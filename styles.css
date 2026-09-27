@@ -46,6 +46,11 @@ input[type=range]{width:100%;accent-color:var(--ice);margin:4px 0 10px}
 .brow.on{background:#1a2233;border-color:var(--ice)}
 .brow .u{color:var(--ice);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .brow .bsep{color:var(--dim);flex:none}
+/* guide panel */
+.guide-panel{top:64px;right:16px;left:auto;width:320px;max-height:70vh;display:flex;flex-direction:column}
+.guide-body{overflow-y:auto;margin-top:6px;min-height:0}
+.guide-body p{margin:8px 0;font-size:13px;line-height:1.5;color:var(--txt)}
+.guide-body p b{color:var(--ice)}
 /* detail panel */
 .dhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .dhead h3{margin:0}
