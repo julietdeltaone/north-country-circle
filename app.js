@@ -43,6 +43,38 @@ const bridgeThresh = (() => {
   return s[Math.min(149, s.length - 1)] || 0;
 })();
 let bridgeMode = false;
+let bridgeList = [];
+let selectedBridge = -1;
+function buildBridgeList() {
+  bridgeList = [];
+  if (bridgeThresh <= 0) return;
+  for (let e = 0; e < EDGES.length; e++) {
+    if (edgeLen[e] < bridgeThresh) continue;
+    const a = EDGES[e][0], b = EDGES[e][1];
+    if (!visible[a] || !visible[b]) continue;
+    bridgeList.push({a, b, len: edgeLen[e]});
+  }
+  bridgeList.sort((x, y) => y.len - x.len);
+}
+function renderBridgePanel() {
+  const el = document.getElementById("bridges-panel");
+  const list = document.getElementById("bridges-list");
+  el.hidden = !bridgeMode;
+  if (!bridgeMode) return;
+  const rows = bridgeList.slice(0, 40);
+  list.innerHTML = rows.length ? rows.map((br, k) => `
+    <button class="brow${k === selectedBridge ? " on" : ""}" data-k="${k}">
+      <span class="u">@${esc(PEOPLE[br.a].username)}</span><span class="bsep">↔</span><span class="u">@${esc(PEOPLE[br.b].username)}</span>
+    </button>`).join("")
+    : `<div class="note">No long-range bridges among the visible people.</div>`;
+  list.querySelectorAll(".brow").forEach(b => b.addEventListener("click", () => {
+    const k = +b.dataset.k, br = bridgeList[k];
+    selectedBridge = k;
+    flyToXY((XS[br.a] + XS[br.b]) / 2, (YS[br.a] + YS[br.b]) / 2);
+    select(br.a);
+    renderBridgePanel();
+  }));
+}
 
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function igLink(u) { return `<a href="https://www.instagram.com/${esc(u)}/" target="_blank" rel="noopener">@${esc(u)}</a>`; }
@@ -93,6 +125,7 @@ function applyFilters() {
   document.getElementById("vis-count").textContent =
     `${vc.toLocaleString()} of ${N.toLocaleString()} people shown`;
   updateStats();
+  if (bridgeMode) { buildBridgeList(); renderBridgePanel(); }
   draw();
 }
 function updateStats() {
@@ -156,19 +189,30 @@ function draw() {
     drawEdges(false, bridgeMode ? "rgba(70,85,120,0.12)" : "rgba(70,85,120,0.28)", 1);
   }
 
-  /* long-range bridges drawn on top in violet */
+  /* long-range bridges: glow underlay + bright core, selected one in amber */
   if (bridgeMode && bridgeThresh > 0) {
-    ctx.strokeStyle = "rgba(208,162,255,0.8)";
-    ctx.lineWidth = 1.6;
-    ctx.beginPath();
-    for (let e = 0; e < EDGES.length; e++) {
-      if (edgeLen[e] < bridgeThresh) continue;
-      const a = EDGES[e][0], b = EDGES[e][1];
-      if (!visible[a] || !visible[b]) continue;
-      ctx.moveTo(w2sX(XS[a]), w2sY(XS[a]));
-      ctx.lineTo(w2sX(XS[b]), w2sY(XS[b]));
+    for (const [style, w] of [["rgba(170,120,255,0.30)", 6], ["rgba(216,170,255,0.95)", 2]]) {
+      ctx.strokeStyle = style;
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      for (let e = 0; e < EDGES.length; e++) {
+        if (edgeLen[e] < bridgeThresh) continue;
+        const a = EDGES[e][0], b = EDGES[e][1];
+        if (!visible[a] || !visible[b]) continue;
+        ctx.moveTo(w2sX(XS[a]), w2sY(XS[a]));
+        ctx.lineTo(w2sX(XS[b]), w2sY(XS[b]));
+      }
+      ctx.stroke();
     }
-    ctx.stroke();
+    const sb = bridgeList[selectedBridge];
+    if (sb && visible[sb.a] && visible[sb.b]) {
+      ctx.strokeStyle = "#ffb454";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(w2sX(XS[sb.a]), w2sY(XS[sb.a]));
+      ctx.lineTo(w2sX(XS[sb.b]), w2sY(XS[sb.b]));
+      ctx.stroke();
+    }
   }
 
   /* nodes */
@@ -256,9 +300,12 @@ function zoomAt(mx, my, f) {
 /* smooth fly-to animation */
 let flyAnim = null;
 function flyTo(i, targetScale) {
+  flyToXY(XS[i], YS[i], targetScale);
+}
+function flyToXY(wx, wy, targetScale) {
   if (flyAnim) cancelAnimationFrame(flyAnim);
   const ts = clampScale(targetScale || Math.max(scale, baseScale) * 3.2);
-  const tx = W / 2 - XS[i] * ts, ty = H / 2 - YS[i] * ts;
+  const tx = W / 2 - wx * ts, ty = H / 2 - wy * ts;
   const s0 = scale, ox0 = ox, oy0 = oy, t0 = performance.now(), dur = 450;
   const step = t => {
     const k = Math.min(1, (t - t0) / dur);
@@ -629,11 +676,16 @@ function initToolbar() {
   document.getElementById("f-list").addEventListener("change", e => { fList = e.target.checked; applyFilters(); });
   document.getElementById("f-isolate").addEventListener("change", e => { isolate = e.target.checked; draw(); });
   const bb = document.getElementById("btn-bridges");
-  bb.addEventListener("click", () => {
-    bridgeMode = !bridgeMode;
+  function setBridgeMode(v) {
+    bridgeMode = v;
     bb.classList.toggle("on", bridgeMode);
+    selectedBridge = -1;
+    if (bridgeMode) buildBridgeList();
+    renderBridgePanel();
     draw();
-  });
+  }
+  bb.addEventListener("click", () => setBridgeMode(!bridgeMode));
+  document.getElementById("bridges-close").addEventListener("click", () => setBridgeMode(false));
   const bh = document.getElementById("btn-hubs");
   bh.addEventListener("click", () => {
     hubMode = !hubMode;
