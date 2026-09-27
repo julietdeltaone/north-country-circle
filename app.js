@@ -5,15 +5,18 @@ const PEOPLE = (D.people && D.people.people) || [];
 const GRAPH = (D.follow_graph && D.follow_graph.people) || [];
 const EVENTS = (D.unfollows && D.unfollows.events) || [];
 const META = D.meta || {};
+const EDGES = (D.friend_edges && D.friend_edges.edges) || [];
 const gById = Object.fromEntries(GRAPH.map(g => [g.id, g]));
+const igToId = Object.fromEntries(PEOPLE.filter(p => p.ig).map(p => [p.ig, p.id]));
 
 const NAV = [
   {group: "Command", items: [["overview", "Overview"]]},
-  {group: "Circle", items: [["graph", "Circle Graph"], ["follows", "Who Follows Who"], ["unfollows", "Unfollows"]]},
+  {group: "Circle", items: [["graph", "Circle Graph"], ["follows", "Who Follows Who"], ["connections", "Friend Connections"], ["unfollows", "Unfollows"]]},
   {group: "Directory", items: [["directory", "Directory"]]},
   {group: "Add", items: [["intake", "Friend Intake"]]},
 ];
 const RENDERERS = {overview: renderOverview, graph: renderGraph, follows: renderFollows,
+                   connections: renderConnections,
                    unfollows: renderUnfollows, directory: renderDirectory, intake: renderIntake};
 
 const COLORS = {mutual: "#8fd0ff", jdfollows: "#ffb454", followsjd: "#d8b98a",
@@ -98,6 +101,22 @@ function renderGraph() {
     const x = C + R1 * Math.cos(a), y = C + R1 * Math.sin(a);
     svg += `<line x1="${C}" y1="${C}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${colorOf(g)}" stroke-width="1.5" opacity="0.55"/>`;
   });
+  // friend-to-friend edges (collected following lists): thin arcs between inner-ring nodes
+  const drawn = new Set();
+  EDGES.forEach(e => {
+    const aId = igToId[e.from], bId = igToId[e.to];
+    if (!aId || !bId || aId === bId) return;
+    if (angleOf[aId] == null || angleOf[bId] == null) return;
+    const key = [aId, bId].sort().join("|");
+    if (drawn.has(key)) return;
+    drawn.add(key);
+    const a1 = angleOf[aId], a2 = angleOf[bId];
+    const x1 = C + R1 * Math.cos(a1), y1 = C + R1 * Math.sin(a1);
+    const x2 = C + R1 * Math.cos(a2), y2 = C + R1 * Math.sin(a2);
+    const mid = (a1 + a2) / 2;
+    const cx = C + R1 * 0.55 * Math.cos(mid), cy = C + R1 * 0.55 * Math.sin(mid);
+    svg += `<path d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${cx.toFixed(1)},${cy.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="#4a5a7a" stroke-width="1.2" opacity="0.65"/>`;
+  });
   // edges friend -> area
   areas.forEach(p => {
     const via = p.via && personOf(p.via);
@@ -141,6 +160,7 @@ function renderGraph() {
       <span><span class="dot" style="background:#d8b98a"></span>They follow you</span>
       <span><span class="dot" style="background:#ff7b7b"></span>Unfollowed you</span>
       <span><span class="dot" style="background:#8a93a3"></span>No IG linked</span>
+      <span><span class="dot" style="background:#4a5a7a"></span>Friend-to-friend follow</span>
     </div>
     <div class="graph-wrap">
       <div class="card graph-box">${svg}</div>
@@ -189,7 +209,35 @@ function renderFollows() {
       <tr><th>Person</th><th>You follow</th><th>Follows you</th><th>Status</th></tr>
       ${rows || `<tr><td colspan="4"><div class="empty">Nobody mapped yet — add friends under Friend Intake.</div></td></tr>`}
     </table></div>
-    <div class="card note">Friend-to-friend follows are tracked in the Directory (who is connected via whom). Instagram only exposes your own following list, so follow status between friends is recorded from what you tell Luna.</div>`;
+    <div class="card note">Friend-to-friend follows come from the collected following lists (see Friend Connections) — not just what you tell Luna.</div>`;
+}
+
+/* ---------- friend connections ---------- */
+function edgeName(handle, fallback) {
+  const id = igToId[handle];
+  if (id) { const p = personOf(id); if (p) return p.name; }
+  return fallback || ("@" + handle);
+}
+function renderConnections() {
+  const el = document.getElementById("view-connections");
+  const rows = EDGES.map(e => {
+    const fn = edgeName(e.from, e.from_name), tn = edgeName(e.to, e.to_name);
+    const tag = e.target_kind === "jd_account" ? "your account"
+      : e.target_kind === "collected" ? "collected list" : "roster";
+    return `<tr>
+      <td><strong>${esc(fn)}</strong><br><span class="note"><a href="https://www.instagram.com/${esc(e.from)}/" target="_blank" rel="noopener">@${esc(e.from)}</a></span></td>
+      <td class="note">follows</td>
+      <td><strong>${esc(tn)}</strong><br><span class="note"><a href="https://www.instagram.com/${esc(e.to)}/" target="_blank" rel="noopener">@${esc(e.to)}</a></span></td>
+      <td><span class="note">${esc(tag)}</span></td>
+    </tr>`;
+  }).join("");
+  el.innerHTML = `
+    <h2>Friend Connections<span class="sub">Follow links between mapped friends and your accounts, from the friend-of-friend following lists collected 2026-09-27. Same links draw as thin arcs on the Circle Graph.</span></h2>
+    <div class="card"><table>
+      <tr><th>Follower</th><th></th><th>Followed</th><th>Target</th></tr>
+      ${rows || `<tr><td colspan="4"><div class="empty">No friend-to-friend edges collected yet.</div></td></tr>`}
+    </table></div>
+    <div class="card note">${EDGES.length} directed edges. Lists: @johnmeyers_sr, @jamesphilipm, @mr_writers_block, @davidzufall (partial, 132 of 1,436), @elisameyers. David Zufall's handle and Elisa Meyers' identity are unconfirmed.</div>`;
 }
 
 /* ---------- unfollows ---------- */
