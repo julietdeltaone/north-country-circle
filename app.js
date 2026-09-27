@@ -107,7 +107,7 @@ window.addEventListener("resize", () => { clearTimeout(window.__rzT); window.__r
 /* ---------- filter / tool state ---------- */
 const visible = new Uint8Array(N).fill(1);
 let visibleCount = N;
-let minConn = 0, fJd = false, fList = false, isolate = false, hubMode = false;
+let minConn = 0, fJd = false, fList = false, isolate = false, hubMode = false, fLabels = true;
 let layers = [], hover = -1;
 const curSel = () => layers.length ? layers[layers.length - 1] : -1;
 let pathNodes = null, pathSet = null, pathEdgeSet = null;
@@ -242,16 +242,16 @@ function draw() {
     }
   }
 
-  /* labels: JD always, plus big nodes when zoomed in */
+  /* default labels: JD + big nodes when zoomed in (toggleable in Filters) */
   ctx.font = "11px -apple-system,Segoe UI,Roboto,sans-serif";
   ctx.textAlign = "center";
   const labelZoom = baseScale * 6;
-  if (jdIndex >= 0 && visible[jdIndex]) {
+  if (fLabels && jdIndex >= 0 && visible[jdIndex]) {
     ctx.fillStyle = "#ffb454";
     ctx.fillText("@jdmeyers_", w2sX(XS[jdIndex]), w2sY(YS[jdIndex]) - rad(jdIndex) - 5);
   }
   /* big-node labels when zoomed in */
-  if (scale >= labelZoom) {
+  if (fLabels && scale >= labelZoom) {
     ctx.fillStyle = "rgba(219,226,238,0.85)";
     let drawn = 0;
     const cutoff = totalOf([...hubSet][79]);
@@ -721,6 +721,7 @@ function initToolbar() {
   document.getElementById("f-jd").addEventListener("change", e => { fJd = e.target.checked; applyFilters(); });
   document.getElementById("f-list").addEventListener("change", e => { fList = e.target.checked; applyFilters(); });
   document.getElementById("f-isolate").addEventListener("change", e => { isolate = e.target.checked; draw(); });
+  document.getElementById("f-labels").addEventListener("change", e => { fLabels = e.target.checked; draw(); });
   const bb = document.getElementById("btn-bridges");
   function setBridgeMode(v) {
     bridgeMode = v;
