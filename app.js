@@ -614,7 +614,12 @@ function initToolbar() {
   document.getElementById("f-jd").addEventListener("change", e => { fJd = e.target.checked; applyFilters(); });
   document.getElementById("f-list").addEventListener("change", e => { fList = e.target.checked; applyFilters(); });
   document.getElementById("f-isolate").addEventListener("change", e => { isolate = e.target.checked; draw(); });
-  document.getElementById("f-bridges").addEventListener("change", e => { bridgeMode = e.target.checked; draw(); });
+  const bb = document.getElementById("btn-bridges");
+  bb.addEventListener("click", () => {
+    bridgeMode = !bridgeMode;
+    bb.classList.toggle("on", bridgeMode);
+    draw();
+  });
   const bh = document.getElementById("btn-hubs");
   bh.addEventListener("click", () => {
     hubMode = !hubMode;
@@ -625,6 +630,13 @@ function initToolbar() {
   document.getElementById("zin").addEventListener("click", () => zoomAt(W / 2, H / 2, 1.35));
   document.getElementById("zout").addEventListener("click", () => zoomAt(W / 2, H / 2, 1 / 1.35));
   document.getElementById("zfit").addEventListener("click", () => { fitView(); draw(); });
+  const fsb = document.getElementById("btn-fs");
+  function toggleFS() {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen().catch(() => {});
+  }
+  fsb.addEventListener("click", toggleFS);
+  document.addEventListener("fullscreenchange", () => fsb.classList.toggle("on", !!document.fullscreenElement));
   document.addEventListener("keydown", e => {
     if (e.target.matches("input, textarea")) return;
     if (e.key === "/") { e.preventDefault(); document.getElementById("q").focus(); }
@@ -637,6 +649,7 @@ function initToolbar() {
     else if (e.key === "+" || e.key === "=") zoomAt(W / 2, H / 2, 1.25);
     else if (e.key === "-") zoomAt(W / 2, H / 2, 1 / 1.25);
     else if (e.key === "0") { fitView(); select(-1); draw(); }
+    else if (e.key === "f" || e.key === "F") toggleFS();
   });
   if (window.innerWidth < 900) {
     const mn = document.getElementById("mobile-note");
