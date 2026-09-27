@@ -71,7 +71,7 @@ function renderBridgePanel() {
     const k = +b.dataset.k, br = bridgeList[k];
     selectedBridge = k;
     flyToXY((XS[br.a] + XS[br.b]) / 2, (YS[br.a] + YS[br.b]) / 2);
-    select(br.a);
+    addLayer(br.a);
     renderBridgePanel();
   }));
 }
@@ -108,7 +108,8 @@ window.addEventListener("resize", () => { clearTimeout(window.__rzT); window.__r
 const visible = new Uint8Array(N).fill(1);
 let visibleCount = N;
 let minConn = 0, fJd = false, fList = false, isolate = false, hubMode = false;
-let selected = -1, hover = -1;
+let layers = [], hover = -1;
+const curSel = () => layers.length ? layers[layers.length - 1] : -1;
 let pathNodes = null, pathSet = null, pathEdgeSet = null;
 
 function applyFilters() {
@@ -142,17 +143,22 @@ function draw() {
   ctx.clearRect(0, 0, W, H);
   const x0 = s2wX(-30), x1 = s2wX(W + 30), y0 = s2wY(-30), y1 = s2wY(H + 30);
 
-  /* highlight set: selected/hover node + its neighbors, or the JD path */
+  /* highlight set: layered nodes + their neighbors (+ hover), or the JD path */
   const hi = new Set();
   if (pathSet) { for (const i of pathSet) hi.add(i); }
   else {
-    const c = hover >= 0 ? hover : selected;
-    if (c >= 0) {
-      hi.add(c);
-      for (const j of outAdj[c]) hi.add(j);
-      for (const j of inAdj[c]) hi.add(j);
+    for (const s of layers) {
+      hi.add(s);
+      for (const j of outAdj[s]) hi.add(j);
+      for (const j of inAdj[s]) hi.add(j);
+    }
+    if (hover >= 0) {
+      hi.add(hover);
+      for (const j of outAdj[hover]) hi.add(j);
+      for (const j of inAdj[hover]) hi.add(j);
     }
   }
+  const layerSet = new Set(layers);
   const dim = hi.size > 0;
 
   /* edges, batched in as few strokes as possible */
@@ -218,7 +224,7 @@ function draw() {
   /* nodes */
   for (let i = 0; i < N; i++) {
     if (!visible[i]) continue;
-    if (isolate && selected >= 0 && !hi.has(i)) continue;
+    if (isolate && layers.length > 0 && !hi.has(i)) continue;
     const x = w2sX(XS[i]), y = w2sY(YS[i]);
     if (x < -20 || y < -20 || x > W + 20 || y > H + 20) continue;
     const isHi = !dim || hi.has(i);
@@ -229,9 +235,9 @@ function draw() {
     else if (hubMode && hubSet.has(i)) ctx.fillStyle = isHi ? "#ffd9a0" : "rgba(255,217,160,0.3)";
     else ctx.fillStyle = isHi ? "#8fd0ff" : "rgba(143,208,255,0.22)";
     ctx.fill();
-    if (i === jdIndex || i === selected || i === hover || (hubMode && hubSet.has(i) && isHi)) {
+    if (i === jdIndex || layerSet.has(i) || i === hover || (hubMode && hubSet.has(i) && isHi)) {
       ctx.lineWidth = i === jdIndex ? 2.5 : 2;
-      ctx.strokeStyle = i === jdIndex ? "#ffb454" : (hubMode && hubSet.has(i) && i !== selected && i !== hover ? "rgba(255,180,84,0.8)" : "#ffb454");
+      ctx.strokeStyle = i === jdIndex ? "#ffb454" : (hubMode && hubSet.has(i) && !layerSet.has(i) && i !== hover ? "rgba(255,180,84,0.8)" : "#ffb454");
       ctx.stroke();
     }
   }
@@ -258,15 +264,17 @@ function draw() {
     }
   }
 
-  /* labels for every connection of the selected person, until cleared */
-  if (selected >= 0) {
+  /* labels for every connection of each layered person */
+  if (layers.length) {
     ctx.fillStyle = "rgba(143,208,255,0.9)";
-    const nbs = undAdj[selected].filter(j => visible[j] && j !== selected)
-      .sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 160);
-    for (const j of nbs) {
-      const x = w2sX(XS[j]), y = w2sY(YS[j]);
-      if (x < 0 || y < 0 || x > W || y > H) continue;
-      ctx.fillText("@" + PEOPLE[j].username, x, y - rad(j) - 4);
+    for (const s of layers) {
+      const nbs = undAdj[s].filter(j => visible[j] && j !== s)
+        .sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 80);
+      for (const j of nbs) {
+        const x = w2sX(XS[j]), y = w2sY(YS[j]);
+        if (x < 0 || y < 0 || x > W || y > H) continue;
+        ctx.fillText("@" + PEOPLE[j].username, x, y - rad(j) - 4);
+      }
     }
   }
 }
@@ -398,8 +406,11 @@ function endPointer(e) {
   const tap = wasSingle && !moved && (Date.now() - downT) < TAP_MS;
   pts.delete(e.pointerId);
   if (pts.size === 0) {
-    if (tap && mode === "node" && activeNode >= 0) select(activeNode === selected ? -1 : activeNode);
-    else if (tap && mode === "pan") select(-1);
+    if (tap && mode === "node" && activeNode >= 0) {
+      if (layers.includes(activeNode)) removeLayer(activeNode);
+      else addLayer(activeNode);
+    }
+    else if (tap && mode === "pan" && pathSet) { clearPath(); draw(); }
     mode = "idle"; activeNode = -1; pinch = null;
   } else if (pts.size === 1) {
     const p = [...pts.values()][0];
@@ -435,16 +446,48 @@ function connListHTML(arr) {
 }
 /* ---------- breadcrumb trail: hop person -> person through following lists ---------- */
 let trail = [];
-function select(i, push = true) {
-  if (push && i >= 0 && trail[trail.length - 1] !== i) {
+/* ---------- stackable selection layers ---------- */
+function pushTrail(i) {
+  if (trail[trail.length - 1] !== i) {
     trail.push(i);
     if (trail.length > 12) trail.shift();
   }
-  selected = i;
+  renderTrail();
+}
+function addLayer(i, push = true) {
+  if (i < 0) return;
+  if (push) pushTrail(i);
+  if (!layers.includes(i)) layers.push(i);
   clearPath();
   draw();
   renderDetail();
-  renderTrail();
+  renderLayers();
+}
+function removeLayer(i) {
+  layers = layers.filter(j => j !== i);
+  draw();
+  renderDetail();
+  renderLayers();
+}
+function clearLayers() {
+  layers = [];
+  draw();
+  renderDetail();
+  renderLayers();
+}
+function renderLayers() {
+  const el = document.getElementById("layers");
+  if (!layers.length) { el.hidden = true; el.innerHTML = ""; return; }
+  el.hidden = false;
+  el.innerHTML = layers.map(j =>
+    `<span class="lchip" data-j="${j}">@${esc(PEOPLE[j].username)}<button data-j="${j}" title="Remove this layer">×</button></span>`
+  ).join("") + `<button class="layers-clear" id="layers-clear">Clear all</button>`;
+  el.querySelectorAll(".lchip").forEach(c => c.addEventListener("click", e => {
+    const j = +c.dataset.j;
+    if (e.target.tagName === "BUTTON") removeLayer(j);
+    else flyTo(j);
+  }));
+  document.getElementById("layers-clear").addEventListener("click", clearLayers);
 }
 function renderTrail() {
   const el = document.getElementById("trail");
@@ -456,15 +499,18 @@ function renderTrail() {
   el.querySelectorAll(".crumb").forEach(b => b.addEventListener("click", () => {
     const k = +b.dataset.k;
     trail = trail.slice(0, k + 1);
-    select(trail[k], false);
+    flyTo(trail[k]);
+    addLayer(trail[k], false);
+    renderTrail();
   }));
   el.querySelector(".trail-x").addEventListener("click", () => { trail = []; renderTrail(); });
 }
 function renderDetail() {
   const el = document.getElementById("detail");
-  if (selected < 0) { el.hidden = true; return; }
+  const i = curSel();
+  if (i < 0) { el.hidden = true; return; }
   el.hidden = false;
-  const p = PEOPLE[selected], i = selected;
+  const p = PEOPLE[i];
   const followers = inAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
   const following = outAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
   el.innerHTML = `
@@ -482,11 +528,11 @@ function renderDetail() {
     <div class="connlist">${connListHTML(following) || `<div class="note">Nobody in the collected lists.</div>`}</div>`;
   el.querySelectorAll(".conn").forEach(c => c.addEventListener("click", () => {
     const j = +c.dataset.i;
-    flyTo(j); select(j);
+    flyTo(j); addLayer(j);
   }));
   const pb = document.getElementById("path-jd");
   if (pb) pb.addEventListener("click", () => tracePathToJD(i));
-  document.getElementById("d-clear").addEventListener("click", () => select(-1));
+  document.getElementById("d-clear").addEventListener("click", () => removeLayer(i));
 }
 
 /* ---------- shortest path back to JD ---------- */
@@ -537,7 +583,7 @@ function tracePathToJD(i) {
   el.querySelector("#path-jd").outerHTML =
     `<button class="pathbtn clear" id="path-clear">${hops} hop${hops === 1 ? "" : "s"} to JD — ${path.map(j => "@" + esc(PEOPLE[j].username)).join(" → ")}</button>
      <div class="note" style="margin-top:6px">Tap the map or press Esc to clear.</div>`;
-  document.getElementById("path-clear").addEventListener("click", () => select(selected));
+  document.getElementById("path-clear").addEventListener("click", () => { clearPath(); draw(); });
 }
 function clearPath() {
   pathNodes = null; pathSet = null; pathEdgeSet = null;
@@ -569,7 +615,7 @@ function initSearch() {
     res.querySelectorAll(".hit").forEach(h => h.addEventListener("click", () => {
       const i = +h.dataset.i;
       res.hidden = true; q.value = ""; q.blur();
-      flyTo(i); select(i);
+      flyTo(i); addLayer(i);
     }));
   });
   q.addEventListener("keydown", e => {
@@ -640,7 +686,7 @@ function paintDir() {
   document.querySelectorAll("#dir-list .locate").forEach(b => b.addEventListener("click", () => {
     const i = +b.dataset.i;
     document.getElementById("directory").hidden = true;
-    flyTo(i); select(i);
+    flyTo(i); addLayer(i);
   }));
 }
 function initDirectory() {
@@ -692,7 +738,7 @@ function initToolbar() {
     bh.classList.toggle("on", hubMode);
     draw();
   });
-  document.getElementById("btn-reset").addEventListener("click", () => { fitView(); select(-1); draw(); });
+  document.getElementById("btn-reset").addEventListener("click", () => { fitView(); clearLayers(); draw(); });
   document.getElementById("zin").addEventListener("click", () => zoomAt(W / 2, H / 2, 1.35));
   document.getElementById("zout").addEventListener("click", () => zoomAt(W / 2, H / 2, 1 / 1.35));
   document.getElementById("zfit").addEventListener("click", () => { fitView(); draw(); });
@@ -710,11 +756,11 @@ function initToolbar() {
       if (!document.getElementById("directory").hidden) {
         document.getElementById("directory").hidden = true;
         document.getElementById("btn-dir").classList.remove("on");
-      } else if (pathSet || selected >= 0) select(-1);
+      } else if (pathSet || layers.length) { clearPath(); clearLayers(); }
     }
     else if (e.key === "+" || e.key === "=") zoomAt(W / 2, H / 2, 1.25);
     else if (e.key === "-") zoomAt(W / 2, H / 2, 1 / 1.25);
-    else if (e.key === "0") { fitView(); select(-1); draw(); }
+    else if (e.key === "0") { fitView(); clearLayers(); draw(); }
     else if (e.key === "f" || e.key === "F") toggleFS();
   });
   if (window.innerWidth < 900) {
