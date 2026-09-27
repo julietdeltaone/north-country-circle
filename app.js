@@ -184,8 +184,8 @@ function draw() {
     ctx.strokeStyle = "rgba(255,180,84,0.85)"; ctx.lineWidth = 2.5; ctx.beginPath();
     for (const key of pathEdgeSet) {
       const a = Math.floor(key / N), b = key % N;
-      ctx.moveTo(w2sX(XS[a]), w2sY(XS[a]));
-      ctx.lineTo(w2sX(XS[b]), w2sY(XS[b]));
+      ctx.moveTo(w2sX(XS[a]), w2sY(YS[a]));
+      ctx.lineTo(w2sX(XS[b]), w2sY(YS[b]));
     }
     ctx.stroke();
   } else if (dim) {
@@ -205,8 +205,8 @@ function draw() {
         if (edgeLen[e] < bridgeThresh) continue;
         const a = EDGES[e][0], b = EDGES[e][1];
         if (!visible[a] || !visible[b]) continue;
-        ctx.moveTo(w2sX(XS[a]), w2sY(XS[a]));
-        ctx.lineTo(w2sX(XS[b]), w2sY(XS[b]));
+        ctx.moveTo(w2sX(XS[a]), w2sY(YS[a]));
+        ctx.lineTo(w2sX(XS[b]), w2sY(YS[b]));
       }
       ctx.stroke();
     }
@@ -215,8 +215,8 @@ function draw() {
       ctx.strokeStyle = "#ffb454";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(w2sX(XS[sb.a]), w2sY(XS[sb.a]));
-      ctx.lineTo(w2sX(XS[sb.b]), w2sY(XS[sb.b]));
+      ctx.moveTo(w2sX(XS[sb.a]), w2sY(YS[sb.a]));
+      ctx.lineTo(w2sX(XS[sb.b]), w2sY(YS[sb.b]));
       ctx.stroke();
     }
   }
@@ -505,6 +505,16 @@ function renderTrail() {
   }));
   el.querySelector(".trail-x").addEventListener("click", () => { trail = []; renderTrail(); });
 }
+function listStatusText(p) {
+  switch (p.list_status) {
+    case "complete": return " &middot; list complete";
+    case "partial-bounded": return " &middot; list partial";
+    case "exhausted-mismatch": return " &middot; list partial (header mismatch)";
+    case "private": return " &middot; private — no list";
+    case "failed": return " &middot; capture failed";
+    default: return "";
+  }
+}
 function renderDetail() {
   const el = document.getElementById("detail");
   const i = curSel();
@@ -515,7 +525,7 @@ function renderDetail() {
   const following = outAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
   el.innerHTML = `
     <div class="dhead"><h3>${esc(p.name || p.username)}</h3><button class="tbtn" id="d-clear" title="Clear selection (Esc)">×</button></div>
-    <div class="meta">${igLink(p.username)}${p.num_lists ? ` &middot; in ${p.num_lists} list${p.num_lists > 1 ? "s" : ""}` : ""}${p.has_list ? " &middot; list collected" : ""}${p.jd_follows ? " &middot; followed by JD" : ""}</div>
+    <div class="meta">${igLink(p.username)}${p.num_lists ? ` &middot; in ${p.num_lists} list${p.num_lists > 1 ? "s" : ""}` : ""}${listStatusText(p)}${p.jd_follows ? " &middot; followed by JD" : ""}</div>
     <div class="statrow">
       <div><b>${p.in_degree}</b><span>in</span></div>
       <div><b>${p.out_degree}</b><span>out</span></div>
@@ -667,7 +677,7 @@ function paintDir() {
       <td>${igLink(p.username)}</td>
       <td>${esc(p.name || "—")}</td>
       <td>${p.in_degree}</td><td>${p.out_degree}</td><td><strong>${total}</strong></td>
-      <td>${p.num_lists || ""}${p.has_list ? " ●" : ""}</td>
+      <td>${p.num_lists || ""}${p.has_list ? " ●" : (p.list_status === "private" ? " P" : (p.list_status === "failed" ? " !" : ""))}</td>
       <td>${p.jd_follows ? "Yes" : ""}</td>
       <td><button class="locate" data-i="${i}">Locate</button></td>
     </tr>`).join("") + `</tbody></table>`
