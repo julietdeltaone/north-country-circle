@@ -30,6 +30,7 @@
     <button id="btn-bridges" class="tbtn" title="Highlights the ~150 longest connections: links between people in far-apart parts of the map">Bridges</button>
     <button id="btn-dir" class="tbtn" title="Open the directory">Directory</button>
     <button id="btn-reset" class="tbtn" title="Reset view (0)">Reset</button>
+    <button id="btn-guide" class="tbtn" title="How to use this">?</button>
   </div>
 
   <aside class="hud panel" id="filters" hidden>
@@ -49,6 +50,17 @@
     <div class="dhead"><h3>Long-range bridges</h3><button class="tbtn" id="bridges-close" title="Hide panel">×</button></div>
     <div class="note">The longest links on the map — each connects people in far-apart parts of the network. Click one to visit it.</div>
     <div id="bridges-list"></div>
+  </aside>
+
+  <aside class="hud panel guide-panel" id="guide" hidden>
+    <div class="dhead"><h3>How to use this</h3><button class="tbtn" id="guide-close" title="Close">×</button></div>
+    <div class="guide-body">
+      <p><b>Find someone.</b> Search a handle or name up top, or open the Directory. Enter flies you to them.</p>
+      <p><b>Explore connections.</b> Click any dot: their connections light up with names. Click more dots to stack them — each stays until you clear it. The chips under the search box are your active stack: × drops one, Clear all drops them all.</p>
+      <p><b>Spot surprises.</b> Bridges lists the longest links between far-apart parts of the map — people connecting groups that otherwise never touch. Click a row to visit it.</p>
+      <p><b>Walk the network.</b> A person's panel lists who follows them and who they follow — click a name to hop there. The trail under the search box is your click history; click a name to jump back.</p>
+      <p><b>Move around.</b> Drag to pan (hold Shift to drag over dots), scroll to zoom, F for fullscreen, Esc clears everything.</p>
+    </div>
   </aside>
 
   <aside class="hud drawer" id="directory" hidden>
