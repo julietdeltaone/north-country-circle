@@ -48,3 +48,32 @@ th.sorted{color:var(--ice)}
 td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
 tr:hover td{background:#161d2b}
 @media(max-width:640px){.nav{top:52px}.detail{position:static;max-width:none}}
+/* network controls */
+.canvas-holder{position:relative}
+#net-canvas{display:block;width:100%;border-radius:6px;background:#0d1119;cursor:default;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.zoomctl{position:absolute;right:10px;bottom:10px;display:flex;flex-direction:column;gap:8px;z-index:5}
+.zoomctl button{width:46px;height:46px;border-radius:10px;border:1px solid var(--line);background:rgba(13,17,25,.92);color:var(--ice);font-size:22px;font-weight:700;cursor:pointer;line-height:1}
+.zoomctl button:active{background:var(--ice);color:#0b0e14}
+.net-search{position:relative;max-width:440px;margin-bottom:12px}
+.net-search input{width:100%;background:#0d1119;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px 14px;font-size:15px}
+.net-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#0d1119;border:1px solid var(--line);border-radius:8px;z-index:20;max-height:300px;overflow-y:auto;box-shadow:0 8px 28px rgba(0,0,0,.55)}
+.net-hit{padding:9px 13px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--line)}
+.net-hit:last-child{border-bottom:none}
+.net-hit:hover,.net-hit:active{background:#161d2b}
+.hint{font-size:12.5px;color:var(--dim);margin-top:10px}
+/* directory cards (mobile) */
+.dir-cards{display:flex;flex-direction:column;gap:10px}
+.dir-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.dir-card-main{flex:1;min-width:0}
+.dir-card-stats{font-size:12.5px;color:var(--dim);margin-top:3px}
+.jdtag{color:var(--ice);font-weight:600}
+.dir-map{flex:none;background:transparent;border:1px solid var(--ice);color:var(--ice);border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer}
+.dir-map:active{background:var(--ice);color:#0b0e14}
+@media(max-width:640px){
+  .nav{top:52px}
+  main{padding:16px 12px 60px}
+  .net-box{flex:1 1 100%;min-width:0;padding:12px}
+  .detail{position:static;max-width:none;flex:1 1 100%}
+  .topbar{padding:12px 14px}
+  .sync{font-size:11px}
+}
