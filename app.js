@@ -18,6 +18,7 @@ for (const [a, b] of EDGES) {
 const totalOf = i => PEOPLE[i].in_degree + PEOPLE[i].out_degree;
 const maxTotal = Math.max(1, ...PEOPLE.map((_, i) => totalOf(i)));
 const byName = new Map(PEOPLE.map((p, i) => [p.username, i]));
+const isMobile = () => window.matchMedia("(max-width: 640px)").matches;
 
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function igLink(u) { return `<a href="https://www.instagram.com/${esc(u)}/" target="_blank" rel="noopener">@${esc(u)}</a>`; }
@@ -36,6 +37,7 @@ function buildNav() {
   if (META.synced_at) parts.push(`synced ${esc(META.synced_at)}`);
   document.getElementById("sync-line").textContent = parts.join(" · ");
 }
+let pendingJump = null; // person index to fly to after the network view renders
 function show(key) {
   document.querySelectorAll(".view").forEach(v => v.hidden = true);
   document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("active", b.dataset.view === key));
@@ -56,7 +58,7 @@ function connListHTML(arr) {
 function showDetail(i) {
   const boxEl = document.getElementById("net-detail");
   if (!boxEl) return;
-  if (i < 0) { boxEl.innerHTML = `<div class="empty">Click a node to see its connections.</div>`; return; }
+  if (i < 0) { boxEl.innerHTML = `<div class="empty">Tap a node to see its connections.</div>`; return; }
   const p = PEOPLE[i];
   const followers = inAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
   const following = outAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
@@ -73,37 +75,66 @@ function showDetail(i) {
     <h4>Follows (${following.length})</h4>
     <div class="connlist">${connListHTML(following) || `<div class="note">Nobody in the collected lists.</div>`}</div>`;
   boxEl.querySelectorAll(".conn").forEach(c => c.addEventListener("click", () => {
-    if (net) net.select(+c.dataset.i);
+    if (net) { net.centerOn(+c.dataset.i); net.select(+c.dataset.i); }
   }));
 }
 function renderNetwork() {
   const el = document.getElementById("view-network");
   el.innerHTML = `
-    <h2>Network<span class="sub">Every person found across the collected following lists, and every follow between them. Node size = total connections. Drag a node to move it, drag the background to pan, scroll to zoom, click a node for details.</span></h2>
+    <h2>Network<span class="sub">Every person found across the collected following lists, and every follow between them. Node size = total connections.</span></h2>
     <div class="net-wrap">
-      <div class="card net-box"><canvas id="net-canvas"></canvas></div>
-      <div class="card detail" id="net-detail"><div class="empty">Click a node to see its connections.</div></div>
+      <div class="card net-box">
+        <div class="net-search">
+          <input id="net-q" placeholder="Find a person by handle or name…" autocomplete="off">
+          <div id="net-results" class="net-results" hidden></div>
+        </div>
+        <div class="canvas-holder">
+          <canvas id="net-canvas"></canvas>
+          <div class="zoomctl">
+            <button id="zoom-in" aria-label="Zoom in">+</button>
+            <button id="zoom-out" aria-label="Zoom out">&minus;</button>
+            <button id="zoom-reset" aria-label="Reset view">&#10226;</button>
+          </div>
+        </div>
+        <div class="hint">Drag background to pan &middot; pinch or scroll to zoom &middot; drag a node to move it &middot; tap a node for details</div>
+      </div>
+      <div class="card detail" id="net-detail"><div class="empty">Tap a node to see its connections.</div></div>
     </div>`;
   initCanvas(document.getElementById("net-canvas"));
+  initNetSearch();
+  document.getElementById("zoom-in").addEventListener("click", () => net && net.zoomCenter(1.35));
+  document.getElementById("zoom-out").addEventListener("click", () => net && net.zoomCenter(1 / 1.35));
+  document.getElementById("zoom-reset").addEventListener("click", () => net && net.reset());
+  if (pendingJump != null && net) {
+    const i = pendingJump; pendingJump = null;
+    net.centerOn(i); net.select(i);
+  }
 }
 
 function initCanvas(canvas) {
   const box = canvas.parentElement;
-  const W = Math.max(320, box.clientWidth - 36), H = 620;
+  const W = Math.max(300, box.clientWidth);
+  const H = isMobile() ? Math.max(340, Math.round(window.innerHeight * 0.55)) : 620;
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   canvas.width = W * dpr; canvas.height = H * dpr;
   canvas.style.width = W + "px"; canvas.style.height = H + "px";
   const ctx = canvas.getContext("2d");
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  // fit layout box [-1,1] into canvas
-  let scale = Math.min(W, H) / 2.25, ox = W / 2, oy = H / 2;
+  const baseScale = Math.min(W, H) / 2.25;
+  const SMIN = Math.min(W, H) / 6, SMAX = 8 * Math.min(W, H) / 2.25;
+  let scale = baseScale, ox = W / 2, oy = H / 2;
   const w2sX = x => ox + x * scale, w2sY = y => oy + y * scale;
   const s2wX = x => (x - ox) / scale, s2wY = y => (y - oy) / scale;
+  const clampScale = s => Math.min(SMAX, Math.max(SMIN, s));
   const rad = i => 2 + 7 * Math.sqrt(totalOf(i) / maxTotal);
 
-  let hover = -1, selected = -1, dragNode = -1, panning = false, px = 0, py = 0, moved = false;
+  let hover = -1, selected = -1;
   const tip = document.getElementById("tooltip");
+  const posOf = e => {
+    const r = canvas.getBoundingClientRect();
+    return {x: e.clientX - r.left, y: e.clientY - r.top};
+  };
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
@@ -115,7 +146,6 @@ function initCanvas(canvas) {
       for (const j of inAdj[c]) hi.add(j);
     }
     const dim = hi.size > 0;
-    // edges
     ctx.lineWidth = 1;
     if (dim) {
       ctx.strokeStyle = "rgba(70,85,120,0.18)";
@@ -143,7 +173,6 @@ function initCanvas(canvas) {
       }
       ctx.stroke();
     }
-    // nodes
     for (let i = 0; i < N; i++) {
       const p = PEOPLE[i], r = rad(i);
       const x = w2sX(p.x), y = w2sY(p.y);
@@ -163,7 +192,7 @@ function initCanvas(canvas) {
 
   function nearest(mx, my) {
     const wx = s2wX(mx), wy = s2wY(my);
-    const tol = 14 / scale;
+    const tol = 16 / scale;
     let best = -1, bd = tol * tol;
     for (let i = 0; i < N; i++) {
       const dx = PEOPLE[i].x - wx, dy = PEOPLE[i].y - wy;
@@ -178,97 +207,188 @@ function initCanvas(canvas) {
     draw();
     showDetail(i);
   }
+  function zoomAt(mx, my, f) {
+    const ns = clampScale(scale * f);
+    ox = mx - (mx - ox) * (ns / scale);
+    oy = my - (my - oy) * (ns / scale);
+    scale = ns;
+    draw();
+  }
 
-  canvas.addEventListener("mousemove", e => {
-    const r = canvas.getBoundingClientRect();
-    const mx = e.clientX - r.left, my = e.clientY - r.top;
-    if (dragNode >= 0) {
-      PEOPLE[dragNode].x = s2wX(mx); PEOPLE[dragNode].y = s2wY(my);
-      draw(); return;
-    }
-    if (panning) {
-      ox += mx - px; oy += my - py; px = mx; py = my; moved = true;
-      draw(); return;
-    }
+  /* ----- unified pointer handling: tap = select, drag bg = pan,
+         drag node = move, two fingers = pinch zoom ----- */
+  const pts = new Map();
+  let mode = "idle", activeNode = -1, startX = 0, startY = 0;
+  let moved = false, downT = 0;
+  let pinch = null;
+  const TAP_MS = 400, TAP_PX = 9;
+  const pdist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+  function setHover(mx, my, cx, cy) {
     const h = nearest(mx, my);
     if (h !== hover) { hover = h; draw(); }
     if (h >= 0) {
       const p = PEOPLE[h];
       tip.hidden = false;
-      tip.style.left = (e.clientX + 14) + "px";
-      tip.style.top = (e.clientY + 10) + "px";
-      tip.innerHTML = `<strong>${esc(p.name || p.username)}</strong><br>@${esc(p.username)} · ${totalOf(h)} connections`;
+      tip.style.left = (cx + 14) + "px";
+      tip.style.top = (cy + 10) + "px";
+      tip.innerHTML = `<strong>${esc(p.name || p.username)}</strong><br>@${esc(p.username)} &middot; ${totalOf(h)} connections`;
       canvas.style.cursor = "pointer";
     } else {
       tip.hidden = true;
       canvas.style.cursor = "default";
     }
-  });
-  canvas.addEventListener("mouseleave", () => { tip.hidden = true; hover = -1; draw(); });
-  canvas.addEventListener("mousedown", e => {
-    const r = canvas.getBoundingClientRect();
-    const mx = e.clientX - r.left, my = e.clientY - r.top;
-    const h = nearest(mx, my);
-    moved = false;
-    if (h >= 0) { dragNode = h; }
-    else { panning = true; px = mx; py = my; }
-  });
-  window.addEventListener("mouseup", e => {
-    if (dragNode >= 0 && !moved) { /* treated as click below */ }
-    const wasDrag = dragNode >= 0, wasPan = panning && moved;
-    dragNode = -1; panning = false;
-    if (wasDrag && !wasPan) {
-      const r = canvas.getBoundingClientRect();
-      const h = nearest(e.clientX - r.left, e.clientY - r.top);
-      if (h >= 0) { pick(selected === h ? -1 : h); }
-      draw();
+  }
+
+  canvas.addEventListener("pointerdown", e => {
+    try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+    const p = posOf(e);
+    pts.set(e.pointerId, p);
+    if (pts.size === 1) {
+      const h = nearest(p.x, p.y);
+      mode = h >= 0 ? "node" : "pan";
+      activeNode = h; startX = p.x; startY = p.y;
+      moved = false; downT = Date.now(); pinch = null;
+    } else if (pts.size === 2) {
+      const [a, b] = [...pts.values()];
+      pinch = {d: pdist(a, b), scale, ox, oy, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2};
+      mode = "pinch"; moved = true; activeNode = -1;
+      tip.hidden = true;
     }
   });
+  canvas.addEventListener("pointermove", e => {
+    if (!pts.has(e.pointerId)) {
+      if (e.pointerType === "mouse") { const p = posOf(e); setHover(p.x, p.y, e.clientX, e.clientY); }
+      return;
+    }
+    const p = posOf(e), prev = pts.get(e.pointerId);
+    pts.set(e.pointerId, p);
+    if (mode === "pinch" && pts.size >= 2 && pinch && pinch.d > 0) {
+      const [a, b] = [...pts.values()];
+      const d = pdist(a, b);
+      if (d > 0) {
+        const ns = clampScale(pinch.scale * d / pinch.d);
+        const f = ns / scale;
+        ox = pinch.cx - (pinch.cx - pinch.ox) * f;
+        oy = pinch.cy - (pinch.cy - pinch.oy) * f;
+        scale = ns;
+        draw();
+      }
+      return;
+    }
+    if (Math.hypot(p.x - startX, p.y - startY) > TAP_PX) moved = true;
+    if (mode === "node" && activeNode >= 0 && moved) {
+      PEOPLE[activeNode].x = s2wX(p.x);
+      PEOPLE[activeNode].y = s2wY(p.y);
+      draw();
+      return;
+    }
+    if (mode === "pan" && moved) {
+      ox += p.x - prev.x; oy += p.y - prev.y;
+      draw();
+      return;
+    }
+    if (e.pointerType === "mouse" && !moved) setHover(p.x, p.y, e.clientX, e.clientY);
+  });
+  function endPointer(e) {
+    const wasSingle = pts.size === 1;
+    const tap = wasSingle && !moved && (Date.now() - downT) < TAP_MS;
+    pts.delete(e.pointerId);
+    if (pts.size === 0) {
+      if (tap && mode === "node" && activeNode >= 0) pick(activeNode === selected ? -1 : activeNode);
+      else if (tap && mode === "pan" && selected >= 0) pick(-1);
+      mode = "idle"; activeNode = -1; pinch = null;
+    } else if (pts.size === 1) {
+      // pinch released back to one finger: re-baseline so nothing jumps
+      const p = [...pts.values()][0];
+      startX = p.x; startY = p.y; moved = false; downT = Date.now();
+      const h = nearest(p.x, p.y);
+      mode = h >= 0 ? "node" : "pan"; activeNode = h; pinch = null;
+    }
+  }
+  canvas.addEventListener("pointerup", endPointer);
+  canvas.addEventListener("pointercancel", endPointer);
+  canvas.addEventListener("pointerleave", e => {
+    if (!pts.has(e.pointerId) && e.pointerType === "mouse") { tip.hidden = true; hover = -1; draw(); }
+  });
+  canvas.addEventListener("contextmenu", e => e.preventDefault());
   canvas.addEventListener("wheel", e => {
     e.preventDefault();
-    const r = canvas.getBoundingClientRect();
-    const mx = e.clientX - r.left, my = e.clientY - r.top;
-    const f = e.deltaY < 0 ? 1.15 : 1 / 1.15;
-    const ns = Math.min(8 * Math.min(W, H) / 2.25, Math.max(Math.min(W, H) / 6, scale * f));
-    ox = mx - (mx - ox) * (ns / scale);
-    oy = my - (my - oy) * (ns / scale);
-    scale = ns;
-    draw();
+    const p = posOf(e);
+    zoomAt(p.x, p.y, e.deltaY < 0 ? 1.15 : 1 / 1.15);
   }, {passive: false});
+  canvas.addEventListener("dblclick", e => {
+    const p = posOf(e);
+    zoomAt(p.x, p.y, 1.6);
+  });
 
-  net = {draw, select: pick};
+  net = {
+    draw,
+    select: pick,
+    zoomCenter: f => zoomAt(W / 2, H / 2, f),
+    reset: () => { scale = baseScale; ox = W / 2; oy = H / 2; draw(); },
+    centerOn: (i, boost) => {
+      const s = clampScale(Math.max(scale, baseScale) * (boost || 3));
+      scale = s;
+      ox = W / 2 - PEOPLE[i].x * s;
+      oy = H / 2 - PEOPLE[i].y * s;
+      draw();
+    },
+  };
   draw();
+}
+
+/* ---------- find-a-person search on the network view ---------- */
+function initNetSearch() {
+  const q = document.getElementById("net-q"), res = document.getElementById("net-results");
+  if (!q) return;
+  q.addEventListener("input", () => {
+    const s = q.value.trim().toLowerCase();
+    if (s.length < 2) { res.hidden = true; return; }
+    const scored = [];
+    for (let i = 0; i < N && scored.length < 400; i++) {
+      const p = PEOPLE[i];
+      const u = p.username.toLowerCase(), nm = (p.name || "").toLowerCase();
+      let rank = -1;
+      if (u === s || nm === s) rank = 0;
+      else if (u.startsWith(s) || nm.startsWith(s)) rank = 1;
+      else if (u.includes(s) || nm.includes(s)) rank = 2;
+      if (rank >= 0) scored.push([rank, totalOf(i), i]);
+    }
+    scored.sort((a, b) => a[0] - b[0] || b[1] - a[1]);
+    const matches = scored.slice(0, 8).map(x => x[2]);
+    res.innerHTML = matches.map(i =>
+      `<div class="net-hit" data-i="${i}"><strong>${esc(PEOPLE[i].name || PEOPLE[i].username)}</strong> <span class="note">@${esc(PEOPLE[i].username)} &middot; ${totalOf(i)} connections</span></div>`).join("")
+      || `<div class="note" style="padding:10px 12px">No matches.</div>`;
+    res.hidden = false;
+    res.querySelectorAll(".net-hit").forEach(h => h.addEventListener("click", () => {
+      const i = +h.dataset.i;
+      res.hidden = true; q.value = ""; q.blur();
+      if (net) { net.centerOn(i); net.select(i); }
+      if (isMobile()) document.getElementById("net-detail").scrollIntoView({behavior: "smooth", block: "nearest"});
+    }));
+  });
+  q.addEventListener("keydown", e => { if (e.key === "Escape") { res.hidden = true; q.blur(); } });
+  document.addEventListener("click", e => { if (!e.target.closest(".net-search")) res.hidden = true; });
 }
 
 /* ---------- directory ---------- */
 let dirState = {q: "", key: "total", dir: -1};
+let dirMode = null; // "table" | "cards"
 function renderDirectory() {
   const el = document.getElementById("view-directory");
   el.innerHTML = `
-    <h2>Directory<span class="sub">Everyone found across the collected following lists. Search by handle or name; click a column to sort.</span></h2>
+    <h2>Directory<span class="sub">Everyone found across the collected following lists. Search by handle or name; tap a column to sort.</span></h2>
     <div class="card controls">
       <input id="dir-q" placeholder="Search handle or name…" value="${esc(dirState.q)}">
       <span class="note" id="dir-count"></span>
     </div>
-    <div class="card"><table id="dir-table">
-      <thead><tr>
-        <th data-k="username">Handle</th><th data-k="name">Name</th>
-        <th data-k="in_degree">In</th><th data-k="out_degree">Out</th>
-        <th data-k="total">Total</th><th data-k="num_lists">Lists</th>
-        <th data-k="jd">JD follows</th>
-      </tr></thead>
-      <tbody></tbody>
-    </table></div>`;
+    <div id="dir-list"></div>`;
   const q = document.getElementById("dir-q");
   q.addEventListener("input", () => { dirState.q = q.value; paintDir(); });
-  el.querySelectorAll("th[data-k]").forEach(th => th.addEventListener("click", () => {
-    const k = th.dataset.k;
-    if (dirState.key === k) dirState.dir *= -1;
-    else { dirState.key = k; dirState.dir = k === "username" || k === "name" ? 1 : -1; }
-    paintDir();
-  }));
+  dirMode = null;
   paintDir();
-  q.focus();
+  if (!isMobile()) q.focus();
 }
 function dirRows() {
   const q = dirState.q.trim().toLowerCase();
@@ -285,25 +405,81 @@ function dirRows() {
   });
   return rows;
 }
+function jumpToNetwork(i) {
+  pendingJump = i;
+  if (location.hash === "#network" || !location.hash) renderNetwork();
+  else location.hash = "network";
+  window.scrollTo(0, 0);
+}
 function paintDir() {
   const rows = dirRows();
-  document.getElementById("dir-count").textContent = `${rows.length} of ${N} people`;
-  document.querySelectorAll("#dir-table th").forEach(th => {
-    const k = th.dataset.k;
-    th.classList.toggle("sorted", dirState.key === k);
-    th.textContent = th.textContent.replace(/ [▲▼]$/, "") + (dirState.key === k ? (dirState.dir === 1 ? " ▲" : " ▼") : "");
-  });
-  document.querySelector("#dir-table tbody").innerHTML = rows.map(({p, total}) => `
-    <tr>
-      <td>${igLink(p.username)}</td>
-      <td>${esc(p.name || "—")}</td>
-      <td>${p.in_degree}</td><td>${p.out_degree}</td><td><strong>${total}</strong></td>
-      <td>${p.num_lists || ""}${p.has_list ? " ●" : ""}</td>
-      <td>${p.jd_follows ? "Yes" : ""}</td>
-    </tr>`).join("") || `<tr><td colspan="7"><div class="empty">No matches.</div></td></tr>`;
+  const mode = isMobile() ? "cards" : "table";
+  if (mode !== dirMode) dirMode = mode;
+  document.getElementById("dir-count").textContent = `${rows.length.toLocaleString()} of ${N.toLocaleString()} people`;
+  const list = document.getElementById("dir-list");
+  if (mode === "cards") {
+    const cap = 400;
+    const shown = rows.slice(0, cap);
+    list.innerHTML = `<div class="dir-cards">` + shown.map(({p, i, total}) => `
+      <div class="dir-card">
+        <div class="dir-card-main">
+          <div><strong>${esc(p.name || p.username)}</strong></div>
+          <div class="note">${igLink(p.username)}</div>
+          <div class="dir-card-stats">${total} connections${p.num_lists ? ` &middot; ${p.num_lists} lists` : ""}${p.jd_follows ? ` &middot; <span class="jdtag">JD follows</span>` : ""}</div>
+        </div>
+        <button class="dir-map" data-i="${i}">Map</button>
+      </div>`).join("") + `</div>`
+      + (rows.length > cap ? `<div class="note" style="margin-top:10px">Showing ${cap} of ${rows.length.toLocaleString()} — refine your search.</div>` : "")
+      + (rows.length === 0 ? `<div class="empty">No matches.</div>` : "");
+    list.querySelectorAll(".dir-map").forEach(b => b.addEventListener("click", () => jumpToNetwork(+b.dataset.i)));
+  } else {
+    const cap = 2000;
+    const shown = rows.slice(0, cap);
+    list.innerHTML = `<div class="card" style="padding:6px 10px;overflow-x:auto"><table id="dir-table">
+      <thead><tr>
+        <th data-k="username">Handle</th><th data-k="name">Name</th>
+        <th data-k="in_degree">In</th><th data-k="out_degree">Out</th>
+        <th data-k="total">Total</th><th data-k="num_lists">Lists</th>
+        <th data-k="jd">JD follows</th>
+      </tr></thead>
+      <tbody>` + shown.map(({p, i, total}) => `
+      <tr>
+        <td>${igLink(p.username)}</td>
+        <td>${esc(p.name || "—")}</td>
+        <td>${p.in_degree}</td><td>${p.out_degree}</td><td><strong>${total}</strong></td>
+        <td>${p.num_lists || ""}${p.has_list ? " ●" : ""}</td>
+        <td>${p.jd_follows ? "Yes" : ""}</td>
+      </tr>`).join("") + `</tbody></table></div>`
+      + (rows.length > cap ? `<div class="note" style="margin-top:10px">Showing ${cap.toLocaleString()} of ${rows.length.toLocaleString()} — refine your search.</div>` : "")
+      + (rows.length === 0 ? `<div class="empty">No matches.</div>` : "");
+    list.querySelectorAll("th[data-k]").forEach(th => th.addEventListener("click", () => {
+      const k = th.dataset.k;
+      if (dirState.key === k) dirState.dir *= -1;
+      else { dirState.key = k; dirState.dir = k === "username" || k === "name" ? 1 : -1; }
+      paintDir();
+    }));
+    list.querySelectorAll("#dir-table th").forEach(th => {
+      const k = th.dataset.k;
+      th.classList.toggle("sorted", dirState.key === k);
+      th.textContent = th.textContent.replace(/ [▲▼]$/, "") + (dirState.key === k ? (dirState.dir === 1 ? " ▲" : " ▼") : "");
+    });
+  }
 }
+let rszT = null, lastMobile = null;
+window.addEventListener("resize", () => {
+  clearTimeout(rszT);
+  rszT = setTimeout(() => {
+    const m = isMobile();
+    if (m !== lastMobile) {
+      lastMobile = m;
+      if (!document.getElementById("view-directory").hidden) paintDir();
+      else if (!document.getElementById("view-network").hidden) renderNetwork();
+    }
+  }, 250);
+});
 
 buildNav();
+lastMobile = isMobile();
 show(location.hash === "#directory" ? "directory" : "network");
 window.addEventListener("hashchange", () => {
   const k = location.hash === "#directory" ? "directory" : "network";
