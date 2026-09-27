@@ -733,6 +733,10 @@ function initToolbar() {
   }
   bb.addEventListener("click", () => setBridgeMode(!bridgeMode));
   document.getElementById("bridges-close").addEventListener("click", () => setBridgeMode(false));
+  const gb = document.getElementById("btn-guide"), gp = document.getElementById("guide");
+  const setGuide = v => { gp.hidden = !v; gb.classList.toggle("on", v); };
+  gb.addEventListener("click", () => setGuide(gp.hidden));
+  document.getElementById("guide-close").addEventListener("click", () => setGuide(false));
   const bh = document.getElementById("btn-hubs");
   bh.addEventListener("click", () => {
     hubMode = !hubMode;
@@ -754,7 +758,10 @@ function initToolbar() {
     if (e.target.matches("input, textarea")) return;
     if (e.key === "/") { e.preventDefault(); document.getElementById("q").focus(); }
     else if (e.key === "Escape") {
-      if (!document.getElementById("directory").hidden) {
+      if (!document.getElementById("guide").hidden) {
+        document.getElementById("guide").hidden = true;
+        document.getElementById("btn-guide").classList.remove("on");
+      } else if (!document.getElementById("directory").hidden) {
         document.getElementById("directory").hidden = true;
         document.getElementById("btn-dir").classList.remove("on");
       } else if (pathSet || layers.length) { clearPath(); clearLayers(); }
