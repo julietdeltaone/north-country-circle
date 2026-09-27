@@ -200,6 +200,7 @@ function draw() {
     ctx.fillStyle = "#ffb454";
     ctx.fillText("@jdmeyers_", w2sX(XS[jdIndex]), w2sY(YS[jdIndex]) - rad(jdIndex) - 5);
   }
+  /* big-node labels when zoomed in */
   if (scale >= labelZoom) {
     ctx.fillStyle = "rgba(219,226,238,0.85)";
     let drawn = 0;
@@ -210,6 +211,18 @@ function draw() {
       if (x < 0 || y < 0 || x > W || y > H) continue;
       ctx.fillText("@" + PEOPLE[i].username, x, y - rad(i) - 4);
       drawn++;
+    }
+  }
+
+  /* labels for every connection of the selected person, until cleared */
+  if (selected >= 0) {
+    ctx.fillStyle = "rgba(143,208,255,0.9)";
+    const nbs = undAdj[selected].filter(j => visible[j] && j !== selected)
+      .sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 160);
+    for (const j of nbs) {
+      const x = w2sX(XS[j]), y = w2sY(YS[j]);
+      if (x < 0 || y < 0 || x > W || y > H) continue;
+      ctx.fillText("@" + PEOPLE[j].username, x, y - rad(j) - 4);
     }
   }
 }
@@ -289,7 +302,7 @@ canvas.addEventListener("pointerdown", e => {
   if (flyAnim) { cancelAnimationFrame(flyAnim); flyAnim = null; }
   if (pts.size === 1) {
     const h = nearest(p.x, p.y);
-    mode = h >= 0 ? "node" : "pan";
+    mode = (e.shiftKey || h < 0) ? "pan" : "node";
     activeNode = h; startX = p.x; startY = p.y;
     moved = false; downT = Date.now(); pinch = null;
   } else if (pts.size === 2) {
@@ -345,7 +358,7 @@ function endPointer(e) {
     const p = [...pts.values()][0];
     startX = p.x; startY = p.y; moved = false; downT = Date.now();
     const h = nearest(p.x, p.y);
-    mode = h >= 0 ? "node" : "pan"; activeNode = h; pinch = null;
+    mode = (!e.shiftKey && h >= 0) ? "node" : "pan"; activeNode = h; pinch = null;
   }
 }
 canvas.addEventListener("pointerup", endPointer);
@@ -408,7 +421,7 @@ function renderDetail() {
   const followers = inAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
   const following = outAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
   el.innerHTML = `
-    <h3>${esc(p.name || p.username)}</h3>
+    <div class="dhead"><h3>${esc(p.name || p.username)}</h3><button class="tbtn" id="d-clear" title="Clear selection (Esc)">×</button></div>
     <div class="meta">${igLink(p.username)}${p.num_lists ? ` &middot; in ${p.num_lists} list${p.num_lists > 1 ? "s" : ""}` : ""}${p.has_list ? " &middot; list collected" : ""}${p.jd_follows ? " &middot; followed by JD" : ""}</div>
     <div class="statrow">
       <div><b>${p.in_degree}</b><span>in</span></div>
@@ -426,6 +439,7 @@ function renderDetail() {
   }));
   const pb = document.getElementById("path-jd");
   if (pb) pb.addEventListener("click", () => tracePathToJD(i));
+  document.getElementById("d-clear").addEventListener("click", () => select(-1));
 }
 
 /* ---------- shortest path back to JD ---------- */
