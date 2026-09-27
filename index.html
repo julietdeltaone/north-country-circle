@@ -26,6 +26,7 @@
   <div class="hud hud-tr">
     <button id="btn-filters" class="tbtn" title="Navigation filters">Filters</button>
     <button id="btn-hubs" class="tbtn" title="Highlight the top connectors">Hubs</button>
+    <button id="btn-bridges" class="tbtn" title="Highlight long-range connections">Bridges</button>
     <button id="btn-dir" class="tbtn" title="Open the directory">Directory</button>
     <button id="btn-reset" class="tbtn" title="Reset view (0)">Reset</button>
   </div>
@@ -37,7 +38,6 @@
     <label class="check"><input type="checkbox" id="f-jd"> Followed by JD</label>
     <label class="check"><input type="checkbox" id="f-list"> List collected</label>
     <label class="check"><input type="checkbox" id="f-isolate"> Isolate selected neighbors</label>
-    <label class="check"><input type="checkbox" id="f-bridges"> Highlight long-range bridges</label>
     <div class="note" id="vis-count"></div>
   </aside>
 
@@ -56,10 +56,11 @@
   <div class="hud zoomctl">
     <button id="zin" aria-label="Zoom in">+</button>
     <button id="zout" aria-label="Zoom out">&minus;</button>
+    <button id="btn-fs" aria-label="Fullscreen" title="Fullscreen (F)">&#x26F6;</button>
     <button id="zfit" aria-label="Reset view">&#10226;</button>
   </div>
 
-  <div class="hud hint">Drag&nbsp;pan &middot; Scroll&nbsp;zoom &middot; Click&nbsp;node for details &middot; <b>/</b>&nbsp;search &middot; <b>Esc</b>&nbsp;clear</div>
+  <div class="hud hint">Drag&nbsp;pan &middot; Scroll&nbsp;zoom &middot; Click&nbsp;node for details &middot; <b>/</b>&nbsp;search &middot; <b>F</b>&nbsp;fullscreen &middot; <b>Esc</b>&nbsp;clear</div>
 
   <div class="hud mobile-note" id="mobile-note" hidden>
     This explorer is built for desktop — it works here, but the full toolset needs a bigger screen.
