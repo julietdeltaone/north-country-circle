@@ -38,6 +38,14 @@ body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 -apple-system,
 input[type=range]{width:100%;accent-color:var(--ice);margin:4px 0 10px}
 .check{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--txt);padding:5px 0;cursor:pointer}
 .check input{accent-color:var(--ice)}
+/* bridges panel */
+.bridges-panel{top:auto;bottom:52px;left:16px;width:308px;max-height:56vh;display:flex;flex-direction:column}
+#bridges-list{overflow-y:auto;margin-top:8px;display:flex;flex-direction:column;gap:2px;min-height:0}
+.brow{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--txt);font-size:12.5px;padding:6px 8px;cursor:pointer;text-align:left;width:100%}
+.brow:hover{background:#161d2b;border-color:var(--line)}
+.brow.on{background:#1a2233;border-color:var(--ice)}
+.brow .u{color:var(--ice);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .bsep{color:var(--dim);flex:none}
 /* detail panel */
 .dhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .dhead h3{margin:0}
