@@ -39,5 +39,18 @@
   ],
   "sources": [
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFA, CFC",
+    "closeness_tier": "Inner",
+    "state": "Inactive",
+    "standing": "Stable",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "Park Bros",
+    "years_known": "10",
+    "phone": "(315)212-1652"
+  }
 }
