@@ -48,5 +48,18 @@
   "sources": [
     "legacy",
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Regular",
+    "state": "Inactive",
+    "standing": "Stable",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "Technology",
+    "years_known": "11",
+    "phone": "(315)528-1614"
+  }
 }
