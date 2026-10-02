@@ -1,0 +1,48 @@
+{
+  "name": "John Meyers Sr.",
+  "slug": "john-meyers-sr",
+  "category": "fam",
+  "role": "Father",
+  "period": "2000 – Present",
+  "standing": "Active",
+  "description": "Clarkson EE grad. Math teacher, fire alarm sales, then sole owner-operator of Taxi Zero. Practical and direct. Pushed JD toward the Part 107 certification and sat the exam alongside him. Deacon at CFC for decades. Still in Potsdam.",
+  "bio": "BS and MS from Clarkson. Career arc: communications engineering → technical writing → internet marketing → entrepreneurship. Runs Taxi Zero (since 2013), Adirondack Quality Apartments, Airbnb short-term rentals, and three educational YouTube channels in parallel. Deacon at CFC since 1991. Co-took the FAA Part 107 exam with JD in April 2018 — both passed. Lost approximately $50,000 in stock options during the 2008 financial crisis, which changed the family's financial trajectory without the kids knowing at the time.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "Clarkson University"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "Taxi Zero"
+    },
+    {
+      "type": "date",
+      "label": "Deacon since 1991"
+    },
+    {
+      "type": "place",
+      "label": "Aguascalientes, Mexico"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "date",
+      "label": "Married 1996"
+    },
+    {
+      "type": "person",
+      "label": "Elisa Meyers"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
+}
