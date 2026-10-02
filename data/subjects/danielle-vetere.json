@@ -1,0 +1,43 @@
+{
+  "name": "Danielle Vetere",
+  "slug": "danielle-vetere",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "From Hauppauge, Long Island. Came to SUNY Potsdam in fall 2018 for the early childhood education program, got involved with the CFC lifegroup shortly after. Part of the same overlapping social network as JD through 2020–2022. Their friendship was real — a daily-update practice JD found intimate. She later became involved with Merrick Sinclair, then married him. Processing that took several weeks of work through Romans 12 and letters of blessing in mid-2022.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "SUNY Potsdam"
+    },
+    {
+      "type": "org",
+      "label": "Calvary Baptist"
+    },
+    {
+      "type": "person",
+      "label": "Merrick Sinclair"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Andrew Matott"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "Ogdensburg Airport"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
