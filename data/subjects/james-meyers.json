@@ -1,0 +1,60 @@
+{
+  "name": "James Meyers",
+  "slug": "james-meyers",
+  "category": "fam",
+  "role": "Younger Brother",
+  "period": "2000 – Present",
+  "standing": "Good",
+  "description": "Born June 2003. Appears throughout the 2017–2018 journals in car rides, lego league, NSP musical rehearsals. Good relationship. Now 22.",
+  "bio": "Youngest sibling. Quiet, introspective, empathetic, encyclopedic recall of geography and history. Fluent in Spanish by 2022. Lost significant weight 2018–2020 through sustained effort. Graduated SUNY Potsdam 2025 with a BA in English Writing, then enrolled in SUNY Canton nursing program. Active in the church college ministry, respected for kindness and dependability.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "SUNY Potsdam"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Canton"
+    },
+    {
+      "type": "date",
+      "label": "Graduated 2025"
+    },
+    {
+      "type": "person",
+      "label": "Rick Sinclair"
+    },
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Jamie Sinclair"
+    },
+    {
+      "type": "org",
+      "label": "CFA"
+    },
+    {
+      "type": "person",
+      "label": "Elisa Meyers"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "event",
+      "label": "Ianthe musical (2015)"
+    },
+    {
+      "type": "event",
+      "label": "Chitty Chitty Bang Bang (2017)"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
+}
