@@ -76,15 +76,15 @@ function dossierDir(e, idx){
   if(person && person.aliases) kv += '<dt>Also known as</dt><dd>'+esc(person.aliases)+'</dd>';
   kv += '<dt>IG handle</dt><dd><a class="iglink" href="'+igURL(e.name)+'" target="_blank" rel="noopener">@'+esc(e.name)+' ↗</a></dd>'+
         '<dt>Relation</dt><dd><span class="chip '+esc(e.relation||'')+'">'+esc(e.relation||'—')+'</span></dd>';
-  if(person) kv += '<dt>Named file</dt><dd>'+esc(person.person)+' · '+esc(person.mentions||'0')+' memoir mentions</dd>';
+  if(person) kv += '<dt>Named file</dt><dd>'+esc(person.person)+' · '+esc(person.mentions||'0')+' file mentions</dd>';
 
   var memoirInner = '';
   if(leg && leg.desc) memoirInner += '<p class="body rtext">'+esc(leg.desc)+'</p>';
   if(rec && rec.body) memoirInner += '<p class="body rtext">'+esc(rec.body)+'</p>';
-  if(!memoirInner) memoirInner = '<p class="body">No memoir material on file.</p>';
+  if(!memoirInner) memoirInner = '<p class="body">No subject material on file.</p>';
 
   var chips = [];
-  if(leg) chips.push('<span class="chip ghost">legacy memoir</span>');
+  if(leg) chips.push('<span class="chip ghost">subject file</span>');
   if(rec) chips.push('<span class="chip ghost">the record</span>');
   chips.push('<span class="chip ghost">circle graph</span>');
   chips.push('<span class="chip ghost">directory</span>');
@@ -108,7 +108,7 @@ function dossierDir(e, idx){
     '</div>'+
     (e.detail ? '<p class="body" style="margin-top:10px;font-size:12.5px;color:var(--mut)"><span style="color:var(--dim);text-transform:uppercase;font-size:10.5px;letter-spacing:.08em">On file</span><br>'+esc(e.detail.split('; ').join(' · ')).replace(/^./, function(c){return c.toUpperCase();})+'</p>' : '')+
     '</div>'+
-    '<div class="dsec"><h3><span class="n">03</span> Memoir file</h3>'+
+    '<div class="dsec"><h3><span class="n">03</span> Subject file</h3>'+
     '<div class="memoir'+(UNLOCKED||!hasSensitive?' unlocked':'')+'">'+
     memoirInner+
     (hasSensitive ? wallHTML() : '')+
@@ -128,7 +128,7 @@ function dossierDir(e, idx){
 function wallHTML(){
   return '<div class="wall"><div class="wlock">◈</div>'+
     '<div class="wstamp">Restricted</div>'+
-    '<p>This section holds personal memoir material. Enter the password to reveal it.</p>'+
+    '<p>This section holds personal subject material. Enter the password to reveal it.</p>'+
     '<form class="wallform"><input type="password" placeholder="Password" autocomplete="off" aria-label="Password">'+
     '<button type="submit">Reveal</button></form>'+
     '<p class="werr"></p></div>';
