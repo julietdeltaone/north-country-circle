@@ -15,6 +15,7 @@
   --violet:#b48ce8;
   --red:#e0685c;
   --serif:'Instrument Serif',Georgia,serif;
+  --disp:'Archivo','Hanken Grotesk',system-ui,sans-serif;
   --sans:'Hanken Grotesk',system-ui,sans-serif;
   --ease:cubic-bezier(.22,.9,.24,1);
   --r:14px;
@@ -56,7 +57,7 @@ button{font-family:var(--sans)}
 }
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
 .brand-mark{color:var(--amber);font-size:20px;line-height:1}
-.brand-text h1{font-size:21px;margin:0;line-height:1.05;white-space:nowrap;font-family:var(--serif);font-weight:400}
+.brand-text h1{font-size:21px;margin:0;line-height:1.05;white-space:nowrap;font-family:var(--disp);font-weight:700;letter-spacing:-.01em}
 .brand-text small{color:var(--mut);font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 .backlink{color:var(--mut);text-decoration:none;font-size:13px;font-weight:600;
   border:1px solid var(--line);border-radius:9px;padding:7px 12px;transition:all .18s}
@@ -105,7 +106,7 @@ button{font-family:var(--sans)}
 .row.sel{background:var(--amber-dim);border-color:rgba(232,179,75,.4)}
 .row.bgrow{opacity:.75}
 .ring{width:38px;height:38px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-family:var(--serif);font-size:19px;color:var(--txt);
+  font-family:var(--disp);font-weight:700;font-size:17px;color:var(--txt);
   background:rgba(255,255,255,.06);border:1px solid var(--line);transition:border-color .2s}
 .row.sel .ring{border-color:rgba(232,179,75,.6)}
 .ring.mutual{box-shadow:inset 0 0 0 1.5px rgba(232,179,75,.35)}
@@ -116,7 +117,7 @@ button{font-family:var(--sans)}
 .row .nm b{display:block;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .nm span{display:block;font-size:11.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .meta{text-align:right;flex:none}
-.row .meta b{display:block;font-family:var(--serif);font-size:20px;font-weight:400;line-height:1.1}
+.row .meta b{display:block;font-family:var(--disp);font-size:20px;font-weight: 600;line-height:1.1}
 .row .meta span{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.07em}
 .empty-note{color:var(--dim);font-size:12.5px;padding:22px;border:1px dashed var(--line);
   border-radius:10px;text-align:center;margin:8px 4px}
@@ -124,12 +125,12 @@ button{font-family:var(--sans)}
 /* ---------- middle: metrics + strongest ---------- */
 #midbody{flex:1;overflow-y:auto;padding:20px 22px 28px;min-height:0}
 .m-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
-.m-head h2{font-family:var(--serif);font-weight:400;font-size:24px;margin:0}
+.m-head h2{font-family:var(--disp);font-weight:700;font-size:24px;margin:0;letter-spacing:-.01em}
 .m-head span{font-size:11.5px;color:var(--dim)}
 .m-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 6px}
 .mtile{background:rgba(255,255,255,.045);border:1px solid var(--line-soft);border-radius:12px;
   padding:13px 14px;animation:rise .5s var(--ease) both}
-.mtile .v{font-family:var(--serif);font-size:30px;line-height:1.1}
+.mtile .v{font-family:var(--disp);font-weight:700;font-size:30px;line-height:1.1;letter-spacing:-.01em}
 .mtile .v small{font-size:15px;color:var(--mut)}
 .mtile .l{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;margin-top:4px}
 .mtile.hi{border-color:rgba(232,179,75,.35);background:rgba(232,179,75,.06)}
@@ -145,11 +146,11 @@ button{font-family:var(--sans)}
   border:1px solid transparent;transition:all .18s var(--ease);animation:rowin .4s var(--ease) both}
 .scard:hover{background:rgba(255,255,255,.05);border-color:var(--line-soft)}
 .scard.sel{background:var(--amber-dim);border-color:rgba(232,179,75,.4)}
-.srank{font-family:var(--serif);font-size:22px;color:var(--amber);width:30px;flex:none;text-align:center}
+.srank{font-family:var(--disp);font-weight:700;font-size:22px;color:var(--amber);width:30px;flex:none;text-align:center}
 .scard .nm{flex:1;min-width:0}
 .scard .nm b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .scard .nm span{display:block;font-size:11.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.scard .score{font-family:var(--serif);font-size:19px;color:var(--mut);flex:none}
+.scard .score{font-family:var(--disp);font-weight:700;font-size:19px;color:var(--mut);flex:none}
 .m-note{font-size:11.5px;color:var(--dim);margin-top:18px;line-height:1.6}
 
 /* ---------- right: dossier document ---------- */
@@ -161,28 +162,29 @@ button{font-family:var(--sans)}
 .doc{padding:0 0 34px;animation:profin .45s var(--ease) both}
 @keyframes profin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .classbar{
-  margin:0;padding:9px 22px;text-align:center;
-  font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;
-  color:#0b0d12;background:linear-gradient(90deg,#d99a35,#f2cd7d,#d99a35);
+  margin:0;padding:10px 26px 0;
+  font-size:10px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--dim);border-top:1px solid var(--line-soft);
 }
-.classbar.bot{margin-top:26px}
+.doc>.classbar:first-child{border-top:0;padding-top:14px}
+.classbar.bot{margin-top:26px;padding-bottom:4px}
 .doc-head{padding:22px 26px 6px;position:relative}
 .doc-kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:700}
-.doc-head h2{font-family:var(--serif);font-weight:400;font-size:38px;margin:6px 0 2px;line-height:1.05}
+.doc-head h2{font-family:var(--disp);font-weight:800;font-size:38px;margin:6px 0 2px;line-height:1.05;letter-spacing:-.015em}
 .iglink{display:inline-flex;align-items:center;gap:6px;color:var(--teal);text-decoration:none;
   font-size:13.5px;font-weight:600}
 .iglink:hover{text-decoration:underline}
 .doc-filed{font-size:11.5px;color:var(--dim);margin-top:8px}
 .stamp{
-  position:absolute;top:26px;right:26px;transform:rotate(9deg);
-  border:2px solid var(--red);color:var(--red);border-radius:6px;
-  font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
-  padding:6px 12px;opacity:.85;pointer-events:none;
+  position:absolute;top:24px;right:26px;
+  border:1px solid var(--line);color:var(--dim);border-radius:20px;
+  font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  padding:5px 12px;pointer-events:none;background:rgba(255,255,255,.03);
 }
-.stamp.amber{border-color:var(--amber);color:var(--amber)}
+.stamp.amber{border-color:rgba(232,179,75,.4);color:var(--amber)}
 .dsec{padding:16px 26px 0}
 .dsec>h3{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--amber);
-  margin:0 0 10px;font-weight:700;display:flex;align-items:center;gap:8px}
+  margin:0 0 10px;font-weight:700;display:flex;align-items:center;gap:8px;font-family:var(--disp)}
 .dsec>h3 .n{color:var(--dim);font-weight:600}
 .kv{display:grid;grid-template-columns:130px 1fr;gap:6px 12px;font-size:13px}
 .kv dt{color:var(--dim);text-transform:uppercase;font-size:10.5px;letter-spacing:.07em;padding-top:2px}
@@ -202,7 +204,7 @@ button{font-family:var(--sans)}
   transition:width .7s var(--ease)}
 .dstats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .stat{background:rgba(255,255,255,.045);border:1px solid var(--line-soft);border-radius:11px;padding:11px 12px}
-.stat .v{font-family:var(--serif);font-size:26px;line-height:1.1}
+.stat .v{font-family:var(--disp);font-weight:700;font-size:26px;line-height:1.1}
 .stat .l{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;margin-top:3px}
 .dsec p.body{font-size:13.5px;color:#d6d2c9;line-height:1.7;margin:0 0 10px}
 .srcrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
@@ -210,7 +212,7 @@ button{font-family:var(--sans)}
   border-radius:12px;padding:14px 15px;cursor:pointer;transition:all .2s var(--ease)}
 .xcard:hover{border-color:rgba(232,179,75,.55);transform:translateY(-1px)}
 .xcard .t{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--amber);font-weight:700;margin-bottom:5px}
-.xcard .n{font-family:var(--serif);font-size:19px}
+.xcard .n{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:-.01em}
 .xcard .s{font-size:12px;color:var(--mut);margin-top:3px}
 
 /* assessment scaffold */
@@ -238,11 +240,12 @@ button{font-family:var(--sans)}
   padding:26px 20px;text-align:center;
   transition:opacity .35s var(--ease);
 }
-.memoir.unlocked .wall{opacity:0;pointer-events:none}
+.memoir.unlocked .wall{opacity:0;pointer-events:none;visibility:hidden;
+  transition:opacity .35s var(--ease),visibility 0s linear .4s}
 .wall .wstamp{
-  border:2.5px solid var(--red);color:var(--red);border-radius:6px;
-  font-size:13px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;
-  padding:8px 18px 8px 22px;transform:rotate(-4deg);opacity:.9;
+  border:1px solid rgba(224,104,92,.45);color:var(--red);border-radius:20px;
+  font-size:10.5px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;
+  padding:7px 16px 7px 19px;opacity:.85;
 }
 .wall p{font-size:12px;color:var(--mut);margin:0;max-width:280px}
 .wall form{display:flex;gap:8px;margin-top:2px}
