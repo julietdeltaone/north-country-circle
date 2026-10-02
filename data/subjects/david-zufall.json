@@ -36,5 +36,18 @@
   "sources": [
     "legacy",
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Inner",
+    "state": "Active",
+    "standing": "Stable",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Familiar",
+    "shared_interests": "Photography, Travel",
+    "years_known": "12",
+    "phone": "(315)355-1892"
+  }
 }
