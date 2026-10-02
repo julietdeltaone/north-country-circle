@@ -1,0 +1,43 @@
+{
+  "name": "Gabe Paladin",
+  "slug": "gabe-paladin",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "Bronwyn's older brother. JD's actual friend — not just a proximity arrangement. They connected through drone visits, the 2017 Chitty Chitty Bang Bang musical, and Monday-night youth group. The friendship ended without closure in August 2018. JD has noted this as an unacknowledged piece of damage in the record.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Bronwyn Paladin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Bronwyn Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Gabe Paladin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
