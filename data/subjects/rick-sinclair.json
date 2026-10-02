@@ -1,56 +1,57 @@
 {
-  "name": "Rick Sinclair",
-  "slug": "rick-sinclair",
-  "category": "auth",
-  "role": "Head Pastor — CFC",
-  "period": "Childhood – Present (institutional)",
-  "standing": "Institutional",
-  "description": "The patriarch of CFC. Father of Jamie and Merrick Sinclair. Father-in-law of Daniel Paladin. His family network effectively governs the organization. JD's father John Sr. is still a deacon under his tenure. Present as an institutional force more than a direct relationship.",
-  "bio": "Head pastor of CFC across all campuses. Nine children. Led the August 2018 discovery meeting in the pastoral authority role. Casually mentioned in that meeting that he imagined in five years the situation would no longer be of concern. JD thought it was unreasonable at the time. Five years passed.",
-  "chips": [
-    {
-      "type": "person",
-      "label": "Jamie Sinclair"
-    },
-    {
-      "type": "person",
-      "label": "Merrick Sinclair"
-    },
-    {
-      "type": "person",
-      "label": "Brietta Paladin"
-    },
-    {
-      "type": "org",
-      "label": "CFC"
-    },
-    {
-      "type": "person",
-      "label": "Rick Sinclair"
-    },
-    {
-      "type": "org",
-      "label": "CFC Canton"
-    },
-    {
-      "type": "person",
-      "label": "Rick Sinclair"
-    },
-    {
-      "type": "person",
-      "label": "Danielle Vetere"
-    },
-    {
-      "type": "person",
-      "label": "Liz Wangerin"
-    },
-    {
-      "type": "org",
-      "label": "CFC"
-    }
-  ],
-  "sources": [
-    "legacy",
-    "record"
-  ]
+ "name": "Rick Sinclair",
+ "slug": "rick-sinclair",
+ "category": "auth",
+ "role": "Head Pastor \u2014 CFC",
+ "period": "Childhood \u2013 Present (institutional)",
+ "standing": "Institutional",
+ "description": "The patriarch of CFC. Father of Jamie and Merrick Sinclair. Father-in-law of Daniel Paladin. His family network effectively governs the organization. JD's father John Sr. is still a deacon under his tenure. Present as an institutional force more than a direct relationship.",
+ "bio": "Head pastor of CFC across all campuses. Nine children. Led the August 2018 discovery meeting in the pastoral authority role. Casually mentioned in that meeting that he imagined in five years the situation would no longer be of concern. JD thought it was unreasonable at the time. Five years passed.",
+ "chips": [
+  {
+   "type": "person",
+   "label": "Jamie Sinclair"
+  },
+  {
+   "type": "person",
+   "label": "Merrick Sinclair"
+  },
+  {
+   "type": "person",
+   "label": "Brietta Paladin"
+  },
+  {
+   "type": "org",
+   "label": "CFC"
+  },
+  {
+   "type": "person",
+   "label": "Rick Sinclair"
+  },
+  {
+   "type": "org",
+   "label": "CFC Canton"
+  },
+  {
+   "type": "person",
+   "label": "Rick Sinclair"
+  },
+  {
+   "type": "person",
+   "label": "Danielle Vetere"
+  },
+  {
+   "type": "person",
+   "label": "Liz Wangerin"
+  },
+  {
+   "type": "org",
+   "label": "CFC"
+  }
+ ],
+ "sources": [
+  "legacy",
+  "record"
+ ],
+ "public_footprint": "Rick Sinclair is the senior pastor of the Christian Fellowship Center, a network of five churches in Potsdam, Canton, Madrid, Moira and Gouverneur, a role he has held since 1981.\nSources: https://religionnews.com/2022/08/25/an-insular-quiverfull-church-in-new-yorks-north-country-faces-a-reckoning/; https://thehillnews.org/news/joshmadsen/should-local-pastors-be-mandatory-reporters-in-sexual-assault-cases/"
 }
