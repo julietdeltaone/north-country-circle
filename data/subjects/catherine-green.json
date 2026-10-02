@@ -1,0 +1,63 @@
+{
+  "name": "Catherine Green",
+  "slug": "catherine-green",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "Oldest sibling. Married Jeeves Green in 2017. Head barista at Park Bros from when it opened in 2015, competed in latte-art competitions in Rochester. JD lived with Catherine and Jeeves from March 2020 through June 2022. A close relationship — she has been a critical sounding board, including encouraging him to connect with Josh McGrath, and relayed the July 2022 revelation about Bronwyn dreading church.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Jeeves Green"
+    },
+    {
+      "type": "org",
+      "label": "Park Bros Coffee"
+    },
+    {
+      "type": "place",
+      "label": "Madrid, NY"
+    },
+    {
+      "type": "place",
+      "label": "Massena, NY"
+    },
+    {
+      "type": "date",
+      "label": "Married 2017"
+    },
+    {
+      "type": "person",
+      "label": "Tim Criscitello"
+    },
+    {
+      "type": "org",
+      "label": "Park Bros Coffee"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Potsdam"
+    },
+    {
+      "type": "date",
+      "label": "Married 2019"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Potsdam"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Canton"
+    },
+    {
+      "type": "date",
+      "label": "Graduated 2025"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
