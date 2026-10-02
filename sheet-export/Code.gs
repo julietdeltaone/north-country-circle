@@ -1,0 +1,249 @@
+/**
+ * North Country Circle — Sheet to GitHub link.
+ *
+ * Pushes the Directory + People tabs to data/directory.json in the
+ * julietdeltaone/north-country-circle repo, so the dashboard always reads
+ * fresh data without any middleman.
+ *
+ * ONE-TIME SETUP (about 3 minutes):
+ *  1. In this sheet: Extensions > Apps Script, paste this whole file, Save.
+ *  2. GitHub: Settings > Developer settings > Personal access tokens >
+ *     Fine-grained tokens > Generate new token. Give it Contents: Read and
+ *     write on ONLY the north-country-circle repo. Copy the token.
+ *  3. Back in Apps Script: Project Settings (gear icon) > Script Properties >
+ *     Add property: GITHUB_TOKEN = <paste the token>. Save.
+ *  4. In the editor, run setupCheck once and authorize. The log should say OK.
+ *  5. Triggers (clock icon) > Add Trigger: exportToGitHub, Time-driven,
+ *     Hour timer, Every 6 hours. Save.
+ *
+ * After that, any edit you make in the sheet lands in the repo (and on the
+ * dashboard) within 6 hours — only when something actually changed.
+ */
+
+var OWNER = 'julietdeltaone';
+var REPO = 'north-country-circle';
+var BRANCH = 'main';
+var PATH_IN_REPO = 'data/directory.json';
+var SHEET_ID = '1cszoI0bE6N1GQU-9WPYu4Fm6xazC3Ev84G2ax5SFIn4';
+
+function props() {
+  return PropertiesService.getScriptProperties();
+}
+
+function githubHeaders() {
+  var token = props().getProperty('GITHUB_TOKEN');
+  if (!token) throw new Error('Set the GITHUB_TOKEN script property first (Project Settings > Script Properties).');
+  return {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+}
+
+/** Run once to verify the token and sheet access. Check the log for OK. */
+function setupCheck() {
+  var headers = githubHeaders(); // throws if token missing
+  var res = UrlFetchApp.fetch(
+    'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PATH_IN_REPO + '?ref=' + BRANCH,
+    { method: 'get', headers: headers, muteHttpExceptions: true });
+  Logger.log('GitHub read: HTTP ' + res.getResponseCode());
+  var dir = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Directory');
+  var people = SpreadsheetApp.openById(SHEET_ID).getSheetByName('People');
+  Logger.log('Sheet tabs found: Directory=' + !!dir + ', People=' + !!people);
+  Logger.log('OK — add the 6-hour trigger and you are linked.');
+}
+
+/** Build the exact JSON the dashboard reads. */
+function buildPayload() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  function rowsOf(tab) {
+    var sh = ss.getSheetByName(tab);
+    if (!sh) return [];
+    var vals = sh.getRange(2, 1, Math.max(sh.getLastRow() - 1, 0), 5).getValues();
+    return vals.filter(function(r) { return String(r[0]).trim() !== ''; });
+  }
+  var directory = rowsOf('Directory').map(function(r) {
+    return {
+      name: String(r[0]), display: String(r[1]),
+      pieces: parseInt(r[2], 10) || 0,
+      relation: String(r[3]), detail: String(r[4])
+    };
+  });
+  var people = rowsOf('People').map(function(r) {
+    return {
+      person: String(r[0]), ig: String(r[1]), aka: String(r[2]),
+      source: String(r[3]), mentions: String(r[4])
+    };
+  });
+  return {
+    updated: Utilities.formatDate(new Date(), 'UTC', 'yyyy-MM-dd HH:mm') + ' UTC',
+    sheet_id: SHEET_ID,
+    directory: directory,
+    people: people
+  };
+}
+
+/** Push to GitHub if the data changed since the last push. */
+function exportToGitHub() {
+  var headers = githubHeaders();
+  var payload = buildPayload();
+  var json = JSON.stringify(payload);
+  // Hash only the data, not the timestamp — otherwise every run looks "changed".
+  var dataOnly = JSON.stringify({ directory: payload.directory, people: payload.people });
+  var hash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, dataOnly, Utilities.Charset.UTF_8)
+    .map(function(b) { return ('0' + (b & 0xFF).toString(16)).slice(-2); }).join('');
+  if (props().getProperty('LAST_HASH') === hash) {
+    Logger.log('No changes since last push — skipping.');
+    return;
+  }
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + PATH_IN_REPO;
+  var current = UrlFetchApp.fetch(api + '?ref=' + BRANCH, { method: 'get', headers: headers, muteHttpExceptions: true });
+  if (current.getResponseCode() !== 200) {
+    throw new Error('Could not read current file from GitHub: HTTP ' + current.getResponseCode());
+  }
+  var sha = JSON.parse(current.getContentText()).sha;
+  var put = UrlFetchApp.fetch(api, {
+    method: 'put',
+    headers: headers,
+    muteHttpExceptions: true,
+    payload: JSON.stringify({
+      message: 'directory sync from sheet',
+      content: Utilities.base64Encode(json, Utilities.Charset.UTF_8),
+      sha: sha,
+      branch: BRANCH
+    })
+  });
+  if (put.getResponseCode() !== 200 && put.getResponseCode() !== 201) {
+    throw new Error('GitHub write failed: HTTP ' + put.getResponseCode() + ' ' + put.getContentText().slice(0, 200));
+  }
+  props().setProperty('LAST_HASH', hash);
+  Logger.log('Pushed directory.json to GitHub (' + payload.directory.length + ' directory, ' +
+    payload.people.length + ' people).');
+}
+
+/* ============================================================================
+ * DASHBOARD EDIT API — lets the dossier page's Edit button write back.
+ *
+ * DEPLOY (one time): Deploy > New deployment > Web app >
+ *   Execute as: Me. Who has access: Anyone. Deploy, copy the /exec URL.
+ * Paste that URL into dossier.js as WEBAPP_URL.
+ *
+ * POST JSON: { password, kind, id, patch }
+ *   kind 'subject'   -> id = slug.  Updates the Subject Files tab row and
+ *                       data/subjects/<slug>.json in the repo.
+ *   kind 'directory' -> id = username. Updates the Directory tab row.
+ *   kind 'friends'   -> id = full name. Updates the Friends Database tab row.
+ *
+ * The password is a soft barrier (same as the dashboard's redaction wall),
+ * not real access control — it keeps casual visitors out.
+ * ========================================================================== */
+
+var EDIT_PASSWORD = 'admin';
+
+/** Column maps: field name -> 1-indexed column in each tab. */
+var SUBJECT_COLS = { slug:1, name:2, category:3, role:4, period:5, standing:6,
+  description:7, bio:8, chips:9, sources:10, closeness_tier:11, fdb_standing:12,
+  trajectory:13, years_known:14, shared_interests:15, groups:16,
+  personal_context:17, relationship_type:18, phone:19,
+  public_footprint:20, notes:21 };
+var DIRECTORY_COLS = { name:1, display:2, pieces:3, relation:4, detail:5 };
+var FRIENDS_COLS = { 'Name':1, 'Relationship Type':2, 'Groups / Contexts':3,
+  'Closeness Tier':4, 'State':5, 'Standing':6, 'Trajectory':7,
+  'Personal Context':8, 'Shared Interests':9, 'Years Known':10,
+  'Phone':11, 'Text':12, 'Files & media':13 };
+
+function doPost(e) {
+  try {
+    var body = JSON.parse(e.postData.contents);
+    if (body.password !== EDIT_PASSWORD) {
+      return jsonOut({ ok: false, error: 'wrong password' });
+    }
+    var kind = body.kind, id = String(body.id || ''), patch = body.patch || {};
+    if (!id || !patch || Object.keys(patch).length === 0) {
+      return jsonOut({ ok: false, error: 'missing id or patch' });
+    }
+    if (kind === 'subject') {
+      updateTabRow('Subject Files', SUBJECT_COLS, id, patch);
+      updateSubjectFile(id, patch);
+    } else if (kind === 'directory') {
+      updateTabRow('Directory', DIRECTORY_COLS, id, patch);
+    } else if (kind === 'friends') {
+      updateTabRow('Friends Database', FRIENDS_COLS, id, patch);
+    } else {
+      return jsonOut({ ok: false, error: 'unknown kind' });
+    }
+    return jsonOut({ ok: true });
+  } catch (err) {
+    return jsonOut({ ok: false, error: String(err).slice(0, 200) });
+  }
+}
+
+/** Friendly landing for the one-time authorization visit. */
+function doGet() {
+  return jsonOut({ ok: true, service: 'north-country-circle edit api' });
+}
+
+function jsonOut(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Update one row (matched by key column 1) in a sheet tab. */
+function updateTabRow(tab, colMap, id, patch) {
+  var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName(tab);
+  if (!sh) throw new Error('tab not found: ' + tab);
+  var last = sh.getLastRow();
+  var keys = sh.getRange(2, 1, Math.max(last - 1, 0), 1).getValues();
+  var row = -1;
+  for (var i = 0; i < keys.length; i++) {
+    if (String(keys[i][0]).trim() === id) { row = i + 2; break; }
+  }
+  if (row < 0) throw new Error('row not found in ' + tab + ': ' + id);
+  Object.keys(patch).forEach(function(field) {
+    var col = colMap[field];
+    if (!col) return; // unknown field: ignore
+    sh.getRange(row, col).setValue(patch[field]);
+  });
+}
+
+/** Apply the same patch to data/subjects/<slug>.json in the repo. */
+function updateSubjectFile(slug, patch) {
+  var headers = githubHeaders();
+  var path = 'data/subjects/' + slug + '.json';
+  var api = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + path;
+  var cur = UrlFetchApp.fetch(api + '?ref=' + BRANCH,
+    { method: 'get', headers: headers, muteHttpExceptions: true });
+  if (cur.getResponseCode() !== 200) throw new Error('subject file not found: ' + slug);
+  var curJson = JSON.parse(cur.getContentText());
+  var obj = JSON.parse(Utilities.newBlob(Utilities.base64Decode(curJson.content)).getDataAsString());
+  var fdb = obj.friendsdb || {};
+  Object.keys(patch).forEach(function(field) {
+    var v = patch[field];
+    if (field === 'chips') {
+      // "type: label; type: label" -> [{type, label}]
+      obj.chips = String(v).split(';').map(function(part) {
+        var bits = part.split(':');
+        var t = bits.shift().trim();
+        return { type: t, label: bits.join(':').trim() };
+      }).filter(function(c) { return c.label; });
+    } else if (['closeness_tier','fdb_standing','trajectory','years_known',
+                'shared_interests','groups','personal_context',
+                'relationship_type','phone'].indexOf(field) >= 0) {
+      fdb[field === 'fdb_standing' ? 'standing' : field] = v;
+    } else if (SUBJECT_COLS[field]) {
+      obj[field] = v;
+    }
+  });
+  if (Object.keys(fdb).length) obj.friendsdb = fdb;
+  var put = UrlFetchApp.fetch(api, {
+    method: 'put', headers: headers, muteHttpExceptions: true,
+    payload: JSON.stringify({
+      message: 'subject update from dashboard: ' + slug,
+      content: Utilities.base64Encode(JSON.stringify(obj, null, 2) + '\n', Utilities.Charset.UTF_8),
+      sha: curJson.sha, branch: BRANCH
+    })
+  });
+  if (put.getResponseCode() !== 200 && put.getResponseCode() !== 201) {
+    throw new Error('GitHub subject write failed: HTTP ' + put.getResponseCode());
+  }
+}
