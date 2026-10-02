@@ -10,5 +10,18 @@
   "chips": [],
   "sources": [
     "legacy"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Colleague",
+    "groups": "CPH",
+    "closeness_tier": "Regular",
+    "state": "Closed",
+    "standing": "Strained",
+    "trajectory": "Unclear",
+    "trend": "unknown",
+    "personal_context": "Limited",
+    "shared_interests": "Police",
+    "years_known": "2",
+    "phone": "(315)261-0435"
+  }
 }
