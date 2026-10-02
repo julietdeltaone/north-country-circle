@@ -1,37 +1,36 @@
 {
- "name": "Bella Miller",
- "slug": "bella-miller",
- "category": "peer",
- "role": "Friend \u2014 Massena Youth Group",
- "period": "2017",
- "standing": "",
- "description": "Connected through Cross Current, the New Testament Church youth group in Massena that JD attended occasionally from late 2016. He was getting closer to her through mid-2017 and took a Cape Cod trip with the group in August 2017 \u2014 the same summer the Bronwyn situation was developing.",
- "bio": "JD and Bella became good friends starting around May 2017, bonding over both having Mexican moms. On February 25, 2018 at Cross Current youth in Messina, JD smacked her in the face \u2014 thinking he was being funny. It went completely wrong. CFC removed him from youth group as a result. Bella went on to marry Caden Colbert. JD filmed their wedding video in June 2021. They're on good terms.",
- "chips": [
-  {
-   "type": "org",
-   "label": "CFC"
-  },
-  {
-   "type": "org",
-   "label": "Park Bros Coffee"
-  },
-  {
-   "type": "person",
-   "label": "Katie McGrath"
-  },
-  {
-   "type": "person",
-   "label": "Aaron Daniels"
-  },
-  {
-   "type": "org",
-   "label": "CFC"
-  }
- ],
- "sources": [
-  "legacy",
-  "record"
- ],
- "public_footprint": "Played varsity soccer (#17, midfielder) for the Plattsburgh Hornets, class of 2023, per MaxPreps.\nSources: https://www.maxpreps.com/ny/plattsburgh/plattsburgh-hornets/athletes/bella-miller/?careerid=mbaqqcbfv3t33"
+  "name": "Bella Miller",
+  "slug": "bella-miller",
+  "category": "peer",
+  "role": "Friend — Massena Youth Group",
+  "period": "2017",
+  "standing": "",
+  "description": "Connected through Cross Current, the New Testament Church youth group in Massena that JD attended occasionally from late 2016. He was getting closer to her through mid-2017 and took a Cape Cod trip with the group in August 2017 — the same summer the Bronwyn situation was developing.",
+  "bio": "JD and Bella became good friends starting around May 2017, bonding over both having Mexican moms. On February 25, 2018 at Cross Current youth in Messina, JD smacked her in the face — thinking he was being funny. It went completely wrong. CFC removed him from youth group as a result. Bella went on to marry Caden Colbert. JD filmed their wedding video in June 2021. They're on good terms.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "Park Bros Coffee"
+    },
+    {
+      "type": "person",
+      "label": "Katie McGrath"
+    },
+    {
+      "type": "person",
+      "label": "Aaron Daniels"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
 }
