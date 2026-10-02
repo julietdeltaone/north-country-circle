@@ -1,0 +1,27 @@
+{
+  "name": "Brad",
+  "slug": "brad",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "Pastor of Calvary Baptist Church in Potsdam. Goes by Brad — doesn't like the title Pastor Brad. From the South, has a distinctive accent. Strong personality, very direct, overall very friendly. JD describes conversations with him as what-you-see-is-what-you-get — useful partly because of his directness and partly because there's no restoration process or thumbs-up being waited for.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "Calvary Baptist"
+    },
+    {
+      "type": "org",
+      "label": "Canton-Potsdam Hospital"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Canton"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
