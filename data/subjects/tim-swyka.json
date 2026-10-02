@@ -10,5 +10,18 @@
   "chips": [],
   "sources": [
     "legacy"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Colleague",
+    "groups": "CFC, WORK",
+    "closeness_tier": "Distant",
+    "state": "Closed",
+    "standing": "Dormant",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Superficial",
+    "shared_interests": "Clarkson",
+    "years_known": "10",
+    "phone": "(845)551-6708"
+  }
 }
