@@ -1,56 +1,57 @@
 {
-  "name": "Gabe Paladin",
-  "slug": "gabe-paladin",
-  "category": "",
-  "role": "",
-  "period": "",
-  "standing": "",
-  "description": "",
-  "bio": "Bronwyn's older brother. JD's actual friend — not just a proximity arrangement. They connected through drone visits, the 2017 Chitty Chitty Bang Bang musical, and Monday-night youth group. The friendship ended without closure in August 2018. JD has noted this as an unacknowledged piece of damage in the record.",
-  "chips": [
-    {
-      "type": "person",
-      "label": "Daniel Paladin"
-    },
-    {
-      "type": "person",
-      "label": "Bronwyn Paladin"
-    },
-    {
-      "type": "org",
-      "label": "CFC"
-    },
-    {
-      "type": "person",
-      "label": "Daniel Paladin"
-    },
-    {
-      "type": "person",
-      "label": "Bronwyn Paladin"
-    },
-    {
-      "type": "person",
-      "label": "Gabe Paladin"
-    },
-    {
-      "type": "org",
-      "label": "CFC"
-    }
-  ],
-  "sources": [
-    "record"
-  ],
-  "friendsdb": {
-    "relationship_type": "Friend",
-    "groups": "CFA, CFC",
-    "closeness_tier": "Inner",
-    "state": "Inactive",
-    "standing": "Stable",
-    "trajectory": "Flat",
-    "trend": "flat",
-    "personal_context": "Exposed",
-    "shared_interests": "Park Bros",
-    "years_known": "10",
-    "phone": "(315)212-1652"
+ "name": "Gabe Paladin",
+ "slug": "gabe-paladin",
+ "category": "",
+ "role": "",
+ "period": "",
+ "standing": "",
+ "description": "",
+ "bio": "Bronwyn's older brother. JD's actual friend \u2014 not just a proximity arrangement. They connected through drone visits, the 2017 Chitty Chitty Bang Bang musical, and Monday-night youth group. The friendship ended without closure in August 2018. JD has noted this as an unacknowledged piece of damage in the record.",
+ "chips": [
+  {
+   "type": "person",
+   "label": "Daniel Paladin"
+  },
+  {
+   "type": "person",
+   "label": "Bronwyn Paladin"
+  },
+  {
+   "type": "org",
+   "label": "CFC"
+  },
+  {
+   "type": "person",
+   "label": "Daniel Paladin"
+  },
+  {
+   "type": "person",
+   "label": "Bronwyn Paladin"
+  },
+  {
+   "type": "person",
+   "label": "Gabe Paladin"
+  },
+  {
+   "type": "org",
+   "label": "CFC"
   }
+ ],
+ "sources": [
+  "record"
+ ],
+ "friendsdb": {
+  "relationship_type": "Friend",
+  "groups": "CFA, CFC",
+  "closeness_tier": "Inner",
+  "state": "Inactive",
+  "standing": "Stable",
+  "trajectory": "Flat",
+  "trend": "flat",
+  "personal_context": "Exposed",
+  "shared_interests": "Park Bros",
+  "years_known": "10",
+  "phone": "(315)212-1652"
+ },
+ "public_footprint": "College Ministry Pastor at Christian Fellowship Center (CFC) in Potsdam, NY. Worship music artist who recorded a live album at his home church in New York in January 2026 and has releases on streaming platforms, including 'What Can I Give (Live)'. Also left a public testimonial for a portrait session with JD Meyers Productions.\nSources: https://www.potsdam.edu/media/986/download?attachment; https://www.gofundme.com/f/help-gabe-finish-and-promote-his-live-album/fb/o"
 }
