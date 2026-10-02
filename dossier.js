@@ -480,20 +480,31 @@ function bind(){
 /* ---------- boot ---------- */
 function boot(){
   ambient();
-  fetch('data/dossier.json', {cache:'no-store'})
-    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-    .then(function(d){
-      D = d;
-      $('#fresh').textContent = 'updated ' + (D.updated||'—');
-      buildNodes();
-      hubInit();
-      renderList();
-      bind();
-    })
-    .catch(function(){
-      $('#leftbody').innerHTML = '<div class="empty-note">Could not load dossier data.</div>';
-      $('#stagehint').textContent = 'Data failed to load.';
-    });
+  $('#leftbody').innerHTML = '<div class="empty-note">Loading dossier data…</div>';
+  var tries = 0;
+  function attempt(){
+    tries++;
+    fetch('data/dossier.json', {cache:'no-store'})
+      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(function(d){
+        D = d;
+        $('#fresh').textContent = 'updated ' + (D.updated||'—');
+        buildNodes();
+        hubInit();
+        renderList();
+        bind();
+      })
+      .catch(function(){
+        if(tries < 4){
+          $('#leftbody').innerHTML = '<div class="empty-note">Loading dossier data… (retry '+tries+'/3)</div>';
+          setTimeout(attempt, 1200*tries);
+        } else {
+          $('#leftbody').innerHTML = '<div class="empty-note">Could not load dossier data. <a href="" onclick="location.reload();return false;" style="color:var(--amber)">Retry</a></div>';
+          var sh = $('#stagehint'); if(sh) sh.textContent = 'Data failed to load.';
+        }
+      });
+  }
+  attempt();
 }
 document.addEventListener('DOMContentLoaded', boot);
 })();
