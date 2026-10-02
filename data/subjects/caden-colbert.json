@@ -10,5 +10,18 @@
   "chips": [],
   "sources": [
     "legacy"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC, NTC",
+    "closeness_tier": "Regular",
+    "state": "Closed",
+    "standing": "Strained",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "",
+    "years_known": "15",
+    "phone": "(315)742-7278"
+  }
 }
