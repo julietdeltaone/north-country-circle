@@ -10,5 +10,18 @@
   "chips": [],
   "sources": [
     "legacy"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC, NTC",
+    "closeness_tier": "Distant",
+    "state": "Inactive",
+    "standing": "Dormant",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Familiar",
+    "shared_interests": "CFA",
+    "years_known": "15",
+    "phone": "(315)323-1693"
+  }
 }
