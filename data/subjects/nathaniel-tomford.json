@@ -10,5 +10,18 @@
   "chips": [],
   "sources": [
     "legacy"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC, NTC",
+    "closeness_tier": "Inner",
+    "state": "Inactive",
+    "standing": "Strained",
+    "trajectory": "Declining",
+    "trend": "down",
+    "personal_context": "Exposed",
+    "shared_interests": "Golf, SUNY Canton",
+    "years_known": "15",
+    "phone": "(518)560-0198"
+  }
 }
