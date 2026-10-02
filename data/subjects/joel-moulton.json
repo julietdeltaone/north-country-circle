@@ -10,5 +10,18 @@
   "chips": [],
   "sources": [
     "legacy"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Regular",
+    "state": "Closed",
+    "standing": "Dormant",
+    "trajectory": "Unclear",
+    "trend": "unknown",
+    "personal_context": "Exposed",
+    "shared_interests": "Golf",
+    "years_known": "15",
+    "phone": "(315)742-2146"
+  }
 }
