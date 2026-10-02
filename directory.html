@@ -40,7 +40,6 @@
   .chip { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; border-radius: 20px; padding: 8px 14px; font-size: 12px; cursor: pointer; font-family: inherit; }
   .chip.on { background: #1f6feb; border-color: #1f6feb; color: #fff; }
   .loading, .error { text-align: center; padding: 60px 20px; font-size: 15px; color: #8b949e; }
-  .error a { color: #58a6ff; }
   .foot { color: #6e7681; font-size: 12px; text-align: center; margin-top: 10px; }
   a { color: #58a6ff; text-decoration: none; }
   a:hover { text-decoration: underline; }
@@ -52,21 +51,19 @@
     <h1>NORTH COUNTRY <span>CIRCLE</span></h1>
     <a class="back" href="index.html">&larr; Back to the map</a>
   </div>
-  <div class="sub" id="stamp">Loading the directory from the sheet&hellip;</div>
+  <div class="sub" id="stamp">Loading the directory&hellip;</div>
   <div id="app"><div class="loading">Pulling the directory&hellip;</div></div>
-  <div class="foot">Data lives in the North Country Circle Google Sheet (Directory tab) — this page only reads it. Info pieces: display name, visibility, following count, following list pulled, full pull, follows JD, followed by JD, curated info.</div>
+  <div class="foot">The North Country Circle Google Sheet is the repo — this page reads a snapshot synced from it. Info pieces: display name, visibility, following count, following list pulled, full pull, follows JD, followed by JD, curated info.</div>
 </div>
 <script>
-var SHEET_ID = "1cszoI0bE6N1GQU-9WPYu4Fm6xazC3Ev84G2ax5SFIn4";
-var GVIZ = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=out:json&sheet=Directory";
-var ROWS = [];
-var REL_FILTER = "all";
-var QUERY = "";
+var ROWS = [], PEOPLE = [], UPDATED = "";
+var REL_FILTER = "all", QUERY = "", PQ = "";
 
 function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 function pillClass(p) { return p >= 6 ? "p-high" : p >= 4 ? "p-mid" : "p-low"; }
 function tile(n, l) { return '<div class="tile"><div class="n">' + n + '</div><div class="l">' + l + "</div></div>"; }
 function chip(r, label) { return '<button class="chip' + (REL_FILTER === r ? " on" : "") + '" data-r="' + r + '">' + label + "</button>"; }
+function igLink(h) { return '<a href="https://www.instagram.com/' + esc(h) + '/" target="_blank" rel="noopener">' + esc(h) + "</a>"; }
 
 function render() {
   var rows = ROWS, total = rows.length, sum = 0, pulled = 0, mutual = 0, dist = {};
@@ -99,25 +96,31 @@ function render() {
     tile(avg, "Avg info pieces") +
     tile(pulled.toLocaleString() + " (" + Math.round(pulled / total * 100) + "%)", "Following lists pulled") +
     tile(mutual.toLocaleString(), "Mutual follows") +
+    tile(PEOPLE.length, "Named people") +
     "</div>" +
     '<div class="card"><h2>Info coverage</h2>' + bars + "</div>" +
     '<div class="card"><h2>Most documented</h2>' + topHtml + "</div>" +
+    '<div class="card"><h2>Named people</h2>' +
+    '<div class="controls"><input type="text" id="pq" placeholder="Search people&hellip;" value="' + esc(PQ) + '"></div>' +
+    '<div id="peopletable"></div></div>' +
     '<div class="card"><h2>Directory</h2>' +
     '<div class="controls">' +
     '<input type="text" id="q" placeholder="Search name or display name&hellip;" value="' + esc(QUERY) + '">' +
     chip("all", "All") + chip("mutual", "Mutual") + chip("following", "JD follows") + chip("follower", "Follows JD") +
     '</div><div id="dirtable"></div></div>';
 
-  document.getElementById("stamp").textContent = total.toLocaleString() + " people · loaded " + new Date().toLocaleString();
+  document.getElementById("stamp").textContent =
+    total.toLocaleString() + " people · snapshot synced " + UPDATED;
   var qi = document.getElementById("q");
   qi.addEventListener("input", function() { QUERY = qi.value; renderTable(); });
+  var pqi = document.getElementById("pq");
+  pqi.addEventListener("input", function() { PQ = pqi.value; renderPeople(); });
   Array.prototype.forEach.call(document.querySelectorAll(".chip"), function(c) {
     c.addEventListener("click", function() { REL_FILTER = c.getAttribute("data-r"); render(); });
   });
   renderTable();
+  renderPeople();
 }
-
-function igLink(h) { return '<a href="https://www.instagram.com/' + esc(h) + '/" target="_blank" rel="noopener">' + esc(h) + "</a>"; }
 
 function renderTable() {
   var q = QUERY.toLowerCase();
@@ -139,33 +142,33 @@ function renderTable() {
   if (qi) { qi.focus(); qi.setSelectionRange(qi.value.length, qi.value.length); }
 }
 
-function load() {
-  fetch(GVIZ).then(function(res) {
-    if (!res.ok) throw new Error("sheet not readable (" + res.status + ")");
-    return res.text();
-  }).then(function(t) {
-    var m = t.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?\s*$/);
-    if (!m) throw new Error("unexpected sheet response");
-    var data = JSON.parse(m[1]);
-    if (data.status === "error") throw new Error(data.errors ? data.errors[0].detailed_message : "sheet error");
-    var rows = (data.table.rows || []).map(function(r) {
-      var c = r.c || [];
-      var v = function(i) { return c[i] && c[i].v != null ? c[i].v : ""; };
-      return { name: String(v(0)), display: String(v(1)), pieces: +v(2) || 0, relation: String(v(3)), detail: String(v(4)) };
-    }).filter(function(r) { return r.name; });
-    if (!rows.length) throw new Error("no rows found");
-    ROWS = rows;
-    render();
-  }).catch(function(err) {
-    document.getElementById("app").innerHTML =
-      '<div class="error">Could not read the directory sheet yet.<br><br>' +
-      'One step needed: open the <a href="https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/edit" target="_blank" rel="noopener">North Country Circle sheet</a>, ' +
-      'click <b>Share</b>, and set General access to <b>Anyone with the link</b> (Viewer). Then reload this page.<br><br>' +
-      '<span style="font-size:12px">(' + esc(err.message) + ")</span></div>";
-    document.getElementById("stamp").textContent = "Waiting for sheet access…";
+function renderPeople() {
+  var q = PQ.toLowerCase();
+  var rows = PEOPLE.filter(function(r) {
+    if (!q) return true;
+    return (String(r.person).toLowerCase().indexOf(q) > -1 ||
+            String(r.aka).toLowerCase().indexOf(q) > -1 ||
+            String(r.ig).toLowerCase().indexOf(q) > -1);
   });
+  var h = '<table><tr><th>Person</th><th>IG</th><th>Also known as</th><th>Source</th><th>Mentions</th></tr>';
+  rows.forEach(function(r) {
+    h += "<tr><td>" + esc(r.person) + "</td><td>" + (r.ig ? igLink(r.ig) : '<span class="rel">—</span>') + '</td><td class="rel">' + esc(r.aka) + '</td><td class="rel">' + esc(r.source) + '</td><td class="rel">' + esc(r.mentions) + "</td></tr>";
+  });
+  h += "</table>";
+  if (!rows.length) h += '<div class="foot">No matches.</div>';
+  document.getElementById("peopletable").innerHTML = h;
 }
-load();
+
+fetch("data/directory.json", { cache: "no-store" }).then(function(res) {
+  if (!res.ok) throw new Error("snapshot not found");
+  return res.json();
+}).then(function(d) {
+  ROWS = d.directory || []; PEOPLE = d.people || []; UPDATED = d.updated || "";
+  render();
+}).catch(function(err) {
+  document.getElementById("app").innerHTML =
+    '<div class="error">Could not load the directory snapshot.<br><span style="font-size:12px">(' + esc(err.message) + ")</span></div>";
+});
 </script>
 </body>
 </html>
