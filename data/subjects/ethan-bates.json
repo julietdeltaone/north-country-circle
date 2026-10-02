@@ -1,0 +1,44 @@
+{
+  "name": "Ethan Bates",
+  "slug": "ethan-bates",
+  "category": "peer",
+  "role": "Friend — Moira Area",
+  "period": "2014 – 2016",
+  "standing": "",
+  "description": "From the Moira area — connected to the Wangerin orbit through the Friday Moira service, which the Wangerins also attended given their proximity to North Lawrence. Part of the 2015 summer hangout group. Appeared on the 2016 NYC class trip.",
+  "bio": "Part of the Moira-area friend group JD has known since 2014. Close friend of Merrick Sinclair and Silas Smith. Joined the National Guard as a second lieutenant. Now a police officer in Saranac Lake. The person most directly responsible for planting the idea of JD joining the Guard — he mentioned it every time he came into Park Bros, casually, starting around 2022. No hard sell. It stuck.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "Army National Guard"
+    },
+    {
+      "type": "org",
+      "label": "Park Bros Coffee"
+    },
+    {
+      "type": "event",
+      "label": "FAA Part 107 cert (April 2018)"
+    },
+    {
+      "type": "event",
+      "label": "First wedding gig (Queensbury, NY)"
+    },
+    {
+      "type": "org",
+      "label": "Clarkson University"
+    },
+    {
+      "type": "org",
+      "label": "Canton-Potsdam Hospital"
+    },
+    {
+      "type": "place",
+      "label": "LaFargeville, NY"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
+}
