@@ -175,7 +175,7 @@ function meter(n, max, label){
   return '<div class="pmeter"><div class="barlbl"><span>'+label+'</span><b>'+n+' / '+max+'</b></div>'+
     '<div class="bar"><i style="width:'+p+'%"></i></div></div>';
 }
-function classbar(){ return '<div class="classbar">Confidential · Personal File · JD Meyers</div>'; }
+function classbar(){ return '<div class="classbar">Personal file · JD Meyers</div>'; }
 
 function dossierDir(e, idx){
   var person = null;
@@ -221,7 +221,7 @@ function dossierDir(e, idx){
     '<div class="stat"><div class="v">'+e.degree+'</div><div class="l">graph connections</div></div>'+
     '<div class="stat"><div class="v">'+e.shared_with_jd+'</div><div class="l">shared with you</div></div>'+
     '</div>'+
-    (e.detail ? '<p class="body" style="margin-top:10px;font-size:12.5px;color:var(--mut)">'+esc(e.detail)+'</p>' : '')+
+    (e.detail ? '<p class="body" style="margin-top:10px;font-size:12.5px;color:var(--mut)"><span style="color:var(--dim);text-transform:uppercase;font-size:10.5px;letter-spacing:.08em">On file</span><br>'+esc(e.detail.split('; ').join(' · ')).replace(/^./, function(c){return c.toUpperCase();})+'</p>' : '')+
     '</div>'+
     '<div class="dsec"><h3><span class="n">03</span> Memoir file</h3>'+
     '<div class="memoir'+(UNLOCKED||!hasSensitive?' unlocked':'')+'">'+
