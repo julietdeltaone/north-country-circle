@@ -1,0 +1,43 @@
+{
+  "name": "Melody Maurer",
+  "slug": "melody-maurer",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "Entered the CFC world around 2013 through her friendship with Liana Sinclair. Lived with the Sinclair family for a period around 2014. Was in Catherine's bridal party in 2017. Close friendship with JD developed around 2018. Highly extroverted and widely traveled. As of 2025 pursuing a master's degree in social work. Her younger sister Mercy is best friends with Ellie. Her childhood best friend is Andrew Matott.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Andrew Matott"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "Ogdensburg Airport"
+    },
+    {
+      "type": "person",
+      "label": "Catherine Green"
+    },
+    {
+      "type": "person",
+      "label": "Ryan Dunphey"
+    },
+    {
+      "type": "place",
+      "label": "Market St, Potsdam"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
