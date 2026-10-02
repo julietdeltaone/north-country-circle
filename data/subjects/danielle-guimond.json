@@ -19,5 +19,18 @@
   ],
   "sources": [
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CPH",
+    "closeness_tier": "Inner",
+    "state": "Closed",
+    "standing": "Strained",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Familiar",
+    "shared_interests": "CPH",
+    "years_known": "2",
+    "phone": "(315)2765191"
+  }
 }
