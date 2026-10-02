@@ -1,0 +1,40 @@
+{
+  "name": "Zenna Dale",
+  "slug": "zenna-dale",
+  "category": "peer",
+  "role": "Brief Interest · Bronwyn's Friend",
+  "period": "2016 – 2017",
+  "standing": "",
+  "description": "JD had a brief romantic interest in Zenna in April 2016. By 2017 she and Bronwyn were friends — both appeared in the Chitty Chitty Bang Bang cast. That overlap made navigating the Bronwyn situation more layered than it would otherwise have been.",
+  "bio": "Part of the Moira-era friend group. Was Bronwyn's close friend and JD's primary go-between through Fall 2017. Also the first person who demonstrated genuine feelings toward JD — around age 15. That experience changed his internal operating premise from \"no one likes you\" to something more open. Their moment ended in April 2016. The go-between role shifted to Katie McGrath beginning January 2018.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Josh McGrath"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Merrick Sinclair"
+    },
+    {
+      "type": "person",
+      "label": "Lydia Wangerin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
+}
