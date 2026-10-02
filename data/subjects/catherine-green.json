@@ -59,5 +59,18 @@
   ],
   "sources": [
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Family",
+    "groups": "FAMILY",
+    "closeness_tier": "Inner",
+    "state": "Active",
+    "standing": "Stable",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "Bagdad",
+    "years_known": "25",
+    "phone": "(315)244-7324"
+  }
 }
