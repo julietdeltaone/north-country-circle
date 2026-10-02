@@ -1,0 +1,43 @@
+{
+  "name": "Indira Quintana (Lala)",
+  "slug": "indira-quintana-lala",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "Nickname: Lala. Part of Merrick's friend group when JD reconnected in early 2019. By October 2019 she had developed an interest in JD. He didn't reciprocate romantic feelings but was in a depressive state and found her company numbing. Their physical relationship was brief — approximately November and December 2019. JD self-reported to church leadership in January 2020 after Jamie Sinclair's early-morning text. Lala married Aaron Daniels. They have a child. JD and Lala are cordial when their paths cross.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Aaron Daniels"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Potsdam"
+    },
+    {
+      "type": "org",
+      "label": "Calvary Baptist"
+    },
+    {
+      "type": "person",
+      "label": "Merrick Sinclair"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Andrew Matott"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
