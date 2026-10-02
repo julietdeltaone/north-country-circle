@@ -1,27 +1,28 @@
 {
-  "name": "Wayne Lougheed",
-  "slug": "wayne-lougheed",
-  "category": "",
-  "role": "",
-  "period": "",
-  "standing": "",
-  "description": "",
-  "bio": "Former police lieutenant from New Jersey. Director of Security at Canton-Potsdam Hospital when JD started in June 2023. Married to the hospital's Chief Nursing Officer. His leadership style — defending officers against vague complaints, using documentation as the department's defining strength, managing upward through visible metrics — made enough of an impression on JD that he wrote a formal case study on it. Resigned while JD was at BCT over a disagreement about badge-issuing duties being assigned to Security.",
-  "chips": [
-    {
-      "type": "org",
-      "label": "Canton-Potsdam Hospital"
-    },
-    {
-      "type": "org",
-      "label": "SUNY Canton"
-    },
-    {
-      "type": "place",
-      "label": "Messina, NY"
-    }
-  ],
-  "sources": [
-    "record"
-  ]
+ "name": "Wayne Lougheed",
+ "slug": "wayne-lougheed",
+ "category": "",
+ "role": "",
+ "period": "",
+ "standing": "",
+ "description": "",
+ "bio": "Former police lieutenant from New Jersey. Director of Security at Canton-Potsdam Hospital when JD started in June 2023. Married to the hospital's Chief Nursing Officer. His leadership style \u2014 defending officers against vague complaints, using documentation as the department's defining strength, managing upward through visible metrics \u2014 made enough of an impression on JD that he wrote a formal case study on it. Resigned while JD was at BCT over a disagreement about badge-issuing duties being assigned to Security.",
+ "chips": [
+  {
+   "type": "org",
+   "label": "Canton-Potsdam Hospital"
+  },
+  {
+   "type": "org",
+   "label": "SUNY Canton"
+  },
+  {
+   "type": "place",
+   "label": "Messina, NY"
+  }
+ ],
+ "sources": [
+  "record"
+ ],
+ "public_footprint": "A people-search profile for Wayne Lougheed lists a previous address in Potsdam, NY and reports employment as a property-management owner and regulatory compliance manager (Western Aviation Security Products LLC).\nSources: https://veripages.com/name/Wayne/Lougheed/"
 }
