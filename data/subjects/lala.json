@@ -10,5 +10,18 @@
   "chips": [],
   "sources": [
     "legacy"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "MUTUAL FRIENDS",
+    "closeness_tier": "Inner",
+    "state": "Closed",
+    "standing": "Dormant",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "Student",
+    "years_known": "6",
+    "phone": "(607)226-6175"
+  }
 }
