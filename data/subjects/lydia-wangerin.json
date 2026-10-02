@@ -1,0 +1,32 @@
+{
+  "name": "Lydia Wangerin",
+  "slug": "lydia-wangerin",
+  "category": "peer",
+  "role": "Friend — Brief Romantic Interest",
+  "period": "2016 – 2017",
+  "standing": "",
+  "description": "One of the younger Wangerin siblings. JD had an unresolved interest in her in August 2016 that ended with them not talking for several months — she didn't know how to handle it. By summer 2017 the friendship had recovered; she joined JD and Liz for a helicopter ride over Potsdam at the summer festival.",
+  "bio": "Liz Wangerin's younger sister. JD has known her since 2015 through the Wangerin house. Good friends from May 2017 onward. She married Johnny Martin in May 2024 — JD did their wedding photos.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Liz Wangerin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "Park Bros Coffee"
+    },
+    {
+      "type": "person",
+      "label": "Katie McGrath"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
+}
