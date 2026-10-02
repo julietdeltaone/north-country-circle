@@ -14,42 +14,37 @@
 <div id="vig" aria-hidden="true"></div>
 
 <header id="topbar" class="glass">
-  <a class="backlink" href="index.html" title="Back to the explorer">← Explorer</a>
+  <button id="listtoggle" class="tbtn on" title="Toggle directory list" aria-label="Toggle directory list">
+    <span aria-hidden="true">☰</span>
+  </button>
   <div class="brand">
     <span class="brand-mark" aria-hidden="true">◈</span>
-    <div class="brand-text"><h1>North Country Circle</h1><small>personnel dossier</small></div>
+    <div class="brand-text"><h1>North Country Circle</h1><small>dossier</small></div>
   </div>
-  <nav class="pagelinks">
-    <a href="directory.html">Directory</a>
-    <span class="on">Dossier</span>
-  </nav>
+  <div class="tsearch" role="search">
+    <input id="fq" type="search" placeholder="Search the 732…" autocomplete="off" aria-label="Search names">
+  </div>
+  <select id="frel" aria-label="Filter by relation">
+    <option value="">All relations</option>
+    <option value="mutual">Mutual</option>
+    <option value="following">Following</option>
+    <option value="follower">Follower</option>
+  </select>
+  <button id="bgtoggle" class="tbtn pill" title="Show the full circle as background" aria-pressed="false">
+    <span class="dot" aria-hidden="true"></span>Full circle
+  </button>
   <span id="fresh"></span>
 </header>
 
 <aside id="left" class="glass panel" aria-label="Directory list">
-  <div id="lhead" role="search">
-    <input id="fq" type="search" placeholder="Search names…" autocomplete="off" aria-label="Search names">
-    <div class="scopetoggle" role="tablist" aria-label="Search scope">
-      <button data-scope="dir" class="on" role="tab" aria-selected="true">732 in scope</button>
-      <button data-scope="all" role="tab" aria-selected="false">Full circle</button>
-    </div>
-    <div class="lh-filters">
-      <select id="fsort" aria-label="Sort"></select>
-      <select id="frel" aria-label="Filter by relation">
-        <option value="">All relations</option>
-        <option value="mutual">Mutual</option>
-        <option value="following">Following</option>
-        <option value="follower">Follower</option>
-      </select>
-    </div>
-    <div id="scopenote" class="scopenote">Your first hop — the people who matter.</div>
-    <div id="lcount"></div>
-  </div>
+  <div id="lcount"></div>
   <div id="leftbody"></div>
 </aside>
 
-<main id="mid" class="glass panel" aria-label="Metrics and strongest connections">
-  <div id="midbody"></div>
+<main id="stage" aria-label="Connection map">
+  <canvas id="hub"></canvas>
+  <div id="tip" hidden></div>
+  <div id="stagehint">Drag to pan · scroll to zoom · click a node to open their dossier</div>
 </main>
 
 <aside id="right" class="glass panel" aria-label="Dossier">
