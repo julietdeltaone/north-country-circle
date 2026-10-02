@@ -1,0 +1,35 @@
+{
+  "name": "Josh McGrath",
+  "slug": "josh-mcgrath",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "A Crane School of Music graduate and piano teacher who instructed JD and Bronwyn in 2017. Became JD's mentor starting May 2021. Their weekly meetings at Park Bros Coffee — now spanning four years — are what JD describes as the best thing to ever happen to him. Direct communication style, non-transactional dynamic, the absence of the CFC restoration agenda made these meetings work where nearly a hundred others had not. His siblings: Matthew, Josiah (NY State Trooper), and Katie (go-between in the Bronwyn arc).",
+  "chips": [
+    {
+      "type": "org",
+      "label": "Park Bros Coffee"
+    },
+    {
+      "type": "person",
+      "label": "Katie McGrath"
+    },
+    {
+      "type": "person",
+      "label": "Aaron Daniels"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Potsdam"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
