@@ -232,9 +232,12 @@ body.nolist #stage{left:12px}
 .wall .werr{font-size:12px;color:var(--red);min-height:16px;margin:0}
 .wall .wlock{font-size:22px;color:var(--dim)}
 
-#mclose{display:block;position:sticky;top:0;margin-left:auto;background:rgba(255,255,255,.07);
+.doc-actions{position:sticky;top:0;z-index:2;display:flex;gap:8px;justify-content:flex-end}
+.doc-actions button{background:rgba(255,255,255,.07);
   border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:7px 14px;
-  font-size:12.5px;font-weight:600;cursor:pointer;z-index:2;float:right}
+  font-size:12.5px;font-weight:600;cursor:pointer}
+#dedit{background:rgba(232,179,75,.1);border-color:rgba(232,179,75,.4);color:var(--amber)}
+#dedit:hover{background:rgba(232,179,75,.2)}
 #mclose:hover{border-color:rgba(232,179,75,.5);color:var(--amber)}
 
 /* ---------- responsive ---------- */
@@ -252,3 +255,47 @@ body.nolist #stage{left:12px}
   #stagehint{display:none}
   .stamp{position:static;display:inline-block;margin-top:10px}
 }
+
+/* ---------- dashboard editing ---------- */
+#dedit{position:sticky;top:0;margin-left:auto;margin-right:8px;background:rgba(232,179,75,.1);
+  border:1px solid rgba(232,179,75,.4);color:var(--amber);border-radius:9px;padding:7px 14px;
+  font-size:12.5px;font-weight:600;cursor:pointer;z-index:2;float:right}
+#eoverlay{position:fixed;inset:0;z-index:100;background:rgba(3,5,8,.72);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  animation:efade .25s var(--ease)}
+@keyframes efade{from{opacity:0}to{opacity:1}}
+#emodal{width:min(680px,94vw);max-height:88vh;display:flex;flex-direction:column;
+  background:var(--glass-2);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  animation:epop .3s var(--ease)}
+@keyframes epop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.ehead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:18px 22px 14px;border-bottom:1px solid var(--line-soft)}
+.ekicker{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:700}
+.ehead h3{font-family:var(--disp);font-weight:700;font-size:22px;margin:4px 0 0;letter-spacing:-.01em}
+#eclose{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--txt);
+  border-radius:9px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;flex:none}
+.ebody{overflow-y:auto;padding:6px 22px 10px}
+.egroup{margin-top:14px}
+.eglabel{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+  font-weight:700;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line-soft)}
+.efield{display:block;margin-bottom:10px}
+.efield>span{display:block;font-size:11.5px;color:var(--mut);margin-bottom:4px}
+.efield input,.efield select,.efield textarea{width:100%;background:rgba(255,255,255,.05);
+  border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:9px 12px;
+  font-size:13.5px;font-family:var(--sans);outline:none}
+.efield input:focus,.efield select:focus,.efield textarea:focus{border-color:rgba(232,179,75,.55)}
+.efield textarea{resize:vertical;min-height:64px;line-height:1.55}
+.efoot{display:flex;align-items:center;gap:10px;padding:14px 22px;border-top:1px solid var(--line-soft)}
+#epw{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);
+  border-radius:9px;padding:9px 12px;font-size:13.5px;font-family:var(--sans);outline:none;max-width:180px}
+#emsg{flex:1;font-size:12px;color:var(--red)}
+#esave{background:rgba(232,179,75,.14);border:1px solid rgba(232,179,75,.5);color:var(--amber);
+  border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer}
+#esave:hover:not(:disabled){background:rgba(232,179,75,.25)}
+#esave:disabled{opacity:.55;cursor:wait}
+.etoast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(12px);z-index:200;
+  background:rgba(20,24,33,.95);border:1px solid rgba(232,179,75,.45);color:var(--txt);
+  border-radius:12px;padding:11px 20px;font-size:13px;font-weight:600;opacity:0;
+  transition:all .3s var(--ease);pointer-events:none;max-width:88vw;text-align:center}
+.etoast.show{opacity:1;transform:translateX(-50%)}
