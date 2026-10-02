@@ -56,5 +56,18 @@
   "sources": [
     "legacy",
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Family",
+    "groups": "FAMILY",
+    "closeness_tier": "Regular",
+    "state": "Active",
+    "standing": "Dormant",
+    "trajectory": "Improving",
+    "trend": "up",
+    "personal_context": "Familiar",
+    "shared_interests": "Bagdad",
+    "years_known": "22",
+    "phone": "(315)265-8772"
+  }
 }
