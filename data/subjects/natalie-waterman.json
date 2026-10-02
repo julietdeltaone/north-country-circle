@@ -1,0 +1,35 @@
+{
+  "name": "Natalie Waterman",
+  "slug": "natalie-waterman",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "Junior at Clarkson University, biochemistry and biology. EMS Chief (May 2025–present), previously Assistant Chief. Also a Residential Advisor and nursing assistant at Canton-Potsdam Hospital. From LaFargeville, NY — high school valedictorian, 98.55 average, Youth Provider of the Year 2023. Operational overlap with JD's campus security role is the primary point of contact. Ongoing Snapchat thread. One kiss after Taco Bell. Situation undefined as of the time of writing.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "Clarkson University"
+    },
+    {
+      "type": "org",
+      "label": "Canton-Potsdam Hospital"
+    },
+    {
+      "type": "place",
+      "label": "LaFargeville, NY"
+    },
+    {
+      "type": "org",
+      "label": "Canton-Potsdam Hospital"
+    },
+    {
+      "type": "org",
+      "label": "Fort Jackson, SC"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
