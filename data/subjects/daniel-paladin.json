@@ -52,5 +52,18 @@
   "sources": [
     "legacy",
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Acquaintance",
+    "groups": "CFC",
+    "closeness_tier": "Regular",
+    "state": "Inactive",
+    "standing": "Dormant",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "CFA",
+    "years_known": "15",
+    "phone": "(315)276-0380"
+  }
 }
