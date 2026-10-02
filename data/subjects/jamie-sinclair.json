@@ -1,0 +1,52 @@
+{
+  "name": "Jamie Sinclair",
+  "slug": "jamie-sinclair",
+  "category": "ment",
+  "role": "Pastor — CFC Canton · Mentor · Gatekeeper",
+  "period": "2018 – Present",
+  "standing": "Gatekeeper",
+  "description": "Rick's son, Merrick's older brother. Took personal responsibility for JD's discipleship after 2018. Analytical, direct, genuine. Met with JD for months. Specifically recommended David Zufall as a friend. Currently the gatekeeper for JD's CFC status — asked him not to attend until a formal decision is made. Last met a few months ago.",
+  "bio": "Rick Sinclair's oldest son. Former pastor of CFC Canton. JD's primary pastor through the discipline process. Both are analytical, strategic thinkers — which created a specific problem: JD could always anticipate what Jamie was looking for and could never respond organically. In early 2026, Jamie asked JD not to return to CFC events until a formal decision is made. That decision remains pending.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Rick Sinclair"
+    },
+    {
+      "type": "org",
+      "label": "CFC Canton"
+    },
+    {
+      "type": "person",
+      "label": "Rick Sinclair"
+    },
+    {
+      "type": "person",
+      "label": "Danielle Vetere"
+    },
+    {
+      "type": "person",
+      "label": "Liz Wangerin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Bronwyn Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Gabe Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Brietta Paladin"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
+}
