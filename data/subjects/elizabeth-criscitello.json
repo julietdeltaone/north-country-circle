@@ -1,0 +1,59 @@
+{
+  "name": "Elizabeth Criscitello",
+  "slug": "elizabeth-criscitello",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "Married Tim Criscitello in 2019. Tim's older brother is Colby Criscitello. Graduated SUNY Potsdam 2022 with a BA in English. Barista at Park Bros from 2017. Lives in Potsdam with Tim and their two daughters. Was in Chitty Chitty Bang Bang (2017) at CFA — the production where JD first noticed Bronwyn Paladin.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Tim Criscitello"
+    },
+    {
+      "type": "org",
+      "label": "Park Bros Coffee"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Potsdam"
+    },
+    {
+      "type": "date",
+      "label": "Married 2019"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Potsdam"
+    },
+    {
+      "type": "org",
+      "label": "SUNY Canton"
+    },
+    {
+      "type": "date",
+      "label": "Graduated 2025"
+    },
+    {
+      "type": "person",
+      "label": "Rick Sinclair"
+    },
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Jamie Sinclair"
+    },
+    {
+      "type": "org",
+      "label": "CFA"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
