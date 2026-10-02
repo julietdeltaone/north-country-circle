@@ -183,6 +183,27 @@ function doGet() {
   return jsonOut({ ok: true, service: 'north-country-circle edit api' });
 }
 
+/* ---------- Gemini (future AI parsing) ----------
+   Put the key in: Apps Script editor > Project Settings > Script Properties
+   as GEMINI_API_KEY. Never in the HTML page. */
+function geminiKey() {
+  return PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
+}
+function callGemini(prompt) {
+  var key = geminiKey();
+  if (!key) throw new Error('GEMINI_API_KEY not set in Script Properties');
+  var res = UrlFetchApp.fetch(
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    {
+      method: 'post', contentType: 'application/json',
+      headers: { 'x-goog-api-key': key },
+      payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+      muteHttpExceptions: true
+    });
+  var data = JSON.parse(res.getContentText());
+  return (((data.candidates || [])[0] || {}).content || {}).parts || [];
+}
+
 function jsonOut(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
