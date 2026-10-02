@@ -1,60 +1,61 @@
 {
-  "name": "Merrick Sinclair",
-  "slug": "merrick-sinclair",
-  "category": "conf",
-  "role": "Friend / Rival / Complication",
-  "period": "2012 – Present",
-  "standing": "Managed Distance",
-  "description": "Rick's son, Jamie's younger brother. JD's first real friendship — later revealed to have begun partly out of pity. Recurring friction throughout: Liz (2015), Zenna (2016), and most significantly, his eventual relationship with Danielle. JD holds genuine distaste for his operating style while acknowledging the complexity. Cordial but carefully distanced in 2026.",
-  "bio": "Rick Sinclair's younger son. JD's first modeled friendship. Initially friends with JD partly out of pity; JD worked to graduate from that category. In 2015, involved in a secret relationship with Liz Wangerin that JD observed as a procedural model for covert romantic pursuit. Later became involved with Danielle Vetere — which was one of the harder things JD processed through the Josh meetings. He and Danielle are now married.",
-  "chips": [
-    {
-      "type": "person",
-      "label": "Rick Sinclair"
-    },
-    {
-      "type": "person",
-      "label": "Danielle Vetere"
-    },
-    {
-      "type": "person",
-      "label": "Liz Wangerin"
-    },
-    {
-      "type": "org",
-      "label": "CFC"
-    },
-    {
-      "type": "person",
-      "label": "Bronwyn Paladin"
-    },
-    {
-      "type": "person",
-      "label": "Gabe Paladin"
-    },
-    {
-      "type": "person",
-      "label": "Brietta Paladin"
-    },
-    {
-      "type": "org",
-      "label": "CFC Potsdam"
-    },
-    {
-      "type": "person",
-      "label": "Daniel Paladin"
-    },
-    {
-      "type": "person",
-      "label": "Gabe Paladin"
-    },
-    {
-      "type": "org",
-      "label": "CFC"
-    }
-  ],
-  "sources": [
-    "legacy",
-    "record"
-  ]
+ "name": "Merrick Sinclair",
+ "slug": "merrick-sinclair",
+ "category": "conf",
+ "role": "Friend / Rival / Complication",
+ "period": "2012 \u2013 Present",
+ "standing": "Managed Distance",
+ "description": "Rick's son, Jamie's younger brother. JD's first real friendship \u2014 later revealed to have begun partly out of pity. Recurring friction throughout: Liz (2015), Zenna (2016), and most significantly, his eventual relationship with Danielle. JD holds genuine distaste for his operating style while acknowledging the complexity. Cordial but carefully distanced in 2026.",
+ "bio": "Rick Sinclair's younger son. JD's first modeled friendship. Initially friends with JD partly out of pity; JD worked to graduate from that category. In 2015, involved in a secret relationship with Liz Wangerin that JD observed as a procedural model for covert romantic pursuit. Later became involved with Danielle Vetere \u2014 which was one of the harder things JD processed through the Josh meetings. He and Danielle are now married.",
+ "chips": [
+  {
+   "type": "person",
+   "label": "Rick Sinclair"
+  },
+  {
+   "type": "person",
+   "label": "Danielle Vetere"
+  },
+  {
+   "type": "person",
+   "label": "Liz Wangerin"
+  },
+  {
+   "type": "org",
+   "label": "CFC"
+  },
+  {
+   "type": "person",
+   "label": "Bronwyn Paladin"
+  },
+  {
+   "type": "person",
+   "label": "Gabe Paladin"
+  },
+  {
+   "type": "person",
+   "label": "Brietta Paladin"
+  },
+  {
+   "type": "org",
+   "label": "CFC Potsdam"
+  },
+  {
+   "type": "person",
+   "label": "Daniel Paladin"
+  },
+  {
+   "type": "person",
+   "label": "Gabe Paladin"
+  },
+  {
+   "type": "org",
+   "label": "CFC"
+  }
+ ],
+ "sources": [
+  "legacy",
+  "record"
+ ],
+ "public_footprint": "Studied Speech Communication at SUNY Potsdam and appeared on the Dean's List multiple semesters (Fall 2018, Spring 2019, Fall 2020). Listed as from Canton, NY (St. Lawrence County).\nSources: https://potsdam.meritpages.com/stories/Merrick-Sinclair-Earns-Spot-on-SUNY-Potsdam-Dean-s-List-/14785855; https://potsdam.meritpages.com/stories/Merrick-Sinclair-Earns-Spot-on-SUNY-Potsdam-Dean-s-List-/46325807"
 }
