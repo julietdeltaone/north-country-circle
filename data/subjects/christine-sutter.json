@@ -1,53 +1,52 @@
 {
- "name": "Christine Sutter",
- "slug": "christine-sutter",
- "category": "",
- "role": "",
- "period": "",
- "standing": "",
- "description": "",
- "bio": "Licensed Master Social Worker in the Patient Experience Department at Canton-Potsdam Hospital. Originally from Messina, NY. MSW from the University of Denver specializing in child protection. Met JD at the hospital in July 2024. Six weeks of meaningful connection, then gradual withdrawal after JD escalated to a physical moment on September 27, 2024. She acknowledged the dynamic worked for her only because of its ambiguity. Stopped reaching out in November 2024. JD sent a birthday message in August 2025; she responded briefly.",
- "chips": [
-  {
-   "type": "place",
-   "label": "Messina, NY"
-  },
-  {
-   "type": "org",
-   "label": "Canton-Potsdam Hospital"
-  },
-  {
-   "type": "person",
-   "label": "Dr. Michelle Currier"
-  },
-  {
-   "type": "place",
-   "label": "Canton, NY"
-  },
-  {
-   "type": "person",
-   "label": "Josh McGrath"
-  },
-  {
-   "type": "place",
-   "label": "Potsdam, NY"
+  "name": "Christine Sutter",
+  "slug": "christine-sutter",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "Licensed Master Social Worker in the Patient Experience Department at Canton-Potsdam Hospital. Originally from Messina, NY. MSW from the University of Denver specializing in child protection. Met JD at the hospital in July 2024. Six weeks of meaningful connection, then gradual withdrawal after JD escalated to a physical moment on September 27, 2024. She acknowledged the dynamic worked for her only because of its ambiguity. Stopped reaching out in November 2024. JD sent a birthday message in August 2025; she responded briefly.",
+  "chips": [
+    {
+      "type": "place",
+      "label": "Messina, NY"
+    },
+    {
+      "type": "org",
+      "label": "Canton-Potsdam Hospital"
+    },
+    {
+      "type": "person",
+      "label": "Dr. Michelle Currier"
+    },
+    {
+      "type": "place",
+      "label": "Canton, NY"
+    },
+    {
+      "type": "person",
+      "label": "Josh McGrath"
+    },
+    {
+      "type": "place",
+      "label": "Potsdam, NY"
+    }
+  ],
+  "sources": [
+    "record"
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CPH",
+    "closeness_tier": "Inner",
+    "state": "Closed",
+    "standing": "Strained",
+    "trajectory": "Unclear",
+    "trend": "unknown",
+    "personal_context": "Exposed",
+    "shared_interests": "Hiking",
+    "years_known": "2",
+    "phone": "(315)250-1507"
   }
- ],
- "sources": [
-  "record"
- ],
- "friendsdb": {
-  "relationship_type": "Friend",
-  "groups": "CPH",
-  "closeness_tier": "Inner",
-  "state": "Closed",
-  "standing": "Strained",
-  "trajectory": "Unclear",
-  "trend": "unknown",
-  "personal_context": "Exposed",
-  "shared_interests": "Hiking",
-  "years_known": "2",
-  "phone": "(315)250-1507"
- },
- "public_footprint": "Christine Aileen Sutter is a licensed master social worker in Massena, NY (St. Lawrence County), affiliated with St. Lawrence County social services.\nSources: https://www.doctor.com/Christine-Sutter; https://www.whitepages.com/name/Christine-Sutter"
 }
