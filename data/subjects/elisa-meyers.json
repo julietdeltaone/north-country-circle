@@ -1,65 +1,66 @@
 {
-  "name": "Elisa Meyers",
-  "slug": "elisa-meyers",
-  "category": "fam",
-  "role": "Mother",
-  "period": "2000 – Present",
-  "standing": "Active",
-  "description": "Originally from Mexico. Met John Sr. on a Spain mission trip in 1995. Reserved, indirect communicator. Had private reservations about church discipline decisions. Comes from a complicated wealthy Mexican family background. Still in Potsdam.",
-  "bio": "From an affluent Mexican family. Her dad owned what became the Quality Inn Aguascalientes (4.4 stars, 2,400+ reviews as of 2026). Met JD's dad on a CFC trip to Spain in 1995, married 1996, naturalized U.S. citizen same year. Primary educator during the homeschooling years. Agreeable and conflict-avoidant in communication style. JD describes their relationship as not bad, but not close.",
-  "chips": [
-    {
-      "type": "place",
-      "label": "Aguascalientes, Mexico"
-    },
-    {
-      "type": "org",
-      "label": "CFC"
-    },
-    {
-      "type": "date",
-      "label": "Married 1996"
-    },
-    {
-      "type": "person",
-      "label": "Elisa Meyers"
-    },
-    {
-      "type": "person",
-      "label": "Jeeves Green"
-    },
-    {
-      "type": "org",
-      "label": "Park Bros Coffee"
-    },
-    {
-      "type": "place",
-      "label": "Madrid, NY"
-    },
-    {
-      "type": "place",
-      "label": "Massena, NY"
-    },
-    {
-      "type": "date",
-      "label": "Married 2017"
-    }
-  ],
-  "sources": [
-    "legacy",
-    "record"
-  ],
-  "friendsdb": {
-    "relationship_type": "Family",
-    "groups": "FAMILY",
-    "closeness_tier": "Regular",
-    "state": "Active",
-    "standing": "Stable",
-    "trajectory": "Flat",
-    "trend": "flat",
-    "personal_context": "Exposed",
-    "shared_interests": "Bagdad",
-    "years_known": "25",
-    "phone": "(315)244-7574"
+ "name": "Elisa Meyers",
+ "slug": "elisa-meyers",
+ "category": "fam",
+ "role": "Mother",
+ "period": "2000 \u2013 Present",
+ "standing": "Active",
+ "description": "Originally from Mexico. Met John Sr. on a Spain mission trip in 1995. Reserved, indirect communicator. Had private reservations about church discipline decisions. Comes from a complicated wealthy Mexican family background. Still in Potsdam.",
+ "bio": "From an affluent Mexican family. Her dad owned what became the Quality Inn Aguascalientes (4.4 stars, 2,400+ reviews as of 2026). Met JD's dad on a CFC trip to Spain in 1995, married 1996, naturalized U.S. citizen same year. Primary educator during the homeschooling years. Agreeable and conflict-avoidant in communication style. JD describes their relationship as not bad, but not close.",
+ "chips": [
+  {
+   "type": "place",
+   "label": "Aguascalientes, Mexico"
+  },
+  {
+   "type": "org",
+   "label": "CFC"
+  },
+  {
+   "type": "date",
+   "label": "Married 1996"
+  },
+  {
+   "type": "person",
+   "label": "Elisa Meyers"
+  },
+  {
+   "type": "person",
+   "label": "Jeeves Green"
+  },
+  {
+   "type": "org",
+   "label": "Park Bros Coffee"
+  },
+  {
+   "type": "place",
+   "label": "Madrid, NY"
+  },
+  {
+   "type": "place",
+   "label": "Massena, NY"
+  },
+  {
+   "type": "date",
+   "label": "Married 2017"
   }
+ ],
+ "sources": [
+  "legacy",
+  "record"
+ ],
+ "friendsdb": {
+  "relationship_type": "Family",
+  "groups": "FAMILY",
+  "closeness_tier": "Regular",
+  "state": "Active",
+  "standing": "Stable",
+  "trajectory": "Flat",
+  "trend": "flat",
+  "personal_context": "Exposed",
+  "shared_interests": "Bagdad",
+  "years_known": "25",
+  "phone": "(315)244-7574"
+ },
+ "public_footprint": "Elisa Meyers of Potsdam, NY is named in the March 2025 obituary of Norma Louise Meyers as the spouse of John Meyers (the couple are listed among the deceased's sons and their spouses, with grandchildren also named).\nSources: https://www.legacy.com/us/obituaries/name/norma-meyers-obituary?id=57973023"
 }
