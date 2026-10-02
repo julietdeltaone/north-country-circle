@@ -31,5 +31,18 @@
   ],
   "sources": [
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Regular",
+    "state": "Active",
+    "standing": "Stable",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "Running",
+    "years_known": "11",
+    "phone": "(315)244-2936"
+  }
 }
