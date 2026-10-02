@@ -1,28 +1,27 @@
 {
- "name": "Aaron Daniels",
- "slug": "aaron-daniels",
- "category": "peer",
- "role": "Friend \u00b7 Recurring",
- "period": "2015 \u2013 2019",
- "standing": "",
- "description": "Joined the Merrick/Wangerin friend group mid-2015. Also had a crush on Liz Wangerin, adding a third angle to the 2015 dynamic. Appeared on the 2016 NYC class trip. Part of the 2019 friend group that dissolved after the Lala situation. Later married Lala.",
- "bio": "",
- "chips": [],
- "sources": [
-  "legacy"
- ],
- "friendsdb": {
-  "relationship_type": "Friend",
-  "groups": "CFC",
-  "closeness_tier": "Regular",
-  "state": "Inactive",
-  "standing": "Dormant",
-  "trajectory": "Flat",
-  "trend": "flat",
-  "personal_context": "Exposed",
-  "shared_interests": "",
-  "years_known": "15",
-  "phone": "(315)600-6180"
- },
- "public_footprint": "Founder and owner of Adept Detailing, a car detailing business in Potsdam and Plattsburgh, NY. Aaron J. Daniels of Potsdam earned an Associate in Applied Science in Civil Engineering Technology from SUNY Canton in spring 2019.\nSources: https://www.adeptdetailing.online/about-5; https://canton.meritpages.com/stories/Congratulations-Aaron-Daniels-for-earning-your-Associate-in-Applied-Science-at-SUNY-Canton-/15236344"
+  "name": "Aaron Daniels",
+  "slug": "aaron-daniels",
+  "category": "peer",
+  "role": "Friend · Recurring",
+  "period": "2015 – 2019",
+  "standing": "",
+  "description": "Joined the Merrick/Wangerin friend group mid-2015. Also had a crush on Liz Wangerin, adding a third angle to the 2015 dynamic. Appeared on the 2016 NYC class trip. Part of the 2019 friend group that dissolved after the Lala situation. Later married Lala.",
+  "bio": "",
+  "chips": [],
+  "sources": [
+    "legacy"
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Regular",
+    "state": "Inactive",
+    "standing": "Dormant",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "",
+    "years_known": "15",
+    "phone": "(315)600-6180"
+  }
 }
