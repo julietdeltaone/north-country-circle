@@ -33,6 +33,9 @@
   <button id="bgtoggle" class="tbtn pill" title="Show the full circle as background" aria-pressed="false">
     <span class="dot" aria-hidden="true"></span>Full circle
   </button>
+  <div id="modeToggle" role="group" aria-label="View mode">
+    <button data-m="2d" class="on" aria-label="2D view">2D</button><button data-m="3d" aria-label="3D view">3D</button>
+  </div>
   <span id="fresh"></span>
 </header>
 
@@ -43,6 +46,7 @@
 
 <main id="stage" aria-label="Connection map">
   <canvas id="hub"></canvas>
+  <div id="gl3d" hidden></div>
   <div id="tip" hidden></div>
   <div id="stagehint">Drag to pan · scroll to zoom · click a node to open their dossier</div>
 </main>
