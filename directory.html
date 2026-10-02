@@ -2,51 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="refresh" content="0;url=dossier.html">
 <title>Directory — North Country Circle</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="directory.css">
+<script>location.replace('dossier.html');</script>
 </head>
-<body>
-<canvas id="ambient" aria-hidden="true"></canvas>
-<div id="vig" aria-hidden="true"></div>
-
-<header id="topbar" class="glass">
-  <a class="backlink" href="index.html" title="Back to the explorer">← Explorer</a>
-  <div class="brand">
-    <span class="brand-mark" aria-hidden="true">◈</span>
-    <div class="brand-text"><h1>North Country Circle</h1><small>friend directory</small></div>
-  </div>
-  <div class="modetoggle" role="tablist" aria-label="Directory mode">
-    <button data-mode="directory" class="on" role="tab" aria-selected="true">Directory</button>
-    <button data-mode="people" role="tab" aria-selected="false">Named People</button>
-  </div>
-  <span id="fresh"></span>
-</header>
-
-<aside id="left" class="glass panel" aria-label="Directory list">
-  <div id="lhead" role="search">
-    <input id="fq" type="search" placeholder="Search names…" autocomplete="off" aria-label="Search names">
-    <div class="lh-filters">
-      <select id="fsort" aria-label="Sort"></select>
-      <select id="frel" aria-label="Filter by relation">
-        <option value="">All relations</option>
-        <option value="mutual">Mutual</option>
-        <option value="following">Following</option>
-        <option value="follower">Follower</option>
-      </select>
-    </div>
-    <div id="lcount"></div>
-  </div>
-  <div id="leftbody"></div>
-</aside>
-
-<aside id="right" class="glass panel" aria-label="Profile">
-  <div id="rightbody"></div>
-</aside>
-
-<script src="directory.js"></script>
+<body style="background:#070a10;color:#9aa3b2;font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0">
+<p>The directory is now the dossier. <a href="dossier.html" style="color:#e8b34b">Continue →</a></p>
 </body>
 </html>
