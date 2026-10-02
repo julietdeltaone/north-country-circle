@@ -35,5 +35,18 @@
   ],
   "sources": [
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CPH",
+    "closeness_tier": "Inner",
+    "state": "Closed",
+    "standing": "Strained",
+    "trajectory": "Unclear",
+    "trend": "unknown",
+    "personal_context": "Exposed",
+    "shared_interests": "Hiking",
+    "years_known": "2",
+    "phone": "(315)250-1507"
+  }
 }
