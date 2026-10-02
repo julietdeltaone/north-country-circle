@@ -77,10 +77,21 @@ function dossierDir(e, idx){
   kv += '<dt>IG handle</dt><dd><a class="iglink" href="'+igURL(e.name)+'" target="_blank" rel="noopener">@'+esc(e.name)+' ↗</a></dd>'+
         '<dt>Relation</dt><dd><span class="chip '+esc(e.relation||'')+'">'+esc(e.relation||'—')+'</span></dd>';
   if(person) kv += '<dt>Named file</dt><dd>'+esc(person.person)+' · '+esc(person.mentions||'0')+' file mentions</dd>';
+  var fdb = e.friendsdb || null;
+  if(fdb){
+    if(fdb.closeness_tier) kv += '<dt>Closeness</dt><dd>'+esc(fdb.closeness_tier)+'</dd>';
+    if(fdb.standing) kv += '<dt>Standing</dt><dd>'+esc(fdb.standing)+'</dd>';
+    if(fdb.trajectory) kv += '<dt>Trajectory</dt><dd>'+esc(fdb.trajectory)+'</dd>';
+    if(fdb.years_known) kv += '<dt>Years known</dt><dd>'+esc(fdb.years_known)+'</dd>';
+    if(fdb.shared_interests) kv += '<dt>Shared interests</dt><dd>'+esc(fdb.shared_interests)+'</dd>';
+    if(fdb.groups) kv += '<dt>Contexts</dt><dd>'+esc(fdb.groups)+'</dd>';
+    if(fdb.personal_context) kv += '<dt>Context</dt><dd>'+esc(fdb.personal_context)+'</dd>';
+  }
 
   var memoirInner = '';
   if(leg && leg.desc) memoirInner += '<p class="body rtext">'+esc(leg.desc)+'</p>';
   if(rec && rec.body) memoirInner += '<p class="body rtext">'+esc(rec.body)+'</p>';
+  if(fdb && fdb.phone) memoirInner += '<p class="body rtext"><span style="color:var(--dim)">Phone</span><br>'+esc(fdb.phone)+'</p>';
   if(!memoirInner) memoirInner = '<p class="body">No subject material on file.</p>';
 
   var chips = [];
@@ -92,7 +103,7 @@ function dossierDir(e, idx){
     chips.push('<span class="chip violet">'+esc(c.label)+'</span>');
   });
 
-  var hasSensitive = !!(leg && leg.desc) || !!(rec && rec.body);
+  var hasSensitive = !!(leg && leg.desc) || !!(rec && rec.body) || !!(fdb && fdb.phone);
   return '<div class="doc">'+ classbar() +
     '<div class="doc-head"><button id="mclose" aria-label="Close dossier">Close</button>'+
     '<div class="doc-kicker">Personal file · #'+String(idx+1).padStart(3,'0')+'</div>'+
