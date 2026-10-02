@@ -48,5 +48,18 @@
   "sources": [
     "legacy",
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Inner",
+    "state": "Closed",
+    "standing": "Dormant",
+    "trajectory": "Unclear",
+    "trend": "unknown",
+    "personal_context": "Exposed",
+    "shared_interests": "CFA, Music, Skiing",
+    "years_known": "9",
+    "phone": "(315)212-4531"
+  }
 }
