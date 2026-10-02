@@ -40,5 +40,18 @@
   "sources": [
     "legacy",
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Inner",
+    "state": "Inactive",
+    "standing": "Stable",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "Army, Park Bros",
+    "years_known": "12",
+    "phone": "518)353-4426"
+  }
 }
