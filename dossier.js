@@ -921,7 +921,7 @@ function makeLabel(text, o){
   var tex = new THREE.CanvasTexture(cv);
   tex.minFilter = THREE.LinearFilter;
   var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
-  var s = 0.085;
+  var s = 0.068;
   sp.scale.set(cv.width * s, cv.height * s, 1);
   sp.renderOrder = 10;
   return sp;
@@ -1029,7 +1029,7 @@ function buildGL(){
     nbrGeo: new THREE.SphereGeometry(1.7, 16, 16),
     ray: new THREE.Raycaster(), downX: 0, downY: 0
   };
-  GL.ray.params.Points = { threshold: 3 };
+  GL.ray.params.Points = { threshold: 4.5 };
   D.directory.forEach(function(e, di){ GL.dirByUser[(e.name || '').toLowerCase()] = di; });
 
   renderer.domElement.addEventListener('pointerdown', function(ev){
