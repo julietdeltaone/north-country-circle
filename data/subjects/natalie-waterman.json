@@ -1,35 +1,36 @@
 {
-  "name": "Natalie Waterman",
-  "slug": "natalie-waterman",
-  "category": "",
-  "role": "",
-  "period": "",
-  "standing": "",
-  "description": "",
-  "bio": "Junior at Clarkson University, biochemistry and biology. EMS Chief (May 2025–present), previously Assistant Chief. Also a Residential Advisor and nursing assistant at Canton-Potsdam Hospital. From LaFargeville, NY — high school valedictorian, 98.55 average, Youth Provider of the Year 2023. Operational overlap with JD's campus security role is the primary point of contact. Ongoing Snapchat thread. One kiss after Taco Bell. Situation undefined as of the time of writing.",
-  "chips": [
-    {
-      "type": "org",
-      "label": "Clarkson University"
-    },
-    {
-      "type": "org",
-      "label": "Canton-Potsdam Hospital"
-    },
-    {
-      "type": "place",
-      "label": "LaFargeville, NY"
-    },
-    {
-      "type": "org",
-      "label": "Canton-Potsdam Hospital"
-    },
-    {
-      "type": "org",
-      "label": "Fort Jackson, SC"
-    }
-  ],
-  "sources": [
-    "record"
-  ]
+ "name": "Natalie Waterman",
+ "slug": "natalie-waterman",
+ "category": "",
+ "role": "",
+ "period": "",
+ "standing": "",
+ "description": "",
+ "bio": "Junior at Clarkson University, biochemistry and biology. EMS Chief (May 2025\u2013present), previously Assistant Chief. Also a Residential Advisor and nursing assistant at Canton-Potsdam Hospital. From LaFargeville, NY \u2014 high school valedictorian, 98.55 average, Youth Provider of the Year 2023. Operational overlap with JD's campus security role is the primary point of contact. Ongoing Snapchat thread. One kiss after Taco Bell. Situation undefined as of the time of writing.",
+ "chips": [
+  {
+   "type": "org",
+   "label": "Clarkson University"
+  },
+  {
+   "type": "org",
+   "label": "Canton-Potsdam Hospital"
+  },
+  {
+   "type": "place",
+   "label": "LaFargeville, NY"
+  },
+  {
+   "type": "org",
+   "label": "Canton-Potsdam Hospital"
+  },
+  {
+   "type": "org",
+   "label": "Fort Jackson, SC"
+  }
+ ],
+ "sources": [
+  "record"
+ ],
+ "public_footprint": "From La Fargeville, NY; Clarkson University Presidential Scholar (Spring 2024) majoring in biomolecular science. Earlier named a WWNY Academic All-Star at LaFargeville Central School, where she was valedictorian-equivalent, student council president, and a volunteer EMT.\nSources: https://clarkson.meritpages.com/stories/Natalie-Waterman-of-La-Fargeville-NY-has-been-named-a-Presidential-Scholar-at-Clarkson-University/133605208; https://gray-wwny-prod.gtv-cdn.com/2023/03/14/academic-all-star-natalie-waterman/"
 }
