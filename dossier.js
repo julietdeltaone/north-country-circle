@@ -105,7 +105,7 @@ function dossierDir(e, idx){
 
   var hasSensitive = !!(leg && leg.desc) || !!(rec && rec.body) || !!(fdb && fdb.phone);
   return '<div class="doc">'+ classbar() +
-    '<div class="doc-head"><button id="mclose" aria-label="Close dossier">Close</button>'+
+    '<div class="doc-head"><div class="doc-actions"><button id="dedit" aria-label="Edit this dossier">Edit</button><button id="mclose" aria-label="Close dossier">Close</button></div>'+
     '<div class="doc-kicker">Personal file · #'+String(idx+1).padStart(3,'0')+'</div>'+
     '<h2>'+esc(title)+'</h2>'+
     '<div class="doc-filed">File opened '+esc(D.updated)+' · first-hop connection</div>'+
@@ -478,6 +478,7 @@ function bind(){
   });
   $('#rightbody').addEventListener('click', function(e){
     if(e.target.closest('#mclose')){ S.sel = null; renderProfile(); renderList(); return; }
+    if(e.target.closest('#dedit')){ openEditor(); return; }
   });
   $('#rightbody').addEventListener('submit', function(e){
     var form = e.target.closest('.wallform');
@@ -485,6 +486,189 @@ function bind(){
   });
   document.addEventListener('keydown', function(e){
     if(e.key==='Escape' && S.sel !== null){ S.sel = null; renderProfile(); renderList(); }
+  });
+}
+
+/* ---------- dashboard editing (writes back via the sheet's web app) ---------- */
+var WEBAPP_URL = ''; // set to the Apps Script web app /exec URL after deploying Code.gs
+
+var EDIT_FIELDS = [
+  {k:'display', label:'Display name', kind:'directory', group:'Identity'},
+  {k:'category', label:'Category', kind:'subject', group:'Subject file', type:'select',
+   options:['','fam','peer','rom','auth','ment','conf']},
+  {k:'role', label:'Role', kind:'subject', group:'Subject file'},
+  {k:'period', label:'Period', kind:'subject', group:'Subject file'},
+  {k:'standing', label:'Standing', kind:'subject', group:'Subject file'},
+  {k:'description', label:'Description', kind:'subject', group:'Subject file', type:'area'},
+  {k:'bio', label:'Bio', kind:'subject', group:'Subject file', type:'area'},
+  {k:'chips', label:'Chips (type: label; …)', kind:'subject', group:'Subject file'},
+  {k:'relationship_type', label:'Relationship type', kind:'subject', group:'Friends database', type:'select',
+   options:['','Friend','Family','Acquaintance','Colleague']},
+  {k:'groups', label:'Groups / contexts', kind:'subject', group:'Friends database'},
+  {k:'closeness_tier', label:'Closeness tier', kind:'subject', group:'Friends database', type:'select',
+   options:['','Inner','Regular','Distant']},
+  {k:'fdb_state', label:'State', kind:'subject', group:'Friends database', type:'select',
+   options:['','Active','Inactive','Closed']},
+  {k:'fdb_standing', label:'Standing', kind:'subject', group:'Friends database', type:'select',
+   options:['','Stable','Dormant','Rebuilding','Strained']},
+  {k:'trajectory', label:'Trajectory', kind:'subject', group:'Friends database', type:'select',
+   options:['','Improving','Flat','Declining','Unclear']},
+  {k:'personal_context', label:'Personal context', kind:'subject', group:'Friends database'},
+  {k:'shared_interests', label:'Shared interests', kind:'subject', group:'Friends database'},
+  {k:'years_known', label:'Years known', kind:'subject', group:'Friends database'},
+  {k:'phone', label:'Phone (redacted)', kind:'subject', group:'Friends database'}
+];
+
+function editVal(e, f){
+  var leg = e.legacy||{}, rec = e.record||{}, fdb = e.friendsdb||{};
+  switch(f.k){
+    case 'display': return e.display||'';
+    case 'category': return leg.cat||'';
+    case 'role': return leg.role||'';
+    case 'period': return leg.period||'';
+    case 'standing': return leg.status||'';
+    case 'description': return leg.desc||'';
+    case 'bio': return rec.body||'';
+    case 'chips': return (rec.chips||[]).map(function(c){ return c.type+': '+c.label; }).join('; ');
+    case 'relationship_type': return fdb.relationship_type||'';
+    case 'groups': return fdb.groups||'';
+    case 'closeness_tier': return fdb.closeness_tier||'';
+    case 'fdb_state': return fdb.state||'';
+    case 'fdb_standing': return fdb.standing||'';
+    case 'trajectory': return fdb.trajectory||'';
+    case 'personal_context': return fdb.personal_context||'';
+    case 'shared_interests': return fdb.shared_interests||'';
+    case 'years_known': return fdb.years_known||'';
+    case 'phone': return fdb.phone||'';
+  }
+  return '';
+}
+
+function openEditor(){
+  if(S.sel === null) return;
+  if(!WEBAPP_URL){
+    toast('Editing is not configured yet — the web app URL is missing.');
+    return;
+  }
+  var e = D.directory[S.sel];
+  var groups = [], seen = {};
+  EDIT_FIELDS.forEach(function(f){ if(!seen[f.group]){ seen[f.group]=1; groups.push(f.group); } });
+  var html = '<div id="eoverlay"><div id="emodal" role="dialog" aria-label="Edit dossier">'+
+    '<div class="ehead"><div><div class="ekicker">Edit dossier</div><h3>'+esc(e.display||e.name)+'</h3></div>'+
+    '<button id="eclose" aria-label="Close editor">Close</button></div>'+
+    '<div class="ebody">';
+  groups.forEach(function(g){
+    html += '<div class="egroup"><div class="eglabel">'+esc(g)+'</div>';
+    EDIT_FIELDS.filter(function(f){ return f.group===g; }).forEach(function(f){
+      var v = editVal(e, f);
+      html += '<label class="efield"><span>'+esc(f.label)+'</span>';
+      if(f.type==='select'){
+        html += '<select data-k="'+f.k+'">'+f.options.map(function(o){
+          return '<option value="'+esc(o)+'"'+(o===v?' selected':'')+'>'+esc(o||'—')+'</option>';
+        }).join('')+'</select>';
+      } else if(f.type==='area'){
+        html += '<textarea data-k="'+f.k+'" rows="3">'+esc(v)+'</textarea>';
+      } else {
+        html += '<input data-k="'+f.k+'" value="'+esc(v)+'">';
+      }
+      html += '</label>';
+    });
+    html += '</div>';
+  });
+  var pw = '';
+  try { pw = sessionStorage.getItem('dossier_edit_pw') || ''; } catch(x){}
+  html += '</div><div class="efoot">'+
+    '<input id="epw" type="password" placeholder="Password" autocomplete="off" aria-label="Password" value="'+esc(pw)+'">'+
+    '<span id="emsg"></span>'+
+    '<button id="esave">Save changes</button></div></div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  $('#eclose').addEventListener('click', closeEditor);
+  $('#eoverlay').addEventListener('click', function(ev){ if(ev.target.id==='eoverlay') closeEditor(); });
+  $('#esave').addEventListener('click', saveEditor);
+}
+
+function closeEditor(){
+  var o = $('#eoverlay'); if(o) o.remove();
+}
+
+function toast(msg){
+  var t = document.createElement('div');
+  t.className = 'etoast'; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.classList.add('show'); }, 30);
+  setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 400); }, 2600);
+}
+
+function saveEditor(){
+  var e = D.directory[S.sel];
+  var pw = $('#epw').value;
+  var msg = $('#emsg'), btn = $('#esave');
+  var changed = {};
+  document.querySelectorAll('#emodal [data-k]').forEach(function(inp){
+    var k = inp.getAttribute('data-k');
+    var nv = inp.value;
+    if(nv !== editVal(e, EDIT_FIELDS.filter(function(f){ return f.k===k; })[0])) changed[k] = nv;
+  });
+  if(!Object.keys(changed).length){ closeEditor(); return; }
+  if(!pw){ msg.textContent = 'Enter the password.'; return; }
+  btn.disabled = true; btn.textContent = 'Saving…'; msg.textContent = '';
+  var patches = { directory: {id: e.name, patch: {}}, subject: {id: null, patch: {}} };
+  var subjSlug = (e.legacy && e.legacy.slug) || (e.record && e.record.slug) || null;
+  patches.subject.id = subjSlug;
+  Object.keys(changed).forEach(function(k){
+    var f = EDIT_FIELDS.filter(function(x){ return x.k===k; })[0];
+    patches[f.kind].patch[k] = changed[k];
+  });
+  var kinds = Object.keys(patches).filter(function(k){
+    return Object.keys(patches[k].patch).length && patches[k].id;
+  });
+  function postOne(i){
+    if(i >= kinds.length){ doneSave(true); return; }
+    var k = kinds[i], p = patches[k];
+    fetch(WEBAPP_URL, {
+      method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({ password: pw, kind: k, id: p.id, patch: p.patch })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if(res && res.ok) postOne(i+1);
+      else { msg.textContent = 'Save failed: ' + esc((res&&res.error)||'unknown'); btn.disabled = false; btn.textContent = 'Save changes'; }
+    }).catch(function(){
+      msg.textContent = 'Network error.'; btn.disabled = false; btn.textContent = 'Save changes';
+    });
+  }
+  function doneSave(){
+    try { sessionStorage.setItem('dossier_edit_pw', pw); } catch(x){}
+    applyLocalEdit(e, changed);
+    closeEditor();
+    renderProfile(); renderList();
+    toast('Saved — syncing to the sheet and repo.');
+  }
+  postOne(0);
+}
+
+/* Optimistic local update so the change is visible immediately. */
+function applyLocalEdit(e, changed){
+  Object.keys(changed).forEach(function(k){
+    var v = changed[k];
+    if(k==='display') e.display = v;
+    else if(k==='category'){ e.legacy = e.legacy||{}; e.legacy.cat = v; }
+    else if(k==='role'){ e.legacy = e.legacy||{}; e.legacy.role = v; }
+    else if(k==='period'){ e.legacy = e.legacy||{}; e.legacy.period = v; }
+    else if(k==='standing'){ e.legacy = e.legacy||{}; e.legacy.status = v; }
+    else if(k==='description'){ e.legacy = e.legacy||{}; e.legacy.desc = v; }
+    else if(k==='bio'){ e.record = e.record||{}; e.record.body = v; }
+    else if(k==='chips'){
+      e.record = e.record||{};
+      e.record.chips = String(v).split(';').map(function(part){
+        var bits = part.split(':'), t = bits.shift().trim();
+        return { type: t, label: bits.join(':').trim() };
+      }).filter(function(c){ return c.label; });
+    }
+    else {
+      e.friendsdb = e.friendsdb||{};
+      var fk = (k==='fdb_state') ? 'state' : (k==='fdb_standing' ? 'standing' : k);
+      e.friendsdb[fk] = v;
+      if(k==='trajectory') e.friendsdb.trend = ({'Improving':'up','Flat':'flat','Declining':'down'})[v] || 'unknown';
+    }
   });
 }
 
