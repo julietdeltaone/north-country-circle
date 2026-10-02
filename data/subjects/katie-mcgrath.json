@@ -1,0 +1,39 @@
+{
+  "name": "Katie McGrath",
+  "slug": "katie-mcgrath",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "The younger sister of Josh McGrath. Central go-between in the Bronwyn arc from January 2018 onward — a close friend of Bronwyn's who was willing to be in the middle of it. JD suspects she had some level of personal interest in him at the time that he never directly addressed. Their thread continued through COVID online chatting, and ended when she blocked him after a kiss in June 2023. Her stated reason was that she felt he had used her. The thread between them spans roughly 2017–2023 across multiple phases.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Josh McGrath"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Merrick Sinclair"
+    },
+    {
+      "type": "person",
+      "label": "Lydia Wangerin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Liz Wangerin"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
