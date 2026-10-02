@@ -1,0 +1,35 @@
+{
+  "name": "Dr. Michelle Currier",
+  "slug": "dr-michelle-currier",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "JD's most significant professor at SUNY Canton — taught Critical Issues in Criminal Justice (Fall 2020), Profiling and Behavioral Criminology (Spring 2022), and two sex offender courses (Fall 2022). Labeled JD \"Person X\" during the Profiling course — a designation for individuals who don't fit behavioral consistency models cleanly. Highly analytical, personally critical of law enforcement. Her ex-husband Herb Currier trained JD at the hospital; her son Dustin Currier was an instructor at JD's police academy. Served as a professional reference multiple times.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "SUNY Canton"
+    },
+    {
+      "type": "place",
+      "label": "Messina, NY"
+    },
+    {
+      "type": "org",
+      "label": "Canton-Potsdam Hospital"
+    },
+    {
+      "type": "person",
+      "label": "Dr. Michelle Currier"
+    },
+    {
+      "type": "place",
+      "label": "Canton, NY"
+    }
+  ],
+  "sources": [
+    "record"
+  ]
+}
