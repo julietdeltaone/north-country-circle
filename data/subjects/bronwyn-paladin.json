@@ -1,66 +1,65 @@
 {
- "name": "Bronwyn Paladin",
- "slug": "bronwyn-paladin",
- "category": "rom",
- "role": "Romantic \u2014 Defining Arc",
- "period": "2017 \u2013 2018 active \u00b7 Never addressed",
- "standing": "Never Resolved",
- "description": "Born August 2004. Daughter of Daniel Paladin. The central figure of 2017\u20132018. Letters, a covert iPhone, the \"best day of 2017.\" The situation that reshaped JD's social world entirely. They have not had a meaningful conversation since August 2018 and the relationship has never been addressed.",
- "bio": "Daughter of Daniel and Brietta Paladin. The central figure in the 2017\u20132018 arc. Born August 2004 \u2014 approximately 3.5 years younger than JD. JD has not had a direct conversation with her since August 2018. He came to understand in July 2022 that she had dreaded going to church because of him during the period he was interested in her. He has made peace with the fact that a direct conversation will never happen.",
- "chips": [
-  {
-   "type": "person",
-   "label": "Daniel Paladin"
-  },
-  {
-   "type": "person",
-   "label": "Gabe Paladin"
-  },
-  {
-   "type": "org",
-   "label": "CFC"
-  },
-  {
-   "type": "person",
-   "label": "Daniel Paladin"
-  },
-  {
-   "type": "person",
-   "label": "Bronwyn Paladin"
-  },
-  {
-   "type": "org",
-   "label": "CFC"
-  },
-  {
-   "type": "person",
-   "label": "Daniel Paladin"
-  },
-  {
-   "type": "person",
-   "label": "Bronwyn Paladin"
-  },
-  {
-   "type": "person",
-   "label": "Gabe Paladin"
+  "name": "Bronwyn Paladin",
+  "slug": "bronwyn-paladin",
+  "category": "rom",
+  "role": "Romantic — Defining Arc",
+  "period": "2017 – 2018 active · Never addressed",
+  "standing": "Never Resolved",
+  "description": "Born August 2004. Daughter of Daniel Paladin. The central figure of 2017–2018. Letters, a covert iPhone, the \"best day of 2017.\" The situation that reshaped JD's social world entirely. They have not had a meaningful conversation since August 2018 and the relationship has never been addressed.",
+  "bio": "Daughter of Daniel and Brietta Paladin. The central figure in the 2017–2018 arc. Born August 2004 — approximately 3.5 years younger than JD. JD has not had a direct conversation with her since August 2018. He came to understand in July 2022 that she had dreaded going to church because of him during the period he was interested in her. He has made peace with the fact that a direct conversation will never happen.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Gabe Paladin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Bronwyn Paladin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Bronwyn Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Gabe Paladin"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Inner",
+    "state": "Closed",
+    "standing": "Dormant",
+    "trajectory": "Unclear",
+    "trend": "unknown",
+    "personal_context": "Exposed",
+    "shared_interests": "CFA, Music, Skiing",
+    "years_known": "9",
+    "phone": "(315)212-4531"
   }
- ],
- "sources": [
-  "legacy",
-  "record"
- ],
- "friendsdb": {
-  "relationship_type": "Friend",
-  "groups": "CFC",
-  "closeness_tier": "Inner",
-  "state": "Closed",
-  "standing": "Dormant",
-  "trajectory": "Unclear",
-  "trend": "unknown",
-  "personal_context": "Exposed",
-  "shared_interests": "CFA, Music, Skiing",
-  "years_known": "9",
-  "phone": "(315)212-4531"
- },
- "public_footprint": "Bronwyn Paladin of Potsdam, NY earned Dean's List honors at Lee University for the Fall 2024 semester (full-time undergraduates with a 3.7-4.00 GPA).\nSources: https://leeuniversity.meritpages.com/stories/Bronwyn-Paladin-Earns-Dean-s-List-Honor-at-Lee-University/150674560"
 }
