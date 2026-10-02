@@ -39,5 +39,18 @@
   ],
   "sources": [
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Inner",
+    "state": "Active",
+    "standing": "Stable",
+    "trajectory": "Improving",
+    "trend": "up",
+    "personal_context": "Exposed",
+    "shared_interests": "Skiing, Travel",
+    "years_known": "11",
+    "phone": "(315)212-1727"
+  }
 }
