@@ -1,0 +1,36 @@
+{
+  "name": "Liz Wangerin",
+  "slug": "liz-wangerin",
+  "category": "peer",
+  "role": "Friend · Romantic Orbit · 2015",
+  "period": "2014 – 2016",
+  "standing": "",
+  "description": "Third Wangerin sibling. Central figure of the 2015 friend group complications — JD, Merrick, Aaron Daniels, and Colby Criscitello all had feelings for her in the same year, a fact JD describes as juvenile but real. Lived in the Meyers garage guest room for fall 2015 with Morgan Morse and Laura Siddon.",
+  "bio": "Part of the Moira-era friend group. Four years older than JD. He had feelings for her around age 14 at the same time Merrick Sinclair pursued a secret relationship with her. Observing Merrick's approach — secretive, eventually discovered — generated a procedural lesson in JD rather than a moral one. He later credited this as one of the links in the chain that led to his approach with Bronwyn. Her sister Lydia Wangerin is a separate figure in the record.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Merrick Sinclair"
+    },
+    {
+      "type": "person",
+      "label": "Lydia Wangerin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Liz Wangerin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
+}
