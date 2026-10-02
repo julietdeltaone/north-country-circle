@@ -1,0 +1,56 @@
+{
+  "name": "Daniel Paladin",
+  "slug": "daniel-paladin",
+  "category": "auth",
+  "role": "Pastor — CFC Potsdam · Bronwyn's Father",
+  "period": "2016 – Present (estranged)",
+  "standing": "Cordial / Distant",
+  "description": "Son-in-law of Rick Sinclair. Father of Bronwyn and Gabriel. The authority figure who issued JD's removal in February 2018. JD remains cordial when they cross paths. Still attends some CFC-affiliated musicals that Daniel is involved with.",
+  "bio": "Head pastor of CFC Potsdam. Married to Brietta Paladin, née Sinclair (Rick Sinclair's daughter). Father of Gabe and Bronwyn. Led the August 2018 discovery meeting at the Potsdam campus. The revelation that Bronwyn dreaded going to church came through a conversation Daniel had with Catherine in July 2022. JD describes Daniel as someone whose faith he genuinely respects — which is part of what makes the situation difficult to hold.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Bronwyn Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Gabe Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Brietta Paladin"
+    },
+    {
+      "type": "org",
+      "label": "CFC Potsdam"
+    },
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Gabe Paladin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "person",
+      "label": "Daniel Paladin"
+    },
+    {
+      "type": "person",
+      "label": "Bronwyn Paladin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ]
+}
