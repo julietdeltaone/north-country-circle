@@ -1,59 +1,60 @@
 {
-  "name": "Elizabeth Criscitello",
-  "slug": "elizabeth-criscitello",
-  "category": "",
-  "role": "",
-  "period": "",
-  "standing": "",
-  "description": "",
-  "bio": "Married Tim Criscitello in 2019. Tim's older brother is Colby Criscitello. Graduated SUNY Potsdam 2022 with a BA in English. Barista at Park Bros from 2017. Lives in Potsdam with Tim and their two daughters. Was in Chitty Chitty Bang Bang (2017) at CFA — the production where JD first noticed Bronwyn Paladin.",
-  "chips": [
-    {
-      "type": "person",
-      "label": "Tim Criscitello"
-    },
-    {
-      "type": "org",
-      "label": "Park Bros Coffee"
-    },
-    {
-      "type": "org",
-      "label": "SUNY Potsdam"
-    },
-    {
-      "type": "date",
-      "label": "Married 2019"
-    },
-    {
-      "type": "org",
-      "label": "SUNY Potsdam"
-    },
-    {
-      "type": "org",
-      "label": "SUNY Canton"
-    },
-    {
-      "type": "date",
-      "label": "Graduated 2025"
-    },
-    {
-      "type": "person",
-      "label": "Rick Sinclair"
-    },
-    {
-      "type": "person",
-      "label": "Daniel Paladin"
-    },
-    {
-      "type": "person",
-      "label": "Jamie Sinclair"
-    },
-    {
-      "type": "org",
-      "label": "CFA"
-    }
-  ],
-  "sources": [
-    "record"
-  ]
+ "name": "Elizabeth Criscitello",
+ "slug": "elizabeth-criscitello",
+ "category": "",
+ "role": "",
+ "period": "",
+ "standing": "",
+ "description": "",
+ "bio": "Married Tim Criscitello in 2019. Tim's older brother is Colby Criscitello. Graduated SUNY Potsdam 2022 with a BA in English. Barista at Park Bros from 2017. Lives in Potsdam with Tim and their two daughters. Was in Chitty Chitty Bang Bang (2017) at CFA \u2014 the production where JD first noticed Bronwyn Paladin.",
+ "chips": [
+  {
+   "type": "person",
+   "label": "Tim Criscitello"
+  },
+  {
+   "type": "org",
+   "label": "Park Bros Coffee"
+  },
+  {
+   "type": "org",
+   "label": "SUNY Potsdam"
+  },
+  {
+   "type": "date",
+   "label": "Married 2019"
+  },
+  {
+   "type": "org",
+   "label": "SUNY Potsdam"
+  },
+  {
+   "type": "org",
+   "label": "SUNY Canton"
+  },
+  {
+   "type": "date",
+   "label": "Graduated 2025"
+  },
+  {
+   "type": "person",
+   "label": "Rick Sinclair"
+  },
+  {
+   "type": "person",
+   "label": "Daniel Paladin"
+  },
+  {
+   "type": "person",
+   "label": "Jamie Sinclair"
+  },
+  {
+   "type": "org",
+   "label": "CFA"
+  }
+ ],
+ "sources": [
+  "record"
+ ],
+ "public_footprint": "Elizabeth Criscitello of Potsdam, NY, graduated from SUNY Potsdam (Class of 2023) with dual degrees in English writing and community health; she was named a 2022 English and Communications Departmental Scholar and made the President's List multiple times. SUNY Potsdam's 'Motherhood and Education' feature profiles her balancing motherhood with her studies.\nSources: https://potsdam.meritpages.com/stories/Elizabeth-Criscitello-Named-English-and-Communications-Departmental-Scholar-at-SUNY-Potsdam/83177146; https://www.potsdam.edu/academics/AAS/depts/engl/EllieCriscitello"
 }
