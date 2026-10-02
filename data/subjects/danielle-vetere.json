@@ -39,5 +39,18 @@
   ],
   "sources": [
     "record"
-  ]
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Inner",
+    "state": "Closed",
+    "standing": "Rebuilding",
+    "trajectory": "Unclear",
+    "trend": "unknown",
+    "personal_context": "Exposed",
+    "shared_interests": "Park Bros, SUNY Potsdam",
+    "years_known": "6",
+    "phone": "(631)252-1166"
+  }
 }
