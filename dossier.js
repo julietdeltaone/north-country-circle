@@ -189,7 +189,7 @@ function phead(e){
     '<button id="auditbadge" class="auditbadge ' + (aud ? 'ok' : 'needs') + '" title="Toggle audit status">' +
     (aud ? '● audited' : '● needs audit') + '</button>' + reviewBadge(e) + '</div></div>' +
     '<div class="phbtns">' + actBtn +
-    '<div class="dmenu"><button class="phbtn dbtn" aria-label="More actions" aria-haspopup="true">⋮</button>' +
+    '<div class="dmenu"><button class="phbtn dbtn" aria-label="More actions" aria-haspopup="true"><span class="dots3" aria-hidden="true"><i></i><i></i><i></i></span></button>' +
     '<div class="ditems"><button id="paudit">' + (aud ? 'Audited ✓' : 'Mark audited') + '</button>' +
     '<button id="pdelete" class="danger">Delete this person</button></div></div>' +
     '<button id="mclose" class="phbtn" title="Close panel">×</button></div></div>';
