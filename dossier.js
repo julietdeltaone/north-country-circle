@@ -924,13 +924,15 @@ function openSettings(){
     '<label>Gemini API key<label class="sh">Stored in the sheet, server-side only. Get one at aistudio.google.com → Get API key.</label></label>' +
     '<input id="setkey" type="password" placeholder="AIza…" autocomplete="off">' +
     '<div class="arow"><button id="setsave" class="xbtn acc">Save settings</button>' +
-    '<button id="settest" class="xbtn">Test Gemini</button><span id="setmsg"></span></div>' +
+    '<button id="settest" class="xbtn">Test Gemini</button>' +
+    '<button id="setclear" class="xbtn">Clear key</button><span id="setmsg"></span></div>' +
     '</div></div></div>';
   document.body.insertAdjacentHTML('beforeend', html);
   document.querySelector('#setclose').addEventListener('click', closeSettings);
   document.querySelector('#setoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'setoverlay') closeSettings(); });
   document.querySelector('#setsave').addEventListener('click', saveSettings);
   document.querySelector('#settest').addEventListener('click', testGemini);
+  document.querySelector('#setclear').addEventListener('click', clearGeminiKey);
   if(!WEBAPP_URL){ document.querySelector('#setmsg').textContent = 'Web app URL is not configured yet.'; return; }
   fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
     body: JSON.stringify({ password:getPw(), kind:'getsettings', id:'settings', patch:{x:1} }) })
@@ -944,6 +946,17 @@ function openSettings(){
     }).catch(function(){ document.querySelector('#setmsg').textContent = 'Network error.'; });
 }
 function closeSettings(){ var o = document.querySelector('#setoverlay'); if(o) o.remove(); }
+function clearGeminiKey(){
+  var msg = document.querySelector('#setmsg');
+  if(!WEBAPP_URL){ msg.textContent = 'Web app URL is not configured yet.'; return; }
+  msg.textContent = 'Clearing…';
+  fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ password:getPw(), kind:'settings', id:'settings', patch:{clear_key:true} }) })
+    .then(function(r){ return r.json(); }).then(function(res){
+      msg.textContent = (res && res.ok) ? 'Key cleared.' : ('Clear failed: ' + ((res && res.error) || 'unknown'));
+      if(res && res.ok) loadSettings();
+    }).catch(function(){ msg.textContent = 'Network error.'; });
+}
 function testGemini(){
   var msg = document.querySelector('#setmsg');
   if(!WEBAPP_URL){ msg.textContent = 'Web app URL is not configured yet.'; return; }
