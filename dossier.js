@@ -268,7 +268,7 @@ var hub = {
 function hubInit(){
   hub.cv = $('#hub'); hub.ctx = hub.cv.getContext('2d');
   hubResize();
-  addEventListener('resize', hubResize);
+  addEventListener('resize', function(){ hubResize(); if(S.mode === '3d') glRecenter(); });
   // camera fit
   hubFit();
   // pointer
@@ -507,11 +507,13 @@ function renderProfile(){
   if(S.sel === null){
     panel.classList.remove('open');
     body.innerHTML = '';
+    if(S.mode === '3d') setTimeout(glRecenter, 60);
     return;
   }
   panel.classList.add('open');
   body.innerHTML = dossierDir(D.directory[S.sel], S.sel);
   body.scrollTop = 0;
+  if(S.mode === '3d') setTimeout(glRecenter, 60);
 }
 
 /* ---------- selection ---------- */
@@ -721,6 +723,9 @@ function runEnrich(){
   if(!WEBAPP_URL){ toast('Editing is not configured yet — the web app URL is missing.'); return; }
   var pw = getPw();
   var btn = document.querySelector('#enrichbtn'), msg = document.querySelector('#enrmsg');
+  var ta = document.querySelector('#narrtext');
+  var existing = (ta && ta.value.trim()) || (((e.profile || {}).enriched_value) || '').trim();
+  if(existing){ msg.textContent = 'Assessment already exists — clear the narrative box to generate a fresh one.'; return; }
   btn.disabled = true; btn.textContent = 'Generating…'; msg.textContent = '';
   postKind('enrich', pkey(e), { enrich: 1 }, pw, function(res){
     e.profile = e.profile || {};
@@ -908,7 +913,7 @@ function buildGL(){
   var scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x070a10, 0.0011);
   var camera = new THREE.PerspectiveCamera(52, W / H, 0.5, 4000);
-  camera.position.set(0, 72, 305);
+  camera.position.set(0, 88, 370);
   var controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; controls.dampingFactor = 0.06;
   controls.minDistance = 14; controls.maxDistance = 1000;
@@ -1111,7 +1116,7 @@ function glFocus(di){
   GL.scene.add(g);
   GL.mat.opacity = 0.16;
   var out = p.clone().normalize();
-  var dest = p.clone().add(out.multiplyScalar(38));
+  var dest = p.clone().add(out.multiplyScalar(58));
   dest.y += 10;
   glFlyTo(dest, p.clone(), 1600);
 }
