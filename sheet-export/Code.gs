@@ -265,7 +265,9 @@ function settingsSheet_() {
 }
 function getSetting_(k, fb) {
   var sh = settingsSheet_();
-  var vals = sh.getRange(2, 1, Math.max(sh.getLastRow() - 1, 0), 2).getValues();
+  var n = sh.getLastRow() - 1;
+  if (n < 1) return fb;
+  var vals = sh.getRange(2, 1, n, 2).getValues();
   for (var i = 0; i < vals.length; i++) {
     if (String(vals[i][0]).trim() === k) return vals[i][1];
   }
