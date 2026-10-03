@@ -615,8 +615,6 @@ function renderProfile(){
     panel.classList.remove('editing');
     document.body.classList.remove('panelopen');
     document.body.classList.remove('editing-drawer');
-    var bd0 = document.querySelector('#editbackdrop');
-    if(bd0) bd0.remove();
     body.innerHTML = '';
     if(S.mode === '3d'){ setTimeout(glRecenter, 60); setTimeout(function(){ glResize(); glRecenter(); }, 480); }
     else { setTimeout(function(){ if(hub.cv) hubResize(); }, 480); }
@@ -627,11 +625,6 @@ function renderProfile(){
   var isEditing = !!S.editing;
   panel.classList.toggle('editing', isEditing);
   document.body.classList.toggle('editing-drawer', isEditing);
-  var bd = document.querySelector('#editbackdrop');
-  if(isEditing && !bd){
-    bd = document.createElement('div'); bd.id = 'editbackdrop';
-    document.body.appendChild(bd);
-  } else if(!isEditing && bd){ bd.remove(); }
   body.innerHTML = dossierDir(D.directory[S.sel], S.sel);
   body.scrollTop = 0;
   if(S.mode === '3d'){ setTimeout(glRecenter, 60); setTimeout(function(){ glResize(); glRecenter(); }, 480); }
@@ -1136,22 +1129,15 @@ function downloadDossierFile(name, html){
 }
 function exportDossier(){
   var e = D.directory[S.sel];
-  if(!e || !WEBAPP_URL){ toast('Nothing to export.'); return; }
+  if(!e){ toast('Nothing to export.'); return; }
   var btn = document.querySelector('#pexport');
   if(btn) btn.disabled = true;
-  toast('Building dossier…');
   var html, fname;
   try { html = buildDossierDoc(e); fname = dossierFileName(e); }
   catch(err){ toast('Could not build the document.'); if(btn) btn.disabled = false; return; }
-  postKind('exportdossier', pkey(e), { html: html, filename: fname }, getPw(), function(res){
-    if(btn) btn.disabled = false;
-    toast('Saved to Drive: North Country Circle Dossiers.');
-    downloadDossierFile(fname, html);
-  }, function(err){
-    if(btn) btn.disabled = false;
-    downloadDossierFile(fname, html);
-    toast('Drive save failed — downloaded a local copy instead.');
-  });
+  downloadDossierFile(fname, html);
+  toast('Downloaded ' + fname + '.');
+  if(btn) btn.disabled = false;
 }
 
 /* ---------- quick note: append a timestamped entry to field notes ---------- */
