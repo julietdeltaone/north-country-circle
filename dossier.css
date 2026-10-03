@@ -655,3 +655,6 @@ button.auditbadge{ cursor:pointer; font-family:var(--sans); }
 .genrow{ margin-top:6px; }
 .irow{ margin-bottom:4px; }
 .irow input{ padding:6px 10px; }
+
+.dots3{ display:flex; flex-direction:column; gap:3px; align-items:center; justify-content:center; }
+.dots3 i{ width:4px; height:4px; border-radius:50%; background:currentColor; display:block; }
