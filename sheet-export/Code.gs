@@ -301,16 +301,21 @@ function geminiKey() {
 function callGemini(prompt, apiKey) {
   var key = apiKey || geminiKey();
   if (!key) throw new Error('GEMINI_API_KEY not set in Script Properties');
-  var res = UrlFetchApp.fetch(
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent',
-    {
-      method: 'post', contentType: 'application/json',
-      headers: { 'x-goog-api-key': key },
-      payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: 'application/json' } }),
-      muteHttpExceptions: true
-    });
-  var code = res.getResponseCode(), body = res.getContentText();
+  var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent';
+  var opts = {
+    method: 'post', contentType: 'application/json',
+    headers: { 'x-goog-api-key': key },
+    payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { responseMimeType: 'application/json' } }),
+    muteHttpExceptions: true
+  };
+  var res = null, code = 0, body = '';
+  for (var attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) Utilities.sleep(8000);
+    res = UrlFetchApp.fetch(url, opts);
+    code = res.getResponseCode(); body = res.getContentText();
+    if (code !== 503 && code !== 429) break;
+  }
   if (code !== 200) {
     var msg = body.slice(0, 200);
     try { msg = JSON.parse(body).error.message || msg; } catch (x) {}
