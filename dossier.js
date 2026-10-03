@@ -189,7 +189,7 @@ function dossierView(e, idx, head){
   }
   var narr = prof.enriched_value
     ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, ''))
-    : 'No assessment generated yet.';
+    : 'No bio generated yet.';
   return '<div class="doc">' + classbar() + head +
     '<div class="dsec"><h3><span class="n">01</span> The 15</h3>' +
     (chips ? '<div class="vchips">' + chips + '</div>' : '') +
@@ -197,12 +197,12 @@ function dossierView(e, idx, head){
     '<div class="vcols"><div class="vbars">' + bars + '</div>' +
     '<div class="vrings">' + ringSVG(prof.closeness, 5, 'Close') + score100 + '</div></div>' +
     spec + '</div>' +
-    '<div class="dsec"><h3><span class="n">02</span> Assessment</h3>' +
+    '<div class="dsec"><h3><span class="n">02</span> Bio</h3>' +
     '<div class="narr">' + narr + '</div>' +
-    '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div>' +
+    '<div class="arow"><button id="writebio" class="xbtn acc">' + (prof.enriched_value ? 'Edit bio' : 'Write bio') + '</button></div>' +
     ((prof.enriched === '1' || prof.enriched === 1)
-      ? '<div class="calcnote">calculated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</div>'
-      : '<div class="calcnote dim">not calculated</div>') +
+      ? '<div class="calcnote">generated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</div>'
+      : '<div class="calcnote dim">not generated</div>') +
     '</div>' +
     '<details class="dsec det"><summary><h3><span class="n">03</span> Directory</h3></summary>' + dirDetails(e) + '</details>' +
     '<details class="dsec det"><summary><h3><span class="n">04</span> Reference</h3></summary>' + refDetails(e) + '</details>' +
@@ -220,11 +220,14 @@ function dirDetails(e){
       '<dt>Shared with you</dt><dd>' + e.shared_with_jd + '</dd>';
     if(e.detail) rows += '<dt>On file</dt><dd>' + esc(e.detail) + '</dd>';
   }
-  var nbrs = (e.neighbors || []).slice(0, 8);
+  var nbrs = (e.neighbors || []).slice(0, 12);
   var nbrChips = nbrs.length ? nbrs.map(function(nb){
-    return '<span class="nchip" data-nx="' + esc(nb.u) + '">' + esc(nb.d || nb.u) + '</span>';
+    return '<span class="nchip" data-nx="' + esc(nb.u) + '">' + esc(nb.d || nb.u) +
+      '<b class="nx" data-rmnx="' + esc(nb.u) + '" title="Remove close connection">×</b></span>';
   }).join('') : '<p class="body">No close connections mapped.</p>';
-  return '<dl class="kv">' + rows + '</dl><h4 style="margin:12px 0 8px">Close connections</h4>' + nbrChips;
+  return '<dl class="kv">' + rows + '</dl><h4 style="margin:12px 0 8px">Close connections</h4>' +
+    '<div class="nchips">' + nbrChips + '</div>' +
+    '<div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name…" autocomplete="off"><div id="naddlist"></div></div>';
 }
 function refDetails(e){
   var leg = e.legacy || {}, rec = e.record || {}, prof = e.profile || {};
@@ -258,8 +261,8 @@ function dossierEdit(e, idx, head){
     '<div class="prow"><div class="plab">Organization</div><div class="pctl"><input data-pk="org" value="' + esc(prof.org || (c.orgs || []).join(', ')) + '" placeholder="—"></div></div>' +
     '</div></div>' +
     '<div class="dsec"><h3><span class="n">03</span> Organizations</h3>' + tagRows + '</div>' +
-    '<div class="dsec"><h3><span class="n">04</span> Assessment</h3>' +
-    '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Narrative assessment — or Generate to fill it in.">' + esc(narrVal) + '</textarea>' +
+    '<div class="dsec"><h3><span class="n">04</span> Bio</h3>' +
+    '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Write your draft bio here, then hit Generate to clean it up.">' + esc(narrVal) + '</textarea>' +
     '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
     '<div class="dsec"><h3><span class="n">05</span> Reference</h3>' +
     '<textarea id="refnotes" data-pk="notes" rows="3" placeholder="Field notes — private reference material.">' + esc(prof.notes || '') + '</textarea></div>' +
@@ -279,7 +282,7 @@ function dossierDir(e, idx){
   if(e.relation) sub += ' · ' + e.relation;
   var head = '<div class="doc-head"><div class="doc-actions">' +
     (S.editing
-      ? '<button id="psave" disabled>Save</button><button id="pdone">Done</button>'
+      ? '<button id="psave" disabled>Save</button><button id="pdone">Done</button><span id="savestate" class="savestate"></span>'
       : '<button id="pedit">Edit</button>') +
     '<button id="paudit">' + ((prof.audit === 'audited') ? 'Audited ✓' : 'Mark audited') + '</button>' +
     '<button id="mclose">Close</button></div>' +
@@ -589,6 +592,9 @@ function renderProfile(){
 
 /* ---------- selection ---------- */
 function selectDir(idx, on){
+  if(S.saveTimer && S.sel !== null && S.sel !== idx){
+    clearTimeout(S.saveTimer); S.saveTimer = null; saveProfile(true, S.sel);
+  }
   S.editing = false;
   if(on === false){ S.sel = null; }
   else S.sel = (S.sel === idx) ? null : idx;
@@ -652,10 +658,21 @@ function bind(){
   $('#rightbody').addEventListener('click', function(e){
     if(e.target.closest('#mclose')){ S.sel = null; renderProfile(); renderList(); return; }
     if(e.target.closest('#pedit')){ S.editing = true; renderProfile(); return; }
-    if(e.target.closest('#pdone')){ S.editing = false; renderProfile(); return; }
-    if(e.target.closest('#psave')){ saveProfile(); return; }
+    if(e.target.closest('#pdone')){
+      if(S.saveTimer){ clearTimeout(S.saveTimer); S.saveTimer = null; saveProfile(true, S.sel); }
+      S.editing = false; renderProfile(); return;
+    }
+    if(e.target.closest('#psave')){ saveProfile(false); return; }
     if(e.target.closest('#paudit')){ toggleAudit(); return; }
     if(e.target.closest('#enrichbtn')){ runEnrich(); return; }
+    if(e.target.closest('#writebio')){
+      S.editing = true; renderProfile();
+      var m2 = document.querySelector('#enrmsg');
+      if(m2) m2.textContent = 'Write your draft above, then Generate.';
+      var nt = document.querySelector('#narrtext');
+      if(nt) nt.focus();
+      return;
+    }
     if(e.target.closest('#pfill')){ fillFromText(); return; }
     var pd = e.target.closest('.pdot');
     if(pd){
@@ -667,6 +684,13 @@ function bind(){
         d2.classList.toggle('on', d2.getAttribute('data-v') === nv && nv !== '');
       });
       markDirty();
+      return;
+    }
+    var rmx = e.target.closest('[data-rmnx]');
+    if(rmx){ removeClose(D.directory[S.sel], rmx.getAttribute('data-rmnx')); return; }
+    var ah = e.target.closest('.naddhit');
+    if(ah && ah.getAttribute('data-ai')){
+      addClose(D.directory[S.sel], parseInt(ah.getAttribute('data-ai'), 10));
       return;
     }
     var nx = e.target.closest('.nchip');
@@ -716,9 +740,13 @@ function bind(){
   });
   $('#rightbody').addEventListener('input', function(e){
     if(e.target.closest('[data-pk]')) markDirty();
+    if(e.target.id === 'naddinput') renderNadd(e.target.value);
   });
   document.addEventListener('keydown', function(e){
-    if(e.key==='Escape' && S.sel !== null){ S.sel = null; renderProfile(); renderList(); }
+    if(e.key==='Escape' && S.sel !== null){
+      if(S.saveTimer){ clearTimeout(S.saveTimer); S.saveTimer = null; saveProfile(true, S.sel); }
+      S.sel = null; renderProfile(); renderList();
+    }
   });
 }
 
@@ -726,9 +754,19 @@ function bind(){
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec'; // set to the Apps Script web app /exec URL after deploying Code.gs
 
 function getPw(){ return ''; }
+function setSaveState(t, cls){
+  var el = document.querySelector('#savestate');
+  if(!el) return;
+  el.textContent = t || '';
+  el.className = 'savestate' + (cls ? ' ' + cls : '');
+}
 function markDirty(){
   var b = document.querySelector('#psave');
   if(b) b.disabled = false;
+  setSaveState('Unsaved changes', 'dim');
+  clearTimeout(S.saveTimer);
+  var idx = S.sel;
+  S.saveTimer = setTimeout(function(){ S.saveTimer = null; saveProfile(true, idx); }, 2500);
 }
 function collectProfile(e){
   var prof = e.profile || {}, changed = {};
@@ -757,23 +795,90 @@ function applyProfileEdit(e, changed){
   Object.keys(changed).forEach(function(k){ e.profile[k] = changed[k]; });
   if(changed.display_name) e.display = changed.display_name;
 }
-function saveProfile(){
-  var e = D.directory[S.sel];
-  if(!WEBAPP_URL){ toast('Editing is not configured yet — the web app URL is missing.'); return; }
-  var pw = getPw();
+function saveProfile(auto, idx){
+  if(idx === undefined || idx === null) idx = S.sel;
+  var e = D.directory[idx];
+  if(!e) return;
+  if(!WEBAPP_URL){ if(!auto) toast('Editing is not configured yet — the web app URL is missing.'); return; }
   var changed = collectProfile(e);
-  if(!Object.keys(changed).length){ toast('No changes.'); return; }
+  if(!Object.keys(changed).length){ if(!auto) toast('No changes.'); setSaveState('All changes saved'); return; }
   applyProfileEdit(e, changed);
-  renderProfile(); renderList(); updateAuditPill();
+  renderList(); updateAuditPill();
   var btn = document.querySelector('#psave');
-  if(btn){ btn.disabled = true; btn.textContent = 'Saving…'; }
-  postKind('profile', pkey(e), changed, pw, function(){
-    if(btn){ btn.disabled = false; btn.textContent = 'Save'; }
-    toast('Saved.');
+  if(btn) btn.disabled = true;
+  setSaveState('Saving…');
+  clearTimeout(S.saveTimer); S.saveTimer = null;
+  postKind('profile', pkey(e), changed, getPw(), function(){
+    setSaveState('All changes saved');
+    if(!auto) toast('Saved.');
   }, function(err){
-    if(btn){ btn.disabled = false; btn.textContent = 'Save'; }
-    toast(err + ' — kept locally, hit Save again to retry.');
+    setSaveState('Could not save — will retry', 'err');
+    if(btn) btn.disabled = false;
+    if(!auto) toast(err + ' — kept locally, hit Save again to retry.');
+    clearTimeout(S.saveTimer);
+    S.saveTimer = setTimeout(function(){ S.saveTimer = null; saveProfile(true, idx); }, 8000);
   });
+}
+function renderNadd(q){
+  var list = document.querySelector('#naddlist');
+  if(!list) return;
+  q = (q || '').trim().toLowerCase();
+  var e = D.directory[S.sel];
+  var existing = {};
+  (e.neighbors || []).forEach(function(n){ existing[(n.u || '').toLowerCase()] = 1; });
+  if(!q || q.length < 2){ list.innerHTML = ''; return; }
+  var hits = [];
+  D.directory.forEach(function(r, i){
+    if(i === S.sel || (r.profile || {}).deleted === '1') return;
+    var key = (r.name || '').toLowerCase();
+    if(existing[key]) return;
+    var label = r.display || r.name || '';
+    if((label + ' ' + (r.name || '')).toLowerCase().indexOf(q) < 0) return;
+    hits.push({ i: i, label: label });
+  });
+  list.innerHTML = hits.length
+    ? hits.slice(0, 6).map(function(h){
+        return '<div class="naddhit" data-ai="' + h.i + '">' + esc(h.label) + '</div>';
+      }).join('')
+    : '<div class="naddhit none">No matches</div>';
+}
+function saveCloseLists(e){
+  var prof = e.profile || {};
+  postKind('profile', pkey(e), {
+    close_add: prof.close_add || '', close_hide: prof.close_hide || ''
+  }, getPw(), function(){ toast('Close connections updated.'); },
+  function(err){ toast(err + ' — kept locally, reopen to retry.'); });
+}
+function addClose(e, idx){
+  var t = D.directory[idx];
+  if(!e || !t || !WEBAPP_URL) return;
+  var prof = e.profile = e.profile || {};
+  var key = t.name || '', kl = key.toLowerCase();
+  var adds = tagList(prof.close_add);
+  if(adds.map(function(x){ return x.toLowerCase(); }).indexOf(kl) < 0) adds.push(key);
+  prof.close_add = adds.join(', ');
+  prof.close_hide = tagList(prof.close_hide).filter(function(x){ return x.toLowerCase() !== kl; }).join(', ');
+  e.neighbors = e.neighbors || [];
+  if(!e.neighbors.some(function(n){ return (n.u || '').toLowerCase() === kl; }))
+    e.neighbors.push({ u: key, d: t.display || t.name });
+  saveCloseLists(e);
+  renderProfile();
+}
+function removeClose(e, u){
+  if(!e || !u || !WEBAPP_URL) return;
+  var kl = (u || '').toLowerCase();
+  var prof = e.profile = e.profile || {};
+  var adds = tagList(prof.close_add);
+  if(adds.map(function(x){ return x.toLowerCase(); }).indexOf(kl) >= 0){
+    prof.close_add = adds.filter(function(x){ return x.toLowerCase() !== kl; }).join(', ');
+  } else {
+    var hides = tagList(prof.close_hide);
+    if(hides.map(function(x){ return x.toLowerCase(); }).indexOf(kl) < 0) hides.push(u);
+    prof.close_hide = hides.join(', ');
+  }
+  e.neighbors = (e.neighbors || []).filter(function(n){ return (n.u || '').toLowerCase() !== kl; });
+  saveCloseLists(e);
+  renderProfile();
 }
 function deletePerson(){
   var e = D.directory[S.sel];
@@ -849,19 +954,18 @@ function applyParsed(fields, msg){
 function runEnrich(){
   var e = D.directory[S.sel];
   if(!WEBAPP_URL){ toast('Editing is not configured yet — the web app URL is missing.'); return; }
-  var pw = getPw();
   var btn = document.querySelector('#enrichbtn'), msg = document.querySelector('#enrmsg');
   var ta = document.querySelector('#narrtext');
-  var existing = (ta && ta.value.trim()) || (((e.profile || {}).enriched_value) || '').trim();
-  if(existing){ msg.textContent = 'Assessment already exists — clear the narrative box to generate a fresh one.'; return; }
-  btn.disabled = true; btn.textContent = 'Generating…'; msg.textContent = '';
-  postKind('enrich', pkey(e), { enrich: 1 }, pw, function(res){
+  var draft = (ta && ta.value.trim()) || '';
+  if(!draft){ msg.textContent = 'Write your draft bio first — Generate will clean it up.'; return; }
+  btn.disabled = true; btn.textContent = 'Cleaning up…'; msg.textContent = '';
+  postKind('enrich', pkey(e), { draft: draft }, getPw(), function(res){
     e.profile = e.profile || {};
     e.profile.enriched = '1'; e.profile.enriched_value = res.value; e.profile.enriched_at = res.at;
     renderProfile();
-    toast('Assessment calculated.');
+    toast('Bio cleaned up.');
   }, function(err){
-    msg.textContent = err; btn.disabled = false; btn.textContent = 'Generate assessment';
+    msg.textContent = err; btn.disabled = false; btn.textContent = 'Generate bio';
   });
 }
 function updateAuditPill(){
@@ -877,7 +981,7 @@ function openSettings(){
   var html = '<div id="setoverlay"><div id="setcard" role="dialog" aria-label="Settings">' +
     '<div class="xhead"><h2>Settings</h2><div class="sp"></div><button class="xbtn" id="setclose">Close</button></div>' +
     '<div class="setbody">' +
-    '<label>Assessment prompt<label class="sh">Sent to Gemini with the 15 values on every Generate. Edit freely.</label></label>' +
+    '<label>Bio prompt<label class="sh">Sent to Gemini with the person\'s facts on every Generate. Edit freely.</label></label>' +
     '<textarea id="setprompt" rows="10" placeholder="Loading…"></textarea>' +
     '<label>Gemini API key<label class="sh">Stored in the sheet, server-side only. Get one at aistudio.google.com → Get API key.</label></label>' +
     '<input id="setkey" type="password" placeholder="AIza…" autocomplete="off">' +
