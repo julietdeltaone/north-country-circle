@@ -446,3 +446,32 @@ details.dsec.det summary h3{display:inline-block}
 #setkey{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);
   border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--sans)}
 #setmsg{font-size:12.5px;color:var(--dim)}
+
+/* ---- org tags, review flags, delete ---- */
+.tcat{ margin:0 0 14px; }
+.tlab{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin-bottom:7px; }
+.tchips{ display:flex; flex-wrap:wrap; gap:7px; align-items:center; }
+.tchip{ font-size:12.5px; padding:5px 11px; border-radius:999px; border:1px solid rgba(255,255,255,.16);
+  color:var(--dim); cursor:pointer; user-select:none; transition:border-color .15s, color .15s, background .15s; }
+.tchip:hover{ border-color:rgba(255,255,255,.4); color:var(--txt); }
+.tchip.on{ border-color:var(--amber); color:var(--amber); background:rgba(232,179,75,.1); }
+.tadd{ font-size:12.5px; padding:5px 10px; border-radius:999px; border:1px dashed rgba(255,255,255,.25);
+  background:transparent; color:var(--txt); width:110px; outline:none; }
+.tadd:focus{ border-color:var(--amber); }
+.tadd::placeholder{ color:var(--dim); }
+.otags{ display:flex; flex-wrap:wrap; gap:7px; margin:2px 0 10px; }
+.otag{ font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(232,179,75,.45);
+  color:var(--amber); cursor:pointer; }
+.otag:hover{ background:rgba(232,179,75,.12); }
+.revbadge{ display:inline-block; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:#f0a35e; border:1px solid rgba(240,163,94,.5); border-radius:999px; padding:2px 9px; margin-left:6px; }
+#tagpill .x{ margin-left:6px; font-weight:700; }
+#tagpill[hidden]{ display:none; }
+.revq{ margin-top:22px; border-top:1px solid rgba(255,255,255,.1); padding-top:14px; }
+.revq h3{ font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin:0 0 10px; }
+.revrow{ display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-radius:8px;
+  cursor:pointer; border:1px solid transparent; }
+.revrow:hover{ background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.12); }
+.revrow span{ font-size:12px; color:#f0a35e; }
+.xbtn.danger{ border-color:rgba(220,80,80,.6); color:#e08080; }
+.xbtn.danger:hover{ background:rgba(220,80,80,.12); }
