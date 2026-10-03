@@ -302,7 +302,7 @@ function callGemini(prompt, apiKey) {
   var key = apiKey || geminiKey();
   if (!key) throw new Error('GEMINI_API_KEY not set in Script Properties');
   var res = UrlFetchApp.fetch(
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent',
     {
       method: 'post', contentType: 'application/json',
       headers: { 'x-goog-api-key': key },
