@@ -58,7 +58,6 @@ function meter(n, max, label){
   return '<div class="pmeter"><div class="barlbl"><span>'+label+'</span><b>'+n+' / '+max+'</b></div>'+
     '<div class="bar"><i style="width:'+p+'%"></i></div></div>';
 }
-function classbar(){ return '<div class="classbar">Personal file · JD Meyers</div>'; }
 
 var PROFILE_FIELDS = [
   {k:'relationship', label:'Relationship', type:'select', options:['','family','friend','coworker','acquaintance','other']},
@@ -1392,7 +1391,8 @@ function buildGL(){
     points: points, mat: mat, bg: bg, glPos: glPos,
     flight: null, focusGroup: null, focusDi: -1, dirByUser: {},
     nbrGeo: new THREE.SphereGeometry(1.7, 16, 16),
-    ray: new THREE.Raycaster(), downX: 0, downY: 0
+    ray: new THREE.Raycaster(), downX: 0, downY: 0,
+    hoverLabel: null, hoverDi: -1
   };
   GL.ray.params.Points = { threshold: 4.5 };
   D.directory.forEach(function(e, di){ GL.dirByUser[(e.name || '').toLowerCase()] = di; });
@@ -1408,7 +1408,10 @@ function buildGL(){
     if(!GL) return;
     var hit = glPick(ev);
     renderer.domElement.style.cursor = hit ? 'pointer' : 'grab';
+    var di = (hit && hit.kind === 'node') ? NODES[hit.index].i : null;
+    glHoverLabel(di);
   });
+  renderer.domElement.addEventListener('pointerleave', function(){ glHoverLabel(null); });
   addEventListener('resize', glResize);
   (function glAnimate(){
     requestAnimationFrame(glAnimate);
@@ -1447,6 +1450,22 @@ function glPick(ev){
   if(ph.length && ph[0].index != null) return { kind: 'node', index: ph[0].index };
   return null;
 }
+/* Hover label: name sprite above the hovered node (3D). Only one at a time. */
+function glHoverLabel(di){
+  if(!GL) return;
+  if(di === GL.hoverDi) return;
+  GL.hoverDi = di;
+  if(GL.hoverLabel){ GL.scene.remove(GL.hoverLabel); GL.hoverLabel = null; }
+  if(di == null || di < 0 || !GL.glPos[di]) return;
+  if(di === GL.focusDi) return; // already has its gold label
+  var e = D.directory[di];
+  if(!e) return;
+  var lab = makeLabel(e.display || e.name, { size: 22, color: '#e8ecf3' });
+  var p = GL.glPos[di];
+  lab.position.set(p.x, p.y + 4.5, p.z);
+  GL.scene.add(lab);
+  GL.hoverLabel = lab;
+}
 function glClick(ev){
   var hit = glPick(ev);
   if(!hit){ selectDir(null); return; }
@@ -1468,6 +1487,7 @@ function glFlyTo(destPos, destTarget, dur){
   };
 }
 function glClearFocus(){
+  glHoverLabel(null);
   if(!GL || !GL.focusGroup) return;
   GL.scene.remove(GL.focusGroup);
   GL.focusGroup = null;
