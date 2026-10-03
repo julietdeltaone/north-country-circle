@@ -187,6 +187,24 @@ function doPost(e) {
       if (patch.gemini_key) setSetting_('gemini_key', String(patch.gemini_key));
       if (patch.clear_key) setSetting_('gemini_key', '');
       return jsonOut({ ok: true });
+    } else if (kind === 'parseprofile') {
+      var pkey2 = getSetting_('gemini_key', '') || PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
+      if (!pkey2) return jsonOut({ ok: false, error: 'no Gemini API key — add one in Settings (gear icon)' });
+      var ptext = String((patch && patch.text) || '').slice(0, 2000);
+      if (!ptext.trim()) return jsonOut({ ok: false, error: 'describe the person first' });
+      var pprompt = 'You are a data entry assistant. Extract the fields below from the description. ' +
+        'Return ONLY valid JSON with any of these keys (omit any field not clearly mentioned): ' +
+        'relationship (one of: family, friend, coworker, acquaintance, other), ' +
+        'context (one of: work, school, military, community, church, online, other), ' +
+        'closeness, charisma, competence, intellect, creativity, reliability, reputation, assertiveness, ego (each an integer 1-5; convert number words to digits), ' +
+        'specialty (short phrase, e.g. job or role), ' +
+        'interests (comma-separated list). ' +
+        'Description: ' + ptext;
+      var pparts = callGemini(pprompt, pkey2);
+      var praw = pparts.map(function(pt) { return pt.text || ''; }).join('').replace(/```json|```/g, '');
+      var pm = praw.match(/\{[\s\S]*\}/);
+      if (!pm) throw new Error('could not parse that — try simpler wording');
+      return jsonOut({ ok: true, fields: JSON.parse(pm[0]) });
     } else if (kind === 'testgemini') {
       var apiKey = getSetting_('gemini_key', '') || PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
       if (!apiKey) return jsonOut({ ok: false, error: 'no Gemini API key — paste one above and save' });
