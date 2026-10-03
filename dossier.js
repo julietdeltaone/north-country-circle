@@ -115,6 +115,40 @@ var SCORE_FIELDS = [
   {k:'assertiveness', label:'Assertiveness'},
   {k:'ego', label:'Ego'}
 ];
+var ORG_CATS = [
+  {k:'churches', label:'Churches', options:['CFC Potsdam','CFC Canton','CFC Madrid','NTC','Calvary Baptist']},
+  {k:'companies', label:'Companies', options:['Rochester Regional Health','Clarkson University','Park Bros.']},
+  {k:'universities', label:'Universities', options:['SUNY Canton','SUNY Potsdam','St. Lawrence University','Clarkson University']}
+];
+function tagList(v){ return String(v || '').split(',').map(function(x){ return x.trim(); }).filter(Boolean); }
+function tagPicker(cat, prof){
+  var sel = tagList(prof[cat.k]);
+  var all = cat.options.concat(sel.filter(function(x){ return cat.options.indexOf(x) < 0; }));
+  var h = '<div class="tcat"><div class="tlab">' + esc(cat.label) + '</div>' +
+    '<div class="tchips" data-tcat="' + cat.k + '">' +
+    all.map(function(o){
+      return '<span class="tchip' + (sel.indexOf(o) >= 0 ? ' on' : '') + '" data-tv="' + esc(o) + '">' + esc(o) + '</span>';
+    }).join('') +
+    '<input class="tadd" placeholder="+ add new" aria-label="Add new ' + esc(cat.label) + '"></div>' +
+    '<input type="hidden" data-pk="' + cat.k + '" value="' + esc(sel.join(', ')) + '"></div>';
+  return h;
+}
+function syncTagHidden(tcat){
+  var vals = [];
+  tcat.querySelectorAll('.tchip.on').forEach(function(c){ vals.push(c.getAttribute('data-tv')); });
+  tcat.querySelector('input[data-pk]').value = vals.join(', ');
+}
+function refreshTagCat(k){
+  var panel = $('#rightbody'); if(!panel) return;
+  var tcat = panel.querySelector('.tchips[data-tcat="' + k + '"]');
+  if(!tcat) return;
+  var cat = ORG_CATS.filter(function(c){ return c.k === k; })[0]; if(!cat) return;
+  var sel = tagList(tcat.parentNode.querySelector('input[data-pk]').value);
+  var all = cat.options.concat(sel.filter(function(x){ return cat.options.indexOf(x) < 0; }));
+  tcat.innerHTML = all.map(function(o){
+    return '<span class="tchip' + (sel.indexOf(o) >= 0 ? ' on' : '') + '" data-tv="' + esc(o) + '">' + esc(o) + '</span>';
+  }).join('') + '<input class="tadd" placeholder="+ add new" aria-label="Add new ' + esc(cat.label) + '">';
+}
 function ringSVG(val, max, label){
   var v = parseInt(val || '0', 10) || 0;
   var C = 2 * Math.PI * 15.5, frac = max ? Math.max(0, Math.min(1, v / max)) : 0;
@@ -139,6 +173,12 @@ function dossierView(e, idx, head){
   if(prof.relationship) chips += '<span class="vchip">' + esc(prof.relationship) + '</span>';
   if(prof.context) chips += '<span class="vchip">' + esc(prof.context) + '</span>';
   if(e.src === 'contacts') chips += '<span class="vchip">phone contact</span>';
+  var otags = '';
+  ORG_CATS.forEach(function(cat){
+    tagList(prof[cat.k]).forEach(function(v){
+      otags += '<span class="otag" data-tagk="' + cat.k + '" data-tagv="' + esc(v) + '" title="Filter the list by ' + esc(v) + '">' + esc(v) + '</span>';
+    });
+  });
   var spec = '';
   if(prof.specialty) spec += '<div class="vline"><span>Specialty</span>' + esc(prof.specialty) + '</div>';
   if(prof.interests) spec += '<div class="vline"><span>Interests</span>' + esc(prof.interests) + '</div>';
@@ -153,6 +193,7 @@ function dossierView(e, idx, head){
   return '<div class="doc">' + classbar() + head +
     '<div class="dsec"><h3><span class="n">01</span> The 15</h3>' +
     (chips ? '<div class="vchips">' + chips + '</div>' : '') +
+    (otags ? '<div class="otags">' + otags + '</div>' : '') +
     '<div class="vcols"><div class="vbars">' + bars + '</div>' +
     '<div class="vrings">' + ringSVG(prof.closeness, 5, 'Close') + score100 + '</div></div>' +
     spec + '</div>' +
@@ -186,12 +227,13 @@ function dirDetails(e){
   return '<dl class="kv">' + rows + '</dl><h4 style="margin:12px 0 8px">Close connections</h4>' + nbrChips;
 }
 function refDetails(e){
-  var leg = e.legacy || {}, rec = e.record || {};
+  var leg = e.legacy || {}, rec = e.record || {}, prof = e.profile || {};
   var hasSensitive = !!(leg.desc || rec.body || (e.friendsdb || {}).phone || e.notes);
   var inner = '';
   if(leg.desc) inner += '<p class="body rtext">' + esc(leg.desc) + '</p>';
   if(rec.body) inner += '<p class="body rtext">' + esc(rec.body) + '</p>';
   if(e.public_footprint) inner += '<p class="body rtext"><span style="color:var(--dim)">Public footprint</span><br>' + esc(e.public_footprint) + '</p>';
+  if(prof.notes) inner += '<p class="body rtext"><span style="color:var(--dim)">Field notes</span><br>' + esc(prof.notes) + '</p>';
   if(!inner) inner = '<p class="body">No reference material on file.</p>';
   return '<div class="memoir unlocked">' + inner + '</div>';
 }
@@ -200,14 +242,34 @@ function dossierEdit(e, idx, head){
   var prof = e.profile || {};
   var prows = PROFILE_FIELDS.map(function(f){ return profRow(f, prof); }).join('');
   var narrVal = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
+  var c = e.contact || {};
+  var dispVal = prof.display_name || e.display || '';
+  var tagRows = ORG_CATS.map(function(cat){ return tagPicker(cat, prof); }).join('');
+  var revVal = prof.review_flag || '';
   return '<div class="doc">' + classbar() + head +
     '<div class="dsec"><h3><span class="n">00</span> Quick fill</h3>' +
     '<textarea id="pfree" rows="3" placeholder="Just describe them in your own words — e.g. \u201cfriend from church, closeness 4, really charismatic, runs Zufall Farm, into photography and travel\u201d"></textarea>' +
     '<div class="arow"><button id="pfill" class="xbtn acc">Fill the 15</button><span id="pfillmsg"></span></div></div>' +
     '<div class="dsec"><h3><span class="n">01</span> The 15</h3><div class="pform">' + prows + '</div></div>' +
-    '<div class="dsec"><h3><span class="n">02</span> Assessment</h3>' +
+    '<div class="dsec"><h3><span class="n">02</span> Directory</h3><div class="pform">' +
+    '<div class="prow"><div class="plab">Display name</div><div class="pctl"><input data-pk="display_name" value="' + esc(dispVal) + '" placeholder="—"></div></div>' +
+    '<div class="prow"><div class="plab">Phone</div><div class="pctl"><input data-pk="phone" value="' + esc(prof.phone || (c.phones || []).join(', ')) + '" placeholder="—"></div></div>' +
+    '<div class="prow"><div class="plab">Email</div><div class="pctl"><input data-pk="email" value="' + esc(prof.email || (c.emails || []).join(', ')) + '" placeholder="—"></div></div>' +
+    '<div class="prow"><div class="plab">Organization</div><div class="pctl"><input data-pk="org" value="' + esc(prof.org || (c.orgs || []).join(', ')) + '" placeholder="—"></div></div>' +
+    '</div></div>' +
+    '<div class="dsec"><h3><span class="n">03</span> Organizations</h3>' + tagRows + '</div>' +
+    '<div class="dsec"><h3><span class="n">04</span> Assessment</h3>' +
     '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Narrative assessment — or Generate to fill it in.">' + esc(narrVal) + '</textarea>' +
     '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
+    '<div class="dsec"><h3><span class="n">05</span> Reference</h3>' +
+    '<textarea id="refnotes" data-pk="notes" rows="3" placeholder="Field notes — private reference material.">' + esc(prof.notes || '') + '</textarea></div>' +
+    '<div class="dsec"><h3><span class="n">06</span> Flag &amp; delete</h3><div class="pform">' +
+    '<div class="prow"><div class="plab">Needs review</div><div class="pctl"><select data-pk="review_flag">' +
+    '<option value="">—</option>' +
+    '<option value="duplicate"' + (revVal === 'duplicate' ? ' selected' : '') + '>Possible duplicate</option>' +
+    '<option value="missing_info"' + (revVal === 'missing_info' ? ' selected' : '') + '>Missing information</option>' +
+    '</select></div></div></div>' +
+    '<div class="arow"><button id="pdelete" class="xbtn danger">Delete this person</button></div></div>' +
     classbar().replace('classbar', 'classbar bot') + '</div>';
 }
 function dossierDir(e, idx){
@@ -221,12 +283,18 @@ function dossierDir(e, idx){
       : '<button id="pedit">Edit</button>') +
     '<button id="paudit">' + ((prof.audit === 'audited') ? 'Audited ✓' : 'Mark audited') + '</button>' +
     '<button id="mclose">Close</button></div>' +
-    '<div class="doc-kicker">Personal file · #' + String(idx + 1).padStart(3, '0') + ' ' + auditBadge(e) + '</div>' +
+    '<div class="doc-kicker">Personal file · #' + String(idx + 1).padStart(3, '0') + ' ' + auditBadge(e) + reviewBadge(e) + '</div>' +
     '<h2>' + esc(title) + '</h2>' +
     '<div class="doc-filed">' + esc(sub) + '</div></div>';
   return S.editing ? dossierEdit(e, idx, head) : dossierView(e, idx, head);
 }
 
+function reviewBadge(e){
+  var f = (e.profile || {}).review_flag;
+  if(!f) return '';
+  var label = f === 'duplicate' ? 'possible duplicate' : (f === 'missing_info' ? 'missing info' : f);
+  return ' <span class="revbadge" title="Flagged for review: ' + esc(label) + '">needs review</span>';
+}
 /* ---------- hub-spoke layout (deterministic) ---------- */
 function buildNodes(){
   var dir = D.directory;
@@ -475,7 +543,10 @@ function listRows(){
   var onlyNeeds = !!S.auditFilter;
   return ORDER.filter(function(di){
     var r = D.directory[di];
-    if(onlyNeeds && (r.profile || {}).audit === 'audited') return false;
+    var pr = r.profile || {};
+    if(pr.deleted === '1') return false;
+    if(onlyNeeds && pr.audit === 'audited') return false;
+    if(S.tag && tagList(pr[S.tag.k]).indexOf(S.tag.v) < 0) return false;
     if(S.rel && r.relation !== S.rel) return false;
     if(!q) return true;
     return ((r.display||r.name)+' @'+r.name).toLowerCase().indexOf(q) >= 0;
@@ -542,6 +613,8 @@ function bind(){
     deb = setTimeout(function(){ S.q = fq.value; renderList(); }, 140);
   });
   $('#frel').addEventListener('change', function(e){ S.rel = e.target.value; renderList(); });
+  var tgp = $('#tagpill');
+  if(tgp) tgp.addEventListener('click', function(){ S.tag = null; renderList(); updateTagPill(); });
   $('#bgtoggle').addEventListener('click', function(){
     S.showBg = !S.showBg;
     this.classList.toggle('on', S.showBg);
@@ -606,6 +679,40 @@ function bind(){
       if(found >= 0) selectDir(found);
       return;
     }
+    var tc = e.target.closest('.tchip');
+    if(tc){
+      tc.classList.toggle('on');
+      syncTagHidden(tc.closest('.tcat'));
+      markDirty();
+      return;
+    }
+    var og = e.target.closest('.otag');
+    if(og){
+      S.tag = { k: og.getAttribute('data-tagk'), v: og.getAttribute('data-tagv') };
+      renderList(); updateTagPill();
+      return;
+    }
+    if(e.target.closest('#pdelete')){ deletePerson(); return; }
+  });
+  $('#rightbody').addEventListener('keydown', function(e){
+    if(e.target.classList && e.target.classList.contains('tadd') && e.key === 'Enter'){
+      e.preventDefault();
+      var v = e.target.value.trim();
+      if(!v) return;
+      var chips = e.target.parentNode;
+      var dup = false;
+      chips.querySelectorAll('.tchip').forEach(function(c){
+        if(c.getAttribute('data-tv').toLowerCase() === v.toLowerCase()){ c.classList.add('on'); dup = true; }
+      });
+      if(!dup){
+        var sp = document.createElement('span');
+        sp.className = 'tchip on'; sp.setAttribute('data-tv', v); sp.textContent = v;
+        chips.insertBefore(sp, e.target);
+      }
+      e.target.value = '';
+      syncTagHidden(chips.closest('.tcat'));
+      markDirty();
+    }
   });
   $('#rightbody').addEventListener('input', function(e){
     if(e.target.closest('[data-pk]')) markDirty();
@@ -648,6 +755,7 @@ function postKind(kind, id, patch, pw, onOk, onErr){
 function applyProfileEdit(e, changed){
   e.profile = e.profile || {};
   Object.keys(changed).forEach(function(k){ e.profile[k] = changed[k]; });
+  if(changed.display_name) e.display = changed.display_name;
 }
 function saveProfile(){
   var e = D.directory[S.sel];
@@ -666,6 +774,24 @@ function saveProfile(){
     if(btn){ btn.disabled = false; btn.textContent = 'Save'; }
     toast(err + ' — kept locally, hit Save again to retry.');
   });
+}
+function deletePerson(){
+  var e = D.directory[S.sel];
+  if(!e || !WEBAPP_URL){ toast('Nothing to delete.'); return; }
+  var label = e.display || e.name;
+  if(!confirm('Delete ' + label + ' from the circle?\n\nThey will be hidden from the directory and the 3D view. Undo it anytime by clearing the flag in the sheet.')) return;
+  postKind('profile', pkey(e), { deleted: '1' }, getPw(), function(){
+    e.profile = e.profile || {}; e.profile.deleted = '1';
+    S.sel = null; S.editing = false;
+    renderProfile(); renderList(); updateAuditPill();
+    toast('Deleted ' + label + '.');
+  }, function(err){ toast(err + ' — not deleted, try again.'); });
+}
+function updateTagPill(){
+  var pill = $('#tagpill');
+  if(!pill) return;
+  if(S.tag){ pill.hidden = false; pill.querySelector('span').textContent = S.tag.v; }
+  else pill.hidden = true;
 }
 function toggleAudit(){
   var e = D.directory[S.sel];
@@ -711,6 +837,8 @@ function applyParsed(fields, msg){
     } else if(el.tagName === 'SELECT'){
       var ok = Array.prototype.some.call(el.options, function(o){ return o.value === String(v).toLowerCase(); });
       if(ok){ el.value = String(v).toLowerCase(); n++; }
+    } else if(el.type === 'hidden' && (k === 'churches' || k === 'companies' || k === 'universities')){
+      el.value = String(v); refreshTagCat(k); n++;
     } else {
       el.value = String(v); n++;
     }
@@ -756,9 +884,18 @@ function openSettings(){
     '<div class="arow"><button id="setsave" class="xbtn acc">Save settings</button>' +
     '<button id="settest" class="xbtn">Test Gemini</button>' +
     '<button id="setclear" class="xbtn">Clear key</button><span id="setmsg"></span></div>' +
+    '<div class="revq"><h3>Needs review</h3><div id="revqlist">' + reviewQueueHTML() + '</div></div>' +
     '</div></div></div>';
   document.body.insertAdjacentHTML('beforeend', html);
   document.querySelector('#setclose').addEventListener('click', closeSettings);
+  document.querySelector('#revqlist').addEventListener('click', function(ev){
+    var row = ev.target.closest('.revrow');
+    if(!row) return;
+    var i = parseInt(row.getAttribute('data-ri'), 10);
+    closeSettings();
+    if(i >= 0 && i !== S.sel) selectDir(i);
+    else if(i >= 0){ renderProfile(); }
+  });
   document.querySelector('#setoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'setoverlay') closeSettings(); });
   document.querySelector('#setsave').addEventListener('click', saveSettings);
   document.querySelector('#settest').addEventListener('click', testGemini);
@@ -774,6 +911,16 @@ function openSettings(){
         document.querySelector('#setmsg').textContent = 'Could not load: ' + ((res && res.error) || 'unknown');
       }
     }).catch(function(){ document.querySelector('#setmsg').textContent = 'Network error.'; });
+}
+function reviewQueueHTML(){
+  var rows = [];
+  D.directory.forEach(function(r, i){
+    var pr = r.profile || {};
+    if(!pr.review_flag || pr.deleted === '1') return;
+    var label = pr.review_flag === 'duplicate' ? 'possible duplicate' : (pr.review_flag === 'missing_info' ? 'missing info' : pr.review_flag);
+    rows.push('<div class="revrow" data-ri="' + i + '"><b>' + esc(r.display || r.name) + '</b><span>' + esc(label) + '</span></div>');
+  });
+  return rows.length ? rows.join('') : '<p class="body dim">Nothing flagged. Set "Needs review" on a person\'s file to queue them here.</p>';
 }
 function closeSettings(){ var o = document.querySelector('#setoverlay'); if(o) o.remove(); }
 function clearGeminiKey(){
