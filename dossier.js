@@ -3,8 +3,6 @@
 'use strict';
 var S = { q:'', rel:'', sel:null, showBg:false, listOpen:true, mode:'3d', auditFilter:false, editing:false };
 var D = null, NODES = [], ORDER = [];
-var UNLOCKED = false;
-try { UNLOCKED = sessionStorage.getItem('dossier_clear') === '1'; } catch(e){}
 
 function $(s,r){ return (r||document).querySelector(s); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
@@ -195,7 +193,7 @@ function refDetails(e){
   if(rec.body) inner += '<p class="body rtext">' + esc(rec.body) + '</p>';
   if(e.public_footprint) inner += '<p class="body rtext"><span style="color:var(--dim)">Public footprint</span><br>' + esc(e.public_footprint) + '</p>';
   if(!inner) inner = '<p class="body">No reference material on file.</p>';
-  return '<div class="memoir' + (UNLOCKED || !hasSensitive ? ' unlocked' : '') + '">' + inner + (hasSensitive ? wallHTML() : '') + '</div>';
+  return '<div class="memoir unlocked">' + inner + '</div>';
 }
 /* Edit mode: the fast-entry form. */
 function dossierEdit(e, idx, head){
@@ -216,8 +214,7 @@ function dossierDir(e, idx){
   if(e.relation) sub += ' · ' + e.relation;
   var head = '<div class="doc-head"><div class="doc-actions">' +
     (S.editing
-      ? '<input id="ppw" type="password" placeholder="Password" autocomplete="off" aria-label="Password">' +
-        '<button id="psave" disabled>Save</button><button id="pdone">Done</button>'
+      ? '<button id="psave" disabled>Save</button><button id="pdone">Done</button>'
       : '<button id="pedit">Edit</button>') +
     '<button id="paudit">' + ((prof.audit === 'audited') ? 'Audited ✓' : 'Mark audited') + '</button>' +
     '<button id="mclose">Close</button></div>' +
@@ -227,25 +224,223 @@ function dossierDir(e, idx){
   return S.editing ? dossierEdit(e, idx, head) : dossierView(e, idx, head);
 }
 
-/* Soft barrier only: this page and its data are public on a static host.
-   The password is a privacy screen against casual viewing, not access control. */
-function wallHTML(){
-  return '<div class="wall"><div class="wlock">◈</div>'+
-    '<div class="wstamp">Restricted</div>'+
-    '<p>This section holds personal subject material. Enter the password to reveal it.</p>'+
-    '<form class="wallform"><input type="password" placeholder="Password" autocomplete="off" aria-label="Password">'+
-    '<button type="submit">Reveal</button></form>'+
-    '<p class="werr"></p></div>';
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function initial(s){ s=String(s||'').replace(/^@/,'').trim(); return s? s[0].toUpperCase() : '·'; }
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0;
+  var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t;
+  return ((t^t>>>14)>>>0)/4294967296; }; }
+
+var RELC = { mutual:'#e8b34b', following:'#6fd3e7', follower:'#6db3f2' };
+
+/* ---------- ambient backdrop ---------- */
+function ambient(){
+  var cv = $('#ambient'), ctx = cv.getContext('2d');
+  var W,H;
+  function size(){
+    W = Math.floor(innerWidth/3); H = Math.floor(innerHeight/3);
+    cv.width=W; cv.height=H; cv.style.width=innerWidth+'px'; cv.style.height=innerHeight+'px';
+  }
+  size(); addEventListener('resize', size);
+  var blobs = [
+    {x:.22,y:.28,r:.42,c:'232,179,75', a:.055, sx:.00011, sy:.00013, p:0},
+    {x:.78,y:.62,r:.5, c:'111,211,231',a:.045, sx:.00009, sy:.00012, p:2},
+    {x:.6, y:.12,r:.36, c:'180,140,232',a:.04, sx:.00012, sy:.00008, p:4},
+    {x:.12,y:.85,r:.4, c:'109,179,242',a:.035,sx:.00008, sy:.0001,  p:1}
+  ];
+  var t0 = performance.now(), running = true;
+  document.addEventListener('visibilitychange', function(){ running = !document.hidden; if(running) requestAnimationFrame(frame); });
+  function frame(now){
+    if(!running) return;
+    var t = (now-t0)/1000;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = '#070a10'; ctx.fillRect(0,0,W,H);
+    blobs.forEach(function(b){
+      var x = (b.x + Math.sin(t*b.sx*1000 + b.p)*.06) * W;
+      var y = (b.y + Math.cos(t*b.sy*1000 + b.p)*.06) * H;
+      var r = b.r * Math.max(W,H);
+      var g = ctx.createRadialGradient(x,y,0,x,y,r);
+      g.addColorStop(0,'rgba('+b.c+','+b.a+')');
+      g.addColorStop(1,'rgba('+b.c+',0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 }
-function unlock(){
-  UNLOCKED = true;
-  try { sessionStorage.setItem('dossier_clear', '1'); } catch(e){}
-  document.querySelectorAll('.memoir').forEach(function(m){ m.classList.add('unlocked'); });
+
+/* ---------- dossier document (unchanged design) ---------- */
+function igURL(h){ return 'https://www.instagram.com/'+encodeURIComponent(String(h).replace(/^@/,'') )+'/'; }
+function meter(n, max, label){
+  var p = Math.max(0, Math.min(100, (n/max)*100));
+  return '<div class="pmeter"><div class="barlbl"><span>'+label+'</span><b>'+n+' / '+max+'</b></div>'+
+    '<div class="bar"><i style="width:'+p+'%"></i></div></div>';
 }
-function tryUnlock(form){
-  var input = form.querySelector('input'), err = form.parentElement.querySelector('.werr');
-  if(input.value === 'admin'){ unlock(); }
-  else { err.textContent = 'Wrong password.'; input.value=''; input.focus(); }
+function classbar(){ return '<div class="classbar">Personal file · JD Meyers</div>'; }
+
+var PROFILE_FIELDS = [
+  {k:'relationship', label:'Relationship', type:'select', options:['','family','friend','coworker','acquaintance','other']},
+  {k:'context', label:'Context', type:'select', options:['','work','school','military','community','online','other']},
+  {k:'closeness', label:'Closeness', type:'score', hint:'1 rarely interact · 5 know them well'},
+  {k:'specialty', label:'Specialty', type:'text'},
+  {k:'interests', label:'Interests', type:'text'},
+  {k:'charisma', label:'Charisma', type:'score', hint:'1 fades into background · 5 people gravitate'},
+  {k:'competence', label:'Competence', type:'score', hint:'within their own field'},
+  {k:'intellect', label:'Intellect', type:'score'},
+  {k:'creativity', label:'Creativity', type:'score'},
+  {k:'reliability', label:'Reliability', type:'score', hint:'1 often misses · 5 never check'},
+  {k:'reputation', label:'Reputation', type:'score'},
+  {k:'assertiveness', label:'Assertiveness', type:'score'},
+  {k:'ego', label:'Ego', type:'score', hint:'1 credits others · 5 takes credit'},
+];
+function pkey(e){ return e.src === 'contacts' ? e.name : 'ig:' + (e.name || '').toLowerCase(); }
+function auditBadge(e){
+  var a = (e.profile || {}).audit || 'needs_audit';
+  return a === 'audited'
+    ? '<span class="auditbadge ok">● audited</span>'
+    : '<span class="auditbadge needs">● needs audit</span>';
+}
+function dotRow(k, val){
+  var h = '<div class="dots" data-pk="' + k + '">';
+  for(var i = 1; i <= 5; i++){
+    h += '<span class="pdot' + (String(val) === String(i) ? ' on' : '') + '" data-v="' + i + '">' + i + '</span>';
+  }
+  return h + '</div>';
+}
+function profRow(f, prof){
+  var v = prof[f.k] || '';
+  var h = '<div class="prow"><div class="plab">' + esc(f.label) +
+    (f.hint ? '<span class="phint">' + esc(f.hint) + '</span>' : '') + '</div><div class="pctl">';
+  if(f.type === 'select'){
+    h += '<select data-pk="' + f.k + '">' + f.options.map(function(o){
+      return '<option value="' + esc(o) + '"' + (o === v ? ' selected' : '') + '>' + esc(o || '—') + '</option>';
+    }).join('') + '</select>';
+  } else if(f.type === 'score'){
+    h += dotRow(f.k, v);
+  } else {
+    h += '<input data-pk="' + f.k + '" value="' + esc(v) + '" placeholder="—">';
+  }
+  return h + '</div></div>';
+}
+var SCORE_FIELDS = [
+  {k:'closeness', label:'Closeness'},
+  {k:'charisma', label:'Charisma'},
+  {k:'competence', label:'Competence'},
+  {k:'intellect', label:'Intellect'},
+  {k:'creativity', label:'Creativity'},
+  {k:'reliability', label:'Reliability'},
+  {k:'reputation', label:'Reputation'},
+  {k:'assertiveness', label:'Assertiveness'},
+  {k:'ego', label:'Ego'}
+];
+function ringSVG(val, max, label){
+  var v = parseInt(val || '0', 10) || 0;
+  var C = 2 * Math.PI * 15.5, frac = max ? Math.max(0, Math.min(1, v / max)) : 0;
+  return '<div class="vring"><svg viewBox="0 0 40 40" width="52" height="52">' +
+    '<circle cx="20" cy="20" r="15.5" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/>' +
+    '<circle cx="20" cy="20" r="15.5" fill="none" stroke="var(--amber)" stroke-width="5" stroke-linecap="round" ' +
+    'stroke-dasharray="' + (C * frac).toFixed(1) + ' ' + C.toFixed(1) + '" transform="rotate(-90 20 20)"/>' +
+    '<text x="20" y="24" text-anchor="middle" font-size="11" font-weight="700" fill="var(--txt)">' + v + '</text></svg>' +
+    '<span>' + esc(label) + '</span></div>';
+}
+function barRow(f, val){
+  var v = parseInt(val || '0', 10) || 0;
+  return '<div class="vrow"><span class="vlab">' + esc(f.label) + '</span>' +
+    '<div class="vbar"><i style="width:' + (v * 20) + '%"></i></div>' +
+    '<b class="vval">' + (val ? v : '–') + '</b></div>';
+}
+/* Compact read-only view: every data point visible without scrolling. */
+function dossierView(e, idx, head){
+  var prof = e.profile || {};
+  var bars = SCORE_FIELDS.map(function(f){ return barRow(f, prof[f.k]); }).join('');
+  var chips = '';
+  if(prof.relationship) chips += '<span class="vchip">' + esc(prof.relationship) + '</span>';
+  if(prof.context) chips += '<span class="vchip">' + esc(prof.context) + '</span>';
+  if(e.src === 'contacts') chips += '<span class="vchip">phone contact</span>';
+  var spec = '';
+  if(prof.specialty) spec += '<div class="vline"><span>Specialty</span>' + esc(prof.specialty) + '</div>';
+  if(prof.interests) spec += '<div class="vline"><span>Interests</span>' + esc(prof.interests) + '</div>';
+  var score100 = '';
+  if(prof.enriched_value){
+    var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
+    if(m) score100 = ringSVG(m[1], 100, 'Score');
+  }
+  var narr = prof.enriched_value
+    ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, ''))
+    : 'No assessment generated yet.';
+  return '<div class="doc">' + classbar() + head +
+    '<div class="dsec"><h3><span class="n">01</span> The 15</h3>' +
+    (chips ? '<div class="vchips">' + chips + '</div>' : '') +
+    '<div class="vcols"><div class="vbars">' + bars + '</div>' +
+    '<div class="vrings">' + ringSVG(prof.closeness, 5, 'Close') + score100 + '</div></div>' +
+    spec + '</div>' +
+    '<div class="dsec"><h3><span class="n">02</span> Assessment</h3>' +
+    '<div class="narr">' + narr + '</div>' +
+    '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div>' +
+    ((prof.enriched === '1' || prof.enriched === 1)
+      ? '<div class="calcnote">calculated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</div>'
+      : '<div class="calcnote dim">not calculated</div>') +
+    '</div>' +
+    '<details class="dsec det"><summary><h3><span class="n">03</span> Directory</h3></summary>' + dirDetails(e) + '</details>' +
+    '<details class="dsec det"><summary><h3><span class="n">04</span> Reference</h3></summary>' + refDetails(e) + '</details>' +
+    classbar().replace('classbar', 'classbar bot') + '</div>';
+}
+function dirDetails(e){
+  var c = e.contact || {};
+  var rows = '<dt>Key</dt><dd>' + esc(pkey(e)) + '</dd>';
+  if(c.phones && c.phones.length) rows += '<dt>Phone</dt><dd>' + esc(c.phones.join(', ')) + '</dd>';
+  if(c.emails && c.emails.length) rows += '<dt>Email</dt><dd>' + esc(c.emails.join(', ')) + '</dd>';
+  if(c.orgs && c.orgs.length) rows += '<dt>Org</dt><dd>' + esc(c.orgs.join(', ')) + '</dd>';
+  if(e.src !== 'contacts'){
+    rows += '<dt>Relation</dt><dd>' + esc(e.relation || '—') + '</dd>' +
+      '<dt>Graph connections</dt><dd>' + e.degree + '</dd>' +
+      '<dt>Shared with you</dt><dd>' + e.shared_with_jd + '</dd>';
+    if(e.detail) rows += '<dt>On file</dt><dd>' + esc(e.detail) + '</dd>';
+  }
+  var nbrs = (e.neighbors || []).slice(0, 8);
+  var nbrChips = nbrs.length ? nbrs.map(function(nb){
+    return '<span class="nchip" data-nx="' + esc(nb.u) + '">' + esc(nb.d || nb.u) + '</span>';
+  }).join('') : '<p class="body">No close connections mapped.</p>';
+  return '<dl class="kv">' + rows + '</dl><h4 style="margin:12px 0 8px">Close connections</h4>' + nbrChips;
+}
+function refDetails(e){
+  var leg = e.legacy || {}, rec = e.record || {};
+  var hasSensitive = !!(leg.desc || rec.body || (e.friendsdb || {}).phone || e.notes);
+  var inner = '';
+  if(leg.desc) inner += '<p class="body rtext">' + esc(leg.desc) + '</p>';
+  if(rec.body) inner += '<p class="body rtext">' + esc(rec.body) + '</p>';
+  if(e.public_footprint) inner += '<p class="body rtext"><span style="color:var(--dim)">Public footprint</span><br>' + esc(e.public_footprint) + '</p>';
+  if(!inner) inner = '<p class="body">No reference material on file.</p>';
+  return '<div class="memoir unlocked">' + inner + '</div>';
+}
+/* Edit mode: the fast-entry form. */
+function dossierEdit(e, idx, head){
+  var prof = e.profile || {};
+  var prows = PROFILE_FIELDS.map(function(f){ return profRow(f, prof); }).join('');
+  var narrVal = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
+  return '<div class="doc">' + classbar() + head +
+    '<div class="dsec"><h3><span class="n">01</span> The 15</h3><div class="pform">' + prows + '</div></div>' +
+    '<div class="dsec"><h3><span class="n">02</span> Assessment</h3>' +
+    '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Narrative assessment — or Generate to fill it in.">' + esc(narrVal) + '</textarea>' +
+    '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
+    classbar().replace('classbar', 'classbar bot') + '</div>';
+}
+function dossierDir(e, idx){
+  var prof = e.profile || {};
+  var title = e.display || e.name;
+  var sub = e.src === 'contacts' ? 'phone contact' : '@' + e.name;
+  if(e.relation) sub += ' · ' + e.relation;
+  var head = '<div class="doc-head"><div class="doc-actions">' +
+    (S.editing
+      ? '<button id="psave" disabled>Save</button><button id="pdone">Done</button>'
+      : '<button id="pedit">Edit</button>') +
+    '<button id="paudit">' + ((prof.audit === 'audited') ? 'Audited ✓' : 'Mark audited') + '</button>' +
+    '<button id="mclose">Close</button></div>' +
+    '<div class="doc-kicker">Personal file · #' + String(idx + 1).padStart(3, '0') + ' ' + auditBadge(e) + '</div>' +
+    '<h2>' + esc(title) + '</h2>' +
+    '<div class="doc-filed">' + esc(sub) + '</div></div>';
+  return S.editing ? dossierEdit(e, idx, head) : dossierView(e, idx, head);
 }
 
 /* ---------- hub-spoke layout (deterministic) ---------- */
@@ -628,73 +823,15 @@ function bind(){
   $('#rightbody').addEventListener('input', function(e){
     if(e.target.closest('[data-pk]')) markDirty();
   });
-  $('#rightbody').addEventListener('submit', function(e){
-    var form = e.target.closest('.wallform');
-    if(form){ e.preventDefault(); tryUnlock(form); }
-  });
   document.addEventListener('keydown', function(e){
     if(e.key==='Escape' && S.sel !== null){ S.sel = null; renderProfile(); renderList(); }
   });
 }
 
-/* ---------- expanded profile (read-only full view) ---------- */
-function xRow(k, v){
-  if(v == null || v === '') return '';
-  return '<div class="xrow"><div class="k">' + esc(k) + '</div><div class="v">' + v + '</div></div>';
-}
-function openExpanded(){
-  if(S.sel === null) return;
-  closeExpanded();
-  var e = D.directory[S.sel];
-  var prof = e.profile || {};
-  var title = e.display || e.name;
-  var p15 = PROFILE_FIELDS.map(function(f){
-    var v = prof[f.k];
-    if(f.type === 'score') v = v ? v + ' / 5' : '—';
-    return xRow(f.label, esc(v || '—'));
-  }).join('') + xRow('Last note', (prof.last_note_date ? esc(prof.last_note_date) + ' · ' : '') + esc(prof.last_note || '—'));
-  var enriched = (prof.enriched === '1' || prof.enriched === 1) && prof.enriched_value;
-  var leg = e.legacy || {}, rec = e.record || {};
-  var hasSensitive = !!(leg.desc || rec.body || (e.friendsdb || {}).phone || e.notes);
-  var refInner = '';
-  if(leg.desc) refInner += '<p class="body rtext">' + esc(leg.desc) + '</p>';
-  if(rec.body) refInner += '<p class="body rtext">' + esc(rec.body) + '</p>';
-  if(e.public_footprint) refInner += '<p class="body rtext"><span style="color:var(--dim)">Public footprint</span><br>' + esc(e.public_footprint) + '</p>';
-  if(!refInner) refInner = '<p class="body">No reference material on file.</p>';
-  var c = e.contact || {};
-  var contactRows = xRow('Key', esc(pkey(e))) +
-    xRow('Phone', esc((c.phones || []).join(', '))) +
-    xRow('Email', esc((c.emails || []).join(', '))) +
-    xRow('Org', esc((c.orgs || []).join(', '))) +
-    (e.src === 'contacts' ? '' : xRow('Graph connections', e.degree) + xRow('Shared with you', e.shared_with_jd));
-  var html =
-  '<div id="xoverlay"><div id="xcard" role="dialog" aria-label="Expanded profile">' +
-    '<div class="xhead"><div class="xava">' + esc(initial(title)) + '</div>' +
-    '<div><h2>' + esc(title) + '</h2><div class="xsub">Personal file · #' + String(S.sel + 1).padStart(3, '0') + ' ' + auditBadge(e) + '</div></div>' +
-    '<div class="sp"></div><button class="xbtn" id="xclose">Close</button></div>' +
-    '<div class="xbody"><div class="xgrid">' +
-    '<div class="xsec"><h4>The 15</h4>' + p15 + '</div>' +
-    '<div class="xsec"><h4>Directory</h4>' + contactRows + '</div>' +
-    (enriched ? '<div class="xsec full"><h4>Assessment</h4><div class="xrow"><div class="v pre">' + esc(prof.enriched_value) + '</div></div></div>' : '') +
-    '<div class="xsec full"><h4>Reference</h4><div class="memoir' + (UNLOCKED || !hasSensitive ? ' unlocked' : '') + '">' + refInner + (hasSensitive ? wallHTML() : '') + '</div></div>' +
-    '</div></div></div></div>';
-  document.body.insertAdjacentHTML('beforeend', html);
-  document.querySelector('#xclose').addEventListener('click', closeExpanded);
-  document.querySelector('#xoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'xoverlay') closeExpanded(); });
-}
-function closeExpanded(){
-  var o = document.querySelector('#xoverlay'); if(o) o.remove();
-}
-
 /* ---------- 15-point profile: save, audit, enrich (via the sheet web app) ---------- */
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec'; // set to the Apps Script web app /exec URL after deploying Code.gs
 
-function getPw(){
-  var inp = document.querySelector('#ppw');
-  var v = inp ? inp.value : '';
-  if(v){ try { sessionStorage.setItem('dossier_edit_pw', v); } catch(x){} return v; }
-  try { return sessionStorage.getItem('dossier_edit_pw') || ''; } catch(x){ return ''; }
-}
+function getPw(){ return ''; }
 function markDirty(){
   var b = document.querySelector('#psave');
   if(b) b.disabled = false;
@@ -729,7 +866,6 @@ function saveProfile(){
   var e = D.directory[S.sel];
   if(!WEBAPP_URL){ toast('Editing is not configured yet — the web app URL is missing.'); return; }
   var pw = getPw();
-  if(!pw){ toast('Enter the password first.'); return; }
   var changed = collectProfile(e);
   if(!Object.keys(changed).length){ toast('No changes.'); return; }
   var btn = document.querySelector('#psave');
@@ -746,7 +882,6 @@ function toggleAudit(){
   var e = D.directory[S.sel];
   if(!WEBAPP_URL){ toast('Editing is not configured yet — the web app URL is missing.'); return; }
   var pw = getPw();
-  if(!pw){ toast('Enter the password first.'); return; }
   var next = ((e.profile || {}).audit === 'audited') ? 'needs_audit' : 'audited';
   postKind('profile', pkey(e), { audit: next }, pw, function(){
     e.profile = e.profile || {}; e.profile.audit = next;
@@ -758,7 +893,6 @@ function runEnrich(){
   var e = D.directory[S.sel];
   if(!WEBAPP_URL){ toast('Editing is not configured yet — the web app URL is missing.'); return; }
   var pw = getPw();
-  if(!pw){ toast('Enter the password first.'); return; }
   var btn = document.querySelector('#enrichbtn'), msg = document.querySelector('#enrmsg');
   btn.disabled = true; btn.textContent = 'Generating…'; msg.textContent = '';
   postKind('enrich', pkey(e), { enrich: 1 }, pw, function(res){
@@ -876,22 +1010,25 @@ function initGL(){
 function makeLabel(text, o){
   o = o || {};
   var fs = o.size || 26;
+  var SS = 3; // supersample: draw big, scale down — crisp text up close
   var cv = document.createElement('canvas');
   var mctx = cv.getContext('2d');
   mctx.font = '700 ' + fs + 'px "Hanken Grotesk", sans-serif';
-  cv.width = Math.ceil(mctx.measureText(text).width) + 30;
-  cv.height = fs + 32;
+  var w = Math.ceil(mctx.measureText(text).width) + 30, h = fs + 32;
+  cv.width = w * SS; cv.height = h * SS;
   var ctx = cv.getContext('2d');
+  ctx.scale(SS, SS);
   ctx.font = '700 ' + fs + 'px "Hanken Grotesk", sans-serif';
   ctx.textBaseline = 'middle';
   ctx.shadowColor = 'rgba(0,0,0,.85)'; ctx.shadowBlur = 9;
   ctx.fillStyle = o.color || '#e8ecf3';
-  ctx.fillText(text, 15, cv.height / 2);
+  ctx.fillText(text, 15, h / 2);
   var tex = new THREE.CanvasTexture(cv);
   tex.minFilter = THREE.LinearFilter;
+  try { tex.anisotropy = GL.renderer.capabilities.getMaxAnisotropy(); } catch(x){}
   var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
-  var s = 0.068;
-  sp.scale.set(cv.width * s, cv.height * s, 1);
+  var sc = 0.068;
+  sp.scale.set(w * sc, h * sc, 1);
   sp.renderOrder = 10;
   return sp;
 }
