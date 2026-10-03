@@ -1,7 +1,7 @@
 /* North Country Circle — Dossier. Hub-spoke directory + dossier documents + redaction wall. */
 (function(){
 'use strict';
-var S = { q:'', rel:'', sel:null, showBg:false, listOpen:true, mode:'2d', auditFilter:false };
+var S = { q:'', rel:'', sel:null, showBg:false, listOpen:true, mode:'3d', auditFilter:false, editing:false };
 var D = null, NODES = [], ORDER = [];
 var UNLOCKED = false;
 try { UNLOCKED = sessionStorage.getItem('dossier_clear') === '1'; } catch(e){}
@@ -106,66 +106,125 @@ function profRow(f, prof){
   }
   return h + '</div></div>';
 }
-function dossierDir(e, idx){
+var SCORE_FIELDS = [
+  {k:'closeness', label:'Closeness'},
+  {k:'charisma', label:'Charisma'},
+  {k:'competence', label:'Competence'},
+  {k:'intellect', label:'Intellect'},
+  {k:'creativity', label:'Creativity'},
+  {k:'reliability', label:'Reliability'},
+  {k:'reputation', label:'Reputation'},
+  {k:'assertiveness', label:'Assertiveness'},
+  {k:'ego', label:'Ego'}
+];
+function ringSVG(val, max, label){
+  var v = parseInt(val || '0', 10) || 0;
+  var C = 2 * Math.PI * 15.5, frac = max ? Math.max(0, Math.min(1, v / max)) : 0;
+  return '<div class="vring"><svg viewBox="0 0 40 40" width="52" height="52">' +
+    '<circle cx="20" cy="20" r="15.5" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/>' +
+    '<circle cx="20" cy="20" r="15.5" fill="none" stroke="var(--amber)" stroke-width="5" stroke-linecap="round" ' +
+    'stroke-dasharray="' + (C * frac).toFixed(1) + ' ' + C.toFixed(1) + '" transform="rotate(-90 20 20)"/>' +
+    '<text x="20" y="24" text-anchor="middle" font-size="11" font-weight="700" fill="var(--txt)">' + v + '</text></svg>' +
+    '<span>' + esc(label) + '</span></div>';
+}
+function barRow(f, val){
+  var v = parseInt(val || '0', 10) || 0;
+  return '<div class="vrow"><span class="vlab">' + esc(f.label) + '</span>' +
+    '<div class="vbar"><i style="width:' + (v * 20) + '%"></i></div>' +
+    '<b class="vval">' + (val ? v : '–') + '</b></div>';
+}
+/* Compact read-only view: every data point visible without scrolling. */
+function dossierView(e, idx, head){
   var prof = e.profile || {};
-  var title = e.display || e.name;
-  var isContact = e.src === 'contacts';
-  var sub = isContact ? 'phone contact' : '@' + e.name;
-  if(e.relation) sub += ' · ' + e.relation;
-  var prows = PROFILE_FIELDS.map(function(f){ return profRow(f, prof); }).join('') +
-    '<div class="prow"><div class="plab">Last note<span class="phint">date + one line of evidence</span></div>' +
-    '<div class="pctl note"><input type="date" data-pk="last_note_date" value="' + esc(prof.last_note_date || '') + '">' +
-    '<input data-pk="last_note" value="' + esc(prof.last_note || '') + '" placeholder="One line…"></div></div>';
-
-  var enriched = prof.enriched === '1' || prof.enriched === 1;
-  var enrichBox = enriched
-    ? '<div class="enr done"><span class="enrbadge">calculated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</span><p>' + esc(prof.enriched_value || '') + '</p></div>'
-    : '<div class="enr todo"><span class="enrbadge">not calculated</span><p>No professional assessment generated yet.</p></div>';
-
+  var bars = SCORE_FIELDS.map(function(f){ return barRow(f, prof[f.k]); }).join('');
+  var chips = '';
+  if(prof.relationship) chips += '<span class="vchip">' + esc(prof.relationship) + '</span>';
+  if(prof.context) chips += '<span class="vchip">' + esc(prof.context) + '</span>';
+  if(e.src === 'contacts') chips += '<span class="vchip">phone contact</span>';
+  var spec = '';
+  if(prof.specialty) spec += '<div class="vline"><span>Specialty</span>' + esc(prof.specialty) + '</div>';
+  if(prof.interests) spec += '<div class="vline"><span>Interests</span>' + esc(prof.interests) + '</div>';
+  var score100 = '';
+  if(prof.enriched_value){
+    var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
+    if(m) score100 = ringSVG(m[1], 100, 'Score');
+  }
+  var narr = prof.enriched_value
+    ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, ''))
+    : 'No assessment generated yet.';
+  return '<div class="doc">' + classbar() + head +
+    '<div class="dsec"><h3><span class="n">01</span> The 15</h3>' +
+    (chips ? '<div class="vchips">' + chips + '</div>' : '') +
+    '<div class="vcols"><div class="vbars">' + bars + '</div>' +
+    '<div class="vrings">' + ringSVG(prof.closeness, 5, 'Close') + score100 + '</div></div>' +
+    spec + '</div>' +
+    '<div class="dsec"><h3><span class="n">02</span> Assessment</h3>' +
+    '<div class="narr">' + narr + '</div>' +
+    '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div>' +
+    ((prof.enriched === '1' || prof.enriched === 1)
+      ? '<div class="calcnote">calculated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</div>'
+      : '<div class="calcnote dim">not calculated</div>') +
+    '</div>' +
+    '<details class="dsec det"><summary><h3><span class="n">03</span> Directory</h3></summary>' + dirDetails(e) + '</details>' +
+    '<details class="dsec det"><summary><h3><span class="n">04</span> Reference</h3></summary>' + refDetails(e) + '</details>' +
+    classbar().replace('classbar', 'classbar bot') + '</div>';
+}
+function dirDetails(e){
   var c = e.contact || {};
-  var contactRows = '';
-  if(c.phones && c.phones.length) contactRows += '<dt>Phone</dt><dd>' + esc(c.phones.join(', ')) + '</dd>';
-  if(c.emails && c.emails.length) contactRows += '<dt>Email</dt><dd>' + esc(c.emails.join(', ')) + '</dd>';
-  if(c.orgs && c.orgs.length) contactRows += '<dt>Org</dt><dd>' + esc(c.orgs.join(', ')) + '</dd>';
-  var dirRows = '<dt>Key</dt><dd>' + esc(pkey(e)) + '</dd>' + contactRows;
-  if(!isContact){
-    dirRows += '<dt>Relation</dt><dd>' + esc(e.relation || '—') + '</dd>' +
+  var rows = '<dt>Key</dt><dd>' + esc(pkey(e)) + '</dd>';
+  if(c.phones && c.phones.length) rows += '<dt>Phone</dt><dd>' + esc(c.phones.join(', ')) + '</dd>';
+  if(c.emails && c.emails.length) rows += '<dt>Email</dt><dd>' + esc(c.emails.join(', ')) + '</dd>';
+  if(c.orgs && c.orgs.length) rows += '<dt>Org</dt><dd>' + esc(c.orgs.join(', ')) + '</dd>';
+  if(e.src !== 'contacts'){
+    rows += '<dt>Relation</dt><dd>' + esc(e.relation || '—') + '</dd>' +
       '<dt>Graph connections</dt><dd>' + e.degree + '</dd>' +
       '<dt>Shared with you</dt><dd>' + e.shared_with_jd + '</dd>';
-    if(e.detail) dirRows += '<dt>On file</dt><dd>' + esc(e.detail) + '</dd>';
+    if(e.detail) rows += '<dt>On file</dt><dd>' + esc(e.detail) + '</dd>';
   }
   var nbrs = (e.neighbors || []).slice(0, 8);
   var nbrChips = nbrs.length ? nbrs.map(function(nb){
     return '<span class="nchip" data-nx="' + esc(nb.u) + '">' + esc(nb.d || nb.u) + '</span>';
   }).join('') : '<p class="body">No close connections mapped.</p>';
-
+  return '<dl class="kv">' + rows + '</dl><h4 style="margin:12px 0 8px">Close connections</h4>' + nbrChips;
+}
+function refDetails(e){
   var leg = e.legacy || {}, rec = e.record || {};
   var hasSensitive = !!(leg.desc || rec.body || (e.friendsdb || {}).phone || e.notes);
-  var refInner = '';
-  if(leg.desc) refInner += '<p class="body rtext">' + esc(leg.desc) + '</p>';
-  if(rec.body) refInner += '<p class="body rtext">' + esc(rec.body) + '</p>';
-  if(e.public_footprint) refInner += '<p class="body rtext"><span style="color:var(--dim)">Public footprint</span><br>' + esc(e.public_footprint) + '</p>';
-  if(!refInner) refInner = '<p class="body">No reference material on file.</p>';
-
-  return '<div class="doc">' + classbar() +
-    '<div class="doc-head"><div class="doc-actions">' +
-    '<input id="ppw" type="password" placeholder="Password" autocomplete="off" aria-label="Password">' +
-    '<button id="psave" disabled>Save</button>' +
+  var inner = '';
+  if(leg.desc) inner += '<p class="body rtext">' + esc(leg.desc) + '</p>';
+  if(rec.body) inner += '<p class="body rtext">' + esc(rec.body) + '</p>';
+  if(e.public_footprint) inner += '<p class="body rtext"><span style="color:var(--dim)">Public footprint</span><br>' + esc(e.public_footprint) + '</p>';
+  if(!inner) inner = '<p class="body">No reference material on file.</p>';
+  return '<div class="memoir' + (UNLOCKED || !hasSensitive ? ' unlocked' : '') + '">' + inner + (hasSensitive ? wallHTML() : '') + '</div>';
+}
+/* Edit mode: the fast-entry form. */
+function dossierEdit(e, idx, head){
+  var prof = e.profile || {};
+  var prows = PROFILE_FIELDS.map(function(f){ return profRow(f, prof); }).join('');
+  var narrVal = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
+  return '<div class="doc">' + classbar() + head +
+    '<div class="dsec"><h3><span class="n">01</span> The 15</h3><div class="pform">' + prows + '</div></div>' +
+    '<div class="dsec"><h3><span class="n">02</span> Assessment</h3>' +
+    '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Narrative assessment — or Generate to fill it in.">' + esc(narrVal) + '</textarea>' +
+    '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
+    classbar().replace('classbar', 'classbar bot') + '</div>';
+}
+function dossierDir(e, idx){
+  var prof = e.profile || {};
+  var title = e.display || e.name;
+  var sub = e.src === 'contacts' ? 'phone contact' : '@' + e.name;
+  if(e.relation) sub += ' · ' + e.relation;
+  var head = '<div class="doc-head"><div class="doc-actions">' +
+    (S.editing
+      ? '<input id="ppw" type="password" placeholder="Password" autocomplete="off" aria-label="Password">' +
+        '<button id="psave" disabled>Save</button><button id="pdone">Done</button>'
+      : '<button id="pedit">Edit</button>') +
     '<button id="paudit">' + ((prof.audit === 'audited') ? 'Audited ✓' : 'Mark audited') + '</button>' +
-    '<button id="dxpand">Expand</button><button id="mclose">Close</button></div>' +
+    '<button id="mclose">Close</button></div>' +
     '<div class="doc-kicker">Personal file · #' + String(idx + 1).padStart(3, '0') + ' ' + auditBadge(e) + '</div>' +
     '<h2>' + esc(title) + '</h2>' +
-    '<div class="doc-filed">' + esc(sub) + '</div></div>' +
-    '<div class="dsec"><h3><span class="n">01</span> The 15</h3><div class="pform">' + prows + '</div></div>' +
-    '<div class="dsec"><h3><span class="n">02</span> Assessment</h3>' + enrichBox +
-    '<button id="enrichbtn" class="xbtn acc">Generate assessment</button> <span id="enrmsg"></span></div>' +
-    '<div class="dsec"><h3><span class="n">03</span> Directory</h3><dl class="kv">' + dirRows + '</dl>' +
-    '<h4 style="margin:12px 0 8px">Close connections</h4>' + nbrChips + '</div>' +
-    '<div class="dsec"><h3><span class="n">04</span> Reference</h3>' +
-    '<div class="memoir' + (UNLOCKED || !hasSensitive ? ' unlocked' : '') + '">' + refInner +
-    (hasSensitive ? wallHTML() : '') + '</div></div>' +
-    classbar().replace('classbar', 'classbar bot') +
-    '</div>';
+    '<div class="doc-filed">' + esc(sub) + '</div></div>';
+  return S.editing ? dossierEdit(e, idx, head) : dossierView(e, idx, head);
 }
 
 /* Soft barrier only: this page and its data are public on a static host.
@@ -288,10 +347,12 @@ function hubFit(){
   hub.target = null;
 }
 function w2s(wx, wy){
-  return [ (wx - hub.cam.x)*hub.cam.z + hub.W/2, (wy - hub.cam.y)*hub.cam.z + hub.H/2 ];
+  var sh = (typeof layoutShift === 'function') ? layoutShift().ox2d : 0;
+  return [ (wx - hub.cam.x)*hub.cam.z + hub.W/2 + sh, (wy - hub.cam.y)*hub.cam.z + hub.H/2 ];
 }
 function s2w(sx, sy){
-  return [ (sx - hub.W/2)/hub.cam.z + hub.cam.x, (sy - hub.H/2)/hub.cam.z + hub.cam.y ];
+  var sh = (typeof layoutShift === 'function') ? layoutShift().ox2d : 0;
+  return [ (sx - hub.W/2 - sh)/hub.cam.z + hub.cam.x, (sy - hub.H/2)/hub.cam.z + hub.cam.y ];
 }
 function nodeAlpha(n){
   var q = S.q.trim().toLowerCase();
@@ -476,6 +537,7 @@ function renderProfile(){
 
 /* ---------- selection ---------- */
 function selectDir(idx, on){
+  S.editing = false;
   if(on === false){ S.sel = null; }
   else S.sel = (S.sel === idx) ? null : idx;
   document.querySelectorAll('#leftbody .row').forEach(function(el){
@@ -516,10 +578,13 @@ function bind(){
     renderList();
   });
   updateAuditPill();
+  var sgb = document.querySelector('#settingsbtn');
+  if(sgb) sgb.addEventListener('click', openSettings);
   $('#listtoggle').addEventListener('click', function(){
     S.listOpen = !S.listOpen;
     this.classList.toggle('on', S.listOpen);
     document.body.classList.toggle('nolist', !S.listOpen);
+    if(S.mode === '3d') glRecenter();
     setTimeout(hubResize, 60);
   });
   $('#leftbody').addEventListener('click', function(e){
@@ -532,7 +597,8 @@ function bind(){
   });
   $('#rightbody').addEventListener('click', function(e){
     if(e.target.closest('#mclose')){ S.sel = null; renderProfile(); renderList(); return; }
-    if(e.target.closest('#dxpand')){ openExpanded(); return; }
+    if(e.target.closest('#pedit')){ S.editing = true; renderProfile(); return; }
+    if(e.target.closest('#pdone')){ S.editing = false; renderProfile(); return; }
     if(e.target.closest('#psave')){ saveProfile(); return; }
     if(e.target.closest('#paudit')){ toggleAudit(); return; }
     if(e.target.closest('#enrichbtn')){ runEnrich(); return; }
@@ -711,6 +777,48 @@ function updateAuditPill(){
   pill.textContent = 'Audited ' + done + '/' + D.directory.length;
 }
 
+/* ---------- settings (enrich prompt + api key, stored server-side in the sheet) ---------- */
+function openSettings(){
+  closeSettings();
+  var html = '<div id="setoverlay"><div id="setcard" role="dialog" aria-label="Settings">' +
+    '<div class="xhead"><h2>Settings</h2><div class="sp"></div><button class="xbtn" id="setclose">Close</button></div>' +
+    '<div class="setbody">' +
+    '<label>Assessment prompt<label class="sh">Sent to Gemini with the 15 values on every Generate. Edit freely.</label></label>' +
+    '<textarea id="setprompt" rows="10" placeholder="Loading…"></textarea>' +
+    '<label>Gemini API key<label class="sh">Stored in the sheet, server-side only. Get one at aistudio.google.com → Get API key.</label></label>' +
+    '<input id="setkey" type="password" placeholder="AIza…" autocomplete="off">' +
+    '<div class="arow"><button id="setsave" class="xbtn acc">Save settings</button><span id="setmsg"></span></div>' +
+    '</div></div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.querySelector('#setclose').addEventListener('click', closeSettings);
+  document.querySelector('#setoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'setoverlay') closeSettings(); });
+  document.querySelector('#setsave').addEventListener('click', saveSettings);
+  if(!WEBAPP_URL){ document.querySelector('#setmsg').textContent = 'Web app URL is not configured yet.'; return; }
+  fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ password:getPw(), kind:'getsettings', id:'settings', patch:{x:1} }) })
+    .then(function(r){ return r.json(); }).then(function(res){
+      if(res && res.ok){
+        document.querySelector('#setprompt').value = res.prompt || '';
+        if(res.hasKey) document.querySelector('#setkey').placeholder = 'Key saved ✓ (enter a new one to replace)';
+      } else {
+        document.querySelector('#setmsg').textContent = 'Could not load: ' + ((res && res.error) || 'unknown');
+      }
+    }).catch(function(){ document.querySelector('#setmsg').textContent = 'Network error.'; });
+}
+function closeSettings(){ var o = document.querySelector('#setoverlay'); if(o) o.remove(); }
+function saveSettings(){
+  var msg = document.querySelector('#setmsg');
+  var patch = { prompt: document.querySelector('#setprompt').value };
+  var kv = document.querySelector('#setkey').value;
+  if(kv) patch.gemini_key = kv;
+  msg.textContent = 'Saving…';
+  fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ password:getPw(), kind:'settings', id:'settings', patch:patch }) })
+    .then(function(r){ return r.json(); }).then(function(res){
+      msg.textContent = (res && res.ok) ? 'Saved.' : ('Save failed: ' + ((res && res.error) || 'unknown'));
+    }).catch(function(){ msg.textContent = 'Network error.'; });
+}
+
 /* ---------- 3D sphere ---------- */
 /* ---------- 3D sphere ---------- */
 var GL = null;
@@ -724,6 +832,17 @@ function loadScript(src){
     s.src = src; s.onload = res; s.onerror = function(){ rej(new Error('load failed: '+src)); };
     document.head.appendChild(s);
   });
+}
+/* Keep the subject centered in the free space between the left list and the right panel. */
+function layoutShift(){
+  var lw = (S.listOpen && document.querySelector('#left')) ? document.querySelector('#left').offsetWidth : 0;
+  var pw = (S.sel !== null && document.querySelector('#right')) ? document.querySelector('#right').offsetWidth : 0;
+  return { ox2d: (lw - pw) / 2, vox: (pw - lw) / 2 };
+}
+function glRecenter(){
+  if(!GL || !GL.camera) return;
+  var sh = layoutShift();
+  GL.camera.setViewOffset(window.innerWidth, window.innerHeight, sh.vox, 0, window.innerWidth, window.innerHeight);
 }
 function setMode(m){
   S.mode = m;
