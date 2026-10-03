@@ -129,6 +129,14 @@ body.nolist #stage{left:12px}
   transition:transform .42s var(--ease),opacity .3s;z-index:25}
 #right.open{transform:none;opacity:1;pointer-events:auto}
 #rightbody{flex:1;overflow:hidden;padding:0;min-height:0}
+
+/* ---------- nuclear anti-cutoff: full-viewport drawer while editing ---------- */
+#right.editing{position:fixed;top:14px;bottom:14px;left:50%;right:auto;
+  width:min(1180px,calc(100vw - 28px));z-index:120;opacity:1;pointer-events:auto;
+  transform:translateX(-50%) !important}
+#right.editing #rightbody{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+body.editing-drawer #stage{right:12px}
+#editbackdrop{position:fixed;inset:0;background:rgba(2,4,8,.72);backdrop-filter:blur(4px);z-index:110}
 .doc{padding:0 0 34px;animation:profin .45s var(--ease) both}
 @keyframes profin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .doc-head{padding:22px 26px 6px;position:relative}
