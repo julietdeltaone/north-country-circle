@@ -1156,6 +1156,7 @@ function boot(){
         hubInit();
         renderList();
         bind();
+        setMode(S.mode);
       })
       .catch(function(){
         if(tries < 4){
