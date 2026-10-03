@@ -197,21 +197,26 @@ function dossierView(e, idx, head){
     ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, ''))
     : 'No bio generated yet.';
   return '<div class="doc">' + classbar() + head +
+    '<div class="dgrid">' +
+    '<div class="dcol">' +
     '<div class="dsec"><h3><span class="n">01</span> The 15</h3>' +
     (chips ? '<div class="vchips">' + chips + '</div>' : '') +
     (otags ? '<div class="otags">' + otags + '</div>' : '') +
     '<div class="vcols"><div class="vbars">' + bars + '</div>' +
     '<div class="vrings">' + ringSVG(prof.closeness, 5, 'Close') + score100 + '</div></div>' +
     spec + '</div>' +
+    '</div>' +
+    '<div class="dcol">' +
     '<div class="dsec"><h3><span class="n">02</span> Bio</h3>' +
     '<div class="narr">' + narr + '</div>' +
-    '<div class="arow"><button id="writebio" class="xbtn acc">' + (prof.enriched_value ? 'Edit bio' : 'Write bio') + '</button></div>' +
     ((prof.enriched === '1' || prof.enriched === 1)
       ? '<div class="calcnote">generated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</div>'
       : '<div class="calcnote dim">not generated</div>') +
     '</div>' +
     '<details class="dsec det"><summary><h3><span class="n">03</span> Directory</h3></summary>' + dirDetails(e) + '</details>' +
     '<details class="dsec det"><summary><h3><span class="n">04</span> Reference</h3></summary>' + refDetails(e) + '</details>' +
+    '</div>' +
+    '</div>' +
     classbar().replace('classbar', 'classbar bot') + '</div>';
 }
 function dirDetails(e){
@@ -278,12 +283,15 @@ function dossierDir(e, idx){
   var title = e.display || e.name;
   var sub = e.src === 'contacts' ? 'phone contact' : '@' + e.name;
   if(e.relation) sub += ' · ' + e.relation;
-  var head = '<div class="doc-head"><div class="doc-actions">' +
-    (S.editing
-      ? '<button id="psave" disabled>Save</button><button id="pdone">Done</button><span id="savestate" class="savestate"></span>'
-      : '<button id="pedit">Edit</button>') +
-    '<button id="paudit">' + ((prof.audit === 'audited') ? 'Audited ✓' : 'Mark audited') + '</button>' +
-    '<button id="mclose">Close</button></div>' +
+  var menuBtns = S.editing
+    ? '<button id="psave" disabled>Save</button><button id="pdone">Done</button>'
+    : '<button id="pedit">Edit</button>' +
+      '<button id="paudit">' + ((prof.audit === 'audited') ? 'Audited ✓' : 'Mark audited') + '</button>' +
+      '<button id="mclose">Close</button>';
+  var head = '<div class="doc-head">' +
+    '<div class="dmenu"><span class="dbtn" tabindex="0" aria-label="Actions">⋮</span>' +
+    '<div class="ditems">' + menuBtns + '</div></div>' +
+    (S.editing ? '<span id="savestate" class="savestate"></span>' : '') +
     '<div class="doc-kicker">Personal file · #' + String(idx + 1).padStart(3, '0') + ' ' + auditBadge(e) + reviewBadge(e) + '</div>' +
     '<h2>' + esc(title) + '</h2>' +
     '<div class="doc-filed">' + esc(sub) + '</div></div>';
@@ -663,14 +671,6 @@ function bind(){
     if(e.target.closest('#psave')){ saveProfile(false); return; }
     if(e.target.closest('#paudit')){ toggleAudit(); return; }
     if(e.target.closest('#enrichbtn')){ runEnrich(); return; }
-    if(e.target.closest('#writebio')){
-      S.editing = true; renderProfile();
-      var m2 = document.querySelector('#enrmsg');
-      if(m2) m2.textContent = 'Write your draft above, then Generate.';
-      var nt = document.querySelector('#narrtext');
-      if(nt) nt.focus();
-      return;
-    }
     if(e.target.closest('#pfill')){ fillFromText(); return; }
     var pd = e.target.closest('.pdot');
     if(pd){
