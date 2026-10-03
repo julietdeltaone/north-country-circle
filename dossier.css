@@ -650,4 +650,5 @@ button.auditbadge{ cursor:pointer; font-family:var(--sans); }
 .irow input{ padding:6px 10px; }
 
 .dots3{ display:flex; flex-direction:column; gap:3px; align-items:center; justify-content:center; }
+.pglyph{ display:inline-block; transform:translateY(-2px); }
 .dots3 i{ width:4px; height:4px; border-radius:50%; background:currentColor; display:block; }
