@@ -166,6 +166,11 @@ function doPost(e) {
       return jsonOut({ ok: false, error: 'wrong password' });
     }
     var kind = body.kind, id = String(body.id || ''), patch = body.patch || {};
+    if (kind === 'getsettings') {
+      return jsonOut({ ok: true,
+        prompt: getSetting_('enrich_prompt', '') || ENRICH_PROMPT,
+        hasKey: !!(getSetting_('gemini_key', '') || PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY')) });
+    }
     if (!id || !patch || Object.keys(patch).length === 0) {
       return jsonOut({ ok: false, error: 'missing id or patch' });
     }
@@ -180,6 +185,10 @@ function doPost(e) {
       updateTabRow('Profiles', PROFILE_COLS, id, patch);
     } else if (kind === 'enrich') {
       return jsonOut(doEnrich(id));
+    } else if (kind === 'settings') {
+      if (patch.prompt !== undefined) setSetting_('enrich_prompt', String(patch.prompt));
+      if (patch.gemini_key) setSetting_('gemini_key', String(patch.gemini_key));
+      return jsonOut({ ok: true });
     } else {
       return jsonOut({ ok: false, error: 'unknown kind' });
     }
@@ -217,6 +226,9 @@ function readProfileRow(key) {
 
 function doEnrich(key) {
   var found = readProfileRow(key);
+  var apiKey = getSetting_('gemini_key', '') || PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
+  if (!apiKey) throw new Error('no Gemini API key — add one in Settings (gear icon)');
+  var promptBase = getSetting_('enrich_prompt', '') || ENRICH_PROMPT;
   var v = found.vals;
   var names = ['key','display','relationship','context','closeness','specialty','interests',
     'charisma','competence','intellect','creativity','reliability','reputation',
@@ -226,8 +238,8 @@ function doEnrich(key) {
     var val = String(v[i] == null ? '' : v[i]).trim();
     if (val) lines.push(n + ': ' + val);
   });
-  var prompt = ENRICH_PROMPT + '\n' + lines.join('\n');
-  var parts = callGemini(prompt);
+  var prompt = promptBase + '\n' + lines.join('\n');
+  var parts = callGemini(prompt, apiKey);
   var text = parts.map(function(pt) { return pt.text || ''; }).join('');
   var m = text.match(/\{[\s\S]*\}/);
   if (!m) throw new Error('gemini returned no JSON');
@@ -241,6 +253,33 @@ function doEnrich(key) {
   return { ok: true, value: data.score + ' — ' + data.summary, at: stamp };
 }
 
+/** Server-side settings (Settings tab, col A = key, col B = value). Auto-created. */
+function settingsSheet_() {
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sh = ss.getSheetByName('Settings');
+  if (!sh) {
+    sh = ss.insertSheet('Settings');
+    sh.getRange(1, 1, 1, 2).setValues([['key', 'value']]);
+  }
+  return sh;
+}
+function getSetting_(k, fb) {
+  var sh = settingsSheet_();
+  var vals = sh.getRange(2, 1, Math.max(sh.getLastRow() - 1, 0), 2).getValues();
+  for (var i = 0; i < vals.length; i++) {
+    if (String(vals[i][0]).trim() === k) return vals[i][1];
+  }
+  return fb;
+}
+function setSetting_(k, v) {
+  var sh = settingsSheet_();
+  var vals = sh.getRange(2, 1, Math.max(sh.getLastRow() - 1, 0), 1).getValues();
+  for (var i = 0; i < vals.length; i++) {
+    if (String(vals[i][0]).trim() === k) { sh.getRange(i + 2, 2).setValue(v); return; }
+  }
+  sh.appendRow([k, v]);
+}
+
 /** Friendly landing for the one-time authorization visit. */
 function doGet() {
   return jsonOut({ ok: true, service: 'north-country-circle edit api' });
@@ -252,8 +291,8 @@ function doGet() {
 function geminiKey() {
   return PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
 }
-function callGemini(prompt) {
-  var key = geminiKey();
+function callGemini(prompt, apiKey) {
+  var key = apiKey || geminiKey();
   if (!key) throw new Error('GEMINI_API_KEY not set in Script Properties');
   var res = UrlFetchApp.fetch(
     'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
