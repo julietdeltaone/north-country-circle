@@ -687,7 +687,7 @@ function closeExpanded(){
 }
 
 /* ---------- 15-point profile: save, audit, enrich (via the sheet web app) ---------- */
-var WEBAPP_URL = ''; // set to the Apps Script web app /exec URL after deploying Code.gs
+var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec'; // set to the Apps Script web app /exec URL after deploying Code.gs
 
 function getPw(){
   var inp = document.querySelector('#ppw');
