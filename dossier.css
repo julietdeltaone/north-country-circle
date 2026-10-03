@@ -498,3 +498,6 @@ details.dsec.det summary h3{display:inline-block}
 .savestate{ font-size:12px; color:var(--dim); margin-left:8px; white-space:nowrap; align-self:center; }
 .savestate.dim{ opacity:.75; }
 .savestate.err{ color:#e08080; }
+
+/* ---- delete row ---- */
+.dsec.delrow{ text-align:right; }
