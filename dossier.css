@@ -618,14 +618,23 @@ button.auditbadge{ cursor:pointer; font-family:var(--sans); }
 .efoot .savestate{ margin:0; }
 .esp{ flex:1; }
 
-/* small screens: panel becomes a full overlay, single column */
+/* small screens: panel becomes a full overlay, one scrolling column */
 @media(max-width:1100px){
   body{ overflow:hidden; }
   :root{ --lw:180px; }
   #right{ position:fixed; top:8px; left:8px; right:8px; bottom:8px; width:auto; z-index:60; }
   body.panelopen #stage{ right:12px; }
-  .dgrid{ grid-template-columns:1fr; }
+  .phead{ padding:10px 12px; gap:8px; }
+  .phtext h2{ font-size:18px; }
+  .phbtn{ width:34px; height:34px; }
+  .dmenu{ height:34px; }
+  .dgrid{ display:block; overflow-y:auto; flex:1; min-height:0; }
+  .dcol{ overflow:visible; }
   .dcol:first-child{ border-right:0; border-bottom:1px solid var(--line-soft); }
+  .vright, .eright{ overflow:visible; display:block; }
+  .fpbox{ max-height:300px; }
+  .notesec{ min-height:220px; }
+  .notesec textarea{ min-height:220px; }
   .rgroups{ grid-template-columns:1fr 1fr; }
 }
 
