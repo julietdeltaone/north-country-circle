@@ -207,7 +207,7 @@ var ENRICH_PROMPT = [
   'Weigh the scored metrics (closeness, charisma, competence, intellect, creativity,',
   'reliability, reputation, assertiveness, ego) the way practitioners weigh observed social signals;',
   'treat blank scores as unknown, never invent them.',
-  'Return ONLY valid JSON: {"score": <0-100 integer>, "summary": "<two sentences max>"}.',
+  'Return ONLY valid JSON: {"score": <0-100 integer>, "narrative": "<a 3-4 sentence professional narrative summary of this person>"}.',
   'Person data:'
 ].join('\n');
 
@@ -248,9 +248,9 @@ function doEnrich(key) {
   var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Profiles');
   sh.getRange(found.row, PROFILE_COLS.enriched).setValue(1);
   sh.getRange(found.row, PROFILE_COLS.enriched_value).setValue(
-    data.score + ' — ' + data.summary);
+    data.score + ' — ' + data.narrative);
   sh.getRange(found.row, PROFILE_COLS.enriched_at).setValue(stamp);
-  return { ok: true, value: data.score + ' — ' + data.summary, at: stamp };
+  return { ok: true, value: data.score + ' — ' + data.narrative, at: stamp };
 }
 
 /** Server-side settings (Settings tab, col A = key, col B = value). Auto-created. */
