@@ -306,7 +306,8 @@ function callGemini(prompt, apiKey) {
     {
       method: 'post', contentType: 'application/json',
       headers: { 'x-goog-api-key': key },
-      payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+      payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: 'application/json' } }),
       muteHttpExceptions: true
     });
   var code = res.getResponseCode(), body = res.getContentText();
