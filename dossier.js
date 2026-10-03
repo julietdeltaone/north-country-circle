@@ -201,6 +201,9 @@ function dossierEdit(e, idx, head){
   var prows = PROFILE_FIELDS.map(function(f){ return profRow(f, prof); }).join('');
   var narrVal = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
   return '<div class="doc">' + classbar() + head +
+    '<div class="dsec"><h3><span class="n">00</span> Quick fill</h3>' +
+    '<textarea id="pfree" rows="3" placeholder="Just describe them in your own words — e.g. \u201cfriend from church, closeness 4, really charismatic, runs Zufall Farm, into photography and travel\u201d"></textarea>' +
+    '<div class="arow"><button id="pfill" class="xbtn acc">Fill the 15</button><span id="pfillmsg"></span></div></div>' +
     '<div class="dsec"><h3><span class="n">01</span> The 15</h3><div class="pform">' + prows + '</div></div>' +
     '<div class="dsec"><h3><span class="n">02</span> Assessment</h3>' +
     '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Narrative assessment — or Generate to fill it in.">' + esc(narrVal) + '</textarea>' +
@@ -797,6 +800,7 @@ function bind(){
     if(e.target.closest('#psave')){ saveProfile(); return; }
     if(e.target.closest('#paudit')){ toggleAudit(); return; }
     if(e.target.closest('#enrichbtn')){ runEnrich(); return; }
+    if(e.target.closest('#pfill')){ fillFromText(); return; }
     var pd = e.target.closest('.pdot');
     if(pd){
       var box = pd.closest('.dots');
@@ -890,6 +894,46 @@ function toggleAudit(){
   postKind('profile', pkey(e), { audit: next }, pw, function(){
     toast(next === 'audited' ? 'Marked audited.' : 'Back to needs audit.');
   }, function(err){ toast(err + ' — tap again to retry.'); });
+}
+function fillFromText(){
+  var ta = document.querySelector('#pfree'), msg = document.querySelector('#pfillmsg');
+  var text = ta ? ta.value.trim() : '';
+  if(!text){ msg.textContent = 'Describe the person first.'; return; }
+  if(!WEBAPP_URL){ msg.textContent = 'Web app URL is not configured yet.'; return; }
+  var btn = document.querySelector('#pfill');
+  btn.disabled = true; btn.textContent = 'Parsing…'; msg.textContent = '';
+  fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ password:getPw(), kind:'parseprofile', id:'parse', patch:{text:text} }) })
+    .then(function(r){ return r.json(); }).then(function(res){
+      btn.disabled = false; btn.textContent = 'Fill the 15';
+      if(res && res.ok && res.fields){ applyParsed(res.fields, msg); }
+      else { msg.textContent = 'Parse failed: ' + ((res && res.error) || 'unknown'); }
+    }).catch(function(){ btn.disabled = false; btn.textContent = 'Fill the 15'; msg.textContent = 'Network error.'; });
+}
+function applyParsed(fields, msg){
+  var n = 0;
+  Object.keys(fields).forEach(function(k){
+    var v = fields[k];
+    if(v === '' || v === null || v === undefined) return;
+    var el = document.querySelector('#rightbody [data-pk="' + k + '"]');
+    if(!el) return;
+    if(el.classList && el.classList.contains('dots')){
+      v = String(parseInt(v, 10) || '');
+      if(v < '1' || v > '5') return;
+      el.setAttribute('data-v', v);
+      el.querySelectorAll('.pdot').forEach(function(d){
+        d.classList.toggle('on', d.getAttribute('data-v') === v);
+      });
+      n++;
+    } else if(el.tagName === 'SELECT'){
+      var ok = Array.prototype.some.call(el.options, function(o){ return o.value === String(v).toLowerCase(); });
+      if(ok){ el.value = String(v).toLowerCase(); n++; }
+    } else {
+      el.value = String(v); n++;
+    }
+  });
+  if(n){ markDirty(); msg.textContent = 'Filled ' + n + ' field' + (n === 1 ? '' : 's') + ' — review, then Save.'; }
+  else { msg.textContent = 'Nothing recognizable — try simpler wording.'; }
 }
 function runEnrich(){
   var e = D.directory[S.sel];
