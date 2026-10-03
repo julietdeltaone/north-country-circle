@@ -921,12 +921,14 @@ function openSettings(){
     '<textarea id="setprompt" rows="10" placeholder="Loading…"></textarea>' +
     '<label>Gemini API key<label class="sh">Stored in the sheet, server-side only. Get one at aistudio.google.com → Get API key.</label></label>' +
     '<input id="setkey" type="password" placeholder="AIza…" autocomplete="off">' +
-    '<div class="arow"><button id="setsave" class="xbtn acc">Save settings</button><span id="setmsg"></span></div>' +
+    '<div class="arow"><button id="setsave" class="xbtn acc">Save settings</button>' +
+    '<button id="settest" class="xbtn">Test Gemini</button><span id="setmsg"></span></div>' +
     '</div></div></div>';
   document.body.insertAdjacentHTML('beforeend', html);
   document.querySelector('#setclose').addEventListener('click', closeSettings);
   document.querySelector('#setoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'setoverlay') closeSettings(); });
   document.querySelector('#setsave').addEventListener('click', saveSettings);
+  document.querySelector('#settest').addEventListener('click', testGemini);
   if(!WEBAPP_URL){ document.querySelector('#setmsg').textContent = 'Web app URL is not configured yet.'; return; }
   fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
     body: JSON.stringify({ password:getPw(), kind:'getsettings', id:'settings', patch:{x:1} }) })
@@ -940,6 +942,16 @@ function openSettings(){
     }).catch(function(){ document.querySelector('#setmsg').textContent = 'Network error.'; });
 }
 function closeSettings(){ var o = document.querySelector('#setoverlay'); if(o) o.remove(); }
+function testGemini(){
+  var msg = document.querySelector('#setmsg');
+  if(!WEBAPP_URL){ msg.textContent = 'Web app URL is not configured yet.'; return; }
+  msg.textContent = 'Testing…';
+  fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({ password:getPw(), kind:'testgemini', id:'settings', patch:{x:1} }) })
+    .then(function(r){ return r.json(); }).then(function(res){
+      msg.textContent = (res && res.ok) ? ('Gemini says: ' + res.reply) : ('Test failed: ' + ((res && res.error) || 'unknown'));
+    }).catch(function(){ msg.textContent = 'Network error.'; });
+}
 function saveSettings(){
   var msg = document.querySelector('#setmsg');
   var patch = { prompt: document.querySelector('#setprompt').value };
