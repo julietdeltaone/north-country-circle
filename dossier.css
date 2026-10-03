@@ -635,3 +635,23 @@ button.auditbadge{ cursor:pointer; font-family:var(--sans); }
   .dcol:first-child{ border-right:0; border-bottom:1px solid var(--line-soft); }
   .rgroups{ grid-template-columns:1fr 1fr; }
 }
+
+/* v2 fixes: menu button alignment + tighter edit mode */
+.dmenu .dbtn{ padding:0; font-size:16px; letter-spacing:0; }
+.phbtns{ gap:8px; }
+.qfill{ padding:8px 16px; }
+.qfill input{ padding:7px 12px; }
+.doc.edit .dcol{ padding-top:10px; }
+.doc.edit .dgrid .dsec{ margin-bottom:10px; }
+.doc.edit .dgrid .dsec>h3{ margin-bottom:6px; }
+.eleft .prow{ padding:4px 0; }
+.rrow{ padding:2px 0; }
+.efoot{ padding:8px 16px; }
+.tcat{ margin-bottom:8px; }
+.tlab{ margin-bottom:5px; }
+.tchip{ font-size:12px; padding:4px 9px; }
+.eright #narrtext{ font-size:12.5px; }
+.notesec textarea{ min-height:60px; }
+.genrow{ margin-top:6px; }
+.irow{ margin-bottom:4px; }
+.irow input{ padding:6px 10px; }
