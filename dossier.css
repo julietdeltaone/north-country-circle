@@ -124,7 +124,7 @@ body.nolist #stage{left:12px}
 #stagehint.fade{opacity:0}
 
 /* ---------- right: dossier document ---------- */
-#right{right:12px;width:min(600px,calc(100vw - 48px));
+#right{right:12px;width:min(760px,calc(100vw - 48px));
   transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none;
   transition:transform .42s var(--ease),opacity .3s;z-index:25}
 #right.open{transform:none;opacity:1;pointer-events:auto}
@@ -427,6 +427,8 @@ details.dsec.det summary{cursor:pointer;list-style:none}
 details.dsec.det summary::-webkit-details-marker{display:none}
 details.dsec.det summary h3{display:inline-block}
 #narrtext{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);
+  border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--sans);resize:vertical}
+#pfree{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);
   border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--sans);resize:vertical}
 
 /* ---------- settings overlay ---------- */
