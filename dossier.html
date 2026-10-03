@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dossier.css?v=92956fc760">
+<link rel="stylesheet" href="dossier.css?v=c05a936330">
 </head>
 <body>
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -22,7 +22,7 @@
     <div class="brand-text"><h1>North Country Circle</h1><small>dossier</small></div>
   </div>
   <div class="tsearch" role="search">
-    <input id="fq" type="search" placeholder="Search the 732…" autocomplete="off" aria-label="Search names">
+    <input id="fq" type="search" placeholder="Search the 901…" autocomplete="off" aria-label="Search names">
   </div>
   <select id="frel" aria-label="Filter by relation">
     <option value="">All relations</option>
@@ -33,6 +33,10 @@
   <button id="bgtoggle" class="tbtn pill" title="Show the full circle as background" aria-pressed="false">
     <span class="dot" aria-hidden="true"></span>Full circle
   </button>
+  <button id="auditfilter" class="tbtn pill" title="Show only contacts that still need audit" aria-pressed="false">
+    <span class="dot amber" aria-hidden="true"></span>Needs audit
+  </button>
+  <span id="auditpill" class="apill" title="Audit progress"></span>
   <div id="modeToggle" role="group" aria-label="View mode">
     <button data-m="2d" class="on" aria-label="2D view">2D</button><button data-m="3d" aria-label="3D view">3D</button>
   </div>
@@ -55,6 +59,6 @@
   <div id="rightbody"></div>
 </aside>
 
-<script src="dossier.js?v=ea518e2c23"></script>
+<script src="dossier.js?v=7dc3467ab4"></script>
 </body>
 </html>
