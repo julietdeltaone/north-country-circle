@@ -62,7 +62,7 @@ function classbar(){ return '<div class="classbar">Personal file · JD Meyers</d
 
 var PROFILE_FIELDS = [
   {k:'relationship', label:'Relationship', type:'select', options:['','family','friend','coworker','acquaintance','other']},
-  {k:'context', label:'Context', type:'select', options:['','work','school','military','community','online','other']},
+  {k:'context', label:'Context', type:'select', options:['','work','school','military','community','church','online','other']},
   {k:'closeness', label:'Closeness', type:'score', hint:'1 rarely interact · 5 know them well'},
   {k:'specialty', label:'Specialty', type:'text'},
   {k:'interests', label:'Interests', type:'text'},
@@ -281,7 +281,7 @@ function classbar(){ return '<div class="classbar">Personal file · JD Meyers</d
 
 var PROFILE_FIELDS = [
   {k:'relationship', label:'Relationship', type:'select', options:['','family','friend','coworker','acquaintance','other']},
-  {k:'context', label:'Context', type:'select', options:['','work','school','military','community','online','other']},
+  {k:'context', label:'Context', type:'select', options:['','work','school','military','community','church','online','other']},
   {k:'closeness', label:'Closeness', type:'score', hint:'1 rarely interact · 5 know them well'},
   {k:'specialty', label:'Specialty', type:'text'},
   {k:'interests', label:'Interests', type:'text'},
@@ -868,14 +868,16 @@ function saveProfile(){
   var pw = getPw();
   var changed = collectProfile(e);
   if(!Object.keys(changed).length){ toast('No changes.'); return; }
+  applyProfileEdit(e, changed);
+  renderProfile(); renderList(); updateAuditPill();
   var btn = document.querySelector('#psave');
-  btn.disabled = true; btn.textContent = 'Saving…';
+  if(btn){ btn.disabled = true; btn.textContent = 'Saving…'; }
   postKind('profile', pkey(e), changed, pw, function(){
-    applyProfileEdit(e, changed);
-    renderProfile(); renderList(); updateAuditPill();
+    if(btn){ btn.disabled = false; btn.textContent = 'Save'; }
     toast('Saved.');
   }, function(err){
-    toast(err); btn.disabled = false; btn.textContent = 'Save';
+    if(btn){ btn.disabled = false; btn.textContent = 'Save'; }
+    toast(err + ' — kept locally, hit Save again to retry.');
   });
 }
 function toggleAudit(){
@@ -883,11 +885,11 @@ function toggleAudit(){
   if(!WEBAPP_URL){ toast('Editing is not configured yet — the web app URL is missing.'); return; }
   var pw = getPw();
   var next = ((e.profile || {}).audit === 'audited') ? 'needs_audit' : 'audited';
+  e.profile = e.profile || {}; e.profile.audit = next;
+  renderProfile(); renderList(); updateAuditPill();
   postKind('profile', pkey(e), { audit: next }, pw, function(){
-    e.profile = e.profile || {}; e.profile.audit = next;
-    renderProfile(); renderList(); updateAuditPill();
     toast(next === 'audited' ? 'Marked audited.' : 'Back to needs audit.');
-  }, function(err){ toast(err); });
+  }, function(err){ toast(err + ' — tap again to retry.'); });
 }
 function runEnrich(){
   var e = D.directory[S.sel];
