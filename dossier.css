@@ -424,6 +424,17 @@ details.dsec.det summary h3{display:inline-block}
   border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--sans)}
 #setmsg{font-size:12.5px;color:var(--dim)}
 
+/* ---------- quick-note overlay ---------- */
+#noteoverlay{position:fixed;inset:0;background:rgba(4,6,12,.7);backdrop-filter:blur(6px);
+  z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+#notecard{width:min(560px,94vw);max-height:88vh;overflow:auto;background:rgba(13,17,28,.96);
+  border:1px solid var(--line);border-radius:18px;padding:22px 24px;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+#notecard .xhead{display:flex;align-items:center;margin-bottom:14px}
+#notecard .xhead h2{font-size:19px}
+#notecard .sp{flex:1}
+#notetext{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);
+  border-radius:10px;padding:10px 12px;font-size:13.5px;font-family:var(--sans);resize:vertical}
+
 /* ---- org tags, review flags, delete ---- */
 .tcat{ margin:0 0 14px; }
 .tlab{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--dim); margin-bottom:7px; }
