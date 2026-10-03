@@ -146,6 +146,13 @@ var SUBJECT_COLS = { slug:1, name:2, category:3, role:4, period:5, standing:6,
   trajectory:13, years_known:14, shared_interests:15, groups:16,
   personal_context:17, relationship_type:18, phone:19,
   public_footprint:20, notes:21 };
+
+/** The 15-point schema + audit + enrichment. Cols are 1-based. */
+var PROFILE_COLS = { key:1, display:2, relationship:3, context:4, closeness:5,
+  specialty:6, interests:7, charisma:8, competence:9, intellect:10, creativity:11,
+  reliability:12, reputation:13, assertiveness:14, ego:15,
+  last_note_date:16, last_note:17, audit:18, enriched:19, enriched_value:20,
+  enriched_at:21 };
 var DIRECTORY_COLS = { name:1, display:2, pieces:3, relation:4, detail:5 };
 var FRIENDS_COLS = { 'Name':1, 'Relationship Type':2, 'Groups / Contexts':3,
   'Closeness Tier':4, 'State':5, 'Standing':6, 'Trajectory':7,
@@ -169,6 +176,10 @@ function doPost(e) {
       updateTabRow('Directory', DIRECTORY_COLS, id, patch);
     } else if (kind === 'friends') {
       updateTabRow('Friends Database', FRIENDS_COLS, id, patch);
+    } else if (kind === 'profile') {
+      updateTabRow('Profiles', PROFILE_COLS, id, patch);
+    } else if (kind === 'enrich') {
+      return jsonOut(doEnrich(id));
     } else {
       return jsonOut({ ok: false, error: 'unknown kind' });
     }
@@ -176,6 +187,58 @@ function doPost(e) {
   } catch (err) {
     return jsonOut({ ok: false, error: String(err).slice(0, 200) });
   }
+}
+
+/** Professional composite assessment prompt. The model acts as a professional
+    profiler: it weighs the scored social metrics the way practitioners do and
+    returns one new derived value (a 0-100 composite + a 2-sentence read). */
+var ENRICH_PROMPT = [
+  'You are a professional social profiler. Given 15 structured data points about a person,',
+  'produce the composite assessment a professional would derive from them.',
+  'Weigh the scored metrics (closeness, charisma, competence, intellect, creativity,',
+  'reliability, reputation, assertiveness, ego) the way practitioners weigh observed social signals;',
+  'treat blank scores as unknown, never invent them.',
+  'Return ONLY valid JSON: {"score": <0-100 integer>, "summary": "<two sentences max>"}.',
+  'Person data:'
+].join('\n');
+
+function readProfileRow(key) {
+  var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Profiles');
+  var last = sh.getLastRow();
+  var keys = sh.getRange(2, 1, Math.max(last - 1, 0), 1).getValues();
+  for (var i = 0; i < keys.length; i++) {
+    if (String(keys[i][0]).trim() === key) {
+      var vals = sh.getRange(i + 2, 1, 1, 21).getValues()[0];
+      return { row: i + 2, vals: vals };
+    }
+  }
+  throw new Error('profile not found: ' + key);
+}
+
+function doEnrich(key) {
+  var found = readProfileRow(key);
+  var v = found.vals;
+  var names = ['key','display','relationship','context','closeness','specialty','interests',
+    'charisma','competence','intellect','creativity','reliability','reputation',
+    'assertiveness','ego','last_note_date','last_note'];
+  var lines = [];
+  names.forEach(function(n, i) {
+    var val = String(v[i] == null ? '' : v[i]).trim();
+    if (val) lines.push(n + ': ' + val);
+  });
+  var prompt = ENRICH_PROMPT + '\n' + lines.join('\n');
+  var parts = callGemini(prompt);
+  var text = parts.map(function(pt) { return pt.text || ''; }).join('');
+  var m = text.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('gemini returned no JSON');
+  var data = JSON.parse(m[0]);
+  var stamp = Utilities.formatDate(new Date(), 'America/New_York', 'yyyy-MM-dd');
+  var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Profiles');
+  sh.getRange(found.row, PROFILE_COLS.enriched).setValue(1);
+  sh.getRange(found.row, PROFILE_COLS.enriched_value).setValue(
+    data.score + ' — ' + data.summary);
+  sh.getRange(found.row, PROFILE_COLS.enriched_at).setValue(stamp);
+  return { ok: true, value: data.score + ' — ' + data.summary, at: stamp };
 }
 
 /** Friendly landing for the one-time authorization visit. */
