@@ -171,133 +171,158 @@ function barRow(f, val){
     '<div class="vbar"><i style="width:' + (v * 20) + '%"></i></div>' +
     '<b class="vval">' + (val ? v : '–') + '</b></div>';
 }
-/* Compact read-only view: every data point visible without scrolling. */
-function dossierView(e, idx, head){
+/* Shared panel header (view + edit): name, handle/relation, audit badge, closeness ring,
+   pencil / three-dot / close on the far right. */
+function phead(e){
   var prof = e.profile || {};
-  var bars = SCORE_FIELDS.map(function(f){ return barRow(f, prof[f.k]); }).join('');
+  var title = e.display || e.name;
+  var sub = e.src === 'contacts' ? 'phone contact' : '@' + e.name;
+  if(e.relation) sub += ' · ' + e.relation;
+  var aud = (prof.audit === 'audited');
+  var actBtn = S.editing
+    ? '<button id="pdone" class="phbtn" title="Done — save and exit edit mode">✓</button>'
+    : '<button id="pedit" class="phbtn" title="Edit this file">✎</button>';
+  return '<div class="phead">' +
+    '<div class="phring">' + ringSVG(prof.closeness, 5, 'Close') + '</div>' +
+    '<div class="phtext"><h2>' + esc(title) + '</h2>' +
+    '<div class="phsub"><span>' + esc(sub) + '</span>' +
+    '<button id="auditbadge" class="auditbadge ' + (aud ? 'ok' : 'needs') + '" title="Toggle audit status">' +
+    (aud ? '● audited' : '● needs audit') + '</button>' + reviewBadge(e) + '</div></div>' +
+    '<div class="phbtns">' + actBtn +
+    '<div class="dmenu"><button class="phbtn dbtn" aria-label="More actions" aria-haspopup="true">⋮</button>' +
+    '<div class="ditems"><button id="paudit">' + (aud ? 'Audited ✓' : 'Mark audited') + '</button>' +
+    '<button id="pdelete" class="danger">Delete this person</button></div></div>' +
+    '<button id="mclose" class="phbtn" title="Close panel">×</button></div></div>';
+}
+function fieldDef(k){
+  for(var i = 0; i < PROFILE_FIELDS.length; i++) if(PROFILE_FIELDS[i].k === k) return PROFILE_FIELDS[i];
+  return { k: k, label: k };
+}
+/* Single-line rating: label left, 1-5 pills right, hint as hover tooltip. */
+function rateLine(k, prof){
+  var f = fieldDef(k), v = prof[f.k] || '';
+  var h = '<div class="rrow"><span class="rlab"' + (f.hint ? ' title="' + esc(f.hint) + '"' : '') + '>' +
+    esc(f.label) + '</span><div class="dots sm" data-pk="' + f.k + '" data-v="' + esc(v) + '">';
+  for(var i = 1; i <= 5; i++)
+    h += '<span class="pdot' + (String(v) === String(i) ? ' on' : '') + '" data-v="' + i + '">' + i + '</span>';
+  return h + '</div></div>';
+}
+function idrow(k, label, val){
+  return '<div class="irow"><span class="ilab">' + esc(label) + '</span>' +
+    '<input data-pk="' + k + '" value="' + esc(val) + '" placeholder="—" autocomplete="off"></div>';
+}
+/* Public footprint: prose paragraphs + sources shortened to clickable site names. */
+function footprintHTML(e){
+  var fp = e.public_footprint;
+  if(!fp) return '<div class="fpbox"><p class="body dim">No public footprint on file.</p></div>';
+  var parts = String(fp).split(/\n*Sources:\s*/);
+  var prose = parts[0].trim().split(/\n+/).map(function(p){
+    return '<p>' + esc(p) + '</p>';
+  }).join('');
+  var links = '';
+  if(parts[1]){
+    links = parts[1].split(/;\s*/).map(function(u){
+      u = String(u).trim(); if(!u) return '';
+      var host = u.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+      return '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(host) + '</a>';
+    }).join('');
+  }
+  return '<div class="fpbox">' + prose +
+    (links ? '<div class="fpsrc"><span>Sources</span>' + links + '</div>' : '') + '</div>';
+}
+/* View mode: two columns. Left = the 15. Right = bio, directory, close connections, footprint. */
+function dossierView(e){
+  var prof = e.profile || {};
   var chips = '';
   if(prof.relationship) chips += '<span class="vchip">' + esc(prof.relationship) + '</span>';
   if(prof.context) chips += '<span class="vchip">' + esc(prof.context) + '</span>';
   if(e.src === 'contacts') chips += '<span class="vchip">phone contact</span>';
-  var otags = '';
-  ORG_CATS.forEach(function(cat){
-    tagList(prof[cat.k]).forEach(function(v){
-      otags += '<span class="otag" data-tagk="' + cat.k + '" data-tagv="' + esc(v) + '" title="Filter the list by ' + esc(v) + '">' + esc(v) + '</span>';
-    });
-  });
+  var bars = SCORE_FIELDS.map(function(f){ return barRow(f, prof[f.k]); }).join('');
   var spec = '';
   if(prof.specialty) spec += '<div class="vline"><span>Specialty</span>' + esc(prof.specialty) + '</div>';
   if(prof.interests) spec += '<div class="vline"><span>Interests</span>' + esc(prof.interests) + '</div>';
   var score100 = '';
   if(prof.enriched_value){
     var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
-    if(m) score100 = ringSVG(m[1], 100, 'Score');
+    if(m) score100 = '<div class="vscore">' + ringSVG(m[1], 100, 'Score') + '</div>';
   }
   var narr = prof.enriched_value
     ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, ''))
     : 'No bio generated yet.';
-  return '<div class="doc">' + classbar() + head +
-    '<div class="dgrid">' +
-    '<div class="dcol">' +
-    '<div class="dsec"><h3><span class="n">01</span> The 15</h3>' +
-    (chips ? '<div class="vchips">' + chips + '</div>' : '') +
-    (otags ? '<div class="otags">' + otags + '</div>' : '') +
-    '<div class="vcols"><div class="vbars">' + bars + '</div>' +
-    '<div class="vrings">' + ringSVG(prof.closeness, 5, 'Close') + score100 + '</div></div>' +
-    spec + '</div>' +
-    '</div>' +
-    '<div class="dcol">' +
-    '<div class="dsec"><h3><span class="n">02</span> Bio</h3>' +
-    '<div class="narr">' + narr + '</div>' +
-    ((prof.enriched === '1' || prof.enriched === 1)
-      ? '<div class="calcnote">generated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</div>'
-      : '<div class="calcnote dim">not generated</div>') +
-    '</div>' +
-    '<details class="dsec det"><summary><h3><span class="n">03</span> Directory</h3></summary>' + dirDetails(e) + '</details>' +
-    '<details class="dsec det"><summary><h3><span class="n">04</span> Reference</h3></summary>' + refDetails(e) + '</details>' +
-    '</div>' +
-    '</div>' +
-    classbar().replace('classbar', 'classbar bot') + '</div>';
-}
-function dirDetails(e){
+  var genState = (prof.enriched === '1' || prof.enriched === 1)
+    ? '<span class="calcnote">generated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</span>'
+    : '<span class="calcnote dim">not generated</span>';
   var c = e.contact || {};
-  var rows = '<dt>Key</dt><dd>' + esc(pkey(e)) + '</dd>';
-  if(c.phones && c.phones.length) rows += '<dt>Phone</dt><dd>' + esc(c.phones.map(fmtPhone).join(', ')) + '</dd>';
-  if(c.emails && c.emails.length) rows += '<dt>Email</dt><dd>' + esc(c.emails.join(', ')) + '</dd>';
-  if(c.orgs && c.orgs.length) rows += '<dt>Org</dt><dd>' + esc(c.orgs.join(', ')) + '</dd>';
-  if(e.src !== 'contacts'){
-    rows += '<dt>Relation</dt><dd>' + esc(e.relation || '—') + '</dd>' +
-      '<dt>Graph connections</dt><dd>' + e.degree + '</dd>' +
-      '<dt>Shared with you</dt><dd>' + e.shared_with_jd + '</dd>';
-    if(e.detail) rows += '<dt>On file</dt><dd>' + esc(e.detail) + '</dd>';
-  }
+  var phones = prof.phone || (c.phones || []).join(', ');
+  var kv = '';
+  if(phones) kv += '<div class="kvrow"><span>Phone</span><b>' +
+    esc(String(phones).split(',').map(function(x){ return fmtPhone(x); }).join(', ')) + '</b></div>';
+  if(prof.email || (c.emails || []).length)
+    kv += '<div class="kvrow"><span>Email</span><b>' + esc(prof.email || (c.emails || []).join(', ')) + '</b></div>';
+  if(e.relation) kv += '<div class="kvrow"><span>Relation</span><b>' + esc(e.relation) + '</b></div>';
+  kv += '<div class="kvrow"><span>Graph connections</span><b>' + e.degree + '</b></div>';
+  kv += '<div class="kvrow"><span>Shared with you</span><b>' + e.shared_with_jd + '</b></div>';
+  if(e.detail) kv += '<div class="kvrow"><span>On file</span><b>' + esc(e.detail) + '</b></div>';
   var nbrs = (e.neighbors || []).slice(0, 12);
   var nbrChips = nbrs.length ? nbrs.map(function(nb){
     return '<span class="nchip" data-nx="' + esc(nb.u) + '">' + esc(nb.d || nb.u) +
       '<b class="nx" data-rmnx="' + esc(nb.u) + '" title="Remove close connection">×</b></span>';
-  }).join('') : '<p class="body">No close connections mapped.</p>';
-  return '<dl class="kv">' + rows + '</dl><h4 style="margin:12px 0 8px">Close connections</h4>' +
-    '<div class="nchips">' + nbrChips + '</div>' +
-    '<div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name…" autocomplete="off"><div id="naddlist"></div></div>';
+  }).join('') : '<p class="body dim">No close connections mapped.</p>';
+  return '<div class="doc">' + phead(e) +
+    '<div class="dgrid">' +
+    '<div class="dcol vleft">' +
+    '<div class="dsec"><h3><span class="n">01</span> The 15</h3>' +
+    (chips ? '<div class="vchips">' + chips + '</div>' : '') +
+    '<div class="vbars">' + bars + '</div>' + score100 + spec + '</div>' +
+    '</div>' +
+    '<div class="dcol vright">' +
+    '<div class="dsec"><h3><span class="n">02</span> Bio</h3><div class="narr">' + narr + '</div>' +
+    '<div class="genrow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button>' + genState + '</div></div>' +
+    '<div class="dsec"><h3><span class="n">03</span> Directory</h3><div class="kvlist">' + kv + '</div></div>' +
+    '<div class="dsec"><h3><span class="n">04</span> Close connections</h3><div class="nchips">' + nbrChips + '</div>' +
+    '<div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name…" autocomplete="off"><div id="naddlist"></div></div></div>' +
+    '<div class="dsec fpsec"><h3><span class="n">05</span> Public footprint</h3>' + footprintHTML(e) + '</div>' +
+    '</div></div></div>';
 }
-function refDetails(e){
-  var leg = e.legacy || {}, rec = e.record || {}, prof = e.profile || {};
-  var hasSensitive = !!(leg.desc || rec.body || (e.friendsdb || {}).phone || e.notes);
-  var inner = '';
-  if(leg.desc) inner += '<p class="body rtext">' + esc(leg.desc) + '</p>';
-  if(rec.body) inner += '<p class="body rtext">' + esc(rec.body) + '</p>';
-  if(e.public_footprint) inner += '<p class="body rtext"><span style="color:var(--dim)">Public footprint</span><br>' + esc(e.public_footprint) + '</p>';
-  if(prof.notes) inner += '<p class="body rtext"><span style="color:var(--dim)">Field notes</span><br>' + esc(prof.notes) + '</p>';
-  if(!inner) inner = '<p class="body">No reference material on file.</p>';
-  return '<div class="memoir unlocked">' + inner + '</div>';
-}
-/* Edit mode: the fast-entry form. */
-function dossierEdit(e, idx, head){
+/* Edit mode: same two-column frame + header. Save/Cancel pinned at the bottom. */
+function dossierEdit(e){
   var prof = e.profile || {};
-  var prows = PROFILE_FIELDS.map(function(f){ return profRow(f, prof); }).join('');
-  var narrVal = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
   var c = e.contact || {};
   var dispVal = prof.display_name || e.display || '';
   var tagRows = ORG_CATS.map(function(cat){ return tagPicker(cat, prof); }).join('');
-  return '<div class="doc">' + classbar() + head +
-    '<div class="dsec"><h3><span class="n">00</span> Quick fill</h3>' +
-    '<textarea id="pfree" rows="3" placeholder="Just describe them in your own words — e.g. \u201cfriend from church, closeness 4, really charismatic, runs Zufall Farm, into photography and travel\u201d"></textarea>' +
-    '<div class="arow"><button id="pfill" class="xbtn acc">Fill the 15</button><span id="pfillmsg"></span></div></div>' +
-    '<div class="dsec"><h3><span class="n">01</span> The 15</h3><div class="pform">' + prows + '</div></div>' +
-    '<div class="dsec"><h3><span class="n">02</span> Directory</h3><div class="pform">' +
-    '<div class="prow"><div class="plab">Display name</div><div class="pctl"><input data-pk="display_name" value="' + esc(dispVal) + '" placeholder="—"></div></div>' +
-    '<div class="prow"><div class="plab">Phone</div><div class="pctl"><input data-pk="phone" value="' + esc(prof.phone || (c.phones || []).join(', ')) + '" placeholder="—"></div></div>' +
-    '<div class="prow"><div class="plab">Email</div><div class="pctl"><input data-pk="email" value="' + esc(prof.email || (c.emails || []).join(', ')) + '" placeholder="—"></div></div>' +
-    '</div></div>' +
+  var narrVal = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
+  var relF = PROFILE_FIELDS[0], ctxF = PROFILE_FIELDS[1], spF = PROFILE_FIELDS[3], intF = PROFILE_FIELDS[4];
+  var g1 = ['charisma', 'competence', 'intellect', 'creativity'].map(function(k){ return rateLine(k, prof); }).join('');
+  var g2 = ['reliability', 'reputation', 'assertiveness', 'ego'].map(function(k){ return rateLine(k, prof); }).join('');
+  return '<div class="doc edit">' + phead(e) +
+    '<div class="qfill"><input id="pfree" placeholder="Describe them in your own words — e.g. “friend from church, closeness 4, really charismatic…”" autocomplete="off">' +
+    '<button id="pfill" class="xbtn acc">Fill the 15</button><span id="pfillmsg"></span></div>' +
+    '<div class="dgrid">' +
+    '<div class="dcol eleft">' +
+    '<div class="dsec"><h3><span class="n">01</span> The 15</h3><div class="pform">' +
+    profRow(relF, prof) + profRow(ctxF, prof) + rateLine('closeness', prof) +
+    profRow(spF, prof) + profRow(intF, prof) +
+    '</div><div class="rgroups"><div>' + g1 + '</div><div>' + g2 + '</div></div></div>' +
+    '</div>' +
+    '<div class="dcol eright">' +
+    '<div class="dsec"><h3><span class="n">02</span> Identity</h3>' +
+    idrow('display_name', 'Name', dispVal) +
+    idrow('phone', 'Phone', prof.phone || (c.phones || []).join(', ')) +
+    idrow('email', 'Email', prof.email || (c.emails || []).join(', ')) + '</div>' +
     '<div class="dsec"><h3><span class="n">03</span> Organizations</h3>' + tagRows + '</div>' +
     '<div class="dsec"><h3><span class="n">04</span> Bio</h3>' +
-    '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Write your draft bio here, then hit Generate to clean it up.">' + esc(narrVal) + '</textarea>' +
-    '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
-    '<div class="dsec"><h3><span class="n">05</span> Reference</h3>' +
-    '<textarea id="refnotes" data-pk="notes" rows="3" placeholder="Field notes — private reference material.">' + esc(prof.notes || '') + '</textarea></div>' +
-    '<div class="dsec delrow"><button id="pdelete" class="xbtn danger">Delete this person</button></div>' +
-    classbar().replace('classbar', 'classbar bot') + '</div>';
+    '<textarea id="narrtext" data-pk="enriched_value" rows="3" placeholder="Write your draft bio here, then hit Generate to clean it up.">' + esc(narrVal) + '</textarea>' +
+    '<div class="genrow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
+    '<div class="dsec notesec"><h3><span class="n">05</span> Reference notes</h3>' +
+    '<textarea id="refnotes" data-pk="notes" placeholder="Field notes — private reference material.">' + esc(prof.notes || '') + '</textarea></div>' +
+    '</div></div>' +
+    '<div class="efoot"><span id="savestate" class="savestate"></span><span class="esp"></span>' +
+    '<button id="psave" class="xbtn acc" disabled>Save</button><button id="pdone" class="xbtn">Cancel</button></div>' +
+    '</div>';
 }
 function dossierDir(e, idx){
-  var prof = e.profile || {};
-  var title = e.display || e.name;
-  var sub = e.src === 'contacts' ? 'phone contact' : '@' + e.name;
-  if(e.relation) sub += ' · ' + e.relation;
-  var menuBtns = S.editing
-    ? '<button id="psave" disabled>Save</button><button id="pdone">Done</button>'
-    : '<button id="pedit">Edit</button>' +
-      '<button id="paudit">' + ((prof.audit === 'audited') ? 'Audited ✓' : 'Mark audited') + '</button>' +
-      '<button id="mclose">Close</button>';
-  var head = '<div class="doc-head">' +
-    '<div class="dmenu"><span class="dbtn" tabindex="0" aria-label="Actions">⋮</span>' +
-    '<div class="ditems">' + menuBtns + '</div></div>' +
-    (S.editing ? '<span id="savestate" class="savestate"></span>' : '') +
-    '<div class="doc-kicker">Personal file · #' + String(idx + 1).padStart(3, '0') + ' ' + auditBadge(e) + reviewBadge(e) + '</div>' +
-    '<h2>' + esc(title) + '</h2>' +
-    '<div class="doc-filed">' + esc(sub) + '</div></div>';
-  return S.editing ? dossierEdit(e, idx, head) : dossierView(e, idx, head);
+  return S.editing ? dossierEdit(e) : dossierView(e);
 }
-
 function reviewBadge(e){
   var f = (e.profile || {}).review_flag;
   if(!f) return '';
@@ -586,14 +611,18 @@ function renderProfile(){
   var body = $('#rightbody'), panel = $('#right');
   if(S.sel === null){
     panel.classList.remove('open');
+    document.body.classList.remove('panelopen');
     body.innerHTML = '';
-    if(S.mode === '3d') setTimeout(glRecenter, 60);
+    if(S.mode === '3d'){ setTimeout(glRecenter, 60); setTimeout(function(){ glResize(); glRecenter(); }, 480); }
+    else { setTimeout(function(){ if(hub.cv) hubResize(); }, 480); }
     return;
   }
   panel.classList.add('open');
+  document.body.classList.add('panelopen');
   body.innerHTML = dossierDir(D.directory[S.sel], S.sel);
   body.scrollTop = 0;
-  if(S.mode === '3d') setTimeout(glRecenter, 60);
+  if(S.mode === '3d'){ setTimeout(glRecenter, 60); setTimeout(function(){ glResize(); glRecenter(); }, 480); }
+  else { setTimeout(function(){ if(hub.cv) hubResize(); }, 480); }
 }
 
 /* ---------- selection ---------- */
@@ -670,7 +699,8 @@ function bind(){
     }
     if(e.target.closest('#psave')){ saveProfile(false); return; }
     if(e.target.closest('#paudit')){ toggleAudit(); return; }
-    if(e.target.closest('#enrichbtn')){ runEnrich(); return; }
+    if(e.target.closest('#enrichbtn')){ if(!S.editing){ S.editing = true; renderProfile(); var nt = document.querySelector('#narrtext'); if(nt){ nt.focus(); } var m2 = document.querySelector('#enrmsg'); if(m2) m2.textContent = 'Write your draft above, then Generate.'; } else { runEnrich(); } return; }
+    if(e.target.closest('#auditbadge')){ toggleAudit(); return; }
     if(e.target.closest('#pfill')){ fillFromText(); return; }
     var pd = e.target.closest('.pdot');
     if(pd){
@@ -743,8 +773,14 @@ function bind(){
   document.addEventListener('keydown', function(e){
     if(e.key==='Escape' && S.sel !== null){
       if(S.saveTimer){ clearTimeout(S.saveTimer); S.saveTimer = null; saveProfile(true, S.sel); }
-      S.sel = null; renderProfile(); renderList();
+      S.sel = null; S.editing = false; renderProfile(); renderList();
     }
+  });
+  // three-dot menu: click toggles, click elsewhere closes
+  document.addEventListener('click', function(e){
+    var m = e.target.closest ? e.target.closest('.dmenu') : null;
+    document.querySelectorAll('.dmenu.open').forEach(function(x){ if(x !== m) x.classList.remove('open'); });
+    if(m && e.target.closest('.dbtn')) m.classList.toggle('open');
   });
 }
 
@@ -1074,16 +1110,13 @@ function loadScript(src){
     document.head.appendChild(s);
   });
 }
-/* Keep the subject centered in the free space between the left list and the right panel. */
-function layoutShift(){
-  var lw = (S.listOpen && document.querySelector('#left')) ? document.querySelector('#left').offsetWidth : 0;
-  var pw = (S.sel !== null && document.querySelector('#right')) ? document.querySelector('#right').offsetWidth : 0;
-  return { ox2d: (lw - pw) / 2, vox: (pw - lw) / 2 };
-}
+/* The stage element itself resizes to the free space between the rail and the panel,
+   so the graph center is already the visible middle — no camera offsets needed. */
+function layoutShift(){ return { ox2d: 0, vox: 0 }; }
 function glRecenter(){
   if(!GL || !GL.camera) return;
-  var sh = layoutShift();
-  GL.camera.setViewOffset(window.innerWidth, window.innerHeight, sh.vox, 0, window.innerWidth, window.innerHeight);
+  try { GL.camera.clearViewOffset(); } catch(x){}
+  GL.camera.updateProjectionMatrix();
 }
 function setMode(m){
   S.mode = m;
