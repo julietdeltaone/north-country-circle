@@ -124,7 +124,7 @@ body.nolist #stage{left:12px}
 #stagehint.fade{opacity:0}
 
 /* ---------- right: dossier document ---------- */
-#right{right:12px;width:min(760px,calc(100vw - 48px));
+#right{right:12px;width:min(920px,calc(100vw - 48px));
   transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none;
   transition:transform .42s var(--ease),opacity .3s;z-index:25}
 #right.open{transform:none;opacity:1;pointer-events:auto}
@@ -501,3 +501,38 @@ details.dsec.det summary h3{display:inline-block}
 
 /* ---- delete row ---- */
 .dsec.delrow{ text-align:right; }
+
+/* ---- two-column profile card ---- */
+.dgrid{ display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:20px; padding:0 26px; align-items:start; }
+.dcol{ min-width:0; }
+.dcol .dsec{ margin:0 0 16px; }
+@media(max-width:1100px){ .dgrid{ grid-template-columns:1fr; } }
+
+/* condensed meters */
+.vrow{ gap:7px; }
+.vlab{ flex:0 0 92px; }
+.vbar{ flex:0 1 132px; height:7px; }
+.vval{ margin-left:auto; }
+
+/* three-dot hover menu */
+.doc-head{ padding-left:44px; }
+.dmenu{ position:absolute; top:14px; left:12px; z-index:20; }
+.dbtn{ cursor:pointer; font-size:19px; line-height:1; color:var(--dim); padding:6px 9px; border-radius:8px; letter-spacing:1px; user-select:none; }
+.dmenu:hover .dbtn, .dmenu:focus-within .dbtn{ color:var(--txt); background:rgba(255,255,255,.07); }
+.ditems{ display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:150px; padding:6px;
+  background:#181d26; border:1px solid rgba(255,255,255,.13); border-radius:11px;
+  box-shadow:0 10px 28px rgba(0,0,0,.55); }
+.dmenu:hover .ditems, .dmenu:focus-within .ditems{ display:block; }
+.ditems button{ display:block; width:100%; text-align:left; background:none; border:none;
+  color:var(--txt); font-size:13px; font-weight:600; padding:8px 10px; border-radius:7px; cursor:pointer; }
+.ditems button:hover:not(:disabled){ background:rgba(255,255,255,.08); }
+.ditems button:disabled{ opacity:.35; cursor:default; }
+.dmenu .savestate{ margin:6px 10px 4px; display:block; }
+
+/* tighter card: everything moves up */
+.doc-head{ padding-top:14px; }
+.doc-head h2{ font-size:32px; margin:4px 0 2px; }
+.dsec h3{ margin:0 0 10px; }
+.vchips{ margin-bottom:8px; }
+.otags{ margin:0 0 8px; }
+.narr{ margin-bottom:8px; }
