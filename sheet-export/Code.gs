@@ -162,9 +162,6 @@ var FRIENDS_COLS = { 'Name':1, 'Relationship Type':2, 'Groups / Contexts':3,
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
-    if (body.password !== EDIT_PASSWORD) {
-      return jsonOut({ ok: false, error: 'wrong password' });
-    }
     var kind = body.kind, id = String(body.id || ''), patch = body.patch || {};
     if (kind === 'getsettings') {
       return jsonOut({ ok: true,
@@ -189,6 +186,12 @@ function doPost(e) {
       if (patch.prompt !== undefined) setSetting_('enrich_prompt', String(patch.prompt));
       if (patch.gemini_key) setSetting_('gemini_key', String(patch.gemini_key));
       return jsonOut({ ok: true });
+    } else if (kind === 'testgemini') {
+      var apiKey = getSetting_('gemini_key', '') || PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
+      if (!apiKey) return jsonOut({ ok: false, error: 'no Gemini API key — paste one above and save' });
+      var parts = callGemini('Reply with exactly: GEMINI ONLINE', apiKey);
+      var text = parts.map(function(pt) { return pt.text || ''; }).join('').trim();
+      return jsonOut({ ok: true, reply: text });
     } else {
       return jsonOut({ ok: false, error: 'unknown kind' });
     }
