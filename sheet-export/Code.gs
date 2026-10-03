@@ -208,6 +208,8 @@ function doPost(e) {
       var pm = praw.match(/\{[\s\S]*\}/);
       if (!pm) throw new Error('could not parse that — try simpler wording');
       return jsonOut({ ok: true, fields: JSON.parse(pm[0]) });
+    } else if (kind === 'exportdossier') {
+      return jsonOut(exportDossier(id, patch));
     } else if (kind === 'testgemini') {
       var apiKey = getSetting_('gemini_key', '') || PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
       if (!apiKey) return jsonOut({ ok: false, error: 'no Gemini API key — paste one above and save' });
@@ -335,6 +337,24 @@ function callGemini(prompt, apiKey) {
   }
   var data = JSON.parse(body);
   return (((data.candidates || [])[0] || {}).content || {}).parts || [];
+}
+
+/** Export: save a generated dossier document to the Drive folder. */
+function dossierFolder_() {
+  var it = DriveApp.getFoldersByName('North Country Circle Dossiers');
+  if (it.hasNext()) return it.next();
+  return DriveApp.createFolder('North Country Circle Dossiers');
+}
+function exportDossier(id, patch) {
+  var html = String((patch && patch.html) || '');
+  var name = String((patch && patch.filename) || 'dossier.html').replace(/[\\/:*?"<>|]/g, '').slice(0, 120) || 'dossier.html';
+  if (!html) throw new Error('nothing to export');
+  var folder = dossierFolder_();
+  var file = null;
+  var it = folder.getFilesByName(name);
+  if (it.hasNext()) { file = it.next(); file.setContent(html); }
+  else { file = folder.createFile(name, html, 'text/html'); }
+  return { ok: true, url: file.getUrl(), name: name };
 }
 
 function jsonOut(obj) {
