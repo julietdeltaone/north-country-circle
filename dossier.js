@@ -191,6 +191,7 @@ function phead(e){
     '<div class="phbtns">' + actBtn +
     '<div class="dmenu"><button class="phbtn dbtn" aria-label="More actions" aria-haspopup="true"><span class="dots3" aria-hidden="true"><i></i><i></i><i></i></span></button>' +
     '<div class="ditems"><button id="paudit">' + (aud ? 'Audited ✓' : 'Mark audited') + '</button>' +
+    '<button id="pexport">Export dossier</button>' +
     '<button id="pdelete" class="danger">Delete this person</button></div></div>' +
     '<button id="mclose" class="phbtn" title="Close panel">×</button></div></div>';
 }
@@ -744,6 +745,7 @@ function bind(){
       renderList(); updateTagPill();
       return;
     }
+    if(e.target.closest('#pexport')){ exportDossier(); return; }
     if(e.target.closest('#pdelete')){ deletePerson(); return; }
   });
   $('#rightbody').addEventListener('keydown', function(e){
@@ -1008,6 +1010,122 @@ function updateAuditPill(){
   if(!pill) return;
   var done = D.directory.filter(function(r){ return (r.profile || {}).audit === 'audited'; }).length;
   pill.textContent = 'Audited ' + done + '/' + D.directory.length;
+}
+
+/* ---------- dossier export: FBI-form-style document -> Google Drive ---------- */
+function dossierFileName(e){
+  var base = String(e.display || e.name || 'person').replace(/[\\/:*?"<>|]/g, '').trim() || 'person';
+  return 'Dossier - ' + base + '.html';
+}
+function buildDossierDoc(e){
+  var prof = e.profile || {}, c = e.contact || {};
+  var name = e.display || e.name || '';
+  var handle = e.src === 'contacts' ? '' : '@' + (e.name || '');
+  var aliases = [];
+  if(prof.display_name && prof.display_name !== name) aliases.push(prof.display_name);
+  if(e.name && e.display && e.name !== e.display) aliases.push('@' + e.name);
+  var today = new Date();
+  var ds = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+  var bio = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
+  var score = '';
+  if(prof.enriched_value){
+    var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
+    if(m) score = m[1] + ' / 100';
+  }
+  var classif = [prof.relationship, prof.context].filter(Boolean).join(' · ');
+  var orgs = [];
+  ['churches', 'companies', 'universities'].forEach(function(k){
+    tagList(prof[k]).forEach(function(v){ orgs.push(v); });
+  });
+  var ratings = SCORE_FIELDS.map(function(f){
+    var v = prof[f.k];
+    return '<tr><td>' + esc(f.label) + '</td><td>' + (v ? esc(v) + ' / 5' : '—') + '</td></tr>';
+  }).join('');
+  var extras = '';
+  if(prof.specialty) extras += '<tr><td>Specialty</td><td>' + esc(prof.specialty) + '</td></tr>';
+  if(prof.interests) extras += '<tr><td>Interests</td><td>' + esc(prof.interests) + '</td></tr>';
+  if(score) extras += '<tr><td>Assessment score</td><td>' + esc(score) + '</td></tr>';
+  var assoc = (e.neighbors || []).map(function(nb){ return '<li>' + esc(nb.d || nb.u) + '</li>'; }).join('');
+  var dir = '';
+  var phones = prof.phone || (c.phones || []).join(', ');
+  if(phones) dir += '<div><b>Phone:</b> ' + esc(phones) + '</div>';
+  var emails = prof.email || (c.emails || []).join(', ');
+  if(emails) dir += '<div><b>Email:</b> ' + esc(emails) + '</div>';
+  if(e.relation) dir += '<div><b>Relation:</b> ' + esc(e.relation) + '</div>';
+  dir += '<div><b>Graph connections:</b> ' + e.degree + '</div>';
+  dir += '<div><b>Shared with you:</b> ' + e.shared_with_jd + '</div>';
+  if(e.detail) dir += '<div><b>On file:</b> ' + esc(e.detail) + '</div>';
+  var notes = '';
+  if(prof.notes) notes += '<p>' + esc(prof.notes).replace(/\n/g, '<br>') + '</p>';
+  if(e.public_footprint) notes += '<p><b>Public footprint</b><br>' + esc(e.public_footprint).replace(/\n/g, '<br>') + '</p>';
+  if(!notes) notes = '<p>—</p>';
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
+  '<title>Dossier — ' + esc(name) + '</title><style>' +
+  'body{background:#26292f;margin:0;padding:28px;font-family:"Courier New",Courier,monospace;color:#141414}' +
+  '.page{background:#f5f2e9;max-width:800px;margin:0 auto;padding:40px 44px;box-shadow:0 0 50px rgba(0,0,0,.55)}' +
+  '.mast{display:flex;align-items:center;gap:18px;justify-content:center;margin-bottom:4px}' +
+  '.seal{width:64px;height:64px;border:3px double #141414;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px}' +
+  'h1{font-size:27px;letter-spacing:.3em;margin:0;font-weight:700}' +
+  '.psub{text-align:center;letter-spacing:.5em;font-size:12px;margin:6px 0 18px;color:#333}' +
+  '.frow{display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px}' +
+  'table.box{width:100%;border-collapse:collapse;border:2px solid #141414;margin-bottom:22px}' +
+  'table.box th,table.box td{border:1px solid #141414;padding:8px 10px;font-size:12.5px;vertical-align:top;text-align:left}' +
+  'table.box th{font-size:10.5px;letter-spacing:.12em;background:#ece7d8}' +
+  '.redact{background:#141414;color:#141414;border-radius:2px;padding:0 10px;user-select:none}' +
+  '.sec{margin:0 0 20px}.slabel{font-size:12px;letter-spacing:.14em;font-weight:700;margin-bottom:8px}' +
+  '.sbody{font-size:13px;line-height:1.65}.sbody p{margin:0 0 10px}' +
+  'table.rate{width:100%;border-collapse:collapse}table.rate td{border:1px solid #141414;padding:6px 10px;font-size:12.5px}' +
+  'table.rate td:first-child{width:45%;background:#ece7d8;letter-spacing:.06em;font-size:11.5px}' +
+  'ul.assoc{margin:0;padding-left:22px;font-size:13px;line-height:1.7}' +
+  '.kv div{margin-bottom:4px;font-size:13px}' +
+  '.foot{border-top:2px solid #141414;margin-top:26px;padding-top:10px;font-size:11px}' +
+  '.foot .sig{font-family:"Segoe Script",cursive;font-size:22px;margin:6px 0}' +
+  '.dnw{text-align:center;letter-spacing:.2em;font-size:10.5px;margin:14px 0 6px}' +
+  'table.copies{width:100%;border-collapse:collapse;border:2px solid #141414}table.copies td{border:1px solid #141414;height:44px}' +
+  '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none}}' +
+  '</style></head><body><div class="page">' +
+  '<div class="mast"><div class="seal">◈</div><h1>NORTH COUNTRY CIRCLE</h1></div>' +
+  '<div class="psub">PERSONAL DOSSIER</div>' +
+  '<div class="frow"><span>FORM NO. NCC-01</span><span>FILE NO. <span class="redact">████████</span></span></div>' +
+  '<table class="box">' +
+  '<tr><th>REPORT MADE AT</th><th>DATE REPORT MADE</th><th>LAST ASSESSMENT</th><th>REPORT MADE BY</th></tr>' +
+  '<tr><td>Potsdam, NY</td><td>' + ds + '</td><td>' + esc(prof.enriched_at || '—') + '</td><td><span class="redact">██████</span></td></tr>' +
+  '<tr><th colspan="2">TITLE / DESCRIPTION AND ALL KNOWN ALIASES</th><th colspan="2">CLASSIFICATION</th></tr>' +
+  '<tr><td colspan="2"><b>' + esc(name) + '</b>' +
+  (aliases.length ? '<br>aka ' + esc(aliases.join(', ')) : '') +
+  (handle ? '<br>' + esc(handle) : '') + '</td>' +
+  '<td colspan="2">' + esc(classif || '—') +
+  (orgs.length ? '<br>' + esc(orgs.join(' · ')) : '') + '</td></tr></table>' +
+  '<div class="sec"><div class="slabel">SYNOPSIS OF FACTS:</div><div class="sbody">' +
+  (bio ? '<p>' + esc(bio) + '</p>' : '<p>—</p>') + '</div></div>' +
+  '<div class="sec"><div class="slabel">PROFILE RATINGS:</div><table class="rate">' + ratings + extras + '</table></div>' +
+  '<div class="sec"><div class="slabel">KNOWN ASSOCIATES:</div>' +
+  (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div>' +
+  '<div class="sec"><div class="slabel">DIRECTORY PARTICULARS:</div><div class="sbody kv">' + dir + '</div></div>' +
+  '<div class="sec"><div class="slabel">FIELD NOTES:</div><div class="sbody">' + notes + '</div></div>' +
+  '<div class="foot"><div>APPROVED / FORWARDED BY</div><div class="sig">J. Meyers</div>' +
+  '<div class="dnw">DO NOT WRITE IN THE BOXES BELOW</div>' +
+  '<table class="copies"><tr><td></td><td></td></tr></table>' +
+  '<div style="text-align:center;margin-top:8px;letter-spacing:.2em">COPIES OF THIS REPORT</div></div>' +
+  '</div></body></html>';
+}
+function exportDossier(){
+  var e = D.directory[S.sel];
+  if(!e || !WEBAPP_URL){ toast('Nothing to export.'); return; }
+  var btn = document.querySelector('#pexport');
+  if(btn) btn.disabled = true;
+  toast('Building dossier…');
+  var html;
+  try { html = buildDossierDoc(e); }
+  catch(err){ toast('Could not build the document.'); if(btn) btn.disabled = false; return; }
+  postKind('exportdossier', pkey(e), { html: html, filename: dossierFileName(e) }, getPw(), function(res){
+    if(btn) btn.disabled = false;
+    toast('Saved to Drive: North Country Circle Dossiers.');
+    if(res && res.url){ try { window.open(res.url, '_blank'); } catch(x){} }
+  }, function(err){
+    if(btn) btn.disabled = false;
+    toast('Export failed: ' + err);
+  });
 }
 
 /* ---------- settings (enrich prompt + api key, stored server-side in the sheet) ---------- */
