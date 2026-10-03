@@ -1108,22 +1108,34 @@ function buildDossierDoc(e){
   '<div style="text-align:center;margin-top:8px;letter-spacing:.2em">COPIES OF THIS REPORT</div></div>' +
   '</div></body></html>';
 }
+function downloadDossierFile(name, html){
+  try {
+    var blob = new Blob([html], {type: 'text/html'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  } catch(x){ toast('Download failed.'); }
+}
 function exportDossier(){
   var e = D.directory[S.sel];
   if(!e || !WEBAPP_URL){ toast('Nothing to export.'); return; }
   var btn = document.querySelector('#pexport');
   if(btn) btn.disabled = true;
   toast('Building dossier…');
-  var html;
-  try { html = buildDossierDoc(e); }
+  var html, fname;
+  try { html = buildDossierDoc(e); fname = dossierFileName(e); }
   catch(err){ toast('Could not build the document.'); if(btn) btn.disabled = false; return; }
-  postKind('exportdossier', pkey(e), { html: html, filename: dossierFileName(e) }, getPw(), function(res){
+  postKind('exportdossier', pkey(e), { html: html, filename: fname }, getPw(), function(res){
     if(btn) btn.disabled = false;
     toast('Saved to Drive: North Country Circle Dossiers.');
-    if(res && res.url){ try { window.open(res.url, '_blank'); } catch(x){} }
+    downloadDossierFile(fname, html);
   }, function(err){
     if(btn) btn.disabled = false;
-    toast('Export failed: ' + err);
+    downloadDossierFile(fname, html);
+    toast('Drive save failed — downloaded a local copy instead.');
   });
 }
 
