@@ -245,7 +245,7 @@ function doEnrich(key) {
   var prompt = promptBase + '\n' + lines.join('\n');
   var parts = callGemini(prompt, apiKey);
   var text = parts.map(function(pt) { return pt.text || ''; }).join('');
-  var m = text.match(/\{[\s\S]*\}/);
+  var m = text.replace(/```json|```/g, '').match(/\{[\s\S]*\}/);
   if (!m) throw new Error('gemini returned no JSON');
   var data = JSON.parse(m[0]);
   var stamp = Utilities.formatDate(new Date(), 'America/New_York', 'yyyy-MM-dd');
