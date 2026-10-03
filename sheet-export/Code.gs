@@ -278,7 +278,8 @@ function getSetting_(k, fb) {
 }
 function setSetting_(k, v) {
   var sh = settingsSheet_();
-  var vals = sh.getRange(2, 1, Math.max(sh.getLastRow() - 1, 0), 1).getValues();
+  var n = sh.getLastRow() - 1;
+  var vals = n > 0 ? sh.getRange(2, 1, n, 1).getValues() : [];
   for (var i = 0; i < vals.length; i++) {
     if (String(vals[i][0]).trim() === k) { sh.getRange(i + 2, 2).setValue(v); return; }
   }
