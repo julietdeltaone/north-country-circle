@@ -185,6 +185,7 @@ function doPost(e) {
     } else if (kind === 'settings') {
       if (patch.prompt !== undefined) setSetting_('enrich_prompt', String(patch.prompt));
       if (patch.gemini_key) setSetting_('gemini_key', String(patch.gemini_key));
+      if (patch.clear_key) setSetting_('gemini_key', '');
       return jsonOut({ ok: true });
     } else if (kind === 'testgemini') {
       var apiKey = getSetting_('gemini_key', '') || PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
@@ -308,7 +309,13 @@ function callGemini(prompt, apiKey) {
       payload: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
       muteHttpExceptions: true
     });
-  var data = JSON.parse(res.getContentText());
+  var code = res.getResponseCode(), body = res.getContentText();
+  if (code !== 200) {
+    var msg = body.slice(0, 200);
+    try { msg = JSON.parse(body).error.message || msg; } catch (x) {}
+    throw new Error('Gemini API error ' + code + ': ' + msg);
+  }
+  var data = JSON.parse(body);
   return (((data.candidates || [])[0] || {}).content || {}).parts || [];
 }
 
