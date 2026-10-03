@@ -179,8 +179,8 @@ function phead(e){
   if(e.relation) sub += ' · ' + e.relation;
   var aud = (prof.audit === 'audited');
   var actBtn = S.editing
-    ? '<button id="pdone" class="phbtn" title="Done — save and exit edit mode">✓</button>'
-    : '<button id="pedit" class="phbtn" title="Edit this file">✎</button>';
+    ? '<button id="pdone" class="phbtn" title="Done — save and exit edit mode"><span class="pglyph">✓</span></button>'
+    : '<button id="pedit" class="phbtn" title="Edit this file"><span class="pglyph">✎</span></button>';
   return '<div class="phead">' +
     '<div class="phring">' + ringSVG(prof.closeness, 5, 'Close') + '</div>' +
     '<div class="phtext"><h2>' + esc(title) + '</h2>' +
