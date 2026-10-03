@@ -152,7 +152,9 @@ var PROFILE_COLS = { key:1, display:2, relationship:3, context:4, closeness:5,
   specialty:6, interests:7, charisma:8, competence:9, intellect:10, creativity:11,
   reliability:12, reputation:13, assertiveness:14, ego:15,
   last_note_date:16, last_note:17, audit:18, enriched:19, enriched_value:20,
-  enriched_at:21 };
+  enriched_at:21, notes:22, churches:23, companies:24, universities:25,
+  phone:26, email:27, org:28, display_name:29, review_flag:30, deleted:31,
+  close_add:32, close_hide:33 };
 var DIRECTORY_COLS = { name:1, display:2, pieces:3, relation:4, detail:5 };
 var FRIENDS_COLS = { 'Name':1, 'Relationship Type':2, 'Groups / Contexts':3,
   'Closeness Tier':4, 'State':5, 'Standing':6, 'Trajectory':7,
@@ -181,7 +183,7 @@ function doPost(e) {
     } else if (kind === 'profile') {
       updateTabRow('Profiles', PROFILE_COLS, id, patch);
     } else if (kind === 'enrich') {
-      return jsonOut(doEnrich(id));
+      return jsonOut(doEnrich(id, patch));
     } else if (kind === 'settings') {
       if (patch.prompt !== undefined) setSetting_('enrich_prompt', String(patch.prompt));
       if (patch.gemini_key) setSetting_('gemini_key', String(patch.gemini_key));
@@ -198,7 +200,8 @@ function doPost(e) {
         'context (one of: work, school, military, community, church, online, other), ' +
         'closeness, charisma, competence, intellect, creativity, reliability, reputation, assertiveness, ego (each an integer 1-5; convert number words to digits), ' +
         'specialty (short phrase, e.g. job or role), ' +
-        'interests (comma-separated list). ' +
+        'interests (comma-separated list), ' +
+        'churches, companies, universities (comma-separated; when the person clearly belongs to a known one, use its exact name — known churches: CFC Potsdam, CFC Canton, CFC Madrid, NTC, Calvary Baptist; known companies: Rochester Regional Health, Clarkson University, Park Bros.; known universities: SUNY Canton, SUNY Potsdam, St. Lawrence University, Clarkson University). ' +
         'Description: ' + ptext;
       var pparts = callGemini(pprompt, pkey2);
       var praw = pparts.map(function(pt) { return pt.text || ''; }).join('').replace(/```json|```/g, '');
@@ -224,13 +227,13 @@ function doPost(e) {
     profiler: it weighs the scored social metrics the way practitioners do and
     returns one new derived value (a 0-100 composite + a 2-sentence read). */
 var ENRICH_PROMPT = [
-  'You are a professional social profiler. Given 15 structured data points about a person,',
-  'produce the composite assessment a professional would derive from them.',
-  'Weigh the scored metrics (closeness, charisma, competence, intellect, creativity,',
-  'reliability, reputation, assertiveness, ego) the way practitioners weigh observed social signals;',
-  'treat blank scores as unknown, never invent them.',
-  'Return ONLY valid JSON: {"score": <0-100 integer>, "narrative": "<a 3-4 sentence professional narrative summary of this person>"}.',
-  'Person data:'
+  'You are a copy editor for a private personal directory.',
+  'Below is a draft bio. Clean it up and standardize it:',
+  'fix grammar and flow, keep it to one tight paragraph (3-5 sentences),',
+  'neutral third-person tone, no flattery, no invented details.',
+  'Preserve every factual claim from the draft — do not add new facts.',
+  'Return ONLY the cleaned paragraph — no headings, no quotes, no JSON.',
+  'Draft:'
 ].join('\n');
 
 function readProfileRow(key) {
@@ -239,40 +242,31 @@ function readProfileRow(key) {
   var keys = sh.getRange(2, 1, Math.max(last - 1, 0), 1).getValues();
   for (var i = 0; i < keys.length; i++) {
     if (String(keys[i][0]).trim() === key) {
-      var vals = sh.getRange(i + 2, 1, 1, 21).getValues()[0];
+      var vals = sh.getRange(i + 2, 1, 1, 33).getValues()[0];
       return { row: i + 2, vals: vals };
     }
   }
   throw new Error('profile not found: ' + key);
 }
 
-function doEnrich(key) {
-  var found = readProfileRow(key);
+function doEnrich(id, patch) {
   var apiKey = getSetting_('gemini_key', '') || PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '';
-  if (!apiKey) throw new Error('no Gemini API key — add one in Settings (gear icon)');
+  if (!apiKey) throw new Error('no Gemini API key \u2014 add one in Settings (gear icon)');
   var promptBase = getSetting_('enrich_prompt', '') || ENRICH_PROMPT;
-  var v = found.vals;
-  var names = ['key','display','relationship','context','closeness','specialty','interests',
-    'charisma','competence','intellect','creativity','reliability','reputation',
-    'assertiveness','ego','last_note_date','last_note'];
-  var lines = [];
-  names.forEach(function(n, i) {
-    var val = String(v[i] == null ? '' : v[i]).trim();
-    if (val) lines.push(n + ': ' + val);
-  });
-  var prompt = promptBase + '\n' + lines.join('\n');
+  var draft = String((patch && patch.draft) || '').slice(0, 2000).trim();
+  if (!draft) throw new Error('write your draft bio first');
+  var found = readProfileRow(id);
+  if (!found) throw new Error('profile row not found: ' + id);
+  var prompt = promptBase + '\n' + draft;
   var parts = callGemini(prompt, apiKey);
-  var text = parts.map(function(pt) { return pt.text || ''; }).join('');
-  var m = text.replace(/```json|```/g, '').match(/\{[\s\S]*\}/);
-  if (!m) throw new Error('gemini returned no JSON');
-  var data = JSON.parse(m[0]);
+  var bio = parts.map(function(pt) { return pt.text || ''; }).join('').replace(/```/g, '').trim();
+  if (!bio) throw new Error('gemini returned nothing usable');
   var stamp = Utilities.formatDate(new Date(), 'America/New_York', 'yyyy-MM-dd');
   var sh = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Profiles');
   sh.getRange(found.row, PROFILE_COLS.enriched).setValue(1);
-  sh.getRange(found.row, PROFILE_COLS.enriched_value).setValue(
-    data.score + ' — ' + data.narrative);
+  sh.getRange(found.row, PROFILE_COLS.enriched_value).setValue(bio);
   sh.getRange(found.row, PROFILE_COLS.enriched_at).setValue(stamp);
-  return { ok: true, value: data.score + ' — ' + data.narrative, at: stamp };
+  return { ok: true, value: bio, at: stamp };
 }
 
 /** Server-side settings (Settings tab, col A = key, col B = value). Auto-created. */
