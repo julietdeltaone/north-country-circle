@@ -612,7 +612,11 @@ function renderProfile(){
   var body = $('#rightbody'), panel = $('#right');
   if(S.sel === null){
     panel.classList.remove('open');
+    panel.classList.remove('editing');
     document.body.classList.remove('panelopen');
+    document.body.classList.remove('editing-drawer');
+    var bd0 = document.querySelector('#editbackdrop');
+    if(bd0) bd0.remove();
     body.innerHTML = '';
     if(S.mode === '3d'){ setTimeout(glRecenter, 60); setTimeout(function(){ glResize(); glRecenter(); }, 480); }
     else { setTimeout(function(){ if(hub.cv) hubResize(); }, 480); }
@@ -620,6 +624,14 @@ function renderProfile(){
   }
   panel.classList.add('open');
   document.body.classList.add('panelopen');
+  var isEditing = !!S.editing;
+  panel.classList.toggle('editing', isEditing);
+  document.body.classList.toggle('editing-drawer', isEditing);
+  var bd = document.querySelector('#editbackdrop');
+  if(isEditing && !bd){
+    bd = document.createElement('div'); bd.id = 'editbackdrop';
+    document.body.appendChild(bd);
+  } else if(!isEditing && bd){ bd.remove(); }
   body.innerHTML = dossierDir(D.directory[S.sel], S.sel);
   body.scrollTop = 0;
   if(S.mode === '3d'){ setTimeout(glRecenter, 60); setTimeout(function(){ glResize(); glRecenter(); }, 480); }
