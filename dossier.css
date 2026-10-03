@@ -545,7 +545,7 @@ body.nolist #stage{ left:12px; }
   display:flex; align-items:center; justify-content:center; line-height:1; padding:0; font-family:var(--sans); }
 .phbtn:hover{ border-color:rgba(232,179,75,.5); color:var(--amber); }
 #pedit.phbtn{ color:var(--amber); border-color:rgba(232,179,75,.4); background:rgba(232,179,75,.1); }
-.dmenu{ position:relative; top:auto; left:auto; }
+.dmenu{ position:relative; top:auto; left:auto; display:inline-flex; align-items:center; height:36px; }
 .dmenu .ditems{ left:auto; right:0; top:calc(100% + 6px); min-width:172px; }
 .dmenu.open .ditems{ display:block; }
 .ditems button.danger{ color:#e08080; }
