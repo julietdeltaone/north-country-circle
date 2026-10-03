@@ -191,6 +191,7 @@ function phead(e){
     '<div class="dmenu"><button class="phbtn dbtn" aria-label="More actions" aria-haspopup="true"><span class="dots3" aria-hidden="true"><i></i><i></i><i></i></span></button>' +
     '<div class="ditems"><button id="paudit">' + (aud ? 'Audited ✓' : 'Mark audited') + '</button>' +
     '<button id="pexport">Export dossier</button>' +
+    '<button id="paddnote">Add note</button>' +
     '<button id="pdelete" class="danger">Delete this person</button></div></div>' +
     '<button id="mclose" class="phbtn" title="Close panel">×</button></div></div>';
 }
@@ -745,6 +746,7 @@ function bind(){
       return;
     }
     if(e.target.closest('#pexport')){ exportDossier(); return; }
+    if(e.target.closest('#paddnote')){ openNoteComposer(); return; }
     if(e.target.closest('#pdelete')){ deletePerson(); return; }
   });
   $('#rightbody').addEventListener('keydown', function(e){
@@ -772,6 +774,7 @@ function bind(){
     if(e.target.id === 'naddinput') renderNadd(e.target.value);
   });
   document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && document.querySelector('#noteoverlay')){ closeNoteComposer(); return; }
     if(e.key==='Escape' && S.sel !== null){
       if(S.saveTimer){ clearTimeout(S.saveTimer); S.saveTimer = null; saveProfile(true, S.sel); }
       S.sel = null; S.editing = false; renderProfile(); renderList();
@@ -1136,6 +1139,56 @@ function exportDossier(){
     if(btn) btn.disabled = false;
     downloadDossierFile(fname, html);
     toast('Drive save failed — downloaded a local copy instead.');
+  });
+}
+
+/* ---------- quick note: append a timestamped entry to field notes ---------- */
+function openNoteComposer(){
+  closeNoteComposer();
+  var e = D.directory[S.sel];
+  if(!e || !WEBAPP_URL){ toast('Nothing to add to.'); return; }
+  var name = e.display || e.name || 'this person';
+  var html = '<div id="noteoverlay"><div id="notecard" role="dialog" aria-label="Add note">' +
+    '<div class="xhead"><h2>Add note</h2><div class="sp"></div><button class="xbtn" id="noteclose">Cancel</button></div>' +
+    '<div class="setbody">' +
+    '<label>Note for ' + esc(name) + '<label class="sh">Appended to field notes with today\'s date. Cmd/Ctrl+Enter saves.</label></label>' +
+    '<textarea id="notetext" rows="5" placeholder="What do you want on file?"></textarea>' +
+    '<div class="arow"><button id="notesave" class="xbtn acc">Add to file</button></div>' +
+    '</div></div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.querySelector('#noteclose').addEventListener('click', closeNoteComposer);
+  document.querySelector('#noteoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'noteoverlay') closeNoteComposer(); });
+  document.querySelector('#notesave').addEventListener('click', saveQuickNote);
+  var ta = document.querySelector('#notetext');
+  ta.addEventListener('keydown', function(ev){
+    if((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter'){ ev.preventDefault(); saveQuickNote(); }
+  });
+  ta.focus();
+}
+function closeNoteComposer(){
+  var o = document.querySelector('#noteoverlay');
+  if(o) o.remove();
+}
+function saveQuickNote(){
+  var ta = document.querySelector('#notetext');
+  var text = ta ? ta.value.trim() : '';
+  if(!text){ toast('Write the note first.'); return; }
+  var e = D.directory[S.sel];
+  if(!e){ closeNoteComposer(); return; }
+  e.profile = e.profile || {};
+  var t = new Date();
+  var stamp = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  var old = String(e.profile.notes || '').trim();
+  var notes = old ? old + '\n\n' + stamp + ' \u2014 ' + text : stamp + ' \u2014 ' + text;
+  e.profile.notes = notes;
+  var rn = document.querySelector('#refnotes');
+  if(rn) rn.value = notes;
+  closeNoteComposer();
+  toast('Adding to file\u2026');
+  postKind('profile', pkey(e), { notes: notes }, getPw(), function(){
+    toast('Added to ' + (e.display || e.name || 'their') + '\u2019s file.');
+  }, function(err){
+    toast(err + ' \u2014 kept locally, reopen to retry.');
   });
 }
 
