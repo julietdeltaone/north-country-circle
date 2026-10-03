@@ -121,6 +121,12 @@ var ORG_CATS = [
   {k:'universities', label:'Universities', options:['SUNY Canton','SUNY Potsdam','St. Lawrence University','Clarkson University']}
 ];
 function tagList(v){ return String(v || '').split(',').map(function(x){ return x.trim(); }).filter(Boolean); }
+function fmtPhone(p){
+  var d = String(p || '').replace(/\D/g, '');
+  if(d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
+  if(d.length === 10) return '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6);
+  return String(p || '').trim();
+}
 function tagPicker(cat, prof){
   var sel = tagList(prof[cat.k]);
   var all = cat.options.concat(sel.filter(function(x){ return cat.options.indexOf(x) < 0; }));
@@ -211,7 +217,7 @@ function dossierView(e, idx, head){
 function dirDetails(e){
   var c = e.contact || {};
   var rows = '<dt>Key</dt><dd>' + esc(pkey(e)) + '</dd>';
-  if(c.phones && c.phones.length) rows += '<dt>Phone</dt><dd>' + esc(c.phones.join(', ')) + '</dd>';
+  if(c.phones && c.phones.length) rows += '<dt>Phone</dt><dd>' + esc(c.phones.map(fmtPhone).join(', ')) + '</dd>';
   if(c.emails && c.emails.length) rows += '<dt>Email</dt><dd>' + esc(c.emails.join(', ')) + '</dd>';
   if(c.orgs && c.orgs.length) rows += '<dt>Org</dt><dd>' + esc(c.orgs.join(', ')) + '</dd>';
   if(e.src !== 'contacts'){
@@ -248,7 +254,6 @@ function dossierEdit(e, idx, head){
   var c = e.contact || {};
   var dispVal = prof.display_name || e.display || '';
   var tagRows = ORG_CATS.map(function(cat){ return tagPicker(cat, prof); }).join('');
-  var revVal = prof.review_flag || '';
   return '<div class="doc">' + classbar() + head +
     '<div class="dsec"><h3><span class="n">00</span> Quick fill</h3>' +
     '<textarea id="pfree" rows="3" placeholder="Just describe them in your own words — e.g. \u201cfriend from church, closeness 4, really charismatic, runs Zufall Farm, into photography and travel\u201d"></textarea>' +
@@ -258,7 +263,6 @@ function dossierEdit(e, idx, head){
     '<div class="prow"><div class="plab">Display name</div><div class="pctl"><input data-pk="display_name" value="' + esc(dispVal) + '" placeholder="—"></div></div>' +
     '<div class="prow"><div class="plab">Phone</div><div class="pctl"><input data-pk="phone" value="' + esc(prof.phone || (c.phones || []).join(', ')) + '" placeholder="—"></div></div>' +
     '<div class="prow"><div class="plab">Email</div><div class="pctl"><input data-pk="email" value="' + esc(prof.email || (c.emails || []).join(', ')) + '" placeholder="—"></div></div>' +
-    '<div class="prow"><div class="plab">Organization</div><div class="pctl"><input data-pk="org" value="' + esc(prof.org || (c.orgs || []).join(', ')) + '" placeholder="—"></div></div>' +
     '</div></div>' +
     '<div class="dsec"><h3><span class="n">03</span> Organizations</h3>' + tagRows + '</div>' +
     '<div class="dsec"><h3><span class="n">04</span> Bio</h3>' +
@@ -266,13 +270,7 @@ function dossierEdit(e, idx, head){
     '<div class="arow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
     '<div class="dsec"><h3><span class="n">05</span> Reference</h3>' +
     '<textarea id="refnotes" data-pk="notes" rows="3" placeholder="Field notes — private reference material.">' + esc(prof.notes || '') + '</textarea></div>' +
-    '<div class="dsec"><h3><span class="n">06</span> Flag &amp; delete</h3><div class="pform">' +
-    '<div class="prow"><div class="plab">Needs review</div><div class="pctl"><select data-pk="review_flag">' +
-    '<option value="">—</option>' +
-    '<option value="duplicate"' + (revVal === 'duplicate' ? ' selected' : '') + '>Possible duplicate</option>' +
-    '<option value="missing_info"' + (revVal === 'missing_info' ? ' selected' : '') + '>Missing information</option>' +
-    '</select></div></div></div>' +
-    '<div class="arow"><button id="pdelete" class="xbtn danger">Delete this person</button></div></div>' +
+    '<div class="dsec delrow"><button id="pdelete" class="xbtn danger">Delete this person</button></div>' +
     classbar().replace('classbar', 'classbar bot') + '</div>';
 }
 function dossierDir(e, idx){
@@ -772,6 +770,7 @@ function collectProfile(e){
   var prof = e.profile || {}, changed = {};
   document.querySelectorAll('#rightbody [data-pk]').forEach(function(inp){
     var k = inp.getAttribute('data-pk'), nv;
+    if(k === 'phone' && inp.value !== undefined) inp.value = String(inp.value).split(',').map(function(x){ return fmtPhone(x); }).join(', ');
     if(inp.classList && inp.classList.contains('dots')){
       nv = inp.getAttribute('data-v') || '';
     } else {
