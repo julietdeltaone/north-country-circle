@@ -2,7 +2,7 @@
 (function(){
 'use strict';
 var S = { q:'', rel:'', sel:null, showBg:false, listOpen:true, mode:'3d', auditFilter:false, editing:false, lvl:1 };
-var D = null, NODES = [], ORDER = [];
+var D = null, NODES = [], ORDER = [], LIST_ORDER = [];
 
 function $(s,r){ return (r||document).querySelector(s); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
@@ -478,6 +478,15 @@ function buildNodes(){
   ORDER = dir.map(function(r,i){ return i; })
     .filter(function(i){ return dir[i].has_graph !== false; })
     .sort(function(a,b){ return dir[b].strength - dir[a].strength || a - b; });
+  /* Directory list also shows off-graph people who have dossier content
+     (subject file, timeline events, or attached files) so L2/L3 is reachable. */
+  LIST_ORDER = dir.map(function(r,i){ return i; })
+    .filter(function(i){
+      var r = dir[i];
+      return r.has_graph !== false || (r.events || []).length ||
+        (r.files || []).length || !!r.record;
+    })
+    .sort(function(a,b){ return dir[b].strength - dir[a].strength || a - b; });
   var bounds = [60, 300, dir.length];           // ring cutoffs
   var radii  = [170, 310, 490];
   var spread = [16, 36, 50];
@@ -716,7 +725,7 @@ function tipHide(){ $('#tip').hidden = true; }
 function listRows(){
   var q = S.q.trim().toLowerCase();
   var onlyNeeds = !!S.auditFilter;
-  return ORDER.filter(function(di){
+  return LIST_ORDER.filter(function(di){
     var r = D.directory[di];
     var pr = r.profile || {};
     if(pr.deleted === '1') return false;
@@ -729,9 +738,9 @@ function listRows(){
 }
 function renderList(){
   var rows = listRows();
-  $('#lcount').textContent = rows.length===D.directory.length
-    ? D.directory.length+' names'
-    : rows.length+' of '+D.directory.length+' names';
+  $('#lcount').textContent = rows.length===LIST_ORDER.length
+    ? LIST_ORDER.length+' names'
+    : rows.length+' of '+LIST_ORDER.length+' names';
   var body = $('#leftbody');
   body.innerHTML = rows.length ? rows.slice(0,400).map(function(di,i){
     var r = D.directory[di];
