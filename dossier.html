@@ -3,66 +3,106 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06080d">
 <title>Dossier — North Country Circle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dossier.css?v=4bc3d2d634">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Archivo:wght@500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dossier.css?v=1932aee722">
 </head>
 <body>
 <canvas id="ambient" aria-hidden="true"></canvas>
 <div id="vig" aria-hidden="true"></div>
 
+<!-- ============ top bar ============ -->
 <header id="topbar" class="glass">
-  <button id="listtoggle" class="tbtn on" title="Toggle directory list" aria-label="Toggle directory list">
-    <span aria-hidden="true">☰</span>
-  </button>
+  <button id="listtoggle" class="ibtn on" title="Show or hide the directory (B)" aria-label="Toggle directory" aria-pressed="true"><i data-ic="menu" data-s="18"></i></button>
   <div class="brand">
-    <span class="brand-mark" aria-hidden="true">◈</span>
-    <div class="brand-text"><h1>North Country Circle</h1><small>dossier</small></div>
+    <span class="brand-mark" aria-hidden="true"><i data-ic="orbit" data-s="22"></i></span>
+    <div class="brand-text"><h1>North Country Circle</h1><small id="fresh">Dossier</small></div>
   </div>
-  <div class="tsearch" role="search">
-    <input id="fq" type="search" placeholder="Search the 901…" autocomplete="off" aria-label="Search names">
-  </div>
-  <select id="frel" aria-label="Filter by relation">
-    <option value="">All relations</option>
-    <option value="mutual">Mutual</option>
-    <option value="following">Following</option>
-    <option value="follower">Follower</option>
-  </select>
-  <button id="tagpill" class="tbtn pill" hidden title="Clear tag filter">
-    <span class="dot gold"></span><span></span><b class="x" aria-hidden="true">×</b>
+  <label class="tsearch" role="search">
+    <i data-ic="search" data-s="16"></i>
+    <input id="fq" type="search" placeholder="Search people…" autocomplete="off" aria-label="Search people">
+    <kbd aria-hidden="true">/</kbd>
+  </label>
+  <button id="auditpill" class="apill" title="Audit progress. Click to show only people who still need an audit.">
+    <span class="apbar"><i id="apfill"></i></span><span id="aptxt"></span>
   </button>
-  <button id="bgtoggle" class="tbtn pill" title="Show the full circle as background" aria-pressed="false">
-    <span class="dot" aria-hidden="true"></span>Full circle
-  </button>
-  <button id="auditfilter" class="tbtn pill" title="Show only contacts that still need audit" aria-pressed="false">
-    <span class="dot amber" aria-hidden="true"></span>Needs audit
-  </button>
-  <span id="auditpill" class="apill" title="Audit progress"></span>
-  <button id="settingsbtn" class="tbtn" title="Settings" aria-label="Settings">⚙</button>
-  <div id="modeToggle" role="group" aria-label="View mode">
-    <button data-m="2d" aria-label="2D view">2D</button><button data-m="3d" class="on" aria-label="3D view">3D</button>
-  </div>
-  <span id="fresh"></span>
+  <button id="settingsbtn" class="ibtn" title="Settings and shortcuts" aria-label="Settings"><i data-ic="settings" data-s="18"></i></button>
 </header>
 
-<aside id="left" class="glass panel" aria-label="Directory list">
+<!-- ============ left rail ============ -->
+<aside id="left" class="glass panel" aria-label="Directory">
+  <div class="rail-top">
+    <div id="railtabs" class="seg" role="tablist" aria-label="Directory view">
+      <button data-r="people" class="on" role="tab"><i data-ic="users" data-s="15"></i><span>People</span></button>
+      <button data-r="events" role="tab" style="--c:var(--l2)"><i data-ic="calendar" data-s="15"></i><span>Events</span></button>
+      <button data-r="files" role="tab" style="--c:var(--l3)"><i data-ic="folder" data-s="15"></i><span>Files</span></button>
+    </div>
+    <div class="rail-tools" id="railtools">
+      <div id="lvlchips" class="lvlchips" role="group" aria-label="Filter by depth"></div>
+      <div class="filterwrap">
+        <button id="filterbtn" class="ibtn" title="More filters and sorting" aria-label="More filters" aria-expanded="false"><i data-ic="filter" data-s="16"></i><span id="filtercount" class="badge" hidden></span></button>
+        <div id="filterpop" class="pop" hidden>
+          <label class="fl">Relation
+            <select id="frel">
+              <option value="">Everyone</option>
+              <option value="mutual">Mutual</option>
+              <option value="following">Following</option>
+              <option value="follower">Follower</option>
+            </select>
+          </label>
+          <label class="fl">Sort by
+            <select id="fsort">
+              <option value="strength">Closest first</option>
+              <option value="name">A to Z</option>
+              <option value="audit">Needs audit first</option>
+            </select>
+          </label>
+          <label class="chk"><input type="checkbox" id="fauditonly"> Only people who need an audit</label>
+          <button id="fclear" class="mini">Clear all filters</button>
+        </div>
+      </div>
+    </div>
+    <div id="activeflt" class="activeflt"></div>
+  </div>
   <div id="lcount"></div>
   <div id="leftbody"></div>
 </aside>
 
+<!-- ============ stage ============ -->
 <main id="stage" aria-label="Connection map">
   <canvas id="hub"></canvas>
   <div id="gl3d" hidden></div>
+  <div id="stagebar">
+    <div class="sgroup">
+      <div id="modeToggle" class="seg sm" role="group" aria-label="View mode">
+        <button data-m="2d" aria-label="2D view">2D</button><button data-m="3d" class="on" aria-label="3D view">3D</button>
+      </div>
+      <div id="colorToggle" class="seg sm" role="group" aria-label="Color dots by">
+        <button data-c="level" class="on" title="Color by depth: Snapshot, Story, Files">Depth</button><button data-c="rel" title="Color by relation">Relation</button>
+      </div>
+      <button id="bgtoggle" class="chipbtn" title="Show everyone in the wider circle as faint background dots" aria-pressed="false">Full circle</button>
+    </div>
+    <div class="sgroup">
+      <button id="zin" class="ibtn" title="Zoom in" aria-label="Zoom in"><i data-ic="zin" data-s="16"></i></button>
+      <button id="zout" class="ibtn" title="Zoom out" aria-label="Zoom out"><i data-ic="zout" data-s="16"></i></button>
+      <button id="zreset" class="ibtn" title="Reset view" aria-label="Reset view"><i data-ic="reset" data-s="16"></i></button>
+    </div>
+  </div>
+  <div id="stagebottom">
+    <div id="legend" class="legend"></div>
+    <div id="stagehint" class="hint"></div>
+  </div>
   <div id="tip" hidden></div>
-  <div id="stagehint">Drag to pan · scroll to zoom · click a node to open their dossier</div>
 </main>
 
+<!-- ============ dossier panel ============ -->
 <aside id="right" class="glass panel" aria-label="Dossier">
   <div id="rightbody"></div>
 </aside>
 
-<script src="dossier.js?v=dc5cc84d06"></script>
+<script src="dossier.js?v=4426050916"></script>
 </body>
 </html>
