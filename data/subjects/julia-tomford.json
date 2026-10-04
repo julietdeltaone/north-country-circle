@@ -1,9 +1,35 @@
 {
- "slug": "julia-tomford",
- "name": "Julia Tomford",
- "public_footprint": "Julia Tomford owns Julia Kia Photography LLC, an active New York LLC registered in St. Lawrence County since May 2024. The business is listed among photographers serving the Potsdam, NY area.\nSources: https://www.company-detail.com/company-julia-kia-photography-llc-7329073; https://www.findglocal.com/US/Potsdam-NY/232302-22/genre/181475575221097/Photographers",
- "notes": "",
- "bio": "",
- "chips": [],
- "friendsdb": {}
+  "slug": "julia-tomford",
+  "name": "Julia Tomford",
+  "public_footprint": "Julia Tomford owns Julia Kia Photography LLC, an active New York LLC registered in St. Lawrence County since May 2024. The business is listed among photographers serving the Potsdam, NY area.\nSources: https://www.company-detail.com/company-julia-kia-photography-llc-7329073; https://www.findglocal.com/US/Potsdam-NY/232302-22/genre/181475575221097/Photographers",
+  "notes": "",
+  "bio": "",
+  "chips": [],
+  "friendsdb": {},
+  "events": [
+    {
+      "date": "2022-01-15",
+      "type": "milestone",
+      "summary": "Wedding day — JD filmed it (service exchange)",
+      "detail": "Ceremony 4 PM, 47 Woods Falls Rd, Altona NY, personal vows. Exchange: Julia to photograph JD's wedding, redeemable by Jan 15, 2027."
+    },
+    {
+      "date": "2026-09-22",
+      "type": "milestone",
+      "summary": "Service exchange closed — Julia gave JD a telephoto lens",
+      "detail": "JD filmed her January 15, 2022 wedding as a service exchange; she closed it out with the lens."
+    }
+  ],
+  "files": [
+    {
+      "name": "Service Exchange Agreement — JD ↔ Julia Tomford",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/1-soxOCqmTR8ijsicwfZUxfz1phIPIc8dMGUP3QKj0HM/edit"
+    },
+    {
+      "name": "David & Julia wedding note",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/16IvjoDk_3-iwuDAPDdbvRibWic56hbDm-03xWEW2OGc/edit"
+    }
+  ]
 }
