@@ -1,0 +1,25 @@
+{
+  "slug": "elizabeth-davis",
+  "name": "Elizabeth Davis",
+  "events": [
+    {
+      "date": "2024-01-03",
+      "type": "note",
+      "summary": "Signed JD's wedding videography agreement",
+      "detail": "Agreement signed for her June 2024 wedding to Tyler Gallagher."
+    },
+    {
+      "date": "2024-06-29",
+      "type": "milestone",
+      "summary": "Married Tyler Gallagher — JD filmed videography",
+      "detail": "4:30 PM at Shindigz on the River; ceremony + reception."
+    }
+  ],
+  "files": [
+    {
+      "name": "Wedding videography agreement (signed 01/03/2024)",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/1ZUZ74WZSCOnJg1CkZHWW3FxYrxvN1el6-bjLNh5d9L0/edit"
+    }
+  ]
+}
