@@ -1,7 +1,7 @@
 /* North Country Circle — Dossier. Hub-spoke directory + dossier documents + redaction wall. */
 (function(){
 'use strict';
-var S = { q:'', rel:'', sel:null, showBg:false, listOpen:true, mode:'3d', auditFilter:false, editing:false };
+var S = { q:'', rel:'', sel:null, showBg:false, listOpen:true, mode:'3d', auditFilter:false, editing:false, lvl:1 };
 var D = null, NODES = [], ORDER = [];
 
 function $(s,r){ return (r||document).querySelector(s); }
@@ -187,17 +187,53 @@ function phead(e){
     '<div class="phsub"><span>' + esc(sub) + '</span>' +
     '<button id="auditbadge" class="auditbadge ' + (aud ? 'ok' : 'needs') + '" title="Toggle audit status">' +
     (aud ? '● audited' : '● needs audit') + '</button>' + reviewBadge(e) + '</div></div>' +
+    levelPill(e) +
     '<div class="phbtns">' + actBtn +
     '<div class="dmenu"><button class="phbtn dbtn" aria-label="More actions" aria-haspopup="true"><span class="dots3" aria-hidden="true"><i></i><i></i><i></i></span></button>' +
     '<div class="ditems"><button id="paudit">' + (aud ? 'Audited ✓' : 'Mark audited') + '</button>' +
     '<button id="pexport">Export dossier</button>' +
-    '<button id="paddnote">Add note</button>' +
+    '<button id="paddnote">Add timeline event</button>' +
     '<button id="pdelete" class="danger">Delete this person</button></div></div>' +
     '<button id="mclose" class="phbtn" title="Close panel">×</button></div></div>';
 }
 function fieldDef(k){
   for(var i = 0; i < PROFILE_FIELDS.length; i++) if(PROFILE_FIELDS[i].k === k) return PROFILE_FIELDS[i];
   return { k: k, label: k };
+}
+/* ---------- three dossier levels ----------
+   L1 Snapshot: facts about the person alone (nothing about JD).
+   L2 Story:    the connection to JD + narrative + timeline events.
+   L3 Files:    attached documents. Level is derived from content. */
+var LVLC = {1:'#8fa8d8', 2:'#e8b34b', 3:'#6fd08c'};
+var LVLN = {1:'Snapshot', 2:'Story', 3:'Files'};
+function subjSlug(e){
+  if(e.record && e.record.slug) return e.record.slug;
+  return String(e.display || e.name || '').toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+function personLevel(e){
+  if((e.files || []).length) return 3;
+  if((e.events || []).length) return 2;
+  return 1;
+}
+function levelPill(e){
+  var pl = personLevel(e), cur = S.lvl || 1;
+  var h = '<div class="levels" id="lvlpill" role="tablist" aria-label="Dossier level"><span class="ind" id="lvlind"></span>';
+  [1,2,3].forEach(function(n){
+    var lit = n === 1 || (n === 2 && pl >= 2) || (n === 3 && pl >= 3);
+    h += '<button class="lvlbtn' + (cur === n ? ' on' : '') + '" data-lvl="' + n + '" role="tab" title="Level ' + n + ' — ' + LVLN[n] + '" style="--c:' + LVLC[n] + '">' +
+      '<span class="dot' + (lit ? ' lit' : '') + '"' + (lit ? ' style="background:' + LVLC[n] + '"' : '') + '></span>' + n + '</button>';
+  });
+  return h + '</div>';
+}
+function positionLvlInd(){
+  var pill = document.querySelector('#lvlpill');
+  if(!pill) return;
+  var btn = pill.querySelector('.lvlbtn.on'), ind = pill.querySelector('.ind');
+  if(!btn || !ind) return;
+  ind.style.left = btn.offsetLeft + 'px';
+  ind.style.width = btn.offsetWidth + 'px';
+  ind.style.background = btn.style.getPropertyValue('--c') || LVLC[1];
 }
 /* Single-line rating: label left, 1-5 pills right, hint as hover tooltip. */
 function rateLine(k, prof){
@@ -231,14 +267,35 @@ function footprintHTML(e){
   return '<div class="fpbox">' + prose +
     (links ? '<div class="fpsrc"><span>Sources</span>' + links + '</div>' : '') + '</div>';
 }
-/* View mode: two columns. Left = the 15. Right = bio, directory, close connections, footprint. */
-function dossierView(e){
-  var prof = e.profile || {};
-  var chips = '';
-  if(prof.relationship) chips += '<span class="vchip">' + esc(prof.relationship) + '</span>';
-  if(prof.context) chips += '<span class="vchip">' + esc(prof.context) + '</span>';
-  if(e.src === 'contacts') chips += '<span class="vchip">phone contact</span>';
-  var bars = SCORE_FIELDS.map(function(f){ return barRow(f, prof[f.k]); }).join('');
+/* ---------- three-level views ---------- */
+var L1_SCORES = ['charisma','competence','intellect','creativity','reliability','reputation','assertiveness','ego'];
+var EVTC = { milestone:'#e8b34b', note:'#6fd3e7', 'life event':'#e0685c' };
+function evDate(d){
+  var m = String(d || '').match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?/);
+  if(!m) return esc(String(d || ''));
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var mi = parseInt(m[2] || '1', 10) - 1;
+  if(m[3]) return esc(MON[mi] + ' ' + parseInt(m[3], 10) + ', ' + m[1]);
+  if(m[2]) return esc(MON[mi] + ' ' + m[1]);
+  return esc(m[1]);
+}
+function sortedEvents(e){
+  return (e.events || []).slice().sort(function(a, b){
+    var x = String(a.date || ''), y = String(b.date || '');
+    return x < y ? 1 : (x > y ? -1 : 0);
+  });
+}
+/* L1 — Snapshot: facts about the person alone. Nothing about JD. */
+function lvl1View(e){
+  var prof = e.profile || {}, c = e.contact || {};
+  var phones = prof.phone || (c.phones || []).join(', ');
+  var emails = prof.email || (c.emails || []).join(', ');
+  var kv = '';
+  if(phones) kv += '<div class="kvrow"><span>Phone</span><b>' +
+    esc(String(phones).split(',').map(function(x){ return fmtPhone(x); }).join(', ')) + '</b></div>';
+  if(emails) kv += '<div class="kvrow"><span>Email</span><b>' + esc(emails) + '</b></div>';
+  if(e.detail) kv += '<div class="kvrow"><span>On file</span><b>' + esc(e.detail) + '</b></div>';
+  var bars = L1_SCORES.map(function(k){ return barRow(fieldDef(k), prof[k]); }).join('');
   var spec = '';
   if(prof.specialty) spec += '<div class="vline"><span>Specialty</span>' + esc(prof.specialty) + '</div>';
   if(prof.interests) spec += '<div class="vline"><span>Interests</span>' + esc(prof.interests) + '</div>';
@@ -247,76 +304,159 @@ function dossierView(e){
     var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
     if(m) score100 = '<div class="vscore">' + ringSVG(m[1], 100, 'Score') + '</div>';
   }
-  var narr = prof.enriched_value
-    ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, ''))
-    : 'No bio generated yet.';
-  var genState = (prof.enriched === '1' || prof.enriched === 1)
-    ? '<span class="calcnote">generated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</span>'
-    : '<span class="calcnote dim">not generated</span>';
-  var c = e.contact || {};
-  var phones = prof.phone || (c.phones || []).join(', ');
-  var kv = '';
-  if(phones) kv += '<div class="kvrow"><span>Phone</span><b>' +
-    esc(String(phones).split(',').map(function(x){ return fmtPhone(x); }).join(', ')) + '</b></div>';
-  if(prof.email || (c.emails || []).length)
-    kv += '<div class="kvrow"><span>Email</span><b>' + esc(prof.email || (c.emails || []).join(', ')) + '</b></div>';
-  if(e.relation) kv += '<div class="kvrow"><span>Relation</span><b>' + esc(e.relation) + '</b></div>';
-  kv += '<div class="kvrow"><span>Graph connections</span><b>' + e.degree + '</b></div>';
-  kv += '<div class="kvrow"><span>Shared with you</span><b>' + e.shared_with_jd + '</b></div>';
-  if(e.detail) kv += '<div class="kvrow"><span>On file</span><b>' + esc(e.detail) + '</b></div>';
+  var orgs = '';
+  ['churches','companies','universities'].forEach(function(k){
+    tagList(prof[k]).forEach(function(v){ orgs += '<span class="vchip">' + esc(v) + '</span>'; });
+  });
+  return '<div class="dsec"><h3><span class="n">L1</span> Snapshot <span class="lvltag" style="color:' + LVLC[1] + '">facts only</span></h3>' +
+    (kv ? '<div class="kvlist">' + kv + '</div>' : '') +
+    '<div class="vbars l1bars">' + bars + '</div>' + score100 + spec +
+    (orgs ? '<div class="vchips" style="margin-top:10px">' + orgs + '</div>' : '') + '</div>' +
+    '<div class="dsec fpsec"><h3><span class="n">◈</span> Public footprint</h3>' + footprintHTML(e) + '</div>';
+}
+function connRows(e){
+  var prof = e.profile || {}, fdb = e.friendsdb || {};
+  var h = '';
+  var rel = [prof.relationship, prof.context].filter(Boolean).join(' · ');
+  if(rel) h += '<div class="kvrow"><span>Relationship</span><b>' + esc(rel) + '</b></div>';
+  if(prof.closeness) h += '<div class="kvrow"><span>Closeness</span><b>' + esc(prof.closeness) + ' / 5</b></div>';
+  if(fdb.standing) h += '<div class="kvrow"><span>Standing</span><b>' + esc(fdb.standing) + '</b></div>';
+  if(fdb.state) h += '<div class="kvrow"><span>State</span><b>' + esc(fdb.state) + '</b></div>';
+  if(fdb.trajectory) h += '<div class="kvrow"><span>Trajectory</span><b>' + esc(fdb.trajectory) + '</b></div>';
+  if(fdb.years_known) h += '<div class="kvrow"><span>Known</span><b>' + esc(fdb.years_known) + ' yrs</b></div>';
+  if(e.relation) h += '<div class="kvrow"><span>Relation</span><b>' + esc(e.relation) + '</b></div>';
+  h += '<div class="kvrow"><span>Graph connections</span><b>' + e.degree + '</b></div>';
+  h += '<div class="kvrow"><span>Shared with you</span><b>' + e.shared_with_jd + '</b></div>';
+  return h;
+}
+function nbrChipsHTML(e){
   var nbrs = (e.neighbors || []).slice(0, 12);
-  var nbrChips = nbrs.length ? nbrs.map(function(nb){
+  return nbrs.length ? nbrs.map(function(nb){
     return '<span class="nchip" data-nx="' + esc(nb.u) + '">' + esc(nb.d || nb.u) +
       '<b class="nx" data-rmnx="' + esc(nb.u) + '" title="Remove close connection">×</b></span>';
   }).join('') : '<p class="body dim">No close connections mapped.</p>';
-  return '<div class="doc">' + phead(e) +
-    '<div class="dgrid">' +
-    '<div class="dcol vleft">' +
-    '<div class="dsec"><h3><span class="n">01</span> The 15</h3>' +
-    (chips ? '<div class="vchips">' + chips + '</div>' : '') +
-    '<div class="vbars">' + bars + '</div>' + score100 + spec + '</div>' +
-    '</div>' +
-    '<div class="dcol vright">' +
-    '<div class="dsec"><h3><span class="n">02</span> Bio</h3><div class="narr">' + narr + '</div>' +
-    '<div class="genrow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button>' + genState + '</div></div>' +
-    '<div class="dsec"><h3><span class="n">03</span> Directory</h3><div class="kvlist">' + kv + '</div></div>' +
-    '<div class="dsec"><h3><span class="n">04</span> Close connections</h3><div class="nchips">' + nbrChips + '</div>' +
-    '<div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name…" autocomplete="off"><div id="naddlist"></div></div></div>' +
-    '<div class="dsec fpsec"><h3><span class="n">05</span> Public footprint</h3>' + footprintHTML(e) + '</div>' +
-    '</div></div></div>';
 }
-/* Edit mode: same two-column frame + header. Save/Cancel pinned at the bottom. */
+function timelineHTML(e, editable){
+  var evs = sortedEvents(e);
+  var h = '<div class="tl">';
+  if(!evs.length) h += '<p class="body dim">No timeline events yet.</p>';
+  evs.forEach(function(ev){
+    var t = ev.type || 'note';
+    var col = EVTC[t] || '#9aa3b2';
+    h += '<div class="ev"><span class="evdot" style="background:' + col + '"></span>' +
+      '<div class="evdate">' + evDate(ev.date) + '<span class="evtype">' + esc(t) + '</span></div>' +
+      '<div class="evtitle">' + esc(ev.summary || '') + '</div>' +
+      (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>';
+  });
+  h += '</div>';
+  if(!editable) h += '<div class="arow"><button id="paddevent2" class="xbtn acc">Add event</button></div>';
+  return h;
+}
+/* L2 — Story: the connection to JD + narrative + timeline. */
+function lvl2View(e){
+  var prof = e.profile || {};
+  var narr = prof.enriched_value
+    ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, ''))
+    : 'No story written yet.';
+  var genState = (prof.enriched === '1' || prof.enriched === 1)
+    ? '<span class="calcnote">generated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</span>'
+    : '<span class="calcnote dim">not generated</span>';
+  var notes = prof.notes
+    ? '<div class="dsec"><h3><span class="n">◈</span> Reference notes</h3><div class="narr">' +
+      esc(prof.notes).replace(/\n/g, '<br>') + '</div></div>' : '';
+  return '<div class="dsec"><h3><span class="n">L2</span> Story <span class="lvltag" style="color:' + LVLC[2] + '">connection + history</span></h3>' +
+    '<div class="conncard"><div class="kvlist">' + connRows(e) + '</div></div></div>' +
+    '<div class="dsec"><h3><span class="n">◈</span> Narrative</h3><div class="narr">' + narr + '</div>' +
+    '<div class="genrow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button>' + genState + '</div></div>' +
+    '<div class="dsec"><h3><span class="n">◈</span> Close connections</h3><div class="nchips">' + nbrChipsHTML(e) + '</div>' +
+    '<div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name…" autocomplete="off"><div id="naddlist"></div></div></div>' +
+    '<div class="dsec"><h3><span class="n">◈</span> Timeline</h3>' + timelineHTML(e, false) + '</div>' + notes;
+}
+function filesHTML(e){
+  var fs = e.files || [];
+  var h = '';
+  if(!fs.length) h = '<p class="body dim">No files attached. Attach the documents that need more room than the timeline.</p>';
+  fs.forEach(function(f){
+    var isDoc = (f.kind === 'gdoc');
+    h += '<div class="file"><div class="fic' + (isDoc ? ' doc' : '') + '">' + (isDoc ? 'G' : '↗') + '</div>' +
+      '<div><div class="fn">' + esc(f.name || 'Untitled') + '</div>' +
+      (f.note ? '<div class="fm">' + esc(f.note) + '</div>' : '') + '</div>' +
+      (f.url ? '<a class="open" href="' + esc(f.url) + '" target="_blank" rel="noopener">Open →</a>' : '') + '</div>';
+  });
+  return h;
+}
+/* L3 — Files: attached documents. */
+function lvl3View(e){
+  return '<div class="dsec"><h3><span class="n">L3</span> Files <span class="lvltag" style="color:' + LVLC[3] + '">attached documents</span></h3>' +
+    filesHTML(e) +
+    '<div class="arow"><button id="pnewdoc" class="xbtn acc">New Drive doc</button>' +
+    '<button id="pattachfile" class="xbtn">Attach existing</button></div></div>';
+}
+/* View mode: level pill + one scrolling stage holding all three levels. */
+function dossierView(e){
+  var lv = S.lvl || 1;
+  return '<div class="doc">' + phead(e) +
+    '<div class="lvstage">' +
+    '<div class="lvl' + (lv === 1 ? ' on' : '') + '">' + lvl1View(e) + '</div>' +
+    '<div class="lvl' + (lv === 2 ? ' on' : '') + '">' + lvl2View(e) + '</div>' +
+    '<div class="lvl' + (lv === 3 ? ' on' : '') + '">' + lvl3View(e) + '</div>' +
+    '</div></div>';
+}
+/* Edit mode: level pill switches which fields show; all levels stay in the DOM so saves collect everything. */
 function dossierEdit(e){
   var prof = e.profile || {};
   var c = e.contact || {};
-  var dispVal = prof.display_name || e.display || '';
+  var lv = S.lvl || 1;
   var tagRows = ORG_CATS.map(function(cat){ return tagPicker(cat, prof); }).join('');
   var narrVal = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
   var relF = PROFILE_FIELDS[0], ctxF = PROFILE_FIELDS[1], spF = PROFILE_FIELDS[3], intF = PROFILE_FIELDS[4];
   var g1 = ['charisma', 'competence', 'intellect', 'creativity'].map(function(k){ return rateLine(k, prof); }).join('');
   var g2 = ['reliability', 'reputation', 'assertiveness', 'ego'].map(function(k){ return rateLine(k, prof); }).join('');
+  /* L1 edit: identity, specialty/interests, the 8, orgs */
+  var l1 = '<div class="dsec"><h3><span class="n">L1</span> Snapshot — facts</h3><div class="pform">' +
+    idrow('display_name', 'Name', prof.display_name || e.display || '') +
+    idrow('phone', 'Phone', prof.phone || (c.phones || []).join(', ')) +
+    idrow('email', 'Email', prof.email || (c.emails || []).join(', ')) +
+    profRow(spF, prof) + profRow(intF, prof) +
+    '</div><div class="rgroups"><div>' + g1 + '</div><div>' + g2 + '</div></div></div>' +
+    '<div class="dsec"><h3><span class="n">◈</span> Organizations</h3>' + tagRows + '</div>';
+  /* L2 edit: connection fields, narrative, timeline, close connections, notes */
+  var evRows = (e.events || []).length ? (e.events || []).map(function(ev, i){
+    return '<div class="evrow"><div><div class="evdate">' + evDate(ev.date) +
+      '<span class="evtype">' + esc(ev.type || 'note') + '</span></div>' +
+      '<div class="evtitle">' + esc(ev.summary || '') + '</div>' +
+      (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>' +
+      '<button class="xbtn danger evdel" data-evi="' + i + '">Remove</button></div>';
+  }).join('') : '<p class="body dim">No events yet.</p>';
+  var l2 = '<div class="dsec"><h3><span class="n">L2</span> Story — connection</h3><div class="pform">' +
+    profRow(relF, prof) + profRow(ctxF, prof) + rateLine('closeness', prof) + '</div></div>' +
+    '<div class="dsec"><h3><span class="n">◈</span> Narrative</h3>' +
+    '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Write your draft bio here, then hit Generate to clean it up.">' + esc(narrVal) + '</textarea>' +
+    '<div class="genrow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
+    '<div class="dsec"><h3><span class="n">◈</span> Timeline</h3>' + evRows +
+    '<div class="arow"><button id="paddevent" class="xbtn acc">Add event</button></div></div>' +
+    '<div class="dsec"><h3><span class="n">◈</span> Close connections</h3><div class="nchips">' + nbrChipsHTML(e) + '</div>' +
+    '<div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name…" autocomplete="off"><div id="naddlist"></div></div></div>' +
+    '<div class="dsec notesec"><h3><span class="n">◈</span> Reference notes</h3>' +
+    '<textarea id="refnotes" data-pk="notes" placeholder="Field notes — private reference material.">' + esc(prof.notes || '') + '</textarea></div>';
+  /* L3 edit: files */
+  var fRows = (e.files || []).length ? (e.files || []).map(function(f, i){
+    return '<div class="evrow"><div class="fic' + (f.kind === 'gdoc' ? ' doc' : '') + '">' + (f.kind === 'gdoc' ? 'G' : '↗') + '</div>' +
+      '<div><div class="evtitle">' + esc(f.name || 'Untitled') + '</div>' +
+      (f.url ? '<div class="evdetail">' + esc(f.url) + '</div>' : '') + '</div>' +
+      '<button class="xbtn danger fdel" data-fi="' + i + '">Remove</button></div>';
+  }).join('') : '<p class="body dim">No files attached.</p>';
+  var l3 = '<div class="dsec"><h3><span class="n">L3</span> Files — attached documents</h3>' + fRows +
+    '<div class="arow"><button id="pnewdoc" class="xbtn acc">New Drive doc</button>' +
+    '<button id="pattachfile" class="xbtn">Attach existing</button></div></div>';
   return '<div class="doc edit">' + phead(e) +
     '<div class="qfill"><input id="pfree" placeholder="Describe them in your own words — e.g. “friend from church, closeness 4, really charismatic…”" autocomplete="off">' +
     '<button id="pfill" class="xbtn acc">Fill the 15</button><span id="pfillmsg"></span></div>' +
-    '<div class="dgrid">' +
-    '<div class="dcol eleft">' +
-    '<div class="dsec"><h3><span class="n">01</span> The 15</h3><div class="pform">' +
-    profRow(relF, prof) + profRow(ctxF, prof) + rateLine('closeness', prof) +
-    profRow(spF, prof) + profRow(intF, prof) +
-    '</div><div class="rgroups"><div>' + g1 + '</div><div>' + g2 + '</div></div></div>' +
+    '<div class="lvstage">' +
+    '<div class="lvl' + (lv === 1 ? ' on' : '') + '">' + l1 + '</div>' +
+    '<div class="lvl' + (lv === 2 ? ' on' : '') + '">' + l2 + '</div>' +
+    '<div class="lvl' + (lv === 3 ? ' on' : '') + '">' + l3 + '</div>' +
     '</div>' +
-    '<div class="dcol eright">' +
-    '<div class="dsec"><h3><span class="n">02</span> Identity</h3>' +
-    idrow('display_name', 'Name', dispVal) +
-    idrow('phone', 'Phone', prof.phone || (c.phones || []).join(', ')) +
-    idrow('email', 'Email', prof.email || (c.emails || []).join(', ')) + '</div>' +
-    '<div class="dsec"><h3><span class="n">03</span> Organizations</h3>' + tagRows + '</div>' +
-    '<div class="dsec"><h3><span class="n">04</span> Bio</h3>' +
-    '<textarea id="narrtext" data-pk="enriched_value" rows="3" placeholder="Write your draft bio here, then hit Generate to clean it up.">' + esc(narrVal) + '</textarea>' +
-    '<div class="genrow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
-    '<div class="dsec notesec"><h3><span class="n">05</span> Reference notes</h3>' +
-    '<textarea id="refnotes" data-pk="notes" placeholder="Field notes — private reference material.">' + esc(prof.notes || '') + '</textarea></div>' +
-    '</div></div>' +
     '<div class="efoot"><span id="savestate" class="savestate"></span><span class="esp"></span>' +
     '<button id="psave" class="xbtn acc" disabled>Save</button><button id="pdone" class="xbtn">Cancel</button></div>' +
     '</div>';
@@ -597,11 +737,13 @@ function renderList(){
     var r = D.directory[di];
     var t = r.display || r.name;
     var aud = (r.profile || {}).audit === 'audited';
+    var lv = personLevel(r);
     var sub2 = r.src === 'contacts' ? 'phone contact' : '@'+esc(r.name)+(r.relation ? ' · '+esc(r.relation) : '');
     return '<div class="row'+(S.sel===di?' sel':'')+'" data-i="'+di+'"'+
       ' style="animation-delay:'+Math.min(i*8,240)+'ms" role="button" tabindex="0">'+
       '<div class="ring '+esc(r.relation||'')+'">'+esc(initial(t))+'</div>'+
       '<div class="nm"><b>'+esc(t)+'</b><span>'+sub2+'</span></div>'+
+      '<span class="lvdot lv'+lv+'" title="Level '+lv+' — '+LVLN[lv]+'"></span>'+
       '<span class="adot '+(aud?'ok':'needs')+'" title="'+(aud?'audited':'needs audit')+'"></span></div>';
   }).join('') + (rows.length>400 ? '<div class="empty-note">Showing first 400 — refine the search.</div>' : '')
     : '<div class="empty-note">No names match.</div>';
@@ -627,6 +769,8 @@ function renderProfile(){
   document.body.classList.toggle('editing-drawer', isEditing);
   body.innerHTML = dossierDir(D.directory[S.sel], S.sel);
   body.scrollTop = 0;
+  positionLvlInd();
+  setTimeout(positionLvlInd, 350);
   if(S.mode === '3d'){ setTimeout(glRecenter, 60); setTimeout(function(){ glResize(); glRecenter(); }, 480); }
   else { setTimeout(function(){ if(hub.cv) hubResize(); }, 480); }
 }
@@ -637,6 +781,7 @@ function selectDir(idx, on){
     clearTimeout(S.saveTimer); S.saveTimer = null; saveProfile(true, S.sel);
   }
   S.editing = false;
+  S.lvl = 1;
   if(on === false){ S.sel = null; }
   else S.sel = (S.sel === idx) ? null : idx;
   document.querySelectorAll('#leftbody .row').forEach(function(el){
@@ -698,14 +843,23 @@ function bind(){
   });
   $('#rightbody').addEventListener('click', function(e){
     if(e.target.closest('#mclose')){ S.sel = null; renderProfile(); renderList(); return; }
-    if(e.target.closest('#pedit')){ S.editing = true; renderProfile(); return; }
+    if(e.target.closest('#pedit')){ S.editing = true; renderProfile(); positionLvlInd(); return; }
+    var lb = e.target.closest('.lvlbtn');
+    if(lb){ S.lvl = parseInt(lb.getAttribute('data-lvl'), 10) || 1; renderProfile(); positionLvlInd(); return; }
+    if(e.target.closest('#paddnote') || e.target.closest('#paddevent') || e.target.closest('#paddevent2')){ openEventComposer(); return; }
+    if(e.target.closest('#pnewdoc')){ openDocComposer(); return; }
+    if(e.target.closest('#pattachfile')){ openFileComposer(); return; }
+    var evd = e.target.closest('.evdel');
+    if(evd){ delEvent(parseInt(evd.getAttribute('data-evi'), 10)); return; }
+    var fd = e.target.closest('.fdel');
+    if(fd){ delFile(parseInt(fd.getAttribute('data-fi'), 10)); return; }
     if(e.target.closest('#pdone')){
       if(S.saveTimer){ clearTimeout(S.saveTimer); S.saveTimer = null; saveProfile(true, S.sel); }
       S.editing = false; renderProfile(); return;
     }
     if(e.target.closest('#psave')){ saveProfile(false); return; }
     if(e.target.closest('#paudit')){ toggleAudit(); return; }
-    if(e.target.closest('#enrichbtn')){ if(!S.editing){ S.editing = true; renderProfile(); var nt = document.querySelector('#narrtext'); if(nt){ nt.focus(); } var m2 = document.querySelector('#enrmsg'); if(m2) m2.textContent = 'Write your draft above, then Generate.'; } else { runEnrich(); } return; }
+    if(e.target.closest('#enrichbtn')){ if(!S.editing){ S.editing = true; S.lvl = 2; renderProfile(); positionLvlInd(); var nt = document.querySelector('#narrtext'); if(nt){ nt.focus(); } var m2 = document.querySelector('#enrmsg'); if(m2) m2.textContent = 'Write your draft above, then Generate.'; } else { runEnrich(); } return; }
     if(e.target.closest('#auditbadge')){ toggleAudit(); return; }
     if(e.target.closest('#pfill')){ fillFromText(); return; }
     var pd = e.target.closest('.pdot');
@@ -751,7 +905,6 @@ function bind(){
       return;
     }
     if(e.target.closest('#pexport')){ exportDossier(); return; }
-    if(e.target.closest('#paddnote')){ openNoteComposer(); return; }
     if(e.target.closest('#pdelete')){ deletePerson(); return; }
   });
   $('#rightbody').addEventListener('keydown', function(e){
@@ -1066,6 +1219,19 @@ function buildDossierDoc(e){
   if(prof.notes) notes += '<p>' + esc(prof.notes).replace(/\n/g, '<br>') + '</p>';
   if(e.public_footprint) notes += '<p><b>Public footprint</b><br>' + esc(e.public_footprint).replace(/\n/g, '<br>') + '</p>';
   if(!notes) notes = '<p>—</p>';
+  var evs = sortedEvents(e);
+  var tl = evs.length
+    ? '<ul class="assoc">' + evs.map(function(ev){
+        return '<li><b>' + esc(ev.date || '') + '</b> [' + esc(ev.type || 'note') + '] — ' + esc(ev.summary || '') +
+          (ev.detail ? '<br>' + esc(ev.detail) : '') + '</li>';
+      }).join('') + '</ul>'
+    : '<div class="sbody"><p>—</p></div>';
+  var fls = (e.files || []).length
+    ? '<ul class="assoc">' + (e.files || []).map(function(f){
+        return '<li>' + esc(f.name || 'Untitled') + (f.url ? '<br>' + esc(f.url) : '') +
+          (f.note ? '<br>' + esc(f.note) : '') + '</li>';
+      }).join('') + '</ul>'
+    : '<div class="sbody"><p>—</p></div>';
   return '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
   '<title>Dossier — ' + esc(name) + '</title><style>' +
   'body{background:#26292f;margin:0;padding:28px;font-family:"Courier New",Courier,monospace;color:#141414}' +
@@ -1110,6 +1276,8 @@ function buildDossierDoc(e){
   (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div>' +
   '<div class="sec"><div class="slabel">DIRECTORY PARTICULARS:</div><div class="sbody kv">' + dir + '</div></div>' +
   '<div class="sec"><div class="slabel">FIELD NOTES:</div><div class="sbody">' + notes + '</div></div>' +
+  '<div class="sec"><div class="slabel">TIMELINE:</div><div class="sbody">' + tl + '</div></div>' +
+  '<div class="sec"><div class="slabel">ATTACHED FILES:</div><div class="sbody">' + fls + '</div></div>' +
   '<div class="foot"><div>APPROVED / FORWARDED BY</div><div class="sig">J. Meyers</div>' +
   '<div class="dnw">DO NOT WRITE IN THE BOXES BELOW</div>' +
   '<table class="copies"><tr><td></td><td></td></tr></table>' +
@@ -1140,54 +1308,172 @@ function exportDossier(){
   if(btn) btn.disabled = false;
 }
 
-/* ---------- quick note: append a timestamped entry to field notes ---------- */
-function openNoteComposer(){
+/* ---------- Level 2/3 writes: events + files live in the subject file ---------- */
+function ensureSubject(e, cb){
+  if(e.record && e.record.slug){ cb(); return; }
+  var slug = subjSlug(e);
+  postKind('subject', slug, { name: e.display || e.name, events: '[]', files: '[]' }, getPw(), function(res){
+    if(res && res.api !== 3){ toast('The sheet script needs a redeploy before timelines can save.'); return; }
+    e.record = { slug: slug, events: [], files: [] };
+    e.events = []; e.files = [];
+    cb();
+  }, function(err){ toast(err + ' — could not create the subject file.'); });
+}
+function saveSubjectPatch(patch, okMsg){
+  var e = D.directory[S.sel];
+  if(!e) return;
+  toast('Saving…');
+  postKind('subject', subjSlug(e), patch, getPw(), function(res){
+    if(res && res.api !== 3){
+      toast('Saved locally — the sheet script needs a redeploy to keep it.');
+    } else {
+      toast(okMsg || 'Saved.');
+    }
+    renderProfile(); renderList(); positionLvlInd();
+  }, function(err){
+    toast(err + ' — kept locally, reopen to retry.');
+    renderProfile(); renderList(); positionLvlInd();
+  });
+}
+/* ---------- timeline event composer ---------- */
+function openEventComposer(){
   closeNoteComposer();
   var e = D.directory[S.sel];
   if(!e || !WEBAPP_URL){ toast('Nothing to add to.'); return; }
   var name = e.display || e.name || 'this person';
-  var html = '<div id="noteoverlay"><div id="notecard" role="dialog" aria-label="Add note">' +
-    '<div class="xhead"><h2>Add note</h2><div class="sp"></div><button class="xbtn" id="noteclose">Cancel</button></div>' +
+  var t = new Date();
+  var today = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+  var html = '<div id="noteoverlay"><div id="notecard" role="dialog" aria-label="Add timeline event">' +
+    '<div class="xhead"><h2>Timeline event</h2><div class="sp"></div><button class="xbtn" id="noteclose">Cancel</button></div>' +
     '<div class="setbody">' +
-    '<label>Note for ' + esc(name) + '<label class="sh">Appended to field notes with today\'s date. Cmd/Ctrl+Enter saves.</label></label>' +
-    '<textarea id="notetext" rows="5" placeholder="What do you want on file?"></textarea>' +
-    '<div class="arow"><button id="notesave" class="xbtn acc">Add to file</button></div>' +
+    '<label>For ' + esc(name) + '<label class="sh">Saved to their Level 2 timeline. Cmd/Ctrl+Enter saves.</label></label>' +
+    '<div class="evform"><input id="evdate" value="' + today + '" placeholder="YYYY-MM-DD" autocomplete="off">' +
+    '<select id="evtype"><option value="milestone">milestone</option><option value="note" selected>note</option><option value="life event">life event</option></select></div>' +
+    '<input id="evtitle" placeholder="Headline — e.g. Started a new job" autocomplete="off">' +
+    '<textarea id="evdetail" rows="4" placeholder="Details (optional)"></textarea>' +
+    '<div class="arow"><button id="evsave" class="xbtn acc">Add to timeline</button></div>' +
     '</div></div></div>';
   document.body.insertAdjacentHTML('beforeend', html);
   document.querySelector('#noteclose').addEventListener('click', closeNoteComposer);
   document.querySelector('#noteoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'noteoverlay') closeNoteComposer(); });
-  document.querySelector('#notesave').addEventListener('click', saveQuickNote);
-  var ta = document.querySelector('#notetext');
-  ta.addEventListener('keydown', function(ev){
-    if((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter'){ ev.preventDefault(); saveQuickNote(); }
+  document.querySelector('#evsave').addEventListener('click', saveEvent);
+  var ti = document.querySelector('#evtitle');
+  document.querySelector('#notecard').addEventListener('keydown', function(ev){
+    if((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter'){ ev.preventDefault(); saveEvent(); }
   });
-  ta.focus();
+  ti.focus();
 }
 function closeNoteComposer(){
   var o = document.querySelector('#noteoverlay');
   if(o) o.remove();
 }
-function saveQuickNote(){
-  var ta = document.querySelector('#notetext');
-  var text = ta ? ta.value.trim() : '';
-  if(!text){ toast('Write the note first.'); return; }
+function saveEvent(){
   var e = D.directory[S.sel];
   if(!e){ closeNoteComposer(); return; }
-  e.profile = e.profile || {};
-  var t = new Date();
-  var stamp = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-  var old = String(e.profile.notes || '').trim();
-  var notes = old ? old + '\n\n' + stamp + ' \u2014 ' + text : stamp + ' \u2014 ' + text;
-  e.profile.notes = notes;
-  var rn = document.querySelector('#refnotes');
-  if(rn) rn.value = notes;
-  closeNoteComposer();
-  toast('Adding to file\u2026');
-  postKind('profile', pkey(e), { notes: notes }, getPw(), function(){
-    toast('Added to ' + (e.display || e.name || 'their') + '\u2019s file.');
-  }, function(err){
-    toast(err + ' \u2014 kept locally, reopen to retry.');
+  var date = document.querySelector('#evdate').value.trim();
+  var type = document.querySelector('#evtype').value;
+  var summary = document.querySelector('#evtitle').value.trim();
+  var detail = document.querySelector('#evdetail').value.trim();
+  if(!summary){ toast('Give the event a headline.'); return; }
+  if(!/^\d{4}(-\d{2}(-\d{2})?)?$/.test(date)){ toast('Date as YYYY-MM-DD.'); return; }
+  ensureSubject(e, function(){
+    var ev = { date: date, type: type, summary: summary };
+    if(detail) ev.detail = detail;
+    e.events = e.events || [];
+    e.events.push(ev);
+    closeNoteComposer();
+    saveSubjectPatch({ events: JSON.stringify(e.events) }, 'Added to the timeline.');
   });
+}
+function delEvent(i){
+  var e = D.directory[S.sel];
+  if(!e || !e.events || !e.events[i]) return;
+  if(!confirm('Remove this timeline event?\n\n' + (e.events[i].summary || ''))) return;
+  e.events.splice(i, 1);
+  saveSubjectPatch({ events: JSON.stringify(e.events) }, 'Event removed.');
+}
+/* ---------- file attach / new-doc composers ---------- */
+function openFileComposer(){
+  closeNoteComposer();
+  var e = D.directory[S.sel];
+  if(!e || !WEBAPP_URL){ toast('Nothing to attach to.'); return; }
+  var name = e.display || e.name || 'this person';
+  var html = '<div id="noteoverlay"><div id="notecard" role="dialog" aria-label="Attach a file">' +
+    '<div class="xhead"><h2>Attach file</h2><div class="sp"></div><button class="xbtn" id="noteclose">Cancel</button></div>' +
+    '<div class="setbody">' +
+    '<label>For ' + esc(name) + '<label class="sh">Paste a Google Drive / Docs link. It becomes part of their Level 3.</label></label>' +
+    '<input id="evtitle" placeholder="Name — e.g. Full journal record" autocomplete="off">' +
+    '<input id="evdate" placeholder="https://docs.google.com/…" autocomplete="off" style="margin-top:8px">' +
+    '<textarea id="evdetail" rows="2" placeholder="Note about this file (optional)" style="margin-top:8px"></textarea>' +
+    '<div class="arow"><button id="evsave" class="xbtn acc">Attach</button></div>' +
+    '</div></div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.querySelector('#noteclose').addEventListener('click', closeNoteComposer);
+  document.querySelector('#noteoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'noteoverlay') closeNoteComposer(); });
+  document.querySelector('#evsave').addEventListener('click', saveFileLink);
+  document.querySelector('#evtitle').focus();
+}
+function saveFileLink(){
+  var e = D.directory[S.sel];
+  if(!e){ closeNoteComposer(); return; }
+  var nm = document.querySelector('#evtitle').value.trim();
+  var url = document.querySelector('#evdate').value.trim();
+  var note = document.querySelector('#evdetail').value.trim();
+  if(!nm){ toast('Name the file first.'); return; }
+  if(!url){ toast('Paste the file link.'); return; }
+  ensureSubject(e, function(){
+    var f = { name: nm, kind: url.indexOf('docs.google.com') >= 0 ? 'gdoc' : 'link', url: url };
+    if(note) f.note = note;
+    e.files = e.files || [];
+    e.files.push(f);
+    closeNoteComposer();
+    saveSubjectPatch({ files: JSON.stringify(e.files) }, 'File attached.');
+  });
+}
+function openDocComposer(){
+  closeNoteComposer();
+  var e = D.directory[S.sel];
+  if(!e || !WEBAPP_URL){ toast('Nothing to create for.'); return; }
+  var name = e.display || e.name || 'this person';
+  var html = '<div id="noteoverlay"><div id="notecard" role="dialog" aria-label="New Drive doc">' +
+    '<div class="xhead"><h2>New Drive doc</h2><div class="sp"></div><button class="xbtn" id="noteclose">Cancel</button></div>' +
+    '<div class="setbody">' +
+    '<label>For ' + esc(name) + '<label class="sh">Creates a Google Doc in the North Country Circle Files folder and attaches it as their Level 3.</label></label>' +
+    '<input id="evtitle" placeholder="Doc title — e.g. Full journal record" autocomplete="off">' +
+    '<div class="arow"><button id="evsave" class="xbtn acc">Create doc</button></div>' +
+    '</div></div></div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.querySelector('#noteclose').addEventListener('click', closeNoteComposer);
+  document.querySelector('#noteoverlay').addEventListener('click', function(ev){ if(ev.target.id === 'noteoverlay') closeNoteComposer(); });
+  document.querySelector('#evsave').addEventListener('click', saveNewDoc);
+  document.querySelector('#evtitle').focus();
+}
+function saveNewDoc(){
+  var e = D.directory[S.sel];
+  if(!e){ closeNoteComposer(); return; }
+  var title = document.querySelector('#evtitle').value.trim();
+  if(!title){ toast('Title the doc first.'); return; }
+  var btn = document.querySelector('#evsave');
+  btn.disabled = true; btn.textContent = 'Creating…';
+  ensureSubject(e, function(){
+    postKind('createdoc', subjSlug(e), { title: title }, getPw(), function(res){
+      if(!res || !res.url){ btn.disabled = false; btn.textContent = 'Create doc'; toast('Doc creation failed.'); return; }
+      e.files = e.files || [];
+      e.files.push({ name: res.name || title, kind: 'gdoc', url: res.url });
+      closeNoteComposer();
+      saveSubjectPatch({ files: JSON.stringify(e.files) }, 'Doc created and attached.');
+    }, function(err){
+      btn.disabled = false; btn.textContent = 'Create doc';
+      toast(err + ' — not created.');
+    });
+  });
+}
+function delFile(i){
+  var e = D.directory[S.sel];
+  if(!e || !e.files || !e.files[i]) return;
+  if(!confirm('Remove this file attachment?\n\n' + (e.files[i].name || ''))) return;
+  e.files.splice(i, 1);
+  saveSubjectPatch({ files: JSON.stringify(e.files) }, 'File removed.');
 }
 
 /* ---------- settings (enrich prompt + api key, stored server-side in the sheet) ---------- */
