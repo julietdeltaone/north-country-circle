@@ -1,54 +1,63 @@
 {
- "name": "David Zufall",
- "slug": "david-zufall",
- "category": "peer",
- "role": "Close Friend",
- "period": "~2014 \u2013 Present",
- "standing": "Consistent",
- "description": "In CFC orbit since 2014 \u2014 included in the Spain mission trip. Jamie Sinclair explicitly recommended JD pursue this friendship. Airport manager at OGS who brought JD in. Traveled together internationally. Reliable, consistent, genuine if not emotionally deep. One of the more durable relationships in the record.",
- "bio": "Part of the CFC community since roughly 2014. Was on the 2014 Spain trip. Friendship became intentional starting around February 2019 after Jamie Sinclair specifically recommended JD pursue it. Worked at the Ogdensburg Airport and got JD hired there in December 2020 primarily for the United Airlines standby benefits. They've traveled extensively together. Friendship is close in time spent and reliability but functions at a different emotional register than the Josh McGrath relationship.",
- "chips": [
-  {
-   "type": "org",
-   "label": "CFC"
+  "name": "David Zufall",
+  "slug": "david-zufall",
+  "category": "peer",
+  "role": "Close Friend",
+  "period": "~2014 – Present",
+  "standing": "Consistent",
+  "description": "In CFC orbit since 2014 — included in the Spain mission trip. Jamie Sinclair explicitly recommended JD pursue this friendship. Airport manager at OGS who brought JD in. Traveled together internationally. Reliable, consistent, genuine if not emotionally deep. One of the more durable relationships in the record.",
+  "bio": "Part of the CFC community since roughly 2014. Was on the 2014 Spain trip. Friendship became intentional starting around February 2019 after Jamie Sinclair specifically recommended JD pursue it. Worked at the Ogdensburg Airport and got JD hired there in December 2020 primarily for the United Airlines standby benefits. They've traveled extensively together. Friendship is close in time spent and reliability but functions at a different emotional register than the Josh McGrath relationship.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "Ogdensburg Airport"
+    },
+    {
+      "type": "person",
+      "label": "Catherine Green"
+    },
+    {
+      "type": "person",
+      "label": "Ryan Dunphey"
+    },
+    {
+      "type": "place",
+      "label": "Market St, Potsdam"
+    },
+    {
+      "type": "org",
+      "label": "Clarkson University"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFC",
+    "closeness_tier": "Inner",
+    "state": "Active",
+    "standing": "Stable",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Familiar",
+    "shared_interests": "Photography, Travel",
+    "years_known": "12",
+    "phone": "(315)355-1892"
   },
-  {
-   "type": "org",
-   "label": "Ogdensburg Airport"
-  },
-  {
-   "type": "person",
-   "label": "Catherine Green"
-  },
-  {
-   "type": "person",
-   "label": "Ryan Dunphey"
-  },
-  {
-   "type": "place",
-   "label": "Market St, Potsdam"
-  },
-  {
-   "type": "org",
-   "label": "Clarkson University"
-  }
- ],
- "sources": [
-  "legacy",
-  "record"
- ],
- "friendsdb": {
-  "relationship_type": "Friend",
-  "groups": "CFC",
-  "closeness_tier": "Inner",
-  "state": "Active",
-  "standing": "Stable",
-  "trajectory": "Flat",
-  "trend": "flat",
-  "personal_context": "Familiar",
-  "shared_interests": "Photography, Travel",
-  "years_known": "12",
-  "phone": "(315)355-1892"
- },
- "public_footprint": "No direct public profile found for David Zufall himself. The Zufall family farm, Robert Zufall Farm in Lisbon, NY (St. Lawrence County), is listed as an active organic dairy farm; organic dairy farmer Robert Zufall was featured in an NYS crop insurance farmer-perspectives video.\nSources: https://vimeo.com/channels/nyscropinsurance/44327858"
+  "public_footprint": "No direct public profile found for David Zufall himself. The Zufall family farm, Robert Zufall Farm in Lisbon, NY (St. Lawrence County), is listed as an active organic dairy farm; organic dairy farmer Robert Zufall was featured in an NYS crop insurance farmer-perspectives video.\nSources: https://vimeo.com/channels/nyscropinsurance/44327858",
+  "events": [
+    {
+      "date": "2024-05-18",
+      "type": "note",
+      "summary": "Ran the 5:30 photo op at Haddon Brown & Elena Levendusky's wedding reception",
+      "detail": "Old Town Hall, Waddington NY."
+    }
+  ],
+  "files": []
 }
