@@ -72,5 +72,13 @@
     "shared_interests": "Bagdad",
     "years_known": "25",
     "phone": "(315)244-7324"
-  }
+  },
+  "events": [
+    {
+      "date": "2026-04-16",
+      "type": "note",
+      "summary": "Day in Massena with Catherine Green",
+      "detail": "'Massena, with Catherine Green', Apr 16, 2026."
+    }
+  ]
 }
