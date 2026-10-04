@@ -65,5 +65,14 @@
     "shared_interests": "CFA",
     "years_known": "15",
     "phone": "(315)276-0380"
-  }
+  },
+  "events": [
+    {
+      "date": "2024-05-18",
+      "type": "note",
+      "summary": "Gave the prayer at Haddon & Elena Brown's wedding reception",
+      "detail": "Old Town Hall, Waddington NY."
+    }
+  ],
+  "files": []
 }
