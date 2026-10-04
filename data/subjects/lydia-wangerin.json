@@ -1,46 +1,66 @@
 {
- "name": "Lydia Wangerin",
- "slug": "lydia-wangerin",
- "category": "peer",
- "role": "Friend \u2014 Brief Romantic Interest",
- "period": "2016 \u2013 2017",
- "standing": "",
- "description": "One of the younger Wangerin siblings. JD had an unresolved interest in her in August 2016 that ended with them not talking for several months \u2014 she didn't know how to handle it. By summer 2017 the friendship had recovered; she joined JD and Liz for a helicopter ride over Potsdam at the summer festival.",
- "bio": "Liz Wangerin's younger sister. JD has known her since 2015 through the Wangerin house. Good friends from May 2017 onward. She married Johnny Martin in May 2024 \u2014 JD did their wedding photos.",
- "chips": [
-  {
-   "type": "person",
-   "label": "Liz Wangerin"
+  "name": "Lydia Wangerin",
+  "slug": "lydia-wangerin",
+  "category": "peer",
+  "role": "Friend — Brief Romantic Interest",
+  "period": "2016 – 2017",
+  "standing": "",
+  "description": "One of the younger Wangerin siblings. JD had an unresolved interest in her in August 2016 that ended with them not talking for several months — she didn't know how to handle it. By summer 2017 the friendship had recovered; she joined JD and Liz for a helicopter ride over Potsdam at the summer festival.",
+  "bio": "Liz Wangerin's younger sister. JD has known her since 2015 through the Wangerin house. Good friends from May 2017 onward. She married Johnny Martin in May 2024 — JD did their wedding photos.",
+  "chips": [
+    {
+      "type": "person",
+      "label": "Liz Wangerin"
+    },
+    {
+      "type": "org",
+      "label": "CFC"
+    },
+    {
+      "type": "org",
+      "label": "Park Bros Coffee"
+    },
+    {
+      "type": "person",
+      "label": "Katie McGrath"
+    }
+  ],
+  "sources": [
+    "legacy",
+    "record"
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CFA, CFC",
+    "closeness_tier": "Inner",
+    "state": "Inactive",
+    "standing": "Stable",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Exposed",
+    "shared_interests": "CFA, SUNY Canton",
+    "years_known": "11",
+    "phone": "(315)742-7695"
   },
-  {
-   "type": "org",
-   "label": "CFC"
-  },
-  {
-   "type": "org",
-   "label": "Park Bros Coffee"
-  },
-  {
-   "type": "person",
-   "label": "Katie McGrath"
-  }
- ],
- "sources": [
-  "legacy",
-  "record"
- ],
- "friendsdb": {
-  "relationship_type": "Friend",
-  "groups": "CFA, CFC",
-  "closeness_tier": "Inner",
-  "state": "Inactive",
-  "standing": "Stable",
-  "trajectory": "Flat",
-  "trend": "flat",
-  "personal_context": "Exposed",
-  "shared_interests": "CFA, SUNY Canton",
-  "years_known": "11",
-  "phone": "(315)742-7695"
- },
- "public_footprint": "Lydia Wangerin graduated from SUNY Canton in May 2025 with an Associate of Science in Business Administration. She appeared on the college's honor lists for multiple semesters.\nSources: https://canton.meritpages.com/stories/Lydia-Wangerin-Graduates-from-SUNY-Canton/161607914; https://www.canton.edu/news/2025/graduates.php"
+  "public_footprint": "Lydia Wangerin graduated from SUNY Canton in May 2025 with an Associate of Science in Business Administration. She appeared on the college's honor lists for multiple semesters.\nSources: https://canton.meritpages.com/stories/Lydia-Wangerin-Graduates-from-SUNY-Canton/161607914; https://www.canton.edu/news/2025/graduates.php",
+  "events": [
+    {
+      "date": "2024-05-25",
+      "type": "milestone",
+      "summary": "Married Johnny Martin — JD filmed videography",
+      "detail": "2:00 PM ceremony at CFC Potsdam; reception at 780 Bagdad Rd, Potsdam."
+    }
+  ],
+  "files": [
+    {
+      "name": "Wedding videography agreement (signed)",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/1QdA3KLsBmo_5DtgdwrizIcgrQJ162QlXooEVNPiq-Ug/edit"
+    },
+    {
+      "name": "5/25 wedding day schedule",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/14j5uI89aH3w5VuR88lm9ibZPDPxMbsZI8plKQGCedZ8/edit"
+    }
+  ]
 }
