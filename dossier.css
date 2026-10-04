@@ -680,3 +680,71 @@ button.auditbadge{ cursor:pointer; font-family:var(--sans); }
 .dots3{ display:flex; flex-direction:column; gap:3px; align-items:center; justify-content:center; }
 .pglyph{ display:inline-block; transform:translateY(-2px); }
 .dots3 i{ width:4px; height:4px; border-radius:50%; background:currentColor; display:block; }
+
+/* ================= three dossier levels ================= */
+.phead{flex-wrap:wrap}
+.levels{position:relative;display:flex;background:rgba(255,255,255,.05);
+  border:1px solid var(--line);border-radius:11px;padding:3px;gap:2px;flex:none;margin-left:auto}
+.levels .ind{position:absolute;top:3px;bottom:3px;border-radius:8px;left:3px;width:0;
+  transition:left .35s var(--ease),width .35s var(--ease),background .3s}
+.lvlbtn{position:relative;z-index:1;background:none;border:0;color:var(--mut);font-size:12px;
+  font-weight:700;padding:7px 11px;border-radius:8px;cursor:pointer;display:flex;
+  align-items:center;gap:7px;font-family:var(--sans)}
+.lvlbtn:hover{color:var(--txt)}
+.lvlbtn.on{color:#0a0d12}
+.lvlbtn .dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.22)}
+.phbtns{margin-left:0}
+.lvstage{flex:1;min-height:0;overflow-y:auto;position:relative}
+.lvl{display:none;padding:16px 18px 34px}
+.lvl.on{display:block;animation:lvlIn .38s var(--ease)}
+@keyframes lvlIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.lvl .dsec{padding:0;margin:0 0 18px}
+.lvl .dsec>h3{margin:0 0 10px}
+.lvltag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.l1bars{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;margin-top:12px}
+.conncard{background:rgba(232,179,75,.05);border:1px solid rgba(232,179,75,.22);
+  border-radius:12px;padding:13px 15px}
+/* timeline */
+.tl{position:relative;margin-top:2px;padding-left:24px}
+.tl:before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;
+  background:rgba(255,255,255,.08);border-radius:2px}
+.ev{position:relative;padding:0 0 14px}
+.evdot{position:absolute;left:-21px;top:5px;width:9px;height:9px;border-radius:50%}
+.evdate{font-size:11px;color:var(--dim);letter-spacing:.05em;font-weight:600}
+.evtype{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);
+  border:1px solid var(--line);border-radius:20px;padding:1px 8px;margin-left:6px}
+.evtitle{font-size:13.5px;font-weight:700;margin:2px 0}
+.evdetail{font-size:12.5px;color:var(--mut)}
+.evrow{display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.03);
+  border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.evrow>div:first-child{flex:1;min-width:0}
+.evrow .xbtn{flex:none}
+.evrow .fic{width:34px;height:34px;font-size:13px}
+/* files */
+.file{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);
+  border:1px solid var(--line-soft);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.fic{width:38px;height:38px;flex:none;border-radius:10px;background:rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:var(--mut)}
+.fic.doc{background:rgba(111,208,140,.14);color:#6fd08c}
+.file .fn{font-size:13.5px;font-weight:700}
+.file .fm{font-size:11.5px;color:var(--dim)}
+.file .open{margin-left:auto;font-size:12.5px;font-weight:700;color:#6fd08c;
+  text-decoration:none;white-space:nowrap}
+/* composers */
+.evform{display:flex;gap:8px;margin-bottom:8px}
+.evform input,.evform select{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);
+  color:var(--txt);border-radius:9px;padding:9px 12px;font-size:13px;font-family:var(--sans);outline:none}
+.evform select{flex:none}
+.evform select option{background:#141a25}
+#evtitle{width:100%;margin-bottom:8px;background:rgba(255,255,255,.05);border:1px solid var(--line);
+  color:var(--txt);border-radius:9px;padding:9px 12px;font-size:13px;font-family:var(--sans);outline:none}
+#evdetail{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);
+  border-radius:10px;padding:10px 12px;font-size:13px;font-family:var(--sans);resize:vertical;outline:none}
+#notecard #evdate{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);
+  color:var(--txt);border-radius:9px;padding:9px 12px;font-size:13px;font-family:var(--sans);outline:none}
+/* directory level dots */
+.lvdot{flex:none;width:8px;height:8px;border-radius:50%;align-self:center}
+.lvdot.lv1{background:#8fa8d8}
+.lvdot.lv2{background:#e8b34b}
+.lvdot.lv3{background:#6fd08c}
+@media(max-width:1100px){.l1bars{grid-template-columns:1fr}}
