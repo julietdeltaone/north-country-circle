@@ -1,0 +1,35 @@
+{
+  "slug": "megan-eddy",
+  "name": "Megan Eddy",
+  "events": [
+    {
+      "date": "2025-11-09",
+      "type": "note",
+      "summary": "Signed JD's videography service contract",
+      "detail": "Contract for her Aug 2026 wedding to Matthew Phillips."
+    },
+    {
+      "date": "2026-08-22",
+      "type": "milestone",
+      "summary": "Married Matthew Phillips — JD filmed videography",
+      "detail": "Ceremony ~3 PM at The Stables, Potsdam NY; 250–300 guests. Reception incl. toasts by Courtney and Cameron."
+    }
+  ],
+  "files": [
+    {
+      "name": "Videography service contract (signed 11/9/25)",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/12qn08Aa88aA4kDqNOupTJUKhd16gC2J5fQqs5bhcvE8/edit"
+    },
+    {
+      "name": "Wedding photography information request",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/1Ra6ogPrBW_5oAAU4vOx-YYUCvfLfkPfe1qHCbJsSHG0/edit"
+    },
+    {
+      "name": "M & M reception order",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/1klDT3UbFxqtC9SnSHfyq-l3JbD5zd2fipTaRntguwqE/edit"
+    }
+  ]
+}
