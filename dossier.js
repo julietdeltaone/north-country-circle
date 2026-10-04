@@ -173,28 +173,39 @@ function barRow(f, val){
 /* Shared panel header (view + edit): name, handle/relation, audit badge, closeness ring,
    pencil / three-dot / close on the far right. */
 function phead(e){
-  var prof = e.profile || {};
+  var prof = e.profile || {}, fdb = e.friendsdb || {};
   var title = e.display || e.name;
-  var sub = e.src === 'contacts' ? 'phone contact' : '@' + e.name;
+  var sub = e.src === 'contacts' ? 'phone contact' : e.src === 'subject' ? 'subject file' : '@' + e.name;
   if(e.relation) sub += ' · ' + e.relation;
   var aud = (prof.audit === 'audited');
   var actBtn = S.editing
-    ? '<button id="pdone" class="phbtn" title="Done — save and exit edit mode"><span class="pglyph">✓</span></button>'
-    : '<button id="pedit" class="phbtn" title="Edit this file"><span class="pglyph">✎</span></button>';
+    ? '<button id="pdone" class="phbtn acc" title="Done — save and exit edit mode">' + ic('check', 16) + '</button>'
+    : '<button id="pedit" class="phbtn" title="Edit this file">' + ic('edit', 15) + '</button>';
+  var initial = esc(String(title || '?').trim().charAt(0).toUpperCase());
+  var pl = personLevel(e);
+  var close = prof.closeness ? String(prof.closeness) + '/5' : '—';
+  var tiles = statTile('heart', close, 'closeness', '#e0688a') +
+    statTile('flag', fdb.standing || '—', 'standing', '#e8b34b') +
+    statTile('clock', fdb.years_known ? fdb.years_known + ' yrs' : '—', 'known', '#6fd3e7') +
+    statTile('share', String(e.degree || 0), 'graph links', '#8fa8d8');
   return '<div class="phead">' +
-    '<div class="phring">' + ringSVG(prof.closeness, 5, 'Close') + '</div>' +
-    '<div class="phtext"><h2>' + esc(title) + '</h2>' +
-    '<div class="phsub"><span>' + esc(sub) + '</span>' +
-    '<button id="auditbadge" class="auditbadge ' + (aud ? 'ok' : 'needs') + '" title="Toggle audit status">' +
-    (aud ? '● audited' : '● needs audit') + '</button>' + reviewBadge(e) + '</div></div>' +
+    '<div class="ph-id">' +
+      '<div class="ph-ava" style="--c:' + LVLC[pl] + '"><span>' + initial + '</span></div>' +
+      '<div class="ph-name"><h2>' + esc(title) + '</h2>' +
+      '<div class="ph-sub"><span>' + esc(sub) + '</span>' +
+      '<button id="auditbadge" class="auditbadge ' + (aud ? 'ok' : 'needs') + '" title="Toggle audit status">' +
+      (aud ? '● audited' : '● needs audit') + '</button>' + reviewBadge(e) + '</div></div>' +
+      '<div class="phbtns">' + actBtn +
+      '<div class="dmenu"><button class="phbtn dbtn" aria-label="More actions" aria-haspopup="true">' + ic('dots', 15) + '</button>' +
+      '<div class="ditems"><button id="paudit">' + (aud ? 'Audited ✓' : 'Mark audited') + '</button>' +
+      '<button id="pexport">Export dossier</button>' +
+      '<button id="paddnote">Add timeline event</button>' +
+      '<button id="pdelete" class="danger">Delete this person</button></div></div>' +
+      '<button id="mclose" class="phbtn" title="Close panel">' + ic('x', 16) + '</button></div>' +
+    '</div>' +
+    '<div class="ph-tiles">' + tiles + '</div>' +
     levelPill(e) +
-    '<div class="phbtns">' + actBtn +
-    '<div class="dmenu"><button class="phbtn dbtn" aria-label="More actions" aria-haspopup="true"><span class="dots3" aria-hidden="true"><i></i><i></i><i></i></span></button>' +
-    '<div class="ditems"><button id="paudit">' + (aud ? 'Audited ✓' : 'Mark audited') + '</button>' +
-    '<button id="pexport">Export dossier</button>' +
-    '<button id="paddnote">Add timeline event</button>' +
-    '<button id="pdelete" class="danger">Delete this person</button></div></div>' +
-    '<button id="mclose" class="phbtn" title="Close panel">×</button></div></div>';
+  '</div>';
 }
 function fieldDef(k){
   for(var i = 0; i < PROFILE_FIELDS.length; i++) if(PROFILE_FIELDS[i].k === k) return PROFILE_FIELDS[i];
@@ -206,6 +217,55 @@ function fieldDef(k){
    L3 Files:    attached documents. Level is derived from content. */
 var LVLC = {1:'#8fa8d8', 2:'#e8b34b', 3:'#6fd08c'};
 var LVLN = {1:'Snapshot', 2:'Story', 3:'Files'};
+/* ---------- icon set (inline SVG, stroke = currentColor) ---------- */
+var IC = {
+  phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>',
+  folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  quote:'<path d="M10 11H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6c0 2-1 3.5-3 4.5M20 11h-4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6c0 2-1 3.5-3 4.5"/>',
+  zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  tag:'<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+  trend:'<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
+  activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  edit:'<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
+  dots:'<circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>'
+};
+function ic(n, s){
+  s = s || 16;
+  return '<svg class="icsvg" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IC[n] || '') + '</svg>';
+}
+/* "Generate assessment" button visibility: off by default, toggle in Settings. */
+function assessOn(){
+  try{ return localStorage.getItem('ncc_show_assess') === '1'; }catch(e){ return false; }
+}
+/* small stat tile: icon, value, label */
+function statTile(icon, val, label, color){
+  return '<div class="stile"' + (color ? ' style="--tc:' + color + '"' : '') + '>' +
+    '<span class="stic">' + ic(icon, 17) + '</span>' +
+    '<span class="stx"><b>' + esc(val) + '</b><i>' + esc(label) + '</i></span></div>';
+}
+/* section header: icon + title + tag */
+function secHead(icon, title, tag, color){
+  return '<div class="sechead"><span class="shic"' + (color ? ' style="color:' + color + '"' : '') + '>' +
+    ic(icon, 17) + '</span><h3>' + esc(title) + '</h3>' +
+    (tag ? '<span class="lvltag">' + esc(tag) + '</span>' : '') + '</div>';
+}
 function subjSlug(e){
   if(e.record && e.record.slug) return e.record.slug;
   return String(e.display || e.name || '').toLowerCase().trim()
@@ -218,11 +278,13 @@ function personLevel(e){
 }
 function levelPill(e){
   var pl = personLevel(e), cur = S.lvl || 1;
+  var icons = {1:'camera', 2:'book', 3:'folder'};
   var h = '<div class="levels" id="lvlpill" role="tablist" aria-label="Dossier level"><span class="ind" id="lvlind"></span>';
   [1,2,3].forEach(function(n){
     var lit = n === 1 || (n === 2 && pl >= 2) || (n === 3 && pl >= 3);
     h += '<button class="lvlbtn' + (cur === n ? ' on' : '') + '" data-lvl="' + n + '" role="tab" title="Level ' + n + ' — ' + LVLN[n] + '" style="--c:' + LVLC[n] + '">' +
-      '<span class="dot' + (lit ? ' lit' : '') + '"' + (lit ? ' style="background:' + LVLC[n] + '"' : '') + '></span>' + n + '</button>';
+      '<span class="lvic">' + ic(icons[n], 15) + '</span><span class="lvlab">' + LVLN[n] + '</span>' +
+      '<span class="dot' + (lit ? ' lit' : '') + '"' + (lit ? ' style="background:' + LVLC[n] + '"' : '') + '></span></button>';
   });
   return h + '</div>';
 }
@@ -290,29 +352,37 @@ function lvl1View(e){
   var prof = e.profile || {}, c = e.contact || {};
   var phones = prof.phone || (c.phones || []).join(', ');
   var emails = prof.email || (c.emails || []).join(', ');
-  var kv = '';
-  if(phones) kv += '<div class="kvrow"><span>Phone</span><b>' +
-    esc(String(phones).split(',').map(function(x){ return fmtPhone(x); }).join(', ')) + '</b></div>';
-  if(emails) kv += '<div class="kvrow"><span>Email</span><b>' + esc(emails) + '</b></div>';
-  if(e.detail) kv += '<div class="kvrow"><span>On file</span><b>' + esc(e.detail) + '</b></div>';
-  var bars = L1_SCORES.map(function(k){ return barRow(fieldDef(k), prof[k]); }).join('');
+  var idrows = '';
+  if(phones) idrows += '<div class="idrow"><span class="idic">' + ic('phone', 15) + '</span><div><span>Phone</span><b>' +
+    esc(String(phones).split(',').map(function(x){ return fmtPhone(x); }).join(', ')) + '</b></div></div>';
+  if(emails) idrows += '<div class="idrow"><span class="idic">' + ic('mail', 15) + '</span><div><span>Email</span><b>' + esc(emails) + '</b></div></div>';
+  if(e.detail) idrows += '<div class="idrow"><span class="idic">' + ic('file', 15) + '</span><div><span>On file</span><b>' + esc(e.detail) + '</b></div></div>';
+  var traits = L1_SCORES.map(function(k){
+    var f = fieldDef(k), v = parseInt(prof[k] || '0', 10) || 0;
+    return '<div class="trait' + (v ? '' : ' empty') + '"><div class="t-top"><span>' + esc(f.label) + '</span><b>' +
+      (v ? v + '<i>/5</i>' : '—') + '</b></div>' +
+      '<div class="t-bar"><i style="width:' + (v * 20) + '%"></i></div></div>';
+  }).join('');
   var spec = '';
-  if(prof.specialty) spec += '<div class="vline"><span>Specialty</span>' + esc(prof.specialty) + '</div>';
-  if(prof.interests) spec += '<div class="vline"><span>Interests</span>' + esc(prof.interests) + '</div>';
+  if(prof.specialty) spec += '<div class="idrow"><span class="idic">' + ic('zap', 15) + '</span><div><span>Specialty</span><b>' + esc(prof.specialty) + '</b></div></div>';
+  if(prof.interests) spec += '<div class="idrow"><span class="idic">' + ic('tag', 15) + '</span><div><span>Interests</span><b>' + esc(prof.interests) + '</b></div></div>';
   var score100 = '';
   if(prof.enriched_value){
     var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
-    if(m) score100 = '<div class="vscore">' + ringSVG(m[1], 100, 'Score') + '</div>';
+    if(m) score100 = statTile('star', m[1] + '/100', 'ai score', '#e8b34b');
   }
   var orgs = '';
   ['churches','companies','universities'].forEach(function(k){
-    tagList(prof[k]).forEach(function(v){ orgs += '<span class="vchip">' + esc(v) + '</span>'; });
+    tagList(prof[k]).forEach(function(v){ orgs += '<span class="vchip">' + ic('briefcase', 12) + esc(v) + '</span>'; });
   });
-  return '<div class="dsec"><h3><span class="n">L1</span> Snapshot <span class="lvltag" style="color:' + LVLC[1] + '">facts only</span></h3>' +
-    (kv ? '<div class="kvlist">' + kv + '</div>' : '') +
-    '<div class="vbars l1bars">' + bars + '</div>' + score100 + spec +
-    (orgs ? '<div class="vchips" style="margin-top:10px">' + orgs + '</div>' : '') + '</div>' +
-    '<div class="dsec fpsec"><h3><span class="n">◈</span> Public footprint</h3>' + footprintHTML(e) + '</div>';
+  return '<div class="dsec">' + secHead('user', 'Snapshot', 'facts only', LVLC[1]) +
+    (idrows ? '<div class="idcard">' + idrows + '</div>' : '') +
+    '<div class="traitgrid">' + traits + '</div>' +
+    (spec ? '<div class="idcard">' + spec + '</div>' : '') +
+    (score100 ? '<div class="ph-tiles solo">' + score100 + '</div>' : '') +
+    (orgs ? '<div class="vchips">' + orgs + '</div>' : '') +
+    '</div>' +
+    '<div class="dsec fpsec">' + secHead('link', 'Public footprint', '', '#6fd3e7') + footprintHTML(e) + '</div>';
 }
 function connRows(e){
   var prof = e.profile || {}, fdb = e.friendsdb || {};
@@ -354,43 +424,53 @@ function timelineHTML(e, editable){
 }
 /* L2 — Story: the connection to JD + narrative + timeline. */
 function lvl2View(e){
-  var prof = e.profile || {};
+  var prof = e.profile || {}, fdb = e.friendsdb || {};
   var narr = prof.enriched_value
     ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, ''))
     : 'No story written yet.';
-  var genState = (prof.enriched === '1' || prof.enriched === 1)
-    ? '<span class="calcnote">generated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</span>'
-    : '<span class="calcnote dim">not generated</span>';
+  var rel = [prof.relationship, prof.context].filter(Boolean).join(' · ');
+  var tiles = statTile('activity', fdb.state || '—', 'state', '#8fa8d8') +
+    statTile('trend', fdb.trajectory || '—', 'trajectory', '#6fd3e7') +
+    statTile('send', String(e.shared_with_jd || 0), 'shared with you', '#6fd08c');
   var notes = prof.notes
-    ? '<div class="dsec"><h3><span class="n">◈</span> Reference notes</h3><div class="narr">' +
-      esc(prof.notes).replace(/\n/g, '<br>') + '</div></div>' : '';
-  return '<div class="dsec"><h3><span class="n">L2</span> Story <span class="lvltag" style="color:' + LVLC[2] + '">connection + history</span></h3>' +
-    '<div class="conncard"><div class="kvlist">' + connRows(e) + '</div></div></div>' +
-    '<div class="dsec"><h3><span class="n">◈</span> Narrative</h3><div class="narr">' + narr + '</div>' +
-    '<div class="genrow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button>' + genState + '</div></div>' +
-    '<div class="dsec"><h3><span class="n">◈</span> Close connections</h3><div class="nchips">' + nbrChipsHTML(e) + '</div>' +
+    ? secHead('file', 'Reference notes', '', '#9aa3b2') + '<div class="narr-card">' +
+      esc(prof.notes).replace(/\n/g, '<br>') + '</div>' : '';
+  var assessBtn = assessOn()
+    ? '<div class="genrow"><button id="enrichbtn" class="xbtn acc">' + ic('zap', 13) + ' Generate assessment</button>' +
+      ((prof.enriched === '1' || prof.enriched === 1)
+        ? '<span class="calcnote">generated' + (prof.enriched_at ? ' · ' + esc(prof.enriched_at) : '') + '</span>'
+        : '<span class="calcnote dim">not generated</span>') + '</div>'
+    : '';
+  return '<div class="dsec">' + secHead('book', 'Story', 'connection + history', LVLC[2]) +
+    (rel ? '<div class="rel-line">' + ic('users', 15) + '<span>' + esc(rel) + '</span></div>' : '') +
+    '<div class="ph-tiles trio">' + tiles + '</div></div>' +
+    '<div class="dsec">' + secHead('quote', 'Narrative', '', '#e8b34b') +
+    '<div class="narr-card">' + narr + '</div>' + assessBtn + '</div>' +
+    '<div class="dsec">' + secHead('users', 'Close connections', '', '#8fa8d8') +
+    '<div class="nchips">' + nbrChipsHTML(e) + '</div>' +
     '<div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name…" autocomplete="off"><div id="naddlist"></div></div></div>' +
-    '<div class="dsec"><h3><span class="n">◈</span> Timeline</h3>' + timelineHTML(e, false) + '</div>' + notes;
+    '<div class="dsec">' + secHead('calendar', 'Timeline', (e.events || []).length + ' events', LVLC[2]) + timelineHTML(e, false) + '</div>' + notes;
 }
 function filesHTML(e){
   var fs = e.files || [];
   var h = '';
-  if(!fs.length) h = '<p class="body dim">No files attached. Attach the documents that need more room than the timeline.</p>';
+  if(!fs.length) h = '<div class="empty-card">' + ic('folder', 20) + '<p>No files attached yet.</p><span>Attach the documents that need more room than the timeline.</span></div>';
   fs.forEach(function(f){
     var isDoc = (f.kind === 'gdoc');
-    h += '<div class="file"><div class="fic' + (isDoc ? ' doc' : '') + '">' + (isDoc ? 'G' : '↗') + '</div>' +
-      '<div><div class="fn">' + esc(f.name || 'Untitled') + '</div>' +
-      (f.note ? '<div class="fm">' + esc(f.note) + '</div>' : '') + '</div>' +
-      (f.url ? '<a class="open" href="' + esc(f.url) + '" target="_blank" rel="noopener">Open →</a>' : '') + '</div>';
+    h += '<div class="file"><div class="fic' + (isDoc ? ' doc' : '') + '">' + ic(isDoc ? 'file' : 'link', 17) + '</div>' +
+      '<div class="fbody"><div class="fn">' + esc(f.name || 'Untitled') + '</div>' +
+      (f.note ? '<div class="fm">' + esc(f.note) + '</div>' : '') +
+      '<div class="fm dim">' + (isDoc ? 'Google Doc' : 'Link') + '</div></div>' +
+      (f.url ? '<a class="open" href="' + esc(f.url) + '" target="_blank" rel="noopener">Open ' + ic('send', 12) + '</a>' : '') + '</div>';
   });
   return h;
 }
 /* L3 — Files: attached documents. */
 function lvl3View(e){
-  return '<div class="dsec"><h3><span class="n">L3</span> Files <span class="lvltag" style="color:' + LVLC[3] + '">attached documents</span></h3>' +
+  return '<div class="dsec">' + secHead('folder', 'Files', 'attached documents', LVLC[3]) +
     filesHTML(e) +
-    '<div class="arow"><button id="pnewdoc" class="xbtn acc">New Drive doc</button>' +
-    '<button id="pattachfile" class="xbtn">Attach existing</button></div></div>';
+    '<div class="arow"><button id="pnewdoc" class="xbtn acc">' + ic('plus', 13) + ' New Drive doc</button>' +
+    '<button id="pattachfile" class="xbtn">' + ic('link', 13) + ' Attach existing</button></div></div>';
 }
 /* View mode: level pill + one scrolling stage holding all three levels. */
 function dossierView(e){
@@ -431,8 +511,8 @@ function dossierEdit(e){
   var l2 = '<div class="dsec"><h3><span class="n">L2</span> Story — connection</h3><div class="pform">' +
     profRow(relF, prof) + profRow(ctxF, prof) + rateLine('closeness', prof) + '</div></div>' +
     '<div class="dsec"><h3><span class="n">◈</span> Narrative</h3>' +
-    '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Write your draft bio here, then hit Generate to clean it up.">' + esc(narrVal) + '</textarea>' +
-    '<div class="genrow"><button id="enrichbtn" class="xbtn acc">Generate assessment</button><span id="enrmsg"></span></div></div>' +
+    '<textarea id="narrtext" data-pk="enriched_value" rows="4" placeholder="Write the narrative here.">' + esc(narrVal) + '</textarea>' +
+    (assessOn() ? '<div class="genrow"><button id="enrichbtn" class="xbtn acc">' + ic('zap', 13) + ' Generate assessment</button><span id="enrmsg"></span></div>' : '') + '</div>' +
     '<div class="dsec"><h3><span class="n">◈</span> Timeline</h3>' + evRows +
     '<div class="arow"><button id="paddevent" class="xbtn acc">Add event</button></div></div>' +
     '<div class="dsec"><h3><span class="n">◈</span> Close connections</h3><div class="nchips">' + nbrChipsHTML(e) + '</div>' +
@@ -1491,6 +1571,8 @@ function openSettings(){
   var html = '<div id="setoverlay"><div id="setcard" role="dialog" aria-label="Settings">' +
     '<div class="xhead"><h2>Settings</h2><div class="sp"></div><button class="xbtn" id="setclose">Close</button></div>' +
     '<div class="setbody">' +
+    '<label class="setrow"><input type="checkbox" id="setassess"' + (assessOn() ? ' checked' : '') + '> Show “Generate assessment” button' +
+    '<span class="sh">Hidden by default. Restores the Gemini draft button on dossiers.</span></label>' +
     '<label>Bio prompt<label class="sh">Sent to Gemini with the person\'s facts on every Generate. Edit freely.</label></label>' +
     '<textarea id="setprompt" rows="10" placeholder="Loading…"></textarea>' +
     '<label>Gemini API key<label class="sh">Stored in the sheet, server-side only. Get one at aistudio.google.com → Get API key.</label></label>' +
@@ -1502,6 +1584,10 @@ function openSettings(){
     '</div></div></div>';
   document.body.insertAdjacentHTML('beforeend', html);
   document.querySelector('#setclose').addEventListener('click', closeSettings);
+  var sacb = document.querySelector('#setassess');
+  if(sacb) sacb.addEventListener('change', function(){
+    try{ localStorage.setItem('ncc_show_assess', sacb.checked ? '1' : '0'); }catch(e){}
+  });
   document.querySelector('#revqlist').addEventListener('click', function(ev){
     var row = ev.target.closest('.revrow');
     if(!row) return;
