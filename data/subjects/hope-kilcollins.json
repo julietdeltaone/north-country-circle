@@ -1,9 +1,18 @@
 {
- "slug": "hope-kilcollins",
- "name": "Hope Kilcollins",
- "public_footprint": "SUNY Canton student from the North Country area: named to honors lists including the Spring 2023 honors list (Bachelor of Science in Nursing) and the Fall 2021 Dean's List (Health and Fitness Promotion). As a Brasher Falls/St. Lawrence Central student, presented caffeine research at a STEP conference in Albany.\nSources: https://www.canton.edu/news/2023/honorss23.php; https://5il.co/21z3n",
- "notes": "",
- "bio": "",
- "chips": [],
- "friendsdb": {}
+  "slug": "hope-kilcollins",
+  "name": "Hope Kilcollins",
+  "public_footprint": "SUNY Canton student from the North Country area: named to honors lists including the Spring 2023 honors list (Bachelor of Science in Nursing) and the Fall 2021 Dean's List (Health and Fitness Promotion). As a Brasher Falls/St. Lawrence Central student, presented caffeine research at a STEP conference in Albany.\nSources: https://www.canton.edu/news/2023/honorss23.php; https://5il.co/21z3n",
+  "notes": "",
+  "bio": "",
+  "chips": [],
+  "friendsdb": {},
+  "events": [
+    {
+      "date": "2024-05-25",
+      "type": "milestone",
+      "summary": "Maid of honor at Lydia Wangerin & Johnny Martin's wedding",
+      "detail": "Ceremony at CFC Potsdam."
+    }
+  ],
+  "files": []
 }
