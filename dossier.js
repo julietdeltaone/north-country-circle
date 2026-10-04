@@ -1299,6 +1299,25 @@ function buildNodes(){
       rad:2.0 + 3.6 * (r.strength / maxS), title:dispName(r), handle:r.name, relation:r.relation,
       pieces:r.pieces, strength:r.strength, on:true, col:'#7ea6f0' };
   });
+  /* ring 3: off-graph people who still have real content (events/files/records)
+     get an outer halo so that selecting them always has somewhere to fly to */
+  var seen = {};
+  NODES.forEach(function(n){ seen[n.i] = true; });
+  var halo = [];
+  dir.forEach(function(r, di){
+    if(seen[di] || r.has_graph !== false) return;
+    if(!((r.events || []).length || (r.files || []).length || !!r.record)) return;
+    halo.push(di);
+  });
+  halo.forEach(function(di, k){
+    var hrng = mulberry32(di * 2654435761 % 2147483647);
+    var hang = (k / halo.length) * Math.PI * 2 + (hrng() - 0.5) * 0.12 + 2.1;
+    var hrad = 615 + hrng() * 80;
+    var hr = dir[di];
+    NODES.push({ i:di, ring:3, ang:hang, x:Math.cos(hang) * hrad, y:Math.sin(hang) * hrad,
+      rad:2.0 + 3.6 * (hr.strength / maxS), title:dispName(hr), handle:hr.name, relation:hr.relation,
+      pieces:hr.pieces, strength:hr.strength, on:true, col:'#7ea6f0' });
+  });
 }
 
 /* ---------- map: 2D ---------- */
@@ -1339,7 +1358,7 @@ function hubResize(){
   hub.bgDots = null;
 }
 function hubFit(){
-  var z = Math.min(hub.W, hub.H) / 2 / 560;
+  var z = Math.min(hub.W, hub.H) / 2 / 730;
   hub.cam = { x:0, y:0, z:Math.max(0.3, Math.min(1.4, z)) };
   hub.target = null;
 }
@@ -1539,8 +1558,8 @@ function buildGL(){
 
   var n = NODES.length;
   var posArr = new Float32Array(n * 3), colArr = new Float32Array(n * 3);
-  var shells = [56, 94, 132], perShell = [[], [], []];
-  NODES.forEach(function(nd, k){ perShell[Math.min(nd.ring || 0, 2)].push(k); });
+  var shells = [56, 94, 132, 178], perShell = [[], [], [], []];
+  NODES.forEach(function(nd, k){ perShell[Math.min(nd.ring || 0, 3)].push(k); });
   var glPos = new Array(D.directory.length);
   perShell.forEach(function(list, s){
     var R = shells[s];
