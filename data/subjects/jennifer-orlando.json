@@ -1,0 +1,25 @@
+{
+  "slug": "jennifer-orlando",
+  "name": "Jennifer Orlando",
+  "events": [
+    {
+      "date": "2024-01-15",
+      "type": "note",
+      "summary": "Signed JD's wedding agreement",
+      "detail": "Agreement signed for her Oct 2024 wedding to Jordan Hatch."
+    },
+    {
+      "date": "2024-10-12",
+      "type": "milestone",
+      "summary": "Married Jordan Hatch",
+      "detail": "Rainbow Wedding and Banquet Hall, Altona NY; ceremony + reception."
+    }
+  ],
+  "files": [
+    {
+      "name": "Wedding agreement (signed 01/15/2024)",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/1oLYtFYk0wVOZlgK9q2gXyGR4_3_UrdCH2KX49GXuSy8/edit"
+    }
+  ]
+}
