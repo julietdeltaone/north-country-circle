@@ -1,37 +1,99 @@
 {
- "name": "Danielle Guimond",
- "slug": "danielle-guimond",
- "category": "",
- "role": "",
- "period": "",
- "standing": "",
- "description": "",
- "bio": "ER RN at Canton-Potsdam Hospital. JD first noticed her while working CPH security but did not pursue contact at the time. Facebook friend request July 2024, Snapchat November 2024, asked her to hang out late December 2024. Three visits before JD left for BCT on January 8, 2025. Warm text exchange during BCT that faded by February from attrition. She moved on by April 2025. She was also the nurse for JD's grandmother Norma Meyers, an occasional ER patient at CPH who passed away in late March 2025. JD unfollowed/removed her on most platforms in early 2026. Still Facebook friends.",
- "chips": [
-  {
-   "type": "org",
-   "label": "Canton-Potsdam Hospital"
+  "name": "Danielle Guimond",
+  "slug": "danielle-guimond",
+  "category": "",
+  "role": "",
+  "period": "",
+  "standing": "",
+  "description": "",
+  "bio": "ER RN at Canton-Potsdam Hospital. JD first noticed her while working CPH security but did not pursue contact at the time. Facebook friend request July 2024, Snapchat November 2024, asked her to hang out late December 2024. Three visits before JD left for BCT on January 8, 2025. Warm text exchange during BCT that faded by February from attrition. She moved on by April 2025. She was also the nurse for JD's grandmother Norma Meyers, an occasional ER patient at CPH who passed away in late March 2025. JD unfollowed/removed her on most platforms in early 2026. Still Facebook friends.",
+  "chips": [
+    {
+      "type": "org",
+      "label": "Canton-Potsdam Hospital"
+    },
+    {
+      "type": "org",
+      "label": "Fort Jackson, SC"
+    }
+  ],
+  "sources": [
+    "record"
+  ],
+  "friendsdb": {
+    "relationship_type": "Friend",
+    "groups": "CPH",
+    "closeness_tier": "Inner",
+    "state": "Closed",
+    "standing": "Strained",
+    "trajectory": "Flat",
+    "trend": "flat",
+    "personal_context": "Familiar",
+    "shared_interests": "CPH",
+    "years_known": "2",
+    "phone": "(315)2765191"
   },
-  {
-   "type": "org",
-   "label": "Fort Jackson, SC"
-  }
- ],
- "sources": [
-  "record"
- ],
- "friendsdb": {
-  "relationship_type": "Friend",
-  "groups": "CPH",
-  "closeness_tier": "Inner",
-  "state": "Closed",
-  "standing": "Strained",
-  "trajectory": "Flat",
-  "trend": "flat",
-  "personal_context": "Familiar",
-  "shared_interests": "CPH",
-  "years_known": "2",
-  "phone": "(315)2765191"
- },
- "public_footprint": "Danielle Guimond of Ogdensburg, NY, a graduating senior at Ogdensburg Free Academy, was honored by SUNY Potsdam in July 2016 for completing the College in High School program and earning college credit.\nSources: https://potsdam.meritpages.com/stories/Danielle-Guimond-Completes-SUNY-Potsdam-s-College-in-High-School-Program-/7406666"
+  "public_footprint": "Danielle Guimond of Ogdensburg, NY, a graduating senior at Ogdensburg Free Academy, was honored by SUNY Potsdam in July 2016 for completing the College in High School program and earning college credit.\nSources: https://potsdam.meritpages.com/stories/Danielle-Guimond-Completes-SUNY-Potsdam-s-College-in-High-School-Program-/7406666",
+  "events": [
+    {
+      "date": "2024-07",
+      "type": "note",
+      "summary": "Facebook friend request sent — accepted",
+      "detail": "JD had passed her in CPH hallways during security shifts; didn't pursue contact at the time."
+    },
+    {
+      "date": "2024-11",
+      "type": "note",
+      "summary": "Added on Snapchat"
+    },
+    {
+      "date": "2024-12",
+      "type": "milestone",
+      "summary": "JD asked her to hang out",
+      "detail": "Felt safer with BCT departure (Jan 8) approaching."
+    },
+    {
+      "date": "2025-01",
+      "type": "milestone",
+      "summary": "Three visits before BCT",
+      "detail": "Visit 1: JD brought Mexican hot chocolate made \"the way his mom used to,\" movie, some intimacy. Visit 2: more intimate. Visit 3: hours-long conversation over coloring — she said she thought he was \"out of her league\"; both acknowledged bad timing."
+    },
+    {
+      "date": "2025-01-07",
+      "type": "note",
+      "summary": "BCT texts begin",
+      "detail": "\"Going dark. Ttyl Danielle. Made it to South Carolina.\" — her: \"Good luck!!! I'll be rooting for you! Hang in there.\" Warm through January, stalled mid-February."
+    },
+    {
+      "date": "2025-03",
+      "type": "life event",
+      "summary": "Norma Meyers died — last direct contact",
+      "detail": "JD's grandmother, an occasional ER patient nursed by Danielle, passed away. Danielle replied to JD's story post. Nothing after."
+    },
+    {
+      "date": "2025-04",
+      "type": "note",
+      "summary": "She moved on",
+      "detail": "Soft-launched a new guy on socials."
+    },
+    {
+      "date": "2025-05-09",
+      "type": "note",
+      "summary": "Message marked Read, no reply"
+    },
+    {
+      "date": "2026-02",
+      "type": "milestone",
+      "summary": "JD disengaged",
+      "detail": "Unfollowed on IG, removed on Snapchat. Still Facebook friends. No outstanding issues — file is informational."
+    }
+  ],
+  "files": [
+    {
+      "name": "danielle_guimond_record",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/1k7p0ygu9l_0FrQugcOzDku8Di8B8sP0TSXDpef79Q74/edit",
+      "note": "Full journal record, Jul 2024 – Mar 2026"
+    }
+  ]
 }
