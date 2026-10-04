@@ -10,5 +10,14 @@
   "chips": [],
   "sources": [
     "legacy"
-  ]
+  ],
+  "events": [
+    {
+      "date": "2024-05-25",
+      "type": "milestone",
+      "summary": "Daughter Lydia married Johnny Martin",
+      "detail": "Ceremony at CFC Potsdam; Ina made the wedding cake."
+    }
+  ],
+  "files": []
 }
