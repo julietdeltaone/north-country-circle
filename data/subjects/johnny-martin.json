@@ -1,0 +1,24 @@
+{
+  "slug": "johnny-martin",
+  "name": "Johnny Martin",
+  "events": [
+    {
+      "date": "2024-05-25",
+      "type": "milestone",
+      "summary": "Married Lydia Wangerin — JD filmed videography",
+      "detail": "2:00 PM ceremony at CFC Potsdam; reception at 780 Bagdad Rd."
+    }
+  ],
+  "files": [
+    {
+      "name": "Wedding videography agreement (signed)",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/1QdA3KLsBmo_5DtgdwrizIcgrQJ162QlXooEVNPiq-Ug/edit"
+    },
+    {
+      "name": "5/25 wedding day schedule",
+      "kind": "gdoc",
+      "url": "https://docs.google.com/document/d/14j5uI89aH3w5VuR88lm9ibZPDPxMbsZI8plKQGCedZ8/edit"
+    }
+  ]
+}
