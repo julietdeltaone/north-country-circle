@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connections — North Country Circle</title>
+<link rel="stylesheet" href="rank.css?v=504e87c340">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="tb-left">
+      <h1>Connections</h1>
+      <span class="tb-sub">North Country Circle · pick who you prefer</span>
+    </div>
+    <div class="tb-right">
+      <span id="count" class="count">0 picks</span>
+      <button id="btn-board" class="tbtn">Leaderboard</button>
+      <button id="btn-reset" class="tbtn danger">Reset</button>
+    </div>
+  </header>
+  <main id="stage">
+    <section id="vote" class="view on">
+      <p class="prompt">Who do you like more?</p>
+      <div id="cards"></div>
+      <button id="btn-skip" class="tbtn">Skip this pair</button>
+    </section>
+    <section id="board" class="view">
+      <div class="bcols">
+        <div class="bcol">
+          <h2><span class="trophy">▲</span> Favorites</h2>
+          <div id="top10"></div>
+        </div>
+        <div class="bcol">
+          <h2><span class="trophy dim">▼</span> Least favorites</h2>
+          <div id="bot10"></div>
+        </div>
+      </div>
+      <button id="btn-back" class="tbtn">Back to voting</button>
+    </section>
+  </main>
+</div>
+<script src="rank.js?v=330dc95995"></script>
+</body>
+</html>
