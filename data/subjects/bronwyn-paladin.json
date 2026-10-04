@@ -61,5 +61,14 @@
     "shared_interests": "CFA, Music, Skiing",
     "years_known": "9",
     "phone": "(315)212-4531"
-  }
+  },
+  "events": [
+    {
+      "date": "2024-05-18",
+      "type": "note",
+      "summary": "Bridesmaid at Haddon Brown & Elena Levendusky's wedding",
+      "detail": "Paired with Wesley Brown in the bridal party."
+    }
+  ],
+  "files": []
 }
