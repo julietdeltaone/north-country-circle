@@ -88,6 +88,7 @@ var IC = {
   settings:'<path d="M4 6h9.8M18.2 6H20M4 12h3.8M12.2 12H20M4 18h8.8M17.2 18H20"/><circle cx="16" cy="6" r="2.2"/><circle cx="10" cy="12" r="2.2"/><circle cx="15" cy="18" r="2.2"/>',
   filter:'<path d="M3 5h18l-7 8v6l-4 2v-8z"/>',
   back:'<path d="m15 18-6-6 6-6"/>',
+  chev:'<path d="m6 9 6 6 6-6"/>',
   expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
   shrink:'<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>',
   download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
@@ -400,8 +401,11 @@ function pips5(v){
   for(var i = 1; i <= 5; i++) h += '<i' + (i <= v ? ' class="on"' : '') + '></i>';
   return h + '</span>';
 }
-function card(icon, title, lv, body, right, cls){
-  return '<section class="card ' + (cls || '') + '" style="--c:' + LV[lv].c + '"><header><span class="cic">' + ic(icon, 15) + '</span><h3>' + esc(title) + '</h3>' +
+function card(icon, title, lv, body, right, cls, collapsed){
+  var cc = ('card ' + (cls || '') + (collapsed != null ? ' collapsible' : '') + (collapsed ? ' is-collapsed' : '')).replace(/\s+/g, ' ').trim();
+  return '<section class="' + cc + '" style="--c:' + LV[lv].c + '"><header' +
+    (collapsed != null ? ' data-act="cardtoggle" title="Expand/collapse"' : '') + '><span class="cic">' + ic(icon, 15) + '</span><h3>' + esc(title) + '</h3>' +
+    (collapsed != null ? '<span class="chev">' + ic('chev', 14) + '</span>' : '') +
     (right ? '<div class="cr">' + right + '</div>' : '') + '</header><div class="cb">' + body + '</div></section>';
 }
 function emptyBox(text, btn, lv){
@@ -436,6 +440,7 @@ function phead(e){
     '<button data-act="attach">' + ic('link', 16) + 'Attach a file link</button>' +
     '<hr>' +
     '<button data-act="export">' + ic('download', 16) + 'Export dossier</button>' +
+    '<button data-act="viewdoc">' + ic('book', 16) + 'View dossier</button>' +
     '<button data-act="delete" class="danger">' + ic('trash', 16) + 'Delete this person</button></div></div>';
   return '<div class="phead"><div class="hrow">' + back +
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
@@ -474,7 +479,7 @@ function lvl1View(e){
     String(phones).split(',').map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join('') + '</div></div>';
   if(emails) rows += '<div class="idrow"><span class="idic">' + ic('mail', 15) + '</span><div><span>Email</span>' +
     String(emails).split(',').map(function(x){ x = x.trim(); return '<a href="mailto:' + esc(x) + '">' + esc(x) + '</a>'; }).join('') + '</div></div>';
-  if(e.detail) rows += '<div class="idrow"><span class="idic">' + ic('file', 15) + '</span><div><span>On file</span><b>' + esc(e.detail) + '</b></div></div>';
+  if(e.detail) rows += '<div class="idrow"><span class="idic">' + ic('file', 15) + '</span><div><b>' + esc(e.detail) + '</b></div></div>';
   var contact = card('user', 'Contact', 1, rows || emptyBox('No contact details yet.', 'Add details', 1));
 
   var anyScore = L1_SCORES.some(function(k){ return prof[k]; });
@@ -554,7 +559,7 @@ function lvl2View(e){
   if(from.length) cc += '<div class="subhead">Also linked here</div><div class="chips">' + from.slice(0, 12).map(function(di){
     return nbrChipHTML({ u:D.directory[di].name, d:dispName(D.directory[di]) }, false); }).join('') + '</div>';
   cc += '<div class="arow"><button class="mini neutral" data-act="goedit" data-lvl="2">' + ic('edit', 13) + 'Manage connections</button></div>';
-  var conns = card('share', 'Close connections', 2, cc);
+  var conns = card('share', 'Close connections', 2, cc, '', '', true);
 
   var tl = card('calendar', 'Timeline', 2, timelineHTML(e),
     '<button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button>', 'span');
@@ -643,7 +648,7 @@ function dossierEdit(e){
     card('quote', 'Narrative', 2, '<textarea id="narrtext" data-pk="enriched_value" data-orig="' + esc(narrVal) + '" rows="5" placeholder="Write the story of how you know them.">' + esc(narrVal) + '</textarea>' +
       (assessOn() ? '<div class="genrow"><button class="mini" data-act="enrich" style="--c:' + LV[2].c + '">' + ic('zap', 13) + 'Generate assessment</button><span id="enrmsg" class="calcnote"></span></div>' : '')) +
     card('share', 'Close connections', 2, '<div class="chips">' + ((e.neighbors || []).slice(0, 12).map(function(nb){ return nbrChipHTML(nb, true); }).join('') || '<span class="dim" style="font-size:13px">None mapped yet.</span>') +
-      '</div><div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name" autocomplete="off"><div id="naddlist"></div></div>') +
+      '</div><div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name" autocomplete="off"><div id="naddlist"></div></div>', '', '', true) +
     card('calendar', 'Timeline', 2, evRows + '<div class="arow"><button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button></div>', '', 'span') +
     card('file', 'Reference notes', 2, '<textarea id="refnotes" data-pk="notes" rows="5" placeholder="Private field notes.">' + esc(prof.notes || '') + '</textarea>', '', 'span');
 
@@ -751,6 +756,8 @@ function act(a, el){
       if(nx != null) openPerson(nx); else toast('That was the last one in this list.');
       break;
     case 'export': exportDossier(); break;
+    case 'viewdoc': viewDossier(); break;
+    case 'cardtoggle': { var tsec = el.closest('.card'); if(tsec) tsec.classList.toggle('is-collapsed'); break; }
     case 'delete': deletePerson(); break;
     case 'addevent': openEventComposer(); break;
     case 'newdoc': openDocComposer(); break;
@@ -1073,6 +1080,19 @@ function exportDossier(){
     setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 4000);
     toast('Downloaded ' + fname);
   }catch(x){ toast('Download failed.'); }
+}
+function viewDossier(){
+  var e = D.directory[S.sel];
+  if(!e){ toast('Nothing to view.'); return; }
+  var html;
+  try{ html = buildDossierDoc(e); }
+  catch(err){ toast('Could not build the document.'); return; }
+  try{
+    var blob = new Blob([html], { type:'text/html' });
+    var url = URL.createObjectURL(blob);
+    window.open(url, '_blank', 'noopener');
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 120000);
+  }catch(x){ toast('Could not open the document.'); }
 }
 
 /* ---------- modals: event, file, doc, settings ---------- */
@@ -1504,23 +1524,34 @@ function initGL(){
 function makeLabel(text, o){
   o = o || {};
   var fs = o.size || 26, SS = 3;
+  var font = '600 ' + fs + 'px Inter, system-ui, sans-serif';
   var cv = document.createElement('canvas'), mctx = cv.getContext('2d');
-  mctx.font = '700 ' + fs + 'px "Hanken Grotesk", sans-serif';
-  var w = Math.ceil(mctx.measureText(text).width) + 30, h = fs + 32;
+  mctx.font = font;
+  var tw = Math.ceil(mctx.measureText(text).width);
+  var px = Math.round(fs * 0.66), py = Math.round(fs * 0.42);
+  var w = tw + px * 2, h = fs + py * 2, r = (h - 3) / 2;
   cv.width = w * SS; cv.height = h * SS;
   var ctx = cv.getContext('2d');
   ctx.scale(SS, SS);
-  ctx.font = '700 ' + fs + 'px "Hanken Grotesk", sans-serif';
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(1.5, 1.5, w - 3, h - 3, r);
+  else{ ctx.moveTo(1.5 + r, 1.5); ctx.arcTo(w - 1.5, 1.5, w - 1.5, h - 1.5, r); ctx.arcTo(w - 1.5, h - 1.5, 1.5, h - 1.5, r); ctx.arcTo(1.5, h - 1.5, 1.5, 1.5, r); ctx.arcTo(1.5, 1.5, w - 1.5, 1.5, r); ctx.closePath(); }
+  ctx.fillStyle = o.bg || 'rgba(9,13,20,0.78)';
+  ctx.fill();
+  ctx.strokeStyle = o.edge || 'rgba(255,255,255,0.16)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.font = font;
   ctx.textBaseline = 'middle';
-  ctx.shadowColor = 'rgba(0,0,0,.85)'; ctx.shadowBlur = 9;
   ctx.fillStyle = o.color || '#e8ecf3';
-  ctx.fillText(text, 15, h / 2);
+  ctx.fillText(text, px, h / 2 + 1);
   var tex = new THREE.CanvasTexture(cv);
   tex.minFilter = THREE.LinearFilter;
   try{ tex.anisotropy = GL.renderer.capabilities.getMaxAnisotropy(); }catch(x){}
   var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false }));
-  sp.scale.set(w * 0.068, h * 0.068, 1);
+  sp.scale.set(w * 0.062, h * 0.062, 1);
   sp.renderOrder = 10;
+  sp.userData.isLabel = true;
   return sp;
 }
 function makeGlow(colorHex, size){
@@ -1552,7 +1583,7 @@ function buildGL(){
 
   scene.add(new THREE.Mesh(new THREE.SphereGeometry(4.6, 28, 28), new THREE.MeshBasicMaterial({ color:0xf4efe6 })));
   scene.add(makeGlow(0xf4efe6, 30));
-  var jdLabel = makeLabel('JD', { size:34, color:'#f4efe6' });
+  var jdLabel = makeLabel('JD', { size:30, color:'#f4efe6' });
   jdLabel.position.set(0, 10, 0);
   scene.add(jdLabel);
 
@@ -1622,6 +1653,24 @@ function buildGL(){
       if(t >= 1) GL.flight = null;
     }
     GL.controls.update();
+    if(GL.focusGroup){
+      var _cd = GL.camera.position.clone().sub(GL.controls.target);
+      var _cl = _cd.length() || 1; _cd.divideScalar(_cl);
+      var _kids = GL.focusGroup.children;
+      for(var _li = 0; _li < _kids.length; _li++){
+        var _lo = _kids[_li];
+        if(!_lo.userData || !_lo.userData.isLabel || !_lo.userData.nodePos) continue;
+        var _od = _lo.userData.nodePos.clone().sub(GL.controls.target);
+        var _ol = _od.length() || 1;
+        var _facing = _od.divideScalar(_ol).dot(_cd);
+        var _t = Math.min(1, Math.max(0, (_facing + 0.35) / 0.8));
+        _t = _t * _t * (3 - 2 * _t);
+        var _ndc = _lo.userData.nodePos.clone().project(GL.camera);
+        var _edge = Math.max(Math.abs(_ndc.x), Math.abs(_ndc.y));
+        var _ef = _edge > 0.9 ? Math.max(0, 1 - (_edge - 0.9) / 0.1) : 1;
+        _lo.material.opacity = (0.16 + 0.84 * _t) * _ef;
+      }
+    }
     GL.renderer.render(GL.scene, GL.camera);
   })();
 }
@@ -1656,7 +1705,7 @@ function glHoverLabel(di){
   GL.hoverDi = di;
   if(GL.hoverLabel){ GL.scene.remove(GL.hoverLabel); GL.hoverLabel = null; }
   if(di == null || di < 0 || !GL.glPos[di] || di === GL.focusDi) return;
-  var lab = makeLabel(dispName(D.directory[di]), { size:22, color:'#e8ecf3' }), p = GL.glPos[di];
+  var lab = makeLabel(dispName(D.directory[di]), { size:20, color:'#e8ecf3' }), p = GL.glPos[di];
   lab.position.set(p.x, p.y + 4.5, p.z);
   GL.scene.add(lab); GL.hoverLabel = lab;
 }
@@ -1696,13 +1745,17 @@ function glFocus(di){
     mesh.position.copy(np);
     mesh.userData.dirIdx = di2 != null ? di2 : -1;
     g.add(mesh);
-    var lab = makeLabel(nb.d || nb.u, { size:22, color:'#cfe6f2' });
-    lab.position.set(np.x, np.y + 3.6, np.z);
+    var lab = makeLabel(nb.d || nb.u, { size:19, color:'#d7e5f2' });
+    var ldir = np.clone().sub(p);
+    if(ldir.lengthSq() < 1e-6) ldir.set(0, 1, 0);
+    ldir.normalize();
+    lab.position.set(np.x + ldir.x * 8.5, np.y + ldir.y * 8.5, np.z + ldir.z * 8.5);
+    lab.userData.nodePos = np.clone();
     g.add(lab);
     g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p, np]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:0.35 })));
   });
-  var fl = makeLabel(dispName(e), { size:30, color:'#f4efe6' });
-  fl.position.set(p.x, p.y + 5.5, p.z);
+  var fl = makeLabel(dispName(e), { size:24, color:'#f4efe6' });
+  fl.position.set(p.x, p.y + 11, p.z);
   g.add(fl);
   var marker = makeGlow(parseInt(LV[personLevel(e)].c.slice(1), 16), 16);
   marker.position.copy(p);
