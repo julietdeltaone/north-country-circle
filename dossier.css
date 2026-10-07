@@ -359,6 +359,14 @@ body.panelwide{--pw:clamp(640px,58vw,920px)}
 .pr-inf{font-size:12.5px;line-height:1.55;margin:8px 0 0;color:var(--txt)}
 .pr-group{font-size:10px;letter-spacing:.14em;font-weight:700;color:var(--l2);margin:10px 0 6px;text-transform:uppercase}
 .pr-desc{font-size:11px;color:var(--dim);margin:-3px 0 7px 82px;line-height:1.45}
+.prow{display:flex;align-items:stretch;gap:10px;margin-top:12px}
+.proscore{flex:1;background:var(--fill);border:1px solid var(--line-soft);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:12px}
+.proscore b{font-family:var(--head);font-size:30px;color:var(--txt);line-height:1}
+.proscore span{font-size:11.5px;color:var(--dim);line-height:1.4}
+.pchip{flex:1;position:relative;overflow:hidden;background:var(--fill);border:1px solid var(--line-soft);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px}
+.pchip em{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,rgba(240,180,76,.28),rgba(240,180,76,.04));pointer-events:none}
+.pchip b{position:relative;font-family:var(--head);font-size:22px;color:var(--txt)}
+.pchip span{position:relative;font-size:11.5px;color:var(--dim)}
 .card.collapsible>header{cursor:pointer}
 .card.collapsible>header:hover h3{color:#fff}
 .card.collapsible .chev{margin-left:auto;display:inline-flex;color:var(--dim);transition:transform .18s var(--ease)}
