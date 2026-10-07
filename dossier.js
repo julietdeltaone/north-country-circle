@@ -521,8 +521,9 @@ function linkedFrom(e){
 function nbrChipHTML(nb, removable){
   var di = BYN[(nb.u || '').toLowerCase()];
   var d = di != null ? LV[personLevel(D.directory[di])].c : '#5a6b84';
+  var label = di != null ? auName(D.directory[di]).name : personLabel(nb.u, nb.d);
   return '<span class="nchip' + (removable ? '' : ' plain') + '" style="--d:' + d + '" ' + (di != null ? 'data-act="nav" data-di="' + di + '" title="Open dossier"' : 'title="Not in the directory"') + '><i></i>' +
-    esc(nb.d || nb.u) + (removable ? '<b class="nx" data-act="rmnx" data-u="' + esc(nb.u) + '" title="Remove close connection">×</b>' : '') + '</span>';
+    esc(label) + (removable ? '<b class="nx" data-act="rmnx" data-u="' + esc(nb.u) + '" title="Remove close connection">×</b>' : '') + '</span>';
 }
 function tile(icon, val, label){
   return '<div class="tile"><span class="tic">' + ic(icon, 15) + '</span><span class="tx"><b' + (val ? '' : ' class="dim"') + '>' + esc(val || '—') + '</b><i>' + esc(label) + '</i></span></div>';
@@ -544,7 +545,7 @@ function lvl2View(e){
     tile('activity', fdb.state, 'State') + tile('trend', fdb.trajectory, 'Trajectory') +
     tile('clock', fdb.years_known ? fdb.years_known + ' yrs' : '', 'Known for') + tile('share', String(e.degree || 0), 'Graph links') +
     tile('send', String(e.shared_with_jd || 0), 'Shared with you') + '</div>' +
-    '';
+    connTimelineHTML(e);
   var connection = card('users', 'Connection', 2, conn, '', 'span');
 
   var narrText = prof.enriched_value ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '')) : '';
@@ -646,6 +647,7 @@ function dossierEdit(e){
       '<button class="mini danger" data-act="evdel" data-evi="' + o.i + '">Remove</button></div>';
   }).join('') || '<p class="dim" style="margin:0 0 4px;font-size:13px">No events yet.</p>';
   var l2 = card('users', 'Connection', 2, selRow(relF, prof) + selRow(ctxF, prof) + '<div class="rgroups">' + rateLine('closeness', prof) + '</div>') +
+    cpCardHTML(e) +
     card('quote', 'Narrative', 2, '<textarea id="narrtext" data-pk="enriched_value" data-orig="' + esc(narrVal) + '" rows="5" placeholder="Write the story of how you know them.">' + esc(narrVal) + '</textarea>' +
       (assessOn() ? '<div class="genrow"><button class="mini" data-act="enrich" style="--c:' + LV[2].c + '">' + ic('zap', 13) + 'Generate assessment</button><span id="enrmsg" class="calcnote"></span></div>' : '')) +
     card('share', 'Close connections', 2, '<div class="chips">' + ((e.neighbors || []).slice(0, 12).map(function(nb){ return nbrChipHTML(nb, true); }).join('') || '<span class="dim" style="font-size:13px">None mapped yet.</span>') +
@@ -679,6 +681,7 @@ function renderPanel(keep){
   var st = null;
   if(keep){ var old = $('.lvstage', body); if(old) st = old.scrollTop; }
   panel.classList.add('open'); document.body.classList.add('panelopen');
+  document.body.classList.toggle('is-editing', !!S.editing);
   var e = D.directory[S.sel];
   body.innerHTML = S.editing ? dossierEdit(e) : dossierView(e);
   var stg = $('.lvstage', body);
@@ -764,6 +767,8 @@ function act(a, el){
     case 'newdoc': openDocComposer(); break;
     case 'attach': openFileComposer(); break;
     case 'evdel': delEvent(parseInt(el.getAttribute('data-evi'), 10)); break;
+    case 'cpadd': (function(){ var w = $('#cprows'); if(!w) return; var d = document.createElement('div'); d.innerHTML = cpRowHTML({}, w.children.length); w.appendChild(d.firstChild); syncConnPhases(); })(); break;
+    case 'cpdel': (function(){ var r = el.closest('.cprow'); if(r){ r.remove(); syncConnPhases(); } })(); break;
     case 'fdel': delFile(parseInt(el.getAttribute('data-fi'), 10)); break;
     case 'enrich': runEnrich(); break;
     case 'fill': fillFromText(); break;
@@ -950,6 +955,89 @@ function readHTML(prof){
     '<p class="pr-inf">' + esc(r.inference) + '</p></div>';
 }
 
+/* ---------- connection timeline ---------- */
+var CP_LABELS = ['Acquaintances','Friends','Close friends','Best friends','Drifted apart','Reconnected','Working together','Dating','Roommates','Teammates','Mentor','Fell out'];
+function connPhases(e){
+  var raw = (e.profile || {}).conn_phases || '';
+  if(!raw) return [];
+  try{
+    var a = JSON.parse(raw);
+    return Array.isArray(a) ? a.filter(function(p){ return p && (p.f || p.l); }) : [];
+  }catch(x){ return []; }
+}
+function ymIdx(s){
+  var m = String(s || '').match(/(\d{4})-(\d{1,2})/);
+  if(!m) return null;
+  return parseInt(m[1], 10) * 12 + parseInt(m[2], 10);
+}
+function ymLabel(s){
+  var m = String(s || '').match(/(\d{4})-(\d{1,2})/);
+  if(!m) return '';
+  var M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return M[parseInt(m[2], 10) - 1] + ' ' + m[1];
+}
+function connTimelineHTML(e){
+  var ps = connPhases(e);
+  if(!ps.length) return '';
+  var now = new Date(), nowIdx = now.getFullYear() * 12 + now.getMonth() + 1;
+  var items = [];
+  ps.forEach(function(p){
+    var f = ymIdx(p.f); if(f == null) return;
+    var t = p.t ? ymIdx(p.t) : nowIdx; if(t == null || t < f) t = f;
+    items.push({ f:f, t:t, fs:p.f, ts:p.t, l:p.l || 'Untitled phase', n:p.n || '', ongoing:!p.t });
+  });
+  if(!items.length) return '';
+  var min = nowIdx, max = 0;
+  items.forEach(function(x){ if(x.f < min) min = x.f; if(x.t > max) max = x.t; });
+  if(max <= min) max = min + 1;
+  var span = max - min;
+  var cols = ['#f0b44c', '#7ea6f0', '#5cd6a0', '#b48ce8'];
+  var segs = items.map(function(x, i){
+    var l = (x.f - min) / span * 100;
+    var w = Math.max(3, (x.t - x.f + 1) / span * 100);
+    if(l + w > 100) w = 100 - l;
+    return '<div class="ctl-seg" style="left:' + l.toFixed(1) + '%;width:' + w.toFixed(1) + '%;--c:' + cols[i % 4] + '"' +
+      ' title="' + esc(x.l + (x.n ? ' \u2014 ' + x.n : '')) + '"><b>' + esc(x.l) + '</b><i>' +
+      esc(ymLabel(x.fs)) + (x.ongoing ? ' \u2013 now' : ' \u2013 ' + ymLabel(x.ts)) + '</i></div>';
+  }).join('');
+  return '<div class="ctline"><div class="ctl-track">' + segs + '</div>' +
+    '<div class="ctl-axis"><span>' + Math.floor(min / 12) + '</span><span>' + Math.ceil(max / 12) + '</span></div></div>';
+}
+function cpRowHTML(p, i){
+  p = p || {};
+  var ongoing = !p.t;
+  return '<div class="cprow" data-i="' + i + '">' +
+    '<input type="month" class="cp-f" value="' + esc(p.f || '') + '" aria-label="From">' +
+    '<span class="cp-arr">\u2192</span>' +
+    '<input type="month" class="cp-t" value="' + esc(p.t || '') + '" aria-label="To"' + (ongoing ? ' disabled' : '') + '>' +
+    '<label class="cp-now"><input type="checkbox" class="cp-tp"' + (ongoing ? ' checked' : '') + '> now</label>' +
+    '<input class="cp-l" list="cplabels" value="' + esc(p.l || '') + '" placeholder="Phase label" aria-label="Phase label">' +
+    '<input class="cp-n" value="' + esc(p.n || '') + '" placeholder="Note (optional)" aria-label="Note">' +
+    '<button class="mini danger" data-act="cpdel">Remove</button></div>';
+}
+function cpCardHTML(e){
+  var cps = connPhases(e);
+  return card('clock', 'Connection timeline', 2,
+    '<div id="cprows">' + cps.map(function(p, i){ return cpRowHTML(p, i); }).join('') + '</div>' +
+    '<div class="arow"><button class="mini" data-act="cpadd" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add phase</button></div>' +
+    '<input type="hidden" data-pk="conn_phases" id="cpdata" value="' + esc(JSON.stringify(cps)) + '">' +
+    '<datalist id="cplabels">' + CP_LABELS.map(function(l){ return '<option value="' + esc(l) + '">'; }).join('') + '</datalist>',
+    '', 'span');
+}
+function syncConnPhases(){
+  var wrap = $('#cprows'); if(!wrap) return;
+  var out = [];
+  $$('.cprow', wrap).forEach(function(r){
+    var f = $('.cp-f', r).value, tp = $('.cp-tp', r).checked;
+    var t = tp ? '' : $('.cp-t', r).value;
+    var l = $('.cp-l', r).value.trim(), n = $('.cp-n', r).value.trim();
+    if(f || l) out.push({ f:f, t:t, l:l, n:n });
+  });
+  out.sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); });
+  $('#cpdata').value = JSON.stringify(out);
+  markDirty();
+}
+
 /* ---------- audit dashboard ---------- */
 var AUD = { open:false, q:'', f:'needs', sort:'missing', sel:{}, rows:[], undoStack:[], redoStack:[] };
 var BIZ_RE = /\b(llc|inc|corp|co\.|company|church|bakery|grill|cantina|pizza|caf[eé]|studio|salon|barber|tattoo|photo|productions|realty|motors|auto|plumbing|electric|construction|landscap|farm|market|deli|pub|brewery|winery|hotel|motel|insurance|dental|clinic|school|university|college|ntc|cfc|ministr)\b/i;
@@ -961,20 +1049,20 @@ function isBusiness(e){
 function titleCase(s){
   return String(s).replace(/[\w'’]+/g, function(w){ return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); });
 }
+function personLabel(handle, display){
+  var h = String(handle || '').trim();
+  var raw = String(display || '').trim();
+  if(raw) return raw;
+  var clean = h.replace(/^_+|_+$/g, '');
+  var parts = clean.split(/[._\-]+/).filter(function(p){ return p && !/^\d+$/.test(p); });
+  if(parts.length) return titleCase(parts.join(' '));
+  return h;
+}
 function auName(e){
   var prof = e.profile || {};
-  var raw = String(e.display || prof.display_name || '').trim();
   var handle = String(e.name || '').trim();
-  var biz = isBusiness(e);
-  if(raw && !biz) return { name:raw, business:false, handle:handle };
-  var nm = raw;
-  if(!nm){
-    var clean = handle.replace(/^_+|_+$/g, '');
-    var parts = clean.split(/[._\-]+/).filter(function(p){ return p && !/^\d+$/.test(p); });
-    if(parts.length) nm = titleCase(parts.join(' '));
-  }
-  if(!nm) nm = handle || 'Unknown';
-  return { name:nm, business:biz, handle:handle };
+  var nm = personLabel(handle, String(e.display || prof.display_name || '').trim());
+  return { name:nm || 'Unknown', business:isBusiness(e), handle:handle };
 }
 function auditStats(e){
   var prof = e.profile || {};
@@ -1299,7 +1387,11 @@ function buildDossierDoc(e){
   if(prof.specialty) extras += '<div class="kv"><span class="cl">Specialty</span> ' + esc(prof.specialty) + '</div>';
   if(prof.interests) extras += '<div class="kv"><span class="cl">Interests</span> ' + esc(prof.interests) + '</div>';
   if(score) extras += '<div class="kv"><span class="cl">Assessment</span> ' + esc(score) + '</div>';
-  var assoc = (e.neighbors || []).map(function(nb){ return '<li>' + esc(nb.d || nb.u) + '</li>'; }).join('');
+  var assoc = (e.neighbors || []).map(function(nb){
+    var di = BYN[(nb.u || '').toLowerCase()];
+    var label = di != null ? auName(D.directory[di]).name : personLabel(nb.u, nb.d);
+    return '<li>' + esc(label) + '</li>';
+  }).join('');
   var notes = '';
   if(prof.notes) notes += '<p>' + esc(prof.notes).replace(/\n/g, '<br>') + '</p>';
   if(e.public_footprint) notes += '<p><b>Public footprint</b><br>' + esc(e.public_footprint).replace(/\n/g, '<br>') + '</p>';
@@ -1339,7 +1431,14 @@ function buildDossierDoc(e){
   '.brow .bar i{display:block;height:100%;background:#141414}' +
   '.brow em{font-style:normal;font-size:11.5px;width:36px;text-align:right}' +
   '.kv{font-size:13px;margin:6px 0}' +
-  '.cols{display:flex;gap:28px}.cols .col{flex:1;min-width:0}' +
+  '.cols2{column-count:2;column-gap:30px}' +
+  '.cols2 .sec{break-inside:avoid;margin:0 0 18px}' +
+  '.cols2 .slabel{font-size:11px;margin-bottom:6px}' +
+  '.cols2 .sbody{font-size:12px;line-height:1.6}' +
+  '.cols2 .brow{margin-bottom:5px}' +
+  '.cols2 .brow span{width:96px;font-size:10px}' +
+  '.cols2 ul.assoc{font-size:12px;line-height:1.6}' +
+  '.cols2 .kv{font-size:12px;margin:4px 0}' +
   'ul.assoc{margin:0;padding-left:22px;font-size:13px;line-height:1.7}' +
   '.foot{border-top:2px solid #141414;margin-top:26px;padding-top:10px;font-size:11px}' +
   '.foot .sig{font-family:"Segoe Script",cursive;font-size:22px;margin:6px 0}' +
@@ -1350,12 +1449,14 @@ function buildDossierDoc(e){
   (contact.length ? '<div class="contact">' + contact.join('<br>') + '</div>' : '') + '</div>' +
   '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' +
   '<div class="sec"><div class="slabel">SYNOPSIS</div><div class="sbody">' + (bio ? '<p>' + esc(bio) + '</p>' : '<p>—</p>') + '</div></div>' +
+  '<div class="cols2">' +
   '<div class="sec"><div class="slabel">PROFILE RATINGS</div><div class="bars">' + bars + '</div>' + extras + '</div>' +
-  '<div class="cols"><div class="col"><div class="sec"><div class="slabel">KNOWN ASSOCIATES</div>' +
-    (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div></div>' +
-  '<div class="col"><div class="sec"><div class="slabel">FIELD NOTES</div><div class="sbody">' + notes + '</div></div></div></div>' +
+  '<div class="sec"><div class="slabel">KNOWN ASSOCIATES</div>' +
+    (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div>' +
+  '<div class="sec"><div class="slabel">FIELD NOTES</div><div class="sbody">' + notes + '</div></div>' +
   '<div class="sec"><div class="slabel">TIMELINE</div><div class="sbody">' + tl + '</div></div>' +
   '<div class="sec"><div class="slabel">ATTACHED FILES</div><div class="sbody">' + fls + '</div></div>' +
+  '</div>' +
   '<div class="foot"><div>APPROVED / FORWARDED BY</div><div class="sig">J. Meyers</div></div>' +
   '</div></body></html>';
 }
@@ -1949,7 +2050,9 @@ function buildGL(){
       GL.controls.target.copy(f.t0.clone().lerp(f.t2, e2));
       if(t >= 1) GL.flight = null;
     }
-    GL.controls.autoRotate = !GL.flight && !GL.userHold && !(GL.hoverDi != null && GL.hoverDi >= 0) && S.sel === null;
+    var _sel = S.sel !== null;
+    GL.controls.autoRotateSpeed = _sel ? 0.12 : 0.25;
+    GL.controls.autoRotate = !GL.flight && !GL.userHold && !(GL.hoverDi != null && GL.hoverDi >= 0);
     GL.controls.update();
     if(GL.focusGroup){
       var _cd = GL.camera.position.clone().sub(GL.controls.target);
@@ -2159,7 +2262,7 @@ function bind(){
       return;
     }
     var row = ev.target.closest('.aurow');
-    if(row){ closeAudit(); openPerson(parseInt(row.getAttribute('data-di'), 10), { push:true }); }
+    if(row){ closeAudit(); openPerson(parseInt(row.getAttribute('data-di'), 10), { push:true, edit:true }); }
   });
   $('#listtoggle').addEventListener('click', toggleList);
   $('#settingsbtn').addEventListener('click', openSettings);
@@ -2231,9 +2334,17 @@ function bind(){
   });
   rb.addEventListener('input', function(e){
     if(e.target.id === 'naddinput'){ renderNadd(e.target.value); return; }
+    if(e.target.closest('#cprows')){ syncConnPhases(); return; }
     if(e.target.closest('[data-pk]')) markDirty();
   });
-  rb.addEventListener('change', function(e){ if(e.target.tagName === 'SELECT' && e.target.hasAttribute('data-pk')) markDirty(); });
+  rb.addEventListener('change', function(e){
+    if(e.target.classList && e.target.classList.contains('cp-tp')){
+      var row = e.target.closest('.cprow'), mt = row ? $('.cp-t', row) : null;
+      if(mt) mt.disabled = e.target.checked;
+      syncConnPhases(); return;
+    }
+    if(e.target.tagName === 'SELECT' && e.target.hasAttribute('data-pk')) markDirty();
+  });
 
   document.addEventListener('click', function(e){
     if(!e.target.closest('.menu')) closeMenus();
