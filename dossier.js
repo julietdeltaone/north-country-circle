@@ -156,19 +156,23 @@ function ambient(){
 
 /* ---------- profile model ---------- */
 var PROFILE_FIELDS = [
-  {k:'relationship', label:'Relationship', type:'select', options:['','family','friend','coworker','acquaintance','other']},
-  {k:'context', label:'Context', type:'select', options:['','work','school','military','community','church','online','other']},
-  {k:'closeness', label:'Closeness', type:'score', hint:'1 rarely interact · 5 know them well'},
-  {k:'specialty', label:'Specialty', type:'text'},
-  {k:'interests', label:'Interests', type:'text'},
-  {k:'charisma', label:'Charisma', type:'score', hint:'1 fades into background · 5 people gravitate'},
-  {k:'competence', label:'Competence', type:'score', hint:'within their own field'},
-  {k:'intellect', label:'Intellect', type:'score'},
-  {k:'creativity', label:'Creativity', type:'score'},
-  {k:'reliability', label:'Reliability', type:'score', hint:'1 often misses · 5 never check'},
-  {k:'reputation', label:'Reputation', type:'score'},
-  {k:'assertiveness', label:'Assertiveness', type:'score'},
-  {k:'ego', label:'Ego', type:'score', hint:'1 credits others · 5 takes credit'}
+  {k:'relationship', label:'Relationship', type:'select', options:['','family','friend','coworker','acquaintance','other'], hint:'How you know them at the highest level'},
+  {k:'context', label:'Context', type:'select', options:['','work','school','military','community','church','online','other'], hint:'Where your paths cross most'},
+  {k:'closeness', label:'Closeness', type:'score', hint:'1 rarely interact · 2 acquaintance · 3 friendly · 4 close · 5 inner circle'},
+  {k:'specialty', label:'Specialty', type:'text', hint:'Their job, role, or what they are known for'},
+  {k:'interests', label:'Interests', type:'text', hint:'Hobbies, passions, things they care about'},
+  {k:'charisma', label:'Charisma', type:'score', hint:'1 fades into background · 3 holds a conversation · 5 people gravitate to them'},
+  {k:'competence', label:'Competence', type:'score', hint:'How good they are at what they do · 1 struggles · 5 expert'},
+  {k:'intellect', label:'Intellect', type:'score', hint:'1 surface-level thinker · 3 sharp · 5 exceptional mind'},
+  {k:'creativity', label:'Creativity', type:'score', hint:'1 follows the script · 3 original ideas · 5 constantly inventing'},
+  {k:'reliability', label:'Reliability', type:'score', hint:'1 often misses or flakes · 3 usually follows through · 5 never have to check'},
+  {k:'reputation', label:'Reputation', type:'score', hint:'How others see them · 1 poor standing · 3 neutral · 5 highly respected'},
+  {k:'assertiveness', label:'Assertiveness', type:'score', hint:'1 avoids conflict, goes along · 3 speaks up · 5 dominates the room'},
+  {k:'ego', label:'Ego', type:'score', hint:'1 credits others, humble · 3 balanced · 5 takes credit, self-focused'},
+  {k:'standing', label:'Standing', type:'text', hint:'Current state of your relationship (e.g. Stable, Strained, Growing)'},
+  {k:'state', label:'State', type:'text', hint:'Is the relationship active, dormant, or closed?'},
+  {k:'trajectory', label:'Trajectory', type:'text', hint:'Where it is heading: improving, stable, or declining?'},
+  {k:'years_known', label:'Known for (yrs)', type:'text', hint:'How many years you have known them'}
 ];
 var SCORE_FIELDS = [
   {k:'closeness', label:'Closeness'}, {k:'charisma', label:'Charisma'}, {k:'competence', label:'Competence'},
@@ -611,7 +615,9 @@ function dossierView(e){
 
 /* ---------- panel: edit mode ---------- */
 function irow(k, label, val){
-  return '<div class="irow"><span class="ilab">' + esc(label) + '</span><input data-pk="' + k + '" value="' + esc(val) + '" placeholder="—" autocomplete="off"></div>';
+  var f = fieldDef(k), hint = f && f.hint ? ' data-hint="' + esc(f.hint) + '"' : '';
+  var lab = '<span class="ilab"' + hint + '>' + esc(label) + (hint ? ' ' + ic('help', 11) : '') + '</span>';
+  return '<div class="irow">' + lab + '<input data-pk="' + k + '" value="' + esc(val) + '" placeholder="—" autocomplete="off"></div>';
 }
 function selRow(f, prof){
   var v = prof[f.k] || '';
@@ -872,6 +878,27 @@ function postKind(kind, id, patch, pw, onOk, onErr){
   }).catch(function(){ onErr('Network error.'); });
 }
 function getPw(){ return ''; }
+/* ---------- field hint popups ---------- */
+document.addEventListener('click', function(ev){
+  var lab = ev.target.closest('[data-hint]');
+  // Close any open hint
+  document.querySelectorAll('.hintpop').forEach(function(p){ p.remove(); });
+  if(!lab) return;
+  ev.stopPropagation();
+  var pop = document.createElement('div');
+  pop.className = 'hintpop';
+  pop.textContent = lab.getAttribute('data-hint');
+  document.body.appendChild(pop);
+  var r = lab.getBoundingClientRect();
+  pop.style.left = Math.min(r.left, window.innerWidth - 260) + 'px';
+  pop.style.top = (r.bottom + 6 + window.scrollY) + 'px';
+  setTimeout(function(){
+    document.addEventListener('click', function closer(){
+      pop.remove();
+      document.removeEventListener('click', closer);
+    });
+  }, 10);
+});
 /* ---------- research review toggle ---------- */
 var RESEARCH_KEY = 'ncc_research_review';
 function researchOn(){
