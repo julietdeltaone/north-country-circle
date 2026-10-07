@@ -2209,7 +2209,7 @@ function glHoverLabel(di){
   GL.hoverDi = di;
   if(GL.hoverLabel){ GL.scene.remove(GL.hoverLabel); GL.hoverLabel = null; }
   if(di == null || di < 0 || !GL.glPos[di] || di === GL.focusDi) return;
-  var lab = makeLabel(dispName(D.directory[di]), { size:20, color:'#e8ecf3' }), p = GL.glPos[di];
+  var lab = makeLabel(auName(D.directory[di]).name, { size:20, color:'#e8ecf3' }), p = GL.glPos[di];
   lab.position.set(p.x, p.y + 4.5, p.z);
   GL.scene.add(lab); GL.hoverLabel = lab;
 }
@@ -2249,7 +2249,7 @@ function glFocus(di){
     mesh.position.copy(np);
     mesh.userData.dirIdx = di2 != null ? di2 : -1;
     g.add(mesh);
-    var lab = makeLabel(nb.d || nb.u, { size:19, color:'#d7e5f2' });
+    var lab = makeLabel((function(){ var _di = BYN[(nb.u||'').toLowerCase()]; return _di != null ? auName(D.directory[_di]).name : personLabel(nb.u, nb.d); })(), { size:19, color:'#d7e5f2' });
     var ldir = np.clone().sub(p);
     if(ldir.lengthSq() < 1e-6) ldir.set(0, 1, 0);
     ldir.normalize();
@@ -2258,7 +2258,7 @@ function glFocus(di){
     g.add(lab);
     g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p, np]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:0.35 })));
   });
-  var fl = makeLabel(dispName(e), { size:24, color:'#f4efe6' });
+  var fl = makeLabel(auName(e).name, { size:24, color:'#f4efe6' });
   fl.position.set(p.x, p.y + 11, p.z);
   g.add(fl);
   var marker = makeGlow(parseInt(LV[personLevel(e)].c.slice(1), 16), 16);
