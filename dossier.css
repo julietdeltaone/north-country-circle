@@ -323,7 +323,7 @@ body.panelwide{--pw:clamp(640px,58vw,920px)}
 /* connection timeline (view) */
 .ctline{margin-top:12px}
 .ctl-track{position:relative;height:52px;background:rgba(255,255,255,.03);border:1px solid var(--line-soft);border-radius:10px;overflow:hidden}
-.ctl-seg{position:absolute;top:6px;bottom:6px;border-radius:7px;background:color-mix(in srgb,var(--c) 22%,transparent);border:1px solid color-mix(in srgb,var(--c) 55%,transparent);padding:4px 8px;overflow:hidden;min-width:0}
+.ctl-seg{position:absolute;height:24px;border-radius:7px;background:color-mix(in srgb,var(--c) 22%,transparent);border:1px solid color-mix(in srgb,var(--c) 55%,transparent);padding:4px 8px;overflow:hidden;min-width:0}
 .ctl-seg b{display:block;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt)}
 .ctl-seg i{display:block;font-style:normal;font-size:10px;color:var(--dim);white-space:nowrap}
 .ctl-axis{display:flex;justify-content:space-between;font-size:10.5px;color:var(--dim);margin-top:4px}
