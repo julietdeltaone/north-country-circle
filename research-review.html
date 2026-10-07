@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>University Research Review</title>
+<style>
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,system-ui,sans-serif;margin:0;padding:20px;max-width:900px;margin:0 auto}
+h1{font-size:22px;margin-bottom:4px}
+.sub{color:#8b949e;font-size:13px;margin-bottom:20px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.card.high{border-left:3px solid #3fb950}
+.card.med{border-left:3px solid #d29922}
+.card.low{border-left:3px solid #484f58}
+.name{font-weight:700;font-size:15px}
+.uni{color:#58a6ff;margin-top:4px}
+.loc{color:#8b949e;font-size:13px;margin-top:2px}
+.src{font-size:12px;margin-top:6px}
+.src a{color:#58a6ff}
+.note{font-size:12.5px;color:#8b949e;margin-top:4px;font-style:italic}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:1px}
+.b-high{background:#1a3a24;color:#3fb950}
+.b-med{background:#3a2f1a;color:#d29922}
+.b-low{background:#21262d;color:#8b949e}
+.filter{margin-bottom:16px}
+.filter button{background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:6px 14px;border-radius:8px;margin-right:8px;cursor:pointer}
+.filter button.on{background:#1f6feb;border-color:#1f6feb}
+</style></head><body>
+<h1>University Research Review <span style="font-size:14px;color:#8b949e">89 people</span></h1>
+<div class="sub">Green = confirmed degree. Click a source link to verify. Tell Luna which ones to write to the sheet.</div>
+<div class="filter">
+<button onclick="f('all')" class="on" id="b-all">All</button>
+<button onclick="f('high')" id="b-high">Degrees only</button>
+<button onclick="f('low')" id="b-low">No result</button>
+</div>
+<div id="list">
+<div class="card high" data-c="high">
+<div class="name">Danielle<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Potsdam — BA Childhood/Early Childhood Education; MS Education in Literacy (2022; 2025)</div><div class="loc">Whitestone, NY</div><div class="src"><a href="https://meritpages.com/Danielle-Vetere/4775118" target="_blank">Source</a></div><div class="note">Danielle Vetere of Whitestone, NY, SUNY Potsdam-verified: BA Childhood/Early Childhood Education (2022, cum laude) then MS Education in Literacy (2025). Matches memory record (married Merrick Sinclair).</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Dr. Michelle Currier<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Canton — Faculty - Assistant Professor of Criminal Justice; Dean of School of Science, Health and Criminal Justice; PhD (2014+)</div><div class="loc">Canton, NY (St. Lawrence County)</div><div class="note">JD's most significant SUNY Canton professor (criminal justice). Hired as lecturer, became Assistant Professor, lead faculty for Forensic Criminology, selected as Dean. PhD credentialed.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Elizabeth Deschaine<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Potsdam — BS Biology (magna cum laude) (2022)</div><div class="loc">Potsdam, NY</div><div class="src"><a href="https://meritpages.com/Elizabeth-J-Deschaine/4774276" target="_blank">Source</a></div><div class="note">SUNY Potsdam-verified Merit Pages: graduated magna cum laude with a Bachelor of Science in Biology, set to graduate May 2022; multiple President's List mentions 2019-2022 (Biology/Biochemistry). Matches the ctx hint exactly.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Emilie Albert<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Canton — BS Applied Psychology (2025)</div><div class="src"><a href="https://www.canton.edu/news/2025/graduates.php" target="_blank">Source</a></div><div class="note">SUNY Canton official 2025 graduate list names 'Emilie Albert, Applied Psychology'. Also on SUNY Canton Spring 2025 Dean's List. Matches ctx specialty 'Mental Health'. Location not stated in sources.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Ethan Bates<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Potsdam — BA Music (2023)</div><div class="loc">North Bangor, NY</div><div class="src"><a href="https://potsdam.meritpages.com/stories/Ethan-Bates-Set-to-Graduate-from-SUNY-Potsdam/108809068" target="_blank">Source</a></div><div class="note">SUNY Potsdam-verified meritpages (May 18, 2023): Ethan Bates of North Bangor, NY 'is set to graduate summa cum laude from SUNY Potsdam with a Bachelor of Arts degree in Music' (Commencement 2023, May 20). Also graduated from SUNY Potsdam's Law Enforcement Training Institute (Dec 2022, Director's Award). Now a Saranac Lake police officer per profile ctx. Matches profile ctx exactly.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Frederick Laud Amoah-Darko Jr.<span class="badge b-high">DEGREE</span></div>
+<div class="uni">Clarkson University — PhD Mathematics</div><div class="loc">Potsdam, NY area (St. Lawrence County)</div><div class="note">Confirmed Clarkson PhD in Mathematics from earlier research session.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Hope Kilcollins<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Canton</div><div class="src"><a href="https://canton.meritpages.com/stories/Hope-Kilcollins-Earns-Dean-s-List-Honors-at-SUNY-Canton/72991958" target="_blank">Source</a></div><div class="note">SUNY Canton-verified meritpages story (Jan 10, 2022): 'SUNY Canton recognizes Hope Kilcollins for earning Dean's List honors during the Fall 2021 semester.' Degree program, graduation year, and hometown not stated in the record. Registered-nurse status from profile ctx not confirmed by public sources.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">James Meyers<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Potsdam — BA English Writing (2025)</div><div class="loc">Potsdam, NY</div><div class="src"><a href="https://meritpages.com/James-Philip-Meyers/6675391" target="_blank">Source</a></div><div class="note">SUNY Potsdam-verified meritpages: James Meyers of Potsdam, NY 'is set to graduate summa cum laude from SUNY Potsdam with a Bachelor of Arts degree in English Writing' (May 15, 2025). Also: 2024 Departmental Scholar for English Writing, Sigma Tau Delta induction (May 2024), multiple President's List appearances. Matches profile ctx exactly.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Josiah McGrath<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Canton (2016)</div><div class="loc">St. Lawrence County, NY</div><div class="note">President's List Fall 2016. IG josiahbounce in captures.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Lydia Wangerin<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Canton — AS Business Administration (2025)</div><div class="loc">Madrid, NY</div><div class="note">Married Johnny Martin May 2024 (JD did photos). Honor lists. Known 5/24-vs-5/25 wedding-date conflict stands.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Merrick Sinclair<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Potsdam — Speech Communication (major) (2019)</div><div class="loc">Canton, NY (St. Lawrence County)</div><div class="src"><a href="https://potsdam.meritpages.com/stories/Merrick-Sinclair-Earns-Spot-on-SUNY-Potsdam-Dean-s-List-/14785855" target="_blank">Source</a></div><div class="note">Dean's List Spring 2019 and Fall 2019, Speech Communication major, hometown listed as Canton NY. Whitepages confirms unique name match, lives in Canton NY.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Morgan Morse<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Potsdam — BA Childhood/Early Childhood Education (2020)</div><div class="loc">Gouverneur, NY</div><div class="src"><a href="https://potsdam.meritpages.com/stories/Morgan-Morse-Set-to-Graduate-from-SUNY-Potsdam-/30461138" target="_blank">Source</a></div><div class="note">Morgan M. Morse of Gouverneur, NY (homeschooled grad 2015): started at SUNY Canton (undeclared, then Early Childhood major; President's List 2016), transferred and earned BA Childhood/Early Childhood Education from SUNY Potsdam magna cum laude, Class of 2020. SUNY-verified via Merit.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Nathaniel Tomford<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Canton — Legal Studies (B.Tech, not confirmed)</div><div class="loc">Gouverneur, NY</div><div class="src"><a href="https://canton.meritpages.com/stories/Nathaniel-Tomford-Earns-President-s-List-Honors-at-SUNY-Canton/110711508" target="_blank">Source</a></div><div class="note">SUNY Canton-verified Merit announcements: Legal Studies major from Gouverneur, NY; President's List Spring 2023, Fall 2022, Fall 2021; Dean's List Fall 2020/Spring 2021. Matches ctx hint (President's List, Legal Studies). Graduation degree/year not stated in announcements.</div>
+</div>
+<div class="card high" data-c="high">
+<div class="name">Olivia Huntley<span class="badge b-high">DEGREE</span></div>
+<div class="uni">SUNY Potsdam — Criminal Justice (2025)</div><div class="loc">Potsdam, NY</div><div class="note">Class of 2025, President's/Dean's List. Potsdam HS track 2019. (sf:olivia-huntley; queue also has 'Olivia Huntly' spelling duplicate.)</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Aaron Daniels<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">Joined Merrick/Wangerin group 2015; married Lala (Indira Quintana). Common name, no distinguishing public footprint.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Andrew Matott<span class="badge b-low">LOW</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://www.beenverified.com/people/andrew-matott/" target="_blank">Source</a></div><div class="note">Ambiguous. Public-records aggregator lists an Andrew Matott, age 34, in Potsdam, NY (unverified match to this person). An unrelated Andrew Matott is a NYC bankruptcy attorney (Seward & Kissel) and a NY Assembly committee assistant — excluded as different people. No degree found.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Anne Wangerin<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">Lydia Wangerin's sister (May 2024 wedding docs).</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Avery Criscitello<span class="badge b-low">LOW</span></div>
+<div class="loc">Potsdam, NY</div><div class="note">IG cloutlord_420 display name 'Avery Criscitello' in 2026-09-27 captures. Possible Tim Criscitello relative — unverified.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">B. Ryan Dunphey<span class="badge b-med">MEDIUM</span></div>
+<div class="loc">Madrid, NY (St. Lawrence County)</div><div class="note">Public records confirm Madrid NY address. No degree or university affiliation found in searches.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Bella Miller (Bella Colbert)<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County area</div><div class="note">Friend since 2017, married Caden Colbert, JD filmed June 2021 wedding. No university info found.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Blake Burr<span class="badge b-low">LOW</span></div>
+<div class="note">Searched 'Blake Burr Clarkson/Potsdam security' and 'Blake Burr corrections St. Lawrence County NY'. No university or local professional record found. Unrelated hits only (Arizona DOC employee, Manitoba hockey player). A public-records index lists a Blake Burr in Gouverneur NY (age 36) but that is not verified as this person.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Brenna McGrath / Hayden Stech<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County area</div><div class="note">Local couple, June 2026 wedding at Stables at Windy Point. No university info confirmed. SUNY Plattsburgh Dean's List Brenna McGrath is from Spencerport - different person.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Bronwyn Paladin<span class="badge b-low">HIGH</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://leeuniversity.meritpages.com/stories/Bronwyn-Paladin-Earns-Dean-s-List-Honor-at-Lee-University/150674560" target="_blank">Source</a></div><div class="note">Lee University-verified meritpages story (Dec 19, 2024): Bronwyn Paladin of Potsdam, NY earned Dean's List honors at Lee University for Fall 2024. Lee University (Cleveland, TN) is not one of the 4 local universities, so university recorded as 'none found' per the local-only schema. No degree/year confirmed.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">CJ Tomford<span class="badge b-med">MEDIUM</span></div>
+<div class="uni">SUNY Canton</div><div class="loc">Lisbon, NY</div><div class="note">Possible match: Christian J. Tomford, Lisbon NY / SUNY Canton — UNVERIFIED, flagged open.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Caden Colbert<span class="badge b-low">LOW</span></div>
+<div class="note">Searched 'Caden Colbert Potsdam NY Cornerstone' and wedding context. Found his June 5, 2021 wedding video (Ysabella/Bella), but no university, degree, or residence info. No degree or location confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Carol Harris Huckle<span class="badge b-low">LOW</span></div>
+<div class="loc">unknown</div><div class="note">No clear match found. Carol Harris obituary results appear to be different people.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Catherine Green<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">JD's older sister (b. June 1997); head barista at Park Bros since its 2015 opening; lived in Madrid, NY 2020-2022. No degree from any of the 4 local schools found (meritpages hits are other Catherine Greens: Lubbock TX, Myrtle Beach SC, Hockessin DE). Current location unconfirmed — Madrid, NY is the last known residence from 2020-2022.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Catherine Meyers (Catherine Green)<span class="badge b-low">HIGH</span></div>
+<div class="loc">Madrid, NY (St. Lawrence County)</div><div class="note">JD's older sister. Lived with husband Jeeves in Madrid NY 2020-2022. No university info found in web searches.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Christine Sutter<span class="badge b-med">MEDIUM</span></div>
+<div class="loc">Massena, NY</div><div class="src"><a href="https://www.doctor.com/Christine-Sutter" target="_blank">Source</a></div><div class="note">NPI registry (NPI 1841922747, assigned 06/29/2022) and doctor.com list 'Christine Aileen Sutter', Social Worker, 16 Phillips St, Massena, NY. Whitepages lists work as 'Licensed Master Social Worker at St Lawrence County' with address history including Potsdam and Chase Mills, NY — matching profile ctx 'Social Work'. No university for the degree confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">DJ Colbert<span class="badge b-low">LOW</span></div>
+<div class="loc">Norwood, NY</div><div class="note">Donald J. Colbert II (1971-2022) — DECEASED (obituary only). Father of Caden and Judson, uncle of Philip Dennis.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Daniel Paladin<span class="badge b-low">HIGH</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://www.potsdam.edu/media/986/download?attachment" target="_blank">Source</a></div><div class="note">SUNY Potsdam's spiritual groups directory lists 'Daniel Paladin, Lead Pastor (Potsdam)' and 'Gabe Paladin, College Ministry Pastor' for Christian Fellowship Center (CFC) Potsdam, 41 Main Street, daniel@cfconline.org. No university degree found.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Danielle Guimond<span class="badge b-med">MEDIUM</span></div>
+<div class="loc">Ogdensburg, NY</div><div class="src"><a href="https://potsdam.meritpages.com/stories/Danielle-Guimond-Completes-SUNY-Potsdam-s-College-in-High-School-Program-/7406666" target="_blank">Source</a></div><div class="note">SUNY Potsdam-verified meritpages story (Jul 2016): Danielle Guimond of Ogdensburg completed SUNY Potsdam's College in High School program (earned college credit while at Ogdensburg Free Academy) — not a degree. Public records (BeenVerified, ClustrMaps, people-search.org) consistently place Danielle R Guimond (b. 1997) at Ogdensburg, NY (7812 NY-68). RN credential from profile ctx not confirmed by any public source; no degree at any of the 4 universities found.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Danielle Vetere (Sinclair)<span class="badge b-med">MEDIUM</span></div>
+<div class="uni">SUNY Canton — Unknown major (2023)</div><div class="loc">St. Lawrence County area</div><div class="src"><a href="http://canton.meritpages.com/stories/Danielle-Sinclair-Earns-President-s-List-Honors-at-SUNY-Canton/123899595" target="_blank">Source</a></div><div class="note">Danielle Sinclair earned President's List Fall 2023 and Dean's List Spring 2023 at SUNY Canton. Likely Danielle Vetere (now married to Merrick Sinclair) but married name match is circumstantial - not 100% confirmed same person.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Darlene Sinclair<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">IG darlenesinclair / darlenesinclair3643 in captures. No public obituary/listing match.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">David Tomford<span class="badge b-low">LOW</span></div>
+<div class="loc">Altona, NY</div><div class="note">Husband of Julia Tomford (Julia Kia Photography); groom in Jan 15 2022 wedding JD filmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">David Zufall<span class="badge b-low">LOW</span></div>
+<div class="loc">Lisbon, NY</div><div class="src"><a href="https://www.northcountrypublicradio.org/photos/50375289146" target="_blank">Source</a></div><div class="note">Searched 'David Zufall Potsdam NY' and 'David Zufall Farm Potsdam NY'. Only confirmed public trace: NCPR Photo of the Day credits photos to 'David Zufall, Lisbon'. No university record found. Identity match to the friend with the farm is plausible but unverified.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Eli Thomas<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">Core CFA golf/social group; uncle is DJ Colbert.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Elisa Meyers<span class="badge b-low">HIGH</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://www.donaldsonfh.com/obituaries/obituary-listings?obId=39819659&source=fb0" target="_blank">Source</a></div><div class="note">March 2025 obituary of Norma Louise Meyers (Donaldson-Seymour Funeral Home, Potsdam) lists survivor 'John (Elisa) Meyers, Potsdam, NY'. No university degree found in public records.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Eliza Sullivan<span class="badge b-low">LOW</span></div>
+<div class="note">Searched 'Eliza Sullivan Potsdam NY Clarkson/St. Lawrence'. Hits were unrelated (Williams College skier, St. Lawrence youth hockey goalie). No local North Country match to this person's identity. No degree or location confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Elizabeth Davis<span class="badge b-low">LOW</span></div>
+<div class="note">Very common name; searched 'Elizabeth Davis Potsdam NY SUNY Potsdam/Clarkson'. Hits were unrelated (SUNY Cortland provost history, NYU alumni pages). No local North Country match to this person's identity. No degree or location confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Ellie Criscitello<span class="badge b-low">LOW</span></div>
+<div class="loc">Potsdam, NY</div><div class="note">Same person as Elizabeth Criscitello (JD's sister, married Tim Criscitello). Batch 1 had 'Ellie Meyers' medium SUNY Potsdam — do not double-count.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Ellie Meyers (Elizabeth Criscitello)<span class="badge b-med">MEDIUM</span></div>
+<div class="uni">SUNY Potsdam — BA English (2022)</div><div class="loc">Potsdam, NY (St. Lawrence County)</div><div class="note">From JD's memory records. Needs independent verification via web search.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Emily Wangerin<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">Wangerin family, CFC orbit. IG emilywangerin / emilywangerinart in captures. Not in Lydia's documented sibling list.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Evan Dennis<span class="badge b-low">LOW</span></div>
+<div class="note">No Potsdam footprint found. Shares Dennis surname with Philip Dennis.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Gabe Paladin<span class="badge b-low">HIGH</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://www.potsdam.edu/media/986/download?attachment" target="_blank">Source</a></div><div class="note">SUNY Potsdam's spiritual groups directory lists 'Gabe Paladin, College Ministry Pastor' for Christian Fellowship Center (CFC) Potsdam, gabepaladin@cfconline.org. No university degree found; songwriter/composer credit ('Gabriel Paladin') confirmed only in profile ctx, not in public sources.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Gabriel Paladin<span class="badge b-med">MEDIUM</span></div>
+<div class="loc">Potsdam/Canton area (St. Lawrence County)</div><div class="note">CFC college ministry pastor and worship artist. No university affiliation found in web searches.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">I. R. Lashomb<span class="badge b-low">LOW</span></div>
+<div class="note">Searched 'I. R. Lashomb admissions Potsdam NY' and 'Lashomb admissions Clarkson'. No matching person found in any university directory or news. No degree or location confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Ina & Danny Wangerin<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">Wangerin family. No confirmed locally-tied public footprint.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Jamie Sinclair<span class="badge b-low">HIGH</span></div>
+<div class="loc">Canton, NY</div><div class="src"><a href="https://WWW.JUSTICE.GOV/crt/case-document/file/1149341/dl" target="_blank">Source</a></div><div class="note">US DOJ memorandum in Christian Fellowship Centers of NY v. Village of Canton (2019): 'In May 2016, the Church launched a congregation in the Village and appointed Pastor Jamie Sinclair to lead it' — the Canton CFC congregation. Additional corroboration in local news (CFC Canton is a Cult Facebook group coverage). No university degree found.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Jeeves Green<span class="badge b-low">LOW</span></div>
+<div class="note">Searched 'Jeeves Green Potsdam NY Clarkson/SUNY Potsdam'. No university or degree records found. Known from JD's circle as brother-in-law living in the Potsdam/Madrid NY area (relationship context), but no public degree info.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Jeeves Green<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">JD's brother-in-law, married Catherine Meyers. IG jeevesgreen.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Jennifer Orlando<span class="badge b-low">LOW</span></div>
+<div class="note">Very common name; searched 'Jennifer Orlando Potsdam NY'. Hits were unrelated (NJ ed-para, NYC tech manager, FL/NC people). No local North Country match to this person's identity. No degree or location confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Jesper (On Black)<span class="badge b-low">LOW</span></div>
+<div class="note">Searched 'Jesper On Black band Potsdam/Canton NY'. No matching person, band, or university record found. No degree or location confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Joel Moulton<span class="badge b-low">LOW</span></div>
+<div class="note">Tried 'Joel Moulton Potsdam NY OR Canton NY' and '"Joel Moulton" Potsdam OR "jtmoulton" golf LinkedIn' — only out-of-area records (Maine, Florida Joel Moultons), no North Country match. Identity/location unconfirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">John Meyers<span class="badge b-low">HIGH</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://txizero.com/taxi/are-there-taxis-at-massena-airport/" target="_blank">Source</a></div><div class="note">Taxi Zero (txizero.com), his own business site, identifies owner/driver John Meyers, operating one taxi out of Potsdam, NY since 2014 (934 Bagdad Rd, Potsdam; TikTok @john_meyers_sr / @taxi_musings). No university degree found at any of the 4 universities. Electrical engineering/mathematics/teaching background appears only in his profile hints, not in public records.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">John Meyers Sr.<span class="badge b-low">HIGH</span></div>
+<div class="loc">Potsdam, NY (St. Lawrence County)</div><div class="note">JD's dad. Owner/operator of Taxi Zero, Potsdam NY. No university info.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">John Zufall<span class="badge b-med">MEDIUM</span></div>
+<div class="loc">Lisbon, NY</div><div class="src"><a href="https://www.natureupnorth.org/justmynature/kathryn-jepson/north-country-voices-canton-farmers-market" target="_blank">Source</a></div><div class="note">Matches ctx (farmer, friend): identified as owner of Zufall Family Farm, Lisbon NY, a dairy farm milking ~100 cows. No university affiliation found anywhere; degree info not available.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Johnny Martin<span class="badge b-low">LOW</span></div>
+<div class="note">Searched 'Johnny Martin Potsdam NY Clarkson'. Only unrelated hits (a SC obituary for a Johnny Martin who held a Clarkson master's, an L.A. Guns bassist, a 19th-century boxer). No local person match. No degree or location confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Josh McGrath<span class="badge b-low">LOW</span></div>
+<div class="loc">Potsdam area (St. Lawrence County)</div><div class="note">JD mentor since May 2021, weekly Park Bros Coffee meetings. No clear web match for university info.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Josiah Martin<span class="badge b-low">HIGH</span></div>
+<div class="loc">Moira, NY</div><div class="src"><a href="https://www.nfib.com/news/news/member-spotlight-josiah-martin-of-new-york/" target="_blank">Source</a></div><div class="note">Owner-operator of Martin's Handmade Pretzels, 697 County Highway 6, Moira NY; 2026 SBA National Small Business Manufacturer of the Year. Bought the bakery at age 17, age 24 in 2026 — no college attendance found anywhere. Location/business identity confirmed; no degree exists on record.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Judson Colbert<span class="badge b-med">MEDIUM</span></div>
+<div class="uni">SUNY Canton (2017)</div><div class="loc">Norwood, NY</div><div class="note">Caden's older brother; 2017 SUNY Potsdam article (heading to SUNY Canton that fall). Father DJ Colbert.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Julia Tomford<span class="badge b-low">HIGH</span></div>
+<div class="loc">Colton, NY</div><div class="note">Julia Kia Photography LLC (NY DOS #7329073, filed May 15 2024, St. Lawrence County), Julia Tomford, 351 Gulf Rd, Colton, NY 13625 — identity and location confirmed (found via search on company-detail.com; live URL unavailable, so source left blank). No degree found at any of the 4 schools. Matches memory: JD filmed her Jan 2022 wedding.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Katelyn Matthews<span class="badge b-low">LOW</span></div>
+<div class="note">Brief fall-2023 connection (met at Hayride). No local public footprint.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Kathy Moulton<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">Mother of Joel; CFC Madrid parental community.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Kayla Bryson<span class="badge b-low">LOW</span></div>
+<div class="loc">unknown</div><div class="note">No clear local match found. JD photographed her senior pictures.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">LAEL CARD<span class="badge b-low">LOW</span></div>
+<div class="note">IG laelcard confirmed in follow-graph. Web hits (Houghton lacrosse, CA birth index) unrelated — do not merge.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Lala (Indira Quintana)<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">Brief 2019 involvement JD self-reported to church leadership; married Aaron Daniels; cordial now.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Leah & Anne Wangerin<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">Wangerin family. Existing public_footprint in subject file from prior sweeps.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Liz Wangerin<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">Lydia Wangerin's sister.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Maddie Barton<span class="badge b-low">LOW</span></div>
+<div class="loc">Potsdam, NY</div><div class="note">Possible lead: MADDIE'S BAKERY LLC filed 2020-02-26, filer Madelyn Elizabeth Barton, 450 Parmenter Rd Potsdam — Inactive. Link unconfirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Megan Eddy<span class="badge b-low">LOW</span></div>
+<div class="loc">unknown</div><div class="note">No clear local match. Has $150 refund conflict with JD's business.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Melody Maurer<span class="badge b-med">MEDIUM</span></div>
+<div class="loc">Potsdam, NY (St. Lawrence County)</div><div class="src"><a href="https://nuwber.com/person/563a7f4ce0cd4806cb8c80f4" target="_blank">Source</a></div><div class="note">Melody J Maurer, 33 y.o., Potsdam NY confirmed via public records. Close friend since ~2018 from CFC orbit. Pursuing social-work masters as of 2025. No specific university confirmed.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Mike Tomford<span class="badge b-low">LOW</span></div>
+<div class="loc">Richville/Madrid, NY</div><div class="note">Pastor at Richville Christian Fellowship; father of Nathaniel and CJ. Same CFC Madrid parental layer. NOTE: do-not-record rule on cfctoo.com allegations — kept out.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Molly Criscitello<span class="badge b-low">LOW</span></div>
+<div class="loc">Potsdam, NY</div><div class="note">Existing public_footprint in subject file from prior sweeps.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Natalie Waterman<span class="badge b-med">MEDIUM</span></div>
+<div class="uni">Clarkson University</div><div class="loc">Potsdam, NY</div><div class="note">Clarkson junior, EMS Chief (from JD memory records). Ongoing undefined thread with JD. Not web-verified for degree.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Philip<span class="badge b-low">LOW</span></div>
+<div class="note">Tried 'Philip Dennis CFA golf Canton NY OR Potsdam NY' and '"Philip Dennis" Potsdam OR Canton North Country NY golf' — no North Country matches found. Identity unconfirmed; cannot distinguish common-name results.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Philip Dennis<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">Subject file exists. Nephew of DJ Colbert.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Philip Wangerin<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">Wangerin family. No standalone public record. Do NOT merge with 'Philip Paige' (different person).</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Rick Sinclair<span class="badge b-low">HIGH</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://www.cfconline.org/potsdam/" target="_blank">Source</a></div><div class="note">Executive Pastor of Christian Fellowship Center (senior pastor since 1981); lives in the Village of Potsdam with wife Darlene. Identity and location confirmed via CFC's own site. No degree information available from any of the 4 schools.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Riley Criscitello<span class="badge b-med">MEDIUM</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://www.familytreenow.com/records/people/address/100-market-st-20_potsdam-ny-13676" target="_blank">Source</a></div><div class="note">Age 23 (b. Jan 2003), 100 Market St, Potsdam NY; competes in SLC Disc Golf league as @rileycdiscgolf (PDGA/UDisc results, Canton NY events). No college degree on record at this age. Location and league identity confirmed; degree none found.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Samuel Wangerin<span class="badge b-low">LOW</span></div>
+<div class="loc">Madrid, NY</div><div class="note">Covered jointly in philip-sam-wangerin.json ('Philip & Sam Wangerin'). Aggregator 'S Wangerin' hits are unrelated Susan L. Wangerin of Gouverneur.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Silas Smith<span class="badge b-low">LOW</span></div>
+<div class="note">No subject file yet. No confirmed public footprint.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Tim Lashomb<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">Existing public_footprint in subject file from prior sweeps.</div>
+</div>
+<div class="card med" data-c="med">
+<div class="name">Tim Swyka<span class="badge b-med">MEDIUM</span></div>
+<div class="loc">Potsdam, NY</div><div class="src"><a href="https://unmask.com/Timothy-Swyka/" target="_blank">Source</a></div><div class="note">Timothy 'Tim' Swyka, ~39, 28 Sullivan Road, Potsdam NY; email taswyka@yahoo.com matches IG handle taswyka, so identity is the right person. Co-authored 2021 IEEE ICIP paper 'High Fidelity Fingerprint Generation' with Clarkson University affiliation (joint Clarkson/Precise Biometrics research team), but no degree from any of the 4 schools found. Location confirmed; degree unknown.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Vinnie Vetere<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">IG @vinnyvetere — distinct from Danielle Vetere (@daniveteree); keep strictly separate. No subject file yet.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Wayne Lougheed<span class="badge b-low">LOW</span></div>
+<div class="loc">Canton/Potsdam, NY</div><div class="note">JD's former boss, hospital security director Canton-Potsdam Hospital. JD wrote leadership case study on him.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Whitney Verbeck<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">Existing public_footprint in subject file from prior sweeps.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Ysabella Miller<span class="badge b-low">LOW</span></div>
+<div class="loc">St. Lawrence County, NY</div><div class="note">Ysabella M. Colbert, married Caden Colbert; JD filmed June 2021 wedding. IG ysabellamcolbert.</div>
+</div>
+<div class="card low" data-c="low">
+<div class="name">Zenna Dale<span class="badge b-low">LOW</span></div>
+<div class="note">No confirmed locally-tied public footprint.</div>
+</div>
+</div>
+<script>
+function f(c){
+  document.querySelectorAll('.filter button').forEach(b=>b.classList.remove('on'));
+  document.getElementById('b-'+c).classList.add('on');
+  document.querySelectorAll('.card').forEach(el=>{
+    el.style.display = (c==='all'||el.dataset.c===c||(c==='high'&&el.dataset.c==='high')) ? '' : 'none';
+  });
+}
+</script></body></html>
