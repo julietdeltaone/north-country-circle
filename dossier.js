@@ -872,6 +872,19 @@ function postKind(kind, id, patch, pw, onOk, onErr){
   }).catch(function(){ onErr('Network error.'); });
 }
 function getPw(){ return ''; }
+/* ---------- research review toggle ---------- */
+var RESEARCH_KEY = 'ncc_research_review';
+function researchOn(){
+  try { return localStorage.getItem(RESEARCH_KEY) !== 'off'; } catch(x){ return true; }
+}
+function toggleResearch(){
+  try {
+    var cur = researchOn();
+    localStorage.setItem(RESEARCH_KEY, cur ? 'off' : 'on');
+    toast('Research suggestions ' + (cur ? 'hidden' : 'shown') + '.');
+    refresh();
+  } catch(x){}
+}
 /* ---------- pending overlay: edits stay visible across reloads ---------- */
 var PENDING_KEY = 'ncc_pending_v1', PENDING_TTL = 3600000;
 function loadPending(){
