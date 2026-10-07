@@ -1,7 +1,15 @@
-/* North Country Circle — Dossier v4
+/* North Country Circle — Dossier v5
    Directory rail + connection map + dossier panel.
-   Level colors: L1 Snapshot = blue, L2 Story = amber, L3 Files = green.
+   Level colors: L1 On file = blue, L2 Story = amber, L3 Files = green.
 
+   v5 changes (consolidated model):
+   - Level 1 is now "On file": everything idiosyncratic to the person (contact, background,
+     known associates, public footprint, synopsis). Story level holds the relationship.
+   - Closeness is now the hero metric Open / Associate / Vetted. Map rings, dot colors and
+     the legend all key off tier.
+   - Status collapsed into one Momentum metric (1-5, 3 neutral) with a directional UI.
+   - Ratings feed a Big Five estimator; the top trait shows as a single hero chip.
+   - Story is synopsis-only. Timeline events keep only the initiated-by toggle.
    v4 changes (editing + saving rebuilt):
    - Edit mode is one stack of collapsible sections that covers every column in the Profiles sheet.
    - Every edit goes through one outbox: saved to this browser first, sent to the sheet in batches,
@@ -15,10 +23,26 @@
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 
 var LV = {
-  1:{ c:'#7ea6f0', n:'Snapshot', ic:'user' },
-  2:{ c:'#f0b44c', n:'Story',    ic:'book' },
-  3:{ c:'#5cd6a0', n:'Files',    ic:'folder' }
+  1:{ c:'#7ea6f0', n:'On file', ic:'user' },
+  2:{ c:'#f0b44c', n:'Story',   ic:'book' },
+  3:{ c:'#5cd6a0', n:'Files',   ic:'folder' }
 };
+/* tiers: the hero metric. Rings, dot colors and the legend all key off this. */
+var TIERS = {
+  vetted:   { c:'#f0b44c', n:'Vetted' },
+  associate:{ c:'#7ea6f0', n:'Associate' },
+  open:     { c:'#9aa3b2', n:'Open' }
+};
+var TIER_ORDER = ['vetted', 'associate', 'open'];
+var MOM_LABELS = { 1:'Fading fast', 2:'Fading', 3:'Neutral', 4:'Growing', 5:'Surging' };
+function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
+function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || '#4a5568'; }
+function tierName(e){ return (TIERS[tierOf(e)] || {}).n || ''; }
+function catLabel(e){
+  var v = gv(e, 'category'), ps = fieldDef('category').o || [];
+  for(var i = 0; i < ps.length; i++) if(ps[i][0] === v) return ps[i][1];
+  return v;
+}
 var RELC = { mutual:'#e0688a', following:'#b48ce8', follower:'#8b95a7' };
 var RELN = { mutual:'Mutual', following:'Following', follower:'Follower' };
 
@@ -26,7 +50,7 @@ var S = {
   q:'', rel:'', lvlF:0, auditOnly:false, tag:null, sort:'strength',
   rail:'people', limit:200,
   sel:null, editing:false, lvl:1, hist:[], fwd:[], wide:false,
-  mode:'3d', colorBy:'level', showBg:false, listOpen:true,
+  mode:'3d', colorBy:'tier', showBg:false, listOpen:true, tierF:'',
   openSecs:{}, evEdit:null, degEdit:null, jumpTo:null
 };
 var D = null, NODES = [], ORDER = [], LIST_ORDER = [], BYN = {}, PK2I = {};
@@ -174,17 +198,6 @@ function ambient(){
 }
 
 /* ---------- field registry: one place that knows every Profiles column the page edits ---------- */
-var SCORE_HINTS = {
-  closeness:'1 rarely interact · 2 acquaintance · 3 friendly · 4 close · 5 inner circle',
-  charisma:'1 fades into background · 3 holds a conversation · 5 people gravitate to them',
-  competence:'How good they are at what they do · 1 struggles · 5 expert',
-  intellect:'1 surface-level thinker · 3 sharp · 5 exceptional mind',
-  creativity:'1 follows the script · 3 original ideas · 5 constantly inventing',
-  reliability:'1 often misses or flakes · 3 usually follows through · 5 never have to check',
-  reputation:'How others see them · 1 poor standing · 3 neutral · 5 highly respected',
-  assertiveness:'1 avoids conflict, goes along · 3 speaks up · 5 dominates the room',
-  ego:'1 credits others, humble · 3 balanced · 5 takes credit, self-focused'
-};
 var ORG_CATS = [
   {k:'churches', label:'Churches', options:['CFC Potsdam','CFC Canton','CFC Madrid','NTC','Calvary Baptist']},
   {k:'companies', label:'Companies', options:['Rochester Regional Health','Clarkson University','Park Bros.']},
@@ -192,66 +205,54 @@ var ORG_CATS = [
 ];
 var F = {
   display_name:{ l:'Name', t:'text' },
-  also_known_as:{ l:'Also known as', t:'text', h:'Other names or nicknames. Separate with semicolons.' },
+  also_known_as:{ l:'Also known as', t:'text' },
   phone:{ l:'Phone', t:'phone' },
   email:{ l:'Email', t:'text' },
 
-  relationship:{ l:'Relationship', t:'select', o:['','family','friend','coworker','acquaintance','other'], h:'How you know them at the highest level' },
-  context:{ l:'Context', t:'select', o:['','work','school','military','community','church','online','other'], h:'Where your paths cross most' },
-  role:{ l:'Role', t:'text', h:'Short label, for example: CFA Friend · Golf Buddy' },
+  relationship:{ l:'Relationship', t:'select', o:['','family','friend','coworker','acquaintance','other'] },
+  context:{ l:'Context', t:'select', o:['','work','school','military','community','church','online','other'] },
   category:{ l:'Category', t:'select', o:[['',''],['peer','Peer'],['rom','Romantic'],['fam','Family'],['auth','Authority'],['ment','Mentor'],['conf','Conflict']] },
-  groups:{ l:'Groups', t:'tags', sep:', ', h:'Circles they belong to, for example: CFC, WORK' },
-  period:{ l:'Period', t:'text', h:'When the relationship ran, for example: 2014 – 2016' },
-  years_known:{ l:'Known for (yrs)', t:'text', h:'How many years you have known them' },
-  closeness:{ l:'Closeness', t:'score', h:SCORE_HINTS.closeness },
+  years_known:{ l:'Known for (yrs)', t:'text' },
+  tier:{ l:'Tier', t:'tier' },
+  momentum:{ l:'Momentum', t:'momentum' },
 
-  standing:{ l:'Standing', t:'select', o:['','Stable','Growing','Rebuilding','Strained','Dormant'], h:'Current state of the relationship' },
-  state:{ l:'State', t:'select', o:['','Active','Inactive','Closed'], h:'Is the relationship active, inactive, or closed?' },
-  trajectory:{ l:'Trajectory', t:'select', o:['','Improving','Flat','Declining','Unclear'], h:'Where it is heading' },
-  standing_note:{ l:'Standing note', t:'text', h:'One line on why the standing is what it is' },
-  personal_context:{ l:'How well exposed', t:'select', o:['','Exposed','Familiar','Limited','Superficial'], h:'How much of their real life you have seen' },
+  charisma:{ l:'Charisma', t:'score' },
+  competence:{ l:'Competence', t:'score' },
+  intellect:{ l:'Intellect', t:'score' },
+  creativity:{ l:'Creativity', t:'score' },
+  reliability:{ l:'Reliability', t:'score' },
+  reputation:{ l:'Reputation', t:'score' },
+  assertiveness:{ l:'Assertiveness', t:'score' },
+  ego:{ l:'Ego', t:'score' },
 
-  charisma:{ l:'Charisma', t:'score', h:SCORE_HINTS.charisma },
-  competence:{ l:'Competence', t:'score', h:SCORE_HINTS.competence },
-  intellect:{ l:'Intellect', t:'score', h:SCORE_HINTS.intellect },
-  creativity:{ l:'Creativity', t:'score', h:SCORE_HINTS.creativity },
-  reliability:{ l:'Reliability', t:'score', h:SCORE_HINTS.reliability },
-  reputation:{ l:'Reputation', t:'score', h:SCORE_HINTS.reputation },
-  assertiveness:{ l:'Assertiveness', t:'score', h:SCORE_HINTS.assertiveness },
-  ego:{ l:'Ego', t:'score', h:SCORE_HINTS.ego },
-
-  specialty:{ l:'Specialty', t:'text', h:'Their job, role, or what they are known for' },
-  interests:{ l:'Interests', t:'text', h:'Hobbies, passions, things they care about' },
-  shared_interests:{ l:'Shared interests', t:'tags', sep:', ', h:'Things you have in common' },
+  specialty:{ l:'Specialty', t:'text' },
+  interests:{ l:'Interests', t:'text' },
+  shared_interests:{ l:'Shared interests', t:'tags', sep:', ' },
   churches:{ l:'Churches', t:'pick', sep:', ' },
   companies:{ l:'Companies', t:'pick', sep:', ' },
   universities:{ l:'Universities', t:'pick', sep:', ' },
-  chips:{ l:'Tags', t:'tags', sep:'; ', ph:'+ type: label', h:'Format is type: label, for example person: Jeeves Green or org: Park Bros Coffee' },
+  chips:{ l:'Tags', t:'tags', sep:'; ', ph:'+ type: label' },
+  public_footprint:{ l:'Public footprint', t:'long', r:4 },
 
-  bio:{ l:'Bio', t:'long', r:8, ai:'bio', ph:'The story of who they are and how you know them.' },
-  description:{ l:'Summary', t:'long', r:3, ph:'Short version, two or three sentences.' },
-  synopsis:{ l:'Synopsis', t:'long', r:4, ai:'synopsis', ph:'Type or speak. One topic per line, starting with a label and colon (Background:, How we met:, Personality:, Notes:).' },
-  notes:{ l:'Private notes', t:'long', r:4, ph:'Private field notes.' },
-  public_footprint:{ l:'Public footprint', t:'long', r:4, h:'What is publicly findable. Put sources on a last line starting with Sources: and separate links with semicolons.' },
+  synopsis:{ l:'Synopsis', t:'long', r:4, ai:'synopsis', ph:'One topic per line, starting with a label and colon.' },
 
-  review_flag:{ l:'Review flag', t:'select', o:[['',''],['missing_info','Missing info'],['duplicate','Possible duplicate']], h:'Queues them in Settings > Needs review' },
-  relationship_type:{ l:'Type (legacy)', t:'text', h:'Older Friends Database field. Friend, Family, Acquaintance, Colleague.' },
-  sources:{ l:'Sources', t:'text', h:'Where this record came from (record, legacy, ...)' },
-  mentions:{ l:'Mentions', t:'text', h:'How many times they appear in the source material' }
+  review_flag:{ l:'Review flag', t:'select', o:[['',''],['missing_info','Missing info'],['duplicate','Possible duplicate']] },
+  relationship_type:{ l:'Type (legacy)', t:'text' },
+  sources:{ l:'Sources', t:'text' },
+  mentions:{ l:'Mentions', t:'text' }
 };
 var L1_SCORES = ['charisma','competence','intellect','creativity','reliability','reputation','assertiveness','ego'];
-var READ_TRAITS = ['closeness'].concat(L1_SCORES);
-var L1_TOTAL = 13;
+var READ_TRAITS = L1_SCORES.slice();
+var L1_TOTAL = 14;
 
 /* The edit stack, top to bottom. lv = which level color the section wears. */
 var SECTIONS = [
   { id:'identity',    title:'Identity',     ic:'user',      lv:1, fields:['display_name','also_known_as','phone','email'] },
-  { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','role','category','groups','period','years_known','closeness'] },
-  { id:'status',      title:'Status',       ic:'activity',  lv:2, fields:['standing','state','trajectory','standing_note','personal_context'] },
+  { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
   { id:'ratings',     title:'Ratings',      ic:'star',      lv:1, fields:L1_SCORES },
-  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','chips'] },
+  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','chips','public_footprint'] },
+  { id:'onfile',      title:'On file',      ic:'quote',     lv:1, fields:['synopsis'] },
   { id:'education',   title:'Education',    ic:'cap',       lv:1, fields:[] },
-  { id:'story',       title:'Story',        ic:'quote',     lv:2, fields:['bio','description','synopsis','notes','public_footprint'] },
   { id:'connections', title:'Connections',  ic:'share',     lv:2, fields:[] },
   { id:'timeline',    title:'Timeline',     ic:'calendar',  lv:2, fields:[] },
   { id:'files',       title:'Files',        ic:'folder',    lv:3, fields:[] },
@@ -332,6 +333,7 @@ function l1Fill(e){
   if(gv(e, 'email')) n++;
   ['specialty','interests'].concat(L1_SCORES).forEach(function(k){ if(gv(e, k)) n++; });
   if(ORG_CATS.some(function(cat){ return tagList(gv(e, cat.k)).length; })) n++;
+  if(gv(e, 'synopsis')) n++;
   return n;
 }
 function normEntry(r){
@@ -371,9 +373,10 @@ function passes(r, skipLvl, skipQ){
   if(S.tag && tagList(gv(r, S.tag.k)).indexOf(S.tag.v) < 0) return false;
   if(S.rel && r.relation !== S.rel) return false;
   if(!skipLvl && S.lvlF && personLevel(r) !== S.lvlF) return false;
+  if(S.tierF && tierOf(r) !== S.tierF) return false;
   if(!skipQ){
     var q = S.q.trim().toLowerCase();
-    if(q && ((dispName(r) + ' @' + r.name + ' ' + gv(r, 'specialty') + ' ' + gv(r, 'interests') + ' ' + gv(r, 'also_known_as') + ' ' + degreeText(r)).toLowerCase().indexOf(q) < 0)) return false;
+    if(q && ((dispName(r) + ' @' + r.name + ' ' + gv(r, 'specialty') + ' ' + gv(r, 'interests') + ' ' + gv(r, 'also_known_as') + ' ' + degreeText(r) + ' ' + tierName(r)).toLowerCase().indexOf(q) < 0)) return false;
   }
   return true;
 }
@@ -392,7 +395,7 @@ function refreshMatch(){
   NODES.forEach(function(n){
     var r = D.directory[n.i];
     n.on = passes(r);
-    n.col = S.colorBy === 'rel' ? (RELC[r.relation] || '#8b95a7') : LV[personLevel(r)].c;
+    n.col = S.colorBy === 'rel' ? (RELC[r.relation] || '#8b95a7') : tierCol(r);
   });
 }
 function refresh(){
@@ -416,7 +419,7 @@ function renderLvlChips(){
 }
 function pipsHTML(e){
   var on = [true, !!(e.events || []).length, !!(e.files || []).length];
-  return '<span class="pips" title="Snapshot' + (on[1] ? ', Story' : '') + (on[2] ? ', Files' : '') + '">' +
+  return '<span class="pips" title="On file' + (on[1] ? ', Story' : '') + (on[2] ? ', Files' : '') + '">' +
     [1,2,3].map(function(n){ return '<i class="pip' + (on[n - 1] ? ' lit' : '') + '" style="--c:' + LV[n].c + '"></i>'; }).join('') + '</span>';
 }
 function renderRail(){
@@ -488,13 +491,14 @@ function railFiles(){
   $('#leftbody').innerHTML = h || '<div class="empty-note">No files attached yet. Open someone and use the Files section.</div>';
 }
 function updateFilterUI(){
-  var n = (S.rel ? 1 : 0) + (S.auditOnly ? 1 : 0) + (S.sort !== 'strength' ? 1 : 0);
+  var n = (S.rel ? 1 : 0) + (S.tierF ? 1 : 0) + (S.auditOnly ? 1 : 0) + (S.sort !== 'strength' ? 1 : 0);
   var b = $('#filtercount');
   b.hidden = !n; b.textContent = n;
   $('#frel').value = S.rel; $('#fsort').value = S.sort; $('#fauditonly').checked = S.auditOnly;
   var chips = [];
   if(S.tag) chips.push('<button class="aflt" data-clr="tag">' + esc(S.tag.v) + '<b>' + ic('x', 11) + '</b></button>');
   if(S.rel) chips.push('<button class="aflt" data-clr="rel">' + esc(RELN[S.rel]) + '<b>' + ic('x', 11) + '</b></button>');
+  if(S.tierF) chips.push('<button class="aflt" data-clr="tier">' + esc(TIERS[S.tierF].n) + '<b>' + ic('x', 11) + '</b></button>');
   if(S.auditOnly) chips.push('<button class="aflt" data-clr="audit">Needs audit<b>' + ic('x', 11) + '</b></button>');
   if(S.q.trim()) chips.push('<button class="aflt" data-clr="q">“' + esc(S.q.trim()) + '”<b>' + ic('x', 11) + '</b></button>');
   $('#activeflt').innerHTML = chips.join('');
@@ -503,9 +507,10 @@ function updateFilterUI(){
 function clearFilter(k){
   if(k === 'tag') S.tag = null;
   else if(k === 'rel') S.rel = '';
+  else if(k === 'tier') S.tierF = '';
   else if(k === 'audit') S.auditOnly = false;
   else if(k === 'q'){ S.q = ''; $('#fq').value = ''; }
-  else if(k === 'all'){ S.tag = null; S.rel = ''; S.auditOnly = false; S.sort = 'strength'; S.lvlF = 0; S.q = ''; $('#fq').value = ''; }
+  else if(k === 'all'){ S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.sort = 'strength'; S.lvlF = 0; S.q = ''; $('#fq').value = ''; }
   S.limit = 200; refresh();
 }
 function updateAuditPill(){
@@ -515,24 +520,27 @@ function updateAuditPill(){
   $('#apfill').style.width = (live.length ? Math.round(done / live.length * 100) : 0) + '%';
 }
 function updateLegend(){
-  var c = {1:0, 2:0, 3:0}, rc = {mutual:0, following:0, follower:0};
+  var tc = { vetted:0, associate:0, open:0, none:0 }, rc = { mutual:0, following:0, follower:0 };
   LIST_ORDER.forEach(function(di){
     var r = D.directory[di];
     if(!passes(r, true)) return;
-    c[personLevel(r)]++; if(rc[r.relation] != null) rc[r.relation]++;
+    if(S.colorBy === 'rel'){ if(rc[r.relation] != null) rc[r.relation]++; }
+    else { var t = tierOf(r); if(tc[t] != null) tc[t]++; else tc.none++; }
   });
   var h = '';
-  if(S.colorBy === 'level'){
-    [1,2,3].forEach(function(n){
-      h += '<button class="lg' + (S.lvlF === n ? ' on' : '') + '" data-lf="' + n + '" style="--c:' + LV[n].c + '" title="Show only ' + LV[n].n + '"><i></i>' + LV[n].n + ' <b>' + c[n] + '</b></button>';
-    });
-  } else {
+  if(S.colorBy === 'rel'){
     ['mutual','following','follower'].forEach(function(k){
       h += '<button class="lg' + (S.rel === k ? ' on' : '') + '" data-rf="' + k + '" style="--c:' + RELC[k] + '"><i></i>' + RELN[k] + ' <b>' + rc[k] + '</b></button>';
     });
+  } else {
+    TIER_ORDER.forEach(function(t){
+      h += '<button class="lg' + (S.tierF === t ? ' on' : '') + '" data-tf="' + t + '" style="--c:' + TIERS[t].c + '" title="Show only ' + TIERS[t].n + '"><i></i>' + TIERS[t].n + ' <b>' + tc[t] + '</b></button>';
+    });
+    if(tc.none) h += '<span class="lg dim" style="--c:#4a5568"><i></i>Untiered <b>' + tc.none + '</b></span>';
   }
   $('#legend').innerHTML = h;
 }
+
 
 /* ---------- panel: shared bits ---------- */
 function pips5(v){
@@ -585,7 +593,7 @@ function phead(e){
   return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + back +
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
     '<div class="hname"><h2 title="' + esc(dispName(e)) + '">' + esc(dispName(e)) + '</h2>' +
-    '<div class="hsub"><span>' + esc(subLine(e)) + '</span>' + rel + (gv(e, 'role') ? '<span class="rolechip">' + esc(gv(e, 'role')) + '</span>' : '') +
+    '<div class="hsub"><span>' + esc(subLine(e)) + '</span>' + rel +
     reviewBadge(e) + (S.editing ? '<span class="editflag">Editing</span>' : '') + '</div></div>' +
     '<div class="hact">' + edit +
     '<button class="ibtn" id="pwide" data-act="wide" title="' + (S.wide ? 'Narrow the panel' : 'Widen the panel') + '" aria-label="Resize panel">' + ic(S.wide ? 'shrink' : 'expand', 16) + '</button>' +
@@ -609,7 +617,6 @@ function footprintHTML(e){
   return '<div class="fpbox">' + prose + (links ? '<div class="fpsrc"><span>Sources</span>' + links + '</div>' : '') + '</div>';
 }
 function lvl1View(e){
-  var prof = e.profile || {};
   var phones = gv(e, 'phone'), emails = gv(e, 'email'), aka = gv(e, 'also_known_as');
   var rows = '';
   if(e.src !== 'contacts' && e.src !== 'subject' && e.name)
@@ -623,23 +630,17 @@ function lvl1View(e){
 
   var ds = sortDegrees(degreesOf(e));
   var edu = ds.length ? card('cap', 'Education', 1, '<div class="edulist">' + ds.map(function(d){
-    var line = [d.degree, d.major].filter(Boolean).join(' · ');
+    var line = [d.degree, d.major].filter(Boolean).join(' \u00b7 ');
     return '<div class="edu"><span class="eic">' + ic('cap', 15) + '</span><div><b>' + esc(d.school || 'School not set') + '</b>' +
       (line ? '<span>' + esc(line) + '</span>' : '') + (d.note ? '<span class="dim">' + esc(d.note) + '</span>' : '') + '</div>' +
       (d.year ? '<em>' + esc(d.year) + '</em>' : '') + '</div>';
   }).join('') + '</div>', '', 'span') : '';
 
-  var anyRated = L1_SCORES.some(function(k){ return gv(e, k) !== ''; });
   var traits = '<div class="traits grid2">' + L1_SCORES.map(function(k){
     var v = gv(e, k);
     return '<div class="trait' + (v ? '' : ' empty-t') + '"><span>' + esc(fieldDef(k).l) + '</span>' + pips5(v) + '</div>';
   }).join('') + '</div>';
-  var score = '';
-  if(prof.enriched_value){
-    var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
-    if(m) score = '<span class="score" title="Assessment score">' + ic('star', 11) + ' ' + m[1] + '/100</span>';
-  }
-  var ratings = (anyRated || gv(e, 'closeness')) ? card('activity', 'Ratings', 1, readHTML(e) + traits, score) : '';
+  var ratings = L1_SCORES.some(function(k){ return gv(e, k) !== ''; }) ? card('activity', 'Ratings', 1, readHTML(e) + traits) : '';
 
   var bg = '';
   if(gv(e, 'specialty')) bg += '<div class="idrow"><span class="idic">' + ic('zap', 15) + '</span><div><span>Specialty</span><b>' + esc(gv(e, 'specialty')) + '</b></div></div>';
@@ -656,13 +657,15 @@ function lvl1View(e){
     (chipsHTML ? '<div class="subhead">Tags</div><div class="chips">' + chipsHTML + '</div>' : '');
   var background = bgBody ? card('briefcase', 'Background', 1, bgBody) : '';
 
+  var syn = gv(e, 'synopsis') ? card('quote', 'Synopsis', 1, '<div class="narr">' + esc(gv(e, 'synopsis')) + '</div>', '', 'span') : '';
   var fp = gv(e, 'public_footprint') ? card('link', 'Public footprint', 1, footprintHTML(e), '', 'span') : '';
   var ka = knownAssociates(e).slice(0, 24);
   var conns = ka.length ? card('share', 'Known associates', 1, '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>', '', '', true) : '';
-  var out = edu + contact + ratings + background + conns + fp;
-  if(!out) out = card('user', 'Snapshot', 1, emptyBox('Nothing on file yet. Press the pencil to start filling this in.'), '', 'span');
+  var out = contact + edu + ratings + background + syn + conns + fp;
+  if(!out) out = card('user', 'On file', 1, emptyBox('Nothing on file yet. Press the pencil to start filling this in.'), '', 'span');
   return out;
 }
+
 function linkedFrom(e){
   var me = (e.name || '').toLowerCase(), out = [];
   D.directory.forEach(function(r, di){
@@ -699,41 +702,37 @@ function timelineHTML(e){
   return '<div class="tl">' + evs.map(function(o){
     var ev = o.ev, t = ev.type || 'note';
     var meta = '';
-    if(ev.depth) meta += '<span class="evbadge depth-' + esc(ev.depth) + '">' + esc(cap(ev.depth)) + '</span>';
     if(ev.init) meta += '<span class="evbadge">' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</span>';
     return '<div class="ev"><span class="evdot"></span><div class="evtop"><time>' + evDate(ev.date) + '</time><span class="etype">' + ic(EVT_ICON[t] || 'quote', 11) + esc(t) + '</span>' + meta + '</div>' +
       '<div class="evtitle">' + esc(ev.summary || '') + '</div>' + (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>';
   }).join('') + '</div>';
 }
-function narrBlock(e){
-  var enr = (e.profile || {}).enriched_value ? String((e.profile || {}).enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
-  var bio = gv(e, 'bio'), desc = gv(e, 'description'), syn = gv(e, 'synopsis').replace(/\*\*/g, '');
-  var main = bio || enr || syn, h = '';
-  if(main) h += '<div class="narr">' + esc(main) + '</div>';
-  if(desc && desc !== main) h += '<div class="subhead">Summary</div><div class="narr alt">' + esc(desc) + '</div>';
-  if(syn && syn !== main) h += '<div class="subhead">Synopsis</div><div class="narr alt">' + esc(syn) + '</div>';
-  return h || emptyBox('No story written yet. Use Edit and open the Story section.');
-}
+
 function lvl2View(e){
-  var rel = [gv(e, 'relationship'), gv(e, 'context')].filter(Boolean).join(' · ');
-  var role = gv(e, 'role'), groups = splitTags(gv(e, 'groups'), ', ');
-  var yrs = gv(e, 'years_known'), cl = gv(e, 'closeness');
-  var conn = (rel ? '<div class="rel-line">' + ic('users', 15) + '<span>' + esc(cap(rel)) + (role ? ' — ' + esc(role) : '') + '</span></div>' : (role ? '<div class="rel-line">' + ic('users', 15) + '<span>' + esc(role) + '</span></div>' : '')) +
-    (groups.length ? '<div class="chips" style="margin-bottom:10px">' + groups.map(function(g){ return '<span class="vchip plainchip">' + esc(g) + '</span>'; }).join('') + '</div>' : '') +
-    '<div class="tiles">' + tile('heart', cl ? cl + ' / 5' : '', 'Closeness') + tile('flag', gv(e, 'standing'), 'Standing') +
-    tile('activity', gv(e, 'state'), 'State') + tile('trend', gv(e, 'trajectory'), 'Trajectory') +
-    tile('clock', yrs ? yrs + ' yrs' : '', 'Known for') + tile('calendar', gv(e, 'period'), 'Period') +
-    tile('user', gv(e, 'personal_context'), 'Exposure') +
-    tile('share', String(e.degree || 0), 'Graph links') + tile('send', String(e.shared_with_jd || 0), 'Shared with you') + '</div>' +
-    (gv(e, 'standing_note') && gv(e, 'standing_note') !== gv(e, 'standing') ? '<p class="dim" style="font-size:12.5px;margin:10px 0 0">' + esc(gv(e, 'standing_note')) + '</p>' : '') +
-    connTimelineHTML(e);
-  var connection = card('users', 'Connection', 2, conn, '', 'span');
-  var narrative = card('quote', 'Narrative', 2, narrBlock(e));
+  var tier = tierOf(e), mom = parseInt(gv(e, 'momentum'), 10);
+  var hero = '<div class="tierhero">' + TIER_ORDER.map(function(t){
+    return '<div class="tseg' + (tier === t ? ' on' : '') + '" style="--c:' + TIERS[t].c + '"><b>' + TIERS[t].n + '</b></div>';
+  }).join('') + '</div>';
+  var momHTML = '';
+  if(mom >= 1 && mom <= 5){
+    momHTML = '<div class="momview"><div class="momtrack"><div class="momfill" style="width:' + ((mom - 1) / 4 * 100) + '%"></div>' +
+      '<div class="mommark" style="left:' + ((mom - 1) / 4 * 100) + '%"></div></div>' +
+      '<div class="momlabels"><span>Fading</span><b>' + MOM_LABELS[mom] + '</b><span>Growing</span></div></div>';
+  }
+  var yrs = gv(e, 'years_known');
+  var tiles = '<div class="tiles">' +
+    tile('users', cap(gv(e, 'relationship')), 'Relationship') +
+    tile('briefcase', cap(gv(e, 'context')), 'Context') +
+    tile('tag', catLabel(e), 'Category') +
+    tile('clock', yrs ? yrs + ' yrs' : '', 'Known for') +
+    tile('share', String(e.degree || 0), 'Graph links') +
+    tile('send', String(e.shared_with_jd || 0), 'Shared with you') + '</div>';
+  var connection = card('users', 'Connection', 2, hero + momHTML + tiles + connTimelineHTML(e), '', 'span');
   var tl = card('calendar', 'Timeline', 2, timelineHTML(e),
     '<button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button>', 'span');
-  var notes = gv(e, 'notes') ? card('file', 'Reference notes', 2, '<div class="narr">' + esc(gv(e, 'notes')) + '</div>', '', 'span') : '';
-  return connection + narrative + tl + notes;
+  return connection + tl;
 }
+
 function filesHTML(e){
   var fs = e.files || [];
   if(!fs.length) return emptyBox('Nothing attached. Use a file when the timeline runs out of room.');
@@ -759,22 +758,24 @@ function dossierView(e){
 /* ---------- panel: edit mode (one stack of sections) ---------- */
 function optPair(o){ return Array.isArray(o) ? o : [o, o ? cap(o) : '—']; }
 function labHTML(f, extra){
-  var hint = f.h ? ' data-hint="' + esc(f.h) + '"' : '';
-  return '<span class="ilab"' + hint + '>' + esc(f.l) + (f.h ? ' ' + ic('help', 11) : '') + '</span>' + (extra || '');
+  return '<span class="ilab">' + esc(f.l) + '</span>' + (extra || '');
 }
+
 function tagChip(v, on, rm){
   return '<span class="tchip' + (on ? ' on' : '') + (rm ? ' rm' : '') + '" data-tv="' + esc(v) + '">' + esc(v) + (rm ? '<b>×</b>' : '') + '</span>';
 }
 function orgCat(k){ return ORG_CATS.filter(function(c){ return c.k === k; })[0]; }
 function rateRow(k, e){
   var f = fieldDef(k), v = gv(e, k);
-  var h = '<div class="rrow"><span class="rlab"' + (f.h ? ' data-hint="' + esc(f.h) + '"' : '') + '>' + esc(f.l) + (f.h ? ' ' + ic('help', 11) : '') + '</span><div class="dots" data-pk="' + k + '" data-v="' + esc(v) + '">';
+  var h = '<div class="rrow"><span class="rlab">' + esc(f.l) + '</span><div class="dots" data-pk="' + k + '" data-v="' + esc(v) + '">';
   for(var i = 1; i <= 5; i++) h += '<span class="pdot' + (String(v) === String(i) ? ' on' : '') + '" data-v="' + i + '">' + i + '</span>';
   return h + '</div></div>';
 }
 function fieldRow(k, e){
   var f = fieldDef(k), v = gv(e, k);
   if(f.t === 'score') return rateRow(k, e);
+  if(f.t === 'tier') return tierEditHTML(e);
+  if(f.t === 'momentum') return momentumEditHTML(e);
   if(f.t === 'select'){
     var opts = f.o.map(optPair);
     if(v && !opts.some(function(p){ return p[0] === v; })) opts.push([v, v]);
@@ -807,6 +808,22 @@ function secFill(s, e){
   var got = s.fields.filter(function(k){ return gv(e, k) !== ''; }).length;
   return { t:got + '/' + s.fields.length, done:got === s.fields.length };
 }
+/* tier hero editor + momentum directional editor */
+function tierEditHTML(e){
+  var v = tierOf(e);
+  return '<div class="irow"><span class="ilab">Tier</span><div class="tierhero edit">' + TIER_ORDER.map(function(t){
+    return '<button type="button" class="tseg' + (v === t ? ' on' : '') + '" data-tier="' + t + '" style="--c:' + TIERS[t].c + '"><b>' + TIERS[t].n + '</b></button>';
+  }).join('') + '</div></div>';
+}
+function momentumEditHTML(e){
+  var v = parseInt(gv(e, 'momentum'), 10);
+  if(!(v >= 1 && v <= 5)) v = 3;
+  var h = '<div class="irow"><span class="ilab">Momentum</span><div class="momwrap"><div class="momtrack" data-pk="momentum" data-v="' + v + '"><div class="momfill" style="width:' + ((v - 1) / 4 * 100) + '%"></div>';
+  for(var i = 1; i <= 5; i++) h += '<button type="button" class="mstop' + (i === v ? ' on' : '') + '" data-v="' + i + '" title="' + MOM_LABELS[i] + '"><i></i></button>';
+  h += '</div><div class="momlabels"><span>Fading</span><b>' + MOM_LABELS[v] + '</b><span>Growing</span></div></div></div>';
+  return h;
+}
+
 function updateFills(){
   if(S.sel === null || !S.editing) return;
   var e = D.directory[S.sel];
@@ -838,8 +855,7 @@ function evFormHTML(ev){
     '<select id="evtype">' + types.map(function(x){ return '<option value="' + x + '"' + (x === t ? ' selected' : '') + '>' + cap(x) + '</option>'; }).join('') + '</select></div>' +
     '<input type="text" id="evtitle" value="' + esc(ev.summary || '') + '" placeholder="Headline, for example: Started a new job" autocomplete="off">' +
     '<textarea id="evdetail" rows="3" placeholder="Details (optional)">' + esc(ev.detail || '') + '</textarea>' +
-    '<div class="evmeta"><span class="evmlab">Depth</span>' + seg('evdepth', [['', '—'], ['open', 'Open'], ['associate', 'Associate'], ['vetted', 'Vetted']], ev.depth) +
-    '<span class="evmlab">Initiated by</span>' + seg('evinit', [['', '—'], ['me', 'Me'], ['them', 'Them']], ev.init) + '</div>' +
+    '<div class="evmeta"><span class="evmlab">Initiated by</span>' + seg('evinit', [['', '—'], ['me', 'Me'], ['them', 'Them']], ev.init) + '</div>' +
     '<div class="arow"><button class="mini" data-act="evsave" style="--c:' + LV[2].c + '">' + ic('check', 13) + (S.evEdit != null ? 'Update event' : 'Add to timeline') + '</button>' +
     (S.evEdit != null ? '<button class="mini neutral" data-act="evcancel">Cancel</button>' : '') + '</div></div>';
 }
@@ -1342,8 +1358,7 @@ function saveEvent(){
   if(!/^\d{4}(-\d{2}(-\d{2})?)?$/.test(date)){ toast('Use a date like 2026-10-04.'); return; }
   var ev = { date:date, type:type, summary:summary };
   if(detail) ev.detail = detail;
-  var ds = $('#evdepth .on'), is = $('#evinit .on');
-  if(ds && ds.getAttribute('data-v')) ev.depth = ds.getAttribute('data-v');
+  var is = $('#evinit .on');
   if(is && is.getAttribute('data-v')) ev.init = is.getAttribute('data-v');
   var arr = (e.events || []).slice();
   if(S.evEdit != null && arr[S.evEdit]) arr[S.evEdit] = ev; else arr.push(ev);
@@ -1483,24 +1498,33 @@ function doUnmerge(e){
 }
 
 /* ---------- pro personality score ---------- */
-function traitAvg(e, traits){
-  var vals = traits.map(function(t){ return parseFloat(gv(e, t)); }).filter(function(v){ return !isNaN(v); });
-  if(!vals.length) return null;
-  return Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100);
+
+/* Big Five, estimated from the 8 trait ratings. The top trait is the hero chip. */
+var BIG5 = [
+  { n:'Openness',         from:['intellect','creativity'],   inv:[] },
+  { n:'Conscientiousness', from:['competence','reliability'], inv:[] },
+  { n:'Extraversion',      from:['charisma','assertiveness'], inv:[] },
+  { n:'Agreeableness',     from:['reputation'],              inv:['ego'] },
+  { n:'Neuroticism',       from:['ego'],                     inv:['reliability'] }
+];
+function big5Scores(e){
+  return BIG5.map(function(t){
+    var vals = [];
+    t.from.forEach(function(k){ var v = parseFloat(gv(e, k)); if(!isNaN(v)) vals.push(v); });
+    t.inv.forEach(function(k){ var v = parseFloat(gv(e, k)); if(!isNaN(v)) vals.push(6 - v); });
+    if(!vals.length) return null;
+    return { n:t.n, score:Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100) };
+  }).filter(Boolean);
 }
 function readHTML(e){
-  var pro = traitAvg(e, READ_TRAITS);
-  if(pro === null) return '';
-  var con = traitAvg(e, ['reliability','competence']);
-  var rated = READ_TRAITS.filter(function(t){ return !isNaN(parseFloat(gv(e, t))); }).length;
-  return '<div class="prow">' +
-    '<div class="proscore"><b>' + pro + '</b><span>Pro personality<br>score</span></div>' +
-    (con !== null
-      ? '<div class="pchip"><em style="width:' + con + '%"></em><b>' + con + '</b><span>Conscientiousness</span></div>'
-      : '') +
-    '</div>' +
-    '<div class="pr-desc" style="margin:6px 0 0">Based on ' + rated + ' of 9 ratings.</div>';
+  var ts = big5Scores(e);
+  if(!ts.length) return '';
+  ts.sort(function(a, b){ return b.score - a.score; });
+  var top = ts[0];
+  return '<div class="prow"><div class="pchip"><em style="width:' + top.score + '%"></em><b>' + top.score + '</b><span>' + esc(top.n) + '</span></div></div>' +
+    '<div class="pr-desc" style="margin:6px 0 0">Top trait from the ratings below.</div>';
 }
+
 
 /* ---------- connection timeline ---------- */
 var CP_LABELS = ['Acquaintances','Friends','Close friends','Best friends','Drifted apart','Reconnected','Working together','Dating','Roommates','Teammates','Mentor','Fell out'];
@@ -1615,7 +1639,7 @@ function auName(e){
 function auditStats(e){
   var hasR = L1_SCORES.some(function(k){ return gv(e, k) !== ''; });
   var hasB = !!(gv(e, 'specialty') || gv(e, 'interests') || ORG_CATS.some(function(c){ return gv(e, c.k).trim(); }));
-  var hasC = !!(gv(e, 'relationship') || gv(e, 'context') || gv(e, 'closeness'));
+  var hasC = !!(gv(e, 'relationship') || gv(e, 'context') || gv(e, 'tier'));
   var audited = (e.profile || {}).audit === 'audited';
   var missing = (hasR ? 0 : 1) + (hasB ? 0 : 1) + (hasC ? 0 : 1) + (audited ? 0 : 1);
   return { hasR:hasR, hasB:hasB, hasC:hasC, audited:audited, missing:missing, score:4 - missing };
@@ -1783,8 +1807,8 @@ function buildDossierDoc(e){
   var aka = gv(e, 'also_known_as');
   var today = new Date();
   var ds = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-  var bio = gv(e, 'bio') || gv(e, 'synopsis').replace(/\*\*/g, '') || gv(e, 'description');
-  var classif = [gv(e, 'relationship'), gv(e, 'context'), gv(e, 'role')].filter(Boolean).join(' · ');
+  var bio = gv(e, 'synopsis');
+  var classif = [gv(e, 'relationship'), gv(e, 'context'), tierName(e)].filter(Boolean).join(' · ');
   var orgs = [];
   ORG_CATS.forEach(function(cat){ tagList(gv(e, cat.k)).forEach(function(v){ orgs.push(v); }); });
   var contact = [];
@@ -1800,9 +1824,8 @@ function buildDossierDoc(e){
   var extras = '';
   if(gv(e, 'specialty')) extras += '<div class="kv"><span class="cl">Specialty</span> ' + esc(gv(e, 'specialty')) + '</div>';
   if(gv(e, 'interests')) extras += '<div class="kv"><span class="cl">Interests</span> ' + esc(gv(e, 'interests')) + '</div>';
-  ['standing','state','trajectory','period'].forEach(function(k){
-    if(gv(e, k)) extras += '<div class="kv"><span class="cl">' + esc(fieldDef(k).l) + '</span> ' + esc(gv(e, k)) + '</div>';
-  });
+  if(tierName(e)) extras += '<div class="kv"><span class="cl">Tier</span> ' + esc(tierName(e)) + '</div>';
+  if(gv(e, 'momentum')) extras += '<div class="kv"><span class="cl">Momentum</span> ' + esc(gv(e, 'momentum')) + ' / 5</div>';
   degreesOf(e).forEach(function(d){ extras += '<div class="kv"><span class="cl">Degree</span> ' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '</div>'; });
   var assoc = knownAssociates(e).map(function(nb){
     var di = BYN[(nb.u || '').toLowerCase()];
@@ -1810,7 +1833,6 @@ function buildDossierDoc(e){
     return '<li>' + esc(label) + '</li>';
   }).join('');
   var notes = '';
-  if(gv(e, 'description')) notes += '<p>' + esc(gv(e, 'description')).replace(/\n/g, '<br>') + '</p>';
   if(gv(e, 'notes')) notes += '<p>' + esc(gv(e, 'notes')).replace(/\n/g, '<br>') + '</p>';
   if(gv(e, 'public_footprint')) notes += '<p><b>Public footprint</b><br>' + esc(gv(e, 'public_footprint')).replace(/\n/g, '<br>') + '</p>';
   if(!notes) notes = '<p>—</p>';
@@ -1930,7 +1952,7 @@ function reviewQueueHTML(){
 function openSettings(){
   openModal('Settings',
     '<label class="lab">Keyboard shortcuts</label>' +
-    '<div class="keys"><kbd>/</kbd><span>Search</span><kbd>↑ ↓</kbd><span>Move through the directory</span><kbd>1 2 3</kbd><span>Snapshot, Story, Files</span><kbd>E</kbd><span>Edit the open dossier</span>' +
+    '<div class="keys"><kbd>/</kbd><span>Search</span><kbd>↑ ↓</kbd><span>Move through the directory</span><kbd>1 2 3</kbd><span>On file, Story, Files</span><kbd>E</kbd><span>Edit the open dossier</span>' +
     '<kbd>Alt ←</kbd><span>Back to the previous person</span><kbd>Esc</kbd><span>Back, finish editing, or close</span><kbd>B</kbd><span>Show or hide the directory</span></div>' +
     '<label class="lab">Edit key<span class="sh">Only needed if you set EDIT_TOKEN in the Apps Script project. Stored in this browser.</span></label>' +
     '<input type="password" id="setedit" placeholder="Edit key" autocomplete="off" value="' + esc(getPw()) + '">' +
@@ -1996,39 +2018,34 @@ function buildNodes(){
   LIST_ORDER = dir.map(function(r, i){ return i; })
     .filter(function(i){ var r = dir[i]; return r.has_graph !== false || (r.events || []).length || (r.files || []).length || !!r.record; })
     .sort(function(a, b){ return dir[b].strength - dir[a].strength || a - b; });
-  var bounds = [60, 300, dir.length], radii = [170, 310, 490], spread = [16, 36, 50], counts = [0, 0, 0];
-  NODES = ORDER.map(function(di, pos){
-    var ring = pos < bounds[0] ? 0 : (pos < bounds[1] ? 1 : 2);
-    var k = counts[ring]++;
-    var n = ring === 0 ? bounds[0] : (ring === 1 ? bounds[1] - bounds[0] : dir.length - bounds[1]);
-    var rng = mulberry32(di * 2654435761 % 2147483647);
-    var ang = (k / n) * Math.PI * 2 + (rng() - 0.5) * (Math.PI * 2 / n) * 0.6 + ring * 0.7;
-    var rad = radii[ring] + (rng() - 0.5) * 2 * spread[ring];
-    var r = dir[di];
-    return { i:di, ring:ring, ang:ang, x:Math.cos(ang) * rad, y:Math.sin(ang) * rad,
-      rad:2.0 + 3.6 * (r.strength / maxS), title:dispName(r), handle:r.name, relation:r.relation,
-      pieces:r.pieces, strength:r.strength, on:true, col:'#7ea6f0' };
-  });
-  /* ring 3: off-graph people who still have real content (events/files/records)
-     get an outer halo so that selecting them always has somewhere to fly to */
-  var seen = {};
-  NODES.forEach(function(n){ seen[n.i] = true; });
-  var halo = [];
+  /* rings are tiers: vetted inner, associate middle, open outer, untiered halo */
+  var tierRing = { vetted:0, associate:1, open:2 };
+  function ringOf(di){ var t = tierOf(dir[di]); return tierRing[t] != null ? tierRing[t] : 3; }
+  var seen = {}, placement = [];
+  ORDER.forEach(function(di){ seen[di] = true; placement.push(di); });
   dir.forEach(function(r, di){
     if(seen[di] || r.has_graph !== false) return;
     if(!((r.events || []).length || (r.files || []).length || !!r.record)) return;
-    halo.push(di);
+    placement.push(di);
   });
-  halo.forEach(function(di, k){
-    var hrng = mulberry32(di * 2654435761 % 2147483647);
-    var hang = (k / halo.length) * Math.PI * 2 + (hrng() - 0.5) * 0.12 + 2.1;
-    var hrad = 615 + hrng() * 80;
-    var hr = dir[di];
-    NODES.push({ i:di, ring:3, ang:hang, x:Math.cos(hang) * hrad, y:Math.sin(hang) * hrad,
-      rad:2.0 + 3.6 * (hr.strength / maxS), title:dispName(hr), handle:hr.name, relation:hr.relation,
-      pieces:hr.pieces, strength:hr.strength, on:true, col:'#7ea6f0' });
+  var byRing = [[], [], [], []];
+  placement.forEach(function(di){ byRing[ringOf(di)].push(di); });
+  var radii = [170, 310, 490, 640], spread = [16, 36, 50, 70];
+  NODES = [];
+  byRing.forEach(function(list, ring){
+    var n = list.length;
+    list.forEach(function(di, k){
+      var rng = mulberry32(di * 2654435761 % 2147483647);
+      var ang = (k / Math.max(1, n)) * Math.PI * 2 + (rng() - 0.5) * 0.3 + ring * 0.7;
+      var rad = radii[ring] + (rng() - 0.5) * 2 * spread[ring];
+      var r = dir[di];
+      NODES.push({ i:di, ring:ring, ang:ang, x:Math.cos(ang) * rad, y:Math.sin(ang) * rad,
+        rad:2.0 + 3.6 * (r.strength / maxS), title:dispName(r), handle:r.name, relation:r.relation,
+        pieces:r.pieces, strength:r.strength, on:true, col:'#7ea6f0' });
+    });
   });
 }
+
 
 /* ---------- map: 2D ---------- */
 var hub = { cv:null, ctx:null, W:0, H:0, dpr:1, cam:{ x:0, y:0, z:1 }, target:null, rot:0, hover:null, dragging:false, lastT:0, bgDots:null, raf:0 };
@@ -2590,7 +2607,7 @@ function bind(){
   $('#zreset').addEventListener('click', resetView);
   $('#legend').addEventListener('click', function(e){
     var b = e.target.closest('button'); if(!b) return;
-    if(b.hasAttribute('data-lf')){ var n = parseInt(b.getAttribute('data-lf'), 10); S.lvlF = S.lvlF === n ? 0 : n; }
+    if(b.hasAttribute('data-tf')){ var t2 = b.getAttribute('data-tf'); S.tierF = S.tierF === t2 ? '' : t2; }
     else if(b.hasAttribute('data-rf')){ var k = b.getAttribute('data-rf'); S.rel = S.rel === k ? '' : k; }
     S.rail = 'people'; S.limit = 200; refresh();
   });
@@ -2607,8 +2624,26 @@ function bind(){
   rb.addEventListener('click', function(e){
     var a = e.target.closest('[data-act]');
     if(a){ e.stopPropagation(); act(a.getAttribute('data-act'), a); return; }
-    var sg = e.target.closest('#evdepth button, #evinit button');
+    var sg = e.target.closest('#evinit button');
     if(sg){ $$('button', sg.parentNode).forEach(function(x){ x.classList.toggle('on', x === sg); }); return; }
+    var tseg = e.target.closest('.tseg[data-tier]');
+    if(tseg){
+      var tv = tseg.getAttribute('data-tier');
+      $$('.tseg', tseg.parentNode).forEach(function(x){ x.classList.toggle('on', x === tseg); });
+      setField('tier', tv); return;
+    }
+    var mst = e.target.closest('.mstop');
+    if(mst){
+      var mv = mst.getAttribute('data-v'), track = mst.closest('.momtrack');
+      setField('momentum', mv);
+      if(track){
+        track.setAttribute('data-v', mv);
+        $$('.mstop', track).forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-v') === mv); });
+        var fill = $('.momfill', track); if(fill) fill.style.width = ((parseInt(mv, 10) - 1) / 4 * 100) + '%';
+        var lab = $('.momlabels b', track.parentNode); if(lab) lab.textContent = MOM_LABELS[mv];
+      }
+      updateFills(); return;
+    }
     var pd = e.target.closest('.pdot');
     if(pd){
       var box = pd.closest('.dots'), nv = box.getAttribute('data-v') === pd.getAttribute('data-v') ? '' : pd.getAttribute('data-v');
@@ -2725,7 +2760,7 @@ function boot(){
   ambient();
   var m = store('ncc_mode'), c = store('ncc_color');
   if(m === '2d' || m === '3d') S.mode = m;
-  if(c === 'level' || c === 'rel') S.colorBy = c;
+  if(c === 'tier' || c === 'rel') S.colorBy = c; else if(c === 'level') S.colorBy = 'tier';
   try{ var so = JSON.parse(store('ncc_secs') || 'null'); if(so && typeof so === 'object') S.openSecs = so; }catch(x){}
   $$('#colorToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-c') === S.colorBy); });
   if(innerWidth <= 860){ S.listOpen = false; document.body.classList.add('nolist'); $('#listtoggle').classList.remove('on'); $('#listtoggle').setAttribute('aria-pressed', 'false'); }
