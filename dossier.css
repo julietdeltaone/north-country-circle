@@ -339,6 +339,8 @@ body.panelwide{--pw:clamp(640px,58vw,920px)}
 .pr-bar i{display:block;height:100%;background:var(--l2);border-radius:3px}
 .pr-dim em{font-style:normal;font-size:11px;width:28px;text-align:right;color:var(--dim)}
 .pr-inf{font-size:12.5px;line-height:1.55;margin:8px 0 0;color:var(--txt)}
+.pr-group{font-size:10px;letter-spacing:.14em;font-weight:700;color:var(--l2);margin:10px 0 6px;text-transform:uppercase}
+.pr-desc{font-size:11px;color:var(--dim);margin:-3px 0 7px 82px;line-height:1.45}
 .card.collapsible>header{cursor:pointer}
 .card.collapsible>header:hover h3{color:#fff}
 .card.collapsible .chev{margin-left:auto;display:inline-flex;color:var(--dim);transition:transform .18s var(--ease)}
