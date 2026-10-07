@@ -27,7 +27,7 @@ var S = {
   rail:'people', limit:200,
   sel:null, editing:false, lvl:1, hist:[], fwd:[], wide:false,
   mode:'3d', colorBy:'level', showBg:false, listOpen:true,
-  openSecs:{ identity:true, story:true }, evEdit:null, jumpTo:null
+  openSecs:{}, evEdit:null, degEdit:null, jumpTo:null
 };
 var D = null, NODES = [], ORDER = [], LIST_ORDER = [], BYN = {}, PK2I = {};
 
@@ -126,7 +126,8 @@ var IC = {
   reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
   star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
   ig:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/>',
-  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>'
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  cap:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/><path d="M22 10v6"/>'
 };
 function ic(n, s){
   s = s || 16;
@@ -227,7 +228,7 @@ var F = {
   universities:{ l:'Universities', t:'pick', sep:', ' },
   chips:{ l:'Tags', t:'tags', sep:'; ', ph:'+ type: label', h:'Format is type: label, for example person: Jeeves Green or org: Park Bros Coffee' },
 
-  bio:{ l:'Bio', t:'long', r:6, ai:'bio', ph:'The story of who they are and how you know them.' },
+  bio:{ l:'Bio', t:'long', r:8, ai:'bio', ph:'The story of who they are and how you know them.' },
   description:{ l:'Summary', t:'long', r:3, ph:'Short version, two or three sentences.' },
   synopsis:{ l:'Synopsis', t:'long', r:4, ai:'synopsis', ph:'Type or speak. One topic per line, starting with a label and colon (Background:, How we met:, Personality:, Notes:).' },
   notes:{ l:'Private notes', t:'long', r:4, ph:'Private field notes.' },
@@ -249,6 +250,7 @@ var SECTIONS = [
   { id:'status',      title:'Status',       ic:'activity',  lv:2, fields:['standing','state','trajectory','standing_note','personal_context'] },
   { id:'ratings',     title:'Ratings',      ic:'star',      lv:1, fields:L1_SCORES },
   { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','chips'] },
+  { id:'education',   title:'Education',    ic:'cap',       lv:1, fields:[] },
   { id:'story',       title:'Story',        ic:'quote',     lv:2, fields:['bio','description','synopsis','notes','public_footprint'] },
   { id:'connections', title:'Connections',  ic:'share',     lv:2, fields:[] },
   { id:'timeline',    title:'Timeline',     ic:'calendar',  lv:2, fields:[] },
@@ -259,6 +261,35 @@ var EVT_ICON = { milestone:'flag', note:'quote', 'life event':'heart' };
 
 function fieldDef(k){ return F[k] || { k:k, l:k }; }
 function dispName(e){ return e.display || e.name || ''; }
+
+/* ---------- education: degrees from the four local universities ---------- */
+var SCHOOLS = {
+  'Clarkson University':{ s:'Clarkson' }, 'SUNY Potsdam':{ s:'SUNY Potsdam' },
+  'SUNY Canton':{ s:'SUNY Canton' }, 'St. Lawrence University':{ s:'SLU' }
+};
+var DEGREE_TYPES = ['AA','AAS','AS','BA','BS','BFA','BBA','BTech','MA','MS','MBA','MEd','MPA','PhD','EdD','DPT','OTD','JD','MD','Certificate','Attended (no degree)','Other'];
+function degreesOf(e){ return parseArr(gv(e, 'degrees')).filter(function(d){ return d && (d.school || d.degree || d.major || d.year); }); }
+function degreeText(e){ return degreesOf(e).map(function(d){ return [d.school, d.degree, d.major, d.year].join(' '); }).join(' '); }
+function yy(y){ y = String(y || ''); return /^\d{4}$/.test(y) ? '\u2019' + y.slice(2) : y; }
+function schoolShort(s){ return (SCHOOLS[s] && SCHOOLS[s].s) || s || 'School'; }
+function sortDegrees(ds){ return ds.slice().sort(function(a, b){ return String(b.year || '').localeCompare(String(a.year || '')); }); }
+function degBadge(d){
+  var bits = [];
+  if(d.degree) bits.push(esc(d.degree));
+  if(d.major) bits.push(esc(d.major));
+  if(d.year) bits.push(esc(yy(d.year)));
+  return '<span class="dbadge" title="' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '">' + ic('cap', 12) +
+    '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits.length ? '<span>' + bits.join(' · ') + '</span>' : '') + '</span>';
+}
+function headBadges(e){
+  var ds = sortDegrees(degreesOf(e)); if(!ds.length) return '';
+  var shown = ds.slice(0, 4), more = ds.length - shown.length;
+  return '<div class="dbadges">' + shown.map(degBadge).join('') + (more > 0 ? '<span class="dmore">+' + more + '</span>' : '') + '</div>';
+}
+function capHTML(e){
+  var ds = degreesOf(e); if(!ds.length) return '';
+  return '<span class="rcap" title="' + esc(ds.map(function(d){ return schoolShort(d.school) + ' ' + (d.degree || ''); }).join(', ')) + '">' + ic('cap', 14) + '</span>';
+}
 
 /* The sheet row key. Prefix tells which data dump a person came from. */
 function pkey(e){
@@ -342,7 +373,7 @@ function passes(r, skipLvl, skipQ){
   if(!skipLvl && S.lvlF && personLevel(r) !== S.lvlF) return false;
   if(!skipQ){
     var q = S.q.trim().toLowerCase();
-    if(q && ((dispName(r) + ' @' + r.name + ' ' + gv(r, 'specialty') + ' ' + gv(r, 'interests') + ' ' + gv(r, 'also_known_as')).toLowerCase().indexOf(q) < 0)) return false;
+    if(q && ((dispName(r) + ' @' + r.name + ' ' + gv(r, 'specialty') + ' ' + gv(r, 'interests') + ' ' + gv(r, 'also_known_as') + ' ' + degreeText(r)).toLowerCase().indexOf(q) < 0)) return false;
   }
   return true;
 }
@@ -410,7 +441,7 @@ function railPeople(){
     return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
       '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
       (aud ? '' : '<i class="auddot" title="Needs audit"></i>') + '</div>' +
-      '<div class="nm"><b>' + esc(dispName(r)) + '</b><span>' + esc(sub) + '</span></div>' + pipsHTML(r) + '</div>';
+      '<div class="nm"><b>' + esc(dispName(r)) + '</b><span>' + esc(sub) + '</span></div>' + capHTML(r) + pipsHTML(r) + '</div>';
   }).join('');
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
   $('#leftbody').innerHTML = h || '<div class="empty-note">No one matches. Try clearing a filter.</div>';
@@ -554,11 +585,11 @@ function phead(e){
   return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + back +
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
     '<div class="hname"><h2 title="' + esc(dispName(e)) + '">' + esc(dispName(e)) + '</h2>' +
-    '<div class="hsub"><span>' + esc(subLine(e)) + '</span>' + rel +
+    '<div class="hsub"><span>' + esc(subLine(e)) + '</span>' + rel + (gv(e, 'role') ? '<span class="rolechip">' + esc(gv(e, 'role')) + '</span>' : '') +
     reviewBadge(e) + (S.editing ? '<span class="editflag">Editing</span>' : '') + '</div></div>' +
     '<div class="hact">' + edit +
     '<button class="ibtn" id="pwide" data-act="wide" title="' + (S.wide ? 'Narrow the panel' : 'Widen the panel') + '" aria-label="Resize panel">' + ic(S.wide ? 'shrink' : 'expand', 16) + '</button>' +
-    menu + '<button class="ibtn" data-act="close" title="Close (Esc)" aria-label="Close">' + ic('x', 17) + '</button></div></div>' + tabs + '</div>';
+    menu + '<button class="ibtn" data-act="close" title="Close (Esc)" aria-label="Close">' + ic('x', 17) + '</button></div></div>' + headBadges(e) + tabs + '</div>';
 }
 
 /* ---------- panel: view mode ---------- */
@@ -588,9 +619,18 @@ function lvl1View(e){
     String(phones).split(',').map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join('') + '</div></div>';
   if(emails) rows += '<div class="idrow"><span class="idic">' + ic('mail', 15) + '</span><div><span>Email</span>' +
     String(emails).split(',').map(function(x){ x = x.trim(); return '<a href="mailto:' + esc(x) + '">' + esc(x) + '</a>'; }).join('') + '</div></div>';
-  var contact = card('user', 'Contact', 1, rows || emptyBox('No contact details yet.'));
+  var contact = rows ? card('user', 'Contact', 1, rows) : '';
 
-  var traits = '<div class="traits">' + L1_SCORES.map(function(k){
+  var ds = sortDegrees(degreesOf(e));
+  var edu = ds.length ? card('cap', 'Education', 1, '<div class="edulist">' + ds.map(function(d){
+    var line = [d.degree, d.major].filter(Boolean).join(' · ');
+    return '<div class="edu"><span class="eic">' + ic('cap', 15) + '</span><div><b>' + esc(d.school || 'School not set') + '</b>' +
+      (line ? '<span>' + esc(line) + '</span>' : '') + (d.note ? '<span class="dim">' + esc(d.note) + '</span>' : '') + '</div>' +
+      (d.year ? '<em>' + esc(d.year) + '</em>' : '') + '</div>';
+  }).join('') + '</div>', '', 'span') : '';
+
+  var anyRated = L1_SCORES.some(function(k){ return gv(e, k) !== ''; });
+  var traits = '<div class="traits grid2">' + L1_SCORES.map(function(k){
     var v = gv(e, k);
     return '<div class="trait' + (v ? '' : ' empty-t') + '"><span>' + esc(fieldDef(k).l) + '</span>' + pips5(v) + '</div>';
   }).join('') + '</div>';
@@ -599,7 +639,7 @@ function lvl1View(e){
     var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
     if(m) score = '<span class="score" title="Assessment score">' + ic('star', 11) + ' ' + m[1] + '/100</span>';
   }
-  var ratings = card('activity', 'Ratings', 1, traits + readHTML(e), score);
+  var ratings = (anyRated || gv(e, 'closeness')) ? card('activity', 'Ratings', 1, readHTML(e) + traits, score) : '';
 
   var bg = '';
   if(gv(e, 'specialty')) bg += '<div class="idrow"><span class="idic">' + ic('zap', 15) + '</span><div><span>Specialty</span><b>' + esc(gv(e, 'specialty')) + '</b></div></div>';
@@ -611,19 +651,17 @@ function lvl1View(e){
       orgs += '<button class="vchip" data-act="tagfilter" data-tagk="' + cat.k + '" data-tagv="' + esc(v) + '" title="See everyone at ' + esc(v) + '">' + ic('briefcase', 12) + esc(v) + '</button>';
     });
   });
-  var chipsHTML = splitTags(gv(e, 'chips'), '; ').map(function(c){
-    return '<span class="vchip plainchip">' + esc(c) + '</span>';
-  }).join('');
-  var bgBody = (bg ? bg : '') + (orgs ? '<div class="subhead">Organizations (click to see who else)</div><div class="chips">' + orgs + '</div>' : '') +
+  var chipsHTML = splitTags(gv(e, 'chips'), '; ').map(function(c){ return '<span class="vchip plainchip">' + esc(c) + '</span>'; }).join('');
+  var bgBody = bg + (orgs ? '<div class="subhead">Organizations (click to see who else)</div><div class="chips">' + orgs + '</div>' : '') +
     (chipsHTML ? '<div class="subhead">Tags</div><div class="chips">' + chipsHTML + '</div>' : '');
-  var background = card('briefcase', 'Background', 1, bgBody || emptyBox('No specialty, interests, or organizations yet.'));
+  var background = bgBody ? card('briefcase', 'Background', 1, bgBody) : '';
 
-  var fp = card('link', 'Public footprint', 1, footprintHTML(e), '', 'span');
+  var fp = gv(e, 'public_footprint') ? card('link', 'Public footprint', 1, footprintHTML(e), '', 'span') : '';
   var ka = knownAssociates(e).slice(0, 24);
-  var cc = ka.length ? '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>'
-    : '<p class="dim" style="margin:0 0 4px;font-size:13px">No known associates mapped.</p>';
-  var conns = card('share', 'Known associates', 1, cc, '', '', true);
-  return contact + ratings + background + conns + fp;
+  var conns = ka.length ? card('share', 'Known associates', 1, '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>', '', '', true) : '';
+  var out = edu + contact + ratings + background + conns + fp;
+  if(!out) out = card('user', 'Snapshot', 1, emptyBox('Nothing on file yet. Press the pencil to start filling this in.'), '', 'span');
+  return out;
 }
 function linkedFrom(e){
   var me = (e.name || '').toLowerCase(), out = [];
@@ -762,6 +800,7 @@ function fieldRow(k, e){
 function secFill(s, e){
   var n;
   if(s.id === 'connections'){ n = (e.neighbors || []).length + connPhases(e).length; return { t:String(n), done:n > 0 }; }
+  if(s.id === 'education'){ n = degreesOf(e).length; return { t:String(n), done:n > 0 }; }
   if(s.id === 'timeline'){ n = (e.events || []).length; return { t:String(n), done:n > 0 }; }
   if(s.id === 'files'){ n = (e.files || []).length; return { t:String(n), done:n > 0 }; }
   if(s.id === 'admin'){ var a = (e.profile || {}).audit === 'audited'; return { t:a ? 'Audited' : 'Needs audit', done:a }; }
@@ -838,16 +877,76 @@ function adminBody(e){
   h += '<div class="subhead">Danger zone</div><div class="arow" style="margin-top:0"><button class="mini danger" data-act="delete">' + ic('trash', 13) + 'Delete this person</button></div>';
   return h;
 }
+function educationBody(e){
+  var ds = parseArr(gv(e, 'degrees'));
+  var rows = ds.map(function(d, i){ return { d:d, i:i }; })
+    .sort(function(a, b){ return String(b.d.year || '').localeCompare(String(a.d.year || '')); })
+    .map(function(o){
+      var line = [o.d.degree, o.d.major, o.d.year].filter(Boolean).join(' · ');
+      return '<div class="evrow' + (S.degEdit === o.i ? ' editing' : '') + '"><div class="fic">' + ic('cap', 16) + '</div><div><div class="evtitle">' + esc(o.d.school || 'School not set') + '</div>' +
+        (line ? '<div class="evdetail">' + esc(line) + '</div>' : '') + (o.d.note ? '<div class="evdetail">' + esc(o.d.note) + '</div>' : '') + '</div>' +
+        '<div class="evbtns"><button class="mini neutral" data-act="degedit" data-di="' + o.i + '">Edit</button><button class="mini danger" data-act="degdel" data-di="' + o.i + '">Remove</button></div></div>';
+    }).join('') || '<p class="dim" style="margin:0 0 8px;font-size:13px">No degrees on file.</p>';
+  var cur = (S.degEdit != null && ds[S.degEdit]) ? ds[S.degEdit] : {};
+  var known = !!SCHOOLS[cur.school], other = cur.school && !known;
+  var schoolOpts = '<option value="">School…</option>' + Object.keys(SCHOOLS).map(function(k){
+    return '<option value="' + esc(k) + '"' + (cur.school === k ? ' selected' : '') + '>' + esc(k) + '</option>'; }).join('') +
+    '<option value="__other"' + (other ? ' selected' : '') + '>Other school</option>';
+  var degOpts = '<option value="">Degree…</option>' + DEGREE_TYPES.map(function(k){
+    return '<option value="' + esc(k) + '"' + (cur.degree === k ? ' selected' : '') + '>' + esc(k) + '</option>'; }).join('');
+  if(cur.degree && DEGREE_TYPES.indexOf(cur.degree) < 0) degOpts += '<option value="' + esc(cur.degree) + '" selected>' + esc(cur.degree) + '</option>';
+  return rows + '<div class="evform"><div class="subhead">' + (S.degEdit != null ? 'Edit degree' : 'Add degree') + '</div>' +
+    '<div class="two"><select id="ddschool">' + schoolOpts + '</select><select id="dddegree">' + degOpts + '</select></div>' +
+    '<input type="text" id="ddother" value="' + esc(other ? cur.school : '') + '" placeholder="Other school name (only if not in the list)" autocomplete="off">' +
+    '<div class="two"><input type="text" id="ddmajor" value="' + esc(cur.major || '') + '" placeholder="Major" autocomplete="off">' +
+    '<input type="text" id="ddyear" value="' + esc(cur.year || '') + '" placeholder="Grad year, for example 2019" autocomplete="off"></div>' +
+    '<input type="text" id="ddnote" value="' + esc(cur.note || '') + '" placeholder="Source or note (optional)" autocomplete="off">' +
+    '<div class="arow"><button class="mini" data-act="degsave" style="--c:' + LV[1].c + '">' + ic('check', 13) + (S.degEdit != null ? 'Update degree' : 'Add degree') + '</button>' +
+    (S.degEdit != null ? '<button class="mini neutral" data-act="degcancel">Cancel</button>' : '') + '</div></div>';
+}
+function saveDegree(){
+  var e = D.directory[S.sel]; if(!e) return;
+  var sch = $('#ddschool').value, school = sch === '__other' ? $('#ddother').value.trim() : sch;
+  var degree = $('#dddegree').value, major = $('#ddmajor').value.trim(), year = $('#ddyear').value.trim(), note = $('#ddnote').value.trim();
+  if(!school){ toast('Pick the school first.'); return; }
+  if(!degree && !major && !year){ toast('Add at least a degree, major, or year.'); return; }
+  if(year && !/^\d{4}$/.test(year)){ toast('Use a four digit year like 2019.'); return; }
+  var d = { school:school };
+  if(degree) d.degree = degree;
+  if(major) d.major = major;
+  if(year) d.year = year;
+  if(note) d.note = note;
+  var arr = parseArr(gv(e, 'degrees')).slice();
+  if(S.degEdit != null && arr[S.degEdit]) arr[S.degEdit] = d; else arr.push(d);
+  var patch = { degrees:JSON.stringify(arr) };
+  if(SCHOOLS[school]){
+    var us = tagList(gv(e, 'universities'));
+    if(us.indexOf(school) < 0){ us.push(school); patch.universities = us.join(', '); }
+  }
+  var edited = S.degEdit != null;
+  S.degEdit = null;
+  queuePatch(S.sel, patch);
+  renderPanel(true); toast(edited ? 'Degree updated.' : 'Degree added.');
+}
+function delDegree(i){
+  var e = D.directory[S.sel], arr = parseArr(gv(e, 'degrees')).slice();
+  if(!arr[i]) return;
+  if(!confirm('Remove this degree?\n\n' + [arr[i].school, arr[i].degree, arr[i].major].filter(Boolean).join(' · '))) return;
+  arr.splice(i, 1); S.degEdit = null;
+  queuePatch(S.sel, { degrees:JSON.stringify(arr) });
+  renderPanel(true); toast('Degree removed.');
+}
 function secBody(s, e){
   if(s.id === 'connections') return connectionsBody(e);
   if(s.id === 'timeline') return timelineEdit(e);
+  if(s.id === 'education') return educationBody(e);
   if(s.id === 'files') return filesEdit(e);
   if(s.id === 'admin') return adminBody(e);
   if(s.id === 'ratings') return '<div class="rgrid">' + s.fields.map(function(k){ return fieldRow(k, e); }).join('') + '</div>';
   return s.fields.map(function(k){ return fieldRow(k, e); }).join('');
 }
 function secHTML(s, e){
-  var open = !!S.openSecs[s.id], fl = secFill(s, e);
+  var open = S.openSecs[s.id] !== false, fl = secFill(s, e);
   return '<section class="esec' + (open ? ' open' : '') + '" data-sec="' + s.id + '" style="--c:' + (s.lv ? LV[s.lv].c : '#ece9e2') + '">' +
     '<header data-act="sectoggle" data-sec="' + s.id + '"><span class="cic">' + ic(s.ic, 15) + '</span><h3>' + esc(s.title) + '</h3>' +
     '<span class="sbadge' + (fl.done ? ' done' : '') + '">' + esc(fl.t) + '</span><span class="chev">' + ic('chev', 14) + '</span></header>' +
@@ -864,7 +963,7 @@ function dossierEdit(e){
 }
 function saveOpenSecs(){ store('ncc_secs', JSON.stringify(S.openSecs)); }
 function toggleSec(id, force){
-  var on = force != null ? force : !S.openSecs[id];
+  var on = force != null ? force : !(S.openSecs[id] !== false);
   S.openSecs[id] = on; saveOpenSecs();
   var el = $('#rightbody .esec[data-sec="' + id + '"]'); if(el) el.classList.toggle('open', on);
 }
@@ -903,7 +1002,7 @@ function openPerson(idx, o){
   if(o.push && S.sel !== null && S.sel !== idx){ S.hist.push(S.sel); S.fwd = []; }
   else if(!o.keepHist){ S.hist = []; S.fwd = []; }
   syncNavBtns();
-  S.sel = idx; S.editing = !!o.edit; S.lvl = o.lvl || 1; S.evEdit = null;
+  S.sel = idx; S.editing = !!o.edit; S.lvl = o.lvl || 1; S.evEdit = null; S.degEdit = null;
   markSel();
   var row = $('#leftbody [data-i="' + idx + '"]');
   if(row) row.scrollIntoView({ block:'nearest' });
@@ -913,7 +1012,7 @@ function openPerson(idx, o){
   glSyncFocus();
 }
 function closePanel(){
-  S.sel = null; S.editing = false; S.hist = []; S.fwd = []; S.evEdit = null;
+  S.sel = null; S.editing = false; S.hist = []; S.fwd = []; S.evEdit = null; S.degEdit = null;
   markSel(); renderPanel(false); glSyncFocus();
 }
 function goBack(){
@@ -950,12 +1049,12 @@ function setLevel(n){
 }
 function enterEdit(sec){
   if(S.sel === null) return;
-  S.editing = true; S.evEdit = null;
+  S.editing = true; S.evEdit = null; S.degEdit = null;
   if(sec) S.jumpTo = sec;
   renderPanel(false);
 }
 function exitEdit(){
-  outKick(); S.editing = false; S.evEdit = null; renderPanel(true); refresh();
+  outKick(); S.editing = false; S.evEdit = null; S.degEdit = null; renderPanel(true); refresh();
 }
 function nextNeedsAudit(){
   var rows = listRows().filter(function(di){ return di !== S.sel && (D.directory[di].profile || {}).audit !== 'audited'; });
@@ -994,6 +1093,10 @@ function act(a, el){
     case 'newdoc': openDocComposer(); break;
     case 'evedit': S.evEdit = parseInt(el.getAttribute('data-evi'), 10); S.jumpTo = 'timeline'; renderPanel(true); break;
     case 'evcancel': S.evEdit = null; renderPanel(true); break;
+    case 'degedit': S.degEdit = parseInt(el.getAttribute('data-di'), 10); S.jumpTo = 'education'; renderPanel(true); break;
+    case 'degcancel': S.degEdit = null; renderPanel(true); break;
+    case 'degsave': saveDegree(); break;
+    case 'degdel': delDegree(parseInt(el.getAttribute('data-di'), 10)); break;
     case 'evsave': saveEvent(); break;
     case 'evdel': delEvent(parseInt(el.getAttribute('data-evi'), 10)); break;
     case 'fsave': saveFileLink(); break;
@@ -1161,7 +1264,9 @@ var lastFeed = 0;
 function fetchChanges(){
   if(!WEBAPP_URL || !D || S.editing) return;
   lastFeed = Date.now();
-  fetch(WEBAPP_URL + '?action=changes&hours=72&password=' + encodeURIComponent(getPw()))
+  var since = Date.parse(String(D.updated || '').replace(' UTC', 'Z').replace(' ', 'T'));
+  var q = isNaN(since) ? 'hours=72' : 'since=' + encodeURIComponent(new Date(since - 15 * 60000).toISOString());
+  fetch(WEBAPP_URL + '?action=changes&' + q + '&password=' + encodeURIComponent(getPw()))
     .then(function(r){ return r.json(); }).then(function(res){
       if(!res || !res.ok) return;
       var pend = {}; OUT.items.forEach(function(it){ pend[it.id] = 1; });
@@ -1698,6 +1803,7 @@ function buildDossierDoc(e){
   ['standing','state','trajectory','period'].forEach(function(k){
     if(gv(e, k)) extras += '<div class="kv"><span class="cl">' + esc(fieldDef(k).l) + '</span> ' + esc(gv(e, k)) + '</div>';
   });
+  degreesOf(e).forEach(function(d){ extras += '<div class="kv"><span class="cl">Degree</span> ' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '</div>'; });
   var assoc = knownAssociates(e).map(function(nb){
     var di = BYN[(nb.u || '').toLowerCase()];
     var label = di != null ? auName(D.directory[di]).name : personLabel(nb.u, nb.d);
