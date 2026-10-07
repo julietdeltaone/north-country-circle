@@ -699,7 +699,7 @@ function dossierEdit(e){
     'Start lines with a label and colon \u2014 <b>Background:</b> who they are, <b>How we met:</b> the origin, ' +
     '<b>Personality:</b> what they\u2019re like, <b>Notes:</b> anything else. ' +
     'Auto-fill fixes grammar/spelling and applies this format; it won\u2019t touch your other fields.</div>' +
-    '<div class="qfill"><textarea id="pfree" data-pk="synopsis" rows="4" placeholder="Type or speak your synopsis here">' + esc((e.profile || {}).synopsis || '') + '</textarea>' +
+    '<div class="qfill"><textarea id="pfree" data-pk="synopsis" rows="2" placeholder="Type or speak your synopsis here">' + esc((e.profile || {}).synopsis || '') + '</textarea>' +
     '<button class="mini neutral" data-act="fill">' + ic('sparkle', 13) + 'Auto-fill</button><span id="pfillmsg"></span></div></div>';
   return '<div class="doc edit">' + phead(e) + '<div class="lvstage">' + qfill +
     [1,2,3].map(function(n){ return '<div class="lvl' + (S.lvl === n ? ' on' : '') + '" data-l="' + n + '">' + (n === 1 ? l1 : n === 2 ? l2 : l3) + '</div>'; }).join('') +
@@ -882,7 +882,7 @@ function postKind(kind, id, patch, pw, onOk, onErr){
 function getPw(){ return ''; }
 /* ---------- field hint popups ---------- */
 document.addEventListener('click', function(ev){
-  var lab = ev.target.closest('[data-hint]');
+  var lab = ev.target.closest ? ev.target.closest('[data-hint]') : null;
   // Close any open hint
   document.querySelectorAll('.hintpop').forEach(function(p){ p.remove(); });
   if(!lab) return;
