@@ -34,7 +34,8 @@ var TIERS = {
   open:     { c:'#9aa3b2', n:'Open' }
 };
 var TIER_ORDER = ['vetted', 'associate', 'open'];
-var MOM_LABELS = { '-':'Fading', '0':'Neutral', '+':'Growing' };
+var MOM_LABELS = { '-':'negative', '0':'neutral', '+':'positive' };
+var MOM_ICONS = { '-':'\u2212', '0':'\u25c6', '+':'+' };
 function momPos(v){ return v === '-' ? 0 : (v === '+' ? 100 : 50); }
 function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
 function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
@@ -661,7 +662,7 @@ function lvl1View(e){
 
   var syn = gv(e, 'synopsis') ? card('quote', 'Synopsis', 1, '<div class="narr">' + esc(gv(e, 'synopsis')) + '</div>', '', 'span') : '';
   var fp = gv(e, 'public_footprint') ? card('link', 'Public footprint', 1, footprintHTML(e), '', 'span') : '';
-  var ka = knownAssociates(e).slice(0, 4);
+  var ka = knownAssociates(e);
   var conns = ka.length ? card('share', 'Known associates', 1, '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>', '', '', true) : '';
   var out = contact + edu + ratings + background + syn + conns + fp;
   if(!out) out = card('user', 'On file', 1, emptyBox('Nothing on file yet. Press the pencil to start filling this in.'), '', 'span');
@@ -676,15 +677,20 @@ function linkedFrom(e){
   });
   return out;
 }
+function hiddenAssoc(e){
+  var h = {};
+  tagList(String((e.profile || {}).close_hide || '')).forEach(function(x){ h[x.toLowerCase()] = 1; });
+  return h;
+}
 function knownAssociates(e){
-  var seen = {}, out = [];
+  var seen = {}, out = [], hide = hiddenAssoc(e);
   (e.neighbors || []).forEach(function(nb){
     var k = (nb.u || '').toLowerCase();
-    if(k && !seen[k]){ seen[k] = 1; out.push({ u:nb.u, d:nb.d }); }
+    if(k && !seen[k] && !hide[k]){ seen[k] = 1; out.push({ u:nb.u, d:nb.d }); }
   });
   linkedFrom(e).forEach(function(di){
     var r = D.directory[di], k = (r.name || '').toLowerCase();
-    if(k && !seen[k]){ seen[k] = 1; out.push({ u:r.name, d:dispName(r) }); }
+    if(k && !seen[k] && !hide[k]){ seen[k] = 1; out.push({ u:r.name, d:dispName(r) }); }
   });
   return out;
 }
@@ -718,8 +724,8 @@ function lvl2View(e){
   var momHTML = '';
   if(mom){
     momHTML = '<div class="momview"><div class="momtrack"><div class="momfill" style="width:' + momPos(mom) + '%"></div>' +
-      '<div class="mommark" style="left:' + momPos(mom) + '%"></div></div>' +
-      '<div class="momlabels"><span>Fading</span><b>' + MOM_LABELS[mom] + '</b><span>Growing</span></div></div>';
+      '<div class="mommark sym" style="left:' + momPos(mom) + '%">' + MOM_ICONS[mom] + '</div></div>' +
+      '<div class="momlabels"><span>negative</span><b>' + MOM_LABELS[mom] + '</b><span>positive</span></div></div>';
   }
   var yrs = gv(e, 'years_known');
   var tiles = '<div class="tiles">' +
@@ -821,8 +827,8 @@ function momentumEditHTML(e){
   var v = momVal(e) || '0';
   var order = ['-', '0', '+'];
   var h = '<div class="irow"><span class="ilab">Momentum</span><div class="momwrap"><div class="momtrack tri" data-pk="momentum" data-v="' + v + '"><div class="momfill" style="width:' + momPos(v) + '%"></div>';
-  order.forEach(function(t){ h += '<button type="button" class="mstop' + (t === v ? ' on' : '') + '" data-v="' + t + '" title="' + MOM_LABELS[t] + '"><i></i></button>'; });
-  h += '</div><div class="momlabels"><span>Fading</span><b>' + MOM_LABELS[v] + '</b><span>Growing</span></div></div></div>';
+  order.forEach(function(t){ h += '<button type="button" class="mstop' + (t === v ? ' on' : '') + '" data-v="' + t + '" title="' + MOM_LABELS[t] + '"><b class="msym">' + MOM_ICONS[t] + '</b></button>'; });
+  h += '</div><div class="momlabels"><span>negative</span><b>' + MOM_LABELS[v] + '</b><span>positive</span></div></div></div>';
   return h;
 }
 
@@ -835,7 +841,7 @@ function updateFills(){
   });
 }
 function connectionsBody(e){
-  var nb = (e.neighbors || []);
+  var nb = knownAssociates(e);
   var chips = nb.length ? '<div class="chips">' + nb.map(function(x){ return nbrChipHTML(x, true); }).join('') + '</div>' : '<p class="dim" style="margin:0;font-size:13px">None mapped yet.</p>';
   var cps = connPhases(e);
   return '<div class="subhead first">Known associates</div>' + chips +
@@ -1638,6 +1644,46 @@ function auName(e){
   var nm = personLabel(handle, String(e.display || gv(e, 'display_name') || '').trim());
   return { name:nm || 'Unknown', business:isBusiness(e), handle:handle };
 }
+function lastNameOf(e){
+  return String(gv(e, 'last_name') || '').trim().toLowerCase();
+}
+function firstNameOf(e){
+  return String(gv(e, 'first_name') || '').trim();
+}
+function nameOk(e){
+  return !!(firstNameOf(e) && lastNameOf(e));
+}
+function nameFlag(e){
+  if(nameOk(e)) return '';
+  var d = String(e.display || '');
+  if(!d.trim()) return 'blank';
+  if(d.indexOf('&') >= 0) return 'couple';
+  if(!firstNameOf(e)) return 'no name';
+  return 'no last name';
+}
+/* closeness prediction: family of fleshed-out people + own data richness + tier + years known */
+function closeScore(e, famMap){
+  var st = auditStats(e);
+  if(st.audited) return null;
+  var score = 0, reasons = [];
+  var ln = lastNameOf(e);
+  if(ln && famMap[ln]){
+    var fams = famMap[ln].filter(function(x){ return x.i !== (e.name || '').toLowerCase(); });
+    if(fams.length){
+      score += 50;
+      reasons.push('Family: ' + fams.slice(0, 2).map(function(x){ return x.d; }).join(', '));
+    }
+  }
+  if(st.score > 0){ score += st.score * 10; reasons.push(st.score + '/4 on file'); }
+  var tier = tierOf(e);
+  if(tier === 'vetted'){ score += 20; reasons.push('Vetted'); }
+  else if(tier === 'associate'){ score += 10; reasons.push('Associate'); }
+  var yk = parseInt(gv(e, 'years_known'), 10);
+  if(yk > 0) score += Math.min(yk, 15);
+  if((e.relation || '') === 'mutual') score += 5;
+  if(!score) return null;
+  return { score:score, reasons:reasons };
+}
 function auditStats(e){
   var hasR = L1_SCORES.some(function(k){ return gv(e, k) !== ''; });
   var hasB = !!(gv(e, 'specialty') || gv(e, 'interests') || ORG_CATS.some(function(c){ return gv(e, c.k).trim(); }));
@@ -1728,10 +1774,20 @@ function auSetFilter(f){
 function renderAudit(){
   var q = AUD.q.trim().toLowerCase();
   var rows = [];
+  /* family map: last name -> fleshed-out people (score>=2) carrying it */
+  var famMap = {};
+  D.directory.forEach(function(x){
+    if((x.profile || {}).deleted === '1' || isBusiness(x)) return;
+    if(auditStats(x).score < 2) return;
+    var ln = lastNameOf(x);
+    if(!ln) return;
+    (famMap[ln] = famMap[ln] || []).push({ i:(x.name || '').toLowerCase(), d:dispName(x) });
+  });
   D.directory.forEach(function(e, di){
     if((e.profile || {}).deleted === '1') return;
     var st = auditStats(e);
     var an = auName(e);
+    var cs = null;
     var pass = true;
     if(AUD.f === 'needs') pass = st.missing > 0;
     else if(AUD.f === 'audit') pass = !st.audited;
@@ -1739,20 +1795,23 @@ function renderAudit(){
     else if(AUD.f === 'background') pass = !st.hasB;
     else if(AUD.f === 'connection') pass = !st.hasC;
     else if(AUD.f === 'business') pass = an.business;
+    else if(AUD.f === 'name') pass = !an.business && !nameOk(e);
+    else if(AUD.f === 'close'){ cs = closeScore(e, famMap); pass = !!cs; }
     if(!pass) return;
     if(q){
       var hay = (an.name + ' ' + an.handle + ' ' + gv(e, 'display_name')).toLowerCase();
       if(hay.indexOf(q) < 0) return;
     }
-    rows.push({ di:di, e:e, st:st, an:an });
+    rows.push({ di:di, e:e, st:st, an:an, cs:cs });
   });
   rows.sort(function(a, b){
     if(AUD.sort === 'name') return a.an.name.localeCompare(b.an.name);
     if(AUD.sort === 'complete') return b.st.score - a.st.score || a.an.name.localeCompare(b.an.name);
+    if(AUD.sort === 'close' || AUD.f === 'close') return ((b.cs && b.cs.score) || 0) - ((a.cs && a.cs.score) || 0) || a.an.name.localeCompare(b.an.name);
     return a.st.score - b.st.score || a.an.name.localeCompare(b.an.name);
   });
   AUD.rows = rows;
-  var nA = 0, nR = 0, nB = 0, nC = 0, nBiz = 0;
+  var nA = 0, nR = 0, nB = 0, nC = 0, nBiz = 0, nName = 0, nClose = 0;
   D.directory.forEach(function(e){
     if((e.profile || {}).deleted === '1') return;
     var st = auditStats(e);
@@ -1761,13 +1820,16 @@ function renderAudit(){
     if(!st.hasB) nB++;
     if(!st.hasC) nC++;
     if(isBusiness(e)) nBiz++;
+    else if(!nameOk(e)) nName++;
+    if(closeScore(e, famMap)) nClose++;
   });
   $('#aushown').textContent = rows.length + ' shown';
   function stat(f, label, n){
     return '<button class="austat' + (AUD.f === f ? ' on' : '') + '" data-f="' + f + '"><b>' + n + '</b><span>' + label + '</span></button>';
   }
   $('#austats').innerHTML = stat('audit', 'Need audit', nA) + stat('ratings', 'Need ratings', nR) +
-    stat('background', 'Need background', nB) + stat('connection', 'Need connection', nC) + stat('business', 'Businesses', nBiz);
+    stat('background', 'Need background', nB) + stat('connection', 'Need connection', nC) + stat('business', 'Businesses', nBiz) +
+    stat('name', 'Name review', nName) + stat('close', 'Likely close', nClose);
   function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
   $('#aubody').innerHTML = rows.slice(0, 600).map(function(r){
     var ini = (r.an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
@@ -1779,7 +1841,9 @@ function renderAudit(){
       '<span class="aumain"><span class="auname">' + esc(r.an.name) +
         (r.an.business ? '<em class="aubiz">Business</em>' : '') +
         (hd ? '<i>@' + esc(hd) + '</i>' : '') + '</span>' +
-      '<span class="auneeds">' + pill(r.st.hasR, 'Ratings') + pill(r.st.hasB, 'Background') + pill(r.st.hasC, 'Connection') + pill(r.st.audited, 'Audited') + '</span></span>' +
+      '<span class="auneeds">' + pill(r.st.hasR, 'Ratings') + pill(r.st.hasB, 'Background') + pill(r.st.hasC, 'Connection') + pill(r.st.audited, 'Audited') +
+        (AUD.f === 'name' ? '<b class="miss">' + esc(nameFlag(r.e) || 'name') + '</b>' : '') +
+        (r.cs ? r.cs.reasons.map(function(x){ return '<b class="have">' + esc(x) + '</b>'; }).join('') : '') + '</span></span>' +
       '<span class="aubar" title="' + r.st.score + ' of 4 complete"><i style="width:' + (r.st.score * 25) + '%"></i></span>' +
       '<span class="aubtn"><button class="mini" data-auact="' + (r.st.audited ? 'unaudit' : 'audit') + '">' + (r.st.audited ? 'Reopen' : 'Mark audited') + '</button></span></div>';
   }).join('') + (rows.length > 600 ? '<p class="dim" style="padding:14px">Showing the first 600. Narrow the filter or search to see the rest.</p>' : '') || '<p class="dim" style="padding:20px">Nobody matches this filter.</p>';
