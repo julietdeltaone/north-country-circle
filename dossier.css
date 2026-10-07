@@ -599,3 +599,7 @@ button.vchip:hover{background:color-mix(in srgb,var(--c) 20%,transparent)}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
+
+.hintpop{position:absolute;z-index:200;max-width:240px;background:#1e2430;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;color:var(--txt);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.ilab[data-hint]{cursor:help}
+.ilab[data-hint] svg{opacity:.5;vertical-align:-1px}
