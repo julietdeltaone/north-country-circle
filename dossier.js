@@ -622,13 +622,14 @@ function irow(k, label, val){
 }
 function selRow(f, prof){
   var v = prof[f.k] || '';
-  return '<div class="irow"><span class="ilab">' + esc(f.label) + '</span><select data-pk="' + f.k + '">' + f.options.map(function(o){
+  var hint = f.hint ? ' data-hint="' + esc(f.hint) + '"' : '';
+  return '<div class="irow"><span class="ilab"' + hint + '>' + esc(f.label) + (hint ? ' ' + ic('help', 11) : '') + '</span><select data-pk="' + f.k + '">' + f.options.map(function(o){
     return '<option value="' + esc(o) + '"' + (o === v ? ' selected' : '') + '>' + esc(o ? o.charAt(0).toUpperCase() + o.slice(1) : '—') + '</option>';
   }).join('') + '</select></div>';
 }
 function rateLine(k, prof){
   var f = fieldDef(k), v = prof[f.k] || '';
-  var h = '<div class="rrow"><span class="rlab"' + (f.hint ? ' title="' + esc(f.hint) + '"' : '') + '>' + esc(f.label) + '</span><div class="dots" data-pk="' + f.k + '" data-v="' + esc(v) + '">';
+  var h = '<div class="rrow"><span class="rlab"' + (f.hint ? ' data-hint="' + esc(f.hint) + '"' : '') + '>' + esc(f.label) + (f.hint ? ' ' + ic('help', 11) : '') + '</span><div class="dots" data-pk="' + f.k + '" data-v="' + esc(v) + '">';
   for(var i = 1; i <= 5; i++) h += '<span class="pdot' + (String(v) === String(i) ? ' on' : '') + '" data-v="' + i + '">' + i + '</span>';
   return h + '</div></div>';
 }
@@ -672,7 +673,7 @@ function dossierEdit(e){
       '<div class="evtitle">' + esc(ev.summary || '') + '</div>' + (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>' +
       '<button class="mini danger" data-act="evdel" data-evi="' + o.i + '">Remove</button></div>';
   }).join('') || '<p class="dim" style="margin:0 0 4px;font-size:13px">No events yet.</p>';
-  var l2 = card('users', 'Connection', 2, selRow(relF, prof) + selRow(ctxF, prof) + '<div class="rgroups">' + rateLine('closeness', prof) + '</div>' +
+  var l2 = card('users', 'Connection', 2, '<div class="two">' + selRow(relF, prof) + selRow(ctxF, prof) + '</div><div class="rgroups">' + rateLine('closeness', prof) + '</div>' +
     '<div class="two">' + irow('standing', 'Standing', prof.standing || '') + irow('state', 'State', prof.state || '') + '</div>' +
     '<div class="two">' + irow('trajectory', 'Trajectory', prof.trajectory || '') + irow('years_known', 'Known for (yrs)', prof.years_known || '') + '</div>') +
     cpCardHTML(e) +
