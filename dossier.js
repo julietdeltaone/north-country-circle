@@ -33,10 +33,13 @@ function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0;
   return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 function tagList(v){ return String(v || '').split(',').map(function(x){ return x.trim(); }).filter(Boolean); }
 function fmtPhone(p){
-  var d = String(p || '').replace(/\D/g, '');
+  var raw = String(p || '').trim(), ext = '';
+  var xm = raw.match(/[;x]|ext\.?\s*(\d+)$/i);
+  if(xm){ ext = (xm[1] || raw.split(/[;x]/i).pop() || '').replace(/\D/g, ''); raw = raw.slice(0, xm.index).trim(); }
+  var d = raw.replace(/\D/g, '');
   if(d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
-  if(d.length === 10) return '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6);
-  return String(p || '').trim();
+  var out = d.length === 10 ? '(' + d.slice(0,3) + ') ' + d.slice(3,6) + '-' + d.slice(6) : raw;
+  return out + (ext ? ' ext. ' + ext : '');
 }
 function hexA(hex, a){
   var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
@@ -858,101 +861,25 @@ function toggleAudit(){
   setAudit(((e.profile || {}).audit === 'audited') ? 'needs_audit' : 'audited');
 }
 
-/* ---------- predictive profile read (ultra-granular) ---------- */
-var READ_CORE = [
-  { k:'presence', label:'Presence', desc:'Commands attention when they walk in.',
-    traits:['charisma','reputation','assertiveness'],
-    hi:'Magnetic in a room \u2014 people orient toward them.', lo:'Quiet footprint \u2014 easy to overlook, often underestimated.' },
-  { k:'trust', label:'Trust', desc:'You can hand them something important.',
-    traits:['reliability','closeness','competence'],
-    hi:'Someone you can count on \u2014 follow-through is the norm.', lo:'Unproven \u2014 enjoy, but verify.' },
-  { k:'depth', label:'Depth', desc:'Conversations go somewhere real.',
-    traits:['intellect','creativity'],
-    hi:'Real inner life \u2014 conversations go somewhere.', lo:'Surface signal so far \u2014 untested past first impressions.' },
-  { k:'edge', label:'Edge', desc:'Pushes their own agenda, for better or worse.',
-    traits:['ego','assertiveness'],
-    hi:'Strong-willed \u2014 directness lands better than hints.', lo:'Easygoing \u2014 unlikely to push back, even when they should.' }
-];
-var READ_FX = [
-  { k:'flake', label:'Flake Risk', desc:'Chance they disappear when it counts.',
-    parts:[['ego',1],['reliability',-1],['closeness',-1]],
-    hi:'May vanish when it counts \u2014 don\u2019t build plans on them.', lo:'Shows up when it matters.' },
-  { k:'surface', label:'Surface Charm', desc:'Sparkle without substance.',
-    parts:[['charisma',1],['intellect',-1]],
-    hi:'All sparkle, no substance \u2014 keep expectations shallow.', lo:'What you see is roughly what\u2019s there.' },
-  { k:'qdrive', label:'Quiet Drive', desc:'Moves things forward without needing credit.',
-    parts:[['assertiveness',1],['ego',-1]],
-    hi:'Gets things done without needing the credit.', lo:'Needs a visible incentive to act.' },
-  { k:'under', label:'Underrated', desc:'Better than people think.',
-    parts:[['competence',1],['reputation',-1]],
-    hi:'Better than their reputation suggests \u2014 look closer.', lo:'Reputation matches the reality.' },
-  { k:'over', label:'Overrated', desc:'Coasting on name recognition.',
-    parts:[['reputation',1],['competence',-1]],
-    hi:'Coasting on name recognition \u2014 verify before trusting.', lo:'No hype gap \u2014 standing is earned.' },
-  { k:'intensity', label:'Intensity', desc:'How heavy the relationship feels.',
-    parts:[['closeness',1],['assertiveness',1]],
-    hi:'The relationship runs heavy \u2014 set the pace deliberately.', lo:'Light touch \u2014 easy to keep at arm\u2019s length.' },
-  { k:'like', label:'Likability', desc:'How easy they are to be around.',
-    parts:[['charisma',1],['closeness',1],['reliability',1]],
-    hi:'Easy to be around \u2014 rooms warm up to them.', lo:'An acquired taste \u2014 don\u2019t force it.' },
-  { k:'follow', label:'Follow-through', desc:'Finishes what they start.',
-    parts:[['reliability',1],['competence',1]],
-    hi:'Finishes what they start.', lo:'Starts more than they finish.' },
-  { k:'vol', label:'Volatility', desc:'Expect unpredictability.',
-    parts:[['ego',1],['assertiveness',1],['reliability',-1]],
-    hi:'Unpredictable \u2014 plan buffers.', lo:'Steady \u2014 few surprises.' }
-];
+/* ---------- pro personality score ---------- */
 var READ_TRAITS = ['closeness','charisma','competence','intellect','creativity','reliability','reputation','assertiveness','ego'];
-function metricScore(prof, parts){
-  var vals = [];
-  parts.forEach(function(p){
-    var v = parseFloat(prof[p[0]]);
-    if(isNaN(v)) return;
-    vals.push(p[1] < 0 ? 6 - v : v);
-  });
+function traitAvg(prof, traits){
+  var vals = traits.map(function(t){ return parseFloat(prof[t]); }).filter(function(v){ return !isNaN(v); });
   if(!vals.length) return null;
   return Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100);
 }
-function profileRead(prof){
-  function mk(d, group){
-    var parts = d.traits ? d.traits.map(function(t){ return [t, 1]; }) : d.parts;
-    return { k:d.k, label:d.label, desc:d.desc, group:group, score:metricScore(prof, parts), hi:d.hi, lo:d.lo };
-  }
-  var core = READ_CORE.map(function(d){ return mk(d, 'core'); });
-  var fx = READ_FX.map(function(d){ return mk(d, 'fx'); });
-  var rated = READ_TRAITS.filter(function(t){ return !isNaN(parseFloat(prof[t])); }).length;
-  var signal = Math.round(rated / READ_TRAITS.length * 100);
-  var scoredCore = core.filter(function(m){ return m.score !== null; });
-  if(scoredCore.length < 2) return null;
-  var top = scoredCore.slice().sort(function(a, b){ return b.score - a.score; })[0];
-  var ext = null, extDev = 0;
-  fx.forEach(function(m){
-    if(m.score === null) return;
-    var dev = Math.abs(m.score - 50);
-    if(dev > extDev){ extDev = dev; ext = m; }
-  });
-  var inf = top.score >= 50 ? top.hi : top.lo;
-  if(ext && extDev >= 15) inf += ' ' + (ext.score >= 60 ? ext.hi : ext.lo);
-  return { core:core, fx:fx, signal:signal, rated:rated, inference:inf };
-}
 function readHTML(prof){
-  var r = profileRead(prof);
-  if(!r) return '';
-  function rows(list){
-    return list.map(function(m){
-      if(m.score === null) return '';
-      return '<div class="pr-dim"><span>' + m.label + '</span><div class="pr-bar"><i style="width:' + m.score +
-        '%"></i></div><em>' + m.score + '</em></div><div class="pr-desc">' + esc(m.desc) + '</div>';
-    }).join('');
-  }
-  var fxRows = rows(r.fx);
-  return '<div class="pread"><div class="pr-title">Profile read</div>' +
-    '<div class="pr-group">Core</div>' + rows(r.core) +
-    (fxRows ? '<div class="pr-group">Interactions</div>' + fxRows : '') +
-    '<div class="pr-group">Signal</div>' +
-    '<div class="pr-dim"><span>Data</span><div class="pr-bar"><i style="width:' + r.signal + '%"></i></div><em>' + r.rated + '/9</em></div>' +
-    '<div class="pr-desc">' + (r.rated >= 7 ? 'Solid file \u2014 this read carries weight.' : r.rated >= 4 ? 'Partial file \u2014 directionally useful.' : 'Thin file \u2014 treat as a sketch.') + '</div>' +
-    '<p class="pr-inf">' + esc(r.inference) + '</p></div>';
+  var pro = traitAvg(prof, READ_TRAITS);
+  if(pro === null) return '';
+  var con = traitAvg(prof, ['reliability','competence']);
+  var rated = READ_TRAITS.filter(function(t){ return !isNaN(parseFloat(prof[t])); }).length;
+  return '<div class="prow">' +
+    '<div class="proscore"><b>' + pro + '</b><span>Pro personality<br>score</span></div>' +
+    (con !== null
+      ? '<div class="pchip"><em style="width:' + con + '%"></em><b>' + con + '</b><span>Conscientiousness</span></div>'
+      : '') +
+    '</div>' +
+    '<div class="pr-desc" style="margin:6px 0 0">Based on ' + rated + ' of 9 ratings.</div>';
 }
 
 /* ---------- connection timeline ---------- */
