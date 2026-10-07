@@ -655,7 +655,7 @@ function dossierEdit(e){
       (assessOn() ? '<div class="genrow"><button class="mini" data-act="enrich" style="--c:' + LV[2].c + '">' + ic('zap', 13) + 'Generate assessment</button><span id="enrmsg" class="calcnote"></span></div>' : '')) +
     card('share', 'Close connections', 2, '<div class="chips">' + ((e.neighbors || []).slice(0, 12).map(function(nb){ return nbrChipHTML(nb, true); }).join('') || '<span class="dim" style="font-size:13px">None mapped yet.</span>') +
       '</div><div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name" autocomplete="off"><div id="naddlist"></div></div>', '', '', true) +
-    (e.src === 'contacts' ? mergeCardHTML(e) : '') +
+    ((e.src === 'contacts' || e.src === 'subject') ? mergeCardHTML(e) : '') +
     card('calendar', 'Timeline', 2, evRows + '<div class="arow"><button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button></div>', '', 'span') +
     card('file', 'Reference notes', 2, '<textarea id="refnotes" data-pk="notes" rows="5" placeholder="Private field notes.">' + esc(prof.notes || '') + '</textarea>', '', 'span');
 
@@ -1268,7 +1268,7 @@ function mergeSearch(q){
   var hits = [];
   if(q.length >= 2){
     D.directory.forEach(function(r, i){
-      if(r.src === 'contacts' || (r.profile || {}).deleted === '1') return;
+      if(r.src === 'contacts' || r.src === 'subject' || (r.profile || {}).deleted === '1') return;
       var label = dispName(r) || '', h = (r.name || '').toLowerCase();
       if(label.toLowerCase().indexOf(q) >= 0 || h.indexOf(q.replace('@','')) >= 0) hits.push({ i:i, label:label, handle:r.name });
       if(hits.length >= 6) return;
