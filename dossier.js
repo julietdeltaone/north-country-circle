@@ -822,10 +822,43 @@ function postKind(kind, id, patch, pw, onOk, onErr){
   }).catch(function(){ onErr('Network error.'); });
 }
 function getPw(){ return ''; }
+/* ---------- pending overlay: edits stay visible across reloads ---------- */
+var PENDING_KEY = 'ncc_pending_v1', PENDING_TTL = 3600000;
+function loadPending(){
+  var p = {};
+  try { p = JSON.parse(localStorage.getItem(PENDING_KEY) || '{}'); } catch(x){ p = {}; }
+  var now = Date.now(), fresh = {};
+  Object.keys(p).forEach(function(k){
+    if(p[k] && p[k]._ts && (now - p[k]._ts) < PENDING_TTL) fresh[k] = p[k];
+  });
+  try { localStorage.setItem(PENDING_KEY, JSON.stringify(fresh)); } catch(x){}
+  return fresh;
+}
+function stashPending(pkey, changed){
+  var all = loadPending();
+  var cur = all[pkey] || { _ts: Date.now() };
+  Object.keys(changed).forEach(function(k){ if(k.charAt(0) !== '_') cur[k] = changed[k]; });
+  cur._ts = Date.now();
+  all[pkey] = cur;
+  try { localStorage.setItem(PENDING_KEY, JSON.stringify(all)); } catch(x){}
+}
+function applyPending(){
+  var all = loadPending();
+  Object.keys(all).forEach(function(pkey){
+    var idx = -1;
+    D.directory.some(function(e, i){ if(pkey(e) === pkey){ idx = i; return true; } return false; });
+    if(idx >= 0){
+      var ch = {}, src = all[pkey];
+      Object.keys(src).forEach(function(k){ if(k.charAt(0) !== '_') ch[k] = src[k]; });
+      applyProfileEdit(D.directory[idx], ch);
+    }
+  });
+}
 function applyProfileEdit(e, changed){
   e.profile = e.profile || {};
   Object.keys(changed).forEach(function(k){ e.profile[k] = changed[k]; });
   if(changed.display_name) e.display = changed.display_name;
+  if(changed.display && !changed.display_name) e.profile.display = changed.display;
 }
 function saveProfile(auto, idx){
   if(idx === undefined || idx === null) idx = S.sel;
@@ -833,7 +866,9 @@ function saveProfile(auto, idx){
   if(!WEBAPP_URL){ if(!auto) toast('Editing is not set up: the web app URL is missing.'); return; }
   var changed = collectProfile(e);
   if(!Object.keys(changed).length){ setSaveState('All changes saved'); return; }
+  if(changed.display_name) changed.display = changed.display_name;
   applyProfileEdit(e, changed);
+  stashPending(pkey(e), changed);
   clearTimeout(S.saveTimer); S.saveTimer = null;
   refresh();
   setSaveState('Saving…', 'dim');
@@ -851,6 +886,7 @@ function setAudit(next){
   if(!WEBAPP_URL){ toast('Editing is not set up: the web app URL is missing.'); return; }
   flushSave();
   e.profile = e.profile || {}; e.profile.audit = next;
+  stashPending(pkey(e), { audit:next });
   renderPanel(true); refresh();
   postKind('profile', pkey(e), { audit:next }, getPw(), function(){
     toast(next === 'audited' ? 'Marked as audited.' : 'Back to needs audit.');
@@ -1193,6 +1229,7 @@ function renderNadd(q){
 }
 function saveCloseLists(e){
   var prof = e.profile || {};
+  stashPending(pkey(e), { close_add:prof.close_add || '', close_hide:prof.close_hide || '' });
   postKind('profile', pkey(e), { close_add:prof.close_add || '', close_hide:prof.close_hide || '' }, getPw(),
     function(){ toast('Close connections updated.'); },
     function(err){ toast(err + ' Kept on screen, reopen to retry.'); });
@@ -2342,6 +2379,7 @@ function boot(){
         D = d;
         $('#fresh').textContent = 'Updated ' + (D.updated || '—');
         D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; });
+        try { applyPending(); } catch(px){}
         buildNodes();
         $('#fq').placeholder = 'Search ' + LIST_ORDER.length + ' people…';
         hubInit(); bind(); refresh(); setMode(S.mode);
