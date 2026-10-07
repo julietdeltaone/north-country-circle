@@ -551,7 +551,10 @@ function timelineHTML(e){
   if(!evs.length) return emptyBox('No timeline events yet.', 'Add the first event', 2);
   return '<div class="tl">' + evs.map(function(o){
     var ev = o.ev, t = ev.type || 'note';
-    return '<div class="ev"><span class="evdot"></span><div class="evtop"><time>' + evDate(ev.date) + '</time><span class="etype">' + ic(EVT_ICON[t] || 'quote', 11) + esc(t) + '</span></div>' +
+    var meta = '';
+    if(ev.depth) meta += '<span class="evbadge depth-' + esc(ev.depth) + '">' + esc(ev.depth.charAt(0).toUpperCase() + ev.depth.slice(1)) + '</span>';
+    if(ev.init) meta += '<span class="evbadge">' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</span>';
+    return '<div class="ev"><span class="evdot"></span><div class="evtop"><time>' + evDate(ev.date) + '</time><span class="etype">' + ic(EVT_ICON[t] || 'quote', 11) + esc(t) + '</span>' + meta + '</div>' +
       '<div class="evtitle">' + esc(ev.summary || '') + '</div>' + (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>';
   }).join('') + '</div>';
 }
@@ -1619,8 +1622,18 @@ function openEventComposer(){
     '<select id="evtype"><option value="milestone">Milestone</option><option value="note" selected>Note</option><option value="life event">Life event</option></select></div>' +
     '<input type="text" id="evtitle" placeholder="Headline, for example: Started a new job" autocomplete="off">' +
     '<textarea id="evdetail" rows="4" placeholder="Details (optional)"></textarea>' +
+    '<div class="evmeta"><span class="evmlab">Depth</span><div class="seg" id="evdepth">' +
+    '<button data-v="" class="on">—</button><button data-v="open">Open</button><button data-v="associate">Associate</button><button data-v="vetted">Vetted</button></div>' +
+    '<span class="evmlab">Initiated by</span><div class="seg" id="evinit">' +
+    '<button data-v="" class="on">—</button><button data-v="me">Me</button><button data-v="them">Them</button></div></div>' +
     '<div class="arow"><button id="evsave" class="mini" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add to timeline</button></div>', 2);
   $('#evsave').addEventListener('click', saveEvent);
+  $$('#modal .seg').forEach(function(sg){
+    sg.addEventListener('click', function(ev){
+      var b = ev.target.closest('button'); if(!b) return;
+      $$('button', sg).forEach(function(x){ x.classList.toggle('on', x === b); });
+    });
+  });
   $('#modal').addEventListener('keydown', function(ev){ if((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter'){ ev.preventDefault(); saveEvent(); } });
   $('#evtitle').focus();
 }
@@ -1633,6 +1646,10 @@ function saveEvent(){
   ensureSubject(e, function(){
     var ev = { date:date, type:type, summary:summary };
     if(detail) ev.detail = detail;
+    var dv = $('#evdepth'), iv = $('#evinit');
+    var dsel = dv ? $('.on', dv) : null, isel = iv ? $('.on', iv) : null;
+    if(dsel && dsel.getAttribute('data-v')) ev.depth = dsel.getAttribute('data-v');
+    if(isel && isel.getAttribute('data-v')) ev.init = isel.getAttribute('data-v');
     e.events = e.events || []; e.events.push(ev);
     closeModal();
     saveSubjectPatch({ events:JSON.stringify(e.events) }, 'Added to the timeline.');
