@@ -34,7 +34,9 @@ var TIERS = {
   open:     { c:'#9aa3b2', n:'Open' }
 };
 var TIER_ORDER = ['vetted', 'associate', 'open'];
-var MOM_LABELS = { 1:'Fading fast', 2:'Fading', 3:'Neutral', 4:'Growing', 5:'Surging' };
+var MOM_LABELS = { '-':'Fading', '0':'Neutral', '+':'Growing' };
+function momPos(v){ return v === '-' ? 0 : (v === '+' ? 100 : 50); }
+function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
 function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
 function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || '#4a5568'; }
 function tierName(e){ return (TIERS[tierOf(e)] || {}).n || ''; }
@@ -659,7 +661,7 @@ function lvl1View(e){
 
   var syn = gv(e, 'synopsis') ? card('quote', 'Synopsis', 1, '<div class="narr">' + esc(gv(e, 'synopsis')) + '</div>', '', 'span') : '';
   var fp = gv(e, 'public_footprint') ? card('link', 'Public footprint', 1, footprintHTML(e), '', 'span') : '';
-  var ka = knownAssociates(e).slice(0, 24);
+  var ka = knownAssociates(e).slice(0, 4);
   var conns = ka.length ? card('share', 'Known associates', 1, '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>', '', '', true) : '';
   var out = contact + edu + ratings + background + syn + conns + fp;
   if(!out) out = card('user', 'On file', 1, emptyBox('Nothing on file yet. Press the pencil to start filling this in.'), '', 'span');
@@ -691,7 +693,7 @@ function nbrChipHTML(nb, removable){
   var d = di != null ? LV[personLevel(D.directory[di])].c : '#5a6b84';
   var label = di != null ? auName(D.directory[di]).name : personLabel(nb.u, nb.d);
   return '<span class="nchip' + (removable ? '' : ' plain') + '" style="--d:' + d + '" ' + (di != null ? 'data-act="nav" data-di="' + di + '" title="Open dossier"' : 'title="Not in the directory"') + '><i></i>' +
-    esc(label) + (removable ? '<b class="nx" data-act="rmnx" data-u="' + esc(nb.u) + '" title="Remove close connection">×</b>' : '') + '</span>';
+    esc(label) + (removable ? '<b class="nx" data-act="rmnx" data-u="' + esc(nb.u) + '" title="Remove known associate">×</b>' : '') + '</span>';
 }
 function tile(icon, val, label){
   return '<div class="tile"><span class="tic">' + ic(icon, 15) + '</span><span class="tx"><b' + (val ? '' : ' class="dim"') + '>' + esc(val || '—') + '</b><i>' + esc(label) + '</i></span></div>';
@@ -709,14 +711,14 @@ function timelineHTML(e){
 }
 
 function lvl2View(e){
-  var tier = tierOf(e), mom = parseInt(gv(e, 'momentum'), 10);
+  var tier = tierOf(e), mom = momVal(e);
   var hero = '<div class="tierhero">' + TIER_ORDER.map(function(t){
     return '<div class="tseg' + (tier === t ? ' on' : '') + '" style="--c:' + TIERS[t].c + '"><b>' + TIERS[t].n + '</b></div>';
   }).join('') + '</div>';
   var momHTML = '';
-  if(mom >= 1 && mom <= 5){
-    momHTML = '<div class="momview"><div class="momtrack"><div class="momfill" style="width:' + ((mom - 1) / 4 * 100) + '%"></div>' +
-      '<div class="mommark" style="left:' + ((mom - 1) / 4 * 100) + '%"></div></div>' +
+  if(mom){
+    momHTML = '<div class="momview"><div class="momtrack"><div class="momfill" style="width:' + momPos(mom) + '%"></div>' +
+      '<div class="mommark" style="left:' + momPos(mom) + '%"></div></div>' +
       '<div class="momlabels"><span>Fading</span><b>' + MOM_LABELS[mom] + '</b><span>Growing</span></div></div>';
   }
   var yrs = gv(e, 'years_known');
@@ -816,10 +818,10 @@ function tierEditHTML(e){
   }).join('') + '</div></div>';
 }
 function momentumEditHTML(e){
-  var v = parseInt(gv(e, 'momentum'), 10);
-  if(!(v >= 1 && v <= 5)) v = 3;
-  var h = '<div class="irow"><span class="ilab">Momentum</span><div class="momwrap"><div class="momtrack" data-pk="momentum" data-v="' + v + '"><div class="momfill" style="width:' + ((v - 1) / 4 * 100) + '%"></div>';
-  for(var i = 1; i <= 5; i++) h += '<button type="button" class="mstop' + (i === v ? ' on' : '') + '" data-v="' + i + '" title="' + MOM_LABELS[i] + '"><i></i></button>';
+  var v = momVal(e) || '0';
+  var order = ['-', '0', '+'];
+  var h = '<div class="irow"><span class="ilab">Momentum</span><div class="momwrap"><div class="momtrack tri" data-pk="momentum" data-v="' + v + '"><div class="momfill" style="width:' + momPos(v) + '%"></div>';
+  order.forEach(function(t){ h += '<button type="button" class="mstop' + (t === v ? ' on' : '') + '" data-v="' + t + '" title="' + MOM_LABELS[t] + '"><i></i></button>'; });
   h += '</div><div class="momlabels"><span>Fading</span><b>' + MOM_LABELS[v] + '</b><span>Growing</span></div></div></div>';
   return h;
 }
@@ -836,8 +838,8 @@ function connectionsBody(e){
   var nb = (e.neighbors || []);
   var chips = nb.length ? '<div class="chips">' + nb.map(function(x){ return nbrChipHTML(x, true); }).join('') + '</div>' : '<p class="dim" style="margin:0;font-size:13px">None mapped yet.</p>';
   var cps = connPhases(e);
-  return '<div class="subhead first">Close connections</div>' + chips +
-    '<div class="naddwrap"><input id="naddinput" placeholder="Add a close connection: type a name" autocomplete="off"><div id="naddlist"></div></div>' +
+  return '<div class="subhead first">Known associates</div>' + chips +
+    '<div class="naddwrap"><input id="naddinput" placeholder="Add a known associate: type a name" autocomplete="off"><div id="naddlist"></div></div>' +
     '<div class="subhead">Connection timeline</div>' +
     '<div id="cprows">' + cps.map(function(p, i){ return cpRowHTML(p, i); }).join('') + '</div>' +
     '<div class="arow"><button class="mini" data-act="cpadd" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add phase</button></div>' +
@@ -1422,7 +1424,7 @@ function aiTidy(k){
   }, function(err){ if(btn) btn.disabled = false; if(msg) msg.textContent = err; });
 }
 
-/* ---------- close connections + merge ---------- */
+/* ---------- known associates + merge ---------- */
 function renderNadd(q){
   var list = $('#naddlist'); if(!list) return;
   q = (q || '').trim().toLowerCase();
@@ -1825,7 +1827,7 @@ function buildDossierDoc(e){
   if(gv(e, 'specialty')) extras += '<div class="kv"><span class="cl">Specialty</span> ' + esc(gv(e, 'specialty')) + '</div>';
   if(gv(e, 'interests')) extras += '<div class="kv"><span class="cl">Interests</span> ' + esc(gv(e, 'interests')) + '</div>';
   if(tierName(e)) extras += '<div class="kv"><span class="cl">Tier</span> ' + esc(tierName(e)) + '</div>';
-  if(gv(e, 'momentum')) extras += '<div class="kv"><span class="cl">Momentum</span> ' + esc(gv(e, 'momentum')) + ' / 5</div>';
+  if(momVal(e)) extras += '<div class="kv"><span class="cl">Momentum</span> ' + esc(MOM_LABELS[momVal(e)]) + '</div>';
   degreesOf(e).forEach(function(d){ extras += '<div class="kv"><span class="cl">Degree</span> ' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '</div>'; });
   var assoc = knownAssociates(e).map(function(nb){
     var di = BYN[(nb.u || '').toLowerCase()];
@@ -2639,7 +2641,7 @@ function bind(){
       if(track){
         track.setAttribute('data-v', mv);
         $$('.mstop', track).forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-v') === mv); });
-        var fill = $('.momfill', track); if(fill) fill.style.width = ((parseInt(mv, 10) - 1) / 4 * 100) + '%';
+        var fill = $('.momfill', track); if(fill) fill.style.width = momPos(mv) + '%';
         var lab = $('.momlabels b', track.parentNode); if(lab) lab.textContent = MOM_LABELS[mv];
       }
       updateFills(); return;
