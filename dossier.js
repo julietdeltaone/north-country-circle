@@ -60,6 +60,9 @@ function typing(){
 
 /* ---------- icons (one stroke family, so they all sit together) ---------- */
 var IC = {
+  home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  chevl:'<path d="m15 18-6-6 6-6"/>',
+  chevr:'<path d="m9 18 6-6-6-6"/>',
   phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
   mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
   user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
@@ -717,8 +720,9 @@ function openPerson(idx, o){
   o = o || {};
   if(idx == null || !D.directory[idx]) return;
   flushSave();
-  if(o.push && S.sel !== null && S.sel !== idx) S.hist.push(S.sel);
-  else if(!o.keepHist) S.hist = [];
+  if(o.push && S.sel !== null && S.sel !== idx){ S.hist.push(S.sel); S.fwd = []; }
+  else if(!o.keepHist){ S.hist = []; S.fwd = []; }
+  syncNavBtns();
   S.sel = idx; S.editing = !!o.edit; S.lvl = o.lvl || 1;
   markSel();
   var row = $('#leftbody [data-i="' + idx + '"]');
@@ -730,13 +734,33 @@ function openPerson(idx, o){
 }
 function closePanel(){
   flushSave();
-  S.sel = null; S.editing = false; S.hist = [];
+  S.sel = null; S.editing = false; S.hist = []; S.fwd = [];
   markSel(); renderPanel(false); glSyncFocus();
 }
 function goBack(){
   if(!S.hist.length) return;
+  if(S.sel !== null) S.fwd.push(S.sel);
   var prev = S.hist.pop();
   openPerson(prev, { keepHist:true });
+  syncNavBtns();
+}
+function goForward(){
+  if(!S.fwd.length) return;
+  if(S.sel !== null) S.hist.push(S.sel);
+  var nxt = S.fwd.pop();
+  openPerson(nxt, { keepHist:true });
+  syncNavBtns();
+}
+function goHome(){
+  closePanel();
+  if(S.mode === '3d' && typeof glReset === 'function') glReset();
+  else if(typeof hubFit === 'function') hubFit();
+  syncNavBtns();
+}
+function syncNavBtns(){
+  var b = $('#navback'), f = $('#navfwd');
+  if(b) b.classList.toggle('dim', !S.hist.length);
+  if(f) f.classList.toggle('dim', !S.fwd.length);
 }
 function setLevel(n){
   if(S.sel === null) return;
@@ -798,6 +822,9 @@ function act(a, el){
       S.tag = { k:el.getAttribute('data-tagk'), v:el.getAttribute('data-tagv') };
       S.rail = 'people'; S.limit = 200; S.listOpen = true;
       document.body.classList.remove('nolist'); $('#listtoggle').classList.add('on');
+  $('#navhome').addEventListener('click', goHome);
+  $('#navback').addEventListener('click', goBack);
+  $('#navfwd').addEventListener('click', goForward);
       refresh(); toast('Showing everyone at ' + S.tag.v);
       break;
   }
@@ -2446,9 +2473,11 @@ function onKey(e){
   }
   if($('#modal')) return;
   if(e.altKey && e.key === 'ArrowLeft'){ e.preventDefault(); goBack(); return; }
+  if(e.altKey && e.key === 'ArrowRight'){ e.preventDefault(); goForward(); return; }
   if(typing() || e.metaKey || e.ctrlKey || e.altKey) return;
   if(e.key === '/'){ e.preventDefault(); if(!S.listOpen) toggleList(); $('#fq').focus(); $('#fq').select(); return; }
   if(e.key === 'b' || e.key === 'B'){ toggleList(); return; }
+  if(e.key === 'h' || e.key === 'H'){ goHome(); return; }
   if(e.key === 'ArrowDown' || e.key === 'j'){ e.preventDefault(); stepSel(1); return; }
   if(e.key === 'ArrowUp' || e.key === 'k'){ e.preventDefault(); stepSel(-1); return; }
   if(S.sel === null) return;
