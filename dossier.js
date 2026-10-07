@@ -521,6 +521,18 @@ function linkedFrom(e){
   });
   return out;
 }
+function knownAssociates(e){
+  var seen = {}, out = [];
+  (e.neighbors || []).forEach(function(nb){
+    var k = (nb.u || '').toLowerCase();
+    if(k && !seen[k]){ seen[k] = 1; out.push({ u:nb.u, d:nb.d }); }
+  });
+  linkedFrom(e).forEach(function(di){
+    var r = D.directory[di], k = (r.name || '').toLowerCase();
+    if(k && !seen[k]){ seen[k] = 1; out.push({ u:r.name, d:dispName(r) }); }
+  });
+  return out;
+}
 function nbrChipHTML(nb, removable){
   var di = BYN[(nb.u || '').toLowerCase()];
   var d = di != null ? LV[personLevel(D.directory[di])].c : '#5a6b84';
@@ -558,13 +570,10 @@ function lvl2View(e){
     : '';
   var narrative = card('quote', 'Narrative', 2, (narrText ? '<div class="narr">' + narrText + '</div>' : emptyBox('No story written yet.', 'Write the story', 2)) + assess);
 
-  var nbrs = (e.neighbors || []).slice(0, 12);
-  var from = linkedFrom(e);
-  var cc = (nbrs.length ? '<div class="chips">' + nbrs.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>' : '<p class="dim" style="margin:0 0 4px;font-size:13px">No close connections mapped.</p>');
-  if(from.length) cc += '<div class="subhead">Also linked here</div><div class="chips">' + from.slice(0, 12).map(function(di){
-    return nbrChipHTML({ u:D.directory[di].name, d:dispName(D.directory[di]) }, false); }).join('') + '</div>';
-  cc += '';
-  var conns = card('share', 'Close connections', 2, cc, '', '', true);
+  var ka = knownAssociates(e).slice(0, 24);
+  var cc = ka.length ? '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>'
+    : '<p class="dim" style="margin:0 0 4px;font-size:13px">No known associates mapped.</p>';
+  var conns = card('share', 'Known associates', 2, cc, '', '', true);
 
   var tl = card('calendar', 'Timeline', 2, timelineHTML(e),
     '<button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button>', 'span');
@@ -1424,7 +1433,7 @@ function buildDossierDoc(e){
   if(prof.specialty) extras += '<div class="kv"><span class="cl">Specialty</span> ' + esc(prof.specialty) + '</div>';
   if(prof.interests) extras += '<div class="kv"><span class="cl">Interests</span> ' + esc(prof.interests) + '</div>';
   if(score) extras += '<div class="kv"><span class="cl">Assessment</span> ' + esc(score) + '</div>';
-  var assoc = (e.neighbors || []).map(function(nb){
+  var assoc = knownAssociates(e).map(function(nb){
     var di = BYN[(nb.u || '').toLowerCase()];
     var label = di != null ? auName(D.directory[di]).name : personLabel(nb.u, nb.d);
     return '<li>' + esc(label) + '</li>';
@@ -2173,7 +2182,7 @@ function glFocus(di){
   glClearFocus();
   GL.focusDi = di;
   var p = GL.glPos[di], e = D.directory[di], g = new THREE.Group();
-  var nbrs = (e.neighbors || []).slice(0, 8);
+  var nbrs = knownAssociates(e).slice(0, 12);
   nbrs.forEach(function(nb, j){
     var y = 1 - 2 * (j + 0.5) / nbrs.length, r = Math.sqrt(Math.max(0, 1 - y * y)), th = j * 2.399963;
     var np = new THREE.Vector3(p.x + Math.cos(th) * r * 16, p.y + y * 16, p.z + Math.sin(th) * r * 16);
