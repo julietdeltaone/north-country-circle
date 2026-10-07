@@ -514,7 +514,11 @@ function lvl1View(e){
   var background = card('briefcase', 'Background', 1, bgBody || emptyBox('No specialty, interests, or organizations yet.', 'Add background', 1));
 
   var fp = card('link', 'Public footprint', 1, footprintHTML(e), '', 'span');
-  return contact + ratings + background + fp;
+  var ka = knownAssociates(e).slice(0, 24);
+  var cc = ka.length ? '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>'
+    : '<p class="dim" style="margin:0 0 4px;font-size:13px">No known associates mapped.</p>';
+  var conns = card('share', 'Known associates', 1, cc, '', '', true);
+  return contact + ratings + background + conns + fp;
 }
 function linkedFrom(e){
   var me = (e.name || '').toLowerCase(), out = [];
@@ -578,15 +582,10 @@ function lvl2View(e){
     : '';
   var narrative = card('quote', 'Narrative', 2, (narrText ? '<div class="narr">' + narrText + '</div>' : emptyBox('No story written yet.', 'Write the story', 2)) + assess);
 
-  var ka = knownAssociates(e).slice(0, 24);
-  var cc = ka.length ? '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>'
-    : '<p class="dim" style="margin:0 0 4px;font-size:13px">No known associates mapped.</p>';
-  var conns = card('share', 'Known associates', 2, cc, '', '', true);
-
   var tl = card('calendar', 'Timeline', 2, timelineHTML(e),
     '<button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button>', 'span');
   var notes = prof.notes ? card('file', 'Reference notes', 2, '<div class="narr" style="white-space:pre-wrap">' + esc(prof.notes) + '</div>', '', 'span') : '';
-  return connection + narrative + conns + tl + notes;
+  return connection + narrative + tl + notes;
 }
 function filesHTML(e){
   var fs = e.files || [];
