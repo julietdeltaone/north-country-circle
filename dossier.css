@@ -666,13 +666,14 @@ button.vchip:hover{background:color-mix(in srgb,var(--c) 20%,transparent)}
 .momtrack{position:relative;height:26px;border-radius:13px;background:linear-gradient(90deg,rgba(224,104,138,.22),rgba(255,255,255,.04) 50%,rgba(92,214,160,.22));border:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between;padding:0 10px}
 .momtrack:before{content:"";position:absolute;left:50%;top:5px;bottom:5px;width:1px;background:var(--line-soft)}
 .mstop{position:relative;z-index:2;width:22px;height:22px;border-radius:50%;border:1px solid var(--line-soft);background:#0d1117;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
-.mstop i{width:8px;height:8px;border-radius:50%;background:var(--dim);opacity:.45}
+.mstop .msym{font-style:normal;font-weight:600;font-size:13px;line-height:1;color:var(--dim);opacity:.55}
 .mstop:hover{border-color:var(--txt)}
 .mstop.on{border-color:var(--txt)}
-.mstop.on i{background:var(--txt);opacity:1}
+.mstop.on .msym{color:var(--txt);opacity:1}
 .momfill{position:absolute;left:0;top:0;bottom:0;border-radius:13px;background:linear-gradient(90deg,rgba(224,104,138,.16),rgba(92,214,160,.16));pointer-events:none;z-index:1}
 .momlabels{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim);margin-top:5px}
 .momlabels b{color:var(--txt);font-size:12px}
 .momview{margin:2px 0 12px}
 .momview .momtrack{cursor:default}
 .mommark{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--txt);z-index:2;border-radius:1px}
+.mommark.sym{width:auto;background:none;top:50%;bottom:auto;transform:translate(-50%,-50%);font-size:15px;font-weight:600;color:var(--txt)}
