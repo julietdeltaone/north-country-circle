@@ -653,3 +653,26 @@ button.vchip:hover{background:color-mix(in srgb,var(--c) 20%,transparent)}
 .traits.grid2 .trait{flex-direction:column;align-items:flex-start;gap:5px;padding:8px 0}
 .traits.grid2 .trait:nth-last-child(-n+2){border-bottom:0}
 .evform .two select,.evform .two input{width:100%}
+
+/* v5: tier hero */
+.tierhero{display:flex;gap:8px;margin:2px 0 12px}
+.tierhero .tseg{flex:1;text-align:center;padding:10px 6px;border-radius:10px;border:1px solid var(--line-soft);background:rgba(255,255,255,.03);color:var(--dim);cursor:default}
+.tierhero .tseg b{font-size:13px;letter-spacing:.04em}
+.tierhero .tseg.on{border-color:color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 12%,transparent);color:var(--txt)}
+.tierhero.edit .tseg{cursor:pointer;background:rgba(255,255,255,.028)}
+.tierhero.edit .tseg:hover{border-color:var(--c);color:var(--txt)}
+/* v5: momentum directional */
+.momwrap{margin:4px 0 6px}
+.momtrack{position:relative;height:26px;border-radius:13px;background:linear-gradient(90deg,rgba(224,104,138,.22),rgba(255,255,255,.04) 50%,rgba(92,214,160,.22));border:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between;padding:0 10px}
+.momtrack:before{content:"";position:absolute;left:50%;top:5px;bottom:5px;width:1px;background:var(--line-soft)}
+.mstop{position:relative;z-index:2;width:22px;height:22px;border-radius:50%;border:1px solid var(--line-soft);background:#0d1117;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.mstop i{width:8px;height:8px;border-radius:50%;background:var(--dim);opacity:.45}
+.mstop:hover{border-color:var(--txt)}
+.mstop.on{border-color:var(--txt)}
+.mstop.on i{background:var(--txt);opacity:1}
+.momfill{position:absolute;left:0;top:0;bottom:0;border-radius:13px;background:linear-gradient(90deg,rgba(224,104,138,.16),rgba(92,214,160,.16));pointer-events:none;z-index:1}
+.momlabels{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim);margin-top:5px}
+.momlabels b{color:var(--txt);font-size:12px}
+.momview{margin:2px 0 12px}
+.momview .momtrack{cursor:default}
+.mommark{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--txt);z-index:2;border-radius:1px}
