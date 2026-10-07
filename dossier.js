@@ -2505,6 +2505,7 @@ function boot(){
         $('#fresh').textContent = 'Updated ' + (D.updated || '—');
         D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; });
         try { applyPending(); } catch(px){}
+        try { syncNavBtns(); } catch(nx){}
         buildNodes();
         $('#fq').placeholder = 'Search ' + LIST_ORDER.length + ' people…';
         hubInit(); bind(); refresh(); setMode(S.mode);
