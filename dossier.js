@@ -409,7 +409,7 @@ function card(icon, title, lv, body, right, cls, collapsed){
     (right ? '<div class="cr">' + right + '</div>' : '') + '</header><div class="cb">' + body + '</div></section>';
 }
 function emptyBox(text, btn, lv){
-  return '<div class="empty"><p>' + esc(text) + '</p>' + (btn ? '<button class="mini" data-act="goedit" data-lvl="' + lv + '" style="--c:' + LV[lv].c + '">' + ic('plus', 13) + esc(btn) + '</button>' : '') + '</div>';
+  return '<div class="empty"><p>' + esc(text) + '</p></div>';
 }
 function reviewBadge(e){
   var f = (e.profile || {}).review_flag;
@@ -446,7 +446,7 @@ function phead(e){
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
     '<div class="hname"><h2 title="' + esc(dispName(e)) + '">' + esc(dispName(e)) + '</h2>' +
     '<div class="hsub"><span>' + esc(subLine(e)) + '</span>' + rel +
-    '<button class="abadge' + (aud ? ' ok' : '') + '" data-act="audit" title="Click to toggle audit status">' + (aud ? 'Audited' : 'Needs audit') + '</button>' + reviewBadge(e) + '</div></div>' +
+    reviewBadge(e) + '</div></div>' +
     '<div class="hact">' + edit +
     '<button class="ibtn" id="pwide" data-act="wide" title="' + (S.wide ? 'Narrow the panel' : 'Widen the panel') + '" aria-label="Resize panel">' + ic(S.wide ? 'shrink' : 'expand', 16) + '</button>' +
     menu + '<button class="ibtn" data-act="close" title="Close (Esc)" aria-label="Close">' + ic('x', 17) + '</button></div></div>' + tabs + '</div>';
@@ -492,7 +492,7 @@ function lvl1View(e){
     var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
     if(m) score = '<span class="score" title="Assessment score">' + ic('star', 11) + ' ' + m[1] + '/100</span>';
   }
-  var ratings = card('activity', 'Ratings', 1, traits + (anyScore ? '' : '<div class="arow"><button class="mini" data-act="goedit" data-lvl="1" style="--c:' + LV[1].c + '">' + ic('plus', 13) + 'Rate them</button></div>'), score);
+  var ratings = card('activity', 'Ratings', 1, traits, score);
 
   var bg = '';
   if(prof.specialty) bg += '<div class="idrow"><span class="idic">' + ic('zap', 15) + '</span><div><span>Specialty</span><b>' + esc(prof.specialty) + '</b></div></div>';
@@ -543,7 +543,7 @@ function lvl2View(e){
     tile('activity', fdb.state, 'State') + tile('trend', fdb.trajectory, 'Trajectory') +
     tile('clock', fdb.years_known ? fdb.years_known + ' yrs' : '', 'Known for') + tile('share', String(e.degree || 0), 'Graph links') +
     tile('send', String(e.shared_with_jd || 0), 'Shared with you') + '</div>' +
-    (rel || prof.closeness ? '' : '<div class="arow"><button class="mini" data-act="goedit" data-lvl="2" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Describe the connection</button></div>');
+    '';
   var connection = card('users', 'Connection', 2, conn, '', 'span');
 
   var narrText = prof.enriched_value ? esc(String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '')) : '';
@@ -558,7 +558,7 @@ function lvl2View(e){
   var cc = (nbrs.length ? '<div class="chips">' + nbrs.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>' : '<p class="dim" style="margin:0 0 4px;font-size:13px">No close connections mapped.</p>');
   if(from.length) cc += '<div class="subhead">Also linked here</div><div class="chips">' + from.slice(0, 12).map(function(di){
     return nbrChipHTML({ u:D.directory[di].name, d:dispName(D.directory[di]) }, false); }).join('') + '</div>';
-  cc += '<div class="arow"><button class="mini neutral" data-act="goedit" data-lvl="2">' + ic('edit', 13) + 'Manage connections</button></div>';
+  cc += '';
   var conns = card('share', 'Close connections', 2, cc, '', '', true);
 
   var tl = card('calendar', 'Timeline', 2, timelineHTML(e),
@@ -851,6 +851,79 @@ function toggleAudit(){
   var e = D.directory[S.sel]; if(!e) return;
   setAudit(((e.profile || {}).audit === 'audited') ? 'needs_audit' : 'audited');
 }
+
+/* ---------- audit dashboard ---------- */
+var AUD = { open:false, q:'', f:'needs', sort:'missing' };
+function auditStats(e){
+  var prof = e.profile || {};
+  var hasR = L1_SCORES.some(function(k){ return prof[k] != null && prof[k] !== ''; });
+  var hasB = !!(prof.specialty || prof.interests || ORG_CATS.some(function(c){ return String(prof[c.k] || '').trim(); }));
+  var hasC = !!(prof.relationship || prof.context || (prof.closeness != null && prof.closeness !== ''));
+  var audited = prof.audit === 'audited';
+  var missing = (hasR ? 0 : 1) + (hasB ? 0 : 1) + (hasC ? 0 : 1) + (audited ? 0 : 1);
+  return { hasR:hasR, hasB:hasB, hasC:hasC, audited:audited, missing:missing, score:4 - missing };
+}
+function openAudit(){
+  AUD.open = true;
+  $('#auditscreen').hidden = false;
+  $('#auq').value = AUD.q;
+  renderAudit();
+}
+function closeAudit(){
+  AUD.open = false;
+  $('#auditscreen').hidden = true;
+}
+function setAuditFor(di, next){
+  var e = D.directory[di]; if(!e) return;
+  if(!WEBAPP_URL){ toast('Editing is not set up: the web app URL is missing.'); return; }
+  e.profile = e.profile || {}; e.profile.audit = next;
+  postKind('profile', pkey(e), { audit:next }, getPw(),
+    function(){ renderAudit(); refresh(); },
+    function(err){ toast(err + ' Tap again to retry.'); });
+}
+function renderAudit(){
+  var q = AUD.q.trim().toLowerCase();
+  var rows = [];
+  D.directory.forEach(function(e, di){
+    if((e.profile || {}).deleted === '1') return;
+    var st = auditStats(e);
+    var pass = true;
+    if(AUD.f === 'needs') pass = st.missing > 0;
+    else if(AUD.f === 'audit') pass = !st.audited;
+    else if(AUD.f === 'ratings') pass = !st.hasR;
+    else if(AUD.f === 'background') pass = !st.hasB;
+    else if(AUD.f === 'connection') pass = !st.hasC;
+    if(!pass) return;
+    if(q){
+      var hay = (dispName(e) + ' ' + (e.name || '') + ' ' + ((e.profile || {}).display_name || '')).toLowerCase();
+      if(hay.indexOf(q) < 0) return;
+    }
+    rows.push({ di:di, e:e, st:st, name:dispName(e) });
+  });
+  rows.sort(function(a, b){
+    if(AUD.sort === 'name') return a.name.localeCompare(b.name);
+    if(AUD.sort === 'complete') return b.st.score - a.st.score || a.name.localeCompare(b.name);
+    return a.st.score - b.st.score || a.name.localeCompare(b.name);
+  });
+  var nA = 0, nR = 0, nB = 0, nC = 0;
+  D.directory.forEach(function(e){
+    if((e.profile || {}).deleted === '1') return;
+    var st = auditStats(e);
+    if(!st.audited) nA++; if(!st.hasR) nR++; if(!st.hasB) nB++; if(!st.hasC) nC++;
+  });
+  $('#aucount').textContent = rows.length + ' shown · ' + nA + ' need audit · ' + nR + ' need ratings · ' + nB + ' need background · ' + nC + ' need connection';
+  function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
+  $('#aubody').innerHTML = rows.map(function(r){
+    var ini = (r.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
+    var handle = (r.e.src === 'contacts' || r.e.src === 'subject') ? '' : '@' + (r.e.name || '');
+    return '<div class="aurow" data-di="' + r.di + '"><span class="auava">' + esc(ini) + '</span>' +
+      '<span class="aumain"><span class="auname">' + esc(r.name) + (handle ? '<i>' + esc(handle) + '</i>' : '') + '</span>' +
+      '<span class="auneeds">' + pill(r.st.hasR, 'Ratings') + pill(r.st.hasB, 'Background') + pill(r.st.hasC, 'Connection') + pill(r.st.audited, 'Audited') + '</span></span>' +
+      '<span class="aubar" title="' + r.st.score + ' of 4 complete"><i style="width:' + (r.st.score * 25) + '%"></i></span>' +
+      '<span class="aubtn"><button class="mini" data-auact="' + (r.st.audited ? 'unaudit' : 'audit') + '">' + (r.st.audited ? 'Reopen' : 'Mark audited') + '</button></span></div>';
+  }).join('') || '<p class="dim" style="padding:20px">Nobody matches this filter.</p>';
+}
+
 function deletePerson(){
   var e = D.directory[S.sel];
   if(!e || !WEBAPP_URL){ toast('Nothing to delete.'); return; }
@@ -976,9 +1049,7 @@ function buildDossierDoc(e){
   var prof = e.profile || {}, c = e.contact || {};
   var name = dispName(e);
   var handle = (e.src === 'contacts' || e.src === 'subject') ? '' : '@' + (e.name || '');
-  var aliases = [];
-  if(prof.display_name && prof.display_name !== name) aliases.push(prof.display_name);
-  if(e.name && e.display && e.name !== e.display) aliases.push('@' + e.name);
+  var aka = (prof.display_name && prof.display_name !== name) ? prof.display_name : '';
   var today = new Date();
   var ds = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
   var bio = prof.enriched_value ? String(prof.enriched_value).replace(/^\d{1,3}\s*[—–-]\s*/, '') : '';
@@ -987,28 +1058,33 @@ function buildDossierDoc(e){
   var classif = [prof.relationship, prof.context].filter(Boolean).join(' · ');
   var orgs = [];
   ORG_CATS.forEach(function(cat){ tagList(prof[cat.k]).forEach(function(v){ orgs.push(v); }); });
-  var ratings = SCORE_FIELDS.map(function(f){
-    var v = prof[f.k];
-    return '<tr><td>' + esc(f.label) + '</td><td>' + (v ? esc(v) + ' / 5' : '—') + '</td></tr>';
+  var contact = [];
+  if(handle) contact.push('<span class="cl">Instagram</span> ' + esc(handle));
+  var emails = prof.email || (c.emails || []).join(', ');
+  if(emails) contact.push('<span class="cl">Email</span> ' + esc(emails));
+  var phones = prof.phone || (c.phones || []).join(', ');
+  if(phones) contact.push('<span class="cl">Phone</span> ' + esc(phones));
+  if(orgs.length) contact.push('<span class="cl">Orgs</span> ' + esc(orgs.join(' · ')));
+  var bars = SCORE_FIELDS.map(function(f){
+    var v = parseInt(prof[f.k], 10), ok = !isNaN(v);
+    var w = ok ? Math.max(0, Math.min(5, v)) / 5 * 100 : 0;
+    return '<div class="brow"><span>' + esc(f.label) + '</span><div class="bar"><i style="width:' + w + '%"></i></div><em>' + (ok ? v + '/5' : '—') + '</em></div>';
   }).join('');
   var extras = '';
-  if(prof.specialty) extras += '<tr><td>Specialty</td><td>' + esc(prof.specialty) + '</td></tr>';
-  if(prof.interests) extras += '<tr><td>Interests</td><td>' + esc(prof.interests) + '</td></tr>';
-  if(score) extras += '<tr><td>Assessment score</td><td>' + esc(score) + '</td></tr>';
+  if(prof.specialty) extras += '<div class="kv"><span class="cl">Specialty</span> ' + esc(prof.specialty) + '</div>';
+  if(prof.interests) extras += '<div class="kv"><span class="cl">Interests</span> ' + esc(prof.interests) + '</div>';
+  if(score) extras += '<div class="kv"><span class="cl">Assessment</span> ' + esc(score) + '</div>';
   var assoc = (e.neighbors || []).map(function(nb){ return '<li>' + esc(nb.d || nb.u) + '</li>'; }).join('');
-  var dir = '';
-  var phones = prof.phone || (c.phones || []).join(', ');
-  if(phones) dir += '<div><b>Phone:</b> ' + esc(phones) + '</div>';
-  var emails = prof.email || (c.emails || []).join(', ');
-  if(emails) dir += '<div><b>Email:</b> ' + esc(emails) + '</div>';
-  if(e.relation) dir += '<div><b>Relation:</b> ' + esc(e.relation) + '</div>';
-  dir += '<div><b>Graph connections:</b> ' + (e.degree || 0) + '</div>';
-  dir += '<div><b>Shared with you:</b> ' + (e.shared_with_jd || 0) + '</div>';
-  if(e.detail) dir += '<div><b>On file:</b> ' + esc(e.detail) + '</div>';
   var notes = '';
   if(prof.notes) notes += '<p>' + esc(prof.notes).replace(/\n/g, '<br>') + '</p>';
   if(e.public_footprint) notes += '<p><b>Public footprint</b><br>' + esc(e.public_footprint).replace(/\n/g, '<br>') + '</p>';
   if(!notes) notes = '<p>—</p>';
+  var meta = ['Compiled ' + ds];
+  if(prof.enriched_at) meta.push('Last assessment ' + esc(prof.enriched_at));
+  if(classif) meta.push(esc(classif));
+  meta.push((e.degree || 0) + ' graph connections');
+  if(e.shared_with_jd) meta.push(e.shared_with_jd + ' shared');
+  if(e.detail) meta.push('File note: ' + esc(e.detail));
   var evs = sortedEvents(e);
   var tl = evs.length
     ? '<ul class="assoc">' + evs.map(function(o){
@@ -1024,48 +1100,41 @@ function buildDossierDoc(e){
   return '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
   '<title>Dossier — ' + esc(name) + '</title><style>' +
   'body{background:#26292f;margin:0;padding:28px;font-family:"Courier New",Courier,monospace;color:#141414}' +
-  '.page{background:#f5f2e9;max-width:800px;margin:0 auto;padding:40px 44px;box-shadow:0 0 50px rgba(0,0,0,.55)}' +
-  '.mast{display:flex;align-items:center;gap:18px;justify-content:center;margin-bottom:4px}' +
-  '.seal{width:64px;height:64px;border:3px double #141414;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px}' +
-  'h1{font-size:27px;letter-spacing:.3em;margin:0;font-weight:700}' +
-  '.psub{text-align:center;letter-spacing:.5em;font-size:12px;margin:6px 0 18px;color:#333}' +
-  '.frow{display:flex;justify-content:space-between;font-size:12px;margin-bottom:14px}' +
-  'table.box{width:100%;border-collapse:collapse;border:2px solid #141414;margin-bottom:22px}' +
-  'table.box th,table.box td{border:1px solid #141414;padding:8px 10px;font-size:12.5px;vertical-align:top;text-align:left}' +
-  'table.box th{font-size:10.5px;letter-spacing:.12em;background:#ece7d8}' +
-  '.redact{background:#141414;color:#141414;border-radius:2px;padding:0 10px;user-select:none}' +
+  '.page{background:#f5f2e9;max-width:820px;margin:0 auto;padding:44px 48px;box-shadow:0 0 50px rgba(0,0,0,.55)}' +
+  '.hero h1{font-size:34px;margin:0 0 4px;letter-spacing:.02em}' +
+  '.hero .aka{font-size:13px;color:#333;margin-bottom:8px}' +
+  '.contact{font-size:13px;line-height:2;margin-bottom:4px}' +
+  '.cl{font-size:10.5px;letter-spacing:.14em;font-weight:700;margin-right:5px}' +
+  '.meta{font-size:12px;color:#333;border-top:2px solid #141414;border-bottom:1px solid #141414;padding:9px 0;margin:14px 0 22px;line-height:1.8}' +
   '.sec{margin:0 0 20px}.slabel{font-size:12px;letter-spacing:.14em;font-weight:700;margin-bottom:8px}' +
   '.sbody{font-size:13px;line-height:1.65}.sbody p{margin:0 0 10px}' +
-  'table.rate{width:100%;border-collapse:collapse}table.rate td{border:1px solid #141414;padding:6px 10px;font-size:12.5px}' +
-  'table.rate td:first-child{width:45%;background:#ece7d8;letter-spacing:.06em;font-size:11.5px}' +
+  '.brow{display:flex;align-items:center;gap:10px;margin-bottom:7px}' +
+  '.brow span{width:120px;font-size:11px;letter-spacing:.08em;font-weight:700}' +
+  '.brow .bar{flex:1;height:11px;border:1.5px solid #141414}' +
+  '.brow .bar i{display:block;height:100%;background:#141414}' +
+  '.brow em{font-style:normal;font-size:11.5px;width:36px;text-align:right}' +
+  '.kv{font-size:13px;margin:6px 0}' +
+  '.cols{display:flex;gap:28px}.cols .col{flex:1;min-width:0}' +
   'ul.assoc{margin:0;padding-left:22px;font-size:13px;line-height:1.7}' +
-  '.kv div{margin-bottom:4px;font-size:13px}' +
   '.foot{border-top:2px solid #141414;margin-top:26px;padding-top:10px;font-size:11px}' +
   '.foot .sig{font-family:"Segoe Script",cursive;font-size:22px;margin:6px 0}' +
-  '.dnw{text-align:center;letter-spacing:.2em;font-size:10.5px;margin:14px 0 6px}' +
-  'table.copies{width:100%;border-collapse:collapse;border:2px solid #141414}table.copies td{border:1px solid #141414;height:44px}' +
   '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none}}' +
   '</style></head><body><div class="page">' +
-  '<div class="mast"><div class="seal">◈</div><h1>NORTH COUNTRY CIRCLE</h1></div>' +
-  '<div class="psub">PERSONAL DOSSIER</div>' +
-  '<div class="frow"><span>FORM NO. NCC-01</span><span>FILE NO. <span class="redact">████████</span></span></div>' +
-  '<table class="box">' +
-  '<tr><th>REPORT MADE AT</th><th>DATE REPORT MADE</th><th>LAST ASSESSMENT</th><th>REPORT MADE BY</th></tr>' +
-  '<tr><td>Potsdam, NY</td><td>' + ds + '</td><td>' + esc(prof.enriched_at || '—') + '</td><td><span class="redact">██████</span></td></tr>' +
-  '<tr><th colspan="2">TITLE / DESCRIPTION AND ALL KNOWN ALIASES</th><th colspan="2">CLASSIFICATION</th></tr>' +
-  '<tr><td colspan="2"><b>' + esc(name) + '</b>' + (aliases.length ? '<br>aka ' + esc(aliases.join(', ')) : '') + (handle ? '<br>' + esc(handle) : '') + '</td>' +
-  '<td colspan="2">' + esc(classif || '—') + (orgs.length ? '<br>' + esc(orgs.join(' · ')) : '') + '</td></tr></table>' +
-  '<div class="sec"><div class="slabel">SYNOPSIS OF FACTS:</div><div class="sbody">' + (bio ? '<p>' + esc(bio) + '</p>' : '<p>—</p>') + '</div></div>' +
-  '<div class="sec"><div class="slabel">PROFILE RATINGS:</div><table class="rate">' + ratings + extras + '</table></div>' +
-  '<div class="sec"><div class="slabel">KNOWN ASSOCIATES:</div>' + (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div>' +
-  '<div class="sec"><div class="slabel">DIRECTORY PARTICULARS:</div><div class="sbody kv">' + dir + '</div></div>' +
-  '<div class="sec"><div class="slabel">FIELD NOTES:</div><div class="sbody">' + notes + '</div></div>' +
-  '<div class="sec"><div class="slabel">TIMELINE:</div><div class="sbody">' + tl + '</div></div>' +
-  '<div class="sec"><div class="slabel">ATTACHED FILES:</div><div class="sbody">' + fls + '</div></div>' +
-  '<div class="foot"><div>APPROVED / FORWARDED BY</div><div class="sig">J. Meyers</div>' +
-  '<div class="dnw">DO NOT WRITE IN THE BOXES BELOW</div><table class="copies"><tr><td></td><td></td></tr></table>' +
-  '<div style="text-align:center;margin-top:8px;letter-spacing:.2em">COPIES OF THIS REPORT</div></div></div></body></html>';
+  '<div class="hero"><h1>' + esc(name) + '</h1>' +
+  (aka ? '<div class="aka">also known as ' + esc(aka) + '</div>' : '') +
+  (contact.length ? '<div class="contact">' + contact.join('<br>') + '</div>' : '') + '</div>' +
+  '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' +
+  '<div class="sec"><div class="slabel">SYNOPSIS</div><div class="sbody">' + (bio ? '<p>' + esc(bio) + '</p>' : '<p>—</p>') + '</div></div>' +
+  '<div class="sec"><div class="slabel">PROFILE RATINGS</div><div class="bars">' + bars + '</div>' + extras + '</div>' +
+  '<div class="cols"><div class="col"><div class="sec"><div class="slabel">KNOWN ASSOCIATES</div>' +
+    (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div></div>' +
+  '<div class="col"><div class="sec"><div class="slabel">FIELD NOTES</div><div class="sbody">' + notes + '</div></div></div></div>' +
+  '<div class="sec"><div class="slabel">TIMELINE</div><div class="sbody">' + tl + '</div></div>' +
+  '<div class="sec"><div class="slabel">ATTACHED FILES</div><div class="sbody">' + fls + '</div></div>' +
+  '<div class="foot"><div>APPROVED / FORWARDED BY</div><div class="sig">J. Meyers</div></div>' +
+  '</div></body></html>';
 }
+
 function exportDossier(){
   var e = D.directory[S.sel];
   if(!e){ toast('Nothing to export.'); return; }
@@ -1817,7 +1886,28 @@ function bind(){
   $('#activeflt').addEventListener('click', function(e){
     var b = e.target.closest('[data-clr]'); if(b) clearFilter(b.getAttribute('data-clr'));
   });
-  $('#auditpill').addEventListener('click', function(){ S.auditOnly = !S.auditOnly; S.rail = 'people'; S.limit = 200; refresh(); });
+  $('#auditpill').addEventListener('click', openAudit);
+  $('#auditback').addEventListener('click', closeAudit);
+  $('#aufilters').addEventListener('click', function(ev){
+    var b = ev.target.closest('button'); if(!b) return;
+    AUD.f = b.getAttribute('data-f');
+    $$('#aufilters button').forEach(function(x){ x.classList.toggle('on', x === b); });
+    renderAudit();
+  });
+  $('#ausort').addEventListener('change', function(ev){ AUD.sort = ev.target.value; renderAudit(); });
+  var _audt = null;
+  $('#auq').addEventListener('input', function(ev){ clearTimeout(_audt); _audt = setTimeout(function(){ AUD.q = ev.target.value; renderAudit(); }, 200); });
+  $('#aubody').addEventListener('click', function(ev){
+    var ab = ev.target.closest('[data-auact]');
+    if(ab){
+      ev.stopPropagation();
+      var rr = ab.closest('.aurow');
+      setAuditFor(parseInt(rr.getAttribute('data-di'), 10), ab.getAttribute('data-auact') === 'audit' ? 'audited' : 'needs_audit');
+      return;
+    }
+    var row = ev.target.closest('.aurow');
+    if(row){ closeAudit(); openPerson(parseInt(row.getAttribute('data-di'), 10), { push:true }); }
+  });
   $('#listtoggle').addEventListener('click', toggleList);
   $('#settingsbtn').addEventListener('click', openSettings);
   $('#leftbody').addEventListener('click', function(e){
@@ -1912,6 +2002,7 @@ function stepSel(d){
 }
 function onKey(e){
   if(e.key === 'Escape'){
+    if(AUD.open){ closeAudit(); return; }
     if($('#modal')){ closeModal(); return; }
     var fp = $('#filterpop'); if(fp && !fp.hidden){ fp.hidden = true; return; }
     if(document.activeElement === $('#fq')){ if($('#fq').value){ clearFilter('q'); } else $('#fq').blur(); return; }
