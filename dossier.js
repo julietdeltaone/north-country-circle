@@ -655,6 +655,7 @@ function dossierEdit(e){
       (assessOn() ? '<div class="genrow"><button class="mini" data-act="enrich" style="--c:' + LV[2].c + '">' + ic('zap', 13) + 'Generate assessment</button><span id="enrmsg" class="calcnote"></span></div>' : '')) +
     card('share', 'Close connections', 2, '<div class="chips">' + ((e.neighbors || []).slice(0, 12).map(function(nb){ return nbrChipHTML(nb, true); }).join('') || '<span class="dim" style="font-size:13px">None mapped yet.</span>') +
       '</div><div class="naddwrap"><input id="naddinput" placeholder="Add a close connection — type a name" autocomplete="off"><div id="naddlist"></div></div>', '', '', true) +
+    (e.src === 'contacts' ? mergeCardHTML(e) : '') +
     card('calendar', 'Timeline', 2, evRows + '<div class="arow"><button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button></div>', '', 'span') +
     card('file', 'Reference notes', 2, '<textarea id="refnotes" data-pk="notes" rows="5" placeholder="Private field notes.">' + esc(prof.notes || '') + '</textarea>', '', 'span');
 
@@ -842,6 +843,19 @@ function stashPending(pkey, changed){
   all[pkey] = cur;
   try { localStorage.setItem(PENDING_KEY, JSON.stringify(all)); } catch(x){}
 }
+function syncNeighborsFromClose(e){
+  var prof = e.profile || {};
+  var hide = tagList(prof.close_hide).map(function(x){ return x.toLowerCase(); });
+  var adds = tagList(prof.close_add);
+  if(hide.length) e.neighbors = (e.neighbors || []).filter(function(n){ return hide.indexOf((n.u || '').toLowerCase()) < 0; });
+  adds.forEach(function(a){
+    var kl = a.toLowerCase(), di = BYN[kl];
+    if(di === undefined) return;
+    var t = D.directory[di];
+    if(!(e.neighbors || []).some(function(n){ return (n.u || '').toLowerCase() === kl; }))
+      (e.neighbors = e.neighbors || []).push({ u:t.name || '', d:dispName(t) });
+  });
+}
 function applyPending(){
   var all = loadPending();
   Object.keys(all).forEach(function(pkey){
@@ -851,6 +865,7 @@ function applyPending(){
       var ch = {}, src = all[pkey];
       Object.keys(src).forEach(function(k){ if(k.charAt(0) !== '_') ch[k] = src[k]; });
       applyProfileEdit(D.directory[idx], ch);
+      if(ch.close_add !== undefined || ch.close_hide !== undefined) syncNeighborsFromClose(D.directory[idx]);
     }
   });
 }
@@ -955,15 +970,23 @@ function connTimelineHTML(e){
   if(max <= min) max = min + 1;
   var span = max - min;
   var cols = ['#f0b44c', '#7ea6f0', '#5cd6a0', '#b48ce8'];
+  items.sort(function(a, b){ return a.f - b.f || a.t - b.t; });
+  var lanes = [];
+  items.forEach(function(x){
+    var li = 0;
+    while(li < lanes.length && lanes[li] >= x.f) li++;
+    x.lane = li;
+    lanes[li] = x.t;
+  });
   var segs = items.map(function(x, i){
     var l = (x.f - min) / span * 100;
     var w = Math.max(3, (x.t - x.f + 1) / span * 100);
     if(l + w > 100) w = 100 - l;
-    return '<div class="ctl-seg" style="left:' + l.toFixed(1) + '%;width:' + w.toFixed(1) + '%;--c:' + cols[i % 4] + '"' +
+    return '<div class="ctl-seg" style="left:' + l.toFixed(1) + '%;width:' + w.toFixed(1) + '%;top:' + (x.lane * 30) + 'px;--c:' + cols[i % 4] + '"' +
       ' title="' + esc(x.l + (x.n ? ' \u2014 ' + x.n : '')) + '"><b>' + esc(x.l) + '</b><i>' +
       esc(ymLabel(x.fs)) + (x.ongoing ? ' \u2013 now' : ' \u2013 ' + ymLabel(x.ts)) + '</i></div>';
   }).join('');
-  return '<div class="ctline"><div class="ctl-track">' + segs + '</div>' +
+  return '<div class="ctline"><div class="ctl-track" style="height:' + (lanes.length * 30 + 6) + 'px">' + segs + '</div>' +
     '<div class="ctl-axis"><span>' + Math.floor(min / 12) + '</span><span>' + Math.ceil(max / 12) + '</span></div></div>';
 }
 function cpRowHTML(p, i){
@@ -1226,6 +1249,56 @@ function renderNadd(q){
   });
   list.innerHTML = hits.length ? hits.slice(0, 6).map(function(h){ return '<div class="naddhit" data-ai="' + h.i + '">' + esc(h.label) + '</div>'; }).join('')
     : '<div class="naddhit none">No matches</div>';
+}
+function mergeCardHTML(e){
+  var prof = e.profile || {}, mi = (prof.merged_into || '').trim();
+  var body = '';
+  if(mi){
+    body = '<p style="font-size:13px;margin:0 0 8px">Merged into <b>@' + esc(mi) + '</b>. Their numbers now live on that profile; this entry hides after the next sync.</p>' +
+      '<button class="mini danger" data-act="unmerge">Unmerge</button>';
+  } else {
+    body = '<p class="dim" style="font-size:13px;margin:0 0 8px">Fold this contact\u2019s numbers into an Instagram person and hide the duplicate.</p>' +
+      '<div class="naddwrap"><input id="mergeinput" placeholder="Merge into — type a name or @handle" autocomplete="off"><div id="mergelist"></div></div>';
+  }
+  return card('users', 'Merge person', 2, body, '', '', true);
+}
+function mergeSearch(q){
+  var list = $('#mergelist'); if(!list) return;
+  q = (q || '').toLowerCase().trim();
+  var hits = [];
+  if(q.length >= 2){
+    D.directory.forEach(function(r, i){
+      if(r.src === 'contacts' || (r.profile || {}).deleted === '1') return;
+      var label = dispName(r) || '', h = (r.name || '').toLowerCase();
+      if(label.toLowerCase().indexOf(q) >= 0 || h.indexOf(q.replace('@','')) >= 0) hits.push({ i:i, label:label, handle:r.name });
+      if(hits.length >= 6) return;
+    });
+  }
+  list.innerHTML = hits.length ? hits.map(function(h){
+    return '<div class="naddhit" data-mh="' + esc(h.handle) + '">' + esc(h.label) + ' <span class="dim">@' + esc(h.handle) + '</span></div>';
+  }).join('') : (q.length >= 2 ? '<div class="naddhit none">No matches</div>' : '');
+}
+function doMerge(e, handle){
+  if(!e || !handle || !WEBAPP_URL) return;
+  flushSave();
+  var prof = e.profile = e.profile || {};
+  prof.merged_into = handle.toLowerCase();
+  stashPending(pkey(e), { merged_into: prof.merged_into });
+  renderPanel(true);
+  postKind('profile', pkey(e), { merged_into: prof.merged_into }, getPw(),
+    function(){ toast('Merged into @' + handle + '. Hides after the next sync.'); },
+    function(err){ toast(err + ' Kept on screen, reopen to retry.'); });
+}
+function doUnmerge(e){
+  if(!e || !WEBAPP_URL) return;
+  flushSave();
+  var prof = e.profile = e.profile || {};
+  prof.merged_into = '';
+  stashPending(pkey(e), { merged_into: '' });
+  renderPanel(true);
+  postKind('profile', pkey(e), { merged_into: '' }, getPw(),
+    function(){ toast('Unmerged.'); },
+    function(err){ toast(err + ' Kept on screen, reopen to retry.'); });
 }
 function saveCloseLists(e){
   var prof = e.profile || {};
@@ -2278,6 +2351,9 @@ function bind(){
     }
     var ah = e.target.closest('.naddhit');
     if(ah && ah.getAttribute('data-ai')){ addClose(D.directory[S.sel], parseInt(ah.getAttribute('data-ai'), 10)); return; }
+    if(ah && ah.getAttribute('data-mh')){ doMerge(D.directory[S.sel], ah.getAttribute('data-mh')); return; }
+    var um = e.target.closest('[data-act="unmerge"]');
+    if(um){ doUnmerge(D.directory[S.sel]); return; }
     var tc = e.target.closest('.tchip');
     if(tc){ tc.classList.toggle('on'); syncTagHidden(tc.closest('.tchips')); markDirty(); }
   });
@@ -2298,6 +2374,7 @@ function bind(){
   });
   rb.addEventListener('input', function(e){
     if(e.target.id === 'naddinput'){ renderNadd(e.target.value); return; }
+    if(e.target.id === 'mergeinput'){ mergeSearch(e.target.value); return; }
     if(e.target.closest('#cprows')){ syncConnPhases(); return; }
     if(e.target.closest('[data-pk]')) markDirty();
   });
