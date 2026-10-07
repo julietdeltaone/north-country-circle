@@ -88,6 +88,8 @@ var IC = {
   settings:'<path d="M4 6h9.8M18.2 6H20M4 12h3.8M12.2 12H20M4 18h8.8M17.2 18H20"/><circle cx="16" cy="6" r="2.2"/><circle cx="10" cy="12" r="2.2"/><circle cx="15" cy="18" r="2.2"/>',
   filter:'<path d="M3 5h18l-7 8v6l-4 2v-8z"/>',
   back:'<path d="m15 18-6-6 6-6"/>',
+  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+  redo:'<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
   chev:'<path d="m6 9 6 6 6-6"/>',
   expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
   shrink:'<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>',
@@ -492,7 +494,7 @@ function lvl1View(e){
     var m = String(prof.enriched_value).match(/^(\d{1,3})\s*[—–-]/);
     if(m) score = '<span class="score" title="Assessment score">' + ic('star', 11) + ' ' + m[1] + '/100</span>';
   }
-  var ratings = card('activity', 'Ratings', 1, traits, score);
+  var ratings = card('activity', 'Ratings', 1, traits + readHTML(prof), score);
 
   var bg = '';
   if(prof.specialty) bg += '<div class="idrow"><span class="idic">' + ic('zap', 15) + '</span><div><span>Specialty</span><b>' + esc(prof.specialty) + '</b></div></div>';
@@ -852,8 +854,69 @@ function toggleAudit(){
   setAudit(((e.profile || {}).audit === 'audited') ? 'needs_audit' : 'audited');
 }
 
+/* ---------- predictive profile read ---------- */
+var READ_DIMS = [
+  { k:'presence', label:'Presence', traits:['charisma','reputation','assertiveness'] },
+  { k:'trust', label:'Trust', traits:['reliability','closeness','competence'] },
+  { k:'depth', label:'Depth', traits:['intellect','creativity'] },
+  { k:'edge', label:'Edge', traits:['ego','assertiveness'] }
+];
+var READ_COPY = {
+  presence:{ hi:'Magnetic in a room — people orient toward them.', lo:'quiet footprint, easy to overlook and often underestimated' },
+  trust:{ hi:'Someone you can count on — follow-through is the norm.', lo:'unproven follow-through — enjoy, but verify' },
+  depth:{ hi:'Real inner life — conversations go somewhere.', lo:'surface signal so far — untested past first impressions' },
+  edge:{ hi:'Strong-willed — directness lands better than hints.', lo:'easygoing — unlikely to push back, even when they should' }
+};
+function profileRead(prof){
+  var dims = READ_DIMS.map(function(d){
+    var vals = d.traits.map(function(t){ var v = parseFloat(prof[t]); return isNaN(v) ? null : v; })
+      .filter(function(v){ return v !== null; });
+    if(!vals.length) return { k:d.k, label:d.label, score:null };
+    return { k:d.k, label:d.label, score:Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100) };
+  });
+  var scored = dims.filter(function(d){ return d.score !== null; });
+  if(scored.length < 2) return null;
+  var srt = scored.slice().sort(function(a, b){ return b.score - a.score; });
+  return { dims:dims, top:srt[0], low:srt[srt.length - 1] };
+}
+function readHTML(prof){
+  var r = profileRead(prof);
+  if(!r) return '';
+  var bars = r.dims.map(function(d){
+    return '<div class="pr-dim"><span>' + d.label + '</span><div class="pr-bar"><i style="width:' +
+      (d.score === null ? 0 : d.score) + '%"></i></div><em>' + (d.score === null ? '—' : d.score) + '</em></div>';
+  }).join('');
+  var inf = READ_COPY[r.top.k].hi;
+  if(r.low.k !== r.top.k && r.low.score !== null && r.low.score < 45) inf += ' Watch — ' + READ_COPY[r.low.k].lo + '.';
+  return '<div class="pread"><div class="pr-title">Profile read</div>' + bars + '<p class="pr-inf">' + esc(inf) + '</p></div>';
+}
+
 /* ---------- audit dashboard ---------- */
-var AUD = { open:false, q:'', f:'needs', sort:'missing' };
+var AUD = { open:false, q:'', f:'needs', sort:'missing', sel:{}, rows:[], undoStack:[], redoStack:[] };
+var BIZ_RE = /\b(llc|inc|corp|co\.|company|church|bakery|grill|cantina|pizza|caf[eé]|studio|salon|barber|tattoo|photo|productions|realty|motors|auto|plumbing|electric|construction|landscap|farm|market|deli|pub|brewery|winery|hotel|motel|insurance|dental|clinic|school|university|college|ntc|cfc|ministr)\b/i;
+var ADDR_RE = /\d+\s+[A-Za-z.]+\s+(st|street|ave|avenue|rd|road|blvd|ln|lane|dr|drive)\b|\bNY\b\s*\d{5}|\b\d{5}\b/;
+function isBusiness(e){
+  var t = (String(e.display || '') + ' ' + String(e.name || '')).trim();
+  return BIZ_RE.test(t) || ADDR_RE.test(t);
+}
+function titleCase(s){
+  return String(s).replace(/[\w'’]+/g, function(w){ return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); });
+}
+function auName(e){
+  var prof = e.profile || {};
+  var raw = String(e.display || prof.display_name || '').trim();
+  var handle = String(e.name || '').trim();
+  var biz = isBusiness(e);
+  if(raw && !biz) return { name:raw, business:false, handle:handle };
+  var nm = raw;
+  if(!nm){
+    var clean = handle.replace(/^_+|_+$/g, '');
+    var parts = clean.split(/[._\-]+/).filter(function(p){ return p && !/^\d+$/.test(p); });
+    if(parts.length) nm = titleCase(parts.join(' '));
+  }
+  if(!nm) nm = handle || 'Unknown';
+  return { name:nm, business:biz, handle:handle };
+}
 function auditStats(e){
   var prof = e.profile || {};
   var hasR = L1_SCORES.some(function(k){ return prof[k] != null && prof[k] !== ''; });
@@ -864,7 +927,7 @@ function auditStats(e){
   return { hasR:hasR, hasB:hasB, hasC:hasC, audited:audited, missing:missing, score:4 - missing };
 }
 function openAudit(){
-  AUD.open = true;
+  AUD.open = true; AUD.sel = {};
   $('#auditscreen').hidden = false;
   $('#auq').value = AUD.q;
   renderAudit();
@@ -873,13 +936,89 @@ function closeAudit(){
   AUD.open = false;
   $('#auditscreen').hidden = true;
 }
+function pushUndo(entry){
+  AUD.undoStack.push(entry);
+  if(AUD.undoStack.length > 30) AUD.undoStack.shift();
+  AUD.redoStack = [];
+  updateUndoBtns();
+}
+function updateUndoBtns(){
+  var u = $('#auundo'), r = $('#auredo');
+  if(u) u.disabled = !AUD.undoStack.length;
+  if(r) r.disabled = !AUD.redoStack.length;
+}
+function applyEntry(entry, toPrev, done){
+  var items = entry.items, pending = items.length;
+  if(!pending){ if(done) done(); return; }
+  items.forEach(function(it){
+    var e = D.directory[it.di];
+    if(!e || !WEBAPP_URL){ pending--; if(!pending) fin(); return; }
+    var val = toPrev ? it.prev : it.next;
+    var back = toPrev ? it.next : it.prev;
+    e.profile = e.profile || {};
+    if(entry.postKey === 'audit') e.profile.audit = val; else e.profile.deleted = val;
+    var data = {}; data[entry.postKey] = val;
+    postKind('profile', pkey(e), data, getPw(), function(){ pending--; if(!pending) fin(); },
+      function(err){
+        if(entry.postKey === 'audit') e.profile.audit = back; else e.profile.deleted = back;
+        toast('A change failed: ' + err);
+        pending--; if(!pending) fin();
+      });
+  });
+  function fin(){ renderAudit(); refresh(); if(done) done(); }
+}
+function doUndo(){
+  var en = AUD.undoStack.pop();
+  if(!en){ toast('Nothing to undo.'); return; }
+  updateUndoBtns();
+  applyEntry(en, true, function(){ AUD.redoStack.push(en); updateUndoBtns(); });
+}
+function doRedo(){
+  var en = AUD.redoStack.pop();
+  if(!en){ toast('Nothing to redo.'); return; }
+  updateUndoBtns();
+  applyEntry(en, false, function(){ AUD.undoStack.push(en); updateUndoBtns(); });
+}
 function setAuditFor(di, next){
   var e = D.directory[di]; if(!e) return;
   if(!WEBAPP_URL){ toast('Editing is not set up: the web app URL is missing.'); return; }
-  e.profile = e.profile || {}; e.profile.audit = next;
-  postKind('profile', pkey(e), { audit:next }, getPw(),
-    function(){ renderAudit(); refresh(); },
-    function(err){ toast(err + ' Tap again to retry.'); });
+  var prev = (e.profile || {}).audit || '';
+  if(prev === next) return;
+  var entry = { postKey:'audit', items:[{ di:di, prev:prev, next:next }] };
+  pushUndo(entry);
+  applyEntry(entry, false);
+}
+function bulkAudit(next){
+  var dis = Object.keys(AUD.sel).map(Number).filter(function(di){
+    var e = D.directory[di];
+    return e && (e.profile || {}).deleted !== '1' && ((e.profile || {}).audit || '') !== next;
+  });
+  if(!dis.length){ toast('Nothing to update.'); return; }
+  var entry = { postKey:'audit', items:dis.map(function(di){
+    return { di:di, prev:(D.directory[di].profile || {}).audit || '', next:next };
+  }) };
+  AUD.sel = {};
+  pushUndo(entry);
+  applyEntry(entry, false, function(){ toast(dis.length + ' updated.'); });
+}
+function bulkDelete(){
+  var dis = Object.keys(AUD.sel).map(Number).filter(function(di){
+    var e = D.directory[di];
+    return e && (e.profile || {}).deleted !== '1';
+  });
+  if(!dis.length) return;
+  if(!confirm('Delete ' + dis.length + ' from the circle?\n\nThey will be hidden from the directory and the map. You can undo this.')) return;
+  var entry = { postKey:'deleted', items:dis.map(function(di){
+    return { di:di, prev:(D.directory[di].profile || {}).deleted || '', next:'1' };
+  }) };
+  AUD.sel = {};
+  pushUndo(entry);
+  applyEntry(entry, false, function(){ toast(dis.length + ' deleted.'); });
+}
+function auSetFilter(f){
+  AUD.f = f;
+  $$('#aufilters button').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-f') === f); });
+  renderAudit();
 }
 function renderAudit(){
   var q = AUD.q.trim().toLowerCase();
@@ -887,41 +1026,68 @@ function renderAudit(){
   D.directory.forEach(function(e, di){
     if((e.profile || {}).deleted === '1') return;
     var st = auditStats(e);
+    var an = auName(e);
     var pass = true;
     if(AUD.f === 'needs') pass = st.missing > 0;
     else if(AUD.f === 'audit') pass = !st.audited;
     else if(AUD.f === 'ratings') pass = !st.hasR;
     else if(AUD.f === 'background') pass = !st.hasB;
     else if(AUD.f === 'connection') pass = !st.hasC;
+    else if(AUD.f === 'business') pass = an.business;
     if(!pass) return;
     if(q){
-      var hay = (dispName(e) + ' ' + (e.name || '') + ' ' + ((e.profile || {}).display_name || '')).toLowerCase();
+      var hay = (an.name + ' ' + an.handle + ' ' + ((e.profile || {}).display_name || '')).toLowerCase();
       if(hay.indexOf(q) < 0) return;
     }
-    rows.push({ di:di, e:e, st:st, name:dispName(e) });
+    rows.push({ di:di, e:e, st:st, an:an });
   });
   rows.sort(function(a, b){
-    if(AUD.sort === 'name') return a.name.localeCompare(b.name);
-    if(AUD.sort === 'complete') return b.st.score - a.st.score || a.name.localeCompare(b.name);
-    return a.st.score - b.st.score || a.name.localeCompare(b.name);
+    if(AUD.sort === 'name') return a.an.name.localeCompare(b.an.name);
+    if(AUD.sort === 'complete') return b.st.score - a.st.score || a.an.name.localeCompare(b.an.name);
+    return a.st.score - b.st.score || a.an.name.localeCompare(b.an.name);
   });
-  var nA = 0, nR = 0, nB = 0, nC = 0;
+  AUD.rows = rows;
+  var nA = 0, nR = 0, nB = 0, nC = 0, nBiz = 0;
   D.directory.forEach(function(e){
     if((e.profile || {}).deleted === '1') return;
     var st = auditStats(e);
     if(!st.audited) nA++; if(!st.hasR) nR++; if(!st.hasB) nB++; if(!st.hasC) nC++;
+    if(isBusiness(e)) nBiz++;
   });
-  $('#aucount').textContent = rows.length + ' shown · ' + nA + ' need audit · ' + nR + ' need ratings · ' + nB + ' need background · ' + nC + ' need connection';
+  $('#aushown').textContent = rows.length + ' shown';
+  function stat(f, label, n){
+    return '<button class="austat' + (AUD.f === f ? ' on' : '') + '" data-f="' + f + '"><b>' + n + '</b><span>' + label + '</span></button>';
+  }
+  $('#austats').innerHTML = stat('audit', 'Need audit', nA) + stat('ratings', 'Need ratings', nR) +
+    stat('background', 'Need background', nB) + stat('connection', 'Need connection', nC) + stat('business', 'Businesses', nBiz);
   function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
   $('#aubody').innerHTML = rows.map(function(r){
-    var ini = (r.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
-    var handle = (r.e.src === 'contacts' || r.e.src === 'subject') ? '' : '@' + (r.e.name || '');
-    return '<div class="aurow" data-di="' + r.di + '"><span class="auava">' + esc(ini) + '</span>' +
-      '<span class="aumain"><span class="auname">' + esc(r.name) + (handle ? '<i>' + esc(handle) + '</i>' : '') + '</span>' +
+    var ini = (r.an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
+    var hd = (r.e.src === 'contacts' || r.e.src === 'subject') ? '' : r.an.handle.replace(/^@/, '');
+    var sel = AUD.sel[r.di] ? ' checked' : '';
+    return '<div class="aurow" data-di="' + r.di + '">' +
+      '<input type="checkbox" class="ausel" data-di="' + r.di + '"' + sel + ' aria-label="Select">' +
+      '<span class="auava">' + esc(ini) + '</span>' +
+      '<span class="aumain"><span class="auname">' + esc(r.an.name) +
+        (r.an.business ? '<em class="aubiz">Business</em>' : '') +
+        (hd ? '<i>@' + esc(hd) + '</i>' : '') + '</span>' +
       '<span class="auneeds">' + pill(r.st.hasR, 'Ratings') + pill(r.st.hasB, 'Background') + pill(r.st.hasC, 'Connection') + pill(r.st.audited, 'Audited') + '</span></span>' +
       '<span class="aubar" title="' + r.st.score + ' of 4 complete"><i style="width:' + (r.st.score * 25) + '%"></i></span>' +
       '<span class="aubtn"><button class="mini" data-auact="' + (r.st.audited ? 'unaudit' : 'audit') + '">' + (r.st.audited ? 'Reopen' : 'Mark audited') + '</button></span></div>';
   }).join('') || '<p class="dim" style="padding:20px">Nobody matches this filter.</p>';
+  renderBulk();
+  updateUndoBtns();
+}
+function renderBulk(){
+  var n = Object.keys(AUD.sel).length;
+  var bb = $('#aubulk');
+  if(!n){ bb.hidden = true; return; }
+  bb.hidden = false;
+  bb.innerHTML = '<span><b>' + n + '</b> selected</span>' +
+    '<button class="mini" data-bulk="audit">Mark audited</button>' +
+    '<button class="mini" data-bulk="unaudit">Reopen</button>' +
+    '<button class="mini danger" data-bulk="delete">Delete</button>' +
+    '<button class="mini neutral" data-bulk="clear">Clear</button>';
 }
 
 function deletePerson(){
@@ -1888,16 +2054,40 @@ function bind(){
   });
   $('#auditpill').addEventListener('click', openAudit);
   $('#auditback').addEventListener('click', closeAudit);
+  $('#auundo').addEventListener('click', doUndo);
+  $('#auredo').addEventListener('click', doRedo);
   $('#aufilters').addEventListener('click', function(ev){
     var b = ev.target.closest('button'); if(!b) return;
-    AUD.f = b.getAttribute('data-f');
-    $$('#aufilters button').forEach(function(x){ x.classList.toggle('on', x === b); });
+    auSetFilter(b.getAttribute('data-f'));
+  });
+  $('#austats').addEventListener('click', function(ev){
+    var b = ev.target.closest('.austat'); if(!b) return;
+    auSetFilter(b.getAttribute('data-f'));
+  });
+  $('#auselall').addEventListener('click', function(){
+    var all = AUD.rows.length && AUD.rows.every(function(r){ return AUD.sel[r.di]; });
+    if(all) AUD.sel = {}; else AUD.rows.forEach(function(r){ AUD.sel[r.di] = 1; });
     renderAudit();
+  });
+  $('#aubulk').addEventListener('click', function(ev){
+    var b = ev.target.closest('[data-bulk]'); if(!b) return;
+    var k = b.getAttribute('data-bulk');
+    if(k === 'audit') bulkAudit('audited');
+    else if(k === 'unaudit') bulkAudit('needs_audit');
+    else if(k === 'delete') bulkDelete();
+    else if(k === 'clear'){ AUD.sel = {}; renderAudit(); }
   });
   $('#ausort').addEventListener('change', function(ev){ AUD.sort = ev.target.value; renderAudit(); });
   var _audt = null;
   $('#auq').addEventListener('input', function(ev){ clearTimeout(_audt); _audt = setTimeout(function(){ AUD.q = ev.target.value; renderAudit(); }, 200); });
+  $('#aubody').addEventListener('change', function(ev){
+    var cb = ev.target.closest('.ausel'); if(!cb) return;
+    var di = parseInt(cb.getAttribute('data-di'), 10);
+    if(cb.checked) AUD.sel[di] = 1; else delete AUD.sel[di];
+    renderBulk();
+  });
   $('#aubody').addEventListener('click', function(ev){
+    if(ev.target.classList && ev.target.classList.contains('ausel')) return;
     var ab = ev.target.closest('[data-auact]');
     if(ab){
       ev.stopPropagation();
@@ -2001,6 +2191,14 @@ function stepSel(d){
   openPerson(rows[cur < 0 ? 0 : Math.max(0, Math.min(rows.length - 1, cur + d))], { lvl:S.lvl });
 }
 function onKey(e){
+  if(AUD.open){
+    if((e.metaKey || e.ctrlKey) && !e.altKey){
+      var kz = String(e.key || '').toLowerCase();
+      if(kz === 'z' && !typing()){ e.preventDefault(); if(e.shiftKey) doRedo(); else doUndo(); return; }
+      if(kz === 'y' && !typing()){ e.preventDefault(); doRedo(); return; }
+    }
+    return;
+  }
   if(e.key === 'Escape'){
     if(AUD.open){ closeAudit(); return; }
     if($('#modal')){ closeModal(); return; }
