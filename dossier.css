@@ -278,7 +278,9 @@ body.panelwide{--pw:clamp(640px,58vw,920px)}
 
 /* stage inside panel */
 .lvstage{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
-.lvl{display:none;padding:14px 16px 28px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px;align-items:start}
+.lvl{display:none;padding:14px 16px 28px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;align-items:start}
+.doc.edit .lvl{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.doc.edit .card{margin:0;min-width:0;overflow:hidden}
 .lvl.on{display:grid;animation:lvlIn .3s var(--ease)}
 .lvl[data-l="1"]{--lc:var(--l1)}
 .lvl[data-l="2"]{--lc:var(--l2)}
@@ -554,6 +556,9 @@ button.vchip:hover{background:color-mix(in srgb,var(--c) 20%,transparent)}
 .mb select option{background:#141a25}
 .mb textarea{resize:vertical;line-height:1.5}
 .mb .two{display:flex;gap:8px}
+.doc.edit .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.doc.edit .two .irow{margin-bottom:0}
+.doc.edit .two .ilab{width:70px}
 .mb .two select{width:auto;flex:none}
 .setrow{display:flex;align-items:flex-start;gap:10px;cursor:pointer;background:rgba(255,255,255,.03);border:1px solid var(--line-soft);
   border-radius:10px;padding:10px 12px;margin-bottom:14px;font-weight:700;font-size:13px}
