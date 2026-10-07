@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dossier.css?v=6e0eb990c0">
+<link rel="stylesheet" href="dossier.css?v=4c3b4f2086">
 </head>
 <body>
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -103,6 +103,31 @@
   <div id="rightbody"></div>
 </aside>
 
-<script src="dossier.js?v=0ae9ffeac9"></script>
+<!-- ============ audit dashboard ============ -->
+<div id="auditscreen" hidden>
+  <div class="au-head glass">
+    <button id="auditback" class="ibtn" title="Back to dossier (Esc)" aria-label="Back"><i data-ic="back" data-s="18"></i></button>
+    <div class="au-title"><h2>Audit dashboard</h2><small id="aucount"></small></div>
+    <label class="tsearch" role="search"><i data-ic="search" data-s="16"></i><input id="auq" type="search" placeholder="Search people…" autocomplete="off" aria-label="Search people"></label>
+  </div>
+  <div class="au-tools">
+    <div id="aufilters" class="seg" role="group" aria-label="Filter">
+      <button data-f="needs" class="on">Needs attention</button>
+      <button data-f="audit">Needs audit</button>
+      <button data-f="ratings">Needs ratings</button>
+      <button data-f="background">Needs background</button>
+      <button data-f="connection">Needs connection</button>
+      <button data-f="all">Everyone</button>
+    </div>
+    <select id="ausort" aria-label="Sort">
+      <option value="missing">Least complete first</option>
+      <option value="complete">Most complete first</option>
+      <option value="name">A to Z</option>
+    </select>
+  </div>
+  <div id="aubody"></div>
+</div>
+
+<script src="dossier.js?v=dbb3713ba8"></script>
 </body>
 </html>
