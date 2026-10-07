@@ -102,6 +102,8 @@ i[data-ic]{display:inline-flex;font-style:normal}
 /* ---------- top bar ---------- */
 #topbar{position:fixed;top:var(--gap);left:var(--gap);right:var(--gap);height:var(--top);z-index:30;
   display:flex;align-items:center;gap:14px;padding:0 14px;border-radius:16px}
+.navbtns{display:flex;align-items:center;gap:2px;margin-left:4px;padding-left:8px;border-left:1px solid var(--line-soft)}
+.navbtns .ibtn.dim{opacity:.3;pointer-events:none}
 .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:none}
 .brand-mark{color:var(--txt);display:flex}
 .brand-text h1{font-family:var(--disp);font-weight:700;font-size:18px;margin:0;line-height:1.1;letter-spacing:-.01em;white-space:nowrap}
