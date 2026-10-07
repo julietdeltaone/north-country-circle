@@ -854,41 +854,101 @@ function toggleAudit(){
   setAudit(((e.profile || {}).audit === 'audited') ? 'needs_audit' : 'audited');
 }
 
-/* ---------- predictive profile read ---------- */
-var READ_DIMS = [
-  { k:'presence', label:'Presence', traits:['charisma','reputation','assertiveness'] },
-  { k:'trust', label:'Trust', traits:['reliability','closeness','competence'] },
-  { k:'depth', label:'Depth', traits:['intellect','creativity'] },
-  { k:'edge', label:'Edge', traits:['ego','assertiveness'] }
+/* ---------- predictive profile read (ultra-granular) ---------- */
+var READ_CORE = [
+  { k:'presence', label:'Presence', desc:'Commands attention when they walk in.',
+    traits:['charisma','reputation','assertiveness'],
+    hi:'Magnetic in a room \u2014 people orient toward them.', lo:'Quiet footprint \u2014 easy to overlook, often underestimated.' },
+  { k:'trust', label:'Trust', desc:'You can hand them something important.',
+    traits:['reliability','closeness','competence'],
+    hi:'Someone you can count on \u2014 follow-through is the norm.', lo:'Unproven \u2014 enjoy, but verify.' },
+  { k:'depth', label:'Depth', desc:'Conversations go somewhere real.',
+    traits:['intellect','creativity'],
+    hi:'Real inner life \u2014 conversations go somewhere.', lo:'Surface signal so far \u2014 untested past first impressions.' },
+  { k:'edge', label:'Edge', desc:'Pushes their own agenda, for better or worse.',
+    traits:['ego','assertiveness'],
+    hi:'Strong-willed \u2014 directness lands better than hints.', lo:'Easygoing \u2014 unlikely to push back, even when they should.' }
 ];
-var READ_COPY = {
-  presence:{ hi:'Magnetic in a room — people orient toward them.', lo:'quiet footprint, easy to overlook and often underestimated' },
-  trust:{ hi:'Someone you can count on — follow-through is the norm.', lo:'unproven follow-through — enjoy, but verify' },
-  depth:{ hi:'Real inner life — conversations go somewhere.', lo:'surface signal so far — untested past first impressions' },
-  edge:{ hi:'Strong-willed — directness lands better than hints.', lo:'easygoing — unlikely to push back, even when they should' }
-};
-function profileRead(prof){
-  var dims = READ_DIMS.map(function(d){
-    var vals = d.traits.map(function(t){ var v = parseFloat(prof[t]); return isNaN(v) ? null : v; })
-      .filter(function(v){ return v !== null; });
-    if(!vals.length) return { k:d.k, label:d.label, score:null };
-    return { k:d.k, label:d.label, score:Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100) };
+var READ_FX = [
+  { k:'flake', label:'Flake Risk', desc:'Chance they disappear when it counts.',
+    parts:[['ego',1],['reliability',-1],['closeness',-1]],
+    hi:'May vanish when it counts \u2014 don\u2019t build plans on them.', lo:'Shows up when it matters.' },
+  { k:'surface', label:'Surface Charm', desc:'Sparkle without substance.',
+    parts:[['charisma',1],['intellect',-1]],
+    hi:'All sparkle, no substance \u2014 keep expectations shallow.', lo:'What you see is roughly what\u2019s there.' },
+  { k:'qdrive', label:'Quiet Drive', desc:'Moves things forward without needing credit.',
+    parts:[['assertiveness',1],['ego',-1]],
+    hi:'Gets things done without needing the credit.', lo:'Needs a visible incentive to act.' },
+  { k:'under', label:'Underrated', desc:'Better than people think.',
+    parts:[['competence',1],['reputation',-1]],
+    hi:'Better than their reputation suggests \u2014 look closer.', lo:'Reputation matches the reality.' },
+  { k:'over', label:'Overrated', desc:'Coasting on name recognition.',
+    parts:[['reputation',1],['competence',-1]],
+    hi:'Coasting on name recognition \u2014 verify before trusting.', lo:'No hype gap \u2014 standing is earned.' },
+  { k:'intensity', label:'Intensity', desc:'How heavy the relationship feels.',
+    parts:[['closeness',1],['assertiveness',1]],
+    hi:'The relationship runs heavy \u2014 set the pace deliberately.', lo:'Light touch \u2014 easy to keep at arm\u2019s length.' },
+  { k:'like', label:'Likability', desc:'How easy they are to be around.',
+    parts:[['charisma',1],['closeness',1],['reliability',1]],
+    hi:'Easy to be around \u2014 rooms warm up to them.', lo:'An acquired taste \u2014 don\u2019t force it.' },
+  { k:'follow', label:'Follow-through', desc:'Finishes what they start.',
+    parts:[['reliability',1],['competence',1]],
+    hi:'Finishes what they start.', lo:'Starts more than they finish.' },
+  { k:'vol', label:'Volatility', desc:'Expect unpredictability.',
+    parts:[['ego',1],['assertiveness',1],['reliability',-1]],
+    hi:'Unpredictable \u2014 plan buffers.', lo:'Steady \u2014 few surprises.' }
+];
+var READ_TRAITS = ['closeness','charisma','competence','intellect','creativity','reliability','reputation','assertiveness','ego'];
+function metricScore(prof, parts){
+  var vals = [];
+  parts.forEach(function(p){
+    var v = parseFloat(prof[p[0]]);
+    if(isNaN(v)) return;
+    vals.push(p[1] < 0 ? 6 - v : v);
   });
-  var scored = dims.filter(function(d){ return d.score !== null; });
-  if(scored.length < 2) return null;
-  var srt = scored.slice().sort(function(a, b){ return b.score - a.score; });
-  return { dims:dims, top:srt[0], low:srt[srt.length - 1] };
+  if(!vals.length) return null;
+  return Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100);
+}
+function profileRead(prof){
+  function mk(d, group){
+    var parts = d.traits ? d.traits.map(function(t){ return [t, 1]; }) : d.parts;
+    return { k:d.k, label:d.label, desc:d.desc, group:group, score:metricScore(prof, parts), hi:d.hi, lo:d.lo };
+  }
+  var core = READ_CORE.map(function(d){ return mk(d, 'core'); });
+  var fx = READ_FX.map(function(d){ return mk(d, 'fx'); });
+  var rated = READ_TRAITS.filter(function(t){ return !isNaN(parseFloat(prof[t])); }).length;
+  var signal = Math.round(rated / READ_TRAITS.length * 100);
+  var scoredCore = core.filter(function(m){ return m.score !== null; });
+  if(scoredCore.length < 2) return null;
+  var top = scoredCore.slice().sort(function(a, b){ return b.score - a.score; })[0];
+  var ext = null, extDev = 0;
+  fx.forEach(function(m){
+    if(m.score === null) return;
+    var dev = Math.abs(m.score - 50);
+    if(dev > extDev){ extDev = dev; ext = m; }
+  });
+  var inf = top.score >= 50 ? top.hi : top.lo;
+  if(ext && extDev >= 15) inf += ' ' + (ext.score >= 60 ? ext.hi : ext.lo);
+  return { core:core, fx:fx, signal:signal, rated:rated, inference:inf };
 }
 function readHTML(prof){
   var r = profileRead(prof);
   if(!r) return '';
-  var bars = r.dims.map(function(d){
-    return '<div class="pr-dim"><span>' + d.label + '</span><div class="pr-bar"><i style="width:' +
-      (d.score === null ? 0 : d.score) + '%"></i></div><em>' + (d.score === null ? '—' : d.score) + '</em></div>';
-  }).join('');
-  var inf = READ_COPY[r.top.k].hi;
-  if(r.low.k !== r.top.k && r.low.score !== null && r.low.score < 45) inf += ' Watch — ' + READ_COPY[r.low.k].lo + '.';
-  return '<div class="pread"><div class="pr-title">Profile read</div>' + bars + '<p class="pr-inf">' + esc(inf) + '</p></div>';
+  function rows(list){
+    return list.map(function(m){
+      if(m.score === null) return '';
+      return '<div class="pr-dim"><span>' + m.label + '</span><div class="pr-bar"><i style="width:' + m.score +
+        '%"></i></div><em>' + m.score + '</em></div><div class="pr-desc">' + esc(m.desc) + '</div>';
+    }).join('');
+  }
+  var fxRows = rows(r.fx);
+  return '<div class="pread"><div class="pr-title">Profile read</div>' +
+    '<div class="pr-group">Core</div>' + rows(r.core) +
+    (fxRows ? '<div class="pr-group">Interactions</div>' + fxRows : '') +
+    '<div class="pr-group">Signal</div>' +
+    '<div class="pr-dim"><span>Data</span><div class="pr-bar"><i style="width:' + r.signal + '%"></i></div><em>' + r.rated + '/9</em></div>' +
+    '<div class="pr-desc">' + (r.rated >= 7 ? 'Solid file \u2014 this read carries weight.' : r.rated >= 4 ? 'Partial file \u2014 directionally useful.' : 'Thin file \u2014 treat as a sketch.') + '</div>' +
+    '<p class="pr-inf">' + esc(r.inference) + '</p></div>';
 }
 
 /* ---------- audit dashboard ---------- */
