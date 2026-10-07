@@ -481,7 +481,6 @@ function lvl1View(e){
     String(phones).split(',').map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join('') + '</div></div>';
   if(emails) rows += '<div class="idrow"><span class="idic">' + ic('mail', 15) + '</span><div><span>Email</span>' +
     String(emails).split(',').map(function(x){ x = x.trim(); return '<a href="mailto:' + esc(x) + '">' + esc(x) + '</a>'; }).join('') + '</div></div>';
-  if(e.detail) rows += '<div class="idrow"><span class="idic">' + ic('file', 15) + '</span><div><b>' + esc(e.detail) + '</b></div></div>';
   var contact = card('user', 'Contact', 1, rows || emptyBox('No contact details yet.', 'Add details', 1));
 
   var anyScore = L1_SCORES.some(function(k){ return prof[k]; });
@@ -1875,6 +1874,9 @@ function buildGL(){
   var controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; controls.dampingFactor = 0.06;
   controls.minDistance = 14; controls.maxDistance = 1000;
+  controls.autoRotateSpeed = 0.25;
+  controls.addEventListener('start', function(){ if(GL) GL.userHold = true; });
+  controls.addEventListener('end', function(){ if(GL) GL.userHold = false; });
 
   scene.add(new THREE.Mesh(new THREE.SphereGeometry(4.6, 28, 28), new THREE.MeshBasicMaterial({ color:0xf4efe6 })));
   scene.add(makeGlow(0xf4efe6, 30));
@@ -1919,7 +1921,7 @@ function buildGL(){
     scene.add(bg);
   }
 
-  GL = { renderer:renderer, scene:scene, camera:camera, controls:controls, points:points, mat:mat, bg:bg, glPos:glPos, colArr:colArr,
+  GL = { renderer:renderer, scene:scene, camera:camera, controls:controls, points:points, mat:mat, bg:bg, glPos:glPos, colArr:colArr, userHold:false,
     flight:null, focusGroup:null, focusDi:-1, nbrGeo:new THREE.SphereGeometry(1.7, 16, 16),
     ray:new THREE.Raycaster(), downX:0, downY:0, hoverLabel:null, hoverDi:-1 };
   GL.ray.params.Points = { threshold:4.5 };
@@ -1947,6 +1949,7 @@ function buildGL(){
       GL.controls.target.copy(f.t0.clone().lerp(f.t2, e2));
       if(t >= 1) GL.flight = null;
     }
+    GL.controls.autoRotate = !GL.flight && !GL.userHold && !(GL.hoverDi != null && GL.hoverDi >= 0) && S.sel === null;
     GL.controls.update();
     if(GL.focusGroup){
       var _cd = GL.camera.position.clone().sub(GL.controls.target);
