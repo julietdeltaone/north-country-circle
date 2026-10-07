@@ -571,6 +571,7 @@ function reviewBadge(e){
 function phead(e){
   var prof = e.profile || {}, pl = personLevel(e), col = LV[pl].c, aud = prof.audit === 'audited';
   var prev = S.hist.length ? D.directory[S.hist[S.hist.length - 1]] : null;
+  var auditBack = AUD.fromAudit ? '<button class="ibtn" data-act="backaudit" title="Back to the audit list">' + ic('back', 15) + '<span>Audit</span></button>' : '';
   var back = prev ? '<button class="ibtn" data-act="back" title="Back to ' + esc(dispName(prev)) + ' (Alt+←)" aria-label="Back">' + ic('back', 17) + '</button>' : '';
   var edit = S.editing
     ? '<button class="ibtn solid" data-act="done" title="Finish editing (Esc)">' + ic('check', 16) + '<span>Done</span></button>'
@@ -593,7 +594,7 @@ function phead(e){
     '<button data-act="export">' + ic('download', 16) + 'Export dossier</button>' +
     '<button data-act="viewdoc">' + ic('book', 16) + 'View dossier</button>' +
     '<button data-act="delete" class="danger">' + ic('trash', 16) + 'Delete this person</button></div></div>';
-  return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + back +
+  return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + auditBack + back +
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
     '<div class="hname"><h2 title="' + esc(dispName(e)) + '">' + esc(dispName(e)) + '</h2>' +
     '<div class="hsub"><span>' + esc(subLine(e)) + '</span>' + rel +
@@ -1023,6 +1024,7 @@ function markSel(){
 function openPerson(idx, o){
   o = o || {};
   if(idx == null || !D.directory[idx]) return;
+  if(!o.fromAuditKeep) AUD.fromAudit = false;
   if(o.push && S.sel !== null && S.sel !== idx){ S.hist.push(S.sel); S.fwd = []; }
   else if(!o.keepHist){ S.hist = []; S.fwd = []; }
   syncNavBtns();
@@ -1093,6 +1095,7 @@ function act(a, el){
   switch(a){
     case 'close': closePanel(); break;
     case 'back': goBack(); break;
+    case 'backaudit': openAudit(); break;
     case 'edit': enterEdit(); break;
     case 'done': exitEdit(); break;
     case 'wide': S.wide = !S.wide; document.body.classList.toggle('panelwide', S.wide); rerender(); break;
@@ -1693,12 +1696,15 @@ function auditStats(e){
   return { hasR:hasR, hasB:hasB, hasC:hasC, audited:audited, missing:missing, score:4 - missing };
 }
 function openAudit(){
-  AUD.open = true; AUD.sel = {};
+  AUD.open = true;
   $('#auditscreen').hidden = false;
   $('#auq').value = AUD.q;
   renderAudit();
+  if(AUD.scroll) $('#aubody').scrollTop = AUD.scroll;
 }
 function closeAudit(){
+  var ab = $('#aubody');
+  if(ab) AUD.scroll = ab.scrollTop;
   AUD.open = false;
   $('#auditscreen').hidden = true;
 }
@@ -2647,7 +2653,7 @@ function bind(){
       return;
     }
     var row = ev.target.closest('.aurow');
-    if(row){ closeAudit(); openPerson(parseInt(row.getAttribute('data-di'), 10), { push:true, edit:true }); }
+    if(row){ AUD.fromAudit = true; closeAudit(); openPerson(parseInt(row.getAttribute('data-di'), 10), { push:true, edit:true, fromAuditKeep:true }); }
   });
   $('#listtoggle').addEventListener('click', toggleList);
   $('#settingsbtn').addEventListener('click', openSettings);
