@@ -1,6 +1,15 @@
 {
   "slug": "brietta-paladin",
   "name": "Brietta Paladin",
-  "events": [],
+  "events": [
+    {
+      "date": "2017-10-03",
+      "type": "note",
+      "summary": "Coordinated ride for Gabe and Bronwyn",
+      "detail": "Requested I give a ride to and from piano lessons at CFC Potsdam from their house on May Rd.",
+      "depth": "associate",
+      "init": "them"
+    }
+  ],
   "files": []
 }
