@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dossier.css?v=08df9df553">
+<link rel="stylesheet" href="dossier.css?v=10aec80ac8">
 </head>
 <body>
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -128,11 +128,14 @@
       <button data-f="background">Needs background</button>
       <button data-f="connection">Needs connection</button>
       <button data-f="business">Businesses</button>
+      <button data-f="name">Name review</button>
+      <button data-f="close">Likely close</button>
       <button data-f="all">Everyone</button>
     </div>
     <button id="auselall" class="mini neutral">Select all</button>
     <select id="ausort" aria-label="Sort">
       <option value="missing">Least complete first</option>
+      <option value="close">Closest first</option>
       <option value="complete">Most complete first</option>
       <option value="name">A to Z</option>
     </select>
@@ -141,6 +144,6 @@
   <div id="aubulk" class="au-bulk" hidden></div>
 </div>
 
-<script src="dossier.js?v=228e933041"></script>
+<script src="dossier.js?v=2f9b0bfbcd"></script>
 </body>
 </html>
