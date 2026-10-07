@@ -676,7 +676,13 @@ function dossierEdit(e){
   var l3 = card('folder', 'Files', 3, fRows + '<div class="arow"><button class="mini" data-act="newdoc" style="--c:' + LV[3].c + '">' + ic('plus', 13) + 'New Drive doc</button>' +
     '<button class="mini neutral" data-act="attach">' + ic('link', 13) + 'Attach existing link</button></div>', '', 'span');
 
-  var qfill = '<div class="qwrap"><div class="qfill"><input id="pfree" placeholder="Describe them in your own words — “friend from church, closeness 4, really charismatic”" autocomplete="off">' +
+  var qfill = '<div class="qwrap"><div class="synhead"><span class="synlabel">Synopsis</span>' +
+    '<button class="mini neutral" data-act="synguide">' + ic('help', 13) + 'Format guide</button></div>' +
+    '<div id="synguide" class="synguide" style="display:none"><b>How to write it:</b> plain speak or type, one topic per line. ' +
+    'Start lines with a label and colon \u2014 <b>Background:</b> who they are, <b>How we met:</b> the origin, ' +
+    '<b>Personality:</b> what they\u2019re like, <b>Notes:</b> anything else. ' +
+    'Auto-fill fixes grammar/spelling and applies this format; it won\u2019t touch your other fields.</div>' +
+    '<div class="qfill"><textarea id="pfree" data-pk="synopsis" rows="4" placeholder="Type or speak your synopsis here">' + esc((e.profile || {}).synopsis || '') + '</textarea>' +
     '<button class="mini neutral" data-act="fill">' + ic('sparkle', 13) + 'Auto-fill</button><span id="pfillmsg"></span></div></div>';
   return '<div class="doc edit">' + phead(e) + '<div class="lvstage">' + qfill +
     [1,2,3].map(function(n){ return '<div class="lvl' + (S.lvl === n ? ' on' : '') + '" data-l="' + n + '">' + (n === 1 ? l1 : n === 2 ? l2 : l3) + '</div>'; }).join('') +
@@ -785,6 +791,7 @@ function act(a, el){
     case 'fdel': delFile(parseInt(el.getAttribute('data-fi'), 10)); break;
     case 'enrich': runEnrich(); break;
     case 'fill': fillFromText(); break;
+    case 'synguide': var sg = $('#synguide'); if(sg) sg.style.display = sg.style.display === 'none' ? 'block' : 'none'; break;
     case 'nav': openPerson(parseInt(el.getAttribute('data-di'), 10), { push:true }); break;
     case 'rmnx': removeClose(e, el.getAttribute('data-u')); break;
     case 'tagfilter':
@@ -1348,16 +1355,19 @@ function removeClose(e, u){
 function fillFromText(){
   var ta = $('#pfree'), msg = $('#pfillmsg');
   var text = ta ? ta.value.trim() : '';
-  if(!text){ msg.textContent = 'Describe the person first.'; return; }
+  if(!text){ msg.textContent = 'Write your synopsis first.'; return; }
   if(!WEBAPP_URL){ msg.textContent = 'Web app URL is not set up.'; return; }
   var btn = $('[data-act="fill"]');
-  btn.disabled = true; msg.textContent = 'Reading…';
+  btn.disabled = true; msg.textContent = 'Cleaning up…';
   fetch(WEBAPP_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-    body:JSON.stringify({ password:getPw(), kind:'parseprofile', id:'parse', patch:{ text:text } }) })
+    body:JSON.stringify({ password:getPw(), kind:'cleansynopsis', id:'parse', patch:{ text:text } }) })
     .then(function(r){ return r.json(); }).then(function(res){
       btn.disabled = false;
-      if(res && res.ok && res.fields) applyParsed(res.fields, msg);
-      else msg.textContent = 'Could not read that: ' + ((res && res.error) || 'unknown');
+      if(res && res.ok && res.value){
+        ta.value = res.value; markDirty();
+        msg.textContent = 'Cleaned up. Review, then Done.';
+      }
+      else msg.textContent = 'Could not clean that: ' + ((res && res.error) || 'unknown');
     }).catch(function(){ btn.disabled = false; msg.textContent = 'Network error.'; });
 }
 function applyParsed(fields, msg){
