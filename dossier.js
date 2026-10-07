@@ -561,10 +561,12 @@ function timelineHTML(e){
 function lvl2View(e){
   var prof = e.profile || {}, fdb = e.friendsdb || {};
   var rel = [prof.relationship, prof.context].filter(Boolean).join(' · ');
+  var standing = prof.standing || fdb.standing, state = prof.state || fdb.state, traj = prof.trajectory || fdb.trajectory;
+  var yrs = prof.years_known || fdb.years_known;
   var conn = (rel ? '<div class="rel-line">' + ic('users', 15) + '<span>' + esc(rel.charAt(0).toUpperCase() + rel.slice(1)) + '</span></div>' : '') +
-    '<div class="tiles">' + tile('heart', prof.closeness ? prof.closeness + ' / 5' : '', 'Closeness') + tile('flag', fdb.standing, 'Standing') +
-    tile('activity', fdb.state, 'State') + tile('trend', fdb.trajectory, 'Trajectory') +
-    tile('clock', fdb.years_known ? fdb.years_known + ' yrs' : '', 'Known for') + tile('share', String(e.degree || 0), 'Graph links') +
+    '<div class="tiles">' + tile('heart', prof.closeness ? prof.closeness + ' / 5' : '', 'Closeness') + tile('flag', standing, 'Standing') +
+    tile('activity', state, 'State') + tile('trend', traj, 'Trajectory') +
+    tile('clock', yrs ? yrs + ' yrs' : '', 'Known for') + tile('share', String(e.degree || 0), 'Graph links') +
     tile('send', String(e.shared_with_jd || 0), 'Shared with you') + '</div>' +
     connTimelineHTML(e);
   var connection = card('users', 'Connection', 2, conn, '', 'span');
@@ -664,7 +666,9 @@ function dossierEdit(e){
       '<div class="evtitle">' + esc(ev.summary || '') + '</div>' + (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>' +
       '<button class="mini danger" data-act="evdel" data-evi="' + o.i + '">Remove</button></div>';
   }).join('') || '<p class="dim" style="margin:0 0 4px;font-size:13px">No events yet.</p>';
-  var l2 = card('users', 'Connection', 2, selRow(relF, prof) + selRow(ctxF, prof) + '<div class="rgroups">' + rateLine('closeness', prof) + '</div>') +
+  var l2 = card('users', 'Connection', 2, selRow(relF, prof) + selRow(ctxF, prof) + '<div class="rgroups">' + rateLine('closeness', prof) + '</div>' +
+    '<div class="two">' + irow('standing', 'Standing', prof.standing || '') + irow('state', 'State', prof.state || '') + '</div>' +
+    '<div class="two">' + irow('trajectory', 'Trajectory', prof.trajectory || '') + irow('years_known', 'Known for (yrs)', prof.years_known || '') + '</div>') +
     cpCardHTML(e) +
     card('quote', 'Narrative', 2, '<textarea id="narrtext" data-pk="enriched_value" data-orig="' + esc(narrVal) + '" rows="5" placeholder="Write the story of how you know them.">' + esc(narrVal) + '</textarea>' +
       (assessOn() ? '<div class="genrow"><button class="mini" data-act="enrich" style="--c:' + LV[2].c + '">' + ic('zap', 13) + 'Generate assessment</button><span id="enrmsg" class="calcnote"></span></div>' : '')) +
