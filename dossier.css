@@ -615,3 +615,9 @@ button.vchip:hover{background:color-mix(in srgb,var(--c) 20%,transparent)}
 .doc.edit .lvl{padding:10px 12px 20px;gap:10px}
 .doc.edit .qwrap{margin-bottom:10px}
 .doc.edit .synhead{margin-bottom:6px}
+
+/* 2-col ratings in edit mode */
+.doc.edit .rgroups{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px}
+.doc.edit .rgroups .rrow{min-width:0}
+.doc.edit .rlab[data-hint]{cursor:help}
+.doc.edit .rlab[data-hint] svg{opacity:.5;vertical-align:-1px}
