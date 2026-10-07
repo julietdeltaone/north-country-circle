@@ -316,6 +316,29 @@ body.panelwide{--pw:clamp(640px,58vw,920px)}
 .aubar{width:110px;height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;flex:none}
 .aubar i{display:block;height:100%;background:var(--l1);border-radius:3px}
 .aubtn{flex:none}
+/* audit dashboard additions */
+.au-stats{display:flex;gap:10px;padding:12px 18px 0;flex-wrap:wrap}
+.austat{display:flex;align-items:baseline;gap:8px;background:rgba(255,255,255,.03);border:1px solid var(--line-soft);border-radius:12px;padding:8px 14px;cursor:pointer;color:var(--txt);font-family:var(--sans)}
+.austat b{font-family:var(--disp);font-size:20px;font-weight:700}
+.austat span{font-size:12px;color:var(--dim)}
+.austat:hover{background:rgba(255,255,255,.06)}
+.austat.on{border-color:var(--l1);background:rgba(126,166,240,.1)}
+.austat.on b{color:var(--l1)}
+.au-undogroup{display:flex;gap:6px}
+.au-tools .mini{flex:none}
+.ausel{width:16px;height:16px;accent-color:var(--l1);flex:none;cursor:pointer}
+.aubiz{font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#c9a6f2;background:rgba(180,140,232,.12);border:1px solid rgba(180,140,232,.35);border-radius:12px;padding:2px 8px;margin-left:8px}
+.au-bulk{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:90;display:flex;align-items:center;gap:10px;background:rgba(14,17,24,.96);border:1px solid var(--line);border-radius:14px;padding:10px 16px;box-shadow:0 8px 30px rgba(0,0,0,.5);font-size:13px}
+.au-bulk[hidden]{display:none}
+/* predictive profile read */
+.pread{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-soft)}
+.pr-title{font-size:11px;letter-spacing:.12em;font-weight:700;color:var(--dim);margin-bottom:8px;text-transform:uppercase}
+.pr-dim{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.pr-dim span{width:74px;font-size:11.5px;color:var(--dim)}
+.pr-bar{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.pr-bar i{display:block;height:100%;background:var(--l2);border-radius:3px}
+.pr-dim em{font-style:normal;font-size:11px;width:28px;text-align:right;color:var(--dim)}
+.pr-inf{font-size:12.5px;line-height:1.55;margin:8px 0 0;color:var(--txt)}
 .card.collapsible>header{cursor:pointer}
 .card.collapsible>header:hover h3{color:#fff}
 .card.collapsible .chev{margin-left:auto;display:inline-flex;color:var(--dim);transition:transform .18s var(--ease)}
