@@ -706,3 +706,8 @@ a.iglink.ig-oneway:hover{color:#ef8aa5}
 .elvldiv:before{content:"";flex:1;height:1px;background:color-mix(in srgb,var(--c) 35%,transparent)}
 .elvldiv span{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
 .elvldiv:after{content:"";flex:8;height:1px;background:color-mix(in srgb,var(--c) 14%,transparent)}
+/* achievement honor chips */
+.achrow{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-soft)}
+.achrow .achlab{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.vchip.achchip{display:inline-flex;align-items:center;gap:6px;cursor:default;border-color:color-mix(in srgb,#f0b44c 30%,transparent)}
+.vchip.achchip svg{color:#f0b44c}
