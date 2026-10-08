@@ -726,3 +726,12 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .egh{display:flex;align-items:center;justify-content:center;gap:10px}
 .egh i{font-style:normal;font-size:13px;font-weight:700;color:var(--dim)}
 .egh.on i{color:var(--c)}
+/* highlights chips */
+.vchip.hchip{display:inline-flex;align-items:center;gap:6px;cursor:default;border-color:color-mix(in srgb,#7fa8ff 30%,transparent)}
+.vchip.hchip svg{color:#7fa8ff}
+/* persona compact grid */
+.persona-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.ptrait{display:flex;align-items:center;gap:10px;font-size:12px}
+.ptrait span{flex:0 0 90px;color:var(--dim);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbar{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.pbar b{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7fa8ff,#b48cff)}
