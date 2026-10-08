@@ -1,6 +1,6 @@
 /* North Country Circle — Dossier v4
    Color rule: three depth colors carry meaning everywhere.
-     Level 1 Snapshot = blue   Level 2 Story = amber   Level 3 Files = green
+     Level 1 Snapshot = blue   Level 2 Record = amber   Level 3 Files = green
    Chrome (buttons, selection, focus on non-level things) stays neutral so the colors never get diluted. */
 :root{
   --ink:#06080d;
@@ -711,3 +711,12 @@ a.iglink.ig-oneway:hover{color:#ef8aa5}
 .achrow .achlab{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
 .vchip.achchip{display:inline-flex;align-items:center;gap:6px;cursor:default;border-color:color-mix(in srgb,#f0b44c 30%,transparent)}
 .vchip.achchip svg{color:#f0b44c}
+
+/* edit hero group toggles */
+.egrouphero{display:flex;gap:10px;margin:0 0 14px}
+.egh{flex:1;border:1px solid var(--line-soft);background:rgba(255,255,255,.028);border-radius:12px;
+padding:12px;cursor:pointer;color:var(--dim);font-family:var(--disp);transition:all .18s var(--ease)}
+.egh b{font-size:15px;font-weight:700;letter-spacing:.02em}
+.egh:hover{border-color:var(--c);color:var(--txt)}
+.egh.on{border-color:color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 10%,transparent);color:var(--txt)}
+.egh.on b{color:var(--c)}
