@@ -1922,6 +1922,7 @@ function auSetFilter(f){
 }
 function renderAudit(){
   var q = AUD.q.trim().toLowerCase();
+  if(AUD.f === 'dup'){ renderDupAudit(q); return; }
   var rows = [];
   /* family map: last name -> fleshed-out people (score>=2) carrying it */
   var famMap = {};
@@ -2002,13 +2003,147 @@ function renderAudit(){
 function renderBulk(){
   var n = Object.keys(AUD.sel).length;
   var bb = $('#aubulk');
-  if(!n){ bb.hidden = true; return; }
+  var showMergeAll = AUD.f === 'dup' && AUD.dupGroups && AUD.dupGroups.length;
+  if(!n && !showMergeAll){ bb.hidden = true; return; }
   bb.hidden = false;
-  bb.innerHTML = '<span><b>' + n + '</b> selected</span>' +
-    '<button class="mini" data-bulk="audit">Mark audited</button>' +
+  bb.innerHTML = (n ? '<span><b>' + n + '</b> selected</span>' : '') +
+    (n ? '<button class="mini" data-bulk="audit">Mark audited</button>' +
     '<button class="mini" data-bulk="unaudit">Reopen</button>' +
-    '<button class="mini danger" data-bulk="delete">Delete</button>' +
-    '<button class="mini neutral" data-bulk="clear">Clear</button>';
+    '<button class="mini danger" data-bulk="delete">Delete</button>' : '') +
+    (n ? '<button class="mini neutral" data-bulk="clear">Clear</button>' : '');
+  if(showMergeAll){
+    bb.innerHTML += '<button class="mini" data-bulk="mergeall" style="--c:#f0b44c">Merge all duplicates</button>';
+  }
+}
+
+/* ---------- duplicate detection + nuclear merge ---------- */
+function normDupName(s){
+  return String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function dupHandle(e){
+  return String(e.name || '').toLowerCase();
+}
+function findDupGroups(){
+  var byName = {}, i, e, pr, key;
+  for(i = 0; i < D.directory.length; i++){
+    e = D.directory[i];
+    pr = e.profile || {};
+    if(pr.deleted === '1' || (pr.merged_into || '').trim()) continue;
+    key = normDupName(e.display || dispName(e));
+    if(!key || key.length < 2) continue;
+    (byName[key] = byName[key] || []).push(i);
+  }
+  var groups = [];
+  Object.keys(byName).forEach(function(k){
+    var members = byName[k];
+    if(members.length < 2) return;
+    var scored = members.map(function(di){
+      var en = D.directory[di];
+      var st = auditStats(en);
+      var score = st.score + (en.has_graph ? 2 : 0) + ((en.pieces || 0) > 0 ? 1 : 0);
+      return { di:di, e:en, st:st, score:score };
+    });
+    scored.sort(function(a, b){ return b.score - a.score; });
+    groups.push({ key:k, members:scored, survivor:scored[0].di });
+  });
+  groups.sort(function(a, b){ return b.members.length - a.members.length; });
+  return groups;
+}
+function renderDupAudit(q){
+  var groups = findDupGroups();
+  if(q){
+    groups = groups.filter(function(g){
+      return g.key.indexOf(q) >= 0 || g.members.some(function(m){
+        return dupHandle(m.e).indexOf(q) >= 0;
+      });
+    });
+  }
+  AUD.dupGroups = groups;
+  AUD.rows = [];
+  var nDup = groups.reduce(function(n, g){ return n + g.members.length; }, 0);
+  $('#aushown').textContent = groups.length + ' groups · ' + nDup + ' entries';
+  var dupStat = $('#austats .austat[data-f="dup"]');
+  if(!dupStat){
+    $('#austats').insertAdjacentHTML('beforeend',
+      '<button class="austat on" data-f="dup"><b>' + groups.length + '</b><span>Duplicate groups</span></button>');
+  } else {
+    dupStat.querySelector('b').textContent = groups.length;
+    $('#austats').querySelectorAll('.austat').forEach(function(s){ s.classList.toggle('on', s.getAttribute('data-f') === 'dup'); });
+  }
+  function dupSrcLabel(e){
+    var n = String(e.name || '');
+    var m = n.match(/^(ig|ct|sf|fdb):/);
+    if(m) return m[1];
+    return e.has_graph ? 'ig' : 'entry';
+  }
+  $('#aubody').innerHTML = groups.map(function(g, gi){
+    var cards = g.members.map(function(m){
+      var an = auName(m.e);
+      var srcTag = '<i>' + esc(dupSrcLabel(m.e)) + '</i>';
+      var isS = m.di === g.survivor;
+      return '<label class="dupmem' + (isS ? ' surv' : '') + '">' +
+        '<input type="radio" name="dupsurv' + gi + '" data-gi="' + gi + '" data-di="' + m.di + '"' + (isS ? ' checked' : '') + '>' +
+        '<span class="auava">' + esc((an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</span>' +
+        '<span class="aumain"><span class="auname">' + esc(an.name) + ' ' + srcTag + '</span>' +
+        '<span class="auneeds"><b class="' + (m.st.score >= 3 ? 'have' : 'miss') + '">' + m.st.score + '/4 data</b>' +
+        (m.e.has_graph ? '<b class="have">graph</b>' : '') +
+        ((m.e.pieces || 0) ? '<b class="have">' + m.e.pieces + ' mentions</b>' : '') + '</span></span>' +
+        (isS ? '<em class="dupsurvtag">survivor</em>' : '') + '</label>';
+    }).join('');
+    return '<div class="dupgroup"><div class="duphead"><b>' + esc(g.members[0].e.display || g.key) + '</b>' +
+      '<span class="dim">' + g.members.length + ' entries</span>' +
+      '<button class="mini" data-dupmerge="' + gi + '" style="--c:#f0b44c">Merge into survivor</button></div>' +
+      '<div class="dupmems">' + cards + '</div></div>';
+  }).join('') || '<p class="dim" style="padding:20px">No duplicates found.</p>';
+  renderBulk();
+  updateUndoBtns();
+}
+function dupSurvivorName(g){
+  var e = D.directory[g.survivor];
+  return e ? (dispName(e) || dupHandle(e)) : '?';
+}
+function doMergeGroup(gi){
+  var g = (AUD.dupGroups || [])[gi];
+  if(!g) return;
+  var surv = D.directory[g.survivor];
+  if(!surv) return;
+  var target = dupHandle(surv);
+  if(!target){ toast('Survivor has no handle to merge into.'); return; }
+  var losers = g.members.filter(function(m){ return m.di !== g.survivor; });
+  if(!losers.length){ toast('Nothing to merge.'); return; }
+  if(!confirm('Merge ' + losers.length + ' duplicate' + (losers.length > 1 ? 's' : '') + ' into "' +
+      dupSurvivorName(g) + '"?\n\nTheir info folds into the survivor and they disappear from the directory. You can undo this.')) return;
+  var entry = { postKey:'merged_into', items:losers.map(function(m){
+    return { di:m.di, prev:((D.directory[m.di].profile || {}).merged_into || ''), next:target };
+  }) };
+  pushUndo(entry);
+  applyEntry(entry, false, function(){ toast(losers.length + ' merged into ' + dupSurvivorName(g) + '.'); });
+}
+function doMergeAllDups(){
+  var groups = AUD.dupGroups || [];
+  if(!groups.length){ toast('No duplicate groups.'); return; }
+  var total = groups.reduce(function(n, g){ return n + g.members.length - 1; }, 0);
+  if(!total){ toast('Nothing to merge.'); return; }
+  if(!confirm('Merge ' + total + ' duplicates across ' + groups.length + ' groups?\n\nEach group folds into its selected survivor. You can undo this.')) return;
+  var items = [];
+  groups.forEach(function(g){
+    var surv = D.directory[g.survivor];
+    if(!surv) return;
+    var target = dupHandle(surv);
+    if(!target) return;
+    g.members.forEach(function(m){
+      if(m.di === g.survivor) return;
+      items.push({ di:m.di, prev:((D.directory[m.di].profile || {}).merged_into || ''), next:target });
+    });
+  });
+  if(!items.length){ toast('Nothing to merge.'); return; }
+  var entry = { postKey:'merged_into', items:items };
+  pushUndo(entry);
+  applyEntry(entry, false, function(){ toast(total + ' duplicates merged.'); });
+}
+function dupSetSurvivor(gi, di){
+  var g = (AUD.dupGroups || [])[gi];
+  if(g) g.survivor = di;
 }
 
 /* ---------- export ---------- */
@@ -2776,19 +2911,30 @@ function bind(){
     if(k === 'audit') bulkAudit('audited');
     else if(k === 'unaudit') bulkAudit('needs_audit');
     else if(k === 'delete') bulkDelete();
+    else if(k === 'mergeall') doMergeAllDups();
     else if(k === 'clear'){ AUD.sel = {}; renderAudit(); }
   });
   $('#ausort').addEventListener('change', function(ev){ AUD.sort = ev.target.value; renderAudit(); });
   var _audt = null;
   $('#auq').addEventListener('input', function(ev){ clearTimeout(_audt); _audt = setTimeout(function(){ AUD.q = ev.target.value; renderAudit(); }, 200); });
   $('#aubody').addEventListener('change', function(ev){
-    var cb = ev.target.closest('.ausel'); if(!cb) return;
-    var di = parseInt(cb.getAttribute('data-di'), 10);
-    if(cb.checked) AUD.sel[di] = 1; else delete AUD.sel[di];
-    renderBulk();
+    var cb = ev.target.closest('.ausel'); if(cb){
+      var di = parseInt(cb.getAttribute('data-di'), 10);
+      if(cb.checked) AUD.sel[di] = 1; else delete AUD.sel[di];
+      renderBulk();
+      return;
+    }
+    var radio = ev.target.closest('input[type="radio"][data-gi]');
+    if(radio){
+      dupSetSurvivor(parseInt(radio.getAttribute('data-gi'), 10), parseInt(radio.getAttribute('data-di'), 10));
+      renderDupAudit(AUD.q.trim().toLowerCase());
+      return;
+    }
   });
   $('#aubody').addEventListener('click', function(ev){
     if(ev.target.classList && ev.target.classList.contains('ausel')) return;
+    var dm = ev.target.closest('[data-dupmerge]');
+    if(dm){ ev.stopPropagation(); doMergeGroup(parseInt(dm.getAttribute('data-dupmerge'), 10)); return; }
     var ab = ev.target.closest('[data-auact]');
     if(ab){
       ev.stopPropagation();
