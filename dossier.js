@@ -125,6 +125,7 @@ var IC = {
   quote:'<path d="M10 11H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6c0 2-1 3.5-3 4.5M20 11h-4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6c0 2-1 3.5-3 4.5"/>',
   zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
   briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  church:'<path d="M12 2v4M8 4h8"/><path d="M5 8 3 9v13h18V9l-2-1"/><path d="M9 22v-6h6v6"/>',
   tag:'<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
   trend:'<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
   activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
@@ -328,7 +329,7 @@ function subjSlug(e){
 function subLine(e){
   if(e.src === 'contacts') return 'Phone contact';
   if(e.src === 'subject') return 'Subject file';
-  return '@' + e.name;
+  return '';
 }
 function l1Fill(e){
   var n = 0;
@@ -576,7 +577,6 @@ function phead(e){
   var edit = S.editing
     ? '<button class="ibtn solid" data-act="done" title="Finish editing (Esc)">' + ic('check', 16) + '<span>Done</span></button>'
     : '<button class="ibtn" data-act="edit" title="Edit this dossier (E)" aria-label="Edit">' + ic('edit', 16) + '</button>';
-  var rel = e.relation ? '<span class="rchip" style="--c:' + RELC[e.relation] + '">' + RELN[e.relation] + '</span>' : '';
   var cnt = { 1:l1Fill(e) + '/' + L1_TOTAL, 2:(e.events || []).length || '', 3:(e.files || []).length || '' };
   var tabs = S.editing ? '' : '<div class="tabs" role="tablist">' + [1,2,3].map(function(n){
     return '<button class="tab' + (S.lvl === n ? ' on' : '') + (n > 1 && !cnt[n] ? ' empty' : '') + '" role="tab" data-act="tab" data-lvl="' + n + '" style="--c:' + LV[n].c +
@@ -597,8 +597,8 @@ function phead(e){
   return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + auditBack + back +
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
     '<div class="hname"><h2 title="' + esc(dispName(e)) + '">' + esc(dispName(e)) + '</h2>' +
-    '<div class="hsub"><span>' + esc(subLine(e)) + '</span>' + rel +
-    reviewBadge(e) + (S.editing ? '<span class="editflag">Editing</span>' : '') + '</div></div>' +
+    (function(){ var sl = subLine(e); return sl ? '<div class="hsub"><span>' + esc(sl) + '</span>' +
+    reviewBadge(e) + (S.editing ? '<span class="editflag">Editing</span>' : '') + '</div>' : ''; })() + '</div>' +
     '<div class="hact">' + edit +
     '<button class="ibtn" id="pwide" data-act="wide" title="' + (S.wide ? 'Narrow the panel' : 'Widen the panel') + '" aria-label="Resize panel">' + ic(S.wide ? 'shrink' : 'expand', 16) + '</button>' +
     menu + '<button class="ibtn" data-act="close" title="Close (Esc)" aria-label="Close">' + ic('x', 17) + '</button></div></div>' + headBadges(e) + tabs + '</div>';
@@ -624,7 +624,7 @@ function lvl1View(e){
   var phones = gv(e, 'phone'), emails = gv(e, 'email'), aka = gv(e, 'also_known_as');
   var rows = '';
   if(e.src !== 'contacts' && e.src !== 'subject' && e.name)
-    rows += '<div class="idrow"><span class="idic">' + ic('ig', 15) + '</span><div><span>Instagram</span><a href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a></div></div>';
+    rows += '<div class="idrow"><span class="idic">' + ic('ig', 15) + '</span><div><span>Instagram</span><a class="iglink ' + (e.relation === 'mutual' ? 'ig-mutual' : 'ig-oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a></div></div>';
   if(aka) rows += '<div class="idrow"><span class="idic">' + ic('user', 15) + '</span><div><span>Also known as</span><b>' + esc(aka) + '</b></div></div>';
   if(phones) rows += '<div class="idrow"><span class="idic">' + ic('phone', 15) + '</span><div><span>Phone</span>' +
     String(phones).split(',').map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join('') + '</div></div>';
@@ -650,15 +650,14 @@ function lvl1View(e){
   if(gv(e, 'specialty')) bg += '<div class="idrow"><span class="idic">' + ic('zap', 15) + '</span><div><span>Specialty</span><b>' + esc(gv(e, 'specialty')) + '</b></div></div>';
   if(gv(e, 'interests')) bg += '<div class="idrow"><span class="idic">' + ic('tag', 15) + '</span><div><span>Interests</span><b>' + esc(gv(e, 'interests')) + '</b></div></div>';
   if(gv(e, 'shared_interests')) bg += '<div class="idrow"><span class="idic">' + ic('heart', 15) + '</span><div><span>Shared interests</span><b>' + esc(gv(e, 'shared_interests')) + '</b></div></div>';
+  var ORG_ICONS = { churches:'church', companies:'briefcase', universities:'cap' };
   var orgs = '';
   ORG_CATS.forEach(function(cat){
     tagList(gv(e, cat.k)).forEach(function(v){
-      orgs += '<button class="vchip" data-act="tagfilter" data-tagk="' + cat.k + '" data-tagv="' + esc(v) + '" title="See everyone at ' + esc(v) + '">' + ic('briefcase', 12) + esc(v) + '</button>';
+      orgs += '<span class="vchip orgchip"><span class="oc-ic">' + ic(ORG_ICONS[cat.k] || 'briefcase', 12) + '</span>' + esc(v) + '</span>';
     });
   });
-  var chipsHTML = splitTags(gv(e, 'chips'), '; ').map(function(c){ return '<span class="vchip plainchip">' + esc(c) + '</span>'; }).join('');
-  var bgBody = bg + (orgs ? '<div class="subhead">Organizations (click to see who else)</div><div class="chips">' + orgs + '</div>' : '') +
-    (chipsHTML ? '<div class="subhead">Tags</div><div class="chips">' + chipsHTML + '</div>' : '');
+  var bgBody = bg + (orgs ? '<div class="subhead">Organizations</div><div class="chips">' + orgs + '</div>' : '');
   var background = bgBody ? card('briefcase', 'Background', 1, bgBody) : '';
 
   var syn = gv(e, 'synopsis') ? card('quote', 'Synopsis', 1, '<div class="narr">' + esc(gv(e, 'synopsis')) + '</div>', '', 'span') : '';
@@ -977,12 +976,43 @@ function secHTML(s, e){
     '<span class="sbadge' + (fl.done ? ' done' : '') + '">' + esc(fl.t) + '</span><span class="chev">' + ic('chev', 14) + '</span></header>' +
     '<div class="sbody">' + secBody(s, e) + '</div></section>';
 }
+function editCompleteness(e){
+  var tot = 0, got = 0;
+  SECTIONS.forEach(function(s){
+    var flds = s.fields || [];
+    if(s.id === 'education'){ tot += 1; if(degreesOf(e).length) got += 1; return; }
+    if(s.id === 'connections'){ tot += 1; if((e.neighbors || []).length) got += 1; return; }
+    if(s.id === 'timeline'){ tot += 1; if((e.events || []).length) got += 1; return; }
+    if(s.id === 'files'){ tot += 1; if((e.files || []).length) got += 1; return; }
+    flds.forEach(function(k){ tot++; if(gv(e, k) !== '') got++; });
+  });
+  var pct = tot ? Math.round(got / tot * 100) : 0;
+  var lvlN = { 1:'On file', 2:'Story', 3:'Files' };
+  var bars = [1, 2, 3].map(function(lv){
+    var lt = 0, lg = 0;
+    SECTIONS.forEach(function(s){
+      if(s.lv !== lv) return;
+      (s.fields || []).forEach(function(k){ lt++; if(gv(e, k) !== '') lg++; });
+      if(s.id === 'education'){ lt++; if(degreesOf(e).length) lg++; }
+      if(s.id === 'connections'){ lt++; if((e.neighbors || []).length) lg++; }
+      if(s.id === 'timeline'){ lt++; if((e.events || []).length) lg++; }
+    });
+    var lp = lt ? Math.round(lg / lt * 100) : 0;
+    return '<div class="ehero-lvl"><span style="--c:' + LV[lv].c + '"><i></i>' + lvlN[lv] + '</span><div class="ehero-bar"><b style="width:' + lp + '%;--c:' + LV[lv].c + '"></b></div><em>' + lp + '%</em></div>';
+  }).join('');
+  return '<div class="ehero"><div class="ehero-top"><b>' + pct + '%</b><span>profile complete</span><div class="ehero-bar big"><b style="width:' + pct + '%"></b></div></div>' + bars + '</div>';
+}
 function dossierEdit(e){
   var jump = '<div class="jump">' + SECTIONS.map(function(s){
     return '<button type="button" data-act="jump" data-sec="' + s.id + '" style="--c:' + (s.lv ? LV[s.lv].c : '#ece9e2') + '">' + esc(s.title) + '</button>';
   }).join('') + '<span class="jsp"></span><button type="button" class="jall" data-act="secall" data-v="1">Open all</button><button type="button" class="jall" data-act="secall" data-v="0">Close all</button></div>';
-  return '<div class="doc edit">' + phead(e) + jump + '<div class="lvstage estage">' +
-    '<div class="estack">' + SECTIONS.map(function(s){ return secHTML(s, e); }).join('') + '</div></div>' +
+  var lvlN = { 1:'On file', 2:'Story', 3:'Files', 0:'Admin' }, lastLv = null, stack = '';
+  SECTIONS.forEach(function(s){
+    if(s.lv !== lastLv){ stack += '<div class="elvldiv" style="--c:' + (s.lv ? LV[s.lv].c : '#8b95a7') + '"><span>' + lvlN[s.lv] + '</span></div>'; lastLv = s.lv; }
+    stack += secHTML(s, e);
+  });
+  return '<div class="doc edit">' + phead(e) + jump + editCompleteness(e) + '<div class="lvstage estage">' +
+    '<div class="estack">' + stack + '</div></div>' +
     '<div class="efoot"><span id="savestate" class="savestate">All changes saved</span><span class="esp"></span>' +
     '<button class="ibtn solid" data-act="done">' + ic('check', 16) + '<span>Done</span></button></div></div>';
 }
@@ -2833,7 +2863,7 @@ function boot(){
   var m = store('ncc_mode'), c = store('ncc_color');
   if(m === '2d' || m === '3d') S.mode = m;
   if(c === 'tier' || c === 'rel') S.colorBy = c; else if(c === 'level') S.colorBy = 'tier';
-  try{ var so = JSON.parse(store('ncc_secs') || 'null'); if(so && typeof so === 'object') S.openSecs = so; }catch(x){}
+  try{ store('ncc_secs', '{}'); }catch(x){} S.openSecs = {};
   $$('#colorToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-c') === S.colorBy); });
   if(innerWidth <= 860){ S.listOpen = false; document.body.classList.add('nolist'); $('#listtoggle').classList.remove('on'); $('#listtoggle').setAttribute('aria-pressed', 'false'); }
   $('#leftbody').innerHTML = '<div class="empty-note">Loading dossier data…</div>';
