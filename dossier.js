@@ -270,7 +270,7 @@ var L1_TOTAL = 14;
 
 /* The edit stack, top to bottom. lv = which level color the section wears. */
 var SECTIONS = [
-  { id:'identity',    title:'Identity',     ic:'user',      lv:1, fields:['display_name','phone','email'] },
+  { id:'identity',    title:'Contact',      ic:'user',      lv:1, fields:['phone','email'] },
   { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
   { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
   { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','highlights','public_footprint'] },
@@ -570,8 +570,8 @@ function clearFilter(k){
   S.limit = 200; refresh();
 }
 function updateAuditPill(){
-  var live = D.directory.filter(function(r){ return (r.profile || {}).deleted !== '1'; });
-  var done = live.filter(function(r){ return (r.profile || {}).audit === 'audited'; }).length;
+  var live = LIST_ORDER.filter(function(di){ return (D.directory[di].profile || {}).deleted !== '1'; });
+  var done = live.filter(function(di){ return (D.directory[di].profile || {}).audit === 'audited'; }).length;
   $('#aptxt').textContent = 'Audited ' + done + '/' + live.length;
   $('#apfill').style.width = (live.length ? Math.round(done / live.length * 100) : 0) + '%';
 }
@@ -621,6 +621,17 @@ function reviewBadge(e){
   var label = f === 'duplicate' ? 'Possible duplicate' : (f === 'missing_info' ? 'Missing info' : f);
   return '<span class="revbadge" title="Flagged for review">' + esc(label) + '</span>';
 }
+function editHeroName(e){
+  if(!e || !S.editing) return;
+  var pr = e.profile || {};
+  var fn = prompt('First name:', pr.first_name || '');
+  if(fn === null) return;
+  var ln = prompt('Last name:', pr.last_name || '');
+  if(ln === null) return;
+  queuePatch(S.sel, { first_name: fn.trim(), last_name: ln.trim() });
+  renderPanel(true);
+  toast('Name updated.');
+}
 function phead(e){
   var prof = e.profile || {}, pl = personLevel(e), col = LV[pl].c, aud = prof.audit === 'audited';
   var prev = S.hist.length ? D.directory[S.hist[S.hist.length - 1]] : null;
@@ -648,7 +659,7 @@ function phead(e){
     '<button data-act="delete" class="danger">' + ic('trash', 16) + 'Delete this person</button></div></div>';
   return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + auditBack + back +
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
-    '<div class="hname"><h2 title="' + esc(dispName(e)) + '">' + esc(dispName(e)) +
+    '<div class="hname"><h2 title="' + esc(dispName(e)) + (S.editing ? ' — click to edit name' : '') + '"' + (S.editing ? ' data-act="editname" style="cursor:pointer"' : '') + '>' + esc(dispName(e)) +
     (S.editing ? '<span class="hpct" title="Profile completeness">' + pct(e) + '%</span>' : '') + '</h2>' +
     (function(){ var sl = subLine(e); return sl ? '<div class="hsub"><span>' + esc(sl) + '</span>' +
     reviewBadge(e) + (S.editing ? '<span class="editflag">Editing</span>' : '') + '</div>' : ''; })() + '</div>' +
@@ -1219,6 +1230,7 @@ function act(a, el){
     case 'backaudit': openAudit(); break;
     case 'edit': enterEdit(); break;
     case 'done': exitEdit(); break;
+    case 'editname': editHeroName(e); break;
     case 'wide': S.wide = !S.wide; document.body.classList.toggle('panelwide', S.wide); rerender(); break;
     case 'menu': var pop = $('.menu-pop', el.parentNode); pop.hidden = !pop.hidden; break;
     case 'tab': setLevel(parseInt(el.getAttribute('data-lvl'), 10) || 1); break;
