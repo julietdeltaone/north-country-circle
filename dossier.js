@@ -505,8 +505,8 @@ function railPeople(){
     var r = D.directory[di], lv = personLevel(r), aud = (r.profile || {}).audit === 'audited';
     var sub = subLine(r) + (r.relation ? ' · ' + RELN[r.relation] : '');
     return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
-      '<div class="ava' + (isEnriched(r) ? ' enr' : '') + '" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
-      (aud ? '' : '<i class="auddot" title="Needs audit"></i>') + '</div>' +
+      '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
+      (!aud ? '<i class="auddot' + (isEnriched(r) ? ' enr' : '') + '" title="Needs audit"></i>' : (isEnriched(r) ? '<i class="enrdot" title="Enriched from online sources"></i>' : '')) + '</div>' +
       '<div class="nm"><b>' + esc(dispName(r)) + '</b><span>' + esc(sub) + '</span></div>' + capHTML(r) + pipsHTML(r) + '</div>';
   }).join('');
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
