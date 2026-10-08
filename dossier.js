@@ -1,15 +1,15 @@
 /* North Country Circle — Dossier v5
    Directory rail + connection map + dossier panel.
-   Level colors: L1 On file = blue, L2 Story = amber, L3 Files = green.
+   Level colors: L1 On file = blue, L2 Record = amber, L3 Files = green.
 
    v5 changes (consolidated model):
    - Level 1 is now "On file": everything idiosyncratic to the person (contact, background,
-     known associates, public footprint, synopsis). Story level holds the relationship.
+     known associates, public footprint, synopsis). Record level holds the relationship.
    - Closeness is now the hero metric Open / Associate / Vetted. Map rings, dot colors and
      the legend all key off tier.
    - Status collapsed into one Momentum metric (1-5, 3 neutral) with a directional UI.
    - Ratings feed a Big Five estimator; the top trait shows as a single hero chip.
-   - Story is synopsis-only. Timeline events keep only the initiated-by toggle.
+   - Record is synopsis-only. Timeline events keep only the initiated-by toggle.
    v4 changes (editing + saving rebuilt):
    - Edit mode is one stack of collapsible sections that covers every column in the Profiles sheet.
    - Every edit goes through one outbox: saved to this browser first, sent to the sheet in batches,
@@ -24,7 +24,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 
 var LV = {
   1:{ c:'#7ea6f0', n:'On file', ic:'user' },
-  2:{ c:'#f0b44c', n:'Story',   ic:'book' },
+  2:{ c:'#f0b44c', n:'Record',   ic:'book' },
   3:{ c:'#5cd6a0', n:'Files',   ic:'folder' }
 };
 /* tiers: the hero metric. Rings, dot colors and the legend all key off this. */
@@ -54,7 +54,7 @@ var S = {
   rail:'people', limit:200,
   sel:null, editing:false, lvl:1, hist:[], fwd:[], wide:false,
   mode:'3d', colorBy:'tier', showBg:false, listOpen:true, tierF:'',
-  openSecs:{}, evEdit:null, degEdit:null, jumpTo:null
+  openSecs:{}, evEdit:null, degEdit:null, jumpTo:null, editGroup:1
 };
 var D = null, NODES = [], ORDER = [], LIST_ORDER = [], BYN = {}, PK2I = {};
 
@@ -449,7 +449,7 @@ function renderLvlChips(){
 }
 function pipsHTML(e){
   var on = [true, !!(e.events || []).length, !!(e.files || []).length];
-  return '<span class="pips" title="On file' + (on[1] ? ', Story' : '') + (on[2] ? ', Files' : '') + '">' +
+  return '<span class="pips" title="On file' + (on[1] ? ', Record' : '') + (on[2] ? ', Files' : '') + '">' +
     [1,2,3].map(function(n){ return '<i class="pip' + (on[n - 1] ? ' lit' : '') + '" style="--c:' + LV[n].c + '"></i>'; }).join('') + '</span>';
 }
 function renderRail(){
@@ -1019,7 +1019,7 @@ function editCompleteness(e){
     flds.forEach(function(k){ tot++; if(gv(e, k) !== '') got++; });
   });
   var pct = tot ? Math.round(got / tot * 100) : 0;
-  var lvlN = { 1:'On file', 2:'Story', 3:'Files' };
+  var lvlN = { 1:'On file', 2:'Record', 3:'Files' };
   var bars = [1, 2, 3].map(function(lv){
     var lt = 0, lg = 0;
     SECTIONS.forEach(function(s){
@@ -1034,16 +1034,31 @@ function editCompleteness(e){
   }).join('');
   return '<div class="ehero"><div class="ehero-top"><b>' + pct + '%</b><span>profile complete</span><div class="ehero-bar big"><b style="width:' + pct + '%"></b></div></div>' + bars + '</div>';
 }
+function editGroups(){
+  // level groups for the edit hero toggle: 1=On file, 2=Record, 3=Files(+Admin)
+  return [
+    { id:1, n:'On file', c:LV[1].c, lvs:[1] },
+    { id:2, n:'Record',  c:LV[2].c, lvs:[2] },
+    { id:3, n:'Files',   c:LV[3].c, lvs:[3, 0] }
+  ];
+}
 function dossierEdit(e){
+  if(S.editGroup == null) S.editGroup = 1;
+  var groups = editGroups();
   var jump = '<div class="jump">' + SECTIONS.map(function(s){
     return '<button type="button" data-act="jump" data-sec="' + s.id + '" style="--c:' + (s.lv ? LV[s.lv].c : '#ece9e2') + '">' + esc(s.title) + '</button>';
   }).join('') + '<span class="jsp"></span><button type="button" class="jall" data-act="secall" data-v="1">Open all</button><button type="button" class="jall" data-act="secall" data-v="0">Close all</button></div>';
-  var lvlN = { 1:'On file', 2:'Story', 3:'Files', 0:'Admin' }, lastLv = null, stack = '';
+  var hero = '<div class="egrouphero">' + groups.map(function(g){
+    return '<button type="button" class="egh' + (S.editGroup === g.id ? ' on' : '') + '" data-act="egroup" data-g="' + g.id + '" style="--c:' + g.c + '"><b>' + g.n + '</b></button>';
+  }).join('') + '</div>';
+  var lvlN = { 1:'On file', 2:'Record', 3:'Files', 0:'Admin' }, lastLv = null, stack = '';
+  var active = groups.filter(function(g){ return g.id === S.editGroup; })[0];
   SECTIONS.forEach(function(s){
+    if(active.lvs.indexOf(s.lv) < 0) return;
     if(s.lv !== lastLv){ stack += '<div class="elvldiv" style="--c:' + (s.lv ? LV[s.lv].c : '#8b95a7') + '"><span>' + lvlN[s.lv] + '</span></div>'; lastLv = s.lv; }
     stack += secHTML(s, e);
   });
-  return '<div class="doc edit">' + phead(e) + jump + editCompleteness(e) + '<div class="lvstage estage">' +
+  return '<div class="doc edit">' + phead(e) + jump + hero + editCompleteness(e) + '<div class="lvstage estage">' +
     '<div class="estack">' + stack + '</div></div>' +
     '<div class="efoot"><span id="savestate" class="savestate">All changes saved</span><span class="esp"></span>' +
     '<button class="ibtn solid" data-act="done">' + ic('check', 16) + '<span>Done</span></button></div></div>';
@@ -1166,6 +1181,7 @@ function act(a, el){
     case 'sectoggle': toggleSec(el.getAttribute('data-sec')); break;
     case 'jump': jumpTo(el.getAttribute('data-sec')); break;
     case 'secall': SECTIONS.forEach(function(s){ S.openSecs[s.id] = el.getAttribute('data-v') === '1'; }); saveOpenSecs(); $$('#rightbody .esec').forEach(function(x){ x.classList.toggle('open', el.getAttribute('data-v') === '1'); }); break;
+    case 'egroup': S.editGroup = parseInt(el.getAttribute('data-g'), 10); renderPanel(true); break;
     case 'audit': toggleAudit(); break;
     case 'setaudit': setAudit(el.getAttribute('data-v')); break;
     case 'auditnext':
@@ -2086,7 +2102,7 @@ function reviewQueueHTML(){
 function openSettings(){
   openModal('Settings',
     '<label class="lab">Keyboard shortcuts</label>' +
-    '<div class="keys"><kbd>/</kbd><span>Search</span><kbd>↑ ↓</kbd><span>Move through the directory</span><kbd>1 2 3</kbd><span>On file, Story, Files</span><kbd>E</kbd><span>Edit the open dossier</span>' +
+    '<div class="keys"><kbd>/</kbd><span>Search</span><kbd>↑ ↓</kbd><span>Move through the directory</span><kbd>1 2 3</kbd><span>On file, Record, Files</span><kbd>E</kbd><span>Edit the open dossier</span>' +
     '<kbd>Alt ←</kbd><span>Back to the previous person</span><kbd>Esc</kbd><span>Back, finish editing, or close</span><kbd>B</kbd><span>Show or hide the directory</span></div>' +
     '<label class="lab">Edit key<span class="sh">Only needed if you set EDIT_TOKEN in the Apps Script project. Stored in this browser.</span></label>' +
     '<input type="password" id="setedit" placeholder="Edit key" autocomplete="off" value="' + esc(getPw()) + '">' +
