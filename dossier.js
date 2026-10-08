@@ -99,7 +99,23 @@ function typing(){
 }
 function parseArr(v){
   if(Array.isArray(v)) return v;
-  try{ var a = JSON.parse(String(v || '[]')); return Array.isArray(a) ? a : []; }catch(x){ return []; }
+  var str = String(v || '').trim();
+  if(!str) return [];
+  try{ var a = JSON.parse(str); if(Array.isArray(a)) return a; }catch(x){}
+  // legacy text format: "Major — School (Year); Major2 — School2 (Year2)"
+  return str.split(/\s*;\s*/).map(function(part){
+    var m = part.match(/^(.*?)\s*[\u2014-]\s*(.*?)\s*(?:\(([^)]*)\))?$/);
+    if(!m) return null;
+    var left = m[1].trim(), right = m[2].trim(), year = (m[3] || '').trim();
+    // guess which side is the school
+    var isSchool = function(x){ return /^(SUNY|CUNY)\b|university|college|institute|academy|\bschool\b/i.test(x); };
+    var d = {};
+    if(isSchool(right)){ d.school = right; if(left) d.major = left; }
+    else if(isSchool(left)){ d.school = left; if(right) d.major = right; }
+    else { d.school = right || left; if(left && left !== d.school) d.major = left; }
+    if(year) d.year = year.replace(/[^0-9]/g, '').slice(-4) || year;
+    return d.school ? d : null;
+  }).filter(Boolean);
 }
 
 /* ---------- icons (one stroke family, so they all sit together) ---------- */
@@ -254,7 +270,7 @@ var L1_TOTAL = 14;
 
 /* The edit stack, top to bottom. lv = which level color the section wears. */
 var SECTIONS = [
-  { id:'identity',    title:'Identity',     ic:'user',      lv:1, fields:['display_name','also_known_as','phone','email'] },
+  { id:'identity',    title:'Identity',     ic:'user',      lv:1, fields:['display_name','phone','email'] },
   { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
   { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
   { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','chips','highlights','public_footprint'] },
