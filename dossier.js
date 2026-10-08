@@ -273,7 +273,7 @@ var SECTIONS = [
   { id:'identity',    title:'Identity',     ic:'user',      lv:1, fields:['display_name','phone','email'] },
   { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
   { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
-  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','chips','highlights','public_footprint'] },
+  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','highlights','public_footprint'] },
   { id:'onfile',      title:'On file',      ic:'quote',     lv:1, fields:['synopsis'] },
   { id:'education',   title:'Education',    ic:'cap',       lv:1, fields:[] },
   { id:'connections', title:'Connections',  ic:'share',     lv:2, fields:[] },
@@ -284,7 +284,12 @@ var SECTIONS = [
 var EVT_ICON = { milestone:'flag', note:'quote', 'life event':'heart' };
 
 function fieldDef(k){ return F[k] || { k:k, l:k }; }
-function dispName(e){ return e.display || e.name || ''; }
+function dispName(e){
+  var pr = e.profile || {};
+  var fn = (pr.first_name || '').trim(), ln = (pr.last_name || '').trim();
+  if(fn || ln) return (fn + ' ' + ln).trim();
+  return e.display || e.name || '';
+}
 
 /* ---------- education: degrees from the four local universities ---------- */
 var SCHOOLS = {
