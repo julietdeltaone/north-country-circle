@@ -720,3 +720,9 @@ padding:12px;cursor:pointer;color:var(--dim);font-family:var(--disp);transition:
 .egh:hover{border-color:var(--c);color:var(--txt)}
 .egh.on{border-color:color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 10%,transparent);color:var(--txt)}
 .egh.on b{color:var(--c)}
+/* compact completeness in header + hero toggle percentages */
+.hpct{display:inline-block;margin-left:10px;font-size:12px;font-weight:800;color:#8fb3ff;
+border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;vertical-align:middle;white-space:nowrap}
+.egh{display:flex;align-items:center;justify-content:center;gap:10px}
+.egh i{font-style:normal;font-size:13px;font-weight:700;color:var(--dim)}
+.egh.on i{color:var(--c)}
