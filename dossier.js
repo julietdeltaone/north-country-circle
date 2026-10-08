@@ -50,7 +50,7 @@ var RELC = { mutual:'#e0688a', following:'#b48ce8', follower:'#8b95a7' };
 var RELN = { mutual:'Mutual', following:'Following', follower:'Follower' };
 
 var S = {
-  q:'', rel:'', lvlF:0, auditOnly:false, tag:null, sort:'strength',
+  q:'', rel:'', lvlF:0, auditOnly:false, enrichedOnly:false, tag:null, sort:'strength',
   rail:'people', limit:200,
   sel:null, editing:false, lvl:1, hist:[], fwd:[], wide:false,
   mode:'3d', colorBy:'tier', showBg:false, listOpen:true, tierF:'',
@@ -358,6 +358,12 @@ function pkey(e){
 }
 
 /* Get a field's value from wherever it lives. The profile row wins once it has been edited here. */
+function isEnriched(e){
+  var pr = e.profile || {};
+  if((pr.degrees || '').trim() || (pr.highlights || '').trim() || (pr.achievements || '').trim()) return true;
+  var fp = String(pr.public_footprint || e.public_footprint || '');
+  return fp.indexOf('http') >= 0;
+}
 function gv(e, k){
   var p = e.profile || {}, v = p[k];
   var edited = !!(e._set && e._set[k]);
@@ -426,6 +432,7 @@ function passes(r, skipLvl, skipQ){
   var pr = r.profile || {};
   if(pr.deleted === '1') return false;
   if(S.auditOnly && pr.audit === 'audited') return false;
+  if(S.enrichedOnly && !isEnriched(r)) return false;
   if(S.tag && tagList(gv(r, S.tag.k)).indexOf(S.tag.v) < 0) return false;
   if(S.rel && r.relation !== S.rel) return false;
   if(!skipLvl && S.lvlF && personLevel(r) !== S.lvlF) return false;
@@ -498,7 +505,7 @@ function railPeople(){
     var r = D.directory[di], lv = personLevel(r), aud = (r.profile || {}).audit === 'audited';
     var sub = subLine(r) + (r.relation ? ' · ' + RELN[r.relation] : '');
     return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
-      '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
+      '<div class="ava' + (isEnriched(r) ? ' enr' : '') + '" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
       (aud ? '' : '<i class="auddot" title="Needs audit"></i>') + '</div>' +
       '<div class="nm"><b>' + esc(dispName(r)) + '</b><span>' + esc(sub) + '</span></div>' + capHTML(r) + pipsHTML(r) + '</div>';
   }).join('');
@@ -547,15 +554,16 @@ function railFiles(){
   $('#leftbody').innerHTML = h || '<div class="empty-note">No files attached yet. Open someone and use the Files section.</div>';
 }
 function updateFilterUI(){
-  var n = (S.rel ? 1 : 0) + (S.tierF ? 1 : 0) + (S.auditOnly ? 1 : 0) + (S.sort !== 'strength' ? 1 : 0);
+  var n = (S.rel ? 1 : 0) + (S.tierF ? 1 : 0) + (S.auditOnly ? 1 : 0) + (S.enrichedOnly ? 1 : 0) + (S.sort !== 'strength' ? 1 : 0);
   var b = $('#filtercount');
   b.hidden = !n; b.textContent = n;
-  $('#frel').value = S.rel; $('#fsort').value = S.sort; $('#fauditonly').checked = S.auditOnly;
+  $('#frel').value = S.rel; $('#fsort').value = S.sort; $('#fauditonly').checked = S.auditOnly; $('#fenrichedonly').checked = S.enrichedOnly;
   var chips = [];
   if(S.tag) chips.push('<button class="aflt" data-clr="tag">' + esc(S.tag.v) + '<b>' + ic('x', 11) + '</b></button>');
   if(S.rel) chips.push('<button class="aflt" data-clr="rel">' + esc(RELN[S.rel]) + '<b>' + ic('x', 11) + '</b></button>');
   if(S.tierF) chips.push('<button class="aflt" data-clr="tier">' + esc(TIERS[S.tierF].n) + '<b>' + ic('x', 11) + '</b></button>');
   if(S.auditOnly) chips.push('<button class="aflt" data-clr="audit">Needs audit<b>' + ic('x', 11) + '</b></button>');
+  if(S.enrichedOnly) chips.push('<button class="aflt" data-clr="enriched">Enriched<b>' + ic('x', 11) + '</b></button>');
   if(S.q.trim()) chips.push('<button class="aflt" data-clr="q">“' + esc(S.q.trim()) + '”<b>' + ic('x', 11) + '</b></button>');
   $('#activeflt').innerHTML = chips.join('');
   $('#auditpill').classList.toggle('on', S.auditOnly);
@@ -565,8 +573,9 @@ function clearFilter(k){
   else if(k === 'rel') S.rel = '';
   else if(k === 'tier') S.tierF = '';
   else if(k === 'audit') S.auditOnly = false;
+  else if(k === 'enriched') S.enrichedOnly = false;
   else if(k === 'q'){ S.q = ''; $('#fq').value = ''; }
-  else if(k === 'all'){ S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.sort = 'strength'; S.lvlF = 0; S.q = ''; $('#fq').value = ''; }
+  else if(k === 'all'){ S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.enrichedOnly = false; S.sort = 'strength'; S.lvlF = 0; S.q = ''; $('#fq').value = ''; }
   S.limit = 200; refresh();
 }
 function updateAuditPill(){
@@ -2739,6 +2748,7 @@ function bind(){
   $('#frel').addEventListener('change', function(e){ S.rel = e.target.value; S.limit = 200; refresh(); });
   $('#fsort').addEventListener('change', function(e){ S.sort = e.target.value; refresh(); });
   $('#fauditonly').addEventListener('change', function(e){ S.auditOnly = e.target.checked; S.limit = 200; refresh(); });
+  $('#fenrichedonly').addEventListener('change', function(e){ S.enrichedOnly = e.target.checked; S.limit = 200; refresh(); });
   $('#fclear').addEventListener('click', function(){ clearFilter('all'); $('#filterpop').hidden = true; });
   $('#activeflt').addEventListener('click', function(e){
     var b = e.target.closest('[data-clr]'); if(b) clearFilter(b.getAttribute('data-clr'));
