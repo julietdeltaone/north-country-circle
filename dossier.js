@@ -622,7 +622,8 @@ function phead(e){
     '<button data-act="delete" class="danger">' + ic('trash', 16) + 'Delete this person</button></div></div>';
   return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + auditBack + back +
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
-    '<div class="hname"><h2 title="' + esc(dispName(e)) + '">' + esc(dispName(e)) + '</h2>' +
+    '<div class="hname"><h2 title="' + esc(dispName(e)) + '">' + esc(dispName(e)) +
+    (S.editing ? '<span class="hpct" title="Profile completeness">' + pct(e) + '%</span>' : '') + '</h2>' +
     (function(){ var sl = subLine(e); return sl ? '<div class="hsub"><span>' + esc(sl) + '</span>' +
     reviewBadge(e) + (S.editing ? '<span class="editflag">Editing</span>' : '') + '</div>' : ''; })() + '</div>' +
     '<div class="hact">' + edit +
@@ -720,9 +721,18 @@ function knownAssociates(e){
     var k = (nb.u || '').toLowerCase();
     if(k && !seen[k] && !hide[k]){ seen[k] = 1; out.push({ u:nb.u, d:nb.d }); }
   });
-  linkedFrom(e).forEach(function(di){
-    var r = D.directory[di], k = (r.name || '').toLowerCase();
-    if(k && !seen[k] && !hide[k]){ seen[k] = 1; out.push({ u:r.name, d:dispName(r) }); }
+  return out;
+}
+function listedByOthers(e){
+  // reverse edges: people whose auto-picks include this person. Shown separately in the
+  // editor as incoming/auto context — NOT as this person's own known associates.
+  var me = (e.name || '').toLowerCase(), hide = hiddenAssoc(e), out = [];
+  D.directory.forEach(function(r){
+    if(r === e || (r.profile || {}).deleted === '1') return;
+    if((r.neighbors || []).some(function(n){ return (n.u || '').toLowerCase() === me; })){
+      var k = (r.name || '').toLowerCase();
+      if(k && !hide[k]) out.push(r);
+    }
   });
   return out;
 }
@@ -876,8 +886,11 @@ function connectionsBody(e){
   var nb = knownAssociates(e);
   var chips = nb.length ? '<div class="chips">' + nb.map(function(x){ return nbrChipHTML(x, true); }).join('') + '</div>' : '<p class="dim" style="margin:0;font-size:13px">None mapped yet.</p>';
   var cps = connPhases(e);
+  var listed = listedByOthers(e);
+  var listedHTML = listed.length ? '<div class="subhead">Listed by others <span class="dim" style="font-weight:400">(' + listed.length + ' incoming, auto)</span></div><div class="chips">' +
+    listed.map(function(r){ return '<span class="nchip plain" data-act="nav" data-di="' + D.directory.indexOf(r) + '" title="Open dossier"><i></i>' + esc(auName(r).name) + '</span>'; }).join('') + '</div>' : '';
   return '<div class="subhead first">Known associates</div>' + chips +
-    '<div class="naddwrap"><input id="naddinput" placeholder="Add a known associate: type a name" autocomplete="off"><div id="naddlist"></div></div>' +
+    '<div class="naddwrap"><input id="naddinput" placeholder="Add a known associate: type a name" autocomplete="off"><div id="naddlist"></div></div>' + listedHTML +
     '<div class="subhead">Connection timeline</div>' +
     '<div id="cprows">' + cps.map(function(p, i){ return cpRowHTML(p, i); }).join('') + '</div>' +
     '<div class="arow"><button class="mini" data-act="cpadd" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add phase</button></div>' +
@@ -1008,8 +1021,8 @@ function secHTML(s, e){
     '<span class="sbadge' + (fl.done ? ' done' : '') + '">' + esc(fl.t) + '</span><span class="chev">' + ic('chev', 14) + '</span></header>' +
     '<div class="sbody">' + secBody(s, e) + '</div></section>';
 }
-function editCompleteness(e){
-  var tot = 0, got = 0;
+function editCompletenessData(e){
+  var tot = 0, got = 0, levels = {};
   SECTIONS.forEach(function(s){
     var flds = s.fields || [];
     if(s.id === 'education'){ tot += 1; if(degreesOf(e).length) got += 1; return; }
@@ -1018,9 +1031,7 @@ function editCompleteness(e){
     if(s.id === 'files'){ tot += 1; if((e.files || []).length) got += 1; return; }
     flds.forEach(function(k){ tot++; if(gv(e, k) !== '') got++; });
   });
-  var pct = tot ? Math.round(got / tot * 100) : 0;
-  var lvlN = { 1:'On file', 2:'Record', 3:'Files' };
-  var bars = [1, 2, 3].map(function(lv){
+  [1, 2, 3].forEach(function(lv){
     var lt = 0, lg = 0;
     SECTIONS.forEach(function(s){
       if(s.lv !== lv) return;
@@ -1029,11 +1040,11 @@ function editCompleteness(e){
       if(s.id === 'connections'){ lt++; if((e.neighbors || []).length) lg++; }
       if(s.id === 'timeline'){ lt++; if((e.events || []).length) lg++; }
     });
-    var lp = lt ? Math.round(lg / lt * 100) : 0;
-    return '<div class="ehero-lvl"><span style="--c:' + LV[lv].c + '"><i></i>' + lvlN[lv] + '</span><div class="ehero-bar"><b style="width:' + lp + '%;--c:' + LV[lv].c + '"></b></div><em>' + lp + '%</em></div>';
-  }).join('');
-  return '<div class="ehero"><div class="ehero-top"><b>' + pct + '%</b><span>profile complete</span><div class="ehero-bar big"><b style="width:' + pct + '%"></b></div></div>' + bars + '</div>';
+    levels[lv] = lt ? Math.round(lg / lt * 100) : 0;
+  });
+  return { pct: tot ? Math.round(got / tot * 100) : 0, levels: levels };
 }
+function pct(e){ return editCompletenessData(e).pct; }
 function editGroups(){
   // level groups for the edit hero toggle: 1=On file, 2=Record, 3=Files(+Admin)
   return [
@@ -1045,11 +1056,10 @@ function editGroups(){
 function dossierEdit(e){
   if(S.editGroup == null) S.editGroup = 1;
   var groups = editGroups();
-  var jump = '<div class="jump">' + SECTIONS.map(function(s){
-    return '<button type="button" data-act="jump" data-sec="' + s.id + '" style="--c:' + (s.lv ? LV[s.lv].c : '#ece9e2') + '">' + esc(s.title) + '</button>';
-  }).join('') + '<span class="jsp"></span><button type="button" class="jall" data-act="secall" data-v="1">Open all</button><button type="button" class="jall" data-act="secall" data-v="0">Close all</button></div>';
+  var comp = editCompletenessData(e);
   var hero = '<div class="egrouphero">' + groups.map(function(g){
-    return '<button type="button" class="egh' + (S.editGroup === g.id ? ' on' : '') + '" data-act="egroup" data-g="' + g.id + '" style="--c:' + g.c + '"><b>' + g.n + '</b></button>';
+    var gp = comp.levels[g.id] != null ? comp.levels[g.id] : 0;
+    return '<button type="button" class="egh' + (S.editGroup === g.id ? ' on' : '') + '" data-act="egroup" data-g="' + g.id + '" style="--c:' + g.c + '"><b>' + g.n + '</b><i>' + gp + '%</i></button>';
   }).join('') + '</div>';
   var lvlN = { 1:'On file', 2:'Record', 3:'Files', 0:'Admin' }, lastLv = null, stack = '';
   var active = groups.filter(function(g){ return g.id === S.editGroup; })[0];
@@ -1058,7 +1068,7 @@ function dossierEdit(e){
     if(s.lv !== lastLv){ stack += '<div class="elvldiv" style="--c:' + (s.lv ? LV[s.lv].c : '#8b95a7') + '"><span>' + lvlN[s.lv] + '</span></div>'; lastLv = s.lv; }
     stack += secHTML(s, e);
   });
-  return '<div class="doc edit">' + phead(e) + jump + hero + editCompleteness(e) + '<div class="lvstage estage">' +
+  return '<div class="doc edit">' + phead(e) + hero + '<div class="lvstage estage">' +
     '<div class="estack">' + stack + '</div></div>' +
     '<div class="efoot"><span id="savestate" class="savestate">All changes saved</span><span class="esp"></span>' +
     '<button class="ibtn solid" data-act="done">' + ic('check', 16) + '<span>Done</span></button></div></div>';
@@ -2738,11 +2748,11 @@ function bind(){
   $('#leftbody').addEventListener('click', function(e){
     if(e.target.closest('[data-more]')){ S.limit += 200; renderRail(); return; }
     var row = e.target.closest('[data-i]');
-    if(row) openPerson(parseInt(row.getAttribute('data-i'), 10), { lvl:parseInt(row.getAttribute('data-go'), 10) || 1 });
+    if(row) openPerson(parseInt(row.getAttribute('data-i'), 10), { lvl:parseInt(row.getAttribute('data-go'), 10) || 1, edit:S.editing });
   });
   $('#leftbody').addEventListener('keydown', function(e){
     var row = e.target.closest('[data-i]');
-    if(row && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); openPerson(parseInt(row.getAttribute('data-i'), 10), { lvl:parseInt(row.getAttribute('data-go'), 10) || 1 }); }
+    if(row && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); openPerson(parseInt(row.getAttribute('data-i'), 10), { lvl:parseInt(row.getAttribute('data-go'), 10) || 1, edit:S.editing }); }
   });
 
   /* stage */
