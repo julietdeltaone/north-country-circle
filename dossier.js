@@ -125,6 +125,7 @@ var IC = {
   quote:'<path d="M10 11H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6c0 2-1 3.5-3 4.5M20 11h-4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6c0 2-1 3.5-3 4.5"/>',
   zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
   briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  award:'<circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/>',
   church:'<path d="M12 2v4M8 4h8"/><path d="M5 8 3 9v13h18V9l-2-1"/><path d="M9 22v-6h6v6"/>',
   tag:'<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
   trend:'<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
@@ -278,6 +279,31 @@ function degreeText(e){ return degreesOf(e).map(function(d){ return [d.school, d
 function yy(y){ y = String(y || ''); return /^\d{4}$/.test(y) ? '\u2019' + y.slice(2) : y; }
 function schoolShort(s){ return (SCHOOLS[s] && SCHOOLS[s].s) || s || 'School'; }
 function sortDegrees(ds){ return ds.slice().sort(function(a, b){ return String(b.year || '').localeCompare(String(a.year || '')); }); }
+function achievementsOf(e){
+  var fp = String(gv(e, 'public_footprint') || ''), out = [], seen = {};
+  function add(label){ label = String(label || '').trim(); if(label && !seen[label.toLowerCase()]){ seen[label.toLowerCase()] = 1; out.push(label); } }
+  var m, rx;
+  // Dean's / President's List with optional year ranges
+  rx = /(President'?s|Dean'?s) List/gi;
+  while((m = rx.exec(fp))){
+    var tail = fp.slice(m.index, m.index + 120).split(/[.\n]/)[0];
+    var ym = tail.match(/((?:Fall|Spring|Summer|Winter)\s+(?:19|20)\d{2}|(?:19|20)\d{2}(?:\s*(?:[\u2013\u2014-]|to)\s*(?:19|20)?\d{2,4})?(?:\s*,\s*(?:19|20)\d{2})*)/i);
+    var yrs = ym ? ym[1].trim().replace(/\s+/g, ' ') : '';
+    add(m[1].replace(/'?s$/, "'s") + ' List' + (yrs ? ' ' + yrs : ''));
+  }
+  // Named awards
+  ['Director\'?s Award', 'Photo of the Day', 'Rookie of the Year'].forEach(function(pat){
+    rx = new RegExp(pat, 'gi');
+    while((m = rx.exec(fp))) add(m[0]);
+  });
+  // Scholarships: "X Scholarship"
+  rx = /([A-Z][A-Za-z&.'-]*(?:\s+[A-Z][A-Za-z&.'-]*){0,3} Scholarship)/g;
+  while((m = rx.exec(fp))) add(m[1]);
+  // Certifications: "Certified X Technician/..."
+  rx = /Certified ([A-Z][A-Za-z ]{2,40}?)(?=\s+(?:at|in|from|\.|,|\n|$))/g;
+  while((m = rx.exec(fp))) add('Certified ' + m[1].trim());
+  return out.slice(0, 8);
+}
 function degBadge(d){
   var bits = [];
   if(d.degree) bits.push(esc(d.degree));
@@ -640,6 +666,12 @@ function lvl1View(e){
       (d.year ? '<em>' + esc(d.year) + '</em>' : '') + '</div>';
   }).join('') + '</div>', '', 'span') : '';
 
+  var ach = achievementsOf(e);
+  if(ach.length){
+    var achHTML = '<div class="achrow"><span class="achlab">' + ic('award', 13) + 'Honors</span><div class="chips">' +
+      ach.map(function(a){ return '<span class="vchip achchip">' + ic('award', 12) + esc(a) + '</span>'; }).join('') + '</div></div>';
+    edu = edu ? edu.replace(/<\/div><\/section>$/, achHTML + '</div></section>') : card('cap', 'Education', 1, achHTML, '', 'span');
+  }
   var traits = '<div class="traits grid2">' + L1_SCORES.map(function(k){
     var v = gv(e, k);
     return '<div class="trait' + (v ? '' : ' empty-t') + '"><span>' + esc(fieldDef(k).l) + '</span>' + pips5(v) + '</div>';
