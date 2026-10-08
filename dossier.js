@@ -238,6 +238,8 @@ var F = {
   universities:{ l:'Universities', t:'pick', sep:', ' },
   chips:{ l:'Tags', t:'tags', sep:'; ', ph:'+ type: label' },
   public_footprint:{ l:'Public footprint', t:'long', r:4 },
+  highlights:{ l:'Highlights', t:'tags', sep:' | ', ph:'Key fact, e.g. NYSP trooper in Canton' },
+  achievements:{ l:'Achievements', t:'tags', sep:' | ', ph:'Award + year, e.g. Dean\'s List 2020' },
 
   synopsis:{ l:'Synopsis', t:'long', r:4, ai:'synopsis', ph:'One topic per line, starting with a label and colon.' },
 
@@ -254,8 +256,8 @@ var L1_TOTAL = 14;
 var SECTIONS = [
   { id:'identity',    title:'Identity',     ic:'user',      lv:1, fields:['display_name','also_known_as','phone','email'] },
   { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
-  { id:'ratings',     title:'Ratings',      ic:'star',      lv:1, fields:L1_SCORES },
-  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','chips','public_footprint'] },
+  { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
+  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','shared_interests','churches','companies','universities','chips','highlights','public_footprint'] },
   { id:'onfile',      title:'On file',      ic:'quote',     lv:1, fields:['synopsis'] },
   { id:'education',   title:'Education',    ic:'cap',       lv:1, fields:[] },
   { id:'connections', title:'Connections',  ic:'share',     lv:2, fields:[] },
@@ -303,6 +305,9 @@ function achievementsOf(e){
   rx = /Certified ([A-Z][A-Za-z ]{2,40}?)(?=\s+(?:at|in|from|\.|,|\n|$))/g;
   while((m = rx.exec(fp))) add('Certified ' + m[1].trim());
   return out.slice(0, 8);
+}
+function parseAchievements(v){
+  return String(v || '').split(/\s*\|\s*/).map(function(x){ return x.trim(); }).filter(Boolean).slice(0, 8);
 }
 function degBadge(d){
   var bits = [];
@@ -667,7 +672,8 @@ function lvl1View(e){
       (d.year ? '<em>' + esc(d.year) + '</em>' : '') + '</div>';
   }).join('') + '</div>', '', 'span') : '';
 
-  var ach = achievementsOf(e);
+  var ach = parseAchievements(gv(e, 'achievements'));
+  if(!ach.length) ach = achievementsOf(e);
   if(ach.length){
     var achHTML = '<div class="achrow"><span class="achlab">' + ic('award', 13) + 'Honors</span><div class="chips">' +
       ach.map(function(a){ return '<span class="vchip achchip">' + ic('award', 12) + esc(a) + '</span>'; }).join('') + '</div></div>';
@@ -677,7 +683,11 @@ function lvl1View(e){
     var v = gv(e, k);
     return '<div class="trait' + (v ? '' : ' empty-t') + '"><span>' + esc(fieldDef(k).l) + '</span>' + pips5(v) + '</div>';
   }).join('') + '</div>';
-  var ratings = L1_SCORES.some(function(k){ return gv(e, k) !== ''; }) ? card('activity', 'Ratings', 1, readHTML(e) + traits) : '';
+  var personaTraits = '<div class="persona-grid">' + L1_SCORES.map(function(k){
+    var v = parseInt(gv(e, k), 10) || 0;
+    return '<div class="ptrait" title="' + esc(fieldDef(k).l) + ': ' + v + '/5"><span>' + esc(fieldDef(k).l) + '</span><div class="pbar"><b style="width:' + (v*20) + '%"></b></div></div>';
+  }).join('') + '</div>';
+  var ratings = L1_SCORES.some(function(k){ return gv(e, k) !== ''; }) ? card('activity', 'Persona', 1, personaTraits) : '';
 
   var bg = '';
   if(gv(e, 'specialty')) bg += '<div class="idrow"><span class="idic">' + ic('zap', 15) + '</span><div><span>Specialty</span><b>' + esc(gv(e, 'specialty')) + '</b></div></div>';
@@ -690,14 +700,16 @@ function lvl1View(e){
       orgs += '<span class="vchip orgchip"><span class="oc-ic">' + ic(ORG_ICONS[cat.k] || 'briefcase', 12) + '</span>' + esc(v) + '</span>';
     });
   });
-  var bgBody = bg + (orgs ? '<div class="subhead">Organizations</div><div class="chips">' + orgs + '</div>' : '');
+  var hl = parseAchievements(gv(e, 'highlights'));
+  var hlHTML = hl.length ? '<div class="subhead">Highlights</div><div class="chips">' +
+    hl.map(function(h){ return '<span class="vchip hchip">' + ic('zap', 12) + esc(h) + '</span>'; }).join('') + '</div>' : '';
+  var bgBody = bg + hlHTML + (orgs ? '<div class="subhead">Organizations</div><div class="chips">' + orgs + '</div>' : '');
   var background = bgBody ? card('briefcase', 'Background', 1, bgBody) : '';
 
   var syn = gv(e, 'synopsis') ? card('quote', 'Synopsis', 1, '<div class="narr">' + esc(gv(e, 'synopsis')) + '</div>', '', 'span') : '';
-  var fp = gv(e, 'public_footprint') ? card('link', 'Public footprint', 1, footprintHTML(e), '', 'span') : '';
   var ka = knownAssociates(e);
   var conns = ka.length ? card('share', 'Known associates', 1, '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>', '', '', true) : '';
-  var out = contact + edu + ratings + background + syn + conns + fp;
+  var out = contact + edu + ratings + background + syn + conns;
   if(!out) out = card('user', 'On file', 1, emptyBox('Nothing on file yet. Press the pencil to start filling this in.'), '', 'span');
   return out;
 }
@@ -971,7 +983,8 @@ function educationBody(e){
     '<input type="text" id="ddyear" value="' + esc(cur.year || '') + '" placeholder="Grad year, for example 2019" autocomplete="off"></div>' +
     '<input type="text" id="ddnote" value="' + esc(cur.note || '') + '" placeholder="Source or note (optional)" autocomplete="off">' +
     '<div class="arow"><button class="mini" data-act="degsave" style="--c:' + LV[1].c + '">' + ic('check', 13) + (S.degEdit != null ? 'Update degree' : 'Add degree') + '</button>' +
-    (S.degEdit != null ? '<button class="mini neutral" data-act="degcancel">Cancel</button>' : '') + '</div></div>';
+    (S.degEdit != null ? '<button class="mini neutral" data-act="degcancel">Cancel</button>' : '') + '</div></div>' +
+    '<div class="subhead">Achievements</div>' + fieldRow('achievements', e);
 }
 function saveDegree(){
   var e = D.directory[S.sel]; if(!e) return;
@@ -1935,7 +1948,7 @@ function renderAudit(){
       '<span class="aumain"><span class="auname">' + esc(r.an.name) +
         (r.an.business ? '<em class="aubiz">Business</em>' : '') +
         (hd ? '<i>@' + esc(hd) + '</i>' : '') + '</span>' +
-      '<span class="auneeds">' + pill(r.st.hasR, 'Ratings') + pill(r.st.hasB, 'Background') + pill(r.st.hasC, 'Connection') + pill(r.st.audited, 'Audited') +
+      '<span class="auneeds">' + pill(r.st.hasR, 'Persona') + pill(r.st.hasB, 'Background') + pill(r.st.hasC, 'Connection') + pill(r.st.audited, 'Audited') +
         (AUD.f === 'name' ? '<b class="miss">' + esc(nameFlag(r.e) || 'name') + '</b>' : '') +
         (r.cs ? r.cs.reasons.map(function(x){ return '<b class="have">' + esc(x) + '</b>'; }).join('') : '') + '</span></span>' +
       '<span class="aubar" title="' + r.st.score + ' of 4 complete"><i style="width:' + (r.st.score * 25) + '%"></i></span>' +
