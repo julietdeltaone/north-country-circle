@@ -1788,7 +1788,7 @@ function todayStr(){
 }
 
 /* ---------- audit dashboard ---------- */
-var AUD = { open:false, q:'', f:'needs', sort:'missing', sel:{}, rows:[], undoStack:[], redoStack:[] };
+var AUD = { open:false, q:'', f:'needs', sort:'missing', sel:{}, selGroups:{}, rows:[], undoStack:[], redoStack:[] };
 var BIZ_RE = /\b(llc|inc|corp|co\.|company|church|bakery|grill|cantina|pizza|caf[eé]|studio|salon|barber|tattoo|photo|productions|realty|motors|auto|plumbing|electric|construction|landscap|farm|market|deli|pub|brewery|winery|hotel|motel|insurance|dental|clinic|school|university|college|ntc|cfc|ministr)\b/i;
 var ADDR_RE = /\d+\s+[A-Za-z.]+\s+(st|street|ave|avenue|rd|road|blvd|ln|lane|dr|drive)\b|\bNY\b\s*\d{5}|\b\d{5}\b/;
 function isBusiness(e){
@@ -2026,17 +2026,45 @@ function renderAudit(){
 function renderBulk(){
   var n = Object.keys(AUD.sel).length;
   var bb = $('#aubulk');
-  var showMergeAll = AUD.f === 'dup' && AUD.dupGroups && AUD.dupGroups.length;
-  if(!n && !showMergeAll){ bb.hidden = true; return; }
+  var isMergeView = (AUD.f === 'dup' || AUD.f === 'pmerge') && AUD.dupGroups && AUD.dupGroups.length;
+  var nG = isMergeView ? Object.keys(AUD.selGroups).length : 0;
+  if(!n && !isMergeView){ bb.hidden = true; return; }
   bb.hidden = false;
   bb.innerHTML = (n ? '<span><b>' + n + '</b> selected</span>' : '') +
     (n ? '<button class="mini" data-bulk="audit">Mark audited</button>' +
     '<button class="mini" data-bulk="unaudit">Reopen</button>' +
     '<button class="mini danger" data-bulk="delete">Delete</button>' : '') +
     (n ? '<button class="mini neutral" data-bulk="clear">Clear</button>' : '');
-  if(showMergeAll){
-    bb.innerHTML += '<button class="mini" data-bulk="mergeall" style="--c:#f0b44c">Merge all duplicates</button>';
+  if(isMergeView){
+    bb.innerHTML += (nG ? '<span><b>' + nG + '</b> groups selected</span>' +
+      '<button class="mini" data-bulk="mergesel" style="--c:#f0b44c">Merge selected</button>' +
+      '<button class="mini neutral" data-bulk="clearsel">Clear</button>' : '') +
+      '<button class="mini" data-bulk="mergeall" style="--c:#f0b44c">Merge all' +
+      (AUD.f === 'pmerge' ? ' photo matches' : ' duplicates') + '</button>';
   }
+}
+function doMergeSelected(){
+  var groups = (AUD.dupGroups || []).filter(function(_, gi){ return AUD.selGroups[gi]; });
+  if(!groups.length){ toast('No groups selected.'); return; }
+  var total = groups.reduce(function(n, g){ return n + g.members.length - 1; }, 0);
+  if(!total){ toast('Nothing to merge.'); return; }
+  if(!confirm('Merge ' + total + ' entries across ' + groups.length + ' selected groups?\n\nEach group folds into its selected survivor. You can undo this.')) return;
+  var items = [];
+  groups.forEach(function(g){
+    var surv = D.directory[g.survivor];
+    if(!surv) return;
+    var target = dupHandle(surv);
+    if(!target) return;
+    g.members.forEach(function(m){
+      if(m.di === g.survivor) return;
+      items.push({ di:m.di, prev:((D.directory[m.di].profile || {}).merged_into || ''), next:target });
+    });
+  });
+  if(!items.length){ toast('Nothing to merge.'); return; }
+  AUD.selGroups = {};
+  var entry = { postKey:'merged_into', items:items };
+  pushUndo(entry);
+  applyEntry(entry, false, function(){ toast(total + ' merged.'); });
 }
 
 /* ---------- duplicate detection + nuclear merge ---------- */
@@ -2173,7 +2201,9 @@ function renderPhotoMerge(q){
         ((m.e.pieces || 0) ? '<b class="have">' + m.e.pieces + ' mentions</b>' : '') + '</span></span>' +
         (isS ? '<em class="dupsurvtag">survivor</em>' : '') + '</label>';
     }).join('');
-    return '<div class="dupgroup"><div class="duphead"><b>' + esc(g.face) + '</b>' +
+    return '<div class="dupgroup"><div class="duphead">' +
+      '<input type="checkbox" class="dupgsel" data-gi="' + gi + '"' + (AUD.selGroups[gi] ? ' checked' : '') + ' title="Select group">' +
+      '<b>' + esc(g.face) + '</b>' +
       '<span class="dim">photo face · ' + g.members.length + ' entries</span>' +
       '<button class="mini" data-dupmerge="' + gi + '" style="--c:#f0b44c">Merge into survivor</button></div>' +
       '<div class="dupmems">' + cards + '</div></div>';
@@ -2983,6 +3013,14 @@ function bind(){
     auSetFilter(b.getAttribute('data-f'));
   });
   $('#auselall').addEventListener('click', function(){
+    if(AUD.f === 'dup' || AUD.f === 'pmerge'){
+      var gs = AUD.dupGroups || [];
+      var all = gs.length && gs.every(function(_, gi){ return AUD.selGroups[gi]; });
+      AUD.selGroups = {};
+      if(!all) gs.forEach(function(_, gi){ AUD.selGroups[gi] = 1; });
+      renderAudit();
+      return;
+    }
     var all = AUD.rows.length && AUD.rows.every(function(r){ return AUD.sel[r.di]; });
     if(all) AUD.sel = {}; else AUD.rows.forEach(function(r){ AUD.sel[r.di] = 1; });
     renderAudit();
@@ -2994,6 +3032,8 @@ function bind(){
     else if(k === 'unaudit') bulkAudit('needs_audit');
     else if(k === 'delete') bulkDelete();
     else if(k === 'mergeall') doMergeAllDups();
+    else if(k === 'mergesel') doMergeSelected();
+    else if(k === 'clearsel'){ AUD.selGroups = {}; renderAudit(); }
     else if(k === 'clear'){ AUD.sel = {}; renderAudit(); }
   });
   $('#ausort').addEventListener('change', function(ev){ AUD.sort = ev.target.value; renderAudit(); });
@@ -3006,10 +3046,17 @@ function bind(){
       renderBulk();
       return;
     }
+    var gcb = ev.target.closest('.dupgsel'); if(gcb){
+      var gi = parseInt(gcb.getAttribute('data-gi'), 10);
+      if(gcb.checked) AUD.selGroups[gi] = 1; else delete AUD.selGroups[gi];
+      renderBulk();
+      return;
+    }
     var radio = ev.target.closest('input[type="radio"][data-gi]');
     if(radio){
       dupSetSurvivor(parseInt(radio.getAttribute('data-gi'), 10), parseInt(radio.getAttribute('data-di'), 10));
-      renderDupAudit(AUD.q.trim().toLowerCase());
+      if(AUD.f === 'pmerge') renderPhotoMerge(AUD.q.trim().toLowerCase());
+      else renderDupAudit(AUD.q.trim().toLowerCase());
       return;
     }
   });
