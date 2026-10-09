@@ -234,8 +234,7 @@ function ambient(){
 /* ---------- field registry: one place that knows every Profiles column the page edits ---------- */
 var ORG_CATS = [
   {k:'churches', label:'Churches', options:['CFC Potsdam','CFC Canton','CFC Madrid','NTC','Calvary Baptist']},
-  {k:'companies', label:'Companies', options:['Rochester Regional Health','Clarkson University','Park Bros.']},
-  {k:'universities', label:'Universities', options:['SUNY Canton','SUNY Potsdam','St. Lawrence University','Clarkson University']}
+  {k:'companies', label:'Companies', options:['Rochester Regional Health','Clarkson University','Park Bros.']}
 ];
 var F = {
   display_name:{ l:'Name', t:'text' },
@@ -286,7 +285,7 @@ var SECTIONS = [
   { id:'identity',    title:'Contact',      ic:'user',      lv:1, fields:['phone','email'] },
   { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
   { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
-  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','churches','companies','universities','highlights','public_footprint'] },
+  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','churches','companies','highlights','public_footprint'] },
   { id:'onfile',      title:'On file',      ic:'quote',     lv:1, fields:['synopsis'] },
   { id:'education',   title:'Education',    ic:'cap',       lv:1, fields:[] },
   { id:'connections', title:'Connections',  ic:'share',     lv:2, fields:[] },
@@ -310,7 +309,15 @@ var SCHOOLS = {
   'SUNY Canton':{ s:'SUNY Canton' }, 'St. Lawrence University':{ s:'SLU' }
 };
 var DEGREE_TYPES = ['AA','AAS','AS','BA','BS','BFA','BBA','BTech','MA','MS','MBA','MEd','MPA','PhD','EdD','DPT','OTD','JD','MD','Certificate','Attended (no degree)','Other'];
-function degreesOf(e){ return parseArr(gv(e, 'degrees')).filter(function(d){ return d && (d.school || d.degree || d.major || d.year); }); }
+function degreesOf(e){
+  var ds = parseArr(gv(e, 'degrees')).filter(function(d){ return d && (d.school || d.degree || d.major || d.year); });
+  /* Universities field folds into degrees as school-only entries */
+  tagList(gv(e, 'universities')).forEach(function(u){
+    if(!ds.some(function(d){ return (d.school || '').toLowerCase() === u.toLowerCase(); }))
+      ds.push({ school:u, degree:'', major:'', year:'', note:'' });
+  });
+  return ds;
+}
 function degreeText(e){ return degreesOf(e).map(function(d){ return [d.school, d.degree, d.major, d.year].join(' '); }).join(' '); }
 function yy(y){ y = String(y || ''); return /^\d{4}$/.test(y) ? '\u2019' + y.slice(2) : y; }
 function schoolShort(s){ return (SCHOOLS[s] && SCHOOLS[s].s) || s || 'School'; }
@@ -762,7 +769,7 @@ function lvl1View(e){
   if(ach.length){
     var achHTML = '<div class="achrow"><span class="achlab">' + ic('award', 13) + 'Honors</span><div class="chips">' +
       ach.map(function(a){ return '<span class="vchip achchip">' + ic('award', 12) + esc(a) + '</span>'; }).join('') + '</div></div>';
-    edu = edu ? edu.replace(/<\/div><\/section>$/, achHTML + '</div></section>') : card('cap', 'Education', 1, achHTML, '', 'span');
+    edu = edu ? edu.replace(/<\/div><\/section>$/, achHTML + '</div></section>') : card('cap', 'Education', 1, achHTML, '', '');
   }
   var traits = '<div class="traits grid2">' + L1_SCORES.map(function(k){
     var v = gv(e, k);
@@ -1081,10 +1088,6 @@ function saveDegree(){
   var arr = parseArr(gv(e, 'degrees')).slice();
   if(S.degEdit != null && arr[S.degEdit]) arr[S.degEdit] = d; else arr.push(d);
   var patch = { degrees:JSON.stringify(arr) };
-  if(SCHOOLS[school]){
-    var us = tagList(gv(e, 'universities'));
-    if(us.indexOf(school) < 0){ us.push(school); patch.universities = us.join(', '); }
-  }
   var edited = S.degEdit != null;
   S.degEdit = null;
   queuePatch(S.sel, patch);
