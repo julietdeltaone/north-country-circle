@@ -533,7 +533,7 @@ function railPeople(){
     return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
       '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
       (S.showIndicators ? (!aud ? '<i class="auddot' + (isEnriched(r) ? ' enr' : '') + '" title="Needs audit"></i>' : (isEnriched(r) ? '<i class="enrdot" title="Enriched from online sources"></i>' : '')) : '') + '</div>' +
-      '<div class="nm"><b>' + esc(dispName(r)) + '</b><span>' + esc(sub) + '</span>' + fieldIndicators(r) + '</div>' + capHTML(r) + pipsHTML(r) + '</div>';
+      '<div class="nm"><b>' + esc(dispName(r)) + '</b><div class="subrow"><span class="sub">' + esc(sub) + '</span>' + fieldIndicators(r) + '</div></div>' + capHTML(r) + pipsHTML(r) + '</div>';
   }).join('');
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
   $('#leftbody').innerHTML = indTogg + (h || '<div class="empty-note">No one matches. Try clearing a filter.</div>');
@@ -2578,29 +2578,28 @@ function setMode(m){
   if(S.mode === m) return;
   $$('#modeToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m') === m); });
   var hint = $('#stagehint'), hubEl = $('#hub'), glEl = $('#gl3d');
-  hubEl.style.transition = 'opacity .45s ease';
-  glEl.style.transition = 'opacity .45s ease';
-  function clearFx(a, b){
-    a.style.opacity = ''; a.style.transition = '';
-    b.style.opacity = ''; b.style.transition = '';
+  var was3d = S.mode === '3d';
+  S.mode = m; store('ncc_mode', m);
+  /* Simple crossfade: no camera flights, just a smooth 350ms opacity blend. */
+  hubEl.style.transition = 'opacity .35s ease';
+  glEl.style.transition = 'opacity .35s ease';
+  function clearFx(){
+    hubEl.style.opacity = ''; hubEl.style.transition = '';
+    glEl.style.opacity = ''; glEl.style.transition = '';
   }
   if(m === '3d'){
     hint.textContent = 'Drag to orbit · scroll to zoom · click a dot to open them';
-    S.mode = m; store('ncc_mode', m);
     var doEnter = function(){
       if(!GL) return;
-      GL.flight = null;
-      GL.camera.position.set(0, 460, 0.1);
-      GL.controls.target.set(0, 0, 0);
       glEl.hidden = false;
-      hubEl.style.opacity = '0';
+      glEl.style.opacity = '0';
       void glEl.offsetWidth;
+      hubEl.style.opacity = '0';
       glEl.style.opacity = '1';
       setTimeout(function(){
         hubEl.style.visibility = 'hidden';
-        clearFx(hubEl, glEl);
-        glFlyTo(new THREE.Vector3(0, 72, 305), new THREE.Vector3(0, 0, 0), 1500);
-      }, 480);
+        clearFx();
+      }, 380);
     };
     if(GL){ initGL(); doEnter(); }
     else{
@@ -2612,25 +2611,16 @@ function setMode(m){
     }
   } else {
     hint.textContent = 'Drag to pan · scroll to zoom · click a dot to open them';
-    store('ncc_mode', m);
-    var flyMs = 0;
-    if(GL && S.mode === '3d'){
-      glFlyTo(new THREE.Vector3(0, 460, 0.1), new THREE.Vector3(0, 0, 0), 1100);
-      flyMs = 1150;
-    }
+    hubEl.style.visibility = 'visible';
+    hubResize(); hubStart();
+    hubEl.style.opacity = '0';
+    void hubEl.offsetWidth;
+    glEl.style.opacity = '0';
+    hubEl.style.opacity = '1';
     setTimeout(function(){
-      S.mode = m;
-      hubEl.style.visibility = 'visible';
-      hubResize(); hubStart();
-      hubEl.style.opacity = '0';
-      void hubEl.offsetWidth;
-      glEl.style.opacity = '0';
-      hubEl.style.opacity = '1';
-      setTimeout(function(){
-        glEl.hidden = true;
-        clearFx(hubEl, glEl);
-      }, 480);
-    }, flyMs);
+      glEl.hidden = true;
+      clearFx();
+    }, 380);
   }
 }
 function setColorMode(c){
