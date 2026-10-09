@@ -2575,17 +2575,62 @@ function loadScript(src){
   });
 }
 function setMode(m){
-  S.mode = m; store('ncc_mode', m);
+  if(S.mode === m) return;
   $$('#modeToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m') === m); });
-  var hint = $('#stagehint');
+  var hint = $('#stagehint'), hubEl = $('#hub'), glEl = $('#gl3d');
+  hubEl.style.transition = 'opacity .45s ease';
+  glEl.style.transition = 'opacity .45s ease';
+  function clearFx(a, b){
+    a.style.opacity = ''; a.style.transition = '';
+    b.style.opacity = ''; b.style.transition = '';
+  }
   if(m === '3d'){
-    $('#gl3d').hidden = false; $('#hub').style.visibility = 'hidden';
     hint.textContent = 'Drag to orbit · scroll to zoom · click a dot to open them';
-    initGL();
+    S.mode = m; store('ncc_mode', m);
+    var doEnter = function(){
+      if(!GL) return;
+      GL.flight = null;
+      GL.camera.position.set(0, 460, 0.1);
+      GL.controls.target.set(0, 0, 0);
+      glEl.hidden = false;
+      hubEl.style.opacity = '0';
+      void glEl.offsetWidth;
+      glEl.style.opacity = '1';
+      setTimeout(function(){
+        hubEl.style.visibility = 'hidden';
+        clearFx(hubEl, glEl);
+        glFlyTo(new THREE.Vector3(0, 72, 305), new THREE.Vector3(0, 0, 0), 1500);
+      }, 480);
+    };
+    if(GL){ initGL(); doEnter(); }
+    else{
+      initGL();
+      var tries = 0, wait = setInterval(function(){
+        tries++;
+        if(GL || tries > 80){ clearInterval(wait); if(GL) doEnter(); }
+      }, 100);
+    }
   } else {
-    $('#gl3d').hidden = true; $('#hub').style.visibility = 'visible';
     hint.textContent = 'Drag to pan · scroll to zoom · click a dot to open them';
-    hubResize(); hubStart();
+    store('ncc_mode', m);
+    var flyMs = 0;
+    if(GL && S.mode === '3d'){
+      glFlyTo(new THREE.Vector3(0, 460, 0.1), new THREE.Vector3(0, 0, 0), 1100);
+      flyMs = 1150;
+    }
+    setTimeout(function(){
+      S.mode = m;
+      hubEl.style.visibility = 'visible';
+      hubResize(); hubStart();
+      hubEl.style.opacity = '0';
+      void hubEl.offsetWidth;
+      glEl.style.opacity = '0';
+      hubEl.style.opacity = '1';
+      setTimeout(function(){
+        glEl.hidden = true;
+        clearFx(hubEl, glEl);
+      }, 480);
+    }, flyMs);
   }
 }
 function setColorMode(c){
