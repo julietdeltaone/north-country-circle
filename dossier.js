@@ -553,7 +553,8 @@ function railPeople(){
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
   $('#leftbody').innerHTML = indTogg + indLegendHTML() + (h || '<div class="empty-note">No one matches. Try clearing a filter.</div>');
   var si = $('#showindicators');
-  if(si) si.addEventListener('change', function(e){ S.showIndicators = e.target.checked; refresh(); });
+  if(si) si.addEventListener('change', function(e){ S.showIndicators = e.target.checked; document.body.classList.toggle('ind-on', S.showIndicators); refresh(); });
+  document.body.classList.toggle('ind-on', S.showIndicators);
 }
 function collectEvents(){
   var q = S.q.trim().toLowerCase(), items = [];
