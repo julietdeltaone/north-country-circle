@@ -868,9 +868,10 @@ function lvl2View(e){
   var tierChip = tier ? '<div class="tchip1" style="--c:' + tierCol(e) + '"><b>' + TIERS[tier].n + '</b></div>' : '';
   var momHTML = '';
   if(mom){
-    momHTML = '<div class="momview"><div class="momtrack"><div class="momfill" style="width:' + momPos(mom) + '%"></div>' +
-      '<div class="mommark sym" style="left:' + momPos(mom) + '%">' + MOM_ICONS[mom] + '</div></div>' +
-      '<div class="momlabels"><span>negative</span><b>' + MOM_LABELS[mom] + '</b><span>positive</span></div></div>';
+    momHTML = '<div class="momsimple" title="Momentum: ' + MOM_LABELS[mom] + '">' +
+      ['-','0','+'].map(function(m){
+        return '<i class="' + (m === mom ? 'on ' : '') + (m === '-' ? 'neg' : m === '+' ? 'pos' : 'neu') + '">' + MOM_ICONS[m] + '</i>';
+      }).join('') + '</div>';
   }
   var tierMom = (tierChip || momHTML) ? '<div class="tiermom">' + tierChip + momHTML + '</div>' : '';
   var sinceY = knownSinceYear(e), yrsK = yearsKnownCalc(e);
