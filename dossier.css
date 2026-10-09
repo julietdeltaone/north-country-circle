@@ -765,10 +765,11 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .indtogg input:checked ~ em{color:var(--txt)}
 .indlegend{display:flex;flex-wrap:wrap;gap:6px 10px;padding:6px 12px 2px;font-size:10px;color:var(--mut)}
 .indlegend b{display:inline-flex;align-items:center;gap:4px;font-weight:600}
-.indlegend .iseg{width:14px;height:6px;border-radius:3px;background:#2a3342}
-.indlegend .iseg.on{background:#9aa4b5}
-.indlegend .iseg.web{background:#4d9fff}
-.fstrip{display:flex;gap:3px;margin-top:3px}
-.fstrip .iseg{width:16px;height:6px;border-radius:3px;background:#232b38;flex:none}
-.fstrip .iseg.on{background:#9aa4b5}
-.fstrip .iseg.web{background:#4d9fff;box-shadow:0 0 4px rgba(77,159,255,.6)}
+.indlegend .iseg{width:22px;height:8px;border-radius:4px;background:transparent;border:1.5px solid #3d4757;box-sizing:border-box}
+.indlegend .iseg.on{background:#d0d7e2;border-color:#d0d7e2}
+.indlegend .iseg.web{background:#4d9fff;border-color:#4d9fff}
+.fstrip{display:flex;gap:4px;margin-top:5px}
+.fstrip .iseg{width:24px;height:9px;border-radius:5px;background:transparent;border:1.5px solid #3d4757;flex:none;box-sizing:border-box}
+.fstrip .iseg.on{background:#d0d7e2;border-color:#d0d7e2}
+.fstrip .iseg.web{background:#4d9fff;border-color:#4d9fff;box-shadow:0 0 7px rgba(77,159,255,.8)}
+.indtogg.inscrl{padding:10px 4px 6px}
