@@ -1727,37 +1727,17 @@ function ymLabel(s){
 function connTimelineHTML(e){
   var ps = connPhases(e);
   if(!ps.length) return '';
-  var now = new Date(), nowIdx = now.getFullYear() * 12 + now.getMonth() + 1;
-  var items = [];
-  ps.forEach(function(p){
-    var f = ymIdx(p.f); if(f == null) return;
-    var t = p.t ? ymIdx(p.t) : nowIdx; if(t == null || t < f) t = f;
-    items.push({ f:f, t:t, fs:p.f, ts:p.t, l:p.l || 'Untitled phase', n:p.n || '', ongoing:!p.t });
-  });
-  if(!items.length) return '';
-  var min = nowIdx, max = 0;
-  items.forEach(function(x){ if(x.f < min) min = x.f; if(x.t > max) max = x.t; });
-  if(max <= min) max = min + 1;
-  var span = max - min;
   var cols = ['#f0b44c', '#7ea6f0', '#5cd6a0', '#b48ce8'];
-  items.sort(function(a, b){ return a.f - b.f || a.t - b.t; });
-  var lanes = [];
-  items.forEach(function(x){
-    var li = 0;
-    while(li < lanes.length && lanes[li] >= x.f) li++;
-    x.lane = li;
-    lanes[li] = x.t;
-  });
-  var segs = items.map(function(x, i){
-    var l = (x.f - min) / span * 100;
-    var w = Math.max(3, (x.t - x.f + 1) / span * 100);
-    if(l + w > 100) w = 100 - l;
-    return '<div class="ctl-seg" style="left:' + l.toFixed(1) + '%;width:' + w.toFixed(1) + '%;top:' + (x.lane * 30) + 'px;--c:' + cols[i % 4] + '"' +
-      ' title="' + esc(x.l + (x.n ? ' \u2014 ' + x.n : '')) + '"><b>' + esc(x.l) + '</b><i>' +
-      esc(ymLabel(x.fs)) + (x.ongoing ? ' \u2013 now' : ' \u2013 ' + ymLabel(x.ts)) + '</i></div>';
+  ps.sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); });
+  var rows = ps.map(function(p, i){
+    var c = cols[i % 4];
+    var range = ymLabel(p.f) + (p.t ? ' \u2013 ' + ymLabel(p.t) : ' \u2013 now');
+    return '<div class="cphase" style="--c:' + c + '"><i class="cpdot"></i>' +
+      '<div class="cpbody"><b>' + esc(p.l || 'Untitled phase') + '</b>' +
+      '<span class="cpdate">' + esc(range) + '</span>' +
+      (p.n ? '<span class="cpnote">' + esc(p.n) + '</span>' : '') + '</div></div>';
   }).join('');
-  return '<div class="ctline"><div class="ctl-track" style="height:' + (lanes.length * 30 + 6) + 'px">' + segs + '</div>' +
-    '<div class="ctl-axis"><span>' + Math.floor(min / 12) + '</span><span>' + Math.ceil(max / 12) + '</span></div></div>';
+  return '<div class="ctlist">' + rows + '</div>';
 }
 function cpRowHTML(p, i){
   p = p || {};
