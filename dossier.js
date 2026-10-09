@@ -2206,30 +2206,32 @@ function buildDossierDoc(e){
   if(!notes) notes = '<p>—</p>';
   var meta = ['Compiled ' + ds];
   if(classif) meta.push(esc(classif));
-  meta.push((e.degree || 0) + ' graph connections');
-  if(e.shared_with_jd) meta.push(e.shared_with_jd + ' shared');
   var evs = sortedEvents(e);
   var tl = evs.length
     ? '<ul class="assoc">' + evs.map(function(o){
         var ev = o.ev;
-        return '<li><b>' + esc(ev.date || '') + '</b> [' + esc(ev.type || 'note') + '] — ' + esc(ev.summary || '') + (ev.detail ? '<br>' + esc(ev.detail) : '') + '</li>';
+        return '<li><b>' + esc(ev.date || '') + '</b> — ' + esc(ev.summary || '') + (ev.detail ? '<br>' + esc(ev.detail) : '') + '</li>';
       }).join('') + '</ul>'
     : '<div class="sbody"><p>—</p></div>';
-  var fls = (e.files || []).length
-    ? '<ul class="assoc">' + (e.files || []).map(function(f){
-        return '<li>' + esc(f.name || 'Untitled') + (f.url ? '<br>' + esc(f.url) : '') + (f.note ? '<br>' + esc(f.note) : '') + '</li>';
-      }).join('') + '</ul>'
-    : '<div class="sbody"><p>—</p></div>';
+  var initial = (name || '·').trim().charAt(0).toUpperCase();
   return '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
   '<title>Dossier — ' + esc(name) + '</title><style>' +
   'body{background:#26292f;margin:0;padding:28px;font-family:"Courier New",Courier,monospace;color:#141414}' +
-  '.page{background:#f5f2e9;max-width:820px;margin:0 auto;padding:44px 48px;box-shadow:0 0 50px rgba(0,0,0,.55)}' +
-  '.hero h1{font-size:34px;margin:0 0 4px;letter-spacing:.02em}' +
-  '.hero .aka{font-size:13px;color:#333;margin-bottom:8px}' +
-  '.contact{font-size:13px;line-height:2;margin-bottom:4px}' +
+  '.page{background:#f5f2e9;max-width:820px;margin:0 auto;padding:0;box-shadow:0 0 50px rgba(0,0,0,.55)}' +
+  '.banner{background:#141414;color:#f5f2e9;padding:26px 48px 22px;display:flex;align-items:center;gap:22px}' +
+  '.seal{flex:none;width:74px;height:74px;border-radius:50%;border:2.5px solid #c9a227;display:flex;align-items:center;justify-content:center;' +
+    'font-size:34px;font-weight:700;color:#c9a227;background:radial-gradient(circle at 35% 30%,#2a2a2a,#141414)}' +
+  '.btitle .kicker{font-size:10.5px;letter-spacing:.34em;color:#c9a227;margin-bottom:6px}' +
+  '.btitle h1{font-size:34px;margin:0;letter-spacing:.02em;color:#f5f2e9}' +
+  '.btitle .aka{font-size:12px;color:#a09a8a;margin-top:4px}' +
+  '.rule{height:3px;background:linear-gradient(90deg,#c9a227 0%,#c9a227 22%,transparent 22%)}' +
+  '.body{padding:30px 48px 44px}' +
+  '.contact{font-size:13px;line-height:2.1;margin-bottom:4px}' +
+  '.contact .ci{display:inline-block;width:20px;text-align:center;margin-right:6px}' +
   '.cl{font-size:10.5px;letter-spacing:.14em;font-weight:700;margin-right:5px}' +
   '.meta{font-size:12px;color:#333;border-top:2px solid #141414;border-bottom:1px solid #141414;padding:9px 0;margin:14px 0 22px;line-height:1.8}' +
   '.sec{margin:0 0 20px}.slabel{font-size:12px;letter-spacing:.14em;font-weight:700;margin-bottom:8px}' +
+  '.slabel .si{display:inline-block;width:20px;margin-right:4px;vertical-align:-2px}' +
   '.sbody{font-size:13px;line-height:1.65}.sbody p{margin:0 0 10px}' +
   '.brow{display:flex;align-items:center;gap:10px;margin-bottom:7px}' +
   '.brow span{width:120px;font-size:11px;letter-spacing:.08em;font-weight:700}' +
@@ -2250,21 +2252,22 @@ function buildDossierDoc(e){
   '.foot .sig{font-family:"Segoe Script",cursive;font-size:22px;margin:6px 0}' +
   '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none}}' +
   '</style></head><body><div class="page">' +
-  '<div class="hero"><h1>' + esc(name) + '</h1>' +
-  (aka ? '<div class="aka">also known as ' + esc(aka) + '</div>' : '') +
-  (contact.length ? '<div class="contact">' + contact.join('<br>') + '</div>' : '') + '</div>' +
+  '<div class="banner"><div class="seal">' + esc(initial) + '</div>' +
+  '<div class="btitle"><div class="kicker">PERSONNEL DOSSIER</div><h1>' + esc(name) + '</h1>' +
+  (aka ? '<div class="aka">also known as ' + esc(aka) + '</div>' : '') + '</div></div>' +
+  '<div class="rule"></div><div class="body">' +
+  (contact.length ? '<div class="contact">' + contact.join('<br>') + '</div>' : '') +
   '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' +
-  '<div class="sec"><div class="slabel">SYNOPSIS</div><div class="sbody">' + (bio ? '<p>' + esc(bio).replace(/\n/g, '<br>') + '</p>' : '<p>—</p>') + '</div></div>' +
+  '<div class="sec"><div class="slabel"><span class="si">&#9998;</span>SYNOPSIS</div><div class="sbody">' + (bio ? '<p>' + esc(bio).replace(/\n/g, '<br>') + '</p>' : '<p>—</p>') + '</div></div>' +
   '<div class="cols2">' +
-  '<div class="sec"><div class="slabel">PROFILE RATINGS</div><div class="bars">' + bars + '</div>' + extras + '</div>' +
-  '<div class="sec"><div class="slabel">KNOWN ASSOCIATES</div>' +
+  '<div class="sec"><div class="slabel"><span class="si">&#9733;</span>PROFILE RATINGS</div><div class="bars">' + bars + '</div>' + extras + '</div>' +
+  '<div class="sec"><div class="slabel"><span class="si">&#9823;</span>KNOWN ASSOCIATES</div>' +
     (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div>' +
-  '<div class="sec"><div class="slabel">FIELD NOTES</div><div class="sbody">' + notes + '</div></div>' +
-  '<div class="sec"><div class="slabel">TIMELINE</div><div class="sbody">' + tl + '</div></div>' +
-  '<div class="sec"><div class="slabel">ATTACHED FILES</div><div class="sbody">' + fls + '</div></div>' +
+  '<div class="sec"><div class="slabel"><span class="si">&#9776;</span>FIELD NOTES</div><div class="sbody">' + notes + '</div></div>' +
+  '<div class="sec"><div class="slabel"><span class="si">&#9782;</span>TIMELINE</div><div class="sbody">' + tl + '</div></div>' +
   '</div>' +
   '<div class="foot"><div>APPROVED / FORWARDED BY</div><div class="sig">J. Meyers</div></div>' +
-  '</div></body></html>';
+  '</div></div></body></html>';
 }
 function exportDossier(){
   var e = D.directory[S.sel];
