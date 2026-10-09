@@ -791,8 +791,9 @@ function lvl1View(e){
 
   var syn = gv(e, 'synopsis') ? card('quote', 'Synopsis', 1, '<div class="narr">' + esc(gv(e, 'synopsis')) + '</div>', '', 'span') : '';
   var ka = knownAssociates(e);
-  var conns = ka.length ? card('share', 'Known associates', 1, '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>', '', '', true) : '';
-  var out = contact + edu + ratings + background + syn + conns;
+  var conns = ka.length ? card('share', 'Known associates', 1, '<div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>', '', '') : '';
+  var top2col = (contact || edu) ? '<div class="ce2col">' + contact + edu + '</div>' : '';
+  var out = top2col + ratings + background + syn + conns;
   if(!out) out = card('user', 'On file', 1, emptyBox('Nothing on file yet. Press the pencil to start filling this in.'), '', 'span');
   return out;
 }
@@ -845,35 +846,34 @@ function timelineHTML(e){
   var evs = sortedEvents(e);
   if(!evs.length) return emptyBox('No timeline events yet.');
   return '<div class="tl">' + evs.map(function(o){
-    var ev = o.ev, t = ev.type || 'note';
+    var ev = o.ev;
     var meta = '';
     if(ev.init) meta += '<span class="evbadge">' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</span>';
-    return '<div class="ev"><span class="evdot"></span><div class="evtop"><time>' + evDate(ev.date) + '</time><span class="etype">' + ic(EVT_ICON[t] || 'quote', 11) + esc(t) + '</span>' + meta + '</div>' +
+    return '<div class="ev"><span class="evdot"></span><div class="evtop"><time>' + evDate(ev.date) + '</time>' + meta + '</div>' +
       '<div class="evtitle">' + esc(ev.summary || '') + '</div>' + (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>';
   }).join('') + '</div>';
 }
 
 function lvl2View(e){
   var tier = tierOf(e), mom = momVal(e);
-  var hero = '<div class="tierhero">' + TIER_ORDER.map(function(t){
-    return '<div class="tseg' + (tier === t ? ' on' : '') + '" style="--c:' + TIERS[t].c + '"><b>' + TIERS[t].n + '</b></div>';
-  }).join('') + '</div>';
+  var tierChip = tier ? '<div class="tchip1" style="--c:' + tierCol(e) + '"><b>' + TIERS[tier].n + '</b></div>' : '';
   var momHTML = '';
   if(mom){
     momHTML = '<div class="momview"><div class="momtrack"><div class="momfill" style="width:' + momPos(mom) + '%"></div>' +
       '<div class="mommark sym" style="left:' + momPos(mom) + '%">' + MOM_ICONS[mom] + '</div></div>' +
       '<div class="momlabels"><span>negative</span><b>' + MOM_LABELS[mom] + '</b><span>positive</span></div></div>';
   }
+  var tierMom = (tierChip || momHTML) ? '<div class="tiermom">' + tierChip + momHTML + '</div>' : '';
   var sinceY = knownSinceYear(e), yrsK = yearsKnownCalc(e);
   var tiles = '<div class="tiles">' +
     tile('users', cap(gv(e, 'relationship')), 'Relationship') +
     tile('briefcase', cap(gv(e, 'context')), 'Context') +
     tile('tag', catLabel(e), 'Category') +
-    tile('clock', sinceY ? String(sinceY) : '', 'Known since' + (yrsK > 0 ? ' (' + yrsK + ' yrs)' : '')) +
-    tile('share', String(e.degree || 0), 'Graph links') +
-    tile('send', String(e.shared_with_jd || 0), 'Shared with you') + '</div>';
-  var connection = card('users', 'Connection', 2, hero + momHTML + tiles + connTimelineHTML(e), '', 'span');
-  var tl = card('calendar', 'Timeline', 2, timelineHTML(e),
+    tile('clock', sinceY ? String(sinceY) : '', 'Known since' + (yrsK > 0 ? ' (' + yrsK + ' yrs)' : '')) + '</div>';
+  var connection = card('users', 'Connection', 2, tierMom + tiles, '', 'span');
+  var phases = connTimelineHTML(e);
+  var tlBody = phases ? '<div class="tl2col"><div class="tlmain">' + timelineHTML(e) + '</div><div class="tlphases"><div class="subhead">Phases</div>' + phases + '</div></div>' : timelineHTML(e);
+  var tl = card('calendar', 'Timeline', 2, tlBody,
     '<button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button>', 'span');
   return connection + tl;
 }
