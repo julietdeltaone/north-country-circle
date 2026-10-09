@@ -2575,52 +2575,17 @@ function loadScript(src){
   });
 }
 function setMode(m){
-  if(S.mode === m) return;
-  $$('#modeToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m') === m); });
-  var hint = $('#stagehint'), hubEl = $('#hub'), glEl = $('#gl3d');
-  var was3d = S.mode === '3d';
   S.mode = m; store('ncc_mode', m);
-  /* Simple crossfade: no camera flights, just a smooth 350ms opacity blend. */
-  hubEl.style.transition = 'opacity .35s ease';
-  glEl.style.transition = 'opacity .35s ease';
-  function clearFx(){
-    hubEl.style.opacity = ''; hubEl.style.transition = '';
-    glEl.style.opacity = ''; glEl.style.transition = '';
-  }
+  $$('#modeToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m') === m); });
+  var hint = $('#stagehint');
   if(m === '3d'){
+    $('#gl3d').hidden = false; $('#hub').style.visibility = 'hidden';
     hint.textContent = 'Drag to orbit · scroll to zoom · click a dot to open them';
-    var doEnter = function(){
-      if(!GL) return;
-      glEl.hidden = false;
-      glEl.style.opacity = '0';
-      void glEl.offsetWidth;
-      hubEl.style.opacity = '0';
-      glEl.style.opacity = '1';
-      setTimeout(function(){
-        hubEl.style.visibility = 'hidden';
-        clearFx();
-      }, 380);
-    };
-    if(GL){ initGL(); doEnter(); }
-    else{
-      initGL();
-      var tries = 0, wait = setInterval(function(){
-        tries++;
-        if(GL || tries > 80){ clearInterval(wait); if(GL) doEnter(); }
-      }, 100);
-    }
+    initGL();
   } else {
+    $('#gl3d').hidden = true; $('#hub').style.visibility = 'visible';
     hint.textContent = 'Drag to pan · scroll to zoom · click a dot to open them';
-    hubEl.style.visibility = 'visible';
     hubResize(); hubStart();
-    hubEl.style.opacity = '0';
-    void hubEl.offsetWidth;
-    glEl.style.opacity = '0';
-    hubEl.style.opacity = '1';
-    setTimeout(function(){
-      glEl.hidden = true;
-      clearFx();
-    }, 380);
   }
 }
 function setColorMode(c){
