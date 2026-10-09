@@ -1533,7 +1533,7 @@ function deletePerson(){
   var e = D.directory[S.sel];
   if(!e) return;
   var label = dispName(e);
-  if(!confirm('Delete ' + label + ' from the circle?\n\nThey will be hidden from the directory and the map. To bring them back, clear the deleted flag in the sheet.')) return;
+  if(!confirm('Delete ' + label + ' from the circle?\n\nThey will be moved to the Trash sheet (hidden). To bring them back, ask Luna.')) return;
   queuePatch(S.sel, { deleted:'1' });
   closePanel(); refresh(); toast('Deleted ' + label + '.');
 }
@@ -2113,7 +2113,9 @@ function renderDupAudit(q){
         ((m.e.pieces || 0) ? '<b class="have">' + m.e.pieces + ' mentions</b>' : '') + '</span></span>' +
         (isS ? '<em class="dupsurvtag">survivor</em>' : '') + '</label>';
     }).join('');
-    return '<div class="dupgroup"><div class="duphead"><b>' + esc(g.members[0].e.display || g.key) + '</b>' +
+    return '<div class="dupgroup"><div class="duphead">' +
+      '<input type="checkbox" class="dupgsel" data-gi="' + gi + '"' + (AUD.selGroups[gi] ? ' checked' : '') + ' title="Select group">' +
+      '<b>' + esc(g.members[0].e.display || g.key) + '</b>' +
       '<span class="dim">' + g.members.length + ' entries</span>' +
       '<button class="mini" data-dupmerge="' + gi + '" style="--c:#f0b44c">Merge into survivor</button></div>' +
       '<div class="dupmems">' + cards + '</div></div>';
