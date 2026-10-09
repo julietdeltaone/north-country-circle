@@ -797,7 +797,7 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 @media(max-width:700px){.ce2col{grid-template-columns:1fr}}
 
 /* ---- Tier + momentum two-column ---- */
-.tiermom{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin-bottom:12px}
+.tiermom{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;margin-bottom:12px}
 .tchip1{display:inline-flex;align-items:center;padding:10px 20px;border-radius:12px;font-size:14px;font-weight:700;
   color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border:1.5px solid color-mix(in srgb,var(--c) 55%,transparent)}
 .tchip1 b{font-size:14px}
@@ -817,4 +817,3 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .momsimple i.neg.on{color:#e06c5c;background:rgba(224,108,92,.14)}
 .momsimple i.neu.on{color:#9aa3b2;background:rgba(154,163,178,.14)}
 .momsimple i.pos.on{color:#5cd6a0;background:rgba(92,214,160,.14)}
-.tiermom{gap:12px}
