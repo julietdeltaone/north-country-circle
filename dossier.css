@@ -759,7 +759,7 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 
 /* ---- Field indicators toggle + strip ---- */
 .indtogg{display:flex;align-items:center;gap:8px;padding:8px 12px 4px;cursor:pointer;user-select:none}
-.indtogg.inscrl{position:sticky;top:0;z-index:5;background:var(--bg,#0d1117);padding:10px 12px;border-bottom:1px solid #1e2530}
+.indtogg.inscrl{position:sticky;top:0;z-index:5;background:var(--bg,#0d1117);padding:10px 4px 6px;border-bottom:1px solid #1e2530}
 .indtogg input{position:absolute;opacity:0;pointer-events:none}
 .indtogg .itrack{flex:none;width:30px;height:17px;border-radius:10px;background:#2a3342;position:relative;transition:background .15s}
 .indtogg .itrack i{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#8b94a3;transition:left .15s,background .15s}
@@ -776,7 +776,6 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .row .nm .fstrip .iseg{width:12px;height:12px;border-radius:50%;background:transparent;border:1.5px solid #3d4757;flex:none;box-sizing:border-box;padding:0;cursor:pointer;transition:transform .12s}
 .row .nm .fstrip .iseg:hover{transform:scale(1.35)}
 .row .nm .fstrip .iseg.on{background:var(--c);border-color:var(--c)}
-.indtogg.inscrl{padding:10px 4px 6px}
 
 /* ---- Connection phases: clean vertical list ---- */
 .ctlist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
