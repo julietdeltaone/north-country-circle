@@ -260,7 +260,7 @@ var F = {
 
   specialty:{ l:'Specialty', t:'text' },
   interests:{ l:'Interests', t:'text' },
-  shared_interests:{ l:'Shared interests', t:'tags', sep:', ' },
+  // shared_interests removed per JD 2026-10-08
   churches:{ l:'Churches', t:'pick', sep:', ' },
   companies:{ l:'Companies', t:'pick', sep:', ' },
   universities:{ l:'Universities', t:'pick', sep:', ' },
@@ -2978,8 +2978,8 @@ function bind(){
     if(dot){
       e.stopPropagation();
       var di = parseInt(dot.getAttribute('data-di'), 10), sec = dot.getAttribute('data-sec');
-      if(S.sel === di && S.editing){ jumpTo(sec); }
-      else { openPerson(di, { edit:true }); S.jumpTo = sec; setTimeout(function(){ jumpTo(sec); }, 60); }
+      if(S.sel !== di) openPerson(di, {});
+      enterEdit(sec);
       return;
     }
     var row = e.target.closest('[data-i]');
