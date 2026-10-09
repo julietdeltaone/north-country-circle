@@ -51,7 +51,7 @@ var RELN = { mutual:'Mutual', following:'Following', follower:'Follower' };
 
 var S = {
   q:'', rel:'', lvlF:0, auditOnly:false, enrichedOnly:false, tag:null, sort:'strength',
-  rail:'people', limit:200,
+  rail:'people', limit:200, showIndicators:false,
   sel:null, editing:false, lvl:1, hist:[], fwd:[], wide:false,
   mode:'3d', colorBy:'tier', showBg:false, listOpen:true, tierF:'',
   openSecs:{}, evEdit:null, degEdit:null, jumpTo:null, editGroup:1
@@ -485,6 +485,30 @@ function pipsHTML(e){
   return '<span class="pips" title="On file' + (on[1] ? ', Record' : '') + (on[2] ? ', Files' : '') + '">' +
     [1,2,3].map(function(n){ return '<i class="pip' + (on[n - 1] ? ' lit' : '') + '" style="--c:' + LV[n].c + '"></i>'; }).join('') + '</span>';
 }
+/* Per-person field indicators: 7 segments showing what's filled in at a glance.
+   D=Degrees H=Highlights A=Achievements S=Synopsis W=Web-scraped K=Known associates R=Ratings */
+var FINDEFS = [
+  ['D', 'Degrees', function(e){ return degreesOf(e).length > 0; }],
+  ['H', 'Highlights', function(e){ return !!((e.profile || {}).highlights || '').trim(); }],
+  ['A', 'Achievements', function(e){ return !!((e.profile || {}).achievements || '').trim(); }],
+  ['S', 'Synopsis', function(e){ return !!((e.profile || {}).synopsis || '').trim(); }],
+  ['W', 'Web-scraped data', function(e){ return isEnriched(e); }, true],
+  ['K', 'Known associates', function(e){ return !!(((e.profile || {}).close_add || '').trim() || (e.neighbors || []).length); }],
+  ['R', 'Ratings', function(e){ var p = e.profile || {}; return ['assertiveness','charisma','competence','creativity','intellect','ego'].some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
+];
+function fieldIndicators(e){
+  if(!S.showIndicators) return '';
+  return '<span class="fstrip">' + FINDEFS.map(function(d){
+    var on = d[2](e);
+    return '<i class="iseg' + (on ? (d[3] ? ' web' : ' on') : '') + '" title="' + d[1] + (on ? ': filled' : ': empty') + '"></i>';
+  }).join('') + '</span>';
+}
+function indLegendHTML(){
+  if(!S.showIndicators) return '';
+  return '<div class="indlegend">' + FINDEFS.map(function(d){
+    return '<b><i class="iseg' + (d[3] ? ' web' : ' on') + '"></i>' + d[0] + ' ' + d[1] + '</b>';
+  }).join('') + '</div>';
+}
 function renderRail(){
   var lb = $('#leftbody'), keepTop = lb ? lb.scrollTop : 0;
   $$('#railtabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-r') === S.rail); });
@@ -500,6 +524,7 @@ function railPeople(){
   var rows = listRows();
   var total = LIST_ORDER.filter(function(di){ return (D.directory[di].profile || {}).deleted !== '1'; }).length;
   $('#lcount').textContent = rows.length === total ? total + ' people' : rows.length + ' of ' + total + ' people';
+  $('#lcount').innerHTML = esc($('#lcount').textContent) + indLegendHTML();
   var shown = rows.slice(0, S.limit);
   var h = shown.map(function(di){
     var r = D.directory[di], lv = personLevel(r), aud = (r.profile || {}).audit === 'audited';
@@ -507,7 +532,7 @@ function railPeople(){
     return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
       '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
       (!aud ? '<i class="auddot' + (isEnriched(r) ? ' enr' : '') + '" title="Needs audit"></i>' : (isEnriched(r) ? '<i class="enrdot" title="Enriched from online sources"></i>' : '')) + '</div>' +
-      '<div class="nm"><b>' + esc(dispName(r)) + '</b><span>' + esc(sub) + '</span></div>' + capHTML(r) + pipsHTML(r) + '</div>';
+      '<div class="nm"><b>' + esc(dispName(r)) + '</b><span>' + esc(sub) + '</span>' + fieldIndicators(r) + '</div>' + capHTML(r) + pipsHTML(r) + '</div>';
   }).join('');
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
   $('#leftbody').innerHTML = h || '<div class="empty-note">No one matches. Try clearing a filter.</div>';
@@ -2884,6 +2909,7 @@ function bind(){
   $('#fsort').addEventListener('change', function(e){ S.sort = e.target.value; refresh(); });
   $('#fauditonly').addEventListener('change', function(e){ S.auditOnly = e.target.checked; S.limit = 200; refresh(); });
   $('#fenrichedonly').addEventListener('change', function(e){ S.enrichedOnly = e.target.checked; S.limit = 200; refresh(); });
+  $('#showindicators').addEventListener('change', function(e){ S.showIndicators = e.target.checked; refresh(); });
   $('#fclear').addEventListener('click', function(){ clearFilter('all'); $('#filterpop').hidden = true; });
   $('#activeflt').addEventListener('click', function(e){
     var b = e.target.closest('[data-clr]'); if(b) clearFilter(b.getAttribute('data-clr'));
