@@ -525,17 +525,20 @@ function railPeople(){
   var total = LIST_ORDER.filter(function(di){ return (D.directory[di].profile || {}).deleted !== '1'; }).length;
   $('#lcount').textContent = rows.length === total ? total + ' people' : rows.length + ' of ' + total + ' people';
   $('#lcount').innerHTML = esc($('#lcount').textContent) + indLegendHTML();
+  var indTogg = '<label class="indtogg inscrl" title="Show per-person field indicators"><input type="checkbox" id="showindicators"' + (S.showIndicators ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Show Indicators</em></label>';
   var shown = rows.slice(0, S.limit);
   var h = shown.map(function(di){
     var r = D.directory[di], lv = personLevel(r), aud = (r.profile || {}).audit === 'audited';
     var sub = subLine(r) + (r.relation ? ' · ' + RELN[r.relation] : '');
     return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
       '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
-      (!aud ? '<i class="auddot' + (isEnriched(r) ? ' enr' : '') + '" title="Needs audit"></i>' : (isEnriched(r) ? '<i class="enrdot" title="Enriched from online sources"></i>' : '')) + '</div>' +
+      (S.showIndicators ? (!aud ? '<i class="auddot' + (isEnriched(r) ? ' enr' : '') + '" title="Needs audit"></i>' : (isEnriched(r) ? '<i class="enrdot" title="Enriched from online sources"></i>' : '')) : '') + '</div>' +
       '<div class="nm"><b>' + esc(dispName(r)) + '</b><span>' + esc(sub) + '</span>' + fieldIndicators(r) + '</div>' + capHTML(r) + pipsHTML(r) + '</div>';
   }).join('');
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
-  $('#leftbody').innerHTML = h || '<div class="empty-note">No one matches. Try clearing a filter.</div>';
+  $('#leftbody').innerHTML = indTogg + (h || '<div class="empty-note">No one matches. Try clearing a filter.</div>');
+  var si = $('#showindicators');
+  if(si) si.addEventListener('change', function(e){ S.showIndicators = e.target.checked; refresh(); });
 }
 function collectEvents(){
   var q = S.q.trim().toLowerCase(), items = [];
@@ -2909,7 +2912,6 @@ function bind(){
   $('#fsort').addEventListener('change', function(e){ S.sort = e.target.value; refresh(); });
   $('#fauditonly').addEventListener('change', function(e){ S.auditOnly = e.target.checked; S.limit = 200; refresh(); });
   $('#fenrichedonly').addEventListener('change', function(e){ S.enrichedOnly = e.target.checked; S.limit = 200; refresh(); });
-  $('#showindicators').addEventListener('change', function(e){ S.showIndicators = e.target.checked; refresh(); });
   $('#fclear').addEventListener('click', function(){ clearFilter('all'); $('#filterpop').hidden = true; });
   $('#activeflt').addEventListener('click', function(e){
     var b = e.target.closest('[data-clr]'); if(b) clearFilter(b.getAttribute('data-clr'));
