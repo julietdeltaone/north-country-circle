@@ -968,11 +968,8 @@ function connectionsBody(e){
   var nb = knownAssociates(e);
   var chips = nb.length ? '<div class="chips">' + nb.map(function(x){ return nbrChipHTML(x, true); }).join('') + '</div>' : '<p class="dim" style="margin:0;font-size:13px">None mapped yet.</p>';
   var cps = connPhases(e);
-  var listed = listedByOthers(e);
-  var listedHTML = listed.length ? '<div class="subhead">Listed by others <span class="dim" style="font-weight:400">(' + listed.length + ' incoming, auto)</span></div><div class="chips">' +
-    listed.map(function(r){ return '<span class="nchip plain" data-act="nav" data-di="' + D.directory.indexOf(r) + '" title="Open dossier"><i></i>' + esc(auName(r).name) + '</span>'; }).join('') + '</div>' : '';
   return '<div class="subhead first">Known associates</div>' + chips +
-    '<div class="naddwrap"><input id="naddinput" placeholder="Add a known associate: type a name" autocomplete="off"><div id="naddlist"></div></div>' + listedHTML +
+    '<div class="naddwrap"><input id="naddinput" placeholder="Add a known associate: type a name" autocomplete="off"><div id="naddlist"></div></div>' +
     '<div class="subhead">Connection timeline</div>' +
     '<div id="cprows">' + cps.map(function(p, i){ return cpRowHTML(p, i); }).join('') + '</div>' +
     '<div class="arow"><button class="mini" data-act="cpadd" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add phase</button></div>' +
@@ -980,14 +977,12 @@ function connectionsBody(e){
 }
 function evFormHTML(ev){
   ev = ev || {};
-  var types = ['milestone','note','life event'], t = ev.type || 'note';
   function seg(id, items, cur){
     return '<div class="seg" id="' + id + '">' + items.map(function(it){
       return '<button type="button" data-v="' + it[0] + '"' + (String(cur || '') === it[0] ? ' class="on"' : '') + '>' + it[1] + '</button>'; }).join('') + '</div>';
   }
   return '<div class="evform" id="evform"><div class="subhead">' + (S.evEdit != null ? 'Edit event' : 'Add event') + '</div>' +
-    '<div class="two"><input type="text" id="evdate" value="' + esc(ev.date || todayStr()) + '" placeholder="YYYY-MM-DD" autocomplete="off">' +
-    '<select id="evtype">' + types.map(function(x){ return '<option value="' + x + '"' + (x === t ? ' selected' : '') + '>' + cap(x) + '</option>'; }).join('') + '</select></div>' +
+    '<input type="text" id="evdate" value="' + esc(ev.date || todayStr()) + '" placeholder="YYYY-MM-DD" autocomplete="off" style="width:100%">' +
     '<input type="text" id="evtitle" value="' + esc(ev.summary || '') + '" placeholder="Headline, for example: Started a new job" autocomplete="off">' +
     '<textarea id="evdetail" rows="3" placeholder="Details (optional)">' + esc(ev.detail || '') + '</textarea>' +
     '<div class="evmeta"><span class="evmlab">Initiated by</span>' + seg('evinit', [['', '—'], ['me', 'Me'], ['them', 'Them']], ev.init) + '</div>' +
@@ -997,7 +992,7 @@ function evFormHTML(ev){
 function timelineEdit(e){
   var rows = sortedEvents(e).map(function(o){
     var ev = o.ev;
-    return '<div class="evrow' + (S.evEdit === o.i ? ' editing' : '') + '"><div><div class="evtop"><time style="color:var(--l2);font-size:11.5px;font-weight:700">' + evDate(ev.date) + '</time><span class="etype">' + esc(ev.type || 'note') + '</span></div>' +
+    return '<div class="evrow' + (S.evEdit === o.i ? ' editing' : '') + '"><div><div class="evtop"><time style="color:var(--l2);font-size:11.5px;font-weight:700">' + evDate(ev.date) + '</time></div>' +
       '<div class="evtitle">' + esc(ev.summary || '') + '</div>' + (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>' +
       '<div class="evbtns"><button class="mini neutral" data-act="evedit" data-evi="' + o.i + '">Edit</button><button class="mini danger" data-act="evdel" data-evi="' + o.i + '">Remove</button></div></div>';
   }).join('') || '<p class="dim" style="margin:0 0 8px;font-size:13px">No events yet.</p>';
@@ -1144,11 +1139,10 @@ function dossierEdit(e){
     var gp = comp.levels[g.id] != null ? comp.levels[g.id] : 0;
     return '<button type="button" class="egh' + (S.editGroup === g.id ? ' on' : '') + '" data-act="egroup" data-g="' + g.id + '" style="--c:' + g.c + '"><b>' + g.n + '</b><i>' + gp + '%</i></button>';
   }).join('') + '</div>';
-  var lvlN = { 1:'On file', 2:'Record', 3:'Files', 0:'Admin' }, lastLv = null, stack = '';
+  var lvlN = { 1:'On file', 2:'Record', 3:'Files', 0:'Admin' }, stack = '';
   var active = groups.filter(function(g){ return g.id === S.editGroup; })[0];
   SECTIONS.forEach(function(s){
     if(active.lvs.indexOf(s.lv) < 0) return;
-    if(s.lv !== lastLv){ stack += '<div class="elvldiv" style="--c:' + (s.lv ? LV[s.lv].c : '#8b95a7') + '"><span>' + lvlN[s.lv] + '</span></div>'; lastLv = s.lv; }
     stack += secHTML(s, e);
   });
   return '<div class="doc edit">' + phead(e) + hero + '<div class="lvstage estage">' +
@@ -1535,7 +1529,7 @@ function delEvent(i){
 }
 function saveEvent(){
   var e = D.directory[S.sel]; if(!e) return;
-  var date = $('#evdate').value.trim(), type = $('#evtype').value;
+  var date = $('#evdate').value.trim(), type = 'note';
   var summary = $('#evtitle').value.trim(), detail = $('#evdetail').value.trim();
   if(!summary){ toast('Give the event a headline.'); return; }
   if(!/^\d{4}(-\d{2}(-\d{2})?)?$/.test(date)){ toast('Use a date like 2026-10-04.'); return; }
