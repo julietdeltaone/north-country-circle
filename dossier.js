@@ -498,31 +498,32 @@ function pipsHTML(e){
   return '<span class="pips" title="On file' + (on[1] ? ', Record' : '') + (on[2] ? ', Files' : '') + '">' +
     [1,2,3].map(function(n){ return '<i class="pip' + (on[n - 1] ? ' lit' : '') + '" style="--c:' + LV[n].c + '"></i>'; }).join('') + '</span>';
 }
-/* Per-person field indicators: 7 segments showing what's filled in at a glance.
-   D=Degrees H=Highlights A=Achievements S=Synopsis W=Web-scraped K=Known associates R=Ratings */
-var FINDEFS = [
-  ['D', 'Degrees', function(e){ return degreesOf(e).length > 0; }],
-  ['H', 'Highlights', function(e){ return !!((e.profile || {}).highlights || '').trim(); }],
-  ['A', 'Achievements', function(e){ return !!((e.profile || {}).achievements || '').trim(); }],
-  ['S', 'Synopsis', function(e){ return !!((e.profile || {}).synopsis || '').trim(); }],
-  ['W', 'Web-scraped data', function(e){ return isEnriched(e); }, true],
-  ['K', 'Known associates', function(e){ return !!(((e.profile || {}).close_add || '').trim() || (e.neighbors || []).length); }],
-  ['R', 'Ratings', function(e){ var p = e.profile || {}; return ['assertiveness','charisma','competence','creativity','intellect','ego'].some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
-  ['E', 'Timeline events', function(e){ return !!((e.events || []).length); }],
-  ['F', 'Files', function(e){ return !!((e.files || []).length); }],
+/* Per-person level dots: blue=On file, yellow=Record, green=Files.
+   One dot per filled section; hollow when empty. */
+var DOTDEFS = [
+  ['Contact', '#7ea6f0', function(e){ var p = e.profile || {}; return !!((p.phone || '').trim() || (p.email || '').trim() || (e.name || '').trim()); }],
+  ['Education', '#7ea6f0', function(e){ return degreesOf(e).length > 0; }],
+  ['Background', '#7ea6f0', function(e){ var p = e.profile || {}; return !!((p.specialty || '').trim() || (p.interests || '').trim()); }],
+  ['Synopsis', '#7ea6f0', function(e){ return !!((e.profile || {}).synopsis || '').trim(); }],
+  ['Persona', '#7ea6f0', function(e){ var p = e.profile || {}; return ['assertiveness','charisma','competence','creativity','intellect','ego'].some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
+  ['Relationship', '#f0b44c', function(e){ var p = e.profile || {}; return !!((p.relationship || '').trim() || (p.tier || '').trim()); }],
+  ['Timeline', '#f0b44c', function(e){ return !!((e.events || []).length); }],
+  ['Phases', '#f0b44c', function(e){ return connPhases(e).length > 0; }],
+  ['Files', '#5cd6a0', function(e){ return !!((e.files || []).length); }],
 ];
 function fieldIndicators(e){
   if(!S.showIndicators) return '';
-  return '<span class="fstrip">' + FINDEFS.map(function(d){
+  return '<span class="fstrip">' + DOTDEFS.map(function(d){
     var on = d[2](e);
-    return '<i class="iseg' + (on ? (d[3] ? ' web' : ' on') : '') + '" title="' + d[1] + (on ? ': filled' : ': empty') + '"></i>';
+    return '<i class="iseg' + (on ? ' on' : '') + '" style="--c:' + d[1] + '" title="' + d[0] + (on ? ': filled' : ': empty') + '"></i>';
   }).join('') + '</span>';
 }
 function indLegendHTML(){
   if(!S.showIndicators) return '';
-  return '<div class="indlegend">' + FINDEFS.map(function(d){
-    return '<b><i class="iseg' + (d[3] ? ' web' : ' on') + '"></i>' + d[0] + ' ' + d[1] + '</b>';
-  }).join('') + '</div>';
+  return '<div class="indlegend"><b><i class="iseg on" style="--c:#7ea6f0"></i>On file</b>' +
+    '<b><i class="iseg on" style="--c:#f0b44c"></i>Record</b>' +
+    '<b><i class="iseg on" style="--c:#5cd6a0"></i>Files</b>' +
+    '<b><i class="iseg web"></i>Web-scraped</b></div>';
 }
 function renderRail(){
   var lb = $('#leftbody'), keepTop = lb ? lb.scrollTop : 0;
