@@ -38,6 +38,19 @@ var MOM_LABELS = { '-':'negative', '0':'neutral', '+':'positive' };
 var MOM_ICONS = { '-':'\u2212', '0':'\u25c6', '+':'+' };
 function momPos(v){ return v === '-' ? 0 : (v === '+' ? 100 : 50); }
 function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
+/* Known-since year: stored as a 4-digit year. Migrates old year-count values. */
+function knownSinceYear(e){
+  var v = String(gv(e, 'years_known') || '').trim();
+  if(!v) return 0;
+  var n = parseInt(v, 10);
+  if(n >= 1900 && n <= 2100) return n;
+  if(n > 0 && n < 100) return new Date().getFullYear() - n;
+  return 0;
+}
+function yearsKnownCalc(e){
+  var y = knownSinceYear(e);
+  return y ? Math.max(0, new Date().getFullYear() - y) : 0;
+}
 function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
 function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || '#4a5568'; }
 function tierName(e){ return (TIERS[tierOf(e)] || {}).n || ''; }
@@ -233,7 +246,7 @@ var F = {
   relationship:{ l:'Relationship', t:'select', o:['','family','friend','coworker','acquaintance','other'] },
   context:{ l:'Context', t:'select', o:['','work','school','military','community','church','online','other'] },
   category:{ l:'Category', t:'select', o:[['',''],['peer','Peer'],['rom','Romantic'],['fam','Family'],['auth','Authority'],['ment','Mentor'],['conf','Conflict']] },
-  years_known:{ l:'Known for (yrs)', t:'text' },
+  years_known:{ l:'Known since', t:'text' },
   tier:{ l:'Tier', t:'tier' },
   momentum:{ l:'Momentum', t:'momentum' },
 
@@ -851,12 +864,12 @@ function lvl2View(e){
       '<div class="mommark sym" style="left:' + momPos(mom) + '%">' + MOM_ICONS[mom] + '</div></div>' +
       '<div class="momlabels"><span>negative</span><b>' + MOM_LABELS[mom] + '</b><span>positive</span></div></div>';
   }
-  var yrs = gv(e, 'years_known');
+  var sinceY = knownSinceYear(e), yrsK = yearsKnownCalc(e);
   var tiles = '<div class="tiles">' +
     tile('users', cap(gv(e, 'relationship')), 'Relationship') +
     tile('briefcase', cap(gv(e, 'context')), 'Context') +
     tile('tag', catLabel(e), 'Category') +
-    tile('clock', yrs ? yrs + ' yrs' : '', 'Known for') +
+    tile('clock', sinceY ? String(sinceY) : '', 'Known since' + (yrsK > 0 ? ' (' + yrsK + ' yrs)' : '')) +
     tile('share', String(e.degree || 0), 'Graph links') +
     tile('send', String(e.shared_with_jd || 0), 'Shared with you') + '</div>';
   var connection = card('users', 'Connection', 2, hero + momHTML + tiles + connTimelineHTML(e), '', 'span');
@@ -1827,7 +1840,7 @@ function closeScore(e, famMap){
   var tier = tierOf(e);
   if(tier === 'vetted'){ score += 20; reasons.push('Vetted'); }
   else if(tier === 'associate'){ score += 10; reasons.push('Associate'); }
-  var yk = parseInt(gv(e, 'years_known'), 10);
+  var yk = yearsKnownCalc(e);
   if(yk > 0) score += Math.min(yk, 15);
   if((e.relation || '') === 'mutual') score += 5;
   if(!score) return null;
