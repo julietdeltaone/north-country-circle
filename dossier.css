@@ -753,3 +753,22 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .ptrait span{flex:0 0 90px;color:var(--dim);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pbar{flex:1;height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
 .pbar b{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#7fa8ff,#b48cff)}
+
+/* ---- Field indicators toggle + strip ---- */
+.indtogg{display:flex;align-items:center;gap:8px;padding:8px 12px 4px;cursor:pointer;user-select:none}
+.indtogg input{position:absolute;opacity:0;pointer-events:none}
+.indtogg .itrack{flex:none;width:30px;height:17px;border-radius:10px;background:#2a3342;position:relative;transition:background .15s}
+.indtogg .itrack i{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#8b94a3;transition:left .15s,background .15s}
+.indtogg input:checked + .itrack{background:#1d4ed8}
+.indtogg input:checked + .itrack i{left:15px;background:#fff}
+.indtogg em{font-style:normal;font-size:12px;font-weight:600;color:var(--mut)}
+.indtogg input:checked ~ em{color:var(--txt)}
+.indlegend{display:flex;flex-wrap:wrap;gap:6px 10px;padding:6px 12px 2px;font-size:10px;color:var(--mut)}
+.indlegend b{display:inline-flex;align-items:center;gap:4px;font-weight:600}
+.indlegend .iseg{width:14px;height:6px;border-radius:3px;background:#2a3342}
+.indlegend .iseg.on{background:#9aa4b5}
+.indlegend .iseg.web{background:#4d9fff}
+.fstrip{display:flex;gap:3px;margin-top:3px}
+.fstrip .iseg{width:16px;height:6px;border-radius:3px;background:#232b38;flex:none}
+.fstrip .iseg.on{background:#9aa4b5}
+.fstrip .iseg.web{background:#4d9fff;box-shadow:0 0 4px rgba(77,159,255,.6)}
