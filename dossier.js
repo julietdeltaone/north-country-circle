@@ -501,21 +501,21 @@ function pipsHTML(e){
 /* Per-person level dots: blue=On file, yellow=Record, green=Files.
    One dot per filled section; hollow when empty. */
 var DOTDEFS = [
-  ['Contact', '#7ea6f0', function(e){ var p = e.profile || {}; return !!((p.phone || '').trim() || (p.email || '').trim() || (e.name || '').trim()); }],
-  ['Education', '#7ea6f0', function(e){ return degreesOf(e).length > 0; }],
-  ['Background', '#7ea6f0', function(e){ var p = e.profile || {}; return !!((p.specialty || '').trim() || (p.interests || '').trim()); }],
-  ['Synopsis', '#7ea6f0', function(e){ return !!((e.profile || {}).synopsis || '').trim(); }],
-  ['Persona', '#7ea6f0', function(e){ var p = e.profile || {}; return ['assertiveness','charisma','competence','creativity','intellect','ego'].some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
-  ['Relationship', '#f0b44c', function(e){ var p = e.profile || {}; return !!((p.relationship || '').trim() || (p.tier || '').trim()); }],
-  ['Timeline', '#f0b44c', function(e){ return !!((e.events || []).length); }],
-  ['Phases', '#f0b44c', function(e){ return connPhases(e).length > 0; }],
-  ['Files', '#5cd6a0', function(e){ return !!((e.files || []).length); }],
+  ['Contact', '#7ea6f0', 'identity', function(e){ var p = e.profile || {}; return !!((p.phone || '').trim() || (p.email || '').trim() || (e.name || '').trim()); }],
+  ['Education', '#7ea6f0', 'education', function(e){ return degreesOf(e).length > 0; }],
+  ['Background', '#7ea6f0', 'background', function(e){ var p = e.profile || {}; return !!((p.specialty || '').trim() || (p.interests || '').trim()); }],
+  ['Synopsis', '#7ea6f0', 'onfile', function(e){ return !!((e.profile || {}).synopsis || '').trim(); }],
+  ['Persona', '#7ea6f0', 'ratings', function(e){ var p = e.profile || {}; return ['assertiveness','charisma','competence','creativity','intellect','ego'].some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
+  ['Relationship', '#f0b44c', 'relationship', function(e){ var p = e.profile || {}; return !!((p.relationship || '').trim() || (p.tier || '').trim()); }],
+  ['Timeline', '#f0b44c', 'timeline', function(e){ return !!((e.events || []).length); }],
+  ['Phases', '#f0b44c', 'connections', function(e){ return connPhases(e).length > 0; }],
+  ['Files', '#5cd6a0', 'files', function(e){ return !!((e.files || []).length); }],
 ];
-function fieldIndicators(e){
+function fieldIndicators(di, e){
   if(!S.showIndicators) return '';
   return '<span class="fstrip">' + DOTDEFS.map(function(d){
-    var on = d[2](e);
-    return '<i class="iseg' + (on ? ' on' : '') + '" style="--c:' + d[1] + '" title="' + d[0] + (on ? ': filled' : ': empty') + '"></i>';
+    var on = d[3](e);
+    return '<i class="iseg' + (on ? ' on' : '') + '" style="--c:' + d[1] + '" data-di="' + di + '" data-sec="' + d[2] + '" title="' + d[0] + (on ? ': filled — click to edit' : ': empty — click to add') + '"></i>';
   }).join('') + '</span>';
 }
 function indLegendHTML(){
@@ -548,7 +548,7 @@ function railPeople(){
     return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
       '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
       (S.showIndicators ? (!aud ? '<i class="auddot' + (isEnriched(r) ? ' enr' : '') + '" title="Needs audit"></i>' : (isEnriched(r) ? '<i class="enrdot" title="Enriched from online sources"></i>' : '')) : '') + '</div>' +
-      '<div class="nm"><b>' + esc(dispName(r)) + '</b><div class="subrow"><span class="sub">' + esc(sub) + '</span>' + fieldIndicators(r) + '</div></div>' + capHTML(r) + '</div>';
+      '<div class="nm"><b>' + esc(dispName(r)) + '</b><div class="subrow"><span class="sub">' + esc(sub) + '</span>' + fieldIndicators(di, r) + '</div></div>' + capHTML(r) + '</div>';
   }).join('');
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
   $('#leftbody').innerHTML = indTogg + indLegendHTML() + (h || '<div class="empty-note">No one matches. Try clearing a filter.</div>');
@@ -754,7 +754,7 @@ function lvl1View(e){
     return '<div class="edu"><span class="eic">' + ic('cap', 15) + '</span><div><b>' + esc(d.school || 'School not set') + '</b>' +
       (line ? '<span>' + esc(line) + '</span>' : '') + (d.note ? '<span class="dim">' + esc(d.note) + '</span>' : '') + '</div>' +
       (d.year ? '<em>' + esc(d.year) + '</em>' : '') + '</div>';
-  }).join('') + '</div>', '', 'span') : '';
+  }).join('') + '</div>', '', '') : '';
 
   var ach = parseAchievements(gv(e, 'achievements'));
   if(!ach.length) ach = achievementsOf(e);
@@ -1746,12 +1746,12 @@ function connTimelineHTML(e){
   var rows = ps.map(function(p, i){
     var c = cols[i % 4];
     var range = ymLabel(p.f) + (p.t ? ' \u2013 ' + ymLabel(p.t) : ' \u2013 now');
-    return '<div class="cphase" style="--c:' + c + '"><i class="cpdot"></i>' +
-      '<div class="cpbody"><b>' + esc(p.l || 'Untitled phase') + '</b>' +
-      '<span class="cpdate">' + esc(range) + '</span>' +
-      (p.n ? '<span class="cpnote">' + esc(p.n) + '</span>' : '') + '</div></div>';
+    return '<div class="ev"><span class="evdot" style="--c:' + c + ';background:' + c + '"></span>' +
+      '<div class="evtop"><time>' + esc(range) + '</time></div>' +
+      '<div class="evtitle">' + esc(p.l || 'Untitled phase') + '</div>' +
+      (p.n ? '<div class="evdetail">' + esc(p.n) + '</div>' : '') + '</div>';
   }).join('');
-  return '<div class="ctlist">' + rows + '</div>';
+  return '<div class="tl">' + rows + '</div>';
 }
 function cpRowHTML(p, i){
   p = p || {};
@@ -2966,6 +2966,14 @@ function bind(){
   $('#settingsbtn').addEventListener('click', openSettings);
   $('#leftbody').addEventListener('click', function(e){
     if(e.target.closest('[data-more]')){ S.limit += 200; renderRail(); return; }
+    var dot = e.target.closest('.fstrip .iseg');
+    if(dot){
+      e.stopPropagation();
+      var di = parseInt(dot.getAttribute('data-di'), 10), sec = dot.getAttribute('data-sec');
+      if(S.sel === di && S.editing){ jumpTo(sec); }
+      else { openPerson(di, { edit:true }); S.jumpTo = sec; setTimeout(function(){ jumpTo(sec); }, 60); }
+      return;
+    }
     var row = e.target.closest('[data-i]');
     if(row) openPerson(parseInt(row.getAttribute('data-i'), 10), { lvl:parseInt(row.getAttribute('data-go'), 10) || 1, edit:S.editing });
   });
