@@ -495,6 +495,8 @@ var FINDEFS = [
   ['W', 'Web-scraped data', function(e){ return isEnriched(e); }, true],
   ['K', 'Known associates', function(e){ return !!(((e.profile || {}).close_add || '').trim() || (e.neighbors || []).length); }],
   ['R', 'Ratings', function(e){ var p = e.profile || {}; return ['assertiveness','charisma','competence','creativity','intellect','ego'].some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
+  ['E', 'Timeline events', function(e){ return !!((e.events || []).length); }],
+  ['F', 'Files', function(e){ return !!((e.files || []).length); }],
 ];
 function fieldIndicators(e){
   if(!S.showIndicators) return '';
@@ -532,7 +534,7 @@ function railPeople(){
     return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
       '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
       (S.showIndicators ? (!aud ? '<i class="auddot' + (isEnriched(r) ? ' enr' : '') + '" title="Needs audit"></i>' : (isEnriched(r) ? '<i class="enrdot" title="Enriched from online sources"></i>' : '')) : '') + '</div>' +
-      '<div class="nm"><b>' + esc(dispName(r)) + '</b><div class="subrow"><span class="sub">' + esc(sub) + '</span>' + fieldIndicators(r) + '</div></div>' + capHTML(r) + pipsHTML(r) + '</div>';
+      '<div class="nm"><b>' + esc(dispName(r)) + '</b><div class="subrow"><span class="sub">' + esc(sub) + '</span>' + fieldIndicators(r) + '</div></div>' + capHTML(r) + '</div>';
   }).join('');
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
   $('#leftbody').innerHTML = indTogg + indLegendHTML() + (h || '<div class="empty-note">No one matches. Try clearing a filter.</div>');
