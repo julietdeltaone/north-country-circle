@@ -524,7 +524,6 @@ function railPeople(){
   var rows = listRows();
   var total = LIST_ORDER.filter(function(di){ return (D.directory[di].profile || {}).deleted !== '1'; }).length;
   $('#lcount').textContent = rows.length === total ? total + ' people' : rows.length + ' of ' + total + ' people';
-  $('#lcount').innerHTML = esc($('#lcount').textContent) + indLegendHTML();
   var indTogg = '<label class="indtogg inscrl" title="Show per-person field indicators"><input type="checkbox" id="showindicators"' + (S.showIndicators ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Show Indicators</em></label>';
   var shown = rows.slice(0, S.limit);
   var h = shown.map(function(di){
@@ -536,7 +535,7 @@ function railPeople(){
       '<div class="nm"><b>' + esc(dispName(r)) + '</b><div class="subrow"><span class="sub">' + esc(sub) + '</span>' + fieldIndicators(r) + '</div></div>' + capHTML(r) + pipsHTML(r) + '</div>';
   }).join('');
   if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
-  $('#leftbody').innerHTML = indTogg + (h || '<div class="empty-note">No one matches. Try clearing a filter.</div>');
+  $('#leftbody').innerHTML = indTogg + indLegendHTML() + (h || '<div class="empty-note">No one matches. Try clearing a filter.</div>');
   var si = $('#showindicators');
   if(si) si.addEventListener('change', function(e){ S.showIndicators = e.target.checked; refresh(); });
 }
