@@ -2109,13 +2109,14 @@ function qaPaint(key, val, el){
     if(ava && TIERS[val]) ava.style.setProperty('--c', TIERS[val].c);
   }
   var di = qaCur(), e = di != null ? D.directory[di] : null;
-  if(e){
-    var st = auditStats(e), vals = [st.hasR, st.hasB, st.hasC];
-    var pills = document.querySelectorAll('#qabody .qaneeds b');
-    for(var j = 0; j < pills.length && j < vals.length; j++){
-      pills[j].classList.toggle('have', !!vals[j]);
-      pills[j].classList.toggle('miss', !vals[j]);
-    }
+  if(e) qaPaintPills(e);
+}
+function qaPaintPills(e){
+  var st = auditStats(e), vals = [st.hasR, st.hasB, st.hasC];
+  var pills = document.querySelectorAll('#qabody .qaneeds b');
+  for(var j = 0; j < pills.length && j < vals.length; j++){
+    pills[j].classList.toggle('have', !!vals[j]);
+    pills[j].classList.toggle('miss', !vals[j]);
   }
 }
 function qaGo(d){
@@ -2123,6 +2124,17 @@ function qaGo(d){
   QA.idx = (QA.idx + d + QA.queue.length) % QA.queue.length;
   renderQuick();
   $('#qabody').scrollTop = 0;
+}
+function qaTextHTML(e){
+  function ti(key, lab, ph, extra){
+    return '<div class="qarow"><span class="qalab">' + lab + '</span><input type="text" class="qtext" data-qpk="' + key + '" value="' + esc(gv(e, key)) + '" placeholder="' + esc(ph) + '" autocomplete="off"' + (extra || '') + '></div>';
+  }
+  return '<div class="qadiv"></div>' +
+    ti('context', 'Context', 'How do you know them?') +
+    ti('years_known', 'Known since', 'e.g. 2019', ' inputmode="numeric"') +
+    ti('specialty', 'Specialty', 'What they do') +
+    ti('interests', 'Interests', 'Comma separated') +
+    '<div class="qarow"><span class="qalab">Synopsis</span><textarea class="qarea" data-qpk="synopsis" rows="3" placeholder="Notes about this person">' + esc(gv(e, 'synopsis')) + '</textarea></div>';
 }
 function qaMoreHTML(e){
   var h = '<div class="qamorebody"><div class="qarow"><span class="qalab">Persona</span><div class="qadots">' +
@@ -2178,6 +2190,7 @@ function renderQuick(){
         '<button type="button" class="qtseg big go' + (aud ? ' on' : '') + '" data-qk="audit" data-qv="audited">Audited</button>' +
       '</div></div>' +
       qaMoreHTML(e) +
+      qaTextHTML(e) +
     '</div>';
   body.scrollTop = st;
   updateUndoBtns();
@@ -3340,6 +3353,28 @@ function bind(){
   $('#qafilters').addEventListener('click', function(ev){
     var b = ev.target.closest('[data-qf]');
     if(b) qaSetFilter(b.getAttribute('data-qf'));
+  });
+  var qFocusVal = '';
+  $('#qabody').addEventListener('focusin', function(ev){
+    var t = ev.target.closest('[data-qpk]');
+    if(t) qFocusVal = t.value;
+  });
+  $('#qabody').addEventListener('input', function(ev){
+    var t = ev.target.closest('[data-qpk]');
+    if(!t) return;
+    var di = qaCur(); if(di == null) return;
+    var p = {}; p[t.getAttribute('data-qpk')] = t.value;
+    queuePatch(di, p);
+  });
+  $('#qabody').addEventListener('change', function(ev){
+    var t = ev.target.closest('[data-qpk]');
+    if(!t) return;
+    var di = qaCur(); if(di == null) return;
+    if(t.value !== qFocusVal){
+      pushUndo({ items:[{ di:di, key:t.getAttribute('data-qpk'), prev:qFocusVal, next:t.value }] });
+      updateUndoBtns();
+      qaPaintPills(D.directory[di]);
+    }
   });
   $('#qabody').addEventListener('click', function(ev){
     var d = ev.target.closest('[data-qd]');
