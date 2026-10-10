@@ -2012,10 +2012,11 @@ function qaBuildQueue(){
 }
 function openQuick(){
   QA.queue = qaBuildQueue();
-  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
+  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.more = false;
   QA.open = true;
   $('#quickscreen').hidden = false;
   renderQuick();
+  $('#qabody').scrollTop = 0;
 }
 function closeQuick(){
   QA.open = false;
@@ -2049,9 +2050,33 @@ function qaGo(d){
   if(!QA.queue.length) return;
   QA.idx = (QA.idx + d + QA.queue.length) % QA.queue.length;
   renderQuick();
+  $('#qabody').scrollTop = 0;
+}
+function qaMoreHTML(e){
+  var h = '<button type="button" class="qamore" id="qamore" aria-expanded="' + !!QA.more + '"><span>' + (QA.more ? 'Fewer fields' : 'More fields') + '</span>' + ic('chev', 14) + '</button>';
+  if(!QA.more) return h;
+  h += '<div class="qamorebody"><div class="qarow"><span class="qalab">Persona</span><div class="qadots">' +
+    L1_SCORES.map(function(k){
+      var v = gv(e, k);
+      var dots = [1, 2, 3, 4, 5].map(function(i){
+        return '<button type="button" class="qdot' + (String(v) === String(i) ? ' on' : '') + '" data-qd="' + i + '">' + i + '</button>';
+      }).join('');
+      return '<div class="qaraterow"><span class="qratelab">' + esc(fieldDef(k).l) + '</span><div class="qdotbox" data-qdk="' + k + '" data-v="' + esc(v) + '">' + dots + '</div></div>';
+    }).join('') + '</div></div>';
+  h += '<div class="qarow"><span class="qalab">Relationship</span><div class="qaseg wrap">' +
+    ['', 'family', 'friend', 'coworker', 'acquaintance', 'other'].map(function(o){
+      var lab = o === '' ? '—' : o.charAt(0).toUpperCase() + o.slice(1);
+      return '<button type="button" class="qtseg sm' + (gv(e, 'relationship') === o ? ' on' : '') + '" data-qk="relationship" data-qv="' + o + '">' + lab + '</button>';
+    }).join('') + '</div></div>';
+  h += '<div class="qarow"><span class="qalab">Category</span><div class="qaseg wrap">' +
+    [['', '—'], ['peer', 'Peer'], ['rom', 'Romantic'], ['fam', 'Family'], ['auth', 'Authority'], ['ment', 'Mentor'], ['conf', 'Conflict']].map(function(p){
+      return '<button type="button" class="qtseg sm' + (gv(e, 'category') === p[0] ? ' on' : '') + '" data-qk="category" data-qv="' + p[0] + '">' + p[1] + '</button>';
+    }).join('') + '</div></div></div>';
+  return h;
 }
 function renderQuick(){
   var body = $('#qabody');
+  var st = body.scrollTop;
   if(!QA.queue.length){
     $('#qacount').textContent = '';
     body.innerHTML = '<div class="qadone"><div class="qacheck">' + ic('check', 42) + '</div><h3>All caught up</h3><p>' +
@@ -2082,7 +2107,9 @@ function renderQuick(){
         '<button type="button" class="qtseg big' + (!aud ? ' on' : '') + '" data-qk="audit" data-qv="needs_audit">Needs audit</button>' +
         '<button type="button" class="qtseg big go' + (aud ? ' on' : '') + '" data-qk="audit" data-qv="audited">Audited</button>' +
       '</div></div>' +
+      qaMoreHTML(e) +
     '</div>';
+  body.scrollTop = st;
   updateUndoBtns();
 }
 function pushUndo(entry){
@@ -3234,11 +3261,21 @@ function bind(){
   $('#auundo').addEventListener('click', doUndo);
   $('#auredo').addEventListener('click', doRedo);
   $('#qaopen').addEventListener('click', openQuick);
+  $('#qaopen2').addEventListener('click', openQuick);
   $('#qaback').addEventListener('click', closeQuick);
   $('#qaundo').addEventListener('click', doUndo);
   $('#qaprev').addEventListener('click', function(){ qaGo(-1); });
   $('#qanext').addEventListener('click', function(){ qaGo(1); });
   $('#qabody').addEventListener('click', function(ev){
+    if(ev.target.closest('#qamore')){ QA.more = !QA.more; renderQuick(); return; }
+    var d = ev.target.closest('[data-qd]');
+    if(d){
+      var box = d.closest('[data-qdk]');
+      var key = box.getAttribute('data-qdk');
+      var cur = box.getAttribute('data-v'), nv = d.getAttribute('data-qd');
+      qaTap(key, cur === nv ? '' : nv);
+      return;
+    }
     var b = ev.target.closest('[data-qk]');
     if(b){ qaTap(b.getAttribute('data-qk'), b.getAttribute('data-qv')); return; }
     if(ev.target.closest('#qaclose2')) closeQuick();
@@ -3487,6 +3524,7 @@ function onKey(e){
     return;
   }
   if(e.key === 'Escape'){
+    if(QA.open){ closeQuick(); return; }
     if($('#modal')){ closeModal(); return; }
     var fp = $('#filterpop'); if(fp && !fp.hidden){ fp.hidden = true; return; }
     if(document.activeElement === $('#fq')){ if($('#fq').value){ clearFilter('q'); } else $('#fq').blur(); return; }
@@ -3500,6 +3538,10 @@ function onKey(e){
   if(e.altKey && e.key === 'ArrowLeft'){ e.preventDefault(); goBack(); return; }
   if(e.altKey && e.key === 'ArrowRight'){ e.preventDefault(); goForward(); return; }
   if(typing() || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(QA.open){
+    if(e.key === 'ArrowLeft'){ qaGo(-1); return; }
+    if(e.key === 'ArrowRight'){ qaGo(1); return; }
+  }
   if(e.key === '/'){ e.preventDefault(); if(!S.listOpen) toggleList(); $('#fq').focus(); $('#fq').select(); return; }
   if(e.key === 'b' || e.key === 'B'){ toggleList(); return; }
   if(e.key === 'h' || e.key === 'H'){ goHome(); return; }
