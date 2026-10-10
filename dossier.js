@@ -2089,7 +2089,7 @@ function qaPrevVal(di, key){
   if(key === 'tier') return tierOf(e);
   if(key === 'momentum') return momVal(e);
   if(key === 'audit') return (e.profile || {}).audit || '';
-  return '';
+  return gv(e, key) || '';
 }
 function qaTap(key, val, el){
   var di = qaCur(); if(di == null) return;
