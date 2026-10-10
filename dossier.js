@@ -249,14 +249,12 @@ var F = {
   tier:{ l:'Tier', t:'tier' },
   momentum:{ l:'Momentum', t:'momentum' },
 
-  charisma:{ l:'Charisma', t:'score' },
-  competence:{ l:'Competence', t:'score' },
-  intellect:{ l:'Intellect', t:'score' },
-  creativity:{ l:'Creativity', t:'score' },
-  reliability:{ l:'Reliability', t:'score' },
-  reputation:{ l:'Reputation', t:'score' },
-  assertiveness:{ l:'Assertiveness', t:'score' },
-  ego:{ l:'Ego', t:'score' },
+  openness:{ l:'Openness', t:'score', d:'Curious vs. set in their ways' },
+  conscientiousness:{ l:'Conscientiousness', t:'score', d:'Follow-through and organization' },
+  extraversion:{ l:'Extraversion', t:'score', d:'Outgoing vs. reserved' },
+  agreeableness:{ l:'Agreeableness', t:'score', d:'Warm and cooperative vs. harsh' },
+  neuroticism:{ l:'Neuroticism', t:'score', d:'Reactive vs. steady', neg:1 },
+  ego:{ l:'Ego', t:'score', d:'Self-important', neg:1 },
 
   specialty:{ l:'Specialty', t:'text' },
   interests:{ l:'Interests', t:'text' },
@@ -276,7 +274,7 @@ var F = {
   sources:{ l:'Sources', t:'text' },
   mentions:{ l:'Mentions', t:'text' }
 };
-var L1_SCORES = ['charisma','competence','intellect','creativity','reliability','reputation','assertiveness','ego'];
+var L1_SCORES = ['openness','conscientiousness','extraversion','agreeableness','neuroticism','ego'];
 var READ_TRAITS = L1_SCORES.slice();
 var L1_TOTAL = 14;
 
@@ -512,7 +510,7 @@ var DOTDEFS = [
   ['Education', '#7ea6f0', 'education', function(e){ return degreesOf(e).length > 0; }],
   ['Background', '#7ea6f0', 'background', function(e){ var p = e.profile || {}; return !!((p.specialty || '').trim() || (p.interests || '').trim()); }],
   ['Synopsis', '#7ea6f0', 'onfile', function(e){ return !!((e.profile || {}).synopsis || '').trim(); }],
-  ['Persona', '#7ea6f0', 'ratings', function(e){ var p = e.profile || {}; return ['assertiveness','charisma','competence','creativity','intellect','ego'].some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
+  ['Persona', '#7ea6f0', 'ratings', function(e){ var p = e.profile || {}; return L1_SCORES.some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
   ['Relationship', '#f0b44c', 'relationship', function(e){ var p = e.profile || {}; return !!((p.relationship || '').trim() || (p.tier || '').trim()); }],
   ['Timeline', '#f0b44c', 'timeline', function(e){ return !!((e.events || []).length); }],
   ['Phases', '#f0b44c', 'connections', function(e){ return connPhases(e).length > 0; }],
@@ -1820,25 +1818,28 @@ function doUnmerge(e){
 
 /* ---------- pro personality score ---------- */
 
-/* Big Five, estimated from the 8 trait ratings. The top trait is the hero chip. */
-var BIG5 = [
-  { n:'Openness',         from:['intellect','creativity'],   inv:[] },
-  { n:'Conscientiousness', from:['competence','reliability'], inv:[] },
-  { n:'Extraversion',      from:['charisma','assertiveness'], inv:[] },
-  { n:'Agreeableness',     from:['reputation'],              inv:['ego'] },
-  { n:'Neuroticism',       from:['ego'],                     inv:['reliability'] }
-];
-function big5Scores(e){
-  return BIG5.map(function(t){
-    var vals = [];
-    t.from.forEach(function(k){ var v = parseFloat(gv(e, k)); if(!isNaN(v)) vals.push(v); });
-    t.inv.forEach(function(k){ var v = parseFloat(gv(e, k)); if(!isNaN(v)) vals.push(6 - v); });
-    if(!vals.length) return null;
-    return { n:t.n, score:Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100) };
+/* Persona scores: each trait is rated directly 1-5. Neuroticism and Ego are
+   negative-valence (high = worse); everything else is high = better. */
+var NEG_TRAITS = ['neuroticism','ego'];
+function traitScores(e){
+  return L1_SCORES.map(function(k){
+    var v = parseFloat(gv(e, k));
+    if(isNaN(v) || !v) return null;
+    return { k:k, n:fieldDef(k).l, score:Math.round(v / 5 * 100), rating:v };
   }).filter(Boolean);
 }
+function proScore(e){
+  var vals = [];
+  L1_SCORES.forEach(function(k){
+    var v = parseFloat(gv(e, k));
+    if(isNaN(v) || !v) return;
+    vals.push(NEG_TRAITS.indexOf(k) >= 0 ? 6 - v : v);
+  });
+  if(!vals.length) return 0;
+  return Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100);
+}
 function readHTML(e){
-  var ts = big5Scores(e);
+  var ts = traitScores(e).filter(function(t){ return NEG_TRAITS.indexOf(t.k) < 0; });
   if(!ts.length) return '';
   ts.sort(function(a, b){ return b.score - a.score; });
   var top = ts[0];
@@ -2208,11 +2209,12 @@ function qaYearHTML(e){
 function qaMoreHTML(e){
   var h = '<div class="qamorebody"><div class="qarow"><span class="qalab">Persona</span><div class="qadots">' +
     L1_SCORES.map(function(k){
-      var v = gv(e, k);
+      var v = gv(e, k), fd = fieldDef(k), neg = !!fd.neg;
       var dots = [1, 2, 3, 4, 5].map(function(i){
         return '<button type="button" class="qdot' + (String(v) === String(i) ? ' on' : '') + '" data-qd="' + i + '">' + i + '</button>';
       }).join('');
-      return '<div class="qaraterow"><span class="qratelab">' + esc(fieldDef(k).l) + '</span><div class="qdotbox" data-qdk="' + k + '" data-v="' + esc(v) + '">' + dots + '</div></div>';
+      return '<div class="qaraterow' + (neg ? ' neg' : '') + '"><span class="qratelab">' + esc(fd.l) +
+        '<em>' + esc(fd.d || '') + (neg ? ' · high is worse' : '') + '</em></span><div class="qdotbox" data-qdk="' + k + '" data-v="' + esc(v) + '">' + dots + '</div></div>';
     }).join('') + '</div></div>';
   h += '<div class="qarow"><span class="qalab">Relationship</span><div class="qaseg wrap">' +
     ['', 'family', 'friend', 'coworker', 'acquaintance', 'other'].map(function(o){
