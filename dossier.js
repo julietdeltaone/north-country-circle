@@ -1999,22 +1999,62 @@ function closeAudit(){
   $('#auditscreen').hidden = true;
 }
 /* ---------- quick mobile audit: one person at a time, rapid taps ---------- */
-var QA = { open:false, queue:[], idx:0, total:0, done:0 };
+var QA = { open:false, queue:[], idx:0, total:0, done:0, q:'audit', skipRender:false };
+var QA_FILTERS = [
+  { k:'audit',      l:'Needs audit' },
+  { k:'ratings',    l:'Needs ratings' },
+  { k:'background', l:'Needs background' },
+  { k:'connection', l:'Needs connection' },
+  { k:'business',   l:'Businesses' },
+  { k:'needs',      l:'Needs attention' }
+];
+function qaPass(e, st, an){
+  if((e.profile || {}).deleted === '1' || st.audited) return false;
+  if(QA.q === 'ratings') return !st.hasR;
+  if(QA.q === 'background') return !st.hasB;
+  if(QA.q === 'connection') return !st.hasC;
+  if(QA.q === 'business') return an.business;
+  if(QA.q === 'needs') return st.missing > 0;
+  return true; /* 'audit' */
+}
 function qaBuildQueue(){
   var rows = [];
   D.directory.forEach(function(e, di){
-    if((e.profile || {}).deleted === '1') return;
-    if((e.profile || {}).audit === 'audited') return;
-    rows.push({ di:di, st:auditStats(e), nm:(auName(e).name || '').toLowerCase() });
+    var st = auditStats(e), an = auName(e);
+    if(!qaPass(e, st, an)) return;
+    rows.push({ di:di, st:st, nm:(an.name || '').toLowerCase() });
   });
   rows.sort(function(a, b){ return (a.st.score - b.st.score) || (a.nm < b.nm ? -1 : a.nm > b.nm ? 1 : 0); });
   return rows.map(function(r){ return r.di; });
 }
+function qaCount(k){
+  var keep = QA.q, n = 0; QA.q = k;
+  D.directory.forEach(function(e){
+    if(qaPass(e, auditStats(e), auName(e))) n++;
+  });
+  QA.q = keep;
+  return n;
+}
+function renderQuickFilters(){
+  $('#qafilters').innerHTML = QA_FILTERS.map(function(f){
+    return '<button type="button" class="qaf' + (QA.q === f.k ? ' on' : '') + '" data-qf="' + f.k + '">' + f.l + ' <b>' + qaCount(f.k) + '</b></button>';
+  }).join('');
+}
+function qaSetFilter(k){
+  if(QA.q === k) return;
+  QA.q = k;
+  QA.queue = qaBuildQueue();
+  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
+  renderQuickFilters();
+  renderQuick();
+  $('#qabody').scrollTop = 0;
+}
 function openQuick(){
   QA.queue = qaBuildQueue();
-  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.more = false;
+  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
   QA.open = true;
   $('#quickscreen').hidden = false;
+  renderQuickFilters();
   renderQuick();
   $('#qabody').scrollTop = 0;
 }
@@ -2030,20 +2070,52 @@ function qaPrevVal(di, key){
   if(key === 'audit') return (e.profile || {}).audit || '';
   return '';
 }
-function qaTap(key, val){
+function qaTap(key, val, el){
   var di = qaCur(); if(di == null) return;
   var prev = qaPrevVal(di, key);
   if(prev === val) return;
   var entry = { items:[{ di:di, key:key, prev:prev, next:val }] };
   pushUndo(entry);
+  QA.skipRender = true;
   applyEntry(entry, false);
+  qaPaint(key, val, el);
   if(key === 'audit' && val === 'audited'){
     QA.done++;
     entry.qaRemove = di;
     entry.qaRemoveIdx = QA.idx;
     QA.queue.splice(QA.idx, 1);
     if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
+    renderQuickFilters();
     renderQuick();
+    $('#qabody').scrollTop = 0;
+  }
+}
+/* update the tapped control in place so the card never re-renders mid-flow
+   (a full re-render drops the scroll position on iOS) */
+function qaPaint(key, val, el){
+  if(el){
+    var box = el.closest('.qaseg') || el.closest('.qdotbox');
+    if(box){
+      var attr = el.hasAttribute('data-qd') ? 'data-qd' : 'data-qv';
+      var btns = box.querySelectorAll('[' + attr + ']');
+      for(var i = 0; i < btns.length; i++){
+        btns[i].classList.toggle('on', val !== '' && btns[i].getAttribute(attr) === val);
+      }
+      if(attr === 'data-qd') box.setAttribute('data-v', val);
+    }
+  }
+  if(key === 'tier'){
+    var ava = document.querySelector('#qabody .qaava');
+    if(ava && TIERS[val]) ava.style.setProperty('--c', TIERS[val].c);
+  }
+  var di = qaCur(), e = di != null ? D.directory[di] : null;
+  if(e){
+    var st = auditStats(e), vals = [st.hasR, st.hasB, st.hasC];
+    var pills = document.querySelectorAll('#qabody .qaneeds b');
+    for(var j = 0; j < pills.length && j < vals.length; j++){
+      pills[j].classList.toggle('have', !!vals[j]);
+      pills[j].classList.toggle('miss', !vals[j]);
+    }
   }
 }
 function qaGo(d){
@@ -2053,9 +2125,7 @@ function qaGo(d){
   $('#qabody').scrollTop = 0;
 }
 function qaMoreHTML(e){
-  var h = '<button type="button" class="qamore" id="qamore" aria-expanded="' + !!QA.more + '"><span>' + (QA.more ? 'Fewer fields' : 'More fields') + '</span>' + ic('chev', 14) + '</button>';
-  if(!QA.more) return h;
-  h += '<div class="qamorebody"><div class="qarow"><span class="qalab">Persona</span><div class="qadots">' +
+  var h = '<div class="qamorebody"><div class="qarow"><span class="qalab">Persona</span><div class="qadots">' +
     L1_SCORES.map(function(k){
       var v = gv(e, k);
       var dots = [1, 2, 3, 4, 5].map(function(i){
@@ -2130,7 +2200,8 @@ function applyEntry(entry, toPrev, done){
     queuePatch(it.di, p);
   });
   renderAudit(); refresh();
-  if(QA.open) renderQuick();
+  if(QA.open && !QA.skipRender) renderQuick();
+  QA.skipRender = false;
   if(done) done();
 }
 function doUndo(){
@@ -3266,18 +3337,21 @@ function bind(){
   $('#qaundo').addEventListener('click', doUndo);
   $('#qaprev').addEventListener('click', function(){ qaGo(-1); });
   $('#qanext').addEventListener('click', function(){ qaGo(1); });
+  $('#qafilters').addEventListener('click', function(ev){
+    var b = ev.target.closest('[data-qf]');
+    if(b) qaSetFilter(b.getAttribute('data-qf'));
+  });
   $('#qabody').addEventListener('click', function(ev){
-    if(ev.target.closest('#qamore')){ QA.more = !QA.more; renderQuick(); return; }
     var d = ev.target.closest('[data-qd]');
     if(d){
       var box = d.closest('[data-qdk]');
       var key = box.getAttribute('data-qdk');
       var cur = box.getAttribute('data-v'), nv = d.getAttribute('data-qd');
-      qaTap(key, cur === nv ? '' : nv);
+      qaTap(key, cur === nv ? '' : nv, d);
       return;
     }
     var b = ev.target.closest('[data-qk]');
-    if(b){ qaTap(b.getAttribute('data-qk'), b.getAttribute('data-qv')); return; }
+    if(b){ qaTap(b.getAttribute('data-qk'), b.getAttribute('data-qv'), b); return; }
     if(ev.target.closest('#qaclose2')) closeQuick();
   });
   (function(){
