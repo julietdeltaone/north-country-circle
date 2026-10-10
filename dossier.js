@@ -2113,7 +2113,6 @@ function qaTap(key, val, el){
 function qaDelete(){
   var di = qaCur(); if(di == null) return;
   var e = D.directory[di], name = auName(e).name;
-  if(!confirm('Delete ' + name + ' from the circle?\n\nThey will be moved to the Trash sheet (hidden). You can undo this.')) return;
   var entry = { items:[{ di:di, key:'deleted', prev:(e.profile || {}).deleted || '', next:'1' }] };
   pushUndo(entry);
   QA.skipRender = true;
