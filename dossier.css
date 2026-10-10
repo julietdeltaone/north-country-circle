@@ -886,3 +886,25 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
   #qabody{align-items:center}
   .qacard{padding:28px 30px}
 }
+
+/* quick audit: more fields */
+.qamore{width:100%;margin:6px 0 4px;min-height:52px;border-radius:14px;border:1px dashed var(--line);
+  background:transparent;color:var(--dim);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.qamore .chev{display:inline-flex;transition:transform .18s}
+.qamore[aria-expanded="true"]{color:var(--txt);border-style:solid}
+.qamore[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.qamorebody{padding-top:6px}
+.qadots{display:flex;flex-direction:column;gap:4px}
+.qaraterow{display:flex;align-items:center;gap:10px;padding:7px 2px}
+.qratelab{flex:1;font-size:14px;font-weight:500;color:var(--txt);min-width:0}
+.qdotbox{display:flex;gap:7px;flex:none}
+.qdot{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.03);
+  color:var(--dim);font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.qdot:active{transform:scale(.92)}
+.qdot.on{border-color:#7ea6f0;background:rgba(126,166,240,.18);color:#fff;box-shadow:0 0 0 1px #7ea6f0}
+.qaseg.wrap{flex-wrap:wrap}
+.qtseg.sm{flex:1 1 30%;min-height:50px;font-size:13.5px}
