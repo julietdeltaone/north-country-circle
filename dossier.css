@@ -940,3 +940,8 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .qanameedit{width:100%;background:rgba(255,255,255,.06);border:1px solid #7ea6f0;border-radius:10px;
   color:var(--txt);font-family:var(--disp);font-weight:700;font-size:20px;line-height:1.25;
   padding:6px 10px;outline:none;box-sizing:border-box;-webkit-appearance:none;appearance:none}
+
+/* quick audit: persona trait descriptions + negative-valence signal */
+.qratelab em{display:block;font-style:normal;font-size:11px;font-weight:400;color:var(--dim);margin-top:1px}
+.qaraterow.neg .qratelab em{color:#e08a8a}
+.qaraterow.neg .qdot.on{border-color:#e08a8a;background:rgba(224,138,138,.16);box-shadow:0 0 0 1px #e08a8a}
