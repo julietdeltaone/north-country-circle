@@ -844,20 +844,20 @@ function familyTreeHTML(e){
   var f = e.family; if(!f) return '';
   var P = f.parents || [], SP = f.spouses || [], C = f.children || [], SB = f.siblings || [];
   if(!P.length && !SP.length && !C.length && !SB.length) return '';
-  var R = 17, gap = 12, rS = 13;
+  var R = 11, gap = 8, rS = 13;
   function spread(n, y, cx){
     var w = n * R * 2 + Math.max(0, n - 1) * gap, x0 = cx - w / 2, out = [];
     for(var i = 0; i < n; i++) out.push(x0 + R + i * (R * 2 + gap));
     return out;
   }
-  var yP = 30, yM = 100, yC = 170;
+  var yP = 18, yM = 62, yC = 106;
   var nMax = Math.max(P.length, C.length, SP.length ? 2 : 1, 1);
-  var W = Math.max(200, nMax * R * 2 + (nMax - 1) * gap + 60);
-  var cx = W / 2, H = yC + R + 16;
+  var W = Math.max(140, nMax * R * 2 + (nMax - 1) * gap + 36);
+  var cx = W / 2, H = yC + R + 10;
   var selfX = cx, spX = null;
   if(SP.length){ selfX = cx - R - gap / 2; spX = cx + R + gap / 2; }
   var pX = spread(P.length, yP, cx), cX = spread(C.length, yC, cx);
-  var s = '<svg class="famtree" viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:420px;display:block;margin:0 auto">';
+  var s = '<svg class="famtree" viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:280px;display:block;margin:0 auto">';
   // connectors
   if(P.length){
     var x0 = pX[0], x1 = pX[pX.length - 1];
@@ -868,12 +868,12 @@ function familyTreeHTML(e){
   }
   if(SP.length) s += '<path class="fln" d="M' + (selfX + R) + ',' + yM + ' L' + (spX - R) + ',' + yM + '"/>';
   if(C.length){
-    s += '<path class="fln" d="M' + selfX + ',' + yM + ' L' + selfX + ',' + (yM + 34) + '"/>';
+    s += '<path class="fln" d="M' + selfX + ',' + yM + ' L' + selfX + ',' + (yM + 22) + '"/>';
     var bx0 = cX[0], bx1 = cX[cX.length - 1];
-    s += '<path class="fln" d="M' + bx0 + ',' + (yM + 34);
-    cX.forEach(function(x){ s += ' L' + x + ',' + (yM + 34); });
+    s += '<path class="fln" d="M' + bx0 + ',' + (yM + 22);
+    cX.forEach(function(x){ s += ' L' + x + ',' + (yM + 22); });
     s += '"/>';
-    cX.forEach(function(x){ s += '<path class="fln" d="M' + x + ',' + (yM + 34) + ' L' + x + ',' + (yC - R) + '"/>'; });
+    cX.forEach(function(x){ s += '<path class="fln" d="M' + x + ',' + (yM + 22) + ' L' + x + ',' + (yC - R) + '"/>'; });
   }
   // nodes
   pX.forEach(function(x, i){ s += famNode(x, yP, R, FAM_COLORS.parent, P[i].u, P[i].d); });
