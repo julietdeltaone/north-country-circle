@@ -2024,7 +2024,18 @@ function qaBuildQueue(){
     if(!qaPass(e, st, an)) return;
     rows.push({ di:di, st:st, nm:(an.name || '').toLowerCase() });
   });
-  rows.sort(function(a, b){ return (a.st.score - b.st.score) || (a.nm < b.nm ? -1 : a.nm > b.nm ? 1 : 0); });
+  if(QA.sort === 'shuffle'){
+    for(var i = rows.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1)), t = rows[i];
+      rows[i] = rows[j]; rows[j] = t;
+    }
+  } else if(QA.sort === 'name'){
+    rows.sort(function(a, b){ return a.nm < b.nm ? -1 : a.nm > b.nm ? 1 : 0; });
+  } else if(QA.sort === 'close'){
+    rows.sort(function(a, b){ return (D.directory[b.di].strength || 0) - (D.directory[a.di].strength || 0); });
+  } else {
+    rows.sort(function(a, b){ return (a.st.score - b.st.score) || (a.nm < b.nm ? -1 : a.nm > b.nm ? 1 : 0); });
+  }
   return rows.map(function(r){ return r.di; });
 }
 function qaCount(k){
@@ -2049,11 +2060,20 @@ function qaSetFilter(k){
   renderQuick();
   $('#qabody').scrollTop = 0;
 }
+function qaSetSort(s){
+  if(QA.sort === s && s !== 'shuffle') return;
+  QA.sort = s;
+  QA.queue = qaBuildQueue();
+  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
+  renderQuick();
+  $('#qabody').scrollTop = 0;
+}
 function openQuick(){
   QA.queue = qaBuildQueue();
   QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
   QA.open = true;
   $('#quickscreen').hidden = false;
+  $('#qasort').value = QA.sort;
   renderQuickFilters();
   renderQuick();
   $('#qabody').scrollTop = 0;
@@ -3350,6 +3370,7 @@ function bind(){
   $('#qaundo').addEventListener('click', doUndo);
   $('#qaprev').addEventListener('click', function(){ qaGo(-1); });
   $('#qanext').addEventListener('click', function(){ qaGo(1); });
+  $('#qasort').addEventListener('change', function(){ qaSetSort(this.value); });
   $('#qafilters').addEventListener('click', function(ev){
     var b = ev.target.closest('[data-qf]');
     if(b) qaSetFilter(b.getAttribute('data-qf'));
