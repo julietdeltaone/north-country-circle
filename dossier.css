@@ -912,15 +912,16 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .qaseg.wrap{flex-wrap:wrap}
 .qtseg.sm{flex:1 1 30%;min-height:50px;font-size:13.5px}
 
-/* quick audit: text inputs */
-.qadiv{height:1px;background:var(--line-soft);margin:10px 0 18px}
-.qtext,.qarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;
-  color:var(--txt);font-family:var(--sans);font-size:16px;padding:14px;outline:none;box-sizing:border-box;
-  -webkit-appearance:none;appearance:none}
-.qtext{min-height:54px}
-.qtext:focus,.qarea:focus{border-color:#7ea6f0;box-shadow:0 0 0 1px #7ea6f0}
-.qarea{min-height:96px;resize:vertical;line-height:1.45}
-.qtext::placeholder,.qarea::placeholder{color:var(--dim);opacity:.65}
+/* quick audit: year ticker (thin row) */
+.qatick{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch}
+.qatick::-webkit-scrollbar{display:none}
+.qtick{flex:none;min-width:52px;min-height:34px;padding:6px 8px;border-radius:9px;
+  border:1px solid var(--line);background:var(--fill);color:var(--txt);
+  font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.qtick.on{background:#7ea6f0;border-color:#7ea6f0;color:#0b0e14}
+.qtick:active{transform:scale(.96)}
 
 /* quick audit: sort */
 #qasort{background:var(--fill);border:1px solid var(--line);color:var(--txt);border-radius:9px;
@@ -932,3 +933,10 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
   display:flex;align-items:center;justify-content:center;gap:8px;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .qadel:active{transform:scale(.98)}
+
+/* quick audit: tappable name */
+.qaname[data-qname]{cursor:pointer}
+.qaname[data-qname]:active{opacity:.7}
+.qanameedit{width:100%;background:rgba(255,255,255,.06);border:1px solid #7ea6f0;border-radius:10px;
+  color:var(--txt);font-family:var(--disp);font-weight:700;font-size:20px;line-height:1.25;
+  padding:6px 10px;outline:none;box-sizing:border-box;-webkit-appearance:none;appearance:none}
