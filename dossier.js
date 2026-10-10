@@ -2127,11 +2127,45 @@ function qaDelete(){
   $('#qabody').scrollTop = 0;
   toast('Deleted ' + name + '.');
 }
+function qaEditName(el){
+  var di = qaCur(); if(di == null) return;
+  var e = D.directory[di], an = auName(e);
+  var cur = an.name === 'Unknown' ? '' : an.name;
+  var prev = gv(e, 'display_name') || '';
+  var inp = document.createElement('input');
+  inp.type = 'text';
+  inp.value = cur;
+  inp.className = 'qanameedit';
+  inp.setAttribute('autocomplete', 'off');
+  inp.setAttribute('aria-label', 'Edit name');
+  el.innerHTML = '';
+  el.appendChild(inp);
+  inp.focus();
+  try{ inp.select(); }catch(x){}
+  var done = false;
+  function finish(save){
+    if(done) return; done = true;
+    var v = inp.value.trim();
+    if(save && v && v !== cur){
+      var entry = { items:[{ di:di, key:'display_name', prev:prev, next:v }] };
+      pushUndo(entry);
+      QA.skipRender = true;
+      applyEntry(entry, false);
+    }
+    renderQuick();
+  }
+  inp.addEventListener('click', function(ev){ ev.stopPropagation(); });
+  inp.addEventListener('blur', function(){ finish(true); });
+  inp.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter') finish(true);
+    else if(ev.key === 'Escape') finish(false);
+  });
+}
 /* update the tapped control in place so the card never re-renders mid-flow
    (a full re-render drops the scroll position on iOS) */
 function qaPaint(key, val, el){
   if(el){
-    var box = el.closest('.qaseg') || el.closest('.qdotbox');
+    var box = el.closest('.qaseg') || el.closest('.qdotbox') || el.closest('.qatick');
     if(box){
       var attr = el.hasAttribute('data-qd') ? 'data-qd' : 'data-qv';
       var btns = box.querySelectorAll('[' + attr + ']');
@@ -2162,16 +2196,14 @@ function qaGo(d){
   renderQuick();
   $('#qabody').scrollTop = 0;
 }
-function qaTextHTML(e){
-  function ti(key, lab, ph, extra){
-    return '<div class="qarow"><span class="qalab">' + lab + '</span><input type="text" class="qtext" data-qpk="' + key + '" value="' + esc(gv(e, key)) + '" placeholder="' + esc(ph) + '" autocomplete="off"' + (extra || '') + '></div>';
-  }
-  return '<div class="qadiv"></div>' +
-    ti('context', 'Context', 'How do you know them?') +
-    ti('years_known', 'Known since', 'e.g. 2019', ' inputmode="numeric"') +
-    ti('specialty', 'Specialty', 'What they do') +
-    ti('interests', 'Interests', 'Comma separated') +
-    '<div class="qarow"><span class="qalab">Synopsis</span><textarea class="qarea" data-qpk="synopsis" rows="3" placeholder="Notes about this person">' + esc(gv(e, 'synopsis')) + '</textarea></div>';
+function qaYearHTML(e){
+  var cur = String(gv(e, 'years_known') || '');
+  var yrs = [];
+  for(var y = 2026; y >= 2000; y--) yrs.push(y);
+  return '<div class="qarow"><span class="qalab">Known since</span><div class="qatick" id="qatick">' +
+    yrs.map(function(y){
+      return '<button type="button" class="qtick' + (cur === String(y) ? ' on' : '') + '" data-qk="years_known" data-qv="' + y + '">' + y + '</button>';
+    }).join('') + '</div></div>';
 }
 function qaMoreHTML(e){
   var h = '<div class="qamorebody"><div class="qarow"><span class="qalab">Persona</span><div class="qadots">' +
@@ -2186,6 +2218,10 @@ function qaMoreHTML(e){
     ['', 'family', 'friend', 'coworker', 'acquaintance', 'other'].map(function(o){
       var lab = o === '' ? '—' : o.charAt(0).toUpperCase() + o.slice(1);
       return '<button type="button" class="qtseg sm' + (gv(e, 'relationship') === o ? ' on' : '') + '" data-qk="relationship" data-qv="' + o + '">' + lab + '</button>';
+    }).join('') + '</div></div>';
+  h += '<div class="qarow"><span class="qalab">Context</span><div class="qaseg wrap">' +
+    [['', '—'], ['work', 'Work'], ['school', 'School'], ['military', 'Military'], ['community', 'Community'], ['church', 'Church'], ['online', 'Online'], ['other', 'Other']].map(function(p){
+      return '<button type="button" class="qtseg sm' + (gv(e, 'context') === p[0] ? ' on' : '') + '" data-qk="context" data-qv="' + p[0] + '">' + p[1] + '</button>';
     }).join('') + '</div></div>';
   h += '<div class="qarow"><span class="qalab">Category</span><div class="qaseg wrap">' +
     [['', '—'], ['peer', 'Peer'], ['rom', 'Romantic'], ['fam', 'Family'], ['auth', 'Authority'], ['ment', 'Mentor'], ['conf', 'Conflict']].map(function(p){
@@ -2216,7 +2252,7 @@ function renderQuick(){
   body.innerHTML =
     '<div class="qacard">' +
       '<div class="qaid"><span class="qaava" style="--c:' + tierCol(e) + '">' + esc(ini) + '</span>' +
-      '<div class="qamain"><div class="qaname">' + esc(an.name) + (an.business ? '<em class="aubiz">Business</em>' : '') + '</div>' +
+      '<div class="qamain"><div class="qaname" data-qname="1" title="Tap to edit name">' + esc(an.name) + (an.business ? '<em class="aubiz">Business</em>' : '') + '</div>' +
       (an.handle ? '<div class="qahandle">@' + esc(an.handle.replace(/^@/, '')) + '</div>' : '') +
       '<div class="qaneeds">' + pill(st.hasR, 'Persona') + pill(st.hasB, 'Background') + pill(st.hasC, 'Connection') + '</div></div></div>' +
       '<div class="qarow"><span class="qalab">Tier</span><div class="qaseg">' +
@@ -2230,10 +2266,12 @@ function renderQuick(){
         '<button type="button" class="qtseg big go' + (aud ? ' on' : '') + '" data-qk="audit" data-qv="audited">Audited</button>' +
       '</div></div>' +
       qaMoreHTML(e) +
-      qaTextHTML(e) +
+      qaYearHTML(e) +
       '<button type="button" class="qadel" data-qdel="1">' + ic('trash', 14) + '<span>Delete — move to trash</span></button>' +
     '</div>';
   body.scrollTop = st;
+  var tick = body.querySelector('#qatick'), tickOn = tick && tick.querySelector('.on');
+  if(tick && tickOn) tick.scrollLeft = Math.max(0, tickOn.offsetLeft - tick.clientWidth / 2 + tickOn.clientWidth / 2);
   updateUndoBtns();
 }
 function pushUndo(entry){
@@ -3402,30 +3440,10 @@ function bind(){
     var b = ev.target.closest('[data-qf]');
     if(b) qaSetFilter(b.getAttribute('data-qf'));
   });
-  var qFocusVal = '';
-  $('#qabody').addEventListener('focusin', function(ev){
-    var t = ev.target.closest('[data-qpk]');
-    if(t) qFocusVal = t.value;
-  });
-  $('#qabody').addEventListener('input', function(ev){
-    var t = ev.target.closest('[data-qpk]');
-    if(!t) return;
-    var di = qaCur(); if(di == null) return;
-    var p = {}; p[t.getAttribute('data-qpk')] = t.value;
-    queuePatch(di, p);
-  });
-  $('#qabody').addEventListener('change', function(ev){
-    var t = ev.target.closest('[data-qpk]');
-    if(!t) return;
-    var di = qaCur(); if(di == null) return;
-    if(t.value !== qFocusVal){
-      pushUndo({ items:[{ di:di, key:t.getAttribute('data-qpk'), prev:qFocusVal, next:t.value }] });
-      updateUndoBtns();
-      qaPaintPills(D.directory[di]);
-    }
-  });
   $('#qabody').addEventListener('click', function(ev){
     if(ev.target.closest('[data-qdel]')){ qaDelete(); return; }
+    var nm = ev.target.closest('[data-qname]');
+    if(nm && !nm.querySelector('input')){ qaEditName(nm); return; }
     var d = ev.target.closest('[data-qd]');
     if(d){
       var box = d.closest('[data-qdk]');
