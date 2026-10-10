@@ -1998,6 +1998,93 @@ function closeAudit(){
   AUD.open = false;
   $('#auditscreen').hidden = true;
 }
+/* ---------- quick mobile audit: one person at a time, rapid taps ---------- */
+var QA = { open:false, queue:[], idx:0, total:0, done:0 };
+function qaBuildQueue(){
+  var rows = [];
+  D.directory.forEach(function(e, di){
+    if((e.profile || {}).deleted === '1') return;
+    if((e.profile || {}).audit === 'audited') return;
+    rows.push({ di:di, st:auditStats(e), nm:(auName(e).name || '').toLowerCase() });
+  });
+  rows.sort(function(a, b){ return (a.st.score - b.st.score) || (a.nm < b.nm ? -1 : a.nm > b.nm ? 1 : 0); });
+  return rows.map(function(r){ return r.di; });
+}
+function openQuick(){
+  QA.queue = qaBuildQueue();
+  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
+  QA.open = true;
+  $('#quickscreen').hidden = false;
+  renderQuick();
+}
+function closeQuick(){
+  QA.open = false;
+  $('#quickscreen').hidden = true;
+}
+function qaCur(){ return QA.queue.length ? QA.queue[QA.idx] : null; }
+function qaPrevVal(di, key){
+  var e = D.directory[di]; if(!e) return '';
+  if(key === 'tier') return tierOf(e);
+  if(key === 'momentum') return momVal(e);
+  if(key === 'audit') return (e.profile || {}).audit || '';
+  return '';
+}
+function qaTap(key, val){
+  var di = qaCur(); if(di == null) return;
+  var prev = qaPrevVal(di, key);
+  if(prev === val) return;
+  var entry = { items:[{ di:di, key:key, prev:prev, next:val }] };
+  pushUndo(entry);
+  applyEntry(entry, false);
+  if(key === 'audit' && val === 'audited'){
+    QA.done++;
+    entry.qaRemove = di;
+    entry.qaRemoveIdx = QA.idx;
+    QA.queue.splice(QA.idx, 1);
+    if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
+    renderQuick();
+  }
+}
+function qaGo(d){
+  if(!QA.queue.length) return;
+  QA.idx = (QA.idx + d + QA.queue.length) % QA.queue.length;
+  renderQuick();
+}
+function renderQuick(){
+  var body = $('#qabody');
+  if(!QA.queue.length){
+    $('#qacount').textContent = '';
+    body.innerHTML = '<div class="qadone"><div class="qacheck">' + ic('check', 42) + '</div><h3>All caught up</h3><p>' +
+      (QA.done ? QA.done + ' audited this session.' : 'Nobody left to audit.') + '</p>' +
+      '<button class="qaclose2" id="qaclose2" type="button">Back to dashboard</button></div>';
+    updateUndoBtns();
+    return;
+  }
+  var di = qaCur(), e = D.directory[di];
+  var an = auName(e), st = auditStats(e);
+  var ini = (an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
+  var tier = tierOf(e), mom = momVal(e) || '0', aud = (e.profile || {}).audit === 'audited';
+  function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
+  $('#qacount').textContent = (QA.done + QA.idx + 1) + ' of ' + QA.total;
+  body.innerHTML =
+    '<div class="qacard">' +
+      '<div class="qaid"><span class="qaava" style="--c:' + tierCol(e) + '">' + esc(ini) + '</span>' +
+      '<div class="qamain"><div class="qaname">' + esc(an.name) + (an.business ? '<em class="aubiz">Business</em>' : '') + '</div>' +
+      (an.handle ? '<div class="qahandle">@' + esc(an.handle.replace(/^@/, '')) + '</div>' : '') +
+      '<div class="qaneeds">' + pill(st.hasR, 'Persona') + pill(st.hasB, 'Background') + pill(st.hasC, 'Connection') + '</div></div></div>' +
+      '<div class="qarow"><span class="qalab">Tier</span><div class="qaseg">' +
+        TIER_ORDER.map(function(t){ return '<button type="button" class="qtseg' + (tier === t ? ' on' : '') + '" data-qk="tier" data-qv="' + t + '" style="--c:' + TIERS[t].c + '">' + TIERS[t].n + '</button>'; }).join('') +
+      '</div></div>' +
+      '<div class="qarow"><span class="qalab">Momentum</span><div class="qaseg">' +
+        ['-','0','+'].map(function(m){ return '<button type="button" class="qtseg' + (mom === m ? ' on' : '') + '" data-qk="momentum" data-qv="' + m + '">' + (m === '-' ? '−' : m === '+' ? '+' : '◆') + '</button>'; }).join('') +
+      '</div></div>' +
+      '<div class="qarow"><span class="qalab">Audit</span><div class="qaseg wide">' +
+        '<button type="button" class="qtseg big' + (!aud ? ' on' : '') + '" data-qk="audit" data-qv="needs_audit">Needs audit</button>' +
+        '<button type="button" class="qtseg big go' + (aud ? ' on' : '') + '" data-qk="audit" data-qv="audited">Audited</button>' +
+      '</div></div>' +
+    '</div>';
+  updateUndoBtns();
+}
 function pushUndo(entry){
   AUD.undoStack.push(entry);
   if(AUD.undoStack.length > 30) AUD.undoStack.shift();
@@ -2005,27 +2092,44 @@ function pushUndo(entry){
   updateUndoBtns();
 }
 function updateUndoBtns(){
-  var u = $('#auundo'), r = $('#auredo');
+  var u = $('#auundo'), r = $('#auredo'), qu = $('#qaundo');
   if(u) u.disabled = !AUD.undoStack.length;
   if(r) r.disabled = !AUD.redoStack.length;
+  if(qu) qu.disabled = !AUD.undoStack.length;
 }
 function applyEntry(entry, toPrev, done){
   entry.items.forEach(function(it){
-    var p = {}; p[entry.postKey] = toPrev ? it.prev : it.next;
+    var p = {}; p[it.key || entry.postKey] = toPrev ? it.prev : it.next;
     queuePatch(it.di, p);
   });
   renderAudit(); refresh();
+  if(QA.open) renderQuick();
   if(done) done();
 }
 function doUndo(){
   var en = AUD.undoStack.pop();
   if(!en){ toast('Nothing to undo.'); return; }
   applyEntry(en, true, function(){ AUD.redoStack.push(en); updateUndoBtns(); });
+  if(QA.open && en.qaRemove != null){
+    QA.queue.splice(Math.min(en.qaRemoveIdx, QA.queue.length), 0, en.qaRemove);
+    QA.done = Math.max(0, QA.done - 1);
+    QA.idx = Math.min(en.qaRemoveIdx, QA.queue.length - 1);
+    renderQuick();
+  }
 }
 function doRedo(){
   var en = AUD.redoStack.pop();
   if(!en){ toast('Nothing to redo.'); return; }
   applyEntry(en, false, function(){ AUD.undoStack.push(en); updateUndoBtns(); });
+  if(QA.open && en.qaRemove != null){
+    var at = QA.queue.indexOf(en.qaRemove);
+    if(at >= 0){
+      QA.queue.splice(at, 1);
+      QA.done++;
+      if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
+      renderQuick();
+    }
+  }
 }
 function setAuditFor(di, next){
   var e = D.directory[di]; if(!e) return;
@@ -3129,6 +3233,25 @@ function bind(){
   $('#auditback').addEventListener('click', closeAudit);
   $('#auundo').addEventListener('click', doUndo);
   $('#auredo').addEventListener('click', doRedo);
+  $('#qaopen').addEventListener('click', openQuick);
+  $('#qaback').addEventListener('click', closeQuick);
+  $('#qaundo').addEventListener('click', doUndo);
+  $('#qaprev').addEventListener('click', function(){ qaGo(-1); });
+  $('#qanext').addEventListener('click', function(){ qaGo(1); });
+  $('#qabody').addEventListener('click', function(ev){
+    var b = ev.target.closest('[data-qk]');
+    if(b){ qaTap(b.getAttribute('data-qk'), b.getAttribute('data-qv')); return; }
+    if(ev.target.closest('#qaclose2')) closeQuick();
+  });
+  (function(){
+    var sx = 0, sy = 0, qb = $('#qabody');
+    qb.addEventListener('touchstart', function(ev){ var t = ev.touches[0]; sx = t.clientX; sy = t.clientY; }, { passive:true });
+    qb.addEventListener('touchend', function(ev){
+      if(!QA.open || !QA.queue.length) return;
+      var t = ev.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+      if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) qaGo(dx < 0 ? 1 : -1);
+    }, { passive:true });
+  })();
   $('#aufilters').addEventListener('click', function(ev){
     var b = ev.target.closest('button'); if(!b) return;
     auSetFilter(b.getAttribute('data-f'));
@@ -3349,6 +3472,13 @@ function stepSel(d){
 }
 function onKey(e){
   if(AUD.open){
+    if(QA.open && !typing()){
+      if(e.key === 'Escape'){ closeQuick(); return; }
+      if(!e.metaKey && !e.ctrlKey && !e.altKey){
+        if(e.key === 'ArrowLeft'){ qaGo(-1); return; }
+        if(e.key === 'ArrowRight'){ qaGo(1); return; }
+      }
+    }
     if((e.metaKey || e.ctrlKey) && !e.altKey){
       var kz = String(e.key || '').toLowerCase();
       if(kz === 'z' && !typing()){ e.preventDefault(); if(e.shiftKey) doRedo(); else doUndo(); return; }
