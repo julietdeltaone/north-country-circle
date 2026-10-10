@@ -925,3 +925,10 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 /* quick audit: sort */
 #qasort{background:var(--fill);border:1px solid var(--line);color:var(--txt);border-radius:9px;
   padding:9px 6px;font-family:var(--sans);font-size:12px;font-weight:600;max-width:112px;flex:none}
+
+/* quick audit: delete */
+.qadel{width:100%;margin:16px 0 6px;min-height:54px;border-radius:14px;border:1px solid rgba(224,108,92,.4);
+  background:rgba(224,108,92,.08);color:#e06c5c;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.qadel:active{transform:scale(.98)}
