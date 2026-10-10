@@ -3457,10 +3457,13 @@ function bind(){
     if(ev.target.closest('#qaclose2')) closeQuick();
   });
   (function(){
-    var sx = 0, sy = 0, qb = $('#qabody');
-    qb.addEventListener('touchstart', function(ev){ var t = ev.touches[0]; sx = t.clientX; sy = t.clientY; }, { passive:true });
+    var sx = 0, sy = 0, swI = false, qb = $('#qabody');
+    qb.addEventListener('touchstart', function(ev){
+      var t = ev.touches[0]; sx = t.clientX; sy = t.clientY;
+      swI = !!(ev.target && ev.target.closest && ev.target.closest('#qatick'));
+    }, { passive:true });
     qb.addEventListener('touchend', function(ev){
-      if(!QA.open || !QA.queue.length) return;
+      if(!QA.open || !QA.queue.length || swI) return;
       var t = ev.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
       if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) qaGo(dx < 0 ? 1 : -1);
     }, { passive:true });
