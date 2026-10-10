@@ -1999,7 +1999,7 @@ function closeAudit(){
   $('#auditscreen').hidden = true;
 }
 /* ---------- quick mobile audit: one person at a time, rapid taps ---------- */
-var QA = { open:false, queue:[], idx:0, total:0, done:0, q:'audit', sort:'missing', skipRender:false };
+var QA = { open:false, queue:[], idx:0, total:0, done:0, del:0, q:'audit', sort:'missing', skipRender:false };
 var QA_FILTERS = [
   { k:'audit',      l:'Needs audit' },
   { k:'ratings',    l:'Needs ratings' },
@@ -2055,7 +2055,7 @@ function qaSetFilter(k){
   if(QA.q === k) return;
   QA.q = k;
   QA.queue = qaBuildQueue();
-  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
+  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.del = 0;
   renderQuickFilters();
   renderQuick();
   $('#qabody').scrollTop = 0;
@@ -2064,13 +2064,13 @@ function qaSetSort(s){
   if(QA.sort === s && s !== 'shuffle') return;
   QA.sort = s;
   QA.queue = qaBuildQueue();
-  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
+  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.del = 0;
   renderQuick();
   $('#qabody').scrollTop = 0;
 }
 function openQuick(){
   QA.queue = qaBuildQueue();
-  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0;
+  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.del = 0;
   QA.open = true;
   $('#quickscreen').hidden = false;
   $('#qasort').value = QA.sort;
@@ -2109,6 +2109,24 @@ function qaTap(key, val, el){
     renderQuick();
     $('#qabody').scrollTop = 0;
   }
+}
+function qaDelete(){
+  var di = qaCur(); if(di == null) return;
+  var e = D.directory[di], name = auName(e).name;
+  if(!confirm('Delete ' + name + ' from the circle?\n\nThey will be moved to the Trash sheet (hidden). You can undo this.')) return;
+  var entry = { items:[{ di:di, key:'deleted', prev:(e.profile || {}).deleted || '', next:'1' }] };
+  pushUndo(entry);
+  QA.skipRender = true;
+  applyEntry(entry, false);
+  QA.del++;
+  entry.qaRemove = di;
+  entry.qaRemoveIdx = QA.idx;
+  QA.queue.splice(QA.idx, 1);
+  if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
+  renderQuickFilters();
+  renderQuick();
+  $('#qabody').scrollTop = 0;
+  toast('Deleted ' + name + '.');
 }
 /* update the tapped control in place so the card never re-renders mid-flow
    (a full re-render drops the scroll position on iOS) */
@@ -2181,8 +2199,11 @@ function renderQuick(){
   var st = body.scrollTop;
   if(!QA.queue.length){
     $('#qacount').textContent = '';
+    var bits = [];
+    if(QA.done) bits.push(QA.done + ' audited');
+    if(QA.del) bits.push(QA.del + ' deleted');
     body.innerHTML = '<div class="qadone"><div class="qacheck">' + ic('check', 42) + '</div><h3>All caught up</h3><p>' +
-      (QA.done ? QA.done + ' audited this session.' : 'Nobody left to audit.') + '</p>' +
+      (bits.length ? bits.join(' · ') + ' this session.' : 'Nobody left to audit.') + '</p>' +
       '<button class="qaclose2" id="qaclose2" type="button">Back to dashboard</button></div>';
     updateUndoBtns();
     return;
@@ -2192,7 +2213,7 @@ function renderQuick(){
   var ini = (an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
   var tier = tierOf(e), mom = momVal(e) || '0', aud = (e.profile || {}).audit === 'audited';
   function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
-  $('#qacount').textContent = (QA.done + QA.idx + 1) + ' of ' + QA.total;
+  $('#qacount').textContent = (QA.done + QA.del + QA.idx + 1) + ' of ' + QA.total;
   body.innerHTML =
     '<div class="qacard">' +
       '<div class="qaid"><span class="qaava" style="--c:' + tierCol(e) + '">' + esc(ini) + '</span>' +
@@ -2211,6 +2232,7 @@ function renderQuick(){
       '</div></div>' +
       qaMoreHTML(e) +
       qaTextHTML(e) +
+      '<button type="button" class="qadel" data-qdel="1">' + ic('trash', 14) + '<span>Delete — move to trash</span></button>' +
     '</div>';
   body.scrollTop = st;
   updateUndoBtns();
@@ -2243,8 +2265,10 @@ function doUndo(){
   applyEntry(en, true, function(){ AUD.redoStack.push(en); updateUndoBtns(); });
   if(QA.open && en.qaRemove != null){
     QA.queue.splice(Math.min(en.qaRemoveIdx, QA.queue.length), 0, en.qaRemove);
-    QA.done = Math.max(0, QA.done - 1);
+    if(en.items[0] && en.items[0].key === 'deleted') QA.del = Math.max(0, QA.del - 1);
+    else QA.done = Math.max(0, QA.done - 1);
     QA.idx = Math.min(en.qaRemoveIdx, QA.queue.length - 1);
+    renderQuickFilters();
     renderQuick();
   }
 }
@@ -2256,8 +2280,10 @@ function doRedo(){
     var at = QA.queue.indexOf(en.qaRemove);
     if(at >= 0){
       QA.queue.splice(at, 1);
-      QA.done++;
+      if(en.items[0] && en.items[0].key === 'deleted') QA.del++;
+      else QA.done++;
       if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
+      renderQuickFilters();
       renderQuick();
     }
   }
@@ -3398,6 +3424,7 @@ function bind(){
     }
   });
   $('#qabody').addEventListener('click', function(ev){
+    if(ev.target.closest('[data-qdel]')){ qaDelete(); return; }
     var d = ev.target.closest('[data-qd]');
     if(d){
       var box = d.closest('[data-qdk]');
