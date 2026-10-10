@@ -2243,10 +2243,11 @@ function pushUndo(entry){
   updateUndoBtns();
 }
 function updateUndoBtns(){
-  var u = $('#auundo'), r = $('#auredo'), qu = $('#qaundo');
+  var u = $('#auundo'), r = $('#auredo'), qu = $('#qaundo'), qr = $('#qaredo');
   if(u) u.disabled = !AUD.undoStack.length;
   if(r) r.disabled = !AUD.redoStack.length;
   if(qu) qu.disabled = !AUD.undoStack.length;
+  if(qr) qr.disabled = !AUD.redoStack.length;
 }
 function applyEntry(entry, toPrev, done){
   entry.items.forEach(function(it){
@@ -3393,6 +3394,7 @@ function bind(){
   $('#qaopen2').addEventListener('click', openQuick);
   $('#qaback').addEventListener('click', closeQuick);
   $('#qaundo').addEventListener('click', doUndo);
+  $('#qaredo').addEventListener('click', doRedo);
   $('#qaprev').addEventListener('click', function(){ qaGo(-1); });
   $('#qanext').addEventListener('click', function(){ qaGo(1); });
   $('#qasort').addEventListener('change', function(){ qaSetSort(this.value); });
