@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="dossier.css?v=f8291a7e23">
+<link rel="stylesheet" href="dossier.css?v=54cd0e9999">
 </head>
 <body>
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -118,6 +118,7 @@
     <div class="au-undogroup">
       <button id="auundo" class="ibtn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><i data-ic="undo" data-s="16"></i></button>
       <button id="auredo" class="ibtn" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled><i data-ic="redo" data-s="16"></i></button>
+      <button id="qaopen" class="ibtn" title="Quick audit — rapid one-by-one review" aria-label="Quick audit"><i data-ic="zap" data-s="16"></i></button>
     </div>
     <label class="tsearch" role="search"><i data-ic="search" data-s="16"></i><input id="auq" type="search" placeholder="Search people…" autocomplete="off" aria-label="Search people"></label>
   </div>
@@ -148,6 +149,20 @@
   <div id="aubulk" class="au-bulk" hidden></div>
 </div>
 
-<script src="dossier.js?v=6f7d164ca4"></script>
+<!-- ============ quick mobile audit ============ -->
+<div id="quickscreen" hidden>
+  <div class="qa-head glass">
+    <button id="qaback" class="ibtn" title="Back (Esc)" aria-label="Back"><i data-ic="back" data-s="18"></i></button>
+    <div class="qa-title"><h2>Quick audit</h2><small id="qacount"></small></div>
+    <button id="qaundo" class="ibtn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><i data-ic="undo" data-s="16"></i></button>
+  </div>
+  <div id="qabody"></div>
+  <div class="qa-nav">
+    <button id="qaprev" class="qanav" aria-label="Previous person"><i data-ic="chevl" data-s="20"></i><span>Back</span></button>
+    <button id="qanext" class="qanav" aria-label="Next person"><span>Next</span><i data-ic="chevr" data-s="20"></i></button>
+  </div>
+</div>
+
+<script src="dossier.js?v=8204a09388"></script>
 </body>
 </html>
