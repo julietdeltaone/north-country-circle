@@ -1999,7 +1999,7 @@ function closeAudit(){
   $('#auditscreen').hidden = true;
 }
 /* ---------- quick mobile audit: one person at a time, rapid taps ---------- */
-var QA = { open:false, queue:[], idx:0, total:0, done:0, q:'audit', skipRender:false };
+var QA = { open:false, queue:[], idx:0, total:0, done:0, q:'audit', sort:'missing', skipRender:false };
 var QA_FILTERS = [
   { k:'audit',      l:'Needs audit' },
   { k:'ratings',    l:'Needs ratings' },
