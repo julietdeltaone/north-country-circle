@@ -1106,6 +1106,13 @@ body.dfamfsopen{overflow:hidden}
 .dfamnode span{font-size:11px;color:var(--rc);font-weight:700}
 .dfamnode:hover{border-color:rgba(255,255,255,.35)}
 .dfamnode.editing{background:color-mix(in srgb,var(--rc) 14%,transparent);border-color:var(--rc)}
+.dfamhome{position:absolute;width:156px;box-sizing:border-box;background:none;border:none;color:#8fb7ff;
+  font-family:var(--sans);font-size:11px;font-weight:700;text-align:left;padding:2px 14px;cursor:pointer;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dfamhome:hover{text-decoration:underline}
+.dfamfrom{font-size:12.5px;color:var(--dim);margin-top:1px}
+.dfamfromlink{background:none;border:none;padding:0;color:#8fb7ff;font:inherit;font-weight:700;cursor:pointer}
+.dfamfromlink:hover{text-decoration:underline}
 .dfamedithead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .dfamedithead b{font-size:14px;margin-right:auto}
 .dfamedit{flex-basis:100%;padding:6px 0 4px}
