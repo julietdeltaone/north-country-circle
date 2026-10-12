@@ -2710,7 +2710,7 @@ function grpRenameSave(oldName){
    source of truth — [[relation, person name], ...] per person, edited through
    queuePatch exactly like the profile editor's family section). Display adds
    the inverses and shared-parent siblings, mirroring the build. ----- */
-var DFAM = { editing:null, openTree:null };
+var DFAM = { editing:null, openTree:null, zoom:'fit', scale:1, lastTreeId:null, animateNext:false, walking:false };
 /* Tree colors are structural, never relative to a chosen person (JD
    2026-10-12 rebuild): bloodline members are tinted by generation, eldest
    generation first; a spouse who married into the family gets one color. */
@@ -3026,20 +3026,90 @@ function famTreeModel(disp, tree, homes){
     } };
 }
 function famTreeHTML(model){
+  /* Entrance choreography (JD 2026-10-12: the full-screen tree should
+     feel alive): when DFAM.animateNext is set, nodes carry a per-node
+     delay (generation by generation) and connector lines a draw delay;
+     the .anim CSS does the rest. Reduced motion never gets .anim. */
+  var anim = DFAM.animateNext && !dfReduced();
   var lines = model.lines.map(function(l){
-    return '<line x1="' + l.x1 + '" y1="' + l.y1 + '" x2="' + l.x2 + '" y2="' + l.y2 + '"/>';
+    var dl = anim ? Math.max(0, (Math.max(l.y1, l.y2) / DFT.ROW) * 0.12 - 0.02) : 0;
+    return '<line pathLength="1" x1="' + l.x1 + '" y1="' + l.y1 + '" x2="' + l.x2 + '" y2="' + l.y2 + '"' +
+      (anim ? ' style="--dl:' + dl.toFixed(3) + 's"' : '') + '/>';
   }).join('');
+  var seenGen = {};
   var nodes = model.nodes.map(function(n){
     var st = model.styleOf(n.di);
+    var g = model.gen[n.di] || 0, ix = (seenGen[g] = (seenGen[g] || 0) + 1);
+    var nd = 0.05 + g * 0.12 + (ix - 1) * 0.045;
     return '<button type="button" class="dfamnode' + (DFAM.editing === n.di ? ' editing' : '') + '" data-dfnode data-di="' + n.di +
-      '" style="left:' + n.x + 'px;top:' + n.y + 'px;--rc:' + st.c + '"><b>' + esc(dispName(D.directory[n.di])) + '</b><span>' + st.cap + '</span></button>';
+      '" style="left:' + n.x + 'px;top:' + n.y + 'px;--rc:' + st.c + (anim ? ';--nd:' + nd.toFixed(3) + 's' : '') +
+      '"><b>' + esc(dispName(D.directory[n.di])) + '</b><span>' + st.cap + '</span></button>';
   }).join('');
   var chips = (model.chips || []).map(function(c){
     return '<button type="button" class="dfamhome" data-dfhome="' + c.tid + '" style="left:' + c.x + 'px;top:' + c.y +
-      'px" title="Open their home family">→ ' + esc(c.title) + '</button>';
+      'px' + (anim ? ';--nd:0.55s' : '') + '" title="Open their home family">→ ' + esc(c.title) + '</button>';
   }).join('');
-  return '<div class="dftree" style="width:' + model.w + 'px;height:' + model.h + 'px">' +
+  return '<div class="dftree' + (anim ? ' anim' : '') + '" style="width:' + model.w + 'px;height:' + model.h + 'px">' +
     '<svg class="dftree-lines" width="' + model.w + '" height="' + model.h + '">' + lines + '</svg>' + nodes + chips + '</div>';
+}
+function dfReduced(){
+  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+/* Scale + center the open tree inside its scroll viewport: 'fit' mode
+   scales the whole tree to use the viewport (small families grow to a
+   readable size, capped at 1.6x; large chains floor at 0.3 and keep
+   pan/scroll); a numeric DFAM.zoom is a manual scale. The stage is sized
+   to the scaled tree (or the viewport, whichever is larger) and the tree
+   is centered inside it. */
+function famFit(){
+  var sc = $('#dashsec-family .dfamfsscroll'), stage = $('#dashsec-family .dfamstage'), tree = $('#dashsec-family .dftree');
+  if(!sc || !stage || !tree) return;
+  var tw = parseFloat(tree.style.width) || 0, th = parseFloat(tree.style.height) || 0;
+  if(!tw || !th) return;
+  var vw = Math.max(200, sc.clientWidth - 32), vh = Math.max(200, sc.clientHeight - 32);
+  var s;
+  if(DFAM.zoom === 'fit' || DFAM.zoom == null){
+    s = Math.min(vw / (tw + 56), vh / (th + 56));
+    s = Math.max(0.3, Math.min(1.6, s));
+  } else s = DFAM.zoom;
+  DFAM.scale = s;
+  var sw = Math.max(vw, Math.ceil(tw * s) + 16), sh = Math.max(vh, Math.ceil(th * s) + 16);
+  stage.style.width = sw + 'px';
+  stage.style.height = sh + 'px';
+  tree.style.left = Math.max(0, Math.round((sw - tw * s) / 2)) + 'px';
+  tree.style.top = Math.max(0, Math.round((sh - th * s) / 2)) + 'px';
+  tree.style.transform = 'scale(' + s + ')';
+}
+function famOpenTree(id){
+  DFAM.openTree = id; DFAM.editing = null; DFAM.zoom = 'fit';
+  renderDashFamily();
+}
+function famCloseTree(){
+  if(DFAM.openTree == null) return;
+  var fs = $('#dashsec-family .dfamfs');
+  if(fs && !dfReduced()){
+    fs.classList.add('closing');
+    setTimeout(function(){ DFAM.openTree = null; DFAM.editing = null; renderDashFamily(); }, 140);
+  } else {
+    DFAM.openTree = null; DFAM.editing = null; renderDashFamily();
+  }
+}
+/* Walking between families: the current tree fades/scales slightly out,
+   then the new tree choreographs in. Instant under reduced motion. */
+function famWalkTo(id){
+  if(DFAM.openTree == null || DFAM.openTree === id){ famOpenTree(id); return; }
+  var fs = $('#dashsec-family .dfamfs');
+  if(!fs || dfReduced() || DFAM.walking){
+    DFAM.openTree = id; DFAM.editing = null; DFAM.zoom = 'fit'; renderDashFamily();
+    return;
+  }
+  DFAM.walking = true;
+  fs.classList.add('walkout');
+  setTimeout(function(){
+    DFAM.walking = false;
+    DFAM.openTree = id; DFAM.editing = null; DFAM.zoom = 'fit';
+    renderDashFamily();
+  }, 170);
 }
 function famEditorHTML(di){
   var e = D.directory[di], links = famLinks(e);
@@ -3095,13 +3165,20 @@ function renderDashFamily(){
       leg.push('<span class="dfamleg"><i style="background:' + FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)] + '"></i>Generation ' + (g + 1) + (g === 0 ? ' · eldest' : '') + '</span>');
     if(openM.hasSpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
     var oedit = DFAM.editing != null && openT.members.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
-    h += '<div class="dfamfs"><div class="dfamfssheet">' +
+    DFAM.animateNext = DFAM.lastTreeId !== DFAM.openTree;
+    h += '<div class="dfamfs' + (DFAM.animateNext ? '' : ' still') + '"><div class="dfamfssheet">' +
       '<div class="dfamfsbar"><b>' + esc(openT.title) + '</b><div class="dfamlegend">' + leg.join('') + '</div>' +
+      '<div class="dfamzoom" role="group" aria-label="Tree zoom">' +
+      '<button type="button" data-dfzoom="fit">Fit</button><button type="button" data-dfzoom="100">100%</button>' +
+      '<button type="button" data-dfzoom="out" aria-label="Zoom out">−</button><button type="button" data-dfzoom="in" aria-label="Zoom in">+</button></div>' +
       '<button type="button" class="mini neutral" data-dfclose="1">Close</button></div>' +
-      '<div class="dfamfsscroll">' + famTreeHTML(openM) + oedit + '</div>' +
+      '<div class="dfamfsscroll"><div class="dfamstage">' + famTreeHTML(openM) + '</div>' + oedit + '</div>' +
       '</div></div>';
   } else DFAM.openTree = null;
   el.innerHTML = h;
+  if(openT){ DFAM.lastTreeId = DFAM.openTree; famFit(); }
+  else DFAM.lastTreeId = null;
+  DFAM.animateNext = false;
   document.body.classList.toggle('dfamfsopen', !!openT);
   $('#aushown').textContent = trees.length + (trees.length === 1 ? ' family' : ' families');
 }
@@ -4942,11 +5019,20 @@ function bind(){
   var famEl = $('#dashsec-family');
   famEl.addEventListener('click', function(ev){
     var ex = ev.target.closest('[data-dfexpand]');
-    if(ex){ DFAM.openTree = ex.getAttribute('data-dfexpand'); DFAM.editing = null; renderDashFamily(); return; }
+    if(ex){ famOpenTree(ex.getAttribute('data-dfexpand')); return; }
     var hm = ev.target.closest('[data-dfhome]');
-    if(hm){ DFAM.openTree = hm.getAttribute('data-dfhome'); DFAM.editing = null; renderDashFamily(); return; }
+    if(hm){ famWalkTo(hm.getAttribute('data-dfhome')); return; }
+    var zm = ev.target.closest('[data-dfzoom]');
+    if(zm){
+      var z = zm.getAttribute('data-dfzoom');
+      if(z === 'fit') DFAM.zoom = 'fit';
+      else if(z === '100') DFAM.zoom = 1;
+      else { var cur = DFAM.scale || 1; DFAM.zoom = Math.max(0.2, Math.min(2.5, cur * (z === 'in' ? 1.2 : 1 / 1.2))); }
+      famFit();
+      return;
+    }
     var cl = ev.target.closest('[data-dfclose]');
-    if(cl || (ev.target.classList && ev.target.classList.contains('dfamfs'))){ DFAM.openTree = null; DFAM.editing = null; renderDashFamily(); return; }
+    if(cl || (ev.target.classList && ev.target.classList.contains('dfamfs'))){ famCloseTree(); return; }
     var an = ev.target.closest('[data-dfnode]');
     if(an){
       DFAM.editing = parseInt(an.getAttribute('data-di'), 10);
@@ -4966,21 +5052,46 @@ function bind(){
     if(ev.target.id && ev.target.id.indexOf('dfamrel-') === 0) famRelSave(ev.target.value);
   });
   document.addEventListener('keydown', function(ev){
-    if(ev.key === 'Escape' && DFAM.openTree != null && !famEl.hidden){ DFAM.openTree = null; DFAM.editing = null; renderDashFamily(); }
+    if(ev.key === 'Escape' && DFAM.openTree != null && !famEl.hidden) famCloseTree();
   });
-  var fspan = null;
+  window.addEventListener('resize', function(){
+    if(DFAM.openTree != null && DFAM.zoom === 'fit') famFit();
+  });
+  var fspan = null, fsVel = null, fsRaf = 0;
+  function famPanMomentum(){
+    if(!fsVel) return;
+    var sc = fsVel.el;
+    sc.scrollLeft -= fsVel.x; sc.scrollTop -= fsVel.y;
+    fsVel.x *= 0.94; fsVel.y *= 0.94;
+    if(Math.abs(fsVel.x) < 0.4 && Math.abs(fsVel.y) < 0.4){ fsVel = null; return; }
+    fsRaf = requestAnimationFrame(famPanMomentum);
+  }
   famEl.addEventListener('pointerdown', function(ev){
     var sc = ev.target.closest ? ev.target.closest('.dfamfsscroll') : null;
     if(!sc || (ev.target.closest && ev.target.closest('button, input, select, textarea, a, .dfamedit'))) return;
-    fspan = { el: sc, x: ev.clientX, y: ev.clientY, sl: sc.scrollLeft, st: sc.scrollTop, moved: false };
+    cancelAnimationFrame(fsRaf); fsVel = null;
+    fspan = { el: sc, x: ev.clientX, y: ev.clientY, sl: sc.scrollLeft, st: sc.scrollTop, moved: false,
+      lx: ev.clientX, ly: ev.clientY, lt: performance.now(), vx: 0, vy: 0 };
   });
   document.addEventListener('pointermove', function(ev){
     if(!fspan) return;
     var dx = ev.clientX - fspan.x, dy = ev.clientY - fspan.y;
     if(Math.abs(dx) + Math.abs(dy) > 4) fspan.moved = true;
     if(fspan.moved){ fspan.el.scrollLeft = fspan.sl - dx; fspan.el.scrollTop = fspan.st - dy; }
+    var now = performance.now(), dt = now - fspan.lt;
+    if(dt > 0){
+      fspan.vx = 0.7 * fspan.vx + 0.3 * ((ev.clientX - fspan.lx) / dt * 16);
+      fspan.vy = 0.7 * fspan.vy + 0.3 * ((ev.clientY - fspan.ly) / dt * 16);
+      fspan.lx = ev.clientX; fspan.ly = ev.clientY; fspan.lt = now;
+    }
   });
-  document.addEventListener('pointerup', function(){ fspan = null; });
+  document.addEventListener('pointerup', function(){
+    if(fspan && fspan.moved && !dfReduced() && (Math.abs(fspan.vx) > 0.6 || Math.abs(fspan.vy) > 0.6)){
+      fsVel = { el: fspan.el, x: fspan.vx, y: fspan.vy };
+      fsRaf = requestAnimationFrame(famPanMomentum);
+    }
+    fspan = null;
+  });
   $('#qaback').addEventListener('click', closeQuick);
   $('#qaundo').addEventListener('click', doUndo);
   $('#qaredo').addEventListener('click', doRedo);
