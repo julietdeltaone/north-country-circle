@@ -249,7 +249,8 @@ var F = {
   last_name:{ l:'Last name', t:'text' },
   also_known_as:{ l:'Also known as', t:'text' },
   phone:{ l:'Phone', t:'phone' },
-  email:{ l:'Email', t:'text' },
+  /* Email field removed from the editor per JD 2026-10-12; stored Sheet data untouched.
+     The Contact section shows the Instagram username read-only instead (igRow). */
 
   relationship:{ l:'Relationship', t:'select', o:['','family','friend','coworker','acquaintance','other'] },
   context:{ l:'Context', t:'select', o:['','work','school','military','community','church','online','other'] },
@@ -290,7 +291,7 @@ var L1_TOTAL = 14;
 
 /* The edit stack, top to bottom. lv = which level color the section wears. */
 var SECTIONS = [
-  { id:'identity',    title:'Contact',      ic:'user',      lv:1, fields:['first_name','last_name','phone','email'] },
+  { id:'identity',    title:'Contact',      ic:'user',      lv:1, fields:['first_name','last_name','phone'] },
   { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
   { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
   { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','churches','companies','highlights','public_footprint'] },
@@ -444,14 +445,62 @@ function subLine(e){
   if(e.src === 'subject') return 'Subject file';
   return '';
 }
+/* ---------- insufficient-data waivers (JD 2026-10-12) ----------
+   Per person, per field: waiving a field disables it in the editor and excludes
+   it from every completeness/audit calculation until it is un-waived. Stored as
+   a JSON object {fieldKey:1} in the Profiles 'Waivers' column (patch field
+   'waivers'), so it survives syncs like any other profile field. Pseudo keys
+   cover the custom-body sections: degrees (Education), connections (Known
+   associates), events (Timeline), files (Files). */
+var WAIVER_FIELD = 'waivers';
+function wvSet(e){
+  try{ var v = JSON.parse(gv(e, WAIVER_FIELD) || '{}'); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; }
+  catch(x){ return {}; }
+}
+function wvHas(e, k){ return !!wvSet(e)[k]; }
+function setWaivers(di, keys, on){
+  var e = D.directory[di]; if(!e) return;
+  var w = wvSet(e);
+  keys.forEach(function(k){ if(on) w[k] = 1; else delete w[k]; });
+  var p = {}; p[WAIVER_FIELD] = JSON.stringify(w);
+  queuePatch(di, p);
+}
+var SEC_PSEUDO = { education:'degrees', connections:'connections', timeline:'events', files:'files' };
+function secWaiverKeys(s){
+  var ks = (s.fields || []).slice();
+  if(s.id === 'identity') ks.push('also_known_as');
+  if(SEC_PSEUDO[s.id]) ks.push(SEC_PSEUDO[s.id]);
+  return ks;
+}
+function groupWaiverKeys(g){
+  var ks = [];
+  SECTIONS.forEach(function(s){
+    if(g.lvs.indexOf(s.lv) < 0) return;
+    secWaiverKeys(s).forEach(function(k){ if(ks.indexOf(k) < 0) ks.push(k); });
+  });
+  return ks;
+}
+function wvToggleHTML(k, e, cls){
+  var on = wvHas(e, k);
+  return '<label class="indtogg wvtogg ' + (cls || '') + '" title="Insufficient data: disable this field for this person and stop counting it in audits. Turn it back on any time.">' +
+    '<input type="checkbox" data-wv="' + k + '"' + (on ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Insufficient data</em></label>';
+}
+function l1Slots(e){
+  return ['phone', 'email', 'specialty'].concat(L1_SCORES, ['orgs', 'synopsis']);
+}
+function l1SlotWaived(e, s){
+  if(s === 'orgs') return wvHas(e, 'churches') && wvHas(e, 'companies');
+  return wvHas(e, s);
+}
+function l1SlotVal(e, s){
+  if(s === 'orgs') return ORG_CATS.some(function(cat){ return tagList(gv(e, cat.k)).length; }) ? '1' : '';
+  return gv(e, s);
+}
 function l1Fill(e){
-  var n = 0;
-  if(gv(e, 'phone')) n++;
-  if(gv(e, 'email')) n++;
-  ['specialty'].concat(L1_SCORES).forEach(function(k){ if(gv(e, k)) n++; });
-  if(ORG_CATS.some(function(cat){ return tagList(gv(e, cat.k)).length; })) n++;
-  if(gv(e, 'synopsis')) n++;
-  return n;
+  return l1Slots(e).filter(function(s){ return !l1SlotWaived(e, s) && l1SlotVal(e, s); }).length;
+}
+function l1Total(e){
+  return l1Slots(e).filter(function(s){ return !l1SlotWaived(e, s); }).length;
 }
 function normEntry(r){
   var p = r.profile || {};
@@ -736,7 +785,7 @@ function phead(e){
   var edit = S.editing
     ? '<button class="ibtn solid" data-act="done" title="Finish editing (Esc)">' + ic('check', 16) + '<span>Done</span></button>'
     : '<button class="ibtn" data-act="edit" title="Edit this dossier (E)" aria-label="Edit">' + ic('edit', 16) + '</button>';
-  var cnt = { 1:l1Fill(e) + '/' + L1_TOTAL, 2:(e.events || []).length || '', 3:(e.files || []).length || '' };
+  var cnt = { 1:l1Fill(e) + '/' + l1Total(e), 2:(e.events || []).length || '', 3:(e.files || []).length || '' };
   var tabs = S.editing ? '' : '<div class="tabs" role="tablist">' + [1,2,3].map(function(n){
     return '<button class="tab' + (S.lvl === n ? ' on' : '') + (n > 1 && !cnt[n] ? ' empty' : '') + '" role="tab" data-act="tab" data-lvl="' + n + '" style="--c:' + LV[n].c +
       '" title="' + LV[n].n + ' (' + n + ')">' + ic(LV[n].ic, 15) + '<span>' + LV[n].n + '</span>' + (cnt[n] ? '<em>' + cnt[n] + '</em>' : '') + '</button>';
@@ -1085,10 +1134,18 @@ function orgCat(k){ return ORG_CATS.filter(function(c){ return c.k === k; })[0];
    changes only by typing in the field (patched on input like any text field);
    clearing it means emptying the field while the toggle is on. */
 function akaRow(e){
-  var v = gv(e, 'also_known_as'), on = !!String(v || '').trim();
-  return '<div class="irow akarow"><label class="indtogg akatogg" title="Show the also-known-as field">' +
+  var v = gv(e, 'also_known_as'), on = !!String(v || '').trim(), wv = wvHas(e, 'also_known_as');
+  return '<div class="irow akarow wvrow' + (wv ? ' waived' : '') + '" data-wvk="also_known_as"><label class="indtogg akatogg" title="Show the also-known-as field">' +
     '<input type="checkbox" data-akatgl' + (on ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Also known as</em></label>' +
-    '<input class="akainput" data-pk="also_known_as" value="' + esc(v) + '" placeholder="Nickname or alias" autocomplete="off"' + (on ? '' : ' hidden') + '></div>';
+    '<input class="akainput" data-pk="also_known_as" value="' + esc(v) + '" placeholder="Nickname or alias" autocomplete="off"' + (on ? '' : ' hidden') + '>' +
+    wvToggleHTML('also_known_as', e) + '</div>';
+}
+/* Read-only Instagram username, shown in the Contact section where the Email
+   field used to be, so the handle is visible while editing the name. */
+function igRow(e){
+  if(e.src === 'contacts' || e.src === 'subject' || !e.name) return '';
+  return '<div class="irow igrow"><span class="ilab">Instagram</span>' +
+    '<a class="iglink ' + (e.relation === 'mutual' ? 'ig-mutual' : 'ig-oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a></div>';
 }
 /* Skills editor: free-text add at the top, the selected skills as removable chips,
    and a dropdown (collapsed by default) of BROAD categories only. */
@@ -1118,45 +1175,54 @@ function rateRow(k, e){
   return h + '</div></div>';
 }
 function fieldRow(k, e){
-  var f = fieldDef(k), v = gv(e, k);
-  if(f.t === 'score') return rateRow(k, e);
-  if(f.t === 'tier') return tierEditHTML(e);
-  if(f.t === 'momentum') return momentumEditHTML(e);
-  if(f.t === 'select'){
+  var f = fieldDef(k), v = gv(e, k), h;
+  if(f.t === 'score') h = rateRow(k, e);
+  else if(f.t === 'tier') h = tierEditHTML(e);
+  else if(f.t === 'momentum') h = momentumEditHTML(e);
+  else if(f.t === 'select'){
     var opts = f.o.map(optPair);
     if(v && !opts.some(function(p){ return p[0] === v; })) opts.push([v, v]);
-    return '<div class="irow">' + labHTML(f) + '<select data-pk="' + k + '">' + opts.map(function(p){
+    h = '<div class="irow">' + labHTML(f) + '<select data-pk="' + k + '">' + opts.map(function(p){
       return '<option value="' + esc(p[0]) + '"' + (p[0] === v ? ' selected' : '') + '>' + esc(p[1]) + '</option>';
     }).join('') + '</select></div>';
   }
-  if(f.t === 'long'){
+  else if(f.t === 'long'){
     var ai = f.ai ? '<button class="mini neutral aibtn" data-act="tidy" data-k="' + k + '">' + ic('sparkle', 13) + 'Tidy with AI</button><span class="aimsg" id="aimsg-' + k + '"></span>' : '';
-    return '<div class="lrow"><div class="lhead">' + labHTML(f) + ai + '</div><textarea data-pk="' + k + '" rows="' + (f.r || 4) + '" placeholder="' + esc(f.ph || '') + '">' + esc(v) + '</textarea></div>';
+    h = '<div class="lrow"><div class="lhead">' + labHTML(f) + ai + '</div><textarea data-pk="' + k + '" rows="' + (f.r || 4) + '" placeholder="' + esc(f.ph || '') + '">' + esc(v) + '</textarea></div>';
   }
-  if(k === 'specialty') return skillsEditHTML(e);
-  if(f.t === 'tags' || f.t === 'pick'){
+  else if(k === 'specialty') h = skillsEditHTML(e);
+  else if(f.t === 'tags' || f.t === 'pick'){
     var sep = f.sep || ', ', cur = splitTags(v, sep), chips;
     if(f.t === 'pick'){
       var baseOpts = f.vocab || (orgCat(k) || {}).options || [];
       var all = baseOpts.concat(cur.filter(function(x){ return baseOpts.indexOf(x) < 0; }));
       chips = all.map(function(o){ return tagChip(o, cur.indexOf(o) >= 0, false); });
     } else chips = cur.map(function(x){ return tagChip(x, true, true); });
-    return '<div class="trow">' + labHTML(f) + '<div class="tchips" data-pk="' + k + '" data-mode="' + (f.t === 'pick' ? 'pick' : 'tags') + '" data-sep="' + esc(sep) + '">' +
+    h = '<div class="trow">' + labHTML(f) + '<div class="tchips" data-pk="' + k + '" data-mode="' + (f.t === 'pick' ? 'pick' : 'tags') + '" data-sep="' + esc(sep) + '">' +
       chips.join('') + '<input class="tadd" placeholder="' + esc(f.ph || '+ add') + '" aria-label="Add ' + esc(f.l) + '"></div></div>';
   }
-  /* Email stays disabled unless the profile already has one on file. */
-  return '<div class="irow">' + labHTML(f) + '<input data-pk="' + k + '" value="' + esc(v) + '" placeholder="—" autocomplete="off"' +
-    (k === 'email' && !String(v || '').trim() ? ' disabled' : '') + '></div>';
+  else h = '<div class="irow">' + labHTML(f) + '<input data-pk="' + k + '" value="' + esc(v) + '" placeholder="—" autocomplete="off"></div>';
+  /* Insufficient-data waiver: mark the row and append its toggle. Interaction
+     blocking for waived rows is CSS (.wvrow.waived) plus delegated-handler guards. */
+  var wv = wvHas(e, k);
+  h = h.replace(/class="([a-z]+row)"/, 'class="$1 wvrow' + (wv ? ' waived' : '') + '" data-wvk="' + k + '"');
+  var cut = h.lastIndexOf('</div>');
+  if(cut > 0) h = h.slice(0, cut) + wvToggleHTML(k, e) + h.slice(cut);
+  return h;
 }
 function secFill(s, e){
   var n;
-  if(s.id === 'connections'){ n = (e.neighbors || []).length + connPhases(e).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'education'){ n = degreesOf(e).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'timeline'){ n = (e.events || []).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'files'){ n = (e.files || []).length; return { t:String(n), done:n > 0 }; }
+  if(s.id === 'connections'){ if(wvHas(e, 'connections')) return { t:'Waived', done:true }; n = (e.neighbors || []).length + connPhases(e).length; return { t:String(n), done:n > 0 }; }
+  if(s.id === 'education'){ if(wvHas(e, 'degrees')) return { t:'Waived', done:true }; n = degreesOf(e).length; return { t:String(n), done:n > 0 }; }
+  if(s.id === 'timeline'){ if(wvHas(e, 'events')) return { t:'Waived', done:true }; n = (e.events || []).length; return { t:String(n), done:n > 0 }; }
+  if(s.id === 'files'){ if(wvHas(e, 'files')) return { t:'Waived', done:true }; n = (e.files || []).length; return { t:String(n), done:n > 0 }; }
   if(s.id === 'admin'){ var a = (e.profile || {}).audit === 'audited'; return { t:a ? 'Audited' : 'Needs audit', done:a }; }
-  var got = s.fields.filter(function(k){ return gv(e, k) !== ''; }).length;
-  return { t:got + '/' + s.fields.length, done:got === s.fields.length };
+  var ks = s.fields.filter(function(k){ return !wvHas(e, k); });
+  if(s.id === 'identity' && !wvHas(e, 'also_known_as')) ks = ks.concat(['also_known_as']);
+  else if(s.id === 'identity') ks = ks.filter(function(k){ return k !== 'also_known_as'; });
+  if(!ks.length) return { t:'Waived', done:true };
+  var got = ks.filter(function(k){ return gv(e, k) !== ''; }).length;
+  return { t:got + '/' + ks.length, done:got === ks.length };
 }
 /* tier hero editor + momentum directional editor */
 function tierEditHTML(e){
@@ -1298,41 +1364,54 @@ function delDegree(i){
   queuePatch(S.sel, { degrees:JSON.stringify(arr) });
   renderPanel(true); toast('Degree removed.');
 }
+/* Wrap a custom-body section (Education / Known associates / Timeline / Files)
+   with its pseudo-field waiver bar; the body greys out and locks when waived. */
+function wvSecWrap(pk, label, bodyHTML, e){
+  var wv = wvHas(e, pk);
+  return '<div class="wvsecwrap' + (wv ? ' waived' : '') + '" data-wvk="' + pk + '">' +
+    '<div class="secwvbar"><span>' + esc(label) + '</span>' + wvToggleHTML(pk, e) + '</div>' +
+    '<div class="wvsecbody">' + bodyHTML + '</div></div>';
+}
 function secBody(s, e){
-  if(s.id === 'connections') return connectionsBody(e);
-  if(s.id === 'timeline') return timelineEdit(e);
-  if(s.id === 'education') return educationBody(e);
-  if(s.id === 'files') return filesEdit(e);
+  if(s.id === 'connections') return wvSecWrap('connections', 'Known associates, family and phases', connectionsBody(e), e);
+  if(s.id === 'timeline') return wvSecWrap('events', 'Timeline events', timelineEdit(e), e);
+  if(s.id === 'education') return wvSecWrap('degrees', 'Degrees', educationBody(e), e);
+  if(s.id === 'files') return wvSecWrap('files', 'Attached files', filesEdit(e), e);
   if(s.id === 'admin') return adminBody(e);
   if(s.id === 'ratings') return '<div class="rgrid">' + s.fields.map(function(k){ return fieldRow(k, e); }).join('') + '</div>';
-  if(s.id === 'identity') return s.fields.map(function(k){ return fieldRow(k, e); }).join('') + akaRow(e);
+  if(s.id === 'identity') return s.fields.map(function(k){ return fieldRow(k, e); }).join('') + igRow(e) + akaRow(e);
   return s.fields.map(function(k){ return fieldRow(k, e); }).join('');
 }
 function secHTML(s, e){
   var open = S.openSecs[s.id] !== false, fl = secFill(s, e);
+  var keys = secWaiverKeys(s), allWv = keys.length && keys.every(function(k){ return wvHas(e, k); });
   return '<section class="esec' + (open ? ' open' : '') + '" data-sec="' + s.id + '" style="--c:' + (s.lv ? LV[s.lv].c : '#ece9e2') + '">' +
-    '<header data-act="sectoggle" data-sec="' + s.id + '"><span class="cic">' + ic(s.ic, 15) + '</span><h3>' + esc(s.title) + '</h3>' +
-    '<span class="sbadge' + (fl.done ? ' done' : '') + '">' + esc(fl.t) + '</span><span class="chev">' + ic('chev', 14) + '</span></header>' +
+    '<header><span class="sechead" data-act="sectoggle" data-sec="' + s.id + '"><span class="cic">' + ic(s.ic, 15) + '</span><h3>' + esc(s.title) + '</h3>' +
+    '<span class="sbadge' + (fl.done ? ' done' : '') + '">' + esc(fl.t) + '</span><span class="chev">' + ic('chev', 14) + '</span></span>' +
+    '<label class="indtogg secwv" title="Insufficient data for this whole section: waive or restore every field in ' + esc(s.title) + ' at once">' +
+    '<input type="checkbox" data-secwv="' + s.id + '"' + (allWv ? ' checked' : '') + '><span class="itrack"><i></i></span></label></header>' +
     '<div class="sbody">' + secBody(s, e) + '</div></section>';
 }
 function editCompletenessData(e){
   var tot = 0, got = 0, levels = {};
   SECTIONS.forEach(function(s){
     var flds = s.fields || [];
-    if(s.id === 'education'){ tot += 1; if(degreesOf(e).length) got += 1; return; }
-    if(s.id === 'connections'){ tot += 1; if((e.neighbors || []).length) got += 1; return; }
-    if(s.id === 'timeline'){ tot += 1; if((e.events || []).length) got += 1; return; }
-    if(s.id === 'files'){ tot += 1; if((e.files || []).length) got += 1; return; }
-    flds.forEach(function(k){ tot++; if(gv(e, k) !== '') got++; });
+    if(s.id === 'education'){ if(!wvHas(e, 'degrees')){ tot += 1; if(degreesOf(e).length) got += 1; } return; }
+    if(s.id === 'connections'){ if(!wvHas(e, 'connections')){ tot += 1; if((e.neighbors || []).length) got += 1; } return; }
+    if(s.id === 'timeline'){ if(!wvHas(e, 'events')){ tot += 1; if((e.events || []).length) got += 1; } return; }
+    if(s.id === 'files'){ if(!wvHas(e, 'files')){ tot += 1; if((e.files || []).length) got += 1; } return; }
+    flds.forEach(function(k){ if(wvHas(e, k)) return; tot++; if(gv(e, k) !== '') got++; });
+    if(s.id === 'identity' && !wvHas(e, 'also_known_as')){ tot++; if(gv(e, 'also_known_as') !== '') got++; }
   });
   [1, 2, 3].forEach(function(lv){
     var lt = 0, lg = 0;
     SECTIONS.forEach(function(s){
       if(s.lv !== lv) return;
-      (s.fields || []).forEach(function(k){ lt++; if(gv(e, k) !== '') lg++; });
-      if(s.id === 'education'){ lt++; if(degreesOf(e).length) lg++; }
-      if(s.id === 'connections'){ lt++; if((e.neighbors || []).length) lg++; }
-      if(s.id === 'timeline'){ lt++; if((e.events || []).length) lg++; }
+      (s.fields || []).forEach(function(k){ if(wvHas(e, k)) return; lt++; if(gv(e, k) !== '') lg++; });
+      if(s.id === 'identity' && !wvHas(e, 'also_known_as')){ lt++; if(gv(e, 'also_known_as') !== '') lg++; }
+      if(s.id === 'education' && !wvHas(e, 'degrees')){ lt++; if(degreesOf(e).length) lg++; }
+      if(s.id === 'connections' && !wvHas(e, 'connections')){ lt++; if((e.neighbors || []).length) lg++; }
+      if(s.id === 'timeline' && !wvHas(e, 'events')){ lt++; if((e.events || []).length) lg++; }
     });
     levels[lv] = lt ? Math.round(lg / lt * 100) : 0;
   });
@@ -1353,7 +1432,10 @@ function dossierEdit(e){
   var comp = editCompletenessData(e);
   var hero = '<div class="egrouphero">' + groups.map(function(g){
     var gp = comp.levels[g.id] != null ? comp.levels[g.id] : 0;
-    return '<button type="button" class="egh' + (S.editGroup === g.id ? ' on' : '') + '" data-act="egroup" data-g="' + g.id + '" style="--c:' + g.c + '"><b>' + g.n + '</b><i>' + gp + '%</i></button>';
+    var gks = groupWaiverKeys(g), gAllWv = gks.length && gks.every(function(k){ return wvHas(e, k); });
+    return '<span class="eghwrap"><button type="button" class="egh' + (S.editGroup === g.id ? ' on' : '') + '" data-act="egroup" data-g="' + g.id + '" style="--c:' + g.c + '"><b>' + g.n + '</b><i>' + gp + '%</i></button>' +
+      '<label class="indtogg egwv" title="Insufficient data for the whole ' + g.n + ' tab: waive or restore every field in it at once">' +
+      '<input type="checkbox" data-groupwv="' + g.id + '"' + (gAllWv ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Waive tab</em></label></span>';
   }).join('') + '</div>';
   var lvlN = { 1:'On file', 2:'Record', 3:'Files', 0:'Admin' }, stack = '';
   var active = groups.filter(function(g){ return g.id === S.editGroup; })[0];
@@ -2003,7 +2085,7 @@ function todayStr(){
 }
 
 /* ---------- audit dashboard ---------- */
-var AUD = { open:false, q:'', f:'needs', sort:'missing', sel:{}, selGroups:{}, rows:[], undoStack:[], redoStack:[], msel:null };
+var AUD = { open:false, section:'audit', q:'', f:'needs', sort:'missing', sel:{}, selGroups:{}, rows:[], undoStack:[], redoStack:[], msel:null };
 var BIZ_RE = /\b(llc|inc|corp|co\.|company|church|bakery|grill|cantina|pizza|caf[eé]|studio|salon|barber|tattoo|photo|productions|realty|motors|auto|plumbing|electric|construction|landscap|farm|market|deli|pub|brewery|winery|hotel|motel|insurance|dental|clinic|school|university|college|ntc|cfc|ministr)\b/i;
 var ADDR_RE = /\d+\s+[A-Za-z.]+\s+(st|street|ave|avenue|rd|road|blvd|ln|lane|dr|drive)\b|\bNY\b\s*\d{5}|\b\d{5}\b/;
 function isBusiness(e){
@@ -2068,9 +2150,16 @@ function closeScore(e, famMap){
   return { score:score, reasons:reasons };
 }
 function auditStats(e){
-  var hasR = L1_SCORES.some(function(k){ return gv(e, k) !== ''; });
-  var hasB = !!(gv(e, 'specialty') || ORG_CATS.some(function(c){ return gv(e, c.k).trim(); }));
-  var hasC = !!(gv(e, 'relationship') || gv(e, 'context') || gv(e, 'tier'));
+  /* Waived (insufficient-data) fields are excluded: a bucket is satisfied when
+     every field it could use is waived, or any non-waived field has a value. */
+  function bucket(keys, valFn){
+    var need = keys.filter(function(k){ return !wvHas(e, k); });
+    if(!need.length) return true;
+    return need.some(valFn);
+  }
+  var hasR = bucket(L1_SCORES, function(k){ return gv(e, k) !== ''; });
+  var hasB = bucket(['specialty', 'churches', 'companies'], function(k){ return gv(e, k).trim() !== ''; });
+  var hasC = bucket(['relationship', 'context', 'tier'], function(k){ return gv(e, k) !== ''; });
   var audited = (e.profile || {}).audit === 'audited';
   var missing = (hasR ? 0 : 1) + (hasB ? 0 : 1) + (hasC ? 0 : 1) + (audited ? 0 : 1);
   return { hasR:hasR, hasB:hasB, hasC:hasC, audited:audited, missing:missing, score:4 - missing };
@@ -2079,14 +2168,331 @@ function openAudit(){
   AUD.open = true;
   $('#auditscreen').hidden = false;
   $('#auq').value = AUD.q;
-  renderAudit();
-  if(AUD.scroll) $('#aubody').scrollTop = AUD.scroll;
+  dashShow(AUD.section || 'audit');
+  if(AUD.scroll && (AUD.section || 'audit') === 'audit') $('#aubody').scrollTop = AUD.scroll;
 }
 function closeAudit(){
   var ab = $('#aubody');
   if(ab) AUD.scroll = ab.scrollTop;
+  if(QA.open) closeQuick();
   AUD.open = false;
   $('#auditscreen').hidden = true;
+}
+
+/* ---------- dashboard sections (JD 2026-10-12): Audit is one section of a
+   single dashboard alongside Quick Audit, Organizations, Groups and Family.
+   Quick Audit keeps its own full-screen overlay (z-index above the dashboard);
+   entering it from the dashboard and backing out returns to the dashboard. */
+function dashShow(sec){
+  if(sec === 'quick'){ openQuick(); return; }
+  if(QA.open) closeQuick();
+  AUD.section = sec;
+  $$('#dashnav [data-dashsec]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-dashsec') === sec); });
+  $('#dashsec-audit').hidden = sec !== 'audit';
+  $('#dashsec-orgs').hidden = sec !== 'orgs';
+  $('#dashsec-groups').hidden = sec !== 'groups';
+  $('#dashsec-family').hidden = sec !== 'family';
+  var qw = $('#auqwrap'); if(qw) qw.style.display = sec === 'audit' ? '' : 'none';
+  if(sec === 'audit') renderAudit();
+  else if(sec === 'orgs') renderDashOrgs();
+  else if(sec === 'groups') renderDashGroups();
+  else if(sec === 'family') renderDashFamily();
+}
+function dashOpenPerson(di){
+  AUD.fromAudit = true;
+  closeAudit();
+  openPerson(di, { push:true, edit:true, fromAuditKeep:true });
+}
+function liveEntry(e){
+  var p = e.profile || {};
+  return p.deleted !== '1' && !(p.merged_into || '').trim();
+}
+
+/* ----- Organizations: churches / companies / universities with their people ----- */
+var DORG = { open:{} };
+var ORG_SECTIONS = [
+  { k:'churches', label:'Churches' },
+  { k:'companies', label:'Companies' },
+  { k:'universities', label:'Universities' }
+];
+function orgNames(k){
+  var seen = {}, out = [];
+  var cat = orgCat(k);
+  if(cat) cat.options.forEach(function(o){ if(!seen[o]){ seen[o] = 1; out.push(o); } });
+  D.directory.forEach(function(e){
+    if(!liveEntry(e)) return;
+    tagList(gv(e, k)).forEach(function(o){ if(!seen[o]){ seen[o] = 1; out.push(o); } });
+  });
+  return out;
+}
+function orgMembers(k, name){
+  var out = [];
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    if(tagList(gv(e, k)).indexOf(name) >= 0) out.push(di);
+  });
+  return out.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+}
+function renderDashOrgs(){
+  var el = $('#dashsec-orgs'); if(!el) return;
+  var totalOrgs = 0, totalMem = 0;
+  var h = ORG_SECTIONS.map(function(cat){
+    var names = orgNames(cat.k).map(function(n){ return { n:n, mem:orgMembers(cat.k, n) }; })
+      .filter(function(o){ return o.mem.length; })
+      .sort(function(a, b){ return (b.mem.length - a.mem.length) || a.n.localeCompare(b.n); });
+    totalOrgs += names.length;
+    totalMem += names.reduce(function(a, o){ return a + o.mem.length; }, 0);
+    var rows = names.map(function(o){
+      var key = cat.k + '|' + o.n, open = !!DORG.open[key];
+      var mem = open ? '<div class="dmemlist">' + o.mem.map(function(di){
+        return '<button type="button" class="dmem" data-openperson="' + di + '">' + esc(dispName(D.directory[di])) + '</button>';
+      }).join('') + '</div>' : '';
+      return '<div class="dorg"><button type="button" class="dorghead" data-orgtoggle="' + esc(key) + '">' +
+        '<b>' + esc(o.n) + '</b><span class="dcount">' + o.mem.length + (o.mem.length === 1 ? ' person' : ' people') + '</span>' +
+        '<span class="chev">' + ic('chev', 14) + '</span></button>' + mem + '</div>';
+    }).join('');
+    return '<div class="dsecblock"><h3 class="dsectitle">' + esc(cat.label) + '</h3>' + (rows || '<p class="dim">None on file.</p>') + '</div>';
+  }).join('');
+  el.innerHTML = h;
+  $('#aushown').textContent = totalOrgs + ' organizations · ' + totalMem + ' memberships';
+}
+
+/* ----- Groups: revived 2026-10-12. Membership lives in the Profiles 'Groups'
+   column (comma-separated names per person, patched via queuePatch like any
+   other field), so it survives syncs; the group list is the union over people.
+   Seeded from the old Friends Database 'Groups / Contexts' tags. A group with
+   no members yet exists only in DGRP.extra for the session. ----- */
+var DGRP = { open:null, renaming:null, confirmDel:null, extra:[], q:{} };
+function personGroups(e){ return splitTags(gv(e, 'groups'), ', '); }
+function allGroups(){
+  var map = {};
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    personGroups(e).forEach(function(g){ (map[g] = map[g] || []).push(di); });
+  });
+  DGRP.extra.forEach(function(g){ if(!map[g]) map[g] = []; });
+  return map;
+}
+function setPersonGroups(di, arr){ queuePatch(di, { groups: arr.join(', ') }); }
+function grpPatchMembers(name, fn){
+  var map = allGroups(), mem = map[name] || [];
+  mem.forEach(function(di){
+    var e = D.directory[di], gs = personGroups(e), ns = fn(gs.slice());
+    if(ns) setPersonGroups(di, ns);
+  });
+  return mem.length;
+}
+function renderDashGroups(){
+  var el = $('#dashsec-groups'); if(!el) return;
+  var map = allGroups();
+  var names = Object.keys(map).sort(function(a, b){ return (map[b].length - map[a].length) || a.localeCompare(b); });
+  var h = '<div class="dsecblock"><h3 class="dsectitle">Groups</h3>' +
+    '<div class="grpcreate"><input id="grpnew" placeholder="New group name" autocomplete="off">' +
+    '<button type="button" class="mini" data-grpcreate="1">' + ic('plus', 13) + 'Create group</button></div>' +
+    '<p class="dim" style="margin:0 0 6px;font-size:12.5px">Revived from the old Friends Database group tags. Add people to a group and it is saved on their profiles.</p></div>';
+  h += names.map(function(name){
+    var mem = (map[name] || []).slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+    var open = DGRP.open === name;
+    var head = '<div class="dgrphead"><b>' + esc(name) + '</b><span class="dcount">' + mem.length + (mem.length === 1 ? ' person' : ' people') + '</span>' +
+      '<span class="dgrpacts"><button type="button" class="mini neutral" data-grprename="' + esc(name) + '">Rename</button>' +
+      (DGRP.confirmDel === name
+        ? '<button type="button" class="mini danger" data-grpdelgo="' + esc(name) + '">Confirm delete</button>'
+        : '<button type="button" class="mini danger" data-grpdel="' + esc(name) + '">Delete</button>') +
+      '<button type="button" class="mini neutral" data-grptoggle="' + esc(name) + '">' + (open ? 'Close' : 'People') + '</button></span></div>';
+    var body = '';
+    if(DGRP.renaming === name){
+      body += '<div class="grpcreate"><input id="grprename" value="' + esc(name) + '" autocomplete="off">' +
+        '<button type="button" class="mini" data-grprenamed="' + esc(name) + '">Save name</button>' +
+        '<button type="button" class="mini neutral" data-grprenamex="1">Cancel</button></div>';
+    }
+    if(open){
+      body += '<div class="dmemlist">' + (mem.map(function(di){
+        return '<span class="dmemchip">' + esc(dispName(D.directory[di])) + '<b class="nx" data-grprm="' + esc(name) + '" data-di="' + di + '" title="Remove from group">×</b></span>';
+      }).join('') || '<span class="dim">No members yet. Add someone below.</span>') + '</div>' +
+      '<div class="naddwrap"><input class="grpq" data-grp="' + esc(name) + '" placeholder="Add a person: type a name" autocomplete="off"><div class="grphits" data-grphits="' + esc(name) + '"></div></div>';
+    }
+    return '<div class="dgrp">' + head + body + '</div>';
+  }).join('');
+  el.innerHTML = h || '<p class="dim">No groups yet.</p>';
+  $('#aushown').textContent = names.length + ' groups';
+}
+function grpSearch(input){
+  var name = input.getAttribute('data-grp');
+  var box = document.querySelector('[data-grphits="' + CSS.escape(name) + '"]'); if(!box) return;
+  var q = (input.value || '').trim().toLowerCase();
+  if(q.length < 2){ box.innerHTML = ''; return; }
+  var map = allGroups(), mem = map[name] || [], hits = [];
+  D.directory.forEach(function(r, i){
+    if(hits.length >= 6 || !liveEntry(r) || mem.indexOf(i) >= 0) return;
+    var label = dispName(r);
+    if((label + ' ' + (r.name || '')).toLowerCase().indexOf(q) < 0) return;
+    hits.push({ i:i, label:label });
+  });
+  box.innerHTML = hits.length ? hits.map(function(x){ return '<div class="naddhit" data-gadd="' + esc(name) + '" data-di="' + x.i + '">' + esc(x.label) + '</div>'; }).join('')
+    : '<div class="naddhit none">No matches</div>';
+}
+
+function grpCreate(){
+  var inp = $('#grpnew'); if(!inp) return;
+  var name = inp.value.trim(); if(!name) return;
+  var map = allGroups();
+  if(map[name]){ toast('That group already exists.'); return; }
+  if(DGRP.extra.indexOf(name) < 0) DGRP.extra.push(name);
+  DGRP.open = name; DGRP.renaming = null; DGRP.confirmDel = null;
+  renderDashGroups();
+  toast('Group "' + name + '" created. Add people below.');
+}
+function grpRenameSave(oldName){
+  var inp = $('#grprename'); if(!inp) return;
+  var nw = inp.value.trim();
+  if(!nw || nw === oldName){ DGRP.renaming = null; renderDashGroups(); return; }
+  var map = allGroups();
+  if(map[nw]){ toast('A group with that name already exists.'); return; }
+  grpPatchMembers(oldName, function(gs){
+    var i = gs.indexOf(oldName);
+    if(i < 0) return null;
+    gs[i] = nw; return gs;
+  });
+  var xi = DGRP.extra.indexOf(oldName); if(xi >= 0) DGRP.extra[xi] = nw;
+  if(DGRP.open === oldName) DGRP.open = nw;
+  DGRP.renaming = null;
+  renderDashGroups();
+  toast('Group renamed to "' + nw + '".');
+}
+
+/* ----- Family: trees derived from the stored Profiles 'family' links (the
+   source of truth — [[relation, person name], ...] per person, edited through
+   queuePatch exactly like the profile editor's family section). Display adds
+   the inverses and shared-parent siblings, mirroring the build. ----- */
+var DFAM = { editing:null, q:{} };
+var FAM_REL_LABEL = { parents:'Parent of', spouses:'Spouse of', children:'Child of', siblings:'Sibling of' };
+var FAM_INVERSE = { parent:'children', spouse:'spouses', child:'parents', sibling:'siblings' };
+var FAM_REL_OF = { parents:'parent', spouses:'spouse', children:'child', siblings:'sibling' };
+function famDisplay(){
+  var disp = {};
+  function slot(di){ return disp[di] || (disp[di] = { parents:[], spouses:[], children:[], siblings:[] }); }
+  function push(di, relKey, otherDi){
+    if(di == null || otherDi == null || di === otherDi) return;
+    var arr = slot(di)[relKey];
+    if(!arr.some(function(x){ return x.di === otherDi; })) arr.push({ di:otherDi });
+  }
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    famLinks(e).forEach(function(l){
+      var tdi = BYN[String(l[1] || '').toLowerCase()];
+      if(tdi == null) return;
+      var mine = { parent:'parents', spouse:'spouses', child:'children', sibling:'siblings' }[l[0]];
+      if(!mine) return;
+      push(di, mine, tdi);
+      push(tdi, FAM_INVERSE[l[0]], di);
+    });
+  });
+  /* siblings via shared parents */
+  Object.keys(disp).forEach(function(diK){
+    var di = +diK;
+    disp[di].parents.forEach(function(p){
+      D.directory.forEach(function(r, ri){
+        if(ri === di || !disp[ri]) return;
+        if(disp[ri].parents.some(function(pp){ return pp.di === p.di; })) push(di, 'siblings', ri);
+      });
+    });
+  });
+  return disp;
+}
+function famComponents(disp){
+  var seen = {}, comps = [];
+  Object.keys(disp).forEach(function(diK){
+    var start = +diK;
+    if(seen[start]) return;
+    var comp = [], stack = [start];
+    while(stack.length){
+      var di = stack.pop();
+      if(seen[di]) continue;
+      seen[di] = 1; comp.push(di);
+      ['parents', 'spouses', 'children', 'siblings'].forEach(function(rk){
+        (disp[di][rk] || []).forEach(function(x){ if(!seen[x.di]) stack.push(x.di); });
+      });
+    }
+    if(comp.length) comps.push(comp);
+  });
+  return comps;
+}
+function renderDashFamily(){
+  var el = $('#dashsec-family'); if(!el) return;
+  var disp = famDisplay();
+  var comps = famComponents(disp).sort(function(a, b){ return b.length - a.length; });
+  var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3>' +
+    '<p class="dim" style="margin:0;font-size:12.5px">Links are stored on each profile (parent / spouse / child / sibling) and saved through the same patch path as the profile editor, so they survive rebuilds.</p></div>';
+  if(!comps.length) h += '<p class="dim">No family links on file yet. Open a profile and use Edit links below, or the Family editor on a profile.</p>';
+  h += comps.map(function(comp){
+    var lastNames = {};
+    comp.forEach(function(di){ var ln = (dispName(D.directory[di]).split(' ').pop() || '').trim(); if(ln) lastNames[ln] = (lastNames[ln] || 0) + 1; });
+    var title = Object.keys(lastNames).sort(function(a, b){ return lastNames[b] - lastNames[a]; })[0] || 'Family';
+    var members = comp.slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+    var rows = members.map(function(di){
+      var e = D.directory[di], rels = [];
+      ['parents', 'spouses', 'children', 'siblings'].forEach(function(rk){
+        var xs = disp[di][rk] || [];
+        if(xs.length) rels.push(FAM_REL_LABEL[rk] + ' ' + xs.map(function(x){ return esc(dispName(D.directory[x.di])); }).join(', '));
+      });
+      var edit = '';
+      if(DFAM.editing === di){
+        var links = famLinks(e);
+        var rows2 = links.map(function(l, i){
+          var tdi = BYN[String(l[1] || '').toLowerCase()];
+          var label = tdi != null ? dispName(D.directory[tdi]) : l[1];
+          return '<div class="famrow"><span class="famrel">' + esc(l[0]) + '</span><span>' + esc(label) + '</span>' +
+            '<b class="nx" data-dfrm="' + di + '" data-i="' + i + '" title="Remove family link">×</b></div>';
+        }).join('');
+        edit = '<div class="dfamedit">' + (rows2 || '<p class="dim" style="margin:0 0 8px;font-size:13px">No stored links yet.</p>') +
+          '<div class="famaddrow"><select id="dfamrel-' + di + '"><option value="parent">Parent</option><option value="spouse">Spouse</option>' +
+          '<option value="child">Child</option><option value="sibling">Sibling</option></select>' +
+          '<input class="dfq" data-dfq="' + di + '" placeholder="Add family member: type a name" autocomplete="off"></div>' +
+          '<div class="dfamhits" data-dfamhits="' + di + '"></div></div>';
+      }
+      return '<div class="dfamrow"><button type="button" class="dfamname" data-openperson="' + di + '">' + esc(dispName(e)) + '</button>' +
+        (rels.length ? '<span class="dfamrels">' + rels.join(' · ') + '</span>' : '<span class="dfamrels dim">linked</span>') +
+        '<button type="button" class="mini neutral" data-dfamedit="' + di + '">' + (DFAM.editing === di ? 'Close' : 'Edit links') + '</button>' + edit + '</div>';
+    }).join('');
+    return '<div class="dfam"><h4 class="dfamtitle">' + esc(title) + ' family</h4>' + rows + '</div>';
+  }).join('');
+  el.innerHTML = h;
+  $('#aushown').textContent = comps.length + (comps.length === 1 ? ' family' : ' families');
+}
+function dashFamSearch(input){
+  var di = parseInt(input.getAttribute('data-dfq'), 10);
+  var box = document.querySelector('[data-dfamhits="' + di + '"]'); if(!box) return;
+  var q = (input.value || '').trim().toLowerCase();
+  var e = D.directory[di], existing = {};
+  famLinks(e).forEach(function(l){ existing[String(l[1] || '').toLowerCase()] = 1; });
+  existing[(e.name || '').toLowerCase()] = 1;
+  if(q.length < 2){ box.innerHTML = ''; return; }
+  var hits = [];
+  D.directory.forEach(function(r, i){
+    if(hits.length >= 6 || !liveEntry(r)) return;
+    if(existing[(r.name || '').toLowerCase()]) return;
+    var label = dispName(r);
+    if((label + ' ' + (r.name || '')).toLowerCase().indexOf(q) < 0) return;
+    hits.push({ i:i, label:label });
+  });
+  box.innerHTML = hits.length ? hits.map(function(x){ return '<div class="naddhit" data-dfadd="' + di + '" data-tdi="' + x.i + '">' + esc(x.label) + '</div>'; }).join('')
+    : '<div class="naddhit none">No matches</div>';
+}
+function dashFamAdd(di, tdi){
+  var e = D.directory[di], t = D.directory[tdi]; if(!e || !t) return;
+  var sel = $('#dfamrel-' + di), rel = sel ? sel.value : 'parent';
+  var links = famLinks(e), kl = (t.name || '').toLowerCase();
+  if(!links.some(function(l){ return String(l[1] || '').toLowerCase() === kl && l[0] === rel; }))
+    links.push([rel, t.name || '']);
+  queuePatch(di, { family: JSON.stringify(links) });
+  renderDashFamily();
+  toast(dispName(t) + ' added as ' + rel + ' of ' + dispName(e) + '.');
+}
+function dashFamRemove(di, i){
+  var e = D.directory[di]; if(!e) return;
+  var links = famLinks(e); links.splice(i, 1);
+  queuePatch(di, { family: JSON.stringify(links) });
+  renderDashFamily();
 }
 /* ---------- quick mobile audit: one person at a time, rapid taps ---------- */
 var QA = { open:false, queue:[], idx:0, total:0, done:0, del:0, q:'audit', sort:'missing', skipRender:false, merge:null };
@@ -3707,7 +4113,79 @@ function bind(){
   $('#auundo').addEventListener('click', doUndo);
   $('#auredo').addEventListener('click', doRedo);
   $('#qaopen').addEventListener('click', openQuick);
-  $('#qaopen2').addEventListener('click', openQuick);
+  $('#qaopen2').addEventListener('click', function(){ openAudit(); dashShow('quick'); });
+  $('#orgsbtn').addEventListener('click', function(){ openAudit(); dashShow('orgs'); });
+  $('#dashnav').addEventListener('click', function(ev){
+    var b = ev.target.closest('[data-dashsec]'); if(!b) return;
+    dashShow(b.getAttribute('data-dashsec'));
+  });
+  $('#dashsec-orgs').addEventListener('click', function(ev){
+    var tg = ev.target.closest('[data-orgtoggle]');
+    if(tg){ var key = tg.getAttribute('data-orgtoggle'); DORG.open[key] = !DORG.open[key]; renderDashOrgs(); return; }
+    var op = ev.target.closest('[data-openperson]');
+    if(op) dashOpenPerson(parseInt(op.getAttribute('data-openperson'), 10));
+  });
+  var grpEl = $('#dashsec-groups');
+  grpEl.addEventListener('click', function(ev){
+    var cr = ev.target.closest('[data-grpcreate]'); if(cr){ grpCreate(); return; }
+    var tb = ev.target.closest('[data-grptoggle]');
+    if(tb){ var tn = tb.getAttribute('data-grptoggle'); DGRP.open = DGRP.open === tn ? null : tn; DGRP.confirmDel = null; renderDashGroups(); return; }
+    var rn = ev.target.closest('[data-grprename]');
+    if(rn){ DGRP.renaming = rn.getAttribute('data-grprename'); DGRP.open = DGRP.renaming; renderDashGroups(); var ri = $('#grprename'); if(ri){ ri.focus(); ri.select(); } return; }
+    if(ev.target.closest('[data-grprenamex]')){ DGRP.renaming = null; renderDashGroups(); return; }
+    var rd = ev.target.closest('[data-grprenamed]');
+    if(rd){ grpRenameSave(rd.getAttribute('data-grprenamed')); return; }
+    var dl = ev.target.closest('[data-grpdel]');
+    if(dl){ DGRP.confirmDel = dl.getAttribute('data-grpdel'); renderDashGroups(); return; }
+    var dg = ev.target.closest('[data-grpdelgo]');
+    if(dg){
+      var dn = dg.getAttribute('data-grpdelgo');
+      grpPatchMembers(dn, function(gs){ var ns = gs.filter(function(g){ return g !== dn; }); return ns.length !== gs.length ? ns : null; });
+      var xi = DGRP.extra.indexOf(dn); if(xi >= 0) DGRP.extra.splice(xi, 1);
+      DGRP.confirmDel = null; if(DGRP.open === dn) DGRP.open = null;
+      renderDashGroups(); toast('Group "' + dn + '" deleted.');
+      return;
+    }
+    var rm = ev.target.closest('[data-grprm]');
+    if(rm){
+      var rmn = rm.getAttribute('data-grprm'), rdi = parseInt(rm.getAttribute('data-di'), 10), re = D.directory[rdi];
+      if(re) setPersonGroups(rdi, personGroups(re).filter(function(g){ return g !== rmn; }));
+      renderDashGroups(); return;
+    }
+    var ad = ev.target.closest('[data-gadd]');
+    if(ad){
+      var anm = ad.getAttribute('data-gadd'), adi = parseInt(ad.getAttribute('data-di'), 10), ae = D.directory[adi];
+      if(ae){
+        var ags = personGroups(ae);
+        if(ags.indexOf(anm) < 0){ ags.push(anm); setPersonGroups(adi, ags); }
+        var axi = DGRP.extra.indexOf(anm); if(axi >= 0) DGRP.extra.splice(axi, 1);
+      }
+      renderDashGroups();
+      var q3 = document.querySelector('.grpq[data-grp="' + CSS.escape(anm) + '"]'); if(q3) q3.focus();
+      return;
+    }
+  });
+  grpEl.addEventListener('input', function(ev){
+    if(ev.target.classList && ev.target.classList.contains('grpq')) grpSearch(ev.target);
+  });
+  grpEl.addEventListener('keydown', function(ev){
+    if(ev.target.id === 'grpnew' && ev.key === 'Enter'){ ev.preventDefault(); grpCreate(); }
+    if(ev.target.id === 'grprename' && ev.key === 'Enter'){ ev.preventDefault(); if(DGRP.renaming) grpRenameSave(DGRP.renaming); }
+  });
+  var famEl = $('#dashsec-family');
+  famEl.addEventListener('click', function(ev){
+    var ed = ev.target.closest('[data-dfamedit]');
+    if(ed){ var d1 = parseInt(ed.getAttribute('data-dfamedit'), 10); DFAM.editing = DFAM.editing === d1 ? null : d1; renderDashFamily(); return; }
+    var rm = ev.target.closest('[data-dfrm]');
+    if(rm){ dashFamRemove(parseInt(rm.getAttribute('data-dfrm'), 10), parseInt(rm.getAttribute('data-i'), 10)); return; }
+    var ad = ev.target.closest('[data-dfadd]');
+    if(ad){ dashFamAdd(parseInt(ad.getAttribute('data-dfadd'), 10), parseInt(ad.getAttribute('data-tdi'), 10)); return; }
+    var op = ev.target.closest('[data-openperson]');
+    if(op) dashOpenPerson(parseInt(op.getAttribute('data-openperson'), 10));
+  });
+  famEl.addEventListener('input', function(ev){
+    if(ev.target.classList && ev.target.classList.contains('dfq')) dashFamSearch(ev.target);
+  });
   $('#qaback').addEventListener('click', closeQuick);
   $('#qaundo').addEventListener('click', doUndo);
   $('#qaredo').addEventListener('click', doRedo);
@@ -3880,6 +4358,8 @@ function bind(){
   /* dossier panel */
   var rb = $('#rightbody');
   rb.addEventListener('click', function(e){
+    /* Waived (insufficient-data) rows are inert except for their own waiver toggle. */
+    if(e.target.closest && e.target.closest('.waived') && !e.target.closest('.wvtogg')) return;
     var a = e.target.closest('[data-act]');
     if(a){ e.stopPropagation(); act(a.getAttribute('data-act'), a); return; }
     var sg = e.target.closest('#evinit button');
@@ -3981,6 +4461,7 @@ function bind(){
   });
   rb.addEventListener('input', function(e){
     var t = e.target;
+    if(t.closest && t.closest('.waived')) return;
     if(t.id === 'naddinput'){ renderNadd(t.value); return; }
     if(t.id === 'faminput'){ famSearch(t.value); return; }
     if(t.id === 'mergeinput'){ mergeSearch(t.value); return; }
@@ -3990,6 +4471,27 @@ function bind(){
   });
   rb.addEventListener('change', function(e){
     var t = e.target;
+    if(t.hasAttribute && t.hasAttribute('data-wv')){
+      /* Per-field insufficient-data toggle: patch + flip the row's waived class in place. */
+      var wvk = t.getAttribute('data-wv'), wvon = t.checked;
+      setWaivers(S.sel, [wvk], wvon);
+      var wvwrap = t.closest('[data-wvk]');
+      if(wvwrap) wvwrap.classList.toggle('waived', wvon);
+      updateFills();
+      return;
+    }
+    if(t.hasAttribute && t.hasAttribute('data-secwv')){
+      var wsec = SECTIONS.filter(function(s){ return s.id === t.getAttribute('data-secwv'); })[0];
+      if(wsec) setWaivers(S.sel, secWaiverKeys(wsec), t.checked);
+      renderPanel(true);
+      return;
+    }
+    if(t.hasAttribute && t.hasAttribute('data-groupwv')){
+      var wgrp = editGroups().filter(function(g){ return String(g.id) === t.getAttribute('data-groupwv'); })[0];
+      if(wgrp) setWaivers(S.sel, groupWaiverKeys(wgrp), t.checked);
+      renderPanel(true);
+      return;
+    }
     if(t.hasAttribute && t.hasAttribute('data-akatgl')){
       /* AKA toggle: visibility only — never patches or clears the stored value. */
       var arow = t.closest('.akarow'), ainp = arow ? arow.querySelector('.akainput') : null;
