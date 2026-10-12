@@ -356,10 +356,37 @@ function degBadge(d){
   return '<span class="dbadge" title="' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '">' + ic('cap', 12) +
     '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits.length ? '<span>' + bits.join(' · ') + '</span>' : '') + '</span>';
 }
+/* Certifications/licenses on file (Sheet-driven): achievement/highlight tags that
+   name a credential, with a footprint fallback for license numbers / LMSW. */
+function certsOf(e){
+  var CERT_RE = /licen[cs]e|certif|specialist|board.certified|\bLMSW\b|\bLCSW\b|\bCRD#|series \d+|faaompt|investment adviser/i;
+  var out = [], seen = {};
+  parseAchievements(gv(e, 'achievements')).concat(parseAchievements(gv(e, 'highlights'))).forEach(function(a){
+    if(!CERT_RE.test(a)) return;
+    var label = a.length > 52 ? a.slice(0, 52).trim() + '\u2026' : a;
+    if(seen[label]) return; seen[label] = 1; out.push(label);
+  });
+  if(!out.length){
+    var fp = String(gv(e, 'public_footprint') || '');
+    var m = fp.match(/license number (\d+)/i); if(m) out.push('License #' + m[1]);
+    if(/\bLMSW\b/.test(fp)) out.push('Licensed Master Social Worker (LMSW)');
+  }
+  return out;
+}
+function certBadges(e){
+  var cs = certsOf(e); if(!cs.length) return '';
+  return cs.slice(0, 3).map(function(c){
+    return '<span class="dbadge certbadge" title="Certification on file: ' + esc(c) + '">' + ic('shield', 12) +
+      '<b>Certified</b><span>' + esc(c) + '</span></span>';
+  }).join('') + (cs.length > 3 ? '<span class="dmore">+' + (cs.length - 3) + '</span>' : '');
+}
 function headBadges(e){
-  var ds = sortDegrees(degreesOf(e)); if(!ds.length) return '';
+  var ds = sortDegrees(degreesOf(e));
   var shown = ds.slice(0, 4), more = ds.length - shown.length;
-  return '<div class="dbadges">' + shown.map(degBadge).join('') + (more > 0 ? '<span class="dmore">+' + more + '</span>' : '') + '</div>';
+  var deg = shown.map(degBadge).join('') + (more > 0 ? '<span class="dmore">+' + more + '</span>' : '');
+  var cert = certBadges(e);
+  if(!deg && !cert) return '';
+  return '<div class="dbadges">' + deg + cert + '</div>';
 }
 function capHTML(e){
   var ds = degreesOf(e); if(!ds.length) return '';
