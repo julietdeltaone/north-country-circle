@@ -445,52 +445,48 @@ function subLine(e){
   if(e.src === 'subject') return 'Subject file';
   return '';
 }
-/* ---------- insufficient-data waivers (JD 2026-10-12) ----------
-   Per person, per field: waiving a field disables it in the editor and excludes
-   it from every completeness/audit calculation until it is un-waived. Stored as
-   a JSON object {fieldKey:1} in the Profiles 'Waivers' column (patch field
-   'waivers'), so it survives syncs like any other profile field. Pseudo keys
-   cover the custom-body sections: degrees (Education), connections (Known
-   associates), events (Timeline), files (Files). */
+/* ---------- insufficient-data waivers (JD 2026-10-12; section-level per JD's
+   correction) ---------- One toggle per editor section: waiving a section
+   disables its fields and excludes the whole section from every completeness /
+   audit calculation until restored. The On File / Record / Files tabs carry one
+   toggle each that waives/restores every section in the tab. Stored as a JSON
+   object of waived section ids ({"identity":1, ...}) in the Profiles 'Waivers'
+   column via the patch path (field 'waivers'), so it survives syncs; the build
+   carries it into the baked data. Toggles are unlabeled and color-coded amber
+   when on; a single legend in the editor explains the dot. */
 var WAIVER_FIELD = 'waivers';
-function wvSet(e){
+function wvSecs(e){
   try{ var v = JSON.parse(gv(e, WAIVER_FIELD) || '{}'); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; }
   catch(x){ return {}; }
 }
-function wvHas(e, k){ return !!wvSet(e)[k]; }
-function setWaivers(di, keys, on){
+function secWaived(e, sid){ return !!wvSecs(e)[sid]; }
+var FIELD_SEC = {};
+SECTIONS.forEach(function(s){ (s.fields || []).forEach(function(k){ FIELD_SEC[k] = s.id; }); });
+FIELD_SEC.also_known_as = 'identity'; FIELD_SEC.email = 'identity';
+FIELD_SEC.degrees = 'education'; FIELD_SEC.connections = 'connections';
+FIELD_SEC.events = 'timeline'; FIELD_SEC.files = 'files';
+function fieldWaived(e, k){ var sid = FIELD_SEC[k]; return sid ? secWaived(e, sid) : false; }
+function setWaiverSections(di, sids, on){
   var e = D.directory[di]; if(!e) return;
-  var w = wvSet(e);
-  keys.forEach(function(k){ if(on) w[k] = 1; else delete w[k]; });
+  var w = wvSecs(e);
+  sids.forEach(function(sid){ if(on) w[sid] = 1; else delete w[sid]; });
   var p = {}; p[WAIVER_FIELD] = JSON.stringify(w);
   queuePatch(di, p);
 }
-var SEC_PSEUDO = { education:'degrees', connections:'connections', timeline:'events', files:'files' };
-function secWaiverKeys(s){
-  var ks = (s.fields || []).slice();
-  if(s.id === 'identity') ks.push('also_known_as');
-  if(SEC_PSEUDO[s.id]) ks.push(SEC_PSEUDO[s.id]);
-  return ks;
+function groupSections(g){
+  return SECTIONS.filter(function(s){ return g.lvs.indexOf(s.lv) >= 0; }).map(function(s){ return s.id; });
 }
-function groupWaiverKeys(g){
-  var ks = [];
-  SECTIONS.forEach(function(s){
-    if(g.lvs.indexOf(s.lv) < 0) return;
-    secWaiverKeys(s).forEach(function(k){ if(ks.indexOf(k) < 0) ks.push(k); });
-  });
-  return ks;
-}
-function wvToggleHTML(k, e, cls){
-  var on = wvHas(e, k);
-  return '<label class="indtogg wvtogg ' + (cls || '') + '" title="Insufficient data: disable this field for this person and stop counting it in audits. Turn it back on any time.">' +
-    '<input type="checkbox" data-wv="' + k + '"' + (on ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Insufficient data</em></label>';
+function groupWaived(e, g){
+  var ss = groupSections(g);
+  return ss.length && ss.every(function(sid){ return secWaived(e, sid); });
 }
 function l1Slots(e){
   return ['phone', 'email', 'specialty'].concat(L1_SCORES, ['orgs', 'synopsis']);
 }
+var L1_SLOT_SEC = { phone:'identity', email:'identity', specialty:'background', orgs:'background', synopsis:'onfile' };
 function l1SlotWaived(e, s){
-  if(s === 'orgs') return wvHas(e, 'churches') && wvHas(e, 'companies');
-  return wvHas(e, s);
+  var sid = L1_SLOT_SEC[s];
+  return secWaived(e, sid || 'ratings');
 }
 function l1SlotVal(e, s){
   if(s === 'orgs') return ORG_CATS.some(function(cat){ return tagList(gv(e, cat.k)).length; }) ? '1' : '';
@@ -1134,11 +1130,10 @@ function orgCat(k){ return ORG_CATS.filter(function(c){ return c.k === k; })[0];
    changes only by typing in the field (patched on input like any text field);
    clearing it means emptying the field while the toggle is on. */
 function akaRow(e){
-  var v = gv(e, 'also_known_as'), on = !!String(v || '').trim(), wv = wvHas(e, 'also_known_as');
-  return '<div class="irow akarow wvrow' + (wv ? ' waived' : '') + '" data-wvk="also_known_as"><label class="indtogg akatogg" title="Show the also-known-as field">' +
+  var v = gv(e, 'also_known_as'), on = !!String(v || '').trim();
+  return '<div class="irow akarow"><label class="indtogg akatogg" title="Show the also-known-as field">' +
     '<input type="checkbox" data-akatgl' + (on ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Also known as</em></label>' +
-    '<input class="akainput" data-pk="also_known_as" value="' + esc(v) + '" placeholder="Nickname or alias" autocomplete="off"' + (on ? '' : ' hidden') + '>' +
-    wvToggleHTML('also_known_as', e) + '</div>';
+    '<input class="akainput" data-pk="also_known_as" value="' + esc(v) + '" placeholder="Nickname or alias" autocomplete="off"' + (on ? '' : ' hidden') + '></div>';
 }
 /* Read-only Instagram username, shown in the Contact section where the Email
    field used to be, so the handle is visible while editing the name. */
@@ -1202,27 +1197,18 @@ function fieldRow(k, e){
       chips.join('') + '<input class="tadd" placeholder="' + esc(f.ph || '+ add') + '" aria-label="Add ' + esc(f.l) + '"></div></div>';
   }
   else h = '<div class="irow">' + labHTML(f) + '<input data-pk="' + k + '" value="' + esc(v) + '" placeholder="—" autocomplete="off"></div>';
-  /* Insufficient-data waiver: mark the row and append its toggle. Interaction
-     blocking for waived rows is CSS (.wvrow.waived) plus delegated-handler guards. */
-  var wv = wvHas(e, k);
-  h = h.replace(/class="([a-z]+row)"/, 'class="$1 wvrow' + (wv ? ' waived' : '') + '" data-wvk="' + k + '"');
-  var cut = h.lastIndexOf('</div>');
-  if(cut > 0) h = h.slice(0, cut) + wvToggleHTML(k, e) + h.slice(cut);
   return h;
 }
 function secFill(s, e){
   var n;
-  if(s.id === 'connections'){ if(wvHas(e, 'connections')) return { t:'Waived', done:true }; n = (e.neighbors || []).length + connPhases(e).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'education'){ if(wvHas(e, 'degrees')) return { t:'Waived', done:true }; n = degreesOf(e).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'timeline'){ if(wvHas(e, 'events')) return { t:'Waived', done:true }; n = (e.events || []).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'files'){ if(wvHas(e, 'files')) return { t:'Waived', done:true }; n = (e.files || []).length; return { t:String(n), done:n > 0 }; }
+  if(secWaived(e, s.id)) return { t:'Waived', done:true };
+  if(s.id === 'connections'){ n = (e.neighbors || []).length + connPhases(e).length; return { t:String(n), done:n > 0 }; }
+  if(s.id === 'education'){ n = degreesOf(e).length; return { t:String(n), done:n > 0 }; }
+  if(s.id === 'timeline'){ n = (e.events || []).length; return { t:String(n), done:n > 0 }; }
+  if(s.id === 'files'){ n = (e.files || []).length; return { t:String(n), done:n > 0 }; }
   if(s.id === 'admin'){ var a = (e.profile || {}).audit === 'audited'; return { t:a ? 'Audited' : 'Needs audit', done:a }; }
-  var ks = s.fields.filter(function(k){ return !wvHas(e, k); });
-  if(s.id === 'identity' && !wvHas(e, 'also_known_as')) ks = ks.concat(['also_known_as']);
-  else if(s.id === 'identity') ks = ks.filter(function(k){ return k !== 'also_known_as'; });
-  if(!ks.length) return { t:'Waived', done:true };
-  var got = ks.filter(function(k){ return gv(e, k) !== ''; }).length;
-  return { t:got + '/' + ks.length, done:got === ks.length };
+  var got = s.fields.filter(function(k){ return gv(e, k) !== ''; }).length;
+  return { t:got + '/' + s.fields.length, done:got === s.fields.length };
 }
 /* tier hero editor + momentum directional editor */
 function tierEditHTML(e){
@@ -1364,54 +1350,44 @@ function delDegree(i){
   queuePatch(S.sel, { degrees:JSON.stringify(arr) });
   renderPanel(true); toast('Degree removed.');
 }
-/* Wrap a custom-body section (Education / Known associates / Timeline / Files)
-   with its pseudo-field waiver bar; the body greys out and locks when waived. */
-function wvSecWrap(pk, label, bodyHTML, e){
-  var wv = wvHas(e, pk);
-  return '<div class="wvsecwrap' + (wv ? ' waived' : '') + '" data-wvk="' + pk + '">' +
-    '<div class="secwvbar"><span>' + esc(label) + '</span>' + wvToggleHTML(pk, e) + '</div>' +
-    '<div class="wvsecbody">' + bodyHTML + '</div></div>';
-}
 function secBody(s, e){
-  if(s.id === 'connections') return wvSecWrap('connections', 'Known associates, family and phases', connectionsBody(e), e);
-  if(s.id === 'timeline') return wvSecWrap('events', 'Timeline events', timelineEdit(e), e);
-  if(s.id === 'education') return wvSecWrap('degrees', 'Degrees', educationBody(e), e);
-  if(s.id === 'files') return wvSecWrap('files', 'Attached files', filesEdit(e), e);
+  if(s.id === 'connections') return connectionsBody(e);
+  if(s.id === 'timeline') return timelineEdit(e);
+  if(s.id === 'education') return educationBody(e);
+  if(s.id === 'files') return filesEdit(e);
   if(s.id === 'admin') return adminBody(e);
   if(s.id === 'ratings') return '<div class="rgrid">' + s.fields.map(function(k){ return fieldRow(k, e); }).join('') + '</div>';
   if(s.id === 'identity') return s.fields.map(function(k){ return fieldRow(k, e); }).join('') + igRow(e) + akaRow(e);
   return s.fields.map(function(k){ return fieldRow(k, e); }).join('');
 }
 function secHTML(s, e){
-  var open = S.openSecs[s.id] !== false, fl = secFill(s, e);
-  var keys = secWaiverKeys(s), allWv = keys.length && keys.every(function(k){ return wvHas(e, k); });
-  return '<section class="esec' + (open ? ' open' : '') + '" data-sec="' + s.id + '" style="--c:' + (s.lv ? LV[s.lv].c : '#ece9e2') + '">' +
+  var open = S.openSecs[s.id] !== false, fl = secFill(s, e), wv = secWaived(e, s.id);
+  return '<section class="esec' + (open ? ' open' : '') + (wv ? ' waived' : '') + '" data-sec="' + s.id + '" style="--c:' + (s.lv ? LV[s.lv].c : '#ece9e2') + '">' +
     '<header><span class="sechead" data-act="sectoggle" data-sec="' + s.id + '"><span class="cic">' + ic(s.ic, 15) + '</span><h3>' + esc(s.title) + '</h3>' +
     '<span class="sbadge' + (fl.done ? ' done' : '') + '">' + esc(fl.t) + '</span><span class="chev">' + ic('chev', 14) + '</span></span>' +
-    '<label class="indtogg secwv" title="Insufficient data for this whole section: waive or restore every field in ' + esc(s.title) + ' at once">' +
-    '<input type="checkbox" data-secwv="' + s.id + '"' + (allWv ? ' checked' : '') + '><span class="itrack"><i></i></span></label></header>' +
+    '<label class="indtogg wvtogg secwv" title="Insufficient data: waive the whole ' + esc(s.title) + ' section for this person (fields disable and stop counting in audits)">' +
+    '<input type="checkbox" data-secwv="' + s.id + '"' + (wv ? ' checked' : '') + '><span class="itrack"><i></i></span></label></header>' +
     '<div class="sbody">' + secBody(s, e) + '</div></section>';
 }
 function editCompletenessData(e){
   var tot = 0, got = 0, levels = {};
   SECTIONS.forEach(function(s){
+    if(secWaived(e, s.id)) return; /* waived sections are excluded entirely */
     var flds = s.fields || [];
-    if(s.id === 'education'){ if(!wvHas(e, 'degrees')){ tot += 1; if(degreesOf(e).length) got += 1; } return; }
-    if(s.id === 'connections'){ if(!wvHas(e, 'connections')){ tot += 1; if((e.neighbors || []).length) got += 1; } return; }
-    if(s.id === 'timeline'){ if(!wvHas(e, 'events')){ tot += 1; if((e.events || []).length) got += 1; } return; }
-    if(s.id === 'files'){ if(!wvHas(e, 'files')){ tot += 1; if((e.files || []).length) got += 1; } return; }
-    flds.forEach(function(k){ if(wvHas(e, k)) return; tot++; if(gv(e, k) !== '') got++; });
-    if(s.id === 'identity' && !wvHas(e, 'also_known_as')){ tot++; if(gv(e, 'also_known_as') !== '') got++; }
+    if(s.id === 'education'){ tot += 1; if(degreesOf(e).length) got += 1; return; }
+    if(s.id === 'connections'){ tot += 1; if((e.neighbors || []).length) got += 1; return; }
+    if(s.id === 'timeline'){ tot += 1; if((e.events || []).length) got += 1; return; }
+    if(s.id === 'files'){ tot += 1; if((e.files || []).length) got += 1; return; }
+    flds.forEach(function(k){ tot++; if(gv(e, k) !== '') got++; });
   });
   [1, 2, 3].forEach(function(lv){
     var lt = 0, lg = 0;
     SECTIONS.forEach(function(s){
-      if(s.lv !== lv) return;
-      (s.fields || []).forEach(function(k){ if(wvHas(e, k)) return; lt++; if(gv(e, k) !== '') lg++; });
-      if(s.id === 'identity' && !wvHas(e, 'also_known_as')){ lt++; if(gv(e, 'also_known_as') !== '') lg++; }
-      if(s.id === 'education' && !wvHas(e, 'degrees')){ lt++; if(degreesOf(e).length) lg++; }
-      if(s.id === 'connections' && !wvHas(e, 'connections')){ lt++; if((e.neighbors || []).length) lg++; }
-      if(s.id === 'timeline' && !wvHas(e, 'events')){ lt++; if((e.events || []).length) lg++; }
+      if(s.lv !== lv || secWaived(e, s.id)) return;
+      (s.fields || []).forEach(function(k){ lt++; if(gv(e, k) !== '') lg++; });
+      if(s.id === 'education'){ lt++; if(degreesOf(e).length) lg++; }
+      if(s.id === 'connections'){ lt++; if((e.neighbors || []).length) lg++; }
+      if(s.id === 'timeline'){ lt++; if((e.events || []).length) lg++; }
     });
     levels[lv] = lt ? Math.round(lg / lt * 100) : 0;
   });
@@ -1432,11 +1408,10 @@ function dossierEdit(e){
   var comp = editCompletenessData(e);
   var hero = '<div class="egrouphero">' + groups.map(function(g){
     var gp = comp.levels[g.id] != null ? comp.levels[g.id] : 0;
-    var gks = groupWaiverKeys(g), gAllWv = gks.length && gks.every(function(k){ return wvHas(e, k); });
     return '<span class="eghwrap"><button type="button" class="egh' + (S.editGroup === g.id ? ' on' : '') + '" data-act="egroup" data-g="' + g.id + '" style="--c:' + g.c + '"><b>' + g.n + '</b><i>' + gp + '%</i></button>' +
-      '<label class="indtogg egwv" title="Insufficient data for the whole ' + g.n + ' tab: waive or restore every field in it at once">' +
-      '<input type="checkbox" data-groupwv="' + g.id + '"' + (gAllWv ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Waive tab</em></label></span>';
-  }).join('') + '</div>';
+      '<label class="indtogg wvtogg egwv" title="Insufficient data: waive or restore every section in the ' + g.n + ' tab at once">' +
+      '<input type="checkbox" data-groupwv="' + g.id + '"' + (groupWaived(e, g) ? ' checked' : '') + '><span class="itrack"><i></i></span></label></span>';
+  }).join('') + '<span class="wvlegend"><span class="wvdot"></span>= insufficient data</span></div>';
   var lvlN = { 1:'On file', 2:'Record', 3:'Files', 0:'Admin' }, stack = '';
   var active = groups.filter(function(g){ return g.id === S.editGroup; })[0];
   SECTIONS.forEach(function(s){
@@ -2150,16 +2125,12 @@ function closeScore(e, famMap){
   return { score:score, reasons:reasons };
 }
 function auditStats(e){
-  /* Waived (insufficient-data) fields are excluded: a bucket is satisfied when
-     every field it could use is waived, or any non-waived field has a value. */
-  function bucket(keys, valFn){
-    var need = keys.filter(function(k){ return !wvHas(e, k); });
-    if(!need.length) return true;
-    return need.some(valFn);
-  }
-  var hasR = bucket(L1_SCORES, function(k){ return gv(e, k) !== ''; });
-  var hasB = bucket(['specialty', 'churches', 'companies'], function(k){ return gv(e, k).trim() !== ''; });
-  var hasC = bucket(['relationship', 'context', 'tier'], function(k){ return gv(e, k) !== ''; });
+  /* A waived section satisfies the bucket it feeds: Persona (ratings) feeds
+     needs-ratings, Background feeds needs-background, Relationship feeds
+     needs-connection. */
+  var hasR = secWaived(e, 'ratings') || L1_SCORES.some(function(k){ return gv(e, k) !== ''; });
+  var hasB = secWaived(e, 'background') || !!(gv(e, 'specialty') || ORG_CATS.some(function(c){ return gv(e, c.k).trim(); }));
+  var hasC = secWaived(e, 'relationship') || !!(gv(e, 'relationship') || gv(e, 'context') || gv(e, 'tier'));
   var audited = (e.profile || {}).audit === 'audited';
   var missing = (hasR ? 0 : 1) + (hasB ? 0 : 1) + (hasC ? 0 : 1) + (audited ? 0 : 1);
   return { hasR:hasR, hasB:hasB, hasC:hasC, audited:audited, missing:missing, score:4 - missing };
@@ -4358,8 +4329,8 @@ function bind(){
   /* dossier panel */
   var rb = $('#rightbody');
   rb.addEventListener('click', function(e){
-    /* Waived (insufficient-data) rows are inert except for their own waiver toggle. */
-    if(e.target.closest && e.target.closest('.waived') && !e.target.closest('.wvtogg')) return;
+    /* Waived sections are inert below their header (the header keeps the toggle). */
+    if(e.target.closest && e.target.closest('.esec.waived .sbody')) return;
     var a = e.target.closest('[data-act]');
     if(a){ e.stopPropagation(); act(a.getAttribute('data-act'), a); return; }
     var sg = e.target.closest('#evinit button');
@@ -4461,7 +4432,7 @@ function bind(){
   });
   rb.addEventListener('input', function(e){
     var t = e.target;
-    if(t.closest && t.closest('.waived')) return;
+    if(t.closest && t.closest('.esec.waived .sbody')) return;
     if(t.id === 'naddinput'){ renderNadd(t.value); return; }
     if(t.id === 'faminput'){ famSearch(t.value); return; }
     if(t.id === 'mergeinput'){ mergeSearch(t.value); return; }
@@ -4471,24 +4442,16 @@ function bind(){
   });
   rb.addEventListener('change', function(e){
     var t = e.target;
-    if(t.hasAttribute && t.hasAttribute('data-wv')){
-      /* Per-field insufficient-data toggle: patch + flip the row's waived class in place. */
-      var wvk = t.getAttribute('data-wv'), wvon = t.checked;
-      setWaivers(S.sel, [wvk], wvon);
-      var wvwrap = t.closest('[data-wvk]');
-      if(wvwrap) wvwrap.classList.toggle('waived', wvon);
-      updateFills();
-      return;
-    }
     if(t.hasAttribute && t.hasAttribute('data-secwv')){
-      var wsec = SECTIONS.filter(function(s){ return s.id === t.getAttribute('data-secwv'); })[0];
-      if(wsec) setWaivers(S.sel, secWaiverKeys(wsec), t.checked);
+      /* Section-level insufficient-data toggle. */
+      setWaiverSections(S.sel, [t.getAttribute('data-secwv')], t.checked);
       renderPanel(true);
       return;
     }
     if(t.hasAttribute && t.hasAttribute('data-groupwv')){
+      /* Tab-level toggle: waives/restores every section in the tab at once. */
       var wgrp = editGroups().filter(function(g){ return String(g.id) === t.getAttribute('data-groupwv'); })[0];
-      if(wgrp) setWaivers(S.sel, groupWaiverKeys(wgrp), t.checked);
+      if(wgrp) setWaiverSections(S.sel, groupSections(wgrp), t.checked);
       renderPanel(true);
       return;
     }
