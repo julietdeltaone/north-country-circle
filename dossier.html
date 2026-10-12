@@ -42,11 +42,7 @@
 <!-- ============ left rail ============ -->
 <aside id="left" class="glass panel" aria-label="Directory">
   <div class="rail-top">
-    <div id="railtabs" class="seg" role="tablist" aria-label="Directory view">
-      <button data-r="people" class="on" role="tab"><i data-ic="users" data-s="15"></i><span>People</span></button>
-      <button data-r="events" role="tab" style="--c:var(--l2)"><i data-ic="calendar" data-s="15"></i><span>Events</span></button>
-      <button data-r="files" role="tab" style="--c:var(--l3)"><i data-ic="folder" data-s="15"></i><span>Files</span></button>
-    </div>
+    <div id="railstats" class="railstats" role="group" aria-label="Directory statistics"></div>
     <div class="rail-tools" id="railtools">
       <div id="lvlchips" class="lvlchips" role="group" aria-label="Filter by depth"></div>
       <div class="filterwrap">
@@ -60,13 +56,12 @@
               <option value="follower">Follower</option>
             </select>
           </label>
-          <label class="fl">Sort by
-            <select id="fsort">
-              <option value="strength">Closest first</option>
-              <option value="name">A to Z</option>
-              <option value="audit">Needs audit first</option>
-            </select>
-          </label>
+          <div class="fl">Sort by
+            <div class="sortdd" id="sortdd">
+              <button type="button" class="sortbtn" id="sortbtn" aria-haspopup="listbox" aria-expanded="false"><span id="sortlab">Strongest connection</span><i data-ic="chev" data-s="13"></i></button>
+              <div class="sortpop" id="sortpop" role="listbox" aria-label="Sort people by" hidden></div>
+            </div>
+          </div>
           <label class="chk"><input type="checkbox" id="fauditonly"> Only people who need an audit</label>
           <label class="chk"><input type="checkbox" id="fenrichedonly"> Only enriched from online sources</label>
           <button id="fclear" class="mini">Clear all filters</button>
@@ -184,6 +179,6 @@
   </div>
 </div>
 
-<script src="dossier.js?v=ccfaff1402"></script>
+<script src="dossier.js?v=82379d6a91"></script>
 </body>
 </html>
