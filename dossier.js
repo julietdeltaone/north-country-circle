@@ -3698,15 +3698,56 @@ function bind(){
     if(ah && ah.getAttribute('data-mh')){ doMerge(D.directory[S.sel], ah.getAttribute('data-mh')); return; }
     var um = e.target.closest('[data-act="unmerge"]');
     if(um){ doUnmerge(D.directory[S.sel]); return; }
+    var skb = e.target.closest('[data-skdd]');
+    if(skb){
+      var skp = skb.parentNode ? skb.parentNode.querySelector('.skddpanel') : null;
+      if(skp){ skp.hidden = !skp.hidden; skb.setAttribute('aria-expanded', String(!skp.hidden)); skb.classList.toggle('open', !skp.hidden); }
+      return;
+    }
+    var sko = e.target.closest('.skopt');
+    if(sko){
+      var skEdit = sko.closest('.skedit'), skCont = skEdit ? $('.tchips', skEdit) : null;
+      if(skCont){
+        var cat = sko.getAttribute('data-cat'), ex = null;
+        $$('.tchip', skCont).forEach(function(c){ if(c.getAttribute('data-tv') === cat) ex = c; });
+        if(ex) ex.remove();
+        else {
+          var sktmp = document.createElement('div');
+          sktmp.innerHTML = tagChip(cat, true, true);
+          skCont.appendChild(sktmp.firstChild);
+        }
+        setField(skCont.getAttribute('data-pk'), readTags(skCont));
+        syncSkillOpts(skEdit);
+      }
+      return;
+    }
     var tc = e.target.closest('.tchip');
     if(tc){
-      var cont = tc.closest('.tchips');
+      var cont = tc.closest('.tchips'), tcEdit = tc.closest('.skedit');
       if(cont.getAttribute('data-mode') === 'pick') tc.classList.toggle('on');
       else tc.remove();
       setField(cont.getAttribute('data-pk'), readTags(cont));
+      if(tcEdit) syncSkillOpts(tcEdit);
     }
   });
   rb.addEventListener('keydown', function(e){
+    if(e.target.classList && e.target.classList.contains('skadd') && e.key === 'Enter'){
+      e.preventDefault();
+      var sv = e.target.value.trim(); if(!sv) return;
+      var sEdit = e.target.closest('.skedit'), sCont = sEdit ? $('.tchips', sEdit) : null;
+      if(!sCont) return;
+      var sDup = false;
+      $$('.tchip', sCont).forEach(function(c){ if(c.getAttribute('data-tv').toLowerCase() === sv.toLowerCase()) sDup = true; });
+      if(!sDup){
+        var stmp = document.createElement('div');
+        stmp.innerHTML = tagChip(sv, true, true);
+        sCont.appendChild(stmp.firstChild);
+      }
+      e.target.value = '';
+      setField(sCont.getAttribute('data-pk'), readTags(sCont));
+      syncSkillOpts(sEdit);
+      return;
+    }
     if(e.target.classList && e.target.classList.contains('tadd') && e.key === 'Enter'){
       e.preventDefault();
       var v = e.target.value.trim(); if(!v) return;
@@ -3732,6 +3773,12 @@ function bind(){
   });
   rb.addEventListener('change', function(e){
     var t = e.target;
+    if(t.hasAttribute && t.hasAttribute('data-akatgl')){
+      /* AKA toggle: visibility only — never patches or clears the stored value. */
+      var arow = t.closest('.akarow'), ainp = arow ? arow.querySelector('.akainput') : null;
+      if(ainp){ ainp.hidden = !t.checked; if(t.checked) ainp.focus(); }
+      return;
+    }
     if(t.classList && t.classList.contains('cp-tp')){
       var row = t.closest('.cprow'), mt = row ? $('.cp-t', row) : null;
       if(mt) mt.disabled = t.checked;
