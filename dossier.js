@@ -1009,6 +1009,25 @@ function famSearch(q){
   list.innerHTML = hits.length ? hits.map(function(h){ return '<div class="naddhit" data-fi="' + h.i + '">' + esc(h.label) + '</div>'; }).join('')
     : '<div class="naddhit none">No matches</div>';
 }
+/* Family links are two-way IN STORAGE, not just in display (JD 2026-10-12):
+   adding a link on one profile writes the inverse link onto the other
+   profile's own family field through the same queuePatch path (the way
+   Known associates dual-write); removing one side removes the inverse. */
+var FAM_INV_REL = { parent:'child', child:'parent', spouse:'spouse', sibling:'sibling' };
+function famDualWrite(di, rel, tdi, adding){
+  var e = D.directory[di], t = D.directory[tdi];
+  if(!e || !t || di === tdi) return;
+  var inv = FAM_INV_REL[rel]; if(!inv) return;
+  var back = (e.name || '').toLowerCase();
+  var tl = famLinks(t), before = tl.length;
+  if(adding){
+    if(!tl.some(function(l){ return l[0] === inv && String(l[1] || '').toLowerCase() === back; }))
+      tl.push([inv, e.name || '']);
+  } else {
+    tl = tl.filter(function(l){ return !(l[0] === inv && String(l[1] || '').toLowerCase() === back); });
+  }
+  if(tl.length !== before) queuePatch(tdi, { family: JSON.stringify(tl) });
+}
 function addFam(e, idx){
   var t = D.directory[idx]; if(!e || !t) return;
   var rel = ($('#famrel') || {}).value || 'parent';
@@ -1016,12 +1035,18 @@ function addFam(e, idx){
   if(!links.some(function(l){ return String(l[1] || '').toLowerCase() === kl && l[0] === rel; }))
     links.push([rel, t.name || '']);
   queuePatch(S.sel, { family: JSON.stringify(links) });
+  famDualWrite(S.sel, rel, idx, true);
   renderPanel(true); toast(dispName(t) + ' added as ' + rel + '.');
 }
 function removeFam(e, i){
   if(!e) return;
-  var links = famLinks(e); links.splice(i, 1);
+  var links = famLinks(e), gone = links[i];
+  links.splice(i, 1);
   queuePatch(S.sel, { family: JSON.stringify(links) });
+  if(gone){
+    var tdi = BYN[String(gone[1] || '').toLowerCase()];
+    if(tdi != null) famDualWrite(S.sel, gone[0], tdi, false);
+  }
   renderPanel(true);
 }
 
@@ -2636,13 +2661,19 @@ function dashFamAdd(di, tdi){
   if(!links.some(function(l){ return String(l[1] || '').toLowerCase() === kl && l[0] === rel; }))
     links.push([rel, t.name || '']);
   queuePatch(di, { family: JSON.stringify(links) });
+  famDualWrite(di, rel, tdi, true);
   renderDashFamily();
   toast(dispName(t) + ' added as ' + rel + ' of ' + dispName(e) + '.');
 }
 function dashFamRemove(di, i){
   var e = D.directory[di]; if(!e) return;
-  var links = famLinks(e); links.splice(i, 1);
+  var links = famLinks(e), gone = links[i];
+  links.splice(i, 1);
   queuePatch(di, { family: JSON.stringify(links) });
+  if(gone){
+    var tdi = BYN[String(gone[1] || '').toLowerCase()];
+    if(tdi != null) famDualWrite(di, gone[0], tdi, false);
+  }
   renderDashFamily();
 }
 /* ---------- quick mobile audit: one person at a time, rapid taps ---------- */
