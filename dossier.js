@@ -5385,6 +5385,12 @@ function onKey(e){
   if(e.altKey && e.key === 'ArrowLeft'){ e.preventDefault(); goBack(); return; }
   if(e.altKey && e.key === 'ArrowRight'){ e.preventDefault(); goForward(); return; }
   if(typing() || e.metaKey || e.ctrlKey || e.altKey) return;
+  /* Arrow keys belong to the focused control when focus sits inside the
+     profile panel or another custom widget (editor buttons, the skills
+     accordion, menus) — the global step-through only applies when focus
+     is on the canvas/body/list, never mid-edit. */
+  if((e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') &&
+     e.target && e.target.closest && e.target.closest('#rightbody, #sortdd, .menu, .skflow')) return;
   if(QA.open){
     if(e.key === 'ArrowLeft'){ qaGo(-1); return; }
     if(e.key === 'ArrowRight'){ qaGo(1); return; }
