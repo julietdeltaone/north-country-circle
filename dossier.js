@@ -1080,6 +1080,42 @@ function famAssocSync(di, tdi){
       (o.neighbors = o.neighbors || []).push({ u:x.name || '', d:dispName(x) });
   });
 }
+/* Sibling parent inference (JD 2026-10-12): adding a PARENT to a person
+   adds the same parent to all of that person's siblings — siblings are
+   explicit sibling links plus everyone sharing an existing parent. Each
+   affected sibling is written through the same queuePatch family path,
+   with the usual dual-write onto the parent and the family-associate
+   mirror. Adds only: removals stay per-person. Idempotent — a sibling
+   who already has the parent is skipped. Returns how many siblings
+   were updated. */
+function famSiblingsOf(di){
+  var disp = famDisplay(), out = {}, s = disp[di];
+  if(!s) return [];
+  s.siblings.forEach(function(x){ out[x.di] = 1; });
+  s.parents.forEach(function(p){
+    Object.keys(disp).forEach(function(k){
+      if(+k !== di && disp[k].parents.some(function(pp){ return pp.di === p.di; })) out[k] = 1;
+    });
+  });
+  delete out[di];
+  return Object.keys(out).map(Number);
+}
+function famAddParentToSiblings(di, tdi){
+  var t = D.directory[tdi]; if(!t) return 0;
+  var kl = (t.name || '').toLowerCase(), n = 0;
+  famSiblingsOf(di).forEach(function(sib){
+    if(sib === tdi) return;
+    var se = D.directory[sib]; if(!se) return;
+    var links = famLinks(se);
+    if(links.some(function(l){ return l[0] === 'parent' && String(l[1] || '').toLowerCase() === kl; })) return;
+    links.push(['parent', t.name || '']);
+    queuePatch(sib, { family: JSON.stringify(links) });
+    famDualWrite(sib, 'parent', tdi, true);
+    famAssocSync(sib, tdi);
+    n++;
+  });
+  return n;
+}
 function addFam(e, idx){
   var t = D.directory[idx]; if(!e || !t) return;
   var rel = ($('#famrel') || {}).value || 'parent';
@@ -1089,7 +1125,9 @@ function addFam(e, idx){
   queuePatch(S.sel, { family: JSON.stringify(links) });
   famDualWrite(S.sel, rel, idx, true);
   famAssocSync(S.sel, idx);
-  renderPanel(true); toast(dispName(t) + ' added as ' + rel + '.');
+  var sibN = rel === 'parent' ? famAddParentToSiblings(S.sel, idx) : 0;
+  renderPanel(true);
+  toast(dispName(t) + ' added as ' + rel + (sibN ? ' — also added to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') + '.' : '.'));
 }
 function removeFam(e, i){
   if(!e) return;
@@ -2885,8 +2923,9 @@ function dashFamAdd(di, tdi){
   queuePatch(di, { family: JSON.stringify(links) });
   famDualWrite(di, rel, tdi, true);
   famAssocSync(di, tdi);
+  var sibN = rel === 'parent' ? famAddParentToSiblings(di, tdi) : 0;
   renderDashFamily();
-  toast(dispName(t) + ' added as ' + rel + ' of ' + dispName(e) + '.');
+  toast(dispName(t) + ' added as ' + rel + ' of ' + dispName(e) + (sibN ? ' — also added to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') + '.' : '.'));
 }
 function dashFamRemove(di, i){
   var e = D.directory[di]; if(!e) return;
