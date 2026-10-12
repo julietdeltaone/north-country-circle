@@ -34,7 +34,7 @@
   <button id="auditpill" class="apill" title="Audit progress. Click to show only people who still need an audit.">
     <span class="apbar"><i id="apfill"></i></span><span id="aptxt"></span>
   </button>
-  <a href="orgs.html" class="ibtn" title="Organizations dashboard" aria-label="Organizations" style="text-decoration:none"><i data-ic="briefcase" data-s="18"></i></a>
+  <button id="orgsbtn" class="ibtn" title="Organizations — in the dashboard" aria-label="Organizations"><i data-ic="briefcase" data-s="18"></i></button>
   <button id="qaopen2" class="ibtn" title="Quick audit" aria-label="Quick audit"><i data-ic="zap" data-s="18"></i></button>
   <button id="settingsbtn" class="ibtn" title="Settings and shortcuts" aria-label="Settings"><i data-ic="settings" data-s="18"></i></button>
 </header>
@@ -111,18 +111,26 @@
   <div id="rightbody"></div>
 </aside>
 
-<!-- ============ audit dashboard ============ -->
+<!-- ============ dashboard (audit / quick audit / organizations / groups / family) ============ -->
 <div id="auditscreen" hidden>
   <div class="au-head glass">
     <button id="auditback" class="ibtn" title="Back to dossier (Esc)" aria-label="Back"><i data-ic="back" data-s="18"></i></button>
-    <div class="au-title"><h2>Audit dashboard</h2><small id="aushown"></small></div>
+    <div class="au-title"><h2>Dashboard</h2><small id="aushown"></small></div>
     <div class="au-undogroup">
       <button id="auundo" class="ibtn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><i data-ic="undo" data-s="16"></i></button>
       <button id="auredo" class="ibtn" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled><i data-ic="redo" data-s="16"></i></button>
       <button id="qaopen" class="ibtn" title="Quick audit — rapid one-by-one review" aria-label="Quick audit"><i data-ic="zap" data-s="16"></i></button>
     </div>
-    <label class="tsearch" role="search"><i data-ic="search" data-s="16"></i><input id="auq" type="search" placeholder="Search people…" autocomplete="off" aria-label="Search people"></label>
+    <label class="tsearch" id="auqwrap" role="search"><i data-ic="search" data-s="16"></i><input id="auq" type="search" placeholder="Search people…" autocomplete="off" aria-label="Search people"></label>
   </div>
+  <nav class="dashnav" id="dashnav" aria-label="Dashboard sections">
+    <button type="button" data-dashsec="audit" class="on">Audit</button>
+    <button type="button" data-dashsec="quick">Quick Audit</button>
+    <button type="button" data-dashsec="orgs">Organizations</button>
+    <button type="button" data-dashsec="groups">Groups</button>
+    <button type="button" data-dashsec="family">Family</button>
+  </nav>
+  <div id="dashsec-audit">
   <div class="au-stats" id="austats"></div>
   <div class="au-tools">
     <div id="aufilters" class="seg" role="group" aria-label="Filter">
@@ -148,6 +156,10 @@
   </div>
   <div id="aubody"></div>
   <div id="aubulk" class="au-bulk" hidden></div>
+  </div>
+  <div id="dashsec-orgs" class="dashsec" hidden></div>
+  <div id="dashsec-groups" class="dashsec" hidden></div>
+  <div id="dashsec-family" class="dashsec" hidden></div>
 </div>
 
 <!-- ============ quick mobile audit ============ -->
