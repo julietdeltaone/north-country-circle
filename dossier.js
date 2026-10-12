@@ -237,8 +237,12 @@ var ORG_CATS = [
   {k:'companies', label:'Companies', options:['Rochester Regional Health','Clarkson University','Park Bros.']}
 ];
 /* Canonical skills vocabulary, ranked by frequency across profiles (2026-10-12 harvest).
-   The Skills editor offers these as tap-to-toggle chips, most-used first, plus free add. */
+   These remain valid profile values; the editor no longer offers them as chips —
+   see SKILL_CATS and skillsEditHTML (broad-category dropdown + free-text add). */
 var SKILLS_VOCAB = ['Photography','Travel','Registered Nurse','Music','Skiing','Bass','Golf','Airlines','Airplanes','Drones','Mental Health','Admissions','Technology','Farmer','Ultimate Frisbee','Electrical Engineering','Taxi Driver','Construction','Mathematics','Teaching','Clarinet','Piano','Guitar','Content Creation','Running','Healthcare','Horseback Riding','Administration','Film','Video','Singing','Carpentry','Coloring','IT','Social Work','Hiking','Corrections','Security'];
+/* Broad skill categories for the Skills editor dropdown: broad only. Specific skills
+   (Taxi Driver, Clarinet, Piano, ...) are added through the free-text field instead. */
+var SKILL_CATS = ['Healthcare','Customer Service','Education','Technology','Construction','Creative Media','Business','Food Service','Transportation','Agriculture','Public Safety','Social Services','Administration','Sales','Outdoors'];
 var F = {
   display_name:{ l:'Name', t:'text' },
   also_known_as:{ l:'Also known as', t:'text' },
@@ -1072,6 +1076,38 @@ function tagChip(v, on, rm){
   return '<span class="tchip' + (on ? ' on' : '') + (rm ? ' rm' : '') + '" data-tv="' + esc(v) + '">' + esc(v) + (rm ? '<b>×</b>' : '') + '</span>';
 }
 function orgCat(k){ return ORG_CATS.filter(function(c){ return c.k === k; })[0]; }
+/* Also known as sits behind a toggle in the Identity section, OFF by default; it
+   starts ON only when the profile already has an AKA value. The toggle is a pure
+   visibility control: it never writes or deletes the stored value. The value
+   changes only by typing in the field (patched on input like any text field);
+   clearing it means emptying the field while the toggle is on. */
+function akaRow(e){
+  var v = gv(e, 'also_known_as'), on = !!String(v || '').trim();
+  return '<div class="irow akarow"><label class="indtogg akatogg" title="Show the also-known-as field">' +
+    '<input type="checkbox" data-akatgl' + (on ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Also known as</em></label>' +
+    '<input class="akainput" data-pk="also_known_as" value="' + esc(v) + '" placeholder="Nickname or alias" autocomplete="off"' + (on ? '' : ' hidden') + '></div>';
+}
+/* Skills editor: free-text add at the top, the selected skills as removable chips,
+   and a dropdown (collapsed by default) of BROAD categories only. */
+function skillsEditHTML(e){
+  var f = fieldDef('specialty'), sep = f.sep || ', ';
+  var cur = splitTags(gv(e, 'specialty'), sep);
+  var chips = cur.map(function(x){ return tagChip(x, true, true); }).join('');
+  var opts = SKILL_CATS.map(function(c){
+    return '<button type="button" class="skopt' + (cur.indexOf(c) >= 0 ? ' on' : '') + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
+  }).join('');
+  return '<div class="trow">' + labHTML(f) + '<div class="skedit">' +
+    '<input class="skadd" placeholder="+ add a specific skill" aria-label="Add a specific skill" autocomplete="off">' +
+    '<div class="tchips" data-pk="specialty" data-mode="tags" data-sep="' + esc(sep) + '">' + chips + '</div>' +
+    '<div class="skdd"><button type="button" class="skddbtn" data-skdd="1" aria-expanded="false">Broad categories ' + ic('chev', 13) + '</button>' +
+    '<div class="skddpanel" hidden>' + opts + '</div></div>' +
+    '</div></div>';
+}
+function syncSkillOpts(edit){
+  var cont = $('.tchips', edit); if(!cont) return;
+  var sel = $$('.tchip', cont).map(function(c){ return c.getAttribute('data-tv'); });
+  $$('.skopt', edit).forEach(function(o){ o.classList.toggle('on', sel.indexOf(o.getAttribute('data-cat')) >= 0); });
+}
 function rateRow(k, e){
   var f = fieldDef(k), v = gv(e, k);
   var h = '<div class="rrow"><span class="rlab">' + esc(f.l) + '</span><div class="dots" data-pk="' + k + '" data-v="' + esc(v) + '">';
@@ -1094,6 +1130,7 @@ function fieldRow(k, e){
     var ai = f.ai ? '<button class="mini neutral aibtn" data-act="tidy" data-k="' + k + '">' + ic('sparkle', 13) + 'Tidy with AI</button><span class="aimsg" id="aimsg-' + k + '"></span>' : '';
     return '<div class="lrow"><div class="lhead">' + labHTML(f) + ai + '</div><textarea data-pk="' + k + '" rows="' + (f.r || 4) + '" placeholder="' + esc(f.ph || '') + '">' + esc(v) + '</textarea></div>';
   }
+  if(k === 'specialty') return skillsEditHTML(e);
   if(f.t === 'tags' || f.t === 'pick'){
     var sep = f.sep || ', ', cur = splitTags(v, sep), chips;
     if(f.t === 'pick'){
@@ -1104,7 +1141,9 @@ function fieldRow(k, e){
     return '<div class="trow">' + labHTML(f) + '<div class="tchips" data-pk="' + k + '" data-mode="' + (f.t === 'pick' ? 'pick' : 'tags') + '" data-sep="' + esc(sep) + '">' +
       chips.join('') + '<input class="tadd" placeholder="' + esc(f.ph || '+ add') + '" aria-label="Add ' + esc(f.l) + '"></div></div>';
   }
-  return '<div class="irow">' + labHTML(f) + '<input data-pk="' + k + '" value="' + esc(v) + '" placeholder="—" autocomplete="off"></div>';
+  /* Email stays disabled unless the profile already has one on file. */
+  return '<div class="irow">' + labHTML(f) + '<input data-pk="' + k + '" value="' + esc(v) + '" placeholder="—" autocomplete="off"' +
+    (k === 'email' && !String(v || '').trim() ? ' disabled' : '') + '></div>';
 }
 function secFill(s, e){
   var n;
@@ -1394,6 +1433,11 @@ function goForward(){
 }
 function goHome(){
   closePanel();
+  /* Home also clears the search box and every active filter, back to the default people view. */
+  S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.enrichedOnly = false;
+  S.sort = 'strength'; S.lvlF = 0; S.q = ''; S.rail = 'people'; S.limit = 200;
+  var fqEl = $('#fq'); if(fqEl) fqEl.value = '';
+  refresh();
   if(S.mode === '3d' && typeof glReset === 'function') glReset();
   else if(typeof hubFit === 'function') hubFit();
   syncNavBtns();
