@@ -2671,7 +2671,10 @@ function famEditorHTML(di){
 function famTitle(comp){
   var lastNames = {};
   comp.forEach(function(di){ var ln = (dispName(D.directory[di]).split(' ').pop() || '').trim(); if(ln) lastNames[ln] = (lastNames[ln] || 0) + 1; });
-  return Object.keys(lastNames).sort(function(a, b){ return lastNames[b] - lastNames[a]; })[0] || 'Family';
+  var names = Object.keys(lastNames).sort(function(a, b){ return lastNames[b] - lastNames[a] || (a < b ? -1 : 1); });
+  if(!names.length) return 'Family';
+  if(names.length === 1) return names[0] + ' family';
+  return names.slice(0, 3).join(' · ') + (names.length > 3 ? ' +' + (names.length - 3) : '') + ' families';
 }
 /* Families render COLLAPSED by default (JD 2026-10-12): the section is a
    compact list of family cards — name, headcount, generations, eldest
@@ -2695,7 +2698,7 @@ function renderDashFamily(){
     var model = models[ci], ti = topInfo(model);
     var meta = comp.length + (comp.length === 1 ? ' person' : ' people') + ' · ' + (model.maxGen + 1) + (model.maxGen === 0 ? ' generation' : ' generations') +
       ' · Eldest: ' + ti.names.join(' & ') + (ti.extra > 0 ? ' +' + ti.extra : '');
-    return '<div class="dfam dfamcard"><div class="dfamcardmain"><h4 class="dfamtitle">' + esc(famTitle(comp)) + ' family</h4>' +
+    return '<div class="dfam dfamcard"><div class="dfamcardmain"><h4 class="dfamtitle">' + esc(famTitle(comp)) + '</h4>' +
       '<div class="dfammeta">' + esc(meta) + '</div></div>' +
       '<button type="button" class="mini neutral dfamexpand" data-dfexpand="' + ti.repDi + '">Expand tree</button></div>';
   }).join('');
@@ -2709,7 +2712,7 @@ function renderDashFamily(){
     if(omodel.hasSpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
     var oedit = DFAM.editing != null && ocomp.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
     h += '<div class="dfamfs"><div class="dfamfssheet">' +
-      '<div class="dfamfsbar"><b>' + esc(famTitle(ocomp)) + ' family</b><div class="dfamlegend">' + leg.join('') + '</div>' +
+      '<div class="dfamfsbar"><b>' + esc(famTitle(ocomp)) + '</b><div class="dfamlegend">' + leg.join('') + '</div>' +
       '<button type="button" class="mini neutral" data-dfclose="1">Close</button></div>' +
       '<div class="dfamfsscroll">' + famTreeHTML(omodel) + oedit + '</div>' +
       '</div></div>';
@@ -4461,6 +4464,19 @@ function bind(){
   document.addEventListener('keydown', function(ev){
     if(ev.key === 'Escape' && DFAM.openDi != null && !famEl.hidden){ DFAM.openDi = null; DFAM.editing = null; renderDashFamily(); }
   });
+  var fspan = null;
+  famEl.addEventListener('pointerdown', function(ev){
+    var sc = ev.target.closest ? ev.target.closest('.dfamfsscroll') : null;
+    if(!sc || (ev.target.closest && ev.target.closest('button, input, select, textarea, a, .dfamedit'))) return;
+    fspan = { el: sc, x: ev.clientX, y: ev.clientY, sl: sc.scrollLeft, st: sc.scrollTop, moved: false };
+  });
+  document.addEventListener('pointermove', function(ev){
+    if(!fspan) return;
+    var dx = ev.clientX - fspan.x, dy = ev.clientY - fspan.y;
+    if(Math.abs(dx) + Math.abs(dy) > 4) fspan.moved = true;
+    if(fspan.moved){ fspan.el.scrollLeft = fspan.sl - dx; fspan.el.scrollTop = fspan.st - dy; }
+  });
+  document.addEventListener('pointerup', function(){ fspan = null; });
   $('#qaback').addEventListener('click', closeQuick);
   $('#qaundo').addEventListener('click', doUndo);
   $('#qaredo').addEventListener('click', doRedo);
