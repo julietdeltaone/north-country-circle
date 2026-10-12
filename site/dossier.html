@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06080d">
+<title>Dossier — North Country Circle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dossier.css?v=8005fa8fd4">
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+<div id="vig" aria-hidden="true"></div>
+
+<!-- ============ top bar ============ -->
+<header id="topbar" class="glass">
+  <button id="listtoggle" class="ibtn on" title="Show or hide the directory (B)" aria-label="Toggle directory" aria-pressed="true"><i data-ic="menu" data-s="18"></i></button>
+  <div class="navbtns">
+    <button id="navhome" class="ibtn" title="Home — clear selection and reset the map (H)" aria-label="Home"><i data-ic="home" data-s="18"></i></button>
+    <button id="navback" class="ibtn" title="Back (Alt+Left)" aria-label="Back"><i data-ic="chevl" data-s="18"></i></button>
+    <button id="navfwd" class="ibtn" title="Forward (Alt+Right)" aria-label="Forward"><i data-ic="chevr" data-s="18"></i></button>
+  </div>
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"><i data-ic="orbit" data-s="22"></i></span>
+    <div class="brand-text"><h1>North Country Circle</h1><small id="fresh">Dossier</small></div>
+  </div>
+  <label class="tsearch" role="search">
+    <i data-ic="search" data-s="16"></i>
+    <input id="fq" type="search" placeholder="Search people…" autocomplete="off" aria-label="Search people">
+    <kbd aria-hidden="true">/</kbd>
+  </label>
+  <button id="auditpill" class="apill" title="Audit progress. Click to show only people who still need an audit.">
+    <span class="apbar"><i id="apfill"></i></span><span id="aptxt"></span>
+  </button>
+  <a href="orgs.html" class="ibtn" title="Organizations dashboard" aria-label="Organizations" style="text-decoration:none"><i data-ic="briefcase" data-s="18"></i></a>
+  <button id="qaopen2" class="ibtn" title="Quick audit" aria-label="Quick audit"><i data-ic="zap" data-s="18"></i></button>
+  <button id="settingsbtn" class="ibtn" title="Settings and shortcuts" aria-label="Settings"><i data-ic="settings" data-s="18"></i></button>
+</header>
+
+<!-- ============ left rail ============ -->
+<aside id="left" class="glass panel" aria-label="Directory">
+  <div class="rail-top">
+    <div id="railtabs" class="seg" role="tablist" aria-label="Directory view">
+      <button data-r="people" class="on" role="tab"><i data-ic="users" data-s="15"></i><span>People</span></button>
+      <button data-r="events" role="tab" style="--c:var(--l2)"><i data-ic="calendar" data-s="15"></i><span>Events</span></button>
+      <button data-r="files" role="tab" style="--c:var(--l3)"><i data-ic="folder" data-s="15"></i><span>Files</span></button>
+    </div>
+    <div class="rail-tools" id="railtools">
+      <div id="lvlchips" class="lvlchips" role="group" aria-label="Filter by depth"></div>
+      <div class="filterwrap">
+        <button id="filterbtn" class="ibtn" title="More filters and sorting" aria-label="More filters" aria-expanded="false"><i data-ic="filter" data-s="16"></i><span id="filtercount" class="badge" hidden></span></button>
+        <div id="filterpop" class="pop" hidden>
+          <label class="fl">Relation
+            <select id="frel">
+              <option value="">Everyone</option>
+              <option value="mutual">Mutual</option>
+              <option value="following">Following</option>
+              <option value="follower">Follower</option>
+            </select>
+          </label>
+          <label class="fl">Sort by
+            <select id="fsort">
+              <option value="strength">Closest first</option>
+              <option value="name">A to Z</option>
+              <option value="audit">Needs audit first</option>
+            </select>
+          </label>
+          <label class="chk"><input type="checkbox" id="fauditonly"> Only people who need an audit</label>
+          <label class="chk"><input type="checkbox" id="fenrichedonly"> Only enriched from online sources</label>
+          <button id="fclear" class="mini">Clear all filters</button>
+        </div>
+      </div>
+    </div>
+    <div id="activeflt" class="activeflt"></div>
+  </div>
+  <div id="lcount"></div>
+  <div id="leftbody"></div>
+</aside>
+
+<!-- ============ stage ============ -->
+<main id="stage" aria-label="Connection map">
+  <canvas id="hub"></canvas>
+  <div id="gl3d" hidden></div>
+  <div id="stagebar">
+    <div class="sgroup">
+      <div id="modeToggle" class="seg sm" role="group" aria-label="View mode">
+        <button data-m="2d" aria-label="2D view">2D</button><button data-m="3d" class="on" aria-label="3D view">3D</button>
+      </div>
+      <div id="colorToggle" class="seg sm" role="group" aria-label="Color dots by">
+        <button data-c="tier" class="on" title="Color by tier: Vetted, Associate, Open">Tier</button><button data-c="rel" title="Color by relation">Relation</button>
+      </div>
+      <button id="bgtoggle" class="chipbtn" title="Show everyone in the wider circle as faint background dots" aria-pressed="false">Full circle</button>
+    </div>
+    <div class="sgroup">
+      <button id="zin" class="ibtn" title="Zoom in" aria-label="Zoom in"><i data-ic="zin" data-s="16"></i></button>
+      <button id="zout" class="ibtn" title="Zoom out" aria-label="Zoom out"><i data-ic="zout" data-s="16"></i></button>
+      <button id="zreset" class="ibtn" title="Reset view" aria-label="Reset view"><i data-ic="reset" data-s="16"></i></button>
+    </div>
+  </div>
+  <div id="stagebottom">
+    <div id="legend" class="legend"></div>
+    <div id="stagehint" class="hint"></div>
+  </div>
+  <div id="tip" hidden></div>
+</main>
+
+<!-- ============ dossier panel ============ -->
+<aside id="right" class="glass panel" aria-label="Dossier">
+  <div id="rightbody"></div>
+</aside>
+
+<!-- ============ audit dashboard ============ -->
+<div id="auditscreen" hidden>
+  <div class="au-head glass">
+    <button id="auditback" class="ibtn" title="Back to dossier (Esc)" aria-label="Back"><i data-ic="back" data-s="18"></i></button>
+    <div class="au-title"><h2>Audit dashboard</h2><small id="aushown"></small></div>
+    <div class="au-undogroup">
+      <button id="auundo" class="ibtn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><i data-ic="undo" data-s="16"></i></button>
+      <button id="auredo" class="ibtn" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled><i data-ic="redo" data-s="16"></i></button>
+      <button id="qaopen" class="ibtn" title="Quick audit — rapid one-by-one review" aria-label="Quick audit"><i data-ic="zap" data-s="16"></i></button>
+    </div>
+    <label class="tsearch" role="search"><i data-ic="search" data-s="16"></i><input id="auq" type="search" placeholder="Search people…" autocomplete="off" aria-label="Search people"></label>
+  </div>
+  <div class="au-stats" id="austats"></div>
+  <div class="au-tools">
+    <div id="aufilters" class="seg" role="group" aria-label="Filter">
+      <button data-f="needs" class="on">Needs attention</button>
+      <button data-f="audit">Needs audit</button>
+      <button data-f="ratings">Needs ratings</button>
+      <button data-f="background">Needs background</button>
+      <button data-f="connection">Needs connection</button>
+      <button data-f="business">Businesses</button>
+      <button data-f="name">Name review</button>
+      <button data-f="close">Likely close</button>
+      <button data-f="dup">Duplicates</button>
+      <button data-f="pmerge">Photo matches</button>
+      <button data-f="all">Everyone</button>
+    </div>
+    <button id="auselall" class="mini neutral">Select all</button>
+    <select id="ausort" aria-label="Sort">
+      <option value="missing">Least complete first</option>
+      <option value="close">Closest first</option>
+      <option value="complete">Most complete first</option>
+      <option value="name">A to Z</option>
+    </select>
+  </div>
+  <div id="aubody"></div>
+  <div id="aubulk" class="au-bulk" hidden></div>
+</div>
+
+<!-- ============ quick mobile audit ============ -->
+<div id="quickscreen" hidden>
+  <div class="qa-head glass">
+    <button id="qaback" class="ibtn" title="Back (Esc)" aria-label="Back"><i data-ic="back" data-s="18"></i></button>
+    <div class="qa-title"><h2>Quick audit</h2><small id="qacount"></small></div>
+    <select id="qasort" aria-label="Sort order">
+      <option value="missing">Least complete</option>
+      <option value="name">A–Z</option>
+      <option value="close">Closest first</option>
+      <option value="shuffle">Shuffle</option>
+    </select>
+    <button id="qaundo" class="ibtn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><i data-ic="undo" data-s="16"></i></button>
+    <button id="qaredo" class="ibtn" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled><i data-ic="redo" data-s="16"></i></button>
+  </div>
+  <div class="qa-filters" id="qafilters"></div>
+  <div id="qabody"></div>
+  <div class="qa-nav">
+    <button id="qaprev" class="qanav" aria-label="Previous person"><i data-ic="chevl" data-s="20"></i><span>Back</span></button>
+    <button id="qanext" class="qanav" aria-label="Next person"><span>Next</span><i data-ic="chevr" data-s="20"></i></button>
+  </div>
+</div>
+
+<script src="dossier.js?v=f8c1d10410"></script>
+</body>
+</html>
