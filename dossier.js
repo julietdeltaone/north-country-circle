@@ -294,7 +294,7 @@ var SECTIONS = [
   { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','churches','companies','highlights','public_footprint'] },
   { id:'onfile',      title:'On file',      ic:'quote',     lv:1, fields:['synopsis'] },
   { id:'education',   title:'Education',    ic:'cap',       lv:1, fields:[] },
-  { id:'connections', title:'Connections',  ic:'share',     lv:2, fields:[] },
+  { id:'connections', title:'Known associates',  ic:'share',     lv:2, fields:[] },
   { id:'timeline',    title:'Timeline',     ic:'calendar',  lv:2, fields:[] },
   { id:'files',       title:'Files',        ic:'folder',    lv:3, fields:[] },
   { id:'admin',       title:'Admin',        ic:'shield',    lv:0, fields:['review_flag','relationship_type','sources','mentions'] }
@@ -1836,27 +1836,36 @@ function renderNadd(q){
   list.innerHTML = hits.length ? hits.slice(0, 6).map(function(h){ return '<div class="naddhit" data-ai="' + h.i + '">' + esc(h.label) + '</div>'; }).join('')
     : '<div class="naddhit none">No matches</div>';
 }
+/* Known associates are two-way: adding or removing one writes the
+   reciprocal close_add/close_hide onto the other profile through the same
+   patch path, and both neighbor lists update locally on the spot. */
+function assocSidePatch(ownerIdx, otherName, add){
+  var o = D.directory[ownerIdx]; if(!o) return;
+  var key = otherName || '', kl = key.toLowerCase(); if(!kl) return;
+  var adds = tagList(gv(o, 'close_add')), hides = tagList(gv(o, 'close_hide'));
+  var low = function(x){ return x.toLowerCase(); };
+  if(add){
+    if(adds.map(low).indexOf(kl) < 0) adds.push(key);
+    hides = hides.filter(function(x){ return x.toLowerCase() !== kl; });
+  } else {
+    if(adds.map(low).indexOf(kl) >= 0) adds = adds.filter(function(x){ return x.toLowerCase() !== kl; });
+    else if(hides.map(low).indexOf(kl) < 0) hides.push(key);
+  }
+  queuePatch(ownerIdx, { close_add:adds.join(', '), close_hide:hides.join(', ') });
+  syncNeighborsFromClose(o);
+}
 function addClose(e, idx){
   var t = D.directory[idx];
   if(!e || !t) return;
-  var key = t.name || '', kl = key.toLowerCase();
-  var adds = tagList(gv(e, 'close_add'));
-  if(adds.map(function(x){ return x.toLowerCase(); }).indexOf(kl) < 0) adds.push(key);
-  var hides = tagList(gv(e, 'close_hide')).filter(function(x){ return x.toLowerCase() !== kl; });
-  e.neighbors = e.neighbors || [];
-  if(!e.neighbors.some(function(n){ return (n.u || '').toLowerCase() === kl; })) e.neighbors.push({ u:key, d:dispName(t) });
-  queuePatch(S.sel, { close_add:adds.join(', '), close_hide:hides.join(', ') });
+  assocSidePatch(S.sel, t.name || '', true);
+  if(idx !== S.sel) assocSidePatch(idx, e.name || '', true);
   renderPanel(true);
 }
 function removeClose(e, u){
   if(!e || !u) return;
-  var kl = u.toLowerCase();
-  var adds = tagList(gv(e, 'close_add')), hides = tagList(gv(e, 'close_hide'));
-  if(adds.map(function(x){ return x.toLowerCase(); }).indexOf(kl) >= 0){
-    adds = adds.filter(function(x){ return x.toLowerCase() !== kl; });
-  } else if(hides.map(function(x){ return x.toLowerCase(); }).indexOf(kl) < 0) hides.push(u);
-  e.neighbors = (e.neighbors || []).filter(function(n){ return (n.u || '').toLowerCase() !== kl; });
-  queuePatch(S.sel, { close_add:adds.join(', '), close_hide:hides.join(', ') });
+  assocSidePatch(S.sel, u, false);
+  var tdi = BYN[(u || '').toLowerCase()];
+  if(tdi !== undefined && tdi !== S.sel) assocSidePatch(tdi, e.name || '', false);
   renderPanel(true);
 }
 function mergeBody(e){
@@ -2077,7 +2086,7 @@ function closeAudit(){
   $('#auditscreen').hidden = true;
 }
 /* ---------- quick mobile audit: one person at a time, rapid taps ---------- */
-var QA = { open:false, queue:[], idx:0, total:0, done:0, del:0, q:'audit', sort:'missing', skipRender:false };
+var QA = { open:false, queue:[], idx:0, total:0, done:0, del:0, q:'audit', sort:'missing', skipRender:false, merge:null };
 var QA_FILTERS = [
   { k:'audit',      l:'Needs audit' },
   { k:'ratings',    l:'Needs ratings' },
@@ -2149,6 +2158,7 @@ function qaSetSort(s){
 function openQuick(){
   QA.queue = qaBuildQueue();
   QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.del = 0;
+  QA.merge = null;
   QA.open = true;
   $('#quickscreen').hidden = false;
   $('#qasort').value = QA.sort;
@@ -2270,6 +2280,7 @@ function qaPaintPills(e){
 }
 function qaGo(d){
   if(!QA.queue.length) return;
+  QA.merge = null;
   QA.idx = (QA.idx + d + QA.queue.length) % QA.queue.length;
   renderQuick();
   $('#qabody').scrollTop = 0;
@@ -2307,6 +2318,74 @@ function qaMoreHTML(e){
       return '<button type="button" class="qtseg sm' + (gv(e, 'category') === p[0] ? ' on' : '') + '" data-qk="category" data-qv="' + p[0] + '">' + p[1] + '</button>';
     }).join('') + '</div></div></div>';
   return h;
+}
+function qaMergeHTML(e){
+  if(QA.merge.step === 'confirm' && QA.merge.other != null){
+    var other = D.directory[QA.merge.other];
+    if(other){
+      var surv = QA.merge.survivor === 'current' ? e : other;
+      var loser = surv === e ? other : e;
+      return '<div class="qacard">' +
+        '<h2 class="qmh">Merge profiles</h2>' +
+        '<p class="qmline"><b>' + esc(dispName(loser)) + '</b> merges into <b>' + esc(dispName(surv)) + '</b></p>' +
+        '<p class="qahint">' + esc(dispName(loser)) + ' folds into ' + esc(dispName(surv)) + ': unique info carries over, ' + esc(dispName(loser)) + ' is retired (Merged Into) and leaves the people list. Undo is on the audit toolbar.</p>' +
+        '<button type="button" class="qamswap" data-qmswap="1"><span>Swap \u2014 ' + esc(dispName(loser)) + ' survives instead</span></button>' +
+        '<button type="button" class="qamgo" data-qmgo="1"><span>Merge ' + esc(dispName(loser)) + ' into ' + esc(dispName(surv)) + '</span></button>' +
+        '<button type="button" class="qadel qmback" data-qmback="1"><span>Back</span></button>' +
+      '</div>';
+    }
+    QA.merge.step = 'pick';
+  }
+  return '<div class="qacard">' +
+    '<h2 class="qmh">Merge ' + esc(dispName(e)) + '</h2>' +
+    '<p class="qahint">Pick the second profile. Nothing merges yet \u2014 you confirm on the next screen. The profile you pick survives unless you swap.</p>' +
+    '<input id="qminput" class="qminput" type="text" placeholder="Search people\u2026" autocomplete="off">' +
+    '<div id="qmhits" class="qmhits"></div>' +
+    '<button type="button" class="qadel qmback" data-qmcancel="1"><span>Cancel</span></button>' +
+  '</div>';
+}
+function renderQaMergeHits(q){
+  var box = $('#qmhits'); if(!box) return;
+  q = String(q || '').trim().toLowerCase();
+  var curDi = QA.queue[QA.idx], list = [];
+  for(var i = 0; i < D.directory.length && list.length < 14; i++){
+    if(i === curDi) continue;
+    var en = D.directory[i], pr = en.profile || {};
+    if(pr.deleted === '1' || (pr.merged_into || '').trim()) continue;
+    if(q && (dispName(en) || '').toLowerCase().indexOf(q) < 0 && (en.name || '').toLowerCase().indexOf(q) < 0) continue;
+    list.push(i);
+  }
+  box.innerHTML = list.map(function(i){
+    var en = D.directory[i];
+    return '<button type="button" class="naddhit" data-qmpick="' + i + '"><b>' + esc(dispName(en)) + '</b>' +
+      (en.name && String(en.name).toLowerCase() !== (dispName(en) || '').toLowerCase() ? '<span>' + esc(en.name) + '</span>' : '') + '</button>';
+  }).join('') || '<p class="dim" style="padding:8px 2px">No matches.</p>';
+}
+function qaDoMerge(){
+  var m = QA.merge; if(!m || m.other == null) return;
+  var curDi = QA.queue[QA.idx];
+  var loserDi = m.survivor === 'current' ? m.other : curDi;
+  var survDi = m.survivor === 'current' ? curDi : m.other;
+  var surv = D.directory[survDi], loser = D.directory[loserDi];
+  if(!surv || !loser) return;
+  var target = dupHandle(surv);
+  if(!target){ toast('The survivor has no key to merge into.'); return; }
+  var qi = QA.queue.indexOf(loserDi);
+  var entry = { postKey:'merged_into',
+    items:[{ di:loserDi, prev:((loser.profile || {}).merged_into || ''), next:target }],
+    qaRemove:loserDi, qaRemoveIdx:qi >= 0 ? qi : QA.idx, qaRemoveName:dispName(loser) };
+  pushUndo(entry);
+  if(qi >= 0){
+    QA.queue.splice(qi, 1);
+    QA.done++;
+    if(qi < QA.idx) QA.idx--;
+    if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
+  }
+  QA.merge = null;
+  QA.skipRender = true;
+  applyEntry(entry, false, function(){ toast(dispName(loser) + ' merged into ' + dispName(surv) + '.'); });
+  renderQuickFilters();
+  renderQuick();
 }
 function renderQuick(){
   var body = $('#qabody');
@@ -2346,6 +2425,7 @@ function renderQuick(){
       '</div></div>' +
       qaMoreHTML(e) +
       qaYearHTML(e) +
+      '<button type="button" class="qamrg" data-qmerge="1">' + ic('share', 14) + '<span>Merge with another profile\u2026</span></button>' +
       '<button type="button" class="qadel" data-qdel="1">' + ic('trash', 14) + '<span>Delete — move to trash</span></button>' +
     '</div>';
   body.scrollTop = st;
@@ -2462,6 +2542,11 @@ function renderAudit(){
   D.directory.forEach(function(e, di){
     if((e.profile || {}).deleted === '1') return;
     var st = auditStats(e);
+  if(QA.merge){
+    body.innerHTML = qaMergeHTML(e);
+    if(QA.merge.step === 'pick') renderQaMergeHits($('#qminput') ? $('#qminput').value : '');
+    return;
+  }
     var an = auName(e);
     var cs = null;
     var pass = true;
@@ -3520,6 +3605,13 @@ function bind(){
   });
   $('#qabody').addEventListener('click', function(ev){
     if(ev.target.closest('[data-qdel]')){ qaDelete(); return; }
+    if(ev.target.closest('[data-qmerge]')){ QA.merge = { step:'pick', other:null, survivor:'picked' }; renderQuick(); var qmi = $('#qminput'); if(qmi) qmi.focus(); return; }
+    var qmp = ev.target.closest('[data-qmpick]');
+    if(qmp && QA.merge){ QA.merge.other = parseInt(qmp.getAttribute('data-qmpick'), 10); QA.merge.step = 'confirm'; renderQuick(); return; }
+    if(ev.target.closest('[data-qmswap]') && QA.merge){ QA.merge.survivor = QA.merge.survivor === 'picked' ? 'current' : 'picked'; renderQuick(); return; }
+    if(ev.target.closest('[data-qmgo]')){ qaDoMerge(); return; }
+    if(ev.target.closest('[data-qmback]') && QA.merge){ QA.merge.step = 'pick'; QA.merge.other = null; renderQuick(); return; }
+    if(ev.target.closest('[data-qmcancel]')){ QA.merge = null; renderQuick(); return; }
     var nm = ev.target.closest('[data-qname]');
     if(nm && !nm.querySelector('input')){ qaEditName(nm); return; }
     var d = ev.target.closest('[data-qd]');
@@ -3533,6 +3625,9 @@ function bind(){
     var b = ev.target.closest('[data-qk]');
     if(b){ qaTap(b.getAttribute('data-qk'), b.getAttribute('data-qv'), b); return; }
     if(ev.target.closest('#qaclose2')) closeQuick();
+  });
+  $('#qabody').addEventListener('input', function(ev){
+    if(ev.target.id === 'qminput') renderQaMergeHits(ev.target.value);
   });
   (function(){
     var sx = 0, sy = 0, swI = false, qb = $('#qabody');
