@@ -2003,7 +2003,7 @@ function todayStr(){
 }
 
 /* ---------- audit dashboard ---------- */
-var AUD = { open:false, q:'', f:'needs', sort:'missing', sel:{}, selGroups:{}, rows:[], undoStack:[], redoStack:[] };
+var AUD = { open:false, q:'', f:'needs', sort:'missing', sel:{}, selGroups:{}, rows:[], undoStack:[], redoStack:[], msel:null };
 var BIZ_RE = /\b(llc|inc|corp|co\.|company|church|bakery|grill|cantina|pizza|caf[eé]|studio|salon|barber|tattoo|photo|productions|realty|motors|auto|plumbing|electric|construction|landscap|farm|market|deli|pub|brewery|winery|hotel|motel|insurance|dental|clinic|school|university|college|ntc|cfc|ministr)\b/i;
 var ADDR_RE = /\d+\s+[A-Za-z.]+\s+(st|street|ave|avenue|rd|road|blvd|ln|lane|dr|drive)\b|\bNY\b\s*\d{5}|\b\d{5}\b/;
 function isBusiness(e){
@@ -2252,6 +2252,55 @@ function qaEditName(el){
     else if(ev.key === 'Escape') finish(false);
   });
 }
+/* inline first/last name edit in the full audit list: swaps the row's name text
+   for two inputs in place; Enter moves first->last then saves, blur saves, Esc cancels.
+   Saves first_name/last_name (plus display_name so every label updates at once)
+   through the standard undoable patch flow. */
+function auEditName(span, di){
+  var e = D.directory[di]; if(!e || span.getAttribute('data-editing')) return;
+  span.setAttribute('data-editing', '1');
+  var sFn = gv(e, 'first_name') || '', sLn = gv(e, 'last_name') || '';
+  var dn0 = gv(e, 'display_name') || '';
+  var seedFn = sFn, seedLn = sLn;
+  if(!seedFn && !seedLn){
+    var lab = auName(e).name;
+    if(lab && lab !== 'Unknown' && lab.indexOf('@') < 0){
+      var parts = lab.trim().split(/\s+/);
+      seedFn = parts[0] || ''; seedLn = parts.slice(1).join(' ');
+    }
+  }
+  span.innerHTML = '<span class="aune">' +
+    '<input type="text" class="aunein" data-w="fn" value="' + esc(seedFn) + '" placeholder="First" autocomplete="off" aria-label="First name">' +
+    '<input type="text" class="aunein" data-w="ln" value="' + esc(seedLn) + '" placeholder="Last" autocomplete="off" aria-label="Last name"></span>';
+  var fnI = span.querySelector('[data-w="fn"]'), lnI = span.querySelector('[data-w="ln"]');
+  fnI.focus(); try{ fnI.select(); }catch(x){}
+  var done = false;
+  function finish(save){
+    if(done) return; done = true;
+    var fn = fnI.value.trim(), ln = lnI.value.trim();
+    if(save && (fn || ln) && (fn !== sFn || ln !== sLn)){
+      var entry = { items:[
+        { di:di, key:'first_name', prev:sFn, next:fn },
+        { di:di, key:'last_name', prev:sLn, next:ln },
+        { di:di, key:'display_name', prev:dn0, next:(fn + ' ' + ln).trim() }
+      ] };
+      pushUndo(entry);
+      applyEntry(entry, false);
+      return;
+    }
+    renderAudit();
+  }
+  [fnI, lnI].forEach(function(inp){
+    inp.addEventListener('click', function(ev){ ev.stopPropagation(); });
+    inp.addEventListener('keydown', function(ev){
+      if(ev.key === 'Enter'){ if(inp === fnI){ ev.preventDefault(); lnI.focus(); try{ lnI.select(); }catch(x){} } else finish(true); }
+      else if(ev.key === 'Escape') finish(false);
+    });
+    inp.addEventListener('blur', function(){
+      setTimeout(function(){ if(!span.contains(document.activeElement)) finish(true); }, 0);
+    });
+  });
+}
 /* update the tapped control in place so the card never re-renders mid-flow
    (a full re-render drops the scroll position on iOS) */
 function qaPaint(key, val, el){
@@ -2406,7 +2455,9 @@ function renderQuick(){
   }
   var di = qaCur(), e = D.directory[di];
   var an = auName(e), st = auditStats(e);
-  var ini = (an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
+  var nm = (firstNameOf(e) || lastNameOf(e)) ? dispName(e) : an.name;
+  var ini = (nm.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
+  var qsub = [gv(e, 'relationship'), gv(e, 'context')].filter(Boolean).map(function(s){ return s.charAt(0).toUpperCase() + s.slice(1); }).join(' · ');
   var tier = tierOf(e), mom = momVal(e) || '0', aud = (e.profile || {}).audit === 'audited';
   function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
   $('#qacount').textContent = (QA.done + QA.del + QA.idx + 1) + ' of ' + QA.total;
@@ -2418,8 +2469,9 @@ function renderQuick(){
   body.innerHTML =
     '<div class="qacard">' +
       '<div class="qaid"><span class="qaava" style="--c:' + tierCol(e) + '">' + esc(ini) + '</span>' +
-      '<div class="qamain"><div class="qaname" data-qname="1" title="Tap to edit name">' + esc(an.name) + (an.business ? '<em class="aubiz">Business</em>' : '') + '</div>' +
+      '<div class="qamain"><div class="qaname" data-qname="1" title="Tap to edit name">' + esc(nm) + (an.business ? '<em class="aubiz">Business</em>' : '') + '</div>' +
       (an.handle ? '<div class="qahandle">@' + esc(an.handle.replace(/^@/, '')) + '</div>' : '') +
+      (qsub ? '<div class="qasub">' + esc(qsub) + '</div>' : '') +
       '<div class="qaneeds">' + pill(st.hasR, 'Persona') + pill(st.hasB, 'Background') + pill(st.hasC, 'Connection') + '</div></div></div>' +
       '<div class="qarow"><span class="qalab">Tier</span><div class="qaseg">' +
         TIER_ORDER.map(function(t){ return '<button type="button" class="qtseg' + (tier === t ? ' on' : '') + '" data-qk="tier" data-qv="' + t + '" style="--c:' + TIERS[t].c + '">' + TIERS[t].n + '</button>'; }).join('') +
@@ -2534,6 +2586,7 @@ function auSetFilter(f){
   renderAudit();
 }
 function renderAudit(){
+  AUD.msel = null;
   var q = AUD.q.trim().toLowerCase();
   if(AUD.f === 'dup'){ renderDupAudit(q); return; }
   if(AUD.f === 'pmerge'){ renderPhotoMerge(q); return; }
@@ -2602,7 +2655,7 @@ function renderAudit(){
     return '<div class="aurow" data-di="' + r.di + '">' +
       '<input type="checkbox" class="ausel" data-di="' + r.di + '"' + sel + ' aria-label="Select">' +
       '<span class="auava">' + esc(ini) + '</span>' +
-      '<span class="aumain"><span class="auname">' + esc(r.an.name) +
+      '<span class="aumain"><span class="auname"><span class="aunmt" data-nedit="' + r.di + '" title="Tap the name to edit it">' + esc(r.an.name) + '</span>' +
         (r.an.business ? '<em class="aubiz">Business</em>' : '') +
         (hd ? '<i>@' + esc(hd) + '</i>' : '') + '</span>' +
       '<span class="auneeds">' + pill(r.st.hasR, 'Persona') + pill(r.st.hasB, 'Background') + pill(r.st.hasC, 'Connection') + pill(r.st.audited, 'Audited') +
@@ -2624,7 +2677,8 @@ function renderBulk(){
   bb.innerHTML = (n ? '<span><b>' + n + '</b> selected</span>' : '') +
     (n ? '<button class="mini" data-bulk="audit">Mark audited</button>' +
     '<button class="mini" data-bulk="unaudit">Reopen</button>' +
-    '<button class="mini danger" data-bulk="delete">Delete</button>' : '') +
+    '<button class="mini danger" data-bulk="delete">Delete</button>' +
+    '<button class="mini" data-bulk="merge2" style="--c:#f0b44c"' + (n === 2 ? '' : ' disabled title="Select exactly 2 people to merge"') + '>Merge</button>' : '') +
     (n ? '<button class="mini neutral" data-bulk="clear">Clear</button>' : '');
   if(isMergeView){
     bb.innerHTML += (nG ? '<span><b>' + nG + '</b> groups selected</span>' +
@@ -2656,6 +2710,64 @@ function doMergeSelected(){
   var entry = { postKey:'merged_into', items:items };
   pushUndo(entry);
   applyEntry(entry, false, function(){ toast(total + ' merged.'); });
+}
+
+/* ---------- merge exactly 2 selected people (full audit multi-select) ---------- */
+function pairName(e){
+  return (firstNameOf(e) || lastNameOf(e)) ? dispName(e) : auName(e).name;
+}
+function openMergeSel(){
+  var dis = Object.keys(AUD.sel).map(function(k){ return parseInt(k, 10); });
+  if(dis.length !== 2){ toast('Select exactly 2 people to merge.'); return; }
+  var a = dis[0], b = dis[1];
+  var ord = {};
+  AUD.rows.forEach(function(r, i){ ord[r.di] = i; });
+  var oa = ord[a] == null ? 1e9 : ord[a], ob = ord[b] == null ? 1e9 : ord[b];
+  var sa = auditStats(D.directory[a]).score, sb = auditStats(D.directory[b]).score;
+  /* default survivor: the profile with more on file; ties go to the one listed first */
+  var surv = sa === sb ? (oa <= ob ? a : b) : (sa > sb ? a : b);
+  AUD.msel = { pair:[a, b], survivor:surv };
+  renderMergeSel();
+}
+function renderMergeSel(){
+  var m = AUD.msel; if(!m) return;
+  var surv = D.directory[m.survivor];
+  var loser = D.directory[m.pair[0] === m.survivor ? m.pair[1] : m.pair[0]];
+  if(!surv || !loser){ AUD.msel = null; renderAudit(); return; }
+  $('#aushown').textContent = 'Merge 2 profiles';
+  $('#aubody').innerHTML = '<div class="mselwrap"><div class="mselcard">' +
+    '<h3 class="mselh">Merge profiles</h3>' +
+    '<p class="qahint">Tap a name to choose who survives. The other profile folds into it: unique info carries over at the next build, and the folded profile is retired (Merged Into) and leaves the list. You can undo this.</p>' +
+    m.pair.map(function(di){
+      var e = D.directory[di], on = di === m.survivor;
+      var ini = (pairName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
+      return '<button type="button" class="mselpick' + (on ? ' on' : '') + '" data-mselpick="' + di + '">' +
+        '<span class="auava">' + esc(ini) + '</span>' +
+        '<span class="aumain"><span class="auname">' + esc(pairName(e)) + '</span>' +
+        '<span class="mselrole">' + (on ? 'Survivor — this profile stays' : 'Tap to make this one survive') + '</span></span>' +
+        (on ? '<b class="mselbadge">Survivor</b>' : '') + '</button>';
+    }).join('') +
+    '<p class="qmline"><b>' + esc(pairName(loser)) + '</b> merges into <b>' + esc(pairName(surv)) + '</b></p>' +
+    '<button type="button" class="qamgo" data-mselgo="1"><span>Merge ' + esc(pairName(loser)) + ' into ' + esc(pairName(surv)) + '</span></button>' +
+    '<button type="button" class="mselback" data-mselback="1"><span>Cancel</span></button>' +
+  '</div></div>';
+  $('#aubody').scrollTop = 0;
+}
+function doMergeSel(){
+  var m = AUD.msel; if(!m) return;
+  var survDi = m.survivor;
+  var loserDi = m.pair[0] === survDi ? m.pair[1] : m.pair[0];
+  var surv = D.directory[survDi], loser = D.directory[loserDi];
+  if(!surv || !loser){ AUD.msel = null; renderAudit(); return; }
+  var target = dupHandle(surv);
+  if(!target){ toast('The survivor has no key to merge into.'); return; }
+  var entry = { postKey:'merged_into',
+    items:[{ di:loserDi, prev:((loser.profile || {}).merged_into || ''), next:target }] };
+  AUD.msel = null;
+  delete AUD.sel[loserDi];
+  delete AUD.sel[survDi];
+  pushUndo(entry);
+  applyEntry(entry, false, function(){ toast(pairName(loser) + ' merged into ' + pairName(surv) + '.'); });
 }
 
 /* ---------- duplicate detection + nuclear merge ---------- */
@@ -3673,6 +3785,7 @@ function bind(){
     else if(k === 'delete') bulkDelete();
     else if(k === 'mergeall') doMergeAllDups();
     else if(k === 'mergesel') doMergeSelected();
+    else if(k === 'merge2') openMergeSel();
     else if(k === 'clearsel'){ AUD.selGroups = {}; renderAudit(); }
     else if(k === 'clear'){ AUD.sel = {}; renderAudit(); }
   });
@@ -3702,6 +3815,12 @@ function bind(){
   });
   $('#aubody').addEventListener('click', function(ev){
     if(ev.target.classList && ev.target.classList.contains('ausel')) return;
+    var mp = ev.target.closest('[data-mselpick]');
+    if(mp && AUD.msel){ AUD.msel.survivor = parseInt(mp.getAttribute('data-mselpick'), 10); renderMergeSel(); return; }
+    if(ev.target.closest('[data-mselgo]')){ doMergeSel(); return; }
+    if(ev.target.closest('[data-mselback]')){ AUD.msel = null; renderAudit(); return; }
+    var nmt = ev.target.closest('[data-nedit]');
+    if(nmt){ ev.stopPropagation(); auEditName(nmt, parseInt(nmt.getAttribute('data-nedit'), 10)); return; }
     var dm = ev.target.closest('[data-dupmerge]');
     if(dm){ ev.stopPropagation(); doMergeGroup(parseInt(dm.getAttribute('data-dupmerge'), 10)); return; }
     var ab = ev.target.closest('[data-auact]');
