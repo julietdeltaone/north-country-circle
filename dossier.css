@@ -1016,3 +1016,71 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .qamgo{border:1px solid rgba(240,180,76,.55);background:rgba(240,180,76,.14);color:#f5c877}
 .qamswap:active,.qamgo:active{transform:scale(.98)}
 .qmback{background:none;border-color:var(--line);color:var(--dim)}
+
+/* ---------- insufficient-data waivers (2026-10-12) ---------- */
+.wvtogg{padding:2px 0 2px 10px;margin-left:auto;flex:none}
+.wvtogg em{font-size:11px}
+.lrow .wvtogg{display:flex;justify-content:flex-end}
+.wvrow.waived{opacity:.55}
+.wvrow.waived :is(input,select,textarea,button,.pdot,.tchip,.nx){pointer-events:none}
+.wvrow.waived .wvtogg,.wvrow.waived .wvtogg *{pointer-events:auto}
+.wvrow.waived :is(input,select,textarea){color:var(--mut)}
+.wvsecwrap .secwvbar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.wvsecwrap .secwvbar>span{font-size:12px;color:var(--dim);font-weight:700}
+.wvsecwrap.waived .wvsecbody{opacity:.5}
+.wvsecwrap.waived .wvsecbody :is(input,select,textarea,button,.nx,.nchip){pointer-events:none}
+.esec>header .sechead{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:pointer}
+.esec>header .secwv{padding:0;flex:none}
+.eghwrap{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.eghwrap .egh{flex:none}
+.egwv{align-self:center;padding:0}
+
+/* ---------- dashboard (2026-10-12) ---------- */
+.dashnav{display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:rgba(255,255,255,.015)}
+.dashnav button{flex:1;min-width:130px;padding:12px 14px;border-radius:12px;border:1px solid var(--line-soft);
+  background:rgba(255,255,255,.028);color:var(--dim);font-family:var(--disp);font-size:15px;font-weight:700;
+  letter-spacing:.02em;cursor:pointer;transition:all .18s var(--ease)}
+.dashnav button:hover{color:var(--txt);border-color:rgba(255,255,255,.3)}
+.dashnav button.on{color:var(--txt);border-color:var(--l1);background:color-mix(in srgb,var(--l1) 12%,transparent)}
+#dashsec-audit{display:flex;flex-direction:column;flex:1;min-height:0}
+#dashsec-audit[hidden]{display:none}
+.dashsec{flex:1;overflow-y:auto;padding:16px 18px 80px}
+.dashsec[hidden]{display:none}
+.dsecblock{max-width:1100px;margin-bottom:22px}
+.dsectitle{font-family:var(--disp);font-size:16px;margin:0 0 12px}
+.dorg,.dgrp,.dfam{border:1px solid var(--line-soft);border-radius:12px;background:rgba(255,255,255,.02);
+  margin-bottom:10px;max-width:1100px;padding:6px 14px}
+.dorghead{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;color:var(--txt);
+  padding:8px 0;cursor:pointer;font-size:14px;text-align:left;font-family:var(--sans)}
+.dorghead b{font-weight:700}
+.dcount{color:var(--dim);font-size:12px;font-weight:700}
+.dorghead .chev{margin-left:auto;color:var(--dim);display:inline-flex}
+.dmemlist{display:flex;flex-wrap:wrap;gap:8px;padding:6px 0 12px;align-items:center}
+.dmem{border:1px solid var(--line);background:var(--fill);color:var(--txt);border-radius:999px;
+  padding:5px 12px;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.dmem:hover{border-color:rgba(255,255,255,.35)}
+.dmemchip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--fill);
+  border-radius:999px;padding:5px 8px 5px 12px;font-size:13px}
+.dmemchip .nx{cursor:pointer;color:var(--dim);font-style:normal;font-weight:700}
+.dgrphead{display:flex;align-items:center;gap:12px;padding:8px 0;flex-wrap:wrap}
+.dgrphead b{font-size:14.5px}
+.dgrpacts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.grpcreate{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap;max-width:1100px}
+.grpcreate input{flex:1;min-width:200px;background:rgba(255,255,255,.05);border:1px solid var(--line);
+  color:var(--txt);border-radius:9px;padding:8px 11px;font-size:13px;outline:none;font-family:var(--sans)}
+.dfam{padding-bottom:12px}
+.dfamtitle{font-family:var(--disp);font-size:14.5px;margin:8px 0 4px}
+.dfamrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line-soft);flex-wrap:wrap}
+.dfamname{background:none;border:0;color:var(--txt);font-weight:700;font-size:13.5px;cursor:pointer;
+  padding:0;text-align:left;font-family:var(--sans)}
+.dfamname:hover{text-decoration:underline}
+.dfamrels{color:var(--dim);font-size:12.5px;flex:1;min-width:200px}
+.dfamedit{flex-basis:100%;padding:6px 0 4px}
+.dfamedit select,.dfamedit input{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);
+  border-radius:9px;padding:8px 11px;font-size:13px;outline:none;font-family:var(--sans)}
+.dfamedit input{flex:1;min-width:0}
+@media (max-width:760px){
+  .dashnav button{min-width:44%;font-size:14px;padding:10px}
+  .wvtogg em{display:none}
+  .wvtogg{padding-left:4px}
+}
