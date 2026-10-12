@@ -3059,7 +3059,9 @@ function famSpaceLayout(disp, ft){
   var LABEL = 52, GX = 320, GY = 280, PAD = 150;
   var totalArea = 0;
   models.forEach(function(m){ totalArea += (m.w + GX) * (m.h + LABEL + GY); });
-  var target = Math.max(1500, Math.min(3400, Math.ceil(Math.sqrt(totalArea) * 1.15)));
+  /* aim the world's aspect at a landscape viewport so Fit uses the
+     screen instead of letterboxing a tall stack of trees */
+  var target = Math.max(2000, Math.min(5200, Math.ceil(Math.sqrt(totalArea) * 1.55)));
   var clusters = [], cx = PAD, cy = PAD, rowH = 0;
   trees.forEach(function(t, i){
     var m = models[i], chh = m.h + LABEL;
@@ -3144,7 +3146,20 @@ function dfCamFor(bx, by, bw, bh, maxK){
   k = Math.max(0.04, Math.min(maxK || 1.1, k));
   return { k:k, x: vp.clientWidth / 2 - (bx + bw / 2) * k, y: vp.clientHeight / 2 - (by + bh / 2) * k };
 }
-function dfStopGlide(){ if(DFSPACE.glide){ cancelAnimationFrame(DFSPACE.glide.raf); DFSPACE.glide = null; } }
+function dfStopGlide(){
+  if(DFSPACE.glide){ cancelAnimationFrame(DFSPACE.glide.raf); DFSPACE.glide = null; }
+  /* a glide (or fresh input) always wins over leftover pan momentum */
+  if(DFSPACE.momRaf) cancelAnimationFrame(DFSPACE.momRaf);
+  DFSPACE.momRaf = 0; DFSPACE.vel = null;
+}
+function dfMomStep(){
+  var v = DFSPACE.vel; if(!v) return;
+  DFSPACE.cam.x += v.x; DFSPACE.cam.y += v.y;
+  v.x *= 0.94; v.y *= 0.94;
+  dfApplyCam();
+  if(Math.abs(v.x) < 0.3 && Math.abs(v.y) < 0.3){ DFSPACE.vel = null; DFSPACE.momRaf = 0; return; }
+  DFSPACE.momRaf = requestAnimationFrame(dfMomStep);
+}
 function dfGlideTo(target, dur){
   if(!target) return;
   if(dfReduced() || !dur){ dfStopGlide(); DFSPACE.cam = target; dfApplyCam(); return; }
@@ -3215,11 +3230,11 @@ function famCloseSpace(){
 /* from a profile: land in the one space, gliding to that person's home
    cluster (their blood instance) */
 function famOpenSpaceFor(di){
-  openAudit();
   DFAM.open = true;
   DFAM.focus = { type:'person', di:di };
   DFSPACE.fresh = true;
-  dashShow('family');
+  AUD.section = 'family';
+  openAudit();
 }
 function famEditorHTML(di){
   var e = D.directory[di], links = famLinks(e);
@@ -5225,19 +5240,11 @@ function bind(){
   });
   /* space navigation: drag pans with momentum, two pointers pinch-zoom
      around their midpoint, wheel zooms around the cursor */
-  var dfPtrs = {}, dfPan = null, dfPinch = null, dfVel = null, dfRaf = 0;
-  function dfMomStep(){
-    if(!dfVel) return;
-    DFSPACE.cam.x += dfVel.x; DFSPACE.cam.y += dfVel.y;
-    dfVel.x *= 0.94; dfVel.y *= 0.94;
-    dfApplyCam();
-    if(Math.abs(dfVel.x) < 0.3 && Math.abs(dfVel.y) < 0.3){ dfVel = null; return; }
-    dfRaf = requestAnimationFrame(dfMomStep);
-  }
+  var dfPtrs = {}, dfPan = null, dfPinch = null;
   famEl.addEventListener('pointerdown', function(ev){
     var vp = ev.target.closest ? ev.target.closest('.dfspace') : null;
     if(!vp || (ev.target.closest && ev.target.closest('button, input, select, textarea, a, .dfamedit'))) return;
-    dfStopGlide(); cancelAnimationFrame(dfRaf); dfVel = null;
+    dfStopGlide();
     dfPtrs[ev.pointerId] = { x:ev.clientX, y:ev.clientY };
     var ids = Object.keys(dfPtrs);
     if(ids.length === 2){
@@ -5290,8 +5297,8 @@ function bind(){
     if(!Object.keys(dfPtrs).length) dfPinch = null;
     if(dfPan && !wasPinch){
       if(dfPan.moved && !dfReduced() && (Math.abs(dfPan.vx) > 0.6 || Math.abs(dfPan.vy) > 0.6)){
-        dfVel = { x:dfPan.vx, y:dfPan.vy };
-        dfRaf = requestAnimationFrame(dfMomStep);
+        DFSPACE.vel = { x:dfPan.vx, y:dfPan.vy };
+        DFSPACE.momRaf = requestAnimationFrame(dfMomStep);
       }
       dfPan = null;
     }
@@ -5303,7 +5310,7 @@ function bind(){
     var vp = ev.target.closest ? ev.target.closest('.dfspace') : null;
     if(!vp || (ev.target.closest && ev.target.closest('.dfamedit'))) return;
     ev.preventDefault();
-    dfStopGlide(); cancelAnimationFrame(dfRaf); dfVel = null;
+    dfStopGlide();
     var r = vp.getBoundingClientRect(), cx = ev.clientX - r.left, cy = ev.clientY - r.top, c = DFSPACE.cam;
     var wx = (cx - c.x) / c.k, wy = (cy - c.y) / c.k;
     var k2 = Math.max(0.04, Math.min(2.5, c.k * Math.exp(-ev.deltaY * 0.0016)));
