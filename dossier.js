@@ -237,12 +237,44 @@ var ORG_CATS = [
   {k:'companies', label:'Companies', options:['Rochester Regional Health','Clarkson University','Park Bros.']}
 ];
 /* Canonical skills vocabulary, ranked by frequency across profiles (2026-10-12 harvest).
-   These remain valid profile values; the editor no longer offers them as chips —
-   see SKILL_CATS and skillsEditHTML (broad-category dropdown + free-text add). */
+   These remain valid profile values; every one of them is reachable in the Skills
+   editor flow under its parent category in SKILL_TAXONOMY below. */
 var SKILLS_VOCAB = ['Photography','Travel','Registered Nurse','Music','Skiing','Bass','Golf','Airlines','Airplanes','Drones','Mental Health','Admissions','Technology','Farmer','Ultimate Frisbee','Electrical Engineering','Taxi Driver','Construction','Mathematics','Teaching','Clarinet','Piano','Guitar','Content Creation','Running','Healthcare','Horseback Riding','Administration','Film','Video','Singing','Carpentry','Coloring','IT','Social Work','Hiking','Corrections','Security'];
-/* Broad skill categories for the Skills editor dropdown: broad only. Specific skills
-   (Taxi Driver, Clarinet, Piano, ...) are added through the free-text field instead. */
-var SKILL_CATS = ['Healthcare','Customer Service','Education','Technology','Construction','Creative Media','Business','Food Service','Transportation','Agriculture','Public Safety','Social Services','Administration','Sales','Outdoors'];
+/* Skills picker taxonomy (JD 2026-10-12): parent category -> specific skills,
+   built for North Country / St. Lawrence County work (hospitals, the four
+   colleges, corrections, trades, dairy, tourism) plus the harvested values.
+   The editor renders this as a drill-down flow: tap a category to expand it
+   in place, tap a skill to toggle it. Each category's own name is offered
+   first inside it as the general skill (e.g. "Healthcare" under Healthcare).
+   Edit this one structure to change the picker. Storage is unchanged: the
+   union of selected values in the Profiles 'Specialty' column. */
+var SKILL_TAXONOMY = [
+  { cat:'Healthcare', skills:['Registered Nurse','CNA','LPN','EMT','Mental Health','Physical Therapist','Occupational Therapist','Home Health Aide','Medical Technician'] },
+  { cat:'Public Safety', skills:['Law Enforcement','Corrections','Security','Firefighter','Emergency Dispatcher'] },
+  { cat:'Education', skills:['Teacher','Teaching','Professor','Student Worker','Admissions','Tutor','Coach','Librarian','Mathematics'] },
+  { cat:'Technology', skills:['IT','Electrical Engineering','Civil Engineering','Mechanical Engineering','Environmental Engineering','Drones'] },
+  { cat:'Transportation', skills:['Airline','Airlines','Airplanes','Pilot','Taxi Driver','Truck Driver','Delivery Driver'] },
+  { cat:'Food Service', skills:['Cook','Server','Bartender','Barista','Baker'] },
+  { cat:'Construction', skills:['Carpentry','Electrician','Plumber','HVAC','Welder','Mechanic'] },
+  { cat:'Administration', skills:['Administrator','Administrative Assistant','Office Manager','Receptionist','Human Resources'] },
+  { cat:'Business', skills:['Business Owner','Manager','Marketing','Accounting','Banking','Real Estate'] },
+  { cat:'Sales', skills:['Retail','Car Sales'] },
+  { cat:'Customer Service', skills:['Cashier','Front Desk'] },
+  { cat:'Social Services', skills:['Social Work','Counselor','Case Manager','Childcare'] },
+  { cat:'Agriculture', skills:['Farmer','Dairy Farmer','Farmhand','Veterinarian'] },
+  { cat:'Creative Media', skills:['Photography','Video','Film','Content Creation','Music','Singing','Guitar','Piano','Bass','Clarinet','Coloring','Graphic Design','Writing'] },
+  { cat:'Outdoors', skills:['Skiing','Golf','Running','Hiking','Horseback Riding','Ultimate Frisbee','Travel','Fishing','Hunting','Landscaping'] }
+];
+/* skill -> parent category (the category name itself maps to its own category,
+   as that category's general skill). First mapping wins. */
+var SKILL_PARENT = {};
+SKILL_TAXONOMY.forEach(function(g){
+  SKILL_PARENT[g.cat] = g.cat;
+  g.skills.forEach(function(s){ if(!SKILL_PARENT[s]) SKILL_PARENT[s] = g.cat; });
+});
+function skillParentOf(s){ return SKILL_PARENT[s] || null; }
+/* the one category currently expanded in the Skills flow (accordion) */
+var SK_OPEN = null;
 var F = {
   display_name:{ l:'Name', t:'text' },
   first_name:{ l:'First name', t:'text' },
@@ -1167,26 +1199,51 @@ function igRow(e){
   return '<div class="irow igrow"><span class="ilab">Instagram</span>' +
     '<a class="iglink ' + (e.relation === 'mutual' ? 'ig-mutual' : 'ig-oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a></div>';
 }
-/* Skills editor: free-text add at the top, the selected skills as removable chips,
-   and a dropdown (collapsed by default) of BROAD categories only. */
+/* Skills editor: free-text add at the top, the selected skills as removable
+   chips, then the SKILL_TAXONOMY flow — parent categories that expand in
+   place (one open at a time); tapping a skill toggles it on the profile.
+   Inside each category the general skill (the category's own name) is listed
+   first. Selected values with no parent land in an "Other" group at the
+   bottom so nothing on a profile is ever hidden by the picker. */
+function skillFlowHTML(cur){
+  var h = SKILL_TAXONOMY.map(function(g){
+    var items = [g.cat].concat(g.skills.filter(function(s){ return s !== g.cat; }));
+    var n = items.filter(function(s){ return cur.indexOf(s) >= 0; }).length;
+    var open = SK_OPEN === g.cat;
+    var btns = items.map(function(s, i){
+      return '<button type="button" class="skopt' + (i === 0 ? ' gen' : '') + (cur.indexOf(s) >= 0 ? ' on' : '') + '" data-skill="' + esc(s) + '">' + esc(s) + (i === 0 ? '<em>general</em>' : '') + '</button>';
+    }).join('');
+    return '<div class="skcat' + (open ? ' open' : '') + '">' +
+      '<button type="button" class="skcatbtn" data-skcat="' + esc(g.cat) + '" aria-expanded="' + open + '"><span class="skcatname">' + esc(g.cat) + '</span>' +
+      (n ? '<span class="skcnt">' + n + '</span>' : '') + ic('chev', 13) + '</button>' +
+      '<div class="skcatpanel"' + (open ? '' : ' hidden') + '>' + btns + '</div></div>';
+  }).join('');
+  var others = cur.filter(function(s){ return !skillParentOf(s); });
+  if(others.length){
+    var openO = SK_OPEN === 'Other';
+    h += '<div class="skcat skother' + (openO ? ' open' : '') + '">' +
+      '<button type="button" class="skcatbtn" data-skcat="Other" aria-expanded="' + openO + '"><span class="skcatname">Other</span><span class="skcnt">' + others.length + '</span>' + ic('chev', 13) + '</button>' +
+      '<div class="skcatpanel"' + (openO ? '' : ' hidden') + '>' +
+      others.map(function(s){ return '<button type="button" class="skopt on" data-skill="' + esc(s) + '">' + esc(s) + '</button>'; }).join('') +
+      '</div></div>';
+  }
+  return '<div class="skflow">' + h + '</div>';
+}
 function skillsEditHTML(e){
   var f = fieldDef('specialty'), sep = f.sep || ', ';
   var cur = splitTags(gv(e, 'specialty'), sep);
   var chips = cur.map(function(x){ return tagChip(x, true, true); }).join('');
-  var opts = SKILL_CATS.map(function(c){
-    return '<button type="button" class="skopt' + (cur.indexOf(c) >= 0 ? ' on' : '') + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
-  }).join('');
   return '<div class="trow">' + labHTML(f) + '<div class="skedit">' +
     '<input class="skadd" placeholder="+ add a specific skill" aria-label="Add a specific skill" autocomplete="off">' +
     '<div class="tchips" data-pk="specialty" data-mode="tags" data-sep="' + esc(sep) + '">' + chips + '</div>' +
-    '<div class="skdd"><button type="button" class="skddbtn" data-skdd="1" aria-expanded="false">Broad categories ' + ic('chev', 13) + '</button>' +
-    '<div class="skddpanel" hidden>' + opts + '</div></div>' +
+    skillFlowHTML(cur) +
     '</div></div>';
 }
 function syncSkillOpts(edit){
   var cont = $('.tchips', edit); if(!cont) return;
   var sel = $$('.tchip', cont).map(function(c){ return c.getAttribute('data-tv'); });
-  $$('.skopt', edit).forEach(function(o){ o.classList.toggle('on', sel.indexOf(o.getAttribute('data-cat')) >= 0); });
+  var flow = $('.skflow', edit);
+  if(flow) flow.outerHTML = skillFlowHTML(sel);
 }
 function rateRow(k, e){
   var f = fieldDef(k), v = gv(e, k);
@@ -2383,7 +2440,7 @@ function grpRenameSave(oldName){
    source of truth — [[relation, person name], ...] per person, edited through
    queuePatch exactly like the profile editor's family section). Display adds
    the inverses and shared-parent siblings, mirroring the build. ----- */
-var DFAM = { editing:null };
+var DFAM = { editing:null, openDi:null };
 /* Tree colors are structural, never relative to a chosen person (JD
    2026-10-12 rebuild): bloodline members are tinted by generation, eldest
    generation first; a spouse who married into the family gets one color. */
@@ -2611,28 +2668,54 @@ function famEditorHTML(di){
     '<input class="dfq" data-dfq="' + di + '" placeholder="Add family member: type a name" autocomplete="off"></div>' +
     '<div class="dfamhits" data-dfamhits="' + di + '"></div></div>';
 }
+function famTitle(comp){
+  var lastNames = {};
+  comp.forEach(function(di){ var ln = (dispName(D.directory[di]).split(' ').pop() || '').trim(); if(ln) lastNames[ln] = (lastNames[ln] || 0) + 1; });
+  return Object.keys(lastNames).sort(function(a, b){ return lastNames[b] - lastNames[a]; })[0] || 'Family';
+}
+/* Families render COLLAPSED by default (JD 2026-10-12): the section is a
+   compact list of family cards — name, headcount, generations, eldest
+   names. A card's expand control opens the full descendant tree in a
+   full-screen overlay (DFAM.openDi = a member of the open family), where
+   the tree, the role legend, and the tap-a-node link editor live. */
 function renderDashFamily(){
   var el = $('#dashsec-family'); if(!el) return;
   var disp = famDisplay();
   var comps = famComponents(disp).sort(function(a, b){ return b.length - a.length; });
   var models = comps.map(function(comp){ return famTreeModel(disp, comp); });
-  var maxGen = 0, anySpouse = false;
-  models.forEach(function(m){ if(m.maxGen > maxGen) maxGen = m.maxGen; if(m.hasSpouse) anySpouse = true; });
-  var leg = [];
-  for(var g = 0; g <= maxGen; g++)
-    leg.push('<span class="dfamleg"><i style="background:' + FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)] + '"></i>Generation ' + (g + 1) + (g === 0 ? ' · eldest' : '') + '</span>');
-  if(anySpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
-  var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3><div class="dfamlegend">' + leg.join('') + '</div>' +
-    '<p class="dim" style="margin:8px 0 0;font-size:12.5px">Drawn as standard descendant trees: the eldest generation at the top, partners side by side, and each couple\'s children on the level below, joined by the connector lines. Tap any person to edit their family links. Links are stored on each profile and saved through the same patch path as the profile editor, so they survive rebuilds.</p></div>';
+  function topInfo(model){
+    var minY = Math.min.apply(null, model.nodes.map(function(n){ return n.y; }));
+    var top = model.nodes.filter(function(n){ return n.y === minY; }).sort(function(a, b){ return a.x - b.x; });
+    return { repDi:top[0].di, names:top.slice(0, 2).map(function(n){ return dispName(D.directory[n.di]); }), extra:top.length - 2 };
+  }
+  var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3>' +
+    '<p class="dim" style="margin:0;font-size:12.5px">Each family is drawn as a standard descendant tree: the eldest generation at the top, partners side by side, and each couple\'s children on the level below. Expand a family to see its full tree and edit its links.</p></div>';
   if(!comps.length) h += '<p class="dim">No family links on file yet. Add links from a profile\'s Family section.</p>';
   h += comps.map(function(comp, ci){
-    var lastNames = {};
-    comp.forEach(function(di){ var ln = (dispName(D.directory[di]).split(' ').pop() || '').trim(); if(ln) lastNames[ln] = (lastNames[ln] || 0) + 1; });
-    var title = Object.keys(lastNames).sort(function(a, b){ return lastNames[b] - lastNames[a]; })[0] || 'Family';
-    var edit = DFAM.editing != null && comp.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
-    return '<div class="dfam"><h4 class="dfamtitle">' + esc(title) + ' family</h4><div class="dfamscroll">' + famTreeHTML(models[ci]) + '</div>' + edit + '</div>';
+    var model = models[ci], ti = topInfo(model);
+    var meta = comp.length + (comp.length === 1 ? ' person' : ' people') + ' · ' + (model.maxGen + 1) + (model.maxGen === 0 ? ' generation' : ' generations') +
+      ' · Eldest: ' + ti.names.join(' & ') + (ti.extra > 0 ? ' +' + ti.extra : '');
+    return '<div class="dfam dfamcard"><div class="dfamcardmain"><h4 class="dfamtitle">' + esc(famTitle(comp)) + ' family</h4>' +
+      '<div class="dfammeta">' + esc(meta) + '</div></div>' +
+      '<button type="button" class="mini neutral dfamexpand" data-dfexpand="' + ti.repDi + '">Expand tree</button></div>';
   }).join('');
+  var openCi = -1;
+  if(DFAM.openDi != null) comps.forEach(function(comp, ci){ if(comp.indexOf(DFAM.openDi) >= 0) openCi = ci; });
+  if(openCi >= 0){
+    var ocomp = comps[openCi], omodel = models[openCi];
+    var leg = [];
+    for(var g = 0; g <= omodel.maxGen; g++)
+      leg.push('<span class="dfamleg"><i style="background:' + FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)] + '"></i>Generation ' + (g + 1) + (g === 0 ? ' · eldest' : '') + '</span>');
+    if(omodel.hasSpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
+    var oedit = DFAM.editing != null && ocomp.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
+    h += '<div class="dfamfs"><div class="dfamfssheet">' +
+      '<div class="dfamfsbar"><b>' + esc(famTitle(ocomp)) + ' family</b><div class="dfamlegend">' + leg.join('') + '</div>' +
+      '<button type="button" class="mini neutral" data-dfclose="1">Close</button></div>' +
+      '<div class="dfamfsscroll">' + famTreeHTML(omodel) + oedit + '</div>' +
+      '</div></div>';
+  } else DFAM.openDi = null;
   el.innerHTML = h;
+  document.body.classList.toggle('dfamfsopen', openCi >= 0);
   $('#aushown').textContent = comps.length + (comps.length === 1 ? ' family' : ' families');
 }
 function dashFamSearch(input){
@@ -4356,6 +4439,10 @@ function bind(){
   });
   var famEl = $('#dashsec-family');
   famEl.addEventListener('click', function(ev){
+    var ex = ev.target.closest('[data-dfexpand]');
+    if(ex){ DFAM.openDi = parseInt(ex.getAttribute('data-dfexpand'), 10); DFAM.editing = null; renderDashFamily(); return; }
+    var cl = ev.target.closest('[data-dfclose]');
+    if(cl || (ev.target.classList && ev.target.classList.contains('dfamfs'))){ DFAM.openDi = null; DFAM.editing = null; renderDashFamily(); return; }
     var an = ev.target.closest('[data-dfnode]');
     if(an){
       DFAM.editing = parseInt(an.getAttribute('data-di'), 10);
@@ -4370,6 +4457,9 @@ function bind(){
   });
   famEl.addEventListener('input', function(ev){
     if(ev.target.classList && ev.target.classList.contains('dfq')) dashFamSearch(ev.target);
+  });
+  document.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape' && DFAM.openDi != null && !famEl.hidden){ DFAM.openDi = null; DFAM.editing = null; renderDashFamily(); }
   });
   $('#qaback').addEventListener('click', closeQuick);
   $('#qaundo').addEventListener('click', doUndo);
@@ -4580,22 +4670,23 @@ function bind(){
     if(ah && ah.getAttribute('data-mh')){ doMerge(D.directory[S.sel], ah.getAttribute('data-mh')); return; }
     var um = e.target.closest('[data-act="unmerge"]');
     if(um){ doUnmerge(D.directory[S.sel]); return; }
-    var skb = e.target.closest('[data-skdd]');
-    if(skb){
-      var skp = skb.parentNode ? skb.parentNode.querySelector('.skddpanel') : null;
-      if(skp){ skp.hidden = !skp.hidden; skb.setAttribute('aria-expanded', String(!skp.hidden)); skb.classList.toggle('open', !skp.hidden); }
+    var scb = e.target.closest('.skcatbtn');
+    if(scb){
+      var scEdit = scb.closest('.skedit'), scCat = scb.getAttribute('data-skcat');
+      SK_OPEN = (SK_OPEN === scCat) ? null : scCat;
+      if(scEdit) syncSkillOpts(scEdit);
       return;
     }
     var sko = e.target.closest('.skopt');
     if(sko){
       var skEdit = sko.closest('.skedit'), skCont = skEdit ? $('.tchips', skEdit) : null;
       if(skCont){
-        var cat = sko.getAttribute('data-cat'), ex = null;
-        $$('.tchip', skCont).forEach(function(c){ if(c.getAttribute('data-tv') === cat) ex = c; });
+        var skv = sko.getAttribute('data-skill'), ex = null;
+        $$('.tchip', skCont).forEach(function(c){ if(c.getAttribute('data-tv') === skv) ex = c; });
         if(ex) ex.remove();
         else {
           var sktmp = document.createElement('div');
-          sktmp.innerHTML = tagChip(cat, true, true);
+          sktmp.innerHTML = tagChip(skv, true, true);
           skCont.appendChild(sktmp.firstChild);
         }
         setField(skCont.getAttribute('data-pk'), readTags(skCont));
