@@ -236,6 +236,9 @@ var ORG_CATS = [
   {k:'churches', label:'Churches', options:['CFC Potsdam','CFC Canton','CFC Madrid','NTC','Calvary Baptist']},
   {k:'companies', label:'Companies', options:['Rochester Regional Health','Clarkson University','Park Bros.']}
 ];
+/* Canonical skills vocabulary, ranked by frequency across profiles (2026-10-12 harvest).
+   The Skills editor offers these as tap-to-toggle chips, most-used first, plus free add. */
+var SKILLS_VOCAB = ['Photography','Travel','Registered Nurse','Music','Skiing','Bass','Golf','Airlines','Airplanes','Drones','Mental Health','Admissions','Technology','Farmer','Ultimate Frisbee','Electrical Engineering','Taxi Driver','Construction','Mathematics','Teaching','Clarinet','Piano','Guitar','Content Creation','Running','Healthcare','Horseback Riding','Administration','Film','Video','Singing','Carpentry','Coloring','IT','Social Work','Hiking','Corrections','Security'];
 var F = {
   display_name:{ l:'Name', t:'text' },
   also_known_as:{ l:'Also known as', t:'text' },
@@ -256,8 +259,9 @@ var F = {
   neuroticism:{ l:'Neuroticism', t:'score', d:'Reactive vs. steady', neg:1 },
   ego:{ l:'Ego', t:'score', d:'Self-important', neg:1 },
 
-  specialty:{ l:'Specialty', t:'text' },
-  interests:{ l:'Interests', t:'text' },
+  // Specialty + Interests merged into one Skills field per JD 2026-10-12.
+  // Stored in the Profiles 'Specialty' column; 'Interests' column retired (cleared in the sheet).
+  specialty:{ l:'Skills', t:'pick', sep:', ', vocab:SKILLS_VOCAB },
   // shared_interests removed per JD 2026-10-08
   churches:{ l:'Churches', t:'pick', sep:', ' },
   companies:{ l:'Companies', t:'pick', sep:', ' },
@@ -283,7 +287,7 @@ var SECTIONS = [
   { id:'identity',    title:'Contact',      ic:'user',      lv:1, fields:['phone','email'] },
   { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
   { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
-  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','interests','churches','companies','highlights','public_footprint'] },
+  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','churches','companies','highlights','public_footprint'] },
   { id:'onfile',      title:'On file',      ic:'quote',     lv:1, fields:['synopsis'] },
   { id:'education',   title:'Education',    ic:'cap',       lv:1, fields:[] },
   { id:'connections', title:'Connections',  ic:'share',     lv:2, fields:[] },
@@ -438,7 +442,7 @@ function l1Fill(e){
   var n = 0;
   if(gv(e, 'phone')) n++;
   if(gv(e, 'email')) n++;
-  ['specialty','interests'].concat(L1_SCORES).forEach(function(k){ if(gv(e, k)) n++; });
+  ['specialty'].concat(L1_SCORES).forEach(function(k){ if(gv(e, k)) n++; });
   if(ORG_CATS.some(function(cat){ return tagList(gv(e, cat.k)).length; })) n++;
   if(gv(e, 'synopsis')) n++;
   return n;
@@ -484,7 +488,7 @@ function passes(r, skipLvl, skipQ){
   if(S.tierF && tierOf(r) !== S.tierF) return false;
   if(!skipQ){
     var q = S.q.trim().toLowerCase();
-    if(q && ((dispName(r) + ' @' + r.name + ' ' + gv(r, 'specialty') + ' ' + gv(r, 'interests') + ' ' + gv(r, 'also_known_as') + ' ' + degreeText(r) + ' ' + tierName(r)).toLowerCase().indexOf(q) < 0)) return false;
+    if(q && ((dispName(r) + ' @' + r.name + ' ' + gv(r, 'specialty') + ' ' + gv(r, 'also_known_as') + ' ' + degreeText(r) + ' ' + tierName(r)).toLowerCase().indexOf(q) < 0)) return false;
   }
   return true;
 }
@@ -535,7 +539,7 @@ function pipsHTML(e){
 var DOTDEFS = [
   ['Contact', '#7ea6f0', 'identity', function(e){ var p = e.profile || {}; return !!((p.phone || '').trim() || (p.email || '').trim() || (e.name || '').trim()); }],
   ['Education', '#7ea6f0', 'education', function(e){ return degreesOf(e).length > 0; }],
-  ['Background', '#7ea6f0', 'background', function(e){ var p = e.profile || {}; return !!((p.specialty || '').trim() || (p.interests || '').trim()); }],
+  ['Background', '#7ea6f0', 'background', function(e){ var p = e.profile || {}; return !!((p.specialty || '').trim()); }],
   ['Synopsis', '#7ea6f0', 'onfile', function(e){ return !!((e.profile || {}).synopsis || '').trim(); }],
   ['Persona', '#7ea6f0', 'ratings', function(e){ var p = e.profile || {}; return L1_SCORES.some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
   ['Relationship', '#f0b44c', 'relationship', function(e){ var p = e.profile || {}; return !!((p.relationship || '').trim() || (p.tier || '').trim()); }],
@@ -807,9 +811,9 @@ function lvl1View(e){
   var ratings = L1_SCORES.some(function(k){ return gv(e, k) !== ''; }) ? card('activity', 'Persona', 1, personaTraits) : '';
 
   var bg = '';
-  if(gv(e, 'specialty')) bg += '<div class="idrow"><span class="idic">' + ic('zap', 15) + '</span><div><span>Specialty</span><b>' + esc(gv(e, 'specialty')) + '</b></div></div>';
-  if(gv(e, 'interests')) bg += '<div class="idrow"><span class="idic">' + ic('tag', 15) + '</span><div><span>Interests</span><b>' + esc(gv(e, 'interests')) + '</b></div></div>';
-  if(bg) bg = '<div class="bggrid">' + bg + '</div>';
+  var skList = tagList(gv(e, 'specialty'));
+  if(skList.length) bg = '<div class="subhead first">Skills</div><div class="chips">' +
+    skList.map(function(s){ return '<span class="vchip skchip">' + ic('zap', 12) + esc(s) + '</span>'; }).join('') + '</div>';
   var ORG_ICONS = { churches:'church', companies:'briefcase', universities:'cap' };
   var orgs = '';
   ORG_CATS.forEach(function(cat){
@@ -1093,7 +1097,8 @@ function fieldRow(k, e){
   if(f.t === 'tags' || f.t === 'pick'){
     var sep = f.sep || ', ', cur = splitTags(v, sep), chips;
     if(f.t === 'pick'){
-      var cat = orgCat(k), all = cat.options.concat(cur.filter(function(x){ return cat.options.indexOf(x) < 0; }));
+      var baseOpts = f.vocab || (orgCat(k) || {}).options || [];
+      var all = baseOpts.concat(cur.filter(function(x){ return baseOpts.indexOf(x) < 0; }));
       chips = all.map(function(o){ return tagChip(o, cur.indexOf(o) >= 0, false); });
     } else chips = cur.map(function(x){ return tagChip(x, true, true); });
     return '<div class="trow">' + labHTML(f) + '<div class="tchips" data-pk="' + k + '" data-mode="' + (f.t === 'pick' ? 'pick' : 'tags') + '" data-sep="' + esc(sep) + '">' +
@@ -2007,7 +2012,7 @@ function closeScore(e, famMap){
 }
 function auditStats(e){
   var hasR = L1_SCORES.some(function(k){ return gv(e, k) !== ''; });
-  var hasB = !!(gv(e, 'specialty') || gv(e, 'interests') || ORG_CATS.some(function(c){ return gv(e, c.k).trim(); }));
+  var hasB = !!(gv(e, 'specialty') || ORG_CATS.some(function(c){ return gv(e, c.k).trim(); }));
   var hasC = !!(gv(e, 'relationship') || gv(e, 'context') || gv(e, 'tier'));
   var audited = (e.profile || {}).audit === 'audited';
   var missing = (hasR ? 0 : 1) + (hasB ? 0 : 1) + (hasC ? 0 : 1) + (audited ? 0 : 1);
@@ -2734,8 +2739,7 @@ function buildDossierDoc(e){
     return '<div class="brow"><span>' + esc(fieldDef(k).l) + '</span><div class="bar"><i style="width:' + w + '%"></i></div><em>' + (ok ? v + '/5' : '—') + '</em></div>';
   }).join('');
   var extras = '';
-  if(gv(e, 'specialty')) extras += '<div class="kv"><span class="cl">Specialty</span> ' + esc(gv(e, 'specialty')) + '</div>';
-  if(gv(e, 'interests')) extras += '<div class="kv"><span class="cl">Interests</span> ' + esc(gv(e, 'interests')) + '</div>';
+  if(gv(e, 'specialty')) extras += '<div class="kv"><span class="cl">Skills</span> ' + esc(gv(e, 'specialty')) + '</div>';
   if(tierName(e)) extras += '<div class="kv"><span class="cl">Tier</span> ' + esc(tierName(e)) + '</div>';
   if(momVal(e)) extras += '<div class="kv"><span class="cl">Momentum</span> ' + esc(MOM_LABELS[momVal(e)]) + '</div>';
   degreesOf(e).forEach(function(d){ extras += '<div class="kv"><span class="cl">Degree</span> ' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '</div>'; });
