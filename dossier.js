@@ -1600,6 +1600,7 @@ function connectionsBody(e){
   return '<div class="subhead first">Known associates</div>' + chips +
     '<div class="naddwrap"><input id="naddinput" placeholder="Add a known associate: type a name" autocomplete="off"><div id="naddlist"></div></div>' +
     '<div class="subhead">Family</div>' + famEditHTML(e) +
+    '<div class="arow"><button class="mini" data-act="famspace">Open in family space</button></div>' +
     '<div class="subhead">Connection timeline</div>' +
     '<div id="cprows">' + cps.map(function(p, i){ return cpRowHTML(p, i); }).join('') + '</div>' +
     '<div class="arow"><button class="mini" data-act="cpadd" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add phase</button></div>' +
@@ -1937,6 +1938,7 @@ function act(a, el){
     case 'nav': openPerson(parseInt(el.getAttribute('data-di'), 10), { push:true }); break;
     case 'rmnx': removeClose(e, el.getAttribute('data-u')); break;
     case 'famrm': removeFam(e, parseInt(el.getAttribute('data-i'), 10)); break;
+    case 'famspace': if(S.sel != null) famOpenSpaceFor(S.sel); break;
     case 'tagfilter':
       S.tag = { k:el.getAttribute('data-tagk'), v:el.getAttribute('data-tagv') };
       S.rail = 'people'; S.limit = 200; S.listOpen = true;
@@ -2549,7 +2551,11 @@ function dashShow(sec){
   if(sec === 'audit') renderAudit();
   else if(sec === 'orgs') renderDashOrgs();
   else if(sec === 'groups') renderDashGroups();
-  else if(sec === 'family') renderDashFamily();
+  else if(sec === 'family'){
+    /* the Family tab lands in the one shared space (JD 2026-10-12) */
+    if(!DFAM.open && famTrees(famDisplay()).trees.length){ DFAM.open = true; DFAM.focus = { type:'fit' }; DFSPACE.fresh = true; }
+    renderDashFamily();
+  }
 }
 function dashOpenPerson(di){
   AUD.fromAudit = true;
@@ -2717,7 +2723,12 @@ function grpRenameSave(oldName){
    source of truth — [[relation, person name], ...] per person, edited through
    queuePatch exactly like the profile editor's family section). Display adds
    the inverses and shared-parent siblings, mirroring the build. ----- */
-var DFAM = { editing:null, openTree:null, zoom:'fit', scale:1, lastTreeId:null, animateNext:false, walking:false };
+var DFAM = { editing:null, open:false, focus:null };
+/* Family SPACE (JD 2026-10-12): every bloodline tree lives in ONE
+   full-screen world the user pans/zooms like the 2D/3D maps — clusters
+   are the separate trees, nodes are circles, and a dashed connector
+   links a married-in spouse's instance to their home instance. */
+var DFSPACE = { cam:{ x:0, y:0, k:1 }, fit:true, glide:null, moved:false, layout:null, fresh:false };
 /* Tree colors are structural, never relative to a chosen person (JD
    2026-10-12 rebuild): bloodline members are tinted by generation, eldest
    generation first; a spouse who married into the family gets one color. */
@@ -2872,7 +2883,9 @@ function famTrees(disp){
    midpoint to a horizontal sibship bar, and each child hangs from that bar
    on the level directly below. There is no anchor person: positions and
    colors come only from the link graph itself. ----- */
-var DFT = { NW:156, NH:48, CGAP:30, UGAP:26, ROW:112, DROP:28 };
+/* node slots are sized for CIRCLES now: a 52px disc (radius CR, center
+   CY below the slot top) with the name and generation caption under it */
+var DFT = { NW:118, NH:92, CY:28, CR:26, CGAP:38, UGAP:34, ROW:150, DROP:26 };
 function famTreeModel(disp, tree, homes){
   var comp = tree.members, inComp = {};
   comp.forEach(function(di){ inComp[di] = 1; });
@@ -2967,7 +2980,7 @@ function famTreeModel(disp, tree, homes){
     if(u.partner != null){
       nodes.push({ di:u.partner, x:mx + DFT.NW + DFT.CGAP, y:gy });
       xOf[u.partner] = mx + DFT.NW + DFT.CGAP + DFT.NW / 2;
-      lines.push({ x1:mx + DFT.NW, y1:gy + DFT.NH / 2, x2:mx + DFT.NW + DFT.CGAP, y2:gy + DFT.NH / 2 });
+      lines.push({ x1:mx + DFT.NW / 2 + DFT.CR, y1:gy + DFT.CY, x2:mx + DFT.NW + DFT.CGAP + DFT.NW / 2 - DFT.CR, y2:gy + DFT.CY });
     }
     var headCx = mx + memberW / 2;
     if(blocks.length){
@@ -2979,7 +2992,7 @@ function famTreeModel(disp, tree, homes){
         centers.push({ cx:x.b.xOf[x.di] + kx, top:gen[x.di] * DFT.ROW });
         kx += x.b.w + DFT.UGAP;
       });
-      lines.push({ x1:headCx, y1:gy + DFT.NH, x2:headCx, y2:barY });
+      lines.push({ x1:headCx, y1:gy + DFT.CY, x2:headCx, y2:barY });
       lines.push({ x1:centers[0].cx, y1:barY, x2:centers[centers.length - 1].cx, y2:barY });
       centers.forEach(function(c){ lines.push({ x1:c.cx, y1:barY, x2:c.cx, y2:c.top }); });
     }
@@ -3025,98 +3038,188 @@ function famTreeModel(disp, tree, homes){
     var home = homes && homes[n.di];
     if(home && home !== tree) chips.push({ di:n.di, x:n.x, y:n.y + DFT.NH + 4, tid:home.id, title:home.title });
   });
-  return { nodes:nodes, lines:lines, chips:chips, gen:gen, w:totalW, h:maxY + DFT.NH + 12 + (chips.length ? 26 : 0), maxGen:maxGen, hasSpouse:hasSpouse,
+  return { nodes:nodes, lines:lines, chips:chips, gen:gen, w:totalW, h:maxY + DFT.NH + 16, maxGen:maxGen, hasSpouse:hasSpouse,
     styleOf:function(di){
       if(marriedIn(di)) return { c:FAM_SPOUSE_COLOR, cap:'Spouse' };
       var g = gen[di];
       return { c:FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)], cap:'Gen ' + (g + 1) };
     } };
 }
-function famTreeHTML(model){
-  /* Entrance choreography (JD 2026-10-12: the full-screen tree should
-     feel alive): when DFAM.animateNext is set, nodes carry a per-node
-     delay (generation by generation) and connector lines a draw delay;
-     the .anim CSS does the rest. Reduced motion never gets .anim. */
-  var anim = DFAM.animateNext && !dfReduced();
-  var lines = model.lines.map(function(l){
-    var dl = anim ? Math.max(0, (Math.max(l.y1, l.y2) / DFT.ROW) * 0.12 - 0.02) : 0;
-    return '<line pathLength="1" x1="' + l.x1 + '" y1="' + l.y1 + '" x2="' + l.x2 + '" y2="' + l.y2 + '"' +
-      (anim ? ' style="--dl:' + dl.toFixed(3) + 's"' : '') + '/>';
-  }).join('');
-  var seenGen = {};
-  var nodes = model.nodes.map(function(n){
-    var st = model.styleOf(n.di);
-    var g = model.gen[n.di] || 0, ix = (seenGen[g] = (seenGen[g] || 0) + 1);
-    var nd = 0.05 + g * 0.12 + (ix - 1) * 0.045;
-    return '<button type="button" class="dfamnode' + (DFAM.editing === n.di ? ' editing' : '') + '" data-dfnode data-di="' + n.di +
-      '" style="left:' + n.x + 'px;top:' + n.y + 'px;--rc:' + st.c + (anim ? ';--nd:' + nd.toFixed(3) + 's' : '') +
-      '"><b>' + esc(dispName(D.directory[n.di])) + '</b><span>' + st.cap + '</span></button>';
-  }).join('');
-  var chips = (model.chips || []).map(function(c){
-    return '<button type="button" class="dfamhome" data-dfhome="' + c.tid + '" style="left:' + c.x + 'px;top:' + c.y +
-      'px' + (anim ? ';--nd:0.55s' : '') + '" title="Open their home family">→ ' + esc(c.title) + '</button>';
-  }).join('');
-  return '<div class="dftree' + (anim ? ' anim' : '') + '" style="width:' + model.w + 'px;height:' + model.h + 'px">' +
-    '<svg class="dftree-lines" width="' + model.w + '" height="' + model.h + '">' + lines + '</svg>' + nodes + chips + '</div>';
-}
 function dfReduced(){
   return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 }
-/* Scale + center the open tree inside its scroll viewport: 'fit' mode
-   scales the whole tree to use the viewport (small families grow to a
-   readable size, capped at 1.6x; large chains floor at 0.3 and keep
-   pan/scroll); a numeric DFAM.zoom is a manual scale. The stage is sized
-   to the scaled tree (or the viewport, whichever is larger) and the tree
-   is centered inside it. */
-function famFit(){
-  var sc = $('#dashsec-family .dfamfsscroll'), stage = $('#dashsec-family .dfamstage'), tree = $('#dashsec-family .dftree');
-  if(!sc || !stage || !tree) return;
-  var tw = parseFloat(tree.style.width) || 0, th = parseFloat(tree.style.height) || 0;
-  if(!tw || !th) return;
-  var vw = Math.max(200, sc.clientWidth - 32), vh = Math.max(200, sc.clientHeight - 32);
-  var s;
-  if(DFAM.zoom === 'fit' || DFAM.zoom == null){
-    s = Math.min(vw / (tw + 56), vh / (th + 56));
-    s = Math.max(0.3, Math.min(1.6, s));
-  } else s = DFAM.zoom;
-  DFAM.scale = s;
-  var sw = Math.max(vw, Math.ceil(tw * s) + 16), sh = Math.max(vh, Math.ceil(th * s) + 16);
-  stage.style.width = sw + 'px';
-  stage.style.height = sh + 'px';
-  tree.style.left = Math.max(0, Math.round((sw - tw * s) / 2)) + 'px';
-  tree.style.top = Math.max(0, Math.round((sh - th * s) / 2)) + 'px';
-  tree.style.transform = 'scale(' + s + ')';
+/* ----- the combined family space: shelf-pack every bloodline tree into
+   one world. Each cluster keeps its famTreeModel geometry untouched;
+   clusters sit in roomy rows with the family name as a quiet label
+   above, and married-in instances get a dashed connector to the same
+   person's home (blood) instance in their home cluster. ----- */
+function famSpaceLayout(disp, ft){
+  var trees = ft.trees, homes = ft.homes;
+  var models = trees.map(function(t){ return famTreeModel(disp, t, homes); });
+  var LABEL = 52, GX = 320, GY = 280, PAD = 150;
+  var totalArea = 0;
+  models.forEach(function(m){ totalArea += (m.w + GX) * (m.h + LABEL + GY); });
+  var target = Math.max(1500, Math.min(3400, Math.ceil(Math.sqrt(totalArea) * 1.15)));
+  var clusters = [], cx = PAD, cy = PAD, rowH = 0;
+  trees.forEach(function(t, i){
+    var m = models[i], chh = m.h + LABEL;
+    if(cx > PAD && cx + m.w > PAD + target){ cx = PAD; cy += rowH + GY; rowH = 0; }
+    clusters.push({ tree:t, model:m, ox:cx, oy:cy + LABEL, w:m.w, h:m.h, labelY:cy });
+    cx += m.w + GX; if(chh > rowH) rowH = chh;
+  });
+  var W = 0, H = 0;
+  clusters.forEach(function(c){ if(c.ox + c.w > W) W = c.ox + c.w; if(c.oy + c.h > H) H = c.oy + c.h; });
+  W += PAD; H += PAD;
+  var centers = {};
+  clusters.forEach(function(c){
+    c.model.nodes.forEach(function(n){
+      centers[c.tree.id + '|' + n.di] = { x:c.ox + n.x + DFT.NW / 2, y:c.oy + n.y + DFT.CY };
+    });
+  });
+  var links = [], seenLink = {};
+  clusters.forEach(function(c){
+    c.model.nodes.forEach(function(n){
+      if(c.tree.blood[n.di]) return;
+      var home = homes[n.di];
+      if(!home || home === c.tree) return;
+      var a = centers[c.tree.id + '|' + n.di], b = centers[home.id + '|' + n.di];
+      if(!a || !b || seenLink[n.di + '|' + c.tree.id]) return;
+      seenLink[n.di + '|' + c.tree.id] = 1;
+      links.push({ di:n.di, x1:a.x, y1:a.y, x2:b.x, y2:b.y, from:c.tree.id, to:home.id });
+    });
+  });
+  return { trees:trees, homes:homes, clusters:clusters, W:W, H:H, links:links, models:models };
 }
-function famOpenTree(id){
-  DFAM.openTree = id; DFAM.editing = null; DFAM.zoom = 'fit';
+function famSpaceHTML(L){
+  /* Entrance stays restrained in the big space (JD 2026-10-12): the
+     whole world fades in and nodes rise gently with a small per-cluster
+     delay — no generation-by-generation stagger across every tree. */
+  var anim = DFSPACE.fresh && !dfReduced();
+  var clusters = L.clusters.map(function(c, ci){
+    var m = c.model;
+    var lines = m.lines.map(function(l){
+      return '<line x1="' + l.x1 + '" y1="' + l.y1 + '" x2="' + l.x2 + '" y2="' + l.y2 + '"/>';
+    }).join('');
+    var nodes = m.nodes.map(function(n, ni){
+      var st = m.styleOf(n.di);
+      var home = !c.tree.blood[n.di] ? L.homes[n.di] : null;
+      var mi = !!(home && home !== c.tree);
+      var nm = dispName(D.directory[n.di]);
+      return '<button type="button" class="dfnode' + (DFAM.editing === n.di ? ' editing' : '') + (mi ? ' mi' : '') +
+        '" data-dfnode data-di="' + n.di + '" data-tid="' + c.tree.id + '"' + (mi ? ' data-home="' + home.id + '"' : '') +
+        ' style="left:' + n.x + 'px;top:' + n.y + 'px;--rc:' + st.c +
+        (anim ? ';--nd:' + Math.min(0.8, ci * 0.06 + ni * 0.012).toFixed(3) + 's' : '') +
+        '" title="' + esc(nm) + (mi ? ' — home family: ' + esc(home.title) : '') + '">' +
+        '<span class="dfdisc">' + esc(famInitials(nm)) + '</span>' +
+        (mi ? '<span class="dfhomebadge" title="Home family: ' + esc(home.title) + '">⌂</span>' : '') +
+        '<span class="dfname">' + esc(nm) + '</span><span class="dfcap">' + st.cap + '</span></button>';
+    }).join('');
+    return '<div class="dfclabel" style="left:' + c.ox + 'px;top:' + c.labelY + 'px">' + esc(c.tree.title) +
+      '<span>' + c.tree.members.length + (c.tree.members.length === 1 ? ' person' : ' people') + ' · ' +
+      (c.model.maxGen + 1) + (c.model.maxGen === 0 ? ' generation' : ' generations') + '</span></div>' +
+      '<div class="dfcluster" style="left:' + c.ox + 'px;top:' + c.oy + 'px;width:' + c.w + 'px;height:' + c.h + 'px">' +
+      '<svg class="dfclines" width="' + c.w + '" height="' + c.h + '">' + lines + '</svg>' + nodes + '</div>';
+  }).join('');
+  var xl = L.links.map(function(l){
+    var mx1 = l.x1 + (l.x2 - l.x1) * 0.35, mx2 = l.x1 + (l.x2 - l.x1) * 0.65;
+    return '<path class="dfxlink" data-dfx="' + l.di + '" d="M' + l.x1.toFixed(1) + ' ' + l.y1.toFixed(1) +
+      ' C' + mx1.toFixed(1) + ' ' + l.y1.toFixed(1) + ',' + mx2.toFixed(1) + ' ' + l.y2.toFixed(1) + ',' +
+      l.x2.toFixed(1) + ' ' + l.y2.toFixed(1) + '"/>';
+  }).join('');
+  return '<div class="dfspace-world' + (anim ? ' anim' : '') + '" style="width:' + L.W + 'px;height:' + L.H + 'px">' +
+    '<svg class="dfxsvg" width="' + L.W + '" height="' + L.H + '">' + xl + '</svg>' + clusters + '</div>';
+}
+/* ----- space camera: screen = world * k + (x, y). Drag pans (with the
+   momentum the tree overlay had), wheel/pinch zoom around the cursor,
+   and glides animate between framings. Reduced motion jumps. ----- */
+function dfViewport(){ return $('#dashsec-family .dfspace'); }
+function dfApplyCam(){
+  var w = $('#dashsec-family .dfspace-world'); if(!w) return;
+  var c = DFSPACE.cam;
+  w.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) scale(' + c.k + ')';
+}
+function dfCamFor(bx, by, bw, bh, maxK){
+  var vp = dfViewport(); if(!vp) return null;
+  var k = Math.min(vp.clientWidth / Math.max(1, bw), vp.clientHeight / Math.max(1, bh));
+  k = Math.max(0.04, Math.min(maxK || 1.1, k));
+  return { k:k, x: vp.clientWidth / 2 - (bx + bw / 2) * k, y: vp.clientHeight / 2 - (by + bh / 2) * k };
+}
+function dfStopGlide(){ if(DFSPACE.glide){ cancelAnimationFrame(DFSPACE.glide.raf); DFSPACE.glide = null; } }
+function dfGlideTo(target, dur){
+  if(!target) return;
+  if(dfReduced() || !dur){ dfStopGlide(); DFSPACE.cam = target; dfApplyCam(); return; }
+  dfStopGlide();
+  var from = { x:DFSPACE.cam.x, y:DFSPACE.cam.y, k:DFSPACE.cam.k }, t0 = performance.now();
+  var g = DFSPACE.glide = { raf:0 };
+  function step(now){
+    if(DFSPACE.glide !== g) return;
+    var t = Math.min(1, (now - t0) / dur);
+    var e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    DFSPACE.cam = { x:from.x + (target.x - from.x) * e, y:from.y + (target.y - from.y) * e, k:from.k + (target.k - from.k) * e };
+    dfApplyCam();
+    if(t < 1) g.raf = requestAnimationFrame(step); else DFSPACE.glide = null;
+  }
+  g.raf = requestAnimationFrame(step);
+}
+function dfFitAll(anim){
+  var L = DFSPACE.layout; if(!L) return;
+  DFSPACE.fit = true;
+  dfGlideTo(dfCamFor(0, 0, L.W, L.H, 1), anim ? 650 : 0);
+}
+function dfGlideCluster(tid, dur){
+  var L = DFSPACE.layout; if(!L) return;
+  var c = null;
+  L.clusters.forEach(function(x){ if(x.tree.id === tid) c = x; });
+  if(!c) return;
+  DFSPACE.fit = false;
+  dfGlideTo(dfCamFor(c.ox - 80, c.labelY - 40, c.w + 160, c.h + 130, 1.05), dur == null ? 650 : dur);
+}
+function dfGlidePerson(di){
+  var L = DFSPACE.layout; if(!L) return;
+  var home = L.homes[di], best = null;
+  L.clusters.forEach(function(c){
+    c.model.nodes.forEach(function(n){
+      if(n.di !== di) return;
+      var p = { x:c.ox + n.x + DFT.NW / 2, y:c.oy + n.y + DFT.CY, isHome:home === c.tree };
+      if(!best || (p.isHome && !best.isHome)) best = p;
+    });
+  });
+  if(!best) return;
+  var vp = dfViewport(); if(!vp) return;
+  var k = Math.max(DFSPACE.cam.k, 0.8);
+  DFSPACE.fit = false;
+  dfGlideTo({ k:k, x:vp.clientWidth / 2 - best.x * k, y:vp.clientHeight / 2 - best.y * k }, 650);
+}
+function dfInitSpace(){
+  if(!DFSPACE.layout) return;
+  dfApplyCam();
+  var f = DFAM.focus; DFAM.focus = null;
+  DFSPACE.fresh = false;
+  if(!f) return;
+  if(f.type === 'tree') dfGlideCluster(f.id, 700);
+  else if(f.type === 'person') dfGlidePerson(f.di);
+  else dfFitAll(true);
+}
+function famOpenSpace(focus){
+  DFAM.open = true;
+  DFAM.focus = focus || { type:'fit' };
+  DFSPACE.fresh = true;
   renderDashFamily();
 }
-function famCloseTree(){
-  if(DFAM.openTree == null) return;
-  var fs = $('#dashsec-family .dfamfs');
-  if(fs && !dfReduced()){
-    fs.classList.add('closing');
-    setTimeout(function(){ DFAM.openTree = null; DFAM.editing = null; renderDashFamily(); }, 140);
-  } else {
-    DFAM.openTree = null; DFAM.editing = null; renderDashFamily();
-  }
+function famCloseSpace(){
+  if(!DFAM.open) return;
+  DFAM.open = false; DFAM.editing = null; DFAM.focus = null;
+  dfStopGlide();
+  renderDashFamily();
 }
-/* Walking between families: the current tree fades/scales slightly out,
-   then the new tree choreographs in. Instant under reduced motion. */
-function famWalkTo(id){
-  if(DFAM.openTree == null || DFAM.openTree === id){ famOpenTree(id); return; }
-  var fs = $('#dashsec-family .dfamfs');
-  if(!fs || dfReduced() || DFAM.walking){
-    DFAM.openTree = id; DFAM.editing = null; DFAM.zoom = 'fit'; renderDashFamily();
-    return;
-  }
-  DFAM.walking = true;
-  fs.classList.add('walkout');
-  setTimeout(function(){
-    DFAM.walking = false;
-    DFAM.openTree = id; DFAM.editing = null; DFAM.zoom = 'fit';
-    renderDashFamily();
-  }, 170);
+/* from a profile: land in the one space, gliding to that person's home
+   cluster (their blood instance) */
+function famOpenSpaceFor(di){
+  openAudit();
+  DFAM.open = true;
+  DFAM.focus = { type:'person', di:di };
+  DFSPACE.fresh = true;
+  dashShow('family');
 }
 function famEditorHTML(di){
   var e = D.directory[di], links = famLinks(e);
@@ -3133,12 +3236,13 @@ function famEditorHTML(di){
     '<input class="dfq" data-dfq="' + di + '" placeholder="Add family member: type a name" autocomplete="off"></div>' +
     '<div class="dfamhits" data-dfamhits="' + di + '"></div></div>';
 }
-/* Families render COLLAPSED by default (JD 2026-10-12): the section is a
-   compact list of bloodline cards — name from the root surname, headcount
-   of the rendered tree, generations, eldest names, and the home trees of
-   any married-in spouses. A card's expand control opens the full
-   descendant tree in a full-screen overlay (DFAM.openTree = tree id),
-   where the tree, the role legend, and the tap-a-node link editor live. */
+/* The Family section is a compact list of bloodline cards — name from
+   the root surname, headcount, generations, eldest names, and the home
+   trees of any married-in spouses — behind the one shared SPACE (JD
+   2026-10-12): entering the tab lands in the space, where every tree
+   sits in a single pan/zoom world of circle nodes; a card's Open button
+   enters the space gliding to that family, and a married-in spouse's
+   dashed connector (or tapping their node) walks to their home tree. */
 function renderDashFamily(){
   var el = $('#dashsec-family'); if(!el) return;
   var disp = famDisplay();
@@ -3151,7 +3255,8 @@ function renderDashFamily(){
     return { names:top.slice(0, 2).map(function(n){ return dispName(D.directory[n.di]); }), extra:top.length - 2 };
   }
   var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3>' +
-    '<p class="dim" style="margin:0;font-size:12.5px">Each tree is one bloodline: blood descendants of its founders, plus their spouses shown as married in. A spouse\'s own family stays in its own tree — follow the link under a married-in spouse (or the "Spouses from" line on a card) to walk across. Expand a family to see its full tree and edit its links.</p></div>';
+    '<p class="dim" style="margin:0 0 10px;font-size:12.5px">Every family lives in one shared space: each tree is a bloodline — blood descendants of its founders, plus spouses shown as married in. A dashed pink line links a married-in spouse to their own home family; tap their circle to glide there. Drag to pan, scroll or pinch to zoom, tap anyone to edit their links.</p>' +
+    (trees.length ? '<button type="button" class="mini" data-dfopen="1">Open family space</button>' : '') + '</div>';
   if(!trees.length) h += '<p class="dim">No family links on file yet. Add links from a profile\'s Family section.</p>';
   h += trees.map(function(t, ci){
     var model = models[ci], ti = topInfo(t, model);
@@ -3162,32 +3267,35 @@ function renderDashFamily(){
     }).join(', ') + '</div>' : '';
     return '<div class="dfam dfamcard"><div class="dfamcardmain"><h4 class="dfamtitle">' + esc(t.title) + '</h4>' +
       '<div class="dfammeta">' + esc(meta) + '</div>' + from + '</div>' +
-      '<button type="button" class="mini neutral dfamexpand" data-dfexpand="' + t.id + '">Expand tree</button></div>';
+      '<button type="button" class="mini neutral dfamexpand" data-dfexpand="' + t.id + '">Open in space</button></div>';
   }).join('');
-  var openT = null, openM = null;
-  if(DFAM.openTree != null) trees.forEach(function(t, ci){ if(t.id === DFAM.openTree){ openT = t; openM = models[ci]; } });
-  if(openT){
+  if(DFAM.open && trees.length){
+    var L = famSpaceLayout(disp, ft);
+    DFSPACE.layout = L;
+    var maxGen = 0, anySpouse = false;
+    L.models.forEach(function(m){ if(m.maxGen > maxGen) maxGen = m.maxGen; if(m.hasSpouse) anySpouse = true; });
     var leg = [];
-    for(var g = 0; g <= openM.maxGen; g++)
+    for(var g = 0; g <= maxGen; g++)
       leg.push('<span class="dfamleg"><i style="background:' + FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)] + '"></i>Generation ' + (g + 1) + (g === 0 ? ' · eldest' : '') + '</span>');
-    if(openM.hasSpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
-    var oedit = DFAM.editing != null && openT.members.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
-    DFAM.animateNext = DFAM.lastTreeId !== DFAM.openTree;
-    h += '<div class="dfamfs' + (DFAM.animateNext ? '' : ' still') + '"><div class="dfamfssheet">' +
-      '<div class="dfamfsbar"><b>' + esc(openT.title) + '</b><div class="dfamlegend">' + leg.join('') + '</div>' +
-      '<div class="dfamzoom" role="group" aria-label="Tree zoom">' +
+    if(anySpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
+    var idx = L.clusters.map(function(c){
+      return '<button type="button" data-dfgo="' + c.tree.id + '">' + esc(c.tree.title.replace(/ family$/, '')) + '</button>';
+    }).join('');
+    var oedit = DFAM.editing != null ? '<div class="dfspace-edit">' + famEditorHTML(DFAM.editing) + '</div>' : '';
+    h += '<div class="dfamfs"><div class="dfamfssheet">' +
+      '<div class="dfamfsbar"><b>Family space</b><div class="dfspidx" role="group" aria-label="Families">' + idx + '</div>' +
+      '<div class="dfamlegend">' + leg.join('') + '</div>' +
+      '<div class="dfamzoom" role="group" aria-label="Space zoom">' +
       '<button type="button" data-dfzoom="fit">Fit</button><button type="button" data-dfzoom="100">100%</button>' +
       '<button type="button" data-dfzoom="out" aria-label="Zoom out">−</button><button type="button" data-dfzoom="in" aria-label="Zoom in">+</button></div>' +
       '<button type="button" class="mini neutral" data-dfclose="1">Close</button></div>' +
-      '<div class="dfamfsscroll"><div class="dfamstage">' + famTreeHTML(openM) + '</div>' + oedit + '</div>' +
+      '<div class="dfspace">' + famSpaceHTML(L) + oedit + '</div>' +
       '</div></div>';
-  } else DFAM.openTree = null;
+  }
   el.innerHTML = h;
-  if(openT){ DFAM.lastTreeId = DFAM.openTree; famFit(); }
-  else DFAM.lastTreeId = null;
-  DFAM.animateNext = false;
-  document.body.classList.toggle('dfamfsopen', !!openT);
+  document.body.classList.toggle('dfamfsopen', !!(DFAM.open && trees.length));
   $('#aushown').textContent = trees.length + (trees.length === 1 ? ' family' : ' families');
+  if(DFAM.open && trees.length) dfInitSpace();
 }
 function dashFamSearch(input){
   var di = parseInt(input.getAttribute('data-dfq'), 10);
@@ -5064,24 +5172,37 @@ function bind(){
   var famEl = $('#dashsec-family');
   famEl.addEventListener('click', function(ev){
     var ex = ev.target.closest('[data-dfexpand]');
-    if(ex){ famOpenTree(ex.getAttribute('data-dfexpand')); return; }
+    if(ex){ famOpenSpace({ type:'tree', id:ex.getAttribute('data-dfexpand') }); return; }
+    var opn = ev.target.closest('[data-dfopen]');
+    if(opn){ famOpenSpace({ type:'fit' }); return; }
     var hm = ev.target.closest('[data-dfhome]');
-    if(hm){ famWalkTo(hm.getAttribute('data-dfhome')); return; }
+    if(hm){ famOpenSpace({ type:'tree', id:hm.getAttribute('data-dfhome') }); return; }
+    var go = ev.target.closest('[data-dfgo]');
+    if(go){ dfGlideCluster(go.getAttribute('data-dfgo')); return; }
     var zm = ev.target.closest('[data-dfzoom]');
     if(zm){
-      var z = zm.getAttribute('data-dfzoom');
-      if(z === 'fit') DFAM.zoom = 'fit';
-      else if(z === '100') DFAM.zoom = 1;
-      else { var cur = DFAM.scale || 1; DFAM.zoom = Math.max(0.2, Math.min(2.5, cur * (z === 'in' ? 1.2 : 1 / 1.2))); }
-      famFit();
+      var z = zm.getAttribute('data-dfzoom'), vp = dfViewport();
+      if(z === 'fit') dfFitAll(true);
+      else if(vp){
+        var cx = vp.clientWidth / 2, cy = vp.clientHeight / 2, c = DFSPACE.cam;
+        var wx = (cx - c.x) / c.k, wy = (cy - c.y) / c.k;
+        var k2 = z === '100' ? 1 : Math.max(0.05, Math.min(2.5, c.k * (z === 'in' ? 1.25 : 1 / 1.25)));
+        DFSPACE.fit = false;
+        dfGlideTo({ k:k2, x:cx - wx * k2, y:cy - wy * k2 }, 300);
+      }
       return;
     }
     var cl = ev.target.closest('[data-dfclose]');
-    if(cl || (ev.target.classList && ev.target.classList.contains('dfamfs'))){ famCloseTree(); return; }
+    if(cl || (ev.target.classList && ev.target.classList.contains('dfamfs'))){ famCloseSpace(); return; }
     var an = ev.target.closest('[data-dfnode]');
     if(an){
-      DFAM.editing = parseInt(an.getAttribute('data-di'), 10);
-      renderDashFamily(); return;
+      if(DFSPACE.moved){ DFSPACE.moved = false; return; }
+      var ndi = parseInt(an.getAttribute('data-di'), 10);
+      var goHome = !!an.getAttribute('data-home');
+      DFAM.editing = ndi;
+      renderDashFamily();
+      if(goHome) dfGlidePerson(ndi);
+      return;
     }
     var rm = ev.target.closest('[data-dfrm]');
     if(rm){ dashFamRemove(parseInt(rm.getAttribute('data-dfrm'), 10), parseInt(rm.getAttribute('data-i'), 10)); return; }
@@ -5097,46 +5218,99 @@ function bind(){
     if(ev.target.id && ev.target.id.indexOf('dfamrel-') === 0) famRelSave(ev.target.value);
   });
   document.addEventListener('keydown', function(ev){
-    if(ev.key === 'Escape' && DFAM.openTree != null && !famEl.hidden) famCloseTree();
+    if(ev.key === 'Escape' && DFAM.open && !famEl.hidden) famCloseSpace();
   });
   window.addEventListener('resize', function(){
-    if(DFAM.openTree != null && DFAM.zoom === 'fit') famFit();
+    if(DFAM.open && DFSPACE.fit) dfFitAll(false);
   });
-  var fspan = null, fsVel = null, fsRaf = 0;
-  function famPanMomentum(){
-    if(!fsVel) return;
-    var sc = fsVel.el;
-    sc.scrollLeft -= fsVel.x; sc.scrollTop -= fsVel.y;
-    fsVel.x *= 0.94; fsVel.y *= 0.94;
-    if(Math.abs(fsVel.x) < 0.4 && Math.abs(fsVel.y) < 0.4){ fsVel = null; return; }
-    fsRaf = requestAnimationFrame(famPanMomentum);
+  /* space navigation: drag pans with momentum, two pointers pinch-zoom
+     around their midpoint, wheel zooms around the cursor */
+  var dfPtrs = {}, dfPan = null, dfPinch = null, dfVel = null, dfRaf = 0;
+  function dfMomStep(){
+    if(!dfVel) return;
+    DFSPACE.cam.x += dfVel.x; DFSPACE.cam.y += dfVel.y;
+    dfVel.x *= 0.94; dfVel.y *= 0.94;
+    dfApplyCam();
+    if(Math.abs(dfVel.x) < 0.3 && Math.abs(dfVel.y) < 0.3){ dfVel = null; return; }
+    dfRaf = requestAnimationFrame(dfMomStep);
   }
   famEl.addEventListener('pointerdown', function(ev){
-    var sc = ev.target.closest ? ev.target.closest('.dfamfsscroll') : null;
-    if(!sc || (ev.target.closest && ev.target.closest('button, input, select, textarea, a, .dfamedit'))) return;
-    cancelAnimationFrame(fsRaf); fsVel = null;
-    fspan = { el: sc, x: ev.clientX, y: ev.clientY, sl: sc.scrollLeft, st: sc.scrollTop, moved: false,
-      lx: ev.clientX, ly: ev.clientY, lt: performance.now(), vx: 0, vy: 0 };
+    var vp = ev.target.closest ? ev.target.closest('.dfspace') : null;
+    if(!vp || (ev.target.closest && ev.target.closest('button, input, select, textarea, a, .dfamedit'))) return;
+    dfStopGlide(); cancelAnimationFrame(dfRaf); dfVel = null;
+    dfPtrs[ev.pointerId] = { x:ev.clientX, y:ev.clientY };
+    var ids = Object.keys(dfPtrs);
+    if(ids.length === 2){
+      var pa = dfPtrs[ids[0]], pb = dfPtrs[ids[1]];
+      dfPinch = { d:Math.hypot(pa.x - pb.x, pa.y - pb.y), mx:(pa.x + pb.x) / 2, my:(pa.y + pb.y) / 2 };
+      dfPan = null;
+    } else {
+      dfPan = { x:ev.clientX, y:ev.clientY, lx:ev.clientX, ly:ev.clientY, lt:performance.now(), vx:0, vy:0, moved:false };
+    }
+    DFSPACE.fit = false;
   });
   document.addEventListener('pointermove', function(ev){
-    if(!fspan) return;
-    var dx = ev.clientX - fspan.x, dy = ev.clientY - fspan.y;
-    if(Math.abs(dx) + Math.abs(dy) > 4) fspan.moved = true;
-    if(fspan.moved){ fspan.el.scrollLeft = fspan.sl - dx; fspan.el.scrollTop = fspan.st - dy; }
-    var now = performance.now(), dt = now - fspan.lt;
+    if(!dfPtrs[ev.pointerId]) return;
+    dfPtrs[ev.pointerId] = { x:ev.clientX, y:ev.clientY };
+    var ids = Object.keys(dfPtrs);
+    if(dfPinch && ids.length === 2){
+      var pa = dfPtrs[ids[0]], pb = dfPtrs[ids[1]];
+      var d = Math.hypot(pa.x - pb.x, pa.y - pb.y), mx = (pa.x + pb.x) / 2, my = (pa.y + pb.y) / 2;
+      var vp = dfViewport();
+      if(vp && dfPinch.d){
+        var r = vp.getBoundingClientRect(), cx = mx - r.left, cy = my - r.top, c = DFSPACE.cam;
+        var wx = (cx - c.x) / c.k, wy = (cy - c.y) / c.k;
+        var k2 = Math.max(0.04, Math.min(2.5, c.k * (d / dfPinch.d)));
+        DFSPACE.cam = { k:k2, x:cx - wx * k2 + (mx - dfPinch.mx), y:cy - wy * k2 + (my - dfPinch.my) };
+        dfApplyCam();
+        DFSPACE.moved = true;
+      }
+      dfPinch = { d:d, mx:mx, my:my };
+      return;
+    }
+    if(!dfPan) return;
+    var dx = ev.clientX - dfPan.x, dy = ev.clientY - dfPan.y;
+    if(Math.abs(dx) + Math.abs(dy) > 4) dfPan.moved = true;
+    if(dfPan.moved){
+      DFSPACE.cam.x += ev.clientX - dfPan.lx;
+      DFSPACE.cam.y += ev.clientY - dfPan.ly;
+      dfApplyCam();
+      DFSPACE.moved = true;
+    }
+    var now = performance.now(), dt = now - dfPan.lt;
     if(dt > 0){
-      fspan.vx = 0.7 * fspan.vx + 0.3 * ((ev.clientX - fspan.lx) / dt * 16);
-      fspan.vy = 0.7 * fspan.vy + 0.3 * ((ev.clientY - fspan.ly) / dt * 16);
-      fspan.lx = ev.clientX; fspan.ly = ev.clientY; fspan.lt = now;
+      dfPan.vx = 0.7 * dfPan.vx + 0.3 * ((ev.clientX - dfPan.lx) / dt * 16);
+      dfPan.vy = 0.7 * dfPan.vy + 0.3 * ((ev.clientY - dfPan.ly) / dt * 16);
+      dfPan.lx = ev.clientX; dfPan.ly = ev.clientY; dfPan.lt = now;
     }
   });
-  document.addEventListener('pointerup', function(){
-    if(fspan && fspan.moved && !dfReduced() && (Math.abs(fspan.vx) > 0.6 || Math.abs(fspan.vy) > 0.6)){
-      fsVel = { el: fspan.el, x: fspan.vx, y: fspan.vy };
-      fsRaf = requestAnimationFrame(famPanMomentum);
+  function dfPtrUp(ev){
+    var wasPinch = !!dfPinch;
+    delete dfPtrs[ev.pointerId];
+    if(!Object.keys(dfPtrs).length) dfPinch = null;
+    if(dfPan && !wasPinch){
+      if(dfPan.moved && !dfReduced() && (Math.abs(dfPan.vx) > 0.6 || Math.abs(dfPan.vy) > 0.6)){
+        dfVel = { x:dfPan.vx, y:dfPan.vy };
+        dfRaf = requestAnimationFrame(dfMomStep);
+      }
+      dfPan = null;
     }
-    fspan = null;
-  });
+    if(DFSPACE.moved) setTimeout(function(){ DFSPACE.moved = false; }, 60);
+  }
+  document.addEventListener('pointerup', dfPtrUp);
+  document.addEventListener('pointercancel', dfPtrUp);
+  famEl.addEventListener('wheel', function(ev){
+    var vp = ev.target.closest ? ev.target.closest('.dfspace') : null;
+    if(!vp || (ev.target.closest && ev.target.closest('.dfamedit'))) return;
+    ev.preventDefault();
+    dfStopGlide(); cancelAnimationFrame(dfRaf); dfVel = null;
+    var r = vp.getBoundingClientRect(), cx = ev.clientX - r.left, cy = ev.clientY - r.top, c = DFSPACE.cam;
+    var wx = (cx - c.x) / c.k, wy = (cy - c.y) / c.k;
+    var k2 = Math.max(0.04, Math.min(2.5, c.k * Math.exp(-ev.deltaY * 0.0016)));
+    DFSPACE.cam = { k:k2, x:cx - wx * k2, y:cy - wy * k2 };
+    DFSPACE.fit = false;
+    dfApplyCam();
+  }, { passive:false });
   $('#qaback').addEventListener('click', closeQuick);
   $('#qaundo').addEventListener('click', doUndo);
   $('#qaredo').addEventListener('click', doRedo);
