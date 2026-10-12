@@ -1,27 +1,27 @@
 {
-  "name": "Caden Colbert",
-  "slug": "caden-colbert",
-  "category": "peer",
-  "role": "CFA Friend · Golf Buddy",
-  "period": "~2012 – 2018",
-  "standing": "",
-  "description": "Son of DJ Colbert. Part of the CFA golf group and broader CFC social world. His older brother Judson became a closer friend of JD's in 2016. A sister, Kate Colbert, appeared at ski trips and the 2016 NYC class trip.",
-  "bio": "",
-  "chips": [],
-  "sources": [
-    "legacy"
-  ],
-  "friendsdb": {
-    "relationship_type": "Friend",
-    "groups": "CFC, NTC",
-    "closeness_tier": "Regular",
-    "state": "Closed",
-    "standing": "Strained",
-    "trajectory": "Flat",
-    "trend": "flat",
-    "personal_context": "Exposed",
-    "shared_interests": "",
-    "years_known": "15",
-    "phone": "(315)742-7278"
-  }
+ "name": "Caden Colbert",
+ "slug": "caden-colbert",
+ "category": "peer",
+ "role": "CFA Friend · Golf Buddy",
+ "period": "~2012 – 2018",
+ "standing": "",
+ "description": "Potsdam-area friend from the CFC community. Married Ysabella (Bella) Colbert; JD filmed their wedding in 2021.",
+ "bio": "",
+ "chips": [],
+ "sources": [
+  "legacy"
+ ],
+ "friendsdb": {
+  "relationship_type": "Friend",
+  "groups": "CFC, NTC",
+  "closeness_tier": "Regular",
+  "state": "Closed",
+  "standing": "Strained",
+  "trajectory": "Flat",
+  "trend": "flat",
+  "personal_context": "Exposed",
+  "shared_interests": "",
+  "years_known": "15",
+  "phone": "(315)742-7278"
+ }
 }
