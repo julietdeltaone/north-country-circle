@@ -2358,20 +2358,13 @@ function grpRenameSave(oldName){
    source of truth — [[relation, person name], ...] per person, edited through
    queuePatch exactly like the profile editor's family section). Display adds
    the inverses and shared-parent siblings, mirroring the build. ----- */
-var DFAM = { anchor:{}, editing:null, q:{} };
-/* Role colors for the family tree (JD 2026-10-12): roles are relative to the
-   anchored person; clicking any node re-anchors the tree on them. */
-var FAM_ROLE = {
-  self:    { label:'Self',            c:'#ece9e2' },
-  spouse:  { label:'Spouse',          c:'#e0688a' },
-  parent:  { label:'Parent',          c:'#7fa8ff' },
-  child:   { label:'Child',           c:'#c9a6f2' },
-  sibling: { label:'Sibling',         c:'#f0b44c' },
-  extended:{ label:'Extended family', c:'#8b94a3' }
-};
-var FAM_REL_LABEL = { parents:'Parent of', spouses:'Spouse of', children:'Child of', siblings:'Sibling of' };
+var DFAM = { editing:null };
+/* Tree colors are structural, never relative to a chosen person (JD
+   2026-10-12 rebuild): bloodline members are tinted by generation, eldest
+   generation first; a spouse who married into the family gets one color. */
+var FAM_GEN_COLORS = ['#7fa8ff', '#c9a6f2', '#6fd3a7', '#f0b44c', '#f28ba8'];
+var FAM_SPOUSE_COLOR = '#e0688a';
 var FAM_INVERSE = { parent:'children', spouse:'spouses', child:'parents', sibling:'siblings' };
-var FAM_REL_OF = { parents:'parent', spouses:'spouse', children:'child', siblings:'sibling' };
 function famDisplay(){
   var disp = {};
   function slot(di){ return disp[di] || (disp[di] = { parents:[], spouses:[], children:[], siblings:[] }); }
@@ -2421,20 +2414,161 @@ function famComponents(disp){
   });
   return comps;
 }
-function famRoleOf(disp, anchor, di){
-  if(di === anchor) return 'self';
-  var a = disp[anchor] || {};
-  function has(rk){ return (a[rk] || []).some(function(x){ return x.di === di; }); }
-  if(has('spouses')) return 'spouse';
-  if(has('parents')) return 'parent';
-  if(has('children')) return 'child';
-  if(has('siblings')) return 'sibling';
-  return 'extended';
+/* ----- descendant-tree layout, following the standard genealogy chart
+   convention (pedigree / descendant charts as drawn by genealogy software):
+   the eldest generation sits at the top; partners stand side by side joined
+   by a horizontal couple line; a vertical drop line falls from the couple's
+   midpoint to a horizontal sibship bar, and each child hangs from that bar
+   on the level directly below. There is no anchor person: positions and
+   colors come only from the link graph itself. ----- */
+var DFT = { NW:156, NH:48, CGAP:30, UGAP:26, ROW:112, DROP:28 };
+function famTreeModel(disp, comp){
+  var inComp = {};
+  comp.forEach(function(di){ inComp[di] = 1; });
+  function rel(di, rk){
+    return ((disp[di] && disp[di][rk]) || []).map(function(x){ return x.di; })
+      .filter(function(x){ return inComp[x]; });
+  }
+  /* generation from parent links only: 0 = eldest known generation */
+  var gen = {}, busy = {};
+  function genOf(di){
+    if(gen[di] != null) return gen[di];
+    if(busy[di]) return 0;
+    busy[di] = 1;
+    var ps = rel(di, 'parents');
+    gen[di] = ps.length ? 1 + Math.max.apply(null, ps.map(genOf)) : 0;
+    busy[di] = 0;
+    return gen[di];
+  }
+  comp.forEach(genOf);
+  /* married-in: no parents in this family, but a partner who descends in it */
+  function marriedIn(di){
+    if(rel(di, 'parents').length) return false;
+    return rel(di, 'spouses').some(function(s){ return rel(s, 'parents').length > 0; });
+  }
+  /* Couple units: every non-married-in person heads a unit and their spouse
+     stands beside them as partner. A founding couple (both bloodline, e.g.
+     two roots) pairs up the same way: the first head processed claims the
+     other, and the claimed head's own unit folds into it. */
+  var pairMap = {}, units = [];
+  comp.forEach(function(di){
+    if(marriedIn(di)) return;
+    var u = { head:di, partner:null, childUnits:[] };
+    units.push(u); pairMap[di] = u;
+  });
+  units.forEach(function(u){
+    var sps = rel(u.head, 'spouses');
+    for(var i = 0; i < sps.length; i++){
+      var s = sps[i];
+      if(s === u.head || pairMap[s] === u) continue;
+      if(pairMap[s] && pairMap[s].partner != null) continue;
+      u.partner = s; pairMap[s] = u; break;
+    }
+  });
+  /* safety net: anyone still unplaced (e.g. an unclaimed married-in parent)
+     gets a solo unit so nobody silently drops out of the tree */
+  comp.forEach(function(di){
+    if(!pairMap[di]){
+      var u = { head:di, partner:null, childUnits:[] };
+      units.push(u); pairMap[di] = u;
+    }
+  });
+  var active = units.filter(function(u){ return pairMap[u.head] === u; });
+  /* each child hangs from exactly one parent unit: the unit holding both
+     parents when there is one, otherwise the first parent's unit */
+  function parentUnitOf(child){
+    var ps = rel(child, 'parents'), cand = [];
+    ps.forEach(function(p){ var u = pairMap[p]; if(u && cand.indexOf(u) < 0) cand.push(u); });
+    for(var i = 0; i < cand.length; i++)
+      if(ps.every(function(p){ return pairMap[p] === cand[i]; })) return cand[i];
+    return cand[0] || null;
+  }
+  comp.forEach(function(di){
+    var pu = parentUnitOf(di);
+    if(!pu || pu === pairMap[di]) return;
+    if(!pu.childUnits.some(function(c){ return c.unit === pairMap[di]; }))
+      pu.childUnits.push({ di:di, unit:pairMap[di] });
+  });
+  var childUnitSet = [];
+  active.forEach(function(u){ u.childUnits.forEach(function(c){ if(childUnitSet.indexOf(c.unit) < 0) childUnitSet.push(c.unit); }); });
+  var roots = active.filter(function(u){ return childUnitSet.indexOf(u) < 0; });
+  /* recursive block layout: a block is as wide as its widest row; the couple
+     centers over its children, children blocks sit side by side below */
+  function layoutUnit(u){
+    var memberW = u.partner != null ? 2 * DFT.NW + DFT.CGAP : DFT.NW;
+    var blocks = u.childUnits.map(function(c){ return { di:c.di, b:layoutUnit(c.unit) }; });
+    var kidsW = blocks.length ? blocks.reduce(function(n, x){ return n + x.b.w; }, 0) + DFT.UGAP * (blocks.length - 1) : 0;
+    var w = Math.max(memberW, kidsW);
+    var nodes = [], lines = [], xOf = {};
+    var mx = (w - memberW) / 2, gy = gen[u.head] * DFT.ROW;
+    nodes.push({ di:u.head, x:mx, y:gy });
+    xOf[u.head] = mx + DFT.NW / 2;
+    if(u.partner != null){
+      nodes.push({ di:u.partner, x:mx + DFT.NW + DFT.CGAP, y:gy });
+      xOf[u.partner] = mx + DFT.NW + DFT.CGAP + DFT.NW / 2;
+      lines.push({ x1:mx + DFT.NW, y1:gy + DFT.NH / 2, x2:mx + DFT.NW + DFT.CGAP, y2:gy + DFT.NH / 2 });
+    }
+    var headCx = mx + memberW / 2;
+    if(blocks.length){
+      var kx = (w - kidsW) / 2, barY = gy + DFT.NH + DFT.DROP, centers = [];
+      blocks.forEach(function(x){
+        x.b.nodes.forEach(function(n){ nodes.push({ di:n.di, x:n.x + kx, y:n.y }); });
+        x.b.lines.forEach(function(l){ lines.push({ x1:l.x1 + kx, y1:l.y1, x2:l.x2 + kx, y2:l.y2 }); });
+        Object.keys(x.b.xOf).forEach(function(k){ xOf[k] = x.b.xOf[k] + kx; });
+        centers.push({ cx:x.b.xOf[x.di] + kx, top:gen[x.di] * DFT.ROW });
+        kx += x.b.w + DFT.UGAP;
+      });
+      lines.push({ x1:headCx, y1:gy + DFT.NH, x2:headCx, y2:barY });
+      lines.push({ x1:centers[0].cx, y1:barY, x2:centers[centers.length - 1].cx, y2:barY });
+      centers.forEach(function(c){ lines.push({ x1:c.cx, y1:barY, x2:c.cx, y2:c.top }); });
+    }
+    return { w:w, nodes:nodes, lines:lines, xOf:xOf, headCx:headCx };
+  }
+  /* root units side by side across the full width; root heads who are
+     siblings of each other share a sibship bar above the row */
+  var sibGroups = [];
+  roots.forEach(function(u){
+    var g = null;
+    sibGroups.forEach(function(gr){ if(gr.some(function(v){ return rel(u.head, 'siblings').indexOf(v.head) >= 0; })) g = gr; });
+    if(g) g.push(u); else sibGroups.push([u]);
+  });
+  var blocks = roots.map(function(u){ return { u:u, b:layoutUnit(u) }; });
+  var totalW = blocks.reduce(function(n, x){ return n + x.b.w; }, 0) + DFT.UGAP * Math.max(0, blocks.length - 1);
+  var padTop = sibGroups.some(function(g){ return g.length > 1; }) ? 36 : 10;
+  var nodes = [], lines = [], rootCenter = {}, ox = 0;
+  blocks.forEach(function(x){
+    x.b.nodes.forEach(function(n){ nodes.push({ di:n.di, x:n.x + ox, y:n.y + padTop }); });
+    x.b.lines.forEach(function(l){ lines.push({ x1:l.x1 + ox, y1:l.y1 + padTop, x2:l.x2 + ox, y2:l.y2 + padTop }); });
+    rootCenter[x.u.head] = x.b.xOf[x.u.head] + ox;
+    ox += x.b.w + DFT.UGAP;
+  });
+  sibGroups.forEach(function(g){
+    if(g.length < 2) return;
+    var cs = g.map(function(u){ return rootCenter[u.head]; }), by = padTop - 16;
+    lines.push({ x1:Math.min.apply(null, cs), y1:by, x2:Math.max.apply(null, cs), y2:by });
+    cs.forEach(function(cx){ lines.push({ x1:cx, y1:by, x2:cx, y2:padTop }); });
+  });
+  var maxY = 0, maxGen = 0, hasSpouse = false;
+  nodes.forEach(function(n){ if(n.y > maxY) maxY = n.y; });
+  comp.forEach(function(di){ if(gen[di] > maxGen) maxGen = gen[di]; if(marriedIn(di)) hasSpouse = true; });
+  return { nodes:nodes, lines:lines, w:totalW, h:maxY + DFT.NH + 12, maxGen:maxGen, hasSpouse:hasSpouse,
+    styleOf:function(di){
+      if(marriedIn(di)) return { c:FAM_SPOUSE_COLOR, cap:'Spouse' };
+      var g = gen[di];
+      return { c:FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)], cap:'Gen ' + (g + 1) };
+    } };
 }
-function famNodeHTML(disp, anchor, di, ckey){
-  var role = famRoleOf(disp, anchor, di), rc = FAM_ROLE[role];
-  return '<button type="button" class="dfamnode' + (role === 'self' ? ' self' : '') + '" data-famanchor="' + ckey + '" data-di="' + di + '" style="--rc:' + rc.c + '">' +
-    '<b>' + esc(dispName(D.directory[di])) + '</b><span>' + rc.label + '</span></button>';
+function famTreeHTML(model){
+  var lines = model.lines.map(function(l){
+    return '<line x1="' + l.x1 + '" y1="' + l.y1 + '" x2="' + l.x2 + '" y2="' + l.y2 + '"/>';
+  }).join('');
+  var nodes = model.nodes.map(function(n){
+    var st = model.styleOf(n.di);
+    return '<button type="button" class="dfamnode' + (DFAM.editing === n.di ? ' editing' : '') + '" data-dfnode data-di="' + n.di +
+      '" style="left:' + n.x + 'px;top:' + n.y + 'px;--rc:' + st.c + '"><b>' + esc(dispName(D.directory[n.di])) + '</b><span>' + st.cap + '</span></button>';
+  }).join('');
+  return '<div class="dftree" style="width:' + model.w + 'px;height:' + model.h + 'px">' +
+    '<svg class="dftree-lines" width="' + model.w + '" height="' + model.h + '">' + lines + '</svg>' + nodes + '</div>';
 }
 function famEditorHTML(di){
   var e = D.directory[di], links = famLinks(e);
@@ -2456,41 +2590,22 @@ function renderDashFamily(){
   var el = $('#dashsec-family'); if(!el) return;
   var disp = famDisplay();
   var comps = famComponents(disp).sort(function(a, b){ return b.length - a.length; });
-  var legend = '<div class="dfamlegend">' + Object.keys(FAM_ROLE).map(function(r){
-    return '<span class="dfamleg"><i style="background:' + FAM_ROLE[r].c + '"></i>' + FAM_ROLE[r].label + '</span>';
-  }).join('') + '</div>';
-  var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3>' + legend +
-    '<p class="dim" style="margin:8px 0 0;font-size:12.5px">Tap any person to center the tree on them and edit their links. Links are stored on each profile and saved through the same patch path as the profile editor, so they survive rebuilds.</p></div>';
+  var models = comps.map(function(comp){ return famTreeModel(disp, comp); });
+  var maxGen = 0, anySpouse = false;
+  models.forEach(function(m){ if(m.maxGen > maxGen) maxGen = m.maxGen; if(m.hasSpouse) anySpouse = true; });
+  var leg = [];
+  for(var g = 0; g <= maxGen; g++)
+    leg.push('<span class="dfamleg"><i style="background:' + FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)] + '"></i>Generation ' + (g + 1) + (g === 0 ? ' · eldest' : '') + '</span>');
+  if(anySpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
+  var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3><div class="dfamlegend">' + leg.join('') + '</div>' +
+    '<p class="dim" style="margin:8px 0 0;font-size:12.5px">Drawn as standard descendant trees: the eldest generation at the top, partners side by side, and each couple\'s children on the level below, joined by the connector lines. Tap any person to edit their family links. Links are stored on each profile and saved through the same patch path as the profile editor, so they survive rebuilds.</p></div>';
   if(!comps.length) h += '<p class="dim">No family links on file yet. Add links from a profile\'s Family section.</p>';
   h += comps.map(function(comp, ci){
-    var ckey = 'c' + ci;
     var lastNames = {};
     comp.forEach(function(di){ var ln = (dispName(D.directory[di]).split(' ').pop() || '').trim(); if(ln) lastNames[ln] = (lastNames[ln] || 0) + 1; });
     var title = Object.keys(lastNames).sort(function(a, b){ return lastNames[b] - lastNames[a]; })[0] || 'Family';
-    var anchor = DFAM.anchor[ckey];
-    if(anchor == null || comp.indexOf(anchor) < 0){
-      anchor = comp.slice().sort(function(a, b){
-        function deg(di){ var d = disp[di] || {}; return ['parents', 'spouses', 'children', 'siblings'].reduce(function(n, rk){ return n + (d[rk] || []).length; }, 0); }
-        return deg(b) - deg(a);
-      })[0];
-      DFAM.anchor[ckey] = anchor;
-    }
-    var a = disp[anchor] || {};
-    function disOf(rk){ return (a[rk] || []).map(function(x){ return x.di; }); }
-    var placed = {};
-    function band(label, dis){
-      var xs = dis.filter(function(di){ return !placed[di]; });
-      xs.forEach(function(di){ placed[di] = 1; });
-      if(!xs.length) return '';
-      return '<div class="dfamband"><span class="dfambandlab">' + label + '</span><div class="dfamnodes">' +
-        xs.map(function(di){ return famNodeHTML(disp, anchor, di, ckey); }).join('') + '</div></div>';
-    }
-    var tree = band('Parents', disOf('parents')) +
-      band('Self, spouse & siblings', disOf('siblings').concat([anchor], disOf('spouses'))) +
-      band('Children', disOf('children')) +
-      band('More family', comp.slice());
     var edit = DFAM.editing != null && comp.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
-    return '<div class="dfam"><h4 class="dfamtitle">' + esc(title) + ' family</h4><div class="dfamtree">' + tree + '</div>' + edit + '</div>';
+    return '<div class="dfam"><h4 class="dfamtitle">' + esc(title) + ' family</h4><div class="dfamscroll">' + famTreeHTML(models[ci]) + '</div>' + edit + '</div>';
   }).join('');
   el.innerHTML = h;
   $('#aushown').textContent = comps.length + (comps.length === 1 ? ' family' : ' families');
@@ -4210,11 +4325,9 @@ function bind(){
   });
   var famEl = $('#dashsec-family');
   famEl.addEventListener('click', function(ev){
-    var an = ev.target.closest('[data-famanchor]');
+    var an = ev.target.closest('[data-dfnode]');
     if(an){
-      var adi = parseInt(an.getAttribute('data-di'), 10);
-      DFAM.anchor[an.getAttribute('data-famanchor')] = adi;
-      DFAM.editing = adi;
+      DFAM.editing = parseInt(an.getAttribute('data-di'), 10);
       renderDashFamily(); return;
     }
     var rm = ev.target.closest('[data-dfrm]');
