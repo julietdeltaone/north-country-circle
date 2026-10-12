@@ -2101,7 +2101,10 @@ function personLabel(handle, display){
 }
 function auName(e){
   var handle = String(e.name || '').trim();
-  var nm = personLabel(handle, String(e.display || gv(e, 'display_name') || '').trim());
+  /* Current first/last name wins over the baked display (JD 2026-10-12: name
+     edits propagate everywhere — audit rows, associate chips, GL labels). */
+  var fn = (String(gv(e, 'first_name') || '') + ' ' + String(gv(e, 'last_name') || '')).trim();
+  var nm = fn || personLabel(handle, String(e.display || gv(e, 'display_name') || '').trim());
   return { name:nm || 'Unknown', business:isBusiness(e), handle:handle };
 }
 function lastNameOf(e){
@@ -3222,7 +3225,7 @@ function findDupGroups(){
     e = D.directory[i];
     pr = e.profile || {};
     if(pr.deleted === '1' || (pr.merged_into || '').trim()) continue;
-    key = normDupName(e.display || dispName(e));
+    key = normDupName(dispName(e));
     if(!key || key.length < 2) continue;
     (byName[key] = byName[key] || []).push(i);
   }
@@ -3285,7 +3288,7 @@ function renderDupAudit(q){
     }).join('');
     return '<div class="dupgroup"><div class="duphead">' +
       '<input type="checkbox" class="dupgsel" data-gi="' + gi + '"' + (AUD.selGroups[gi] ? ' checked' : '') + ' title="Select group">' +
-      '<b>' + esc(g.members[0].e.display || g.key) + '</b>' +
+      '<b>' + esc(dispName(g.members[0].e) || g.key) + '</b>' +
       '<span class="dim">' + g.members.length + ' entries</span>' +
       '<button class="mini" data-dupmerge="' + gi + '" style="--c:#f0b44c">Merge into survivor</button></div>' +
       '<div class="dupmems">' + cards + '</div></div>';
