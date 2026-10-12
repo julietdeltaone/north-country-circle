@@ -1119,30 +1119,62 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .dfammeta{font-size:12.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dfamcard .dfamexpand{flex:none}
 /* Family full-screen tree overlay */
-.dfamfs{position:fixed;inset:0;z-index:120;background:rgba(4,6,10,.8);display:flex;padding:18px}
+.dfamfs{position:fixed;inset:0;z-index:120;background:rgba(4,6,10,.8);display:flex;padding:18px;
+  animation:dfFsIn .18s ease both}
+.dfamfs.closing{transition:opacity .13s ease;opacity:0}
+.dfamfs.still,.dfamfs.still .dfamfssheet{animation:none}
+.dfamfs.walkout .dfamfsscroll{transition:opacity .16s ease,transform .16s ease;opacity:0;transform:scale(.985)}
+@keyframes dfFsIn{from{opacity:0}to{opacity:1}}
 .dfamfssheet{flex:1;min-width:0;max-width:1440px;margin:0 auto;display:flex;flex-direction:column;
-  background:#0d1119;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  background:#0d1119;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  animation:dfSheetIn .22s var(--ease) both}
+@keyframes dfSheetIn{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
 .dfamfsbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
 .dfamfsbar b{font-family:var(--disp);font-size:16px;margin-right:auto}
-.dfamfsscroll{flex:1;overflow:auto;padding:16px;cursor:grab}
+.dfamzoom{display:flex;gap:6px}
+.dfamzoom button{background:var(--fill);border:1px solid var(--line);color:var(--mut);border-radius:8px;
+  padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.dfamzoom button:hover{color:var(--txt);border-color:rgba(255,255,255,.28)}
+.dfamzoom button:focus-visible{outline:2px solid rgba(126,166,240,.85);outline-offset:1px}
+.dfamfsscroll{flex:1;overflow:auto;padding:16px;cursor:grab;
+  background:radial-gradient(1100px 620px at 50% 28%,rgba(110,140,220,.08),rgba(0,0,0,0) 62%),#0a0d13}
 .dfamfsscroll:active{cursor:grabbing}
-.dfamfsscroll .dfamedit{max-width:720px;margin-top:14px}
+.dfamfsscroll .dfamedit{max-width:720px;margin:14px auto 0}
 body.dfamfsopen{overflow:hidden}
-.dftree{position:relative}
+.dfamstage{position:relative;margin:0 auto}
+.dftree{position:absolute;transform-origin:0 0}
 .dftree-lines{position:absolute;left:0;top:0;pointer-events:none}
 .dftree-lines line{stroke:#39415a;stroke-width:1.5}
+/* Entrance choreography: founders rise first, connector lines draw
+   downward, children stagger in generation by generation, jump chips
+   fade in once the tree settles. All fast (<0.9s), never bouncy. */
+.dftree.anim .dfamnode{animation:dfRise .38s var(--ease) backwards;animation-delay:var(--nd,0s)}
+.dftree.anim .dftree-lines line{stroke-dasharray:1;stroke-dashoffset:1;
+  animation:dfDraw .28s ease-out forwards;animation-delay:var(--dl,0s)}
+.dftree.anim .dfamhome{animation:dfFade .3s ease backwards;animation-delay:var(--nd,.55s)}
+@keyframes dfRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dfDraw{to{stroke-dashoffset:0}}
+@keyframes dfFade{from{opacity:0}to{opacity:1}}
 .dfamnode{position:absolute;width:156px;height:48px;box-sizing:border-box;display:flex;flex-direction:column;
   align-items:flex-start;justify-content:center;gap:1px;border:1px solid var(--line);
   border-left:4px solid var(--rc);background:rgba(255,255,255,.03);border-radius:10px;padding:6px 10px;
-  cursor:pointer;color:var(--txt);font-family:var(--sans);text-align:left}
+  cursor:pointer;color:var(--txt);font-family:var(--sans);text-align:left;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
 .dfamnode b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .dfamnode span{font-size:11px;color:var(--rc);font-weight:700}
-.dfamnode:hover{border-color:rgba(255,255,255,.35)}
+.dfamnode:hover{border-color:rgba(255,255,255,.35);transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(0,0,0,.45),0 0 0 1px color-mix(in srgb,var(--rc) 50%,transparent),
+  0 0 18px color-mix(in srgb,var(--rc) 32%,transparent)}
 .dfamnode.editing{background:color-mix(in srgb,var(--rc) 14%,transparent);border-color:var(--rc)}
 .dfamhome{position:absolute;width:156px;box-sizing:border-box;background:none;border:none;color:#8fb7ff;
   font-family:var(--sans);font-size:11px;font-weight:700;text-align:left;padding:2px 14px;cursor:pointer;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dfamhome:hover{text-decoration:underline}
+@media (prefers-reduced-motion: reduce){
+  .dfamfs,.dfamfssheet{animation:none}
+  .dftree.anim .dfamnode,.dftree.anim .dftree-lines line,.dftree.anim .dfamhome{animation:none}
+  .dfamnode{transition:none}
+}
 .dfamfrom{font-size:12.5px;color:var(--dim);margin-top:1px}
 .dfamfromlink{background:none;border:none;padding:0;color:#8fb7ff;font:inherit;font-weight:700;cursor:pointer}
 .dfamfromlink:hover{text-decoration:underline}
