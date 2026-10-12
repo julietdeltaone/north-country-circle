@@ -141,7 +141,18 @@ i[data-ic]{display:inline-flex;font-style:normal}
 #left{left:var(--gap);width:var(--lw);transition:transform .38s var(--ease),opacity .3s}
 body.nolist #left{transform:translateX(calc(-100% - 20px));opacity:0;pointer-events:none}
 .rail-top{flex:none;padding:12px 12px 8px;display:flex;flex-direction:column;gap:10px}
-#railtabs button{padding:7px 6px}
+/* Sidebar stat tiles (2026-10-12): replace the Events/Files rail tabs.
+   Each tile is a filter toggle; People clears all filters. */
+.railstats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rstile{display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:rgba(255,255,255,.03);
+  border:1px solid var(--line-soft);border-radius:11px;padding:8px 11px;color:var(--txt);cursor:pointer;
+  font-family:var(--sans);text-align:left;transition:border-color .15s,background .15s}
+.rstile b{font-family:var(--disp);font-size:17px;line-height:1.15}
+.rstile span{font-size:11px;color:var(--dim);font-weight:600}
+.rstile:hover{border-color:rgba(255,255,255,.3)}
+.rstile.on{border-color:var(--l1);background:color-mix(in srgb,var(--l1) 13%,transparent)}
+.rstile.on span{color:var(--txt)}
+.rstile:focus-visible{outline:2px solid rgba(126,166,240,.85);outline-offset:1px}
 .rail-tools{display:flex;gap:8px;align-items:stretch}
 .lvlchips{flex:1;min-width:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .lchip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:0;
@@ -158,6 +169,25 @@ body.nolist #left{transform:translateX(calc(-100% - 20px));opacity:0;pointer-eve
 .fl{display:flex;flex-direction:column;gap:5px;font-size:11.5px;color:var(--dim);font-weight:700}
 .fl select{background:var(--fill);border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:13px;color:var(--txt);outline:none}
 .fl select option{background:#141a25}
+/* Sort dropdown (2026-10-12): custom, dark-themed like the rest of the
+   chrome — a native select's open panel is OS-rendered and unthemeable. */
+.sortdd{position:relative}
+.sortbtn{display:flex;align-items:center;gap:8px;width:100%;background:var(--fill);border:1px solid var(--line);
+  border-radius:9px;padding:8px 10px;font-size:13px;color:var(--txt);cursor:pointer;text-align:left;font-family:var(--sans)}
+.sortbtn span{flex:1}
+.sortbtn svg{color:var(--dim);transition:transform .15s;flex:none}
+.sortbtn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.sortbtn:focus-visible{outline:2px solid rgba(126,166,240,.85);outline-offset:1px}
+.sortpop{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:80;background:#151b27;
+  border:1px solid var(--line);border-radius:11px;padding:5px;box-shadow:0 16px 38px rgba(0,0,0,.55);
+  display:flex;flex-direction:column;gap:2px}
+.sortpop[hidden]{display:none}
+.sortopt{display:flex;align-items:center;width:100%;text-align:left;background:none;border:0;border-radius:8px;
+  padding:8px 10px;font-size:13px;color:var(--mut);cursor:pointer;font-family:var(--sans)}
+.sortopt:hover,.sortopt.kbact{background:rgba(255,255,255,.08);color:var(--txt)}
+.sortopt:focus-visible{outline:2px solid rgba(126,166,240,.85);outline-offset:-2px}
+.sortopt.on{color:var(--txt);font-weight:700}
+.sortopt.on::after{content:'✓';margin-left:auto;color:var(--l1);font-weight:700}
 .chk{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--txt);cursor:pointer}
 .chk input{accent-color:#ece9e2;width:15px;height:15px}
 .activeflt{display:flex;flex-wrap:wrap;gap:6px}
@@ -403,6 +433,7 @@ button.vchip:hover{background:color-mix(in srgb,var(--c) 20%,transparent)}
 .naddhit:first-child{border-top:1px solid var(--line);border-radius:9px 9px 0 0}
 .naddhit:last-child{border-radius:0 0 9px 9px}
 .naddhit:hover{background:#252b37}
+.naddhit.kbact{background:#252b37;box-shadow:inset 3px 0 0 var(--l1)}
 .naddhit.none{color:var(--dim);cursor:default}
 .tl{position:relative;padding-left:24px}
 .tl:before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:rgba(255,255,255,.08);border-radius:2px}
@@ -522,6 +553,8 @@ button.vchip:hover{background:color-mix(in srgb,var(--c) 20%,transparent)}
 .skopt:hover{border-color:rgba(255,255,255,.35);color:var(--txt)}
 .skopt.on{border-color:var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
 .skopt em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:6px;opacity:.65}
+.skcatbtn:focus-visible,.skopt:focus-visible,.menu-pop button:focus-visible{outline:2px solid rgba(126,166,240,.85);outline-offset:1px}
+.menu-pop button.kbact{background:rgba(255,255,255,.08)}
 /* Also known as toggle row (Identity section) */
 .akarow .akatogg{padding:0;flex:none}
 .akarow .akainput[hidden]{display:none}
