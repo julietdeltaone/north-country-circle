@@ -63,7 +63,7 @@ var RELC = { mutual:'#e0688a', following:'#b48ce8', follower:'#8b95a7' };
 var RELN = { mutual:'Mutual', following:'Following', follower:'Follower' };
 
 var S = {
-  q:'', rel:'', lvlF:0, auditOnly:false, enrichedOnly:false, tag:null, sort:'strength',
+  q:'', rel:'', lvlF:0, auditOnly:false, enrichedOnly:false, recentOnly:false, famOnly:false, tag:null, sort:'strength',
   rail:'people', limit:200, showIndicators:false,
   sel:null, editing:false, lvl:1, hist:[], fwd:[], wide:false,
   mode:'3d', colorBy:'tier', showBg:false, listOpen:true, tierF:'',
@@ -563,12 +563,25 @@ function sortedEvents(e){
 function igURL(h){ return 'https://www.instagram.com/' + encodeURIComponent(String(h).replace(/^@/, '')) + '/'; }
 
 /* ---------- filtering ---------- */
+function updatedAtMs(r){
+  var v = (r.profile || {}).updated_at;
+  if(!v) return 0;
+  var t = Date.parse(v);
+  return isNaN(t) ? 0 : t;
+}
+function hasFamily(r){
+  if(famLinks(r).length) return true;
+  var f = r.family || {};
+  return !!((f.parents || []).length || (f.spouses || []).length || (f.children || []).length || (f.siblings || []).length);
+}
 function passes(r, skipLvl, skipQ){
   var pr = r.profile || {};
   if(pr.deleted === '1') return false;
   if((pr.merged_into || '').trim()) return false;
   if(S.auditOnly && pr.audit === 'audited') return false;
   if(S.enrichedOnly && !isEnriched(r)) return false;
+  if(S.recentOnly){ var ua = updatedAtMs(r); if(!ua || Date.now() - ua > 7 * 864e5) return false; }
+  if(S.famOnly && !hasFamily(r)) return false;
   if(S.tag && tagList(gv(r, S.tag.k)).indexOf(S.tag.v) < 0) return false;
   if(S.rel && r.relation !== S.rel) return false;
   if(!skipLvl && S.lvlF && personLevel(r) !== S.lvlF) return false;
@@ -583,6 +596,19 @@ function listRows(){
   var rows = LIST_ORDER.filter(function(di){ return passes(D.directory[di]); });
   if(S.sort === 'name'){
     rows.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+  } else if(S.sort === 'name-desc'){
+    rows.sort(function(a, b){ return dispName(D.directory[b]).localeCompare(dispName(D.directory[a])); });
+  } else if(S.sort === 'filled' || S.sort === 'filledasc'){
+    var dirn = S.sort === 'filled' ? -1 : 1;
+    rows.sort(function(a, b){
+      var d = (pct(D.directory[a]) - pct(D.directory[b])) * dirn;
+      return d || dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+    });
+  } else if(S.sort === 'recent'){
+    rows.sort(function(a, b){
+      var d = updatedAtMs(D.directory[b]) - updatedAtMs(D.directory[a]);
+      return d || dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+    });
   } else if(S.sort === 'audit'){
     var needs = rows.filter(function(di){ return (D.directory[di].profile || {}).audit !== 'audited'; });
     var done = rows.filter(function(di){ return (D.directory[di].profile || {}).audit === 'audited'; });
@@ -603,7 +629,115 @@ function refresh(){
 var _rt = null;
 function refreshSoon(){ clearTimeout(_rt); _rt = setTimeout(refresh, 450); }
 
+/* ---------- sort control (custom dropdown: the native select's open panel
+   is OS-rendered and cannot be themed; this one is dark like the rest of
+   the chrome, and fully keyboard-operable) ---------- */
+var SORT_OPTS = [
+  ['strength', 'Strongest connection'],
+  ['filled', 'Most filled'],
+  ['filledasc', 'Least filled'],
+  ['recent', 'Most recent'],
+  ['name', 'A to Z'],
+  ['name-desc', 'Z to A'],
+  ['audit', 'Needs audit first']
+];
+function sortLabel(v){
+  for(var i = 0; i < SORT_OPTS.length; i++) if(SORT_OPTS[i][0] === v) return SORT_OPTS[i][1];
+  return SORT_OPTS[0][1];
+}
+function setSort(v){
+  if(!SORT_OPTS.some(function(o){ return o[0] === v; })) v = 'strength';
+  S.sort = v;
+  store('ncc_sort', v);
+}
+function buildSortUI(){
+  var pop = $('#sortpop');
+  if(!pop || pop.children.length) return;
+  pop.innerHTML = SORT_OPTS.map(function(o){
+    return '<button type="button" class="sortopt" role="option" data-sv="' + o[0] + '">' + o[1] + '</button>';
+  }).join('');
+}
+function syncSortUI(){
+  buildSortUI();
+  var lab = $('#sortlab'); if(lab) lab.textContent = sortLabel(S.sort);
+  var pop = $('#sortpop'); if(!pop) return;
+  $$('.sortopt', pop).forEach(function(o){
+    var on = o.getAttribute('data-sv') === S.sort;
+    o.classList.toggle('on', on);
+    o.setAttribute('aria-selected', String(on));
+  });
+}
+function sortPopOpen(){ var p = $('#sortpop'); return !!(p && !p.hidden); }
+function setSortPop(open, focusOpt){
+  var p = $('#sortpop'), b = $('#sortbtn'); if(!p || !b) return;
+  syncSortUI();
+  p.hidden = !open;
+  b.setAttribute('aria-expanded', String(open));
+  if(open){
+    var act = $('.sortopt.on', p) || $('.sortopt', p);
+    kbSetAct(p, act);
+    if(focusOpt && act) act.focus();
+  } else kbSetAct(p, null);
+}
+function chooseSort(v){
+  setSort(v);
+  S.limit = 200;
+  setSortPop(false);
+  refresh();
+  var b = $('#sortbtn'); if(b) b.focus();
+}
+
+/* ---------- keyboard highlight helper (shared by the sort dropdown and
+   the person-picker hit lists) ---------- */
+function kbSetAct(list, el){
+  if(!list) return;
+  $$('.kbact', list).forEach(function(x){ x.classList.remove('kbact'); if(x.getAttribute('role') === 'option') x.setAttribute('aria-selected', 'false'); });
+  if(el){
+    el.classList.add('kbact');
+    if(el.classList.contains('naddhit') || el.classList.contains('sortopt')) el.setAttribute('role', 'option');
+    el.setAttribute('aria-selected', 'true');
+    if(el.scrollIntoView) el.scrollIntoView({ block:'nearest' });
+  }
+}
+function kbMove(list, items, dir){
+  if(!items.length) return null;
+  var cur = $('.kbact', list), i = cur ? items.indexOf(cur) : -1;
+  var n = items.length;
+  i = i < 0 ? (dir > 0 ? 0 : n - 1) : (i + dir + n) % n;
+  kbSetAct(list, items[i]);
+  return items[i];
+}
+
 /* ---------- left rail ---------- */
+/* Sidebar stat tiles (JD 2026-10-12): the Events and Files rail views are
+   gone — JD never used them. Four tiles carry the counts that matter, and
+   each is a filter: People clears, the rest toggle their filter. */
+function railStatsData(){
+  var now = Date.now(), total = 0, needs = 0, recent = 0, fam = 0;
+  LIST_ORDER.forEach(function(di){
+    var r = D.directory[di], pr = r.profile || {};
+    if(pr.deleted === '1' || (pr.merged_into || '').trim()) return;
+    total++;
+    if(pr.audit !== 'audited') needs++;
+    var ua = updatedAtMs(r);
+    if(ua && now - ua <= 7 * 864e5) recent++;
+    if(hasFamily(r)) fam++;
+  });
+  return { total:total, needs:needs, recent:recent, fam:fam };
+}
+function renderRailStats(){
+  var el = $('#railstats'); if(!el || !D) return;
+  var c = railStatsData();
+  var anyF = !!(S.rel || S.tierF || S.tag || S.q.trim() || S.auditOnly || S.enrichedOnly || S.recentOnly || S.famOnly || S.lvlF);
+  function tile(k, v, lab, on, title){
+    return '<button type="button" class="rstile' + (on ? ' on' : '') + '" data-rs="' + k + '" aria-pressed="' + on + '" title="' + title + '"><b>' + v + '</b><span>' + lab + '</span></button>';
+  }
+  el.innerHTML =
+    tile('people', c.total, 'People', !anyF, 'Everyone — click to clear all filters') +
+    tile('audit', c.needs, 'Need audit', S.auditOnly, 'People who still need an audit — click to filter') +
+    tile('recent', c.recent, 'Updated · 7d', S.recentOnly, 'Updated in the last 7 days — click to filter') +
+    tile('family', c.fam, 'Family linked', S.famOnly, 'People with family links — click to filter');
+}
 function renderLvlChips(){
   var c = {0:0, 1:0, 2:0, 3:0};
   LIST_ORDER.forEach(function(di){
@@ -650,11 +784,8 @@ function indLegendHTML(){
 }
 function renderRail(){
   var lb = $('#leftbody'), keepTop = lb ? lb.scrollTop : 0;
-  $$('#railtabs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-r') === S.rail); });
-  $('#lvlchips').parentNode.style.display = S.rail === 'people' ? '' : 'none';
-  if(S.rail === 'people') railPeople();
-  else if(S.rail === 'events') railEvents();
-  else railFiles();
+  renderRailStats();
+  railPeople();
   updateFilterUI();
   if(lb) lb.scrollTop = keepTop;
 }
@@ -721,16 +852,18 @@ function railFiles(){
   $('#leftbody').innerHTML = h || '<div class="empty-note">No files attached yet. Open someone and use the Files section.</div>';
 }
 function updateFilterUI(){
-  var n = (S.rel ? 1 : 0) + (S.tierF ? 1 : 0) + (S.auditOnly ? 1 : 0) + (S.enrichedOnly ? 1 : 0) + (S.sort !== 'strength' ? 1 : 0);
+  var n = (S.rel ? 1 : 0) + (S.tierF ? 1 : 0) + (S.auditOnly ? 1 : 0) + (S.enrichedOnly ? 1 : 0) + (S.recentOnly ? 1 : 0) + (S.famOnly ? 1 : 0) + (S.sort !== 'strength' ? 1 : 0);
   var b = $('#filtercount');
   b.hidden = !n; b.textContent = n;
-  $('#frel').value = S.rel; $('#fsort').value = S.sort; $('#fauditonly').checked = S.auditOnly; $('#fenrichedonly').checked = S.enrichedOnly;
+  $('#frel').value = S.rel; syncSortUI(); $('#fauditonly').checked = S.auditOnly; $('#fenrichedonly').checked = S.enrichedOnly;
   var chips = [];
   if(S.tag) chips.push('<button class="aflt" data-clr="tag">' + esc(S.tag.v) + '<b>' + ic('x', 11) + '</b></button>');
   if(S.rel) chips.push('<button class="aflt" data-clr="rel">' + esc(RELN[S.rel]) + '<b>' + ic('x', 11) + '</b></button>');
   if(S.tierF) chips.push('<button class="aflt" data-clr="tier">' + esc(TIERS[S.tierF].n) + '<b>' + ic('x', 11) + '</b></button>');
   if(S.auditOnly) chips.push('<button class="aflt" data-clr="audit">Needs audit<b>' + ic('x', 11) + '</b></button>');
   if(S.enrichedOnly) chips.push('<button class="aflt" data-clr="enriched">Enriched<b>' + ic('x', 11) + '</b></button>');
+  if(S.recentOnly) chips.push('<button class="aflt" data-clr="recent">Updated · 7d<b>' + ic('x', 11) + '</b></button>');
+  if(S.famOnly) chips.push('<button class="aflt" data-clr="family">Family linked<b>' + ic('x', 11) + '</b></button>');
   if(S.q.trim()) chips.push('<button class="aflt" data-clr="q">“' + esc(S.q.trim()) + '”<b>' + ic('x', 11) + '</b></button>');
   $('#activeflt').innerHTML = chips.join('');
   $('#auditpill').classList.toggle('on', S.auditOnly);
@@ -741,8 +874,10 @@ function clearFilter(k){
   else if(k === 'tier') S.tierF = '';
   else if(k === 'audit') S.auditOnly = false;
   else if(k === 'enriched') S.enrichedOnly = false;
+  else if(k === 'recent') S.recentOnly = false;
+  else if(k === 'family') S.famOnly = false;
   else if(k === 'q'){ S.q = ''; $('#fq').value = ''; }
-  else if(k === 'all'){ S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.enrichedOnly = false; S.sort = 'strength'; S.lvlF = 0; S.q = ''; $('#fq').value = ''; }
+  else if(k === 'all'){ S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.enrichedOnly = false; S.recentOnly = false; S.famOnly = false; setSort('strength'); S.lvlF = 0; S.q = ''; $('#fq').value = ''; }
   S.limit = 200; refresh();
 }
 function updateAuditPill(){
@@ -1011,6 +1146,22 @@ function famLinks(e){
   try{ var v = JSON.parse(gv(e, 'family') || '[]'); return Array.isArray(v) ? v : []; }
   catch(x){ return []; }
 }
+/* The family relation picker remembers the last relation used (JD
+   2026-10-12: "if I just did sibling have the next one be sibling") —
+   one value shared by the profile editor and the dashboard family
+   editor, persisted in localStorage. First-ever use defaults to parent. */
+var FAM_RELS = ['parent', 'spouse', 'child', 'sibling'];
+function famRelDefault(){
+  var v = store('ncc_famrel');
+  return FAM_RELS.indexOf(v) >= 0 ? v : 'parent';
+}
+function famRelSave(v){ if(FAM_RELS.indexOf(v) >= 0) store('ncc_famrel', v); }
+function famRelOptions(){
+  var d = famRelDefault();
+  return FAM_RELS.map(function(r){
+    return '<option value="' + r + '"' + (r === d ? ' selected' : '') + '>' + r.charAt(0).toUpperCase() + r.slice(1) + '</option>';
+  }).join('');
+}
 function famEditHTML(e){
   var links = famLinks(e);
   var rows = links.map(function(l, i){
@@ -1021,8 +1172,7 @@ function famEditHTML(e){
   }).join('');
   return (rows || '<p class="dim" style="margin:0 0 8px;font-size:13px">No family links yet.</p>') +
     '<div class="naddwrap"><div class="famaddrow">' +
-    '<select id="famrel"><option value="parent">Parent</option><option value="spouse">Spouse</option>' +
-    '<option value="child">Child</option><option value="sibling">Sibling</option></select>' +
+    '<select id="famrel">' + famRelOptions() + '</select>' +
     '<input id="faminput" placeholder="Add family member: type a name" autocomplete="off"></div>' +
     '<div id="famlist"></div></div>';
 }
@@ -1116,9 +1266,58 @@ function famAddParentToSiblings(di, tdi){
   });
   return n;
 }
+/* Spouse-parent inference (JD 2026-10-12, traditional setup: no half or
+   step siblings, one spouse per person): adding a family link also adds
+   the obvious complements through the same dual-write path —
+   (a) a child added to a person is also added to their recorded spouse
+       (the child gains the spouse as a parent);
+   (b) a parent added to a child brings the parent's recorded spouse
+       along as the child's other parent (and, like any parent add, the
+       inferred parent propagates to the child's siblings);
+   (c) a spouse added to a person becomes a parent of that person's
+       recorded children.
+   Adds only, idempotent; removals never propagate. Returns how many
+   inferred person-links were added. */
+function famSpouseComplements(di, rel, tdi){
+  var e = D.directory[di], t = D.directory[tdi];
+  if(!e || !t) return 0;
+  function resolve(list, r){
+    return list.filter(function(l){ return l[0] === r; })
+      .map(function(l){ return BYN[String(l[1] || '').toLowerCase()]; })
+      .filter(function(v){ return v != null; });
+  }
+  function addLink(ownerDi, r, targetDi){
+    var o = D.directory[ownerDi], tg = D.directory[targetDi];
+    if(!o || !tg || ownerDi === targetDi) return false;
+    var kl = (tg.name || '').toLowerCase(); if(!kl) return false;
+    var ls = famLinks(o);
+    if(ls.some(function(l){ return l[0] === r && String(l[1] || '').toLowerCase() === kl; })) return false;
+    ls.push([r, tg.name || '']);
+    queuePatch(ownerDi, { family: JSON.stringify(ls) });
+    famDualWrite(ownerDi, r, targetDi, true);
+    famAssocSync(ownerDi, targetDi);
+    return true;
+  }
+  var n = 0;
+  if(rel === 'child'){
+    resolve(famLinks(e), 'spouse').forEach(function(sdi){
+      if(sdi !== tdi && addLink(tdi, 'parent', sdi)) n++;
+    });
+  } else if(rel === 'parent'){
+    resolve(famLinks(t), 'spouse').forEach(function(sdi){
+      if(sdi !== di && addLink(di, 'parent', sdi)){ n++; n += famAddParentToSiblings(di, sdi); }
+    });
+  } else if(rel === 'spouse'){
+    resolve(famLinks(e), 'child').forEach(function(cdi){
+      if(cdi !== tdi && addLink(cdi, 'parent', tdi)) n++;
+    });
+  }
+  return n;
+}
 function addFam(e, idx){
   var t = D.directory[idx]; if(!e || !t) return;
   var rel = ($('#famrel') || {}).value || 'parent';
+  famRelSave(rel);
   var links = famLinks(e), kl = (t.name || '').toLowerCase();
   if(!links.some(function(l){ return String(l[1] || '').toLowerCase() === kl && l[0] === rel; }))
     links.push([rel, t.name || '']);
@@ -1126,8 +1325,12 @@ function addFam(e, idx){
   famDualWrite(S.sel, rel, idx, true);
   famAssocSync(S.sel, idx);
   var sibN = rel === 'parent' ? famAddParentToSiblings(S.sel, idx) : 0;
+  var infN = famSpouseComplements(S.sel, rel, idx);
   renderPanel(true);
-  toast(dispName(t) + ' added as ' + rel + (sibN ? ' — also added to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') + '.' : '.'));
+  toast(dispName(t) + ' added as ' + rel +
+    (sibN ? ' — also added to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') : '') +
+    (infN ? (sibN ? ', plus ' : ' — plus ') + infN + ' inferred link' + (infN === 1 ? '' : 's') : '') +
+    ((sibN || infN) ? '.' : '.'));
 }
 function removeFam(e, i){
   if(!e) return;
@@ -1636,8 +1839,8 @@ function goForward(){
 function goHome(){
   closePanel();
   /* Home also clears the search box and every active filter, back to the default people view. */
-  S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.enrichedOnly = false;
-  S.sort = 'strength'; S.lvlF = 0; S.q = ''; S.rail = 'people'; S.limit = 200;
+  S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.enrichedOnly = false; S.recentOnly = false; S.famOnly = false;
+  setSort('strength'); S.lvlF = 0; S.q = ''; S.rail = 'people'; S.limit = 200;
   var fqEl = $('#fq'); if(fqEl) fqEl.value = '';
   refresh();
   if(S.mode === '3d' && typeof glReset === 'function') glReset();
@@ -2841,8 +3044,7 @@ function famEditorHTML(di){
   return '<div class="dfamedit"><div class="dfamedithead"><b>' + esc(dispName(e)) + '</b>' +
     '<button type="button" class="mini neutral" data-openperson="' + di + '">Open profile</button></div>' +
     (rows || '<p class="dim" style="margin:0 0 8px;font-size:13px">No stored links yet.</p>') +
-    '<div class="famaddrow"><select id="dfamrel-' + di + '"><option value="parent">Parent</option><option value="spouse">Spouse</option>' +
-    '<option value="child">Child</option><option value="sibling">Sibling</option></select>' +
+    '<div class="famaddrow"><select id="dfamrel-' + di + '">' + famRelOptions() + '</select>' +
     '<input class="dfq" data-dfq="' + di + '" placeholder="Add family member: type a name" autocomplete="off"></div>' +
     '<div class="dfamhits" data-dfamhits="' + di + '"></div></div>';
 }
@@ -2917,6 +3119,7 @@ function dashFamSearch(input){
 function dashFamAdd(di, tdi){
   var e = D.directory[di], t = D.directory[tdi]; if(!e || !t) return;
   var sel = $('#dfamrel-' + di), rel = sel ? sel.value : 'parent';
+  famRelSave(rel);
   var links = famLinks(e), kl = (t.name || '').toLowerCase();
   if(!links.some(function(l){ return String(l[1] || '').toLowerCase() === kl && l[0] === rel; }))
     links.push([rel, t.name || '']);
@@ -2924,8 +3127,12 @@ function dashFamAdd(di, tdi){
   famDualWrite(di, rel, tdi, true);
   famAssocSync(di, tdi);
   var sibN = rel === 'parent' ? famAddParentToSiblings(di, tdi) : 0;
+  var infN = famSpouseComplements(di, rel, tdi);
   renderDashFamily();
-  toast(dispName(t) + ' added as ' + rel + ' of ' + dispName(e) + (sibN ? ' — also added to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') + '.' : '.'));
+  toast(dispName(t) + ' added as ' + rel + ' of ' + dispName(e) +
+    (sibN ? ' — also added to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') : '') +
+    (infN ? (sibN ? ', plus ' : ' — plus ') + infN + ' inferred link' + (infN === 1 ? '' : 's') : '') +
+    ((sibN || infN) ? '.' : '.'));
 }
 function dashFamRemove(di, i){
   var e = D.directory[di]; if(!e) return;
@@ -4517,6 +4724,94 @@ function resetView(){
   else hubFit();
 }
 
+/* ---------- keyboard navigation for custom dropdowns & pickers ----------
+   One capture-phase handler: arrow keys move a visible highlight, Enter
+   picks, Escape closes — for the sort dropdown, the person-picker hit
+   lists, and the profile "More actions" menu. Native <select> elements
+   keep their built-in keyboard behavior and are left alone. */
+function pickerListFor(t){
+  if(!t || !t.tagName) return null;
+  if(t.id === 'naddinput') return $('#naddlist');
+  if(t.id === 'faminput') return $('#famlist');
+  if(t.id === 'mergeinput') return $('#mergelist');
+  if(t.id === 'qminput') return $('#qmhits');
+  if(t.classList && t.classList.contains('grpq')){ var w = t.closest('.naddwrap'); return w ? w.querySelector('.grphits') : null; }
+  if(t.classList && t.classList.contains('dfq')) return document.querySelector('[data-dfamhits="' + t.getAttribute('data-dfq') + '"]');
+  return null;
+}
+function kbNav(e){
+  var t = e.target;
+  if(!t || !t.closest) return;
+  var key = e.key;
+  /* --- sort dropdown --- */
+  var dd = t.closest('#sortdd');
+  if(dd){
+    var pop = $('#sortpop'), btn = $('#sortbtn');
+    if(key === 'ArrowDown' || key === 'ArrowUp'){
+      e.preventDefault(); e.stopPropagation();
+      if(pop.hidden){ setSortPop(true, true); return; }
+      var act = kbMove(pop, $$('.sortopt', pop), key === 'ArrowDown' ? 1 : -1);
+      if(act) act.focus();
+    } else if(key === 'Home' && !pop.hidden){
+      e.preventDefault(); var f = $$('.sortopt', pop)[0]; kbSetAct(pop, f); if(f) f.focus();
+    } else if(key === 'End' && !pop.hidden){
+      e.preventDefault(); var os = $$('.sortopt', pop), l = os[os.length - 1]; kbSetAct(pop, l); if(l) l.focus();
+    } else if(key === 'Escape' && !pop.hidden){
+      e.preventDefault(); e.stopPropagation(); setSortPop(false); if(btn) btn.focus();
+    }
+    return;
+  }
+  /* --- profile "More actions" menu --- */
+  var mn = t.closest('.menu');
+  if(mn){
+    var mpop = $('.menu-pop', mn), trig = $('[data-act="menu"]', mn);
+    var items = mpop ? $$('button', mpop) : [];
+    if(key === 'ArrowDown' || key === 'ArrowUp'){
+      e.preventDefault(); e.stopPropagation();
+      if(!mpop || mpop.hidden){ if(trig) trig.click(); var f2 = items[0]; if(f2) f2.focus(); return; }
+      if(!items.length) return;
+      var i = items.indexOf(document.activeElement);
+      var n = (i + (key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+      items[n].focus();
+    } else if(key === 'Escape' && mpop && !mpop.hidden){
+      e.preventDefault(); e.stopPropagation();
+      closeMenus(); if(trig) trig.focus();
+    } else if(key === 'Home' && mpop && !mpop.hidden && items.length){ e.preventDefault(); items[0].focus(); }
+    else if(key === 'End' && mpop && !mpop.hidden && items.length){ e.preventDefault(); items[items.length - 1].focus(); }
+    return;
+  }
+  /* --- person-picker hit lists (focus stays in the input) --- */
+  var list = pickerListFor(t);
+  if(list){
+    var hits = $$('.naddhit:not(.none)', list);
+    if(key === 'ArrowDown' || key === 'ArrowUp'){
+      if(!hits.length) return;
+      e.preventDefault(); e.stopPropagation();
+      list.setAttribute('role', 'listbox');
+      kbMove(list, hits, key === 'ArrowDown' ? 1 : -1);
+    } else if(key === 'Enter'){
+      var act2 = $('.kbact', list);
+      if(act2){ e.preventDefault(); e.stopPropagation(); act2.click(); }
+    } else if(key === 'Escape'){
+      if($('.kbact', list) || (list.id !== 'qmhits' && list.children.length)){
+        e.preventDefault(); e.stopPropagation();
+        kbSetAct(list, null);
+        if(list.id !== 'qmhits') list.innerHTML = '';
+      }
+    }
+    return;
+  }
+  /* --- filter popover: Escape closes and returns focus to its button --- */
+  if(key === 'Escape' && t.closest('#filterpop')){
+    var fp2 = $('#filterpop');
+    if(fp2 && !fp2.hidden){
+      e.preventDefault(); e.stopPropagation();
+      fp2.hidden = true;
+      var fb = $('#filterbtn'); fb.setAttribute('aria-expanded', 'false'); fb.focus();
+    }
+  }
+}
+
 /* ---------- events ---------- */
 function bind(){
   var fq = $('#fq'), deb = null;
@@ -4532,9 +4827,14 @@ function bind(){
   if(nf) nf.addEventListener('click', goForward);
 
   /* rail */
-  $('#railtabs').addEventListener('click', function(e){
-    var b = e.target.closest('button'); if(!b) return;
-    S.rail = b.getAttribute('data-r'); refresh();
+  $('#railstats').addEventListener('click', function(e){
+    var b = e.target.closest('[data-rs]'); if(!b) return;
+    var k = b.getAttribute('data-rs');
+    if(k === 'people'){ clearFilter('all'); return; }
+    if(k === 'audit') S.auditOnly = !S.auditOnly;
+    else if(k === 'recent') S.recentOnly = !S.recentOnly;
+    else if(k === 'family') S.famOnly = !S.famOnly;
+    S.limit = 200; refresh();
   });
   $('#lvlchips').addEventListener('click', function(e){
     var b = e.target.closest('[data-lf]'); if(!b) return;
@@ -4547,7 +4847,11 @@ function bind(){
   });
   $('#filterpop').addEventListener('click', function(e){ e.stopPropagation(); });
   $('#frel').addEventListener('change', function(e){ S.rel = e.target.value; S.limit = 200; refresh(); });
-  $('#fsort').addEventListener('change', function(e){ S.sort = e.target.value; refresh(); });
+  $('#sortbtn').addEventListener('click', function(e){ e.stopPropagation(); setSortPop(!sortPopOpen(), false); });
+  $('#sortpop').addEventListener('click', function(e){
+    var o = e.target.closest('.sortopt'); if(!o) return;
+    chooseSort(o.getAttribute('data-sv'));
+  });
   $('#fauditonly').addEventListener('change', function(e){ S.auditOnly = e.target.checked; S.limit = 200; refresh(); });
   $('#fenrichedonly').addEventListener('change', function(e){ S.enrichedOnly = e.target.checked; S.limit = 200; refresh(); });
   $('#fclear').addEventListener('click', function(){ clearFilter('all'); $('#filterpop').hidden = true; });
@@ -4640,6 +4944,9 @@ function bind(){
   });
   famEl.addEventListener('input', function(ev){
     if(ev.target.classList && ev.target.classList.contains('dfq')) dashFamSearch(ev.target);
+  });
+  famEl.addEventListener('change', function(ev){
+    if(ev.target.id && ev.target.id.indexOf('dfamrel-') === 0) famRelSave(ev.target.value);
   });
   document.addEventListener('keydown', function(ev){
     if(ev.key === 'Escape' && DFAM.openTree != null && !famEl.hidden){ DFAM.openTree = null; DFAM.editing = null; renderDashFamily(); }
@@ -4931,6 +5238,27 @@ function bind(){
       setField(cont.getAttribute('data-pk'), readTags(cont));
     }
   });
+  rb.addEventListener('keydown', function(e){
+    /* Skills flow: arrows walk categories and the open panel's skills;
+       Enter/Space stay native on the buttons; Right opens, Left closes. */
+    var t = e.target;
+    if(!t.classList || (!t.classList.contains('skcatbtn') && !t.classList.contains('skopt'))) return;
+    var flow = t.closest('.skflow'); if(!flow) return;
+    if(e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End'){
+      var items = $$('.skcatbtn, .skopt', flow).filter(function(el){ return el.offsetParent !== null; });
+      var i = items.indexOf(t); if(i < 0 || !items.length) return;
+      e.preventDefault();
+      var n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1
+        : (i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+      items[n].focus();
+    } else if(e.key === 'ArrowRight' && t.classList.contains('skcatbtn')){
+      var cat = t.closest('.skcat');
+      if(cat && !cat.classList.contains('open')){ e.preventDefault(); t.click(); }
+    } else if(e.key === 'ArrowLeft' && t.classList.contains('skcatbtn')){
+      var cat2 = t.closest('.skcat');
+      if(cat2 && cat2.classList.contains('open')){ e.preventDefault(); t.click(); }
+    }
+  });
   rb.addEventListener('input', function(e){
     var t = e.target;
     if(t.closest && t.closest('.esec.waived .sbody')) return;
@@ -4943,6 +5271,7 @@ function bind(){
   });
   rb.addEventListener('change', function(e){
     var t = e.target;
+    if(t.id === 'famrel'){ famRelSave(t.value); return; }
     if(t.hasAttribute && t.hasAttribute('data-secwv')){
       /* Section-level insufficient-data toggle. */
       setWaiverSections(S.sel, [t.getAttribute('data-secwv')], t.checked);
@@ -4978,9 +5307,15 @@ function bind(){
 
   document.addEventListener('click', function(e){
     if(!e.target.closest('.menu')) closeMenus();
+    if(!e.target.closest('#sortdd')) setSortPop(false);
     if(!e.target.closest('.filterwrap')){ var fp = $('#filterpop'); if(fp && !fp.hidden){ fp.hidden = true; $('#filterbtn').setAttribute('aria-expanded', 'false'); } }
   });
   document.addEventListener('keydown', onKey);
+  document.addEventListener('keydown', kbNav, true);
+  document.addEventListener('mouseover', function(e){
+    var h = e.target.closest && e.target.closest('.naddhit');
+    if(h && !h.classList.contains('none') && h.parentNode) kbSetAct(h.parentNode, h);
+  });
 }
 function toggleList(){
   S.listOpen = !S.listOpen;
@@ -5046,6 +5381,8 @@ function boot(){
   var m = store('ncc_mode'), c = store('ncc_color');
   if(m === '2d' || m === '3d') S.mode = m;
   if(c === 'tier' || c === 'rel') S.colorBy = c; else if(c === 'level') S.colorBy = 'tier';
+  var sv = store('ncc_sort');
+  if(sv && SORT_OPTS.some(function(o){ return o[0] === sv; })) S.sort = sv;
   try{ store('ncc_secs', '{}'); }catch(x){} S.openSecs = {};
   $$('#colorToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-c') === S.colorBy); });
   if(innerWidth <= 860){ S.listOpen = false; document.body.classList.add('nolist'); $('#listtoggle').classList.remove('on'); $('#listtoggle').setAttribute('aria-pressed', 'false'); }
