@@ -1072,18 +1072,18 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .dfamlegend{display:flex;flex-wrap:wrap;gap:6px 16px}
 .dfamleg{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--dim);font-weight:600}
 .dfamleg i{width:9px;height:9px;border-radius:50%;display:inline-block}
-.dfamtree{padding:6px 0 2px}
-.dfamband{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--line-soft)}
-.dfamband:first-child{border-top:0}
-.dfambandlab{flex:none;width:150px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding-top:9px}
-.dfamnodes{display:flex;flex-wrap:wrap;gap:8px}
-.dfamnode{display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:1px solid var(--line);
-  border-left:4px solid var(--rc);background:rgba(255,255,255,.03);border-radius:10px;padding:8px 12px;
+.dfamscroll{overflow-x:auto;padding:8px 2px 6px}
+.dftree{position:relative}
+.dftree-lines{position:absolute;left:0;top:0;pointer-events:none}
+.dftree-lines line{stroke:#39415a;stroke-width:1.5}
+.dfamnode{position:absolute;width:156px;height:48px;box-sizing:border-box;display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:center;gap:1px;border:1px solid var(--line);
+  border-left:4px solid var(--rc);background:rgba(255,255,255,.03);border-radius:10px;padding:6px 10px;
   cursor:pointer;color:var(--txt);font-family:var(--sans);text-align:left}
-.dfamnode b{font-size:13.5px}
+.dfamnode b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .dfamnode span{font-size:11px;color:var(--rc);font-weight:700}
 .dfamnode:hover{border-color:rgba(255,255,255,.35)}
-.dfamnode.self{background:color-mix(in srgb,var(--rc) 12%,transparent);border-color:var(--rc)}
+.dfamnode.editing{background:color-mix(in srgb,var(--rc) 14%,transparent);border-color:var(--rc)}
 .dfamedithead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .dfamedithead b{font-size:14px;margin-right:auto}
 .dfamedit{flex-basis:100%;padding:6px 0 4px}
