@@ -484,6 +484,7 @@ function igURL(h){ return 'https://www.instagram.com/' + encodeURIComponent(Stri
 function passes(r, skipLvl, skipQ){
   var pr = r.profile || {};
   if(pr.deleted === '1') return false;
+  if((pr.merged_into || '').trim()) return false;
   if(S.auditOnly && pr.audit === 'audited') return false;
   if(S.enrichedOnly && !isEnriched(r)) return false;
   if(S.tag && tagList(gv(r, S.tag.k)).indexOf(S.tag.v) < 0) return false;
@@ -2096,7 +2097,7 @@ var QA_FILTERS = [
   { k:'needs',      l:'Needs attention' }
 ];
 function qaPass(e, st, an){
-  if((e.profile || {}).deleted === '1' || st.audited) return false;
+  if((e.profile || {}).deleted === '1' || ((e.profile || {}).merged_into || '').trim() || st.audited) return false;
   if(QA.q === 'ratings') return !st.hasR;
   if(QA.q === 'background') return !st.hasB;
   if(QA.q === 'connection') return !st.hasC;
@@ -2407,6 +2408,11 @@ function renderQuick(){
   var tier = tierOf(e), mom = momVal(e) || '0', aud = (e.profile || {}).audit === 'audited';
   function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
   $('#qacount').textContent = (QA.done + QA.del + QA.idx + 1) + ' of ' + QA.total;
+  if(QA.merge){
+    body.innerHTML = qaMergeHTML(e);
+    if(QA.merge.step === 'pick') renderQaMergeHits($('#qminput') ? $('#qminput').value : '');
+    return;
+  }
   body.innerHTML =
     '<div class="qacard">' +
       '<div class="qaid"><span class="qaava" style="--c:' + tierCol(e) + '">' + esc(ini) + '</span>' +
@@ -2533,20 +2539,15 @@ function renderAudit(){
   /* family map: last name -> fleshed-out people (score>=2) carrying it */
   var famMap = {};
   D.directory.forEach(function(x){
-    if((x.profile || {}).deleted === '1' || isBusiness(x)) return;
+    if((x.profile || {}).deleted === '1' || ((x.profile || {}).merged_into || '').trim() || isBusiness(x)) return;
     if(auditStats(x).score < 2) return;
     var ln = lastNameOf(x);
     if(!ln) return;
     (famMap[ln] = famMap[ln] || []).push({ i:(x.name || '').toLowerCase(), d:dispName(x) });
   });
   D.directory.forEach(function(e, di){
-    if((e.profile || {}).deleted === '1') return;
+    if((e.profile || {}).deleted === '1' || ((e.profile || {}).merged_into || '').trim()) return;
     var st = auditStats(e);
-  if(QA.merge){
-    body.innerHTML = qaMergeHTML(e);
-    if(QA.merge.step === 'pick') renderQaMergeHits($('#qminput') ? $('#qminput').value : '');
-    return;
-  }
     var an = auName(e);
     var cs = null;
     var pass = true;
@@ -2574,7 +2575,7 @@ function renderAudit(){
   AUD.rows = rows;
   var nA = 0, nR = 0, nB = 0, nC = 0, nBiz = 0, nName = 0, nClose = 0;
   D.directory.forEach(function(e){
-    if((e.profile || {}).deleted === '1') return;
+    if((e.profile || {}).deleted === '1' || ((e.profile || {}).merged_into || '').trim()) return;
     var st = auditStats(e);
     if(!st.audited) nA++;
     if(!st.hasR) nR++;
