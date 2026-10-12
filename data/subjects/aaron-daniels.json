@@ -1,27 +1,27 @@
 {
-  "name": "Aaron Daniels",
-  "slug": "aaron-daniels",
-  "category": "peer",
-  "role": "Friend · Recurring",
-  "period": "2015 – 2019",
-  "standing": "",
-  "description": "Joined the Merrick/Wangerin friend group mid-2015. Also had a crush on Liz Wangerin, adding a third angle to the 2015 dynamic. Appeared on the 2016 NYC class trip. Part of the 2019 friend group that dissolved after the Lala situation. Later married Lala.",
-  "bio": "",
-  "chips": [],
-  "sources": [
-    "legacy"
-  ],
-  "friendsdb": {
-    "relationship_type": "Friend",
-    "groups": "CFC",
-    "closeness_tier": "Regular",
-    "state": "Inactive",
-    "standing": "Dormant",
-    "trajectory": "Flat",
-    "trend": "flat",
-    "personal_context": "Exposed",
-    "shared_interests": "",
-    "years_known": "15",
-    "phone": "(315)600-6180"
-  }
+ "name": "Aaron Daniels",
+ "slug": "aaron-daniels",
+ "category": "peer",
+ "role": "Friend · Recurring",
+ "period": "2015 – 2019",
+ "standing": "",
+ "description": "Part of JD's mid-2010s friend group in the Potsdam area. Later married Indira (Lala) Quintana.",
+ "bio": "",
+ "chips": [],
+ "sources": [
+  "legacy"
+ ],
+ "friendsdb": {
+  "relationship_type": "Friend",
+  "groups": "CFC",
+  "closeness_tier": "Regular",
+  "state": "Inactive",
+  "standing": "Dormant",
+  "trajectory": "Flat",
+  "trend": "flat",
+  "personal_context": "Exposed",
+  "shared_interests": "",
+  "years_known": "15",
+  "phone": "(315)600-6180"
+ }
 }
