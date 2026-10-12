@@ -245,6 +245,8 @@ var SKILLS_VOCAB = ['Photography','Travel','Registered Nurse','Music','Skiing','
 var SKILL_CATS = ['Healthcare','Customer Service','Education','Technology','Construction','Creative Media','Business','Food Service','Transportation','Agriculture','Public Safety','Social Services','Administration','Sales','Outdoors'];
 var F = {
   display_name:{ l:'Name', t:'text' },
+  first_name:{ l:'First name', t:'text' },
+  last_name:{ l:'Last name', t:'text' },
   also_known_as:{ l:'Also known as', t:'text' },
   phone:{ l:'Phone', t:'phone' },
   email:{ l:'Email', t:'text' },
@@ -288,7 +290,7 @@ var L1_TOTAL = 14;
 
 /* The edit stack, top to bottom. lv = which level color the section wears. */
 var SECTIONS = [
-  { id:'identity',    title:'Contact',      ic:'user',      lv:1, fields:['phone','email'] },
+  { id:'identity',    title:'Contact',      ic:'user',      lv:1, fields:['first_name','last_name','phone','email'] },
   { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
   { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
   { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','churches','companies','highlights','public_footprint'] },
@@ -715,16 +717,16 @@ function reviewBadge(e){
   var label = f === 'duplicate' ? 'Possible duplicate' : (f === 'missing_info' ? 'Missing info' : f);
   return '<span class="revbadge" title="Flagged for review">' + esc(label) + '</span>';
 }
+/* Name edits live in the Contact section as ordinary First/Last name
+   fields (2026-10-12): tapping the hero name jumps there and focuses the
+   First name field instead of prompting. */
 function editHeroName(e){
   if(!e || !S.editing) return;
-  var pr = e.profile || {};
-  var fn = prompt('First name:', pr.first_name || '');
-  if(fn === null) return;
-  var ln = prompt('Last name:', pr.last_name || '');
-  if(ln === null) return;
-  queuePatch(S.sel, { first_name: fn.trim(), last_name: ln.trim() });
+  S.editGroup = 1;
+  toggleSec('identity', true);
   renderPanel(true);
-  toast('Name updated.');
+  var inp = $('#rightbody input[data-pk="first_name"]');
+  if(inp){ inp.scrollIntoView({ block:'center' }); inp.focus(); inp.select(); }
 }
 function phead(e){
   var prof = e.profile || {}, pl = personLevel(e), col = LV[pl].c, aud = prof.audit === 'audited';
@@ -753,7 +755,7 @@ function phead(e){
     '<button data-act="delete" class="danger">' + ic('trash', 16) + 'Delete this person</button></div></div>';
   return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + auditBack + back +
     '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
-    '<div class="hname"><h2 title="' + esc(dispName(e)) + (S.editing ? ' — click to edit name' : '') + '"' + (S.editing ? ' data-act="editname" style="cursor:pointer"' : '') + '>' + esc(dispName(e)) +
+    '<div class="hname"><h2 title="' + esc(dispName(e)) + (S.editing ? ' — edit name in Contact' : '') + '"' + (S.editing ? ' data-act="editname" style="cursor:pointer"' : '') + '>' + esc(dispName(e)) +
     (S.editing ? '<span class="hpct" title="Profile completeness">' + pct(e) + '%</span>' : '') + '</h2>' +
     (function(){ var sl = subLine(e); return sl ? '<div class="hsub"><span>' + esc(sl) + '</span>' +
     reviewBadge(e) + (S.editing ? '<span class="editflag">Editing</span>' : '') + '</div>' : ''; })() + '</div>' +
