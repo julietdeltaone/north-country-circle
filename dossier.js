@@ -800,7 +800,9 @@ function renderRail(){
 function railPeople(){
   renderLvlChips();
   var rows = listRows();
-  var total = LIST_ORDER.filter(function(di){ return (D.directory[di].profile || {}).deleted !== '1'; }).length;
+  /* same rule as listRows()/passes() and the rail tiles: exclude deleted
+     AND merged-away entries, or the header total sits above the row count */
+  var total = LIST_ORDER.filter(function(di){ return liveEntry(D.directory[di]); }).length;
   $('#lcount').textContent = rows.length === total ? total + ' people' : rows.length + ' of ' + total + ' people';
   var indTogg = '<label class="indtogg inscrl" title="Show per-person field indicators"><input type="checkbox" id="showindicators"' + (S.showIndicators ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Show Indicators</em></label>';
   var shown = rows.slice(0, S.limit);
@@ -889,7 +891,10 @@ function clearFilter(k){
   S.limit = 200; refresh();
 }
 function updateAuditPill(){
-  var live = LIST_ORDER.filter(function(di){ return (D.directory[di].profile || {}).deleted !== '1'; });
+  /* same denominator as the list header / All chip / People tile (JD
+     2026-10-12 merge audit): exclude deleted AND merged-away entries —
+     counting merged_into rows here inflated the total vs the list */
+  var live = LIST_ORDER.filter(function(di){ return liveEntry(D.directory[di]); });
   var done = live.filter(function(di){ return (D.directory[di].profile || {}).audit === 'audited'; }).length;
   $('#aptxt').textContent = 'Audited ' + done + '/' + live.length;
   $('#apfill').style.width = (live.length ? Math.round(done / live.length * 100) : 0) + '%';
