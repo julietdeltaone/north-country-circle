@@ -262,7 +262,8 @@ var SKILL_TAXONOMY = [
   { cat:'Customer Service', skills:['Cashier','Front Desk'] },
   { cat:'Social Services', skills:['Social Work','Counselor','Case Manager','Childcare'] },
   { cat:'Agriculture', skills:['Farmer','Dairy Farmer','Farmhand','Veterinarian'] },
-  { cat:'Creative Media', skills:['Photography','Video','Film','Content Creation','Music','Singing','Guitar','Piano','Bass','Clarinet','Coloring','Graphic Design','Writing'] },
+  { cat:'Creative Media', skills:['Photography','Video','Film','Content Creation','Coloring','Graphic Design','Writing'] },
+  { cat:'Music', skills:['Singing','Guitar','Piano','Bass','Clarinet','Drums','Violin','Trumpet','Saxophone','Flute','Cello','Banjo','Ukulele','Choir','Songwriting','Music Production','DJ','Worship Leading'] },
   { cat:'Outdoors', skills:['Skiing','Golf','Running','Hiking','Horseback Riding','Ultimate Frisbee','Travel','Fishing','Hunting','Landscaping'] }
 ];
 /* skill -> parent category (the category name itself maps to its own category,
@@ -1060,6 +1061,23 @@ function famDualWrite(di, rel, tdi, adding){
   }
   if(tl.length !== before) queuePatch(tdi, { family: JSON.stringify(tl) });
 }
+/* All family are known associates (JD 2026-10-12): the build unions family
+   links into the baked neighbors; mirror an ADD locally so both profiles
+   show the associate in-session, before the next rebuild. Respects
+   close_hide on either side. Removal leaves the neighbor lists alone:
+   close_hide is the removal mechanism, and the build's derivation settles
+   the rest at the next rebuild. */
+function famAssocSync(di, tdi){
+  var e = D.directory[di], t = D.directory[tdi];
+  if(!e || !t || di === tdi) return;
+  [[e, t], [t, e]].forEach(function(pr){
+    var o = pr[0], x = pr[1], xk = (x.name || '').toLowerCase();
+    if(!xk) return;
+    if(hiddenAssoc(o)[xk] || hiddenAssoc(x)[(o.name || '').toLowerCase()]) return;
+    if(!(o.neighbors || []).some(function(n){ return (n.u || '').toLowerCase() === xk; }))
+      (o.neighbors = o.neighbors || []).push({ u:x.name || '', d:dispName(x) });
+  });
+}
 function addFam(e, idx){
   var t = D.directory[idx]; if(!e || !t) return;
   var rel = ($('#famrel') || {}).value || 'parent';
@@ -1068,6 +1086,7 @@ function addFam(e, idx){
     links.push([rel, t.name || '']);
   queuePatch(S.sel, { family: JSON.stringify(links) });
   famDualWrite(S.sel, rel, idx, true);
+  famAssocSync(S.sel, idx);
   renderPanel(true); toast(dispName(t) + ' added as ' + rel + '.');
 }
 function removeFam(e, i){
@@ -2748,6 +2767,7 @@ function dashFamAdd(di, tdi){
     links.push([rel, t.name || '']);
   queuePatch(di, { family: JSON.stringify(links) });
   famDualWrite(di, rel, tdi, true);
+  famAssocSync(di, tdi);
   renderDashFamily();
   toast(dispName(t) + ' added as ' + rel + ' of ' + dispName(e) + '.');
 }
