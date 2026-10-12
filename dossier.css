@@ -752,6 +752,8 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 /* highlights chips */
 .vchip.hchip{display:inline-flex;align-items:center;gap:6px;cursor:default;border-color:color-mix(in srgb,#7fa8ff 30%,transparent)}
 .vchip.hchip svg{color:#7fa8ff}
+.vchip.skchip{display:inline-flex;align-items:center;gap:6px;cursor:default;border-color:color-mix(in srgb,#5fd0a5 30%,transparent)}
+.vchip.skchip svg{color:#5fd0a5}
 /* persona compact grid */
 .persona-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
 .ptrait{display:flex;align-items:center;gap:10px;font-size:12px}
