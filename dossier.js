@@ -1302,6 +1302,7 @@ function secBody(s, e){
   if(s.id === 'files') return filesEdit(e);
   if(s.id === 'admin') return adminBody(e);
   if(s.id === 'ratings') return '<div class="rgrid">' + s.fields.map(function(k){ return fieldRow(k, e); }).join('') + '</div>';
+  if(s.id === 'identity') return s.fields.map(function(k){ return fieldRow(k, e); }).join('') + akaRow(e);
   return s.fields.map(function(k){ return fieldRow(k, e); }).join('');
 }
 function secHTML(s, e){
