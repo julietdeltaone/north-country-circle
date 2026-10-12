@@ -2461,7 +2461,7 @@ function grpRenameSave(oldName){
    source of truth — [[relation, person name], ...] per person, edited through
    queuePatch exactly like the profile editor's family section). Display adds
    the inverses and shared-parent siblings, mirroring the build. ----- */
-var DFAM = { editing:null, openDi:null };
+var DFAM = { editing:null, openTree:null };
 /* Tree colors are structural, never relative to a chosen person (JD
    2026-10-12 rebuild): bloodline members are tinted by generation, eldest
    generation first; a spouse who married into the family gets one color. */
@@ -2499,23 +2499,115 @@ function famDisplay(){
   });
   return disp;
 }
-function famComponents(disp){
-  var seen = {}, comps = [];
-  Object.keys(disp).forEach(function(diK){
-    var start = +diK;
-    if(seen[start]) return;
-    var comp = [], stack = [start];
-    while(stack.length){
-      var di = stack.pop();
-      if(seen[di]) continue;
-      seen[di] = 1; comp.push(di);
-      ['parents', 'spouses', 'children', 'siblings'].forEach(function(rk){
-        (disp[di][rk] || []).forEach(function(x){ if(!seen[x.di]) stack.push(x.di); });
+/* ----- bloodline trees (JD 2026-10-12): a family tree is a BLOODLINE,
+   not a connected component — marriage must not chain one bloodline into
+   another. Founding groups come from the parent-less roots: sibling
+   groups among roots (the Paladin siblings found the Paladin tree),
+   founding couples (two roots married to each other), and solo roots
+   with blood descendants. A tree renders its blood descendants plus the
+   SPOUSES of blood members (one marriage hop); a spouse's own bloodline
+   is never pulled in. A person can be blood in one tree and a married-in
+   spouse in another — their HOME tree is where they are blood, and
+   married-in nodes link across to it so the chain can still be walked
+   one marriage at a time. ----- */
+var FAM_SUF = { 'sr.':1, 'jr.':1, 'ii':1, 'iii':1, 'iv':1 };
+function famSurname(di){
+  var parts = dispName(D.directory[di]).split(/\s+/).filter(function(x){ return x; });
+  while(parts.length > 1 && FAM_SUF[parts[parts.length - 1].toLowerCase()]) parts.pop();
+  return parts.length ? parts[parts.length - 1] : '';
+}
+function famTrees(disp){
+  function rel(di, rk){ return ((disp[di] && disp[di][rk]) || []).map(function(x){ return x.di; }); }
+  var roots = Object.keys(disp).map(Number).filter(function(di){ return !rel(di, 'parents').length; })
+    .sort(function(a, b){ return a - b; });
+  /* founding sibling groups among roots: union over SIBLING edges only —
+     a spouse edge must never merge two bloodlines at the root */
+  var upar = {}; roots.forEach(function(di){ upar[di] = di; });
+  function find(x){ while(upar[x] !== x){ upar[x] = upar[upar[x]]; x = upar[x]; } return x; }
+  roots.forEach(function(di){
+    rel(di, 'siblings').forEach(function(s){
+      if(upar[s] == null) return;
+      var a = find(di), b = find(s);
+      if(a !== b) upar[a] = b;
+    });
+  });
+  var groups = {}, founded = [], claimed = {}, foundedRoots = {};
+  roots.forEach(function(di){ var r = find(di); (groups[r] = groups[r] || []).push(di); });
+  Object.keys(groups).forEach(function(k){
+    if(groups[k].length >= 2){
+      var g = groups[k].slice().sort(function(a, b){ return a - b; });
+      founded.push(g);
+      g.forEach(function(di){ claimed[di] = 1; foundedRoots[di] = 1; });
+    }
+  });
+  var singles = roots.filter(function(di){ return !claimed[di]; }), paired = {};
+  singles.forEach(function(di){
+    if(paired[di]) return;
+    var sps = rel(di, 'spouses').filter(function(s){ return upar[s] != null && !claimed[s] && !paired[s]; });
+    if(sps.length){
+      founded.push([di, sps[0]].sort(function(a, b){ return a - b; }));
+      paired[di] = paired[sps[0]] = 1; foundedRoots[di] = foundedRoots[sps[0]] = 1;
+    }
+  });
+  singles.forEach(function(di){
+    if(paired[di]) return;
+    if(!rel(di, 'children').length) return; /* no descendants: renders only as a married-in spouse */
+    if(rel(di, 'spouses').some(function(s){ return foundedRoots[s]; })) return;
+    founded.push([di]); foundedRoots[di] = 1;
+  });
+  var trees = founded.map(function(g, gi){
+    var blood = {};
+    g.forEach(function(di){ blood[di] = 1; });
+    var grew = true;
+    while(grew){
+      grew = false;
+      Object.keys(disp).map(Number).forEach(function(di){
+        if(blood[di]) return;
+        if(rel(di, 'parents').some(function(p){ return blood[p]; })){ blood[di] = 1; grew = true; return; }
+        if(!rel(di, 'parents').length && rel(di, 'siblings').some(function(s){ return blood[s]; })){ blood[di] = 1; grew = true; }
       });
     }
-    if(comp.length) comps.push(comp);
+    var members = {};
+    Object.keys(blood).forEach(function(k){ members[k] = 1; rel(+k, 'spouses').forEach(function(s){ members[s] = 1; }); });
+    return { id:'ft' + gi, roots:g, blood:blood,
+      members:Object.keys(members).map(Number).sort(function(a, b){ return a - b; }) };
   });
-  return comps;
+  /* titles come from the root surnames; a surname that is the unanimous
+     surname of another tree's roots is claimed by that tree and loses
+     ties here (keeps the Paladin siblings from titling as "Daniels") */
+  var claims = {};
+  trees.forEach(function(t){
+    var cnt = {};
+    t.roots.forEach(function(di){ var s = famSurname(di); if(s) cnt[s] = (cnt[s] || 0) + 1; });
+    t.cnt = cnt;
+    var ks = Object.keys(cnt);
+    if(ks.length === 1 && cnt[ks[0]] === t.roots.length) claims[ks[0]] = (claims[ks[0]] || 0) + 1;
+  });
+  trees.forEach(function(t){
+    var cands = Object.keys(t.cnt).sort(function(a, b){ return t.cnt[b] - t.cnt[a] || (a < b ? -1 : 1); });
+    var pick = null;
+    for(var i = 0; i < cands.length; i++){ if(!claims[cands[i]] || cands.length === 1){ pick = cands[i]; break; } }
+    var base = pick || cands[0];
+    t.title = base ? base + ' family' : 'Family';
+  });
+  /* home tree per person: where they are blood; the largest such tree wins */
+  var homes = {};
+  trees.forEach(function(t){
+    Object.keys(t.blood).forEach(function(k){
+      if(!homes[k] || t.members.length > homes[k].members.length) homes[k] = t;
+    });
+  });
+  trees.forEach(function(t){
+    t.spousesFrom = [];
+    var seenH = {};
+    t.members.forEach(function(di){
+      if(t.blood[di]) return;
+      var hm = homes[di];
+      if(hm && hm !== t && !seenH[hm.id]){ seenH[hm.id] = 1; t.spousesFrom.push(hm); }
+    });
+  });
+  trees.sort(function(a, b){ return b.members.length - a.members.length || (a.title < b.title ? -1 : a.title > b.title ? 1 : 0); });
+  return { trees:trees, homes:homes };
 }
 /* ----- descendant-tree layout, following the standard genealogy chart
    convention (pedigree / descendant charts as drawn by genealogy software):
@@ -2525,8 +2617,8 @@ function famComponents(disp){
    on the level directly below. There is no anchor person: positions and
    colors come only from the link graph itself. ----- */
 var DFT = { NW:156, NH:48, CGAP:30, UGAP:26, ROW:112, DROP:28 };
-function famTreeModel(disp, comp){
-  var inComp = {};
+function famTreeModel(disp, tree, homes){
+  var comp = tree.members, inComp = {};
   comp.forEach(function(di){ inComp[di] = 1; });
   function rel(di, rk){
     return ((disp[di] && disp[di][rk]) || []).map(function(x){ return x.di; })
@@ -2544,11 +2636,18 @@ function famTreeModel(disp, comp){
     return gen[di];
   }
   comp.forEach(genOf);
-  /* married-in: no parents in this family, but a partner who descends in it */
-  function marriedIn(di){
-    if(rel(di, 'parents').length) return false;
-    return rel(di, 'spouses').some(function(s){ return rel(s, 'parents').length > 0; });
-  }
+  /* a blood member with no recorded parents still belongs on their
+     siblings' row when a sibling descends in this tree — their parents
+     were simply never recorded (e.g. the Brown siblings of Baxter) */
+  comp.forEach(function(di){
+    if(gen[di] !== 0 || !tree.blood[di]) return;
+    var best = 0;
+    rel(di, 'siblings').forEach(function(s){ if(tree.blood[s] && gen[s] > best) best = gen[s]; });
+    if(best) gen[di] = best;
+  });
+  /* married-in: rendered in this tree only as the spouse of a blood
+     member — blood membership comes from the tree, not from local links */
+  function marriedIn(di){ return !tree.blood[di]; }
   /* Couple units: every non-married-in person heads a unit and their spouse
      stands beside them as partner. A founding couple (both bloodline, e.g.
      two roots) pairs up the same way: the first head processed claims the
@@ -2592,6 +2691,9 @@ function famTreeModel(disp, comp){
     if(!pu.childUnits.some(function(c){ return c.unit === pairMap[di]; }))
       pu.childUnits.push({ di:di, unit:pairMap[di] });
   });
+  /* siblings hang in directory order — stable on every render, and the
+     closest thing to birth order the data supports */
+  active.forEach(function(u){ u.childUnits.sort(function(a, b){ return a.di - b.di; }); });
   var childUnitSet = [];
   active.forEach(function(u){ u.childUnits.forEach(function(c){ if(childUnitSet.indexOf(c.unit) < 0) childUnitSet.push(c.unit); }); });
   var roots = active.filter(function(u){ return childUnitSet.indexOf(u) < 0; });
@@ -2647,14 +2749,27 @@ function famTreeModel(disp, comp){
   });
   sibGroups.forEach(function(g){
     if(g.length < 2) return;
-    var cs = g.map(function(u){ return rootCenter[u.head]; }), by = padTop - 16;
+    /* the sibship bar sits just above the siblings' own generation row,
+       which is not always the top row (parent-less siblings of a blood
+       member render beside their sibling's generation, not at the top) */
+    var gy = Math.min.apply(null, g.map(function(u){ return gen[u.head]; }));
+    var by = padTop + gy * DFT.ROW - 16;
+    var cs = g.map(function(u){ return rootCenter[u.head]; });
     lines.push({ x1:Math.min.apply(null, cs), y1:by, x2:Math.max.apply(null, cs), y2:by });
-    cs.forEach(function(cx){ lines.push({ x1:cx, y1:by, x2:cx, y2:padTop }); });
+    g.forEach(function(u){ lines.push({ x1:rootCenter[u.head], y1:by, x2:rootCenter[u.head], y2:padTop + gen[u.head] * DFT.ROW }); });
   });
   var maxY = 0, maxGen = 0, hasSpouse = false;
   nodes.forEach(function(n){ if(n.y > maxY) maxY = n.y; });
   comp.forEach(function(di){ if(gen[di] > maxGen) maxGen = gen[di]; if(marriedIn(di)) hasSpouse = true; });
-  return { nodes:nodes, lines:lines, w:totalW, h:maxY + DFT.NH + 12, maxGen:maxGen, hasSpouse:hasSpouse,
+  /* walking the chain (JD 2026-10-12): a married-in spouse whose home
+     tree exists gets a jump link under their node to that tree */
+  var chips = [];
+  nodes.forEach(function(n){
+    if(tree.blood[n.di]) return;
+    var home = homes && homes[n.di];
+    if(home && home !== tree) chips.push({ di:n.di, x:n.x, y:n.y + DFT.NH + 4, tid:home.id, title:home.title });
+  });
+  return { nodes:nodes, lines:lines, chips:chips, gen:gen, w:totalW, h:maxY + DFT.NH + 12 + (chips.length ? 26 : 0), maxGen:maxGen, hasSpouse:hasSpouse,
     styleOf:function(di){
       if(marriedIn(di)) return { c:FAM_SPOUSE_COLOR, cap:'Spouse' };
       var g = gen[di];
@@ -2670,8 +2785,12 @@ function famTreeHTML(model){
     return '<button type="button" class="dfamnode' + (DFAM.editing === n.di ? ' editing' : '') + '" data-dfnode data-di="' + n.di +
       '" style="left:' + n.x + 'px;top:' + n.y + 'px;--rc:' + st.c + '"><b>' + esc(dispName(D.directory[n.di])) + '</b><span>' + st.cap + '</span></button>';
   }).join('');
+  var chips = (model.chips || []).map(function(c){
+    return '<button type="button" class="dfamhome" data-dfhome="' + c.tid + '" style="left:' + c.x + 'px;top:' + c.y +
+      'px" title="Open their home family">→ ' + esc(c.title) + '</button>';
+  }).join('');
   return '<div class="dftree" style="width:' + model.w + 'px;height:' + model.h + 'px">' +
-    '<svg class="dftree-lines" width="' + model.w + '" height="' + model.h + '">' + lines + '</svg>' + nodes + '</div>';
+    '<svg class="dftree-lines" width="' + model.w + '" height="' + model.h + '">' + lines + '</svg>' + nodes + chips + '</div>';
 }
 function famEditorHTML(di){
   var e = D.directory[di], links = famLinks(e);
@@ -2689,58 +2808,54 @@ function famEditorHTML(di){
     '<input class="dfq" data-dfq="' + di + '" placeholder="Add family member: type a name" autocomplete="off"></div>' +
     '<div class="dfamhits" data-dfamhits="' + di + '"></div></div>';
 }
-function famTitle(comp){
-  var lastNames = {};
-  comp.forEach(function(di){ var ln = (dispName(D.directory[di]).split(' ').pop() || '').trim(); if(ln) lastNames[ln] = (lastNames[ln] || 0) + 1; });
-  var names = Object.keys(lastNames).sort(function(a, b){ return lastNames[b] - lastNames[a] || (a < b ? -1 : 1); });
-  if(!names.length) return 'Family';
-  if(names.length === 1) return names[0] + ' family';
-  return names.slice(0, 3).join(' · ') + (names.length > 3 ? ' +' + (names.length - 3) : '') + ' families';
-}
 /* Families render COLLAPSED by default (JD 2026-10-12): the section is a
-   compact list of family cards — name, headcount, generations, eldest
-   names. A card's expand control opens the full descendant tree in a
-   full-screen overlay (DFAM.openDi = a member of the open family), where
-   the tree, the role legend, and the tap-a-node link editor live. */
+   compact list of bloodline cards — name from the root surname, headcount
+   of the rendered tree, generations, eldest names, and the home trees of
+   any married-in spouses. A card's expand control opens the full
+   descendant tree in a full-screen overlay (DFAM.openTree = tree id),
+   where the tree, the role legend, and the tap-a-node link editor live. */
 function renderDashFamily(){
   var el = $('#dashsec-family'); if(!el) return;
   var disp = famDisplay();
-  var comps = famComponents(disp).sort(function(a, b){ return b.length - a.length; });
-  var models = comps.map(function(comp){ return famTreeModel(disp, comp); });
-  function topInfo(model){
+  var ft = famTrees(disp), trees = ft.trees, homes = ft.homes;
+  var models = trees.map(function(t){ return famTreeModel(disp, t, homes); });
+  function topInfo(t, model){
     var minY = Math.min.apply(null, model.nodes.map(function(n){ return n.y; }));
-    var top = model.nodes.filter(function(n){ return n.y === minY; }).sort(function(a, b){ return a.x - b.x; });
-    return { repDi:top[0].di, names:top.slice(0, 2).map(function(n){ return dispName(D.directory[n.di]); }), extra:top.length - 2 };
+    var top = model.nodes.filter(function(n){ return n.y === minY && t.blood[n.di]; }).sort(function(a, b){ return a.x - b.x; });
+    if(!top.length) top = model.nodes.filter(function(n){ return n.y === minY; }).sort(function(a, b){ return a.x - b.x; });
+    return { names:top.slice(0, 2).map(function(n){ return dispName(D.directory[n.di]); }), extra:top.length - 2 };
   }
   var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3>' +
-    '<p class="dim" style="margin:0;font-size:12.5px">Each family is drawn as a standard descendant tree: the eldest generation at the top, partners side by side, and each couple\'s children on the level below. Expand a family to see its full tree and edit its links.</p></div>';
-  if(!comps.length) h += '<p class="dim">No family links on file yet. Add links from a profile\'s Family section.</p>';
-  h += comps.map(function(comp, ci){
-    var model = models[ci], ti = topInfo(model);
-    var meta = comp.length + (comp.length === 1 ? ' person' : ' people') + ' · ' + (model.maxGen + 1) + (model.maxGen === 0 ? ' generation' : ' generations') +
+    '<p class="dim" style="margin:0;font-size:12.5px">Each tree is one bloodline: blood descendants of its founders, plus their spouses shown as married in. A spouse\'s own family stays in its own tree — follow the link under a married-in spouse (or the "Spouses from" line on a card) to walk across. Expand a family to see its full tree and edit its links.</p></div>';
+  if(!trees.length) h += '<p class="dim">No family links on file yet. Add links from a profile\'s Family section.</p>';
+  h += trees.map(function(t, ci){
+    var model = models[ci], ti = topInfo(t, model);
+    var meta = t.members.length + (t.members.length === 1 ? ' person' : ' people') + ' · ' + (model.maxGen + 1) + (model.maxGen === 0 ? ' generation' : ' generations') +
       ' · Eldest: ' + ti.names.join(' & ') + (ti.extra > 0 ? ' +' + ti.extra : '');
-    return '<div class="dfam dfamcard"><div class="dfamcardmain"><h4 class="dfamtitle">' + esc(famTitle(comp)) + '</h4>' +
-      '<div class="dfammeta">' + esc(meta) + '</div></div>' +
-      '<button type="button" class="mini neutral dfamexpand" data-dfexpand="' + ti.repDi + '">Expand tree</button></div>';
+    var from = t.spousesFrom.length ? '<div class="dfamfrom">Spouses from: ' + t.spousesFrom.map(function(hm){
+      return '<button type="button" class="dfamfromlink" data-dfhome="' + hm.id + '">' + esc(hm.title) + '</button>';
+    }).join(', ') + '</div>' : '';
+    return '<div class="dfam dfamcard"><div class="dfamcardmain"><h4 class="dfamtitle">' + esc(t.title) + '</h4>' +
+      '<div class="dfammeta">' + esc(meta) + '</div>' + from + '</div>' +
+      '<button type="button" class="mini neutral dfamexpand" data-dfexpand="' + t.id + '">Expand tree</button></div>';
   }).join('');
-  var openCi = -1;
-  if(DFAM.openDi != null) comps.forEach(function(comp, ci){ if(comp.indexOf(DFAM.openDi) >= 0) openCi = ci; });
-  if(openCi >= 0){
-    var ocomp = comps[openCi], omodel = models[openCi];
+  var openT = null, openM = null;
+  if(DFAM.openTree != null) trees.forEach(function(t, ci){ if(t.id === DFAM.openTree){ openT = t; openM = models[ci]; } });
+  if(openT){
     var leg = [];
-    for(var g = 0; g <= omodel.maxGen; g++)
+    for(var g = 0; g <= openM.maxGen; g++)
       leg.push('<span class="dfamleg"><i style="background:' + FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)] + '"></i>Generation ' + (g + 1) + (g === 0 ? ' · eldest' : '') + '</span>');
-    if(omodel.hasSpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
-    var oedit = DFAM.editing != null && ocomp.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
+    if(openM.hasSpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
+    var oedit = DFAM.editing != null && openT.members.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
     h += '<div class="dfamfs"><div class="dfamfssheet">' +
-      '<div class="dfamfsbar"><b>' + esc(famTitle(ocomp)) + '</b><div class="dfamlegend">' + leg.join('') + '</div>' +
+      '<div class="dfamfsbar"><b>' + esc(openT.title) + '</b><div class="dfamlegend">' + leg.join('') + '</div>' +
       '<button type="button" class="mini neutral" data-dfclose="1">Close</button></div>' +
-      '<div class="dfamfsscroll">' + famTreeHTML(omodel) + oedit + '</div>' +
+      '<div class="dfamfsscroll">' + famTreeHTML(openM) + oedit + '</div>' +
       '</div></div>';
-  } else DFAM.openDi = null;
+  } else DFAM.openTree = null;
   el.innerHTML = h;
-  document.body.classList.toggle('dfamfsopen', openCi >= 0);
-  $('#aushown').textContent = comps.length + (comps.length === 1 ? ' family' : ' families');
+  document.body.classList.toggle('dfamfsopen', !!openT);
+  $('#aushown').textContent = trees.length + (trees.length === 1 ? ' family' : ' families');
 }
 function dashFamSearch(input){
   var di = parseInt(input.getAttribute('data-dfq'), 10);
@@ -4467,9 +4582,11 @@ function bind(){
   var famEl = $('#dashsec-family');
   famEl.addEventListener('click', function(ev){
     var ex = ev.target.closest('[data-dfexpand]');
-    if(ex){ DFAM.openDi = parseInt(ex.getAttribute('data-dfexpand'), 10); DFAM.editing = null; renderDashFamily(); return; }
+    if(ex){ DFAM.openTree = ex.getAttribute('data-dfexpand'); DFAM.editing = null; renderDashFamily(); return; }
+    var hm = ev.target.closest('[data-dfhome]');
+    if(hm){ DFAM.openTree = hm.getAttribute('data-dfhome'); DFAM.editing = null; renderDashFamily(); return; }
     var cl = ev.target.closest('[data-dfclose]');
-    if(cl || (ev.target.classList && ev.target.classList.contains('dfamfs'))){ DFAM.openDi = null; DFAM.editing = null; renderDashFamily(); return; }
+    if(cl || (ev.target.classList && ev.target.classList.contains('dfamfs'))){ DFAM.openTree = null; DFAM.editing = null; renderDashFamily(); return; }
     var an = ev.target.closest('[data-dfnode]');
     if(an){
       DFAM.editing = parseInt(an.getAttribute('data-di'), 10);
@@ -4486,7 +4603,7 @@ function bind(){
     if(ev.target.classList && ev.target.classList.contains('dfq')) dashFamSearch(ev.target);
   });
   document.addEventListener('keydown', function(ev){
-    if(ev.key === 'Escape' && DFAM.openDi != null && !famEl.hidden){ DFAM.openDi = null; DFAM.editing = null; renderDashFamily(); }
+    if(ev.key === 'Escape' && DFAM.openTree != null && !famEl.hidden){ DFAM.openTree = null; DFAM.editing = null; renderDashFamily(); }
   });
   var fspan = null;
   famEl.addEventListener('pointerdown', function(ev){
