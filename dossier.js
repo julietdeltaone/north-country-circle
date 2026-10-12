@@ -475,7 +475,9 @@ function subjSlug(e){
 }
 function subLine(e){
   if(e.src === 'contacts') return 'Phone contact';
-  if(e.src === 'subject') return 'Subject file';
+  /* No 'Subject file' label (JD 2026-10-12): the record origin distinction
+     is gone — nearly everyone has an IG handle, so record-sourced profiles
+     are no longer labeled apart from IG/contacts profiles. */
   return '';
 }
 /* ---------- insufficient-data waivers (JD 2026-10-12; section-level per JD's
@@ -3488,7 +3490,7 @@ function findDupGroups(){
     var scored = members.map(function(di){
       var en = D.directory[di];
       var st = auditStats(en);
-      var score = st.score + (en.has_graph ? 2 : 0) + ((en.pieces || 0) > 0 ? 1 : 0);
+      var score = st.score + (en.has_graph ? 2 : 0);
       return { di:di, e:en, st:st, score:score };
     });
     scored.sort(function(a, b){ return b.score - a.score; });
@@ -3521,21 +3523,23 @@ function renderDupAudit(q){
   function dupSrcLabel(e){
     var n = String(e.name || '');
     var m = n.match(/^(ig|ct|sf|fdb):/);
-    if(m) return m[1];
+    /* 'sf' (record/subject-file origin) gets no tag (JD 2026-10-12): the
+       record origin distinction is removed; other origins keep theirs. */
+    if(m) return m[1] === 'sf' ? '' : m[1];
     return e.has_graph ? 'ig' : 'entry';
   }
   $('#aubody').innerHTML = groups.map(function(g, gi){
     var cards = g.members.map(function(m){
       var an = auName(m.e);
-      var srcTag = '<i>' + esc(dupSrcLabel(m.e)) + '</i>';
+      var _sl = dupSrcLabel(m.e);
+      var srcTag = _sl ? ' <i>' + esc(_sl) + '</i>' : '';
       var isS = m.di === g.survivor;
       return '<label class="dupmem' + (isS ? ' surv' : '') + '">' +
         '<input type="radio" name="dupsurv' + gi + '" data-gi="' + gi + '" data-di="' + m.di + '"' + (isS ? ' checked' : '') + '>' +
         '<span class="auava">' + esc((an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</span>' +
-        '<span class="aumain"><span class="auname">' + esc(an.name) + ' ' + srcTag + '</span>' +
+        '<span class="aumain"><span class="auname">' + esc(an.name) + srcTag + '</span>' +
         '<span class="auneeds"><b class="' + (m.st.score >= 3 ? 'have' : 'miss') + '">' + m.st.score + '/4 data</b>' +
-        (m.e.has_graph ? '<b class="have">graph</b>' : '') +
-        ((m.e.pieces || 0) ? '<b class="have">' + m.e.pieces + ' mentions</b>' : '') + '</span></span>' +
+        (m.e.has_graph ? '<b class="have">graph</b>' : '') + '</span></span>' +
         (isS ? '<em class="dupsurvtag">survivor</em>' : '') + '</label>';
     }).join('');
     return '<div class="dupgroup"><div class="duphead">' +
@@ -3567,7 +3571,7 @@ function renderPhotoMerge(q){
       if(pr.deleted === '1' || (pr.merged_into || '').trim()) return;
       var st = auditStats(en);
       members.push({ di:di, e:en, st:st,
-        score:st.score + (en.has_graph ? 2 : 0) + ((en.pieces || 0) > 0 ? 1 : 0) });
+        score:st.score + (en.has_graph ? 2 : 0) });
     });
     if(members.length < 2) return;
     members.sort(function(a, b){ return b.score - a.score; });
@@ -3587,15 +3591,15 @@ function renderPhotoMerge(q){
     var cards = g.members.map(function(m){
       var an = auName(m.e);
       var n = String(m.e.name || ''), mt = n.match(/^(ig|ct|sf|fdb):/);
-      var srcTag = '<i>' + esc(mt ? mt[1] : (m.e.has_graph ? 'ig' : 'entry')) + '</i>';
+      var _sl = mt ? mt[1] : (m.e.has_graph ? 'ig' : 'entry');
+      var srcTag = _sl === 'sf' ? '' : ' <i>' + esc(_sl) + '</i>';
       var isS = m.di === g.survivor;
       return '<label class="dupmem' + (isS ? ' surv' : '') + '">' +
         '<input type="radio" name="dupsurv' + gi + '" data-gi="' + gi + '" data-di="' + m.di + '"' + (isS ? ' checked' : '') + '>' +
         '<span class="auava">' + esc((an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</span>' +
-        '<span class="aumain"><span class="auname">' + esc(an.name) + ' ' + srcTag + '</span>' +
+        '<span class="aumain"><span class="auname">' + esc(an.name) + srcTag + '</span>' +
         '<span class="auneeds"><b class="' + (m.st.score >= 3 ? 'have' : 'miss') + '">' + m.st.score + '/4 data</b>' +
-        (m.e.has_graph ? '<b class="have">graph</b>' : '') +
-        ((m.e.pieces || 0) ? '<b class="have">' + m.e.pieces + ' mentions</b>' : '') + '</span></span>' +
+        (m.e.has_graph ? '<b class="have">graph</b>' : '') + '</span></span>' +
         (isS ? '<em class="dupsurvtag">survivor</em>' : '') + '</label>';
     }).join('');
     return '<div class="dupgroup"><div class="duphead">' +
