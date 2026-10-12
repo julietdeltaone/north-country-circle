@@ -1,27 +1,27 @@
 {
-  "name": "Lala",
-  "slug": "lala",
-  "category": "rom",
-  "role": "Romantic — Brief",
-  "period": "Nov – Dec 2019",
-  "standing": "Closed",
-  "description": "Part of the Merrick-adjacent friend group. Brief sexual involvement that JD self-reported to church leaders — an act of genuine conviction he acknowledges he wouldn't repeat. Later married Aaron Daniels.",
-  "bio": "",
-  "chips": [],
-  "sources": [
-    "legacy"
-  ],
-  "friendsdb": {
-    "relationship_type": "Friend",
-    "groups": "MUTUAL FRIENDS",
-    "closeness_tier": "Inner",
-    "state": "Closed",
-    "standing": "Dormant",
-    "trajectory": "Flat",
-    "trend": "flat",
-    "personal_context": "Exposed",
-    "shared_interests": "Student",
-    "years_known": "6",
-    "phone": "(607)226-6175"
-  }
+ "name": "Lala",
+ "slug": "lala",
+ "category": "rom",
+ "role": "Romantic — Brief",
+ "period": "Nov – Dec 2019",
+ "standing": "Closed",
+ "description": "Part of the Merrick-adjacent friend group from early 2019. Later married Aaron Daniels. Now goes by Indira Quintana; this entry merges into her profile.",
+ "bio": "",
+ "chips": [],
+ "sources": [
+  "legacy"
+ ],
+ "friendsdb": {
+  "relationship_type": "Friend",
+  "groups": "MUTUAL FRIENDS",
+  "closeness_tier": "Inner",
+  "state": "Closed",
+  "standing": "Dormant",
+  "trajectory": "Flat",
+  "trend": "flat",
+  "personal_context": "Exposed",
+  "shared_interests": "Student",
+  "years_known": "6",
+  "phone": "(607)226-6175"
+ }
 }
