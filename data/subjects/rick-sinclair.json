@@ -2,11 +2,11 @@
  "name": "Rick Sinclair",
  "slug": "rick-sinclair",
  "category": "auth",
- "role": "Head Pastor \u2014 CFC",
- "period": "Childhood \u2013 Present (institutional)",
+ "role": "Head Pastor — CFC",
+ "period": "Childhood – Present (institutional)",
  "standing": "Institutional",
- "description": "The patriarch of CFC. Father of Jamie and Merrick Sinclair. Father-in-law of Daniel Paladin. His family network effectively governs the organization. JD's father John Sr. is still a deacon under his tenure. Present as an institutional force more than a direct relationship.",
- "bio": "Head pastor of CFC across all campuses. Nine children. Led the August 2018 discovery meeting in the pastoral authority role. Casually mentioned in that meeting that he imagined in five years the situation would no longer be of concern. JD thought it was unreasonable at the time. Five years passed.",
+ "description": "Head pastor of CFC and father of Jamie and Merrick Sinclair. An institutional figure in JD's church community more than a direct relationship.",
+ "bio": "Head pastor of CFC across all campuses. Father of nine, including Jamie and Merrick Sinclair.",
  "chips": [
   {
    "type": "person",
