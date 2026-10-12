@@ -501,20 +501,27 @@ button.vchip:hover{background:color-mix(in srgb,var(--c) 20%,transparent)}
 .tadd{font-size:12.5px;padding:5px 11px;border-radius:999px;border:1px dashed rgba(255,255,255,.25);background:transparent;color:var(--txt);width:130px;outline:none}
 .tadd:focus{border-color:var(--c)}
 .tadd::placeholder{color:var(--dim)}
-/* Skills editor: free-text add on top, selected chips, collapsed broad-category dropdown */
+/* Skills editor: free-text add on top, selected chips, then the taxonomy flow —
+   parent categories that expand in place (accordion) to their specific skills */
 .skedit{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .skadd{font-size:12.5px;padding:6px 11px;border-radius:999px;border:1px dashed rgba(255,255,255,.25);background:transparent;color:var(--txt);width:210px;max-width:100%;outline:none}
 .skadd:focus{border-color:var(--c)}
 .skadd::placeholder{color:var(--dim)}
-.skddbtn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);cursor:pointer}
-.skddbtn:hover{color:var(--txt);border-color:rgba(255,255,255,.35)}
-.skddbtn svg{transition:transform .15s}
-.skddbtn.open svg{transform:rotate(180deg)}
-.skddpanel{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.skddpanel[hidden]{display:none}
+.skflow{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.skcat + .skcat{border-top:1px solid var(--line)}
+.skcatbtn{display:flex;align-items:center;gap:8px;width:100%;font-size:12.5px;font-weight:600;padding:7px 12px;border:0;background:transparent;color:var(--dim);cursor:pointer;text-align:left}
+.skcatbtn:hover{color:var(--txt)}
+.skcatname{flex:1}
+.skcatbtn svg{transition:transform .15s;flex:none}
+.skcat.open .skcatbtn{color:var(--txt)}
+.skcat.open .skcatbtn svg{transform:rotate(180deg)}
+.skcnt{font-size:11px;font-weight:700;color:var(--c);border:1px solid var(--c);border-radius:999px;padding:0 6px;line-height:16px}
+.skcatpanel{display:flex;flex-wrap:wrap;gap:6px;padding:2px 12px 10px}
+.skcatpanel[hidden]{display:none}
 .skopt{font-size:12.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);color:var(--dim);cursor:pointer;font-weight:600;background:transparent}
 .skopt:hover{border-color:rgba(255,255,255,.35);color:var(--txt)}
 .skopt.on{border-color:var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
+.skopt em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:6px;opacity:.65}
 /* Also known as toggle row (Identity section) */
 .akarow .akatogg{padding:0;flex:none}
 .akarow .akainput[hidden]{display:none}
@@ -1072,7 +1079,21 @@ border:1px solid rgba(143,179,255,.35);border-radius:99px;padding:2px 10px;verti
 .dfamlegend{display:flex;flex-wrap:wrap;gap:6px 16px}
 .dfamleg{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--dim);font-weight:600}
 .dfamleg i{width:9px;height:9px;border-radius:50%;display:inline-block}
-.dfamscroll{overflow-x:auto;padding:8px 2px 6px}
+/* Family overview cards: collapsed by default, one compact row per family */
+.dfamcard{display:flex;align-items:center;gap:12px;padding-top:2px;padding-bottom:8px}
+.dfamcardmain{flex:1;min-width:0}
+.dfamcard .dfamtitle{margin:6px 0 2px}
+.dfammeta{font-size:12.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dfamcard .dfamexpand{flex:none}
+/* Family full-screen tree overlay */
+.dfamfs{position:fixed;inset:0;z-index:120;background:rgba(4,6,10,.8);display:flex;padding:18px}
+.dfamfssheet{flex:1;min-width:0;max-width:1440px;margin:0 auto;display:flex;flex-direction:column;
+  background:#0d1119;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.dfamfsbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
+.dfamfsbar b{font-family:var(--disp);font-size:16px;margin-right:auto}
+.dfamfsscroll{flex:1;overflow:auto;padding:16px}
+.dfamfsscroll .dfamedit{max-width:720px;margin-top:14px}
+body.dfamfsopen{overflow:hidden}
 .dftree{position:relative}
 .dftree-lines{position:absolute;left:0;top:0;pointer-events:none}
 .dftree-lines line{stroke:#39415a;stroke-width:1.5}
