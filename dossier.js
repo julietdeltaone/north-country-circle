@@ -913,6 +913,8 @@ function updateLegend(){
     });
     if(tc.none) h += '<span class="lg dim" style="--c:#4a5568"><i></i>Untiered <b>' + tc.none + '</b></span>';
   }
+  if(Object.keys(NEWGAIN).length)
+    h += '<span class="lg dim newnote" style="--c:#a9c6ff" title="People who gained a connection in the last 7 days glow softly on the map"><i></i>New links · 7d</span>';
   $('#legend').innerHTML = h;
 }
 
@@ -4317,7 +4319,24 @@ function clearGeminiKey(){
 }
 
 /* ---------- map: layout ---------- */
+/* People who gained a connection in the last 7 days: the build stamps
+   each fresh associate edge with new:1 on the neighbor objects (first-
+   seen registry in build_dossier_data.py). Collected here as directory
+   indices so both maps can give those nodes a subtle glow treatment. */
+var NEWGAIN = {};
+function computeNewGain(){
+  NEWGAIN = {};
+  D.directory.forEach(function(r, di){
+    (r.neighbors || []).forEach(function(nb){
+      if(!nb.new) return;
+      NEWGAIN[di] = 1;
+      var tj = BYN[(nb.u || '').toLowerCase()];
+      if(tj != null) NEWGAIN[tj] = 1;
+    });
+  });
+}
 function buildNodes(){
+  computeNewGain();
   var dir = D.directory, maxS = 1;
   dir.forEach(function(r){ if(r.strength > maxS) maxS = r.strength; });
   ORDER = dir.map(function(r, i){ return i; })
@@ -4349,7 +4368,7 @@ function buildNodes(){
       var r = dir[di];
       NODES.push({ i:di, ring:ring, ang:ang, x:Math.cos(ang) * rad, y:Math.sin(ang) * rad,
         rad:2.0 + 3.6 * (r.strength / maxS), title:dispName(r), handle:r.name, relation:r.relation,
-        pieces:r.pieces, strength:r.strength, on:true, col:'#7ea6f0' });
+        pieces:r.pieces, strength:r.strength, on:true, col:'#7ea6f0', nw:NEWGAIN[di] ? 1 : 0 });
     });
   });
 }
@@ -4417,10 +4436,23 @@ function hubFrame(now){
   var c = w2s(0, 0);
   ctx.lineWidth = 1;
   NODES.forEach(function(n){
-    var p = w2s(n.x, n.y);
-    ctx.strokeStyle = hexA(n.col, n.ring === 0 ? 0.10 : 0.05);
+    /* Spokes MUST end at the node's drawn position (rotX/rotY): the hub
+       slowly rotates when idle, and drawing to the unrotated n.x/n.y
+       left the lines behind while the nodes moved on (JD bug report
+       2026-10-12). */
+    var p = w2s(rotX(n), rotY(n));
     ctx.globalAlpha = n.on ? 1 : 0.25;
-    ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+    if(n.nw && n.on){
+      /* New connection (<=7d): a soft glow pass under a brighter core. */
+      ctx.strokeStyle = hexA(n.col, 0.13); ctx.lineWidth = 3.6;
+      ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+      ctx.strokeStyle = hexA(n.col, 0.55); ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+      ctx.lineWidth = 1;
+    } else {
+      ctx.strokeStyle = hexA(n.col, n.ring === 0 ? 0.10 : 0.05);
+      ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+    }
   });
   ctx.globalAlpha = 1;
   NODES.forEach(function(n){
@@ -4428,6 +4460,11 @@ function hubFrame(now){
     if(p[0] < -30 || p[1] < -30 || p[0] > W + 30 || p[1] > H + 30) return;
     var rr = Math.max(1.6, n.rad * Math.sqrt(z)), active = (S.sel === n.i || hub.hover === n);
     ctx.globalAlpha = n.on ? 1 : 0.1;
+    if(n.nw && n.on){
+      /* faint halo for nodes that gained a connection this week */
+      ctx.fillStyle = hexA(n.col, 0.15);
+      ctx.beginPath(); ctx.arc(p[0], p[1], rr + 5, 0, Math.PI * 2); ctx.fill();
+    }
     if(n.on || S.sel === n.i){ ctx.shadowColor = n.col; ctx.shadowBlur = active ? 14 : 6; }
     ctx.fillStyle = n.col;
     ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, Math.PI * 2); ctx.fill();
@@ -4697,9 +4734,11 @@ function buildGL(){
 }
 function glRecolor(){
   if(!GL) return;
-  var c = new THREE.Color(), arr = GL.colArr;
+  var c = new THREE.Color(), arr = GL.colArr, white = new THREE.Color(0xffffff);
   NODES.forEach(function(nd, k){
-    c.set(nd.col); var f = nd.on ? 1 : 0.12;
+    c.set(nd.col);
+    if(nd.nw && nd.on) c.lerp(white, 0.38); /* new connection: quietly brighter */
+    var f = nd.on ? 1 : 0.12;
     arr[k * 3] = c.r * f; arr[k * 3 + 1] = c.g * f; arr[k * 3 + 2] = c.b * f;
   });
   GL.points.geometry.attributes.color.needsUpdate = true;
@@ -4762,6 +4801,7 @@ function glFocus(di){
     var np = new THREE.Vector3(p.x + Math.cos(th) * r * 16, p.y + y * 16, p.z + Math.sin(th) * r * 16);
     var di2 = BYN[(nb.u || '').toLowerCase()];
     var col = di2 != null ? new THREE.Color(LV[personLevel(D.directory[di2])].c) : new THREE.Color(0x5a6b84);
+    if(nb.new) col.lerp(new THREE.Color(0xffffff), 0.3); /* fresh edge reads brighter */
     var mesh = new THREE.Mesh(GL.nbrGeo, new THREE.MeshBasicMaterial({ color:col }));
     mesh.position.copy(np);
     mesh.userData.dirIdx = di2 != null ? di2 : -1;
@@ -4773,7 +4813,7 @@ function glFocus(di){
     lab.position.set(np.x + ldir.x * 8.5, np.y + ldir.y * 8.5, np.z + ldir.z * 8.5);
     lab.userData.nodePos = np.clone();
     g.add(lab);
-    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p, np]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:0.35 })));
+    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p, np]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:nb.new ? 0.65 : 0.35 })));
   });
   var fl = makeLabel(auName(e).name, { size:24, color:'#f4efe6' });
   fl.position.set(p.x, p.y + 11, p.z);
