@@ -1625,6 +1625,26 @@ function applyProfileEdit(e, ch){
   });
   if(ch.display) e.display = ch.display;
   else if(ch.display_name) e.display = ch.display_name;
+  /* Name edits propagate everywhere in the same action (JD 2026-10-12): every
+     surface derives its label from this directory entry, so re-render the ones
+     currently on screen. The rail already refreshes via queuePatch. */
+  if(ch.first_name != null || ch.last_name != null || ch.display || ch.display_name){
+    var di = D.directory.indexOf(e);
+    if(di >= 0) propagateName(di);
+  }
+}
+function propagateName(di){
+  if(QA.open) renderQuick();
+  if(AUD.open){
+    var sec = AUD.section || 'audit';
+    if(sec === 'audit') renderAudit();
+    else if(sec === 'orgs') renderDashOrgs();
+    else if(sec === 'groups') renderDashGroups();
+    else if(sec === 'family') renderDashFamily();
+  }
+  /* View-mode panel (hero + other people's associate chips) re-renders; while
+     editing, the editor itself holds the name and re-renders on exit. */
+  if(S.sel != null && !S.editing) renderPanel(true);
 }
 function queuePatch(idx, patch){
   var e = D.directory[idx]; if(!e) return;
@@ -2335,7 +2355,17 @@ function grpRenameSave(oldName){
    source of truth — [[relation, person name], ...] per person, edited through
    queuePatch exactly like the profile editor's family section). Display adds
    the inverses and shared-parent siblings, mirroring the build. ----- */
-var DFAM = { editing:null, q:{} };
+var DFAM = { anchor:{}, editing:null, q:{} };
+/* Role colors for the family tree (JD 2026-10-12): roles are relative to the
+   anchored person; clicking any node re-anchors the tree on them. */
+var FAM_ROLE = {
+  self:    { label:'Self',            c:'#ece9e2' },
+  spouse:  { label:'Spouse',          c:'#e0688a' },
+  parent:  { label:'Parent',          c:'#7fa8ff' },
+  child:   { label:'Child',           c:'#c9a6f2' },
+  sibling: { label:'Sibling',         c:'#f0b44c' },
+  extended:{ label:'Extended family', c:'#8b94a3' }
+};
 var FAM_REL_LABEL = { parents:'Parent of', spouses:'Spouse of', children:'Child of', siblings:'Sibling of' };
 var FAM_INVERSE = { parent:'children', spouse:'spouses', child:'parents', sibling:'siblings' };
 var FAM_REL_OF = { parents:'parent', spouses:'spouse', children:'child', siblings:'sibling' };
@@ -2388,44 +2418,76 @@ function famComponents(disp){
   });
   return comps;
 }
+function famRoleOf(disp, anchor, di){
+  if(di === anchor) return 'self';
+  var a = disp[anchor] || {};
+  function has(rk){ return (a[rk] || []).some(function(x){ return x.di === di; }); }
+  if(has('spouses')) return 'spouse';
+  if(has('parents')) return 'parent';
+  if(has('children')) return 'child';
+  if(has('siblings')) return 'sibling';
+  return 'extended';
+}
+function famNodeHTML(disp, anchor, di, ckey){
+  var role = famRoleOf(disp, anchor, di), rc = FAM_ROLE[role];
+  return '<button type="button" class="dfamnode' + (role === 'self' ? ' self' : '') + '" data-famanchor="' + ckey + '" data-di="' + di + '" style="--rc:' + rc.c + '">' +
+    '<b>' + esc(dispName(D.directory[di])) + '</b><span>' + rc.label + '</span></button>';
+}
+function famEditorHTML(di){
+  var e = D.directory[di], links = famLinks(e);
+  var rows = links.map(function(l, i){
+    var tdi = BYN[String(l[1] || '').toLowerCase()];
+    var label = tdi != null ? dispName(D.directory[tdi]) : l[1];
+    return '<div class="famrow"><span class="famrel">' + esc(l[0]) + '</span><span>' + esc(label) + '</span>' +
+      '<b class="nx" data-dfrm="' + di + '" data-i="' + i + '" title="Remove family link">×</b></div>';
+  }).join('');
+  return '<div class="dfamedit"><div class="dfamedithead"><b>' + esc(dispName(e)) + '</b>' +
+    '<button type="button" class="mini neutral" data-openperson="' + di + '">Open profile</button></div>' +
+    (rows || '<p class="dim" style="margin:0 0 8px;font-size:13px">No stored links yet.</p>') +
+    '<div class="famaddrow"><select id="dfamrel-' + di + '"><option value="parent">Parent</option><option value="spouse">Spouse</option>' +
+    '<option value="child">Child</option><option value="sibling">Sibling</option></select>' +
+    '<input class="dfq" data-dfq="' + di + '" placeholder="Add family member: type a name" autocomplete="off"></div>' +
+    '<div class="dfamhits" data-dfamhits="' + di + '"></div></div>';
+}
 function renderDashFamily(){
   var el = $('#dashsec-family'); if(!el) return;
   var disp = famDisplay();
   var comps = famComponents(disp).sort(function(a, b){ return b.length - a.length; });
-  var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3>' +
-    '<p class="dim" style="margin:0;font-size:12.5px">Links are stored on each profile (parent / spouse / child / sibling) and saved through the same patch path as the profile editor, so they survive rebuilds.</p></div>';
-  if(!comps.length) h += '<p class="dim">No family links on file yet. Open a profile and use Edit links below, or the Family editor on a profile.</p>';
-  h += comps.map(function(comp){
+  var legend = '<div class="dfamlegend">' + Object.keys(FAM_ROLE).map(function(r){
+    return '<span class="dfamleg"><i style="background:' + FAM_ROLE[r].c + '"></i>' + FAM_ROLE[r].label + '</span>';
+  }).join('') + '</div>';
+  var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3>' + legend +
+    '<p class="dim" style="margin:8px 0 0;font-size:12.5px">Tap any person to center the tree on them and edit their links. Links are stored on each profile and saved through the same patch path as the profile editor, so they survive rebuilds.</p></div>';
+  if(!comps.length) h += '<p class="dim">No family links on file yet. Add links from a profile\'s Family section.</p>';
+  h += comps.map(function(comp, ci){
+    var ckey = 'c' + ci;
     var lastNames = {};
     comp.forEach(function(di){ var ln = (dispName(D.directory[di]).split(' ').pop() || '').trim(); if(ln) lastNames[ln] = (lastNames[ln] || 0) + 1; });
     var title = Object.keys(lastNames).sort(function(a, b){ return lastNames[b] - lastNames[a]; })[0] || 'Family';
-    var members = comp.slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
-    var rows = members.map(function(di){
-      var e = D.directory[di], rels = [];
-      ['parents', 'spouses', 'children', 'siblings'].forEach(function(rk){
-        var xs = disp[di][rk] || [];
-        if(xs.length) rels.push(FAM_REL_LABEL[rk] + ' ' + xs.map(function(x){ return esc(dispName(D.directory[x.di])); }).join(', '));
-      });
-      var edit = '';
-      if(DFAM.editing === di){
-        var links = famLinks(e);
-        var rows2 = links.map(function(l, i){
-          var tdi = BYN[String(l[1] || '').toLowerCase()];
-          var label = tdi != null ? dispName(D.directory[tdi]) : l[1];
-          return '<div class="famrow"><span class="famrel">' + esc(l[0]) + '</span><span>' + esc(label) + '</span>' +
-            '<b class="nx" data-dfrm="' + di + '" data-i="' + i + '" title="Remove family link">×</b></div>';
-        }).join('');
-        edit = '<div class="dfamedit">' + (rows2 || '<p class="dim" style="margin:0 0 8px;font-size:13px">No stored links yet.</p>') +
-          '<div class="famaddrow"><select id="dfamrel-' + di + '"><option value="parent">Parent</option><option value="spouse">Spouse</option>' +
-          '<option value="child">Child</option><option value="sibling">Sibling</option></select>' +
-          '<input class="dfq" data-dfq="' + di + '" placeholder="Add family member: type a name" autocomplete="off"></div>' +
-          '<div class="dfamhits" data-dfamhits="' + di + '"></div></div>';
-      }
-      return '<div class="dfamrow"><button type="button" class="dfamname" data-openperson="' + di + '">' + esc(dispName(e)) + '</button>' +
-        (rels.length ? '<span class="dfamrels">' + rels.join(' · ') + '</span>' : '<span class="dfamrels dim">linked</span>') +
-        '<button type="button" class="mini neutral" data-dfamedit="' + di + '">' + (DFAM.editing === di ? 'Close' : 'Edit links') + '</button>' + edit + '</div>';
-    }).join('');
-    return '<div class="dfam"><h4 class="dfamtitle">' + esc(title) + ' family</h4>' + rows + '</div>';
+    var anchor = DFAM.anchor[ckey];
+    if(anchor == null || comp.indexOf(anchor) < 0){
+      anchor = comp.slice().sort(function(a, b){
+        function deg(di){ var d = disp[di] || {}; return ['parents', 'spouses', 'children', 'siblings'].reduce(function(n, rk){ return n + (d[rk] || []).length; }, 0); }
+        return deg(b) - deg(a);
+      })[0];
+      DFAM.anchor[ckey] = anchor;
+    }
+    var a = disp[anchor] || {};
+    function disOf(rk){ return (a[rk] || []).map(function(x){ return x.di; }); }
+    var placed = {};
+    function band(label, dis){
+      var xs = dis.filter(function(di){ return !placed[di]; });
+      xs.forEach(function(di){ placed[di] = 1; });
+      if(!xs.length) return '';
+      return '<div class="dfamband"><span class="dfambandlab">' + label + '</span><div class="dfamnodes">' +
+        xs.map(function(di){ return famNodeHTML(disp, anchor, di, ckey); }).join('') + '</div></div>';
+    }
+    var tree = band('Parents', disOf('parents')) +
+      band('Self, spouse & siblings', disOf('siblings').concat([anchor], disOf('spouses'))) +
+      band('Children', disOf('children')) +
+      band('More family', comp.slice());
+    var edit = DFAM.editing != null && comp.indexOf(DFAM.editing) >= 0 ? famEditorHTML(DFAM.editing) : '';
+    return '<div class="dfam"><h4 class="dfamtitle">' + esc(title) + ' family</h4><div class="dfamtree">' + tree + '</div>' + edit + '</div>';
   }).join('');
   el.innerHTML = h;
   $('#aushown').textContent = comps.length + (comps.length === 1 ? ' family' : ' families');
@@ -4145,8 +4207,13 @@ function bind(){
   });
   var famEl = $('#dashsec-family');
   famEl.addEventListener('click', function(ev){
-    var ed = ev.target.closest('[data-dfamedit]');
-    if(ed){ var d1 = parseInt(ed.getAttribute('data-dfamedit'), 10); DFAM.editing = DFAM.editing === d1 ? null : d1; renderDashFamily(); return; }
+    var an = ev.target.closest('[data-famanchor]');
+    if(an){
+      var adi = parseInt(an.getAttribute('data-di'), 10);
+      DFAM.anchor[an.getAttribute('data-famanchor')] = adi;
+      DFAM.editing = adi;
+      renderDashFamily(); return;
+    }
     var rm = ev.target.closest('[data-dfrm]');
     if(rm){ dashFamRemove(parseInt(rm.getAttribute('data-dfrm'), 10), parseInt(rm.getAttribute('data-i'), 10)); return; }
     var ad = ev.target.closest('[data-dfadd]');
