@@ -451,3 +451,47 @@ a.vchip:hover,.nchip:hover{transform:translateY(-1px)}
   .pvbadge{bottom:calc(84px + env(safe-area-inset-bottom))}
   .sheet{animation:sheetIn .3s var(--ease)}
 }
+
+/* ============================================================
+   FIX PASS 2026-10-13 (preview only)
+   1) App shell: the header is fixed-height and only the view
+      below it scrolls. The document itself never scrolls, so
+      the header cannot drift, lag, or trap a scroll of its own
+      on phones (100vh / URL-bar sizing included).
+   2) Styles for the Today intro note, hint lines, and the
+      selectable duplicate rows from the selective-merge flow.
+   ============================================================ */
+html,body{height:100%}
+body{overflow:hidden}
+#app{height:100vh;height:100dvh;min-height:0}
+#rail{position:static;height:auto}
+#col{height:100%;min-height:0;overflow:hidden}
+#top{position:relative;flex:none}
+#view{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+body.sheet-open #view{overflow:hidden}
+.netwrap,.fspace{height:calc(100dvh - 245px)}
+@media (max-width:899px){
+  #app{display:flex;flex-direction:column}
+  .netwrap,.fspace{height:calc(100dvh - 300px)}
+}
+
+/* Today intro note */
+.tintro{display:flex;gap:10px;align-items:flex-start;padding:12px 16px;border:1px solid rgba(255,255,255,.08);border-radius:var(--r);background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:var(--sh-card)}
+.tintro p{flex:1;color:var(--mut);font-size:13.5px;line-height:1.55}
+.tintro p b{color:var(--txt)}
+.tintro .ib{flex:none;margin:-2px -6px 0 0}
+
+/* plain hint lines inside cards */
+.hint{color:var(--dim);font-size:12.5px;line-height:1.5;margin-top:8px}
+.rsec .hint{margin:0 0 4px}
+
+/* selectable duplicate rows (checkbox square + row) */
+.dm.pick{user-select:none;-webkit-user-select:none}
+.dm .dmc{flex:none;width:21px;height:21px;border:1.5px solid var(--line2);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:#0c111c;background:rgba(255,255,255,.03)}
+.dm.on .dmc{background:var(--acc2);border-color:var(--acc2)}
+.dm.pick:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* visible cue that the profile name itself is the edit control */
+.hero h1[data-act]{cursor:pointer}
+.hcue{opacity:.38;margin-left:10px}
+.hcue .icsvg{vertical-align:0}
