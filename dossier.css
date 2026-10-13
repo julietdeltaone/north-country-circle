@@ -128,6 +128,14 @@ option,optgroup{background:#141a26;color:var(--txt)}
 .rc>header{display:flex;align-items:center;gap:14px} .rh{flex:1;min-width:0} .rh h2{font:500 24px var(--serif)} .rh h2 a{color:var(--txt)} .meta{color:var(--mut)} .rn{color:var(--dim);font-size:13px}
 .rbs{display:flex;flex-direction:column;gap:12px}
 .rb{border:1px solid var(--line2);border-left:3px solid var(--warn);border-radius:10px;padding:14px 16px;background:var(--bg2)}
+/* single-issue lane card (2026-10-13) */
+.issue-say{font-size:16px;font-weight:600;color:var(--txt);margin:0 0 5px;line-height:1.35}
+.issue-sub{font-size:13.5px;color:var(--mut);margin:0 0 10px;line-height:1.45}
+.rb.issue .qk{margin-top:10px}
+.qa{margin:10px 0}
+.qakinds{margin-bottom:8px}
+.qa-row input{flex:1;min-width:0}
+.qgroup{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:14px 0 4px}
 .rb.quiet{border-left-color:var(--line2)}
 .rb h4{font-size:14px;font-weight:600;margin-bottom:6px} .rb h4 small{margin-left:6px;font-weight:400}
 .rb p{color:var(--mut);margin-bottom:2px} .rb .row{margin-top:12px}
