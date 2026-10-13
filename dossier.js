@@ -185,7 +185,9 @@ var IC = {
   star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
   ig:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/>',
   sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
-  cap:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/><path d="M22 10v6"/>'
+  cap:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/><path d="M22 10v6"/>',
+  pin:'<path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/>',
+  fb:'<path d="M15.5 3.5h-2.6a4 4 0 0 0-4 4v2.6H6.5v3h2.4v7.4h3v-7.4h2.5l.5-3h-3V7.7a1.2 1.2 0 0 1 1.2-1.2h2.4z"/>'
 };
 function ic(n, s){
   s = s || 16;
@@ -1015,11 +1017,14 @@ function lvl1View(e){
   var rows = '';
   if(e.src !== 'contacts' && e.src !== 'subject' && e.name)
     rows += '<div class="idrow"><span class="idic">' + ic('ig', 15) + '</span><div><span>Instagram</span><a class="iglink ' + (e.relation === 'mutual' ? 'ig-mutual' : 'ig-oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a></div></div>';
+  if(e.fb_url) rows += '<div class="idrow"><span class="idic">' + ic('fb', 15) + '</span><div><span>Facebook</span><a class="iglink" href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">' + (e.fb_handle ? '@' + esc(e.fb_handle) : 'Facebook profile') + '</a></div></div>';
   if(aka) rows += '<div class="idrow"><span class="idic">' + ic('user', 15) + '</span><div><span>Also known as</span><b>' + esc(aka) + '</b></div></div>';
   if(phones) rows += '<div class="idrow"><span class="idic">' + ic('phone', 15) + '</span><div><span>Phone</span>' +
     String(phones).split(',').map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join('') + '</div></div>';
   if(emails) rows += '<div class="idrow"><span class="idic">' + ic('mail', 15) + '</span><div><span>Email</span>' +
     String(emails).split(',').map(function(x){ x = x.trim(); return '<a href="mailto:' + esc(x) + '">' + esc(x) + '</a>'; }).join('') + '</div></div>';
+  if(e.city) rows += '<div class="idrow"><span class="idic">' + ic('pin', 15) + '</span><div><span>Lives in</span><b>' + esc(e.city) + '</b></div></div>';
+  if(e.hometown) rows += '<div class="idrow"><span class="idic">' + ic('pin', 15) + '</span><div><span>From</span><b>' + esc(e.hometown) + '</b></div></div>';
   var contact = rows ? card('user', 'Contact', 1, rows) : '';
 
   var ds = sortDegrees(degreesOf(e));
@@ -1051,6 +1056,9 @@ function lvl1View(e){
   var skList = tagList(gv(e, 'specialty'));
   if(skList.length) bg = '<div class="subhead first">Skills</div><div class="chips">' +
     skList.map(function(s){ return '<span class="vchip skchip">' + ic('zap', 12) + esc(s) + '</span>'; }).join('') + '</div>';
+  var lgList = e.languages || [];
+  if(lgList.length) bg += '<div class="subhead' + (bg ? '' : ' first') + '">Languages</div><div class="chips">' +
+    lgList.map(function(s){ return '<span class="vchip lgchip">' + ic('quote', 12) + esc(s) + '</span>'; }).join('') + '</div>';
   var ORG_ICONS = { churches:'church', companies:'briefcase', universities:'cap' };
   var orgs = '';
   ORG_CATS.forEach(function(cat){
