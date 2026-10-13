@@ -1962,7 +1962,7 @@ function paintSort(){
 }
 function viewSort(v){
   if(S.sort.start == null) startSortSession();
-  v.innerHTML = '<div class="page lanepage"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
+  v.innerHTML = '<div class="page lanepage sortview"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
     '<h1 class="display">The Sort</h1><p class="sub">One person at a time. Keep the people who belong in your circle; trash the rest. Skipping sends someone to the back of the line.</p><div class="sess" id="sess"></div></div>' +
     '<div class="focus"><section class="qcard" id="qcard"></section><aside class="upnext" id="qlist"></aside></div></div>';
   paintSort();
@@ -1974,7 +1974,7 @@ function viewSorted(v){
     return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></div>' +
       '<div class="ea"><button type="button" class="btn ghost sm" data-act="sortrestore" data-di="' + di + '">' + btn + '</button></div></div>';
   }
-  v.innerHTML = '<div class="page settings"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
+  v.innerHTML = '<div class="page settings sortedpage"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
     '<h1 class="display">Sorted</h1><p class="sub">Everyone you have sorted so far. Restoring someone clears their verdict and puts them back on the sort list.</p></div>' +
     '<section class="card"><header><h3>In the trash</h3><em class="cnt">' + sl.trash.length + '</em></header><div class="cbody">' +
     (sl.trash.length ? sl.trash.map(function(di){ return row(di, 'Restore'); }).join('') : '<p class="dim">Nobody is in the trash.</p>') + '</div></section>' +
