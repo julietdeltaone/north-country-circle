@@ -1456,6 +1456,7 @@ var S = {
   depth:0, route:{ name:'today', seg:[] }, ctx:null,
   today:{ i:0, surv:{}, dsel:{}, skipped:{}, lane:'', start:0, goal:10, fin:false, pick:false },
   sort:{ i:0, start:null, goal:10, fin:false, skipped:{} },
+  dtool:{ kind:'', i:0, start:null, goal:10, fin:false, skipped:{} }, /*DONE-SUITE*/
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80 },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d') },
@@ -1525,7 +1526,8 @@ var NAV = [
   { k:'people',  l:'People',  ic:'people' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
-  { k:'groups',  l:'Groups',  ic:'groups' }
+  { k:'groups',  l:'Groups',  ic:'groups' },
+  { k:'done',    l:'Done',    ic:'check' } /*DONE-SUITE*/
 ];
 function activeNav(){
   var n = S.route.name;
@@ -1536,7 +1538,7 @@ function activeNav(){
 function renderChrome(){
   var act = activeNav(), st = D ? getState() : null;
   var badge = st ? st.needs.length : 0;
-  var items = NAV.map(function(n){
+  var items = NAV.filter(function(n){ return n.k !== 'done' || doneSuiteOn(); }).map(function(n){ /*DONE-SUITE*/
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span>' +
       (n.k === 'today' && badge ? '<em>' + (badge > 999 ? '999+' : badge) + '</em>' : '') + '</a>';
   }).join('');
@@ -1615,7 +1617,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(x){ try{ return decodeURIComponent(x); }catch(e){ return x; } });
   var name = seg[0] || 'today';
   if(name === 'p') name = 'profile';
-  if(['today','people','profile','network','family','groups','settings'].indexOf(name) < 0) name = 'today';
+  if(['today','people','profile','network','family','groups','settings','done'].indexOf(name) < 0) name = 'today'; /*DONE-SUITE*/
   return { name:name, seg:seg.slice(1), qs:qs };
 }
 function go(path, o){
@@ -1658,6 +1660,7 @@ function render(){
     else if(n === 'family') viewFamily(v);
     else if(n === 'groups') viewGroups(v);
     else if(n === 'settings') viewSettings(v);
+    else if(n === 'done') viewDone(v); /*DONE-SUITE*/
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/today" class="btn">Go to Today</a></p></div>';
     if(window.console) console.error(err);
@@ -1750,7 +1753,7 @@ function viewTodayHome(v){
     '<div class="tring-c"><b><span class="cu" data-n="' + sortedN + '">' + sortedN + '</span></b><small>of ' + totS + ' sorted</small></div></div>' : '';
   var grid = (live.length || counts.sweep) ? '<div class="lanes">' + live.map(function(l, i){ return card(l, false, i); }).join('') + (counts.sweep ? card(laneDef('sweep'), true, live.length) : '') + '</div>' : '';
   var clearline = clear.length ? '<p class="clearline">' + ic('check', 14) + 'Nothing waiting in: ' + clear.map(function(l){ return esc(l.t); }).join(', ') + '.</p>' : '';
-  v.innerHTML = '<div class="page todayhome"><section class="thero">' + head + ring + '</section>' +
+  v.innerHTML = '<div class="page todayhome"><section class="thero">' + head + doneHeroLine() + ring + '</section>' + /*DONE-SUITE*/
     '<section class="fixstrip"><div class="fix-txt"><b>Fix profiles</b><span>' + (fixN ? fixN + ' ' + (fixN === 1 ? 'thing needs' : 'things need') + ' fixing across all the fix lists.' : 'Nothing needs fixing right now.') + '</span></div>' +
     (fixN ? '<a class="btn primary" href="#/today/needs" data-act="lane" data-lane="needs">Start ' + ic('arrow', 14) + '</a>' : '') +
     '<button type="button" class="btn ghost" data-act="fixpick" aria-expanded="' + (S.today.pick ? 'true' : 'false') + '">Pick a kind of work ' + ic('chev', 14) + '</button></section>' +
@@ -1996,6 +1999,232 @@ function sortVerdictWrite(di, v){
   }
   refreshAfterStatus();
 }
+
+
+/* ============================================================
+   DONE SUITE (removable) — the path-to-done gauges and tools.
+   Everything for this suite lives in this block, plus the small
+   hooks marked DONE-SUITE elsewhere (nav entry, router entry,
+   chrome filter, hero line, settings card, dispatcher cases,
+   refreshAfterStatus branch, S.dtool state). To retire it: hide
+   it in Settings (one tap, no code), or delete this block and
+   the marked hooks. JD asked for exactly that (2026-10-13).
+   Done means: everyone sorted, every live profile passes the
+   floor, no flags open, no empties unexamined, no decision
+   piles left. The floor: full name + something real on file +
+   no open flag — or an empty profile that was checked (or kept
+   and then cleared), because checked-empty is complete.
+   ============================================================ */
+var DONE_BACKLOG = { held:50, pushed:278, strike:87, asOf:'Oct 13, 2026' }; /* Luna-side decision piles; the counts change when JD rules and Luna files the results */
+function doneSuiteOn(){ return store('ncc_done_hide') !== '1'; }
+function doneFails(e){
+  var f = [];
+  if(!nameOk(e)) f.push('name');
+  if(isShell(e)) f.push('bits');
+  if(raw(e, 'review_flag')) f.push('flag');
+  return f;
+}
+function doneFloorPass(e){
+  if(nameOk(e) && !isShell(e) && !raw(e, 'review_flag')) return true;
+  if(isShell(e) && (isChecked(e) || (sortVerdict(e) === 'keep' && !raw(e, 'review_flag')))) return true;
+  return false;
+}
+var DONE_CACHE = { ver:-1, s:null };
+function doneStats(){
+  if(DONE_CACHE.ver === VER && DONE_CACHE.s) return DONE_CACHE.s;
+  var P = people(), pass = 0, shellsOpen = 0, unexam = 0, flags = 0, flagMiss = 0, flagDup = 0, onefix = 0, personDone = 0;
+  P.forEach(function(di){
+    var e = D.directory[di], fl = raw(e, 'review_flag'), fp = doneFloorPass(e), f = doneFails(e);
+    if(fp) pass++;
+    if(fl){ flags++; if(fl === 'missing_info') flagMiss++; else if(fl === 'duplicate') flagDup++; }
+    if(isShell(e) && !fp) shellsOpen++;
+    if(isShell(e) && !isChecked(e) && sortVerdict(e) !== 'keep') unexam++;
+    if(!fp && f.length === 1 && f[0] !== 'bits') onefix++;
+    if(fp && (famLinks(e).length || sortVerdict(e))) personDone++;
+  });
+  var q = sortQueue().length, sl = sortedLists(), sortedN = sl.keep.length + sl.trash.length;
+  var backlog = DONE_BACKLOG.held + DONE_BACKLOG.pushed + DONE_BACKLOG.strike;
+  var s = { tot:P.length, pass:pass, shellsOpen:shellsOpen, unexam:unexam, flags:flags, flagMiss:flagMiss, flagDup:flagDup,
+    onefix:onefix, personDone:personDone, queue:q, sortedN:sortedN, sortTot:q + sortedN, backlog:backlog,
+    complete:(q === 0 && pass === P.length && flags === 0 && unexam === 0 && backlog === 0) };
+  DONE_CACHE = { ver:VER, s:s };
+  return s;
+}
+function doneHeroLine(){
+  if(!doneSuiteOn()) return '';
+  var s = doneStats();
+  if(s.complete) return '';
+  return '<p class="doneline"><a href="#/done" data-act="donehome"><b>' + s.personDone + ' of ' + s.tot + '</b> people fully done</a><span> · the rest of the path is on the Done page</span></p>';
+}
+function doneBar(frac){
+  return '<div class="dbar"><i style="width:' + Math.max(0, Math.min(100, frac * 100)) + '%"></i></div>';
+}
+function viewDone(v){
+  if(!doneSuiteOn()){ go('today', { replace:true }); return; }
+  var seg = S.route.seg[0] || '';
+  if(seg === 'shells' || seg === 'onefix') return viewDoneTool(v, seg);
+  var s = doneStats();
+  function gauge(t, n, of, frac, sub, state){
+    return '<div class="dgauge"><div class="dg-t"><b>' + t + '</b><span class="dg-n">' + n + (of != null ? ' <small>of ' + of + '</small>' : '') + '</span></div>' +
+      doneBar(frac) + '<p class="dg-s">' + sub + (state ? ' <b class="dg-state">' + state + '</b>' : '') + '</p></div>';
+  }
+  var pct = s.tot ? Math.round(s.personDone / s.tot * 100) : 100;
+  var head = '<div class="hhead"><h1 class="display">The path to done</h1>' +
+    '<p class="sub">Done means: everyone sorted, every profile passes the floor, no flags open, no empty profiles left unexamined, and no decision piles waiting on you. The floor is a full name and something real on file, or an empty profile that has been checked — checked and empty counts as complete.</p></div>';
+  var overall = '<section class="doverall"><div class="do-big"><b>' + pct + '%</b><span>' + s.personDone + ' of ' + s.tot + ' people fully done</span></div>' + doneBar(s.tot ? s.personDone / s.tot : 1) + '</section>';
+  var gauges = '<section class="dgauges">' +
+    gauge('Sorted', s.sortedN, s.sortTot, s.sortTot ? s.sortedN / s.sortTot : 1, 'Everyone on the list has a verdict: keep or trash. Family is exempt.', s.queue ? s.queue + ' left' : 'Done') +
+    gauge('The floor', s.pass, s.tot, s.tot ? s.pass / s.tot : 1, 'Profiles with a full name, something real on file, and no open flag — plus checked empties.', s.pass === s.tot ? 'Done' : (s.tot - s.pass) + ' to go') +
+    gauge('Open flags', s.flags, null, s.flags ? 0 : 1, s.flags ? (s.flagMiss + ' missing info · ' + s.flagDup + ' possible duplicates. Each one ends in a fix, a verdict, or a clear.') : 'No flags are open.', s.flags ? s.flags + ' open' : 'Done') +
+    gauge('Unexamined empties', s.unexam, null, s.unexam ? 0 : 1, 'Profiles with nothing on file that nobody has checked yet.', s.unexam ? s.unexam + ' to check' : 'Done') +
+    gauge('Decision backlog', s.backlog, null, s.backlog ? 0 : 1, DONE_BACKLOG.held + ' findings held · ' + DONE_BACKLOG.pushed + ' filed facts to review · ' + DONE_BACKLOG.strike + ' strike-list names to settle. Counted ' + DONE_BACKLOG.asOf + '; these move when you rule and Luna files.', s.backlog ? s.backlog + ' waiting' : 'Done') +
+    '</section>';
+  function tool(href, act, lane, n, t, d, done){
+    return '<a href="' + href + '" class="lane' + (done ? ' quiet' : '') + '"' + (act ? ' data-act="' + act + '"' : '') + (lane ? ' data-lane="' + lane + '"' : '') + '>' +
+      '<span class="lane-n cu" data-n="' + n + '">' + n + '</span><b class="lane-t">' + t + '</b><span class="lane-d">' + d + '</span>' +
+      '<span class="lane-go">' + (done ? 'Done' : 'Start ' + ic('arrow', 14)) + '</span></a>';
+  }
+  var tools = '<h2 class="dtools-h">Tools</h2><div class="lanes dtools">' +
+    tool('#/today/sort', 'sortstart', '', s.queue, 'Finish the sort', 'The two-question verdict, one person at a time.', !s.queue) +
+    tool('#/done/shells', '', '', s.shellsOpen, 'Shell check', 'Empty profiles, one at a time: keep and flag for research, trash, or checked — nothing exists.', !s.shellsOpen) +
+    tool('#/done/onefix', '', '', s.onefix, 'One fix away', 'People who pass the floor with a single tap: a flag to clear, a duplicate to settle, a name to finish.', !s.onefix) +
+    tool('#/today/cleanup', 'lane', 'cleanup', s.flagMiss, 'Missing-info flags', 'The flagged profiles, in the fix list you already know.', !s.flagMiss) +
+    tool('#/today/dup', 'lane', 'dup', s.flagDup, 'Possible duplicates', 'Settle each pair: merge them, or say they are different people.', !s.flagDup) +
+    '</div>';
+  var fin = s.complete ? '<section class="card donefin"><div class="cbody"><h3>Done.</h3><p class="dim">Every measure on this page is at its target. This suite has done its job — hide it in Settings whenever you like; it was built to be removed.</p></div></section>' : '';
+  v.innerHTML = '<div class="page donepage">' + head + overall + gauges + tools + fin +
+    '<p class="donefoot">This whole suite can be hidden in Settings, and removed for good once the work is finished.</p></div>';
+}
+/* ---- the two session tools: same rhythm as the Sort (10 at a time, skip sinks) ---- */
+function doneToolQueue(kind){
+  var out = [];
+  people().forEach(function(di){
+    var e = D.directory[di];
+    if(kind === 'shells'){ if(isShell(e) && !doneFloorPass(e)) out.push(di); }
+    else { var f = doneFails(e); if(!doneFloorPass(e) && f.length === 1 && f[0] !== 'bits') out.push(di); }
+  });
+  if(kind === 'shells') out.sort(function(a, b){
+    var ka = sortVerdict(D.directory[a]) === 'keep' ? 0 : 1, kb = sortVerdict(D.directory[b]) === 'keep' ? 0 : 1;
+    if(ka !== kb) return ka - kb;
+    return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+  });
+  else out.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+  return out;
+}
+function startDoneTool(kind){
+  var n = doneToolQueue(kind).length;
+  S.dtool = { kind:kind, i:0, start:n, goal:Math.min(SESSION_SIZE, n), fin:false, skipped:{} };
+}
+function presentedDoneQueue(){
+  var q = doneToolQueue(S.dtool.kind), sk = S.dtool.skipped, un = [], dn = [];
+  q.forEach(function(di){ (sk[pkey(D.directory[di])] ? dn : un).push(di); });
+  return un.concat(dn);
+}
+function doneToolMeter(){
+  var el = $('#sess'); if(!el) return;
+  var handled = Math.max(0, (S.dtool.start || 0) - doneToolQueue(S.dtool.kind).length), goal = Math.max(1, S.dtool.goal), shown = Math.min(handled, goal);
+  el.innerHTML = '<div class="sbar"><i style="width:' + Math.min(100, shown / goal * 100) + '%"></i></div>' +
+    '<small><b>' + shown + '</b> of ' + goal + ' this session' + ' · ' + doneToolQueue(S.dtool.kind).length + ' left here</small>';
+}
+function viewDoneTool(v, kind){
+  if(S.dtool.kind !== kind || S.dtool.start == null) startDoneTool(kind);
+  var t = kind === 'shells' ? 'Shell check' : 'One fix away';
+  var d = kind === 'shells' ? 'Empty profiles, one at a time. Keep the person and flag them for research, trash them, or say nothing exists — checked and empty counts as done.'
+    : 'Each person here passes the floor with one tap. Clear the flag, settle the duplicate, or finish the name.';
+  v.innerHTML = '<div class="page lanepage sortview"><div class="lhead"><a class="backlink" href="#/done" data-act="donehome2">' + ic('chevl', 16) + 'Done</a>' +
+    '<h1 class="display">' + t + '</h1><p class="sub">' + d + '</p><div class="sess" id="sess"></div></div>' +
+    '<div class="focus"><section class="qcard" id="qcard"></section><aside class="upnext" id="qlist"></aside></div></div>';
+  paintDoneTool();
+}
+function doneCardHead(e, di, i, n){
+  return '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
+    '<p class="meta">' + esc(hasHandle(e) ? '@' + e.name : (e.detail || 'From your contacts')) + '</p></div>' +
+    '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>';
+}
+function doneShellCard(di, i, n){
+  var e = D.directory[di], vd = sortVerdict(e), fl = raw(e, 'review_flag');
+  var body, acts;
+  if(vd === 'keep' && fl === 'duplicate'){
+    body = '<p class="sort-ev">Nothing on file</p><div class="sort-frame"><p>You kept this person. The open item is a possible-duplicate flag, and that is settled in the duplicates list — merge them, or say they are different people.</p></div>';
+    acts = '<a class="btn primary lg" href="#/today/dup" data-act="lane" data-lane="dup">Open the duplicates list ' + ic('arrow', 14) + '</a>' +
+      '<button type="button" class="btn danger lg" data-act="shelltrash" data-di="' + di + '">' + ic('trash', 15) + 'Trash instead</button>';
+  } else if(vd === 'keep'){
+    body = '<p class="sort-ev">Nothing on file</p><div class="sort-frame"><p>You kept this person, so they are flagged for research. If the research found nothing, say so — a kept profile with nothing on file and no flag counts as done.</p></div>';
+    acts = '<button type="button" class="btn primary lg" data-act="shellclear" data-di="' + di + '">' + ic('check', 16) + 'Nothing more exists</button>' +
+      '<button type="button" class="btn danger lg" data-act="shelltrash" data-di="' + di + '">' + ic('trash', 15) + 'Trash instead</button>';
+  } else {
+    body = '<p class="sort-ev">Nothing on file</p><div class="sort-frame"><p>Could your paths cross again?</p><p>Would you want to be up to speed on them?</p></div>';
+    acts = '<button type="button" class="btn primary lg" data-act="shellkeep" data-di="' + di + '">' + ic('check', 16) + 'Keep</button>' +
+      '<button type="button" class="btn danger lg" data-act="shelltrash" data-di="' + di + '">' + ic('trash', 15) + 'Trash</button>' +
+      '<button type="button" class="btn ghost lg" data-act="shellchecked" data-di="' + di + '">Nothing exists — checked</button>';
+  }
+  return '<article class="rc sortcard" data-di="' + di + '">' + doneCardHead(e, di, i, n) + body +
+    '<footer class="rfoot sort-actions">' + acts + '<span class="sp"></span>' +
+    '<button type="button" class="btn ghost" data-act="dtoolskip" data-di="' + di + '">' + ic('skip', 15) + 'Skip for now</button>' +
+    '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open full profile</a></footer>' +
+    '<p class="hint foothint">Everything saves as you go, and Undo works here too.</p></article>';
+}
+function doneOnefixCard(di, i, n){
+  var e = D.directory[di], fl = raw(e, 'review_flag'), f = doneFails(e), body, acts;
+  if(f[0] === 'flag' && fl === 'duplicate'){
+    body = '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p><div class="sort-frame"><p>One thing is open: this profile is flagged as a possible duplicate. That is settled in the duplicates list — merge them, or say they are different people.</p></div>';
+    acts = '<a class="btn primary lg" href="#/today/dup" data-act="lane" data-lane="dup">Open the duplicates list ' + ic('arrow', 14) + '</a>';
+  } else if(f[0] === 'flag'){
+    body = '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p><div class="sort-frame"><p>One thing is open: your missing-info flag. Everything the floor asks for is already on file, so clearing the flag finishes this profile. To add the missing info instead, open the full profile.</p></div>';
+    acts = '<button type="button" class="btn primary lg" data-act="onefixclear" data-di="' + di + '">' + ic('check', 16) + 'Clear the flag</button>';
+  } else {
+    body = '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p><div class="sort-frame"><p>One thing is open: the name is incomplete — a first or last name is missing. It is finished on their profile, in the Contact section.</p></div>';
+    acts = '<a class="btn primary lg" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Fix it on their profile ' + ic('arrow', 14) + '</a>';
+  }
+  return '<article class="rc sortcard" data-di="' + di + '">' + doneCardHead(e, di, i, n) + body +
+    '<footer class="rfoot sort-actions">' + acts + '<span class="sp"></span>' +
+    '<button type="button" class="btn ghost" data-act="dtoolskip" data-di="' + di + '">' + ic('skip', 15) + 'Skip for now</button>' +
+    '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open full profile</a></footer>' +
+    '<p class="hint foothint">One tap finishes this profile. Undo works here too.</p></article>';
+}
+function paintDoneTool(){
+  var kind = S.dtool.kind, q = presentedDoneQueue(), list = $('#qlist'), card = $('#qcard');
+  if(!list || !card) return;
+  var i = S.dtool.i = Math.max(0, Math.min(Math.max(0, q.length - 1), S.dtool.i));
+  var handled = Math.max(0, (S.dtool.start || 0) - doneToolQueue(kind).length);
+  if(!S.dtool.fin && S.dtool.goal > 0 && handled >= S.dtool.goal && q.length > 0) S.dtool.fin = true;
+  doneToolMeter();
+  var t = kind === 'shells' ? 'shells' : 'people';
+  if(!q.length){
+    list.innerHTML = '';
+    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>All clear</h2><p>Nothing left in this tool. Everything you did is already saved.</p>' +
+      '<div class="row"><a class="btn primary" href="#/done" data-act="donehome2">Back to the path to done</a><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
+    return;
+  }
+  if(S.dtool.fin){
+    list.innerHTML = '';
+    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>' + S.dtool.goal + ' done</h2><p>' + q.length + ' ' + t + ' left here. Keep going while you are on a roll, or stop here. Everything you did is already saved.</p>' +
+      '<div class="row"><button type="button" class="btn primary lg" data-act="dtoolmore">Do ' + Math.min(SESSION_SIZE, q.length) + ' more</button><a class="btn ghost" href="#/done" data-act="donehome2">Back to the path to done</a></div></div>';
+    return;
+  }
+  card.innerHTML = kind === 'shells' ? doneShellCard(q[i], i, q.length) : doneOnefixCard(q[i], i, q.length);
+  var nxt = q.slice(i + 1, i + 6).map(function(di2, k){
+    var e2 = D.directory[di2];
+    return '<button type="button" class="qrow" data-act="dtoolpick" data-i="' + (i + 1 + k) + '">' + avatar(e2, 'sm') + '<span class="qn"><b>' + esc(dispName(e2)) + '</b><small>' + esc(sortEvidence(e2)) + '</small></span></button>';
+  }).join('');
+  list.innerHTML = '<div class="qhead">Up next</div>' + (nxt || '<p class="dim pad">This is the last one.</p>');
+}
+function doneCheckedWrite(di){
+  var e = D.directory[di]; if(!e) return;
+  txn('Checked ' + dispName(e), function(){
+    queuePatch(di, { audit:'audited' });
+    if(raw(e, 'review_flag')) queuePatch(di, { review_flag:'' });
+  });
+  toast(dispName(e) + ' checked — nothing on file, and that counts as done.', { undo:true });
+  refreshAfterStatus();
+}
+function doneClearFlagWrite(di, msg){
+  var e = D.directory[di]; if(!e) return;
+  txn('Clear flag ' + dispName(e), function(){ queuePatch(di, { review_flag:'' }); });
+  toast(msg || (dispName(e) + ' — flag cleared.'), { undo:true });
+  refreshAfterStatus();
+}
+/* === END DONE SUITE === */
 
 function factsHTML(e){
   var rows = [];
@@ -3266,6 +3495,8 @@ function viewSettings(v){
       var e = D.directory[di], tgt = BYN[String(e.profile.merged_into).toLowerCase()];
       return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>into ' + esc(tgt != null ? dispName(D.directory[tgt]) : e.profile.merged_into) + '</small></div><div class="ea"><button type="button" class="btn ghost sm" data-act="unmerge" data-di="' + di + '">Restore</button></div></div>';
     }).join('') : '<p class="dim">Nothing has been merged.</p>') + '</div></section>' +
+    '<section class="card"><header><h3>Done tools</h3></header><div class="cbody"><p class="dim">The Done page tracks the path to a finished directory: sorting, the floor, flags, unexamined empties, and the decision backlog. It is built to be taken away when the work is finished. Hiding it here removes it from the sidebar and from Today; nothing else changes.</p>' +
+    '<div class="row"><button type="button" class="btn ghost sm" data-act="donetoggle">' + (doneSuiteOn() ? 'Hide the Done tools' : 'Show the Done tools') + '</button></div></div></section>' + /*DONE-SUITE*/
     '<section class="card"><header><h3>On this device</h3></header><div class="cbody"><p class="dim">Two review states live only in this browser: duplicate pairs you marked as different people, and this week’s spot checks.</p>' +
     '<div class="row"><button type="button" class="btn ghost sm" data-act="rstlocal">Reset them</button></div></div></section>' +
     '<section class="card"><header><h3>Keyboard</h3></header><div class="cbody"><div class="keys"><kbd>/</kbd><span>Search</span><kbd>J</kbd><kbd>K</kbd><span>Next or previous in the queue</span><kbd>C</kbd><span>Mark checked</span><kbd>Esc</kbd><span>Close or go back</span><kbd>Ctrl Z</kbd><span>Undo</span></div></div></section></div>';
@@ -3378,6 +3609,7 @@ function refreshAfterStatus(){
     else if(seg) paintQueue(curTab());
     else viewToday($('#view'));
   }
+  else if(n === 'done'){ var dsg = S.route.seg[0] || ''; if(dsg === 'shells' || dsg === 'onefix') paintDoneTool(); else viewDone($('#view')); } /*DONE-SUITE*/
   else if(n === 'profile') repaintTop();
   afterWrite();
 }
@@ -3527,6 +3759,18 @@ function onClick(ev){
     case 'sortpick': S.sort.i = +el.getAttribute('data-i'); paintSort(); landOn('#qcard .rc'); break;
     case 'sortmore': S.sort.start = sortQueue().length; S.sort.goal = Math.min(SESSION_SIZE, S.sort.start); S.sort.fin = false; S.sort.skipped = {}; S.sort.i = 0; paintSort(); break;
     case 'sortrestore': { var rnm = dispName(D.directory[di]); txn('Restore ' + rnm, function(){ queuePatch(di, { audit:'' }); }); toast(rnm + ' is back on the sort list.', { undo:true }); if(S.route.name === 'today' && S.route.seg[0] === 'sorted') viewSorted($('#view')); afterWrite(); break; }
+    case 'donehome': ev.preventDefault(); go('done'); prevent = false; break;
+    case 'donehome2': ev.preventDefault(); go('done'); prevent = false; break;
+    case 'shellkeep': sortVerdictWrite(di, 'keep'); break;
+    case 'shelltrash': sortVerdictWrite(di, 'trash'); break;
+    case 'shellchecked': doneCheckedWrite(di); break;
+    case 'shellclear': doneClearFlagWrite(di, dispName(D.directory[di]) + ' — nothing more exists. Flag cleared; checked and empty counts as done.'); break;
+    case 'onefixclear': doneClearFlagWrite(di); break;
+    case 'dtoolskip': { if(D.directory[di]) S.dtool.skipped[pkey(D.directory[di])] = 1; paintDoneTool(); break; }
+    case 'dtoolpick': S.dtool.i = +el.getAttribute('data-i'); paintDoneTool(); landOn('#qcard .rc'); break;
+    case 'dtoolmore': S.dtool.start = doneToolQueue(S.dtool.kind).length; S.dtool.goal = Math.min(SESSION_SIZE, S.dtool.start); S.dtool.fin = false; S.dtool.skipped = {}; S.dtool.i = 0; paintDoneTool(); break;
+    case 'donetoggle': store('ncc_done_hide', doneSuiteOn() ? '1' : ''); render(); break;
+    /*DONE-SUITE*/
     case 'seeall': openLaneList(); break;
     case 'dupsel': {
       var dk = el.getAttribute('data-key'), dsel = (S.today.dsel[dk] || []).slice(), dix = dsel.indexOf(di);
