@@ -232,7 +232,7 @@ function knownSinceYear(e){
   if(n > 0 && n < 100) return new Date().getFullYear() - n;
   return 0;
 }
-function liveEntry(e){ var p = e.profile || {}; return p.deleted !== '1' && !(p.merged_into || '').trim(); }
+function liveEntry(e){ var p = e.profile || {}; return p.deleted !== '1' && p.audit !== 'trash' && !(p.merged_into || '').trim(); }
 function isChecked(e){ return (e.profile || {}).audit === 'audited'; }
 function igURL(h){ return 'https://www.instagram.com/' + encodeURIComponent(String(h).replace(/^@/, '')) + '/'; }
 function hasHandle(e){ return e.src !== 'contacts' && e.src !== 'subject' && !/^(ig|ct|sf|fdb):/.test(String(e.name || '')) && !!e.name; }
@@ -1454,7 +1454,8 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    ============================================================ */
 var S = {
   depth:0, route:{ name:'today', seg:[] }, ctx:null,
-  today:{ i:0, surv:{}, dsel:{}, skipped:{}, lane:'', start:0, goal:10, fin:false },
+  today:{ i:0, surv:{}, dsel:{}, skipped:{}, lane:'', start:0, goal:10, fin:false, pick:false },
+  sort:{ i:0, start:null, goal:10, fin:false, skipped:{} },
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80 },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d') },
@@ -1710,16 +1711,21 @@ function ringHTML(frac, size, stroke){
 }
 function viewToday(v){
   var lane = S.route.seg[0] || '';
+  if(lane === 'sort') return viewSort(v);
+  if(lane === 'sorted') return viewSorted(v);
   if(lane && !laneDef(lane)) lane = '';
   if(!lane) return viewTodayHome(v);
   return viewLane(v, lane);
 }
 function viewTodayHome(v){
-  var st = getState(), needs = issueCount('needs'), wait = st.sweep.length, done = st.checkedN, tot = st.total || 1;
-  var pct = Math.round(done / tot * 1000) / 10;
+  /* SORT FIRST (2026-10-13): the hero is the Sort — JD's roster weed-out.
+     The fix lanes are demoted to one compact strip; the lane cards still
+     exist, unchanged, behind a collapsed "Pick a kind of work" disclosure. */
+  var left = sortQueue().length, sl = sortedLists(), sortedN = sl.keep.length + sl.trash.length, totS = left + sortedN;
   var lanes = LANES.filter(function(l){ return l.k !== 'needs' && l.k !== 'sweep'; });
   var counts = {}, max = 1;
   lanes.concat([laneDef('sweep')]).forEach(function(l){ counts[l.k] = issueCount(l.k); if(counts[l.k] > max) max = counts[l.k]; });
+  var fixN = lanes.reduce(function(s, l){ return s + counts[l.k]; }, 0) + counts.sweep;
   var live = lanes.filter(function(l){ return counts[l.k] > 0; }), clear = lanes.filter(function(l){ return counts[l.k] === 0; });
   function card(l, quiet, i){
     return '<a href="#/today/' + l.k + '" class="lane' + (quiet ? ' quiet' : '') + '" data-act="lane" data-lane="' + l.k + '" style="--h:' + l.h + ';--i:' + i + '">' +
@@ -1730,19 +1736,25 @@ function viewTodayHome(v){
       '<span class="lane-go">Start ' + ic('arrow', 14) + '</span></a>';
   }
   var head;
-  if(!needs && !wait){
-    head = '<div class="hhead"><h1 class="display">All caught up</h1><p class="sub">Everyone is marked done. New people and a weekly spot check will show up here.</p></div>';
+  if(!left && !sortedN){
+    head = '<div class="hhead"><h1 class="display">The Sort</h1><p class="sub">Nobody is waiting to be sorted right now.</p></div>';
+  } else if(!left){
+    head = '<div class="hhead"><h1 class="display">The Sort</h1><p class="sub">Everyone has been sorted. New people who show up in your circle will land here to be sorted once.</p>' +
+      '<div class="row"><a class="btn ghost lg" href="#/today/sorted" data-act="sortlist">See sorted (' + sortedN + ')</a></div></div>';
   } else {
-    head = '<div class="hhead"><h1 class="display">Today</h1><p class="sub"><b class="cu" data-n="' + needs + '">' + needs + '</b> ' + (needs === 1 ? 'thing needs' : 'things need') + ' fixing. One issue at a time, ' + SESSION_SIZE + ' at a time, most important first. ' +
-      (wait ? '<b class="cu" data-n="' + wait + '">' + wait + '</b> more people have no flags and only need a quick once-over.' : '') + '</p>' +
-      (needs ? '<div class="row"><a class="btn primary lg" href="#/today/needs" data-act="lane" data-lane="needs">Start the next ' + Math.min(SESSION_SIZE, needs) + ' ' + ic('arrow', 16) + '</a></div>' : '') + '</div>';
+    head = '<div class="hhead"><h1 class="display">The Sort</h1><p class="sub"><b class="cu" data-n="' + left + '">' + left + '</b> ' + (left === 1 ? 'person' : 'people') + ' left to sort. One at a time, two questions: could your paths cross again, and would you want to be up to speed on them? No to both — they go in the trash.</p>' +
+      '<div class="row"><a class="btn primary lg" href="#/today/sort" data-act="sortstart">Start sorting ' + ic('arrow', 16) + '</a>' +
+      (sortedN ? '<a class="btn ghost lg" href="#/today/sorted" data-act="sortlist">See sorted (' + sortedN + ')</a>' : '') + '</div></div>';
   }
-  v.innerHTML = '<div class="page todayhome"><section class="thero">' + head +
-    '<div class="tring" title="' + done + ' of ' + st.total + ' done">' + ringHTML(done / tot, 148, 10) +
-    '<div class="tring-c"><b><span class="cu" data-n="' + done + '">' + done + '</span></b><small>of ' + st.total + ' done</small></div></div></section>' +
-    (live.length ? '<h2 class="sect">Or pick a kind of work</h2><div class="lanes">' + live.map(function(l, i){ return card(l, false, i); }).join('') + (counts.sweep ? card(laneDef('sweep'), true, live.length) : '') + '</div>'
-      : (counts.sweep ? '<h2 class="sect">Lowest priority</h2><div class="lanes">' + card(laneDef('sweep'), true, 0) + '</div>' : '')) +
-    (clear.length && live.length ? '<p class="clearline">' + ic('check', 14) + 'Nothing waiting in: ' + clear.map(function(l){ return esc(l.t); }).join(', ') + '.</p>' : '') + '</div>';
+  var ring = totS ? '<div class="tring" title="Sorted ' + sortedN + ' of ' + totS + '">' + ringHTML(sortedN / totS, 148, 10) +
+    '<div class="tring-c"><b><span class="cu" data-n="' + sortedN + '">' + sortedN + '</span></b><small>of ' + totS + ' sorted</small></div></div>' : '';
+  var grid = (live.length || counts.sweep) ? '<div class="lanes">' + live.map(function(l, i){ return card(l, false, i); }).join('') + (counts.sweep ? card(laneDef('sweep'), true, live.length) : '') + '</div>' : '';
+  var clearline = clear.length ? '<p class="clearline">' + ic('check', 14) + 'Nothing waiting in: ' + clear.map(function(l){ return esc(l.t); }).join(', ') + '.</p>' : '';
+  v.innerHTML = '<div class="page todayhome"><section class="thero">' + head + ring + '</section>' +
+    '<section class="fixstrip"><div class="fix-txt"><b>Fix profiles</b><span>' + (fixN ? fixN + ' ' + (fixN === 1 ? 'thing needs' : 'things need') + ' fixing across all the fix lists.' : 'Nothing needs fixing right now.') + '</span></div>' +
+    (fixN ? '<a class="btn primary" href="#/today/needs" data-act="lane" data-lane="needs">Start ' + ic('arrow', 14) + '</a>' : '') +
+    '<button type="button" class="btn ghost" data-act="fixpick" aria-expanded="' + (S.today.pick ? 'true' : 'false') + '">Pick a kind of work ' + ic('chev', 14) + '</button></section>' +
+    '<div class="fixpick"' + (S.today.pick ? '' : ' hidden') + '>' + grid + clearline + '</div></div>';
 }
 function startSession(lane){
   var n = issueCount(lane);
@@ -1802,6 +1814,187 @@ function openLaneList(){
     if(it.reason !== lastR){ lastR = it.reason; hdr = '<div class="qgroup">' + esc(ISSUE_SHORT[it.reason]) + '</div>'; }
     return hdr + '<button type="button" class="prow" data-act="qpick" data-i="' + k + '">' + avatar(e, 'sm') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(ISSUE_SHORT[it.reason]) + '</small></span></button>';
   }).join('') + (q.length > 400 ? '<p class="dim pad">Showing the first 400.</p>' : '') + '</div>', { focus:false });
+}
+
+/* ============================================================
+   The Sort — the roster weed-out (2026-10-13). Every live, listed person
+   with no sort verdict and no family links gets one card and two questions:
+   could your paths cross again, and would you want to be up to speed on
+   them? Keep / Trash / Skip for now.
+   The verdict is stored in the profile's audit field — 'keep' or 'trash' —
+   written through the same outbox -> Sheet patch path as every other write
+   in the app (txn + queuePatch), so it survives reloads and the
+   subject-sync rebuild (the build passes the audit column through as-is).
+   'audited' still means checked; a verdict is a separate value, not a
+   check. Trash hides the person everywhere liveEntry is consulted — the
+   sort queue, the People list, and every count — the same visible effect
+   as Remove (deleted:'1'); the entry stays in the data so the Sorted list
+   can restore them with the inverse patch { audit:'' }.
+   Keep on a profile with nothing on file also sets JD's own missing-info
+   flag (when no flag is set), so the fix lists pick them up for research
+   instead of the keep quietly burying an empty profile.
+   ============================================================ */
+function sortVerdict(e){ var a = raw(e, 'audit'); return a === 'keep' ? 'keep' : a === 'trash' ? 'trash' : ''; }
+/* what is on file, as testable bits — the same signal set as the pre-sort */
+function onFileBits(e){
+  var bits = [];
+  if(gv(e, 'synopsis')) bits.push('a summary');
+  if(tagList(gv(e, 'companies')).length) bits.push('work');
+  if(gv(e, 'highlights')) bits.push('highlights');
+  if(footprintOf(e).blocks.length) bits.push('a web record');
+  if(gv(e, 'phone')) bits.push('a phone number');
+  if(tagList(gv(e, 'churches')).length) bits.push('a church');
+  if(degreesOf(e).length) bits.push('a school');
+  if(gv(e, 'sources')) bits.push('sources');
+  if((e.events || []).length) bits.push('life events');
+  return bits;
+}
+function isShell(e){ return !onFileBits(e).length; }
+/* order: dead pile first (no connections, nothing on file), then people
+   whose identity is not confirmed, then new or unclassified, then the
+   rest by fewest connections */
+function sortBucket(di){
+  var e = D.directory[di];
+  if(!(e.neighbors || []).length && isShell(e)) return 0;
+  if(identitySignals(e).n < 2) return 1;
+  if(NEWGAIN[di] || (!tierOf(e) && !raw(e, 'relationship') && !raw(e, 'context'))) return 2;
+  return 3;
+}
+var SORT_CACHE = { ver:-1, q:null };
+function sortQueue(){
+  if(SORT_CACHE.ver === VER && SORT_CACHE.q) return SORT_CACHE.q;
+  var out = [];
+  people().forEach(function(di){ var e = D.directory[di]; if(!sortVerdict(e) && !famLinks(e).length) out.push(di); });
+  out.sort(function(a, b){
+    var ba = sortBucket(a), bb = sortBucket(b); if(ba !== bb) return ba - bb;
+    var na = (D.directory[a].neighbors || []).length, nb = (D.directory[b].neighbors || []).length;
+    if(na !== nb) return na - nb;
+    return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+  });
+  SORT_CACHE = { ver:VER, q:out };
+  return out;
+}
+function sortedLists(){
+  var keep = [], trash = [];
+  D.directory.forEach(function(e, di){
+    var p = e.profile || {};
+    if(p.deleted === '1' || (p.merged_into || '').trim()) return;
+    if(p.audit === 'keep') keep.push(di);
+    else if(p.audit === 'trash') trash.push(di);
+  });
+  var byName = function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); };
+  return { keep:keep.sort(byName), trash:trash.sort(byName) };
+}
+/* skipped people sink to the end of the session queue; a skip writes nothing */
+function presentedSortQueue(){
+  var q = sortQueue(), sk = S.sort.skipped, un = [], done = [];
+  q.forEach(function(di){ (sk[pkey(D.directory[di])] ? done : un).push(di); });
+  return un.concat(done);
+}
+function startSortSession(){
+  var n = sortQueue().length;
+  S.sort.i = 0; S.sort.start = n; S.sort.goal = Math.min(SESSION_SIZE, n); S.sort.fin = false; S.sort.skipped = {};
+}
+function sortMeter(){
+  var el = $('#sess'); if(!el) return;
+  var handled = Math.max(0, (S.sort.start || 0) - sortQueue().length), goal = Math.max(1, S.sort.goal), shown = Math.min(handled, goal);
+  el.innerHTML = '<div class="sbar"><i style="width:' + Math.min(100, shown / goal * 100) + '%"></i></div>' +
+    '<small><b>' + shown + '</b> of ' + goal + ' this session' + ' · ' + sortQueue().length + ' left to sort</small>';
+}
+function sortEvidence(e){
+  var bits = onFileBits(e), nc = (e.neighbors || []).length;
+  if(!bits.length && !nc) return 'Nothing on file';
+  var parts = [];
+  var rel = [tierName(e), cap(gv(e, 'relationship')), cap(gv(e, 'context')), e.relation ? (RELN[e.relation] || '') : ''].filter(Boolean);
+  if(rel.length) parts.push(rel.join(' · '));
+  parts.push(nc + (nc === 1 ? ' connection' : ' connections'));
+  var job = tagList(gv(e, 'companies'))[0], place = e.city || e.hometown, school = degreesOf(e)[0], onf = [];
+  if(job) onf.push('works at ' + job);
+  if(place) onf.push((e.city ? 'lives in ' : 'from ') + place);
+  if(school) onf.push(schoolShort(school.school));
+  if(onf.length) parts.push(onf.join(' · '));
+  else if(bits.length) parts.push('On file: ' + bits.join(', '));
+  var yk = knownSinceYear(e);
+  if(yk) parts.push('Known since ' + yk);
+  return parts.join(' · ');
+}
+function sortCardHTML(di, i, n){
+  var e = D.directory[di];
+  return '<article class="rc sortcard" data-di="' + di + '">' +
+    '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="sortopen" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
+    '<p class="meta">' + esc(hasHandle(e) ? '@' + e.name : (e.detail || 'From your contacts')) + '</p></div>' +
+    '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>' +
+    '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p>' +
+    '<div class="sort-frame"><p>Could your paths cross again?</p><p>Would you want to be up to speed on them?</p></div>' +
+    '<footer class="rfoot sort-actions">' +
+    '<button type="button" class="btn primary lg" data-act="sortkeep" data-di="' + di + '">' + ic('check', 16) + 'Keep</button>' +
+    '<button type="button" class="btn danger lg" data-act="sorttrash" data-di="' + di + '">' + ic('trash', 15) + 'Trash</button>' +
+    '<span class="sp"></span>' +
+    '<button type="button" class="btn ghost" data-act="sortskip" data-di="' + di + '">' + ic('skip', 15) + 'Skip for now</button>' +
+    '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="sortopen" data-di="' + di + '">Open full profile</a></footer>' +
+    '<p class="hint foothint">Keep means they stay in your circle. Trash hides them everywhere — restore them any time from the sorted list. Keys: K keep, T trash, S skip.</p></article>';
+}
+function paintSort(){
+  var q = presentedSortQueue(), list = $('#qlist'), card = $('#qcard');
+  if(!list || !card) return;
+  var i = S.sort.i = Math.max(0, Math.min(Math.max(0, q.length - 1), S.sort.i));
+  var handled = Math.max(0, (S.sort.start || 0) - sortQueue().length);
+  if(!S.sort.fin && S.sort.goal > 0 && handled >= S.sort.goal && q.length > 0) S.sort.fin = true;
+  sortMeter();
+  if(!q.length){
+    list.innerHTML = '';
+    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>All sorted</h2><p>Everyone in your circle has been sorted. New people will show up here to be sorted once.</p>' +
+      '<div class="row"><a class="btn primary" href="#/today/sorted" data-act="sortlist">See the sorted list</a><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
+    return;
+  }
+  if(S.sort.fin){
+    list.innerHTML = '';
+    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>' + S.sort.goal + ' sorted</h2><p>' + q.length + ' left to sort. Keep going while you are on a roll, or stop here. Everything you did is already saved.</p>' +
+      '<div class="row"><button type="button" class="btn primary lg" data-act="sortmore">Sort ' + Math.min(SESSION_SIZE, q.length) + ' more</button><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
+    return;
+  }
+  card.innerHTML = sortCardHTML(q[i], i, q.length);
+  var nxt = q.slice(i + 1, i + 6).map(function(di2, k){
+    var e2 = D.directory[di2];
+    return '<button type="button" class="qrow" data-act="sortpick" data-i="' + (i + 1 + k) + '">' + avatar(e2, 'sm') + '<span class="qn"><b>' + esc(dispName(e2)) + '</b><small>' + esc(sortEvidence(e2)) + '</small></span></button>';
+  }).join('');
+  list.innerHTML = '<div class="qhead">Up next</div>' + (nxt || '<p class="dim pad">This is the last one.</p>');
+}
+function viewSort(v){
+  if(S.sort.start == null) startSortSession();
+  v.innerHTML = '<div class="page lanepage"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
+    '<h1 class="display">The Sort</h1><p class="sub">One person at a time. Keep the people who belong in your circle; trash the rest. Skipping sends someone to the back of the line.</p><div class="sess" id="sess"></div></div>' +
+    '<div class="focus"><section class="qcard" id="qcard"></section><aside class="upnext" id="qlist"></aside></div></div>';
+  paintSort();
+}
+function viewSorted(v){
+  var sl = sortedLists();
+  function row(di, btn){
+    var e = D.directory[di];
+    return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></div>' +
+      '<div class="ea"><button type="button" class="btn ghost sm" data-act="sortrestore" data-di="' + di + '">' + btn + '</button></div></div>';
+  }
+  v.innerHTML = '<div class="page settings"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
+    '<h1 class="display">Sorted</h1><p class="sub">Everyone you have sorted so far. Restoring someone clears their verdict and puts them back on the sort list.</p></div>' +
+    '<section class="card"><header><h3>In the trash</h3><em class="cnt">' + sl.trash.length + '</em></header><div class="cbody">' +
+    (sl.trash.length ? sl.trash.map(function(di){ return row(di, 'Restore'); }).join('') : '<p class="dim">Nobody is in the trash.</p>') + '</div></section>' +
+    '<section class="card"><header><h3>Kept</h3><em class="cnt">' + sl.keep.length + '</em></header><div class="cbody">' +
+    (sl.keep.length ? sl.keep.map(function(di){ return row(di, 'Put back'); }).join('') : '<p class="dim">Nobody has been kept yet.</p>') + '</div></section></div>';
+}
+function sortVerdictWrite(di, v){
+  var e = D.directory[di]; if(!e) return;
+  if(v === 'keep'){
+    var enrich = isShell(e) && !raw(e, 'review_flag');
+    txn('Keep ' + dispName(e), function(){
+      queuePatch(di, { audit:'keep' });
+      if(enrich) queuePatch(di, { review_flag:'missing_info' });
+    });
+    toast(dispName(e) + ' stays in your circle.' + (enrich ? ' Nothing on file, so they are flagged as missing info for the fix list.' : ''), { undo:true });
+  } else {
+    txn('Trash ' + dispName(e), function(){ queuePatch(di, { audit:'trash' }); });
+    toast(dispName(e) + ' moved to the trash.', { undo:true });
+  }
+  refreshAfterStatus();
 }
 
 function factsHTML(e){
@@ -3053,7 +3246,13 @@ function curDi(el){
 function curTab(){ return S.route.seg[0] || 'needs'; }
 function refreshAfterStatus(){
   var n = S.route.name;
-  if(n === 'today'){ if(S.route.seg[0]) paintQueue(curTab()); else viewToday($('#view')); }
+  if(n === 'today'){
+    var seg = S.route.seg[0] || '';
+    if(seg === 'sort') paintSort();
+    else if(seg === 'sorted') viewSorted($('#view'));
+    else if(seg) paintQueue(curTab());
+    else viewToday($('#view'));
+  }
   else if(n === 'profile') repaintTop();
   afterWrite();
 }
@@ -3193,6 +3392,16 @@ function onClick(ev){
     case 'lane': ev.preventDefault(); startSession(el.getAttribute('data-lane')); go('today/' + el.getAttribute('data-lane')); landOn('#qcard .rc, #qcard .done-card'); prevent = false; break;
     case 'lanehome': ev.preventDefault(); go('today'); prevent = false; break;
     case 'sessmore': S.today.start = issueCount(curTab()); S.today.goal = Math.min(SESSION_SIZE, S.today.start); S.today.fin = false; paintQueue(curTab()); break;
+    case 'sortstart': ev.preventDefault(); startSortSession(); go('today/sort'); landOn('#qcard .rc, #qcard .done-card'); prevent = false; break;
+    case 'sortlist': ev.preventDefault(); go('today/sorted'); prevent = false; break;
+    case 'fixpick': { S.today.pick = !S.today.pick; var fp = $('.fixpick'); if(fp) fp.hidden = !S.today.pick; el.setAttribute('aria-expanded', S.today.pick ? 'true' : 'false'); break; }
+    case 'sortopen': { ev.preventDefault(); var sq = presentedSortQueue(); openPerson(di, ctxFrom('The Sort', sq, sq.indexOf(di), 'today')); prevent = false; break; }
+    case 'sortkeep': sortVerdictWrite(di, 'keep'); break;
+    case 'sorttrash': sortVerdictWrite(di, 'trash'); break;
+    case 'sortskip': { if(D.directory[di]) S.sort.skipped[pkey(D.directory[di])] = 1; paintSort(); break; }
+    case 'sortpick': S.sort.i = +el.getAttribute('data-i'); paintSort(); landOn('#qcard .rc'); break;
+    case 'sortmore': S.sort.start = sortQueue().length; S.sort.goal = Math.min(SESSION_SIZE, S.sort.start); S.sort.fin = false; S.sort.skipped = {}; S.sort.i = 0; paintSort(); break;
+    case 'sortrestore': { var rnm = dispName(D.directory[di]); txn('Restore ' + rnm, function(){ queuePatch(di, { audit:'' }); }); toast(rnm + ' is back on the sort list.', { undo:true }); if(S.route.name === 'today' && S.route.seg[0] === 'sorted') viewSorted($('#view')); afterWrite(); break; }
     case 'seeall': openLaneList(); break;
     case 'dupsel': {
       var dk = el.getAttribute('data-key'), dsel = (S.today.dsel[dk] || []).slice(), dix = dsel.indexOf(di);
@@ -3467,7 +3676,17 @@ function onKey(ev){
   if(mod && (ev.key === 'k' || ev.key === 'K')){ ev.preventDefault(); var g = $('#gs'); if(g) g.focus(); return; }
   if(mod || ev.altKey) return;
   if(ev.key === '/'){ ev.preventDefault(); var gs = $('#gs'); if(gs) gs.focus(); return; }
-  if(S.route.name === 'today' && S.route.seg[0]){
+  if(S.route.name === 'today' && S.route.seg[0] === 'sort'){
+    /* the Sort has its own keys: K keep, T trash, S skip (lane J/K nav does not apply here) */
+    var sh = $('#sheetwrap');
+    if(sh && sh.hidden && !S.sort.fin){
+      var pq = presentedSortQueue(), cd = pq[Math.max(0, Math.min(Math.max(0, pq.length - 1), S.sort.i))], kk = ev.key && ev.key.length === 1 ? ev.key.toLowerCase() : '';
+      if(cd != null && kk === 'k') sortVerdictWrite(cd, 'keep');
+      else if(cd != null && kk === 't') sortVerdictWrite(cd, 'trash');
+      else if(cd != null && kk === 's'){ S.sort.skipped[pkey(D.directory[cd])] = 1; paintSort(); }
+    }
+  }
+  else if(S.route.name === 'today' && S.route.seg[0]){
     var ql = queueFor(curTab()).length;
     if(ev.key === 'j' && ql){ S.today.i = (S.today.i + 1) % ql; paintQueue(curTab()); }
     else if(ev.key === 'k' && ql){ S.today.i = (S.today.i - 1 + ql) % ql; paintQueue(curTab()); }
