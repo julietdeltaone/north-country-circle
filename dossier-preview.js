@@ -1570,9 +1570,10 @@ function todayHead(st){
   var needs = st.needs.length, wait = st.sweep.length, done = st.checkedN, tot = st.total || 1;
   var line;
   if(!needs && !wait) line = 'Everyone is checked.';
-  else line = [needs ? '<b class="cu" data-n="' + needs + '">' + needs + '</b> need' + (needs === 1 ? 's' : '') + ' you' : '', wait ? '<b class="cu" data-n="' + wait + '">' + wait + '</b> waiting on the floor sweep' : '', '<b class="cu" data-n="' + done + '">' + done + '</b> checked'].filter(Boolean).join(' · ');
+  else line = [needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' you' : '', wait ? wait + ' waiting on the floor sweep' : '', done + ' checked'].filter(Boolean).join(' · ');
   var pc = Math.round(done / tot * 1000) / 10;
-  return '<div class="pagehead"><div><h1 class="display">Today</h1><p class="sub">' + esc(line) + '</p></div>' +
+  var richLine = (!needs && !wait) ? esc(line) : [needs ? '<b class="cu" data-n="' + needs + '">' + needs + '</b> need' + (needs === 1 ? 's' : '') + ' you' : '', wait ? '<b class="cu" data-n="' + wait + '">' + wait + '</b> waiting on the floor sweep' : '', '<b class="cu" data-n="' + done + '">' + done + '</b> checked'].filter(Boolean).join(' · ');
+  return '<div class="pagehead"><div><h1 class="display">Today</h1><p class="sub">' + richLine + '</p></div>' +
     '<div class="prog" title="' + done + ' of ' + st.total + ' checked"><div class="bar"><i class="c" style="width:' + (done / tot * 100) + '%"></i><i class="n" style="width:' + (needs / tot * 100) + '%"></i></div>' +
     '<small><b class="cu" data-n="' + done + '">' + done + '</b> of <span class="cu" data-n="' + st.total + '">' + st.total + '</span> checked' + (pc ? ' (' + pc + '%)' : '') + '</small></div></div>';
 }
