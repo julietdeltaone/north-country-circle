@@ -135,6 +135,7 @@ option,optgroup{background:#141a26;color:var(--txt)}
 .qa{margin:10px 0}
 .qakinds{margin-bottom:8px}
 .qa-row input{flex:1;min-width:0}
+.qa-dest{font-size:12.5px;color:var(--dim);margin:8px 0 0;line-height:1.4}
 .qgroup{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:14px 0 4px}
 /* one-time landing highlight (user-initiated navigation only; fires once) */
 .landed{box-shadow:0 0 0 3px var(--acc),0 0 22px rgba(134,160,216,.35)!important;animation:landFade 1.3s ease-out 1}
@@ -187,6 +188,14 @@ option,optgroup{background:#141a26;color:var(--txt)}
 .banner.ok{border-color:rgba(95,183,165,.35)} .banner.ok .bi{color:var(--ok)}
 .banner.needs{border-color:rgba(224,163,90,.45);display:block;background:linear-gradient(0deg,var(--card),var(--card))} .banner.needs .bi{color:var(--warn)}
 .bh{display:flex;align-items:center;gap:12px;flex-wrap:wrap} .banner .rbs{margin-top:14px}
+.banner .rbs{gap:0}
+.banner .brow{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;padding:13px 0;border-top:1px solid var(--line2)}
+.banner .brow:first-child{border-top:0;padding-top:2px}
+.banner .brow-tx{min-width:0}
+.banner .brow .issue-say{font-size:15px;margin-bottom:3px}
+.banner .brow .issue-sub{margin-bottom:0}
+.banner .brow-acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex:none;padding-top:1px}
+@media (max-width:560px){ .banner .brow{flex-direction:column;gap:8px} .banner .brow-acts{justify-content:flex-start} }
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start} .pcol{display:flex;flex-direction:column;gap:16px;min-width:0}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
 .card>header{display:flex;align-items:center;gap:10px;padding:14px 18px 0} .card h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--mut)}
