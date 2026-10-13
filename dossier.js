@@ -680,6 +680,30 @@ function pairDismissed(a, b){
   return Object.keys(m).some(function(k){ var parts = k.split('|'); return parts.indexOf(ka) >= 0 && parts.indexOf(kb) >= 0; });
 }
 function dismissDupPair(a, b){ var m = dupDismissed(); m[dupPairKey(a, b)] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; }
+/* whole-group dismissal: storing the group key retires the group, because
+   pairDismissed() treats a stored key listing both people as covering the pair */
+function dismissDupGroup(g){ var m = dupDismissed(); m[dupGroupKey(g.dis)] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; }
+function undismissDupGroup(key){ var m = dupDismissed(); if(m[key]){ delete m[key]; store('ncc_dupok', JSON.stringify(m)); VER++; } }
+function redismissDupGroup(key){ var m = dupDismissed(); if(!m[key]){ m[key] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; } }
+/* "All different people — no duplicates here": JD has reviewed the whole group
+   and says nobody in it is a duplicate of anyone else in it. Clears the
+   duplicate flag on every flagged member (the same review_flag:'' write the
+   merge path uses, through the same queuePatch machinery) and retires the
+   group with a whole-group dismissal. The dismissal rides on the undo entry
+   (entry.gclear), so Undo lifts it and Redo restores it — see refreshAfterUndo. */
+function clearDupGroup(g){
+  var key = dupGroupKey(g.dis);
+  var flagged = g.dis.filter(function(d){ return raw(D.directory[d], 'review_flag') === 'duplicate'; });
+  var entry = txn('All different people', function(){
+    flagged.forEach(function(d){ queuePatch(d, { review_flag:'' }); });
+  });
+  entry.gclear = key;
+  if(!entry.items.length){ UNDO.stack.push(entry); if(UNDO.stack.length > 100) UNDO.stack.shift(); UNDO.redo = []; paintUndo(); }
+  dismissDupGroup(g);
+  S.today.dsel[key] = [];
+  toast('No duplicates here — all ' + g.dis.length + ' are different people.', { undo:true });
+  refreshAfterStatus();
+}
 function spotDone(){ try{ var o = JSON.parse(store('ncc_spot') || '{}') || {}; return o.w === weekKey() ? o.done || {} : {}; }catch(x){ return {}; } }
 function markSpotDone(di){ var d = spotDone(); d[pkey(D.directory[di])] = 1; store('ncc_spot', JSON.stringify({ w:weekKey(), done:d })); VER++; }
 
@@ -693,7 +717,7 @@ function getState(){
     var k = normDupName(dispName(D.directory[di]));
     if(k.length >= 2) (byName[k] = byName[k] || []).push(di);
   });
-  Object.keys(byName).forEach(function(k){ if(byName[k].length > 1) groups.push({ kind:'name', label:'Same name', dis:byName[k].slice() }); });
+  Object.keys(byName).forEach(function(k){ if(byName[k].length > 1) groups.push({ kind:'name', label:'Same name', title:'Same name: ' + dispName(D.directory[byName[k][0]]), dis:byName[k].slice() }); });
   var byHandle = {}; D.directory.forEach(function(r, di){ byHandle[String(r.name || '').toLowerCase()] = di; });
   (D.photo_merge || []).forEach(function(pm){
     var dis = [];
@@ -701,7 +725,7 @@ function getState(){
       var di = byHandle[String(k).toLowerCase()];
       if(di !== undefined && liveEntry(D.directory[di]) && dis.indexOf(di) < 0) dis.push(di);
     });
-    if(dis.length > 1) groups.push({ kind:'photo', label:'Same face ("' + pm.face + '")', dis:dis });
+    if(dis.length > 1) groups.push({ kind:'photo', label:'Same face ("' + pm.face + '")', title:'Same first name: ' + pm.face, dis:dis });
   });
   groups = groups.filter(function(g){
     if(!g.dis.some(function(di){ return !isChecked(D.directory[di]); })) return false;
@@ -1759,6 +1783,10 @@ function paintQueue(tab){
       '<div class="row"><button type="button" class="btn primary lg" data-act="sessmore">Do ' + Math.min(SESSION_SIZE, q.length) + ' more</button><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
     return;
   }
+  /* a freshly presented card starts with an empty merge selection — the person
+     whose card it is stays labeled "this one" but is never pre-picked */
+  var cardKey = tab + '|' + q[i].di + '|' + q[i].reason + '|' + famKeyOf(q[i]);
+  if(S.today.cardKey !== cardKey){ S.today.cardKey = cardKey; S.today.dsel = {}; }
   card.innerHTML = issueCard(q[i], tab, i, q.length);
   var nxt = q.slice(i + 1, i + 6).map(function(it, k){
     var e = D.directory[it.di];
@@ -1824,17 +1852,20 @@ function dupBlock(x, di){
         '<span><b>' + esc(dispName(me)) + (m === di ? ' <em>this one</em>' : '') + '</b><small>' + esc(dupMemberLine(m)) + '</small></span>' +
         '<a href="#/p/' + encodeURIComponent(personId(me)) + '" class="dl" data-act="openp" data-di="' + m + '" title="Open profile">' + ic('ext', 14) + '</a></div>';
     }).join('');
-    var hint = sel.length === 0 ? 'Tap two profiles that are the same person. Only those two merge — everyone else here keeps their own profile.'
+    var hint = sel.length === 0 ? 'Tap the two that are the same person — or \'All different people\' if none match.'
       : sel.length === 1 ? 'One picked. Now tap the other profile of the same person.'
       : gone ? 'You marked these two as different people before, so they can\'t be merged. Unselect one and pick a different pair.'
       : 'Two picked. Merging combines their details into the one that stays. Nothing is deleted, and you can undo it.';
     var ready = sel.length === 2 && !gone;
-    return '<div class="rb"><h4>' + esc(REASONS.dup.l) + ' <small>' + esc(g.label) + '</small></h4>' +
-      '<p>Same person twice, or two different people who look alike? Twins and same-name people are common — nothing merges unless you pick two and confirm.</p>' +
+    return '<div class="rb"><h4>' + esc(g.title || g.label) + '</h4>' +
+      '<p>' + (g.kind === 'photo'
+        ? 'These people share a first name. They may all be different people. If two of them are actually the same person, tap those two and merge them. If none of them match, tap \'All different people\'.'
+        : 'These profiles share the same name. They may be different people. If two of them are actually the same person, tap those two and merge them. If none of them match, tap \'All different people\'.') + '</p>' +
       '<div class="dms">' + mems + '</div>' +
       '<p class="hint">' + hint + '</p>' +
       '<div class="row"><button type="button" class="btn primary" data-act="dupmerge" data-key="' + esc(key) + '" data-gi="' + gi + '"' + (ready ? '' : ' disabled') + '>' + ic('merge', 15) + 'Merge these two</button>' +
-      '<button type="button" class="btn ghost" data-act="notdup2" data-key="' + esc(key) + '" data-gi="' + gi + '"' + (ready ? '' : ' disabled') + '>These two are different people</button></div></div>';
+      '<button type="button" class="btn ghost" data-act="notdup2" data-key="' + esc(key) + '" data-gi="' + gi + '"' + (ready ? '' : ' disabled') + '>These two are different people</button></div>' +
+      '<div class="row"><button type="button" class="btn primary wide" data-act="dupclear" data-key="' + esc(key) + '" data-gi="' + gi + '">All different people — no duplicates here</button></div></div>';
   }).join('');
 }
 
@@ -3101,8 +3132,8 @@ function onClick(ev){
   switch(act){
     case 'sheetx': closeSheet(); break;
     case 'savekey': { var kv = ($('#ekey') || {}).value || ''; store('ncc_edit_key', kv.trim()); OUT.auth = false; closeSheet(); OUT.retry = 0; outKick(); toast('Key saved. Retrying.'); break; }
-    case 'undo': doUndo(); refreshAfterUndo(); break;
-    case 'redo': doRedo(); refreshAfterUndo(); break;
+    case 'undo': doUndo(); refreshAfterUndo('undo'); break;
+    case 'redo': doRedo(); refreshAfterUndo('redo'); break;
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
     case 'back': back(); break;
     case 'set': doSet(el); break;
@@ -3187,6 +3218,12 @@ function onClick(ev){
       dismissDupPair(sd[0], sd[1]); S.today.dsel[el.getAttribute('data-key')] = [];
       toast(dispName(D.directory[sd[0]]) + ' and ' + dispName(D.directory[sd[1]]) + ' marked as different people. They won\'t be paired up again.');
       refreshAfterStatus(); break;
+    }
+    case 'dupclear': {
+      var itg = S.route.name === 'today' ? issueQueue(curTab())[S.today.i] : null;
+      var bxg = itg ? itg.x : (S.route.name === 'profile' ? getState().by[di] : null);
+      var gg = bxg && (bxg.detail.dup || [])[+el.getAttribute('data-gi')]; if(!gg) break;
+      clearDupGroup(gg); break;
     }
     case 'dupgo': {
       var lo2 = DMG.surv === DMG.a ? DMG.b : DMG.a, sv2 = DMG.surv;
@@ -3339,7 +3376,11 @@ function onClick(ev){
   }
   if(prevent && el.tagName === 'A' && act !== 'openp') ev.preventDefault();
 }
-function refreshAfterUndo(){
+function refreshAfterUndo(dir){
+  /* a whole-group "all different people" clear rides on its undo entry:
+     undoing it lifts the group dismissal, redoing it restores the dismissal */
+  if(dir === 'undo'){ var eu = UNDO.redo[UNDO.redo.length - 1]; if(eu && eu.gclear) undismissDupGroup(eu.gclear); }
+  else if(dir === 'redo'){ var er = UNDO.stack[UNDO.stack.length - 1]; if(er && er.gclear) redismissDupGroup(er.gclear); }
   var n = S.route.name;
   if(n === 'profile'){ if(D.directory[S.prof.di]) paintProfile(S.prof.di); }
   else if(n === 'today') { refreshAfterStatus(); }
@@ -3421,8 +3462,8 @@ function onKey(ev){
   }
   if(isField) return;
   var mod = ev.ctrlKey || ev.metaKey;
-  if(mod && (ev.key === 'z' || ev.key === 'Z')){ ev.preventDefault(); if(ev.shiftKey) doRedo(); else doUndo(); refreshAfterUndo(); return; }
-  if(mod && (ev.key === 'y' || ev.key === 'Y')){ ev.preventDefault(); doRedo(); refreshAfterUndo(); return; }
+  if(mod && (ev.key === 'z' || ev.key === 'Z')){ ev.preventDefault(); if(ev.shiftKey) doRedo(); else doUndo(); refreshAfterUndo(ev.shiftKey ? 'redo' : 'undo'); return; }
+  if(mod && (ev.key === 'y' || ev.key === 'Y')){ ev.preventDefault(); doRedo(); refreshAfterUndo('redo'); return; }
   if(mod && (ev.key === 'k' || ev.key === 'K')){ ev.preventDefault(); var g = $('#gs'); if(g) g.focus(); return; }
   if(mod || ev.altKey) return;
   if(ev.key === '/'){ ev.preventDefault(); var gs = $('#gs'); if(gs) gs.focus(); return; }
