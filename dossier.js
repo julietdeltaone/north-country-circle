@@ -3766,7 +3766,7 @@ function onClick(ev){
     case 'shellchecked': doneCheckedWrite(di); break;
     case 'shellclear': doneClearFlagWrite(di, dispName(D.directory[di]) + ' — nothing more exists. Flag cleared; checked and empty counts as done.'); break;
     case 'onefixclear': doneClearFlagWrite(di); break;
-    case 'dtoolskip': { if(D.directory[di]) S.dtool.skipped[pkey(D.directory[di])] = 1; paintDoneTool(); break; }
+    case 'dtoolskip': { if(D.directory[di]){ S.dtool.skipped[pkey(D.directory[di])] = 1; var pq2 = presentedDoneQueue(), unc2 = pq2.filter(function(d2){ return !S.dtool.skipped[pkey(D.directory[d2])]; }).length; if(S.dtool.i >= unc2) S.dtool.i = 0; } paintDoneTool(); break; }
     case 'dtoolpick': S.dtool.i = +el.getAttribute('data-i'); paintDoneTool(); landOn('#qcard .rc'); break;
     case 'dtoolmore': S.dtool.start = doneToolQueue(S.dtool.kind).length; S.dtool.goal = Math.min(SESSION_SIZE, S.dtool.start); S.dtool.fin = false; S.dtool.skipped = {}; S.dtool.i = 0; paintDoneTool(); break;
     case 'donetoggle': store('ncc_done_hide', doneSuiteOn() ? '1' : ''); render(); break;
