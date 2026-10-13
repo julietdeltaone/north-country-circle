@@ -728,7 +728,7 @@ function getState(){
       if(raw(e, 'review_flag') === 'missing_info'){ rs.push('missing'); }
       if(!nameOk(e)){ rs.push('name'); }
       if(isBusiness(e)){ rs.push('biz'); }
-      if(NEWGAIN[di] && !tierOf(e) && !raw(e, 'relationship')){ rs.push('fresh'); }
+      if(NEWGAIN[di] && (!tierOf(e) || !raw(e, 'relationship'))){ rs.push('fresh'); }
       if(tierOf(e) === 'vetted' || tierOf(e) === 'associate'){ rs.push('inner'); det.inner = depthGaps(e); }
     } else if(spotSet[di] && !sdone[pkey(e)]){ rs.push('spot'); }
     var pr = 99;
@@ -772,6 +772,63 @@ function tabCount(tab){
   if(tab === 'needs') return st.needs.length;
   if(tab === 'sweep') return st.sweep.length;
   return queueFor(tab).length;
+}
+/* ---- one issue per card: lanes queue issues, not people (2026-10-13) ---- */
+var ISSUE_RANK = { dup:1, identity:2, unsrc:3, family:4, fresh:5, missing:6, name:6, biz:6, inner:7, spot:8, sweep:9 };
+var ISSUE_SHORT = {
+  dup:'Possible duplicate', identity:'Can\'t confirm who this is', unsrc:'Web info with no source',
+  family:'Family link problem', fresh:'New — not sorted yet', missing:'Flagged: missing info',
+  name:'Name incomplete', biz:'Looks like a business', inner:'Close circle — detail missing',
+  spot:'Spot check', sweep:'Quick once-over'
+};
+/* structured family problems, mirroring familyIssues() order:
+   count problems first, then per-link problems in link order */
+function famIssueItems(di){
+  var e = D.directory[di], links = famLinks(e), out = [];
+  var sp = [], par = [];
+  links.forEach(function(l, i){ if(l[0] === 'spouse') sp.push(i); if(l[0] === 'parent') par.push(i); });
+  if(sp.length > 1) out.push({ kind:'spouses', idxs:sp });
+  if(par.length > 2) out.push({ kind:'parents', idxs:par });
+  links.forEach(function(l, i){
+    var tdi = BYN[String(l[1] || '').toLowerCase()];
+    if(tdi == null){ out.push({ kind:'dangling', rel:l[0], key:l[1], idx:i }); return; }
+    if(tdi === di){ out.push({ kind:'self', rel:l[0], key:l[1], idx:i }); return; }
+    var inv = FAM_INV_REL[l[0]], me = String(e.name || '').toLowerCase();
+    var back = famLinks(D.directory[tdi]).some(function(x){ return x[0] === inv && String(x[1] || '').toLowerCase() === me; });
+    if(!back) out.push({ kind:'oneway', rel:l[0], key:l[1], idx:i, tdi:tdi, inv:inv });
+  });
+  return out;
+}
+function famKeyOf(it){
+  if(!it || it.reason !== 'family' || !it.fam) return '';
+  var f = it.fam;
+  return f.kind + '|' + (f.rel || '') + '|' + (f.key || '') + '|' + (f.idxs ? f.idxs.join(',') : (f.idx != null ? f.idx : ''));
+}
+function issueQueue(tab){
+  var st = getState(), items = [];
+  function push(x, c, fam){ items.push({ di:x.di, reason:c, x:x, fam:fam || null }); }
+  if(tab === 'sweep'){ st.sweep.forEach(function(x){ push(x, 'sweep'); }); return items; }
+  var pool = tab === 'needs' ? st.needs : queueFor(tab);
+  pool.forEach(function(x){
+    x.reasons.forEach(function(c){
+      if(tab !== 'needs' && REASONS[c].tab !== tab) return;
+      if(c === 'family') famIssueItems(x.di).forEach(function(fi){ push(x, 'family', fi); });
+      else push(x, c);
+    });
+  });
+  items.sort(function(a, b){ return (ISSUE_RANK[a.reason] - ISSUE_RANK[b.reason]) || st.cmp(a.x, b.x); });
+  return items;
+}
+function issueCount(tab){ return issueQueue(tab).length; }
+/* after a fix: if the same issue is still in the queue, step past it;
+   if it resolved, the next issue slides into the current slot */
+function advanceIssue(di, reason, famkey){
+  var q = issueQueue(curTab());
+  for(var k = 0; k < q.length; k++){
+    var it = q[k];
+    if(it.di === di && it.reason === reason && famKeyOf(it) === (famkey || '')){ if(k >= S.today.i) S.today.i = k + 1; break; }
+  }
+  refreshAfterStatus();
 }
 function statusOf(di){
   var x = getState().by[di]; if(!x) return 'waiting';
@@ -1583,7 +1640,7 @@ window.__nccChanged = function(di){
    session. A LANE shows one person at a time, with a clear "Done" and a count of how far you are.
    ============================================================ */
 var LANES = [
-  { k:'needs',    t:'Your next people',     d:'Everyone who needs you, most important first.', ic:'today',   h:'#d6e2ff', home:false },
+  { k:'needs',    t:'Needs you',     d:'Everything that needs a fix, most important first. One issue at a time.', ic:'today',   h:'#d6e2ff', home:false },
   { k:'dup',      t:'Possible duplicates',  d:'These might be the same person twice. Pick the two that match and merge them, or say they are different people.', ic:'merge', h:'#b7a1e6' },
   { k:'identity', t:'Who is this?',         d:'Not enough on file to be sure who they are. Add a place, school, job or link, or say nothing more exists.', ic:'user', h:'#86a0d8' },
   { k:'unsrc',    t:'Needs a source',       d:'Web details with no link behind them. Add where they came from, or remove them.', ic:'link', h:'#d6a8e6' },
@@ -1611,11 +1668,11 @@ function viewToday(v){
   return viewLane(v, lane);
 }
 function viewTodayHome(v){
-  var st = getState(), needs = st.needs.length, wait = st.sweep.length, done = st.checkedN, tot = st.total || 1;
+  var st = getState(), needs = issueCount('needs'), wait = st.sweep.length, done = st.checkedN, tot = st.total || 1;
   var pct = Math.round(done / tot * 1000) / 10;
   var lanes = LANES.filter(function(l){ return l.k !== 'needs' && l.k !== 'sweep'; });
   var counts = {}, max = 1;
-  lanes.concat([laneDef('sweep')]).forEach(function(l){ counts[l.k] = tabCount(l.k); if(counts[l.k] > max) max = counts[l.k]; });
+  lanes.concat([laneDef('sweep')]).forEach(function(l){ counts[l.k] = issueCount(l.k); if(counts[l.k] > max) max = counts[l.k]; });
   var live = lanes.filter(function(l){ return counts[l.k] > 0; }), clear = lanes.filter(function(l){ return counts[l.k] === 0; });
   function card(l, quiet, i){
     return '<a href="#/today/' + l.k + '" class="lane' + (quiet ? ' quiet' : '') + '" data-act="lane" data-lane="' + l.k + '" style="--h:' + l.h + ';--i:' + i + '">' +
@@ -1629,8 +1686,8 @@ function viewTodayHome(v){
   if(!needs && !wait){
     head = '<div class="hhead"><h1 class="display">All caught up</h1><p class="sub">Everyone is marked done. New people and a weekly spot check will show up here.</p></div>';
   } else {
-    head = '<div class="hhead"><h1 class="display">Today</h1><p class="sub"><b class="cu" data-n="' + needs + '">' + needs + '</b> ' + (needs === 1 ? 'person needs' : 'people need') + ' a look. Work through them ' + SESSION_SIZE + ' at a time, most important first. ' +
-      (wait ? '<b class="cu" data-n="' + wait + '">' + wait + '</b> more have no flags and only need a quick once-over.' : '') + '</p>' +
+    head = '<div class="hhead"><h1 class="display">Today</h1><p class="sub"><b class="cu" data-n="' + needs + '">' + needs + '</b> ' + (needs === 1 ? 'thing needs' : 'things need') + ' fixing. One issue at a time, ' + SESSION_SIZE + ' at a time, most important first. ' +
+      (wait ? '<b class="cu" data-n="' + wait + '">' + wait + '</b> more people have no flags and only need a quick once-over.' : '') + '</p>' +
       (needs ? '<div class="row"><a class="btn primary lg" href="#/today/needs" data-act="lane" data-lane="needs">Start the next ' + Math.min(SESSION_SIZE, needs) + ' ' + ic('arrow', 16) + '</a></div>' : '') + '</div>';
   }
   v.innerHTML = '<div class="page todayhome"><section class="thero">' + head +
@@ -1641,7 +1698,7 @@ function viewTodayHome(v){
     (clear.length && live.length ? '<p class="clearline">' + ic('check', 14) + 'Nothing waiting in: ' + clear.map(function(l){ return esc(l.t); }).join(', ') + '.</p>' : '') + '</div>';
 }
 function startSession(lane){
-  var n = tabCount(lane);
+  var n = issueCount(lane);
   S.today.lane = lane; S.today.i = 0; S.today.start = n; S.today.goal = Math.min(SESSION_SIZE, n); S.today.fin = false;
 }
 function viewLane(v, lane){
@@ -1660,7 +1717,7 @@ function sessMeter(q){
     '<small><b>' + shown + '</b> of ' + goal + ' this session' + ' · ' + q.length + ' left here</small>';
 }
 function paintQueue(tab){
-  var q = queueFor(tab), list = $('#qlist'), card = $('#qcard');
+  var q = issueQueue(tab), list = $('#qlist'), card = $('#qcard');
   if(!list || !card) return;
   var i = S.today.i = Math.max(0, Math.min(q.length - 1, S.today.i));
   var handled = Math.max(0, S.today.start - q.length);
@@ -1679,19 +1736,20 @@ function paintQueue(tab){
       '<div class="row"><button type="button" class="btn primary lg" data-act="sessmore">Do ' + Math.min(SESSION_SIZE, q.length) + ' more</button><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
     return;
   }
-  card.innerHTML = reviewCard(q[i], tab, i, q.length);
-  var nxt = q.slice(i + 1, i + 6).map(function(x, k){
-    var e = D.directory[x.di], r = tab === 'needs' || tab === 'sweep' ? x.reasons[0] : (x.reasons.filter(function(c){ return REASONS[c].tab === tab; })[0] || x.reasons[0]);
-    return '<button type="button" class="qrow" data-act="qpick" data-i="' + (i + 1 + k) + '">' + avatar(e, 'sm') + '<span class="qn"><b>' + esc(dispName(e)) + '</b><small>' + esc(REASONS[r].l) + '</small></span></button>';
+  card.innerHTML = issueCard(q[i], tab, i, q.length);
+  var nxt = q.slice(i + 1, i + 6).map(function(it, k){
+    var e = D.directory[it.di];
+    return '<button type="button" class="qrow" data-act="qpick" data-i="' + (i + 1 + k) + '">' + avatar(e, 'sm') + '<span class="qn"><b>' + esc(dispName(e)) + '</b><small>' + esc(ISSUE_SHORT[it.reason]) + '</small></span></button>';
   }).join('');
   list.innerHTML = '<div class="qhead">Up next</div>' + (nxt || '<p class="dim pad">This is the last one.</p>') +
     '<button type="button" class="btn ghost sm wide" data-act="seeall">See all ' + q.length + ' in this lane</button>';
 }
 function openLaneList(){
-  var tab = S.route.seg[0] || 'needs', q = queueFor(tab);
-  openSheet('All ' + q.length + ' in this lane', '<div class="plist flat">' + q.slice(0, 400).map(function(x, k){
-    var e = D.directory[x.di];
-    return '<button type="button" class="prow" data-act="qpick" data-i="' + k + '">' + avatar(e, 'sm') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(REASONS[x.reasons[0]].l) + '</small></span></button>';
+  var tab = S.route.seg[0] || 'needs', q = issueQueue(tab), lastR = '';
+  openSheet('All ' + q.length + ' in this lane', '<div class="plist flat">' + q.slice(0, 400).map(function(it, k){
+    var e = D.directory[it.di], hdr = '';
+    if(it.reason !== lastR){ lastR = it.reason; hdr = '<div class="qgroup">' + esc(ISSUE_SHORT[it.reason]) + '</div>'; }
+    return hdr + '<button type="button" class="prow" data-act="qpick" data-i="' + k + '">' + avatar(e, 'sm') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(ISSUE_SHORT[it.reason]) + '</small></span></button>';
   }).join('') + (q.length > 400 ? '<p class="dim pad">Showing the first 400.</p>' : '') + '</div>', { focus:false });
 }
 
@@ -1756,85 +1814,129 @@ function dupBlock(x, di){
       '<button type="button" class="btn ghost" data-act="notdup2" data-key="' + esc(key) + '" data-gi="' + gi + '"' + (ready ? '' : ' disabled') + '>These two are different people</button></div></div>';
   }).join('');
 }
-function reasonBlocks(x, di, tab){
-  var e = D.directory[di], out = [];
-  var order = x.reasons.slice().sort(function(a, b){
-    var ta = REASONS[a].tab === tab ? -1 : 0, tb = REASONS[b].tab === tab ? -1 : 0;
-    return (ta - tb) || (REASONS[a].pr - REASONS[b].pr);
-  });
-  order.forEach(function(c){
-    if(c === 'dup') out.push(dupBlock(x, di));
-    else if(c === 'identity'){
-      var sg = x.detail.identity || identitySignals(e);
-      out.push('<div class="rb"><h4>' + esc(REASONS.identity.l) + ' <small>' + sg.n + ' of 2 signals</small></h4>' +
-        '<p>Two independent signals beyond the name: place, school, work or church, contact, a connection to you, or a sourced web record. Fix it or waive it honestly.</p>' +
-        '<div class="sigs">' + sg.have.map(function(s){ return '<span class="sig on">' + ic('check', 12) + esc(s) + '</span>'; }).join('') + sg.miss.map(function(s){ return '<span class="sig">' + esc(s) + '</span>'; }).join('') + '</div>' +
-        '<div class="row"><button type="button" class="btn" data-act="openedit" data-di="' + di + '" data-sec="identity">Open profile to add detail</button>' +
-        '<button type="button" class="btn ghost" data-act="waive" data-di="' + di + '" data-sid="identity">Waive — not enough data exists</button></div></div>');
-    }
-    else if(c === 'unsrc'){
-      var fp = footprintOf(e);
-      out.push('<div class="rb"><h4>' + esc(REASONS.unsrc.l) + '</h4><p>The web record has no source attached, so it reads as inferred. Source it, remove it, or accept it by marking this person checked.</p>' +
-        '<div class="row"><button type="button" class="btn" data-act="openedit" data-di="' + di + '" data-sec="about">Open profile to add a source</button>' +
-        '<button type="button" class="btn ghost" data-act="rmfootprint" data-di="' + di + '">Remove the unsourced text</button></div></div>');
-    }
-    else if(c === 'family'){
-      out.push('<div class="rb"><h4>' + esc(REASONS.family.l) + '</h4><ul class="issues">' + (x.detail.family || []).map(function(s){ return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' +
-        '<div class="row"><a class="btn" href="#/family" data-act="openfam" data-di="' + di + '">Open in Family</a>' +
-        '<button type="button" class="btn ghost" data-act="openedit" data-di="' + di + '" data-sec="connections">Edit family links</button></div></div>');
-    }
-    else if(c === 'missing'){
-      out.push('<div class="rb"><h4>' + esc(REASONS.missing.l) + '</h4><p>You flagged this profile as missing information.</p>' +
-        '<div class="row"><button type="button" class="btn ghost" data-act="clearflag" data-di="' + di + '">Clear flag</button></div></div>');
-    }
-    else if(c === 'name'){
-      out.push('<div class="rb"><h4>' + esc(REASONS.name.l) + '</h4><p>Names show as First Last. Handles never stand in for a name.</p>' +
-        '<div class="row two"><input data-nm="first_name" data-di="' + di + '" value="' + esc(gv(e, 'first_name')) + '" placeholder="First name" autocomplete="off">' +
-        '<input data-nm="last_name" data-di="' + di + '" value="' + esc(gv(e, 'last_name')) + '" placeholder="Last name" autocomplete="off"></div>' +
-        '<p class="hint">Each field saves on its own when you tap out of it.</p></div>');
-    }
-    else if(c === 'biz'){
-      out.push('<div class="rb"><h4>' + esc(REASONS.biz.l) + '</h4><p>The name reads like a business or an address rather than a person.</p>' +
-        '<div class="row"><button type="button" class="btn danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 15) + 'Remove from the circle</button></div></div>');
-    }
-    else if(c === 'fresh'){
-      out.push('<div class="rb"><h4>' + esc(REASONS.fresh.l) + '</h4><p>Showed up in the graph in the last week and has no tier or relationship yet. Classify below.</p></div>');
-    }
-    else if(c === 'inner'){
-      var gaps = x.detail.inner || [];
-      out.push('<div class="rb"><h4>' + esc(REASONS.inner.l) + (gaps.length ? ' <small>' + gaps.length + ' gap' + (gaps.length === 1 ? '' : 's') + '</small>' : '') + '</h4>' +
-        '<p>' + (gaps.length ? 'Inner circle gets full detail. Tap a gap to fill it, or waive it as insufficient data.' : 'Detail is complete for this tier.') + '</p>' +
-        (gaps.length ? '<div class="sigs">' + gaps.map(function(g){ return '<button type="button" class="sig btnsig" data-act="openedit" data-di="' + di + '" data-sec="' + ({ onfile:'about', relationship:'relationship', background:'background', connections:'connections', timeline:'timeline' }[g.sid]) + '">' + esc(g.l) + '</button>'; }).join('') + '</div>' : '') + '</div>');
-    }
-    else if(c === 'spot'){
-      out.push('<div class="rb"><h4>' + esc(REASONS.spot.l) + '</h4><p>Picked at random this week to keep the whole directory statistically re-verified. Is everything here still right?</p>' +
-        '<div class="row"><button type="button" class="btn primary" data-act="spotok" data-di="' + di + '">' + ic('check', 15) + 'Still correct</button>' +
-        '<button type="button" class="btn ghost" data-act="reopen" data-di="' + di + '">Reopen for a full check</button></div></div>');
-    }
-    else if(c === 'sweep'){
-      out.push('<div class="rb quiet"><h4>' + esc(REASONS.sweep.l) + '</h4><p>No flags. This is the baseline once-over: identity, no foreign content, no duplicate, one sourced anchor fact. Then it is done.</p></div>');
-    }
-  });
-  return out.join('');
+
+/* ---- single-issue card: one problem, stated plainly, fixed right here ---- */
+var QA_KINDS = [
+  ['companies', 'Employer', 'Employer or workplace'],
+  ['churches', 'Church', 'Church name'],
+  ['universities', 'School', 'School name'],
+  ['phone', 'Phone', 'Phone number'],
+  ['link', 'Web link', 'Paste a Facebook, Instagram or web link']
+];
+function qaHTML(di, reason){
+  var kind = S.today.qaKind || 'companies';
+  var ph = (QA_KINDS.filter(function(k){ return k[0] === kind; })[0] || QA_KINDS[0])[2];
+  return '<div class="qa"><div class="chips qakinds">' + QA_KINDS.map(function(k){
+      return '<button type="button" class="fc' + (kind === k[0] ? ' on' : '') + '" data-act="qakind" data-v="' + k[0] + '">' + k[1] + '</button>';
+    }).join('') + '</div>' +
+    '<div class="row qa-row"><input class="qa-in" data-di="' + di + '" placeholder="' + ph + '" autocomplete="off">' +
+    '<button type="button" class="btn primary" data-act="qaadd" data-di="' + di + '" data-reason="' + reason + '">Add</button></div></div>';
 }
-function reviewCard(x, tab, i, n){
-  var di = x.di, e = D.directory[di];
-  var spot = x.kind === 'spot';
-  var unclassified = !tierOf(e) || !gv(e, 'relationship');
+function classifyHTML(di){
+  var e = D.directory[di];
+  return '<div class="qk"><label>How close</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
+    '<div class="qk"><label>How you know them</label>' + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '"') + '</div>';
+}
+var SIG_PLAIN = { 'Place':'a place', 'School':'a school', 'Work or church':'a job or church', 'Phone or Facebook':'a phone number or social profile', 'Connection to JD':'a connection to you', 'Sourced web record':'a web record with a source' };
+function famIssueBody(it){
+  var di = it.di, e = D.directory[di], f = it.fam, name = dispName(e), fk = famKeyOf(it);
+  function cutBtn(idx, label){
+    return '<button type="button" class="btn ghost" data-act="famcut" data-di="' + di + '" data-i="' + idx + '" data-reason="family" data-famkey="' + esc(fk) + '">' + label + '</button>';
+  }
+  if(f.kind === 'oneway'){
+    var other = D.directory[f.tdi], oname = dispName(other);
+    var relWord = { spouse:'husband or wife', parent:'parent', child:'child', sibling:'sibling' }[f.rel] || 'family';
+    return '<p class="issue-say">' + esc(oname) + '\'s profile doesn\'t link back to ' + esc(name) + '.</p>' +
+      '<p class="issue-sub">' + esc(name) + ' lists ' + esc(oname) + ' as their ' + relWord + ', but ' + esc(oname) + ' has no family link to ' + esc(name) + '. Family links should go both ways.</p>' +
+      '<div class="row"><button type="button" class="btn primary" data-act="famlink" data-di="' + f.tdi + '" data-rel="' + f.inv + '" data-t="' + di + '" data-reason="family" data-famkey="' + esc(fk) + '">Link them both ways</button>' +
+      cutBtn(f.idx, 'Remove the link from ' + esc(name)) + '</div>';
+  }
+  if(f.kind === 'dangling'){
+    return '<p class="issue-say">This profile links to ' + esc(f.key) + ', who isn\'t in the directory.</p>' +
+      '<p class="issue-sub">The link points at nobody, so it can\'t be shown on the family tree.</p><div class="row">' + cutBtn(f.idx, 'Remove the link') + '</div>';
+  }
+  if(f.kind === 'self'){
+    return '<p class="issue-say">This profile links to itself as its own ' + esc(f.rel) + '.</p><div class="row">' + cutBtn(f.idx, 'Remove the link') + '</div>';
+  }
+  var links = famLinks(e), isSp = f.kind === 'spouses';
+  var names = f.idxs.map(function(i){ var td = BYN[String(links[i][1] || '').toLowerCase()]; return td != null ? dispName(D.directory[td]) : links[i][1]; });
+  return '<p class="issue-say">' + (isSp ? 'More than one spouse is recorded: ' : 'More than two parents are recorded: ') + esc(names.join(', ')) + '.</p>' +
+    '<p class="issue-sub">The family tree keeps ' + (isSp ? 'one spouse' : 'two parents') + ' per person. Remove the link that doesn\'t belong.</p>' +
+    '<div class="row">' + f.idxs.map(function(i){ var td = BYN[String(links[i][1] || '').toLowerCase()]; var nm = td != null ? dispName(D.directory[td]) : links[i][1]; return cutBtn(i, 'Remove link to ' + esc(nm)); }).join('') + '</div>';
+}
+function issueBody(it){
+  var di = it.di, e = D.directory[di], x = it.x, c = it.reason, name = dispName(e);
+  if(c === 'dup') return dupBlock(x, di);
+  if(c === 'identity'){
+    var sg = x.detail.identity || identitySignals(e);
+    var miss = sg.miss.map(function(s){ return SIG_PLAIN[s] || s.toLowerCase(); });
+    var have = sg.have.map(function(s){ return SIG_PLAIN[s] || s.toLowerCase(); });
+    return '<div class="rb issue"><p class="issue-say">We can\'t confirm who this is yet.</p>' +
+      '<p class="issue-sub">' + (miss.length ? 'Nothing on file ties ' + esc(name) + ' to ' + esc(miss.join(', ').replace(/, ([^,]*)$/, ' or $1')) + '.' : '') +
+      (have.length ? ' On file so far: ' + esc(have.join(', ')) + ' — one more is enough.' : ' Add any one detail below and this is fixed.') + '</p>' +
+      qaHTML(di, 'identity') +
+      '<div class="row"><button type="button" class="btn ghost" data-act="waive" data-di="' + di + '" data-sid="identity">Nothing more exists</button></div></div>';
+  }
+  if(c === 'unsrc'){
+    var fp = footprintOf(e), tx = fp.blocks.length ? fp.blocks[0].text : '';
+    if(tx.length > 220) tx = tx.slice(0, 220).trim() + '…';
+    return '<div class="rb issue"><p class="issue-say">This web info has no source link, so it can\'t be trusted yet.</p>' +
+      (tx ? '<p class="issue-sub">“' + esc(tx) + '”</p>' : '') +
+      '<div class="qa"><div class="row qa-row"><input class="qa-in" data-di="' + di + '" placeholder="Paste the link this came from" autocomplete="off">' +
+      '<button type="button" class="btn primary" data-act="srcadd" data-di="' + di + '">Add this source</button></div></div>' +
+      '<div class="row"><button type="button" class="btn ghost" data-act="rmfootprint" data-di="' + di + '">Remove the unsourced text</button></div></div>';
+  }
+  if(c === 'family') return '<div class="rb issue">' + famIssueBody(it) + '</div>';
+  if(c === 'missing'){
+    return '<div class="rb issue"><p class="issue-say">You flagged this profile as missing information.</p>' +
+      '<p class="issue-sub">Add what\'s missing right here, or clear the flag if it\'s fine now.</p>' +
+      qaHTML(di, 'missing') +
+      '<div class="row"><button type="button" class="btn ghost" data-act="clearflag" data-di="' + di + '">Clear flag</button></div></div>';
+  }
+  if(c === 'name'){
+    return '<div class="rb issue"><p class="issue-say">This name isn\'t in First Last form yet.</p>' +
+      '<p class="issue-sub">Names show as First Last — handles never stand in for a name. Each field saves when you tap out of it.</p>' +
+      '<div class="row two"><input data-nm="first_name" data-di="' + di + '" value="' + esc(gv(e, 'first_name')) + '" placeholder="First name" autocomplete="off">' +
+      '<input data-nm="last_name" data-di="' + di + '" value="' + esc(gv(e, 'last_name')) + '" placeholder="Last name" autocomplete="off"></div></div>';
+  }
+  if(c === 'biz'){
+    return '<div class="rb issue"><p class="issue-say">This name looks like a business or an address, not a person.</p>' +
+      '<div class="row"><button type="button" class="btn danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 15) + 'Remove from the circle</button></div></div>';
+  }
+  if(c === 'fresh'){
+    return '<div class="rb issue"><p class="issue-say">New this week and not sorted yet.</p>' +
+      '<p class="issue-sub">Set how close they are and how you know them. It saves as you tap — set both and you\'re done.</p>' + classifyHTML(di) + '</div>';
+  }
+  if(c === 'inner'){
+    var gaps = x.detail.inner || [];
+    return '<div class="rb issue"><p class="issue-say">One of your close circle — some detail is still missing.</p>' +
+      (gaps.length ? '<p class="issue-sub">Missing: ' + esc(gaps.map(function(g){ return g.l.toLowerCase(); }).join(', ')) + '. Fill it in below, say nothing more exists for it, or just mark Done.</p>' +
+        '<div class="row">' + gaps.map(function(g){ return '<button type="button" class="btn ghost" data-act="waive" data-di="' + di + '" data-sid="' + g.sid + '">Nothing more exists: ' + esc(g.l.toLowerCase()) + '</button>'; }).join('') + '</div>'
+        : '<p class="issue-sub">Detail is complete for this tier. A quick look and mark Done.</p>') +
+      classifyHTML(di) + '</div>';
+  }
+  if(c === 'spot'){
+    return '<div class="rb issue"><p class="issue-say">Spot check — this finished profile was picked at random to re-verify.</p>' +
+      '<p class="issue-sub">Is everything on it still right?</p>' +
+      '<div class="row"><button type="button" class="btn primary" data-act="spotok" data-di="' + di + '">' + ic('check', 15) + 'Still correct</button>' +
+      '<button type="button" class="btn ghost" data-act="reopen" data-di="' + di + '">Reopen for a full check</button></div></div>';
+  }
+  return '<div class="rb issue"><p class="issue-say">No flags — just give this one a quick once-over.</p>' +
+    '<p class="issue-sub">Check the name, the facts below, and that nothing looks off. Then mark Done.</p></div>';
+}
+function issueCard(it, tab, i, n){
+  var di = it.di, e = D.directory[di];
+  var withDone = it.reason === 'sweep' || it.reason === 'inner';
   return '<article class="rc" data-di="' + di + '">' +
     '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
     '<p class="meta">' + esc([tierName(e), cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ') || (hasHandle(e) ? '@' + e.name : 'Not classified yet')) + '</p></div>' +
     '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>' +
-    '<div class="rbs">' + reasonBlocks(x, di, tab) + '</div>' +
+    '<div class="rbs">' + issueBody(it) + '</div>' +
     '<section class="rsec"><h5>What is on file</h5>' + factsHTML(e) + '</section>' +
-    '<details class="rsec quick"' + (unclassified ? ' open' : '') + '><summary>' + (unclassified ? 'Set tier and relationship' : 'Change tier, relationship or momentum') + '</summary><p class="hint">Tap a value to set it. It saves right away, and you can change it any time.</p>' +
-    '<div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
-    '<div class="qk"><label>Relationship</label>' + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '"') + '</div>' +
-    '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', 'Cooling'], ['0', 'Steady'], ['+', 'Warming']], momVal(e), ' data-di="' + di + '"') + '</div></details>' +
     '<footer class="rfoot"><button type="button" class="btn ghost" data-act="qskip">' + ic('skip', 15) + 'Skip for now</button>' +
     '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open full profile</a><span class="sp"></span>' +
-    (spot ? '' : '<button type="button" class="btn primary lg" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 16) + 'Done, next person</button>') + '</footer>' +
-    (spot ? '' : '<p class="hint foothint">Done takes them off your list and nothing is deleted. You can undo it right after.</p>') + '</article>';
+    (withDone ? '<button type="button" class="btn primary lg" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 16) + 'Done, next</button>' : '') + '</footer>' +
+    (withDone ? '<p class="hint foothint">Done takes them off your list and nothing is deleted. You can undo it right after.</p>' : '') + '</article>';
 }
 
 /* ============================================================
@@ -2034,9 +2136,14 @@ function bannerHTML(di){
     return '<div class="banner"><span class="bi q">' + ic('shield', 18) + '</span><div><b>Waiting for the floor sweep</b><small>No flags. Checked once it clears identity, duplicates and one sourced anchor fact.</small></div><span class="sp"></span>' + doneBtn + '</div>';
   }
   var open = S.prof.bannerOpen !== false;
-  return '<div class="banner needs"><div class="bh"><span class="bi">' + ic('shield', 18) + '</span><div><b>Needs you</b><small>' + real.map(function(c){ return esc(REASONS[c].l); }).join(' · ') + '</small></div><span class="sp"></span>' +
+  var items = [];
+  real.forEach(function(c){
+    if(c === 'family') famIssueItems(di).forEach(function(fi){ items.push({ di:di, reason:'family', x:x, fam:fi }); });
+    else items.push({ di:di, reason:c, x:x, fam:null });
+  });
+  return '<div class="banner needs"><div class="bh"><span class="bi">' + ic('shield', 18) + '</span><div><b>Needs you</b><small>' + items.map(function(it){ return esc(ISSUE_SHORT[it.reason]); }).join(' · ') + '</small></div><span class="sp"></span>' +
     '<button type="button" class="btn ghost sm" data-act="bantog">' + (open ? 'Hide' : 'Show') + ' details</button>' + doneBtn + '</div>' +
-    (open ? '<div class="rbs">' + reasonBlocks(x, di, '') + '</div>' : '') + '</div>';
+    (open ? '<div class="rbs">' + items.map(function(it){ return issueBody(it); }).join('') + '</div>' : '') + '</div>';
 }
 
 /* ---------- section cards ---------- */
@@ -2977,14 +3084,61 @@ function onClick(ev){
     case 'back': back(); break;
     case 'set': doSet(el); break;
     case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
+    case 'qakind': S.today.qaKind = el.getAttribute('data-v'); if(S.route.name === 'today') paintQueue(curTab()); else if(S.route.name === 'profile') paintProfile(S.prof.di); break;
+    case 'qaadd': {
+      var qwrap = el.closest('.qa'), qinp = qwrap ? $('.qa-in', qwrap) : null, qv = qinp ? qinp.value.trim() : '';
+      if(!qv){ toast('Type something first.'); break; }
+      var qkind = S.today.qaKind || 'companies', qe = D.directory[di]; if(!qe) break;
+      if(qkind === 'link'){
+        var qurl = /^https?:\/\//i.test(qv) ? qv : 'https://' + qv, qcur = gv(qe, 'public_footprint');
+        txn('Add source link', function(){ queuePatch(di, { public_footprint:(qcur ? qcur + '\n' : '') + 'Sources: ' + qurl }); });
+        toast('Link added as a source.');
+      } else if(qkind === 'phone'){
+        var qph = gv(qe, 'phone');
+        txn('Add phone', function(){ queuePatch(di, { phone:qph ? qph + ', ' + qv : qv }); });
+        toast('Phone added.');
+      } else {
+        var qarr = tagList(gv(qe, qkind));
+        if(qarr.map(function(s){ return s.toLowerCase(); }).indexOf(qv.toLowerCase()) < 0) qarr.push(qv);
+        txn('Add detail', function(){ var o = {}; o[qkind] = qarr.join(', '); queuePatch(di, o); });
+        toast('Added.');
+      }
+      if(S.route.name === 'profile') paintProfile(S.prof.di);
+      else advanceIssue(di, el.getAttribute('data-reason') || '', '');
+      break;
+    }
+    case 'srcadd': {
+      var swrap = el.closest('.qa'), sinp = swrap ? $('.qa-in', swrap) : null, sv = sinp ? sinp.value.trim() : '';
+      if(!sv){ toast('Paste the source link first.'); break; }
+      var surl = /^https?:\/\//i.test(sv) ? sv : 'https://' + sv, scur = gv(D.directory[di], 'public_footprint');
+      txn('Add source link', function(){ queuePatch(di, { public_footprint:(scur ? scur + '\n' : '') + 'Sources: ' + surl }); });
+      toast('Source added.');
+      if(S.route.name === 'profile') paintProfile(S.prof.di);
+      else advanceIssue(di, 'unsrc', '');
+      break;
+    }
+    case 'famlink': {
+      var fmsg = addFamily(+el.getAttribute('data-di'), el.getAttribute('data-rel'), +el.getAttribute('data-t'));
+      toast(fmsg || 'Linked both ways.', { undo:true });
+      if(S.route.name === 'profile') paintProfile(S.prof.di);
+      else advanceIssue(+el.getAttribute('data-t'), 'family', el.getAttribute('data-famkey') || '');
+      break;
+    }
+    case 'famcut': {
+      removeFamily(di, +el.getAttribute('data-i'));
+      toast('Link removed.', { undo:true });
+      if(S.route.name === 'profile') paintProfile(S.prof.di);
+      else advanceIssue(di, 'family', el.getAttribute('data-famkey') || '');
+      break;
+    }
     case 'check': markChecked(di, el.getAttribute('data-adv') === '1'); break;
     case 'reopen': txn('Reopen', function(){ queuePatch(di, { audit:'' }); }); toast('Reopened.', { undo:true }); refreshAfterStatus(); break;
     case 'spotok': markSpotDone(di); toast('Spot check recorded.'); if(S.route.name === 'profile') repaintTop(); else refreshAfterStatus(); afterWrite(); break;
     case 'qpick': closeSheet(); S.today.i = +el.getAttribute('data-i'); paintQueue(curTab()); if(innerWidth < 900){ var qc = $('#qcard'); if(qc) qc.scrollIntoView({ behavior:'smooth', block:'start' }); } break;
-    case 'qskip': { var ql = queueFor(curTab()).length; S.today.i = ql ? (S.today.i + 1) % ql : 0; paintQueue(curTab()); break; }
+    case 'qskip': { var ql = issueQueue(curTab()).length; S.today.i = ql ? (S.today.i + 1) % ql : 0; paintQueue(curTab()); break; }
     case 'lane': ev.preventDefault(); startSession(el.getAttribute('data-lane')); go('today/' + el.getAttribute('data-lane')); prevent = false; break;
     case 'lanehome': ev.preventDefault(); go('today'); prevent = false; break;
-    case 'sessmore': S.today.start = tabCount(curTab()); S.today.goal = Math.min(SESSION_SIZE, S.today.start); S.today.fin = false; paintQueue(curTab()); break;
+    case 'sessmore': S.today.start = issueCount(curTab()); S.today.goal = Math.min(SESSION_SIZE, S.today.start); S.today.fin = false; paintQueue(curTab()); break;
     case 'seeall': openLaneList(); break;
     case 'dupsel': {
       var dk = el.getAttribute('data-key'), dsel = (S.today.dsel[dk] || []).slice(), dix = dsel.indexOf(di);
@@ -2994,13 +3148,17 @@ function onClick(ev){
       S.today.dsel[dk] = dsel; paintQueue(curTab()); break;
     }
     case 'dupmerge': {
-      var q1 = queueFor(curTab())[S.today.i], g1 = q1 && (q1.detail.dup || [])[+el.getAttribute('data-gi')]; if(!g1) break;
+      var it1 = S.route.name === 'today' ? issueQueue(curTab())[S.today.i] : null;
+      var bx1 = it1 ? it1.x : (S.route.name === 'profile' ? getState().by[di] : null);
+      var g1 = bx1 && (bx1.detail.dup || [])[+el.getAttribute('data-gi')]; if(!g1) break;
       var s1 = (S.today.dsel[el.getAttribute('data-key')] || []).filter(function(d){ return g1.dis.indexOf(d) >= 0; });
       if(s1.length !== 2) break;
       openDupMerge(s1[0], s1[1]); break;
     }
     case 'notdup2': {
-      var qd = queueFor(curTab())[S.today.i], gd = qd && (qd.detail.dup || [])[+el.getAttribute('data-gi')]; if(!gd) break;
+      var itd = S.route.name === 'today' ? issueQueue(curTab())[S.today.i] : null;
+      var bxd = itd ? itd.x : (S.route.name === 'profile' ? getState().by[di] : null);
+      var gd = bxd && (bxd.detail.dup || [])[+el.getAttribute('data-gi')]; if(!gd) break;
       var sd = (S.today.dsel[el.getAttribute('data-key')] || []).filter(function(d){ return gd.dis.indexOf(d) >= 0; });
       if(sd.length !== 2) break;
       dismissDupPair(sd[0], sd[1]); S.today.dsel[el.getAttribute('data-key')] = [];
@@ -3010,7 +3168,14 @@ function onClick(ev){
     case 'dupgo': {
       var lo2 = DMG.surv === DMG.a ? DMG.b : DMG.a, sv2 = DMG.surv;
       var ln2 = dispName(D.directory[lo2]), sn2 = dispName(D.directory[sv2]);
-      txn('Merge ' + ln2 + ' into ' + sn2, function(){ queuePatch(lo2, { merged_into:mergeTarget(sv2) }); });
+      /* same writes as the profile merge sheet (mergeMany): fold the loser in
+         and clear the duplicate flag on both, so the survivor does not come
+         back to this lane still flagged */
+      txn('Merge ' + ln2 + ' into ' + sn2, function(){
+        queuePatch(lo2, { merged_into:mergeTarget(sv2) });
+        if(raw(D.directory[lo2], 'review_flag') === 'duplicate') queuePatch(lo2, { review_flag:'' });
+        if(raw(D.directory[sv2], 'review_flag') === 'duplicate') queuePatch(sv2, { review_flag:'' });
+      });
       DMG = { a:null, b:null, surv:null };
       closeSheet(); toast('Merged ' + ln2 + ' into ' + sn2 + '.', { undo:true }); refreshAfterStatus(); break;
     }
