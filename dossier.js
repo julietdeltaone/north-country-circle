@@ -1,87 +1,46 @@
-/* North Country Circle — Dossier v5
-   Directory rail + connection map + dossier panel.
-   Level colors: L1 On file = blue, L2 Record = amber, L3 Files = green.
+/* North Country Circle — Dossier v6
+   One front end, five destinations: Today (the work), People, Network, Family, Groups.
+   The profile is a page, not a panel. Everything that writes goes through the same outbox as v5
+   (see DATA-CONTRACT.md section 6): queuePatch -> localStorage -> batched POST -> Sheet.
 
-   v5 changes (consolidated model):
-   - Level 1 is now "On file": everything idiosyncratic to the person (contact, background,
-     known associates, public footprint, synopsis). Record level holds the relationship.
-   - Closeness is now the hero metric Open / Associate / Vetted. Map rings, dot colors and
-     the legend all key off tier.
-   - Status collapsed into one Momentum metric (1-5, 3 neutral) with a directional UI.
-   - Ratings feed a Big Five estimator; the top trait shows as a single hero chip.
-   - Record is synopsis-only. Timeline events keep only the initiated-by toggle.
-   v4 changes (editing + saving rebuilt):
-   - Edit mode is one stack of collapsible sections that covers every column in the Profiles sheet.
-   - Every edit goes through one outbox: saved to this browser first, sent to the sheet in batches,
-     retried until the server confirms, and re-sent after a reload if it never got through.
-   - On load the page asks the sheet for rows edited recently, so edits show even before the
-     GitHub snapshot catches up.
-   - Events and files now live in the Profiles sheet row like everything else. */
+   Layout of this file
+     1. constants + helpers          5. reasons engine (what needs attention, and why)
+     2. data access (gv, pkey ...)   6. family model + writes
+     3. outbox + undo                7. merge
+     4. waivers                      8. views: shell, router, Today, People, Profile, Network, Family, Groups, Settings
+*/
 (function(){
 'use strict';
 
+/* ============================================================
+   1. constants + helpers
+   ============================================================ */
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 
-var LV = {
-  1:{ c:'#7ea6f0', n:'On file', ic:'user' },
-  2:{ c:'#f0b44c', n:'Record',   ic:'book' },
-  3:{ c:'#5cd6a0', n:'Files',   ic:'folder' }
-};
-/* tiers: the hero metric. Rings, dot colors and the legend all key off this. */
 var TIERS = {
-  vetted:   { c:'#f0b44c', n:'Vetted' },
-  associate:{ c:'#7ea6f0', n:'Associate' },
-  open:     { c:'#9aa3b2', n:'Open' }
+  vetted:   { n:'Vetted',    c:'#d6e2ff' },
+  associate:{ n:'Associate', c:'#86a0d8' },
+  open:     { n:'Open',      c:'#6f7a93' }
 };
 var TIER_ORDER = ['vetted', 'associate', 'open'];
-var MOM_LABELS = { '-':'negative', '0':'neutral', '+':'positive' };
-var MOM_ICONS = { '-':'\u2212', '0':'\u25c6', '+':'+' };
-function momPos(v){ return v === '-' ? 0 : (v === '+' ? 100 : 50); }
-function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
-/* Known-since year: stored as a 4-digit year. Migrates old year-count values. */
-function knownSinceYear(e){
-  var v = String(gv(e, 'years_known') || '').trim();
-  if(!v) return 0;
-  var n = parseInt(v, 10);
-  if(n >= 1900 && n <= 2100) return n;
-  if(n > 0 && n < 100) return new Date().getFullYear() - n;
-  return 0;
-}
-function yearsKnownCalc(e){
-  var y = knownSinceYear(e);
-  return y ? Math.max(0, new Date().getFullYear() - y) : 0;
-}
-function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
-function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || '#4a5568'; }
-function tierName(e){ return (TIERS[tierOf(e)] || {}).n || ''; }
-function catLabel(e){
-  var v = gv(e, 'category'), ps = fieldDef('category').o || [];
-  for(var i = 0; i < ps.length; i++) if(ps[i][0] === v) return ps[i][1];
-  return v;
-}
-var RELC = { mutual:'#e0688a', following:'#b48ce8', follower:'#8b95a7' };
+var TIER_RANK = { vetted:0, associate:1, open:2 };
+var RELC = { mutual:'#c78bd8', following:'#86a0d8', follower:'#7b869e' };
 var RELN = { mutual:'Mutual', following:'Following', follower:'Follower' };
+var STAT_C = { needs:'#e0a35a', checked:'#5fb7a5', waiting:'#6f7a93' };
+var MOM_LABELS = { '-':'Cooling', '0':'Steady', '+':'Warming' };
+var MOM_ICONS = { '-':'−', '0':'◆', '+':'+' };
 
-var S = {
-  q:'', rel:'', lvlF:0, auditOnly:false, enrichedOnly:false, recentOnly:false, famOnly:false, tag:null, sort:'strength',
-  rail:'people', limit:200, showIndicators:false,
-  sel:null, editing:false, lvl:1, hist:[], fwd:[], wide:false,
-  mode:'3d', colorBy:'tier', showBg:false, listOpen:true, tierF:'',
-  openSecs:{}, evEdit:null, degEdit:null, jumpTo:null, editGroup:1
-};
-var D = null, NODES = [], ORDER = [], LIST_ORDER = [], BYN = {}, PK2I = {};
-
-/* ---------- small helpers ---------- */
-function $(s, r){ return (r || document).querySelector(s); }
-function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
-function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
-  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+var $ = function(s, r){ return (r || document).querySelector(s); };
+var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
 function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0;
   var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
   return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function hash32(s){ var h = 2166136261; s = String(s); for(var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 function tagList(v){ return String(v || '').split(',').map(function(x){ return x.trim(); }).filter(Boolean); }
 function splitTags(v, sep){
-  var re = String(sep || ', ').indexOf(';') >= 0 ? /\s*;\s*/ : /\s*,\s*/;
+  var re = String(sep || ', ').indexOf(';') >= 0 ? /\s*;\s*/ : (String(sep).indexOf('|') >= 0 ? /\s*\|\s*/ : /\s*,\s*/);
   return String(v || '').split(re).map(function(x){ return x.trim(); }).filter(Boolean);
 }
 function cap(s){ s = String(s || ''); return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
@@ -98,13 +57,6 @@ function hexA(hex, a){
   var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
-function toast(msg){
-  var t = $('#toast');
-  if(!t){ t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(toast._t);
-  toast._t = setTimeout(function(){ t.classList.remove('show'); }, 2600);
-}
 function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){} return null; }
 function typing(){
   var a = document.activeElement;
@@ -115,12 +67,11 @@ function parseArr(v){
   var str = String(v || '').trim();
   if(!str) return [];
   try{ var a = JSON.parse(str); if(Array.isArray(a)) return a; }catch(x){}
-  // legacy text format: "Major — School (Year); Major2 — School2 (Year2)"
+  /* legacy text: "Major — School (Year); Major2 — School2 (Year2)" */
   return str.split(/\s*;\s*/).map(function(part){
-    var m = part.match(/^(.*?)\s*[\u2014-]\s*(.*?)\s*(?:\(([^)]*)\))?$/);
+    var m = part.match(/^(.*?)\s*[—-]\s*(.*?)\s*(?:\(([^)]*)\))?$/);
     if(!m) return null;
     var left = m[1].trim(), right = m[2].trim(), year = (m[3] || '').trim();
-    // guess which side is the school
     var isSchool = function(x){ return /^(SUNY|CUNY)\b|university|college|institute|academy|\bschool\b/i.test(x); };
     var d = {};
     if(isSchool(right)){ d.school = right; if(left) d.major = left; }
@@ -130,126 +81,83 @@ function parseArr(v){
     return d.school ? d : null;
   }).filter(Boolean);
 }
+function todayStr(){
+  var t = new Date();
+  return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+}
+function weekKey(){
+  var d = new Date(), t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  var day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day);
+  var y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return t.getUTCFullYear() + '-W' + String(Math.ceil(((t - y0) / 864e5 + 1) / 7)).padStart(2, '0');
+}
 
-/* ---------- icons (one stroke family, so they all sit together) ---------- */
+/* one stroke family so every icon sits together */
 var IC = {
-  home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
-  chevl:'<path d="m15 18-6-6 6-6"/>',
-  chevr:'<path d="m9 18 6-6-6-6"/>',
+  minus:'<path d="M5 12h14"/>', target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  today:'<path d="M3 7.5 12 3l9 4.5-9 4.5z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/>',
+  people:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  network:'<circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="12" r="9"/><circle cx="19.4" cy="7.6" r="1.4"/>',
+  tree:'<circle cx="12" cy="5" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M12 7.5V12M12 12 6 15.5M12 12l6 3.5"/>',
+  groups:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  chevl:'<path d="m15 18-6-6 6-6"/>', chevr:'<path d="m9 18 6-6-6-6"/>', chev:'<path d="m6 9 6 6 6-6"/>', chevu:'<path d="m18 15-6-6-6 6"/>',
   phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
   mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
   user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
-  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
-  heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
-  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
-  clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
-  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>',
   link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
   ext:'<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/>',
-  help:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
   file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>',
-  folder:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
-  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
   calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
-  quote:'<path d="M10 11H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6c0 2-1 3.5-3 4.5M20 11h-4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6c0 2-1 3.5-3 4.5"/>',
-  zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
-  briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
-  award:'<circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/>',
-  church:'<path d="M12 2v4M8 4h8"/><path d="M5 8 3 9v13h18V9l-2-1"/><path d="M9 22v-6h6v6"/>',
-  tag:'<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
-  trend:'<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
-  activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
-  check:'<path d="M20 6 9 17l-5-5"/>',
-  x:'<path d="M18 6 6 18M6 6l12 12"/>',
-  plus:'<path d="M12 5v14M5 12h14"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>', x:'<path d="M18 6 6 18M6 6l12 12"/>', plus:'<path d="M12 5v14M5 12h14"/>',
   edit:'<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
   dots:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
-  send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
   search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
-  menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
   settings:'<path d="M4 6h9.8M18.2 6H20M4 12h3.8M12.2 12H20M4 18h8.8M17.2 18H20"/><circle cx="16" cy="6" r="2.2"/><circle cx="10" cy="12" r="2.2"/><circle cx="15" cy="18" r="2.2"/>',
   filter:'<path d="M3 5h18l-7 8v6l-4 2v-8z"/>',
-  back:'<path d="m15 18-6-6 6-6"/>',
   undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
   redo:'<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
-  chev:'<path d="m6 9 6 6 6-6"/>',
-  expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
-  shrink:'<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>',
   download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
   trash:'<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
   shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
-  orbit:'<circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="12" r="9"/><circle cx="19.4" cy="7.6" r="1.4"/>',
+  merge:'<circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="12" r="2.5"/><path d="M6 8.5v7M8.4 6.8C13 7 15.6 9 15.6 12M8.4 17.2C13 17 15.6 15 15.6 12"/>',
   zin:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/>',
   zout:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M8 11h6"/>',
   reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
-  star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
   ig:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/>',
+  fb:'<path d="M15.5 3.5h-2.6a4 4 0 0 0-4 4v2.6H6.5v3h2.4v7.4h3v-7.4h2.5l.5-3h-3V7.7a1.2 1.2 0 0 1 1.2-1.2h2.4z"/>',
   sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
   cap:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/><path d="M22 10v6"/>',
   pin:'<path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/>',
-  fb:'<path d="M15.5 3.5h-2.6a4 4 0 0 0-4 4v2.6H6.5v3h2.4v7.4h3v-7.4h2.5l.5-3h-3V7.7a1.2 1.2 0 0 1 1.2-1.2h2.4z"/>'
+  briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  church:'<path d="M12 2v4M8 4h8"/><path d="M5 8 3 9v13h18V9l-2-1"/><path d="M9 22v-6h6v6"/>',
+  award:'<circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/>',
+  help:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  skip:'<path d="m5 4 10 8-10 8zM19 5v14"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'
 };
 function ic(n, s){
   s = s || 16;
-  return '<svg class="icsvg" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IC[n] || '') + '</svg>';
-}
-function injectIcons(root){
-  $$('[data-ic]', root).forEach(function(el){ el.innerHTML = ic(el.getAttribute('data-ic'), parseInt(el.getAttribute('data-s'), 10) || 16); });
+  return '<svg class="icsvg" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IC[n] || '') + '</svg>';
 }
 
-/* ---------- ambient backdrop ---------- */
-function ambient(){
-  var cv = $('#ambient'), ctx = cv.getContext('2d'), W, H;
-  function size(){
-    W = Math.floor(innerWidth / 3); H = Math.floor(innerHeight / 3);
-    cv.width = W; cv.height = H; cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
-  }
-  size(); addEventListener('resize', function(){ size(); if(still) draw(0); });
-  var blobs = [
-    {x:.22,y:.28,r:.42,c:'126,166,240',a:.05,sx:.00011,sy:.00013,p:0},
-    {x:.78,y:.62,r:.5, c:'240,180,76', a:.035,sx:.00009,sy:.00012,p:2},
-    {x:.6, y:.12,r:.36,c:'180,140,232',a:.035,sx:.00012,sy:.00008,p:4},
-    {x:.12,y:.85,r:.4, c:'92,214,160', a:.03, sx:.00008,sy:.0001, p:1}
-  ];
-  var still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var t0 = performance.now(), running = true;
-  function draw(now){
-    var t = (now - t0) / 1000;
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = '#06080d'; ctx.fillRect(0, 0, W, H);
-    blobs.forEach(function(b){
-      var x = (b.x + Math.sin(t * b.sx * 1000 + b.p) * .06) * W;
-      var y = (b.y + Math.cos(t * b.sy * 1000 + b.p) * .06) * H;
-      var r = b.r * Math.max(W, H);
-      var g = ctx.createRadialGradient(x, y, 0, x, y, r);
-      g.addColorStop(0, 'rgba(' + b.c + ',' + b.a + ')');
-      g.addColorStop(1, 'rgba(' + b.c + ',0)');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-    });
-  }
-  function frame(now){ if(!running) return; draw(now); requestAnimationFrame(frame); }
-  if(still){ draw(0); return; }
-  document.addEventListener('visibilitychange', function(){ running = !document.hidden; if(running) requestAnimationFrame(frame); });
-  requestAnimationFrame(frame);
-}
+/* ============================================================
+   2. data access
+   ============================================================ */
+var D = null, BYN = {}, PK2I = {}, VER = 0;
 
-/* ---------- field registry: one place that knows every Profiles column the page edits ---------- */
 var ORG_CATS = [
-  {k:'churches', label:'Churches', options:['CFC Potsdam','CFC Canton','CFC Madrid','NTC','Calvary Baptist']},
-  {k:'companies', label:'Companies', options:['Rochester Regional Health','Clarkson University','Park Bros.']}
+  { k:'churches',     label:'Churches',     ic:'church',    options:['CFC Potsdam','CFC Canton','CFC Madrid','NTC','Calvary Baptist'] },
+  { k:'companies',    label:'Companies',    ic:'briefcase', options:['Rochester Regional Health','Clarkson University','Park Bros.'] },
+  { k:'universities', label:'Universities', ic:'cap',       options:['Clarkson University','SUNY Potsdam','SUNY Canton','St. Lawrence University'] }
 ];
-/* Canonical skills vocabulary, ranked by frequency across profiles (2026-10-12 harvest).
-   These remain valid profile values; every one of them is reachable in the Skills
-   editor flow under its parent category in SKILL_TAXONOMY below. */
-var SKILLS_VOCAB = ['Photography','Travel','Registered Nurse','Music','Skiing','Bass','Golf','Airlines','Airplanes','Drones','Mental Health','Admissions','Technology','Farmer','Ultimate Frisbee','Electrical Engineering','Taxi Driver','Construction','Mathematics','Teaching','Clarinet','Piano','Guitar','Content Creation','Running','Healthcare','Horseback Riding','Administration','Film','Video','Singing','Carpentry','Coloring','IT','Social Work','Hiking','Corrections','Security'];
-/* Skills picker taxonomy (JD 2026-10-12): parent category -> specific skills,
-   built for North Country / St. Lawrence County work (hospitals, the four
-   colleges, corrections, trades, dairy, tourism) plus the harvested values.
-   The editor renders this as a drill-down flow: tap a category to expand it
-   in place, tap a skill to toggle it. Each category's own name is offered
-   first inside it as the general skill (e.g. "Healthcare" under Healthcare).
-   Edit this one structure to change the picker. Storage is unchanged: the
-   union of selected values in the Profiles 'Specialty' column. */
+var SCHOOLS = {
+  'Clarkson University':{ s:'Clarkson' }, 'SUNY Potsdam':{ s:'SUNY Potsdam' },
+  'SUNY Canton':{ s:'SUNY Canton' }, 'St. Lawrence University':{ s:'SLU' }
+};
+var DEGREE_TYPES = ['AA','AAS','AS','BA','BS','BFA','BBA','BTech','MA','MS','MBA','MEd','MPA','PhD','EdD','DPT','OTD','JD','MD','Certificate','Attended (no degree)','Other'];
 var SKILL_TAXONOMY = [
   { cat:'Healthcare', skills:['Registered Nurse','CNA','LPN','EMT','Mental Health','Physical Therapist','Occupational Therapist','Home Health Aide','Medical Technician'] },
   { cat:'Public Safety', skills:['Law Enforcement','Corrections','Security','Firefighter','Emergency Dispatcher'] },
@@ -268,192 +176,37 @@ var SKILL_TAXONOMY = [
   { cat:'Music', skills:['Singing','Guitar','Piano','Bass','Clarinet','Drums','Violin','Trumpet','Saxophone','Flute','Cello','Banjo','Ukulele','Choir','Songwriting','Music Production','DJ','Worship Leading'] },
   { cat:'Outdoors', skills:['Skiing','Golf','Running','Hiking','Horseback Riding','Ultimate Frisbee','Travel','Fishing','Hunting','Landscaping'] }
 ];
-/* skill -> parent category (the category name itself maps to its own category,
-   as that category's general skill). First mapping wins. */
 var SKILL_PARENT = {};
 SKILL_TAXONOMY.forEach(function(g){
   SKILL_PARENT[g.cat] = g.cat;
   g.skills.forEach(function(s){ if(!SKILL_PARENT[s]) SKILL_PARENT[s] = g.cat; });
 });
-function skillParentOf(s){ return SKILL_PARENT[s] || null; }
-/* the one category currently expanded in the Skills flow (accordion) */
-var SK_OPEN = null;
-var F = {
-  display_name:{ l:'Name', t:'text' },
-  first_name:{ l:'First name', t:'text' },
-  last_name:{ l:'Last name', t:'text' },
-  also_known_as:{ l:'Also known as', t:'text' },
-  phone:{ l:'Phone', t:'phone' },
-  /* Email field removed from the editor per JD 2026-10-12; stored Sheet data untouched.
-     The Contact section shows the Instagram username read-only instead (igRow). */
-
-  relationship:{ l:'Relationship', t:'select', o:['','family','friend','coworker','acquaintance','other'] },
-  context:{ l:'Context', t:'select', o:['','work','school','military','community','church','online','other'] },
-  category:{ l:'Category', t:'select', o:[['',''],['peer','Peer'],['rom','Romantic'],['fam','Family'],['auth','Authority'],['ment','Mentor'],['conf','Conflict']] },
-  years_known:{ l:'Known since', t:'text' },
-  tier:{ l:'Tier', t:'tier' },
-  momentum:{ l:'Momentum', t:'momentum' },
-
-  openness:{ l:'Openness', t:'score', d:'Curious vs. set in their ways' },
-  conscientiousness:{ l:'Conscientiousness', t:'score', d:'Follow-through and organization' },
-  extraversion:{ l:'Extraversion', t:'score', d:'Outgoing vs. reserved' },
-  agreeableness:{ l:'Agreeableness', t:'score', d:'Warm and cooperative vs. harsh' },
-  neuroticism:{ l:'Neuroticism', t:'score', d:'Reactive vs. steady', neg:1 },
-  ego:{ l:'Ego', t:'score', d:'Self-important', neg:1 },
-
-  // Specialty + Interests merged into one Skills field per JD 2026-10-12.
-  // Stored in the Profiles 'Specialty' column; 'Interests' column retired (cleared in the sheet).
-  specialty:{ l:'Skills', t:'pick', sep:', ', vocab:SKILLS_VOCAB },
-  // shared_interests removed per JD 2026-10-08
-  churches:{ l:'Churches', t:'pick', sep:', ' },
-  companies:{ l:'Companies', t:'pick', sep:', ' },
-  universities:{ l:'Universities', t:'pick', sep:', ' },
-  chips:{ l:'Tags', t:'tags', sep:'; ', ph:'+ type: label' },
-  public_footprint:{ l:'Public footprint', t:'long', r:4 },
-  highlights:{ l:'Highlights', t:'tags', sep:' | ', ph:'Key fact, e.g. NYSP trooper in Canton' },
-  achievements:{ l:'Achievements', t:'tags', sep:' | ', ph:'Award + year, e.g. Dean\'s List 2020' },
-
-  synopsis:{ l:'Synopsis', t:'long', r:4, ai:'synopsis', ph:'One topic per line, starting with a label and colon.' },
-
-  review_flag:{ l:'Review flag', t:'select', o:[['',''],['missing_info','Missing info'],['duplicate','Possible duplicate']] },
-  relationship_type:{ l:'Type (legacy)', t:'text' },
-  sources:{ l:'Sources', t:'text' },
-  mentions:{ l:'Mentions', t:'text' }
-};
-var L1_SCORES = ['openness','conscientiousness','extraversion','agreeableness','neuroticism','ego'];
-var READ_TRAITS = L1_SCORES.slice();
-var L1_TOTAL = 14;
-
-/* The edit stack, top to bottom. lv = which level color the section wears. */
-var SECTIONS = [
-  { id:'identity',    title:'Contact',      ic:'user',      lv:1, fields:['first_name','last_name','phone'] },
-  { id:'relationship',title:'Relationship', ic:'users',     lv:2, fields:['relationship','context','category','years_known','tier','momentum'] },
-  { id:'ratings',     title:'Persona',      ic:'star',      lv:1, fields:L1_SCORES },
-  { id:'background',  title:'Background',   ic:'briefcase', lv:1, fields:['specialty','churches','companies','highlights','public_footprint'] },
-  { id:'onfile',      title:'On file',      ic:'quote',     lv:1, fields:['synopsis'] },
-  { id:'education',   title:'Education',    ic:'cap',       lv:1, fields:[] },
-  { id:'connections', title:'Known associates',  ic:'share',     lv:2, fields:[] },
-  { id:'timeline',    title:'Timeline',     ic:'calendar',  lv:2, fields:[] },
-  { id:'files',       title:'Files',        ic:'folder',    lv:3, fields:[] },
-  { id:'admin',       title:'Admin',        ic:'shield',    lv:0, fields:['review_flag','relationship_type','sources','mentions'] }
+var PERSONA = [
+  ['openness','Openness','Curious vs. set in their ways'],
+  ['conscientiousness','Conscientiousness','Follow-through and organization'],
+  ['extraversion','Extraversion','Outgoing vs. reserved'],
+  ['agreeableness','Agreeableness','Warm and cooperative vs. harsh'],
+  ['neuroticism','Neuroticism','Reactive vs. steady (high is worse)'],
+  ['ego','Ego','Self-important (high is worse)']
 ];
-var EVT_ICON = { milestone:'flag', note:'quote', 'life event':'heart' };
+var REL_OPTS = ['family','friend','coworker','acquaintance','other'];
+var CTX_OPTS = ['work','school','military','community','church','online','other'];
+var CAT_OPTS = [['peer','Peer'],['rom','Romantic'],['fam','Family'],['auth','Authority'],['ment','Mentor'],['conf','Conflict']];
+var CP_LABELS = ['Acquaintances','Friends','Close friends','Best friends','Drifted apart','Reconnected','Working together','Dating','Roommates','Teammates','Mentor','Fell out'];
+var AKA_KEY = 'sf:indira-quintana-lala';   /* the one person who may carry an AKA (contract, rule 7) */
 
-function fieldDef(k){ return F[k] || { k:k, l:k }; }
 function dispName(e){
   var pr = e.profile || {};
   var fn = (pr.first_name || '').trim(), ln = (pr.last_name || '').trim();
   if(fn || ln) return (fn + ' ' + ln).trim();
   return e.display || e.name || '';
 }
-
-/* ---------- education: degrees from the four local universities ---------- */
-var SCHOOLS = {
-  'Clarkson University':{ s:'Clarkson' }, 'SUNY Potsdam':{ s:'SUNY Potsdam' },
-  'SUNY Canton':{ s:'SUNY Canton' }, 'St. Lawrence University':{ s:'SLU' }
-};
-var DEGREE_TYPES = ['AA','AAS','AS','BA','BS','BFA','BBA','BTech','MA','MS','MBA','MEd','MPA','PhD','EdD','DPT','OTD','JD','MD','Certificate','Attended (no degree)','Other'];
-function degreesOf(e){
-  var ds = parseArr(gv(e, 'degrees')).filter(function(d){ return d && (d.school || d.degree || d.major || d.year); });
-  /* Universities field folds into degrees as school-only entries */
-  tagList(gv(e, 'universities')).forEach(function(u){
-    if(!ds.some(function(d){ return (d.school || '').toLowerCase() === u.toLowerCase(); }))
-      ds.push({ school:u, degree:'', major:'', year:'', note:'' });
-  });
-  return ds;
-}
-function degreeText(e){ return degreesOf(e).map(function(d){ return [d.school, d.degree, d.major, d.year].join(' '); }).join(' '); }
-function yy(y){ y = String(y || ''); return /^\d{4}$/.test(y) ? '\u2019' + y.slice(2) : y; }
-function schoolShort(s){ return (SCHOOLS[s] && SCHOOLS[s].s) || s || 'School'; }
-function sortDegrees(ds){ return ds.slice().sort(function(a, b){ return String(b.year || '').localeCompare(String(a.year || '')); }); }
-function achievementsOf(e){
-  var fp = String(gv(e, 'public_footprint') || ''), out = [], seen = {};
-  function add(label){ label = String(label || '').trim(); if(label && !seen[label.toLowerCase()]){ seen[label.toLowerCase()] = 1; out.push(label); } }
-  var m, rx;
-  // Dean's / President's List with optional year ranges
-  rx = /(President'?s|Dean'?s) List/gi;
-  while((m = rx.exec(fp))){
-    var tail = fp.slice(m.index, m.index + 120).split(/[.\n]/)[0];
-    var ym = tail.match(/((?:Fall|Spring|Summer|Winter)\s+(?:19|20)\d{2}|(?:19|20)\d{2}(?:\s*(?:[\u2013\u2014-]|to)\s*(?:19|20)?\d{2,4})?(?:\s*,\s*(?:19|20)\d{2})*)/i);
-    var yrs = ym ? ym[1].trim().replace(/\s+/g, ' ') : '';
-    add(m[1].replace(/'?s$/, "'s") + ' List' + (yrs ? ' ' + yrs : ''));
-  }
-  // Named awards
-  ['Director\'?s Award', 'Photo of the Day', 'Rookie of the Year'].forEach(function(pat){
-    rx = new RegExp(pat, 'gi');
-    while((m = rx.exec(fp))) add(m[0]);
-  });
-  // Scholarships: "X Scholarship"
-  rx = /([A-Z][A-Za-z&.'-]*(?:\s+[A-Z][A-Za-z&.'-]*){0,3} Scholarship)/g;
-  while((m = rx.exec(fp))) add(m[1]);
-  // Certifications: "Certified X Technician/..."
-  rx = /Certified ([A-Z][A-Za-z ]{2,40}?)(?=\s+(?:at|in|from|\.|,|\n|$))/g;
-  while((m = rx.exec(fp))) add('Certified ' + m[1].trim());
-  return out.slice(0, 8);
-}
-function parseAchievements(v){
-  return String(v || '').split(/\s*\|\s*/).map(function(x){ return x.trim(); }).filter(Boolean).slice(0, 8);
-}
-function degBadge(d){
-  var bits = [];
-  if(d.degree) bits.push(esc(d.degree));
-  if(d.major) bits.push(esc(d.major));
-  if(d.year) bits.push(esc(yy(d.year)));
-  return '<span class="dbadge" title="' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '">' + ic('cap', 12) +
-    '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits.length ? '<span>' + bits.join(' · ') + '</span>' : '') + '</span>';
-}
-/* Certifications/licenses on file (Sheet-driven): achievement/highlight tags that
-   name a credential, with a footprint fallback for license numbers / LMSW. */
-function certsOf(e){
-  var CERT_RE = /licen[cs]e|certif|specialist|board.certified|\bLMSW\b|\bLCSW\b|\bCRD#|series \d+|faaompt|investment adviser/i;
-  var out = [], seen = {};
-  parseAchievements(gv(e, 'achievements')).concat(parseAchievements(gv(e, 'highlights'))).forEach(function(a){
-    if(!CERT_RE.test(a)) return;
-    var label = a.length > 52 ? a.slice(0, 52).trim() + '\u2026' : a;
-    if(seen[label]) return; seen[label] = 1; out.push(label);
-  });
-  if(!out.length){
-    var fp = String(gv(e, 'public_footprint') || '');
-    var m = fp.match(/license number (\d+)/i); if(m) out.push('License #' + m[1]);
-    if(/\bLMSW\b/.test(fp)) out.push('Licensed Master Social Worker (LMSW)');
-  }
-  return out;
-}
-function certBadges(e){
-  var cs = certsOf(e); if(!cs.length) return '';
-  return cs.slice(0, 3).map(function(c){
-    return '<span class="dbadge certbadge" title="Certification on file: ' + esc(c) + '">' + ic('shield', 12) +
-      '<b>Certified</b><span>' + esc(c) + '</span></span>';
-  }).join('') + (cs.length > 3 ? '<span class="dmore">+' + (cs.length - 3) + '</span>' : '');
-}
-function headBadges(e){
-  var ds = sortDegrees(degreesOf(e));
-  var shown = ds.slice(0, 4), more = ds.length - shown.length;
-  var deg = shown.map(degBadge).join('') + (more > 0 ? '<span class="dmore">+' + more + '</span>' : '');
-  var cert = certBadges(e);
-  if(!deg && !cert) return '';
-  return '<div class="dbadges">' + deg + cert + '</div>';
-}
-function capHTML(e){
-  var ds = degreesOf(e); if(!ds.length) return '';
-  return '<span class="rcap" title="' + esc(ds.map(function(d){ return schoolShort(d.school) + ' ' + (d.degree || ''); }).join(', ')) + '">' + ic('cap', 14) + '</span>';
-}
-
-/* The sheet row key. Prefix tells which data dump a person came from. */
 function pkey(e){
   var n = String(e.name || '');
   if(/^(ig|ct|sf|fdb):/.test(n)) return n;
   if(e.src === 'contacts') return 'ct:' + n.toLowerCase();
   if(e.src === 'subject') return 'sf:' + ((e.record && e.record.slug) || n);
   return 'ig:' + n.toLowerCase();
-}
-
-/* Get a field's value from wherever it lives. The profile row wins once it has been edited here. */
-function isEnriched(e){
-  var pr = e.profile || {};
-  if((pr.degrees || '').trim() || (pr.highlights || '').trim() || (pr.achievements || '').trim()) return true;
-  var fp = String(pr.public_footprint || e.public_footprint || '');
-  return fp.indexOf('http') >= 0;
 }
 function gv(e, k){
   var p = e.profile || {}, v = p[k];
@@ -466,95 +219,123 @@ function gv(e, k){
   }
   return (v === undefined || v === null || typeof v === 'object') ? '' : String(v);
 }
-function personLevel(e){
-  if((e.files || []).length) return 3;
-  if((e.events || []).length) return 2;
-  return 1;
+function raw(e, k){ var v = (e.profile || {})[k]; return v == null ? '' : String(v); }
+function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
+function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || '#4b5468'; }
+function tierName(e){ return (TIERS[tierOf(e)] || {}).n || ''; }
+function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
+function knownSinceYear(e){
+  var v = String(gv(e, 'years_known') || '').trim();
+  if(!v) return 0;
+  var n = parseInt(v, 10);
+  if(n >= 1900 && n <= 2100) return n;
+  if(n > 0 && n < 100) return new Date().getFullYear() - n;
+  return 0;
 }
-function subjSlug(e){
-  if(e.record && e.record.slug) return e.record.slug;
-  return String(dispName(e)).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-}
-function subLine(e){
-  if(e.src === 'contacts') return 'Phone contact';
-  /* No 'Subject file' label (JD 2026-10-12): the record origin distinction
-     is gone — nearly everyone has an IG handle, so record-sourced profiles
-     are no longer labeled apart from IG/contacts profiles. */
-  return '';
-}
-/* ---------- insufficient-data waivers (JD 2026-10-12; section-level per JD's
-   correction) ---------- One toggle per editor section: waiving a section
-   disables its fields and excludes the whole section from every completeness /
-   audit calculation until restored. The On File / Record / Files tabs carry one
-   toggle each that waives/restores every section in the tab. Stored as a JSON
-   object of waived section ids ({"identity":1, ...}) in the Profiles 'Waivers'
-   column via the patch path (field 'waivers'), so it survives syncs; the build
-   carries it into the baked data. Toggles are unlabeled and color-coded amber
-   when on; a single legend in the editor explains the dot. */
-var WAIVER_FIELD = 'waivers';
-function wvSecs(e){
-  try{ var v = JSON.parse(gv(e, WAIVER_FIELD) || '{}'); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; }
-  catch(x){ return {}; }
-}
-function secWaived(e, sid){ return !!wvSecs(e)[sid]; }
-var FIELD_SEC = {};
-SECTIONS.forEach(function(s){ (s.fields || []).forEach(function(k){ FIELD_SEC[k] = s.id; }); });
-FIELD_SEC.also_known_as = 'identity'; FIELD_SEC.email = 'identity';
-FIELD_SEC.degrees = 'education'; FIELD_SEC.connections = 'connections';
-FIELD_SEC.events = 'timeline'; FIELD_SEC.files = 'files';
-function fieldWaived(e, k){ var sid = FIELD_SEC[k]; return sid ? secWaived(e, sid) : false; }
-function setWaiverSections(di, sids, on){
-  var e = D.directory[di]; if(!e) return;
-  var w = wvSecs(e);
-  sids.forEach(function(sid){ if(on) w[sid] = 1; else delete w[sid]; });
-  var p = {}; p[WAIVER_FIELD] = JSON.stringify(w);
-  queuePatch(di, p);
-}
-function groupSections(g){
-  return SECTIONS.filter(function(s){ return g.lvs.indexOf(s.lv) >= 0; }).map(function(s){ return s.id; });
-}
-function groupWaived(e, g){
-  var ss = groupSections(g);
-  return ss.length && ss.every(function(sid){ return secWaived(e, sid); });
-}
-function l1Slots(e){
-  return ['phone', 'email', 'specialty'].concat(L1_SCORES, ['orgs', 'synopsis']);
-}
-var L1_SLOT_SEC = { phone:'identity', email:'identity', specialty:'background', orgs:'background', synopsis:'onfile' };
-function l1SlotWaived(e, s){
-  var sid = L1_SLOT_SEC[s];
-  return secWaived(e, sid || 'ratings');
-}
-function l1SlotVal(e, s){
-  if(s === 'orgs') return ORG_CATS.some(function(cat){ return tagList(gv(e, cat.k)).length; }) ? '1' : '';
-  return gv(e, s);
-}
-function l1Fill(e){
-  return l1Slots(e).filter(function(s){ return !l1SlotWaived(e, s) && l1SlotVal(e, s); }).length;
-}
-function l1Total(e){
-  return l1Slots(e).filter(function(s){ return !l1SlotWaived(e, s); }).length;
-}
+function liveEntry(e){ var p = e.profile || {}; return p.deleted !== '1' && !(p.merged_into || '').trim(); }
+function isChecked(e){ return (e.profile || {}).audit === 'audited'; }
+function igURL(h){ return 'https://www.instagram.com/' + encodeURIComponent(String(h).replace(/^@/, '')) + '/'; }
+function hasHandle(e){ return e.src !== 'contacts' && e.src !== 'subject' && !/^(ig|ct|sf|fdb):/.test(String(e.name || '')) && !!e.name; }
 function normEntry(r){
   var p = r.profile || {};
   var pe = parseArr(p.events), pf = parseArr(p.files);
   r.events = pe.length ? pe : (Array.isArray(r.events) ? r.events : []);
   r.files = pf.length ? pf : (Array.isArray(r.files) ? r.files : []);
+  r._nb0 = (r.neighbors || []).map(function(n){ return { u:n.u, d:n.d, 'new':n['new'] }; });
+  r._nbx = [];
 }
+function personId(e){ var k = pkey(e); return /^ig:/.test(k) ? k.slice(3) : k; }
+function diFromId(id){
+  id = decodeURIComponent(id || '');
+  if(PK2I[id] != null) return PK2I[id];
+  if(PK2I['ig:' + id.toLowerCase()] != null) return PK2I['ig:' + id.toLowerCase()];
+  return null;
+}
+/* the people the directory lists: same rule v5 used for its list, minus anything deleted or merged away */
+function isListed(e){ return liveEntry(e) && (e.has_graph !== false || (e.events || []).length || (e.files || []).length || !!e.record); }
+var PEOPLE_CACHE = { ver:-1, list:[] };
+function people(){
+  if(PEOPLE_CACHE.ver === VER) return PEOPLE_CACHE.list;
+  var out = [];
+  D.directory.forEach(function(e, di){ if(isListed(e)) out.push(di); });
+  PEOPLE_CACHE = { ver:VER, list:out };
+  return out;
+}
+
+/* degrees, honors, certifications */
+function degreesOf(e){
+  var ds = parseArr(gv(e, 'degrees')).filter(function(d){ return d && (d.school || d.degree || d.major || d.year); });
+  tagList(gv(e, 'universities')).forEach(function(u){
+    if(!ds.some(function(d){ return (d.school || '').toLowerCase() === u.toLowerCase(); }))
+      ds.push({ school:u, degree:'', major:'', year:'', note:'' });
+  });
+  return ds;
+}
+function schoolShort(s){ return (SCHOOLS[s] && SCHOOLS[s].s) || s || 'School'; }
+function sortDegrees(ds){ return ds.slice().sort(function(a, b){ return String(b.year || '').localeCompare(String(a.year || '')); }); }
+function yy(y){ y = String(y || ''); return /^\d{4}$/.test(y) ? '’' + y.slice(2) : y; }
+function parsePipe(v){ return String(v || '').split(/\s*\|\s*/).map(function(x){ return x.trim(); }).filter(Boolean); }
+function achievementsOf(e){
+  var fp = String(gv(e, 'public_footprint') || ''), out = [], seen = {}, m, rx;
+  function add(label){ label = String(label || '').trim(); if(label && !seen[label.toLowerCase()]){ seen[label.toLowerCase()] = 1; out.push(label); } }
+  rx = /(President'?s|Dean'?s) List/gi;
+  while((m = rx.exec(fp))){
+    var tail = fp.slice(m.index, m.index + 120).split(/[.\n]/)[0];
+    var ym = tail.match(/((?:Fall|Spring|Summer|Winter)\s+(?:19|20)\d{2}|(?:19|20)\d{2}(?:\s*(?:[–—-]|to)\s*(?:19|20)?\d{2,4})?(?:\s*,\s*(?:19|20)\d{2})*)/i);
+    var yrs = ym ? ym[1].trim().replace(/\s+/g, ' ') : '';
+    add(m[1].replace(/'?s$/, "'s") + ' List' + (yrs ? ' ' + yrs : ''));
+  }
+  ['Director\'?s Award', 'Photo of the Day', 'Rookie of the Year'].forEach(function(pat){
+    rx = new RegExp(pat, 'gi'); while((m = rx.exec(fp))) add(m[0]);
+  });
+  rx = /([A-Z][A-Za-z&.'-]*(?:\s+[A-Z][A-Za-z&.'-]*){0,3} Scholarship)/g;
+  while((m = rx.exec(fp))) add(m[1]);
+  return out.slice(0, 8);
+}
+function honorsOf(e){ var a = parsePipe(gv(e, 'achievements')).slice(0, 8); return a.length ? a : achievementsOf(e); }
+function certsOf(e){
+  var CERT_RE = /licen[cs]e|certif|specialist|board.certified|\bLMSW\b|\bLCSW\b|\bCRD#|series \d+|faaompt|investment adviser/i;
+  var out = [], seen = {};
+  parsePipe(gv(e, 'achievements')).concat(parsePipe(gv(e, 'highlights'))).forEach(function(a){
+    if(!CERT_RE.test(a)) return;
+    var label = a.length > 52 ? a.slice(0, 52).trim() + '…' : a;
+    if(seen[label]) return; seen[label] = 1; out.push(label);
+  });
+  return out;
+}
+
+/* footprint: prose paragraphs, each optionally followed by "Source(s): url; url" */
+function parseFootprint(text){
+  var t = String(text || '').trim();
+  if(!t) return { blocks:[], sources:[], sourced:false, inferred:false };
+  var blocks = [], sources = [], cur = [];
+  t.split(/\n/).forEach(function(line){
+    var m = line.match(/^\s*Sources?:\s*(.*)$/i);
+    if(m){
+      var urls = (m[1] || '').split(/;\s*|\s+(?=https?:)/).map(function(u){ return u.trim(); }).filter(Boolean);
+      if(cur.length){ blocks.push({ text:cur.join(' '), urls:urls }); cur = []; }
+      else if(blocks.length) blocks[blocks.length - 1].urls = blocks[blocks.length - 1].urls.concat(urls);
+      urls.forEach(function(u){ if(sources.indexOf(u) < 0) sources.push(u); });
+    } else if(!line.trim()){
+      if(cur.length){ blocks.push({ text:cur.join(' '), urls:[] }); cur = []; }
+    } else cur.push(line.trim());
+  });
+  if(cur.length) blocks.push({ text:cur.join(' '), urls:[] });
+  var inferred = blocks.length > 0 && blocks.every(function(b){ return !b.urls.length && /^place association/i.test(b.text); });
+  return { blocks:blocks, sources:sources, sourced:sources.some(function(u){ return /^https?:/i.test(u); }), inferred:inferred };
+}
+function hostOf(u){ return String(u).replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]; }
+function footprintOf(e){ return parseFootprint(gv(e, 'public_footprint') || e.public_footprint || ''); }
+
+/* timeline + phases */
 function evDate(d){
   var m = String(d || '').match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?/);
-  if(!m) return esc(String(d || ''));
+  if(!m) return String(d || '');
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var mi = parseInt(m[2] || '1', 10) - 1;
-  if(m[3]) return esc(MON[mi] + ' ' + parseInt(m[3], 10) + ', ' + m[1]);
-  if(m[2]) return esc(MON[mi] + ' ' + m[1]);
-  return esc(m[1]);
-}
-function monthLabel(d){
-  var m = String(d || '').match(/^(\d{4})(?:-(\d{2}))?/);
-  if(!m) return 'Undated';
-  var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  return m[2] ? MON[parseInt(m[2], 10) - 1] + ' ' + m[1] : m[1];
+  if(m[3]) return MON[mi] + ' ' + parseInt(m[3], 10) + ', ' + m[1];
+  if(m[2]) return MON[mi] + ' ' + m[1];
+  return m[1];
 }
 function sortedEvents(e){
   return (e.events || []).map(function(ev, i){ return { ev:ev, i:i }; }).sort(function(a, b){
@@ -562,1410 +343,52 @@ function sortedEvents(e){
     return x < y ? 1 : (x > y ? -1 : 0);
   });
 }
-function igURL(h){ return 'https://www.instagram.com/' + encodeURIComponent(String(h).replace(/^@/, '')) + '/'; }
-
-/* ---------- filtering ---------- */
-function updatedAtMs(r){
-  var v = (r.profile || {}).updated_at;
-  if(!v) return 0;
-  var t = Date.parse(v);
-  return isNaN(t) ? 0 : t;
+function connPhases(e){
+  var rawv = gv(e, 'conn_phases');
+  if(!rawv) return [];
+  try{ var a = JSON.parse(rawv); return Array.isArray(a) ? a.filter(function(p){ return p && (p.f || p.l); }) : []; }catch(x){ return []; }
 }
-function hasFamily(r){
-  if(famLinks(r).length) return true;
-  var f = r.family || {};
-  return !!((f.parents || []).length || (f.spouses || []).length || (f.children || []).length || (f.siblings || []).length);
-}
-function passes(r, skipLvl, skipQ){
-  var pr = r.profile || {};
-  if(pr.deleted === '1') return false;
-  if((pr.merged_into || '').trim()) return false;
-  if(S.auditOnly && pr.audit === 'audited') return false;
-  if(S.enrichedOnly && !isEnriched(r)) return false;
-  if(S.recentOnly){ var ua = updatedAtMs(r); if(!ua || Date.now() - ua > 7 * 864e5) return false; }
-  if(S.famOnly && !hasFamily(r)) return false;
-  if(S.tag && tagList(gv(r, S.tag.k)).indexOf(S.tag.v) < 0) return false;
-  if(S.rel && r.relation !== S.rel) return false;
-  if(!skipLvl && S.lvlF && personLevel(r) !== S.lvlF) return false;
-  if(S.tierF && tierOf(r) !== S.tierF) return false;
-  if(!skipQ){
-    var q = S.q.trim().toLowerCase();
-    if(q && ((dispName(r) + ' @' + r.name + ' ' + gv(r, 'specialty') + ' ' + gv(r, 'also_known_as') + ' ' + degreeText(r) + ' ' + tierName(r)).toLowerCase().indexOf(q) < 0)) return false;
-  }
-  return true;
-}
-function listRows(){
-  var rows = LIST_ORDER.filter(function(di){ return passes(D.directory[di]); });
-  if(S.sort === 'name'){
-    rows.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
-  } else if(S.sort === 'name-desc'){
-    rows.sort(function(a, b){ return dispName(D.directory[b]).localeCompare(dispName(D.directory[a])); });
-  } else if(S.sort === 'filled' || S.sort === 'filledasc'){
-    var dirn = S.sort === 'filled' ? -1 : 1;
-    rows.sort(function(a, b){
-      var d = (pct(D.directory[a]) - pct(D.directory[b])) * dirn;
-      return d || dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
-    });
-  } else if(S.sort === 'recent'){
-    rows.sort(function(a, b){
-      var d = updatedAtMs(D.directory[b]) - updatedAtMs(D.directory[a]);
-      return d || dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
-    });
-  } else if(S.sort === 'audit'){
-    var needs = rows.filter(function(di){ return (D.directory[di].profile || {}).audit !== 'audited'; });
-    var done = rows.filter(function(di){ return (D.directory[di].profile || {}).audit === 'audited'; });
-    rows = needs.concat(done);
-  }
-  return rows;
-}
-function refreshMatch(){
-  NODES.forEach(function(n){
-    var r = D.directory[n.i];
-    n.on = passes(r);
-    n.col = S.colorBy === 'rel' ? (RELC[r.relation] || '#8b95a7') : tierCol(r);
-  });
-}
-function refresh(){
-  refreshMatch(); renderRail(); glRecolor(); updateAuditPill(); updateLegend();
-}
-var _rt = null;
-function refreshSoon(){ clearTimeout(_rt); _rt = setTimeout(refresh, 450); }
-
-/* ---------- sort control (custom dropdown: the native select's open panel
-   is OS-rendered and cannot be themed; this one is dark like the rest of
-   the chrome, and fully keyboard-operable) ---------- */
-var SORT_OPTS = [
-  ['strength', 'Strongest connection'],
-  ['filled', 'Most filled'],
-  ['filledasc', 'Least filled'],
-  ['recent', 'Most recent'],
-  ['name', 'A to Z'],
-  ['name-desc', 'Z to A'],
-  ['audit', 'Needs audit first']
-];
-function sortLabel(v){
-  for(var i = 0; i < SORT_OPTS.length; i++) if(SORT_OPTS[i][0] === v) return SORT_OPTS[i][1];
-  return SORT_OPTS[0][1];
-}
-function setSort(v){
-  if(!SORT_OPTS.some(function(o){ return o[0] === v; })) v = 'strength';
-  S.sort = v;
-  store('ncc_sort', v);
-}
-function buildSortUI(){
-  var pop = $('#sortpop');
-  if(!pop || pop.children.length) return;
-  pop.innerHTML = SORT_OPTS.map(function(o){
-    return '<button type="button" class="sortopt" role="option" data-sv="' + o[0] + '">' + o[1] + '</button>';
-  }).join('');
-}
-function syncSortUI(){
-  buildSortUI();
-  var lab = $('#sortlab'); if(lab) lab.textContent = sortLabel(S.sort);
-  var pop = $('#sortpop'); if(!pop) return;
-  $$('.sortopt', pop).forEach(function(o){
-    var on = o.getAttribute('data-sv') === S.sort;
-    o.classList.toggle('on', on);
-    o.setAttribute('aria-selected', String(on));
-  });
-}
-function sortPopOpen(){ var p = $('#sortpop'); return !!(p && !p.hidden); }
-function setSortPop(open, focusOpt){
-  var p = $('#sortpop'), b = $('#sortbtn'); if(!p || !b) return;
-  syncSortUI();
-  p.hidden = !open;
-  b.setAttribute('aria-expanded', String(open));
-  if(open){
-    var act = $('.sortopt.on', p) || $('.sortopt', p);
-    kbSetAct(p, act);
-    if(focusOpt && act) act.focus();
-  } else kbSetAct(p, null);
-}
-function chooseSort(v){
-  setSort(v);
-  S.limit = 200;
-  setSortPop(false);
-  refresh();
-  var b = $('#sortbtn'); if(b) b.focus();
+function ymLabel(s){
+  var m = String(s || '').match(/(\d{4})-(\d{1,2})/);
+  if(!m) return '';
+  var M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return M[parseInt(m[2], 10) - 1] + ' ' + m[1];
 }
 
-/* ---------- keyboard highlight helper (shared by the sort dropdown and
-   the person-picker hit lists) ---------- */
-function kbSetAct(list, el){
-  if(!list) return;
-  $$('.kbact', list).forEach(function(x){ x.classList.remove('kbact'); if(x.getAttribute('role') === 'option') x.setAttribute('aria-selected', 'false'); });
-  if(el){
-    el.classList.add('kbact');
-    if(el.classList.contains('naddhit') || el.classList.contains('sortopt')) el.setAttribute('role', 'option');
-    el.setAttribute('aria-selected', 'true');
-    if(el.scrollIntoView) el.scrollIntoView({ block:'nearest' });
-  }
-}
-function kbActivate(el){
-  if(!el) return;
-  el.click();
-  /* A real browser ALSO fires a native click for Enter/Space on a button;
-     stamp the element so that duplicate is swallowed by the capture-phase
-     click guard registered in bind(). */
-  el.__kbSuppressUntil = Date.now() + 400;
-}
-function kbMove(list, items, dir){
-  if(!items.length) return null;
-  var cur = $('.kbact', list), i = cur ? items.indexOf(cur) : -1;
-  var n = items.length;
-  i = i < 0 ? (dir > 0 ? 0 : n - 1) : (i + dir + n) % n;
-  kbSetAct(list, items[i]);
-  return items[i];
-}
-
-/* ---------- left rail ---------- */
-/* Sidebar stat tiles (JD 2026-10-12): the Events and Files rail views are
-   gone — JD never used them. Four tiles carry the counts that matter, and
-   each is a filter: People clears, the rest toggle their filter. */
-function railStatsData(){
-  var now = Date.now(), total = 0, needs = 0, recent = 0, fam = 0;
-  LIST_ORDER.forEach(function(di){
-    var r = D.directory[di], pr = r.profile || {};
-    if(pr.deleted === '1' || (pr.merged_into || '').trim()) return;
-    total++;
-    if(pr.audit !== 'audited') needs++;
-    var ua = updatedAtMs(r);
-    if(ua && now - ua <= 7 * 864e5) recent++;
-    if(hasFamily(r)) fam++;
-  });
-  return { total:total, needs:needs, recent:recent, fam:fam };
-}
-function renderRailStats(){
-  var el = $('#railstats'); if(!el || !D) return;
-  var c = railStatsData();
-  var anyF = !!(S.rel || S.tierF || S.tag || S.q.trim() || S.auditOnly || S.enrichedOnly || S.recentOnly || S.famOnly || S.lvlF);
-  function tile(k, v, lab, on, title){
-    return '<button type="button" class="rstile' + (on ? ' on' : '') + '" data-rs="' + k + '" aria-pressed="' + on + '" title="' + title + '"><b>' + v + '</b><span>' + lab + '</span></button>';
-  }
-  el.innerHTML =
-    tile('people', c.total, 'People', !anyF, 'Everyone — click to clear all filters') +
-    tile('audit', c.needs, 'Need audit', S.auditOnly, 'People who still need an audit — click to filter') +
-    tile('recent', c.recent, 'Updated · 7d', S.recentOnly, 'Updated in the last 7 days — click to filter') +
-    tile('family', c.fam, 'Family linked', S.famOnly, 'People with family links — click to filter');
-}
-function renderLvlChips(){
-  var c = {0:0, 1:0, 2:0, 3:0};
-  LIST_ORDER.forEach(function(di){
-    var r = D.directory[di];
-    if(!passes(r, true)) return;
-    c[0]++; c[personLevel(r)]++;
-  });
-  $('#lvlchips').innerHTML = [0,1,2,3].map(function(n){
-    return '<button class="lchip' + (S.lvlF === n ? ' on' : '') + '" data-lf="' + n + '" style="--c:' + (n ? LV[n].c : '#ece9e2') +
-      '" title="' + (n ? 'Show only ' + LV[n].n + ' people' : 'Show everyone') + '"><b>' + c[n] + '</b><span>' + (n ? LV[n].n : 'All') + '</span></button>';
-  }).join('');
-}
-function pipsHTML(e){
-  var on = [true, !!(e.events || []).length, !!(e.files || []).length];
-  return '<span class="pips" title="On file' + (on[1] ? ', Record' : '') + (on[2] ? ', Files' : '') + '">' +
-    [1,2,3].map(function(n){ return '<i class="pip' + (on[n - 1] ? ' lit' : '') + '" style="--c:' + LV[n].c + '"></i>'; }).join('') + '</span>';
-}
-/* Per-person level dots: blue=On file, yellow=Record, green=Files.
-   One dot per filled section; hollow when empty. */
-var DOTDEFS = [
-  ['Contact', '#7ea6f0', 'identity', function(e){ var p = e.profile || {}; return !!((p.phone || '').trim() || (p.email || '').trim() || (e.name || '').trim()); }],
-  ['Education', '#7ea6f0', 'education', function(e){ return degreesOf(e).length > 0; }],
-  ['Background', '#7ea6f0', 'background', function(e){ var p = e.profile || {}; return !!((p.specialty || '').trim()); }],
-  ['Synopsis', '#7ea6f0', 'onfile', function(e){ return !!((e.profile || {}).synopsis || '').trim(); }],
-  ['Persona', '#7ea6f0', 'ratings', function(e){ var p = e.profile || {}; return L1_SCORES.some(function(k){ return p[k] !== undefined && p[k] !== null && String(p[k]).trim() !== ''; }); }],
-  ['Relationship', '#f0b44c', 'relationship', function(e){ var p = e.profile || {}; return !!((p.relationship || '').trim() || (p.tier || '').trim()); }],
-  ['Timeline', '#f0b44c', 'timeline', function(e){ return !!((e.events || []).length); }],
-  ['Phases', '#f0b44c', 'connections', function(e){ return connPhases(e).length > 0; }],
-  ['Files', '#5cd6a0', 'files', function(e){ return !!((e.files || []).length); }],
-];
-function fieldIndicators(di, e){
-  if(!S.showIndicators) return '';
-  return '<span class="fstrip">' + DOTDEFS.map(function(d){
-    var on = d[3](e);
-    return '<i class="iseg' + (on ? ' on' : '') + '" style="--c:' + d[1] + '" data-di="' + di + '" data-sec="' + d[2] + '" title="' + d[0] + (on ? ': filled — click to edit' : ': empty — click to add') + '"></i>';
-  }).join('') + '</span>';
-}
-function indLegendHTML(){
-  if(!S.showIndicators) return '';
-  return '<div class="indlegend"><b><i class="iseg on" style="--c:#7ea6f0"></i>On file</b>' +
-    '<b><i class="iseg on" style="--c:#f0b44c"></i>Record</b>' +
-    '<b><i class="iseg on" style="--c:#5cd6a0"></i>Files</b>' +
-    '<b><i class="iseg web"></i>Web-scraped</b></div>';
-}
-function renderRail(){
-  var lb = $('#leftbody'), keepTop = lb ? lb.scrollTop : 0;
-  renderRailStats();
-  railPeople();
-  updateFilterUI();
-  if(lb) lb.scrollTop = keepTop;
-}
-function railPeople(){
-  renderLvlChips();
-  var rows = listRows();
-  /* same rule as listRows()/passes() and the rail tiles: exclude deleted
-     AND merged-away entries, or the header total sits above the row count */
-  var total = LIST_ORDER.filter(function(di){ return liveEntry(D.directory[di]); }).length;
-  $('#lcount').textContent = rows.length === total ? total + ' people' : rows.length + ' of ' + total + ' people';
-  var indTogg = '<label class="indtogg inscrl" title="Show per-person field indicators"><input type="checkbox" id="showindicators"' + (S.showIndicators ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Show Indicators</em></label>';
-  var shown = rows.slice(0, S.limit);
-  var h = shown.map(function(di){
-    var r = D.directory[di], lv = personLevel(r), aud = (r.profile || {}).audit === 'audited';
-    var sub = subLine(r) + (r.relation ? ' · ' + RELN[r.relation] : '');
-    return '<div class="row' + (S.sel === di ? ' sel' : '') + '" data-i="' + di + '" role="button" tabindex="0">' +
-      '<div class="ava" style="--c:' + LV[lv].c + '">' + esc((dispName(r).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) +
-      (S.showIndicators ? (!aud ? '<i class="auddot' + (isEnriched(r) ? ' enr' : '') + '" title="Needs audit"></i>' : (isEnriched(r) ? '<i class="enrdot" title="Enriched from online sources"></i>' : '')) : '') + '</div>' +
-      '<div class="nm"><b>' + esc(dispName(r)) + '</b><div class="subrow"><span class="sub">' + esc(sub) + '</span>' + fieldIndicators(di, r) + '</div></div>' + capHTML(r) + '</div>';
-  }).join('');
-  if(rows.length > shown.length) h += '<button class="morebtn" data-more="1">Show ' + Math.min(200, rows.length - shown.length) + ' more</button>';
-  $('#leftbody').innerHTML = indTogg + indLegendHTML() + (h || '<div class="empty-note">No one matches. Try clearing a filter.</div>');
-  var si = $('#showindicators');
-  if(si) si.addEventListener('change', function(e){ S.showIndicators = e.target.checked; document.body.classList.toggle('ind-on', S.showIndicators); refresh(); });
-  document.body.classList.toggle('ind-on', S.showIndicators);
-}
-function collectEvents(){
-  var q = S.q.trim().toLowerCase(), items = [];
-  D.directory.forEach(function(r, di){
-    if(!passes(r, true, true)) return;
-    (r.events || []).forEach(function(ev){
-      if(q && ((ev.summary || '') + ' ' + (ev.detail || '') + ' ' + dispName(r)).toLowerCase().indexOf(q) < 0) return;
-      items.push({ ev:ev, di:di });
-    });
-  });
-  items.sort(function(a, b){ var x = String(a.ev.date || ''), y = String(b.ev.date || ''); return x < y ? 1 : (x > y ? -1 : 0); });
-  return items;
-}
-function railEvents(){
-  var items = collectEvents();
-  $('#lcount').textContent = items.length + (items.length === 1 ? ' event' : ' events') + ' across everyone';
-  var h = '', last = '';
-  items.slice(0, 300).forEach(function(it){
-    var m = monthLabel(it.ev.date);
-    if(m !== last){ h += '<div class="mhead">' + esc(m) + '</div>'; last = m; }
-    h += '<div class="erow' + (S.sel === it.di ? ' sel' : '') + '" style="--c:' + LV[2].c + '" data-i="' + it.di + '" data-go="2" role="button" tabindex="0">' +
-      '<span class="ebar"></span><div class="et"><time>' + evDate(it.ev.date) + '</time><b>' + esc(it.ev.summary || '') + '</b><span>' + esc(dispName(D.directory[it.di])) + '</span></div></div>';
-  });
-  $('#leftbody').innerHTML = h || '<div class="empty-note">No timeline events yet. Open someone and add one in the Timeline section.</div>';
-}
-function railFiles(){
-  var q = S.q.trim().toLowerCase(), items = [];
-  D.directory.forEach(function(r, di){
-    if(!passes(r, true, true)) return;
-    (r.files || []).forEach(function(f){
-      if(q && ((f.name || '') + ' ' + (f.note || '') + ' ' + dispName(r)).toLowerCase().indexOf(q) < 0) return;
-      items.push({ f:f, di:di });
-    });
-  });
-  $('#lcount').textContent = items.length + (items.length === 1 ? ' file' : ' files') + ' across everyone';
-  var h = items.slice(0, 300).map(function(it){
-    return '<div class="erow' + (S.sel === it.di ? ' sel' : '') + '" style="--c:' + LV[3].c + '" data-i="' + it.di + '" data-go="3" role="button" tabindex="0">' +
-      '<span class="fi">' + ic(it.f.kind === 'gdoc' ? 'file' : 'link', 17) + '</span><div class="et"><b>' + esc(it.f.name || 'Untitled') + '</b><span>' +
-      esc(dispName(D.directory[it.di])) + ' · ' + (it.f.kind === 'gdoc' ? 'Google Doc' : 'Link') + '</span></div></div>';
-  }).join('');
-  $('#leftbody').innerHTML = h || '<div class="empty-note">No files attached yet. Open someone and use the Files section.</div>';
-}
-function updateFilterUI(){
-  var n = (S.rel ? 1 : 0) + (S.tierF ? 1 : 0) + (S.auditOnly ? 1 : 0) + (S.enrichedOnly ? 1 : 0) + (S.recentOnly ? 1 : 0) + (S.famOnly ? 1 : 0) + (S.sort !== 'strength' ? 1 : 0);
-  var b = $('#filtercount');
-  b.hidden = !n; b.textContent = n;
-  $('#frel').value = S.rel; syncSortUI(); $('#fauditonly').checked = S.auditOnly; $('#fenrichedonly').checked = S.enrichedOnly;
-  var chips = [];
-  if(S.tag) chips.push('<button class="aflt" data-clr="tag">' + esc(S.tag.v) + '<b>' + ic('x', 11) + '</b></button>');
-  if(S.rel) chips.push('<button class="aflt" data-clr="rel">' + esc(RELN[S.rel]) + '<b>' + ic('x', 11) + '</b></button>');
-  if(S.tierF) chips.push('<button class="aflt" data-clr="tier">' + esc(TIERS[S.tierF].n) + '<b>' + ic('x', 11) + '</b></button>');
-  if(S.auditOnly) chips.push('<button class="aflt" data-clr="audit">Needs audit<b>' + ic('x', 11) + '</b></button>');
-  if(S.enrichedOnly) chips.push('<button class="aflt" data-clr="enriched">Enriched<b>' + ic('x', 11) + '</b></button>');
-  if(S.recentOnly) chips.push('<button class="aflt" data-clr="recent">Updated · 7d<b>' + ic('x', 11) + '</b></button>');
-  if(S.famOnly) chips.push('<button class="aflt" data-clr="family">Family linked<b>' + ic('x', 11) + '</b></button>');
-  if(S.q.trim()) chips.push('<button class="aflt" data-clr="q">“' + esc(S.q.trim()) + '”<b>' + ic('x', 11) + '</b></button>');
-  $('#activeflt').innerHTML = chips.join('');
-  $('#auditpill').classList.toggle('on', S.auditOnly);
-}
-function clearFilter(k){
-  if(k === 'tag') S.tag = null;
-  else if(k === 'rel') S.rel = '';
-  else if(k === 'tier') S.tierF = '';
-  else if(k === 'audit') S.auditOnly = false;
-  else if(k === 'enriched') S.enrichedOnly = false;
-  else if(k === 'recent') S.recentOnly = false;
-  else if(k === 'family') S.famOnly = false;
-  else if(k === 'q'){ S.q = ''; $('#fq').value = ''; }
-  else if(k === 'all'){ S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.enrichedOnly = false; S.recentOnly = false; S.famOnly = false; setSort('strength'); S.lvlF = 0; S.q = ''; $('#fq').value = ''; }
-  S.limit = 200; refresh();
-}
-function updateAuditPill(){
-  /* same denominator as the list header / All chip / People tile (JD
-     2026-10-12 merge audit): exclude deleted AND merged-away entries —
-     counting merged_into rows here inflated the total vs the list */
-  var live = LIST_ORDER.filter(function(di){ return liveEntry(D.directory[di]); });
-  var done = live.filter(function(di){ return (D.directory[di].profile || {}).audit === 'audited'; }).length;
-  $('#aptxt').textContent = 'Audited ' + done + '/' + live.length;
-  $('#apfill').style.width = (live.length ? Math.round(done / live.length * 100) : 0) + '%';
-}
-function updateLegend(){
-  var tc = { vetted:0, associate:0, open:0, none:0 }, rc = { mutual:0, following:0, follower:0 };
-  LIST_ORDER.forEach(function(di){
-    var r = D.directory[di];
-    if(!passes(r, true)) return;
-    if(S.colorBy === 'rel'){ if(rc[r.relation] != null) rc[r.relation]++; }
-    else { var t = tierOf(r); if(tc[t] != null) tc[t]++; else tc.none++; }
-  });
-  var h = '';
-  if(S.colorBy === 'rel'){
-    ['mutual','following','follower'].forEach(function(k){
-      h += '<button class="lg' + (S.rel === k ? ' on' : '') + '" data-rf="' + k + '" style="--c:' + RELC[k] + '"><i></i>' + RELN[k] + ' <b>' + rc[k] + '</b></button>';
-    });
-  } else {
-    TIER_ORDER.forEach(function(t){
-      h += '<button class="lg' + (S.tierF === t ? ' on' : '') + '" data-tf="' + t + '" style="--c:' + TIERS[t].c + '" title="Show only ' + TIERS[t].n + '"><i></i>' + TIERS[t].n + ' <b>' + tc[t] + '</b></button>';
-    });
-    if(tc.none) h += '<span class="lg dim" style="--c:#4a5568"><i></i>Untiered <b>' + tc.none + '</b></span>';
-  }
-  if(Object.keys(NEWGAIN).length)
-    h += '<span class="lg dim newnote" style="--c:#a9c6ff" title="People who gained a connection in the last 7 days glow softly on the map"><i></i>New links · 7d</span>';
-  $('#legend').innerHTML = h;
-}
-
-
-/* ---------- panel: shared bits ---------- */
-function pips5(v){
-  v = parseInt(v || '0', 10) || 0;
-  var h = '<span class="pp">';
-  for(var i = 1; i <= 5; i++) h += '<i' + (i <= v ? ' class="on"' : '') + '></i>';
-  return h + '</span>';
-}
-function card(icon, title, lv, body, right, cls, collapsed){
-  var cc = ('card ' + (cls || '') + (collapsed != null ? ' collapsible' : '') + (collapsed ? ' is-collapsed' : '')).replace(/\s+/g, ' ').trim();
-  return '<section class="' + cc + '" style="--c:' + LV[lv].c + '"><header' +
-    (collapsed != null ? ' data-act="cardtoggle" title="Expand/collapse"' : '') + '><span class="cic">' + ic(icon, 15) + '</span><h3>' + esc(title) + '</h3>' +
-    (collapsed != null ? '<span class="chev">' + ic('chev', 14) + '</span>' : '') +
-    (right ? '<div class="cr">' + right + '</div>' : '') + '</header><div class="cb">' + body + '</div></section>';
-}
-function emptyBox(text){
-  return '<div class="empty"><p>' + esc(text) + '</p></div>';
-}
-function reviewBadge(e){
-  var f = (e.profile || {}).review_flag;
-  if(!f) return '';
-  var label = f === 'duplicate' ? 'Possible duplicate' : (f === 'missing_info' ? 'Missing info' : f);
-  return '<span class="revbadge" title="Flagged for review">' + esc(label) + '</span>';
-}
-/* Name edits live in the Contact section as ordinary First/Last name
-   fields (2026-10-12): tapping the hero name jumps there and focuses the
-   First name field instead of prompting. */
-function editHeroName(e){
-  if(!e || !S.editing) return;
-  S.editGroup = 1;
-  toggleSec('identity', true);
-  renderPanel(true);
-  var inp = $('#rightbody input[data-pk="first_name"]');
-  if(inp){ inp.scrollIntoView({ block:'center' }); inp.focus(); inp.select(); }
-}
-function phead(e){
-  var prof = e.profile || {}, pl = personLevel(e), col = LV[pl].c, aud = prof.audit === 'audited';
-  var prev = S.hist.length ? D.directory[S.hist[S.hist.length - 1]] : null;
-  var auditBack = AUD.fromAudit ? '<button class="ibtn" data-act="backaudit" title="Back to the audit list">' + ic('back', 15) + '<span>Audit</span></button>' : '';
-  var back = prev ? '<button class="ibtn" data-act="back" title="Back to ' + esc(dispName(prev)) + ' (Alt+←)" aria-label="Back">' + ic('back', 17) + '</button>' : '';
-  var edit = S.editing
-    ? '<button class="ibtn solid" data-act="done" title="Finish editing (Esc)">' + ic('check', 16) + '<span>Done</span></button>'
-    : '<button class="ibtn" data-act="edit" title="Edit this dossier (E)" aria-label="Edit">' + ic('edit', 16) + '</button>';
-  var cnt = { 1:l1Fill(e) + '/' + l1Total(e), 2:(e.events || []).length || '', 3:(e.files || []).length || '' };
-  var tabs = S.editing ? '' : '<div class="tabs" role="tablist">' + [1,2,3].map(function(n){
-    return '<button class="tab' + (S.lvl === n ? ' on' : '') + (n > 1 && !cnt[n] ? ' empty' : '') + '" role="tab" data-act="tab" data-lvl="' + n + '" style="--c:' + LV[n].c +
-      '" title="' + LV[n].n + ' (' + n + ')">' + ic(LV[n].ic, 15) + '<span>' + LV[n].n + '</span>' + (cnt[n] ? '<em>' + cnt[n] + '</em>' : '') + '</button>';
-  }).join('') + '</div>';
-  var menu = '<div class="menu"><button class="ibtn" data-act="menu" aria-haspopup="true" title="More actions" aria-label="More actions">' + ic('dots', 17) + '</button>' +
-    '<div class="menu-pop" hidden>' +
-    '<button data-act="audit">' + ic('shield', 16) + (aud ? 'Mark as needs audit' : 'Mark as audited') + '</button>' +
-    (aud ? '' : '<button data-act="auditnext">' + ic('check', 16) + 'Mark audited, open next</button>') +
-    '<hr>' +
-    '<button data-act="addevent">' + ic('calendar', 16) + 'Add timeline event</button>' +
-    '<button data-act="newdoc">' + ic('file', 16) + 'New Drive doc</button>' +
-    '<button data-act="attach">' + ic('link', 16) + 'Attach a file link</button>' +
-    '<hr>' +
-    '<button data-act="export">' + ic('download', 16) + 'Export dossier</button>' +
-    '<button data-act="viewdoc">' + ic('book', 16) + 'View dossier</button>' +
-    '<button data-act="delete" class="danger">' + ic('trash', 16) + 'Delete this person</button></div></div>';
-  return '<div class="phead' + (S.editing ? ' editing' : '') + '"><div class="hrow">' + auditBack + back +
-    '<div class="ava lg-ava" style="--c:' + col + '">' + esc((dispName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</div>' +
-    '<div class="hname"><h2 title="' + esc(dispName(e)) + (S.editing ? ' — edit name in Contact' : '') + '"' + (S.editing ? ' data-act="editname" style="cursor:pointer"' : '') + '>' + esc(dispName(e)) +
-    (S.editing ? '<span class="hpct" title="Profile completeness">' + pct(e) + '%</span>' : '') + '</h2>' +
-    (function(){ var sl = subLine(e); return sl ? '<div class="hsub"><span>' + esc(sl) + '</span>' +
-    reviewBadge(e) + (S.editing ? '<span class="editflag">Editing</span>' : '') + '</div>' : ''; })() + '</div>' +
-    '<div class="hact">' + edit +
-    '<button class="ibtn" id="pwide" data-act="wide" title="' + (S.wide ? 'Narrow the panel' : 'Widen the panel') + '" aria-label="Resize panel">' + ic(S.wide ? 'shrink' : 'expand', 16) + '</button>' +
-    menu + '<button class="ibtn" data-act="close" title="Close (Esc)" aria-label="Close">' + ic('x', 17) + '</button></div></div>' + headBadges(e) + tabs + '</div>';
-}
-
-/* ---------- panel: view mode ---------- */
-function footprintHTML(e){
-  var fp = gv(e, 'public_footprint');
-  if(!fp) return '<div class="fpbox"><p class="dim">No public footprint on file.</p></div>';
-  var parts = String(fp).split(/\n*Sources:\s*/);
-  var prose = parts[0].trim().split(/\n+/).map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('');
-  var links = '';
-  if(parts[1]){
-    links = parts[1].split(/;\s*/).map(function(u){
-      u = String(u).trim(); if(!u) return '';
-      var host = u.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
-      return '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(host) + ic('ext', 12) + '</a>';
-    }).join('');
-  }
-  return '<div class="fpbox">' + prose + (links ? '<div class="fpsrc"><span>Sources</span>' + links + '</div>' : '') + '</div>';
-}
-function lvl1View(e){
-  var phones = gv(e, 'phone'), emails = gv(e, 'email'), aka = gv(e, 'also_known_as');
-  var rows = '';
-  if(e.src !== 'contacts' && e.src !== 'subject' && e.name)
-    rows += '<div class="idrow"><span class="idic">' + ic('ig', 15) + '</span><div><span>Instagram</span><a class="iglink ' + (e.relation === 'mutual' ? 'ig-mutual' : 'ig-oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a></div></div>';
-  if(e.fb_url) rows += '<div class="idrow"><span class="idic">' + ic('fb', 15) + '</span><div><span>Facebook</span><a class="iglink" href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">' + (e.fb_handle ? '@' + esc(e.fb_handle) : 'Facebook profile') + '</a></div></div>';
-  if(aka) rows += '<div class="idrow"><span class="idic">' + ic('user', 15) + '</span><div><span>Also known as</span><b>' + esc(aka) + '</b></div></div>';
-  if(phones) rows += '<div class="idrow"><span class="idic">' + ic('phone', 15) + '</span><div><span>Phone</span>' +
-    String(phones).split(',').map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join('') + '</div></div>';
-  if(emails) rows += '<div class="idrow"><span class="idic">' + ic('mail', 15) + '</span><div><span>Email</span>' +
-    String(emails).split(',').map(function(x){ x = x.trim(); return '<a href="mailto:' + esc(x) + '">' + esc(x) + '</a>'; }).join('') + '</div></div>';
-  if(e.city) rows += '<div class="idrow"><span class="idic">' + ic('pin', 15) + '</span><div><span>Lives in</span><b>' + esc(e.city) + '</b></div></div>';
-  if(e.hometown) rows += '<div class="idrow"><span class="idic">' + ic('pin', 15) + '</span><div><span>From</span><b>' + esc(e.hometown) + '</b></div></div>';
-  var contact = rows ? card('user', 'Contact', 1, rows) : '';
-
-  var ds = sortDegrees(degreesOf(e));
-  var edu = ds.length ? card('cap', 'Education', 1, '<div class="edulist">' + ds.map(function(d){
-    var line = [d.degree, d.major].filter(Boolean).join(' \u00b7 ');
-    return '<div class="edu"><span class="eic">' + ic('cap', 15) + '</span><div><b>' + esc(d.school || 'School not set') + '</b>' +
-      (line ? '<span>' + esc(line) + '</span>' : '') + (d.note ? '<span class="dim">' + esc(d.note) + '</span>' : '') + '</div>' +
-      (d.year ? '<em>' + esc(d.year) + '</em>' : '') + '</div>';
-  }).join('') + '</div>', '', '') : '';
-
-  var ach = parseAchievements(gv(e, 'achievements'));
-  if(!ach.length) ach = achievementsOf(e);
-  if(ach.length){
-    var achHTML = '<div class="achrow"><span class="achlab">' + ic('award', 13) + 'Honors</span><div class="chips">' +
-      ach.map(function(a){ return '<span class="vchip achchip">' + ic('award', 12) + esc(a) + '</span>'; }).join('') + '</div></div>';
-    edu = edu ? edu.replace(/<\/div><\/section>$/, achHTML + '</div></section>') : card('cap', 'Education', 1, achHTML, '', '');
-  }
-  var traits = '<div class="traits grid2">' + L1_SCORES.map(function(k){
-    var v = gv(e, k);
-    return '<div class="trait' + (v ? '' : ' empty-t') + '"><span>' + esc(fieldDef(k).l) + '</span>' + pips5(v) + '</div>';
-  }).join('') + '</div>';
-  var personaTraits = '<div class="persona-grid">' + L1_SCORES.map(function(k){
-    var v = parseInt(gv(e, k), 10) || 0;
-    return '<div class="ptrait" title="' + esc(fieldDef(k).l) + ': ' + v + '/5"><span>' + esc(fieldDef(k).l) + '</span><div class="pbar"><b style="width:' + (v*20) + '%"></b></div></div>';
-  }).join('') + '</div>';
-  var ratings = L1_SCORES.some(function(k){ return gv(e, k) !== ''; }) ? card('activity', 'Persona', 1, personaTraits) : '';
-
-  var bg = '';
-  var skList = tagList(gv(e, 'specialty'));
-  if(skList.length) bg = '<div class="subhead first">Skills</div><div class="chips">' +
-    skList.map(function(s){ return '<span class="vchip skchip">' + ic('zap', 12) + esc(s) + '</span>'; }).join('') + '</div>';
-  var lgList = e.languages || [];
-  if(lgList.length) bg += '<div class="subhead' + (bg ? '' : ' first') + '">Languages</div><div class="chips">' +
-    lgList.map(function(s){ return '<span class="vchip lgchip">' + ic('quote', 12) + esc(s) + '</span>'; }).join('') + '</div>';
-  var ORG_ICONS = { churches:'church', companies:'briefcase', universities:'cap' };
-  var orgs = '';
-  ORG_CATS.forEach(function(cat){
-    tagList(gv(e, cat.k)).forEach(function(v){
-      orgs += '<span class="vchip orgchip"><span class="oc-ic">' + ic(ORG_ICONS[cat.k] || 'briefcase', 12) + '</span>' + esc(v) + '</span>';
-    });
-  });
-  var hl = parseAchievements(gv(e, 'highlights'));
-  var hlHTML = hl.length ? '<div class="subhead">Highlights</div><div class="chips">' +
-    hl.map(function(h){ return '<span class="vchip hchip">' + ic('zap', 12) + esc(h) + '</span>'; }).join('') + '</div>' : '';
-  var bgBody = bg + hlHTML + (orgs ? '<div class="subhead">Organizations</div><div class="chips">' + orgs + '</div>' : '');
-  var background = bgBody ? card('briefcase', 'Background', 1, bgBody) : '';
-
-  var syn = gv(e, 'synopsis') ? card('quote', 'Synopsis', 1, '<div class="narr">' + esc(gv(e, 'synopsis')) + '</div>', '', 'span') : '';
-  var ka = knownAssociates(e);
-  var famT = familyTreeHTML(e);
-  var connsBody = (famT ? '<div class="subhead' + (ka.length ? '' : ' first') + '">Family</div>' + famT : '') +
-    (ka.length ? '<div class="subhead' + (famT ? '' : ' first') + '">Known associates</div><div class="chips">' + ka.map(function(nb){ return nbrChipHTML(nb, false); }).join('') + '</div>' : '');
-  var conns = (ka.length || famT) ? card('share', 'Known associates', 1, connsBody, '', '') : '';
-  var top2col = (contact || edu) ? '<div class="ce2col">' + contact + edu + '</div>' : '';
-  var out = top2col + ratings + background + syn + conns;
-  if(!out) out = card('user', 'On file', 1, emptyBox('Nothing on file yet. Press the pencil to start filling this in.'), '', 'span');
-  return out;
-}
-
-function linkedFrom(e){
-  var me = (e.name || '').toLowerCase(), out = [];
-  D.directory.forEach(function(r, di){
-    if(r === e || (r.profile || {}).deleted === '1') return;
-    if((r.neighbors || []).some(function(n){ return (n.u || '').toLowerCase() === me; })) out.push(di);
-  });
-  return out;
-}
-function hiddenAssoc(e){
-  var h = {};
-  tagList(String((e.profile || {}).close_hide || '')).forEach(function(x){ h[x.toLowerCase()] = 1; });
-  return h;
-}
-/* ---------- family tree (icon-only branch tree) ---------- */
-var FAM_COLORS = { self:'#f5b942', parent:'#6ea8fe', sibling:'#b28bff', spouse:'#ff8fb3', child:'#7ee2a8' };
-function famInitials(label){
-  var w = String(label || '').trim().split(/\s+/).filter(Boolean);
-  if(!w.length) return '?';
-  return (w[0][0] + (w.length > 1 ? w[w.length-1][0] : '')).toUpperCase();
-}
-function famNode(x, y, r, color, key, label, isSelf){
-  var di = BYN[String(key || '').toLowerCase()];
-  var init = famInitials(label);
-  var nav = di != null ? ' data-act="nav" data-di="' + di + '" style="cursor:pointer"' : '';
-  return '<g' + nav + '><title>' + esc(label || key) + '</title>' +
-    '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + color + '"' +
-    (isSelf ? ' stroke="#ffe1a1" stroke-width="2.5"' : '') + '/>' +
-    '<text x="' + x + '" y="' + (y + 4.5) + '" text-anchor="middle" font-size="' + (r > 15 ? 13 : 10.5) +
-    '" font-weight="700" fill="#0b0e14">' + esc(init) + '</text></g>';
-}
-function familyTreeHTML(e){
-  var f = e.family; if(!f) return '';
-  var P = f.parents || [], SP = f.spouses || [], C = f.children || [], SB = f.siblings || [];
-  if(!P.length && !SP.length && !C.length && !SB.length) return '';
-  var R = 11, gap = 8, rS = 13;
-  function spread(n, y, cx){
-    var w = n * R * 2 + Math.max(0, n - 1) * gap, x0 = cx - w / 2, out = [];
-    for(var i = 0; i < n; i++) out.push(x0 + R + i * (R * 2 + gap));
-    return out;
-  }
-  var yP = 18, yM = 62, yC = 106;
-  var nMax = Math.max(P.length, C.length, SP.length ? 2 : 1, 1);
-  var W = Math.max(140, nMax * R * 2 + (nMax - 1) * gap + 36);
-  var cx = W / 2, H = yC + R + 10;
-  var selfX = cx, spX = null;
-  if(SP.length){ selfX = cx - R - gap / 2; spX = cx + R + gap / 2; }
-  var pX = spread(P.length, yP, cx), cX = spread(C.length, yC, cx);
-  var s = '<svg class="famtree" viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:280px;display:block;margin:0 auto">';
-  // connectors
-  if(P.length){
-    var x0 = pX[0], x1 = pX[pX.length - 1];
-    s += '<path class="fln" d="M' + x0 + ',' + yP;
-    pX.forEach(function(x){ s += ' L' + x + ',' + yP; });
-    s += '"/>';
-    s += '<path class="fln" d="M' + cx + ',' + yP + ' L' + cx + ',' + yM + '"/>';
-  }
-  if(SP.length) s += '<path class="fln" d="M' + (selfX + R) + ',' + yM + ' L' + (spX - R) + ',' + yM + '"/>';
-  if(C.length){
-    s += '<path class="fln" d="M' + selfX + ',' + yM + ' L' + selfX + ',' + (yM + 22) + '"/>';
-    var bx0 = cX[0], bx1 = cX[cX.length - 1];
-    s += '<path class="fln" d="M' + bx0 + ',' + (yM + 22);
-    cX.forEach(function(x){ s += ' L' + x + ',' + (yM + 22); });
-    s += '"/>';
-    cX.forEach(function(x){ s += '<path class="fln" d="M' + x + ',' + (yM + 22) + ' L' + x + ',' + (yC - R) + '"/>'; });
-  }
-  // nodes
-  pX.forEach(function(x, i){ s += famNode(x, yP, R, FAM_COLORS.parent, P[i].u, P[i].d); });
-  s += famNode(selfX, yM, R + 3, FAM_COLORS.self, e.name, dispName(e) || e.name, true);
-  if(SP.length) s += famNode(spX, yM, R, FAM_COLORS.spouse, SP[0].u, SP[0].d);
-  cX.forEach(function(x, i){ s += famNode(x, yC, R, FAM_COLORS.child, C[i].u, C[i].d); });
-  s += '</svg>';
-  if(SB.length){
-    s += '<div class="famsibs">' + SB.map(function(x){
-      var di = BYN[String(x.u || '').toLowerCase()];
-      return '<span class="famchip" title="' + esc(x.d) + '"' + (di != null ? ' data-act="nav" data-di="' + di + '"' : '') + '>' + esc(famInitials(x.d)) + '</span>';
-    }).join('') + '</div>';
-  }
-  return '<div class="famwrap">' + s + '</div>';
-}
-
-/* ---------- family links editor ---------- */
-function famLinks(e){
-  try{ var v = JSON.parse(gv(e, 'family') || '[]'); return Array.isArray(v) ? v : []; }
-  catch(x){ return []; }
-}
-/* The family relation picker remembers the last relation used (JD
-   2026-10-12: "if I just did sibling have the next one be sibling") —
-   one value shared by the profile editor and the dashboard family
-   editor, persisted in localStorage. First-ever use defaults to parent. */
-var FAM_RELS = ['parent', 'spouse', 'child', 'sibling'];
-function famRelDefault(){
-  var v = store('ncc_famrel');
-  return FAM_RELS.indexOf(v) >= 0 ? v : 'parent';
-}
-function famRelSave(v){ if(FAM_RELS.indexOf(v) >= 0) store('ncc_famrel', v); }
-function famRelOptions(){
-  var d = famRelDefault();
-  return FAM_RELS.map(function(r){
-    return '<option value="' + r + '"' + (r === d ? ' selected' : '') + '>' + r.charAt(0).toUpperCase() + r.slice(1) + '</option>';
-  }).join('');
-}
-function famEditHTML(e){
-  var links = famLinks(e);
-  var rows = links.map(function(l, i){
-    var di = BYN[String(l[1] || '').toLowerCase()];
-    var label = di != null ? dispName(D.directory[di]) : l[1];
-    return '<div class="famrow"><span class="famrel">' + esc(l[0]) + '</span><span>' + esc(label) + '</span>' +
-      '<b class="nx" data-act="famrm" data-i="' + i + '" title="Remove family link">×</b></div>';
-  }).join('');
-  return (rows || '<p class="dim" style="margin:0 0 8px;font-size:13px">No family links yet.</p>') +
-    '<div class="naddwrap"><div class="famaddrow">' +
-    '<select id="famrel">' + famRelOptions() + '</select>' +
-    '<input id="faminput" placeholder="Add family member: type a name" autocomplete="off"></div>' +
-    '<div id="famlist"></div></div>';
-}
-function famSearch(q){
-  var list = $('#famlist'); if(!list) return;
-  q = (q || '').trim().toLowerCase();
-  var e = D.directory[S.sel], existing = {};
-  famLinks(e).forEach(function(l){ existing[String(l[1] || '').toLowerCase()] = 1; });
-  existing[(e.name || '').toLowerCase()] = 1;
-  if(!q || q.length < 2){ list.innerHTML = ''; return; }
-  var hits = [];
-  D.directory.forEach(function(r, i){
-    if(hits.length >= 6 || (r.profile || {}).deleted === '1') return;
-    if(existing[(r.name || '').toLowerCase()]) return;
-    var label = dispName(r);
-    if((label + ' ' + (r.name || '')).toLowerCase().indexOf(q) < 0) return;
-    hits.push({ i:i, label:label });
-  });
-  list.innerHTML = hits.length ? hits.map(function(h){ return '<div class="naddhit" data-fi="' + h.i + '">' + esc(h.label) + '</div>'; }).join('')
-    : '<div class="naddhit none">No matches</div>';
-}
-/* Family links are two-way IN STORAGE, not just in display (JD 2026-10-12):
-   adding a link on one profile writes the inverse link onto the other
-   profile's own family field through the same queuePatch path (the way
-   Known associates dual-write); removing one side removes the inverse. */
-var FAM_INV_REL = { parent:'child', child:'parent', spouse:'spouse', sibling:'sibling' };
-function famDualWrite(di, rel, tdi, adding){
-  var e = D.directory[di], t = D.directory[tdi];
-  if(!e || !t || di === tdi) return;
-  var inv = FAM_INV_REL[rel]; if(!inv) return;
-  var back = (e.name || '').toLowerCase();
-  var tl = famLinks(t), before = tl.length;
-  if(adding){
-    if(!tl.some(function(l){ return l[0] === inv && String(l[1] || '').toLowerCase() === back; }))
-      tl.push([inv, e.name || '']);
-  } else {
-    tl = tl.filter(function(l){ return !(l[0] === inv && String(l[1] || '').toLowerCase() === back); });
-  }
-  if(tl.length !== before) queuePatch(tdi, { family: JSON.stringify(tl) });
-}
-/* All family are known associates (JD 2026-10-12): the build unions family
-   links into the baked neighbors; mirror an ADD locally so both profiles
-   show the associate in-session, before the next rebuild. Respects
-   close_hide on either side. Removal leaves the neighbor lists alone:
-   close_hide is the removal mechanism, and the build's derivation settles
-   the rest at the next rebuild. */
-function famAssocSync(di, tdi){
-  var e = D.directory[di], t = D.directory[tdi];
-  if(!e || !t || di === tdi) return;
-  [[e, t], [t, e]].forEach(function(pr){
-    var o = pr[0], x = pr[1], xk = (x.name || '').toLowerCase();
-    if(!xk) return;
-    if(hiddenAssoc(o)[xk] || hiddenAssoc(x)[(o.name || '').toLowerCase()]) return;
-    if(!(o.neighbors || []).some(function(n){ return (n.u || '').toLowerCase() === xk; }))
-      (o.neighbors = o.neighbors || []).push({ u:x.name || '', d:dispName(x) });
-  });
-}
-/* Sibling parent inference (JD 2026-10-12): adding a PARENT to a person
-   adds the same parent to all of that person's siblings — siblings are
-   explicit sibling links plus everyone sharing an existing parent. Each
-   affected sibling is written through the same queuePatch family path,
-   with the usual dual-write onto the parent and the family-associate
-   mirror. Adds only: removals stay per-person. Idempotent — a sibling
-   who already has the parent is skipped. Returns how many siblings
-   were updated. */
-function famSiblingsOf(di){
-  var disp = famDisplay(), out = {}, s = disp[di];
-  if(!s) return [];
-  s.siblings.forEach(function(x){ out[x.di] = 1; });
-  s.parents.forEach(function(p){
-    Object.keys(disp).forEach(function(k){
-      if(+k !== di && disp[k].parents.some(function(pp){ return pp.di === p.di; })) out[k] = 1;
-    });
-  });
-  delete out[di];
-  return Object.keys(out).map(Number);
-}
-function famAddParentToSiblings(di, tdi){
-  var t = D.directory[tdi]; if(!t) return 0;
-  var kl = (t.name || '').toLowerCase(), n = 0;
-  famSiblingsOf(di).forEach(function(sib){
-    if(sib === tdi) return;
-    var se = D.directory[sib]; if(!se) return;
-    var links = famLinks(se);
-    if(links.some(function(l){ return l[0] === 'parent' && String(l[1] || '').toLowerCase() === kl; })) return;
-    links.push(['parent', t.name || '']);
-    queuePatch(sib, { family: JSON.stringify(links) });
-    famDualWrite(sib, 'parent', tdi, true);
-    famAssocSync(sib, tdi);
-    n++;
-  });
-  return n;
-}
-/* Spouse-parent inference (JD 2026-10-12, traditional setup: no half or
-   step siblings, one spouse per person): adding a family link also adds
-   the obvious complements through the same dual-write path —
-   (a) a child added to a person is also added to their recorded spouse
-       (the child gains the spouse as a parent);
-   (b) a parent added to a child brings the parent's recorded spouse
-       along as the child's other parent (and, like any parent add, the
-       inferred parent propagates to the child's siblings);
-   (c) a spouse added to a person becomes a parent of that person's
-       recorded children.
-   Adds only, idempotent; removals never propagate. Returns how many
-   inferred person-links were added. */
-function famSpouseComplements(di, rel, tdi){
-  var e = D.directory[di], t = D.directory[tdi];
-  if(!e || !t) return 0;
-  function resolve(list, r){
-    return list.filter(function(l){ return l[0] === r; })
-      .map(function(l){ return BYN[String(l[1] || '').toLowerCase()]; })
-      .filter(function(v){ return v != null; });
-  }
-  function addLink(ownerDi, r, targetDi){
-    var o = D.directory[ownerDi], tg = D.directory[targetDi];
-    if(!o || !tg || ownerDi === targetDi) return false;
-    var kl = (tg.name || '').toLowerCase(); if(!kl) return false;
-    var ls = famLinks(o);
-    if(ls.some(function(l){ return l[0] === r && String(l[1] || '').toLowerCase() === kl; })) return false;
-    ls.push([r, tg.name || '']);
-    queuePatch(ownerDi, { family: JSON.stringify(ls) });
-    famDualWrite(ownerDi, r, targetDi, true);
-    famAssocSync(ownerDi, targetDi);
-    return true;
-  }
-  var n = 0;
-  if(rel === 'child'){
-    resolve(famLinks(e), 'spouse').forEach(function(sdi){
-      if(sdi !== tdi && addLink(tdi, 'parent', sdi)) n++;
-    });
-  } else if(rel === 'parent'){
-    resolve(famLinks(t), 'spouse').forEach(function(sdi){
-      if(sdi !== di && addLink(di, 'parent', sdi)){ n++; n += famAddParentToSiblings(di, sdi); }
-    });
-  } else if(rel === 'spouse'){
-    resolve(famLinks(e), 'child').forEach(function(cdi){
-      if(cdi !== tdi && addLink(cdi, 'parent', tdi)) n++;
-    });
-  }
-  return n;
-}
-function addFam(e, idx){
-  var t = D.directory[idx]; if(!e || !t) return;
-  var rel = ($('#famrel') || {}).value || 'parent';
-  famRelSave(rel);
-  var links = famLinks(e), kl = (t.name || '').toLowerCase();
-  if(!links.some(function(l){ return String(l[1] || '').toLowerCase() === kl && l[0] === rel; }))
-    links.push([rel, t.name || '']);
-  queuePatch(S.sel, { family: JSON.stringify(links) });
-  famDualWrite(S.sel, rel, idx, true);
-  famAssocSync(S.sel, idx);
-  var sibN = rel === 'parent' ? famAddParentToSiblings(S.sel, idx) : 0;
-  var infN = famSpouseComplements(S.sel, rel, idx);
-  renderPanel(true);
-  toast(dispName(t) + ' added as ' + rel +
-    (sibN ? ' — also added to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') : '') +
-    (infN ? (sibN ? ', plus ' : ' — plus ') + infN + ' inferred link' + (infN === 1 ? '' : 's') : '') +
-    ((sibN || infN) ? '.' : '.'));
-}
-function removeFam(e, i){
-  if(!e) return;
-  var links = famLinks(e), gone = links[i];
-  links.splice(i, 1);
-  queuePatch(S.sel, { family: JSON.stringify(links) });
-  if(gone){
-    var tdi = BYN[String(gone[1] || '').toLowerCase()];
-    if(tdi != null) famDualWrite(S.sel, gone[0], tdi, false);
-  }
-  renderPanel(true);
-}
-
+/* associates */
+function hiddenAssoc(e){ var h = {}; tagList(raw(e, 'close_hide')).forEach(function(x){ h[x.toLowerCase()] = 1; }); return h; }
 function knownAssociates(e){
-  var seen = {}, out = [], hide = hiddenAssoc(e);  (e.neighbors || []).forEach(function(nb){
+  var seen = {}, out = [], hide = hiddenAssoc(e);
+  (e.neighbors || []).forEach(function(nb){
     var k = (nb.u || '').toLowerCase();
-    if(k && !seen[k] && !hide[k]){ seen[k] = 1; out.push({ u:nb.u, d:nb.d }); }
+    if(k && !seen[k] && !hide[k]){ seen[k] = 1; out.push({ u:nb.u, d:nb.d, 'new':nb['new'] }); }
   });
   return out;
 }
-function listedByOthers(e){
-  // reverse edges: people whose auto-picks include this person. Shown separately in the
-  // editor as incoming/auto context — NOT as this person's own known associates.
-  var me = (e.name || '').toLowerCase(), hide = hiddenAssoc(e), out = [];
-  D.directory.forEach(function(r){
-    if(r === e || (r.profile || {}).deleted === '1') return;
-    if((r.neighbors || []).some(function(n){ return (n.u || '').toLowerCase() === me; })){
-      var k = (r.name || '').toLowerCase();
-      if(k && !hide[k]) out.push(r);
-    }
+/* rebuild the displayed neighbor list from the baked base + local extras + close_add - close_hide */
+function rebuildNeighbors(e){
+  var hide = hiddenAssoc(e), seen = {}, out = [];
+  function add(u, d, nw){
+    var k = String(u || '').toLowerCase();
+    if(!k || seen[k] || hide[k]) return;
+    seen[k] = 1; out.push({ u:u, d:d, 'new':nw });
+  }
+  (e._nb0 || []).forEach(function(n){ add(n.u, n.d, n['new']); });
+  (e._nbx || []).forEach(function(n){ add(n.u, n.d); });
+  tagList(raw(e, 'close_add')).forEach(function(a){
+    var di = BYN[a.toLowerCase()];
+    add(a, di != null ? dispName(D.directory[di]) : a);
   });
-  return out;
-}
-function nbrChipHTML(nb, removable){
-  var di = BYN[(nb.u || '').toLowerCase()];
-  var d = di != null ? LV[personLevel(D.directory[di])].c : '#5a6b84';
-  var label = di != null ? auName(D.directory[di]).name : personLabel(nb.u, nb.d);
-  return '<span class="nchip' + (removable ? '' : ' plain') + '" style="--d:' + d + '" ' + (di != null ? 'data-act="nav" data-di="' + di + '" title="Open dossier"' : 'title="Not in the directory"') + '><i></i>' +
-    esc(label) + (removable ? '<b class="nx" data-act="rmnx" data-u="' + esc(nb.u) + '" title="Remove known associate">×</b>' : '') + '</span>';
-}
-function tile(icon, val, label){
-  return '<div class="tile"><span class="tic">' + ic(icon, 15) + '</span><span class="tx"><b' + (val ? '' : ' class="dim"') + '>' + esc(val || '—') + '</b><i>' + esc(label) + '</i></span></div>';
-}
-function timelineHTML(e){
-  var evs = sortedEvents(e);
-  if(!evs.length) return emptyBox('No timeline events yet.');
-  return '<div class="tl">' + evs.map(function(o){
-    var ev = o.ev;
-    var meta = '';
-    if(ev.init) meta += '<span class="evbadge">' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</span>';
-    return '<div class="ev"><span class="evdot"></span><div class="evtop"><time>' + evDate(ev.date) + '</time>' + meta + '</div>' +
-      '<div class="evtitle">' + esc(ev.summary || '') + '</div>' + (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>';
-  }).join('') + '</div>';
-}
-
-function lvl2View(e){
-  var tier = tierOf(e), mom = momVal(e);
-  var tierChip = tier ? '<div class="tchip1" style="--c:' + tierCol(e) + '"><b>' + TIERS[tier].n + '</b></div>' : '';
-  var momHTML = '';
-  if(mom){
-    momHTML = '<div class="momsimple" title="Momentum: ' + MOM_LABELS[mom] + '">' +
-      ['-','0','+'].map(function(m){
-        return '<i class="' + (m === mom ? 'on ' : '') + (m === '-' ? 'neg' : m === '+' ? 'pos' : 'neu') + '">' + MOM_ICONS[m] + '</i>';
-      }).join('') + '</div>';
-  }
-  var tierMom = (tierChip || momHTML) ? '<div class="tiermom">' + tierChip + momHTML + '</div>' : '';
-  var sinceY = knownSinceYear(e), yrsK = yearsKnownCalc(e);
-  var tiles = '<div class="tiles">' +
-    tile('users', cap(gv(e, 'relationship')), 'Relationship') +
-    tile('briefcase', cap(gv(e, 'context')), 'Context') +
-    tile('tag', catLabel(e), 'Category') +
-    tile('clock', sinceY ? String(sinceY) : '', 'Known since' + (yrsK > 0 ? ' (' + yrsK + ' yrs)' : '')) + '</div>';
-  var connection = card('users', 'Connection', 2, tierMom + tiles, '', 'span');
-  var phases = connTimelineHTML(e);
-  var tlBody = phases ? '<div class="tl2col"><div class="tlmain">' + timelineHTML(e) + '</div><div class="tlphases"><div class="subhead">Phases</div>' + phases + '</div></div>' : timelineHTML(e);
-  var tl = card('calendar', 'Timeline', 2, tlBody,
-    '<button class="mini" data-act="addevent" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add event</button>', 'span');
-  return connection + tl;
-}
-
-function filesHTML(e){
-  var fs = e.files || [];
-  if(!fs.length) return emptyBox('Nothing attached. Use a file when the timeline runs out of room.');
-  return fs.map(function(f){
-    var isDoc = f.kind === 'gdoc';
-    return '<div class="file"><div class="fic">' + ic(isDoc ? 'file' : 'link', 17) + '</div><div class="fbody"><div class="fn">' + esc(f.name || 'Untitled') + '</div>' +
-      (f.note ? '<div class="fm">' + esc(f.note) + '</div>' : '') + '<div class="fm dim">' + (isDoc ? 'Google Doc' : 'Link') + '</div></div>' +
-      (f.url ? '<a class="open" href="' + esc(f.url) + '" target="_blank" rel="noopener">Open' + ic('ext', 12) + '</a>' : '') + '</div>';
-  }).join('');
-}
-function lvl3View(e){
-  return card('folder', 'Files', 3, filesHTML(e) +
-    '<div class="arow"><button class="mini" data-act="newdoc" style="--c:' + LV[3].c + '">' + ic('plus', 13) + 'New Drive doc</button>' +
-    '<button class="mini neutral" data-act="attach">' + ic('link', 13) + 'Attach existing link</button></div>', '', 'span');
-}
-function dossierView(e){
-  var views = { 1:lvl1View, 2:lvl2View, 3:lvl3View };
-  return '<div class="doc">' + phead(e) + '<div class="lvstage">' + [1,2,3].map(function(n){
-    return '<div class="lvl' + (S.lvl === n ? ' on' : '') + '" data-l="' + n + '">' + views[n](e) + '</div>';
-  }).join('') + '</div></div>';
-}
-
-/* ---------- panel: edit mode (one stack of sections) ---------- */
-function optPair(o){ return Array.isArray(o) ? o : [o, o ? cap(o) : '—']; }
-function labHTML(f, extra){
-  return '<span class="ilab">' + esc(f.l) + '</span>' + (extra || '');
-}
-
-function tagChip(v, on, rm){
-  return '<span class="tchip' + (on ? ' on' : '') + (rm ? ' rm' : '') + '" data-tv="' + esc(v) + '">' + esc(v) + (rm ? '<b>×</b>' : '') + '</span>';
-}
-function orgCat(k){ return ORG_CATS.filter(function(c){ return c.k === k; })[0]; }
-/* Also known as sits behind a toggle in the Identity section, OFF by default; it
-   starts ON only when the profile already has an AKA value. The toggle is a pure
-   visibility control: it never writes or deletes the stored value. The value
-   changes only by typing in the field (patched on input like any text field);
-   clearing it means emptying the field while the toggle is on. */
-function akaRow(e){
-  var v = gv(e, 'also_known_as'), on = !!String(v || '').trim();
-  return '<div class="irow akarow"><label class="indtogg akatogg" title="Show the also-known-as field">' +
-    '<input type="checkbox" data-akatgl' + (on ? ' checked' : '') + '><span class="itrack"><i></i></span><em>Also known as</em></label>' +
-    '<input class="akainput" data-pk="also_known_as" value="' + esc(v) + '" placeholder="Nickname or alias" autocomplete="off"' + (on ? '' : ' hidden') + '></div>';
-}
-/* Read-only Instagram username, shown in the Contact section where the Email
-   field used to be, so the handle is visible while editing the name. */
-function igRow(e){
-  if(e.src === 'contacts' || e.src === 'subject' || !e.name) return '';
-  return '<div class="irow igrow"><span class="ilab">Instagram</span>' +
-    '<a class="iglink ' + (e.relation === 'mutual' ? 'ig-mutual' : 'ig-oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a></div>';
-}
-/* Skills editor: free-text add at the top, the selected skills as removable
-   chips, then the SKILL_TAXONOMY flow — parent categories that expand in
-   place (one open at a time); tapping a skill toggles it on the profile.
-   Inside each category the general skill (the category's own name) is listed
-   first. Selected values with no parent land in an "Other" group at the
-   bottom so nothing on a profile is ever hidden by the picker. */
-function skillFlowHTML(cur){
-  var h = SKILL_TAXONOMY.map(function(g){
-    var items = [g.cat].concat(g.skills.filter(function(s){ return s !== g.cat; }));
-    var n = items.filter(function(s){ return cur.indexOf(s) >= 0; }).length;
-    var open = SK_OPEN === g.cat;
-    var btns = items.map(function(s, i){
-      return '<button type="button" class="skopt' + (i === 0 ? ' gen' : '') + (cur.indexOf(s) >= 0 ? ' on' : '') + '" data-skill="' + esc(s) + '">' + esc(s) + (i === 0 ? '<em>general</em>' : '') + '</button>';
-    }).join('');
-    return '<div class="skcat' + (open ? ' open' : '') + '">' +
-      '<button type="button" class="skcatbtn" data-skcat="' + esc(g.cat) + '" aria-expanded="' + open + '"><span class="skcatname">' + esc(g.cat) + '</span>' +
-      (n ? '<span class="skcnt">' + n + '</span>' : '') + ic('chev', 13) + '</button>' +
-      '<div class="skcatpanel"' + (open ? '' : ' hidden') + '>' + btns + '</div></div>';
-  }).join('');
-  var others = cur.filter(function(s){ return !skillParentOf(s); });
-  if(others.length){
-    var openO = SK_OPEN === 'Other';
-    h += '<div class="skcat skother' + (openO ? ' open' : '') + '">' +
-      '<button type="button" class="skcatbtn" data-skcat="Other" aria-expanded="' + openO + '"><span class="skcatname">Other</span><span class="skcnt">' + others.length + '</span>' + ic('chev', 13) + '</button>' +
-      '<div class="skcatpanel"' + (openO ? '' : ' hidden') + '>' +
-      others.map(function(s){ return '<button type="button" class="skopt on" data-skill="' + esc(s) + '">' + esc(s) + '</button>'; }).join('') +
-      '</div></div>';
-  }
-  return '<div class="skflow">' + h + '</div>';
-}
-function skillsEditHTML(e){
-  var f = fieldDef('specialty'), sep = f.sep || ', ';
-  var cur = splitTags(gv(e, 'specialty'), sep);
-  var chips = cur.map(function(x){ return tagChip(x, true, true); }).join('');
-  return '<div class="trow">' + labHTML(f) + '<div class="skedit">' +
-    '<input class="skadd" placeholder="+ add a specific skill" aria-label="Add a specific skill" autocomplete="off">' +
-    '<div class="tchips" data-pk="specialty" data-mode="tags" data-sep="' + esc(sep) + '">' + chips + '</div>' +
-    skillFlowHTML(cur) +
-    '</div></div>';
-}
-function syncSkillOpts(edit){
-  var cont = $('.tchips', edit); if(!cont) return;
-  var sel = $$('.tchip', cont).map(function(c){ return c.getAttribute('data-tv'); });
-  var flow = $('.skflow', edit);
-  if(flow) flow.outerHTML = skillFlowHTML(sel);
-}
-function rateRow(k, e){
-  var f = fieldDef(k), v = gv(e, k);
-  var h = '<div class="rrow"><span class="rlab">' + esc(f.l) + '</span><div class="dots" data-pk="' + k + '" data-v="' + esc(v) + '">';
-  for(var i = 1; i <= 5; i++) h += '<span class="pdot' + (String(v) === String(i) ? ' on' : '') + '" data-v="' + i + '">' + i + '</span>';
-  return h + '</div></div>';
-}
-function fieldRow(k, e){
-  var f = fieldDef(k), v = gv(e, k), h;
-  if(f.t === 'score') h = rateRow(k, e);
-  else if(f.t === 'tier') h = tierEditHTML(e);
-  else if(f.t === 'momentum') h = momentumEditHTML(e);
-  else if(f.t === 'select'){
-    var opts = f.o.map(optPair);
-    if(v && !opts.some(function(p){ return p[0] === v; })) opts.push([v, v]);
-    h = '<div class="irow">' + labHTML(f) + '<select data-pk="' + k + '">' + opts.map(function(p){
-      return '<option value="' + esc(p[0]) + '"' + (p[0] === v ? ' selected' : '') + '>' + esc(p[1]) + '</option>';
-    }).join('') + '</select></div>';
-  }
-  else if(f.t === 'long'){
-    var ai = f.ai ? '<button class="mini neutral aibtn" data-act="tidy" data-k="' + k + '">' + ic('sparkle', 13) + 'Tidy with AI</button><span class="aimsg" id="aimsg-' + k + '"></span>' : '';
-    h = '<div class="lrow"><div class="lhead">' + labHTML(f) + ai + '</div><textarea data-pk="' + k + '" rows="' + (f.r || 4) + '" placeholder="' + esc(f.ph || '') + '">' + esc(v) + '</textarea></div>';
-  }
-  else if(k === 'specialty') h = skillsEditHTML(e);
-  else if(f.t === 'tags' || f.t === 'pick'){
-    var sep = f.sep || ', ', cur = splitTags(v, sep), chips;
-    if(f.t === 'pick'){
-      var baseOpts = f.vocab || (orgCat(k) || {}).options || [];
-      var all = baseOpts.concat(cur.filter(function(x){ return baseOpts.indexOf(x) < 0; }));
-      chips = all.map(function(o){ return tagChip(o, cur.indexOf(o) >= 0, false); });
-    } else chips = cur.map(function(x){ return tagChip(x, true, true); });
-    h = '<div class="trow">' + labHTML(f) + '<div class="tchips" data-pk="' + k + '" data-mode="' + (f.t === 'pick' ? 'pick' : 'tags') + '" data-sep="' + esc(sep) + '">' +
-      chips.join('') + '<input class="tadd" placeholder="' + esc(f.ph || '+ add') + '" aria-label="Add ' + esc(f.l) + '"></div></div>';
-  }
-  else h = '<div class="irow">' + labHTML(f) + '<input data-pk="' + k + '" value="' + esc(v) + '" placeholder="—" autocomplete="off"></div>';
-  return h;
-}
-function secFill(s, e){
-  var n;
-  if(secWaived(e, s.id)) return { t:'Waived', done:true };
-  if(s.id === 'connections'){ n = (e.neighbors || []).length + connPhases(e).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'education'){ n = degreesOf(e).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'timeline'){ n = (e.events || []).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'files'){ n = (e.files || []).length; return { t:String(n), done:n > 0 }; }
-  if(s.id === 'admin'){ var a = (e.profile || {}).audit === 'audited'; return { t:a ? 'Audited' : 'Needs audit', done:a }; }
-  var got = s.fields.filter(function(k){ return gv(e, k) !== ''; }).length;
-  return { t:got + '/' + s.fields.length, done:got === s.fields.length };
-}
-/* tier hero editor + momentum directional editor */
-function tierEditHTML(e){
-  var v = tierOf(e);
-  return '<div class="irow"><span class="ilab">Tier</span><div class="tierhero edit">' + TIER_ORDER.map(function(t){
-    return '<button type="button" class="tseg' + (v === t ? ' on' : '') + '" data-tier="' + t + '" style="--c:' + TIERS[t].c + '"><b>' + TIERS[t].n + '</b></button>';
-  }).join('') + '</div></div>';
-}
-function momentumEditHTML(e){
-  var v = momVal(e) || '0';
-  var order = ['-', '0', '+'];
-  var h = '<div class="irow"><span class="ilab">Momentum</span><div class="momwrap"><div class="momtrack tri" data-pk="momentum" data-v="' + v + '"><div class="momfill" style="width:' + momPos(v) + '%"></div>';
-  order.forEach(function(t){ h += '<button type="button" class="mstop' + (t === v ? ' on' : '') + '" data-v="' + t + '" title="' + MOM_LABELS[t] + '"><b class="msym">' + MOM_ICONS[t] + '</b></button>'; });
-  h += '</div><div class="momlabels"><span>negative</span><b>' + MOM_LABELS[v] + '</b><span>positive</span></div></div></div>';
-  return h;
-}
-
-function updateFills(){
-  if(S.sel === null || !S.editing) return;
-  var e = D.directory[S.sel];
-  SECTIONS.forEach(function(s){
-    var el = $('#rightbody .esec[data-sec="' + s.id + '"] .sbadge'); if(!el) return;
-    var f = secFill(s, e); el.textContent = f.t; el.classList.toggle('done', f.done);
-  });
-}
-function connectionsBody(e){
-  var nb = knownAssociates(e);
-  var chips = nb.length ? '<div class="chips">' + nb.map(function(x){ return nbrChipHTML(x, true); }).join('') + '</div>' : '<p class="dim" style="margin:0;font-size:13px">None mapped yet.</p>';
-  var cps = connPhases(e);
-  return '<div class="subhead first">Known associates</div>' + chips +
-    '<div class="naddwrap"><input id="naddinput" placeholder="Add a known associate: type a name" autocomplete="off"><div id="naddlist"></div></div>' +
-    '<div class="subhead">Family</div>' + famEditHTML(e) +
-    '<div class="arow"><button class="mini" data-act="famspace">Open in family space</button></div>' +
-    '<div class="subhead">Connection timeline</div>' +
-    '<div id="cprows">' + cps.map(function(p, i){ return cpRowHTML(p, i); }).join('') + '</div>' +
-    '<div class="arow"><button class="mini" data-act="cpadd" style="--c:' + LV[2].c + '">' + ic('plus', 13) + 'Add phase</button></div>' +
-    '<datalist id="cplabels">' + CP_LABELS.map(function(l){ return '<option value="' + esc(l) + '">'; }).join('') + '</datalist>';
-}
-function evFormHTML(ev){
-  ev = ev || {};
-  function seg(id, items, cur){
-    return '<div class="seg" id="' + id + '">' + items.map(function(it){
-      return '<button type="button" data-v="' + it[0] + '"' + (String(cur || '') === it[0] ? ' class="on"' : '') + '>' + it[1] + '</button>'; }).join('') + '</div>';
-  }
-  return '<div class="evform" id="evform"><div class="subhead">' + (S.evEdit != null ? 'Edit event' : 'Add event') + '</div>' +
-    '<input type="text" id="evdate" value="' + esc(ev.date || todayStr()) + '" placeholder="YYYY-MM-DD" autocomplete="off" style="width:100%">' +
-    '<input type="text" id="evtitle" value="' + esc(ev.summary || '') + '" placeholder="Headline, for example: Started a new job" autocomplete="off">' +
-    '<textarea id="evdetail" rows="3" placeholder="Details (optional)">' + esc(ev.detail || '') + '</textarea>' +
-    '<div class="evmeta"><span class="evmlab">Initiated by</span>' + seg('evinit', [['', '—'], ['me', 'Me'], ['them', 'Them']], ev.init) + '</div>' +
-    '<div class="arow"><button class="mini" data-act="evsave" style="--c:' + LV[2].c + '">' + ic('check', 13) + (S.evEdit != null ? 'Update event' : 'Add to timeline') + '</button>' +
-    (S.evEdit != null ? '<button class="mini neutral" data-act="evcancel">Cancel</button>' : '') + '</div></div>';
-}
-function timelineEdit(e){
-  var rows = sortedEvents(e).map(function(o){
-    var ev = o.ev;
-    return '<div class="evrow' + (S.evEdit === o.i ? ' editing' : '') + '"><div><div class="evtop"><time style="color:var(--l2);font-size:11.5px;font-weight:700">' + evDate(ev.date) + '</time></div>' +
-      '<div class="evtitle">' + esc(ev.summary || '') + '</div>' + (ev.detail ? '<div class="evdetail">' + esc(ev.detail) + '</div>' : '') + '</div>' +
-      '<div class="evbtns"><button class="mini neutral" data-act="evedit" data-evi="' + o.i + '">Edit</button><button class="mini danger" data-act="evdel" data-evi="' + o.i + '">Remove</button></div></div>';
-  }).join('') || '<p class="dim" style="margin:0 0 8px;font-size:13px">No events yet.</p>';
-  var cur = S.evEdit != null ? (e.events || [])[S.evEdit] : null;
-  return rows + evFormHTML(cur);
-}
-function filesEdit(e){
-  var rows = (e.files || []).map(function(f, i){
-    var isDoc = f.kind === 'gdoc';
-    return '<div class="evrow"><div class="fic">' + ic(isDoc ? 'file' : 'link', 16) + '</div><div><div class="evtitle">' + esc(f.name || 'Untitled') + '</div>' +
-      (f.url ? '<div class="evdetail">' + esc(f.url) + '</div>' : '') + (f.note ? '<div class="evdetail">' + esc(f.note) + '</div>' : '') + '</div>' +
-      '<div class="evbtns"><button class="mini danger" data-act="fdel" data-fi="' + i + '">Remove</button></div></div>';
-  }).join('') || '<p class="dim" style="margin:0 0 8px;font-size:13px">No files attached.</p>';
-  return rows + '<div class="evform"><div class="subhead">Attach a link</div>' +
-    '<input type="text" id="fname" placeholder="Name, for example: Full journal record" autocomplete="off">' +
-    '<input type="text" id="furl" placeholder="https://docs.google.com/…" autocomplete="off">' +
-    '<input type="text" id="fnote" placeholder="Note (optional)" autocomplete="off">' +
-    '<div class="arow"><button class="mini" data-act="fsave" style="--c:' + LV[3].c + '">' + ic('link', 13) + 'Attach</button>' +
-    '<button class="mini neutral" data-act="newdoc">' + ic('plus', 13) + 'New Drive doc instead</button></div></div>';
-}
-function adminBody(e){
-  var aud = (e.profile || {}).audit === 'audited';
-  var h = '<div class="irow"><span class="ilab">Audit</span><div class="seg" id="audseg">' +
-    '<button type="button" data-act="setaudit" data-v="needs_audit"' + (aud ? '' : ' class="on"') + '>Needs audit</button>' +
-    '<button type="button" data-act="setaudit" data-v="audited"' + (aud ? ' class="on"' : '') + '>Audited</button></div></div>';
-  h += SECTIONS[SECTIONS.length - 1].fields.map(function(k){ return fieldRow(k, e); }).join('');
-  if(e.src === 'contacts' || e.src === 'subject') h += '<div class="subhead">Merge person</div>' + mergeBody(e);
-  h += '<div class="subhead">Danger zone</div><div class="arow" style="margin-top:0"><button class="mini danger" data-act="delete">' + ic('trash', 13) + 'Delete this person</button></div>';
-  return h;
-}
-function educationBody(e){
-  var ds = parseArr(gv(e, 'degrees'));
-  var rows = ds.map(function(d, i){ return { d:d, i:i }; })
-    .sort(function(a, b){ return String(b.d.year || '').localeCompare(String(a.d.year || '')); })
-    .map(function(o){
-      var line = [o.d.degree, o.d.major, o.d.year].filter(Boolean).join(' · ');
-      return '<div class="evrow' + (S.degEdit === o.i ? ' editing' : '') + '"><div class="fic">' + ic('cap', 16) + '</div><div><div class="evtitle">' + esc(o.d.school || 'School not set') + '</div>' +
-        (line ? '<div class="evdetail">' + esc(line) + '</div>' : '') + (o.d.note ? '<div class="evdetail">' + esc(o.d.note) + '</div>' : '') + '</div>' +
-        '<div class="evbtns"><button class="mini neutral" data-act="degedit" data-di="' + o.i + '">Edit</button><button class="mini danger" data-act="degdel" data-di="' + o.i + '">Remove</button></div></div>';
-    }).join('') || '<p class="dim" style="margin:0 0 8px;font-size:13px">No degrees on file.</p>';
-  var cur = (S.degEdit != null && ds[S.degEdit]) ? ds[S.degEdit] : {};
-  var known = !!SCHOOLS[cur.school], other = cur.school && !known;
-  var schoolOpts = '<option value="">School…</option>' + Object.keys(SCHOOLS).map(function(k){
-    return '<option value="' + esc(k) + '"' + (cur.school === k ? ' selected' : '') + '>' + esc(k) + '</option>'; }).join('') +
-    '<option value="__other"' + (other ? ' selected' : '') + '>Other school</option>';
-  var degOpts = '<option value="">Degree…</option>' + DEGREE_TYPES.map(function(k){
-    return '<option value="' + esc(k) + '"' + (cur.degree === k ? ' selected' : '') + '>' + esc(k) + '</option>'; }).join('');
-  if(cur.degree && DEGREE_TYPES.indexOf(cur.degree) < 0) degOpts += '<option value="' + esc(cur.degree) + '" selected>' + esc(cur.degree) + '</option>';
-  return rows + '<div class="evform"><div class="subhead">' + (S.degEdit != null ? 'Edit degree' : 'Add degree') + '</div>' +
-    '<div class="two"><select id="ddschool">' + schoolOpts + '</select><select id="dddegree">' + degOpts + '</select></div>' +
-    '<input type="text" id="ddother" value="' + esc(other ? cur.school : '') + '" placeholder="Other school name (only if not in the list)" autocomplete="off">' +
-    '<div class="two"><input type="text" id="ddmajor" value="' + esc(cur.major || '') + '" placeholder="Major" autocomplete="off">' +
-    '<input type="text" id="ddyear" value="' + esc(cur.year || '') + '" placeholder="Grad year, for example 2019" autocomplete="off"></div>' +
-    '<input type="text" id="ddnote" value="' + esc(cur.note || '') + '" placeholder="Source or note (optional)" autocomplete="off">' +
-    '<div class="arow"><button class="mini" data-act="degsave" style="--c:' + LV[1].c + '">' + ic('check', 13) + (S.degEdit != null ? 'Update degree' : 'Add degree') + '</button>' +
-    (S.degEdit != null ? '<button class="mini neutral" data-act="degcancel">Cancel</button>' : '') + '</div></div>' +
-    '<div class="subhead">Achievements</div>' + fieldRow('achievements', e);
-}
-function saveDegree(){
-  var e = D.directory[S.sel]; if(!e) return;
-  var sch = $('#ddschool').value, school = sch === '__other' ? $('#ddother').value.trim() : sch;
-  var degree = $('#dddegree').value, major = $('#ddmajor').value.trim(), year = $('#ddyear').value.trim(), note = $('#ddnote').value.trim();
-  if(!school){ toast('Pick the school first.'); return; }
-  if(!degree && !major && !year){ toast('Add at least a degree, major, or year.'); return; }
-  if(year && !/^\d{4}$/.test(year)){ toast('Use a four digit year like 2019.'); return; }
-  var d = { school:school };
-  if(degree) d.degree = degree;
-  if(major) d.major = major;
-  if(year) d.year = year;
-  if(note) d.note = note;
-  var arr = parseArr(gv(e, 'degrees')).slice();
-  if(S.degEdit != null && arr[S.degEdit]) arr[S.degEdit] = d; else arr.push(d);
-  var patch = { degrees:JSON.stringify(arr) };
-  var edited = S.degEdit != null;
-  S.degEdit = null;
-  queuePatch(S.sel, patch);
-  renderPanel(true); toast(edited ? 'Degree updated.' : 'Degree added.');
-}
-function delDegree(i){
-  var e = D.directory[S.sel], arr = parseArr(gv(e, 'degrees')).slice();
-  if(!arr[i]) return;
-  if(!confirm('Remove this degree?\n\n' + [arr[i].school, arr[i].degree, arr[i].major].filter(Boolean).join(' · '))) return;
-  arr.splice(i, 1); S.degEdit = null;
-  queuePatch(S.sel, { degrees:JSON.stringify(arr) });
-  renderPanel(true); toast('Degree removed.');
-}
-function secBody(s, e){
-  if(s.id === 'connections') return connectionsBody(e);
-  if(s.id === 'timeline') return timelineEdit(e);
-  if(s.id === 'education') return educationBody(e);
-  if(s.id === 'files') return filesEdit(e);
-  if(s.id === 'admin') return adminBody(e);
-  if(s.id === 'ratings') return '<div class="rgrid">' + s.fields.map(function(k){ return fieldRow(k, e); }).join('') + '</div>';
-  if(s.id === 'identity') return s.fields.map(function(k){ return fieldRow(k, e); }).join('') + igRow(e) + akaRow(e);
-  return s.fields.map(function(k){ return fieldRow(k, e); }).join('');
-}
-function secHTML(s, e){
-  var open = S.openSecs[s.id] !== false, fl = secFill(s, e), wv = secWaived(e, s.id);
-  return '<section class="esec' + (open ? ' open' : '') + (wv ? ' waived' : '') + '" data-sec="' + s.id + '" style="--c:' + (s.lv ? LV[s.lv].c : '#ece9e2') + '">' +
-    '<header><span class="sechead" data-act="sectoggle" data-sec="' + s.id + '"><span class="cic">' + ic(s.ic, 15) + '</span><h3>' + esc(s.title) + '</h3>' +
-    '<span class="sbadge' + (fl.done ? ' done' : '') + '">' + esc(fl.t) + '</span><span class="chev">' + ic('chev', 14) + '</span></span>' +
-    '<label class="indtogg wvtogg secwv" title="Insufficient data: waive the whole ' + esc(s.title) + ' section for this person (fields disable and stop counting in audits)">' +
-    '<input type="checkbox" data-secwv="' + s.id + '"' + (wv ? ' checked' : '') + '><span class="itrack"><i></i></span></label></header>' +
-    '<div class="sbody">' + secBody(s, e) + '</div></section>';
-}
-function editCompletenessData(e){
-  var tot = 0, got = 0, levels = {};
-  SECTIONS.forEach(function(s){
-    if(secWaived(e, s.id)) return; /* waived sections are excluded entirely */
-    var flds = s.fields || [];
-    if(s.id === 'education'){ tot += 1; if(degreesOf(e).length) got += 1; return; }
-    if(s.id === 'connections'){ tot += 1; if((e.neighbors || []).length) got += 1; return; }
-    if(s.id === 'timeline'){ tot += 1; if((e.events || []).length) got += 1; return; }
-    if(s.id === 'files'){ tot += 1; if((e.files || []).length) got += 1; return; }
-    flds.forEach(function(k){ tot++; if(gv(e, k) !== '') got++; });
-  });
-  [1, 2, 3].forEach(function(lv){
-    var lt = 0, lg = 0;
-    SECTIONS.forEach(function(s){
-      if(s.lv !== lv || secWaived(e, s.id)) return;
-      (s.fields || []).forEach(function(k){ lt++; if(gv(e, k) !== '') lg++; });
-      if(s.id === 'education'){ lt++; if(degreesOf(e).length) lg++; }
-      if(s.id === 'connections'){ lt++; if((e.neighbors || []).length) lg++; }
-      if(s.id === 'timeline'){ lt++; if((e.events || []).length) lg++; }
-    });
-    levels[lv] = lt ? Math.round(lg / lt * 100) : 0;
-  });
-  return { pct: tot ? Math.round(got / tot * 100) : 0, levels: levels };
-}
-function pct(e){ return editCompletenessData(e).pct; }
-function editGroups(){
-  // level groups for the edit hero toggle: 1=On file, 2=Record, 3=Files(+Admin)
-  return [
-    { id:1, n:'On file', c:LV[1].c, lvs:[1] },
-    { id:2, n:'Record',  c:LV[2].c, lvs:[2] },
-    { id:3, n:'Files',   c:LV[3].c, lvs:[3, 0] }
-  ];
-}
-function dossierEdit(e){
-  if(S.editGroup == null) S.editGroup = 1;
-  var groups = editGroups();
-  var comp = editCompletenessData(e);
-  var hero = '<div class="egrouphero">' + groups.map(function(g){
-    var gp = comp.levels[g.id] != null ? comp.levels[g.id] : 0;
-    return '<span class="eghwrap"><button type="button" class="egh' + (S.editGroup === g.id ? ' on' : '') + '" data-act="egroup" data-g="' + g.id + '" style="--c:' + g.c + '"><b>' + g.n + '</b><i>' + gp + '%</i></button>' +
-      '<label class="indtogg wvtogg egwv" title="Insufficient data: waive or restore every section in the ' + g.n + ' tab at once">' +
-      '<input type="checkbox" data-groupwv="' + g.id + '"' + (groupWaived(e, g) ? ' checked' : '') + '><span class="itrack"><i></i></span></label></span>';
-  }).join('') + '<span class="wvlegend"><span class="wvdot"></span>= insufficient data</span></div>';
-  var lvlN = { 1:'On file', 2:'Record', 3:'Files', 0:'Admin' }, stack = '';
-  var active = groups.filter(function(g){ return g.id === S.editGroup; })[0];
-  SECTIONS.forEach(function(s){
-    if(active.lvs.indexOf(s.lv) < 0) return;
-    stack += secHTML(s, e);
-  });
-  return '<div class="doc edit">' + phead(e) + hero + '<div class="lvstage estage">' +
-    '<div class="estack">' + stack + '</div></div>' +
-    '<div class="efoot"><span id="savestate" class="savestate">All changes saved</span><span class="esp"></span>' +
-    '<button class="ibtn solid" data-act="done">' + ic('check', 16) + '<span>Done</span></button></div></div>';
-}
-function saveOpenSecs(){ store('ncc_secs', JSON.stringify(S.openSecs)); }
-function toggleSec(id, force){
-  var on = force != null ? force : !(S.openSecs[id] !== false);
-  S.openSecs[id] = on; saveOpenSecs();
-  var el = $('#rightbody .esec[data-sec="' + id + '"]'); if(el) el.classList.toggle('open', on);
-}
-function jumpTo(id){
-  toggleSec(id, true);
-  var el = $('#rightbody .esec[data-sec="' + id + '"]'); if(!el) return;
-  var stg = $('#rightbody .estage');
-  if(stg) stg.scrollTo({ top: Math.max(0, el.offsetTop - 8), behavior:'smooth' });
-}
-
-/* ---------- panel: render + navigation ---------- */
-function renderPanel(keep){
-  var body = $('#rightbody'), panel = $('#right');
-  if(S.sel === null){
-    panel.classList.remove('open'); document.body.classList.remove('panelopen');
-    body.innerHTML = ''; return;
-  }
-  var st = null;
-  if(keep){ var old = $('.lvstage', body); if(old) st = old.scrollTop; }
-  panel.classList.add('open'); document.body.classList.add('panelopen');
-  document.body.classList.toggle('is-editing', !!S.editing);
-  var e = D.directory[S.sel];
-  body.innerHTML = S.editing ? dossierEdit(e) : dossierView(e);
-  var stg = $('.lvstage', body);
-  if(stg && st != null) stg.scrollTop = st;
-  if(S.editing) syncUI();
-  if(S.jumpTo){ var j = S.jumpTo; S.jumpTo = null; jumpTo(j); }
-}
-function rerender(){ renderPanel(true); }
-function markSel(){
-  $$('#leftbody [data-i]').forEach(function(el){ el.classList.toggle('sel', parseInt(el.getAttribute('data-i'), 10) === S.sel); });
-}
-function openPerson(idx, o){
-  o = o || {};
-  if(idx == null || !D.directory[idx]) return;
-  if(!o.fromAuditKeep) AUD.fromAudit = false;
-  if(o.push && S.sel !== null && S.sel !== idx){ S.hist.push(S.sel); S.fwd = []; }
-  else if(!o.keepHist){ S.hist = []; S.fwd = []; }
-  syncNavBtns();
-  S.sel = idx; S.editing = !!o.edit; S.lvl = o.lvl || 1; S.evEdit = null; S.degEdit = null;
-  markSel();
-  var row = $('#leftbody [data-i="' + idx + '"]');
-  if(row) row.scrollIntoView({ block:'nearest' });
-  var n = NODES.filter(function(x){ return x.i === idx; })[0];
-  if(n) hub.target = { x:rotX(n), y:rotY(n) };
-  renderPanel(false);
-  glSyncFocus();
-}
-function closePanel(){
-  S.sel = null; S.editing = false; S.hist = []; S.fwd = []; S.evEdit = null; S.degEdit = null;
-  markSel(); renderPanel(false); glSyncFocus();
-}
-function goBack(){
-  if(!S.hist.length) return;
-  if(S.sel !== null) S.fwd.push(S.sel);
-  var prev = S.hist.pop();
-  openPerson(prev, { keepHist:true });
-  syncNavBtns();
-}
-function goForward(){
-  if(!S.fwd.length) return;
-  if(S.sel !== null) S.hist.push(S.sel);
-  var nxt = S.fwd.pop();
-  openPerson(nxt, { keepHist:true });
-  syncNavBtns();
-}
-function goHome(){
-  closePanel();
-  /* Home also clears the search box and every active filter, back to the default people view. */
-  S.tag = null; S.rel = ''; S.tierF = ''; S.auditOnly = false; S.enrichedOnly = false; S.recentOnly = false; S.famOnly = false;
-  setSort('strength'); S.lvlF = 0; S.q = ''; S.rail = 'people'; S.limit = 200;
-  var fqEl = $('#fq'); if(fqEl) fqEl.value = '';
-  refresh();
-  if(S.mode === '3d' && typeof glReset === 'function') glReset();
-  else if(typeof hubFit === 'function') hubFit();
-  syncNavBtns();
-}
-function syncNavBtns(){
-  var b = $('#navback'), f = $('#navfwd');
-  if(b) b.classList.toggle('dim', !S.hist.length);
-  if(f) f.classList.toggle('dim', !S.fwd.length);
-}
-function setLevel(n){
-  if(S.sel === null || S.editing) return;
-  S.lvl = n;
-  $$('#rightbody .tab').forEach(function(t){ t.classList.toggle('on', parseInt(t.getAttribute('data-lvl'), 10) === n); });
-  $$('#rightbody .lvl').forEach(function(l){ l.classList.toggle('on', parseInt(l.getAttribute('data-l'), 10) === n); });
-  var stg = $('#rightbody .lvstage'); if(stg) stg.scrollTop = 0;
-}
-function enterEdit(sec){
-  if(S.sel === null) return;
-  S.editing = true; S.evEdit = null; S.degEdit = null;
-  if(sec) S.jumpTo = sec;
-  renderPanel(false);
-}
-function exitEdit(){
-  outKick(); S.editing = false; S.evEdit = null; S.degEdit = null; renderPanel(true); refresh();
-}
-function nextNeedsAudit(){
-  var rows = listRows().filter(function(di){ return di !== S.sel && (D.directory[di].profile || {}).audit !== 'audited'; });
-  return rows.length ? rows[0] : null;
-}
-
-/* ---------- panel actions ---------- */
-function closeMenus(){ $$('.menu-pop').forEach(function(m){ m.hidden = true; }); }
-function act(a, el){
-  if(a !== 'menu') closeMenus();
-  var e = S.sel !== null ? D.directory[S.sel] : null;
-  switch(a){
-    case 'close': closePanel(); break;
-    case 'back': goBack(); break;
-    case 'backaudit': openAudit(); break;
-    case 'edit': enterEdit(); break;
-    case 'done': exitEdit(); break;
-    case 'editname': editHeroName(e); break;
-    case 'wide': S.wide = !S.wide; document.body.classList.toggle('panelwide', S.wide); rerender(); break;
-    case 'menu': var pop = $('.menu-pop', el.parentNode); pop.hidden = !pop.hidden; break;
-    case 'tab': setLevel(parseInt(el.getAttribute('data-lvl'), 10) || 1); break;
-    case 'sectoggle': toggleSec(el.getAttribute('data-sec')); break;
-    case 'jump': jumpTo(el.getAttribute('data-sec')); break;
-    case 'secall': SECTIONS.forEach(function(s){ S.openSecs[s.id] = el.getAttribute('data-v') === '1'; }); saveOpenSecs(); $$('#rightbody .esec').forEach(function(x){ x.classList.toggle('open', el.getAttribute('data-v') === '1'); }); break;
-    case 'egroup': S.editGroup = parseInt(el.getAttribute('data-g'), 10); renderPanel(true); break;
-    case 'audit': toggleAudit(); break;
-    case 'setaudit': setAudit(el.getAttribute('data-v')); break;
-    case 'auditnext':
-      var nx = nextNeedsAudit();
-      setAudit('audited');
-      if(nx != null) openPerson(nx); else toast('That was the last one in this list.');
-      break;
-    case 'export': exportDossier(); break;
-    case 'viewdoc': viewDossier(); break;
-    case 'cardtoggle': { var tsec = el.closest('.card'); if(tsec) tsec.classList.toggle('is-collapsed'); break; }
-    case 'delete': deletePerson(); break;
-    case 'addevent': S.evEdit = null; if(S.editing){ renderPanel(true); jumpTo('timeline'); } else enterEdit('timeline'); break;
-    case 'attach': if(S.editing) jumpTo('files'); else enterEdit('files'); break;
-    case 'newdoc': openDocComposer(); break;
-    case 'evedit': S.evEdit = parseInt(el.getAttribute('data-evi'), 10); S.jumpTo = 'timeline'; renderPanel(true); break;
-    case 'evcancel': S.evEdit = null; renderPanel(true); break;
-    case 'degedit': S.degEdit = parseInt(el.getAttribute('data-di'), 10); S.jumpTo = 'education'; renderPanel(true); break;
-    case 'degcancel': S.degEdit = null; renderPanel(true); break;
-    case 'degsave': saveDegree(); break;
-    case 'degdel': delDegree(parseInt(el.getAttribute('data-di'), 10)); break;
-    case 'evsave': saveEvent(); break;
-    case 'evdel': delEvent(parseInt(el.getAttribute('data-evi'), 10)); break;
-    case 'fsave': saveFileLink(); break;
-    case 'fdel': delFile(parseInt(el.getAttribute('data-fi'), 10)); break;
-    case 'cpadd': (function(){ var w = $('#cprows'); if(!w) return; var d = document.createElement('div'); d.innerHTML = cpRowHTML({}, w.children.length); w.appendChild(d.firstChild); syncConnPhases(); })(); break;
-    case 'cpdel': (function(){ var r = el.closest('.cprow'); if(r){ r.remove(); syncConnPhases(); } })(); break;
-    case 'tidy': aiTidy(el.getAttribute('data-k')); break;
-    case 'nav': openPerson(parseInt(el.getAttribute('data-di'), 10), { push:true }); break;
-    case 'rmnx': removeClose(e, el.getAttribute('data-u')); break;
-    case 'famrm': removeFam(e, parseInt(el.getAttribute('data-i'), 10)); break;
-    case 'famspace': if(S.sel != null) famOpenSpaceFor(S.sel); break;
-    case 'tagfilter':
-      S.tag = { k:el.getAttribute('data-tagk'), v:el.getAttribute('data-tagv') };
-      S.rail = 'people'; S.limit = 200; S.listOpen = true;
-      document.body.classList.remove('nolist'); $('#listtoggle').classList.add('on');
-      refresh(); toast('Showing everyone at ' + S.tag.v);
-      break;
-  }
+  e.neighbors = out;
 }
 
 /* ============================================================
-   SAVING: one outbox for every edit.
-   1. The edit shows on screen immediately.
-   2. It is written to this browser (localStorage) before anything goes over the network.
-   3. Pending edits are sent to the sheet in batches, one request at a time, in order.
-   4. An edit leaves the outbox only after the server says it saved. Failures retry with backoff.
-   5. If the tab closes first, the leftovers are re-sent the next time the page opens.
+   3. outbox + undo
    ============================================================ */
-var OUT = { items:[], busy:false, timer:null, retry:0, err:'' };
+var OUT = { items:[], busy:false, timer:null, retry:0, err:'', auth:false };
 var OUT_KEY = 'ncc_outbox_v2';
+var UNDO = { stack:[], redo:[], collect:null, suspend:false };
+
 function outLoad(){
   var a = [];
   try{ a = JSON.parse(localStorage.getItem(OUT_KEY) || '[]'); }catch(x){ a = []; }
@@ -1994,49 +417,80 @@ function applyProfileEdit(e, ch){
   });
   if(ch.display) e.display = ch.display;
   else if(ch.display_name) e.display = ch.display_name;
-  /* Name edits propagate everywhere in the same action (JD 2026-10-12): every
-     surface derives its label from this directory entry, so re-render the ones
-     currently on screen. The rail already refreshes via queuePatch. */
-  if(ch.first_name != null || ch.last_name != null || ch.display || ch.display_name){
-    var di = D.directory.indexOf(e);
-    if(di >= 0) propagateName(di);
-  }
+  if(ch.close_add !== undefined || ch.close_hide !== undefined) rebuildNeighbors(e);
+  e._mt = null; VER++;
 }
-function propagateName(di){
-  if(QA.open) renderQuick();
-  if(AUD.open){
-    var sec = AUD.section || 'audit';
-    if(sec === 'audit') renderAudit();
-    else if(sec === 'orgs') renderDashOrgs();
-    else if(sec === 'groups') renderDashGroups();
-    else if(sec === 'family') renderDashFamily();
-  }
-  /* View-mode panel (hero + other people's associate chips) re-renders; while
-     editing, the editor itself holds the name and re-renders on exit. */
-  if(S.sel != null && !S.editing) renderPanel(true);
-}
+/* every write in the app goes through here */
 function queuePatch(idx, patch){
   var e = D.directory[idx]; if(!e) return;
   patch = normPatch(patch);
+  if(UNDO.collect && !UNDO.suspend){
+    Object.keys(patch).forEach(function(k){
+      var hit = null;
+      UNDO.collect.items.forEach(function(it){ if(it.di === idx && it.k === k) hit = it; });
+      if(hit) hit.next = patch[k];
+      else UNDO.collect.items.push({ di:idx, k:k, prev:raw(e, k), next:patch[k] });
+    });
+  }
   applyProfileEdit(e, patch);
   var key = pkey(e), it = null;
   for(var i = 0; i < OUT.items.length; i++) if(OUT.items[i].id === key){ it = OUT.items[i]; break; }
   if(!it){ it = { id:key, patch:{}, sending:null }; OUT.items.push(it); }
   Object.keys(patch).forEach(function(k){ it.patch[k] = patch[k]; });
-  outSave(); syncUI();
+  outSave(); paintSync();
   clearTimeout(OUT.timer); OUT.timer = setTimeout(outKick, 700);
-  refreshSoon();
+  if(window.__nccChanged) window.__nccChanged(idx);
+}
+/* group several patches into one undoable step */
+function txn(label, fn){
+  var prev = UNDO.collect, entry = { label:label, items:[] };
+  UNDO.collect = entry;
+  try{ fn(); } finally { UNDO.collect = prev; }
+  if(entry.items.length && !UNDO.suspend){
+    UNDO.stack.push(entry); if(UNDO.stack.length > 100) UNDO.stack.shift();
+    UNDO.redo = [];
+    paintUndo();
+  }
+  return entry;
+}
+function applyEntry(entry, useNext){
+  UNDO.suspend = true;
+  try{
+    var byDi = {};
+    entry.items.forEach(function(it){ (byDi[it.di] = byDi[it.di] || {})[it.k] = useNext ? it.next : it.prev; });
+    Object.keys(byDi).forEach(function(di){ queuePatch(+di, byDi[di]); });
+  } finally { UNDO.suspend = false; }
+}
+function doUndo(){
+  var en = UNDO.stack.pop();
+  if(!en){ toast('Nothing to undo.'); return; }
+  applyEntry(en, false); UNDO.redo.push(en); paintUndo();
+  toast('Undid: ' + en.label.toLowerCase() + '.');
+}
+function doRedo(){
+  var en = UNDO.redo.pop();
+  if(!en){ toast('Nothing to redo.'); return; }
+  applyEntry(en, true); UNDO.stack.push(en); paintUndo();
+  toast('Redid: ' + en.label.toLowerCase() + '.');
+}
+/* a text field edit: writes through the outbox but is not an undo step (the field has its own undo) */
+function setField(di, k, v){
+  var e = D.directory[di]; if(!e) return;
+  v = String(v == null ? '' : v);
+  if(gv(e, k) === v) return;
+  var p = {}; p[k] = v;
+  UNDO.suspend = true; try{ queuePatch(di, p); } finally { UNDO.suspend = false; }
 }
 function outKick(){
   clearTimeout(OUT.timer);
-  if(OUT.busy) return;
+  if(OUT.busy || OUT.auth) return;
   var batch = [];
   OUT.items.forEach(function(it){
     if(batch.length < 25 && Object.keys(it.patch).length){ it.sending = it.patch; it.patch = {}; batch.push(it); }
   });
-  if(!batch.length){ OUT.items = OUT.items.filter(function(it){ return it.sending; }); outSave(); syncUI(); return; }
+  if(!batch.length){ OUT.items = OUT.items.filter(function(it){ return it.sending; }); outSave(); paintSync(); return; }
   if(!WEBAPP_URL){ batch.forEach(function(it){ it.patch = it.sending; it.sending = null; }); return; }
-  OUT.busy = true; outSave(); syncUI();
+  OUT.busy = true; outSave(); paintSync();
   fetch(WEBAPP_URL, {
     method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
     body:JSON.stringify({ password:getPw(), kind:'batch', id:'batch', patch:{ items:batch.map(function(it){ return { id:it.id, patch:it.sending }; }) } })
@@ -2051,7 +505,7 @@ function outKick(){
     });
     OUT.busy = false; OUT.retry = 0; OUT.err = '';
     OUT.items = OUT.items.filter(function(it){ return Object.keys(it.patch).length || it.sending; });
-    outSave(); syncUI();
+    outSave(); paintSync();
     if(warn.length) toast('Some fields are not columns in the sheet and were skipped: ' + warn.join('; '));
     else if(made.length) toast('No sheet row matched ' + made[0] + '. A new row was created.');
     if(OUT.items.length) outKick();
@@ -2059,35 +513,10 @@ function outKick(){
     OUT.busy = false;
     batch.forEach(function(it){ it.patch = Object.assign({}, it.sending, it.patch); it.sending = null; });
     var msg = String(err && err.message || err);
-    OUT.retry++; OUT.err = msg; outSave(); syncUI();
-    if(/unauthorized/i.test(msg)){
-      var k = prompt('Edit key:');
-      if(k){ store('ncc_edit_key', k.trim()); OUT.retry = 0; OUT.timer = setTimeout(outKick, 300); return; }
-    }
+    OUT.retry++; OUT.err = msg; outSave(); paintSync();
+    if(/unauthorized/i.test(msg)){ OUT.auth = true; askEditKey(); return; }
     OUT.timer = setTimeout(outKick, Math.min(30000, 2000 * Math.pow(2, OUT.retry - 1)));
   });
-}
-function setSaveState(t, cls){
-  var el = $('#savestate'); if(!el) return;
-  el.textContent = t || ''; el.className = 'savestate' + (cls ? ' ' + cls : '');
-}
-function syncUI(){
-  var n = outPending(), txt, cls = '';
-  if(!n){ txt = 'All changes saved'; }
-  else if(OUT.err){ txt = n + ' not saved yet · retrying'; cls = 'err'; }
-  else if(OUT.busy){ txt = 'Saving…'; cls = 'dim'; }
-  else { txt = 'Unsaved changes'; cls = 'dim'; }
-  setSaveState(txt, cls);
-  var p = $('#syncpill');
-  if(!p){
-    p = document.createElement('button'); p.id = 'syncpill'; p.className = 'syncpill'; p.type = 'button';
-    p.addEventListener('click', function(){ OUT.retry = 0; outKick(); });
-    document.body.appendChild(p);
-  }
-  p.hidden = !n;
-  p.className = 'syncpill' + (cls ? ' ' + cls : '');
-  p.textContent = txt;
-  p.title = OUT.err ? ('Last error: ' + OUT.err + '. Click to retry now.') : '';
 }
 addEventListener('online', function(){ OUT.retry = 0; outKick(); });
 addEventListener('pagehide', function(){
@@ -2097,33 +526,16 @@ addEventListener('pagehide', function(){
   if(!items.length) return;
   try{ navigator.sendBeacon(WEBAPP_URL, new Blob([JSON.stringify({ password:getPw(), kind:'batch', id:'batch', patch:{ items:items } })], { type:'text/plain;charset=utf-8' })); }catch(x){}
 });
-
-/* put anything still waiting in the outbox back on top of freshly loaded data */
 function applyOutbox(){
   OUT.items.forEach(function(it){
     var di = PK2I[it.id]; if(di === undefined) return;
-    var e = D.directory[di];
-    applyProfileEdit(e, it.patch);
-    if(it.patch.close_add !== undefined || it.patch.close_hide !== undefined) syncNeighborsFromClose(e);
+    applyProfileEdit(D.directory[di], Object.assign({}, it.sending || {}, it.patch));
   });
 }
-function syncNeighborsFromClose(e){
-  var prof = e.profile || {};
-  var hide = tagList(prof.close_hide).map(function(x){ return x.toLowerCase(); });
-  var adds = tagList(prof.close_add);
-  if(hide.length) e.neighbors = (e.neighbors || []).filter(function(n){ return hide.indexOf((n.u || '').toLowerCase()) < 0; });
-  adds.forEach(function(a){
-    var kl = a.toLowerCase(), di = BYN[kl];
-    if(di === undefined) return;
-    var t = D.directory[di];
-    if(!(e.neighbors || []).some(function(n){ return (n.u || '').toLowerCase() === kl; }))
-      (e.neighbors = e.neighbors || []).push({ u:t.name || '', d:dispName(t) });
-  });
-}
-/* ask the sheet for rows edited in the last 3 days, so edits show before the GitHub snapshot is rebuilt */
+/* rows edited in the Sheet since the snapshot overlay on top of it, so edits show before the next rebuild */
 var lastFeed = 0;
 function fetchChanges(){
-  if(!WEBAPP_URL || !D || S.editing) return;
+  if(!WEBAPP_URL || !D) return;
   lastFeed = Date.now();
   var since = Date.parse(String(D.updated || '').replace(' UTC', 'Z').replace(' ', 'T'));
   var q = isNaN(since) ? 'hours=72' : 'since=' + encodeURIComponent(new Date(since - 15 * 60000).toISOString());
@@ -2134,615 +546,245 @@ function fetchChanges(){
       var n = 0;
       (res.rows || []).forEach(function(row){
         var di = PK2I[row.pkey]; if(di === undefined || pend[row.pkey]) return;
-        var e = D.directory[di], ch = {};
+        var ch = {};
         Object.keys(row.profile || {}).forEach(function(k){ ch[k] = row.profile[k]; });
-        applyProfileEdit(e, ch);
-        if(ch.close_add || ch.close_hide) syncNeighborsFromClose(e);
-        n++;
+        applyProfileEdit(D.directory[di], ch); n++;
       });
-      if(n){ refresh(); if(S.sel !== null && !S.editing) renderPanel(true); }
+      if(n && window.__nccChanged) window.__nccChanged(-1);
     }).catch(function(){});
 }
 document.addEventListener('visibilitychange', function(){
   if(!document.hidden && D && Date.now() - lastFeed > 60000) fetchChanges();
 });
-function postKind(kind, id, patch, pw, onOk, onErr){
+function postKind(kind, id, patch, onOk, onErr){
   fetch(WEBAPP_URL, {
     method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-    body:JSON.stringify({ password:pw, kind:kind, id:id, patch:patch })
+    body:JSON.stringify({ password:getPw(), kind:kind, id:id, patch:patch })
   }).then(function(r){ return r.json(); }).then(function(res){
     if(res && res.ok) onOk(res); else onErr('Failed: ' + ((res && res.error) || 'unknown'));
   }).catch(function(){ onErr('Network error.'); });
 }
 
-/* ---------- field handlers (edit mode) ---------- */
-function setField(k, v){
-  if(S.sel === null) return;
-  var e = D.directory[S.sel]; v = String(v == null ? '' : v);
-  if(gv(e, k) === v) return;
-  var p = {}; p[k] = v;
-  queuePatch(S.sel, p);
-  updateFills();
+/* ============================================================
+   4. waivers ("insufficient data") — section-level, same JSON shape as v5
+   ============================================================ */
+function wvSecs(e){
+  try{ var v = JSON.parse(gv(e, 'waivers') || '{}'); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; }
+  catch(x){ return {}; }
 }
-function readTags(box){
-  var sep = box.getAttribute('data-sep') || ', ';
-  return $$('.tchip.on', box).map(function(c){ return c.getAttribute('data-tv'); }).join(sep);
-}
-function setAudit(next){
-  if(S.sel === null) return;
-  queuePatch(S.sel, { audit:next });
-  renderPanel(true); refresh();
-  toast(next === 'audited' ? 'Marked as audited.' : 'Back to needs audit.');
-}
-function toggleAudit(){
-  var e = D.directory[S.sel]; if(!e) return;
-  setAudit(((e.profile || {}).audit === 'audited') ? 'needs_audit' : 'audited');
-}
-function deletePerson(){
-  var e = D.directory[S.sel];
-  if(!e) return;
-  var label = dispName(e);
-  if(!confirm('Delete ' + label + ' from the circle?\n\nThey will be moved to the Trash sheet (hidden). To bring them back, ask Luna.')) return;
-  queuePatch(S.sel, { deleted:'1' });
-  closePanel(); refresh(); toast('Deleted ' + label + '.');
-}
-function delEvent(i){
-  var e = D.directory[S.sel];
-  if(!e || !e.events || !e.events[i]) return;
-  if(!confirm('Remove this timeline event?\n\n' + (e.events[i].summary || ''))) return;
-  var arr = e.events.slice(); arr.splice(i, 1);
-  S.evEdit = null;
-  queuePatch(S.sel, { events:JSON.stringify(arr) });
-  renderPanel(true); toast('Event removed.');
-}
-function saveEvent(){
-  var e = D.directory[S.sel]; if(!e) return;
-  var date = $('#evdate').value.trim(), type = 'note';
-  var summary = $('#evtitle').value.trim(), detail = $('#evdetail').value.trim();
-  if(!summary){ toast('Give the event a headline.'); return; }
-  if(!/^\d{4}(-\d{2}(-\d{2})?)?$/.test(date)){ toast('Use a date like 2026-10-04.'); return; }
-  var ev = { date:date, type:type, summary:summary };
-  if(detail) ev.detail = detail;
-  var is = $('#evinit .on');
-  if(is && is.getAttribute('data-v')) ev.init = is.getAttribute('data-v');
-  var arr = (e.events || []).slice();
-  if(S.evEdit != null && arr[S.evEdit]) arr[S.evEdit] = ev; else arr.push(ev);
-  var edited = S.evEdit != null;
-  S.evEdit = null;
-  queuePatch(S.sel, { events:JSON.stringify(arr) });
-  renderPanel(true); toast(edited ? 'Event updated.' : 'Added to the timeline.');
-}
-function saveFileLink(){
-  var e = D.directory[S.sel]; if(!e) return;
-  var nm = $('#fname').value.trim(), url = $('#furl').value.trim(), note = $('#fnote').value.trim();
-  if(!nm){ toast('Name the file first.'); return; }
-  if(!url){ toast('Paste the file link.'); return; }
-  var f = { name:nm, kind:url.indexOf('docs.google.com') >= 0 ? 'gdoc' : 'link', url:url };
-  if(note) f.note = note;
-  var arr = (e.files || []).slice(); arr.push(f);
-  queuePatch(S.sel, { files:JSON.stringify(arr) });
-  renderPanel(true); toast('File attached.');
-}
-function delFile(i){
-  var e = D.directory[S.sel];
-  if(!e || !e.files || !e.files[i]) return;
-  if(!confirm('Remove this file attachment?\n\n' + (e.files[i].name || ''))) return;
-  var arr = e.files.slice(); arr.splice(i, 1);
-  queuePatch(S.sel, { files:JSON.stringify(arr) });
-  renderPanel(true); toast('File removed.');
-}
-function openDocComposer(){
-  var e = D.directory[S.sel];
-  if(!e || !WEBAPP_URL){ toast('Nothing to create for.'); return; }
-  openModal('New Drive doc',
-    '<label class="lab">For ' + esc(dispName(e)) + '<span class="sh">Creates a Google Doc in the North Country Circle Files folder and attaches it to their Files section.</span></label>' +
-    '<input type="text" id="dtitle" placeholder="Doc title, for example: Full journal record" autocomplete="off">' +
-    '<div class="arow"><button id="dsave" class="mini" style="--c:' + LV[3].c + '">' + ic('plus', 13) + 'Create doc</button></div>', 3);
-  $('#dsave').addEventListener('click', saveNewDoc);
-  $('#dtitle').addEventListener('keydown', function(ev){ if(ev.key === 'Enter'){ ev.preventDefault(); saveNewDoc(); } });
-  $('#dtitle').focus();
-}
-function saveNewDoc(){
-  var e = D.directory[S.sel]; if(!e){ closeModal(); return; }
-  var title = $('#dtitle').value.trim();
-  if(!title){ toast('Title the doc first.'); return; }
-  var btn = $('#dsave'); btn.disabled = true;
-  postKind('createdoc', subjSlug(e), { title:title }, getPw(), function(res){
-    if(!res.url){ btn.disabled = false; toast('Doc creation failed.'); return; }
-    var arr = (e.files || []).slice(); arr.push({ name:res.name || title, kind:'gdoc', url:res.url });
-    closeModal();
-    queuePatch(S.sel, { files:JSON.stringify(arr) });
-    renderPanel(true); toast('Doc created and attached.');
-  }, function(err){ btn.disabled = false; toast(err + ' Not created.'); });
-}
-function aiTidy(k){
-  var ta = $('#rightbody textarea[data-pk="' + k + '"]'), msg = $('#aimsg-' + k), btn = $('[data-act="tidy"][data-k="' + k + '"]');
-  var text = ta ? ta.value.trim() : '';
-  if(!text){ if(msg) msg.textContent = 'Write something first.'; return; }
-  if(btn) btn.disabled = true; if(msg) msg.textContent = 'Cleaning up…';
-  postKind('tidy', 'tidy', { text:text, mode:k }, getPw(), function(res){
-    if(btn) btn.disabled = false;
-    if(res.value){ ta.value = res.value; setField(k, res.value); if(msg) msg.textContent = 'Cleaned up. Give it a read.'; }
-    else if(msg) msg.textContent = 'Nothing came back.';
-  }, function(err){ if(btn) btn.disabled = false; if(msg) msg.textContent = err; });
+function secWaived(e, sid){ return !!wvSecs(e)[sid]; }
+function setWaivers(di, sids, on){
+  var e = D.directory[di]; if(!e) return;
+  var w = wvSecs(e);
+  sids.forEach(function(sid){ if(on) w[sid] = 1; else delete w[sid]; });
+  queuePatch(di, { waivers: JSON.stringify(w) });
 }
 
-/* ---------- known associates + merge ---------- */
-function renderNadd(q){
-  var list = $('#naddlist'); if(!list) return;
-  q = (q || '').trim().toLowerCase();
-  var e = D.directory[S.sel], existing = {};
-  (e.neighbors || []).forEach(function(n){ existing[(n.u || '').toLowerCase()] = 1; });
-  if(!q || q.length < 2){ list.innerHTML = ''; return; }
-  var hits = [];
-  D.directory.forEach(function(r, i){
-    if(i === S.sel || (r.profile || {}).deleted === '1') return;
-    if(existing[(r.name || '').toLowerCase()]) return;
-    var label = dispName(r);
-    if((label + ' ' + (r.name || '')).toLowerCase().indexOf(q) < 0) return;
-    hits.push({ i:i, label:label });
-  });
-  list.innerHTML = hits.length ? hits.slice(0, 6).map(function(h){ return '<div class="naddhit" data-ai="' + h.i + '">' + esc(h.label) + '</div>'; }).join('')
-    : '<div class="naddhit none">No matches</div>';
-}
-/* Known associates are two-way: adding or removing one writes the
-   reciprocal close_add/close_hide onto the other profile through the same
-   patch path, and both neighbor lists update locally on the spot. */
-function assocSidePatch(ownerIdx, otherName, add){
-  var o = D.directory[ownerIdx]; if(!o) return;
-  var key = otherName || '', kl = key.toLowerCase(); if(!kl) return;
-  var adds = tagList(gv(o, 'close_add')), hides = tagList(gv(o, 'close_hide'));
-  var low = function(x){ return x.toLowerCase(); };
-  if(add){
-    if(adds.map(low).indexOf(kl) < 0) adds.push(key);
-    hides = hides.filter(function(x){ return x.toLowerCase() !== kl; });
-  } else {
-    if(adds.map(low).indexOf(kl) >= 0) adds = adds.filter(function(x){ return x.toLowerCase() !== kl; });
-    else if(hides.map(low).indexOf(kl) < 0) hides.push(key);
-  }
-  queuePatch(ownerIdx, { close_add:adds.join(', '), close_hide:hides.join(', ') });
-  syncNeighborsFromClose(o);
-}
-function addClose(e, idx){
-  var t = D.directory[idx];
-  if(!e || !t) return;
-  assocSidePatch(S.sel, t.name || '', true);
-  if(idx !== S.sel) assocSidePatch(idx, e.name || '', true);
-  renderPanel(true);
-}
-function removeClose(e, u){
-  if(!e || !u) return;
-  assocSidePatch(S.sel, u, false);
-  var tdi = BYN[(u || '').toLowerCase()];
-  if(tdi !== undefined && tdi !== S.sel) assocSidePatch(tdi, e.name || '', false);
-  renderPanel(true);
-}
-function mergeBody(e){
-  var mi = gv(e, 'merged_into').trim();
-  if(mi) return '<p style="font-size:13px;margin:0 0 8px">Merged into <b>@' + esc(mi) + '</b>. Their numbers now live on that profile; this entry hides after the next sync.</p>' +
-    '<button class="mini danger" data-act="unmerge">Unmerge</button>';
-  return '<p class="dim" style="font-size:13px;margin:0 0 8px">Fold this contact’s numbers into an Instagram person and hide the duplicate.</p>' +
-    '<div class="naddwrap"><input id="mergeinput" placeholder="Merge into: type a name or @handle" autocomplete="off"><div id="mergelist"></div></div>';
-}
-function mergeSearch(q){
-  var list = $('#mergelist'); if(!list) return;
-  q = (q || '').toLowerCase().trim();
-  var hits = [];
-  if(q.length >= 2){
-    D.directory.forEach(function(r, i){
-      if(hits.length >= 6) return;
-      if(r.src === 'contacts' || r.src === 'subject' || (r.profile || {}).deleted === '1') return;
-      var label = dispName(r) || '', h = (r.name || '').toLowerCase();
-      if(label.toLowerCase().indexOf(q) >= 0 || h.indexOf(q.replace('@','')) >= 0) hits.push({ i:i, label:label, handle:r.name });
-    });
-  }
-  list.innerHTML = hits.length ? hits.map(function(h){
-    return '<div class="naddhit" data-mh="' + esc(h.handle) + '">' + esc(h.label) + ' <span class="dim">@' + esc(h.handle) + '</span></div>';
-  }).join('') : (q.length >= 2 ? '<div class="naddhit none">No matches</div>' : '');
-}
-function doMerge(e, handle){
-  if(!e || !handle) return;
-  queuePatch(S.sel, { merged_into:handle.toLowerCase() });
-  renderPanel(true); toast('Merged into @' + handle + '. Hides after the next sync.');
-}
-function doUnmerge(e){
-  if(!e) return;
-  queuePatch(S.sel, { merged_into:'' });
-  renderPanel(true); toast('Unmerged.');
-}
-
-/* ---------- pro personality score ---------- */
-
-/* Persona scores: each trait is rated directly 1-5. Neuroticism and Ego are
-   negative-valence (high = worse); everything else is high = better. */
-var NEG_TRAITS = ['neuroticism','ego'];
-function traitScores(e){
-  return L1_SCORES.map(function(k){
-    var v = parseFloat(gv(e, k));
-    if(isNaN(v) || !v) return null;
-    return { k:k, n:fieldDef(k).l, score:Math.round(v / 5 * 100), rating:v };
-  }).filter(Boolean);
-}
-function proScore(e){
-  var vals = [];
-  L1_SCORES.forEach(function(k){
-    var v = parseFloat(gv(e, k));
-    if(isNaN(v) || !v) return;
-    vals.push(NEG_TRAITS.indexOf(k) >= 0 ? 6 - v : v);
-  });
-  if(!vals.length) return 0;
-  return Math.round(vals.reduce(function(a, b){ return a + b; }, 0) / vals.length / 5 * 100);
-}
-function readHTML(e){
-  var ts = traitScores(e).filter(function(t){ return NEG_TRAITS.indexOf(t.k) < 0; });
-  if(!ts.length) return '';
-  ts.sort(function(a, b){ return b.score - a.score; });
-  var top = ts[0];
-  return '<div class="prow"><div class="pchip"><em style="width:' + top.score + '%"></em><b>' + top.score + '</b><span>' + esc(top.n) + '</span></div></div>' +
-    '<div class="pr-desc" style="margin:6px 0 0">Top trait from the ratings below.</div>';
-}
-
-
-/* ---------- connection timeline ---------- */
-var CP_LABELS = ['Acquaintances','Friends','Close friends','Best friends','Drifted apart','Reconnected','Working together','Dating','Roommates','Teammates','Mentor','Fell out'];
-function connPhases(e){
-  var raw = gv(e, 'conn_phases');
-  if(!raw) return [];
-  try{
-    var a = JSON.parse(raw);
-    return Array.isArray(a) ? a.filter(function(p){ return p && (p.f || p.l); }) : [];
-  }catch(x){ return []; }
-}
-function ymIdx(s){
-  var m = String(s || '').match(/(\d{4})-(\d{1,2})/);
-  if(!m) return null;
-  return parseInt(m[1], 10) * 12 + parseInt(m[2], 10);
-}
-function ymLabel(s){
-  var m = String(s || '').match(/(\d{4})-(\d{1,2})/);
-  if(!m) return '';
-  var M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return M[parseInt(m[2], 10) - 1] + ' ' + m[1];
-}
-function connTimelineHTML(e){
-  var ps = connPhases(e);
-  if(!ps.length) return '';
-  var cols = ['#f0b44c', '#7ea6f0', '#5cd6a0', '#b48ce8'];
-  ps.sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); });
-  var rows = ps.map(function(p, i){
-    var c = cols[i % 4];
-    var range = ymLabel(p.f) + (p.t ? ' \u2013 ' + ymLabel(p.t) : ' \u2013 now');
-    return '<div class="ev"><span class="evdot" style="--c:' + c + ';background:' + c + '"></span>' +
-      '<div class="evtop"><time>' + esc(range) + '</time></div>' +
-      '<div class="evtitle">' + esc(p.l || 'Untitled phase') + '</div>' +
-      (p.n ? '<div class="evdetail">' + esc(p.n) + '</div>' : '') + '</div>';
-  }).join('');
-  return '<div class="tl">' + rows + '</div>';
-}
-function cpRowHTML(p, i){
-  p = p || {};
-  var ongoing = !p.t;
-  return '<div class="cprow" data-i="' + i + '">' +
-    '<input type="month" class="cp-f" value="' + esc(p.f || '') + '" aria-label="From">' +
-    '<span class="cp-arr">\u2192</span>' +
-    '<input type="month" class="cp-t" value="' + esc(p.t || '') + '" aria-label="To"' + (ongoing ? ' disabled' : '') + '>' +
-    '<label class="cp-now"><input type="checkbox" class="cp-tp"' + (ongoing ? ' checked' : '') + '> now</label>' +
-    '<input class="cp-l" list="cplabels" value="' + esc(p.l || '') + '" placeholder="Phase label" aria-label="Phase label">' +
-    '<input class="cp-n" value="' + esc(p.n || '') + '" placeholder="Note (optional)" aria-label="Note">' +
-    '<button class="mini danger" data-act="cpdel">Remove</button></div>';
-}
-function syncConnPhases(){
-  var wrap = $('#cprows'); if(!wrap) return;
-  var out = [];
-  $$('.cprow', wrap).forEach(function(r){
-    var f = $('.cp-f', r).value, tp = $('.cp-tp', r).checked;
-    var t = tp ? '' : $('.cp-t', r).value;
-    var l = $('.cp-l', r).value.trim(), n = $('.cp-n', r).value.trim();
-    if(f || l) out.push({ f:f, t:t, l:l, n:n });
-  });
-  out.sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); });
-  setField('conn_phases', out.length ? JSON.stringify(out) : '');
-}
-function todayStr(){
-  var t = new Date();
-  return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-}
-
-/* ---------- audit dashboard ---------- */
-var AUD = { open:false, section:'audit', q:'', f:'needs', sort:'missing', sel:{}, selGroups:{}, rows:[], undoStack:[], redoStack:[], msel:null };
+/* ============================================================
+   5. reasons engine — what needs JD, in what order, and why.
+      "Done" is a state (checked), not a field count. Persona is never a to-do: blank is final.
+   ============================================================ */
+var REASONS = {
+  dup:     { l:'Possible duplicate',          pr:1,  tab:'dup',      s:'Duplicates' },
+  family:  { l:'Family needs a look',         pr:2,  tab:'family',   s:'Family' },
+  identity:{ l:'Identity needs a second signal', pr:3, tab:'identity', s:'Identity' },
+  unsrc:   { l:'Inferred, not sourced',       pr:4,  tab:'unsrc',    s:'Sources' },
+  missing: { l:'Flagged: missing info',       pr:5,  tab:'cleanup',  s:'Cleanup' },
+  name:    { l:'Name incomplete',             pr:6,  tab:'cleanup',  s:'Cleanup' },
+  biz:     { l:'Looks like a business',       pr:7,  tab:'cleanup',  s:'Cleanup' },
+  fresh:   { l:'New this week, unclassified', pr:8,  tab:'fresh',    s:'New' },
+  inner:   { l:'Inner circle, not yet checked', pr:9, tab:'inner',   s:'Inner circle' },
+  spot:    { l:'Spot check',                  pr:10, tab:'spot',     s:'Spot check' },
+  sweep:   { l:'Floor sweep',                 pr:11, tab:'sweep',    s:'Floor sweep' }
+};
+var TABS = [
+  { k:'needs',    l:'Needs you' },
+  { k:'dup',      l:'Duplicates' },
+  { k:'identity', l:'Identity' },
+  { k:'unsrc',    l:'Sources' },
+  { k:'family',   l:'Family' },
+  { k:'fresh',    l:'New' },
+  { k:'cleanup',  l:'Cleanup' },
+  { k:'inner',    l:'Inner circle' },
+  { k:'spot',     l:'Spot check' },
+  { k:'sweep',    l:'Floor sweep' }
+];
 var BIZ_RE = /\b(llc|inc|corp|co\.|company|church|bakery|grill|cantina|pizza|caf[eé]|studio|salon|barber|tattoo|photo|productions|realty|motors|auto|plumbing|electric|construction|landscap|farm|market|deli|pub|brewery|winery|hotel|motel|insurance|dental|clinic|school|university|college|ntc|cfc|ministr)\b/i;
 var ADDR_RE = /\d+\s+[A-Za-z.]+\s+(st|street|ave|avenue|rd|road|blvd|ln|lane|dr|drive)\b|\bNY\b\s*\d{5}|\b\d{5}\b/;
-function isBusiness(e){
-  var t = (String(e.display || '') + ' ' + String(e.name || '')).trim();
-  return BIZ_RE.test(t) || ADDR_RE.test(t);
-}
-function titleCase(s){
-  return String(s).replace(/[\w'’]+/g, function(w){ return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); });
-}
-function personLabel(handle, display){
-  var h = String(handle || '').trim();
-  var raw = String(display || '').trim();
-  if(raw) return raw;
-  var clean = h.replace(/^_+|_+$/g, '');
-  var parts = clean.split(/[._\-]+/).filter(function(p){ return p && !/^\d+$/.test(p); });
-  if(parts.length) return titleCase(parts.join(' '));
-  return h;
-}
-function auName(e){
-  var handle = String(e.name || '').trim();
-  /* Current first/last name wins over the baked display (JD 2026-10-12: name
-     edits propagate everywhere — audit rows, associate chips, GL labels). */
-  var fn = (String(gv(e, 'first_name') || '') + ' ' + String(gv(e, 'last_name') || '')).trim();
-  var nm = fn || personLabel(handle, String(e.display || gv(e, 'display_name') || '').trim());
-  return { name:nm || 'Unknown', business:isBusiness(e), handle:handle };
-}
-function lastNameOf(e){
-  return String(gv(e, 'last_name') || '').trim().toLowerCase();
-}
-function firstNameOf(e){
-  return String(gv(e, 'first_name') || '').trim();
-}
-function nameOk(e){
-  return !!(firstNameOf(e) && lastNameOf(e));
-}
-function nameFlag(e){
-  if(nameOk(e)) return '';
-  var d = String(e.display || '');
-  if(!d.trim()) return 'blank';
-  if(d.indexOf('&') >= 0) return 'couple';
-  if(!firstNameOf(e)) return 'no name';
-  return 'no last name';
-}
-/* closeness prediction: family of fleshed-out people + own data richness + tier + years known */
-function closeScore(e, famMap){
-  var st = auditStats(e);
-  if(st.audited) return null;
-  var score = 0, reasons = [];
-  var ln = lastNameOf(e);
-  if(ln && famMap[ln]){
-    var fams = famMap[ln].filter(function(x){ return x.i !== (e.name || '').toLowerCase(); });
-    if(fams.length){
-      score += 50;
-      reasons.push('Family: ' + fams.slice(0, 2).map(function(x){ return x.d; }).join(', '));
-    }
-  }
-  if(st.score > 0){ score += st.score * 10; reasons.push(st.score + '/4 on file'); }
-  var tier = tierOf(e);
-  if(tier === 'vetted'){ score += 20; reasons.push('Vetted'); }
-  else if(tier === 'associate'){ score += 10; reasons.push('Associate'); }
-  var yk = yearsKnownCalc(e);
-  if(yk > 0) score += Math.min(yk, 15);
-  if((e.relation || '') === 'mutual') score += 5;
-  if(!score) return null;
-  return { score:score, reasons:reasons };
-}
-function auditStats(e){
-  /* A waived section satisfies the bucket it feeds: Persona (ratings) feeds
-     needs-ratings, Background feeds needs-background, Relationship feeds
-     needs-connection. */
-  var hasR = secWaived(e, 'ratings') || L1_SCORES.some(function(k){ return gv(e, k) !== ''; });
-  var hasB = secWaived(e, 'background') || !!(gv(e, 'specialty') || ORG_CATS.some(function(c){ return gv(e, c.k).trim(); }));
-  var hasC = secWaived(e, 'relationship') || !!(gv(e, 'relationship') || gv(e, 'context') || gv(e, 'tier'));
-  var audited = (e.profile || {}).audit === 'audited';
-  var missing = (hasR ? 0 : 1) + (hasB ? 0 : 1) + (hasC ? 0 : 1) + (audited ? 0 : 1);
-  return { hasR:hasR, hasB:hasB, hasC:hasC, audited:audited, missing:missing, score:4 - missing };
-}
-function openAudit(){
-  AUD.open = true;
-  $('#auditscreen').hidden = false;
-  $('#auq').value = AUD.q;
-  dashShow(AUD.section || 'audit');
-  if(AUD.scroll && (AUD.section || 'audit') === 'audit') $('#aubody').scrollTop = AUD.scroll;
-}
-function closeAudit(){
-  var ab = $('#aubody');
-  if(ab) AUD.scroll = ab.scrollTop;
-  if(QA.open) closeQuick();
-  AUD.open = false;
-  $('#auditscreen').hidden = true;
+function isBusiness(e){ var t = (String(e.display || '') + ' ' + String(e.name || '')).trim(); return BIZ_RE.test(t) || ADDR_RE.test(t); }
+function nameOk(e){ return !!(String(gv(e, 'first_name')).trim() && String(gv(e, 'last_name')).trim()); }
+function normDupName(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+
+/* new-connection stamps: people whose associate edge is <= 7 days old (set by the build) */
+var NEWGAIN = {};
+function computeNewGain(){
+  NEWGAIN = {};
+  D.directory.forEach(function(r, di){
+    (r._nb0 || []).forEach(function(nb){
+      if(!nb['new']) return;
+      NEWGAIN[di] = 1;
+      var tj = BYN[(nb.u || '').toLowerCase()];
+      if(tj != null) NEWGAIN[tj] = 1;
+    });
+  });
 }
 
-/* ---------- dashboard sections (JD 2026-10-12): Audit is one section of a
-   single dashboard alongside Quick Audit, Organizations, Groups and Family.
-   Quick Audit keeps its own full-screen overlay (z-index above the dashboard);
-   entering it from the dashboard and backing out returns to the dashboard. */
-function dashShow(sec){
-  if(sec === 'quick'){ openQuick(); return; }
-  if(QA.open) closeQuick();
-  AUD.section = sec;
-  $$('#dashnav [data-dashsec]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-dashsec') === sec); });
-  $('#dashsec-audit').hidden = sec !== 'audit';
-  $('#dashsec-orgs').hidden = sec !== 'orgs';
-  $('#dashsec-groups').hidden = sec !== 'groups';
-  $('#dashsec-family').hidden = sec !== 'family';
-  var qw = $('#auqwrap'); if(qw) qw.style.display = sec === 'audit' ? '' : 'none';
-  if(sec === 'audit') renderAudit();
-  else if(sec === 'orgs') renderDashOrgs();
-  else if(sec === 'groups') renderDashGroups();
-  else if(sec === 'family'){
-    /* the Family tab lands in the one shared space (JD 2026-10-12) */
-    if(!DFAM.open && famTrees(famDisplay()).trees.length){ DFAM.open = true; DFAM.focus = { type:'fit' }; DFSPACE.fresh = true; }
-    renderDashFamily();
-  }
+/* two independent signals beyond the name */
+function identitySignals(e){
+  var have = [], miss = [];
+  function sig(ok, label){ (ok ? have : miss).push(label); }
+  sig(!!(e.city || e.hometown), 'Place');
+  sig(degreesOf(e).length > 0, 'School');
+  sig(!!(tagList(gv(e, 'companies')).length || tagList(gv(e, 'churches')).length), 'Work or church');
+  sig(!!(gv(e, 'phone') || e.fb_url), 'Phone or Facebook');
+  sig(!!(gv(e, 'relationship') || gv(e, 'context') || gv(e, 'groups') || e.record), 'Connection to JD');
+  sig(footprintOf(e).sourced, 'Sourced web record');
+  return { have:have, miss:miss, n:have.length };
 }
-function dashOpenPerson(di){
-  AUD.fromAudit = true;
-  closeAudit();
-  openPerson(di, { push:true, edit:true, fromAuditKeep:true });
+/* what an inner-circle profile is still missing (waived sections do not count; persona never does) */
+function depthGaps(e){
+  var g = [];
+  function need(sid, ok, label){ if(!ok && !secWaived(e, sid)) g.push({ sid:sid, l:label }); }
+  need('relationship', !!(gv(e, 'relationship') || gv(e, 'context')), 'Relationship');
+  need('onfile', !!gv(e, 'synopsis'), 'Synopsis');
+  need('background', !!(gv(e, 'specialty') || ORG_CATS.some(function(c){ return tagList(gv(e, c.k)).length; }) || degreesOf(e).length || gv(e, 'highlights')), 'Background');
+  need('connections', !!(knownAssociates(e).length || famLinks(e).length), 'Connections');
+  need('timeline', !!(e.events || []).length, 'Timeline');
+  return g;
 }
-function liveEntry(e){
-  var p = e.profile || {};
-  return p.deleted !== '1' && !(p.merged_into || '').trim();
-}
-
-/* ----- Organizations: churches / companies / universities with their people ----- */
-var DORG = { open:{} };
-var ORG_SECTIONS = [
-  { k:'churches', label:'Churches' },
-  { k:'companies', label:'Companies' },
-  { k:'universities', label:'Universities' }
-];
-function orgNames(k){
-  var seen = {}, out = [];
-  var cat = orgCat(k);
-  if(cat) cat.options.forEach(function(o){ if(!seen[o]){ seen[o] = 1; out.push(o); } });
-  D.directory.forEach(function(e){
-    if(!liveEntry(e)) return;
-    tagList(gv(e, k)).forEach(function(o){ if(!seen[o]){ seen[o] = 1; out.push(o); } });
+function familyIssues(di){
+  var e = D.directory[di], links = famLinks(e), out = [];
+  var sp = links.filter(function(l){ return l[0] === 'spouse'; });
+  var par = links.filter(function(l){ return l[0] === 'parent'; });
+  if(sp.length > 1) out.push('More than one spouse recorded');
+  if(par.length > 2) out.push('More than two parents recorded');
+  links.forEach(function(l){
+    var tdi = BYN[String(l[1] || '').toLowerCase()];
+    if(tdi == null){ out.push('Link to ' + l[1] + ' points at nobody in the directory'); return; }
+    if(tdi === di){ out.push('Linked to themselves'); return; }
+    var inv = FAM_INV_REL[l[0]], me = String(e.name || '').toLowerCase();
+    var back = famLinks(D.directory[tdi]).some(function(x){ return x[0] === inv && String(x[1] || '').toLowerCase() === me; });
+    if(!back) out.push(dispName(D.directory[tdi]) + ' does not list the matching ' + inv + ' link back');
   });
   return out;
 }
-function orgMembers(k, name){
+var FAM_INV_REL = { parent:'child', child:'parent', spouse:'spouse', sibling:'sibling' };
+
+function dupDismissed(){ try{ return JSON.parse(store('ncc_dupok') || '{}') || {}; }catch(x){ return {}; } }
+function dupGroupKey(dis){ return dis.map(function(di){ return pkey(D.directory[di]); }).sort().join('|'); }
+function dismissDup(dis){ var m = dupDismissed(); m[dupGroupKey(dis)] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; }
+function spotDone(){ try{ var o = JSON.parse(store('ncc_spot') || '{}') || {}; return o.w === weekKey() ? o.done || {} : {}; }catch(x){ return {}; } }
+function markSpotDone(di){ var d = spotDone(); d[pkey(D.directory[di])] = 1; store('ncc_spot', JSON.stringify({ w:weekKey(), done:d })); VER++; }
+
+var ST_CACHE = { ver:-1, st:null };
+function getState(){
+  if(ST_CACHE.ver === VER && ST_CACHE.st) return ST_CACHE.st;
+  var list = people(), by = {}, counts = {}, dismissed = dupDismissed();
+  /* same-name clusters, photo matches */
+  var byName = {}, groups = [], inGroup = {};
+  list.forEach(function(di){
+    var k = normDupName(dispName(D.directory[di]));
+    if(k.length >= 2) (byName[k] = byName[k] || []).push(di);
+  });
+  Object.keys(byName).forEach(function(k){ if(byName[k].length > 1) groups.push({ kind:'name', label:'Same name', dis:byName[k].slice() }); });
+  var byHandle = {}; D.directory.forEach(function(r, di){ byHandle[String(r.name || '').toLowerCase()] = di; });
+  (D.photo_merge || []).forEach(function(pm){
+    var dis = [];
+    (pm.keys || []).forEach(function(k){
+      var di = byHandle[String(k).toLowerCase()];
+      if(di !== undefined && liveEntry(D.directory[di]) && dis.indexOf(di) < 0) dis.push(di);
+    });
+    if(dis.length > 1) groups.push({ kind:'photo', label:'Same face ("' + pm.face + '")', dis:dis });
+  });
+  groups = groups.filter(function(g){ return g.dis.some(function(di){ return !isChecked(D.directory[di]); }) && !dismissed[dupGroupKey(g.dis)]; });
+  groups.forEach(function(g){ g.dis.forEach(function(di){ (inGroup[di] = inGroup[di] || []).push(g); }); });
+  var spotSet = {}, checkedList = list.filter(function(di){ return isChecked(D.directory[di]); });
+  var nSpot = checkedList.length ? Math.max(3, Math.ceil(checkedList.length * 0.05)) : 0, wk = weekKey();
+  checkedList.map(function(di){ return { di:di, h:hash32(wk + pkey(D.directory[di])) }; })
+    .sort(function(a, b){ return a.h - b.h; }).slice(0, nSpot).forEach(function(o){ spotSet[o.di] = 1; });
+  var sdone = spotDone();
+
+  list.forEach(function(di){
+    var e = D.directory[di], checked = isChecked(e), rs = [], det = {};
+    if(!checked){
+      if(inGroup[di]){ rs.push('dup'); det.dup = inGroup[di]; }
+      else if(raw(e, 'review_flag') === 'duplicate'){ rs.push('dup'); det.dup = []; }
+      var fi = familyIssues(di); if(fi.length){ rs.push('family'); det.family = fi; }
+      if(!secWaived(e, 'identity')){ var sg = identitySignals(e); if(sg.n < 2){ rs.push('identity'); det.identity = sg; } }
+      var fp = footprintOf(e);
+      if(fp.blocks.length && !fp.sourced){ rs.push('unsrc'); det.unsrc = fp; }
+      if(raw(e, 'review_flag') === 'missing_info'){ rs.push('missing'); }
+      if(!nameOk(e)){ rs.push('name'); }
+      if(isBusiness(e)){ rs.push('biz'); }
+      if(NEWGAIN[di] && !tierOf(e) && !raw(e, 'relationship')){ rs.push('fresh'); }
+      if(tierOf(e) === 'vetted' || tierOf(e) === 'associate'){ rs.push('inner'); det.inner = depthGaps(e); }
+    } else if(spotSet[di] && !sdone[pkey(e)]){ rs.push('spot'); }
+    var pr = 99;
+    rs.forEach(function(c){ if(REASONS[c].pr < pr) pr = REASONS[c].pr; });
+    var kind = checked ? (rs.length ? 'spot' : 'checked') : (rs.length ? 'needs' : 'sweep');
+    if(!checked && !rs.length){ rs.push('sweep'); pr = REASONS.sweep.pr; }
+    by[di] = { di:di, checked:checked, reasons:rs, detail:det, pr:pr, kind:kind };
+    rs.forEach(function(c){ counts[c] = (counts[c] || 0) + 1; });
+  });
+  function cmp(a, b){
+    if(a.pr !== b.pr) return a.pr - b.pr;
+    var ea = D.directory[a.di], eb = D.directory[b.di];
+    var ta = TIER_RANK[tierOf(ea)], tb = TIER_RANK[tierOf(eb)];
+    ta = ta == null ? 3 : ta; tb = tb == null ? 3 : tb;
+    if(ta !== tb) return ta - tb;
+    return (eb.strength || 0) - (ea.strength || 0) || dispName(ea).localeCompare(dispName(eb));
+  }
+  var all = Object.keys(by).map(function(k){ return by[k]; });
+  var st = { by:by, counts:counts, groups:groups, cmp:cmp,
+    total:list.length,
+    checkedN:all.filter(function(x){ return x.checked; }).length,
+    needs:all.filter(function(x){ return x.kind === 'needs' || x.kind === 'spot'; }).sort(cmp),
+    sweep:all.filter(function(x){ return x.kind === 'sweep'; }).sort(cmp) };
+  ST_CACHE = { ver:VER, st:st };
+  return st;
+}
+function queueFor(tab){
+  var st = getState();
+  if(tab === 'needs') return st.needs;
+  if(tab === 'sweep') return st.sweep;
   var out = [];
-  D.directory.forEach(function(e, di){
-    if(!liveEntry(e)) return;
-    if(tagList(gv(e, k)).indexOf(name) >= 0) out.push(di);
+  Object.keys(st.by).forEach(function(k){
+    var x = st.by[k];
+    if(x.checked && tab !== 'spot') return;
+    if(x.reasons.some(function(c){ return REASONS[c].tab === tab; })) out.push(x);
   });
-  return out.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+  return out.sort(st.cmp);
 }
-function renderDashOrgs(){
-  var el = $('#dashsec-orgs'); if(!el) return;
-  var totalOrgs = 0, totalMem = 0;
-  var h = ORG_SECTIONS.map(function(cat){
-    var names = orgNames(cat.k).map(function(n){ return { n:n, mem:orgMembers(cat.k, n) }; })
-      .filter(function(o){ return o.mem.length; })
-      .sort(function(a, b){ return (b.mem.length - a.mem.length) || a.n.localeCompare(b.n); });
-    totalOrgs += names.length;
-    totalMem += names.reduce(function(a, o){ return a + o.mem.length; }, 0);
-    var rows = names.map(function(o){
-      var key = cat.k + '|' + o.n, open = !!DORG.open[key];
-      var mem = open ? '<div class="dmemlist">' + o.mem.map(function(di){
-        return '<button type="button" class="dmem" data-openperson="' + di + '">' + esc(dispName(D.directory[di])) + '</button>';
-      }).join('') + '</div>' : '';
-      return '<div class="dorg"><button type="button" class="dorghead" data-orgtoggle="' + esc(key) + '">' +
-        '<b>' + esc(o.n) + '</b><span class="dcount">' + o.mem.length + (o.mem.length === 1 ? ' person' : ' people') + '</span>' +
-        '<span class="chev">' + ic('chev', 14) + '</span></button>' + mem + '</div>';
-    }).join('');
-    return '<div class="dsecblock"><h3 class="dsectitle">' + esc(cat.label) + '</h3>' + (rows || '<p class="dim">None on file.</p>') + '</div>';
-  }).join('');
-  el.innerHTML = h;
-  $('#aushown').textContent = totalOrgs + ' organizations · ' + totalMem + ' memberships';
+function tabCount(tab){
+  var st = getState();
+  if(tab === 'needs') return st.needs.length;
+  if(tab === 'sweep') return st.sweep.length;
+  return queueFor(tab).length;
+}
+function statusOf(di){
+  var x = getState().by[di]; if(!x) return 'waiting';
+  return x.checked ? (x.kind === 'spot' ? 'needs' : 'checked') : (x.kind === 'needs' ? 'needs' : 'waiting');
 }
 
-/* ----- Groups: revived 2026-10-12. Membership lives in the Profiles 'Groups'
-   column (comma-separated names per person, patched via queuePatch like any
-   other field), so it survives syncs; the group list is the union over people.
-   Seeded from the old Friends Database 'Groups / Contexts' tags. A group with
-   no members yet exists only in DGRP.extra for the session. ----- */
-var DGRP = { open:null, renaming:null, confirmDel:null, extra:[], q:{} };
-function personGroups(e){ return splitTags(gv(e, 'groups'), ', '); }
-function allGroups(){
-  var map = {};
-  D.directory.forEach(function(e, di){
-    if(!liveEntry(e)) return;
-    personGroups(e).forEach(function(g){ (map[g] = map[g] || []).push(di); });
-  });
-  DGRP.extra.forEach(function(g){ if(!map[g]) map[g] = []; });
-  return map;
+/* ============================================================
+   6. family model (bloodline trees) + writes
+   ============================================================ */
+function famLinks(e){
+  try{ var v = JSON.parse(gv(e, 'family') || '[]'); return Array.isArray(v) ? v : []; }
+  catch(x){ return []; }
 }
-function setPersonGroups(di, arr){ queuePatch(di, { groups: arr.join(', ') }); }
-function grpPatchMembers(name, fn){
-  var map = allGroups(), mem = map[name] || [];
-  mem.forEach(function(di){
-    var e = D.directory[di], gs = personGroups(e), ns = fn(gs.slice());
-    if(ns) setPersonGroups(di, ns);
-  });
-  return mem.length;
-}
-function renderDashGroups(){
-  var el = $('#dashsec-groups'); if(!el) return;
-  var map = allGroups();
-  var names = Object.keys(map).sort(function(a, b){ return (map[b].length - map[a].length) || a.localeCompare(b); });
-  var h = '<div class="dsecblock"><h3 class="dsectitle">Groups</h3>' +
-    '<div class="grpcreate"><input id="grpnew" placeholder="New group name" autocomplete="off">' +
-    '<button type="button" class="mini" data-grpcreate="1">' + ic('plus', 13) + 'Create group</button></div>' +
-    '<p class="dim" style="margin:0 0 6px;font-size:12.5px">Revived from the old Friends Database group tags. Add people to a group and it is saved on their profiles.</p></div>';
-  h += names.map(function(name){
-    var mem = (map[name] || []).slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
-    var open = DGRP.open === name;
-    var head = '<div class="dgrphead"><b>' + esc(name) + '</b><span class="dcount">' + mem.length + (mem.length === 1 ? ' person' : ' people') + '</span>' +
-      '<span class="dgrpacts"><button type="button" class="mini neutral" data-grprename="' + esc(name) + '">Rename</button>' +
-      (DGRP.confirmDel === name
-        ? '<button type="button" class="mini danger" data-grpdelgo="' + esc(name) + '">Confirm delete</button>'
-        : '<button type="button" class="mini danger" data-grpdel="' + esc(name) + '">Delete</button>') +
-      '<button type="button" class="mini neutral" data-grptoggle="' + esc(name) + '">' + (open ? 'Close' : 'People') + '</button></span></div>';
-    var body = '';
-    if(DGRP.renaming === name){
-      body += '<div class="grpcreate"><input id="grprename" value="' + esc(name) + '" autocomplete="off">' +
-        '<button type="button" class="mini" data-grprenamed="' + esc(name) + '">Save name</button>' +
-        '<button type="button" class="mini neutral" data-grprenamex="1">Cancel</button></div>';
-    }
-    if(open){
-      body += '<div class="dmemlist">' + (mem.map(function(di){
-        return '<span class="dmemchip">' + esc(dispName(D.directory[di])) + '<b class="nx" data-grprm="' + esc(name) + '" data-di="' + di + '" title="Remove from group">×</b></span>';
-      }).join('') || '<span class="dim">No members yet. Add someone below.</span>') + '</div>' +
-      '<div class="naddwrap"><input class="grpq" data-grp="' + esc(name) + '" placeholder="Add a person: type a name" autocomplete="off"><div class="grphits" data-grphits="' + esc(name) + '"></div></div>';
-    }
-    return '<div class="dgrp">' + head + body + '</div>';
-  }).join('');
-  el.innerHTML = h || '<p class="dim">No groups yet.</p>';
-  $('#aushown').textContent = names.length + ' groups';
-}
-function grpSearch(input){
-  var name = input.getAttribute('data-grp');
-  var box = document.querySelector('[data-grphits="' + CSS.escape(name) + '"]'); if(!box) return;
-  var q = (input.value || '').trim().toLowerCase();
-  if(q.length < 2){ box.innerHTML = ''; return; }
-  var map = allGroups(), mem = map[name] || [], hits = [];
-  D.directory.forEach(function(r, i){
-    if(hits.length >= 6 || !liveEntry(r) || mem.indexOf(i) >= 0) return;
-    var label = dispName(r);
-    if((label + ' ' + (r.name || '')).toLowerCase().indexOf(q) < 0) return;
-    hits.push({ i:i, label:label });
-  });
-  box.innerHTML = hits.length ? hits.map(function(x){ return '<div class="naddhit" data-gadd="' + esc(name) + '" data-di="' + x.i + '">' + esc(x.label) + '</div>'; }).join('')
-    : '<div class="naddhit none">No matches</div>';
-}
-
-function grpCreate(){
-  var inp = $('#grpnew'); if(!inp) return;
-  var name = inp.value.trim(); if(!name) return;
-  var map = allGroups();
-  if(map[name]){ toast('That group already exists.'); return; }
-  if(DGRP.extra.indexOf(name) < 0) DGRP.extra.push(name);
-  DGRP.open = name; DGRP.renaming = null; DGRP.confirmDel = null;
-  renderDashGroups();
-  toast('Group "' + name + '" created. Add people below.');
-}
-function grpRenameSave(oldName){
-  var inp = $('#grprename'); if(!inp) return;
-  var nw = inp.value.trim();
-  if(!nw || nw === oldName){ DGRP.renaming = null; renderDashGroups(); return; }
-  var map = allGroups();
-  if(map[nw]){ toast('A group with that name already exists.'); return; }
-  grpPatchMembers(oldName, function(gs){
-    var i = gs.indexOf(oldName);
-    if(i < 0) return null;
-    gs[i] = nw; return gs;
-  });
-  var xi = DGRP.extra.indexOf(oldName); if(xi >= 0) DGRP.extra[xi] = nw;
-  if(DGRP.open === oldName) DGRP.open = nw;
-  DGRP.renaming = null;
-  renderDashGroups();
-  toast('Group renamed to "' + nw + '".');
-}
-
-/* ----- Family: trees derived from the stored Profiles 'family' links (the
-   source of truth — [[relation, person name], ...] per person, edited through
-   queuePatch exactly like the profile editor's family section). Display adds
-   the inverses and shared-parent siblings, mirroring the build. ----- */
-var DFAM = { editing:null, open:false, focus:null };
-/* Family SPACE (JD 2026-10-12): every bloodline tree lives in ONE
-   full-screen world the user pans/zooms like the 2D/3D maps — clusters
-   are the separate trees, nodes are circles, and a dashed connector
-   links a married-in spouse's instance to their home instance. */
-var DFSPACE = { cam:{ x:0, y:0, k:1 }, fit:true, glide:null, moved:false, layout:null, fresh:false };
-/* Tree colors are structural, never relative to a chosen person (JD
-   2026-10-12 rebuild): bloodline members are tinted by generation, eldest
-   generation first; a spouse who married into the family gets one color. */
-var FAM_GEN_COLORS = ['#7fa8ff', '#c9a6f2', '#6fd3a7', '#f0b44c', '#f28ba8'];
-var FAM_SPOUSE_COLOR = '#e0688a';
+var FAM_RELS = ['parent', 'spouse', 'child', 'sibling'];
+function famRelDefault(){ var v = store('ncc_famrel'); return FAM_RELS.indexOf(v) >= 0 ? v : 'parent'; }
+function famRelSave(v){ if(FAM_RELS.indexOf(v) >= 0) store('ncc_famrel', v); }
 var FAM_INVERSE = { parent:'children', spouse:'spouses', child:'parents', sibling:'siblings' };
+var FAM_GEN_COLORS = ['#86a0d8', '#b7a1e6', '#6fc2ae', '#d6e2ff', '#c78bd8'];
+var FAM_SPOUSE_COLOR = '#c78bd8';
+var FAM_SUF = { 'sr.':1, 'jr.':1, 'ii':1, 'iii':1, 'iv':1 };
+function famInitials(label){
+  var w = String(label || '').trim().split(/\s+/).filter(Boolean);
+  if(!w.length) return '?';
+  return (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase();
+}
 function famDisplay(){
   var disp = {};
   function slot(di){ return disp[di] || (disp[di] = { parents:[], spouses:[], children:[], siblings:[] }); }
@@ -2762,7 +804,6 @@ function famDisplay(){
       push(tdi, FAM_INVERSE[l[0]], di);
     });
   });
-  /* siblings via shared parents */
   Object.keys(disp).forEach(function(diK){
     var di = +diK;
     disp[di].parents.forEach(function(p){
@@ -2774,29 +815,15 @@ function famDisplay(){
   });
   return disp;
 }
-/* ----- bloodline trees (JD 2026-10-12): a family tree is a BLOODLINE,
-   not a connected component — marriage must not chain one bloodline into
-   another. Founding groups come from the parent-less roots: sibling
-   groups among roots (the Paladin siblings found the Paladin tree),
-   founding couples (two roots married to each other), and solo roots
-   with blood descendants. A tree renders its blood descendants plus the
-   SPOUSES of blood members (one marriage hop); a spouse's own bloodline
-   is never pulled in. A person can be blood in one tree and a married-in
-   spouse in another — their HOME tree is where they are blood, and
-   married-in nodes link across to it so the chain can still be walked
-   one marriage at a time. ----- */
-var FAM_SUF = { 'sr.':1, 'jr.':1, 'ii':1, 'iii':1, 'iv':1 };
 function famSurname(di){
   var parts = dispName(D.directory[di]).split(/\s+/).filter(function(x){ return x; });
   while(parts.length > 1 && FAM_SUF[parts[parts.length - 1].toLowerCase()]) parts.pop();
   return parts.length ? parts[parts.length - 1] : '';
 }
+/* A family tree is a BLOODLINE, never a connected component: marriage must not chain one bloodline into another. */
 function famTrees(disp){
   function rel(di, rk){ return ((disp[di] && disp[di][rk]) || []).map(function(x){ return x.di; }); }
-  var roots = Object.keys(disp).map(Number).filter(function(di){ return !rel(di, 'parents').length; })
-    .sort(function(a, b){ return a - b; });
-  /* founding sibling groups among roots: union over SIBLING edges only —
-     a spouse edge must never merge two bloodlines at the root */
+  var roots = Object.keys(disp).map(Number).filter(function(di){ return !rel(di, 'parents').length; }).sort(function(a, b){ return a - b; });
   var upar = {}; roots.forEach(function(di){ upar[di] = di; });
   function find(x){ while(upar[x] !== x){ upar[x] = upar[upar[x]]; x = upar[x]; } return x; }
   roots.forEach(function(di){
@@ -2811,8 +838,7 @@ function famTrees(disp){
   Object.keys(groups).forEach(function(k){
     if(groups[k].length >= 2){
       var g = groups[k].slice().sort(function(a, b){ return a - b; });
-      founded.push(g);
-      g.forEach(function(di){ claimed[di] = 1; foundedRoots[di] = 1; });
+      founded.push(g); g.forEach(function(di){ claimed[di] = 1; foundedRoots[di] = 1; });
     }
   });
   var singles = roots.filter(function(di){ return !claimed[di]; }), paired = {};
@@ -2826,7 +852,7 @@ function famTrees(disp){
   });
   singles.forEach(function(di){
     if(paired[di]) return;
-    if(!rel(di, 'children').length) return; /* no descendants: renders only as a married-in spouse */
+    if(!rel(di, 'children').length) return;
     if(rel(di, 'spouses').some(function(s){ return foundedRoots[s]; })) return;
     founded.push([di]); foundedRoots[di] = 1;
   });
@@ -2844,12 +870,8 @@ function famTrees(disp){
     }
     var members = {};
     Object.keys(blood).forEach(function(k){ members[k] = 1; rel(+k, 'spouses').forEach(function(s){ members[s] = 1; }); });
-    return { id:'ft' + gi, roots:g, blood:blood,
-      members:Object.keys(members).map(Number).sort(function(a, b){ return a - b; }) };
+    return { id:'ft' + gi, roots:g, blood:blood, members:Object.keys(members).map(Number).sort(function(a, b){ return a - b; }) };
   });
-  /* titles come from the root surnames; a surname that is the unanimous
-     surname of another tree's roots is claimed by that tree and loses
-     ties here (keeps the Paladin siblings from titling as "Daniels") */
   var claims = {};
   trees.forEach(function(t){
     var cnt = {};
@@ -2865,12 +887,9 @@ function famTrees(disp){
     var base = pick || cands[0];
     t.title = base ? base + ' family' : 'Family';
   });
-  /* home tree per person: where they are blood; the largest such tree wins */
   var homes = {};
   trees.forEach(function(t){
-    Object.keys(t.blood).forEach(function(k){
-      if(!homes[k] || t.members.length > homes[k].members.length) homes[k] = t;
-    });
+    Object.keys(t.blood).forEach(function(k){ if(!homes[k] || t.members.length > homes[k].members.length) homes[k] = t; });
   });
   trees.forEach(function(t){
     t.spousesFrom = [];
@@ -2882,26 +901,15 @@ function famTrees(disp){
     });
   });
   trees.sort(function(a, b){ return b.members.length - a.members.length || (a.title < b.title ? -1 : a.title > b.title ? 1 : 0); });
+  /* ids follow the sorted order so deep links stay stable within a bake */
+  trees.forEach(function(t, i){ t.id = 'ft' + i; });
   return { trees:trees, homes:homes };
 }
-/* ----- descendant-tree layout, following the standard genealogy chart
-   convention (pedigree / descendant charts as drawn by genealogy software):
-   the eldest generation sits at the top; partners stand side by side joined
-   by a horizontal couple line; a vertical drop line falls from the couple's
-   midpoint to a horizontal sibship bar, and each child hangs from that bar
-   on the level directly below. There is no anchor person: positions and
-   colors come only from the link graph itself. ----- */
-/* node slots are sized for CIRCLES now: a 52px disc (radius CR, center
-   CY below the slot top) with the name and generation caption under it */
 var DFT = { NW:118, NH:92, CY:28, CR:26, CGAP:38, UGAP:34, ROW:150, DROP:26 };
 function famTreeModel(disp, tree, homes){
   var comp = tree.members, inComp = {};
   comp.forEach(function(di){ inComp[di] = 1; });
-  function rel(di, rk){
-    return ((disp[di] && disp[di][rk]) || []).map(function(x){ return x.di; })
-      .filter(function(x){ return inComp[x]; });
-  }
-  /* generation from parent links only: 0 = eldest known generation */
+  function rel(di, rk){ return ((disp[di] && disp[di][rk]) || []).map(function(x){ return x.di; }).filter(function(x){ return inComp[x]; }); }
   var gen = {}, busy = {};
   function genOf(di){
     if(gen[di] != null) return gen[di];
@@ -2913,22 +921,13 @@ function famTreeModel(disp, tree, homes){
     return gen[di];
   }
   comp.forEach(genOf);
-  /* a blood member with no recorded parents still belongs on their
-     siblings' row when a sibling descends in this tree — their parents
-     were simply never recorded (e.g. the Brown siblings of Baxter) */
   comp.forEach(function(di){
     if(gen[di] !== 0 || !tree.blood[di]) return;
     var best = 0;
     rel(di, 'siblings').forEach(function(s){ if(tree.blood[s] && gen[s] > best) best = gen[s]; });
     if(best) gen[di] = best;
   });
-  /* married-in: rendered in this tree only as the spouse of a blood
-     member — blood membership comes from the tree, not from local links */
   function marriedIn(di){ return !tree.blood[di]; }
-  /* Couple units: every non-married-in person heads a unit and their spouse
-     stands beside them as partner. A founding couple (both bloodline, e.g.
-     two roots) pairs up the same way: the first head processed claims the
-     other, and the claimed head's own unit folds into it. */
   var pairMap = {}, units = [];
   comp.forEach(function(di){
     if(marriedIn(di)) return;
@@ -2944,8 +943,6 @@ function famTreeModel(disp, tree, homes){
       u.partner = s; pairMap[s] = u; break;
     }
   });
-  /* safety net: anyone still unplaced (e.g. an unclaimed married-in parent)
-     gets a solo unit so nobody silently drops out of the tree */
   comp.forEach(function(di){
     if(!pairMap[di]){
       var u = { head:di, partner:null, childUnits:[] };
@@ -2953,29 +950,21 @@ function famTreeModel(disp, tree, homes){
     }
   });
   var active = units.filter(function(u){ return pairMap[u.head] === u; });
-  /* each child hangs from exactly one parent unit: the unit holding both
-     parents when there is one, otherwise the first parent's unit */
   function parentUnitOf(child){
     var ps = rel(child, 'parents'), cand = [];
     ps.forEach(function(p){ var u = pairMap[p]; if(u && cand.indexOf(u) < 0) cand.push(u); });
-    for(var i = 0; i < cand.length; i++)
-      if(ps.every(function(p){ return pairMap[p] === cand[i]; })) return cand[i];
+    for(var i = 0; i < cand.length; i++) if(ps.every(function(p){ return pairMap[p] === cand[i]; })) return cand[i];
     return cand[0] || null;
   }
   comp.forEach(function(di){
     var pu = parentUnitOf(di);
     if(!pu || pu === pairMap[di]) return;
-    if(!pu.childUnits.some(function(c){ return c.unit === pairMap[di]; }))
-      pu.childUnits.push({ di:di, unit:pairMap[di] });
+    if(!pu.childUnits.some(function(c){ return c.unit === pairMap[di]; })) pu.childUnits.push({ di:di, unit:pairMap[di] });
   });
-  /* siblings hang in directory order — stable on every render, and the
-     closest thing to birth order the data supports */
   active.forEach(function(u){ u.childUnits.sort(function(a, b){ return a.di - b.di; }); });
   var childUnitSet = [];
   active.forEach(function(u){ u.childUnits.forEach(function(c){ if(childUnitSet.indexOf(c.unit) < 0) childUnitSet.push(c.unit); }); });
   var roots = active.filter(function(u){ return childUnitSet.indexOf(u) < 0; });
-  /* recursive block layout: a block is as wide as its widest row; the couple
-     centers over its children, children blocks sit side by side below */
   function layoutUnit(u){
     var memberW = u.partner != null ? 2 * DFT.NW + DFT.CGAP : DFT.NW;
     var blocks = u.childUnits.map(function(c){ return { di:c.di, b:layoutUnit(c.unit) }; });
@@ -3006,8 +995,6 @@ function famTreeModel(disp, tree, homes){
     }
     return { w:w, nodes:nodes, lines:lines, xOf:xOf, headCx:headCx };
   }
-  /* root units side by side across the full width; root heads who are
-     siblings of each other share a sibship bar above the row */
   var sibGroups = [];
   roots.forEach(function(u){
     var g = null;
@@ -3026,9 +1013,6 @@ function famTreeModel(disp, tree, homes){
   });
   sibGroups.forEach(function(g){
     if(g.length < 2) return;
-    /* the sibship bar sits just above the siblings' own generation row,
-       which is not always the top row (parent-less siblings of a blood
-       member render beside their sibling's generation, not at the top) */
     var gy = Math.min.apply(null, g.map(function(u){ return gen[u.head]; }));
     var by = padTop + gy * DFT.ROW - 16;
     var cs = g.map(function(u){ return rootCenter[u.head]; });
@@ -3038,37 +1022,18 @@ function famTreeModel(disp, tree, homes){
   var maxY = 0, maxGen = 0, hasSpouse = false;
   nodes.forEach(function(n){ if(n.y > maxY) maxY = n.y; });
   comp.forEach(function(di){ if(gen[di] > maxGen) maxGen = gen[di]; if(marriedIn(di)) hasSpouse = true; });
-  /* walking the chain (JD 2026-10-12): a married-in spouse whose home
-     tree exists gets a jump link under their node to that tree */
-  var chips = [];
-  nodes.forEach(function(n){
-    if(tree.blood[n.di]) return;
-    var home = homes && homes[n.di];
-    if(home && home !== tree) chips.push({ di:n.di, x:n.x, y:n.y + DFT.NH + 4, tid:home.id, title:home.title });
-  });
-  return { nodes:nodes, lines:lines, chips:chips, gen:gen, w:totalW, h:maxY + DFT.NH + 16, maxGen:maxGen, hasSpouse:hasSpouse,
+  return { nodes:nodes, lines:lines, gen:gen, w:totalW, h:maxY + DFT.NH + 16, maxGen:maxGen, hasSpouse:hasSpouse,
     styleOf:function(di){
-      if(marriedIn(di)) return { c:FAM_SPOUSE_COLOR, cap:'Spouse' };
+      if(marriedIn(di)) return { c:FAM_SPOUSE_COLOR, cap:'Married in' };
       var g = gen[di];
       return { c:FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)], cap:'Gen ' + (g + 1) };
     } };
 }
-function dfReduced(){
-  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-}
-/* ----- the combined family space: shelf-pack every bloodline tree into
-   one world. Each cluster keeps its famTreeModel geometry untouched;
-   clusters sit in roomy rows with the family name as a quiet label
-   above, and married-in instances get a dashed connector to the same
-   person's home (blood) instance in their home cluster. ----- */
 function famSpaceLayout(disp, ft){
   var trees = ft.trees, homes = ft.homes;
   var models = trees.map(function(t){ return famTreeModel(disp, t, homes); });
-  var LABEL = 52, GX = 320, GY = 280, PAD = 150;
-  var totalArea = 0;
+  var LABEL = 52, GX = 320, GY = 280, PAD = 150, totalArea = 0;
   models.forEach(function(m){ totalArea += (m.w + GX) * (m.h + LABEL + GY); });
-  /* aim the world's aspect at a landscape viewport so Fit uses the
-     screen instead of letterboxing a tall stack of trees */
   var target = Math.max(2000, Math.min(5200, Math.ceil(Math.sqrt(totalArea) * 1.55)));
   var clusters = [], cx = PAD, cy = PAD, rowH = 0;
   trees.forEach(function(t, i){
@@ -3082,9 +1047,7 @@ function famSpaceLayout(disp, ft){
   W += PAD; H += PAD;
   var centers = {};
   clusters.forEach(function(c){
-    c.model.nodes.forEach(function(n){
-      centers[c.tree.id + '|' + n.di] = { x:c.ox + n.x + DFT.NW / 2, y:c.oy + n.y + DFT.CY };
-    });
+    c.model.nodes.forEach(function(n){ centers[c.tree.id + '|' + n.di] = { x:c.ox + n.x + DFT.NW / 2, y:c.oy + n.y + DFT.CY }; });
   });
   var links = [], seenLink = {};
   clusters.forEach(function(c){
@@ -3100,1157 +1063,212 @@ function famSpaceLayout(disp, ft){
   });
   return { trees:trees, homes:homes, clusters:clusters, W:W, H:H, links:links, models:models };
 }
-function famSpaceHTML(L){
-  /* Entrance stays restrained in the big space (JD 2026-10-12): the
-     whole world fades in and nodes rise gently with a small per-cluster
-     delay — no generation-by-generation stagger across every tree. */
-  var anim = DFSPACE.fresh && !dfReduced();
-  var clusters = L.clusters.map(function(c, ci){
-    var m = c.model;
-    var lines = m.lines.map(function(l){
-      return '<line x1="' + l.x1 + '" y1="' + l.y1 + '" x2="' + l.x2 + '" y2="' + l.y2 + '"/>';
-    }).join('');
-    var nodes = m.nodes.map(function(n, ni){
-      var st = m.styleOf(n.di);
-      var home = !c.tree.blood[n.di] ? L.homes[n.di] : null;
-      var mi = !!(home && home !== c.tree);
-      var nm = dispName(D.directory[n.di]);
-      return '<button type="button" class="dfnode' + (DFAM.editing === n.di ? ' editing' : '') + (mi ? ' mi' : '') +
-        '" data-dfnode data-di="' + n.di + '" data-tid="' + c.tree.id + '"' + (mi ? ' data-home="' + home.id + '"' : '') +
-        ' style="left:' + n.x + 'px;top:' + n.y + 'px;--rc:' + st.c +
-        (anim ? ';--nd:' + Math.min(0.8, ci * 0.06 + ni * 0.012).toFixed(3) + 's' : '') +
-        '" title="' + esc(nm) + (mi ? ' — home family: ' + esc(home.title) : '') + '">' +
-        '<span class="dfdisc">' + esc(famInitials(nm)) + '</span>' +
-        (mi ? '<span class="dfhomebadge" title="Home family: ' + esc(home.title) + '">⌂</span>' : '') +
-        '<span class="dfname">' + esc(nm) + '</span><span class="dfcap">' + st.cap + '</span></button>';
-    }).join('');
-    return '<div class="dfclabel" style="left:' + c.ox + 'px;top:' + c.labelY + 'px">' + esc(c.tree.title) +
-      '<span>' + c.tree.members.length + (c.tree.members.length === 1 ? ' person' : ' people') + ' · ' +
-      (c.model.maxGen + 1) + (c.model.maxGen === 0 ? ' generation' : ' generations') + '</span></div>' +
-      '<div class="dfcluster" style="left:' + c.ox + 'px;top:' + c.oy + 'px;width:' + c.w + 'px;height:' + c.h + 'px">' +
-      '<svg class="dfclines" width="' + c.w + '" height="' + c.h + '">' + lines + '</svg>' + nodes + '</div>';
-  }).join('');
-  var xl = L.links.map(function(l){
-    var mx1 = l.x1 + (l.x2 - l.x1) * 0.35, mx2 = l.x1 + (l.x2 - l.x1) * 0.65;
-    return '<path class="dfxlink" data-dfx="' + l.di + '" d="M' + l.x1.toFixed(1) + ' ' + l.y1.toFixed(1) +
-      ' C' + mx1.toFixed(1) + ' ' + l.y1.toFixed(1) + ',' + mx2.toFixed(1) + ' ' + l.y2.toFixed(1) + ',' +
-      l.x2.toFixed(1) + ' ' + l.y2.toFixed(1) + '"/>';
-  }).join('');
-  return '<div class="dfspace-world' + (anim ? ' anim' : '') + '" style="width:' + L.W + 'px;height:' + L.H + 'px">' +
-    '<svg class="dfxsvg" width="' + L.W + '" height="' + L.H + '">' + xl + '</svg>' + clusters + '</div>';
-}
-/* ----- space camera: screen = world * k + (x, y). Drag pans (with the
-   momentum the tree overlay had), wheel/pinch zoom around the cursor,
-   and glides animate between framings. Reduced motion jumps. ----- */
-function dfViewport(){ return $('#dashsec-family .dfspace'); }
-function dfApplyCam(){
-  var w = $('#dashsec-family .dfspace-world'); if(!w) return;
-  var c = DFSPACE.cam;
-  w.style.transform = 'translate(' + c.x + 'px,' + c.y + 'px) scale(' + c.k + ')';
-}
-function dfCamFor(bx, by, bw, bh, maxK){
-  var vp = dfViewport(); if(!vp) return null;
-  var k = Math.min(vp.clientWidth / Math.max(1, bw), vp.clientHeight / Math.max(1, bh));
-  k = Math.max(0.04, Math.min(maxK || 1.1, k));
-  return { k:k, x: vp.clientWidth / 2 - (bx + bw / 2) * k, y: vp.clientHeight / 2 - (by + bh / 2) * k };
-}
-function dfStopGlide(){
-  if(DFSPACE.glide){ cancelAnimationFrame(DFSPACE.glide.raf); DFSPACE.glide = null; }
-  /* a glide (or fresh input) always wins over leftover pan momentum */
-  if(DFSPACE.momRaf) cancelAnimationFrame(DFSPACE.momRaf);
-  DFSPACE.momRaf = 0; DFSPACE.vel = null;
-}
-function dfMomStep(){
-  var v = DFSPACE.vel; if(!v) return;
-  DFSPACE.cam.x += v.x; DFSPACE.cam.y += v.y;
-  v.x *= 0.94; v.y *= 0.94;
-  dfApplyCam();
-  if(Math.abs(v.x) < 0.3 && Math.abs(v.y) < 0.3){ DFSPACE.vel = null; DFSPACE.momRaf = 0; return; }
-  DFSPACE.momRaf = requestAnimationFrame(dfMomStep);
-}
-function dfGlideTo(target, dur){
-  if(!target) return;
-  if(dfReduced() || !dur){ dfStopGlide(); DFSPACE.cam = target; dfApplyCam(); return; }
-  dfStopGlide();
-  var from = { x:DFSPACE.cam.x, y:DFSPACE.cam.y, k:DFSPACE.cam.k }, t0 = performance.now();
-  var g = DFSPACE.glide = { raf:0 };
-  function step(now){
-    if(DFSPACE.glide !== g) return;
-    var t = Math.min(1, (now - t0) / dur);
-    var e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-    DFSPACE.cam = { x:from.x + (target.x - from.x) * e, y:from.y + (target.y - from.y) * e, k:from.k + (target.k - from.k) * e };
-    dfApplyCam();
-    if(t < 1) g.raf = requestAnimationFrame(step); else DFSPACE.glide = null;
+
+/* Family links are two-way IN STORAGE: a link written on one profile writes its inverse on the other. */
+function famDualWrite(di, rel, tdi, adding){
+  var e = D.directory[di], t = D.directory[tdi];
+  if(!e || !t || di === tdi) return;
+  var inv = FAM_INV_REL[rel]; if(!inv) return;
+  var back = (e.name || '').toLowerCase();
+  var tl = famLinks(t), before = tl.length;
+  if(adding){
+    if(!tl.some(function(l){ return l[0] === inv && String(l[1] || '').toLowerCase() === back; })) tl.push([inv, e.name || '']);
+  } else {
+    tl = tl.filter(function(l){ return !(l[0] === inv && String(l[1] || '').toLowerCase() === back); });
   }
-  g.raf = requestAnimationFrame(step);
+  if(tl.length !== before) queuePatch(tdi, { family: JSON.stringify(tl) });
 }
-function dfFitAll(anim){
-  var L = DFSPACE.layout; if(!L) return;
-  DFSPACE.fit = true;
-  dfGlideTo(dfCamFor(0, 0, L.W, L.H, 1), anim ? 650 : 0);
+/* all family are known associates: mirror an add locally (respecting close_hide on either side) */
+function famAssocSync(di, tdi){
+  var e = D.directory[di], t = D.directory[tdi];
+  if(!e || !t || di === tdi) return;
+  [[e, t], [t, e]].forEach(function(pr){
+    var o = pr[0], x = pr[1], xk = (x.name || '').toLowerCase();
+    if(!xk) return;
+    if(hiddenAssoc(o)[xk] || hiddenAssoc(x)[(o.name || '').toLowerCase()]) return;
+    if(!(o.neighbors || []).some(function(n){ return (n.u || '').toLowerCase() === xk; })){
+      (o._nbx = o._nbx || []).push({ u:x.name || '', d:dispName(x) });
+      rebuildNeighbors(o);
+    }
+  });
 }
-function dfGlideCluster(tid, dur){
-  var L = DFSPACE.layout; if(!L) return;
-  var c = null;
-  L.clusters.forEach(function(x){ if(x.tree.id === tid) c = x; });
-  if(!c) return;
-  DFSPACE.fit = false;
-  dfGlideTo(dfCamFor(c.ox - 80, c.labelY - 40, c.w + 160, c.h + 130, 1.05), dur == null ? 650 : dur);
-}
-function dfGlidePerson(di){
-  var L = DFSPACE.layout; if(!L) return;
-  var home = L.homes[di], best = null;
-  L.clusters.forEach(function(c){
-    c.model.nodes.forEach(function(n){
-      if(n.di !== di) return;
-      var p = { x:c.ox + n.x + DFT.NW / 2, y:c.oy + n.y + DFT.CY, isHome:home === c.tree };
-      if(!best || (p.isHome && !best.isHome)) best = p;
+function famSiblingsOf(di){
+  var disp = famDisplay(), out = {}, s = disp[di];
+  if(!s) return [];
+  s.siblings.forEach(function(x){ out[x.di] = 1; });
+  s.parents.forEach(function(p){
+    Object.keys(disp).forEach(function(k){
+      if(+k !== di && disp[k].parents.some(function(pp){ return pp.di === p.di; })) out[k] = 1;
     });
   });
-  if(!best) return;
-  var vp = dfViewport(); if(!vp) return;
-  var k = Math.max(DFSPACE.cam.k, 0.8);
-  DFSPACE.fit = false;
-  dfGlideTo({ k:k, x:vp.clientWidth / 2 - best.x * k, y:vp.clientHeight / 2 - best.y * k }, 650);
+  delete out[di];
+  return Object.keys(out).map(Number);
 }
-function dfInitSpace(){
-  if(!DFSPACE.layout) return;
-  dfApplyCam();
-  var f = DFAM.focus; DFAM.focus = null;
-  DFSPACE.fresh = false;
-  if(!f) return;
-  if(f.type === 'tree') dfGlideCluster(f.id, 700);
-  else if(f.type === 'person') dfGlidePerson(f.di);
-  else dfFitAll(true);
+function famAddLinkRaw(ownerDi, r, targetDi){
+  var o = D.directory[ownerDi], tg = D.directory[targetDi];
+  if(!o || !tg || ownerDi === targetDi) return false;
+  var kl = (tg.name || '').toLowerCase(); if(!kl) return false;
+  var ls = famLinks(o);
+  if(ls.some(function(l){ return l[0] === r && String(l[1] || '').toLowerCase() === kl; })) return false;
+  ls.push([r, tg.name || '']);
+  queuePatch(ownerDi, { family: JSON.stringify(ls) });
+  famDualWrite(ownerDi, r, targetDi, true);
+  famAssocSync(ownerDi, targetDi);
+  return true;
 }
-function famOpenSpace(focus){
-  DFAM.open = true;
-  DFAM.focus = focus || { type:'fit' };
-  DFSPACE.fresh = true;
-  renderDashFamily();
-}
-function famCloseSpace(){
-  if(!DFAM.open) return;
-  DFAM.open = false; DFAM.editing = null; DFAM.focus = null;
-  dfStopGlide();
-  renderDashFamily();
-}
-/* from a profile: land in the one space, gliding to that person's home
-   cluster (their blood instance) */
-function famOpenSpaceFor(di){
-  DFAM.open = true;
-  DFAM.focus = { type:'person', di:di };
-  DFSPACE.fresh = true;
-  AUD.section = 'family';
-  openAudit();
-}
-function famEditorHTML(di){
-  var e = D.directory[di], links = famLinks(e);
-  var rows = links.map(function(l, i){
-    var tdi = BYN[String(l[1] || '').toLowerCase()];
-    var label = tdi != null ? dispName(D.directory[tdi]) : l[1];
-    return '<div class="famrow"><span class="famrel">' + esc(l[0]) + '</span><span>' + esc(label) + '</span>' +
-      '<b class="nx" data-dfrm="' + di + '" data-i="' + i + '" title="Remove family link">×</b></div>';
-  }).join('');
-  return '<div class="dfamedit"><div class="dfamedithead"><b>' + esc(dispName(e)) + '</b>' +
-    '<button type="button" class="mini neutral" data-openperson="' + di + '">Open profile</button></div>' +
-    (rows || '<p class="dim" style="margin:0 0 8px;font-size:13px">No stored links yet.</p>') +
-    '<div class="famaddrow"><select id="dfamrel-' + di + '">' + famRelOptions() + '</select>' +
-    '<input class="dfq" data-dfq="' + di + '" placeholder="Add family member: type a name" autocomplete="off"></div>' +
-    '<div class="dfamhits" data-dfamhits="' + di + '"></div></div>';
-}
-/* The Family section is a compact list of bloodline cards — name from
-   the root surname, headcount, generations, eldest names, and the home
-   trees of any married-in spouses — behind the one shared SPACE (JD
-   2026-10-12): entering the tab lands in the space, where every tree
-   sits in a single pan/zoom world of circle nodes; a card's Open button
-   enters the space gliding to that family, and a married-in spouse's
-   dashed connector (or tapping their node) walks to their home tree. */
-function renderDashFamily(){
-  var el = $('#dashsec-family'); if(!el) return;
-  var disp = famDisplay();
-  var ft = famTrees(disp), trees = ft.trees, homes = ft.homes;
-  var models = trees.map(function(t){ return famTreeModel(disp, t, homes); });
-  function topInfo(t, model){
-    var minY = Math.min.apply(null, model.nodes.map(function(n){ return n.y; }));
-    var top = model.nodes.filter(function(n){ return n.y === minY && t.blood[n.di]; }).sort(function(a, b){ return a.x - b.x; });
-    if(!top.length) top = model.nodes.filter(function(n){ return n.y === minY; }).sort(function(a, b){ return a.x - b.x; });
-    return { names:top.slice(0, 2).map(function(n){ return dispName(D.directory[n.di]); }), extra:top.length - 2 };
-  }
-  var h = '<div class="dsecblock"><h3 class="dsectitle">Family trees</h3>' +
-    '<p class="dim" style="margin:0 0 10px;font-size:12.5px">Every family lives in one shared space: each tree is a bloodline — blood descendants of its founders, plus spouses shown as married in. A dashed pink line links a married-in spouse to their own home family; tap their circle to glide there. Drag to pan, scroll or pinch to zoom, tap anyone to edit their links.</p>' +
-    (trees.length ? '<button type="button" class="mini" data-dfopen="1">Open family space</button>' : '') + '</div>';
-  if(!trees.length) h += '<p class="dim">No family links on file yet. Add links from a profile\'s Family section.</p>';
-  h += trees.map(function(t, ci){
-    var model = models[ci], ti = topInfo(t, model);
-    var meta = t.members.length + (t.members.length === 1 ? ' person' : ' people') + ' · ' + (model.maxGen + 1) + (model.maxGen === 0 ? ' generation' : ' generations') +
-      ' · Eldest: ' + ti.names.join(' & ') + (ti.extra > 0 ? ' +' + ti.extra : '');
-    var from = t.spousesFrom.length ? '<div class="dfamfrom">Spouses from: ' + t.spousesFrom.map(function(hm){
-      return '<button type="button" class="dfamfromlink" data-dfhome="' + hm.id + '">' + esc(hm.title) + '</button>';
-    }).join(', ') + '</div>' : '';
-    return '<div class="dfam dfamcard"><div class="dfamcardmain"><h4 class="dfamtitle">' + esc(t.title) + '</h4>' +
-      '<div class="dfammeta">' + esc(meta) + '</div>' + from + '</div>' +
-      '<button type="button" class="mini neutral dfamexpand" data-dfexpand="' + t.id + '">Open in space</button></div>';
-  }).join('');
-  if(DFAM.open && trees.length){
-    var L = famSpaceLayout(disp, ft);
-    DFSPACE.layout = L;
-    var maxGen = 0, anySpouse = false;
-    L.models.forEach(function(m){ if(m.maxGen > maxGen) maxGen = m.maxGen; if(m.hasSpouse) anySpouse = true; });
-    var leg = [];
-    for(var g = 0; g <= maxGen; g++)
-      leg.push('<span class="dfamleg"><i style="background:' + FAM_GEN_COLORS[Math.min(g, FAM_GEN_COLORS.length - 1)] + '"></i>Generation ' + (g + 1) + (g === 0 ? ' · eldest' : '') + '</span>');
-    if(anySpouse) leg.push('<span class="dfamleg"><i style="background:' + FAM_SPOUSE_COLOR + '"></i>Spouse · married in</span>');
-    var idx = L.clusters.map(function(c){
-      return '<button type="button" data-dfgo="' + c.tree.id + '">' + esc(c.tree.title.replace(/ family$/, '')) + '</button>';
-    }).join('');
-    var oedit = DFAM.editing != null ? '<div class="dfspace-edit">' + famEditorHTML(DFAM.editing) + '</div>' : '';
-    h += '<div class="dfamfs"><div class="dfamfssheet">' +
-      '<div class="dfamfsbar"><b>Family space</b><div class="dfspidx" role="group" aria-label="Families">' + idx + '</div>' +
-      '<div class="dfamlegend">' + leg.join('') + '</div>' +
-      '<div class="dfamzoom" role="group" aria-label="Space zoom">' +
-      '<button type="button" data-dfzoom="fit">Fit</button><button type="button" data-dfzoom="100">100%</button>' +
-      '<button type="button" data-dfzoom="out" aria-label="Zoom out">−</button><button type="button" data-dfzoom="in" aria-label="Zoom in">+</button></div>' +
-      '<button type="button" class="mini neutral" data-dfclose="1">Close</button></div>' +
-      '<div class="dfspace">' + famSpaceHTML(L) + oedit + '</div>' +
-      '</div></div>';
-  }
-  el.innerHTML = h;
-  document.body.classList.toggle('dfamfsopen', !!(DFAM.open && trees.length));
-  $('#aushown').textContent = trees.length + (trees.length === 1 ? ' family' : ' families');
-  if(DFAM.open && trees.length) dfInitSpace();
-}
-function dashFamSearch(input){
-  var di = parseInt(input.getAttribute('data-dfq'), 10);
-  var box = document.querySelector('[data-dfamhits="' + di + '"]'); if(!box) return;
-  var q = (input.value || '').trim().toLowerCase();
-  var e = D.directory[di], existing = {};
-  famLinks(e).forEach(function(l){ existing[String(l[1] || '').toLowerCase()] = 1; });
-  existing[(e.name || '').toLowerCase()] = 1;
-  if(q.length < 2){ box.innerHTML = ''; return; }
-  var hits = [];
-  D.directory.forEach(function(r, i){
-    if(hits.length >= 6 || !liveEntry(r)) return;
-    if(existing[(r.name || '').toLowerCase()]) return;
-    var label = dispName(r);
-    if((label + ' ' + (r.name || '')).toLowerCase().indexOf(q) < 0) return;
-    hits.push({ i:i, label:label });
-  });
-  box.innerHTML = hits.length ? hits.map(function(x){ return '<div class="naddhit" data-dfadd="' + di + '" data-tdi="' + x.i + '">' + esc(x.label) + '</div>'; }).join('')
-    : '<div class="naddhit none">No matches</div>';
-}
-function dashFamAdd(di, tdi){
-  var e = D.directory[di], t = D.directory[tdi]; if(!e || !t) return;
-  var sel = $('#dfamrel-' + di), rel = sel ? sel.value : 'parent';
-  famRelSave(rel);
-  var links = famLinks(e), kl = (t.name || '').toLowerCase();
-  if(!links.some(function(l){ return String(l[1] || '').toLowerCase() === kl && l[0] === rel; }))
-    links.push([rel, t.name || '']);
-  queuePatch(di, { family: JSON.stringify(links) });
-  famDualWrite(di, rel, tdi, true);
-  famAssocSync(di, tdi);
-  var sibN = rel === 'parent' ? famAddParentToSiblings(di, tdi) : 0;
-  var infN = famSpouseComplements(di, rel, tdi);
-  renderDashFamily();
-  toast(dispName(t) + ' added as ' + rel + ' of ' + dispName(e) +
-    (sibN ? ' — also added to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') : '') +
-    (infN ? (sibN ? ', plus ' : ' — plus ') + infN + ' inferred link' + (infN === 1 ? '' : 's') : '') +
-    ((sibN || infN) ? '.' : '.'));
-}
-function dashFamRemove(di, i){
-  var e = D.directory[di]; if(!e) return;
-  var links = famLinks(e), gone = links[i];
-  links.splice(i, 1);
-  queuePatch(di, { family: JSON.stringify(links) });
-  if(gone){
-    var tdi = BYN[String(gone[1] || '').toLowerCase()];
-    if(tdi != null) famDualWrite(di, gone[0], tdi, false);
-  }
-  renderDashFamily();
-}
-/* ---------- quick mobile audit: one person at a time, rapid taps ---------- */
-var QA = { open:false, queue:[], idx:0, total:0, done:0, del:0, q:'audit', sort:'missing', skipRender:false, merge:null };
-var QA_FILTERS = [
-  { k:'audit',      l:'Needs audit' },
-  { k:'ratings',    l:'Needs ratings' },
-  { k:'background', l:'Needs background' },
-  { k:'connection', l:'Needs connection' },
-  { k:'business',   l:'Businesses' },
-  { k:'needs',      l:'Needs attention' }
-];
-function qaPass(e, st, an){
-  if((e.profile || {}).deleted === '1' || ((e.profile || {}).merged_into || '').trim() || st.audited) return false;
-  if(QA.q === 'ratings') return !st.hasR;
-  if(QA.q === 'background') return !st.hasB;
-  if(QA.q === 'connection') return !st.hasC;
-  if(QA.q === 'business') return an.business;
-  if(QA.q === 'needs') return st.missing > 0;
-  return true; /* 'audit' */
-}
-function qaBuildQueue(){
-  var rows = [];
-  D.directory.forEach(function(e, di){
-    var st = auditStats(e), an = auName(e);
-    if(!qaPass(e, st, an)) return;
-    rows.push({ di:di, st:st, nm:(an.name || '').toLowerCase() });
-  });
-  if(QA.sort === 'shuffle'){
-    for(var i = rows.length - 1; i > 0; i--){
-      var j = Math.floor(Math.random() * (i + 1)), t = rows[i];
-      rows[i] = rows[j]; rows[j] = t;
-    }
-  } else if(QA.sort === 'name'){
-    rows.sort(function(a, b){ return a.nm < b.nm ? -1 : a.nm > b.nm ? 1 : 0; });
-  } else if(QA.sort === 'close'){
-    rows.sort(function(a, b){ return (D.directory[b.di].strength || 0) - (D.directory[a.di].strength || 0); });
-  } else {
-    rows.sort(function(a, b){ return (a.st.score - b.st.score) || (a.nm < b.nm ? -1 : a.nm > b.nm ? 1 : 0); });
-  }
-  return rows.map(function(r){ return r.di; });
-}
-function qaCount(k){
-  var keep = QA.q, n = 0; QA.q = k;
-  D.directory.forEach(function(e){
-    if(qaPass(e, auditStats(e), auName(e))) n++;
-  });
-  QA.q = keep;
+/* adding a parent gives the same parent to every sibling (adds only, idempotent) */
+function famAddParentToSiblings(di, tdi){
+  var n = 0;
+  famSiblingsOf(di).forEach(function(sib){ if(sib !== tdi && famAddLinkRaw(sib, 'parent', tdi)) n++; });
   return n;
 }
-function renderQuickFilters(){
-  $('#qafilters').innerHTML = QA_FILTERS.map(function(f){
-    return '<button type="button" class="qaf' + (QA.q === f.k ? ' on' : '') + '" data-qf="' + f.k + '">' + f.l + ' <b>' + qaCount(f.k) + '</b></button>';
-  }).join('');
-}
-function qaSetFilter(k){
-  if(QA.q === k) return;
-  QA.q = k;
-  QA.queue = qaBuildQueue();
-  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.del = 0;
-  renderQuickFilters();
-  renderQuick();
-  $('#qabody').scrollTop = 0;
-}
-function qaSetSort(s){
-  if(QA.sort === s && s !== 'shuffle') return;
-  QA.sort = s;
-  QA.queue = qaBuildQueue();
-  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.del = 0;
-  renderQuick();
-  $('#qabody').scrollTop = 0;
-}
-function openQuick(){
-  QA.queue = qaBuildQueue();
-  QA.idx = 0; QA.total = QA.queue.length; QA.done = 0; QA.del = 0;
-  QA.merge = null;
-  QA.open = true;
-  $('#quickscreen').hidden = false;
-  $('#qasort').value = QA.sort;
-  renderQuickFilters();
-  renderQuick();
-  $('#qabody').scrollTop = 0;
-}
-function closeQuick(){
-  QA.open = false;
-  $('#quickscreen').hidden = true;
-}
-function qaCur(){ return QA.queue.length ? QA.queue[QA.idx] : null; }
-function qaPrevVal(di, key){
-  var e = D.directory[di]; if(!e) return '';
-  if(key === 'tier') return tierOf(e);
-  if(key === 'momentum') return momVal(e);
-  if(key === 'audit') return (e.profile || {}).audit || '';
-  return gv(e, key) || '';
-}
-function qaTap(key, val, el){
-  var di = qaCur(); if(di == null) return;
-  var prev = qaPrevVal(di, key);
-  if(prev === val) return;
-  var entry = { items:[{ di:di, key:key, prev:prev, next:val }] };
-  pushUndo(entry);
-  QA.skipRender = true;
-  applyEntry(entry, false);
-  qaPaint(key, val, el);
-  if(key === 'audit' && val === 'audited'){
-    QA.done++;
-    entry.qaRemove = di;
-    entry.qaRemoveIdx = QA.idx;
-    QA.queue.splice(QA.idx, 1);
-    if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
-    renderQuickFilters();
-    renderQuick();
-    $('#qabody').scrollTop = 0;
+/* traditional setup (one spouse, no half or step): child -> spouse becomes the other parent, etc. */
+function famSpouseComplements(di, rel, tdi){
+  var e = D.directory[di], t = D.directory[tdi];
+  if(!e || !t) return 0;
+  function resolve(list, r){
+    return list.filter(function(l){ return l[0] === r; }).map(function(l){ return BYN[String(l[1] || '').toLowerCase()]; }).filter(function(v){ return v != null; });
   }
-}
-function qaDelete(){
-  var di = qaCur(); if(di == null) return;
-  var e = D.directory[di], name = auName(e).name;
-  var entry = { items:[{ di:di, key:'deleted', prev:(e.profile || {}).deleted || '', next:'1' }] };
-  pushUndo(entry);
-  QA.skipRender = true;
-  applyEntry(entry, false);
-  QA.del++;
-  entry.qaRemove = di;
-  entry.qaRemoveIdx = QA.idx;
-  QA.queue.splice(QA.idx, 1);
-  if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
-  renderQuickFilters();
-  renderQuick();
-  $('#qabody').scrollTop = 0;
-  toast('Deleted ' + name + '.');
-}
-function qaEditName(el){
-  var di = qaCur(); if(di == null) return;
-  var e = D.directory[di], an = auName(e);
-  var cur = an.name === 'Unknown' ? '' : an.name;
-  var prev = gv(e, 'display_name') || '';
-  var inp = document.createElement('input');
-  inp.type = 'text';
-  inp.value = cur;
-  inp.className = 'qanameedit';
-  inp.setAttribute('autocomplete', 'off');
-  inp.setAttribute('aria-label', 'Edit name');
-  el.innerHTML = '';
-  el.appendChild(inp);
-  inp.focus();
-  try{ inp.select(); }catch(x){}
-  var done = false;
-  function finish(save){
-    if(done) return; done = true;
-    var v = inp.value.trim();
-    if(save && v && v !== cur){
-      var entry = { items:[{ di:di, key:'display_name', prev:prev, next:v }] };
-      pushUndo(entry);
-      QA.skipRender = true;
-      applyEntry(entry, false);
-    }
-    renderQuick();
-  }
-  inp.addEventListener('click', function(ev){ ev.stopPropagation(); });
-  inp.addEventListener('blur', function(){ finish(true); });
-  inp.addEventListener('keydown', function(ev){
-    if(ev.key === 'Enter') finish(true);
-    else if(ev.key === 'Escape') finish(false);
-  });
-}
-/* inline first/last name edit in the full audit list: swaps the row's name text
-   for two inputs in place; Enter moves first->last then saves, blur saves, Esc cancels.
-   Saves first_name/last_name (plus display_name so every label updates at once)
-   through the standard undoable patch flow. */
-function auEditName(span, di){
-  var e = D.directory[di]; if(!e || span.getAttribute('data-editing')) return;
-  span.setAttribute('data-editing', '1');
-  var sFn = gv(e, 'first_name') || '', sLn = gv(e, 'last_name') || '';
-  var dn0 = gv(e, 'display_name') || '';
-  var seedFn = sFn, seedLn = sLn;
-  if(!seedFn && !seedLn){
-    var lab = auName(e).name;
-    if(lab && lab !== 'Unknown' && lab.indexOf('@') < 0){
-      var parts = lab.trim().split(/\s+/);
-      seedFn = parts[0] || ''; seedLn = parts.slice(1).join(' ');
-    }
-  }
-  span.innerHTML = '<span class="aune">' +
-    '<input type="text" class="aunein" data-w="fn" value="' + esc(seedFn) + '" placeholder="First" autocomplete="off" aria-label="First name">' +
-    '<input type="text" class="aunein" data-w="ln" value="' + esc(seedLn) + '" placeholder="Last" autocomplete="off" aria-label="Last name"></span>';
-  var fnI = span.querySelector('[data-w="fn"]'), lnI = span.querySelector('[data-w="ln"]');
-  fnI.focus(); try{ fnI.select(); }catch(x){}
-  var done = false;
-  function finish(save){
-    if(done) return; done = true;
-    var fn = fnI.value.trim(), ln = lnI.value.trim();
-    if(save && (fn || ln) && (fn !== sFn || ln !== sLn)){
-      var entry = { items:[
-        { di:di, key:'first_name', prev:sFn, next:fn },
-        { di:di, key:'last_name', prev:sLn, next:ln },
-        { di:di, key:'display_name', prev:dn0, next:(fn + ' ' + ln).trim() }
-      ] };
-      pushUndo(entry);
-      applyEntry(entry, false);
-      return;
-    }
-    renderAudit();
-  }
-  [fnI, lnI].forEach(function(inp){
-    inp.addEventListener('click', function(ev){ ev.stopPropagation(); });
-    inp.addEventListener('keydown', function(ev){
-      if(ev.key === 'Enter'){ if(inp === fnI){ ev.preventDefault(); lnI.focus(); try{ lnI.select(); }catch(x){} } else finish(true); }
-      else if(ev.key === 'Escape') finish(false);
+  var n = 0;
+  if(rel === 'child'){
+    resolve(famLinks(e), 'spouse').forEach(function(sdi){ if(sdi !== tdi && famAddLinkRaw(tdi, 'parent', sdi)) n++; });
+  } else if(rel === 'parent'){
+    resolve(famLinks(t), 'spouse').forEach(function(sdi){
+      if(sdi !== di && famAddLinkRaw(di, 'parent', sdi)){ n++; n += famAddParentToSiblings(di, sdi); }
     });
-    inp.addEventListener('blur', function(){
-      setTimeout(function(){ if(!span.contains(document.activeElement)) finish(true); }, 0);
-    });
+  } else if(rel === 'spouse'){
+    resolve(famLinks(e), 'child').forEach(function(cdi){ if(cdi !== tdi && famAddLinkRaw(cdi, 'parent', tdi)) n++; });
+  }
+  return n;
+}
+function addFamily(di, rel, tdi){
+  var e = D.directory[di], t = D.directory[tdi], msg = '';
+  if(!e || !t) return '';
+  famRelSave(rel);
+  txn('Add ' + rel + ' link', function(){
+    famAddLinkRaw(di, rel, tdi);
+    var sibN = rel === 'parent' ? famAddParentToSiblings(di, tdi) : 0;
+    var infN = famSpouseComplements(di, rel, tdi);
+    msg = dispName(t) + ' added as ' + rel + ' of ' + dispName(e) +
+      (sibN ? ', also to ' + sibN + ' sibling' + (sibN === 1 ? '' : 's') : '') +
+      (infN ? (sibN ? ', plus ' : ', plus ') + infN + ' inferred link' + (infN === 1 ? '' : 's') : '') + '.';
   });
+  return msg;
 }
-/* update the tapped control in place so the card never re-renders mid-flow
-   (a full re-render drops the scroll position on iOS) */
-function qaPaint(key, val, el){
-  if(el){
-    var box = el.closest('.qaseg') || el.closest('.qdotbox') || el.closest('.qatick');
-    if(box){
-      var attr = el.hasAttribute('data-qd') ? 'data-qd' : 'data-qv';
-      var btns = box.querySelectorAll('[' + attr + ']');
-      for(var i = 0; i < btns.length; i++){
-        btns[i].classList.toggle('on', val !== '' && btns[i].getAttribute(attr) === val);
-      }
-      if(attr === 'data-qd') box.setAttribute('data-v', val);
-    }
-  }
-  if(key === 'tier'){
-    var ava = document.querySelector('#qabody .qaava');
-    if(ava && TIERS[val]) ava.style.setProperty('--c', TIERS[val].c);
-  }
-  var di = qaCur(), e = di != null ? D.directory[di] : null;
-  if(e) qaPaintPills(e);
-}
-function qaPaintPills(e){
-  var st = auditStats(e), vals = [st.hasR, st.hasB, st.hasC];
-  var pills = document.querySelectorAll('#qabody .qaneeds b');
-  for(var j = 0; j < pills.length && j < vals.length; j++){
-    pills[j].classList.toggle('have', !!vals[j]);
-    pills[j].classList.toggle('miss', !vals[j]);
-  }
-}
-function qaGo(d){
-  if(!QA.queue.length) return;
-  QA.merge = null;
-  QA.idx = (QA.idx + d + QA.queue.length) % QA.queue.length;
-  renderQuick();
-  $('#qabody').scrollTop = 0;
-}
-function qaYearHTML(e){
-  var cur = String(gv(e, 'years_known') || '');
-  var yrs = [];
-  for(var y = 2026; y >= 2000; y--) yrs.push(y);
-  return '<div class="qarow"><span class="qalab">Known since</span><div class="qatick" id="qatick">' +
-    yrs.map(function(y){
-      return '<button type="button" class="qtick' + (cur === String(y) ? ' on' : '') + '" data-qk="years_known" data-qv="' + y + '">' + y + '</button>';
-    }).join('') + '</div></div>';
-}
-function qaMoreHTML(e){
-  var h = '<div class="qamorebody"><div class="qarow"><span class="qalab">Persona</span><div class="qadots">' +
-    L1_SCORES.map(function(k){
-      var v = gv(e, k), fd = fieldDef(k), neg = !!fd.neg;
-      var dots = [1, 2, 3, 4, 5].map(function(i){
-        return '<button type="button" class="qdot' + (String(v) === String(i) ? ' on' : '') + '" data-qd="' + i + '">' + i + '</button>';
-      }).join('');
-      return '<div class="qaraterow' + (neg ? ' neg' : '') + '"><span class="qratelab">' + esc(fd.l) +
-        '<em>' + esc(fd.d || '') + (neg ? ' · high is worse' : '') + '</em></span><div class="qdotbox" data-qdk="' + k + '" data-v="' + esc(v) + '">' + dots + '</div></div>';
-    }).join('') + '</div></div>';
-  h += '<div class="qarow"><span class="qalab">Relationship</span><div class="qaseg wrap">' +
-    ['', 'family', 'friend', 'coworker', 'acquaintance', 'other'].map(function(o){
-      var lab = o === '' ? '—' : o.charAt(0).toUpperCase() + o.slice(1);
-      return '<button type="button" class="qtseg sm' + (gv(e, 'relationship') === o ? ' on' : '') + '" data-qk="relationship" data-qv="' + o + '">' + lab + '</button>';
-    }).join('') + '</div></div>';
-  h += '<div class="qarow"><span class="qalab">Context</span><div class="qaseg wrap">' +
-    [['', '—'], ['work', 'Work'], ['school', 'School'], ['military', 'Military'], ['community', 'Community'], ['church', 'Church'], ['online', 'Online'], ['other', 'Other']].map(function(p){
-      return '<button type="button" class="qtseg sm' + (gv(e, 'context') === p[0] ? ' on' : '') + '" data-qk="context" data-qv="' + p[0] + '">' + p[1] + '</button>';
-    }).join('') + '</div></div>';
-  h += '<div class="qarow"><span class="qalab">Category</span><div class="qaseg wrap">' +
-    [['', '—'], ['peer', 'Peer'], ['rom', 'Romantic'], ['fam', 'Family'], ['auth', 'Authority'], ['ment', 'Mentor'], ['conf', 'Conflict']].map(function(p){
-      return '<button type="button" class="qtseg sm' + (gv(e, 'category') === p[0] ? ' on' : '') + '" data-qk="category" data-qv="' + p[0] + '">' + p[1] + '</button>';
-    }).join('') + '</div></div></div>';
-  return h;
-}
-function qaMergeHTML(e){
-  if(QA.merge.step === 'confirm' && QA.merge.other != null){
-    var other = D.directory[QA.merge.other];
-    if(other){
-      var surv = QA.merge.survivor === 'current' ? e : other;
-      var loser = surv === e ? other : e;
-      return '<div class="qacard">' +
-        '<h2 class="qmh">Merge profiles</h2>' +
-        '<p class="qmline"><b>' + esc(dispName(loser)) + '</b> merges into <b>' + esc(dispName(surv)) + '</b></p>' +
-        '<p class="qahint">' + esc(dispName(loser)) + ' folds into ' + esc(dispName(surv)) + ': unique info carries over, ' + esc(dispName(loser)) + ' is retired (Merged Into) and leaves the people list. Undo is on the audit toolbar.</p>' +
-        '<button type="button" class="qamswap" data-qmswap="1"><span>Swap \u2014 ' + esc(dispName(loser)) + ' survives instead</span></button>' +
-        '<button type="button" class="qamgo" data-qmgo="1"><span>Merge ' + esc(dispName(loser)) + ' into ' + esc(dispName(surv)) + '</span></button>' +
-        '<button type="button" class="qadel qmback" data-qmback="1"><span>Back</span></button>' +
-      '</div>';
-    }
-    QA.merge.step = 'pick';
-  }
-  return '<div class="qacard">' +
-    '<h2 class="qmh">Merge ' + esc(dispName(e)) + '</h2>' +
-    '<p class="qahint">Pick the second profile. Nothing merges yet \u2014 you confirm on the next screen. The profile you pick survives unless you swap.</p>' +
-    '<input id="qminput" class="qminput" type="text" placeholder="Search people\u2026" autocomplete="off">' +
-    '<div id="qmhits" class="qmhits"></div>' +
-    '<button type="button" class="qadel qmback" data-qmcancel="1"><span>Cancel</span></button>' +
-  '</div>';
-}
-function renderQaMergeHits(q){
-  var box = $('#qmhits'); if(!box) return;
-  q = String(q || '').trim().toLowerCase();
-  var curDi = QA.queue[QA.idx], list = [];
-  for(var i = 0; i < D.directory.length && list.length < 14; i++){
-    if(i === curDi) continue;
-    var en = D.directory[i], pr = en.profile || {};
-    if(pr.deleted === '1' || (pr.merged_into || '').trim()) continue;
-    if(q && (dispName(en) || '').toLowerCase().indexOf(q) < 0 && (en.name || '').toLowerCase().indexOf(q) < 0) continue;
-    list.push(i);
-  }
-  box.innerHTML = list.map(function(i){
-    var en = D.directory[i];
-    return '<button type="button" class="naddhit" data-qmpick="' + i + '"><b>' + esc(dispName(en)) + '</b>' +
-      (en.name && String(en.name).toLowerCase() !== (dispName(en) || '').toLowerCase() ? '<span>' + esc(en.name) + '</span>' : '') + '</button>';
-  }).join('') || '<p class="dim" style="padding:8px 2px">No matches.</p>';
-}
-function qaDoMerge(){
-  var m = QA.merge; if(!m || m.other == null) return;
-  var curDi = QA.queue[QA.idx];
-  var loserDi = m.survivor === 'current' ? m.other : curDi;
-  var survDi = m.survivor === 'current' ? curDi : m.other;
-  var surv = D.directory[survDi], loser = D.directory[loserDi];
-  if(!surv || !loser) return;
-  var target = dupHandle(surv);
-  if(!target){ toast('The survivor has no key to merge into.'); return; }
-  var qi = QA.queue.indexOf(loserDi);
-  var entry = { postKey:'merged_into',
-    items:[{ di:loserDi, prev:((loser.profile || {}).merged_into || ''), next:target }],
-    qaRemove:loserDi, qaRemoveIdx:qi >= 0 ? qi : QA.idx, qaRemoveName:dispName(loser) };
-  pushUndo(entry);
-  if(qi >= 0){
-    QA.queue.splice(qi, 1);
-    QA.done++;
-    if(qi < QA.idx) QA.idx--;
-    if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
-  }
-  QA.merge = null;
-  QA.skipRender = true;
-  applyEntry(entry, false, function(){ toast(dispName(loser) + ' merged into ' + dispName(surv) + '.'); });
-  renderQuickFilters();
-  renderQuick();
-}
-function renderQuick(){
-  var body = $('#qabody');
-  var st = body.scrollTop;
-  if(!QA.queue.length){
-    $('#qacount').textContent = '';
-    var bits = [];
-    if(QA.done) bits.push(QA.done + ' audited');
-    if(QA.del) bits.push(QA.del + ' deleted');
-    body.innerHTML = '<div class="qadone"><div class="qacheck">' + ic('check', 42) + '</div><h3>All caught up</h3><p>' +
-      (bits.length ? bits.join(' · ') + ' this session.' : 'Nobody left to audit.') + '</p>' +
-      '<button class="qaclose2" id="qaclose2" type="button">Back to dashboard</button></div>';
-    updateUndoBtns();
-    return;
-  }
-  var di = qaCur(), e = D.directory[di];
-  var an = auName(e), st = auditStats(e);
-  var nm = (firstNameOf(e) || lastNameOf(e)) ? dispName(e) : an.name;
-  var ini = (nm.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
-  var qsub = [gv(e, 'relationship'), gv(e, 'context')].filter(Boolean).map(function(s){ return s.charAt(0).toUpperCase() + s.slice(1); }).join(' · ');
-  var tier = tierOf(e), mom = momVal(e) || '0', aud = (e.profile || {}).audit === 'audited';
-  function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
-  $('#qacount').textContent = (QA.done + QA.del + QA.idx + 1) + ' of ' + QA.total;
-  if(QA.merge){
-    body.innerHTML = qaMergeHTML(e);
-    if(QA.merge.step === 'pick') renderQaMergeHits($('#qminput') ? $('#qminput').value : '');
-    return;
-  }
-  body.innerHTML =
-    '<div class="qacard">' +
-      '<div class="qaid"><span class="qaava" style="--c:' + tierCol(e) + '">' + esc(ini) + '</span>' +
-      '<div class="qamain"><div class="qaname" data-qname="1" title="Tap to edit name">' + esc(nm) + (an.business ? '<em class="aubiz">Business</em>' : '') + '</div>' +
-      (an.handle ? '<div class="qahandle">@' + esc(an.handle.replace(/^@/, '')) + '</div>' : '') +
-      (qsub ? '<div class="qasub">' + esc(qsub) + '</div>' : '') +
-      '<div class="qaneeds">' + pill(st.hasR, 'Persona') + pill(st.hasB, 'Background') + pill(st.hasC, 'Connection') + '</div></div></div>' +
-      '<div class="qarow"><span class="qalab">Tier</span><div class="qaseg">' +
-        TIER_ORDER.map(function(t){ return '<button type="button" class="qtseg' + (tier === t ? ' on' : '') + '" data-qk="tier" data-qv="' + t + '" style="--c:' + TIERS[t].c + '">' + TIERS[t].n + '</button>'; }).join('') +
-      '</div></div>' +
-      '<div class="qarow"><span class="qalab">Momentum</span><div class="qaseg">' +
-        ['-','0','+'].map(function(m){ return '<button type="button" class="qtseg' + (mom === m ? ' on' : '') + '" data-qk="momentum" data-qv="' + m + '">' + (m === '-' ? '−' : m === '+' ? '+' : '◆') + '</button>'; }).join('') +
-      '</div></div>' +
-      '<div class="qarow"><span class="qalab">Audit</span><div class="qaseg wide">' +
-        '<button type="button" class="qtseg big' + (!aud ? ' on' : '') + '" data-qk="audit" data-qv="needs_audit">Needs audit</button>' +
-        '<button type="button" class="qtseg big go' + (aud ? ' on' : '') + '" data-qk="audit" data-qv="audited">Audited</button>' +
-      '</div></div>' +
-      qaMoreHTML(e) +
-      qaYearHTML(e) +
-      '<button type="button" class="qamrg" data-qmerge="1">' + ic('share', 14) + '<span>Merge with another profile\u2026</span></button>' +
-      '<button type="button" class="qadel" data-qdel="1">' + ic('trash', 14) + '<span>Delete — move to trash</span></button>' +
-    '</div>';
-  body.scrollTop = st;
-  var tick = body.querySelector('#qatick'), tickOn = tick && tick.querySelector('.on');
-  if(tick && tickOn) tick.scrollLeft = Math.max(0, tickOn.offsetLeft - tick.clientWidth / 2 + tickOn.clientWidth / 2);
-  updateUndoBtns();
-}
-function pushUndo(entry){
-  AUD.undoStack.push(entry);
-  if(AUD.undoStack.length > 30) AUD.undoStack.shift();
-  AUD.redoStack = [];
-  updateUndoBtns();
-}
-function updateUndoBtns(){
-  var u = $('#auundo'), r = $('#auredo'), qu = $('#qaundo'), qr = $('#qaredo');
-  if(u) u.disabled = !AUD.undoStack.length;
-  if(r) r.disabled = !AUD.redoStack.length;
-  if(qu) qu.disabled = !AUD.undoStack.length;
-  if(qr) qr.disabled = !AUD.redoStack.length;
-}
-function applyEntry(entry, toPrev, done){
-  entry.items.forEach(function(it){
-    var p = {}; p[it.key || entry.postKey] = toPrev ? it.prev : it.next;
-    queuePatch(it.di, p);
-  });
-  renderAudit(); refresh();
-  if(QA.open && !QA.skipRender) renderQuick();
-  QA.skipRender = false;
-  if(done) done();
-}
-function doUndo(){
-  var en = AUD.undoStack.pop();
-  if(!en){ toast('Nothing to undo.'); return; }
-  applyEntry(en, true, function(){ AUD.redoStack.push(en); updateUndoBtns(); });
-  if(QA.open && en.qaRemove != null){
-    QA.queue.splice(Math.min(en.qaRemoveIdx, QA.queue.length), 0, en.qaRemove);
-    if(en.items[0] && en.items[0].key === 'deleted') QA.del = Math.max(0, QA.del - 1);
-    else QA.done = Math.max(0, QA.done - 1);
-    QA.idx = Math.min(en.qaRemoveIdx, QA.queue.length - 1);
-    renderQuickFilters();
-    renderQuick();
-  }
-}
-function doRedo(){
-  var en = AUD.redoStack.pop();
-  if(!en){ toast('Nothing to redo.'); return; }
-  applyEntry(en, false, function(){ AUD.undoStack.push(en); updateUndoBtns(); });
-  if(QA.open && en.qaRemove != null){
-    var at = QA.queue.indexOf(en.qaRemove);
-    if(at >= 0){
-      QA.queue.splice(at, 1);
-      if(en.items[0] && en.items[0].key === 'deleted') QA.del++;
-      else QA.done++;
-      if(QA.idx >= QA.queue.length) QA.idx = Math.max(0, QA.queue.length - 1);
-      renderQuickFilters();
-      renderQuick();
-    }
-  }
-}
-function setAuditFor(di, next){
+function removeFamily(di, i){
   var e = D.directory[di]; if(!e) return;
-  var prev = (e.profile || {}).audit || '';
-  if(prev === next) return;
-  var entry = { postKey:'audit', items:[{ di:di, prev:prev, next:next }] };
-  pushUndo(entry);
-  applyEntry(entry, false);
-}
-function bulkAudit(next){
-  var dis = Object.keys(AUD.sel).map(Number).filter(function(di){
-    var e = D.directory[di];
-    return e && (e.profile || {}).deleted !== '1' && ((e.profile || {}).audit || '') !== next;
+  var links = famLinks(e), gone = links[i]; if(!gone) return;
+  txn('Remove family link', function(){
+    links.splice(i, 1);
+    queuePatch(di, { family: JSON.stringify(links) });
+    var tdi = BYN[String(gone[1] || '').toLowerCase()];
+    if(tdi != null) famDualWrite(di, gone[0], tdi, false);
   });
-  if(!dis.length){ toast('Nothing to update.'); return; }
-  var entry = { postKey:'audit', items:dis.map(function(di){
-    return { di:di, prev:(D.directory[di].profile || {}).audit || '', next:next };
-  }) };
-  AUD.sel = {};
-  pushUndo(entry);
-  applyEntry(entry, false, function(){ toast(dis.length + ' updated.'); });
-}
-function bulkDelete(){
-  var dis = Object.keys(AUD.sel).map(Number).filter(function(di){
-    var e = D.directory[di];
-    return e && (e.profile || {}).deleted !== '1';
-  });
-  if(!dis.length) return;
-  if(!confirm('Delete ' + dis.length + ' from the circle?\n\nThey will be hidden from the directory and the map. You can undo this.')) return;
-  var entry = { postKey:'deleted', items:dis.map(function(di){
-    return { di:di, prev:(D.directory[di].profile || {}).deleted || '', next:'1' };
-  }) };
-  AUD.sel = {};
-  pushUndo(entry);
-  applyEntry(entry, false, function(){ toast(dis.length + ' deleted.'); });
-}
-function auSetFilter(f){
-  AUD.f = f;
-  $$('#aufilters button').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-f') === f); });
-  renderAudit();
-}
-function renderAudit(){
-  AUD.msel = null;
-  var q = AUD.q.trim().toLowerCase();
-  if(AUD.f === 'dup'){ renderDupAudit(q); return; }
-  if(AUD.f === 'pmerge'){ renderPhotoMerge(q); return; }
-  var rows = [];
-  /* family map: last name -> fleshed-out people (score>=2) carrying it */
-  var famMap = {};
-  D.directory.forEach(function(x){
-    if((x.profile || {}).deleted === '1' || ((x.profile || {}).merged_into || '').trim() || isBusiness(x)) return;
-    if(auditStats(x).score < 2) return;
-    var ln = lastNameOf(x);
-    if(!ln) return;
-    (famMap[ln] = famMap[ln] || []).push({ i:(x.name || '').toLowerCase(), d:dispName(x) });
-  });
-  D.directory.forEach(function(e, di){
-    if((e.profile || {}).deleted === '1' || ((e.profile || {}).merged_into || '').trim()) return;
-    var st = auditStats(e);
-    var an = auName(e);
-    var cs = null;
-    var pass = true;
-    if(AUD.f === 'needs') pass = st.missing > 0;
-    else if(AUD.f === 'audit') pass = !st.audited;
-    else if(AUD.f === 'ratings') pass = !st.hasR;
-    else if(AUD.f === 'background') pass = !st.hasB;
-    else if(AUD.f === 'connection') pass = !st.hasC;
-    else if(AUD.f === 'business') pass = an.business;
-    else if(AUD.f === 'name') pass = !an.business && !nameOk(e);
-    else if(AUD.f === 'close'){ cs = closeScore(e, famMap); pass = !!cs; }
-    if(!pass) return;
-    if(q){
-      var hay = (an.name + ' ' + an.handle + ' ' + gv(e, 'display_name')).toLowerCase();
-      if(hay.indexOf(q) < 0) return;
-    }
-    rows.push({ di:di, e:e, st:st, an:an, cs:cs });
-  });
-  rows.sort(function(a, b){
-    if(AUD.sort === 'name') return a.an.name.localeCompare(b.an.name);
-    if(AUD.sort === 'complete') return b.st.score - a.st.score || a.an.name.localeCompare(b.an.name);
-    if(AUD.sort === 'close' || AUD.f === 'close') return ((b.cs && b.cs.score) || 0) - ((a.cs && a.cs.score) || 0) || a.an.name.localeCompare(b.an.name);
-    return a.st.score - b.st.score || a.an.name.localeCompare(b.an.name);
-  });
-  AUD.rows = rows;
-  var nA = 0, nR = 0, nB = 0, nC = 0, nBiz = 0, nName = 0, nClose = 0;
-  D.directory.forEach(function(e){
-    if((e.profile || {}).deleted === '1' || ((e.profile || {}).merged_into || '').trim()) return;
-    var st = auditStats(e);
-    if(!st.audited) nA++;
-    if(!st.hasR) nR++;
-    if(!st.hasB) nB++;
-    if(!st.hasC) nC++;
-    if(isBusiness(e)) nBiz++;
-    else if(!nameOk(e)) nName++;
-    if(closeScore(e, famMap)) nClose++;
-  });
-  $('#aushown').textContent = rows.length + ' shown';
-  function stat(f, label, n){
-    return '<button class="austat' + (AUD.f === f ? ' on' : '') + '" data-f="' + f + '"><b>' + n + '</b><span>' + label + '</span></button>';
-  }
-  $('#austats').innerHTML = stat('audit', 'Need audit', nA) + stat('ratings', 'Need ratings', nR) +
-    stat('background', 'Need background', nB) + stat('connection', 'Need connection', nC) + stat('business', 'Businesses', nBiz) +
-    stat('name', 'Name review', nName) + stat('close', 'Likely close', nClose);
-  function pill(has, label){ return '<b class="' + (has ? 'have' : 'miss') + '">' + label + '</b>'; }
-  $('#aubody').innerHTML = rows.slice(0, 600).map(function(r){
-    var ini = (r.an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
-    var hd = (r.e.src === 'contacts' || r.e.src === 'subject') ? '' : r.an.handle.replace(/^@/, '');
-    var sel = AUD.sel[r.di] ? ' checked' : '';
-    return '<div class="aurow" data-di="' + r.di + '">' +
-      '<input type="checkbox" class="ausel" data-di="' + r.di + '"' + sel + ' aria-label="Select">' +
-      '<span class="auava">' + esc(ini) + '</span>' +
-      '<span class="aumain"><span class="auname"><span class="aunmt" data-nedit="' + r.di + '" title="Tap the name to edit it">' + esc(r.an.name) + '</span>' +
-        (r.an.business ? '<em class="aubiz">Business</em>' : '') +
-        (hd ? '<i>@' + esc(hd) + '</i>' : '') + '</span>' +
-      '<span class="auneeds">' + pill(r.st.hasR, 'Persona') + pill(r.st.hasB, 'Background') + pill(r.st.hasC, 'Connection') + pill(r.st.audited, 'Audited') +
-        (AUD.f === 'name' ? '<b class="miss">' + esc(nameFlag(r.e) || 'name') + '</b>' : '') +
-        (r.cs ? r.cs.reasons.map(function(x){ return '<b class="have">' + esc(x) + '</b>'; }).join('') : '') + '</span></span>' +
-      '<span class="aubar" title="' + r.st.score + ' of 4 complete"><i style="width:' + (r.st.score * 25) + '%"></i></span>' +
-      '<span class="aubtn"><button class="mini" data-auact="' + (r.st.audited ? 'unaudit' : 'audit') + '">' + (r.st.audited ? 'Reopen' : 'Mark audited') + '</button></span></div>';
-  }).join('') + (rows.length > 600 ? '<p class="dim" style="padding:14px">Showing the first 600. Narrow the filter or search to see the rest.</p>' : '') || '<p class="dim" style="padding:20px">Nobody matches this filter.</p>';
-  renderBulk();
-  updateUndoBtns();
-}
-function renderBulk(){
-  var n = Object.keys(AUD.sel).length;
-  var bb = $('#aubulk');
-  var isMergeView = (AUD.f === 'dup' || AUD.f === 'pmerge') && AUD.dupGroups && AUD.dupGroups.length;
-  var nG = isMergeView ? Object.keys(AUD.selGroups).length : 0;
-  if(!n && !isMergeView){ bb.hidden = true; return; }
-  bb.hidden = false;
-  bb.innerHTML = (n ? '<span><b>' + n + '</b> selected</span>' : '') +
-    (n ? '<button class="mini" data-bulk="audit">Mark audited</button>' +
-    '<button class="mini" data-bulk="unaudit">Reopen</button>' +
-    '<button class="mini danger" data-bulk="delete">Delete</button>' +
-    '<button class="mini" data-bulk="merge2" style="--c:#f0b44c"' + (n === 2 ? '' : ' disabled title="Select exactly 2 people to merge"') + '>Merge</button>' : '') +
-    (n ? '<button class="mini neutral" data-bulk="clear">Clear</button>' : '');
-  if(isMergeView){
-    bb.innerHTML += (nG ? '<span><b>' + nG + '</b> groups selected</span>' +
-      '<button class="mini" data-bulk="mergesel" style="--c:#f0b44c">Merge selected</button>' +
-      '<button class="mini neutral" data-bulk="clearsel">Clear</button>' : '') +
-      '<button class="mini" data-bulk="mergeall" style="--c:#f0b44c">Merge all' +
-      (AUD.f === 'pmerge' ? ' photo matches' : ' duplicates') + '</button>';
-  }
-}
-function doMergeSelected(){
-  var groups = (AUD.dupGroups || []).filter(function(_, gi){ return AUD.selGroups[gi]; });
-  if(!groups.length){ toast('No groups selected.'); return; }
-  var total = groups.reduce(function(n, g){ return n + g.members.length - 1; }, 0);
-  if(!total){ toast('Nothing to merge.'); return; }
-  if(!confirm('Merge ' + total + ' entries across ' + groups.length + ' selected groups?\n\nEach group folds into its selected survivor. You can undo this.')) return;
-  var items = [];
-  groups.forEach(function(g){
-    var surv = D.directory[g.survivor];
-    if(!surv) return;
-    var target = dupHandle(surv);
-    if(!target) return;
-    g.members.forEach(function(m){
-      if(m.di === g.survivor) return;
-      items.push({ di:m.di, prev:((D.directory[m.di].profile || {}).merged_into || ''), next:target });
-    });
-  });
-  if(!items.length){ toast('Nothing to merge.'); return; }
-  AUD.selGroups = {};
-  var entry = { postKey:'merged_into', items:items };
-  pushUndo(entry);
-  applyEntry(entry, false, function(){ toast(total + ' merged.'); });
 }
 
-/* ---------- merge exactly 2 selected people (full audit multi-select) ---------- */
-function pairName(e){
-  return (firstNameOf(e) || lastNameOf(e)) ? dispName(e) : auName(e).name;
-}
-function openMergeSel(){
-  var dis = Object.keys(AUD.sel).map(function(k){ return parseInt(k, 10); });
-  if(dis.length !== 2){ toast('Select exactly 2 people to merge.'); return; }
-  var a = dis[0], b = dis[1];
-  var ord = {};
-  AUD.rows.forEach(function(r, i){ ord[r.di] = i; });
-  var oa = ord[a] == null ? 1e9 : ord[a], ob = ord[b] == null ? 1e9 : ord[b];
-  var sa = auditStats(D.directory[a]).score, sb = auditStats(D.directory[b]).score;
-  /* default survivor: the profile with more on file; ties go to the one listed first */
-  var surv = sa === sb ? (oa <= ob ? a : b) : (sa > sb ? a : b);
-  AUD.msel = { pair:[a, b], survivor:surv };
-  renderMergeSel();
-}
-function renderMergeSel(){
-  var m = AUD.msel; if(!m) return;
-  var surv = D.directory[m.survivor];
-  var loser = D.directory[m.pair[0] === m.survivor ? m.pair[1] : m.pair[0]];
-  if(!surv || !loser){ AUD.msel = null; renderAudit(); return; }
-  $('#aushown').textContent = 'Merge 2 profiles';
-  $('#aubody').innerHTML = '<div class="mselwrap"><div class="mselcard">' +
-    '<h3 class="mselh">Merge profiles</h3>' +
-    '<p class="qahint">Tap a name to choose who survives. The other profile folds into it: unique info carries over at the next build, and the folded profile is retired (Merged Into) and leaves the list. You can undo this.</p>' +
-    m.pair.map(function(di){
-      var e = D.directory[di], on = di === m.survivor;
-      var ini = (pairName(e).replace(/^@/, '').trim().charAt(0) || '·').toUpperCase();
-      return '<button type="button" class="mselpick' + (on ? ' on' : '') + '" data-mselpick="' + di + '">' +
-        '<span class="auava">' + esc(ini) + '</span>' +
-        '<span class="aumain"><span class="auname">' + esc(pairName(e)) + '</span>' +
-        '<span class="mselrole">' + (on ? 'Survivor — this profile stays' : 'Tap to make this one survive') + '</span></span>' +
-        (on ? '<b class="mselbadge">Survivor</b>' : '') + '</button>';
-    }).join('') +
-    '<p class="qmline"><b>' + esc(pairName(loser)) + '</b> merges into <b>' + esc(pairName(surv)) + '</b></p>' +
-    '<button type="button" class="qamgo" data-mselgo="1"><span>Merge ' + esc(pairName(loser)) + ' into ' + esc(pairName(surv)) + '</span></button>' +
-    '<button type="button" class="mselback" data-mselback="1"><span>Cancel</span></button>' +
-  '</div></div>';
-  $('#aubody').scrollTop = 0;
-}
-function doMergeSel(){
-  var m = AUD.msel; if(!m) return;
-  var survDi = m.survivor;
-  var loserDi = m.pair[0] === survDi ? m.pair[1] : m.pair[0];
-  var surv = D.directory[survDi], loser = D.directory[loserDi];
-  if(!surv || !loser){ AUD.msel = null; renderAudit(); return; }
-  var target = dupHandle(surv);
-  if(!target){ toast('The survivor has no key to merge into.'); return; }
-  var entry = { postKey:'merged_into',
-    items:[{ di:loserDi, prev:((loser.profile || {}).merged_into || ''), next:target }] };
-  AUD.msel = null;
-  delete AUD.sel[loserDi];
-  delete AUD.sel[survDi];
-  pushUndo(entry);
-  applyEntry(entry, false, function(){ toast(pairName(loser) + ' merged into ' + pairName(surv) + '.'); });
-}
-
-/* ---------- duplicate detection + nuclear merge ---------- */
-function normDupName(s){
-  return String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
-}
-function dupHandle(e){
-  return String(e.name || '').toLowerCase();
-}
-function findDupGroups(){
-  var byName = {}, i, e, pr, key;
-  for(i = 0; i < D.directory.length; i++){
-    e = D.directory[i];
-    pr = e.profile || {};
-    if(pr.deleted === '1' || (pr.merged_into || '').trim()) continue;
-    key = normDupName(dispName(e));
-    if(!key || key.length < 2) continue;
-    (byName[key] = byName[key] || []).push(i);
-  }
-  var groups = [];
-  Object.keys(byName).forEach(function(k){
-    var members = byName[k];
-    if(members.length < 2) return;
-    var scored = members.map(function(di){
-      var en = D.directory[di];
-      var st = auditStats(en);
-      var score = st.score + (en.has_graph ? 2 : 0);
-      return { di:di, e:en, st:st, score:score };
-    });
-    scored.sort(function(a, b){ return b.score - a.score; });
-    groups.push({ key:k, members:scored, survivor:scored[0].di });
-  });
-  groups.sort(function(a, b){ return b.members.length - a.members.length; });
-  return groups;
-}
-function renderDupAudit(q){
-  var groups = findDupGroups();
-  if(q){
-    groups = groups.filter(function(g){
-      return g.key.indexOf(q) >= 0 || g.members.some(function(m){
-        return dupHandle(m.e).indexOf(q) >= 0;
-      });
-    });
-  }
-  AUD.dupGroups = groups;
-  AUD.rows = [];
-  var nDup = groups.reduce(function(n, g){ return n + g.members.length; }, 0);
-  $('#aushown').textContent = groups.length + ' groups · ' + nDup + ' entries';
-  var dupStat = $('#austats .austat[data-f="dup"]');
-  if(!dupStat){
-    $('#austats').insertAdjacentHTML('beforeend',
-      '<button class="austat on" data-f="dup"><b>' + groups.length + '</b><span>Duplicate groups</span></button>');
+/* known associates are two-way: a write on one side writes the reciprocal on the other */
+function assocSidePatch(ownerIdx, otherName, add){
+  var o = D.directory[ownerIdx]; if(!o) return;
+  var key = otherName || '', kl = key.toLowerCase(); if(!kl) return;
+  var adds = tagList(raw(o, 'close_add')), hides = tagList(raw(o, 'close_hide'));
+  var low = function(x){ return x.toLowerCase(); };
+  if(add){
+    if(adds.map(low).indexOf(kl) < 0) adds.push(key);
+    hides = hides.filter(function(x){ return x.toLowerCase() !== kl; });
   } else {
-    dupStat.querySelector('b').textContent = groups.length;
-    $('#austats').querySelectorAll('.austat').forEach(function(s){ s.classList.toggle('on', s.getAttribute('data-f') === 'dup'); });
+    if(adds.map(low).indexOf(kl) >= 0) adds = adds.filter(function(x){ return x.toLowerCase() !== kl; });
+    else if(hides.map(low).indexOf(kl) < 0) hides.push(key);
+    /* a removed link also leaves any local family-sync extras */
+    o._nbx = (o._nbx || []).filter(function(n){ return String(n.u || '').toLowerCase() !== kl; });
   }
-  function dupSrcLabel(e){
-    var n = String(e.name || '');
-    var m = n.match(/^(ig|ct|sf|fdb):/);
-    /* 'sf' (record/subject-file origin) gets no tag (JD 2026-10-12): the
-       record origin distinction is removed; other origins keep theirs. */
-    if(m) return m[1] === 'sf' ? '' : m[1];
-    return e.has_graph ? 'ig' : 'entry';
-  }
-  $('#aubody').innerHTML = groups.map(function(g, gi){
-    var cards = g.members.map(function(m){
-      var an = auName(m.e);
-      var _sl = dupSrcLabel(m.e);
-      var srcTag = _sl ? ' <i>' + esc(_sl) + '</i>' : '';
-      var isS = m.di === g.survivor;
-      return '<label class="dupmem' + (isS ? ' surv' : '') + '">' +
-        '<input type="radio" name="dupsurv' + gi + '" data-gi="' + gi + '" data-di="' + m.di + '"' + (isS ? ' checked' : '') + '>' +
-        '<span class="auava">' + esc((an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</span>' +
-        '<span class="aumain"><span class="auname">' + esc(an.name) + srcTag + '</span>' +
-        '<span class="auneeds"><b class="' + (m.st.score >= 3 ? 'have' : 'miss') + '">' + m.st.score + '/4 data</b>' +
-        (m.e.has_graph ? '<b class="have">graph</b>' : '') + '</span></span>' +
-        (isS ? '<em class="dupsurvtag">survivor</em>' : '') + '</label>';
-    }).join('');
-    return '<div class="dupgroup"><div class="duphead">' +
-      '<input type="checkbox" class="dupgsel" data-gi="' + gi + '"' + (AUD.selGroups[gi] ? ' checked' : '') + ' title="Select group">' +
-      '<b>' + esc(dispName(g.members[0].e) || g.key) + '</b>' +
-      '<span class="dim">' + g.members.length + ' entries</span>' +
-      '<button class="mini" data-dupmerge="' + gi + '" style="--c:#f0b44c">Merge into survivor</button></div>' +
-      '<div class="dupmems">' + cards + '</div></div>';
-  }).join('') || '<p class="dim" style="padding:20px">No duplicates found.</p>';
-  renderBulk();
-  updateUndoBtns();
+  queuePatch(ownerIdx, { close_add:adds.join(', '), close_hide:hides.join(', ') });
 }
-function dupSurvivorName(g){
-  var e = D.directory[g.survivor];
-  return e ? (dispName(e) || dupHandle(e)) : '?';
-}
-/* ---------- photo-match merge queue (Person Index review-merge rows) ---------- */
-function renderPhotoMerge(q){
-  var raw = D.photo_merge || [];
-  var byKey = {};
-  D.directory.forEach(function(e, di){ byKey[String(e.name || '').toLowerCase()] = di; });
-  var groups = [];
-  raw.forEach(function(pm){
-    var members = [];
-    (pm.keys || []).forEach(function(k){
-      var di = byKey[String(k).toLowerCase()];
-      if(di === undefined) return;
-      var en = D.directory[di], pr = en.profile || {};
-      if(pr.deleted === '1' || (pr.merged_into || '').trim()) return;
-      var st = auditStats(en);
-      members.push({ di:di, e:en, st:st,
-        score:st.score + (en.has_graph ? 2 : 0) });
-    });
-    if(members.length < 2) return;
-    members.sort(function(a, b){ return b.score - a.score; });
-    if(q && pm.face.toLowerCase().indexOf(q) < 0 &&
-       !members.some(function(m){ return dupHandle(m.e).indexOf(q) >= 0; })) return;
-    groups.push({ key:pm.face, face:pm.face, members:members, survivor:members[0].di, photo:true });
+function addAssociate(di, tdi){
+  var e = D.directory[di], t = D.directory[tdi]; if(!e || !t) return;
+  txn('Add known associate', function(){
+    assocSidePatch(di, t.name || '', true);
+    if(tdi !== di) assocSidePatch(tdi, e.name || '', true);
   });
-  AUD.dupGroups = groups;
-  AUD.rows = [];
-  var pmStat = $('#austats .austat[data-f="pmerge"]');
-  var html = pmStat ? '' : '<button class="austat on" data-f="pmerge"><b>' + groups.length + '</b><span>Photo matches</span></button>';
-  if(!pmStat) $('#austats').insertAdjacentHTML('beforeend', html);
-  else pmStat.querySelector('b').textContent = groups.length;
-  $('#austats').querySelectorAll('.austat').forEach(function(s){ s.classList.toggle('on', s.getAttribute('data-f') === 'pmerge'); });
-  $('#aushown').textContent = groups.length + ' groups';
-  $('#aubody').innerHTML = groups.map(function(g, gi){
-    var cards = g.members.map(function(m){
-      var an = auName(m.e);
-      var n = String(m.e.name || ''), mt = n.match(/^(ig|ct|sf|fdb):/);
-      var _sl = mt ? mt[1] : (m.e.has_graph ? 'ig' : 'entry');
-      var srcTag = _sl === 'sf' ? '' : ' <i>' + esc(_sl) + '</i>';
-      var isS = m.di === g.survivor;
-      return '<label class="dupmem' + (isS ? ' surv' : '') + '">' +
-        '<input type="radio" name="dupsurv' + gi + '" data-gi="' + gi + '" data-di="' + m.di + '"' + (isS ? ' checked' : '') + '>' +
-        '<span class="auava">' + esc((an.name.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</span>' +
-        '<span class="aumain"><span class="auname">' + esc(an.name) + srcTag + '</span>' +
-        '<span class="auneeds"><b class="' + (m.st.score >= 3 ? 'have' : 'miss') + '">' + m.st.score + '/4 data</b>' +
-        (m.e.has_graph ? '<b class="have">graph</b>' : '') + '</span></span>' +
-        (isS ? '<em class="dupsurvtag">survivor</em>' : '') + '</label>';
-    }).join('');
-    return '<div class="dupgroup"><div class="duphead">' +
-      '<input type="checkbox" class="dupgsel" data-gi="' + gi + '"' + (AUD.selGroups[gi] ? ' checked' : '') + ' title="Select group">' +
-      '<b>' + esc(g.face) + '</b>' +
-      '<span class="dim">photo face · ' + g.members.length + ' entries</span>' +
-      '<button class="mini" data-dupmerge="' + gi + '" style="--c:#f0b44c">Merge into survivor</button></div>' +
-      '<div class="dupmems">' + cards + '</div></div>';
-  }).join('') || '<p class="dim" style="padding:20px">No photo matches pending.</p>';
-  renderBulk();
-  updateUndoBtns();
 }
-function doMergeGroup(gi){
-  var g = (AUD.dupGroups || [])[gi];
-  if(!g) return;
-  var surv = D.directory[g.survivor];
-  if(!surv) return;
-  var target = dupHandle(surv);
-  if(!target){ toast('Survivor has no handle to merge into.'); return; }
-  var losers = g.members.filter(function(m){ return m.di !== g.survivor; });
-  if(!losers.length){ toast('Nothing to merge.'); return; }
-  if(!confirm('Merge ' + losers.length + ' duplicate' + (losers.length > 1 ? 's' : '') + ' into "' +
-      dupSurvivorName(g) + '"?\n\nTheir info folds into the survivor and they disappear from the directory. You can undo this.')) return;
-  var entry = { postKey:'merged_into', items:losers.map(function(m){
-    return { di:m.di, prev:((D.directory[m.di].profile || {}).merged_into || ''), next:target };
-  }) };
-  pushUndo(entry);
-  applyEntry(entry, false, function(){ toast(losers.length + ' merged into ' + dupSurvivorName(g) + '.'); });
-}
-function doMergeAllDups(){
-  var groups = AUD.dupGroups || [];
-  if(!groups.length){ toast('No duplicate groups.'); return; }
-  var total = groups.reduce(function(n, g){ return n + g.members.length - 1; }, 0);
-  if(!total){ toast('Nothing to merge.'); return; }
-  if(!confirm('Merge ' + total + ' duplicates across ' + groups.length + ' groups?\n\nEach group folds into its selected survivor. You can undo this.')) return;
-  var items = [];
-  groups.forEach(function(g){
-    var surv = D.directory[g.survivor];
-    if(!surv) return;
-    var target = dupHandle(surv);
-    if(!target) return;
-    g.members.forEach(function(m){
-      if(m.di === g.survivor) return;
-      items.push({ di:m.di, prev:((D.directory[m.di].profile || {}).merged_into || ''), next:target });
-    });
+function removeAssociate(di, u){
+  var e = D.directory[di]; if(!e || !u) return;
+  txn('Remove known associate', function(){
+    assocSidePatch(di, u, false);
+    var tdi = BYN[String(u).toLowerCase()];
+    if(tdi !== undefined && tdi !== di) assocSidePatch(tdi, e.name || '', false);
   });
-  if(!items.length){ toast('Nothing to merge.'); return; }
-  var entry = { postKey:'merged_into', items:items };
-  pushUndo(entry);
-  applyEntry(entry, false, function(){ toast(total + ' duplicates merged.'); });
-}
-function dupSetSurvivor(gi, di){
-  var g = (AUD.dupGroups || [])[gi];
-  if(g) g.survivor = di;
 }
 
-/* ---------- export ---------- */
-function dossierFileName(e){
-  var base = String(dispName(e) || 'person').replace(/[\\/:*?"<>|]/g, '').trim() || 'person';
-  return 'Dossier - ' + base + '.html';
+/* groups live in each person's own 'groups' list */
+var GRP_EXTRA = (function(){ try{ return JSON.parse(store('ncc_groups_extra') || '[]') || []; }catch(x){ return []; } })();
+function personGroups(e){ return splitTags(gv(e, 'groups'), ', '); }
+function allGroups(){
+  var map = {};
+  D.directory.forEach(function(e, di){ if(liveEntry(e)) personGroups(e).forEach(function(g){ (map[g] = map[g] || []).push(di); }); });
+  GRP_EXTRA.forEach(function(g){ if(!map[g]) map[g] = []; });
+  return map;
 }
+function setPersonGroups(di, arr){ queuePatch(di, { groups: arr.join(', ') }); }
+function orgMembers(k, name){
+  var out = [];
+  D.directory.forEach(function(e, di){ if(liveEntry(e) && tagList(gv(e, k)).indexOf(name) >= 0) out.push(di); });
+  return out.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+}
+function orgNames(k){
+  var seen = {}, out = [], cat = ORG_CATS.filter(function(c){ return c.k === k; })[0];
+  if(cat) cat.options.forEach(function(o){ if(!seen[o]){ seen[o] = 1; out.push(o); } });
+  D.directory.forEach(function(e){ if(liveEntry(e)) tagList(gv(e, k)).forEach(function(o){ if(!seen[o]){ seen[o] = 1; out.push(o); } }); });
+  return out;
+}
+
+/* ============================================================
+   7. merge — COMBINES. The loser is never overwritten and nothing from it is dropped:
+      lists union, narratives append below the survivor's, single values keep the survivor's with blanks filled.
+      The UI only writes the pointer; the build performs the combine (DATA-CONTRACT 5.1).
+   ============================================================ */
+var M_SINGLE = ['first_name','last_name','phone','relationship','context','category','years_known','tier','momentum','openness','conscientiousness','extraversion','agreeableness','neuroticism','ego'];
+var M_LISTS = [['specialty','skills'],['churches','churches'],['companies','companies'],['universities','universities'],['groups','groups'],['highlights','highlights'],['achievements','honors']];
+var M_TEXT = [['synopsis','synopsis'],['public_footprint','public footprint']];
+function mergeTarget(survivorDi){ return String(D.directory[survivorDi].name || '').toLowerCase(); }
+function mergeRichness(e){ return Object.keys(e.profile || {}).filter(function(k){ return String((e.profile || {})[k] || '').trim() && k !== 'updated_at'; }).length + (e.has_graph ? 3 : 0) + (e.neighbors || []).length / 5; }
+function mergePreview(loserDi, survDi){
+  var L = D.directory[loserDi], S = D.directory[survDi], out = { filled:[], union:[], appended:[], carried:[] };
+  M_SINGLE.forEach(function(k){ if(!String(gv(S, k)).trim() && String(gv(L, k)).trim()) out.filled.push(k.replace(/_/g, ' ')); });
+  M_LISTS.forEach(function(p){
+    var sep = (p[0] === 'highlights' || p[0] === 'achievements') ? ' | ' : ', ';
+    var have = splitTags(gv(S, p[0]), sep).map(function(x){ return x.toLowerCase(); });
+    var add = splitTags(gv(L, p[0]), sep).filter(function(x){ return have.indexOf(x.toLowerCase()) < 0; });
+    if(add.length) out.union.push(add.length + ' ' + p[1]);
+  });
+  M_TEXT.forEach(function(p){ var a = String(gv(L, p[0])).trim(), b = String(gv(S, p[0])).trim(); if(a && a !== b) out.appended.push(p[1]); });
+  var ne = (L.events || []).length, nf = (L.files || []).length, nd = degreesOf(L).length, nfam = famLinks(L).length;
+  if(ne) out.carried.push(ne + ' timeline event' + (ne === 1 ? '' : 's'));
+  if(nf) out.carried.push(nf + ' file' + (nf === 1 ? '' : 's'));
+  if(nd) out.carried.push(nd + ' degree' + (nd === 1 ? '' : 's'));
+  if(nfam) out.carried.push(nfam + ' family link' + (nfam === 1 ? '' : 's'));
+  return out;
+}
+function mergeInto(loserDi, survDi){
+  var L = D.directory[loserDi], S = D.directory[survDi];
+  if(!L || !S || loserDi === survDi) return false;
+  var target = mergeTarget(survDi);
+  if(!target) return false;
+  txn('Merge ' + dispName(L), function(){
+    queuePatch(loserDi, { merged_into:target });
+    if(raw(S, 'review_flag') === 'duplicate') queuePatch(survDi, { review_flag:'' });
+    if(raw(L, 'review_flag') === 'duplicate') queuePatch(loserDi, { review_flag:'' });
+  });
+  return true;
+}
+function unmerge(di){ txn('Unmerge', function(){ queuePatch(di, { merged_into:'' }); }); }
+
+/* ============================================================
+   export: a standalone document of one profile (neutral paper style, no theme colors)
+   ============================================================ */
 function buildDossierDoc(e){
-  var name = dispName(e);
-  var handle = (e.src === 'contacts' || e.src === 'subject') ? '' : '@' + (e.name || '');
-  var aka = gv(e, 'also_known_as');
-  var today = new Date();
-  var ds = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+  var name = dispName(e), handle = hasHandle(e) ? '@' + (e.name || '') : '';
+  var aka = personIsAka(e) ? gv(e, 'also_known_as') : '';
+  var ds = todayStr();
   var bio = gv(e, 'synopsis');
   var classif = [gv(e, 'relationship'), gv(e, 'context'), tierName(e)].filter(Boolean).join(' · ');
   var orgs = [];
@@ -4259,11 +1277,13 @@ function buildDossierDoc(e){
   if(handle) contact.push('<span class="cl">Instagram</span> ' + esc(handle));
   if(gv(e, 'email')) contact.push('<span class="cl">Email</span> ' + esc(gv(e, 'email')));
   if(gv(e, 'phone')) contact.push('<span class="cl">Phone</span> ' + esc(gv(e, 'phone')));
+  if(e.city) contact.push('<span class="cl">Lives in</span> ' + esc(e.city));
+  if(e.hometown) contact.push('<span class="cl">From</span> ' + esc(e.hometown));
   if(orgs.length) contact.push('<span class="cl">Orgs</span> ' + esc(orgs.join(' · ')));
-  var bars = READ_TRAITS.map(function(k){
-    var v = parseInt(gv(e, k), 10), ok = !isNaN(v);
+  var bars = PERSONA.map(function(p){
+    var v = parseInt(gv(e, p[0]), 10), ok = !isNaN(v);
     var w = ok ? Math.max(0, Math.min(5, v)) / 5 * 100 : 0;
-    return '<div class="brow"><span>' + esc(fieldDef(k).l) + '</span><div class="bar"><i style="width:' + w + '%"></i></div><em>' + (ok ? v + '/5' : '—') + '</em></div>';
+    return '<div class="brow"><span>' + esc(p[1]) + '</span><div class="bar"><i style="width:' + w + '%"></i></div><em>' + (ok ? v + '/5' : '—') + '</em></div>';
   }).join('');
   var extras = '';
   if(gv(e, 'specialty')) extras += '<div class="kv"><span class="cl">Skills</span> ' + esc(gv(e, 'specialty')) + '</div>';
@@ -4272,1497 +1292,1698 @@ function buildDossierDoc(e){
   degreesOf(e).forEach(function(d){ extras += '<div class="kv"><span class="cl">Degree</span> ' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '</div>'; });
   var assoc = knownAssociates(e).map(function(nb){
     var di = BYN[(nb.u || '').toLowerCase()];
-    var label = di != null ? auName(D.directory[di]).name : personLabel(nb.u, nb.d);
-    return '<li>' + esc(label) + '</li>';
+    return '<li>' + esc(di != null ? dispName(D.directory[di]) : nb.d || nb.u) + '</li>';
   }).join('');
-  var notes = '';
+  var fp = gv(e, 'public_footprint'), notes = '';
   if(gv(e, 'notes')) notes += '<p>' + esc(gv(e, 'notes')).replace(/\n/g, '<br>') + '</p>';
-  if(gv(e, 'public_footprint')) notes += '<p><b>Public footprint</b><br>' + esc(gv(e, 'public_footprint')).replace(/\n/g, '<br>') + '</p>';
+  if(fp) notes += '<p><b>Public footprint</b><br>' + esc(fp).replace(/\n/g, '<br>') + '</p>';
   if(!notes) notes = '<p>—</p>';
-  var meta = ['Compiled ' + ds];
-  if(classif) meta.push(esc(classif));
   var evs = sortedEvents(e);
-  var tl = evs.length
-    ? '<ul class="assoc">' + evs.map(function(o){
-        var ev = o.ev;
-        return '<li><b>' + esc(ev.date || '') + '</b> — ' + esc(ev.summary || '') + (ev.detail ? '<br>' + esc(ev.detail) : '') + '</li>';
-      }).join('') + '</ul>'
-    : '<div class="sbody"><p>—</p></div>';
+  var tl = evs.length ? '<ul class="assoc">' + evs.map(function(o){
+    return '<li><b>' + esc(o.ev.date || '') + '</b> — ' + esc(o.ev.summary || '') + (o.ev.detail ? '<br>' + esc(o.ev.detail) : '') + '</li>';
+  }).join('') + '</ul>' : '<div class="sbody"><p>—</p></div>';
   var initial = (name || '·').trim().charAt(0).toUpperCase();
-  return '<!doctype html><html lang="en"><head><meta charset="utf-8">' +
-  '<title>Dossier — ' + esc(name) + '</title><style>' +
-  'body{background:#26292f;margin:0;padding:28px;font-family:"Courier New",Courier,monospace;color:#141414}' +
-  '.page{background:#f5f2e9;max-width:820px;margin:0 auto;padding:0;box-shadow:0 0 50px rgba(0,0,0,.55)}' +
-  '.banner{background:#141414;color:#f5f2e9;padding:26px 48px 22px;display:flex;align-items:center;gap:22px}' +
-  '.seal{flex:none;width:74px;height:74px;border-radius:50%;border:2.5px solid #c9a227;display:flex;align-items:center;justify-content:center;' +
-    'font-size:34px;font-weight:700;color:#c9a227;background:radial-gradient(circle at 35% 30%,#2a2a2a,#141414)}' +
-  '.btitle .kicker{font-size:10.5px;letter-spacing:.34em;color:#c9a227;margin-bottom:6px}' +
-  '.btitle h1{font-size:34px;margin:0;letter-spacing:.02em;color:#f5f2e9}' +
-  '.btitle .aka{font-size:12px;color:#a09a8a;margin-top:4px}' +
-  '.rule{height:3px;background:linear-gradient(90deg,#c9a227 0%,#c9a227 22%,transparent 22%)}' +
-  '.body{padding:30px 48px 44px}' +
-  '.contact{font-size:13px;line-height:2.1;margin-bottom:4px}' +
-  '.contact .ci{display:inline-block;width:20px;text-align:center;margin-right:6px}' +
-  '.cl{font-size:10.5px;letter-spacing:.14em;font-weight:700;margin-right:5px}' +
-  '.meta{font-size:12px;color:#333;border-top:2px solid #141414;border-bottom:1px solid #141414;padding:9px 0;margin:14px 0 22px;line-height:1.8}' +
-  '.sec{margin:0 0 20px}.slabel{font-size:12px;letter-spacing:.14em;font-weight:700;margin-bottom:8px}' +
-  '.slabel .si{display:inline-block;width:20px;margin-right:4px;vertical-align:-2px}' +
-  '.sbody{font-size:13px;line-height:1.65}.sbody p{margin:0 0 10px}' +
-  '.brow{display:flex;align-items:center;gap:10px;margin-bottom:7px}' +
-  '.brow span{width:120px;font-size:11px;letter-spacing:.08em;font-weight:700}' +
-  '.brow .bar{flex:1;height:11px;border:1.5px solid #141414}' +
-  '.brow .bar i{display:block;height:100%;background:#141414}' +
-  '.brow em{font-style:normal;font-size:11.5px;width:36px;text-align:right}' +
-  '.kv{font-size:13px;margin:6px 0}' +
-  '.cols2{column-count:2;column-gap:30px}' +
-  '.cols2 .sec{break-inside:avoid;margin:0 0 18px}' +
-  '.cols2 .slabel{font-size:11px;margin-bottom:6px}' +
-  '.cols2 .sbody{font-size:12px;line-height:1.6}' +
-  '.cols2 .brow{margin-bottom:5px}' +
-  '.cols2 .brow span{width:96px;font-size:10px}' +
-  '.cols2 ul.assoc{font-size:12px;line-height:1.6}' +
-  '.cols2 .kv{font-size:12px;margin:4px 0}' +
-  'ul.assoc{margin:0;padding-left:22px;font-size:13px;line-height:1.7}' +
-  '.foot{border-top:2px solid #141414;margin-top:26px;padding-top:10px;font-size:11px}' +
-  '.foot .sig{font-family:"Segoe Script",cursive;font-size:22px;margin:6px 0}' +
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Dossier — ' + esc(name) + '</title><style>' +
+  'body{background:#1b1e26;margin:0;padding:28px;font-family:Georgia,"Times New Roman",serif;color:#16181d}' +
+  '.page{background:#f4f3ef;max-width:820px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.5)}' +
+  '.banner{background:#14161c;color:#f4f3ef;padding:26px 48px 22px;display:flex;align-items:center;gap:22px}' +
+  '.seal{flex:none;width:70px;height:70px;border-radius:50%;border:2px solid #86a0d8;display:flex;align-items:center;justify-content:center;font-size:32px;color:#86a0d8}' +
+  '.kicker{font:600 10.5px/1 Helvetica,Arial,sans-serif;letter-spacing:.3em;color:#86a0d8;margin-bottom:8px}' +
+  'h1{font-size:32px;margin:0;font-weight:400;letter-spacing:.01em}.aka{font:12px Helvetica,Arial,sans-serif;color:#9aa3b6;margin-top:4px}' +
+  '.rule{height:3px;background:linear-gradient(90deg,#86a0d8 0%,#86a0d8 22%,transparent 22%)}.body{padding:30px 48px 44px}' +
+  '.contact{font:13px/2 Helvetica,Arial,sans-serif;margin-bottom:4px}.cl{font:700 10px Helvetica,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-right:6px;color:#4b5468}' +
+  '.meta{font:12px/1.8 Helvetica,Arial,sans-serif;color:#333;border-top:2px solid #14161c;border-bottom:1px solid #14161c;padding:9px 0;margin:14px 0 22px}' +
+  '.sec{margin:0 0 20px}.slabel{font:700 11px Helvetica,Arial,sans-serif;letter-spacing:.16em;margin-bottom:8px}' +
+  '.sbody{font-size:14px;line-height:1.65}.sbody p{margin:0 0 10px}' +
+  '.brow{display:flex;align-items:center;gap:10px;margin-bottom:7px;font:11px Helvetica,Arial,sans-serif}.brow span{width:120px;letter-spacing:.06em;font-weight:700}' +
+  '.brow .bar{flex:1;height:10px;border:1.5px solid #14161c}.brow .bar i{display:block;height:100%;background:#14161c}.brow em{font-style:normal;width:36px;text-align:right}' +
+  '.kv{font-size:13px;margin:6px 0}.cols2{column-count:2;column-gap:30px}.cols2 .sec{break-inside:avoid;margin:0 0 18px}' +
+  'ul.assoc{margin:0;padding-left:22px;font-size:13px;line-height:1.7}.foot{border-top:2px solid #14161c;margin-top:26px;padding-top:10px;font:11px Helvetica,Arial,sans-serif}' +
   '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none}}' +
-  '</style></head><body><div class="page">' +
-  '<div class="banner"><div class="seal">' + esc(initial) + '</div>' +
-  '<div class="btitle"><div class="kicker">PERSONNEL DOSSIER</div><h1>' + esc(name) + '</h1>' +
-  (aka ? '<div class="aka">also known as ' + esc(aka) + '</div>' : '') + '</div></div>' +
-  '<div class="rule"></div><div class="body">' +
+  '</style></head><body><div class="page"><div class="banner"><div class="seal">' + esc(initial) + '</div><div><div class="kicker">PERSONNEL DOSSIER</div><h1>' + esc(name) + '</h1>' +
+  (aka ? '<div class="aka">also known as ' + esc(aka) + '</div>' : '') + '</div></div><div class="rule"></div><div class="body">' +
   (contact.length ? '<div class="contact">' + contact.join('<br>') + '</div>' : '') +
-  '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' +
-  '<div class="sec"><div class="slabel"><span class="si">&#9998;</span>SYNOPSIS</div><div class="sbody">' + (bio ? '<p>' + esc(bio).replace(/\n/g, '<br>') + '</p>' : '<p>—</p>') + '</div></div>' +
-  '<div class="cols2">' +
-  '<div class="sec"><div class="slabel"><span class="si">&#9733;</span>PROFILE RATINGS</div><div class="bars">' + bars + '</div>' + extras + '</div>' +
-  '<div class="sec"><div class="slabel"><span class="si">&#9823;</span>KNOWN ASSOCIATES</div>' +
-    (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div>' +
-  '<div class="sec"><div class="slabel"><span class="si">&#9776;</span>FIELD NOTES</div><div class="sbody">' + notes + '</div></div>' +
-  '<div class="sec"><div class="slabel"><span class="si">&#9782;</span>TIMELINE</div><div class="sbody">' + tl + '</div></div>' +
-  '</div>' +
-  '<div class="foot"><div>APPROVED / FORWARDED BY</div><div class="sig">J. Meyers</div></div>' +
-  '</div></div></body></html>';
+  '<div class="meta">Compiled ' + ds + (classif ? ' &nbsp;·&nbsp; ' + esc(classif) : '') + '</div>' +
+  '<div class="sec"><div class="slabel">SYNOPSIS</div><div class="sbody">' + (bio ? '<p>' + esc(bio).replace(/\n/g, '<br>') + '</p>' : '<p>—</p>') + '</div></div>' +
+  '<div class="cols2"><div class="sec"><div class="slabel">PROFILE RATINGS</div>' + bars + extras + '</div>' +
+  '<div class="sec"><div class="slabel">KNOWN ASSOCIATES</div>' + (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div>' +
+  '<div class="sec"><div class="slabel">FIELD NOTES</div><div class="sbody">' + notes + '</div></div>' +
+  '<div class="sec"><div class="slabel">TIMELINE</div><div class="sbody">' + tl + '</div></div></div>' +
+  '<div class="foot">Compiled from the North Country Circle directory.</div></div></div></body></html>';
 }
-function exportDossier(){
-  var e = D.directory[S.sel];
-  if(!e){ toast('Nothing to export.'); return; }
-  var html, fname;
-  try{ html = buildDossierDoc(e); fname = dossierFileName(e); }
-  catch(err){ toast('Could not build the document.'); return; }
-  try{
-    var blob = new Blob([html], { type:'text/html' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = fname;
-    document.body.appendChild(a); a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 4000);
-    toast('Downloaded ' + fname);
-  }catch(x){ toast('Download failed.'); }
+function personIsAka(e){ return pkey(e) === AKA_KEY; }
+
+/* ============================================================
+   8. views
+   ============================================================ */
+var S = {
+  depth:0, route:{ name:'today', seg:[] }, ctx:null,
+  today:{ i:0, surv:{}, skipped:{} },
+  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80 },
+  prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
+  net:{ color:'tier', bg:false, sel:null },
+  fam:{ editing:null, focus:null, sheet:false },
+  grp:{ kind:'groups', open:null, renaming:null }
+};
+var PHI = 0; /* pending-render guard */
+
+function toast(msg, opt){
+  opt = opt || {};
+  var wrap = $('#toasts'); if(!wrap) return;
+  var t = document.createElement('div'); t.className = 'toast';
+  t.innerHTML = '<span>' + esc(msg) + '</span>' + (opt.undo ? '<button type="button" data-act="undo">Undo</button>' : '');
+  wrap.appendChild(t);
+  requestAnimationFrame(function(){ t.classList.add('show'); });
+  setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 250); }, opt.undo ? 6500 : 3200);
+  while(wrap.children.length > 3) wrap.firstChild.remove();
 }
-function viewDossier(){
-  var e = D.directory[S.sel];
-  if(!e){ toast('Nothing to view.'); return; }
-  var html;
-  try{ html = buildDossierDoc(e); }
-  catch(err){ toast('Could not build the document.'); return; }
-  try{
-    var blob = new Blob([html], { type:'text/html' });
-    var url = URL.createObjectURL(blob);
-    window.open(url, '_blank', 'noopener');
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 120000);
-  }catch(x){ toast('Could not open the document.'); }
+function avatar(e, size){
+  var nm = dispName(e), c = tierCol(e);
+  return '<span class="av av-' + (size || 'md') + '" style="--tc:' + c + '">' + esc((nm.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase()) + '</span>';
+}
+function seg(k, opts, val, extra){
+  return '<div class="seg" role="group">' + opts.map(function(o){
+    var v = Array.isArray(o) ? o[0] : o, l = Array.isArray(o) ? o[1] : cap(o);
+    return '<button type="button" class="' + (String(val) === String(v) ? 'on' : '') + '" data-act="set" data-k="' + k + '" data-v="' + esc(v) + '"' + (extra || '') + '>' + esc(l) + '</button>';
+  }).join('') + '</div>';
+}
+function chip(label, cls){ return '<span class="chip ' + (cls || '') + '">' + esc(label) + '</span>'; }
+function statusChip(di){
+  var s = statusOf(di);
+  return '<span class="st st-' + s + '">' + (s === 'checked' ? ic('check', 12) + 'Checked' : s === 'needs' ? 'Needs you' : 'Waiting') + '</span>';
+}
+function infoLine(e){
+  return [tierName(e), cap(gv(e, 'relationship')), e.city].filter(Boolean).join(' · ');
+}
+function emptyState(title, body){ return '<div class="empty"><h3>' + esc(title) + '</h3><p>' + esc(body || '') + '</p></div>'; }
+
+/* ---------- sheet (dialog on desktop, bottom sheet on phones) ---------- */
+function openSheet(title, body, o){
+  o = o || {};
+  closeSheet();
+  var w = $('#sheetwrap');
+  w.innerHTML = '<div class="scrim" data-act="sheetx"></div><div class="sheet' + (o.wide ? ' wide' : '') + '" role="dialog" aria-modal="true" aria-label="' + esc(title) + '">' +
+    '<header><h2>' + esc(title) + '</h2><button type="button" class="ib" data-act="sheetx" aria-label="Close">' + ic('x', 18) + '</button></header>' +
+    '<div class="sbody">' + body + '</div></div>';
+  w.hidden = false; document.body.classList.add('sheet-open');
+  S.sheetOnClose = o.onClose || null;
+  var f = $('input:not([type=hidden]), textarea', w); if(f && o.focus !== false) f.focus();
+}
+function closeSheet(){
+  var w = $('#sheetwrap'); if(!w || w.hidden) return;
+  w.hidden = true; w.innerHTML = ''; document.body.classList.remove('sheet-open');
+  var f = S.sheetOnClose; S.sheetOnClose = null; if(f) f();
+}
+function askEditKey(){
+  openSheet('Edit key needed',
+    '<p class="dim">The sheet rejected the last save. Enter the edit key (the EDIT_TOKEN from the Apps Script project). It is stored in this browser only.</p>' +
+    '<input type="password" id="ekey" placeholder="Edit key" autocomplete="off">' +
+    '<div class="row end"><button type="button" class="btn primary" data-act="savekey">Save and retry</button></div>',
+    { onClose:function(){ OUT.auth = false; } });
 }
 
-/* ---------- modals + settings ---------- */
-function openModal(title, bodyHTML, lv, wide){
-  closeModal();
-  document.body.insertAdjacentHTML('beforeend',
-    '<div id="modal"><div class="mcard' + (wide ? ' wide' : '') + '" role="dialog" aria-label="' + esc(title) + '" style="--lc:' + (lv ? LV[lv].c : '#ece9e2') + '">' +
-    '<div class="mhd"><h2>' + esc(title) + '</h2><span class="sp"></span><button class="ibtn" id="mclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
-    '<div class="mb">' + bodyHTML + '</div></div></div>');
-  $('#mclose').addEventListener('click', closeModal);
-  $('#modal').addEventListener('mousedown', function(ev){ if(ev.target.id === 'modal') closeModal(); });
+/* ---------- global chrome ---------- */
+var NAV = [
+  { k:'today',   l:'Today',   ic:'today' },
+  { k:'people',  l:'People',  ic:'people' },
+  { k:'network', l:'Network', ic:'network' },
+  { k:'family',  l:'Family',  ic:'tree' },
+  { k:'groups',  l:'Groups',  ic:'groups' }
+];
+function activeNav(){
+  var n = S.route.name;
+  if(n === 'profile') return S.ctx && S.ctx.from ? S.ctx.from : 'people';
+  if(n === 'settings') return 'settings';
+  return n;
 }
-function closeModal(){ var m = $('#modal'); if(m) m.remove(); }
-function reviewQueueHTML(){
+function renderChrome(){
+  var act = activeNav(), st = D ? getState() : null;
+  var badge = st ? st.needs.length : 0;
+  var items = NAV.map(function(n){
+    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span>' +
+      (n.k === 'today' && badge ? '<em>' + (badge > 999 ? '999+' : badge) + '</em>' : '') + '</a>';
+  }).join('');
+  $('#rail').innerHTML = '<a class="brand" href="#/today" aria-label="North Country Circle"><i></i><b>North Country Circle</b></a>' +
+    '<div class="navlist">' + items + '</div>' +
+    '<div class="railfoot"><a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
+    '<small id="fresh">' + (D ? 'Data ' + esc(D.updated || '') : '') + '</small></div>';
+  $('#tabs').innerHTML = items;
+  var top = $('#top');
+  var onProfile = S.route.name === 'profile';
+  top.innerHTML =
+    (onProfile ? '<button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' : '<span class="logo-s"><i></i></span>') +
+    '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
+    '<div class="topr"><button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
+    '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
+    '<button type="button" class="syncp" id="sync" data-act="retry"></button>' +
+    '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a></div>';
+  paintSync(); paintUndo();
+}
+function paintSync(){
+  var p = $('#sync'); if(!p) return;
+  var n = outPending(), txt, cls = 'ok';
+  if(!n){ txt = 'Saved'; }
+  else if(OUT.err){ txt = n + ' not saved · retrying'; cls = 'err'; }
+  else if(OUT.busy){ txt = 'Saving'; cls = 'busy'; }
+  else { txt = 'Unsaved'; cls = 'busy'; }
+  p.className = 'syncp ' + cls; p.innerHTML = '<i></i>' + esc(txt);
+  p.title = OUT.err ? 'Last error: ' + OUT.err + '. Tap to retry now.' : 'Every edit is stored in this browser first, then sent to the sheet.';
+  var sp = $('#syncs'); if(sp) sp.textContent = txt;
+}
+function paintUndo(){
+  var u = $('#undob'), r = $('#redob');
+  if(u) u.disabled = !UNDO.stack.length;
+  if(r) r.disabled = !UNDO.redo.length;
+}
+
+/* ---------- search ---------- */
+function matchText(e){
+  if(e._mt) return e._mt;
+  e._mt = [dispName(e), hasHandle(e) ? e.name : '', gv(e, 'specialty'), gv(e, 'companies'), gv(e, 'churches'), gv(e, 'universities'), gv(e, 'groups'), e.city || '', e.hometown || '',
+    personIsAka(e) ? gv(e, 'also_known_as') : '', degreesOf(e).map(function(d){ return d.school + ' ' + d.major; }).join(' ')].join(' ').toLowerCase();
+  return e._mt;
+}
+function searchPeople(q, limit, pool){
+  q = String(q || '').trim().toLowerCase().replace(/^@/, '');
+  if(!q) return [];
+  var toks = q.split(/\s+/), out = [];
+  (pool || people()).forEach(function(di){
+    var e = D.directory[di], t = matchText(e), ok = true;
+    for(var i = 0; i < toks.length; i++) if(t.indexOf(toks[i]) < 0){ ok = false; break; }
+    if(!ok) return;
+    var nm = dispName(e).toLowerCase();
+    var s = nm === q ? 0 : nm.indexOf(q) === 0 ? 1 : nm.split(' ').some(function(w){ return w.indexOf(toks[0]) === 0; }) ? 2 : 3;
+    out.push({ di:di, s:s });
+  });
+  out.sort(function(a, b){ return a.s - b.s || (D.directory[b.di].strength || 0) - (D.directory[a.di].strength || 0); });
+  return out.slice(0, limit || 8).map(function(o){ return o.di; });
+}
+function paintSearch(){
+  var inp = $('#gs'), box = $('#gsr'); if(!inp || !box) return;
+  var q = inp.value.trim();
+  if(!q){ box.hidden = true; box.innerHTML = ''; return; }
+  var hits = searchPeople(q, 7);
+  box.innerHTML = hits.map(function(di, i){
+    var e = D.directory[di];
+    return '<button type="button" class="gsi-row' + (i === 0 ? ' on' : '') + '" data-act="gsopen" data-di="' + di + '">' + avatar(e, 'sm') +
+      '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></span>' + statusChip(di) + '</button>';
+  }).join('') + (hits.length ? '<button type="button" class="gsi-all" data-act="gsall">See all matches in People</button>' : '<div class="gsi-none">No one matches</div>');
+  box.hidden = false;
+}
+
+/* ---------- router ---------- */
+function parseRoute(){
+  var h = location.hash.replace(/^#\/?/, ''), qs = '';
+  var qi = h.indexOf('?'); if(qi >= 0){ qs = h.slice(qi + 1); h = h.slice(0, qi); }
+  var seg = h.split('/').filter(Boolean).map(function(x){ try{ return decodeURIComponent(x); }catch(e){ return x; } });
+  var name = seg[0] || 'today';
+  if(name === 'p') name = 'profile';
+  if(['today','people','profile','network','family','groups','settings'].indexOf(name) < 0) name = 'today';
+  return { name:name, seg:seg.slice(1), qs:qs };
+}
+function go(path, o){
+  o = o || {};
+  var url = '#/' + path;
+  if(o.replace) history.replaceState({ d:S.depth }, '', url);
+  else { S.depth++; history.pushState({ d:S.depth }, '', url); }
+  render();
+}
+function back(fallback){
+  if(S.depth > 0) history.back();
+  else go(fallback || 'today', { replace:true });
+}
+addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
+function openPerson(di, ctx, o){
+  var e = D.directory[di]; if(!e) return;
+  if(ctx) S.ctx = ctx; else if(!(o && o.keepCtx)) S.ctx = null;
+  S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
+  if(o && o.edit) S.prof.edit[o.edit] = true;
+  go('p/' + encodeURIComponent(personId(e)));
+}
+function ctxFrom(label, dis, i, from){
+  return { label:label, keys:dis.map(function(d){ return pkey(D.directory[d]); }), i:i, from:from };
+}
+
+var renderTimer = 0;
+function render(){
+  if(!D) return;
+  cancelAnimationFrame(renderTimer);
+  S.route = parseRoute();
+  var v = $('#view'), n = S.route.name;
+  closeSheet();
+  document.body.setAttribute('data-view', n);
+  try{
+    renderChrome();
+    if(n === 'today') viewToday(v);
+    else if(n === 'people') viewPeople(v);
+    else if(n === 'profile') viewProfile(v);
+    else if(n === 'network') viewNetwork(v);
+    else if(n === 'family') viewFamily(v);
+    else if(n === 'groups') viewGroups(v);
+    else if(n === 'settings') viewSettings(v);
+  }catch(err){
+    v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/today" class="btn">Go to Today</a></p></div>';
+    if(window.console) console.error(err);
+  }
+}
+function afterWrite(di){
+  /* chrome badge + any list that depends on status; never re-render a view the user is typing in */
+  var st = getState();
+  $$('.nv[data-nav="today"]').forEach(function(a){
+    var em = $('em', a);
+    if(!st.needs.length){ if(em) em.remove(); return; }
+    if(!em){ em = document.createElement('em'); a.appendChild(em); }
+    em.textContent = st.needs.length > 999 ? '999+' : st.needs.length;
+  });
+  paintUndo();
+}
+window.__nccChanged = function(di){
+  afterWrite(di);
+  if(di === -1 && !typing() && $('#sheetwrap').hidden) render();
+};
+
+/* ============================================================
+   Today — the work. Queue by reason on the left, one actionable card on the right.
+   ============================================================ */
+function todayHead(st){
+  var needs = st.needs.length, wait = st.sweep.length, done = st.checkedN, tot = st.total || 1;
+  var line;
+  if(!needs && !wait) line = 'Everyone is checked.';
+  else line = [needs ? needs + ' need' + (needs === 1 ? 's' : '') + ' you' : '', wait ? wait + ' waiting on the floor sweep' : '', done + ' checked'].filter(Boolean).join(' · ');
+  var pc = Math.round(done / tot * 1000) / 10;
+  return '<div class="pagehead"><div><h1 class="display">Today</h1><p class="sub">' + esc(line) + '</p></div>' +
+    '<div class="prog" title="' + done + ' of ' + st.total + ' checked"><div class="bar"><i class="c" style="width:' + (done / tot * 100) + '%"></i><i class="n" style="width:' + (needs / tot * 100) + '%"></i></div>' +
+    '<small><b>' + done + '</b> of ' + st.total + ' checked' + (pc ? ' (' + pc + '%)' : '') + '</small></div></div>';
+}
+function viewToday(v){
+  var st = getState(), tab = S.route.seg[0] || 'needs';
+  if(!TABS.some(function(t){ return t.k === tab; })) tab = 'needs';
+  var q = queueFor(tab);
+  if(S.today.tab !== tab){ S.today.tab = tab; S.today.i = 0; }
+  if(S.today.i >= q.length) S.today.i = Math.max(0, q.length - 1);
+  var tabs = TABS.filter(function(t){ return t.k === 'needs' || t.k === 'sweep' || tabCount(t.k) > 0 || t.k === tab; }).map(function(t){
+    var n = tabCount(t.k);
+    return '<a href="#/today/' + t.k + '" class="tab' + (t.k === tab ? ' on' : '') + '" data-tab="' + t.k + '">' + esc(t.l) + '<em>' + n + '</em></a>';
+  }).join('');
+  v.innerHTML = '<div class="page today">' + todayHead(st) + '<nav class="tabrow" aria-label="Queues">' + tabs + '</nav>' +
+    '<div class="tgrid"><aside class="qlist" id="qlist"></aside><section class="qcard" id="qcard"></section></div></div>';
+  paintQueue(tab);
+}
+function paintQueue(tab){
+  var q = queueFor(tab), list = $('#qlist'), card = $('#qcard');
+  if(!list || !card) return;
+  var i = S.today.i = Math.max(0, Math.min(q.length - 1, S.today.i));
+  var start = Math.max(0, Math.min(i - 3, q.length - 60));
+  var rows = q.slice(start, start + 60).map(function(x, k){
+    var idx = start + k, e = D.directory[x.di];
+    var r = tab === 'needs' || tab === 'sweep' ? x.reasons[0] : (x.reasons.filter(function(c){ return REASONS[c].tab === tab; })[0] || x.reasons[0]);
+    return '<button type="button" class="qrow' + (idx === i ? ' on' : '') + '" data-act="qpick" data-i="' + idx + '">' + avatar(e, 'sm') +
+      '<span class="qn"><b>' + esc(dispName(e)) + '</b><small>' + esc(REASONS[r].l) + (x.reasons.length > 1 && tab === 'needs' ? ' +' + (x.reasons.length - 1) : '') + '</small></span>' +
+      (tierName(e) ? '<span class="qt" style="--tc:' + tierCol(e) + '">' + esc(tierName(e)) + '</span>' : '') + '</button>';
+  }).join('');
+  list.innerHTML = '<div class="qhead"><b>' + q.length + '</b> in this queue</div>' + (rows || '') +
+    (q.length > start + 60 ? '<div class="qmore">+' + (q.length - start - 60) + ' more below</div>' : '');
+  if(!q.length){
+    card.innerHTML = tab === 'needs' ? emptyState('Nothing needs you.', 'Everything with a flag has been handled. The floor sweep is next if anyone is still waiting.')
+      : emptyState('This queue is clear.', 'Handled items leave the queue on their own.');
+    return;
+  }
+  card.innerHTML = reviewCard(q[i], tab, i, q.length);
+  var on = $('.qrow.on', list); if(on && on.scrollIntoView) on.scrollIntoView({ block:'nearest' });
+}
+
+function factsHTML(e){
   var rows = [];
-  D.directory.forEach(function(r, i){
-    var pr = r.profile || {};
-    if(!pr.review_flag || pr.deleted === '1') return;
-    var label = pr.review_flag === 'duplicate' ? 'Possible duplicate' : (pr.review_flag === 'missing_info' ? 'Missing info' : pr.review_flag);
-    rows.push('<div class="revrow" data-ri="' + i + '"><b>' + esc(dispName(r)) + '</b><span>' + esc(label) + '</span></div>');
+  function row(icn, label, val){ if(val) rows.push('<div class="fact"><span>' + ic(icn, 14) + label + '</span><div>' + val + '</div></div>'); }
+  row('pin', 'Lives in', e.city ? esc(e.city) : '');
+  row('pin', 'From', e.hometown ? esc(e.hometown) : '');
+  row('cap', 'School', degreesOf(e).slice(0, 2).map(function(d){ return esc(schoolShort(d.school) + (d.degree ? ' ' + d.degree : '') + (d.year ? ' ' + yy(d.year) : '')); }).join(', '));
+  row('briefcase', 'Work', tagList(gv(e, 'companies')).map(esc).join(', '));
+  row('church', 'Church', tagList(gv(e, 'churches')).map(esc).join(', '));
+  var links = [];
+  if(hasHandle(e)) links.push('<a href="' + igURL(e.name) + '" target="_blank" rel="noopener">Instagram ' + ic('ext', 11) + '</a>');
+  if(e.fb_url) links.push('<a href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">Facebook ' + ic('ext', 11) + '</a>');
+  if(gv(e, 'phone')) links.push(esc(fmtPhone(String(gv(e, 'phone')).split(',')[0])));
+  row('link', 'Reach', links.join(' <i class="sep"></i> '));
+  var ks = knownSinceYear(e); row('calendar', 'Known since', ks ? String(ks) : '');
+  var fp = footprintOf(e);
+  if(fp.blocks.length){
+    var tx = fp.blocks[0].text; if(tx.length > 240) tx = tx.slice(0, 240).trim() + '…';
+    row('file', 'Web record', '<span class="conf ' + (fp.sourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (fp.sourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span> ' + esc(tx));
+  }
+  var syn = gv(e, 'synopsis');
+  if(syn){ var s2 = syn.length > 200 ? syn.slice(0, 200).trim() + '…' : syn; row('book', 'Synopsis', esc(s2)); }
+  return rows.length ? '<div class="facts">' + rows.join('') + '</div>' : '<p class="dim">Nothing on file beyond the name.</p>';
+}
+function dupBlock(x, di){
+  var e = D.directory[di], gs = x.detail.dup || [];
+  if(!gs.length){
+    return '<div class="rb"><h4>' + esc(REASONS.dup.l) + '</h4><p>Flagged as a possible duplicate, but no matching name or face turned up. Find the other entry, or clear the flag.</p>' +
+      '<div class="row"><button type="button" class="btn" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 15) + 'Find the other entry</button>' +
+      '<button type="button" class="btn ghost" data-act="clearflag" data-di="' + di + '">Clear flag</button></div></div>';
+  }
+  return gs.map(function(g, gi){
+    var key = dupGroupKey(g.dis), sv = S.today.surv[key];
+    if(sv == null || g.dis.indexOf(sv) < 0){ sv = g.dis.slice().sort(function(a, b){ return mergeRichness(D.directory[b]) - mergeRichness(D.directory[a]); })[0]; }
+    var mems = g.dis.map(function(m){
+      var me = D.directory[m];
+      return '<label class="dm' + (m === sv ? ' on' : '') + (m === di ? ' me' : '') + '"><input type="radio" name="sv' + gi + '" data-act="surv" data-key="' + esc(key) + '" data-di="' + m + '"' + (m === sv ? ' checked' : '') + '>' +
+        avatar(me, 'sm') + '<span><b>' + esc(dispName(me)) + (m === di ? ' <em>this one</em>' : '') + '</b><small>' + esc([hasHandle(me) ? '@' + me.name : String(me.name).split(':')[0], tierName(me), me.city, isChecked(me) ? 'checked' : ''].filter(Boolean).join(' · ')) + '</small></span>' +
+        '<a href="#/p/' + encodeURIComponent(personId(me)) + '" class="dl" data-act="openp" data-di="' + m + '" title="Open profile">' + ic('ext', 14) + '</a></label>';
+    }).join('');
+    return '<div class="rb"><h4>' + esc(REASONS.dup.l) + ' <small>' + esc(g.label) + '</small></h4>' +
+      '<p>Twins and same-name people are common. Nothing merges unless you combine it. Pick the profile that should survive.</p>' +
+      '<div class="dms">' + mems + '</div>' +
+      '<div class="row"><button type="button" class="btn primary" data-act="mergegroup" data-key="' + esc(key) + '" data-gi="' + gi + '">' + ic('merge', 15) + 'Combine into survivor</button>' +
+      '<button type="button" class="btn ghost" data-act="notdup" data-gi="' + gi + '">Different people</button></div></div>';
+  }).join('');
+}
+function reasonBlocks(x, di, tab){
+  var e = D.directory[di], out = [];
+  var order = x.reasons.slice().sort(function(a, b){
+    var ta = REASONS[a].tab === tab ? -1 : 0, tb = REASONS[b].tab === tab ? -1 : 0;
+    return (ta - tb) || (REASONS[a].pr - REASONS[b].pr);
   });
-  if(rows.length > 150) rows = rows.slice(0, 150).concat(['<p class="dim" style="margin:8px 0 0;font-size:12.5px">Showing the first 150.</p>']);
-  return rows.length ? rows.join('') : '<p class="dim" style="margin:0;font-size:13px">Nothing flagged. Set a review flag in a person’s Admin section to queue them here.</p>';
-}
-function openSettings(){
-  openModal('Settings',
-    '<label class="lab">Keyboard shortcuts</label>' +
-    '<div class="keys"><kbd>/</kbd><span>Search</span><kbd>↑ ↓</kbd><span>Move through the directory</span><kbd>1 2 3</kbd><span>On file, Record, Files</span><kbd>E</kbd><span>Edit the open dossier</span>' +
-    '<kbd>Alt ←</kbd><span>Back to the previous person</span><kbd>Esc</kbd><span>Back, finish editing, or close</span><kbd>B</kbd><span>Show or hide the directory</span></div>' +
-    '<label class="lab">Edit key<span class="sh">Only needed if you set EDIT_TOKEN in the Apps Script project. Stored in this browser.</span></label>' +
-    '<input type="password" id="setedit" placeholder="Edit key" autocomplete="off" value="' + esc(getPw()) + '">' +
-    '<label class="lab">Bio tidy prompt<span class="sh">Sent to Gemini with the draft text when you press Tidy with AI on a Bio.</span></label>' +
-    '<textarea id="setprompt" rows="8" placeholder="Loading…"></textarea>' +
-    '<label class="lab">Gemini API key<span class="sh">Stored in the sheet, server-side only. Get one at aistudio.google.com.</span></label>' +
-    '<input type="password" id="setkey" placeholder="AIza…" autocomplete="off">' +
-    '<div class="arow"><button id="setsave" class="mini neutral">Save settings</button><button id="settest" class="mini neutral">Test Gemini</button><button id="setclear" class="mini neutral">Clear key</button><span id="setmsg"></span></div>' +
-    '<div class="revq"><h3>Needs review</h3><div id="revqlist">' + reviewQueueHTML() + '</div></div>', 0, true);
-  $('#setedit').addEventListener('change', function(){ store('ncc_edit_key', this.value.trim()); loadSettings(); });
-  $('#revqlist').addEventListener('click', function(ev){
-    var row = ev.target.closest('.revrow'); if(!row) return;
-    var i = parseInt(row.getAttribute('data-ri'), 10);
-    closeModal(); if(i >= 0) openPerson(i);
+  order.forEach(function(c){
+    if(c === 'dup') out.push(dupBlock(x, di));
+    else if(c === 'identity'){
+      var sg = x.detail.identity || identitySignals(e);
+      out.push('<div class="rb"><h4>' + esc(REASONS.identity.l) + ' <small>' + sg.n + ' of 2 signals</small></h4>' +
+        '<p>Two independent signals beyond the name: place, school, work or church, contact, a connection to you, or a sourced web record. Fix it or waive it honestly.</p>' +
+        '<div class="sigs">' + sg.have.map(function(s){ return '<span class="sig on">' + ic('check', 12) + esc(s) + '</span>'; }).join('') + sg.miss.map(function(s){ return '<span class="sig">' + esc(s) + '</span>'; }).join('') + '</div>' +
+        '<div class="row"><button type="button" class="btn" data-act="openedit" data-di="' + di + '" data-sec="identity">Add detail</button>' +
+        '<button type="button" class="btn ghost" data-act="waive" data-di="' + di + '" data-sid="identity">Waive: insufficient data</button></div></div>');
+    }
+    else if(c === 'unsrc'){
+      var fp = footprintOf(e);
+      out.push('<div class="rb"><h4>' + esc(REASONS.unsrc.l) + '</h4><p>The web record has no source attached, so it reads as inferred. Source it, remove it, or accept it by marking this person checked.</p>' +
+        '<div class="row"><button type="button" class="btn" data-act="openedit" data-di="' + di + '" data-sec="about">Add a source</button>' +
+        '<button type="button" class="btn ghost" data-act="rmfootprint" data-di="' + di + '">Remove the unsourced text</button></div></div>');
+    }
+    else if(c === 'family'){
+      out.push('<div class="rb"><h4>' + esc(REASONS.family.l) + '</h4><ul class="issues">' + (x.detail.family || []).map(function(s){ return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' +
+        '<div class="row"><a class="btn" href="#/family" data-act="openfam" data-di="' + di + '">Open in Family</a>' +
+        '<button type="button" class="btn ghost" data-act="openedit" data-di="' + di + '" data-sec="connections">Edit links</button></div></div>');
+    }
+    else if(c === 'missing'){
+      out.push('<div class="rb"><h4>' + esc(REASONS.missing.l) + '</h4><p>You flagged this profile as missing information.</p>' +
+        '<div class="row"><button type="button" class="btn ghost" data-act="clearflag" data-di="' + di + '">Clear flag</button></div></div>');
+    }
+    else if(c === 'name'){
+      out.push('<div class="rb"><h4>' + esc(REASONS.name.l) + '</h4><p>Names show as First Last. Handles never stand in for a name.</p>' +
+        '<div class="row two"><input data-nm="first_name" data-di="' + di + '" value="' + esc(gv(e, 'first_name')) + '" placeholder="First name" autocomplete="off">' +
+        '<input data-nm="last_name" data-di="' + di + '" value="' + esc(gv(e, 'last_name')) + '" placeholder="Last name" autocomplete="off"></div></div>');
+    }
+    else if(c === 'biz'){
+      out.push('<div class="rb"><h4>' + esc(REASONS.biz.l) + '</h4><p>The name reads like a business or an address rather than a person.</p>' +
+        '<div class="row"><button type="button" class="btn danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 15) + 'Remove from the circle</button></div></div>');
+    }
+    else if(c === 'fresh'){
+      out.push('<div class="rb"><h4>' + esc(REASONS.fresh.l) + '</h4><p>Showed up in the graph in the last week and has no tier or relationship yet. Classify below.</p></div>');
+    }
+    else if(c === 'inner'){
+      var gaps = x.detail.inner || [];
+      out.push('<div class="rb"><h4>' + esc(REASONS.inner.l) + (gaps.length ? ' <small>' + gaps.length + ' gap' + (gaps.length === 1 ? '' : 's') + '</small>' : '') + '</h4>' +
+        '<p>' + (gaps.length ? 'Inner circle gets full detail. Tap a gap to fill it, or waive it as insufficient data.' : 'Detail is complete for this tier.') + '</p>' +
+        (gaps.length ? '<div class="sigs">' + gaps.map(function(g){ return '<button type="button" class="sig btnsig" data-act="openedit" data-di="' + di + '" data-sec="' + ({ onfile:'about', relationship:'relationship', background:'background', connections:'connections', timeline:'timeline' }[g.sid]) + '">' + esc(g.l) + '</button>'; }).join('') + '</div>' : '') + '</div>');
+    }
+    else if(c === 'spot'){
+      out.push('<div class="rb"><h4>' + esc(REASONS.spot.l) + '</h4><p>Picked at random this week to keep the whole directory statistically re-verified. Is everything here still right?</p>' +
+        '<div class="row"><button type="button" class="btn primary" data-act="spotok" data-di="' + di + '">' + ic('check', 15) + 'Still correct</button>' +
+        '<button type="button" class="btn ghost" data-act="reopen" data-di="' + di + '">Reopen for a full check</button></div></div>');
+    }
+    else if(c === 'sweep'){
+      out.push('<div class="rb quiet"><h4>' + esc(REASONS.sweep.l) + '</h4><p>No flags. This is the baseline once-over: identity, no foreign content, no duplicate, one sourced anchor fact. Then it is done.</p></div>');
+    }
   });
-  $('#setsave').addEventListener('click', saveSettings);
-  $('#settest').addEventListener('click', testGemini);
-  $('#setclear').addEventListener('click', clearGeminiKey);
-  loadSettings();
+  return out.join('');
 }
-function settingsCall(kind, patch, cb){
-  var msg = $('#setmsg');
-  if(!WEBAPP_URL){ if(msg) msg.textContent = 'Web app URL is not set up.'; return; }
-  fetch(WEBAPP_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-    body:JSON.stringify({ password:getPw(), kind:kind, id:'settings', patch:patch }) })
-    .then(function(r){ return r.json(); }).then(cb)
-    .catch(function(){ var m = $('#setmsg'); if(m) m.textContent = 'Network error.'; });
-}
-function loadSettings(){
-  settingsCall('getsettings', { x:1 }, function(res){
-    var m = $('#setmsg'), p = $('#setprompt'), k = $('#setkey'); if(!p) return;
-    if(res && res.ok){
-      p.value = res.prompt || '';
-      k.placeholder = res.hasKey ? 'Key saved. Enter a new one to replace it.' : 'AIza…';
-    } else if(m) m.textContent = 'Could not load: ' + ((res && res.error) || 'unknown');
-  });
-}
-function saveSettings(){
-  var msg = $('#setmsg'), patch = { prompt:$('#setprompt').value }, kv = $('#setkey').value;
-  if(kv) patch.gemini_key = kv;
-  msg.textContent = 'Saving…';
-  settingsCall('settings', patch, function(res){ msg.textContent = (res && res.ok) ? 'Saved.' : 'Save failed: ' + ((res && res.error) || 'unknown'); });
-}
-function testGemini(){
-  var msg = $('#setmsg'); msg.textContent = 'Testing…';
-  settingsCall('testgemini', { x:1 }, function(res){ msg.textContent = (res && res.ok) ? 'Gemini says: ' + res.reply : 'Test failed: ' + ((res && res.error) || 'unknown'); });
-}
-function clearGeminiKey(){
-  var msg = $('#setmsg'); msg.textContent = 'Clearing…';
-  settingsCall('settings', { clear_key:true }, function(res){
-    msg.textContent = (res && res.ok) ? 'Key cleared.' : 'Clear failed: ' + ((res && res.error) || 'unknown');
-    if(res && res.ok) loadSettings();
-  });
+function reviewCard(x, tab, i, n){
+  var di = x.di, e = D.directory[di];
+  var spot = x.kind === 'spot';
+  return '<article class="rc" data-di="' + di + '">' +
+    '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
+    '<p class="meta">' + esc([tierName(e), cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ') || (hasHandle(e) ? '@' + e.name : 'Unclassified')) + '</p></div>' +
+    '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>' +
+    '<div class="rbs">' + reasonBlocks(x, di, tab) + '</div>' +
+    '<section class="rsec"><h5>What is on file</h5>' + factsHTML(e) + '</section>' +
+    '<section class="rsec quick"><h5>Classify</h5>' +
+    '<div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
+    '<div class="qk"><label>Relationship</label>' + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '"') + '</div>' +
+    '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', 'Cooling'], ['0', 'Steady'], ['+', 'Warming']], momVal(e), ' data-di="' + di + '"') + '</div></section>' +
+    '<footer class="rfoot"><button type="button" class="btn ghost" data-act="qskip">' + ic('skip', 15) + 'Skip</button>' +
+    '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a><span class="sp"></span>' +
+    (spot ? '' : '<button type="button" class="btn primary lg" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 16) + 'Checked</button>') + '</footer></article>';
 }
 
-/* ---------- map: layout ---------- */
-/* People who gained a connection in the last 7 days: the build stamps
-   each fresh associate edge with new:1 on the neighbor objects (first-
-   seen registry in build_dossier_data.py). Collected here as directory
-   indices so both maps can give those nodes a subtle glow treatment. */
-var NEWGAIN = {};
-function computeNewGain(){
-  NEWGAIN = {};
-  D.directory.forEach(function(r, di){
-    (r.neighbors || []).forEach(function(nb){
-      if(!nb.new) return;
-      NEWGAIN[di] = 1;
-      var tj = BYN[(nb.u || '').toLowerCase()];
-      if(tj != null) NEWGAIN[tj] = 1;
-    });
+/* ============================================================
+   People — one list, one search, a few honest filters. No stat tiles, no pips, no fill bars.
+   ============================================================ */
+function peopleFiltered(){
+  var f = S.ppl, pool = people();
+  var dis = f.q.trim() ? searchPeople(f.q, 9999, pool) : pool.slice();
+  var st = getState();
+  dis = dis.filter(function(di){
+    var e = D.directory[di];
+    if(f.status !== 'all'){ var s = statusOf(di); if(s !== f.status) return false; }
+    if(f.tier !== 'all'){ var t = tierOf(e); if(f.tier === 'none' ? !!t : t !== f.tier) return false; }
+    if(f.rel && e.relation !== f.rel) return false;
+    if(f.group && personGroups(e).indexOf(f.group) < 0) return false;
+    return true;
   });
+  if(!f.q.trim() || f.sort !== 'closest'){
+    if(f.sort === 'name') dis.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+    else if(f.sort === 'recent') dis.sort(function(a, b){ return (Date.parse(raw(D.directory[b], 'updated_at')) || 0) - (Date.parse(raw(D.directory[a], 'updated_at')) || 0); });
+    else if(f.sort === 'tier') dis.sort(function(a, b){
+      var ta = TIER_RANK[tierOf(D.directory[a])], tb = TIER_RANK[tierOf(D.directory[b])];
+      ta = ta == null ? 3 : ta; tb = tb == null ? 3 : tb;
+      return ta - tb || (D.directory[b].strength || 0) - (D.directory[a].strength || 0);
+    });
+    else dis.sort(function(a, b){ return (D.directory[b].strength || 0) - (D.directory[a].strength || 0); });
+  }
+  return dis;
 }
-function buildNodes(){
+function prow(di, i){
+  var e = D.directory[di], s = statusOf(di), x = getState().by[di];
+  var why = s === 'needs' && x && x.reasons.length ? '<span class="why">' + esc(REASONS[x.reasons[0]].s) + '</span>' : '';
+  return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
+    '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></span>' + why +
+    '<span class="stm st-' + s + '" title="' + (s === 'checked' ? 'Checked' : s === 'needs' ? 'Needs you' : 'Waiting') + '">' + (s === 'checked' ? ic('check', 14) : '<i></i>') + '</span></button>';
+}
+function viewPeople(v){
+  var f = S.ppl, groups = Object.keys(allGroups()).sort();
+  function chips(key, opts, cur){
+    return '<div class="chips" role="group">' + opts.map(function(o){
+      return '<button type="button" class="fc' + (cur === o[0] ? ' on' : '') + '" data-act="pf" data-k="' + key + '" data-v="' + o[0] + '">' + o[1] + '</button>';
+    }).join('') + '</div>';
+  }
+  v.innerHTML = '<div class="page people"><div class="pagehead"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div></div>' +
+    '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
+    chips('status', [['all', 'Everyone'], ['needs', 'Needs you'], ['waiting', 'Waiting'], ['checked', 'Checked']], f.status) +
+    chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
+    '<div class="tool-r"><select id="psort" aria-label="Sort">' + [['closest', 'Closest first'], ['name', 'A to Z'], ['tier', 'By tier'], ['recent', 'Recently edited']].map(function(o){ return '<option value="' + o[0] + '"' + (f.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
+    '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button></div></div>' +
+    '<div class="plist" id="plist"></div></div>';
+  paintPeople();
+}
+function paintPeople(){
+  var box = $('#plist'); if(!box) return;
+  var dis = peopleFiltered(), f = S.ppl;
+  S.ppl.cur = dis;
+  var shown = dis.slice(0, f.limit);
+  box.innerHTML = shown.map(function(di, i){ return prow(di, i); }).join('') +
+    (dis.length > shown.length ? '<button type="button" class="btn ghost more" data-act="pmore">Show ' + Math.min(100, dis.length - shown.length) + ' more (' + (dis.length - shown.length) + ' left)</button>' : '') +
+    (!dis.length ? emptyState('No one matches.', 'Loosen a filter or clear the search.') : '');
+  var c = $('#pcount'); if(c) c.textContent = dis.length === getState().total ? dis.length + ' people' : dis.length + ' of ' + getState().total + ' people';
+}
+function openMoreFilters(){
+  var f = S.ppl, groups = Object.keys(allGroups()).sort();
+  openSheet('More filters',
+    '<label class="lab">Instagram relationship</label>' + '<div class="chips">' + [['', 'Any'], ['mutual', 'Mutual'], ['following', 'Following'], ['follower', 'Follower']].map(function(o){
+      return '<button type="button" class="fc' + (f.rel === o[0] ? ' on' : '') + '" data-act="pf2" data-k="rel" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</div>' +
+    '<label class="lab">Group</label><div class="chips">' + [''].concat(groups).map(function(g){
+      return '<button type="button" class="fc' + (f.group === g ? ' on' : '') + '" data-act="pf2" data-k="group" data-v="' + esc(g) + '">' + (g ? esc(g) : 'Any') + '</button>'; }).join('') + '</div>' +
+    '<div class="row end"><button type="button" class="btn ghost" data-act="pclear">Clear all filters</button><button type="button" class="btn primary" data-act="sheetx">Done</button></div>', { focus:false });
+}
+
+/* ============================================================
+   Profile — a page that opens up. Sections show a digest first; empty sections fold into one "Add" row.
+   Edit is per section, in place; no global edit mode.
+   ============================================================ */
+function isInner(e){ var t = tierOf(e); return t === 'vetted' || t === 'associate'; }
+var SECS = [
+  { id:'identity',    t:'Contact',        col:'b', ord:1, w:['identity'] },
+  { id:'relationship',t:'Relationship',   col:'b', ord:2, w:['relationship'] },
+  { id:'about',       t:'About',          col:'a', ord:3, w:['onfile'] },
+  { id:'background',  t:'Background',     col:'b', ord:4, w:['background', 'education'] },
+  { id:'connections', t:'Connections',    col:'a', ord:5, w:['connections'] },
+  { id:'timeline',    t:'Timeline',       col:'a', ord:6, w:['timeline'] },
+  { id:'files',       t:'Files',          col:'b', ord:7, w:['files'] },
+  { id:'persona',     t:'Persona',        col:'b', ord:8, w:['ratings'] }
+];
+function secDef(id){ return SECS.filter(function(s){ return s.id === id; })[0]; }
+function secWaivedUI(e, id){ var d = secDef(id); return d.w.every(function(w){ return secWaived(e, w); }); }
+function secHasContent(e, id){
+  switch(id){
+    case 'identity': return true;
+    case 'relationship': return true;
+    case 'about': return !!(gv(e, 'synopsis') || footprintOf(e).blocks.length);
+    case 'background': return !!(gv(e, 'specialty') || ORG_CATS.some(function(c){ return tagList(gv(e, c.k)).length; }) || degreesOf(e).length || gv(e, 'highlights') || gv(e, 'achievements') || (e.languages || []).length);
+    case 'connections': return !!(knownAssociates(e).length || famLinks(e).length);
+    case 'timeline': return !!((e.events || []).length || connPhases(e).length);
+    case 'files': return !!(e.files || []).length;
+    case 'persona': return PERSONA.some(function(p){ return gv(e, p[0]) !== ''; });
+  }
+  return false;
+}
+function secShown(e, id){
+  if(S.prof.edit[id]) return true;
+  if(secWaivedUI(e, id)) return id !== 'persona';
+  if(secHasContent(e, id)) return true;
+  if(id === 'persona') return false;
+  if(id === 'identity' || id === 'relationship' || id === 'about') return true;
+  return isInner(e);   /* depth follows closeness: the long tail shows only what is there */
+}
+
+function viewProfile(v){
+  var di = diFromId(S.route.seg[0]);
+  if(di == null || !D.directory[di] || !liveEntry(D.directory[di])){
+    v.innerHTML = '<div class="page">' + emptyState('That profile is not here.', 'It may have been merged or removed.') + '<p class="center"><a class="btn" href="#/people">Back to People</a></p></div>'; return;
+  }
+  if(S.prof.di !== di) S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
+  var e = D.directory[di];
+  var pager = '';
+  if(S.ctx && S.ctx.keys){
+    var i = S.ctx.keys.indexOf(pkey(e));
+    if(i >= 0){
+      pager = '<div class="pager"><button type="button" class="ib" data-act="ctxstep" data-d="-1" aria-label="Previous"' + (i === 0 ? ' disabled' : '') + '>' + ic('chevl', 18) + '</button>' +
+        '<span>' + esc(S.ctx.label) + ' <b>' + (i + 1) + ' / ' + S.ctx.keys.length + '</b></span>' +
+        '<button type="button" class="ib" data-act="ctxstep" data-d="1" aria-label="Next"' + (i === S.ctx.keys.length - 1 ? ' disabled' : '') + '>' + ic('chevr', 18) + '</button></div>';
+    }
+  }
+  v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="ptop">' + pager + '<span class="sp"></span>' +
+    '<div class="menu"><button type="button" class="ib" data-act="menu" aria-haspopup="true" aria-label="More actions">' + ic('dots', 20) + '</button>' +
+    '<div class="menu-pop" hidden>' +
+    '<button type="button" data-act="export" data-di="' + di + '">' + ic('download', 16) + 'Export dossier</button>' +
+    '<button type="button" data-act="viewdoc" data-di="' + di + '">' + ic('book', 16) + 'View dossier</button>' +
+    '<button type="button" data-act="newdoc" data-di="' + di + '">' + ic('file', 16) + 'New Drive doc</button>' +
+    '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Combine with another profile</button>' +
+    '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
+    '<section id="p-hero" class="hero"></section><section id="p-banner"></section>' +
+    '<div class="pgrid"><div class="pcol" id="pc-a"></div><div class="pcol" id="pc-b"></div></div><div id="p-add"></div></div>';
+  paintProfile(di);
+}
+function paintProfile(di){
+  var e = D.directory[di];
+  $('#p-hero').innerHTML = heroHTML(di);
+  $('#p-banner').innerHTML = bannerHTML(di);
+  ['a', 'b'].forEach(function(col){
+    $('#pc-' + col).innerHTML = SECS.filter(function(s){ return s.col === col && secShown(e, s.id); }).map(function(s){ return secHTML(di, s.id); }).join('');
+  });
+  SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
+  var hidden = SECS.filter(function(s){ return !secShown(e, s.id); });
+  var legacy = ['relationship_type', 'sources', 'mentions'].filter(function(k){ return String(gv(e, k)).trim(); });
+  $('#p-add').innerHTML = (hidden.length ? '<div class="addrow"><span>Add to this profile</span>' + hidden.map(function(s){
+      return '<button type="button" class="btn ghost sm" data-act="secedit" data-sec="' + s.id + '">' + ic('plus', 13) + esc(s.id === 'persona' ? 'Rate' : s.t) + '</button>'; }).join('') + '</div>' : '') +
+    (legacy.length ? '<details class="legacy"><summary>Legacy notes (read only)</summary>' + legacy.map(function(k){ return '<div><b>' + esc({ relationship_type:'Type', sources:'Sources', mentions:'Mentions' }[k]) + '</b><p>' + esc(gv(e, k)) + '</p></div>'; }).join('') + '</details>' : '');
+}
+function repaintSec(id){
+  var di = S.prof.di, e = D.directory[di]; if(di == null) return;
+  var el = $('#sec-' + id);
+  if(!el){ paintProfile(di); return; }
+  var wrap = document.createElement('div'); wrap.innerHTML = secHTML(di, id);
+  var nu = wrap.firstChild; nu.style.order = secDef(id).ord;
+  el.parentNode.insertBefore(nu, el); el.remove();
+}
+function repaintTop(){
+  var di = S.prof.di; if(di == null || !$('#p-hero')) return;
+  $('#p-hero').innerHTML = heroHTML(di);
+  $('#p-banner').innerHTML = bannerHTML(di);
+}
+
+function heroHTML(di){
+  var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context')), knownSinceYear(e) ? 'Known since ' + knownSinceYear(e) : '', e.city].filter(Boolean).join(' · ');
+  var ds = sortDegrees(degreesOf(e)).slice(0, 3).map(function(d){
+    var bits = [d.degree, d.year ? yy(d.year) : ''].filter(Boolean).join(' ');
+    return '<span class="dbadge">' + ic('cap', 12) + '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits ? '<i>' + esc(bits) + '</i>' : '') + '</span>';
+  }).join('');
+  var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
+  return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Edit name">' + esc(dispName(e)) + '</h1>' +
+    '<p class="hsub">' + esc(sub || (hasHandle(e) ? '@' + e.name : 'Not yet classified')) + '</p>' +
+    ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') + '</div>' +
+    '<div class="hctl"><div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
+    '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '"') + '</div></div>';
+}
+function bannerHTML(di){
+  var e = D.directory[di], x = getState().by[di];
+  if(!x) return '';
+  if(x.checked){
+    var spot = x.kind === 'spot';
+    return '<div class="banner ok"><span class="bi">' + ic('check', 18) + '</span><div><b>Checked</b><small>' + (spot ? 'Picked for this week’s spot check.' : 'Done at its tier. Empty fields are fine.') + '</small></div>' +
+      '<span class="sp"></span>' + (spot ? '<button type="button" class="btn" data-act="spotok" data-di="' + di + '">Still correct</button>' : '') +
+      '<button type="button" class="btn ghost" data-act="reopen" data-di="' + di + '">Reopen</button></div>';
+  }
+  var real = x.reasons.filter(function(c){ return c !== 'sweep'; });
+  var nextBtn = '<button type="button" class="btn primary" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 15) + 'Checked, next</button>';
+  if(!real.length){
+    return '<div class="banner"><span class="bi q">' + ic('shield', 18) + '</span><div><b>Waiting for the floor sweep</b><small>No flags. Checked once it clears identity, duplicates and one sourced anchor fact.</small></div><span class="sp"></span>' +
+      '<button type="button" class="btn" data-act="check" data-di="' + di + '">Checked</button>' + nextBtn + '</div>';
+  }
+  var open = S.prof.bannerOpen !== false;
+  return '<div class="banner needs"><div class="bh"><span class="bi">' + ic('shield', 18) + '</span><div><b>Needs you</b><small>' + real.map(function(c){ return esc(REASONS[c].l); }).join(' · ') + '</small></div><span class="sp"></span>' +
+    '<button type="button" class="btn ghost sm" data-act="bantog">' + (open ? 'Hide' : 'Show') + ' details</button>' +
+    '<button type="button" class="btn" data-act="check" data-di="' + di + '">Checked</button>' + nextBtn + '</div>' +
+    (open ? '<div class="rbs">' + reasonBlocks(x, di, '') + '</div>' : '') + '</div>';
+}
+
+/* ---------- section cards ---------- */
+function secHTML(di, id){
+  var e = D.directory[di], d = secDef(id), editing = !!S.prof.edit[id], waived = secWaivedUI(e, id);
+  var acts = '';
+  if(editing){
+    acts = (id !== 'persona' ? '<label class="wv" title="Insufficient data: this section stops counting against the profile"><input type="checkbox" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '"' + (waived ? ' checked' : '') + '><span>Insufficient data</span></label>' : '') +
+      '<button type="button" class="btn sm primary" data-act="secdone" data-sec="' + id + '">Done</button>';
+  } else acts = '<button type="button" class="ib sm" data-act="secedit" data-sec="' + id + '" aria-label="Edit ' + d.t + '" title="Edit">' + ic('edit', 15) + '</button>';
+  var body;
+  if(waived && !editing){
+    body = '<p class="dim waivedmsg">Waived: insufficient data. <button type="button" class="lnk" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '" data-off="1">Restore</button></p>';
+  } else body = editing ? secEdit(di, id) : secView(di, id);
+  return '<section class="card' + (editing ? ' editing' : '') + (waived ? ' waived' : '') + '" id="sec-' + id + '" data-sec="' + id + '"><header><h3>' + d.t + '</h3>' + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header><div class="cbody">' + body + '</div></section>';
+}
+function secSummary(e, id){
+  var n = 0;
+  if(id === 'connections') n = knownAssociates(e).length + famLinks(e).length;
+  else if(id === 'timeline') n = (e.events || []).length;
+  else if(id === 'files') n = (e.files || []).length;
+  return n ? '<em class="cnt">' + n + '</em>' : '';
+}
+function emptyPrompt(di, id, text){
+  return '<button type="button" class="emptyp" data-act="secedit" data-sec="' + id + '">' + ic('plus', 14) + esc(text) + '</button>';
+}
+function chipsHTML(list, cls, icn){
+  return '<div class="chips ro">' + list.map(function(s){ return '<span class="vchip ' + (cls || '') + '">' + (icn ? ic(icn, 12) : '') + esc(s) + '</span>'; }).join('') + '</div>';
+}
+function sourceChips(urls){
+  return urls.map(function(u){ return /^https?:/i.test(u) ? '<a class="src" href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(hostOf(u)) + ic('ext', 11) + '</a>' : '<span class="src plain">' + esc(u) + '</span>'; }).join('');
+}
+function secView(di, id){
+  var e = D.directory[di];
+  if(id === 'identity'){
+    var rows = [];
+    function r(icn, lab, val, note){ if(val) rows.push('<div class="irow"><span class="il">' + ic(icn, 15) + lab + '</span><div class="iv">' + val + (note ? ' <small class="derived">' + note + '</small>' : '') + '</div></div>'); }
+    if(hasHandle(e)) r('ig', 'Instagram', '<a class="iglink ' + (e.relation === 'mutual' ? 'mutual' : 'oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a>', e.relation ? RELN[e.relation] : '');
+    if(e.fb_url) r('fb', 'Facebook', '<a class="iglink" href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">' + (e.fb_handle ? '@' + esc(e.fb_handle) : 'Profile') + '</a>');
+    if(personIsAka(e) && gv(e, 'also_known_as')) r('user', 'Also known as', '<b>' + esc(gv(e, 'also_known_as')) + '</b>');
+    var ph = String(gv(e, 'phone')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
+    if(ph.length) r('phone', 'Phone', ph.map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join(' '));
+    var em = String(gv(e, 'email')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
+    if(em.length) r('mail', 'Email', em.map(function(x){ return '<a href="mailto:' + esc(x) + '">' + esc(x) + '</a>'; }).join(' '), 'on file');
+    r('pin', 'Lives in', esc(e.city || ''), 'from Facebook');
+    r('pin', 'From', esc(e.hometown || ''), 'from Facebook');
+    if((e.languages || []).length) r('book', 'Languages', e.languages.map(esc).join(', '), 'from subject file');
+    return rows.length ? '<div class="irows">' + rows.join('') + '</div>' : '<p class="dim">No contact details yet.</p>' + emptyPrompt(di, id, 'Add a phone number');
+  }
+  if(id === 'relationship'){
+    var tiles = [['Relationship', cap(gv(e, 'relationship'))], ['Context', cap(gv(e, 'context'))], ['Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1]],
+      ['Known since', knownSinceYear(e) ? knownSinceYear(e) + ' (' + Math.max(0, new Date().getFullYear() - knownSinceYear(e)) + ' yrs)' : '']];
+    var gs = personGroups(e);
+    return '<div class="tiles">' + tiles.map(function(t){ return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b></div>'; }).join('') + '</div>' +
+      (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '');
+  }
+  if(id === 'about'){
+    var syn = gv(e, 'synopsis'), fp = footprintOf(e), out = '';
+    if(syn){
+      out += '<div class="narr">' + String(syn).split(/\n+/).map(function(line){
+        var m = line.match(/^([A-Z][A-Za-z &\/'-]{1,28}):\s+(.*)$/);
+        return m ? '<p><span class="lab">' + esc(m[1]) + '</span>' + esc(m[2]) + '</p>' : '<p>' + esc(line) + '</p>';
+      }).join('') + '</div>';
+    }
+    if(fp.blocks.length){
+      out += '<div class="sub-h">Web record <span class="conf ' + (fp.sourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (fp.sourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
+        fp.blocks.map(function(b){
+          return '<div class="fpb ' + (b.urls.length ? 'ok' : 'no') + '"><p>' + esc(b.text) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : '<div class="srcs"><span class="src none">No source attached</span></div>') + '</div>';
+        }).join('');
+    }
+    return out || emptyPrompt(di, id, 'Write a synopsis');
+  }
+  if(id === 'background'){
+    var out2 = '', sk = tagList(gv(e, 'specialty'));
+    if(sk.length) out2 += '<div class="sub-h first">Skills</div>' + chipsHTML(sk, 'sk');
+    var ds = sortDegrees(degreesOf(e));
+    if(ds.length) out2 += '<div class="sub-h' + (out2 ? '' : ' first') + '">Education</div><div class="edulist">' + ds.map(function(d){
+      var line = [d.degree, d.major].filter(Boolean).join(' · ');
+      return '<div class="edu"><span>' + ic('cap', 15) + '</span><div><b>' + esc(d.school || 'School not set') + '</b>' + (line ? '<small>' + esc(line) + '</small>' : '') + (d.note ? '<small class="dim">' + esc(d.note) + '</small>' : '') + '</div>' + (d.year ? '<em>' + esc(d.year) + '</em>' : '') + '</div>';
+    }).join('') + '</div>';
+    var ach = honorsOf(e);
+    if(ach.length) out2 += '<div class="sub-h">Honors</div>' + chipsHTML(ach, 'hon', 'award');
+    var hl = parsePipe(gv(e, 'highlights'));
+    if(hl.length) out2 += '<div class="sub-h">Highlights</div>' + chipsHTML(hl, 'hl');
+    var orgs = '';
+    ORG_CATS.forEach(function(c){ if(c.k === 'universities') return; tagList(gv(e, c.k)).forEach(function(o){ orgs += '<a class="vchip link" href="#/groups/' + c.k + '/' + encodeURIComponent(o) + '">' + ic(c.ic, 12) + esc(o) + '</a>'; }); });
+    if(orgs) out2 += '<div class="sub-h">Organizations</div><div class="chips ro">' + orgs + '</div>';
+    return out2 || emptyPrompt(di, id, 'Add skills, work, school');
+  }
+  if(id === 'connections'){
+    var ka = knownAssociates(e), links = famLinks(e), out3 = '';
+    var tree = familyMiniTree(di);
+    if(tree) out3 += '<div class="sub-h first">Family</div>' + tree;
+    else if(links.length) out3 += '<div class="sub-h first">Family</div>' + famListHTML(di, false);
+    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + ', always two-way</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 18).map(function(nb){ return nbrChip(nb, false); }).join('') +
+      (ka.length > 18 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">+' + (ka.length - 18) + ' more</button>' : '') + '</div>';
+    out3 += '<div class="row"><a class="btn ghost sm" href="#/family" data-act="openfam" data-di="' + di + '">' + ic('tree', 14) + 'Open in Family</a><a class="btn ghost sm" href="#/network" data-act="shownet" data-di="' + di + '">' + ic('network', 14) + 'Show on Network</a></div>';
+    return (ka.length || links.length) ? out3 : emptyPrompt(di, id, 'Add family or known associates');
+  }
+  if(id === 'timeline'){
+    var evs = sortedEvents(e), ps = connPhases(e).slice().sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); }), out4 = '';
+    if(ps.length) out4 += '<div class="sub-h first">Phases</div><div class="phases">' + ps.map(function(p){
+      return '<div class="ph"><b>' + esc(p.l || 'Untitled phase') + '</b><small>' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</small>' + (p.n ? '<p>' + esc(p.n) + '</p>' : '') + '</div>';
+    }).join('') + '</div>';
+    if(evs.length) out4 += '<div class="sub-h' + (out4 ? '' : ' first') + '">Events</div><div class="tl">' + evs.slice(0, S.prof.open.ev ? 999 : 6).map(function(o){
+      var ev = o.ev;
+      return '<div class="ev"><i></i><time>' + esc(evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
+    }).join('') + '</div>' + (evs.length > 6 && !S.prof.open.ev ? '<button type="button" class="btn ghost sm" data-act="opentog" data-k="ev">Show all ' + evs.length + ' events</button>' : '');
+    return out4 || emptyPrompt(di, id, 'Add an event');
+  }
+  if(id === 'files'){
+    var fs = e.files || [];
+    return fs.length ? fs.map(function(f){
+      var isDoc = f.kind === 'gdoc';
+      return '<div class="file"><span>' + ic(isDoc ? 'file' : 'link', 17) + '</span><div><b>' + esc(f.name || 'Untitled') + '</b><small>' + (isDoc ? 'Google Doc' : 'Link') + (f.note ? ' · ' + esc(f.note) : '') + '</small></div>' +
+        (f.url ? '<a class="btn ghost sm" href="' + esc(f.url) + '" target="_blank" rel="noopener">Open' + ic('ext', 12) + '</a>' : '') + '</div>';
+    }).join('') : emptyPrompt(di, id, 'Attach a link or create a doc');
+  }
+  if(id === 'persona'){
+    return '<div class="persona">' + PERSONA.map(function(p){
+      var n = parseInt(gv(e, p[0]), 10) || 0;
+      return '<div class="pt"><span>' + p[1] + '</span><div class="pb"><i style="width:' + (n * 20) + '%"></i></div><b>' + (n ? n + '/5' : 'Not rated') + '</b></div>';
+    }).join('') + '</div>';
+  }
+  return '';
+}
+function nbrChip(nb, removable){
+  var di = BYN[(nb.u || '').toLowerCase()];
+  var label = di != null ? dispName(D.directory[di]) : nb.d || nb.u;
+  var c = di != null ? tierCol(D.directory[di]) : '#4b5468';
+  return '<span class="nchip' + (nb['new'] ? ' new' : '') + '" style="--tc:' + c + '">' +
+    (di != null ? '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><i></i>' + esc(label) + '</a>' : '<span><i></i>' + esc(label) + '</span>') +
+    (removable ? '<button type="button" class="nx" data-act="assocrm" data-u="' + esc(nb.u) + '" aria-label="Remove">' + ic('x', 12) + '</button>' : '') + '</span>';
+}
+function famListHTML(di, editable){
+  var e = D.directory[di], links = famLinks(e);
+  return '<div class="famlist">' + links.map(function(l, i){
+    var tdi = BYN[String(l[1] || '').toLowerCase()], label = tdi != null ? dispName(D.directory[tdi]) : l[1];
+    return '<div class="fl"><span class="rel">' + esc(l[0]) + '</span>' + (tdi != null ? '<a href="#/p/' + encodeURIComponent(personId(D.directory[tdi])) + '" data-act="openp" data-di="' + tdi + '">' + esc(label) + '</a>' : '<span>' + esc(label) + '</span>') +
+      (editable ? '<button type="button" class="nx" data-act="famrm" data-i="' + i + '" aria-label="Remove link">' + ic('x', 12) + '</button>' : '') + '</div>';
+  }).join('') + '</div>';
+}
+function familyMiniTree(di){
+  var e = D.directory[di], disp = famDisplay(), f = disp[di];
+  if(!f) return '';
+  function lab(arr){ return arr.map(function(x){ var t = D.directory[x.di]; return { di:x.di, label:dispName(t) }; }); }
+  var P = lab(f.parents), SP = lab(f.spouses), C = lab(f.children), SB = lab(f.siblings);
+  if(!P.length && !SP.length && !C.length && !SB.length) return '';
+  function node(o, cls){
+    return '<a class="fnode ' + cls + '" href="#/p/' + encodeURIComponent(personId(D.directory[o.di])) + '" data-act="openp" data-di="' + o.di + '"><span>' + esc(famInitials(o.label)) + '</span><small>' + esc(o.label) + '</small></a>';
+  }
+  var self = '<div class="fnode self"><span>' + esc(famInitials(dispName(e))) + '</span><small>' + esc(dispName(e)) + '</small></div>';
+  return '<div class="ftree">' +
+    (P.length ? '<div class="fr"><label>Parents</label><div>' + P.map(function(o){ return node(o, 'par'); }).join('') + '</div></div>' : '') +
+    '<div class="fr"><label>' + (SP.length ? 'Self and spouse' : 'Self') + '</label><div>' + self + SP.map(function(o){ return node(o, 'sp'); }).join('') + '</div></div>' +
+    (SB.length ? '<div class="fr"><label>Siblings</label><div>' + SB.map(function(o){ return node(o, 'sib'); }).join('') + '</div></div>' : '') +
+    (C.length ? '<div class="fr"><label>Children</label><div>' + C.map(function(o){ return node(o, 'chi'); }).join('') + '</div></div>' : '') + '</div>';
+}
+
+/* ---------- section editors ---------- */
+function tagEditor(di, k, sep, ph){
+  var e = D.directory[di], cur = splitTags(gv(e, k), sep);
+  return '<div class="tags" data-k="' + k + '" data-sep="' + esc(sep) + '">' + cur.map(function(x){
+    return '<span class="tchip on">' + esc(x) + '<button type="button" data-act="tagrm" data-k="' + k + '" data-sep="' + esc(sep) + '" data-v="' + esc(x) + '" aria-label="Remove">' + ic('x', 11) + '</button></span>'; }).join('') +
+    '<input class="tadd" data-k="' + k + '" data-sep="' + esc(sep) + '" placeholder="' + esc(ph) + '" autocomplete="off"></div>';
+}
+function pickEditor(di, k, options, ph){
+  var e = D.directory[di], cur = tagList(gv(e, k)), all = options.concat(cur.filter(function(x){ return options.indexOf(x) < 0; }));
+  return '<div class="tags">' + all.map(function(o){
+    return '<button type="button" class="tchip tog' + (cur.indexOf(o) >= 0 ? ' on' : '') + '" data-act="tagtog" data-k="' + k + '" data-sep=", " data-v="' + esc(o) + '">' + esc(o) + '</button>'; }).join('') +
+    '<input class="tadd" data-k="' + k + '" data-sep=", " placeholder="' + esc(ph || 'Add another') + '" autocomplete="off"></div>';
+}
+function skillFlow(di){
+  var e = D.directory[di], cur = tagList(gv(e, 'specialty')), open = S.prof.skOpen;
+  var h = SKILL_TAXONOMY.map(function(g){
+    var items = [g.cat].concat(g.skills.filter(function(s){ return s !== g.cat; }));
+    var n = items.filter(function(s){ return cur.indexOf(s) >= 0; }).length, isOpen = open === g.cat;
+    return '<div class="skcat' + (isOpen ? ' open' : '') + '"><button type="button" class="skhead" data-act="skcat" data-cat="' + esc(g.cat) + '" aria-expanded="' + isOpen + '"><span>' + esc(g.cat) + '</span>' + (n ? '<em>' + n + '</em>' : '') + ic('chev', 13) + '</button>' +
+      (isOpen ? '<div class="skpanel">' + items.map(function(s, i){ return '<button type="button" class="tchip tog' + (cur.indexOf(s) >= 0 ? ' on' : '') + '" data-act="tagtog" data-k="specialty" data-sep=", " data-v="' + esc(s) + '">' + esc(s) + (i === 0 ? ' <small>general</small>' : '') + '</button>'; }).join('') + '</div>' : '') + '</div>';
+  }).join('');
+  var others = cur.filter(function(s){ return !SKILL_PARENT[s]; });
+  if(others.length) h += '<div class="skcat open"><div class="skhead static"><span>Other</span><em>' + others.length + '</em></div><div class="skpanel">' + others.map(function(s){ return '<button type="button" class="tchip tog on" data-act="tagtog" data-k="specialty" data-sep=", " data-v="' + esc(s) + '">' + esc(s) + '</button>'; }).join('') + '</div></div>';
+  return '<div class="skflow">' + h + '</div>';
+}
+function lab(t, sub){ return '<label class="lab">' + esc(t) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</label>'; }
+function secEdit(di, id){
+  var e = D.directory[di];
+  if(id === 'identity'){
+    return lab('First name') + '<input data-pk="first_name" value="' + esc(gv(e, 'first_name')) + '" autocomplete="off">' +
+      lab('Last name') + '<input data-pk="last_name" value="' + esc(gv(e, 'last_name')) + '" autocomplete="off">' +
+      lab('Phone', 'Several numbers: separate with commas') + '<input data-pk="phone" inputmode="tel" value="' + esc(gv(e, 'phone')) + '" autocomplete="off">' +
+      (personIsAka(e) ? lab('Also known as') + '<input data-pk="also_known_as" value="' + esc(gv(e, 'also_known_as')) + '" autocomplete="off">' : '') +
+      '<p class="note">Instagram, Facebook, Lives in, From and Languages are derived and read only. Correct them at the source (the FB Profiles tab or a subject file).</p>' + secView(di, 'identity');
+  }
+  if(id === 'relationship'){
+    var yrs = '<option value="">Not set</option>'; for(var y = new Date().getFullYear(); y >= 1950; y--) yrs += '<option value="' + y + '"' + (knownSinceYear(e) === y ? ' selected' : '') + '>' + y + '</option>';
+    var gs = Object.keys(allGroups()).sort(), mine = personGroups(e);
+    return lab('Relationship') + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '" data-sec="relationship"') +
+      lab('Context') + seg('context', CTX_OPTS, gv(e, 'context'), ' data-di="' + di + '" data-sec="relationship"') +
+      lab('Category') + seg('category', CAT_OPTS, gv(e, 'category'), ' data-di="' + di + '" data-sec="relationship"') +
+      lab('Known since') + '<select data-pk="years_known" class="yr">' + yrs + '</select>' +
+      lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
+      '<input class="tadd" data-grpnew placeholder="New group" autocomplete="off"></div>';
+  }
+  if(id === 'about'){
+    return lab('Synopsis', 'One topic per line, starting with a label and a colon. Keep it general: facts, never intimate detail.') +
+      '<textarea data-pk="synopsis" rows="6">' + esc(gv(e, 'synopsis')) + '</textarea>' +
+      '<div class="row"><button type="button" class="btn ghost sm" data-act="tidy" data-di="' + di + '">' + ic('sparkle', 14) + 'Tidy with AI</button><span class="aimsg" id="aimsg"></span></div>' +
+      lab('Web record', 'Prose, then a Sources line with the links. Text with no source reads as inferred.') +
+      '<textarea data-pk="public_footprint" rows="6">' + esc(gv(e, 'public_footprint')) + '</textarea>';
+  }
+  if(id === 'background'){
+    return lab('Skills') + tagEditor(di, 'specialty', ', ', 'Add a specific skill') + skillFlow(di) +
+      ORG_CATS.filter(function(c){ return c.k !== 'universities'; }).map(function(c){ return lab(c.label) + pickEditor(di, c.k, c.options, 'Add another'); }).join('') +
+      lab('Highlights') + tagEditor(di, 'highlights', ' | ', 'Key fact, e.g. NYSP trooper in Canton') +
+      lab('Education') + degreesEditor(di) +
+      lab('Honors') + tagEditor(di, 'achievements', ' | ', 'Award and year, e.g. Dean’s List 2020');
+  }
+  if(id === 'connections'){
+    return lab('Known associates', 'Always two-way: adding or removing writes both profiles') +
+      '<div class="chips">' + (knownAssociates(e).map(function(nb){ return nbrChip(nb, true); }).join('') || '<span class="dim">None mapped yet.</span>') + '</div>' +
+      '<div class="finder"><input id="assocq" placeholder="Add a known associate: type a name" autocomplete="off"><div id="assocr" class="hits"></div></div>' +
+      lab('Family', 'Traditional model: one spouse, bloodline trees') + famListHTML(di, true) +
+      '<div class="famadd"><div class="seg" id="famrels">' + FAM_RELS.map(function(r){ return '<button type="button" class="' + (famRelDefault() === r ? 'on' : '') + '" data-act="famrel" data-v="' + r + '">' + cap(r) + '</button>'; }).join('') + '</div>' +
+      '<div class="finder"><input id="famq" placeholder="Add family member: type a name" autocomplete="off"><div id="famr" class="hits"></div></div></div>';
+  }
+  if(id === 'timeline'){
+    var cur = S.prof.evEdit != null ? (e.events || [])[S.prof.evEdit] : null;
+    var rows = sortedEvents(e).map(function(o){
+      return '<div class="evrow' + (S.prof.evEdit === o.i ? ' editing' : '') + '"><div><time>' + esc(evDate(o.ev.date)) + '</time><b>' + esc(o.ev.summary || '') + '</b></div>' +
+        '<div class="ea"><button type="button" class="btn ghost sm" data-act="evedit" data-i="' + o.i + '">Edit</button><button type="button" class="btn ghost sm danger" data-act="evdel" data-i="' + o.i + '">Remove</button></div></div>';
+    }).join('');
+    cur = cur || {};
+    var ps = connPhases(e);
+    return (rows || '<p class="dim">No events yet.</p>') +
+      '<div class="form"><h5>' + (S.prof.evEdit != null ? 'Edit event' : 'Add event') + '</h5>' +
+      '<input type="date" id="ev-date" value="' + esc((cur.date && /^\d{4}-\d{2}-\d{2}$/.test(cur.date)) ? cur.date : todayStr()) + '">' +
+      '<input id="ev-sum" placeholder="Headline, e.g. Started a new job" value="' + esc(cur.summary || '') + '" autocomplete="off">' +
+      '<textarea id="ev-det" rows="2" placeholder="Details (optional)">' + esc(cur.detail || '') + '</textarea>' +
+      '<div class="seg" id="ev-init">' + [['', 'Neither'], ['me', 'I reached out'], ['them', 'They reached out']].map(function(o){ return '<button type="button" data-act="evinit" data-v="' + o[0] + '" class="' + (String(cur.init || '') === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="row"><button type="button" class="btn primary sm" data-act="evsave">' + (S.prof.evEdit != null ? 'Update event' : 'Add to timeline') + '</button>' + (S.prof.evEdit != null ? '<button type="button" class="btn ghost sm" data-act="evcancel">Cancel</button>' : '') + '</div></div>' +
+      lab('Phases', 'How the relationship changed over time') +
+      '<div id="cprows">' + ps.map(function(p, i){ return phaseRow(p, i); }).join('') + '</div>' +
+      '<div class="row"><button type="button" class="btn ghost sm" data-act="cpadd">' + ic('plus', 13) + 'Add phase</button></div>' +
+      '<datalist id="cplabels">' + CP_LABELS.map(function(l){ return '<option value="' + esc(l) + '">'; }).join('') + '</datalist>';
+  }
+  if(id === 'files'){
+    var fs = (e.files || []).map(function(f, i){
+      return '<div class="evrow"><div><b>' + esc(f.name || 'Untitled') + '</b><small class="dim">' + esc(f.url || '') + '</small></div><div class="ea"><button type="button" class="btn ghost sm danger" data-act="fdel" data-i="' + i + '">Remove</button></div></div>';
+    }).join('');
+    return (fs || '<p class="dim">No files attached.</p>') + '<div class="form"><h5>Attach a link</h5><input id="f-name" placeholder="Name, e.g. Full journal record" autocomplete="off"><input id="f-url" placeholder="https://docs.google.com/…" autocomplete="off"><input id="f-note" placeholder="Note (optional)" autocomplete="off">' +
+      '<div class="row"><button type="button" class="btn primary sm" data-act="fsave">' + ic('link', 13) + 'Attach</button><button type="button" class="btn ghost sm" data-act="newdoc" data-di="' + di + '">' + ic('plus', 13) + 'New Drive doc instead</button></div></div>';
+  }
+  if(id === 'persona'){
+    return '<p class="note">Entered by you only. Blank is a valid, final answer. Nothing here is ever estimated.</p>' + PERSONA.map(function(p){
+      var v = gv(e, p[0]);
+      return '<div class="rate"><div><b>' + p[1] + '</b><small>' + p[2] + '</small></div><div class="dots">' + [1, 2, 3, 4, 5].map(function(n){
+        return '<button type="button" class="' + (String(v) === String(n) ? 'on' : '') + '" data-act="persona" data-k="' + p[0] + '" data-v="' + n + '">' + n + '</button>'; }).join('') +
+        '<button type="button" class="clr" data-act="persona" data-k="' + p[0] + '" data-v="" aria-label="Clear"' + (v ? '' : ' disabled') + '>' + ic('x', 12) + '</button></div></div>';
+    }).join('');
+  }
+  return '';
+}
+function phaseRow(p, i){
+  p = p || {}; var ongoing = !p.t;
+  return '<div class="cprow" data-i="' + i + '"><div class="two"><input type="month" class="cp-f" value="' + esc(p.f || '') + '" aria-label="From"><input type="month" class="cp-t" value="' + esc(p.t || '') + '" aria-label="To"' + (ongoing ? ' disabled' : '') + '></div>' +
+    '<label class="chk"><input type="checkbox" class="cp-now"' + (ongoing ? ' checked' : '') + '> Ongoing</label>' +
+    '<input class="cp-l" list="cplabels" value="' + esc(p.l || '') + '" placeholder="Phase label" aria-label="Phase label" autocomplete="off">' +
+    '<input class="cp-n" value="' + esc(p.n || '') + '" placeholder="Note (optional)" aria-label="Note" autocomplete="off">' +
+    '<button type="button" class="btn ghost sm danger" data-act="cpdel">Remove</button></div>';
+}
+function degreesEditor(di){
+  var e = D.directory[di], ds = parseArr(gv(e, 'degrees'));
+  var rows = ds.map(function(d, i){ return { d:d, i:i }; }).sort(function(a, b){ return String(b.d.year || '').localeCompare(String(a.d.year || '')); }).map(function(o){
+    var line = [o.d.degree, o.d.major, o.d.year].filter(Boolean).join(' · ');
+    return '<div class="evrow' + (S.prof.degEdit === o.i ? ' editing' : '') + '"><div><b>' + esc(o.d.school || 'School not set') + '</b>' + (line ? '<small>' + esc(line) + '</small>' : '') + '</div>' +
+      '<div class="ea"><button type="button" class="btn ghost sm" data-act="degedit" data-i="' + o.i + '">Edit</button><button type="button" class="btn ghost sm danger" data-act="degdel" data-i="' + o.i + '">Remove</button></div></div>';
+  }).join('');
+  var cur = (S.prof.degEdit != null && ds[S.prof.degEdit]) ? ds[S.prof.degEdit] : {};
+  var known = !!SCHOOLS[cur.school], other = cur.school && !known;
+  var sch = '<option value="">School</option>' + Object.keys(SCHOOLS).map(function(k){ return '<option' + (cur.school === k ? ' selected' : '') + '>' + esc(k) + '</option>'; }).join('') + '<option value="__other"' + (other ? ' selected' : '') + '>Other school</option>';
+  var dg = '<option value="">Degree</option>' + DEGREE_TYPES.map(function(k){ return '<option' + (cur.degree === k ? ' selected' : '') + '>' + esc(k) + '</option>'; }).join('');
+  if(cur.degree && DEGREE_TYPES.indexOf(cur.degree) < 0) dg += '<option selected>' + esc(cur.degree) + '</option>';
+  var yr = '<option value="">Year</option>'; for(var y = new Date().getFullYear() + 5; y >= 1950; y--) yr += '<option' + (String(cur.year) === String(y) ? ' selected' : '') + '>' + y + '</option>';
+  return (rows || '<p class="dim">No degrees on file.</p>') + '<div class="form"><h5>' + (S.prof.degEdit != null ? 'Edit degree' : 'Add degree') + '</h5>' +
+    '<div class="two"><select id="dd-school">' + sch + '</select><select id="dd-degree">' + dg + '</select></div>' +
+    '<input id="dd-other" value="' + esc(other ? cur.school : '') + '" placeholder="Other school name (only if not in the list)" autocomplete="off">' +
+    '<div class="two"><input id="dd-major" value="' + esc(cur.major || '') + '" placeholder="Major" autocomplete="off"><select id="dd-year">' + yr + '</select></div>' +
+    '<input id="dd-note" value="' + esc(cur.note || '') + '" placeholder="Source or note (optional)" autocomplete="off">' +
+    '<div class="row"><button type="button" class="btn primary sm" data-act="degsave">' + (S.prof.degEdit != null ? 'Update degree' : 'Add degree') + '</button>' + (S.prof.degEdit != null ? '<button type="button" class="btn ghost sm" data-act="degcancel">Cancel</button>' : '') + '</div></div>';
+}
+
+/* ============================================================
+   Network — a map you read, not a control surface. Rings are tiers; color-by and the wider-circle
+   toggle are the only controls. Tap a dot for a card; the card is the way out to the profile.
+   ============================================================ */
+var NET = { nodes:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, bg:null, byDi:{} };
+function netBuild(){
   computeNewGain();
   var dir = D.directory, maxS = 1;
   dir.forEach(function(r){ if(r.strength > maxS) maxS = r.strength; });
-  ORDER = dir.map(function(r, i){ return i; })
-    .filter(function(i){ return dir[i].has_graph !== false; })
-    .sort(function(a, b){ return dir[b].strength - dir[a].strength || a - b; });
-  LIST_ORDER = dir.map(function(r, i){ return i; })
-    .filter(function(i){ var r = dir[i]; return r.has_graph !== false || (r.events || []).length || (r.files || []).length || !!r.record; })
-    .sort(function(a, b){ return dir[b].strength - dir[a].strength || a - b; });
-  /* rings are tiers: vetted inner, associate middle, open outer, untiered halo */
-  var tierRing = { vetted:0, associate:1, open:2 };
-  function ringOf(di){ var t = tierOf(dir[di]); return tierRing[t] != null ? tierRing[t] : 3; }
-  var seen = {}, placement = [];
-  ORDER.forEach(function(di){ seen[di] = true; placement.push(di); });
-  dir.forEach(function(r, di){
-    if(seen[di] || r.has_graph !== false) return;
-    if(!((r.events || []).length || (r.files || []).length || !!r.record)) return;
-    placement.push(di);
-  });
+  var list = people().filter(function(di){ return dir[di].has_graph !== false; })
+    .sort(function(a, b){ return (dir[b].strength || 0) - (dir[a].strength || 0) || a - b; });
   var byRing = [[], [], [], []];
-  placement.forEach(function(di){ byRing[ringOf(di)].push(di); });
+  list.forEach(function(di){ var t = TIER_RANK[tierOf(dir[di])]; byRing[t == null ? 3 : t].push(di); });
   var radii = [170, 310, 490, 640], spread = [16, 36, 50, 70];
-  NODES = [];
-  byRing.forEach(function(list, ring){
-    var n = list.length;
-    list.forEach(function(di, k){
+  NET.nodes = []; NET.byDi = {};
+  byRing.forEach(function(arr, ring){
+    var n = arr.length;
+    arr.forEach(function(di, k){
       var rng = mulberry32(di * 2654435761 % 2147483647);
       var ang = (k / Math.max(1, n)) * Math.PI * 2 + (rng() - 0.5) * 0.3 + ring * 0.7;
-      var rad = radii[ring] + (rng() - 0.5) * 2 * spread[ring];
-      var r = dir[di];
-      NODES.push({ i:di, ring:ring, ang:ang, x:Math.cos(ang) * rad, y:Math.sin(ang) * rad,
-        rad:2.0 + 3.6 * (r.strength / maxS), title:dispName(r), handle:r.name, relation:r.relation,
-        pieces:r.pieces, strength:r.strength, on:true, col:'#7ea6f0', nw:NEWGAIN[di] ? 1 : 0 });
+      var rad = radii[ring] + (rng() - 0.5) * 2 * spread[ring], r = dir[di];
+      var nd = { di:di, ring:ring, x:Math.cos(ang) * rad, y:Math.sin(ang) * rad, r:2 + 3.6 * ((r.strength || 0) / maxS), nw:NEWGAIN[di] ? 1 : 0 };
+      NET.nodes.push(nd); NET.byDi[di] = nd;
     });
   });
+  NET.bg = null;
 }
-
-
-/* ---------- map: 2D ---------- */
-var hub = { cv:null, ctx:null, W:0, H:0, dpr:1, cam:{ x:0, y:0, z:1 }, target:null, rot:0, hover:null, dragging:false, lastT:0, bgDots:null, raf:0 };
-function hubInit(){
-  hub.cv = $('#hub'); hub.ctx = hub.cv.getContext('2d');
-  hubResize(); hubFit();
-  var sx = 0, sy = 0, moved = false;
-  hub.cv.addEventListener('pointerdown', function(e){ hub.dragging = true; moved = false; sx = e.clientX; sy = e.clientY; hub.cv.setPointerCapture(e.pointerId); });
-  hub.cv.addEventListener('pointermove', function(e){
-    if(hub.dragging){
-      var dx = e.clientX - sx, dy = e.clientY - sy;
-      if(Math.abs(dx) + Math.abs(dy) > 3) moved = true;
-      hub.cam.x -= dx / hub.cam.z; hub.cam.y -= dy / hub.cam.z; hub.target = null;
-      sx = e.clientX; sy = e.clientY;
-    } else hubHover(e);
+function netColor(nd){
+  var e = D.directory[nd.di], m = S.net.color;
+  if(m === 'relation') return RELC[e.relation] || '#4b5468';
+  if(m === 'status') return STAT_C[statusOf(nd.di)] || '#4b5468';
+  return tierOf(e) ? tierCol(e) : '#4b5468';
+}
+function viewNetwork(v){
+  var legend = S.net.color === 'relation' ? [['mutual', 'Mutual'], ['following', 'Following'], ['follower', 'Follower']].map(function(x){ return [RELC[x[0]], x[1]]; })
+    : S.net.color === 'status' ? [[STAT_C.needs, 'Needs you'], [STAT_C.waiting, 'Waiting'], [STAT_C.checked, 'Checked']]
+    : TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([['#4b5468', 'Untiered']]);
+  v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub">Closest in the middle. Each ring is a tier.</p></div>' +
+    '<div class="netctl"><div class="seg"><button type="button" data-act="netcolor" data-v="tier" class="' + (S.net.color === 'tier' ? 'on' : '') + '">Tier</button><button type="button" data-act="netcolor" data-v="relation" class="' + (S.net.color === 'relation' ? 'on' : '') + '">Relation</button><button type="button" data-act="netcolor" data-v="status" class="' + (S.net.color === 'status' ? 'on' : '') + '">Status</button></div>' +
+    '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Wider circle</button></div></div>' +
+    '<div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
+    '<div class="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
+    '<div class="netzoom"><button type="button" class="ib" data-act="netzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="netzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="netfit" aria-label="Reset view">' + ic('target', 18) + '</button></div>' +
+    '<div class="netcard" id="netcard" hidden></div></div></div>';
+  if(!NET.nodes.length || NET.stamp !== VER) { netBuild(); NET.stamp = VER; }
+  NET.cv = $('#netcv'); NET.ctx = NET.cv.getContext('2d');
+  netResize(); netFit();
+  if(S.net.sel != null && NET.byDi[S.net.sel]){ var nd = NET.byDi[S.net.sel]; NET.cam.x = nd.x; NET.cam.y = nd.y; NET.cam.z = Math.max(NET.cam.z, 1.6); }
+  netCard();
+  var cv = NET.cv; NET.ptr = {}; NET.pinch = 0;
+  cv.addEventListener('pointerdown', function(ev){
+    cv.setPointerCapture(ev.pointerId);
+    NET.ptr[ev.pointerId] = { x:ev.clientX, y:ev.clientY }; NET.moved = false;
+    var ks = Object.keys(NET.ptr); if(ks.length === 2) NET.pinch = netPinchDist();
   });
-  hub.cv.addEventListener('pointerup', function(e){ hub.dragging = false; if(!moved) hubClick(e); });
-  hub.cv.addEventListener('pointerleave', function(){ hub.hover = null; tipHide(); });
-  hub.cv.addEventListener('wheel', function(e){
-    e.preventDefault();
-    var z2 = Math.max(0.35, Math.min(3.2, hub.cam.z * Math.exp(-e.deltaY * 0.0011)));
-    var r = hub.cv.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
-    var wx = (mx - hub.W / 2) / hub.cam.z + hub.cam.x, wy = (my - hub.H / 2) / hub.cam.z + hub.cam.y;
-    hub.cam.z = z2; hub.cam.x = wx - (mx - hub.W / 2) / z2; hub.cam.y = wy - (my - hub.H / 2) / z2; hub.target = null;
+  cv.addEventListener('pointermove', function(ev){
+    var p = NET.ptr[ev.pointerId]; if(!p) return;
+    var ks = Object.keys(NET.ptr);
+    if(ks.length === 1){
+      var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
+      if(Math.abs(dx) + Math.abs(dy) > 3) NET.moved = true;
+      NET.cam.x -= dx / NET.cam.z; NET.cam.y -= dy / NET.cam.z;
+    }
+    p.x = ev.clientX; p.y = ev.clientY;
+    if(ks.length === 2){
+      var d = netPinchDist();
+      if(NET.pinch) NET.cam.z = Math.max(0.3, Math.min(4, NET.cam.z * d / NET.pinch));
+      NET.pinch = d; NET.moved = true;
+    }
+    NET.dirty = true;
+  });
+  function up(ev){
+    var had = NET.ptr[ev.pointerId]; delete NET.ptr[ev.pointerId]; NET.pinch = 0;
+    if(had && !NET.moved && Object.keys(NET.ptr).length === 0){
+      var r = cv.getBoundingClientRect(), n = netHit(ev.clientX - r.left, ev.clientY - r.top);
+      S.net.sel = n ? n.di : null; netCard(); NET.dirty = true;
+    }
+  }
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', function(ev){
+    ev.preventDefault();
+    var z2 = Math.max(0.3, Math.min(4, NET.cam.z * Math.exp(-ev.deltaY * 0.0011)));
+    var r = cv.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
+    var wx = (mx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (my - NET.H / 2) / NET.cam.z + NET.cam.y;
+    NET.cam.z = z2; NET.cam.x = wx - (mx - NET.W / 2) / z2; NET.cam.y = wy - (my - NET.H / 2) / z2; NET.dirty = true;
   }, { passive:false });
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden) hub.lastT = performance.now(); });
-  hub.lastT = performance.now();
+  cancelAnimationFrame(NET.raf);
+  (function frame(){
+    if(!document.body.contains(NET.cv) || document.body.getAttribute('data-view') !== 'network') return;
+    if(NET.dirty){ netDraw(); NET.dirty = false; }
+    NET.raf = requestAnimationFrame(frame);
+  })();
 }
-function hubStart(){ if(!hub.raf){ hub.lastT = performance.now(); hub.raf = requestAnimationFrame(hubFrame); } }
-function hubResize(){
-  if(!hub.cv) return;
-  var r = $('#stage').getBoundingClientRect();
-  hub.dpr = Math.min(2, window.devicePixelRatio || 1);
-  hub.W = Math.max(50, r.width); hub.H = Math.max(50, r.height);
-  hub.cv.width = Math.round(hub.W * hub.dpr); hub.cv.height = Math.round(hub.H * hub.dpr);
-  hub.cv.style.width = hub.W + 'px'; hub.cv.style.height = hub.H + 'px';
-  hub.bgDots = null;
+function netPinchDist(){ var k = Object.keys(NET.ptr).map(function(i){ return NET.ptr[i]; }); return k.length < 2 ? 0 : Math.hypot(k[0].x - k[1].x, k[0].y - k[1].y); }
+function netResize(){
+  var cv = NET.cv, r = cv.getBoundingClientRect(); NET.dpr = Math.min(2, window.devicePixelRatio || 1);
+  NET.W = Math.max(200, r.width); NET.H = Math.max(200, r.height);
+  cv.width = NET.W * NET.dpr; cv.height = NET.H * NET.dpr; NET.dirty = true;
 }
-function hubFit(){
-  var z = Math.min(hub.W, hub.H) / 2 / 730;
-  hub.cam = { x:0, y:0, z:Math.max(0.3, Math.min(1.4, z)) };
-  hub.target = null;
-}
-function w2s(wx, wy){ return [ (wx - hub.cam.x) * hub.cam.z + hub.W / 2, (wy - hub.cam.y) * hub.cam.z + hub.H / 2 ]; }
-function s2w(sx, sy){ return [ (sx - hub.W / 2) / hub.cam.z + hub.cam.x, (sy - hub.H / 2) / hub.cam.z + hub.cam.y ]; }
-function rotX(n){ var a = n.ang + hub.rot, r = Math.hypot(n.x, n.y); return Math.cos(a) * r; }
-function rotY(n){ var a = n.ang + hub.rot, r = Math.hypot(n.x, n.y); return Math.sin(a) * r; }
-function hubFrame(now){
-  if(S.mode !== '2d'){ hub.raf = 0; return; }
-  var dt = Math.min(0.05, (now - hub.lastT) / 1000); hub.lastT = now;
-  if(!document.hidden && !hub.dragging && hub.hover === null && S.sel === null) hub.rot += dt * 0.018;
-  if(hub.target){
-    hub.cam.x += (hub.target.x - hub.cam.x) * Math.min(1, dt * 5);
-    hub.cam.y += (hub.target.y - hub.cam.y) * Math.min(1, dt * 5);
-    if(Math.abs(hub.target.x - hub.cam.x) < 1 && Math.abs(hub.target.y - hub.cam.y) < 1) hub.target = null;
-  }
-  var ctx = hub.ctx, W = hub.W, H = hub.H, z = hub.cam.z;
-  ctx.setTransform(hub.dpr, 0, 0, hub.dpr, 0, 0);
-  ctx.clearRect(0, 0, W, H);
-  if(S.showBg) drawBg(ctx);
-  var c = w2s(0, 0);
-  ctx.lineWidth = 1;
-  NODES.forEach(function(n){
-    /* Spokes MUST end at the node's drawn position (rotX/rotY): the hub
-       slowly rotates when idle, and drawing to the unrotated n.x/n.y
-       left the lines behind while the nodes moved on (JD bug report
-       2026-10-12). */
-    var p = w2s(rotX(n), rotY(n));
-    ctx.globalAlpha = n.on ? 1 : 0.25;
-    if(n.nw && n.on){
-      /* New connection (<=7d): a soft glow pass under a brighter core. */
-      ctx.strokeStyle = hexA(n.col, 0.13); ctx.lineWidth = 3.6;
-      ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
-      ctx.strokeStyle = hexA(n.col, 0.55); ctx.lineWidth = 1.3;
-      ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
-      ctx.lineWidth = 1;
-    } else {
-      ctx.strokeStyle = hexA(n.col, n.ring === 0 ? 0.10 : 0.05);
-      ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
-    }
-  });
-  ctx.globalAlpha = 1;
-  NODES.forEach(function(n){
-    var p = w2s(rotX(n), rotY(n));
-    if(p[0] < -30 || p[1] < -30 || p[0] > W + 30 || p[1] > H + 30) return;
-    var rr = Math.max(1.6, n.rad * Math.sqrt(z)), active = (S.sel === n.i || hub.hover === n);
-    ctx.globalAlpha = n.on ? 1 : 0.1;
-    if(n.nw && n.on){
-      /* faint halo for nodes that gained a connection this week */
-      ctx.fillStyle = hexA(n.col, 0.15);
-      ctx.beginPath(); ctx.arc(p[0], p[1], rr + 5, 0, Math.PI * 2); ctx.fill();
-    }
-    if(n.on || S.sel === n.i){ ctx.shadowColor = n.col; ctx.shadowBlur = active ? 14 : 6; }
-    ctx.fillStyle = n.col;
-    ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, Math.PI * 2); ctx.fill();
-    ctx.shadowBlur = 0;
-    if(active){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(p[0], p[1], rr + 3.5, 0, Math.PI * 2); ctx.stroke(); }
-  });
-  ctx.globalAlpha = 1;
-  var s = Math.sqrt(z);
-  var grd = ctx.createRadialGradient(c[0], c[1], 0, c[0], c[1], 26 * s);
-  grd.addColorStop(0, 'rgba(244,239,230,.55)'); grd.addColorStop(1, 'rgba(244,239,230,0)');
-  ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(c[0], c[1], 26 * s, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#f4efe6'; ctx.beginPath(); ctx.arc(c[0], c[1], Math.max(7, 11 * s), 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#0b0d12'; ctx.font = '700 ' + Math.max(9, 11 * s) + 'px Archivo,sans-serif';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('JD', c[0], c[1] + 0.5);
-  hub.raf = requestAnimationFrame(hubFrame);
-}
-function drawBg(ctx){
-  if(!hub.bgDots){
-    var dots = [], idx = D.circle_index || [];
-    for(var i = 0; i < idx.length; i++){
-      var rng = mulberry32((i + 1) * 2246822519 % 2147483647);
-      var ang = rng() * Math.PI * 2, rad = 640 + rng() * rng() * 1100;
-      dots.push([Math.cos(ang) * rad, Math.sin(ang) * rad]);
-    }
-    hub.bgDots = dots;
-  }
-  ctx.fillStyle = 'rgba(154,163,178,.16)';
-  var dots2 = hub.bgDots;
-  for(var j = 0; j < dots2.length; j++){
-    var p = w2s(dots2[j][0], dots2[j][1]);
-    if(p[0] < -4 || p[1] < -4 || p[0] > hub.W + 4 || p[1] > hub.H + 4) continue;
-    ctx.fillRect(p[0], p[1], 1.6, 1.6);
-  }
-}
-function hubNodeAt(sx, sy){
-  var w = s2w(sx, sy), best = null, bestD = 14 / hub.cam.z;
-  for(var i = 0; i < NODES.length; i++){
-    var n = NODES[i], d = Math.hypot(rotX(n) - w[0], rotY(n) - w[1]);
-    if(d < bestD + n.rad * 0.4){ bestD = d; best = n; }
-  }
+function netFit(){ NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.bg ? 1900 : 1450))); NET.dirty = true; }
+function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
+function netHit(sx, sy){
+  var wx = (sx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (sy - NET.H / 2) / NET.cam.z + NET.cam.y, best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
+  NET.nodes.forEach(function(n){ var d = Math.hypot(n.x - wx, n.y - wy); if(d < lim && d < bd){ bd = d; best = n; } });
   return best;
 }
-function hubHover(e){
-  var r = hub.cv.getBoundingClientRect();
-  var n = hubNodeAt(e.clientX - r.left, e.clientY - r.top);
-  hub.hover = n;
-  hub.cv.style.cursor = n ? 'pointer' : 'grab';
-  if(n) tipShow(e.clientX, e.clientY, n); else tipHide();
-}
-function hubClick(e){
-  var r = hub.cv.getBoundingClientRect();
-  var n = hubNodeAt(e.clientX - r.left, e.clientY - r.top);
-  if(n) openPerson(n.i); else if(S.sel !== null) closePanel();
-}
-function tipShow(cx, cy, n){
-  var tip = $('#tip'), lv = personLevel(D.directory[n.i]);
-  tip.innerHTML = '<b>' + esc(n.title) + '</b><span style="--c:' + LV[lv].c + '"><i></i>' + LV[lv].n + (n.relation ? ' · ' + esc(RELN[n.relation] || n.relation) : '') + '</span>';
-  tip.hidden = false;
-  tip.style.left = Math.min(cx + 16, innerWidth - 250) + 'px';
-  tip.style.top = Math.min(cy + 14, innerHeight - 80) + 'px';
-}
-function tipHide(){ $('#tip').hidden = true; }
-
-/* ---------- map: 3D ---------- */
-var GL = null;
-var THREE_URLS = [
-  'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
-  'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js'
-];
-function loadScript(src){
-  return new Promise(function(res, rej){
-    var s = document.createElement('script');
-    s.src = src; s.onload = res; s.onerror = function(){ rej(new Error('load failed: ' + src)); };
-    document.head.appendChild(s);
+function netDraw(){
+  var ctx = NET.ctx, z = NET.cam.z;
+  ctx.setTransform(NET.dpr, 0, 0, NET.dpr, 0, 0); ctx.clearRect(0, 0, NET.W, NET.H);
+  var c = w2s(0, 0);
+  [170, 310, 490, 640].forEach(function(r, i){
+    ctx.strokeStyle = 'rgba(160,175,205,' + (0.10 - i * 0.015) + ')'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
   });
-}
-function setMode(m){
-  S.mode = m; store('ncc_mode', m);
-  $$('#modeToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-m') === m); });
-  var hint = $('#stagehint');
-  if(m === '3d'){
-    $('#gl3d').hidden = false; $('#hub').style.visibility = 'hidden';
-    hint.textContent = 'Drag to orbit · scroll to zoom · click a dot to open them';
-    initGL();
-  } else {
-    $('#gl3d').hidden = true; $('#hub').style.visibility = 'visible';
-    hint.textContent = 'Drag to pan · scroll to zoom · click a dot to open them';
-    hubResize(); hubStart();
+  if(S.net.bg){
+    if(!NET.bg){
+      var ci = D.circle_index || [], dots = [];
+      for(var i = 0; i < ci.length; i++){ var rng = mulberry32((i + 1) * 2246822519 % 2147483647), ang = rng() * 6.2832, rad = 720 + rng() * rng() * 1100; dots.push([Math.cos(ang) * rad, Math.sin(ang) * rad]); }
+      NET.bg = dots;
+    }
+    ctx.fillStyle = 'rgba(150,160,185,.2)';
+    NET.bg.forEach(function(d){ var p = w2s(d[0], d[1]); if(p[0] > -3 && p[1] > -3 && p[0] < NET.W + 3 && p[1] < NET.H + 3) ctx.fillRect(p[0], p[1], 1.5, 1.5); });
   }
-}
-function setColorMode(c){
-  S.colorBy = c; store('ncc_color', c);
-  $$('#colorToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-c') === c); });
-  refresh();
-}
-function initGL(){
-  var holder = $('#gl3d');
-  if(GL){ glResize(); glSyncFocus(); return; }
-  if(holder.querySelector('.gl-loading')) return;
-  holder.insertAdjacentHTML('beforeend', '<div class="gl-loading">Building 3D space…</div>');
-  loadScript(THREE_URLS[0]).then(function(){ return loadScript(THREE_URLS[1]); }).then(function(){
-    var l = holder.querySelector('.gl-loading'); if(l) l.remove();
-    buildGL(); glRecolor(); glSyncFocus();
-  }).catch(function(){
-    var l = holder.querySelector('.gl-loading');
-    if(l) l.textContent = 'Could not load the 3D engine. Check your connection, or switch to 2D.';
+  var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null;
+  if(sel){
+    var se = D.directory[sel.di], a = w2s(sel.x, sel.y);
+    ctx.strokeStyle = 'rgba(214,226,255,.35)'; ctx.lineWidth = 1;
+    knownAssociates(se).forEach(function(nb){
+      var t = BYN[(nb.u || '').toLowerCase()], nd = t != null ? NET.byDi[t] : null; if(!nd) return;
+      var b = w2s(nd.x, nd.y); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    });
+  }
+  var fade = !!sel, hot = {};
+  if(sel) knownAssociates(D.directory[sel.di]).forEach(function(nb){ var t = BYN[(nb.u || '').toLowerCase()]; if(t != null) hot[t] = 1; });
+  NET.nodes.forEach(function(n){
+    var p = w2s(n.x, n.y); if(p[0] < -10 || p[1] < -10 || p[0] > NET.W + 10 || p[1] > NET.H + 10) return;
+    var rr = n.r * Math.sqrt(z), col = netColor(n), isSel = sel && sel.di === n.di;
+    ctx.globalAlpha = fade && !isSel && !hot[n.di] ? 0.28 : 1;
+    if(n.nw){ ctx.fillStyle = hexA(col, 0.18); ctx.beginPath(); ctx.arc(p[0], p[1], rr + 5, 0, 6.2832); ctx.fill(); }
+    ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, 6.2832); ctx.fill();
+    if(isSel){ ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(p[0], p[1], rr + 3.5, 0, 6.2832); ctx.stroke(); }
   });
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#e8ecf5'; ctx.beginPath(); ctx.arc(c[0], c[1], Math.max(7, 10 * Math.sqrt(z)), 0, 6.2832); ctx.fill();
+  ctx.fillStyle = '#0a0d14'; ctx.font = '700 ' + Math.max(8, 10 * Math.sqrt(z)) + 'px Inter,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('JD', c[0], c[1] + 0.5);
 }
-function makeLabel(text, o){
-  o = o || {};
-  var fs = o.size || 26, SS = 3;
-  var font = '600 ' + fs + 'px Inter, system-ui, sans-serif';
-  var cv = document.createElement('canvas'), mctx = cv.getContext('2d');
-  mctx.font = font;
-  var tw = Math.ceil(mctx.measureText(text).width);
-  var px = Math.round(fs * 0.66), py = Math.round(fs * 0.42);
-  var w = tw + px * 2, h = fs + py * 2, r = (h - 3) / 2;
-  cv.width = w * SS; cv.height = h * SS;
-  var ctx = cv.getContext('2d');
-  ctx.scale(SS, SS);
-  ctx.beginPath();
-  if(ctx.roundRect) ctx.roundRect(1.5, 1.5, w - 3, h - 3, r);
-  else{ ctx.moveTo(1.5 + r, 1.5); ctx.arcTo(w - 1.5, 1.5, w - 1.5, h - 1.5, r); ctx.arcTo(w - 1.5, h - 1.5, 1.5, h - 1.5, r); ctx.arcTo(1.5, h - 1.5, 1.5, 1.5, r); ctx.arcTo(1.5, 1.5, w - 1.5, 1.5, r); ctx.closePath(); }
-  ctx.fillStyle = o.bg || 'rgba(9,13,20,0.78)';
-  ctx.fill();
-  ctx.strokeStyle = o.edge || 'rgba(255,255,255,0.16)';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-  ctx.font = font;
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = o.color || '#e8ecf3';
-  ctx.fillText(text, px, h / 2 + 1);
-  var tex = new THREE.CanvasTexture(cv);
-  tex.minFilter = THREE.LinearFilter;
-  try{ tex.anisotropy = GL.renderer.capabilities.getMaxAnisotropy(); }catch(x){}
-  var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false }));
-  sp.scale.set(w * 0.062, h * 0.062, 1);
-  sp.renderOrder = 10;
-  sp.userData.isLabel = true;
-  return sp;
+function netCard(){
+  var box = $('#netcard'); if(!box) return;
+  var di = S.net.sel;
+  if(di == null || !D.directory[di]){ box.hidden = true; box.innerHTML = ''; return; }
+  var e = D.directory[di], ka = knownAssociates(e).length, inFam = !!famDisplay()[di];
+  box.hidden = false;
+  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></div>' + statusChip(di) +
+    '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+    '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
+    (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
+    '<button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>';
 }
-function makeGlow(colorHex, size){
-  var cv = document.createElement('canvas');
-  cv.width = cv.height = 128;
-  var ctx = cv.getContext('2d');
-  var g = ctx.createRadialGradient(64, 64, 4, 64, 64, 64);
-  var c = '#' + ('000000' + colorHex.toString(16)).slice(-6);
-  g.addColorStop(0, c); g.addColorStop(0.35, c + 'aa'); g.addColorStop(1, c + '00');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, 128, 128);
-  var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map:new THREE.CanvasTexture(cv), transparent:true, depthWrite:false, blending:THREE.AdditiveBlending }));
-  sp.scale.set(size, size, 1);
-  return sp;
-}
-function buildGL(){
-  var holder = $('#gl3d');
-  var W = holder.clientWidth || innerWidth, H = holder.clientHeight || innerHeight;
-  var renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
-  renderer.setSize(W, H);
-  holder.appendChild(renderer.domElement);
-  var scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x06080d, 0.0011);
-  var camera = new THREE.PerspectiveCamera(52, W / H, 0.5, 4000);
-  camera.position.set(0, 88, 370);
-  var controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true; controls.dampingFactor = 0.06;
-  controls.minDistance = 14; controls.maxDistance = 1000;
-  controls.autoRotateSpeed = 0.25;
-  controls.addEventListener('start', function(){ if(GL) GL.userHold = true; });
-  controls.addEventListener('end', function(){ if(GL) GL.userHold = false; });
 
-  scene.add(new THREE.Mesh(new THREE.SphereGeometry(4.6, 28, 28), new THREE.MeshBasicMaterial({ color:0xf4efe6 })));
-  scene.add(makeGlow(0xf4efe6, 30));
-  var jdLabel = makeLabel('JD', { size:30, color:'#f4efe6' });
-  jdLabel.position.set(0, 10, 0);
-  scene.add(jdLabel);
-
-  var n = NODES.length;
-  var posArr = new Float32Array(n * 3), colArr = new Float32Array(n * 3);
-  var shells = [56, 94, 132, 178], perShell = [[], [], [], []];
-  NODES.forEach(function(nd, k){ perShell[Math.min(nd.ring || 0, 3)].push(k); });
-  var glPos = new Array(D.directory.length);
-  perShell.forEach(function(list, s){
-    var R = shells[s];
-    list.forEach(function(k, j){
-      var di = NODES[k].i;
-      var y = 1 - 2 * (j + 0.5) / list.length, r = Math.sqrt(Math.max(0, 1 - y * y)), th = j * 2.399963;
-      var rnd = mulberry32(di * 7919 + 13), jr = R * (0.93 + rnd() * 0.14);
-      var v = new THREE.Vector3(Math.cos(th) * r * jr, y * jr, Math.sin(th) * r * jr);
-      glPos[di] = v;
-      posArr[k * 3] = v.x; posArr[k * 3 + 1] = v.y; posArr[k * 3 + 2] = v.z;
+/* ============================================================
+   Family space — bloodline trees on one pannable canvas. The model code is unchanged; the camera is
+   a plain transform with drag momentum, pinch and wheel zoom, and a glide to the focused person.
+   ============================================================ */
+var FAMV = { cam:{ x:0, y:0, z:1 }, vel:{ x:0, y:0 }, ptr:{}, pinch:0, moved:false, raf:0, lay:null, pos:{}, glide:null, el:null };
+function viewFamily(v){
+  var disp = famDisplay(), ft = famTrees(disp), lay = famSpaceLayout(disp, ft);
+  FAMV.lay = lay; FAMV.pos = {};
+  lay.clusters.forEach(function(c){
+    c.model.nodes.forEach(function(n){ if(c.tree.blood[n.di] || !FAMV.pos[n.di]) FAMV.pos[n.di] = { x:c.ox + n.x + DFT.NW / 2, y:c.oy + n.y + DFT.CY, tree:c.tree.id }; });
+  });
+  if(!lay.clusters.length){ v.innerHTML = '<div class="page">' + emptyState('No family trees yet.', 'Add a parent, spouse, child or sibling from a profile and the tree appears here.') + '</div>'; return; }
+  var svg = '<svg class="flines" width="' + lay.W + '" height="' + lay.H + '" viewBox="0 0 ' + lay.W + ' ' + lay.H + '">';
+  lay.clusters.forEach(function(c){
+    c.model.lines.forEach(function(l){ svg += '<line x1="' + (c.ox + l.x1) + '" y1="' + (c.oy + l.y1) + '" x2="' + (c.ox + l.x2) + '" y2="' + (c.oy + l.y2) + '"/>'; });
+  });
+  lay.links.forEach(function(l){ svg += '<path class="xlink" d="M' + l.x1 + ' ' + l.y1 + ' C' + l.x1 + ' ' + (l.y1 + 120) + ' ' + l.x2 + ' ' + (l.y2 - 120) + ' ' + l.x2 + ' ' + l.y2 + '"/>'; });
+  svg += '</svg>';
+  var html = '';
+  lay.clusters.forEach(function(c){
+    html += '<div class="ftitle" style="left:' + c.ox + 'px;top:' + c.labelY + 'px">' + esc(c.tree.title) + ' <small>' + c.tree.members.length + '</small></div>';
+    c.model.nodes.forEach(function(n){
+      var e = D.directory[n.di], st = c.model.styleOf(n.di), foc = S.fam.focus === n.di;
+      html += '<button type="button" class="fn' + (foc ? ' foc' : '') + '" data-act="fnode" data-di="' + n.di + '" style="left:' + (c.ox + n.x) + 'px;top:' + (c.oy + n.y) + 'px;--fc:' + st.c + '"><span class="fc">' + esc(famInitials(dispName(e))) + '</span><b>' + esc(dispName(e)) + '</b><small>' + esc(st.cap) + '</small></button>';
     });
   });
-  var geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
-  geo.setAttribute('color', new THREE.BufferAttribute(colArr, 3));
-  var mat = new THREE.PointsMaterial({ size:2.8, vertexColors:true, sizeAttenuation:true, transparent:true, opacity:0.95, depthWrite:false });
-  var points = new THREE.Points(geo, mat);
-  scene.add(points);
-
-  var bg = null, ci = D.circle_index || [];
-  if(ci.length){
-    var bp = new Float32Array(ci.length * 3), R2 = 218;
-    for(var bi = 0; bi < ci.length; bi++){
-      var y2 = 1 - 2 * (bi + 0.5) / ci.length, r2 = Math.sqrt(Math.max(0, 1 - y2 * y2)), th2 = bi * 2.399963;
-      bp[bi * 3] = Math.cos(th2) * r2 * R2; bp[bi * 3 + 1] = y2 * R2; bp[bi * 3 + 2] = Math.sin(th2) * r2 * R2;
+  v.innerHTML = '<div class="page fampage"><div class="netbar"><div><h1 class="display">Family</h1><p class="sub">' + lay.trees.length + ' bloodline' + (lay.trees.length === 1 ? '' : 's') + '. Married-in spouses also appear in their own tree.</p></div></div>' +
+    '<div class="fspace" id="fspace"><div class="fworld" id="fworld" style="width:' + lay.W + 'px;height:' + lay.H + 'px">' + svg + html + '</div>' +
+    '<div class="netzoom"><button type="button" class="ib" data-act="famzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="famzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="famfit" aria-label="Fit all">' + ic('target', 18) + '</button></div>' +
+    '<div class="netcard" id="famcard" hidden></div></div></div>';
+  FAMV.el = $('#fspace');
+  famFit();
+  if(S.fam.focus != null && FAMV.pos[S.fam.focus]){ var p = FAMV.pos[S.fam.focus]; FAMV.cam = { x:p.x, y:p.y, z:0.9 }; famApply(); }
+  famCard();
+  var el = FAMV.el; FAMV.ptr = {}; FAMV.pinch = 0;
+  el.addEventListener('pointerdown', function(ev){
+    if(ev.target.closest('.netzoom, .netcard')) return;
+    el.setPointerCapture(ev.pointerId); FAMV.ptr[ev.pointerId] = { x:ev.clientX, y:ev.clientY, t:ev.target }; FAMV.moved = false; FAMV.vel = { x:0, y:0 }; FAMV.glide = null;
+    if(Object.keys(FAMV.ptr).length === 2) FAMV.pinch = famPinchDist();
+  });
+  el.addEventListener('pointermove', function(ev){
+    var p = FAMV.ptr[ev.pointerId]; if(!p) return;
+    var ks = Object.keys(FAMV.ptr);
+    if(ks.length === 1){
+      var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
+      if(Math.abs(dx) + Math.abs(dy) > 4) FAMV.moved = true;
+      if(FAMV.moved){ FAMV.cam.x -= dx / FAMV.cam.z; FAMV.cam.y -= dy / FAMV.cam.z; FAMV.vel = { x:dx / FAMV.cam.z, y:dy / FAMV.cam.z }; famApply(); }
     }
-    var bgGeo = new THREE.BufferGeometry();
-    bgGeo.setAttribute('position', new THREE.BufferAttribute(bp, 3));
-    bg = new THREE.Points(bgGeo, new THREE.PointsMaterial({ size:1.4, color:0x2b3648, transparent:true, opacity:0.5, depthWrite:false }));
-    bg.visible = !!S.showBg;
-    scene.add(bg);
+    p.x = ev.clientX; p.y = ev.clientY;
+    if(ks.length === 2){
+      var d = famPinchDist(); if(FAMV.pinch) FAMV.cam.z = Math.max(0.2, Math.min(1.6, FAMV.cam.z * d / FAMV.pinch));
+      FAMV.pinch = d; FAMV.moved = true; famApply();
+    }
+  });
+  function fup(ev){
+    var had = FAMV.ptr[ev.pointerId]; delete FAMV.ptr[ev.pointerId]; FAMV.pinch = 0;
+    if(had && FAMV.moved && Object.keys(FAMV.ptr).length === 0) famCoast();
   }
-
-  GL = { renderer:renderer, scene:scene, camera:camera, controls:controls, points:points, mat:mat, bg:bg, glPos:glPos, colArr:colArr, userHold:false,
-    flight:null, focusGroup:null, focusDi:-1, nbrGeo:new THREE.SphereGeometry(1.7, 16, 16),
-    ray:new THREE.Raycaster(), downX:0, downY:0, hoverLabel:null, hoverDi:-1 };
-  GL.ray.params.Points = { threshold:4.5 };
-
-  renderer.domElement.addEventListener('pointerdown', function(ev){ GL.downX = ev.clientX; GL.downY = ev.clientY; });
-  renderer.domElement.addEventListener('pointerup', function(ev){
-    if(Math.hypot(ev.clientX - GL.downX, ev.clientY - GL.downY) > 6) return;
-    glClick(ev);
-  });
-  renderer.domElement.addEventListener('pointermove', function(ev){
-    if(!GL) return;
-    var hit = glPick(ev);
-    renderer.domElement.style.cursor = hit ? 'pointer' : 'grab';
-    glHoverLabel((hit && hit.kind === 'node') ? NODES[hit.index].i : null);
-  });
-  renderer.domElement.addEventListener('pointerleave', function(){ glHoverLabel(null); });
-  (function glAnimate(){
-    requestAnimationFrame(glAnimate);
-    if(S.mode !== '3d' || !GL || document.hidden) return;
-    if(GL.flight){
-      var f = GL.flight, t = Math.min(1, (performance.now() - f.start) / f.dur);
-      var e2 = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      var a = f.p0.clone().lerp(f.p1, e2), b = f.p1.clone().lerp(f.p2, e2);
-      GL.camera.position.copy(a.lerp(b, e2));
-      GL.controls.target.copy(f.t0.clone().lerp(f.t2, e2));
-      if(t >= 1) GL.flight = null;
-    }
-    var _sel = S.sel !== null;
-    GL.controls.autoRotateSpeed = _sel ? 0.12 : 0.25;
-    GL.controls.autoRotate = !GL.flight && !GL.userHold && !(GL.hoverDi != null && GL.hoverDi >= 0);
-    GL.controls.update();
-    if(GL.focusGroup){
-      var _cd = GL.camera.position.clone().sub(GL.controls.target);
-      var _cl = _cd.length() || 1; _cd.divideScalar(_cl);
-      var _kids = GL.focusGroup.children;
-      for(var _li = 0; _li < _kids.length; _li++){
-        var _lo = _kids[_li];
-        if(!_lo.userData || !_lo.userData.isLabel || !_lo.userData.nodePos) continue;
-        var _od = _lo.userData.nodePos.clone().sub(GL.controls.target);
-        var _ol = _od.length() || 1;
-        var _facing = _od.divideScalar(_ol).dot(_cd);
-        var _t = Math.min(1, Math.max(0, (_facing + 0.35) / 0.8));
-        _t = _t * _t * (3 - 2 * _t);
-        var _ndc = _lo.userData.nodePos.clone().project(GL.camera);
-        var _edge = Math.max(Math.abs(_ndc.x), Math.abs(_ndc.y));
-        var _ef = _edge > 0.9 ? Math.max(0, 1 - (_edge - 0.9) / 0.1) : 1;
-        _lo.material.opacity = (0.16 + 0.84 * _t) * _ef;
-      }
-    }
-    GL.renderer.render(GL.scene, GL.camera);
-  })();
-}
-function glRecolor(){
-  if(!GL) return;
-  var c = new THREE.Color(), arr = GL.colArr, white = new THREE.Color(0xffffff);
-  NODES.forEach(function(nd, k){
-    c.set(nd.col);
-    if(nd.nw && nd.on) c.lerp(white, 0.38); /* new connection: quietly brighter */
-    var f = nd.on ? 1 : 0.12;
-    arr[k * 3] = c.r * f; arr[k * 3 + 1] = c.g * f; arr[k * 3 + 2] = c.b * f;
-  });
-  GL.points.geometry.attributes.color.needsUpdate = true;
-}
-function glResize(){
-  if(!GL) return;
-  var holder = $('#gl3d'), W = holder.clientWidth || innerWidth, H = holder.clientHeight || innerHeight;
-  GL.camera.aspect = W / H; GL.camera.updateProjectionMatrix(); GL.renderer.setSize(W, H);
-}
-function glPick(ev){
-  var rect = GL.renderer.domElement.getBoundingClientRect();
-  var mx = ((ev.clientX - rect.left) / rect.width) * 2 - 1, my = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
-  GL.ray.setFromCamera({ x:mx, y:my }, GL.camera);
-  if(GL.focusGroup){
-    var hits = GL.ray.intersectObjects(GL.focusGroup.children.filter(function(o){ return o.isMesh; }));
-    if(hits.length) return { kind:'neighbor', obj:hits[0].object };
-  }
-  var ph = GL.ray.intersectObject(GL.points);
-  if(ph.length && ph[0].index != null) return { kind:'node', index:ph[0].index };
-  return null;
-}
-function glHoverLabel(di){
-  if(!GL || di === GL.hoverDi) return;
-  GL.hoverDi = di;
-  if(GL.hoverLabel){ GL.scene.remove(GL.hoverLabel); GL.hoverLabel = null; }
-  if(di == null || di < 0 || !GL.glPos[di] || di === GL.focusDi) return;
-  var lab = makeLabel(auName(D.directory[di]).name, { size:20, color:'#e8ecf3' }), p = GL.glPos[di];
-  lab.position.set(p.x, p.y + 4.5, p.z);
-  GL.scene.add(lab); GL.hoverLabel = lab;
-}
-function glClick(ev){
-  var hit = glPick(ev);
-  if(!hit){ if(S.sel !== null) closePanel(); return; }
-  if(hit.kind === 'neighbor'){
-    var di = hit.obj.userData.dirIdx;
-    if(di >= 0) openPerson(di, { push:true });
-    return;
-  }
-  openPerson(NODES[hit.index].i);
-}
-function glFlyTo(destPos, destTarget, dur){
-  var p0 = GL.camera.position.clone(), t0 = GL.controls.target.clone();
-  var mid = p0.clone().add(destPos).multiplyScalar(0.5);
-  mid.setLength(Math.max(p0.length(), destPos.length()) + 70);
-  GL.flight = { p0:p0, p1:mid, p2:destPos.clone(), t0:t0, t2:destTarget.clone(), start:performance.now(), dur:dur || 1500 };
-}
-function glClearFocus(){
-  glHoverLabel(null);
-  if(!GL || !GL.focusGroup) return;
-  GL.scene.remove(GL.focusGroup); GL.focusGroup = null; GL.focusDi = -1; GL.mat.opacity = 0.95;
-}
-function glFocus(di){
-  if(!GL || !GL.glPos[di]) return;
-  glClearFocus();
-  GL.focusDi = di;
-  var p = GL.glPos[di], e = D.directory[di], g = new THREE.Group();
-  var nbrs = knownAssociates(e).slice(0, 12);
-  nbrs.forEach(function(nb, j){
-    var y = 1 - 2 * (j + 0.5) / nbrs.length, r = Math.sqrt(Math.max(0, 1 - y * y)), th = j * 2.399963;
-    var np = new THREE.Vector3(p.x + Math.cos(th) * r * 16, p.y + y * 16, p.z + Math.sin(th) * r * 16);
-    var di2 = BYN[(nb.u || '').toLowerCase()];
-    var col = di2 != null ? new THREE.Color(LV[personLevel(D.directory[di2])].c) : new THREE.Color(0x5a6b84);
-    if(nb.new) col.lerp(new THREE.Color(0xffffff), 0.3); /* fresh edge reads brighter */
-    var mesh = new THREE.Mesh(GL.nbrGeo, new THREE.MeshBasicMaterial({ color:col }));
-    mesh.position.copy(np);
-    mesh.userData.dirIdx = di2 != null ? di2 : -1;
-    g.add(mesh);
-    var lab = makeLabel((function(){ var _di = BYN[(nb.u||'').toLowerCase()]; return _di != null ? auName(D.directory[_di]).name : personLabel(nb.u, nb.d); })(), { size:19, color:'#d7e5f2' });
-    var ldir = np.clone().sub(p);
-    if(ldir.lengthSq() < 1e-6) ldir.set(0, 1, 0);
-    ldir.normalize();
-    lab.position.set(np.x + ldir.x * 8.5, np.y + ldir.y * 8.5, np.z + ldir.z * 8.5);
-    lab.userData.nodePos = np.clone();
-    g.add(lab);
-    g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p, np]), new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:nb.new ? 0.65 : 0.35 })));
-  });
-  var fl = makeLabel(auName(e).name, { size:24, color:'#f4efe6' });
-  fl.position.set(p.x, p.y + 11, p.z);
-  g.add(fl);
-  var marker = makeGlow(parseInt(LV[personLevel(e)].c.slice(1), 16), 16);
-  marker.position.copy(p);
-  g.add(marker);
-  GL.focusGroup = g; GL.scene.add(g); GL.mat.opacity = 0.16;
-  var dest = p.clone().add(p.clone().normalize().multiplyScalar(58));
-  dest.y += 10;
-  glFlyTo(dest, p.clone(), 1600);
-}
-function glUnfocus(){
-  if(!GL) return;
-  glClearFocus();
-  glFlyTo(new THREE.Vector3(0, 72, 305), new THREE.Vector3(0, 0, 0), 1400);
-}
-function glReset(){ resetView(); }
-function glSyncFocus(){
-  if(!GL || S.mode !== '3d') return;
-  if(S.sel == null || S.sel < 0){ glUnfocus(); return; }
-  if(S.sel !== GL.focusDi) glFocus(S.sel);
-}
-function zoomBy(f){
-  if(S.mode === '3d' && GL){
-    var t = GL.controls.target, d = GL.camera.position.clone().sub(t).multiplyScalar(f);
-    d.setLength(Math.min(1000, Math.max(14, d.length())));
-    GL.camera.position.copy(t.clone().add(d));
-  } else hub.cam.z = Math.max(0.35, Math.min(3.2, hub.cam.z / f));
-}
-function resetView(){
-  if(S.mode === '3d' && GL) glFlyTo(new THREE.Vector3(0, 72, 305), new THREE.Vector3(0, 0, 0), 1200);
-  else hubFit();
-}
-
-/* ---------- keyboard navigation for custom dropdowns & pickers ----------
-   One capture-phase handler: arrow keys move a visible highlight, Enter
-   picks, Escape closes — for the sort dropdown, the person-picker hit
-   lists, and the profile "More actions" menu. Native <select> elements
-   keep their built-in keyboard behavior and are left alone. */
-function pickerListFor(t){
-  if(!t || !t.tagName) return null;
-  if(t.id === 'naddinput') return $('#naddlist');
-  if(t.id === 'faminput') return $('#famlist');
-  if(t.id === 'mergeinput') return $('#mergelist');
-  if(t.id === 'qminput') return $('#qmhits');
-  if(t.classList && t.classList.contains('grpq')){ var w = t.closest('.naddwrap'); return w ? w.querySelector('.grphits') : null; }
-  if(t.classList && t.classList.contains('dfq')) return document.querySelector('[data-dfamhits="' + t.getAttribute('data-dfq') + '"]');
-  return null;
-}
-function kbNav(e){
-  var t = e.target;
-  if(!t || !t.closest) return;
-  var key = e.key;
-  /* --- sort dropdown --- */
-  var dd = t.closest('#sortdd');
-  if(dd){
-    var pop = $('#sortpop'), btn = $('#sortbtn');
-    if(key === 'ArrowDown' || key === 'ArrowUp'){
-      e.preventDefault(); e.stopPropagation();
-      if(pop.hidden){ setSortPop(true, true); return; }
-      var act = kbMove(pop, $$('.sortopt', pop), key === 'ArrowDown' ? 1 : -1);
-      if(act) act.focus();
-    } else if(key === 'Home' && !pop.hidden){
-      e.preventDefault(); var f = $$('.sortopt', pop)[0]; kbSetAct(pop, f); if(f) f.focus();
-    } else if(key === 'End' && !pop.hidden){
-      e.preventDefault(); var os = $$('.sortopt', pop), l = os[os.length - 1]; kbSetAct(pop, l); if(l) l.focus();
-    } else if(key === 'Escape' && !pop.hidden){
-      e.preventDefault(); e.stopPropagation(); setSortPop(false); if(btn) btn.focus();
-    } else if((key === 'Enter' || key === ' ') && t.classList.contains('sortopt')){
-      e.preventDefault(); e.stopPropagation();
-      chooseSort(t.getAttribute('data-sv'));
-      t.__kbSuppressUntil = Date.now() + 400;
-    } else if((key === 'Enter' || key === ' ') && t === btn){
-      e.preventDefault(); e.stopPropagation(); kbActivate(btn);
-    }
-    return;
-  }
-  /* --- profile "More actions" menu --- */
-  var mn = t.closest('.menu');
-  if(mn){
-    var mpop = $('.menu-pop', mn), trig = $('[data-act="menu"]', mn);
-    var items = mpop ? $$('button', mpop) : [];
-    if(key === 'ArrowDown' || key === 'ArrowUp'){
-      e.preventDefault(); e.stopPropagation();
-      if(!mpop || mpop.hidden){ if(trig) trig.click(); var f2 = items[0]; if(f2) f2.focus(); return; }
-      if(!items.length) return;
-      var i = items.indexOf(document.activeElement);
-      var n = (i + (key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
-      items[n].focus();
-    } else if(key === 'Escape' && mpop && !mpop.hidden){
-      e.preventDefault(); e.stopPropagation();
-      closeMenus(); if(trig) trig.focus();
-    } else if(key === 'Home' && mpop && !mpop.hidden && items.length){ e.preventDefault(); items[0].focus(); }
-    else if(key === 'End' && mpop && !mpop.hidden && items.length){ e.preventDefault(); items[items.length - 1].focus(); }
-    else if((key === 'Enter' || key === ' ') && t.tagName === 'BUTTON'){
-      e.preventDefault(); e.stopPropagation(); kbActivate(t);
-    }
-    return;
-  }
-  /* --- person-picker hit lists (focus stays in the input) --- */
-  var list = pickerListFor(t);
-  if(list){
-    var hits = $$('.naddhit:not(.none)', list);
-    if(key === 'ArrowDown' || key === 'ArrowUp'){
-      if(!hits.length) return;
-      e.preventDefault(); e.stopPropagation();
-      list.setAttribute('role', 'listbox');
-      kbMove(list, hits, key === 'ArrowDown' ? 1 : -1);
-    } else if(key === 'Enter'){
-      var act2 = $('.kbact', list);
-      if(act2){ e.preventDefault(); e.stopPropagation(); act2.click(); }
-    } else if(key === 'Escape'){
-      if($('.kbact', list) || (list.id !== 'qmhits' && list.children.length)){
-        e.preventDefault(); e.stopPropagation();
-        kbSetAct(list, null);
-        if(list.id !== 'qmhits') list.innerHTML = '';
-      }
-    }
-    return;
-  }
-  /* --- filter popover: Escape closes and returns focus to its button --- */
-  if(key === 'Escape' && t.closest('#filterpop')){
-    var fp2 = $('#filterpop');
-    if(fp2 && !fp2.hidden){
-      e.preventDefault(); e.stopPropagation();
-      fp2.hidden = true;
-      var fb = $('#filterbtn'); fb.setAttribute('aria-expanded', 'false'); fb.focus();
-    }
-  }
-}
-
-/* ---------- events ---------- */
-function bind(){
-  var fq = $('#fq'), deb = null;
-  fq.addEventListener('input', function(){
-    clearTimeout(deb);
-    deb = setTimeout(function(){ S.q = fq.value; S.limit = 200; refresh(); }, 140);
-  });
-
-  /* nav buttons (bound once, here, not inside an action) */
-  var nh = $('#navhome'), nb = $('#navback'), nf = $('#navfwd');
-  if(nh) nh.addEventListener('click', goHome);
-  if(nb) nb.addEventListener('click', goBack);
-  if(nf) nf.addEventListener('click', goForward);
-
-  /* rail */
-  $('#railstats').addEventListener('click', function(e){
-    var b = e.target.closest('[data-rs]'); if(!b) return;
-    var k = b.getAttribute('data-rs');
-    if(k === 'people'){ clearFilter('all'); return; }
-    if(k === 'audit') S.auditOnly = !S.auditOnly;
-    else if(k === 'recent') S.recentOnly = !S.recentOnly;
-    else if(k === 'family') S.famOnly = !S.famOnly;
-    S.limit = 200; refresh();
-  });
-  $('#lvlchips').addEventListener('click', function(e){
-    var b = e.target.closest('[data-lf]'); if(!b) return;
-    S.lvlF = parseInt(b.getAttribute('data-lf'), 10) || 0; S.limit = 200; refresh();
-  });
-  $('#filterbtn').addEventListener('click', function(e){
-    e.stopPropagation();
-    var pop = $('#filterpop'); pop.hidden = !pop.hidden;
-    this.setAttribute('aria-expanded', String(!pop.hidden));
-  });
-  $('#filterpop').addEventListener('click', function(e){ e.stopPropagation(); });
-  $('#frel').addEventListener('change', function(e){ S.rel = e.target.value; S.limit = 200; refresh(); });
-  $('#sortbtn').addEventListener('click', function(e){ e.stopPropagation(); setSortPop(!sortPopOpen(), false); });
-  $('#sortpop').addEventListener('click', function(e){
-    var o = e.target.closest('.sortopt'); if(!o) return;
-    chooseSort(o.getAttribute('data-sv'));
-  });
-  $('#fauditonly').addEventListener('change', function(e){ S.auditOnly = e.target.checked; S.limit = 200; refresh(); });
-  $('#fenrichedonly').addEventListener('change', function(e){ S.enrichedOnly = e.target.checked; S.limit = 200; refresh(); });
-  $('#fclear').addEventListener('click', function(){ clearFilter('all'); $('#filterpop').hidden = true; });
-  $('#activeflt').addEventListener('click', function(e){
-    var b = e.target.closest('[data-clr]'); if(b) clearFilter(b.getAttribute('data-clr'));
-  });
-  $('#auditpill').addEventListener('click', openAudit);
-  $('#auditback').addEventListener('click', closeAudit);
-  $('#auundo').addEventListener('click', doUndo);
-  $('#auredo').addEventListener('click', doRedo);
-  $('#qaopen').addEventListener('click', openQuick);
-  $('#qaopen2').addEventListener('click', function(){ openAudit(); dashShow('quick'); });
-  $('#orgsbtn').addEventListener('click', function(){ openAudit(); dashShow('orgs'); });
-  $('#dashnav').addEventListener('click', function(ev){
-    var b = ev.target.closest('[data-dashsec]'); if(!b) return;
-    dashShow(b.getAttribute('data-dashsec'));
-  });
-  $('#dashsec-orgs').addEventListener('click', function(ev){
-    var tg = ev.target.closest('[data-orgtoggle]');
-    if(tg){ var key = tg.getAttribute('data-orgtoggle'); DORG.open[key] = !DORG.open[key]; renderDashOrgs(); return; }
-    var op = ev.target.closest('[data-openperson]');
-    if(op) dashOpenPerson(parseInt(op.getAttribute('data-openperson'), 10));
-  });
-  var grpEl = $('#dashsec-groups');
-  grpEl.addEventListener('click', function(ev){
-    var cr = ev.target.closest('[data-grpcreate]'); if(cr){ grpCreate(); return; }
-    var tb = ev.target.closest('[data-grptoggle]');
-    if(tb){ var tn = tb.getAttribute('data-grptoggle'); DGRP.open = DGRP.open === tn ? null : tn; DGRP.confirmDel = null; renderDashGroups(); return; }
-    var rn = ev.target.closest('[data-grprename]');
-    if(rn){ DGRP.renaming = rn.getAttribute('data-grprename'); DGRP.open = DGRP.renaming; renderDashGroups(); var ri = $('#grprename'); if(ri){ ri.focus(); ri.select(); } return; }
-    if(ev.target.closest('[data-grprenamex]')){ DGRP.renaming = null; renderDashGroups(); return; }
-    var rd = ev.target.closest('[data-grprenamed]');
-    if(rd){ grpRenameSave(rd.getAttribute('data-grprenamed')); return; }
-    var dl = ev.target.closest('[data-grpdel]');
-    if(dl){ DGRP.confirmDel = dl.getAttribute('data-grpdel'); renderDashGroups(); return; }
-    var dg = ev.target.closest('[data-grpdelgo]');
-    if(dg){
-      var dn = dg.getAttribute('data-grpdelgo');
-      grpPatchMembers(dn, function(gs){ var ns = gs.filter(function(g){ return g !== dn; }); return ns.length !== gs.length ? ns : null; });
-      var xi = DGRP.extra.indexOf(dn); if(xi >= 0) DGRP.extra.splice(xi, 1);
-      DGRP.confirmDel = null; if(DGRP.open === dn) DGRP.open = null;
-      renderDashGroups(); toast('Group "' + dn + '" deleted.');
-      return;
-    }
-    var rm = ev.target.closest('[data-grprm]');
-    if(rm){
-      var rmn = rm.getAttribute('data-grprm'), rdi = parseInt(rm.getAttribute('data-di'), 10), re = D.directory[rdi];
-      if(re) setPersonGroups(rdi, personGroups(re).filter(function(g){ return g !== rmn; }));
-      renderDashGroups(); return;
-    }
-    var ad = ev.target.closest('[data-gadd]');
-    if(ad){
-      var anm = ad.getAttribute('data-gadd'), adi = parseInt(ad.getAttribute('data-di'), 10), ae = D.directory[adi];
-      if(ae){
-        var ags = personGroups(ae);
-        if(ags.indexOf(anm) < 0){ ags.push(anm); setPersonGroups(adi, ags); }
-        var axi = DGRP.extra.indexOf(anm); if(axi >= 0) DGRP.extra.splice(axi, 1);
-      }
-      renderDashGroups();
-      var q3 = document.querySelector('.grpq[data-grp="' + CSS.escape(anm) + '"]'); if(q3) q3.focus();
-      return;
-    }
-  });
-  grpEl.addEventListener('input', function(ev){
-    if(ev.target.classList && ev.target.classList.contains('grpq')) grpSearch(ev.target);
-  });
-  grpEl.addEventListener('keydown', function(ev){
-    if(ev.target.id === 'grpnew' && ev.key === 'Enter'){ ev.preventDefault(); grpCreate(); }
-    if(ev.target.id === 'grprename' && ev.key === 'Enter'){ ev.preventDefault(); if(DGRP.renaming) grpRenameSave(DGRP.renaming); }
-  });
-  var famEl = $('#dashsec-family');
-  famEl.addEventListener('click', function(ev){
-    var ex = ev.target.closest('[data-dfexpand]');
-    if(ex){ famOpenSpace({ type:'tree', id:ex.getAttribute('data-dfexpand') }); return; }
-    var opn = ev.target.closest('[data-dfopen]');
-    if(opn){ famOpenSpace({ type:'fit' }); return; }
-    var hm = ev.target.closest('[data-dfhome]');
-    if(hm){ famOpenSpace({ type:'tree', id:hm.getAttribute('data-dfhome') }); return; }
-    var go = ev.target.closest('[data-dfgo]');
-    if(go){ dfGlideCluster(go.getAttribute('data-dfgo')); return; }
-    var zm = ev.target.closest('[data-dfzoom]');
-    if(zm){
-      var z = zm.getAttribute('data-dfzoom'), vp = dfViewport();
-      if(z === 'fit') dfFitAll(true);
-      else if(vp){
-        var cx = vp.clientWidth / 2, cy = vp.clientHeight / 2, c = DFSPACE.cam;
-        var wx = (cx - c.x) / c.k, wy = (cy - c.y) / c.k;
-        var k2 = z === '100' ? 1 : Math.max(0.05, Math.min(2.5, c.k * (z === 'in' ? 1.25 : 1 / 1.25)));
-        DFSPACE.fit = false;
-        dfGlideTo({ k:k2, x:cx - wx * k2, y:cy - wy * k2 }, 300);
-      }
-      return;
-    }
-    var cl = ev.target.closest('[data-dfclose]');
-    if(cl || (ev.target.classList && ev.target.classList.contains('dfamfs'))){ famCloseSpace(); return; }
-    var an = ev.target.closest('[data-dfnode]');
-    if(an){
-      if(DFSPACE.moved){ DFSPACE.moved = false; return; }
-      var ndi = parseInt(an.getAttribute('data-di'), 10);
-      var goHome = !!an.getAttribute('data-home');
-      DFAM.editing = ndi;
-      renderDashFamily();
-      if(goHome) dfGlidePerson(ndi);
-      return;
-    }
-    var rm = ev.target.closest('[data-dfrm]');
-    if(rm){ dashFamRemove(parseInt(rm.getAttribute('data-dfrm'), 10), parseInt(rm.getAttribute('data-i'), 10)); return; }
-    var ad = ev.target.closest('[data-dfadd]');
-    if(ad){ dashFamAdd(parseInt(ad.getAttribute('data-dfadd'), 10), parseInt(ad.getAttribute('data-tdi'), 10)); return; }
-    var op = ev.target.closest('[data-openperson]');
-    if(op) dashOpenPerson(parseInt(op.getAttribute('data-openperson'), 10));
-  });
-  famEl.addEventListener('input', function(ev){
-    if(ev.target.classList && ev.target.classList.contains('dfq')) dashFamSearch(ev.target);
-  });
-  famEl.addEventListener('change', function(ev){
-    if(ev.target.id && ev.target.id.indexOf('dfamrel-') === 0) famRelSave(ev.target.value);
-  });
-  document.addEventListener('keydown', function(ev){
-    if(ev.key === 'Escape' && DFAM.open && !famEl.hidden) famCloseSpace();
-  });
-  window.addEventListener('resize', function(){
-    if(DFAM.open && DFSPACE.fit) dfFitAll(false);
-  });
-  /* space navigation: drag pans with momentum, two pointers pinch-zoom
-     around their midpoint, wheel zooms around the cursor */
-  var dfPtrs = {}, dfPan = null, dfPinch = null;
-  famEl.addEventListener('pointerdown', function(ev){
-    var vp = ev.target.closest ? ev.target.closest('.dfspace') : null;
-    if(!vp || (ev.target.closest && ev.target.closest('button, input, select, textarea, a, .dfamedit'))) return;
-    dfStopGlide();
-    dfPtrs[ev.pointerId] = { x:ev.clientX, y:ev.clientY };
-    var ids = Object.keys(dfPtrs);
-    if(ids.length === 2){
-      var pa = dfPtrs[ids[0]], pb = dfPtrs[ids[1]];
-      dfPinch = { d:Math.hypot(pa.x - pb.x, pa.y - pb.y), mx:(pa.x + pb.x) / 2, my:(pa.y + pb.y) / 2 };
-      dfPan = null;
-    } else {
-      dfPan = { x:ev.clientX, y:ev.clientY, lx:ev.clientX, ly:ev.clientY, lt:performance.now(), vx:0, vy:0, moved:false };
-    }
-    DFSPACE.fit = false;
-  });
-  document.addEventListener('pointermove', function(ev){
-    if(!dfPtrs[ev.pointerId]) return;
-    dfPtrs[ev.pointerId] = { x:ev.clientX, y:ev.clientY };
-    var ids = Object.keys(dfPtrs);
-    if(dfPinch && ids.length === 2){
-      var pa = dfPtrs[ids[0]], pb = dfPtrs[ids[1]];
-      var d = Math.hypot(pa.x - pb.x, pa.y - pb.y), mx = (pa.x + pb.x) / 2, my = (pa.y + pb.y) / 2;
-      var vp = dfViewport();
-      if(vp && dfPinch.d){
-        var r = vp.getBoundingClientRect(), cx = mx - r.left, cy = my - r.top, c = DFSPACE.cam;
-        var wx = (cx - c.x) / c.k, wy = (cy - c.y) / c.k;
-        var k2 = Math.max(0.04, Math.min(2.5, c.k * (d / dfPinch.d)));
-        DFSPACE.cam = { k:k2, x:cx - wx * k2 + (mx - dfPinch.mx), y:cy - wy * k2 + (my - dfPinch.my) };
-        dfApplyCam();
-        DFSPACE.moved = true;
-      }
-      dfPinch = { d:d, mx:mx, my:my };
-      return;
-    }
-    if(!dfPan) return;
-    var dx = ev.clientX - dfPan.x, dy = ev.clientY - dfPan.y;
-    if(Math.abs(dx) + Math.abs(dy) > 4) dfPan.moved = true;
-    if(dfPan.moved){
-      DFSPACE.cam.x += ev.clientX - dfPan.lx;
-      DFSPACE.cam.y += ev.clientY - dfPan.ly;
-      dfApplyCam();
-      DFSPACE.moved = true;
-    }
-    var now = performance.now(), dt = now - dfPan.lt;
-    if(dt > 0){
-      dfPan.vx = 0.7 * dfPan.vx + 0.3 * ((ev.clientX - dfPan.lx) / dt * 16);
-      dfPan.vy = 0.7 * dfPan.vy + 0.3 * ((ev.clientY - dfPan.ly) / dt * 16);
-      dfPan.lx = ev.clientX; dfPan.ly = ev.clientY; dfPan.lt = now;
-    }
-  });
-  function dfPtrUp(ev){
-    var wasPinch = !!dfPinch;
-    delete dfPtrs[ev.pointerId];
-    if(!Object.keys(dfPtrs).length) dfPinch = null;
-    if(dfPan && !wasPinch){
-      if(dfPan.moved && !dfReduced() && (Math.abs(dfPan.vx) > 0.6 || Math.abs(dfPan.vy) > 0.6)){
-        DFSPACE.vel = { x:dfPan.vx, y:dfPan.vy };
-        DFSPACE.momRaf = requestAnimationFrame(dfMomStep);
-      }
-      dfPan = null;
-    }
-    if(DFSPACE.moved) setTimeout(function(){ DFSPACE.moved = false; }, 60);
-  }
-  document.addEventListener('pointerup', dfPtrUp);
-  document.addEventListener('pointercancel', dfPtrUp);
-  famEl.addEventListener('wheel', function(ev){
-    var vp = ev.target.closest ? ev.target.closest('.dfspace') : null;
-    if(!vp || (ev.target.closest && ev.target.closest('.dfamedit'))) return;
+  el.addEventListener('pointerup', fup); el.addEventListener('pointercancel', fup);
+  el.addEventListener('wheel', function(ev){
     ev.preventDefault();
-    dfStopGlide();
-    var r = vp.getBoundingClientRect(), cx = ev.clientX - r.left, cy = ev.clientY - r.top, c = DFSPACE.cam;
-    var wx = (cx - c.x) / c.k, wy = (cy - c.y) / c.k;
-    var k2 = Math.max(0.04, Math.min(2.5, c.k * Math.exp(-ev.deltaY * 0.0016)));
-    DFSPACE.cam = { k:k2, x:cx - wx * k2, y:cy - wy * k2 };
-    DFSPACE.fit = false;
-    dfApplyCam();
+    var z0 = FAMV.cam.z, z2 = Math.max(0.2, Math.min(1.6, z0 * Math.exp(-ev.deltaY * 0.0011)));
+    var r = el.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top, W = r.width, H = r.height;
+    var wx = (mx - W / 2) / z0 + FAMV.cam.x, wy = (my - H / 2) / z0 + FAMV.cam.y;
+    FAMV.cam.z = z2; FAMV.cam.x = wx - (mx - W / 2) / z2; FAMV.cam.y = wy - (my - H / 2) / z2; famApply();
   }, { passive:false });
-  $('#qaback').addEventListener('click', closeQuick);
-  $('#qaundo').addEventListener('click', doUndo);
-  $('#qaredo').addEventListener('click', doRedo);
-  $('#qaprev').addEventListener('click', function(){ qaGo(-1); });
-  $('#qanext').addEventListener('click', function(){ qaGo(1); });
-  $('#qasort').addEventListener('change', function(){ qaSetSort(this.value); });
-  $('#qafilters').addEventListener('click', function(ev){
-    var b = ev.target.closest('[data-qf]');
-    if(b) qaSetFilter(b.getAttribute('data-qf'));
-  });
-  $('#qabody').addEventListener('click', function(ev){
-    if(ev.target.closest('[data-qdel]')){ qaDelete(); return; }
-    if(ev.target.closest('[data-qmerge]')){ QA.merge = { step:'pick', other:null, survivor:'picked' }; renderQuick(); var qmi = $('#qminput'); if(qmi) qmi.focus(); return; }
-    var qmp = ev.target.closest('[data-qmpick]');
-    if(qmp && QA.merge){ QA.merge.other = parseInt(qmp.getAttribute('data-qmpick'), 10); QA.merge.step = 'confirm'; renderQuick(); return; }
-    if(ev.target.closest('[data-qmswap]') && QA.merge){ QA.merge.survivor = QA.merge.survivor === 'picked' ? 'current' : 'picked'; renderQuick(); return; }
-    if(ev.target.closest('[data-qmgo]')){ qaDoMerge(); return; }
-    if(ev.target.closest('[data-qmback]') && QA.merge){ QA.merge.step = 'pick'; QA.merge.other = null; renderQuick(); return; }
-    if(ev.target.closest('[data-qmcancel]')){ QA.merge = null; renderQuick(); return; }
-    var nm = ev.target.closest('[data-qname]');
-    if(nm && !nm.querySelector('input')){ qaEditName(nm); return; }
-    var d = ev.target.closest('[data-qd]');
-    if(d){
-      var box = d.closest('[data-qdk]');
-      var key = box.getAttribute('data-qdk');
-      var cur = box.getAttribute('data-v'), nv = d.getAttribute('data-qd');
-      qaTap(key, cur === nv ? '' : nv, d);
-      return;
-    }
-    var b = ev.target.closest('[data-qk]');
-    if(b){ qaTap(b.getAttribute('data-qk'), b.getAttribute('data-qv'), b); return; }
-    if(ev.target.closest('#qaclose2')) closeQuick();
-  });
-  $('#qabody').addEventListener('input', function(ev){
-    if(ev.target.id === 'qminput') renderQaMergeHits(ev.target.value);
-  });
-  (function(){
-    var sx = 0, sy = 0, swI = false, qb = $('#qabody');
-    qb.addEventListener('touchstart', function(ev){
-      var t = ev.touches[0]; sx = t.clientX; sy = t.clientY;
-      swI = !!(ev.target && ev.target.closest && ev.target.closest('#qatick'));
-    }, { passive:true });
-    qb.addEventListener('touchend', function(ev){
-      if(!QA.open || !QA.queue.length || swI) return;
-      var t = ev.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
-      if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy)) qaGo(dx < 0 ? 1 : -1);
-    }, { passive:true });
+}
+function famPinchDist(){ var k = Object.keys(FAMV.ptr).map(function(i){ return FAMV.ptr[i]; }); return k.length < 2 ? 0 : Math.hypot(k[0].x - k[1].x, k[0].y - k[1].y); }
+function famApply(){
+  var w = $('#fworld'), el = FAMV.el; if(!w || !el) return;
+  var r = el.getBoundingClientRect(), z = FAMV.cam.z;
+  w.style.transform = 'translate(' + (r.width / 2 - FAMV.cam.x * z) + 'px,' + (r.height / 2 - FAMV.cam.y * z) + 'px) scale(' + z + ')';
+}
+function famFit(){
+  var el = FAMV.el, lay = FAMV.lay; if(!el || !lay) return;
+  var r = el.getBoundingClientRect();
+  FAMV.cam = { x:lay.W / 2, y:lay.H / 2, z:Math.max(0.2, Math.min(1, Math.min(r.width / lay.W, r.height / lay.H) * 0.95)) };
+  famApply();
+}
+function famCoast(){
+  cancelAnimationFrame(FAMV.raf);
+  (function step(){
+    if(document.body.getAttribute('data-view') !== 'family') return;
+    FAMV.vel.x *= 0.92; FAMV.vel.y *= 0.92;
+    if(Math.abs(FAMV.vel.x) + Math.abs(FAMV.vel.y) < 0.15) return;
+    FAMV.cam.x -= FAMV.vel.x; FAMV.cam.y -= FAMV.vel.y; famApply(); FAMV.raf = requestAnimationFrame(step);
   })();
-  $('#aufilters').addEventListener('click', function(ev){
-    var b = ev.target.closest('button'); if(!b) return;
-    auSetFilter(b.getAttribute('data-f'));
-  });
-  $('#austats').addEventListener('click', function(ev){
-    var b = ev.target.closest('.austat'); if(!b) return;
-    auSetFilter(b.getAttribute('data-f'));
-  });
-  $('#auselall').addEventListener('click', function(){
-    if(AUD.f === 'dup' || AUD.f === 'pmerge'){
-      var gs = AUD.dupGroups || [];
-      var all = gs.length && gs.every(function(_, gi){ return AUD.selGroups[gi]; });
-      AUD.selGroups = {};
-      if(!all) gs.forEach(function(_, gi){ AUD.selGroups[gi] = 1; });
-      renderAudit();
-      return;
-    }
-    var all = AUD.rows.length && AUD.rows.every(function(r){ return AUD.sel[r.di]; });
-    if(all) AUD.sel = {}; else AUD.rows.forEach(function(r){ AUD.sel[r.di] = 1; });
-    renderAudit();
-  });
-  $('#aubulk').addEventListener('click', function(ev){
-    var b = ev.target.closest('[data-bulk]'); if(!b) return;
-    var k = b.getAttribute('data-bulk');
-    if(k === 'audit') bulkAudit('audited');
-    else if(k === 'unaudit') bulkAudit('needs_audit');
-    else if(k === 'delete') bulkDelete();
-    else if(k === 'mergeall') doMergeAllDups();
-    else if(k === 'mergesel') doMergeSelected();
-    else if(k === 'merge2') openMergeSel();
-    else if(k === 'clearsel'){ AUD.selGroups = {}; renderAudit(); }
-    else if(k === 'clear'){ AUD.sel = {}; renderAudit(); }
-  });
-  $('#ausort').addEventListener('change', function(ev){ AUD.sort = ev.target.value; renderAudit(); });
-  var _audt = null;
-  $('#auq').addEventListener('input', function(ev){ clearTimeout(_audt); _audt = setTimeout(function(){ AUD.q = ev.target.value; renderAudit(); }, 200); });
-  $('#aubody').addEventListener('change', function(ev){
-    var cb = ev.target.closest('.ausel'); if(cb){
-      var di = parseInt(cb.getAttribute('data-di'), 10);
-      if(cb.checked) AUD.sel[di] = 1; else delete AUD.sel[di];
-      renderBulk();
-      return;
-    }
-    var gcb = ev.target.closest('.dupgsel'); if(gcb){
-      var gi = parseInt(gcb.getAttribute('data-gi'), 10);
-      if(gcb.checked) AUD.selGroups[gi] = 1; else delete AUD.selGroups[gi];
-      renderBulk();
-      return;
-    }
-    var radio = ev.target.closest('input[type="radio"][data-gi]');
-    if(radio){
-      dupSetSurvivor(parseInt(radio.getAttribute('data-gi'), 10), parseInt(radio.getAttribute('data-di'), 10));
-      if(AUD.f === 'pmerge') renderPhotoMerge(AUD.q.trim().toLowerCase());
-      else renderDupAudit(AUD.q.trim().toLowerCase());
-      return;
-    }
-  });
-  $('#aubody').addEventListener('click', function(ev){
-    if(ev.target.classList && ev.target.classList.contains('ausel')) return;
-    var mp = ev.target.closest('[data-mselpick]');
-    if(mp && AUD.msel){ AUD.msel.survivor = parseInt(mp.getAttribute('data-mselpick'), 10); renderMergeSel(); return; }
-    if(ev.target.closest('[data-mselgo]')){ doMergeSel(); return; }
-    if(ev.target.closest('[data-mselback]')){ AUD.msel = null; renderAudit(); return; }
-    var nmt = ev.target.closest('[data-nedit]');
-    if(nmt){ ev.stopPropagation(); auEditName(nmt, parseInt(nmt.getAttribute('data-nedit'), 10)); return; }
-    var dm = ev.target.closest('[data-dupmerge]');
-    if(dm){ ev.stopPropagation(); doMergeGroup(parseInt(dm.getAttribute('data-dupmerge'), 10)); return; }
-    var ab = ev.target.closest('[data-auact]');
-    if(ab){
-      ev.stopPropagation();
-      var rr = ab.closest('.aurow');
-      setAuditFor(parseInt(rr.getAttribute('data-di'), 10), ab.getAttribute('data-auact') === 'audit' ? 'audited' : 'needs_audit');
-      return;
-    }
-    var row = ev.target.closest('.aurow');
-    if(row){ AUD.fromAudit = true; closeAudit(); openPerson(parseInt(row.getAttribute('data-di'), 10), { push:true, edit:true, fromAuditKeep:true }); }
-  });
-  $('#listtoggle').addEventListener('click', toggleList);
-  $('#settingsbtn').addEventListener('click', openSettings);
-  $('#leftbody').addEventListener('click', function(e){
-    if(e.target.closest('[data-more]')){ S.limit += 200; renderRail(); return; }
-    var dot = e.target.closest('.fstrip .iseg');
-    if(dot){
-      e.stopPropagation();
-      var di = parseInt(dot.getAttribute('data-di'), 10), sec = dot.getAttribute('data-sec');
-      if(S.sel !== di) openPerson(di, {});
-      enterEdit(sec);
-      return;
-    }
-    var row = e.target.closest('[data-i]');
-    if(row) openPerson(parseInt(row.getAttribute('data-i'), 10), { lvl:parseInt(row.getAttribute('data-go'), 10) || 1, edit:S.editing });
-  });
-  $('#leftbody').addEventListener('keydown', function(e){
-    var row = e.target.closest('[data-i]');
-    if(row && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); openPerson(parseInt(row.getAttribute('data-i'), 10), { lvl:parseInt(row.getAttribute('data-go'), 10) || 1, edit:S.editing }); }
-  });
+}
+function famGlide(di){
+  var p = FAMV.pos[di]; if(!p) return;
+  var from = { x:FAMV.cam.x, y:FAMV.cam.y, z:FAMV.cam.z }, to = { x:p.x, y:p.y, z:Math.max(0.7, FAMV.cam.z) }, t0 = performance.now();
+  cancelAnimationFrame(FAMV.raf);
+  (function step(now){
+    var k = Math.min(1, ((now || performance.now()) - t0) / 420), ease = 1 - Math.pow(1 - k, 3);
+    FAMV.cam = { x:from.x + (to.x - from.x) * ease, y:from.y + (to.y - from.y) * ease, z:from.z + (to.z - from.z) * ease }; famApply();
+    if(k < 1) FAMV.raf = requestAnimationFrame(step);
+  })();
+}
+function famCard(){
+  var box = $('#famcard'); if(!box) return;
+  var di = S.fam.focus;
+  if(di == null || !D.directory[di]){ box.hidden = true; box.innerHTML = ''; return; }
+  var e = D.directory[di], f = famDisplay()[di] || { parents:[], spouses:[], children:[], siblings:[] };
+  var plural = function(n, w, ws){ return n ? n + ' ' + (n === 1 ? w : ws) : ''; };
+  var bits = [plural(f.parents.length, 'parent', 'parents'), f.spouses.length ? 'spouse' : '', plural(f.children.length, 'child', 'children'), plural(f.siblings.length, 'sibling', 'siblings')].filter(Boolean);
+  box.hidden = false;
+  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(bits.join(' · ') || 'No links') + '</small></div><span class="sp"></span>' +
+    '<button type="button" class="ib" data-act="famclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+    '<div class="nc-f"><span class="sp"></span><button type="button" class="btn ghost sm" data-act="openedit" data-di="' + di + '" data-sec="connections">Edit links</button><button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>';
+}
 
-  /* stage */
-  $('#modeToggle').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) setMode(b.getAttribute('data-m')); });
-  $('#colorToggle').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) setColorMode(b.getAttribute('data-c')); });
-  $('#bgtoggle').addEventListener('click', function(){
-    S.showBg = !S.showBg; this.setAttribute('aria-pressed', String(S.showBg));
-    if(GL && GL.bg) GL.bg.visible = S.showBg;
+/* ============================================================
+   Groups — your own groups plus churches, employers and schools, each with its people.
+   ============================================================ */
+var GKINDS = [['groups', 'Groups'], ['churches', 'Churches'], ['companies', 'Employers'], ['universities', 'Schools']];
+function grpNamesFor(kind){
+  if(kind === 'groups'){ var m = allGroups(); return Object.keys(m).sort().map(function(n){ return { n:n, c:m[n].length }; }); }
+  return orgNames(kind).map(function(n){ return { n:n, c:orgMembers(kind, n).length }; }).filter(function(x){ return x.c > 0; }).sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); });
+}
+function viewGroups(v){
+  var kind = S.route.seg[0] || 'groups', name = S.route.seg[1] || '';
+  if(!GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
+  var names = grpNamesFor(kind);
+  var tabs = '<nav class="tabrow">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
+  var list = names.map(function(x){ return '<a href="#/groups/' + kind + '/' + encodeURIComponent(x.n) + '" class="grow' + (x.n === name ? ' on' : '') + '"><span>' + esc(x.n) + '</span><em>' + x.c + '</em></a>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>';
+  var add = kind === 'groups' ? '<div class="finder inline"><input id="gnew" placeholder="New group name" autocomplete="off"><button type="button" class="btn sm" data-act="gnew">Create</button></div>' : '';
+  var detail = '';
+  if(name){
+    var mem = kind === 'groups' ? (allGroups()[name] || []) : orgMembers(kind, name);
+    mem = mem.slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+    detail = '<div class="gdet"><div class="gdh"><a class="ib backm" href="#/groups/' + kind + '" aria-label="Back to list">' + ic('chevl', 18) + '</a><div><h2>' + esc(name) + '</h2><small>' + mem.length + ' ' + (mem.length === 1 ? 'person' : 'people') + '</small></div><span class="sp"></span>' +
+      (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
+      (kind === 'groups' ? '<div class="finder"><input id="gaddq" data-g="' + esc(name) + '" placeholder="Add a person to this group" autocomplete="off"><div id="gaddr" class="hits"></div></div>' : '<p class="note">Membership comes from each profile’s Background section.</p>') +
+      '<div class="plist">' + (mem.map(function(di, i){ var e = D.directory[di];
+        return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="popen1" data-di="' + di + '">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span></a>' +
+          (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>'; }).join('') || '<p class="dim pad">No one yet.</p>') + '</div></div>';
+  }
+  v.innerHTML = '<div class="page groups' + (name ? ' has-detail' : '') + '"><div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div></div>' + tabs +
+    '<div class="ggrid"><aside class="glist">' + add + list + '</aside><section class="gmain">' + (detail || '<div class="empty"><h3>Pick one</h3><p>Choose a name on the left to see who is in it.</p></div>') + '</section></div></div>';
+}
+function groupRename(oldN, newN){
+  newN = newN.trim(); if(!newN || newN === oldN) return;
+  txn('Rename group', function(){
+    (allGroups()[oldN] || []).forEach(function(di){
+      var arr = personGroups(D.directory[di]).map(function(g){ return g === oldN ? newN : g; });
+      setPersonGroups(di, arr.filter(function(g, i) { return arr.indexOf(g) === i; }));
+    });
   });
-  $('#zin').addEventListener('click', function(){ zoomBy(0.8); });
-  $('#zout').addEventListener('click', function(){ zoomBy(1.25); });
-  $('#zreset').addEventListener('click', resetView);
-  $('#legend').addEventListener('click', function(e){
-    var b = e.target.closest('button'); if(!b) return;
-    if(b.hasAttribute('data-tf')){ var t2 = b.getAttribute('data-tf'); S.tierF = S.tierF === t2 ? '' : t2; }
-    else if(b.hasAttribute('data-rf')){ var k = b.getAttribute('data-rf'); S.rel = S.rel === k ? '' : k; }
-    S.rail = 'people'; S.limit = 200; refresh();
-  });
-  if(window.ResizeObserver){
-    var pend = false;
-    new ResizeObserver(function(){
-      if(pend) return; pend = true;
-      requestAnimationFrame(function(){ pend = false; hubResize(); glResize(); });
-    }).observe($('#stage'));
-  } else addEventListener('resize', function(){ hubResize(); glResize(); });
+  GRP_EXTRA = GRP_EXTRA.map(function(g){ return g === oldN ? newN : g; }); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA));
+}
+function groupDelete(n){
+  txn('Delete group', function(){ (allGroups()[n] || []).forEach(function(di){ setPersonGroups(di, personGroups(D.directory[di]).filter(function(g){ return g !== n; })); }); });
+  GRP_EXTRA = GRP_EXTRA.filter(function(g){ return g !== n; }); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA));
+}
 
-  /* dossier panel */
-  var rb = $('#rightbody');
-  rb.addEventListener('click', function(e){
-    /* Waived sections are inert below their header (the header keeps the toggle). */
-    if(e.target.closest && e.target.closest('.esec.waived .sbody')) return;
-    var a = e.target.closest('[data-act]');
-    if(a){ e.stopPropagation(); act(a.getAttribute('data-act'), a); return; }
-    var sg = e.target.closest('#evinit button');
-    if(sg){ $$('button', sg.parentNode).forEach(function(x){ x.classList.toggle('on', x === sg); }); return; }
-    var tseg = e.target.closest('.tseg[data-tier]');
-    if(tseg){
-      var tv = tseg.getAttribute('data-tier');
-      $$('.tseg', tseg.parentNode).forEach(function(x){ x.classList.toggle('on', x === tseg); });
-      setField('tier', tv); return;
-    }
-    var mst = e.target.closest('.mstop');
-    if(mst){
-      var mv = mst.getAttribute('data-v'), track = mst.closest('.momtrack');
-      setField('momentum', mv);
-      if(track){
-        track.setAttribute('data-v', mv);
-        $$('.mstop', track).forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-v') === mv); });
-        var fill = $('.momfill', track); if(fill) fill.style.width = momPos(mv) + '%';
-        var lab = $('.momlabels b', track.parentNode); if(lab) lab.textContent = MOM_LABELS[mv];
-      }
-      updateFills(); return;
-    }
-    var pd = e.target.closest('.pdot');
-    if(pd){
-      var box = pd.closest('.dots'), nv = box.getAttribute('data-v') === pd.getAttribute('data-v') ? '' : pd.getAttribute('data-v');
-      box.setAttribute('data-v', nv);
-      $$('.pdot', box).forEach(function(d2){ d2.classList.toggle('on', d2.getAttribute('data-v') === nv && nv !== ''); });
-      setField(box.getAttribute('data-pk'), nv); return;
-    }
-    var ah = e.target.closest('.naddhit');
-    if(ah && ah.getAttribute('data-ai')){ addClose(D.directory[S.sel], parseInt(ah.getAttribute('data-ai'), 10)); return; }
-    if(ah && ah.getAttribute('data-fi')){ addFam(D.directory[S.sel], parseInt(ah.getAttribute('data-fi'), 10)); return; }
-    if(ah && ah.getAttribute('data-mh')){ doMerge(D.directory[S.sel], ah.getAttribute('data-mh')); return; }
-    var um = e.target.closest('[data-act="unmerge"]');
-    if(um){ doUnmerge(D.directory[S.sel]); return; }
-    var scb = e.target.closest('.skcatbtn');
-    if(scb){
-      var scEdit = scb.closest('.skedit'), scCat = scb.getAttribute('data-skcat');
-      SK_OPEN = (SK_OPEN === scCat) ? null : scCat;
-      if(scEdit) syncSkillOpts(scEdit);
-      return;
-    }
-    var sko = e.target.closest('.skopt');
-    if(sko){
-      var skEdit = sko.closest('.skedit'), skCont = skEdit ? $('.tchips', skEdit) : null;
-      if(skCont){
-        var skv = sko.getAttribute('data-skill'), ex = null;
-        $$('.tchip', skCont).forEach(function(c){ if(c.getAttribute('data-tv') === skv) ex = c; });
-        if(ex) ex.remove();
-        else {
-          var sktmp = document.createElement('div');
-          sktmp.innerHTML = tagChip(skv, true, true);
-          skCont.appendChild(sktmp.firstChild);
-        }
-        setField(skCont.getAttribute('data-pk'), readTags(skCont));
-        syncSkillOpts(skEdit);
-      }
-      return;
-    }
-    var tc = e.target.closest('.tchip');
-    if(tc){
-      var cont = tc.closest('.tchips'), tcEdit = tc.closest('.skedit');
-      if(cont.getAttribute('data-mode') === 'pick') tc.classList.toggle('on');
-      else tc.remove();
-      setField(cont.getAttribute('data-pk'), readTags(cont));
-      if(tcEdit) syncSkillOpts(tcEdit);
-    }
-  });
-  rb.addEventListener('keydown', function(e){
-    if(e.target.classList && e.target.classList.contains('skadd') && e.key === 'Enter'){
-      e.preventDefault();
-      var sv = e.target.value.trim(); if(!sv) return;
-      var sEdit = e.target.closest('.skedit'), sCont = sEdit ? $('.tchips', sEdit) : null;
-      if(!sCont) return;
-      var sDup = false;
-      $$('.tchip', sCont).forEach(function(c){ if(c.getAttribute('data-tv').toLowerCase() === sv.toLowerCase()) sDup = true; });
-      if(!sDup){
-        var stmp = document.createElement('div');
-        stmp.innerHTML = tagChip(sv, true, true);
-        sCont.appendChild(stmp.firstChild);
-      }
-      e.target.value = '';
-      setField(sCont.getAttribute('data-pk'), readTags(sCont));
-      syncSkillOpts(sEdit);
-      return;
-    }
-    if(e.target.classList && e.target.classList.contains('tadd') && e.key === 'Enter'){
-      e.preventDefault();
-      var v = e.target.value.trim(); if(!v) return;
-      var cont = e.target.parentNode, dup = false;
-      $$('.tchip', cont).forEach(function(c){ if(c.getAttribute('data-tv').toLowerCase() === v.toLowerCase()){ c.classList.add('on'); dup = true; } });
-      if(!dup){
-        var tmp = document.createElement('div');
-        tmp.innerHTML = tagChip(v, true, cont.getAttribute('data-mode') !== 'pick');
-        cont.insertBefore(tmp.firstChild, e.target);
-      }
-      e.target.value = '';
-      setField(cont.getAttribute('data-pk'), readTags(cont));
-    }
-  });
-  rb.addEventListener('keydown', function(e){
-    /* Skills flow: arrows walk categories and the open panel's skills;
-       Enter/Space stay native on the buttons; Right opens, Left closes. */
-    var t = e.target;
-    if(!t.classList || (!t.classList.contains('skcatbtn') && !t.classList.contains('skopt'))) return;
-    var flow = t.closest('.skflow'); if(!flow) return;
-    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); e.stopPropagation(); kbActivate(t); return; }
-    if(e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End'){
-      var items = $$('.skcatbtn, .skopt', flow).filter(function(el){ return el.offsetParent !== null; });
-      var i = items.indexOf(t); if(i < 0 || !items.length) return;
-      e.preventDefault();
-      var n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1
-        : (i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
-      items[n].focus();
-    } else if(e.key === 'ArrowRight' && t.classList.contains('skcatbtn')){
-      var cat = t.closest('.skcat');
-      if(cat && !cat.classList.contains('open')){ e.preventDefault(); t.click(); }
-    } else if(e.key === 'ArrowLeft' && t.classList.contains('skcatbtn')){
-      var cat2 = t.closest('.skcat');
-      if(cat2 && cat2.classList.contains('open')){ e.preventDefault(); t.click(); }
-    }
-  });
-  rb.addEventListener('input', function(e){
-    var t = e.target;
-    if(t.closest && t.closest('.esec.waived .sbody')) return;
-    if(t.id === 'naddinput'){ renderNadd(t.value); return; }
-    if(t.id === 'faminput'){ famSearch(t.value); return; }
-    if(t.id === 'mergeinput'){ mergeSearch(t.value); return; }
-    if(t.closest('#cprows')){ syncConnPhases(); return; }
-    var k = t.getAttribute && t.getAttribute('data-pk');
-    if(k && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && k !== 'phone') setField(k, t.value);
-  });
-  rb.addEventListener('change', function(e){
-    var t = e.target;
-    if(t.id === 'famrel'){ famRelSave(t.value); return; }
-    if(t.hasAttribute && t.hasAttribute('data-secwv')){
-      /* Section-level insufficient-data toggle. */
-      setWaiverSections(S.sel, [t.getAttribute('data-secwv')], t.checked);
-      renderPanel(true);
-      return;
-    }
-    if(t.hasAttribute && t.hasAttribute('data-groupwv')){
-      /* Tab-level toggle: waives/restores every section in the tab at once. */
-      var wgrp = editGroups().filter(function(g){ return String(g.id) === t.getAttribute('data-groupwv'); })[0];
-      if(wgrp) setWaiverSections(S.sel, groupSections(wgrp), t.checked);
-      renderPanel(true);
-      return;
-    }
-    if(t.hasAttribute && t.hasAttribute('data-akatgl')){
-      /* AKA toggle: visibility only — never patches or clears the stored value. */
-      var arow = t.closest('.akarow'), ainp = arow ? arow.querySelector('.akainput') : null;
-      if(ainp){ ainp.hidden = !t.checked; if(t.checked) ainp.focus(); }
-      return;
-    }
-    if(t.classList && t.classList.contains('cp-tp')){
-      var row = t.closest('.cprow'), mt = row ? $('.cp-t', row) : null;
-      if(mt) mt.disabled = t.checked;
-      syncConnPhases(); return;
-    }
-    if(t.closest && t.closest('#cprows')){ syncConnPhases(); return; }
-    var k = t.getAttribute && t.getAttribute('data-pk');
-    if(!k) return;
-    if(k === 'phone'){
-      t.value = String(t.value).split(',').map(function(x){ return fmtPhone(x); }).filter(Boolean).join(', ');
-      setField(k, t.value);
-    } else if(t.tagName === 'SELECT') setField(k, t.value);
-  });
-
-  document.addEventListener('click', function(e){
-    if(!e.target.closest('.menu')) closeMenus();
-    if(!e.target.closest('#sortdd')) setSortPop(false);
-    if(!e.target.closest('.filterwrap')){ var fp = $('#filterpop'); if(fp && !fp.hidden){ fp.hidden = true; $('#filterbtn').setAttribute('aria-expanded', 'false'); } }
-  });
-  document.addEventListener('keydown', onKey);
-  document.addEventListener('keydown', kbNav, true);
-  document.addEventListener('click', function(e){
-    var t = e.target;
-    if(t && t.__kbSuppressUntil && t.__kbSuppressUntil > Date.now()){
-      t.__kbSuppressUntil = 0;
-      e.preventDefault(); e.stopPropagation();
-    }
-  }, true);
-  document.addEventListener('mouseover', function(e){
-    var h = e.target.closest && e.target.closest('.naddhit');
-    if(h && !h.classList.contains('none') && h.parentNode) kbSetAct(h.parentNode, h);
+/* ============================================================
+   Settings — only things that are settings: connection, AI assist, merged profiles, local data.
+   The review queue lives on Today. Shortcuts are listed, not configurable.
+   ============================================================ */
+function viewSettings(v){
+  var merged = [];
+  D.directory.forEach(function(e, di){ var m = (e.profile || {}).merged_into; if(m && String(m).trim() && (e.profile || {}).deleted !== '1') merged.push(di); });
+  v.innerHTML = '<div class="page settings"><div class="pagehead"><div><h1 class="display">Settings</h1><p class="sub">Data from ' + esc(D.updated || 'unknown') + '</p></div></div>' +
+    '<section class="card"><header><h3>Connection</h3></header><div class="cbody">' +
+    '<label class="lab">Edit key<small>Only needed if the Apps Script project has an EDIT_TOKEN. Kept in this browser.</small></label>' +
+    '<input type="password" id="setedit" placeholder="Edit key" autocomplete="off" value="' + esc(getPw()) + '">' +
+    '<div class="row"><span class="syncline"><b id="syncs"></b></span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="retry">Send pending edits now</button></div></div></section>' +
+    '<section class="card"><header><h3>AI assist</h3></header><div class="cbody">' +
+    '<label class="lab">Tidy prompt<small>Sent to Gemini with your draft when you press Tidy with AI.</small></label><textarea id="setprompt" rows="7" placeholder="Loading"></textarea>' +
+    '<label class="lab">Gemini API key<small>Stored in the sheet, server side only.</small></label><input type="password" id="setkey" placeholder="AIza" autocomplete="off">' +
+    '<div class="row"><button type="button" class="btn primary sm" data-act="setsave">Save</button><button type="button" class="btn ghost sm" data-act="settest">Test</button><button type="button" class="btn ghost sm danger" data-act="setclear">Clear key</button><span id="setmsg" class="dim"></span></div></div></section>' +
+    '<section class="card"><header><h3>Merged profiles</h3><em class="cnt">' + merged.length + '</em></header><div class="cbody">' +
+    (merged.length ? '<p class="dim">Combined profiles stay in the sheet with a pointer to the survivor. Restoring one brings it back as its own profile.</p>' + merged.map(function(di){
+      var e = D.directory[di], tgt = BYN[String(e.profile.merged_into).toLowerCase()];
+      return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>into ' + esc(tgt != null ? dispName(D.directory[tgt]) : e.profile.merged_into) + '</small></div><div class="ea"><button type="button" class="btn ghost sm" data-act="unmerge" data-di="' + di + '">Restore</button></div></div>';
+    }).join('') : '<p class="dim">Nothing has been merged.</p>') + '</div></section>' +
+    '<section class="card"><header><h3>On this device</h3></header><div class="cbody"><p class="dim">Two review states live only in this browser: duplicate pairs you marked as different people, and this week’s spot checks.</p>' +
+    '<div class="row"><button type="button" class="btn ghost sm" data-act="rstlocal">Reset them</button></div></div></section>' +
+    '<section class="card"><header><h3>Keyboard</h3></header><div class="cbody"><div class="keys"><kbd>/</kbd><span>Search</span><kbd>J</kbd><kbd>K</kbd><span>Next or previous in the queue</span><kbd>C</kbd><span>Mark checked</span><kbd>Esc</kbd><span>Close or go back</span><kbd>Ctrl Z</kbd><span>Undo</span></div></div></section></div>';
+  paintSync();
+  settingsCall('getsettings', { x:1 }, function(res){
+    var p = $('#setprompt'), k = $('#setkey'), m = $('#setmsg'); if(!p) return;
+    if(res && res.ok){ p.value = res.prompt || ''; k.placeholder = res.hasKey ? 'Key saved. Enter a new one to replace it.' : 'AIza'; }
+    else if(m) m.textContent = 'Could not load: ' + ((res && res.error) || 'unknown');
   });
 }
-function toggleList(){
-  S.listOpen = !S.listOpen;
-  $('#listtoggle').classList.toggle('on', S.listOpen);
-  $('#listtoggle').setAttribute('aria-pressed', String(S.listOpen));
-  document.body.classList.toggle('nolist', !S.listOpen);
+function settingsCall(kind, patch, cb){
+  fetch(WEBAPP_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:JSON.stringify({ password:getPw(), kind:kind, id:'settings', patch:patch }) })
+    .then(function(r){ return r.json(); }).then(cb).catch(function(){ var m = $('#setmsg'); if(m) m.textContent = 'Network error.'; });
 }
-function stepSel(d){
-  if(S.rail !== 'people') return;
-  var rows = listRows(); if(!rows.length) return;
-  var cur = rows.indexOf(S.sel);
-  openPerson(rows[cur < 0 ? 0 : Math.max(0, Math.min(rows.length - 1, cur + d))], { lvl:S.lvl });
+
+/* ============================================================
+   Combine sheet (merge from a profile) and Drive doc sheet
+   ============================================================ */
+var MG = { a:null, b:null, surv:null };
+function openMergeSheet(di){
+  MG = { a:di, b:null, surv:null };
+  openSheet('Combine profiles', '<p class="dim">Pick the other profile. Nothing is deleted: unique details carry over and the retired profile can be restored in Settings.</p>' +
+    '<div class="finder"><input id="mq" placeholder="Search for the other profile" autocomplete="off"><div id="mr" class="hits"></div></div>');
 }
-function onKey(e){
-  if(AUD.open){
-    if(QA.open && !typing()){
-      if(e.key === 'Escape'){ closeQuick(); return; }
-      if(!e.metaKey && !e.ctrlKey && !e.altKey){
-        if(e.key === 'ArrowLeft'){ qaGo(-1); return; }
-        if(e.key === 'ArrowRight'){ qaGo(1); return; }
-      }
+function mergeStep2(){
+  var A = D.directory[MG.a], B = D.directory[MG.b];
+  if(MG.surv == null) MG.surv = mergeRichness(B) > mergeRichness(A) ? MG.b : MG.a;
+  var loser = MG.surv === MG.a ? MG.b : MG.a, pv = mergePreview(loser, MG.surv);
+  var lines = [];
+  if(pv.filled.length) lines.push('Fills blanks: ' + pv.filled.join(', '));
+  if(pv.union.length) lines.push('Combines lists: ' + pv.union.join(', '));
+  if(pv.appended.length) lines.push('Appends text: ' + pv.appended.join(', '));
+  if(pv.carried.length) lines.push('Carries over: ' + pv.carried.join(', '));
+  $('#sheetwrap .sbody').innerHTML = '<p class="dim">Choose the profile that stays.</p>' + [MG.a, MG.b].map(function(di){
+    var e = D.directory[di];
+    return '<label class="dm' + (di === MG.surv ? ' on' : '') + '"><input type="radio" name="msv" data-act="msv" data-di="' + di + '"' + (di === MG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc([hasHandle(e) ? '@' + e.name : '', tierName(e), e.city].filter(Boolean).join(' · ')) + '</small></span></label>';
+  }).join('') + '<div class="rb quiet"><h4>What combines</h4>' + (lines.length ? '<ul class="issues">' + lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<p>Nothing extra to carry over.</p>') + '</div>' +
+    '<div class="row end"><button type="button" class="btn ghost" data-act="sheetx">Cancel</button><button type="button" class="btn primary" data-act="mergego">Combine ' + esc(dispName(D.directory[loser])) + ' into ' + esc(dispName(D.directory[MG.surv])) + '</button></div>';
+}
+function mergeMany(survDi, losers){
+  var target = mergeTarget(survDi); if(!target) return false;
+  txn('Combine profiles', function(){
+    losers.forEach(function(l){
+      queuePatch(l, { merged_into:target });
+      if(raw(D.directory[l], 'review_flag') === 'duplicate') queuePatch(l, { review_flag:'' });
+    });
+    if(raw(D.directory[survDi], 'review_flag') === 'duplicate') queuePatch(survDi, { review_flag:'' });
+  });
+  return true;
+}
+function subjSlug(e){
+  if(e.record && e.record.slug) return e.record.slug;
+  return String(dispName(e)).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+function openDocSheet(di){
+  var e = D.directory[di]; if(!e) return;
+  openSheet('New Drive doc', '<p class="dim">Creates a Google Doc in the North Country Circle Files folder and attaches it to ' + esc(dispName(e)) + '.</p>' +
+    '<input id="dtitle" placeholder="Title, e.g. Full journal record" autocomplete="off"><div class="row end"><button type="button" class="btn primary" data-act="docgo" data-di="' + di + '">Create doc</button></div>');
+}
+function aiTidy(){
+  var ta = $('textarea[data-pk="synopsis"]'), msg = $('#aimsg'), di = S.prof.di;
+  var text = ta ? ta.value.trim() : '';
+  if(!text){ if(msg) msg.textContent = 'Write something first.'; return; }
+  if(msg) msg.textContent = 'Working';
+  postKind('tidy', 'tidy', { text:text, mode:'synopsis' }, function(res){
+    if(res.value){ ta.value = res.value; setField(di, 'synopsis', res.value); if(msg) msg.textContent = 'Done. Give it a read.'; }
+    else if(msg) msg.textContent = 'Nothing came back.';
+  }, function(err){ if(msg) msg.textContent = err; });
+}
+
+/* ============================================================
+   9. events — one delegated click handler, one input/change handler, one key handler
+   ============================================================ */
+function curDi(el){
+  var d = el && el.getAttribute && el.getAttribute('data-di');
+  if(d != null && d !== '') return +d;
+  return S.route.name === 'profile' ? S.prof.di : null;
+}
+function curTab(){ return S.route.seg[0] || 'needs'; }
+function refreshAfterStatus(){
+  var n = S.route.name;
+  if(n === 'today') paintQueue(curTab());
+  else if(n === 'profile') repaintTop();
+  afterWrite();
+  var tc = $('.tabrow'); if(tc && n === 'today') $$('.tab', tc).forEach(function(a){ var em = $('em', a); if(em) em.textContent = tabCount(a.getAttribute('data-tab')); });
+  if(n === 'today'){ var h = $('.pagehead'); if(h) h.outerHTML = todayHead(getState()); }
+}
+function todayCtx(di){
+  if(S.route.name !== 'today') return null;
+  var tab = curTab(), q = queueFor(tab), i = 0;
+  q.forEach(function(x, k){ if(x.di === di) i = k; });
+  return ctxFrom((TABS.filter(function(t){ return t.k === tab; })[0] || {}).l || 'Queue', q.map(function(x){ return x.di; }), i, 'today');
+}
+function nextInCtx(di){
+  if(!S.ctx) return false;
+  var k = pkey(D.directory[di]), i = S.ctx.keys.indexOf(k);
+  for(var j = i + 1; j < S.ctx.keys.length; j++){
+    var ni = PK2I[S.ctx.keys[j]];
+    if(ni != null && liveEntry(D.directory[ni]) && !isChecked(D.directory[ni])){ ctxGo(ni, j); return true; }
+  }
+  return false;
+}
+function ctxGo(di, j){
+  S.ctx.i = j; S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
+  history.replaceState({ d:S.depth }, '', '#/p/' + encodeURIComponent(personId(D.directory[di]))); render(); window.scrollTo(0, 0);
+}
+function markChecked(di, adv){
+  var e = D.directory[di]; if(!e) return;
+  var onToday = S.route.name === 'today', wasProfile = S.route.name === 'profile';
+  txn('Mark ' + dispName(e) + ' checked', function(){ queuePatch(di, { audit:'audited' }); });
+  toast(dispName(e) + ' checked.', { undo:true });
+  if(wasProfile && adv){ if(!nextInCtx(di)){ if(S.ctx && S.ctx.from === 'today') back('today'); else repaintTop(); } return; }
+  refreshAfterStatus();
+}
+function doSet(el){
+  var di = curDi(el), k = el.getAttribute('data-k'), v = el.getAttribute('data-v'), e = D.directory[di];
+  if(!e) return;
+  var cur = String(k === 'tier' ? tierOf(e) : gv(e, k));
+  var clearable = ['relationship', 'context', 'category'].indexOf(k) >= 0;
+  var next = (clearable && cur === v) ? '' : v;
+  txn('Set ' + k, function(){ queuePatch(di, (function(){ var o = {}; o[k] = next; return o; })()); });
+  if(S.route.name === 'today') paintQueue(curTab());
+  else if(S.route.name === 'profile'){ repaintTop(); var sec = el.getAttribute('data-sec'); if(sec) repaintSec(sec); }
+  afterWrite();
+}
+function saveTags(el, mutate){
+  var k = el.getAttribute('data-k'), sep = el.getAttribute('data-sep') || ', ', di = S.prof.di, e = D.directory[di];
+  var arr = splitTags(gv(e, k), sep); arr = mutate(arr);
+  txn('Edit ' + k, function(){ queuePatch(di, (function(){ var o = {}; o[k] = arr.join(sep); return o; })()); });
+  repaintSec('background'); repaintTop();
+  var f = $('.tadd[data-k="' + k + '"]'); if(f) f.focus();
+}
+function readPhases(){
+  return $$('#cprows .cprow').map(function(r){
+    var now = $('.cp-now', r).checked, f = $('.cp-f', r).value, t = now ? '' : $('.cp-t', r).value;
+    var o = { f:f, l:$('.cp-l', r).value.trim() }; if(t) o.t = t; var n = $('.cp-n', r).value.trim(); if(n) o.n = n; return o;
+  }).filter(function(p){ return p.f || p.l; });
+}
+function savePhases(){ var di = S.prof.di; setField(di, 'conn_phases', JSON.stringify(readPhases())); }
+function saveEvents(arr, label){ txn(label, function(){ queuePatch(S.prof.di, { events:JSON.stringify(arr) }); }); S.prof.evEdit = null; repaintSec('timeline'); }
+function saveDegrees(arr, label){ txn(label, function(){ queuePatch(S.prof.di, { degrees:JSON.stringify(arr) }); }); S.prof.degEdit = null; repaintSec('background'); repaintTop(); }
+function pickerHits(inp, boxId, act, exclude){
+  var box = $(boxId); if(!box) return;
+  var q = inp.value.trim();
+  if(q.length < 2){ box.innerHTML = ''; return; }
+  var hits = searchPeople(q, 6, people().filter(function(d){ return exclude.indexOf(d) < 0; }));
+  box.innerHTML = hits.length ? hits.map(function(d){ return '<button type="button" class="hit" data-act="' + act + '" data-di="' + d + '" data-g="' + esc(inp.getAttribute('data-g') || '') + '">' + avatar(D.directory[d], 'sm') + '<span>' + esc(dispName(D.directory[d])) + '<small>' + esc(infoLine(D.directory[d])) + '</small></span></button>'; }).join('') : '<div class="hit none">No matches</div>';
+}
+
+function onClick(ev){
+  var t = ev.target;
+  if(!t.closest('.menu')) $$('.menu-pop').forEach(function(m){ m.hidden = true; });
+  if(!t.closest('.gsearch')){ var gb = $('#gsr'); if(gb) gb.hidden = true; }
+  var el = t.closest('[data-act]'); if(!el) return;
+  if(el.tagName === 'INPUT') return;   /* checkboxes and radios are handled on change */
+  var act = el.getAttribute('data-act'), di = curDi(el);
+  if(el.tagName === 'A' && (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button === 1)) return;
+  var prevent = true;
+  switch(act){
+    case 'sheetx': closeSheet(); break;
+    case 'savekey': { var kv = ($('#ekey') || {}).value || ''; store('ncc_edit_key', kv.trim()); OUT.auth = false; closeSheet(); OUT.retry = 0; outKick(); toast('Key saved. Retrying.'); break; }
+    case 'undo': doUndo(); refreshAfterUndo(); break;
+    case 'redo': doRedo(); refreshAfterUndo(); break;
+    case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
+    case 'back': back(); break;
+    case 'set': doSet(el); break;
+    case 'check': markChecked(di, el.getAttribute('data-adv') === '1'); break;
+    case 'reopen': txn('Reopen', function(){ queuePatch(di, { audit:'' }); }); toast('Reopened.', { undo:true }); refreshAfterStatus(); break;
+    case 'spotok': markSpotDone(di); toast('Spot check recorded.'); if(S.route.name === 'profile') repaintTop(); else refreshAfterStatus(); afterWrite(); break;
+    case 'qpick': S.today.i = +el.getAttribute('data-i'); paintQueue(curTab()); if(innerWidth < 900){ var qc = $('#qcard'); if(qc) qc.scrollIntoView({ behavior:'smooth', block:'start' }); } break;
+    case 'qskip': { var ql = queueFor(curTab()).length; S.today.i = ql ? (S.today.i + 1) % ql : 0; paintQueue(curTab()); break; }
+    case 'surv': S.today.surv[el.getAttribute('data-key')] = di; paintQueue(curTab()); break;
+    case 'notdup': { var qd = queueFor(curTab())[S.today.i], g = qd && (qd.detail.dup || [])[+el.getAttribute('data-gi')]; if(g){ dismissDup(g.dis); toast('Marked as different people.'); refreshAfterStatus(); } break; }
+    case 'mergegroup': {
+      var q1 = queueFor(curTab())[S.today.i], g1 = q1 && (q1.detail.dup || [])[+el.getAttribute('data-gi')]; if(!g1) break;
+      var sv = S.today.surv[el.getAttribute('data-key')];
+      if(sv == null || g1.dis.indexOf(sv) < 0) sv = g1.dis.slice().sort(function(a, b){ return mergeRichness(D.directory[b]) - mergeRichness(D.directory[a]); })[0];
+      var losers = g1.dis.filter(function(d){ return d !== sv; });
+      if(!confirm('Combine ' + losers.map(function(l){ return dispName(D.directory[l]); }).join(', ') + ' into ' + dispName(D.directory[sv]) + '?\n\nUnique details carry over. You can restore it from Settings or with Undo.')) break;
+      mergeMany(sv, losers); toast('Combined into ' + dispName(D.directory[sv]) + '.', { undo:true }); refreshAfterStatus(); break;
     }
-    if((e.metaKey || e.ctrlKey) && !e.altKey){
-      var kz = String(e.key || '').toLowerCase();
-      if(kz === 'z' && !typing()){ e.preventDefault(); if(e.shiftKey) doRedo(); else doUndo(); return; }
-      if(kz === 'y' && !typing()){ e.preventDefault(); doRedo(); return; }
+    case 'mergeopen': openMergeSheet(di); break;
+    case 'mpick': MG.b = di; MG.surv = null; mergeStep2(); break;
+    case 'mergego': {
+      var lo = MG.surv === MG.a ? MG.b : MG.a; mergeMany(MG.surv, [lo]); closeSheet();
+      toast('Combined ' + dispName(D.directory[lo]) + ' into ' + dispName(D.directory[MG.surv]) + '.', { undo:true });
+      if(S.route.name === 'profile'){ if(lo === S.prof.di){ openPerson(MG.surv, null, { }); } else { paintProfile(S.prof.di); } } else refreshAfterStatus();
+      break;
     }
+    case 'unmerge': unmerge(di); toast('Restored.', { undo:true }); viewSettings($('#view')); break;
+    case 'clearflag': txn('Clear flag', function(){ queuePatch(di, { review_flag:'' }); }); refreshAfterStatus(); break;
+    case 'waive': {
+      var sids = (el.getAttribute('data-sid') || '').split(',').filter(Boolean), on = el.getAttribute('data-off') ? false : true;
+      txn(on ? 'Waive section' : 'Restore section', function(){ setWaivers(di, sids, on); });
+      if(S.route.name === 'profile'){ paintProfile(S.prof.di); } else refreshAfterStatus();
+      break;
+    }
+    case 'rmfootprint': {
+      var e0 = D.directory[di], keep = footprintOf(e0).blocks.filter(function(b){ return b.urls.length; });
+      if(!confirm('Remove the web-record text that has no source?')) break;
+      txn('Remove unsourced text', function(){ queuePatch(di, { public_footprint:keep.map(function(b){ return b.text + '\nSources: ' + b.urls.join('; '); }).join('\n\n') }); });
+      refreshAfterStatus(); break;
+    }
+    case 'delperson': {
+      var e1 = D.directory[di]; if(!e1) break;
+      if(!confirm('Remove ' + dispName(e1) + ' from the circle?\n\nThey move to the Trash sheet and can be restored from there.')) break;
+      txn('Remove ' + dispName(e1), function(){ queuePatch(di, { deleted:'1' }); });
+      toast('Removed ' + dispName(e1) + '.', { undo:true });
+      if(S.route.name === 'profile') back('people'); else refreshAfterStatus();
+      break;
+    }
+    case 'openp': { ev.preventDefault(); openPerson(di, todayCtx(di), { keepCtx:S.route.name === 'profile' }); prevent = false; break; }
+    case 'popen': { var cur = S.ppl.cur || []; openPerson(di, ctxFrom('People', cur, +el.getAttribute('data-i'), 'people')); break; }
+    case 'popen1': openPerson(di, null); break;
+    case 'gsopen': { var box = $('#gsr'); if(box) box.hidden = true; openPerson(di, null); break; }
+    case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; S.ppl.limit = 80; go('people'); break; }
+    case 'openedit': openPerson(di, todayCtx(di) || (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); break;
+    case 'openfam': S.fam.focus = di; go('family'); break;
+    case 'shownet': S.net.sel = di; go('network'); break;
+    case 'ctxstep': {
+      var d = +el.getAttribute('data-d'), j = S.ctx.keys.indexOf(pkey(D.directory[S.prof.di])) + d, ni = PK2I[S.ctx.keys[j]];
+      if(ni != null) ctxGo(ni, j); break;
+    }
+    /* people */
+    case 'pf': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); S.ppl.limit = 80; viewPeople($('#view')); break;
+    case 'pf2': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); S.ppl.limit = 80; openMoreFilters(); viewPeople($('#view')); break;
+    case 'pmore': S.ppl.limit += 100; paintPeople(); break;
+    case 'morefilters': openMoreFilters(); break;
+    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80 }; closeSheet(); viewPeople($('#view')); break;
+    /* profile chrome */
+    case 'menu': { var mp = $('.menu-pop', el.parentNode); var was = mp.hidden; $$('.menu-pop').forEach(function(m){ m.hidden = true; }); mp.hidden = !was; break; }
+    case 'export': { try{ var blob = new Blob([buildDossierDoc(D.directory[di])], { type:'text/html' }), a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Dossier - ' + (dispName(D.directory[di]).replace(/[\\/:*?"<>|]/g, '').trim() || 'person') + '.html'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 4000); toast('Downloaded.'); }catch(x){ toast('Could not build the document.'); } $$('.menu-pop').forEach(function(m){ m.hidden = true; }); break; }
+    case 'viewdoc': { try{ var u = URL.createObjectURL(new Blob([buildDossierDoc(D.directory[di])], { type:'text/html' })); window.open(u, '_blank', 'noopener'); setTimeout(function(){ URL.revokeObjectURL(u); }, 120000); }catch(x){ toast('Could not open the document.'); } $$('.menu-pop').forEach(function(m){ m.hidden = true; }); break; }
+    case 'newdoc': $$('.menu-pop').forEach(function(m){ m.hidden = true; }); openDocSheet(di); break;
+    case 'docgo': {
+      var title = ($('#dtitle') || {}).value.trim(); if(!title){ toast('Title the doc first.'); break; }
+      el.disabled = true;
+      postKind('createdoc', subjSlug(D.directory[di]), { title:title }, function(res){
+        if(!res.url){ el.disabled = false; toast('Doc creation failed.'); return; }
+        var arr = (D.directory[di].files || []).slice(); arr.push({ name:res.name || title, kind:'gdoc', url:res.url });
+        closeSheet(); txn('Attach doc', function(){ queuePatch(di, { files:JSON.stringify(arr) }); });
+        if(S.route.name === 'profile'){ repaintSec('files'); if(!$('#sec-files')) paintProfile(di); } toast('Doc created and attached.');
+      }, function(err){ el.disabled = false; toast(err + ' Not created.'); });
+      break;
+    }
+    case 'bantog': S.prof.bannerOpen = !(S.prof.bannerOpen !== false); repaintTop(); break;
+    case 'opentog': { var kk = el.getAttribute('data-k'); S.prof.open[kk] = !S.prof.open[kk]; repaintSec(kk === 'ev' ? 'timeline' : 'connections'); break; }
+    case 'secedit': { var sid = el.getAttribute('data-sec'); S.prof.edit[sid] = true; if($('#sec-' + sid)) repaintSec(sid); else paintProfile(S.prof.di); var sc = $('#sec-' + sid); if(sc) sc.scrollIntoView({ block:'nearest', behavior:'smooth' }); break; }
+    case 'secdone': { var sd = el.getAttribute('data-sec'); delete S.prof.edit[sd]; S.prof.evEdit = null; S.prof.degEdit = null; paintProfile(S.prof.di); break; }
+    case 'tagrm': saveTags(el, function(a){ var v = el.getAttribute('data-v'); return a.filter(function(x){ return x !== v; }); }); break;
+    case 'tagtog': saveTags(el, function(a){ var v = el.getAttribute('data-v'), i = a.indexOf(v); if(i >= 0) a.splice(i, 1); else a.push(v); return a; }); break;
+    case 'skcat': { var c = el.getAttribute('data-cat'); S.prof.skOpen = S.prof.skOpen === c ? null : c; repaintSec('background'); break; }
+    case 'grptog': { var g2 = el.getAttribute('data-g'), e2 = D.directory[S.prof.di], gl = personGroups(e2), gi = gl.indexOf(g2); if(gi >= 0) gl.splice(gi, 1); else gl.push(g2); txn('Edit groups', function(){ setPersonGroups(S.prof.di, gl); }); repaintSec('relationship'); break; }
+    case 'persona': { var pk = el.getAttribute('data-k'), pv = el.getAttribute('data-v'); txn('Rate ' + pk, function(){ var o = {}; o[pk] = pv; queuePatch(S.prof.di, o); }); repaintSec('persona'); break; }
+    case 'tidy': aiTidy(); break;
+    case 'assocadd': { addAssociate(S.prof.di, di); repaintSec('connections'); break; }
+    case 'assocrm': removeAssociate(S.prof.di, el.getAttribute('data-u')); repaintSec('connections'); break;
+    case 'famrel': famRelSave(el.getAttribute('data-v')); $$('#famrels button').forEach(function(b){ b.classList.toggle('on', b === el); }); break;
+    case 'famadd': { var msg = addFamily(S.prof.di, famRelDefault(), di); toast(msg || 'Added.', { undo:true }); repaintSec('connections'); repaintTop(); break; }
+    case 'famrm': removeFamily(S.prof.di, +el.getAttribute('data-i')); repaintSec('connections'); repaintTop(); break;
+    case 'evinit': $$('#ev-init button').forEach(function(b){ b.classList.toggle('on', b === el); }); break;
+    case 'evedit': S.prof.evEdit = +el.getAttribute('data-i'); repaintSec('timeline'); break;
+    case 'evcancel': S.prof.evEdit = null; repaintSec('timeline'); break;
+    case 'evdel': { var evs = (D.directory[S.prof.di].events || []).slice(), i1 = +el.getAttribute('data-i'); if(!evs[i1] || !confirm('Remove this event?\n\n' + (evs[i1].summary || ''))) break; evs.splice(i1, 1); saveEvents(evs, 'Remove event'); break; }
+    case 'evsave': {
+      var sum = $('#ev-sum').value.trim(), dt = $('#ev-date').value; if(!sum){ toast('Write a headline first.'); break; }
+      var ev = { date:dt || todayStr(), summary:sum }, det = $('#ev-det').value.trim(); if(det) ev.detail = det;
+      var ib = $('#ev-init .on'); if(ib && ib.getAttribute('data-v')) ev.init = ib.getAttribute('data-v');
+      var arr2 = (D.directory[S.prof.di].events || []).slice(); if(S.prof.evEdit != null && arr2[S.prof.evEdit]) arr2[S.prof.evEdit] = ev; else arr2.push(ev);
+      saveEvents(arr2, S.prof.evEdit != null ? 'Edit event' : 'Add event'); break;
+    }
+    case 'cpadd': { var cr = document.createElement('div'); cr.innerHTML = phaseRow({}, $$('#cprows .cprow').length); $('#cprows').appendChild(cr.firstChild); break; }
+    case 'cpdel': el.closest('.cprow').remove(); savePhases(); break;
+    case 'fsave': {
+      var nm = $('#f-name').value.trim(), url = $('#f-url').value.trim(), nt = $('#f-note').value.trim();
+      if(!nm){ toast('Name the file first.'); break; } if(!url){ toast('Paste the link.'); break; }
+      var f = { name:nm, kind:url.indexOf('docs.google.com') >= 0 ? 'gdoc' : 'link', url:url }; if(nt) f.note = nt;
+      var fa = (D.directory[S.prof.di].files || []).slice(); fa.push(f);
+      txn('Attach file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fa) }); }); repaintSec('files'); break;
+    }
+    case 'fdel': { var fl = (D.directory[S.prof.di].files || []).slice(), fi = +el.getAttribute('data-i'); if(!fl[fi] || !confirm('Remove this attachment?')) break; fl.splice(fi, 1); txn('Remove file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fl) }); }); repaintSec('files'); break; }
+    case 'degedit': S.prof.degEdit = +el.getAttribute('data-i'); repaintSec('background'); break;
+    case 'degcancel': S.prof.degEdit = null; repaintSec('background'); break;
+    case 'degdel': { var da = parseArr(gv(D.directory[S.prof.di], 'degrees')).slice(), dI = +el.getAttribute('data-i'); if(!da[dI] || !confirm('Remove this degree?')) break; da.splice(dI, 1); saveDegrees(da, 'Remove degree'); break; }
+    case 'degsave': {
+      var sch = $('#dd-school').value, school = sch === '__other' ? $('#dd-other').value.trim() : sch;
+      var degree = $('#dd-degree').value, major = $('#dd-major').value.trim(), year = $('#dd-year').value, note = $('#dd-note').value.trim();
+      if(!school){ toast('Pick the school first.'); break; } if(!degree && !major && !year){ toast('Add a degree, major or year.'); break; }
+      var dd = { school:school }; if(degree) dd.degree = degree; if(major) dd.major = major; if(year) dd.year = year; if(note) dd.note = note;
+      var da2 = parseArr(gv(D.directory[S.prof.di], 'degrees')).slice(); if(S.prof.degEdit != null && da2[S.prof.degEdit]) da2[S.prof.degEdit] = dd; else da2.push(dd);
+      saveDegrees(da2, 'Edit degree'); break;
+    }
+    /* network + family */
+    case 'netcolor': S.net.color = el.getAttribute('data-v'); viewNetwork($('#view')); break;
+    case 'netbg': S.net.bg = !S.net.bg; viewNetwork($('#view')); break;
+    case 'netzoom': NET.cam.z = Math.max(0.3, Math.min(4, NET.cam.z * (+el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3))); NET.dirty = true; break;
+    case 'netfit': netFit(); break;
+    case 'netclose': S.net.sel = null; netCard(); NET.dirty = true; break;
+    case 'fnode': { if(FAMV.moved) break; S.fam.focus = di; $$('.fn.foc').forEach(function(n){ n.classList.remove('foc'); }); el.classList.add('foc'); famCard(); famGlide(di); break; }
+    case 'famclose': S.fam.focus = null; $$('.fn.foc').forEach(function(n){ n.classList.remove('foc'); }); famCard(); break;
+    case 'famzoom': FAMV.cam.z = Math.max(0.2, Math.min(1.6, FAMV.cam.z * (+el.getAttribute('data-d') > 0 ? 1.25 : 0.8))); famApply(); break;
+    case 'famfit': famFit(); break;
+    /* groups */
+    case 'gnew': { var gi2 = $('#gnew'), gn = gi2.value.trim(); if(!gn) break; if(!allGroups()[gn]){ GRP_EXTRA.push(gn); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); } go('groups/groups/' + encodeURIComponent(gn)); break; }
+    case 'grename': { var nn = prompt('Rename group', el.getAttribute('data-g')); if(nn){ groupRename(el.getAttribute('data-g'), nn); go('groups/groups/' + encodeURIComponent(nn.trim()), { replace:true }); } break; }
+    case 'gdelete': { var gd = el.getAttribute('data-g'); if(!confirm('Delete the group "' + gd + '"?\n\nIt is removed from everyone in it. People stay.')) break; groupDelete(gd); toast('Group deleted.', { undo:true }); go('groups/groups', { replace:true }); break; }
+    case 'gmemrm': { var gm = el.getAttribute('data-g'); txn('Remove from group', function(){ setPersonGroups(di, personGroups(D.directory[di]).filter(function(x){ return x !== gm; })); }); viewGroups($('#view')); break; }
+    case 'gadd': { var ga = el.getAttribute('data-g'); txn('Add to group', function(){ var l = personGroups(D.directory[di]); if(l.indexOf(ga) < 0) l.push(ga); setPersonGroups(di, l); }); viewGroups($('#view')); break; }
+    /* settings */
+    case 'setsave': { var m = $('#setmsg'), patch = { prompt:$('#setprompt').value }, kv2 = $('#setkey').value; if(kv2) patch.gemini_key = kv2; m.textContent = 'Saving'; settingsCall('settings', patch, function(res){ m.textContent = (res && res.ok) ? 'Saved.' : 'Save failed: ' + ((res && res.error) || 'unknown'); }); break; }
+    case 'settest': { var m2 = $('#setmsg'); m2.textContent = 'Testing'; settingsCall('testgemini', { x:1 }, function(res){ m2.textContent = (res && res.ok) ? 'Gemini replied: ' + res.reply : 'Test failed: ' + ((res && res.error) || 'unknown'); }); break; }
+    case 'setclear': { var m3 = $('#setmsg'); m3.textContent = 'Clearing'; settingsCall('settings', { clear_key:true }, function(res){ m3.textContent = (res && res.ok) ? 'Key cleared.' : 'Clear failed.'; }); break; }
+    case 'rstlocal': store('ncc_dupok', '{}'); store('ncc_spot', '{}'); VER++; toast('Reset.'); afterWrite(); break;
+    default: prevent = false;
+  }
+  if(prevent && el.tagName === 'A' && act !== 'openp') ev.preventDefault();
+}
+function refreshAfterUndo(){
+  var n = S.route.name;
+  if(n === 'profile'){ if(D.directory[S.prof.di]) paintProfile(S.prof.di); }
+  else if(n === 'today') { refreshAfterStatus(); }
+  else if(n === 'people') paintPeople();
+  else render();
+  afterWrite();
+}
+
+function onInput(ev){
+  var t = ev.target;
+  if(t.id === 'gs'){ paintSearch(); return; }
+  if(t.id === 'pq'){ S.ppl.q = t.value; S.ppl.limit = 80; paintPeople(); return; }
+  if(t.id === 'assocq'){ var e = D.directory[S.prof.di]; pickerHits(t, '#assocr', 'assocadd', [S.prof.di].concat(knownAssociates(e).map(function(n){ return BYN[(n.u || '').toLowerCase()]; }))); return; }
+  if(t.id === 'famq'){ pickerHits(t, '#famr', 'famadd', [S.prof.di]); return; }
+  if(t.id === 'gaddq'){ var g = t.getAttribute('data-g'); pickerHits(t, '#gaddr', 'gadd', (allGroups()[g] || [])); return; }
+  if(t.id === 'mq'){
+    var q = t.value.trim(), box = $('#mr'); if(q.length < 2){ box.innerHTML = ''; return; }
+    var hits = searchPeople(q, 6, people().filter(function(d){ return d !== MG.a; }));
+    box.innerHTML = hits.length ? hits.map(function(d){ return '<button type="button" class="hit" data-act="mpick" data-di="' + d + '">' + avatar(D.directory[d], 'sm') + '<span>' + esc(dispName(D.directory[d])) + '<small>' + esc(infoLine(D.directory[d])) + '</small></span></button>'; }).join('') : '<div class="hit none">No matches</div>';
+  }
+}
+function onChange(ev){
+  var t = ev.target, act = t.getAttribute && t.getAttribute('data-act');
+  if(t.id === 'psort'){ S.ppl.sort = t.value; paintPeople(); return; }
+  if(t.id === 'setedit'){ store('ncc_edit_key', t.value.trim()); return; }
+  if(act === 'waive' && t.type === 'checkbox'){
+    var di = curDi(t), sids = t.getAttribute('data-sid').split(',');
+    txn(t.checked ? 'Waive section' : 'Restore section', function(){ setWaivers(di, sids, t.checked); });
+    paintProfile(S.prof.di); return;
+  }
+  if(act === 'surv'){ S.today.surv[t.getAttribute('data-key')] = +t.getAttribute('data-di'); paintQueue(curTab()); return; }
+  if(act === 'msv'){ MG.surv = +t.getAttribute('data-di'); mergeStep2(); return; }
+  if(t.hasAttribute && t.hasAttribute('data-nm')){
+    setField(+t.getAttribute('data-di'), t.getAttribute('data-nm'), t.value.trim());
+    var e = D.directory[+t.getAttribute('data-di')]; if(e){ e.display = ''; }
+    refreshAfterStatus(); return;
+  }
+  if(t.hasAttribute && t.hasAttribute('data-pk')){
+    var k = t.getAttribute('data-pk');
+    setField(S.prof.di, k, (t.tagName === 'TEXTAREA') ? t.value : t.value.trim());
+    if(k === 'first_name' || k === 'last_name') repaintTop();
+    if(k === 'public_footprint' || k === 'synopsis') repaintTop();
     return;
   }
-  if(e.key === 'Escape'){
-    if(QA.open){ closeQuick(); return; }
-    if($('#modal')){ closeModal(); return; }
-    var fp = $('#filterpop'); if(fp && !fp.hidden){ fp.hidden = true; return; }
-    if(document.activeElement === $('#fq')){ if($('#fq').value){ clearFilter('q'); } else $('#fq').blur(); return; }
-    if(typing()){ document.activeElement.blur(); return; }
-    if(S.editing){ exitEdit(); return; }
-    if(S.hist.length){ goBack(); return; }
-    if(S.sel !== null) closePanel();
+  if(t.classList && t.classList.contains('tadd')){ addTag(t); return; }
+  if(t.hasAttribute && t.hasAttribute('data-grpnew')){
+    var n = t.value.trim(); if(!n) return;
+    if(!allGroups()[n]){ GRP_EXTRA.push(n); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
+    var gl = personGroups(D.directory[S.prof.di]); if(gl.indexOf(n) < 0) gl.push(n);
+    txn('Edit groups', function(){ setPersonGroups(S.prof.di, gl); }); repaintSec('relationship'); return;
+  }
+  if(t.closest && t.closest('.cprow')){
+    if(t.classList.contains('cp-now')){ var row = t.closest('.cprow'), tt = $('.cp-t', row); tt.disabled = t.checked; if(t.checked) tt.value = ''; }
+    savePhases(); return;
+  }
+  if(t.id === 'dd-school'){ var o = $('#dd-other'); if(o) o.style.display = t.value === '__other' ? '' : 'none'; }
+}
+function addTag(t){
+  var v = t.value.trim().replace(/[,|]+$/, ''); t.value = ''; if(!v) return;
+  saveTags(t, function(a){ if(a.map(function(x){ return x.toLowerCase(); }).indexOf(v.toLowerCase()) < 0) a.push(v); return a; });
+}
+function onKey(ev){
+  var t = ev.target, tag = t.tagName, isField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+  if(ev.key === 'Enter' && t.classList && t.classList.contains('tadd')){ ev.preventDefault(); addTag(t); return; }
+  if(ev.key === 'Enter' && t.id === 'gnew'){ ev.preventDefault(); var b = $('[data-act="gnew"]'); if(b) b.click(); return; }
+  if(ev.key === 'Enter' && t.id === 'dtitle'){ ev.preventDefault(); var d = $('[data-act="docgo"]'); if(d) d.click(); return; }
+  if(ev.key === 'Enter' && t.id === 'ekey'){ ev.preventDefault(); var s = $('[data-act="savekey"]'); if(s) s.click(); return; }
+  if(t.id === 'gs'){
+    if(ev.key === 'Enter'){ ev.preventDefault(); var first = $('#gsr .gsi-row'); if(first) first.click(); else if(t.value.trim()){ S.ppl.q = t.value; go('people'); } }
+    else if(ev.key === 'Escape'){ t.value = ''; paintSearch(); t.blur(); }
     return;
   }
-  if($('#modal')) return;
-  if(e.altKey && e.key === 'ArrowLeft'){ e.preventDefault(); goBack(); return; }
-  if(e.altKey && e.key === 'ArrowRight'){ e.preventDefault(); goForward(); return; }
-  if(typing() || e.metaKey || e.ctrlKey || e.altKey) return;
-  /* Arrow keys belong to the focused control when focus sits inside the
-     profile panel or another custom widget (editor buttons, the skills
-     accordion, menus) — the global step-through only applies when focus
-     is on the canvas/body/list, never mid-edit. */
-  if((e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') &&
-     e.target && e.target.closest && e.target.closest('#rightbody, #sortdd, .menu, .skflow')) return;
-  if(QA.open){
-    if(e.key === 'ArrowLeft'){ qaGo(-1); return; }
-    if(e.key === 'ArrowRight'){ qaGo(1); return; }
+  if(ev.key === 'Escape'){
+    if(!$('#sheetwrap').hidden){ closeSheet(); return; }
+    if(isField){ t.blur(); return; }
+    if(S.route.name === 'profile'){ var open = Object.keys(S.prof.edit); if(open.length){ S.prof.edit = {}; paintProfile(S.prof.di); } else back('people'); }
+    return;
   }
-  if(e.key === '/'){ e.preventDefault(); if(!S.listOpen) toggleList(); $('#fq').focus(); $('#fq').select(); return; }
-  if(e.key === 'b' || e.key === 'B'){ toggleList(); return; }
-  if(e.key === 'h' || e.key === 'H'){ goHome(); return; }
-  if(e.key === 'ArrowDown' || e.key === 'j'){ e.preventDefault(); stepSel(1); return; }
-  if(e.key === 'ArrowUp' || e.key === 'k'){ e.preventDefault(); stepSel(-1); return; }
-  if(S.sel === null) return;
-  if((e.key === '1' || e.key === '2' || e.key === '3') && !S.editing){ setLevel(parseInt(e.key, 10)); return; }
-  if((e.key === 'e' || e.key === 'E') && !S.editing){ e.preventDefault(); enterEdit(); }
+  if(isField) return;
+  var mod = ev.ctrlKey || ev.metaKey;
+  if(mod && (ev.key === 'z' || ev.key === 'Z')){ ev.preventDefault(); if(ev.shiftKey) doRedo(); else doUndo(); refreshAfterUndo(); return; }
+  if(mod && (ev.key === 'y' || ev.key === 'Y')){ ev.preventDefault(); doRedo(); refreshAfterUndo(); return; }
+  if(mod && (ev.key === 'k' || ev.key === 'K')){ ev.preventDefault(); var g = $('#gs'); if(g) g.focus(); return; }
+  if(mod || ev.altKey) return;
+  if(ev.key === '/'){ ev.preventDefault(); var gs = $('#gs'); if(gs) gs.focus(); return; }
+  if(S.route.name === 'today'){
+    var ql = queueFor(curTab()).length;
+    if(ev.key === 'j' && ql){ S.today.i = (S.today.i + 1) % ql; paintQueue(curTab()); }
+    else if(ev.key === 'k' && ql){ S.today.i = (S.today.i - 1 + ql) % ql; paintQueue(curTab()); }
+    else if(ev.key === 'c'){ var x = queueFor(curTab())[S.today.i]; if(x && x.kind !== 'spot') markChecked(x.di, true); }
+  } else if(S.route.name === 'profile' && ev.key === 'c'){
+    var xs = getState().by[S.prof.di]; if(xs && !xs.checked) markChecked(S.prof.di, true);
+  }
 }
 
-/* ---------- boot ---------- */
+/* ============================================================
+   10. boot
+   ============================================================ */
 function boot(){
-  injectIcons(document);
-  ambient();
-  var m = store('ncc_mode'), c = store('ncc_color');
-  if(m === '2d' || m === '3d') S.mode = m;
-  if(c === 'tier' || c === 'rel') S.colorBy = c; else if(c === 'level') S.colorBy = 'tier';
-  var sv = store('ncc_sort');
-  if(sv && SORT_OPTS.some(function(o){ return o[0] === sv; })) S.sort = sv;
-  try{ store('ncc_secs', '{}'); }catch(x){} S.openSecs = {};
-  $$('#colorToggle button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-c') === S.colorBy); });
-  if(innerWidth <= 860){ S.listOpen = false; document.body.classList.add('nolist'); $('#listtoggle').classList.remove('on'); $('#listtoggle').setAttribute('aria-pressed', 'false'); }
-  $('#leftbody').innerHTML = '<div class="empty-note">Loading dossier data…</div>';
+  document.addEventListener('click', onClick);
+  document.addEventListener('input', onInput);
+  document.addEventListener('change', onChange);
+  document.addEventListener('keydown', onKey);
+  addEventListener('resize', function(){ if(S.route.name === 'network' && NET.cv && document.body.contains(NET.cv)){ netResize(); } else if(S.route.name === 'family') famApply(); });
+  $('#view').innerHTML = '<div class="page"><p class="dim center pad">Loading</p></div>';
   var tries = 0;
   (function attempt(){
     tries++;
@@ -5770,30 +2991,19 @@ function boot(){
       .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(d){
         D = d;
-        $('#fresh').textContent = 'Updated ' + (D.updated || '—');
-        D.directory.forEach(function(r, i){
-          BYN[(r.name || '').toLowerCase()] = i;
-          normEntry(r);
-          PK2I[pkey(r)] = i;
-        });
+        D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; normEntry(r); PK2I[pkey(r)] = i; });
         outLoad();
-        try { applyOutbox(); } catch(px){}
-        try { syncNavBtns(); } catch(nx){}
-        buildNodes();
-        $('#fq').placeholder = 'Search ' + LIST_ORDER.length + ' people…';
-        hubInit(); bind(); refresh(); setMode(S.mode);
-        syncUI(); outKick(); fetchChanges();
+        try{ applyOutbox(); }catch(px){}
+        computeNewGain();
+        history.replaceState({ d:0 }, '', location.hash || '#/today');
+        render();
+        outKick(); fetchChanges();
       })
-      .catch(function(){
-        if(tries < 4){
-          $('#leftbody').innerHTML = '<div class="empty-note">Loading dossier data… (retry ' + tries + '/3)</div>';
-          setTimeout(attempt, 1200 * tries);
-        } else {
-          $('#leftbody').innerHTML = '<div class="empty-note">Could not load the dossier data. <a href="" onclick="location.reload();return false;" style="color:var(--txt)">Retry</a></div>';
-          $('#stagehint').textContent = 'Data failed to load.';
-        }
+      .catch(function(err){
+        if(tries < 4){ $('#view').innerHTML = '<div class="page"><p class="dim center pad">Loading (retry ' + tries + ' of 3)</p></div>'; setTimeout(attempt, 1200 * tries); }
+        else $('#view').innerHTML = '<div class="page">' + emptyState('Could not load the data.', String(err && err.message || err)) + '<p class="center"><button type="button" class="btn" onclick="location.reload()">Retry</button></p></div>';
       });
   })();
 }
-document.addEventListener('DOMContentLoaded', boot);
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
