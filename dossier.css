@@ -638,3 +638,48 @@ details.quick[open]>summary{margin-bottom:10px}
   .foothint{text-align:left}
   .rfoot .btn.lg{flex:1 1 100%;order:-1}
 }
+
+/* ---------- The Sort: thin finish (2026-10-13) ----------
+   JD's steer: ultra elegant, thin — hairline borders and light dividers in
+   place of heavy boxes, a soft glass tint, restrained shadows, generous
+   spacing, and the modern stack set bold for names, headlines, and counts.
+   Scoped to the new surfaces only (hero, fix strip, sort card, sorted list);
+   other views keep the shared glass treatment. No motion of any kind. */
+.thero{border:1px solid rgba(255,255,255,.08);box-shadow:0 16px 38px -26px rgba(0,0,0,.6);
+  background:linear-gradient(125deg,rgba(112,146,235,.14),rgba(150,120,225,.05) 46%,rgba(15,20,31,.55)),linear-gradient(180deg,rgba(28,36,54,.55),rgba(16,21,33,.55))}
+.thero::before{opacity:.4}
+.thero .display{font:800 42px/1.08 var(--sans);letter-spacing:-.022em}
+.thero .ring{filter:drop-shadow(0 0 10px rgba(120,150,235,.16))}
+.tring-c b{font:700 32px var(--sans);letter-spacing:-.01em}
+.thero .btn.primary{box-shadow:0 6px 16px -8px rgba(160,185,240,.45),inset 0 1px 0 #fff}
+.fixstrip{padding:19px 22px;border:1px solid rgba(255,255,255,.08);box-shadow:0 10px 26px -20px rgba(0,0,0,.55);
+  background:linear-gradient(180deg,rgba(28,36,54,.5),rgba(16,21,33,.5))}
+.fixstrip .fix-txt b{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.fixstrip .fix-txt span b{color:var(--acc2);font-weight:700}
+.sortview .display,.sortedpage .display{font:800 34px/1.1 var(--sans);letter-spacing:-.02em}
+.sortview .upnext{box-shadow:0 10px 26px -20px rgba(0,0,0,.55)}
+.sortview .upnext::before{opacity:.4}
+.sortview .qrow .qn b{font-weight:600}
+.sortview .done-card{box-shadow:0 14px 34px -24px rgba(0,0,0,.55)}
+.sortview .done-card::before{opacity:.4}
+.rc.sortcard{padding:30px;gap:20px;border-color:rgba(255,255,255,.08);box-shadow:0 16px 38px -26px rgba(0,0,0,.6);
+  background:linear-gradient(180deg,rgba(28,36,54,.55),rgba(16,21,33,.55))}
+.rc.sortcard::before{opacity:.4}
+.sortcard .rh h2{font:700 27px/1.15 var(--sans);letter-spacing:-.015em}
+.sortcard .rn{font-weight:600;font-variant-numeric:tabular-nums}
+.sort-ev{background:transparent;border:none;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);border-radius:0;padding:15px 2px;font-size:15.5px}
+.sort-frame p{font:600 19px/1.4 var(--sans);letter-spacing:-.01em}
+.sort-actions .btn.lg{font-weight:600}
+.sort-actions .btn.primary{box-shadow:0 6px 16px -8px rgba(160,185,240,.45),inset 0 1px 0 #fff}
+.sortedpage .card{box-shadow:0 12px 30px -22px rgba(0,0,0,.55)}
+.sortedpage .card::before{opacity:.4}
+.sortedpage .evrow{padding:13px 0;border-bottom-color:rgba(255,255,255,.06)}
+.sortedpage .evrow b{font-weight:600;letter-spacing:-.01em}
+@media (max-width:899px){
+  .thero .display{font-size:33px}
+  .sortview .display,.sortedpage .display{font-size:28px}
+  .rc.sortcard{padding:22px 18px;gap:18px}
+  .sortcard .rh h2{font-size:23px}
+  .sort-frame p{font-size:17px}
+  .fixstrip{padding:16px 18px}
+}
