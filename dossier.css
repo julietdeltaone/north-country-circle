@@ -266,8 +266,22 @@ option,optgroup{background:#141a26;color:var(--txt)}
 .settings{max-width:760px} .settings .card{margin-bottom:0} .settings{gap:16px}
 .syncline{color:var(--mut)}
 
+/* ---------- The Sort + Fix strip (2026-10-13) ---------- */
+.fixstrip{position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 20px;border-radius:16px;background:linear-gradient(180deg,rgba(26,33,50,.74),rgba(15,20,31,.74));-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(255,255,255,.09);box-shadow:0 22px 50px -24px rgba(0,0,0,.8)}
+.fixstrip .fix-txt{display:flex;flex-direction:column;gap:2px;margin-right:auto;min-width:200px}
+.fixstrip .fix-txt b{font-size:15.5px}
+.fixstrip .fix-txt span{color:var(--mut);font-size:13.5px}
+.fixpick{display:flex;flex-direction:column;gap:20px}
+.sort-ev{font-size:15px;line-height:1.55;color:#c6cede;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sort-frame{display:flex;flex-direction:column;gap:4px}
+.sort-frame p{font:500 19px/1.35 var(--serif);color:var(--txt)}
+.sort-actions .btn.lg{min-height:52px;padding:0 30px;font-size:16px}
+
 /* ---------- phone ---------- */
 @media (max-width:899px){
+  .fixstrip{padding:14px 16px;gap:10px}
+  .sort-actions .btn.lg{flex:1 1 42%;padding:0 14px}
+  .sort-frame p{font-size:17px}
   #app{display:block;padding-bottom:calc(66px + env(safe-area-inset-bottom))}
   #rail{display:none}
   #tabs{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(16,20,28,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
