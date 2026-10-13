@@ -2070,6 +2070,15 @@ var QA_KINDS = [
   ['phone', 'Phone', 'Phone number'],
   ['link', 'Web link', 'Paste a Facebook, Instagram or web link']
 ];
+/* where each quick-add kind really lands on the profile: section (SECS
+   titles) + the field's own name there. Companies/Churches are the
+   Background pick lists, School feeds Background's Education, Phone is
+   the Contact section's Phone field, a Web link becomes a source on the
+   About section's Web record. */
+var QA_DEST = {
+  companies:'Background · Companies', churches:'Background · Churches', universities:'Background · Education',
+  phone:'Contact · Phone', link:'About · Web record, as a source'
+};
 function qaHTML(di, reason){
   var kind = S.today.qaKind || 'companies';
   var ph = (QA_KINDS.filter(function(k){ return k[0] === kind; })[0] || QA_KINDS[0])[2];
@@ -2077,7 +2086,8 @@ function qaHTML(di, reason){
       return '<button type="button" class="fc' + (kind === k[0] ? ' on' : '') + '" data-act="qakind" data-v="' + k[0] + '">' + k[1] + '</button>';
     }).join('') + '</div>' +
     '<div class="row qa-row"><input class="qa-in" data-di="' + di + '" placeholder="' + ph + '" autocomplete="off">' +
-    '<button type="button" class="btn primary" data-act="qaadd" data-di="' + di + '" data-reason="' + reason + '">Add</button></div></div>';
+    '<button type="button" class="btn primary" data-act="qaadd" data-di="' + di + '" data-reason="' + reason + '">Add</button></div>' +
+    '<p class="qa-dest">Goes on their profile under ' + (QA_DEST[kind] || '') + '.</p></div>';
 }
 function classifyHTML(di){
   var e = D.directory[di];
@@ -2364,6 +2374,118 @@ function heroHTML(di){
     '<div class="hctl"><div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
     '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '"') + '</div></div>';
 }
+/* ---- profile banner rows (2026-10-13): the banner is an index, not a
+   stack of editors. Each open issue is ONE row: the lane card's sentence,
+   and a Fix this button that takes JD to the real field (banTarget below).
+   Direct state actions stay on their rows: family fixes (they have no
+   single field home — the fix IS the link write), Clear flag on the
+   missing-info row, Remove on the looks-like-a-business row. ---- */
+function famSaySub(di, f){
+  var e = D.directory[di], name = dispName(e);
+  if(f.kind === 'oneway'){
+    var other = D.directory[f.tdi], oname = dispName(other);
+    var relWord = { spouse:'husband or wife', parent:'parent', child:'child', sibling:'sibling' }[f.rel] || 'family';
+    return { say:oname + '\'s profile doesn\'t link back to ' + name + '.',
+      sub:name + ' lists ' + oname + ' as their ' + relWord + ', but ' + oname + ' has no family link to ' + name + '. Family links should go both ways.' };
+  }
+  if(f.kind === 'dangling') return { say:'This profile links to ' + f.key + ', who isn\'t in the directory.', sub:'The link points at nobody, so it can\'t be shown on the family tree.' };
+  if(f.kind === 'self') return { say:'This profile links to itself as its own ' + f.rel + '.', sub:'' };
+  var links = famLinks(e), isSp = f.kind === 'spouses';
+  var names = f.idxs.map(function(i){ var td = BYN[String(links[i][1] || '').toLowerCase()]; return td != null ? dispName(D.directory[td]) : links[i][1]; });
+  return { say:(isSp ? 'More than one spouse is recorded: ' : 'More than two parents are recorded: ') + names.join(', ') + '.',
+    sub:'The family tree keeps ' + (isSp ? 'one spouse' : 'two parents') + ' per person. Remove the link that doesn\'t belong.' };
+}
+function banSaySub(it){
+  var di = it.di, e = D.directory[di], x = it.x, c = it.reason, name = dispName(e);
+  if(c === 'dup'){
+    var gs = x.detail.dup || [];
+    if(!gs.length) return { say:'Flagged as a possible duplicate.', sub:'No matching name or face turned up.' };
+    var g = gs[0];
+    return { say:(g.title || g.label || 'Possible duplicate'),
+      sub:(gs.length > 1 ? 'This profile sits in ' + gs.length + ' possible-duplicate groups. ' : '') +
+        (g.kind === 'photo' ? 'These people share a first name. They may all be different people.' : 'These profiles share the same name. They may be different people.') };
+  }
+  if(c === 'identity'){
+    var sg = x.detail.identity || identitySignals(e);
+    var miss = sg.miss.map(function(s){ return SIG_PLAIN[s] || s.toLowerCase(); });
+    var have = sg.have.map(function(s){ return SIG_PLAIN[s] || s.toLowerCase(); });
+    return { say:'We can\'t confirm who this is yet.',
+      sub:(miss.length ? 'Nothing on file ties ' + name + ' to ' + miss.join(', ').replace(/, ([^,]*)$/, ' or $1') + '.' : '') +
+        (have.length ? ' On file so far: ' + have.join(', ') + ' — one more is enough.' : ' Add one detail — a job, church, school, phone or source — and this is fixed.') };
+  }
+  if(c === 'unsrc'){
+    var fp = footprintOf(e), tx = fp.blocks.length ? fp.blocks[0].text : '';
+    if(tx.length > 220) tx = tx.slice(0, 220).trim() + '…';
+    return { say:'This web info has no source link, so it can\'t be trusted yet.', sub:tx ? '“' + tx + '”' : '' };
+  }
+  if(c === 'family') return famSaySub(di, it.fam);
+  if(c === 'missing') return { say:'You flagged this profile as missing information.', sub:'Add what\'s missing, or clear the flag if it\'s fine now.' };
+  if(c === 'name') return { say:'This name isn\'t in First Last form yet.', sub:'Names show as First Last — handles never stand in for a name.' };
+  if(c === 'biz') return { say:'This name looks like a business or an address, not a person.', sub:'' };
+  if(c === 'fresh') return { say:'New this week and not sorted yet.', sub:'Set how close they are and how you know them.' };
+  if(c === 'inner'){
+    var gaps = x.detail.inner || [];
+    return { say:'One of your close circle — some detail is still missing.',
+      sub:gaps.length ? 'Missing: ' + gaps.map(function(g2){ return g2.l.toLowerCase(); }).join(', ') + '.' : 'Detail is complete for this tier. A quick look and mark Done.' };
+  }
+  if(c === 'spot') return { say:'Spot check — this finished profile was picked at random to re-verify.', sub:'Is everything on it still right?' };
+  return { say:ISSUE_SHORT[c] || 'Needs a look.', sub:'' };
+}
+/* where each banner issue is really fixed: the section + field that own
+   the data, the hero controls (tier lives there), or the lane that owns
+   the machinery (duplicates). Family and business rows keep their direct
+   actions instead — see bannerRowHTML. */
+function banTarget(it){
+  var di = it.di, e = D.directory[di], c = it.reason;
+  if(c === 'dup') return { goto:'dup' };
+  if(c === 'identity'){
+    var sg = it.x.detail.identity || identitySignals(e);
+    if(sg.miss.indexOf('Work or church') >= 0) return { sec:'background', tf:'input.tadd[data-k="companies"]' };
+    if(sg.miss.indexOf('Phone or Facebook') >= 0) return { sec:'identity', tf:'input[data-pk="phone"]' };
+    if(sg.miss.indexOf('Sourced web record') >= 0) return { sec:'about', tf:'textarea[data-pk="public_footprint"]' };
+    return { sec:'relationship' };
+  }
+  if(c === 'unsrc') return { sec:'about', tf:'textarea[data-pk="public_footprint"]' };
+  if(c === 'missing') return { sec:'background', tf:'input.tadd[data-k="companies"]' };
+  if(c === 'name') return { sec:'identity' };
+  if(c === 'fresh'){
+    if(!tierOf(e)) return { goto:'hero' };
+    return { sec:'relationship' };
+  }
+  if(c === 'inner'){
+    var gaps = it.x.detail.inner || [], SEC = { relationship:'relationship', onfile:'about', background:'background', connections:'connections', timeline:'timeline' };
+    if(gaps.length) return { sec:SEC[gaps[0].sid] || 'about' };
+    return { sec:'about' };
+  }
+  return { sec:'identity' };
+}
+function banFamActs(it){
+  var di = it.di, f = it.fam, fk = famKeyOf(it);
+  function cut(idx, label){
+    return '<button type="button" class="btn ghost sm" data-act="famcut" data-di="' + di + '" data-i="' + idx + '" data-reason="family" data-famkey="' + esc(fk) + '">' + esc(label) + '</button>';
+  }
+  if(f.kind === 'oneway'){
+    return '<button type="button" class="btn primary sm" data-act="famlink" data-di="' + f.tdi + '" data-rel="' + f.inv + '" data-t="' + di + '" data-reason="family" data-famkey="' + esc(fk) + '">Link them both ways</button>' +
+      cut(f.idx, 'Remove the link from ' + dispName(D.directory[di]));
+  }
+  if(f.kind === 'dangling' || f.kind === 'self') return cut(f.idx, 'Remove the link');
+  var links = famLinks(D.directory[di]);
+  return f.idxs.map(function(i){ var td = BYN[String(links[i][1] || '').toLowerCase()]; var nm = td != null ? dispName(D.directory[td]) : links[i][1]; return cut(i, 'Remove link to ' + nm); }).join('');
+}
+function bannerRowHTML(it){
+  var di = it.di, c = it.reason, ss = banSaySub(it), acts = '';
+  if(c === 'family') acts = banFamActs(it);
+  else if(c === 'biz') acts = '<button type="button" class="btn danger sm" data-act="delperson" data-di="' + di + '">Remove from the circle</button>';
+  else if(c === 'inner' && !(it.x.detail.inner || []).length) acts = '';
+  else {
+    var t = banTarget(it);
+    acts = '<button type="button" class="btn primary sm" data-act="banfix" data-di="' + di + '"' +
+      (t.sec ? ' data-sec="' + t.sec + '"' : '') + (t.tf ? ' data-tf="' + esc(t.tf) + '"' : '') + (t.goto ? ' data-goto="' + t.goto + '"' : '') + '>Fix this</button>' +
+      (c === 'missing' ? '<button type="button" class="btn ghost sm" data-act="clearflag" data-di="' + di + '">Clear flag</button>' : '');
+  }
+  return '<div class="brow"><div class="brow-tx"><p class="issue-say">' + esc(ss.say) + '</p>' + (ss.sub ? '<p class="issue-sub">' + esc(ss.sub) + '</p>' : '') + '</div>' +
+    (acts ? '<div class="brow-acts">' + acts + '</div>' : '') + '</div>';
+}
 function bannerHTML(di){
   var e = D.directory[di], x = getState().by[di];
   if(!x) return '';
@@ -2390,7 +2512,7 @@ function bannerHTML(di){
   });
   return '<div class="banner needs"><div class="bh"><span class="bi">' + ic('shield', 18) + '</span><div><b>Needs you</b><small>' + items.map(function(it){ return esc(ISSUE_SHORT[it.reason]); }).join(' · ') + '</small></div><span class="sp"></span>' +
     '<button type="button" class="btn ghost sm" data-act="bantog">' + (open ? 'Hide' : 'Show') + ' details</button>' + doneBtn + '</div>' +
-    (open ? '<div class="rbs">' + items.map(function(it){ return issueBody(it); }).join('') + '</div>' : '') + '</div>';
+    (open ? '<div class="rbs">' + items.map(function(it){ return bannerRowHTML(it); }).join('') + '</div>' : '') + '</div>';
 }
 
 /* ---------- section cards ---------- */
@@ -3510,6 +3632,30 @@ function onClick(ev){
         closeSheet(); txn('Attach doc', function(){ queuePatch(di, { files:JSON.stringify(arr) }); });
         if(S.route.name === 'profile'){ repaintSec('files'); if(!$('#sec-files')) paintProfile(di); } toast('Doc created and attached.');
       }, function(err){ el.disabled = false; toast(err + ' Not created.'); });
+      break;
+    }
+    case 'banfix': {
+      var bgo = el.getAttribute('data-goto');
+      if(bgo === 'dup'){
+        startSession('dup');
+        var bdq = issueQueue('dup');
+        for(var bq = 0; bq < bdq.length; bq++){ if(bdq[bq].di === di && bdq[bq].reason === 'dup'){ S.today.i = bq; break; } }
+        go('today/dup'); landOn('#qcard .rc, #qcard .done-card'); prevent = false; break;
+      }
+      if(bgo === 'hero'){ landOn('#p-hero .hctl'); break; }
+      var bsec = el.getAttribute('data-sec'); if(!bsec) break;
+      S.prof.edit[bsec] = true;
+      if($('#sec-' + bsec)) repaintSec(bsec); else paintProfile(S.prof.di);
+      var btf = el.getAttribute('data-tf'), bfel = btf ? $(btf, $('#sec-' + bsec)) : null;
+      var bwrap = bfel ? (bfel.closest('.tags') || bfel.closest('.form')) : null;
+      if(bwrap) landOn(bwrap, { focus:true });
+      else {
+        landOn('#sec-' + bsec, { focus:!bfel });
+        if(bfel){
+          var brm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          setTimeout(function(){ bfel.focus({ preventScroll:true }); }, brm ? 60 : 420);
+        }
+      }
       break;
     }
     case 'bantog': S.prof.bannerOpen = !(S.prof.bannerOpen !== false); repaintTop(); if(S.prof.bannerOpen) landOn('.banner .rbs'); break;
