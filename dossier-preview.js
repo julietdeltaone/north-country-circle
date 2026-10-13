@@ -2443,19 +2443,22 @@ function banTarget(it){
     if(sg.miss.indexOf('Work or church') >= 0) return { sec:'background', tf:'input.tadd[data-k="companies"]' };
     if(sg.miss.indexOf('Phone or Facebook') >= 0) return { sec:'identity', tf:'input[data-pk="phone"]' };
     if(sg.miss.indexOf('Sourced web record') >= 0) return { sec:'about', tf:'textarea[data-pk="public_footprint"]' };
-    return { sec:'relationship' };
+    return { sec:'relationship', tf:'#ksin' };
   }
   if(c === 'unsrc') return { sec:'about', tf:'textarea[data-pk="public_footprint"]' };
   if(c === 'missing') return { sec:'background', tf:'input.tadd[data-k="companies"]' };
-  if(c === 'name') return { sec:'identity' };
+  if(c === 'name') return { sec:'identity', tf:'input[data-pk="first_name"]' };
   if(c === 'fresh'){
     if(!tierOf(e)) return { goto:'hero' };
-    return { sec:'relationship' };
+    return { sec:'relationship', tf:'#ksin' };
   }
   if(c === 'inner'){
-    var gaps = it.x.detail.inner || [], SEC = { relationship:'relationship', onfile:'about', background:'background', connections:'connections', timeline:'timeline' };
-    if(gaps.length) return { sec:SEC[gaps[0].sid] || 'about' };
-    return { sec:'about' };
+    var gaps = it.x.detail.inner || [];
+    var TGT = { relationship:{ sec:'relationship', tf:'#ksin' }, onfile:{ sec:'about', tf:'textarea[data-pk="synopsis"]' },
+      background:{ sec:'background', tf:'input.tadd[data-k="specialty"]' }, connections:{ sec:'connections', tf:'#assocq' },
+      timeline:{ sec:'timeline', tf:'#ev-date' } };
+    if(gaps.length) return TGT[gaps[0].sid] || { sec:'about', tf:'textarea[data-pk="synopsis"]' };
+    return { sec:'about', tf:'textarea[data-pk="synopsis"]' };
   }
   return { sec:'identity' };
 }
