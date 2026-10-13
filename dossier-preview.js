@@ -672,7 +672,14 @@ var FAM_INV_REL = { parent:'child', child:'parent', spouse:'spouse', sibling:'si
 
 function dupDismissed(){ try{ return JSON.parse(store('ncc_dupok') || '{}') || {}; }catch(x){ return {}; } }
 function dupGroupKey(dis){ return dis.map(function(di){ return pkey(D.directory[di]); }).sort().join('|'); }
-function dismissDup(dis){ var m = dupDismissed(); m[dupGroupKey(dis)] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; }
+function dupPairKey(a, b){ var ka = pkey(D.directory[a]), kb = pkey(D.directory[b]); return ka < kb ? ka + '|' + kb : kb + '|' + ka; }
+/* a pair counts as dismissed when its own pair key is stored, or when a legacy
+   whole-group dismissal (a stored key listing both people) covers it */
+function pairDismissed(a, b){
+  var m = dupDismissed(), ka = pkey(D.directory[a]), kb = pkey(D.directory[b]);
+  return Object.keys(m).some(function(k){ var parts = k.split('|'); return parts.indexOf(ka) >= 0 && parts.indexOf(kb) >= 0; });
+}
+function dismissDupPair(a, b){ var m = dupDismissed(); m[dupPairKey(a, b)] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; }
 function spotDone(){ try{ var o = JSON.parse(store('ncc_spot') || '{}') || {}; return o.w === weekKey() ? o.done || {} : {}; }catch(x){ return {}; } }
 function markSpotDone(di){ var d = spotDone(); d[pkey(D.directory[di])] = 1; store('ncc_spot', JSON.stringify({ w:weekKey(), done:d })); VER++; }
 
@@ -696,7 +703,12 @@ function getState(){
     });
     if(dis.length > 1) groups.push({ kind:'photo', label:'Same face ("' + pm.face + '")', dis:dis });
   });
-  groups = groups.filter(function(g){ return g.dis.some(function(di){ return !isChecked(D.directory[di]); }) && !dismissed[dupGroupKey(g.dis)]; });
+  groups = groups.filter(function(g){
+    if(!g.dis.some(function(di){ return !isChecked(D.directory[di]); })) return false;
+    /* a group stays until every pair inside it has been marked different people */
+    for(var a = 0; a < g.dis.length; a++) for(var b = a + 1; b < g.dis.length; b++) if(!pairDismissed(g.dis[a], g.dis[b])) return true;
+    return false;
+  });
   groups.forEach(function(g){ g.dis.forEach(function(di){ (inGroup[di] = inGroup[di] || []).push(g); }); });
   var spotSet = {}, checkedList = list.filter(function(di){ return isChecked(D.directory[di]); });
   var nSpot = checkedList.length ? Math.max(3, Math.ceil(checkedList.length * 0.05)) : 0, wk = weekKey();
@@ -1338,7 +1350,7 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    ============================================================ */
 var S = {
   depth:0, route:{ name:'today', seg:[] }, ctx:null,
-  today:{ i:0, surv:{}, skipped:{} },
+  today:{ i:0, surv:{}, dsel:{}, skipped:{} },
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80 },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ color:'tier', bg:false, sel:null },
@@ -1587,7 +1599,10 @@ function viewToday(v){
     var n = tabCount(t.k);
     return '<a href="#/today/' + t.k + '" class="tab' + (t.k === tab ? ' on' : '') + '" data-tab="' + t.k + '">' + esc(t.l) + '<em class="cu" data-n="' + n + '">' + n + '</em></a>';
   }).join('');
-  v.innerHTML = '<div class="page today">' + todayHead(st) + '<nav class="tabrow" aria-label="Queues">' + tabs + '</nav>' +
+  var intro = store('ncc_tintro') === '1' ? '' :
+    '<div class="tintro"><p><b>How this works:</b> work top to bottom — duplicates first, then identity, sources, family, new people, cleanup. The tabs filter this same queue. Tap a name to open their profile. Marking someone <b>Done</b> only takes them off this list; it doesn\'t delete anything.</p>' +
+    '<button type="button" class="ib sm" data-act="intx" aria-label="Hide this note">' + ic('x', 14) + '</button></div>';
+  v.innerHTML = '<div class="page today">' + todayHead(st) + intro + '<nav class="tabrow" aria-label="Queues">' + tabs + '</nav>' +
     '<div class="tgrid"><aside class="qlist" id="qlist"></aside><section class="qcard" id="qcard"></section></div></div>';
   paintQueue(tab);
 }
@@ -1637,27 +1652,42 @@ function factsHTML(e){
   if(syn){ var s2 = syn.length > 200 ? syn.slice(0, 200).trim() + '…' : syn; row('book', 'Synopsis', esc(s2)); }
   return rows.length ? '<div class="facts">' + rows.join('') + '</div>' : '<p class="dim">Nothing on file beyond the name.</p>';
 }
+function dupMemberLine(m){
+  var me = D.directory[m];
+  return [hasHandle(me) ? '@' + me.name : String(me.name).split(':')[0], tierName(me), me.city, isChecked(me) ? 'checked' : ''].filter(Boolean).join(' · ');
+}
+/* Selective merge: tap exactly two profiles in the group, then merge just
+   those two. The rest of the group stays untouched and re-evaluates. */
 function dupBlock(x, di){
   var e = D.directory[di], gs = x.detail.dup || [];
   if(!gs.length){
-    return '<div class="rb"><h4>' + esc(REASONS.dup.l) + '</h4><p>Flagged as a possible duplicate, but no matching name or face turned up. Find the other entry, or clear the flag.</p>' +
-      '<div class="row"><button type="button" class="btn" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 15) + 'Find the other entry</button>' +
-      '<button type="button" class="btn ghost" data-act="clearflag" data-di="' + di + '">Clear flag</button></div></div>';
+    return '<div class="rb"><h4>' + esc(REASONS.dup.l) + '</h4><p>This profile is flagged as a possible duplicate, but no matching name or face turned up. Merge it with the other entry by hand, or clear the flag.</p>' +
+      '<div class="row"><button type="button" class="btn" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 15) + 'Find the other profile and merge</button>' +
+      '<button type="button" class="btn ghost" data-act="clearflag" data-di="' + di + '">Clear flag — not a duplicate</button></div></div>';
   }
   return gs.map(function(g, gi){
-    var key = dupGroupKey(g.dis), sv = S.today.surv[key];
-    if(sv == null || g.dis.indexOf(sv) < 0){ sv = g.dis.slice().sort(function(a, b){ return mergeRichness(D.directory[b]) - mergeRichness(D.directory[a]); })[0]; }
+    var key = dupGroupKey(g.dis);
+    var sel = (S.today.dsel[key] || []).filter(function(d){ return g.dis.indexOf(d) >= 0; });
+    S.today.dsel[key] = sel;
+    var gone = sel.length === 2 && pairDismissed(sel[0], sel[1]);
     var mems = g.dis.map(function(m){
-      var me = D.directory[m];
-      return '<label class="dm' + (m === sv ? ' on' : '') + (m === di ? ' me' : '') + '"><input type="radio" name="sv' + gi + '" data-act="surv" data-key="' + esc(key) + '" data-di="' + m + '"' + (m === sv ? ' checked' : '') + '>' +
-        avatar(me, 'sm') + '<span><b>' + esc(dispName(me)) + (m === di ? ' <em>this one</em>' : '') + '</b><small>' + esc([hasHandle(me) ? '@' + me.name : String(me.name).split(':')[0], tierName(me), me.city, isChecked(me) ? 'checked' : ''].filter(Boolean).join(' · ')) + '</small></span>' +
-        '<a href="#/p/' + encodeURIComponent(personId(me)) + '" class="dl" data-act="openp" data-di="' + m + '" title="Open profile">' + ic('ext', 14) + '</a></label>';
+      var me = D.directory[m], on = sel.indexOf(m) >= 0;
+      return '<div class="dm pick' + (on ? ' on' : '') + (m === di ? ' me' : '') + '" role="button" tabindex="0" aria-pressed="' + (on ? 'true' : 'false') + '" data-act="dupsel" data-key="' + esc(key) + '" data-di="' + m + '">' +
+        '<span class="dmc">' + (on ? ic('check', 13) : '') + '</span>' + avatar(me, 'sm') +
+        '<span><b>' + esc(dispName(me)) + (m === di ? ' <em>this one</em>' : '') + '</b><small>' + esc(dupMemberLine(m)) + '</small></span>' +
+        '<a href="#/p/' + encodeURIComponent(personId(me)) + '" class="dl" data-act="openp" data-di="' + m + '" title="Open profile">' + ic('ext', 14) + '</a></div>';
     }).join('');
+    var hint = sel.length === 0 ? 'Tap two profiles that are the same person. Only those two merge — everyone else here keeps their own profile.'
+      : sel.length === 1 ? 'One picked. Now tap the other profile of the same person.'
+      : gone ? 'You marked these two as different people before, so they can\'t be merged. Unselect one and pick a different pair.'
+      : 'Two picked. Merging combines their details into the one that stays. Nothing is deleted, and you can undo it.';
+    var ready = sel.length === 2 && !gone;
     return '<div class="rb"><h4>' + esc(REASONS.dup.l) + ' <small>' + esc(g.label) + '</small></h4>' +
-      '<p>Twins and same-name people are common. Nothing merges unless you combine it. Pick the profile that should survive.</p>' +
+      '<p>Same person twice, or two different people who look alike? Twins and same-name people are common — nothing merges unless you pick two and confirm.</p>' +
       '<div class="dms">' + mems + '</div>' +
-      '<div class="row"><button type="button" class="btn primary" data-act="mergegroup" data-key="' + esc(key) + '" data-gi="' + gi + '">' + ic('merge', 15) + 'Combine into survivor</button>' +
-      '<button type="button" class="btn ghost" data-act="notdup" data-gi="' + gi + '">Different people</button></div></div>';
+      '<p class="hint">' + hint + '</p>' +
+      '<div class="row"><button type="button" class="btn primary" data-act="dupmerge" data-key="' + esc(key) + '" data-gi="' + gi + '"' + (ready ? '' : ' disabled') + '>' + ic('merge', 15) + 'Merge these two</button>' +
+      '<button type="button" class="btn ghost" data-act="notdup2" data-key="' + esc(key) + '" data-gi="' + gi + '"' + (ready ? '' : ' disabled') + '>These two are different people</button></div></div>';
   }).join('');
 }
 function reasonBlocks(x, di, tab){
@@ -1673,19 +1703,19 @@ function reasonBlocks(x, di, tab){
       out.push('<div class="rb"><h4>' + esc(REASONS.identity.l) + ' <small>' + sg.n + ' of 2 signals</small></h4>' +
         '<p>Two independent signals beyond the name: place, school, work or church, contact, a connection to you, or a sourced web record. Fix it or waive it honestly.</p>' +
         '<div class="sigs">' + sg.have.map(function(s){ return '<span class="sig on">' + ic('check', 12) + esc(s) + '</span>'; }).join('') + sg.miss.map(function(s){ return '<span class="sig">' + esc(s) + '</span>'; }).join('') + '</div>' +
-        '<div class="row"><button type="button" class="btn" data-act="openedit" data-di="' + di + '" data-sec="identity">Add detail</button>' +
-        '<button type="button" class="btn ghost" data-act="waive" data-di="' + di + '" data-sid="identity">Waive: insufficient data</button></div></div>');
+        '<div class="row"><button type="button" class="btn" data-act="openedit" data-di="' + di + '" data-sec="identity">Open profile to add detail</button>' +
+        '<button type="button" class="btn ghost" data-act="waive" data-di="' + di + '" data-sid="identity">Waive — not enough data exists</button></div></div>');
     }
     else if(c === 'unsrc'){
       var fp = footprintOf(e);
       out.push('<div class="rb"><h4>' + esc(REASONS.unsrc.l) + '</h4><p>The web record has no source attached, so it reads as inferred. Source it, remove it, or accept it by marking this person checked.</p>' +
-        '<div class="row"><button type="button" class="btn" data-act="openedit" data-di="' + di + '" data-sec="about">Add a source</button>' +
+        '<div class="row"><button type="button" class="btn" data-act="openedit" data-di="' + di + '" data-sec="about">Open profile to add a source</button>' +
         '<button type="button" class="btn ghost" data-act="rmfootprint" data-di="' + di + '">Remove the unsourced text</button></div></div>');
     }
     else if(c === 'family'){
       out.push('<div class="rb"><h4>' + esc(REASONS.family.l) + '</h4><ul class="issues">' + (x.detail.family || []).map(function(s){ return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' +
         '<div class="row"><a class="btn" href="#/family" data-act="openfam" data-di="' + di + '">Open in Family</a>' +
-        '<button type="button" class="btn ghost" data-act="openedit" data-di="' + di + '" data-sec="connections">Edit links</button></div></div>');
+        '<button type="button" class="btn ghost" data-act="openedit" data-di="' + di + '" data-sec="connections">Edit family links</button></div></div>');
     }
     else if(c === 'missing'){
       out.push('<div class="rb"><h4>' + esc(REASONS.missing.l) + '</h4><p>You flagged this profile as missing information.</p>' +
@@ -1694,7 +1724,8 @@ function reasonBlocks(x, di, tab){
     else if(c === 'name'){
       out.push('<div class="rb"><h4>' + esc(REASONS.name.l) + '</h4><p>Names show as First Last. Handles never stand in for a name.</p>' +
         '<div class="row two"><input data-nm="first_name" data-di="' + di + '" value="' + esc(gv(e, 'first_name')) + '" placeholder="First name" autocomplete="off">' +
-        '<input data-nm="last_name" data-di="' + di + '" value="' + esc(gv(e, 'last_name')) + '" placeholder="Last name" autocomplete="off"></div></div>');
+        '<input data-nm="last_name" data-di="' + di + '" value="' + esc(gv(e, 'last_name')) + '" placeholder="Last name" autocomplete="off"></div>' +
+        '<p class="hint">Each field saves on its own when you tap out of it.</p></div>');
     }
     else if(c === 'biz'){
       out.push('<div class="rb"><h4>' + esc(REASONS.biz.l) + '</h4><p>The name reads like a business or an address rather than a person.</p>' +
@@ -1729,13 +1760,13 @@ function reviewCard(x, tab, i, n){
     '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>' +
     '<div class="rbs">' + reasonBlocks(x, di, tab) + '</div>' +
     '<section class="rsec"><h5>What is on file</h5>' + factsHTML(e) + '</section>' +
-    '<section class="rsec quick"><h5>Classify</h5>' +
+    '<section class="rsec quick"><h5>Classify</h5><p class="hint">Tap a value to set it — it saves right away, and you can change it any time.</p>' +
     '<div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
     '<div class="qk"><label>Relationship</label>' + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '"') + '</div>' +
     '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', 'Cooling'], ['0', 'Steady'], ['+', 'Warming']], momVal(e), ' data-di="' + di + '"') + '</div></section>' +
-    '<footer class="rfoot"><button type="button" class="btn ghost" data-act="qskip">' + ic('skip', 15) + 'Skip</button>' +
+    '<footer class="rfoot"><button type="button" class="btn ghost" data-act="qskip">' + ic('skip', 15) + 'Skip for now</button>' +
     '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a><span class="sp"></span>' +
-    (spot ? '' : '<button type="button" class="btn primary lg" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 16) + 'Checked</button>') + '</footer></article>';
+    (spot ? '' : '<button type="button" class="btn primary lg" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 16) + 'Done — I\'ve checked this</button>') + '</footer></article>';
 }
 
 /* ============================================================
@@ -1866,10 +1897,10 @@ function viewProfile(v){
   v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="ptop">' + pager + '<span class="sp"></span>' +
     '<div class="menu"><button type="button" class="ib" data-act="menu" aria-haspopup="true" aria-label="More actions">' + ic('dots', 20) + '</button>' +
     '<div class="menu-pop" hidden>' +
-    '<button type="button" data-act="export" data-di="' + di + '">' + ic('download', 16) + 'Export dossier</button>' +
-    '<button type="button" data-act="viewdoc" data-di="' + di + '">' + ic('book', 16) + 'View dossier</button>' +
+    '<button type="button" data-act="export" data-di="' + di + '">' + ic('download', 16) + 'Download dossier file</button>' +
+    '<button type="button" data-act="viewdoc" data-di="' + di + '">' + ic('book', 16) + 'Open dossier in a new tab</button>' +
     '<button type="button" data-act="newdoc" data-di="' + di + '">' + ic('file', 16) + 'New Drive doc</button>' +
-    '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Combine with another profile</button>' +
+    '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
     '<section id="p-hero" class="hero"></section><section id="p-banner"></section>' +
     '<div class="pgrid"><div class="pcol" id="pc-a"></div><div class="pcol" id="pc-b"></div></div><div id="p-add"></div></div>';
@@ -1910,7 +1941,7 @@ function heroHTML(di){
     return '<span class="dbadge">' + ic('cap', 12) + '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits ? '<i>' + esc(bits) + '</i>' : '') + '</span>';
   }).join('');
   var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
-  return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Edit name">' + esc(dispName(e)) + '</h1>' +
+  return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
     '<p class="hsub">' + esc(sub || (hasHandle(e) ? '@' + e.name : 'Not yet classified')) + '</p>' +
     ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') + '</div>' +
     '<div class="hctl"><div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
@@ -1923,18 +1954,20 @@ function bannerHTML(di){
     var spot = x.kind === 'spot';
     return '<div class="banner ok"><span class="bi">' + ic('check', 18) + '</span><div><b>Checked</b><small>' + (spot ? 'Picked for this week’s spot check.' : 'Done at its tier. Empty fields are fine.') + '</small></div>' +
       '<span class="sp"></span>' + (spot ? '<button type="button" class="btn" data-act="spotok" data-di="' + di + '">Still correct</button>' : '') +
-      '<button type="button" class="btn ghost" data-act="reopen" data-di="' + di + '">Reopen</button></div>';
+      '<button type="button" class="btn ghost" data-act="reopen" data-di="' + di + '">Not done — reopen</button></div>';
   }
   var real = x.reasons.filter(function(c){ return c !== 'sweep'; });
-  var nextBtn = '<button type="button" class="btn primary" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 15) + 'Checked, next</button>';
+  /* one Done button per banner: it either finishes here or, when you arrived
+     from a queue, moves you to the next person in it */
+  var doneBtn = (S.ctx && S.ctx.keys)
+    ? '<button type="button" class="btn primary" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 15) + 'Done — next person</button>'
+    : '<button type="button" class="btn primary" data-act="check" data-di="' + di + '">' + ic('check', 15) + 'Done — I\'ve checked this</button>';
   if(!real.length){
-    return '<div class="banner"><span class="bi q">' + ic('shield', 18) + '</span><div><b>Waiting for the floor sweep</b><small>No flags. Checked once it clears identity, duplicates and one sourced anchor fact.</small></div><span class="sp"></span>' +
-      '<button type="button" class="btn" data-act="check" data-di="' + di + '">Checked</button>' + nextBtn + '</div>';
+    return '<div class="banner"><span class="bi q">' + ic('shield', 18) + '</span><div><b>Waiting for the floor sweep</b><small>No flags. Checked once it clears identity, duplicates and one sourced anchor fact.</small></div><span class="sp"></span>' + doneBtn + '</div>';
   }
   var open = S.prof.bannerOpen !== false;
   return '<div class="banner needs"><div class="bh"><span class="bi">' + ic('shield', 18) + '</span><div><b>Needs you</b><small>' + real.map(function(c){ return esc(REASONS[c].l); }).join(' · ') + '</small></div><span class="sp"></span>' +
-    '<button type="button" class="btn ghost sm" data-act="bantog">' + (open ? 'Hide' : 'Show') + ' details</button>' +
-    '<button type="button" class="btn" data-act="check" data-di="' + di + '">Checked</button>' + nextBtn + '</div>' +
+    '<button type="button" class="btn ghost sm" data-act="bantog">' + (open ? 'Hide' : 'Show') + ' details</button>' + doneBtn + '</div>' +
     (open ? '<div class="rbs">' + reasonBlocks(x, di, '') + '</div>' : '') + '</div>';
 }
 
@@ -2584,7 +2617,7 @@ function settingsCall(kind, patch, cb){
 var MG = { a:null, b:null, surv:null };
 function openMergeSheet(di){
   MG = { a:di, b:null, surv:null };
-  openSheet('Combine profiles', '<p class="dim">Pick the other profile. Nothing is deleted: unique details carry over and the retired profile can be restored in Settings.</p>' +
+  openSheet('Merge with another profile', '<p class="dim">Pick the other profile of the same person. On the next step you choose which one stays; their details combine into it, nothing is deleted, and you can undo it.</p>' +
     '<div class="finder"><input id="mq" placeholder="Search for the other profile" autocomplete="off"><div id="mr" class="hits"></div></div>');
 }
 function mergeStep2(){
@@ -2596,11 +2629,11 @@ function mergeStep2(){
   if(pv.union.length) lines.push('Combines lists: ' + pv.union.join(', '));
   if(pv.appended.length) lines.push('Appends text: ' + pv.appended.join(', '));
   if(pv.carried.length) lines.push('Carries over: ' + pv.carried.join(', '));
-  $('#sheetwrap .sbody').innerHTML = '<p class="dim">Choose the profile that stays.</p>' + [MG.a, MG.b].map(function(di){
+  $('#sheetwrap .sbody').innerHTML = '<p class="dim">Choose which profile stays. The other one\'s details combine into it, and it stops showing as its own profile. Nothing is deleted, and you can undo this.</p>' + [MG.a, MG.b].map(function(di){
     var e = D.directory[di];
     return '<label class="dm' + (di === MG.surv ? ' on' : '') + '"><input type="radio" name="msv" data-act="msv" data-di="' + di + '"' + (di === MG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc([hasHandle(e) ? '@' + e.name : '', tierName(e), e.city].filter(Boolean).join(' · ')) + '</small></span></label>';
-  }).join('') + '<div class="rb quiet"><h4>What combines</h4>' + (lines.length ? '<ul class="issues">' + lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<p>Nothing extra to carry over.</p>') + '</div>' +
-    '<div class="row end"><button type="button" class="btn ghost" data-act="sheetx">Cancel</button><button type="button" class="btn primary" data-act="mergego">Combine ' + esc(dispName(D.directory[loser])) + ' into ' + esc(dispName(D.directory[MG.surv])) + '</button></div>';
+  }).join('') + '<div class="rb quiet"><h4>What moves over</h4>' + (lines.length ? '<ul class="issues">' + lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<p>Nothing extra to carry over.</p>') + '</div>' +
+    '<div class="row end"><button type="button" class="btn ghost" data-act="sheetx">Cancel</button><button type="button" class="btn primary" data-act="mergego">Merge into ' + esc(dispName(D.directory[MG.surv])) + '</button></div>';
 }
 function mergeMany(survDi, losers){
   var target = mergeTarget(survDi); if(!target) return false;
@@ -2613,6 +2646,30 @@ function mergeMany(survDi, losers){
   });
   return true;
 }
+/* Confirm step for the selective two-person merge from a duplicate group.
+   Confirming queues exactly one patch: merged_into on the loser. */
+var DMG = { a:null, b:null, surv:null };
+function openDupMerge(a, b){
+  DMG = { a:a, b:b, surv: mergeRichness(D.directory[b]) > mergeRichness(D.directory[a]) ? b : a };
+  openSheet('Merge these two', dupMergeBody());
+}
+function dupMergeBody(){
+  var loser = DMG.surv === DMG.a ? DMG.b : DMG.a, L = D.directory[loser], Sv = D.directory[DMG.surv];
+  var pv = mergePreview(loser, DMG.surv), lines = [];
+  if(pv.filled.length) lines.push('Fills in blanks on ' + dispName(Sv) + ': ' + pv.filled.join(', '));
+  if(pv.union.length) lines.push('Combines lists: ' + pv.union.join(', '));
+  if(pv.appended.length) lines.push('Adds text: ' + pv.appended.join(', '));
+  if(pv.carried.length) lines.push('Carries over: ' + pv.carried.join(', '));
+  return '<p class="dim">Which profile stays? The one with more on file is picked for you — tap the other one if you want it to stay instead.</p><div class="dms">' +
+    [DMG.a, DMG.b].map(function(di){
+      var e = D.directory[di];
+      return '<label class="dm' + (di === DMG.surv ? ' on' : '') + '"><input type="radio" name="dsv" data-act="dmsv" data-di="' + di + '"' + (di === DMG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(dupMemberLine(di)) + '</small></span></label>';
+    }).join('') + '</div>' +
+    '<div class="rb quiet"><h4>What happens</h4><p>Their details combine into <b>' + esc(dispName(Sv)) + '</b>. Nothing is deleted; <b>' + esc(dispName(L)) + '</b> stops showing as its own profile. You can undo this, or restore ' + esc(dispName(L)) + ' later in Settings.</p>' +
+    (lines.length ? '<ul class="issues">' + lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<p>Nothing extra to carry over.</p>') + '</div>' +
+    '<div class="row end"><button type="button" class="btn ghost" data-act="sheetx">Cancel</button><button type="button" class="btn primary" data-act="dupgo">Merge into ' + esc(dispName(Sv)) + '</button></div>';
+}
+function refreshDupMerge(){ var b = $('#sheetwrap .sbody'); if(b) b.innerHTML = dupMergeBody(); }
 function subjSlug(e){
   if(e.record && e.record.slug) return e.record.slug;
   return String(dispName(e)).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -2667,13 +2724,13 @@ function nextInCtx(di){
 }
 function ctxGo(di, j){
   S.ctx.i = j; S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
-  history.replaceState({ d:S.depth }, '', '#/p/' + encodeURIComponent(personId(D.directory[di]))); render(); window.scrollTo(0, 0);
+  history.replaceState({ d:S.depth }, '', '#/p/' + encodeURIComponent(personId(D.directory[di]))); render(); window.scrollTo(0, 0); var vw = $('#view'); if(vw) vw.scrollTop = 0;
 }
 function markChecked(di, adv){
   var e = D.directory[di]; if(!e) return;
   var onToday = S.route.name === 'today', wasProfile = S.route.name === 'profile';
   txn('Mark ' + dispName(e) + ' checked', function(){ queuePatch(di, { audit:'audited' }); });
-  toast(dispName(e) + ' checked.', { undo:true });
+  toast(dispName(e) + ' marked done.', { undo:true });
   if(wasProfile && adv){ if(!nextInCtx(di)){ if(S.ctx && S.ctx.from === 'today') back('today'); else repaintTop(); } return; }
   if(onToday && !pvReducedMotion()){
     var pvCard = $('.rc[data-di="' + di + '"]');
@@ -2743,21 +2800,40 @@ function onClick(ev){
     case 'spotok': markSpotDone(di); toast('Spot check recorded.'); if(S.route.name === 'profile') repaintTop(); else refreshAfterStatus(); afterWrite(); break;
     case 'qpick': S.today.i = +el.getAttribute('data-i'); paintQueue(curTab()); if(innerWidth < 900){ var qc = $('#qcard'); if(qc) qc.scrollIntoView({ behavior:'smooth', block:'start' }); } break;
     case 'qskip': { var ql = queueFor(curTab()).length; S.today.i = ql ? (S.today.i + 1) % ql : 0; paintQueue(curTab()); break; }
-    case 'surv': S.today.surv[el.getAttribute('data-key')] = di; paintQueue(curTab()); break;
-    case 'notdup': { var qd = queueFor(curTab())[S.today.i], g = qd && (qd.detail.dup || [])[+el.getAttribute('data-gi')]; if(g){ dismissDup(g.dis); toast('Marked as different people.'); refreshAfterStatus(); } break; }
-    case 'mergegroup': {
+    case 'intx': store('ncc_tintro', '1'); var tin = el.closest('.tintro'); if(tin) tin.remove(); break;
+    case 'dupsel': {
+      var dk = el.getAttribute('data-key'), dsel = (S.today.dsel[dk] || []).slice(), dix = dsel.indexOf(di);
+      if(dix >= 0) dsel.splice(dix, 1);
+      else if(dsel.length >= 2){ toast('Only two at a time — a merge combines exactly two profiles. Unselect one first.'); break; }
+      else dsel.push(di);
+      S.today.dsel[dk] = dsel; paintQueue(curTab()); break;
+    }
+    case 'dupmerge': {
       var q1 = queueFor(curTab())[S.today.i], g1 = q1 && (q1.detail.dup || [])[+el.getAttribute('data-gi')]; if(!g1) break;
-      var sv = S.today.surv[el.getAttribute('data-key')];
-      if(sv == null || g1.dis.indexOf(sv) < 0) sv = g1.dis.slice().sort(function(a, b){ return mergeRichness(D.directory[b]) - mergeRichness(D.directory[a]); })[0];
-      var losers = g1.dis.filter(function(d){ return d !== sv; });
-      if(!confirm('Combine ' + losers.map(function(l){ return dispName(D.directory[l]); }).join(', ') + ' into ' + dispName(D.directory[sv]) + '?\n\nUnique details carry over. You can restore it from Settings or with Undo.')) break;
-      mergeMany(sv, losers); toast('Combined into ' + dispName(D.directory[sv]) + '.', { undo:true }); refreshAfterStatus(); break;
+      var s1 = (S.today.dsel[el.getAttribute('data-key')] || []).filter(function(d){ return g1.dis.indexOf(d) >= 0; });
+      if(s1.length !== 2) break;
+      openDupMerge(s1[0], s1[1]); break;
+    }
+    case 'notdup2': {
+      var qd = queueFor(curTab())[S.today.i], gd = qd && (qd.detail.dup || [])[+el.getAttribute('data-gi')]; if(!gd) break;
+      var sd = (S.today.dsel[el.getAttribute('data-key')] || []).filter(function(d){ return gd.dis.indexOf(d) >= 0; });
+      if(sd.length !== 2) break;
+      dismissDupPair(sd[0], sd[1]); S.today.dsel[el.getAttribute('data-key')] = [];
+      toast(dispName(D.directory[sd[0]]) + ' and ' + dispName(D.directory[sd[1]]) + ' marked as different people. They won\'t be paired up again.');
+      refreshAfterStatus(); break;
+    }
+    case 'dupgo': {
+      var lo2 = DMG.surv === DMG.a ? DMG.b : DMG.a, sv2 = DMG.surv;
+      var ln2 = dispName(D.directory[lo2]), sn2 = dispName(D.directory[sv2]);
+      txn('Merge ' + ln2 + ' into ' + sn2, function(){ queuePatch(lo2, { merged_into:mergeTarget(sv2) }); });
+      DMG = { a:null, b:null, surv:null };
+      closeSheet(); toast('Merged ' + ln2 + ' into ' + sn2 + '.', { undo:true }); refreshAfterStatus(); break;
     }
     case 'mergeopen': openMergeSheet(di); break;
     case 'mpick': MG.b = di; MG.surv = null; mergeStep2(); break;
     case 'mergego': {
       var lo = MG.surv === MG.a ? MG.b : MG.a; mergeMany(MG.surv, [lo]); closeSheet();
-      toast('Combined ' + dispName(D.directory[lo]) + ' into ' + dispName(D.directory[MG.surv]) + '.', { undo:true });
+      toast('Merged ' + dispName(D.directory[lo]) + ' into ' + dispName(D.directory[MG.surv]) + '.', { undo:true });
       if(S.route.name === 'profile'){ if(lo === S.prof.di){ openPerson(MG.surv, null, { }); } else { paintProfile(S.prof.di); } } else refreshAfterStatus();
       break;
     }
@@ -2920,7 +2996,7 @@ function onChange(ev){
     txn(t.checked ? 'Waive section' : 'Restore section', function(){ setWaivers(di, sids, t.checked); });
     paintProfile(S.prof.di); return;
   }
-  if(act === 'surv'){ S.today.surv[t.getAttribute('data-key')] = +t.getAttribute('data-di'); paintQueue(curTab()); return; }
+  if(act === 'dmsv'){ DMG.surv = +t.getAttribute('data-di'); refreshDupMerge(); return; }
   if(act === 'msv'){ MG.surv = +t.getAttribute('data-di'); mergeStep2(); return; }
   if(t.hasAttribute && t.hasAttribute('data-nm')){
     setField(+t.getAttribute('data-di'), t.getAttribute('data-nm'), t.value.trim());
@@ -2954,6 +3030,7 @@ function addTag(t){
 function onKey(ev){
   var t = ev.target, tag = t.tagName, isField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
   if(ev.key === 'Enter' && t.classList && t.classList.contains('tadd')){ ev.preventDefault(); addTag(t); return; }
+  if((ev.key === 'Enter' || ev.key === ' ') && t.classList && t.classList.contains('dm') && t.classList.contains('pick')){ ev.preventDefault(); t.click(); return; }
   if(ev.key === 'Enter' && t.id === 'gnew'){ ev.preventDefault(); var b = $('[data-act="gnew"]'); if(b) b.click(); return; }
   if(ev.key === 'Enter' && t.id === 'dtitle'){ ev.preventDefault(); var d = $('[data-act="docgo"]'); if(d) d.click(); return; }
   if(ev.key === 'Enter' && t.id === 'ekey'){ ev.preventDefault(); var s = $('[data-act="savekey"]'); if(s) s.click(); return; }
