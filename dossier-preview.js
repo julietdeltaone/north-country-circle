@@ -717,7 +717,11 @@ function getState(){
   var sdone = spotDone();
 
   list.forEach(function(di){
-    var e = D.directory[di], checked = isChecked(e), rs = [], det = {};
+    /* an open flag means not done: a profile flagged duplicate or missing info
+       must surface its issue even if it was marked checked before the flag
+       (2026-10-13: 7 duplicate-flagged profiles, incl. Emily Wangerin and her
+       whole same-face group, were invisible on every surface) */
+    var e = D.directory[di], checked = isChecked(e) && raw(e, 'review_flag') !== 'duplicate' && raw(e, 'review_flag') !== 'missing_info', rs = [], det = {};
     if(!checked){
       if(inGroup[di]){ rs.push('dup'); det.dup = inGroup[di]; }
       else if(raw(e, 'review_flag') === 'duplicate'){ rs.push('dup'); det.dup = []; }
@@ -822,6 +826,25 @@ function issueQueue(tab){
 function issueCount(tab){ return issueQueue(tab).length; }
 /* after a fix: if the same issue is still in the queue, step past it;
    if it resolved, the next issue slides into the current slot */
+/* navigate-and-highlight: scroll the named target into view inside the app
+   shell and mark it once (a single 1.3s glow, never a loop). Used by every
+   control that points somewhere, so landing behavior is identical app-wide. */
+function landOn(sel, opts){
+  opts = opts || {};
+  var tries = 0;
+  (function attempt(){
+    var el = typeof sel === 'string' ? $(sel) : sel;
+    if(!el){ if(++tries < 12) setTimeout(attempt, 60); return; }
+    var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior:rm ? 'auto' : 'smooth', block:el.offsetHeight > innerHeight * 0.92 ? 'start' : 'center' });
+    el.classList.remove('landed'); void el.offsetWidth; el.classList.add('landed');
+    setTimeout(function(){ el.classList.remove('landed'); }, 1400);
+    if(opts.focus){
+      var f = el.querySelector('input:not([type=hidden]), textarea, select');
+      if(f) setTimeout(function(){ f.focus({ preventScroll:true }); }, rm ? 0 : 350);
+    }
+  })();
+}
 function advanceIssue(di, reason, famkey){
   var q = issueQueue(curTab());
   for(var k = 0; k < q.length; k++){
@@ -3134,9 +3157,9 @@ function onClick(ev){
     case 'check': markChecked(di, el.getAttribute('data-adv') === '1'); break;
     case 'reopen': txn('Reopen', function(){ queuePatch(di, { audit:'' }); }); toast('Reopened.', { undo:true }); refreshAfterStatus(); break;
     case 'spotok': markSpotDone(di); toast('Spot check recorded.'); if(S.route.name === 'profile') repaintTop(); else refreshAfterStatus(); afterWrite(); break;
-    case 'qpick': closeSheet(); S.today.i = +el.getAttribute('data-i'); paintQueue(curTab()); if(innerWidth < 900){ var qc = $('#qcard'); if(qc) qc.scrollIntoView({ behavior:'smooth', block:'start' }); } break;
+    case 'qpick': closeSheet(); S.today.i = +el.getAttribute('data-i'); paintQueue(curTab()); landOn('#qcard .rc'); break;
     case 'qskip': { var ql = issueQueue(curTab()).length; S.today.i = ql ? (S.today.i + 1) % ql : 0; paintQueue(curTab()); break; }
-    case 'lane': ev.preventDefault(); startSession(el.getAttribute('data-lane')); go('today/' + el.getAttribute('data-lane')); prevent = false; break;
+    case 'lane': ev.preventDefault(); startSession(el.getAttribute('data-lane')); go('today/' + el.getAttribute('data-lane')); landOn('#qcard .rc, #qcard .done-card'); prevent = false; break;
     case 'lanehome': ev.preventDefault(); go('today'); prevent = false; break;
     case 'sessmore': S.today.start = issueCount(curTab()); S.today.goal = Math.min(SESSION_SIZE, S.today.start); S.today.fin = false; paintQueue(curTab()); break;
     case 'seeall': openLaneList(); break;
@@ -3214,7 +3237,7 @@ function onClick(ev){
     case 'popen1': openPerson(di, null); break;
     case 'gsopen': { var box = $('#gsr'); if(box) box.hidden = true; openPerson(di, null); break; }
     case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; S.ppl.limit = 80; go('people'); break; }
-    case 'openedit': openPerson(di, todayCtx(di) || (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); break;
+    case 'openedit': openPerson(di, todayCtx(di) || (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
     case 'openfam': S.fam.focus = di; go('family'); break;
     case 'shownet': S.net.sel = di; go('network'); break;
     case 'ctxstep': {
@@ -3243,9 +3266,9 @@ function onClick(ev){
       }, function(err){ el.disabled = false; toast(err + ' Not created.'); });
       break;
     }
-    case 'bantog': S.prof.bannerOpen = !(S.prof.bannerOpen !== false); repaintTop(); break;
-    case 'opentog': { var kk = el.getAttribute('data-k'); S.prof.open[kk] = !S.prof.open[kk]; repaintSec(kk === 'ev' ? 'timeline' : 'connections'); break; }
-    case 'secedit': { var sid = el.getAttribute('data-sec'); S.prof.edit[sid] = true; if($('#sec-' + sid)) repaintSec(sid); else paintProfile(S.prof.di); var sc = $('#sec-' + sid); if(sc) sc.scrollIntoView({ block:'nearest', behavior:'smooth' }); break; }
+    case 'bantog': S.prof.bannerOpen = !(S.prof.bannerOpen !== false); repaintTop(); if(S.prof.bannerOpen) landOn('.banner .rbs'); break;
+    case 'opentog': { var kk = el.getAttribute('data-k'); S.prof.open[kk] = !S.prof.open[kk]; var osec = kk === 'ev' ? 'timeline' : 'connections'; repaintSec(osec); if(S.prof.open[kk]) landOn('#sec-' + osec); break; }
+    case 'secedit': { var sid = el.getAttribute('data-sec'); S.prof.edit[sid] = true; if($('#sec-' + sid)) repaintSec(sid); else paintProfile(S.prof.di); landOn('#sec-' + sid, { focus:true }); break; }
     case 'secdone': { var sd = el.getAttribute('data-sec'); delete S.prof.edit[sd]; S.prof.evEdit = null; S.prof.degEdit = null; paintProfile(S.prof.di); break; }
     case 'tagrm': saveTags(el, function(a){ var v = el.getAttribute('data-v'); return a.filter(function(x){ return x !== v; }); }); break;
     case 'tagtog': saveTags(el, function(a){ var v = el.getAttribute('data-v'), i = a.indexOf(v); if(i >= 0) a.splice(i, 1); else a.push(v); return a; }); break;
