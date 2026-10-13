@@ -136,6 +136,9 @@ option,optgroup{background:#141a26;color:var(--txt)}
 .qakinds{margin-bottom:8px}
 .qa-row input{flex:1;min-width:0}
 .qgroup{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin:14px 0 4px}
+/* one-time landing highlight (user-initiated navigation only; fires once) */
+.landed{box-shadow:0 0 0 3px var(--acc),0 0 22px rgba(134,160,216,.35)!important;animation:landFade 1.3s ease-out 1}
+@keyframes landFade{0%{box-shadow:0 0 0 3px var(--acc),0 0 26px rgba(134,160,216,.45)}70%{box-shadow:0 0 0 3px rgba(134,160,216,.5),0 0 12px rgba(134,160,216,.18)}100%{box-shadow:0 0 0 0 rgba(134,160,216,0)}}
 .rb.quiet{border-left-color:var(--line2)}
 .rb h4{font-size:14px;font-weight:600;margin-bottom:6px} .rb h4 small{margin-left:6px;font-weight:400}
 .rb p{color:var(--mut);margin-bottom:2px} .rb .row{margin-top:12px}
