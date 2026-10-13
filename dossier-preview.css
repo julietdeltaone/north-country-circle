@@ -692,3 +692,29 @@ details.quick[open]>summary{margin-bottom:10px}
   .sort-frame p{font-size:17px}
   .fixstrip{padding:16px 18px}
 }
+
+/* === DONE SUITE (removable) — delete with the DONE SUITE block in dossier.js === */
+.doneline{margin-top:14px;font-size:14.5px;color:var(--sub,#9aa7c2)}
+.doneline a{color:var(--ink,#e8edf8);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:1px}
+.doneline a b{font-weight:800}
+.doneline span{opacity:.75}
+.donepage{max-width:1060px}
+.doverall{margin:26px 0 6px;padding:26px 30px;border-radius:18px;background:linear-gradient(180deg,rgba(26,33,50,.74),rgba(15,20,31,.74));border:1px solid rgba(255,255,255,.08);box-shadow:0 22px 50px -24px rgba(0,0,0,.8)}
+.do-big{display:flex;align-items:baseline;gap:16px;margin-bottom:14px}
+.do-big b{font-size:52px;font-weight:800;line-height:1;letter-spacing:-.01em}
+.do-big span{font-size:16px;color:var(--sub,#9aa7c2)}
+.dbar{height:4px;border-radius:2px;background:rgba(255,255,255,.07);overflow:hidden}
+.dbar i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#6d8fe0,#d6e2ff)}
+.dgauges{margin-top:10px}
+.dgauge{padding:20px 4px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.dg-t{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:10px}
+.dg-t b{font-size:17px;font-weight:700}
+.dg-n{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.dg-n small{font-size:14px;font-weight:600;color:var(--sub,#9aa7c2)}
+.dg-s{margin-top:9px;font-size:14px;color:var(--sub,#9aa7c2);max-width:640px}
+.dg-state{color:var(--ink,#e8edf8);font-weight:700;white-space:nowrap}
+.dtools-h{margin:30px 0 12px;font-size:20px;font-weight:700}
+.donefin{margin-top:26px}
+.donefoot{margin-top:26px;font-size:13px;color:var(--sub,#9aa7c2);opacity:.8}
+@media (max-width:640px){ .do-big b{font-size:40px} .doverall{padding:20px} .dg-n{font-size:22px} }
+/* === END DONE SUITE === */
