@@ -2232,12 +2232,19 @@ function secEdit(di, id){
       '<p class="note">Instagram, Facebook, Lives in, From and Languages are derived and read only. Correct them at the source (the FB Profiles tab or a subject file).</p>' + secView(di, 'identity');
   }
   if(id === 'relationship'){
-    var yrs = '<option value="">Not set</option>'; for(var y = new Date().getFullYear(); y >= 1950; y--) yrs += '<option value="' + y + '"' + (knownSinceYear(e) === y ? ' selected' : '') + '>' + y + '</option>';
+    var ksYear = knownSinceYear(e), thisY = new Date().getFullYear(), ksUsed = {};
+    D.directory.forEach(function(x){ var y0 = knownSinceYear(x); if(y0) ksUsed[y0] = (ksUsed[y0] || 0) + 1; });
+    var ksList = Object.keys(ksUsed).map(Number).sort(function(a, b){ return ksUsed[b] - ksUsed[a] || b - a; });
+    var ksDl = ksList.map(function(y){ return '<option value="' + y + '">' + y + ' · ' + (thisY - y) + ' yrs</option>'; }).join('');
+    var ksChips = '<button type="button" class="tchip ksy' + (ksYear ? '' : ' on') + '" data-act="kspick" data-y="">Not set</button>';
+    for(var ky = thisY; ky >= 1990; ky--) ksChips += '<button type="button" class="tchip ksy' + (ksYear === ky ? ' on' : '') + '" data-act="kspick" data-y="' + ky + '">' + ky + '</button>';
+    ksList.forEach(function(y){ if(y < 1990 || y > thisY) ksChips += '<button type="button" class="tchip ksy' + (ksYear === y ? ' on' : '') + '" data-act="kspick" data-y="' + y + '">' + y + '</button>'; });
     var gs = Object.keys(allGroups()).sort(), mine = personGroups(e);
     return lab('Relationship') + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Context') + seg('context', CTX_OPTS, gv(e, 'context'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Category') + seg('category', CAT_OPTS, gv(e, 'category'), ' data-di="' + di + '" data-sec="relationship"') +
-      lab('Known since') + '<select data-pk="years_known" class="yr">' + yrs + '</select>' +
+      lab('Known since', 'Type a year (suggestions appear), or tap one') + '<input data-pk="years_known" id="ksin" inputmode="numeric" list="kslist" value="' + (ksYear || '') + '" placeholder="e.g. 2019" autocomplete="off"><datalist id="kslist">' + ksDl + '</datalist>' +
+      '<div class="kschips">' + ksChips + '</div>' +
       lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
       '<input class="tadd" data-grpnew placeholder="New group" autocomplete="off"></div>';
   }
@@ -2454,10 +2461,9 @@ function n3Project(x, y, z){
 function net3Draw(ts){
   var ctx = NET.ctx, W = NET.W, H = NET.H, dpr = NET.dpr, t = ts / 1000;
   N3.base = Math.min(W, H) / 1500 * (W < 600 ? 1.15 : 1);
-  var calm = pvReducedMotion();
   if(!Object.keys(NET.ptr).length){
     N3.yaw += N3.vy; N3.pitch = Math.max(-1.2, Math.min(1.2, N3.pitch + N3.vp)); N3.vy *= 0.94; N3.vp *= 0.94;
-    if(Math.abs(N3.vy) < 0.0004 && Math.abs(N3.vp) < 0.0004 && N3.auto && !calm) N3.yaw += 0.0014;
+    /* calm pass 2026-10-13: no idle auto-rotation — the map sits still until dragged */
   }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
   var c0 = n3Project(0, 0, 0);
@@ -2504,7 +2510,7 @@ function net3Draw(ts){
     var a = (sel && !isSel && !hot[n.di]) ? depth * 0.25 : depth;
     var rr = Math.max(1.6, n.r * p.k * 1.25 * (isSel ? 1.8 : 1));
     ctx.globalAlpha = a;
-    if(n.nw){ var pulse = calm ? 0.5 : 0.5 + 0.5 * Math.sin(t * 2.4 + n.di); ctx.globalAlpha = a * (0.25 + 0.35 * pulse); var hs = rr * 5; ctx.drawImage(glowSprite(col), p.x - hs, p.y - hs, hs * 2, hs * 2); ctx.globalAlpha = a; }
+    if(n.nw){ ctx.globalAlpha = a * 0.425; var hs = rr * 5; ctx.drawImage(glowSprite(col), p.x - hs, p.y - hs, hs * 2, hs * 2); ctx.globalAlpha = a; }
     var gs = rr * 2.6; ctx.drawImage(glowSprite(col), p.x - gs, p.y - gs, gs * 2, gs * 2);
     if(isSel){ ctx.globalAlpha = 1; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(p.x, p.y, rr + 4, 0, 6.2832); ctx.stroke(); }
   });
@@ -2911,19 +2917,11 @@ function ctxGo(di, j){
 }
 function markChecked(di, adv){
   var e = D.directory[di]; if(!e) return;
-  var onToday = S.route.name === 'today', wasProfile = S.route.name === 'profile';
+  var wasProfile = S.route.name === 'profile';
   txn('Mark ' + dispName(e) + ' checked', function(){ queuePatch(di, { audit:'audited' }); });
   toast(dispName(e) + ' marked done.', { undo:true });
   if(wasProfile && adv){ if(!nextInCtx(di)){ if(S.ctx && S.ctx.from === 'today') back('today'); else repaintTop(); } return; }
-  if(onToday && !pvReducedMotion()){
-    var pvCard = $('.rc[data-di="' + di + '"]');
-    if(pvCard){
-      pvCard.classList.add('leaving');
-      var pvRow = $('.qrow.on'); if(pvRow) pvRow.classList.add('leaving');
-      setTimeout(refreshAfterStatus, 300);
-      return;
-    }
-  }
+  /* calm pass 2026-10-13: no exit slide — the next person simply replaces this one */
   refreshAfterStatus();
 }
 function doSet(el){
@@ -2978,6 +2976,7 @@ function onClick(ev){
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
     case 'back': back(); break;
     case 'set': doSet(el); break;
+    case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
     case 'check': markChecked(di, el.getAttribute('data-adv') === '1'); break;
     case 'reopen': txn('Reopen', function(){ queuePatch(di, { audit:'' }); }); toast('Reopened.', { undo:true }); refreshAfterStatus(); break;
     case 'spotok': markSpotDone(di); toast('Spot check recorded.'); if(S.route.name === 'profile') repaintTop(); else refreshAfterStatus(); afterWrite(); break;
@@ -3251,11 +3250,10 @@ function onKey(ev){
 
 
 /* ============================================================
-   PREVIEW-ONLY presentation hooks for the design re-skin.
-   Nothing here writes data, touches the outbox, or changes any
-   payload: count-up numbers on Today, the progress-bar sweep,
-   and the loading skeleton. (The Checked exit animation lives
-   in markChecked; it defers only the repaint, never the write.)
+   Presentation hooks. CALM PASS 2026-10-13: numbers and bars
+   render at their final values, the progress ring is set in
+   place instantly, and the loading skeleton is static. Nothing
+   here writes data, touches the outbox, or changes any payload.
    ============================================================ */
 function pvReducedMotion(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); }
 function skeletonHTML(note){
@@ -3264,36 +3262,10 @@ function skeletonHTML(note){
   return '<div class="page skel" aria-busy="true"><div class="skl head"></div>' + rows +
     '<div class="skl card"></div>' + (note ? '<p class="dim center">' + esc(note) + '</p>' : '') + '</div>';
 }
-function pvCountUp(el){
-  var target = parseFloat(el.getAttribute('data-n'));
-  if(isNaN(target)) return;
-  if(pvReducedMotion()){ el.textContent = target; return; }
-  var t0 = null, dur = 650;
-  function step(ts){
-    if(!t0) t0 = ts;
-    var k = Math.min(1, (ts - t0) / dur), e2 = 1 - Math.pow(1 - k, 3);
-    el.textContent = Math.round(target * e2);
-    if(k < 1) requestAnimationFrame(step); else el.textContent = target;
-  }
-  requestAnimationFrame(step);
-}
 function previewFx(n){
   if(n !== 'today' && n !== 'network') return;
-  if(pvReducedMotion()){ $$('.ring-fg').forEach(function(r){ r.style.strokeDashoffset = r.getAttribute('data-off'); }); return; }
-  $$('.cu[data-n]').forEach(pvCountUp);
-  $$('.ring-fg').forEach(function(r){ requestAnimationFrame(function(){ requestAnimationFrame(function(){ r.style.strokeDashoffset = r.getAttribute('data-off'); }); }); });
-  $$('.lane-bar i, .sbar i').forEach(function(bar){
-    var w = bar.style.width; if(!w) return;
-    bar.style.width = '0%';
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){ bar.style.width = w; }); });
-  });
-}
-/* soft light that follows the pointer across glass surfaces */
-function spotlight(ev){
-  var t = ev.target.closest && ev.target.closest('.lane, .rc, .hero, .card, .thero, .upnext');
-  if(!t) return;
-  var r = t.getBoundingClientRect();
-  t.style.setProperty('--mx', (ev.clientX - r.left) + 'px'); t.style.setProperty('--my', (ev.clientY - r.top) + 'px');
+  /* set the Today progress ring straight to its final value — no sweep */
+  $$('.ring-fg').forEach(function(r){ r.style.strokeDashoffset = r.getAttribute('data-off'); });
 }
 
 /* ============================================================
@@ -3304,7 +3276,6 @@ function boot(){
   document.addEventListener('input', onInput);
   document.addEventListener('change', onChange);
   document.addEventListener('keydown', onKey);
-  document.addEventListener('pointermove', spotlight, { passive:true });
   addEventListener('resize', function(){ if(S.route.name === 'network' && NET.cv && document.body.contains(NET.cv)){ netResize(); } else if(S.route.name === 'family') famApply(); });
   $('#view').innerHTML = skeletonHTML();
   var tries = 0;
