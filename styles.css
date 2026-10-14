@@ -1,7 +1,7 @@
 :root{
-  --bg:#0b0e14; --bg2:#10141d; --card:#141a26; --line:#232c3f;
-  --ice:#8fd0ff; --amber:#ffb454; --tan:#d8b98a; --red:#ff7b7b; --gray:#8a93a3;
-  --txt:#dbe2ee; --dim:#9aa4b8;
+  --bg:#0b0e14; --bg2:#10141d; --card:#171f2e; --line:#31405c;
+  --ice:#8fd0ff; --amber:#ffb454; --tan:#d8b98a; --red:#ff7b7b; --gray:#a5b0c0;
+  --txt:#eef3fb; --dim:#b3bfd2;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
