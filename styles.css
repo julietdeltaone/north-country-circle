@@ -125,3 +125,17 @@ tr:hover td{background:#161d2b}
   .drawer{width:100vw}
   .hint{display:none}
 }
+
+/* ---------- design pass 2026-10-14: frosted glass, unified radii, tabular counts ---------- */
+.panel,.drawer{background:rgba(15,20,30,.80);-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25);border:1px solid rgba(255,255,255,.09);border-radius:16px;box-shadow:0 24px 54px rgba(0,0,0,.55)}
+.drawer{border-radius:0;border-top:0;border-right:0;border-bottom:0}
+.results,.tooltip,.trail,.searchbox input,.tbtn,.mobile-note,.zoomctl button{background:rgba(15,20,30,.84);-webkit-backdrop-filter:blur(14px) saturate(1.25);backdrop-filter:blur(14px) saturate(1.25)}
+.results{border-radius:12px}
+.tooltip{border-radius:10px}
+.tbtn{border-radius:10px}
+.zoomctl button{border-radius:12px}
+.brand{letter-spacing:1.6px}
+.panel h3,.drawer-head h3{letter-spacing:.08em}
+.statrow b,.stats,#vis-count,.slider-label b{font-variant-numeric:tabular-nums}
+td{border-bottom-color:rgba(255,255,255,.05)}
+.hit{border-bottom-color:rgba(255,255,255,.05)}
