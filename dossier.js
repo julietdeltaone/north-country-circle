@@ -1,13 +1,14 @@
 /* North Country Circle — Dossier v6
-   One front end, five destinations: Today (the work), People, Network, Family, Groups.
+   One front end, four destinations: People, Network, Family, Groups. The visual
+   map at index.html is the site's front door; this app is the reading + editing side.
    The profile is a page, not a panel. Everything that writes goes through the same outbox as v5
    (see DATA-CONTRACT.md section 6): queuePatch -> localStorage -> batched POST -> Sheet.
 
    Layout of this file
-     1. constants + helpers          5. reasons engine (what needs attention, and why)
+     1. constants + helpers          5. stamps + landOn (map markers, shared highlight)
      2. data access (gv, pkey ...)   6. family model + writes
      3. outbox + undo                7. merge
-     4. waivers                      8. views: shell, router, Today, People, Profile, Network, Family, Groups, Settings
+     4. waivers                      8. views: shell, router, People, Profile, Network, Family, Groups, Settings
 */
 (function(){
 'use strict';
@@ -583,39 +584,12 @@ function setWaivers(di, sids, on){
 }
 
 /* ============================================================
-   5. reasons engine — what needs JD, in what order, and why.
-      "Done" is a state (checked), not a field count. Persona is never a to-do: blank is final.
+   5. stamps + shared navigation helper. New-connection marks feed
+      the Network map; landOn is the one navigate-and-highlight
+      used by controls app-wide. (The audit-era reasons engine that
+      lived here was removed in the 2026-10-14 wind-down.)
    ============================================================ */
-var REASONS = {
-  dup:     { l:'Possible duplicate',          pr:1,  tab:'dup',      s:'Duplicates' },
-  family:  { l:'Family needs a look',         pr:2,  tab:'family',   s:'Family' },
-  identity:{ l:'Identity needs a second signal', pr:3, tab:'identity', s:'Identity' },
-  unsrc:   { l:'Inferred, not sourced',       pr:4,  tab:'unsrc',    s:'Sources' },
-  missing: { l:'Flagged: missing info',       pr:5,  tab:'cleanup',  s:'Cleanup' },
-  name:    { l:'Name incomplete',             pr:6,  tab:'cleanup',  s:'Cleanup' },
-  biz:     { l:'Looks like a business',       pr:7,  tab:'cleanup',  s:'Cleanup' },
-  fresh:   { l:'New this week, unclassified', pr:8,  tab:'fresh',    s:'New' },
-  inner:   { l:'Inner circle, not yet checked', pr:9, tab:'inner',   s:'Inner circle' },
-  spot:    { l:'Spot check',                  pr:10, tab:'spot',     s:'Spot check' },
-  sweep:   { l:'Floor sweep',                 pr:11, tab:'sweep',    s:'Floor sweep' }
-};
-var TABS = [
-  { k:'needs',    l:'Needs you' },
-  { k:'dup',      l:'Duplicates' },
-  { k:'identity', l:'Identity' },
-  { k:'unsrc',    l:'Sources' },
-  { k:'family',   l:'Family' },
-  { k:'fresh',    l:'New' },
-  { k:'cleanup',  l:'Cleanup' },
-  { k:'inner',    l:'Inner circle' },
-  { k:'spot',     l:'Spot check' },
-  { k:'sweep',    l:'Floor sweep' }
-];
-var BIZ_RE = /\b(llc|inc|corp|co\.|company|church|bakery|grill|cantina|pizza|caf[eé]|studio|salon|barber|tattoo|photo|productions|realty|motors|auto|plumbing|electric|construction|landscap|farm|market|deli|pub|brewery|winery|hotel|motel|insurance|dental|clinic|school|university|college|ntc|cfc|ministr)\b/i;
-var ADDR_RE = /\d+\s+[A-Za-z.]+\s+(st|street|ave|avenue|rd|road|blvd|ln|lane|dr|drive)\b|\bNY\b\s*\d{5}|\b\d{5}\b/;
-function isBusiness(e){ var t = (String(e.display || '') + ' ' + String(e.name || '')).trim(); return BIZ_RE.test(t) || ADDR_RE.test(t); }
-function nameOk(e){ return !!(String(gv(e, 'first_name')).trim() && String(gv(e, 'last_name')).trim()); }
-function normDupName(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+var FAM_INV_REL = { parent:'child', child:'parent', spouse:'spouse', sibling:'sibling' };
 
 /* new-connection stamps: people whose associate edge is <= 7 days old (set by the build) */
 var NEWGAIN = {};
@@ -631,227 +605,6 @@ function computeNewGain(){
   });
 }
 
-/* two independent signals beyond the name */
-function identitySignals(e){
-  var have = [], miss = [];
-  function sig(ok, label){ (ok ? have : miss).push(label); }
-  sig(!!(e.city || e.hometown), 'Place');
-  sig(degreesOf(e).length > 0, 'School');
-  sig(!!(tagList(gv(e, 'companies')).length || tagList(gv(e, 'churches')).length), 'Work or church');
-  sig(!!(gv(e, 'phone') || e.fb_url), 'Phone or Facebook');
-  sig(!!(gv(e, 'relationship') || gv(e, 'context') || gv(e, 'groups') || e.record), 'Connection to JD');
-  sig(footprintOf(e).sourced, 'Sourced web record');
-  return { have:have, miss:miss, n:have.length };
-}
-/* what an inner-circle profile is still missing (waived sections do not count; persona never does) */
-function depthGaps(e){
-  var g = [];
-  function need(sid, ok, label){ if(!ok && !secWaived(e, sid)) g.push({ sid:sid, l:label }); }
-  need('relationship', !!(gv(e, 'relationship') || gv(e, 'context')), 'Relationship');
-  need('onfile', !!gv(e, 'synopsis'), 'Synopsis');
-  need('background', !!(gv(e, 'specialty') || ORG_CATS.some(function(c){ return tagList(gv(e, c.k)).length; }) || degreesOf(e).length || gv(e, 'highlights')), 'Background');
-  need('connections', !!(knownAssociates(e).length || famLinks(e).length), 'Connections');
-  need('timeline', !!(e.events || []).length, 'Timeline');
-  return g;
-}
-function familyIssues(di){
-  var e = D.directory[di], links = famLinks(e), out = [];
-  var sp = links.filter(function(l){ return l[0] === 'spouse'; });
-  var par = links.filter(function(l){ return l[0] === 'parent'; });
-  if(sp.length > 1) out.push('More than one spouse recorded');
-  if(par.length > 2) out.push('More than two parents recorded');
-  links.forEach(function(l){
-    var tdi = BYN[String(l[1] || '').toLowerCase()];
-    if(tdi == null){ out.push('Link to ' + l[1] + ' points at nobody in the directory'); return; }
-    if(tdi === di){ out.push('Linked to themselves'); return; }
-    var inv = FAM_INV_REL[l[0]], me = String(e.name || '').toLowerCase();
-    var back = famLinks(D.directory[tdi]).some(function(x){ return x[0] === inv && String(x[1] || '').toLowerCase() === me; });
-    if(!back) out.push(dispName(D.directory[tdi]) + ' does not list the matching ' + inv + ' link back');
-  });
-  return out;
-}
-var FAM_INV_REL = { parent:'child', child:'parent', spouse:'spouse', sibling:'sibling' };
-
-function dupDismissed(){ try{ return JSON.parse(store('ncc_dupok') || '{}') || {}; }catch(x){ return {}; } }
-function dupGroupKey(dis){ return dis.map(function(di){ return pkey(D.directory[di]); }).sort().join('|'); }
-function dupPairKey(a, b){ var ka = pkey(D.directory[a]), kb = pkey(D.directory[b]); return ka < kb ? ka + '|' + kb : kb + '|' + ka; }
-/* a pair counts as dismissed when its own pair key is stored, or when a legacy
-   whole-group dismissal (a stored key listing both people) covers it */
-function pairDismissed(a, b){
-  var m = dupDismissed(), ka = pkey(D.directory[a]), kb = pkey(D.directory[b]);
-  return Object.keys(m).some(function(k){ var parts = k.split('|'); return parts.indexOf(ka) >= 0 && parts.indexOf(kb) >= 0; });
-}
-function dismissDupPair(a, b){ var m = dupDismissed(); m[dupPairKey(a, b)] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; }
-/* whole-group dismissal: storing the group key retires the group, because
-   pairDismissed() treats a stored key listing both people as covering the pair */
-function dismissDupGroup(g){ var m = dupDismissed(); m[dupGroupKey(g.dis)] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; }
-function undismissDupGroup(key){ var m = dupDismissed(); if(m[key]){ delete m[key]; store('ncc_dupok', JSON.stringify(m)); VER++; } }
-function redismissDupGroup(key){ var m = dupDismissed(); if(!m[key]){ m[key] = 1; store('ncc_dupok', JSON.stringify(m)); VER++; } }
-/* "All different people — no duplicates here": JD has reviewed the whole group
-   and says nobody in it is a duplicate of anyone else in it. Clears the
-   duplicate flag on every flagged member (the same review_flag:'' write the
-   merge path uses, through the same queuePatch machinery) and retires the
-   group with a whole-group dismissal. The dismissal rides on the undo entry
-   (entry.gclear), so Undo lifts it and Redo restores it — see refreshAfterUndo. */
-function clearDupGroup(g){
-  var key = dupGroupKey(g.dis);
-  var flagged = g.dis.filter(function(d){ return raw(D.directory[d], 'review_flag') === 'duplicate'; });
-  var entry = txn('All different people', function(){
-    flagged.forEach(function(d){ queuePatch(d, { review_flag:'' }); });
-  });
-  entry.gclear = key;
-  if(!entry.items.length){ UNDO.stack.push(entry); if(UNDO.stack.length > 100) UNDO.stack.shift(); UNDO.redo = []; paintUndo(); }
-  dismissDupGroup(g);
-  S.today.dsel[key] = [];
-  toast('No duplicates here — all ' + g.dis.length + ' are different people.', { undo:true });
-  refreshAfterStatus();
-}
-function spotDone(){ try{ var o = JSON.parse(store('ncc_spot') || '{}') || {}; return o.w === weekKey() ? o.done || {} : {}; }catch(x){ return {}; } }
-function markSpotDone(di){ var d = spotDone(); d[pkey(D.directory[di])] = 1; store('ncc_spot', JSON.stringify({ w:weekKey(), done:d })); VER++; }
-
-var ST_CACHE = { ver:-1, st:null };
-function getState(){
-  if(ST_CACHE.ver === VER && ST_CACHE.st) return ST_CACHE.st;
-  var list = people(), by = {}, counts = {}, dismissed = dupDismissed();
-  /* same-name clusters, photo matches */
-  var byName = {}, groups = [], inGroup = {};
-  list.forEach(function(di){
-    var k = normDupName(dispName(D.directory[di]));
-    if(k.length >= 2) (byName[k] = byName[k] || []).push(di);
-  });
-  Object.keys(byName).forEach(function(k){ if(byName[k].length > 1) groups.push({ kind:'name', label:'Same name', title:'Same name: ' + dispName(D.directory[byName[k][0]]), dis:byName[k].slice() }); });
-  var byHandle = {}; D.directory.forEach(function(r, di){ byHandle[String(r.name || '').toLowerCase()] = di; });
-  (D.photo_merge || []).forEach(function(pm){
-    var dis = [];
-    (pm.keys || []).forEach(function(k){
-      var di = byHandle[String(k).toLowerCase()];
-      if(di !== undefined && liveEntry(D.directory[di]) && dis.indexOf(di) < 0) dis.push(di);
-    });
-    if(dis.length > 1) groups.push({ kind:'photo', label:'Same face ("' + pm.face + '")', title:'Same first name: ' + pm.face, dis:dis });
-  });
-  groups = groups.filter(function(g){
-    if(!g.dis.some(function(di){ return !isChecked(D.directory[di]); })) return false;
-    /* a group stays until every pair inside it has been marked different people */
-    for(var a = 0; a < g.dis.length; a++) for(var b = a + 1; b < g.dis.length; b++) if(!pairDismissed(g.dis[a], g.dis[b])) return true;
-    return false;
-  });
-  groups.forEach(function(g){ g.dis.forEach(function(di){ (inGroup[di] = inGroup[di] || []).push(g); }); });
-  var spotSet = {}, checkedList = list.filter(function(di){ return isChecked(D.directory[di]); });
-  var nSpot = checkedList.length >= 20 ? Math.max(3, Math.ceil(checkedList.length * 0.05)) : 0, wk = weekKey();
-  checkedList.map(function(di){ return { di:di, h:hash32(wk + pkey(D.directory[di])) }; })
-    .sort(function(a, b){ return a.h - b.h; }).slice(0, nSpot).forEach(function(o){ spotSet[o.di] = 1; });
-  var sdone = spotDone();
-
-  list.forEach(function(di){
-    /* an open flag means not done: a profile flagged duplicate or missing info
-       must surface its issue even if it was marked checked before the flag
-       (2026-10-13: 7 duplicate-flagged profiles, incl. Emily Wangerin and her
-       whole same-face group, were invisible on every surface) */
-    var e = D.directory[di], checked = isChecked(e) && raw(e, 'review_flag') !== 'duplicate' && raw(e, 'review_flag') !== 'missing_info', rs = [], det = {};
-    if(!checked){
-      if(inGroup[di]){ rs.push('dup'); det.dup = inGroup[di]; }
-      else if(raw(e, 'review_flag') === 'duplicate'){ rs.push('dup'); det.dup = []; }
-      var fi = familyIssues(di); if(fi.length){ rs.push('family'); det.family = fi; }
-      if(!secWaived(e, 'identity')){ var sg = identitySignals(e); if(sg.n < 2){ rs.push('identity'); det.identity = sg; } }
-      var fp = footprintOf(e);
-      if(fp.blocks.length && !fp.sourced){ rs.push('unsrc'); det.unsrc = fp; }
-      if(raw(e, 'review_flag') === 'missing_info'){ rs.push('missing'); }
-      if(!nameOk(e)){ rs.push('name'); }
-      if(isBusiness(e)){ rs.push('biz'); }
-      if(NEWGAIN[di] && (!tierOf(e) || !raw(e, 'relationship'))){ rs.push('fresh'); }
-      if(tierOf(e) === 'vetted' || tierOf(e) === 'associate'){ rs.push('inner'); det.inner = depthGaps(e); }
-    } else if(spotSet[di] && !sdone[pkey(e)]){ rs.push('spot'); }
-    var pr = 99;
-    rs.forEach(function(c){ if(REASONS[c].pr < pr) pr = REASONS[c].pr; });
-    var kind = checked ? (rs.length ? 'spot' : 'checked') : (rs.length ? 'needs' : 'sweep');
-    if(!checked && !rs.length){ rs.push('sweep'); pr = REASONS.sweep.pr; }
-    by[di] = { di:di, checked:checked, reasons:rs, detail:det, pr:pr, kind:kind };
-    rs.forEach(function(c){ counts[c] = (counts[c] || 0) + 1; });
-  });
-  function cmp(a, b){
-    if(a.pr !== b.pr) return a.pr - b.pr;
-    var ea = D.directory[a.di], eb = D.directory[b.di];
-    var ta = TIER_RANK[tierOf(ea)], tb = TIER_RANK[tierOf(eb)];
-    ta = ta == null ? 3 : ta; tb = tb == null ? 3 : tb;
-    if(ta !== tb) return ta - tb;
-    return (eb.strength || 0) - (ea.strength || 0) || dispName(ea).localeCompare(dispName(eb));
-  }
-  var all = Object.keys(by).map(function(k){ return by[k]; });
-  var st = { by:by, counts:counts, groups:groups, cmp:cmp,
-    total:list.length,
-    checkedN:all.filter(function(x){ return x.checked; }).length,
-    needs:all.filter(function(x){ return x.kind === 'needs' || x.kind === 'spot'; }).sort(cmp),
-    sweep:all.filter(function(x){ return x.kind === 'sweep'; }).sort(cmp) };
-  ST_CACHE = { ver:VER, st:st };
-  return st;
-}
-function queueFor(tab){
-  var st = getState();
-  if(tab === 'needs') return st.needs;
-  if(tab === 'sweep') return st.sweep;
-  var out = [];
-  Object.keys(st.by).forEach(function(k){
-    var x = st.by[k];
-    if(x.checked && tab !== 'spot') return;
-    if(x.reasons.some(function(c){ return REASONS[c].tab === tab; })) out.push(x);
-  });
-  return out.sort(st.cmp);
-}
-function tabCount(tab){
-  var st = getState();
-  if(tab === 'needs') return st.needs.length;
-  if(tab === 'sweep') return st.sweep.length;
-  return queueFor(tab).length;
-}
-/* ---- one issue per card: lanes queue issues, not people (2026-10-13) ---- */
-var ISSUE_RANK = { dup:1, identity:2, unsrc:3, family:4, fresh:5, missing:6, name:6, biz:6, inner:7, spot:8, sweep:9 };
-var ISSUE_SHORT = {
-  dup:'Possible duplicate', identity:'Can\'t confirm who this is', unsrc:'Web info with no source',
-  family:'Family link problem', fresh:'New — not sorted yet', missing:'Flagged: missing info',
-  name:'Name incomplete', biz:'Looks like a business', inner:'Close circle — detail missing',
-  spot:'Spot check', sweep:'Quick once-over'
-};
-/* structured family problems, mirroring familyIssues() order:
-   count problems first, then per-link problems in link order */
-function famIssueItems(di){
-  var e = D.directory[di], links = famLinks(e), out = [];
-  var sp = [], par = [];
-  links.forEach(function(l, i){ if(l[0] === 'spouse') sp.push(i); if(l[0] === 'parent') par.push(i); });
-  if(sp.length > 1) out.push({ kind:'spouses', idxs:sp });
-  if(par.length > 2) out.push({ kind:'parents', idxs:par });
-  links.forEach(function(l, i){
-    var tdi = BYN[String(l[1] || '').toLowerCase()];
-    if(tdi == null){ out.push({ kind:'dangling', rel:l[0], key:l[1], idx:i }); return; }
-    if(tdi === di){ out.push({ kind:'self', rel:l[0], key:l[1], idx:i }); return; }
-    var inv = FAM_INV_REL[l[0]], me = String(e.name || '').toLowerCase();
-    var back = famLinks(D.directory[tdi]).some(function(x){ return x[0] === inv && String(x[1] || '').toLowerCase() === me; });
-    if(!back) out.push({ kind:'oneway', rel:l[0], key:l[1], idx:i, tdi:tdi, inv:inv });
-  });
-  return out;
-}
-function famKeyOf(it){
-  if(!it || it.reason !== 'family' || !it.fam) return '';
-  var f = it.fam;
-  return f.kind + '|' + (f.rel || '') + '|' + (f.key || '') + '|' + (f.idxs ? f.idxs.join(',') : (f.idx != null ? f.idx : ''));
-}
-function issueQueue(tab){
-  var st = getState(), items = [];
-  function push(x, c, fam){ items.push({ di:x.di, reason:c, x:x, fam:fam || null }); }
-  if(tab === 'sweep'){ st.sweep.forEach(function(x){ push(x, 'sweep'); }); return items; }
-  var pool = tab === 'needs' ? st.needs : queueFor(tab);
-  pool.forEach(function(x){
-    x.reasons.forEach(function(c){
-      if(tab !== 'needs' && REASONS[c].tab !== tab) return;
-      if(c === 'family') famIssueItems(x.di).forEach(function(fi){ push(x, 'family', fi); });
-      else push(x, c);
-    });
-  });
-  items.sort(function(a, b){ return (ISSUE_RANK[a.reason] - ISSUE_RANK[b.reason]) || st.cmp(a.x, b.x); });
-  return items;
-}
-function issueCount(tab){ return issueQueue(tab).length; }
-/* after a fix: if the same issue is still in the queue, step past it;
-   if it resolved, the next issue slides into the current slot */
 /* navigate-and-highlight: scroll the named target into view inside the app
    shell and mark it once (a single 1.3s glow, never a loop). Used by every
    control that points somewhere, so landing behavior is identical app-wide. */
@@ -870,18 +623,6 @@ function landOn(sel, opts){
       if(f) setTimeout(function(){ f.focus({ preventScroll:true }); }, rm ? 0 : 350);
     }
   })();
-}
-function advanceIssue(di, reason, famkey){
-  var q = issueQueue(curTab());
-  for(var k = 0; k < q.length; k++){
-    var it = q[k];
-    if(it.di === di && it.reason === reason && famKeyOf(it) === (famkey || '')){ if(k >= S.today.i) S.today.i = k + 1; break; }
-  }
-  refreshAfterStatus();
-}
-function statusOf(di){
-  var x = getState().by[di]; if(!x) return 'waiting';
-  return x.checked ? (x.kind === 'spot' ? 'needs' : 'checked') : (x.kind === 'needs' ? 'needs' : 'waiting');
 }
 
 /* ============================================================
@@ -1458,10 +1199,7 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    8. views
    ============================================================ */
 var S = {
-  depth:0, route:{ name:'today', seg:[] }, ctx:null,
-  today:{ i:0, surv:{}, dsel:{}, skipped:{}, lane:'', start:0, goal:10, fin:false, pick:false },
-  sort:{ i:0, start:null, goal:10, fin:false, skipped:{} },
-  dtool:{ kind:'', i:0, start:null, goal:10, fin:false, skipped:{} }, /*DONE-SUITE*/
+  depth:0, route:{ name:'people', seg:[] }, ctx:null,
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80 },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d') },
@@ -1491,10 +1229,6 @@ function seg(k, opts, val, extra){
   }).join('') + '</div>';
 }
 function chip(label, cls){ return '<span class="chip ' + (cls || '') + '">' + esc(label) + '</span>'; }
-function statusChip(di){
-  var s = statusOf(di);
-  return '<span class="st st-' + s + '">' + (s === 'checked' ? ic('check', 12) + 'Checked' : s === 'needs' ? 'Needs you' : 'Waiting') + '</span>';
-}
 function infoLine(e){
   return [tierName(e), cap(gv(e, 'relationship')), e.city].filter(Boolean).join(' · ');
 }
@@ -1527,29 +1261,25 @@ function askEditKey(){
 
 /* ---------- global chrome ---------- */
 var NAV = [
-  { k:'today',   l:'Today',   ic:'today' },
   { k:'people',  l:'People',  ic:'people' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
-  { k:'groups',  l:'Groups',  ic:'groups' },
-  { k:'done',    l:'Done',    ic:'check' } /*DONE-SUITE*/
+  { k:'groups',  l:'Groups',  ic:'groups' }
 ];
 function activeNav(){
   var n = S.route.name;
-  if(n === 'profile') return S.ctx && S.ctx.from ? S.ctx.from : 'people';
-  if(n === 'settings') return 'settings';
+  if(n === 'profile'){ var f = S.ctx && S.ctx.from; return NAV.some(function(x){ return x.k === f; }) ? f : 'people'; }
   return n;
 }
 function renderChrome(){
-  var act = activeNav(), st = D ? getState() : null;
-  var badge = st ? st.needs.length : 0;
-  var items = NAV.filter(function(n){ return n.k !== 'done' || doneSuiteOn(); }).map(function(n){ /*DONE-SUITE*/
-    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span>' +
-      (n.k === 'today' && badge ? '<em>' + (badge > 999 ? '999+' : badge) + '</em>' : '') + '</a>';
+  var act = activeNav();
+  var items = NAV.map(function(n){
+    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span></a>';
   }).join('');
-  $('#rail').innerHTML = '<a class="brand" href="#/today" aria-label="North Country Circle"><i></i><b>North Country Circle</b></a>' +
+  $('#rail').innerHTML = '<a class="brand" href="#/people" aria-label="North Country Circle"><i></i><b>North Country Circle</b></a>' +
     '<div class="navlist">' + items + '</div>' +
-    '<div class="railfoot"><a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
+    '<div class="railfoot"><a href="index.html" class="nv">' + ic('network', 20) + '<span>Visual map</span></a>' +
+    '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
     '<small id="fresh">' + (D ? 'Data ' + esc(D.updated || '') : '') + '</small></div>';
   $('#tabs').innerHTML = items;
   var top = $('#top');
@@ -1610,20 +1340,19 @@ function paintSearch(){
   box.innerHTML = hits.map(function(di, i){
     var e = D.directory[di];
     return '<button type="button" class="gsi-row' + (i === 0 ? ' on' : '') + '" data-act="gsopen" data-di="' + di + '">' + avatar(e, 'sm') +
-      '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + statusChip(di) + '</button>';
+      '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + '</button>';
   }).join('') + (hits.length ? '<button type="button" class="gsi-all" data-act="gsall">See all matches in People</button>' : '<div class="gsi-none">No one matches</div>');
   box.hidden = false;
 }
 
 /* ---------- router ---------- */
 function parseRoute(){
-  var h = location.hash.replace(/^#\/?/, ''), qs = '';
-  var qi = h.indexOf('?'); if(qi >= 0){ qs = h.slice(qi + 1); h = h.slice(0, qi); }
-  var seg = h.split('/').filter(Boolean).map(function(x){ try{ return decodeURIComponent(x); }catch(e){ return x; } });
-  var name = seg[0] || 'today';
+  var h = (location.hash || '#/people').replace(/^#\/?/, '');
+  var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
+  var name = seg[0] || 'people';
   if(name === 'p') name = 'profile';
-  if(['today','people','profile','network','family','groups','settings','done'].indexOf(name) < 0) name = 'today'; /*DONE-SUITE*/
-  return { name:name, seg:seg.slice(1), qs:qs };
+  if(['people','profile','network','family','groups','settings'].indexOf(name) < 0) name = 'people';
+  return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
   o = o || {};
@@ -1634,7 +1363,7 @@ function go(path, o){
 }
 function back(fallback){
   if(S.depth > 0) history.back();
-  else go(fallback || 'today', { replace:true });
+  else go(fallback || 'people', { replace:true });
 }
 addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
 function openPerson(di, ctx, o){
@@ -1658,29 +1387,19 @@ function render(){
   document.body.setAttribute('data-view', n);
   try{
     renderChrome();
-    if(n === 'today') viewToday(v);
-    else if(n === 'people') viewPeople(v);
+    if(n === 'people') viewPeople(v);
     else if(n === 'profile') viewProfile(v);
     else if(n === 'network') viewNetwork(v);
     else if(n === 'family') viewFamily(v);
     else if(n === 'groups') viewGroups(v);
     else if(n === 'settings') viewSettings(v);
-    else if(n === 'done') viewDone(v); /*DONE-SUITE*/
   }catch(err){
-    v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/today" class="btn">Go to Today</a></p></div>';
+    v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
   }
-  previewFx(n);
 }
 function afterWrite(di){
-  /* chrome badge + any list that depends on status; never re-render a view the user is typing in */
-  var st = getState();
-  $$('.nv[data-nav="today"]').forEach(function(a){
-    var em = $('em', a);
-    if(!st.needs.length){ if(em) em.remove(); return; }
-    if(!em){ em = document.createElement('em'); a.appendChild(em); }
-    em.textContent = st.needs.length > 999 ? '999+' : st.needs.length;
-  });
+  /* undo buttons after any write; never re-render a view the user is typing in */
   paintUndo();
 }
 window.__nccChanged = function(di){
@@ -1689,757 +1408,13 @@ window.__nccChanged = function(di){
 };
 
 /* ============================================================
-   Today — the work. Queue by reason on the left, one actionable card on the right.
-   ============================================================ */
-/* ============================================================
-   Today — two levels. HOME says in plain words what is waiting and lets you start a short
-   session. A LANE shows one person at a time, with a clear "Done" and a count of how far you are.
-   ============================================================ */
-var LANES = [
-  { k:'needs',    t:'Needs you',     d:'Everything that needs a fix, most important first. One issue at a time.', ic:'today',   h:'#d6e2ff', home:false },
-  { k:'dup',      t:'Possible duplicates',  d:'These might be the same person twice. Pick the two that match and merge them, or say they are different people.', ic:'merge', h:'#b7a1e6' },
-  { k:'identity', t:'Who is this?',         d:'Not enough on file to be sure who they are. Add a place, school, job or link, or say nothing more exists.', ic:'user', h:'#86a0d8' },
-  { k:'unsrc',    t:'Needs a source',       d:'Web details with no link behind them. Add where they came from, or remove them.', ic:'link', h:'#d6a8e6' },
-  { k:'family',   t:'Family links',         d:'Family links that do not line up, like two spouses or a link that only goes one way.', ic:'tree', h:'#e0a35a' },
-  { k:'fresh',    t:'New this week',        d:'Just showed up in your network. Tap a tier and how you know them.', ic:'sparkle', h:'#c7d5f6' },
-  { k:'cleanup',  t:'Cleanup',              d:'Incomplete names, business-looking names, and profiles you flagged.', ic:'edit', h:'#98a2b6' },
-  { k:'inner',    t:'Close circle gaps',    d:'Vetted and associate people who still have detail missing.', ic:'star', h:'#9fb8ea' },
-  { k:'spot',     t:'Spot check',           d:'A few finished profiles picked at random this week. Confirm they are still right.', ic:'eye', h:'#7fb5d6' },
-  { k:'sweep',    t:'Quick once-over',      d:'No flags at all. Skim and confirm. Lowest priority.', ic:'shield', h:'#6f7a93' }
-];
-function laneDef(k){ return LANES.filter(function(l){ return l.k === k; })[0]; }
-var SESSION_SIZE = 10;
-
-function ringHTML(frac, size, stroke){
-  var r = (size - stroke) / 2, c = 2 * Math.PI * r;
-  return '<svg class="ring" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true">' +
-    '<defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6e2ff"/><stop offset="1" stop-color="#6d8fe0"/></linearGradient></defs>' +
-    '<circle class="ring-bg" cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" stroke-width="' + stroke + '"/>' +
-    '<circle class="ring-fg" cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" stroke-width="' + stroke + '" stroke-dasharray="' + c + '" stroke-dashoffset="' + c + '" data-off="' + (c * (1 - Math.max(0.004, Math.min(1, frac)))) + '" transform="rotate(-90 ' + size / 2 + ' ' + size / 2 + ')"/></svg>';
-}
-function viewToday(v){
-  var lane = S.route.seg[0] || '';
-  if(lane === 'sort') return viewSort(v);
-  if(lane === 'sorted') return viewSorted(v);
-  if(lane && !laneDef(lane)) lane = '';
-  if(!lane) return viewTodayHome(v);
-  return viewLane(v, lane);
-}
-function viewTodayHome(v){
-  /* SORT FIRST (2026-10-13): the hero is the Sort — JD's roster weed-out.
-     The fix lanes are demoted to one compact strip; the lane cards still
-     exist, unchanged, behind a collapsed "Pick a kind of work" disclosure. */
-  var left = sortQueue().length, sl = sortedLists(), sortedN = sl.keep.length + sl.trash.length, totS = left + sortedN;
-  var lanes = LANES.filter(function(l){ return l.k !== 'needs' && l.k !== 'sweep'; });
-  var counts = {}, max = 1;
-  lanes.concat([laneDef('sweep')]).forEach(function(l){ counts[l.k] = issueCount(l.k); if(counts[l.k] > max) max = counts[l.k]; });
-  var fixN = lanes.reduce(function(s, l){ return s + counts[l.k]; }, 0) + counts.sweep;
-  var live = lanes.filter(function(l){ return counts[l.k] > 0; }), clear = lanes.filter(function(l){ return counts[l.k] === 0; });
-  function card(l, quiet, i){
-    return '<a href="#/today/' + l.k + '" class="lane' + (quiet ? ' quiet' : '') + '" data-act="lane" data-lane="' + l.k + '" style="--h:' + l.h + ';--i:' + i + '">' +
-      '<span class="lane-ic">' + ic(l.ic, 20) + '</span>' +
-      '<span class="lane-n cu" data-n="' + counts[l.k] + '">' + counts[l.k] + '</span>' +
-      '<b class="lane-t">' + esc(l.t) + '</b><span class="lane-d">' + esc(l.d) + '</span>' +
-      '<span class="lane-bar"><i style="width:' + Math.max(4, counts[l.k] / max * 100) + '%"></i></span>' +
-      '<span class="lane-go">Start ' + ic('arrow', 14) + '</span></a>';
-  }
-  var head;
-  if(!left && !sortedN){
-    head = '<div class="hhead"><h1 class="display">The Sort</h1><p class="sub">Nobody is waiting to be sorted right now.</p></div>';
-  } else if(!left){
-    head = '<div class="hhead"><h1 class="display">The Sort</h1><p class="sub">Everyone has been sorted. New people who show up in your circle will land here to be sorted once.</p>' +
-      '<div class="row"><a class="btn ghost lg" href="#/today/sorted" data-act="sortlist">See sorted (' + sortedN + ')</a></div></div>';
-  } else {
-    head = '<div class="hhead"><h1 class="display">The Sort</h1><p class="sub"><b class="cu" data-n="' + left + '">' + left + '</b> ' + (left === 1 ? 'person' : 'people') + ' left to sort. One at a time, two questions: could your paths cross again, and would you want to be up to speed on them? No to both — they go in the trash.</p>' +
-      '<div class="row"><a class="btn primary lg" href="#/today/sort" data-act="sortstart">Start sorting ' + ic('arrow', 16) + '</a>' +
-      (sortedN ? '<a class="btn ghost lg" href="#/today/sorted" data-act="sortlist">See sorted (' + sortedN + ')</a>' : '') + '</div></div>';
-  }
-  var ring = totS ? '<div class="tring" title="Sorted ' + sortedN + ' of ' + totS + '">' + ringHTML(sortedN / totS, 148, 10) +
-    '<div class="tring-c"><b><span class="cu" data-n="' + sortedN + '">' + sortedN + '</span></b><small>of ' + totS + ' sorted</small></div></div>' : '';
-  var grid = (live.length || counts.sweep) ? '<div class="lanes">' + live.map(function(l, i){ return card(l, false, i); }).join('') + (counts.sweep ? card(laneDef('sweep'), true, live.length) : '') + '</div>' : '';
-  var clearline = clear.length ? '<p class="clearline">' + ic('check', 14) + 'Nothing waiting in: ' + clear.map(function(l){ return esc(l.t); }).join(', ') + '.</p>' : '';
-  v.innerHTML = '<div class="page todayhome"><section class="thero">' + head + doneHeroLine() + ring + '</section>' + /*DONE-SUITE*/
-    '<section class="fixstrip"><div class="fix-txt"><b>Fix profiles</b><span>' + (fixN ? fixN + ' ' + (fixN === 1 ? 'thing needs' : 'things need') + ' fixing across all the fix lists.' : 'Nothing needs fixing right now.') + '</span></div>' +
-    (fixN ? '<a class="btn primary" href="#/today/needs" data-act="lane" data-lane="needs">Start ' + ic('arrow', 14) + '</a>' : '') +
-    '<button type="button" class="btn ghost" data-act="fixpick" aria-expanded="' + (S.today.pick ? 'true' : 'false') + '">Pick a kind of work ' + ic('chev', 14) + '</button></section>' +
-    '<div class="fixpick"' + (S.today.pick ? '' : ' hidden') + '>' + grid + clearline + '</div></div>';
-}
-function startSession(lane){
-  var n = issueCount(lane);
-  S.today.lane = lane; S.today.i = 0; S.today.start = n; S.today.goal = Math.min(SESSION_SIZE, n); S.today.fin = false;
-}
-function viewLane(v, lane){
-  var def = laneDef(lane), q = queueFor(lane);
-  if(S.today.lane !== lane) startSession(lane);
-  if(S.today.i >= q.length) S.today.i = Math.max(0, q.length - 1);
-  v.innerHTML = '<div class="page lanepage"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
-    '<h1 class="display">' + esc(def.t) + '</h1><p class="sub">' + esc(def.d) + '</p><div class="sess" id="sess"></div></div>' +
-    '<div class="focus"><section class="qcard" id="qcard"></section><aside class="upnext" id="qlist"></aside></div></div>';
-  paintQueue(lane);
-}
-function sessMeter(q){
-  var el = $('#sess'); if(!el) return;
-  var handled = Math.max(0, S.today.start - q.length), goal = Math.max(1, S.today.goal), shown = Math.min(handled, goal);
-  el.innerHTML = '<div class="sbar"><i style="width:' + Math.min(100, shown / goal * 100) + '%"></i></div>' +
-    '<small><b>' + shown + '</b> of ' + goal + ' this session' + ' · ' + q.length + ' left here</small>';
-}
-function paintQueue(tab){
-  var q = issueQueue(tab), list = $('#qlist'), card = $('#qcard');
-  if(!list || !card) return;
-  var i = S.today.i = Math.max(0, Math.min(q.length - 1, S.today.i));
-  var handled = Math.max(0, S.today.start - q.length);
-  if(!S.today.fin && S.today.goal > 0 && handled >= S.today.goal && q.length > 0) S.today.fin = true;
-  sessMeter(q);
-  var def = laneDef(tab) || laneDef('needs');
-  if(!q.length){
-    list.innerHTML = '';
-    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>' + (handled ? 'Lane clear' : 'Nothing here') + '</h2><p>' + (handled ? 'You handled ' + handled + ' in this lane. Nice and tidy.' : 'There is nothing in this lane right now.') + '</p>' +
-      '<div class="row"><a class="btn primary" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
-    return;
-  }
-  if(S.today.fin){
-    list.innerHTML = '';
-    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>' + S.today.goal + ' done</h2><p>' + q.length + ' left in this lane. Keep going while you are on a roll, or stop here. Everything you did is already saved.</p>' +
-      '<div class="row"><button type="button" class="btn primary lg" data-act="sessmore">Do ' + Math.min(SESSION_SIZE, q.length) + ' more</button><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
-    return;
-  }
-  /* a freshly presented card starts with an empty merge selection — the person
-     whose card it is stays labeled "this one" but is never pre-picked */
-  var cardKey = tab + '|' + q[i].di + '|' + q[i].reason + '|' + famKeyOf(q[i]);
-  if(S.today.cardKey !== cardKey){ S.today.cardKey = cardKey; S.today.dsel = {}; }
-  card.innerHTML = issueCard(q[i], tab, i, q.length);
-  var nxt = q.slice(i + 1, i + 6).map(function(it, k){
-    var e = D.directory[it.di];
-    return '<button type="button" class="qrow" data-act="qpick" data-i="' + (i + 1 + k) + '">' + avatar(e, 'sm') + '<span class="qn"><b>' + esc(dispName(e)) + '</b><small>' + esc(ISSUE_SHORT[it.reason]) + '</small></span></button>';
-  }).join('');
-  list.innerHTML = '<div class="qhead">Up next</div>' + (nxt || '<p class="dim pad">This is the last one.</p>') +
-    '<button type="button" class="btn ghost sm wide" data-act="seeall">See all ' + q.length + ' in this lane</button>';
-}
-function openLaneList(){
-  var tab = S.route.seg[0] || 'needs', q = issueQueue(tab), lastR = '';
-  openSheet('All ' + q.length + ' in this lane', '<div class="plist flat">' + q.slice(0, 400).map(function(it, k){
-    var e = D.directory[it.di], hdr = '';
-    if(it.reason !== lastR){ lastR = it.reason; hdr = '<div class="qgroup">' + esc(ISSUE_SHORT[it.reason]) + '</div>'; }
-    return hdr + '<button type="button" class="prow" data-act="qpick" data-i="' + k + '">' + avatar(e, 'sm') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(ISSUE_SHORT[it.reason]) + '</small></span></button>';
-  }).join('') + (q.length > 400 ? '<p class="dim pad">Showing the first 400.</p>' : '') + '</div>', { focus:false });
-}
-
-/* ============================================================
-   The Sort — the roster weed-out (2026-10-13). Every live, listed person
-   with no sort verdict and no family links gets one card and two questions:
-   could your paths cross again, and would you want to be up to speed on
-   them? Keep / Trash / Skip for now.
-   The verdict is stored in the profile's audit field — 'keep' or 'trash' —
-   written through the same outbox -> Sheet patch path as every other write
-   in the app (txn + queuePatch), so it survives reloads and the
-   subject-sync rebuild (the build passes the audit column through as-is).
-   'audited' still means checked; a verdict is a separate value, not a
-   check. Trash hides the person everywhere liveEntry is consulted — the
-   sort queue, the People list, and every count — the same visible effect
-   as Remove (deleted:'1'); the entry stays in the data so the Sorted list
-   can restore them with the inverse patch { audit:'' }.
-   Keep on a profile with nothing on file also sets JD's own missing-info
-   flag (when no flag is set), so the fix lists pick them up for research
-   instead of the keep quietly burying an empty profile.
-   ============================================================ */
-function sortVerdict(e){ var a = raw(e, 'audit'); return a === 'keep' ? 'keep' : a === 'trash' ? 'trash' : ''; }
-/* what is on file, as testable bits — the same signal set as the pre-sort */
-function onFileBits(e){
-  var bits = [];
-  if(gv(e, 'synopsis')) bits.push('a summary');
-  if(tagList(gv(e, 'companies')).length) bits.push('work');
-  if(gv(e, 'highlights')) bits.push('highlights');
-  if(footprintOf(e).blocks.length) bits.push('a web record');
-  if(gv(e, 'phone')) bits.push('a phone number');
-  if(tagList(gv(e, 'churches')).length) bits.push('a church');
-  if(degreesOf(e).length) bits.push('a school');
-  if(gv(e, 'sources')) bits.push('sources');
-  if((e.events || []).length) bits.push('life events');
-  return bits;
-}
-function isShell(e){ return !onFileBits(e).length; }
-/* order: dead pile first (no connections, nothing on file), then people
-   whose identity is not confirmed, then new or unclassified, then the
-   rest by fewest connections */
-function sortBucket(di){
-  var e = D.directory[di];
-  if(!(e.neighbors || []).length && isShell(e)) return 0;
-  if(identitySignals(e).n < 2) return 1;
-  if(NEWGAIN[di] || (!tierOf(e) && !raw(e, 'relationship') && !raw(e, 'context'))) return 2;
-  return 3;
-}
-var SORT_CACHE = { ver:-1, q:null };
-function sortQueue(){
-  if(SORT_CACHE.ver === VER && SORT_CACHE.q) return SORT_CACHE.q;
-  var out = [];
-  people().forEach(function(di){ var e = D.directory[di]; if(!sortVerdict(e) && !famLinks(e).length) out.push(di); });
-  out.sort(function(a, b){
-    var ba = sortBucket(a), bb = sortBucket(b); if(ba !== bb) return ba - bb;
-    var na = (D.directory[a].neighbors || []).length, nb = (D.directory[b].neighbors || []).length;
-    if(na !== nb) return na - nb;
-    return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
-  });
-  SORT_CACHE = { ver:VER, q:out };
-  return out;
-}
-function sortedLists(){
-  var keep = [], trash = [];
-  D.directory.forEach(function(e, di){
-    var p = e.profile || {};
-    if(p.deleted === '1' || (p.merged_into || '').trim()) return;
-    if(p.audit === 'keep') keep.push(di);
-    else if(p.audit === 'trash') trash.push(di);
-  });
-  var byName = function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); };
-  return { keep:keep.sort(byName), trash:trash.sort(byName) };
-}
-/* skipped people sink to the end of the session queue; a skip writes nothing */
-function presentedSortQueue(){
-  var q = sortQueue(), sk = S.sort.skipped, un = [], done = [];
-  q.forEach(function(di){ (sk[pkey(D.directory[di])] ? done : un).push(di); });
-  return un.concat(done);
-}
-function startSortSession(){
-  var n = sortQueue().length;
-  S.sort.i = 0; S.sort.start = n; S.sort.goal = Math.min(SESSION_SIZE, n); S.sort.fin = false; S.sort.skipped = {};
-}
-function sortMeter(){
-  var el = $('#sess'); if(!el) return;
-  var handled = Math.max(0, (S.sort.start || 0) - sortQueue().length), goal = Math.max(1, S.sort.goal), shown = Math.min(handled, goal);
-  el.innerHTML = '<div class="sbar"><i style="width:' + Math.min(100, shown / goal * 100) + '%"></i></div>' +
-    '<small><b>' + shown + '</b> of ' + goal + ' this session' + ' · ' + sortQueue().length + ' left to sort</small>';
-}
-function sortEvidence(e){
-  var bits = onFileBits(e), nc = (e.neighbors || []).length;
-  if(!bits.length && !nc) return 'Nothing on file';
-  var parts = [];
-  var rel = [tierName(e), cap(gv(e, 'relationship')), cap(gv(e, 'context')), e.relation ? (RELN[e.relation] || '') : ''].filter(Boolean);
-  if(rel.length) parts.push(rel.join(' · '));
-  parts.push(nc + (nc === 1 ? ' connection' : ' connections'));
-  var job = tagList(gv(e, 'companies'))[0], place = e.city || e.hometown, school = degreesOf(e)[0], onf = [];
-  if(job) onf.push('works at ' + job);
-  if(place) onf.push((e.city ? 'lives in ' : 'from ') + place);
-  if(school) onf.push(schoolShort(school.school));
-  if(onf.length) parts.push(onf.join(' · '));
-  else if(bits.length) parts.push('On file: ' + bits.join(', '));
-  var yk = knownSinceYear(e);
-  if(yk) parts.push('Known since ' + yk);
-  return parts.join(' · ');
-}
-function sortCardHTML(di, i, n){
-  var e = D.directory[di];
-  return '<article class="rc sortcard" data-di="' + di + '">' +
-    '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="sortopen" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
-    '<p class="meta">' + esc(effHandle(e) ? '@' + effHandle(e) : (e.detail || 'From your contacts')) + '</p></div>' +
-    '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>' +
-    '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p>' +
-    '<div class="sort-frame"><p>Could your paths cross again?</p><p>Would you want to be up to speed on them?</p></div>' +
-    '<footer class="rfoot sort-actions">' +
-    '<button type="button" class="btn primary lg" data-act="sortkeep" data-di="' + di + '">' + ic('check', 16) + 'Keep</button>' +
-    '<button type="button" class="btn danger lg" data-act="sorttrash" data-di="' + di + '">' + ic('trash', 15) + 'Trash</button>' +
-    '<span class="sp"></span>' +
-    '<button type="button" class="btn ghost" data-act="sortskip" data-di="' + di + '">' + ic('skip', 15) + 'Skip for now</button>' +
-    '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="sortopen" data-di="' + di + '">Open full profile</a></footer>' +
-    '<p class="hint foothint">Keep means they stay in your circle. Trash hides them everywhere — restore them any time from the sorted list. Keys: K keep, T trash, S skip.</p></article>';
-}
-function paintSort(){
-  var q = presentedSortQueue(), list = $('#qlist'), card = $('#qcard');
-  if(!list || !card) return;
-  var i = S.sort.i = Math.max(0, Math.min(Math.max(0, q.length - 1), S.sort.i));
-  var handled = Math.max(0, (S.sort.start || 0) - sortQueue().length);
-  if(!S.sort.fin && S.sort.goal > 0 && handled >= S.sort.goal && q.length > 0) S.sort.fin = true;
-  sortMeter();
-  if(!q.length){
-    list.innerHTML = '';
-    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>All sorted</h2><p>Everyone in your circle has been sorted. New people will show up here to be sorted once.</p>' +
-      '<div class="row"><a class="btn primary" href="#/today/sorted" data-act="sortlist">See the sorted list</a><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
-    return;
-  }
-  if(S.sort.fin){
-    list.innerHTML = '';
-    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>' + S.sort.goal + ' sorted</h2><p>' + q.length + ' left to sort. Keep going while you are on a roll, or stop here. Everything you did is already saved.</p>' +
-      '<div class="row"><button type="button" class="btn primary lg" data-act="sortmore">Sort ' + Math.min(SESSION_SIZE, q.length) + ' more</button><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
-    return;
-  }
-  card.innerHTML = sortCardHTML(q[i], i, q.length);
-  var nxt = q.slice(i + 1, i + 6).map(function(di2, k){
-    var e2 = D.directory[di2];
-    return '<button type="button" class="qrow" data-act="sortpick" data-i="' + (i + 1 + k) + '">' + avatar(e2, 'sm') + '<span class="qn"><b>' + esc(dispName(e2)) + '</b><small>' + esc(sortEvidence(e2)) + '</small></span></button>';
-  }).join('');
-  list.innerHTML = '<div class="qhead">Up next</div>' + (nxt || '<p class="dim pad">This is the last one.</p>');
-}
-function viewSort(v){
-  if(S.sort.start == null) startSortSession();
-  v.innerHTML = '<div class="page lanepage sortview"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
-    '<h1 class="display">The Sort</h1><p class="sub">One person at a time. Keep the people who belong in your circle; trash the rest. Skipping sends someone to the back of the line.</p><div class="sess" id="sess"></div></div>' +
-    '<div class="focus"><section class="qcard" id="qcard"></section><aside class="upnext" id="qlist"></aside></div></div>';
-  paintSort();
-}
-function viewSorted(v){
-  var sl = sortedLists();
-  function row(di, btn){
-    var e = D.directory[di];
-    return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' +
-      '<div class="ea"><button type="button" class="btn ghost sm" data-act="sortrestore" data-di="' + di + '">' + btn + '</button></div></div>';
-  }
-  v.innerHTML = '<div class="page settings sortedpage"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
-    '<h1 class="display">Sorted</h1><p class="sub">Everyone you have sorted so far. Restoring someone clears their verdict and puts them back on the sort list.</p></div>' +
-    '<section class="card"><header><h3>In the trash</h3><em class="cnt">' + sl.trash.length + '</em></header><div class="cbody">' +
-    (sl.trash.length ? sl.trash.map(function(di){ return row(di, 'Restore'); }).join('') : '<p class="dim">Nobody is in the trash.</p>') + '</div></section>' +
-    '<section class="card"><header><h3>Kept</h3><em class="cnt">' + sl.keep.length + '</em></header><div class="cbody">' +
-    (sl.keep.length ? sl.keep.map(function(di){ return row(di, 'Put back'); }).join('') : '<p class="dim">Nobody has been kept yet.</p>') + '</div></section></div>';
-}
-function sortVerdictWrite(di, v){
-  var e = D.directory[di]; if(!e) return;
-  if(v === 'keep'){
-    var enrich = isShell(e) && !raw(e, 'review_flag');
-    txn('Keep ' + dispName(e), function(){
-      queuePatch(di, { audit:'keep' });
-      if(enrich) queuePatch(di, { review_flag:'missing_info' });
-    });
-    toast(dispName(e) + ' stays in your circle.' + (enrich ? ' Nothing on file, so they are flagged as missing info for the fix list.' : ''), { undo:true });
-  } else {
-    txn('Trash ' + dispName(e), function(){ queuePatch(di, { audit:'trash' }); });
-    toast(dispName(e) + ' moved to the trash.', { undo:true });
-  }
-  refreshAfterStatus();
-}
-
-
-/* ============================================================
-   DONE SUITE (removable) — the path-to-done gauges and tools.
-   Everything for this suite lives in this block, plus the small
-   hooks marked DONE-SUITE elsewhere (nav entry, router entry,
-   chrome filter, hero line, settings card, dispatcher cases,
-   refreshAfterStatus branch, S.dtool state). To retire it: hide
-   it in Settings (one tap, no code), or delete this block and
-   the marked hooks. JD asked for exactly that (2026-10-13).
-   Done means: everyone sorted, every live profile passes the
-   floor, no flags open, no empties unexamined, no decision
-   piles left. The floor: full name + something real on file +
-   no open flag — or an empty profile that was checked (or kept
-   and then cleared), because checked-empty is complete.
-   ============================================================ */
-var DONE_BACKLOG = { held:50, pushed:278, strike:87, asOf:'Oct 13, 2026' }; /* Luna-side decision piles; the counts change when JD rules and Luna files the results */
-function doneSuiteOn(){ return store('ncc_done_hide') !== '1'; }
-function doneFails(e){
-  var f = [];
-  if(!nameOk(e)) f.push('name');
-  if(isShell(e)) f.push('bits');
-  if(raw(e, 'review_flag')) f.push('flag');
-  return f;
-}
-function doneFloorPass(e){
-  if(nameOk(e) && !isShell(e) && !raw(e, 'review_flag')) return true;
-  if(isShell(e) && (isChecked(e) || (sortVerdict(e) === 'keep' && !raw(e, 'review_flag')))) return true;
-  return false;
-}
-var DONE_CACHE = { ver:-1, s:null };
-function doneStats(){
-  if(DONE_CACHE.ver === VER && DONE_CACHE.s) return DONE_CACHE.s;
-  var P = people(), pass = 0, shellsOpen = 0, unexam = 0, flags = 0, flagMiss = 0, flagDup = 0, onefix = 0, personDone = 0;
-  P.forEach(function(di){
-    var e = D.directory[di], fl = raw(e, 'review_flag'), fp = doneFloorPass(e), f = doneFails(e);
-    if(fp) pass++;
-    if(fl){ flags++; if(fl === 'missing_info') flagMiss++; else if(fl === 'duplicate') flagDup++; }
-    if(isShell(e) && !fp) shellsOpen++;
-    if(isShell(e) && !isChecked(e) && sortVerdict(e) !== 'keep') unexam++;
-    if(!fp && f.length === 1 && f[0] !== 'bits') onefix++;
-    if(fp && (famLinks(e).length || sortVerdict(e))) personDone++;
-  });
-  var q = sortQueue().length, sl = sortedLists(), sortedN = sl.keep.length + sl.trash.length;
-  var backlog = DONE_BACKLOG.held + DONE_BACKLOG.pushed + DONE_BACKLOG.strike;
-  var s = { tot:P.length, pass:pass, shellsOpen:shellsOpen, unexam:unexam, flags:flags, flagMiss:flagMiss, flagDup:flagDup,
-    onefix:onefix, personDone:personDone, queue:q, sortedN:sortedN, sortTot:q + sortedN, backlog:backlog,
-    complete:(q === 0 && pass === P.length && flags === 0 && unexam === 0 && backlog === 0) };
-  DONE_CACHE = { ver:VER, s:s };
-  return s;
-}
-function doneHeroLine(){
-  if(!doneSuiteOn()) return '';
-  var s = doneStats();
-  if(s.complete) return '';
-  return '<p class="doneline"><a href="#/done" data-act="donehome"><b>' + s.personDone + ' of ' + s.tot + '</b> people fully done</a><span> · the rest of the path is on the Done page</span></p>';
-}
-function doneBar(frac){
-  return '<div class="dbar"><i style="width:' + Math.max(0, Math.min(100, frac * 100)) + '%"></i></div>';
-}
-function viewDone(v){
-  if(!doneSuiteOn()){ go('today', { replace:true }); return; }
-  var seg = S.route.seg[0] || '';
-  if(seg === 'shells' || seg === 'onefix') return viewDoneTool(v, seg);
-  var s = doneStats();
-  function gauge(t, n, of, frac, sub, state){
-    return '<div class="dgauge"><div class="dg-t"><b>' + t + '</b><span class="dg-n">' + n + (of != null ? ' <small>of ' + of + '</small>' : '') + '</span></div>' +
-      doneBar(frac) + '<p class="dg-s">' + sub + (state ? ' <b class="dg-state">' + state + '</b>' : '') + '</p></div>';
-  }
-  var pct = s.tot ? Math.round(s.personDone / s.tot * 100) : 100;
-  var head = '<div class="hhead"><h1 class="display">The path to done</h1>' +
-    '<p class="sub">Done means: everyone sorted, every profile passes the floor, no flags open, no empty profiles left unexamined, and no decision piles waiting on you. The floor is a full name and something real on file, or an empty profile that has been checked — checked and empty counts as complete.</p></div>';
-  var overall = '<section class="doverall"><div class="do-big"><b>' + pct + '%</b><span>' + s.personDone + ' of ' + s.tot + ' people fully done</span></div>' + doneBar(s.tot ? s.personDone / s.tot : 1) + '</section>';
-  var gauges = '<section class="dgauges">' +
-    gauge('Sorted', s.sortedN, s.sortTot, s.sortTot ? s.sortedN / s.sortTot : 1, 'Everyone on the list has a verdict: keep or trash. Family is exempt.', s.queue ? s.queue + ' left' : 'Done') +
-    gauge('The floor', s.pass, s.tot, s.tot ? s.pass / s.tot : 1, 'Profiles with a full name, something real on file, and no open flag — plus checked empties.', s.pass === s.tot ? 'Done' : (s.tot - s.pass) + ' to go') +
-    gauge('Open flags', s.flags, null, s.flags ? 0 : 1, s.flags ? (s.flagMiss + ' missing info · ' + s.flagDup + ' possible duplicates. Each one ends in a fix, a verdict, or a clear.') : 'No flags are open.', s.flags ? s.flags + ' open' : 'Done') +
-    gauge('Unexamined empties', s.unexam, null, s.unexam ? 0 : 1, 'Profiles with nothing on file that nobody has checked yet.', s.unexam ? s.unexam + ' to check' : 'Done') +
-    gauge('Decision backlog', s.backlog, null, s.backlog ? 0 : 1, DONE_BACKLOG.held + ' findings held · ' + DONE_BACKLOG.pushed + ' filed facts to review · ' + DONE_BACKLOG.strike + ' strike-list names to settle. Counted ' + DONE_BACKLOG.asOf + '; these move when you rule and Luna files.', s.backlog ? s.backlog + ' waiting' : 'Done') +
-    '</section>';
-  function tool(href, act, lane, n, t, d, done){
-    return '<a href="' + href + '" class="lane' + (done ? ' quiet' : '') + '"' + (act ? ' data-act="' + act + '"' : '') + (lane ? ' data-lane="' + lane + '"' : '') + '>' +
-      '<span class="lane-n cu" data-n="' + n + '">' + n + '</span><b class="lane-t">' + t + '</b><span class="lane-d">' + d + '</span>' +
-      '<span class="lane-go">' + (done ? 'Done' : 'Start ' + ic('arrow', 14)) + '</span></a>';
-  }
-  var tools = '<h2 class="dtools-h">Tools</h2><div class="lanes dtools">' +
-    tool('#/today/sort', 'sortstart', '', s.queue, 'Finish the sort', 'The two-question verdict, one person at a time.', !s.queue) +
-    tool('#/done/shells', '', '', s.shellsOpen, 'Shell check', 'Empty profiles, one at a time: keep and flag for research, trash, or checked — nothing exists.', !s.shellsOpen) +
-    tool('#/done/onefix', '', '', s.onefix, 'One fix away', 'People who pass the floor with a single tap: a flag to clear, a duplicate to settle, a name to finish.', !s.onefix) +
-    tool('#/today/cleanup', 'lane', 'cleanup', s.flagMiss, 'Missing-info flags', 'The flagged profiles, in the fix list you already know.', !s.flagMiss) +
-    tool('#/today/dup', 'lane', 'dup', s.flagDup, 'Possible duplicates', 'Settle each pair: merge them, or say they are different people.', !s.flagDup) +
-    '</div>';
-  var fin = s.complete ? '<section class="card donefin"><div class="cbody"><h3>Done.</h3><p class="dim">Every measure on this page is at its target. This suite has done its job — hide it in Settings whenever you like; it was built to be removed.</p></div></section>' : '';
-  v.innerHTML = '<div class="page donepage">' + head + overall + gauges + tools + fin +
-    '<p class="donefoot">This whole suite can be hidden in Settings, and removed for good once the work is finished.</p></div>';
-}
-/* ---- the two session tools: same rhythm as the Sort (10 at a time, skip sinks) ---- */
-function doneToolQueue(kind){
-  var out = [];
-  people().forEach(function(di){
-    var e = D.directory[di];
-    if(kind === 'shells'){ if(isShell(e) && !doneFloorPass(e)) out.push(di); }
-    else { var f = doneFails(e); if(!doneFloorPass(e) && f.length === 1 && f[0] !== 'bits') out.push(di); }
-  });
-  if(kind === 'shells') out.sort(function(a, b){
-    var ka = sortVerdict(D.directory[a]) === 'keep' ? 0 : 1, kb = sortVerdict(D.directory[b]) === 'keep' ? 0 : 1;
-    if(ka !== kb) return ka - kb;
-    return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
-  });
-  else out.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
-  return out;
-}
-function startDoneTool(kind){
-  var n = doneToolQueue(kind).length;
-  S.dtool = { kind:kind, i:0, start:n, goal:Math.min(SESSION_SIZE, n), fin:false, skipped:{} };
-}
-function presentedDoneQueue(){
-  var q = doneToolQueue(S.dtool.kind), sk = S.dtool.skipped, un = [], dn = [];
-  q.forEach(function(di){ (sk[pkey(D.directory[di])] ? dn : un).push(di); });
-  return un.concat(dn);
-}
-function doneToolMeter(){
-  var el = $('#sess'); if(!el) return;
-  var handled = Math.max(0, (S.dtool.start || 0) - doneToolQueue(S.dtool.kind).length), goal = Math.max(1, S.dtool.goal), shown = Math.min(handled, goal);
-  el.innerHTML = '<div class="sbar"><i style="width:' + Math.min(100, shown / goal * 100) + '%"></i></div>' +
-    '<small><b>' + shown + '</b> of ' + goal + ' this session' + ' · ' + doneToolQueue(S.dtool.kind).length + ' left here</small>';
-}
-function viewDoneTool(v, kind){
-  if(S.dtool.kind !== kind || S.dtool.start == null) startDoneTool(kind);
-  var t = kind === 'shells' ? 'Shell check' : 'One fix away';
-  var d = kind === 'shells' ? 'Empty profiles, one at a time. Keep the person and flag them for research, trash them, or say nothing exists — checked and empty counts as done.'
-    : 'Each person here passes the floor with one tap. Clear the flag, settle the duplicate, or finish the name.';
-  v.innerHTML = '<div class="page lanepage sortview"><div class="lhead"><a class="backlink" href="#/done" data-act="donehome2">' + ic('chevl', 16) + 'Done</a>' +
-    '<h1 class="display">' + t + '</h1><p class="sub">' + d + '</p><div class="sess" id="sess"></div></div>' +
-    '<div class="focus"><section class="qcard" id="qcard"></section><aside class="upnext" id="qlist"></aside></div></div>';
-  paintDoneTool();
-}
-function doneCardHead(e, di, i, n){
-  return '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
-    '<p class="meta">' + esc(effHandle(e) ? '@' + effHandle(e) : (e.detail || 'From your contacts')) + '</p></div>' +
-    '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>';
-}
-function doneShellCard(di, i, n){
-  var e = D.directory[di], vd = sortVerdict(e), fl = raw(e, 'review_flag');
-  var body, acts;
-  if(vd === 'keep' && fl === 'duplicate'){
-    body = '<p class="sort-ev">Nothing on file</p><div class="sort-frame"><p>You kept this person. The open item is a possible-duplicate flag, and that is settled in the duplicates list — merge them, or say they are different people.</p></div>';
-    acts = '<a class="btn primary lg" href="#/today/dup" data-act="lane" data-lane="dup">Open the duplicates list ' + ic('arrow', 14) + '</a>' +
-      '<button type="button" class="btn danger lg" data-act="shelltrash" data-di="' + di + '">' + ic('trash', 15) + 'Trash instead</button>';
-  } else if(vd === 'keep'){
-    body = '<p class="sort-ev">Nothing on file</p><div class="sort-frame"><p>You kept this person, so they are flagged for research. If the research found nothing, say so — a kept profile with nothing on file and no flag counts as done.</p></div>';
-    acts = '<button type="button" class="btn primary lg" data-act="shellclear" data-di="' + di + '">' + ic('check', 16) + 'Nothing more exists</button>' +
-      '<button type="button" class="btn danger lg" data-act="shelltrash" data-di="' + di + '">' + ic('trash', 15) + 'Trash instead</button>';
-  } else {
-    body = '<p class="sort-ev">Nothing on file</p><div class="sort-frame"><p>Could your paths cross again?</p><p>Would you want to be up to speed on them?</p></div>';
-    acts = '<button type="button" class="btn primary lg" data-act="shellkeep" data-di="' + di + '">' + ic('check', 16) + 'Keep</button>' +
-      '<button type="button" class="btn danger lg" data-act="shelltrash" data-di="' + di + '">' + ic('trash', 15) + 'Trash</button>' +
-      '<button type="button" class="btn ghost lg" data-act="shellchecked" data-di="' + di + '">Nothing exists — checked</button>';
-  }
-  return '<article class="rc sortcard" data-di="' + di + '">' + doneCardHead(e, di, i, n) + body +
-    '<footer class="rfoot sort-actions">' + acts + '<span class="sp"></span>' +
-    '<button type="button" class="btn ghost" data-act="dtoolskip" data-di="' + di + '">' + ic('skip', 15) + 'Skip for now</button>' +
-    '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open full profile</a></footer>' +
-    '<p class="hint foothint">Everything saves as you go, and Undo works here too.</p></article>';
-}
-function doneOnefixCard(di, i, n){
-  var e = D.directory[di], fl = raw(e, 'review_flag'), f = doneFails(e), body, acts;
-  if(f[0] === 'flag' && fl === 'duplicate'){
-    body = '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p><div class="sort-frame"><p>One thing is open: this profile is flagged as a possible duplicate. That is settled in the duplicates list — merge them, or say they are different people.</p></div>';
-    acts = '<a class="btn primary lg" href="#/today/dup" data-act="lane" data-lane="dup">Open the duplicates list ' + ic('arrow', 14) + '</a>';
-  } else if(f[0] === 'flag'){
-    body = '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p><div class="sort-frame"><p>One thing is open: your missing-info flag. Everything the floor asks for is already on file, so clearing the flag finishes this profile. To add the missing info instead, open the full profile.</p></div>';
-    acts = '<button type="button" class="btn primary lg" data-act="onefixclear" data-di="' + di + '">' + ic('check', 16) + 'Clear the flag</button>';
-  } else {
-    body = '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p><div class="sort-frame"><p>One thing is open: the name is incomplete — a first or last name is missing. It is finished on their profile, in the Contact section.</p></div>';
-    acts = '<a class="btn primary lg" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Fix it on their profile ' + ic('arrow', 14) + '</a>';
-  }
-  return '<article class="rc sortcard" data-di="' + di + '">' + doneCardHead(e, di, i, n) + body +
-    '<footer class="rfoot sort-actions">' + acts + '<span class="sp"></span>' +
-    '<button type="button" class="btn ghost" data-act="dtoolskip" data-di="' + di + '">' + ic('skip', 15) + 'Skip for now</button>' +
-    '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open full profile</a></footer>' +
-    '<p class="hint foothint">One tap finishes this profile. Undo works here too.</p></article>';
-}
-function paintDoneTool(){
-  var kind = S.dtool.kind, q = presentedDoneQueue(), list = $('#qlist'), card = $('#qcard');
-  if(!list || !card) return;
-  var i = S.dtool.i = Math.max(0, Math.min(Math.max(0, q.length - 1), S.dtool.i));
-  var handled = Math.max(0, (S.dtool.start || 0) - doneToolQueue(kind).length);
-  if(!S.dtool.fin && S.dtool.goal > 0 && handled >= S.dtool.goal && q.length > 0) S.dtool.fin = true;
-  doneToolMeter();
-  var t = kind === 'shells' ? 'shells' : 'people';
-  if(!q.length){
-    list.innerHTML = '';
-    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>All clear</h2><p>Nothing left in this tool. Everything you did is already saved.</p>' +
-      '<div class="row"><a class="btn primary" href="#/done" data-act="donehome2">Back to the path to done</a><a class="btn ghost" href="#/today" data-act="lanehome">Back to Today</a></div></div>';
-    return;
-  }
-  if(S.dtool.fin){
-    list.innerHTML = '';
-    card.innerHTML = '<div class="done-card"><div class="done-ic">' + ic('check', 30) + '</div><h2>' + S.dtool.goal + ' done</h2><p>' + q.length + ' ' + t + ' left here. Keep going while you are on a roll, or stop here. Everything you did is already saved.</p>' +
-      '<div class="row"><button type="button" class="btn primary lg" data-act="dtoolmore">Do ' + Math.min(SESSION_SIZE, q.length) + ' more</button><a class="btn ghost" href="#/done" data-act="donehome2">Back to the path to done</a></div></div>';
-    return;
-  }
-  card.innerHTML = kind === 'shells' ? doneShellCard(q[i], i, q.length) : doneOnefixCard(q[i], i, q.length);
-  var nxt = q.slice(i + 1, i + 6).map(function(di2, k){
-    var e2 = D.directory[di2];
-    return '<button type="button" class="qrow" data-act="dtoolpick" data-i="' + (i + 1 + k) + '">' + avatar(e2, 'sm') + '<span class="qn"><b>' + esc(dispName(e2)) + '</b><small>' + esc(sortEvidence(e2)) + '</small></span></button>';
-  }).join('');
-  list.innerHTML = '<div class="qhead">Up next</div>' + (nxt || '<p class="dim pad">This is the last one.</p>');
-}
-function doneCheckedWrite(di){
-  var e = D.directory[di]; if(!e) return;
-  txn('Checked ' + dispName(e), function(){
-    queuePatch(di, { audit:'audited' });
-    if(raw(e, 'review_flag')) queuePatch(di, { review_flag:'' });
-  });
-  toast(dispName(e) + ' checked — nothing on file, and that counts as done.', { undo:true });
-  refreshAfterStatus();
-}
-function doneClearFlagWrite(di, msg){
-  var e = D.directory[di]; if(!e) return;
-  txn('Clear flag ' + dispName(e), function(){ queuePatch(di, { review_flag:'' }); });
-  toast(msg || (dispName(e) + ' — flag cleared.'), { undo:true });
-  refreshAfterStatus();
-}
-/* === END DONE SUITE === */
-
-function factsHTML(e){
-  var rows = [];
-  function row(icn, label, val){ if(val) rows.push('<div class="fact"><span>' + ic(icn, 14) + label + '</span><div>' + val + '</div></div>'); }
-  row('pin', 'Lives in', e.city ? esc(e.city) : '');
-  row('pin', 'From', e.hometown ? esc(e.hometown) : '');
-  row('cap', 'School', degreesOf(e).slice(0, 2).map(function(d){ return esc(schoolShort(d.school) + (d.degree ? ' ' + d.degree : '') + (d.year ? ' ' + yy(d.year) : '')); }).join(', '));
-  row('briefcase', 'Work', tagList(gv(e, 'companies')).map(esc).join(', '));
-  row('church', 'Church', tagList(gv(e, 'churches')).map(esc).join(', '));
-  var links = [];
-  if(effHandle(e)) links.push('<a href="' + igURL(effHandle(e)) + '" target="_blank" rel="noopener">Instagram ' + ic('ext', 11) + '</a>');
-  if(e.fb_url) links.push('<a href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">Facebook ' + ic('ext', 11) + '</a>');
-  if(gv(e, 'phone')) links.push(esc(fmtPhone(String(gv(e, 'phone')).split(',')[0])));
-  row('link', 'Reach', links.join(' <i class="sep"></i> '));
-  var ks = knownSinceYear(e); row('calendar', 'Known since', ks ? String(ks) : '');
-  var fp = footprintOf(e);
-  if(fp.blocks.length){
-    var tx = fp.blocks[0].text; if(tx.length > 240) tx = tx.slice(0, 240).trim() + '…';
-    row('file', 'Web record', '<span class="conf ' + (fp.sourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (fp.sourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span> ' + esc(tx));
-  }
-  var syn = gv(e, 'synopsis');
-  if(syn){ var s2 = syn.length > 200 ? syn.slice(0, 200).trim() + '…' : syn; row('book', 'Synopsis', esc(s2)); }
-  return rows.length ? '<div class="facts">' + rows.join('') + '</div>' : '<p class="dim">Nothing on file beyond the name.</p>';
-}
-function dupMemberLine(m){
-  var me = D.directory[m];
-  return [effHandle(me) ? '@' + effHandle(me) : String(me.name).split(':')[0], tierName(me), me.city, isChecked(me) ? 'checked' : ''].filter(Boolean).join(' · ');
-}
-/* Selective merge: tap exactly two profiles in the group, then merge just
-   those two. The rest of the group stays untouched and re-evaluates. */
-function dupBlock(x, di){
-  var e = D.directory[di], gs = x.detail.dup || [];
-  if(!gs.length){
-    return '<div class="rb"><h4>' + esc(REASONS.dup.l) + '</h4><p>This profile is flagged as a possible duplicate, but no matching name or face turned up. Merge it with the other entry by hand, or clear the flag.</p>' +
-      '<div class="row"><button type="button" class="btn" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 15) + 'Find the other profile and merge</button>' +
-      '<button type="button" class="btn ghost" data-act="clearflag" data-di="' + di + '">Clear flag — not a duplicate</button></div></div>';
-  }
-  return gs.map(function(g, gi){
-    var key = dupGroupKey(g.dis);
-    var sel = (S.today.dsel[key] || []).filter(function(d){ return g.dis.indexOf(d) >= 0; });
-    S.today.dsel[key] = sel;
-    var gone = sel.length === 2 && pairDismissed(sel[0], sel[1]);
-    var mems = g.dis.map(function(m){
-      var me = D.directory[m], on = sel.indexOf(m) >= 0;
-      return '<div class="dm pick' + (on ? ' on' : '') + (m === di ? ' me' : '') + '" role="button" tabindex="0" aria-pressed="' + (on ? 'true' : 'false') + '" data-act="dupsel" data-key="' + esc(key) + '" data-di="' + m + '">' +
-        '<span class="dmc">' + (on ? ic('check', 13) : '') + '</span>' + avatar(me, 'sm') +
-        '<span><b>' + esc(dispName(me)) + (m === di ? ' <em>this one</em>' : '') + '</b><small>' + esc(dupMemberLine(m)) + '</small></span>' +
-        '<a href="#/p/' + encodeURIComponent(personId(me)) + '" class="dl" data-act="openp" data-di="' + m + '" title="Open profile">' + ic('ext', 14) + '</a></div>';
-    }).join('');
-    var hint = sel.length === 0 ? 'Tap the two that are the same person — or \'All different people\' if none match.'
-      : sel.length === 1 ? 'One picked. Now tap the other profile of the same person.'
-      : gone ? 'You marked these two as different people before, so they can\'t be merged. Unselect one and pick a different pair.'
-      : 'Two picked. Merging combines their details into the one that stays. Nothing is deleted, and you can undo it.';
-    var ready = sel.length === 2 && !gone;
-    return '<div class="rb"><h4>' + esc(g.title || g.label) + '</h4>' +
-      '<p>' + (g.kind === 'photo'
-        ? 'These people share a first name. They may all be different people. If two of them are actually the same person, tap those two and merge them. If none of them match, tap \'All different people\'.'
-        : 'These profiles share the same name. They may be different people. If two of them are actually the same person, tap those two and merge them. If none of them match, tap \'All different people\'.') + '</p>' +
-      '<div class="dms">' + mems + '</div>' +
-      '<p class="hint">' + hint + '</p>' +
-      '<div class="row"><button type="button" class="btn primary" data-act="dupmerge" data-key="' + esc(key) + '" data-gi="' + gi + '"' + (ready ? '' : ' disabled') + '>' + ic('merge', 15) + 'Merge these two</button>' +
-      '<button type="button" class="btn ghost" data-act="notdup2" data-key="' + esc(key) + '" data-gi="' + gi + '"' + (ready ? '' : ' disabled') + '>These two are different people</button></div>' +
-      '<div class="row"><button type="button" class="btn primary wide" data-act="dupclear" data-key="' + esc(key) + '" data-gi="' + gi + '">All different people — no duplicates here</button></div></div>';
-  }).join('');
-}
-
-/* ---- single-issue card: one problem, stated plainly, fixed right here ---- */
-var QA_KINDS = [
-  ['companies', 'Employer', 'Employer or workplace'],
-  ['churches', 'Church', 'Church name'],
-  ['universities', 'School', 'School name'],
-  ['phone', 'Phone', 'Phone number'],
-  ['link', 'Web link', 'Paste a Facebook, Instagram or web link']
-];
-/* where each quick-add kind really lands on the profile: section (SECS
-   titles) + the field's own name there. Companies/Churches are the
-   Background pick lists, School feeds Background's Education, Phone is
-   the Contact section's Phone field, a Web link becomes a source on the
-   About section's Web record. */
-var QA_DEST = {
-  companies:'Background · Companies', churches:'Background · Churches', universities:'Background · Education',
-  phone:'Contact · Phone', link:'About · Web record, as a source'
-};
-function qaHTML(di, reason){
-  var kind = S.today.qaKind || 'companies';
-  var ph = (QA_KINDS.filter(function(k){ return k[0] === kind; })[0] || QA_KINDS[0])[2];
-  return '<div class="qa"><div class="chips qakinds">' + QA_KINDS.map(function(k){
-      return '<button type="button" class="fc' + (kind === k[0] ? ' on' : '') + '" data-act="qakind" data-v="' + k[0] + '">' + k[1] + '</button>';
-    }).join('') + '</div>' +
-    '<div class="row qa-row"><input class="qa-in" data-di="' + di + '" placeholder="' + ph + '" autocomplete="off">' +
-    '<button type="button" class="btn primary" data-act="qaadd" data-di="' + di + '" data-reason="' + reason + '">Add</button></div>' +
-    '<p class="qa-dest">Goes on their profile under ' + (QA_DEST[kind] || '') + '.</p></div>';
-}
-function classifyHTML(di){
-  var e = D.directory[di];
-  return '<div class="qk"><label>How close</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
-    '<div class="qk"><label>How you know them</label>' + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '"') + '</div>';
-}
-var SIG_PLAIN = { 'Place':'a place', 'School':'a school', 'Work or church':'a job or church', 'Phone or Facebook':'a phone number or social profile', 'Connection to JD':'a connection to you', 'Sourced web record':'a web record with a source' };
-function famIssueBody(it){
-  var di = it.di, e = D.directory[di], f = it.fam, name = dispName(e), fk = famKeyOf(it);
-  function cutBtn(idx, label){
-    return '<button type="button" class="btn ghost" data-act="famcut" data-di="' + di + '" data-i="' + idx + '" data-reason="family" data-famkey="' + esc(fk) + '">' + label + '</button>';
-  }
-  if(f.kind === 'oneway'){
-    var other = D.directory[f.tdi], oname = dispName(other);
-    var relWord = { spouse:'husband or wife', parent:'parent', child:'child', sibling:'sibling' }[f.rel] || 'family';
-    return '<p class="issue-say">' + esc(oname) + '\'s profile doesn\'t link back to ' + esc(name) + '.</p>' +
-      '<p class="issue-sub">' + esc(name) + ' lists ' + esc(oname) + ' as their ' + relWord + ', but ' + esc(oname) + ' has no family link to ' + esc(name) + '. Family links should go both ways.</p>' +
-      '<div class="row"><button type="button" class="btn primary" data-act="famlink" data-di="' + f.tdi + '" data-rel="' + f.inv + '" data-t="' + di + '" data-reason="family" data-famkey="' + esc(fk) + '">Link them both ways</button>' +
-      cutBtn(f.idx, 'Remove the link from ' + esc(name)) + '</div>';
-  }
-  if(f.kind === 'dangling'){
-    return '<p class="issue-say">This profile links to ' + esc(f.key) + ', who isn\'t in the directory.</p>' +
-      '<p class="issue-sub">The link points at nobody, so it can\'t be shown on the family tree.</p><div class="row">' + cutBtn(f.idx, 'Remove the link') + '</div>';
-  }
-  if(f.kind === 'self'){
-    return '<p class="issue-say">This profile links to itself as its own ' + esc(f.rel) + '.</p><div class="row">' + cutBtn(f.idx, 'Remove the link') + '</div>';
-  }
-  var links = famLinks(e), isSp = f.kind === 'spouses';
-  var names = f.idxs.map(function(i){ var td = BYN[String(links[i][1] || '').toLowerCase()]; return td != null ? dispName(D.directory[td]) : links[i][1]; });
-  return '<p class="issue-say">' + (isSp ? 'More than one spouse is recorded: ' : 'More than two parents are recorded: ') + esc(names.join(', ')) + '.</p>' +
-    '<p class="issue-sub">The family tree keeps ' + (isSp ? 'one spouse' : 'two parents') + ' per person. Remove the link that doesn\'t belong.</p>' +
-    '<div class="row">' + f.idxs.map(function(i){ var td = BYN[String(links[i][1] || '').toLowerCase()]; var nm = td != null ? dispName(D.directory[td]) : links[i][1]; return cutBtn(i, 'Remove link to ' + esc(nm)); }).join('') + '</div>';
-}
-function issueBody(it){
-  var di = it.di, e = D.directory[di], x = it.x, c = it.reason, name = dispName(e);
-  if(c === 'dup') return dupBlock(x, di);
-  if(c === 'identity'){
-    var sg = x.detail.identity || identitySignals(e);
-    var miss = sg.miss.map(function(s){ return SIG_PLAIN[s] || s.toLowerCase(); });
-    var have = sg.have.map(function(s){ return SIG_PLAIN[s] || s.toLowerCase(); });
-    return '<div class="rb issue"><p class="issue-say">We can\'t confirm who this is yet.</p>' +
-      '<p class="issue-sub">' + (miss.length ? 'Nothing on file ties ' + esc(name) + ' to ' + esc(miss.join(', ').replace(/, ([^,]*)$/, ' or $1')) + '.' : '') +
-      (have.length ? ' On file so far: ' + esc(have.join(', ')) + ' — one more is enough.' : ' Add any one detail below and this is fixed.') + '</p>' +
-      qaHTML(di, 'identity') +
-      '<div class="row"><button type="button" class="btn ghost" data-act="waive" data-di="' + di + '" data-sid="identity">Nothing more exists</button></div></div>';
-  }
-  if(c === 'unsrc'){
-    var fp = footprintOf(e), tx = fp.blocks.length ? fp.blocks[0].text : '';
-    if(tx.length > 220) tx = tx.slice(0, 220).trim() + '…';
-    return '<div class="rb issue"><p class="issue-say">This web info has no source link, so it can\'t be trusted yet.</p>' +
-      (tx ? '<p class="issue-sub">“' + esc(tx) + '”</p>' : '') +
-      '<div class="qa"><div class="row qa-row"><input class="qa-in" data-di="' + di + '" placeholder="Paste the link this came from" autocomplete="off">' +
-      '<button type="button" class="btn primary" data-act="srcadd" data-di="' + di + '">Add this source</button></div></div>' +
-      '<div class="row"><button type="button" class="btn ghost" data-act="rmfootprint" data-di="' + di + '">Remove the unsourced text</button></div></div>';
-  }
-  if(c === 'family') return '<div class="rb issue">' + famIssueBody(it) + '</div>';
-  if(c === 'missing'){
-    return '<div class="rb issue"><p class="issue-say">You flagged this profile as missing information.</p>' +
-      '<p class="issue-sub">Add what\'s missing right here, or clear the flag if it\'s fine now.</p>' +
-      qaHTML(di, 'missing') +
-      '<div class="row"><button type="button" class="btn ghost" data-act="clearflag" data-di="' + di + '">Clear flag</button></div></div>';
-  }
-  if(c === 'name'){
-    return '<div class="rb issue"><p class="issue-say">This name isn\'t in First Last form yet.</p>' +
-      '<p class="issue-sub">Names show as First Last — handles never stand in for a name. Each field saves when you tap out of it.</p>' +
-      '<div class="row two"><input data-nm="first_name" data-di="' + di + '" value="' + esc(gv(e, 'first_name')) + '" placeholder="First name" autocomplete="off">' +
-      '<input data-nm="last_name" data-di="' + di + '" value="' + esc(gv(e, 'last_name')) + '" placeholder="Last name" autocomplete="off"></div></div>';
-  }
-  if(c === 'biz'){
-    return '<div class="rb issue"><p class="issue-say">This name looks like a business or an address, not a person.</p>' +
-      '<div class="row"><button type="button" class="btn danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 15) + 'Remove from the circle</button></div></div>';
-  }
-  if(c === 'fresh'){
-    return '<div class="rb issue"><p class="issue-say">New this week and not sorted yet.</p>' +
-      '<p class="issue-sub">Set how close they are and how you know them. It saves as you tap — set both and you\'re done.</p>' + classifyHTML(di) + '</div>';
-  }
-  if(c === 'inner'){
-    var gaps = x.detail.inner || [];
-    return '<div class="rb issue"><p class="issue-say">One of your close circle — some detail is still missing.</p>' +
-      (gaps.length ? '<p class="issue-sub">Missing: ' + esc(gaps.map(function(g){ return g.l.toLowerCase(); }).join(', ')) + '. Fill it in below, say nothing more exists for it, or just mark Done.</p>' +
-        '<div class="row">' + gaps.map(function(g){ return '<button type="button" class="btn ghost" data-act="waive" data-di="' + di + '" data-sid="' + g.sid + '">Nothing more exists: ' + esc(g.l.toLowerCase()) + '</button>'; }).join('') + '</div>'
-        : '<p class="issue-sub">Detail is complete for this tier. A quick look and mark Done.</p>') +
-      classifyHTML(di) + '</div>';
-  }
-  if(c === 'spot'){
-    return '<div class="rb issue"><p class="issue-say">Spot check — this finished profile was picked at random to re-verify.</p>' +
-      '<p class="issue-sub">Is everything on it still right?</p>' +
-      '<div class="row"><button type="button" class="btn primary" data-act="spotok" data-di="' + di + '">' + ic('check', 15) + 'Still correct</button>' +
-      '<button type="button" class="btn ghost" data-act="reopen" data-di="' + di + '">Reopen for a full check</button></div></div>';
-  }
-  return '<div class="rb issue"><p class="issue-say">No flags — just give this one a quick once-over.</p>' +
-    '<p class="issue-sub">Check the name, the facts below, and that nothing looks off. Then mark Done.</p></div>';
-}
-function issueCard(it, tab, i, n){
-  var di = it.di, e = D.directory[di];
-  var withDone = it.reason === 'sweep' || it.reason === 'inner';
-  return '<article class="rc" data-di="' + di + '">' +
-    '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
-    '<p class="meta">' + esc([tierName(e), cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ') || (effHandle(e) ? '@' + effHandle(e) : 'Not classified yet')) + '</p></div>' +
-    '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>' +
-    '<div class="rbs">' + issueBody(it) + '</div>' +
-    '<section class="rsec"><h5>What is on file</h5>' + factsHTML(e) + '</section>' +
-    '<footer class="rfoot"><button type="button" class="btn ghost" data-act="qskip">' + ic('skip', 15) + 'Skip for now</button>' +
-    '<a class="btn ghost" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open full profile</a><span class="sp"></span>' +
-    (withDone ? '<button type="button" class="btn primary lg" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 16) + 'Done, next</button>' : '') + '</footer>' +
-    (withDone ? '<p class="hint foothint">Done takes them off your list and nothing is deleted. You can undo it right after.</p>' : '') + '</article>';
-}
-
-/* ============================================================
    People — one list, one search, a few honest filters. No stat tiles, no pips, no fill bars.
    ============================================================ */
 function peopleFiltered(){
   var f = S.ppl, pool = people();
   var dis = f.q.trim() ? searchPeople(f.q, 9999, pool) : pool.slice();
-  var st = getState();
   dis = dis.filter(function(di){
     var e = D.directory[di];
-    if(f.status !== 'all'){ var s = statusOf(di); if(s !== f.status) return false; }
     if(f.tier !== 'all'){ var t = tierOf(e); if(f.tier === 'none' ? !!t : t !== f.tier) return false; }
     if(f.rel && e.relation !== f.rel) return false;
     if(f.group && personGroups(e).indexOf(f.group) < 0) return false;
@@ -2458,11 +1433,9 @@ function peopleFiltered(){
   return dis;
 }
 function prow(di, i){
-  var e = D.directory[di], s = statusOf(di), x = getState().by[di];
-  var why = s === 'needs' && x && x.reasons.length ? '<span class="why">' + esc(REASONS[x.reasons[0]].s) + '</span>' : '';
+  var e = D.directory[di];
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
-    '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + why +
-    '<span class="stm st-' + s + '" title="' + (s === 'checked' ? 'Checked' : s === 'needs' ? 'Needs you' : 'Waiting') + '">' + (s === 'checked' ? ic('check', 14) : '<i></i>') + '</span></button>';
+    '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span></button>';
 }
 function viewPeople(v){
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
@@ -2473,7 +1446,6 @@ function viewPeople(v){
   }
   v.innerHTML = '<div class="page people"><div class="pagehead"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div></div>' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
-    chips('status', [['all', 'Everyone'], ['needs', 'Needs you'], ['waiting', 'Waiting'], ['checked', 'Checked']], f.status) +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
     '<div class="tool-r"><select id="psort" aria-label="Sort">' + [['closest', 'Closest first'], ['name', 'A to Z'], ['tier', 'By tier'], ['recent', 'Recently edited']].map(function(o){ return '<option value="' + o[0] + '"' + (f.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
     '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button></div></div>' +
@@ -2488,7 +1460,7 @@ function paintPeople(){
   box.innerHTML = shown.map(function(di, i){ return prow(di, i); }).join('') +
     (dis.length > shown.length ? '<button type="button" class="btn ghost more" data-act="pmore">Show ' + Math.min(100, dis.length - shown.length) + ' more (' + (dis.length - shown.length) + ' left)</button>' : '') +
     (!dis.length ? emptyState('No one matches.', 'Loosen a filter or clear the search.') : '');
-  var c = $('#pcount'); if(c) c.textContent = dis.length === getState().total ? dis.length + ' people' : dis.length + ' of ' + getState().total + ' people';
+  var c = $('#pcount'); if(c) c.textContent = dis.length === people().length ? dis.length + ' people' : dis.length + ' of ' + people().length + ' people';
 }
 function openMoreFilters(){
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
@@ -2563,14 +1535,13 @@ function viewProfile(v){
     '<button type="button" data-act="newdoc" data-di="' + di + '">' + ic('file', 16) + 'New Drive doc</button>' +
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
-    '<section id="p-hero" class="hero"></section><section id="p-banner"></section>' +
+    '<section id="p-hero" class="hero"></section>' +
     '<div class="pgrid"><div class="pcol" id="pc-a"></div><div class="pcol" id="pc-b"></div></div><div id="p-add"></div></div>';
   paintProfile(di);
 }
 function paintProfile(di){
   var e = D.directory[di];
   $('#p-hero').innerHTML = heroHTML(di);
-  $('#p-banner').innerHTML = bannerHTML(di);
   ['a', 'b'].forEach(function(col){
     $('#pc-' + col).innerHTML = SECS.filter(function(s){ return s.col === col && secShown(e, s.id); }).map(function(s){ return secHTML(di, s.id); }).join('');
   });
@@ -2592,7 +1563,6 @@ function repaintSec(id){
 function repaintTop(){
   var di = S.prof.di; if(di == null || !$('#p-hero')) return;
   $('#p-hero').innerHTML = heroHTML(di);
-  $('#p-banner').innerHTML = bannerHTML(di);
 }
 
 function heroHTML(di){
@@ -2608,150 +1578,6 @@ function heroHTML(di){
     '<div class="hctl"><div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
     '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '"') + '</div></div>';
 }
-/* ---- profile banner rows (2026-10-13): the banner is an index, not a
-   stack of editors. Each open issue is ONE row: the lane card's sentence,
-   and a Fix this button that takes JD to the real field (banTarget below).
-   Direct state actions stay on their rows: family fixes (they have no
-   single field home — the fix IS the link write), Clear flag on the
-   missing-info row, Remove on the looks-like-a-business row. ---- */
-function famSaySub(di, f){
-  var e = D.directory[di], name = dispName(e);
-  if(f.kind === 'oneway'){
-    var other = D.directory[f.tdi], oname = dispName(other);
-    var relWord = { spouse:'husband or wife', parent:'parent', child:'child', sibling:'sibling' }[f.rel] || 'family';
-    return { say:oname + '\'s profile doesn\'t link back to ' + name + '.',
-      sub:name + ' lists ' + oname + ' as their ' + relWord + ', but ' + oname + ' has no family link to ' + name + '. Family links should go both ways.' };
-  }
-  if(f.kind === 'dangling') return { say:'This profile links to ' + f.key + ', who isn\'t in the directory.', sub:'The link points at nobody, so it can\'t be shown on the family tree.' };
-  if(f.kind === 'self') return { say:'This profile links to itself as its own ' + f.rel + '.', sub:'' };
-  var links = famLinks(e), isSp = f.kind === 'spouses';
-  var names = f.idxs.map(function(i){ var td = BYN[String(links[i][1] || '').toLowerCase()]; return td != null ? dispName(D.directory[td]) : links[i][1]; });
-  return { say:(isSp ? 'More than one spouse is recorded: ' : 'More than two parents are recorded: ') + names.join(', ') + '.',
-    sub:'The family tree keeps ' + (isSp ? 'one spouse' : 'two parents') + ' per person. Remove the link that doesn\'t belong.' };
-}
-function banSaySub(it){
-  var di = it.di, e = D.directory[di], x = it.x, c = it.reason, name = dispName(e);
-  if(c === 'dup'){
-    var gs = x.detail.dup || [];
-    if(!gs.length) return { say:'Flagged as a possible duplicate.', sub:'No matching name or face turned up.' };
-    var g = gs[0];
-    return { say:(g.title || g.label || 'Possible duplicate'),
-      sub:(gs.length > 1 ? 'This profile sits in ' + gs.length + ' possible-duplicate groups. ' : '') +
-        (g.kind === 'photo' ? 'These people share a first name. They may all be different people.' : 'These profiles share the same name. They may be different people.') };
-  }
-  if(c === 'identity'){
-    var sg = x.detail.identity || identitySignals(e);
-    var miss = sg.miss.map(function(s){ return SIG_PLAIN[s] || s.toLowerCase(); });
-    var have = sg.have.map(function(s){ return SIG_PLAIN[s] || s.toLowerCase(); });
-    return { say:'We can\'t confirm who this is yet.',
-      sub:(miss.length ? 'Nothing on file ties ' + name + ' to ' + miss.join(', ').replace(/, ([^,]*)$/, ' or $1') + '.' : '') +
-        (have.length ? ' On file so far: ' + have.join(', ') + ' — one more is enough.' : ' Add one detail — a job, church, school, phone or source — and this is fixed.') };
-  }
-  if(c === 'unsrc'){
-    var fp = footprintOf(e), tx = fp.blocks.length ? fp.blocks[0].text : '';
-    if(tx.length > 220) tx = tx.slice(0, 220).trim() + '…';
-    return { say:'This web info has no source link, so it can\'t be trusted yet.', sub:tx ? '“' + tx + '”' : '' };
-  }
-  if(c === 'family') return famSaySub(di, it.fam);
-  if(c === 'missing') return { say:'You flagged this profile as missing information.', sub:'Add what\'s missing, or clear the flag if it\'s fine now.' };
-  if(c === 'name') return { say:'This name isn\'t in First Last form yet.', sub:'Names show as First Last — handles never stand in for a name.' };
-  if(c === 'biz') return { say:'This name looks like a business or an address, not a person.', sub:'' };
-  if(c === 'fresh') return { say:'New this week and not sorted yet.', sub:'Set how close they are and how you know them.' };
-  if(c === 'inner'){
-    var gaps = x.detail.inner || [];
-    return { say:'One of your close circle — some detail is still missing.',
-      sub:gaps.length ? 'Missing: ' + gaps.map(function(g2){ return g2.l.toLowerCase(); }).join(', ') + '.' : 'Detail is complete for this tier. A quick look and mark Done.' };
-  }
-  if(c === 'spot') return { say:'Spot check — this finished profile was picked at random to re-verify.', sub:'Is everything on it still right?' };
-  return { say:ISSUE_SHORT[c] || 'Needs a look.', sub:'' };
-}
-/* where each banner issue is really fixed: the section + field that own
-   the data, the hero controls (tier lives there), or the lane that owns
-   the machinery (duplicates). Family and business rows keep their direct
-   actions instead — see bannerRowHTML. */
-function banTarget(it){
-  var di = it.di, e = D.directory[di], c = it.reason;
-  if(c === 'dup') return { goto:'dup' };
-  if(c === 'identity'){
-    var sg = it.x.detail.identity || identitySignals(e);
-    if(sg.miss.indexOf('Work or church') >= 0) return { sec:'background', tf:'input.tadd[data-k="companies"]' };
-    if(sg.miss.indexOf('Phone or Facebook') >= 0) return { sec:'identity', tf:'input[data-pk="phone"]' };
-    if(sg.miss.indexOf('Sourced web record') >= 0) return { sec:'about', tf:'textarea[data-pk="public_footprint"]' };
-    return { sec:'relationship', tf:'#ksin' };
-  }
-  if(c === 'unsrc') return { sec:'about', tf:'textarea[data-pk="public_footprint"]' };
-  if(c === 'missing') return { sec:'background', tf:'input.tadd[data-k="companies"]' };
-  if(c === 'name') return { sec:'identity', tf:'input[data-pk="first_name"]' };
-  if(c === 'fresh'){
-    if(!tierOf(e)) return { goto:'hero' };
-    return { sec:'relationship', tf:'#ksin' };
-  }
-  if(c === 'inner'){
-    var gaps = it.x.detail.inner || [];
-    var TGT = { relationship:{ sec:'relationship', tf:'#ksin' }, onfile:{ sec:'about', tf:'textarea[data-pk="synopsis"]' },
-      background:{ sec:'background', tf:'input.tadd[data-k="specialty"]' }, connections:{ sec:'connections', tf:'#assocq' },
-      timeline:{ sec:'timeline', tf:'#ev-date' } };
-    if(gaps.length) return TGT[gaps[0].sid] || { sec:'about', tf:'textarea[data-pk="synopsis"]' };
-    return { sec:'about', tf:'textarea[data-pk="synopsis"]' };
-  }
-  return { sec:'identity' };
-}
-function banFamActs(it){
-  var di = it.di, f = it.fam, fk = famKeyOf(it);
-  function cut(idx, label){
-    return '<button type="button" class="btn ghost sm" data-act="famcut" data-di="' + di + '" data-i="' + idx + '" data-reason="family" data-famkey="' + esc(fk) + '">' + esc(label) + '</button>';
-  }
-  if(f.kind === 'oneway'){
-    return '<button type="button" class="btn primary sm" data-act="famlink" data-di="' + f.tdi + '" data-rel="' + f.inv + '" data-t="' + di + '" data-reason="family" data-famkey="' + esc(fk) + '">Link them both ways</button>' +
-      cut(f.idx, 'Remove the link from ' + dispName(D.directory[di]));
-  }
-  if(f.kind === 'dangling' || f.kind === 'self') return cut(f.idx, 'Remove the link');
-  var links = famLinks(D.directory[di]);
-  return f.idxs.map(function(i){ var td = BYN[String(links[i][1] || '').toLowerCase()]; var nm = td != null ? dispName(D.directory[td]) : links[i][1]; return cut(i, 'Remove link to ' + nm); }).join('');
-}
-function bannerRowHTML(it){
-  var di = it.di, c = it.reason, ss = banSaySub(it), acts = '';
-  if(c === 'family') acts = banFamActs(it);
-  else if(c === 'biz') acts = '<button type="button" class="btn danger sm" data-act="delperson" data-di="' + di + '">Remove from the circle</button>';
-  else if(c === 'inner' && !(it.x.detail.inner || []).length) acts = '';
-  else {
-    var t = banTarget(it);
-    acts = '<button type="button" class="btn primary sm" data-act="banfix" data-di="' + di + '"' +
-      (t.sec ? ' data-sec="' + t.sec + '"' : '') + (t.tf ? ' data-tf="' + esc(t.tf) + '"' : '') + (t.goto ? ' data-goto="' + t.goto + '"' : '') + '>Fix this</button>' +
-      (c === 'missing' ? '<button type="button" class="btn ghost sm" data-act="clearflag" data-di="' + di + '">Clear flag</button>' : '');
-  }
-  return '<div class="brow"><div class="brow-tx"><p class="issue-say">' + esc(ss.say) + '</p>' + (ss.sub ? '<p class="issue-sub">' + esc(ss.sub) + '</p>' : '') + '</div>' +
-    (acts ? '<div class="brow-acts">' + acts + '</div>' : '') + '</div>';
-}
-function bannerHTML(di){
-  var e = D.directory[di], x = getState().by[di];
-  if(!x) return '';
-  if(x.checked){
-    var spot = x.kind === 'spot';
-    return '<div class="banner ok"><span class="bi">' + ic('check', 18) + '</span><div><b>Checked</b><small>' + (spot ? 'Picked for this week’s spot check.' : 'Done at its tier. Empty fields are fine.') + '</small></div>' +
-      '<span class="sp"></span>' + (spot ? '<button type="button" class="btn" data-act="spotok" data-di="' + di + '">Still correct</button>' : '') +
-      '<button type="button" class="btn ghost" data-act="reopen" data-di="' + di + '">Not done — reopen</button></div>';
-  }
-  var real = x.reasons.filter(function(c){ return c !== 'sweep'; });
-  /* one Done button per banner: it either finishes here or, when you arrived
-     from a queue, moves you to the next person in it */
-  var doneBtn = (S.ctx && S.ctx.keys)
-    ? '<button type="button" class="btn primary" data-act="check" data-di="' + di + '" data-adv="1">' + ic('check', 15) + 'Done — next person</button>'
-    : '<button type="button" class="btn primary" data-act="check" data-di="' + di + '">' + ic('check', 15) + 'Done — I\'ve checked this</button>';
-  if(!real.length){
-    return '<div class="banner"><span class="bi q">' + ic('shield', 18) + '</span><div><b>Waiting for the floor sweep</b><small>No flags. Checked once it clears identity, duplicates and one sourced anchor fact.</small></div><span class="sp"></span>' + doneBtn + '</div>';
-  }
-  var open = S.prof.bannerOpen !== false;
-  var items = [];
-  real.forEach(function(c){
-    if(c === 'family') famIssueItems(di).forEach(function(fi){ items.push({ di:di, reason:'family', x:x, fam:fi }); });
-    else items.push({ di:di, reason:c, x:x, fam:null });
-  });
-  return '<div class="banner needs"><div class="bh"><span class="bi">' + ic('shield', 18) + '</span><div><b>Needs you</b><small>' + items.map(function(it){ return esc(ISSUE_SHORT[it.reason]); }).join(' · ') + '</small></div><span class="sp"></span>' +
-    '<button type="button" class="btn ghost sm" data-act="bantog">' + (open ? 'Hide' : 'Show') + ' details</button>' + doneBtn + '</div>' +
-    (open ? '<div class="rbs">' + items.map(function(it){ return bannerRowHTML(it); }).join('') + '</div>' : '') + '</div>';
-}
-
 /* ---------- section cards ---------- */
 function secHTML(di, id){
   var e = D.directory[di], d = secDef(id), editing = !!S.prof.edit[id], waived = secWaivedUI(e, id);
@@ -3081,17 +1907,15 @@ function netBuild(){
 function netColor(nd){
   var e = D.directory[nd.di], m = S.net.color;
   if(m === 'relation') return RELC[e.relation] || '#4b5468';
-  if(m === 'status') return STAT_C[statusOf(nd.di)] || '#4b5468';
   return tierOf(e) ? tierCol(e) : '#4b5468';
 }
 function viewNetwork(v){
   var m3 = S.net.mode !== '2d';
   var legend = S.net.color === 'relation' ? [['mutual', 'Mutual'], ['following', 'Following'], ['follower', 'Follower']].map(function(x){ return [RELC[x[0]], x[1]]; })
-    : S.net.color === 'status' ? [[STAT_C.needs, 'Needs you'], [STAT_C.waiting, 'Waiting'], [STAT_C.checked, 'Done']]
     : TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([['#4b5468', 'No tier yet']]);
   function sg(k, opts, cur){ return '<div class="seg">' + opts.map(function(o){ return '<button type="button" data-act="' + k + '" data-v="' + o[0] + '" class="' + (cur === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
   v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub">' + (m3 ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.') + '</p></div>' +
-    '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation'], ['status', 'Status']], S.net.color) +
+    '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation']], S.net.color) +
     '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Show wider circle</button></div></div>' +
     '<div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
     '<div class="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
@@ -3317,7 +2141,7 @@ function netCard(){
   if(di == null || !D.directory[di]){ box.hidden = true; box.innerHTML = ''; return; }
   var e = D.directory[di], ka = knownAssociates(e).length, inFam = !!famDisplay()[di];
   box.hidden = false;
-  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' + statusChip(di) +
+  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' +
     '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
     '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
     (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
@@ -3481,7 +2305,7 @@ function groupDelete(n){
 
 /* ============================================================
    Settings — only things that are settings: connection, AI assist, merged profiles, local data.
-   The review queue lives on Today. Shortcuts are listed, not configurable.
+   Shortcuts are listed, not configurable.
    ============================================================ */
 function viewSettings(v){
   var merged = [];
@@ -3500,11 +2324,7 @@ function viewSettings(v){
       var e = D.directory[di], tgt = BYN[String(e.profile.merged_into).toLowerCase()];
       return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>into ' + esc(tgt != null ? dispName(D.directory[tgt]) : e.profile.merged_into) + '</small></div><div class="ea"><button type="button" class="btn ghost sm" data-act="unmerge" data-di="' + di + '">Restore</button></div></div>';
     }).join('') : '<p class="dim">Nothing has been merged.</p>') + '</div></section>' +
-    '<section class="card"><header><h3>Done tools</h3></header><div class="cbody"><p class="dim">The Done page tracks the path to a finished directory: sorting, the floor, flags, unexamined empties, and the decision backlog. It is built to be taken away when the work is finished. Hiding it here removes it from the sidebar and from Today; nothing else changes.</p>' +
-    '<div class="row"><button type="button" class="btn ghost sm" data-act="donetoggle">' + (doneSuiteOn() ? 'Hide the Done tools' : 'Show the Done tools') + '</button></div></div></section>' + /*DONE-SUITE*/
-    '<section class="card"><header><h3>On this device</h3></header><div class="cbody"><p class="dim">Two review states live only in this browser: duplicate pairs you marked as different people, and this week’s spot checks.</p>' +
-    '<div class="row"><button type="button" class="btn ghost sm" data-act="rstlocal">Reset them</button></div></div></section>' +
-    '<section class="card"><header><h3>Keyboard</h3></header><div class="cbody"><div class="keys"><kbd>/</kbd><span>Search</span><kbd>J</kbd><kbd>K</kbd><span>Next or previous in the queue</span><kbd>C</kbd><span>Mark checked</span><kbd>Esc</kbd><span>Close or go back</span><kbd>Ctrl Z</kbd><span>Undo</span></div></div></section></div>';
+    '<section class="card"><header><h3>Keyboard</h3></header><div class="cbody"><div class="keys"><kbd>/</kbd><span>Search</span><kbd>Esc</kbd><span>Close or go back</span><kbd>Ctrl Z</kbd><span>Undo</span></div></div></section></div>';
   paintSync();
   settingsCall('getsettings', { x:1 }, function(res){
     var p = $('#setprompt'), k = $('#setkey'), m = $('#setmsg'); if(!p) return;
@@ -3554,28 +2374,6 @@ function mergeMany(survDi, losers){
 }
 /* Confirm step for the selective two-person merge from a duplicate group.
    Confirming queues exactly one patch: merged_into on the loser. */
-var DMG = { a:null, b:null, surv:null };
-function openDupMerge(a, b){
-  DMG = { a:a, b:b, surv: mergeRichness(D.directory[b]) > mergeRichness(D.directory[a]) ? b : a };
-  openSheet('Merge these two', dupMergeBody());
-}
-function dupMergeBody(){
-  var loser = DMG.surv === DMG.a ? DMG.b : DMG.a, L = D.directory[loser], Sv = D.directory[DMG.surv];
-  var pv = mergePreview(loser, DMG.surv), lines = [];
-  if(pv.filled.length) lines.push('Fills in blanks on ' + dispName(Sv) + ': ' + pv.filled.join(', '));
-  if(pv.union.length) lines.push('Combines lists: ' + pv.union.join(', '));
-  if(pv.appended.length) lines.push('Adds text: ' + pv.appended.join(', '));
-  if(pv.carried.length) lines.push('Carries over: ' + pv.carried.join(', '));
-  return '<p class="dim">Which profile stays? The one with more on file is picked for you — tap the other one if you want it to stay instead.</p><div class="dms">' +
-    [DMG.a, DMG.b].map(function(di){
-      var e = D.directory[di];
-      return '<label class="dm' + (di === DMG.surv ? ' on' : '') + '"><input type="radio" name="dsv" data-act="dmsv" data-di="' + di + '"' + (di === DMG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(dupMemberLine(di)) + '</small></span></label>';
-    }).join('') + '</div>' +
-    '<div class="rb quiet"><h4>What happens</h4><p>Their details combine into <b>' + esc(dispName(Sv)) + '</b>. Nothing is deleted; <b>' + esc(dispName(L)) + '</b> stops showing as its own profile. You can undo this, or restore ' + esc(dispName(L)) + ' later in Settings.</p>' +
-    (lines.length ? '<ul class="issues">' + lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<p>Nothing extra to carry over.</p>') + '</div>' +
-    '<div class="row end"><button type="button" class="btn ghost" data-act="sheetx">Cancel</button><button type="button" class="btn primary" data-act="dupgo">Merge into ' + esc(dispName(Sv)) + '</button></div>';
-}
-function refreshDupMerge(){ var b = $('#sheetwrap .sbody'); if(b) b.innerHTML = dupMergeBody(); }
 function subjSlug(e){
   if(e.record && e.record.slug) return e.record.slug;
   return String(dispName(e)).toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -3604,47 +2402,13 @@ function curDi(el){
   if(d != null && d !== '') return +d;
   return S.route.name === 'profile' ? S.prof.di : null;
 }
-function curTab(){ return S.route.seg[0] || 'needs'; }
 function refreshAfterStatus(){
-  var n = S.route.name;
-  if(n === 'today'){
-    var seg = S.route.seg[0] || '';
-    if(seg === 'sort') paintSort();
-    else if(seg === 'sorted') viewSorted($('#view'));
-    else if(seg) paintQueue(curTab());
-    else viewToday($('#view'));
-  }
-  else if(n === 'done'){ var dsg = S.route.seg[0] || ''; if(dsg === 'shells' || dsg === 'onefix') paintDoneTool(); else viewDone($('#view')); } /*DONE-SUITE*/
-  else if(n === 'profile') repaintTop();
+  if(S.route.name === 'profile') repaintTop();
   afterWrite();
-}
-function todayCtx(di){
-  if(S.route.name !== 'today') return null;
-  var tab = curTab(), q = queueFor(tab), i = 0;
-  q.forEach(function(x, k){ if(x.di === di) i = k; });
-  return ctxFrom((TABS.filter(function(t){ return t.k === tab; })[0] || {}).l || 'Queue', q.map(function(x){ return x.di; }), i, 'today');
-}
-function nextInCtx(di){
-  if(!S.ctx) return false;
-  var k = pkey(D.directory[di]), i = S.ctx.keys.indexOf(k);
-  for(var j = i + 1; j < S.ctx.keys.length; j++){
-    var ni = PK2I[S.ctx.keys[j]];
-    if(ni != null && liveEntry(D.directory[ni]) && !isChecked(D.directory[ni])){ ctxGo(ni, j); return true; }
-  }
-  return false;
 }
 function ctxGo(di, j){
   S.ctx.i = j; S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
   history.replaceState({ d:S.depth }, '', '#/p/' + encodeURIComponent(personId(D.directory[di]))); render(); window.scrollTo(0, 0); var vw = $('#view'); if(vw) vw.scrollTop = 0;
-}
-function markChecked(di, adv){
-  var e = D.directory[di]; if(!e) return;
-  var wasProfile = S.route.name === 'profile';
-  txn('Mark ' + dispName(e) + ' checked', function(){ queuePatch(di, { audit:'audited' }); });
-  toast(dispName(e) + ' marked done.', { undo:true });
-  if(wasProfile && adv){ if(!nextInCtx(di)){ if(S.ctx && S.ctx.from === 'today') back('today'); else repaintTop(); } return; }
-  /* calm pass 2026-10-13: no exit slide — the next person simply replaces this one */
-  refreshAfterStatus();
 }
 function doSet(el){
   var di = curDi(el), k = el.getAttribute('data-k'), v = el.getAttribute('data-v'), e = D.directory[di];
@@ -3653,8 +2417,7 @@ function doSet(el){
   var clearable = ['relationship', 'context', 'category'].indexOf(k) >= 0;
   var next = (clearable && cur === v) ? '' : v;
   txn('Set ' + k, function(){ queuePatch(di, (function(){ var o = {}; o[k] = next; return o; })()); });
-  if(S.route.name === 'today') paintQueue(curTab());
-  else if(S.route.name === 'profile'){ repaintTop(); var sec = el.getAttribute('data-sec'); if(sec) repaintSec(sec); }
+  if(S.route.name === 'profile'){ repaintTop(); var sec = el.getAttribute('data-sec'); if(sec) repaintSec(sec); }
   afterWrite();
 }
 function saveTags(el, mutate){
@@ -3699,140 +2462,6 @@ function onClick(ev){
     case 'back': back(); break;
     case 'set': doSet(el); break;
     case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
-    case 'qakind': S.today.qaKind = el.getAttribute('data-v'); if(S.route.name === 'today') paintQueue(curTab()); else if(S.route.name === 'profile') paintProfile(S.prof.di); break;
-    case 'qaadd': {
-      var qwrap = el.closest('.qa'), qinp = qwrap ? $('.qa-in', qwrap) : null, qv = qinp ? qinp.value.trim() : '';
-      if(!qv){ toast('Type something first.'); break; }
-      var qkind = S.today.qaKind || 'companies', qe = D.directory[di]; if(!qe) break;
-      if(qkind === 'link'){
-        var qurl = /^https?:\/\//i.test(qv) ? qv : 'https://' + qv, qcur = gv(qe, 'public_footprint');
-        txn('Add source link', function(){ queuePatch(di, { public_footprint:(qcur ? qcur + '\n' : '') + 'Sources: ' + qurl }); });
-        toast('Link added as a source.');
-      } else if(qkind === 'phone'){
-        var qph = gv(qe, 'phone');
-        txn('Add phone', function(){ queuePatch(di, { phone:qph ? qph + ', ' + qv : qv }); });
-        toast('Phone added.');
-      } else {
-        var qarr = tagList(gv(qe, qkind));
-        if(qarr.map(function(s){ return s.toLowerCase(); }).indexOf(qv.toLowerCase()) < 0) qarr.push(qv);
-        txn('Add detail', function(){ var o = {}; o[qkind] = qarr.join(', '); queuePatch(di, o); });
-        toast('Added.');
-      }
-      if(S.route.name === 'profile') paintProfile(S.prof.di);
-      else advanceIssue(di, el.getAttribute('data-reason') || '', '');
-      break;
-    }
-    case 'srcadd': {
-      var swrap = el.closest('.qa'), sinp = swrap ? $('.qa-in', swrap) : null, sv = sinp ? sinp.value.trim() : '';
-      if(!sv){ toast('Paste the source link first.'); break; }
-      var surl = /^https?:\/\//i.test(sv) ? sv : 'https://' + sv, scur = gv(D.directory[di], 'public_footprint');
-      txn('Add source link', function(){ queuePatch(di, { public_footprint:(scur ? scur + '\n' : '') + 'Sources: ' + surl }); });
-      toast('Source added.');
-      if(S.route.name === 'profile') paintProfile(S.prof.di);
-      else advanceIssue(di, 'unsrc', '');
-      break;
-    }
-    case 'famlink': {
-      var fmsg = addFamily(+el.getAttribute('data-di'), el.getAttribute('data-rel'), +el.getAttribute('data-t'));
-      toast(fmsg || 'Linked both ways.', { undo:true });
-      if(S.route.name === 'profile') paintProfile(S.prof.di);
-      else advanceIssue(+el.getAttribute('data-t'), 'family', el.getAttribute('data-famkey') || '');
-      break;
-    }
-    case 'famcut': {
-      removeFamily(di, +el.getAttribute('data-i'));
-      toast('Link removed.', { undo:true });
-      if(S.route.name === 'profile') paintProfile(S.prof.di);
-      else advanceIssue(di, 'family', el.getAttribute('data-famkey') || '');
-      break;
-    }
-    case 'check': markChecked(di, el.getAttribute('data-adv') === '1'); break;
-    case 'reopen': txn('Reopen', function(){ queuePatch(di, { audit:'' }); }); toast('Reopened.', { undo:true }); refreshAfterStatus(); break;
-    case 'spotok': markSpotDone(di); toast('Spot check recorded.'); if(S.route.name === 'profile') repaintTop(); else refreshAfterStatus(); afterWrite(); break;
-    case 'qpick': closeSheet(); S.today.i = +el.getAttribute('data-i'); paintQueue(curTab()); landOn('#qcard .rc'); break;
-    case 'qskip': { var ql = issueQueue(curTab()).length; S.today.i = ql ? (S.today.i + 1) % ql : 0; paintQueue(curTab()); break; }
-    case 'lane': ev.preventDefault(); startSession(el.getAttribute('data-lane')); go('today/' + el.getAttribute('data-lane')); landOn('#qcard .rc, #qcard .done-card'); prevent = false; break;
-    case 'lanehome': ev.preventDefault(); go('today'); prevent = false; break;
-    case 'sessmore': S.today.start = issueCount(curTab()); S.today.goal = Math.min(SESSION_SIZE, S.today.start); S.today.fin = false; paintQueue(curTab()); break;
-    case 'sortstart': ev.preventDefault(); startSortSession(); go('today/sort'); landOn('#qcard .rc, #qcard .done-card'); prevent = false; break;
-    case 'sortlist': ev.preventDefault(); go('today/sorted'); prevent = false; break;
-    case 'fixpick': { S.today.pick = !S.today.pick; var fp = $('.fixpick'); if(fp) fp.hidden = !S.today.pick; el.setAttribute('aria-expanded', S.today.pick ? 'true' : 'false'); break; }
-    case 'sortopen': { ev.preventDefault(); var sq = presentedSortQueue(); openPerson(di, ctxFrom('The Sort', sq, sq.indexOf(di), 'today')); prevent = false; break; }
-    case 'sortkeep': sortVerdictWrite(di, 'keep'); break;
-    case 'sorttrash': sortVerdictWrite(di, 'trash'); break;
-    case 'sortskip': { if(D.directory[di]) S.sort.skipped[pkey(D.directory[di])] = 1; paintSort(); break; }
-    case 'sortpick': S.sort.i = +el.getAttribute('data-i'); paintSort(); landOn('#qcard .rc'); break;
-    case 'sortmore': S.sort.start = sortQueue().length; S.sort.goal = Math.min(SESSION_SIZE, S.sort.start); S.sort.fin = false; S.sort.skipped = {}; S.sort.i = 0; paintSort(); break;
-    case 'sortrestore': { var rnm = dispName(D.directory[di]); txn('Restore ' + rnm, function(){ queuePatch(di, { audit:'' }); }); toast(rnm + ' is back on the sort list.', { undo:true }); if(S.route.name === 'today' && S.route.seg[0] === 'sorted') viewSorted($('#view')); afterWrite(); break; }
-    case 'donehome': ev.preventDefault(); go('done'); prevent = false; break;
-    case 'donehome2': ev.preventDefault(); go('done'); prevent = false; break;
-    case 'shellkeep': sortVerdictWrite(di, 'keep'); break;
-    case 'shelltrash': sortVerdictWrite(di, 'trash'); break;
-    case 'shellchecked': doneCheckedWrite(di); break;
-    case 'shellclear': doneClearFlagWrite(di, dispName(D.directory[di]) + ' — nothing more exists. Flag cleared; checked and empty counts as done.'); break;
-    case 'onefixclear': doneClearFlagWrite(di); break;
-    case 'dtoolskip': { if(D.directory[di]){ S.dtool.skipped[pkey(D.directory[di])] = 1; var pq2 = presentedDoneQueue(), unc2 = pq2.filter(function(d2){ return !S.dtool.skipped[pkey(D.directory[d2])]; }).length; if(S.dtool.i >= unc2) S.dtool.i = 0; } paintDoneTool(); break; }
-    case 'dtoolpick': S.dtool.i = +el.getAttribute('data-i'); paintDoneTool(); landOn('#qcard .rc'); break;
-    case 'dtoolmore': S.dtool.start = doneToolQueue(S.dtool.kind).length; S.dtool.goal = Math.min(SESSION_SIZE, S.dtool.start); S.dtool.fin = false; S.dtool.skipped = {}; S.dtool.i = 0; paintDoneTool(); break;
-    case 'donetoggle': store('ncc_done_hide', doneSuiteOn() ? '1' : ''); render(); break;
-    /*DONE-SUITE*/
-    case 'seeall': openLaneList(); break;
-    case 'dupsel': {
-      var dk = el.getAttribute('data-key'), dsel = (S.today.dsel[dk] || []).slice(), dix = dsel.indexOf(di);
-      if(dix >= 0) dsel.splice(dix, 1);
-      else if(dsel.length >= 2){ toast('Only two at a time — a merge combines exactly two profiles. Unselect one first.'); break; }
-      else dsel.push(di);
-      S.today.dsel[dk] = dsel; paintQueue(curTab()); break;
-    }
-    case 'dupmerge': {
-      var it1 = S.route.name === 'today' ? issueQueue(curTab())[S.today.i] : null;
-      var bx1 = it1 ? it1.x : (S.route.name === 'profile' ? getState().by[di] : null);
-      var g1 = bx1 && (bx1.detail.dup || [])[+el.getAttribute('data-gi')]; if(!g1) break;
-      var s1 = (S.today.dsel[el.getAttribute('data-key')] || []).filter(function(d){ return g1.dis.indexOf(d) >= 0; });
-      if(s1.length !== 2) break;
-      openDupMerge(s1[0], s1[1]); break;
-    }
-    case 'notdup2': {
-      var itd = S.route.name === 'today' ? issueQueue(curTab())[S.today.i] : null;
-      var bxd = itd ? itd.x : (S.route.name === 'profile' ? getState().by[di] : null);
-      var gd = bxd && (bxd.detail.dup || [])[+el.getAttribute('data-gi')]; if(!gd) break;
-      var sd = (S.today.dsel[el.getAttribute('data-key')] || []).filter(function(d){ return gd.dis.indexOf(d) >= 0; });
-      if(sd.length !== 2) break;
-      /* the dismissal alone lives only in this browser — also clear the
-         duplicate flag on every flagged member of the group through the
-         normal save path (the same txn + queuePatch write clearDupGroup
-         uses), so the ruling reaches the Sheet and every device. The txn
-         entry puts the clears on the undo stack. */
-      var pd = gd.dis.filter(function(d){ return raw(D.directory[d], 'review_flag') === 'duplicate'; });
-      if(pd.length){
-        txn('Different people', function(){
-          pd.forEach(function(d){ queuePatch(d, { review_flag:'' }); });
-        });
-      }
-      dismissDupPair(sd[0], sd[1]); S.today.dsel[el.getAttribute('data-key')] = [];
-      toast(dispName(D.directory[sd[0]]) + ' and ' + dispName(D.directory[sd[1]]) + ' marked as different people. They won\'t be paired up again.', pd.length ? { undo:true } : undefined);
-      refreshAfterStatus(); break;
-    }
-    case 'dupclear': {
-      var itg = S.route.name === 'today' ? issueQueue(curTab())[S.today.i] : null;
-      var bxg = itg ? itg.x : (S.route.name === 'profile' ? getState().by[di] : null);
-      var gg = bxg && (bxg.detail.dup || [])[+el.getAttribute('data-gi')]; if(!gg) break;
-      clearDupGroup(gg); break;
-    }
-    case 'dupgo': {
-      var lo2 = DMG.surv === DMG.a ? DMG.b : DMG.a, sv2 = DMG.surv;
-      var ln2 = dispName(D.directory[lo2]), sn2 = dispName(D.directory[sv2]);
-      /* same writes as the profile merge sheet (mergeMany): fold the loser in
-         and clear the duplicate flag on both, so the survivor does not come
-         back to this lane still flagged */
-      txn('Merge ' + ln2 + ' into ' + sn2, function(){
-        queuePatch(lo2, { merged_into:mergeTarget(sv2) });
-        if(raw(D.directory[lo2], 'review_flag') === 'duplicate') queuePatch(lo2, { review_flag:'' });
-        if(raw(D.directory[sv2], 'review_flag') === 'duplicate') queuePatch(sv2, { review_flag:'' });
-      });
-      DMG = { a:null, b:null, surv:null };
-      closeSheet(); toast('Merged ' + ln2 + ' into ' + sn2 + '.', { undo:true }); refreshAfterStatus(); break;
-    }
     case 'mergeopen': openMergeSheet(di); break;
     case 'mpick': MG.b = di; MG.surv = null; mergeStep2(); break;
     case 'mergego': {
@@ -3842,18 +2471,11 @@ function onClick(ev){
       break;
     }
     case 'unmerge': unmerge(di); toast('Restored.', { undo:true }); viewSettings($('#view')); break;
-    case 'clearflag': txn('Clear flag', function(){ queuePatch(di, { review_flag:'' }); }); refreshAfterStatus(); break;
     case 'waive': {
       var sids = (el.getAttribute('data-sid') || '').split(',').filter(Boolean), on = el.getAttribute('data-off') ? false : true;
       txn(on ? 'Waive section' : 'Restore section', function(){ setWaivers(di, sids, on); });
       if(S.route.name === 'profile'){ paintProfile(S.prof.di); } else refreshAfterStatus();
       break;
-    }
-    case 'rmfootprint': {
-      var e0 = D.directory[di], keep = footprintOf(e0).blocks.filter(function(b){ return b.urls.length; });
-      if(!confirm('Remove the web-record text that has no source?')) break;
-      txn('Remove unsourced text', function(){ queuePatch(di, { public_footprint:keep.map(function(b){ return b.text + '\nSources: ' + b.urls.join('; '); }).join('\n\n') }); });
-      refreshAfterStatus(); break;
     }
     case 'delperson': {
       var e1 = D.directory[di]; if(!e1) break;
@@ -3863,12 +2485,12 @@ function onClick(ev){
       if(S.route.name === 'profile') back('people'); else refreshAfterStatus();
       break;
     }
-    case 'openp': { ev.preventDefault(); openPerson(di, todayCtx(di), { keepCtx:S.route.name === 'profile' }); prevent = false; break; }
+    case 'openp': { ev.preventDefault(); openPerson(di, null, { keepCtx:S.route.name === 'profile' }); prevent = false; break; }
     case 'popen': { var cur = S.ppl.cur || []; openPerson(di, ctxFrom('People', cur, +el.getAttribute('data-i'), 'people')); break; }
     case 'popen1': openPerson(di, null); break;
     case 'gsopen': { var box = $('#gsr'); if(box) box.hidden = true; openPerson(di, null); break; }
     case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; S.ppl.limit = 80; go('people'); break; }
-    case 'openedit': openPerson(di, todayCtx(di) || (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
+    case 'openedit': openPerson(di, (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
     case 'openfam': S.fam.focus = di; go('family'); break;
     case 'shownet': S.net.sel = di; go('network'); break;
     case 'ctxstep': {
@@ -3897,31 +2519,6 @@ function onClick(ev){
       }, function(err){ el.disabled = false; toast(err + ' Not created.'); });
       break;
     }
-    case 'banfix': {
-      var bgo = el.getAttribute('data-goto');
-      if(bgo === 'dup'){
-        startSession('dup');
-        var bdq = issueQueue('dup');
-        for(var bq = 0; bq < bdq.length; bq++){ if(bdq[bq].di === di && bdq[bq].reason === 'dup'){ S.today.i = bq; break; } }
-        go('today/dup'); landOn('#qcard .rc, #qcard .done-card'); prevent = false; break;
-      }
-      if(bgo === 'hero'){ landOn('#p-hero .hctl'); break; }
-      var bsec = el.getAttribute('data-sec'); if(!bsec) break;
-      S.prof.edit[bsec] = true;
-      if($('#sec-' + bsec)) repaintSec(bsec); else paintProfile(S.prof.di);
-      var btf = el.getAttribute('data-tf'), bfel = btf ? $(btf, $('#sec-' + bsec)) : null;
-      var bwrap = bfel ? (bfel.closest('.tags') || bfel.closest('.form')) : null;
-      if(bwrap) landOn(bwrap, { focus:true });
-      else {
-        landOn('#sec-' + bsec, { focus:!bfel });
-        if(bfel){
-          var brm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-          setTimeout(function(){ bfel.focus({ preventScroll:true }); }, brm ? 60 : 420);
-        }
-      }
-      break;
-    }
-    case 'bantog': S.prof.bannerOpen = !(S.prof.bannerOpen !== false); repaintTop(); if(S.prof.bannerOpen) landOn('.banner .rbs'); break;
     case 'opentog': { var kk = el.getAttribute('data-k'); S.prof.open[kk] = !S.prof.open[kk]; var osec = kk === 'ev' ? 'timeline' : 'connections'; repaintSec(osec); if(S.prof.open[kk]) landOn('#sec-' + osec); break; }
     case 'secedit': { var sid = el.getAttribute('data-sec'); S.prof.edit[sid] = true; if($('#sec-' + sid)) repaintSec(sid); else paintProfile(S.prof.di); landOn('#sec-' + sid, { focus:true }); break; }
     case 'secdone': { var sd = el.getAttribute('data-sec'); delete S.prof.edit[sd]; S.prof.evEdit = null; S.prof.degEdit = null; paintProfile(S.prof.di); break; }
@@ -3989,19 +2586,13 @@ function onClick(ev){
     case 'setsave': { var m = $('#setmsg'), patch = { prompt:$('#setprompt').value }, kv2 = $('#setkey').value; if(kv2) patch.gemini_key = kv2; m.textContent = 'Saving'; settingsCall('settings', patch, function(res){ m.textContent = (res && res.ok) ? 'Saved.' : 'Save failed: ' + ((res && res.error) || 'unknown'); }); break; }
     case 'settest': { var m2 = $('#setmsg'); m2.textContent = 'Testing'; settingsCall('testgemini', { x:1 }, function(res){ m2.textContent = (res && res.ok) ? 'Gemini replied: ' + res.reply : 'Test failed: ' + ((res && res.error) || 'unknown'); }); break; }
     case 'setclear': { var m3 = $('#setmsg'); m3.textContent = 'Clearing'; settingsCall('settings', { clear_key:true }, function(res){ m3.textContent = (res && res.ok) ? 'Key cleared.' : 'Clear failed.'; }); break; }
-    case 'rstlocal': store('ncc_dupok', '{}'); store('ncc_spot', '{}'); VER++; toast('Reset.'); afterWrite(); break;
     default: prevent = false;
   }
   if(prevent && el.tagName === 'A' && act !== 'openp') ev.preventDefault();
 }
 function refreshAfterUndo(dir){
-  /* a whole-group "all different people" clear rides on its undo entry:
-     undoing it lifts the group dismissal, redoing it restores the dismissal */
-  if(dir === 'undo'){ var eu = UNDO.redo[UNDO.redo.length - 1]; if(eu && eu.gclear) undismissDupGroup(eu.gclear); }
-  else if(dir === 'redo'){ var er = UNDO.stack[UNDO.stack.length - 1]; if(er && er.gclear) redismissDupGroup(er.gclear); }
   var n = S.route.name;
   if(n === 'profile'){ if(D.directory[S.prof.di]) paintProfile(S.prof.di); }
-  else if(n === 'today') { refreshAfterStatus(); }
   else if(n === 'people') paintPeople();
   else render();
   afterWrite();
@@ -4029,13 +2620,7 @@ function onChange(ev){
     txn(t.checked ? 'Waive section' : 'Restore section', function(){ setWaivers(di, sids, t.checked); });
     paintProfile(S.prof.di); return;
   }
-  if(act === 'dmsv'){ DMG.surv = +t.getAttribute('data-di'); refreshDupMerge(); return; }
   if(act === 'msv'){ MG.surv = +t.getAttribute('data-di'); mergeStep2(); return; }
-  if(t.hasAttribute && t.hasAttribute('data-nm')){
-    setField(+t.getAttribute('data-di'), t.getAttribute('data-nm'), t.value.trim());
-    var e = D.directory[+t.getAttribute('data-di')]; if(e){ e.display = ''; }
-    refreshAfterStatus(); return;
-  }
   if(t.hasAttribute && t.hasAttribute('data-pk')){
     var k = t.getAttribute('data-pk');
     setField(S.prof.di, k, (t.tagName === 'TEXTAREA') ? t.value : t.value.trim());
@@ -4085,24 +2670,6 @@ function onKey(ev){
   if(mod && (ev.key === 'k' || ev.key === 'K')){ ev.preventDefault(); var g = $('#gs'); if(g) g.focus(); return; }
   if(mod || ev.altKey) return;
   if(ev.key === '/'){ ev.preventDefault(); var gs = $('#gs'); if(gs) gs.focus(); return; }
-  if(S.route.name === 'today' && S.route.seg[0] === 'sort'){
-    /* the Sort has its own keys: K keep, T trash, S skip (lane J/K nav does not apply here) */
-    var sh = $('#sheetwrap');
-    if(sh && sh.hidden && !S.sort.fin){
-      var pq = presentedSortQueue(), cd = pq[Math.max(0, Math.min(Math.max(0, pq.length - 1), S.sort.i))], kk = ev.key && ev.key.length === 1 ? ev.key.toLowerCase() : '';
-      if(cd != null && kk === 'k') sortVerdictWrite(cd, 'keep');
-      else if(cd != null && kk === 't') sortVerdictWrite(cd, 'trash');
-      else if(cd != null && kk === 's'){ S.sort.skipped[pkey(D.directory[cd])] = 1; paintSort(); }
-    }
-  }
-  else if(S.route.name === 'today' && S.route.seg[0]){
-    var ql = queueFor(curTab()).length;
-    if(ev.key === 'j' && ql){ S.today.i = (S.today.i + 1) % ql; paintQueue(curTab()); }
-    else if(ev.key === 'k' && ql){ S.today.i = (S.today.i - 1 + ql) % ql; paintQueue(curTab()); }
-    else if(ev.key === 'c' && S.route.seg[0]){ var x = queueFor(curTab())[S.today.i]; if(x && x.kind !== 'spot') markChecked(x.di, true); }
-  } else if(S.route.name === 'profile' && ev.key === 'c'){
-    var xs = getState().by[S.prof.di]; if(xs && !xs.checked) markChecked(S.prof.di, true);
-  }
 }
 
 
@@ -4118,11 +2685,6 @@ function skeletonHTML(note){
   for(var i = 0; i < 3; i++) rows += '<div class="skl-row"><span class="skl av"></span><span class="skl tx" style="width:' + (58 - i * 8) + '%"></span><span class="skl tx s" style="width:22%"></span></div>';
   return '<div class="page skel" aria-busy="true"><div class="skl head"></div>' + rows +
     '<div class="skl card"></div>' + (note ? '<p class="dim center">' + esc(note) + '</p>' : '') + '</div>';
-}
-function previewFx(n){
-  if(n !== 'today' && n !== 'network') return;
-  /* set the Today progress ring straight to its final value — no sweep */
-  $$('.ring-fg').forEach(function(r){ r.style.strokeDashoffset = r.getAttribute('data-off'); });
 }
 
 /* ============================================================
@@ -4146,7 +2708,7 @@ function boot(){
         outLoad();
         try{ applyOutbox(); }catch(px){}
         computeNewGain();
-        history.replaceState({ d:0 }, '', location.hash || '#/today');
+        history.replaceState({ d:0 }, '', location.hash || '#/people');
         render();
         outKick(); fetchChanges();
       })
