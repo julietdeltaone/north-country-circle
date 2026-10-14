@@ -3793,8 +3793,19 @@ function onClick(ev){
       var gd = bxd && (bxd.detail.dup || [])[+el.getAttribute('data-gi')]; if(!gd) break;
       var sd = (S.today.dsel[el.getAttribute('data-key')] || []).filter(function(d){ return gd.dis.indexOf(d) >= 0; });
       if(sd.length !== 2) break;
+      /* the dismissal alone lives only in this browser — also clear the
+         duplicate flag on every flagged member of the group through the
+         normal save path (the same txn + queuePatch write clearDupGroup
+         uses), so the ruling reaches the Sheet and every device. The txn
+         entry puts the clears on the undo stack. */
+      var pd = gd.dis.filter(function(d){ return raw(D.directory[d], 'review_flag') === 'duplicate'; });
+      if(pd.length){
+        txn('Different people', function(){
+          pd.forEach(function(d){ queuePatch(d, { review_flag:'' }); });
+        });
+      }
       dismissDupPair(sd[0], sd[1]); S.today.dsel[el.getAttribute('data-key')] = [];
-      toast(dispName(D.directory[sd[0]]) + ' and ' + dispName(D.directory[sd[1]]) + ' marked as different people. They won\'t be paired up again.');
+      toast(dispName(D.directory[sd[0]]) + ' and ' + dispName(D.directory[sd[1]]) + ' marked as different people. They won\'t be paired up again.', pd.length ? { undo:true } : undefined);
       refreshAfterStatus(); break;
     }
     case 'dupclear': {
