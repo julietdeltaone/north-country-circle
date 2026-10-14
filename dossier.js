@@ -19,10 +19,14 @@
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 
 var TIERS = {
-  vetted:   { n:'Vetted',    c:'#d6e2ff' },
-  associate:{ n:'Associate', c:'#86a0d8' },
-  open:     { n:'Open',      c:'#6f7a93' }
+  vetted:   { n:'Vetted',    c:'#dfa84f' },
+  associate:{ n:'Associate', c:'#6ea8e1' },
+  open:     { n:'Open',      c:'#4fb3a1' }
 };
+/* Ring palette (design pass 2026-10-14): color means ring — one muted hue per
+   ring, shared by the map, legend, stats, People counts and profile tier marks.
+   Ring 4 is the untiered ring; slate stays the neutral fallback off the map. */
+var RING_C = ['#dfa84f', '#6ea8e1', '#4fb3a1', '#a794d8'];
 var TIER_ORDER = ['vetted', 'associate', 'open'];
 var TIER_RANK = { vetted:0, associate:1, open:2 };
 var RELC = { mutual:'#c78bd8', following:'#86a0d8', follower:'#7b869e' };
@@ -222,7 +226,7 @@ function gv(e, k){
 }
 function raw(e, k){ var v = (e.profile || {})[k]; return v == null ? '' : String(v); }
 function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
-function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || '#4b5468'; }
+function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || RING_C[3]; }
 function tierName(e){ return (TIERS[tierOf(e)] || {}).n || ''; }
 function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
 function knownSinceYear(e){
@@ -1450,7 +1454,7 @@ function prow(di, i){
 function pplSideHTML(f){
   var tc = { vetted:0, associate:0, open:0, none:0 };
   people().forEach(function(di){ var t = tierOf(D.directory[di]); tc[(t === 'vetted' || t === 'associate' || t === 'open') ? t : 'none']++; });
-  var tiers = [['vetted', 'Vetted', (TIERS.vetted || {}).c], ['associate', 'Associate', (TIERS.associate || {}).c], ['open', 'Open', (TIERS.open || {}).c], ['none', 'Untiered', '#4b5468']];
+  var tiers = [['vetted', 'Vetted', (TIERS.vetted || {}).c], ['associate', 'Associate', (TIERS.associate || {}).c], ['open', 'Open', (TIERS.open || {}).c], ['none', 'Untiered', RING_C[3]]];
   var gm = allGroups();
   var grows = Object.keys(gm).map(function(g){ return [g, gm[g].length]; }).sort(function(a, b){ return b[1] - a[1] || a[0].localeCompare(b[0]); }).slice(0, 14);
   var rec = people().map(function(di){ return [di, Date.parse(raw(D.directory[di], 'updated_at')) || 0]; }).filter(function(x){ return x[1] > 0; }).sort(function(a, b){ return b[1] - a[1]; }).slice(0, 6);
@@ -1584,7 +1588,7 @@ function pStatsHTML(di){
     ['Files', String((e.files || []).length)]
   ].filter(function(r){ return r[1] !== ''; });
   return '<section class="card pstats" id="p-stats"><header><h3>Key stats</h3></header><div class="cbody"><div class="statrows">' +
-    rows.map(function(r){ return '<div class="srow2"><span>' + r[0] + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div></div></section>';
+    rows.map(function(r){ return '<div class="srow2"><span>' + (r[0] === 'Tier' ? '<i class="sdot" style="background:' + tierCol(e) + '"></i>' : '') + r[0] + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div></div></section>';
 }
 function paintProfile(di){
   var e = D.directory[di];
@@ -1929,7 +1933,14 @@ function degreesEditor(di){
    Network — a map you read, not a control surface. Rings are tiers; color-by and the wider-circle
    toggle are the only controls. Tap a dot for a card; the card is the way out to the profile.
    ============================================================ */
-var NET = { nodes:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, bg:null, byDi:{} };
+var NET = { nodes:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, bg:null, byDi:{}, rot:0, lastAct:0, lastTs:0 };
+/* Solar drift (design pass 2026-10-14): one revolution per 3 minutes. Pauses the
+   instant the user interacts and while a selection is framed; resumes after ~5s
+   idle. Off entirely under prefers-reduced-motion. */
+var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+var DRIFT_RATE = Math.PI * 2 / 180;
+function driftOK(now){ return !REDUCED_MOTION && S.net.sel == null && !Object.keys(NET.ptr).length && (now - NET.lastAct > 5000); }
+function netRotP(x, y){ var c = Math.cos(NET.rot), s = Math.sin(NET.rot); return [x * c - y * s, x * s + y * c]; }
 function netBuild(){
   computeNewGain();
   var dir = D.directory, maxS = 1;
@@ -1957,12 +1968,12 @@ function netBuild(){
 function netColor(nd){
   var e = D.directory[nd.di], m = S.net.color;
   if(m === 'relation') return RELC[e.relation] || '#4b5468';
-  return tierOf(e) ? tierCol(e) : '#4b5468';
+  return RING_C[nd.ring];
 }
 function viewNetwork(v){
   var m3 = S.net.mode !== '2d';
   var legend = S.net.color === 'relation' ? [['mutual', 'Mutual'], ['following', 'Following'], ['follower', 'Follower']].map(function(x){ return [RELC[x[0]], x[1]]; })
-    : TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([['#4b5468', 'No tier yet']]);
+    : TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
   function sg(k, opts, cur){ return '<div class="seg">' + opts.map(function(o){ return '<button type="button" data-act="' + k + '" data-v="' + o[0] + '" class="' + (cur === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
   v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub">' + (m3 ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.') + '</p></div>' +
     '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation']], S.net.color) +
@@ -1974,16 +1985,18 @@ function viewNetwork(v){
     '<aside class="netpanel" id="netpanel"><div id="netpcard" hidden></div><div class="netpstats" id="netpstats"></div></aside></div></div>';
   if(!NET.nodes.length || NET.stamp !== VER) { netBuild(); NET.stamp = VER; }
   NET.cv = $('#netcv'); NET.ctx = NET.cv.getContext('2d');
+  NET.lastAct = performance.now() - 6000; NET.lastTs = 0;
   netResize(); netFit();
   if(S.net.sel != null && NET.byDi[S.net.sel]){
     var nd = NET.byDi[S.net.sel];
     if(m3){ var rho3 = Math.hypot(nd.x3, nd.z3); if(rho3 > 0.001) N3.yaw = Math.atan2(nd.z3, nd.x3) + Math.PI / 2; N3.pitch = Math.max(-1.5, Math.min(1.5, Math.atan2(-nd.y3, Math.max(rho3, 0.001)))); N3.vy = 0; N3.vp = 0; N3.auto = false; }
-    else { NET.cam.x = nd.x; NET.cam.y = nd.y; NET.cam.z = Math.max(NET.cam.z, 1.6); }
+    else { var rp0 = netRotP(nd.x, nd.y); NET.cam.x = rp0[0]; NET.cam.y = rp0[1]; NET.cam.z = Math.max(NET.cam.z, 1.6); }
   }
   netCard();
   var cv = NET.cv; NET.ptr = {}; NET.pinch = 0;
   cv.addEventListener('pointerdown', function(ev){
     cv.setPointerCapture(ev.pointerId);
+    NET.lastAct = performance.now();
     NET.ptr[ev.pointerId] = { x:ev.clientX, y:ev.clientY }; NET.moved = false; N3.vy = 0; N3.vp = 0; N3.idle = 0;
     if(Object.keys(NET.ptr).length === 2) NET.pinch = netPinchDist();
   });
@@ -1992,6 +2005,7 @@ function viewNetwork(v){
     if(!p){ if(S.net.mode !== '2d'){ var r0 = cv.getBoundingClientRect(), h = net3Hit(ev.clientX - r0.left, ev.clientY - r0.top); var hd = h ? h.di : null; if(hd !== N3.hover){ N3.hover = hd; cv.style.cursor = h ? 'pointer' : 'grab'; } } return; }
     var ks = Object.keys(NET.ptr);
     if(ks.length === 1){
+      NET.lastAct = performance.now();
       var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
       if(Math.abs(dx) + Math.abs(dy) > 3) NET.moved = true;
       if(S.net.mode === '2d'){ NET.cam.x -= dx / NET.cam.z; NET.cam.y -= dy / NET.cam.z; }
@@ -2006,6 +2020,7 @@ function viewNetwork(v){
     NET.dirty = true;
   });
   function up(ev){
+    NET.lastAct = performance.now();
     var had = NET.ptr[ev.pointerId]; delete NET.ptr[ev.pointerId]; NET.pinch = 0;
     if(had && !NET.moved && Object.keys(NET.ptr).length === 0){
       var r = cv.getBoundingClientRect(), n = S.net.mode === '2d' ? netHit(ev.clientX - r.left, ev.clientY - r.top) : net3Hit(ev.clientX - r.left, ev.clientY - r.top);
@@ -2014,7 +2029,7 @@ function viewNetwork(v){
   }
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
   cv.addEventListener('wheel', function(ev){
-    ev.preventDefault();
+    ev.preventDefault(); NET.lastAct = performance.now();
     if(S.net.mode !== '2d'){ N3.zoom = Math.max(0.45, Math.min(3.5, N3.zoom * Math.exp(-ev.deltaY * 0.0012))); return; }
     var z2 = Math.max(0.3, Math.min(4, NET.cam.z * Math.exp(-ev.deltaY * 0.0011)));
     var r = cv.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
@@ -2024,8 +2039,15 @@ function viewNetwork(v){
   cancelAnimationFrame(NET.raf);
   (function frame(ts){
     if(!document.body.contains(NET.cv) || document.body.getAttribute('data-view') !== 'network') return;
-    if(S.net.mode === '2d'){ if(NET.dirty){ netDraw(); NET.dirty = false; } }
-    else net3Draw(ts || 0);
+    var now = ts || 0, dt = NET.lastTs ? Math.min(0.05, Math.max(0, (now - NET.lastTs) / 1000)) : 0;
+    NET.lastTs = now;
+    if(S.net.mode === '2d'){
+      if(driftOK(now)){ NET.rot += DRIFT_RATE * dt; NET.dirty = true; }
+      if(NET.dirty){ netDraw(); NET.dirty = false; }
+    } else {
+      if(driftOK(now)) N3.yaw += DRIFT_RATE * dt;
+      net3Draw(ts || 0);
+    }
     NET.raf = requestAnimationFrame(frame);
   })();
 }
@@ -2063,7 +2085,7 @@ function net3Draw(ts){
         var th = a / 72 * 6.2832, p = pass ? n3Project(Math.cos(th) * R, Math.sin(th) * R * 0.82, 0) : n3Project(Math.cos(th) * R, 0, Math.sin(th) * R);
         if(a) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y);
       }
-      ctx.strokeStyle = 'rgba(150,172,225,' + (pass ? 0.05 : 0.10 - i * 0.012) + ')'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = hexA(RING_C[i], pass ? 0.05 : 0.12 - i * 0.014); ctx.lineWidth = 1; ctx.stroke();
     }
   });
   if(S.net.bg){
@@ -2139,11 +2161,13 @@ function netResize(){
   NET.W = Math.max(200, r.width); NET.H = Math.max(200, r.height);
   cv.width = NET.W * NET.dpr; cv.height = NET.H * NET.dpr; NET.dirty = true;
 }
-function netFit(){ N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null; NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.bg ? 1900 : 1450))); NET.dirty = true; }
+function netFit(){ N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null; NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.bg ? 1900 : 1450))); NET.rot = 0; NET.dirty = true; }
 function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
 function netHit(sx, sy){
   var wx = (sx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (sy - NET.H / 2) / NET.cam.z + NET.cam.y, best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
-  NET.nodes.forEach(function(n){ var d = Math.hypot(n.x - wx, n.y - wy); if(d < lim && d < bd){ bd = d; best = n; } });
+  /* undo the 2D drift rotation, so the hit lands on the node under the cursor */
+  var rc = Math.cos(NET.rot), rs = Math.sin(NET.rot), qx = wx * rc + wy * rs, qy = -wx * rs + wy * rc;
+  NET.nodes.forEach(function(n){ var d = Math.hypot(n.x - qx, n.y - qy); if(d < lim && d < bd){ bd = d; best = n; } });
   return best;
 }
 function netDraw(){
@@ -2151,7 +2175,7 @@ function netDraw(){
   ctx.setTransform(NET.dpr, 0, 0, NET.dpr, 0, 0); ctx.clearRect(0, 0, NET.W, NET.H);
   var c = w2s(0, 0);
   [170, 310, 490, 640].forEach(function(r, i){
-    ctx.strokeStyle = 'rgba(160,175,205,' + (0.10 - i * 0.015) + ')'; ctx.lineWidth = 1;
+    ctx.strokeStyle = hexA(RING_C[i], 0.15 - i * 0.02); ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
   });
   if(S.net.bg){
@@ -2161,21 +2185,21 @@ function netDraw(){
       NET.bg = dots;
     }
     ctx.fillStyle = 'rgba(150,160,185,.2)';
-    NET.bg.forEach(function(d){ var p = w2s(d[0], d[1]); if(p[0] > -3 && p[1] > -3 && p[0] < NET.W + 3 && p[1] < NET.H + 3) ctx.fillRect(p[0], p[1], 1.5, 1.5); });
+    NET.bg.forEach(function(d){ var rp = netRotP(d[0], d[1]), p = w2s(rp[0], rp[1]); if(p[0] > -3 && p[1] > -3 && p[0] < NET.W + 3 && p[1] < NET.H + 3) ctx.fillRect(p[0], p[1], 1.5, 1.5); });
   }
   var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null;
   if(sel){
-    var se = D.directory[sel.di], a = w2s(sel.x, sel.y);
+    var se = D.directory[sel.di], sap = netRotP(sel.x, sel.y), a = w2s(sap[0], sap[1]);
     ctx.strokeStyle = 'rgba(214,226,255,.35)'; ctx.lineWidth = 1;
     knownAssociates(se).forEach(function(nb){
       var t = BYN[(nb.u || '').toLowerCase()], nd = t != null ? NET.byDi[t] : null; if(!nd) return;
-      var b = w2s(nd.x, nd.y); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      var bp = netRotP(nd.x, nd.y), b = w2s(bp[0], bp[1]); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     });
   }
   var fade = !!sel, hot = {};
   if(sel) knownAssociates(D.directory[sel.di]).forEach(function(nb){ var t = BYN[(nb.u || '').toLowerCase()]; if(t != null) hot[t] = 1; });
   NET.nodes.forEach(function(n){
-    var p = w2s(n.x, n.y); if(p[0] < -10 || p[1] < -10 || p[0] > NET.W + 10 || p[1] > NET.H + 10) return;
+    var rp = netRotP(n.x, n.y), p = w2s(rp[0], rp[1]); if(p[0] < -10 || p[1] < -10 || p[0] > NET.W + 10 || p[1] > NET.H + 10) return;
     var rr = n.r * Math.sqrt(z), col = netColor(n), isSel = sel && sel.di === n.di;
     ctx.globalAlpha = fade && !isSel && !hot[n.di] ? 0.28 : 1;
     if(n.nw){ ctx.fillStyle = hexA(col, 0.18); ctx.beginPath(); ctx.arc(p[0], p[1], rr + 5, 0, 6.2832); ctx.fill(); }
@@ -2189,14 +2213,14 @@ function netDraw(){
 /* Map stats for the Network right panel. Display-only counts over what is on the map. */
 function netStatsHTML(){
   var tc = {}, nw = 0;
-  NET.nodes.forEach(function(n){ var t = tierOf(n.e) || 'none'; tc[t] = (tc[t] || 0) + 1; if(n.nw) nw++; });
+  NET.nodes.forEach(function(n){ var t = tierOf(D.directory[n.di]) || 'none'; tc[t] = (tc[t] || 0) + 1; if(n.nw) nw++; });
   var rows = [['On the map', String(NET.nodes.length)]];
-  TIER_ORDER.forEach(function(t){ if(tc[t]) rows.push([TIERS[t].n, String(tc[t])]); });
-  if(tc.none) rows.push(['No tier yet', String(tc.none)]);
+  TIER_ORDER.forEach(function(t){ if(tc[t]) rows.push([TIERS[t].n, String(tc[t]), TIERS[t].c]); });
+  if(tc.none) rows.push(['No tier yet', String(tc.none), RING_C[3]]);
   if(nw) rows.push(['New connections', String(nw)]);
   if(S.net.bg) rows.push(['Wider circle', String((D.circle_index || []).length)]);
   return '<div class="side-h"><h3>Map</h3></div><div class="statrows">' +
-    rows.map(function(r){ return '<div class="srow2"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') + '</div>';
+    rows.map(function(r){ return '<div class="srow2"><span>' + (r[2] ? '<i class="sdot" style="background:' + r[2] + '"></i>' : '') + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') + '</div>';
 }
 function netCard(){
   var panel = $('#netpanel'); if(!panel) return;
