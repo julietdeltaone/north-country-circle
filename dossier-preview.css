@@ -1,7 +1,7 @@
 /* North Country Circle: dossier. Dark, quiet, one accent. No theme colors from any school. */
 :root{
-  --bg:#0b0e14; --bg2:#10141c; --card:#131822; --card2:#171d29; --line:#1f2634; --line2:#2a3345;
-  --txt:#e6eaf2; --mut:#98a2b6; --dim:#6b7589;
+  --bg:#0b0e14; --bg2:#10141c; --card:#151b28; --card2:#1a2130; --line:#2b3648; --line2:#3a4763;
+  --txt:#f2f5fa; --mut:#aeb9cc; --dim:#8b96ab;
   --acc:#86a0d8; --acc2:#d6e2ff; --accbg:rgba(134,160,216,.12);
   --ok:#5fb7a5; --warn:#e0a35a; --bad:#e0766f;
   --r:12px; --r2:8px; --rail:224px;
@@ -694,28 +694,3 @@ details.quick[open]>summary{margin-bottom:10px}
   .fixstrip{padding:16px 18px}
 }
 
-/* === DONE SUITE (removable) — delete with the DONE SUITE block in dossier.js === */
-.doneline{margin-top:14px;font-size:14.5px;color:var(--sub,#9aa7c2)}
-.doneline a{color:var(--ink,#e8edf8);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:1px}
-.doneline a b{font-weight:800}
-.doneline span{opacity:.75}
-.donepage{max-width:1060px}
-.doverall{margin:26px 0 6px;padding:26px 30px;border-radius:18px;background:linear-gradient(180deg,rgba(26,33,50,.74),rgba(15,20,31,.74));border:1px solid rgba(255,255,255,.08);box-shadow:0 22px 50px -24px rgba(0,0,0,.8)}
-.do-big{display:flex;align-items:baseline;gap:16px;margin-bottom:14px}
-.do-big b{font-size:52px;font-weight:800;line-height:1;letter-spacing:-.01em}
-.do-big span{font-size:16px;color:var(--sub,#9aa7c2)}
-.dbar{height:4px;border-radius:2px;background:rgba(255,255,255,.07);overflow:hidden}
-.dbar i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,#6d8fe0,#d6e2ff)}
-.dgauges{margin-top:10px}
-.dgauge{padding:20px 4px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
-.dg-t{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:10px}
-.dg-t b{font-size:17px;font-weight:700}
-.dg-n{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
-.dg-n small{font-size:14px;font-weight:600;color:var(--sub,#9aa7c2)}
-.dg-s{margin-top:9px;font-size:14px;color:var(--sub,#9aa7c2);max-width:640px}
-.dg-state{color:var(--ink,#e8edf8);font-weight:700;white-space:nowrap}
-.dtools-h{margin:30px 0 12px;font-size:20px;font-weight:700}
-.donefin{margin-top:26px}
-.donefoot{margin-top:26px;font-size:13px;color:var(--sub,#9aa7c2);opacity:.8}
-@media (max-width:640px){ .do-big b{font-size:40px} .doverall{padding:20px} .dg-n{font-size:22px} }
-/* === END DONE SUITE === */
