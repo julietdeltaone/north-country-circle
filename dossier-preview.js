@@ -1430,7 +1430,7 @@ function peopleFiltered(){
 function prow(di, i){
   var e = D.directory[di];
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
-    '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span></button>';
+    '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></span></button>';
 }
 function viewPeople(v){
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
