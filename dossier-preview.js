@@ -1972,7 +1972,7 @@ function viewNetwork(v){
   netResize(); netFit();
   if(S.net.sel != null && NET.byDi[S.net.sel]){
     var nd = NET.byDi[S.net.sel];
-    if(m3){ N3.yaw = -Math.atan2(nd.x3, nd.z3); N3.pitch = 0.25; N3.auto = false; }
+    if(m3){ var rho3 = Math.hypot(nd.x3, nd.z3); if(rho3 > 0.001) N3.yaw = Math.atan2(nd.z3, nd.x3) + Math.PI / 2; N3.pitch = Math.max(-1.5, Math.min(1.5, Math.atan2(-nd.y3, Math.max(rho3, 0.001)))); N3.vy = 0; N3.vp = 0; N3.auto = false; }
     else { NET.cam.x = nd.x; NET.cam.y = nd.y; NET.cam.z = Math.max(NET.cam.z, 1.6); }
   }
   netCard();
@@ -1990,7 +1990,7 @@ function viewNetwork(v){
       var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
       if(Math.abs(dx) + Math.abs(dy) > 3) NET.moved = true;
       if(S.net.mode === '2d'){ NET.cam.x -= dx / NET.cam.z; NET.cam.y -= dy / NET.cam.z; }
-      else { N3.yaw -= dx * 0.0062; N3.pitch = Math.max(-1.2, Math.min(1.2, N3.pitch + dy * 0.0062)); N3.vy = -dx * 0.0062; N3.vp = dy * 0.0062; }
+      else { N3.yaw -= dx * 0.0062; N3.pitch = Math.max(-1.5, Math.min(1.5, N3.pitch + dy * 0.0062)); N3.vy = -dx * 0.0062; N3.vp = dy * 0.0062; }
     }
     p.x = ev.clientX; p.y = ev.clientY;
     if(ks.length === 2){
@@ -2045,7 +2045,7 @@ function net3Draw(ts){
   var ctx = NET.ctx, W = NET.W, H = NET.H, dpr = NET.dpr, t = ts / 1000;
   N3.base = Math.min(W, H) / 1500 * (W < 600 ? 1.15 : 1);
   if(!Object.keys(NET.ptr).length){
-    N3.yaw += N3.vy; N3.pitch = Math.max(-1.2, Math.min(1.2, N3.pitch + N3.vp)); N3.vy *= 0.94; N3.vp *= 0.94;
+    N3.yaw += N3.vy; N3.pitch = Math.max(-1.5, Math.min(1.5, N3.pitch + N3.vp)); N3.vy *= 0.94; N3.vp *= 0.94;
     /* calm pass 2026-10-13: no idle auto-rotation — the map sits still until dragged */
   }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
