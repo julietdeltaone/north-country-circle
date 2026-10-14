@@ -26,6 +26,16 @@ const maxTotal = Math.max(1, ...PEOPLE.map((_, i) => totalOf(i)));
 const jdIndex = PEOPLE.findIndex(p => p.username === "jdmeyers_");
 const XS = new Float32Array(N), YS = new Float32Array(N);
 for (let i = 0; i < N; i++) { XS[i] = PEOPLE[i].x; YS[i] = PEOPLE[i].y; }
+/* Ambient solar drift (design pass 2026-10-14): the whole layout slowly turns
+   around its center — one revolution per 3 minutes. Rotation applies to node
+   positions only (labels stay upright); hit-testing inverts it. Pauses on
+   interaction and while a selection or path is up; off under reduced motion. */
+const REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+let viewRot = 0, lastAct = performance.now(), lastDrawn = 0;
+const DRIFT_MS = Math.PI * 2 / 180000; /* radians per millisecond */
+function RX(i) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return XS[i] * c - YS[i] * s; }
+function RY(i) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return XS[i] * s + YS[i] * c; }
+function invRot(x, y) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return [x * c + y * s, -x * s + y * c]; }
 /* top hubs for highlight mode */
 const hubSet = new Set(
   PEOPLE.map((p, i) => i).sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 80)
@@ -70,7 +80,7 @@ function renderBridgePanel() {
   list.querySelectorAll(".brow").forEach(b => b.addEventListener("click", () => {
     const k = +b.dataset.k, br = bridgeList[k];
     selectedBridge = k;
-    flyToXY((XS[br.a] + XS[br.b]) / 2, (YS[br.a] + YS[br.b]) / 2);
+    flyToXY((RX(br.a) + RX(br.b)) / 2, (RY(br.a) + RY(br.b)) / 2);
     addLayer(br.a);
     renderBridgePanel();
   }));
@@ -169,11 +179,11 @@ function draw() {
       if (!visible[a] || !visible[b]) continue;
       const bothHi = hi.has(a) && hi.has(b);
       if (onlyHi ? !bothHi : (dim && bothHi)) continue;
-      const ax = XS[a], ay = YS[a];
+      const ax = RX(a), ay = RY(a), bx = RX(b), by = RY(b);
       if ((ax < x0 || ax > x1 || ay < y0 || ay > y1) &&
-          (XS[b] < x0 || XS[b] > x1 || YS[b] < y0 || YS[b] > y1)) continue;
+          (bx < x0 || bx > x1 || by < y0 || by > y1)) continue;
       ctx.moveTo(w2sX(ax), w2sY(ay));
-      ctx.lineTo(w2sX(XS[b]), w2sY(YS[b]));
+      ctx.lineTo(w2sX(bx), w2sY(by));
       if (++n > 60000) break;
     }
     ctx.stroke();
@@ -184,8 +194,8 @@ function draw() {
     ctx.strokeStyle = "rgba(255,180,84,0.85)"; ctx.lineWidth = 2.5; ctx.beginPath();
     for (const key of pathEdgeSet) {
       const a = Math.floor(key / N), b = key % N;
-      ctx.moveTo(w2sX(XS[a]), w2sY(YS[a]));
-      ctx.lineTo(w2sX(XS[b]), w2sY(YS[b]));
+      ctx.moveTo(w2sX(RX(a)), w2sY(RY(a)));
+      ctx.lineTo(w2sX(RX(b)), w2sY(RY(b)));
     }
     ctx.stroke();
   } else if (dim) {
@@ -205,8 +215,8 @@ function draw() {
         if (edgeLen[e] < bridgeThresh) continue;
         const a = EDGES[e][0], b = EDGES[e][1];
         if (!visible[a] || !visible[b]) continue;
-        ctx.moveTo(w2sX(XS[a]), w2sY(YS[a]));
-        ctx.lineTo(w2sX(XS[b]), w2sY(YS[b]));
+        ctx.moveTo(w2sX(RX(a)), w2sY(RY(a)));
+        ctx.lineTo(w2sX(RX(b)), w2sY(RY(b)));
       }
       ctx.stroke();
     }
@@ -215,8 +225,8 @@ function draw() {
       ctx.strokeStyle = "#ffb454";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(w2sX(XS[sb.a]), w2sY(YS[sb.a]));
-      ctx.lineTo(w2sX(XS[sb.b]), w2sY(YS[sb.b]));
+      ctx.moveTo(w2sX(RX(sb.a)), w2sY(RY(sb.a)));
+      ctx.lineTo(w2sX(RX(sb.b)), w2sY(RY(sb.b)));
       ctx.stroke();
     }
   }
@@ -225,7 +235,7 @@ function draw() {
   for (let i = 0; i < N; i++) {
     if (!visible[i]) continue;
     if (isolate && layers.length > 0 && !hi.has(i)) continue;
-    const x = w2sX(XS[i]), y = w2sY(YS[i]);
+    const x = w2sX(RX(i)), y = w2sY(RY(i));
     if (x < -20 || y < -20 || x > W + 20 || y > H + 20) continue;
     const isHi = !dim || hi.has(i);
     const r = rad(i);
@@ -248,7 +258,7 @@ function draw() {
   const labelZoom = baseScale * 6;
   if (fLabels && jdIndex >= 0 && visible[jdIndex]) {
     ctx.fillStyle = "#ffb454";
-    ctx.fillText("@jdmeyers_", w2sX(XS[jdIndex]), w2sY(YS[jdIndex]) - rad(jdIndex) - 5);
+    ctx.fillText("@jdmeyers_", w2sX(RX(jdIndex)), w2sY(RY(jdIndex)) - rad(jdIndex) - 5);
   }
   /* big-node labels when zoomed in */
   if (fLabels && scale >= labelZoom) {
@@ -257,7 +267,7 @@ function draw() {
     const cutoff = totalOf([...hubSet][79]);
     for (let i = 0; i < N && drawn < 220; i++) {
       if (!visible[i] || totalOf(i) < cutoff) continue;
-      const x = w2sX(XS[i]), y = w2sY(YS[i]);
+      const x = w2sX(RX(i)), y = w2sY(RY(i));
       if (x < 0 || y < 0 || x > W || y > H) continue;
       ctx.fillText("@" + PEOPLE[i].username, x, y - rad(i) - 4);
       drawn++;
@@ -271,7 +281,7 @@ function draw() {
       const nbs = undAdj[s].filter(j => visible[j] && j !== s)
         .sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 80);
       for (const j of nbs) {
-        const x = w2sX(XS[j]), y = w2sY(YS[j]);
+        const x = w2sX(RX(j)), y = w2sY(RY(j));
         if (x < 0 || y < 0 || x > W || y > H) continue;
         ctx.fillText("@" + PEOPLE[j].username, x, y - rad(j) - 4);
       }
@@ -285,7 +295,7 @@ function nearest(mx, my) {
   let best = -1, bd = tol2;
   for (let i = 0; i < N; i++) {
     if (!visible[i]) continue;
-    const dx = XS[i] - wx, dy = YS[i] - wy;
+    const dx = RX(i) - wx, dy = RY(i) - wy;
     const d = dx * dx + dy * dy;
     if (d < bd) { bd = d; best = i; }
   }
@@ -308,9 +318,10 @@ function zoomAt(mx, my, f) {
 /* smooth fly-to animation */
 let flyAnim = null;
 function flyTo(i, targetScale) {
-  flyToXY(XS[i], YS[i], targetScale);
+  flyToXY(RX(i), RY(i), targetScale);
 }
 function flyToXY(wx, wy, targetScale) {
+  lastAct = performance.now();
   if (flyAnim) cancelAnimationFrame(flyAnim);
   const ts = clampScale(targetScale || Math.max(scale, baseScale) * 3.2);
   const tx = W / 2 - wx * ts, ty = H / 2 - wy * ts;
@@ -351,6 +362,7 @@ const TAP_MS = 400, TAP_PX = 9;
 const pdist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 
 canvas.addEventListener("pointerdown", e => {
+  lastAct = performance.now();
   try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
   const p = posOf(e);
   pts.set(e.pointerId, p);
@@ -389,8 +401,9 @@ canvas.addEventListener("pointermove", e => {
   }
   if (Math.hypot(p.x - startX, p.y - startY) > TAP_PX) moved = true;
   if (mode === "node" && activeNode >= 0 && moved) {
-    XS[activeNode] = s2wX(p.x);
-    YS[activeNode] = s2wY(p.y);
+    const un = invRot(s2wX(p.x), s2wY(p.y));
+    XS[activeNode] = un[0];
+    YS[activeNode] = un[1];
     draw();
     return;
   }
@@ -427,6 +440,7 @@ canvas.addEventListener("pointerleave", e => {
 canvas.addEventListener("contextmenu", e => e.preventDefault());
 canvas.addEventListener("wheel", e => {
   e.preventDefault();
+  lastAct = performance.now();
   const p = posOf(e);
   zoomAt(p.x, p.y, e.deltaY < 0 ? 1.15 : 1 / 1.15);
 }, {passive: false});
@@ -580,8 +594,8 @@ function tracePathToJD(i) {
   /* frame the whole path */
   let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
   for (const j of path) {
-    x0 = Math.min(x0, XS[j]); x1 = Math.max(x1, XS[j]);
-    y0 = Math.min(y0, YS[j]); y1 = Math.max(y1, YS[j]);
+    x0 = Math.min(x0, RX(j)); x1 = Math.max(x1, RX(j));
+    y0 = Math.min(y0, RY(j)); y1 = Math.max(y1, RY(j));
   }
   const pad = 0.15;
   const need = Math.max((x1 - x0) * (1 + pad), (y1 - y0) * (1 + pad), 0.2);
@@ -789,6 +803,16 @@ function initToolbar() {
 }
 
 /* ---------- init ---------- */
+function driftLoop(t) {
+  requestAnimationFrame(driftLoop);
+  if (REDUCED || t - lastAct < 5000 || layers.length || pathSet || pts.size) return;
+  if (t - lastDrawn < 33) return;
+  const dt = lastDrawn ? Math.min(250, t - lastDrawn) : 0;
+  lastDrawn = t;
+  viewRot += DRIFT_MS * dt;
+  draw();
+}
+requestAnimationFrame(driftLoop);
 resize();
 updateStats();
 applyFilters();
