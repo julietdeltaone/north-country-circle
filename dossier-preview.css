@@ -281,6 +281,7 @@ option,optgroup{background:#141a26;color:var(--txt)}
 .fixstrip .fix-txt b{font-size:15.5px}
 .fixstrip .fix-txt span{color:var(--mut);font-size:13.5px}
 .fixpick{display:flex;flex-direction:column;gap:20px}
+.fixpick[hidden]{display:none}
 .sort-ev{font-size:15px;line-height:1.55;color:#c6cede;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .sort-frame{display:flex;flex-direction:column;gap:4px}
 .sort-frame p{font:500 19px/1.35 var(--serif);color:var(--txt)}
