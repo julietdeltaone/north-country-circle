@@ -694,3 +694,73 @@ details.quick[open]>summary{margin-bottom:10px}
   .fixstrip{padding:16px 18px}
 }
 
+
+/* ================================================================
+   BLEED LAYOUT 2026-10-14 — edge-to-edge content right of the rail,
+   per-view side panels, and the Minimal/Rich view mode (body.vm-rich).
+   Panels show/hide instantly: no transitions, no animation here.
+   ================================================================ */
+#view{display:flex;flex-direction:column;padding:0;max-width:none;width:100%;margin:0}
+.page{flex:0 0 auto;width:100%;padding:16px}
+.page.netpage,.page.fampage{flex:1 1 0%;min-height:0;padding:0;gap:0}
+.netpage .netbar,.fampage .netbar{padding:14px 16px 10px}
+/* top-bar view-mode switch */
+.vmode{flex:0 0 auto}
+.vmode button{min-height:30px;padding:0 11px;font-size:12.5px}
+/* shared side-panel pieces */
+.side-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.side-h h3{margin:0;font-size:15px;font-weight:600}
+.side-sec{margin-top:16px}
+.side-sec h4{margin:0 0 6px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);font-weight:600}
+.srow{display:flex;align-items:center;gap:9px;width:100%;padding:7px 9px;border-radius:8px;color:var(--mut);text-align:left;font-size:13.5px}
+.srow:hover{background:var(--card2);color:var(--txt)}
+.srow.on{background:var(--accbg);color:var(--acc2)}
+.srow i{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.srow span{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srow b{font-variant-numeric:tabular-nums;color:var(--txt);font-weight:600}
+.srow.on b{color:var(--acc2)}
+.srow small{color:var(--dim);flex:0 0 auto}
+.srow.sub{color:var(--dim);font-size:12.5px}
+.statrows{display:flex;flex-direction:column}
+.srow2{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--line)}
+.srow2:last-child{border-bottom:0}
+.srow2 span{color:var(--mut);font-size:13px}
+.srow2 b{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.rich-only{display:none}
+body.vm-rich .rich-only{display:block}
+/* People: full-width list + right counts column */
+.ppl-cols{display:flex;gap:16px;align-items:flex-start}
+.ppl-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:16px}
+.ppl-side{width:290px;flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+/* Profile: three zones — identity left, record center, family + associates right */
+.pcols{display:grid;grid-template-columns:300px minmax(0,1fr) 330px;gap:16px;align-items:start}
+.pstats{display:none}
+body.vm-rich .pstats{display:block}
+/* Network: canvas edge-to-edge + right panel (selected card + map stats) */
+.netcols{display:flex;flex:1 1 auto;min-height:0;position:relative}
+.netpage .netwrap{flex:1 1 auto;min-width:0;height:auto;min-height:0;border:0;border-radius:0}
+.netpanel{display:none}
+.netcols.sel .netpanel,body.vm-rich .netpanel{display:flex;flex-direction:column;gap:14px;width:320px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);padding:14px 16px;overflow-y:auto}
+#netpcard{display:flex;flex-direction:column;gap:10px;background:var(--card2);border:1px solid var(--line2);border-radius:var(--r);padding:12px 14px}
+#netpcard[hidden]{display:none}
+/* Family: full-bleed space + right summary panel */
+.famcols{display:flex;flex:1 1 auto;min-height:0;position:relative}
+.fampage .fspace{flex:1 1 auto;min-width:0;height:auto;min-height:0;border:0;border-radius:0}
+.fampanel{width:300px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);padding:14px 16px;overflow-y:auto}
+/* Groups: right summary column in Rich */
+.gside{display:none}
+@media (min-width:900px){
+  body.vm-rich .ggrid{grid-template-columns:280px minmax(0,1fr) 290px}
+  body.vm-rich .gside{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+}
+@media (max-width:899px){
+  .page{padding:12px}
+  .page.netpage,.page.fampage{padding:0}
+  .netpage .netbar,.fampage .netbar{padding:12px 12px 8px}
+  .ppl-cols{flex-direction:column}
+  .ppl-side{width:100%}
+  .pcols{grid-template-columns:1fr}
+  .pcols .pcol{display:flex}
+  .netcols.sel .netpanel,body.vm-rich .netpanel{position:absolute;right:0;top:0;bottom:0;width:min(320px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
+  .fampanel{position:absolute;right:0;top:0;bottom:0;width:min(300px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
+}
