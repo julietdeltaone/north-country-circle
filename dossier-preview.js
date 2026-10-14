@@ -1195,12 +1195,17 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    ============================================================ */
 var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
-  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80 },
+  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80, side:null },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d') },
-  fam:{ editing:null, focus:null, sheet:false },
+  fam:{ editing:null, focus:null, sheet:false, side:null },
   grp:{ kind:'groups', open:null, renaming:null }
 };
+/* View mode: 'minimal' = clean views, side panels tucked, no stats strips.
+   'rich' = stats panels + side panels open by default. Persisted; default minimal.
+   A panel's own open/closed choice (S.ppl.side / S.fam.side, null = follow the mode) wins over the mode. */
+var VMODE = store('ncc_view_mode') === 'rich' ? 'rich' : 'minimal';
+function sideOpen(st){ return st != null ? !!st : VMODE === 'rich'; }
 var PHI = 0; /* pending-render guard */
 
 function toast(msg, opt){
@@ -1267,6 +1272,7 @@ function activeNav(){
   return n;
 }
 function renderChrome(){
+  document.body.classList.toggle('vm-rich', VMODE === 'rich');
   var act = activeNav();
   var items = NAV.map(function(n){
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span></a>';
@@ -1282,7 +1288,8 @@ function renderChrome(){
   top.innerHTML =
     (onProfile ? '<button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' : '<span class="logo-s"><i></i></span>') +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
-    '<div class="topr"><button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
+    '<div class="topr"><div class="seg vmode" role="group" aria-label="View mode"><button type="button" data-act="vmode" data-v="minimal"' + (VMODE === 'minimal' ? ' class="on"' : '') + '>Minimal</button><button type="button" data-act="vmode" data-v="rich"' + (VMODE === 'rich' ? ' class="on"' : '') + '>Rich</button></div>' +
+    '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
     '<button type="button" class="syncp" id="sync" data-act="retry"></button>' +
     '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a></div>';
@@ -1432,6 +1439,28 @@ function prow(di, i){
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
     '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></span></button>';
 }
+/* People right column: filter shortcuts + counts by tier and group; in Rich it also
+   carries the recent-edits list. Open by default in Rich, tucked in Minimal;
+   S.ppl.side remembers an explicit open/close until the mode flips it again. */
+function pplSideHTML(f){
+  var tc = { vetted:0, associate:0, open:0, none:0 };
+  people().forEach(function(di){ var t = tierOf(D.directory[di]); tc[(t === 'vetted' || t === 'associate' || t === 'open') ? t : 'none']++; });
+  var tiers = [['vetted', 'Vetted', (TIERS.vetted || {}).c], ['associate', 'Associate', (TIERS.associate || {}).c], ['open', 'Open', (TIERS.open || {}).c], ['none', 'Untiered', '#4b5468']];
+  var gm = allGroups();
+  var grows = Object.keys(gm).map(function(g){ return [g, gm[g].length]; }).sort(function(a, b){ return b[1] - a[1] || a[0].localeCompare(b[0]); }).slice(0, 14);
+  var rec = people().map(function(di){ return [di, Date.parse(raw(D.directory[di], 'updated_at')) || 0]; }).filter(function(x){ return x[1] > 0; }).sort(function(a, b){ return b[1] - a[1]; }).slice(0, 6);
+  return '<aside class="ppl-side" id="pplside"><div class="side-h"><h3>Counts</h3><button type="button" class="ib sm" data-act="pplside" aria-label="Close counts">' + ic('x', 15) + '</button></div>' +
+    '<div class="side-sec"><h4>By tier</h4>' + tiers.map(function(t){
+      return '<button type="button" class="srow' + (f.tier === t[0] ? ' on' : '') + '" data-act="pf" data-k="tier" data-v="' + t[0] + '"><i style="background:' + (t[2] || '#4b5468') + '"></i><span>' + t[1] + '</span><b>' + tc[t[0]] + '</b></button>';
+    }).join('') + (f.tier !== 'all' ? '<button type="button" class="srow sub" data-act="pf" data-k="tier" data-v="all"><span>Any tier</span></button>' : '') + '</div>' +
+    '<div class="side-sec"><h4>Groups</h4>' + grows.map(function(g){
+      return '<button type="button" class="srow' + (f.group === g[0] ? ' on' : '') + '" data-act="pf" data-k="group" data-v="' + esc(g[0]) + '"><span>' + esc(g[0]) + '</span><b>' + g[1] + '</b></button>';
+    }).join('') + (f.group ? '<button type="button" class="srow sub" data-act="pf" data-k="group" data-v=""><span>Any group</span></button>' : '') + '</div>' +
+    (rec.length ? '<div class="side-sec rich-only"><h4>Recently edited</h4>' + rec.map(function(x){
+      var e = D.directory[x[0]];
+      return '<button type="button" class="srow" data-act="popen1" data-di="' + x[0] + '"><span>' + esc(dispName(e)) + '</span><small>' + esc(String(raw(e, 'updated_at')).slice(0, 10)) + '</small></button>';
+    }).join('') + '</div>' : '') + '</aside>';
+}
 function viewPeople(v){
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
   function chips(key, opts, cur){
@@ -1440,11 +1469,14 @@ function viewPeople(v){
     }).join('') + '</div>';
   }
   v.innerHTML = '<div class="page people"><div class="pagehead"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div></div>' +
+    '<div class="ppl-cols"><div class="ppl-main">' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
     '<div class="tool-r"><select id="psort" aria-label="Sort">' + [['closest', 'Closest first'], ['name', 'A to Z'], ['tier', 'By tier'], ['recent', 'Recently edited']].map(function(o){ return '<option value="' + o[0] + '"' + (f.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
-    '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button></div></div>' +
-    '<div class="plist" id="plist"></div></div>';
+    '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
+    '<button type="button" class="btn ghost sm" data-act="pplside" aria-expanded="' + (sideOpen(f.side) ? 'true' : 'false') + '">Counts</button></div></div>' +
+    '<div class="plist" id="plist"></div></div>' +
+    (sideOpen(f.side) ? pplSideHTML(f) : '') + '</div></div>';
   paintPeople();
 }
 function paintPeople(){
@@ -1473,14 +1505,14 @@ function openMoreFilters(){
    ============================================================ */
 function isInner(e){ var t = tierOf(e); return t === 'vetted' || t === 'associate'; }
 var SECS = [
-  { id:'identity',    t:'Contact',        col:'b', ord:1, w:['identity'] },
-  { id:'relationship',t:'Relationship',   col:'b', ord:2, w:['relationship'] },
-  { id:'about',       t:'About',          col:'a', ord:3, w:['onfile'] },
-  { id:'background',  t:'Background',     col:'b', ord:4, w:['background', 'education'] },
-  { id:'connections', t:'Connections',    col:'a', ord:5, w:['connections'] },
-  { id:'timeline',    t:'Timeline',       col:'a', ord:6, w:['timeline'] },
-  { id:'files',       t:'Files',          col:'b', ord:7, w:['files'] },
-  { id:'persona',     t:'Persona',        col:'b', ord:8, w:['ratings'] }
+  { id:'identity',    t:'Contact',        col:'l', ord:1, w:['identity'] },
+  { id:'relationship',t:'Relationship',   col:'c', ord:2, w:['relationship'] },
+  { id:'about',       t:'About',          col:'c', ord:3, w:['onfile'] },
+  { id:'background',  t:'Background',     col:'c', ord:4, w:['background', 'education'] },
+  { id:'connections', t:'Connections',    col:'r', ord:5, w:['connections'] },
+  { id:'timeline',    t:'Timeline',       col:'c', ord:6, w:['timeline'] },
+  { id:'files',       t:'Files',          col:'c', ord:7, w:['files'] },
+  { id:'persona',     t:'Persona',        col:'c', ord:8, w:['ratings'] }
 ];
 function secDef(id){ return SECS.filter(function(s){ return s.id === id; })[0]; }
 function secWaivedUI(e, id){ var d = secDef(id); return d.w.every(function(w){ return secWaived(e, w); }); }
@@ -1531,14 +1563,30 @@ function viewProfile(v){
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
     '<section id="p-hero" class="hero"></section>' +
-    '<div class="pgrid"><div class="pcol" id="pc-a"></div><div class="pcol" id="pc-b"></div></div><div id="p-add"></div></div>';
+    '<div class="pcols"><div class="pcol" id="pc-l"></div><div class="pcol" id="pc-c"></div><div class="pcol" id="pc-r"></div></div><div id="p-add"></div></div>';
   paintProfile(di);
+}
+/* Key-stats card for the profile's left column. Display-only; shown in Rich mode. */
+function pStatsHTML(di){
+  var e = D.directory[di], ks = knownSinceYear(e), mv = momVal(e);
+  var rows = [
+    ['Tier', tierName(e) || 'Untiered'],
+    ['Momentum', mv === '+' ? 'Rising' : mv === '-' ? 'Cooling' : mv === '0' ? 'Steady' : ''],
+    ['Known since', ks ? String(ks) : ''],
+    ['Known associates', String(knownAssociates(e).length)],
+    ['Family links', String(famLinks(e).length)],
+    ['Events', String((e.events || []).length)],
+    ['Files', String((e.files || []).length)]
+  ].filter(function(r){ return r[1] !== ''; });
+  return '<section class="card pstats" id="p-stats"><header><h3>Key stats</h3></header><div class="cbody"><div class="statrows">' +
+    rows.map(function(r){ return '<div class="srow2"><span>' + r[0] + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div></div></section>';
 }
 function paintProfile(di){
   var e = D.directory[di];
   $('#p-hero').innerHTML = heroHTML(di);
-  ['a', 'b'].forEach(function(col){
-    $('#pc-' + col).innerHTML = SECS.filter(function(s){ return s.col === col && secShown(e, s.id); }).map(function(s){ return secHTML(di, s.id); }).join('');
+  ['l', 'c', 'r'].forEach(function(col){
+    var secs = SECS.filter(function(s){ return s.col === col && secShown(e, s.id); }).map(function(s){ return secHTML(di, s.id); }).join('');
+    $('#pc-' + col).innerHTML = (col === 'l' ? pStatsHTML(di) : '') + secs;
   });
   SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
   var hidden = SECS.filter(function(s){ return !secShown(e, s.id); });
@@ -1558,6 +1606,8 @@ function repaintSec(id){
 function repaintTop(){
   var di = S.prof.di; if(di == null || !$('#p-hero')) return;
   $('#p-hero').innerHTML = heroHTML(di);
+  var st = $('#p-stats');
+  if(st){ var w = document.createElement('div'); w.innerHTML = pStatsHTML(di); if(w.firstChild) st.replaceWith(w.firstChild); }
 }
 
 function heroHTML(di){
@@ -1912,10 +1962,11 @@ function viewNetwork(v){
   v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub">' + (m3 ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.') + '</p></div>' +
     '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation']], S.net.color) +
     '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Show wider circle</button></div></div>' +
-    '<div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
+    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
     '<div class="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
     '<div class="netzoom"><button type="button" class="ib" data-act="netzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="netzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="netfit" aria-label="Reset view">' + ic('target', 18) + '</button></div>' +
-    '<div class="netcard" id="netcard" hidden></div></div></div>';
+    '</div>' +
+    '<aside class="netpanel" id="netpanel"><div id="netpcard" hidden></div><div class="netpstats" id="netpstats"></div></aside></div></div>';
   if(!NET.nodes.length || NET.stamp !== VER) { netBuild(); NET.stamp = VER; }
   NET.cv = $('#netcv'); NET.ctx = NET.cv.getContext('2d');
   netResize(); netFit();
@@ -1939,7 +1990,7 @@ function viewNetwork(v){
       var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
       if(Math.abs(dx) + Math.abs(dy) > 3) NET.moved = true;
       if(S.net.mode === '2d'){ NET.cam.x -= dx / NET.cam.z; NET.cam.y -= dy / NET.cam.z; }
-      else { N3.yaw += dx * 0.0062; N3.pitch = Math.max(-1.2, Math.min(1.2, N3.pitch + dy * 0.0062)); N3.vy = dx * 0.0062; N3.vp = dy * 0.0062; }
+      else { N3.yaw -= dx * 0.0062; N3.pitch = Math.max(-1.2, Math.min(1.2, N3.pitch + dy * 0.0062)); N3.vy = -dx * 0.0062; N3.vp = dy * 0.0062; }
     }
     p.x = ev.clientX; p.y = ev.clientY;
     if(ks.length === 2){
@@ -2130,17 +2181,38 @@ function netDraw(){
   ctx.fillStyle = '#e8ecf5'; ctx.beginPath(); ctx.arc(c[0], c[1], Math.max(7, 10 * Math.sqrt(z)), 0, 6.2832); ctx.fill();
   ctx.fillStyle = '#0a0d14'; ctx.font = '700 ' + Math.max(8, 10 * Math.sqrt(z)) + 'px Inter,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('JD', c[0], c[1] + 0.5);
 }
+/* Map stats for the Network right panel. Display-only counts over what is on the map. */
+function netStatsHTML(){
+  var tc = {}, nw = 0;
+  NET.nodes.forEach(function(n){ var t = tierOf(n.e) || 'none'; tc[t] = (tc[t] || 0) + 1; if(n.nw) nw++; });
+  var rows = [['On the map', String(NET.nodes.length)]];
+  TIER_ORDER.forEach(function(t){ if(tc[t]) rows.push([TIERS[t].n, String(tc[t])]); });
+  if(tc.none) rows.push(['No tier yet', String(tc.none)]);
+  if(nw) rows.push(['New connections', String(nw)]);
+  if(S.net.bg) rows.push(['Wider circle', String((D.circle_index || []).length)]);
+  return '<div class="side-h"><h3>Map</h3></div><div class="statrows">' +
+    rows.map(function(r){ return '<div class="srow2"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') + '</div>';
+}
 function netCard(){
-  var box = $('#netcard'); if(!box) return;
+  var panel = $('#netpanel'); if(!panel) return;
+  var cardBox = $('#netpcard'), statBox = $('#netpstats'), cols = panel.parentNode;
+  if(statBox) statBox.innerHTML = netStatsHTML();
   var di = S.net.sel;
-  if(di == null || !D.directory[di]){ box.hidden = true; box.innerHTML = ''; return; }
-  var e = D.directory[di], ka = knownAssociates(e).length, inFam = !!famDisplay()[di];
-  box.hidden = false;
-  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></div>' +
-    '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
-    '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
-    (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
-    '<button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>';
+  if(di == null || !D.directory[di]){
+    if(cardBox){ cardBox.hidden = true; cardBox.innerHTML = ''; }
+    if(cols) cols.classList.remove('sel');
+  } else {
+    var e = D.directory[di], ka = knownAssociates(e).length, inFam = !!famDisplay()[di];
+    cardBox.hidden = false;
+    cardBox.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></div>' +
+      '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+      '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
+      (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
+      '<button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>';
+    if(cols) cols.classList.add('sel');
+  }
+  /* the panel opening or closing changes the canvas size; refit the backing store */
+  if(NET.cv && document.body.contains(NET.cv)) requestAnimationFrame(function(){ netResize(); });
 }
 
 /* ============================================================
@@ -2148,6 +2220,22 @@ function netCard(){
    a plain transform with drag momentum, pinch and wheel zoom, and a glide to the focused person.
    ============================================================ */
 var FAMV = { cam:{ x:0, y:0, z:1 }, vel:{ x:0, y:0 }, ptr:{}, pinch:0, moved:false, raf:0, lay:null, pos:{}, glide:null, el:null };
+/* Family right panel: tree summary + a row per tree (tap to jump to that tree). */
+function famSideHTML(lay){
+  var total = 0, big = null;
+  lay.clusters.forEach(function(c){ total += c.tree.members.length; if(!big || c.tree.members.length > big.tree.members.length) big = c; });
+  var rows = [['Trees', String(lay.clusters.length)], ['People in trees', String(total)]];
+  if(big) rows.push(['Largest family', big.tree.title + ' · ' + big.tree.members.length]);
+  var treeRows = lay.clusters.map(function(c){
+    var rep = null;
+    c.model.nodes.forEach(function(n){ if(rep == null && c.tree.blood[n.di]) rep = n.di; });
+    if(rep == null && c.model.nodes.length) rep = c.model.nodes[0].di;
+    return '<button type="button" class="srow' + (rep != null && S.fam.focus === rep ? ' on' : '') + '" data-act="famtree" data-di="' + rep + '"><span>' + esc(c.tree.title) + '</span><b>' + c.tree.members.length + '</b></button>';
+  }).join('');
+  return '<aside class="fampanel"><div class="side-h"><h3>Summary</h3><button type="button" class="ib sm" data-act="famside" aria-label="Close summary">' + ic('x', 15) + '</button></div>' +
+    '<div class="statrows">' + rows.map(function(r){ return '<div class="srow2"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' +
+    '<div class="side-sec"><h4>Trees</h4>' + treeRows + '</div></aside>';
+}
 function viewFamily(v){
   var disp = famDisplay(), ft = famTrees(disp), lay = famSpaceLayout(disp, ft);
   FAMV.lay = lay; FAMV.pos = {};
@@ -2169,10 +2257,12 @@ function viewFamily(v){
       html += '<button type="button" class="fn' + (foc ? ' foc' : '') + '" data-act="fnode" data-di="' + n.di + '" style="left:' + (c.ox + n.x) + 'px;top:' + (c.oy + n.y) + 'px;--fc:' + st.c + '"><span class="fc">' + esc(famInitials(dispName(e))) + '</span><b>' + esc(dispName(e)) + '</b><small>' + esc(st.cap) + '</small></button>';
     });
   });
-  v.innerHTML = '<div class="page fampage"><div class="netbar"><div><h1 class="display">Family</h1><p class="sub">' + lay.trees.length + ' bloodline' + (lay.trees.length === 1 ? '' : 's') + '. Married-in spouses also appear in their own tree.</p></div></div>' +
-    '<div class="fspace" id="fspace"><div class="fworld" id="fworld" style="width:' + lay.W + 'px;height:' + lay.H + 'px">' + svg + html + '</div>' +
+  v.innerHTML = '<div class="page fampage"><div class="netbar"><div><h1 class="display">Family</h1><p class="sub">' + lay.trees.length + ' bloodline' + (lay.trees.length === 1 ? '' : 's') + '. Married-in spouses also appear in their own tree.</p></div>' +
+    '<div class="netctl"><button type="button" class="btn ghost sm" data-act="famside" aria-expanded="' + (sideOpen(S.fam.side) ? 'true' : 'false') + '">Summary</button></div></div>' +
+    '<div class="famcols"><div class="fspace" id="fspace"><div class="fworld" id="fworld" style="width:' + lay.W + 'px;height:' + lay.H + 'px">' + svg + html + '</div>' +
     '<div class="netzoom"><button type="button" class="ib" data-act="famzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="famzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="famfit" aria-label="Fit all">' + ic('target', 18) + '</button></div>' +
-    '<div class="netcard" id="famcard" hidden></div></div></div>';
+    '<div class="netcard" id="famcard" hidden></div></div>' +
+    (sideOpen(S.fam.side) ? famSideHTML(lay) : '') + '</div></div>';
   FAMV.el = $('#fspace');
   famFit();
   if(S.fam.focus != null && FAMV.pos[S.fam.focus]){ var p = FAMV.pos[S.fam.focus]; FAMV.cam = { x:p.x, y:p.y, z:0.9 }; famApply(); }
@@ -2280,8 +2370,21 @@ function viewGroups(v){
         return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="popen1" data-di="' + di + '">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span></a>' +
           (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>'; }).join('') || '<p class="dim pad">No one yet.</p>') + '</div></div>';
   }
+  var totM = 0, bigG = null;
+  names.forEach(function(x){ totM += x.c; if(!bigG || x.c > bigG.c) bigG = x; });
+  var sideRows = [['Showing', (GKINDS.filter(function(k){ return k[0] === kind; })[0] || [])[1] || kind], ['Names', String(names.length)], ['Total memberships', String(totM)]];
+  if(bigG) sideRows.push(['Largest', bigG.n + ' · ' + bigG.c]);
+  var sideExtra = '';
+  if(name){
+    var mem2 = kind === 'groups' ? (allGroups()[name] || []) : orgMembers(kind, name), tc2 = {};
+    mem2.forEach(function(di){ var t = tierName(D.directory[di]) || 'Untiered'; tc2[t] = (tc2[t] || 0) + 1; });
+    sideExtra = '<div class="side-sec"><h4>' + esc(name) + ' by tier</h4><div class="statrows">' +
+      Object.keys(tc2).map(function(t){ return '<div class="srow2"><span>' + esc(t) + '</span><b>' + tc2[t] + '</b></div>'; }).join('') + '</div></div>';
+  }
+  var side = '<aside class="gside"><div class="side-h"><h3>Summary</h3></div><div class="statrows">' +
+    sideRows.map(function(r){ return '<div class="srow2"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' + sideExtra + '</aside>';
   v.innerHTML = '<div class="page groups' + (name ? ' has-detail' : '') + '"><div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div></div>' + tabs +
-    '<div class="ggrid"><aside class="glist">' + add + list + '</aside><section class="gmain">' + (detail || '<div class="empty"><h3>Pick one</h3><p>Choose a name on the left to see who is in it.</p></div>') + '</section></div></div>';
+    '<div class="ggrid"><aside class="glist">' + add + list + '</aside><section class="gmain">' + (detail || '<div class="empty"><h3>Pick one</h3><p>Choose a name on the left to see who is in it.</p></div>') + '</section>' + side + '</div></div>';
 }
 function groupRename(oldN, newN){
   newN = newN.trim(); if(!newN || newN === oldN) return;
@@ -2497,7 +2600,9 @@ function onClick(ev){
     case 'pf2': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); S.ppl.limit = 80; openMoreFilters(); viewPeople($('#view')); break;
     case 'pmore': S.ppl.limit += 100; paintPeople(); break;
     case 'morefilters': openMoreFilters(); break;
-    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80 }; closeSheet(); viewPeople($('#view')); break;
+    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80, side:S.ppl.side }; closeSheet(); viewPeople($('#view')); break;
+    case 'vmode': { var nv = el.getAttribute('data-v') === 'rich' ? 'rich' : 'minimal'; if(nv !== VMODE){ VMODE = nv; store('ncc_view_mode', VMODE); } render(); break; }
+    case 'pplside': S.ppl.side = !sideOpen(S.ppl.side); viewPeople($('#view')); break;
     /* profile chrome */
     case 'menu': { var mp = $('.menu-pop', el.parentNode); var was = mp.hidden; $$('.menu-pop').forEach(function(m){ m.hidden = true; }); mp.hidden = !was; break; }
     case 'export': { try{ var blob = new Blob([buildDossierDoc(D.directory[di])], { type:'text/html' }), a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Dossier - ' + (dispName(D.directory[di]).replace(/[\\/:*?"<>|]/g, '').trim() || 'person') + '.html'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 4000); toast('Downloaded.'); }catch(x){ toast('Could not build the document.'); } $$('.menu-pop').forEach(function(m){ m.hidden = true; }); break; }
@@ -2562,6 +2667,8 @@ function onClick(ev){
     }
     /* network + family */
     case 'netcolor': S.net.color = el.getAttribute('data-v'); viewNetwork($('#view')); break;
+    case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
+    case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
     case 'netmode': S.net.mode = el.getAttribute('data-v') === '2d' ? '2d' : '3d'; store('ncc_netmode', S.net.mode); viewNetwork($('#view')); break;
     case 'netbg': S.net.bg = !S.net.bg; N3.bgPts = null; NET.bg = null; viewNetwork($('#view')); break;
     case 'netzoom': { var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; if(S.net.mode === '2d'){ NET.cam.z = Math.max(0.3, Math.min(4, NET.cam.z * zf)); NET.dirty = true; } else N3.zoom = Math.max(0.45, Math.min(3.5, N3.zoom * zf)); break; }
