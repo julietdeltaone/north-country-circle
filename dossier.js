@@ -236,6 +236,8 @@ function liveEntry(e){ var p = e.profile || {}; return p.deleted !== '1' && p.au
 function isChecked(e){ return (e.profile || {}).audit === 'audited'; }
 function igURL(h){ return 'https://www.instagram.com/' + encodeURIComponent(String(h).replace(/^@/, '')) + '/'; }
 function hasHandle(e){ return e.src !== 'contacts' && e.src !== 'subject' && !/^(ig|ct|sf|fdb):/.test(String(e.name || '')) && !!e.name; }
+/* the handle a profile answers to: its own name for IG entries, or the handle a merged-away IG profile handed it (e.ig, set by the build) */
+function effHandle(e){ return hasHandle(e) ? String(e.name || '') : String(e.ig || ''); }
 function normEntry(r){
   var p = r.profile || {};
   var pe = parseArr(p.events), pf = parseArr(p.files);
@@ -1362,6 +1364,9 @@ function mergePreview(loserDi, survDi){
   if(nf) out.carried.push(nf + ' file' + (nf === 1 ? '' : 's'));
   if(nd) out.carried.push(nd + ' degree' + (nd === 1 ? '' : 's'));
   if(nfam) out.carried.push(nfam + ' family link' + (nfam === 1 ? '' : 's'));
+  var lh = effHandle(L), sh = effHandle(S);
+  if(lh && !sh) out.carried.push('Instagram @' + lh);
+  else if(lh && sh && lh.toLowerCase() !== sh.toLowerCase()) out.carried.push('Instagram stays @' + sh);
   return out;
 }
 function mergeInto(loserDi, survDi){
@@ -1382,7 +1387,7 @@ function unmerge(di){ txn('Unmerge', function(){ queuePatch(di, { merged_into:''
    export: a standalone document of one profile (neutral paper style, no theme colors)
    ============================================================ */
 function buildDossierDoc(e){
-  var name = dispName(e), handle = hasHandle(e) ? '@' + (e.name || '') : '';
+  var name = dispName(e), handle = effHandle(e) ? '@' + effHandle(e) : '';
   var aka = personIsAka(e) ? gv(e, 'also_known_as') : '';
   var ds = todayStr();
   var bio = gv(e, 'synopsis');
@@ -1578,7 +1583,7 @@ function paintUndo(){
 /* ---------- search ---------- */
 function matchText(e){
   if(e._mt) return e._mt;
-  e._mt = [dispName(e), hasHandle(e) ? e.name : '', gv(e, 'specialty'), gv(e, 'companies'), gv(e, 'churches'), gv(e, 'universities'), gv(e, 'groups'), e.city || '', e.hometown || '',
+  e._mt = [dispName(e), effHandle(e), gv(e, 'specialty'), gv(e, 'companies'), gv(e, 'churches'), gv(e, 'universities'), gv(e, 'groups'), e.city || '', e.hometown || '',
     personIsAka(e) ? gv(e, 'also_known_as') : '', degreesOf(e).map(function(d){ return d.school + ' ' + d.major; }).join(' ')].join(' ').toLowerCase();
   return e._mt;
 }
@@ -1605,7 +1610,7 @@ function paintSearch(){
   box.innerHTML = hits.map(function(di, i){
     var e = D.directory[di];
     return '<button type="button" class="gsi-row' + (i === 0 ? ' on' : '') + '" data-act="gsopen" data-di="' + di + '">' + avatar(e, 'sm') +
-      '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></span>' + statusChip(di) + '</button>';
+      '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + statusChip(di) + '</button>';
   }).join('') + (hits.length ? '<button type="button" class="gsi-all" data-act="gsall">See all matches in People</button>' : '<div class="gsi-none">No one matches</div>');
   box.hidden = false;
 }
@@ -1925,7 +1930,7 @@ function sortCardHTML(di, i, n){
   var e = D.directory[di];
   return '<article class="rc sortcard" data-di="' + di + '">' +
     '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="sortopen" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
-    '<p class="meta">' + esc(hasHandle(e) ? '@' + e.name : (e.detail || 'From your contacts')) + '</p></div>' +
+    '<p class="meta">' + esc(effHandle(e) ? '@' + effHandle(e) : (e.detail || 'From your contacts')) + '</p></div>' +
     '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>' +
     '<p class="sort-ev">' + esc(sortEvidence(e)) + '</p>' +
     '<div class="sort-frame"><p>Could your paths cross again?</p><p>Would you want to be up to speed on them?</p></div>' +
@@ -1974,7 +1979,7 @@ function viewSorted(v){
   var sl = sortedLists();
   function row(di, btn){
     var e = D.directory[di];
-    return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></div>' +
+    return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' +
       '<div class="ea"><button type="button" class="btn ghost sm" data-act="sortrestore" data-di="' + di + '">' + btn + '</button></div></div>';
   }
   v.innerHTML = '<div class="page settings sortedpage"><div class="lhead"><a class="backlink" href="#/today" data-act="lanehome">' + ic('chevl', 16) + 'Today</a>' +
@@ -2138,7 +2143,7 @@ function viewDoneTool(v, kind){
 }
 function doneCardHead(e, di, i, n){
   return '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
-    '<p class="meta">' + esc(hasHandle(e) ? '@' + e.name : (e.detail || 'From your contacts')) + '</p></div>' +
+    '<p class="meta">' + esc(effHandle(e) ? '@' + effHandle(e) : (e.detail || 'From your contacts')) + '</p></div>' +
     '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>';
 }
 function doneShellCard(di, i, n){
@@ -2235,7 +2240,7 @@ function factsHTML(e){
   row('briefcase', 'Work', tagList(gv(e, 'companies')).map(esc).join(', '));
   row('church', 'Church', tagList(gv(e, 'churches')).map(esc).join(', '));
   var links = [];
-  if(hasHandle(e)) links.push('<a href="' + igURL(e.name) + '" target="_blank" rel="noopener">Instagram ' + ic('ext', 11) + '</a>');
+  if(effHandle(e)) links.push('<a href="' + igURL(effHandle(e)) + '" target="_blank" rel="noopener">Instagram ' + ic('ext', 11) + '</a>');
   if(e.fb_url) links.push('<a href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">Facebook ' + ic('ext', 11) + '</a>');
   if(gv(e, 'phone')) links.push(esc(fmtPhone(String(gv(e, 'phone')).split(',')[0])));
   row('link', 'Reach', links.join(' <i class="sep"></i> '));
@@ -2251,7 +2256,7 @@ function factsHTML(e){
 }
 function dupMemberLine(m){
   var me = D.directory[m];
-  return [hasHandle(me) ? '@' + me.name : String(me.name).split(':')[0], tierName(me), me.city, isChecked(me) ? 'checked' : ''].filter(Boolean).join(' · ');
+  return [effHandle(me) ? '@' + effHandle(me) : String(me.name).split(':')[0], tierName(me), me.city, isChecked(me) ? 'checked' : ''].filter(Boolean).join(' · ');
 }
 /* Selective merge: tap exactly two profiles in the group, then merge just
    those two. The rest of the group stays untouched and re-evaluates. */
@@ -2415,7 +2420,7 @@ function issueCard(it, tab, i, n){
   var withDone = it.reason === 'sweep' || it.reason === 'inner';
   return '<article class="rc" data-di="' + di + '">' +
     '<header>' + avatar(e, 'lg') + '<div class="rh"><h2><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a></h2>' +
-    '<p class="meta">' + esc([tierName(e), cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ') || (hasHandle(e) ? '@' + e.name : 'Not classified yet')) + '</p></div>' +
+    '<p class="meta">' + esc([tierName(e), cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ') || (effHandle(e) ? '@' + effHandle(e) : 'Not classified yet')) + '</p></div>' +
     '<div class="rn">' + (i + 1) + ' of ' + n + '</div></header>' +
     '<div class="rbs">' + issueBody(it) + '</div>' +
     '<section class="rsec"><h5>What is on file</h5>' + factsHTML(e) + '</section>' +
@@ -2456,7 +2461,7 @@ function prow(di, i){
   var e = D.directory[di], s = statusOf(di), x = getState().by[di];
   var why = s === 'needs' && x && x.reasons.length ? '<span class="why">' + esc(REASONS[x.reasons[0]].s) + '</span>' : '';
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
-    '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></span>' + why +
+    '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + why +
     '<span class="stm st-' + s + '" title="' + (s === 'checked' ? 'Checked' : s === 'needs' ? 'Needs you' : 'Waiting') + '">' + (s === 'checked' ? ic('check', 14) : '<i></i>') + '</span></button>';
 }
 function viewPeople(v){
@@ -2598,7 +2603,7 @@ function heroHTML(di){
   }).join('');
   var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
   return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
-    '<p class="hsub">' + esc(sub || (hasHandle(e) ? '@' + e.name : 'Not yet classified')) + '</p>' +
+    '<p class="hsub">' + esc(sub || (effHandle(e) ? '@' + effHandle(e) : 'Not yet classified')) + '</p>' +
     ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') + '</div>' +
     '<div class="hctl"><div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
     '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '"') + '</div></div>';
@@ -2782,7 +2787,7 @@ function secView(di, id){
   if(id === 'identity'){
     var rows = [];
     function r(icn, lab, val, note){ if(val) rows.push('<div class="irow"><span class="il">' + ic(icn, 15) + lab + '</span><div class="iv">' + val + (note ? ' <small class="derived">' + note + '</small>' : '') + '</div></div>'); }
-    if(hasHandle(e)) r('ig', 'Instagram', '<a class="iglink ' + (e.relation === 'mutual' ? 'mutual' : 'oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a>', e.relation ? RELN[e.relation] : '');
+    if(effHandle(e)) r('ig', 'Instagram', '<a class="iglink ' + (e.relation === 'mutual' ? 'mutual' : 'oneway') + '" href="' + igURL(effHandle(e)) + '" target="_blank" rel="noopener">@' + esc(effHandle(e)) + '</a>', e.relation ? RELN[e.relation] : '');
     if(e.fb_url) r('fb', 'Facebook', '<a class="iglink" href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">' + (e.fb_handle ? '@' + esc(e.fb_handle) : 'Profile') + '</a>');
     if(personIsAka(e) && gv(e, 'also_known_as')) r('user', 'Also known as', '<b>' + esc(gv(e, 'also_known_as')) + '</b>');
     var ph = String(gv(e, 'phone')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
@@ -3312,7 +3317,7 @@ function netCard(){
   if(di == null || !D.directory[di]){ box.hidden = true; box.innerHTML = ''; return; }
   var e = D.directory[di], ka = knownAssociates(e).length, inFam = !!famDisplay()[di];
   box.hidden = false;
-  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></div>' + statusChip(di) +
+  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' + statusChip(di) +
     '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
     '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
     (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
@@ -3532,7 +3537,7 @@ function mergeStep2(){
   if(pv.carried.length) lines.push('Carries over: ' + pv.carried.join(', '));
   $('#sheetwrap .sbody').innerHTML = '<p class="dim">Choose which profile stays. The other one\'s details combine into it, and it stops showing as its own profile. Nothing is deleted, and you can undo this.</p>' + [MG.a, MG.b].map(function(di){
     var e = D.directory[di];
-    return '<label class="dm' + (di === MG.surv ? ' on' : '') + '"><input type="radio" name="msv" data-act="msv" data-di="' + di + '"' + (di === MG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc([hasHandle(e) ? '@' + e.name : '', tierName(e), e.city].filter(Boolean).join(' · ')) + '</small></span></label>';
+    return '<label class="dm' + (di === MG.surv ? ' on' : '') + '"><input type="radio" name="msv" data-act="msv" data-di="' + di + '"' + (di === MG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc([effHandle(e) ? '@' + effHandle(e) : '', tierName(e), e.city].filter(Boolean).join(' · ')) + '</small></span></label>';
   }).join('') + '<div class="rb quiet"><h4>What moves over</h4>' + (lines.length ? '<ul class="issues">' + lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<p>Nothing extra to carry over.</p>') + '</div>' +
     '<div class="row end"><button type="button" class="btn ghost" data-act="sheetx">Cancel</button><button type="button" class="btn primary" data-act="mergego">Merge into ' + esc(dispName(D.directory[MG.surv])) + '</button></div>';
 }
