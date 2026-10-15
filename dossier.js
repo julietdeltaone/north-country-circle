@@ -1233,7 +1233,7 @@ function docDots(b){
 function docRadar(bars){
   var n = bars.length;
   if(n < 3) return '';
-  var W = 216, H = 192, cx = 108, cy = 94, R = 56, i, p;
+  var W = 196, H = 172, cx = 98, cy = 84, R = 50, i, p;
   function pt(i2, f){ var a = -Math.PI / 2 + i2 * 2 * Math.PI / n; return [cx + R * f * Math.cos(a), cy + R * f * Math.sin(a)]; }
   function ringPts(f){
     var out = [];
@@ -1260,8 +1260,8 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
   '.strip{background:#16283f;color:#f2f2f0;padding:11px 36px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.22em;flex:none}' +
   '.bodycols{display:flex;flex:1;min-height:0;align-items:stretch}' +
   '.side{width:256px;flex:none;background:#ebebe8;border-right:1.5px solid #16283f;padding:22px 20px}' +
-  '.side h3{font-size:11px;letter-spacing:.22em;font-weight:600;border-bottom:2px solid #16283f;padding-bottom:7px;margin:0 0 12px}' +
-  '.blk{margin-bottom:24px}.blk:last-child{margin-bottom:4px}' +
+  '.side h3{font-size:11px;letter-spacing:.22em;font-weight:600;border-bottom:2px solid #16283f;padding-bottom:7px;margin:0 0 10px}' +
+  '.blk{margin-bottom:18px}.blk:last-child{margin-bottom:4px}' +
   '.crow{font-size:11.5px;margin-bottom:9px}' +
   '.crow b{display:block;font-size:9.5px;letter-spacing:.16em;color:#595959;margin-bottom:2px;font-weight:600}' +
   '.crow span{display:block;border-bottom:1.5px dotted #16283f;padding-bottom:3px}' +
@@ -1269,7 +1269,7 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
   '.trow .dl{font-size:10.5px;font-weight:600;letter-spacing:.05em;margin-bottom:1px;line-height:1.2;text-transform:uppercase}' +
   '.dots{display:flex;gap:5px}.dots i{display:block;width:8px;height:8px;border-radius:50%;border:1.5px solid #b9b9b4}' +
   '.dots i.on{background:#16283f;border-color:#16283f}' +
-  '.kv{font-size:12px;margin-top:9px}' +
+  '.kv{font-size:12px;margin-top:7px}' +
   '.kv span{display:block;font-weight:600;letter-spacing:.1em;font-size:10px;text-transform:uppercase;color:#595959;margin-bottom:2px}' +
   '.kv i{font-style:normal;display:block;border-bottom:1.5px dotted #16283f;padding-bottom:3px}' +
   '.chartblk{text-align:center}' +
@@ -1283,21 +1283,22 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
   '.kick{font-size:10.5px;letter-spacing:.3em;color:#595959;font-weight:600}' +
   'h1{font-size:27px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;margin:5px 0 0}' +
   '.aka{font-size:12px;color:#6f6f6f;margin-top:3px}' +
-  '.stamp{display:inline-block;border:2.5px solid #5e2129;color:#5e2129;padding:4px 13px;font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:3px;text-transform:uppercase;white-space:nowrap}' +
+  '.stamp{display:inline-block;border:2.5px solid #5e2129;color:#5e2129;padding:8px 18px;font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:5px;text-transform:uppercase;white-space:nowrap}' +
   '.meta{font-size:11.5px;letter-spacing:.08em;border-top:2px solid #16283f;border-bottom:1px solid #16283f;padding:8px 0;margin-top:14px;text-transform:uppercase}' +
   '.meta .mv{border-bottom:1.5px dotted #16283f;padding-bottom:1px}' +
   '.sec{border-top:2px solid #16283f;margin-top:21px;padding-top:10px;break-inside:avoid}' +
   '.sec h2{font-size:12.5px;letter-spacing:.2em;margin:0 0 11px;font-weight:600}.sec h2 b{color:#16283f;font-weight:600}' +
   '.sbody{font-size:12.5px;line-height:1.75}.sbody p{margin:0 0 9px}' +
   'ul{margin:0;padding-left:19px;font-size:12.5px;line-height:1.75}ul.cols{column-count:2;column-gap:30px}' +
-  '@page{size:Letter;margin:.55in;@top-right{content:"FILE COPY";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}@bottom-center{content:"PAGE " counter(page) " OF " counter(pages);font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}' +
+  '@page{size:Letter;margin:.55in;background:#f4f4f1;@top-right{content:"FILE COPY";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}@bottom-center{content:"PAGE " counter(page) " OF " counter(pages);font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}' +
   '@media print{' +
-  'body{background:#fff;padding:0}' +
-  '.page{box-shadow:none;max-width:none;width:auto;display:block}' +
+  'html{background:#f4f4f1}' +
+  'body{background:#f4f4f1;padding:0}' +
+  '.page{box-shadow:none;max-width:none;width:auto;display:block;background:#f4f4f1}' +
   '.bodycols{display:block}' +
-  '.headband{padding:20px 0 16px;break-inside:avoid}' +
-  '.side{float:left;width:250px;margin:2px 24px 14px 0;padding:18px 16px;break-inside:avoid}' +
-  '.main{margin-left:0;padding:22px 0 0;min-width:0}' +
+  '.headband{padding:22px 36px 18px;break-inside:avoid}' +
+  '.side{float:left;width:250px;margin:2px 24px 14px 0;padding:20px 18px;break-inside:avoid}' +
+  '.main{margin-left:0;padding:22px 36px 12px;min-width:0}' +
   '.sec{break-inside:auto}' +
   '.sec h2{break-after:avoid;break-inside:avoid}' +
   '.sbody p{orphans:3;widows:3}' +
@@ -1309,11 +1310,14 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
     var side = '';
     if(T.contact.length) side += '<div class="blk"><h3>CONTACT</h3>' + T.contact.map(function(it){
       return '<div class="crow"><b>' + esc(it.l) + '</b><span>' + docT(it.v) + '</span></div>'; }).join('') + '</div>';
-    if(T.bars.length || T.extras.length){
-      side += '<div class="blk"><h3>' + docRateLabel(T) + '</h3>';
-      if(T.bars.length) side += T.bars.map(function(b){
+    if(T.extras.length){
+      side += '<div class="blk"><h3>DETAILS</h3>' + T.extras.map(function(x){
+        return '<div class="kv"><span>' + esc(x.l) + '</span><i>' + docT(x.v) + '</i></div>'; }).join('') + '</div>';
+    }
+    if(T.bars.length){
+      side += '<div class="blk"><h3>PROFILE RATINGS</h3>' + T.bars.map(function(b){
         return '<div class="trow"><div class="dl" style="color:' + traitC(b) + '">' + esc(b.l) + '</div>' + docDots(b) + '</div>'; }).join('');
-      side += T.extras.map(function(x){ return '<div class="kv"><span>' + esc(x.l) + '</span><i>' + docT(x.v) + '</i></div>'; }).join('') + '</div>';
+      side += '</div>';
       var rad = docRadar(T.bars);
       if(rad) side += '<div class="blk chartblk">' + rad + '<div class="chartcap">BIG FIVE + EGO · SCALE 0–5</div></div>';
     }
@@ -1337,14 +1341,14 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
     if(T.locCity) ident.push('Lives in ' + docT(T.locCity));
     if(T.locHome) ident.push('From ' + docT(T.locHome));
     var head = '<div class="headband"><div class="hbrow"><div class="hbmain">' +
-      '<div class="kick">Subject File</div><h1>' + esc(T.name) + '</h1>' +
+      '<h1>' + esc(T.name) + '</h1>' +
       (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
       (ident.length ? '<div class="ident">' + ident.join(' &nbsp;·&nbsp; ') + '</div>' : '') +
       '</div>' + stamp + '</div>' +
       (meta.length ? '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' : '') + '</div>';
     var nmCss = String(T.name || '').toUpperCase().replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
-    return '<style>@page{@top-left{content:"PERSONNEL DOSSIER — ' + nmCss + '";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}</style>' +
-      '<div class="page"><div class="strip"><span>PERSONNEL DOSSIER</span><span>FILE COPY</span></div>' +
+    return '<style>@page{@top-left{content:"PERSONNEL FILE — ' + nmCss + '";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}</style>' +
+      '<div class="page"><div class="strip"><span>PERSONNEL FILE</span><span>FILE COPY</span></div>' +
       head +
       '<div class="bodycols">' + (side ? '<div class="side">' + side + '</div>' : '') + '<div class="main">' +
       secs.map(function(s, i){ return '<div class="sec"><h2><b>' + ('0' + (i + 1)).slice(-2) + '</b> &nbsp;' + s[0] + '</h2>' + s[1] + '</div>'; }).join('') +
