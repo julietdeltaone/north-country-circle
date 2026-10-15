@@ -809,3 +809,31 @@ body.vm-rich .pstats{display:block}
 .fworld.fam-hov .flines line.hl{opacity:1;stroke:#93a9d6}
 .fworld.fam-hov .flines .xlink{opacity:.06}
 .fworld.fam-hov .flines .xlink.hl{opacity:.9}
+
+/* People table 2026-10-15: the roster is a table now — fixed columns,
+   sortable headers, blanks stay blank, wide zone scrolls on small screens */
+.ptwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.ptable{width:100%;min-width:660px;border-collapse:collapse;font-size:14px}
+.ptable th{padding:10px 14px;text-align:left;font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--line2);white-space:nowrap;cursor:pointer;user-select:none;-webkit-user-select:none}
+.ptable th:hover{color:var(--txt)}
+.ptable th.on{color:var(--txt)}
+.ptable th .sarr{display:inline-block;width:12px;margin-left:5px;color:var(--acc);font-size:9px;vertical-align:1px}
+.ptable th.num,.ptable td.num{text-align:right}
+.ptrow{border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s var(--ease)}
+.ptrow:last-child{border-bottom:0}
+.ptrow:hover{background:linear-gradient(90deg,rgba(134,160,216,.10),rgba(255,255,255,.02))}
+.ptrow:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.ptable td{padding:9px 14px;vertical-align:middle;color:var(--mut)}
+.ptable .c-name{min-width:210px}
+.cname-in{display:flex;align-items:center;gap:12px;min-width:0}
+.ptable .pn b{color:var(--txt)}
+.ptable .ptier{color:var(--mut);font-weight:600;white-space:nowrap}
+.ptable .ptier i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.ptable .ptier.none{color:#a794d8}
+.ptable .clip{display:block;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptable .c-assoc{font-variant-numeric:tabular-nums;color:var(--txt)}
+/* stacked layout: the main column takes the row width so the table zone
+   (not the page) is what scrolls sideways */
+@media (max-width:899px){
+  .ppl-main{width:100%}
+}
