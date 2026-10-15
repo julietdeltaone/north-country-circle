@@ -1223,7 +1223,7 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    ============================================================ */
 var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
-  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80, side:null },
+  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, limit:80, side:null },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d') },
   fam:{ editing:null, focus:null, sheet:false, side:null },
@@ -1440,6 +1440,44 @@ window.__nccChanged = function(di){
 /* ============================================================
    People — one list, one search, a few honest filters. No stat tiles, no pips, no fill bars.
    ============================================================ */
+/* Organizations across churches/companies/universities, deduped in category order. */
+function orgsOf(e){
+  var orgs = [];
+  ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ if(orgs.indexOf(o) < 0) orgs.push(o); }); });
+  return orgs;
+}
+/* People table sort (S.ppl.ts): keys are precomputed once per filter pass.
+   Text columns sort A-Z with blanks last in BOTH directions; tier follows ring
+   order (Vetted, Associate, Open, No tier yet); associates is numeric. Ties
+   fall to name, then directory order, so the ordering is total. */
+function pplSort(dis){
+  var ts = S.ppl.ts || { k:'name', d:1 }, d = ts.d < 0 ? -1 : 1, K = {};
+  dis.forEach(function(di){
+    var e = D.directory[di], tr = TIER_RANK[tierOf(e)];
+    K[di] = {
+      name: dispName(e).toLowerCase(),
+      tier: tr == null ? 3 : tr,
+      loc: String(e.city || e.hometown || '').toLowerCase(),
+      orgs: orgsOf(e).join(' · ').toLowerCase(),
+      assoc: knownAssociates(e).length,
+      skills: tagList(gv(e, 'specialty')).join(', ').toLowerCase()
+    };
+  });
+  dis.sort(function(a, b){
+    var ka = K[a], kb = K[b], r = 0;
+    if(ts.k === 'tier') r = (ka.tier - kb.tier) * d;
+    else if(ts.k === 'assoc') r = (ka.assoc - kb.assoc) * d;
+    else if(ts.k === 'name') r = ka.name.localeCompare(kb.name) * d;
+    else {
+      var va = ka[ts.k], vb = kb[ts.k];
+      if(va !== '' && vb !== '') r = va.localeCompare(vb) * d;
+      else if(va === '' && vb !== '') r = 1;
+      else if(va !== '' && vb === '') r = -1;
+    }
+    if(!r) r = ka.name.localeCompare(kb.name);
+    return r || (a - b);
+  });
+}
 function peopleFiltered(){
   var f = S.ppl, pool = people();
   var dis = f.q.trim() ? searchPeople(f.q, 9999, pool) : pool.slice();
@@ -1450,16 +1488,7 @@ function peopleFiltered(){
     if(f.group && personGroups(e).indexOf(f.group) < 0) return false;
     return true;
   });
-  if(!f.q.trim() || f.sort !== 'closest'){
-    if(f.sort === 'name') dis.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
-    else if(f.sort === 'recent') dis.sort(function(a, b){ return (Date.parse(raw(D.directory[b], 'updated_at')) || 0) - (Date.parse(raw(D.directory[a], 'updated_at')) || 0); });
-    else if(f.sort === 'tier') dis.sort(function(a, b){
-      var ta = TIER_RANK[tierOf(D.directory[a])], tb = TIER_RANK[tierOf(D.directory[b])];
-      ta = ta == null ? 3 : ta; tb = tb == null ? 3 : tb;
-      return ta - tb || (D.directory[b].strength || 0) - (D.directory[a].strength || 0);
-    });
-    else dis.sort(function(a, b){ return (D.directory[b].strength || 0) - (D.directory[a].strength || 0); });
-  }
+  pplSort(dis);
   return dis;
 }
 /* Roster row's second line: only what the profile already has — tier chip,
@@ -1524,19 +1553,53 @@ function viewPeople(v){
     '<div class="ppl-cols"><div class="ppl-main">' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
-    '<div class="tool-r"><select id="psort" aria-label="Sort">' + [['closest', 'Closest first'], ['name', 'A to Z'], ['tier', 'By tier'], ['recent', 'Recently edited']].map(function(o){ return '<option value="' + o[0] + '"' + (f.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>' +
+    '<div class="tool-r">' +
     '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
     '<button type="button" class="btn ghost sm" data-act="pplside" aria-expanded="' + (sideOpen(f.side) ? 'true' : 'false') + '">Counts</button></div></div>' +
     '<div class="plist" id="plist"></div></div>' +
     (sideOpen(f.side) ? pplSideHTML(f) : '') + '</div></div>';
   paintPeople();
 }
+/* People as a table: one row per person, fixed columns, sortable headers.
+   Cells show only what the profile has; blanks stay blank. */
+var PT_COLS = [
+  { k:'name', label:'Name' },
+  { k:'tier', label:'Tier' },
+  { k:'loc', label:'Location' },
+  { k:'orgs', label:'Organizations' },
+  { k:'assoc', label:'Known associates', num:true },
+  { k:'skills', label:'Skills' }
+];
+function ptheadHTML(){
+  var ts = S.ppl.ts || { k:'name', d:1 };
+  return '<thead><tr>' + PT_COLS.map(function(c){
+    var on = ts.k === c.k;
+    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-act="tsort" data-k="' + c.k + '" aria-sort="' + (on ? (ts.d < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + c.label.toLowerCase() + '">' + c.label + '<span class="sarr" aria-hidden="true">' + (on ? (ts.d < 0 ? '▾' : '▴') : '') + '</span></th>';
+  }).join('') + '</tr></thead>';
+}
+function ptierCell(e){
+  var t = tierOf(e);
+  if(t && TIERS[t]) return '<span class="ptier"><i style="background:' + TIERS[t].c + '"></i>' + TIERS[t].n + '</span>';
+  return '<span class="ptier none"><i style="background:' + RING_C[3] + '"></i>No tier yet</span>';
+}
+function ptrowHTML(di, i){
+  var e = D.directory[di];
+  var sub = [cap(gv(e, 'relationship')), hasHandle(e) ? '@' + (e.name || '') : ''].filter(Boolean).join(' · ');
+  var orgs = orgsOf(e), skills = tagList(gv(e, 'specialty'));
+  return '<tr class="ptrow" data-act="popen" data-di="' + di + '" data-i="' + i + '" tabindex="0">' +
+    '<td class="c-name"><div class="cname-in">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span></div></td>' +
+    '<td class="c-tier">' + ptierCell(e) + '</td>' +
+    '<td class="c-loc">' + esc(e.city || e.hometown || '') + '</td>' +
+    '<td class="c-orgs"><span class="clip" title="' + esc(orgs.join(', ')) + '">' + esc(orgs.slice(0, 2).join(', ')) + '</span></td>' +
+    '<td class="c-assoc num">' + knownAssociates(e).length + '</td>' +
+    '<td class="c-skills"><span class="clip" title="' + esc(skills.join(', ')) + '">' + esc(skills.slice(0, 2).join(', ')) + '</span></td></tr>';
+}
 function paintPeople(){
   var box = $('#plist'); if(!box) return;
   var dis = peopleFiltered(), f = S.ppl;
   S.ppl.cur = dis;
   var shown = dis.slice(0, f.limit);
-  box.innerHTML = shown.map(function(di, i){ return prow(di, i); }).join('') +
+  box.innerHTML = (dis.length ? '<div class="ptwrap"><table class="ptable">' + ptheadHTML() + '<tbody>' + shown.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>' : '') +
     (dis.length > shown.length ? '<button type="button" class="btn ghost more" data-act="pmore">Show ' + Math.min(100, dis.length - shown.length) + ' more (' + (dis.length - shown.length) + ' left)</button>' : '') +
     (!dis.length ? emptyState('No one matches.', 'Loosen a filter or clear the search.') : '');
   var c = $('#pcount'); if(c) c.textContent = dis.length === people().length ? dis.length + ' people' : dis.length + ' of ' + people().length + ' people';
@@ -2762,8 +2825,9 @@ function onClick(ev){
     case 'pf': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); S.ppl.limit = 80; viewPeople($('#view')); break;
     case 'pf2': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); S.ppl.limit = 80; openMoreFilters(); viewPeople($('#view')); break;
     case 'pmore': S.ppl.limit += 100; paintPeople(); break;
+    case 'tsort': { var tk = el.getAttribute('data-k'); if(S.ppl.ts && S.ppl.ts.k === tk) S.ppl.ts.d = -S.ppl.ts.d; else S.ppl.ts = { k:tk, d:(tk === 'assoc' ? -1 : 1) }; paintPeople(); break; }
     case 'morefilters': openMoreFilters(); break;
-    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', sort:'closest', limit:80, side:S.ppl.side }; closeSheet(); viewPeople($('#view')); break;
+    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, limit:80, side:S.ppl.side }; closeSheet(); viewPeople($('#view')); break;
     case 'vmode': { var nv = el.getAttribute('data-v') === 'rich' ? 'rich' : 'minimal'; if(nv !== VMODE){ VMODE = nv; store('ncc_view_mode', VMODE); } render(); break; }
     case 'pplside': S.ppl.side = !sideOpen(S.ppl.side); viewPeople($('#view')); break;
     /* profile chrome */
@@ -2878,7 +2942,6 @@ function onInput(ev){
 }
 function onChange(ev){
   var t = ev.target, act = t.getAttribute && t.getAttribute('data-act');
-  if(t.id === 'psort'){ S.ppl.sort = t.value; paintPeople(); return; }
   if(t.id === 'setedit'){ store('ncc_edit_key', t.value.trim()); return; }
   if(act === 'waive' && t.type === 'checkbox'){
     var di = curDi(t), sids = t.getAttribute('data-sid').split(',');
@@ -2914,6 +2977,7 @@ function onKey(ev){
   var t = ev.target, tag = t.tagName, isField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
   if(ev.key === 'Enter' && t.classList && t.classList.contains('tadd')){ ev.preventDefault(); addTag(t); return; }
   if((ev.key === 'Enter' || ev.key === ' ') && t.classList && t.classList.contains('dm') && t.classList.contains('pick')){ ev.preventDefault(); t.click(); return; }
+  if((ev.key === 'Enter' || ev.key === ' ') && t.classList && t.classList.contains('ptrow')){ ev.preventDefault(); t.click(); return; }
   if(ev.key === 'Enter' && t.id === 'gnew'){ ev.preventDefault(); var b = $('[data-act="gnew"]'); if(b) b.click(); return; }
   if(ev.key === 'Enter' && t.id === 'dtitle'){ ev.preventDefault(); var d = $('[data-act="docgo"]'); if(d) d.click(); return; }
   if(ev.key === 'Enter' && t.id === 'ekey'){ ev.preventDefault(); var s = $('[data-act="savekey"]'); if(s) s.click(); return; }
