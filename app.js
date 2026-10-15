@@ -328,12 +328,13 @@ function draw() {
   }
 }
 
-function nearest(mx, my) {
+function nearest(mx, my, resOnly) {
   const wx = s2wX(mx), wy = s2wY(my);
   const tol = 18 / scale, tol2 = tol * tol;
   let best = -1, bd = tol2;
   for (let i = 0; i < N; i++) {
     if (!visible[i]) continue;
+    if (resOnly && !resVis(i)) continue;
     const dx = RX(i) - wx, dy = RY(i) - wy;
     const d = dx * dx + dy * dy;
     if (d < bd) { bd = d; best = i; }
@@ -379,7 +380,9 @@ function flyToXY(wx, wy, targetScale) {
 }
 
 function setHover(mx, my, cx, cy) {
-  const h = nearest(mx, my);
+  /* with the amber filter on, hover only "sees" filtered nodes: ghosted
+     nodes get no tooltip and no hover highlight (clicks still hit them) */
+  const h = nearest(mx, my, resFilter);
   if (h !== hover) { hover = h; draw(); }
   if (h >= 0) {
     const p = PEOPLE[h];
@@ -796,7 +799,11 @@ function initToolbar() {
   });
   document.getElementById("f-jd").addEventListener("change", e => { fJd = e.target.checked; applyFilters(); });
   document.getElementById("f-list").addEventListener("change", e => { fList = e.target.checked; applyFilters(); });
-  document.getElementById("f-resfilter").addEventListener("change", e => { resFilter = e.target.checked; draw(); });
+  document.getElementById("f-resfilter").addEventListener("change", e => {
+    resFilter = e.target.checked;
+    if (resFilter && hover >= 0 && !resVis(hover)) { hover = -1; tip.hidden = true; }
+    draw();
+  });
   document.getElementById("f-isolate").addEventListener("change", e => { isolate = e.target.checked; draw(); });
   document.getElementById("f-labels").addEventListener("change", e => { fLabels = e.target.checked; draw(); });
   const bb = document.getElementById("btn-bridges");
