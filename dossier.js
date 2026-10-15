@@ -2421,14 +2421,17 @@ function repaintTop(){
 }
 
 function heroHTML(di){
-  var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context')), knownSinceYear(e) ? 'Known since ' + knownSinceYear(e) : '', e.city].filter(Boolean).join(' · ');
+  var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context')), knownSinceYear(e) ? 'Known since ' + knownSinceYear(e) : ''].filter(Boolean).join(' · ');
+  /* Location on file gets its own line under the name (JD 2026-10-15): resolved location_on_file -> city -> hometown, normalized; the @handle never renders in the hero (it lives in the Contact card). */
+  var loc = ptNormLoc(ptLocVal(e));
   var ds = sortDegrees(degreesOf(e)).slice(0, 3).map(function(d){
     var bits = [d.degree, d.year ? yy(d.year) : ''].filter(Boolean).join(' ');
     return '<span class="dbadge">' + ic('cap', 12) + '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits ? '<i>' + esc(bits) + '</i>' : '') + '</span>';
   }).join('');
   var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
   return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
-    '<p class="hsub">' + esc(sub || (effHandle(e) ? '@' + effHandle(e) : 'Not yet classified')) + '</p>' +
+    (loc ? '<p class="hloc">' + ic('pin', 13) + esc(loc) + '</p>' : '') +
+    '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
     ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') + '</div>' +
     '<div class="hctl"><div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
     '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '"') + '</div></div>';
@@ -3560,6 +3563,27 @@ function audSetGap(card, gap){
   audWireCard(card);
   if(hadFocus){ var f = $('.aud-in', card) || $('.aud-gchip.on', card); if(f) f.focus(); }
 }
+/* Shift+Right inside a card (JD 2026-10-15): pass on the gap on show
+   ("I just don't want to add a phone number"). The gap is closed out for
+   good — the same per-pair ncc_aud_skip dismissal "Done with them" uses,
+   for this one gap only — any half-typed value is discarded (never
+   saved), an armed countdown is cancelled before it can submit, and the
+   card advances to the person's next open gap with focus in its editor.
+   On the card's LAST open gap it finishes the card instead: the gap is
+   dismissed, the card retires, the next person feeds in, and focus moves
+   to the new card's editor. */
+function audPass(card){
+  var di = +card.getAttribute('data-di'), x = audEntry(di);
+  if(!x) return;
+  var gap = card.getAttribute('data-gap');
+  if(x.gaps.indexOf(gap) < 0) return;
+  audDisarm(card);   /* countdown + typing debounce cancelled: nothing submits */
+  AUD_DISMISS[audPair(di, gap)] = 1;
+  store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+  x.gaps = x.gaps.filter(function(g){ return g !== gap; });
+  if(x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
+  audRetire(card, false, true);
+}
 function audWireCard(card){
   var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
   if(!inp) return;
@@ -3602,7 +3626,7 @@ function audCardLast(card){
   return !x || x.gaps.length <= 1;
 }
 function audTryArm(card){
-  if(!card.isConnected) return;
+  if(!card.isConnected || card.classList.contains('aud-out') || card.classList.contains('aud-done')) return;
   if(!audReady(card)){ audDisarm(card); return; }
   if(!audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audDisarm(card);
@@ -3679,7 +3703,7 @@ function audSave(di, card){
     audRetire(card, true);
   }
 }
-function audRetire(card, saved){
+function audRetire(card, saved, kbFocus){
   audDisarm(card);
   var A = S.audit, di = +card.getAttribute('data-di');
   var hadFocus = card.contains(document.activeElement);
@@ -3696,7 +3720,7 @@ function audRetire(card, saved){
         var nc = tmp.firstChild;
         grid.appendChild(nc);
         audWireCard(nc);
-        if(hadFocus){ var nf = $('button, input', nc); if(nf) nf.focus(); }
+        if(hadFocus){ var nf = kbFocus ? ($('.aud-in', nc) || $('.aud-gchip.on', nc) || $('button, input', nc)) : $('button, input', nc); if(nf) nf.focus(); }
       }
     }
     audPaintCounts(); audPaintEmpty();
@@ -3999,6 +4023,18 @@ function onNavKey(ev){
   var t = ev.target;
   if(!t || !t.closest) return;
   var key = ev.key;
+  /* Shift+Right inside an Audit card (JD 2026-10-15): pass on the gap on
+     show. Checked first so it overrides text selection and chip-group
+     arrow movement within card editors; anywhere else in the app
+     Shift+Right keeps its normal text-selection behavior. */
+  if(key === 'ArrowRight' && ev.shiftKey && !ev.ctrlKey && !ev.metaKey && !ev.altKey){
+    var audCard = t.closest('.aud-card');
+    if(audCard && S.route && S.route.name === 'audit'){
+      ev.preventDefault(); ev.stopImmediatePropagation();
+      audPass(audCard);
+      return;
+    }
+  }
   var pop = t.closest('.menu-pop');
   if(pop && !pop.hidden){
     var items = $$('button', pop).filter(function(b){ return !b.disabled; });
