@@ -791,3 +791,21 @@ body.vm-rich .pstats{display:block}
 @media (prefers-reduced-motion: reduce){
   .netcols.sel .netpanel,body.vm-rich .netpanel,.fampanel,body.vm-rich .gside{animation:none}
 }
+
+/* refinements 2026-10-14 evening: roster second line + family hover life */
+/* People roster: tier chip, place, orgs, associates, snippet on one quiet line */
+.pn .pmeta{margin-top:2px;font-size:12px;color:var(--dim)}
+.pmeta .ptier{color:var(--mut);font-weight:600}
+.pmeta .ptier i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.pmeta .psep{margin:0 6px;opacity:.5}
+.pmeta .psnip{color:var(--dim)}
+/* Family: hovering a person lights them and their direct family; rest dims */
+.fn{transition:opacity .18s ease}
+.flines line,.flines .xlink{transition:opacity .18s ease}
+.fworld.fam-hov .fn{opacity:.35}
+.fworld.fam-hov .fn.hl{opacity:1}
+.fworld.fam-hov .fn.hl .fc{box-shadow:0 0 0 2px var(--bg),0 0 0 4px rgba(214,226,255,.55),0 0 20px -4px rgba(214,226,255,.55)}
+.fworld.fam-hov .flines line{opacity:.15}
+.fworld.fam-hov .flines line.hl{opacity:1;stroke:#93a9d6}
+.fworld.fam-hov .flines .xlink{opacity:.06}
+.fworld.fam-hov .flines .xlink.hl{opacity:.9}
