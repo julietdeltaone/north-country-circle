@@ -33,6 +33,72 @@ const resVis = i => { const r = resOf(i); return r && !r.dossier ? r : null; };
 const resScale = i => { const r = resVis(i); return r ? Math.min(2.2, 1 + 0.35 * Math.sqrt(r.amount)) : 1; };
 let RESN = 0;
 for (let i = 0; i < N; i++) if (resVis(i)) RESN++;
+/* Inferred names (display only): many nodes carry no real name. When a
+   username decomposes cleanly into exactly two alphabetic tokens (split on
+   '.' / '_' / camelCase, trailing digit block stripped), show it as a
+   First Last name in purple — the color is the only signal. Never written
+   to data, never used for research matching or counts. */
+function inferName(u) {
+  const s = String(u || "").replace(/\d+$/, "");
+  if (!s) return null;
+  const parts = [];
+  for (const piece of s.split(/[._]+/)) {
+    if (!piece) continue;
+    const toks = piece
+      .replace(/([a-z])([A-Z])/g, "$1\u0001$2")
+      .replace(/([A-Z]+)([A-Z][a-z])/g, "$1\u0001$2")
+      .split("\u0001");
+    for (const t of toks) parts.push(t);
+  }
+  if (parts.length !== 2) return null;
+  if (!parts.every(t => /^[A-Za-z]{2,}$/.test(t))) return null;
+  return parts.map(t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase()).join(" ");
+}
+const INF = PEOPLE.map(p => (p.name && p.name.trim()) ? null : inferName(p.username));
+let INFN = 0;
+for (let i = 0; i < N; i++) if (INF[i]) INFN++;
+/* sort/display name parts: real name wins, then inferred, then username */
+const FIRST = new Array(N), LAST = new Array(N);
+for (let i = 0; i < N; i++) {
+  const nm = (PEOPLE[i].name && PEOPLE[i].name.trim()) ? PEOPLE[i].name.trim() : INF[i];
+  if (!nm) { FIRST[i] = LAST[i] = PEOPLE[i].username.toLowerCase(); continue; }
+  const toks = nm.split(/\s+/);
+  FIRST[i] = toks[0].toLowerCase();
+  LAST[i] = toks[toks.length - 1].toLowerCase();
+}
+/* Dossier membership for the directory's dossier sort:Research entries carry
+   a baked flag for the 255 matched people; everyone else is resolved against
+   dossier.json's directory (same handle + normalized-name cross-walk the
+   overlay build used), fetched lazily the first time the drawer opens. */
+function normName(s) {
+  return String(s || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/^(dr|mr|mrs|ms|miss|rev) /, "");
+}
+let dossierHandles = null, dossierNames = null;
+function loadDossierMembership() {
+  if (dossierHandles) return;
+  dossierHandles = new Set(); dossierNames = new Set();
+  fetch("data/dossier.json").then(r => r.json()).then(dj => {
+    for (const e of (dj.directory || [])) {
+      const nm = String(e.name || "");
+      if (nm && !nm.includes(":")) dossierHandles.add(nm);
+      if (e.ig) dossierHandles.add(String(e.ig));
+      const dn = normName(e.display);
+      if (dn) dossierNames.add(dn);
+    }
+    if (!document.getElementById("directory").hidden) paintDir();
+  }).catch(() => {});
+}
+function inDossier(i) {
+  const r = resOf(i);
+  if (r) return !!r.dossier;
+  if (dossierHandles) {
+    if (dossierHandles.has(PEOPLE[i].username)) return true;
+    const nm = normName(PEOPLE[i].name);
+    if (nm && dossierNames.has(nm)) return true;
+  }
+  return false;
+}
 const XS = new Float32Array(N), YS = new Float32Array(N);
 for (let i = 0; i < N; i++) { XS[i] = PEOPLE[i].x; YS[i] = PEOPLE[i].y; }
 /* Ambient solar drift (design pass 2026-10-14): the whole layout slowly turns
@@ -103,6 +169,13 @@ function renderBridgePanel() {
 
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function igLink(u) { return `<a href="https://www.instagram.com/${esc(u)}/" target="_blank" rel="noopener">@${esc(u)}</a>`; }
+/* display name as HTML: real name plain, inferred name purple, else username */
+function nameHTML(i) {
+  const p = PEOPLE[i];
+  if (p.name && p.name.trim()) return esc(p.name);
+  if (INF[i]) return `<span class="infname">${esc(INF[i])}</span>`;
+  return esc(p.username);
+}
 
 /* ---------- canvas + view ---------- */
 const canvas = document.getElementById("map");
@@ -154,6 +227,7 @@ function applyFilters() {
   updateStats();
   if (bridgeMode) { buildBridgeList(); renderBridgePanel(); }
   draw();
+  scheduleDirPaint();
 }
 function updateStats() {
   const parts = [`${N.toLocaleString()} people`, `${EDGES.length.toLocaleString()} connections`];
@@ -164,7 +238,42 @@ function updateStats() {
   if (rc) rc.textContent = RESN ? `(${RESN} people)` : "";
   const rn = document.getElementById("resfilter-n");
   if (rn) rn.textContent = RESN ? `(${RESN})` : "";
+  const drn = document.getElementById("d-resfilter-n");
+  if (drn) drn.textContent = RESN ? `(${RESN})` : "";
 }
+/* ---------- shared filter state: Navigate panel + Directory mirror ----------
+   One set of state variables; both control sets write through the setters
+   below and syncFilterUI() pushes the state back into both control sets, so
+   a change made anywhere is reflected (and reversible) everywhere. */
+let dirPaintTimer = 0;
+function scheduleDirPaint() {
+  const dr = document.getElementById("directory");
+  if (!dr || dr.hidden) return;
+  clearTimeout(dirPaintTimer);
+  dirPaintTimer = setTimeout(paintDir, 50);
+}
+function syncFilterUI() {
+  for (const pre of ["", "d-"]) {
+    const mc = document.getElementById(pre + "minconn");
+    if (mc) mc.value = minConn;
+    const mv = document.getElementById(pre + "minconn-val");
+    if (mv) mv.textContent = minConn.toLocaleString();
+    const set = (id, v) => { const el = document.getElementById(pre + id); if (el) el.checked = v; };
+    set("f-jd", fJd); set("f-list", fList); set("f-resfilter", resFilter);
+    set("f-isolate", isolate); set("f-labels", fLabels);
+  }
+}
+function setMinConn(v) { minConn = v; syncFilterUI(); applyFilters(); }
+function setFJd(v) { fJd = v; syncFilterUI(); applyFilters(); }
+function setFList(v) { fList = v; syncFilterUI(); applyFilters(); }
+function setResFilter(v) {
+  resFilter = v; syncFilterUI();
+  if (resFilter && hover >= 0 && !resVis(hover)) { hover = -1; tip.hidden = true; }
+  draw();
+  scheduleDirPaint();
+}
+function setIsolate(v) { isolate = v; syncFilterUI(); draw(); }
+function setFLabels(v) { fLabels = v; syncFilterUI(); draw(); }
 
 /* ---------- renderer ---------- */
 const rad = i => (2 + 7 * Math.sqrt(totalOf(i) / maxTotal)) * resScale(i);
@@ -389,7 +498,7 @@ function setHover(mx, my, cx, cy) {
     tip.hidden = false;
     tip.style.left = (cx + 14) + "px";
     tip.style.top = (cy + 10) + "px";
-    tip.innerHTML = `<strong>${esc(p.name || p.username)}</strong><br>@${esc(p.username)} &middot; ${totalOf(h)} connections`;
+    tip.innerHTML = `<strong>${nameHTML(h)}</strong><br>@${esc(p.username)} &middot; ${totalOf(h)} connections`;
     canvas.style.cursor = "pointer";
   } else {
     tip.hidden = true;
@@ -497,7 +606,7 @@ canvas.addEventListener("dblclick", e => {
 function connListHTML(arr) {
   const cap = 40;
   return arr.slice(0, cap).map(j =>
-    `<div class="conn" data-i="${j}"><strong>${esc(PEOPLE[j].name || PEOPLE[j].username)}</strong> <span class="note">@${esc(PEOPLE[j].username)}</span></div>`).join("")
+    `<div class="conn" data-i="${j}"><strong>${nameHTML(j)}</strong> <span class="note">@${esc(PEOPLE[j].username)}</span></div>`).join("")
     + (arr.length > cap ? `<div class="note" style="padding:4px 8px">+${arr.length - cap} more</div>` : "");
 }
 /* ---------- breadcrumb trail: hop person -> person through following lists ---------- */
@@ -592,7 +701,7 @@ function renderDetail() {
   const followers = inAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
   const following = outAdj[i].slice().sort((a, b) => totalOf(b) - totalOf(a));
   el.innerHTML = `
-    <div class="dhead"><h3>${esc(p.name || p.username)}</h3><button class="tbtn" id="d-clear" title="Clear selection (Esc)">×</button></div>
+    <div class="dhead"><h3>${nameHTML(i)}</h3><button class="tbtn" id="d-clear" title="Clear selection (Esc)">×</button></div>
     <div class="meta">${igLink(p.username)}${p.num_lists ? ` &middot; in ${p.num_lists} list${p.num_lists > 1 ? "s" : ""}` : ""}${listStatusText(p)}${p.jd_follows ? " &middot; followed by JD" : ""}</div>
     <div class="statrow">
       <div><b>${p.in_degree}</b><span>in</span></div>
@@ -679,16 +788,17 @@ function initSearch() {
       if (!visible[i]) continue;
       const p = PEOPLE[i];
       const u = p.username.toLowerCase(), nm = (p.name || "").toLowerCase();
+      const inf = (INF[i] || "").toLowerCase();
       let rank = -1;
-      if (u === s || nm === s) rank = 0;
-      else if (u.startsWith(s) || nm.startsWith(s)) rank = 1;
-      else if (u.includes(s) || nm.includes(s)) rank = 2;
+      if (u === s || nm === s || inf === s) rank = 0;
+      else if (u.startsWith(s) || nm.startsWith(s) || inf.startsWith(s)) rank = 1;
+      else if (u.includes(s) || nm.includes(s) || inf.includes(s)) rank = 2;
       if (rank >= 0) scored.push([rank, totalOf(i), i]);
     }
     scored.sort((a, b) => a[0] - b[0] || b[1] - a[1]);
     const matches = scored.slice(0, 8).map(x => x[2]);
     res.innerHTML = matches.map(i =>
-      `<div class="hit" data-i="${i}"><strong>${esc(PEOPLE[i].name || PEOPLE[i].username)}</strong> <span class="note">@${esc(PEOPLE[i].username)} &middot; ${totalOf(i)} connections</span></div>`).join("")
+      `<div class="hit" data-i="${i}"><strong>${nameHTML(i)}</strong> <span class="note">@${esc(PEOPLE[i].username)} &middot; ${totalOf(i)} connections</span></div>`).join("")
       || `<div class="note" style="padding:10px 12px">No matches among shown people.</div>`;
     res.hidden = false;
     res.querySelectorAll(".hit").forEach(h => h.addEventListener("click", () => {
@@ -709,22 +819,38 @@ function initSearch() {
 
 /* ---------- directory drawer ---------- */
 let dirQ = "", dirKey = "total", dirDir = -1;
+const defaultDir = k => (k === "username" || k === "first" || k === "last" || k === "dossier") ? 1 : -1;
 function dirRows() {
   const q = dirQ.trim().toLowerCase();
   let rows = [];
   for (let i = 0; i < N; i++) {
     if (!visible[i]) continue;
+    if (resFilter && !resVis(i)) continue;
     const p = PEOPLE[i];
     if (q && !p.username.toLowerCase().includes(q) && !(p.name || "").toLowerCase().includes(q)) continue;
     rows.push({i, p, total: totalOf(i)});
   }
   const k = dirKey, d = dirDir;
-  const val = ({p, total}) =>
-    k === "total" ? total : k === "jd" ? (p.jd_follows ? 1 : 0) : (p[k] ?? "");
+  const val = ({i, p, total}) => {
+    switch (k) {
+      case "first": return FIRST[i];
+      case "last": return LAST[i];
+      case "research": { const r = RES[p.username]; return r ? r.amount : 0; }
+      case "dossier": return inDossier(i) ? 0 : 1;
+      case "total": return total;
+      case "jd": return p.jd_follows ? 1 : 0;
+      default: return p[k] ?? "";
+    }
+  };
   rows.sort((a, b) => {
     const va = val(a), vb = val(b);
-    if (typeof va === "number" && typeof vb === "number") return (va - vb) * d || (b.total - a.total);
-    return String(va).localeCompare(String(vb)) * d;
+    let c;
+    if (typeof va === "number" && typeof vb === "number") c = (va - vb) * d;
+    else c = String(va).localeCompare(String(vb)) * d;
+    if (c) return c;
+    if (k === "last") { const f = FIRST[a.i].localeCompare(FIRST[b.i]); if (f) return f; }
+    if (k === "first") { const l = LAST[a.i].localeCompare(LAST[b.i]); if (l) return l; }
+    return b.total - a.total;
   });
   return rows;
 }
@@ -734,9 +860,13 @@ function paintDir() {
   const shown = rows.slice(0, cap);
   document.getElementById("dir-count").textContent =
     `${rows.length.toLocaleString()} of ${visibleCount.toLocaleString()} shown people`;
+  const ssel = document.getElementById("dir-sort");
+  if (ssel) ssel.value = dirKey;
+  const sdir = document.getElementById("dir-dirbtn");
+  if (sdir) sdir.textContent = dirDir === 1 ? "▲ Asc" : "▼ Desc";
   document.getElementById("dir-list").innerHTML = `<table>
     <thead><tr>
-      <th data-k="username">Handle</th><th data-k="name">Name</th>
+      <th data-k="username">Handle</th><th data-k="last">Name</th>
       <th data-k="in_degree">In</th><th data-k="out_degree">Out</th>
       <th data-k="total">Total</th><th data-k="num_lists">Lists</th>
       <th data-k="jd">JD</th><th></th>
@@ -744,7 +874,7 @@ function paintDir() {
     <tbody>` + shown.map(({p, i, total}) => `
     <tr>
       <td>${igLink(p.username)}</td>
-      <td>${esc(p.name || "—")}</td>
+      <td>${(p.name && p.name.trim()) ? esc(p.name) : (INF[i] ? `<span class="infname">${esc(INF[i])}</span>` : "—")}</td>
       <td>${p.in_degree}</td><td>${p.out_degree}</td><td><strong>${total}</strong></td>
       <td>${p.num_lists || ""}${p.has_list ? " ●" : (p.list_status === "private" ? " P" : (p.list_status === "failed" ? " !" : ""))}</td>
       <td>${p.jd_follows ? "Yes" : ""}</td>
@@ -758,7 +888,7 @@ function paintDir() {
     th.innerHTML = th.textContent.replace(/ [▲▼]$/, "") + (dirKey === k ? (dirDir === 1 ? " ▲" : " ▼") : "");
     th.onclick = () => {
       if (dirKey === k) dirDir *= -1;
-      else { dirKey = k; dirDir = (k === "username" || k === "name") ? 1 : -1; }
+      else { dirKey = k; dirDir = defaultDir(k); }
       paintDir();
     };
   });
@@ -770,16 +900,65 @@ function paintDir() {
 }
 function initDirectory() {
   const dr = document.getElementById("directory");
+  /* drag-resizable drawer: grip on the left edge, width persisted */
+  let dirW = 0;
+  try { dirW = +localStorage.getItem("ncc-dir-width") || 0; } catch (_) {}
+  const applyDirWidth = () => {
+    if (dirW > 0 && window.innerWidth > 900) dr.style.width = dirW + "px";
+    else dr.style.width = "";
+  };
+  applyDirWidth();
+  window.addEventListener("resize", applyDirWidth);
+  const grip = document.getElementById("dir-grip");
+  grip.addEventListener("pointerdown", e => {
+    if (window.innerWidth <= 900) return;
+    e.preventDefault();
+    e.stopPropagation();
+    try { grip.setPointerCapture(e.pointerId); } catch (_) {}
+    document.body.classList.add("dir-resizing");
+    const move = ev => {
+      dirW = Math.round(Math.min(Math.max(window.innerWidth - ev.clientX, 320), window.innerWidth * 0.92));
+      dr.style.width = dirW + "px";
+    };
+    const up = () => {
+      grip.removeEventListener("pointermove", move);
+      grip.removeEventListener("pointerup", up);
+      grip.removeEventListener("pointercancel", up);
+      document.body.classList.remove("dir-resizing");
+      try { localStorage.setItem("ncc-dir-width", String(dirW)); } catch (_) {}
+    };
+    grip.addEventListener("pointermove", move);
+    grip.addEventListener("pointerup", up);
+    grip.addEventListener("pointercancel", up);
+  });
   document.getElementById("btn-dir").addEventListener("click", () => {
     dr.hidden = !dr.hidden;
     document.getElementById("btn-dir").classList.toggle("on", !dr.hidden);
-    if (!dr.hidden) { paintDir(); document.getElementById("dir-q").focus(); }
+    if (!dr.hidden) { loadDossierMembership(); paintDir(); document.getElementById("dir-q").focus(); }
   });
   document.getElementById("dir-close").addEventListener("click", () => {
     dr.hidden = true;
     document.getElementById("btn-dir").classList.remove("on");
   });
   document.getElementById("dir-q").addEventListener("input", e => { dirQ = e.target.value; paintDir(); });
+  /* mirrored Navigate filters — same shared setters as the Filters panel */
+  const dmc = document.getElementById("d-minconn");
+  dmc.max = maxTotal;
+  dmc.addEventListener("input", () => setMinConn(+dmc.value));
+  document.getElementById("d-f-jd").addEventListener("change", e => setFJd(e.target.checked));
+  document.getElementById("d-f-list").addEventListener("change", e => setFList(e.target.checked));
+  document.getElementById("d-f-resfilter").addEventListener("change", e => setResFilter(e.target.checked));
+  document.getElementById("d-f-isolate").addEventListener("change", e => setIsolate(e.target.checked));
+  document.getElementById("d-f-labels").addEventListener("change", e => setFLabels(e.target.checked));
+  /* full sort-key set (headers cover the common ones; the select has all) */
+  document.getElementById("dir-sort").addEventListener("change", e => {
+    const k = e.target.value;
+    if (k !== dirKey) { dirKey = k; dirDir = defaultDir(k); }
+    if (k === "dossier") loadDossierMembership();
+    paintDir();
+  });
+  document.getElementById("dir-dirbtn").addEventListener("click", () => { dirDir *= -1; paintDir(); });
+  syncFilterUI();
 }
 
 /* ---------- toolbar, filters, keyboard ---------- */
@@ -792,20 +971,12 @@ function initToolbar() {
   });
   const mc = document.getElementById("minconn");
   mc.max = maxTotal;
-  mc.addEventListener("input", () => {
-    minConn = +mc.value;
-    document.getElementById("minconn-val").textContent = minConn.toLocaleString();
-    applyFilters();
-  });
-  document.getElementById("f-jd").addEventListener("change", e => { fJd = e.target.checked; applyFilters(); });
-  document.getElementById("f-list").addEventListener("change", e => { fList = e.target.checked; applyFilters(); });
-  document.getElementById("f-resfilter").addEventListener("change", e => {
-    resFilter = e.target.checked;
-    if (resFilter && hover >= 0 && !resVis(hover)) { hover = -1; tip.hidden = true; }
-    draw();
-  });
-  document.getElementById("f-isolate").addEventListener("change", e => { isolate = e.target.checked; draw(); });
-  document.getElementById("f-labels").addEventListener("change", e => { fLabels = e.target.checked; draw(); });
+  mc.addEventListener("input", () => setMinConn(+mc.value));
+  document.getElementById("f-jd").addEventListener("change", e => setFJd(e.target.checked));
+  document.getElementById("f-list").addEventListener("change", e => setFList(e.target.checked));
+  document.getElementById("f-resfilter").addEventListener("change", e => setResFilter(e.target.checked));
+  document.getElementById("f-isolate").addEventListener("change", e => setIsolate(e.target.checked));
+  document.getElementById("f-labels").addEventListener("change", e => setFLabels(e.target.checked));
   const bb = document.getElementById("btn-bridges");
   function setBridgeMode(v) {
     bridgeMode = v;
