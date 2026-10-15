@@ -3393,7 +3393,8 @@ function aiTidy(){
 
 /* ============================================================
    Audit — a light feeder wall of quick wins. NOT the old audit suite:
-   one random card per profile, one missing fact per card, filled in
+   one random card per profile carrying ALL of that person's missing
+   quick-win facts (indicator chips switch the editor in place), filled in
    seconds through the same write path as everywhere else (txn /
    queuePatch). There is NO save button: once a card's input is
    complete it flashes for 3 seconds and submits itself (editing during
@@ -3405,13 +3406,13 @@ function aiTidy(){
    ============================================================ */
 var AUD_WALL = 12;
 var AUD_GAPS = {
-  tier:  { tag:'Tier',          prompt:'Tier not set' },
-  loc:   { tag:'Location',      prompt:'No location on file' },
-  rel:   { tag:'Relationship',  prompt:'Relationship not set' },
-  years: { tag:'Years known',   prompt:'How long have you known them?' },
-  phone: { tag:'Phone',         prompt:'No phone number' },
-  orgs:  { tag:'Organizations', prompt:'No organizations on file' },
-  skills:{ tag:'Skills',        prompt:'No skills on file' }
+  tier:  { tag:'Tier',          short:'Tier',     prompt:'Tier not set' },
+  loc:   { tag:'Location',      short:'Location', prompt:'No location on file' },
+  rel:   { tag:'Relationship',  short:'Relation', prompt:'Relationship not set' },
+  years: { tag:'Years known',   short:'Years',    prompt:'How long have you known them?' },
+  phone: { tag:'Phone',         short:'Phone',    prompt:'No phone number' },
+  orgs:  { tag:'Organizations', short:'Orgs',     prompt:'No organizations on file' },
+  skills:{ tag:'Skills',        short:'Skills',   prompt:'No skills on file' }
 };
 function audGaps(e){
   var g = [];
@@ -3452,7 +3453,7 @@ function audDeal(){
   var A = S.audit, pool = [];
   people().forEach(function(di){
     var g = audOpenGaps(di);
-    if(g.length) pool.push({ di:di, gap:g[Math.floor(Math.random() * g.length)] });
+    if(g.length) pool.push({ di:di, gaps:g.slice(), done:[], cur:g[0] });
   });
   for(var i = pool.length - 1; i > 0; i--){
     var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
@@ -3501,18 +3502,50 @@ function audEdHTML(di, gap){
   if(gap === 'skills') return '<div class="pted-add"><input class="aud-in" placeholder="Add a skill" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   return '';
 }
+function audEntry(di){
+  if(!S.audit || !S.audit.shown) return null;
+  for(var i = 0; i < S.audit.shown.length; i++) if(S.audit.shown[i].di === di) return S.audit.shown[i];
+  return null;
+}
+function audChipsHTML(x){
+  var done = x.done.map(function(g){
+    return '<span class="aud-gchip done" title="' + AUD_GAPS[g].tag + ' filled in">✓ ' + AUD_GAPS[g].short + '</span>';
+  }).join('');
+  var open = x.gaps.map(function(g){
+    return '<button type="button" class="aud-gchip' + (g === x.cur ? ' on' : '') + '" data-act="audgap" data-gap="' + g + '" aria-pressed="' + (g === x.cur ? 'true' : 'false') + '">' + AUD_GAPS[g].short + '</button>';
+  }).join('');
+  return done + open;
+}
 function audCardHTML(x, i){
-  var di = x.di, gap = x.gap, e = D.directory[di], meta = AUD_GAPS[gap];
+  var di = x.di, gap = x.cur, e = D.directory[di], meta = AUD_GAPS[gap];
   var ctx = [cap(gv(e, 'relationship')), ptHandle(e) ? '@' + ptHandle(e) : '', ptLocVal(e)].filter(Boolean).join(' · ');
   return '<article class="aud-card" data-di="' + di + '" data-gap="' + gap + '" style="animation-delay:' + Math.min(i * 45, 405) + 'ms">' +
     '<div class="aud-top">' + avatar(e, 'md') +
     '<span class="pn"><button type="button" class="aud-name" data-act="audopen" data-di="' + di + '" title="Open profile">' + esc(dispName(e)) + '</button>' +
-    (ctx ? '<small class="aud-ctx">' + esc(ctx) + '</small>' : '') + '</span>' +
-    '<span class="aud-tag">' + meta.tag + '</span></div>' +
-    '<p class="aud-prompt">' + meta.prompt + '</p>' +
+    (ctx ? '<small class="aud-ctx">' + esc(ctx) + '</small>' : '') + '</span></div>' +
+    '<div class="aud-gaps" role="group" aria-label="Missing items for this person">' + audChipsHTML(x) + '</div>' +
+    '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span></p>' +
     '<div class="aud-ed">' + audEdHTML(di, gap) + '</div>' +
     '<div class="aud-foot"><span class="aud-cd" hidden><span class="aud-cdt">Saving in 3</span><span class="aud-bar"><i></i></span></span><span class="sp"></span>' +
     '<button type="button" class="aud-skip" data-act="audskip" data-di="' + di + '">Skip</button></div></article>';
+}
+/* Switch a card's active gap in place: chips, prompt and editor swap
+   without the card moving or resizing. Any armed countdown is cancelled,
+   so a half-filled editor never submits after a switch. */
+function audSetGap(card, gap){
+  var di = +card.getAttribute('data-di'), x = audEntry(di);
+  if(!x || x.gaps.indexOf(gap) < 0) return;
+  var hadFocus = card.contains(document.activeElement);
+  audDisarm(card);
+  x.cur = gap;
+  card.setAttribute('data-gap', gap);
+  card.removeAttribute('data-pick');
+  var box = $('.aud-gaps', card); if(box) box.innerHTML = audChipsHTML(x);
+  var pr = $('.aud-prompt', card);
+  if(pr) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>';
+  var ed = $('.aud-ed', card); if(ed) ed.innerHTML = audEdHTML(di, gap);
+  audWireCard(card);
+  if(hadFocus){ var f = $('.aud-in', card) || $('.aud-gchip.on', card); if(f) f.focus(); }
 }
 function audWireCard(card){
   var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
@@ -3613,7 +3646,16 @@ function audSave(di, card){
     if(!sv){ audNudge(card); return; }
     ok = audAddTag(di, 'specialty', sv);
   }
-  if(ok){ S.audit.done++; audRetire(card, true); }
+  if(ok){
+    S.audit.done++;
+    var x = audEntry(di);
+    if(x){
+      x.done.push(gap);
+      x.gaps = x.gaps.filter(function(g){ return g !== gap; });
+      if(x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
+    }
+    audRetire(card, true);
+  }
 }
 function audRetire(card, saved){
   audDisarm(card);
@@ -3732,7 +3774,8 @@ function onClick(ev){
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
     case 'back': back(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
-    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit){ audDisarm(audC3); AUD_DISMISS[audPair(di, audC3.getAttribute('data-gap'))] = 1; store('ncc_aud_skip', JSON.stringify(AUD_DISMISS)); audRetire(audC3, false); } break; }
+    case 'audgap': { var audC4 = el.closest('.aud-card'); if(audC4){ var gTo = el.getAttribute('data-gap'); if(gTo && gTo !== audC4.getAttribute('data-gap')) audSetGap(audC4, gTo); } break; }
+    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit){ audDisarm(audC3); var skGap = audC3.getAttribute('data-gap'); AUD_DISMISS[audPair(di, skGap)] = 1; store('ncc_aud_skip', JSON.stringify(AUD_DISMISS)); var xSk = audEntry(di); if(xSk){ xSk.gaps = xSk.gaps.filter(function(g){ return g !== skGap; }); if(xSk.gaps.length){ audPaintCounts(); audSetGap(audC3, xSk.gaps[0]); break; } } audRetire(audC3, false); } break; }
     case 'audopen': if(di != null) openPerson(di); break;
     case 'audshuffle': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;
     case 'set': doSet(el); break;
@@ -3958,7 +4001,7 @@ function onNavKey(ev){
     ev.preventDefault(); ev.stopImmediatePropagation(); t.click(); return;
   }
   if(t.tagName === 'BUTTON'){
-    var grp = t.closest('.seg, .chips, .aud-opts, .pted-opts, .kschips');
+    var grp = t.closest('.seg, .chips, .aud-opts, .aud-gaps, .pted-opts, .kschips');
     if(grp && (key === 'ArrowDown' || key === 'ArrowUp' || key === 'ArrowLeft' || key === 'ArrowRight' || key === 'Home' || key === 'End')){
       var bs = $$('button', grp).filter(function(b){ return !b.disabled; });
       var j = bs.indexOf(t); if(j < 0) return;
