@@ -3369,7 +3369,7 @@ function audGaps(e){
 }
 function audRemaining(){
   var n = 0;
-  people().forEach(function(di){ if(audGaps(D.directory[di]).length) n++; });
+  people().forEach(function(di){ n += audGaps(D.directory[di]).length; });
   return n;
 }
 function audDeal(){
