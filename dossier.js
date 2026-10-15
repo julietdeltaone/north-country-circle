@@ -1140,11 +1140,8 @@ function buildDossierDoc(e){
   var orgs = [];
   ORG_CATS.forEach(function(cat){ tagList(gv(e, cat.k)).forEach(function(v){ orgs.push(v); }); });
   var contact = [];
-  if(handle) contact.push({ l:'Instagram', v:handle });
   if(gv(e, 'email')) contact.push({ l:'Email', v:gv(e, 'email') });
   if(gv(e, 'phone')) contact.push({ l:'Phone', v:gv(e, 'phone') });
-  if(e.city) contact.push({ l:'Lives in', v:e.city });
-  if(e.hometown) contact.push({ l:'From', v:e.hometown });
   if(orgs.length) contact.push({ l:'Orgs', v:orgs.join(' · ') });
   /* Synopsis fallback: field notes recast as prose (source URLs and filing attributions stripped). */
   function proseFromNotes(txt){
@@ -1184,6 +1181,7 @@ function buildDossierDoc(e){
   var evs = sortedEvents(e).map(function(o){ return { date:o.ev.date || '', summary:o.ev.summary || '', detail:o.ev.detail || '' }; });
   var T = {
     name:name, aka:aka, handle:handle, classif:classif, rel:gv(e, 'relationship'), ctx:gv(e, 'context'), tierCol:tierCol(e), contact:contact, synBody:synBody,
+    locCity:e.city || '', locHome:e.hometown || '', knownSince:knownSinceYear(e),
     bars:bars, extras:extras, assoc:assocNames,
     notesText:gv(e, 'notes') ? String(gv(e, 'notes')) : '', fpText:fp ? String(fp) : '',
     evs:evs, tier:tierName(e), initial:(name || '·').trim().charAt(0).toUpperCase()
@@ -1205,26 +1203,28 @@ function docBR(s){ return docT(s).replace(/\n/g, '<br>'); }
 function docRateLabel(T){ return T.bars.length ? 'PROFILE RATINGS' : 'DETAILS'; }
 
 /* ---------- Case File "Sidebar File": the single export design ----------
-   Draft 6 layout (JD pick, 2026-10-15): dark FILE COPY strip, gray sidebar
-   carrying contact + ratings + radar, narrative in the main column.
-   Grayscale base with two deliberate color exceptions: the tier stamp takes
-   the dossier ring color (soft tint + colored border), and each personality
-   trait carries its own muted color across its dots, radar vertex and label.
-   Ratings are five-dot scales; sidebar rows are compact. Contact and info
-   values sit on dotted form lines (the Draft 2 cue). Years in body text and
-   relationship/context values render bold. No rotated stamp. */
+   Layout (JD, 2026-10-15): a full-width header band carries the name and the
+   primary information (handle, location, tier, relationship/context, known
+   since); below it the gray sidebar (contact + ratings + radar) runs beside
+   the narrative column. ONE accent color: very dark navy #16283f (rules,
+   section numbers, rating dots, radar, dotted lines). The tier stamp is the
+   only other color: elegant maroon #5e2129, the same for every tier. Traits
+   are distinguished by label only. Ratings are five-dot scales; sidebar rows
+   are compact; contact and info values sit on dotted form lines. Years in
+   body text and relationship/context values render bold. No rotated stamp. */
+var DOC_NAVY = '#16283f';
+var DOC_MAROON = '#5e2129';
 var TRAIT_STYLE = {
-  openness:{ c:'#41546e', s:'OPN' },
-  conscientiousness:{ c:'#3f5a58', s:'CON' },
-  extraversion:{ c:'#5d4630', s:'EXT' },
-  agreeableness:{ c:'#46543e', s:'AGR' },
-  neuroticism:{ c:'#58455c', s:'NEU' },
-  ego:{ c:'#4b4f57', s:'EGO' }
+  openness:{ s:'OPN' },
+  conscientiousness:{ s:'CON' },
+  extraversion:{ s:'EXT' },
+  agreeableness:{ s:'AGR' },
+  neuroticism:{ s:'NEU' },
+  ego:{ s:'EGO' }
 };
-function traitC(b){ return (TRAIT_STYLE[b.k] || {}).c || '#262626'; }
+function traitC(b){ return DOC_NAVY; }
 function traitS(b){ return (TRAIT_STYLE[b.k] || {}).s || String(b.l || '').slice(0, 3).toUpperCase(); }
-var TIER_DEEP = { '#dfa84f':'#8a6831', '#6ea8e1':'#44688c', '#4fb3a1':'#316f64', '#a794d8':'#675c86' };
-var TIER_TINT = { '#dfa84f':'rgba(223,168,79,.08)', '#6ea8e1':'rgba(110,168,225,.09)', '#4fb3a1':'rgba(79,179,161,.08)', '#a794d8':'rgba(167,148,216,.09)' };
+var TIER_TINT = 'rgba(94,33,41,.07)';
 function docDots(b){
   var f = Math.max(0, Math.min(5, b.v)), c = traitC(b), s = '<span class="dots" aria-hidden="true">';
   for(var i = 0; i < 5; i++) s += '<i class="' + (i < f ? 'on' : '') + '"' + (i < f ? ' style="background:' + c + ';border-color:' + c + '"' : '') + '></i>';
@@ -1248,7 +1248,7 @@ function docRadar(bars){
   var s = '<svg class="radar" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true">';
   for(var ring = 5; ring >= 1; ring--) s += '<polygon points="' + ringPts(ring / 5) + '" fill="' + (ring === 5 ? '#e6e6e3' : 'none') + '" stroke="#c4c4c0" stroke-width="1"/>';
   for(i = 0; i < n; i++){ p = pt(i, 1); s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="#d2d2ce" stroke-width="1"/>'; }
-  s += '<polygon points="' + dataPts() + '" fill="rgba(38,38,38,.14)" stroke="#262626" stroke-width="1.6"/>';
+  s += '<polygon points="' + dataPts() + '" fill="rgba(22,40,63,.13)" stroke="' + DOC_NAVY + '" stroke-width="1.6"/>';
   bars.forEach(function(b, j){ var q = pt(j, Math.max(0, Math.min(5, b.v)) / 5); s += '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="2.8" fill="' + traitC(b) + '"/>'; });
   bars.forEach(function(b, j){ var q = pt(j, 1.34); s += '<text x="' + q[0].toFixed(1) + '" y="' + (q[1] + 3).toFixed(1) + '" text-anchor="middle" fill="' + traitC(b) + '">' + esc(traitS(b)) + '</text>'; });
   return s + '</svg>';
@@ -1257,33 +1257,37 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
   css:
   'body{background:#2b2b2b;margin:0;padding:28px;font-family:"IBM Plex Mono","Courier New",monospace;color:#262626}' +
   '.page{background:#f4f4f1;max-width:820px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.55);display:flex;flex-direction:column}' +
-  '.strip{background:#262626;color:#f2f2f0;padding:11px 36px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.22em;flex:none}' +
+  '.strip{background:#16283f;color:#f2f2f0;padding:11px 36px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.22em;flex:none}' +
   '.bodycols{display:flex;flex:1;min-height:0;align-items:stretch}' +
-  '.side{width:256px;flex:none;background:#ebebe8;border-right:1.5px solid #262626;padding:22px 20px}' +
-  '.side h3{font-size:11px;letter-spacing:.22em;font-weight:600;border-bottom:2px solid #262626;padding-bottom:7px;margin:0 0 12px}' +
+  '.side{width:256px;flex:none;background:#ebebe8;border-right:1.5px solid #16283f;padding:22px 20px}' +
+  '.side h3{font-size:11px;letter-spacing:.22em;font-weight:600;border-bottom:2px solid #16283f;padding-bottom:7px;margin:0 0 12px}' +
   '.blk{margin-bottom:24px}.blk:last-child{margin-bottom:4px}' +
   '.crow{font-size:11.5px;margin-bottom:9px}' +
   '.crow b{display:block;font-size:9.5px;letter-spacing:.16em;color:#595959;margin-bottom:2px;font-weight:600}' +
-  '.crow span{display:block;border-bottom:1.5px dotted #8f8f8a;padding-bottom:3px}' +
+  '.crow span{display:block;border-bottom:1.5px dotted #16283f;padding-bottom:3px}' +
   '.trow{margin-bottom:3px}' +
   '.trow .dl{font-size:10.5px;font-weight:600;letter-spacing:.05em;margin-bottom:1px;line-height:1.2;text-transform:uppercase}' +
   '.dots{display:flex;gap:5px}.dots i{display:block;width:8px;height:8px;border-radius:50%;border:1.5px solid #b9b9b4}' +
-  '.dots i.on{background:#262626;border-color:#262626}' +
+  '.dots i.on{background:#16283f;border-color:#16283f}' +
   '.kv{font-size:12px;margin-top:9px}' +
   '.kv span{display:block;font-weight:600;letter-spacing:.1em;font-size:10px;text-transform:uppercase;color:#595959;margin-bottom:2px}' +
-  '.kv i{font-style:normal;display:block;border-bottom:1.5px dotted #8f8f8a;padding-bottom:3px}' +
+  '.kv i{font-style:normal;display:block;border-bottom:1.5px dotted #16283f;padding-bottom:3px}' +
   '.chartblk{text-align:center}' +
   '.radar text{font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;font-weight:600;letter-spacing:.05em}' +
   '.chartcap{font-size:8px;letter-spacing:.14em;color:#6a6a6a;text-align:center;margin-top:2px}' +
   '.main{flex:1;min-width:0;padding:24px 34px 28px}' +
+  '.headband{padding:20px 36px 18px;border-bottom:2.5px solid #16283f}' +
+  '.hbrow{display:flex;justify-content:space-between;align-items:flex-start;gap:26px}' +
+  '.hbmain{min-width:0}' +
+  '.ident{font-size:12px;color:#595959;margin-top:5px;letter-spacing:.05em}' +
   '.kick{font-size:10.5px;letter-spacing:.3em;color:#595959;font-weight:600}' +
   'h1{font-size:27px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;margin:5px 0 0}' +
   '.aka{font-size:12px;color:#6f6f6f;margin-top:3px}' +
-  '.stamp{display:inline-block;border:2.5px solid #4d4d4d;color:#262626;padding:4px 13px;font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:12px;text-transform:uppercase}' +
-  '.meta{font-size:11.5px;letter-spacing:.08em;border-top:2px solid #262626;border-bottom:1px solid #262626;padding:8px 0;margin-top:15px;text-transform:uppercase}' +
-  '.meta .mv{border-bottom:1.5px dotted #8f8f8a;padding-bottom:1px}' +
-  '.sec{border-top:2px solid #262626;margin-top:21px;padding-top:10px;break-inside:avoid}' +
-  '.sec h2{font-size:12.5px;letter-spacing:.2em;margin:0 0 11px;font-weight:600}.sec h2 b{color:#595959;font-weight:600}' +
+  '.stamp{display:inline-block;border:2.5px solid #5e2129;color:#5e2129;padding:4px 13px;font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:3px;text-transform:uppercase;white-space:nowrap}' +
+  '.meta{font-size:11.5px;letter-spacing:.08em;border-top:2px solid #16283f;border-bottom:1px solid #16283f;padding:8px 0;margin-top:14px;text-transform:uppercase}' +
+  '.meta .mv{border-bottom:1.5px dotted #16283f;padding-bottom:1px}' +
+  '.sec{border-top:2px solid #16283f;margin-top:21px;padding-top:10px;break-inside:avoid}' +
+  '.sec h2{font-size:12.5px;letter-spacing:.2em;margin:0 0 11px;font-weight:600}.sec h2 b{color:#16283f;font-weight:600}' +
   '.sbody{font-size:12.5px;line-height:1.75}.sbody p{margin:0 0 9px}' +
   'ul{margin:0;padding-left:19px;font-size:12.5px;line-height:1.75}ul.cols{column-count:2;column-gap:30px}' +
   '@page{size:Letter;margin:.55in;@top-right{content:"FILE COPY";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}@bottom-center{content:"PAGE " counter(page) " OF " counter(pages);font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}' +
@@ -1291,6 +1295,7 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
   'body{background:#fff;padding:0}' +
   '.page{box-shadow:none;max-width:none;width:auto;display:block}' +
   '.bodycols{display:block}' +
+  '.headband{padding:20px 0 16px;break-inside:avoid}' +
   '.side{float:left;width:250px;margin:2px 24px 14px 0;padding:18px 16px;break-inside:avoid}' +
   '.main{margin-left:0;padding:22px 0 0;min-width:0}' +
   '.sec{break-inside:auto}' +
@@ -1322,21 +1327,26 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
     var meta = [];
     if(T.rel) meta.push('<b class="mv">' + esc(T.rel) + '</b>');
     if(T.ctx) meta.push('<b class="mv">' + esc(T.ctx) + '</b>');
-    if(T.tier) meta.push('<span class="mv">' + esc(T.tier) + '</span>');
+    if(T.knownSince) meta.push('<span class="mv">Known since ' + T.knownSince + '</span>');
     var stamp = '';
     if(T.tier){
-      var tc = T.tierCol || '#4d4d4d';
-      var deep = TIER_DEEP[tc] || '#262626';
-      stamp = '<div><span class="stamp" style="border-color:' + deep + ';background:' + (TIER_TINT[tc] || 'transparent') + ';color:' + deep + '">' + esc(T.tier) + '</span></div>';
+      stamp = '<span class="stamp" style="border-color:' + DOC_MAROON + ';background:' + TIER_TINT + ';color:' + DOC_MAROON + '">' + esc(T.tier) + '</span>';
     }
+    var ident = [];
+    if(T.handle) ident.push(esc(T.handle));
+    if(T.locCity) ident.push('Lives in ' + docT(T.locCity));
+    if(T.locHome) ident.push('From ' + docT(T.locHome));
+    var head = '<div class="headband"><div class="hbrow"><div class="hbmain">' +
+      '<div class="kick">Subject File</div><h1>' + esc(T.name) + '</h1>' +
+      (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
+      (ident.length ? '<div class="ident">' + ident.join(' &nbsp;·&nbsp; ') + '</div>' : '') +
+      '</div>' + stamp + '</div>' +
+      (meta.length ? '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' : '') + '</div>';
     var nmCss = String(T.name || '').toUpperCase().replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
     return '<style>@page{@top-left{content:"PERSONNEL DOSSIER — ' + nmCss + '";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}</style>' +
       '<div class="page"><div class="strip"><span>PERSONNEL DOSSIER</span><span>FILE COPY</span></div>' +
-      '<div class="bodycols"><div class="side">' + side + '</div><div class="main">' +
-      '<div class="kick">Subject File</div><h1>' + esc(T.name) + '</h1>' +
-      (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
-      stamp +
-      (meta.length ? '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' : '') +
+      head +
+      '<div class="bodycols">' + (side ? '<div class="side">' + side + '</div>' : '') + '<div class="main">' +
       secs.map(function(s, i){ return '<div class="sec"><h2><b>' + ('0' + (i + 1)).slice(-2) + '</b> &nbsp;' + s[0] + '</h2>' + s[1] + '</div>'; }).join('') +
       '</div></div></div>';
   } };
@@ -1371,7 +1381,8 @@ var S = {
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d') },
   fam:{ editing:null, focus:null, sheet:false, side:null },
-  grp:{ kind:'groups', open:null, renaming:null }
+  grp:{ kind:'groups', open:null, renaming:null },
+  audit:null   /* Audit feeder wall state (visit only), built lazily by viewAudit */
 };
 /* View mode: 'minimal' = clean views, side panels tucked, no stats strips.
    'rich' = stats panels + side panels open by default. Persisted; default minimal.
@@ -1434,6 +1445,7 @@ function askEditKey(){
 /* ---------- global chrome ---------- */
 var NAV = [
   { k:'people',  l:'People',  ic:'people' },
+  { k:'audit',   l:'Audit',   ic:'target' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
   { k:'groups',  l:'Groups',  ic:'groups' }
@@ -1525,7 +1537,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'people';
   if(name === 'p') name = 'profile';
-  if(['people','profile','network','family','groups','settings'].indexOf(name) < 0) name = 'people';
+  if(['people','profile','network','family','groups','settings','audit'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -1567,6 +1579,7 @@ function render(){
     else if(n === 'family') viewFamily(v);
     else if(n === 'groups') viewGroups(v);
     else if(n === 'settings') viewSettings(v);
+    else if(n === 'audit') viewAudit(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -1784,7 +1797,7 @@ var PT_ALL = [
 var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1 };
 var PT_NUMDIR = { assoc:1, years:1, updated:1 };   /* first click on these sorts high-to-low */
 var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', groups:'groups', years:'years', phone:'phone', email:'email' };
-var PT_SEED_TOWNS = ['Potsdam','Canton','Massena','Norwood','Norfolk','Madrid','Waddington','Ogdensburg','Gouverneur','Lisbon','Colton','Parishville','Hopkinton','Brasher Falls','Winthrop','Hammond','Heuvelton','Hermon','DeKalb Junction','Rensselaer Falls','Pierrepont','Hannawa Falls','West Potsdam','Louisville','Morristown','Star Lake','Cranberry Lake','Edwards','Russell','Chase Mills','North Lawrence'];
+var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
 var PT_SEED_ORGS = {
   universities: ['SUNY Potsdam','Clarkson University','St. Lawrence University','SUNY Canton','Potsdam Central School','Hugh C. Williams Senior High School','Massena Central High School','Norwood-Norfolk Central School','Madrid-Waddington Central School','Ogdensburg Free Academy','Gouverneur Central School','Lisbon Central School','Colton-Pierrepont Central School','Parishville-Hopkinton Central School','St. Lawrence Central School','Edwards-Knox Central School','Hermon-DeKalb Central School','Clifton-Fine Central School','Hammond Central School','Heuvelton Central School','Morristown Central School'],
   companies: ['Canton-Potsdam Hospital','Claxton-Hepburn Medical Center','Massena Hospital'],
@@ -1933,11 +1946,16 @@ function ptNormLoc(raw, kind){
   }
   return '';
 }
+function ptDedupeTowns(list){
+  var out = ptDedupe(list), withState = {};
+  out.forEach(function(x){ var i = x.indexOf(','); if(i > 0) withState[x.slice(0, i).trim().toLowerCase()] = 1; });
+  return out.filter(function(x){ return x.indexOf(',') >= 0 || !withState[x.trim().toLowerCase()]; });
+}
 function ptSugList(kind, catK){
   if(kind === 'town'){
     var vals = [];
     D.directory.forEach(function(e){ var c = ptNormLoc(gv(e, 'city')), h = ptNormLoc(gv(e, 'hometown'), 'hometown'), lf = ptNormLoc(gv(e, 'location_on_file')); if(c) vals.push(c); if(h) vals.push(h); if(lf) vals.push(lf); });
-    return ptDedupe(vals.concat(PT_SEED_TOWNS)).sort(function(a, b){ return a.localeCompare(b); });
+    return ptDedupeTowns(vals.concat(PT_SEED_TOWNS.map(function(x){ return ptNormLoc(x); }))).sort(function(a, b){ return a.localeCompare(b); });
   }
   if(kind === 'org'){
     var ov = [];
@@ -3325,6 +3343,218 @@ function aiTidy(){
 }
 
 /* ============================================================
+   Audit — a light feeder wall of quick wins. NOT the old audit suite:
+   one random card per profile, one missing fact per card, filled in
+   seconds through the same write path as everywhere else (txn /
+   queuePatch / setField). Saving or skipping a card animates it out
+   and the next card in the deck feeds in. State lives in S.audit for
+   the visit only; the deck is rebuilt from the live directory, so a
+   filled gap never deals again.
+   ============================================================ */
+var AUD_WALL = 12;
+var AUD_GAPS = {
+  tier:  { tag:'Tier',          prompt:'Tier not set' },
+  loc:   { tag:'Location',      prompt:'No location on file' },
+  rel:   { tag:'Relationship',  prompt:'Relationship not set' },
+  years: { tag:'Years known',   prompt:'How long have you known them?' },
+  phone: { tag:'Phone',         prompt:'No phone number' },
+  orgs:  { tag:'Organizations', prompt:'No organizations on file' },
+  skills:{ tag:'Skills',        prompt:'No skills on file' }
+};
+function audGaps(e){
+  var g = [];
+  if(!tierOf(e)) g.push('tier');
+  if(!ptLocVal(e)) g.push('loc');
+  if(!gv(e, 'relationship')) g.push('rel');
+  if(!knownSinceYear(e)) g.push('years');
+  if(!gv(e, 'phone')) g.push('phone');
+  if(!orgsOf(e).length) g.push('orgs');
+  if(!tagList(gv(e, 'specialty')).length) g.push('skills');
+  return g;
+}
+function audRemaining(){
+  var n = 0;
+  people().forEach(function(di){ if(audGaps(D.directory[di]).length) n++; });
+  return n;
+}
+function audDeal(){
+  var A = S.audit, pool = [];
+  people().forEach(function(di){
+    if(A.skip[di]) return;
+    var g = audGaps(D.directory[di]);
+    if(g.length) pool.push({ di:di, gap:g[Math.floor(Math.random() * g.length)] });
+  });
+  for(var i = pool.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+  }
+  A.shown = pool.slice(0, AUD_WALL);
+  A.deck = pool.slice(AUD_WALL);
+}
+var AUD_ORG_POOLS = null;
+function audOrgPools(){
+  if(AUD_ORG_POOLS) return AUD_ORG_POOLS;
+  var cats = {};
+  ORG_CATS.forEach(function(c){ cats[c.k] = ptSugList('org', c.k); });
+  AUD_ORG_POOLS = cats;
+  return cats;
+}
+function audOrgPool(){
+  var cats = audOrgPools(), all = [];
+  ORG_CATS.forEach(function(c){ all = all.concat(cats[c.k]); });
+  return ptDedupe(all).sort(function(a, b){ return a.localeCompare(b); });
+}
+function audOrgCat(val){
+  var want = String(val || '').toLowerCase(), cats = audOrgPools();
+  var order = ['churches', 'universities', 'companies'];
+  for(var i = 0; i < order.length; i++){
+    var list = cats[order[i]];
+    for(var j = 0; j < list.length; j++) if(list[j].toLowerCase() === want) return order[i];
+  }
+  return 'companies';
+}
+function audEdHTML(di, gap){
+  var e = D.directory[di];
+  if(gap === 'tier'){
+    return '<div class="aud-opts">' + TIER_ORDER.map(function(t){
+      return '<button type="button" class="fc aud-pick" data-act="audpick" data-v="' + t + '"><i style="background:' + TIERS[t].c + '"></i>' + TIERS[t].n + '</button>';
+    }).join('') + '</div>';
+  }
+  if(gap === 'rel'){
+    return '<div class="aud-opts">' + REL_OPTS.map(function(r){
+      return '<button type="button" class="fc aud-pick" data-act="audpick" data-v="' + r + '">' + cap(r) + '</button>';
+    }).join('') + '</div>';
+  }
+  if(gap === 'loc') return '<div class="pted-add"><input class="aud-in" placeholder="Town, ST — e.g. Potsdam, NY" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
+  if(gap === 'years'){
+    var now = new Date().getFullYear(), opts = '<option value="">Pick a year</option>';
+    for(var y = now; y >= 1960; y--) opts += '<option value="' + y + '">Since ' + y + '</option>';
+    return '<select class="aud-sel" aria-label="Known since">' + opts + '</select>';
+  }
+  if(gap === 'phone') return '<input class="aud-in" type="tel" placeholder="Phone number" autocomplete="off">';
+  if(gap === 'orgs') return '<div class="pted-add"><input class="aud-in" placeholder="Add an organization" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
+  if(gap === 'skills') return '<div class="pted-add"><input class="aud-in" placeholder="Add a skill" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
+  return '';
+}
+function audCardHTML(x, i){
+  var di = x.di, gap = x.gap, e = D.directory[di], meta = AUD_GAPS[gap];
+  var ctx = [cap(gv(e, 'relationship')), ptHandle(e) ? '@' + ptHandle(e) : '', ptLocVal(e)].filter(Boolean).join(' · ');
+  return '<article class="aud-card" data-di="' + di + '" data-gap="' + gap + '" style="animation-delay:' + Math.min(i * 45, 405) + 'ms">' +
+    '<div class="aud-top">' + avatar(e, 'md') +
+    '<span class="pn"><button type="button" class="aud-name" data-act="audopen" data-di="' + di + '" title="Open profile">' + esc(dispName(e)) + '</button>' +
+    (ctx ? '<small class="aud-ctx">' + esc(ctx) + '</small>' : '') + '</span>' +
+    '<span class="aud-tag">' + meta.tag + '</span></div>' +
+    '<p class="aud-prompt">' + meta.prompt + '</p>' +
+    '<div class="aud-ed">' + audEdHTML(di, gap) + '</div>' +
+    '<div class="aud-foot"><button type="button" class="btn primary sm" data-act="audsave" data-di="' + di + '">' + (gap === 'orgs' || gap === 'skills' ? 'Add' : 'Save') + '</button>' +
+    '<button type="button" class="aud-skip" data-act="audskip" data-di="' + di + '">Skip</button></div></article>';
+}
+function audWireCard(card){
+  var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
+  if(inp && (gap === 'loc' || gap === 'orgs' || gap === 'skills')){
+    var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : audOrgPool();
+    ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); });
+  }
+  if(inp) inp.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter'){ ev.preventDefault(); var b = $('[data-act="audsave"]', card); if(b) b.click(); }
+  });
+}
+function audNudge(card){
+  card.classList.remove('aud-need'); void card.offsetWidth; card.classList.add('aud-need');
+  var f = $('.aud-in', card) || $('.aud-sel', card); if(f) f.focus();
+}
+function audAddTag(di, fieldK, val){
+  var e = D.directory[di], arr = splitTags(gv(e, fieldK), ', ');
+  if(arr.map(function(x){ return x.toLowerCase(); }).indexOf(val.toLowerCase()) >= 0) return true;
+  arr.push(val);
+  txn('Edit ' + fieldK, function(){ var o = {}; o[fieldK] = arr.join(', '); queuePatch(di, o); });
+  return true;
+}
+function audSave(di, card){
+  var gap = card.getAttribute('data-gap'), e = D.directory[di];
+  if(!e || +card.getAttribute('data-di') !== di) return;
+  var ok = false;
+  if(gap === 'tier' || gap === 'rel'){
+    var pick = card.getAttribute('data-pick');
+    if(!pick){ audNudge(card); return; }
+    if(gap === 'tier') txn('Set tier', function(){ queuePatch(di, { tier:pick }); });
+    else txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); });
+    ok = true;
+  }
+  else if(gap === 'loc'){
+    var inp = $('.aud-in', card), v = inp ? inp.value.trim() : '';
+    if(!v){ audNudge(card); return; }
+    setField(di, 'location_on_file', ptNormLoc(v)); ok = true;
+  }
+  else if(gap === 'years'){
+    var sel = $('.aud-sel', card), yv = sel ? sel.value : '';
+    if(!yv){ audNudge(card); return; }
+    setField(di, 'years_known', yv); ok = true;
+  }
+  else if(gap === 'phone'){
+    var inp2 = $('.aud-in', card), pv = inp2 ? inp2.value.trim() : '';
+    if(!pv){ audNudge(card); return; }
+    setField(di, 'phone', pv); ok = true;
+  }
+  else if(gap === 'orgs'){
+    var inp3 = $('.aud-in', card), ov = inp3 ? inp3.value.trim() : '';
+    if(!ov){ audNudge(card); return; }
+    ok = audAddTag(di, audOrgCat(ov), ov);
+  }
+  else if(gap === 'skills'){
+    var inp4 = $('.aud-in', card), sv = inp4 ? inp4.value.trim() : '';
+    if(!sv){ audNudge(card); return; }
+    ok = audAddTag(di, 'specialty', sv);
+  }
+  if(ok){ S.audit.done++; audRetire(card, true); }
+}
+function audRetire(card, saved){
+  var A = S.audit, di = +card.getAttribute('data-di');
+  A.shown = A.shown.filter(function(x){ return x.di !== di; });
+  function finish(){
+    card.remove();
+    var nxt = A.deck.shift();
+    if(nxt){
+      A.shown.push(nxt);
+      var grid = $('#audgrid');
+      if(grid){
+        var tmp = document.createElement('div');
+        tmp.innerHTML = audCardHTML(nxt, 0);
+        var nc = tmp.firstChild;
+        grid.appendChild(nc);
+        audWireCard(nc);
+      }
+    }
+    audPaintCounts(); audPaintEmpty();
+  }
+  if(pvReducedMotion()){ finish(); return; }
+  card.classList.add(saved ? 'aud-done' : 'aud-out');
+  setTimeout(finish, 310);
+}
+function audPaintCounts(){
+  var s = $('#audsub'); if(!s) return;
+  var left = audRemaining(), done = S.audit ? S.audit.done : 0;
+  s.textContent = left ? left + ' quick win' + (left === 1 ? '' : 's') + ' left' + (done ? ' · ' + done + ' filled in this visit' : '') : 'Nothing left to fill in';
+}
+function audPaintEmpty(){
+  var box = $('#audempty'), grid = $('#audgrid');
+  if(!box || !grid) return;
+  if(grid.querySelector('.aud-card')){ box.innerHTML = ''; return; }
+  if(audRemaining() === 0) box.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>All caught up</h3><p>Every profile has the basics filled in. Nice work.</p></div>';
+  else box.innerHTML = '<div class="aud-caught">' + ic('target', 26) + '<h3>That is the whole deal</h3><p>The rest were skipped for now. Shuffle to run through them again.</p></div>';
+}
+function viewAudit(v){
+  if(!S.audit) S.audit = { done:0, skip:{}, shown:null, deck:null };
+  if(!S.audit.shown) audDeal();
+  v.innerHTML = '<div class="page audit"><div class="pagehead"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
+    '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></div>' +
+    '<div class="aud-grid" id="audgrid"></div><div id="audempty"></div></div>';
+  var grid = $('#audgrid');
+  grid.innerHTML = S.audit.shown.map(function(x, i){ return audCardHTML(x, i); }).join('');
+  $$('.aud-card', grid).forEach(audWireCard);
+  audPaintCounts(); audPaintEmpty();
+}
+
+/* ============================================================
    9. events — one delegated click handler, one input/change handler, one key handler
    ============================================================ */
 function curDi(el){
@@ -3390,6 +3620,11 @@ function onClick(ev){
     case 'redo': doRedo(); refreshAfterUndo('redo'); break;
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
     case 'back': back(); break;
+    case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); } break; }
+    case 'audsave': { var audC2 = el.closest('.aud-card'); if(audC2 && di != null) audSave(di, audC2); break; }
+    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit){ S.audit.skip[di] = 1; audRetire(audC3, false); } break; }
+    case 'audopen': if(di != null) openPerson(di); break;
+    case 'audshuffle': if(S.audit){ S.audit.skip = {}; S.audit.shown = null; } viewAudit($('#view')); break;
     case 'set': doSet(el); break;
     case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
     case 'mergeopen': openMergeSheet(di); break;
