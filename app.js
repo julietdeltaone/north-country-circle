@@ -340,12 +340,12 @@ function draw() {
       drawEdges(true, "rgba(255,255,255,0.38)", 1);
     }
   } else {
-    drawEdges(false, resFilter ? "rgba(255,255,255,0.018)" : (bridgeMode ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.08)"), 1);
+    drawEdges(false, resFilter ? "rgba(255,255,255,0.018)" : (bridgeMode ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.06)"), 1);
   }
 
   /* long-range bridges: glow underlay + bright core, selected one in amber */
   if (bridgeMode && bridgeThresh > 0) {
-    for (const [style, w] of [["rgba(255,255,255,0.08)", 6], ["rgba(255,255,255,0.7)", 2]]) {
+    for (const [style, w] of [["rgba(255,255,255,0.06)", 6], ["rgba(255,255,255,0.7)", 2]]) {
       ctx.strokeStyle = style;
       ctx.lineWidth = w;
       ctx.beginPath();
@@ -390,7 +390,7 @@ function draw() {
     else if (pathSet && pathSet.has(i)) ctx.fillStyle = "#f5b942";
     else if (res) ctx.fillStyle = isHi ? "#f5b942" : "rgba(245,185,66,0.25)";
     else if (hubMode && hubSet.has(i)) ctx.fillStyle = isHi ? "#ffffff" : "rgba(255,255,255,0.35)";
-    else ctx.fillStyle = isHi ? "#ffffff" : "rgba(200,200,200,0.42)";
+    else ctx.fillStyle = isHi ? "#d4d4d4" : "rgba(195,195,195,0.26)";
     ctx.fill();
     if (i === jdIndex || layerSet.has(i) || i === hover || (hubMode && hubSet.has(i) && isHi)) {
       ctx.lineWidth = i === jdIndex ? 2.5 : 2;
