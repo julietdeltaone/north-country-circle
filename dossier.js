@@ -1850,10 +1850,92 @@ function ptDedupe(list){
   list.forEach(function(x){ x = String(x || '').trim(); if(x && !seen[x.toLowerCase()]){ seen[x.toLowerCase()] = 1; out.push(x); } });
   return out;
 }
+/* ----- location normalization (JD 2026-10-15): one canonical "Town, ST" form.
+   Mirrors _norm_loc in scripts/build_dossier_data.py so a value typed or picked
+   in the table is normalized before it is queued, and the suggestion pool only
+   ever offers normalized values. ----- */
+var PT_STATE_CODES = {alabama:'AL',alaska:'AK',arizona:'AZ',arkansas:'AR',california:'CA',colorado:'CO',connecticut:'CT',delaware:'DE','district of columbia':'DC',florida:'FL',georgia:'GA',hawaii:'HI',idaho:'ID',illinois:'IL',indiana:'IN',iowa:'IA',kansas:'KS',kentucky:'KY',louisiana:'LA',maine:'ME',maryland:'MD',massachusetts:'MA',michigan:'MI',minnesota:'MN',mississippi:'MS',missouri:'MO',montana:'MT',nebraska:'NE',nevada:'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND',ohio:'OH',oklahoma:'OK',oregon:'OR',pennsylvania:'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD',tennessee:'TN',texas:'TX',utah:'UT',vermont:'VT',virginia:'VA',washington:'WA','west virginia':'WV',wisconsin:'WI',wyoming:'WY','puerto rico':'PR',guam:'GU','american samoa':'AS','u.s. virgin islands':'VI','us virgin islands':'VI','northern mariana islands':'MP'};
+var PT_STATE_CODE_SET = {}; Object.keys(PT_STATE_CODES).forEach(function(k){ PT_STATE_CODE_SET[PT_STATE_CODES[k]] = 1; });
+function ptLocTitleWord(w){
+  if(!w || w.indexOf('.') >= 0) return w;
+  if(w === w.toUpperCase() || w === w.toLowerCase()){
+    var lw = w.toLowerCase();
+    if(lw.indexOf('mc') === 0 && lw.length > 2) return 'Mc' + lw.charAt(2).toUpperCase() + lw.slice(3);
+    return lw.charAt(0).toUpperCase() + lw.slice(1);
+  }
+  return w;
+}
+function ptLocTown(s){
+  var particles = {de:1, la:1, del:1, van:1, von:1, der:1, di:1, le:1, da:1, dos:1, das:1};
+  return String(s || '').trim().split(' ').filter(Boolean).map(function(tok, ix){
+    if(ix > 0 && particles[tok.toLowerCase()]) return tok.toLowerCase();
+    return tok.split('-').map(ptLocTitleWord).join('-');
+  }).join(' ');
+}
+function ptLocTail(seg){
+  var s = String(seg || '').trim().replace(/^"+|"+$/g, '');
+  s = s.replace(/\([^)]*\)/g, ' ');
+  if(s.indexOf('(') >= 0) s = s.split('(')[0];
+  s = s.replace(/\s+/g, ' ').trim().replace(/\.+$/, '').replace(/,+$/, '').trim();
+  var low = s.toLowerCase();
+  if(!s || low === 'not listed' || low === 'none' || low === 'n/a' || low === 'na' || low === 'unknown' || low === 'not available' || low === 'not specified' || s === '-' || low.indexOf('not listed') === 0) return '';
+  if(s.indexOf(',') < 0){
+    var mdc = s.match(/^(.+?)\s+D\.?C\.?$/i);
+    if(mdc) return ptLocTown(mdc[1]) + ', DC';
+    var m2 = s.match(/^(.+?)\s+([A-Za-z]{2})$/);
+    if(m2 && PT_STATE_CODE_SET[m2[2].toUpperCase()]) return ptLocTown(m2[1]) + ', ' + m2[2].toUpperCase();
+    var words = s.split(' ');
+    for(var n = 3; n >= 1; n--){
+      if(words.length > n){
+        var sc = PT_STATE_CODES[words.slice(words.length - n).join(' ').toLowerCase()];
+        if(sc) return ptLocTown(words.slice(0, words.length - n).join(' ')) + ', ' + sc;
+      }
+    }
+    return null;
+  }
+  var town = ptLocTown(s.split(',')[0]);
+  if(!town) return null;
+  var segs = s.slice(s.indexOf(',') + 1).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
+  for(var j = 0; j < segs.length; j++){
+    var code = PT_STATE_CODES[segs[j].toLowerCase()] || (segs[j].length === 2 && PT_STATE_CODE_SET[segs[j].toUpperCase()] ? segs[j].toUpperCase() : null);
+    if(code) return town + ', ' + code;
+  }
+  return segs.length ? town + ', ' + ptLocTown(segs[segs.length - 1]) : null;
+}
+function ptNormLoc(raw, kind){
+  var s = String(raw == null ? '' : raw).trim();
+  if(!s) return '';
+  var labeled = {}, firstLabelAt = -1, m;
+  var re = /\b(current city|lives in|city|hometown|from)\s*:\s*([^;|]+)/gi;
+  while((m = re.exec(s))){
+    var lab = m[1].toLowerCase();
+    if(!(lab in labeled)) labeled[lab] = m[2].trim();
+    if(firstLabelAt < 0) firstLabelAt = m.index;
+  }
+  var cut = s.length;
+  [';', '|'].forEach(function(sep){ var i = s.indexOf(sep); if(i >= 0 && i < cut) cut = i; });
+  if(firstLabelAt >= 0 && firstLabelAt < cut) cut = firstLabelAt;
+  var base = s.slice(0, cut).trim();
+  var pref = kind === 'hometown' ? ['hometown', 'from'] : ['current city', 'city', 'lives in'];
+  var cands = [];
+  pref.forEach(function(p){ if(labeled[p]) cands.push(labeled[p]); });
+  if(base) cands.push(base);
+  for(var i = 0; i < cands.length; i++){
+    var r = ptLocTail(cands[i]);
+    if(r === null){
+      var keep = cands[i].replace(/\([^)]*\)/g, ' ');
+      if(keep.indexOf('(') >= 0) keep = keep.split('(')[0];
+      return keep.replace(/\s+/g, ' ').trim().replace(/\.+$/, '').trim();
+    }
+    if(r === '') continue;
+    return r;
+  }
+  return '';
+}
 function ptSugList(kind, catK){
   if(kind === 'town'){
     var vals = [];
-    D.directory.forEach(function(e){ var c = gv(e, 'city'), h = gv(e, 'hometown'), lf = gv(e, 'location_on_file'); if(c) vals.push(c); if(h) vals.push(h); if(lf) vals.push(lf); });
+    D.directory.forEach(function(e){ var c = ptNormLoc(gv(e, 'city')), h = ptNormLoc(gv(e, 'hometown'), 'hometown'), lf = ptNormLoc(gv(e, 'location_on_file')); if(c) vals.push(c); if(h) vals.push(h); if(lf) vals.push(lf); });
     return ptDedupe(vals.concat(PT_SEED_TOWNS)).sort(function(a, b){ return a.localeCompare(b); });
   }
   if(kind === 'org'){
@@ -1891,8 +1973,9 @@ function ptAcWire(inp, list, onPick){
     } else hits = list.slice();
     hits = hits.slice(0, 8);
     if(!hits.length){ hide(); return; }
-    box.innerHTML = hits.map(function(h){ return '<button type="button" class="pted-aci" data-v="' + esc(h) + '">' + esc(h) + '</button>'; }).join('');
+    box.innerHTML = hits.map(function(h){ return '<button type="button" class="pted-aci" data-v="' + esc(h) + '" title="' + esc(h) + '">' + esc(h) + '</button>'; }).join('');
     box.hidden = false;
+    ptEdFit();
     $$('.pted-aci', box).forEach(function(b){
       b.addEventListener('mousedown', function(ev){ ev.preventDefault(); onPick(b.getAttribute('data-v')); hide(); });
     });
@@ -1903,6 +1986,13 @@ function ptAcWire(inp, list, onPick){
 }
 /* ----- the cell editor popover ----- */
 var PTED = null;   /* { di, k, dirty, swallow } */
+function ptEdFit(){
+  var pop = $('#pted'); if(!pop) return;
+  var r = pop.getBoundingClientRect();
+  var x = Math.max(8, Math.min(r.left, window.innerWidth - r.width - 8));
+  var y = Math.max(8, Math.min(r.top, window.innerHeight - r.height - 8));
+  pop.style.left = x + 'px'; pop.style.top = y + 'px';
+}
 function ptEditClose(){
   if(!PTED) return;
   var el = $('#pted'); if(el) el.remove();
@@ -1990,7 +2080,7 @@ function ptCommitText(){
     setField(di, 'first_name', parts[0]);
     setField(di, 'last_name', parts.slice(1).join(' '));
   }
-  else if(k === 'loc') setField(di, 'location_on_file', v);
+  else if(k === 'loc') setField(di, 'location_on_file', ptNormLoc(v));
   else if(k === 'years') setField(di, 'years_known', v);
   else if(k === 'phone') setField(di, 'phone', v);
   else if(k === 'email') setField(di, 'email', v);
@@ -2090,6 +2180,7 @@ function ptEditOpen(di, k, cell){
   if(y + h > window.innerHeight - 8) y = Math.max(8, r.top - h - 6);
   pop.style.left = x + 'px'; pop.style.top = y + 'px'; pop.style.visibility = '';
   ptEdWire(pop, di, k);
+  ptEdFit();
   var inp = $('input', pop);
   if(inp){ inp.focus(); if(inp.id === 'pted-in') inp.select(); }
   else pop.focus();
