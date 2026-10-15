@@ -24,6 +24,13 @@ for (const [a, b] of EDGES) {
 const totalOf = i => PEOPLE[i].in_degree + PEOPLE[i].out_degree;
 const maxTotal = Math.max(1, ...PEOPLE.map((_, i) => totalOf(i)));
 const jdIndex = PEOPLE.findIndex(p => p.username === "jdmeyers_");
+/* ChatGPT master-roster research overlay (data/research.js): nodes with
+   sourced findings on file draw amber and grow with the amount on file. */
+const RES = window.RESEARCH || {};
+const resOf = i => RES[PEOPLE[i].username] || null;
+const resScale = i => { const r = resOf(i); return r ? Math.min(2.2, 1 + 0.35 * Math.sqrt(r.amount)) : 1; };
+let RESN = 0;
+for (let i = 0; i < N; i++) if (resOf(i)) RESN++;
 const XS = new Float32Array(N), YS = new Float32Array(N);
 for (let i = 0; i < N; i++) { XS[i] = PEOPLE[i].x; YS[i] = PEOPLE[i].y; }
 /* Ambient solar drift (design pass 2026-10-14): the whole layout slowly turns
@@ -144,10 +151,12 @@ function updateStats() {
   if (visibleCount !== N) parts.push(`${visibleCount.toLocaleString()} shown`);
   if (META.synced_at) parts.push(`synced ${esc(META.synced_at)}`);
   document.getElementById("stats").innerHTML = parts.join(" &middot; ");
+  const rc = document.getElementById("rescount");
+  if (rc) rc.textContent = RESN ? `(${RESN} people)` : "";
 }
 
 /* ---------- renderer ---------- */
-const rad = i => 2 + 7 * Math.sqrt(totalOf(i) / maxTotal);
+const rad = i => (2 + 7 * Math.sqrt(totalOf(i) / maxTotal)) * resScale(i);
 
 function draw() {
   ctx.clearRect(0, 0, W, H);
@@ -239,9 +248,17 @@ function draw() {
     if (x < -20 || y < -20 || x > W + 20 || y > H + 20) continue;
     const isHi = !dim || hi.has(i);
     const r = rad(i);
+    const res = resOf(i);
+    if (res && isHi) {
+      ctx.beginPath();
+      ctx.arc(x, y, r * 2.15, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(223,168,79,0.14)";
+      ctx.fill();
+    }
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     if (pathSet && pathSet.has(i)) ctx.fillStyle = "#ffb454";
+    else if (res) ctx.fillStyle = isHi ? "#dfa84f" : "rgba(223,168,79,0.25)";
     else if (hubMode && hubSet.has(i)) ctx.fillStyle = isHi ? "#ffd9a0" : "rgba(255,217,160,0.3)";
     else ctx.fillStyle = isHi ? "#8fd0ff" : "rgba(143,208,255,0.22)";
     ctx.fill();
@@ -529,6 +546,18 @@ function listStatusText(p) {
     default: return "";
   }
 }
+function researchHTML(i) {
+  const r = resOf(i);
+  if (!r) return "";
+  const items = r.findings.map(f => {
+    const links = f.sources.map((s, k) =>
+      `<a href="${esc(s)}" target="_blank" rel="noopener">${f.sources.length > 1 ? "Source " + (k + 1) : "Source"}</a>`).join(" &middot; ");
+    return `<div class="resitem"><div class="restext">${esc(f.text)}</div>` +
+      (f.anchor ? `<div class="resanchor">${esc(f.anchor)}</div>` : "") +
+      `<div class="ressrc">${links}</div></div>`;
+  }).join("");
+  return `<h4>Research on file (${r.amount})</h4><div class="reslist">${items}</div>`;
+}
 function renderDetail() {
   const el = document.getElementById("detail");
   const i = curSel();
@@ -546,6 +575,7 @@ function renderDetail() {
       <div><b>${totalOf(i)}</b><span>total</span></div>
     </div>
     ${i === jdIndex ? "" : `<button class="pathbtn" id="path-jd">Trace path to JD</button>`}
+    ${researchHTML(i)}
     <h4>Followed by (${followers.length})</h4>
     <div class="connlist">${connListHTML(followers) || `<div class="note">Nobody in the collected lists.</div>`}</div>
     <h4>Follows (${following.length})</h4>
