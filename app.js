@@ -24,13 +24,15 @@ for (const [a, b] of EDGES) {
 const totalOf = i => PEOPLE[i].in_degree + PEOPLE[i].out_degree;
 const maxTotal = Math.max(1, ...PEOPLE.map((_, i) => totalOf(i)));
 const jdIndex = PEOPLE.findIndex(p => p.username === "jdmeyers_");
-/* ChatGPT master-roster research overlay (data/research.js): nodes with
-   sourced findings on file draw amber and grow with the amount on file. */
+/* ChatGPT master-roster research overlay (data/research.js): researched
+   people who are NOT in the dossier draw amber and grow with the amount on
+   file; the research itself stays in the detail sidebar for everyone. */
 const RES = window.RESEARCH || {};
 const resOf = i => RES[PEOPLE[i].username] || null;
-const resScale = i => { const r = resOf(i); return r ? Math.min(2.2, 1 + 0.35 * Math.sqrt(r.amount)) : 1; };
+const resVis = i => { const r = resOf(i); return r && !r.dossier ? r : null; };
+const resScale = i => { const r = resVis(i); return r ? Math.min(2.2, 1 + 0.35 * Math.sqrt(r.amount)) : 1; };
 let RESN = 0;
-for (let i = 0; i < N; i++) if (resOf(i)) RESN++;
+for (let i = 0; i < N; i++) if (resVis(i)) RESN++;
 const XS = new Float32Array(N), YS = new Float32Array(N);
 for (let i = 0; i < N; i++) { XS[i] = PEOPLE[i].x; YS[i] = PEOPLE[i].y; }
 /* Ambient solar drift (design pass 2026-10-14): the whole layout slowly turns
@@ -254,7 +256,7 @@ function draw() {
     if (x < -20 || y < -20 || x > W + 20 || y > H + 20) continue;
     const isHi = !dim || hi.has(i);
     const r = rad(i);
-    const res = resOf(i);
+    const res = resVis(i);
     if (res && isHi) {
       ctx.beginPath();
       ctx.arc(x, y, r * 2.15, 0, Math.PI * 2);
