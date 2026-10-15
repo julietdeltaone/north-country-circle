@@ -3374,7 +3374,7 @@ function audGaps(e){
 }
 function audRemaining(){
   var n = 0;
-  people().forEach(function(di){ if(audGaps(D.directory[di]).length) n++; });
+  people().forEach(function(di){ n += audGaps(D.directory[di]).length; });
   return n;
 }
 function audDeal(){
@@ -3533,7 +3533,7 @@ function audRetire(card, saved){
 function audPaintCounts(){
   var s = $('#audsub'); if(!s) return;
   var left = audRemaining(), done = S.audit ? S.audit.done : 0;
-  s.textContent = left ? left + ' quick win' + (left === 1 ? '' : 's') + ' left' + (done ? ' · ' + done + ' filled in this visit' : '') : 'Nothing left to fill in';
+  s.textContent = left ? left.toLocaleString('en-US') + ' quick win' + (left === 1 ? '' : 's') + ' left' + (done ? ' · ' + done + ' filled in this visit' : '') : 'Nothing left to fill in';
 }
 function audPaintEmpty(){
   var box = $('#audempty'), grid = $('#audgrid');
