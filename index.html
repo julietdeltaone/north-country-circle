@@ -67,12 +67,38 @@
   </aside>
 
   <aside class="hud drawer" id="directory" hidden>
+    <div id="dir-grip" title="Drag to resize"></div>
     <div class="drawer-head">
       <h3>Directory</h3>
       <a href="dossier.html" target="_blank" rel="noopener" class="tbtn" style="text-decoration:none" title="Open the dossier">Dossier ↗</a>
       <button id="dir-close" class="tbtn">Close</button>
     </div>
+    <div class="dir-filters">
+      <label class="slider-label">Minimum connections <b id="d-minconn-val">0</b></label>
+      <input type="range" id="d-minconn" min="0" max="100" value="0" step="1">
+      <label class="check"><input type="checkbox" id="d-f-jd"> Followed by JD</label>
+      <label class="check"><input type="checkbox" id="d-f-list"> List collected</label>
+      <label class="check"><input type="checkbox" id="d-f-resfilter"> Researched &middot; not in dossier <span id="d-resfilter-n"></span></label>
+      <label class="check"><input type="checkbox" id="d-f-isolate"> Isolate selected neighbors</label>
+      <label class="check"><input type="checkbox" id="d-f-labels" checked> Default name labels</label>
+    </div>
     <input id="dir-q" placeholder="Search handle or name…" autocomplete="off" spellcheck="false">
+    <div class="dir-sortrow">
+      <label for="dir-sort">Sort by</label>
+      <select id="dir-sort">
+        <option value="first">First name</option>
+        <option value="last">Last name</option>
+        <option value="username">Username</option>
+        <option value="total" selected>Connections</option>
+        <option value="research">Research findings</option>
+        <option value="dossier">Dossier status</option>
+        <option value="in_degree">In</option>
+        <option value="out_degree">Out</option>
+        <option value="num_lists">Lists</option>
+        <option value="jd">Followed by JD</option>
+      </select>
+      <button id="dir-dirbtn" class="tbtn" title="Flip sort direction">▼ Desc</button>
+    </div>
     <div class="note" id="dir-count"></div>
     <div id="dir-list"></div>
   </aside>
