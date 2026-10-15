@@ -180,6 +180,7 @@ option,optgroup{background:#141a26;color:var(--txt)}
 .menu-pop[hidden]{display:none} .menu-pop button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:8px;text-align:left} .menu-pop button:hover{background:var(--accbg)} .menu-pop .danger{color:var(--bad)} .menu-pop hr{border:0;border-top:1px solid var(--line);margin:6px 0}
 .hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:6px 0 4px}
 .hmain{flex:1 1 280px;min-width:0} .hmain h1{cursor:text} .hsub{color:var(--mut);margin-top:4px}
+.hloc{display:flex;align-items:center;gap:5px;margin-top:6px;font-size:15px;color:var(--txt)} .hloc svg{color:var(--mut);flex:none}
 .dbadges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .dbadge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:3px 10px;border-radius:12px;background:var(--card);border:1px solid var(--line2);color:var(--acc2)} .dbadge i{color:var(--mut)} .dbadge b{font-weight:600}
 .hctl{display:flex;flex-direction:column;gap:10px} .hctl .qk label{width:78px}
