@@ -5,6 +5,10 @@
   --acc:#86a0d8; --acc2:#d9e4ff; --accbg:rgba(134,160,216,.13);
   --ok:#5fb7a5; --warn:#e0a35a; --bad:#e0766f;
   --r:16px; --r2:10px; --r-sm:8px; --r-lg:20px; --pill:999px; --rail:224px;
+  --card-grad:linear-gradient(180deg,#1c2434,#141a27 48%,#0f141d);
+  --sheen:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.014) 48%,rgba(0,0,0,.10));
+  --sh-card2:0 1px 2px rgba(0,0,0,.5),0 18px 36px -14px rgba(0,0,0,.72),inset 0 1px 0 rgba(255,255,255,.10),inset 0 -1px 0 rgba(0,0,0,.38);
+  --sh-lift2:0 2px 3px rgba(0,0,0,.5),0 24px 44px -16px rgba(0,0,0,.78),inset 0 1px 0 rgba(255,255,255,.13),inset 0 -1px 0 rgba(0,0,0,.38);
   --sans:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif; --serif:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   --d-press:.12s; --d-state:.16s; --d-enter:.24s; --d-view:.3s;
   --ease-out:cubic-bezier(.23,1,.32,1); --ease-std:cubic-bezier(.2,0,0,1); --ease-exit:cubic-bezier(.4,0,1,1); --ease-sheet:cubic-bezier(.32,.72,0,1);
@@ -1131,3 +1135,56 @@ input,select,textarea{transition:border-color var(--d-state) var(--ease-std),box
   .sheet{border-radius:20px 20px 0 0}
   #sheetwrap:not([hidden]) .sheet{animation-name:sheetInM}
 }
+
+/* ================================================================
+   SKIN 2 2026-10-15 — card depth + a content-hugging Audit wall.
+   JD's verdict on the sweep, screenshot in hand: "It looks like
+   pretty much the same." He was on the new build — the wall he
+   actually stares at was still (1) HOLLOW: grid rows stretched
+   every card to the tallest in the row and margin-top:auto
+   pinned the footer to the bottom of the stretch, leaving a
+   void under the editor (measured: 342px cards, a 51px void on
+   short-editor cards), and (2) FLAT: the audit cards got no
+   glass (perf rule), a translucent gradient that let the black
+   wall straight through, and a negative-spread shadow that is
+   invisible on near-black. Fixes, tokens first:
+   — the wall flows masonry-style so each card is exactly as
+     tall as its content and the footer sits one card-gap
+     (14px) under the editor on every card type;
+   — card depth WITHOUT backdrop blur: an opaque top-lit
+     gradient (--card-grad), a lit top rim and a soft ambient
+     shadow with real spread (--sh-card2), so cards sit ON
+     the wall instead of being cut out of it;
+   — the same rim/gradient/shadow language lands on profile
+     section cards (.card) and the People side panel (.ppl-side)
+     via --sheen over their existing glass;
+   — the wall's steel-blue ambient (already in the sweep) is
+     enriched by one more faint low glow. No green, no color
+     cast on content, tier hues untouched, no behavior changes.
+   ================================================================ */
+
+/* wall ground: the sweep's ambient, one faint low glow richer */
+html,body{
+  background:
+    radial-gradient(1100px 620px at 50% -12%, rgba(110,140,220,.12), rgba(0,0,0,0) 62%),
+    radial-gradient(900px 540px at 88% 112%, rgba(70,100,175,.07), rgba(0,0,0,0) 60%),
+    radial-gradient(1500px 900px at 50% 118%, rgba(56,78,128,.055), rgba(0,0,0,0) 65%),
+    var(--bg);
+  background-attachment:fixed;
+}
+
+/* the wall: masonry flow — cards hug their content, no stretched rows */
+.aud-grid:not(.aud-stage){display:block;columns:318px;column-gap:16px}
+.aud-grid:not(.aud-stage) .aud-card{break-inside:avoid;width:100%;margin:0 0 16px}
+.aud-foot{margin-top:0}
+@media (max-width:640px){.aud-grid:not(.aud-stage){columns:1}}
+
+/* card depth without blur: top-lit opaque slab + lit rim + ambient shadow */
+.aud-card{background:var(--card-grad);box-shadow:var(--sh-card2)}
+.aud-peek{background:var(--card-grad)}
+.aud-caught{background:var(--card-grad);box-shadow:var(--sh-card2)}
+
+/* the same depth language on the other card surfaces */
+.card{background:var(--sheen),var(--glass);box-shadow:var(--sh-card2)}
+.card:hover{box-shadow:var(--sh-lift2)}
+.ppl-side{background:var(--sheen),var(--glass);box-shadow:var(--sh-card2)}
