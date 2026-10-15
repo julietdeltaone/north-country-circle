@@ -1876,6 +1876,7 @@ function ptLocTail(seg){
   var s = String(seg || '').trim().replace(/^"+|"+$/g, '');
   s = s.replace(/\([^)]*\)/g, ' ');
   if(s.indexOf('(') >= 0) s = s.split('(')[0];
+  s = s.replace(/"/g, '');
   s = s.replace(/\s+/g, ' ').trim().replace(/\.+$/, '').replace(/,+$/, '').trim();
   var low = s.toLowerCase();
   if(!s || low === 'not listed' || low === 'none' || low === 'n/a' || low === 'na' || low === 'unknown' || low === 'not available' || low === 'not specified' || s === '-' || low.indexOf('not listed') === 0) return '';
