@@ -1177,7 +1177,7 @@ function buildDossierDoc(e){
   var assocNames = knownAssociates(e).map(function(nb){
     var di = BYN[(nb.u || '').toLowerCase()];
     return di != null ? dispName(D.directory[di]) : (nb.d || nb.u || '');
-  }).filter(firstLastOk);
+  }).filter(firstLastOk).slice(0, 10); /* the printed list caps at the strongest 10, same order as the profile page (JD 2026-10-15) */
   var evs = sortedEvents(e).map(function(o){ return { date:o.ev.date || '', summary:o.ev.summary || '', detail:o.ev.detail || '' }; });
   var T = {
     name:name, aka:aka, handle:handle, classif:classif, rel:gv(e, 'relationship'), ctx:gv(e, 'context'), tierCol:tierCol(e), contact:contact, synBody:synBody,
@@ -2327,15 +2327,19 @@ function ptAttach(){
    Edit is per section, in place; no global edit mode.
    ============================================================ */
 function isInner(e){ var t = tierOf(e); return t === 'vetted' || t === 'associate'; }
+/* Layout (JD 2026-10-15): Contact + Connections stack on the left; About leads
+   the wide center; Relationship, Persona and Files condense into the right
+   sidebar. ord doubles as the single-column (mobile) sequence: About, Contact,
+   Connections, Relationship, Persona, Files, then the rest. */
 var SECS = [
-  { id:'identity',    t:'Contact',        col:'l', ord:1, w:['identity'] },
-  { id:'relationship',t:'Relationship',   col:'c', ord:2, w:['relationship'] },
-  { id:'about',       t:'About',          col:'c', ord:3, w:['onfile'] },
-  { id:'background',  t:'Background',     col:'c', ord:4, w:['background', 'education'] },
-  { id:'connections', t:'Connections',    col:'r', ord:5, w:['connections'] },
-  { id:'timeline',    t:'Timeline',       col:'c', ord:6, w:['timeline'] },
-  { id:'files',       t:'Files',          col:'c', ord:7, w:['files'] },
-  { id:'persona',     t:'Persona',        col:'c', ord:8, w:['ratings'] }
+  { id:'identity',    t:'Contact',        col:'l', ord:2, w:['identity'] },
+  { id:'about',       t:'About',          col:'c', ord:1, w:['onfile'] },
+  { id:'connections', t:'Connections',    col:'l', ord:3, w:['connections'] },
+  { id:'relationship',t:'Relationship',   col:'r', ord:4, w:['relationship'] },
+  { id:'persona',     t:'Persona',        col:'r', ord:5, w:['ratings'] },
+  { id:'files',       t:'Files',          col:'r', ord:6, w:['files'] },
+  { id:'background',  t:'Background',     col:'c', ord:7, w:['background', 'education'] },
+  { id:'timeline',    t:'Timeline',       col:'c', ord:8, w:['timeline'] }
 ];
 function secDef(id){ return SECS.filter(function(s){ return s.id === id; })[0]; }
 function secWaivedUI(e, id){ var d = secDef(id); return d.w.every(function(w){ return secWaived(e, w); }); }
@@ -2521,8 +2525,10 @@ function secView(di, id){
     var tree = familyMiniTree(di);
     if(tree) out3 += '<div class="sub-h first">Family</div>' + tree;
     else if(links.length) out3 += '<div class="sub-h first">Family</div>' + famListHTML(di, false);
-    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + ', always two-way</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 18).map(function(nb){ return nbrChip(nb, false); }).join('') +
-      (ka.length > 18 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">+' + (ka.length - 18) + ' more</button>' : '') + '</div>';
+    /* Default = the strongest 10 only (knownAssociates preserves the baked strength order); Show more / Show less toggles the full list (JD 2026-10-15). */
+    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + ', always two-way</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
+      (ka.length > 10 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show more \u00b7 +' + (ka.length - 10) + '</button>' : '') +
+      (ka.length > 10 && S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show less</button>' : '') + '</div>';
     out3 += '<div class="row"><a class="btn ghost sm" href="#/family" data-act="openfam" data-di="' + di + '">' + ic('tree', 14) + 'Open in Family</a><a class="btn ghost sm" href="#/network" data-act="shownet" data-di="' + di + '">' + ic('network', 14) + 'Show on Network</a></div>';
     return (ka.length || links.length) ? out3 : emptyPrompt(di, id, 'Add family or known associates');
   }
