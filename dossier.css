@@ -927,3 +927,42 @@ button.aud-gchip.done:hover{color:var(--txt);border-color:var(--dim)}
 .aud-bar{width:64px;height:4px;border-radius:2px;background:var(--line);overflow:hidden;flex:none}
 .aud-bar i{display:block;height:100%;width:100%;background:var(--acc)}
 @media (max-width:640px){.aud-grid{grid-template-columns:1fr}}
+
+/* ---------- Audit modes (2026-10-15): switcher, daily goal, mode bars,
+   Rapid Fire stage with card-stack peek, Blitz summary ---------- */
+.aud-tools{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:14px}
+.aud-modes{margin:0}
+.aud-goal{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)}
+.aud-goal-l{font-weight:600}
+.aud-goal-bar{width:150px;height:6px;border-radius:3px;background:var(--line);overflow:hidden;display:inline-block;flex:none}
+.aud-goal-bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+.aud-goal-bar i.met{background:var(--acc2)}
+#audgoalt{font-variant-numeric:tabular-nums}
+.aud-goal-b{background:none;border:1px solid var(--line2);color:var(--mut);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:14px;line-height:1;padding:0;flex:none}
+.aud-goal-b:hover{color:var(--txt);border-color:var(--dim)}
+.aud-modebar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:13.5px;color:var(--mut)}
+.aud-modebar b{color:var(--txt);font-variant-numeric:tabular-nums}
+.aud-blitz-t{font-weight:700;color:var(--acc2);font-variant-numeric:tabular-nums}
+#audblitzbtn[hidden]{display:none}
+.aud-catrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.aud-catbtn{font:inherit;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--mut);cursor:pointer}
+.aud-catbtn:hover{color:var(--txt);border-color:var(--dim)}
+.aud-catbtn.on{color:var(--acc2);border-color:var(--acc);background:var(--accbg)}
+.aud-catn{font-variant-numeric:tabular-nums;opacity:.85}
+.aud-catprog{margin:10px 0 0;font-size:13px;color:var(--mut)}
+.aud-stage-wrap{max-width:600px;margin:18px auto 0}
+.aud-stack{position:relative;padding-bottom:22px}
+.aud-peek{position:absolute;left:6px;right:6px;top:0;bottom:22px;background:var(--card);border:1px solid var(--line2);border-radius:16px;transform:translateY(11px) scale(.975);opacity:.55}
+.aud-peek.p2{transform:translateY(22px) scale(.95);opacity:.3}
+.aud-stack.nopeek .aud-peek{display:none}
+.aud-stage{display:block;margin-top:0;position:relative;z-index:1}
+.aud-stage .aud-card{animation-duration:.15s;padding:24px}
+.aud-stage .aud-name{font-size:19px}
+.aud-stage .aud-prompt{font-size:17px}
+.aud-stage .aud-in{font-size:16.5px;padding:11px 12px}
+.aud-stage .aud-pick{font-size:14.5px;padding:9px 14px}
+.aud-stage .aud-ed{min-height:92px}
+.aud-blitzsum{margin-top:0}
+.aud-blitzstats{font-size:16px;color:var(--mut)}
+.aud-blitzstats b{color:var(--txt)}
+@media (max-width:640px){.aud-stage-wrap{max-width:none}.aud-goal-bar{width:100px}}
