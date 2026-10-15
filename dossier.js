@@ -2397,13 +2397,17 @@ function viewFamily(v){
     var wx = (mx - W / 2) / z0 + FAMV.cam.x, wy = (my - H / 2) / z0 + FAMV.cam.y;
     FAMV.cam.z = z2; FAMV.cam.x = wx - (mx - W / 2) / z2; FAMV.cam.y = wy - (my - H / 2) / z2; famApply();
   }, { passive:false });
+  el.addEventListener('pointermove', function(){ FAMV._pmoveT = performance.now(); });
   el.addEventListener('pointerover', function(ev){
     var b = ev.target.closest ? ev.target.closest('.fn') : null, di = b ? +b.getAttribute('data-di') : null;
-    if(di !== FAMV.hover){ FAMV.hover = di; famHi(); }
+    if(di !== FAMV.hover){ FAMV.hover = di; if(di != null) FAMV._hoverT = performance.now(); famHi(); }
   });
   el.addEventListener('pointerout', function(ev){
     var to = ev.relatedTarget;
     if(to && to.closest && to.closest('.fn')) return;
+    /* the idle drift can slide a node out from under a still cursor — that is
+       the world moving, not the user leaving, so it does not clear the hover */
+    if(FAMV._pmoveT && FAMV._hoverT && FAMV._pmoveT <= FAMV._hoverT) return;
     if(FAMV.hover != null){ FAMV.hover = null; famHi(); }
   });
   famDriftStart();
