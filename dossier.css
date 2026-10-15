@@ -903,6 +903,18 @@ button.aud-gchip:hover{color:var(--txt);border-color:var(--dim)}
 .aud-foot{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:2px}
 .aud-skip{background:none;border:none;color:var(--dim);cursor:pointer;font-size:13px;padding:6px 4px}
 .aud-skip:hover{color:var(--txt)}
+.aud-later{background:none;border:none;color:var(--dim);cursor:pointer;font-size:13px;padding:6px 4px}
+#audlaterbtn[hidden]{display:none}
+.aud-later:hover{color:var(--txt)}
+button.aud-gchip.done{cursor:pointer}
+button.aud-gchip.done:hover{color:var(--txt);border-color:var(--dim)}
+.aud-gchip.done.editing{color:var(--acc2);border-color:var(--acc);background:var(--accbg)}
+.aud-head-btns{display:flex;gap:8px;align-items:center}
+.aud-toast{position:sticky;bottom:14px;margin:16px auto 0;max-width:640px;display:flex;align-items:center;gap:14px;background:var(--card2);border:1px solid var(--line2);border-radius:11px;padding:10px 16px;box-shadow:0 12px 30px rgba(0,0,0,.5);opacity:0;transition:opacity .25s;z-index:60}
+.aud-toast.show{opacity:1}
+.aud-toast[hidden]{display:none}
+.aud-toast-t{flex:1;font-size:13.5px}
+.aud-toast-u{background:none;border:none;color:var(--acc2);font-weight:700;cursor:pointer;font:inherit;font-size:13.5px;padding:4px 6px}
 .aud-caught{margin-top:18px;background:var(--card);border:1px dashed var(--line2);border-radius:16px;padding:34px 20px;text-align:center;color:var(--mut)}
 .aud-caught h3{color:var(--txt);font-family:var(--serif);font-weight:500;font-size:21px;margin:10px 0 4px}
 /* auto-submit countdown (2026-10-15): an armed card pulses for 3s, then
