@@ -1600,6 +1600,12 @@ function refreshBusy(){
   var sw = $('#sheetwrap'); if(sw && !sw.hidden) return true;
   if(typeof PTED !== 'undefined' && PTED) return true;
   if(document.querySelector('.aud-card.aud-arm')) return true;
+  var acs = $$('.aud-card');
+  for(var ai2 = 0; ai2 < acs.length; ai2++){
+    if(acs[ai2]._audDeb || acs[ai2]._audBlur) return true;   /* a commit decision is pending on this card */
+    var ain = $('.aud-in', acs[ai2]);
+    if(ain && ain.value.trim()) return true;   /* uncommitted text sitting in an Audit editor, focused or not */
+  }
   if(S.route && S.route.name === 'profile' && S.prof && S.prof.edit && Object.keys(S.prof.edit).length) return true;
   return false;
 }
@@ -2021,7 +2027,10 @@ function ptAcWire(inp, list, onPick){
     box.hidden = false;
     act = 0;   /* first match pre-highlighted: Enter picks it */
     $$('.pted-aci', box).forEach(function(b, i){
-      b.addEventListener('mousedown', function(ev){ ev.preventDefault(); pick(b.getAttribute('data-v')); });
+      var fired = false;
+      function go(ev){ if(fired) return; fired = true; ev.preventDefault(); pick(b.getAttribute('data-v')); }
+      b.addEventListener('pointerdown', go);   /* lands before the input's blur on touch, so the pick always registers */
+      b.addEventListener('mousedown', go);
       b.addEventListener('mouseenter', function(){ act = i; mark(); });
     });
     mark();
@@ -3584,15 +3593,36 @@ function audWireCard(card){
   if(!inp) return;
   var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : gap === 'orgs' ? audOrgPool() : gap === 'years' ? audYearList() : null;
   if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audTryArm(card); });
-  /* commit triggers (JD 2026-10-15): a suggestion pick, Enter, blur, or a
-     900ms pause in typing. Any edit while the countdown runs cancels it and
-     re-enters this flow, so only the final value ever submits. */
+  /* commit triggers (JD 2026-10-15): a suggestion pick or Enter submits
+     what is typed, and a REAL blur (focus leaving the card) submits after
+     a 250ms grace period, so a tap on a suggestion registers its pick
+     first instead of the blur closing the editor underneath it. A pause
+     in typing submits ONLY a value that is already complete for its
+     field (audComplete): a half-typed word never submits, the editor
+     never closes mid-composition, and keystrokes cancel any pending
+     commit. Any edit while the countdown runs cancels it and re-enters
+     this flow, so only the final value ever submits. */
   inp.addEventListener('input', function(){
     audDisarm(card);
     clearTimeout(card._audDeb);
-    card._audDeb = setTimeout(function(){ audTryArm(card); }, 900);
+    card._audDeb = setTimeout(function(){
+      card._audDeb = null;
+      if(audComplete(card)) audTryArm(card);   /* incomplete: keep composing, undisturbed */
+    }, 900);
   });
-  inp.addEventListener('blur', function(){ audTryArm(card); });
+  inp.addEventListener('focus', function(){
+    if(card._audBlur){ clearTimeout(card._audBlur); card._audBlur = null; }
+  });
+  inp.addEventListener('blur', function(){
+    if(card._audBlur) clearTimeout(card._audBlur);
+    card._audBlur = setTimeout(function(){
+      card._audBlur = null;
+      if(!card.isConnected) return;
+      var a = document.activeElement;
+      if(a && card.contains(a)) return;   /* the pick refocused the field, or focus moved within this card: not a real blur */
+      audTryArm(card);
+    }, 250);
+  });
   inp.addEventListener('keydown', function(ev){
     if(ev.key === 'Enter'){ ev.preventDefault(); audTryArm(card); }
   });
@@ -3606,9 +3636,46 @@ function audReady(card){
   var inp = $('.aud-in', card);
   return !!(inp && inp.value.trim());
 }
+/* Pause-commit gate (JD 2026-10-15): a typed value counts as complete
+   only when it is whole for its field — a location that exactly matches
+   a suggestion or normalizes to a full "Town, ST", a plausible complete
+   phone number, a valid 4-digit year, or a skills/orgs value that
+   exactly matches a suggestion. Anything less is still being composed:
+   it waits for Enter, a real blur, or an explicit suggestion pick. */
+function audLocComplete(v){
+  v = String(v || '').trim();
+  if(!v) return false;
+  var lv = v.toLowerCase(), list = ptSugList('town');
+  for(var i = 0; i < list.length; i++) if(list[i].toLowerCase() === lv) return true;
+  return /^.+, [A-Z]{2}$/.test(ptNormLoc(v));
+}
+function audPhoneOk(v){
+  v = String(v || '').trim();
+  if(!v || /[^0-9\s\-().+]/.test(v)) return false;
+  var d = v.replace(/\D/g, '');
+  return d.length === 10 || (d.length === 11 && d.charAt(0) === '1') || d.length === 7;
+}
+function audComplete(card){
+  var gap = card.getAttribute('data-gap');
+  if(gap === 'tier' || gap === 'rel') return !!card.getAttribute('data-pick');
+  var inp = $('.aud-in', card);
+  if(!inp) return false;
+  var v = inp.value.trim();
+  if(!v) return false;
+  if(gap === 'years') return audYearOk(v);
+  if(gap === 'loc') return audLocComplete(v);
+  if(gap === 'phone') return audPhoneOk(v);
+  if(gap === 'skills' || gap === 'orgs'){
+    var list = gap === 'skills' ? ptSugList('skill') : audOrgPool(), lv = v.toLowerCase();
+    for(var i = 0; i < list.length; i++) if(list[i].toLowerCase() === lv) return true;
+    return false;
+  }
+  return false;
+}
 function audDisarm(card){
   if(card._audIv){ clearInterval(card._audIv); card._audIv = null; }
   if(card._audDeb){ clearTimeout(card._audDeb); card._audDeb = null; }
+  if(card._audBlur){ clearTimeout(card._audBlur); card._audBlur = null; }
   card.classList.remove('aud-arm');
   var cd = $('.aud-cd', card); if(cd) cd.hidden = true;
 }
