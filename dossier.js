@@ -1982,16 +1982,19 @@ function degreesEditor(di){
    toggle are the only controls. Tap a dot for a card; the card is the way out to the profile.
    ============================================================ */
 var NET = { nodes:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, bg:null, byDi:{}, rot:0, lastAct:0, lastTs:0, dvel:0, hoverDi:null };
-/* Solar drift (design pass 2026-10-14; ramped spin 2026-10-14 evening): one
-   revolution per 3 minutes at full speed, but the angular velocity eases toward
-   its target — full speed or zero — with a ~1s exponential ramp, so starting
-   and stopping feel like a gentle spin-up / spin-down, never a snap. The target
-   is zero while a node is hovered, while the pointer is down, while a selection
-   is framed, and for a short settle after any interaction. Hovering empty
+/* Solar drift (design pass 2026-10-14; ramped spin 2026-10-14 evening;
+   asymmetric tuning 2026-10-15): one revolution per ~156.5s at full speed
+   (15% faster than the original 180s), and the angular velocity eases toward
+   its target — full speed or zero — with an exponential ramp whose time
+   constant depends on direction: stopping is aggressive (TAU_DOWN ≈ 0.4s, a
+   hovered node brings the map firmly to rest) while starting is gentle
+   (TAU_UP ≈ 2.8s, the spin spools back up gradually). The target is zero
+   while a node is hovered, while the pointer is down, while a selection is
+   framed, and for a short settle after any interaction. Hovering empty
    space does not pause it. Off entirely under prefers-reduced-motion. */
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-var DRIFT_RATE = Math.PI * 2 / 180;
-var DRIFT_TAU = 1.05, DRIFT_SETTLE = 1500;
+var DRIFT_RATE = Math.PI * 2 / 180 * 1.15;
+var DRIFT_TAU_DOWN = 0.4, DRIFT_TAU_UP = 2.8, DRIFT_SETTLE = 1500;
 function driftTarget(now){
   if(REDUCED_MOTION || S.net.sel != null || NET.hoverDi != null) return 0;
   if(Object.keys(NET.ptr).length) return 0;
@@ -2106,7 +2109,7 @@ function viewNetwork(v){
     var now = ts || 0, dt = NET.lastTs ? Math.min(0.05, Math.max(0, (now - NET.lastTs) / 1000)) : 0;
     NET.lastTs = now;
     if(dt > 0){
-      var tg = driftTarget(now), kk = 1 - Math.exp(-dt / DRIFT_TAU);
+      var tg = driftTarget(now), kk = 1 - Math.exp(-dt / (tg < NET.dvel ? DRIFT_TAU_DOWN : DRIFT_TAU_UP));
       NET.dvel += (tg - NET.dvel) * kk;
       if(tg === 0 && NET.dvel < 1e-5) NET.dvel = 0;
     }
