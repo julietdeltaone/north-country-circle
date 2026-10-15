@@ -1209,17 +1209,17 @@ function docRateLabel(T){ return T.bars.length ? 'PROFILE RATINGS' : 'DETAILS'; 
    values sit on dotted form lines (the Draft 2 cue). Years in body text and
    relationship/context values render bold. No rotated stamp. */
 var TRAIT_STYLE = {
-  openness:{ c:'#8b7bb8', s:'OPN' },
-  conscientiousness:{ c:'#6b8cae', s:'CON' },
-  extraversion:{ c:'#c2a14d', s:'EXT' },
-  agreeableness:{ c:'#7fa383', s:'AGR' },
-  neuroticism:{ c:'#c08a8a', s:'NEU' },
-  ego:{ c:'#b87a56', s:'EGO' }
+  openness:{ c:'#41546e', s:'OPN' },
+  conscientiousness:{ c:'#3f5a58', s:'CON' },
+  extraversion:{ c:'#5d4630', s:'EXT' },
+  agreeableness:{ c:'#46543e', s:'AGR' },
+  neuroticism:{ c:'#58455c', s:'NEU' },
+  ego:{ c:'#4b4f57', s:'EGO' }
 };
 function traitC(b){ return (TRAIT_STYLE[b.k] || {}).c || '#262626'; }
 function traitS(b){ return (TRAIT_STYLE[b.k] || {}).s || String(b.l || '').slice(0, 3).toUpperCase(); }
-var TIER_DEEP = { '#dfa84f':'#97700f', '#6ea8e1':'#2e6cb5', '#4fb3a1':'#1e7a67', '#a794d8':'#6a559e' };
-var TIER_TINT = { '#dfa84f':'rgba(223,168,79,.15)', '#6ea8e1':'rgba(110,168,225,.16)', '#4fb3a1':'rgba(79,179,161,.15)', '#a794d8':'rgba(167,148,216,.18)' };
+var TIER_DEEP = { '#dfa84f':'#8a6831', '#6ea8e1':'#44688c', '#4fb3a1':'#316f64', '#a794d8':'#675c86' };
+var TIER_TINT = { '#dfa84f':'rgba(223,168,79,.08)', '#6ea8e1':'rgba(110,168,225,.09)', '#4fb3a1':'rgba(79,179,161,.08)', '#a794d8':'rgba(167,148,216,.09)' };
 function docDots(b){
   var f = Math.max(0, Math.min(5, b.v)), c = traitC(b), s = '<span class="dots" aria-hidden="true">';
   for(var i = 0; i < 5; i++) s += '<i class="' + (i < f ? 'on' : '') + '"' + (i < f ? ' style="background:' + c + ';border-color:' + c + '"' : '') + '></i>';
@@ -1281,9 +1281,19 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
   '.sec h2{font-size:12.5px;letter-spacing:.2em;margin:0 0 11px;font-weight:600}.sec h2 b{color:#595959;font-weight:600}' +
   '.sbody{font-size:12.5px;line-height:1.75}.sbody p{margin:0 0 9px}' +
   'ul{margin:0;padding-left:19px;font-size:12.5px;line-height:1.75}ul.cols{column-count:2;column-gap:30px}' +
-  '@page{size:Letter;margin:.55in}' +
-  '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none;width:auto;display:block}' +
-  '.bodycols{display:block}.side{float:left;width:256px;margin-right:26px}.main{margin-left:282px;padding-right:0}' +
+  '@page{size:Letter;margin:.55in;@top-right{content:"FILE COPY";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}@bottom-center{content:"PAGE " counter(page) " OF " counter(pages);font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}' +
+  '@media print{' +
+  'body{background:#fff;padding:0}' +
+  '.page{box-shadow:none;max-width:none;width:auto;display:block}' +
+  '.bodycols{display:block}' +
+  '.side{float:left;width:250px;margin:2px 24px 14px 0;padding:18px 16px;break-inside:avoid}' +
+  '.main{margin-left:0;padding:22px 0 0;min-width:0}' +
+  '.sec{break-inside:auto}' +
+  '.sec h2{break-after:avoid;break-inside:avoid}' +
+  '.sbody p{orphans:3;widows:3}' +
+  'li{break-inside:avoid;orphans:2;widows:2}' +
+  '.blk,.chartblk,.stamp,.meta,h1{break-inside:avoid}' +
+  'h1{break-after:avoid}' +
   '*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}',
   render: function(T){
     var side = '';
@@ -1311,9 +1321,12 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
     var stamp = '';
     if(T.tier){
       var tc = T.tierCol || '#4d4d4d';
-      stamp = '<div><span class="stamp" style="border-color:' + tc + ';background:' + (TIER_TINT[tc] || 'transparent') + ';color:' + (TIER_DEEP[tc] || '#262626') + '">' + esc(T.tier) + '</span></div>';
+      var deep = TIER_DEEP[tc] || '#262626';
+      stamp = '<div><span class="stamp" style="border-color:' + deep + ';background:' + (TIER_TINT[tc] || 'transparent') + ';color:' + deep + '">' + esc(T.tier) + '</span></div>';
     }
-    return '<div class="page"><div class="strip"><span>PERSONNEL DOSSIER</span><span>FILE COPY</span></div>' +
+    var nmCss = String(T.name || '').toUpperCase().replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
+    return '<style>@page{@top-left{content:"PERSONNEL DOSSIER — ' + nmCss + '";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}</style>' +
+      '<div class="page"><div class="strip"><span>PERSONNEL DOSSIER</span><span>FILE COPY</span></div>' +
       '<div class="bodycols"><div class="side">' + side + '</div><div class="main">' +
       '<div class="kick">Subject File</div><h1>' + esc(T.name) + '</h1>' +
       (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
