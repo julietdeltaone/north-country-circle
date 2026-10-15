@@ -728,8 +728,22 @@ details.quick[open]>summary{margin-bottom:10px}
 .ppl-cols{display:flex;gap:16px;align-items:flex-start}
 .ppl-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:16px}
 .ppl-side{width:290px;flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
-/* Profile: three zones — identity left, record center, family + associates right */
-.pcols{display:grid;grid-template-columns:300px minmax(0,1fr) 330px;gap:16px;align-items:start}
+/* Profile: three zones (JD 2026-10-15) — Contact + Connections stacked left,
+   the About-led record center, Relationship + Persona + Files as a right sidebar */
+.pcols{display:grid;grid-template-columns:320px minmax(0,1fr) 320px;gap:16px;align-items:start}
+/* Hero name: modern all-caps grotesque (profile page only; the export header is separate) */
+#p-hero .hmain h1{font:800 33px/1.08 var(--sans);letter-spacing:.014em;text-transform:uppercase}
+/* Right sidebar condenses: Relationship fields stack one per row, Persona rows tighten */
+#pc-r .tiles{grid-template-columns:1fr}
+#pc-r .pt{grid-template-columns:112px 1fr 54px}
+/* Contact rows: the value column gets the room it needs — handles sit on one line
+   with their tag and never break mid-string; any overflow ends in an ellipsis */
+#sec-identity .irow{grid-template-columns:100px 1fr}
+#sec-identity .iv{word-break:normal}
+#sec-identity .iv{display:flex;align-items:baseline;flex-wrap:nowrap;gap:2px 8px}
+#sec-identity .iv a{display:inline-block;flex:0 1 auto;min-width:0;margin-right:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+#sec-identity .iv small{flex:0 0 auto}
+#sec-identity .iv b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 /* Network: canvas edge-to-edge + right panel (selected card + map stats) */
 .netcols{display:flex;flex:1 1 auto;min-height:0;position:relative}
 .netpage .netwrap{flex:1 1 auto;min-width:0;height:auto;min-height:0;border:0;border-radius:0}
@@ -748,7 +762,11 @@ details.quick[open]>summary{margin-bottom:10px}
   .ppl-cols{flex-direction:column}
   .ppl-side{width:100%}
   .pcols{grid-template-columns:1fr}
-  .pcols .pcol{display:flex}
+  /* single column: the section cards flow in their ord sequence (About, Contact,
+     Connections, Relationship, Persona, Files, then the rest) */
+  .profile .pcols{display:flex;flex-direction:column}
+  .profile .pcols .pcol{display:contents}
+  #p-hero .hmain h1{font-size:24px}
   .netcols.sel .netpanel{position:absolute;right:0;top:0;bottom:0;width:min(320px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
   .fampanel{position:absolute;right:0;top:0;bottom:0;width:min(300px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
 }
