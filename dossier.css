@@ -862,3 +862,12 @@ body.vm-rich .pstats{display:block}
 .pted-ac[hidden]{display:none}
 .pted-aci{display:block;width:100%;padding:8px 10px;border-radius:7px;text-align:left;color:var(--mut)}
 .pted-aci:hover{background:var(--accbg);color:var(--txt)}
+
+/* ---------- export design picker ---------- */
+.expick{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;margin:0 0 8px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--txt)}
+.expick:hover{border-color:var(--line2);background:var(--card2)}
+.expick.on{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.expick .exm{flex:1;min-width:0}
+.expick b{display:block;font-size:14.5px}
+.expick small{display:block;margin-top:1px}
+.extag{flex:none;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--acc2);background:var(--accbg);border-radius:99px;padding:3px 9px}
