@@ -3428,6 +3428,12 @@ function aiTidy(){
    dealt again — and it beats an armed countdown, which never submits.
    Deck state lives in S.audit for the visit; the deck is rebuilt from
    the live directory, so a filled gap never deals again either.
+   "Save for later" parks the person (ncc_aud_later: pkey -> the gap on
+   show); parked people deal first and reopen on the noted category.
+   Shift+Down finishes the person NOW (a complete current value submits
+   first, the rest close out); Shift+Left is Save for later. A done chip
+   reopens its editor (click it) and commits a fresh patch. Every Audit
+   action posts a toast with a one-step Undo (AUD_LAST).
    ============================================================ */
 var AUD_WALL = 12;
 var AUD_GAPS = {
@@ -3458,6 +3464,28 @@ function audPair(di, gap){ var e = D.directory[di]; return e ? pkey(e) + '|' + g
 function audOpenGaps(di){
   return audGaps(D.directory[di]).filter(function(g){ return !AUD_DISMISS[audPair(di, g)]; });
 }
+/* Saved for later: { pkey: gap } in localStorage ncc_aud_later — the gap
+   that was on show when JD parked the person, so the card reopens on it.
+   Parked gaps stay OPEN (nothing is dismissed or submitted, so the
+   quick-win counter keeps counting them); parked people deal first
+   (audDeal) and leave the parked state when they land on the wall. */
+var AUD_LATER = (function(){ try{ return JSON.parse(store('ncc_aud_later') || '{}') || {}; }catch(x){ return {}; } })();
+function audLaterSave(){ store('ncc_aud_later', JSON.stringify(AUD_LATER)); }
+function audLaterEntries(){
+  var byPk = {};
+  people().forEach(function(di){ byPk[pkey(D.directory[di])] = di; });
+  var out = [];
+  Object.keys(AUD_LATER).forEach(function(pk){
+    var di = byPk[pk]; if(di == null) return;
+    var g = audOpenGaps(di); if(!g.length) return;
+    var cur = AUD_LATER[pk];
+    out.push({ di:di, gaps:g.slice(), done:[], cur:(g.indexOf(cur) >= 0 ? cur : g[0]), vals:{}, parked:true });
+  });
+  return out;
+}
+function audUnpark(pk){
+  if(AUD_LATER[pk] !== undefined){ delete AUD_LATER[pk]; audLaterSave(); }
+}
 function audYearList(){
   var out = [], now = new Date().getFullYear();
   for(var y = now; y >= 1960; y--) out.push(String(y));
@@ -3475,16 +3503,22 @@ function audRemaining(){
   return n;
 }
 function audDeal(){
-  var A = S.audit, pool = [];
+  var A = S.audit, later = audLaterEntries(), parkedDis = {}, pool = [];
+  later.forEach(function(x){ parkedDis[x.di] = 1; });
   people().forEach(function(di){
+    if(parkedDis[di]) return;
     var g = audOpenGaps(di);
-    if(g.length) pool.push({ di:di, gaps:g.slice(), done:[], cur:g[0] });
+    if(g.length) pool.push({ di:di, gaps:g.slice(), done:[], cur:g[0], vals:{} });
   });
   for(var i = pool.length - 1; i > 0; i--){
     var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
   }
-  A.shown = pool.slice(0, AUD_WALL);
-  A.deck = pool.slice(AUD_WALL);
+  /* Saved-for-later people deal first, ahead of the random pool, and
+     reopen on the category noted when they were parked (JD 2026-10-15). */
+  var all = later.concat(pool);
+  A.shown = all.slice(0, AUD_WALL);
+  A.deck = all.slice(AUD_WALL);
+  A.shown.forEach(function(x){ if(x.parked) audUnpark(pkey(D.directory[x.di])); });
 }
 var AUD_ORG_POOLS = null;
 function audOrgPools(){
@@ -3534,7 +3568,8 @@ function audEntry(di){
 }
 function audChipsHTML(x){
   var done = x.done.map(function(g){
-    return '<span class="aud-gchip done" title="' + AUD_GAPS[g].tag + ' filled in">✓ ' + AUD_GAPS[g].short + '</span>';
+    var val = x.vals && x.vals[g] ? ': ' + x.vals[g] : '';
+    return '<button type="button" class="aud-gchip done' + (g === x.cur ? ' editing' : '') + '" data-act="audreopen" data-gap="' + g + '" title="' + esc(AUD_GAPS[g].tag + val + ' filled in — click to edit') + '">✓ ' + AUD_GAPS[g].short + '</button>';
   }).join('');
   var open = x.gaps.map(function(g){
     return '<button type="button" class="aud-gchip' + (g === x.cur ? ' on' : '') + '" data-act="audgap" data-gap="' + g + '" aria-pressed="' + (g === x.cur ? 'true' : 'false') + '">' + AUD_GAPS[g].short + '</button>';
@@ -3552,6 +3587,7 @@ function audCardHTML(x, i){
     '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span></p>' +
     '<div class="aud-ed">' + audEdHTML(di, gap) + '</div>' +
     '<div class="aud-foot"><span class="aud-cd" hidden><span class="aud-cdt">Saving in 3</span><span class="aud-bar"><i></i></span></span><span class="sp"></span>' +
+    '<button type="button" class="aud-later" data-act="audpark" data-di="' + di + '" title="Park this person and come back to them later — nothing is saved or closed out">Save for later</button>' +
     '<button type="button" class="aud-skip" data-act="audskip" data-di="' + di + '" title="Finish this person: close out everything still open on this card, for good">Done with them</button></div></article>';
 }
 /* Switch a card's active gap in place: chips, prompt and editor swap
@@ -3572,6 +3608,164 @@ function audSetGap(card, gap){
   audWireCard(card);
   if(hadFocus){ var f = $('.aud-in', card) || $('.aud-gchip.on', card); if(f) f.focus(); }
 }
+/* Repaint just a card's indicator chips (after a state change). */
+function audPaintChips(card){
+  var x = audEntry(+card.getAttribute('data-di')); if(!x) return;
+  var box = $('.aud-gaps', card); if(box) box.innerHTML = audChipsHTML(x);
+}
+function audCardEl(di){ return $('.aud-card[data-di="' + di + '"]'); }
+/* Clicking a DONE chip reopens that gap's editor, prefilled with the
+   value on file (JD 2026-10-15). Committing writes a fresh undoable
+   patch through audSave, like any other fill, and the chip returns to
+   done. Only while the card is live on the wall. */
+function audReopen(card, gap){
+  if(card.classList.contains('aud-out') || card.classList.contains('aud-done')) return;
+  var di = +card.getAttribute('data-di'), x = audEntry(di);
+  if(!x || x.done.indexOf(gap) < 0 || x.cur === gap) return;
+  var hadFocus = card.contains(document.activeElement);
+  audDisarm(card);
+  x.cur = gap;
+  card.setAttribute('data-gap', gap);
+  card.removeAttribute('data-pick');
+  audPaintChips(card);
+  var pr = $('.aud-prompt', card);
+  if(pr) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>';
+  var ed = $('.aud-ed', card); if(ed) ed.innerHTML = audEdHTML(di, gap);
+  var e = D.directory[di];
+  if(gap === 'tier' || gap === 'rel'){
+    var cur = gap === 'tier' ? tierOf(e) : gv(e, 'relationship');
+    if(cur){
+      card.setAttribute('data-pick', cur);
+      $$('.aud-pick', card).forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === cur); });
+    }
+  } else {
+    var inp = $('.aud-in', card);
+    if(inp) inp.value = (x.vals && x.vals[gap]) || (gap === 'loc' ? raw(e, 'location_on_file') : gap === 'years' ? gv(e, 'years_known') : gap === 'phone' ? gv(e, 'phone') : '');
+  }
+  audWireCard(card);
+  if(hadFocus){ var f = $('.aud-in', card) || $('.aud-gchip.done.editing', card); if(f) f.focus(); }
+}
+/* ---- Audit action toast + one-step undo (JD 2026-10-15) ------------
+   Every Audit action is announced in plain words at the bottom of the
+   Audit view and is reversible: AUD_LAST describes the most recent one
+   and the toast's Undo button reverses it — a value submission through
+   the undo stack (the same machinery as the global Undo), a dismissal
+   by restoring its ncc_aud_skip pairs, a park by un-parking. */
+var AUD_LAST = null, AUD_TOAST_T = null;
+function audLog(act){ AUD_LAST = act; }
+function audToastShow(text){
+  var box = $('#audtoast'); if(!box) return;
+  box.innerHTML = '<span class="aud-toast-t">' + esc(text) + '</span>' + (AUD_LAST ? '<button type="button" class="aud-toast-u" data-act="audundo">Undo</button>' : '');
+  box.hidden = false;
+  box.classList.remove('show'); void box.offsetWidth; box.classList.add('show');
+  clearTimeout(AUD_TOAST_T);
+  AUD_TOAST_T = setTimeout(function(){ box.classList.remove('show'); box.hidden = true; AUD_LAST = null; }, 6000);
+}
+function audReverseEntry(entry){
+  if(!entry) return;
+  var i = UNDO.stack.lastIndexOf(entry);
+  if(i < 0) return;   /* already undone, or rolled off the stack */
+  UNDO.stack.splice(i, 1);
+  applyEntry(entry, false);
+  UNDO.redo.push(entry); paintUndo();
+}
+/* Put a person whose card has left the wall back at the front of the
+   deck, so an undone action's card resurfaces instead of vanishing. */
+function audRestock(di, preferGap){
+  var A = S.audit; if(!A || !A.deck || audEntry(di)) return;
+  for(var i = 0; i < A.deck.length; i++) if(A.deck[i].di === di) return;
+  var g = audOpenGaps(di); if(!g.length) return;
+  A.deck.unshift({ di:di, gaps:g.slice(), done:[], cur:(preferGap && g.indexOf(preferGap) >= 0 ? preferGap : g[0]), vals:{} });
+}
+function audUndoLast(){
+  var act = AUD_LAST; if(!act) return;
+  AUD_LAST = null;
+  clearTimeout(AUD_TOAST_T);
+  var box = $('#audtoast'); if(box){ box.classList.remove('show'); box.hidden = true; }
+  var x = audEntry(act.di), card = audCardEl(act.di);
+  if(act.kind === 'save'){
+    audReverseEntry(act.entry);
+    if(S.audit) S.audit.done = Math.max(0, S.audit.done - 1);
+    if(x && card){
+      x.done = x.done.filter(function(g){ return g !== act.gap; });
+      if(x.gaps.indexOf(act.gap) < 0) x.gaps.splice(Math.min(act.gapIndex == null ? x.gaps.length : act.gapIndex, x.gaps.length), 0, act.gap);
+      if(x.vals) delete x.vals[act.gap];
+      audSetGap(card, act.gap);
+    } else audRestock(act.di, act.gap);
+  }
+  else if(act.kind === 'reedit'){
+    audReverseEntry(act.entry);
+    if(x){ if(!x.vals) x.vals = {}; if(act.priorVal) x.vals[act.gap] = act.priorVal; else delete x.vals[act.gap]; if(card) audPaintChips(card); }
+  }
+  else if(act.kind === 'pass'){
+    (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
+    store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+    if(x && card){
+      if(x.gaps.indexOf(act.gap) < 0) x.gaps.splice(Math.min(act.gapIndex == null ? x.gaps.length : act.gapIndex, x.gaps.length), 0, act.gap);
+      audSetGap(card, act.gap);
+    } else audRestock(act.di, act.gap);
+  }
+  else if(act.kind === 'done'){
+    (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
+    store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+    if(act.submit){ audReverseEntry(act.submit.entry); if(S.audit) S.audit.done = Math.max(0, S.audit.done - 1); }
+    audRestock(act.di, act.submit ? act.submit.gap : null);
+  }
+  else if(act.kind === 'park'){
+    if(act.laterPrev === undefined) delete AUD_LATER[act.laterKey]; else AUD_LATER[act.laterKey] = act.laterPrev;
+    audLaterSave();
+    audRestock(act.di, act.gap);
+  }
+  audPaintCounts();
+  toast('Undid the last Audit action.');
+}
+/* Save for later (JD 2026-10-15): park the person. The card leaves the
+   wall and a fresh one feeds in; the gaps stay OPEN (nothing saved,
+   nothing dismissed, the counter keeps counting them) and the category
+   on show is noted, so the card reopens on it when it resurfaces. */
+function audPark(card, kb){
+  var di = +card.getAttribute('data-di'), x = audEntry(di);
+  if(!x || card.classList.contains('aud-out') || card.classList.contains('aud-done')) return;
+  var gap = card.getAttribute('data-gap');
+  audDisarm(card);
+  var pk = pkey(D.directory[di]), prev = AUD_LATER[pk];
+  AUD_LATER[pk] = gap; audLaterSave();
+  var text = 'Saved for later · reopens on ' + AUD_GAPS[gap].tag;
+  audLog({ kind:'park', di:di, gap:gap, laterKey:pk, laterPrev:prev, text:text });
+  audToastShow(text);
+  audRetire(card, false, kb);
+}
+/* Finish this person NOW (JD 2026-10-15): the "Done with them" button
+   and Shift+Down share this. With submitFirst (Shift+Down), a genuinely
+   complete value on show submits immediately — no countdown, no wait —
+   while a fragment is discarded, exactly as Done treats it. Every gap
+   still open then closes out persistently (ncc_aud_skip) and the card
+   retires. Beats an armed countdown: the disarm above cancels it, so a
+   value submits only through this immediate write. */
+function audFinish(card, kb, submitFirst){
+  var di = +card.getAttribute('data-di'), x = audEntry(di);
+  if(!x) return;
+  var gap = card.getAttribute('data-gap');
+  audDisarm(card);
+  var r = null;
+  if(submitFirst && audComplete(card)) r = audWriteValue(di, card, gap);
+  if(r){
+    if(x.done.indexOf(gap) < 0) x.done.push(gap);
+    x.gaps = x.gaps.filter(function(g){ return g !== gap; });
+    if(!x.vals) x.vals = {};
+    x.vals[gap] = r.val;
+    S.audit.done++;
+  }
+  var pairs = [];
+  x.gaps.forEach(function(g){ var p = audPair(di, g); AUD_DISMISS[p] = 1; pairs.push(p); });
+  if(pairs.length) store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+  var n = pairs.length;
+  x.gaps = [];
+  var text = r ? ('Done · ' + r.val + ' saved' + (n ? ', ' + n + ' more closed out' : '')) : ('Done · ' + n + ' closed out for ' + dispName(D.directory[di]));
+  audLog({ kind:'done', di:di, pairs:pairs, submit:r ? { entry:r.entry || null, gap:gap, val:r.val } : null, text:text });
+  audToastShow(text);
+  audRetire(card, !!r, kb);
+}
 /* Shift+Right inside a card (JD 2026-10-15): pass on the gap on show
    ("I just don't want to add a phone number"). The gap is closed out for
    good — the same per-pair ncc_aud_skip dismissal "Done with them" uses,
@@ -3586,10 +3780,15 @@ function audPass(card){
   if(!x) return;
   var gap = card.getAttribute('data-gap');
   if(x.gaps.indexOf(gap) < 0) return;
+  var gapIndex = x.gaps.indexOf(gap);
   audDisarm(card);   /* countdown + typing debounce cancelled: nothing submits */
-  AUD_DISMISS[audPair(di, gap)] = 1;
+  var pair = audPair(di, gap);
+  AUD_DISMISS[pair] = 1;
   store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
   x.gaps = x.gaps.filter(function(g){ return g !== gap; });
+  var text = 'Passed · ' + AUD_GAPS[gap].tag + ' closed out';
+  audLog({ kind:'pass', di:di, gap:gap, gapIndex:gapIndex, pairs:[pair], text:text });
+  audToastShow(text);
   if(x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
   audRetire(card, false, true);
 }
@@ -3695,7 +3894,9 @@ function audCardLast(card){
 function audTryArm(card){
   if(!card.isConnected || card.classList.contains('aud-out') || card.classList.contains('aud-done')) return;
   if(!audReady(card)){ audDisarm(card); return; }
-  if(!audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
+  var xArm = audEntry(+card.getAttribute('data-di'));
+  var reeditArm = !!(xArm && xArm.done.indexOf(card.getAttribute('data-gap')) >= 0);
+  if(reeditArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audDisarm(card);
   var cd = $('.aud-cd', card), cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
   card.classList.add('aud-arm');
@@ -3717,58 +3918,101 @@ function audNudge(card){
 }
 function audAddTag(di, fieldK, val){
   var e = D.directory[di], arr = splitTags(gv(e, fieldK), ', ');
-  if(arr.map(function(x){ return x.toLowerCase(); }).indexOf(val.toLowerCase()) >= 0) return true;
+  if(arr.map(function(x){ return x.toLowerCase(); }).indexOf(val.toLowerCase()) >= 0) return true;   /* already on file: counts as filled, no patch */
   arr.push(val);
-  txn('Edit ' + fieldK, function(){ var o = {}; o[fieldK] = arr.join(', '); queuePatch(di, o); });
-  return true;
+  return txn('Edit ' + fieldK, function(){ var o = {}; o[fieldK] = arr.join(', '); queuePatch(di, o); });
+}
+/* Replace a tag added earlier this visit (a re-edited Orgs/Skills chip):
+   the old value comes off its list and the new one goes on, in one txn. */
+function audReplaceTag(di, oldK, newK, oldVal, newVal){
+  var e = D.directory[di];
+  return txn('Edit ' + newK, function(){
+    if(oldK === newK){
+      var arr = splitTags(gv(e, oldK), ', ').filter(function(x2){ return x2.toLowerCase() !== oldVal.toLowerCase(); });
+      if(arr.map(function(x2){ return x2.toLowerCase(); }).indexOf(newVal.toLowerCase()) < 0) arr.push(newVal);
+      var o = {}; o[newK] = arr.join(', '); queuePatch(di, o);
+    } else {
+      var a1 = splitTags(gv(e, oldK), ', ').filter(function(x2){ return x2.toLowerCase() !== oldVal.toLowerCase(); });
+      var o1 = {}; o1[oldK] = a1.join(', '); queuePatch(di, o1);
+      var a2 = splitTags(gv(e, newK), ', ');
+      if(a2.map(function(x2){ return x2.toLowerCase(); }).indexOf(newVal.toLowerCase()) < 0) a2.push(newVal);
+      var o2 = {}; o2[newK] = a2.join(', '); queuePatch(di, o2);
+    }
+  });
+}
+/* Write the value on show for a gap — the one patch-writing path behind
+   audSave and Shift+Down's immediate submit. Returns { entry, val } or
+   null when there is nothing complete to write. entry is the undo-stack
+   entry for the write (null when the value was already on file and no
+   patch was needed). */
+function audWriteValue(di, card, gap){
+  var e = D.directory[di]; if(!e) return null;
+  if(gap === 'tier' || gap === 'rel'){
+    var pick = card.getAttribute('data-pick');
+    if(!pick) return null;
+    var en = gap === 'tier' ? txn('Set tier', function(){ queuePatch(di, { tier:pick }); }) : txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); });
+    return { entry:en, val:gap === 'tier' ? (TIERS[pick] ? TIERS[pick].n : pick) : cap(pick) };
+  }
+  if(gap === 'loc'){
+    var inp = $('.aud-in', card), v = inp ? inp.value.trim() : '';
+    if(!v) return null;
+    var nv = ptNormLoc(v);
+    /* txn, not setField: an auto-submitted card must be undoable (JD) */
+    return { entry:txn('Set location', function(){ queuePatch(di, { location_on_file:nv }); }), val:nv };
+  }
+  if(gap === 'years'){
+    var yi = $('.aud-year', card), yv = yi ? yi.value.trim() : '';
+    if(!audYearOk(yv)) return null;
+    return { entry:txn('Set years known', function(){ queuePatch(di, { years_known:yv }); }), val:yv };
+  }
+  if(gap === 'phone'){
+    var ip = $('.aud-in', card), pv = ip ? ip.value.trim() : '';
+    if(!pv) return null;
+    return { entry:txn('Set phone', function(){ queuePatch(di, { phone:pv }); }), val:pv };
+  }
+  if(gap === 'orgs'){
+    var io = $('.aud-in', card), ov = io ? io.value.trim() : '';
+    if(!ov) return null;
+    var xo = audEntry(di), priorO = (xo && xo.done.indexOf(gap) >= 0 && xo.vals) ? xo.vals[gap] : '';
+    if(priorO && priorO.toLowerCase() !== ov.toLowerCase())
+      return { entry:audReplaceTag(di, audOrgCat(priorO), audOrgCat(ov), priorO, ov), val:ov };
+    var ro = audAddTag(di, audOrgCat(ov), ov);
+    return ro ? { entry:(ro === true ? null : ro), val:ov } : null;
+  }
+  if(gap === 'skills'){
+    var is2 = $('.aud-in', card), sv = is2 ? is2.value.trim() : '';
+    if(!sv) return null;
+    var xs = audEntry(di), priorS = (xs && xs.done.indexOf(gap) >= 0 && xs.vals) ? xs.vals[gap] : '';
+    if(priorS && priorS.toLowerCase() !== sv.toLowerCase())
+      return { entry:audReplaceTag(di, 'specialty', 'specialty', priorS, sv), val:sv };
+    var rs = audAddTag(di, 'specialty', sv);
+    return rs ? { entry:(rs === true ? null : rs), val:sv } : null;
+  }
+  return null;
 }
 function audSave(di, card){
   var gap = card.getAttribute('data-gap'), e = D.directory[di];
   if(!e || +card.getAttribute('data-di') !== di) return;
-  var ok = false;
-  if(gap === 'tier' || gap === 'rel'){
-    var pick = card.getAttribute('data-pick');
-    if(!pick){ audNudge(card); return; }
-    if(gap === 'tier') txn('Set tier', function(){ queuePatch(di, { tier:pick }); });
-    else txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); });
-    ok = true;
-  }
-  else if(gap === 'loc'){
-    var inp = $('.aud-in', card), v = inp ? inp.value.trim() : '';
-    if(!v){ audNudge(card); return; }
-    /* txn, not setField: an auto-submitted card must be undoable (JD) */
-    txn('Set location', function(){ queuePatch(di, { location_on_file: ptNormLoc(v) }); }); ok = true;
-  }
-  else if(gap === 'years'){
-    var yi = $('.aud-year', card), yv = yi ? yi.value.trim() : '';
-    if(!audYearOk(yv)){ audNudge(card); return; }
-    txn('Set years known', function(){ queuePatch(di, { years_known: yv }); }); ok = true;
-  }
-  else if(gap === 'phone'){
-    var inp2 = $('.aud-in', card), pv = inp2 ? inp2.value.trim() : '';
-    if(!pv){ audNudge(card); return; }
-    txn('Set phone', function(){ queuePatch(di, { phone: pv }); }); ok = true;
-  }
-  else if(gap === 'orgs'){
-    var inp3 = $('.aud-in', card), ov = inp3 ? inp3.value.trim() : '';
-    if(!ov){ audNudge(card); return; }
-    ok = audAddTag(di, audOrgCat(ov), ov);
-  }
-  else if(gap === 'skills'){
-    var inp4 = $('.aud-in', card), sv = inp4 ? inp4.value.trim() : '';
-    if(!sv){ audNudge(card); return; }
-    ok = audAddTag(di, 'specialty', sv);
-  }
-  if(ok){
-    S.audit.done++;
-    var x = audEntry(di);
-    if(x){
+  var x = audEntry(di);
+  var reedit = !!(x && x.done.indexOf(gap) >= 0);
+  var priorVal = (x && x.vals) ? x.vals[gap] : undefined;
+  var gapIndex = x ? x.gaps.indexOf(gap) : -1;
+  var r = audWriteValue(di, card, gap);
+  if(!r){ audNudge(card); return; }
+  if(x){
+    if(!reedit){
+      S.audit.done++;
       x.done.push(gap);
       x.gaps = x.gaps.filter(function(g){ return g !== gap; });
-      if(x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
     }
-    audRetire(card, true);
+    if(!x.vals) x.vals = {};
+    x.vals[gap] = r.val;
+    var text = (reedit ? 'Updated · ' : 'Saved · ') + AUD_GAPS[gap].tag + ' set to ' + r.val;
+    audLog({ kind:reedit ? 'reedit' : 'save', di:di, gap:gap, gapIndex:gapIndex, entry:r.entry || null, priorVal:priorVal, val:r.val, text:text });
+    audToastShow(text);
+    if(x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
   }
+  audRetire(card, true);
 }
 function audRetire(card, saved, kbFocus){
   audDisarm(card);
@@ -3780,6 +4024,7 @@ function audRetire(card, saved, kbFocus){
     var nxt = A.deck.shift();
     if(nxt){
       A.shown.push(nxt);
+      if(nxt.parked) audUnpark(pkey(D.directory[nxt.di]));   /* back on the wall: no longer parked */
       var grid = $('#audgrid');
       if(grid){
         var tmp = document.createElement('div');
@@ -3796,7 +4041,14 @@ function audRetire(card, saved, kbFocus){
   card.classList.add(saved ? 'aud-done' : 'aud-out');
   setTimeout(finish, 310);
 }
+function audLaterPaint(){
+  var b = $('#audlaterbtn'); if(!b) return;
+  var n = audLaterEntries().length;
+  b.hidden = !n;
+  var s2 = $('#audlaterN'); if(s2) s2.textContent = n;
+}
 function audPaintCounts(){
+  audLaterPaint();
   var s = $('#audsub'); if(!s) return;
   var left = audRemaining(), done = S.audit ? S.audit.done : 0;
   s.textContent = left ? left.toLocaleString('en-US') + ' quick win' + (left === 1 ? '' : 's') + ' left' + (done ? ' · ' + done + ' filled in this visit' : '') : 'Nothing left to fill in';
@@ -3812,8 +4064,10 @@ function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null };
   if(!S.audit.shown) audDeal();
   v.innerHTML = '<div class="page audit"><div class="pagehead"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
-    '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></div>' +
-    '<div class="aud-grid" id="audgrid"></div><div id="audempty"></div></div>';
+    '<span class="aud-head-btns"><button type="button" class="btn ghost" data-act="audlater" id="audlaterbtn" hidden>' + ic('today', 15) + '<span>Saved for later (<span id="audlaterN">0</span>)</span></button>' +
+    '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></span></div>' +
+    '<div class="aud-grid" id="audgrid"></div><div id="audempty"></div>' +
+    '<div class="aud-toast" id="audtoast" hidden role="status"></div></div>';
   var grid = $('#audgrid');
   grid.innerHTML = S.audit.shown.map(function(x, i){ return audCardHTML(x, i); }).join('');
   $$('.aud-card', grid).forEach(audWireCard);
@@ -3888,9 +4142,13 @@ function onClick(ev){
     case 'back': back(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
     case 'audgap': { var audC4 = el.closest('.aud-card'); if(audC4){ var gTo = el.getAttribute('data-gap'); if(gTo && gTo !== audC4.getAttribute('data-gap')) audSetGap(audC4, gTo); } break; }
-    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit){ audDisarm(audC3); var xSk = audEntry(di); var skGaps = xSk ? xSk.gaps.slice() : [audC3.getAttribute('data-gap')]; skGaps.forEach(function(g){ AUD_DISMISS[audPair(di, g)] = 1; }); store('ncc_aud_skip', JSON.stringify(AUD_DISMISS)); if(xSk) xSk.gaps = []; audRetire(audC3, false); } break; }
+    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit) audFinish(audC3, false, false); break; }
+    case 'audpark': { var audC5 = el.closest('.aud-card'); if(audC5) audPark(audC5, false); break; }
+    case 'audreopen': { var audC6 = el.closest('.aud-card'); if(audC6) audReopen(audC6, el.getAttribute('data-gap')); break; }
+    case 'audundo': audUndoLast(); break;
     case 'audopen': if(di != null) openPerson(di); break;
     case 'audshuffle': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;
+    case 'audlater': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;   /* redeal: saved-for-later people come first (audDeal) */
     case 'set': doSet(el); break;
     case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
     case 'mergeopen': openMergeSheet(di); break;
@@ -4099,6 +4357,20 @@ function onNavKey(ev){
     if(audCard && S.route && S.route.name === 'audit'){
       ev.preventDefault(); ev.stopImmediatePropagation();
       audPass(audCard);
+      return;
+    }
+  }
+  /* Shift+Down / Shift+Left inside an Audit card (JD 2026-10-15):
+     Shift+Down finishes the person NOW (a complete value on show
+     submits immediately; the rest close out) and Shift+Left saves the
+     person for later, noting the category on show. Checked before the
+     chip-group handler below, so inside a card these arrows never just
+     move focus or extend a text selection. */
+  if(ev.shiftKey && !ev.ctrlKey && !ev.metaKey && !ev.altKey && (key === 'ArrowDown' || key === 'ArrowLeft')){
+    var audCard2 = t.closest('.aud-card');
+    if(audCard2 && S.route && S.route.name === 'audit'){
+      ev.preventDefault(); ev.stopImmediatePropagation();
+      if(key === 'ArrowDown') audFinish(audCard2, true, true); else audPark(audCard2, true);
       return;
     }
   }
