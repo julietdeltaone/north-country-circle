@@ -858,9 +858,9 @@ body.vm-rich .pstats{display:block}
 .pted-sec .lab{margin:8px 0 6px}
 .pted-add{position:relative;margin-top:8px}
 .pted-add:first-child{margin-top:0}
-.pted-ac{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:6;background:var(--card);border:1px solid var(--line2);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.5);padding:4px;max-height:224px;overflow:auto}
+.pted-ac{margin-top:4px;background:var(--card);border:1px solid var(--line2);border-radius:10px;padding:4px;max-height:224px;overflow:auto}
 .pted-ac[hidden]{display:none}
-.pted-aci{display:block;width:100%;padding:8px 10px;border-radius:7px;text-align:left;color:var(--mut)}
+.pted-aci{display:block;width:100%;padding:8px 10px;border-radius:7px;text-align:left;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pted-aci:hover{background:var(--accbg);color:var(--txt)}
 
 /* ---------- export design picker ---------- */
