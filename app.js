@@ -319,9 +319,9 @@ function draw() {
     ctx.stroke();
   };
   if (pathSet) {
-    drawEdges(false, "rgba(70,85,120,0.14)", 1);
+    drawEdges(false, "rgba(255,255,255,0.05)", 1);
     /* path edges in amber */
-    ctx.strokeStyle = "rgba(255,180,84,0.85)"; ctx.lineWidth = 2.5; ctx.beginPath();
+    ctx.strokeStyle = "rgba(245,185,66,0.85)"; ctx.lineWidth = 2.5; ctx.beginPath();
     for (const key of pathEdgeSet) {
       const a = Math.floor(key / N), b = key % N;
       ctx.moveTo(w2sX(RX(a)), w2sY(RY(a)));
@@ -332,20 +332,20 @@ function draw() {
     if (resFilter) {
       /* ghost pass: all non-highlight edges near-invisible; highlight edges
          between two amber-set people stay amber, other highlight edges ice */
-      drawEdges(false, "rgba(70,85,120,0.05)", 1);
-      drawEdges(true, "rgba(223,168,79,0.50)", 1, (a, b) => !!resVis(a) && !!resVis(b));
-      drawEdges(true, "rgba(143,208,255,0.30)", 1, (a, b) => !(resVis(a) && resVis(b)));
+      drawEdges(false, "rgba(255,255,255,0.018)", 1);
+      drawEdges(true, "rgba(245,185,66,0.50)", 1, (a, b) => !!resVis(a) && !!resVis(b));
+      drawEdges(true, "rgba(255,255,255,0.22)", 1, (a, b) => !(resVis(a) && resVis(b)));
     } else {
-      drawEdges(false, "rgba(70,85,120,0.10)", 1);
-      drawEdges(true, "rgba(143,208,255,0.55)", 1);
+      drawEdges(false, "rgba(255,255,255,0.03)", 1);
+      drawEdges(true, "rgba(255,255,255,0.38)", 1);
     }
   } else {
-    drawEdges(false, resFilter ? "rgba(70,85,120,0.05)" : (bridgeMode ? "rgba(70,85,120,0.12)" : "rgba(70,85,120,0.28)"), 1);
+    drawEdges(false, resFilter ? "rgba(255,255,255,0.018)" : (bridgeMode ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.08)"), 1);
   }
 
   /* long-range bridges: glow underlay + bright core, selected one in amber */
   if (bridgeMode && bridgeThresh > 0) {
-    for (const [style, w] of [["rgba(170,120,255,0.30)", 6], ["rgba(216,170,255,0.95)", 2]]) {
+    for (const [style, w] of [["rgba(255,255,255,0.08)", 6], ["rgba(255,255,255,0.7)", 2]]) {
       ctx.strokeStyle = style;
       ctx.lineWidth = w;
       ctx.beginPath();
@@ -360,7 +360,7 @@ function draw() {
     }
     const sb = bridgeList[selectedBridge];
     if (sb && visible[sb.a] && visible[sb.b]) {
-      ctx.strokeStyle = "#ffb454";
+      ctx.strokeStyle = "#e30613";
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(w2sX(RX(sb.a)), w2sY(RY(sb.a)));
@@ -381,30 +381,30 @@ function draw() {
     if (res && (isHi || resFilter)) {
       ctx.beginPath();
       ctx.arc(x, y, r * 2.15, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(223,168,79,0.14)";
+      ctx.fillStyle = "rgba(245,185,66,0.14)";
       ctx.fill();
     }
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    if (resFilter) ctx.fillStyle = res ? "#dfa84f" : "rgba(143,208,255,0.08)";
-    else if (pathSet && pathSet.has(i)) ctx.fillStyle = "#ffb454";
-    else if (res) ctx.fillStyle = isHi ? "#dfa84f" : "rgba(223,168,79,0.25)";
-    else if (hubMode && hubSet.has(i)) ctx.fillStyle = isHi ? "#ffd9a0" : "rgba(255,217,160,0.3)";
-    else ctx.fillStyle = isHi ? "#8fd0ff" : "rgba(143,208,255,0.22)";
+    if (resFilter) ctx.fillStyle = res ? "#f5b942" : "rgba(255,255,255,0.05)";
+    else if (pathSet && pathSet.has(i)) ctx.fillStyle = "#f5b942";
+    else if (res) ctx.fillStyle = isHi ? "#f5b942" : "rgba(245,185,66,0.25)";
+    else if (hubMode && hubSet.has(i)) ctx.fillStyle = isHi ? "#ffffff" : "rgba(255,255,255,0.35)";
+    else ctx.fillStyle = isHi ? "#ffffff" : "rgba(200,200,200,0.42)";
     ctx.fill();
     if (i === jdIndex || layerSet.has(i) || i === hover || (hubMode && hubSet.has(i) && isHi)) {
       ctx.lineWidth = i === jdIndex ? 2.5 : 2;
-      ctx.strokeStyle = i === jdIndex ? "#ffb454" : (hubMode && hubSet.has(i) && !layerSet.has(i) && i !== hover ? "rgba(255,180,84,0.8)" : "#ffb454");
+      ctx.strokeStyle = i === jdIndex ? "#e30613" : (hubMode && hubSet.has(i) && !layerSet.has(i) && i !== hover ? "rgba(255,255,255,0.85)" : "#e30613");
       ctx.stroke();
     }
   }
 
   /* default labels: JD + big nodes when zoomed in (toggleable in Filters) */
-  ctx.font = "11px -apple-system,Segoe UI,Roboto,sans-serif";
+  ctx.font = "11px Archivo,sans-serif";
   ctx.textAlign = "center";
   const labelZoom = baseScale * 6;
   if (fLabels && jdIndex >= 0 && visible[jdIndex]) {
-    ctx.fillStyle = "#ffb454";
+    ctx.fillStyle = "#f2f2f2";
     ctx.fillText("@jdmeyers_", w2sX(RX(jdIndex)), w2sY(RY(jdIndex)) - rad(jdIndex) - 5);
   }
   /* big-node labels when zoomed in */
@@ -424,7 +424,7 @@ function draw() {
 
   /* labels for every connection of each layered person */
   if (layers.length) {
-    ctx.fillStyle = "rgba(143,208,255,0.9)";
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
     for (const s of layers) {
       const nbs = undAdj[s].filter(j => visible[j] && j !== s)
         .sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 80);
@@ -934,7 +934,9 @@ function initDirectory() {
   document.getElementById("btn-dir").addEventListener("click", () => {
     dr.hidden = !dr.hidden;
     document.getElementById("btn-dir").classList.toggle("on", !dr.hidden);
-    if (!dr.hidden) { loadDossierMembership(); paintDir(); document.getElementById("dir-q").focus(); }
+    if (!dr.hidden) { loadDossierMembership();
+      document.getElementById("dir-list").innerHTML = '<div class="dirskl" aria-busy="true">' + '<div class="skr"></div>'.repeat(9) + '</div>';
+      requestAnimationFrame(paintDir); document.getElementById("dir-q").focus(); }
   });
   document.getElementById("dir-close").addEventListener("click", () => {
     dr.hidden = true;
@@ -1060,3 +1062,9 @@ applyFilters();
 initSearch();
 initDirectory();
 initToolbar();
+/* SWISS MONO boot: first frame is on screen — complete the brand bar and fade */
+requestAnimationFrame(() => {
+  const b = document.getElementById("bootload");
+  if (b) { b.classList.add("done"); setTimeout(() => b.remove(), 320); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw());
+});
