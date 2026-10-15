@@ -3429,6 +3429,14 @@ function aiTidy(){
    first, the rest close out); Shift+Left is Save for later. A done chip
    reopens its editor (click it) and commits a fresh patch. Every Audit
    action posts a toast with a one-step Undo (AUD_LAST).
+   MODES (JD 2026-10-15, gamified per Duolingo / Zooniverse / Anki
+   patterns): a segmented switcher (ncc_aud_mode) picks Cards (this
+   wall, the untouched default), Rapid Fire (one person + one gap
+   center stage, instant saves — no countdown — streak + pace + an
+   optional 2-minute Blitz with an end-of-round summary), Category
+   Run (the wall deals a single chosen category), or Finish Line
+   (the wall deals fewest-gaps-first and counts profiles finished).
+   A settable daily goal bar tracks fills across all modes.
    ============================================================ */
 var AUD_WALL = 12;
 var AUD_GAPS = {
@@ -3474,7 +3482,7 @@ function audLaterEntries(){
     var di = byPk[pk]; if(di == null) return;
     var g = audOpenGaps(di); if(!g.length) return;
     var cur = AUD_LATER[pk];
-    out.push({ di:di, gaps:g.slice(), done:[], cur:(g.indexOf(cur) >= 0 ? cur : g[0]), vals:{}, parked:true });
+    out.push({ di:di, gaps:g.slice(), done:[], cur:(g.indexOf(cur) >= 0 ? cur : g[0]), vals:{}, parked:true, dropped:0 });
   });
   return out;
 }
@@ -3503,7 +3511,7 @@ function audDeal(){
   people().forEach(function(di){
     if(parkedDis[di]) return;
     var g = audOpenGaps(di);
-    if(g.length) pool.push({ di:di, gaps:g.slice(), done:[], cur:g[0], vals:{} });
+    if(g.length) pool.push({ di:di, gaps:g.slice(), done:[], cur:g[0], vals:{}, dropped:0 });
   });
   for(var i = pool.length - 1; i > 0; i--){
     var j = Math.floor(Math.random() * (i + 1)), t = pool[i]; pool[i] = pool[j]; pool[j] = t;
@@ -3670,7 +3678,7 @@ function audRestock(di, preferGap){
   var A = S.audit; if(!A || !A.deck || audEntry(di)) return;
   for(var i = 0; i < A.deck.length; i++) if(A.deck[i].di === di) return;
   var g = audOpenGaps(di); if(!g.length) return;
-  A.deck.unshift({ di:di, gaps:g.slice(), done:[], cur:(preferGap && g.indexOf(preferGap) >= 0 ? preferGap : g[0]), vals:{} });
+  A.deck.unshift({ di:di, gaps:g.slice(), done:[], cur:(preferGap && g.indexOf(preferGap) >= 0 ? preferGap : g[0]), vals:{}, dropped:0 });
 }
 function audUndoLast(){
   var act = AUD_LAST; if(!act) return;
@@ -3681,6 +3689,7 @@ function audUndoLast(){
   if(act.kind === 'save'){
     audReverseEntry(act.entry);
     if(S.audit) S.audit.done = Math.max(0, S.audit.done - 1);
+    audNoteUnfill(act);
     if(x && card){
       x.done = x.done.filter(function(g){ return g !== act.gap; });
       if(x.gaps.indexOf(act.gap) < 0) x.gaps.splice(Math.min(act.gapIndex == null ? x.gaps.length : act.gapIndex, x.gaps.length), 0, act.gap);
@@ -3697,13 +3706,14 @@ function audUndoLast(){
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
     if(x && card){
       if(x.gaps.indexOf(act.gap) < 0) x.gaps.splice(Math.min(act.gapIndex == null ? x.gaps.length : act.gapIndex, x.gaps.length), 0, act.gap);
+      if(x.dropped) x.dropped--;
       audSetGap(card, act.gap);
     } else audRestock(act.di, act.gap);
   }
   else if(act.kind === 'done'){
     (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
-    if(act.submit){ audReverseEntry(act.submit.entry); if(S.audit) S.audit.done = Math.max(0, S.audit.done - 1); }
+    if(act.submit){ audReverseEntry(act.submit.entry); if(S.audit) S.audit.done = Math.max(0, S.audit.done - 1); audNoteUnfill(act.submit); }
     audRestock(act.di, act.submit ? act.submit.gap : null);
   }
   else if(act.kind === 'park'){
@@ -3750,7 +3760,8 @@ function audFinish(card, kb, submitFirst){
     if(!x.vals) x.vals = {};
     x.vals[gap] = r.val;
     S.audit.done++;
-  }
+    audNoteFill(di, gap);
+  } else if(S.audit) S.audit.streak = 0;   /* closed out with no fill: streak ends */
   var pairs = [];
   x.gaps.forEach(function(g){ var p = audPair(di, g); AUD_DISMISS[p] = 1; pairs.push(p); });
   if(pairs.length) store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
@@ -3776,6 +3787,8 @@ function audPass(card){
   var gap = card.getAttribute('data-gap');
   if(x.gaps.indexOf(gap) < 0) return;
   var gapIndex = x.gaps.indexOf(gap);
+  if(S.audit) S.audit.streak = 0;   /* a pass breaks the fill streak */
+  x.dropped = (x.dropped || 0) + 1;
   audDisarm(card);   /* countdown + typing debounce cancelled: nothing submits */
   var pair = audPair(di, gap);
   AUD_DISMISS[pair] = 1;
@@ -3891,7 +3904,11 @@ function audTryArm(card){
   if(!audReady(card)){ audDisarm(card); return; }
   var xArm = audEntry(+card.getAttribute('data-di'));
   var reeditArm = !!(xArm && xArm.done.indexOf(card.getAttribute('data-gap')) >= 0);
-  if(reeditArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
+  /* Rapid Fire saves INSTANTLY, always (JD 2026-10-15): on a one-gap
+     stage every save would be a "last gap", so the 3s countdown would
+     kill the pace — the toast + Undo is the safety net instead. */
+  var rapidArm = !!(S.audit && S.audit.mode === 'rapid');
+  if(reeditArm || rapidArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audDisarm(card);
   var cd = $('.aud-cd', card), cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
   card.classList.add('aud-arm');
@@ -3995,15 +4012,21 @@ function audSave(di, card){
   var r = audWriteValue(di, card, gap);
   if(!r){ audNudge(card); return; }
   if(x){
+    var finProfile = false;
     if(!reedit){
       S.audit.done++;
       x.done.push(gap);
       x.gaps = x.gaps.filter(function(g){ return g !== gap; });
+      audNoteFill(di, gap);
+      /* Finish Line counts a profile only when every gap it carried
+         was filled — none passed or closed out along the way. */
+      finProfile = !x.gaps.length && !(x.dropped || 0);
+      if(finProfile) S.audit.finished = (S.audit.finished || 0) + 1;
     }
     if(!x.vals) x.vals = {};
     x.vals[gap] = r.val;
     var text = (reedit ? 'Updated · ' : 'Saved · ') + AUD_GAPS[gap].tag + ' set to ' + r.val;
-    audLog({ kind:reedit ? 'reedit' : 'save', di:di, gap:gap, gapIndex:gapIndex, entry:r.entry || null, priorVal:priorVal, val:r.val, text:text });
+    audLog({ kind:reedit ? 'reedit' : 'save', di:di, gap:gap, gapIndex:gapIndex, entry:r.entry || null, priorVal:priorVal, val:r.val, text:text, blitz:!!(S.audit && S.audit.blitz), finishedProfile:finProfile });
     audToastShow(text);
     if(x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
   }
@@ -4015,6 +4038,7 @@ function audRetire(card, saved, kbFocus){
   var hadFocus = card.contains(document.activeElement);
   A.shown = A.shown.filter(function(x){ return x.di !== di; });
   function finish(){
+    if(!card.isConnected) return;   /* the view was rebuilt mid-animation (mode switch, shuffle): do not feed a stale card into the new wall */
     card.remove();
     var nxt = A.deck.shift();
     if(nxt){
@@ -4034,7 +4058,9 @@ function audRetire(card, saved, kbFocus){
   }
   if(pvReducedMotion()){ finish(); return; }
   card.classList.add(saved ? 'aud-done' : 'aud-out');
-  setTimeout(finish, 310);
+  /* Rapid Fire keeps the swap under 150ms (Doherty threshold): the
+     stage never sits empty long enough to break the rhythm. */
+  setTimeout(finish, (S.audit && S.audit.mode === 'rapid') ? 120 : 310);
 }
 function audLaterPaint(){
   var b = $('#audlaterbtn'); if(!b) return;
@@ -4043,7 +4069,7 @@ function audLaterPaint(){
   var s2 = $('#audlaterN'); if(s2) s2.textContent = n;
 }
 function audPaintCounts(){
-  audLaterPaint();
+  audLaterPaint(); audPaintGoal(); audPaintModeBar();
   var s = $('#audsub'); if(!s) return;
   var left = audRemaining(), done = S.audit ? S.audit.done : 0;
   s.textContent = left ? left.toLocaleString('en-US') + ' quick win' + (left === 1 ? '' : 's') + ' left' + (done ? ' · ' + done + ' filled in this visit' : '') : 'Nothing left to fill in';
@@ -4052,20 +4078,272 @@ function audPaintEmpty(){
   var box = $('#audempty'), grid = $('#audgrid');
   if(!box || !grid) return;
   if(grid.querySelector('.aud-card')){ box.innerHTML = ''; return; }
+  if(S.audit && S.audit.blitzDone){ box.innerHTML = ''; return; }   /* the Blitz summary owns the stage */
+  if(audMode() === 'cat' && !(S.audit && S.audit.cat)){ box.innerHTML = ''; return; }   /* waiting on a category pick */
   if(audRemaining() === 0) box.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>All caught up</h3><p>Every profile has the basics filled in. Nice work.</p></div>';
   else box.innerHTML = '<div class="aud-caught">' + ic('target', 26) + '<h3>That is the whole deck</h3><p>Everything else is filled in or dismissed. Shuffle deals a fresh mix from what is left; dismissed items stay out for good.</p></div>';
 }
+/* ============================================================
+   Audit modes + game layer (JD 2026-10-15). Researched patterns:
+   Duolingo — a settable daily goal with a visible progress bar and
+   milestone celebrations; Zooniverse — one subject, one task, instant
+   advance; Anki — one card at a time, keyboard-first, honest session
+   counters and an end-of-session summary; the goal-gradient effect
+   (Hull 1932; Kivetz et al. 2006) — effort accelerates near a finish,
+   which is exactly what Finish Line's fewest-gaps-first order and
+   the goal bar exploit. Rejected: XP/levels/currency (nothing to
+   spend it on — the real counts are the score), leagues (one user),
+   hearts/penalties (contradicts undo-everything), cross-day streaks
+   (JD fills ad hoc; a day streak would nag), sound and emoji (house
+   rules). The streak lives inside the visit only.
+   ============================================================ */
+var AUD_MODES = [
+  { k:'cards',  l:'Cards' },
+  { k:'rapid',  l:'Rapid Fire' },
+  { k:'cat',    l:'Category Run' },
+  { k:'finish', l:'Finish Line' }
+];
+function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' ? m : 'cards'; }
+/* Daily goal (Duolingo pattern, minus the nagging): fills today vs a
+   goal JD sets himself, persisted per calendar day. */
+function audDay(){
+  var t = new Date(), key = t.getFullYear() + '-' + (t.getMonth() + 1) + '-' + t.getDate(), d = null;
+  try{ d = JSON.parse(store('ncc_aud_day') || 'null'); }catch(x){}
+  if(!d || d.d !== key) d = { d:key, n:0, goal:25, met:false };
+  if(!(d.goal >= 5)) d.goal = 25;
+  return d;
+}
+function audDaySave(d){ store('ncc_aud_day', JSON.stringify(d)); }
+function audPaintGoal(){
+  var f = $('#audgoalfill'), t = $('#audgoalt'); if(!f || !t) return;
+  var d = audDay();
+  f.style.width = Math.min(100, Math.round(d.n / d.goal * 100)) + '%';
+  f.classList.toggle('met', d.n >= d.goal);
+  t.textContent = d.n + ' of ' + d.goal + ' filled today' + (d.n >= d.goal ? ' — goal reached' : '');
+}
+/* One real fill landed (a value written, never a re-edit): session
+   tallies, the streak, the daily goal, milestone notes. Milestones go
+   through the generic toast so they never clobber the Audit action
+   toast and its Undo button. */
+function audNoteFill(di, gap){
+  var A = S.audit; if(!A) return;
+  if(!A.fills) A.fills = [];
+  A.fills.push(Date.now());
+  A.streak = (A.streak || 0) + 1;
+  if(A.streak > (A.best || 0)) A.best = A.streak;
+  if(A.mode === 'cat' && gap){ if(!A.catDone) A.catDone = {}; A.catDone[gap] = (A.catDone[gap] || 0) + 1; }
+  if(A.blitz){ A.blitz.fills++; if(A.streak > A.blitz.best) A.blitz.best = A.streak; }
+  var d = audDay(); d.n++;
+  var met = d.n >= d.goal && !d.met; if(met) d.met = true;
+  audDaySave(d);
+  if(met) toast('Goal reached — ' + d.goal + ' filled today. Everything after this is bonus.');
+  else if(A.done > 0 && A.done % 10 === 0) toast('Milestone — ' + A.done + ' filled this session.');
+  audPaintGoal();
+}
+/* Undo of a fill reverses its tallies (the value itself is reversed by
+   the undo stack in audUndoLast). */
+function audNoteUnfill(act){
+  var A = S.audit; if(!A || !act) return;
+  var d = audDay(); if(d.n > 0) d.n--; if(d.n < d.goal) d.met = false; audDaySave(d);
+  if(A.fills && A.fills.length) A.fills.pop();
+  if(act.blitz && A.blitz && A.blitz.fills > 0) A.blitz.fills--;
+  if(act.finishedProfile && A.finished) A.finished--;
+  audPaintGoal();
+}
+function audPace(){
+  var A = S.audit; if(!A || !A.fills || A.fills.length < 5) return null;
+  var cut = Date.now() - 60000, n = 0;
+  for(var i = A.fills.length - 1; i >= 0; i--){ if(A.fills[i] >= cut) n++; else break; }
+  return n;
+}
+function audCatCounts(){
+  var out = {};
+  Object.keys(AUD_GAPS).forEach(function(g){ out[g] = 0; });
+  people().forEach(function(di){ audOpenGaps(di).forEach(function(g){ out[g]++; }); });
+  return out;
+}
+/* Pool builders for the new modes. Cards' audDeal above is untouched;
+   these share its entry shape and the parked-first rule. */
+function audPoolEntries(){
+  var later = audLaterEntries(), parkedDis = {}, pool = [];
+  later.forEach(function(x){ parkedDis[x.di] = 1; });
+  people().forEach(function(di){
+    if(parkedDis[di]) return;
+    var g = audOpenGaps(di);
+    if(g.length) pool.push({ di:di, gaps:g.slice(), done:[], cur:g[0], vals:{}, dropped:0 });
+  });
+  return { later:later, pool:pool };
+}
+function audShuffleInPlace(a){
+  for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
+}
+function audDealRapid(){
+  var A = S.audit, p = audPoolEntries();
+  audShuffleInPlace(p.pool);
+  var all = p.later.concat(p.pool);
+  A.shown = all.slice(0, 1);
+  A.deck = all.slice(1);
+  A.shown.forEach(function(x){ if(x.parked) audUnpark(pkey(D.directory[x.di])); });
+}
+function audDealFinish(){
+  var A = S.audit, p = audPoolEntries();
+  audShuffleInPlace(p.pool);
+  /* fewest gaps first; the shuffle underneath keeps ties random
+     (Array.prototype.sort is stable) */
+  p.pool.sort(function(a, b){ return a.gaps.length - b.gaps.length; });
+  var all = p.later.concat(p.pool);
+  A.shown = all.slice(0, AUD_WALL);
+  A.deck = all.slice(AUD_WALL);
+  A.shown.forEach(function(x){ if(x.parked) audUnpark(pkey(D.directory[x.di])); });
+}
+function audDealCat(){
+  var A = S.audit, gap = A.cat, later = [], pool = [];
+  if(!gap){ A.shown = []; A.deck = []; return; }
+  people().forEach(function(di){
+    if(audOpenGaps(di).indexOf(gap) < 0) return;
+    var parked = AUD_LATER[pkey(D.directory[di])] !== undefined;
+    var x = { di:di, gaps:[gap], done:[], cur:gap, vals:{}, dropped:0, parked:parked };
+    (parked ? later : pool).push(x);
+  });
+  audShuffleInPlace(pool);
+  var all = later.concat(pool);
+  A.shown = all.slice(0, AUD_WALL);
+  A.deck = all.slice(AUD_WALL);
+  A.shown.forEach(function(x){ if(x.parked) audUnpark(pkey(D.directory[x.di])); });
+}
+function audDealMode(){
+  var m = audMode();
+  if(m === 'rapid') audDealRapid();
+  else if(m === 'finish') audDealFinish();
+  else if(m === 'cat') audDealCat();
+  else audDeal();
+}
+function audSetMode(m){
+  var A = S.audit; if(!A) return;
+  audEndBlitz(true);
+  A.mode = m; store('ncc_aud_mode', m);
+  if(m !== 'cat') A.cat = null;
+  A.blitzDone = null;
+  A.shown = null;
+  viewAudit($('#view'));
+}
+/* ---- Blitz: a 2-minute Rapid Fire round with an end-of-round
+   summary (peak-end rule: the recap is what the round is remembered
+   by). Fills during the round are counted on the blitz state. ---- */
+function audStartBlitz(){
+  var A = S.audit; if(!A) return;
+  if(!audRemaining()){ toast('Nothing left to fill in.'); return; }
+  if(A.blitzDone){ A.blitzDone = null; viewAudit($('#view')); }
+  A.blitz = { ends:Date.now() + 120000, fills:0, best:(A.streak || 0) };
+  if(A._blitzIv) clearInterval(A._blitzIv);
+  A._blitzIv = setInterval(audBlitzTick, 250);
+  audBlitzTick();
+  audPaintModeBar();
+}
+function audBlitzTick(){
+  var A = S.audit, b = A && A.blitz;
+  if(!b){ if(A && A._blitzIv){ clearInterval(A._blitzIv); A._blitzIv = null; } return; }
+  if(Date.now() >= b.ends){ audEndBlitz(false); return; }
+  var el = $('#audblitz-t');
+  if(el) el.textContent = 'Blitz ' + Math.max(1, Math.ceil((b.ends - Date.now()) / 1000)) + 's · ' + b.fills + ' filled';
+}
+function audEndBlitz(silent){
+  var A = S.audit, b = A && A.blitz; if(!b) return;
+  A.blitz = null;
+  if(A._blitzIv){ clearInterval(A._blitzIv); A._blitzIv = null; }
+  var bt = $('#audblitz-t'); if(bt) bt.textContent = '';
+  if(silent) return;
+  A.blitzDone = { fills:b.fills, best:b.best };
+  var grid = $('#audgrid');
+  if(grid) grid.innerHTML = '<div class="aud-caught aud-blitzsum"><h3>Blitz over</h3>' +
+    '<p class="aud-blitzstats"><b>' + b.fills + '</b> fills · best streak <b>' + b.best + '</b> · <b>' + (b.fills / 2).toFixed(1) + '</b> per minute</p>' +
+    '<p><button type="button" class="btn primary" data-act="audblitz">Go again</button> <button type="button" class="btn ghost" data-act="audblitzx">Back to Rapid Fire</button></p></div>';
+  audPaintEmpty(); audPaintModeBar();
+}
+function audModesHTML(){
+  var m = audMode();
+  return '<div class="seg aud-modes" role="tablist" aria-label="Audit mode">' + AUD_MODES.map(function(x){
+    return '<button type="button" role="tab" aria-selected="' + (x.k === m ? 'true' : 'false') + '" class="' + (x.k === m ? 'on' : '') + '" data-act="audmode" data-m="' + x.k + '">' + x.l + '</button>';
+  }).join('') + '</div>';
+}
+function audModeBarHTML(){
+  var A = S.audit, m = audMode();
+  if(m === 'rapid'){
+    return '<div class="aud-modebar"><span id="audstreak">Streak <b>0</b></span>' +
+      '<span>Filled this session: <b id="audsessfill">0</b></span><span id="audpace"></span>' +
+      '<span class="sp"></span><span id="audblitz-t" class="aud-blitz-t"></span>' +
+      '<button type="button" class="btn ghost" data-act="audblitz" id="audblitzbtn">Start 2-minute Blitz</button></div>';
+  }
+  if(m === 'finish'){
+    return '<div class="aud-modebar"><span>Profiles finished this session: <b id="audfin">0</b></span>' +
+      '<span>Filled this session: <b id="audsessfill2">0</b></span>' +
+      '<span class="dim">Fewest gaps first — clear people off the board.</span></div>';
+  }
+  if(m === 'cat'){
+    var counts = audCatCounts();
+    return '<div class="aud-catrow" role="group" aria-label="Pick a category">' + Object.keys(AUD_GAPS).map(function(g){
+      return '<button type="button" class="aud-catbtn' + (A.cat === g ? ' on' : '') + '" data-act="audcat" data-g="' + g + '" aria-pressed="' + (A.cat === g ? 'true' : 'false') + '">' + AUD_GAPS[g].tag + ' <span class="aud-catn" id="audcatn-' + g + '">' + counts[g] + '</span></button>';
+    }).join('') +
+    '<button type="button" class="aud-catbtn" data-act="audcatall">All categories</button></div>' +
+    '<p class="aud-catprog" id="audcatprog"></p>';
+  }
+  return '';
+}
+function audPaintCatProg(){
+  var el = $('#audcatprog'); if(!el) return;
+  var A = S.audit;
+  if(!A.cat){ el.textContent = 'Pick a category — the wall deals only that one, person after person.'; return; }
+  var counts = audCatCounts();
+  Object.keys(AUD_GAPS).forEach(function(g){ var s = $('#audcatn-' + g); if(s) s.textContent = counts[g]; });
+  var cleared = (A.catDone && A.catDone[A.cat]) || 0;
+  el.textContent = AUD_GAPS[A.cat].tag + ': ' + counts[A.cat] + ' still open' + (cleared ? ' · ' + cleared + ' cleared this run' : '');
+}
+function audPaintModeBar(){
+  var A = S.audit; if(!A) return;
+  var m = audMode();
+  if(m === 'rapid'){
+    var st = $('#audstreak');
+    if(st) st.innerHTML = 'Streak <b>' + (A.streak || 0) + '</b>' + (A.best ? ' · Best <b>' + A.best + '</b>' : '');
+    var sf = $('#audsessfill'); if(sf) sf.textContent = A.done || 0;
+    var pc = $('#audpace'); if(pc){ var p = audPace(); pc.textContent = p != null ? 'Pace: ' + p + ' in the last minute' : ''; pc.hidden = p == null; }
+    var btn = $('#audblitzbtn'); if(btn) btn.hidden = !!A.blitz;
+    var stack = $('#audstack'); if(stack) stack.classList.toggle('nopeek', !(A.deck && A.deck.length));
+  }
+  else if(m === 'finish'){
+    var ff = $('#audfin'); if(ff) ff.textContent = A.finished || 0;
+    var sf2 = $('#audsessfill2'); if(sf2) sf2.textContent = A.done || 0;
+  }
+  else if(m === 'cat'){ audPaintCatProg(); }
+}
+
 function viewAudit(v){
-  if(!S.audit) S.audit = { done:0, shown:null, deck:null };
-  if(!S.audit.shown) audDeal();
+  if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null };
+  if(['cards', 'rapid', 'cat', 'finish'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
+  if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
+  if(!S.audit.shown) audDealMode();
+  var m = audMode();
   v.innerHTML = '<div class="page audit"><div class="pagehead"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
     '<span class="aud-head-btns"><button type="button" class="btn ghost" data-act="audlater" id="audlaterbtn" hidden>' + ic('today', 15) + '<span>Saved for later (<span id="audlaterN">0</span>)</span></button>' +
     '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></span></div>' +
-    '<div class="aud-grid" id="audgrid"></div><div id="audempty"></div>' +
+    '<div class="aud-tools">' + audModesHTML() +
+    '<span class="aud-goal"><span class="aud-goal-l">Today\'s goal</span><span class="aud-goal-bar"><i id="audgoalfill"></i></span><span id="audgoalt"></span>' +
+    '<button type="button" class="aud-goal-b" data-act="audgoal" data-d="-5" aria-label="Lower the goal by 5">−</button><button type="button" class="aud-goal-b" data-act="audgoal" data-d="5" aria-label="Raise the goal by 5">+</button></span></div>' +
+    '<div id="audmodebar">' + audModeBarHTML() + '</div>' +
+    (m === 'rapid'
+      ? '<div class="aud-stage-wrap"><div class="aud-stack" id="audstack"><div class="aud-peek p2"></div><div class="aud-peek p1"></div><div class="aud-grid aud-stage" id="audgrid"></div></div></div>'
+      : '<div class="aud-grid" id="audgrid"></div>') +
+    '<div id="audempty"></div>' +
     '<div class="aud-toast" id="audtoast" hidden role="status"></div></div>';
   var grid = $('#audgrid');
-  grid.innerHTML = S.audit.shown.map(function(x, i){ return audCardHTML(x, i); }).join('');
-  $$('.aud-card', grid).forEach(audWireCard);
+  if(S.audit.blitzDone){
+    grid.innerHTML = '<div class="aud-caught aud-blitzsum"><h3>Blitz over</h3>' +
+      '<p class="aud-blitzstats"><b>' + S.audit.blitzDone.fills + '</b> fills · best streak <b>' + S.audit.blitzDone.best + '</b> · <b>' + (S.audit.blitzDone.fills / 2).toFixed(1) + '</b> per minute</p>' +
+      '<p><button type="button" class="btn primary" data-act="audblitz">Go again</button> <button type="button" class="btn ghost" data-act="audblitzx">Back to Rapid Fire</button></p></div>';
+  } else {
+    grid.innerHTML = S.audit.shown.map(function(x, i){ return audCardHTML(x, i); }).join('');
+    $$('.aud-card', grid).forEach(audWireCard);
+  }
+  if(m === 'rapid' && !pvReducedMotion()) S.audit._paceIv = setInterval(function(){ audPaintModeBar(); }, 5000);
   audPaintCounts(); audPaintEmpty();
 }
 
@@ -4141,6 +4419,12 @@ function onClick(ev){
     case 'audpark': { var audC5 = el.closest('.aud-card'); if(audC5) audPark(audC5, false); break; }
     case 'audreopen': { var audC6 = el.closest('.aud-card'); if(audC6) audReopen(audC6, el.getAttribute('data-gap')); break; }
     case 'audundo': audUndoLast(); break;
+    case 'audmode': if(S.audit) audSetMode(el.getAttribute('data-m')); break;
+    case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.shown = null; viewAudit($('#view')); } break;
+    case 'audcatall': if(S.audit) audSetMode('cards'); break;
+    case 'audgoal': { var gd = audDay(); gd.goal = Math.max(5, Math.min(500, gd.goal + (+el.getAttribute('data-d')))); if(gd.n < gd.goal) gd.met = false; audDaySave(gd); audPaintGoal(); break; }
+    case 'audblitz': audStartBlitz(); break;
+    case 'audblitzx': if(S.audit){ S.audit.blitzDone = null; } viewAudit($('#view')); break;
     case 'audopen': if(di != null) openPerson(di); break;
     case 'audshuffle': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;
     case 'audlater': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;   /* redeal: saved-for-later people come first (audDeal) */
@@ -4419,6 +4703,7 @@ function onKey(ev){
   if(ev.key === 'Escape'){
     if(!$('#sheetwrap').hidden){ closeSheet(); return; }
     if(isField){ t.blur(); return; }
+    if(S.route.name === 'audit' && S.audit && S.audit.mode === 'rapid'){ audSetMode('cards'); return; }
     if(S.route.name === 'profile'){ var open = Object.keys(S.prof.edit); if(open.length){ S.prof.edit = {}; paintProfile(S.prof.di); } else back('people'); }
     return;
   }
