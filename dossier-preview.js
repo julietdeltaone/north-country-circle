@@ -1570,6 +1570,9 @@ function render(){
   var v = $('#view'), n = S.route.name;
   closeSheet();
   document.body.setAttribute('data-view', n);
+  /* skin 2026-10-15: route CHANGES earn a short entrance; same-route
+     repaints (polls, quiet refresh, writes) stay instant */
+  if(render._pv !== n){ render._pv = n; v.classList.remove('vin'); void v.offsetWidth; v.classList.add('vin'); clearTimeout(render._vt); render._vt = setTimeout(function(){ v.classList.remove('vin'); }, 380); }
   try{
     renderChrome();
     if(n === 'people') viewPeople(v);
