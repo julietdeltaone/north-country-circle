@@ -35,11 +35,17 @@ const XS = new Float32Array(N), YS = new Float32Array(N);
 for (let i = 0; i < N; i++) { XS[i] = PEOPLE[i].x; YS[i] = PEOPLE[i].y; }
 /* Ambient solar drift (design pass 2026-10-14): the whole layout slowly turns
    around its center — one revolution per 3 minutes. Rotation applies to node
-   positions only (labels stay upright); hit-testing inverts it. Pauses on
-   interaction and while a selection or path is up; off under reduced motion. */
+   positions only (labels stay upright); hit-testing inverts it. The drift has
+   an angular velocity that eases toward its target (full speed or zero) with
+   a ~1s exponential ramp, so starting and stopping never jerk. Target is zero
+   while a node is hovered, while a pointer is down/dragging, while a
+   selection or path is up, and for ~5s after any other interaction; hovering
+   empty space does not pause. Off under reduced motion. */
 const REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-let viewRot = 0, lastAct = performance.now(), lastDrawn = 0;
+let viewRot = 0, lastAct = -10000, lastDrawn = 0;
+let rotVel = 0, lastStep = 0; /* current angular velocity (rad/ms) + ramp clock */
 const DRIFT_MS = Math.PI * 2 / 180000; /* radians per millisecond */
+const RAMP_TAU = 1000; /* ms — velocity easing time constant */
 function RX(i) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return XS[i] * c - YS[i] * s; }
 function RY(i) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return XS[i] * s + YS[i] * c; }
 function invRot(x, y) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return [x * c + y * s, -x * s + y * c]; }
@@ -835,11 +841,21 @@ function initToolbar() {
 /* ---------- init ---------- */
 function driftLoop(t) {
   requestAnimationFrame(driftLoop);
-  if (REDUCED || t - lastAct < 5000 || layers.length || pathSet || pts.size) return;
+  if (REDUCED) { rotVel = 0; lastStep = t; return; }
+  /* ease the angular velocity toward its target every frame; the angle itself
+     still advances on the ~30fps draw cadence so the drawn frame and
+     hit-testing always share the same viewRot */
+  const blocked = hover >= 0 || pts.size > 0 || layers.length > 0 || !!pathSet || (t - lastAct < 5000);
+  const target = blocked ? 0 : DRIFT_MS;
+  const dtF = lastStep ? Math.min(250, t - lastStep) : 0;
+  lastStep = t;
+  if (dtF > 0) rotVel += (target - rotVel) * (1 - Math.exp(-dtF / RAMP_TAU));
+  if (target === 0 && rotVel < DRIFT_MS * 0.002) rotVel = 0;
+  if (rotVel <= 0) return;
   if (t - lastDrawn < 33) return;
-  const dt = lastDrawn ? Math.min(1000, t - lastDrawn) : 0;
+  const dt = lastDrawn ? Math.min(100, t - lastDrawn) : 33;
   lastDrawn = t;
-  viewRot += DRIFT_MS * dt;
+  viewRot += rotVel * dt;
   draw();
 }
 requestAnimationFrame(driftLoop);
