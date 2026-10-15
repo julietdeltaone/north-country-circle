@@ -697,16 +697,14 @@ details.quick[open]>summary{margin-bottom:10px}
 
 /* ================================================================
    BLEED LAYOUT 2026-10-14 — edge-to-edge content right of the rail,
-   per-view side panels, and the Minimal/Rich view mode (body.vm-rich).
-   Panels show/hide instantly: no transitions, no animation here.
+   per-view side panels. Panels show/hide instantly: no transitions,
+   no animation here. (The Minimal/Rich view mode was removed
+   2026-10-15; side panels start tucked and open on demand.)
    ================================================================ */
 #view{display:flex;flex-direction:column;padding:0;max-width:none;width:100%;margin:0}
 .page{flex:0 0 auto;width:100%;padding:16px}
 .page.netpage,.page.fampage{flex:1 1 0%;min-height:0;padding:0;gap:0}
 .netpage .netbar,.fampage .netbar{padding:14px 16px 10px}
-/* top-bar view-mode switch */
-.vmode{flex:0 0 auto}
-.vmode button{min-height:30px;padding:0 11px;font-size:12.5px}
 /* shared side-panel pieces */
 .side-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .side-h h3{margin:0;font-size:15px;font-weight:600}
@@ -726,33 +724,23 @@ details.quick[open]>summary{margin-bottom:10px}
 .srow2:last-child{border-bottom:0}
 .srow2 span{color:var(--mut);font-size:13px}
 .srow2 b{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
-.rich-only{display:none}
-body.vm-rich .rich-only{display:block}
 /* People: full-width list + right counts column */
 .ppl-cols{display:flex;gap:16px;align-items:flex-start}
 .ppl-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:16px}
 .ppl-side{width:290px;flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
 /* Profile: three zones — identity left, record center, family + associates right */
 .pcols{display:grid;grid-template-columns:300px minmax(0,1fr) 330px;gap:16px;align-items:start}
-.pstats{display:none}
-body.vm-rich .pstats{display:block}
 /* Network: canvas edge-to-edge + right panel (selected card + map stats) */
 .netcols{display:flex;flex:1 1 auto;min-height:0;position:relative}
 .netpage .netwrap{flex:1 1 auto;min-width:0;height:auto;min-height:0;border:0;border-radius:0}
 .netpanel{display:none}
-.netcols.sel .netpanel,body.vm-rich .netpanel{display:flex;flex-direction:column;gap:14px;width:320px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);padding:14px 16px;overflow-y:auto}
+.netcols.sel .netpanel{display:flex;flex-direction:column;gap:14px;width:320px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);padding:14px 16px;overflow-y:auto}
 #netpcard{display:flex;flex-direction:column;gap:10px;background:var(--card2);border:1px solid var(--line2);border-radius:var(--r);padding:12px 14px}
 #netpcard[hidden]{display:none}
 /* Family: full-bleed space + right summary panel */
 .famcols{display:flex;flex:1 1 auto;min-height:0;position:relative}
 .fampage .fspace{flex:1 1 auto;min-width:0;height:auto;min-height:0;border:0;border-radius:0}
 .fampanel{width:300px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);padding:14px 16px;overflow-y:auto}
-/* Groups: right summary column in Rich */
-.gside{display:none}
-@media (min-width:900px){
-  body.vm-rich .ggrid{grid-template-columns:280px minmax(0,1fr) 290px}
-  body.vm-rich .gside{display:block;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
-}
 @media (max-width:899px){
   .page{padding:12px}
   .page.netpage,.page.fampage{padding:0}
@@ -761,7 +749,7 @@ body.vm-rich .pstats{display:block}
   .ppl-side{width:100%}
   .pcols{grid-template-columns:1fr}
   .pcols .pcol{display:flex}
-  .netcols.sel .netpanel,body.vm-rich .netpanel{position:absolute;right:0;top:0;bottom:0;width:min(320px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
+  .netcols.sel .netpanel{position:absolute;right:0;top:0;bottom:0;width:min(320px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
   .fampanel{position:absolute;right:0;top:0;bottom:0;width:min(300px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
 }
 
@@ -772,12 +760,12 @@ body.vm-rich .pstats{display:block}
    headings, tabular counts, and one short ease when a panel
    opens. No new hues — the ring palette lives in dossier.js.
    ================================================================ */
-.card,.plist,.qlist,.glist,.ppl-side,.gside,#netpcard,.tintro,.skl.card{border-radius:16px}
+.card,.plist,.qlist,.glist,.ppl-side,#netpcard,.tintro,.skl.card{border-radius:16px}
 .btn,.ib{border-radius:10px}
 .vchip,.nchip,.dbadge{border-radius:999px}
 .nv em{border-radius:999px}
-.ppl-side,.gside{background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.25);backdrop-filter:blur(14px) saturate(1.25);border:1px solid rgba(255,255,255,.08);box-shadow:var(--sh-card)}
-.netcols.sel .netpanel,body.vm-rich .netpanel{background:linear-gradient(180deg,rgba(21,27,40,.88),rgba(13,17,27,.88));-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25);border-left:1px solid rgba(255,255,255,.08)}
+.ppl-side{background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.25);backdrop-filter:blur(14px) saturate(1.25);border:1px solid rgba(255,255,255,.08);box-shadow:var(--sh-card)}
+.netcols.sel .netpanel{background:linear-gradient(180deg,rgba(21,27,40,.88),rgba(13,17,27,.88));-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25);border-left:1px solid rgba(255,255,255,.08)}
 .fampanel{background:linear-gradient(180deg,rgba(21,27,40,.88),rgba(13,17,27,.88));-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25);border-left:1px solid rgba(255,255,255,.08)}
 #netpcard{background:var(--glass2);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);border:1px solid rgba(255,255,255,.10);box-shadow:var(--sh-card)}
 .srow2{border-bottom-color:rgba(255,255,255,.06)}
@@ -787,9 +775,9 @@ body.vm-rich .pstats{display:block}
 .side-h h3{letter-spacing:-.01em}
 .srow b,.fact b,.tile b,.syncp,.hsub{font-variant-numeric:tabular-nums}
 @keyframes panelIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
-.netcols.sel .netpanel,body.vm-rich .netpanel,.fampanel,body.vm-rich .gside{animation:panelIn .18s var(--ease2)}
+.netcols.sel .netpanel,.fampanel{animation:panelIn .18s var(--ease2)}
 @media (prefers-reduced-motion: reduce){
-  .netcols.sel .netpanel,body.vm-rich .netpanel,.fampanel,body.vm-rich .gside{animation:none}
+  .netcols.sel .netpanel,.fampanel{animation:none}
 }
 
 /* refinements 2026-10-14 evening: roster second line + family hover life */
@@ -862,6 +850,8 @@ body.vm-rich .pstats{display:block}
 .pted-ac[hidden]{display:none}
 .pted-aci{display:block;width:100%;padding:8px 10px;border-radius:7px;text-align:left;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pted-aci:hover{background:var(--accbg);color:var(--txt)}
+.pted-aci.on{background:var(--accbg);color:var(--txt)}
+.pted input.bad{border-color:var(--bad);box-shadow:0 0 0 3px rgba(224,118,111,.25)}
 
 /* ---------- export design picker ---------- */
 
@@ -890,4 +880,13 @@ body.vm-rich .pstats{display:block}
 .aud-skip:hover{color:var(--txt)}
 .aud-caught{margin-top:18px;background:var(--card);border:1px dashed var(--line2);border-radius:16px;padding:34px 20px;text-align:center;color:var(--mut)}
 .aud-caught h3{color:var(--txt);font-family:var(--serif);font-weight:500;font-size:21px;margin:10px 0 4px}
+/* auto-submit countdown (2026-10-15): an armed card pulses for 3s, then
+   submits itself. Reduced motion kills the pulse (the global rule below
+   already strips animations); the countdown label keeps ticking. */
+.aud-card.aud-arm{border-color:var(--acc);animation:audArm 1s ease-in-out infinite}
+@keyframes audArm{0%,100%{box-shadow:0 0 0 0 rgba(134,160,216,0)}50%{box-shadow:0 0 0 4px var(--accbg)}}
+.aud-cd{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--acc2)}
+.aud-cd[hidden]{display:none}
+.aud-bar{width:64px;height:4px;border-radius:2px;background:var(--line);overflow:hidden;flex:none}
+.aud-bar i{display:block;height:100%;width:100%;background:var(--acc)}
 @media (max-width:640px){.aud-grid{grid-template-columns:1fr}}
