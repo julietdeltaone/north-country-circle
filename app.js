@@ -807,7 +807,7 @@ function driftLoop(t) {
   requestAnimationFrame(driftLoop);
   if (REDUCED || t - lastAct < 5000 || layers.length || pathSet || pts.size) return;
   if (t - lastDrawn < 33) return;
-  const dt = lastDrawn ? Math.min(250, t - lastDrawn) : 0;
+  const dt = lastDrawn ? Math.min(1000, t - lastDrawn) : 0;
   lastDrawn = t;
   viewRot += DRIFT_MS * dt;
   draw();
