@@ -1134,8 +1134,8 @@ function unmerge(di){ txn('Unmerge', function(){ queuePatch(di, { merged_into:''
 function buildDossierDoc(e){
   var name = dispName(e), handle = effHandle(e) ? '@' + effHandle(e) : '';
   var aka = personIsAka(e) ? gv(e, 'also_known_as') : '';
-  var ds = todayStr();
-  var bio = gv(e, 'synopsis');
+  var bio = String(gv(e, 'synopsis') || '').trim();
+  var fp = gv(e, 'public_footprint');
   var classif = [gv(e, 'relationship'), gv(e, 'context'), tierName(e)].filter(Boolean).join(' · ');
   var orgs = [];
   ORG_CATS.forEach(function(cat){ tagList(gv(e, cat.k)).forEach(function(v){ orgs.push(v); }); });
@@ -1146,56 +1146,80 @@ function buildDossierDoc(e){
   if(e.city) contact.push('<span class="cl">Lives in</span> ' + esc(e.city));
   if(e.hometown) contact.push('<span class="cl">From</span> ' + esc(e.hometown));
   if(orgs.length) contact.push('<span class="cl">Orgs</span> ' + esc(orgs.join(' · ')));
-  var bars = PERSONA.map(function(p){
-    var v = parseInt(gv(e, p[0]), 10), ok = !isNaN(v);
-    var w = ok ? Math.max(0, Math.min(5, v)) / 5 * 100 : 0;
-    return '<div class="brow"><span>' + esc(p[1]) + '</span><div class="bar"><i style="width:' + w + '%"></i></div><em>' + (ok ? v + '/5' : '—') + '</em></div>';
+  /* Synopsis fallback: field notes recast as prose (source URLs and filing attributions stripped). */
+  function proseFromNotes(txt){
+    var s = String(txt || '');
+    s = s.replace(/https?:\/\/[^\s)<\]]+/g, '');
+    s = s.replace(/\((?:via|filed)[^)]*\)/gi, '');
+    s = s.replace(/\(\s*\)/g, '');
+    s = s.replace(/\bSources?\s*:/gi, '');
+    s = s.replace(/[ \t]+/g, ' ');
+    s = s.split('\n').map(function(line){
+      return line.replace(/\s*·\s*·\s*/g, ' · ').replace(/^[\s·,;|–—-]+/, '').replace(/[\s·,;]+$/, '').trim();
+    }).filter(Boolean).join('\n');
+    s = s.replace(/\s+([.,;:!?])/g, '$1').replace(/·\s*\./g, '.');
+    return s.trim();
+  }
+  var synBody = bio || proseFromNotes(fp) || proseFromNotes(gv(e, 'notes'));
+  var synHTML = synBody ? '<div class="sec"><div class="slabel">SYNOPSIS</div><div class="sbody"><p>' + esc(synBody).replace(/\n/g, '<br>') + '</p></div></div>' : '';
+  /* Ratings: only traits carrying a value render; the block vanishes when none do. */
+  var bars = PERSONA.filter(function(p){ return !isNaN(parseInt(gv(e, p[0]), 10)); }).map(function(p){
+    var v = parseInt(gv(e, p[0]), 10);
+    var w = Math.max(0, Math.min(5, v)) / 5 * 100;
+    return '<div class="brow"><span>' + esc(p[1]) + '</span><div class="bar"><i style="width:' + w + '%"></i></div><em>' + v + '/5</em></div>';
   }).join('');
   var extras = '';
   if(gv(e, 'specialty')) extras += '<div class="kv"><span class="cl">Skills</span> ' + esc(gv(e, 'specialty')) + '</div>';
   if(tierName(e)) extras += '<div class="kv"><span class="cl">Tier</span> ' + esc(tierName(e)) + '</div>';
   if(momVal(e)) extras += '<div class="kv"><span class="cl">Momentum</span> ' + esc(MOM_LABELS[momVal(e)]) + '</div>';
   degreesOf(e).forEach(function(d){ extras += '<div class="kv"><span class="cl">Degree</span> ' + esc([d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ')) + '</div>'; });
+  var ratingsHTML = (bars || extras) ? '<div class="sec">' + (bars ? '<div class="slabel">PROFILE RATINGS</div>' + bars : '') + extras + '</div>' : '';
+  /* Known associates: strict First Last only — two tokens, each a capitalized name word. */
+  function firstLastOk(nm){
+    var parts = String(nm || '').trim().split(/\s+/);
+    if(parts.length !== 2) return false;
+    return parts.every(function(t){ return /^\p{Lu}[\p{L}'\u2019-]*$/u.test(t); });
+  }
   var assoc = knownAssociates(e).map(function(nb){
     var di = BYN[(nb.u || '').toLowerCase()];
-    return '<li>' + esc(di != null ? dispName(D.directory[di]) : nb.d || nb.u) + '</li>';
-  }).join('');
-  var fp = gv(e, 'public_footprint'), notes = '';
+    return di != null ? dispName(D.directory[di]) : (nb.d || nb.u || '');
+  }).filter(firstLastOk).map(function(nm){ return '<li>' + esc(nm) + '</li>'; }).join('');
+  var assocHTML = assoc ? '<div class="sec"><div class="slabel">KNOWN ASSOCIATES</div><ul class="assoc">' + assoc + '</ul></div>' : '';
+  var notes = '';
   if(gv(e, 'notes')) notes += '<p>' + esc(gv(e, 'notes')).replace(/\n/g, '<br>') + '</p>';
   if(fp) notes += '<p><b>Public footprint</b><br>' + esc(fp).replace(/\n/g, '<br>') + '</p>';
-  if(!notes) notes = '<p>—</p>';
+  var notesHTML = notes ? '<div class="sec"><div class="slabel">FIELD NOTES</div><div class="sbody">' + notes + '</div></div>' : '';
   var evs = sortedEvents(e);
-  var tl = evs.length ? '<ul class="assoc">' + evs.map(function(o){
+  var tlHTML = evs.length ? '<div class="sec"><div class="slabel">TIMELINE</div><ul class="assoc">' + evs.map(function(o){
     return '<li><b>' + esc(o.ev.date || '') + '</b> — ' + esc(o.ev.summary || '') + (o.ev.detail ? '<br>' + esc(o.ev.detail) : '') + '</li>';
-  }).join('') + '</ul>' : '<div class="sbody"><p>—</p></div>';
+  }).join('') + '</ul></div>' : '';
+  var colsHTML = (ratingsHTML || assocHTML || notesHTML || tlHTML) ? '<div class="cols2">' + ratingsHTML + assocHTML + notesHTML + tlHTML + '</div>' : '';
   var initial = (name || '·').trim().charAt(0).toUpperCase();
   return '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Dossier — ' + esc(name) + '</title><style>' +
   'body{background:#1b1e26;margin:0;padding:28px;font-family:Georgia,"Times New Roman",serif;color:#16181d}' +
   '.page{background:#f4f3ef;max-width:820px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.5)}' +
-  '.banner{background:#14161c;color:#f4f3ef;padding:26px 48px 22px;display:flex;align-items:center;gap:22px}' +
+  '.banner{background:#14161c;color:#f4f3ef;padding:26px 48px 22px;display:flex;align-items:center;gap:22px;break-inside:avoid}' +
   '.seal{flex:none;width:70px;height:70px;border-radius:50%;border:2px solid #86a0d8;display:flex;align-items:center;justify-content:center;font-size:32px;color:#86a0d8}' +
   '.kicker{font:600 10.5px/1 Helvetica,Arial,sans-serif;letter-spacing:.3em;color:#86a0d8;margin-bottom:8px}' +
   'h1{font-size:32px;margin:0;font-weight:400;letter-spacing:.01em}.aka{font:12px Helvetica,Arial,sans-serif;color:#9aa3b6;margin-top:4px}' +
   '.rule{height:3px;background:linear-gradient(90deg,#86a0d8 0%,#86a0d8 22%,transparent 22%)}.body{padding:30px 48px 44px}' +
   '.contact{font:13px/2 Helvetica,Arial,sans-serif;margin-bottom:4px}.cl{font:700 10px Helvetica,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;margin-right:6px;color:#4b5468}' +
   '.meta{font:12px/1.8 Helvetica,Arial,sans-serif;color:#333;border-top:2px solid #14161c;border-bottom:1px solid #14161c;padding:9px 0;margin:14px 0 22px}' +
-  '.sec{margin:0 0 20px}.slabel{font:700 11px Helvetica,Arial,sans-serif;letter-spacing:.16em;margin-bottom:8px}' +
+  '.sec{margin:0 0 20px;break-inside:avoid}.slabel{font:700 11px Helvetica,Arial,sans-serif;letter-spacing:.16em;margin-bottom:8px}' +
   '.sbody{font-size:14px;line-height:1.65}.sbody p{margin:0 0 10px}' +
-  '.brow{display:flex;align-items:center;gap:10px;margin-bottom:7px;font:11px Helvetica,Arial,sans-serif}.brow span{width:120px;letter-spacing:.06em;font-weight:700}' +
+  '.brow{display:flex;align-items:center;gap:10px;margin-bottom:7px;font:11px Helvetica,Arial,sans-serif;break-inside:avoid}.brow span{width:120px;letter-spacing:.06em;font-weight:700}' +
   '.brow .bar{flex:1;height:10px;border:1.5px solid #14161c}.brow .bar i{display:block;height:100%;background:#14161c}.brow em{font-style:normal;width:36px;text-align:right}' +
   '.kv{font-size:13px;margin:6px 0}.cols2{column-count:2;column-gap:30px}.cols2 .sec{break-inside:avoid;margin:0 0 18px}' +
-  'ul.assoc{margin:0;padding-left:22px;font-size:13px;line-height:1.7}.foot{border-top:2px solid #14161c;margin-top:26px;padding-top:10px;font:11px Helvetica,Arial,sans-serif}' +
-  '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none}}' +
+  'ul.assoc{margin:0;padding-left:22px;font-size:13px;line-height:1.7}' +
+  '@page{size:Letter;margin:.55in}' +
+  '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none;width:auto}*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}' +
   '</style></head><body><div class="page"><div class="banner"><div class="seal">' + esc(initial) + '</div><div><div class="kicker">PERSONNEL DOSSIER</div><h1>' + esc(name) + '</h1>' +
   (aka ? '<div class="aka">also known as ' + esc(aka) + '</div>' : '') + '</div></div><div class="rule"></div><div class="body">' +
   (contact.length ? '<div class="contact">' + contact.join('<br>') + '</div>' : '') +
-  '<div class="meta">Compiled ' + ds + (classif ? ' &nbsp;·&nbsp; ' + esc(classif) : '') + '</div>' +
-  '<div class="sec"><div class="slabel">SYNOPSIS</div><div class="sbody">' + (bio ? '<p>' + esc(bio).replace(/\n/g, '<br>') + '</p>' : '<p>—</p>') + '</div></div>' +
-  '<div class="cols2"><div class="sec"><div class="slabel">PROFILE RATINGS</div>' + bars + extras + '</div>' +
-  '<div class="sec"><div class="slabel">KNOWN ASSOCIATES</div>' + (assoc ? '<ul class="assoc">' + assoc + '</ul>' : '<div class="sbody"><p>—</p></div>') + '</div>' +
-  '<div class="sec"><div class="slabel">FIELD NOTES</div><div class="sbody">' + notes + '</div></div>' +
-  '<div class="sec"><div class="slabel">TIMELINE</div><div class="sbody">' + tl + '</div></div></div>' +
-  '<div class="foot">Compiled from the North Country Circle directory.</div></div></div></body></html>';
+  (classif ? '<div class="meta">' + esc(classif) + '</div>' : '') +
+  synHTML +
+  colsHTML +
+  '</div></div></body></html>';
 }
 function personIsAka(e){ return pkey(e) === AKA_KEY; }
 
