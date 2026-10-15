@@ -133,6 +133,7 @@ window.addEventListener("resize", () => { clearTimeout(window.__rzT); window.__r
 const visible = new Uint8Array(N).fill(1);
 let visibleCount = N;
 let minConn = 0, fJd = false, fList = false, isolate = false, hubMode = false, fLabels = true;
+let resFilter = false; /* amber-set isolation: ghost everything except researched-not-in-dossier */
 let layers = [], hover = -1;
 const curSel = () => layers.length ? layers[layers.length - 1] : -1;
 let pathNodes = null, pathSet = null, pathEdgeSet = null;
@@ -161,6 +162,8 @@ function updateStats() {
   document.getElementById("stats").innerHTML = parts.join(" &middot; ");
   const rc = document.getElementById("rescount");
   if (rc) rc.textContent = RESN ? `(${RESN} people)` : "";
+  const rn = document.getElementById("resfilter-n");
+  if (rn) rn.textContent = RESN ? `(${RESN})` : "";
 }
 
 /* ---------- renderer ---------- */
@@ -189,13 +192,14 @@ function draw() {
   const dim = hi.size > 0;
 
   /* edges, batched in as few strokes as possible */
-  const drawEdges = (onlyHi, style, width) => {
+  const drawEdges = (onlyHi, style, width, pred) => {
     ctx.strokeStyle = style; ctx.lineWidth = width; ctx.beginPath();
     let n = 0;
     for (const [a, b] of EDGES) {
       if (!visible[a] || !visible[b]) continue;
       const bothHi = hi.has(a) && hi.has(b);
       if (onlyHi ? !bothHi : (dim && bothHi)) continue;
+      if (pred && !pred(a, b)) continue;
       const ax = RX(a), ay = RY(a), bx = RX(b), by = RY(b);
       if ((ax < x0 || ax > x1 || ay < y0 || ay > y1) &&
           (bx < x0 || bx > x1 || by < y0 || by > y1)) continue;
@@ -216,10 +220,18 @@ function draw() {
     }
     ctx.stroke();
   } else if (dim) {
-    drawEdges(false, "rgba(70,85,120,0.10)", 1);
-    drawEdges(true, "rgba(143,208,255,0.55)", 1);
+    if (resFilter) {
+      /* ghost pass: all non-highlight edges near-invisible; highlight edges
+         between two amber-set people stay amber, other highlight edges ice */
+      drawEdges(false, "rgba(70,85,120,0.05)", 1);
+      drawEdges(true, "rgba(223,168,79,0.50)", 1, (a, b) => !!resVis(a) && !!resVis(b));
+      drawEdges(true, "rgba(143,208,255,0.30)", 1, (a, b) => !(resVis(a) && resVis(b)));
+    } else {
+      drawEdges(false, "rgba(70,85,120,0.10)", 1);
+      drawEdges(true, "rgba(143,208,255,0.55)", 1);
+    }
   } else {
-    drawEdges(false, bridgeMode ? "rgba(70,85,120,0.12)" : "rgba(70,85,120,0.28)", 1);
+    drawEdges(false, resFilter ? "rgba(70,85,120,0.05)" : (bridgeMode ? "rgba(70,85,120,0.12)" : "rgba(70,85,120,0.28)"), 1);
   }
 
   /* long-range bridges: glow underlay + bright core, selected one in amber */
@@ -257,7 +269,7 @@ function draw() {
     const isHi = !dim || hi.has(i);
     const r = rad(i);
     const res = resVis(i);
-    if (res && isHi) {
+    if (res && (isHi || resFilter)) {
       ctx.beginPath();
       ctx.arc(x, y, r * 2.15, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(223,168,79,0.14)";
@@ -265,7 +277,8 @@ function draw() {
     }
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    if (pathSet && pathSet.has(i)) ctx.fillStyle = "#ffb454";
+    if (resFilter) ctx.fillStyle = res ? "#dfa84f" : "rgba(143,208,255,0.08)";
+    else if (pathSet && pathSet.has(i)) ctx.fillStyle = "#ffb454";
     else if (res) ctx.fillStyle = isHi ? "#dfa84f" : "rgba(223,168,79,0.25)";
     else if (hubMode && hubSet.has(i)) ctx.fillStyle = isHi ? "#ffd9a0" : "rgba(255,217,160,0.3)";
     else ctx.fillStyle = isHi ? "#8fd0ff" : "rgba(143,208,255,0.22)";
@@ -292,6 +305,7 @@ function draw() {
     const cutoff = totalOf([...hubSet][79]);
     for (let i = 0; i < N && drawn < 220; i++) {
       if (!visible[i] || totalOf(i) < cutoff) continue;
+      if (resFilter && !resVis(i)) continue;
       const x = w2sX(RX(i)), y = w2sY(RY(i));
       if (x < 0 || y < 0 || x > W || y > H) continue;
       ctx.fillText("@" + PEOPLE[i].username, x, y - rad(i) - 4);
@@ -782,6 +796,7 @@ function initToolbar() {
   });
   document.getElementById("f-jd").addEventListener("change", e => { fJd = e.target.checked; applyFilters(); });
   document.getElementById("f-list").addEventListener("change", e => { fList = e.target.checked; applyFilters(); });
+  document.getElementById("f-resfilter").addEventListener("change", e => { resFilter = e.target.checked; draw(); });
   document.getElementById("f-isolate").addEventListener("change", e => { isolate = e.target.checked; draw(); });
   document.getElementById("f-labels").addEventListener("change", e => { fLabels = e.target.checked; draw(); });
   const bb = document.getElementById("btn-bridges");
