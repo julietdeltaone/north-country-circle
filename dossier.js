@@ -1467,10 +1467,34 @@ function peopleFiltered(){
   }
   return dis;
 }
+/* Roster row's second line: only what the profile already has — tier chip,
+   place, up to two orgs/schools, associate count, and a one-line snippet from
+   the synopsis (or the field notes when there is no synopsis). Absent pieces
+   are omitted, never placeholdered. */
+function prowSnip(e){
+  var s = String(gv(e, 'synopsis') || '').replace(/\s+/g, ' ').trim();
+  if(!s){ var b = footprintOf(e).blocks; s = b.length ? String(b[0].text || '').replace(/\s+/g, ' ').trim() : ''; }
+  return s.length > 90 ? s.slice(0, 90).trim() + '…' : s;
+}
+function prowMeta(e){
+  var parts = [], t = tierOf(e);
+  if(t && TIERS[t]) parts.push('<span class="ptier"><i style="background:' + TIERS[t].c + '"></i>' + TIERS[t].n + '</span>');
+  var loc = e.city || e.hometown || '';
+  if(loc) parts.push('<span>' + esc(loc) + '</span>');
+  var orgs = [];
+  ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ if(orgs.indexOf(o) < 0) orgs.push(o); }); });
+  orgs.slice(0, 2).forEach(function(o){ parts.push('<span>' + esc(o) + '</span>'); });
+  var ka = knownAssociates(e).length;
+  if(ka) parts.push('<span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + '</span>');
+  var snip = prowSnip(e);
+  if(snip) parts.push('<span class="psnip">' + esc(snip) + '</span>');
+  return parts.length ? '<small class="pmeta">' + parts.join('<span class="psep">·</span>') + '</small>' : '';
+}
 function prow(di, i){
   var e = D.directory[di];
+  var sub = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
-    '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span></button>';
+    '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + prowMeta(e) + '</span></button>';
 }
 /* People right column: filter shortcuts + counts by tier and group; in Rich it also
    carries the recent-edits list. Open by default in Rich, tucked in Minimal;
@@ -1957,13 +1981,23 @@ function degreesEditor(di){
    Network — a map you read, not a control surface. Rings are tiers; color-by and the wider-circle
    toggle are the only controls. Tap a dot for a card; the card is the way out to the profile.
    ============================================================ */
-var NET = { nodes:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, bg:null, byDi:{}, rot:0, lastAct:0, lastTs:0 };
-/* Solar drift (design pass 2026-10-14): one revolution per 3 minutes. Pauses the
-   instant the user interacts and while a selection is framed; resumes after ~5s
-   idle. Off entirely under prefers-reduced-motion. */
+var NET = { nodes:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, bg:null, byDi:{}, rot:0, lastAct:0, lastTs:0, dvel:0, hoverDi:null };
+/* Solar drift (design pass 2026-10-14; ramped spin 2026-10-14 evening): one
+   revolution per 3 minutes at full speed, but the angular velocity eases toward
+   its target — full speed or zero — with a ~1s exponential ramp, so starting
+   and stopping feel like a gentle spin-up / spin-down, never a snap. The target
+   is zero while a node is hovered, while the pointer is down, while a selection
+   is framed, and for a short settle after any interaction. Hovering empty
+   space does not pause it. Off entirely under prefers-reduced-motion. */
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 var DRIFT_RATE = Math.PI * 2 / 180;
-function driftOK(now){ return !REDUCED_MOTION && S.net.sel == null && !Object.keys(NET.ptr).length && (now - NET.lastAct > 5000); }
+var DRIFT_TAU = 1.05, DRIFT_SETTLE = 1500;
+function driftTarget(now){
+  if(REDUCED_MOTION || S.net.sel != null || NET.hoverDi != null) return 0;
+  if(Object.keys(NET.ptr).length) return 0;
+  if(now - NET.lastAct < DRIFT_SETTLE) return 0;
+  return DRIFT_RATE;
+}
 function netRotP(x, y){ var c = Math.cos(NET.rot), s = Math.sin(NET.rot); return [x * c - y * s, x * s + y * c]; }
 function netBuild(){
   computeNewGain();
@@ -2009,7 +2043,7 @@ function viewNetwork(v){
     '<aside class="netpanel" id="netpanel"><div id="netpcard" hidden></div><div class="netpstats" id="netpstats"></div></aside></div></div>';
   if(!NET.nodes.length || NET.stamp !== VER) { netBuild(); NET.stamp = VER; }
   NET.cv = $('#netcv'); NET.ctx = NET.cv.getContext('2d');
-  NET.lastAct = performance.now() - 6000; NET.lastTs = 0;
+  NET.lastAct = performance.now() - 6000; NET.lastTs = 0; NET.dvel = 0; NET.hoverDi = null; N3.hover = null;
   netResize(); netFit();
   if(S.net.sel != null && NET.byDi[S.net.sel]){
     var nd = NET.byDi[S.net.sel];
@@ -2026,7 +2060,12 @@ function viewNetwork(v){
   });
   cv.addEventListener('pointermove', function(ev){
     var p = NET.ptr[ev.pointerId];
-    if(!p){ if(S.net.mode !== '2d'){ var r0 = cv.getBoundingClientRect(), h = net3Hit(ev.clientX - r0.left, ev.clientY - r0.top); var hd = h ? h.di : null; if(hd !== N3.hover){ N3.hover = hd; cv.style.cursor = h ? 'pointer' : 'grab'; } } return; }
+    if(!p){
+      var r0 = cv.getBoundingClientRect(), hx = ev.clientX - r0.left, hy = ev.clientY - r0.top;
+      var h = S.net.mode === '2d' ? netHit(hx, hy) : net3Hit(hx, hy), hd = h ? h.di : null;
+      if(hd !== NET.hoverDi){ NET.hoverDi = hd; if(S.net.mode !== '2d') N3.hover = hd; cv.style.cursor = h ? 'pointer' : 'grab'; }
+      return;
+    }
     var ks = Object.keys(NET.ptr);
     if(ks.length === 1){
       NET.lastAct = performance.now();
@@ -2060,16 +2099,22 @@ function viewNetwork(v){
     var wx = (mx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (my - NET.H / 2) / NET.cam.z + NET.cam.y;
     NET.cam.z = z2; NET.cam.x = wx - (mx - NET.W / 2) / z2; NET.cam.y = wy - (my - NET.H / 2) / z2; NET.dirty = true;
   }, { passive:false });
+  cv.addEventListener('pointerleave', function(){ NET.hoverDi = null; N3.hover = null; });
   cancelAnimationFrame(NET.raf);
   (function frame(ts){
     if(!document.body.contains(NET.cv) || document.body.getAttribute('data-view') !== 'network') return;
     var now = ts || 0, dt = NET.lastTs ? Math.min(0.05, Math.max(0, (now - NET.lastTs) / 1000)) : 0;
     NET.lastTs = now;
+    if(dt > 0){
+      var tg = driftTarget(now), kk = 1 - Math.exp(-dt / DRIFT_TAU);
+      NET.dvel += (tg - NET.dvel) * kk;
+      if(tg === 0 && NET.dvel < 1e-5) NET.dvel = 0;
+    }
     if(S.net.mode === '2d'){
-      if(driftOK(now)){ NET.rot += DRIFT_RATE * dt; NET.dirty = true; }
+      if(NET.dvel){ NET.rot += NET.dvel * dt; NET.dirty = true; }
       if(NET.dirty){ netDraw(); NET.dirty = false; }
     } else {
-      if(driftOK(now)) N3.yaw += DRIFT_RATE * dt;
+      if(NET.dvel) N3.yaw += NET.dvel * dt;
       net3Draw(ts || 0);
     }
     NET.raf = requestAnimationFrame(frame);
@@ -2272,7 +2317,7 @@ function netCard(){
    Family space — bloodline trees on one pannable canvas. The model code is unchanged; the camera is
    a plain transform with drag momentum, pinch and wheel zoom, and a glide to the focused person.
    ============================================================ */
-var FAMV = { cam:{ x:0, y:0, z:1 }, vel:{ x:0, y:0 }, ptr:{}, pinch:0, moved:false, raf:0, lay:null, pos:{}, glide:null, el:null };
+var FAMV = { cam:{ x:0, y:0, z:1 }, vel:{ x:0, y:0 }, ptr:{}, pinch:0, moved:false, raf:0, lay:null, pos:{}, glide:null, el:null, hover:null, lastAct:0, dk:0, ph:0, off:null, draf:0, _driftApply:false };
 /* Family right panel: tree summary + a row per tree (tap to jump to that tree). */
 function famSideHTML(lay){
   var total = 0, big = null;
@@ -2291,7 +2336,7 @@ function famSideHTML(lay){
 }
 function viewFamily(v){
   var disp = famDisplay(), ft = famTrees(disp), lay = famSpaceLayout(disp, ft);
-  FAMV.lay = lay; FAMV.pos = {};
+  FAMV.lay = lay; FAMV.pos = {}; FAMV.hover = null; FAMV.off = null; FAMV.dk = 0;
   lay.clusters.forEach(function(c){
     c.model.nodes.forEach(function(n){ if(c.tree.blood[n.di] || !FAMV.pos[n.di]) FAMV.pos[n.di] = { x:c.ox + n.x + DFT.NW / 2, y:c.oy + n.y + DFT.CY, tree:c.tree.id }; });
   });
@@ -2300,7 +2345,7 @@ function viewFamily(v){
   lay.clusters.forEach(function(c){
     c.model.lines.forEach(function(l){ svg += '<line x1="' + (c.ox + l.x1) + '" y1="' + (c.oy + l.y1) + '" x2="' + (c.ox + l.x2) + '" y2="' + (c.oy + l.y2) + '"/>'; });
   });
-  lay.links.forEach(function(l){ svg += '<path class="xlink" d="M' + l.x1 + ' ' + l.y1 + ' C' + l.x1 + ' ' + (l.y1 + 120) + ' ' + l.x2 + ' ' + (l.y2 - 120) + ' ' + l.x2 + ' ' + l.y2 + '"/>'; });
+  lay.links.forEach(function(l){ svg += '<path class="xlink" data-di="' + l.di + '" d="M' + l.x1 + ' ' + l.y1 + ' C' + l.x1 + ' ' + (l.y1 + 120) + ' ' + l.x2 + ' ' + (l.y2 - 120) + ' ' + l.x2 + ' ' + l.y2 + '"/>'; });
   svg += '</svg>';
   var html = '';
   lay.clusters.forEach(function(c){
@@ -2352,12 +2397,23 @@ function viewFamily(v){
     var wx = (mx - W / 2) / z0 + FAMV.cam.x, wy = (my - H / 2) / z0 + FAMV.cam.y;
     FAMV.cam.z = z2; FAMV.cam.x = wx - (mx - W / 2) / z2; FAMV.cam.y = wy - (my - H / 2) / z2; famApply();
   }, { passive:false });
+  el.addEventListener('pointerover', function(ev){
+    var b = ev.target.closest ? ev.target.closest('.fn') : null, di = b ? +b.getAttribute('data-di') : null;
+    if(di !== FAMV.hover){ FAMV.hover = di; famHi(); }
+  });
+  el.addEventListener('pointerout', function(ev){
+    var to = ev.relatedTarget;
+    if(to && to.closest && to.closest('.fn')) return;
+    if(FAMV.hover != null){ FAMV.hover = null; famHi(); }
+  });
+  famDriftStart();
 }
 function famPinchDist(){ var k = Object.keys(FAMV.ptr).map(function(i){ return FAMV.ptr[i]; }); return k.length < 2 ? 0 : Math.hypot(k[0].x - k[1].x, k[0].y - k[1].y); }
 function famApply(){
   var w = $('#fworld'), el = FAMV.el; if(!w || !el) return;
-  var r = el.getBoundingClientRect(), z = FAMV.cam.z;
-  w.style.transform = 'translate(' + (r.width / 2 - FAMV.cam.x * z) + 'px,' + (r.height / 2 - FAMV.cam.y * z) + 'px) scale(' + z + ')';
+  if(!FAMV._driftApply) FAMV.lastAct = performance.now();
+  var r = el.getBoundingClientRect(), z = FAMV.cam.z, o = FAMV.off || { x:0, y:0 };
+  w.style.transform = 'translate(' + (r.width / 2 - FAMV.cam.x * z + o.x) + 'px,' + (r.height / 2 - FAMV.cam.y * z + o.y) + 'px) scale(' + z + ')';
 }
 function famFit(){
   var el = FAMV.el, lay = FAMV.lay; if(!el || !lay) return;
@@ -2395,6 +2451,58 @@ function famCard(){
   box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(bits.join(' · ') || 'No links') + '</small></div><span class="sp"></span>' +
     '<button type="button" class="ib" data-act="famclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
     '<div class="nc-f"><span class="sp"></span><button type="button" class="btn ghost sm" data-act="openedit" data-di="' + di + '" data-sec="connections">Edit links</button><button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>';
+}
+/* Hovering a person lights them and their direct family (parents, spouses,
+   children, siblings) while the rest of the field dims back. A connector line
+   lights when both of its ends land inside a lit person's padded box, which is
+   where the tree geometry puts spouse links, drops, and sibling bars. */
+function famHi(){
+  var w = $('#fworld'); if(!w) return;
+  var nodes = $$('.fn', w), lines = $$('.flines line', w), paths = $$('.flines .xlink', w), di = FAMV.hover;
+  if(di == null || !D.directory[di]){
+    w.classList.remove('fam-hov');
+    nodes.forEach(function(n){ n.classList.remove('hl'); });
+    lines.forEach(function(l){ l.classList.remove('hl'); });
+    paths.forEach(function(p){ p.classList.remove('hl'); });
+    return;
+  }
+  var f = famDisplay()[di] || { parents:[], spouses:[], children:[], siblings:[] }, set = {};
+  set[di] = 1;
+  ['parents', 'spouses', 'children', 'siblings'].forEach(function(k){ (f[k] || []).forEach(function(x){ set[x.di] = 1; }); });
+  var boxes = [];
+  nodes.forEach(function(n){
+    var on = !!set[+n.getAttribute('data-di')];
+    n.classList.toggle('hl', on);
+    if(on) boxes.push({ x0:n.offsetLeft - 24, x1:n.offsetLeft + n.offsetWidth + 24, y0:n.offsetTop - 42, y1:n.offsetTop + n.offsetHeight + 42 });
+  });
+  function inBox(x, y){ for(var i = 0; i < boxes.length; i++){ var b = boxes[i]; if(x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1) return true; } return false; }
+  lines.forEach(function(l){ l.classList.toggle('hl', inBox(+l.getAttribute('x1'), +l.getAttribute('y1')) && inBox(+l.getAttribute('x2'), +l.getAttribute('y2'))); });
+  paths.forEach(function(p){ p.classList.toggle('hl', !!set[+p.getAttribute('data-di')]); });
+  w.classList.add('fam-hov');
+}
+/* Idle drift for the family field: a slow pan (never a rotation — the trees
+   must stay readable) that eases in and out with the same ramped feel as the
+   maps. It runs only while nothing is hovered or held and the view has been
+   quiet for a few seconds; famApply stamps lastAct on every real interaction
+   (drag, wheel, glide, coast), so the drift never fights the user. */
+function famDriftStart(){
+  cancelAnimationFrame(FAMV.draf);
+  var last = performance.now();
+  (function tick(now){
+    if(document.body.getAttribute('data-view') !== 'family' || !FAMV.el || !document.body.contains(FAMV.el)) return;
+    now = now || performance.now();
+    var dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now;
+    var idle = !REDUCED_MOTION && FAMV.hover == null && !Object.keys(FAMV.ptr).length && (now - (FAMV.lastAct || 0) > 4000);
+    var tg = idle ? 1 : 0;
+    FAMV.dk += (tg - FAMV.dk) * (1 - Math.exp(-dt / 1.4));
+    if(FAMV.dk > 0.002 || FAMV.off){
+      FAMV.ph += dt * (Math.PI * 2 / 240) * FAMV.dk;
+      FAMV.off = { x:Math.sin(FAMV.ph) * 16 * FAMV.dk, y:Math.cos(FAMV.ph * 0.8) * 11 * FAMV.dk };
+      FAMV._driftApply = true; famApply(); FAMV._driftApply = false;
+      if(FAMV.dk <= 0.002 && tg === 0) FAMV.off = null;
+    }
+    FAMV.draf = requestAnimationFrame(tick);
+  })(performance.now());
 }
 
 /* ============================================================
