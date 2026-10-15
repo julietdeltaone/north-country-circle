@@ -1349,7 +1349,7 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    ============================================================ */
 var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
-  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, limit:80, side:null },
+  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d') },
   fam:{ editing:null, focus:null, sheet:false, side:null },
@@ -1587,7 +1587,6 @@ function pplSort(dis){
       orgs: orgsOf(e).join(' · ').toLowerCase(),
       assoc: knownAssociates(e).length,
       skills: tagList(gv(e, 'specialty')).join(', ').toLowerCase(),
-      hometown: gv(e, 'hometown').toLowerCase(),
       rel: cap(gv(e, 'relationship')).toLowerCase(),
       handle: ptHandle(e).toLowerCase(),
       groups: personGroups(e).join(', ').toLowerCase(),
@@ -1726,11 +1725,9 @@ function ptrowHTML(di, i){
 }
 function paintPeople(){
   var box = $('#plist'); if(!box) return;
-  var dis = peopleFiltered(), f = S.ppl;
+  var dis = peopleFiltered();
   S.ppl.cur = dis;
-  var shown = dis.slice(0, f.limit);
-  box.innerHTML = (dis.length ? '<div class="ptwrap"><table class="ptable">' + ptheadHTML() + '<tbody>' + shown.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>' : '') +
-    (dis.length > shown.length ? '<button type="button" class="btn ghost more" data-act="pmore">Show ' + Math.min(100, dis.length - shown.length) + ' more (' + (dis.length - shown.length) + ' left)</button>' : '') +
+  box.innerHTML = (dis.length ? '<div class="ptwrap"><table class="ptable">' + ptheadHTML() + '<tbody>' + dis.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>' : '') +
     (!dis.length ? emptyState('No one matches.', 'Loosen a filter or clear the search.') : '');
   var c = $('#pcount'); if(c) c.textContent = dis.length === people().length ? dis.length + ' people' : dis.length + ' of ' + people().length + ' people';
 }
@@ -1754,11 +1751,10 @@ function openMoreFilters(){
 var PT_ALL = [
   { k:'name',     label:'Name' },
   { k:'tier',     label:'Tier' },
-  { k:'loc',      label:'Location' },
+  { k:'loc',      label:'Location on file' },
   { k:'orgs',     label:'Organizations' },
   { k:'assoc',    label:'Known associates', num:true },
   { k:'skills',   label:'Skills' },
-  { k:'hometown', label:'Hometown' },
   { k:'rel',      label:'Relationship' },
   { k:'handle',   label:'Handle' },
   { k:'groups',   label:'Groups' },
@@ -1790,7 +1786,6 @@ var PTCELL = {
   orgs: function(e){ var o = orgsOf(e); return '<span class="clip" title="' + esc(o.join(', ')) + '">' + esc(o.slice(0, 2).join(', ')) + '</span>'; },
   assoc: function(e){ return String(knownAssociates(e).length); },
   skills: function(e){ var s = tagList(gv(e, 'specialty')); return '<span class="clip" title="' + esc(s.join(', ')) + '">' + esc(s.slice(0, 2).join(', ')) + '</span>'; },
-  hometown: function(e){ return esc(gv(e, 'hometown')); },
   rel: function(e){ return esc(cap(gv(e, 'relationship'))); },
   handle: function(e){ var h = ptHandle(e); return h ? '@' + esc(h) : ''; },
   groups: function(e){ var g = personGroups(e); return '<span class="clip" title="' + esc(g.join(', ')) + '">' + esc(g.slice(0, 2).join(', ')) + '</span>'; },
@@ -1829,7 +1824,7 @@ function ptColsSheet(){
         '<button type="button" class="btn ghost sm' + (c.on ? ' on' : '') + '" data-act="ptvis" data-k="' + c.k + '"' + (c.on && onCount === 1 ? ' disabled' : '') + '>' + (c.on ? 'Shown' : 'Hidden') + '</button>' +
         '</span></div>';
     }).join('') +
-    '<p class="note">Tip: Shift-click any cell (except Known associates, Hometown, Handle and Last updated) to edit it in place. On a touch screen, press and hold the cell.</p>', { focus:false });
+    '<p class="note">Tip: Shift-click any cell (except Known associates, Handle and Last updated) to edit it in place. On a touch screen, press and hold the cell.</p>', { focus:false });
 }
 /* ----- autocomplete: live directory values first, seeded county values added ----- */
 function ptDedupe(list){
@@ -3314,7 +3309,7 @@ function onClick(ev){
     case 'popen': { var cur = S.ppl.cur || []; openPerson(di, ctxFrom('People', cur, +el.getAttribute('data-i'), 'people')); break; }
     case 'popen1': openPerson(di, null); break;
     case 'gsopen': { var box = $('#gsr'); if(box) box.hidden = true; openPerson(di, null); break; }
-    case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; S.ppl.limit = 80; go('people'); break; }
+    case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; go('people'); break; }
     case 'openedit': openPerson(di, (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
     case 'openfam': S.fam.focus = di; go('family'); break;
     case 'shownet': S.net.sel = di; go('network'); break;
@@ -3323,15 +3318,14 @@ function onClick(ev){
       if(ni != null) ctxGo(ni, j); break;
     }
     /* people */
-    case 'pf': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); S.ppl.limit = 80; viewPeople($('#view')); break;
-    case 'pf2': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); S.ppl.limit = 80; openMoreFilters(); viewPeople($('#view')); break;
-    case 'pmore': S.ppl.limit += 100; paintPeople(); break;
+    case 'pf': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); viewPeople($('#view')); break;
+    case 'pf2': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); openMoreFilters(); viewPeople($('#view')); break;
     case 'tsort': { var tk = el.getAttribute('data-k'); if(S.ppl.ts && S.ppl.ts.k === tk) S.ppl.ts.d = -S.ppl.ts.d; else S.ppl.ts = { k:tk, d:(PT_NUMDIR[tk] ? -1 : 1) }; paintPeople(); break; }
     case 'ptcols': ptColsSheet(); break;
     case 'ptvis': { var pvk = el.getAttribute('data-k'), pvc = null; ptCols().forEach(function(c){ if(c.k === pvk) pvc = c; }); if(pvc){ if(pvc.on && ptCols().filter(function(c){ return c.on; }).length === 1) break; pvc.on = !pvc.on; ptSaveCols(); paintPeople(); ptColsSheet(); } break; }
     case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); } break; }
     case 'morefilters': openMoreFilters(); break;
-    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, limit:80, side:S.ppl.side }; closeSheet(); viewPeople($('#view')); break;
+    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side }; closeSheet(); viewPeople($('#view')); break;
     case 'vmode': { var nv = el.getAttribute('data-v') === 'rich' ? 'rich' : 'minimal'; if(nv !== VMODE){ VMODE = nv; store('ncc_view_mode', VMODE); } render(); break; }
     case 'pplside': S.ppl.side = !sideOpen(S.ppl.side); viewPeople($('#view')); break;
     /* profile chrome */
@@ -3434,7 +3428,7 @@ function refreshAfterUndo(dir){
 function onInput(ev){
   var t = ev.target;
   if(t.id === 'gs'){ paintSearch(); return; }
-  if(t.id === 'pq'){ S.ppl.q = t.value; S.ppl.limit = 80; paintPeople(); return; }
+  if(t.id === 'pq'){ S.ppl.q = t.value; paintPeople(); return; }
   if(t.id === 'assocq'){ var e = D.directory[S.prof.di]; pickerHits(t, '#assocr', 'assocadd', [S.prof.di].concat(knownAssociates(e).map(function(n){ return BYN[(n.u || '').toLowerCase()]; }))); return; }
   if(t.id === 'famq'){ pickerHits(t, '#famr', 'famadd', [S.prof.di]); return; }
   if(t.id === 'gaddq'){ var g = t.getAttribute('data-g'); pickerHits(t, '#gaddr', 'gadd', (allGroups()[g] || [])); return; }
