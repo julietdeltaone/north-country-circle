@@ -1609,9 +1609,10 @@ function quietRefresh(){
     return;
   }
   if(S.route && S.route.name === 'audit'){ audPaintCounts(); audPaintEmpty(); return; }  /* the wall keeps its cards; only the counter moves */
-  var y = window.scrollY || 0;
+  var y = window.scrollY || 0, vel = $('#view'), vst = vel ? vel.scrollTop : 0;
   render();
   window.scrollTo(0, y);
+  if(vel) vel.scrollTop = vst;   /* #view is the scroller in this layout */
 }
 window.__nccChanged = function(di){
   afterWrite(di);
