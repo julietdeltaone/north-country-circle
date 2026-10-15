@@ -1278,8 +1278,9 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
   '.kick{font-size:10.5px;letter-spacing:.3em;color:#595959;font-weight:600}' +
   'h1{font-size:27px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;margin:5px 0 0}' +
   '.aka{font-size:12px;color:#6f6f6f;margin-top:3px}' +
-  '.stamp{display:inline-block;border:2.5px solid #5e2129;color:#5e2129;padding:8px 18px;font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:5px;text-transform:uppercase;white-space:nowrap}' +
-  '.meta{font-size:11.5px;letter-spacing:.08em;border-top:2px solid #16283f;border-bottom:1px solid #16283f;padding:8px 0;margin-top:14px;text-transform:uppercase}' +
+  '.stamp{display:inline-block;border:2.5px solid #5e2129;color:#5e2129;padding:8px 18px;font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:0;text-transform:uppercase;white-space:nowrap}' +
+  '.meta{font-size:11.5px;letter-spacing:.08em;border-top:2px solid #16283f;border-bottom:1px solid #16283f;padding:8px 0;margin-top:14px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;gap:22px}' +
+  '.metaitems{min-width:0}' +
   '.meta .mv{border-bottom:1.5px dotted #16283f;padding-bottom:1px}' +
   '.sec{border-top:2px solid #16283f;margin-top:21px;padding-top:10px;break-inside:avoid}' +
   '.sec h2{font-size:12.5px;letter-spacing:.2em;margin:0 0 11px;font-weight:600}.sec h2 b{color:#16283f;font-weight:600}' +
@@ -1339,8 +1340,8 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
       '<h1>' + esc(T.name) + '</h1>' +
       (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
       (ident.length ? '<div class="ident">' + ident.join(' &nbsp;·&nbsp; ') + '</div>' : '') +
-      '</div>' + stamp + '</div>' +
-      (meta.length ? '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' : '') + '</div>';
+      '</div></div>' +
+      ((meta.length || stamp) ? '<div class="meta"><span class="metaitems">' + meta.join(' &nbsp;·&nbsp; ') + '</span>' + stamp + '</div>' : '') + '</div>';
     var nmCss = String(T.name || '').toUpperCase().replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
     return '<style>@page{@top-left{content:"PERSONNEL FILE — ' + nmCss + '";font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.22em;color:#777772}}</style>' +
       '<div class="page"><div class="strip"><span>PERSONNEL FILE</span><span>FILE COPY</span></div>' +
@@ -1383,11 +1384,11 @@ var S = {
   grp:{ kind:'groups', open:null, renaming:null },
   audit:null   /* Audit feeder wall state (visit only), built lazily by viewAudit */
 };
-/* View mode: 'minimal' = clean views, side panels tucked, no stats strips.
-   'rich' = stats panels + side panels open by default. Persisted; default minimal.
-   A panel's own open/closed choice (S.ppl.side / S.fam.side, null = follow the mode) wins over the mode. */
-var VMODE = store('ncc_view_mode') === 'rich' ? 'rich' : 'minimal';
-function sideOpen(st){ return st != null ? !!st : VMODE === 'rich'; }
+/* Side panels (People counts, Family summary) start tucked; a panel's own
+   open/closed choice (S.ppl.side / S.fam.side, null = tucked) is remembered
+   for the visit. (The Minimal/Rich view mode was removed 2026-10-15; a
+   stored ncc_view_mode value is simply never read anymore.) */
+function sideOpen(st){ return st != null ? !!st : false; }
 var PHI = 0; /* pending-render guard */
 
 function toast(msg, opt){
@@ -1455,7 +1456,6 @@ function activeNav(){
   return n;
 }
 function renderChrome(){
-  document.body.classList.toggle('vm-rich', VMODE === 'rich');
   var act = activeNav();
   var items = NAV.map(function(n){
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span></a>';
@@ -1471,7 +1471,7 @@ function renderChrome(){
   top.innerHTML =
     (onProfile ? '<button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' : '<span class="logo-s"><i></i></span>') +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
-    '<div class="topr"><div class="seg vmode" role="group" aria-label="View mode"><button type="button" data-act="vmode" data-v="minimal"' + (VMODE === 'minimal' ? ' class="on"' : '') + '>Minimal</button><button type="button" data-act="vmode" data-v="rich"' + (VMODE === 'rich' ? ' class="on"' : '') + '>Rich</button></div>' +
+    '<div class="topr">' +
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
     '<button type="button" class="syncp" id="sync" data-act="retry"></button>' +
@@ -1588,9 +1588,34 @@ function afterWrite(di){
   /* undo buttons after any write; never re-render a view the user is typing in */
   paintUndo();
 }
+/* Silent background refresh (JD 2026-10-15): the changes feed has already
+   swapped the new data into memory by the time this runs; the screen is
+   updated quietly, in place, never blanked. While JD is mid-interaction —
+   typing, a sheet or cell editor open, a profile section in edit mode, or
+   an Audit card inside its 3-second pending window — the visual update
+   defers and retries until the interaction ends. Scroll is preserved. */
+var REF_PENDING = false;
+function refreshBusy(){
+  if(typing()) return true;
+  var sw = $('#sheetwrap'); if(sw && !sw.hidden) return true;
+  if(typeof PTED !== 'undefined' && PTED) return true;
+  if(document.querySelector('.aud-card.aud-arm')) return true;
+  if(S.route && S.route.name === 'profile' && S.prof && S.prof.edit && Object.keys(S.prof.edit).length) return true;
+  return false;
+}
+function quietRefresh(){
+  if(refreshBusy()){
+    if(!REF_PENDING){ REF_PENDING = true; setTimeout(function(){ REF_PENDING = false; quietRefresh(); }, 1200); }
+    return;
+  }
+  if(S.route && S.route.name === 'audit'){ audPaintCounts(); audPaintEmpty(); return; }  /* the wall keeps its cards; only the counter moves */
+  var y = window.scrollY || 0;
+  render();
+  window.scrollTo(0, y);
+}
 window.__nccChanged = function(di){
   afterWrite(di);
-  if(di === -1 && !typing() && $('#sheetwrap').hidden) render();
+  if(di === -1) quietRefresh();
 };
 
 /* ============================================================
@@ -1687,27 +1712,21 @@ function prow(di, i){
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
     '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + prowMeta(e) + '</span></button>';
 }
-/* People right column: filter shortcuts + counts by tier and group; in Rich it also
-   carries the recent-edits list. Open by default in Rich, tucked in Minimal;
-   S.ppl.side remembers an explicit open/close until the mode flips it again. */
+/* People right column: filter shortcuts + counts by tier and group.
+   Tucked until opened; S.ppl.side remembers an explicit open/close. */
 function pplSideHTML(f){
   var tc = { vetted:0, associate:0, open:0, none:0 };
   people().forEach(function(di){ var t = tierOf(D.directory[di]); tc[(t === 'vetted' || t === 'associate' || t === 'open') ? t : 'none']++; });
   var tiers = [['vetted', 'Vetted', (TIERS.vetted || {}).c], ['associate', 'Associate', (TIERS.associate || {}).c], ['open', 'Open', (TIERS.open || {}).c], ['none', 'Untiered', RING_C[3]]];
   var gm = allGroups();
   var grows = Object.keys(gm).map(function(g){ return [g, gm[g].length]; }).sort(function(a, b){ return b[1] - a[1] || a[0].localeCompare(b[0]); }).slice(0, 14);
-  var rec = people().map(function(di){ return [di, Date.parse(raw(D.directory[di], 'updated_at')) || 0]; }).filter(function(x){ return x[1] > 0; }).sort(function(a, b){ return b[1] - a[1]; }).slice(0, 6);
   return '<aside class="ppl-side" id="pplside"><div class="side-h"><h3>Counts</h3><button type="button" class="ib sm" data-act="pplside" aria-label="Close counts">' + ic('x', 15) + '</button></div>' +
     '<div class="side-sec"><h4>By tier</h4>' + tiers.map(function(t){
       return '<button type="button" class="srow' + (f.tier === t[0] ? ' on' : '') + '" data-act="pf" data-k="tier" data-v="' + t[0] + '"><i style="background:' + (t[2] || '#4b5468') + '"></i><span>' + t[1] + '</span><b>' + tc[t[0]] + '</b></button>';
     }).join('') + (f.tier !== 'all' ? '<button type="button" class="srow sub" data-act="pf" data-k="tier" data-v="all"><span>Any tier</span></button>' : '') + '</div>' +
     '<div class="side-sec"><h4>Groups</h4>' + grows.map(function(g){
       return '<button type="button" class="srow' + (f.group === g[0] ? ' on' : '') + '" data-act="pf" data-k="group" data-v="' + esc(g[0]) + '"><span>' + esc(g[0]) + '</span><b>' + g[1] + '</b></button>';
-    }).join('') + (f.group ? '<button type="button" class="srow sub" data-act="pf" data-k="group" data-v=""><span>Any group</span></button>' : '') + '</div>' +
-    (rec.length ? '<div class="side-sec rich-only"><h4>Recently edited</h4>' + rec.map(function(x){
-      var e = D.directory[x[0]];
-      return '<button type="button" class="srow" data-act="popen1" data-di="' + x[0] + '"><span>' + esc(dispName(e)) + '</span><small>' + esc(String(raw(e, 'updated_at')).slice(0, 10)) + '</small></button>';
-    }).join('') + '</div>' : '') + '</aside>';
+    }).join('') + (f.group ? '<button type="button" class="srow sub" data-act="pf" data-k="group" data-v=""><span>Any group</span></button>' : '') + '</div>' + '</aside>';
 }
 function viewPeople(v){
   ptEditClose();
@@ -1737,7 +1756,7 @@ function ptheadHTML(){
   var ts = S.ppl.ts || { k:'name', d:1 };
   return '<thead><tr>' + ptVisibleCols().map(function(c){
     var on = ts.k === c.k;
-    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-act="tsort" data-k="' + c.k + '" aria-sort="' + (on ? (ts.d < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + c.label.toLowerCase() + '">' + c.label + '<span class="sarr" aria-hidden="true">' + (on ? (ts.d < 0 ? '▾' : '▴') : '') + '</span></th>';
+    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-act="tsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (ts.d < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + c.label.toLowerCase() + '">' + c.label + '<span class="sarr" aria-hidden="true">' + (on ? (ts.d < 0 ? '▾' : '▴') : '') + '</span></th>';
   }).join('') + '</tr></thead>';
 }
 function ptierCell(e){
@@ -1749,7 +1768,7 @@ function ptrowHTML(di, i){
   var e = D.directory[di];
   var tds = ptVisibleCols().map(function(c){
     var ed = PT_ED[c.k];
-    return '<td class="c-' + c.k + (c.num ? ' num' : '') + '"' + (ed ? ' data-ed="' + ed + '" data-di="' + di + '"' : '') + '>' + PTCELL[c.k](e, di) + '</td>';
+    return '<td class="c-' + c.k + (c.num ? ' num' : '') + '"' + (ed ? ' data-ed="' + ed + '" data-di="' + di + '" tabindex="0"' : '') + '>' + PTCELL[c.k](e, di) + '</td>';
   }).join('');
   return '<tr class="ptrow" data-act="popen" data-di="' + di + '" data-i="' + i + '" tabindex="0">' + tds + '</tr>';
 }
@@ -1978,29 +1997,61 @@ function ptSugList(kind, catK){
 function ptAcWire(inp, list, onPick){
   var wrap = inp.parentNode, box = wrap ? $('.pted-ac', wrap) : null;
   if(!box) return;
-  function hide(){ box.hidden = true; box.innerHTML = ''; }
+  var hits = [], act = -1;
+  function hide(){ box.hidden = true; box.innerHTML = ''; hits = []; act = -1; }
+  function mark(){
+    $$('.pted-aci', box).forEach(function(b, i){
+      b.classList.toggle('on', i === act);
+      if(i === act && b.scrollIntoView) b.scrollIntoView({ block:'nearest' });
+    });
+  }
+  function pick(v){ onPick(v); hide(); }
   function show(){
-    var q = inp.value.trim().toLowerCase(), hits;
+    var q = inp.value.trim().toLowerCase();
     if(!q){ hide(); return; }
-    if(q){
-      hits = list.filter(function(x){ return x.toLowerCase().indexOf(q) >= 0; });
-      hits.sort(function(a, b){
-        var as = a.toLowerCase().indexOf(q) === 0 ? 0 : 1, bs = b.toLowerCase().indexOf(q) === 0 ? 0 : 1;
-        return as - bs || a.localeCompare(b);
-      });
-    } else hits = list.slice();
+    hits = list.filter(function(x){ return x.toLowerCase().indexOf(q) >= 0; });
+    hits.sort(function(a, b){
+      var as = a.toLowerCase().indexOf(q) === 0 ? 0 : 1, bs = b.toLowerCase().indexOf(q) === 0 ? 0 : 1;
+      return as - bs || a.localeCompare(b);
+    });
     hits = hits.slice(0, 8);
     if(!hits.length){ hide(); return; }
     box.innerHTML = hits.map(function(h){ return '<button type="button" class="pted-aci" data-v="' + esc(h) + '" title="' + esc(h) + '">' + esc(h) + '</button>'; }).join('');
     box.hidden = false;
-    ptEdFit();
-    $$('.pted-aci', box).forEach(function(b){
-      b.addEventListener('mousedown', function(ev){ ev.preventDefault(); onPick(b.getAttribute('data-v')); hide(); });
+    act = 0;   /* first match pre-highlighted: Enter picks it */
+    $$('.pted-aci', box).forEach(function(b, i){
+      b.addEventListener('mousedown', function(ev){ ev.preventDefault(); pick(b.getAttribute('data-v')); });
+      b.addEventListener('mouseenter', function(){ act = i; mark(); });
     });
+    mark();
+    ptEdFit();
   }
   inp.addEventListener('input', show);
   inp.addEventListener('focus', show);
   inp.addEventListener('blur', function(){ setTimeout(hide, 150); });
+  /* keyboard, on the wrapper in capture phase so it runs before the field's
+     own Enter/Escape handlers: arrows move the highlight, Enter picks the
+     highlighted match, Escape closes the list (focus stays in the field),
+     Tab just closes. When the list is closed nothing is intercepted. */
+  wrap.addEventListener('keydown', function(ev){
+    if(ev.target !== inp) return;
+    var open = !box.hidden && hits.length > 0;
+    if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+      ev.preventDefault(); ev.stopPropagation();
+      if(!open){ show(); return; }
+      act = (act + (ev.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; mark();
+    }
+    else if(ev.key === 'Home' || ev.key === 'End'){
+      if(open){ ev.preventDefault(); ev.stopPropagation(); act = ev.key === 'Home' ? 0 : hits.length - 1; mark(); }
+    }
+    else if(ev.key === 'Enter'){
+      if(open && act >= 0){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
+    }
+    else if(ev.key === 'Escape'){
+      if(open){ ev.preventDefault(); ev.stopPropagation(); hide(); }
+    }
+    else if(ev.key === 'Tab'){ hide(); }
+  }, true);
 }
 /* ----- the cell editor popover ----- */
 var PTED = null;   /* { di, k, dirty, swallow } */
@@ -2015,9 +2066,14 @@ function ptEditClose(){
   if(!PTED) return;
   var el = $('#pted'); if(el) el.remove();
   document.removeEventListener('mousedown', ptEdOutside, true);
-  var dirty = PTED.dirty;
+  var dirty = PTED.dirty, kb = PTED.kb, cdi = PTED.di, ck = PTED.k, cell = PTED.cell;
   PTED = null;
   if(dirty) paintPeople();
+  if(kb){   /* opened from the keyboard: hand focus back to the cell */
+    var t = (cell && cell.isConnected) ? cell : null;
+    if(!t){ var ed = PT_ED[ck]; if(ed) t = $('#plist td[data-di="' + cdi + '"][data-ed="' + ed + '"]'); }
+    if(t) t.focus();
+  }
 }
 function ptEdOutside(ev){ if(PTED && !(ev.target.closest && ev.target.closest('#pted'))) ptEditClose(); }
 addEventListener('scroll', function(ev){ if(PTED && !(ev.target && ev.target.closest && ev.target.closest('#pted'))) ptEditClose(); }, true);
@@ -2099,7 +2155,10 @@ function ptCommitText(){
     setField(di, 'last_name', parts.slice(1).join(' '));
   }
   else if(k === 'loc') setField(di, 'location_on_file', ptNormLoc(v));
-  else if(k === 'years') setField(di, 'years_known', v);
+  else if(k === 'years'){
+    if(v && !audYearOk(v)){ inp.classList.add('bad'); inp.focus(); inp.select(); return; }
+    setField(di, 'years_known', v);
+  }
   else if(k === 'phone') setField(di, 'phone', v);
   else if(k === 'email') setField(di, 'email', v);
   if(PTED) PTED.dirty = true;
@@ -2177,12 +2236,13 @@ function ptEdWire(pop, di, k){
   /* single-value text editors */
   var inp = $('#pted-in', pop);
   if(inp){
+    inp.addEventListener('input', function(){ inp.classList.remove('bad'); });
     inp.addEventListener('keydown', function(ev){ if(ev.key === 'Enter'){ ev.preventDefault(); ptCommitText(); } });
     if(k === 'loc') ptAcWire(inp, ptSugList('town'), function(v){ inp.value = v; inp.focus(); });
-    else if(k === 'years') ptAcWire(inp, ptSugList('year'), function(v){ inp.value = v; inp.focus(); });
+    else if(k === 'years') ptAcWire(inp, audYearList(), function(v){ inp.value = v; inp.focus(); });
   }
 }
-function ptEditOpen(di, k, cell){
+function ptEditOpen(di, k, cell, kb){
   ptEditClose();
   var e = D.directory[di]; if(!e) return;
   var pop = document.createElement('div');
@@ -2190,7 +2250,7 @@ function ptEditOpen(di, k, cell){
   pop.innerHTML = ptEdHTML(di, k);
   pop.style.visibility = 'hidden';
   document.body.appendChild(pop);
-  PTED = { di:di, k:k, dirty:false, swallow:false };
+  PTED = { di:di, k:k, dirty:false, swallow:false, cell:cell || null, kb:!!kb };
   document.addEventListener('mousedown', ptEdOutside, true);
   var r = cell.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
   var x = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
@@ -2217,6 +2277,25 @@ function ptAttach(){
     ev.stopPropagation(); ev.preventDefault();
     if(td.getAttribute('data-ed')) ptEditOpen(+td.getAttribute('data-di'), td.getAttribute('data-ed'), td);
   }, true);
+  /* keyboard: Enter/Space on an editable cell opens its editor; arrows walk
+     the editable cells (left/right in reading order, up/down a row's worth) */
+  box.addEventListener('keydown', function(ev){
+    var td = ev.target.closest ? ev.target.closest('td[data-ed]') : null;
+    if(!td || ev.target !== td) return;
+    var k = ev.key;
+    if(k === 'Enter' || k === ' '){
+      ev.preventDefault(); ev.stopPropagation();
+      ptEditOpen(+td.getAttribute('data-di'), td.getAttribute('data-ed'), td, true);
+      return;
+    }
+    if(k === 'ArrowRight' || k === 'ArrowLeft' || k === 'ArrowDown' || k === 'ArrowUp'){
+      ev.preventDefault();
+      var cells = $$('td[data-ed]', box), i = cells.indexOf(td); if(i < 0) return;
+      var per = $$('td[data-ed]', td.parentNode).length || 1;
+      var step = k === 'ArrowRight' ? 1 : k === 'ArrowLeft' ? -1 : k === 'ArrowDown' ? per : -per;
+      var n = cells[i + step]; if(n) n.focus();
+    }
+  });
   var lpT = null, lpX = 0, lpY = 0;
   box.addEventListener('pointerdown', function(ev){
     if(ev.pointerType !== 'touch') return;
@@ -2304,27 +2383,12 @@ function viewProfile(v){
     '<div class="pcols"><div class="pcol" id="pc-l"></div><div class="pcol" id="pc-c"></div><div class="pcol" id="pc-r"></div></div><div id="p-add"></div></div>';
   paintProfile(di);
 }
-/* Key-stats card for the profile's left column. Display-only; shown in Rich mode. */
-function pStatsHTML(di){
-  var e = D.directory[di], ks = knownSinceYear(e), mv = momVal(e);
-  var rows = [
-    ['Tier', tierName(e) || 'Untiered'],
-    ['Momentum', mv === '+' ? 'Rising' : mv === '-' ? 'Cooling' : mv === '0' ? 'Steady' : ''],
-    ['Known since', ks ? String(ks) : ''],
-    ['Known associates', String(knownAssociates(e).length)],
-    ['Family links', String(famLinks(e).length)],
-    ['Events', String((e.events || []).length)],
-    ['Files', String((e.files || []).length)]
-  ].filter(function(r){ return r[1] !== ''; });
-  return '<section class="card pstats" id="p-stats"><header><h3>Key stats</h3></header><div class="cbody"><div class="statrows">' +
-    rows.map(function(r){ return '<div class="srow2"><span>' + (r[0] === 'Tier' ? '<i class="sdot" style="background:' + tierCol(e) + '"></i>' : '') + r[0] + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div></div></section>';
-}
 function paintProfile(di){
   var e = D.directory[di];
   $('#p-hero').innerHTML = heroHTML(di);
   ['l', 'c', 'r'].forEach(function(col){
     var secs = SECS.filter(function(s){ return s.col === col && secShown(e, s.id); }).map(function(s){ return secHTML(di, s.id); }).join('');
-    $('#pc-' + col).innerHTML = (col === 'l' ? pStatsHTML(di) : '') + secs;
+    $('#pc-' + col).innerHTML = secs;
   });
   SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
   var hidden = SECS.filter(function(s){ return !secShown(e, s.id); });
@@ -2344,8 +2408,6 @@ function repaintSec(id){
 function repaintTop(){
   var di = S.prof.di; if(di == null || !$('#p-hero')) return;
   $('#p-hero').innerHTML = heroHTML(di);
-  var st = $('#p-stats');
-  if(st){ var w = document.createElement('div'); w.innerHTML = pStatsHTML(di); if(w.firstChild) st.replaceWith(w.firstChild); }
 }
 
 function heroHTML(di){
@@ -3219,21 +3281,8 @@ function viewGroups(v){
         return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="popen1" data-di="' + di + '">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span></a>' +
           (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>'; }).join('') || '<p class="dim pad">No one yet.</p>') + '</div></div>';
   }
-  var totM = 0, bigG = null;
-  names.forEach(function(x){ totM += x.c; if(!bigG || x.c > bigG.c) bigG = x; });
-  var sideRows = [['Showing', (GKINDS.filter(function(k){ return k[0] === kind; })[0] || [])[1] || kind], ['Names', String(names.length)], ['Total memberships', String(totM)]];
-  if(bigG) sideRows.push(['Largest', bigG.n + ' · ' + bigG.c]);
-  var sideExtra = '';
-  if(name){
-    var mem2 = kind === 'groups' ? (allGroups()[name] || []) : orgMembers(kind, name), tc2 = {};
-    mem2.forEach(function(di){ var t = tierName(D.directory[di]) || 'Untiered'; tc2[t] = (tc2[t] || 0) + 1; });
-    sideExtra = '<div class="side-sec"><h4>' + esc(name) + ' by tier</h4><div class="statrows">' +
-      Object.keys(tc2).map(function(t){ return '<div class="srow2"><span>' + esc(t) + '</span><b>' + tc2[t] + '</b></div>'; }).join('') + '</div></div>';
-  }
-  var side = '<aside class="gside"><div class="side-h"><h3>Summary</h3></div><div class="statrows">' +
-    sideRows.map(function(r){ return '<div class="srow2"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' + sideExtra + '</aside>';
   v.innerHTML = '<div class="page groups' + (name ? ' has-detail' : '') + '"><div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div></div>' + tabs +
-    '<div class="ggrid"><aside class="glist">' + add + list + '</aside><section class="gmain">' + (detail || '<div class="empty"><h3>Pick one</h3><p>Choose a name on the left to see who is in it.</p></div>') + '</section>' + side + '</div></div>';
+    '<div class="ggrid"><aside class="glist">' + add + list + '</aside><section class="gmain">' + (detail || '<div class="empty"><h3>Pick one</h3><p>Choose a name on the left to see who is in it.</p></div>') + '</section></div></div>';
 }
 function groupRename(oldN, newN){
   newN = newN.trim(); if(!newN || newN === oldN) return;
@@ -3345,10 +3394,13 @@ function aiTidy(){
    Audit — a light feeder wall of quick wins. NOT the old audit suite:
    one random card per profile, one missing fact per card, filled in
    seconds through the same write path as everywhere else (txn /
-   queuePatch / setField). Saving or skipping a card animates it out
-   and the next card in the deck feeds in. State lives in S.audit for
-   the visit only; the deck is rebuilt from the live directory, so a
-   filled gap never deals again.
+   queuePatch). There is NO save button: once a card's input is
+   complete it flashes for 3 seconds and submits itself (editing during
+   the window restarts the countdown; Skip cancels). Every submit is a
+   normal undoable txn. Skip is forever: the (profile, gap) pair is
+   dismissed on this device (ncc_aud_skip) and never dealt again.
+   Deck state lives in S.audit for the visit; the deck is rebuilt from
+   the live directory, so a filled gap never deals again either.
    ============================================================ */
 var AUD_WALL = 12;
 var AUD_GAPS = {
@@ -3371,16 +3423,34 @@ function audGaps(e){
   if(!tagList(gv(e, 'specialty')).length) g.push('skills');
   return g;
 }
+/* Persistent skip dismissals: { "pkey|gap": 1 } in localStorage ncc_aud_skip
+   (same store() pattern as ncc_groups_extra). Skipping one gap never
+   dismisses the profile's other gaps. */
+var AUD_DISMISS = (function(){ try{ return JSON.parse(store('ncc_aud_skip') || '{}') || {}; }catch(x){ return {}; } })();
+function audPair(di, gap){ var e = D.directory[di]; return e ? pkey(e) + '|' + gap : ''; }
+function audOpenGaps(di){
+  return audGaps(D.directory[di]).filter(function(g){ return !AUD_DISMISS[audPair(di, g)]; });
+}
+function audYearList(){
+  var out = [], now = new Date().getFullYear();
+  for(var y = now; y >= 1960; y--) out.push(String(y));
+  return out;
+}
+function audYearOk(v){
+  v = String(v || '').trim();
+  if(!/^\d{4}$/.test(v)) return false;
+  var n = +v;
+  return n >= 1900 && n <= new Date().getFullYear();
+}
 function audRemaining(){
   var n = 0;
-  people().forEach(function(di){ n += audGaps(D.directory[di]).length; });
+  people().forEach(function(di){ n += audOpenGaps(di).length; });
   return n;
 }
 function audDeal(){
   var A = S.audit, pool = [];
   people().forEach(function(di){
-    if(A.skip[di]) return;
-    var g = audGaps(D.directory[di]);
+    var g = audOpenGaps(di);
     if(g.length) pool.push({ di:di, gap:g[Math.floor(Math.random() * g.length)] });
   });
   for(var i = pool.length - 1; i > 0; i--){
@@ -3424,11 +3494,7 @@ function audEdHTML(di, gap){
     }).join('') + '</div>';
   }
   if(gap === 'loc') return '<div class="pted-add"><input class="aud-in" placeholder="Town, ST — e.g. Potsdam, NY" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
-  if(gap === 'years'){
-    var now = new Date().getFullYear(), opts = '<option value="">Pick a year</option>';
-    for(var y = now; y >= 1960; y--) opts += '<option value="' + y + '">Since ' + y + '</option>';
-    return '<select class="aud-sel" aria-label="Known since">' + opts + '</select>';
-  }
+  if(gap === 'years') return '<div class="pted-add"><input class="aud-in aud-year" inputmode="numeric" placeholder="Year, e.g. 2019" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'phone') return '<input class="aud-in" type="tel" placeholder="Phone number" autocomplete="off">';
   if(gap === 'orgs') return '<div class="pted-add"><input class="aud-in" placeholder="Add an organization" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'skills') return '<div class="pted-add"><input class="aud-in" placeholder="Add a skill" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
@@ -3444,22 +3510,63 @@ function audCardHTML(x, i){
     '<span class="aud-tag">' + meta.tag + '</span></div>' +
     '<p class="aud-prompt">' + meta.prompt + '</p>' +
     '<div class="aud-ed">' + audEdHTML(di, gap) + '</div>' +
-    '<div class="aud-foot"><button type="button" class="btn primary sm" data-act="audsave" data-di="' + di + '">' + (gap === 'orgs' || gap === 'skills' ? 'Add' : 'Save') + '</button>' +
+    '<div class="aud-foot"><span class="aud-cd" hidden><span class="aud-cdt">Saving in 3</span><span class="aud-bar"><i></i></span></span><span class="sp"></span>' +
     '<button type="button" class="aud-skip" data-act="audskip" data-di="' + di + '">Skip</button></div></article>';
 }
 function audWireCard(card){
   var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
-  if(inp && (gap === 'loc' || gap === 'orgs' || gap === 'skills')){
-    var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : audOrgPool();
-    ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); });
-  }
-  if(inp) inp.addEventListener('keydown', function(ev){
-    if(ev.key === 'Enter'){ ev.preventDefault(); var b = $('[data-act="audsave"]', card); if(b) b.click(); }
+  if(!inp) return;
+  var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : gap === 'orgs' ? audOrgPool() : gap === 'years' ? audYearList() : null;
+  if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audTryArm(card); });
+  /* commit triggers (JD 2026-10-15): a suggestion pick, Enter, blur, or a
+     900ms pause in typing. Any edit while the countdown runs cancels it and
+     re-enters this flow, so only the final value ever submits. */
+  inp.addEventListener('input', function(){
+    audDisarm(card);
+    clearTimeout(card._audDeb);
+    card._audDeb = setTimeout(function(){ audTryArm(card); }, 900);
   });
+  inp.addEventListener('blur', function(){ audTryArm(card); });
+  inp.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter'){ ev.preventDefault(); audTryArm(card); }
+  });
+}
+/* A card is submittable only with a complete value: a chip picked, a
+   non-empty text field, or a plausible 4-digit year (1900–current). */
+function audReady(card){
+  var gap = card.getAttribute('data-gap');
+  if(gap === 'tier' || gap === 'rel') return !!card.getAttribute('data-pick');
+  if(gap === 'years'){ var yi = $('.aud-year', card); return !!(yi && audYearOk(yi.value)); }
+  var inp = $('.aud-in', card);
+  return !!(inp && inp.value.trim());
+}
+function audDisarm(card){
+  if(card._audIv){ clearInterval(card._audIv); card._audIv = null; }
+  if(card._audDeb){ clearTimeout(card._audDeb); card._audDeb = null; }
+  card.classList.remove('aud-arm');
+  var cd = $('.aud-cd', card); if(cd) cd.hidden = true;
+}
+function audTryArm(card){
+  if(!card.isConnected) return;
+  if(!audReady(card)){ audDisarm(card); return; }
+  audDisarm(card);
+  var cd = $('.aud-cd', card), cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
+  card.classList.add('aud-arm');
+  if(cd) cd.hidden = false;
+  var t0 = Date.now();
+  function tick(){
+    if(!card.isConnected){ audDisarm(card); return; }   /* navigated away: abandon quietly */
+    var rem = 3000 - (Date.now() - t0);
+    if(rem <= 0){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
+    if(cdt) cdt.textContent = 'Saving in ' + Math.ceil(rem / 1000);
+    if(bar) bar.style.width = (rem / 30) + '%';
+  }
+  tick();
+  card._audIv = setInterval(tick, 100);
 }
 function audNudge(card){
   card.classList.remove('aud-need'); void card.offsetWidth; card.classList.add('aud-need');
-  var f = $('.aud-in', card) || $('.aud-sel', card); if(f) f.focus();
+  var f = $('.aud-in', card); if(f) f.focus();
 }
 function audAddTag(di, fieldK, val){
   var e = D.directory[di], arr = splitTags(gv(e, fieldK), ', ');
@@ -3482,17 +3589,18 @@ function audSave(di, card){
   else if(gap === 'loc'){
     var inp = $('.aud-in', card), v = inp ? inp.value.trim() : '';
     if(!v){ audNudge(card); return; }
-    setField(di, 'location_on_file', ptNormLoc(v)); ok = true;
+    /* txn, not setField: an auto-submitted card must be undoable (JD) */
+    txn('Set location', function(){ queuePatch(di, { location_on_file: ptNormLoc(v) }); }); ok = true;
   }
   else if(gap === 'years'){
-    var sel = $('.aud-sel', card), yv = sel ? sel.value : '';
-    if(!yv){ audNudge(card); return; }
-    setField(di, 'years_known', yv); ok = true;
+    var yi = $('.aud-year', card), yv = yi ? yi.value.trim() : '';
+    if(!audYearOk(yv)){ audNudge(card); return; }
+    txn('Set years known', function(){ queuePatch(di, { years_known: yv }); }); ok = true;
   }
   else if(gap === 'phone'){
     var inp2 = $('.aud-in', card), pv = inp2 ? inp2.value.trim() : '';
     if(!pv){ audNudge(card); return; }
-    setField(di, 'phone', pv); ok = true;
+    txn('Set phone', function(){ queuePatch(di, { phone: pv }); }); ok = true;
   }
   else if(gap === 'orgs'){
     var inp3 = $('.aud-in', card), ov = inp3 ? inp3.value.trim() : '';
@@ -3507,7 +3615,9 @@ function audSave(di, card){
   if(ok){ S.audit.done++; audRetire(card, true); }
 }
 function audRetire(card, saved){
+  audDisarm(card);
   var A = S.audit, di = +card.getAttribute('data-di');
+  var hadFocus = card.contains(document.activeElement);
   A.shown = A.shown.filter(function(x){ return x.di !== di; });
   function finish(){
     card.remove();
@@ -3521,6 +3631,7 @@ function audRetire(card, saved){
         var nc = tmp.firstChild;
         grid.appendChild(nc);
         audWireCard(nc);
+        if(hadFocus){ var nf = $('button, input', nc); if(nf) nf.focus(); }
       }
     }
     audPaintCounts(); audPaintEmpty();
@@ -3539,10 +3650,10 @@ function audPaintEmpty(){
   if(!box || !grid) return;
   if(grid.querySelector('.aud-card')){ box.innerHTML = ''; return; }
   if(audRemaining() === 0) box.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>All caught up</h3><p>Every profile has the basics filled in. Nice work.</p></div>';
-  else box.innerHTML = '<div class="aud-caught">' + ic('target', 26) + '<h3>That is the whole deal</h3><p>The rest were skipped for now. Shuffle to run through them again.</p></div>';
+  else box.innerHTML = '<div class="aud-caught">' + ic('target', 26) + '<h3>That is the whole deck</h3><p>Everything else is filled in or dismissed. Shuffle deals a fresh mix from what is left; dismissed items stay out for good.</p></div>';
 }
 function viewAudit(v){
-  if(!S.audit) S.audit = { done:0, skip:{}, shown:null, deck:null };
+  if(!S.audit) S.audit = { done:0, shown:null, deck:null };
   if(!S.audit.shown) audDeal();
   v.innerHTML = '<div class="page audit"><div class="pagehead"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
     '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></div>' +
@@ -3619,11 +3730,10 @@ function onClick(ev){
     case 'redo': doRedo(); refreshAfterUndo('redo'); break;
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
     case 'back': back(); break;
-    case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); } break; }
-    case 'audsave': { var audC2 = el.closest('.aud-card'); if(audC2 && di != null) audSave(di, audC2); break; }
-    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit){ S.audit.skip[di] = 1; audRetire(audC3, false); } break; }
+    case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
+    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit){ audDisarm(audC3); AUD_DISMISS[audPair(di, audC3.getAttribute('data-gap'))] = 1; store('ncc_aud_skip', JSON.stringify(AUD_DISMISS)); audRetire(audC3, false); } break; }
     case 'audopen': if(di != null) openPerson(di); break;
-    case 'audshuffle': if(S.audit){ S.audit.skip = {}; S.audit.shown = null; } viewAudit($('#view')); break;
+    case 'audshuffle': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;
     case 'set': doSet(el); break;
     case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
     case 'mergeopen': openMergeSheet(di); break;
@@ -3666,14 +3776,13 @@ function onClick(ev){
     case 'pf2': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); openMoreFilters(); viewPeople($('#view')); break;
     case 'tsort': { var tk = el.getAttribute('data-k'); if(S.ppl.ts && S.ppl.ts.k === tk) S.ppl.ts.d = -S.ppl.ts.d; else S.ppl.ts = { k:tk, d:(PT_NUMDIR[tk] ? -1 : 1) }; paintPeople(); break; }
     case 'ptcols': ptColsSheet(); break;
-    case 'ptvis': { var pvk = el.getAttribute('data-k'), pvc = null; ptCols().forEach(function(c){ if(c.k === pvk) pvc = c; }); if(pvc){ if(pvc.on && ptCols().filter(function(c){ return c.on; }).length === 1) break; pvc.on = !pvc.on; ptSaveCols(); paintPeople(); ptColsSheet(); } break; }
-    case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); } break; }
+    case 'ptvis': { var pvk = el.getAttribute('data-k'), pvc = null; ptCols().forEach(function(c){ if(c.k === pvk) pvc = c; }); if(pvc){ if(pvc.on && ptCols().filter(function(c){ return c.on; }).length === 1) break; pvc.on = !pvc.on; ptSaveCols(); paintPeople(); ptColsSheet(); var pvb = $('#sheetwrap [data-act="ptvis"][data-k="' + pvk + '"]'); if(pvb && !pvb.disabled) pvb.focus(); } break; }
+    case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); var pmb = $('#sheetwrap [data-act="ptmv"][data-k="' + pmk + '"][data-d="' + pmd + '"]'); if(!pmb || pmb.disabled) pmb = $('#sheetwrap [data-act="ptvis"][data-k="' + pmk + '"]'); if(pmb && !pmb.disabled) pmb.focus(); } break; }
     case 'morefilters': openMoreFilters(); break;
     case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side }; closeSheet(); viewPeople($('#view')); break;
-    case 'vmode': { var nv = el.getAttribute('data-v') === 'rich' ? 'rich' : 'minimal'; if(nv !== VMODE){ VMODE = nv; store('ncc_view_mode', VMODE); } render(); break; }
     case 'pplside': S.ppl.side = !sideOpen(S.ppl.side); viewPeople($('#view')); break;
     /* profile chrome */
-    case 'menu': { var mp = $('.menu-pop', el.parentNode); var was = mp.hidden; $$('.menu-pop').forEach(function(m){ m.hidden = true; }); mp.hidden = !was; break; }
+    case 'menu': { var mp = $('.menu-pop', el.parentNode); var was = mp.hidden; $$('.menu-pop').forEach(function(m){ m.hidden = true; }); mp.hidden = !was; if(!mp.hidden){ var mfb = $('button', mp); if(mfb) mfb.focus(); } break; }
     case 'export': $$('.menu-pop').forEach(function(m){ m.hidden = true; }); doExport(di, 'dl'); break;
     case 'viewdoc': $$('.menu-pop').forEach(function(m){ m.hidden = true; }); doExport(di, 'view'); break;
     case 'newdoc': $$('.menu-pop').forEach(function(m){ m.hidden = true; }); openDocSheet(di); break;
@@ -3815,6 +3924,49 @@ function addTag(t){
   var v = t.value.trim().replace(/[,|]+$/, ''); t.value = ''; if(!v) return;
   saveTags(t, function(a){ if(a.map(function(x){ return x.toLowerCase(); }).indexOf(v.toLowerCase()) < 0) a.push(v); return a; });
 }
+/* Keyboard navigation (JD 2026-10-15), registered BEFORE onKey so consumed
+   keys never fall through to it: arrows/Home/End move through open menus
+   and chip groups, Escape closes an open menu and returns focus to its
+   toggle, sortable table headers activate with Enter/Space. Activation in
+   chip groups stays Enter/Space (native button click); arrows only move. */
+function onNavKey(ev){
+  var t = ev.target;
+  if(!t || !t.closest) return;
+  var key = ev.key;
+  var pop = t.closest('.menu-pop');
+  if(pop && !pop.hidden){
+    var items = $$('button', pop).filter(function(b){ return !b.disabled; });
+    if(key === 'Escape'){
+      pop.hidden = true;
+      var tg = pop.parentNode ? $('button[data-act="menu"]', pop.parentNode) : null;
+      if(tg) tg.focus();
+      ev.preventDefault(); ev.stopImmediatePropagation(); return;
+    }
+    if(key === 'Tab'){ pop.hidden = true; return; }
+    if(key === 'ArrowDown' || key === 'ArrowUp' || key === 'Home' || key === 'End'){
+      if(items.length){
+        var i = items.indexOf(t);
+        var n = key === 'Home' ? 0 : key === 'End' ? items.length - 1 : (i + (key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+        if(items[n]) items[n].focus();
+      }
+      ev.preventDefault(); ev.stopImmediatePropagation(); return;
+    }
+    return;
+  }
+  if(t.tagName === 'TH' && t.getAttribute('data-act') === 'tsort' && (key === 'Enter' || key === ' ')){
+    ev.preventDefault(); ev.stopImmediatePropagation(); t.click(); return;
+  }
+  if(t.tagName === 'BUTTON'){
+    var grp = t.closest('.seg, .chips, .aud-opts, .pted-opts, .kschips');
+    if(grp && (key === 'ArrowDown' || key === 'ArrowUp' || key === 'ArrowLeft' || key === 'ArrowRight' || key === 'Home' || key === 'End')){
+      var bs = $$('button', grp).filter(function(b){ return !b.disabled; });
+      var j = bs.indexOf(t); if(j < 0) return;
+      var m = key === 'Home' ? 0 : key === 'End' ? bs.length - 1 : (j + ((key === 'ArrowDown' || key === 'ArrowRight') ? 1 : -1) + bs.length) % bs.length;
+      if(bs[m]) bs[m].focus();
+      ev.preventDefault(); ev.stopImmediatePropagation();
+    }
+  }
+}
 function onKey(ev){
   var t = ev.target, tag = t.tagName, isField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
   if(ev.key === 'Enter' && t.classList && t.classList.contains('tadd')){ ev.preventDefault(); addTag(t); return; }
@@ -3865,6 +4017,7 @@ function boot(){
   document.addEventListener('click', onClick);
   document.addEventListener('input', onInput);
   document.addEventListener('change', onChange);
+  document.addEventListener('keydown', onNavKey);
   document.addEventListener('keydown', onKey);
   addEventListener('resize', function(){ if(S.route.name === 'network' && NET.cv && document.body.contains(NET.cv)){ netResize(); } else if(S.route.name === 'family') famApply(); });
   $('#view').innerHTML = skeletonHTML();
