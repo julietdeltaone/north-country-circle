@@ -864,3 +864,30 @@ body.vm-rich .pstats{display:block}
 .pted-aci:hover{background:var(--accbg);color:var(--txt)}
 
 /* ---------- export design picker ---------- */
+
+/* ---------- Audit feeder wall (2026-10-15) ---------- */
+.aud-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px;margin-top:18px}
+.aud-card{background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;animation:audIn .38s cubic-bezier(.2,.7,.3,1) both}
+@keyframes audIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.aud-card.aud-out{animation:audOut .3s ease-in both}
+@keyframes audOut{to{opacity:0;transform:translateX(26px) scale(.97)}}
+.aud-card.aud-done{animation:audDone .32s ease-in both}
+@keyframes audDone{0%{box-shadow:0 0 0 0 rgba(134,160,216,0)}30%{box-shadow:0 0 0 3px var(--acc),0 0 22px rgba(134,160,216,.4)}100%{opacity:0;transform:translateY(-10px);box-shadow:0 0 0 0 rgba(134,160,216,0)}}
+.aud-card.aud-need{animation:audNeed .35s ease-in-out}
+@keyframes audNeed{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.aud-top{display:flex;align-items:center;gap:10px;min-width:0}
+.aud-top .pn{display:flex;flex-direction:column;min-width:0}
+.aud-name{background:none;border:none;padding:0;text-align:left;cursor:pointer;color:var(--txt);font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.aud-name:hover{color:var(--acc2)}
+.aud-ctx{color:var(--dim);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aud-tag{margin-left:auto;flex:none;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--acc2);background:var(--accbg);border-radius:999px;padding:3px 9px}
+.aud-prompt{font-size:14.5px;font-weight:600}
+.aud-opts{display:flex;flex-wrap:wrap;gap:6px}
+.aud-pick i{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px}
+.aud-card .pted-add{margin-top:0}
+.aud-foot{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:2px}
+.aud-skip{background:none;border:none;color:var(--dim);cursor:pointer;font-size:13px;padding:6px 4px}
+.aud-skip:hover{color:var(--txt)}
+.aud-caught{margin-top:18px;background:var(--card);border:1px dashed var(--line2);border-radius:16px;padding:34px 20px;text-align:center;color:var(--mut)}
+.aud-caught h3{color:var(--txt);font-family:var(--serif);font-weight:500;font-size:21px;margin:10px 0 4px}
+@media (max-width:640px){.aud-grid{grid-template-columns:1fr}}
