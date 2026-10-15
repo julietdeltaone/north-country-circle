@@ -1265,9 +1265,9 @@ var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:
   '.crow{font-size:11.5px;margin-bottom:9px}' +
   '.crow b{display:block;font-size:9.5px;letter-spacing:.16em;color:#595959;margin-bottom:2px;font-weight:600}' +
   '.crow span{display:block;border-bottom:1.5px dotted #8f8f8a;padding-bottom:3px}' +
-  '.trow{margin-bottom:4px}' +
-  '.trow .dl{font-size:10.5px;font-weight:600;letter-spacing:.05em;margin-bottom:2px;text-transform:uppercase}' +
-  '.dots{display:inline-flex;gap:5px}.dots i{display:block;width:8px;height:8px;border-radius:50%;border:1.5px solid #b9b9b4}' +
+  '.trow{margin-bottom:3px}' +
+  '.trow .dl{font-size:10.5px;font-weight:600;letter-spacing:.05em;margin-bottom:1px;line-height:1.2;text-transform:uppercase}' +
+  '.dots{display:flex;gap:5px}.dots i{display:block;width:8px;height:8px;border-radius:50%;border:1.5px solid #b9b9b4}' +
   '.dots i.on{background:#262626;border-color:#262626}' +
   '.kv{font-size:12px;margin-top:9px}' +
   '.kv span{display:block;font-weight:600;letter-spacing:.1em;font-size:10px;text-transform:uppercase;color:#595959;margin-bottom:2px}' +
