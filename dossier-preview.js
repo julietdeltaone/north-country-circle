@@ -3396,11 +3396,13 @@ function aiTidy(){
    one random card per profile carrying ALL of that person's missing
    quick-win facts (indicator chips switch the editor in place), filled in
    seconds through the same write path as everywhere else (txn /
-   queuePatch). There is NO save button: once a card's input is
-   complete it flashes for 3 seconds and submits itself (editing during
-   the window restarts the countdown; Skip cancels). Every submit is a
-   normal undoable txn. Skip is forever: the (profile, gap) pair is
-   dismissed on this device (ncc_aud_skip) and never dealt again.
+   queuePatch). There is NO save button: filling a gap while the person
+   has more to go submits INSTANTLY; only the card's LAST remaining gap
+   flashes for 3 seconds before it submits and retires the card (editing
+   during the window restarts the countdown). Every submit is a normal
+   undoable txn. "Done with them" finishes the person: every gap still
+   open on the card is dismissed on this device (ncc_aud_skip) and never
+   dealt again — and it beats an armed countdown, which never submits.
    Deck state lives in S.audit for the visit; the deck is rebuilt from
    the live directory, so a filled gap never deals again either.
    ============================================================ */
@@ -3425,9 +3427,9 @@ function audGaps(e){
   if(!tagList(gv(e, 'specialty')).length) g.push('skills');
   return g;
 }
-/* Persistent skip dismissals: { "pkey|gap": 1 } in localStorage ncc_aud_skip
-   (same store() pattern as ncc_groups_extra). Skipping one gap never
-   dismisses the profile's other gaps. */
+/* Persistent dismissals: { "pkey|gap": 1 } in localStorage ncc_aud_skip
+   (same store() pattern as ncc_groups_extra). "Done with them" writes one
+   entry per gap still open on the card, so none of them is dealt again. */
 var AUD_DISMISS = (function(){ try{ return JSON.parse(store('ncc_aud_skip') || '{}') || {}; }catch(x){ return {}; } })();
 function audPair(di, gap){ var e = D.directory[di]; return e ? pkey(e) + '|' + gap : ''; }
 function audOpenGaps(di){
@@ -3527,7 +3529,7 @@ function audCardHTML(x, i){
     '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span></p>' +
     '<div class="aud-ed">' + audEdHTML(di, gap) + '</div>' +
     '<div class="aud-foot"><span class="aud-cd" hidden><span class="aud-cdt">Saving in 3</span><span class="aud-bar"><i></i></span></span><span class="sp"></span>' +
-    '<button type="button" class="aud-skip" data-act="audskip" data-di="' + di + '">Skip</button></div></article>';
+    '<button type="button" class="aud-skip" data-act="audskip" data-di="' + di + '" title="Finish this person: close out everything still open on this card, for good">Done with them</button></div></article>';
 }
 /* Switch a card's active gap in place: chips, prompt and editor swap
    without the card moving or resizing. Any armed countdown is cancelled,
@@ -3580,9 +3582,18 @@ function audDisarm(card){
   card.classList.remove('aud-arm');
   var cd = $('.aud-cd', card); if(cd) cd.hidden = true;
 }
+/* Is the gap on show the card's LAST remaining one? (JD 2026-10-15)
+   Judged at commit time against the person's gaps still open on the
+   card: filling any earlier one submits instantly, and only completing
+   the final one — the save that retires the card — gets the countdown. */
+function audCardLast(card){
+  var x = audEntry(+card.getAttribute('data-di'));
+  return !x || x.gaps.length <= 1;
+}
 function audTryArm(card){
   if(!card.isConnected) return;
   if(!audReady(card)){ audDisarm(card); return; }
+  if(!audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audDisarm(card);
   var cd = $('.aud-cd', card), cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
   card.classList.add('aud-arm');
@@ -3775,7 +3786,7 @@ function onClick(ev){
     case 'back': back(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
     case 'audgap': { var audC4 = el.closest('.aud-card'); if(audC4){ var gTo = el.getAttribute('data-gap'); if(gTo && gTo !== audC4.getAttribute('data-gap')) audSetGap(audC4, gTo); } break; }
-    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit){ audDisarm(audC3); var skGap = audC3.getAttribute('data-gap'); AUD_DISMISS[audPair(di, skGap)] = 1; store('ncc_aud_skip', JSON.stringify(AUD_DISMISS)); var xSk = audEntry(di); if(xSk){ xSk.gaps = xSk.gaps.filter(function(g){ return g !== skGap; }); if(xSk.gaps.length){ audPaintCounts(); audSetGap(audC3, xSk.gaps[0]); break; } } audRetire(audC3, false); } break; }
+    case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit){ audDisarm(audC3); var xSk = audEntry(di); var skGaps = xSk ? xSk.gaps.slice() : [audC3.getAttribute('data-gap')]; skGaps.forEach(function(g){ AUD_DISMISS[audPair(di, g)] = 1; }); store('ncc_aud_skip', JSON.stringify(AUD_DISMISS)); if(xSk) xSk.gaps = []; audRetire(audC3, false); } break; }
     case 'audopen': if(di != null) openPerson(di); break;
     case 'audshuffle': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;
     case 'set': doSet(el); break;
