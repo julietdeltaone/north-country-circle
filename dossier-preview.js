@@ -1159,7 +1159,7 @@ function buildDossierDoc(e){
   /* Ratings: only traits carrying a value render; the block vanishes when none do. */
   var bars = PERSONA.filter(function(p){ return !isNaN(parseInt(gv(e, p[0]), 10)); }).map(function(p){
     var v = parseInt(gv(e, p[0]), 10);
-    return { l:p[1], v:v, w:Math.max(0, Math.min(5, v)) / 5 * 100 };
+    return { l:p[1], k:p[0], v:v, w:Math.max(0, Math.min(5, v)) / 5 * 100 };
   });
   var extras = [];
   if(gv(e, 'specialty')) extras.push({ l:'Skills', v:gv(e, 'specialty') });
@@ -1178,7 +1178,7 @@ function buildDossierDoc(e){
   }).filter(firstLastOk);
   var evs = sortedEvents(e).map(function(o){ return { date:o.ev.date || '', summary:o.ev.summary || '', detail:o.ev.detail || '' }; });
   var T = {
-    name:name, aka:aka, handle:handle, classif:classif, contact:contact, synBody:synBody,
+    name:name, aka:aka, handle:handle, classif:classif, rel:gv(e, 'relationship'), ctx:gv(e, 'context'), tierCol:tierCol(e), contact:contact, synBody:synBody,
     bars:bars, extras:extras, assoc:assocNames,
     notesText:gv(e, 'notes') ? String(gv(e, 'notes')) : '', fpText:fp ? String(fp) : '',
     evs:evs, tier:tierName(e), initial:(name || '·').trim().charAt(0).toUpperCase()
@@ -1194,22 +1194,41 @@ function buildDossierDoc(e){
    once (which sections exist, the synopsis fallback, the ratings and the
    First-Last associates rules); DOC_THEME below only renders that content.
    ============================================================ */
-function docBR(s){ return esc(s).replace(/\n/g, '<br>'); }
+function docY(s){ return s.replace(/\b(?:19|20)\d{2}\b/g, '<b>$&</b>'); }
+function docT(s){ return docY(esc(s)); }
+function docBR(s){ return docT(s).replace(/\n/g, '<br>'); }
 function docRateLabel(T){ return T.bars.length ? 'PROFILE RATINGS' : 'DETAILS'; }
 
-/* ---------- Case File: the single export design (grayscale) ----------
-   Intelligence-brief character: IBM Plex Mono, graphite/paper grays,
-   "FILE COPY" strip, tier stamp, numbered sections. Ratings render as
-   five-dot scales, plus a radar graph of the rated traits when 3+ exist. */
-function docDots(v){
-  var f = Math.max(0, Math.min(5, v)), s = '<span class="dots" aria-hidden="true">';
-  for(var i = 0; i < 5; i++) s += '<i class="' + (i < f ? 'on' : '') + '"></i>';
+/* ---------- Case File "Sidebar File": the single export design ----------
+   Draft 6 layout (JD pick, 2026-10-15): dark FILE COPY strip, gray sidebar
+   carrying contact + ratings + radar, narrative in the main column.
+   Grayscale base with two deliberate color exceptions: the tier stamp takes
+   the dossier ring color (soft tint + colored border), and each personality
+   trait carries its own muted color across its dots, radar vertex and label.
+   Ratings are five-dot scales; sidebar rows are compact. Contact and info
+   values sit on dotted form lines (the Draft 2 cue). Years in body text and
+   relationship/context values render bold. No rotated stamp. */
+var TRAIT_STYLE = {
+  openness:{ c:'#8b7bb8', s:'OPN' },
+  conscientiousness:{ c:'#6b8cae', s:'CON' },
+  extraversion:{ c:'#c2a14d', s:'EXT' },
+  agreeableness:{ c:'#7fa383', s:'AGR' },
+  neuroticism:{ c:'#c08a8a', s:'NEU' },
+  ego:{ c:'#b87a56', s:'EGO' }
+};
+function traitC(b){ return (TRAIT_STYLE[b.k] || {}).c || '#262626'; }
+function traitS(b){ return (TRAIT_STYLE[b.k] || {}).s || String(b.l || '').slice(0, 3).toUpperCase(); }
+var TIER_DEEP = { '#dfa84f':'#97700f', '#6ea8e1':'#2e6cb5', '#4fb3a1':'#1e7a67', '#a794d8':'#6a559e' };
+var TIER_TINT = { '#dfa84f':'rgba(223,168,79,.15)', '#6ea8e1':'rgba(110,168,225,.16)', '#4fb3a1':'rgba(79,179,161,.15)', '#a794d8':'rgba(167,148,216,.18)' };
+function docDots(b){
+  var f = Math.max(0, Math.min(5, b.v)), c = traitC(b), s = '<span class="dots" aria-hidden="true">';
+  for(var i = 0; i < 5; i++) s += '<i class="' + (i < f ? 'on' : '') + '"' + (i < f ? ' style="background:' + c + ';border-color:' + c + '"' : '') + '></i>';
   return s + '</span>';
 }
 function docRadar(bars){
   var n = bars.length;
   if(n < 3) return '';
-  var W = 300, H = 212, cx = 150, cy = 102, R = 62, i, p;
+  var W = 216, H = 192, cx = 108, cy = 94, R = 56, i, p;
   function pt(i2, f){ var a = -Math.PI / 2 + i2 * 2 * Math.PI / n; return [cx + R * f * Math.cos(a), cy + R * f * Math.sin(a)]; }
   function ringPts(f){
     var out = [];
@@ -1222,61 +1241,86 @@ function docRadar(bars){
     return out.join(' ');
   }
   var s = '<svg class="radar" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true">';
-  for(var ring = 5; ring >= 1; ring--) s += '<polygon points="' + ringPts(ring / 5) + '" fill="' + (ring === 5 ? '#e3e3e3' : 'none') + '" stroke="#bcbcbc" stroke-width="1"/>';
-  for(i = 0; i < n; i++){ p = pt(i, 1); s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="#bcbcbc" stroke-width="1"/>'; }
-  s += '<polygon points="' + dataPts() + '" fill="rgba(38,38,38,.16)" stroke="#262626" stroke-width="1.6"/>';
-  bars.forEach(function(b, j){ var q = pt(j, Math.max(0, Math.min(5, b.v)) / 5); s += '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="2.6" fill="#262626"/>'; });
-  bars.forEach(function(b, j){ var q = pt(j, 1.3); s += '<text x="' + q[0].toFixed(1) + '" y="' + (q[1] + 3).toFixed(1) + '" text-anchor="middle">' + esc(b.l.toUpperCase()) + '</text>'; });
+  for(var ring = 5; ring >= 1; ring--) s += '<polygon points="' + ringPts(ring / 5) + '" fill="' + (ring === 5 ? '#e6e6e3' : 'none') + '" stroke="#c4c4c0" stroke-width="1"/>';
+  for(i = 0; i < n; i++){ p = pt(i, 1); s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0].toFixed(1) + '" y2="' + p[1].toFixed(1) + '" stroke="#d2d2ce" stroke-width="1"/>'; }
+  s += '<polygon points="' + dataPts() + '" fill="rgba(38,38,38,.14)" stroke="#262626" stroke-width="1.6"/>';
+  bars.forEach(function(b, j){ var q = pt(j, Math.max(0, Math.min(5, b.v)) / 5); s += '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="2.8" fill="' + traitC(b) + '"/>'; });
+  bars.forEach(function(b, j){ var q = pt(j, 1.34); s += '<text x="' + q[0].toFixed(1) + '" y="' + (q[1] + 3).toFixed(1) + '" text-anchor="middle" fill="' + traitC(b) + '">' + esc(traitS(b)) + '</text>'; });
   return s + '</svg>';
 }
 var DOC_THEME = { fonts:'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap',
   css:
   'body{background:#2b2b2b;margin:0;padding:28px;font-family:"IBM Plex Mono","Courier New",monospace;color:#262626}' +
-  '.page{background:#efefef;max-width:820px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.55);padding-bottom:28px}' +
-  '.strip{background:#262626;color:#efefef;padding:10px 36px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.22em;break-inside:avoid}' +
-  '.inner{padding:22px 36px 0}' +
+  '.page{background:#f4f4f1;max-width:820px;margin:0 auto;box-shadow:0 0 50px rgba(0,0,0,.55);display:flex;flex-direction:column}' +
+  '.strip{background:#262626;color:#f2f2f0;padding:11px 36px;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.22em;flex:none}' +
+  '.bodycols{display:flex;flex:1;min-height:0;align-items:stretch}' +
+  '.side{width:256px;flex:none;background:#ebebe8;border-right:1.5px solid #262626;padding:22px 20px}' +
+  '.side h3{font-size:11px;letter-spacing:.22em;font-weight:600;border-bottom:2px solid #262626;padding-bottom:7px;margin:0 0 12px}' +
+  '.blk{margin-bottom:24px}.blk:last-child{margin-bottom:4px}' +
+  '.crow{font-size:11.5px;margin-bottom:9px}' +
+  '.crow b{display:block;font-size:9.5px;letter-spacing:.16em;color:#595959;margin-bottom:2px;font-weight:600}' +
+  '.crow span{display:block;border-bottom:1.5px dotted #8f8f8a;padding-bottom:3px}' +
+  '.trow{margin-bottom:4px}' +
+  '.trow .dl{font-size:10.5px;font-weight:600;letter-spacing:.05em;margin-bottom:2px;text-transform:uppercase}' +
+  '.dots{display:inline-flex;gap:5px}.dots i{display:block;width:8px;height:8px;border-radius:50%;border:1.5px solid #b9b9b4}' +
+  '.dots i.on{background:#262626;border-color:#262626}' +
+  '.kv{font-size:12px;margin-top:9px}' +
+  '.kv span{display:block;font-weight:600;letter-spacing:.1em;font-size:10px;text-transform:uppercase;color:#595959;margin-bottom:2px}' +
+  '.kv i{font-style:normal;display:block;border-bottom:1.5px dotted #8f8f8a;padding-bottom:3px}' +
+  '.chartblk{text-align:center}' +
+  '.radar text{font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;font-weight:600;letter-spacing:.05em}' +
+  '.chartcap{font-size:8px;letter-spacing:.14em;color:#6a6a6a;text-align:center;margin-top:2px}' +
+  '.main{flex:1;min-width:0;padding:24px 34px 28px}' +
   '.kick{font-size:10.5px;letter-spacing:.3em;color:#595959;font-weight:600}' +
   'h1{font-size:27px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;margin:5px 0 0}' +
   '.aka{font-size:12px;color:#6f6f6f;margin-top:3px}' +
-  '.stamp{display:inline-block;border:2.5px solid #4d4d4d;color:#4d4d4d;padding:4px 13px;transform:rotate(-2.5deg);font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:12px;text-transform:uppercase}' +
-  '.meta{font-size:12px;letter-spacing:.12em;border-top:2px solid #262626;border-bottom:1px solid #262626;padding:8px 0;margin-top:16px;text-transform:uppercase}' +
-  'table.info{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:16px}' +
-  'table.info th{text-align:left;width:130px;letter-spacing:.14em;font-weight:600;padding:4px 10px 4px 0;vertical-align:top;text-transform:uppercase}' +
-  'table.info td{padding:4px 0}' +
-  '.sec{border-top:2px solid #262626;margin-top:22px;padding-top:10px;break-inside:avoid}' +
-  '.sec h2{font-size:12.5px;letter-spacing:.2em;margin:0 0 10px;font-weight:600}.sec h2 b{color:#595959;font-weight:600}' +
+  '.stamp{display:inline-block;border:2.5px solid #4d4d4d;color:#262626;padding:4px 13px;font-weight:600;letter-spacing:.18em;border-radius:3px;font-size:12px;margin-top:12px;text-transform:uppercase}' +
+  '.meta{font-size:11.5px;letter-spacing:.08em;border-top:2px solid #262626;border-bottom:1px solid #262626;padding:8px 0;margin-top:15px;text-transform:uppercase}' +
+  '.meta .mv{border-bottom:1.5px dotted #8f8f8a;padding-bottom:1px}' +
+  '.sec{border-top:2px solid #262626;margin-top:21px;padding-top:10px;break-inside:avoid}' +
+  '.sec h2{font-size:12.5px;letter-spacing:.2em;margin:0 0 11px;font-weight:600}.sec h2 b{color:#595959;font-weight:600}' +
   '.sbody{font-size:12.5px;line-height:1.75}.sbody p{margin:0 0 9px}' +
-  '.ratewrap{display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap}' +
-  '.rlist{flex:1;min-width:240px}' +
-  '.rrow{display:flex;align-items:center;gap:12px;font-size:12px;margin-bottom:9px}.rrow span{width:128px;letter-spacing:.06em;font-weight:600}' +
-  '.dots{display:inline-flex;gap:5px}.dots i{display:block;width:9px;height:9px;border-radius:50%;border:1.5px solid #262626}.dots i.on{background:#262626}' +
-  '.rrow em{font-style:normal;font-weight:600}' +
-  '.radar{flex:none}.radar text{font-family:"IBM Plex Mono","Courier New",monospace;font-size:8.5px;letter-spacing:.05em;fill:#4d4d4d}' +
-  '.kv{font-size:12.5px;margin:6px 0}.kv span{display:inline-block;width:128px;font-weight:600;letter-spacing:.1em;font-size:11px;text-transform:uppercase}' +
   'ul{margin:0;padding-left:19px;font-size:12.5px;line-height:1.75}ul.cols{column-count:2;column-gap:30px}' +
   '@page{size:Letter;margin:.55in}' +
-  '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none;width:auto}*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}',
+  '@media print{body{background:#fff;padding:0}.page{box-shadow:none;max-width:none;width:auto;display:block}' +
+  '.bodycols{display:block}.side{float:left;width:256px;margin-right:26px}.main{margin-left:282px;padding-right:0}' +
+  '*{print-color-adjust:exact;-webkit-print-color-adjust:exact}}',
   render: function(T){
+    var side = '';
+    if(T.contact.length) side += '<div class="blk"><h3>CONTACT</h3>' + T.contact.map(function(it){
+      return '<div class="crow"><b>' + esc(it.l) + '</b><span>' + docT(it.v) + '</span></div>'; }).join('') + '</div>';
+    if(T.bars.length || T.extras.length){
+      side += '<div class="blk"><h3>' + docRateLabel(T) + '</h3>';
+      if(T.bars.length) side += T.bars.map(function(b){
+        return '<div class="trow"><div class="dl" style="color:' + traitC(b) + '">' + esc(b.l) + '</div>' + docDots(b) + '</div>'; }).join('');
+      side += T.extras.map(function(x){ return '<div class="kv"><span>' + esc(x.l) + '</span><i>' + docT(x.v) + '</i></div>'; }).join('') + '</div>';
+      var rad = docRadar(T.bars);
+      if(rad) side += '<div class="blk chartblk">' + rad + '<div class="chartcap">BIG FIVE + EGO · SCALE 0–5</div></div>';
+    }
     var secs = [];
     if(T.synBody) secs.push(['SYNOPSIS', '<div class="sbody"><p>' + docBR(T.synBody) + '</p></div>']);
-    if(T.bars.length || T.extras.length) secs.push([docRateLabel(T),
-      (T.bars.length ? '<div class="ratewrap"><div class="rlist">' +
-        T.bars.map(function(b){ return '<div class="rrow"><span>' + esc(b.l) + '</span>' + docDots(b.v) + '<em>' + b.v + '/5</em></div>'; }).join('') + '</div>' +
-        docRadar(T.bars) + '</div>' : '') +
-      T.extras.map(function(x){ return '<div class="kv"><span>' + x.l + '</span>' + esc(x.v) + '</div>'; }).join('')]);
     if(T.assoc.length) secs.push(['KNOWN ASSOCIATES', '<ul class="cols">' + T.assoc.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('') + '</ul>']);
     if(T.notesText || T.fpText) secs.push(['FIELD NOTES', '<div class="sbody">' +
       (T.notesText ? '<p>' + docBR(T.notesText) + '</p>' : '') + (T.fpText ? '<p><b>Public footprint</b><br>' + docBR(T.fpText) + '</p>' : '') + '</div>']);
     if(T.evs.length) secs.push(['TIMELINE', '<ul>' + T.evs.map(function(o){
-      return '<li><b>' + esc(o.date) + '</b> — ' + esc(o.summary) + (o.detail ? '<br>' + esc(o.detail) : '') + '</li>'; }).join('') + '</ul>']);
-    var h = '<div class="page"><div class="strip"><span>PERSONNEL DOSSIER</span><span>FILE COPY</span></div><div class="inner">' +
+      return '<li><b>' + esc(o.date) + '</b> — ' + docT(o.summary) + (o.detail ? '<br>' + docT(o.detail) : '') + '</li>'; }).join('') + '</ul>']);
+    var meta = [];
+    if(T.rel) meta.push('<b class="mv">' + esc(T.rel) + '</b>');
+    if(T.ctx) meta.push('<b class="mv">' + esc(T.ctx) + '</b>');
+    if(T.tier) meta.push('<span class="mv">' + esc(T.tier) + '</span>');
+    var stamp = '';
+    if(T.tier){
+      var tc = T.tierCol || '#4d4d4d';
+      stamp = '<div><span class="stamp" style="border-color:' + tc + ';background:' + (TIER_TINT[tc] || 'transparent') + ';color:' + (TIER_DEEP[tc] || '#262626') + '">' + esc(T.tier) + '</span></div>';
+    }
+    return '<div class="page"><div class="strip"><span>PERSONNEL DOSSIER</span><span>FILE COPY</span></div>' +
+      '<div class="bodycols"><div class="side">' + side + '</div><div class="main">' +
       '<div class="kick">Subject File</div><h1>' + esc(T.name) + '</h1>' +
       (T.aka ? '<div class="aka">also known as ' + esc(T.aka) + '</div>' : '') +
-      (T.tier ? '<div><span class="stamp">' + esc(T.tier) + '</span></div>' : '') +
-      (T.classif ? '<div class="meta">' + esc(T.classif) + '</div>' : '');
-    if(T.contact.length) h += '<table class="info">' + T.contact.map(function(it){ return '<tr><th>' + it.l + '</th><td>' + esc(it.v) + '</td></tr>'; }).join('') + '</table>';
-    h += secs.map(function(s, i){ return '<div class="sec"><h2><b>' + ('0' + (i + 1)).slice(-2) + '</b> &nbsp;' + s[0] + '</h2>' + s[1] + '</div>'; }).join('');
-    return h + '</div></div>';
+      stamp +
+      (meta.length ? '<div class="meta">' + meta.join(' &nbsp;·&nbsp; ') + '</div>' : '') +
+      secs.map(function(s, i){ return '<div class="sec"><h2><b>' + ('0' + (i + 1)).slice(-2) + '</b> &nbsp;' + s[0] + '</h2>' + s[1] + '</div>'; }).join('') +
+      '</div></div></div>';
   } };
 
 function doExport(di, mode){
