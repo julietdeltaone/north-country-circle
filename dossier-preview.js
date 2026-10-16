@@ -2149,7 +2149,12 @@ function ptAcWire(inp, list, onPick, opts){
       if(open){ ev.preventDefault(); ev.stopPropagation(); act = ev.key === 'Home' ? 0 : hits.length - 1; mark(); }
     }
     else if(ev.key === 'Enter'){
-      if(open && act >= 0){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
+      /* opts.enterPick may veto the Enter-pick (return false): the event
+         then falls through to the field's own Enter handler instead of
+         picking the highlighted match. Every Audit text editor uses it —
+         a typed value commits only when IT is complete, never because
+         Enter happened to pick the highlighted suggestion. */
+      if(open && act >= 0 && !(opts && opts.enterPick && !opts.enterPick(hits[act]))){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
     }
     else if(ev.key === 'Escape'){
       if(open){ ev.preventDefault(); ev.stopPropagation(); hide(); }
@@ -3944,6 +3949,7 @@ function audSetGap(card, gap){
   if(!x || x.gaps.indexOf(gap) < 0) return;
   var hadFocus = card.contains(document.activeElement);
   audDisarm(card);
+  audFinalizeStacks(card);   /* switching gaps closes out a stacked orgs/skills gap (values already on file) */
   x.cur = gap;
   card.setAttribute('data-gap', gap);
   card.removeAttribute('data-pick');
@@ -3952,7 +3958,7 @@ function audSetGap(card, gap){
   if(pr) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>';
   var ed = $('.aud-ed', card); if(ed) ed.innerHTML = audEdHTML(di, gap);
   audWireCard(card);
-  if(hadFocus){ var f = $('.aud-in', card) || $('.aud-gchip.on', card); if(f) f.focus(); }
+  if(hadFocus) audFocusEditor(card);
 }
 /* Repaint just a card's indicator chips (after a state change). */
 function audPaintChips(card){
@@ -3989,7 +3995,7 @@ function audReopen(card, gap){
     if(inp) inp.value = (x.vals && x.vals[gap]) || (gap === 'loc' ? raw(e, 'location_on_file') : gap === 'years' ? gv(e, 'years_known') : gap === 'phone' ? gv(e, 'phone') : '');
   }
   audWireCard(card);
-  if(hadFocus){ var f = $('.aud-in', card) || $('.aud-gchip.done.editing', card); if(f) f.focus(); }
+  if(hadFocus) audFocusEditor(card);
 }
 /* ---- Audit action toast + one-step undo (JD 2026-10-15) ------------
    Every Audit action is announced in plain words at the bottom of the
@@ -4064,6 +4070,38 @@ function audUndoLast(){
     audLaterSave();
     audRestock(act.di, act.gap);
   }
+  else if(act.kind === 'stack'){
+    /* reverse one stacked add: the field value comes off the profile,
+       the stack list forgets it, and the fill counters unwind only
+       when it was the gap's FIRST add (the one that counted). The
+       card keeps the orgs/skills editor, ready for more. */
+    audReverseEntry(act.entry);
+    if(act.first){
+      if(S.audit) S.audit.done = Math.max(0, S.audit.done - 1);
+      audNoteUnfill(act);
+    }
+    if(x){
+      if(x.stack && x.stack[act.gap]){
+        var sv = act.val.toLowerCase();
+        x.stack[act.gap] = x.stack[act.gap].filter(function(s2){ return s2.toLowerCase() !== sv; });
+        if(!x.stack[act.gap].length) delete x.stack[act.gap];
+      }
+      if(x.vals){ if(x.stack && x.stack[act.gap]) x.vals[act.gap] = x.stack[act.gap].join(', '); else delete x.vals[act.gap]; }
+      if(card) audPaintChips(card);
+    }
+  }
+  else if(act.kind === 'skip'){
+    /* deal the skipped card straight back (Rapid Fire swaps the
+       stage; elsewhere it just returns to the front of the deck) */
+    if(S.audit){
+      var sq = null;
+      for(var qi = 0; qi < S.audit.deck.length; qi++) if(S.audit.deck[qi].di === act.di){ sq = S.audit.deck[qi]; break; }
+      if(sq){
+        if(audMode() === 'rapid') audStageSwapTo(sq);
+        else { S.audit.deck.splice(S.audit.deck.indexOf(sq), 1); S.audit.deck.unshift(sq); }
+      }
+    }
+  }
   audPaintCounts();
   toast('Undid the last Audit action.');
 }
@@ -4076,6 +4114,7 @@ function audPark(card, kb){
   if(!x || card.classList.contains('aud-out') || card.classList.contains('aud-done')) return;
   var gap = card.getAttribute('data-gap');
   audDisarm(card);
+  audFinalizeStacks(card);   /* a stacked gap is already filled — parking must not re-open it later */
   var pk = pkey(D.directory[di]), prev = AUD_LATER[pk];
   AUD_LATER[pk] = gap; audLaterSave();
   var text = 'Saved for later · reopens on ' + AUD_GAPS[gap].tag;
@@ -4095,6 +4134,7 @@ function audFinish(card, kb, submitFirst){
   if(!x) return;
   var gap = card.getAttribute('data-gap');
   audDisarm(card);
+  audFinalizeStacks(card);   /* stacked values are already on file — Done must not dismiss that gap below */
   var r = null;
   if(submitFirst && audComplete(card)) r = audWriteValue(di, card, gap);
   if(r){
@@ -4128,6 +4168,7 @@ function audPass(card){
   var di = +card.getAttribute('data-di'), x = audEntry(di);
   if(!x) return;
   var gap = card.getAttribute('data-gap');
+  audFinalizeStacks(card);   /* a stacked gap was FILLED, never passed: finalize it, don't dismiss it */
   if(x.gaps.indexOf(gap) < 0) return;
   var gapIndex = x.gaps.indexOf(gap);
   if(S.audit) S.audit.streak = 0;   /* a pass breaks the fill streak */
@@ -4147,7 +4188,17 @@ function audWireCard(card){
   var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
   if(!inp) return;
   var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : gap === 'orgs' ? audOrgPool() : gap === 'years' ? audYearList() : null;
-  if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audTryArm(card); }, gap === 'orgs' ? { label:regSugLabel, resolve:regApply } : null);
+  if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audTryArm(card); },
+    gap === 'orgs' ? { label:regSugLabel, resolve:regApply, enterPick:function(){ return false; } }
+    /* Enter NEVER picks from the dropdown inside an Audit card — it
+       must reach the field's own handler (audEnterKey), which applies
+       the completeness gates to what was actually TYPED. Without this
+       veto, typing the fragment "Po" and pressing Enter committed the
+       dropdown's pre-highlighted "Pomona, CA": a value JD never typed
+       and never chose. A dropdown PICK by mouse/touch still commits
+       as a deliberate choice; only Enter is gated. */
+    : (gap === 'years' || gap === 'loc' || gap === 'skills') ? { enterPick:function(){ return false; } }
+    : null);
   /* commit triggers (JD 2026-10-15): a suggestion pick or Enter submits
      what is typed, and a REAL blur (focus leaving the card) submits after
      a 250ms grace period, so a tap on a suggestion registers its pick
@@ -4156,9 +4207,15 @@ function audWireCard(card){
      field (audComplete): a half-typed word never submits, the editor
      never closes mid-composition, and keystrokes cancel any pending
      commit. Any edit while the countdown runs cancels it and re-enters
-     this flow, so only the final value ever submits. */
+     this flow, so only the final value ever submits.
+     YEARS ARE ENTER-ONLY (JD 2026-10-16): typing in the years combo
+     never arms or commits, however complete the value looks — the
+     pause commit and the blur commit both skip years outright, because
+     a finished-looking year is just four keystrokes, not consent. A
+     typed year saves only on Enter (audEnterKey, no countdown). */
   inp.addEventListener('input', function(){
     audDisarm(card);
+    if(gap === 'years') return;
     clearTimeout(card._audDeb);
     card._audDeb = setTimeout(function(){
       card._audDeb = null;
@@ -4175,13 +4232,230 @@ function audWireCard(card){
       if(!card.isConnected) return;
       var a = document.activeElement;
       if(a && card.contains(a)) return;   /* the pick refocused the field, or focus moved within this card: not a real blur */
+      if(gap === 'years') return;   /* Enter-only: a typed year is never blur-committed */
       audTryArm(card);
     }, 250);
   });
   inp.addEventListener('keydown', function(ev){
-    if(ev.key === 'Enter'){ ev.preventDefault(); audTryArm(card); }
+    if(ev.key === 'Enter'){ ev.preventDefault(); audEnterKey(card); }
   });
 }
+/* ============ keyboard flow (JD 2026-10-16) ============
+   Rapid Fire (and Category Run, which shares this editor path) runs
+   from the keyboard: Enter commits a complete value and the next
+   editor takes focus; Shift+Right commits-or-skips-for-now;
+   Shift+Left deals the previous card back. Cards / Finish Line keep
+   their mouse-first semantics (countdowns, permanent pass,
+   save-for-later) untouched. */
+/* The two "flow" modes — saves are instant there and the keyboard
+   rules below apply. Mirrors the instant-arm grouping in audTryArm. */
+function audFlowMode(){ return !!(S.audit && (S.audit.mode === 'rapid' || S.audit.mode === 'cat')); }
+
+/* The editor focus target inside a card: the text field when the gap
+   has one, else the first pick chip (tier / relationship), else the
+   active gap chip. Focus must NEVER land on the card's name button —
+   that was the second half of the years bug: after a save, the next
+   card's name button took focus because it is the card's first
+   button and the fallback target was "first button or input". */
+function audEditorEl(card){
+  return $('.aud-in', card) || $('.aud-pick', card) || $('.aud-gchip.on', card) || $('button, input', card);
+}
+function audFocusEditor(card){ var f = card && audEditorEl(card); if(f) f.focus(); return f; }
+
+/* Enter inside an Audit text editor. Enter is the explicit
+   confirmation, so it commits ONLY a complete value — the audComplete
+   gates decide, and a fragment never commits (it just nudges).
+   - years: commits the typed year directly, in EVERY mode, with no
+     countdown (Enter replaces the countdown as the confirmation).
+   - orgs / skills in the flow modes: a value ADDS and the editor
+     stays (the stack branch in audSave); Enter on an EMPTY field
+     advances instead (audAdvanceFrom).
+   - everything else: the mode's normal arm path, unchanged. */
+function audEnterKey(card){
+  var gap = card.getAttribute('data-gap');
+  if(gap === 'years'){
+    if(audComplete(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); }
+    else audNudge(card);
+    return;
+  }
+  var inp = $('.aud-in', card), v = inp ? inp.value.trim() : '';
+  if(gap === 'orgs' || gap === 'skills'){
+    if(v){ audTryArm(card); return; }                    /* add it (flow modes stack + stay, via audSave) */
+    if(audFlowMode()){ audAdvanceFrom(card); return; }   /* empty Enter advances in the flow modes */
+    audNudge(card); return;
+  }
+  if(!audComplete(card)){ audNudge(card); return; }      /* fragment: never commits */
+  audTryArm(card);
+}
+
+/* Close out a stacked multi-value gap (orgs / skills saved one value
+   at a time in the flow modes): the values are already on file; this
+   is the card bookkeeping that moves the gap to done. Returns true
+   when a stack was finalized. Safe to call anywhere — no stack, no-op. */
+function audFinalizeStacks(card){
+  var x = audEntry(+card.getAttribute('data-di'));
+  if(!x || !x.stack) return false;
+  var did = false;
+  Object.keys(x.stack).forEach(function(g){
+    if(x.gaps.indexOf(g) >= 0){
+      x.gaps = x.gaps.filter(function(q){ return q !== g; });
+      if(x.done.indexOf(g) < 0) x.done.push(g);
+      did = true;
+    }
+  });
+  if(did) audPaintChips(card);
+  return did;
+}
+
+/* Flow-mode advance with nothing (new) to commit on the current gap:
+   finalize a pending stack if there is one (retire as a fill when the
+   person is complete, else move to their next gap); with no stack,
+   skip the card for now — it deals again later this visit. */
+function audAdvanceFrom(card){
+  var di = +card.getAttribute('data-di'), x = audEntry(di);
+  if(!x) return;
+  var had = audFinalizeStacks(card);
+  if(had && x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
+  if(had){ audRetire(card, true, true); return; }
+  audSkipNow(card);
+}
+
+/* Prefill a re-shown card whose current gap was already FILLED this
+   visit (Shift+Left deals these back): the same value restoration
+   audReopen does, without entering re-edit state. */
+function audPrefillDone(card, x){
+  var gap = x.cur, e = D.directory[x.di];
+  if(gap === 'tier' || gap === 'rel'){
+    var cur = gap === 'tier' ? tierOf(e) : gv(e, 'relationship');
+    if(cur){
+      card.setAttribute('data-pick', cur);
+      $$('.aud-pick', card).forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === cur); });
+    }
+  } else if(gap === 'loc' || gap === 'years' || gap === 'phone'){
+    var inp = $('.aud-in', card);
+    if(inp) inp.value = (x.vals && x.vals[gap]) || (gap === 'loc' ? raw(e, 'location_on_file') : gv(e, gap === 'years' ? 'years_known' : 'phone'));
+  }
+}
+
+/* Render one specific entry onto the stage and put focus in its
+   editor: skip-for-now deals the deck front through here, Shift+Left
+   deals history back. Wires the card and restores a filled gap's
+   editor. In Category Run the card appends to the wall like any
+   other dealt card. */
+function audStageRender(x){
+  var A = S.audit, grid = $('#audgrid');
+  if(!grid || !x) return null;
+  var ix = A.deck.indexOf(x); if(ix >= 0) A.deck.splice(ix, 1);
+  if(A.shown.indexOf(x) < 0) A.shown.push(x);
+  if(x.parked) audUnpark(pkey(D.directory[x.di]));
+  if(x.gaps.indexOf(x.cur) < 0 && x.done.indexOf(x.cur) < 0) x.cur = x.gaps[0] || x.done[x.done.length - 1];
+  var tmp = document.createElement('div');
+  tmp.innerHTML = audCardHTML(x, 0);
+  var nc = tmp.firstChild;
+  grid.appendChild(nc);
+  audWireCard(nc);
+  if(x.done.indexOf(x.cur) >= 0) audPrefillDone(nc, x);
+  audFocusEditor(nc);
+  audPaintCounts(); audPaintEmpty();
+  return nc;
+}
+
+/* Swap the Rapid Fire stage to a specific entry: the current entry
+   returns to the FRONT of the deck (it deals again on the next
+   advance, untouched), the target takes the stage. */
+function audStageSwapTo(x){
+  var A = S.audit, grid = $('#audgrid');
+  if(!grid || !x) return;
+  var cur = $('.aud-card', grid);
+  if(cur){
+    var cx = audEntry(+cur.getAttribute('data-di'));
+    audDisarm(cur);
+    cur.remove();
+    A.shown = A.shown.filter(function(y){ return !cx || y.di !== cx.di; });
+    if(cx && cx !== x) A.deck.unshift(cx);
+  }
+  audStageRender(x);
+}
+
+/* Skip for now (flow modes): the card leaves the stage with NO
+   dismissal — its entry goes to the BACK of the deck and deals again
+   later this visit. A stacked gap finalizes first (its values are
+   already on file). One-step undoable like everything else in Audit.
+   Rapid Fire also records the card in stage history, so Shift+Left
+   can deal it straight back. */
+function audSkipNow(card){
+  var A = S.audit, di = +card.getAttribute('data-di'), x = audEntry(di);
+  if(!x) return;
+  audFinalizeStacks(card);
+  audDisarm(card);
+  A.streak = 0;
+  A.shown = A.shown.filter(function(y){ return y.di !== di; });
+  if(audMode() === 'rapid'){
+    if(!A.hist) A.hist = [];
+    A.hist = A.hist.filter(function(h){ return h.di !== di; });
+    A.hist.push(x);
+    if(A.hist.length > 50) A.hist.shift();
+  }
+  card.remove();
+  if(A.deck.length){
+    A.deck.push(x);
+    audLog({ kind:'skip', di:di, text:'Skipped for now · deals again later' });
+    audToastShow('Skipped for now · deals again later');
+    audStageRender(A.deck.shift());
+  } else {
+    audStageRender(x);
+    audToastShow('Only card in the deck — it stays.');
+  }
+  audPaintCounts(); audPaintEmpty();
+}
+
+/* Shift+Right in Rapid Fire (JD 2026-10-16): advance with the
+   keyboard. A complete value on show commits first — a FOCUSED pick
+   chip counts as the pending pick, and a complete org/skill value
+   adds and then advances — otherwise the card is skipped for now
+   (never the permanent pass; Cards mode keeps that, see onNavKey). */
+function audRapidShiftRight(card){
+  var di = +card.getAttribute('data-di'), gap = card.getAttribute('data-gap');
+  if((gap === 'orgs' || gap === 'skills') && $('.aud-in', card) && $('.aud-in', card).value.trim()){
+    audSave(di, card);        /* flow-mode stack add: writes the value, stays */
+    audAdvanceFrom(card);     /* then advance (finalizes the stack) */
+    return;
+  }
+  if((gap === 'tier' || gap === 'rel') && !card.getAttribute('data-pick')){
+    var a = document.activeElement;
+    if(a && card.contains(a) && a.classList && a.classList.contains('aud-pick')){
+      card.setAttribute('data-pick', a.getAttribute('data-v'));
+      $$('.aud-pick', card).forEach(function(b){ b.classList.toggle('on', b === a); });
+    }
+  }
+  if(audComplete(card)){
+    if(gap === 'years'){ audDisarm(card); audSave(di, card); }   /* Enter-only rule: no countdown */
+    else audTryArm(card);
+    return;
+  }
+  audSkipNow(card);
+}
+
+/* Shift+Left in Rapid Fire (JD 2026-10-16): deal the previous card
+   back, its editor focused. Entries with nothing left to show (no
+   open gap and nothing filled this visit) are passed over; the
+   current card returns to the front of the deck. */
+function audRapidBack(card){
+  var A = S.audit;
+  if(!A || !A.hist || !A.hist.length){ audNudge(card); return; }
+  audFinalizeStacks(card);
+  var curDi = +card.getAttribute('data-di'), y = null;
+  while(A.hist.length){
+    var cand = A.hist.pop();
+    if(cand.di === curDi) continue;
+    if(!cand.gaps.length && !cand.done.length) continue;
+    y = cand; break;
+  }
+  if(!y){ audNudge(card); return; }
+  if(y.gaps.indexOf(y.cur) < 0) y.cur = y.gaps[0] || y.done[y.done.length - 1];
+  audStageSwapTo(y);
+}
+
 /* A card is submittable only with a complete value: a chip picked, a
    non-empty text field, or a plausible 4-digit year (1900–current). */
 function audReady(card){
@@ -4250,9 +4524,11 @@ function audTryArm(card){
   var reeditArm = !!(xArm && xArm.done.indexOf(card.getAttribute('data-gap')) >= 0);
   /* Rapid Fire saves INSTANTLY, always (JD 2026-10-15): on a one-gap
      stage every save would be a "last gap", so the 3s countdown would
-     kill the pace — the toast + Undo is the safety net instead. */
-  var rapidArm = !!(S.audit && S.audit.mode === 'rapid');
-  if(reeditArm || rapidArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
+     kill the pace — the toast + Undo is the safety net instead.
+     Category Run is instant too (JD 2026-10-16): once a value is
+     confirmed entered it commits immediately, last gap included. */
+  var instantArm = !!(S.audit && (S.audit.mode === 'rapid' || S.audit.mode === 'cat'));
+  if(reeditArm || instantArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audDisarm(card);
   var cd = $('.aud-cd', card), cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
   card.classList.add('aud-arm');
@@ -4351,6 +4627,30 @@ function audSave(di, card){
   if(!e || +card.getAttribute('data-di') !== di) return;
   var x = audEntry(di);
   var reedit = !!(x && x.done.indexOf(gap) >= 0);
+  /* Flow-mode multi-value gaps (JD 2026-10-16): in Rapid Fire and
+     Category Run a save of orgs/skills ADDS the value and STAYS — the
+     value is written, the field clears, focus stays in it, and the
+     gap stays open so more values stack. The gap closes when JD
+     advances (Enter on the empty field, Shift+Right, a gap switch, or
+     Done) via audFinalizeStacks. Only the FIRST add counts as the
+     fill (streak, goal, counters); every add is undoable (kind
+     'stack'). Cards / Finish Line keep the one-shot save below. */
+  if(x && !reedit && audFlowMode() && (gap === 'orgs' || gap === 'skills')){
+    var rs = audWriteValue(di, card, gap);
+    if(!rs){ audNudge(card); return; }
+    if(!x.stack) x.stack = {};
+    var sList = x.stack[gap] || (x.stack[gap] = []);
+    var firstAdd = !sList.length;
+    if(!sList.some(function(sv){ return sv.toLowerCase() === rs.val.toLowerCase(); })) sList.push(rs.val);
+    if(!x.vals) x.vals = {};
+    x.vals[gap] = sList.join(', ');
+    if(firstAdd){ S.audit.done++; audNoteFill(di, gap); }
+    audLog({ kind:'stack', di:di, gap:gap, entry:rs.entry || null, val:rs.val, first:firstAdd, blitz:!!(S.audit && S.audit.blitz), text:'Added · ' + AUD_GAPS[gap].tag + ': ' + rs.val });
+    audToastShow('Added · ' + AUD_GAPS[gap].tag + ': ' + rs.val);
+    var inpS = $('.aud-in', card); if(inpS){ inpS.value = ''; inpS.focus(); }
+    audPaintCounts();
+    return;
+  }
   var priorVal = (x && x.vals) ? x.vals[gap] : undefined;
   var gapIndex = x ? x.gaps.indexOf(gap) : -1;
   var r = audWriteValue(di, card, gap);
@@ -4379,11 +4679,21 @@ function audSave(di, card){
 function audRetire(card, saved, kbFocus){
   audDisarm(card);
   var A = S.audit, di = +card.getAttribute('data-di');
+  var xOut = audEntry(di);
   var hadFocus = card.contains(document.activeElement);
   A.shown = A.shown.filter(function(x){ return x.di !== di; });
   function finish(){
     if(!card.isConnected) return;   /* the view was rebuilt mid-animation (mode switch, shuffle): do not feed a stale card into the new wall */
     card.remove();
+    /* Rapid Fire stage history (JD 2026-10-16): every card that
+       leaves the stage is remembered, most recent last, so
+       Shift+Left can deal the previous card back. */
+    if(xOut && audMode() === 'rapid'){
+      if(!A.hist) A.hist = [];
+      A.hist = A.hist.filter(function(h){ return h.di !== di; });
+      A.hist.push(xOut);
+      if(A.hist.length > 50) A.hist.shift();
+    }
     var nxt = A.deck.shift();
     if(nxt){
       A.shown.push(nxt);
@@ -4395,7 +4705,11 @@ function audRetire(card, saved, kbFocus){
         var nc = tmp.firstChild;
         grid.appendChild(nc);
         audWireCard(nc);
-        if(hadFocus){ var nf = kbFocus ? ($('.aud-in', nc) || $('.aud-gchip.on', nc) || $('button, input', nc)) : $('button, input', nc); if(nf) nf.focus(); }
+        /* Keyboard flows (and the flow modes generally) land focus
+           in the DEALT card's editor — never on its name button.
+           Cards / Finish Line keep the old rule for pure-mouse
+           retirements (focus only follows when the card had it). */
+        if(hadFocus || audFlowMode()){ var nf = (kbFocus || audFlowMode()) ? audEditorEl(nc) : $('button, input', nc); if(nf) nf.focus(); }
       }
     }
     audPaintCounts(); audPaintEmpty();
@@ -4686,6 +5000,14 @@ function viewAudit(v){
   } else {
     grid.innerHTML = S.audit.shown.map(function(x, i){ return audCardHTML(x, i); }).join('');
     $$('.aud-card', grid).forEach(audWireCard);
+    /* Rapid Fire opens with the keyboard live (JD 2026-10-16): focus
+       the stage card's editor on render, unless focus is already
+       inside it (a re-render under the user's hands must not yank
+       the caret — quietRefresh defers those rebuilds anyway). */
+    if(m === 'rapid'){
+      var fc = $('.aud-card', grid);
+      if(fc && !fc.contains(document.activeElement)) audFocusEditor(fc);
+    }
   }
   if(m === 'rapid' && !pvReducedMotion()) S.audit._paceIv = setInterval(function(){ audPaintModeBar(); }, 5000);
   audPaintCounts(); audPaintEmpty();
@@ -4995,12 +5317,15 @@ function onNavKey(ev){
   /* Shift+Right inside an Audit card (JD 2026-10-15): pass on the gap on
      show. Checked first so it overrides text selection and chip-group
      arrow movement within card editors; anywhere else in the app
-     Shift+Right keeps its normal text-selection behavior. */
+     Shift+Right keeps its normal text-selection behavior.
+     RAPID FIRE diverges (JD 2026-10-16): Shift+Right is the keyboard
+     advance there — commit a complete pending value, else skip the
+     card for now (it deals again later; NOT the permanent pass). */
   if(key === 'ArrowRight' && ev.shiftKey && !ev.ctrlKey && !ev.metaKey && !ev.altKey){
     var audCard = t.closest('.aud-card');
     if(audCard && S.route && S.route.name === 'audit'){
       ev.preventDefault(); ev.stopImmediatePropagation();
-      audPass(audCard);
+      if(audMode() === 'rapid') audRapidShiftRight(audCard); else audPass(audCard);
       return;
     }
   }
@@ -5009,12 +5334,16 @@ function onNavKey(ev){
      submits immediately; the rest close out) and Shift+Left saves the
      person for later, noting the category on show. Checked before the
      chip-group handler below, so inside a card these arrows never just
-     move focus or extend a text selection. */
+     move focus or extend a text selection.
+     RAPID FIRE diverges (JD 2026-10-16): Shift+Left deals the
+     PREVIOUS card back instead of parking; Shift+Down is unchanged. */
   if(ev.shiftKey && !ev.ctrlKey && !ev.metaKey && !ev.altKey && (key === 'ArrowDown' || key === 'ArrowLeft')){
     var audCard2 = t.closest('.aud-card');
     if(audCard2 && S.route && S.route.name === 'audit'){
       ev.preventDefault(); ev.stopImmediatePropagation();
-      if(key === 'ArrowDown') audFinish(audCard2, true, true); else audPark(audCard2, true);
+      if(key === 'ArrowDown') audFinish(audCard2, true, true);
+      else if(audMode() === 'rapid') audRapidBack(audCard2);
+      else audPark(audCard2, true);
       return;
     }
   }
