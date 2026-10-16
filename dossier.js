@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.2.0';
+var APP_VERSION = '2.2.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -412,7 +412,7 @@ function parseFootprint(text){
     } else cur.push(line.trim());
   });
   if(cur.length) blocks.push({ text:cur.join(' '), urls:[] });
-  var inferred = blocks.length > 0 && blocks.every(function(b){ return !b.urls.length && /^place association/i.test(b.text); });
+  var inferred = blocks.length > 0 && blocks.every(function(b){ return !b.urls.length && /^place association/i.test(b.text.replace(/^[•·\-*]\s*/, '')); });
   return { blocks:blocks, sources:sources, sourced:sources.some(function(u){ return /^https?:/i.test(u); }), inferred:inferred };
 }
 function hostOf(u){ return String(u).replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]; }
@@ -2598,6 +2598,8 @@ function secView(di, id){
   }
   if(id === 'about'){
     var syn = gv(e, 'synopsis'), fp = footprintOf(e), out = '';
+    var fsrc = (e.files || []).some(function(f){ return f && f.kind === 'source' && f.url; });
+    var wrSourced = fp.sourced || fsrc;
     if(syn){
       out += '<div class="narr">' + String(syn).split(/\n+/).map(function(line){
         var m = line.match(/^([A-Z][A-Za-z &\/'-]{1,28}):\s+(.*)$/);
@@ -2605,9 +2607,9 @@ function secView(di, id){
       }).join('') + '</div>';
     }
     if(fp.blocks.length){
-      out += '<div class="sub-h">Web record <span class="conf ' + (fp.sourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (fp.sourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
+      out += '<div class="sub-h">Web record <span class="conf ' + (wrSourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (wrSourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
         fp.blocks.map(function(b){
-          return '<div class="fpb ' + (b.urls.length ? 'ok' : 'no') + '"><p>' + esc(b.text) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : '<div class="srcs"><span class="src none">No source attached</span></div>') + '</div>';
+          return '<div class="fpb ' + (b.urls.length || fsrc ? 'ok' : 'no') + '"><p>' + esc(b.text) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : (fsrc ? '' : '<div class="srcs"><span class="src none">No source attached</span></div>')) + '</div>';
         }).join('');
     }
     return out || emptyPrompt(di, id, 'Write a synopsis');
@@ -2656,7 +2658,7 @@ function secView(di, id){
     var fs = e.files || [];
     return fs.length ? fs.map(function(f){
       var isDoc = f.kind === 'gdoc';
-      return '<div class="file"><span>' + ic(isDoc ? 'file' : 'link', 17) + '</span><div><b>' + esc(f.name || 'Untitled') + '</b><small>' + (isDoc ? 'Google Doc' : 'Link') + (f.note ? ' · ' + esc(f.note) : '') + '</small></div>' +
+      return '<div class="file"><span>' + ic(isDoc ? 'file' : 'link', 17) + '</span><div><b>' + esc(f.name || 'Untitled') + '</b><small>' + (isDoc ? 'Google Doc' : (f.kind === 'source' ? 'Source' : 'Link')) + (f.note ? ' · ' + esc(f.note) : '') + '</small></div>' +
         (f.url ? '<a class="btn ghost sm" href="' + esc(f.url) + '" target="_blank" rel="noopener">Open' + ic('ext', 12) + '</a>' : '') + '</div>';
     }).join('') : emptyPrompt(di, id, 'Attach a link or create a doc');
   }
@@ -2757,7 +2759,7 @@ function secEdit(di, id){
     return lab('Synopsis', 'One topic per line, starting with a label and a colon. Keep it general: facts, never intimate detail.') +
       '<textarea data-pk="synopsis" rows="6">' + esc(gv(e, 'synopsis')) + '</textarea>' +
       '<div class="row"><button type="button" class="btn ghost sm" data-act="tidy" data-di="' + di + '">' + ic('sparkle', 14) + 'Tidy with AI</button><span class="aimsg" id="aimsg"></span></div>' +
-      lab('Web record', 'Prose, then a Sources line with the links. Text with no source reads as inferred.') +
+      lab('Web record', 'Bullet points, one fact each, with the source name in parentheses. The source links themselves live under Files.') +
       '<textarea data-pk="public_footprint" rows="6">' + esc(gv(e, 'public_footprint')) + '</textarea>';
   }
   if(id === 'background'){
