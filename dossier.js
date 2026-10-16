@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.4.1';
+var APP_VERSION = '2.5.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1542,7 +1542,7 @@ var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
-  net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d'), layout:(store('ncc_netlayout') === 'tier' ? 'tier' : 'score') },
+  net:{ bg:store('ncc_netbg') === '1', sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d'), layout:(store('ncc_netlayout') === 'tier' || store('ncc_netlayout') === 'clusters' ? store('ncc_netlayout') : 'score') },
   fam:{ editing:null, focus:null, sheet:false, side:null },
   grp:{ kind:'groups', open:null, renaming:null },
   audit:null   /* Audit feeder wall state (visit only), built lazily by viewAudit */
@@ -3049,33 +3049,47 @@ function scoreBadgeHTML(di){
   var s = scoreFor(di); if(!s) return '';
   return '<span class="sc-badge" title="Closeness score"><b>' + s.score + '</b>' + (s.pinned ? '<i>pinned</i>' : '') + '</span>';
 }
-/* Active-layout coordinates: the tier layout's fields stay the
-   default everywhere; the score layout's parallel fields take over
-   only while it is selected. nd.ring is always the TIER ring —
-   netColor reads it, and tier owns color in both layouts. */
+/* Layout coordinates come in three parallel sets per node — tier
+   (x/y, x3/y3/z3), score (sx/sy, sx3/sy3/sz3) and clusters (cx/cy,
+   cx3/cy3/cz3). The draw and the hit tests never read them directly:
+   they read DISPLAY coordinates (dx/dy, dx3/dy3/dz3), which the morph
+   engine tweens whenever the layout changes, so switching layouts is
+   travel, not teleport. nd.ring is always the TIER ring — netColor
+   reads it, and tier owns color in every layout. */
 function netLayoutScore(){ return S.net.layout === 'score'; }
-function netP2(nd){ return netLayoutScore() ? [nd.sx, nd.sy] : [nd.x, nd.y]; }
-function netP3(nd){ return netLayoutScore() ? [nd.sx3, nd.sy3, nd.sz3] : [nd.x3, nd.y3, nd.z3]; }
+function netT2(nd, lay){ return lay === 'score' ? [nd.sx, nd.sy] : lay === 'clusters' ? [nd.cx, nd.cy] : [nd.x, nd.y]; }
+function netT3(nd, lay){ return lay === 'score' ? [nd.sx3, nd.sy3, nd.sz3] : lay === 'clusters' ? [nd.cx3, nd.cy3, nd.cz3] : [nd.x3, nd.y3, nd.z3]; }
+function netP2(nd){ return [nd.dx, nd.dy]; }
+function netP3(nd){ return [nd.dx3, nd.dy3, nd.dz3]; }
 function netLowConf(nd){ if(!netLayoutScore() || !SCORE.byDi) return false; var s = SCORE.byDi[nd.di]; return !!(s && s.lowConf); }
+function netSnapDisplay(){
+  NET.nodes.forEach(function(nd){
+    var p = netT2(nd, S.net.layout), p3 = netT3(nd, S.net.layout);
+    nd.dx = nd.fx = p[0]; nd.dy = nd.fy = p[1];
+    nd.dx3 = nd.fx3 = p3[0]; nd.dy3 = nd.fy3 = p3[1]; nd.dz3 = nd.fz3 = p3[2];
+  });
+  NET.dirty = true;
+}
 
 /* ============================================================
    Network — a map you read, not a control surface. Rings are tiers; color-by and the wider-circle
    toggle are the only controls. Tap a dot for a card; the card is the way out to the profile.
    ============================================================ */
-var NET = { nodes:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, bg:null, byDi:{}, rot:0, lastAct:0, lastTs:0, dvel:0, hoverDi:null };
+var NET = { nodes:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, bg:null, byDi:{}, rot:0, lastAct:0, lastTs:0, dvel:0, hoverDi:null, cxOff:0, bgA:0, glide:null, morph:null, guideFade:null, subAt:0, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false };
 /* Solar drift (design pass 2026-10-14; ramped spin 2026-10-14 evening;
    asymmetric tuning 2026-10-15): one revolution per ~156.5s at full speed
    (15% faster than the original 180s), and the angular velocity eases toward
    its target — full speed or zero — with an exponential ramp whose time
    constant depends on direction: stopping is aggressive (TAU_DOWN ≈ 0.4s, a
-   hovered node brings the map firmly to rest) while starting is gentle
-   (TAU_UP ≈ 2.8s, the spin spools back up gradually). The target is zero
+   hovered node brings the map firmly to rest) while starting spools
+   back up over TAU_UP ≈ 1.2s (quickened 2026-10-16 at JD's direction;
+   it was 2.8s). The target is zero
    while a node is hovered, while the pointer is down, while a selection is
    framed, and for a short settle after any interaction. Hovering empty
    space does not pause it. Off entirely under prefers-reduced-motion. */
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 var DRIFT_RATE = Math.PI * 2 / 180 * 1.15;
-var DRIFT_TAU_DOWN = 0.4, DRIFT_TAU_UP = 2.8, DRIFT_SETTLE = 1500;
+var DRIFT_TAU_DOWN = 0.4, DRIFT_TAU_UP = 1.2, DRIFT_SETTLE = 1500;
 function driftTarget(now){
   if(REDUCED_MOTION || S.net.sel != null || NET.hoverDi != null) return 0;
   if(Object.keys(NET.ptr).length) return 0;
@@ -3083,6 +3097,160 @@ function driftTarget(now){
   return DRIFT_RATE;
 }
 function netRotP(x, y){ var c = Math.cos(NET.rot), s = Math.sin(NET.rot); return [x * c - y * s, x * s + y * c]; }
+/* ---------- Motion engine (redesign 2026-10-16): one ease, two tween
+   systems. The GLIDE moves camera values. Per-dimension cameras are
+   simply the live NET.cam / N3 values — nothing ever resets them, so
+   each dimension keeps its own camera for the whole visit. The MORPH
+   moves node display coordinates between layouts over 600ms — the
+   spatial re-identification move, deliberately longer than the
+   120-300ms state tokens (redesign audit §2.5). Both are interruptible:
+   a new glide or morph re-targets from current values, and a hand on
+   the map cancels a glide outright. Reduced motion makes every move
+   instant. ---------- */
+function netEase(p){ return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
+var NET_CH = {
+  c2x:function(v){ NET.cam.x = v; }, c2y:function(v){ NET.cam.y = v; },
+  c2z:function(v){ NET.cam.z = v; }, rot:function(v){ NET.rot = v; },
+  yaw:function(v){ N3.yaw = v; }, pitch:function(v){ N3.pitch = v; }, zoom3:function(v){ N3.zoom = v; },
+  cxoff:function(v){ NET.cxOff = v; }, fx:function(v){ N3.fx = v; }, fy:function(v){ N3.fy = v; }
+};
+var NET_CH_GET = {
+  c2x:function(){ return NET.cam.x; }, c2y:function(){ return NET.cam.y; },
+  c2z:function(){ return NET.cam.z; }, rot:function(){ return NET.rot; },
+  yaw:function(){ return N3.yaw; }, pitch:function(){ return N3.pitch; }, zoom3:function(){ return N3.zoom; },
+  cxoff:function(){ return NET.cxOff; }, fx:function(){ return N3.fx; }, fy:function(){ return N3.fy; }
+};
+function netGlide(dur, to, onDone){
+  if(REDUCED_MOTION || !dur){
+    for(var k in to) NET_CH[k](to[k]);
+    NET.glide = null; NET.dirty = true;
+    if(onDone) onDone();
+    return;
+  }
+  var from = {};
+  for(var k2 in to) from[k2] = NET_CH_GET[k2]();
+  NET.glide = { t0:performance.now(), dur:dur, from:from, to:to, onDone:onDone || null };
+  NET.dirty = true;
+}
+function netGlideStep(now){
+  var g = NET.glide; if(!g) return;
+  var p = Math.min(1, (now - g.t0) / g.dur), e = netEase(p);
+  for(var k in g.to) NET_CH[k](g.from[k] + (g.to[k] - g.from[k]) * e);
+  NET.dirty = true;
+  if(p >= 1){ NET.glide = null; if(g.onDone) g.onDone(); }
+}
+function netMorphTo(lay){
+  var now = performance.now();
+  NET.nodes.forEach(function(nd){ nd.fx = nd.dx; nd.fy = nd.dy; nd.fx3 = nd.dx3; nd.fy3 = nd.dy3; nd.fz3 = nd.dz3; });
+  NET.guideFade = { from:S.net.layout, t0:now };
+  S.net.layout = lay; store('ncc_netlayout', lay);
+  NET.subAt = now + (REDUCED_MOTION ? 0 : 300); /* the subheading swaps at the morph's midpoint */
+  if(REDUCED_MOTION){ NET.morph = null; netSnapDisplay(); }
+  else NET.morph = { t0:now, dur:600 };
+  NET.dirty = true;
+}
+function netMorphStep(now){
+  var m = NET.morph; if(!m) return;
+  var p = Math.min(1, (now - m.t0) / m.dur), e = netEase(p);
+  NET.nodes.forEach(function(nd){
+    var t2 = netT2(nd, S.net.layout), t3 = netT3(nd, S.net.layout);
+    nd.dx = nd.fx + (t2[0] - nd.fx) * e; nd.dy = nd.fy + (t2[1] - nd.fy) * e;
+    nd.dx3 = nd.fx3 + (t3[0] - nd.fx3) * e; nd.dy3 = nd.fy3 + (t3[1] - nd.fy3) * e; nd.dz3 = nd.fz3 + (t3[2] - nd.fz3) * e;
+  });
+  NET.dirty = true;
+  if(p >= 1){ NET.morph = null; netSnapDisplay(); }
+}
+/* Guide rings cross-fade on a layout switch: [[layout, alpha], ...] */
+function netGuideAlphas(now){
+  var gf = NET.guideFade;
+  if(!gf) return [[S.net.layout, 1]];
+  var p = Math.min(1, (now - gf.t0) / 240);
+  if(p >= 1){ NET.guideFade = null; return [[S.net.layout, 1]]; }
+  return [[gf.from, 1 - p], [S.net.layout, p]];
+}
+function netFitZ(){ return Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.layout === 'score' ? 1840 : S.net.layout === 'clusters' ? 1650 : 1450))); }
+function netFitNow(){
+  NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = netFitZ(); NET.rot = 0;
+  N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null;
+  NET.dirty = true;
+}
+/* Frame the selection with the framing math the view has always used,
+   arrived at by glide instead of in one frame. */
+function netFrameSel(){
+  var nd = NET.byDi[S.net.sel]; if(!nd) return;
+  if(S.net.mode !== '2d'){
+    var p3 = netP3(nd), rho3 = Math.hypot(p3[0], p3[2]);
+    var tyaw = rho3 > 0.001 ? Math.atan2(p3[2], p3[0]) + Math.PI / 2 : N3.yaw;
+    var tpitch = Math.max(-1.5, Math.min(1.5, Math.atan2(-p3[1], Math.max(rho3, 0.001))));
+    N3.vy = 0; N3.vp = 0; N3.auto = false;
+    var dyaw = Math.atan2(Math.sin(tyaw - N3.yaw), Math.cos(tyaw - N3.yaw));
+    netGlide(450, { yaw:N3.yaw + dyaw, pitch:tpitch });
+  } else {
+    var p2 = netP2(nd), rp0 = netRotP(p2[0], p2[1]);
+    netGlide(450, { c2x:rp0[0], c2y:rp0[1], c2z:Math.max(NET.cam.z, 1.6) });
+  }
+}
+function netSubHTML(){
+  if(S.net.layout === 'score') return 'Closest in the middle, by closeness score: the top 5, then 15, 50, 150. Tier still owns the color. Tap a dot for details.';
+  if(S.net.layout === 'clusters') return 'Grouped by what people share: churches, schools and workplaces pull their members together. Tier still owns the color. Tap a dot for details.';
+  return S.net.mode !== '2d' ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.';
+}
+function netCtlPaint(){
+  $$('.netctl [data-act="netmode"]').forEach(function(b){ b.classList.toggle('on', (b.getAttribute('data-v') === '3d') === (S.net.mode !== '2d')); });
+  $$('.netctl [data-act="netlayout"]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === S.net.layout); });
+  var fb = $('.netctl [data-act="netbg"]');
+  if(fb){ fb.classList.toggle('on', S.net.bg); fb.setAttribute('aria-pressed', S.net.bg ? 'true' : 'false'); }
+  var fl = $('.netctl [data-act="netfly"]');
+  if(fl){
+    if(REDUCED_MOTION){ fl.disabled = true; fl.title = 'Flyover is off while reduced motion is on'; }
+    else if(S.net.mode === '2d'){ fl.disabled = true; fl.title = 'Flyover flies the 3D orb. Switch to 3D to use it.'; }
+    else { fl.disabled = false; fl.title = ''; }
+  }
+  flyBtnPaint();
+}
+function netSwitchMode(nm){
+  nm = nm === '2d' ? '2d' : '3d';
+  if(nm === S.net.mode) return;
+  if(FLY.on) flyStop();
+  netHovHide();
+  NET.glide = null;
+  var p2 = { x:NET.cam.x, y:NET.cam.y, z:NET.cam.z, rot:NET.rot };
+  var p3 = { yaw:N3.yaw, pitch:N3.pitch, zoom:N3.zoom, auto:N3.auto };
+  function swap(){
+    S.net.mode = nm; store('ncc_netmode', nm);
+    if(nm === '2d'){
+      NET.cam.x = p2.x * 0.35; NET.cam.y = p2.y * 0.35; NET.cam.z = netFitZ(); NET.rot = p2.rot;
+      netGlide(450, { c2x:p2.x, c2y:p2.y, c2z:p2.z });
+    } else {
+      N3.yaw = p3.yaw - 0.55; N3.pitch = 0.38; N3.zoom = Math.max(0.45, p3.zoom * 0.92); N3.vy = 0; N3.vp = 0; N3.auto = p3.auto;
+      netGlide(450, { yaw:p3.yaw, pitch:p3.pitch, zoom3:p3.zoom });
+    }
+    var sb = $('#netsub'); if(sb) sb.textContent = netSubHTML();
+    netCtlPaint(); NET.dirty = true;
+  }
+  var cv = NET.cv;
+  if(cv && !REDUCED_MOTION){
+    cv.style.transition = 'opacity 80ms ease'; cv.style.opacity = '0';
+    setTimeout(function(){
+      swap();
+      cv.style.opacity = '1';
+      setTimeout(function(){ cv.style.transition = ''; cv.style.opacity = ''; }, 110);
+    }, 85);
+  } else swap();
+}
+function netToggleFS(){
+  if(document.fullscreenElement){ document.exitFullscreen(); return; }
+  var pg = $('.netpage');
+  if(pg && pg.requestFullscreen) pg.requestFullscreen();
+}
+function netViewportChange(){
+  if(document.body.getAttribute('data-view') !== 'network' || !NET.cv || !document.body.contains(NET.cv)) return;
+  netResize();
+  var fb = $('[data-act="netfs"]');
+  if(fb){ var fs = !!document.fullscreenElement; fb.classList.toggle('on', fs); fb.setAttribute('aria-pressed', fs ? 'true' : 'false'); }
+}
+document.addEventListener('fullscreenchange', netViewportChange);
+addEventListener('resize', netViewportChange);
 function netBuild(){
   computeNewGain();
   var dir = D.directory, maxS = 1;
@@ -3123,42 +3291,102 @@ function netBuild(){
       nd.sx3 = Math.cos(th3) * gr * rad3; nd.sy3 = gy * rad3 * 0.82; nd.sz3 = Math.sin(th3) * gr * rad3;
     });
   });
+  /* Clusters layout positions: community blobs by shared canonical
+     group/org — the same memberships the cluster plates use. A node's
+     home is its largest community; blobs sit on a wide ring (2D) or a
+     sphere shell (3D), members pack inside on a golden spiral, and
+     nodes in no qualifying community form a loose outer field. */
+  var cmap = {}, corder = [];
+  NET.nodes.forEach(function(nd){
+    var e = D.directory[nd.di], seen = {};
+    function pushC(nm){
+      if(!nm || seen[nm]) return; seen[nm] = 1;
+      var c = cmap[nm]; if(!c){ c = cmap[nm] = { name:nm, nds:[] }; corder.push(c); }
+      c.nds.push(nd);
+    }
+    personGroups(e).forEach(pushC);
+    orgsOf(e).forEach(function(o){ pushC(regApply(o)); });
+  });
+  var big = corder.filter(function(c){ return c.nds.length >= CLUST_MIN; })
+    .sort(function(a, b){ return b.nds.length - a.nds.length || a.name.localeCompare(b.name); });
+  var homeOf = {};
+  big.forEach(function(c){ c.nds.forEach(function(nd){ var cur = homeOf[nd.di]; if(!cur || c.nds.length > cur.nds.length) homeOf[nd.di] = c; }); });
+  var M = big.length;
+  big.forEach(function(c, ci){
+    var ang = (ci / Math.max(1, M)) * Math.PI * 2 - Math.PI / 2;
+    c.ox = Math.cos(ang) * 460; c.oy = Math.sin(ang) * 460;
+    if(M === 1){ c.ox = 0; c.oy = 0; }
+    c.rad = Math.min(215, 40 + Math.sqrt(c.nds.length) * 24.7);
+    var by = 1 - 2 * (ci + 0.5) / Math.max(1, M), br = Math.sqrt(Math.max(0, 1 - by * by)), bth = ci * 2.399963;
+    c.ox3 = Math.cos(bth) * br * 470; c.oy3 = by * 470 * 0.82; c.oz3 = Math.sin(bth) * br * 470;
+    c.home = c.nds.filter(function(m){ return homeOf[m.di] === c; });
+  });
+  var orph = [];
+  NET.nodes.forEach(function(nd){
+    var c = homeOf[nd.di];
+    if(!c){ orph.push(nd); return; }
+    var k = c.home.indexOf(nd), n = Math.max(1, c.home.length);
+    var rng = mulberry32((nd.di + 31337) * 2654435761 % 2147483647);
+    var th = k * 2.399963 + (rng() - 0.5) * 0.3, rr = c.rad * Math.sqrt((k + 0.5) / n);
+    nd.cx = c.ox + Math.cos(th) * rr; nd.cy = c.oy + Math.sin(th) * rr;
+    nd.cx3 = c.ox3 + Math.cos(th) * rr * 0.75; nd.cy3 = c.oy3 + Math.sin(th) * rr * 0.6; nd.cz3 = c.oz3 + (rng() - 0.5) * 70;
+  });
+  orph.forEach(function(nd, k){
+    var rng = mulberry32((nd.di + 777) * 2654435761 % 2147483647);
+    var ang = k * 2.399963 + (rng() - 0.5) * 0.4, rad = 800 + (rng() - 0.5) * 90;
+    nd.cx = Math.cos(ang) * rad; nd.cy = Math.sin(ang) * rad;
+    var gy = 1 - 2 * (k + 0.5) / Math.max(1, orph.length), gr = Math.sqrt(Math.max(0, 1 - gy * gy)), th3 = k * 2.399963 + (rng() - 0.5) * 0.25;
+    nd.cx3 = Math.cos(th3) * gr * 800; nd.cy3 = gy * 800 * 0.82; nd.cz3 = Math.sin(th3) * gr * 800;
+  });
   NET.bg = null;
   netClustersBuild();
+  netSnapDisplay();
 }
 function netColor(nd){
-  var e = D.directory[nd.di], m = S.net.color;
-  if(m === 'relation') return RELC[e.relation] || '#4b5468';
+  /* Tier owns color, always (JD's standing rule). The follow-direction
+     paint mode and its control were deleted in the redesign. */
   return RING_C[nd.ring];
 }
 function viewNetwork(v){
   FLY.on = false; FLY.t = 0; FLY.box = null; FLY.slots = []; /* flyover is opt-in per visit — never persisted, never the default */
   var m3 = S.net.mode !== '2d';
-  var legend = S.net.color === 'relation' ? [['mutual', 'Mutual'], ['following', 'Following'], ['follower', 'Follower']].map(function(x){ return [RELC[x[0]], x[1]]; })
-    : TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
+  /* One strip, three labeled questions (redesign 2026-10-16): VIEW is
+     how am I looking at it, LAYOUT is how is it arranged, ACTIONS is
+     what can I do to it. The legend is static: tier owns color. */
+  var legend = TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
   function sg(k, opts, cur){ return '<div class="seg">' + opts.map(function(o){ return '<button type="button" data-act="' + k + '" data-v="' + o[0] + '" class="' + (cur === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
-  v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub">' + (S.net.layout === 'score' ? 'Closest in the middle, by closeness score: the top 5, then 15, 50, 150. Tier still owns the color. Tap a dot for details.' : (m3 ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.')) + '</p></div>' +
-    '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation']], S.net.color) + sg('netlayout', [['tier', 'Tier rings'], ['score', 'Score rings']], S.net.layout) +
-    (m3 ? '<button type="button" class="btn ghost sm" data-act="netfly" aria-pressed="false"' + (REDUCED_MOTION ? ' disabled title="Flyover is off while reduced motion is on"' : '') + '>Flyover</button>' : '') +
-    '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Show wider circle</button></div></div>' +
+  v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub" id="netsub">' + netSubHTML() + '</p></div>' +
+    '<div class="netctl">' +
+    '<div class="netgrp"><span class="netkick">View</span>' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + '</div>' +
+    '<div class="netgrp"><span class="netkick">Layout</span>' + sg('netlayout', [['score', 'Score'], ['tier', 'Tier'], ['clusters', 'Clusters']], S.net.layout) + '</div>' +
+    '<div class="netgrp"><span class="netkick">Actions</span><span class="netacts">' +
+    '<button type="button" class="btn ghost sm" data-act="netfly" aria-pressed="false"' + (REDUCED_MOTION ? ' disabled title="Flyover is off while reduced motion is on"' : (!m3 ? ' disabled title="Flyover flies the 3D orb. Switch to 3D to use it."' : '')) + '>Flyover</button>' +
+    '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button>' +
+    '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Wider circle</button></span></div>' +
+    '</div></div>' +
     '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netfly" id="netfly" aria-hidden="true"></div><div class="netclust" id="netclust" aria-hidden="true"></div>' +
-    '<div class="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
+    '<div class="nethov" id="nethov" hidden></div>' +
+    '<div class="netlegend" id="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
+    '<button type="button" class="netlegchip" data-act="netlegend" aria-expanded="false" aria-controls="netlegend">Legend</button>' +
     '<div class="netzoom"><button type="button" class="ib" data-act="netzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="netzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="netfit" aria-label="Reset view">' + ic('target', 18) + '</button></div>' +
     '</div>' +
     '<aside class="netpanel" id="netpanel"><div id="netpcard" hidden></div><div class="netpstats" id="netpstats"></div></aside></div></div>';
   if(!NET.nodes.length || NET.stamp !== VER) { netBuild(); NET.stamp = VER; }
-  NET.cv = $('#netcv'); NET.ctx = NET.cv.getContext('2d');
+  NET.cv = $('#netcv'); NET.ctx = NET.cv.getContext('2d'); NET.hovEl = $('#nethov'); NET.hovDi = null;
   NET.lastAct = performance.now() - 6000; NET.lastTs = 0; NET.dvel = 0; NET.hoverDi = null; N3.hover = null;
-  netResize(); netFit();
-  if(S.net.sel != null && NET.byDi[S.net.sel]){
-    var nd = NET.byDi[S.net.sel];
-    if(m3){ var p3 = netP3(nd), rho3 = Math.hypot(p3[0], p3[2]); if(rho3 > 0.001) N3.yaw = Math.atan2(p3[2], p3[0]) + Math.PI / 2; N3.pitch = Math.max(-1.5, Math.min(1.5, Math.atan2(-p3[1], Math.max(rho3, 0.001)))); N3.vy = 0; N3.vp = 0; N3.auto = false; }
-    else { var p2 = netP2(nd), rp0 = netRotP(p2[0], p2[1]); NET.cam.x = rp0[0]; NET.cam.y = rp0[1]; NET.cam.z = Math.max(NET.cam.z, 1.6); }
-  }
+  NET.glide = null; NET.morph = null; NET.guideFade = null; NET.subAt = 0; NET.cxOff = 0;
+  NET.bgA = S.net.bg ? 1 : 0;
+  netResize();
+  /* Cameras are never reset on entry: each dimension's live values are
+     its remembered camera for the whole visit. First entry homes them. */
+  if(!NET._camInit){ netFitNow(); NET._camInit = true; }
+  if(S.net.sel != null && NET.byDi[S.net.sel]) netFrameSel();
   netCard();
   var cv = NET.cv; NET.ptr = {}; NET.pinch = 0;
   cv.addEventListener('pointerdown', function(ev){
     flyStop(); /* any touch hands the camera straight back */
+    NET.glide = null; /* a hand on the map interrupts any camera glide */
+    netHovHide();
     cv.setPointerCapture(ev.pointerId);
     NET.lastAct = performance.now();
     NET.ptr[ev.pointerId] = { x:ev.clientX, y:ev.clientY }; NET.moved = false; N3.vy = 0; N3.vp = 0; N3.idle = 0;
@@ -3167,10 +3395,11 @@ function viewNetwork(v){
   cv.addEventListener('pointermove', function(ev){
     var p = NET.ptr[ev.pointerId];
     if(!p){
-      if(FLY.on) return; /* no hover churn while the camera is flying */
+      if(FLY.on){ netHovHide(); return; } /* no hover churn while the camera is flying */
       var r0 = cv.getBoundingClientRect(), hx = ev.clientX - r0.left, hy = ev.clientY - r0.top;
       var h = S.net.mode === '2d' ? netHit(hx, hy) : net3Hit(hx, hy), hd = h ? h.di : null;
       if(hd !== NET.hoverDi){ NET.hoverDi = hd; if(S.net.mode !== '2d') N3.hover = hd; cv.style.cursor = h ? 'pointer' : 'grab'; }
+      netHovPaint(ev, h);
       return;
     }
     var ks = Object.keys(NET.ptr);
@@ -3199,14 +3428,14 @@ function viewNetwork(v){
   }
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
   cv.addEventListener('wheel', function(ev){
-    ev.preventDefault(); flyStop(); NET.lastAct = performance.now();
+    ev.preventDefault(); flyStop(); NET.glide = null; NET.lastAct = performance.now();
     if(S.net.mode !== '2d'){ N3.zoom = Math.max(0.45, Math.min(3.5, N3.zoom * Math.exp(-ev.deltaY * 0.0012))); return; }
     var z2 = Math.max(0.3, Math.min(4, NET.cam.z * Math.exp(-ev.deltaY * 0.0011)));
     var r = cv.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
     var wx = (mx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (my - NET.H / 2) / NET.cam.z + NET.cam.y;
     NET.cam.z = z2; NET.cam.x = wx - (mx - NET.W / 2) / z2; NET.cam.y = wy - (my - NET.H / 2) / z2; NET.dirty = true;
   }, { passive:false });
-  cv.addEventListener('pointerleave', function(){ NET.hoverDi = null; N3.hover = null; });
+  cv.addEventListener('pointerleave', function(){ NET.hoverDi = null; N3.hover = null; netHovHide(); });
   cancelAnimationFrame(NET.raf);
   (function frame(ts){
     if(!document.body.contains(NET.cv) || document.body.getAttribute('data-view') !== 'network') return;
@@ -3216,6 +3445,21 @@ function viewNetwork(v){
       var tg = driftTarget(now), kk = 1 - Math.exp(-dt / (tg < NET.dvel ? DRIFT_TAU_DOWN : DRIFT_TAU_UP));
       NET.dvel += (tg - NET.dvel) * kk;
       if(tg === 0 && NET.dvel < 1e-5) NET.dvel = 0;
+    }
+    netGlideStep(now); netMorphStep(now);
+    if(NET.subAt && now >= NET.subAt){ NET.subAt = 0; var sb = $('#netsub'); if(sb) sb.textContent = netSubHTML(); }
+    var bgT = S.net.bg ? 1 : 0;
+    if(NET.bgA !== bgT){
+      NET.bgA += (bgT - NET.bgA) * (dt > 0 ? 1 - Math.exp(-dt / 0.08) : 1);
+      if(Math.abs(bgT - NET.bgA) < 0.02) NET.bgA = bgT;
+      NET.dirty = true;
+    }
+    if(!FLY.on && (N3.fx || N3.fy)){
+      /* the Flyover focus wander settles home once the flight ends */
+      var kf = dt > 0 ? 1 - Math.exp(-dt / 0.3) : 1;
+      N3.fx += (0 - N3.fx) * kf; N3.fy += (0 - N3.fy) * kf;
+      if(Math.abs(N3.fx) < 0.05) N3.fx = 0;
+      if(Math.abs(N3.fy) < 0.05) N3.fy = 0;
     }
     if(S.net.mode === '2d'){
       if(NET.dvel){ NET.rot += NET.dvel * dt; NET.dirty = true; }
@@ -3229,8 +3473,39 @@ function viewNetwork(v){
   })();
 }
 
+/* ---------- Hover card (redesign 2026-10-16): the explorer's floating
+   card, in both dimensions. It follows the cursor with an offset and
+   flips near the edges, never takes pointer events, and shows on fine
+   pointers only (touch keeps tap-to-select). Line one is the name,
+   line two tier and closeness score, line three one fact — the same
+   fact Flyover picks. It replaces the 3D canvas name plate. ------- */
+var NET_FINE = !!(window.matchMedia && window.matchMedia('(pointer:fine)').matches);
+function netHovPaint(ev, nd){
+  var el = NET.hovEl; if(!el) return;
+  if(!NET_FINE || !nd || FLY.on || Object.keys(NET.ptr).length){ netHovHide(); return; }
+  if(NET.hovDi !== nd.di){
+    NET.hovDi = nd.di;
+    var e = D.directory[nd.di], s = scoreFor(nd.di), f = flyFact(e);
+    el.innerHTML = '<b>' + esc(dispName(e)) + '</b>' +
+      '<span class="nh-l2">' + esc(tierName(e) || 'No tier yet') + (s ? ' · Score ' + s.score : '') + '</span>' +
+      (f ? '<span class="nh-l3">' + esc(f) + '</span>' : '');
+  }
+  var r = NET.cv.getBoundingClientRect();
+  el.hidden = false;
+  var x = ev.clientX - r.left + 14, y = ev.clientY - r.top + 16, w = el.offsetWidth, h = el.offsetHeight;
+  if(x + w > NET.W - 4) x = ev.clientX - r.left - w - 10;
+  if(y + h > NET.H - 4) y = ev.clientY - r.top - h - 10;
+  el.style.transform = 'translate3d(' + Math.max(2, x).toFixed(1) + 'px,' + Math.max(2, y).toFixed(1) + 'px,0)';
+  el.classList.add('vis');
+}
+function netHovHide(){
+  var el = NET.hovEl;
+  if(el){ el.hidden = true; el.classList.remove('vis'); }
+  NET.hovDi = null;
+}
+
 /* ---------- 3D: a small software renderer on the canvas, no outside libraries ---------- */
-var N3 = { yaw:0.6, pitch:0.38, vy:0, vp:0, zoom:1, auto:true, idle:0, hover:null, proj:[], glow:{}, bgPts:null, t:0 };
+var N3 = { yaw:0.6, pitch:0.38, vy:0, vp:0, zoom:1, auto:true, idle:0, hover:null, proj:[], glow:{}, bgPts:null, t:0, fx:0, fy:0 };
 /* ---------- Cluster labels (JD 2026-10-16, from the reference design he picked):
    orientation plates for the largest Groups + Organizations on the map, in the
    reference style "NAME — N" (canonical values only, via personGroups/orgsOf +
@@ -3299,27 +3574,29 @@ function netClustPaint(){
     if(show) p.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) translate(-50%,-50%)';
   });
 }
-/* ---------- Flyover (JD 2026-10-16): an opt-in ambient pass over the 3D orb.
-   The orb keeps its normal drift spin; on top of that the camera eases along
-   a slow path — pitch sways over ~150s, zoom breathes over ~105s, on the
-   same exponential ramp family as the drift spool — so the viewpoint glides
-   in and out of the shells instead of sitting on the orbit rail. Nothing
-   springy, nothing fast. Nodes that swing near the camera get a small DOM
-   label (name, tier, one basic fact) that fades and rises in as they
-   approach and fades as they recede; at most six are alive at once, pooled
-   and recycled, and the layer never takes pointer events. Any pointer,
-   wheel or key input stops the flight and hands control straight back;
-   the toggle does too. Never persisted and disabled outright under
-   prefers-reduced-motion. */
+/* ---------- Flyover (JD 2026-10-16; v2 in the redesign, same day): an
+   opt-in ambient pass over the 3D orb. The orb keeps its normal drift
+   spin; on top of that the camera eases along a quicker path — pitch
+   sways over ~95s, zoom breathes over ~70s, easing constant ~1.8s —
+   and the focus point wanders slowly sideways, so the flight travels
+   around the orb instead of breathing in one spot. Nodes that swing
+   near the camera get a small DOM label (name, tier, two facts) that
+   fades and rises in as they approach and fades as they recede; at
+   most twelve are alive at once (fourteen in full screen), pooled and
+   recycled, and the layer never takes pointer events. Any pointer or
+   wheel input stops the flight and hands control straight back; the
+   toggle does too. Starting it keeps any selection. Never persisted
+   and disabled outright under prefers-reduced-motion. */
 var FLY = { on:false, t:0, box:null, slots:[], lts:0 };
-var FLY_MAX = 6;
+var FLY_POOL = 14;
+function flyMax(){ return document.fullscreenElement ? 14 : 12; }
 function flyEnsure(){
   var box = $('#netfly'); if(!box) return null;
   if(FLY.box !== box){
     FLY.box = box; FLY.slots = []; box.innerHTML = '';
-    for(var i = 0; i < FLY_MAX; i++){
+    for(var i = 0; i < FLY_POOL; i++){
       var d = document.createElement('div'); d.className = 'flylab'; d.style.opacity = '0';
-      d.innerHTML = '<b></b><span></span>'; box.appendChild(d);
+      d.innerHTML = '<b></b><span></span><span></span>'; box.appendChild(d);
       FLY.slots.push({ el:d, di:null, a:0, tg:0, p:null, rr:0 });
     }
   }
@@ -3331,9 +3608,11 @@ function flyBtnPaint(){
 }
 function flyStart(){
   if(REDUCED_MOTION || S.net.mode === '2d' || !flyEnsure()) return;
-  if(S.net.sel != null){ S.net.sel = null; N3.auto = true; netCard(); NET.dirty = true; }
-  NET.hoverDi = null; N3.hover = null;
+  /* Starting Flyover keeps the selection (redesign 2026-10-16): the
+     flight and its labels never needed it cleared. */
+  NET.hoverDi = null; N3.hover = null; netHovHide();
   FLY.on = true; FLY.t = 0; FLY.lts = 0;
+  N3.fx = 0; N3.fy = 0;
   flyBtnPaint();
 }
 function flyStop(){
@@ -3345,11 +3624,15 @@ function flyStop(){
 function flyToggle(){ if(FLY.on) flyStop(); else flyStart(); }
 function flyStep(dt){
   FLY.t += dt;
-  var k = 1 - Math.exp(-dt / 2.6);
-  var pitchT = 0.38 + 0.52 * Math.sin(FLY.t * (Math.PI * 2 / 150));
-  var zoomT = 1.02 + 0.48 * Math.sin(FLY.t * (Math.PI * 2 / 105) + 1.2);
+  var k = 1 - Math.exp(-dt / 1.8);
+  var pitchT = 0.38 + 0.52 * Math.sin(FLY.t * (Math.PI * 2 / 95));
+  var zoomT = 1.02 + 0.48 * Math.sin(FLY.t * (Math.PI * 2 / 70) + 1.2);
   N3.pitch += (pitchT - N3.pitch) * k;
   N3.zoom += (zoomT - N3.zoom) * k;
+  /* a slow sideways wander of the focus point, so the flight travels
+     around the orb instead of breathing in one spot */
+  N3.fx = 64 * Math.sin(FLY.t * (Math.PI * 2 / 47));
+  N3.fy = 36 * Math.sin(FLY.t * (Math.PI * 2 / 61));
 }
 function flyFact(e){
   var loc = ptNormLoc(ptLocVal(e));
@@ -3373,7 +3656,7 @@ function flyLabels(ts){
       cands.push({ p:p, rr:rr });
     }
     cands.sort(function(a, b){ return b.rr - a.rr; });
-    for(var j = 0; j < cands.length && chosen.length < FLY_MAX; j++){
+    for(var j = 0; j < cands.length && chosen.length < flyMax(); j++){
       var c = cands[j], ok = true;
       for(var m = 0; m < chosen.length; m++){ if(Math.abs(chosen[m].p.x - c.p.x) < 158 && Math.abs(chosen[m].p.y - c.p.y) < 60){ ok = false; break; } }
       if(ok) chosen.push(c);
@@ -3393,7 +3676,11 @@ function flyLabels(ts){
         var e = D.directory[c.p.n.di];
         s.di = c.p.n.di; s.tg = 1; s.p = c.p; s.rr = c.rr;
         s.el.children[0].textContent = dispName(e);
-        s.el.children[1].textContent = [tierName(e) || 'No tier yet', flyFact(e)].filter(Boolean).join(' · ');
+        s.el.children[1].textContent = tierName(e) || 'No tier yet';
+        var loc = ptNormLoc(ptLocVal(e));
+        var rest = cap(gv(e, 'relationship')) || cap(gv(e, 'context')) || (knownSinceYear(e) ? 'Known since ' + knownSinceYear(e) : '');
+        if(!loc){ loc = rest; rest = ''; }
+        s.el.children[2].textContent = [loc, rest].filter(Boolean).join(' · ');
         used[s.di] = 1;
         break;
       }
@@ -3422,7 +3709,7 @@ function n3Project(x, y, z){
   var x1 = x * cy + z * sy, z1 = -x * sy + z * cy;
   var y2 = y * cp - z1 * sp, z2 = y * sp + z1 * cp;
   var f = 950, k = f / (f + z2 + 120) * N3.base * N3.zoom;
-  return { x:NET.W / 2 + x1 * k, y:NET.H / 2 + y2 * k, z:z2, k:k };
+  return { x:NET.W / 2 + NET.cxOff + N3.fx + x1 * k, y:NET.H / 2 + N3.fy + y2 * k, z:z2, k:k };
 }
 function net3Draw(ts){
   var ctx = NET.ctx, W = NET.W, H = NET.H, dpr = NET.dpr, t = ts / 1000;
@@ -3436,29 +3723,36 @@ function net3Draw(ts){
   /* tier shells: one tilted ring and one upright ring per shell. In the
      score layout the shells are the Dunbar layers instead: neutral
      strokes (tier keeps color) with a label at the top of each shell. */
-  var scoreLay = netLayoutScore();
-  (scoreLay ? SCORE_RADII : [170, 310, 490, 640]).forEach(function(R, i){
-    for(var pass = 0; pass < 2; pass++){
-      ctx.beginPath();
-      for(var a = 0; a <= 72; a++){
-        var th = a / 72 * 6.2832, p = pass ? n3Project(Math.cos(th) * R, Math.sin(th) * R * 0.82, 0) : n3Project(Math.cos(th) * R, 0, Math.sin(th) * R);
-        if(a) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y);
+  /* shells: tier shells in tier colors, score shells neutral with a
+     label. On a layout switch the two sets cross-fade over 240ms; the
+     Clusters layout has no shells — its plates are the guides. */
+  netGuideAlphas(ts).forEach(function(ga){
+    var lay = ga[0], al = ga[1];
+    if(al <= 0.01 || lay === 'clusters') return;
+    var scoreLay = lay === 'score';
+    (scoreLay ? SCORE_RADII : [170, 310, 490, 640]).forEach(function(R, i){
+      for(var pass = 0; pass < 2; pass++){
+        ctx.beginPath();
+        for(var a = 0; a <= 72; a++){
+          var th = a / 72 * 6.2832, p = pass ? n3Project(Math.cos(th) * R, Math.sin(th) * R * 0.82, 0) : n3Project(Math.cos(th) * R, 0, Math.sin(th) * R);
+          if(a) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y);
+        }
+        ctx.strokeStyle = scoreLay ? 'rgba(255,255,255,' + ((pass ? 0.045 : 0.085) * al) + ')' : hexA(RING_C[i], (pass ? 0.05 : 0.12 - i * 0.014) * al); ctx.lineWidth = 1; ctx.stroke();
       }
-      ctx.strokeStyle = scoreLay ? 'rgba(255,255,255,' + (pass ? 0.045 : 0.085) + ')' : hexA(RING_C[i], pass ? 0.05 : 0.12 - i * 0.014); ctx.lineWidth = 1; ctx.stroke();
-    }
-    if(scoreLay){
-      var lp = n3Project(0, -R * 0.82, 0);
-      ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-      ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fillText(SCORE_GUIDES[i], lp.x, lp.y - 4);
-    }
+      if(scoreLay){
+        var lp = n3Project(0, -R * 0.82, 0);
+        ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+        ctx.fillStyle = 'rgba(255,255,255,' + (0.45 * al) + ')'; ctx.fillText(SCORE_GUIDES[i], lp.x, lp.y - 4);
+      }
+    });
   });
-  if(S.net.bg){
+  if(NET.bgA > 0.02){
     if(!N3.bgPts){
       var ci = D.circle_index || [], pts = [];
       for(var i = 0; i < ci.length; i++){ var rng = mulberry32((i + 1) * 2246822519 % 2147483647), u = rng() * 2 - 1, th2 = rng() * 6.2832, rr = Math.sqrt(1 - u * u), rad = 760 + rng() * rng() * 1000; pts.push([Math.cos(th2) * rr * rad, u * rad * 0.82, Math.sin(th2) * rr * rad]); }
       N3.bgPts = pts;
     }
-    ctx.fillStyle = 'rgba(255,255,255,.16)';
+    ctx.fillStyle = 'rgba(255,255,255,' + (0.16 * NET.bgA) + ')';
     N3.bgPts.forEach(function(q){ var p = n3Project(q[0], q[1], q[2]); if(p.x > -2 && p.y > -2 && p.x < W + 2 && p.y < H + 2) ctx.fillRect(p.x, p.y, 1.4, 1.4); });
   }
   var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null, hot = {};
@@ -3490,16 +3784,18 @@ function net3Draw(ts){
   });
   if(!cDrawn) n3Center(ctx, c0);
   ctx.globalAlpha = 1;
-  /* labels: selected and hovered only, so the sphere stays clean */
-  [sel ? sel.di : null, N3.hover].forEach(function(di, i){
-    if(di == null || (i === 1 && di === (sel && sel.di))) return;
-    var p = proj[NET.nodes.indexOf(NET.byDi[di])]; if(!p) return;
-    var nm = dispName(D.directory[di]); ctx.font = '600 12.5px Archivo,sans-serif';
-    var w = ctx.measureText(nm).width + 18, x = Math.max(6, Math.min(W - w - 6, p.x - w / 2)), y = p.y - 34;
-    ctx.fillStyle = 'rgba(10,10,10,.92)'; ctx.strokeStyle = '#3a3a3a'; ctx.lineWidth = 1;
-    ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x, y, w, 24, 2); else ctx.rect(x, y, w, 24); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = '#f2f2f2'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(nm, x + 9, y + 12.5);
-  });
+  /* label: the selection only, so the sphere stays clean. Hover has
+     the DOM card now (netHovPaint); the canvas name plate is retired. */
+  if(sel){
+    var sp2 = proj[NET.nodes.indexOf(sel)];
+    if(sp2){
+      var nm = dispName(D.directory[sel.di]); ctx.font = '600 12.5px Archivo,sans-serif';
+      var w = ctx.measureText(nm).width + 18, x = Math.max(6, Math.min(W - w - 6, sp2.x - w / 2)), y = sp2.y - 34;
+      ctx.fillStyle = 'rgba(10,10,10,.92)'; ctx.strokeStyle = '#3a3a3a'; ctx.lineWidth = 1;
+      ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x, y, w, 24, 2); else ctx.rect(x, y, w, 24); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#f2f2f2'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(nm, x + 9, y + 12.5);
+    }
+  }
   flyLabels(ts);
   netClustPaint();
 }
@@ -3523,14 +3819,32 @@ function net3Hit(sx, sy){
 
 function netPinchDist(){ var k = Object.keys(NET.ptr).map(function(i){ return NET.ptr[i]; }); return k.length < 2 ? 0 : Math.hypot(k[0].x - k[1].x, k[0].y - k[1].y); }
 function netResize(){
-  var cv = NET.cv, r = cv.getBoundingClientRect(); NET.dpr = Math.min(2, window.devicePixelRatio || 1);
+  var cv = NET.cv; if(!cv) return;
+  var r = cv.getBoundingClientRect(); NET.dpr = Math.min(2, window.devicePixelRatio || 1);
+  var ow = NET.W;
   NET.W = Math.max(200, r.width); NET.H = Math.max(200, r.height);
   cv.width = NET.W * NET.dpr; cv.height = NET.H * NET.dpr; NET.dirty = true;
+  /* Selection panel compensation: when the panel's arrival is what
+     changed the canvas width, glide the map center by the same amount,
+     so content keeps its place on the page and shifts WITH the panel
+     over 240ms instead of snapping sideways in one frame. */
+  var pf = NET._panelFlag; NET._panelFlag = false;
+  if(pf && ow && NET.W !== ow) netGlide(240, { cxoff:NET.cxOff + (ow - NET.W) / 2 });
 }
-function netFit(){ N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null; NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.bg ? 1900 : (netLayoutScore() ? 1840 : 1450)))); NET.rot = 0; NET.dirty = true; }
-function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
+function netFit(){
+  /* Reset is a 450ms glide home in the current dimension, not a snap. */
+  N3.auto = S.net.sel == null;
+  if(S.net.mode === '2d'){
+    var home = Math.round(NET.rot / (Math.PI * 2)) * Math.PI * 2;
+    netGlide(450, { c2x:0, c2y:0, c2z:netFitZ(), rot:home });
+  } else {
+    N3.vy = 0; N3.vp = 0;
+    netGlide(450, { pitch:0.38, zoom3:1 });
+  }
+}
+function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2 + NET.cxOff, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
 function netHit(sx, sy){
-  var wx = (sx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (sy - NET.H / 2) / NET.cam.z + NET.cam.y, best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
+  var wx = (sx - NET.W / 2 - NET.cxOff) / NET.cam.z + NET.cam.x, wy = (sy - NET.H / 2) / NET.cam.z + NET.cam.y, best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
   /* undo the 2D drift rotation, so the hit lands on the node under the cursor */
   var rc = Math.cos(NET.rot), rs = Math.sin(NET.rot), qx = wx * rc + wy * rs, qy = -wx * rs + wy * rc;
   NET.nodes.forEach(function(n){ var pp = netP2(n), d = Math.hypot(pp[0] - qx, pp[1] - qy); if(d < lim && d < bd){ bd = d; best = n; } });
@@ -3540,28 +3854,34 @@ function netDraw(){
   var ctx = NET.ctx, z = NET.cam.z;
   ctx.setTransform(NET.dpr, 0, 0, NET.dpr, 0, 0); ctx.clearRect(0, 0, NET.W, NET.H);
   var c = w2s(0, 0);
-  if(netLayoutScore()){
-    /* score layout: neutral layer guides (tier keeps color), labeled */
-    ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-    SCORE_RADII.forEach(function(r, i){
-      ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
-      ctx.fillStyle = 'rgba(255,255,255,0.42)';
-      ctx.fillText(SCORE_GUIDES[i], c[0], c[1] - r * z - 5);
-    });
-  } else {
-    [170, 310, 490, 640].forEach(function(r, i){
-      ctx.strokeStyle = hexA(RING_C[i], 0.15 - i * 0.02); ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
-    });
-  }
-  if(S.net.bg){
+  /* guides cross-fade on a layout switch; Clusters has none — its
+     plates are the guides there */
+  netGuideAlphas(performance.now()).forEach(function(ga){
+    var lay = ga[0], al = ga[1];
+    if(al <= 0.01 || lay === 'clusters') return;
+    if(lay === 'score'){
+      /* score layout: neutral layer guides (tier keeps color), labeled */
+      ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      SCORE_RADII.forEach(function(r, i){
+        ctx.strokeStyle = 'rgba(255,255,255,' + (0.10 * al) + ')'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,' + (0.42 * al) + ')';
+        ctx.fillText(SCORE_GUIDES[i], c[0], c[1] - r * z - 5);
+      });
+    } else {
+      [170, 310, 490, 640].forEach(function(r, i){
+        ctx.strokeStyle = hexA(RING_C[i], (0.15 - i * 0.02) * al); ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
+      });
+    }
+  });
+  if(NET.bgA > 0.02){
     if(!NET.bg){
       var ci = D.circle_index || [], dots = [];
       for(var i = 0; i < ci.length; i++){ var rng = mulberry32((i + 1) * 2246822519 % 2147483647), ang = rng() * 6.2832, rad = 720 + rng() * rng() * 1100; dots.push([Math.cos(ang) * rad, Math.sin(ang) * rad]); }
       NET.bg = dots;
     }
-    ctx.fillStyle = 'rgba(255,255,255,.13)';
+    ctx.fillStyle = 'rgba(255,255,255,' + (0.13 * NET.bgA) + ')';
     NET.bg.forEach(function(d){ var rp = netRotP(d[0], d[1]), p = w2s(rp[0], rp[1]); if(p[0] > -3 && p[1] > -3 && p[0] < NET.W + 3 && p[1] < NET.H + 3) ctx.fillRect(p[0], p[1], 1.5, 1.5); });
   }
   var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null;
@@ -3624,8 +3944,9 @@ function netCard(){
       '<div class="nc-scb">' + scoreBadgeHTML(di) + '</div>';
     if(cols) cols.classList.add('sel');
   }
-  /* the panel opening or closing changes the canvas size; refit the backing store */
-  if(NET.cv && document.body.contains(NET.cv)) requestAnimationFrame(function(){ netResize(); });
+  /* the panel opening or closing changes the canvas size; refit the
+     backing store, flagged so netResize can glide the compensation */
+  if(NET.cv && document.body.contains(NET.cv)){ NET._panelFlag = true; requestAnimationFrame(function(){ netResize(); }); }
 }
 
 /* ============================================================
@@ -5571,14 +5892,15 @@ function onClick(ev){
       saveDegrees(da2, 'Edit degree'); break;
     }
     /* network + family */
-    case 'netcolor': S.net.color = el.getAttribute('data-v'); viewNetwork($('#view')); break;
     case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
     case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
-    case 'netmode': S.net.mode = el.getAttribute('data-v') === '2d' ? '2d' : '3d'; store('ncc_netmode', S.net.mode); viewNetwork($('#view')); break;
-    case 'netlayout': S.net.layout = el.getAttribute('data-v') === 'score' ? 'score' : 'tier'; store('ncc_netlayout', S.net.layout); viewNetwork($('#view')); break;
+    case 'netmode': netSwitchMode(el.getAttribute('data-v')); break;
+    case 'netlayout': { var nl = el.getAttribute('data-v'); if(nl !== S.net.layout){ netMorphTo(nl); netCtlPaint(); netCard(); } break; }
     case 'netfly': flyToggle(); break;
-    case 'netbg': S.net.bg = !S.net.bg; N3.bgPts = null; NET.bg = null; viewNetwork($('#view')); break;
-    case 'netzoom': { flyStop(); var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; if(S.net.mode === '2d'){ NET.cam.z = Math.max(0.3, Math.min(4, NET.cam.z * zf)); NET.dirty = true; } else N3.zoom = Math.max(0.45, Math.min(3.5, N3.zoom * zf)); break; }
+    case 'netfs': netToggleFS(); break;
+    case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
+    case 'netbg': S.net.bg = !S.net.bg; store('ncc_netbg', S.net.bg ? '1' : ''); netCtlPaint(); netCard(); NET.dirty = true; break;
+    case 'netzoom': { flyStop(); var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; if(S.net.mode === '2d') netGlide(200, { c2z:Math.max(0.3, Math.min(4, NET.cam.z * zf)) }); else netGlide(200, { zoom3:Math.max(0.45, Math.min(3.5, N3.zoom * zf)) }); break; }
     case 'netfit': flyStop(); netFit(); break;
     case 'netclose': S.net.sel = null; netCard(); NET.dirty = true; break;
     case 'fnode': { if(FAMV.moved) break; S.fam.focus = di; $$('.fn.foc').forEach(function(n){ n.classList.remove('foc'); }); el.classList.add('foc'); famCard(); famGlide(di); break; }
