@@ -1228,3 +1228,13 @@ html,body{background:var(--bg)}
 .sc-badge i{font-style:normal;font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
 .hscore{margin-top:10px}
 .nc-scb{margin-top:10px}
+
+/* Network mobile pass (2026-10-16, Network only): 40px tap targets in
+   the control bar and panel, and the selection panel becomes a bottom
+   sheet on phones so the map stays visible behind it. */
+@media (max-width:700px){
+  .netpage .netbar .btn{min-height:40px}
+  .netcols.sel .netpanel{left:10px;right:10px;top:auto;bottom:10px;width:auto;max-height:64%;border:1px solid var(--line);border-radius:4px;box-shadow:0 18px 44px rgba(0,0,0,.5)}
+  .netpanel .btn{min-height:40px}
+  .netpanel .ib{min-width:40px;min-height:40px}
+}
