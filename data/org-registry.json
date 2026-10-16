@@ -1,0 +1,163 @@
+{
+ "version": 1,
+ "updated": "2026-10-16",
+ "canonicals": {
+  "CFC": {
+   "kinds": [
+    "churches",
+    "companies",
+    "groups"
+   ]
+  },
+  "Rochester Regional Health": {
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  "SUNY Canton": {
+   "kinds": [
+    "universities",
+    "companies"
+   ]
+  },
+  "SUNY Potsdam": {
+   "kinds": [
+    "universities",
+    "companies"
+   ]
+  },
+  "Clarkson University": {
+   "kinds": [
+    "companies",
+    "universities"
+   ]
+  },
+  "U.S. Army": {
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  "U.S. Marine Corps": {
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  "U.S. Air Force": {
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  "U.S. Navy": {
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  "U.S. Coast Guard": {
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  "Army National Guard": {
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  "Air National Guard": {
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  "U.S. Air Force ROTC": {
+   "kinds": [
+    "groups"
+   ]
+  },
+  "Park Bros.": {
+   "kinds": [
+    "companies"
+   ]
+  },
+  "St. Lawrence County Department of Social Services": {
+   "kinds": [
+    "companies"
+   ]
+  },
+  "St. Lawrence Psychiatric Center": {
+   "kinds": [
+    "companies"
+   ]
+  },
+  "Syracuse University": {
+   "kinds": [
+    "universities"
+   ]
+  },
+  "Upstate Medical University": {
+   "kinds": [
+    "companies",
+    "universities"
+   ]
+  }
+ },
+ "aliases": {
+  "CFC Potsdam": "CFC",
+  "CFC Canton": "CFC",
+  "CFC Madrid": "CFC",
+  "Christian Fellowship Center": "CFC",
+  "Christian Fellowship Center Potsdam": "CFC",
+  "Canton-Potsdam Hospital": "Rochester Regional Health",
+  "CPH": "Rochester Regional Health",
+  "St. Lawrence Health": "Rochester Regional Health",
+  "Rochester Regional Health - St. Lawrence Region": "Rochester Regional Health",
+  "Rochester Regional Health - St Lawrence Region": "Rochester Regional Health",
+  "RRH": "Rochester Regional Health",
+  "State University of New York at Canton": "SUNY Canton",
+  "SUNY Canton - Faculty": "SUNY Canton",
+  "State University of New York at Potsdam": "SUNY Potsdam",
+  "State University of New York at Potsdam \u2014 Masters in Teaching": "SUNY Potsdam",
+  "United States Army": "U.S. Army",
+  "US Army": "U.S. Army",
+  "Army": "U.S. Army",
+  "U.S. Marines": "U.S. Marine Corps",
+  "Marines": "U.S. Marine Corps",
+  "United States Marine Corps": "U.S. Marine Corps",
+  "US Marine Corps": "U.S. Marine Corps",
+  "US Marines": "U.S. Marine Corps",
+  "United States Air Force": "U.S. Air Force",
+  "USAF": "U.S. Air Force",
+  "US Air Force": "U.S. Air Force",
+  "U.S. AirForce": "U.S. Air Force",
+  "Air Force": "U.S. Air Force",
+  "United States Navy": "U.S. Navy",
+  "US Navy": "U.S. Navy",
+  "Navy": "U.S. Navy",
+  "United States Coast Guard": "U.S. Coast Guard",
+  "US Coast Guard": "U.S. Coast Guard",
+  "Coast Guard": "U.S. Coast Guard",
+  "New York Army National Guard": "Army National Guard",
+  "NY Army National Guard": "Army National Guard",
+  "New York Air National Guard": "Air National Guard",
+  "US AirForce ROTC": "U.S. Air Force ROTC",
+  "USAF ROTC": "U.S. Air Force ROTC",
+  "Air Force ROTC": "U.S. Air Force ROTC",
+  "Park Bros": "Park Bros.",
+  "Park Bros Coffee": "Park Bros.",
+  "St Lawrence County DSS": "St. Lawrence County Department of Social Services",
+  "St. Lawrence County DSS": "St. Lawrence County Department of Social Services",
+  "St Lawrence Psychiatric Center": "St. Lawrence Psychiatric Center",
+  "Sryacuse University": "Syracuse University",
+  "Suny Upstate Medical University": "Upstate Medical University",
+  "SUNY Upstate Medical University": "Upstate Medical University",
+  "NYSARC Inc.": "NYSARC",
+  "NYSARC, Inc.": "NYSARC",
+  "Clarkson University - PhD Mathematics": "Clarkson University"
+ }
+}
