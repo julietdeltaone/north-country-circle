@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.3.0';
+var APP_VERSION = '2.3.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -278,7 +278,7 @@ var PERSONA = [
   ['neuroticism','Neuroticism','Reactive vs. steady (high is worse)'],
   ['ego','Ego','Self-important (high is worse)']
 ];
-var REL_OPTS = ['family','friend','coworker','acquaintance','other'];
+var REL_OPTS = ['family','friend','coworker','client','online','acquaintance','by association','other'];
 var CTX_OPTS = ['work','school','military','community','church','online','other'];
 var CAT_OPTS = [['peer','Peer'],['rom','Romantic'],['fam','Family'],['auth','Authority'],['ment','Mentor'],['conf','Conflict']];
 var CP_LABELS = ['Acquaintances','Friends','Close friends','Best friends','Drifted apart','Reconnected','Working together','Dating','Roommates','Teammates','Mentor','Fell out'];
