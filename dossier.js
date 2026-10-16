@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.1.0';
+var APP_VERSION = '2.2.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -158,7 +158,7 @@ function ic(n, s){
 var D = null, BYN = {}, PK2I = {}, VER = 0;
 
 var ORG_CATS = [
-  { k:'churches',     label:'Churches',     ic:'church',    options:['CFC Potsdam','CFC Canton','CFC Madrid','NTC','Calvary Baptist'] },
+  { k:'churches',     label:'Churches',     ic:'church',    options:['CFC','NTC','Calvary Baptist'] },
   { k:'companies',    label:'Companies',    ic:'briefcase', options:['Rochester Regional Health','Clarkson University','Park Bros.'] },
   { k:'universities', label:'Universities', ic:'cap',       options:['Clarkson University','SUNY Potsdam','SUNY Canton','St. Lawrence University'] }
 ];
@@ -166,6 +166,86 @@ var SCHOOLS = {
   'Clarkson University':{ s:'Clarkson' }, 'SUNY Potsdam':{ s:'SUNY Potsdam' },
   'SUNY Canton':{ s:'SUNY Canton' }, 'St. Lawrence University':{ s:'SLU' }
 };
+/* ============================================================
+   Canonical org/group registry (JD 2026-10-16)
+   One alias -> canonical map covering churches / companies /
+   universities / groups. Source of truth: the Sheet Settings key
+   'org_registry', baked into dossier.json as D.org_registry by
+   build_dossier_data.py (which normalizes baked values through it).
+   In-app registrations (the Groups-view combine tool, genuinely new
+   names typed into editors) are kept in a localStorage overlay
+   (ncc_org_registry_v1 — the same durability pattern as GRP_EXTRA)
+   and merged over the baked map; the profile rewrites themselves
+   always go to the Sheet through the normal save path.
+   regKey MUST mirror _reg_key in scripts/build_dossier_data.py.
+   ============================================================ */
+var ORGREG = { canon:{}, kinds:{}, aliases:{}, aliasDisp:{} };
+function regKey(s){ return String(s == null ? '' : s).trim().replace(/\s+/g, ' ').toLowerCase().replace(/\.+$/, ''); }
+function regOverlay(){ try{ return JSON.parse(store('ncc_org_registry_v1') || 'null') || {}; }catch(x){ return {}; } }
+function regSaveOverlay(o){ store('ncc_org_registry_v1', JSON.stringify(o)); }
+function regLoad(){
+  ORGREG = { canon:{}, kinds:{}, aliases:{}, aliasDisp:{} };
+  function eat(reg){
+    if(!reg) return;
+    Object.keys(reg.canonicals || {}).forEach(function(n){
+      ORGREG.canon[regKey(n)] = n;
+      ORGREG.kinds[regKey(n)] = (reg.canonicals[n] || {}).kinds || [];
+    });
+    Object.keys(reg.aliases || {}).forEach(function(a){
+      ORGREG.aliases[regKey(a)] = reg.aliases[a];
+      ORGREG.aliasDisp[regKey(a)] = a;
+    });
+  }
+  eat(D && D.org_registry);
+  eat(regOverlay());
+  AUD_ORG_POOLS = null;
+}
+function regResolve(v){
+  var k = regKey(v); if(!k) return null;
+  if(ORGREG.canon[k]) return ORGREG.canon[k];
+  return ORGREG.aliases[k] || null;
+}
+function regApply(v){ return regResolve(v) || v; }
+function regCanonFor(kind){
+  return Object.keys(ORGREG.kinds).filter(function(k){ return ORGREG.kinds[k].indexOf(kind) >= 0; }).map(function(k){ return ORGREG.canon[k]; });
+}
+function regAliasDisps(){
+  return Object.keys(ORGREG.aliases).map(function(k){ return ORGREG.aliasDisp[k]; });
+}
+function regSugLabel(v){
+  var r = regResolve(v);
+  return (r && regKey(r) !== regKey(v)) ? v + ' \u2192 ' + r : v;
+}
+function regRegisterCanon(name, kind){
+  name = String(name || '').trim(); if(!name) return;
+  var o = regOverlay(); o.canonicals = o.canonicals || {}; o.aliases = o.aliases || {};
+  var kinds = ((o.canonicals[name] || {}).kinds || ORGREG.kinds[regKey(name)] || []).slice();
+  if(kind && kinds.indexOf(kind) < 0) kinds.push(kind);
+  o.canonicals[name] = { kinds:kinds };
+  regSaveOverlay(o); regLoad();
+}
+function regRegisterAlias(alias, canonical, kind){
+  alias = String(alias || '').trim(); canonical = String(canonical || '').trim();
+  if(!alias || !canonical || regKey(alias) === regKey(canonical)) return;
+  var o = regOverlay(); o.canonicals = o.canonicals || {}; o.aliases = o.aliases || {};
+  o.aliases[alias] = canonical;
+  regSaveOverlay(o);
+  regRegisterCanon(canonical, kind);
+}
+/* Org suggestions for one category: canonical names (data values
+   resolved through the registry + the kind's registered canonicals)
+   plus the alias spellings that resolve into this category, so an old
+   variant typed into an editor surfaces as "Old Name -> Canonical". */
+function ptOrgSug(catK){
+  var base = ptSugList('org', catK), have = {};
+  base.forEach(function(v){ have[v.toLowerCase()] = 1; });
+  regAliasDisps().forEach(function(a){
+    var r = regResolve(a);
+    if(r && base.indexOf(r) >= 0 && !have[a.toLowerCase()]){ have[a.toLowerCase()] = 1; base.push(a); }
+  });
+  return base.sort(function(a, b){ return a.localeCompare(b); });
+}
+
 var DEGREE_TYPES = ['AA','AAS','AS','BA','BS','BFA','BBA','BTech','MA','MS','MBA','MEd','MPA','PhD','EdD','DPT','OTD','JD','MD','Certificate','Attended (no degree)','Other'];
 var SKILL_TAXONOMY = [
   { cat:'Healthcare', skills:['Registered Nurse','CNA','LPN','EMT','Mental Health','Physical Therapist','Occupational Therapist','Home Health Aide','Medical Technician'] },
@@ -1068,7 +1148,11 @@ function removeAssociate(di, u){
 
 /* groups live in each person's own 'groups' list */
 var GRP_EXTRA = (function(){ try{ return JSON.parse(store('ncc_groups_extra') || '[]') || []; }catch(x){ return []; } })();
-function personGroups(e){ return splitTags(gv(e, 'groups'), ', '); }
+function personGroups(e){
+  var seen = {}, out = [];
+  splitTags(gv(e, 'groups'), ', ').forEach(function(g){ var c = regApply(g), k2 = regKey(c); if(c && !seen[k2]){ seen[k2] = 1; out.push(c); } });
+  return out;
+}
 function allGroups(){
   var map = {};
   D.directory.forEach(function(e, di){ if(liveEntry(e)) personGroups(e).forEach(function(g){ (map[g] = map[g] || []).push(di); }); });
@@ -1078,13 +1162,15 @@ function allGroups(){
 function setPersonGroups(di, arr){ queuePatch(di, { groups: arr.join(', ') }); }
 function orgMembers(k, name){
   var out = [];
-  D.directory.forEach(function(e, di){ if(liveEntry(e) && tagList(gv(e, k)).indexOf(name) >= 0) out.push(di); });
+  D.directory.forEach(function(e, di){ if(liveEntry(e) && tagList(gv(e, k)).map(regApply).indexOf(name) >= 0) out.push(di); });
   return out.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
 }
 function orgNames(k){
   var seen = {}, out = [], cat = ORG_CATS.filter(function(c){ return c.k === k; })[0];
-  if(cat) cat.options.forEach(function(o){ if(!seen[o]){ seen[o] = 1; out.push(o); } });
-  D.directory.forEach(function(e){ if(liveEntry(e)) tagList(gv(e, k)).forEach(function(o){ if(!seen[o]){ seen[o] = 1; out.push(o); } }); });
+  function push(o){ o = regApply(o); if(o && !seen[o]){ seen[o] = 1; out.push(o); } }
+  if(cat) cat.options.forEach(push);
+  regCanonFor(k).forEach(push);
+  D.directory.forEach(function(e){ if(liveEntry(e)) tagList(gv(e, k)).forEach(push); });
   return out;
 }
 
@@ -1838,7 +1924,7 @@ var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills',
 var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
 var PT_SEED_ORGS = {
   universities: ['SUNY Potsdam','Clarkson University','St. Lawrence University','SUNY Canton','Potsdam Central School','Hugh C. Williams Senior High School','Massena Central High School','Norwood-Norfolk Central School','Madrid-Waddington Central School','Ogdensburg Free Academy','Gouverneur Central School','Lisbon Central School','Colton-Pierrepont Central School','Parishville-Hopkinton Central School','St. Lawrence Central School','Edwards-Knox Central School','Hermon-DeKalb Central School','Clifton-Fine Central School','Hammond Central School','Heuvelton Central School','Morristown Central School'],
-  companies: ['Canton-Potsdam Hospital','Claxton-Hepburn Medical Center','Massena Hospital'],
+  companies: ['Rochester Regional Health','Claxton-Hepburn Medical Center','Massena Hospital'],
   churches: []
 };
 function ptHandle(e){ return effHandle(e); }
@@ -1997,9 +2083,9 @@ function ptSugList(kind, catK){
   }
   if(kind === 'org'){
     var ov = [];
-    D.directory.forEach(function(e){ tagList(gv(e, catK)).forEach(function(x){ ov.push(x); }); });
+    D.directory.forEach(function(e){ tagList(gv(e, catK)).forEach(function(x){ ov.push(regApply(x)); }); });
     var cat = null; ORG_CATS.forEach(function(c){ if(c.k === catK) cat = c; });
-    return ptDedupe(ov.concat(cat ? cat.options : []).concat(PT_SEED_ORGS[catK] || [])).sort(function(a, b){ return a.localeCompare(b); });
+    return ptDedupe(ov.concat(cat ? cat.options : []).concat(PT_SEED_ORGS[catK] || []).concat(regCanonFor(catK))).sort(function(a, b){ return a.localeCompare(b); });
   }
   if(kind === 'skill'){
     var sv = [];
@@ -2014,7 +2100,7 @@ function ptSugList(kind, catK){
   }
   return [];
 }
-function ptAcWire(inp, list, onPick){
+function ptAcWire(inp, list, onPick, opts){
   var wrap = inp.parentNode, box = wrap ? $('.pted-ac', wrap) : null;
   if(!box) return;
   var hits = [], act = -1;
@@ -2025,7 +2111,7 @@ function ptAcWire(inp, list, onPick){
       if(i === act && b.scrollIntoView) b.scrollIntoView({ block:'nearest' });
     });
   }
-  function pick(v){ onPick(v); hide(); }
+  function pick(v){ onPick(opts && opts.resolve ? opts.resolve(v) : v); hide(); }
   function show(){
     var q = inp.value.trim().toLowerCase();
     if(!q){ hide(); return; }
@@ -2036,7 +2122,7 @@ function ptAcWire(inp, list, onPick){
     });
     hits = hits.slice(0, 8);
     if(!hits.length){ hide(); return; }
-    box.innerHTML = hits.map(function(h){ return '<button type="button" class="pted-aci" data-v="' + esc(h) + '" title="' + esc(h) + '">' + esc(h) + '</button>'; }).join('');
+    box.innerHTML = hits.map(function(h){ var lb = (opts && opts.label) ? opts.label(h) : h; return '<button type="button" class="pted-aci" data-v="' + esc(h) + '" title="' + esc(lb) + '">' + esc(lb) + '</button>'; }).join('');
     box.hidden = false;
     act = 0;   /* first match pre-highlighted: Enter picks it */
     $$('.pted-aci', box).forEach(function(b, i){
@@ -2220,9 +2306,10 @@ function ptEdWire(pop, di, k){
     });
     $$('.pted-addin', pop).forEach(function(inp){
       var fieldK = inp.getAttribute('data-cat');
-      var list = ptSugList(k === 'orgs' ? 'org' : 'skill', fieldK);
+      var list = k === 'orgs' ? ptOrgSug(fieldK) : ptSugList('skill', fieldK);
       function addVal(val){
         val = String(val || '').trim(); if(!val) return;
+        if(k === 'orgs'){ val = regApply(val); if(!ORGREG.canon[regKey(val)]) regRegisterCanon(val, fieldK); }
         ptTagsMutate(di, fieldK, function(a){
           if(a.map(function(x){ return x.toLowerCase(); }).indexOf(val.toLowerCase()) < 0) a.push(val);
           return a;
@@ -2230,7 +2317,8 @@ function ptEdWire(pop, di, k){
         ptEdRefresh(fieldK);
       }
       inp.addEventListener('keydown', function(ev){ if(ev.key === 'Enter'){ ev.preventDefault(); addVal(inp.value); } });
-      ptAcWire(inp, list, addVal);
+      if(k === 'orgs') ptAcWire(inp, list, addVal, { label:regSugLabel, resolve:regApply });
+      else ptAcWire(inp, list, addVal);
     });
     return;
   }
@@ -2248,8 +2336,9 @@ function ptEdWire(pop, di, k){
     if(gn) gn.addEventListener('keydown', function(ev){
       if(ev.key !== 'Enter') return;
       ev.preventDefault();
-      var n = gn.value.trim(); if(!n) return;
+      var n = regApply(gn.value.trim()); if(!n) return;
       if(!allGroups()[n]){ GRP_EXTRA.push(n); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
+      if(!ORGREG.canon[regKey(n)]) regRegisterCanon(n, 'groups');
       var e = D.directory[di], gl = personGroups(e);
       if(gl.indexOf(n) < 0){ gl.push(n); txn('Edit groups', function(){ setPersonGroups(di, gl); }); if(PTED) PTED.dirty = true; }
       ptEdRefresh();
@@ -2620,7 +2709,7 @@ function tagEditor(di, k, sep, ph){
     '<input class="tadd" data-k="' + k + '" data-sep="' + esc(sep) + '" placeholder="' + esc(ph) + '" autocomplete="off"></div>';
 }
 function pickEditor(di, k, options, ph){
-  var e = D.directory[di], cur = tagList(gv(e, k)), all = options.concat(cur.filter(function(x){ return options.indexOf(x) < 0; }));
+  var e = D.directory[di], cur = tagList(gv(e, k)).map(regApply), all = options.concat(cur.filter(function(x){ return options.indexOf(x) < 0; }));
   return '<div class="tags">' + all.map(function(o){
     return '<button type="button" class="tchip tog' + (cur.indexOf(o) >= 0 ? ' on' : '') + '" data-act="tagtog" data-k="' + k + '" data-sep=", " data-v="' + esc(o) + '">' + esc(o) + '</button>'; }).join('') +
     '<input class="tadd" data-k="' + k + '" data-sep=", " placeholder="' + esc(ph || 'Add another') + '" autocomplete="off"></div>';
@@ -3408,6 +3497,49 @@ function famDriftStart(){
    Groups — your own groups plus churches, employers and schools, each with its people.
    ============================================================ */
 var GKINDS = [['groups', 'Groups'], ['churches', 'Churches'], ['companies', 'Employers'], ['universities', 'Schools']];
+/* Manage mode (JD 2026-10-16): tick several names in one kind and combine
+   them into a surviving canonical. Every affected profile is rewritten
+   through the normal save path inside one undoable txn, and each loser
+   is registered as an alias of the survivor in the org registry. */
+var GMGR = { on:false, sel:{} };
+function grpCombine(kind, losers, target){
+  target = regApply(String(target || '').trim());
+  if(!target) return 0;
+  losers = losers.filter(function(L){ return L && regKey(L) !== regKey(target); });
+  if(!losers.length) return 0;
+  var n = 0;
+  if(kind === 'groups'){
+    var hadMembers = losers.some(function(L){ return (allGroups()[L] || []).length > 0; });
+    txn('Combine groups', function(){
+      losers.forEach(function(L){
+        (allGroups()[L] || []).forEach(function(di){
+          var arr = personGroups(D.directory[di]).map(function(g){ return g === L ? target : g; });
+          setPersonGroups(di, arr.filter(function(g, i){ return arr.indexOf(g) === i; }));
+          n++;
+        });
+      });
+    });
+    GRP_EXTRA = GRP_EXTRA.filter(function(g){ return losers.indexOf(g) < 0; });
+    if(!hadMembers && GRP_EXTRA.indexOf(target) < 0) GRP_EXTRA.push(target);
+    store('ncc_groups_extra', JSON.stringify(GRP_EXTRA));
+  } else {
+    txn('Combine organizations', function(){
+      losers.forEach(function(L){
+        orgMembers(kind, L).forEach(function(di){
+          var e = D.directory[di];
+          var arr = tagList(gv(e, kind)).map(function(o){ return regApply(o) === L ? target : regApply(o); });
+          var seen = {}, out = [];
+          arr.forEach(function(o){ var lk = o.toLowerCase(); if(o && !seen[lk]){ seen[lk] = 1; out.push(o); } });
+          var patch = {}; patch[kind] = out.join(', ');
+          queuePatch(di, patch);
+          n++;
+        });
+      });
+    });
+  }
+  losers.forEach(function(L){ regRegisterAlias(L, target, kind); });
+  return n;
+}
 function grpNamesFor(kind){
   if(kind === 'groups'){ var m = allGroups(); return Object.keys(m).sort().map(function(n){ return { n:n, c:m[n].length }; }); }
   return orgNames(kind).map(function(n){ return { n:n, c:orgMembers(kind, n).length }; }).filter(function(x){ return x.c > 0; }).sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); });
@@ -3417,7 +3549,17 @@ function viewGroups(v){
   if(!GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
   var names = grpNamesFor(kind);
   var tabs = '<nav class="tabrow">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
-  var list = names.map(function(x){ return '<a href="#/groups/' + kind + '/' + encodeURIComponent(x.n) + '" class="grow' + (x.n === name ? ' on' : '') + '"><span>' + esc(x.n) + '</span><em>' + x.c + '</em></a>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>';
+  var selCount = names.filter(function(x){ return GMGR.sel[kind + '|' + x.n]; }).length;
+  var mgr = '';
+  if(GMGR.on){
+    mgr = '<div class="gmgr"><p class="gmgr-h">Tick the names to merge, type or pick the surviving name, then combine. Ticked names stay on file as aliases of the survivor, so old spellings keep resolving to it.</p>' +
+      '<div class="finder inline"><input id="gmgrt" list="gmgrdl" placeholder="Surviving name" autocomplete="off"><datalist id="gmgrdl">' + names.map(function(x){ return '<option value="' + esc(x.n) + '">'; }).join('') + '</datalist></div>' +
+      '<div class="gmgr-row2"><button type="button" class="btn sm primary" data-act="gmgrgo" data-k="' + kind + '"' + (selCount ? '' : ' disabled') + '>Combine ' + selCount + ' selected</button>' +
+      (selCount ? '<button type="button" class="btn ghost sm" data-act="gmgrclear">Clear</button>' : '') + '</div></div>';
+  }
+  var list = GMGR.on
+    ? (names.map(function(x){ var on = !!GMGR.sel[kind + '|' + x.n]; return '<label class="grow gmgr-r' + (on ? ' on' : '') + '"><input type="checkbox" data-act="gmgrsel" data-k="' + kind + '" data-n="' + esc(x.n) + '"' + (on ? ' checked' : '') + '><span>' + esc(x.n) + '</span><em>' + x.c + '</em></label>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>')
+    : (names.map(function(x){ return '<a href="#/groups/' + kind + '/' + encodeURIComponent(x.n) + '" class="grow' + (x.n === name ? ' on' : '') + '"><span>' + esc(x.n) + '</span><em>' + x.c + '</em></a>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>');
   var add = kind === 'groups' ? '<div class="finder inline"><input id="gnew" placeholder="New group name" autocomplete="off"><button type="button" class="btn sm" data-act="gnew">Create</button></div>' : '';
   var detail = '';
   if(name){
@@ -3430,8 +3572,8 @@ function viewGroups(v){
         return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="popen1" data-di="' + di + '">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span></a>' +
           (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>'; }).join('') || '<p class="dim pad">No one yet.</p>') + '</div></div>';
   }
-  v.innerHTML = '<div class="page groups' + (name ? ' has-detail' : '') + '"><div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div></div>' + tabs +
-    '<div class="ggrid"><aside class="glist">' + add + list + '</aside><section class="gmain">' + (detail || '<div class="empty"><h3>Pick one</h3><p>Choose a name on the left to see who is in it.</p></div>') + '</section></div></div>';
+  v.innerHTML = '<div class="page groups' + (name ? ' has-detail' : '') + '"><div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>' + tabs +
+    '<div class="ggrid"><aside class="glist">' + mgr + add + list + '</aside><section class="gmain">' + (detail || '<div class="empty"><h3>Pick one</h3><p>Choose a name on the left to see who is in it.</p></div>') + '</section></div></div>';
 }
 function groupRename(oldN, newN){
   newN = newN.trim(); if(!newN || newN === oldN) return;
@@ -3664,10 +3806,12 @@ function audOrgPools(){
 function audOrgPool(){
   var cats = audOrgPools(), all = [];
   ORG_CATS.forEach(function(c){ all = all.concat(cats[c.k]); });
+  all = all.concat(regAliasDisps());
   return ptDedupe(all).sort(function(a, b){ return a.localeCompare(b); });
 }
 function audOrgCat(val){
-  var want = String(val || '').toLowerCase(), cats = audOrgPools();
+  val = regApply(String(val || ''));
+  var want = val.toLowerCase(), cats = audOrgPools();
   var order = ['churches', 'universities', 'companies'];
   for(var i = 0; i < order.length; i++){
     var list = cats[order[i]];
@@ -3934,7 +4078,7 @@ function audWireCard(card){
   var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
   if(!inp) return;
   var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : gap === 'orgs' ? audOrgPool() : gap === 'years' ? audYearList() : null;
-  if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audTryArm(card); });
+  if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audTryArm(card); }, gap === 'orgs' ? { label:regSugLabel, resolve:regApply } : null);
   /* commit triggers (JD 2026-10-15): a suggestion pick or Enter submits
      what is typed, and a REAL blur (focus leaving the card) submits after
      a 250ms grace period, so a tap on a suggestion registers its pick
@@ -4010,6 +4154,7 @@ function audComplete(card){
   if(gap === 'skills' || gap === 'orgs'){
     var list = gap === 'skills' ? ptSugList('skill') : audOrgPool(), lv = v.toLowerCase();
     for(var i = 0; i < list.length; i++) if(list[i].toLowerCase() === lv) return true;
+    if(gap === 'orgs' && regResolve(v)) return true;
     return false;
   }
   return false;
@@ -4115,7 +4260,7 @@ function audWriteValue(di, card, gap){
     return { entry:txn('Set phone', function(){ queuePatch(di, { phone:pv }); }), val:pv };
   }
   if(gap === 'orgs'){
-    var io = $('.aud-in', card), ov = io ? io.value.trim() : '';
+    var io = $('.aud-in', card), ov = io ? regApply(io.value.trim()) : '';
     if(!ov) return null;
     var xo = audEntry(di), priorO = (xo && xo.done.indexOf(gap) >= 0 && xo.vals) ? xo.vals[gap] : '';
     if(priorO && priorO.toLowerCase() !== ov.toLowerCase())
@@ -4684,7 +4829,20 @@ function onClick(ev){
     case 'famzoom': FAMV.cam.z = Math.max(0.2, Math.min(1.6, FAMV.cam.z * (+el.getAttribute('data-d') > 0 ? 1.25 : 0.8))); famApply(); break;
     case 'famfit': famFit(); break;
     /* groups */
-    case 'gnew': { var gi2 = $('#gnew'), gn = gi2.value.trim(); if(!gn) break; if(!allGroups()[gn]){ GRP_EXTRA.push(gn); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); } go('groups/groups/' + encodeURIComponent(gn)); break; }
+    case 'gmgr': GMGR.on = !GMGR.on; if(!GMGR.on) GMGR.sel = {}; render(); break;
+    case 'gmgrsel': { var gk0 = el.getAttribute('data-k'), gn0 = el.getAttribute('data-n'), gkey = gk0 + '|' + gn0; if(GMGR.sel[gkey]) delete GMGR.sel[gkey]; else GMGR.sel[gkey] = 1; render(); break; }
+    case 'gmgrclear': GMGR.sel = {}; render(); break;
+    case 'gmgrgo': {
+      var gk2 = el.getAttribute('data-k'), tin = $('#gmgrt'), tgt = tin ? tin.value : '';
+      if(!String(tgt || '').trim()){ toast('Type or pick the surviving name first.'); break; }
+      var losers2 = Object.keys(GMGR.sel).filter(function(key){ return key.indexOf(gk2 + '|') === 0; }).map(function(key){ return key.slice(gk2.length + 1); });
+      var cnt2 = grpCombine(gk2, losers2, tgt);
+      GMGR.sel = {};
+      toast('Combined into ' + regApply(tgt) + ' \u00b7 ' + cnt2 + ' profiles updated', { undo:true });
+      go('groups/' + gk2 + '/' + encodeURIComponent(regApply(tgt)), { replace:true });
+      break;
+    }
+    case 'gnew': { var gi2 = $('#gnew'), gn = regApply(gi2.value.trim()); if(!gn) break; if(!allGroups()[gn]){ GRP_EXTRA.push(gn); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); } if(!ORGREG.canon[regKey(gn)]) regRegisterCanon(gn, 'groups'); go('groups/groups/' + encodeURIComponent(gn)); break; }
     case 'grename': { var nn = prompt('Rename group', el.getAttribute('data-g')); if(nn){ groupRename(el.getAttribute('data-g'), nn); go('groups/groups/' + encodeURIComponent(nn.trim()), { replace:true }); } break; }
     case 'gdelete': { var gd = el.getAttribute('data-g'); if(!confirm('Delete the group "' + gd + '"?\n\nIt is removed from everyone in it. People stay.')) break; groupDelete(gd); toast('Group deleted.', { undo:true }); go('groups/groups', { replace:true }); break; }
     case 'gmemrm': { var gm = el.getAttribute('data-g'); txn('Remove from group', function(){ setPersonGroups(di, personGroups(D.directory[di]).filter(function(x){ return x !== gm; })); }); viewGroups($('#view')); break; }
@@ -4736,8 +4894,9 @@ function onChange(ev){
   }
   if(t.classList && t.classList.contains('tadd')){ addTag(t); return; }
   if(t.hasAttribute && t.hasAttribute('data-grpnew')){
-    var n = t.value.trim(); if(!n) return;
+    var n = regApply(t.value.trim()); if(!n) return;
     if(!allGroups()[n]){ GRP_EXTRA.push(n); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
+    if(!ORGREG.canon[regKey(n)]) regRegisterCanon(n, 'groups');
     var gl = personGroups(D.directory[S.prof.di]); if(gl.indexOf(n) < 0) gl.push(n);
     txn('Edit groups', function(){ setPersonGroups(S.prof.di, gl); }); repaintSec('relationship'); return;
   }
@@ -4749,6 +4908,8 @@ function onChange(ev){
 }
 function addTag(t){
   var v = t.value.trim().replace(/[,|]+$/, ''); t.value = ''; if(!v) return;
+  var tk = t.getAttribute('data-k');
+  if(ORG_CATS.some(function(c){ return c.k === tk; })){ v = regApply(v); if(!ORGREG.canon[regKey(v)]) regRegisterCanon(v, tk); }
   saveTags(t, function(a){ if(a.map(function(x){ return x.toLowerCase(); }).indexOf(v.toLowerCase()) < 0) a.push(v); return a; });
 }
 /* Keyboard navigation (JD 2026-10-15), registered BEFORE onKey so consumed
@@ -4898,6 +5059,7 @@ function boot(){
       .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(d){
         D = d;
+        regLoad();
         D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; normEntry(r); PK2I[pkey(r)] = i; });
         outLoad();
         try{ applyOutbox(); }catch(px){}
