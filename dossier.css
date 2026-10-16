@@ -1220,13 +1220,11 @@ html,body{background:var(--bg)}
 .gmgr-r input{margin:0;accent-color:var(--acc);width:15px;height:15px;flex:none}
 .gmgr-r span{flex:1}
 
-/* Closeness score (Method v2, 2026-10-16): the breakdown block on the
-   profile Relationship section and the Network selection card. */
-.sc-box{margin-top:12px;border:1px solid var(--line);border-radius:2px;padding:10px 12px;background:var(--bg2)}
-.sc-top{display:flex;align-items:baseline;gap:9px}
-.sc-top b{font-family:var(--serif);font-size:24px;font-weight:700;line-height:1}
-.sc-top span{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mut)}
-.sc-line{margin-top:6px;font-size:12.5px;line-height:1.5;color:var(--txt)}
-.sc-blank{margin-top:4px;font-size:12px;line-height:1.5;color:var(--mut)}
-.nc-sc{border-top:1px solid var(--line);margin-top:10px}
-.nc-sc .sc-box{border:none;border-radius:0;background:none;margin:0;padding:10px 2px 2px}
+/* Closeness score (Method v2, 2026-10-16): a plain badge — the number,
+   plus a small "pinned" marker when a Score Pin is in force. It sits in
+   the profile hero and on the Network selection card. */
+.sc-badge{display:inline-flex;align-items:baseline;gap:7px;border:1px solid var(--line);border-radius:2px;padding:5px 11px;background:var(--bg2)}
+.sc-badge b{font-family:var(--serif);font-size:19px;font-weight:700;line-height:1}
+.sc-badge i{font-style:normal;font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.hscore{margin-top:10px}
+.nc-scb{margin-top:10px}
