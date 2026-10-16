@@ -12,6 +12,11 @@
 </head>
 <body>
 <div id="bootload" aria-hidden="true"><div class="bl-brand"><span class="bl-dot"></span>North Country Circle</div><div class="bl-track"><i></i></div><div class="bl-sub">Loading the map</div></div>
+<script>/* Boot-overlay watchdog: app.js dismisses #bootload on its first frame, but if
+   app.js ever fails to load or throws before that line, the overlay would trap the
+   page (fixed, full-screen, top z-index). This independent timer guarantees the
+   overlay always clears and removes itself from hit-testing. */
+setTimeout(function(){var b=document.getElementById("bootload");if(b&&!b.classList.contains("done")){b.classList.add("done");setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b);},450);}},4000);</script>
 <div id="stage">
   <canvas id="map"></canvas>
 
