@@ -2896,9 +2896,11 @@ var SCORE = { ver:-1, byDi:null };
 function fmtScoreVal(v){ return String(Math.round(v * 100) / 100); }
 function scoreCompute(){
   var W = SCORE_CFG.weights, pop = people(), N = pop.length, byDi = {};
-  /* JD's own entry anchors the shared-connection measurement */
+  /* JD's own entry anchors the shared-connection measurement. His
+     handle is the identity: the baked entry's key flavor is sf:
+     (subject file), so match the username itself, not a prefix. */
   var jdDi = null;
-  pop.forEach(function(di){ if(pkey(D.directory[di]) === 'ig:jdmeyers_') jdDi = di; });
+  pop.forEach(function(di){ var e0 = D.directory[di]; if(jdDi == null && ((e0.name || '') === 'jdmeyers_' || pkey(e0) === 'ig:jdmeyers_' || pkey(e0) === 'sf:jdmeyers_')) jdDi = di; });
   var jdAssoc = {}, jdGroups = {}, jdOrgs = {};
   if(jdDi != null){
     knownAssociates(D.directory[jdDi]).forEach(function(nb){ jdAssoc[(nb.u || '').toLowerCase()] = 1; });
