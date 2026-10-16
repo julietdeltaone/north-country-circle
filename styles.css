@@ -125,7 +125,10 @@ tr:hover td{background:#1a1a1a}
   .hud-tr{top:auto;bottom:76px;left:12px;right:auto;flex-direction:column}
   .tbtn{padding:8px 10px;font-size:12px}
   .panel{width:min(262px,80vw)}
-  .detail{width:min(330px,86vw)}
+  /* detail panel starts right of the left-edge toolbar column, so with a
+     person selected the nav buttons stay tappable instead of sitting
+     under the panel */
+  .detail{left:96px;right:12px;width:auto}
   .drawer{width:100vw}
   .hint{display:none}
 }
