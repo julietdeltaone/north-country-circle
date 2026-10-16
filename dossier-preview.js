@@ -3455,7 +3455,7 @@ function netResize(){
   NET.W = Math.max(200, r.width); NET.H = Math.max(200, r.height);
   cv.width = NET.W * NET.dpr; cv.height = NET.H * NET.dpr; NET.dirty = true;
 }
-function netFit(){ N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null; NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.bg ? 1900 : (netLayoutScore() ? 1720 : 1450)))); NET.rot = 0; NET.dirty = true; }
+function netFit(){ N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null; NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.bg ? 1900 : (netLayoutScore() ? 1840 : 1450)))); NET.rot = 0; NET.dirty = true; }
 function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
 function netHit(sx, sy){
   var wx = (sx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (sy - NET.H / 2) / NET.cam.z + NET.cam.y, best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
