@@ -17,6 +17,10 @@
    1. constants + helpers
    ============================================================ */
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
+/* App version — one number shared by both apps (dossier + explorer); scheme
+   and changelog live in VERSION.md at the repo root. MAJOR = design era
+   (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
+var APP_VERSION = '2.1.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1480,7 +1484,8 @@ function renderChrome(){
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
     '<button type="button" class="syncp" id="sync" data-act="retry"></button>' +
-    '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a></div>';
+    '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a>' +
+    '<span class="ver" title="App version">V' + APP_VERSION + '</span></div>';
   paintSync(); paintUndo();
 }
 function paintSync(){
