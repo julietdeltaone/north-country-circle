@@ -4031,9 +4031,11 @@ function audTryArm(card){
   var reeditArm = !!(xArm && xArm.done.indexOf(card.getAttribute('data-gap')) >= 0);
   /* Rapid Fire saves INSTANTLY, always (JD 2026-10-15): on a one-gap
      stage every save would be a "last gap", so the 3s countdown would
-     kill the pace — the toast + Undo is the safety net instead. */
-  var rapidArm = !!(S.audit && S.audit.mode === 'rapid');
-  if(reeditArm || rapidArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
+     kill the pace — the toast + Undo is the safety net instead.
+     Category Run is instant too (JD 2026-10-16): once a value is
+     confirmed entered it commits immediately, last gap included. */
+  var instantArm = !!(S.audit && (S.audit.mode === 'rapid' || S.audit.mode === 'cat'));
+  if(reeditArm || instantArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audDisarm(card);
   var cd = $('.aud-cd', card), cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
   card.classList.add('aud-arm');
