@@ -1191,3 +1191,14 @@ html,body{background:var(--bg)}
 .sk-cols .skl{height:300px;border-radius:2px}
 .sk-big{height:52vh;border-radius:2px;margin-top:16px}
 @media (prefers-reduced-motion:reduce){.skl::after{animation:none}}
+
+/* ---------- FLYOVER 2026-10-16: ambient 3D camera pass ----------
+   DOM labels for the nodes nearest the camera while Flyover runs in
+   the Network view. The layer never takes pointer events; the fade and
+   rise are driven per-frame from net3Draw on the standard state token
+   (opacity/transform only, no layout). Swiss Mono paint: flat #0a0a0a
+   plate, hairline border, 2px corners, tracked caps for the info line. */
+.netfly{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:5}
+.flylab{position:absolute;left:0;top:0;min-width:118px;max-width:228px;padding:7px 11px 8px;background:rgba(10,10,10,.93);border:1px solid var(--line2);border-radius:var(--r);opacity:0;will-change:transform,opacity}
+.flylab b{display:block;font-weight:600;font-size:13px;line-height:1.25;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flylab span{display:block;margin-top:2px;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
