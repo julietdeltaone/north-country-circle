@@ -1474,7 +1474,7 @@ var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
-  net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d'), layout:(store('ncc_netlayout') === 'score' ? 'score' : 'tier') },
+  net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d'), layout:(store('ncc_netlayout') === 'tier' ? 'tier' : 'score') },
   fam:{ editing:null, focus:null, sheet:false, side:null },
   grp:{ kind:'groups', open:null, renaming:null },
   audit:null   /* Audit feeder wall state (visit only), built lazily by viewAudit */
@@ -2557,9 +2557,8 @@ function heroHTML(di){
   return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
     (loc ? '<p class="hloc">' + ic('pin', 13) + esc(loc) + '</p>' : '') +
     '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
-    ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') + '</div>' +
-    '<div class="hctl"><div class="qk"><label>Tier</label>' + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '"') + '</div>' +
-    '<div class="qk"><label>Momentum</label>' + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '"') + '</div></div>';
+    ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') +
+    '<div class="hscore">' + scoreBadgeHTML(di) + '</div></div>';
 }
 /* ---------- section cards ---------- */
 function secHTML(di, id){
@@ -2609,12 +2608,11 @@ function secView(di, id){
     return rows.length ? '<div class="irows">' + rows.join('') + '</div>' : '<p class="dim">No contact details yet.</p>' + emptyPrompt(di, id, 'Add a phone number');
   }
   if(id === 'relationship'){
-    var tiles = [['Relationship', cap(gv(e, 'relationship'))], ['Context', cap(gv(e, 'context'))], ['Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1]],
-      ['Known since', knownSinceYear(e) ? knownSinceYear(e) + ' (' + Math.max(0, new Date().getFullYear() - knownSinceYear(e)) + ' yrs)' : '']];
+    var tiles = [['Tier', tierOf(e) ? TIERS[tierOf(e)].n : ''], ['Relationship', cap(gv(e, 'relationship'))], ['Context', cap(gv(e, 'context'))], ['Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1]],
+      ['Known since', knownSinceYear(e) ? knownSinceYear(e) + ' (' + Math.max(0, new Date().getFullYear() - knownSinceYear(e)) + ' yrs)' : ''], ['Momentum', momVal(e) ? MOM_LABELS[momVal(e)] : '']];
     var gs = personGroups(e);
     return '<div class="tiles">' + tiles.map(function(t){ return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b></div>'; }).join('') + '</div>' +
-      (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '') +
-      '<div class="sub-h">Closeness score</div>' + scoreBreakdownHTML(di);
+      (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '');
   }
   if(id === 'about'){
     var syn = gv(e, 'synopsis'), fp = footprintOf(e), out = '';
@@ -2767,7 +2765,9 @@ function secEdit(di, id){
     for(var ky = thisY; ky >= 1990; ky--) ksChips += '<button type="button" class="tchip ksy' + (ksYear === ky ? ' on' : '') + '" data-act="kspick" data-y="' + ky + '">' + ky + '</button>';
     ksList.forEach(function(y){ if(y < 1990 || y > thisY) ksChips += '<button type="button" class="tchip ksy' + (ksYear === y ? ' on' : '') + '" data-act="kspick" data-y="' + y + '">' + y + '</button>'; });
     var gs = Object.keys(allGroups()).sort(), mine = personGroups(e);
-    return lab('Relationship') + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '" data-sec="relationship"') +
+    return lab('Tier') + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '" data-sec="relationship"') +
+      lab('Momentum') + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '" data-sec="relationship"') +
+      lab('Relationship') + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Closeness') + seg('closeness', CLOSE_OPTS, gv(e, 'closeness'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Context') + seg('context', CTX_OPTS, gv(e, 'context'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Category') + seg('category', CAT_OPTS, gv(e, 'category'), ' data-di="' + di + '" data-sec="relationship"') +
@@ -2893,7 +2893,6 @@ var SCORE_LABELS = { closeness:'Closeness', tier:'Tier', relationship:'Relations
 var SCORE_RADII = [120, 235, 365, 525, 690], SCORE_SPREAD = [14, 26, 40, 55, 70];
 var SCORE_GUIDES = ['TOP 5', '6\u201315', '16\u201350', '51\u2013150', '150+'];
 var SCORE = { ver:-1, byDi:null };
-function fmtScoreVal(v){ return String(Math.round(v * 100) / 100); }
 function scoreCompute(){
   var W = SCORE_CFG.weights, pop = people(), N = pop.length, byDi = {};
   /* JD's own entry anchors the shared-connection measurement. His
@@ -2975,14 +2974,12 @@ function scoreCompute(){
 }
 function scoreAll(){ if(SCORE.ver !== VER || !SCORE.byDi) scoreCompute(); return SCORE.byDi; }
 function scoreFor(di){ var m = scoreAll(); return m[di] || null; }
-function scoreBreakdownHTML(di){
+function scoreBadgeHTML(di){
+  /* The score shows as a plain badge (JD 2026-10-16): the number, plus
+     a small "pinned" marker when a Score Pin is in force. No layer
+     label and no arithmetic anywhere it appears. */
   var s = scoreFor(di); if(!s) return '';
-  var h = '<div class="sc-box"><div class="sc-top"><b>' + s.score + '</b><span>Closeness score' + (s.layer ? ' \u00b7 Layer ' + s.layer + ' of 5' : ' \u00b7 Not on the map') + '</span></div>';
-  if(s.pinned) h += '<div class="sc-line">Pinned at ' + s.score + ' \u2014 the computed score is ' + s.computed + '.</div>';
-  if(s.parts.length) h += '<div class="sc-line">' + s.parts.map(function(p){ return esc(p.label) + ' ' + p.w + ' \u00d7 ' + fmtScoreVal(p.v); }).join(' \u00b7 ') + ' \u2192 ' + s.computed + '</div>';
-  if(s.blank.length) h += '<div class="sc-blank">Blank: ' + esc(s.blank.join(', ')) + ' \u2014 not counted, never zero.</div>';
-  if(s.lowConf) h += '<div class="sc-blank">Low confidence: only one signal on file.</div>';
-  return h + '</div>';
+  return '<span class="sc-badge" title="Closeness score"><b>' + s.score + '</b>' + (s.pinned ? '<i>pinned</i>' : '') + '</span>';
 }
 /* Active-layout coordinates: the tier layout's fields stay the
    default everywhere; the score layout's parallel fields take over
@@ -3556,7 +3553,7 @@ function netCard(){
       '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
       (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
       '<button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>' +
-      '<div class="nc-sc">' + scoreBreakdownHTML(di) + '</div>';
+      '<div class="nc-scb">' + scoreBadgeHTML(di) + '</div>';
     if(cols) cols.classList.add('sel');
   }
   /* the panel opening or closing changes the canvas size; refit the backing store */
@@ -3981,7 +3978,6 @@ var AUD_GAPS = {
   tier:  { tag:'Tier',          short:'Tier',     prompt:'Tier not set' },
   loc:   { tag:'Location',      short:'Location', prompt:'No location on file' },
   rel:   { tag:'Relationship',  short:'Relation', prompt:'Relationship not set' },
-  closeness: { tag:'Closeness', short:'Closeness', prompt:'How close are you?' },
   years: { tag:'Years known',   short:'Years',    prompt:'How long have you known them?' },
   phone: { tag:'Phone',         short:'Phone',    prompt:'No phone number' },
   orgs:  { tag:'Organizations', short:'Orgs',     prompt:'No organizations on file' },
@@ -3996,9 +3992,6 @@ function audGaps(e){
   if(!gv(e, 'phone')) g.push('phone');
   if(!orgsOf(e).length) g.push('orgs');
   if(!tagList(gv(e, 'specialty')).length) g.push('skills');
-  /* Closeness joins the feeder only alongside another gap (JD 2026-10-16):
-     alone it would flood the wall with every unrated profile on day one. */
-  if(!gv(e, 'closeness') && g.length) g.push('closeness');
   return g;
 }
 /* Persistent dismissals: { "pkey|gap": 1 } in localStorage ncc_aud_skip
@@ -4101,11 +4094,6 @@ function audEdHTML(di, gap){
       return '<button type="button" class="fc aud-pick" data-act="audpick" data-v="' + r + '">' + cap(r) + '</button>';
     }).join('') + '</div>';
   }
-  if(gap === 'closeness'){
-    return '<div class="aud-opts">' + CLOSE_OPTS.map(function(r){
-      return '<button type="button" class="fc aud-pick" data-act="audpick" data-v="' + r + '">' + cap(r) + '</button>';
-    }).join('') + '</div>';
-  }
   if(gap === 'loc') return '<div class="pted-add"><input class="aud-in" placeholder="Town, ST — e.g. Potsdam, NY" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'years') return '<div class="pted-add"><input class="aud-in aud-year" inputmode="numeric" placeholder="Year, e.g. 2019" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'phone') return '<input class="aud-in" type="tel" placeholder="Phone number" autocomplete="off">';
@@ -4185,8 +4173,8 @@ function audReopen(card, gap){
   if(pr) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>';
   var ed = $('.aud-ed', card); if(ed) ed.innerHTML = audEdHTML(di, gap);
   var e = D.directory[di];
-  if(gap === 'tier' || gap === 'rel' || gap === 'closeness'){
-    var cur = gap === 'tier' ? tierOf(e) : gv(e, gap === 'rel' ? 'relationship' : 'closeness');
+  if(gap === 'tier' || gap === 'rel'){
+    var cur = gap === 'tier' ? tierOf(e) : gv(e, 'relationship');
     if(cur){
       card.setAttribute('data-pick', cur);
       $$('.aud-pick', card).forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === cur); });
@@ -4526,8 +4514,8 @@ function audAdvanceFrom(card){
    audReopen does, without entering re-edit state. */
 function audPrefillDone(card, x){
   var gap = x.cur, e = D.directory[x.di];
-  if(gap === 'tier' || gap === 'rel' || gap === 'closeness'){
-    var cur = gap === 'tier' ? tierOf(e) : gv(e, gap === 'rel' ? 'relationship' : 'closeness');
+  if(gap === 'tier' || gap === 'rel'){
+    var cur = gap === 'tier' ? tierOf(e) : gv(e, 'relationship');
     if(cur){
       card.setAttribute('data-pick', cur);
       $$('.aud-pick', card).forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === cur); });
@@ -4622,7 +4610,7 @@ function audRapidShiftRight(card){
     audAdvanceFrom(card);     /* then advance (finalizes the stack) */
     return;
   }
-  if((gap === 'tier' || gap === 'rel' || gap === 'closeness') && !card.getAttribute('data-pick')){
+  if((gap === 'tier' || gap === 'rel') && !card.getAttribute('data-pick')){
     var a = document.activeElement;
     if(a && card.contains(a) && a.classList && a.classList.contains('aud-pick')){
       card.setAttribute('data-pick', a.getAttribute('data-v'));
@@ -4661,7 +4649,7 @@ function audRapidBack(card){
    non-empty text field, or a plausible 4-digit year (1900–current). */
 function audReady(card){
   var gap = card.getAttribute('data-gap');
-  if(gap === 'tier' || gap === 'rel' || gap === 'closeness') return !!card.getAttribute('data-pick');
+  if(gap === 'tier' || gap === 'rel') return !!card.getAttribute('data-pick');
   if(gap === 'years'){ var yi = $('.aud-year', card); return !!(yi && audYearOk(yi.value)); }
   var inp = $('.aud-in', card);
   return !!(inp && inp.value.trim());
@@ -4687,7 +4675,7 @@ function audPhoneOk(v){
 }
 function audComplete(card){
   var gap = card.getAttribute('data-gap');
-  if(gap === 'tier' || gap === 'rel' || gap === 'closeness') return !!card.getAttribute('data-pick');
+  if(gap === 'tier' || gap === 'rel') return !!card.getAttribute('data-pick');
   var inp = $('.aud-in', card);
   if(!inp) return false;
   var v = inp.value.trim();
@@ -4780,12 +4768,10 @@ function audReplaceTag(di, oldK, newK, oldVal, newVal){
    patch was needed). */
 function audWriteValue(di, card, gap){
   var e = D.directory[di]; if(!e) return null;
-  if(gap === 'tier' || gap === 'rel' || gap === 'closeness'){
+  if(gap === 'tier' || gap === 'rel'){
     var pick = card.getAttribute('data-pick');
     if(!pick) return null;
-    var en = gap === 'tier' ? txn('Set tier', function(){ queuePatch(di, { tier:pick }); })
-      : gap === 'rel' ? txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); })
-      : txn('Set closeness', function(){ queuePatch(di, { closeness:pick }); });
+    var en = gap === 'tier' ? txn('Set tier', function(){ queuePatch(di, { tier:pick }); }) : txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); });
     return { entry:en, val:gap === 'tier' ? (TIERS[pick] ? TIERS[pick].n : pick) : cap(pick) };
   }
   if(gap === 'loc'){
