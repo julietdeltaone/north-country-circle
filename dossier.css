@@ -61,6 +61,7 @@ body.sheet-open{overflow:hidden}
 .show-s{display:none}
 .syncp{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border-radius:2px;border:1px solid var(--line);font-size:12.5px;color:var(--mut);white-space:nowrap}
 .syncp i{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.ver{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--mut);white-space:nowrap;margin-left:4px}
 .syncp.busy i{background:var(--warn)} .syncp.err{color:var(--bad);border-color:rgba(224,118,111,.4)} .syncp.err i{background:var(--bad)}
 #view{padding:28px;max-width:1280px;width:100%;margin:0 auto;outline:none}
 .page{display:flex;flex-direction:column;gap:20px}
