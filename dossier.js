@@ -4201,15 +4201,14 @@ function audCardHTML(x, i){
 /* Switch a card's active gap in place: chips, prompt and editor swap
    without the card moving or resizing. Any armed countdown is cancelled,
    so a half-filled editor never submits after a switch. */
-/* Positional stability (JD 2026-10-16): the Audit wall is CSS
-   multicol, whose balance is a pure function of the cards' height
-   sequence — hold that sequence constant and no bystander ever moves.
-   A wall card that changes content in place therefore keeps the
-   height it had: the card is a flex column whose footer is pinned by
-   margin-top:auto, so shorter content just leaves quiet space above
-   the footer. Taller content takes its natural height (only the
-   cards below it in its own column shift, by exactly the excess).
-   Stage cards are exempt — the stage wrap locks that footprint. */
+/* Positional stability (JD 2026-10-16): the Audit wall is a row of
+   independent column stacks (see audBuildWall), and a wall card that
+   changes content in place keeps the height it had — shorter content
+   just leaves quiet space at the card's bottom, so the cards below
+   it in its column never shift. Taller content takes its natural
+   height (only the cards below it in its own column shift, by
+   exactly the excess). Stage cards are exempt — the stage wrap
+   locks that footprint. */
 function audPinH(card){
   if(!card || (S.audit && S.audit.mode === 'rapid')) return null;
   return card.offsetHeight || null;
@@ -4975,7 +4974,10 @@ function audRetire(card, saved, kbFocus){
        DEPARTED card's slot — same DOM position, same height — so the
        wall's height sequence is unchanged, no bystander moves, and
        focus lands in the new card's editor without scrolling. */
-    var sib = card.nextElementSibling, prev = card.previousElementSibling, depH = card.offsetHeight;
+    var sib = card.nextElementSibling, prev = card.previousElementSibling, depH = card.offsetHeight, colEl = card.parentNode;
+    var allC = $$('.aud-card'), ci = -1;
+    for(var i2 = 0; i2 < allC.length; i2++) if(allC[i2] === card) ci = i2;
+    var domNext = ci >= 0 ? (allC[ci + 1] || null) : null, domPrev = ci >= 0 ? (allC[ci - 1] || null) : null;
     card.remove();
     /* Rapid Fire stage history (JD 2026-10-16): every card that
        leaves the stage is remembered, most recent last, so
@@ -4991,11 +4993,11 @@ function audRetire(card, saved, kbFocus){
       A.shown.push(nxt);
       if(nxt.parked) audUnpark(pkey(D.directory[nxt.di]));   /* back on the wall: no longer parked */
       var grid = $('#audgrid');
-      if(grid){
+      if(grid && colEl){
         var tmp = document.createElement('div');
         tmp.innerHTML = audCardHTML(nxt, 0);
         var nc = tmp.firstChild;
-        if(sib && sib.parentNode === grid) grid.insertBefore(nc, sib); else grid.appendChild(nc);
+        if(sib && sib.parentNode === colEl) colEl.insertBefore(nc, sib); else colEl.appendChild(nc);
         audWireCard(nc);
         if(depH && nc.offsetHeight <= depH) nc.style.height = depH + 'px';
         /* Keyboard flows (and the flow modes generally) land focus
@@ -5013,7 +5015,9 @@ function audRetire(card, saved, kbFocus){
        one), never to the first card on the wall. */
     if(!nxt && audFlowMode() && hadFocus){
       var rest = (sib && sib.classList && sib.classList.contains('aud-card')) ? sib
-        : (prev && prev.classList && prev.classList.contains('aud-card')) ? prev : null;
+        : (prev && prev.classList && prev.classList.contains('aud-card')) ? prev
+        : (domNext && domNext.isConnected) ? domNext
+        : (domPrev && domPrev.isConnected) ? domPrev : null;
       if(rest) audFocusEditor(rest);
     }
     audPaintCounts(); audPaintEmpty();
@@ -5279,6 +5283,63 @@ function audPaintModeBar(){
   else if(m === 'cat'){ audPaintCatProg(); }
 }
 
+/* Wall columns (JD 2026-10-16): the wall is K independent column
+   stacks — K from the wall's width at the old multicol measure
+   (a 318px column + 16px gutter). Cards are dealt shortest-column-
+   first by measured height. A card leaving or arriving touches only
+   its own column; the survivors cannot rebalance (CSS multicol
+   rebalanced the whole wall on every change — the original jump). */
+function audColCount(grid){
+  var w = (grid && grid.clientWidth) || 318;
+  return Math.max(1, Math.floor((w + 16) / 334));
+}
+function audBuildWall(grid){
+  var A = S.audit; if(!grid || !A || !A.shown) return;
+  var k = audColCount(grid), cols = [];
+  grid.innerHTML = '';
+  for(var i = 0; i < k; i++){
+    var c = document.createElement('div');
+    c.className = 'aud-col';
+    grid.appendChild(c); cols.push(c);
+  }
+  A.shown.forEach(function(x, i){
+    var tmp = document.createElement('div');
+    tmp.innerHTML = audCardHTML(x, i);
+    var nc = tmp.firstChild;
+    var tgt = cols[0];
+    for(var j = 1; j < cols.length; j++) if(cols[j].offsetHeight < tgt.offsetHeight) tgt = cols[j];
+    tgt.appendChild(nc);
+    audWireCard(nc);
+  });
+}
+/* On a viewport resize that changes the column count, re-deal the
+   EXISTING card nodes (values, wiring and focus ride along — nothing
+   is re-rendered). Never while JD is mid-interaction: the flex
+   columns just breathe until he is done. */
+var AUD_COL_WATCH = false;
+function audWatchCols(){
+  if(AUD_COL_WATCH) return; AUD_COL_WATCH = true;
+  var t = null;
+  addEventListener('resize', function(){
+    clearTimeout(t);
+    t = setTimeout(function(){
+      if(!S.route || S.route.name !== 'audit' || audMode() === 'rapid') return;
+      var grid = $('#audgrid'); if(!grid) return;
+      var cols = $$('.aud-col', grid), k = audColCount(grid);
+      if(!cols.length || cols.length === k || refreshBusy()) return;
+      var cards = $$('.aud-card', grid);
+      grid.innerHTML = '';
+      var fresh = [];
+      for(var i = 0; i < k; i++){ var c = document.createElement('div'); c.className = 'aud-col'; grid.appendChild(c); fresh.push(c); }
+      cards.forEach(function(nc){
+        var tgt = fresh[0];
+        for(var j = 1; j < fresh.length; j++) if(fresh[j].offsetHeight < tgt.offsetHeight) tgt = fresh[j];
+        tgt.appendChild(nc);
+      });
+    }, 180);
+  });
+}
+
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null };
   if(['cards', 'rapid', 'cat', 'finish'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
@@ -5302,17 +5363,18 @@ function viewAudit(v){
     grid.innerHTML = '<div class="aud-caught aud-blitzsum"><h3>Blitz over</h3>' +
       '<p class="aud-blitzstats"><b>' + S.audit.blitzDone.fills + '</b> fills · best streak <b>' + S.audit.blitzDone.best + '</b> · <b>' + (S.audit.blitzDone.fills / 2).toFixed(1) + '</b> per minute</p>' +
       '<p><button type="button" class="btn primary" data-act="audblitz">Go again</button> <button type="button" class="btn ghost" data-act="audblitzx">Back to Rapid Fire</button></p></div>';
-  } else {
+  } else if(m === 'rapid') {
     grid.innerHTML = S.audit.shown.map(function(x, i){ return audCardHTML(x, i); }).join('');
     $$('.aud-card', grid).forEach(audWireCard);
     /* Rapid Fire opens with the keyboard live (JD 2026-10-16): focus
        the stage card's editor on render, unless focus is already
        inside it (a re-render under the user's hands must not yank
        the caret — quietRefresh defers those rebuilds anyway). */
-    if(m === 'rapid'){
-      var fc = $('.aud-card', grid);
-      if(fc && !fc.contains(document.activeElement)) audFocusEditor(fc);
-    }
+    var fc = $('.aud-card', grid);
+    if(fc && !fc.contains(document.activeElement)) audFocusEditor(fc);
+  } else {
+    audBuildWall(grid);
+    audWatchCols();
   }
   if(m === 'rapid' && !pvReducedMotion()) S.audit._paceIv = setInterval(function(){ audPaintModeBar(); }, 5000);
   audPaintCounts(); audPaintEmpty();
