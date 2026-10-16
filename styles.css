@@ -119,7 +119,10 @@ tr:hover td{background:#1a1a1a}
 .mobile-note button{flex:none;background:var(--amber);border:none;border-radius:2px;padding:8px 14px;font-weight:700;cursor:pointer;color:#0a0a0a}
 @media(max-width:900px){
   .hud-tc{width:min(420px,72vw);left:16px;transform:none}
-  .hud-tr{top:auto;bottom:76px;right:12px;flex-direction:column}
+  /* toolbar goes to the LEFT edge: on the right it sat under the zoomctl
+     column (same bottom-right corner) and Bridges/Directory/Reset/Guide
+     were untappable — their centers hit the zoom buttons instead */
+  .hud-tr{top:auto;bottom:76px;left:12px;right:auto;flex-direction:column}
   .tbtn{padding:8px 10px;font-size:12px}
   .panel{width:min(262px,80vw)}
   .detail{width:min(330px,86vw)}
@@ -168,14 +171,14 @@ body.dir-resizing{user-select:none!important;cursor:ew-resize!important}
 @media(max-width:900px){ #dir-grip{display:none} }
 
 /* ---------- SWISS MONO 2026-10-15: boot + directory loading states ---------- */
-#bootload{position:fixed;inset:0;z-index:80;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .24s var(--ease-std)}
-#bootload.done{opacity:0;pointer-events:none}
+#bootload{position:fixed;inset:0;z-index:80;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .24s var(--ease-std, cubic-bezier(.2,0,0,1))}
+#bootload.done{opacity:0;pointer-events:none;visibility:hidden}
 .bl-brand{display:flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.14em;color:var(--txt)}
 .bl-dot{width:9px;height:9px;border-radius:50%;background:var(--red);flex:none}
 .bl-track{width:220px;height:2px;background:#262626;overflow:hidden}
 .bl-track i{display:block;height:100%;background:var(--red);transform:scaleX(.12);transform-origin:left;animation:blFill 1.4s cubic-bezier(.2,0,0,1) forwards}
 @keyframes blFill{to{transform:scaleX(.88)}}
-#bootload.done .bl-track i{transform:scaleX(1);transition:transform .18s var(--ease-std)}
+#bootload.done .bl-track i{transform:scaleX(1);transition:transform .18s var(--ease-std, cubic-bezier(.2,0,0,1))}
 .bl-sub{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5c5c5c}
 .dirskl{padding:6px 2px}
 .dirskl .skr{height:15px;background:rgba(255,255,255,.06);margin:11px 10px;position:relative;overflow:hidden}
