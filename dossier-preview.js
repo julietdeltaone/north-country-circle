@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.3.2';
+var APP_VERSION = '2.3.3';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4711,6 +4711,13 @@ function audRetire(card, saved, kbFocus){
            retirements (focus only follows when the card had it). */
         if(hadFocus || audFlowMode()){ var nf = (kbFocus || audFlowMode()) ? audEditorEl(nc) : $('button, input', nc); if(nf) nf.focus(); }
       }
+    }
+    /* Flow modes on a wall (Category Run deals its whole lane at
+       once, so often no fresh card feeds in): a retired card must not
+       strand focus on <body> — hand it to the first card left. */
+    if(!nxt && audFlowMode() && hadFocus){
+      var rest = $('#audgrid .aud-card');
+      if(rest) audFocusEditor(rest);
     }
     audPaintCounts(); audPaintEmpty();
   }
