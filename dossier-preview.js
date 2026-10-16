@@ -1469,7 +1469,7 @@ var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
-  net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d') },
+  net:{ color:'tier', bg:false, sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d'), layout:(store('ncc_netlayout') === 'score' ? 'score' : 'tier') },
   fam:{ editing:null, focus:null, sheet:false, side:null },
   grp:{ kind:'groups', open:null, renaming:null },
   audit:null   /* Audit feeder wall state (visit only), built lazily by viewAudit */
@@ -1744,6 +1744,7 @@ function pplSort(dis){
       assoc: knownAssociates(e).length,
       skills: tagList(gv(e, 'specialty')).join(', ').toLowerCase(),
       rel: cap(gv(e, 'relationship')).toLowerCase(),
+      close: CLOSE_RANK[(gv(e, 'closeness') || '').toLowerCase()] || 0,
       handle: ptHandle(e).toLowerCase(),
       groups: personGroups(e).join(', ').toLowerCase(),
       years: knownSinceYear(e),
@@ -1756,7 +1757,7 @@ function pplSort(dis){
     var ka = K[a], kb = K[b], r = 0;
     if(ts.k === 'tier') r = (ka.tier - kb.tier) * d;
     else if(ts.k === 'assoc') r = (ka.assoc - kb.assoc) * d;
-    else if(ts.k === 'years' || ts.k === 'updated'){
+    else if(ts.k === 'years' || ts.k === 'updated' || ts.k === 'close'){
       var na = ka[ts.k], nb = kb[ts.k];
       if(na && nb) r = (na - nb) * d; else if(na) r = -1; else if(nb) r = 1;
     }
@@ -1906,6 +1907,7 @@ var PT_ALL = [
   { k:'assoc',    label:'Known associates', num:true },
   { k:'skills',   label:'Skills' },
   { k:'rel',      label:'Relationship' },
+  { k:'close',    label:'Closeness' },
   { k:'handle',   label:'Handle' },
   { k:'groups',   label:'Groups' },
   { k:'years',    label:'Years known', num:true },
@@ -1914,8 +1916,8 @@ var PT_ALL = [
   { k:'updated',  label:'Last updated', num:true }
 ];
 var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1 };
-var PT_NUMDIR = { assoc:1, years:1, updated:1 };   /* first click on these sorts high-to-low */
-var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', groups:'groups', years:'years', phone:'phone', email:'email' };
+var PT_NUMDIR = { assoc:1, years:1, updated:1, close:1 };   /* first click on these sorts high-to-low */
+var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', close:'close', groups:'groups', years:'years', phone:'phone', email:'email' };
 var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
 var PT_SEED_ORGS = {
   universities: ['SUNY Potsdam','Clarkson University','St. Lawrence University','SUNY Canton','Potsdam Central School','Hugh C. Williams Senior High School','Massena Central High School','Norwood-Norfolk Central School','Madrid-Waddington Central School','Ogdensburg Free Academy','Gouverneur Central School','Lisbon Central School','Colton-Pierrepont Central School','Parishville-Hopkinton Central School','St. Lawrence Central School','Edwards-Knox Central School','Hermon-DeKalb Central School','Clifton-Fine Central School','Hammond Central School','Heuvelton Central School','Morristown Central School'],
@@ -1937,6 +1939,7 @@ var PTCELL = {
   assoc: function(e){ return String(knownAssociates(e).length); },
   skills: function(e){ var s = tagList(gv(e, 'specialty')); return '<span class="clip" title="' + esc(s.join(', ')) + '">' + esc(s.slice(0, 2).join(', ')) + '</span>'; },
   rel: function(e){ return esc(cap(gv(e, 'relationship'))); },
+  close: function(e){ return esc(cap(gv(e, 'closeness'))); },
   handle: function(e){ var h = ptHandle(e); return h ? '@' + esc(h) : ''; },
   groups: function(e){ var g = personGroups(e); return '<span class="clip" title="' + esc(g.join(', ')) + '">' + esc(g.slice(0, 2).join(', ')) + '</span>'; },
   years: function(e){ var y = knownSinceYear(e); return y ? String(y) : ''; },
@@ -2208,6 +2211,13 @@ function ptEdHTML(di, k){
       return '<button type="button" class="pted-opt' + (cur === o[0] ? ' on' : '') + '" data-v="' + o[0] + '"><i style="background:' + o[2] + '"></i>' + o[1] + '</button>';
     }).join('') + '</div>';
   }
+  if(k === 'close'){
+    var cc2 = gv(e, 'closeness');
+    var copts = [['', 'Not set']].concat(CLOSE_OPTS.map(function(r){ return [r, cap(r)]; }));
+    return '<div class="pted-h">Closeness</div><div class="pted-opts">' + copts.map(function(o){
+      return '<button type="button" class="pted-opt' + (cc2 === o[0] ? ' on' : '') + '" data-v="' + o[0] + '">' + o[1] + '</button>';
+    }).join('') + '</div>';
+  }
   if(k === 'rel'){
     var rc = gv(e, 'relationship');
     var ropts = [['', 'Not set']].concat(REL_OPTS.map(function(r){ return [r, cap(r)]; }));
@@ -2280,11 +2290,15 @@ function ptEdWire(pop, di, k){
   pop.addEventListener('keydown', function(ev){
     if(ev.key === 'Escape'){ ev.stopPropagation(); ptEditClose(); }
   });
-  if(k === 'tier' || k === 'rel'){
+  if(k === 'tier' || k === 'rel' || k === 'close'){
     $$('.pted-opt', pop).forEach(function(b){
       b.addEventListener('click', function(){
         var v = b.getAttribute('data-v'), e = D.directory[di];
         if(k === 'tier') txn('Set tier', function(){ queuePatch(di, { tier:v }); });
+        else if(k === 'close'){
+          var curC = gv(e, 'closeness'), nextC = (v && v === curC) ? '' : v;
+          txn('Set closeness', function(){ queuePatch(di, { closeness:nextC }); });
+        }
         else {
           var cur = gv(e, 'relationship'), next = (v && v === cur) ? '' : v;
           txn('Set relationship', function(){ queuePatch(di, { relationship:next }); });
@@ -2594,7 +2608,8 @@ function secView(di, id){
       ['Known since', knownSinceYear(e) ? knownSinceYear(e) + ' (' + Math.max(0, new Date().getFullYear() - knownSinceYear(e)) + ' yrs)' : '']];
     var gs = personGroups(e);
     return '<div class="tiles">' + tiles.map(function(t){ return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b></div>'; }).join('') + '</div>' +
-      (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '');
+      (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '') +
+      '<div class="sub-h">Closeness score</div>' + scoreBreakdownHTML(di);
   }
   if(id === 'about'){
     var syn = gv(e, 'synopsis'), fp = footprintOf(e), out = '';
@@ -2748,8 +2763,10 @@ function secEdit(di, id){
     ksList.forEach(function(y){ if(y < 1990 || y > thisY) ksChips += '<button type="button" class="tchip ksy' + (ksYear === y ? ' on' : '') + '" data-act="kspick" data-y="' + y + '">' + y + '</button>'; });
     var gs = Object.keys(allGroups()).sort(), mine = personGroups(e);
     return lab('Relationship') + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '" data-sec="relationship"') +
+      lab('Closeness') + seg('closeness', CLOSE_OPTS, gv(e, 'closeness'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Context') + seg('context', CTX_OPTS, gv(e, 'context'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Category') + seg('category', CAT_OPTS, gv(e, 'category'), ' data-di="' + di + '" data-sec="relationship"') +
+      lab('Score pin', 'Optional: a fixed score from 0 to 100 that overrides the computed closeness score') + '<input data-pk="score_pin" type="number" min="0" max="100" step="1" value="' + esc(gv(e, 'score_pin')) + '" placeholder="Not pinned" autocomplete="off">' +
       lab('Known since', 'Type a year (suggestions appear), or tap one') + '<input data-pk="years_known" id="ksin" inputmode="numeric" list="kslist" value="' + (ksYear || '') + '" placeholder="e.g. 2019" autocomplete="off"><datalist id="kslist">' + ksDl + '</datalist>' +
       '<div class="kschips">' + ksChips + '</div>' +
       lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
@@ -2844,6 +2861,132 @@ function degreesEditor(di){
 }
 
 /* ============================================================
+   Closeness score (JD 2026-10-16, Method v2; canonical spec:
+   your_files/ncc-closeness-score-method-v2-2026-10-16.md).
+   score = 100 x sum(w_i * v_i over FILLED components) / sum(w_i
+   over FILLED). A blank component is unknown, never zero: it drops
+   out and the remaining weights rescale. An open tier and a
+   "distant" rating are FILLED at value 0; a blank tier, an
+   unmapped relationship, an unrated closeness and unknown years
+   drop out. Mutual fabric is Adamic-Adar shared with JD (common
+   known associates + shared canonical groups and organizations),
+   percentile-ranked across the listed population, so it is
+   defined for everyone and always filled. A Score Pin (Sheet
+   column "Score Pin") wins over the computed score and survives
+   recomputation. All weights and maps live in SCORE_CFG only.
+   ============================================================ */
+var CLOSE_OPTS = ['distant', 'less than close', 'close', 'especially close'];
+var CLOSE_RANK = { 'distant':1, 'less than close':2, 'close':3, 'especially close':4 };
+var SCORE_CFG = {
+  weights: { closeness:40, tier:25, relationship:15, years:10, fabric:10 },
+  closeness: { 'distant':0, 'less than close':0.33, 'close':0.67, 'especially close':1 },
+  tier: { vetted:1, associate:0.5, open:0 },
+  relationship: { family:1.0, friend:0.85, coworker:0.6, client:0.55, acquaintance:0.35, 'by association':0.2, online:0.15 },
+  yearsCap: 20
+};
+var SCORE_LABELS = { closeness:'Closeness', tier:'Tier', relationship:'Relationship', years:'Years', fabric:'Fabric' };
+var SCORE_RADII = [120, 235, 365, 525, 690], SCORE_SPREAD = [14, 26, 40, 55, 70];
+var SCORE_GUIDES = ['TOP 5', '6\u201315', '16\u201350', '51\u2013150', '150+'];
+var SCORE = { ver:-1, byDi:null };
+function fmtScoreVal(v){ return String(Math.round(v * 100) / 100); }
+function scoreCompute(){
+  var W = SCORE_CFG.weights, pop = people(), N = pop.length, byDi = {};
+  /* JD's own entry anchors the shared-connection measurement */
+  var jdDi = null;
+  pop.forEach(function(di){ if(pkey(D.directory[di]) === 'ig:jdmeyers_') jdDi = di; });
+  var jdAssoc = {}, jdGroups = {}, jdOrgs = {};
+  if(jdDi != null){
+    knownAssociates(D.directory[jdDi]).forEach(function(nb){ jdAssoc[(nb.u || '').toLowerCase()] = 1; });
+    personGroups(D.directory[jdDi]).forEach(function(g){ jdGroups[g] = 1; });
+    orgsOf(D.directory[jdDi]).forEach(function(o){ jdOrgs[regApply(o)] = 1; });
+  }
+  /* degrees across the population: a person's degree is their
+     known-associate count; a group's or org's degree is its
+     member count among the listed profiles */
+  var gDeg = {}, oDeg = {};
+  pop.forEach(function(di){
+    var e = D.directory[di];
+    personGroups(e).forEach(function(g){ gDeg[g] = (gDeg[g] || 0) + 1; });
+    orgsOf(e).forEach(function(o){ var c = regApply(o); oDeg[c] = (oDeg[c] || 0) + 1; });
+  });
+  function aaOf(e){
+    var sum = 0;
+    knownAssociates(e).forEach(function(nb){
+      var u = (nb.u || '').toLowerCase();
+      if(!u || !jdAssoc[u]) return;
+      var tdi = BYN[u]; if(tdi == null) return;
+      var deg = knownAssociates(D.directory[tdi]).length;
+      if(deg > 1) sum += 1 / Math.log(deg);
+    });
+    personGroups(e).forEach(function(g){ if(jdGroups[g] && gDeg[g] > 1) sum += 1 / Math.log(gDeg[g]); });
+    orgsOf(e).forEach(function(o){ var c = regApply(o); if(jdOrgs[c] && oDeg[c] > 1) sum += 1 / Math.log(oDeg[c]); });
+    return sum;
+  }
+  var aa = {};
+  pop.forEach(function(di){ aa[di] = aaOf(D.directory[di]); });
+  var sortedAA = pop.map(function(di){ return aa[di]; }).sort(function(a, b){ return a - b; });
+  function pctOf(v){ /* proportion of the population strictly below v, over N-1 */
+    var lo = 0, hi = sortedAA.length;
+    while(lo < hi){ var mid = (lo + hi) >> 1; if(sortedAA[mid] < v) lo = mid + 1; else hi = mid; }
+    return N > 1 ? lo / (N - 1) : 0;
+  }
+  pop.forEach(function(di){
+    var e = D.directory[di], parts = [], blank = [], wsum = 0, vsum = 0;
+    function add(k, filled, v){
+      if(filled){ parts.push({ k:k, label:SCORE_LABELS[k], w:W[k], v:v }); wsum += W[k]; vsum += W[k] * v; }
+      else blank.push(SCORE_LABELS[k]);
+    }
+    var cv = (gv(e, 'closeness') || '').toLowerCase();
+    add('closeness', SCORE_CFG.closeness[cv] !== undefined, SCORE_CFG.closeness[cv] || 0);
+    var tv = tierOf(e);
+    add('tier', SCORE_CFG.tier[tv] !== undefined, SCORE_CFG.tier[tv] || 0);
+    var rv = (gv(e, 'relationship') || '').toLowerCase();
+    add('relationship', SCORE_CFG.relationship[rv] !== undefined, SCORE_CFG.relationship[rv] || 0);
+    var sy = knownSinceYear(e);
+    var yrs = sy ? Math.max(0, Math.min(SCORE_CFG.yearsCap, new Date().getFullYear() - sy)) : null;
+    add('years', yrs != null, yrs != null ? Math.log(1 + yrs) / Math.log(1 + SCORE_CFG.yearsCap) : 0);
+    add('fabric', true, pctOf(aa[di]));
+    var computed = wsum ? Math.round(100 * vsum / wsum) : 0;
+    var pin = parseFloat(gv(e, 'score_pin'));
+    var pinned = isFinite(pin) && pin >= 0 && pin <= 100;
+    byDi[di] = {
+      score: pinned ? Math.round(pin) : computed, computed:computed, pinned:pinned,
+      parts:parts, blank:blank, filledCount:parts.length,
+      lowConf:parts.length <= 1, layer:0, rank:0
+    };
+  });
+  /* Dunbar rank layers over the on-map population (the same set
+     netBuild maps), so layer 1 always holds exactly 5 */
+  var onMap = pop.filter(function(di){ return D.directory[di].has_graph !== false; });
+  onMap.sort(function(a, b){ return (byDi[b].score - byDi[a].score) || (a - b); });
+  onMap.forEach(function(di, i){
+    byDi[di].rank = i + 1;
+    byDi[di].layer = i < 5 ? 1 : i < 15 ? 2 : i < 50 ? 3 : i < 150 ? 4 : 5;
+  });
+  SCORE.byDi = byDi; SCORE.ver = VER;
+  return byDi;
+}
+function scoreAll(){ if(SCORE.ver !== VER || !SCORE.byDi) scoreCompute(); return SCORE.byDi; }
+function scoreFor(di){ var m = scoreAll(); return m[di] || null; }
+function scoreBreakdownHTML(di){
+  var s = scoreFor(di); if(!s) return '';
+  var h = '<div class="sc-box"><div class="sc-top"><b>' + s.score + '</b><span>Closeness score' + (s.layer ? ' \u00b7 Layer ' + s.layer + ' of 5' : ' \u00b7 Not on the map') + '</span></div>';
+  if(s.pinned) h += '<div class="sc-line">Pinned at ' + s.score + ' \u2014 the computed score is ' + s.computed + '.</div>';
+  if(s.parts.length) h += '<div class="sc-line">' + s.parts.map(function(p){ return esc(p.label) + ' ' + p.w + ' \u00d7 ' + fmtScoreVal(p.v); }).join(' \u00b7 ') + ' \u2192 ' + s.computed + '</div>';
+  if(s.blank.length) h += '<div class="sc-blank">Blank: ' + esc(s.blank.join(', ')) + ' \u2014 not counted, never zero.</div>';
+  if(s.lowConf) h += '<div class="sc-blank">Low confidence: only one signal on file.</div>';
+  return h + '</div>';
+}
+/* Active-layout coordinates: the tier layout's fields stay the
+   default everywhere; the score layout's parallel fields take over
+   only while it is selected. nd.ring is always the TIER ring —
+   netColor reads it, and tier owns color in both layouts. */
+function netLayoutScore(){ return S.net.layout === 'score'; }
+function netP2(nd){ return netLayoutScore() ? [nd.sx, nd.sy] : [nd.x, nd.y]; }
+function netP3(nd){ return netLayoutScore() ? [nd.sx3, nd.sy3, nd.sz3] : [nd.x3, nd.y3, nd.z3]; }
+function netLowConf(nd){ if(!netLayoutScore() || !SCORE.byDi) return false; var s = SCORE.byDi[nd.di]; return !!(s && s.lowConf); }
+
+/* ============================================================
    Network — a map you read, not a control surface. Rings are tiers; color-by and the wider-circle
    toggle are the only controls. Tap a dot for a card; the card is the way out to the profile.
    ============================================================ */
@@ -2890,6 +3033,24 @@ function netBuild(){
       NET.nodes.push(nd); NET.byDi[di] = nd;
     });
   });
+  /* Score layout positions (Method v2): parallel coordinates by
+     Dunbar rank layer (sx/sy for 2D, sx3/sy3/sz3 for 3D), so the
+     tier layout above is untouched. Within a layer, members sit in
+     score order around the circle. */
+  var scAll = scoreAll(), byLayer = [[], [], [], [], []];
+  NET.nodes.forEach(function(nd){ var s = scAll[nd.di]; byLayer[(s && s.layer ? s.layer : 5) - 1].push(nd); });
+  byLayer.forEach(function(arr, layer){
+    arr.sort(function(a, b){ return (scAll[b.di].score - scAll[a.di].score) || (a.di - b.di); });
+    var n = arr.length;
+    arr.forEach(function(nd, k){
+      var rng = mulberry32((nd.di + 7919) * 2654435761 % 2147483647);
+      var ang = (k / Math.max(1, n)) * Math.PI * 2 + (rng() - 0.5) * 0.3 + layer * 0.7;
+      var rad = SCORE_RADII[layer] + (rng() - 0.5) * 2 * SCORE_SPREAD[layer];
+      nd.sring = layer; nd.sx = Math.cos(ang) * rad; nd.sy = Math.sin(ang) * rad;
+      var gy = 1 - 2 * (k + 0.5) / Math.max(1, n), gr = Math.sqrt(Math.max(0, 1 - gy * gy)), th3 = k * 2.399963 + layer * 1.3 + (rng() - 0.5) * 0.25, rad3 = SCORE_RADII[layer] + (rng() - 0.5) * 2 * SCORE_SPREAD[layer];
+      nd.sx3 = Math.cos(th3) * gr * rad3; nd.sy3 = gy * rad3 * 0.82; nd.sz3 = Math.sin(th3) * gr * rad3;
+    });
+  });
   NET.bg = null;
   netClustersBuild();
 }
@@ -2904,8 +3065,8 @@ function viewNetwork(v){
   var legend = S.net.color === 'relation' ? [['mutual', 'Mutual'], ['following', 'Following'], ['follower', 'Follower']].map(function(x){ return [RELC[x[0]], x[1]]; })
     : TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
   function sg(k, opts, cur){ return '<div class="seg">' + opts.map(function(o){ return '<button type="button" data-act="' + k + '" data-v="' + o[0] + '" class="' + (cur === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
-  v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub">' + (m3 ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.') + '</p></div>' +
-    '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation']], S.net.color) +
+  v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub">' + (S.net.layout === 'score' ? 'Closest in the middle, by closeness score: the top 5, then 15, 50, 150. Tier still owns the color. Tap a dot for details.' : (m3 ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.')) + '</p></div>' +
+    '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation']], S.net.color) + sg('netlayout', [['tier', 'Tier rings'], ['score', 'Score rings']], S.net.layout) +
     (m3 ? '<button type="button" class="btn ghost sm" data-act="netfly" aria-pressed="false"' + (REDUCED_MOTION ? ' disabled title="Flyover is off while reduced motion is on"' : '') + '>Flyover</button>' : '') +
     '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Show wider circle</button></div></div>' +
     '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netfly" id="netfly" aria-hidden="true"></div><div class="netclust" id="netclust" aria-hidden="true"></div>' +
@@ -2919,8 +3080,8 @@ function viewNetwork(v){
   netResize(); netFit();
   if(S.net.sel != null && NET.byDi[S.net.sel]){
     var nd = NET.byDi[S.net.sel];
-    if(m3){ var rho3 = Math.hypot(nd.x3, nd.z3); if(rho3 > 0.001) N3.yaw = Math.atan2(nd.z3, nd.x3) + Math.PI / 2; N3.pitch = Math.max(-1.5, Math.min(1.5, Math.atan2(-nd.y3, Math.max(rho3, 0.001)))); N3.vy = 0; N3.vp = 0; N3.auto = false; }
-    else { var rp0 = netRotP(nd.x, nd.y); NET.cam.x = rp0[0]; NET.cam.y = rp0[1]; NET.cam.z = Math.max(NET.cam.z, 1.6); }
+    if(m3){ var p3 = netP3(nd), rho3 = Math.hypot(p3[0], p3[2]); if(rho3 > 0.001) N3.yaw = Math.atan2(p3[2], p3[0]) + Math.PI / 2; N3.pitch = Math.max(-1.5, Math.min(1.5, Math.atan2(-p3[1], Math.max(rho3, 0.001)))); N3.vy = 0; N3.vp = 0; N3.auto = false; }
+    else { var p2 = netP2(nd), rp0 = netRotP(p2[0], p2[1]); NET.cam.x = rp0[0]; NET.cam.y = rp0[1]; NET.cam.z = Math.max(NET.cam.z, 1.6); }
   }
   netCard();
   var cv = NET.cv; NET.ptr = {}; NET.pinch = 0;
@@ -3053,7 +3214,7 @@ function netClustPaint(){
     if(ok && m3){
       for(var i = 0; i < n; i++){ var q = N3.proj[p.c.idx[i]]; if(!q){ ok = false; break; } sx += q.x; sy += q.y; }
     } else if(ok){
-      for(var j = 0; j < n; j++){ var nd = NET.nodes[p.c.idx[j]], rp = netRotP(nd.x, nd.y), s = w2s(rp[0], rp[1]); sx += s[0]; sy += s[1]; }
+      for(var j = 0; j < n; j++){ var nd = NET.nodes[p.c.idx[j]], cp2 = netP2(nd), rp = netRotP(cp2[0], cp2[1]), s = w2s(rp[0], rp[1]); sx += s[0]; sy += s[1]; }
     }
     if(!ok){ p.el.style.opacity = '0'; return; }
     var x = sx / n, y = sy / n, w = p.w || 90, h = p.h || 24, show = true;
@@ -3201,15 +3362,23 @@ function net3Draw(ts){
   }
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
   var c0 = n3Project(0, 0, 0);
-  /* tier shells: one tilted ring and one upright ring per shell */
-  [170, 310, 490, 640].forEach(function(R, i){
+  /* tier shells: one tilted ring and one upright ring per shell. In the
+     score layout the shells are the Dunbar layers instead: neutral
+     strokes (tier keeps color) with a label at the top of each shell. */
+  var scoreLay = netLayoutScore();
+  (scoreLay ? SCORE_RADII : [170, 310, 490, 640]).forEach(function(R, i){
     for(var pass = 0; pass < 2; pass++){
       ctx.beginPath();
       for(var a = 0; a <= 72; a++){
         var th = a / 72 * 6.2832, p = pass ? n3Project(Math.cos(th) * R, Math.sin(th) * R * 0.82, 0) : n3Project(Math.cos(th) * R, 0, Math.sin(th) * R);
         if(a) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y);
       }
-      ctx.strokeStyle = hexA(RING_C[i], pass ? 0.05 : 0.12 - i * 0.014); ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = scoreLay ? 'rgba(255,255,255,' + (pass ? 0.045 : 0.085) + ')' : hexA(RING_C[i], pass ? 0.05 : 0.12 - i * 0.014); ctx.lineWidth = 1; ctx.stroke();
+    }
+    if(scoreLay){
+      var lp = n3Project(0, -R * 0.82, 0);
+      ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+      ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fillText(SCORE_GUIDES[i], lp.x, lp.y - 4);
     }
   });
   if(S.net.bg){
@@ -3223,7 +3392,7 @@ function net3Draw(ts){
   }
   var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null, hot = {};
   if(sel) knownAssociates(D.directory[sel.di]).forEach(function(nb){ var tt = BYN[(nb.u || '').toLowerCase()]; if(tt != null) hot[tt] = 1; });
-  var proj = NET.nodes.map(function(n){ var p = n3Project(n.x3, n.y3, n.z3); p.n = n; return p; });
+  var proj = NET.nodes.map(function(n){ var pp = netP3(n), p = n3Project(pp[0], pp[1], pp[2]); p.n = n; return p; });
   N3.proj = proj;
   /* edges from the selected person */
   if(sel){
@@ -3241,7 +3410,7 @@ function net3Draw(ts){
     if(p.x < -20 || p.y < -20 || p.x > W + 20 || p.y > H + 20) return;
     var n = p.n, col = netColor(n), isSel = sel && sel.di === n.di;
     var depth = Math.max(0.28, Math.min(1, 1 - (p.z + 650) / 1500));
-    var a = (sel && !isSel && !hot[n.di]) ? depth * 0.25 : depth;
+    var a = (sel && !isSel && !hot[n.di]) ? depth * 0.25 : depth; if(netLowConf(n)) a *= 0.45;
     var rr = Math.max(1.6, n.r * p.k * 1.25 * (isSel ? 1.8 : 1));
     ctx.globalAlpha = a;
     if(n.nw){ ctx.globalAlpha = a * 0.425; var hs = rr * 5; ctx.drawImage(glowSprite(col), p.x - hs, p.y - hs, hs * 2, hs * 2); ctx.globalAlpha = a; }
@@ -3287,23 +3456,34 @@ function netResize(){
   NET.W = Math.max(200, r.width); NET.H = Math.max(200, r.height);
   cv.width = NET.W * NET.dpr; cv.height = NET.H * NET.dpr; NET.dirty = true;
 }
-function netFit(){ N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null; NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.bg ? 1900 : 1450))); NET.rot = 0; NET.dirty = true; }
+function netFit(){ N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null; NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.bg ? 1900 : (netLayoutScore() ? 1720 : 1450)))); NET.rot = 0; NET.dirty = true; }
 function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
 function netHit(sx, sy){
   var wx = (sx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (sy - NET.H / 2) / NET.cam.z + NET.cam.y, best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
   /* undo the 2D drift rotation, so the hit lands on the node under the cursor */
   var rc = Math.cos(NET.rot), rs = Math.sin(NET.rot), qx = wx * rc + wy * rs, qy = -wx * rs + wy * rc;
-  NET.nodes.forEach(function(n){ var d = Math.hypot(n.x - qx, n.y - qy); if(d < lim && d < bd){ bd = d; best = n; } });
+  NET.nodes.forEach(function(n){ var pp = netP2(n), d = Math.hypot(pp[0] - qx, pp[1] - qy); if(d < lim && d < bd){ bd = d; best = n; } });
   return best;
 }
 function netDraw(){
   var ctx = NET.ctx, z = NET.cam.z;
   ctx.setTransform(NET.dpr, 0, 0, NET.dpr, 0, 0); ctx.clearRect(0, 0, NET.W, NET.H);
   var c = w2s(0, 0);
-  [170, 310, 490, 640].forEach(function(r, i){
-    ctx.strokeStyle = hexA(RING_C[i], 0.15 - i * 0.02); ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
-  });
+  if(netLayoutScore()){
+    /* score layout: neutral layer guides (tier keeps color), labeled */
+    ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    SCORE_RADII.forEach(function(r, i){
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.42)';
+      ctx.fillText(SCORE_GUIDES[i], c[0], c[1] - r * z - 5);
+    });
+  } else {
+    [170, 310, 490, 640].forEach(function(r, i){
+      ctx.strokeStyle = hexA(RING_C[i], 0.15 - i * 0.02); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
+    });
+  }
   if(S.net.bg){
     if(!NET.bg){
       var ci = D.circle_index || [], dots = [];
@@ -3315,19 +3495,19 @@ function netDraw(){
   }
   var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null;
   if(sel){
-    var se = D.directory[sel.di], sap = netRotP(sel.x, sel.y), a = w2s(sap[0], sap[1]);
+    var se = D.directory[sel.di], sp2 = netP2(sel), sap = netRotP(sp2[0], sp2[1]), a = w2s(sap[0], sap[1]);
     ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1;
     knownAssociates(se).forEach(function(nb){
       var t = BYN[(nb.u || '').toLowerCase()], nd = t != null ? NET.byDi[t] : null; if(!nd) return;
-      var bp = netRotP(nd.x, nd.y), b = w2s(bp[0], bp[1]); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      var np2 = netP2(nd), bp = netRotP(np2[0], np2[1]), b = w2s(bp[0], bp[1]); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     });
   }
   var fade = !!sel, hot = {};
   if(sel) knownAssociates(D.directory[sel.di]).forEach(function(nb){ var t = BYN[(nb.u || '').toLowerCase()]; if(t != null) hot[t] = 1; });
   NET.nodes.forEach(function(n){
-    var rp = netRotP(n.x, n.y), p = w2s(rp[0], rp[1]); if(p[0] < -10 || p[1] < -10 || p[0] > NET.W + 10 || p[1] > NET.H + 10) return;
+    var pp = netP2(n), rp = netRotP(pp[0], pp[1]), p = w2s(rp[0], rp[1]); if(p[0] < -10 || p[1] < -10 || p[0] > NET.W + 10 || p[1] > NET.H + 10) return;
     var rr = n.r * Math.sqrt(z), col = netColor(n), isSel = sel && sel.di === n.di;
-    ctx.globalAlpha = fade && !isSel && !hot[n.di] ? 0.28 : 1;
+    ctx.globalAlpha = (fade && !isSel && !hot[n.di] ? 0.28 : 1) * (netLowConf(n) ? 0.45 : 1);
     if(n.nw){ ctx.fillStyle = hexA(col, 0.18); ctx.beginPath(); ctx.arc(p[0], p[1], rr + 5, 0, 6.2832); ctx.fill(); }
     ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, 6.2832); ctx.fill();
     if(isSel){ ctx.strokeStyle = '#e30613'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(p[0], p[1], rr + 3.5, 0, 6.2832); ctx.stroke(); }
@@ -3345,6 +3525,11 @@ function netStatsHTML(){
   TIER_ORDER.forEach(function(t){ if(tc[t]) rows.push([TIERS[t].n, String(tc[t]), TIERS[t].c]); });
   if(tc.none) rows.push(['No tier yet', String(tc.none), RING_C[3]]);
   if(nw) rows.push(['New connections', String(nw)]);
+  if(S.net.layout === 'score'){
+    var lc = [0, 0, 0, 0, 0];
+    NET.nodes.forEach(function(n){ lc[n.sring || 0]++; });
+    ['Layer 1 · top 5', 'Layer 2 · 6–15', 'Layer 3 · 16–50', 'Layer 4 · 51–150', 'Layer 5 · 150+'].forEach(function(l, i){ if(lc[i]) rows.push([l, String(lc[i])]); });
+  }
   if(S.net.bg) rows.push(['Wider circle', String((D.circle_index || []).length)]);
   return '<div class="side-h"><h3>Map</h3></div><div class="statrows">' +
     rows.map(function(r){ return '<div class="srow2"><span>' + (r[2] ? '<i class="sdot" style="background:' + r[2] + '"></i>' : '') + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') + '</div>';
@@ -3364,7 +3549,8 @@ function netCard(){
       '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
       '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
       (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
-      '<button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>';
+      '<button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>' +
+      '<div class="nc-sc">' + scoreBreakdownHTML(di) + '</div>';
     if(cols) cols.classList.add('sel');
   }
   /* the panel opening or closing changes the canvas size; refit the backing store */
@@ -3789,6 +3975,7 @@ var AUD_GAPS = {
   tier:  { tag:'Tier',          short:'Tier',     prompt:'Tier not set' },
   loc:   { tag:'Location',      short:'Location', prompt:'No location on file' },
   rel:   { tag:'Relationship',  short:'Relation', prompt:'Relationship not set' },
+  closeness: { tag:'Closeness', short:'Closeness', prompt:'How close are you?' },
   years: { tag:'Years known',   short:'Years',    prompt:'How long have you known them?' },
   phone: { tag:'Phone',         short:'Phone',    prompt:'No phone number' },
   orgs:  { tag:'Organizations', short:'Orgs',     prompt:'No organizations on file' },
@@ -3803,6 +3990,9 @@ function audGaps(e){
   if(!gv(e, 'phone')) g.push('phone');
   if(!orgsOf(e).length) g.push('orgs');
   if(!tagList(gv(e, 'specialty')).length) g.push('skills');
+  /* Closeness joins the feeder only alongside another gap (JD 2026-10-16):
+     alone it would flood the wall with every unrated profile on day one. */
+  if(!gv(e, 'closeness') && g.length) g.push('closeness');
   return g;
 }
 /* Persistent dismissals: { "pkey|gap": 1 } in localStorage ncc_aud_skip
@@ -3905,6 +4095,11 @@ function audEdHTML(di, gap){
       return '<button type="button" class="fc aud-pick" data-act="audpick" data-v="' + r + '">' + cap(r) + '</button>';
     }).join('') + '</div>';
   }
+  if(gap === 'closeness'){
+    return '<div class="aud-opts">' + CLOSE_OPTS.map(function(r){
+      return '<button type="button" class="fc aud-pick" data-act="audpick" data-v="' + r + '">' + cap(r) + '</button>';
+    }).join('') + '</div>';
+  }
   if(gap === 'loc') return '<div class="pted-add"><input class="aud-in" placeholder="Town, ST — e.g. Potsdam, NY" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'years') return '<div class="pted-add"><input class="aud-in aud-year" inputmode="numeric" placeholder="Year, e.g. 2019" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'phone') return '<input class="aud-in" type="tel" placeholder="Phone number" autocomplete="off">';
@@ -3984,8 +4179,8 @@ function audReopen(card, gap){
   if(pr) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>';
   var ed = $('.aud-ed', card); if(ed) ed.innerHTML = audEdHTML(di, gap);
   var e = D.directory[di];
-  if(gap === 'tier' || gap === 'rel'){
-    var cur = gap === 'tier' ? tierOf(e) : gv(e, 'relationship');
+  if(gap === 'tier' || gap === 'rel' || gap === 'closeness'){
+    var cur = gap === 'tier' ? tierOf(e) : gv(e, gap === 'rel' ? 'relationship' : 'closeness');
     if(cur){
       card.setAttribute('data-pick', cur);
       $$('.aud-pick', card).forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === cur); });
@@ -4325,8 +4520,8 @@ function audAdvanceFrom(card){
    audReopen does, without entering re-edit state. */
 function audPrefillDone(card, x){
   var gap = x.cur, e = D.directory[x.di];
-  if(gap === 'tier' || gap === 'rel'){
-    var cur = gap === 'tier' ? tierOf(e) : gv(e, 'relationship');
+  if(gap === 'tier' || gap === 'rel' || gap === 'closeness'){
+    var cur = gap === 'tier' ? tierOf(e) : gv(e, gap === 'rel' ? 'relationship' : 'closeness');
     if(cur){
       card.setAttribute('data-pick', cur);
       $$('.aud-pick', card).forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === cur); });
@@ -4421,7 +4616,7 @@ function audRapidShiftRight(card){
     audAdvanceFrom(card);     /* then advance (finalizes the stack) */
     return;
   }
-  if((gap === 'tier' || gap === 'rel') && !card.getAttribute('data-pick')){
+  if((gap === 'tier' || gap === 'rel' || gap === 'closeness') && !card.getAttribute('data-pick')){
     var a = document.activeElement;
     if(a && card.contains(a) && a.classList && a.classList.contains('aud-pick')){
       card.setAttribute('data-pick', a.getAttribute('data-v'));
@@ -4460,7 +4655,7 @@ function audRapidBack(card){
    non-empty text field, or a plausible 4-digit year (1900–current). */
 function audReady(card){
   var gap = card.getAttribute('data-gap');
-  if(gap === 'tier' || gap === 'rel') return !!card.getAttribute('data-pick');
+  if(gap === 'tier' || gap === 'rel' || gap === 'closeness') return !!card.getAttribute('data-pick');
   if(gap === 'years'){ var yi = $('.aud-year', card); return !!(yi && audYearOk(yi.value)); }
   var inp = $('.aud-in', card);
   return !!(inp && inp.value.trim());
@@ -4486,7 +4681,7 @@ function audPhoneOk(v){
 }
 function audComplete(card){
   var gap = card.getAttribute('data-gap');
-  if(gap === 'tier' || gap === 'rel') return !!card.getAttribute('data-pick');
+  if(gap === 'tier' || gap === 'rel' || gap === 'closeness') return !!card.getAttribute('data-pick');
   var inp = $('.aud-in', card);
   if(!inp) return false;
   var v = inp.value.trim();
@@ -4579,10 +4774,12 @@ function audReplaceTag(di, oldK, newK, oldVal, newVal){
    patch was needed). */
 function audWriteValue(di, card, gap){
   var e = D.directory[di]; if(!e) return null;
-  if(gap === 'tier' || gap === 'rel'){
+  if(gap === 'tier' || gap === 'rel' || gap === 'closeness'){
     var pick = card.getAttribute('data-pick');
     if(!pick) return null;
-    var en = gap === 'tier' ? txn('Set tier', function(){ queuePatch(di, { tier:pick }); }) : txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); });
+    var en = gap === 'tier' ? txn('Set tier', function(){ queuePatch(di, { tier:pick }); })
+      : gap === 'rel' ? txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); })
+      : txn('Set closeness', function(){ queuePatch(di, { closeness:pick }); });
     return { entry:en, val:gap === 'tier' ? (TIERS[pick] ? TIERS[pick].n : pick) : cap(pick) };
   }
   if(gap === 'loc'){
@@ -5040,7 +5237,7 @@ function doSet(el){
   var di = curDi(el), k = el.getAttribute('data-k'), v = el.getAttribute('data-v'), e = D.directory[di];
   if(!e) return;
   var cur = String(k === 'tier' ? tierOf(e) : gv(e, k));
-  var clearable = ['relationship', 'context', 'category'].indexOf(k) >= 0;
+  var clearable = ['relationship', 'context', 'category', 'closeness'].indexOf(k) >= 0;
   var next = (clearable && cur === v) ? '' : v;
   txn('Set ' + k, function(){ queuePatch(di, (function(){ var o = {}; o[k] = next; return o; })()); });
   if(S.route.name === 'profile'){ repaintTop(); var sec = el.getAttribute('data-sec'); if(sec) repaintSec(sec); }
@@ -5215,6 +5412,7 @@ function onClick(ev){
     case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
     case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
     case 'netmode': S.net.mode = el.getAttribute('data-v') === '2d' ? '2d' : '3d'; store('ncc_netmode', S.net.mode); viewNetwork($('#view')); break;
+    case 'netlayout': S.net.layout = el.getAttribute('data-v') === 'score' ? 'score' : 'tier'; store('ncc_netlayout', S.net.layout); viewNetwork($('#view')); break;
     case 'netfly': flyToggle(); break;
     case 'netbg': S.net.bg = !S.net.bg; N3.bgPts = null; NET.bg = null; viewNetwork($('#view')); break;
     case 'netzoom': { flyStop(); var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; if(S.net.mode === '2d'){ NET.cam.z = Math.max(0.3, Math.min(4, NET.cam.z * zf)); NET.dirty = true; } else N3.zoom = Math.max(0.45, Math.min(3.5, N3.zoom * zf)); break; }
