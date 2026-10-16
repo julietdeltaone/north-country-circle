@@ -4,6 +4,10 @@
    lists is a node, every follow a directed edge. Custom navigation tools:
    search + fly-to, connection-count filter, hub highlighting, neighbor
    isolation, and shortest-path tracing back to JD. */
+/* App version — one number shared by both apps (explorer + dossier); scheme
+   and changelog live in VERSION.md at the repo root. MAJOR = design era
+   (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
+const APP_VERSION = "2.1.0";
 const D = window.CIRCLE_DATA || {};
 const PEOPLE = D.people || [];
 const EDGES = D.edges || [];
@@ -995,6 +999,11 @@ function initToolbar() {
   }
   bb.addEventListener("click", () => setBridgeMode(!bridgeMode));
   document.getElementById("bridges-close").addEventListener("click", () => setBridgeMode(false));
+  const ver = document.createElement("span");
+  ver.className = "ver";
+  ver.title = "App version";
+  ver.textContent = "V" + APP_VERSION;
+  document.querySelector(".hud-tr").appendChild(ver);
   const gb = document.getElementById("btn-guide"), gp = document.getElementById("guide");
   const setGuide = v => { gp.hidden = !v; gb.classList.toggle("on", v); };
   gb.addEventListener("click", () => setGuide(gp.hidden));
