@@ -1203,3 +1203,11 @@ html,body{background:var(--bg)}
 .flylab{position:absolute;left:0;top:0;min-width:118px;max-width:228px;padding:7px 11px 8px;background:rgba(10,10,10,.93);border:1px solid var(--line2);border-radius:var(--r);opacity:0;will-change:transform,opacity}
 .flylab b{display:block;font-weight:600;font-size:13px;line-height:1.25;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .flylab span{display:block;margin-top:2px;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Groups manage mode (JD 2026-10-16) */
+.gmgr{padding:12px;border-bottom:1px solid var(--line)}
+.gmgr-h{margin:0 0 10px;font-size:12px;line-height:1.55;color:var(--mut)}
+.gmgr-row2{display:flex;gap:8px;align-items:center;margin-top:10px}
+.gmgr-r{cursor:pointer;justify-content:flex-start}
+.gmgr-r input{margin:0;accent-color:var(--acc);width:15px;height:15px;flex:none}
+.gmgr-r span{flex:1}
