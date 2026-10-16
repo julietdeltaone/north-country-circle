@@ -551,6 +551,11 @@ canvas.addEventListener("pointermove", e => {
     return;
   }
   if (Math.hypot(p.x - startX, p.y - startY) > TAP_PX) moved = true;
+  /* Touch has no Shift key, so a touch drag that starts on a dot must pan the
+     map — otherwise the drag just moves that one dot and the map feels stuck.
+     Mouse keeps the old behavior (drag a dot to move it, Shift+drag pans);
+     taps are unaffected either way: a tap never sets `moved`. */
+  if (mode === "node" && moved && e.pointerType !== "mouse") mode = "pan";
   if (mode === "node" && activeNode >= 0 && moved) {
     const un = invRot(s2wX(p.x), s2wY(p.y));
     XS[activeNode] = un[0];
