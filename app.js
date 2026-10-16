@@ -105,6 +105,10 @@ function inDossier(i) {
 }
 const XS = new Float32Array(N), YS = new Float32Array(N);
 for (let i = 0; i < N; i++) { XS[i] = PEOPLE[i].x; YS[i] = PEOPLE[i].y; }
+/* per-frame screen positions, rebuilt once at the top of draw(): edges,
+   nodes, and labels all read these instead of each recomputing rotation +
+   projection for the same node over and over within one frame */
+const SX = new Float32Array(N), SY = new Float32Array(N);
 /* Ambient solar drift (design pass 2026-10-14): the whole layout slowly turns
    around its center — one revolution per 3 minutes. Rotation applies to node
    positions only (labels stay upright); hit-testing inverts it. The drift has
@@ -114,13 +118,20 @@ for (let i = 0; i < N; i++) { XS[i] = PEOPLE[i].x; YS[i] = PEOPLE[i].y; }
    selection or path is up, and for ~5s after any other interaction; hovering
    empty space does not pause. Off under reduced motion. */
 const REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+const COARSE = !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
 let viewRot = 0, lastAct = -10000, lastDrawn = 0;
+let gestureActive = false; /* a pointer is down on the map (set in the pointer handlers) */
 let rotVel = 0, lastStep = 0; /* current angular velocity (rad/ms) + ramp clock */
 const DRIFT_MS = Math.PI * 2 / 180000; /* radians per millisecond */
 const RAMP_TAU = 1000; /* ms — velocity easing time constant */
-function RX(i) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return XS[i] * c - YS[i] * s; }
-function RY(i) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return XS[i] * s + YS[i] * c; }
-function invRot(x, y) { const c = Math.cos(viewRot), s = Math.sin(viewRot); return [x * c + y * s, -x * s + y * c]; }
+/* rotation trig cached per viewRot value: RX/RY are called ~200k times per
+   frame (every edge endpoint + node), and recomputing cos/sin on every call
+   was a measurable slice of the frame cost on phone CPUs */
+let _rc = 1, _rs = 0, _rFor = NaN;
+function rotCS() { if (_rFor !== viewRot) { _rFor = viewRot; _rc = Math.cos(viewRot); _rs = Math.sin(viewRot); } }
+function RX(i) { rotCS(); return XS[i] * _rc - YS[i] * _rs; }
+function RY(i) { rotCS(); return XS[i] * _rs + YS[i] * _rc; }
+function invRot(x, y) { rotCS(); return [x * _rc + y * _rs, -x * _rs + y * _rc]; }
 /* top hubs for highlight mode */
 const hubSet = new Set(
   PEOPLE.map((p, i) => i).sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 80)
@@ -196,15 +207,36 @@ function fitView() {
   SMAX = 10 * Math.min(W, H) / 2.25;
   scale = baseScale; ox = W / 2; oy = H / 2;
 }
+let sized = false;
 function resize() {
+  /* Preserve the view across resizes. On a phone, resize almost never means
+     "re-fit the map": it fires because the browser chrome moved (URL bar
+     showing/hiding changes innerHeight) or the keyboard opened/closed. The
+     old code called fitView() here, so any of those snapped the user's
+     pan/zoom back to the fitted view mid-use — the "big circle glitch."
+     Instead: update the scale limits for the new viewport and keep the same
+     world point at the center of the screen. Only the very first sizing
+     (and the Reset button, via fitView) fits the view. */
+  const wx = W ? s2wX(W / 2) : 0, wy = H ? s2wY(H / 2) : 0;
   dpr = Math.min(2, window.devicePixelRatio || 1);
   W = window.innerWidth; H = window.innerHeight;
   canvas.width = W * dpr; canvas.height = H * dpr;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  fitView();
+  baseScale = Math.min(W, H) / 2.25;
+  SMIN = Math.min(W, H) / 8;
+  SMAX = 10 * Math.min(W, H) / 2.25;
+  if (!sized) { sized = true; scale = baseScale; ox = W / 2; oy = H / 2; }
+  else {
+    scale = clampScale(scale);
+    ox = W / 2 - wx * scale;
+    oy = H / 2 - wy * scale;
+  }
   draw();
 }
-window.addEventListener("resize", () => { clearTimeout(window.__rzT); window.__rzT = setTimeout(resize, 200); });
+function scheduleResize() { clearTimeout(window.__rzT); window.__rzT = setTimeout(resize, 120); }
+window.addEventListener("resize", scheduleResize);
+window.addEventListener("orientationchange", scheduleResize);
+if (window.visualViewport) window.visualViewport.addEventListener("resize", scheduleResize);
 
 /* ---------- filter / tool state ---------- */
 const visible = new Uint8Array(N).fill(1);
@@ -284,7 +316,17 @@ const rad = i => (2 + 7 * Math.sqrt(totalOf(i) / maxTotal)) * resScale(i);
 
 function draw() {
   ctx.clearRect(0, 0, W, H);
-  const x0 = s2wX(-30), x1 = s2wX(W + 30), y0 = s2wY(-30), y1 = s2wY(H + 30);
+  /* one position pass per frame: rotate + project every node once into
+     SX/SY; the edge, node, and label passes below all read those */
+  rotCS();
+  for (let i = 0; i < N; i++) {
+    SX[i] = ox + (XS[i] * _rc - YS[i] * _rs) * scale;
+    SY[i] = oy + (XS[i] * _rs + YS[i] * _rc) * scale;
+  }
+  /* text is the slowest canvas op per item; on touch devices the name
+     labels pause while a gesture is in flight (they repaint on release
+     via endPointer's final draw). Desktop rendering is unchanged. */
+  const gesturing = COARSE && gestureActive;
 
   /* highlight set: layered nodes + their neighbors (+ hover), or the JD path */
   const hi = new Set();
@@ -313,11 +355,11 @@ function draw() {
       const bothHi = hi.has(a) && hi.has(b);
       if (onlyHi ? !bothHi : (dim && bothHi)) continue;
       if (pred && !pred(a, b)) continue;
-      const ax = RX(a), ay = RY(a), bx = RX(b), by = RY(b);
-      if ((ax < x0 || ax > x1 || ay < y0 || ay > y1) &&
-          (bx < x0 || bx > x1 || by < y0 || by > y1)) continue;
-      ctx.moveTo(w2sX(ax), w2sY(ay));
-      ctx.lineTo(w2sX(bx), w2sY(by));
+      const ax = SX[a], ay = SY[a], bx = SX[b], by = SY[b];
+      if ((ax < -30 || ax > W + 30 || ay < -30 || ay > H + 30) &&
+          (bx < -30 || bx > W + 30 || by < -30 || by > H + 30)) continue;
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(bx, by);
       if (++n > 60000) break;
     }
     ctx.stroke();
@@ -328,8 +370,8 @@ function draw() {
     ctx.strokeStyle = "rgba(245,185,66,0.85)"; ctx.lineWidth = 2.5; ctx.beginPath();
     for (const key of pathEdgeSet) {
       const a = Math.floor(key / N), b = key % N;
-      ctx.moveTo(w2sX(RX(a)), w2sY(RY(a)));
-      ctx.lineTo(w2sX(RX(b)), w2sY(RY(b)));
+      ctx.moveTo(SX[a], SY[a]);
+      ctx.lineTo(SX[b], SY[b]);
     }
     ctx.stroke();
   } else if (dim) {
@@ -357,8 +399,8 @@ function draw() {
         if (edgeLen[e] < bridgeThresh) continue;
         const a = EDGES[e][0], b = EDGES[e][1];
         if (!visible[a] || !visible[b]) continue;
-        ctx.moveTo(w2sX(RX(a)), w2sY(RY(a)));
-        ctx.lineTo(w2sX(RX(b)), w2sY(RY(b)));
+        ctx.moveTo(SX[a], SY[a]);
+        ctx.lineTo(SX[b], SY[b]);
       }
       ctx.stroke();
     }
@@ -367,8 +409,8 @@ function draw() {
       ctx.strokeStyle = "#e30613";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(w2sX(RX(sb.a)), w2sY(RY(sb.a)));
-      ctx.lineTo(w2sX(RX(sb.b)), w2sY(RY(sb.b)));
+      ctx.moveTo(SX[sb.a], SY[sb.a]);
+      ctx.lineTo(SX[sb.b], SY[sb.b]);
       ctx.stroke();
     }
   }
@@ -377,7 +419,7 @@ function draw() {
   for (let i = 0; i < N; i++) {
     if (!visible[i]) continue;
     if (isolate && layers.length > 0 && !hi.has(i)) continue;
-    const x = w2sX(RX(i)), y = w2sY(RY(i));
+    const x = SX[i], y = SY[i];
     if (x < -20 || y < -20 || x > W + 20 || y > H + 20) continue;
     const isHi = !dim || hi.has(i);
     const r = rad(i);
@@ -403,13 +445,15 @@ function draw() {
     }
   }
 
-  /* default labels: JD + big nodes when zoomed in (toggleable in Filters) */
+  /* default labels: JD + big nodes when zoomed in (toggleable in Filters) —
+     all label passes skip while a touch gesture is in flight (see above) */
+  if (!gesturing) {
   ctx.font = "11px Archivo,sans-serif";
   ctx.textAlign = "center";
   const labelZoom = baseScale * 6;
   if (fLabels && jdIndex >= 0 && visible[jdIndex]) {
     ctx.fillStyle = "#f2f2f2";
-    ctx.fillText("@jdmeyers_", w2sX(RX(jdIndex)), w2sY(RY(jdIndex)) - rad(jdIndex) - 5);
+    ctx.fillText("@jdmeyers_", SX[jdIndex], SY[jdIndex] - rad(jdIndex) - 5);
   }
   /* big-node labels when zoomed in */
   if (fLabels && scale >= labelZoom) {
@@ -419,7 +463,7 @@ function draw() {
     for (let i = 0; i < N && drawn < 220; i++) {
       if (!visible[i] || totalOf(i) < cutoff) continue;
       if (resFilter && !resVis(i)) continue;
-      const x = w2sX(RX(i)), y = w2sY(RY(i));
+      const x = SX[i], y = SY[i];
       if (x < 0 || y < 0 || x > W || y > H) continue;
       ctx.fillText("@" + PEOPLE[i].username, x, y - rad(i) - 4);
       drawn++;
@@ -433,11 +477,12 @@ function draw() {
       const nbs = undAdj[s].filter(j => visible[j] && j !== s)
         .sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 80);
       for (const j of nbs) {
-        const x = w2sX(RX(j)), y = w2sY(RY(j));
+        const x = SX[j], y = SY[j];
         if (x < 0 || y < 0 || x > W || y > H) continue;
         ctx.fillText("@" + PEOPLE[j].username, x, y - rad(j) - 4);
       }
     }
+  }
   }
 }
 
@@ -461,12 +506,22 @@ const posOf = e => {
   const r = canvas.getBoundingClientRect();
   return {x: e.clientX - r.left, y: e.clientY - r.top};
 };
+/* Gesture-driven draws coalesce onto rAF: a fast finger (or a trackpad
+   wheel) can fire far more events than the display can show, and one full
+   draw is a whole frame of work — extra events only need to move the
+   target transform, not each repaint the world. */
+let drawQueued = false;
+function drawSoon() {
+  if (drawQueued) return;
+  drawQueued = true;
+  requestAnimationFrame(() => { drawQueued = false; draw(); });
+}
 function zoomAt(mx, my, f) {
   const ns = clampScale(scale * f);
   ox = mx - (mx - ox) * (ns / scale);
   oy = my - (my - oy) * (ns / scale);
   scale = ns;
-  draw();
+  drawSoon();
 }
 /* smooth fly-to animation */
 let flyAnim = null;
@@ -518,6 +573,7 @@ const pdist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 
 canvas.addEventListener("pointerdown", e => {
   lastAct = performance.now();
+  gestureActive = true;
   try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
   const p = posOf(e);
   pts.set(e.pointerId, p);
@@ -550,7 +606,7 @@ canvas.addEventListener("pointermove", e => {
       ox = pinch.cx - (pinch.cx - pinch.ox) * f;
       oy = pinch.cy - (pinch.cy - pinch.oy) * f;
       scale = ns;
-      draw();
+      drawSoon();
     }
     return;
   }
@@ -564,12 +620,12 @@ canvas.addEventListener("pointermove", e => {
     const un = invRot(s2wX(p.x), s2wY(p.y));
     XS[activeNode] = un[0];
     YS[activeNode] = un[1];
-    draw();
+    drawSoon();
     return;
   }
   if (mode === "pan" && moved) {
     ox += p.x - prev.x; oy += p.y - prev.y;
-    draw();
+    drawSoon();
     return;
   }
   if (e.pointerType === "mouse" && !moved) setHover(p.x, p.y, e.clientX, e.clientY);
@@ -584,6 +640,8 @@ function endPointer(e) {
       else addLayer(activeNode);
     }
     else if (tap && mode === "pan" && pathSet) { clearPath(); draw(); }
+    gestureActive = false;
+    draw(); /* full repaint on release: labels (paused mid-gesture) return */
     mode = "idle"; activeNode = -1; pinch = null;
   } else if (pts.size === 1) {
     const p = [...pts.values()][0];
@@ -598,6 +656,12 @@ canvas.addEventListener("pointerleave", e => {
   if (!pts.has(e.pointerId) && e.pointerType === "mouse") { tip.hidden = true; hover = -1; draw(); }
 });
 canvas.addEventListener("contextmenu", e => e.preventDefault());
+/* iOS Safari page-zoom gestures start on whatever the fingers land on —
+   HUD chrome included; touch-action:none covers the canvas only. The
+   explorer is a full-screen tool: the page itself must never zoom, all
+   pinch belongs to the map. (gesturestart is Mobile Safari's event.) */
+document.addEventListener("gesturestart", e => e.preventDefault());
+document.addEventListener("gesturechange", e => e.preventDefault());
 canvas.addEventListener("wheel", e => {
   e.preventDefault();
   lastAct = performance.now();
