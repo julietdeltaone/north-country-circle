@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.2.1';
+var APP_VERSION = '2.3.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -2886,6 +2886,7 @@ function netBuild(){
     });
   });
   NET.bg = null;
+  netClustersBuild();
 }
 function netColor(nd){
   var e = D.directory[nd.di], m = S.net.color;
@@ -2902,7 +2903,7 @@ function viewNetwork(v){
     '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation']], S.net.color) +
     (m3 ? '<button type="button" class="btn ghost sm" data-act="netfly" aria-pressed="false"' + (REDUCED_MOTION ? ' disabled title="Flyover is off while reduced motion is on"' : '') + '>Flyover</button>' : '') +
     '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Show wider circle</button></div></div>' +
-    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netfly" id="netfly" aria-hidden="true"></div>' +
+    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netfly" id="netfly" aria-hidden="true"></div><div class="netclust" id="netclust" aria-hidden="true"></div>' +
     '<div class="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
     '<div class="netzoom"><button type="button" class="ib" data-act="netzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="netzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="netfit" aria-label="Reset view">' + ic('target', 18) + '</button></div>' +
     '</div>' +
@@ -2992,6 +2993,74 @@ function viewNetwork(v){
 
 /* ---------- 3D: a small software renderer on the canvas, no outside libraries ---------- */
 var N3 = { yaw:0.6, pitch:0.38, vy:0, vp:0, zoom:1, auto:true, idle:0, hover:null, proj:[], glow:{}, bgPts:null, t:0 };
+/* ---------- Cluster labels (JD 2026-10-16, from the reference design he picked):
+   orientation plates for the largest Groups + Organizations on the map, in the
+   reference style "NAME — N" (canonical values only, via personGroups/orgsOf +
+   regApply). Each plate sits at the centroid of its cluster's on-map members
+   and is repainted from the same projections the nodes themselves use, so it
+   tracks pan/zoom/drift exactly — furniture, not animation, and it never takes
+   pointer events. Only clusters with at least CLUST_MIN on-map members show,
+   capped at the CLUST_MAX largest; when two plates would collide the larger
+   cluster wins and the smaller drops out, and the whole layer fades away once
+   you zoom in close, where orientation is no longer the question. A separate
+   layer from Flyover's person labels — the two never share slots. */
+var CLUST = { list:[], box:null, plates:[] };
+var CLUST_MIN = 5, CLUST_MAX = 10;
+function netClustersBuild(){
+  var map = {}, order = [];
+  NET.nodes.forEach(function(nd, ni){
+    var e = D.directory[nd.di], seen = {};
+    function push(nm){
+      if(!nm || seen[nm]) return; seen[nm] = 1;
+      var c = map[nm]; if(!c){ c = map[nm] = { name:nm, idx:[] }; order.push(c); }
+      c.idx.push(ni);
+    }
+    personGroups(e).forEach(push);
+    orgsOf(e).forEach(function(o){ push(regApply(o)); });
+  });
+  CLUST.list = order.filter(function(c){ return c.idx.length >= CLUST_MIN; })
+    .sort(function(a, b){ return b.idx.length - a.idx.length || a.name.localeCompare(b.name); })
+    .slice(0, CLUST_MAX);
+  CLUST.box = null; CLUST.plates = [];
+}
+function clustEnsure(){
+  var box = $('#netclust'); if(!box) return null;
+  if(CLUST.box !== box){
+    CLUST.box = box; CLUST.plates = []; box.innerHTML = '';
+    CLUST.list.forEach(function(c){
+      var d = document.createElement('div'); d.className = 'clab';
+      d.textContent = c.name + ' \u2014 ' + c.idx.length;
+      box.appendChild(d);
+      CLUST.plates.push({ c:c, el:d, w:0, h:0 });
+    });
+    CLUST.plates.forEach(function(p){ p.w = p.el.offsetWidth; p.h = p.el.offsetHeight; });
+  }
+  return box;
+}
+function netClustPaint(){
+  if(!clustEnsure()) return;
+  var m3 = S.net.mode !== '2d';
+  var z = m3 ? N3.zoom : NET.cam.z, lo = m3 ? 1.15 : 1.0, hi = m3 ? 1.7 : 1.5;
+  var fade = Math.max(0, Math.min(1, (hi - z) / (hi - lo)));
+  var kept = [];
+  CLUST.plates.forEach(function(p){
+    var sx = 0, sy = 0, n = p.c.idx.length, ok = fade > 0.02;
+    if(ok && m3){
+      for(var i = 0; i < n; i++){ var q = N3.proj[p.c.idx[i]]; if(!q){ ok = false; break; } sx += q.x; sy += q.y; }
+    } else if(ok){
+      for(var j = 0; j < n; j++){ var nd = NET.nodes[p.c.idx[j]], rp = netRotP(nd.x, nd.y), s = w2s(rp[0], rp[1]); sx += s[0]; sy += s[1]; }
+    }
+    if(!ok){ p.el.style.opacity = '0'; return; }
+    var x = sx / n, y = sy / n, w = p.w || 90, h = p.h || 24, show = true;
+    for(var k = 0; k < kept.length; k++){
+      var o = kept[k];
+      if(Math.abs(o.x - x) < (o.w + w) / 2 + 8 && Math.abs(o.y - y) < (o.h + h) / 2 + 8){ show = false; break; }
+    }
+    if(show) kept.push({ x:x, y:y, w:w, h:h });
+    p.el.style.opacity = show ? fade.toFixed(3) : '0';
+    if(show) p.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) translate(-50%,-50%)';
+  });
+}
 /* ---------- Flyover (JD 2026-10-16): an opt-in ambient pass over the 3D orb.
    The orb keeps its normal drift spin; on top of that the camera eases along
    a slow path — pitch sways over ~150s, zoom breathes over ~105s, on the
@@ -3187,6 +3256,7 @@ function net3Draw(ts){
     ctx.fillStyle = '#f2f2f2'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(nm, x + 9, y + 12.5);
   });
   flyLabels(ts);
+  netClustPaint();
 }
 function n3Center(ctx, c){
   var s = Math.max(9, 17 * c.k * 2.2), g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, s * 3.2);
@@ -3260,6 +3330,7 @@ function netDraw(){
   ctx.globalAlpha = 1;
   ctx.fillStyle = '#e30613'; ctx.beginPath(); ctx.arc(c[0], c[1], Math.max(7, 10 * Math.sqrt(z)), 0, 6.2832); ctx.fill();
   ctx.fillStyle = '#ffffff'; ctx.font = '700 ' + Math.max(8, 10 * Math.sqrt(z)) + 'px Archivo,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('JD', c[0], c[1] + 0.5);
+  netClustPaint();
 }
 /* Map stats for the Network right panel. Display-only counts over what is on the map. */
 function netStatsHTML(){
