@@ -2797,14 +2797,16 @@ function netColor(nd){
   return RING_C[nd.ring];
 }
 function viewNetwork(v){
+  FLY.on = false; FLY.t = 0; FLY.box = null; FLY.slots = []; /* flyover is opt-in per visit — never persisted, never the default */
   var m3 = S.net.mode !== '2d';
   var legend = S.net.color === 'relation' ? [['mutual', 'Mutual'], ['following', 'Following'], ['follower', 'Follower']].map(function(x){ return [RELC[x[0]], x[1]]; })
     : TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
   function sg(k, opts, cur){ return '<div class="seg">' + opts.map(function(o){ return '<button type="button" data-act="' + k + '" data-v="' + o[0] + '" class="' + (cur === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
   v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub">' + (m3 ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.') + '</p></div>' +
     '<div class="netctl">' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + sg('netcolor', [['tier', 'Tier'], ['relation', 'Relation']], S.net.color) +
+    (m3 ? '<button type="button" class="btn ghost sm" data-act="netfly" aria-pressed="false"' + (REDUCED_MOTION ? ' disabled title="Flyover is off while reduced motion is on"' : '') + '>Flyover</button>' : '') +
     '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Show wider circle</button></div></div>' +
-    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
+    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netfly" id="netfly" aria-hidden="true"></div>' +
     '<div class="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
     '<div class="netzoom"><button type="button" class="ib" data-act="netzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="netzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="netfit" aria-label="Reset view">' + ic('target', 18) + '</button></div>' +
     '</div>' +
@@ -2821,6 +2823,7 @@ function viewNetwork(v){
   netCard();
   var cv = NET.cv; NET.ptr = {}; NET.pinch = 0;
   cv.addEventListener('pointerdown', function(ev){
+    flyStop(); /* any touch hands the camera straight back */
     cv.setPointerCapture(ev.pointerId);
     NET.lastAct = performance.now();
     NET.ptr[ev.pointerId] = { x:ev.clientX, y:ev.clientY }; NET.moved = false; N3.vy = 0; N3.vp = 0; N3.idle = 0;
@@ -2829,6 +2832,7 @@ function viewNetwork(v){
   cv.addEventListener('pointermove', function(ev){
     var p = NET.ptr[ev.pointerId];
     if(!p){
+      if(FLY.on) return; /* no hover churn while the camera is flying */
       var r0 = cv.getBoundingClientRect(), hx = ev.clientX - r0.left, hy = ev.clientY - r0.top;
       var h = S.net.mode === '2d' ? netHit(hx, hy) : net3Hit(hx, hy), hd = h ? h.di : null;
       if(hd !== NET.hoverDi){ NET.hoverDi = hd; if(S.net.mode !== '2d') N3.hover = hd; cv.style.cursor = h ? 'pointer' : 'grab'; }
@@ -2860,7 +2864,7 @@ function viewNetwork(v){
   }
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
   cv.addEventListener('wheel', function(ev){
-    ev.preventDefault(); NET.lastAct = performance.now();
+    ev.preventDefault(); flyStop(); NET.lastAct = performance.now();
     if(S.net.mode !== '2d'){ N3.zoom = Math.max(0.45, Math.min(3.5, N3.zoom * Math.exp(-ev.deltaY * 0.0012))); return; }
     var z2 = Math.max(0.3, Math.min(4, NET.cam.z * Math.exp(-ev.deltaY * 0.0011)));
     var r = cv.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
@@ -2883,6 +2887,7 @@ function viewNetwork(v){
       if(NET.dirty){ netDraw(); NET.dirty = false; }
     } else {
       if(NET.dvel) N3.yaw += NET.dvel * dt;
+      if(FLY.on && dt > 0) flyStep(dt);
       net3Draw(ts || 0);
     }
     NET.raf = requestAnimationFrame(frame);
@@ -2891,6 +2896,118 @@ function viewNetwork(v){
 
 /* ---------- 3D: a small software renderer on the canvas, no outside libraries ---------- */
 var N3 = { yaw:0.6, pitch:0.38, vy:0, vp:0, zoom:1, auto:true, idle:0, hover:null, proj:[], glow:{}, bgPts:null, t:0 };
+/* ---------- Flyover (JD 2026-10-16): an opt-in ambient pass over the 3D orb.
+   The orb keeps its normal drift spin; on top of that the camera eases along
+   a slow path — pitch sways over ~150s, zoom breathes over ~105s, on the
+   same exponential ramp family as the drift spool — so the viewpoint glides
+   in and out of the shells instead of sitting on the orbit rail. Nothing
+   springy, nothing fast. Nodes that swing near the camera get a small DOM
+   label (name, tier, one basic fact) that fades and rises in as they
+   approach and fades as they recede; at most six are alive at once, pooled
+   and recycled, and the layer never takes pointer events. Any pointer,
+   wheel or key input stops the flight and hands control straight back;
+   the toggle does too. Never persisted and disabled outright under
+   prefers-reduced-motion. */
+var FLY = { on:false, t:0, box:null, slots:[], lts:0 };
+var FLY_MAX = 6;
+function flyEnsure(){
+  var box = $('#netfly'); if(!box) return null;
+  if(FLY.box !== box){
+    FLY.box = box; FLY.slots = []; box.innerHTML = '';
+    for(var i = 0; i < FLY_MAX; i++){
+      var d = document.createElement('div'); d.className = 'flylab'; d.style.opacity = '0';
+      d.innerHTML = '<b></b><span></span>'; box.appendChild(d);
+      FLY.slots.push({ el:d, di:null, a:0, tg:0, p:null, rr:0 });
+    }
+  }
+  return box;
+}
+function flyBtnPaint(){
+  var b = $('[data-act="netfly"]'); if(!b) return;
+  b.classList.toggle('on', FLY.on); b.setAttribute('aria-pressed', FLY.on ? 'true' : 'false');
+}
+function flyStart(){
+  if(REDUCED_MOTION || S.net.mode === '2d' || !flyEnsure()) return;
+  if(S.net.sel != null){ S.net.sel = null; N3.auto = true; netCard(); NET.dirty = true; }
+  NET.hoverDi = null; N3.hover = null;
+  FLY.on = true; FLY.t = 0; FLY.lts = 0;
+  flyBtnPaint();
+}
+function flyStop(){
+  if(!FLY.on) return;
+  FLY.on = false;
+  FLY.slots.forEach(function(s){ s.tg = 0; }); /* labels fade out on the exit token */
+  flyBtnPaint();
+}
+function flyToggle(){ if(FLY.on) flyStop(); else flyStart(); }
+function flyStep(dt){
+  FLY.t += dt;
+  var k = 1 - Math.exp(-dt / 2.6);
+  var pitchT = 0.38 + 0.52 * Math.sin(FLY.t * (Math.PI * 2 / 150));
+  var zoomT = 1.02 + 0.48 * Math.sin(FLY.t * (Math.PI * 2 / 105) + 1.2);
+  N3.pitch += (pitchT - N3.pitch) * k;
+  N3.zoom += (zoomT - N3.zoom) * k;
+}
+function flyFact(e){
+  var loc = ptNormLoc(ptLocVal(e));
+  return loc || cap(gv(e, 'relationship')) || cap(gv(e, 'context')) || (knownSinceYear(e) ? 'Known since ' + knownSinceYear(e) : '');
+}
+function flyLabels(ts){
+  var any = FLY.on || FLY.slots.some(function(s){ return s.a > 0.01; });
+  if(!any || !flyEnsure()) return;
+  var dt = FLY.lts ? Math.min(0.05, Math.max(0.001, (ts - FLY.lts) / 1000)) : 0.016;
+  FLY.lts = ts;
+  var chosen = [];
+  if(FLY.on){
+    var cands = [];
+    for(var i = 0; i < N3.proj.length; i++){
+      var p = N3.proj[i];
+      if(p.z > -30) continue; /* near hemisphere only */
+      if(p.x < 84 || p.y < 76 || p.x > NET.W - 84 || p.y > NET.H - 56) continue;
+      if(p.y < 132 && (p.x < 270 || p.x > NET.W - 220)) continue; /* keep the legend and zoom corners clear */
+      var rr = Math.max(1.6, p.n.r * p.k * 1.25);
+      if(rr < 3.3) continue; /* only dots that read as near */
+      cands.push({ p:p, rr:rr });
+    }
+    cands.sort(function(a, b){ return b.rr - a.rr; });
+    for(var j = 0; j < cands.length && chosen.length < FLY_MAX; j++){
+      var c = cands[j], ok = true;
+      for(var m = 0; m < chosen.length; m++){ if(Math.abs(chosen[m].p.x - c.p.x) < 158 && Math.abs(chosen[m].p.y - c.p.y) < 60){ ok = false; break; } }
+      if(ok) chosen.push(c);
+    }
+  }
+  var byDi = {}; chosen.forEach(function(c){ byDi[c.p.n.di] = c; });
+  var used = {};
+  FLY.slots.forEach(function(s){
+    var c = s.di != null ? byDi[s.di] : null;
+    if(c){ s.tg = 1; used[s.di] = 1; s.p = c.p; s.rr = c.rr; } else s.tg = 0;
+  });
+  chosen.forEach(function(c){
+    if(used[c.p.n.di]) return;
+    for(var i2 = 0; i2 < FLY.slots.length; i2++){
+      var s = FLY.slots[i2];
+      if(s.di == null || (s.a <= 0.01 && s.tg === 0)){
+        var e = D.directory[c.p.n.di];
+        s.di = c.p.n.di; s.tg = 1; s.p = c.p; s.rr = c.rr;
+        s.el.children[0].textContent = dispName(e);
+        s.el.children[1].textContent = [tierName(e) || 'No tier yet', flyFact(e)].filter(Boolean).join(' · ');
+        used[s.di] = 1;
+        break;
+      }
+    }
+  });
+  var kf = 1 - Math.exp(-dt / 0.22), ko = 1 - Math.exp(-dt / 0.15);
+  FLY.slots.forEach(function(s){
+    s.a += (s.tg - s.a) * (s.tg > s.a ? kf : ko);
+    if(s.tg === 0 && s.a <= 0.01){ s.a = 0; s.di = null; }
+    if(s.di == null || !s.p){ s.el.style.opacity = '0'; return; }
+    var x = NET.W > 260 ? Math.max(120, Math.min(NET.W - 120, s.p.x)) : s.p.x;
+    var y = Math.max(52, s.p.y - s.rr - 12 - (1 - s.a) * 8); /* the rise: settles up as it fades in */
+    s.el.style.opacity = s.a.toFixed(3);
+    s.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) translate(-50%,-100%)';
+  });
+}
+
 function glowSprite(col){
   var c = N3.glow[col]; if(c) return c;
   c = document.createElement('canvas'); c.width = c.height = 64;
@@ -2973,6 +3090,7 @@ function net3Draw(ts){
     ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x, y, w, 24, 2); else ctx.rect(x, y, w, 24); ctx.fill(); ctx.stroke();
     ctx.fillStyle = '#f2f2f2'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(nm, x + 9, y + 12.5);
   });
+  flyLabels(ts);
 }
 function n3Center(ctx, c){
   var s = Math.max(9, 17 * c.k * 2.2), g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, s * 3.2);
@@ -4545,9 +4663,10 @@ function onClick(ev){
     case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
     case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
     case 'netmode': S.net.mode = el.getAttribute('data-v') === '2d' ? '2d' : '3d'; store('ncc_netmode', S.net.mode); viewNetwork($('#view')); break;
+    case 'netfly': flyToggle(); break;
     case 'netbg': S.net.bg = !S.net.bg; N3.bgPts = null; NET.bg = null; viewNetwork($('#view')); break;
-    case 'netzoom': { var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; if(S.net.mode === '2d'){ NET.cam.z = Math.max(0.3, Math.min(4, NET.cam.z * zf)); NET.dirty = true; } else N3.zoom = Math.max(0.45, Math.min(3.5, N3.zoom * zf)); break; }
-    case 'netfit': netFit(); break;
+    case 'netzoom': { flyStop(); var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; if(S.net.mode === '2d'){ NET.cam.z = Math.max(0.3, Math.min(4, NET.cam.z * zf)); NET.dirty = true; } else N3.zoom = Math.max(0.45, Math.min(3.5, N3.zoom * zf)); break; }
+    case 'netfit': flyStop(); netFit(); break;
     case 'netclose': S.net.sel = null; netCard(); NET.dirty = true; break;
     case 'fnode': { if(FAMV.moved) break; S.fam.focus = di; $$('.fn.foc').forEach(function(n){ n.classList.remove('foc'); }); el.classList.add('foc'); famCard(); famGlide(di); break; }
     case 'famclose': S.fam.focus = null; $$('.fn.foc').forEach(function(n){ n.classList.remove('foc'); }); famCard(); break;
@@ -4691,6 +4810,7 @@ function onNavKey(ev){
   }
 }
 function onKey(ev){
+  if(FLY.on && S.route.name === 'network') flyStop(); /* any key hands the camera back */
   var t = ev.target, tag = t.tagName, isField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
   if(ev.key === 'Enter' && t.classList && t.classList.contains('tadd')){ ev.preventDefault(); addTag(t); return; }
   if((ev.key === 'Enter' || ev.key === ' ') && t.classList && t.classList.contains('dm') && t.classList.contains('pick')){ ev.preventDefault(); t.click(); return; }
