@@ -879,7 +879,7 @@ details.quick[open]>summary{margin-bottom:10px}
 
 /* ---------- Audit feeder wall (2026-10-15) ---------- */
 .aud-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(318px,1fr));gap:16px;margin-top:18px}
-.aud-card{background:var(--card);border:1px solid var(--line2);border-radius:2px;padding:18px;display:flex;flex-direction:column;gap:12px;animation:audIn .38s cubic-bezier(.2,.7,.3,1) both}
+.aud-card{background:var(--card);border:1px solid var(--line2);border-radius:2px;padding:18px;display:flex;flex-direction:column;gap:12px;animation:audIn .38s cubic-bezier(.2,.7,.3,1) both;position:relative}
 @keyframes audIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
 .aud-card.aud-out{animation:audOut .3s ease-in both}
 @keyframes audOut{to{opacity:0;transform:translateX(26px) scale(.97)}}
@@ -926,8 +926,8 @@ button.aud-gchip.done:hover{color:var(--txt);border-color:var(--dim)}
    already strips animations); the countdown label keeps ticking. */
 .aud-card.aud-arm{border-color:var(--acc);animation:audArm 1s ease-in-out infinite}
 @keyframes audArm{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}50%{box-shadow:0 0 0 4px var(--accbg)}}
-.aud-cd{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--acc2)}
-.aud-cd[hidden]{display:none}
+.aud-cd{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--acc2);position:absolute;left:18px;bottom:15px;visibility:hidden;pointer-events:none;z-index:5}
+.aud-card.aud-arm .aud-cd{visibility:visible}
 .aud-bar{width:64px;height:4px;border-radius:2px;background:var(--line);overflow:hidden;flex:none}
 .aud-bar i{display:block;height:100%;width:100%;background:var(--acc)}
 @media (max-width:640px){.aud-grid{grid-template-columns:1fr}}
@@ -960,7 +960,7 @@ button.aud-gchip.done:hover{color:var(--txt);border-color:var(--dim)}
 .aud-peek.p2{transform:translateY(22px) scale(.95);opacity:.3}
 .aud-stack.nopeek .aud-peek{display:none}
 .aud-stage{display:block;margin-top:0;position:relative;z-index:1}
-.aud-stage .aud-card{animation-duration:.15s;padding:24px}
+.aud-stage .aud-card{animation-duration:.15s;padding:24px;width:100%}
 .aud-stage .aud-name{font-size:19px}
 .aud-stage .aud-prompt{font-size:17px}
 .aud-stage .aud-in{font-size:16.5px;padding:11px 12px}
@@ -1162,10 +1162,25 @@ html,body{background:var(--bg)}
 .aud-grid:not(.aud-stage){display:block;columns:318px;column-gap:16px}
 .aud-grid:not(.aud-stage) .aud-card{break-inside:avoid;width:100%;margin:0 0 16px}
 .aud-foot{margin-top:0}
+
+/* smoothness pins (2026-10-16): the count lines above the wall are
+   single-line so a commit can never grow the page head and shift the
+   wall; the scroller never applies scroll anchoring on top of the
+   app's own scroll restoration. */
+#audsub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aud-catprog{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#view{overflow-anchor:none}
 @media (max-width:640px){.aud-grid:not(.aud-stage){columns:1}}
 
 /* card depth without blur: top-lit opaque slab + lit rim + ambient shadow */
 .aud-card{background:var(--card-grad);box-shadow:var(--sh-card2)}
+
+/* the suggestion list overlays instead of growing the card (2026-10-16):
+   in-flow it added ~95px to the card on every keystroke and rebalanced
+   the whole wall; as an overlay it changes no layout at all. Audit
+   cards only — the People-table popover keeps its in-flow list. */
+.aud-card .pted-add{position:relative}
+.aud-card .pted-ac{position:absolute;left:0;right:0;top:100%;margin-top:4px;z-index:40;box-shadow:0 12px 30px rgba(0,0,0,.5)}
 .aud-peek{background:var(--card-grad)}
 .aud-caught{background:var(--card-grad);box-shadow:var(--sh-card2)}
 
