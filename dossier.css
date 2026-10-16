@@ -954,7 +954,7 @@ button.aud-gchip.done:hover{color:var(--txt);border-color:var(--dim)}
 .aud-catbtn.on{color:#0a0a0a;border-color:var(--txt);background:var(--txt)}
 .aud-catn{font-variant-numeric:tabular-nums;opacity:.85}
 .aud-catprog{margin:10px 0 0;font-size:13px;color:var(--mut)}
-.aud-stage-wrap{max-width:600px;margin:18px auto 0}
+.aud-stage-wrap{width:100%;max-width:600px;margin:18px auto 0}
 .aud-stack{position:relative;padding-bottom:22px}
 .aud-peek{position:absolute;left:6px;right:6px;top:0;bottom:22px;background:var(--card);border:1px solid var(--line2);border-radius:2px;transform:translateY(11px) scale(.975);opacity:.55}
 .aud-peek.p2{transform:translateY(22px) scale(.95);opacity:.3}
@@ -1158,9 +1158,13 @@ input,select,textarea{transition:border-color var(--d-state) var(--ease-std),box
 /* wall ground: the sweep's ambient, one faint low glow richer */
 html,body{background:var(--bg)}
 
-/* the wall: masonry flow — cards hug their content, no stretched rows */
-.aud-grid:not(.aud-stage){display:block;columns:318px;column-gap:16px}
-.aud-grid:not(.aud-stage) .aud-card{break-inside:avoid;width:100%;margin:0 0 16px}
+/* the wall: explicit columns (2026-10-16) — K independent stacks
+   (JS deals shortest-first), so a departure or arrival touches only
+   its own column. CSS multicol rebalanced every column on any
+   change; that was the jump. Cards hug their content, no rows. */
+.aud-grid:not(.aud-stage){display:flex;gap:16px;align-items:flex-start}
+.aud-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:16px}
+.aud-grid:not(.aud-stage) .aud-card{width:100%;margin:0}
 .aud-foot{margin-top:0}
 
 /* smoothness pins (2026-10-16): the count lines above the wall are
@@ -1169,8 +1173,7 @@ html,body{background:var(--bg)}
    app's own scroll restoration. */
 #audsub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .aud-catprog{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#view{overflow-anchor:none}
-@media (max-width:640px){.aud-grid:not(.aud-stage){columns:1}}
+#view{overflow-anchor:none;scrollbar-gutter:stable}
 
 /* card depth without blur: top-lit opaque slab + lit rim + ambient shadow */
 .aud-card{background:var(--card-grad);box-shadow:var(--sh-card2)}
