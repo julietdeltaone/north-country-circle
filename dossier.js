@@ -3558,7 +3558,7 @@ function viewGroups(v){
       (selCount ? '<button type="button" class="btn ghost sm" data-act="gmgrclear">Clear</button>' : '') + '</div></div>';
   }
   var list = GMGR.on
-    ? (names.map(function(x){ var on = !!GMGR.sel[kind + '|' + x.n]; return '<label class="grow gmgr-r' + (on ? ' on' : '') + '"><input type="checkbox" data-act="gmgrsel" data-k="' + kind + '" data-n="' + esc(x.n) + '"' + (on ? ' checked' : '') + '><span>' + esc(x.n) + '</span><em>' + x.c + '</em></label>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>')
+    ? (names.map(function(x){ var on = !!GMGR.sel[kind + '|' + x.n]; return '<label class="grow gmgr-r' + (on ? ' on' : '') + '"><input type="checkbox" data-gmsel="' + kind + '|' + esc(x.n) + '"' + (on ? ' checked' : '') + '><span>' + esc(x.n) + '</span><em>' + x.c + '</em></label>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>')
     : (names.map(function(x){ return '<a href="#/groups/' + kind + '/' + encodeURIComponent(x.n) + '" class="grow' + (x.n === name ? ' on' : '') + '"><span>' + esc(x.n) + '</span><em>' + x.c + '</em></a>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>');
   var add = kind === 'groups' ? '<div class="finder inline"><input id="gnew" placeholder="New group name" autocomplete="off"><button type="button" class="btn sm" data-act="gnew">Create</button></div>' : '';
   var detail = '';
@@ -4830,7 +4830,6 @@ function onClick(ev){
     case 'famfit': famFit(); break;
     /* groups */
     case 'gmgr': GMGR.on = !GMGR.on; if(!GMGR.on) GMGR.sel = {}; render(); break;
-    case 'gmgrsel': { var gk0 = el.getAttribute('data-k'), gn0 = el.getAttribute('data-n'), gkey = gk0 + '|' + gn0; if(GMGR.sel[gkey]) delete GMGR.sel[gkey]; else GMGR.sel[gkey] = 1; render(); break; }
     case 'gmgrclear': GMGR.sel = {}; render(); break;
     case 'gmgrgo': {
       var gk2 = el.getAttribute('data-k'), tin = $('#gmgrt'), tgt = tin ? tin.value : '';
@@ -4878,6 +4877,11 @@ function onInput(ev){
 }
 function onChange(ev){
   var t = ev.target, act = t.getAttribute && t.getAttribute('data-act');
+  if(t.hasAttribute && t.hasAttribute('data-gmsel')){
+    var gmkey = t.getAttribute('data-gmsel');
+    if(t.checked) GMGR.sel[gmkey] = 1; else delete GMGR.sel[gmkey];
+    render(); return;
+  }
   if(t.id === 'setedit'){ store('ncc_edit_key', t.value.trim()); return; }
   if(act === 'waive' && t.type === 'checkbox'){
     var di = curDi(t), sids = t.getAttribute('data-sid').split(',');
