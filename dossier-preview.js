@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.4.0';
+var APP_VERSION = '2.4.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -489,6 +489,63 @@ function outLoad(){
 }
 function outSave(){ try{ localStorage.setItem(OUT_KEY, JSON.stringify(OUT.items)); }catch(x){} }
 function outPending(){ return OUT.items.filter(function(it){ return Object.keys(it.patch || {}).length || it.sending; }).length; }
+/* Local-wins overlay (JD 2026-10-16): every value saved in the app is
+   remembered here, keyed by profile + field, until a FRESH dataset
+   (the baked snapshot at load, or a changes-feed row) actually shows
+   it. The bake republishes only on the ~10-minute subject sync, and
+   the outbox forgets a write once the endpoint acks it — without this
+   overlay, a reload inside the lag window resurrected pre-save data:
+   values flipped between saved and not saved and the Audit counts
+   regressed. queuePatch (the one choke point for every write) notes
+   each field here; the dataset intake points reconcile against it. */
+var WINS = {}, WINS_KEY = 'ncc_local_wins', WINS_TTL = 7 * 24 * 3600 * 1000;
+function winsLoad(){
+  try{ WINS = JSON.parse(localStorage.getItem(WINS_KEY) || '{}') || {}; }catch(x){ WINS = {}; }
+  if(!WINS || typeof WINS !== 'object' || Array.isArray(WINS)) WINS = {};
+  winsPrune();
+}
+function winsSave(){ try{ localStorage.setItem(WINS_KEY, JSON.stringify(WINS)); }catch(x){} }
+function winsPrune(){
+  var cut = Date.now() - WINS_TTL, dirty = false;
+  Object.keys(WINS).forEach(function(k){
+    var f = WINS[k] || {};
+    Object.keys(f).forEach(function(kk){ if(!f[kk] || !f[kk].t || f[kk].t < cut){ delete f[kk]; dirty = true; } });
+    if(!Object.keys(f).length){ delete WINS[k]; dirty = true; }
+  });
+  if(dirty) winsSave();
+}
+function winsEq(a, b){ return String(a == null ? '' : a).trim().toLowerCase() === String(b == null ? '' : b).trim().toLowerCase(); }
+function winsNote(key, patch){
+  if(!key || !patch) return;
+  var f = WINS[key] || (WINS[key] = {}), t = Date.now();
+  Object.keys(patch).forEach(function(k){ f[k] = { v:patch[k], t:t }; });
+  winsSave();
+}
+/* Re-apply one profile's surviving overlay fields over the live data. */
+function winsApplyTo(di){
+  var e = D && D.directory[di]; if(!e) return;
+  var f = WINS[pkey(e)]; if(!f) return;
+  var ch = null;
+  Object.keys(f).forEach(function(k){ if(!winsEq((e.profile || {})[k], f[k].v)){ (ch = ch || {})[k] = f[k].v; } });
+  if(ch) applyProfileEdit(e, ch);
+}
+function winsApplyAll(){ if(!D) return; Object.keys(WINS).forEach(function(k){ var di = PK2I[k]; if(di !== undefined) winsApplyTo(di); }); }
+/* Retire the overlay fields a fresh dataset already shows.
+   freshVal(pk, k) returns {found, val} read from the FRESH data,
+   before any local re-application; profiles the fresh data does not
+   cover must report found:false so their entries survive. */
+function winsRetire(freshVal){
+  var dirty = false;
+  Object.keys(WINS).forEach(function(k){
+    var f = WINS[k];
+    Object.keys(f).forEach(function(kk){
+      var r = freshVal(k, kk);
+      if(r && r.found && winsEq(r.val, f[kk].v)){ delete f[kk]; dirty = true; }
+    });
+    if(!Object.keys(f).length){ delete WINS[k]; dirty = true; }
+  });
+  if(dirty) winsSave();
+}
 function getPw(){ return store('ncc_edit_key') || ''; }
 function normPatch(p){
   var o = {};
@@ -526,6 +583,7 @@ function queuePatch(idx, patch){
   for(var i = 0; i < OUT.items.length; i++) if(OUT.items[i].id === key){ it = OUT.items[i]; break; }
   if(!it){ it = { id:key, patch:{}, sending:null }; OUT.items.push(it); }
   Object.keys(patch).forEach(function(k){ it.patch[k] = patch[k]; });
+  winsNote(key, patch);
   outSave(); paintSync();
   clearTimeout(OUT.timer); OUT.timer = setTimeout(outKick, 700);
   if(window.__nccChanged) window.__nccChanged(idx);
@@ -632,6 +690,15 @@ function fetchChanges(){
     .then(function(r){ return r.json(); }).then(function(res){
       if(!res || !res.ok) return;
       var pend = {}; OUT.items.forEach(function(it){ pend[it.id] = 1; });
+      var rowsByPk = {};
+      (res.rows || []).forEach(function(row){ if(row && row.pkey) rowsByPk[row.pkey] = row.profile || {}; });
+      /* Local-wins overlay (2026-10-16): fields this feed already
+         shows are retired; the survivors are re-applied over the
+         rows below, so a stale row can never un-show a saved value. */
+      winsRetire(function(pk, k){
+        var p = rowsByPk[pk]; if(!p || !(k in p)) return { found:false };
+        return { found:true, val:p[k] };
+      });
       var n = 0;
       (res.rows || []).forEach(function(row){
         var di = PK2I[row.pkey]; if(di === undefined || pend[row.pkey]) return;
@@ -639,6 +706,7 @@ function fetchChanges(){
         Object.keys(row.profile || {}).forEach(function(k){ ch[k] = row.profile[k]; });
         applyProfileEdit(D.directory[di], ch); n++;
       });
+      Object.keys(rowsByPk).forEach(function(pk){ var di = PK2I[pk]; if(di !== undefined) winsApplyTo(di); });
       if(n && window.__nccChanged) window.__nccChanged(-1);
     }).catch(function(){});
 }
@@ -4122,16 +4190,34 @@ function audCardHTML(x, i){
     '<div class="aud-gaps" role="group" aria-label="Missing items for this person">' + audChipsHTML(x) + '</div>' +
     '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span></p>' +
     '<div class="aud-ed">' + audEdHTML(di, gap) + '</div>' +
-    '<div class="aud-foot"><span class="aud-cd" hidden><span class="aud-cdt">Saving in 3</span><span class="aud-bar"><i></i></span></span><span class="sp"></span>' +
+    '<div class="aud-foot"><span class="aud-cd"><span class="aud-cdt">Saving in 3</span><span class="aud-bar"><i></i></span></span><span class="sp"></span>' +
     '<button type="button" class="aud-later" data-act="audpark" data-di="' + di + '" title="Park this person and come back to them later — nothing is saved or closed out">Save for later</button>' +
     '<button type="button" class="aud-skip" data-act="audskip" data-di="' + di + '" title="Finish this person: close out everything still open on this card, for good">Done with them</button></div></article>';
 }
 /* Switch a card's active gap in place: chips, prompt and editor swap
    without the card moving or resizing. Any armed countdown is cancelled,
    so a half-filled editor never submits after a switch. */
+/* Positional stability (JD 2026-10-16): the Audit wall is CSS
+   multicol, whose balance is a pure function of the cards' height
+   sequence — hold that sequence constant and no bystander ever moves.
+   A wall card that changes content in place therefore keeps the
+   height it had: the card is a flex column whose footer is pinned by
+   margin-top:auto, so shorter content just leaves quiet space above
+   the footer. Taller content takes its natural height (only the
+   cards below it in its own column shift, by exactly the excess).
+   Stage cards are exempt — the stage wrap locks that footprint. */
+function audPinH(card){
+  if(!card || (S.audit && S.audit.mode === 'rapid')) return null;
+  return card.offsetHeight || null;
+}
+function audHoldH(card, h){
+  if(!card || !h) return;
+  if(card.offsetHeight <= h) card.style.height = h + 'px';
+}
 function audSetGap(card, gap){
   var di = +card.getAttribute('data-di'), x = audEntry(di);
   if(!x || x.gaps.indexOf(gap) < 0) return;
+  var pinH = audPinH(card);
   var hadFocus = card.contains(document.activeElement);
   audDisarm(card);
   audFinalizeStacks(card);   /* switching gaps closes out a stacked orgs/skills gap (values already on file) */
@@ -4143,12 +4229,15 @@ function audSetGap(card, gap){
   if(pr) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>';
   var ed = $('.aud-ed', card); if(ed) ed.innerHTML = audEdHTML(di, gap);
   audWireCard(card);
+  audHoldH(card, pinH);
   if(hadFocus) audFocusEditor(card);
 }
 /* Repaint just a card's indicator chips (after a state change). */
 function audPaintChips(card){
   var x = audEntry(+card.getAttribute('data-di')); if(!x) return;
+  var pinH = audPinH(card);
   var box = $('.aud-gaps', card); if(box) box.innerHTML = audChipsHTML(x);
+  audHoldH(card, pinH);
 }
 function audCardEl(di){ return $('.aud-card[data-di="' + di + '"]'); }
 /* Clicking a DONE chip reopens that gap's editor, prefilled with the
@@ -4159,6 +4248,7 @@ function audReopen(card, gap){
   if(card.classList.contains('aud-out') || card.classList.contains('aud-done')) return;
   var di = +card.getAttribute('data-di'), x = audEntry(di);
   if(!x || x.done.indexOf(gap) < 0 || x.cur === gap) return;
+  var pinH = audPinH(card);
   var hadFocus = card.contains(document.activeElement);
   audDisarm(card);
   x.cur = gap;
@@ -4180,6 +4270,7 @@ function audReopen(card, gap){
     if(inp) inp.value = (x.vals && x.vals[gap]) || (gap === 'loc' ? raw(e, 'location_on_file') : gap === 'years' ? gv(e, 'years_known') : gap === 'phone' ? gv(e, 'phone') : '');
   }
   audWireCard(card);
+  audHoldH(card, pinH);
   if(hadFocus) audFocusEditor(card);
 }
 /* ---- Audit action toast + one-step undo (JD 2026-10-15) ------------
@@ -4445,7 +4536,7 @@ function audFlowMode(){ return !!(S.audit && (S.audit.mode === 'rapid' || S.audi
 function audEditorEl(card){
   return $('.aud-in', card) || $('.aud-pick', card) || $('.aud-gchip.on', card) || $('button, input', card);
 }
-function audFocusEditor(card){ var f = card && audEditorEl(card); if(f) f.focus(); return f; }
+function audFocusEditor(card){ var f = card && audEditorEl(card); if(f) f.focus({ preventScroll:true }); return f; }
 
 /* Enter inside an Audit text editor. Enter is the explicit
    confirmation, so it commits ONLY a complete value — the audComplete
@@ -4540,6 +4631,15 @@ function audStageRender(x){
   grid.appendChild(nc);
   audWireCard(nc);
   if(x.done.indexOf(x.cur) >= 0) audPrefillDone(nc, x);
+  /* Stage footprint lock (JD 2026-10-16): the wrap never shrinks
+     below the tallest stage card dealt this session, so a swap can
+     never change the page height around the stage. */
+  var wrap = grid.closest ? grid.closest('.aud-stage-wrap') : null;
+  if(wrap){
+    var wh = wrap.offsetHeight;
+    if(!A._stageH || wh > A._stageH) A._stageH = wh;
+    wrap.style.minHeight = A._stageH + 'px';
+  }
   audFocusEditor(nc);
   audPaintCounts(); audPaintEmpty();
   return nc;
@@ -4691,8 +4791,7 @@ function audDisarm(card){
   if(card._audIv){ clearInterval(card._audIv); card._audIv = null; }
   if(card._audDeb){ clearTimeout(card._audDeb); card._audDeb = null; }
   if(card._audBlur){ clearTimeout(card._audBlur); card._audBlur = null; }
-  card.classList.remove('aud-arm');
-  var cd = $('.aud-cd', card); if(cd) cd.hidden = true;
+  card.classList.remove('aud-arm');   /* the countdown span hides with the class (its space stays reserved) */
 }
 /* Is the gap on show the card's LAST remaining one? (JD 2026-10-15)
    Judged at commit time against the person's gaps still open on the
@@ -4715,9 +4814,8 @@ function audTryArm(card){
   var instantArm = !!(S.audit && (S.audit.mode === 'rapid' || S.audit.mode === 'cat'));
   if(reeditArm || instantArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audDisarm(card);
-  var cd = $('.aud-cd', card), cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
-  card.classList.add('aud-arm');
-  if(cd) cd.hidden = false;
+  var cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
+  card.classList.add('aud-arm');   /* .aud-arm reveals the countdown span (space already reserved) */
   var t0 = Date.now();
   function tick(){
     if(!card.isConnected){ audDisarm(card); return; }   /* navigated away: abandon quietly */
@@ -4731,7 +4829,7 @@ function audTryArm(card){
 }
 function audNudge(card){
   card.classList.remove('aud-need'); void card.offsetWidth; card.classList.add('aud-need');
-  var f = $('.aud-in', card); if(f) f.focus();
+  var f = $('.aud-in', card); if(f) f.focus({ preventScroll:true });
 }
 function audAddTag(di, fieldK, val){
   var e = D.directory[di], arr = splitTags(gv(e, fieldK), ', ');
@@ -4832,7 +4930,7 @@ function audSave(di, card){
     if(firstAdd){ S.audit.done++; audNoteFill(di, gap); }
     audLog({ kind:'stack', di:di, gap:gap, entry:rs.entry || null, val:rs.val, first:firstAdd, blitz:!!(S.audit && S.audit.blitz), text:'Added · ' + AUD_GAPS[gap].tag + ': ' + rs.val });
     audToastShow('Added · ' + AUD_GAPS[gap].tag + ': ' + rs.val);
-    var inpS = $('.aud-in', card); if(inpS){ inpS.value = ''; inpS.focus(); }
+    var inpS = $('.aud-in', card); if(inpS){ inpS.value = ''; inpS.focus({ preventScroll:true }); }
     audPaintCounts();
     return;
   }
@@ -4869,6 +4967,11 @@ function audRetire(card, saved, kbFocus){
   A.shown = A.shown.filter(function(x){ return x.di !== di; });
   function finish(){
     if(!card.isConnected) return;   /* the view was rebuilt mid-animation (mode switch, shuffle): do not feed a stale card into the new wall */
+    /* Replacement-in-place (JD 2026-10-16): the dealt card takes the
+       DEPARTED card's slot — same DOM position, same height — so the
+       wall's height sequence is unchanged, no bystander moves, and
+       focus lands in the new card's editor without scrolling. */
+    var sib = card.nextElementSibling, prev = card.previousElementSibling, depH = card.offsetHeight;
     card.remove();
     /* Rapid Fire stage history (JD 2026-10-16): every card that
        leaves the stage is remembered, most recent last, so
@@ -4888,29 +4991,35 @@ function audRetire(card, saved, kbFocus){
         var tmp = document.createElement('div');
         tmp.innerHTML = audCardHTML(nxt, 0);
         var nc = tmp.firstChild;
-        grid.appendChild(nc);
+        if(sib && sib.parentNode === grid) grid.insertBefore(nc, sib); else grid.appendChild(nc);
         audWireCard(nc);
+        if(depH && nc.offsetHeight <= depH) nc.style.height = depH + 'px';
         /* Keyboard flows (and the flow modes generally) land focus
-           in the DEALT card's editor — never on its name button.
-           Cards / Finish Line keep the old rule for pure-mouse
-           retirements (focus only follows when the card had it). */
-        if(hadFocus || audFlowMode()){ var nf = (kbFocus || audFlowMode()) ? audEditorEl(nc) : $('button, input', nc); if(nf) nf.focus(); }
+           in the DEALT card's editor — never on its name button, and
+           never by scrolling the view to it. Cards / Finish Line
+           keep the old rule for pure-mouse retirements (focus only
+           follows when the card had it). */
+        if(hadFocus || audFlowMode()){ var nf = (kbFocus || audFlowMode()) ? audEditorEl(nc) : $('button, input', nc); if(nf) nf.focus({ preventScroll:true }); }
       }
     }
     /* Flow modes on a wall (Category Run deals its whole lane at
        once, so often no fresh card feeds in): a retired card must not
-       strand focus on <body> — hand it to the first card left. */
+       strand focus on <body> — hand it to the card that slid into the
+       departed slot (the former next sibling, else the previous
+       one), never to the first card on the wall. */
     if(!nxt && audFlowMode() && hadFocus){
-      var rest = $('#audgrid .aud-card');
+      var rest = (sib && sib.classList && sib.classList.contains('aud-card')) ? sib
+        : (prev && prev.classList && prev.classList.contains('aud-card')) ? prev : null;
       if(rest) audFocusEditor(rest);
     }
     audPaintCounts(); audPaintEmpty();
   }
   if(pvReducedMotion()){ finish(); return; }
   card.classList.add(saved ? 'aud-done' : 'aud-out');
-  /* Rapid Fire keeps the swap under 150ms (Doherty threshold): the
-     stage never sits empty long enough to break the rhythm. */
-  setTimeout(finish, (S.audit && S.audit.mode === 'rapid') ? 120 : 310);
+  /* The flow modes keep the swap under 150ms (Doherty threshold):
+     the stage never sits empty long enough to break the rhythm, and
+     a Category Run Enter chain lands in the dealt card at once. */
+  setTimeout(finish, audFlowMode() ? 120 : 310);
 }
 function audLaterPaint(){
   var b = $('#audlaterbtn'); if(!b) return;
@@ -5654,8 +5763,17 @@ function boot(){
         D = d;
         regLoad();
         D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; normEntry(r); PK2I[pkey(r)] = i; });
-        outLoad();
+        outLoad(); winsLoad();
+        /* Local-wins overlay vs the fresh bake (2026-10-16): retire
+           what the bake already shows, then the outbox and the
+           overlay's survivors re-apply on top — a value JD saved can
+           never vanish just because the bake has not caught up. */
+        winsRetire(function(pk, k){
+          var di = PK2I[pk]; if(di === undefined) return { found:false };
+          var e = D.directory[di]; return { found:true, val:(e.profile || {})[k] };
+        });
         try{ applyOutbox(); }catch(px){}
+        winsApplyAll();
         computeNewGain();
         history.replaceState({ d:0 }, '', location.hash || '#/people');
         render();
