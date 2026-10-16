@@ -2154,7 +2154,12 @@ function ptAcWire(inp, list, onPick, opts){
       if(open){ ev.preventDefault(); ev.stopPropagation(); act = ev.key === 'Home' ? 0 : hits.length - 1; mark(); }
     }
     else if(ev.key === 'Enter'){
-      if(open && act >= 0){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
+      /* opts.enterPick may veto the Enter-pick (return false): the event
+         then falls through to the field's own Enter handler instead of
+         picking the highlighted match. The Audit years editor uses it —
+         a typed year commits only when IT is complete, never because
+         Enter happened to pick a highlighted neighbour year. */
+      if(open && act >= 0 && !(opts && opts.enterPick && !opts.enterPick(hits[act]))){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
     }
     else if(ev.key === 'Escape'){
       if(open){ ev.preventDefault(); ev.stopPropagation(); hide(); }
