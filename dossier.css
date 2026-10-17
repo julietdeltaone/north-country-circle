@@ -1240,6 +1240,36 @@ html,body{background:var(--bg)}
 .flyplate.in .fp-f1{opacity:1;transform:none;transition-delay:240ms}
 .flyplate.in .fp-f2{opacity:1;transform:none;transition-delay:360ms}
 
+/* Grand Flyover stage (V2.7.0, JD 2026-10-16): the WebGL takeover
+   layer inside the network wrap. The scene itself is flyover3d.js;
+   this is only its chrome — the hero panel (the flyplate grown up,
+   same Swiss Mono paint, anchored in 3D by CSS2D so the type stays
+   crisp and upright while the camera orbits), the satellite name
+   tags, and the exit affordance. Signal red appears on the exit
+   hover only; the stage rations it the way the map does. */
+.fly3d{position:absolute;inset:0;z-index:9;background:#0a0a0a;opacity:0;transition:opacity .3s ease;overflow:hidden}
+.fly3d .f3-gl{position:absolute;inset:0;z-index:1}
+.fly3d .f3-gl canvas{display:block}
+.fly3d .f3-css2d{position:absolute;inset:0;z-index:2;pointer-events:none}
+.f3-exit{position:absolute;top:12px;right:12px;z-index:3;padding:8px 14px;background:rgba(10,10,10,.82);border:1px solid var(--line2);border-radius:2px;color:var(--txt);font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}
+.f3-exit:hover{border-color:#e30613;color:#e30613}
+.f3-plate{width:248px;padding:13px 16px 14px;background:rgba(10,10,10,.94);border:1px solid var(--line2);border-radius:2px;opacity:0;transition:opacity .25s ease}
+.f3-plate .f3-name,.f3-plate .f3-meta,.f3-plate .f3-fact{display:block;opacity:0;transform:translateY(7px);transition:opacity .3s ease,transform .3s ease}
+.f3-plate .f3-name{font-family:var(--serif);font-size:24px;font-weight:700;line-height:1.15;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f3-plate .f3-meta{margin-top:6px;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f3-plate .f3-meta .f3-num{font-family:var(--serif);font-size:14px}
+.f3-plate .f3-pin{color:#e30613}
+.f3-plate .f3-fact{margin-top:5px;font-size:13px;font-weight:400;line-height:1.35;letter-spacing:0;text-transform:none;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f3-plate.in{opacity:1}
+.f3-plate.in .f3-name{opacity:1;transform:none;transition-delay:0ms}
+.f3-plate.in .f3-meta{opacity:1;transform:none;transition-delay:300ms}
+.f3-plate.in .f3-f1{opacity:1;transform:none;transition-delay:700ms}
+.f3-plate.in .f3-f2{opacity:1;transform:none;transition-delay:1000ms}
+.f3-plate.fast .f3-name,.f3-plate.fast .f3-meta,.f3-plate.fast .f3-fact{transition-duration:.18s;transition-delay:0ms}
+.f3-plate.fs{width:276px;padding:15px 18px 16px}
+.f3-plate.fs .f3-name{font-size:28px}
+.f3-sattag{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#d8d8d8;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.9);transition:opacity .3s ease}
+
 /* Cluster labels (JD 2026-10-16): "NAME — N" orientation plates for the biggest
    Groups + Organizations on the network map. Swiss Mono paint, quieter than the
    Flyover person plates: flat plate, hairline border, 2px corners, Space Grotesk
