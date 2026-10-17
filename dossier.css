@@ -1192,6 +1192,7 @@ html,body{background:var(--bg)}
    The list also gets room for all eight suggestions: the shared
    224px cap cut the last rows off behind an internal scrollbar. */
 .aud-card:focus-within{z-index:80}
+.aud-card .pted-ac.up{top:auto;bottom:100%;margin-top:0;margin-bottom:4px}
 .aud-peek{background:var(--card-grad)}
 .aud-caught{background:var(--card-grad);box-shadow:var(--sh-card2)}
 
