@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.7.1';
+var APP_VERSION = '2.8.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -325,6 +325,8 @@ function liveEntry(e){ var p = e.profile || {}; return p.deleted !== '1' && p.au
 function isChecked(e){ return (e.profile || {}).audit === 'audited'; }
 function igURL(h){ return 'https://www.instagram.com/' + encodeURIComponent(String(h).replace(/^@/, '')) + '/'; }
 function hasHandle(e){ return e.src !== 'contacts' && e.src !== 'subject' && !/^(ig|ct|sf|fdb):/.test(String(e.name || '')) && !!e.name; }
+/* the handle a profile answers to: its own name for IG entries, or the handle a merged-away IG profile handed it (e.ig, set by the build) */
+function effHandle(e){ return hasHandle(e) ? String(e.name || '') : String(e.ig || ''); }
 function normEntry(r){
   var p = r.profile || {};
   var pe = parseArr(p.events), pf = parseArr(p.files);
@@ -1265,6 +1267,9 @@ function mergePreview(loserDi, survDi){
   if(nf) out.carried.push(nf + ' file' + (nf === 1 ? '' : 's'));
   if(nd) out.carried.push(nd + ' degree' + (nd === 1 ? '' : 's'));
   if(nfam) out.carried.push(nfam + ' family link' + (nfam === 1 ? '' : 's'));
+  var lh = effHandle(L), sh = effHandle(S);
+  if(lh && !sh) out.carried.push('Instagram @' + lh);
+  else if(lh && sh && lh.toLowerCase() !== sh.toLowerCase()) out.carried.push('Instagram stays @' + sh);
   return out;
 }
 function mergeInto(loserDi, survDi){
@@ -1285,7 +1290,7 @@ function unmerge(di){ txn('Unmerge', function(){ queuePatch(di, { merged_into:''
    export: a standalone document of one profile (neutral paper style, no theme colors)
    ============================================================ */
 function buildDossierDoc(e){
-  var name = dispName(e), handle = hasHandle(e) ? '@' + (e.name || '') : '';
+  var name = dispName(e), handle = effHandle(e) ? '@' + effHandle(e) : '';
   var aka = personIsAka(e) ? gv(e, 'also_known_as') : '';
   var bio = String(gv(e, 'synopsis') || '').trim();
   var fp = gv(e, 'public_footprint');
@@ -1657,7 +1662,7 @@ function paintUndo(){
 /* ---------- search ---------- */
 function matchText(e){
   if(e._mt) return e._mt;
-  e._mt = [dispName(e), hasHandle(e) ? e.name : '', gv(e, 'specialty'), gv(e, 'companies'), gv(e, 'churches'), gv(e, 'universities'), gv(e, 'groups'), e.city || '', e.hometown || '',
+  e._mt = [dispName(e), effHandle(e), gv(e, 'specialty'), gv(e, 'companies'), gv(e, 'churches'), gv(e, 'universities'), gv(e, 'groups'), e.city || '', e.hometown || '',
     personIsAka(e) ? gv(e, 'also_known_as') : '', degreesOf(e).map(function(d){ return d.school + ' ' + d.major; }).join(' ')].join(' ').toLowerCase();
   return e._mt;
 }
@@ -1684,7 +1689,7 @@ function paintSearch(){
   box.innerHTML = hits.map(function(di, i){
     var e = D.directory[di];
     return '<button type="button" class="gsi-row' + (i === 0 ? ' on' : '') + '" data-act="gsopen" data-di="' + di + '">' + avatar(e, 'sm') +
-      '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></span>' + '</button>';
+      '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + '</button>';
   }).join('') + (hits.length ? '<button type="button" class="gsi-all" data-act="gsall">See all matches in People</button>' : '<div class="gsi-none">No one matches</div>');
   box.hidden = false;
 }
@@ -1878,7 +1883,7 @@ function prowMeta(e){
 }
 function prow(di, i){
   var e = D.directory[di];
-  var sub = [cap(gv(e, 'relationship')), hasHandle(e) ? '@' + (e.name || '') : ''].filter(Boolean).join(' · ');
+  var sub = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
     '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + prowMeta(e) + '</span></button>';
 }
@@ -1992,13 +1997,13 @@ var PT_SEED_ORGS = {
   companies: ['Rochester Regional Health','Claxton-Hepburn Medical Center','Massena Hospital'],
   churches: []
 };
-function ptHandle(e){ return hasHandle(e) ? String(e.name || '') : String(e.ig || ''); }
+function ptHandle(e){ return effHandle(e); }
 /* Location on file (Sheet column, JD 2026-10-15) is the person's single
    location: when set it wins over the derived city/hometown everywhere. */
 function ptLocVal(e){ return gv(e, 'location_on_file') || gv(e, 'city') || gv(e, 'hometown') || ''; }
 var PTCELL = {
   name: function(e){
-    var sub = [cap(gv(e, 'relationship')), hasHandle(e) ? '@' + (e.name || '') : ''].filter(Boolean).join(' · ');
+    var sub = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
     return '<div class="cname-in">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span></div>';
   },
   tier: function(e){ return ptierCell(e); },
@@ -2681,7 +2686,7 @@ function secView(di, id){
   if(id === 'identity'){
     var rows = [];
     function r(icn, lab, val, note){ if(val) rows.push('<div class="irow"><span class="il">' + ic(icn, 15) + lab + '</span><div class="iv">' + val + (note ? ' <small class="derived">' + note + '</small>' : '') + '</div></div>'); }
-    if(hasHandle(e)) r('ig', 'Instagram', '<a class="iglink ' + (e.relation === 'mutual' ? 'mutual' : 'oneway') + '" href="' + igURL(e.name) + '" target="_blank" rel="noopener">@' + esc(e.name) + '</a>', e.relation ? RELN[e.relation] : '');
+    if(effHandle(e)) r('ig', 'Instagram', '<a class="iglink ' + (e.relation === 'mutual' ? 'mutual' : 'oneway') + '" href="' + igURL(effHandle(e)) + '" target="_blank" rel="noopener">@' + esc(effHandle(e)) + '</a>', e.relation ? RELN[e.relation] : '');
     if(e.fb_url) r('fb', 'Facebook', '<a class="iglink" href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">' + (e.fb_handle ? '@' + esc(e.fb_handle) : 'Profile') + '</a>');
     if(personIsAka(e) && gv(e, 'also_known_as')) r('user', 'Also known as', '<b>' + esc(gv(e, 'also_known_as')) + '</b>');
     var ph = String(gv(e, 'phone')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
@@ -3803,21 +3808,21 @@ var FLY3D_P = null;
 function fly3dBoot(){
   if(FLY.stageDead || REDUCED_MOTION) return;
   if(!FLY3D_P){
-    FLY3D_P = import('./flyover3d.js?v=' + APP_VERSION).then(function(){ return window.FLY3D || null; }, function(){ return null; });
+    FLY3D_P = import('./flyover3d.js?v=' + APP_VERSION).then(function(){ return window.FLY3D || null; }, function(){ FLY3D_P = null; return null; });
   }
   FLY.stagePending = true; FLY.stageAsk = false;
 }
 function fly3dAsk(){
   if(!FLY3D_P) return;
   FLY3D_P.then(function(F){
-    if(!F){ FLY.stagePending = false; FLY.stageDead = true; return; }
+    if(!F){ FLY.stagePending = false; FLY.stageDead = true; setTimeout(function(){ FLY.stageDead = false; }, 15000); return; }
     if(!FLY.on || FLY.stage || FLY.phase !== 'present'){ FLY.stageAsk = false; return; }
     var ok = false;
     try { ok = F.begin(fly3dApi()); } catch(_e) { ok = false; }
     if(ok){
       FLY.stage = true; FLY.stagePending = false;
       if(FLY.plate){ FLY.plate.classList.remove('in'); FLY.plate.style.opacity = '0'; }
-    } else { FLY.stagePending = false; FLY.stageDead = true; }
+    } else { FLY.stagePending = false; if(!F.active && !F.busy) FLY.stageDead = true; }
   });
 }
 function fly3dGone(drift){
@@ -4242,7 +4247,7 @@ function netCard(){
   } else {
     var e = D.directory[di], ka = knownAssociates(e).length, inFam = !!famDisplay()[di];
     cardBox.hidden = false;
-    cardBox.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (hasHandle(e) ? '@' + e.name : '')) + '</small></div>' +
+    cardBox.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' +
       '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
       '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
       (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
@@ -4506,7 +4511,7 @@ function viewGroups(v){
   var kind = S.route.seg[0] || 'groups', name = S.route.seg[1] || '';
   if(!GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
   var names = grpNamesFor(kind);
-  var tabs = '<nav class="tabrow">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
+  var tabs = '<nav class="tabrow" aria-label="Group kinds">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
   var selCount = names.filter(function(x){ return GMGR.sel[kind + '|' + x.n]; }).length;
   var mgr = '';
   if(GMGR.on){
@@ -4602,7 +4607,7 @@ function mergeStep2(){
   if(pv.carried.length) lines.push('Carries over: ' + pv.carried.join(', '));
   $('#sheetwrap .sbody').innerHTML = '<p class="dim">Choose which profile stays. The other one\'s details combine into it, and it stops showing as its own profile. Nothing is deleted, and you can undo this.</p>' + [MG.a, MG.b].map(function(di){
     var e = D.directory[di];
-    return '<label class="dm' + (di === MG.surv ? ' on' : '') + '"><input type="radio" name="msv" data-act="msv" data-di="' + di + '"' + (di === MG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc([hasHandle(e) ? '@' + e.name : '', tierName(e), e.city].filter(Boolean).join(' · ')) + '</small></span></label>';
+    return '<label class="dm' + (di === MG.surv ? ' on' : '') + '"><input type="radio" name="msv" data-act="msv" data-di="' + di + '"' + (di === MG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc([effHandle(e) ? '@' + effHandle(e) : '', tierName(e), e.city].filter(Boolean).join(' · ')) + '</small></span></label>';
   }).join('') + '<div class="rb quiet"><h4>What moves over</h4>' + (lines.length ? '<ul class="issues">' + lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<p>Nothing extra to carry over.</p>') + '</div>' +
     '<div class="row end"><button type="button" class="btn ghost" data-act="sheetx">Cancel</button><button type="button" class="btn primary" data-act="mergego">Merge into ' + esc(dispName(D.directory[MG.surv])) + '</button></div>';
 }
