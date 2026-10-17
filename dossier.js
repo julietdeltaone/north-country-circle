@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.8.0';
+var APP_VERSION = '2.8.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -2554,6 +2554,7 @@ var SECS = [
   { id:'relationship',t:'Relationship',   col:'r', ord:4, w:['relationship'] },
   { id:'persona',     t:'Persona',        col:'r', ord:5, w:['ratings'] },
   { id:'files',       t:'Files',          col:'r', ord:6, w:['files'] },
+  { id:'lima',        t:'Lima Charlie note', col:'r', ord:9, w:['lima'] },
   { id:'background',  t:'Background',     col:'c', ord:7, w:['background', 'education'] },
   { id:'timeline',    t:'Timeline',       col:'c', ord:8, w:['timeline'] }
 ];
@@ -2574,6 +2575,10 @@ function secHasContent(e, id){
 }
 function secShown(e, id){
   if(S.prof.edit[id]) return true;
+  /* Lima Charlie note (JD 2026-10-17): the card exists on the profile only
+     while a note is waiting (or its editor is open); with no note it folds
+     into the "Add to this profile" row like any unfilled section. */
+  if(id === 'lima') return !!lcNote(e).trim();
   if(secWaivedUI(e, id)) return id !== 'persona';
   if(secHasContent(e, id)) return true;
   if(id === 'persona') return false;
@@ -2656,7 +2661,11 @@ function secHTML(di, id){
   var e = D.directory[di], d = secDef(id), editing = !!S.prof.edit[id], waived = secWaivedUI(e, id);
   var acts = '';
   if(editing){
-    acts = (id !== 'persona' ? '<label class="wv" title="Insufficient data: this section stops counting against the profile"><input type="checkbox" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '"' + (waived ? ' checked' : '') + '><span>Insufficient data</span></label>' : '') +
+    /* the Lima Charlie editor carries its own Save/Cancel in the body (Save
+       is the only commit, exactly like the Audit deck's dock): no waive
+       toggle and no header Done, so there is one obvious save path. */
+    acts = id === 'lima' ? '' :
+      (id !== 'persona' ? '<label class="wv" title="Insufficient data: this section stops counting against the profile"><input type="checkbox" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '"' + (waived ? ' checked' : '') + '><span>Insufficient data</span></label>' : '') +
       '<button type="button" class="btn sm primary" data-act="secdone" data-sec="' + id + '">Done</button>';
   } else acts = '<button type="button" class="ib sm" data-act="secedit" data-sec="' + id + '" aria-label="Edit ' + d.t + '" title="Edit">' + ic('edit', 15) + '</button>';
   var body;
@@ -2666,6 +2675,7 @@ function secHTML(di, id){
   return '<section class="card' + (editing ? ' editing' : '') + (waived ? ' waived' : '') + '" id="sec-' + id + '" data-sec="' + id + '"><header><h3>' + d.t + '</h3>' + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header><div class="cbody">' + body + '</div></section>';
 }
 function secSummary(e, id){
+  if(id === 'lima') return lcNote(e).trim() ? '<span class="lc-mark" title="A Lima Charlie note is waiting on this profile">LC</span>' : '';
   var n = 0;
   if(id === 'connections') n = knownAssociates(e).length + famLinks(e).length;
   else if(id === 'timeline') n = (e.events || []).length;
@@ -2776,6 +2786,10 @@ function secView(di, id){
       var n = parseInt(gv(e, p[0]), 10) || 0;
       return '<div class="pt"><span>' + p[1] + '</span><div class="pb"><i style="width:' + (n * 20) + '%"></i></div><b>' + (n ? n + '/5' : 'Not rated') + '</b></div>';
     }).join('') + '</div>';
+  }
+  if(id === 'lima'){
+    return '<p class="lc-note-txt">' + esc(lcNote(e)) + '</p>' +
+      '<p class="dim">Waiting for Luna\'s next Lima Charlie run. She applies it, then clears it.</p>';
   }
   return '';
 }
@@ -2916,6 +2930,14 @@ function secEdit(di, id){
     }).join('');
     return (fs || '<p class="dim">No files attached.</p>') + '<div class="form"><h5>Attach a link</h5><input id="f-name" placeholder="Name, e.g. Full journal record" autocomplete="off"><input id="f-url" placeholder="https://docs.google.com/…" autocomplete="off"><input id="f-note" placeholder="Note (optional)" autocomplete="off">' +
       '<div class="row"><button type="button" class="btn primary sm" data-act="fsave">' + ic('link', 13) + 'Attach</button><button type="button" class="btn ghost sm" data-act="newdoc" data-di="' + di + '">' + ic('plus', 13) + 'New Drive doc instead</button></div></div>';
+  }
+  if(id === 'lima'){
+    var lcur = lcNote(e);
+    return lab('Lima Charlie note', 'Dictate every change for this profile. Nothing saves until you tap Save note.') +
+      '<textarea id="plima-note" rows="4" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now. Known him since 2019. Add SUNY Potsdam.">' + esc(lcur) + '</textarea>' +
+      '<div class="row"><button type="button" class="btn primary sm" data-act="plcsave">Save note</button>' +
+      '<button type="button" class="btn ghost sm" data-act="secdone" data-sec="lima">Cancel</button>' +
+      (lcur.trim() ? '<span class="dim">Clear the text and save to remove the note.</span>' : '') + '</div>';
   }
   if(id === 'persona'){
     return '<p class="note">Entered by you only. Blank is a valid, final answer. Nothing here is ever estimated.</p>' + PERSONA.map(function(p){
@@ -6170,15 +6192,31 @@ function lcRenderOpen(v){
    no debounce, no countdown, no blur save. Writes through the one
    save path; the local-wins overlay carries it until the Sheet
    bake catches up, like every other field. */
+/* The one Lima Charlie commit, shared by the Audit deck and the
+   profile note box (JD 2026-10-17): same txn, same patch key, same
+   toast — a note saved anywhere behaves identically everywhere. */
+function lcCommitNote(di, val){
+  var had = lcNote(D.directory[di]).trim();
+  txn('Lima Charlie note', function(){ queuePatch(di, { lima_charlie_notes: val }); });
+  toast(val.trim() ? (had ? 'Note updated. Luna will apply it on the next Lima Charlie run.' : 'Note saved. Luna will apply it on the next Lima Charlie run.') : 'Note cleared.');
+}
 function lcSaveNote(){
   var A = S.audit; if(!A || A.lcOpen == null) return;
   var di = A.lcOpen, ta = $('#lcnote'); if(!ta) return;
   var val = ta.value;
-  var had = lcNote(D.directory[di]).trim();
-  txn('Lima Charlie note', function(){ queuePatch(di, { lima_charlie_notes: val }); });
   A.lcOpen = null;
+  lcCommitNote(di, val);
   viewAudit($('#view'));
-  toast(val.trim() ? (had ? 'Note updated. Luna will apply it on the next Lima Charlie run.' : 'Note saved. Luna will apply it on the next Lima Charlie run.') : 'Note cleared.');
+}
+/* Profile-side save (JD 2026-10-17): the note box on the person's own
+   profile. Save tap only — the textarea never arms, debounces or
+   submits on blur, exactly like the deck. */
+function plcSaveNote(){
+  var di = S.prof.di, ta = $('#plima-note'); if(di == null || !ta) return;
+  var val = ta.value;
+  delete S.prof.edit.lima;
+  lcCommitNote(di, val);
+  paintProfile(di);
 }
 
 /* Wall columns (JD 2026-10-16): the wall is K independent column
@@ -6366,6 +6404,7 @@ function onClick(ev){
     case 'lcback': if(S.audit){ S.audit.lcOpen = null; viewAudit($('#view')); } break;
     case 'lcshuffle': if(S.audit) lcShuffleDeck(); break;
     case 'lcsave': if(S.audit) lcSaveNote(); break;
+    case 'plcsave': plcSaveNote(); break;
     case 'set': doSet(el); break;
     case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
     case 'mergeopen': openMergeSheet(di); break;
