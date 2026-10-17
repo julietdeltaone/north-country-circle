@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.8.1';
+var APP_VERSION = '2.8.2';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -142,6 +142,7 @@ var IC = {
   award:'<circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/>',
   help:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
   eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  home:'<path d="m3 11.5 9-8.5 9 8.5"/><path d="M5.5 10v10.5h13V10"/><path d="M9.8 20.5v-5.5h4.4v5.5"/>',
   skip:'<path d="m5 4 10 8-10 8zM19 5v14"/>',
   arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
   star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
@@ -766,6 +767,17 @@ function computeNewGain(){
    control that points somewhere, so landing behavior is identical app-wide. */
 function landOn(sel, opts){
   opts = opts || {};
+  /* Inside the Lima Charlie fit view nothing may scroll (the page is
+     clipped to one screen): highlight + focus only. */
+  if(lcActive()){
+    var el0 = typeof sel === 'string' ? $(sel) : sel;
+    if(el0){
+      el0.classList.remove('landed'); void el0.offsetWidth; el0.classList.add('landed');
+      setTimeout(function(){ el0.classList.remove('landed'); }, 1400);
+      if(opts.focus){ var f0 = el0.querySelector('input:not([type=hidden]), textarea, select'); if(f0) f0.focus({ preventScroll:true }); }
+    }
+    return;
+  }
   var tries = 0;
   (function attempt(){
     var el = typeof sel === 'string' ? $(sel) : sel;
@@ -1628,10 +1640,11 @@ function renderChrome(){
     '<div class="railfoot"><a href="index.html" class="nv">' + ic('network', 20) + '<span>Visual map</span></a>' +
     '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
     '<small id="fresh">' + (D ? 'Data ' + esc(D.updated || '') : '') + '</small></div>';
-  $('#tabs').innerHTML = items;
+  $('#tabs').innerHTML = '<button type="button" class="nv" data-act="home" aria-label="Home">' + ic('home', 20) + '<span>Home</span></button>' + items;
   var top = $('#top');
   var onProfile = S.route.name === 'profile';
   top.innerHTML =
+    '<button type="button" class="ib homebtn" data-act="home" aria-label="Home" title="Home: People, with search and filters cleared">' + ic('home', 20) + '</button>' +
     (onProfile ? '<button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' : '<span class="logo-s"><i></i></span>') +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
     '<div class="topr">' +
@@ -1713,6 +1726,21 @@ function go(path, o){
 function back(fallback){
   if(S.depth > 0) history.back();
   else go(fallback || 'people', { replace:true });
+}
+/* Home (JD 2026-10-17): one tap from anywhere — including inside the
+   Lima Charlie expanded view — back to the People landing in its
+   default state. Clears TRANSIENT view state only: the global search
+   text, the People search/filters/sort, the profile context and any
+   open LC profile. Never touches user data: audit skips/laters,
+   local-wins, the org registry overlay, pending Lima Charlie notes
+   and the outbox all survive. */
+function goHome(){
+  closeSheet();
+  $$('.menu-pop').forEach(function(m){ m.hidden = true; });
+  S.ctx = null;
+  if(S.audit) S.audit.lcOpen = null;
+  S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side };
+  go('people');
 }
 addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
 function openPerson(di, ctx, o){
@@ -2602,7 +2630,9 @@ function viewProfile(v){
         '<button type="button" class="ib" data-act="ctxstep" data-d="1" aria-label="Next"' + (i === S.ctx.keys.length - 1 ? ' disabled' : '') + '>' + ic('chevr', 18) + '</button></div>';
     }
   }
-  v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="ptop">' + pager + '<span class="sp"></span>' +
+  v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="ptop">' +
+    '<div class="pback"><button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' +
+    '<button type="button" class="crumb" data-act="back" title="Back to ' + esc(S.ctx && S.ctx.label ? S.ctx.label : 'People') + '">' + esc(S.ctx && S.ctx.label ? S.ctx.label : 'People') + '</button></div>' + pager + '<span class="sp"></span>' +
     '<div class="menu"><button type="button" class="ib" data-act="menu" aria-haspopup="true" aria-label="More actions">' + ic('dots', 20) + '</button>' +
     '<div class="menu-pop" hidden>' +
     '<button type="button" data-act="export" data-di="' + di + '">' + ic('download', 16) + 'Download dossier file</button>' +
@@ -2615,6 +2645,7 @@ function viewProfile(v){
   paintProfile(di);
 }
 function paintProfile(di){
+  if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
   var e = D.directory[di];
   $('#p-hero').innerHTML = heroHTML(di);
   ['l', 'c', 'r'].forEach(function(col){
@@ -2630,6 +2661,7 @@ function paintProfile(di){
 }
 function repaintSec(id){
   var di = S.prof.di, e = D.directory[di]; if(di == null) return;
+  if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
   var el = $('#sec-' + id);
   if(!el){ paintProfile(di); return; }
   var wrap = document.createElement('div'); wrap.innerHTML = secHTML(di, id);
@@ -2637,7 +2669,9 @@ function repaintSec(id){
   el.parentNode.insertBefore(nu, el); el.remove();
 }
 function repaintTop(){
-  var di = S.prof.di; if(di == null || !$('#p-hero')) return;
+  var di = S.prof.di; if(di == null) return;
+  if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
+  if(!$('#p-hero')) return;
   $('#p-hero').innerHTML = heroHTML(di);
 }
 
@@ -2699,6 +2733,7 @@ function secView(di, id){
     if(effHandle(e)) r('ig', 'Instagram', '<a class="iglink ' + (e.relation === 'mutual' ? 'mutual' : 'oneway') + '" href="' + igURL(effHandle(e)) + '" target="_blank" rel="noopener">@' + esc(effHandle(e)) + '</a>', e.relation ? RELN[e.relation] : '');
     if(e.fb_url) r('fb', 'Facebook', '<a class="iglink" href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">' + (e.fb_handle ? '@' + esc(e.fb_handle) : 'Profile') + '</a>');
     if(personIsAka(e) && gv(e, 'also_known_as')) r('user', 'Also known as', '<b>' + esc(gv(e, 'also_known_as')) + '</b>');
+    if(gv(e, 'location_on_file')) r('pin', 'Location on file', esc(ptNormLoc(gv(e, 'location_on_file'))));
     var ph = String(gv(e, 'phone')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
     if(ph.length) r('phone', 'Phone', ph.map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join(' '));
     var em = String(gv(e, 'email')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
@@ -2859,6 +2894,7 @@ function secEdit(di, id){
       lab('Last name') + '<input data-pk="last_name" value="' + esc(gv(e, 'last_name')) + '" autocomplete="off">' +
       lab('Phone', 'Several numbers: separate with commas') + '<input data-pk="phone" inputmode="tel" value="' + esc(gv(e, 'phone')) + '" autocomplete="off">' +
       (personIsAka(e) ? lab('Also known as') + '<input data-pk="also_known_as" value="' + esc(gv(e, 'also_known_as')) + '" autocomplete="off">' : '') +
+      lab('Location on file', 'One place for this person: it replaces the derived city/hometown everywhere it appears') + '<input data-pk="location_on_file" value="' + esc(gv(e, 'location_on_file')) + '" placeholder="Town, ST" autocomplete="off">' +
       '<p class="note">Instagram, Facebook, Lives in, From and Languages are derived and read only. Correct them at the source (the FB Profiles tab or a subject file).</p>' + secView(di, 'identity');
   }
   if(id === 'relationship'){
@@ -6056,75 +6092,43 @@ function lcChips(label, list){
 function lcText(label, txt){
   return txt ? '<div class="lc-sec"><h4>' + esc(label) + '</h4><p class="lc-txt">' + esc(txt) + '</p></div>' : '';
 }
-/* The whole profile, read-only and complete: every stored value
-   on one screen — no section folds away, no "show more". */
+/* The whole profile on one screen, built from the profile's OWN
+   section cards (JD 2026-10-17, V2.8.2): every value the profile
+   shows is here, and every value the profile can edit can be edited
+   in place — the same section editors, the same queuePatch save
+   path, the same nothing-saves-early rules. Sections render in the
+   profile's own column arrangement and never fold away here (the
+   fit zoom is what keeps it to one screen). The Lima Charlie note
+   itself stays in the dock below, so the profile's own lima card
+   is not duplicated. While this view is open, S.prof points at the
+   open person (lcRenderOpen keeps it so), which is what lets the
+   shared editors work untouched. */
 function lcOpenHTML(di){
   var e = D.directory[di];
   var head = '<div class="lc-head">' + avatar(e, 'lg') + '<div class="lc-hmain"><h2 class="display">' + esc(dispName(e)) + '</h2>' +
     '<p class="lc-hsub">' + esc([infoLine(e), ptNormLoc(ptLocVal(e))].filter(Boolean).join(' · ') || 'Not yet classified') + '</p></div>' +
     '<div class="lc-hscore">' + scoreBadgeHTML(di) + '</div></div>';
-  var c1 = '<div class="lc-sec"><h4>Contact</h4>' +
-    lcKV('Phone', gv(e, 'phone') ? fmtPhone(gv(e, 'phone')) : '') +
-    lcKV('Email', gv(e, 'email')) +
-    lcKV('Instagram', effHandle(e) ? '@' + effHandle(e) : '') +
-    lcKV('Facebook', e.fb_handle ? '@' + e.fb_handle : (e.fb_url ? 'Profile on file' : '')) +
-    lcKV('Also known as', personIsAka(e) ? gv(e, 'also_known_as') : '') +
-    lcKV('Lives in', e.city || '') +
-    lcKV('From', e.hometown || '') +
-    lcKV('Location on file', ptNormLoc(ptLocVal(e))) +
-    lcKV('Languages', (e.languages || []).join(', ')) + '</div>';
-  c1 += '<div class="lc-sec"><h4>Relationship</h4>' +
-    lcKV('Tier', tierOf(e) ? TIERS[tierOf(e)].n : '') +
-    lcKV('Relationship', cap(gv(e, 'relationship'))) +
-    lcKV('Context', cap(gv(e, 'context'))) +
-    lcKV('Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1] || '') +
-    lcKV('Closeness', cap(gv(e, 'closeness'))) +
-    lcKV('Score pin', gv(e, 'score_pin')) +
-    lcKV('Known since', knownSinceYear(e) ? String(knownSinceYear(e)) : '') +
-    lcKV('Momentum', momVal(e) ? MOM_LABELS[momVal(e)] : '') + '</div>';
-  c1 += '<div class="lc-sec"><h4>Persona</h4><div class="lc-persona">' + PERSONA.map(function(p){
-      var n = parseInt(gv(e, p[0]), 10) || 0;
-      return '<div class="lc-pt"><span>' + esc(p[1]) + '</span><span class="lc-pdots">' + [1, 2, 3, 4, 5].map(function(i){ return '<i class="' + (n >= i ? 'on' : '') + '"></i>'; }).join('') + '</span><b>' + (n ? n + '/5' : '—') + '</b></div>';
-    }).join('') + '</div></div>';
-  var c2 = '';
-  ORG_CATS.forEach(function(c){ c2 += lcChips(c.label, tagList(gv(e, c.k))); });
-  c2 += lcChips('Groups', personGroups(e));
-  c2 += lcChips('Skills', tagList(gv(e, 'specialty')));
-  c2 += lcChips('Interests', tagList(gv(e, 'interests')));
-  var ds = sortDegrees(degreesOf(e));
-  if(ds.length) c2 += '<div class="lc-sec"><h4>Education</h4>' + ds.map(function(d){
-      var rest = [d.degree, d.major, d.year].filter(Boolean).join(' · ');
-      return '<p class="lc-line"><b>' + esc(d.school || '') + '</b>' + (rest ? ' — ' + esc(rest) : '') + '</p>';
-    }).join('') + '</div>';
-  c2 += lcChips('Highlights', parsePipe(gv(e, 'highlights')));
-  c2 += lcChips('Honors', honorsOf(e));
-  c2 += lcChips('Certifications', certsOf(e));
-  if(!c2) c2 = '<div class="lc-sec"><h4>Background</h4><p class="lc-txt dim">Nothing on file yet.</p></div>';
-  var c3 = lcText('Synopsis', gv(e, 'synopsis'));
-  var fp = footprintOf(e);
-  if(fp.blocks.length) c3 += '<div class="lc-sec"><h4>Field notes</h4>' + fp.blocks.map(function(b){ return '<p class="lc-txt">' + esc(b.text) + '</p>'; }).join('') + '</div>';
-  var fam = famLinks(e);
-  if(fam.length) c3 += '<div class="lc-sec"><h4>Family</h4>' + fam.map(function(l){
-      var tdi = BYN[String(l[1] || '').toLowerCase()];
-      return '<p class="lc-line"><span class="lc-rel">' + esc(l[0]) + '</span> ' + esc(tdi != null ? dispName(D.directory[tdi]) : l[1]) + '</p>';
-    }).join('') + '</div>';
-  var ka = knownAssociates(e);
-  if(ka.length) c3 += '<div class="lc-sec"><h4>Known associates (' + ka.length + ')</h4><p class="lc-names">' + ka.map(function(nb){
-      var tdi2 = BYN[(nb.u || '').toLowerCase()];
-      return esc(tdi2 != null ? dispName(D.directory[tdi2]) : (nb.d || nb.u));
-    }).join(' · ') + '</p></div>';
-  var evs = sortedEvents(e);
-  if(evs.length) c3 += '<div class="lc-sec"><h4>Timeline</h4>' + evs.map(function(o){
-      return '<p class="lc-line"><span class="lc-rel">' + esc(evDate(o.ev.date)) + '</span> ' + esc(o.ev.summary || '') + '</p>';
-    }).join('') + '</div>';
-  var ps = connPhases(e);
-  if(ps.length) c3 += '<div class="lc-sec"><h4>Phases</h4>' + ps.map(function(p){
-      return '<p class="lc-line"><b>' + esc(p.l || 'Phase') + '</b> ' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</p>';
-    }).join('') + '</div>';
-  var fs = e.files || [];
-  if(fs.length) c3 += '<div class="lc-sec"><h4>Files (' + fs.length + ')</h4>' + fs.map(function(f){ return '<p class="lc-line">' + esc(f.name || 'Untitled') + '</p>'; }).join('') + '</div>';
-  if(!c3) c3 = '<div class="lc-sec"><h4>About</h4><p class="lc-txt dim">Nothing on file yet.</p></div>';
-  return head + '<div class="lc-cols"><div class="lc-col">' + c1 + '</div><div class="lc-col">' + c2 + '</div><div class="lc-col">' + c3 + '</div></div>';
+  function colSecs(col){
+    return SECS.filter(function(s){ return s.col === col && s.id !== 'lima'; }).map(function(s){ return secHTML(di, s.id); }).join('');
+  }
+  return head + '<div class="lc-cols"><div class="lc-col">' + colSecs('l') + '</div><div class="lc-col">' + colSecs('c') + '</div><div class="lc-col">' + colSecs('r') + '</div></div>';
+}
+/* Is the Lima Charlie expanded view the live screen right now? The
+   shared profile painters check this and re-render the LC view
+   instead of the (absent) profile page. */
+function lcActive(){ return !!(S.route && S.route.name === 'audit' && S.audit && audMode() === 'lima' && S.audit.lcOpen != null && $('#lcfit')); }
+function lcFitSoon(){ lcFit(); requestAnimationFrame(function(){ lcFit(); }); }
+/* Rebuild the open LC profile in place (after any direct edit):
+   same sections, same edit states (they live in S.prof), dock name
+   refreshed, fit recalculated. The note draft in the dock is NOT
+   touched — it only ever changes by typing or by Save note. */
+function lcRepaint(){
+  var fit = $('#lcfit'); if(!fit || !S.audit || S.audit.lcOpen == null) return;
+  var di = S.audit.lcOpen, e = D.directory[di]; if(!e) return;
+  fit.innerHTML = lcOpenHTML(di);
+  var dn = $('.lc-dockname');
+  if(dn) dn.innerHTML = esc(dispName(e)) + (lcNote(e).trim() ? ' <span class="lc-mark">LC note waiting</span>' : '');
+  lcFitSoon();
 }
 /* Fit-to-screen: the profile block is laid out at natural size,
    then scaled down (CSS zoom, so layout and visuals agree) to
@@ -6168,7 +6172,14 @@ function lcFit(){
 function lcRenderOpen(v){
   var A = S.audit, di = A.lcOpen, e = D.directory[di];
   if(!e){ A.lcOpen = null; viewAudit(v); return; }
+  /* The shared profile editors key off S.prof: point it at the open
+     person (fresh edit state on first open; preserved across
+     re-renders of the same person so an open editor survives). */
+  if(!S.prof || S.prof.di !== di) S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
   var note = lcNote(e);
+  /* An unsaved note draft survives re-renders (undo refresh, quiet
+     data refresh): the dock field is only ever reset by Save. */
+  var oldTa = $('#lcnote'), draft = oldTa ? oldTa.value : null;
   v.innerHTML = '<div class="page lc-page" id="lcpage">' +
     '<div class="lc-fitwrap" id="lcfitwrap"><div class="lc-fit" id="lcfit">' + lcOpenHTML(di) + '</div></div>' +
     '<div class="lc-dock" id="lcdock">' +
@@ -6176,7 +6187,7 @@ function lcRenderOpen(v){
       '<span class="lc-dockname">' + esc(dispName(e)) + (note.trim() ? ' <span class="lc-mark">LC note waiting</span>' : '') + '</span><span class="sp"></span>' +
       '<button type="button" class="btn primary" data-act="lcsave">Save note</button></div>' +
       '<label class="lc-notelab" for="lcnote">Lima Charlie note — dictate every change for this profile. Luna applies it on the next run, then clears it.</label>' +
-      '<textarea id="lcnote" rows="3" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now. Known him since 2019. Add SUNY Potsdam.">' + esc(note) + '</textarea>' +
+      '<textarea id="lcnote" rows="3" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now. Known him since 2019. Add SUNY Potsdam.">' + esc(draft != null ? draft : note) + '</textarea>' +
     '</div></div>';
   lcFit();
   requestAnimationFrame(function(){ lcFit(); });   /* re-fit once webfonts settle */
@@ -6342,6 +6353,7 @@ function doSet(el){
   var next = (clearable && cur === v) ? '' : v;
   txn('Set ' + k, function(){ queuePatch(di, (function(){ var o = {}; o[k] = next; return o; })()); });
   if(S.route.name === 'profile'){ repaintTop(); var sec = el.getAttribute('data-sec'); if(sec) repaintSec(sec); }
+  else if(lcActive() && di === S.audit.lcOpen) lcRepaint();
   afterWrite();
 }
 function saveTags(el, mutate){
@@ -6383,7 +6395,8 @@ function onClick(ev){
     case 'undo': doUndo(); refreshAfterUndo('undo'); break;
     case 'redo': doRedo(); refreshAfterUndo('redo'); break;
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
-    case 'back': back(); break;
+    case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
+    case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
     case 'audgap': { var audC4 = el.closest('.aud-card'); if(audC4){ var gTo = el.getAttribute('data-gap'); if(gTo && gTo !== audC4.getAttribute('data-gap')) audSetGap(audC4, gTo); } break; }
     case 'audskip': { var audC3 = el.closest('.aud-card'); if(audC3 && di != null && S.audit) audFinish(audC3, false, false); break; }
@@ -6397,7 +6410,7 @@ function onClick(ev){
     case 'audgoal': { var gd = audDay(); gd.goal = Math.max(5, Math.min(500, gd.goal + (+el.getAttribute('data-d')))); if(gd.n < gd.goal) gd.met = false; audDaySave(gd); audPaintGoal(); break; }
     case 'audblitz': audStartBlitz(); break;
     case 'audblitzx': if(S.audit){ S.audit.blitzDone = null; } viewAudit($('#view')); break;
-    case 'audopen': if(di != null) openPerson(di); break;
+    case 'audopen': if(di != null){ var aw = (S.audit && S.audit.shown) ? S.audit.shown.map(function(x){ return x.di; }) : []; openPerson(di, aw.length ? ctxFrom('Audit', aw, aw.indexOf(di), 'audit') : null); } break;
     case 'audshuffle': if(S.audit){ if(audMode() === 'lima'){ lcShuffleDeck(); break; } S.audit.shown = null; } viewAudit($('#view')); break;
     case 'audlater': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;   /* redeal: saved-for-later people come first (audDeal) */
     case 'lcopen': if(di != null && S.audit && audMode() === 'lima'){ S.audit.lcOpen = di; viewAudit($('#view')); } break;
@@ -6419,7 +6432,7 @@ function onClick(ev){
     case 'waive': {
       var sids = (el.getAttribute('data-sid') || '').split(',').filter(Boolean), on = el.getAttribute('data-off') ? false : true;
       txn(on ? 'Waive section' : 'Restore section', function(){ setWaivers(di, sids, on); });
-      if(S.route.name === 'profile'){ paintProfile(S.prof.di); } else refreshAfterStatus();
+      if(S.route.name === 'profile'){ paintProfile(S.prof.di); } else if(lcActive()) lcRepaint(); else refreshAfterStatus();
       break;
     }
     case 'delperson': {
@@ -6432,8 +6445,8 @@ function onClick(ev){
     }
     case 'openp': { ev.preventDefault(); openPerson(di, null, { keepCtx:S.route.name === 'profile' }); prevent = false; break; }
     case 'popen': { var cur = S.ppl.cur || []; openPerson(di, ctxFrom('People', cur, +el.getAttribute('data-i'), 'people')); break; }
-    case 'popen1': openPerson(di, null); break;
-    case 'gsopen': { var box = $('#gsr'); if(box) box.hidden = true; openPerson(di, null); break; }
+    case 'popen1': { var nw = (typeof NET !== 'undefined' && NET.nodes && NET.nodes.length) ? NET.nodes.map(function(n){ return n.di; }) : []; if(nw.indexOf(di) < 0) nw = people(); openPerson(di, nw.length ? ctxFrom('Network', nw, nw.indexOf(di), 'network') : null); break; }
+    case 'gsopen': { var box = $('#gsr'); if(box) box.hidden = true; var gw = (S.ppl.cur && S.ppl.cur.length) ? S.ppl.cur : []; if(gw.indexOf(di) < 0) gw = people(); openPerson(di, ctxFrom('People', gw, gw.indexOf(di), 'people')); break; }
     case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; go('people'); break; }
     case 'openedit': openPerson(di, (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
     case 'openfam': S.fam.focus = di; go('family'); break;
@@ -6593,7 +6606,9 @@ function onChange(ev){
   if(act === 'msv'){ MG.surv = +t.getAttribute('data-di'); mergeStep2(); return; }
   if(t.hasAttribute && t.hasAttribute('data-pk')){
     var k = t.getAttribute('data-pk');
-    setField(S.prof.di, k, (t.tagName === 'TEXTAREA') ? t.value : t.value.trim());
+    var pkV = (t.tagName === 'TEXTAREA') ? t.value : t.value.trim();
+    if(k === 'location_on_file') pkV = ptNormLoc(pkV);   /* same normalization the table + Audit editors write */
+    setField(S.prof.di, k, pkV);
     if(k === 'first_name' || k === 'last_name') repaintTop();
     if(k === 'public_footprint' || k === 'synopsis') repaintTop();
     return;
@@ -6711,6 +6726,11 @@ function onKey(ev){
   if(ev.key === 'Escape'){
     if(!$('#sheetwrap').hidden){ closeSheet(); return; }
     if(isField){ t.blur(); return; }
+    if(S.route.name === 'audit' && S.audit && S.audit.lcOpen != null){
+      if(S.prof && Object.keys(S.prof.edit).length){ S.prof.edit = {}; S.prof.evEdit = null; S.prof.degEdit = null; lcRepaint(); }
+      else { S.audit.lcOpen = null; viewAudit($('#view')); }
+      return;
+    }
     if(S.route.name === 'audit' && S.audit && S.audit.mode === 'rapid'){ audSetMode('cards'); return; }
     if(S.route.name === 'profile'){ var open = Object.keys(S.prof.edit); if(open.length){ S.prof.edit = {}; paintProfile(S.prof.di); } else back('people'); }
     return;
