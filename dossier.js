@@ -3625,7 +3625,7 @@ function netClustPaint(){
    input ends the flight and hands the camera straight back.
    Never persisted; disabled outright under reduced motion. ------ */
 var FLY = { on:false, bag:[], bi:0, cur:null, hot:{}, phase:'', pt:0, flyDur:1.3,
-            plate:null, box:null, lastDi:null, morphSeen:0, lx2:0, ly2:0, lx3:0, ly3:0, lz3:0 };
+            plate:null, box:null, lastDi:null, morphSeen:0, lx2:0, ly2:0, lx3:0, ly3:0, lz3:0, hop:0, midT:0, tgtCh:null };
 var FLY_PRESENT = 3.6; /* seconds on each person once the camera arrives — about five seconds a call, flight included */
 function flyEnsure(){
   var box = $('#netfly'); if(!box) return null;
@@ -3675,10 +3675,10 @@ function flyCamTarget(nd, p2, p3){
     var L = Math.hypot(p3[0], p3[1], p3[2]);
     return { yaw:N3.yaw + dyaw,
              pitch:Math.max(-1.5, Math.min(1.5, Math.atan2(-p3[1], Math.max(rho, 0.001)))),
-             zoom3:L > 560 ? 1.8 : 2.3, fx:0, fy:0 };
+             zoom3:L > 560 ? 1.8 : 2.3, fx:0, fy:0, cxoff:0 };
   }
   var rp = netRotP(p2[0], p2[1]);
-  return { c2x:rp[0], c2y:rp[1], c2z:2.6 };
+  return { c2x:rp[0], c2y:rp[1], c2z:2.6, cxoff:0 };
 }
 function flyFrame(nd, quick, p2, p3){
   /* fly the camera in on nd; a far hop dips toward the overview for
@@ -3687,21 +3687,24 @@ function flyFrame(nd, quick, p2, p3){
   var dist = m3 ? Math.hypot(p3[0] - FLY.lx3, p3[1] - FLY.ly3, p3[2] - FLY.lz3)
                 : Math.hypot(p2[0] - FLY.lx2, p2[1] - FLY.ly2);
   FLY.lx2 = p2[0]; FLY.ly2 = p2[1]; FLY.lx3 = p3[0]; FLY.ly3 = p3[1]; FLY.lz3 = p3[2];
+  FLY.tgtCh = tgt;
   if(quick || dist <= 430){
+    FLY.hop = 0;
     FLY.flyDur = quick ? 0.9 : 1.3;
     netGlide(Math.round(FLY.flyDur * 1000), tgt);
     return;
   }
   FLY.flyDur = 1.6;
+  FLY.hop = 1; FLY.midT = 0.65;
   var mid;
   if(m3){
     mid = { yaw:(N3.yaw + tgt.yaw) / 2, pitch:(N3.pitch + tgt.pitch) / 2,
-            zoom3:Math.max(0.85, Math.min(N3.zoom, tgt.zoom3) * 0.55), fx:0, fy:0 };
+            zoom3:Math.max(0.85, Math.min(N3.zoom, tgt.zoom3) * 0.55), fx:0, fy:0, cxoff:0 };
   } else {
     mid = { c2x:(NET.cam.x + tgt.c2x) / 2, c2y:(NET.cam.y + tgt.c2y) / 2,
-            c2z:Math.max(netFitZ(), Math.min(NET.cam.z, tgt.c2z) * 0.42) };
+            c2z:Math.max(netFitZ(), Math.min(NET.cam.z, tgt.c2z) * 0.42), cxoff:0 };
   }
-  netGlide(650, mid, function(){ if(FLY.on && FLY.cur === nd) netGlide(950, tgt); });
+  netGlide(650, mid);
 }
 function flyCall(){
   var nd = null;
@@ -3782,9 +3785,24 @@ function flyStep(dt){
     flyReframe(true);
   }
   FLY.pt += dt;
+  if(FLY.phase === 'fly' && FLY.hop === 1 && FLY.pt >= FLY.midT){
+    FLY.hop = 2;
+    if(FLY.tgtCh) netGlide(950, FLY.tgtCh);
+  }
   if(FLY.phase === 'fly' && FLY.pt >= FLY.flyDur){
     FLY.phase = 'present'; FLY.pt = 0;
     if(FLY.plate) FLY.plate.classList.add('in');
+    /* if another system's glide stole the flight (a panel opening
+       or closing runs its own camera glide), the person can land
+       off-center: re-frame them with a short glide */
+    var nd0 = FLY.cur, off = 0;
+    if(nd0){
+      var pp0;
+      if(S.net.mode !== '2d'){ var q3 = netP3(nd0); pp0 = n3Project(q3[0], q3[1], q3[2]); }
+      else { var q2 = netP2(nd0), qr = netRotP(q2[0], q2[1]), qs = w2s(qr[0], qr[1]); pp0 = { x:qs[0], y:qs[1] }; }
+      off = Math.hypot(pp0.x - NET.W / 2, pp0.y - NET.H / 2);
+    }
+    if(off > 34) netGlide(420, flyCamTarget(nd0, netP2(nd0), netP3(nd0)));
   } else if(FLY.phase === 'present' && FLY.pt >= FLY_PRESENT){
     flyCall();
     return;
