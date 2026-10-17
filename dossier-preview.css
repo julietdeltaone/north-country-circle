@@ -1184,7 +1184,14 @@ html,body{background:var(--bg)}
    the whole wall; as an overlay it changes no layout at all. Audit
    cards only — the People-table popover keeps its in-flow list. */
 .aud-card .pted-add{position:relative}
-.aud-card .pted-ac{position:absolute;left:0;right:0;top:100%;margin-top:4px;z-index:40;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.aud-card .pted-ac{position:absolute;left:0;right:0;top:100%;margin-top:4px;z-index:40;box-shadow:0 12px 30px rgba(0,0,0,.5);max-height:min(336px,calc(100vh - 150px))}
+/* dropdown visibility (JD 2026-10-16): the card being edited paints
+   above its neighbours — every card becomes its own stacking context
+   once its entrance animation fills, so without this a later card in
+   the column painted OVER an earlier card's open suggestion list.
+   The list also gets room for all eight suggestions: the shared
+   224px cap cut the last rows off behind an internal scrollbar. */
+.aud-card:focus-within{z-index:80}
 .aud-peek{background:var(--card-grad)}
 .aud-caught{background:var(--card-grad);box-shadow:var(--sh-card2)}
 
