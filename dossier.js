@@ -3142,7 +3142,7 @@ function netGlideStep(now){
 function netMorphTo(lay){
   var now = performance.now();
   NET.nodes.forEach(function(nd){ nd.fx = nd.dx; nd.fy = nd.dy; nd.fx3 = nd.dx3; nd.fy3 = nd.dy3; nd.fz3 = nd.dz3; });
-  NET.guideFade = { from:S.net.layout, t0:now };
+  NET.guideFade = REDUCED_MOTION ? null : { from:S.net.layout, t0:now }; /* cross-fades are instant under reduced motion too */
   S.net.layout = lay; store('ncc_netlayout', lay);
   NET.subAt = now + (REDUCED_MOTION ? 0 : 300); /* the subheading swaps at the morph's midpoint */
   if(REDUCED_MOTION){ NET.morph = null; netSnapDisplay(); }
@@ -3450,8 +3450,11 @@ function viewNetwork(v){
     if(NET.subAt && now >= NET.subAt){ NET.subAt = 0; var sb = $('#netsub'); if(sb) sb.textContent = netSubHTML(); }
     var bgT = S.net.bg ? 1 : 0;
     if(NET.bgA !== bgT){
-      NET.bgA += (bgT - NET.bgA) * (dt > 0 ? 1 - Math.exp(-dt / 0.08) : 1);
-      if(Math.abs(bgT - NET.bgA) < 0.02) NET.bgA = bgT;
+      if(REDUCED_MOTION) NET.bgA = bgT;
+      else {
+        NET.bgA += (bgT - NET.bgA) * (dt > 0 ? 1 - Math.exp(-dt / 0.08) : 1);
+        if(Math.abs(bgT - NET.bgA) < 0.02) NET.bgA = bgT;
+      }
       NET.dirty = true;
     }
     if(!FLY.on && (N3.fx || N3.fy)){
