@@ -18,6 +18,20 @@
    the map. Swiss Mono law: black, grayscale, hairlines; tier owns
    color; signal red only for the lock-on pulse, the pinned tick and
    the exit affordance. No emoji.
+
+   IDENTITY PASS (V2.7.1, JD 2026-10-17): the stage must visibly BE
+   the person it calls. (1) A monogram sigil — the person's
+   initials, tier-colored — rides at the orb's core. (2) The orbit
+   system is composed from the person's own record (api.bodies:
+   associates first, then their canonical orgs, then their groups,
+   cap 8), with larger bodies and readable name tags, so a dense
+   network and a sparse one look structurally different. (3) The
+   arrival selects the person out of the universe: their point
+   flares, their connection lines light up with packets streaming
+   in, and the orb GROWS out of the point (and collapses back into
+   it on exit). (4) The name plate is part of the orb system —
+   anchored beside the orb, tied to its rim by a hairline leader,
+   its name assembling with the orb's own formation beat.
    ===================================================================== */
 import * as THREE from 'three';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
@@ -36,6 +50,15 @@ function easeInOut(t){ return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2,
 function easeOut(t){ return 1 - Math.pow(1 - t, 3); }
 function smoother(t){ return t * t * t * (t * (t * 6 - 15) + 10); }
 function hash01(n){ var x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+function initialsOf(name){
+  var w = String(name || '').replace(/^@/, '').split(/\s+/).filter(Boolean);
+  if(!w.length) return '··';
+  if(w.length === 1) return (w[0].charAt(0) + (w[0].charAt(1) || '')).toUpperCase();
+  return (w[0].charAt(0) + w[w.length - 1].charAt(0)).toUpperCase();
+}
+/* orb growth curve: a called person starts as their universe point
+   (3% scale) and assembles to full size — never a fade-up pop */
+function heroScale(anim){ return 0.03 + 0.97 * easeOut(clamp(anim, 0, 1)); }
 function dotTexture(){
   var c = document.createElement('canvas'); c.width = c.height = 64;
   var g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
@@ -209,6 +232,20 @@ function buildOrb(st, di, keepOld){
   var atmo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.16, 48, 32), atmoMat);
   g.add(atmo);
 
+  /* monogram sigil: the person's initials at the core, tier-colored,
+     camera-facing for the whole orbit (CSS2D) — the orb is marked
+     with who it is at all times */
+  var hex = api.tierCol(di);
+  var monoEl = document.createElement('div');
+  monoEl.className = 'f3-mono';
+  monoEl.textContent = initialsOf(api.name(di));
+  monoEl.style.color = hex;
+  monoEl.style.borderColor = hex;
+  monoEl.style.boxShadow = '0 0 22px ' + hex + '59, inset 0 0 16px rgba(0,0,0,.55)';
+  var mono = new CSS2DObject(monoEl);
+  mono.center.set(0.5, 0.5);
+  g.add(mono);
+
   /* particle shell — ~700 points on a fibonacci sphere, density of
      presence scaled mildly by the fabric component of the score */
   var fabric = api.fabric(di);
@@ -244,18 +281,29 @@ function buildOrb(st, di, keepOld){
     new THREE.MeshBasicMaterial({ color:0xe30613, side:THREE.DoubleSide, transparent:true, opacity:0, fog:false }));
   pulse.rotation.x = Math.PI / 2; g.add(pulse);
 
-  /* satellites — the person's strongest on-map known associates */
-  var sats = [];
-  var hot = api.hot(di).slice(0, 8);
-  hot.forEach(function(sdi, i){
+  /* satellites — the orbit system composed from the person's own
+     record (api.bodies): their strongest on-map known associates
+     first, then their canonical organizations, then their groups,
+     filling to the cap of 8. Associates are tier-colored like the
+     map; org/group bodies ride in the hero's own tier tint. Bodies
+     and tags are sized to actually register on screen. */
+  var sats = [], bodyRecs = [];
+  var bodies = (api.bodies ? api.bodies(di)
+    : api.hot(di).map(function(t){ return { k:'p', di:t }; })).slice(0, 8);
+  bodies.forEach(function(b, i){
+    var isP = b.k === 'p';
+    var sdi = isP ? b.di : null;
+    var nm = isP ? api.name(sdi) : b.n;
+    var seed = isP ? sdi : 5000 + i * 131 + nm.length * 17;
     var pivot = new THREE.Group();
-    pivot.rotation.set(hash01(sdi * 3 + 1) * 1.9 - 0.95, hash01(sdi * 5 + 2) * 1.2, hash01(sdi * 7 + 3) * 1.9 - 0.95);
+    pivot.rotation.set(hash01(seed * 3 + 1) * 1.9 - 0.95, hash01(seed * 5 + 2) * 1.2, hash01(seed * 7 + 3) * 1.9 - 0.95);
     g.add(pivot);
-    var scol = new THREE.Color(api.tierCol(sdi));
+    var scol = isP ? new THREE.Color(api.tierCol(sdi))
+                   : col.clone().lerp(new THREE.Color(0xffffff), 0.45);
     var spr = new THREE.Sprite(new THREE.SpriteMaterial({ map:st.dotTex, color:scol,
       transparent:true, opacity:0, depthWrite:false, blending:THREE.AdditiveBlending, fog:false }));
     var rad = R * (2.35 + 0.38 * i);
-    spr.scale.set(9, 9, 1);
+    spr.scale.set(isP ? 13 : 11.5, isP ? 13 : 11.5, 1);
     pivot.add(spr);
     var lgeo = new THREE.BufferGeometry();
     lgeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
@@ -263,21 +311,32 @@ function buildOrb(st, di, keepOld){
     line.frustumCulled = false;
     pivot.add(line);
     var tagEl = document.createElement('div');
-    tagEl.className = 'f3-sattag'; tagEl.textContent = api.name(sdi); tagEl.style.opacity = '0';
+    tagEl.className = 'f3-sattag' + (isP ? '' : ' og');
+    tagEl.textContent = nm; tagEl.style.opacity = '0';
+    if(!isP) tagEl.style.color = hex;
     var tag = new CSS2DObject(tagEl);
     tag.center.set(0.5, -0.6);
     pivot.add(tag);
-    sats.push({ di:sdi, pivot:pivot, spr:spr, line:line, tag:tag, tagEl:tagEl,
-      rad:rad, ang:hash01(sdi * 11 + 4) * 6.2832, speed:(0.14 + 0.045 * i) * (hash01(sdi * 13) < 0.5 ? 1 : -1),
+    sats.push({ di:sdi, kind:b.k, name:nm, pivot:pivot, spr:spr, line:line, tag:tag, tagEl:tagEl,
+      rad:rad, ang:hash01(seed * 11 + 4) * 6.2832, speed:(0.14 + 0.045 * i) * (hash01(seed * 13) < 0.5 ? 1 : -1),
       op:0 });
+    bodyRecs.push({ k:b.k, n:nm });
   });
+  /* the selection layer follows this hero: universe edges run to
+     their on-map associates (people only — orgs/groups are not
+     points in the universe), and the flare/packets take the tint */
+  st.edgeDis = (api.edges ? api.edges(di) : api.hot(di)).slice(0, 8);
+  if(st.flare) st.flare.material.color.set(hex);
+  if(st.edgeLines) st.edgeLines.material.color.copy(col.clone().lerp(new THREE.Color(0xffffff), 0.35));
+  if(st.packets) st.packets.forEach(function(pk){ pk.material.color.copy(col.clone().lerp(new THREE.Color(0xffffff), 0.25)); });
 
   st.viewGroup.add(g);
   st.hero = { di:di, group:g, core:core, coreMat:coreMat, atmoMat:atmoMat, shell:shell,
     pivA:pivA, pivB:pivB, pivArc:pivArc, arc:arc, arcMat:arcMat, tick:tick, pulse:pulse,
-    sats:sats, R:R, score:score, pinned:pinned, anim:0, sweepShown:-1 };
+    sats:sats, R:R, score:score, pinned:pinned, anim:0, sweepShown:-1,
+    mono:mono, monoEl:monoEl, bodies:bodyRecs };
   nodePos(api, di, g.position);
-  g.scale.setScalar(0.55);
+  g.scale.setScalar(0.03);
   fillPanel(st, di);
   return st.hero;
 }
@@ -309,14 +368,42 @@ var FLY3D = {
   begin:function(api){ return stageBegin(api); },
   exit:function(){ stageExit(); },
   _forceQuality:function(q){ if(ST){ ST.forceQ = q; applyQuality(ST); } },
+  /* harness-only: call a specific person next (the current call is
+     cut short). JD never triggers this; it exists so the black-box
+     suites can cast dense / sparse / org-only profiles on purpose. */
+  _jump:function(di){
+    if(!ST || !FLY3D.active) return;
+    ST.jumpDi = di;
+    if(ST.phase === 'orbit'){ ST.phase = 'linger'; ST.phaseT = T_LINGER - 0.05; }
+    else if(ST.phase === 'linger'){ ST.phaseT = T_LINGER - 0.05; }
+  },
   debug:function(){
     if(!ST) return { active:this.active, built:false };
+    var plate = null;
+    if(ST.panelEl && ST.wrap){
+      var pr = ST.panelEl.getBoundingClientRect(), wr = ST.wrap.getBoundingClientRect();
+      plate = { x:pr.left - wr.left, y:pr.top - wr.top, w:pr.width, h:pr.height,
+        wrapW:wr.width, wrapH:wr.height,
+        shown:ST.panelEl.classList.contains('in') };
+    }
     return { active:this.active, built:true, phase:ST.phase, heroDi:ST.heroDi,
       calls:ST.callLog.slice(), quality:ST.quality, bloom:ST.bloomOn,
       azDeg:ST.azRel * 57.29578, fps:Math.round(ST.fps * 10) / 10,
       heroPx:ST.heroPx || null,
       dpr:ST.renderer ? ST.renderer.getPixelRatio() : 0,
-      orbitR:ST.hero ? Math.round(orbitRadius(ST, ST.hero.R)) : 0 };
+      orbitR:ST.hero ? Math.round(orbitRadius(ST, ST.hero.R)) : 0,
+      mono:ST.hero ? ST.hero.monoEl.textContent : null,
+      monoOp:ST.hero ? parseFloat(ST.hero.monoEl.style.opacity || '0') : 0,
+      bodies:ST.hero ? ST.hero.bodies : null,
+      tags:ST.hero ? ST.hero.sats.map(function(s){ return s.name; }) : [],
+      edges:(ST.edgeDis || []).slice(),
+      edgeOp:ST.edgeLines ? Math.round(ST.edgeLines.material.opacity * 100) / 100 : 0,
+      flareOp:ST.flare ? Math.round(ST.flare.material.opacity * 100) / 100 : 0,
+      heroScale:ST.hero ? Math.round(ST.hero.group.scale.x * 1000) / 1000 : 0,
+      boundPx:ST.boundPx ? Math.round(ST.boundPx) : 0,
+      side:ST.panelSide || null,
+      leader:ST.leaderEl ? parseFloat(ST.leaderEl.style.opacity || '0') : 0,
+      plate:plate };
   }
 };
 window.FLY3D = FLY3D;
@@ -350,6 +437,8 @@ function stageBegin(api){
   }
   st.drift = 0; st.time = 0;
   st.phase = 'takeover'; st.phaseT = 0;
+  st._edgeOp = 0; st._flareOp = 0;
+  st.panelIn = false; st.panelSide = null; st.jumpDi = null; st.boundPx = 0;
   st.heroDi = api.firstDi; st.lastDi = api.lastDi;
   st.bag = shuffleBag(api, api.lastDi, api.firstDi); st.bi = 1; /* first entry is the person the canvas glided to */
   st.callLog = [api.firstDi];
@@ -364,6 +453,15 @@ function stageBegin(api){
   var glHost = document.createElement('div'); glHost.className = 'f3-gl';
   ov.appendChild(glHost);
   glHost.appendChild(st.renderer.domElement);
+  /* the leader layer: an SVG hairline from the plate to the orb rim,
+     above the GL canvas, below the CSS2D plates */
+  var leader = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  leader.setAttribute('class', 'f3-leader');
+  leader.innerHTML = '<line x1="0" y1="0" x2="0" y2="0"></line><circle r="2.5" cx="0" cy="0"></circle>';
+  ov.appendChild(leader);
+  st.leaderEl = leader;
+  st.leaderLine = leader.querySelector('line');
+  st.leaderDot = leader.querySelector('circle');
   st.css2d.domElement.className = 'f3-css2d';
   st.css2d.domElement.style.pointerEvents = 'none';
   ov.appendChild(st.css2d.domElement);
@@ -393,6 +491,30 @@ function stageBegin(api){
   paintViewGroup(st);
   buildUniverse(st);
   buildStars(st);
+
+  /* selection layer (identity pass): the called person's universe
+     edges as light-up lines, packets that stream along them toward
+     the hero, and the flare that marks their point before the orb
+     assembles. Children of viewGroup: positions are the same local
+     coordinates the point cloud uses. */
+  var egeo = new THREE.BufferGeometry();
+  egeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(8 * 2 * 3), 3));
+  st.edgeLines = new THREE.LineSegments(egeo, new THREE.LineBasicMaterial({ color:0xffffff,
+    transparent:true, opacity:0, blending:THREE.AdditiveBlending, depthWrite:false, fog:false }));
+  st.edgeLines.frustumCulled = false;
+  st.viewGroup.add(st.edgeLines);
+  st.packets = [];
+  for(var pi = 0; pi < 8; pi++){
+    var pk = new THREE.Sprite(new THREE.SpriteMaterial({ map:st.dotTex, color:0xffffff,
+      transparent:true, opacity:0, depthWrite:false, blending:THREE.AdditiveBlending, fog:false }));
+    pk.scale.set(7, 7, 1); pk.frustumCulled = false; pk.visible = false;
+    st.viewGroup.add(pk); st.packets.push(pk);
+  }
+  st.flare = new THREE.Sprite(new THREE.SpriteMaterial({ map:st.dotTex, color:0xffffff,
+    transparent:true, opacity:0, depthWrite:false, blending:THREE.AdditiveBlending, fog:false }));
+  st.flare.scale.set(20, 20, 1); st.flare.frustumCulled = false; st.flare.visible = false;
+  st.viewGroup.add(st.flare);
+  st.edgeDis = [];
 
   /* hero panel (CSS2D, always screen-upright) */
   var panel = document.createElement('div');
@@ -481,6 +603,10 @@ function teardown(st){
   ST = null;
 }
 function nextCall(st){
+  if(st.jumpDi != null){
+    var jd = st.jumpDi; st.jumpDi = null;
+    if(jd !== st.heroDi && st.api.byDi[jd]) return jd;
+  }
   var di = null;
   while(st.bi < st.bag.length){
     var cand = st.bag[st.bi++];
@@ -498,6 +624,7 @@ function nextCall(st){
 function collapsePanel(st, fast){
   st.panelEl.classList.add('fast');
   st.panelEl.classList.remove('in');
+  st.panelIn = false;
   st.hero && st.hero.sats.forEach(function(s){ s.op = 0; });
 }
 
@@ -521,6 +648,40 @@ function fillPanel(st, di){
   st.panelF2.textContent = f[1] || ''; st.panelF2.style.display = f[1] ? '' : 'none';
   st.panelEl.classList.remove('fast');
   st.panelEl.classList.remove('in');
+  st.panelIn = false; st.panelSide = null;
+}
+/* The plate belongs to the orb system: it anchors BESIDE the orb
+   (never in a detached corner), its facing edge at the orb's
+   bounding circle plus a leader gap. The bounding circle is the
+   solid assembly — core, atmosphere, score arc — at 1.78 radii;
+   the two outer gyroscope hairlines (1px, low opacity) sweep a
+   wider ellipse and may pass behind the plate's far corner on
+   smaller screens. The side is chosen once per call, at formation,
+   by measured fit: viewport containment is the hard constraint,
+   clearance the preference (left, then right, then below/above;
+   portrait wraps go below/above first). */
+function placePanel(st){
+  var W = st.wrap.clientWidth || 900, H = st.wrap.clientHeight || 650;
+  var pw = st.panelEl.offsetWidth || 248, ph = st.panelEl.offsetHeight || 150;
+  var hp = st.heroPx || { x:W / 2, y:H / 2 }, bp = st.boundPx || 120, gap = 30;
+  var fits = {
+    left: hp.x - bp - gap - pw >= 4,
+    right: hp.x + bp + gap + pw <= W - 4,
+    below: hp.y + bp + gap + ph <= H - 4,
+    above: hp.y - bp - gap - ph >= 4
+  };
+  var order = W < 620 ? ['below', 'above', 'left', 'right'] : ['left', 'right', 'below', 'above'];
+  var side = order[0];
+  for(var i = 0; i < order.length; i++){ if(fits[order[i]]){ side = order[i]; break; } }
+  st.panelSide = side;
+  st.panelObj.center.set(side === 'left' ? 1 : side === 'right' ? 0 : 0.5,
+                         (side === 'left' || side === 'right') ? 0.5 : side === 'below' ? 0 : 1);
+}
+function panelShow(st){
+  if(st.panelIn) return;
+  st.panelIn = true;
+  placePanel(st);
+  st.panelEl.classList.add('in');
 }
 function applyQuality(st){
   var q = st.forceQ || st.quality;
@@ -553,6 +714,7 @@ function sampleFps(st, dt){
 
 /* camera geometry helpers (view space) */
 var _hw = new THREE.Vector3(), _off = new THREE.Vector3(), _p1 = new THREE.Vector3(), _tgt = new THREE.Vector3();
+var _ep = new THREE.Vector3(), _ep2 = new THREE.Vector3(), _bv = new THREE.Vector3();
 function orbitOffset(az, el, R, out){
   return out.set(R * Math.cos(el) * Math.sin(az), R * Math.sin(el), R * Math.cos(el) * Math.cos(az));
 }
@@ -603,6 +765,10 @@ function stageTick(ts){
 
   switch(st.phase){
     case 'takeover': {
+      /* the selection beat: the hero is still just their point in
+         the universe — it flares, and their edges light up */
+      st._flareOp = 1;
+      st._edgeOp = 0.15 + 0.35 * clamp(st.phaseT / T_TAKEOVER, 0, 1);
       cam.position.set(0, 0, 0);
       cam.lookAt(_hw);
       if(st.phaseT >= T_TAKEOVER){
@@ -625,13 +791,20 @@ function stageTick(ts){
       cam.lookAt(_hw);
       cam.fov = lerp(st.apFromFov, 48, t); cam.updateProjectionMatrix();
       hero.anim = Math.min(1, hero.anim + dt / 1.1);
+      st._flareOp = 1 - hero.anim;
+      st._edgeOp = 0.30 + 0.25 * hero.anim;
+      /* the name assembles WITH the formation: once the orb is
+         mostly grown, its title plate builds in beside it */
+      if(hero.anim >= 0.72) panelShow(st);
       if(st.phaseT >= T_APPROACH){
         st.phase = 'orbit'; st.phaseT = 0;
-        st.panelEl.classList.add('in');
+        panelShow(st);
       }
       break;
     }
     case 'orbit': case 'linger': {
+      st._flareOp = 0;
+      st._edgeOp = 0.30;
       var dur = st.phase === 'orbit' ? T_ORBIT : T_LINGER;
       var pt = clamp(st.phaseT / dur, 0, 1);
       var sw = smoother(pt);
@@ -689,10 +862,12 @@ function stageTick(ts){
       var nHeroW = nodePos(st.api, tr.toDi, _tgt);
       st.viewGroup.localToWorld(nHeroW);
       if(tr.oldHero){
+        /* the departing orb collapses back into its universe point */
         var shrink = clamp(1 - tt / 0.28, 0, 1);
-        tr.oldHero.group.scale.setScalar(Math.max(0.001, (0.55 + 0.45 * tr.oldHero.anim) * shrink));
+        tr.oldHero.group.scale.setScalar(Math.max(0.001, heroScale(tr.oldHero.anim) * shrink));
         tr.oldHero.coreMat.uniforms.uBright.value = shrink * tr.oldHero.anim;
         tr.oldHero.atmoMat.uniforms.uBright.value = shrink;
+        tr.oldHero.monoEl.style.opacity = (shrink * easeOut(tr.oldHero.anim)).toFixed(3);
         if(tt >= 0.3 && tr.oldHero.group.parent){
           st.viewGroup.remove(tr.oldHero.group);
           tr.oldHero.group.traverse(function(o){
@@ -704,9 +879,15 @@ function stageTick(ts){
       }
       tr.newHero.anim = clamp((tt - 0.55) / 0.45, 0, 1);
       var ne2 = easeOut(tr.newHero.anim);
-      tr.newHero.group.scale.setScalar(0.55 + 0.45 * ne2);
+      tr.newHero.group.scale.setScalar(heroScale(tr.newHero.anim));
       tr.newHero.coreMat.uniforms.uBright.value = ne2;
       tr.newHero.atmoMat.uniforms.uBright.value = ne2;
+      tr.newHero.monoEl.style.opacity = ne2.toFixed(3);
+      /* the new person's point flares as their orb assembles, and
+         their edges stream in with the growth */
+      st._flareOp = tt < 0.5 ? 0 : 1 - tr.newHero.anim;
+      st._edgeOp = 0.15 + 0.35 * tr.newHero.anim;
+      if(tr.newHero.anim >= 0.72) panelShow(st);
       var dest = orbitOffset(tr.az1, tr.el1, tr.orbitR1, _p1).add(nHeroW);
       if(!tr.ctrl){
         tr.ctrl = tr.fromPos.clone().lerp(dest, 0.5);
@@ -720,12 +901,14 @@ function stageTick(ts){
         st.az0 = tr.az1; st.el0 = tr.el1; st.orbitR = tr.orbitR1; st.azRel = 0;
         st.phase = 'orbit'; st.phaseT = 0;
         st.transit = null;
-        st.panelEl.classList.add('in');
+        panelShow(st);
       }
       break;
     }
     case 'exit': {
       var xt = easeInOut(clamp(st.phaseT / T_EXIT, 0, 1));
+      st._flareOp = 0;
+      st._edgeOp = 0.30 * (1 - xt);
       _p1.copy(st.exitFrom).lerp(_tgt.set(0, 0, 0), 0.5);
       bez(st.exitFrom, _p1, _tgt.set(0, 0, 0), xt, cam.position);
       cam.lookAt(_hw);
@@ -742,11 +925,15 @@ function stageTick(ts){
   /* hero assembly animation + satellite motion */
   if(hero && st.phase !== 'transit'){
     var e2 = easeOut(hero.anim);
-    hero.group.scale.setScalar(0.55 + 0.45 * e2);
+    /* growth from the point; on exit the orb collapses back into it */
+    var shrinkX = st.phase === 'exit' ? 1 - 0.97 * easeInOut(clamp(st.phaseT / T_EXIT, 0, 1)) : 1;
+    hero.group.scale.setScalar(Math.max(0.001, heroScale(hero.anim) * shrinkX));
     if(st.phase !== 'exit'){
       hero.coreMat.uniforms.uBright.value = e2;
       hero.atmoMat.uniforms.uBright.value = e2;
     }
+    hero.monoEl.style.opacity = (st.phase === 'exit'
+      ? (1 - easeInOut(clamp(st.phaseT / T_EXIT, 0, 1))) * e2 : e2).toFixed(3);
     hero.sats.forEach(function(s){
       s.ang += s.speed * dt;
       var x = Math.cos(s.ang) * s.rad, z = Math.sin(s.ang) * s.rad;
@@ -760,21 +947,61 @@ function stageTick(ts){
       var toCam = _off.copy(cam.position).sub(_hw).normalize();
       var toSat = sw2.sub(_hw).normalize();
       var facing = toSat.dot(toCam);
-      var base = s.op * (facing < -0.2 ? 0.12 : 0.88);
+      var base = s.op * (facing < -0.2 ? 0.25 : 1.0);
       s.tagEl.style.opacity = base.toFixed(3);
       s.spr.material.opacity = s.op * 0.95;
-      s.line.material.opacity = s.op * 0.22;
+      s.line.material.opacity = s.op * 0.42;
     });
   }
-  /* panel anchor: rides up-left of the orb, lerped so it never whips */
+  /* selection layer, applied: the hero's universe edges follow the
+     live layout positions; packets stream from each associate's
+     point toward the hero; the flare burns at the hero's point with
+     the phase envelope (full while they are still just a point,
+     gone once the orb has assembled) */
+  if(st.edgeLines && hero){
+    var hpL = nodePos(st.api, hero.di, _ep);
+    var lpA = st.edgeLines.geometry.attributes.position.array;
+    var eop = st._edgeOp || 0;
+    for(var ei = 0; ei < 8; ei++){
+      var tdi = st.edgeDis ? st.edgeDis[ei] : null;
+      var tpL = (tdi != null && st.api.byDi[tdi]) ? nodePos(st.api, tdi, _ep2) : hpL;
+      lpA[ei * 6] = hpL.x; lpA[ei * 6 + 1] = hpL.y; lpA[ei * 6 + 2] = hpL.z;
+      lpA[ei * 6 + 3] = tpL.x; lpA[ei * 6 + 4] = tpL.y; lpA[ei * 6 + 5] = tpL.z;
+      var pkt = st.packets[ei];
+      if(tdi != null && eop > 0.02){
+        pkt.visible = true;
+        var frc = (st.time * 0.4 + ei * 0.173) % 1;
+        pkt.position.lerpVectors(tpL, hpL, frc);
+        pkt.material.opacity = eop * Math.sin(frc * Math.PI) * 0.95;
+      } else pkt.visible = false;
+    }
+    st.edgeLines.geometry.attributes.position.needsUpdate = true;
+    st.edgeLines.material.opacity = eop * 0.75;
+    if(st.flare){
+      st.flare.position.copy(hpL);
+      var fop = st._flareOp || 0;
+      st.flare.material.opacity = fop * 0.8;
+      var fsc = 20 + 52 * fop;
+      st.flare.scale.set(fsc, fsc, 1);
+      st.flare.visible = fop > 0.02;
+    }
+  }
+
+  /* panel anchor: beside the orb on the side placePanel chose at
+     formation, its facing edge at the orb's bounding circle plus a
+     leader gap; lerped so it rides with the system, never whips */
   var right = new THREE.Vector3(1, 0, 0).applyQuaternion(cam.quaternion);
   var up = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion);
-  /* frame-relative anchor: fractions of the visible half-height /
-     half-width at the hero's depth, so the panel rides in-frame at
-     any orb size, zoom, or aspect */
   var distH = Math.max(40, cam.position.distanceTo(_hw));
   var halfH = Math.tan(cam.fov * Math.PI / 360) * distH;
-  _tgt.copy(_hw).addScaledVector(up, halfH * 0.50).addScaledVector(right, -halfH * cam.aspect * 0.30);
+  var boundW = hero ? hero.R * 1.78 : 53;
+  var gapW = 30 * (2 * halfH) / Math.max(1, st.wrap.clientHeight || 1);
+  var pSide = st.panelSide || 'left';
+  if(!st.panelSide) _tgt.copy(_hw).addScaledVector(up, boundW + gapW);
+  else if(pSide === 'below') _tgt.copy(_hw).addScaledVector(up, -(boundW + gapW));
+  else if(pSide === 'above') _tgt.copy(_hw).addScaledVector(up, boundW + gapW);
+  else if(pSide === 'right') _tgt.copy(_hw).addScaledVector(right, boundW + gapW).addScaledVector(up, hero ? hero.R * 0.5 : 20);
+  else _tgt.copy(_hw).addScaledVector(right, -(boundW + gapW)).addScaledVector(up, hero ? hero.R * 0.5 : 20);
   if(!st.anchorInit){ st.anchorObj.position.copy(_tgt); st.anchorInit = true; }
   else st.anchorObj.position.lerp(_tgt, 1 - Math.exp(-dt / 0.12));
 
@@ -790,6 +1017,27 @@ function stageTick(ts){
   /* harness probe: where the hero sits on screen this frame */
   var hv = _hw.clone().project(st.camera);
   st.heroPx = { x:(hv.x + 1) / 2 * (st.wrap.clientWidth || 1), y:(1 - hv.y) / 2 * (st.wrap.clientHeight || 1) };
+  /* the orb assembly's projected bounding radius (core + arc) */
+  _bv.copy(_hw).addScaledVector(right, boundW).project(st.camera);
+  st.boundPx = Math.hypot((_bv.x + 1) / 2 * (st.wrap.clientWidth || 1) - st.heroPx.x,
+                          (1 - _bv.y) / 2 * (st.wrap.clientHeight || 1) - st.heroPx.y);
+  /* the leader: hairline from the plate's nearest edge point to
+     the orb's rim, drawn only while the plate is built in */
+  if(st.leaderEl){
+    var showLeader = st.panelIn && !st.exiting && st.panelEl.classList.contains('in');
+    if(showLeader){
+      var wrL = st.wrap.getBoundingClientRect(), prL = st.panelEl.getBoundingClientRect();
+      var hx = st.heroPx.x, hy = st.heroPx.y;
+      var pcx = clamp(hx, prL.left - wrL.left, prL.right - wrL.left);
+      var pcy = clamp(hy, prL.top - wrL.top, prL.bottom - wrL.top);
+      var ldx = pcx - hx, ldy = pcy - hy, ldl = Math.max(1, Math.hypot(ldx, ldy));
+      var rimX = hx + ldx / ldl * st.boundPx, rimY = hy + ldy / ldl * st.boundPx;
+      st.leaderLine.setAttribute('x1', pcx.toFixed(1)); st.leaderLine.setAttribute('y1', pcy.toFixed(1));
+      st.leaderLine.setAttribute('x2', rimX.toFixed(1)); st.leaderLine.setAttribute('y2', rimY.toFixed(1));
+      st.leaderDot.setAttribute('cx', rimX.toFixed(1)); st.leaderDot.setAttribute('cy', rimY.toFixed(1));
+      st.leaderEl.style.opacity = '0.85';
+    } else st.leaderEl.style.opacity = '0';
+  }
   st.raf = requestAnimationFrame(stageTick);
 }
 
