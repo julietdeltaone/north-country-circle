@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.6.0';
+var APP_VERSION = '2.6.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -3226,7 +3226,6 @@ function netCtlPaint(){
   var fl = $('.netctl [data-act="netfly"]');
   if(fl){
     if(REDUCED_MOTION){ fl.disabled = true; fl.title = 'Flyover is off while reduced motion is on'; }
-    else if(S.net.mode === '2d'){ fl.disabled = true; fl.title = 'Flyover flies the 3D orb. Switch to 3D to use it.'; }
     else { fl.disabled = false; fl.title = ''; }
   }
   flyBtnPaint();
@@ -3234,7 +3233,6 @@ function netCtlPaint(){
 function netSwitchMode(nm){
   nm = nm === '2d' ? '2d' : '3d';
   if(nm === S.net.mode) return;
-  if(FLY.on) flyStop();
   netHovHide();
   NET.glide = null;
   var p2 = { x:NET.cam.x, y:NET.cam.y, z:NET.cam.z, rot:NET.rot };
@@ -3249,6 +3247,7 @@ function netSwitchMode(nm){
       netGlide(450, { yaw:p3.yaw, pitch:p3.pitch, zoom3:p3.zoom });
     }
     var sb = $('#netsub'); if(sb) sb.textContent = netSubHTML();
+    if(FLY.on) flyReframe(false);
     netCtlPaint(); NET.dirty = true;
   }
   var cv = NET.cv;
@@ -3273,6 +3272,14 @@ function netViewportChange(){
   if(fb){ var fs = !!document.fullscreenElement; fb.classList.toggle('on', fs); fb.setAttribute('aria-pressed', fs ? 'true' : 'false'); }
 }
 document.addEventListener('fullscreenchange', netViewportChange);
+/* Roll call: any key press hands the camera back too (Esc also
+   leaves full screen natively, as it always has). */
+document.addEventListener('keydown', function(ev){
+  if(!FLY.on || document.body.getAttribute('data-view') !== 'network') return;
+  var t = ev.target;
+  if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  flyStop();
+});
 addEventListener('resize', netViewportChange);
 function netBuild(){
   computeNewGain();
@@ -3371,7 +3378,7 @@ function netColor(nd){
   return RING_C[nd.ring];
 }
 function viewNetwork(v){
-  FLY.on = false; FLY.t = 0; FLY.box = null; FLY.slots = []; /* flyover is opt-in per visit — never persisted, never the default */
+  FLY.on = false; FLY.cur = null; FLY.bag = []; FLY.plate = null; FLY.box = null; /* flyover is opt-in per visit — never persisted, never the default */
   var m3 = S.net.mode !== '2d';
   /* One strip, three labeled questions (redesign 2026-10-16): VIEW is
      how am I looking at it, LAYOUT is how is it arranged, ACTIONS is
@@ -3383,7 +3390,7 @@ function viewNetwork(v){
     '<div class="netgrp"><span class="netkick">View</span>' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + '</div>' +
     '<div class="netgrp"><span class="netkick">Layout</span>' + sg('netlayout', [['score', 'Score'], ['tier', 'Tier'], ['clusters', 'Clusters']], S.net.layout) + '</div>' +
     '<div class="netgrp"><span class="netkick">Actions</span><span class="netacts">' +
-    '<button type="button" class="btn ghost sm" data-act="netfly" aria-pressed="false"' + (REDUCED_MOTION ? ' disabled title="Flyover is off while reduced motion is on"' : (!m3 ? ' disabled title="Flyover flies the 3D orb. Switch to 3D to use it."' : '')) + '>Flyover</button>' +
+    '<button type="button" class="btn ghost sm" data-act="netfly" aria-pressed="false"' + (REDUCED_MOTION ? ' disabled title="Flyover is off while reduced motion is on"' : '') + '>Flyover</button>' +
     '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button>' +
     '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Wider circle</button></span></div>' +
     '</div></div>' +
@@ -3489,6 +3496,7 @@ function viewNetwork(v){
     }
     if(S.net.mode === '2d'){
       if(NET.dvel){ NET.rot += NET.dvel * dt; NET.dirty = true; }
+      if(FLY.on && dt > 0) flyStep(dt);
       if(NET.dirty){ netDraw(); NET.dirty = false; }
     } else {
       if(NET.dvel) N3.yaw += NET.dvel * dt;
@@ -3600,31 +3608,33 @@ function netClustPaint(){
     if(show) p.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) translate(-50%,-50%)';
   });
 }
-/* ---------- Flyover (JD 2026-10-16; v2 in the redesign, same day): an
-   opt-in ambient pass over the 3D orb. The orb keeps its normal drift
-   spin; on top of that the camera eases along a quicker path — pitch
-   sways over ~95s, zoom breathes over ~70s, easing constant ~1.8s —
-   and the focus point wanders slowly sideways, so the flight travels
-   around the orb instead of breathing in one spot. Nodes that swing
-   near the camera get a small DOM label (name, tier, two facts) that
-   fades and rises in as they approach and fades as they recede; at
-   most twelve are alive at once (fourteen in full screen), pooled and
-   recycled, and the layer never takes pointer events. Any pointer or
-   wheel input stops the flight and hands control straight back; the
-   toggle does too. Starting it keeps any selection. Never persisted
-   and disabled outright under prefers-reduced-motion. */
-var FLY = { on:false, t:0, box:null, slots:[], lts:0 };
-var FLY_POOL = 14;
-function flyMax(){ return document.fullscreenElement ? 14 : 12; }
+/* ---------- Flyover ROLL CALL (JD 2026-10-16 evening; replaces the
+   v2 wide overview): the camera leaves the overview behind and calls
+   the roll. It flies IN close on one person at a time — their plate
+   animates in staggered (name, then tier + score, then up to two
+   facts), a pulse ring runs around their node and their strongest
+   associate links light up — holds, then arcs over to the next.
+   Far hops pull back before pushing in, so the travel reads as an
+   arc instead of a straight tunnel through the map. Order is a
+   shuffle bag over everyone on the map: random, nobody repeats
+   until the whole pool has been called, then it reshuffles and
+   goes on. Works in 3D and 2D (v2 flew the 3D orb only). A layout
+   switch mid-flight re-frames the current person at their new
+   position and the call continues; a dimension switch does the
+   same. Starting keeps any selection; any pointer, wheel or key
+   input ends the flight and hands the camera straight back.
+   Never persisted; disabled outright under reduced motion. ------ */
+var FLY = { on:false, bag:[], bi:0, cur:null, hot:{}, phase:'', pt:0, flyDur:1.3,
+            plate:null, box:null, lastDi:null, morphSeen:0, lx2:0, ly2:0, lx3:0, ly3:0, lz3:0 };
+var FLY_PRESENT = 3.6; /* seconds on each person once the camera arrives — about five seconds a call, flight included */
 function flyEnsure(){
   var box = $('#netfly'); if(!box) return null;
   if(FLY.box !== box){
-    FLY.box = box; FLY.slots = []; box.innerHTML = '';
-    for(var i = 0; i < FLY_POOL; i++){
-      var d = document.createElement('div'); d.className = 'flylab'; d.style.opacity = '0';
-      d.innerHTML = '<b></b><span></span><span></span>'; box.appendChild(d);
-      FLY.slots.push({ el:d, di:null, a:0, tg:0, p:null, rr:0 });
-    }
+    FLY.box = box; box.innerHTML = '';
+    var d = document.createElement('div');
+    d.className = 'flyplate'; d.setAttribute('aria-hidden', 'true');
+    d.innerHTML = '<b class="fp-name"></b><span class="fp-meta"></span><span class="fp-fact fp-f1"></span><span class="fp-fact fp-f2"></span>';
+    box.appendChild(d); FLY.plate = d;
   }
   return box;
 }
@@ -3632,96 +3642,216 @@ function flyBtnPaint(){
   var b = $('[data-act="netfly"]'); if(!b) return;
   b.classList.toggle('on', FLY.on); b.setAttribute('aria-pressed', FLY.on ? 'true' : 'false');
 }
+function flyShuffleBag(){
+  var dis = NET.nodes.map(function(n){ return n.di; });
+  for(var i = dis.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1)), t = dis[i]; dis[i] = dis[j]; dis[j] = t;
+  }
+  if(dis.length > 1 && dis[0] === FLY.lastDi){ var t2 = dis[0]; dis[0] = dis[1]; dis[1] = t2; }
+  FLY.bag = dis; FLY.bi = 0;
+}
+function flyFacts(e){
+  /* up to two fact lines for the plate, drawn from the hover card's
+     pool: relationship + years first, then the top organization,
+     then location, then context — the first two that say something */
+  var out = [], seen = {};
+  function add(s){ s = String(s || '').trim(); if(s && !seen[s]){ seen[s] = 1; out.push(s); } }
+  var rel = cap(gv(e, 'relationship')), yrs = knownSinceYear(e);
+  add([rel, yrs ? 'Known since ' + yrs : ''].filter(Boolean).join(' · '));
+  var orgs = orgsOf(e);
+  if(orgs.length) add(regApply(orgs[0]));
+  add(ptNormLoc(ptLocVal(e)));
+  add(cap(gv(e, 'context')));
+  return out.slice(0, 2);
+}
+function flyCamTarget(nd, p2, p3){
+  /* the glide channels that frame nd close up. 3D faces the person
+     dead-on the way netFrameSel does, at a close zoom; 2D centers
+     their rotated position at a close zoom of its own. */
+  if(S.net.mode !== '2d'){
+    var rho = Math.hypot(p3[0], p3[2]);
+    var tyaw = rho > 0.001 ? Math.atan2(p3[2], p3[0]) + Math.PI / 2 : N3.yaw;
+    var dyaw = Math.atan2(Math.sin(tyaw - N3.yaw), Math.cos(tyaw - N3.yaw));
+    var L = Math.hypot(p3[0], p3[1], p3[2]);
+    return { yaw:N3.yaw + dyaw,
+             pitch:Math.max(-1.5, Math.min(1.5, Math.atan2(-p3[1], Math.max(rho, 0.001)))),
+             zoom3:L > 560 ? 1.8 : 2.3, fx:0, fy:0 };
+  }
+  var rp = netRotP(p2[0], p2[1]);
+  return { c2x:rp[0], c2y:rp[1], c2z:2.6 };
+}
+function flyFrame(nd, quick, p2, p3){
+  /* fly the camera in on nd; a far hop dips toward the overview for
+     the first stretch, then pushes in — the arc between calls */
+  var tgt = flyCamTarget(nd, p2, p3), m3 = S.net.mode !== '2d';
+  var dist = m3 ? Math.hypot(p3[0] - FLY.lx3, p3[1] - FLY.ly3, p3[2] - FLY.lz3)
+                : Math.hypot(p2[0] - FLY.lx2, p2[1] - FLY.ly2);
+  FLY.lx2 = p2[0]; FLY.ly2 = p2[1]; FLY.lx3 = p3[0]; FLY.ly3 = p3[1]; FLY.lz3 = p3[2];
+  if(quick || dist <= 430){
+    FLY.flyDur = quick ? 0.9 : 1.3;
+    netGlide(Math.round(FLY.flyDur * 1000), tgt);
+    return;
+  }
+  FLY.flyDur = 1.6;
+  var mid;
+  if(m3){
+    mid = { yaw:(N3.yaw + tgt.yaw) / 2, pitch:(N3.pitch + tgt.pitch) / 2,
+            zoom3:Math.max(0.85, Math.min(N3.zoom, tgt.zoom3) * 0.55), fx:0, fy:0 };
+  } else {
+    mid = { c2x:(NET.cam.x + tgt.c2x) / 2, c2y:(NET.cam.y + tgt.c2y) / 2,
+            c2z:Math.max(netFitZ(), Math.min(NET.cam.z, tgt.c2z) * 0.42) };
+  }
+  netGlide(650, mid, function(){ if(FLY.on && FLY.cur === nd) netGlide(950, tgt); });
+}
+function flyCall(){
+  var nd = null;
+  while(FLY.bi < FLY.bag.length){
+    var cand = NET.byDi[FLY.bag[FLY.bi++]];
+    if(cand){ nd = cand; break; }
+  }
+  if(!nd){
+    flyShuffleBag();
+    while(FLY.bi < FLY.bag.length){
+      var cand2 = NET.byDi[FLY.bag[FLY.bi++]];
+      if(cand2){ nd = cand2; break; }
+    }
+  }
+  if(!nd) return;
+  FLY.cur = nd; FLY.lastDi = nd.di;
+  var e = D.directory[nd.di];
+  FLY.hot = {};
+  knownAssociates(e).forEach(function(nb){
+    var t = BYN[(nb.u || '').toLowerCase()];
+    if(t != null && NET.byDi[t]) FLY.hot[t] = 1;
+  });
+  var pl = FLY.plate;
+  if(pl){
+    pl.classList.remove('in');
+    pl.children[0].textContent = dispName(e);
+    var s = scoreFor(nd.di);
+    pl.children[1].textContent = (tierName(e) || 'No tier yet') +
+      (s ? ' · Score ' + s.score : '') + (s && s.pinned ? ' · Pinned' : '');
+    var f = flyFacts(e);
+    pl.children[2].textContent = f[0] || '';
+    pl.children[3].textContent = f[1] || '';
+    pl.children[2].style.display = f[0] ? '' : 'none';
+    pl.children[3].style.display = f[1] ? '' : 'none';
+  }
+  FLY.phase = 'fly'; FLY.pt = 0;
+  flyFrame(nd, false, netP2(nd), netP3(nd));
+  NET.dirty = true;
+}
+function flyReframe(morph){
+  /* the map moved under the current person (a layout morph) or the
+     dimension changed: re-frame them where they now are and let
+     the call continue — the flight never dies under a switch */
+  var nd = FLY.cur; if(!nd) return;
+  if(morph){
+    flyFrame(nd, true, netT2(nd, S.net.layout), netT3(nd, S.net.layout));
+    return;
+  }
+  if(FLY.plate) FLY.plate.classList.remove('in');
+  FLY.phase = 'fly'; FLY.pt = 0;
+  flyFrame(nd, true, netP2(nd), netP3(nd));
+}
 function flyStart(){
-  if(REDUCED_MOTION || S.net.mode === '2d' || !flyEnsure()) return;
-  /* Starting Flyover keeps the selection (redesign 2026-10-16): the
-     flight and its labels never needed it cleared. */
+  if(REDUCED_MOTION || !NET.nodes.length || !flyEnsure()) return;
+  /* Starting Flyover keeps the selection (redesign 2026-10-16):
+     the roll call never needed it cleared. */
   NET.hoverDi = null; N3.hover = null; netHovHide();
-  FLY.on = true; FLY.t = 0; FLY.lts = 0;
-  N3.fx = 0; N3.fy = 0;
+  N3.vy = 0; N3.vp = 0;
+  FLY.on = true; FLY.bag = []; FLY.bi = 0;
+  FLY.lx2 = 0; FLY.ly2 = 0; FLY.lx3 = 0; FLY.ly3 = 0; FLY.lz3 = 0;
+  flyCall();
   flyBtnPaint();
 }
 function flyStop(){
   if(!FLY.on) return;
-  FLY.on = false;
-  FLY.slots.forEach(function(s){ s.tg = 0; }); /* labels fade out on the exit token */
+  FLY.on = false; FLY.cur = null; FLY.hot = {}; FLY.phase = '';
+  if(FLY.plate) FLY.plate.classList.remove('in');
+  NET.dirty = true;
   flyBtnPaint();
 }
 function flyToggle(){ if(FLY.on) flyStop(); else flyStart(); }
 function flyStep(dt){
-  FLY.t += dt;
-  var k = 1 - Math.exp(-dt / 1.8);
-  var pitchT = 0.38 + 0.52 * Math.sin(FLY.t * (Math.PI * 2 / 95));
-  var zoomT = 1.02 + 0.48 * Math.sin(FLY.t * (Math.PI * 2 / 70) + 1.2);
-  N3.pitch += (pitchT - N3.pitch) * k;
-  N3.zoom += (zoomT - N3.zoom) * k;
-  /* a slow sideways wander of the focus point, so the flight travels
-     around the orb instead of breathing in one spot */
-  N3.fx = 64 * Math.sin(FLY.t * (Math.PI * 2 / 47));
-  N3.fy = 36 * Math.sin(FLY.t * (Math.PI * 2 / 61));
+  if(!FLY.cur) return;
+  NET.lastAct = performance.now(); /* the solar drift stays parked while the roll is called */
+  N3.vy *= 0.8; N3.vp *= 0.8;
+  if(NET.morph && NET.morph.t0 !== FLY.morphSeen){
+    FLY.morphSeen = NET.morph.t0;
+    flyReframe(true);
+  }
+  FLY.pt += dt;
+  if(FLY.phase === 'fly' && FLY.pt >= FLY.flyDur){
+    FLY.phase = 'present'; FLY.pt = 0;
+    if(FLY.plate) FLY.plate.classList.add('in');
+  } else if(FLY.phase === 'present' && FLY.pt >= FLY_PRESENT){
+    flyCall();
+    return;
+  }
+  flyPlatePaint();
+  if(S.net.mode === '2d') NET.dirty = true;
+}
+function flyPlatePaint(){
+  var pl = FLY.plate, nd = FLY.cur;
+  if(!pl || !nd) return;
+  var x, y, rr;
+  if(S.net.mode !== '2d'){
+    var p3 = netP3(nd), pr = n3Project(p3[0], p3[1], p3[2]);
+    x = pr.x; y = pr.y; rr = Math.max(1.6, nd.r * pr.k * 1.25);
+  } else {
+    var p2 = netP2(nd), rp = netRotP(p2[0], p2[1]), sp = w2s(rp[0], rp[1]);
+    x = sp[0]; y = sp[1]; rr = nd.r * Math.sqrt(NET.cam.z);
+  }
+  var w = pl.offsetWidth || 230, h = pl.offsetHeight || 92;
+  var px = NET.W > w + 12 ? Math.max(w / 2 + 6, Math.min(NET.W - w / 2 - 6, x)) : NET.W / 2;
+  var py = y - rr - 12;
+  if(py - h < 6) py = y + rr + 12 + h; /* no room above the node: the plate hangs below it */
+  pl.style.transform = 'translate3d(' + px.toFixed(1) + 'px,' + py.toFixed(1) + 'px,0) translate(-50%,-100%)';
+}
+function flyPulse(ctx, x, y, rr, t){
+  /* a steady ring riding the node on the house pulse, plus an echo
+     that keeps expanding off it and fading — signal red is reserved
+     for exactly this: the person being called */
+  var pu = 0.5 + 0.5 * Math.sin(t * 4.4);
+  ctx.strokeStyle = 'rgba(227,6,19,' + (0.55 + 0.35 * pu).toFixed(3) + ')'; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.arc(x, y, rr + 4 + 2.2 * pu, 0, 6.2832); ctx.stroke();
+  var ep = (t * 0.55) % 1;
+  ctx.strokeStyle = 'rgba(227,6,19,' + (0.34 * (1 - ep)).toFixed(3) + ')'; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.arc(x, y, rr + 6 + ep * 20, 0, 6.2832); ctx.stroke();
+}
+function flyCanvas3(ts){
+  if(!FLY.on || !FLY.cur) return;
+  var ctx = NET.ctx, nd = FLY.cur;
+  var idx = NET.nodes.indexOf(nd); if(idx < 0) return;
+  var p = N3.proj[idx]; if(!p) return;
+  /* the called person's strongest links light up */
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.1;
+  ctx.beginPath();
+  for(var i = 0; i < N3.proj.length; i++){
+    var q = N3.proj[i];
+    if(q.n && FLY.hot[q.n.di]){ ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); }
+  }
+  ctx.stroke();
+  flyPulse(ctx, p.x, p.y, Math.max(1.6, nd.r * p.k * 1.25), ts / 1000);
+}
+function flyCanvas2(){
+  if(!FLY.on || !FLY.cur) return;
+  var ctx = NET.ctx, nd = FLY.cur;
+  var p2 = netP2(nd), rp = netRotP(p2[0], p2[1]), a = w2s(rp[0], rp[1]);
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.1;
+  ctx.beginPath();
+  NET.nodes.forEach(function(n2){
+    if(!FLY.hot[n2.di]) return;
+    var q2 = netP2(n2), rq = netRotP(q2[0], q2[1]), b = w2s(rq[0], rq[1]);
+    ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
+  });
+  ctx.stroke();
+  flyPulse(ctx, a[0], a[1], nd.r * Math.sqrt(NET.cam.z), performance.now() / 1000);
 }
 function flyFact(e){
   var loc = ptNormLoc(ptLocVal(e));
   return loc || cap(gv(e, 'relationship')) || cap(gv(e, 'context')) || (knownSinceYear(e) ? 'Known since ' + knownSinceYear(e) : '');
-}
-function flyLabels(ts){
-  var any = FLY.on || FLY.slots.some(function(s){ return s.a > 0.01; });
-  if(!any || !flyEnsure()) return;
-  var dt = FLY.lts ? Math.min(0.05, Math.max(0.001, (ts - FLY.lts) / 1000)) : 0.016;
-  FLY.lts = ts;
-  var chosen = [];
-  if(FLY.on){
-    var cands = [];
-    for(var i = 0; i < N3.proj.length; i++){
-      var p = N3.proj[i];
-      if(p.z > -30) continue; /* near hemisphere only */
-      if(p.x < 84 || p.y < 76 || p.x > NET.W - 84 || p.y > NET.H - 56) continue;
-      if(p.y < 132 && (p.x < 270 || p.x > NET.W - 220)) continue; /* keep the legend and zoom corners clear */
-      var rr = Math.max(1.6, p.n.r * p.k * 1.25);
-      if(rr < 3.3) continue; /* only dots that read as near */
-      cands.push({ p:p, rr:rr });
-    }
-    cands.sort(function(a, b){ return b.rr - a.rr; });
-    for(var j = 0; j < cands.length && chosen.length < flyMax(); j++){
-      var c = cands[j], ok = true;
-      for(var m = 0; m < chosen.length; m++){ if(Math.abs(chosen[m].p.x - c.p.x) < 158 && Math.abs(chosen[m].p.y - c.p.y) < 60){ ok = false; break; } }
-      if(ok) chosen.push(c);
-    }
-  }
-  var byDi = {}; chosen.forEach(function(c){ byDi[c.p.n.di] = c; });
-  var used = {};
-  FLY.slots.forEach(function(s){
-    var c = s.di != null ? byDi[s.di] : null;
-    if(c){ s.tg = 1; used[s.di] = 1; s.p = c.p; s.rr = c.rr; } else s.tg = 0;
-  });
-  chosen.forEach(function(c){
-    if(used[c.p.n.di]) return;
-    for(var i2 = 0; i2 < FLY.slots.length; i2++){
-      var s = FLY.slots[i2];
-      if(s.di == null || (s.a <= 0.01 && s.tg === 0)){
-        var e = D.directory[c.p.n.di];
-        s.di = c.p.n.di; s.tg = 1; s.p = c.p; s.rr = c.rr;
-        s.el.children[0].textContent = dispName(e);
-        s.el.children[1].textContent = tierName(e) || 'No tier yet';
-        var loc = ptNormLoc(ptLocVal(e));
-        var rest = cap(gv(e, 'relationship')) || cap(gv(e, 'context')) || (knownSinceYear(e) ? 'Known since ' + knownSinceYear(e) : '');
-        if(!loc){ loc = rest; rest = ''; }
-        s.el.children[2].textContent = [loc, rest].filter(Boolean).join(' · ');
-        used[s.di] = 1;
-        break;
-      }
-    }
-  });
-  var kf = 1 - Math.exp(-dt / 0.22), ko = 1 - Math.exp(-dt / 0.15);
-  FLY.slots.forEach(function(s){
-    s.a += (s.tg - s.a) * (s.tg > s.a ? kf : ko);
-    if(s.tg === 0 && s.a <= 0.01){ s.a = 0; s.di = null; }
-    if(s.di == null || !s.p){ s.el.style.opacity = '0'; return; }
-    var x = NET.W > 260 ? Math.max(120, Math.min(NET.W - 120, s.p.x)) : s.p.x;
-    var y = Math.max(52, s.p.y - s.rr - 12 - (1 - s.a) * 8); /* the rise: settles up as it fades in */
-    s.el.style.opacity = s.a.toFixed(3);
-    s.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) translate(-50%,-100%)';
-  });
 }
 function glowSprite(col){
   var c = N3.glow[col]; if(c) return c;
@@ -3822,7 +3952,7 @@ function net3Draw(ts){
       ctx.fillStyle = '#f2f2f2'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(nm, x + 9, y + 12.5);
     }
   }
-  flyLabels(ts);
+  flyCanvas3(ts);
   netClustPaint();
 }
 function n3Center(ctx, c){
@@ -3932,6 +4062,7 @@ function netDraw(){
   ctx.globalAlpha = 1;
   ctx.fillStyle = '#e30613'; ctx.beginPath(); ctx.arc(c[0], c[1], Math.max(7, 10 * Math.sqrt(z)), 0, 6.2832); ctx.fill();
   ctx.fillStyle = '#ffffff'; ctx.font = '700 ' + Math.max(8, 10 * Math.sqrt(z)) + 'px Archivo,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('JD', c[0], c[1] + 0.5);
+  flyCanvas2();
   netClustPaint();
 }
 /* Map stats for the Network right panel. Display-only counts over what is on the map. */
@@ -5820,9 +5951,10 @@ function lcOpenHTML(di){
   return head + '<div class="lc-cols"><div class="lc-col">' + c1 + '</div><div class="lc-col">' + c2 + '</div><div class="lc-col">' + c3 + '</div></div>';
 }
 /* Fit-to-screen: the profile block is laid out at natural size,
-   then scaled (transform only) so it fills the space above the
-   note dock exactly. The page itself never scrolls in this view:
-   the container is sized to the visible viewport and clipped. */
+   then scaled down (CSS zoom, so layout and visuals agree) to
+   fit the space above the note dock exactly. The page itself
+   never scrolls in this view: the container is sized to the
+   visible viewport and clipped. */
 var LC_FIT_WATCH = false;
 function lcFit(){
   var page = $('#lcpage'), wrap = $('#lcfitwrap'), fit = $('#lcfit'), dock = $('#lcdock');
@@ -5833,17 +5965,29 @@ function lcFit(){
   if(view){ var vcs = getComputedStyle(view); padV = (parseFloat(vcs.paddingTop) || 0) + (parseFloat(vcs.paddingBottom) || 0); }
   if(app) appPadB = parseFloat(getComputedStyle(app).paddingBottom) || 0;
   var availH = Math.max(240, window.innerHeight - chromH - padV - appPadB);
-  var availW = page.clientWidth || (window.innerWidth - 32);
+  var pcs = getComputedStyle(page);
+  var pgPadV = (parseFloat(pcs.paddingTop) || 0) + (parseFloat(pcs.paddingBottom) || 0);
+  var pgPadH = (parseFloat(pcs.paddingLeft) || 0) + (parseFloat(pcs.paddingRight) || 0);
+  var availW = (page.clientWidth - pgPadH) || (window.innerWidth - 32);
   page.style.height = availH + 'px';
-  fit.style.transform = '';
+  fit.style.zoom = '';
   wrap.style.width = ''; wrap.style.height = '';
-  var natW = fit.scrollWidth || fit.offsetWidth, natH = fit.scrollHeight || fit.offsetHeight;
+  var natW = fit.offsetWidth, natH = fit.offsetHeight;
   var dockH = dock.offsetHeight;
-  var roomH = Math.max(120, availH - dockH - 14);
+  var roomH = Math.max(120, availH - pgPadV - dockH - 24);
   var s = Math.min(1, availW / Math.max(1, natW), roomH / Math.max(1, natH));
-  if(s < 1) fit.style.transform = 'scale(' + s + ')';
+  if(s < 1) fit.style.zoom = s;
   wrap.style.width = Math.ceil(natW * s) + 'px';
-  wrap.style.height = Math.ceil(natH * s) + 'px';
+  wrap.style.height = Math.ceil(natH * s) + 'px';   /* arithmetic: offsetHeight ignores zoom */
+  /* one feedback pass: if the assembled page still measures tall
+     (gap/padding drift), shrink the scale to match exactly */
+  var over = page.scrollHeight;
+  if(over > availH - 2 && s > 0.05){
+    s = s * (Math.max(120, availH - 4) / over);
+    fit.style.zoom = s;
+    wrap.style.width = Math.ceil(natW * s) + 'px';
+    wrap.style.height = Math.ceil(natH * s) + 'px';
+  }
 }
 function lcRenderOpen(v){
   var A = S.audit, di = A.lcOpen, e = D.directory[di];
@@ -5860,6 +6004,7 @@ function lcRenderOpen(v){
     '</div></div>';
   lcFit();
   requestAnimationFrame(function(){ lcFit(); });   /* re-fit once webfonts settle */
+  setTimeout(function(){ lcFit(); }, 450);         /* final settle pass (no-op once closed) */
   if(!LC_FIT_WATCH){
     LC_FIT_WATCH = true;
     addEventListener('resize', function(){
