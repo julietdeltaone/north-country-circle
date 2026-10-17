@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.6.1';
+var APP_VERSION = '2.7.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -3231,6 +3231,7 @@ function netCtlPaint(){
   flyBtnPaint();
 }
 function netSwitchMode(nm){
+  if(FLY.stage) return; /* dimension is gated while the Grand stage flies; layout switches still morph live under it */
   nm = nm === '2d' ? '2d' : '3d';
   if(nm === S.net.mode) return;
   netHovHide();
@@ -3378,7 +3379,7 @@ function netColor(nd){
   return RING_C[nd.ring];
 }
 function viewNetwork(v){
-  FLY.on = false; FLY.cur = null; FLY.bag = []; FLY.plate = null; FLY.box = null; /* flyover is opt-in per visit — never persisted, never the default */
+  FLY.on = false; FLY.cur = null; FLY.bag = []; FLY.plate = null; FLY.box = null; FLY.stage = false; FLY.stagePending = false; FLY.stageAsk = false; /* flyover is opt-in per visit — never persisted, never the default */
   var m3 = S.net.mode !== '2d';
   /* One strip, three labeled questions (redesign 2026-10-16): VIEW is
      how am I looking at it, LAYOUT is how is it arranged, ACTIONS is
@@ -3494,7 +3495,10 @@ function viewNetwork(v){
       if(Math.abs(N3.fx) < 0.05) N3.fx = 0;
       if(Math.abs(N3.fy) < 0.05) N3.fy = 0;
     }
-    if(S.net.mode === '2d'){
+    if(FLY.stage){
+      /* the Grand stage owns the pixels; the glide/morph steps above
+         keep running because the stage reads live display coords */
+    } else if(S.net.mode === '2d'){
       if(NET.dvel){ NET.rot += NET.dvel * dt; NET.dirty = true; }
       if(FLY.on && dt > 0) flyStep(dt);
       if(NET.dirty){ netDraw(); NET.dirty = false; }
@@ -3625,7 +3629,8 @@ function netClustPaint(){
    input ends the flight and hands the camera straight back.
    Never persisted; disabled outright under reduced motion. ------ */
 var FLY = { on:false, bag:[], bi:0, cur:null, hot:{}, phase:'', pt:0, flyDur:1.3,
-            plate:null, box:null, lastDi:null, morphSeen:0, lx2:0, ly2:0, lx3:0, ly3:0, lz3:0, hop:0, midT:0, tgtCh:null };
+            plate:null, box:null, lastDi:null, morphSeen:0, lx2:0, ly2:0, lx3:0, ly3:0, lz3:0, hop:0, midT:0, tgtCh:null,
+            stage:false, stagePending:false, stageAsk:false, stageDead:false, snap:null };
 var FLY_PRESENT = 3.6; /* seconds on each person once the camera arrives — about five seconds a call, flight included */
 function flyEnsure(){
   var box = $('#netfly'); if(!box) return null;
@@ -3749,6 +3754,7 @@ function flyReframe(morph){
      dimension changed: re-frame them where they now are and let
      the call continue — the flight never dies under a switch */
   var nd = FLY.cur; if(!nd) return;
+  if(FLY.stage) return; /* the stage reads live display coords itself */
   if(morph){
     flyFrame(nd, true, netT2(nd, S.net.layout), netT3(nd, S.net.layout));
     return;
@@ -3764,20 +3770,122 @@ function flyStart(){
   NET.hoverDi = null; N3.hover = null; netHovHide();
   N3.vy = 0; N3.vp = 0;
   FLY.on = true; FLY.bag = []; FLY.bi = 0;
+  FLY.stage = false; FLY.stagePending = false; FLY.stageAsk = false;
+  /* Grand stage (V2.7.0): snapshot the exact pre-Flyover camera so
+     the stage can hand it back untouched on exit. The selection is
+     never touched by either Flyover. */
+  FLY.snap = { x:NET.cam.x, y:NET.cam.y, z:NET.cam.z, rot:NET.rot,
+    yaw:N3.yaw, pitch:N3.pitch, zoom:N3.zoom, fx:N3.fx, fy:N3.fy, cxOff:NET.cxOff };
   FLY.lx2 = 0; FLY.ly2 = 0; FLY.lx3 = 0; FLY.ly3 = 0; FLY.lz3 = 0;
   flyCall();
   flyBtnPaint();
+  fly3dBoot();
 }
 function flyStop(){
   if(!FLY.on) return;
+  if(FLY.stage && window.FLY3D && FLY3D.active){
+    /* the Grand stage owns the exit: it pulls back and crossfades
+       out, then calls fly3dGone to restore the camera from FLY.snap */
+    FLY.stage = false; FLY.on = false; FLY.stagePending = false;
+    if(FLY.plate) FLY.plate.classList.remove('in');
+    FLY3D.exit();
+    flyBtnPaint();
+    return;
+  }
   FLY.on = false; FLY.cur = null; FLY.hot = {}; FLY.phase = '';
   if(FLY.plate) FLY.plate.classList.remove('in');
   NET.dirty = true;
   flyBtnPaint();
 }
+/* ---------- Grand Flyover stage bridge (V2.7.0): flyover3d.js is
+   a separate WebGL module, lazy-loaded on the first Flyover press.
+   The canvas roll call starts exactly as it always has (it is also
+   the glide that carries the camera in close on the first person);
+   once the canvas arrives and the module is ready, the stage takes
+   over with a matched camera. Any failure — import, WebGL, begin —
+   leaves the canvas roll call running untouched. ---------- */
+var FLY3D_P = null;
+function fly3dBoot(){
+  if(FLY.stageDead || REDUCED_MOTION) return;
+  if(!FLY3D_P){
+    FLY3D_P = import('./flyover3d.js?v=' + APP_VERSION).then(function(){ return window.FLY3D || null; }, function(){ return null; });
+  }
+  FLY.stagePending = true; FLY.stageAsk = false;
+}
+function fly3dAsk(){
+  if(!FLY3D_P) return;
+  FLY3D_P.then(function(F){
+    if(!F){ FLY.stagePending = false; FLY.stageDead = true; return; }
+    if(!FLY.on || FLY.stage || FLY.phase !== 'present'){ FLY.stageAsk = false; return; }
+    var ok = false;
+    try { ok = F.begin(fly3dApi()); } catch(_e) { ok = false; }
+    if(ok){
+      FLY.stage = true; FLY.stagePending = false;
+      if(FLY.plate){ FLY.plate.classList.remove('in'); FLY.plate.style.opacity = '0'; }
+    } else { FLY.stagePending = false; FLY.stageDead = true; }
+  });
+}
+function fly3dGone(drift){
+  var s = FLY.snap;
+  if(s){
+    NET.cam.x = s.x; NET.cam.y = s.y; NET.cam.z = s.z; NET.rot = s.rot;
+    /* yaw comes back as snapshot + the stage's own drift: in this
+       map the solar drift literally is yaw advancing, so that is
+       the continuous value — restoring the stale snapshot yaw
+       would spin the universe backwards at the crossfade */
+    N3.yaw = s.yaw + (drift || 0);
+    N3.pitch = s.pitch; N3.zoom = s.zoom;
+    N3.fx = s.fx; N3.fy = s.fy; NET.cxOff = s.cxOff;
+  }
+  FLY.cur = null; FLY.hot = {}; FLY.phase = ''; FLY.stageAsk = false;
+  if(FLY.plate){ FLY.plate.classList.remove('in'); FLY.plate.style.opacity = ''; }
+  NET.glide = null; NET.dirty = true;
+  flyBtnPaint();
+}
+function flyHotDis(di){
+  var e = D.directory[di], out = [];
+  knownAssociates(e).forEach(function(nb){
+    var t = BYN[(nb.u || '').toLowerCase()];
+    if(t != null && NET.byDi[t]) out.push(t);
+  });
+  return out.slice(0, 8);
+}
+function fly3dApi(){
+  return {
+    wrap: $('.netwrap'),
+    nodes: NET.nodes,
+    byDi: NET.byDi,
+    pos: function(nd){ return [nd.dx3, nd.dy3, nd.dz3]; },
+    entry: function(di){ return D.directory[di]; },
+    name: function(di){ return dispName(D.directory[di]); },
+    tierName: function(di){ return tierName(D.directory[di]); },
+    tierCol: function(di){ return tierCol(D.directory[di]); },
+    score: function(di){ return scoreFor(di); },
+    facts: function(di){ return flyFacts(D.directory[di]); },
+    hot: function(di){ return flyHotDis(di); },
+    fabric: function(di){
+      var s = scoreFor(di); if(!s || !s.parts) return 0;
+      for(var i = 0; i < s.parts.length; i++) if(s.parts[i].k === 'fabric') return s.parts[i].v;
+      return 0;
+    },
+    cam: function(){
+      return { yaw:N3.yaw, pitch:N3.pitch, zoom:N3.zoom, W:NET.W, H:NET.H,
+               fx:N3.fx, fy:N3.fy, cxOff:NET.cxOff };
+    },
+    driftRate: DRIFT_RATE,
+    mobile: NET.W < 700 || !!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches),
+    firstDi: FLY.cur ? FLY.cur.di : null,
+    lastDi: FLY.lastDi,
+    onGone: function(drift){ fly3dGone(drift); }
+  };
+}
 function flyToggle(){ if(FLY.on) flyStop(); else flyStart(); }
 function flyStep(dt){
+  if(FLY.stage) return; /* the Grand stage runs its own clock */
   if(!FLY.cur) return;
+  if(FLY.stagePending && !FLY.stageAsk && FLY.phase === 'present' && FLY.pt > 0.15){
+    FLY.stageAsk = true; fly3dAsk();
+  }
   NET.lastAct = performance.now(); /* the solar drift stays parked while the roll is called */
   N3.vy *= 0.8; N3.vp *= 0.8;
   if(NET.morph && NET.morph.t0 !== FLY.morphSeen){
@@ -6621,5 +6729,9 @@ function boot(){
       });
   })();
 }
+/* read-only inspection handle for the black-box harnesses (the app is
+   an IIFE; without this, camera/selection state is unmeasurable) */
+window.__NCC__ = { NET:NET, N3:N3, FLY:FLY, S:S, scoreFor:scoreFor,
+  flyHotDis:flyHotDis, n3Project:n3Project, netP3:netP3, flyStop:flyStop };
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
