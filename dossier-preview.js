@@ -3821,6 +3821,7 @@ function fly3dAsk(){
   });
 }
 function fly3dGone(drift){
+  FLY.on = false; FLY.stage = false;
   var s = FLY.snap;
   if(s){
     NET.cam.x = s.x; NET.cam.y = s.y; NET.cam.z = s.z; NET.rot = s.rot;
