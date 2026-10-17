@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.5.1';
+var APP_VERSION = '2.5.2';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4908,9 +4908,10 @@ function audFocusEditor(card){ var f = card && audEditorEl(card); if(f) f.focus(
    gates decide, and a fragment never commits (it just nudges).
    - years: commits the typed year directly, in EVERY mode, with no
      countdown (Enter replaces the countdown as the confirmation).
-   - orgs / skills in the flow modes: a value ADDS and the editor
-     stays (the stack branch in audSave); Enter on an EMPTY field
-     advances instead (audAdvanceFrom).
+   - orgs / skills: a value commits AND closes the gap out, exactly
+     like a single-value field (JD 2026-10-16 — the flow modes' "add
+     and stay" stacking was overruled; Enter means done). Enter on an
+     EMPTY field in the flow modes advances instead (audAdvanceFrom).
    - everything else: the mode's normal arm path, unchanged. */
 function audEnterKey(card){
   var gap = card.getAttribute('data-gap');
@@ -4921,7 +4922,7 @@ function audEnterKey(card){
   }
   var inp = $('.aud-in', card), v = inp ? inp.value.trim() : '';
   if(gap === 'orgs' || gap === 'skills'){
-    if(v){ audTryArm(card); return; }                    /* add it (flow modes stack + stay, via audSave) */
+    if(v){ audTryArm(card); return; }                    /* commit it — audSave closes the gap out */
     if(audFlowMode()){ audAdvanceFrom(card); return; }   /* empty Enter advances in the flow modes */
     audNudge(card); return;
   }
@@ -4929,10 +4930,15 @@ function audEnterKey(card){
   audTryArm(card);
 }
 
-/* Close out a stacked multi-value gap (orgs / skills saved one value
-   at a time in the flow modes): the values are already on file; this
-   is the card bookkeeping that moves the gap to done. Returns true
-   when a stack was finalized. Safe to call anywhere — no stack, no-op. */
+/* Close out a stacked multi-value gap: the values are already on
+   file; this is the card bookkeeping that moves the gap to done.
+   Returns true when a stack was finalized. Safe to call anywhere —
+   no stack, no-op. NOTE (JD 2026-10-16, evening): commits no longer
+   stack (audSave closes orgs/skills out on the commit gesture), so
+   in a fresh session this never fires; it stays as the safety net
+   for stack state left by a pre-fix session and for its callers
+   (gap switch, park, Done, pass, advance), which remain correct
+   either way. */
 function audFinalizeStacks(card){
   var x = audEntry(+card.getAttribute('data-di'));
   if(!x || !x.stack) return false;
@@ -5067,8 +5073,7 @@ function audSkipNow(card){
 function audRapidShiftRight(card){
   var di = +card.getAttribute('data-di'), gap = card.getAttribute('data-gap');
   if((gap === 'orgs' || gap === 'skills') && $('.aud-in', card) && $('.aud-in', card).value.trim()){
-    audSave(di, card);        /* flow-mode stack add: writes the value, stays */
-    audAdvanceFrom(card);     /* then advance (finalizes the stack) */
+    audSave(di, card);        /* the commit closes the gap out now (JD 2026-10-16): audSave itself advances the card, like any other field */
     return;
   }
   if((gap === 'tier' || gap === 'rel') && !card.getAttribute('data-pick')){
@@ -5275,30 +5280,16 @@ function audSave(di, card){
   if(!e || +card.getAttribute('data-di') !== di) return;
   var x = audEntry(di);
   var reedit = !!(x && x.done.indexOf(gap) >= 0);
-  /* Flow-mode multi-value gaps (JD 2026-10-16): in Rapid Fire and
-     Category Run a save of orgs/skills ADDS the value and STAYS — the
-     value is written, the field clears, focus stays in it, and the
-     gap stays open so more values stack. The gap closes when JD
-     advances (Enter on the empty field, Shift+Right, a gap switch, or
-     Done) via audFinalizeStacks. Only the FIRST add counts as the
-     fill (streak, goal, counters); every add is undoable (kind
-     'stack'). Cards / Finish Line keep the one-shot save below. */
-  if(x && !reedit && audFlowMode() && (gap === 'orgs' || gap === 'skills')){
-    var rs = audWriteValue(di, card, gap);
-    if(!rs){ audNudge(card); return; }
-    if(!x.stack) x.stack = {};
-    var sList = x.stack[gap] || (x.stack[gap] = []);
-    var firstAdd = !sList.length;
-    if(!sList.some(function(sv){ return sv.toLowerCase() === rs.val.toLowerCase(); })) sList.push(rs.val);
-    if(!x.vals) x.vals = {};
-    x.vals[gap] = sList.join(', ');
-    if(firstAdd){ S.audit.done++; audNoteFill(di, gap); }
-    audLog({ kind:'stack', di:di, gap:gap, entry:rs.entry || null, val:rs.val, first:firstAdd, blitz:!!(S.audit && S.audit.blitz), text:'Added · ' + AUD_GAPS[gap].tag + ': ' + rs.val });
-    audToastShow('Added · ' + AUD_GAPS[gap].tag + ': ' + rs.val);
-    var inpS = $('.aud-in', card); if(inpS){ inpS.value = ''; inpS.focus({ preventScroll:true }); }
-    audPaintCounts();
-    return;
-  }
+  /* Orgs / skills commit like every other field, in EVERY mode
+     (JD 2026-10-16, evening — this OVERRULES the flow-mode stacking
+     shipped the same morning): an Enter or a suggestion pick writes
+     the value and CLOSES the gap out through the one-shot path below;
+     the card moves on exactly as it does for years or relationship.
+     The morning's "add and stay" stack left the gap open with only a
+     toast as evidence, which read as "nothing happened" — Enter means
+     done. Adding another value is the done chip's re-edit, as with
+     any other filled gap. audFinalizeStacks stays as an inert safety
+     net for any stack state a pre-fix session left behind. */
   var priorVal = (x && x.vals) ? x.vals[gap] : undefined;
   var gapIndex = x ? x.gaps.indexOf(gap) : -1;
   var r = audWriteValue(di, card, gap);
@@ -5322,6 +5313,7 @@ function audSave(di, card){
     audToastShow(text);
     if(x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
   }
+  audPaintChips(card);   /* the done chip carrying the just-saved value is visible on the card as it leaves — the save is seen, not just toasted */
   audRetire(card, true);
 }
 function audRetire(card, saved, kbFocus){
