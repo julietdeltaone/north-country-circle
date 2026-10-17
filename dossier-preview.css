@@ -1268,7 +1268,15 @@ html,body{background:var(--bg)}
 .f3-plate.fast .f3-name,.f3-plate.fast .f3-meta,.f3-plate.fast .f3-fact{transition-duration:.18s;transition-delay:0ms}
 .f3-plate.fs{width:276px;padding:15px 18px 16px}
 .f3-plate.fs .f3-name{font-size:28px}
-.f3-sattag{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#d8d8d8;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.9);transition:opacity .3s ease}
+.f3-sattag{font-family:var(--sans);font-size:11.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:#e8e8e8;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.95);transition:opacity .3s ease}
+.f3-sattag.og{font-size:10.5px;letter-spacing:.11em}
+/* identity pass (V2.7.1): the monogram sigil at the orb's core —
+   the person's initials, tier-colored, always facing the camera */
+.f3-mono{display:flex;align-items:center;justify-content:center;width:66px;height:66px;border-radius:50%;border:1.5px solid #fff;background:rgba(10,10,10,.42);font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.03em;opacity:0;pointer-events:none;text-shadow:0 0 14px rgba(0,0,0,.65)}
+/* the hairline leader tying the name plate to the orb's rim */
+.f3-leader{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .3s ease}
+.f3-leader line{stroke:#9a9a9a;stroke-width:1}
+.f3-leader circle{fill:#9a9a9a}
 
 /* Cluster labels (JD 2026-10-16): "NAME — N" orientation plates for the biggest
    Groups + Organizations on the network map. Swiss Mono paint, quieter than the
