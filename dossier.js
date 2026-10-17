@@ -6168,6 +6168,25 @@ function lcFit(){
     wrap.style.width = Math.ceil(natW * s) + 'px';
     wrap.style.height = Math.ceil(natH * s) + 'px';
   }
+  /* final correction against the wrap's OWN overflow (V2.8.2): text
+     laid out under zoom quantizes to device pixels, so the rendered
+     block can stand taller than natH x s — with the section cards
+     in here that reached ~30px, and the wrap would clip the bottom
+     card. If the spill fits the room, the wrap grows into it; if
+     not, the zoom (never the wrap) shrinks by the measured excess,
+     which is roughly constant in rendered pixels. */
+  for(var fi = 0; fi < 3 && s > 0.05; fi++){
+    var wR = wrap.scrollHeight, wH = wrap.clientHeight;
+    if(!(wR > wH + 1)) break;
+    if(wR <= roomH){ wrap.style.height = wR + 'px'; break; }
+    var wQ = wR - natH * s;
+    var s2 = Math.max(0.05, (roomH - wQ) / Math.max(1, natH));
+    if(s2 >= s) break;
+    s = s2;
+    fit.style.zoom = s;
+    wrap.style.width = Math.ceil(natW * s) + 'px';
+    wrap.style.height = roomH + 'px';
+  }
 }
 function lcRenderOpen(v){
   var A = S.audit, di = A.lcOpen, e = D.directory[di];
