@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.5.3';
+var APP_VERSION = '2.6.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -5454,9 +5454,10 @@ var AUD_MODES = [
   { k:'cards',  l:'Cards' },
   { k:'rapid',  l:'Rapid Fire' },
   { k:'cat',    l:'Category Run' },
-  { k:'finish', l:'Finish Line' }
+  { k:'finish', l:'Finish Line' },
+  { k:'lima',   l:'Lima Charlie' }
 ];
-function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' ? m : 'cards'; }
+function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' || m === 'lima' ? m : 'cards'; }
 /* Daily goal (Duolingo pattern, minus the nagging): fills today vs a
    goal JD sets himself, persisted per calendar day. */
 function audDay(){
@@ -5569,6 +5570,7 @@ function audDealMode(){
   if(m === 'rapid') audDealRapid();
   else if(m === 'finish') audDealFinish();
   else if(m === 'cat') audDealCat();
+  else if(m === 'lima') lcEnsureDeck();
   else audDeal();
 }
 function audSetMode(m){
@@ -5576,6 +5578,7 @@ function audSetMode(m){
   audEndBlitz(true);
   A.mode = m; store('ncc_aud_mode', m);
   if(m !== 'cat') A.cat = null;
+  if(m !== 'lima') A.lcOpen = null;
   A.blitzDone = null;
   A.shown = null;
   viewAudit($('#view'));
@@ -5642,6 +5645,11 @@ function audModeBarHTML(){
     '</div>' +
     '<p class="aud-catprog" id="audcatprog"></p>';
   }
+  if(m === 'lima'){
+    var np = lcPendingCount();
+    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Lima Charlie run</span>' +
+      '<span class="dim">Tap a card to open the whole profile. Dictate everything that needs to change into the note box; Luna applies it on the next run.</span></div>';
+  }
   return '<div class="aud-modebar"><button type="button" class="btn ghost" data-act="audbulkphone">Mark all phone gaps done</button>' +
     '<span class="dim">Close out the phone gap for everyone you have no number for.</span></div>';
 }
@@ -5670,6 +5678,204 @@ function audPaintModeBar(){
     var sf2 = $('#audsessfill2'); if(sf2) sf2.textContent = A.done || 0;
   }
   else if(m === 'cat'){ audPaintCatProg(); }
+  else if(m === 'lima'){ var lp = $('#lcpend'); if(lp) lp.textContent = lcPendingCount(); }
+}
+
+/* ============================================================
+   Lima Charlie (JD 2026-10-16): a fifth Audit mode for whole-
+   profile voice dictation. A deck of four random profiles (any
+   listed profile — not gap-driven); Shuffle deals four fresh
+   ones. Opening a card shows the ENTIRE profile at once, scaled
+   to fit the screen with no scrolling (Persona ratings
+   included), plus one note box. JD dictates every change he
+   wants into the note; Save writes it through the one save path
+   (queuePatch, field lima_charlie_notes -> Sheet column BG
+   "Lima Charlie Notes"). Luna's daily Lima Charlie run reads
+   the notes, applies the edits and clears them; a card whose
+   profile has a note waiting carries an LC marker. The note box
+   is a dictation surface: nothing auto-submits, arms or counts
+   down — Save is the only commit.
+   ============================================================ */
+function lcNote(e){ return String(gv(e, 'lima_charlie_notes') || ''); }
+function lcPendingCount(){
+  var n = 0;
+  people().forEach(function(di){ if(lcNote(D.directory[di]).trim()) n++; });
+  return n;
+}
+function lcDealFresh(){
+  var A = S.audit, pool = people().slice(), cur = A.lcDeck || [];
+  audShuffleInPlace(pool);
+  var fresh = pool.filter(function(di){ return cur.indexOf(di) < 0; });
+  if(fresh.length < 4) fresh = pool;
+  A.lcDeck = fresh.slice(0, 4);
+}
+function lcEnsureDeck(){
+  var A = S.audit;
+  if(!A.lcDeck || !A.lcDeck.length) lcDealFresh();
+}
+function lcShuffleDeck(){
+  var A = S.audit; if(!A) return;
+  A.lcOpen = null;
+  lcDealFresh();
+  viewAudit($('#view'));
+}
+function lcDeckCardHTML(di){
+  var e = D.directory[di], note = lcNote(e).trim();
+  var line2 = [infoLine(e), ptLocVal(e)].filter(Boolean).join(' · ');
+  var orgs = orgsOf(e).slice(0, 2).join(' · ');
+  return '<button type="button" class="lc-card" data-act="lcopen" data-di="' + di + '">' +
+    '<span class="lc-card-top">' + avatar(e, 'md') + (note ? '<span class="lc-mark" title="A Lima Charlie note is waiting on this profile">LC</span>' : '') + '</span>' +
+    '<span class="lc-card-name">' + esc(dispName(e)) + '</span>' +
+    (line2 ? '<span class="lc-card-line">' + esc(line2) + '</span>' : '') +
+    (orgs ? '<span class="lc-card-line dim">' + esc(orgs) + '</span>' : '') +
+    (note ? '<span class="lc-card-note">' + esc(note.length > 90 ? note.slice(0, 90) + '…' : note) + '</span>' : '') +
+    '</button>';
+}
+function lcRender(){
+  var wrap = $('#lcwrap'); if(!wrap) return;
+  lcEnsureDeck();
+  wrap.innerHTML = '<div class="lc-deck">' + S.audit.lcDeck.map(lcDeckCardHTML).join('') + '</div>' +
+    '<div class="lc-deckbar"><button type="button" class="btn primary" data-act="lcshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button>' +
+    '<span class="dim">Four at a time, anyone in the directory. Tap a card for the whole profile on one screen.</span></div>';
+}
+function lcKV(label, val){ return val ? '<div class="lc-kv"><span>' + esc(label) + '</span><b>' + esc(val) + '</b></div>' : ''; }
+function lcChips(label, list){
+  return list && list.length ? '<div class="lc-sec"><h4>' + esc(label) + '</h4><p class="lc-chips">' + list.map(function(x){ return '<span class="lc-chip">' + esc(x) + '</span>'; }).join('') + '</p></div>' : '';
+}
+function lcText(label, txt){
+  return txt ? '<div class="lc-sec"><h4>' + esc(label) + '</h4><p class="lc-txt">' + esc(txt) + '</p></div>' : '';
+}
+/* The whole profile, read-only and complete: every stored value
+   on one screen — no section folds away, no "show more". */
+function lcOpenHTML(di){
+  var e = D.directory[di];
+  var head = '<div class="lc-head">' + avatar(e, 'lg') + '<div class="lc-hmain"><h2 class="display">' + esc(dispName(e)) + '</h2>' +
+    '<p class="lc-hsub">' + esc([infoLine(e), ptNormLoc(ptLocVal(e))].filter(Boolean).join(' · ') || 'Not yet classified') + '</p></div>' +
+    '<div class="lc-hscore">' + scoreBadgeHTML(di) + '</div></div>';
+  var c1 = '<div class="lc-sec"><h4>Contact</h4>' +
+    lcKV('Phone', gv(e, 'phone') ? fmtPhone(gv(e, 'phone')) : '') +
+    lcKV('Email', gv(e, 'email')) +
+    lcKV('Instagram', effHandle(e) ? '@' + effHandle(e) : '') +
+    lcKV('Facebook', e.fb_handle ? '@' + e.fb_handle : (e.fb_url ? 'Profile on file' : '')) +
+    lcKV('Also known as', personIsAka(e) ? gv(e, 'also_known_as') : '') +
+    lcKV('Lives in', e.city || '') +
+    lcKV('From', e.hometown || '') +
+    lcKV('Location on file', ptNormLoc(ptLocVal(e))) +
+    lcKV('Languages', (e.languages || []).join(', ')) + '</div>';
+  c1 += '<div class="lc-sec"><h4>Relationship</h4>' +
+    lcKV('Tier', tierOf(e) ? TIERS[tierOf(e)].n : '') +
+    lcKV('Relationship', cap(gv(e, 'relationship'))) +
+    lcKV('Context', cap(gv(e, 'context'))) +
+    lcKV('Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1] || '') +
+    lcKV('Closeness', cap(gv(e, 'closeness'))) +
+    lcKV('Score pin', gv(e, 'score_pin')) +
+    lcKV('Known since', knownSinceYear(e) ? String(knownSinceYear(e)) : '') +
+    lcKV('Momentum', momVal(e) ? MOM_LABELS[momVal(e)] : '') + '</div>';
+  c1 += '<div class="lc-sec"><h4>Persona</h4><div class="lc-persona">' + PERSONA.map(function(p){
+      var n = parseInt(gv(e, p[0]), 10) || 0;
+      return '<div class="lc-pt"><span>' + esc(p[1]) + '</span><span class="lc-pdots">' + [1, 2, 3, 4, 5].map(function(i){ return '<i class="' + (n >= i ? 'on' : '') + '"></i>'; }).join('') + '</span><b>' + (n ? n + '/5' : '—') + '</b></div>';
+    }).join('') + '</div></div>';
+  var c2 = '';
+  ORG_CATS.forEach(function(c){ c2 += lcChips(c.label, tagList(gv(e, c.k))); });
+  c2 += lcChips('Groups', personGroups(e));
+  c2 += lcChips('Skills', tagList(gv(e, 'specialty')));
+  c2 += lcChips('Interests', tagList(gv(e, 'interests')));
+  var ds = sortDegrees(degreesOf(e));
+  if(ds.length) c2 += '<div class="lc-sec"><h4>Education</h4>' + ds.map(function(d){
+      var rest = [d.degree, d.major, d.year].filter(Boolean).join(' · ');
+      return '<p class="lc-line"><b>' + esc(d.school || '') + '</b>' + (rest ? ' — ' + esc(rest) : '') + '</p>';
+    }).join('') + '</div>';
+  c2 += lcChips('Highlights', parsePipe(gv(e, 'highlights')));
+  c2 += lcChips('Honors', honorsOf(e));
+  c2 += lcChips('Certifications', certsOf(e));
+  if(!c2) c2 = '<div class="lc-sec"><h4>Background</h4><p class="lc-txt dim">Nothing on file yet.</p></div>';
+  var c3 = lcText('Synopsis', gv(e, 'synopsis'));
+  var fp = footprintOf(e);
+  if(fp.blocks.length) c3 += '<div class="lc-sec"><h4>Field notes</h4>' + fp.blocks.map(function(b){ return '<p class="lc-txt">' + esc(b.text) + '</p>'; }).join('') + '</div>';
+  var fam = famLinks(e);
+  if(fam.length) c3 += '<div class="lc-sec"><h4>Family</h4>' + fam.map(function(l){
+      var tdi = BYN[String(l[1] || '').toLowerCase()];
+      return '<p class="lc-line"><span class="lc-rel">' + esc(l[0]) + '</span> ' + esc(tdi != null ? dispName(D.directory[tdi]) : l[1]) + '</p>';
+    }).join('') + '</div>';
+  var ka = knownAssociates(e);
+  if(ka.length) c3 += '<div class="lc-sec"><h4>Known associates (' + ka.length + ')</h4><p class="lc-names">' + ka.map(function(nb){
+      var tdi2 = BYN[(nb.u || '').toLowerCase()];
+      return esc(tdi2 != null ? dispName(D.directory[tdi2]) : (nb.d || nb.u));
+    }).join(' · ') + '</p></div>';
+  var evs = sortedEvents(e);
+  if(evs.length) c3 += '<div class="lc-sec"><h4>Timeline</h4>' + evs.map(function(o){
+      return '<p class="lc-line"><span class="lc-rel">' + esc(evDate(o.ev.date)) + '</span> ' + esc(o.ev.summary || '') + '</p>';
+    }).join('') + '</div>';
+  var ps = connPhases(e);
+  if(ps.length) c3 += '<div class="lc-sec"><h4>Phases</h4>' + ps.map(function(p){
+      return '<p class="lc-line"><b>' + esc(p.l || 'Phase') + '</b> ' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</p>';
+    }).join('') + '</div>';
+  var fs = e.files || [];
+  if(fs.length) c3 += '<div class="lc-sec"><h4>Files (' + fs.length + ')</h4>' + fs.map(function(f){ return '<p class="lc-line">' + esc(f.name || 'Untitled') + '</p>'; }).join('') + '</div>';
+  if(!c3) c3 = '<div class="lc-sec"><h4>About</h4><p class="lc-txt dim">Nothing on file yet.</p></div>';
+  return head + '<div class="lc-cols"><div class="lc-col">' + c1 + '</div><div class="lc-col">' + c2 + '</div><div class="lc-col">' + c3 + '</div></div>';
+}
+/* Fit-to-screen: the profile block is laid out at natural size,
+   then scaled (transform only) so it fills the space above the
+   note dock exactly. The page itself never scrolls in this view:
+   the container is sized to the visible viewport and clipped. */
+var LC_FIT_WATCH = false;
+function lcFit(){
+  var page = $('#lcpage'), wrap = $('#lcfitwrap'), fit = $('#lcfit'), dock = $('#lcdock');
+  if(!page || !wrap || !fit || !dock) return;
+  var top = $('#top'), view = $('#view'), app = $('#app');
+  var chromH = 0, padV = 56, appPadB = 0;
+  if(top && top.offsetParent !== null) chromH += top.getBoundingClientRect().height;
+  if(view){ var vcs = getComputedStyle(view); padV = (parseFloat(vcs.paddingTop) || 0) + (parseFloat(vcs.paddingBottom) || 0); }
+  if(app) appPadB = parseFloat(getComputedStyle(app).paddingBottom) || 0;
+  var availH = Math.max(240, window.innerHeight - chromH - padV - appPadB);
+  var availW = page.clientWidth || (window.innerWidth - 32);
+  page.style.height = availH + 'px';
+  fit.style.transform = '';
+  wrap.style.width = ''; wrap.style.height = '';
+  var natW = fit.scrollWidth || fit.offsetWidth, natH = fit.scrollHeight || fit.offsetHeight;
+  var dockH = dock.offsetHeight;
+  var roomH = Math.max(120, availH - dockH - 14);
+  var s = Math.min(1, availW / Math.max(1, natW), roomH / Math.max(1, natH));
+  if(s < 1) fit.style.transform = 'scale(' + s + ')';
+  wrap.style.width = Math.ceil(natW * s) + 'px';
+  wrap.style.height = Math.ceil(natH * s) + 'px';
+}
+function lcRenderOpen(v){
+  var A = S.audit, di = A.lcOpen, e = D.directory[di];
+  if(!e){ A.lcOpen = null; viewAudit(v); return; }
+  var note = lcNote(e);
+  v.innerHTML = '<div class="page lc-page" id="lcpage">' +
+    '<div class="lc-fitwrap" id="lcfitwrap"><div class="lc-fit" id="lcfit">' + lcOpenHTML(di) + '</div></div>' +
+    '<div class="lc-dock" id="lcdock">' +
+      '<div class="lc-dockrow"><button type="button" class="btn ghost" data-act="lcback">' + ic('chevl', 15) + '<span>Back to the deck</span></button>' +
+      '<span class="lc-dockname">' + esc(dispName(e)) + (note.trim() ? ' <span class="lc-mark">LC note waiting</span>' : '') + '</span><span class="sp"></span>' +
+      '<button type="button" class="btn primary" data-act="lcsave">Save note</button></div>' +
+      '<label class="lc-notelab" for="lcnote">Lima Charlie note — dictate every change for this profile. Luna applies it on the next run, then clears it.</label>' +
+      '<textarea id="lcnote" rows="3" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now. Known him since 2019. Add SUNY Potsdam.">' + esc(note) + '</textarea>' +
+    '</div></div>';
+  lcFit();
+  requestAnimationFrame(function(){ lcFit(); });   /* re-fit once webfonts settle */
+  if(!LC_FIT_WATCH){
+    LC_FIT_WATCH = true;
+    addEventListener('resize', function(){
+      if(S.route && S.route.name === 'audit' && audMode() === 'lima' && S.audit && S.audit.lcOpen != null) lcFit();
+    });
+  }
+}
+/* Save is the ONLY commit for a Lima Charlie note (JD 2026-10-16):
+   no debounce, no countdown, no blur save. Writes through the one
+   save path; the local-wins overlay carries it until the Sheet
+   bake catches up, like every other field. */
+function lcSaveNote(){
+  var A = S.audit; if(!A || A.lcOpen == null) return;
+  var di = A.lcOpen, ta = $('#lcnote'); if(!ta) return;
+  var val = ta.value;
+  var had = lcNote(D.directory[di]).trim();
+  txn('Lima Charlie note', function(){ queuePatch(di, { lima_charlie_notes: val }); });
+  A.lcOpen = null;
+  viewAudit($('#view'));
+  toast(val.trim() ? (had ? 'Note updated. Luna will apply it on the next Lima Charlie run.' : 'Note saved. Luna will apply it on the next Lima Charlie run.') : 'Note cleared.');
 }
 
 /* Wall columns (JD 2026-10-16): the wall is K independent column
@@ -5730,11 +5936,12 @@ function audWatchCols(){
 }
 
 function viewAudit(v){
-  if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null };
-  if(['cards', 'rapid', 'cat', 'finish'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
+  if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
+  if(['cards', 'rapid', 'cat', 'finish', 'lima'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
   var m = audMode();
+  if(m === 'lima' && S.audit.lcOpen != null && D.directory[S.audit.lcOpen]){ lcRenderOpen(v); return; }
   v.innerHTML = '<div class="page audit"><div class="pagehead"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
     '<span class="aud-head-btns"><button type="button" class="btn ghost" data-act="audlater" id="audlaterbtn" hidden>' + ic('today', 15) + '<span>Saved for later (<span id="audlaterN">0</span>)</span></button>' +
     '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></span></div>' +
@@ -5744,11 +5951,12 @@ function viewAudit(v){
     '<div id="audmodebar">' + audModeBarHTML() + '</div>' +
     (m === 'rapid'
       ? '<div class="aud-stage-wrap"><div class="aud-stack" id="audstack"><div class="aud-peek p2"></div><div class="aud-peek p1"></div><div class="aud-grid aud-stage" id="audgrid"></div></div></div>'
-      : '<div class="aud-grid" id="audgrid"></div>') +
+      : m === 'lima' ? '<div id="lcwrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
     '<div id="audempty"></div>' +
     '<div class="aud-toast" id="audtoast" hidden role="status"></div></div>';
   var grid = $('#audgrid');
-  if(S.audit.blitzDone){
+  if(m === 'lima'){ lcRender(); }
+  else if(S.audit.blitzDone){
     grid.innerHTML = '<div class="aud-caught aud-blitzsum"><h3>Blitz over</h3>' +
       '<p class="aud-blitzstats"><b>' + S.audit.blitzDone.fills + '</b> fills · best streak <b>' + S.audit.blitzDone.best + '</b> · <b>' + (S.audit.blitzDone.fills / 2).toFixed(1) + '</b> per minute</p>' +
       '<p><button type="button" class="btn primary" data-act="audblitz">Go again</button> <button type="button" class="btn ghost" data-act="audblitzx">Back to Rapid Fire</button></p></div>';
@@ -5849,8 +6057,12 @@ function onClick(ev){
     case 'audblitz': audStartBlitz(); break;
     case 'audblitzx': if(S.audit){ S.audit.blitzDone = null; } viewAudit($('#view')); break;
     case 'audopen': if(di != null) openPerson(di); break;
-    case 'audshuffle': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;
+    case 'audshuffle': if(S.audit){ if(audMode() === 'lima'){ lcShuffleDeck(); break; } S.audit.shown = null; } viewAudit($('#view')); break;
     case 'audlater': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;   /* redeal: saved-for-later people come first (audDeal) */
+    case 'lcopen': if(di != null && S.audit && audMode() === 'lima'){ S.audit.lcOpen = di; viewAudit($('#view')); } break;
+    case 'lcback': if(S.audit){ S.audit.lcOpen = null; viewAudit($('#view')); } break;
+    case 'lcshuffle': if(S.audit) lcShuffleDeck(); break;
+    case 'lcsave': if(S.audit) lcSaveNote(); break;
     case 'set': doSet(el); break;
     case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
     case 'mergeopen': openMergeSheet(di); break;
