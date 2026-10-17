@@ -4827,11 +4827,21 @@ function audBulkPhone(){
   audLog({ kind:'bulkpass', di:targets[0], gap:'phone', pairs:pairs, text:text });
   audToastShow(text);
 }
+/* Orgs / skills commit gestures (JD 2026-10-16, late): these two
+   editors are ENTER/PICK-ONLY in every mode, so an explicit commit
+   gesture — Enter, or a suggestion pick — saves INSTANTLY here: no
+   arm, no Cards/Finish-Line last-gap countdown. Every other gap
+   keeps the mode's normal arm path via audTryArm. */
+function audCommitGesture(card){
+  var gap = card.getAttribute('data-gap');
+  if(gap === 'orgs' || gap === 'skills'){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
+  audTryArm(card);
+}
 function audWireCard(card){
   var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
   if(!inp) return;
   var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : gap === 'orgs' ? audOrgPool() : gap === 'years' ? audYearList() : null;
-  if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audTryArm(card); },
+  if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audCommitGesture(card); },
     gap === 'orgs' ? { label:regSugLabel, resolve:regApply, enterPick:function(){ return false; } }
     /* Enter must reach the field's own handler (audEnterKey), which
        applies the completeness gates to what was actually TYPED —
@@ -4857,10 +4867,16 @@ function audWireCard(card){
      never arms or commits, however complete the value looks — the
      pause commit and the blur commit both skip years outright, because
      a finished-looking year is just four keystrokes, not consent. A
-     typed year saves only on Enter (audEnterKey, no countdown). */
+     typed year saves only on Enter (audEnterKey, no countdown).
+     ORGS / SKILLS ARE ENTER/PICK-ONLY (JD 2026-10-16, late): the same
+     timed paths are closed for these two editors in EVERY mode — no
+     typing-pause arm, no blur arm, and no last-gap countdown — because
+     a pause mid-word ("CFC P…") filed the fragment before Enter was
+     ever pressed. Enter and suggestion picks commit instantly via
+     audCommitGesture; nothing else can submit these two fields. */
   inp.addEventListener('input', function(){
     audDisarm(card);
-    if(gap === 'years') return;
+    if(gap === 'years' || gap === 'orgs' || gap === 'skills') return;
     clearTimeout(card._audDeb);
     card._audDeb = setTimeout(function(){
       card._audDeb = null;
@@ -4877,7 +4893,7 @@ function audWireCard(card){
       if(!card.isConnected) return;
       var a = document.activeElement;
       if(a && card.contains(a)) return;   /* the pick refocused the field, or focus moved within this card: not a real blur */
-      if(gap === 'years') return;   /* Enter-only: a typed year is never blur-committed */
+      if(gap === 'years' || gap === 'orgs' || gap === 'skills') return;   /* Enter/pick-only: never blur-committed */
       audTryArm(card);
     }, 250);
   });
@@ -4914,8 +4930,11 @@ function audFocusEditor(card){ var f = card && audEditorEl(card); if(f) f.focus(
      countdown (Enter replaces the countdown as the confirmation).
    - orgs / skills: a value commits AND closes the gap out, exactly
      like a single-value field (JD 2026-10-16 — the flow modes' "add
-     and stay" stacking was overruled; Enter means done). Enter on an
-     EMPTY field in the flow modes advances instead (audAdvanceFrom).
+     and stay" stacking was overruled; Enter means done), and commits
+     INSTANTLY in every mode — these editors are enter/pick-only, so
+     Enter never arms the Cards/Finish-Line countdown (JD 2026-10-16,
+     late). Enter on an EMPTY field in the flow modes advances
+     instead (audAdvanceFrom).
    - everything else: the mode's normal arm path, unchanged. */
 function audEnterKey(card){
   var gap = card.getAttribute('data-gap');
@@ -4926,7 +4945,7 @@ function audEnterKey(card){
   }
   var inp = $('.aud-in', card), v = inp ? inp.value.trim() : '';
   if(gap === 'orgs' || gap === 'skills'){
-    if(v){ audTryArm(card); return; }                    /* commit it — audSave closes the gap out */
+    if(v){ audCommitGesture(card); return; }            /* commit it — INSTANTLY, no countdown in any mode; audSave closes the gap out */
     if(audFlowMode()){ audAdvanceFrom(card); return; }   /* empty Enter advances in the flow modes */
     audNudge(card); return;
   }
