@@ -100,8 +100,8 @@ var ATMO_FRAG = [
   'uniform vec3 uColor; uniform float uBreathe; uniform float uBright;',
   'varying vec3 vN;',
   'void main(){',
-  '  float i = pow(clamp(0.72 - dot(normalize(vN), vec3(0.0, 0.0, 1.0)), 0.0, 1.0), 3.5);',
-  '  gl_FragColor = vec4(uColor * i * 1.5 * uBreathe * uBright, 1.0);',
+  '  float i = pow(clamp(0.68 - dot(normalize(vN), vec3(0.0, 0.0, 1.0)), 0.0, 1.0), 3.5);',
+  '  gl_FragColor = vec4(uColor * i * 0.95 * uBreathe * uBright, 1.0);',
   '}'
 ].join('\n');
 
@@ -206,7 +206,7 @@ function buildOrb(st, di, keepOld){
   var atmoMat = new THREE.ShaderMaterial({ vertexShader:ATMO_VERT, fragmentShader:ATMO_FRAG,
     uniforms:{ uColor:{ value:col }, uBreathe:{ value:1 }, uBright:{ value:0 } },
     side:THREE.BackSide, blending:THREE.AdditiveBlending, transparent:true, depthWrite:false });
-  var atmo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.22, 48, 32), atmoMat);
+  var atmo = new THREE.Mesh(new THREE.SphereGeometry(R * 1.16, 48, 32), atmoMat);
   g.add(atmo);
 
   /* particle shell — ~700 points on a fibonacci sphere, density of
@@ -316,7 +316,7 @@ var FLY3D = {
       azDeg:ST.azRel * 57.29578, fps:Math.round(ST.fps * 10) / 10,
       heroPx:ST.heroPx || null,
       dpr:ST.renderer ? ST.renderer.getPixelRatio() : 0,
-      orbitR:ST.hero ? Math.round(ST.hero.R * 3.2) : 0 };
+      orbitR:ST.hero ? Math.round(orbitRadius(ST, ST.hero.R)) : 0 };
   }
 };
 window.FLY3D = FLY3D;
@@ -559,6 +559,15 @@ function orbitOffset(az, el, R, out){
 function heroWorld(st, out){
   return st.hero.group.getWorldPosition(out);
 }
+/* orbit distance: the spec's visual target is the core at roughly a
+   third to two-fifths of the frame height — 5.6 radii at the 48
+   degree orbit FOV; wider still on narrow (portrait) wraps so the
+   ring system stays in frame */
+function orbitRadius(st, R){
+  var a = st.camera ? st.camera.aspect : 1;
+  var f = a < 0.8 ? 1.45 : a < 1.1 ? 1.2 : 1;
+  return R * 5.6 * f;
+}
 
 function stageTick(ts){
   var st = ST; if(!st || st.dead) return;
@@ -603,7 +612,7 @@ function stageTick(ts){
         var rel = _off.copy(cam.position).sub(_hw);
         st.az0 = Math.atan2(rel.x, rel.z);
         st.el0 = clamp(Math.asin(clamp(rel.y / Math.max(1, rel.length()), -1, 1)), 0.20, 0.55);
-        st.orbitR = hero.R * 3.2;
+        st.orbitR = orbitRadius(st, hero.R);
         st.panelEl.classList.remove('in');
       }
       break;
@@ -667,7 +676,7 @@ function stageTick(ts){
           var rel2 = cam.position.clone().sub(nw);
           st.transit = { fromDi:st.heroDi, toDi:ndi, fromPos:cam.position.clone(),
             heroW0:_hw.clone(), oldHero:oldH, newHero:nh,
-            az1:Math.atan2(rel2.x, rel2.z), el1:0.32, orbitR1:nh.R * 3.2, ctrl:null };
+            az1:Math.atan2(rel2.x, rel2.z), el1:0.32, orbitR1:orbitRadius(st, nh.R), ctrl:null };
           st.heroDi = ndi; st.lastDi = ndi; st.callLog.push(ndi);
           st.phase = 'transit'; st.phaseT = 0;
           collapsePanel(st, true);
@@ -760,7 +769,12 @@ function stageTick(ts){
   /* panel anchor: rides up-left of the orb, lerped so it never whips */
   var right = new THREE.Vector3(1, 0, 0).applyQuaternion(cam.quaternion);
   var up = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion);
-  _tgt.copy(_hw).addScaledVector(up, hero ? hero.R * 2.05 : 60).addScaledVector(right, hero ? -hero.R * 1.30 : -40);
+  /* frame-relative anchor: fractions of the visible half-height /
+     half-width at the hero's depth, so the panel rides in-frame at
+     any orb size, zoom, or aspect */
+  var distH = Math.max(40, cam.position.distanceTo(_hw));
+  var halfH = Math.tan(cam.fov * Math.PI / 360) * distH;
+  _tgt.copy(_hw).addScaledVector(up, halfH * 0.50).addScaledVector(right, -halfH * cam.aspect * 0.30);
   if(!st.anchorInit){ st.anchorObj.position.copy(_tgt); st.anchorInit = true; }
   else st.anchorObj.position.lerp(_tgt, 1 - Math.exp(-dt / 0.12));
 
