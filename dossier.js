@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.7.0';
+var APP_VERSION = '2.7.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -3851,6 +3851,31 @@ function flyHotDis(di){
   });
   return out.slice(0, 8);
 }
+/* The Grand stage's orbit-system composition (identity pass,
+   V2.7.1): the bodies around a called person are built from THEIR
+   record, strongest content first, capped at 8 like the hot set —
+   1) on-map known associates (flyHotDis order), 2) their
+   organizations (canonical via the registry, deduped), 3) their
+   groups (canonical, deduped against the orgs) — orgs/groups fill
+   only the slots the associates leave, so a person with no on-map
+   associates still gets a system made of their own orgs/groups. */
+function flyBodies(di){
+  var e = D.directory[di], out = [], seen = {};
+  flyHotDis(di).forEach(function(t){ out.push({ k:'p', di:t, n:dispName(D.directory[t]) }); });
+  if(out.length < 8){
+    orgsOf(e).forEach(function(o){
+      if(out.length >= 8) return;
+      var c = regApply(o), k = 'x' + regKey(c);
+      if(c && !seen[k]){ seen[k] = 1; out.push({ k:'o', n:c }); }
+    });
+    personGroups(e).forEach(function(g){
+      if(out.length >= 8) return;
+      var k = 'x' + regKey(g);
+      if(!seen[k]){ seen[k] = 1; out.push({ k:'g', n:g }); }
+    });
+  }
+  return out;
+}
 function fly3dApi(){
   return {
     wrap: $('.netwrap'),
@@ -3864,6 +3889,8 @@ function fly3dApi(){
     score: function(di){ return scoreFor(di); },
     facts: function(di){ return flyFacts(D.directory[di]); },
     hot: function(di){ return flyHotDis(di); },
+    bodies: function(di){ return flyBodies(di); },
+    edges: function(di){ return flyHotDis(di); },
     fabric: function(di){
       var s = scoreFor(di); if(!s || !s.parts) return 0;
       for(var i = 0; i < s.parts.length; i++) if(s.parts[i].k === 'fabric') return s.parts[i].v;
@@ -6733,6 +6760,7 @@ function boot(){
 /* read-only inspection handle for the black-box harnesses (the app is
    an IIFE; without this, camera/selection state is unmeasurable) */
 window.__NCC__ = { NET:NET, N3:N3, FLY:FLY, S:S, scoreFor:scoreFor,
-  flyHotDis:flyHotDis, n3Project:n3Project, netP3:netP3, flyStop:flyStop };
+  flyHotDis:flyHotDis, flyBodies:flyBodies, dispName:dispName,
+  n3Project:n3Project, netP3:netP3, flyStop:flyStop };
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
