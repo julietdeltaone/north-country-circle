@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.7.1';
+var APP_VERSION = '2.8.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -3808,21 +3808,21 @@ var FLY3D_P = null;
 function fly3dBoot(){
   if(FLY.stageDead || REDUCED_MOTION) return;
   if(!FLY3D_P){
-    FLY3D_P = import('./flyover3d.js?v=' + APP_VERSION).then(function(){ return window.FLY3D || null; }, function(){ return null; });
+    FLY3D_P = import('./flyover3d.js?v=' + APP_VERSION).then(function(){ return window.FLY3D || null; }, function(){ FLY3D_P = null; return null; });
   }
   FLY.stagePending = true; FLY.stageAsk = false;
 }
 function fly3dAsk(){
   if(!FLY3D_P) return;
   FLY3D_P.then(function(F){
-    if(!F){ FLY.stagePending = false; FLY.stageDead = true; return; }
+    if(!F){ FLY.stagePending = false; FLY.stageDead = true; setTimeout(function(){ FLY.stageDead = false; }, 15000); return; }
     if(!FLY.on || FLY.stage || FLY.phase !== 'present'){ FLY.stageAsk = false; return; }
     var ok = false;
     try { ok = F.begin(fly3dApi()); } catch(_e) { ok = false; }
     if(ok){
       FLY.stage = true; FLY.stagePending = false;
       if(FLY.plate){ FLY.plate.classList.remove('in'); FLY.plate.style.opacity = '0'; }
-    } else { FLY.stagePending = false; FLY.stageDead = true; }
+    } else { FLY.stagePending = false; if(!F.active && !F.busy) FLY.stageDead = true; }
   });
 }
 function fly3dGone(drift){
@@ -4511,7 +4511,7 @@ function viewGroups(v){
   var kind = S.route.seg[0] || 'groups', name = S.route.seg[1] || '';
   if(!GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
   var names = grpNamesFor(kind);
-  var tabs = '<nav class="tabrow">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
+  var tabs = '<nav class="tabrow" aria-label="Group kinds">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
   var selCount = names.filter(function(x){ return GMGR.sel[kind + '|' + x.n]; }).length;
   var mgr = '';
   if(GMGR.on){
