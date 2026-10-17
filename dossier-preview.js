@@ -2170,7 +2170,11 @@ function ptAcWire(inp, list, onPick, opts){
   var wrap = inp.parentNode, box = wrap ? $('.pted-ac', wrap) : null;
   if(!box) return;
   var hits = [], act = -1;
-  function hide(){ box.hidden = true; box.innerHTML = ''; hits = []; act = -1; }
+  /* deliberate: true only after JD navigates the highlight himself
+     (ArrowUp/ArrowDown/Home/End). The pre-highlight show() paints on
+     the first match is PASSIVE — it is not a choice he made. */
+  var deliberate = false;
+  function hide(){ box.hidden = true; box.innerHTML = ''; hits = []; act = -1; deliberate = false; }
   function mark(){
     $$('.pted-aci', box).forEach(function(b, i){
       b.classList.toggle('on', i === act);
@@ -2190,7 +2194,8 @@ function ptAcWire(inp, list, onPick, opts){
     if(!hits.length){ hide(); return; }
     box.innerHTML = hits.map(function(h){ var lb = (opts && opts.label) ? opts.label(h) : h; return '<button type="button" class="pted-aci" data-v="' + esc(h) + '" title="' + esc(lb) + '">' + esc(lb) + '</button>'; }).join('');
     box.hidden = false;
-    act = 0;   /* first match pre-highlighted: Enter picks it */
+    act = 0;   /* first match pre-highlighted — PASSIVE until he arrows to a choice */
+    deliberate = false;
     $$('.pted-aci', box).forEach(function(b, i){
       var fired = false;
       function go(ev){ if(fired) return; fired = true; ev.preventDefault(); pick(b.getAttribute('data-v')); }
@@ -2214,18 +2219,23 @@ function ptAcWire(inp, list, onPick, opts){
     if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
       ev.preventDefault(); ev.stopPropagation();
       if(!open){ show(); return; }
-      act = (act + (ev.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; mark();
+      act = (act + (ev.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; deliberate = true; mark();
     }
     else if(ev.key === 'Home' || ev.key === 'End'){
-      if(open){ ev.preventDefault(); ev.stopPropagation(); act = ev.key === 'Home' ? 0 : hits.length - 1; mark(); }
+      if(open){ ev.preventDefault(); ev.stopPropagation(); act = ev.key === 'Home' ? 0 : hits.length - 1; deliberate = true; mark(); }
     }
     else if(ev.key === 'Enter'){
       /* opts.enterPick may veto the Enter-pick (return false): the event
          then falls through to the field's own Enter handler instead of
          picking the highlighted match. Every Audit text editor uses it —
          a typed value commits only when IT is complete, never because
-         Enter happened to pick the highlighted suggestion. */
-      if(open && act >= 0 && !(opts && opts.enterPick && !opts.enterPick(hits[act]))){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
+         Enter happened to pick the highlighted suggestion. The veto
+         lifts for a DELIBERATE highlight: once JD has arrowed to the
+         suggestion he wants, Enter is his pick, exactly like a click
+         (JD 2026-10-16: "I arrow down to it, I hit Enter, and that
+         enters it"). A passive pre-highlight is NOT a pick — typing
+         "Po" and pressing Enter still commits nothing. */
+      if(open && act >= 0 && (deliberate || !(opts && opts.enterPick && !opts.enterPick(hits[act])))){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
     }
     else if(ev.key === 'Escape'){
       if(open){ ev.preventDefault(); ev.stopPropagation(); hide(); }
@@ -4658,6 +4668,13 @@ function audUndoLast(){
       audSetGap(card, act.gap);
     } else audRestock(act.di, act.gap);
   }
+  else if(act.kind === 'bulkpass'){
+    /* restore every pair the bulk close-out wrote, then redeal so the
+       phone gaps are back on the wall exactly as before */
+    (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
+    store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+    if(S.audit){ S.audit.shown = null; viewAudit($('#view')); }
+  }
   else if(act.kind === 'done'){
     (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
@@ -4783,19 +4800,44 @@ function audPass(card){
   if(x.gaps.length){ audPaintCounts(); audSetGap(card, x.gaps[0]); return; }
   audRetire(card, false, true);
 }
+/* ---- Bulk phone close-out (JD 2026-10-16) --------------------------
+   "If I don't have them here, I don't have them at all, so just close
+   out the rest for contacts." One confirmed action closes the phone
+   gap for every profile whose phone gap is still open, through the
+   SAME dismissal store as a manual pass (ncc_aud_skip pairs), so the
+   feeder treats them identically and the toast's Undo restores every
+   pair at once. Dismissals live in that store: Profiles column O is
+   the audit-era status field (keep / needs_audit / audited / trash,
+   read by liveEntry) and cannot carry per-gap dismissals. */
+function audBulkPhone(){
+  var A = S.audit; if(!A) return;
+  var targets = people().filter(function(di){ return audOpenGaps(di).indexOf('phone') >= 0; });
+  if(!targets.length){ toast('No open phone gaps — everyone is already closed out.'); return; }
+  if(!confirm('Close out the phone gap for ' + targets.length + ' ' + (targets.length === 1 ? 'person' : 'people') + '?\n\nUse this when you have no number for them and are not going to get one. Their other gaps stay open, and you can undo this from the toast right after.')) return;
+  var pairs = targets.map(function(di){ return audPair(di, 'phone'); });
+  pairs.forEach(function(p){ AUD_DISMISS[p] = 1; });
+  store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+  var text = 'Phone gaps closed out · ' + targets.length + ' ' + (targets.length === 1 ? 'person' : 'people');
+  A.shown = null;
+  viewAudit($('#view'));
+  audLog({ kind:'bulkpass', di:targets[0], gap:'phone', pairs:pairs, text:text });
+  audToastShow(text);
+}
 function audWireCard(card){
   var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
   if(!inp) return;
   var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : gap === 'orgs' ? audOrgPool() : gap === 'years' ? audYearList() : null;
   if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audTryArm(card); },
     gap === 'orgs' ? { label:regSugLabel, resolve:regApply, enterPick:function(){ return false; } }
-    /* Enter NEVER picks from the dropdown inside an Audit card — it
-       must reach the field's own handler (audEnterKey), which applies
-       the completeness gates to what was actually TYPED. Without this
-       veto, typing the fragment "Po" and pressing Enter committed the
-       dropdown's pre-highlighted "Pomona, CA": a value JD never typed
-       and never chose. A dropdown PICK by mouse/touch still commits
-       as a deliberate choice; only Enter is gated. */
+    /* Enter must reach the field's own handler (audEnterKey), which
+       applies the completeness gates to what was actually TYPED —
+       UNLESS JD has deliberately arrowed to a suggestion, in which
+       case ptAcWire treats Enter as the pick it is (see ptAcWire's
+       "deliberate" flag). Without this veto, typing the fragment "Po"
+       and pressing Enter committed the dropdown's passively
+       pre-highlighted "Pomona, CA": a value JD never typed and never
+       chose. A dropdown pick by mouse/touch commits as a deliberate
+       choice too; only the passive pre-highlight is gated. */
     : (gap === 'years' || gap === 'loc' || gap === 'skills') ? { enterPick:function(){ return false; } }
     : null);
   /* commit triggers (JD 2026-10-15): a suggestion pick or Enter submits
@@ -5571,10 +5613,13 @@ function audModeBarHTML(){
     return '<div class="aud-catrow" role="group" aria-label="Pick a category">' + Object.keys(AUD_GAPS).map(function(g){
       return '<button type="button" class="aud-catbtn' + (A.cat === g ? ' on' : '') + '" data-act="audcat" data-g="' + g + '" aria-pressed="' + (A.cat === g ? 'true' : 'false') + '">' + AUD_GAPS[g].tag + ' <span class="aud-catn" id="audcatn-' + g + '">' + counts[g] + '</span></button>';
     }).join('') +
-    '<button type="button" class="aud-catbtn" data-act="audcatall">All categories</button></div>' +
+    '<button type="button" class="aud-catbtn" data-act="audcatall">All categories</button>' +
+    (A.cat === 'phone' ? '<button type="button" class="aud-catbtn aud-bulkphone" data-act="audbulkphone">Mark all phone gaps done</button>' : '') +
+    '</div>' +
     '<p class="aud-catprog" id="audcatprog"></p>';
   }
-  return '';
+  return '<div class="aud-modebar"><button type="button" class="btn ghost" data-act="audbulkphone">Mark all phone gaps done</button>' +
+    '<span class="dim">Close out the phone gap for everyone you have no number for.</span></div>';
 }
 function audPaintCatProg(){
   var el = $('#audcatprog'); if(!el) return;
@@ -5775,6 +5820,7 @@ function onClick(ev){
     case 'audmode': if(S.audit) audSetMode(el.getAttribute('data-m')); break;
     case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.shown = null; viewAudit($('#view')); } break;
     case 'audcatall': if(S.audit) audSetMode('cards'); break;
+    case 'audbulkphone': audBulkPhone(); break;
     case 'audgoal': { var gd = audDay(); gd.goal = Math.max(5, Math.min(500, gd.goal + (+el.getAttribute('data-d')))); if(gd.n < gd.goal) gd.met = false; audDaySave(gd); audPaintGoal(); break; }
     case 'audblitz': audStartBlitz(); break;
     case 'audblitzx': if(S.audit){ S.audit.blitzDone = null; } viewAudit($('#view')); break;
