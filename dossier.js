@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.5.2';
+var APP_VERSION = '2.5.3';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -2210,6 +2210,19 @@ function ptAcWire(inp, list, onPick, opts){
     });
     mark();
     ptEdFit();
+    flip();
+  }
+  /* Flip the list UP when it would run past the bottom of the screen
+     and there is more room above the field than below it — on a phone
+     the editor often sits low, and a downward list ran off the fold
+     (JD 2026-10-16: every suggestion visible, all the way down).
+     Only the Audit card list is positioned to use the class. */
+  function flip(){
+    box.classList.remove('up');
+    var r = box.getBoundingClientRect();
+    if(r.bottom <= window.innerHeight - 4) return;
+    var ir = inp.getBoundingClientRect();
+    if(ir.top - 8 > window.innerHeight - ir.bottom) box.classList.add('up');
   }
   inp.addEventListener('input', show);
   inp.addEventListener('focus', show);
