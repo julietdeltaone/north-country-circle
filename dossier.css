@@ -1428,3 +1428,19 @@ html,body{background:var(--bg)}
 .card header .lc-mark{margin-left:2px}
 .lc-note-txt{margin:0 0 6px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}
 @media (max-width:640px){.lc-deck{grid-template-columns:1fr 1fr}.lc-card{min-height:150px;padding:14px}.lc-card-name{font-size:16px}}
+
+/* V2.8.2 (JD 2026-10-17): persistent Home + profile back/breadcrumb,
+   and the Lima Charlie expanded view now hosts the profile's own
+   section cards (direct editing). Home is a neutral control — red
+   stays rationed to LC marks and true accents. */
+.homebtn{flex:none}
+.pback{display:flex;align-items:center;gap:2px;flex:none}
+.crumb{font:600 11.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);padding:8px 6px;border-radius:2px;white-space:nowrap}
+.crumb:hover{color:var(--txt);background:var(--card)}
+.lc-col>.card{width:100%;flex:none}
+.lc-fit .card header h3{font-size:13px}
+@media (pointer:coarse){
+  .homebtn{width:44px;height:44px}
+  .pback .ib,.pager .ib{width:44px;height:44px}
+  .crumb{padding:12px 8px}
+}
