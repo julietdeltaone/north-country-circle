@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.9.1';
+var APP_VERSION = '2.10.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1621,6 +1621,7 @@ function askEditKey(){
 var NAV = [
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
+  { k:'daily',   l:'Daily Ten', ic:'today' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
   { k:'groups',  l:'Groups',  ic:'groups' }
@@ -1713,7 +1714,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'people';
   if(name === 'p') name = 'profile';
-  if(['people','profile','network','family','groups','settings','audit'].indexOf(name) < 0) name = 'people';
+  if(['people','profile','network','family','groups','settings','audit','daily'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -1774,6 +1775,7 @@ function render(){
     else if(n === 'groups') viewGroups(v);
     else if(n === 'settings') viewSettings(v);
     else if(n === 'audit') viewAudit(v);
+    else if(n === 'daily') viewDaily(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -4615,6 +4617,53 @@ function groupDelete(n){
    Settings — only things that are settings: connection, AI assist, merged profiles, local data.
    Shortcuts are listed, not configurable.
    ============================================================ */
+
+/* ============================================================
+   Daily Ten (JD 2026-10-19): the currency routine's brief.
+   Every morning Luna checks 25 profiles against the public
+   record and files the strongest verified updates into the
+   Sheet automatically. This view renders the latest brief
+   (data/daily-ten.json, written by the routine); read-only.
+   ============================================================ */
+var DT = null, DT_LOADING = false;
+function dtLoad(){
+  if(DT || DT_LOADING) return;
+  DT_LOADING = true;
+  fetch('data/daily-ten.json', { cache:'no-store' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ DT = d; DT_LOADING = false; if(S.route.name === 'daily') render(); })
+    .catch(function(){ DT = { empty:true }; DT_LOADING = false; if(S.route.name === 'daily') render(); });
+}
+function viewDaily(v){
+  dtLoad();
+  var head = '<div class="page daily"><div class="pagehead"><div><h1 class="display">Daily Ten</h1><p class="sub">Currency routine: 25 profiles checked against the public record every day; the strongest verified updates are filed automatically.</p></div></div>';
+  if(!DT){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">Loading the latest brief...</p></div></section></div>'; return; }
+  if(DT.empty || !DT.date){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
+  var filedNames = {};
+  (DT.filed || []).forEach(function(f){ filedNames[String(f.name || '').toLowerCase()] = 1; });
+  function personLink(name, display){
+    var di = BYN[String(name || '').toLowerCase()];
+    var label = esc(display || name || '');
+    if(di == null) return '<b>' + label + '</b>';
+    var e = D.directory[di];
+    return '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>';
+  }
+  var filedHTML = (DT.filed || []).length ? (DT.filed || []).map(function(f){
+    var facts = (f.facts || []).map(function(x){
+      return '<li>' + esc(x.text) + (x.url ? ' <a href="' + esc(x.url) + '" target="_blank" rel="noopener">(' + esc(x.source || 'source') + ')</a>' : ' <span class="dim">(' + esc(x.source || '') + ')</span>') + '</li>';
+    }).join('');
+    return '<div class="evrow"><div class="dtfiled">' + personLink(f.name, f.display) + '<ul class="dtfacts">' + facts + '</ul></div></div>';
+  }).join('') : '<p class="dim">Nothing new worth filing today. Everyone checked is current.</p>';
+  var checkedHTML = (DT.checked || []).map(function(c){
+    var filed = filedNames[String(c.name || '').toLowerCase()];
+    return '<span class="dtchip' + (filed ? ' filed' : '') + '">' + personLink(c.name, c.display) + (filed ? ' &middot; updated' : '') + '</span>';
+  }).join('');
+  var cov = DT.coverage ? '<p class="dim">' + DT.coverage.checked_total + ' of ' + DT.coverage.of + ' profiles checked in the last ' + DT.coverage.window_days + ' days. The rotation covers everyone about once a month.</p>' : '';
+  v.innerHTML = head +
+    '<section class="card"><header><h3>Filed today</h3><em class="cnt">' + (DT.filed || []).length + '</em></header><div class="cbody">' + filedHTML + '</div></section>' +
+    '<section class="card"><header><h3>Checked</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody"><div class="dtchips">' + checkedHTML + '</div>' + cov + '</div></section></div>';
+}
+
 function viewSettings(v){
   var merged = [];
   D.directory.forEach(function(e, di){ var m = (e.profile || {}).merged_into; if(m && String(m).trim() && (e.profile || {}).deleted !== '1') merged.push(di); });
