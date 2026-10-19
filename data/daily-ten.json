@@ -104,6 +104,19 @@
  ],
  "filed": [
   {
+   "name": "sf:zvi-szafran",
+   "display": "Zvi Szafran",
+   "facts": [
+    {
+     "text": "Featured speaker at the October 2026 public event marking the start of demolition at Canton's long-vacant Midtown Plaza; the $27 million replacement project includes 60 apartments and an Innovation Center operated by SUNY Canton",
+     "source": "NCPR",
+     "url": "https://www.northcountrypublicradio.org/news/story/54070/20261009/demolition-underway-at-canton-s-long-vacant-midtown-plaza",
+     "fresh": true,
+     "published": "2026-10-09"
+    }
+   ]
+  },
+  {
    "name": "sf:david-disalvo",
    "display": "David DiSalvo",
    "facts": [
@@ -185,7 +198,7 @@
   }
  ],
  "coverage": {
-  "checked_total": 25,
+  "checked_total": 26,
   "of": 670,
   "window_days": 30
  }
