@@ -1455,3 +1455,16 @@ html,body{background:var(--bg)}
 .dtchip{display:inline-block;padding:4px 10px;border:1px solid #262626;border-radius:2px;font-size:12.5px}
 .dtchip a{color:inherit;text-decoration:none}
 .dtchip.filed{border-color:#e30613}
+
+/* Daily Ten info cards (V2.10.1) */
+.dtstats{display:flex;gap:28px;flex-wrap:wrap}
+.dtstat{display:flex;flex-direction:column;gap:2px}
+.dtstat b{font-size:20px;line-height:1.1}
+.dtstat span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9a9a9a}
+.dtfresh{border-color:#e30613}
+.dtp-head{display:flex;gap:10px;align-items:center;margin-bottom:4px}
+.dtp-head a{color:inherit;text-decoration:none}
+.dtp-name small{display:block;margin-top:1px}
+.dtfact{line-height:1.55;margin:4px 0 0}
+.dtfact a{color:#7db3e8;text-decoration:none}
+.dtnew{color:#e30613;font-size:10.5px;font-weight:700;letter-spacing:.06em}
