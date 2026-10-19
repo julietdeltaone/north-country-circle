@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.9.0';
+var APP_VERSION = '2.9.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -344,7 +344,7 @@ function diFromId(id){
   return null;
 }
 /* the people the directory lists: same rule v5 used for its list, minus anything deleted or merged away */
-function isListed(e){ return liveEntry(e) && (e.has_graph !== false || (e.events || []).length || (e.files || []).length || !!e.record); }
+function isListed(e){ return liveEntry(e) && (e.has_graph !== false || (e.events || []).length || (e.files || []).length || !!e.record || !!(((e.profile || {}).display_name || e.display || '') + '').trim()); }
 var PEOPLE_CACHE = { ver:-1, list:[] };
 function people(){
   if(PEOPLE_CACHE.ver === VER) return PEOPLE_CACHE.list;
