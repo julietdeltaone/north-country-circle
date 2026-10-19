@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.10.1';
+var APP_VERSION = '2.11.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1621,7 +1621,7 @@ function askEditKey(){
 var NAV = [
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
-  { k:'daily',   l:'Daily Ten', ic:'today' },
+  { k:'daily',   l:'Active Search', ic:'search' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
   { k:'groups',  l:'Groups',  ic:'groups' }
@@ -4634,11 +4634,33 @@ function dtLoad(){
     .then(function(d){ DT = d; DT_LOADING = false; if(S.route.name === 'daily') render(); })
     .catch(function(){ DT = { empty:true }; DT_LOADING = false; if(S.route.name === 'daily') render(); });
 }
+function dtAnimate(){
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setTimeout(function(){
+    document.querySelectorAll('.asnum[data-n]').forEach(function(el){
+      var target = parseFloat(el.getAttribute('data-n'));
+      if(reduced){ el.textContent = target; return; }
+      var t0 = null;
+      function step(ts){ if(!t0) t0 = ts; var p = Math.min(1, (ts - t0) / 800); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(step); }
+      requestAnimationFrame(step);
+    });
+    var ring = document.querySelector('.asring-fg');
+    if(ring) ring.style.strokeDashoffset = ring.getAttribute('data-off');
+    var bar = document.querySelector('.asbar-fill');
+    if(bar) bar.style.width = bar.getAttribute('data-w');
+  }, 40);
+}
 function viewDaily(v){
   dtLoad();
-  var head = '<div class="page daily"><div class="pagehead"><div><h1 class="display">Daily Ten</h1><p class="sub">Currency routine: 25 profiles checked against the public record every day; the strongest verified updates are filed automatically.</p></div></div>';
-  if(!DT){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">Loading the latest brief...</p></div></section></div>'; return; }
+  var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Active Search</h1><p class="sub">The currency routine, run daily: 25 profiles checked against the public record, a fresh-find hunt across the last three weeks, and the strongest verified updates filed automatically.</p></div></div>';
+  if(!DT){
+    v.innerHTML = head + '<div class="asskel"><div class="skl hero"></div><div class="skl-row"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div><div class="skl"></div></div></div>';
+    return;
+  }
   if(DT.empty || !DT.date){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtD(iso){ if(!iso) return ''; var p = String(iso).split('-'); return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]; }
+  function daysBetween(a, b){ return Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 86400000); }
   var filedNames = {};
   (DT.filed || []).forEach(function(f){ filedNames[String(f.name || '').toLowerCase()] = 1; });
   function diOf(name){ var di = BYN[String(name || '').toLowerCase()]; return di == null ? null : di; }
@@ -4649,40 +4671,73 @@ function viewDaily(v){
     return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>';
   }
   function factLine(x){
-    return esc(x.text) + (x.url ? ' <a href="' + esc(x.url) + '" target="_blank" rel="noopener">(' + esc(x.source || 'source') + ')</a>' : ' <span class="dim">(' + esc(x.source || '') + ')</span>');
+    return esc(x.text) + (x.url ? ' <a class="assrc" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.source || 'source') + ' ' + ic('ext', 11) + '</a>' : ' <span class="dim">(' + esc(x.source || '') + ')</span>');
   }
-  var sum = '<section class="card"><div class="cbody"><div class="dtstats">' +
-    '<div class="dtstat"><b>' + (DT.checked || []).length + '</b><span>Checked</span></div>' +
-    '<div class="dtstat"><b>' + (DT.filed || []).length + '</b><span>Updated</span></div>' +
-    (DT.coverage ? '<div class="dtstat"><b>' + DT.coverage.checked_total + ' / ' + DT.coverage.of + '</b><span>Checked this month</span></div>' : '') +
-    '<div class="dtstat"><b>' + esc(DT.date) + '</b><span>Latest brief</span></div>' +
+  /* --- Fresh hero --- */
+  var freshF = null, freshX = null;
+  (DT.filed || []).forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh && !freshX){ freshF = f; freshX = x; } }); });
+  var hero = '';
+  if(freshF){
+    var fdi = diOf(freshF.name), fe = fdi != null ? D.directory[fdi] : null;
+    var age = freshX.published ? daysBetween(freshX.published, DT.date) : null;
+    hero = '<section class="card ashero asanim" style="--d:0ms">' +
+      '<div class="ashero-wm">FRESH</div>' +
+      '<div class="ashero-top"><span class="askicker">' + ic('sparkle', 13) + ' FRESH &mdash; PAST 3 WEEKS</span>' +
+      (freshX.published ? '<span class="ashero-pub">PUBLISHED ' + esc(fmtD(freshX.published)).toUpperCase() + '</span>' : '') + '</div>' +
+      '<div class="ashero-main"><div class="ashero-av">' + (fe ? avatar(fe, 'xl') : '') + '</div>' +
+      '<div class="ashero-body"><div class="ashero-name display">' + esc(freshF.display || freshF.name) + '</div>' +
+      '<p class="ashero-fact">' + factLine(freshX) + '</p>' +
+      '<div class="astl"><span class="astl-dot"></span><span>Published ' + esc(fmtD(freshX.published)) + '</span><span class="astl-line"></span><span class="astl-dot red"></span><span>Filed ' + esc(fmtD(DT.date)) + (age != null && age >= 0 ? ' &middot; ' + age + ' day' + (age === 1 ? '' : 's') + ' from publication to profile' : '') + '</span></div>' +
+      '<div class="ashero-link">' + (fe ? '<a href="#/p/' + encodeURIComponent(personId(fe)) + '" data-act="openp" data-di="' + fdi + '">Open the profile ' + ic('arrow', 12) + '</a>' : '') + '</div>' +
+      '</div></div></section>';
+  }
+  /* --- Stats band --- */
+  var covPct = DT.coverage ? Math.round(1000 * DT.coverage.checked_total / Math.max(1, DT.coverage.of)) / 10 : 0;
+  var C = 2 * Math.PI * 34;
+  var ringOff = (C * (1 - covPct / 100)).toFixed(1);
+  var stats = '<section class="card asanim" style="--d:70ms"><div class="cbody"><div class="asstats">' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b class="asnum" data-n="' + (DT.checked || []).length + '">0</b><span>Checked today</span></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + (DT.filed || []).length + '">0</b><span>Profiles updated</span></div>' +
+    '<div class="asstat asstat-ring"><svg class="asring" width="84" height="84" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this month &middot; ' + covPct + '%</span></div></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('calendar', 16) + '</span><b>' + esc(fmtD(DT.date)) + '</b><span>Latest brief</span></div>' +
     '</div></div></section>';
-  var freshHTML = '';
-  (DT.filed || []).forEach(function(f){
-    (f.facts || []).forEach(function(x){
-      if(!x.fresh || freshHTML) return;
-      var di = diOf(f.name);
-      freshHTML = '<section class="card dtfresh"><header><h3>Fresh</h3><em class="cnt">PAST 3 WEEKS</em></header><div class="cbody">' +
-        '<div class="dtp-head">' + (di != null ? avatar(D.directory[di], 'md') : '') + '<div class="dtp-name">' + personLink(f.name, f.display) +
-        (x.published ? '<small class="dim">Published ' + esc(x.published) + '</small>' : '') + '</div></div>' +
-        '<p class="dtfact">' + factLine(x) + '</p></div></section>';
-    });
+  /* --- Updated packets --- */
+  var cards = (DT.filed || []).length ? (DT.filed || []).map(function(f, i){
+    var di = diOf(f.name), e = di != null ? D.directory[di] : null;
+    var facts = (f.facts || []).map(function(x, j){
+      return '<div class="asfact"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? ' <span class="dtnew">FRESH</span>' : '') + '</p></div>';
+    }).join('');
+    return '<section class="card dtperson asanim" style="--d:' + (140 + i * 70) + 'ms"><div class="cbody">' +
+      '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + personLink(f.name, f.display) +
+      '<small class="dim">' + (e ? esc(infoLine(e)) : '') + '</small></div>' +
+      '<span class="asfiled-cnt">' + (f.facts || []).length + ' filed</span></div>' + facts + '</div></section>';
+  }).join('') : '<section class="card asanim" style="--d:140ms"><div class="cbody"><p class="dim">Nothing new worth filing today. Everyone checked is current.</p></div></section>';
+  /* --- Checked, with outcomes --- */
+  var updNames = {}, curNames = [];
+  (DT.checked || []).forEach(function(c){
+    if(filedNames[String(c.name || '').toLowerCase()]) updNames[String(c.name || '').toLowerCase()] = c; else curNames.push(c);
   });
-  var cards = (DT.filed || []).length ? (DT.filed || []).map(function(f){
-    var di = diOf(f.name);
-    var facts = (f.facts || []).map(function(x){ return '<li>' + factLine(x) + (x.fresh ? ' <span class="dtnew">NEW</span>' : '') + '</li>'; }).join('');
-    return '<section class="card dtperson"><div class="cbody">' +
-      '<div class="dtp-head">' + (di != null ? avatar(D.directory[di], 'md') : '') + '<div class="dtp-name">' + personLink(f.name, f.display) +
-      '<small class="dim">' + (f.facts || []).length + ' new fact' + ((f.facts || []).length === 1 ? '' : 's') + ' filed</small></div></div>' +
-      '<ul class="dtfacts">' + facts + '</ul></div></section>';
-  }).join('') : '<section class="card"><div class="cbody"><p class="dim">Nothing new worth filing today. Everyone checked is current.</p></div></section>';
-  var checkedHTML = (DT.checked || []).map(function(c){
-    var filed = filedNames[String(c.name || '').toLowerCase()];
-    return '<span class="dtchip' + (filed ? ' filed' : '') + '">' + personLink(c.name, c.display) + (filed ? ' &middot; updated' : '') + '</span>';
-  }).join('');
-  var cov = DT.coverage ? '<p class="dim">' + DT.coverage.checked_total + ' of ' + DT.coverage.of + ' profiles checked in the last ' + DT.coverage.window_days + ' days. The rotation covers everyone about once a month.</p>' : '';
-  v.innerHTML = head + sum + freshHTML + cards +
-    '<section class="card"><header><h3>Checked</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody"><div class="dtchips">' + checkedHTML + '</div>' + cov + '</div></section></div>';
+  var updList = Object.keys(updNames).map(function(k){ return updNames[k]; });
+  function chip(c, kind){
+    var di = diOf(c.name);
+    var inner = (di != null ? avatar(D.directory[di], 'sm') : '') + '<span>' + esc(c.display || c.name) + '</span>' + (kind === 'upd' ? ic('sparkle', 12) : ic('check', 12));
+    if(di == null) return '<span class="aschip ' + kind + '">' + inner + '</span>';
+    return '<a class="aschip ' + kind + '" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>';
+  }
+  var barPct = DT.coverage ? Math.max(1.5, covPct) : 0;
+  var rotationDays = DT.coverage ? Math.ceil(DT.coverage.of / Math.max(1, (DT.checked || []).length)) : 0;
+  var checkedCard = '<section class="card asanim" style="--d:' + (140 + (DT.filed || []).length * 70 + 60) + 'ms"><header><h3>Checked today</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody">' +
+    '<div class="asoutcomes"><div class="asoutcome"><b>' + updList.length + '</b><span>Updated &mdash; new information filed</span></div>' +
+    '<div class="asoutcome"><b>' + curNames.length + '</b><span>Confirmed current &mdash; checked, nothing new</span></div>' +
+    (freshF && !((DT.checked || []).some(function(c){ return String(c.name || '').toLowerCase() === String(freshF.name || '').toLowerCase(); })) ? '<div class="asoutcome"><b>+1</b><span>Fresh find from the news sweep</span></div>' : '') + '</div>' +
+    (updList.length ? '<div class="asgroup-t">UPDATED</div><div class="aschips">' + updList.map(function(c){ return chip(c, 'upd'); }).join('') + '</div>' : '') +
+    (curNames.length ? '<div class="asgroup-t">CONFIRMED CURRENT</div><div class="aschips">' + curNames.map(function(c){ return chip(c, 'cur'); }).join('') + '</div>' : '') +
+    (DT.coverage ? '<div class="ascov"><div class="ascov-h"><span>ROTATION COVERAGE</span><span>' + DT.coverage.checked_total + ' of ' + DT.coverage.of + ' in the last ' + DT.coverage.window_days + ' days</span></div>' +
+      '<div class="asbar"><div class="asbar-fill" data-w="' + barPct + '%" style="width:0"></div></div>' +
+      '<p class="dim">At ' + (DT.checked || []).length + ' checks a day, the full circle completes about every ' + rotationDays + ' days, so every profile is re-verified roughly once a month.</p></div>' : '') +
+    '</div></section>';
+  v.innerHTML = head + hero + stats + cards + checkedCard + '</div>';
+  dtAnimate();
 }
 
 function viewSettings(v){
