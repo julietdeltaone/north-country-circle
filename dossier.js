@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.11.0';
+var APP_VERSION = '2.11.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1621,7 +1621,7 @@ function askEditKey(){
 var NAV = [
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
-  { k:'daily',   l:'Active Search', ic:'search' },
+  { k:'daily',   l:'Live Records', ic:'search' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
   { k:'groups',  l:'Groups',  ic:'groups' }
@@ -4652,7 +4652,7 @@ function dtAnimate(){
 }
 function viewDaily(v){
   dtLoad();
-  var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Active Search</h1><p class="sub">The currency routine, run daily: 25 profiles checked against the public record, a fresh-find hunt across the last three weeks, and the strongest verified updates filed automatically.</p></div></div>';
+  var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Live Records</h1><p class="sub">The currency routine, run daily: 25 profiles checked against the public record, a fresh-find hunt across the last three weeks, and the strongest verified updates filed automatically.</p></div></div>';
   if(!DT){
     v.innerHTML = head + '<div class="asskel"><div class="skl hero"></div><div class="skl-row"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div><div class="skl"></div></div></div>';
     return;
@@ -4681,8 +4681,8 @@ function viewDaily(v){
     var fdi = diOf(freshF.name), fe = fdi != null ? D.directory[fdi] : null;
     var age = freshX.published ? daysBetween(freshX.published, DT.date) : null;
     hero = '<section class="card ashero asanim" style="--d:0ms">' +
-      '<div class="ashero-wm">FRESH</div>' +
-      '<div class="ashero-top"><span class="askicker">' + ic('sparkle', 13) + ' FRESH &mdash; PAST 3 WEEKS</span>' +
+      '<div class="ashero-wm">NEW</div>' +
+      '<div class="ashero-top"><span class="askicker">' + ic('sparkle', 13) + ' NEW RECORD &mdash; PAST 3 WEEKS</span>' +
       (freshX.published ? '<span class="ashero-pub">PUBLISHED ' + esc(fmtD(freshX.published)).toUpperCase() + '</span>' : '') + '</div>' +
       '<div class="ashero-main"><div class="ashero-av">' + (fe ? avatar(fe, 'xl') : '') + '</div>' +
       '<div class="ashero-body"><div class="ashero-name display">' + esc(freshF.display || freshF.name) + '</div>' +
@@ -4697,7 +4697,7 @@ function viewDaily(v){
   var ringOff = (C * (1 - covPct / 100)).toFixed(1);
   var stats = '<section class="card asanim" style="--d:70ms"><div class="cbody"><div class="asstats">' +
     '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b class="asnum" data-n="' + (DT.checked || []).length + '">0</b><span>Checked today</span></div>' +
-    '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + (DT.filed || []).length + '">0</b><span>Profiles updated</span></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + (DT.filed || []).length + '">0</b><span>Updated records</span></div>' +
     '<div class="asstat asstat-ring"><svg class="asring" width="84" height="84" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this month &middot; ' + covPct + '%</span></div></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('calendar', 16) + '</span><b>' + esc(fmtD(DT.date)) + '</b><span>Latest brief</span></div>' +
     '</div></div></section>';
@@ -4705,7 +4705,7 @@ function viewDaily(v){
   var cards = (DT.filed || []).length ? (DT.filed || []).map(function(f, i){
     var di = diOf(f.name), e = di != null ? D.directory[di] : null;
     var facts = (f.facts || []).map(function(x, j){
-      return '<div class="asfact"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? ' <span class="dtnew">FRESH</span>' : '') + '</p></div>';
+      return '<div class="asfact"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? ' <span class="dtnew">NEW</span>' : '') + '</p></div>';
     }).join('');
     return '<section class="card dtperson asanim" style="--d:' + (140 + i * 70) + 'ms"><div class="cbody">' +
       '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + personLink(f.name, f.display) +
@@ -4729,14 +4729,15 @@ function viewDaily(v){
   var checkedCard = '<section class="card asanim" style="--d:' + (140 + (DT.filed || []).length * 70 + 60) + 'ms"><header><h3>Checked today</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody">' +
     '<div class="asoutcomes"><div class="asoutcome"><b>' + updList.length + '</b><span>Updated &mdash; new information filed</span></div>' +
     '<div class="asoutcome"><b>' + curNames.length + '</b><span>Confirmed current &mdash; checked, nothing new</span></div>' +
-    (freshF && !((DT.checked || []).some(function(c){ return String(c.name || '').toLowerCase() === String(freshF.name || '').toLowerCase(); })) ? '<div class="asoutcome"><b>+1</b><span>Fresh find from the news sweep</span></div>' : '') + '</div>' +
+    (freshF && !((DT.checked || []).some(function(c){ return String(c.name || '').toLowerCase() === String(freshF.name || '').toLowerCase(); })) ? '<div class="asoutcome"><b>+1</b><span>New record from the news sweep</span></div>' : '') + '</div>' +
     (updList.length ? '<div class="asgroup-t">UPDATED</div><div class="aschips">' + updList.map(function(c){ return chip(c, 'upd'); }).join('') + '</div>' : '') +
     (curNames.length ? '<div class="asgroup-t">CONFIRMED CURRENT</div><div class="aschips">' + curNames.map(function(c){ return chip(c, 'cur'); }).join('') + '</div>' : '') +
     (DT.coverage ? '<div class="ascov"><div class="ascov-h"><span>ROTATION COVERAGE</span><span>' + DT.coverage.checked_total + ' of ' + DT.coverage.of + ' in the last ' + DT.coverage.window_days + ' days</span></div>' +
       '<div class="asbar"><div class="asbar-fill" data-w="' + barPct + '%" style="width:0"></div></div>' +
       '<p class="dim">At ' + (DT.checked || []).length + ' checks a day, the full circle completes about every ' + rotationDays + ' days, so every profile is re-verified roughly once a month.</p></div>' : '') +
     '</div></section>';
-  v.innerHTML = head + hero + stats + cards + checkedCard + '</div>';
+  var updHead = (DT.filed || []).length ? '<div class="assec-t asanim" style="--d:120ms">UPDATED RECORDS</div>' : '';
+  v.innerHTML = head + hero + stats + updHead + cards + checkedCard + '</div>';
   dtAnimate();
 }
 
