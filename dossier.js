@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.12.0';
+var APP_VERSION = '2.13.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1554,7 +1554,7 @@ var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
-  net:{ bg:store('ncc_netbg') === '1', sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d'), layout:(store('ncc_netlayout') === 'tier' || store('ncc_netlayout') === 'clusters' ? store('ncc_netlayout') : 'score') },
+  net:{ bg:store('ncc_netbg') === '1', sel:null, mode:(store('ncc_netmode') === '2d' ? '2d' : '3d'), layout:(['tier', 'clusters', 'orbits'].indexOf(store('ncc_netlayout')) >= 0 ? store('ncc_netlayout') : 'score') },
   fam:{ editing:null, focus:null, sheet:false, side:null },
   grp:{ kind:'groups', open:null, renaming:null },
   audit:null   /* Audit feeder wall state (visit only), built lazily by viewAudit */
@@ -3140,8 +3140,8 @@ function scoreBadgeHTML(di){
    travel, not teleport. nd.ring is always the TIER ring — netColor
    reads it, and tier owns color in every layout. */
 function netLayoutScore(){ return S.net.layout === 'score'; }
-function netT2(nd, lay){ return lay === 'score' ? [nd.sx, nd.sy] : lay === 'clusters' ? [nd.cx, nd.cy] : [nd.x, nd.y]; }
-function netT3(nd, lay){ return lay === 'score' ? [nd.sx3, nd.sy3, nd.sz3] : lay === 'clusters' ? [nd.cx3, nd.cy3, nd.cz3] : [nd.x3, nd.y3, nd.z3]; }
+function netT2(nd, lay){ return lay === 'score' ? [nd.sx, nd.sy] : lay === 'clusters' ? [nd.cx, nd.cy] : lay === 'orbits' ? [nd.ox || 0, nd.oy || 0] : [nd.x, nd.y]; }
+function netT3(nd, lay){ return lay === 'score' ? [nd.sx3, nd.sy3, nd.sz3] : (lay === 'clusters' || lay === 'orbits') ? [nd.cx3, nd.cy3, nd.cz3] : [nd.x3, nd.y3, nd.z3]; }
 function netP2(nd){ return [nd.dx, nd.dy]; }
 function netP3(nd){ return [nd.dx3, nd.dy3, nd.dz3]; }
 function netLowConf(nd){ if(!netLayoutScore() || !SCORE.byDi) return false; var s = SCORE.byDi[nd.di]; return !!(s && s.lowConf); }
@@ -3251,7 +3251,7 @@ function netGuideAlphas(now){
   if(p >= 1){ NET.guideFade = null; return [[S.net.layout, 1]]; }
   return [[gf.from, 1 - p], [S.net.layout, p]];
 }
-function netFitZ(){ return Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.layout === 'score' ? 1840 : S.net.layout === 'clusters' ? 1650 : 1450))); }
+function netFitZ(){ return Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / (S.net.layout === 'score' ? 1840 : S.net.layout === 'clusters' ? 1650 : S.net.layout === 'orbits' ? 2250 : 1450))); }
 function netFitNow(){
   NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = netFitZ(); NET.rot = 0;
   N3.zoom = 1; N3.pitch = 0.38; N3.auto = S.net.sel == null;
@@ -3276,6 +3276,7 @@ function netFrameSel(){
 function netSubHTML(){
   if(S.net.layout === 'score') return 'Closest in the middle, by closeness score: the top 5, then 15, 50, 150. Tier still owns the color. Tap a dot for details.';
   if(S.net.layout === 'clusters') return 'Grouped by what people share: churches, schools and workplaces pull their members together. Tier still owns the color. Tap a dot for details.';
+  if(S.net.layout === 'orbits') return 'Organizations are gravity wells: members circle their church, school or workplace, and anyone in several drifts between them. Tier still owns the color. Tap a dot for details.';
   return S.net.mode !== '2d' ? 'Drag to turn it. Closest people sit in the middle; each shell is a tier. Tap a dot for details.' : 'Closest in the middle. Each ring is a tier. Tap a dot for details.';
 }
 function netCtlPaint(){
@@ -3431,7 +3432,106 @@ function netBuild(){
   });
   NET.bg = null;
   netClustersBuild();
+  netOrbitBuild();
   netSnapDisplay();
+}
+/* ---------- Orbits layout (JD 2026-10-20): the fun one. Every
+   organization or group with at least ORB_MIN on-map members becomes
+   a gravity well — the same canonical memberships the Clusters layout
+   uses. Members circle their biggest well slowly, each on its own
+   ring and direction; a person in several wells glides across to
+   another of them every few seconds, picked at random, so the map
+   keeps quietly rearranging itself. The biggest well sits in the
+   middle and the rest are ringed greedily so wells sharing the most
+   members sit next to each other. People in no qualifying
+   organization take one slow, wide lap around the whole field.
+   Positions live in nd.ox/nd.oy; netOrbitStep advances them inside
+   the frame loop and the morph engine still owns travel between
+   layouts. 3D falls back to the Clusters coordinates. Reduced motion
+   parks everyone at their starting spot. Display-only: nothing here
+   ever writes data. ---------- */
+var ORB = { wells:[], lone:null };
+var ORB_MIN = 4;
+function orbRad(ov, w){ return w === ORB.lone ? w.rad * (0.8 + ov.frac * 0.25) : Math.max(16, w.rad * ov.frac); }
+function netOrbitBuild(){
+  var map = {}, order = [];
+  NET.nodes.forEach(function(nd){
+    var e = D.directory[nd.di], seen = {};
+    nd.ov = null;
+    function pushW(nm){
+      if(!nm || seen[nm]) return; seen[nm] = 1;
+      var w = map[nm]; if(!w){ w = map[nm] = { name:nm, nds:[], x:0, y:0, rad:0 }; order.push(w); }
+      w.nds.push(nd);
+    }
+    personGroups(e).forEach(pushW);
+    orgsOf(e).forEach(function(o){ pushW(regApply(o)); });
+  });
+  var wells = order.filter(function(w){ return w.nds.length >= ORB_MIN; })
+    .sort(function(a, b){ return b.nds.length - a.nds.length || a.name.localeCompare(b.name); });
+  function shared(a, b){
+    var s = {}, n = 0;
+    a.nds.forEach(function(nd){ s[nd.di] = 1; });
+    b.nds.forEach(function(nd){ if(s[nd.di]) n++; });
+    return n;
+  }
+  ORB.lone = { name:'', x:0, y:0, rad:1080 };
+  if(wells.length){
+    var sun = wells[0], rest = wells.slice(1), ring = [], cur = sun;
+    while(rest.length){
+      var bi = 0, bs = -1;
+      rest.forEach(function(w, i){ var s = shared(cur, w); if(s > bs){ bs = s; bi = i; } });
+      cur = rest.splice(bi, 1)[0]; ring.push(cur);
+    }
+    sun.rad = Math.min(200, 52 + Math.sqrt(sun.nds.length) * 22);
+    var R1 = sun.rad + 285;
+    ring.forEach(function(w, i){
+      w.rad = Math.min(170, 42 + Math.sqrt(w.nds.length) * 21);
+      var band = i < 9 ? 0 : 1, na = band ? ring.length - 9 : Math.min(9, ring.length), k = band ? i - 9 : i;
+      var ang = (k / Math.max(1, na)) * Math.PI * 2 - Math.PI / 2;
+      var rr = band ? R1 + 345 : R1;
+      w.x = Math.cos(ang) * rr; w.y = Math.sin(ang) * rr;
+    });
+  }
+  ORB.wells = wells;
+  var now = performance.now();
+  NET.nodes.forEach(function(nd){
+    var mine = wells.filter(function(w){ return w.nds.indexOf(nd) >= 0; });
+    var rng = mulberry32((nd.di + 4242) * 2654435761 % 2147483647);
+    var home = ORB.lone;
+    mine.forEach(function(w){ if(home === ORB.lone || w.nds.length > home.nds.length) home = w; });
+    var ov = { wells:mine, home:home, frac:0.3 + rng() * 0.62, ang:rng() * Math.PI * 2,
+      dir:(rng() < 0.5 ? -1 : 1), glide:null, next:now + 5000 + rng() * 12000 };
+    ov.spd = ov.dir * (Math.PI * 2) / (95 + ov.frac * 85);
+    nd.ov = ov;
+    var rad = orbRad(ov, home);
+    nd.ox = home.x + Math.cos(ov.ang) * rad; nd.oy = home.y + Math.sin(ov.ang) * rad;
+  });
+}
+function netOrbitStep(dt, now){
+  if(REDUCED_MOTION || Object.keys(NET.ptr).length) return;
+  var any = false;
+  NET.nodes.forEach(function(nd){
+    var ov = nd.ov; if(!ov) return;
+    any = true;
+    if(ov.glide){
+      var g = ov.glide, p = Math.min(1, (now - g.t0) / g.dur), e = netEase(p);
+      nd.ox = g.fx + (g.tx - g.fx) * e; nd.oy = g.fy + (g.ty - g.fy) * e;
+      if(p >= 1){ ov.glide = null; ov.home = g.w; ov.ang = g.a1; }
+    } else {
+      ov.ang += ov.spd * dt;
+      var w = ov.home, rad = orbRad(ov, w);
+      nd.ox = w.x + Math.cos(ov.ang) * rad; nd.oy = w.y + Math.sin(ov.ang) * rad;
+      if(ov.wells.length > 1 && now >= ov.next){
+        var opts = ov.wells.filter(function(x){ return x !== ov.home; });
+        var nw = opts[Math.floor(Math.random() * opts.length)];
+        var a1 = ov.ang + (Math.random() - 0.5) * 1.2, nr = orbRad(ov, nw);
+        ov.glide = { fx:nd.ox, fy:nd.oy, tx:nw.x + Math.cos(a1) * nr, ty:nw.y + Math.sin(a1) * nr, t0:now, dur:2400 + Math.random() * 900, w:nw, a1:a1 };
+        ov.next = now + 8000 + Math.random() * 11000;
+      }
+    }
+    nd.dx = nd.ox; nd.dy = nd.oy;
+  });
+  if(any) NET.dirty = true;
 }
 function netColor(nd){
   /* Tier owns color, always (JD's standing rule). The follow-direction
@@ -3449,7 +3549,7 @@ function viewNetwork(v){
   v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub" id="netsub">' + netSubHTML() + '</p></div>' +
     '<div class="netctl">' +
     '<div class="netgrp"><span class="netkick">View</span>' + sg('netmode', [['3d', '3D'], ['2d', '2D']], m3 ? '3d' : '2d') + '</div>' +
-    '<div class="netgrp"><span class="netkick">Layout</span>' + sg('netlayout', [['score', 'Score'], ['tier', 'Tier'], ['clusters', 'Clusters']], S.net.layout) + '</div>' +
+    '<div class="netgrp"><span class="netkick">Layout</span>' + sg('netlayout', [['score', 'Score'], ['tier', 'Tier'], ['clusters', 'Clusters'], ['orbits', 'Orbits']], S.net.layout) + '</div>' +
     '<div class="netgrp"><span class="netkick">Actions</span><span class="netacts">' +
     '<button type="button" class="btn ghost sm" data-act="netfly" aria-pressed="false"' + (REDUCED_MOTION ? ' disabled title="Flyover is off while reduced motion is on"' : '') + '>Flyover</button>' +
     '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button>' +
@@ -3561,6 +3661,7 @@ function viewNetwork(v){
     } else if(S.net.mode === '2d'){
       if(NET.dvel){ NET.rot += NET.dvel * dt; NET.dirty = true; }
       if(FLY.on && dt > 0) flyStep(dt);
+      if(S.net.layout === 'orbits' && !NET.morph && !FLY.on && dt > 0) netOrbitStep(dt, now);
       if(NET.dirty){ netDraw(); NET.dirty = false; }
     } else {
       if(NET.dvel) N3.yaw += NET.dvel * dt;
@@ -4098,7 +4199,7 @@ function net3Draw(ts){
      Clusters layout has no shells — its plates are the guides. */
   netGuideAlphas(ts).forEach(function(ga){
     var lay = ga[0], al = ga[1];
-    if(al <= 0.01 || lay === 'clusters') return;
+    if(al <= 0.01 || lay === 'clusters' || lay === 'orbits') return;
     var scoreLay = lay === 'score';
     (scoreLay ? SCORE_RADII : [170, 310, 490, 640]).forEach(function(R, i){
       for(var pass = 0; pass < 2; pass++){
@@ -4228,7 +4329,7 @@ function netDraw(){
      plates are the guides there */
   netGuideAlphas(performance.now()).forEach(function(ga){
     var lay = ga[0], al = ga[1];
-    if(al <= 0.01 || lay === 'clusters') return;
+    if(al <= 0.01 || lay === 'clusters' || lay === 'orbits') return;
     if(lay === 'score'){
       /* score layout: neutral layer guides (tier keeps color), labeled */
       ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
