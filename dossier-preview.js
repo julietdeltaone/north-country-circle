@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.13.0';
+var APP_VERSION = '2.13.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -3533,6 +3533,62 @@ function netOrbitStep(dt, now){
   });
   if(any) NET.dirty = true;
 }
+/* Orbits dressing (JD 2026-10-20): each well gets a soft aura orb on
+   the canvas behind its members, and a person traveling between wells
+   carries a small name plate in the org-plate style for the flight
+   only — it fades in as they leave and is gone when they arrive. */
+var ORBL = { box:null, els:{} };
+function netOrbitAuras(ctx, z){
+  if(S.net.layout !== 'orbits') return;
+  ORB.wells.forEach(function(w){
+    var rp = netRotP(w.x, w.y), p = w2s(rp[0], rp[1]), R = Math.max(28, w.rad * 1.18 * z);
+    if(p[0] < -R || p[1] < -R || p[0] > NET.W + R || p[1] > NET.H + R) return;
+    var g = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], R);
+    g.addColorStop(0, 'rgba(255,255,255,0.055)');
+    g.addColorStop(0.55, 'rgba(255,255,255,0.026)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(p[0], p[1], R, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.035)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(p[0], p[1], R * 0.78, 0, 6.2832); ctx.stroke();
+  });
+}
+function orbLabelsEnsure(){
+  var box = $('#netorb'); if(!box) return null;
+  if(ORBL.box !== box){ ORBL.box = box; ORBL.els = {}; box.innerHTML = ''; }
+  return box;
+}
+function netOrbitLabelsPaint(now){
+  var box = orbLabelsEnsure(); if(!box) return;
+  var active = {};
+  if(S.net.layout === 'orbits' && S.net.mode === '2d' && !REDUCED_MOTION){
+    NET.nodes.forEach(function(nd){
+      var ov = nd.ov, g = ov && ov.glide;
+      if(!g) return;
+      active[nd.di] = 1;
+      var el = ORBL.els[nd.di];
+      if(!el){
+        el = document.createElement('div');
+        el.className = 'orblab';
+        el.textContent = dispName(D.directory[nd.di]);
+        box.appendChild(el);
+        ORBL.els[nd.di] = el;
+      }
+      var pp = netP2(nd), rp = netRotP(pp[0], pp[1]), s = w2s(rp[0], rp[1]);
+      var pr = Math.min(1, Math.max(0, (now - g.t0) / g.dur));
+      var a = pr < 0.12 ? pr / 0.12 : pr > 0.8 ? (1 - pr) / 0.2 : 1;
+      if(s[0] < -40 || s[1] < -20 || s[0] > NET.W + 40 || s[1] > NET.H + 20) a = 0;
+      el.style.opacity = (a * 0.97).toFixed(3);
+      el.style.transform = 'translate3d(' + s[0].toFixed(1) + 'px,' + (s[1] - 22).toFixed(1) + 'px,0) translate(-50%,-50%)';
+    });
+  }
+  Object.keys(ORBL.els).forEach(function(di){
+    if(active[di]) return;
+    var el = ORBL.els[di];
+    if(el && el.parentNode) el.parentNode.removeChild(el);
+    delete ORBL.els[di];
+  });
+}
 function netColor(nd){
   /* Tier owns color, always (JD's standing rule). The follow-direction
      paint mode and its control were deleted in the redesign. */
@@ -3555,7 +3611,7 @@ function viewNetwork(v){
     '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button>' +
     '<button type="button" class="btn ghost sm' + (S.net.bg ? ' on' : '') + '" data-act="netbg" aria-pressed="' + !!S.net.bg + '">Wider circle</button></span></div>' +
     '</div></div>' +
-    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netfly" id="netfly" aria-hidden="true"></div><div class="netclust" id="netclust" aria-hidden="true"></div>' +
+    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netfly" id="netfly" aria-hidden="true"></div><div class="netclust" id="netclust" aria-hidden="true"></div><div class="netorb" id="netorb" aria-hidden="true"></div>' +
     '<div class="nethov" id="nethov" hidden></div>' +
     '<div class="netlegend" id="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
     '<button type="button" class="netlegchip" data-act="netlegend" aria-expanded="false" aria-controls="netlegend">Legend</button>' +
@@ -3752,6 +3808,7 @@ function clustEnsure(){
 function netClustPaint(){
   if(!clustEnsure()) return;
   var m3 = S.net.mode !== '2d';
+  CLUST.box.classList.toggle('orbits', S.net.layout === 'orbits' && !m3);
   var z = m3 ? N3.zoom : NET.cam.z, lo = m3 ? 1.15 : 1.0, hi = m3 ? 1.7 : 1.5;
   var fade = Math.max(0, Math.min(1, (hi - z) / (hi - lo)));
   var kept = [];
@@ -4269,6 +4326,7 @@ function net3Draw(ts){
   }
   flyCanvas3(ts);
   netClustPaint();
+  netOrbitLabelsPaint(ts || performance.now());
 }
 function n3Center(ctx, c){
   var s = Math.max(9, 17 * c.k * 2.2), g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, s * 3.2);
@@ -4346,6 +4404,7 @@ function netDraw(){
       });
     }
   });
+  netOrbitAuras(ctx, z);
   if(NET.bgA > 0.02){
     if(!NET.bg){
       var ci = D.circle_index || [], dots = [];
@@ -4379,6 +4438,7 @@ function netDraw(){
   ctx.fillStyle = '#ffffff'; ctx.font = '700 ' + Math.max(8, 10 * Math.sqrt(z)) + 'px Archivo,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('JD', c[0], c[1] + 0.5);
   flyCanvas2();
   netClustPaint();
+  netOrbitLabelsPaint(performance.now());
 }
 /* Map stats for the Network right panel. Display-only counts over what is on the map. */
 function netStatsHTML(){
