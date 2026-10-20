@@ -7,7 +7,7 @@
 /* App version — one number shared by both apps (explorer + dossier); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-const APP_VERSION = "2.11.1";
+const APP_VERSION = "2.12.0";
 const D = window.CIRCLE_DATA || {};
 const PEOPLE = D.people || [];
 const EDGES = D.edges || [];
