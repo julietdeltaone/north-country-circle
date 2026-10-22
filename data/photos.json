@@ -1,1 +1,407 @@
-{"updated":"2026-10-22","total":670,"batches":"Batch 1 (first 50) in progress","people":[]}
+{
+  "updated": "2026-10-22",
+  "total": 670,
+  "batches": "Batch 1 of 14 \u2014 profiles 1-50 checked 2026-10-22",
+  "people": [
+    {
+      "evidence": "No source links on file.",
+      "name": "Catherine Green",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only 2 Google Docs on file (wedding agreement, run-of-show) \u2014 documents, not photo sources.",
+      "name": "Elena Brown",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Page titled 'Meet The Owner | Adept Detailing' carries a single lead image directly above 'Aaron Daniels is the founder and owner of Adept Detailing...' \u2014 no explicit caption/alt naming him in the image itself, so likely not confirmed. Both SUNY Canton Merit stories text-only.",
+      "name": "Aaron Daniels",
+      "photo_url": "https://static.wixstatic.com/media/6349cb_caabf0d69b77421e903fd82b6c683933~mv2.jpg/v1/fill/w_341,h_339,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/6349cb_caabf0d69b77421e903fd82b6c683933~mv2.jpg",
+      "source_page": "https://www.adeptdetailing.online/about-5",
+      "status": "likely",
+      "type": "portrait"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Abigail Daniels",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit story returns 'page not found'. Canton Honors 2024 page lists her in text only; its 3 photos are captioned for other subjects, none tied to her. Fall 2025 honors page is a text list, no images.",
+      "name": "Abby Stiles",
+      "photo_url": null,
+      "source_page": "https://www.canton.edu/news/2024/honors24.php",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "United Helpers Insider post is about patient Eric J. Matott; its only photo is Eric+Matott.JPG. Cole appears in text only ('One nurse who visited regularly was Allison Cole'). LinkedIn auth-walled.",
+      "name": "Allison Cole",
+      "photo_url": null,
+      "source_page": "https://uhinsider.blogspot.com/2017/05/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Photo caption names her in the line-up: 'Left to right: First-place winner Adriana Levendusky, third-place winner Leah Morgan, fourth-place winner Paul French, Potsdam Rotary President Sunday Smith...' \u2014 group photo, she is in it per caption, but image URL could not be extracted from the page (no Images footnote returned) \u2014 needs re-extraction before the photo itself can be filed.",
+      "name": "Adriana Levendusky",
+      "photo_url": null,
+      "source_page": "https://www.potsdamrotary.org/Stories/students-win-2-000-in-rotary-essay-contest",
+      "status": "possible",
+      "type": "group"
+    },
+    {
+      "evidence": "UNE Athletics roster page 'Adria Tebo \u2014 2026-2027 Women's Ice Hockey Roster' (Senior, Forward, Canton NY, Northwood School); sole player image file WIH_Tebo_09159.jpg \u2014 roster headshot tied to her by page and filename. Note: on-file URL path says mens-soccer but serves her women's ice hockey roster page.",
+      "name": "Adria Tebo",
+      "photo_url": "https://athletics.une.edu/images/2026/10/20/WIH_Tebo_09159.jpg?width=300",
+      "source_page": "https://athletics.une.edu/sports/mens-soccer/roster/adria-tebo/8118",
+      "status": "confirmed",
+      "type": "headshot"
+    },
+    {
+      "evidence": "Merit profile lists 6 Clarkson achievements in text only, no images. Note: newzjunky source blocked by browser policy and Clarkson Merit story link uncheckable on that pass \u2014 no_photo on sources actually readable.",
+      "name": "Aidan Daniels",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/Aidan-Daniels/8189308",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Merit profile text-only. Potsdam President's List Merit story 'page not found'. NNYCF page lists her in text; its only image is a generic graduates illustration with no caption tying it to her \u2014 not filed.",
+      "name": "Alana Hoover",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/Alana-M-Hoover/5361990",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Name appears only in the ~200-student award list. Page's only image is generic (Honors Convocation 2022, honors-program2022.jpg) with no caption/alt tying her to anyone pictured. Facebook/LinkedIn auth.",
+      "name": "Alessandra Parker",
+      "photo_url": null,
+      "source_page": "https://www.canton.edu/news/2022/honors-awards.php",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Alexandra Colbert",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Alex Hammond",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Alexis Nicole",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Alli Potter",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "AnyFlip Mahopac News 06.01.2023 flipbook returned no image URLs; page 8 honors item names 'Allison Dubbioso' (magna cum laude, SUNY Potsdam) with no photo/caption tied to her. Facebook auth.",
+      "name": "Ally Dubbioso",
+      "photo_url": null,
+      "source_page": "https://anyflip.com/puzs/mksr/basic",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Name appears only in graduate/honors lists. 2019 commencement page's sole image is a generic group shot (graduates taking selfies) \u2014 no one identified, cannot be assigned to her. Claxton-Hepburn link resolved only to a blog-index stub; full article not surfaced.",
+      "name": "Allyssa Sabre",
+      "photo_url": null,
+      "source_page": "https://www.canton.edu/news/2019/2019graduates.php",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is a Facebook post (auth).",
+      "name": "Alyssa L Ramsay",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Ambika Banavara",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "School Library System 'Council Members Report' PDF is a text-only table listing her as Teacher Rep/Librarian & Chairperson, SLL BOCES \u2014 no photo. LinkedIn auth. Second PDF (BOE minutes) not photo-bearing per source type.",
+      "name": "Rachelle Amo",
+      "photo_url": null,
+      "source_page": "https://4.files.edl.io/0a51/06/27/19/190124-a4245973-9ed2-4b4a-848c-a7490e4b7456.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Both CFC event pages returned 404 \u2014 no content/photos obtainable. Facebook link skipped (auth).",
+      "name": "Anastasia Daniels",
+      "photo_url": null,
+      "source_page": "https://www.cfconline.org/events/event/5/youth-group/2024-01-22",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Text-only corporation record for ANASTASIAS BAKERY LLC, registered agent Anastasia Cote \u2014 no images. Second link (opengovny inspection, Gideon's Galley) also text-only, no images.",
+      "name": "Anastasia Cote",
+      "photo_url": null,
+      "source_page": "https://opendatany.com/corporation.php?id=5314553",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Andrea Vetere",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "County roster PDF read in full \u2014 text-only listing (Superintendent, Buildings & Grounds), no images.",
+      "name": "Andy Dennis",
+      "photo_url": null,
+      "source_page": "https://www.stlawco.gov/sites/default/files/CountyClerk/2025%20County%20Clerk%20Roster.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Annabelle Dowling",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Honeyfund wedding page (Nathaniel Wolf & Anne Wangerin, 2024-06-22, Canton NY) \u2014 fetched page contained no image markers/Images list, so no couple photo could be extracted. Note page names bride Anne Wangerin.",
+      "name": "Anne Katherin Wolf",
+      "photo_url": null,
+      "source_page": "https://www.honeyfund.com/site/wolf-family-2024",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Arianna Mason",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Arianna Rider",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Caption under image: 'Trap Men and Women National Teams'; article reports Aeriel Skinner gold in Women's Open Trap at same Tucson selection match, but caption does not name her and Women's Trap National Team list does not include her \u2014 presence unconfirmed. Other image on page rejected (captioned Carey Garrison, different person). Priority SSUSA article returned 404.",
+      "name": "Aeriel Skinner",
+      "photo_url": "https://usashooting.org/app/uploads/2025/12/trap-national-teams-300x225.png",
+      "source_page": "https://sitemaps.usashooting.org/2026-shotgun-national-teams/",
+      "status": "possible",
+      "type": "group"
+    },
+    {
+      "evidence": "Only a Facebook link on file \u2014 auth-walled, not checkable.",
+      "name": "Hamza Hmyene",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Merit profile is person-specific (Winthrop NY, SUNY Potsdam BA Psychology, cum laude) but page returned no Images/no photo URL. President's List story link returns Merit 'page not found'. Facebook skipped.",
+      "name": "Autumn Zellweger",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/Autumn-Zellweger/7476550",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only source on file is Facebook (auth).",
+      "name": "Brianna McCarthy",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Becca Emmett",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "CFC leadership page lists '[Image 1: Ben Levendusky]' directly above heading 'Ben Levendusky \u2014 Pastor at CFC Madrid'. Same image on /madrid/ as Lead Pastor. Second distinct confirmed photo on americanwomenswrestling.com/who-we-are captioned 'Ben Levendusky - Photo by Richard Sinclair': https://images.squarespace-cdn.com/content/v1/5d646c0f2d707d0001489778/1612557628612-D8EG1I7PFGRQ8FSZ9KAW/Ben.jpg",
+      "name": "Ben Levendusky",
+      "photo_url": "https://www.cfconline.org/wp-content/cfc-leadership/485.webp?v=1779404586",
+      "source_page": "https://www.cfconline.org/leadership/",
+      "status": "confirmed",
+      "type": "staff photo"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Jason Deschaine",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Listed Merit URL resolves to an unrelated story (Brooke Gill, James Madison University) \u2014 broken/mismatched source link, no Mark Boyle content or images.",
+      "name": "Mark Joseph Boyle",
+      "photo_url": null,
+      "source_page": "https://potsdam.meritpages.com/stories/Mark-Boyle-Set-to-Graduate-from-SUNY-Potsdam-/14197",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Bree Rogers",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Both sources on file are Facebook (auth).",
+      "name": "Brendan Bombard",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Lowville Academy Sept 2025 newsletter PDF readable and confirms him (6th grade ELA teacher, Lowville alumnus) but extraction contains no image URLs/caption tying a photo to him.",
+      "name": "Brian M. Zehr",
+      "photo_url": null,
+      "source_page": "https://files.smartsites.parentsquare.com/4459/september_2025.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Brianna Hammond",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only image is show cover art (alt 'Good Enough'); page never names Brietta \u2014 podcast hosted by Andrea Burke. Artwork not tied to her.",
+      "name": "Brietta Paladin",
+      "photo_url": null,
+      "source_page": "https://toppodcast.com/podcast_feeds/good-enough/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "North Country This Week Feb 21-27 2026 article (nominated for Deputy of the Year Award; joined Sheriff's Office 2025) \u2014 text-only extraction, no photo caption/image tied to him. Second PDF lists him only in a table as School Resource Deputy.",
+      "name": "Brock Tulley",
+      "photo_url": null,
+      "source_page": "https://zeta.creativecirclecdn.com/ncn/files/20260219-110008-284-2026-02-21.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Caption directly under photo: 'Dr. Randy Sheeks presents Bronwyn Paladin with the Presser Undergraduate Scholar Award.' Article: senior music performance major from Potsdam NY, Lee University's 2026 Presser Undergraduate Scholar. Other sources checked: student profile page text-only; testimonials page's only image is another student.",
+      "name": "Bronwyn Paladin",
+      "photo_url": "https://i0.wp.com/www.leeuniversity.edu/wp-content/uploads/Presser-Award_2026.jpg?resize=640%2C442&ssl=1",
+      "source_page": "https://www.leeuniversity.edu/news/paladin-earns-2026-presser-award/",
+      "status": "confirmed",
+      "type": "article photo"
+    },
+    {
+      "evidence": "Merit profile lists text stories only (Potsdam NY, SUNY Potsdam BA Speech Communication, cum laude) \u2014 no profile photo.",
+      "name": "Brooke Moore",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/Brooke-L-Moore/5362175",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Appears only as a name in a 550-recipient list. Page's sole image is generic stock predating the awards, no caption tying her to it.",
+      "name": "Brooke Joyce",
+      "photo_url": null,
+      "source_page": "https://nnycf.org/2022-scholarship-awards/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Cliff Bailey",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Business listing has no photos at all; he is named only in a customer review text.",
+      "name": "Caden Colbert",
+      "photo_url": null,
+      "source_page": "https://outdoornearme.com/branch/cornerstone-services-norwood-32-s-main-st-norwood-ny-13668",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "On-file Kilmer Labs URL is truncated; searches found no page naming her. Closest Kilmer project page's photo captions name other people. Kilmer index also hit a browser rate-limit on retry \u2014 noted gap.",
+      "name": "Caelin Ramsay",
+      "photo_url": null,
+      "source_page": "https://www.potsdam.edu/academics/appliedlearning/mentored-student-research/kilmer-labs/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Caleb Lindsey",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Chamber entry for Railroad Productions lists Cory Williams as business contact; its Photo Gallery includes a file named '1.Headshot.JPG' alongside portfolio shots \u2014 no caption names the headshot's subject, so possible not confirmed. The Knot listing is review text only. Third source (Potsdam Crane page) is about Alex Mariano \u2014 its photos are Mariano, Cory is only the video credit; those photos were rejected for Cory.",
+      "name": "Cory Williams",
+      "photo_url": "https://www.potsdamchamber.com/wp-content/uploads/gravity_forms/14-3176f72419867ca7663517d4107e18b0/2025/12/1.Headshot.JPG",
+      "source_page": "https://www.potsdamchamber.com/view/business-leaders-table-view/entry/2784/?pagenum=3&sort",
+      "status": "possible",
+      "type": "business gallery headshot"
+    }
+  ]
+}
