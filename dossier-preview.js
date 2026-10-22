@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.24.0';
+var APP_VERSION = '2.25.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4135,7 +4135,7 @@ function phLoad(){
   PH_LOADING = true;
   fetch('data/photos.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if($('#p-hero')) repaintTop(); })
+    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if(S.route.name === 'audit') render(); else if($('#p-hero')) repaintTop(); })
     .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos') render(); });
 }
 
@@ -4144,10 +4144,16 @@ function phReview(){
 }
 function phSetReview(name, val){
   if(!name) return;
+  var adv = null;
+  if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){
+    var q0 = phaQueue(phaState().filter), i0 = q0.findIndex(function(p){ return p.name === name; });
+    if(i0 >= 0) adv = (q0[i0 + 1] || q0[i0 - 1] || {}).name || null;
+  }
   var r = phReview(), k = String(name).toLowerCase();
   if(val) r[k] = val; else delete r[k];
   store('ncc_photos_review_v1', JSON.stringify(r));
   if(S.route.name === 'photos') viewPhotos($('#view'));
+  else if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){ if(adv) phaState().cur = adv; viewAudit($('#view')); }
 }
 
 /* ---------- profile photos: framing store + hero + editor (JD 2026-10-22) ---------- */
@@ -4241,9 +4247,103 @@ function phEditor(name){
   apply();
 }
 
+/* ============================================================
+   Photo Audit (JD 2026-10-22): a dedicated Audit mode — the
+   review desk. The Photos page is view-only; every verdict
+   (confirm / bad photo / reject / undo) lives here, in a
+   purpose-built three-column desk: queue, stage, details.
+   ============================================================ */
+function phaState(){ var A = S.audit; if(!A) return { filter:'todo', cur:null }; if(!A.pha) A.pha = { filter:'todo', cur:null }; return A.pha; }
+function phaAll(){ if(!PH || !PH.people) return []; return PH.people.filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely' || p.status === 'possible'); }); }
+function phaRev(p){ return phReview()[String(p.name || '').toLowerCase()] || ''; }
+function phaCounts(){
+  var c = { todo:0, confirmed:0, bad:0, rejected:0, possible:0 };
+  phaAll().forEach(function(p){ var r = phaRev(p); if(r === 'confirmed') c.confirmed++; else if(r === 'bad') c.bad++; else if(r === 'rejected') c.rejected++; else c.todo++; if(p.status === 'possible' && r !== 'rejected') c.possible++; });
+  return c;
+}
+function phaQueue(f){
+  var all = phaAll(), rank = { possible:0, likely:1, confirmed:2 }, q;
+  if(f === 'possible') q = all.filter(function(p){ return p.status === 'possible' && phaRev(p) !== 'rejected'; });
+  else if(f === 'bad') q = all.filter(function(p){ return phaRev(p) === 'bad'; });
+  else if(f === 'rejected') q = (PH ? PH.people : []).filter(function(p){ return p.photo_url && phaRev(p) === 'rejected'; });
+  else if(f === 'confirmed') q = all.filter(function(p){ return phaRev(p) === 'confirmed'; });
+  else if(f === 'all') q = all.slice();
+  else q = all.filter(function(p){ return !phaRev(p); });
+  q.sort(function(a, b){ return (rank[a.status] - rank[b.status]) || a.name.localeCompare(b.name); });
+  return q;
+}
+function phaRender(){
+  var w = $('#phawrap'); if(!w) return;
+  phLoad();
+  if(!PH){ w.innerHTML = '<p class="dim">Loading photo data&hellip;</p>'; return; }
+  if(PH.empty || !PH.people){ w.innerHTML = '<p class="dim">No photo data yet.</p>'; return; }
+  var st = phaState(), c = phaCounts();
+  var filters = [ ['todo', 'To review', c.todo], ['possible', 'Possible grade', c.possible], ['bad', 'Bad photo', c.bad], ['confirmed', 'Confirmed', c.confirmed], ['rejected', 'Rejected', c.rejected], ['all', 'All photos', phaAll().length] ];
+  var q = phaQueue(st.filter);
+  if(st.cur && !q.some(function(p){ return p.name === st.cur; })) st.cur = q.length ? q[0].name : null;
+  if(!st.cur && q.length) st.cur = q[0].name;
+  var idx = q.findIndex(function(p){ return p.name === st.cur; });
+  var p = idx >= 0 ? q[idx] : null;
+  var chips = filters.map(function(f){ return '<button type="button" class="pha-chip' + (st.filter === f[0] ? ' on' : '') + '" data-act="phafilter" data-f="' + f[0] + '">' + f[1] + ' <b>' + f[2] + '</b></button>'; }).join('');
+  var list = q.map(function(x){ var r = phaRev(x); return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span><em>' + (r === 'bad' ? 'BAD' : r === 'confirmed' ? 'OK' : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P') + '</em></button>'; }).join('');
+  var stage, detail;
+  if(p){
+    var di = BYN[String(p.name).toLowerCase()]; if(di == null) di = null;
+    var e = di != null ? D.directory[di] : null;
+    var rev = phaRev(p);
+    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO</span>' : rev === 'confirmed' ? '<span class="phbadge conf">CONFIRMED BY YOU</span>' : rev === 'rejected' ? '<span class="phbadge poss">REJECTED</span>' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
+    var curUrl = phFrameFor(p.name, p).url || p.photo_url;
+    var thumbs = (p.also && p.also.length) ? '<div class="pha-alts">' + [p.photo_url].concat(p.also.map(function(a){ return a.url; })).map(function(u){ return '<button type="button" class="pha-alt' + (u === curUrl ? ' on' : '') + '" data-act="phaalt" data-pname="' + esc(p.name) + '" data-u="' + esc(u) + '"><img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></button>'; }).join('') + '</div>' : '';
+    stage = '<div class="pha-stage"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs + '</div>';
+    var verdicts = rev === 'confirmed'
+      ? '<span class="phok">' + ic('check', 14) + ' Confirmed by you</span><button type="button" class="btn ghost" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button>'
+      : rev === 'bad'
+      ? '<span class="phok bad">Right person, bad photo &mdash; keep looking</span><button type="button" class="btn primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Confirm instead</button><button type="button" class="btn ghost" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button>'
+      : rev === 'rejected'
+      ? '<span class="phok bad">Rejected by you</span><button type="button" class="btn ghost" data-act="phundo" data-pname="' + esc(p.name) + '">Undo rejection</button>'
+      : '<button type="button" class="btn primary pha-big" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 15) + ' Confirm</button><button type="button" class="btn pha-big" data-act="phbad" data-pname="' + esc(p.name) + '">Bad photo</button><button type="button" class="btn ghost pha-big" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('trash', 15) + ' Reject</button>';
+    detail = '<div class="pha-detail"><div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + badge + '</div>' +
+      '<div class="pha-pos">' + (idx + 1) + ' of ' + q.length + ' in this queue</div>' +
+      '<p class="pha-type dim">' + esc(p.type || 'photo') + '</p>' +
+      '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
+      (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
+      '<div class="pha-verdicts">' + verdicts + '</div>' +
+      '<div class="pha-nav"><button type="button" class="btn ghost sm" data-act="phanav" data-d="-1">&larr; Prev</button><button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button><button type="button" class="btn ghost sm" data-act="phanav" data-d="1">Next &rarr;</button></div>' +
+      '</div>';
+  } else {
+    stage = '<div class="pha-stage"><div class="pha-none">' + ic('check', 30) + '<p>This queue is clear.</p></div></div>';
+    detail = '<div class="pha-detail"><p class="dim">Nothing here. Pick another queue on the left.</p></div>';
+  }
+  w.innerHTML = '<div class="pha"><div class="pha-queue"><div class="pha-chips">' + chips + '</div><div class="pha-list">' + (list || '<p class="dim">Queue is empty.</p>') + '</div></div>' + stage + detail + '</div>';
+  phaKeys();
+}
+function phaNav(d){
+  var st = phaState(), q = phaQueue(st.filter); if(!q.length) return;
+  var i = q.findIndex(function(p){ return p.name === st.cur; });
+  i = Math.min(q.length - 1, Math.max(0, (i < 0 ? 0 : i) + d));
+  st.cur = q[i].name; phaRender();
+}
+function phaKeys(){
+  if(window.__phaKeys) return; window.__phaKeys = true;
+  document.addEventListener('keydown', function(ev){
+    if(S.route.name !== 'audit' || !S.audit || audMode() !== 'photos') return;
+    var t = ev.target; if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if(document.body.classList.contains('sheet-open')) return;
+    var st = phaState(); if(!st.cur) return;
+    var k = ev.key;
+    if(k === 'ArrowRight'){ phaNav(1); ev.preventDefault(); }
+    else if(k === 'ArrowLeft'){ phaNav(-1); ev.preventDefault(); }
+    else if(k === 'c' || k === 'C') phSetReview(st.cur, 'confirmed');
+    else if(k === 'b' || k === 'B') phSetReview(st.cur, 'bad');
+    else if(k === 'x' || k === 'X') phSetReview(st.cur, 'rejected');
+    else if(k === 'u' || k === 'U') phSetReview(st.cur, null);
+    else if(k === 'a' || k === 'A') phEditor(st.cur);
+  });
+}
+
 function viewPhotos(v){
   phLoad();
-  var head = '<div class="page asearch"><div class="pagehead phhead"><div><h1 class="display">Photos</h1><p class="sub">A photo counts only when its page ties it to the person. Select a photo to review it in the viewer.</p></div></div>';
+  var head = '<div class="page asearch"><div class="pagehead phhead"><div><h1 class="display">Photos</h1><p class="sub">A photo counts only when its page ties it to the person. Select a photo to see it in the viewer.</p></div></div>';
   if(!PH){
     v.innerHTML = head + '<div class="asskel"><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div></div></div>';
     return;
@@ -4261,63 +4361,39 @@ function viewPhotos(v){
   var stats = '<div class="phstrip">' +
     '<span class="phst">' + ic('camera', 13) + '<b>' + PH.people.length + ' / ' + (PH.total || PH.people.length) + '</b> checked</span>' +
     '<span class="phst">' + ic('check', 13) + '<b>' + found.length + '</b> on file</span>' +
-    '<span class="phst">' + ic('eye', 13) + '<b>' + awaiting + '</b> awaiting review</span>' +
     '<span class="phst">' + ic('search', 13) + '<b>' + (counts.no_photo + counts.no_source + counts.auth_only) + '</b> no photo yet</span>' +
     '</div>';
-  function phActs(p){
-    var rev = revOf(p), nm = esc(p.name);
-    function b(act, icon, label, title, cls){
-      return '<button type="button" class="pha' + (cls ? ' ' + cls : '') + '" data-act="' + act + '" data-pname="' + nm + '" title="' + title + '">' + ic(icon, 13) + '<span class="t">' + label + '</span></button>';
-    }
-    var adj = b('phadjust', 'edit', 'Adjust', 'Adjust the framing of this photo');
-    if(rev === 'confirmed') return '<div class="phacts">' + b('phundo', 'undo', 'Undo', 'Undo your confirmation') + adj + '</div>';
-    if(rev === 'bad') return '<div class="phacts">' + b('phconfirm', 'check', 'Confirm', 'Confirm: right person, good photo', 'primary') + b('phundo', 'undo', 'Undo', 'Undo the bad-photo flag') + adj + '</div>';
-    return '<div class="phacts">' + b('phconfirm', 'check', 'Confirm', 'Confirm: right person, good photo', 'primary') + b('phbad', 'skip', 'Bad photo', 'Right person, bad photo: keep looking') + b('phreject', 'trash', 'Reject', 'Reject: not this person') + adj + '</div>';
-  }
   function photoCard(p){
-    var rev = revOf(p);
     var sel = PH_SEL && PH_SEL.toLowerCase() === String(p.name).toLowerCase();
-    var grade = rev === 'bad' ? '<span class="phg bad">BAD</span>' : rev === 'confirmed' ? '<span class="phg ok">' + ic('check', 11) + '</span>' : p.status === 'confirmed' ? '<span class="phg conf">C</span>' : p.status === 'likely' ? '<span class="phg lik">L</span>' : '<span class="phg poss">P</span>';
-    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' + phActs(p) +
-      '<div class="phnm"><b>' + esc(p.name) + '</b>' + grade + '</div></section>';
+    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' +
+      '<div class="phnm"><b>' + esc(p.name) + '</b></div></section>';
   }
   function phRail(p){
     var di = diOf(p.name), e = di != null ? D.directory[di] : null;
-    var rev = revOf(p);
-    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO</span>' : rev === 'confirmed' ? '<span class="phbadge conf">CONFIRMED BY YOU</span>' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
-    var review = rev === 'confirmed'
-      ? '<div class="phrev"><span class="phok">' + ic('check', 13) + ' Confirmed by you</span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
-      : rev === 'bad'
-      ? '<div class="phrev"><span class="phok bad">Right person, bad photo &mdash; keep looking</span></div><div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">Confirm instead</button><span class="sp"></span><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
-      : '<div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 13) + ' Confirm</button><button type="button" class="btn ghost sm" data-act="phbad" data-pname="' + esc(p.name) + '">Bad photo</button><button type="button" class="btn ghost sm" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('x', 13) + ' Reject</button></div>';
+    var badge = p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
     var alts = (p.also || []).length ? '<p class="dim phrail-pad">' + (p.also.length + 1) + ' photos on file for this person &mdash; switch between them in Adjust.</p>' : '';
     return '<aside class="phrail"><div class="phrail-h"><b>' + esc(p.name) + '</b><button type="button" class="ib" data-act="phclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
       '<span class="phimg phrail-img"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' +
       '<div class="phrail-meta">' + badge + '<span class="dim">' + esc(p.type || 'photo') + '</span></div>' +
       '<p class="ph-ev phrail-pad">' + esc(p.evidence || '') + '</p>' + alts +
       (p.source_page ? '<p class="phrail-pad"><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
-      '<div class="phrail-pad">' + review + '</div>' +
       '<div class="phrev phrail-pad"><button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button>' + (e ? '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>' : '') + '</div>' +
-      flagBlock +
       '</aside>';
   }
   found.sort(function(a, b){ var ra = revOf(a) === 'confirmed' ? 1 : 0, rb = revOf(b) === 'confirmed' ? 1 : 0; if(ra !== rb) return ra - rb; var r = { confirmed:0, likely:1, possible:2 }; return r[a.status] - r[b.status] || a.name.localeCompare(b.name); });
   var shown = found.slice(0, Math.max(PH_SHOW, PH_COLS * 2));
   var moreHtml = found.length > shown.length ? '<div class="phmore"><button type="button" class="btn ghost" data-act="phmore">Show more photos &mdash; ' + (found.length - shown.length) + ' more</button></div>' : '';
-  var flagBlock = flagged.length ? '<div class="phrail-flags"><div class="phrail-sec">FLAGGED — KEEP LOOKING</div><p>' + flagged.map(function(p){ return esc(p.name); }).join(', ') + '</p></div>' : '';
   var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
   var toolsHtml = '<div class="phbar">' + stats + colsHtml + '</div>';
-  var rejected = PH.people.filter(function(p){ return revOf(p) === 'rejected'; });
-  var rejHtml = rejected.length ? '<div class="phrej"><span>Rejected by you: ' + rejected.map(function(p){ return esc(p.name); }).join(', ') + '</span>' + rejected.map(function(p){ return '<button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo ' + esc(p.name) + '</button>'; }).join('') + '</div>' : '';
   if(PH_SEL && !found.some(function(p){ return p.name.toLowerCase() === PH_SEL.toLowerCase(); })) PH_SEL = null;
   var railHtml;
   if(PH_SEL){ var sp = found.filter(function(p){ return p.name.toLowerCase() === PH_SEL.toLowerCase(); })[0]; railHtml = sp ? phRail(sp) : phRailEmpty(); }
   else railHtml = phRailEmpty();
   function phRailEmpty(){
     return '<aside class="phrail"><div class="phrail-h"><b>Viewer</b></div>' +
-      '<div class="phrail-none">' + ic('camera', 26) + '<p>Select a photo.<br>Its details and every edit live here.</p></div>' + flagBlock + '</aside>';
+      '<div class="phrail-none">' + ic('camera', 26) + '<p>Select a photo to see it here.<br>Reviewing lives in Audit &rarr; Photo Audit.</p></div></aside>';
   }
-  var foundHtml = found.length ? toolsHtml + '<div class="phwrap"><div class="phmain"><div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml + rejHtml + '</div>' + railHtml + '</div>' : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
+  var foundHtml = found.length ? toolsHtml + '<div class="phwrap"><div class="phmain"><div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml + '</div>' + railHtml + '</div>' : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
   v.innerHTML = head + foundHtml + '</div>';
 }
 
@@ -5509,9 +5585,10 @@ var AUD_MODES = [
   { k:'rapid',  l:'Rapid Fire' },
   { k:'cat',    l:'Category Run' },
   { k:'finish', l:'Finish Line' },
-  { k:'lima',   l:'Lima Charlie' }
+  { k:'lima',   l:'Lima Charlie' },
+  { k:'photos', l:'Photo Audit' }
 ];
-function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' || m === 'lima' ? m : 'cards'; }
+function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' || m === 'lima' || m === 'photos' ? m : 'cards'; }
 /* Daily goal (Duolingo pattern, minus the nagging): fills today vs a
    goal JD sets himself, persisted per calendar day. */
 function audDay(){
@@ -5625,6 +5702,7 @@ function audDealMode(){
   else if(m === 'finish') audDealFinish();
   else if(m === 'cat') audDealCat();
   else if(m === 'lima') lcEnsureDeck();
+  else if(m === 'photos'){ /* the photo desk manages its own queue */ }
   else audDeal();
 }
 function audSetMode(m){
@@ -5703,6 +5781,12 @@ function audModeBarHTML(){
     var np = lcPendingCount();
     return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Lima Charlie run</span>' +
       '<span class="dim">Tap a card to open the whole profile. Dictate everything that needs to change into the note box; Luna applies it on the next run.</span></div>';
+  }
+  if(m === 'photos'){
+    phLoad();
+    var pc = phaCounts();
+    return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> to review</span><span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
+      '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; B bad photo &middot; X reject &middot; U undo &middot; A adjust</span></div>';
   }
   return '<div class="aud-modebar"><button type="button" class="btn ghost" data-act="audbulkphone">Mark all phone gaps done</button>' +
     '<span class="dim">Close out the phone gap for everyone you have no number for.</span></div>';
@@ -6015,7 +6099,7 @@ function audWatchCols(){
 
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
-  if(['cards', 'rapid', 'cat', 'finish', 'lima'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
+  if(['cards', 'rapid', 'cat', 'finish', 'lima', 'photos'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
   var m = audMode();
@@ -6029,11 +6113,12 @@ function viewAudit(v){
     '<div id="audmodebar">' + audModeBarHTML() + '</div>' +
     (m === 'rapid'
       ? '<div class="aud-stage-wrap"><div class="aud-stack" id="audstack"><div class="aud-peek p2"></div><div class="aud-peek p1"></div><div class="aud-grid aud-stage" id="audgrid"></div></div></div>'
-      : m === 'lima' ? '<div id="lcwrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
+      : m === 'lima' ? '<div id="lcwrap"></div>' : m === 'photos' ? '<div id="phawrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
     '<div id="audempty"></div>' +
     '<div class="aud-toast" id="audtoast" hidden role="status"></div></div>';
   var grid = $('#audgrid');
   if(m === 'lima'){ lcRender(); }
+  else if(m === 'photos'){ phaRender(); }
   else if(S.audit.blitzDone){
     grid.innerHTML = '<div class="aud-caught aud-blitzsum"><h3>Blitz over</h3>' +
       '<p class="aud-blitzstats"><b>' + S.audit.blitzDone.fills + '</b> fills · best streak <b>' + S.audit.blitzDone.best + '</b> · <b>' + (S.audit.blitzDone.fills / 2).toFixed(1) + '</b> per minute</p>' +
@@ -6127,6 +6212,10 @@ function onClick(ev){
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
     case 'phbad': phSetReview(el.getAttribute('data-pname'), 'bad'); break;
     case 'phmore': PH_SHOW += 24; if(S.route.name === 'photos') viewPhotos($('#view')); break;
+    case 'phafilter': phaState().filter = el.getAttribute('data-f') || 'todo'; phaState().cur = null; viewAudit($('#view')); break;
+    case 'phacur': phaState().cur = el.getAttribute('data-pname'); phaRender(); break;
+    case 'phanav': phaNav(parseInt(el.getAttribute('data-d'), 10) || 1); break;
+    case 'phaalt': { var anm = el.getAttribute('data-pname'); var afr = phFrameFor(anm); afr.url = el.getAttribute('data-u'); phFrameSet(anm, afr); phaRender(); break; }
     case 'phsel': { var pn = el.getAttribute('data-pname'); var sy = window.scrollY; PH_SEL = (PH_SEL && pn && PH_SEL.toLowerCase() === pn.toLowerCase()) ? null : pn; if(S.route.name === 'photos'){ viewPhotos($('#view')); window.scrollTo(0, sy); } break; }
     case 'phclose': PH_SEL = null; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'phcols': PH_COLS = parseInt(el.getAttribute('data-n'), 10) || 12; store('ncc_photos_cols_v1', String(PH_COLS)); PH_SHOW = PH_COLS * 4; if(S.route.name === 'photos') viewPhotos($('#view')); break;
