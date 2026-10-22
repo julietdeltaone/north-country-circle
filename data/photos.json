@@ -1,7 +1,7 @@
 {
  "updated": "2026-10-22",
  "total": 670,
- "batches": "Batches 1-7 + requeue \u2014 profiles 1-350 checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle",
+ "batches": "Batches 1-8 + requeue \u2014 profiles 1-400 checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photo for Courtney Delosh",
  "people": [
   {
    "evidence": "Page titled 'Meet The Owner | Adept Detailing' carries a single lead image directly above 'Aaron Daniels is the founder and owner of Adept Detailing...' \u2014 no explicit caption/alt naming him in the image itself, so likely not confirmed. Both SUNY Canton Merit stories text-only.",
@@ -92,6 +92,14 @@
    "type": null
   },
   {
+   "evidence": "City on a Hill Somerville staff page photo sits directly above the heading 'Alexis Krapf, Director of Discipleship, Deacon' \u2014 a labeled staff photo. Likely the same person: originally from Upstate NY, self-described grammar/language lover (modern English and ancient Greek) matching her SUNY Potsdam Presidential Scholars profile (Alexis Donnelly, Spanish/English-Writing, Linguistics minor), with two 2025 Gordon-Conwell master's degrees; 'Krapf' appears to be a married name. Strongly suggested but not explicitly proven \u2014 likely, not confirmed. Her Potsdam profile also embeds an alt-tied photo ('Alexis Donnelly Image') whose URL could not be extracted.",
+   "name": "Alexis Donnely",
+   "photo_url": "https://images.squarespace-cdn.com/content/v1/5ba6c72ae5f7d1371ddb3b72/36ddbc3e-8498-42d7-922e-50bf40ce1ba8/147+Angelina+Rose+.jpg",
+   "source_page": "https://www.coahsomerville.org/leadership-staff",
+   "status": "likely",
+   "type": "staff photo"
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Alexis Nicole",
    "photo_url": null,
@@ -174,6 +182,14 @@
   {
    "evidence": "No source links on file.",
    "name": "Andrea Vetere",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Andrew Haas",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
@@ -309,6 +325,22 @@
   },
   {
    "evidence": "No source links on file.",
+   "name": "Blake Amo",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Brad Ingram",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
    "name": "Bree Rogers",
    "photo_url": null,
    "source_page": null,
@@ -324,11 +356,27 @@
    "type": null
   },
   {
+   "evidence": "State Police release names Deputy Brian Hanlin as a responding deputy but carries no photo at all \u2014 no portrait or scene photo to file.",
+   "name": "Brian Hanlin",
+   "photo_url": null,
+   "source_page": "https://troopers.ny.gov/news/state-police-investigating-officer-involved-shooting-jefferson-county",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "Lowville Academy Sept 2025 newsletter PDF readable and confirms him (6th grade ELA teacher, Lowville alumnus) but extraction contains no image URLs/caption tying a photo to him.",
    "name": "Brian M. Zehr",
    "photo_url": null,
    "source_page": "https://files.smartsites.parentsquare.com/4459/september_2025.pdf",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Brian Patraw",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
@@ -392,6 +440,14 @@
    "name": "Brooke Moore",
    "photo_url": null,
    "source_page": "https://meritpages.com/Brooke-L-Moore/5362175",
+   "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Canton Fire Dept members page lists him (FF/EMT-B since 2019) in a text-only roster table \u2014 no member photos on the page.",
+   "name": "Bryan Noble",
+   "photo_url": null,
+   "source_page": "https://www.cantonfd.org/content/members/",
    "status": "no_photo",
    "type": null
   },
@@ -477,6 +533,14 @@
   },
   {
    "evidence": "No source links on file.",
+   "name": "Cayden Stickney",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
    "name": "Cayden Westwood",
    "photo_url": null,
    "source_page": null,
@@ -530,6 +594,14 @@
    "source_page": "https://diy.clarkson.edu/apply-to-clarkson/the-healthcare-major-a-program-designed-for-the-future/",
    "status": "confirmed",
    "type": "article photo (presenting)"
+  },
+  {
+   "evidence": "Identity verified as the right Christine Sutter (aggregator bios match: LMSW, Canton/Massena NY, MSW University of Denver), but RocketReach's only profile image is its generic default placeholder avatar \u2014 excluded; Topline returned no image. Inner Lakes Therapy staff page carries her bio but no labeled staff headshot, only generic site graphics. Her LinkedIn is being tried via the Google Images route.",
+   "name": "Christine Sutter",
+   "photo_url": null,
+   "source_page": "https://www.innerlakestherapy.com/innerlakes-therapists",
+   "status": "no_photo",
+   "type": null
   },
   {
    "evidence": "GovSalaries page is a text-only salary table. Bus Runs PDF is text-only route tables naming her as driver \u2014 no images.",
@@ -596,12 +668,12 @@
    "type": "business gallery headshot"
   },
   {
-   "evidence": "Merit graduation story and SLU Dean's List page both text-only, no images. Caveat: newzjunky source blocked by browser policy, unchecked. LinkedIn auth. Requeue: the newzjunky source is blocked by browser policy (not a rate limit) and remains honestly unchecked; all readable sources are text-only.",
+   "evidence": "LinkedIn profile photo from her on-file LinkedIn profile (headline: Barista at Loud'n Roasted Coffee Roasters, Ashburn VA; verified badge) \u2014 retrieved 2026-10-22. Her newzjunky source is browser policy-blocked. Note: the LinkedIn CDN URL carries an expiry (Dec 2026) and may need a refresh later.",
    "name": "Courtney Delosh",
-   "photo_url": null,
-   "source_page": "https://stlawu.meritpages.com/stories/Courtney-Delosh-Graduates-from-St-Lawrence-University/110114099",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/D4E03AQFr0GV93AloiQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1708115107213?e=1794441600&v=beta&t=P7lGmgmAIYdj3gC3TkCDrvjUafZLKYLTW0LkyX_SEvY",
+   "source_page": "https://www.linkedin.com/in/courtney-delosh",
+   "status": "confirmed",
+   "type": "profile photo (LinkedIn)"
   },
   {
    "evidence": "No source links on file (profile is just 'Cynthia').",
@@ -668,6 +740,14 @@
    "type": null
   },
   {
+   "evidence": "Merit profile photo slot is the default missing.png placeholder \u2014 excluded. The 2021-22 Chemistry Dept annual report PDF names her only in the graduates list, no photo.",
+   "name": "Danielle McPherson",
+   "photo_url": null,
+   "source_page": "https://meritpages.com/Danielle-McPherson/4251063",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book \u2014 its only image is the book cover, rejected. Cover caption list confirms '34 - Danielle Vetere 22, childhood/early childhood education student'; JD confirmed 2026-10-22. SUNY Potsdam Instagram checked 2026-10-22 \u2014 no usable post of her found.",
    "name": "Danielle Vetere",
    "photo_url": "https://www.potsdam.edu/sites/default/files/inline-images/cover1_0.jpg",
@@ -676,6 +756,22 @@
    "type": "group / cover collage",
    "focus": "50% 74%",
    "zoom": 1.9
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Danny Wangerin",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Danny Witkop",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
   },
   {
    "evidence": "CFC Potsdam page's only person photo is Rick Sinclair (Lead Pastor). Darlene appears only in text ('He and his wife, Darlene'). Facebook auth.",
@@ -759,6 +855,22 @@
   },
   {
    "evidence": "No source links on file.",
+   "name": "Destiny Ingram",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Winning-team photo caption names everyone left to right, ending '...Destiny Snyder and Nasierra Daniels' \u2014 she is identified by name and position (fifth from left); the article lists Destiny Snyder of Potsdam on the winning team.",
+   "name": "Destiny Snyder",
+   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/WinningTeamcopy_0.jpg?itok=EYKWXsFW",
+   "source_page": "https://www.potsdam.edu/news/businessadministrationstudentscampusentrepreneurialcompetition",
+   "status": "confirmed",
+   "type": "group"
+  },
+  {
+   "evidence": "No source links on file.",
    "name": "Dillynn Grant",
    "photo_url": null,
    "source_page": null,
@@ -812,6 +924,14 @@
    "source_page": null,
    "status": "auth_only",
    "type": null
+  },
+  {
+   "evidence": "St. Lawrence 2024-25 roster labels her entry 'Elena Trempe - View Profile' (Sophomore, Enfield NH, Mascoma Valley Regional) and the matching roster image is her file Elena_Trempe.jpg \u2014 roster headshot tied to her by the roster page. Filed at the larger render size of the same file (extracted at width=80).",
+   "name": "Elena Trempe",
+   "photo_url": "https://saintsathletics.com/images/2025/1/14/Elena_Trempe.jpg?width=600&quality=90",
+   "source_page": "https://saintsathletics.com/sports/womens-track-and-field/roster/2024-25",
+   "status": "confirmed",
+   "type": "roster headshot"
   },
   {
    "evidence": "No source links on file.",
@@ -899,6 +1019,14 @@
    "photo_url": null,
    "source_page": "https://us.bold.pro/my/emily-bouchard",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Emily Criscitello",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
@@ -998,6 +1126,14 @@
    "type": null
   },
   {
+   "evidence": "Graduates page lists Ethan Ryan (AAS Criminal Justice) but its only image is captioned 'President Zvi Szafran speaks during Commencement 2024' \u2014 not him. Merit listings text-only.",
+   "name": "Ethan Ryan",
+   "photo_url": null,
+   "source_page": "http://www.canton.edu/news/2024/graduates.php",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Evan Dennis",
    "photo_url": null,
@@ -1044,6 +1180,14 @@
    "source_page": "https://www.youtube.com/watch?v=4LnKFARj7jM",
    "status": "possible",
    "type": "video thumbnail (unextracted)"
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Gabi Ramsdell",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
   },
   {
    "evidence": "No source links on file.",
@@ -1214,6 +1358,14 @@
    "type": null
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Irvin Otero",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Isa Luciano Criscitello",
    "photo_url": null,
@@ -1238,6 +1390,14 @@
    "type": null
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Jack Kessler",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "His own Merit Pages profile (Lee University, Biblical & Theological Studies and Classics, Class of 2027, Potsdam NY) carries [Image 0] as the profile image above his name \u2014 file 'Banquet.jpg' in his own Merit photo directory. Lee symposium article quotes him; its group photo (40 participants, no individual caption) not used.",
    "name": "Jackson Paladin",
    "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/8218301/medium/Banquet.jpg?1771512781",
@@ -1256,6 +1416,14 @@
   {
    "evidence": "No source links on file.",
    "name": "Jale -",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "James Fortunato",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
@@ -1304,6 +1472,14 @@
   {
    "evidence": "No source links on file.",
    "name": "Jason Deschaine",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Jason Sweet",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
@@ -1391,7 +1567,23 @@
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
+   "name": "Jessica Braman",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
    "name": "Jessica Hurlbut",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Jillian Ferrante",
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
@@ -1481,6 +1673,14 @@
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Jonathan Puglia",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
@@ -1580,11 +1780,27 @@
    "type": null
   },
   {
+   "evidence": "The NCPR index and linked story identify her as the guitarist, but the story's only subject image is a generic uncaptioned guitar photo \u2014 no caption or label ties it to her.",
+   "name": "Julia Sinclair",
+   "photo_url": null,
+   "source_page": "https://www.northcountrypublicradio.org/news/pages/st-lawrence-valley-ny?nophotos&limit=30&start=2528",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Julia Swy",
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Company record is text-only. FindGlocal names Julia Kia Photography but its extracted images are labeled for other photography businesses \u2014 none tied to Julia herself (photos BY her don't count).",
+   "name": "Julia Tomford",
+   "photo_url": null,
+   "source_page": "https://www.findglocal.com/US/Potsdam-NY/232302-22/genre/181475575221097/Photographers",
+   "status": "no_photo",
    "type": null
   },
   {
@@ -1642,6 +1858,14 @@
    "source_page": "https://meritpages.com/karimoulton",
    "status": "confirmed",
    "type": "profile photo"
+  },
+  {
+   "evidence": "Leone Timing and MileSplit pages are text-only results tables (Karle McCormick, Ogdensburg Free Academy) \u2014 no images. This is Karle the OFA runner, not her twin Kayle the NCPR journalist.",
+   "name": "Karle McCormick",
+   "photo_url": null,
+   "source_page": "https://www.leonetiming.com/2015/XC/Adirondack/GV1.htm",
+   "status": "no_photo",
+   "type": null
   },
   {
    "evidence": "Merit Dean's List story text-only. Canton Class of 2026 graduates page lists her in text; its sole image is a generic commencement audience photo with no caption tying her to anyone pictured \u2014 excluded.",
@@ -1780,6 +2004,14 @@
    "type": null
   },
   {
+   "evidence": "Merit profile is text-only achievement listings \u2014 no profile photo, not even a placeholder URL.",
+   "name": "Kyle Deschaine",
+   "photo_url": null,
+   "source_page": "https://meritpages.com/Kyle-B-Deschaine/2786218",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "Merit Dean's List story (SUNY Canton, spring 2015, Emergency Management) extracted text-only, no photo.",
    "name": "Kyle Gotham",
    "photo_url": null,
@@ -1838,6 +2070,14 @@
   {
    "evidence": "No source links on file.",
    "name": "Libby Criscitello",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Libby Thomas",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
@@ -2028,6 +2268,14 @@
    "type": "roster headshot"
   },
   {
+   "evidence": "Village PDF mentions his police retirement in text only. The NCPR article quotes his testimony; its captioned photos show John Jones and Oral 'Nick' Hillary, not him.",
+   "name": "Mark Wentworth",
+   "photo_url": null,
+   "source_page": "https://www.northcountrypublicradio.org/news/story/32598/20160920/hillary-trial-police-former-boyfriend-john-jones-testifies",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "OpenGovNY corporate record (MG Tree LLC, Potsdam) is a text-only entity filing with no images and does not name him. Only other link is Facebook (auth).",
    "name": "Martin Lovell",
    "photo_url": null,
@@ -2049,6 +2297,14 @@
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Merit profile returned story listings only \u2014 no profile-photo URL at all. Clarkson Merit stories text-only.",
+   "name": "Matthew Tomford",
+   "photo_url": null,
+   "source_page": "https://meritpages.com/Matthew-Tomford/303340",
+   "status": "no_photo",
    "type": null
   },
   {
@@ -2084,6 +2340,14 @@
    "type": null
   },
   {
+   "evidence": "SUNY Canton Roos coach bio page is text-only in extraction \u2014 no headshot URL extractable; a headshot may exist on the live page that extraction missed. Merit stories text-only.",
+   "name": "Meg Howard",
+   "photo_url": null,
+   "source_page": "https://rooathletics.com/sports/womens-lacrosse/roster/coaches/megan-howard/1938",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "No source links on file. (Meg Lapinski is not Maggie Lapinski \u2014 kept separate.)",
    "name": "Meg Lapinski",
    "photo_url": null,
@@ -2097,6 +2361,14 @@
    "photo_url": null,
    "source_page": "https://www.uvmhealth.org/providers/megan-converse-otlr",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Megan Davis",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
@@ -2196,12 +2468,28 @@
    "type": "headshot"
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Mike Coventry",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Clarkson Love Stories page section headed 'Debbie Knaebel 15 and Michael Knaebel' has a single photo directly under the heading \u2014 alt 'A couple smiling into the camera on wedding day', filename Deborah-Knaebel.jpg. Section text confirms Michael works for Clarkson OIT. Tied to the named couple by placement and filename.",
    "name": "Mike Knaebel",
    "photo_url": "https://diy.clarkson.edu/wp-content/uploads/2021/02/Deborah-Knaebel.jpg",
    "source_page": "https://diy.clarkson.edu/uncategorized/clarkson-love-stories/",
    "status": "confirmed",
    "type": "couple wedding photo"
+  },
+  {
+   "evidence": "Mixcloud's sole image is episode-specific artwork labeled with the full sermon title naming Pastor Mike Tomford, and neighboring episodes carry different artwork, so it is not generic show art \u2014 but the page does not explicitly state the artwork depicts him. Hubhopper yielded no image; Gouverneur Tribune Press page 404.",
+   "name": "Mike Tomford",
+   "photo_url": "https://thumbnailer.mixcloud.com/unsafe/290x290/extaudio/b/1/b/f/64b8-d22e-4acc-adfe-82bea25db508",
+   "source_page": "https://www.mixcloud.com/rcfgcf/sermon-psalm-57-singing-praises-in-the-cave-pastor-mike-tomford-june-21-2020/",
+   "status": "possible",
+   "type": "podcast episode artwork"
   },
   {
    "evidence": "No source links on file.",
@@ -2249,6 +2537,14 @@
    "photo_url": null,
    "source_page": "https://www.potsdam.edu/sites/default/files/Candlelight%20program%202017%20final.pdf",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Natalie Southworth",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
@@ -2308,6 +2604,14 @@
    "type": null
   },
   {
+   "evidence": "SUNY Canton Fall 2021 honors page is a text name list (only image is the college logo). Merit profile text-only.",
+   "name": "Noah Marshall",
+   "photo_url": null,
+   "source_page": "https://www.canton.edu/news/2022/honorsf21.php",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "The 90 Miler article leads with her ('Norah Pease 24 and Kelly Bloom 25 ease their canoe into the cold water...') and the first photos sit immediately after that paragraph \u2014 uncaptioned in extraction, so the pair in the canoe is not text-confirmed as her. The page's captioned photos are of other people. Her Merit profile is text-only.",
    "name": "Norah Pease",
    "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2025-09/02_0.JPG?itok=RNs-nYWJ",
@@ -2338,6 +2642,14 @@
    "source_page": "https://stlawrence.cce.cornell.edu/staff/olivia-briggs",
    "status": "confirmed",
    "type": "staff photo"
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Olivia Brown",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
   },
   {
    "evidence": "Caption for the page's only photo: 'Schyler Oakes, David Valeske, Michael Bernard, Jennie Hutton, Ciara Spicer, and Olivia Goodrow are shown with their Isabella Graham Hart School of Practical Nursing pins' (LPN graduation, Dec 15 2023). Caption confirms she is among the six pictured but gives no position/order \u2014 possible, not individually identifiable from text.",
@@ -2420,6 +2732,14 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Philip Hubbe",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "The alumni-spotlight page extraction returned no photo. The readMedia Model Senate article is solely about Philip Paige 15, and its Related Media file is explicitly named 'Philip_Paige_5830_0.jpg' \u2014 the medium rendition of that tied image is filed.",
    "name": "Philip Lloyd Paige",
    "photo_url": "https://s3.amazonaws.com/attachments.readmedia.com/files/58834/medium/Paige_5830_0.jpg?1399992992",
@@ -2476,6 +2796,14 @@
    "type": "headshot"
   },
   {
+   "evidence": "Clarkson people profile is contact/campus info only \u2014 fetch produced no headshot or Images entry.",
+   "name": "Richard Tacchino",
+   "photo_url": null,
+   "source_page": "https://www.clarkson.edu/people/richard-tacchino",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "CFC Potsdam page's Lead Pastor section places [Image 0: Rick Sinclair] directly above his heading and pastor bio. Second confirmed photo: Religion News Service article image explicitly captioned 'Rick Sinclair, senior pastor for the Christian Fellowship Center' (religionnews.com). The RNS article's other images are church buildings, excluded.",
    "name": "Rick Sinclair",
    "photo_url": "https://www.cfconline.org/wp-content/cfc-leadership/483.webp?v=1779404586",
@@ -2500,6 +2828,14 @@
    "type": null
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Rochester regional IT",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Rosalie Smith",
    "photo_url": null,
@@ -2512,6 +2848,14 @@
    "name": "Ryan Daniels",
    "photo_url": null,
    "source_page": "https://www.bizprofile.net/ny/norwood/sage-tech-llc",
+   "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "SUNY Potsdam newsletter PDF fetch failed (empty response) \u2014 gap; her Merit stories are text-only.",
+   "name": "Ryleigh Combs",
+   "photo_url": null,
+   "source_page": "https://www.potsdam.edu/sites/default/files/2016SOE%26PSnewsletter.pdf",
    "status": "no_photo",
    "type": null
   },
@@ -2604,6 +2948,14 @@
    "type": null
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Savannah Adams",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Savannah Newtown",
    "photo_url": null,
@@ -2686,6 +3038,14 @@
    "type": null
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Susan Brown",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Sydney Storrin",
    "photo_url": null,
@@ -2750,6 +3110,22 @@
    "type": "article photo (URL unextracted)"
   },
   {
+   "evidence": "LETI graduation photo caption identifies everyone clockwise from top left, ending '...Connor Palmer, Timothy Jenkins and Sabrina Feit' \u2014 he is named and position-identified; the article lists Timothy Jenkins of North Rose among the eight graduating cadets.",
+   "name": "Timothy Jenkins",
+   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/LETI-grads-Fall-2017a.jpg?itok=fqmPGiAG",
+   "source_page": "https://www.potsdam.edu/news/cadets-complete-suny-potsdam-law-enforcement-training-institute",
+   "status": "confirmed",
+   "type": "group"
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Timothy Kunkle",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Laing Family Farm homepage names her as co-owner but none of its six images is captioned/tied to her (farm/animal scenes). Dairy Foods 'Horizon Honors its Farmers' article names Scott and Traci Laing as HOPE Award recipients but is text-only.",
    "name": "Traci Laing",
    "photo_url": null,
@@ -2806,6 +3182,22 @@
    "type": null
   },
   {
+   "evidence": "TheOrg profile is his (Director of Safety and Security, St. Lawrence Health) but the fetch returned no photo URL. Rochester Regional article quotes him only. Veripages result is a Minnesota namesake, not him.",
+   "name": "Wayne Lougheed",
+   "photo_url": null,
+   "source_page": "https://theorg.com/org/st-lawrence-health/org-chart/wayne-lougheed",
+   "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Wayne Ogs Enterprise",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "name": "William Dunphey",
    "status": "confirmed",
    "photo_url": "https://images-pw.pixieset.com/site/2Yxwpp/nMV3K0/_K3A1988-fa9824e9-1500.jpg",
@@ -2816,6 +3208,14 @@
   {
    "evidence": "Her on-file links are mealtrain.com (root domain, not a personal page) and an unrelated govsalaries page for a different person (Amanda Deragon) \u2014 no checkable personal source on file.",
    "name": "Ysabella Colbert",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Zenna Dale",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
