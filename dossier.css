@@ -1579,7 +1579,16 @@ html,body{background:var(--bg)}
 .phcols-ctl>span{font:600 11px Archivo,sans-serif;letter-spacing:.08em;color:#8f8f8f;text-transform:uppercase}
 .phcolbtn{background:none;border:1px solid #2b2b2b;color:#cfcfcf;border-radius:2px;padding:7px 10px;font:600 11px Archivo,sans-serif;cursor:pointer}
 .phcolbtn.on{border-color:#e30613;color:#fff}
-.phcard{overflow:hidden;content-visibility:auto;contain-intrinsic-size:auto 320px;cursor:pointer}
+.phcard{overflow:hidden;content-visibility:auto;contain-intrinsic-size:auto 320px;cursor:pointer;position:relative}
+.phcard:hover,.phcard:focus-within{overflow:visible;content-visibility:visible;z-index:8}
+.phacts{position:absolute;right:6px;bottom:40px;display:flex;gap:4px;z-index:5}
+.pha{display:flex;align-items:center;gap:0;background:rgba(10,10,10,.85);border:1px solid #3d3d3d;color:#e8e8e8;border-radius:2px;height:24px;min-width:24px;padding:0 4px;cursor:pointer}
+.pha .t{display:none;font:600 10.5px Archivo,sans-serif;letter-spacing:.03em;white-space:nowrap}
+.pha.primary{border-color:#e30613}
+.pha:hover{border-color:#e30613;color:#fff}
+.phcard:hover .phacts,.phcard:focus-within .phacts{left:6px;right:auto;width:max-content;max-width:320px;background:rgba(10,10,10,.92);border:1px solid #2b2b2b;border-radius:2px;padding:4px}
+.phcard:hover .pha,.phcard:focus-within .pha{padding:0 7px;gap:5px}
+.phcard:hover .pha .t,.phcard:focus-within .pha .t{display:inline}
 .phcard.sel{border-color:#e30613;box-shadow:0 0 0 1px #e30613}
 .phnm{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px}
 .phnm b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
