@@ -588,12 +588,18 @@
    "type": null
   },
   {
-   "evidence": "Google Images (2026-10-22) indexed this image from their exact on-file LinkedIn profile (caption: 'Blake Burr - Director of Security... ten year background in law enforcement and private security'), but it is a post/feed image, not the profile headshot \u2014 whether it depicts him is unverified.",
+   "evidence": "Profile headshot from their exact on-file LinkedIn profile, read from the live public profile page 2026-10-22 (no login): headline \"Director of Security (ten year law enforcement and private security background)\". JD flagged the earlier photo 2026-10-22: it was a feed/post image from the same profile, not the headshot; that image is kept as an alternate.",
    "name": "Blake Burr",
-   "photo_url": "https://media.licdn.com/dms/image/v2/D5622AQGserd5mc5P5g/feedshare-shrink_800/B56Z_I3hwlHIAg-/0/1785781427489?e=2147483647&v=beta&t=FFVWHOk7H2m9yrijiuzC7HTjBs26V-o9iUcaWGl4isQ",
+   "photo_url": "https://media.licdn.com/dms/image/v2/D5603AQFiaaosalXgEw/profile-displayphoto-scale_400_400/B56Z6JXyiSG8Ak-/0/1780421177849?e=1794441600&v=beta&t=JQ5nohDQj6fWBC9fU4WSHBazArhah3D7NZ-rcPJyCyc",
    "source_page": "https://www.linkedin.com/in/blakeburr",
-   "status": "possible",
-   "type": "post image (LinkedIn)"
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot",
+   "also": [
+    {
+     "url": "https://media.licdn.com/dms/image/v2/D5622AQGserd5mc5P5g/feedshare-shrink_800/B56Z_I3hwlHIAg-/0/1785781427489?e=2147483647&v=beta&t=FFVWHOk7H2m9yrijiuzC7HTjBs26V-o9iUcaWGl4isQ",
+     "note": "Feed/post image previously filed in error; replaced by the profile headshot 2026-10-22."
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3532,12 +3538,18 @@
    "type": null
   },
   {
-   "evidence": "Google Images (2026-10-22) indexed this image from their exact on-file LinkedIn profile (caption: 'Luke Boyle - Inbound Investment Advisor'), but it is a post/feed image, not the profile headshot \u2014 whether it depicts him is unverified. His Merit profile and SmartAsset advisor profile carry no personal photo.",
+   "evidence": "Profile headshot from their exact on-file LinkedIn profile, read from the live public profile page 2026-10-22 (no login): headline \"Inbound Investment Advisor\". JD flagged the earlier photo 2026-10-22: it was a feed/post image from the same profile, not the headshot; that image is kept as an alternate.",
    "name": "Luke Boyle",
-   "photo_url": "https://media.licdn.com/dms/image/v2/D4D22AQEoko8XgKowpw/feedshare-shrink_800/B4DZ397ryAIUAc-/0/1778081775037?e=2147483647&v=beta&t=54ANODfxMydHCb1U1yYUV13o1-ou7QOuGUYr2N9dMGY",
+   "photo_url": "https://media.licdn.com/dms/image/v2/D5603AQHXP9oP8a7Wcw/profile-displayphoto-shrink_400_400/B56Z3kC2VjKgAg-/0/1777647445775?e=1794441600&v=beta&t=rvV8pu4Y4yr8gjR38WnIGyZfrfOvTGq4iIK6Atm46To",
    "source_page": "https://www.linkedin.com/in/luke-boyle-466681206",
-   "status": "possible",
-   "type": "post image (LinkedIn)"
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot",
+   "also": [
+    {
+     "url": "https://media.licdn.com/dms/image/v2/D4D22AQEoko8XgKowpw/feedshare-shrink_800/B4DZ397ryAIUAc-/0/1778081775037?e=2147483647&v=beta&t=54ANODfxMydHCb1U1yYUV13o1-ou7QOuGUYr2N9dMGY",
+     "note": "Feed/post image previously filed in error; replaced by the profile headshot 2026-10-22."
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4252,12 +4264,18 @@
    "type": null
   },
   {
-   "evidence": "Google Images (2026-10-22) indexed this image from their exact on-file LinkedIn profile (caption: 'Noah Diederich - Production Maintenance Engineer @ Alcoa'), but it is a post/feed image, not the profile headshot \u2014 whether it depicts him is unverified. His newzjunky source is policy-blocked.",
+   "evidence": "Profile headshot from their exact on-file LinkedIn profile, read from the live public profile page 2026-10-22 (no login): headline \"Product Planning Engineer at Derrick Corporation\". JD flagged the earlier photo 2026-10-22: it was a feed/post image from the same profile, not the headshot; that image is kept as an alternate.",
    "name": "Noah Diederich",
-   "photo_url": "https://media.licdn.com/dms/image/v2/D4E22AQGRXxSinU-h3w/feedshare-shrink_800/B4EZx7qzAeGkAg-/0/1771601343029?e=2147483647&v=beta&t=08Lu-c4H4ncd7iMJRxFiGSQdISHwOGFmeyzp-5zqbas",
+   "photo_url": "https://media.licdn.com/dms/image/v2/D4E03AQGQjAkWQWtz6g/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1726686580808?e=1794441600&v=beta&t=9w5irz6Qne6sAtPaYHgeoC-OrVLFomU2l7b8hyGAf-I",
    "source_page": "https://www.linkedin.com/in/noah-diederich",
-   "status": "possible",
-   "type": "post image (LinkedIn)"
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot",
+   "also": [
+    {
+     "url": "https://media.licdn.com/dms/image/v2/D4E22AQGRXxSinU-h3w/feedshare-shrink_800/B4EZx7qzAeGkAg-/0/1771601343029?e=2147483647&v=beta&t=08Lu-c4H4ncd7iMJRxFiGSQdISHwOGFmeyzp-5zqbas",
+     "note": "Feed/post image previously filed in error; replaced by the profile headshot 2026-10-22."
+    }
+   ]
   },
   {
    "evidence": "SUNY Canton Fall 2021 honors page is a text name list (only image is the college logo). Merit profile text-only.",
