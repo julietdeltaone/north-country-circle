@@ -1,7 +1,7 @@
 {
   "updated": "2026-10-22",
   "total": 670,
-  "batches": "Batches 1-3 + requeue \u2014 profiles 1-150 checked 2026-10-22",
+  "batches": "Batches 1-4 + requeue \u2014 profiles 1-200 checked 2026-10-22",
   "people": [
     {
       "evidence": "No source links on file.",
@@ -420,9 +420,9 @@
       "type": null
     },
     {
-      "evidence": "Potsdam Bears roster headshot: filename lafountain_hs2223_color.jpg slotted at her roster entry (#23, Guard). Second confirmed photo: Potsdam business plan article captioned 'From left, Wesley Hall 23, Caroline LaFountain 23, and Eben Thrasher 23 pose for a photo' (https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/web01_10.jpg?itok=b_8umzfO). Merit profile text-only. Note photo URL is width=40 thumbnail size as extracted.",
+      "evidence": "Potsdam Bears roster headshot: filename lafountain_hs2223_color.jpg slotted at her roster entry (#23, Guard). Second confirmed photo: Potsdam business plan article captioned 'From left, Wesley Hall 23, Caroline LaFountain 23, and Eben Thrasher 23 pose for a photo' (https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/web01_10.jpg?itok=b_8umzfO). Merit profile text-only. Note photo URL is width=40 thumbnail size as extracted. URL upgraded 2026-10-22 from the width=40 thumbnail extraction to the verified width=600 (600x900) version of the same roster headshot.",
       "name": "Caroline LaFountain",
-      "photo_url": "https://potsdambears.com/images/2022/11/9/lafountain_hs2223_color.jpg?width=40",
+      "photo_url": "https://potsdambears.com/images/2022/11/9/lafountain_hs2223_color.jpg?width=600",
       "source_page": "https://potsdambears.com/sports/womens-basketball/roster/caroline-lafountain/8121",
       "status": "confirmed",
       "type": "headshot"
@@ -652,7 +652,7 @@
       "type": "group"
     },
     {
-      "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book \u2014 its only image is the book cover, rejected.",
+      "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book \u2014 its only image is the book cover, rejected. Cover caption list confirms '34 - Danielle Vetere 22, childhood/early childhood education student'; JD confirmed 2026-10-22. SUNY Potsdam Instagram checked 2026-10-22 \u2014 no usable post of her found.",
       "name": "Danielle Vetere",
       "photo_url": "https://www.potsdam.edu/sites/default/files/inline-images/cover1_0.jpg",
       "source_page": "https://www.potsdam.edu/PotsdamPeopleCover",
@@ -676,12 +676,12 @@
       "type": null
     },
     {
-      "evidence": "Strict BY-vs-OF QC: homepage work samples (photos BY him) rejected. One uncaptioned image sits immediately before his 'Hi, I'm David Zufall' intro section \u2014 the only plausible portrait OF him, no alt/caption naming him, so possible only. NCPR and Nature Up North pages failed with browser 429s (unchecked; those are credited work BY him in any case).",
+      "evidence": "JD correction 2026-10-22: the uncaptioned portrait candidate on his site is NOT David \u2014 David took that photo; the subject is his client William Dunphey (the image sits mislabeled as David's About photo on his own site). No verified photo of David himself yet.",
       "name": "David Zufall",
-      "photo_url": "https://images-pw.pixieset.com/site/2Yxwpp/nMV3K0/_K3A1988-fa9824e9-1500.jpg",
+      "photo_url": null,
       "source_page": "https://www.davidzufallphotography.com/",
-      "status": "possible",
-      "type": "portrait (candidate)"
+      "status": "no_photo",
+      "type": null
     },
     {
       "evidence": "Business entry (duplicate of David Zufall check): homepage contains no image tied by caption/alt/context as a portrait of David himself \u2014 the one candidate is uncaptioned, filed under David Zufall's own entry as possible. NCPR todaysphoto link failed with 429 (unchecked).",
@@ -748,9 +748,9 @@
       "type": null
     },
     {
-      "evidence": "Dental team page heading 'Dr. Angeles Felix, DMD, CAGS' with image directly under it labeled '[Image 0: dr felix]', followed by her bio \u2014 staff photo tied by name and placement. NPI profile text-only.",
+      "evidence": "Dental team page heading 'Dr. Angeles Felix, DMD, CAGS' with image directly under it labeled '[Image 0: dr felix]', followed by her bio \u2014 staff photo tied by name and placement. NPI profile text-only. Fixed 2026-10-22: the page-extraction URL (cumberlandsmile.com/mediaManagerImagedr-felix.jpg) 404s when loaded directly; a live-browser check shows the photo renders on the practice's own page and its real CDN src is the URL now filed.",
       "name": "Angeles Felix",
-      "photo_url": "https://cumberlandsmile.com/mediaManagerImagedr-felix.jpg",
+      "photo_url": "https://cdcssl.ibsrv.net/ibimg/smb/430x430_80/webmgr/0v/o/k/dr-felix.jpg.webp?b8b50b506902b486890a5da74d95a594",
       "source_page": "https://cumberlandsmile.com/team",
       "status": "confirmed",
       "type": "staff photo"
@@ -1202,6 +1202,422 @@
       "source_page": "https://meritpages.com/ddurant",
       "status": "confirmed",
       "type": "profile photo"
+    },
+    {
+      "evidence": "Newspaper PDF fetch failed upstream ('URL not found' on fetch service) \u2014 no content obtained. Fetch gap, not a verified absence; requeue recommended.",
+      "name": "Ina Wangerin",
+      "photo_url": null,
+      "source_page": "https://zeta.creativecirclecdn.com/ncn/files/20230516-150017-2022-05-13.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Merit President's List story (filed as Isabella Lucia, Geology, Malone NY) is text-only, no photo. A Publitas magazine PDF on file was not checked in this pass.",
+      "name": "Isabella Phoebe",
+      "photo_url": null,
+      "source_page": "https://potsdam.meritpages.com/stories/Isabella-Lucia-Named-to-SUNY-Potsdam-President-s-List-/10160124",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Isa Luciano Criscitello",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Isaiah Reiter",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "His own Merit Pages profile (Lee University, Biblical & Theological Studies and Classics, Class of 2027, Potsdam NY) carries [Image 0] as the profile image above his name \u2014 file 'Banquet.jpg' in his own Merit photo directory. Lee symposium article quotes him; its group photo (40 participants, no individual caption) not used.",
+      "name": "Jackson Paladin",
+      "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/8218301/medium/Banquet.jpg?1771512781",
+      "source_page": "https://meritpages.com/jackpaladin",
+      "status": "confirmed",
+      "type": "profile photo"
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Jake Seguin",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Jale -",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Jameson Dunphey",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit profile (SUNY Potsdam, English Writing) lists text achievements only \u2014 no profile photo, unlike other Merit profiles. President's List stories text-only.",
+      "name": "James Meyers",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/James-Philip-Meyers/6675391",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Cult Education article about CFC Canton names him only in quotes ('Jamie Sinclair, Canton CFC pastor'); the page carried no photos at all.",
+      "name": "Jamie Sinclair",
+      "photo_url": null,
+      "source_page": "https://culteducation.com/group/1289-general-information/34738-facebook-group-claims-canton-christian-fellowship-center-a-cult.html",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Norwood-Norfolk CSD staff directory entry: '[Image 51: JanelColbert's Profile Photo] \u2014 Janel Colbert \u2014 Instructional Aide.' A real uploaded photo file, not the site's empty_profile placeholder used for staff without photos. County sales PDF is text-only.",
+      "name": "Janel Colbert",
+      "photo_url": "https://3.files.edl.io/2b22/25/08/20/164600-05c8b1d3-de14-487f-b2ea-9af01adb2ef3.jpg",
+      "source_page": "https://nncsk12.org/apps/staff/",
+      "status": "confirmed",
+      "type": "staff profile photo"
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Jared T",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Jazzy Dunn",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Jazmyn Villnave",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "He IS listed in the NE Cyberteam Campus Champions directory (found on page 25): 'Jeeves Green \u2014 Clarkson University \u2014 Campus Champions \u2014 rcf.' But his Picture cell is the generic default-user placeholder headshot \u2014 excluded, so no_photo.",
+      "name": "Jeeves Green",
+      "photo_url": null,
+      "source_page": "https://necyberteam.org/people/list/campus-champions?combine=&order=field_institution&sort=desc&page=25",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Jemma Cooper",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Jenna White",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Jess Evans",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Jessica Hurlbut",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Josh De Voe",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Coaching-staff article (Jonathan Cyphers 12 named graduate assistant coach) returned no Images footnote \u2014 no headshot extractable despite the Sidearm format. 2009 Cortland recap likewise text-only.",
+      "name": "Jon Cyphers",
+      "photo_url": null,
+      "source_page": "https://saintsathletics.com/story.aspx?filename=mens-track-and-field-cyphers-joins-saints-coaching-staff&file_date=1-18-2019",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Joye Levendusky",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit profile lists two text achievements (President's List, SUNY Canton) \u2014 no profile photo, no Images footnote.",
+      "name": "Jocelyn Daniels",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/Jocelyn-Daniels/9692918",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "His Massena HS staff page explicitly carries '[Image 1: Mr. Joseph Boyle's profile picture]' \u2014 a profile photo tied to him by label and page. Extraction gap: the only URL returned was the page's background image, rejected rather than misfiled; his profile-picture URL needs re-extraction.",
+      "name": "Joseph Boyle",
+      "photo_url": null,
+      "source_page": "https://mhs.mcs.k12.ny.us/apps/pages/index.jsp?uREC_ID=966947&type=u",
+      "status": "possible",
+      "type": "staff profile picture (unextracted)"
+    },
+    {
+      "evidence": "Image sits directly under his section heading 'Zufall Family Farm | John Zufall, Lisbon, NY (Owner)', labeled 'Zufall farm photos' \u2014 a farm photo grid tied to his farm's section. The label does not state John himself is pictured (photos credited to others) \u2014 possible only.",
+      "name": "John Zufall",
+      "photo_url": "https://www.natureupnorth.org/sites/default/files/inline-images/Zufall_grid.jpg",
+      "source_page": "https://www.natureupnorth.org/justmynature/kathryn-jepson/north-country-voices-canton-farmers-market",
+      "status": "possible",
+      "type": "gallery / farm photo grid"
+    },
+    {
+      "evidence": "Page is 'Tour Dates \u2013 Andrew & John Eastmond'; its only image is a guitar close-up \u2014 no person pictured, nothing captioned as John.",
+      "name": "John Eastmond",
+      "photo_url": null,
+      "source_page": "https://www.andreweastmond.com/appearances/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "NCPR 'One small town, two taxi companies' lead photo caption: 'Thad Broughton and his wife run Potsdam Taxi. John Meyers and his wife started Taxi Zero in 2014. Photos: Sarah Harris.' Caption ties the photo package to both owners but does not identify John individually in the image \u2014 possible; his wife may be the person pictured for Taxi Zero. Article's second photo is a customer, rejected. txizero.com images have no caption tying them to John.",
+      "name": "John Meyers",
+      "photo_url": "https://www.northcountrypublicradio.org/news/images/twotaxis.jpg",
+      "source_page": "https://www.northcountrypublicradio.org/news/story/27462/20150211/one-small-town-two-taxi-companies",
+      "status": "possible",
+      "type": "article lead photo"
+    },
+    {
+      "evidence": "NY Royal Rangers GMA page is a text-only recipient table \u2014 it lists him (G2015-197, Oct 2015) but carries no photos.",
+      "name": "Johnny Martin",
+      "photo_url": null,
+      "source_page": "http://nyroyalrangers.org/awards/gma/?amp",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Jonah Black",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is LinkedIn (auth).",
+      "name": "Jordyn Brothers",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "NCPR article lead photo caption: 'Josh Parker stands next to his pellet-fired evaporator at his sugar shack near Canton. Photo: Todd Moe.' A second captioned photo of him is on the page (josh3.jpg, hydrometer). Daily Meal Shark Tank piece is the same Joshua Parker of Parker's Maple, but its images are Shutterstock stock \u2014 nothing filed from it.",
+      "name": "Josh Parker",
+      "photo_url": "https://www.northcountrypublicradio.org/news/images/josh4.jpg",
+      "source_page": "https://www.northcountrypublicradio.org/news/story/24189/20140228/canton-teen-is-young-maple-syrup-entrepreneur",
+      "status": "confirmed",
+      "type": "article photo"
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Joshua White",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "His Kickstarter 'About the creator' page (About Josh McGrath, Potsdam NY, first-person bio) carries this single image as his creator profile photo, same avatar shown beside 'Created by Josh McGrath'. No caption/alt names him in the image, so likely not confirmed. Campaign main image is book art \u2014 excluded.",
+      "name": "Josh McGrath",
+      "photo_url": "https://i.kickstarter.com/assets/039/307/223/b4e0a00804f6ea5c01362861e98e5dec_original.jpg?anim=false&blur=false&fit=cover&height=200&origin=ugc&q=92&v=1669234450&width=200&sig=02SdDWWTZdRCMTjqEvuRZ7%2F%2BLfnDxnEpYFCT2d2Sjf4%3D",
+      "source_page": "https://www.kickstarter.com/projects/joshmcgrath/nora-hollingsworth-fantasy-book-series/creator",
+      "status": "likely",
+      "type": "profile avatar"
+    },
+    {
+      "evidence": "Canton 2018 graduates page lists him in text only, no photos on the page. NY State Police Troop B article names him among 32 probationary troopers but is text-only \u2014 no group photo.",
+      "name": "Josiah McGrath",
+      "photo_url": null,
+      "source_page": "https://www.canton.edu/news/2018/grads18.php",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "NFIB member spotlight photo caption: 'NFIB member Josiah Martin of New York with President Trump at the White House'; article identifies him as owner-operator of Martin's Handmade Pretzels, Moira, 2026 SBA Small Business Manufacturer of the Year. SBDC awards page names him but carries no images.",
+      "name": "Josiah Martin",
+      "photo_url": "https://www.nfib.com/wp-content/uploads/2026/06/New-York-Member-Spotlight-Martins-Pretzels-White-House-May-2026-crop.png",
+      "source_page": "https://www.nfib.com/news/news/member-spotlight-josiah-martin-of-new-york/",
+      "status": "confirmed",
+      "type": "article photo"
+    },
+    {
+      "evidence": "Only links on file are LinkedIn and Facebook (auth).",
+      "name": "Joel Moulton",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "The article's only photo is captioned 'Chancellor Nancy L. Zimpher poses with SUNY Potsdam art education student Cashlynn Jaggers 20 and her commissioned work' \u2014 that is Cashlynn, not Judson. He appears in text only as her boyfriend at the ceremony; not pictured or captioned anywhere.",
+      "name": "Judson Colbert",
+      "photo_url": null,
+      "source_page": "https://www.potsdam.edu/news/suny-potsdam-art-student-paints-commissioned-work-honor-chancellor-nancy-l-zimpher",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Julia Swy",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Julianna Shatraw",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Her own About page, first-person: 'Hi, I'm Julie Feliciano, the founder of Aja Performance Media... I'm a car photographer,' directly under the single lead photo (alt: a person in a cap using a camera in a wooden hide). Strong person-specific context but no caption names her in the image \u2014 likely.",
+      "name": "Julie Feliciano",
+      "photo_url": "https://img1.wsimg.com/isteam/ip/44e0e498-a0e8-4e04-885b-489187b149d5/IMG_20250411_220240_476.webp/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:600,h:600,cg:true",
+      "source_page": "https://ajaperformancemedia.com/about-me",
+      "status": "likely",
+      "type": "portrait / action photo"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Katie Jenks",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Kallie Belleau",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth) \u2014 the kale.hitchman reversed-name profile.",
+      "name": "Elak Namhctih",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Kara Daniels",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Her own Merit Pages profile (Business Administration, SNHU, Class of 2020, Potsdam NY) carries [Image 0] at the top \u2014 her student photo file in her own Merit photo directory. Only other image is the Merit logo, excluded.",
+      "name": "Kari Moulton",
+      "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/6250529/medium/79BCE884-82FB-49E3-A119-447D32A7F249.jpeg?1621371347",
+      "source_page": "https://meritpages.com/karimoulton",
+      "status": "confirmed",
+      "type": "profile photo"
+    },
+    {
+      "evidence": "Merit Dean's List story text-only. Canton Class of 2026 graduates page lists her in text; its sole image is a generic commencement audience photo with no caption tying her to anyone pictured \u2014 excluded.",
+      "name": "Katelyn Matthews",
+      "photo_url": null,
+      "source_page": "https://canton.meritpages.com/stories/Katelyn-Matthews-Earned-Dean-s-List-Honors-During-the-Fall-2025-Semester-at-SUNY-Canton/176912712",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Katelyn Persun",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Katerina Cavellos",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Kathy Moulton",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit graduation story (filed as Katelyn Bertrand, Spring 2018, Nursing, Canton NY) is text-only, no photo.",
+      "name": "Katie Bertrand",
+      "photo_url": null,
+      "source_page": "https://canton.meritpages.com/stories/Congratulations-Katelyn-Bertrand-For-Graduating-From-SUNY-Canton-/11316460",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "name": "William Dunphey",
+      "status": "confirmed",
+      "photo_url": "https://images-pw.pixieset.com/site/2Yxwpp/nMV3K0/_K3A1988-fa9824e9-1500.jpg",
+      "source_page": "https://www.davidzufallphotography.com/",
+      "type": "portrait",
+      "evidence": "Photo by David Zufall, sitting mislabeled as the About photo on David Zufall's own site. JD confirmed 2026-10-22 that the subject is William Dunphey (son of B. Ryan Dunphey; Clarkson Engineering & Management). Filed for William as confirmed on JD's identification."
+    },
+    {
+      "name": "Shannon Boyle",
+      "status": "confirmed",
+      "photo_url": "https://www.potsdam.edu/sites/default/files/inline-images/cover1_0.jpg",
+      "source_page": "https://www.potsdam.edu/PotsdamPeopleCover",
+      "type": "group / cover collage",
+      "evidence": "Potsdam People 2022 front cover caption list: '37 - Shannon Boyle 20 & 22, music performance graduate and master's student.' JD confirmed 2026-10-22 she is #37 in this same cover photo, playing the harp. Same cover image as Danielle Vetere (#34)."
     }
   ]
 }
