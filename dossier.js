@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.13.1';
+var APP_VERSION = '2.14.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -146,7 +146,8 @@ var IC = {
   skip:'<path d="m5 4 10 8-10 8zM19 5v14"/>',
   arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
   star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
-  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'
+  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>'
 };
 function ic(n, s){
   s = s || 16;
@@ -1622,6 +1623,7 @@ var NAV = [
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
   { k:'daily',   l:'Live Records', ic:'search' },
+  { k:'photos',  l:'Photos', ic:'camera' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
   { k:'groups',  l:'Groups',  ic:'groups' }
@@ -1714,7 +1716,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'people';
   if(name === 'p') name = 'profile';
-  if(['people','profile','network','family','groups','settings','audit','daily'].indexOf(name) < 0) name = 'people';
+  if(['people','profile','network','family','groups','settings','audit','daily','photos'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -1776,6 +1778,7 @@ function render(){
     else if(n === 'settings') viewSettings(v);
     else if(n === 'audit') viewAudit(v);
     else if(n === 'daily') viewDaily(v);
+    else if(n === 'photos') viewPhotos(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -4901,6 +4904,68 @@ function viewDaily(v){
   var top = '<div class="astop' + (hero ? '' : ' astop-solo') + '">' + hero + stats + '</div>';
   v.innerHTML = head + top + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>';
   dtAnimate();
+}
+
+/* ============================================================
+   Photos on File (JD 2026-10-22): every profile's on-file Source
+   links are checked for photos; each photo is QC'd from page
+   context only (caption / alt text / roster / profile context —
+   no facial recognition) and graded confirmed / likely /
+   possible. People with no usable photo or no checkable source
+   are listed too, so coverage is honest. Data: data/photos.json,
+   written by the Photos on File batches; read-only here.
+   ============================================================ */
+var PH = null, PH_LOADING = false;
+function phLoad(){
+  if(PH || PH_LOADING) return;
+  PH_LOADING = true;
+  fetch('data/photos.json', { cache:'no-store' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ PH = d; PH_LOADING = false; if(S.route.name === 'photos') render(); })
+    .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos') render(); });
+}
+function viewPhotos(v){
+  phLoad();
+  var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Photos</h1><p class="sub">Photos on file: each profile&rsquo;s web source links, checked for a photo of that person. A photo only counts when the page itself ties it to them &mdash; a caption, alt text, a roster headshot, a staff or profile photo. Group and article photos where they may appear are marked possible, never confirmed.</p></div></div>';
+  if(!PH){
+    v.innerHTML = head + '<div class="asskel"><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div></div></div>';
+    return;
+  }
+  if(PH.empty || !PH.people){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">No photo checks yet. The first batch lands today.</p></div></section></div>'; return; }
+  function diOf(name){ var di = BYN[String(name || '').toLowerCase()]; return di == null ? null : di; }
+  var counts = { confirmed:0, likely:0, possible:0, no_photo:0, no_source:0, auth_only:0 };
+  PH.people.forEach(function(p){ if(counts[p.status] != null) counts[p.status]++; });
+  var withPhoto = counts.confirmed + counts.likely + counts.possible;
+  var stats = '<section class="card aspanel"><div class="cbody"><div class="asstats">' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('camera', 16) + '</span><b>' + PH.people.length + ' / ' + (PH.total || PH.people.length) + '</b><span>Profiles checked</span></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('check', 16) + '</span><b>' + counts.confirmed + '</b><span>Confirmed photos</span></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('eye', 16) + '</span><b>' + (counts.likely + counts.possible) + '</b><span>Likely / possible</span></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b>' + (counts.no_photo + counts.no_source + counts.auth_only) + '</b><span>No photo found yet</span></div>' +
+    '</div></div></section>';
+  function photoCard(p){
+    var di = diOf(p.name), e = di != null ? D.directory[di] : null;
+    var badge = p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
+    return '<section class="card phcard"><a class="phimg" href="' + esc(p.source_page || p.photo_url) + '" target="_blank" rel="noopener"><img src="' + esc(p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" referrerpolicy="no-referrer"></a><div class="cbody">' +
+      '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') +
+      '<small class="dim">' + esc(p.type || 'photo') + '</small></div>' + badge + '</div>' +
+      '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
+      (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
+      '</div></section>';
+  }
+  var found = PH.people.filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely' || p.status === 'possible'); });
+  found.sort(function(a, b){ var r = { confirmed:0, likely:1, possible:2 }; return r[a.status] - r[b.status] || a.name.localeCompare(b.name); });
+  var foundHtml = found.length ? '<div class="assec-t">ON FILE &mdash; ' + found.length + '</div><div class="phgrid">' + found.map(photoCard).join('') + '</div>' : '<section class="card"><div class="cbody"><p class="dim">No photos confirmed in the checked batches yet.</p></div></section>';
+  function chip(p){
+    var di = diOf(p.name), label = esc(p.name);
+    var why = p.status === 'no_photo' ? 'checked, no photo' : p.status === 'auth_only' ? 'Facebook / LinkedIn only' : 'no source links on file';
+    var inner = (di != null ? avatar(D.directory[di], 'sm') : '') + '<span>' + label + '</span><small class="dim">' + why + '</small>';
+    if(di == null) return '<span class="aschip">' + inner + '</span>';
+    return '<a class="aschip" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>';
+  }
+  var rest = PH.people.filter(function(p){ return !p.photo_url || (p.status !== 'confirmed' && p.status !== 'likely' && p.status !== 'possible'); });
+  var restHtml = rest.length ? '<section class="card" style="margin-top:14px"><header><h3>No photo yet</h3><em class="cnt">' + rest.length + '</em></header><div class="cbody"><div class="aschips">' + rest.map(chip).join('') + '</div>' +
+    '<p class="dim" style="margin-top:10px">Checked ' + esc(PH.updated || '') + (PH.batches ? ' &middot; ' + esc(PH.batches) : '') + '. Facebook, LinkedIn and Instagram links are counted as not checkable here &mdash; they sit behind sign-in.</p></div></section>' : '';
+  v.innerHTML = head + stats + foundHtml + restHtml + '</div>';
 }
 
 function viewSettings(v){
