@@ -1,7 +1,7 @@
 {
   "updated": "2026-10-22",
   "total": 670,
-  "batches": "Batch 1 of 14 \u2014 profiles 1-50 checked 2026-10-22",
+  "batches": "Batches 1-2 \u2014 profiles 1-100 checked 2026-10-22 (Dawson Wiegandt + Delany Durant in requeue after browser rate limits)",
   "people": [
     {
       "evidence": "No source links on file.",
@@ -402,6 +402,390 @@
       "source_page": "https://www.potsdamchamber.com/view/business-leaders-table-view/entry/2784/?pagenum=3&sort",
       "status": "possible",
       "type": "business gallery headshot"
+    },
+    {
+      "evidence": "NCPR Community Calendar July 9 2017 (30 event listings) \u2014 no Images, her name does not appear in extracted text.",
+      "name": "Carina Gilchrist",
+      "photo_url": null,
+      "source_page": "https://www.northcountrypublicradio.org/upnorth/comcal/index.php?cat=0&cd=9&cm=07&cy=2017",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Fall Island 2019 program PDF \u2014 she appears in text only (Student Interns list; bio 'Soprano Carolina Medina is a recent Vocal Performance graduate from the Crane School of Music'), no extractable photo tied to her.",
+      "name": "Carolina Medina",
+      "photo_url": null,
+      "source_page": "https://www.potsdam.edu/sites/default/files/inline-files/Fall%20Island%202019%20Program.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Potsdam Bears roster headshot: filename lafountain_hs2223_color.jpg slotted at her roster entry (#23, Guard). Second confirmed photo: Potsdam business plan article captioned 'From left, Wesley Hall 23, Caroline LaFountain 23, and Eben Thrasher 23 pose for a photo' (https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/web01_10.jpg?itok=b_8umzfO). Merit profile text-only. Note photo URL is width=40 thumbnail size as extracted.",
+      "name": "Caroline LaFountain",
+      "photo_url": "https://potsdambears.com/images/2022/11/9/lafountain_hs2223_color.jpg?width=40",
+      "source_page": "https://potsdambears.com/sports/womens-basketball/roster/caroline-lafountain/8121",
+      "status": "confirmed",
+      "type": "headshot"
+    },
+    {
+      "evidence": "Explicit caption: 'Cashlynn (Jaggers) Colbert, right, with SUNY Chancellor Nancy Zipher and her unveiled watercolor painting.' Page is her art profile. BFA news page image generic/uncaptioned \u2014 excluded.",
+      "name": "Cashlynn Colbert",
+      "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2021-08/Jaggers1.jpg?itok=kSzyANLC",
+      "source_page": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert",
+      "status": "confirmed",
+      "type": "group"
+    },
+    {
+      "evidence": "Clarkson alumni post about him carries no photo. DataCamp portfolio redirected to generic homepage; its images are generic illustrations or other named people.",
+      "name": "Eric Trelease",
+      "photo_url": null,
+      "source_page": "https://engage.clarkson.edu/blog/recent-news/eric-trelease-06/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Cathie Deschaine",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Text-only salary table; he appears only as data rows (2025/2024 Police Patrol Officer, Massena).",
+      "name": "Caleb Bresett",
+      "photo_url": null,
+      "source_page": "https://govsalaries.com/salaries/NY/massena/j/police-patrol-officer",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Cecilie Smith",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Team section lists him by name/role directly under the image ('Alfredo Rodriguez \u2014 Chaplain & Bible Instructor'); filename alfredo_rodriguez.webp.",
+      "name": "Alfredo Rodriguez",
+      "photo_url": "https://www.awakeningchristianacademy.org/images/team/alfredo_rodriguez.webp",
+      "source_page": "https://www.awakeningchristianacademy.org/",
+      "status": "confirmed",
+      "type": "staff photo"
+    },
+    {
+      "evidence": "Article entirely about his appointment as OBPA Airport Manager but text-only, no headshot.",
+      "name": "Charlie Garrelts",
+      "photo_url": null,
+      "source_page": "https://baldwinllc.com/news/obpa-names-new-airport-manager",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Charlotte Clark",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Chelsea McGrath",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file (single-name profile).",
+      "name": "Chiara",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Berkeley College women's basketball bio is her individual player profile ('30 - Salwa Hmyene', Guard, Potsdam NY) and its image is alt-titled 'Salwa Hmyene'. Excluded: Cornell Cooperative Extension staff page image alt-titled her name but file is images/default.png, a generic placeholder. WWNY highlights page blocked by policy, not needed.",
+      "name": "Salwa Hmyene",
+      "photo_url": "https://berkeleycollege.prestosports.com/sports/wbkb/2024-25/files/Number_30.jpg?max_width=600&max_height=800",
+      "source_page": "https://berkeleycollege.prestosports.com/sports/wbkb/2024-25/bios/hmyene_salwa_hm4z",
+      "status": "confirmed",
+      "type": "headshot"
+    },
+    {
+      "evidence": "GovSalaries page is a text-only salary table. Bus Runs PDF is text-only route tables naming her as driver \u2014 no images.",
+      "name": "Cierra Hitchman",
+      "photo_url": null,
+      "source_page": "https://govsalaries.com/salaries/NY/colton-pierrepont-central-schools?page=2&year=2024",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "PDGA event results page is text-only tables; she appears only as a name in MA3 results \u2014 no photo.",
+      "name": "Avery Criscitello",
+      "photo_url": null,
+      "source_page": "https://www.PDGA.com/tour/event/47777",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Colleen Cheney",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Colleen Hackett",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Clarkson news article names him in text only (1st place DoorBit team) \u2014 fetched article carried no Images/photo. LinkedIn auth.",
+      "name": "Corey Delisa",
+      "photo_url": null,
+      "source_page": "https://www.clarkson.edu/news-events/clarkson-students-win-big-nys-business-plan-competition",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Corinne O'Brien",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Her own Merit Pages profile (SUNY Canton, Criminal Investigation, Class of 2022, Watertown NY, first-person bio); [Image 0] at top of profile is her student photo file. Canton honors page yielded only the SUNY Canton logo \u2014 excluded.",
+      "name": "Leslie Perri",
+      "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/6055846/medium/image_55415491.JPG?1610778457",
+      "source_page": "https://meritpages.com/leslie-perri-686264",
+      "status": "confirmed",
+      "type": "profile photo"
+    },
+    {
+      "evidence": "Merit graduation story and SLU Dean's List page both text-only, no images. Caveat: newzjunky source blocked by browser policy, unchecked. LinkedIn auth.",
+      "name": "Courtney Delosh",
+      "photo_url": null,
+      "source_page": "https://stlawu.meritpages.com/stories/Courtney-Delosh-Graduates-from-St-Lawrence-University/110114099",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "PDGA and UDisc results pages are text-only scores listings \u2014 no photos on either.",
+      "name": "Riley Criscitello",
+      "photo_url": null,
+      "source_page": "https://www.pdga.com/tour/event/50063",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file (profile is just 'Cynthia').",
+      "name": "Cynthia",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Clarkson people-directory profile (CAMP Research Engineer); sole image explicitly alt-texted '[Image 0: Judah Pare Headshot]' on his named profile page.",
+      "name": "Judah Pare",
+      "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=jpare",
+      "source_page": "https://www.clarkson.edu/people/judah-pare",
+      "status": "confirmed",
+      "type": "headshot"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Derek Grant",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Leilani Leal",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Daniel Manor",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit Dean's List story (Winthrop NY, Spring 2014, SUNY Canton) text-only, no photo.",
+      "name": "Daniel Moulton",
+      "photo_url": null,
+      "source_page": "https://canton.meritpages.com/stories/Daniel-Moulton-of-Winthrop-Made-Dean-s-List-at-SUNY-Canton/4094495",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Rochester Regional article names/quotes her as SLR Patient Experience Coordinator but page returned no Images/no photo. Handbook PDF remains unchecked (rate limit on follow-up). Facebook auth.",
+      "name": "Danielle Caskinett",
+      "photo_url": null,
+      "source_page": "https://WWW.ROCHESTERREGIONAL.ORG/hub/slh-restarting-volunteer-program",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Caption-confirmed presence, no URL: museum newsletter caption reads 'Cannoneers are (l-r) James Miller, Daniel Zufall, Scott Wilson, Hudson Brown, David Zufall, Kirke Perry, John Zufall, and Gilbert Rivers' (Fort Tribute artillery certification item) \u2014 but the PDF extraction returned no image URL, so the photo itself is pending re-extraction. Graded possible until a URL files.",
+      "name": "Daniel Zufall",
+      "photo_url": null,
+      "source_page": "https://slpowermuseum.com/wp-content/uploads/2026/06/Newsletter-26-28.1-Mar-May.pdf",
+      "status": "possible",
+      "type": "group"
+    },
+    {
+      "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book \u2014 its only image is the book cover, rejected.",
+      "name": "Danielle Vetere",
+      "photo_url": "https://www.potsdam.edu/sites/default/files/inline-images/cover1_0.jpg",
+      "source_page": "https://www.potsdam.edu/PotsdamPeopleCover",
+      "status": "confirmed",
+      "type": "group / cover collage"
+    },
+    {
+      "evidence": "CFC Potsdam page's only person photo is Rick Sinclair (Lead Pastor). Darlene appears only in text ('He and his wife, Darlene'). Facebook auth.",
+      "name": "Darlene Sinclair",
+      "photo_url": null,
+      "source_page": "https://www.cfconline.org/potsdam/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "CFC sermons page lists him as speaker with no images. Funeral home condolence page mentions him presiding, no images. LinkedIn/Facebook auth.",
+      "name": "David Tulloch",
+      "photo_url": null,
+      "source_page": "https://www.cfconline.org/sermons/series/foundations",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Strict BY-vs-OF QC: homepage work samples (photos BY him) rejected. One uncaptioned image sits immediately before his 'Hi, I'm David Zufall' intro section \u2014 the only plausible portrait OF him, no alt/caption naming him, so possible only. NCPR and Nature Up North pages failed with browser 429s (unchecked; those are credited work BY him in any case).",
+      "name": "David Zufall",
+      "photo_url": "https://images-pw.pixieset.com/site/2Yxwpp/nMV3K0/_K3A1988-fa9824e9-1500.jpg",
+      "source_page": "https://www.davidzufallphotography.com/",
+      "status": "possible",
+      "type": "portrait (candidate)"
+    },
+    {
+      "evidence": "Business entry (duplicate of David Zufall check): homepage contains no image tied by caption/alt/context as a portrait of David himself \u2014 the one candidate is uncaptioned, filed under David Zufall's own entry as possible. NCPR todaysphoto link failed with 429 (unchecked).",
+      "name": "David Zufall Photography",
+      "photo_url": null,
+      "source_page": "https://www.davidzufallphotography.com/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Utica roster/coach bio page is person-specific but extraction returned no Images/no headshot URL. Flagged: Sidearm roster pages often carry a headshot text extraction may miss \u2014 worth a second look in the requeue pass.",
+      "name": "Haydn Demers-St.Hilaire",
+      "photo_url": null,
+      "source_page": "https://uticapioneers.com/sports/baseball/roster/coaches/haydn-demers-st-hilaire/1728",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Debbie Gordon",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Debbie Knaebel",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Congress.gov Congressional Record tribute (Betsy Kaplan Award, 2021) and Finextra 2006 press release both text-only, no photos. Facebook auth.",
+      "name": "Don Gruneisen",
+      "photo_url": null,
+      "source_page": "https://www.congress.gov/congressional-record/volume-167/issue-153/extensions-of-remarks-section/article/E947-2",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Dillynn Grant",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Dorie Colbert Reiter",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "PDF is a compiled CFC Potsdam text document (church history/news excerpts; states Daniel Paladin is senior pastor of CFC Potsdam) \u2014 not a photo document, no image extracted.",
+      "name": "Daniel Paladin",
+      "photo_url": null,
+      "source_page": "https://cdn-cms.f-static.net/uploads/4421615/normal_60188b7d3be98.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Dental team page heading 'Dr. Angeles Felix, DMD, CAGS' with image directly under it labeled '[Image 0: dr felix]', followed by her bio \u2014 staff photo tied by name and placement. NPI profile text-only.",
+      "name": "Angeles Felix",
+      "photo_url": "https://cumberlandsmile.com/mediaManagerImagedr-felix.jpg",
+      "source_page": "https://cumberlandsmile.com/team",
+      "status": "confirmed",
+      "type": "staff photo"
+    },
+    {
+      "evidence": "COORDINATOR CORRECTION (downgraded from agent's 'possible'): NNYCF page's sole image is the same generic uncaptioned graduates illustration rejected for Alana Hoover and Brooke Joyce in Batch 1 \u2014 no context ties her to it, so no_photo for consistency. Merit profile and President's List story carried no images. SportsNet lacrosse page: her only mention is a photo CREDIT ('Photo from Shannon Brown') \u2014 she was the photographer, not a subject; that image was not assigned.",
+      "name": "Shannon Brown",
+      "photo_url": null,
+      "source_page": "https://nnycf.org/foundation-awards-scholarships/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Andrew Matott",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Daniel Smith",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Clarkson business-plan article and Merit Presidential Scholar story both text-only, no photos. Gap: Clarkson Ignite entrepreneurship page could not be checked (fetch rate-limited 429) \u2014 no_photo on pages actually checked.",
+      "name": "Ethan Flamand",
+      "photo_url": null,
+      "source_page": "https://www.clarkson.edu/news-events/clarkson-students-win-big-nys-business-plan-competition",
+      "status": "no_photo",
+      "type": null
     }
   ]
 }
