@@ -1587,8 +1587,28 @@ html,body{background:var(--bg)}
 .phbadge.lik{color:#d8d8d8}
 .phbadge.poss{color:#8a8a8a}
 .phbadge.bad{color:#f5b942;border-color:#f5b942}
+.phbadge.low{color:#f5b942;border-color:#f5b942}
 .phok.bad{color:#f5b942}
 .phmore{margin-top:12px;text-align:center}
+.phtools{display:flex;gap:8px;margin:12px 0 2px}
+.phtoggle{background:none;border:1px solid #2b2b2b;color:#cfcfcf;border-radius:2px;padding:7px 12px;font:600 11px Archivo,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.phtoggle.on{border-color:#e30613;color:#fff}
+
+/* Live Records change log rail (V2.20.0) */
+.dtwrap{display:flex;gap:14px;align-items:flex-start}
+.dtmain{flex:1;min-width:0}
+.dtrail{width:320px;flex:none;position:sticky;top:12px;background:#101010;border:1px solid #262626;border-radius:2px;max-height:calc(100vh - 24px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.dtrail::-webkit-scrollbar{width:5px}
+.dtrail::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+.dtrail-h{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #262626;font:700 11px "Space Grotesk",sans-serif;letter-spacing:.14em;position:sticky;top:0;background:#101010;z-index:1}
+.chg{padding:10px 14px;border-bottom:1px solid #1c1c1c}
+.chg-name{font-size:13.5px}
+.chg-name a{color:inherit;text-decoration:none}
+.chg-what{margin:3px 0 5px;font-size:12.5px;line-height:1.45;color:#d7d7d7}
+.chg-src{font-size:11px;color:#8f8f8f;text-transform:uppercase;letter-spacing:.06em;line-height:1.5}
+.chg-src a{color:#7db3e8;text-decoration:none;text-transform:none;letter-spacing:0;font-size:11.5px}
+.chg-filed{display:block;color:#6f6f6f}
+@media (max-width:1000px){ .dtwrap{flex-direction:column} .dtrail{width:100%;position:static;max-height:480px} }
 .ph-ev{font-size:13px;color:#bdbdbd;margin:8px 0 4px}
 .phrev{display:flex;align-items:center;gap:8px;margin-top:10px}
 .phrev .sp{flex:1}
