@@ -1,8 +1,16 @@
 {
  "updated": "2026-10-22",
  "total": 670,
- "batches": "Batches 1-8 + requeue \u2014 profiles 1-400 checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photo for Courtney Delosh",
+ "batches": "Batches 1-9 + requeue \u2014 profiles 1-450 checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photo for Courtney Delosh",
  "people": [
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Aaron Cote",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
   {
    "evidence": "Page titled 'Meet The Owner | Adept Detailing' carries a single lead image directly above 'Aaron Daniels is the founder and owner of Adept Detailing...' \u2014 no explicit caption/alt naming him in the image itself, so likely not confirmed. Both SUNY Canton Merit stories text-only.",
    "name": "Aaron Daniels",
@@ -25,6 +33,14 @@
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Acacia White",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -60,6 +76,14 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Alan K Daniels",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "Merit profile text-only. Potsdam President's List Merit story 'page not found'. NNYCF page lists her in text; its only image is a generic graduates illustration with no caption tying it to her \u2014 not filed.",
    "name": "Alana Hoover",
    "photo_url": null,
@@ -78,6 +102,14 @@
   {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Alex Hammond",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Alex Koberda",
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
@@ -108,12 +140,36 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Alexis Sullivan",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "Team section lists him by name/role directly under the image ('Alfredo Rodriguez \u2014 Chaplain & Bible Instructor'); filename alfredo_rodriguez.webp.",
    "name": "Alfredo Rodriguez",
    "photo_url": "https://www.awakeningchristianacademy.org/images/team/alfredo_rodriguez.webp",
    "source_page": "https://www.awakeningchristianacademy.org/",
    "status": "confirmed",
    "type": "staff photo"
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Alicia Taillon",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Clarkson people profile (Program Director, Occupational Therapy) fetched twice \u2014 biography/education/contact text only, no headshot URL. Gap: a headshot may exist on the live page that extraction missed.",
+   "name": "Alisha Ohl",
+   "photo_url": null,
+   "source_page": "https://www.clarkson.edu/people/alisha-ohl",
+   "status": "no_photo",
+   "type": null
   },
   {
    "evidence": "No source links on file.",
@@ -148,8 +204,32 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Alycia Miller-Lynch",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is a Facebook post (auth).",
    "name": "Alyssa L Ramsay",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "SUNY Canton Spring 2026 honors page lists her (Nursing BS) as a text-only entry among 1,500+ names; the commencement PDF likewise lists her in a text-only program \u2014 no images.",
+   "name": "Amber Erwin",
+   "photo_url": null,
+   "source_page": "https://www.canton.edu/news/2026/honors-s26.php",
+   "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Amber Ingram",
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
@@ -161,6 +241,22 @@
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Massena CSD budget newsletter names her in text only: special educator Ana Miller won the 2024 Puzzle Piece Foundation NNY Grant for her ASD classroom (principal accepted on the school's behalf). No photo or caption tied to her; no image URL extractable.",
+   "name": "Ana Miller",
+   "photo_url": null,
+   "source_page": "https://4.files.edl.io/4911/05/08/24/114028-07c836f4-2825-4820-8002-2d78e26719e8.pdf",
+   "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Anastasia Colbert",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -204,6 +300,14 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Andrew Wiseman",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "County roster PDF read in full \u2014 text-only listing (Superintendent, Buildings & Grounds), no images.",
    "name": "Andy Dennis",
    "photo_url": null,
@@ -236,6 +340,22 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Ann Parow Mackey",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Anna Molinero",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Annabelle Boudreau",
    "photo_url": null,
@@ -260,11 +380,27 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Anne Shaver",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Annelise Cevallos",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Annika Greco",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -284,11 +420,59 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Asher Cragg",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Clarkson Merit appointment story carries a single media attachment named ashleigh-graveline.jpg captioned 'Ashleigh Graveline' \u2014 the story announces her appointment as clinical assistant professor of OT at Clarkson, so the labeled attachment is her photo. Her Clarkson people profile is text-only.",
+   "name": "Ashleigh Graveline",
+   "photo_url": "https://s3.amazonaws.com/rm3.attachments.prod.readmedia.com/files/42190/inline/ashleigh-graveline.jpg?1537449223",
+   "source_page": "https://clarkson.meritpages.com/news/ashleigh-graveline-appointed-clinical-assistant-professor-of-occupational-therapy-at-clarkson-university/5392/print",
+   "status": "confirmed",
+   "type": "headshot"
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Ashley LaFay",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Ashley StDenis",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Ashlin Elliott",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "Merit profile is person-specific (Winthrop NY, SUNY Potsdam BA Psychology, cum laude) but page returned no Images/no photo URL. President's List story link returns Merit 'page not found'. Facebook skipped.",
    "name": "Autumn Zellweger",
    "photo_url": null,
    "source_page": "https://meritpages.com/Autumn-Zellweger/7476550",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Avery Charleson",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -329,6 +513,14 @@
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only source on file is LinkedIn (auth) \u2014 a separate pass is trying LinkedIn photos via Google Images.",
+   "name": "Blake Burr",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -621,6 +813,14 @@
   },
   {
    "evidence": "No source links on file.",
+   "name": "Colby Criscitello",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
    "name": "Colleen Cheney",
    "photo_url": null,
    "source_page": null,
@@ -782,6 +982,30 @@
    "type": null
   },
   {
+   "evidence": "His Merit profile (Legal Studies, SUNY Canton Class of 2022, Rensselaer Falls NY) carries a real uploaded student profile photo in the profile slot \u2014 an S3 photo file, not the missing.png placeholder.",
+   "name": "David Hartman",
+   "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/6056211/medium/1100D60C-6450-4922-A07C-EFC31BCCE0D3.jpeg?1610756431",
+   "source_page": "https://meritpages.com/hartm104",
+   "status": "confirmed",
+   "type": "profile photo"
+  },
+  {
+   "also": [
+    {
+     "note": "Babylist registry photo of the couple ('Julia and David Tomford's Baby Registry,' Potsdam NY).",
+     "source_page": "https://my.babylist.com/julia-tomford",
+     "status": "confirmed",
+     "url": "https://images.babylist.com/image/upload/w_340,h_340,c_thumb,f_auto/v1770331970/spluiuqsdzmampijfsnq.jpg"
+    }
+   ],
+   "evidence": "WayUp profile carries a photo explicitly labeled 'David Tomford's profile photo' on his own page; context matches (UB Mechanical Engineering 2020, Potsdam State, CFC, Dunn Paper co-op in Gouverneur). A second labeled photo (Babylist couple registry photo) is also on file.",
+   "name": "David Tomford",
+   "photo_url": "https://res.cloudinary.com/campus-job/image/upload/t_student-public-page/v1/profile_pictures/wQ7PxdmSmF_20180419.jpg",
+   "source_page": "https://www.wayup.com/profile/David-Tomford-7405dbb997/",
+   "status": "confirmed",
+   "type": "profile photo"
+  },
+  {
    "evidence": "CFC sermons page lists him as speaker with no images. Funeral home condolence page mentions him presiding, no images. LinkedIn/Facebook auth.",
    "name": "David Tulloch",
    "photo_url": null,
@@ -824,6 +1048,14 @@
   {
    "evidence": "No source links on file.",
    "name": "Debbie Knaebel",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Debbie Swyka",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
@@ -896,6 +1128,14 @@
   {
    "evidence": "No source links on file.",
    "name": "Dorie Colbert Reiter",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Dr Kring",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
@@ -1000,6 +1240,14 @@
   {
    "evidence": "No source links on file.",
    "name": "Elsie Breen",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Emilee McAdoo",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
@@ -1219,6 +1467,14 @@
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Merit story names Grace E. Ockrin as an incoming St. Lawrence University Class of 2025 student (Webster Schroeder HS) but is text-only.",
+   "name": "Grace Ockrin",
+   "photo_url": null,
+   "source_page": "https://stlawu.meritpages.com/stories/Grace-Ockrin-Enrolled-at-St-Lawrence-University/65535564",
+   "status": "no_photo",
    "type": null
   },
   {
@@ -1598,6 +1854,14 @@
    "type": null
   },
   {
+   "evidence": "Village of Canton board minutes (March 20, 2024) are text-only; he appears only as a text item (board accepted his resignation effective April 7) \u2014 no images in the document.",
+   "name": "Joe Mastro",
+   "photo_url": null,
+   "source_page": "https://cms3.revize.com/revize/canton/2024 03 20 Village Board Meeting Minutes.pdf?t=202406141425540&t=202406141425540",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "Only links on file are LinkedIn and Facebook (auth).",
    "name": "Joel Moulton",
    "photo_url": null,
@@ -1657,6 +1921,14 @@
    "photo_url": null,
    "source_page": "https://saintsathletics.com/story.aspx?filename=mens-track-and-field-cyphers-joins-saints-coaching-staff&file_date=1-18-2019",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Jon Mart",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
@@ -1772,6 +2044,14 @@
    "type": null
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Julia Andryuk",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Julia Fulton",
    "photo_url": null,
@@ -1820,11 +2100,27 @@
    "type": "portrait / action photo"
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Julie McOrmond",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "NTC Massena preacher page is a text-only list of his sermon posts \u2014 no photo URL tied to him. Opengovny inspection record text-only. The AEDC newsletter on file was not opened in this pass.",
    "name": "Justin Cardinal",
    "photo_url": null,
    "source_page": "https://www.ntcmassena.com/preacher/justin-cardinal/",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Justin Daniels",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -1884,11 +2180,27 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Katelyn Tomford",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Katerina Cavellos",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kathy Eggleson",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -1938,6 +2250,14 @@
    "source_page": "https://potsdambears.com/sports/womens-lacrosse/roster/katie-lapinski/2087",
    "status": "confirmed",
    "type": "headshot"
+  },
+  {
+   "evidence": "No source links on file of her own.",
+   "name": "Katie McGrath",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
   },
   {
    "evidence": "Her Merit profile (SUNY Potsdam, Public Health, Potsdam NY) returned achievement listings only \u2014 no profile photo (contrast Delany Durant's Merit profile, which did carry one).",
@@ -2172,6 +2492,22 @@
    "type": null
   },
   {
+   "evidence": "No source links on file. (Kept distinct from Meg Lapinski per JD's ruling.)",
+   "name": "Maggie Lapinski",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Maggie Thibodeau",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Maliah Wright",
    "photo_url": null,
@@ -2361,6 +2697,14 @@
    "photo_url": null,
    "source_page": "https://www.uvmhealth.org/providers/megan-converse-otlr",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Megan Daniels",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
@@ -2668,6 +3012,14 @@
    "type": null
   },
   {
+   "evidence": "Merit profile (filed under the 'Huntley' spelling \u2014 Olivia Huntley of Potsdam, SUNY Potsdam Criminal Justice) is text-only listings. DirectAthletics page is text results tables only.",
+   "name": "Olivia Huntly",
+   "photo_url": null,
+   "source_page": "https://meritpages.com/Olivia-Huntley/7054475",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Olivia Miller",
    "photo_url": null,
@@ -2697,6 +3049,14 @@
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Paige Alves",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
@@ -2900,6 +3260,14 @@
    "type": null
   },
   {
+   "evidence": "Merit profile (SUNY Canton President's List, Canton NY) is text-only listings \u2014 no profile photo extractable. The on-file newspaper PDF failed to load (empty response) \u2014 that source remains unchecked.",
+   "name": "Samarah Martin",
+   "photo_url": null,
+   "source_page": "https://meritpages.com/Samarah-Martin/3121843",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Sandra Mills Tallo",
    "photo_url": null,
@@ -2945,6 +3313,14 @@
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Rochester Regional article names her in text only as one of seven Certified Lactation Consultant RNs at Canton-Potsdam Hospital's Birthplace; the article's photo is captioned for a patient, not her.",
+   "name": "Sarah Pederson",
+   "photo_url": null,
+   "source_page": "https://www.rochesterregional.org/hub/specialized-rns-assist-new-moms",
+   "status": "no_photo",
    "type": null
   },
   {
@@ -3046,6 +3422,14 @@
    "type": null
   },
   {
+   "evidence": "No source links on file.",
+   "name": "Susan Buckley",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Sydney Storrin",
    "photo_url": null,
@@ -3091,6 +3475,22 @@
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Tim Gault",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Tim Parker",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
    "type": null
   },
   {
