@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.17.0';
+var APP_VERSION = '2.18.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -2651,6 +2651,7 @@ function viewProfile(v){
 }
 function paintProfile(di){
   if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
+  phLoad();
   var e = D.directory[di];
   $('#p-hero').innerHTML = heroHTML(di);
   ['l', 'c', 'r'].forEach(function(col){
@@ -2693,7 +2694,7 @@ function heroHTML(di){
     (loc ? '<p class="hloc">' + ic('pin', 13) + esc(loc) + '</p>' : '') +
     '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
     ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') +
-    '<div class="hscore">' + scoreBadgeHTML(di) + '</div></div>';
+    '<div class="hscore">' + scoreBadgeHTML(di) + '</div></div>' + phHeroHTML(e);
 }
 /* ---------- section cards ---------- */
 function secHTML(di, id){
@@ -4921,7 +4922,7 @@ function phLoad(){
   PH_LOADING = true;
   fetch('data/photos.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ PH = d; PH_LOADING = false; if(S.route.name === 'photos') render(); })
+    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if($('#p-hero')) repaintTop(); })
     .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos') render(); });
 }
 
@@ -4935,6 +4936,97 @@ function phSetReview(name, val){
   store('ncc_photos_review_v1', JSON.stringify(r));
   if(S.route.name === 'photos') viewPhotos($('#view'));
 }
+
+/* ---------- profile photos: framing store + hero + editor (JD 2026-10-22) ---------- */
+var PH_BY_NAME = null;
+function phIndex(){
+  if(!PH || !PH.people) return null;
+  if(!PH_BY_NAME){
+    PH_BY_NAME = {};
+    PH.people.forEach(function(p){ if(p.photo_url) PH_BY_NAME[p.name] = p; });
+  }
+  return PH_BY_NAME;
+}
+function phFrames(){
+  try{ return JSON.parse(store('ncc_photos_frame_v1') || '{}') || {}; }catch(x){ return {}; }
+}
+function phFrameFor(name, p){
+  p = p || (phIndex() || {})[name];
+  var f = { z:1, x:50, y:22, url:null };
+  if(p){
+    if(p.focus){ var m = String(p.focus).match(/([\d.]+)%\s+([\d.]+)%/); if(m){ f.x = +m[1]; f.y = +m[2]; } }
+    if(p.zoom) f.z = +p.zoom;
+    f.url = p.photo_url;
+  }
+  var s = phFrames()[String(name).toLowerCase()];
+  if(s){ if(s.z) f.z = +s.z; if(s.x != null) f.x = +s.x; if(s.y != null) f.y = +s.y; if(s.url) f.url = s.url; }
+  return f;
+}
+function phFrameSet(name, fr){
+  var all = phFrames();
+  all[String(name).toLowerCase()] = { z:fr.z, x:Math.round(fr.x), y:Math.round(fr.y), url:fr.url || undefined };
+  store('ncc_photos_frame_v1', JSON.stringify(all));
+}
+function phFrameStyle(p){
+  var f = phFrameFor(p.name, p);
+  return 'object-position:' + f.x + '% ' + f.y + '%;' + (f.z && f.z !== 1 ? 'transform:scale(' + f.z + ')' : '');
+}
+function phHeroHTML(e){
+  var idx = phIndex(); if(!idx) return '';
+  var p = idx[dispName(e)]; if(!p || !p.photo_url) return '';
+  if(phReview()[String(p.name).toLowerCase()] === 'rejected') return '';
+  var f = phFrameFor(p.name, p);
+  return '<div class="hphoto"><img src="' + esc(f.url || p.photo_url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="object-position:' + f.x + '% ' + f.y + '%;transform:scale(' + f.z + ')">' +
+    '<button type="button" class="hphoto-adj" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button></div>';
+}
+function phEditor(name){
+  var idx = phIndex(); var p = idx && idx[name]; if(!p) return;
+  var urls = [p.photo_url].concat((p.also || []).map(function(a){ return a.url; }).filter(Boolean));
+  var f0 = phFrameFor(name, p);
+  var cur = { z:f0.z, x:f0.x, y:f0.y, url:f0.url || p.photo_url };
+  var ov = document.createElement('div');
+  ov.className = 'phed-wrap';
+  ov.innerHTML = '<div class="phed"><header><h3>Photo \u2014 ' + esc(name) + '</h3><button type="button" class="ib" data-x aria-label="Close">' + ic('x', 18) + '</button></header>' +
+    '<div class="phed-stage"><img draggable="false" referrerpolicy="no-referrer" alt=""></div>' +
+    '<div class="phed-ctl"><label class="phed-zoom">Zoom <input type="range" min="1" max="3" step="0.01"></label>' +
+    (urls.length > 1 ? '<div class="phed-thumbs">' + urls.map(function(u, i){ return '<button type="button" data-u="' + esc(u) + '">Photo ' + (i + 1) + '</button>'; }).join('') + '</div>' : '') +
+    '<p class="dim">Drag the photo to pan it. Your framing saves on this device and applies in the profile header and the Photos section.</p>' +
+    '<div class="row end"><button type="button" class="btn ghost" data-reset>Reset</button><span class="sp"></span><button type="button" class="btn" data-cancel>Cancel</button><button type="button" class="btn primary" data-save>Save framing</button></div></div></div>';
+  document.body.appendChild(ov);
+  document.body.classList.add('sheet-open');
+  var img = ov.querySelector('.phed-stage img'), stage = ov.querySelector('.phed-stage'), rng = ov.querySelector('input[type=range]');
+  function apply(){
+    img.src = cur.url;
+    img.style.objectPosition = cur.x + '% ' + cur.y + '%';
+    img.style.transform = 'scale(' + cur.z + ')';
+    rng.value = cur.z;
+    ov.querySelectorAll('.phed-thumbs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-u') === cur.url); });
+  }
+  rng.addEventListener('input', function(){ cur.z = +rng.value; apply(); });
+  ov.querySelectorAll('.phed-thumbs button').forEach(function(b){ b.addEventListener('click', function(){ cur.url = b.getAttribute('data-u'); apply(); }); });
+  var drag = null;
+  stage.addEventListener('pointerdown', function(ev){ drag = { x:ev.clientX, y:ev.clientY, fx:cur.x, fy:cur.y }; stage.setPointerCapture(ev.pointerId); });
+  stage.addEventListener('pointermove', function(ev){
+    if(!drag) return;
+    var r = stage.getBoundingClientRect();
+    cur.x = Math.min(100, Math.max(0, drag.fx - (ev.clientX - drag.x) / r.width * 100));
+    cur.y = Math.min(100, Math.max(0, drag.fy - (ev.clientY - drag.y) / r.height * 100));
+    apply();
+  });
+  stage.addEventListener('pointerup', function(){ drag = null; });
+  function close(){ ov.remove(); document.body.classList.remove('sheet-open'); }
+  ov.querySelector('[data-x]').addEventListener('click', close);
+  ov.querySelector('[data-cancel]').addEventListener('click', close);
+  ov.addEventListener('click', function(ev){ if(ev.target === ov) close(); });
+  ov.querySelector('[data-reset]').addEventListener('click', function(){ cur = { z:(p.zoom || 1), x:50, y:22, url:p.photo_url }; if(p.focus){ var m = String(p.focus).match(/([\d.]+)%\s+([\d.]+)%/); if(m){ cur.x = +m[1]; cur.y = +m[2]; } } apply(); });
+  ov.querySelector('[data-save]').addEventListener('click', function(){
+    phFrameSet(name, cur); close();
+    if($('#p-hero')) repaintTop();
+    if(S.route.name === 'photos') viewPhotos($('#view'));
+  });
+  apply();
+}
+
 function viewPhotos(v){
   phLoad();
   var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Photos</h1><p class="sub">Photos on file: each profile&rsquo;s web source links, checked for a photo of that person. A photo only counts when the page itself ties it to them &mdash; a caption, alt text, a roster headshot, a staff or profile photo. Confirm or reject each one below: confirming removes the grade badge, rejecting removes the photo. Headshots are framed on the rule of thirds &mdash; eyes on the upper third line, with padding around the subject; hover any photo to see the thirds grid.</p></div></div>';
@@ -4965,7 +5057,7 @@ function viewPhotos(v){
     var review = rev === 'confirmed'
       ? '<div class="phrev"><span class="phok">' + ic('check', 13) + ' Confirmed by you</span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
       : '<div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 13) + ' Confirm</button><button type="button" class="btn ghost sm" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('x', 13) + ' Reject</button></div>';
-    return '<section class="card phcard' + (portrait ? ' is-portrait' : '') + '"><a class="phimg" href="' + esc(p.source_page || p.photo_url) + '" target="_blank" rel="noopener"><img src="' + esc(p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" referrerpolicy="no-referrer"' + (p.focus ? ' style="object-position:' + esc(p.focus) + (p.zoom ? ';transform:scale(' + p.zoom + ')' : '') + '"' : '') + '><span class="phthirds"></span></a><div class="cbody">' +
+    return '<section class="card phcard' + (portrait ? ' is-portrait' : '') + '"><a class="phimg" href="' + esc(p.source_page || p.photo_url) + '" target="_blank" rel="noopener"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></a><div class="cbody">' +
       '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') +
       '<small class="dim">' + esc(p.type || 'photo') + '</small></div>' + badge + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
@@ -6791,6 +6883,7 @@ function onClick(ev){
     case 'redo': doRedo(); refreshAfterUndo('redo'); break;
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
     case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
+    case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phreject': phSetReview(el.getAttribute('data-pname'), 'rejected'); break;
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
     case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
