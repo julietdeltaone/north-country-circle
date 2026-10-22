@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.18.0';
+var APP_VERSION = '2.19.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4916,7 +4916,7 @@ function viewDaily(v){
    are listed too, so coverage is honest. Data: data/photos.json,
    written by the Photos on File batches; read-only here.
    ============================================================ */
-var PH = null, PH_LOADING = false;
+var PH = null, PH_LOADING = false, PH_SHOW = 24;
 function phLoad(){
   if(PH || PH_LOADING) return;
   PH_LOADING = true;
@@ -4969,14 +4969,14 @@ function phFrameSet(name, fr){
 }
 function phFrameStyle(p){
   var f = phFrameFor(p.name, p);
-  return 'object-position:' + f.x + '% ' + f.y + '%;' + (f.z && f.z !== 1 ? 'transform:scale(' + f.z + ')' : '');
+  return 'object-position:' + f.x + '% ' + f.y + '%;' + (f.z && f.z !== 1 ? 'transform-origin:' + f.x + '% ' + f.y + '%;transform:scale(' + f.z + ')' : '');
 }
 function phHeroHTML(e){
   var idx = phIndex(); if(!idx) return '';
   var p = idx[dispName(e)]; if(!p || !p.photo_url) return '';
   if(phReview()[String(p.name).toLowerCase()] === 'rejected') return '';
   var f = phFrameFor(p.name, p);
-  return '<div class="hphoto"><img src="' + esc(f.url || p.photo_url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="object-position:' + f.x + '% ' + f.y + '%;transform:scale(' + f.z + ')">' +
+  return '<div class="hphoto"><span class="hphoto-box"><img src="' + esc(f.url || p.photo_url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="object-position:' + f.x + '% ' + f.y + '%;transform-origin:' + f.x + '% ' + f.y + '%;transform:scale(' + f.z + ')"></span>' +
     '<button type="button" class="hphoto-adj" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button></div>';
 }
 function phEditor(name){
@@ -4998,6 +4998,7 @@ function phEditor(name){
   function apply(){
     img.src = cur.url;
     img.style.objectPosition = cur.x + '% ' + cur.y + '%';
+    img.style.transformOrigin = cur.x + '% ' + cur.y + '%';
     img.style.transform = 'scale(' + cur.z + ')';
     rng.value = cur.z;
     ov.querySelectorAll('.phed-thumbs button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-u') === cur.url); });
@@ -5042,7 +5043,8 @@ function viewPhotos(v){
   PH.people.forEach(function(p){ if(counts[p.status] != null) counts[p.status]++; });
   var foundAll = PH.people.filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely' || p.status === 'possible'); });
   var found = foundAll.filter(function(p){ return revOf(p) !== 'rejected'; });
-  var awaiting = found.filter(function(p){ return revOf(p) !== 'confirmed'; }).length;
+  var awaiting = found.filter(function(p){ return revOf(p) !== 'confirmed' && revOf(p) !== 'bad'; }).length;
+  var flagged = foundAll.filter(function(p){ return revOf(p) === 'bad'; });
   var stats = '<section class="card aspanel"><div class="cbody"><div class="asstats">' +
     '<div class="asstat"><span class="asstat-ic">' + ic('camera', 16) + '</span><b>' + PH.people.length + ' / ' + (PH.total || PH.people.length) + '</b><span>Profiles checked</span></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('check', 16) + '</span><b>' + found.length + '</b><span>Photos on file</span></div>' +
@@ -5053,11 +5055,14 @@ function viewPhotos(v){
     var di = diOf(p.name), e = di != null ? D.directory[di] : null;
     var rev = revOf(p);
     var portrait = /headshot|portrait|staff|profile/i.test(p.type || '');
-    var badge = rev === 'confirmed' ? '' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
+    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO</span>' : rev === 'confirmed' ? '' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
+    var adjBtn = '<button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust</button>';
     var review = rev === 'confirmed'
-      ? '<div class="phrev"><span class="phok">' + ic('check', 13) + ' Confirmed by you</span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
-      : '<div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 13) + ' Confirm</button><button type="button" class="btn ghost sm" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('x', 13) + ' Reject</button></div>';
-    return '<section class="card phcard' + (portrait ? ' is-portrait' : '') + '"><a class="phimg" href="' + esc(p.source_page || p.photo_url) + '" target="_blank" rel="noopener"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></a><div class="cbody">' +
+      ? '<div class="phrev"><span class="phok">' + ic('check', 13) + ' Confirmed by you</span><span class="sp"></span>' + adjBtn + '<button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
+      : rev === 'bad'
+      ? '<div class="phrev"><span class="phok bad">Right person, bad photo &mdash; keep looking</span><span class="sp"></span>' + adjBtn + '<button type="button" class="btn ghost sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">Confirm</button><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
+      : '<div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 13) + ' Confirm</button><button type="button" class="btn ghost sm" data-act="phbad" data-pname="' + esc(p.name) + '">Bad photo</button><button type="button" class="btn ghost sm" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('x', 13) + ' Reject</button><span class="sp"></span>' + adjBtn + '</div>';
+    return '<section class="card phcard' + (portrait ? ' is-portrait' : '') + '"><a class="phimg" href="' + esc(p.source_page || p.photo_url) + '" target="_blank" rel="noopener"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></a><div class="cbody">' +
       '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') +
       '<small class="dim">' + esc(p.type || 'photo') + '</small></div>' + badge + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
@@ -5066,7 +5071,10 @@ function viewPhotos(v){
       '</div></section>';
   }
   found.sort(function(a, b){ var ra = revOf(a) === 'confirmed' ? 1 : 0, rb = revOf(b) === 'confirmed' ? 1 : 0; if(ra !== rb) return ra - rb; var r = { confirmed:0, likely:1, possible:2 }; return r[a.status] - r[b.status] || a.name.localeCompare(b.name); });
-  var foundHtml = found.length ? '<div class="assec-t">ON FILE &mdash; ' + found.length + (awaiting ? ' &middot; ' + awaiting + ' AWAITING REVIEW' : '') + '</div><div class="phgrid">' + found.map(photoCard).join('') + '</div>' : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
+  var shown = found.slice(0, PH_SHOW);
+  var moreHtml = found.length > shown.length ? '<div class="phmore"><button type="button" class="btn ghost" data-act="phmore">Show more photos &mdash; ' + (found.length - shown.length) + ' more</button></div>' : '';
+  var flagHtml = flagged.length ? '<div class="phrej"><span>Flagged for a better photo (right person, bad photo): ' + flagged.map(function(p){ return esc(p.name); }).join(', ') + '</span></div>' : '';
+  var foundHtml = found.length ? '<div class="assec-t">ON FILE &mdash; ' + found.length + (awaiting ? ' &middot; ' + awaiting + ' AWAITING REVIEW' : '') + '</div><div class="phgrid">' + shown.map(photoCard).join('') + '</div>' + moreHtml + flagHtml : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
   function chip(p){
     var di = diOf(p.name), label = esc(p.name);
     var why = revOf(p) === 'rejected' ? 'photo rejected by you' : p.status === 'possible' ? 'photo exists, URL pending' : p.status === 'no_photo' ? 'checked, no photo' : p.status === 'auth_only' ? 'Facebook / LinkedIn only' : 'no source links on file';
@@ -6886,6 +6894,8 @@ function onClick(ev){
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phreject': phSetReview(el.getAttribute('data-pname'), 'rejected'); break;
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
+    case 'phbad': phSetReview(el.getAttribute('data-pname'), 'bad'); break;
+    case 'phmore': PH_SHOW += 24; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
