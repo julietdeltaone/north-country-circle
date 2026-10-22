@@ -1571,7 +1571,16 @@ html,body{background:var(--bg)}
    object-position 50% 22% anchors the subject so eyes land near the
    upper third line, with a padded inset frame so nothing is cropped
    tight. Hover shows the thirds grid. */
-.phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+.phgrid{display:grid;grid-template-columns:repeat(var(--phcols,5),1fr);gap:14px;align-items:start}
+.phgrid.dense{gap:8px}
+.phgrid.dense .phcard .phimg{padding:4px}
+.phgrid.dense .phcard .cbody{padding:8px}
+.phgrid.dense .ph-ev{display:none}
+.phgrid.dense .phrev{gap:4px}
+.phcols-ctl{display:flex;align-items:center;gap:6px;margin-left:auto}
+.phcols-ctl>span{font:600 11px Archivo,sans-serif;letter-spacing:.08em;color:#8f8f8f;text-transform:uppercase}
+.phcolbtn{background:none;border:1px solid #2b2b2b;color:#cfcfcf;border-radius:2px;padding:7px 10px;font:600 11px Archivo,sans-serif;cursor:pointer}
+.phcolbtn.on{border-color:#e30613;color:#fff}
 .phcard{overflow:hidden;content-visibility:auto;contain-intrinsic-size:auto 520px}
 .phcard .phimg{display:block;position:relative;background:#0c0c0c;aspect-ratio:1/1;padding:10px;box-sizing:border-box;overflow:hidden}
 .phcard .phimg img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}
