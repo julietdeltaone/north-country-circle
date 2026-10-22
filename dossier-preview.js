@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.22.0';
+var APP_VERSION = '2.23.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -5079,11 +5079,21 @@ function viewPhotos(v){
     '<div class="asstat"><span class="asstat-ic">' + ic('eye', 16) + '</span><b>' + awaiting + '</b><span>Awaiting your review</span></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b>' + (counts.no_photo + counts.no_source + counts.auth_only) + '</b><span>No photo found yet</span></div>' +
     '</div></div></section>';
+  function phActs(p){
+    var rev = revOf(p), nm = esc(p.name);
+    function b(act, icon, label, title, cls){
+      return '<button type="button" class="pha' + (cls ? ' ' + cls : '') + '" data-act="' + act + '" data-pname="' + nm + '" title="' + title + '">' + ic(icon, 13) + '<span class="t">' + label + '</span></button>';
+    }
+    var adj = b('phadjust', 'edit', 'Adjust', 'Adjust the framing of this photo');
+    if(rev === 'confirmed') return '<div class="phacts">' + b('phundo', 'undo', 'Undo', 'Undo your confirmation') + adj + '</div>';
+    if(rev === 'bad') return '<div class="phacts">' + b('phconfirm', 'check', 'Confirm', 'Confirm: right person, good photo', 'primary') + b('phundo', 'undo', 'Undo', 'Undo the bad-photo flag') + adj + '</div>';
+    return '<div class="phacts">' + b('phconfirm', 'check', 'Confirm', 'Confirm: right person, good photo', 'primary') + b('phbad', 'skip', 'Bad photo', 'Right person, bad photo: keep looking') + b('phreject', 'trash', 'Reject', 'Reject: not this person') + adj + '</div>';
+  }
   function photoCard(p){
     var rev = revOf(p);
     var sel = PH_SEL && PH_SEL.toLowerCase() === String(p.name).toLowerCase();
     var grade = rev === 'bad' ? '<span class="phg bad">BAD</span>' : rev === 'confirmed' ? '<span class="phg ok">' + ic('check', 11) + '</span>' : p.status === 'confirmed' ? '<span class="phg conf">C</span>' : p.status === 'likely' ? '<span class="phg lik">L</span>' : '<span class="phg poss">P</span>';
-    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' +
+    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' + phActs(p) +
       '<div class="phnm"><b>' + esc(p.name) + '</b>' + grade + '</div></section>';
   }
   function phRail(p){
