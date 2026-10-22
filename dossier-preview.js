@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.26.0';
+var APP_VERSION = '2.27.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1555,7 +1555,7 @@ var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
-  net:{ sel:null, org:null },
+  net:{ sel:null, org:null, view:'2d' },
   fam:{ editing:null, focus:null, sheet:false, side:null },
   grp:{ kind:'groups', open:null, renaming:null },
   audit:null   /* Audit feeder wall state (visit only), built lazily by viewAudit */
@@ -2797,7 +2797,7 @@ function secView(di, id){
     if(tree) out3 += '<div class="sub-h first">Family</div>' + tree;
     else if(links.length) out3 += '<div class="sub-h first">Family</div>' + famListHTML(di, false);
     /* Default = the strongest 10 only (knownAssociates preserves the baked strength order); Show more / Show less toggles the full list (JD 2026-10-15). */
-    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + ', always two-way</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
+    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + '</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
       (ka.length > 10 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show more \u00b7 +' + (ka.length - 10) + '</button>' : '') +
       (ka.length > 10 && S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show less</button>' : '') + '</div>';
     out3 += '<div class="row"><a class="btn ghost sm" href="#/family" data-act="openfam" data-di="' + di + '">' + ic('tree', 14) + 'Open in Family</a><a class="btn ghost sm" href="#/network" data-act="shownet" data-di="' + di + '">' + ic('network', 14) + 'Show on Network</a></div>';
@@ -2939,7 +2939,7 @@ function secEdit(di, id){
       lab('Honors') + tagEditor(di, 'achievements', ' | ', 'Award and year, e.g. Dean’s List 2020');
   }
   if(id === 'connections'){
-    return lab('Known associates', 'Always two-way: adding or removing writes both profiles') +
+    return lab('Known associates', 'Adding or removing writes both profiles') +
       '<div class="chips">' + (knownAssociates(e).map(function(nb){ return nbrChip(nb, true); }).join('') || '<span class="dim">None mapped yet.</span>') + '</div>' +
       '<div class="finder"><input id="assocq" placeholder="Add a known associate: type a name" autocomplete="off"><div id="assocr" class="hits"></div></div>' +
       lab('Family', 'Traditional model: one spouse, bloodline trees') + famListHTML(di, true) +
@@ -3045,7 +3045,7 @@ var SCORE_CFG = {
   yearsCap: 20
 };
 var SCORE_LABELS = { closeness:'Closeness', tier:'Tier', relationship:'Relationship', years:'Years', fabric:'Fabric' };
-var SCORE_RADII = [120, 235, 365, 525, 690], SCORE_SPREAD = [14, 26, 40, 55, 70];
+var SCORE_RADII = [160, 315, 485, 700, 920], SCORE_SPREAD = [14, 26, 40, 55, 70];
 var SCORE_GUIDES = ['TOP 5', '6\u201315', '16\u201350', '51\u2013150', '150+'];
 var SCORE = { ver:-1, byDi:null };
 function scoreCompute(){
@@ -3152,12 +3152,13 @@ function netLowConf(nd){ if(!SCORE.byDi) return false; var s = SCORE.byDi[nd.di]
    to JD routes through the hub of their largest organization,
    so the org structure rides the same lines. Ambient spokes are
    hairline texture; the focused person's (or organization's)
-   route is full strength. The map holds still — no drift, no
-   3D, no alternate layouts. Tap a dot for a card; tap a hub
+   route is full strength. One layout, two views: the flat 2D
+   disc, or a tilted, slowly rotating 3D projection of the same
+   coordinates (JD 2026-10-22). Tap a dot for a card; tap a hub
    diamond (or its row in the panel) to focus an organization.
    Display-only: nothing here ever writes data.
    ============================================================ */
-var NET = { nodes:[], hubs:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false };
+var NET = { nodes:[], hubs:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, tilt:1.02, lastT:0 };
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 /* Camera glide: the one motion the page still has. A glide moves
    camera values (pan / zoom / panel compensation) with the house
@@ -3191,7 +3192,7 @@ function netGlideStep(now){
   NET.dirty = true;
   if(p >= 1){ NET.glide = null; if(g.onDone) g.onDone(); }
 }
-function netFitZ(){ return Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / 1840)); }
+function netFitZ(){ return Math.max(0.3, Math.min(1.4, Math.min(NET.W, NET.H) / 2400)); }
 function netFitNow(){
   NET.cam.x = 0; NET.cam.y = 0; NET.cam.z = netFitZ();
   NET.dirty = true;
@@ -3201,9 +3202,6 @@ function netFrameSel(){
   var nd = NET.byDi[S.net.sel]; if(!nd) return;
   var p2 = netP2(nd);
   netGlide(450, { c2x:p2[0], c2y:p2[1], c2z:Math.max(NET.cam.z, 1.6) });
-}
-function netSubHTML(){
-  return 'Everyone in the directory around JD: the top 5 closest in the middle, then 15, 50, 150. A line runs from JD to each person, through the hub of their main organization. Tier owns the color. Tap a dot for details; tap a diamond, or an organization in the panel, to focus it.';
 }
 function netToggleFS(){
   if(document.fullscreenElement){ document.exitFullscreen(); return; }
@@ -3277,14 +3275,26 @@ function netBuild(){
       if(na !== nb) return na < nb ? -1 : 1;
       return (scAll[b.di].score - scAll[a.di].score) || (a.di - b.di);
     });
-    var n = arr.length;
-    arr.forEach(function(nd, k){
-      var rng = mulberry32((nd.di + 7919) * 2654435761 % 2147483647);
-      var slot = Math.PI * 2 / Math.max(1, n);
-      var ang = (k / Math.max(1, n)) * Math.PI * 2 + (rng() - 0.5) * slot * 0.55 + layer * 0.7;
-      var rad = SCORE_RADII[layer] + (rng() - 0.5) * 2 * SCORE_SPREAD[layer];
-      nd.sring = layer; nd.sx = nd.dx = Math.cos(ang) * rad; nd.sy = nd.dy = Math.sin(ang) * rad;
-    });
+    var n = arr.length, TAU = Math.PI * 2;
+    /* Even spacing inside each org sector (JD 2026-10-22): a
+       sector is the contiguous run of org-mates in the sorted
+       ring; its span is its share of the circle, and each member
+       sits at the center of an equal slot within that span.
+       Jitter is capped at a quarter of a slot, so neighbours
+       keep real air between them instead of clumping. */
+    var k = 0;
+    while(k < n){
+      var j = k + 1;
+      while(j < n && (arr[j].primary || '') === (arr[k].primary || '')) j++;
+      var span = (j - k) / n * TAU, slot = span / (j - k), start = k / n * TAU;
+      for(var m = k; m < j; m++){
+        var nd2 = arr[m], rng = mulberry32((nd2.di + 7919) * 2654435761 % 2147483647);
+        var ang = start + (m - k + 0.5) * slot + (rng() - 0.5) * slot * 0.25 + layer * 0.7;
+        var rad = SCORE_RADII[layer] + (rng() - 0.5) * 2 * SCORE_SPREAD[layer];
+        nd2.sring = layer; nd2.sx = nd2.dx = Math.cos(ang) * rad; nd2.sy = nd2.dy = Math.sin(ang) * rad;
+      }
+      k = j;
+    }
   });
   /* Hubs: one per qualifying org, at the centroid of its members.
      A hub is furniture on the spokes — nobody moves for it. */
@@ -3312,8 +3322,12 @@ function netColor(nd){
 }
 function viewNetwork(v){
   var legend = TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
-  v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1><p class="sub" id="netsub">' + netSubHTML() + '</p></div>' +
+  S.net.view = store('ncc_netview') === '3d' ? '3d' : '2d'; NET.view = S.net.view;
+  v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1></div>' +
     '<div class="netctl">' +
+    '<div class="netgrp"><span class="netkick">View</span><span class="netacts">' +
+    '<button type="button" class="btn ghost sm' + (S.net.view === '2d' ? ' on' : '') + '" data-act="netview" data-v="2d" aria-pressed="' + (S.net.view === '2d' ? 'true' : 'false') + '">2D</button>' +
+    '<button type="button" class="btn ghost sm' + (S.net.view === '3d' ? ' on' : '') + '" data-act="netview" data-v="3d" aria-pressed="' + (S.net.view === '3d' ? 'true' : 'false') + '">3D</button></span></div>' +
     '<div class="netgrp"><span class="netkick">Actions</span><span class="netacts">' +
     '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button></span></div>' +
     '</div></div>' +
@@ -3354,7 +3368,8 @@ function viewNetwork(v){
     if(ks.length === 1){
       var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
       if(Math.abs(dx) + Math.abs(dy) > 3) NET.moved = true;
-      NET.cam.x -= dx / NET.cam.z; NET.cam.y -= dy / NET.cam.z;
+      if(NET.view === '3d'){ NET.rot += dx * 0.005; NET.tilt = Math.max(0.3, Math.min(1.35, NET.tilt + dy * 0.003)); }
+      else { NET.cam.x -= dx / NET.cam.z; NET.cam.y -= dy / NET.cam.z; }
     }
     p.x = ev.clientX; p.y = ev.clientY;
     if(ks.length === 2){
@@ -3382,6 +3397,7 @@ function viewNetwork(v){
   cv.addEventListener('wheel', function(ev){
     ev.preventDefault(); NET.glide = null;
     var z2 = Math.max(0.3, Math.min(4, NET.cam.z * Math.exp(-ev.deltaY * 0.0011)));
+    if(NET.view === '3d'){ NET.cam.z = z2; NET.dirty = true; return; }
     var r = cv.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
     var wx = (mx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (my - NET.H / 2) / NET.cam.z + NET.cam.y;
     NET.cam.z = z2; NET.cam.x = wx - (mx - NET.W / 2) / z2; NET.cam.y = wy - (my - NET.H / 2) / z2; NET.dirty = true;
@@ -3390,7 +3406,16 @@ function viewNetwork(v){
   cancelAnimationFrame(NET.raf);
   (function frame(){
     if(!document.body.contains(NET.cv) || document.body.getAttribute('data-view') !== 'network') return;
-    netGlideStep(performance.now());
+    var now = performance.now();
+    /* 3D idle motion: the disc turns in-plane at one revolution
+       per 90 seconds. A hand on the map (any pointer down) pauses
+       it, and reduced motion holds the tilted view still. */
+    if(NET.view === '3d' && !REDUCED_MOTION && !Object.keys(NET.ptr).length){
+      var dt = Math.min(100, now - (NET.lastT || now));
+      if(dt > 0){ NET.rot = (NET.rot + dt / 1000 * (Math.PI * 2 / 90)) % (Math.PI * 2); NET.dirty = true; }
+    }
+    NET.lastT = now;
+    netGlideStep(now);
     if(NET.dirty){ netDraw(); NET.dirty = false; }
     NET.raf = requestAnimationFrame(frame);
   })();
@@ -3408,8 +3433,12 @@ function netHovPaint(ev, nd){
   if(NET.hovDi !== nd.di){
     NET.hovDi = nd.di;
     var e = D.directory[nd.di], s = scoreFor(nd.di), f = flyFact(e);
+    var sy = knownSinceYear(e), yrs = sy ? new Date().getFullYear() - sy : null;
+    var ka = knownAssociates(e).length, rel = cap(gv(e, 'relationship') || '');
     el.innerHTML = '<b>' + esc(dispName(e)) + '</b>' +
-      '<span class="nh-l2">' + esc(tierName(e) || 'No tier yet') + (s ? ' · Score ' + s.score : '') + '</span>' +
+      '<span class="nh-l2">' + esc(tierName(e) || 'No tier yet') + (s ? ' · Score ' + s.score : '') + (ka ? ' · ' + ka + ' associate' + (ka === 1 ? '' : 's') : '') + '</span>' +
+      ((rel || yrs != null) ? '<span>' + esc([rel, yrs != null ? 'Known ' + yrs + ' yr' + (yrs === 1 ? '' : 's') : ''].filter(Boolean).join(' · ')) + '</span>' : '') +
+      (nd.orgs.length ? '<span class="nh-orgs">' + esc(nd.orgs.join(', ')) + '</span>' : '') +
       (f ? '<span class="nh-l3">' + esc(f) + '</span>' : '');
   }
   var r = NET.cv.getBoundingClientRect();
@@ -3463,7 +3492,7 @@ function netClustPaint(){
     var focus = !!(S.net.org && S.net.org === p.h.name);
     var op = focus ? 1 : fade;
     if(op <= 0.02){ p.el.style.opacity = '0'; return; }
-    var s = w2s(p.h.x, p.h.y), x = s[0], y = s[1], w = p.w || 90, h = p.hgt || 24, show = true;
+    var s = netPS(p.h.x, p.h.y), x = s[0], y = s[1], w = p.w || 90, h = p.hgt || 24, show = true;
     for(var k = 0; k < kept.length; k++){
       var o = kept[k];
       if(Math.abs(o.x - x) < (o.w + w) / 2 + 8 && Math.abs(o.y - y) < (o.h + h) / 2 + 8){ show = false; break; }
@@ -3493,7 +3522,31 @@ function netFit(){
   netGlide(450, { c2x:0, c2y:0, c2z:netFitZ() });
 }
 function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2 + NET.cxOff, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
+/* ---------- 3D view (JD 2026-10-22): the same Design A disc,
+   projected. A world point is rotated in-plane by NET.rot,
+   tilted back by NET.tilt (~58 deg), then scaled by a simple
+   perspective divide; the returned scale drives dot size and
+   alpha, so the far side reads smaller and dimmer. Draw and
+   picking both route through this projection, so hover and tap
+   stay exact in either view. ---------- */
+var NET3_F = 2300; /* perspective focal distance, world units */
+function netP3(x, y){
+  var dx = x - NET.cam.x, dy = y - NET.cam.y;
+  var cr = Math.cos(NET.rot), sr = Math.sin(NET.rot);
+  var xr = dx * cr - dy * sr, yr = dx * sr + dy * cr;
+  var ps = NET3_F / (NET3_F + yr * Math.sin(NET.tilt));
+  return [NET.W / 2 + NET.cxOff + xr * ps * NET.cam.z, NET.H / 2 + yr * Math.cos(NET.tilt) * ps * NET.cam.z, ps];
+}
+function netPS(x, y){ if(NET.view === '3d'){ var p = netP3(x, y); return [p[0], p[1]]; } return w2s(x, y); }
 function netHit(sx, sy){
+  if(NET.view === '3d'){
+    var best3 = null, bd3 = 1e9;
+    NET.nodes.forEach(function(n){
+      var p = netP3(n.dx, n.dy), d = Math.hypot(p[0] - sx, p[1] - sy), lim = Math.max(10, n.r * Math.sqrt(NET.cam.z) * p[2] + 7);
+      if(d < lim && d < bd3){ bd3 = d; best3 = n; }
+    });
+    return best3;
+  }
   var wx = (sx - NET.W / 2 - NET.cxOff) / NET.cam.z + NET.cam.x, wy = (sy - NET.H / 2) / NET.cam.z + NET.cam.y, best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
   NET.nodes.forEach(function(n){ var d = Math.hypot(n.dx - wx, n.dy - wy); if(d < lim && d < bd){ bd = d; best = n; } });
   return best;
@@ -3501,22 +3554,38 @@ function netHit(sx, sy){
 function netHubHit(sx, sy){
   var best = null, bd = 1e9;
   NET.hubs.forEach(function(h){
-    var s = w2s(h.x, h.y), d = Math.hypot(s[0] - sx, s[1] - sy);
+    var s = netPS(h.x, h.y), d = Math.hypot(s[0] - sx, s[1] - sy);
     if(d < 13 && d < bd){ bd = d; best = h; }
   });
   return best;
 }
 function netDraw(){
-  var ctx = NET.ctx, z = NET.cam.z;
+  var ctx = NET.ctx, z = NET.cam.z, is3 = NET.view === '3d';
   ctx.setTransform(NET.dpr, 0, 0, NET.dpr, 0, 0); ctx.clearRect(0, 0, NET.W, NET.H);
-  var c = w2s(0, 0);
+  /* One projection for the whole frame: flat w2s in 2D, the
+     tilted perspective netP3 in 3D (third value = depth scale). */
+  var P = is3 ? netP3 : function(x, y){ var s = w2s(x, y); return [s[0], s[1], 1]; };
+  var c = P(0, 0);
+  /* Painter order in 3D: far side first, so near dots and hubs
+     draw over far ones. Depth grows with the rotated y. */
+  var yrOf = function(x, y){ return x * Math.sin(NET.rot) + y * Math.cos(NET.rot); };
+  var nodeOrder = NET.nodes, hubOrder = NET.hubs;
+  if(is3){
+    nodeOrder = NET.nodes.slice().sort(function(a, b){ return yrOf(b.dx, b.dy) - yrOf(a.dx, a.dy); });
+    hubOrder = NET.hubs.slice().sort(function(a, b){ return yrOf(b.x, b.y) - yrOf(a.x, a.y); });
+  }
   /* guide rings: the Dunbar layers, neutral strokes (tier keeps color), labeled */
   ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
   SCORE_RADII.forEach(function(r, i){
     ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.arc(c[0], c[1], r * z, 0, 6.2832); ctx.stroke();
+    ctx.beginPath();
+    if(is3){
+      for(var a2 = 0; a2 <= 72; a2++){ var t2 = a2 / 72 * 6.2832, gp = P(Math.cos(t2) * r, Math.sin(t2) * r); if(a2 === 0) ctx.moveTo(gp[0], gp[1]); else ctx.lineTo(gp[0], gp[1]); }
+    } else ctx.arc(c[0], c[1], r * z, 0, 6.2832);
+    ctx.stroke();
     ctx.fillStyle = 'rgba(255,255,255,0.42)';
-    ctx.fillText(SCORE_GUIDES[i], c[0], c[1] - r * z - 5);
+    if(is3){ var lp = P(0, -r); ctx.fillText(SCORE_GUIDES[i], lp[0], lp[1] - 5); }
+    else ctx.fillText(SCORE_GUIDES[i], c[0], c[1] - r * z - 5);
   });
   var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null;
   var hov = NET.hoverDi != null ? NET.byDi[NET.hoverDi] : null;
@@ -3535,14 +3604,14 @@ function netDraw(){
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'rgba(255,255,255,' + (0.10 * amb * (orgF ? 0.35 : 1)).toFixed(3) + ')';
     ctx.beginPath();
-    NET.hubs.forEach(function(h){ var p = w2s(h.x, h.y); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); });
+    NET.hubs.forEach(function(h){ var p = P(h.x, h.y); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); });
     ctx.stroke();
     ctx.strokeStyle = 'rgba(255,255,255,' + (0.05 * amb * (orgF ? 0.3 : 1)).toFixed(3) + ')';
     ctx.beginPath();
     NET.nodes.forEach(function(n){
-      var p = w2s(n.dx, n.dy);
+      var p = P(n.dx, n.dy);
       if(p[0] < -80 || p[1] < -80 || p[0] > NET.W + 80 || p[1] > NET.H + 80) return;
-      if(n.hub){ var hp = w2s(n.hub.x, n.hub.y); ctx.moveTo(hp[0], hp[1]); ctx.lineTo(p[0], p[1]); }
+      if(n.hub){ var hp = P(n.hub.x, n.hub.y); ctx.moveTo(hp[0], hp[1]); ctx.lineTo(p[0], p[1]); }
       else { ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); }
     });
     ctx.stroke();
@@ -3552,13 +3621,13 @@ function netDraw(){
      (membership, not just primary routing: a person in several
      orgs lights up under each of them). --- */
   if(orgF){
-    var op = w2s(orgF.x, orgF.y);
+    var op = P(orgF.x, orgF.y);
     ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 1.3;
     ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(op[0], op[1]); ctx.stroke();
     ctx.strokeStyle = 'rgba(255,255,255,0.38)'; ctx.lineWidth = 1.1;
     ctx.beginPath();
     orgF.nds.forEach(function(n){
-      var p = w2s(n.dx, n.dy);
+      var p = P(n.dx, n.dy);
       if(p[0] < -80 || p[1] < -80 || p[0] > NET.W + 80 || p[1] > NET.H + 80) return;
       ctx.moveTo(op[0], op[1]); ctx.lineTo(p[0], p[1]);
     });
@@ -3568,29 +3637,29 @@ function netDraw(){
      the old map: the one transient line set that earned its ink) --- */
   var hot = {};
   if(sel){
-    var se = D.directory[sel.di], sp2 = netP2(sel), a = w2s(sp2[0], sp2[1]);
+    var se = D.directory[sel.di], sp2 = netP2(sel), a = P(sp2[0], sp2[1]);
     ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1;
     knownAssociates(se).forEach(function(nb){
       var t = BYN[(nb.u || '').toLowerCase()], nd = t != null ? NET.byDi[t] : null; if(!nd) return;
       hot[t] = 1;
-      var b = w2s(nd.dx, nd.dy); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      var b = P(nd.dx, nd.dy); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     });
   }
   /* --- Spokes, tier two (person): the focused person's own
      route, full strength — through their hub when they have one. --- */
   if(focus){
-    var fp = w2s(focus.dx, focus.dy);
+    var fp = P(focus.dx, focus.dy);
     ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 1.4;
     ctx.beginPath();
-    if(focus.hub){ var fhp = w2s(focus.hub.x, focus.hub.y); ctx.moveTo(c[0], c[1]); ctx.lineTo(fhp[0], fhp[1]); ctx.lineTo(fp[0], fp[1]); }
+    if(focus.hub){ var fhp = P(focus.hub.x, focus.hub.y); ctx.moveTo(c[0], c[1]); ctx.lineTo(fhp[0], fhp[1]); ctx.lineTo(fp[0], fp[1]); }
     else { ctx.moveTo(c[0], c[1]); ctx.lineTo(fp[0], fp[1]); }
     ctx.stroke();
   }
   /* --- hub diamonds --- */
-  NET.hubs.forEach(function(h){
-    var p = w2s(h.x, h.y);
+  hubOrder.forEach(function(h){
+    var p = P(h.x, h.y);
     if(p[0] < -20 || p[1] < -20 || p[0] > NET.W + 20 || p[1] > NET.H + 20) return;
-    var s = 4.5, foc = orgF === h;
+    var s = 4.5 * (is3 ? p[2] : 1), foc = orgF === h;
     ctx.save(); ctx.translate(p[0], p[1]); ctx.rotate(Math.PI / 4);
     ctx.fillStyle = foc ? '#e30613' : '#0a0a0a';
     ctx.strokeStyle = foc ? '#e30613' : 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1.2;
@@ -3598,12 +3667,14 @@ function netDraw(){
     ctx.restore();
   });
   /* --- people --- */
-  NET.nodes.forEach(function(n){
-    var p = w2s(n.dx, n.dy);
+  nodeOrder.forEach(function(n){
+    var p = P(n.dx, n.dy);
     if(p[0] < -10 || p[1] < -10 || p[0] > NET.W + 10 || p[1] > NET.H + 10) return;
-    var rr = n.r * Math.sqrt(z), col = netColor(n), isSel = sel && sel.di === n.di;
+    var rr = n.r * Math.sqrt(z) * (is3 ? p[2] : 1), col = netColor(n), isSel = sel && sel.di === n.di;
     var al = 1;
-    if(orgF && !memberOf(n, orgF)) al = 0.16;
+    /* depth: the far side of the tilted disc reads dimmer */
+    if(is3) al = Math.max(0.45, Math.min(1, 0.28 + 0.46 * p[2]));
+    if(orgF && !memberOf(n, orgF)) al = Math.min(al, 0.16);
     if(sel && !isSel && !hot[n.di]) al = Math.min(al, 0.28);
     if(netLowConf(n)) al *= 0.45;
     ctx.globalAlpha = al;
@@ -3656,12 +3727,22 @@ function netCard(){
     if(cols) cols.classList.toggle('sel', !!S.net.org);
   } else {
     var e = D.directory[di], ka = knownAssociates(e).length, inFam = !!famDisplay()[di];
+    var nd = NET.byDi[di], sc = scoreFor(di), sy = knownSinceYear(e), yrs = sy ? new Date().getFullYear() - sy : null;
+    var drows = [['Tier', tierName(e) || 'No tier yet']];
+    if(gv(e, 'relationship')) drows.push(['Relationship', cap(gv(e, 'relationship'))]);
+    if(yrs != null) drows.push(['Years known', yrs + ' (since ' + sy + ')']);
+    if(sc) drows.push(['Closeness score', String(sc.score)]);
+    drows.push(['Known associates', String(ka)]);
+    if(nd && nd.orgs.length) drows.push(['Organizations', nd.orgs.join(', ')]);
+    drows.push(['Connections through', nd && nd.hub ? nd.hub.name : 'Direct to JD']);
+    var detail = '<div class="statrows nc-rows">' + drows.map(function(r){ return '<div class="srow2"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>';
     cardBox.hidden = false;
     cardBox.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' +
       '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
       '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
       (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
       '<button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>' +
+      detail +
       '<div class="nc-scb">' + scoreBadgeHTML(di) + '</div>';
     if(cols) cols.classList.add('sel');
   }
@@ -4130,6 +4211,8 @@ function viewDaily(v){
    ============================================================ */
 var PH = null, PH_LOADING = false, PH_SHOW = 24, PH_SEL = null;
 var PH_COLS = Math.min(12, Math.max(3, parseInt(store('ncc_photos_cols_v1') || '10', 10) || 10));
+var PH_SORT = store('ncc_photos_sort_v1') || 'grade';
+var PH_SDIR = store('ncc_photos_sdir_v1') === 'desc' ? -1 : 1;
 function phLoad(){
   if(PH || PH_LOADING) return;
   PH_LOADING = true;
@@ -4299,10 +4382,10 @@ function phaRender(){
   var st = phaState(), c = phaCounts();
   var filters = [ ['todo', 'To review', c.todo], ['possible', 'Possible grade', c.possible], ['bad', 'Bad photo', c.bad], ['confirmed', 'Confirmed', c.confirmed], ['rejected', 'Rejected', c.rejected], ['all', 'All photos', phaAll().length] ];
   var q = phaQueue(st.filter);
-  if(st.cur && !q.some(function(p){ return p.name === st.cur; })) st.cur = q.length ? q[0].name : null;
-  if(!st.cur && q.length) st.cur = q[0].name;
   var idx = q.findIndex(function(p){ return p.name === st.cur; });
   var p = idx >= 0 ? q[idx] : null;
+  if(!p && st.cur){ var ap = phaAll().filter(function(x){ return x.name === st.cur; })[0]; if(ap) p = ap; }
+  if(!p && q.length){ st.cur = q[0].name; p = q[0]; idx = 0; }
   var chips = filters.map(function(f){ return '<button type="button" class="pha-chip' + (st.filter === f[0] ? ' on' : '') + '" data-act="phafilter" data-f="' + f[0] + '">' + f[1] + ' <b>' + f[2] + '</b></button>'; }).join('');
   var list = q.map(function(x){ var r = phaRev(x); var tag = r === 'bad' ? 'BAD' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : r === 'confirmed' ? 'OK' : r === 'rejected' ? 'REJ' : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P'; return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span><em>' + tag + '</em></button>'; }).join('');
   var view, main;
@@ -4316,7 +4399,7 @@ function phaRender(){
     var thumbs = (p.also && p.also.length) ? '<div class="pha-alts">' + [p.photo_url].concat(p.also.map(function(a){ return a.url; })).map(function(u){ return '<button type="button" class="pha-alt' + (u === curUrl ? ' on' : '') + '" data-act="phaalt" data-pname="' + esc(p.name) + '" data-u="' + esc(u) + '"><img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></button>'; }).join('') + '</div>' : '';
     view = '<div class="pha-view"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs +
       '<div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + badge + '</div>' +
-      '<div class="pha-pos">' + (idx + 1) + ' of ' + q.length + ' in this queue &middot; ' + esc(p.type || 'photo') + '</div>' +
+      '<div class="pha-pos">' + (idx >= 0 ? (idx + 1) + ' of ' + q.length + ' in this queue' : 'Outside this queue') + ' &middot; ' + esc(p.type || 'photo') + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
       (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
       '</div>';
@@ -4411,11 +4494,23 @@ function viewPhotos(v){
       '<div class="phrev phrail-pad"><button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button>' + (e ? '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>' : '') + '</div>' +
       '</aside>';
   }
-  found.sort(function(a, b){ var ra = revOf(a) === 'confirmed' ? 1 : 0, rb = revOf(b) === 'confirmed' ? 1 : 0; if(ra !== rb) return ra - rb; var r = { confirmed:0, likely:1, possible:2 }; return r[a.status] - r[b.status] || a.name.localeCompare(b.name); });
+  function phEntryOf(p){ var di = diOf(p.name); return di != null ? D.directory[di] : null; }
+  function phYearsOf(p){ var e = phEntryOf(p); if(!e) return -1; var sy = parseInt(String(gv(e, 'years_known') || '').trim(), 10); return isNaN(sy) || sy < 1900 ? -1 : new Date().getFullYear() - sy; }
+  function phOrgOf(p){ var e = phEntryOf(p); if(!e) return ''; var o = orgsOf(e); return o.length ? regApply(o[0]) : ''; }
+  found.sort(function(a, b){
+    var c = 0;
+    if(PH_SORT === 'name') c = a.name.localeCompare(b.name);
+    else if(PH_SORT === 'org'){ var oa = phOrgOf(a), ob = phOrgOf(b); c = ((oa === '' ? 1 : 0) - (ob === '' ? 1 : 0)) || oa.localeCompare(ob) || a.name.localeCompare(b.name); }
+    else if(PH_SORT === 'years') c = (phYearsOf(b) - phYearsOf(a)) || a.name.localeCompare(b.name);
+    else if(PH_SORT === 'tier'){ var tr = { vetted:0, associate:1, open:2 }; var ta = tr[tierOf(phEntryOf(a))], tb = tr[tierOf(phEntryOf(b))]; c = ((ta == null ? 3 : ta) - (tb == null ? 3 : tb)) || a.name.localeCompare(b.name); }
+    else { var ra = revOf(a) === 'confirmed' ? 1 : 0, rb = revOf(b) === 'confirmed' ? 1 : 0; var r = { confirmed:0, likely:1, possible:2 }; c = (ra - rb) || (r[a.status] - r[b.status]) || a.name.localeCompare(b.name); }
+    return PH_SDIR < 0 ? -c : c;
+  });
   var shown = found.slice(0, Math.max(PH_SHOW, PH_COLS * 2));
   var moreHtml = found.length > shown.length ? '<div class="phmore"><button type="button" class="btn ghost" data-act="phmore">Show more photos &mdash; ' + (found.length - shown.length) + ' more</button></div>' : '';
   var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
-  var toolsHtml = '<div class="phbar">' + stats + colsHtml + '</div>';
+  var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Tier']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
+  var toolsHtml = '<div class="phbar">' + stats + sortHtml + colsHtml + '</div>';
   if(PH_SEL && !found.some(function(p){ return p.name.toLowerCase() === PH_SEL.toLowerCase(); })) PH_SEL = null;
   var railHtml;
   if(PH_SEL){ var sp = found.filter(function(p){ return p.name.toLowerCase() === PH_SEL.toLowerCase(); })[0]; railHtml = sp ? phRail(sp) : phRailEmpty(); }
@@ -4424,8 +4519,9 @@ function viewPhotos(v){
     return '<aside class="phrail"><div class="phrail-h"><b>Viewer</b></div>' +
       '<div class="phrail-none">' + ic('camera', 26) + '<p>Select a photo to see it here.<br>Reviewing lives in Audit &rarr; Photo Audit.</p></div></aside>';
   }
-  var foundHtml = found.length ? toolsHtml + '<div class="phwrap"><div class="phmain"><div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml + '</div>' + railHtml + '</div>' : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
-  v.innerHTML = head + foundHtml + '</div>';
+  var topHtml = '<div class="ph-top">' + railHtml + '<div class="ph-topmain"><div class="pagehead phhead"><div><h1 class="display">Photos</h1><p class="sub">A photo counts only when its page ties it to the person. Select a photo to see it in the viewer.</p></div></div>' + toolsHtml + '</div></div>';
+  var foundHtml = found.length ? topHtml + '<div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml : topHtml + '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
+  v.innerHTML = '<div class="page asearch">' + foundHtml + '</div>';
 }
 
 
@@ -6252,6 +6348,8 @@ function onClick(ev){
     case 'phsel': { var pn = el.getAttribute('data-pname'); var sy = window.scrollY; PH_SEL = (PH_SEL && pn && PH_SEL.toLowerCase() === pn.toLowerCase()) ? null : pn; if(S.route.name === 'photos'){ viewPhotos($('#view')); window.scrollTo(0, sy); } break; }
     case 'phclose': PH_SEL = null; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'phcols': PH_COLS = parseInt(el.getAttribute('data-n'), 10) || 12; store('ncc_photos_cols_v1', String(PH_COLS)); PH_SHOW = PH_COLS * 4; if(S.route.name === 'photos') viewPhotos($('#view')); break;
+    case 'phsort': PH_SORT = el.getAttribute('data-s') || 'grade'; store('ncc_photos_sort_v1', PH_SORT); if(S.route.name === 'photos') viewPhotos($('#view')); break;
+    case 'phsdir': PH_SDIR = PH_SDIR < 0 ? 1 : -1; store('ncc_photos_sdir_v1', PH_SDIR < 0 ? 'desc' : 'asc'); if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
@@ -6388,6 +6486,7 @@ function onClick(ev){
     case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
     case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
     case 'netorg': { var ov = el.getAttribute('data-v'); S.net.org = ov && ov !== S.net.org ? ov : null; netCard(); NET.dirty = true; break; }
+    case 'netview': { var vv = el.getAttribute('data-v') === '3d' ? '3d' : '2d'; S.net.view = vv; NET.view = vv; store('ncc_netview', vv); $$('.netacts [data-act="netview"]').forEach(function(b){ var on = b.getAttribute('data-v') === vv; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); if(vv === '3d') netGlide(300, { c2x:0, c2y:0 }); NET.dirty = true; break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
     case 'netzoom': { var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; netGlide(200, { c2z:Math.max(0.3, Math.min(4, NET.cam.z * zf)) }); break; }
@@ -6646,7 +6745,7 @@ function boot(){
       .then(function(d){
         D = d;
         regLoad();
-        D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; normEntry(r); PK2I[pkey(r)] = i; });
+        D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; var dn = String(((r.profile || {}).display_name || r.display || '')).toLowerCase(); if(dn && !(dn in BYN)) BYN[dn] = i; normEntry(r); PK2I[pkey(r)] = i; });
         outLoad(); winsLoad();
         /* Local-wins overlay vs the fresh bake (2026-10-16): retire
            what the bake already shows, then the outbox and the
