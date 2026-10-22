@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.25.0';
+var APP_VERSION = '2.26.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4152,8 +4152,9 @@ function phSetReview(name, val){
   var r = phReview(), k = String(name).toLowerCase();
   if(val) r[k] = val; else delete r[k];
   store('ncc_photos_review_v1', JSON.stringify(r));
+  if(val !== 'bad'){ var bm = phBadReasons(); if(bm[k]){ delete bm[k]; store('ncc_photos_badreason_v1', JSON.stringify(bm)); } }
   if(S.route.name === 'photos') viewPhotos($('#view'));
-  else if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){ if(adv) phaState().cur = adv; viewAudit($('#view')); }
+  else if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){ if(adv && val && val !== 'bad') phaState().cur = adv; viewAudit($('#view')); }
 }
 
 /* ---------- profile photos: framing store + hero + editor (JD 2026-10-22) ---------- */
@@ -4272,6 +4273,24 @@ function phaQueue(f){
   q.sort(function(a, b){ return (rank[a.status] - rank[b.status]) || a.name.localeCompare(b.name); });
   return q;
 }
+var PHA_REASONS = [ ['younger', 'Younger photo'], ['dog', 'Dog'], ['object', 'Object / thing'], ['landscape', 'Landscape'], ['group', 'Group shot'], ['blurry', 'Blurry / low quality'], ['other', 'Other'] ];
+function phBadReasons(){ try{ return JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){ return {}; } }
+function phBadReason(name){ return phBadReasons()[String(name || '').toLowerCase()] || ''; }
+function phReasonLabel(r){ for(var i = 0; i < PHA_REASONS.length; i++) if(PHA_REASONS[i][0] === r) return PHA_REASONS[i][1]; return ''; }
+function phSetBadReason(name, r){
+  var m = phBadReasons(), k = String(name).toLowerCase();
+  if(r) m[k] = r; else delete m[k];
+  store('ncc_photos_badreason_v1', JSON.stringify(m));
+  phaRender();
+}
+function phClearVerdict(name){
+  var r = phReview(), k = String(name).toLowerCase();
+  delete r[k];
+  store('ncc_photos_review_v1', JSON.stringify(r));
+  var m = phBadReasons(); if(m[k]){ delete m[k]; store('ncc_photos_badreason_v1', JSON.stringify(m)); }
+  phaState().cur = name;
+  viewAudit($('#view'));
+}
 function phaRender(){
   var w = $('#phawrap'); if(!w) return;
   phLoad();
@@ -4285,36 +4304,47 @@ function phaRender(){
   var idx = q.findIndex(function(p){ return p.name === st.cur; });
   var p = idx >= 0 ? q[idx] : null;
   var chips = filters.map(function(f){ return '<button type="button" class="pha-chip' + (st.filter === f[0] ? ' on' : '') + '" data-act="phafilter" data-f="' + f[0] + '">' + f[1] + ' <b>' + f[2] + '</b></button>'; }).join('');
-  var list = q.map(function(x){ var r = phaRev(x); return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span><em>' + (r === 'bad' ? 'BAD' : r === 'confirmed' ? 'OK' : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P') + '</em></button>'; }).join('');
-  var stage, detail;
+  var list = q.map(function(x){ var r = phaRev(x); var tag = r === 'bad' ? 'BAD' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : r === 'confirmed' ? 'OK' : r === 'rejected' ? 'REJ' : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P'; return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span><em>' + tag + '</em></button>'; }).join('');
+  var view, main;
   if(p){
     var di = BYN[String(p.name).toLowerCase()]; if(di == null) di = null;
     var e = di != null ? D.directory[di] : null;
     var rev = phaRev(p);
-    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO</span>' : rev === 'confirmed' ? '<span class="phbadge conf">CONFIRMED BY YOU</span>' : rev === 'rejected' ? '<span class="phbadge poss">REJECTED</span>' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
+    var reason = phBadReason(p.name);
+    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO' + (reason ? ' — ' + esc(phReasonLabel(reason)).toUpperCase() : '') + '</span>' : rev === 'confirmed' ? '<span class="phbadge conf">CONFIRMED BY YOU</span>' : rev === 'rejected' ? '<span class="phbadge poss">REJECTED</span>' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
     var curUrl = phFrameFor(p.name, p).url || p.photo_url;
     var thumbs = (p.also && p.also.length) ? '<div class="pha-alts">' + [p.photo_url].concat(p.also.map(function(a){ return a.url; })).map(function(u){ return '<button type="button" class="pha-alt' + (u === curUrl ? ' on' : '') + '" data-act="phaalt" data-pname="' + esc(p.name) + '" data-u="' + esc(u) + '"><img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></button>'; }).join('') + '</div>' : '';
-    stage = '<div class="pha-stage"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs + '</div>';
-    var verdicts = rev === 'confirmed'
-      ? '<span class="phok">' + ic('check', 14) + ' Confirmed by you</span><button type="button" class="btn ghost" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button>'
-      : rev === 'bad'
-      ? '<span class="phok bad">Right person, bad photo &mdash; keep looking</span><button type="button" class="btn primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Confirm instead</button><button type="button" class="btn ghost" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button>'
-      : rev === 'rejected'
-      ? '<span class="phok bad">Rejected by you</span><button type="button" class="btn ghost" data-act="phundo" data-pname="' + esc(p.name) + '">Undo rejection</button>'
-      : '<button type="button" class="btn primary pha-big" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 15) + ' Confirm</button><button type="button" class="btn pha-big" data-act="phbad" data-pname="' + esc(p.name) + '">Bad photo</button><button type="button" class="btn ghost pha-big" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('trash', 15) + ' Reject</button>';
-    detail = '<div class="pha-detail"><div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + badge + '</div>' +
-      '<div class="pha-pos">' + (idx + 1) + ' of ' + q.length + ' in this queue</div>' +
-      '<p class="pha-type dim">' + esc(p.type || 'photo') + '</p>' +
+    view = '<div class="pha-view"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs +
+      '<div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + badge + '</div>' +
+      '<div class="pha-pos">' + (idx + 1) + ' of ' + q.length + ' in this queue &middot; ' + esc(p.type || 'photo') + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
       (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
-      '<div class="pha-verdicts">' + verdicts + '</div>' +
-      '<div class="pha-nav"><button type="button" class="btn ghost sm" data-act="phanav" data-d="-1">&larr; Prev</button><button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button><button type="button" class="btn ghost sm" data-act="phanav" data-d="1">Next &rarr;</button></div>' +
       '</div>';
+    var stateLine = rev === 'confirmed' ? '<span class="phok">' + ic('check', 14) + ' Confirmed by you</span>'
+      : rev === 'bad' ? '<span class="phok bad">Bad photo &mdash; keep looking for a better one</span>'
+      : rev === 'rejected' ? '<span class="phok bad">Rejected by you</span>'
+      : '<span class="dim">No verdict yet</span>';
+    var reasonRow = rev === 'bad' ? '<div class="pha-reasons"><span class="pha-rlabel">Why bad:</span>' + PHA_REASONS.map(function(r){ return '<button type="button" class="pha-rchip' + (reason === r[0] ? ' on' : '') + '" data-act="phareason" data-pname="' + esc(p.name) + '" data-r="' + r[0] + '">' + r[1] + '</button>'; }).join('') + '</div>' : '';
+    var controls = '<div class="pha-controls">' +
+      '<div class="pha-crow">' + stateLine + '<span class="sp"></span>' +
+      '<button type="button" class="btn ghost sm" data-act="phanav" data-d="-1">&larr; Prev</button>' +
+      '<button type="button" class="btn ghost sm" data-act="phanav" data-d="1">Skip &rarr;</button></div>' +
+      '<div class="pha-crow big">' +
+      '<button type="button" class="btn primary pha-big" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 15) + ' Confirm</button>' +
+      '<button type="button" class="btn pha-big' + (rev === 'bad' ? ' onbad' : '') + '" data-act="phbad" data-pname="' + esc(p.name) + '">Bad photo</button>' +
+      '<button type="button" class="btn ghost pha-big" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('trash', 15) + ' Reject</button></div>' +
+      reasonRow +
+      '<div class="pha-crow">' +
+      (rev ? '<button type="button" class="btn ghost sm" data-act="phareaudit" data-pname="' + esc(p.name) + '">Re-audit</button><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo verdict</button>' : '') +
+      '<button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button>' +
+      (e ? '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>' : '') +
+      '</div></div>';
+    main = '<div class="pha-main"><div class="pha-chips">' + chips + '</div>' + controls + '<div class="pha-qgrid">' + (list || '<p class="dim">Queue is empty.</p>') + '</div></div>';
   } else {
-    stage = '<div class="pha-stage"><div class="pha-none">' + ic('check', 30) + '<p>This queue is clear.</p></div></div>';
-    detail = '<div class="pha-detail"><p class="dim">Nothing here. Pick another queue on the left.</p></div>';
+    view = '<div class="pha-view"><div class="pha-none">' + ic('check', 30) + '<p>This queue is clear.</p></div></div>';
+    main = '<div class="pha-main"><div class="pha-chips">' + chips + '</div><div class="pha-qgrid"><p class="dim">Nothing here. Pick another queue above.</p></div></div>';
   }
-  w.innerHTML = '<div class="pha"><div class="pha-queue"><div class="pha-chips">' + chips + '</div><div class="pha-list">' + (list || '<p class="dim">Queue is empty.</p>') + '</div></div>' + stage + detail + '</div>';
+  w.innerHTML = '<div class="pha">' + view + main + '</div>';
   phaKeys();
 }
 function phaNav(d){
@@ -4338,6 +4368,7 @@ function phaKeys(){
     else if(k === 'x' || k === 'X') phSetReview(st.cur, 'rejected');
     else if(k === 'u' || k === 'U') phSetReview(st.cur, null);
     else if(k === 'a' || k === 'A') phEditor(st.cur);
+    else if(k >= '1' && k <= '7'){ var cp = (phIndex() || {})[st.cur]; if(cp && phaRev(cp) === 'bad') phSetBadReason(st.cur, PHA_REASONS[+k - 1][0]); }
   });
 }
 
@@ -5786,7 +5817,7 @@ function audModeBarHTML(){
     phLoad();
     var pc = phaCounts();
     return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> to review</span><span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
-      '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; B bad photo &middot; X reject &middot; U undo &middot; A adjust</span></div>';
+      '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; B bad photo &middot; X reject &middot; U undo &middot; A adjust &middot; 1&ndash;7 why bad</span></div>';
   }
   return '<div class="aud-modebar"><button type="button" class="btn ghost" data-act="audbulkphone">Mark all phone gaps done</button>' +
     '<span class="dim">Close out the phone gap for everyone you have no number for.</span></div>';
@@ -6216,6 +6247,8 @@ function onClick(ev){
     case 'phacur': phaState().cur = el.getAttribute('data-pname'); phaRender(); break;
     case 'phanav': phaNav(parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'phaalt': { var anm = el.getAttribute('data-pname'); var afr = phFrameFor(anm); afr.url = el.getAttribute('data-u'); phFrameSet(anm, afr); phaRender(); break; }
+    case 'phareason': phSetBadReason(el.getAttribute('data-pname'), el.getAttribute('data-r')); break;
+    case 'phareaudit': phClearVerdict(el.getAttribute('data-pname')); break;
     case 'phsel': { var pn = el.getAttribute('data-pname'); var sy = window.scrollY; PH_SEL = (PH_SEL && pn && PH_SEL.toLowerCase() === pn.toLowerCase()) ? null : pn; if(S.route.name === 'photos'){ viewPhotos($('#view')); window.scrollTo(0, sy); } break; }
     case 'phclose': PH_SEL = null; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'phcols': PH_COLS = parseInt(el.getAttribute('data-n'), 10) || 12; store('ncc_photos_cols_v1', String(PH_COLS)); PH_SHOW = PH_COLS * 4; if(S.route.name === 'photos') viewPhotos($('#view')); break;
