@@ -228,12 +228,14 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "IG follow-up 2026-10-22: public profile picture from her own Instagram profile; handle from the friends-database key tied to her name; profile display name matches. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Amber Ingram",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/461973079_884526976957493_379618851883465429_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=8LS03jiGZdQQ7kNvwEEyyys&_nc_oc=Adpx4SJA48hudLSAJ36Kkszx2mybTcIUnp-29FMIoPgAWmBt1McqL_TsouZ3xsQOGPchlxwvuiw8hoZ1eZIMixE_&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMYTIq22wDe0pdn2VgMp2tBQ_m6798S6nUYPOyTuihuWw&oe=6AE00EDF",
+   "source_page": "https://www.instagram.com/amber_ingram",
+   "status": "confirmed",
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "No source links on file.",
@@ -292,12 +294,14 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from their own Instagram profile; handle from the explorer person-index; name matches the profile display name and the bio (\"Andrew's Leather\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from their own Instagram profile; handle from the explorer person-index; name matches the profile display name and the bio (\"Andrew's Leather\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Andrew Matott",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/673190771_18580578091056572_4765580915954847686_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=3TDB4U7lsJsQ7kNvwGxCvTM&_nc_oc=AdoNO7aOzRFrXP73yswmdt4movZPra7-294aLmuw4-6NOJofQ8drKoEpw6gOZfkJADYZ9trm74IVG06eej7m5rUO&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=g3e4iiba3rDfxqnu19hB5A&oh=00_AQPn6xBS51bi1aBMdCZEg0tjGhgYpAGWpLbNN5TBcuahrQ&oe=6AE00996",
    "source_page": "https://www.instagram.com/drewspov_",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -890,12 +894,14 @@
    "type": "group"
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); bio anchors identity (\"wife to @jeevesgreen\"; Jeeves Green is her husband). No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); bio anchors identity (\"wife to @jeevesgreen\"; Jeeves Green is her husband). No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Catherine Green",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/440764983_1387980021913675_7203490156071399257_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=nW9T234SoPwQ7kNvwGYfsmQ&_nc_oc=AdoJliV34qc1DPh8zLPpkwYif0h-Wb-KT-1JBBFNtzWl_hgAlsW0k6jIudYEEn3ofxWzBOTaSwLpMdsJecr4k9K5&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPFjoe9rJFM3UDiA97SimCURkRZmpZ0JlRYtufpA1XD0A&oe=6ADFFF75",
    "source_page": "https://www.instagram.com/_cathaccino_",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1556,12 +1562,14 @@
    "type": "roster headshot"
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; name matches; bio (\"Follower of Christ Jesus\", \"Husband to @sarahbthomas\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; name matches; bio (\"Follower of Christ Jesus\", \"Husband to @sarahbthomas\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Eli Thomas",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/386817353_558235439781787_4872730248183847931_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=OYNP4N1bXF8Q7kNvwEwkoe6&_nc_oc=AdroOCx2ek4Fkm38mp3jRg6tMCs4cS0yBqrfSRyvh-6VUrU9F9QcpfW43y5UtapyA84VyPETUTqka-yNriB01QGI&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMtqAiV6_0Ct7YuUXQgmyDhjrgG3eULRQKvu5b71naoQA&oe=6AE0185F",
    "source_page": "https://www.instagram.com/eli.e.thomas",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "Source is her mother Norma Meyers's obituary \u2014 Elisa appears only as a name in survivors text; no photo on the page, and any obituary photo would be of Norma, not Elisa. Nothing filed.",
@@ -1788,12 +1796,14 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Emma Morse",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/434466959_938347524593552_5775828971960760044_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTguQzMifQ%3D%3D&_nc_ohc=OWG4USA9E3MQ7kNvwGNEb57&_nc_oc=AdrHpnAN7rqmzZ_dTdQ0ea495w_0IcJW4tnE0ZV2DT_AonWZSZWTpRfGxjr2rFLmf6XH8jtslObG7wGnAiBqxsiA&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNSTCCOT7dLHndPdEDYAn4Rx5zCf9GmWWtad2L1_0KMNQ&oe=6AE00A03",
    "source_page": "https://www.instagram.com/emma_morse315",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "Her SLU people page is a text-only contact block (Library Assistant V) with no photo. The Hill News piece names her only in a signatory list \u2014 no photo tied to her. Merit story text-only.",
@@ -2308,12 +2318,14 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Isaiah Reiter",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/455229930_477813748212377_2532060956786125956_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=WCgMvivtPX4Q7kNvwFvQZ0U&_nc_oc=AdosDSdw3sSwJH9LQXrwA0WZb2SuZb3_TYs_jf8_Ul26RoJWNzBPwyuyznpur1JyqrZGNWKQshBpRI2deqtEzact&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQN4IpEVe1jcecNHEGWSuSOPAG3xLO-JU6NEhn08uV9kAA&oe=6AE0050E",
    "source_page": "https://www.instagram.com/isaiahreiter",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "The 2013 SUNY Canton hockey story fetch timed out upstream \u2014 that source remains unverified (requeue). His other source is Facebook (auth). Requeue check (2026-10-22): the Roo Athletics story loaded on retry \u2014 a game recap noting her first career goal; no image URL is extractable from it.",
@@ -2708,12 +2720,14 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Joel Moulton",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/557049020_18530236423045482_4285200388828061018_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=LrUIeXpj2dMQ7kNvwEqsejg&_nc_oc=Adq-JHpfK94iY5tlnJrcDdGGWVu9QqkZM6SjkXPuGCa2itlnMwMzUaAJIpVovMVlIsqcDNEiLxro7M4pAs10sEeW&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=dR-N3klU2aLRLhZdzC-QvA&oh=00_AQOeB-NBM1D0V20mR5fkr1yVZQbmRJKyHywfW9PrqCmDTg&oe=6ADFFBBA",
    "source_page": "https://www.instagram.com/jtmoulton",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "Her Merit profile (Clarkson communication, Class of 2019) is text-only achievement listings \u2014 no profile photo extractable.",
@@ -3584,12 +3598,14 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; profile display name is Maddie Barton and the explorer person-index ties this handle to her, BUT the bio says Kentucky \u2014 she may have moved, or this could be a different Maddie Barton. One name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; profile display name is Maddie Barton and the explorer person-index ties this handle to her, BUT the bio says Kentucky \u2014 she may have moved, or this could be a different Maddie Barton. One name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Maddie Barton",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/762864024_18373213480232259_8948022842898521937_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy44OTIuQzMifQ%3D%3D&_nc_ohc=8T7XotvnUsEQ7kNvwGDQytQ&_nc_oc=AdozH6jDDzd2P4B2TTa-digczmljy3faQ99TKON3R0-2PmmRfwSce6DxA4U4HPqLXoS2cv5quEfKirUt5_1yWV9X&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=dfkZDDWgG7SeaF6Q1eTEJA&oh=00_AQNmSTav6bG7ZU4FI80LK2RzM6I9du0jZGohexPZ4w18wg&oe=6AE00536",
    "source_page": "https://www.instagram.com/m.bsouth02",
    "status": "possible",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3984,12 +4000,14 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); handle and profile display name both match; JD's close friend. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); handle and profile display name both match; JD's close friend. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Melody Maurer",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/72333581_608917669876903_3437690140091219968_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=NfhY6WPnYWQQ7kNvwHlu46c&_nc_oc=AdqbrpJ8Tc0YZRA7fRbULCTLqzi9Cn2wSvXMMcvT5DAO7aYyDVRDrphHRSWI2NTecnrCsOcziqq0U2MxVCBcIYhG&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQN_G67hRb7o7101zJp_VESkimJ1ftMyZOUwIuqjT_lt8w&oe=6AE00755",
    "source_page": "https://www.instagram.com/melody_maurer",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "Potsdam Food Co-op newsletter (Jan-Feb 2007) photo caption names her in position: 'Judges (l to r) Gracie McFadden, Marissa Maurer, Alice McFadden, Mercy Maurer. Photo by Hye Chong Yi' (2006 Holiday Bake Off judges). Caption confirms she is in the photo, rightmost of four, but Yumpu extraction returned no image URL \u2014 possible until re-extraction.",
@@ -4256,12 +4274,14 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; name matches, but the bio (\"Based in Jacksonville Florida\", selling vintage) does not tie to any known North Country anchor \u2014 one name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; name matches, but the bio (\"Based in Jacksonville Florida\", selling vintage) does not tie to any known North Country anchor \u2014 one name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. Filed at 150x150 (the size Instagram signs the link for) and flagged low-fidelity placeholder: keep looking for a higher-resolution photo.",
    "name": "Noah Adams",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/798467534_18461260798138062_8804818832181941739_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=89bfOgJETW8Q7kNvwEakeB-&_nc_oc=Adrc5X3xJ-EVm1ZmZNPh4Ad3YOh_ahWreek__scZoE0g44gm_lEgDO8VB5iErclsTWzcqzrHlIkvMAZe2limI2Zh&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=wOiyR7gbAOgD0IO0zqXIOw&oh=00_AQNbajOaiwmmJoaOnTVwZtjFiR0xizdMlGCLpbsTk1QBlg&oe=6AE00D2D",
    "source_page": "https://www.instagram.com/noah_adams24",
    "status": "possible",
-   "type": "Instagram profile picture"
+   "type": "Instagram profile picture",
+   "lowres": true,
+   "px": 150
   },
   {
    "evidence": "Profile headshot from their exact on-file LinkedIn profile, read from the live public profile page 2026-10-22 (no login): headline \"Product Planning Engineer at Derrick Corporation\". JD flagged the earlier photo 2026-10-22: it was a feed/post image from the same profile, not the headshot; that image is kept as an alternate.",
