@@ -1,1 +1,173 @@
-{"entries":[{"filed":"2026-10-22","name":"Noah Diederich","source":"LinkedIn profile","source_date":"2026-10-22","url":"https://www.linkedin.com/in/noah-diederich","what":"Profile photo replaced with his LinkedIn headshot; the earlier image was a feed post photo, not the headshot. His LinkedIn headline now reads Product Planning Engineer at Derrick Corporation (previously Alcoa)."},{"filed":"2026-10-22","name":"Blake Burr","source":"LinkedIn profile","source_date":"2026-10-22","url":"https://www.linkedin.com/in/blakeburr","what":"Profile photo replaced with his LinkedIn headshot; the earlier image was a feed post photo, not the headshot."},{"filed":"2026-10-22","name":"Luke Boyle","source":"LinkedIn profile","source_date":"2026-10-22","url":"https://www.linkedin.com/in/luke-boyle-466681206","what":"Profile photo replaced with his LinkedIn headshot; the earlier image was a feed post photo, not the headshot."},{"filed":"2026-10-22","name":"Norah Pease","source":"SUNY Potsdam","source_date":"2025-09","url":"https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler","what":"Profile photo swapped to the finish-line lead photo from the SUNY Potsdam Sufferfest article; the original launch shot is kept as an alternate. The first photo was flagged as a bad photo."},{"filed":"2026-10-22","name":"Amber Ingram","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/amber_ingram","what":"Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Andrew Matott","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/drewspov_","what":"Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Catherine Green","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/_cathaccino_","what":"Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Eli Thomas","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/eli.e.thomas","what":"Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Emma Morse","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/emma_morse315","what":"Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Isaiah Reiter","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/isaiahreiter","what":"Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Joel Moulton","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/jtmoulton","what":"Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Maddie Barton","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/m.bsouth02","what":"Instagram profile picture filed at 150px, graded possible: the profile name matches but its bio says Kentucky, with no North Country anchor. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Melody Maurer","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/melody_maurer","what":"Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."},{"filed":"2026-10-22","name":"Noah Adams","source":"Instagram profile","source_date":"2026-10-22","url":"https://www.instagram.com/noah_adams24","what":"Instagram profile picture filed at 150px, graded possible: the profile name matches but its bio (vintage seller, Jacksonville FL) has no North Country anchor. Low-fidelity placeholder, flagged keep-looking."}],"updated":"2026-10-22"}
+{
+ "entries": [
+  {
+   "filed": "2026-10-22",
+   "name": "Acacia White",
+   "what": "Added to her profile: she is a Registered Nurse and Certified Lactation Consultant (CLC) at The Birthplace at Canton-Potsdam Hospital.",
+   "source": "Rochester Regional Health",
+   "source_date": "2026-10-22",
+   "url": "https://www.rochesterregional.org/hub/specialized-rns-assist-new-moms"
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Alan K Daniels",
+   "what": "Added to his profile: he led a men's group that met Monday mornings at the Canton McDonald's, listed in the Christian Fellowship Center newsletter of September 11, 2012.",
+   "source": "Christian Fellowship Center",
+   "source_date": "2012-09-11",
+   "url": "https://myemail.constantcontact.com/News-from-Christian-Fellowship-Center.html?soid=1102557608599&aid=4XDtQ_GmDnA"
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Alex Hammond",
+   "what": "Added to his profile: he served as town supervisor of Waddington from 2017 to 2023, and his New York Army National Guard service includes a 2016 Adjutant General's Corps commission and a term as strength manager for the 27th Infantry Brigade Combat Team.",
+   "source": "DVIDS",
+   "source_date": "2026-08",
+   "url": "https://www.dvidshub.net/news/573239/new-york-army-national-guard-officer-gets-promoted-site-historic-french-and-indian-war-battlefield"
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Alex Hammond",
+   "what": "Added to his profile: Governor Andrew Cuomo appointed him to the SUNY Potsdam College Council.",
+   "source": "SUNY Potsdam",
+   "source_date": "2026-10-22",
+   "url": "https://www.potsdam.edu/news/suny-potsdam-college-council-welcomes-new-returning-members"
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Alicia Taillon",
+   "what": "Added to her profile: St. Lawrence University's Alumni in Action (February 2022) named her among the North Country community women who inspired alumna Molly McMasters '20 to launch her painting business.",
+   "source": "St. Lawrence University",
+   "source_date": "2022-02-11",
+   "url": "https://www.stlawu.edu/news/alumni-action-february-2022"
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Alycia Miller-Lynch",
+   "what": "Added to her profile: Kevin and Alycia Miller-Lynch were listed among North Country Public Radio's leadership donors for fiscal year 2007.",
+   "source": "North Country Public Radio",
+   "source_date": "2007",
+   "url": "https://www.northcountrypublicradio.org/support/annualgiving.html"
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Alexis Sullivan",
+   "what": "Added to her profile: she was awarded a Northern New York Community Foundation scholarship as a Madrid-Waddington Central School student in the Foundation's 2020-2021 awards.",
+   "source": "Northern New York Community Foundation",
+   "source_date": "2020",
+   "url": "https://nnycf.org/2020-community-foundation-scholarships/"
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Noah Diederich",
+   "source": "LinkedIn profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.linkedin.com/in/noah-diederich",
+   "what": "Profile photo replaced with his LinkedIn headshot; the earlier image was a feed post photo, not the headshot. His LinkedIn headline now reads Product Planning Engineer at Derrick Corporation (previously Alcoa)."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Blake Burr",
+   "source": "LinkedIn profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.linkedin.com/in/blakeburr",
+   "what": "Profile photo replaced with his LinkedIn headshot; the earlier image was a feed post photo, not the headshot."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Luke Boyle",
+   "source": "LinkedIn profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.linkedin.com/in/luke-boyle-466681206",
+   "what": "Profile photo replaced with his LinkedIn headshot; the earlier image was a feed post photo, not the headshot."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Norah Pease",
+   "source": "SUNY Potsdam",
+   "source_date": "2025-09",
+   "url": "https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler",
+   "what": "Profile photo swapped to the finish-line lead photo from the SUNY Potsdam Sufferfest article; the original launch shot is kept as an alternate. The first photo was flagged as a bad photo."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Amber Ingram",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/amber_ingram",
+   "what": "Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Andrew Matott",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/drewspov_",
+   "what": "Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Catherine Green",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/_cathaccino_",
+   "what": "Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Eli Thomas",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/eli.e.thomas",
+   "what": "Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Emma Morse",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/emma_morse315",
+   "what": "Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Isaiah Reiter",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/isaiahreiter",
+   "what": "Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Joel Moulton",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/jtmoulton",
+   "what": "Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Maddie Barton",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/m.bsouth02",
+   "what": "Instagram profile picture filed at 150px, graded possible: the profile name matches but its bio says Kentucky, with no North Country anchor. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Melody Maurer",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/melody_maurer",
+   "what": "Instagram profile picture filed at 150px. Low-fidelity placeholder, flagged keep-looking."
+  },
+  {
+   "filed": "2026-10-22",
+   "name": "Noah Adams",
+   "source": "Instagram profile",
+   "source_date": "2026-10-22",
+   "url": "https://www.instagram.com/noah_adams24",
+   "what": "Instagram profile picture filed at 150px, graded possible: the profile name matches but its bio (vintage seller, Jacksonville FL) has no North Country anchor. Low-fidelity placeholder, flagged keep-looking."
+  }
+ ],
+ "updated": "2026-10-22"
+}
