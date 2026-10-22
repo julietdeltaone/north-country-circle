@@ -2797,7 +2797,7 @@ function secView(di, id){
     if(tree) out3 += '<div class="sub-h first">Family</div>' + tree;
     else if(links.length) out3 += '<div class="sub-h first">Family</div>' + famListHTML(di, false);
     /* Default = the strongest 10 only (knownAssociates preserves the baked strength order); Show more / Show less toggles the full list (JD 2026-10-15). */
-    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + ', always two-way</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
+    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + '</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
       (ka.length > 10 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show more \u00b7 +' + (ka.length - 10) + '</button>' : '') +
       (ka.length > 10 && S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show less</button>' : '') + '</div>';
     out3 += '<div class="row"><a class="btn ghost sm" href="#/family" data-act="openfam" data-di="' + di + '">' + ic('tree', 14) + 'Open in Family</a><a class="btn ghost sm" href="#/network" data-act="shownet" data-di="' + di + '">' + ic('network', 14) + 'Show on Network</a></div>';
@@ -2939,7 +2939,7 @@ function secEdit(di, id){
       lab('Honors') + tagEditor(di, 'achievements', ' | ', 'Award and year, e.g. Dean’s List 2020');
   }
   if(id === 'connections'){
-    return lab('Known associates', 'Always two-way: adding or removing writes both profiles') +
+    return lab('Known associates', 'Adding or removing writes both profiles') +
       '<div class="chips">' + (knownAssociates(e).map(function(nb){ return nbrChip(nb, true); }).join('') || '<span class="dim">None mapped yet.</span>') + '</div>' +
       '<div class="finder"><input id="assocq" placeholder="Add a known associate: type a name" autocomplete="off"><div id="assocr" class="hits"></div></div>' +
       lab('Family', 'Traditional model: one spouse, bloodline trees') + famListHTML(di, true) +
@@ -4130,6 +4130,8 @@ function viewDaily(v){
    ============================================================ */
 var PH = null, PH_LOADING = false, PH_SHOW = 24, PH_SEL = null;
 var PH_COLS = Math.min(12, Math.max(3, parseInt(store('ncc_photos_cols_v1') || '10', 10) || 10));
+var PH_SORT = store('ncc_photos_sort_v1') || 'grade';
+var PH_SDIR = store('ncc_photos_sdir_v1') === 'desc' ? -1 : 1;
 function phLoad(){
   if(PH || PH_LOADING) return;
   PH_LOADING = true;
@@ -4411,11 +4413,23 @@ function viewPhotos(v){
       '<div class="phrev phrail-pad"><button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button>' + (e ? '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>' : '') + '</div>' +
       '</aside>';
   }
-  found.sort(function(a, b){ var ra = revOf(a) === 'confirmed' ? 1 : 0, rb = revOf(b) === 'confirmed' ? 1 : 0; if(ra !== rb) return ra - rb; var r = { confirmed:0, likely:1, possible:2 }; return r[a.status] - r[b.status] || a.name.localeCompare(b.name); });
+  function phEntryOf(p){ var di = diOf(p.name); return di != null ? D.directory[di] : null; }
+  function phYearsOf(p){ var e = phEntryOf(p); if(!e) return -1; var sy = parseInt(String(gv(e, 'years_known') || '').trim(), 10); return isNaN(sy) || sy < 1900 ? -1 : new Date().getFullYear() - sy; }
+  function phOrgOf(p){ var e = phEntryOf(p); if(!e) return ''; var o = orgsOf(e); return o.length ? regApply(o[0]) : ''; }
+  found.sort(function(a, b){
+    var c = 0;
+    if(PH_SORT === 'name') c = a.name.localeCompare(b.name);
+    else if(PH_SORT === 'org'){ var oa = phOrgOf(a), ob = phOrgOf(b); c = ((oa === '' ? 1 : 0) - (ob === '' ? 1 : 0)) || oa.localeCompare(ob) || a.name.localeCompare(b.name); }
+    else if(PH_SORT === 'years') c = (phYearsOf(b) - phYearsOf(a)) || a.name.localeCompare(b.name);
+    else if(PH_SORT === 'tier'){ var tr = { vetted:0, associate:1, open:2 }; var ta = tr[tierOf(phEntryOf(a))], tb = tr[tierOf(phEntryOf(b))]; c = ((ta == null ? 3 : ta) - (tb == null ? 3 : tb)) || a.name.localeCompare(b.name); }
+    else { var ra = revOf(a) === 'confirmed' ? 1 : 0, rb = revOf(b) === 'confirmed' ? 1 : 0; var r = { confirmed:0, likely:1, possible:2 }; c = (ra - rb) || (r[a.status] - r[b.status]) || a.name.localeCompare(b.name); }
+    return PH_SDIR < 0 ? -c : c;
+  });
   var shown = found.slice(0, Math.max(PH_SHOW, PH_COLS * 2));
   var moreHtml = found.length > shown.length ? '<div class="phmore"><button type="button" class="btn ghost" data-act="phmore">Show more photos &mdash; ' + (found.length - shown.length) + ' more</button></div>' : '';
   var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
-  var toolsHtml = '<div class="phbar">' + stats + colsHtml + '</div>';
+  var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Tier']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
+  var toolsHtml = '<div class="phbar">' + stats + sortHtml + colsHtml + '</div>';
   if(PH_SEL && !found.some(function(p){ return p.name.toLowerCase() === PH_SEL.toLowerCase(); })) PH_SEL = null;
   var railHtml;
   if(PH_SEL){ var sp = found.filter(function(p){ return p.name.toLowerCase() === PH_SEL.toLowerCase(); })[0]; railHtml = sp ? phRail(sp) : phRailEmpty(); }
@@ -4424,8 +4438,9 @@ function viewPhotos(v){
     return '<aside class="phrail"><div class="phrail-h"><b>Viewer</b></div>' +
       '<div class="phrail-none">' + ic('camera', 26) + '<p>Select a photo to see it here.<br>Reviewing lives in Audit &rarr; Photo Audit.</p></div></aside>';
   }
-  var foundHtml = found.length ? toolsHtml + '<div class="phwrap"><div class="phmain"><div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml + '</div>' + railHtml + '</div>' : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
-  v.innerHTML = head + foundHtml + '</div>';
+  var topHtml = '<div class="ph-top">' + railHtml + '<div class="ph-topmain"><div class="pagehead phhead"><div><h1 class="display">Photos</h1><p class="sub">A photo counts only when its page ties it to the person. Select a photo to see it in the viewer.</p></div></div>' + toolsHtml + '</div></div>';
+  var foundHtml = found.length ? topHtml + '<div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml : topHtml + '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
+  v.innerHTML = '<div class="page asearch">' + foundHtml + '</div>';
 }
 
 
@@ -6252,6 +6267,8 @@ function onClick(ev){
     case 'phsel': { var pn = el.getAttribute('data-pname'); var sy = window.scrollY; PH_SEL = (PH_SEL && pn && PH_SEL.toLowerCase() === pn.toLowerCase()) ? null : pn; if(S.route.name === 'photos'){ viewPhotos($('#view')); window.scrollTo(0, sy); } break; }
     case 'phclose': PH_SEL = null; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'phcols': PH_COLS = parseInt(el.getAttribute('data-n'), 10) || 12; store('ncc_photos_cols_v1', String(PH_COLS)); PH_SHOW = PH_COLS * 4; if(S.route.name === 'photos') viewPhotos($('#view')); break;
+    case 'phsort': PH_SORT = el.getAttribute('data-s') || 'grade'; store('ncc_photos_sort_v1', PH_SORT); if(S.route.name === 'photos') viewPhotos($('#view')); break;
+    case 'phsdir': PH_SDIR = PH_SDIR < 0 ? 1 : -1; store('ncc_photos_sdir_v1', PH_SDIR < 0 ? 'desc' : 'asc'); if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
