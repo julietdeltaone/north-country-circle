@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.19.1';
+var APP_VERSION = '2.20.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4799,6 +4799,15 @@ function dtLoad(){
     .then(function(d){ DT = d; DT_LOADING = false; if(S.route.name === 'daily') render(); })
     .catch(function(){ DT = { empty:true }; DT_LOADING = false; if(S.route.name === 'daily') render(); });
 }
+var CH = null, CH_LOADING = false;
+function chLoad(){
+  if(CH || CH_LOADING) return;
+  CH_LOADING = true;
+  fetch('data/changes.json', { cache:'no-store' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ CH = d; CH_LOADING = false; if(S.route.name === 'daily') render(); })
+    .catch(function(){ CH = { entries:[] }; CH_LOADING = false; });
+}
 function dtAnimate(){
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   setTimeout(function(){
@@ -4816,7 +4825,7 @@ function dtAnimate(){
   }, 40);
 }
 function viewDaily(v){
-  dtLoad();
+  dtLoad(); chLoad();
   var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Live Records</h1><p class="sub">The currency routine, run daily: 25 profiles checked against the public record, a fresh-find hunt across the last three weeks, and the strongest verified updates filed automatically.</p></div></div>';
   if(!DT){
     v.innerHTML = head + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
@@ -4903,7 +4912,25 @@ function viewDaily(v){
     '</div></section>';
   var updHead = (DT.filed || []).length ? '<div class="assec-t asanim" style="--d:120ms">UPDATED RECORDS</div>' : '';
   var top = '<div class="astop' + (hero ? '' : ' astop-solo') + '">' + hero + stats + '</div>';
-  v.innerHTML = head + top + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>';
+  /* --- Change log rail (JD 2026-10-22): every amendment from the photo/info passes, with the date of its source --- */
+  function fmtSrc(iso){
+    if(!iso) return '';
+    var p = String(iso).split('-');
+    if(p.length === 2) return MON[parseInt(p[1], 10) - 1] + ' ' + p[0];
+    return fmtD(iso);
+  }
+  var rail = '';
+  if(CH && CH.entries && CH.entries.length){
+    var citems = CH.entries.slice(0, 80).map(function(c){
+      return '<div class="chg"><div class="chg-name">' + personLink(c.name) + '</div>' +
+        '<p class="chg-what">' + esc(c.what || '') + '</p>' +
+        '<div class="chg-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
+        (c.source_date ? ' &middot; source ' + esc(fmtSrc(c.source_date)) : '') +
+        (c.filed ? '<span class="chg-filed">Filed ' + esc(fmtSrc(c.filed)) + '</span>' : '') + '</div></div>';
+    }).join('');
+    rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
+  }
+  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + top + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div></div>';
   dtAnimate();
 }
 
@@ -4916,7 +4943,7 @@ function viewDaily(v){
    are listed too, so coverage is honest. Data: data/photos.json,
    written by the Photos on File batches; read-only here.
    ============================================================ */
-var PH = null, PH_LOADING = false, PH_SHOW = 24;
+var PH = null, PH_LOADING = false, PH_SHOW = 24, PH_HIDE_LOW = false;
 function phLoad(){
   if(PH || PH_LOADING) return;
   PH_LOADING = true;
@@ -5042,7 +5069,10 @@ function viewPhotos(v){
   var counts = { confirmed:0, likely:0, possible:0, no_photo:0, no_source:0, auth_only:0 };
   PH.people.forEach(function(p){ if(counts[p.status] != null) counts[p.status]++; });
   var foundAll = PH.people.filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely' || p.status === 'possible'); });
+  var lowAll = foundAll.filter(function(p){ return p.lowres; });
+  var lowList = foundAll.filter(function(p){ return p.lowres && revOf(p) !== 'bad'; });
   var found = foundAll.filter(function(p){ return revOf(p) !== 'rejected'; });
+  if(PH_HIDE_LOW) found = found.filter(function(p){ return !p.lowres; });
   var awaiting = found.filter(function(p){ return revOf(p) !== 'confirmed' && revOf(p) !== 'bad'; }).length;
   var flagged = foundAll.filter(function(p){ return revOf(p) === 'bad'; });
   var stats = '<section class="card aspanel"><div class="cbody"><div class="asstats">' +
@@ -5056,6 +5086,7 @@ function viewPhotos(v){
     var rev = revOf(p);
     var portrait = /headshot|portrait|staff|profile/i.test(p.type || '');
     var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO</span>' : rev === 'confirmed' ? '' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
+    if(p.lowres && rev !== 'bad') badge += '<span class="phbadge low">LOW-RES ' + (p.px ? p.px + 'PX' : '') + '</span>';
     var adjBtn = '<button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust</button>';
     var review = rev === 'confirmed'
       ? '<div class="phrev"><span class="phok">' + ic('check', 13) + ' Confirmed by you</span><span class="sp"></span>' + adjBtn + '<button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
@@ -5074,7 +5105,9 @@ function viewPhotos(v){
   var shown = found.slice(0, PH_SHOW);
   var moreHtml = found.length > shown.length ? '<div class="phmore"><button type="button" class="btn ghost" data-act="phmore">Show more photos &mdash; ' + (found.length - shown.length) + ' more</button></div>' : '';
   var flagHtml = flagged.length ? '<div class="phrej"><span>Flagged for a better photo (right person, bad photo): ' + flagged.map(function(p){ return esc(p.name); }).join(', ') + '</span></div>' : '';
-  var foundHtml = found.length ? '<div class="assec-t">ON FILE &mdash; ' + found.length + (awaiting ? ' &middot; ' + awaiting + ' AWAITING REVIEW' : '') + '</div><div class="phgrid">' + shown.map(photoCard).join('') + '</div>' + moreHtml + flagHtml : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
+  var lowHtml = lowList.length ? '<div class="phrej"><span>Low fidelity (150px placeholders, keep looking): ' + lowList.map(function(p){ return esc(p.name); }).join(', ') + '</span></div>' : '';
+  var toolsHtml = lowAll.length ? '<div class="phtools"><button type="button" class="phtoggle' + (PH_HIDE_LOW ? ' on' : '') + '" data-act="phfilter">' + (PH_HIDE_LOW ? 'Low-fidelity photos are hidden' : 'Hide low-fidelity photos') + ' &middot; ' + lowAll.length + ' low-res</button></div>' : '';
+  var foundHtml = (found.length || lowAll.length) ? toolsHtml + '<div class="assec-t">ON FILE &mdash; ' + found.length + (awaiting ? ' &middot; ' + awaiting + ' AWAITING REVIEW' : '') + (PH_HIDE_LOW ? ' &middot; LOW-FIDELITY HIDDEN' : '') + '</div><div class="phgrid">' + shown.map(photoCard).join('') + '</div>' + moreHtml + flagHtml + lowHtml : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
   function chip(p){
     var di = diOf(p.name), label = esc(p.name);
     var why = revOf(p) === 'rejected' ? 'photo rejected by you' : p.status === 'possible' ? 'photo exists, URL pending' : p.status === 'no_photo' ? 'checked, no photo' : p.status === 'auth_only' ? 'Facebook / LinkedIn only' : 'no source links on file';
@@ -6896,6 +6929,7 @@ function onClick(ev){
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
     case 'phbad': phSetReview(el.getAttribute('data-pname'), 'bad'); break;
     case 'phmore': PH_SHOW += 24; if(S.route.name === 'photos') viewPhotos($('#view')); break;
+    case 'phfilter': PH_HIDE_LOW = !PH_HIDE_LOW; PH_SHOW = 24; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
