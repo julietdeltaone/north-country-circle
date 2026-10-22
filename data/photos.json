@@ -1,7 +1,7 @@
 {
  "updated": "2026-10-22",
  "total": 670,
- "batches": "Batches 1-11 + requeue — profiles 1-550 checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 12 profiles",
+ "batches": "Batches 1-12 + requeue — profiles 1-600 checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 17 profiles",
  "people": [
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -588,12 +588,12 @@
    "type": null
   },
   {
-   "evidence": "Only source on file is LinkedIn (auth) — a separate pass is trying LinkedIn photos via Google Images.",
+   "evidence": "Google Images (2026-10-22) indexed this image from their exact on-file LinkedIn profile (caption: 'Blake Burr - Director of Security... ten year background in law enforcement and private security'), but it is a post/feed image, not the profile headshot — whether it depicts him is unverified.",
    "name": "Blake Burr",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/D5622AQGserd5mc5P5g/feedshare-shrink_800/B56Z_I3hwlHIAg-/0/1785781427489?e=2147483647&v=beta&t=FFVWHOk7H2m9yrijiuzC7HTjBs26V-o9iUcaWGl4isQ",
+   "source_page": "https://www.linkedin.com/in/blakeburr",
+   "status": "possible",
+   "type": "post image (LinkedIn)"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1020,12 +1020,12 @@
    "type": null
   },
   {
-   "evidence": "Identity verified as the right Christine Sutter (aggregator bios match: LMSW, Canton/Massena NY, MSW University of Denver), but RocketReach's only profile image is its generic default placeholder avatar — excluded; Topline returned no image. Inner Lakes Therapy staff page carries her bio but no labeled staff headshot, only generic site graphics. Her LinkedIn is being tried via the Google Images route.",
+   "evidence": "LinkedIn profile photo harvested via Google Images (2026-10-22): the image result's landing page was verified as their exact on-file LinkedIn profile; indexed caption: 'Christine Sutter - LMSW | LinkedIn'. Her other sources had no photo of her (an aggregator page showed only a generic placeholder avatar; the Inner Lakes staff page carries her bio with no headshot).",
    "name": "Christine Sutter",
-   "photo_url": null,
-   "source_page": "https://www.innerlakestherapy.com/innerlakes-therapists",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/C4D03AQFlE-NnLRO8Nw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1562393064777?e=2147483647&v=beta&t=Vr99N_Wi8rsAgT9elcdSxosiGoIuoGBt9JlYjQ-9ADg",
+   "source_page": "https://www.linkedin.com/in/christine-sutter-b179b082",
+   "status": "confirmed",
+   "type": "profile photo (LinkedIn)"
   },
   {
    "evidence": "Clarkson people profile fetched in full — education/teaching/research/publications text only, no headshot URL. The NextAvenue 'Fighting Falls' URL now resolves to a generic index page — the article itself could not be retrieved this pass.",
@@ -1478,7 +1478,7 @@
    "type": null
   },
   {
-   "evidence": "Only links on file are Facebook and LinkedIn (auth).",
+   "evidence": "Only links on file are Facebook and LinkedIn (auth). Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile — not filled.",
    "name": "Dimitri Damon",
    "photo_url": null,
    "source_page": null,
@@ -2134,7 +2134,7 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is LinkedIn (auth).",
+   "evidence": "Only link on file is LinkedIn (auth). Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile (results linked to a different person's slug) — not filled.",
    "name": "Hannah Puglia",
    "photo_url": null,
    "source_page": null,
@@ -2310,7 +2310,7 @@
    "type": null
   },
   {
-   "evidence": "The 2013 SUNY Canton hockey story fetch timed out upstream — that source remains unverified (requeue). His other source is Facebook (auth).",
+   "evidence": "The 2013 SUNY Canton hockey story fetch timed out upstream — that source remains unverified (requeue). His other source is Facebook (auth). Requeue check (2026-10-22): the Roo Athletics story loaded on retry — a game recap noting her first career goal; no image URL is extractable from it.",
    "name": "Isreal Tyler",
    "photo_url": null,
    "source_page": "https://rooathletics.com/story.aspx?filename=HOC_0201130415&file_date=2-1-2013",
@@ -2646,11 +2646,35 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Jim Holt",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Jim Wing",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "Merit profile lists two text achievements (President's List, SUNY Canton) — no profile photo, no Images footnote.",
    "name": "Jocelyn Daniels",
    "photo_url": null,
    "source_page": "https://meritpages.com/Jocelyn-Daniels/9692918",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Joe Charlebois",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -2662,11 +2686,27 @@
    "type": null
   },
   {
-   "evidence": "Only links on file are LinkedIn and Facebook (auth).",
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Joe Moore",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only links on file are LinkedIn and Facebook (auth). Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile (results linked to a different slug) — not filled.",
    "name": "Joel Moulton",
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Her Merit profile (Clarkson communication, Class of 2019) is text-only achievement listings — no profile photo extractable.",
+   "name": "Joelle Kowalka",
+   "photo_url": null,
+   "source_page": "https://meritpages.com/Joelle-Elizabeth-Kowalka/2938066",
+   "status": "no_photo",
    "type": null
   },
   {
@@ -2698,6 +2738,14 @@
      "note": "NCPR story lead photo (two taxis) — package is about both owners; John not individually identified in the caption. Kept on file per JD."
     }
    ]
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "John Molinero",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
   },
   {
    "evidence": "Image sits directly under his section heading 'Zufall Family Farm | John Zufall, Lisbon, NY (Owner)', labeled 'Zufall farm photos' — a farm photo grid tied to his farm's section. The label does not state John himself is pictured (photos credited to others) — possible only.",
@@ -2756,8 +2804,16 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is LinkedIn (auth).",
+   "evidence": "Only link on file is LinkedIn (auth). Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile — not filled.",
    "name": "Jordyn Brothers",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Joseph Baxter",
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
@@ -2797,6 +2853,14 @@
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
+   "name": "Joshua Dsouza",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
    "name": "Joshua White",
    "photo_url": null,
    "source_page": null,
@@ -2820,6 +2884,14 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Josiah Tabolt",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Joye Levendusky",
    "photo_url": null,
@@ -2836,11 +2908,27 @@
    "type": "headshot"
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Judith Tomford",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "The article's only photo is captioned 'Chancellor Nancy L. Zimpher poses with SUNY Potsdam art education student Cashlynn Jaggers 20 and her commissioned work' — that is Cashlynn, not Judson. He appears in text only as her boyfriend at the ceremony; not pictured or captioned anywhere.",
    "name": "Judson Colbert",
    "photo_url": null,
    "source_page": "https://www.potsdam.edu/news/suny-potsdam-art-student-paints-commissioned-work-honor-chancellor-nancy-l-zimpher",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Judson Foote",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -2908,6 +2996,14 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Julie Rose LaShomb",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "NTC Massena preacher page is a text-only list of his sermon posts — no photo URL tied to him. Opengovny inspection record text-only. The AEDC newsletter on file was not opened in this pass.",
    "name": "Justin Cardinal",
    "photo_url": null,
@@ -2932,6 +3028,14 @@
    "type": null
   },
   {
+   "evidence": "Her Merit profile (SUNY Potsdam Biomedical Sciences) is text-only President's List/graduation listings — no profile photo at all.",
+   "name": "Kailee Paige",
+   "photo_url": null,
+   "source_page": "https://meritpages.com/Kailee-Paige/8881107",
+   "status": "no_photo",
+   "type": null
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Kallie Belleau",
    "photo_url": null,
@@ -2946,6 +3050,22 @@
    "source_page": null,
    "status": "no_source",
    "type": null
+  },
+  {
+   "evidence": "Her Clarkson people page is biography text only, but her org-chart block carries the directory image labeled 'kferguso' alongside her name and title (Clinical Assistant Professor, Physical Therapy) — the directory headshot keyed to her username.",
+   "name": "Kara Ferguson",
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=kferguso",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=kferguso",
+   "status": "confirmed",
+   "type": "directory photo"
+  },
+  {
+   "evidence": "Her practice site's only real image heads 'The Therapy Garage Story' section, which names Karen Hoover and Regis Quirin as co-owners — tied to her by section context but with no caption/alt naming her, so likely rather than confirmed. Her Clarkson people page is text only.",
+   "name": "Karen Hoover",
+   "photo_url": "https://img1.wsimg.com/isteam/ip/92484fc8-1a54-4715-9016-1887b461c88b/39e09cd5106cf116588847433fd704c8.png/:/rs=w:400,cg:true,m",
+   "source_page": "http://thetherapygarage.com/",
+   "status": "likely",
+   "type": "practice photo"
   },
   {
    "evidence": "Her own Merit Pages profile (Business Administration, SNHU, Class of 2020, Potsdam NY) carries [Image 0] at the top — her student photo file in her own Merit photo directory. Only other image is the Merit logo, excluded.",
@@ -2982,6 +3102,14 @@
   {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Katelyn Tomford",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Katelynne Kulp",
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
@@ -3060,6 +3188,14 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Katie Wolstenholme",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "Her Merit profile (SUNY Potsdam, Public Health, Potsdam NY) returned achievement listings only — no profile photo (contrast Delany Durant's Merit profile, which did carry one).",
    "name": "Katrina Lee Cutler",
    "photo_url": null,
@@ -3084,11 +3220,51 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kaylee Gilbert",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kaylee Hartley",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kayleigh Clary",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "Church directory checked in full plus an in-page find for 'Levendusky' — no match; she does not appear on the page. All 46 images are generic stock attached to other churches' listings — excluded.",
    "name": "Keila Levendusky",
    "photo_url": null,
    "source_page": "https://www.nrpastors.com/nrpchurches",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kelsey Wilbur",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kenna Leigh",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -3100,11 +3276,27 @@
    "type": null
   },
   {
+   "evidence": "The Colgate appointment story's sole image carries the alt/caption 'Kevin Lynch' (filename Kevin-Lynch1.jpg) directly above the announcement naming him Colgate's new CIO — a labeled headshot tied to him by the page.",
+   "name": "Kevin Lynch",
+   "photo_url": "http://news.colgate.edu/wp-content/uploads/2012/11/Kevin-Lynch1.jpg",
+   "source_page": "https://www.colgate.edu/news/stories/colgate-appoints-kevin-lynch-chief-information-officer",
+   "status": "confirmed",
+   "type": "headshot"
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Khosa Muno",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kim Sisk",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -3121,6 +3313,30 @@
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Krysten Emily",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kundai Mugugu",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "His Clarkson people profile (full biography, Physical Therapy) returned no headshot URL; the Clarkson tenure-and-promotion news story about him is likewise text-only in extraction.",
+   "name": "Kwadwo Appiah-Kubi",
+   "photo_url": null,
+   "source_page": "https://www.clarkson.edu/people/kwadwo-appiah-kubi",
+   "status": "no_photo",
    "type": null
   },
   {
@@ -3148,6 +3364,22 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Kyle Prescott",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Lacey Matott",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
    "evidence": "Her own Houghton University women's lacrosse roster page (2021, Sophomore, Norwood NY) carries [Image 2] in the player slot — filename 'Lael_1.jpg' — the roster headshot tied to her by placement and filename. Page's other images are site logos, excluded.",
    "name": "Lael Card",
    "photo_url": "https://athletics.houghton.edu/images/2021/3/24/Lael_1.jpg?width=300",
@@ -3164,6 +3396,14 @@
    "type": null
   },
   {
+   "evidence": "The GlobeNewswire founding-dean release carries a photo attachment labeled 'lenn-johns / Lenn Johns', tying an image to him, but the fetch returned no image URL to file. His Clarkson people profile is text-only in extraction.",
+   "name": "Lennart Johns",
+   "photo_url": null,
+   "source_page": "https://www.globenewswire.com/news-release/2020/10/19/2110634/0/en/Clarkson-University-Names-Founding-Dean-of-the-Lewis-School-of-Health-Sciences.html",
+   "status": "possible",
+   "type": "press photo"
+  },
+  {
    "evidence": "Her own Merit Pages profile (SUNY Canton, Criminal Investigation, Class of 2022, Watertown NY, first-person bio); [Image 0] at top of profile is her student photo file. Canton honors page yielded only the SUNY Canton logo — excluded.",
    "name": "Leslie Perri",
    "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/6055846/medium/image_55415491.JPG?1610778457",
@@ -3177,6 +3417,14 @@
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Lexi Kennedy LaBombard",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -3204,11 +3452,43 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Lindsey Elaine",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "RRH article names her in text only as one of the Birthplace at Canton-Potsdam Hospital RNs who are Certified Lactation Consultants; not pictured or quoted. The article's captioned photo subject is a different person. Merit stories text-only.",
    "name": "Lindsey Sorrento",
    "photo_url": null,
    "source_page": "https://www.rochesterregional.org/hub/specialized-rns-assist-new-moms",
    "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Lisa Arquette",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Her on-file sources appear mismatched: the opengovpay page is for a different name, no NCPR story about her surfaced, and the police-reform PDF is not about her. No checkable source actually about her, and no photo of her found.",
+   "name": "Lisa Criscitello",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Liz Wangerin",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -3218,6 +3498,14 @@
    "source_page": "https://www.canton.edu/news/2023/academy.php",
    "status": "confirmed",
    "type": "group / training photo"
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Loni Hughes Recker",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
   },
   {
    "evidence": "Her own first-person blog (branded 'Louissa Tabolt') — both assigned posts extracted text-only, no photo of any kind.",
@@ -3236,8 +3524,24 @@
    "type": null
   },
   {
+   "evidence": "Google Images (2026-10-22) indexed this image from their exact on-file LinkedIn profile (caption: 'Luke Boyle - Inbound Investment Advisor'), but it is a post/feed image, not the profile headshot — whether it depicts him is unverified. His Merit profile and SmartAsset advisor profile carry no personal photo.",
+   "name": "Luke Boyle",
+   "photo_url": "https://media.licdn.com/dms/image/v2/D4D22AQEoko8XgKowpw/feedshare-shrink_800/B4DZ397ryAIUAc-/0/1778081775037?e=2147483647&v=beta&t=54ANODfxMydHCb1U1yYUV13o1-ou7QOuGUYr2N9dMGY",
+   "source_page": "https://www.linkedin.com/in/luke-boyle-466681206",
+   "status": "possible",
+   "type": "post image (LinkedIn)"
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Lydia Bartlett",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Lydia Dale",
    "photo_url": null,
    "source_page": null,
    "status": "auth_only",
@@ -3252,11 +3556,35 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Mackenzie Leigh",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Maddie Barton",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Maddie Morgan",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Maddy Cusworth",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -3276,7 +3604,7 @@
    "type": null
   },
   {
-   "evidence": "Only links on file are a Facebook photo post and LinkedIn (auth). Per the file, the FB post is a Claxton Hepburn staff photo naming her — a photo likely exists there but cannot be extracted or QC'd publicly.",
+   "evidence": "Only links on file are a Facebook photo post and LinkedIn (auth). Per the file, the FB post is a Claxton Hepburn staff photo naming her — a photo likely exists there but cannot be extracted or QC'd publicly. Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile — not filled.",
    "name": "Maggie Ecker",
    "photo_url": null,
    "source_page": null,
@@ -3300,11 +3628,35 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Maggie Marceau",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Maggie Thibodeau",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is her own Facebook (auth). Nothing imported from Maggie Ecker's profiles.",
+   "name": "Maggie Tibs",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Makiah Barber",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
    "type": null
   },
   {
@@ -3340,6 +3692,22 @@
    "type": null
   },
   {
+   "evidence": "Her Merit profile (SUNY Potsdam Business Administration '19) is text-only — no profile photo. The MealTrain page on file is a train for Nick Waite and Molly Criscitello; its photo is captioned for them, not for her.",
+   "name": "Maria Tallo",
+   "photo_url": null,
+   "source_page": "https://meritpages.com/nntallo",
+   "status": "no_photo",
+   "type": null
+  },
+  {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Marissa Carl",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Marissa Chelan",
    "photo_url": null,
@@ -3364,7 +3732,7 @@
    "type": null
   },
   {
-   "evidence": "Wikipedia infobox carries a photo captioned 'Walczyk in 2025' — caption ties the image to him — but the fetch returned no image URL to file. His NY Senate bio page (official headshot expected) failed to load on this pass — requeue for both.",
+   "evidence": "Wikipedia infobox carries a photo captioned 'Walczyk in 2025' — caption ties the image to him — but the fetch returned no image URL to file. His NY Senate bio page (official headshot expected) failed to load on this pass — requeue for both. Requeue check (2026-10-22): Wikipedia infobox caption 'Walczyk in 2025' confirms the infobox photo depicts him; the fetch again returned no image URL, so it stays possible/unfiled.",
    "name": "Mark C Walczyk",
    "photo_url": null,
    "source_page": "https://en.wikipedia.org/wiki/Mark_Walczyk",
@@ -3412,6 +3780,14 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Martha Martin",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "OpenGovNY corporate record (MG Tree LLC, Potsdam) is a text-only entity filing with no images and does not name him. Only other link is Facebook (auth).",
    "name": "Martin Lovell",
    "photo_url": null,
@@ -3436,12 +3812,28 @@
    "type": null
   },
   {
+   "evidence": "Only link on file is Facebook (auth).",
+   "name": "Matthew Cote",
+   "photo_url": null,
+   "source_page": null,
+   "status": "auth_only",
+   "type": null
+  },
+  {
    "evidence": "Merit profile returned story listings only — no profile-photo URL at all. Clarkson Merit stories text-only.",
    "name": "Matthew Tomford",
    "photo_url": null,
    "source_page": "https://meritpages.com/Matthew-Tomford/303340",
    "status": "no_photo",
    "type": null
+  },
+  {
+   "evidence": "His Clarkson org-chart block (Campus Safety & Security Sergeant) carries the directory image labeled 'mvolz' — the directory headshot keyed to his username. His Clarkson people page is a contact block only.",
+   "name": "Matthew Volz",
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=mvolz",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=mvolz",
+   "status": "confirmed",
+   "type": "directory photo"
   },
   {
    "evidence": "LinkedIn profile photo harvested via Google Images (2026-10-22): the image result's landing page was verified as their exact on-file LinkedIn profile; indexed caption: 'Patient Experience and Compliance Manager, St. Lawrence Health'. Earlier sources checked had no photo of them.",
@@ -3510,6 +3902,14 @@
   {
    "evidence": "No source links on file.",
    "name": "Megan Davis",
+   "photo_url": null,
+   "source_page": null,
+   "status": "no_source",
+   "type": null
+  },
+  {
+   "evidence": "No source links on file.",
+   "name": "Megan Eddy",
    "photo_url": null,
    "source_page": null,
    "status": "no_source",
@@ -3740,12 +4140,12 @@
    "type": null
   },
   {
-   "evidence": "Only links on file are LinkedIn (auth) and newzjunky (browser policy-blocked, unchecked gap).",
+   "evidence": "Google Images (2026-10-22) indexed this image from their exact on-file LinkedIn profile (caption: 'Noah Diederich - Production Maintenance Engineer @ Alcoa'), but it is a post/feed image, not the profile headshot — whether it depicts him is unverified. His newzjunky source is policy-blocked.",
    "name": "Noah Diederich",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/D4E22AQGRXxSinU-h3w/feedshare-shrink_800/B4EZx7qzAeGkAg-/0/1771601343029?e=2147483647&v=beta&t=08Lu-c4H4ncd7iMJRxFiGSQdISHwOGFmeyzp-5zqbas",
+   "source_page": "https://www.linkedin.com/in/noah-diederich",
+   "status": "possible",
+   "type": "post image (LinkedIn)"
   },
   {
    "evidence": "SUNY Canton Fall 2021 honors page is a text name list (only image is the college logo). Merit profile text-only.",
@@ -4190,12 +4590,12 @@
    "type": "article photo"
   },
   {
-   "evidence": "Only links on file are LinkedIn and Facebook (auth).",
+   "evidence": "LinkedIn profile photo harvested via Google Images (2026-10-22): the image result's landing page was verified as their exact on-file LinkedIn profile; indexed caption: 'Stephanie Regan - Medical Scribe at Orthopedics & Sports Medicine | LinkedIn'.",
    "name": "Stephanie Regan",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/C5603AQETybsn8RIBjQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1517527067373?e=2147483647&v=beta&t=xPWAiWyjBCZQoqWD4VsFhRWmucpivQ4S6375nkHBR-g",
+   "source_page": "https://www.linkedin.com/in/stephanie-regan-b14346b0",
+   "status": "confirmed",
+   "type": "profile photo (LinkedIn)"
   },
   {
    "evidence": "Her own site homepage returned no portrait/about photo. The NCPR page's only story photo is captioned 'Kaelynn Hong as Olive' — a film still of a different person, excluded.",
@@ -4342,12 +4742,12 @@
    "type": null
   },
   {
-   "evidence": "Only links on file are LinkedIn and Facebook (auth).",
+   "evidence": "LinkedIn profile photo harvested via Google Images (2026-10-22): the image result's landing page was verified as their exact on-file LinkedIn profile; indexed caption: 'Valeria Zhukova - Cosmetica Laboratories Inc | LinkedIn'.",
    "name": "Valeria Zhukova",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/D4E03AQGocQfQ3CVBtA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1699555721192?e=2147483647&v=beta&t=AW42-ULP5Wi9RWto1I9jkT-PqjvI_yzOvl6tBYhLKPA",
+   "source_page": "https://www.linkedin.com/in/valeria-zhukova",
+   "status": "confirmed",
+   "type": "profile photo (LinkedIn)"
   },
   {
    "evidence": "No source links on file.",
