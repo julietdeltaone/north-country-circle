@@ -292,12 +292,12 @@
    "type": null
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from their own Instagram profile; handle from the explorer person-index; name matches the profile display name and the bio (\"Andrew's Leather\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Andrew Matott",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/673190771_18580578091056572_4765580915954847686_n.jpg?stp=dst",
+   "source_page": "https://www.instagram.com/drewspov_",
+   "status": "confirmed",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -890,12 +890,12 @@
    "type": "group"
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); bio anchors identity (\"wife to @jeevesgreen\"; Jeeves Green is her husband). No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Catherine Green",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/440764983_1387980021913675_7203490156071399257_n.jpg?stp=dst-j",
+   "source_page": "https://www.instagram.com/_cathaccino_",
+   "status": "confirmed",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1556,12 +1556,12 @@
    "type": "roster headshot"
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; name matches; bio (\"Follower of Christ Jesus\", \"Husband to @sarahbthomas\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Eli Thomas",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/386817353_558235439781787_4872730248183847931_n.jpg?stp=dst-jp",
+   "source_page": "https://www.instagram.com/eli.e.thomas",
+   "status": "confirmed",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "Source is her mother Norma Meyers's obituary \u2014 Elisa appears only as a name in survivors text; no photo on the page, and any obituary photo would be of Norma, not Elisa. Nothing filed.",
@@ -1788,12 +1788,12 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Emma Morse",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/434466959_938337524593552_5775828971960760044_n.jpg?stp=dst-jp",
+   "source_page": "https://www.instagram.com/emma_morse315",
+   "status": "confirmed",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "Her SLU people page is a text-only contact block (Library Assistant V) with no photo. The Hill News piece names her only in a signatory list \u2014 no photo tied to her. Merit story text-only.",
@@ -2308,12 +2308,12 @@
    "type": null
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Isaiah Reiter",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/455229930_477813748212377_2532060956786125956_n.jpg?stp=dst-jp",
+   "source_page": "https://www.instagram.com/isaiahreiter",
+   "status": "confirmed",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "The 2013 SUNY Canton hockey story fetch timed out upstream \u2014 that source remains unverified (requeue). His other source is Facebook (auth). Requeue check (2026-10-22): the Roo Athletics story loaded on retry \u2014 a game recap noting her first career goal; no image URL is extractable from it.",
@@ -2708,12 +2708,12 @@
    "type": null
   },
   {
-   "evidence": "Only links on file are LinkedIn and Facebook (auth). Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile (results linked to a different slug) \u2014 not filled.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Joel Moulton",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/557049020_18530236423045482_4285200388828061018_n.jpg?stp=dst",
+   "source_page": "https://www.instagram.com/jtmoulton",
+   "status": "confirmed",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "Her Merit profile (Clarkson communication, Class of 2019) is text-only achievement listings \u2014 no profile photo extractable.",
@@ -3584,12 +3584,12 @@
    "type": null
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; profile display name is Maddie Barton and the explorer person-index ties this handle to her, BUT the bio says Kentucky \u2014 she may have moved, or this could be a different Maddie Barton. One name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Maddie Barton",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/762864024_18373213480232259_8948022842898521937_n.jpg?stp=dst",
+   "source_page": "https://www.instagram.com/m.bsouth02",
+   "status": "possible",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3984,12 +3984,12 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); handle and profile display name both match; JD's close friend. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Melody Maurer",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/72333581_608917669876903_3437690140091219968_n.jpg?stp=dst-jpg",
+   "source_page": "https://www.instagram.com/melody_maurer",
+   "status": "confirmed",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "Potsdam Food Co-op newsletter (Jan-Feb 2007) photo caption names her in position: 'Judges (l to r) Gracie McFadden, Marissa Maurer, Alice McFadden, Mercy Maurer. Photo by Hye Chong Yi' (2006 Holiday Bake Off judges). Caption confirms she is in the photo, rightmost of four, but Yumpu extraction returned no image URL \u2014 possible until re-extraction.",
@@ -4256,12 +4256,12 @@
    "type": null
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; name matches, but the bio (\"Based in Jacksonville Florida\", selling vintage) does not tie to any known North Country anchor \u2014 one name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Noah Adams",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/798467534_18461260798138062_8804818832181941739_n.jpg?stp=dst",
+   "source_page": "https://www.instagram.com/noah_adams24",
+   "status": "possible",
+   "type": "Instagram profile picture"
   },
   {
    "evidence": "Profile headshot from their exact on-file LinkedIn profile, read from the live public profile page 2026-10-22 (no login): headline \"Product Planning Engineer at Derrick Corporation\". JD flagged the earlier photo 2026-10-22: it was a feed/post image from the same profile, not the headshot; that image is kept as an alternate.",
