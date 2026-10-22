@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.20.0';
+var APP_VERSION = '2.21.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4944,6 +4944,7 @@ function viewDaily(v){
    written by the Photos on File batches; read-only here.
    ============================================================ */
 var PH = null, PH_LOADING = false, PH_SHOW = 24, PH_HIDE_LOW = false;
+var PH_COLS = Math.min(12, Math.max(3, parseInt(store('ncc_photos_cols_v1') || '12', 10) || 12));
 function phLoad(){
   if(PH || PH_LOADING) return;
   PH_LOADING = true;
@@ -5102,12 +5103,13 @@ function viewPhotos(v){
       '</div></section>';
   }
   found.sort(function(a, b){ var ra = revOf(a) === 'confirmed' ? 1 : 0, rb = revOf(b) === 'confirmed' ? 1 : 0; if(ra !== rb) return ra - rb; var r = { confirmed:0, likely:1, possible:2 }; return r[a.status] - r[b.status] || a.name.localeCompare(b.name); });
-  var shown = found.slice(0, PH_SHOW);
+  var shown = found.slice(0, Math.max(PH_SHOW, PH_COLS * 2));
   var moreHtml = found.length > shown.length ? '<div class="phmore"><button type="button" class="btn ghost" data-act="phmore">Show more photos &mdash; ' + (found.length - shown.length) + ' more</button></div>' : '';
   var flagHtml = flagged.length ? '<div class="phrej"><span>Flagged for a better photo (right person, bad photo): ' + flagged.map(function(p){ return esc(p.name); }).join(', ') + '</span></div>' : '';
   var lowHtml = lowList.length ? '<div class="phrej"><span>Low fidelity (150px placeholders, keep looking): ' + lowList.map(function(p){ return esc(p.name); }).join(', ') + '</span></div>' : '';
-  var toolsHtml = lowAll.length ? '<div class="phtools"><button type="button" class="phtoggle' + (PH_HIDE_LOW ? ' on' : '') + '" data-act="phfilter">' + (PH_HIDE_LOW ? 'Low-fidelity photos are hidden' : 'Hide low-fidelity photos') + ' &middot; ' + lowAll.length + ' low-res</button></div>' : '';
-  var foundHtml = (found.length || lowAll.length) ? toolsHtml + '<div class="assec-t">ON FILE &mdash; ' + found.length + (awaiting ? ' &middot; ' + awaiting + ' AWAITING REVIEW' : '') + (PH_HIDE_LOW ? ' &middot; LOW-FIDELITY HIDDEN' : '') + '</div><div class="phgrid">' + shown.map(photoCard).join('') + '</div>' + moreHtml + flagHtml + lowHtml : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
+  var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
+  var toolsHtml = '<div class="phtools">' + (lowAll.length ? '<button type="button" class="phtoggle' + (PH_HIDE_LOW ? ' on' : '') + '" data-act="phfilter">' + (PH_HIDE_LOW ? 'Low-fidelity photos are hidden' : 'Hide low-fidelity photos') + ' &middot; ' + lowAll.length + ' low-res</button>' : '') + colsHtml + '</div>';
+  var foundHtml = (found.length || lowAll.length) ? toolsHtml + '<div class="assec-t">ON FILE &mdash; ' + found.length + (awaiting ? ' &middot; ' + awaiting + ' AWAITING REVIEW' : '') + (PH_HIDE_LOW ? ' &middot; LOW-FIDELITY HIDDEN' : '') + '</div><div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml + flagHtml + lowHtml : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
   function chip(p){
     var di = diOf(p.name), label = esc(p.name);
     var why = revOf(p) === 'rejected' ? 'photo rejected by you' : p.status === 'possible' ? 'photo exists, URL pending' : p.status === 'no_photo' ? 'checked, no photo' : p.status === 'auth_only' ? 'Facebook / LinkedIn only' : 'no source links on file';
@@ -6930,6 +6932,7 @@ function onClick(ev){
     case 'phbad': phSetReview(el.getAttribute('data-pname'), 'bad'); break;
     case 'phmore': PH_SHOW += 24; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'phfilter': PH_HIDE_LOW = !PH_HIDE_LOW; PH_SHOW = 24; if(S.route.name === 'photos') viewPhotos($('#view')); break;
+    case 'phcols': PH_COLS = parseInt(el.getAttribute('data-n'), 10) || 12; store('ncc_photos_cols_v1', String(PH_COLS)); PH_SHOW = PH_COLS * 4; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
