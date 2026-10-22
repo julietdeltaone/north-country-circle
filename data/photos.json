@@ -164,12 +164,12 @@
    "type": null
   },
   {
-   "evidence": "Clarkson people profile (Program Director, Occupational Therapy) fetched twice — biography/education/contact text only, no headshot URL. Gap: a headshot may exist on the live page that extraction missed.",
+   "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Associate Professor and Program Director, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern (photo served from directories.clarkson.edu/view_image.php inside the person's own block).",
    "name": "Alisha Ohl",
-   "photo_url": null,
-   "source_page": "https://www.clarkson.edu/people/alisha-ohl",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=aohl",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=aohl",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "No source links on file.",
@@ -564,12 +564,12 @@
    "type": null
   },
   {
-   "evidence": "Her Clarkson people profile (Clinical Associate Professor, OTD; directs the Assistive Technology Resource and Education Center) fetched text-only with no headshot URL; the NYSOTA 'Dessert & Dialogue' event page names her as presenter with a bio but likewise yielded no flyer/headshot URL. Gap: a headshot may exist on the live Clarkson page that extraction missed.",
+   "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Clinical Associate Professor, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
    "name": "Beth Randall",
-   "photo_url": null,
-   "source_page": "https://www.clarkson.edu/people/beth-randall",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=brandall",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=brandall",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -714,12 +714,12 @@
    "type": null
   },
   {
-   "evidence": "Her Clarkson people profile (Clinical Associate Professor of OT, OTD) returned no headshot/photo URL; the June 2024 promotion story naming her is likewise text-only.",
+   "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Clinical Associate Professor, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
    "name": "Brittany DiSalvo",
-   "photo_url": null,
-   "source_page": "https://www.clarkson.edu/people/brittany-disalvo",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=bdisalvo",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=bdisalvo",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1034,12 +1034,12 @@
    "type": "profile photo (LinkedIn)"
   },
   {
-   "evidence": "Clarkson people profile fetched in full — education/teaching/research/publications text only, no headshot URL. The NextAvenue 'Fighting Falls' URL now resolves to a generic index page — the article itself could not be retrieved this pass.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Associate Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
    "name": "Christopher Towler",
-   "photo_url": null,
-   "source_page": "https://www.clarkson.edu/people/christopher-towler",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=ctowler",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=ctowler",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "GovSalaries page is a text-only salary table. Bus Runs PDF is text-only route tables naming her as driver — no images.",
@@ -1210,12 +1210,12 @@
    "type": null
   },
   {
-   "evidence": "Clarkson people profile and the Clarkson appointment story are both text-only — no headshot in either fetch. Gap: the WesternU research story could not be fetched at all, so that source remains unchecked.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Assistant Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
    "name": "Dale Fournier",
-   "photo_url": null,
-   "source_page": "https://www.clarkson.edu/people/dale-fournier",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=dfournie",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=dfournie",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "No source links on file.",
@@ -1316,12 +1316,12 @@
    "type": null
   },
   {
-   "evidence": "Clarkson people profile is text-only with no Images footnote; his Merit profile (David Scott DiSalvo of Heuvelton, Clarkson DPT 2019) returned text only — no profile photo extracted.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Assistant Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
    "name": "David DiSalvo",
-   "photo_url": null,
-   "source_page": "https://www.clarkson.edu/people/david-disalvo",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=ddisalvo",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=ddisalvo",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "His Merit profile (Legal Studies, SUNY Canton Class of 2022, Rensselaer Falls NY) carries a real uploaded student profile photo in the profile slot — an S3 photo file, not the missing.png placeholder.",
@@ -2708,12 +2708,20 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Joel Moulton and headline: Assistant Manager at Park Bros. Replaces the 150px Instagram picture, kept as an alternate.",
    "name": "Joel Moulton",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/557049020_18530236423045482_4285200388828061018_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=LrUIeXpj2dMQ7kNvwEqsejg&_nc_oc=Adq-JHpfK94iY5tlnJrcDdGGWVu9QqkZM6SjkXPuGCa2itlnMwMzUaAJIpVovMVlIsqcDNEiLxro7M4pAs10sEeW&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=dR-N3klU2aLRLhZdzC-QvA&oh=00_AQOeB-NBM1D0V20mR5fkr1yVZQbmRJKyHywfW9PrqCmDTg&oe=6ADFFBBA",
-   "source_page": "https://www.instagram.com/jtmoulton",
+   "photo_url": "https://media.licdn.com/dms/image/v2/D4E35AQEm4pDACfLENQ/profile-framedphoto-shrink_400_400/profile-framedphoto-shrink_400_400/0/1711315820502?e=1793296800&v=beta&t=OBn2UdHPRq7sVcRWdEWZT4a54zQYGSdGuG5JknTzxhg",
+   "source_page": "https://www.linkedin.com/in/joel-moulton-a992aa2b6",
    "status": "confirmed",
-   "type": "Instagram profile picture"
+   "type": "LinkedIn profile headshot",
+   "also": [
+    {
+     "url": "https://scontent.cdninstagram.com/v/t51.82787-19/557049020_18530236423045482_4285200388828061018_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=LrUIeXpj2dMQ7kNvwEqsejg&_nc_oc=Adq-JHpfK94iY5tlnJrcDdGGWVu9QqkZM6SjkXPuGCa2itlnMwMzUaAJIpVovMVlIsqcDNEiLxro7M4pAs10sEeW&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=dR-N3klU2aLRLhZdzC-QvA&oh=00_AQOeB-NBM1D0V20mR5fkr1yVZQbmRJKyHywfW9PrqCmDTg&oe=6ADFFBBA",
+     "type": "Instagram profile picture",
+     "status": "confirmed",
+     "evidence": "Instagram profile picture (@jtmoulton), filed earlier today; kept as an alternate now that a higher-resolution LinkedIn headshot is on file."
+    }
+   ]
   },
   {
    "evidence": "Her Merit profile (Clarkson communication, Class of 2019) is text-only achievement listings — no profile photo extractable.",
@@ -2818,12 +2826,12 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is LinkedIn (auth). Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile — not filled.",
+   "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Jordyn Brothers and headline: Chemical Dependency Counselor (LinkedIn headline).",
    "name": "Jordyn Brothers",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/D4E03AQHLf9NwqlJ60g/profile-displayphoto-scale_400_400/B4EZ4kGDCWIwAg-/0/1778722026847?e=1794441600&v=beta&t=eT4HKB3bi3rTeiaSwyvoePMr92uJ-alPfueKePqBzuo",
+   "source_page": "https://www.linkedin.com/in/jordyn-brothers",
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3346,12 +3354,12 @@
    "type": null
   },
   {
-   "evidence": "His Clarkson people profile (full biography, Physical Therapy) returned no headshot URL; the Clarkson tenure-and-promotion news story about him is likewise text-only in extraction.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Associate Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
    "name": "Kwadwo Appiah-Kubi",
-   "photo_url": null,
-   "source_page": "https://www.clarkson.edu/people/kwadwo-appiah-kubi",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=kappiahk",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=kappiahk",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "Merit profile is text-only achievement listings — no profile photo, not even a placeholder URL.",
@@ -3410,12 +3418,12 @@
    "type": null
   },
   {
-   "evidence": "The GlobeNewswire founding-dean release carries a photo attachment labeled 'lenn-johns / Lenn Johns', tying an image to him, but the fetch returned no image URL to file. His Clarkson people profile is text-only in extraction.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; he heads the Lewis School of Health Sciences. Confirmed directory headshot pattern. Supersedes his previous 'possible' Wikipedia-infobox photo whose image URL could never be extracted.",
    "name": "Lennart Johns",
-   "photo_url": null,
-   "source_page": "https://www.globenewswire.com/news-release/2020/10/19/2110634/0/en/Clarkson-University-Names-Founding-Dean-of-the-Lewis-School-of-Health-Sciences.html",
-   "status": "possible",
-   "type": "press photo"
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=ljohns",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=ljohns",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "Her own Merit Pages profile (SUNY Canton, Criminal Investigation, Class of 2022, Watertown NY, first-person bio); [Image 0] at top of profile is her student photo file. Canton honors page yielded only the SUNY Canton logo — excluded.",
@@ -4008,12 +4016,12 @@
    "type": null
   },
   {
-   "evidence": "His on-file Merit stories are text-only listings; no photo-bearing Merit profile surfaced. The newzjunky source is policy-blocked (permanent gap) and LinkedIn is auth-walled. Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile — not filled.",
+   "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Merrick Sinclair and headline: his LinkedIn profile headshot (framed variant).",
    "name": "Merrick Sinclair",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/D5635AQG0anbFxyPgCA/profile-framedphoto-shrink_400_400/profile-framedphoto-shrink_400_400/0/1702160446931?e=1793296800&v=beta&t=Ydv1fgZ1NsO-SEY8EmBphOpHWlbsAJhy0bcKJNXcdYA",
+   "source_page": "https://www.linkedin.com/in/merrick-sinclair-profmx",
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot"
   },
   {
    "evidence": "No source links on file.",
@@ -4216,12 +4224,12 @@
    "type": null
   },
   {
-   "evidence": "Merit profile photo slot is the default missing.png placeholder — excluded. President's/Dean's List stories text-only. Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile — not filled.",
+   "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Nathaniel Tomford and headline: Contracts Coordinator at Atlantic Testing Laboratories (LinkedIn headline).",
    "name": "Nathaniel Tomford",
-   "photo_url": null,
-   "source_page": "https://meritpages.com/Nathaniel-Tomford/5737223",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/D5603AQHWTE_durlcUA/profile-displayphoto-scale_400_400/B56Z_XVWIHG8Ak-/0/1786024128415?e=1794441600&v=beta&t=WtGqgZS1YdTUzcNgMV7UbTVbG8sOYN8Ev6pZsxtPJN8",
+   "source_page": "https://www.linkedin.com/in/nathaniel-tomford-36bb84346",
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot"
   },
   {
    "evidence": "No source links on file.",
@@ -4604,12 +4612,12 @@
    "type": "headshot"
   },
   {
-   "evidence": "Clarkson people profile is contact/campus info only — fetch produced no headshot or Images entry.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Assistant to the Dean of Health Sciences, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
    "name": "Richard Tacchino",
-   "photo_url": null,
-   "source_page": "https://www.clarkson.edu/people/richard-tacchino",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=rtacchin",
+   "source_page": "https://www.clarkson.edu/organizational-chart?u=rtacchin",
+   "status": "confirmed",
+   "type": "headshot"
   },
   {
    "evidence": "CFC Potsdam page's Lead Pastor section places [Image 0: Rick Sinclair] directly above his heading and pastor bio. Second confirmed photo: Religion News Service article image explicitly captioned 'Rick Sinclair, senior pastor for the Christian Fellowship Center' (religionnews.com). The RNS article's other images are church buildings, excluded.",
@@ -5150,12 +5158,12 @@
    "type": null
   },
   {
-   "evidence": "His checkable sources are Canton Merit stories, text-only by type; targeted searches surfaced no Merit profile or story carrying a photo of him. His LinkedIn was tried separately via Google Images (see harvest note). Google Images harvest (2026-10-22) found no image tied to their exact LinkedIn profile — not filled.",
+   "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Timothy Lashomb and headline: Student at SUNY Canton (LinkedIn headline, profile name Timothy Lashomb).",
    "name": "Tim Lashomb",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://media.licdn.com/dms/image/v2/C4D03AQGWdyoBekrkGA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1615753080842?e=1794441600&v=beta&t=aT1n-cQ-aILv7wvmbFCGZTe4M3GGwV3SWYcgBMrPWs0",
+   "source_page": "https://www.linkedin.com/in/timothy-lashomb-529278195",
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot"
   },
   {
    "evidence": "No source links on file.",
