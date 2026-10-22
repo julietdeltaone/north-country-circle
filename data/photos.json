@@ -1,7 +1,7 @@
 {
   "updated": "2026-10-22",
   "total": 670,
-  "batches": "Batches 1-2 \u2014 profiles 1-100 checked 2026-10-22 (Dawson Wiegandt + Delany Durant in requeue after browser rate limits)",
+  "batches": "Batches 1-3 + requeue \u2014 profiles 1-150 checked 2026-10-22",
   "people": [
     {
       "evidence": "No source links on file.",
@@ -786,6 +786,422 @@
       "source_page": "https://www.clarkson.edu/news-events/clarkson-students-win-big-nys-business-plan-competition",
       "status": "no_photo",
       "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Cayden Westwood",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Eileen Mackenzie",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "PubMed journal abstract (Physiotherapy Research International 2016) lists her as co-author in text only \u2014 no photo of any author.",
+      "name": "Emily LaShomb",
+      "photo_url": null,
+      "source_page": "https://pubmed.ncbi.nlm.nih.gov/25504938/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Elsie Breen",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Eli Thomas",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Source is her mother Norma Meyers's obituary \u2014 Elisa appears only as a name in survivors text; no photo on the page, and any obituary photo would be of Norma, not Elisa. Nothing filed.",
+      "name": "Elisa Meyers",
+      "photo_url": null,
+      "source_page": "https://www.legacy.com/us/obituaries/name/norma-meyers-obituary?id=57973023",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Elise Deuel",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit profile is text-only achievement listings (SUNY Potsdam President's Lists, Biology/Biochemistry) \u2014 no profile photo. Bold.pro resume page also text-only, no photo.",
+      "name": "Elizabeth Deschaine",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/Elizabeth-J-Deschaine/4774276",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Elizabeth Daniels",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Ellie Jent",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Her Potsdam English dept profile ('Motherhood and Education', Elizabeth Criscitello 22) returned text only, no image extracted. Merit profile text-only. HealthHives page names her only as a Google reviewer.",
+      "name": "Ellie Criscitello",
+      "photo_url": null,
+      "source_page": "https://www.potsdam.edu/academics/AAS/depts/engl/EllieCriscitello",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Clarkson Math Alumni page carries a text entry for him with no headshot. NIST article is about Prof. Athavale, mentions him in text only. CV PDF text-only.",
+      "name": "Emmanuel Atindama",
+      "photo_url": null,
+      "source_page": "https://www.clarkson.edu/academics/schools-colleges/engineering/mathematics-department/mathematics-alumni",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Merit story (filed as Emily Hankins, AAS Nursing, Potsdam NY, spring 2019) is text-only, no photo.",
+      "name": "Emily R. Jent",
+      "photo_url": null,
+      "source_page": "https://canton.meritpages.com/stories/Congratulations-Emily-Hankins-for-earning-your-Associate-in-Applied-Science-at-SUNY-Canton-/15236347",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Canton 2025 honors/graduates pages list her in text only; graduates page's only image is a generic commencement stage wide shot, not tied to her \u2014 excluded.",
+      "name": "Emilie Albert",
+      "photo_url": null,
+      "source_page": "https://www.canton.edu/news/2025/graduates.php",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Emily Ramer",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Exhibit article's only image is her PAINTING 'Majorie' (a work BY her, submitted photo) \u2014 not a photo OF her, not filed. The 2016 Colorscape article contains no images and is about a different person (Emily Redfield).",
+      "name": "Emily Wangerin",
+      "photo_url": null,
+      "source_page": "https://www.evesun.com/news/stories/2025-08-01/43118/'Mirrors-and-Muses'-exhibit-opens-August-16",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Her person-specific SUNY Canton 'People Like Me' profile (nursing, Canton-Potsdam Hospital) returned text only, no image extracted. Merit graduation story likewise text-only.",
+      "name": "Emma Bortnick",
+      "photo_url": null,
+      "source_page": "https://www.canton.edu/plm/name-90294-en.html",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Emma Morse",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Fall 2022 Law Enforcement Training Institute graduation group photo; caption explicitly names him in position: 'Back row, from left: ... Adrian Bove, Ethan Bates, Massena Police Officer Grant Lebeau...' Article also lists him as Director's Award recipient. Saranac Lake PD page lists him in a text-only staff table; Merit profile text-only.",
+      "name": "Ethan Bates",
+      "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/TopPRimage_0.jpg?itok=q3cMrwUt",
+      "source_page": "https://www.potsdam.edu/news/LawEnforcementTrainingInstituteRecognizesFallGraduates",
+      "status": "confirmed",
+      "type": "group"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Evan Dennis",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Franny Olsen",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Caption-confirmed, URL unextracted: Woodshop News feature carries a captioned photo 'Tim Criscitello aligning the knives on a toolhead for its Weinig Unimat 218 molder/shaper' (credit Michael Gordon) plus two other captioned team photos; product/portfolio shots not filed. Page returned no Images footnote, so no direct URL \u2014 graded possible until re-extraction. Note the article's principal is Eric Criscitello (owner); Tim is his son and business partner.",
+      "name": "From the Heart Cabinetry",
+      "photo_url": null,
+      "source_page": "https://www.woodshopnews.com/features/positioned-in-potsdam",
+      "status": "possible",
+      "type": "article photo"
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Julia Fulton",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Myles Laramay",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Gabriela Melendez",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Gabe Matthis",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Hill News feature about him as co-owner of The Bagelry (quoted) is text-only \u2014 no photo/caption. Opengovny inspection record not surfaced and is text-only by type.",
+      "name": "Gabriel Ockrin",
+      "photo_url": null,
+      "source_page": "https://thehillnews.org/features/rebeccadoser/i-bagel-your-pardon/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "GoFundMe campaign is his own (first-person) but fetch returned text only \u2014 campaign image unextracted/unverified. YouTube 'Take Me to the Tree' credits him as one of four performers; thumbnail may show him but no thumbnail URL appeared in the fetch. Potsdam Spiritual Groups PDF lists him as College Ministry Pastor, text-only.",
+      "name": "Gabe Paladin",
+      "photo_url": null,
+      "source_page": "https://www.youtube.com/watch?v=4LnKFARj7jM",
+      "status": "possible",
+      "type": "video thumbnail (unextracted)"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Gabi White",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Ginny L. Hunter",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Caption for the page's only photo: 'Schyler Oakes, David Valeske, Michael Bernard, Jennie Hutton, Ciara Spicer, and Olivia Goodrow are shown with their Isabella Graham Hart School of Practical Nursing pins' (LPN graduation, Dec 15 2023). Caption confirms she is among the six pictured but gives no position/order \u2014 possible, not individually identifiable from text.",
+      "name": "Olivia Goodrow",
+      "photo_url": "https://edge.sitecorecloud.io/rochesterred189-rrh4822-prodb67b-4284/media/project/rrh/rrh/health-and-news-hub/thumbnails/igh-nursing-graduation-lg-010824.jpg?h=563&iar=0&w=1000",
+      "source_page": "https://www.rochesterregional.org/hub/lpns-graduate-from-potsdam-nursing-school",
+      "status": "possible",
+      "type": "group"
+    },
+    {
+      "evidence": "Her only on-file source (Roc City Mag music article) returned HTTP 403 on fetch \u2014 no photo could be extracted or QC'd. This is an unverified gap, not a verified absence; worth a requeue if the page becomes reachable.",
+      "name": "Grace Serene",
+      "photo_url": null,
+      "source_page": "https://www.roccitymag.com/music/a-three-year-journey-for-grace-serene-and-the-super-clean-17255247/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Gracyn Denny",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Jen Haas",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Haley Lutz",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Paula Haller",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Ezra Hamilton",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "County Youth Bureau 2020 Annual Report PDF \u2014 she appears in text only (Youth Advisory Board roster, Potsdam High); no photo/caption tied to her. The report's captioned photo subject is a different person.",
+      "name": "Hannah Hughes",
+      "photo_url": null,
+      "source_page": "https://www.stlawco.gov/sites/default/files/YouthBureau/2020%20YB%20Annual%20Report.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Hannah McConnell",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "OpenGovPay page is a text-only salary table (14 records for Haven Gotham) \u2014 no images. Facebook auth.",
+      "name": "Haven Fern",
+      "photo_url": null,
+      "source_page": "https://opengovpay.com/search?category=employee&employee=Haven+Gotham",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Heather Gamue",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Heather Dowling",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Bold.pro resume profile (GM, SkyWest Airlines, Ogdensburg NY) extracted text-only \u2014 no profile photo URL. LinkedIn/Facebook auth.",
+      "name": "Emily Bouchard",
+      "photo_url": null,
+      "source_page": "https://us.bold.pro/my/emily-bouchard",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Vimbai Kuzanga",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Swarthmore cohort page places '[Image 4: holt]' directly above heading 'Hannah Holt 22' and her fellow bio; filename profile_holt1.jpg in the same profile-photo series as every other named fellow. Second source (Panther Press new-teachers article about her) returned no photo URL.",
+      "name": "Hannah Holt",
+      "photo_url": "https://www.swarthmore.edu/sites/default/files/styles/media_object/public/assets/images/inclusive-excellence-fellows-initiative/profile_holt1.jpg.webp?itok=myMcDeNc",
+      "source_page": "https://www.swarthmore.edu/inclusive-excellence-fellows-initiative/2020-2021-cohort",
+      "status": "confirmed",
+      "type": "profile headshot"
+    },
+    {
+      "evidence": "Armdrag article: she appears only in text as quoted mother-coach. Article's photos are of the wrestlers (Macaluso, Fitzgerald, Esther Levendusky) \u2014 none is of her.",
+      "name": "Heidi Jo Levendusky",
+      "photo_url": null,
+      "source_page": "https://armdrag.com/read?article=22332",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Cornell CALS article lists her in text only; all five photos are captioned for other named pairs. Bull Vine scholarship article has a full paragraph on her but is text-only.",
+      "name": "Hannah Braun",
+      "photo_url": null,
+      "source_page": "https://cals.cornell.edu/news/2022/06/animal-science-students-awarded-for-academic-excellence-stewardship",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "SUNY Canton Spring 2023 honors page lists her in text only; page's sole image is the SUNY Canton logo (excluded). Newspaper PDF could not be fetched (empty body) \u2014 grade rests on the Canton page checked.",
+      "name": "Hope Kilcollins",
+      "photo_url": null,
+      "source_page": "https://www.canton.edu/news/2023/honorss23.php",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is LinkedIn (auth).",
+      "name": "Hannah Puglia",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "HSS clinical profile extraction returned her bio but no photo URL. Identity check passes: HSS bio states BS Biology, St. Lawrence University 2012 and two-time DIII All-American in cross country \u2014 matches the SLU-runner context on file. Saints Hall of Fame article does not mention her (its Jenna Hulton is a different person). Flag: a live-browser check of HSS might find a headshot extraction missed.",
+      "name": "Jenna Moulton",
+      "photo_url": null,
+      "source_page": "https://www.hss.edu/profiles/clinical/jenna-moulton",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Requeue pass: TFRRS page now loads (no 429) \u2014 text-only results table, no Images. He appears as a results row under the name 'Dawson Anthony' (Saint Rose, 7th Men's 400m, 49.26). No photo on the page.",
+      "name": "Dawson Wiegandt",
+      "photo_url": null,
+      "source_page": "https://www.tfrrs.org/results/56578/3492810/Northeast-10_Outdoor_Track__Field_Championships/400-Meters",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Requeue pass: her own Merit Pages profile (St. Lawrence University, Class of 2025, Psychology, Chase Mills NY) carries [Image 0] at the top \u2014 a student photo file named 'profile_pic.JPG' in her own Merit photo directory. Dean's List story text-only. This resolves her Batch 2 rate-limit gap.",
+      "name": "Delany Durant",
+      "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/6672163/medium/profile_pic.JPG?1632585199",
+      "source_page": "https://meritpages.com/ddurant",
+      "status": "confirmed",
+      "type": "profile photo"
     }
   ]
 }
