@@ -1,7 +1,7 @@
 {
   "updated": "2026-10-22",
   "total": 670,
-  "batches": "Batches 1-5 + requeue \u2014 profiles 1-250 checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle",
+  "batches": "Batches 1-6 + requeue \u2014 profiles 1-300 checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle",
   "people": [
     {
       "evidence": "No source links on file.",
@@ -2021,6 +2021,406 @@
       "photo_url": null,
       "source_page": "https://www.gcsk12.org/boe/2024_2025/02_10_25/2_10_25_minutes.pdf",
       "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Megan Furner",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "UVM Health provider profile (Megan Converse, OTL/R, Occupational Therapist; Clarkson OT) extracted with no provider headshot \u2014 only image is the UVM Health logo. Merit profile text-only listings, no photo.",
+      "name": "Megan Converse",
+      "photo_url": null,
+      "source_page": "https://www.uvmhealth.org/providers/megan-converse-otlr",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file. (Meg Lapinski is not Maggie Lapinski \u2014 kept separate.)",
+      "name": "Meg Lapinski",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "APA leadership page lists her in the Executive Team as 'Deputy Director for Planning Megan Phillips' \u2014 a text-only line with no portrait. The page's portraits are board members and the Executive Director only; none is of her.",
+      "name": "Megan Phillips",
+      "photo_url": null,
+      "source_page": "https://apa.ny.gov/about/leadership.html",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Melody Maurer",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Potsdam Food Co-op newsletter (Jan-Feb 2007) photo caption names her in position: 'Judges (l to r) Gracie McFadden, Marissa Maurer, Alice McFadden, Mercy Maurer. Photo by Hye Chong Yi' (2006 Holiday Bake Off judges). Caption confirms she is in the photo, rightmost of four, but Yumpu extraction returned no image URL \u2014 possible until re-extraction.",
+      "name": "Mercy Maurer",
+      "photo_url": null,
+      "source_page": "https://www.yumpu.com/en/document/view/35336558/reset-renovation-approved-by-membership-potsdam-food-co-op",
+      "status": "possible",
+      "type": "group photo (captioned, URL unextracted)"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Micah McCulley",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit graduation story (AAS Nursing, SUNY Canton, July 2021) is text-only, no photo. Canton honors pages are text-only lists by type.",
+      "name": "Michael Jent",
+      "photo_url": null,
+      "source_page": "https://canton.meritpages.com/stories/Michael-Jent-has-graduated-from-SUNY-Canton/59825692",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Michelle Daniels",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "NPI registry profile (Sunday Wright Smith RN, MSN, CNM, Advanced Practice Midwife, Potsdam NY) is text-only registry data \u2014 no photo of any kind.",
+      "name": "Sunday Wright Smith",
+      "photo_url": null,
+      "source_page": "https://npiprofile.com/npi/1215451067",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "NPI record (DPT, Dallas TX / Canton NY mailing) is entirely text \u2014 no photo. Facebook auth.",
+      "name": "Molly Lapinski",
+      "photo_url": null,
+      "source_page": "https://www.npichecker.com/npi/1689117483/molly-lapinski",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Molli Sue",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Her own Merit profile (SUNY Potsdam, Childhood/Early Childhood Education, Class of 2020, Gouverneur NY) carries [Image 0] at the top \u2014 a student photo file (IMG_2917.JPG) in her own Merit photo directory. Remaining images are the Merit logo and award badges.",
+      "name": "Morgan Morse",
+      "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/4251136/medium/IMG_2917.JPG?1515905115",
+      "source_page": "https://meritpages.com/Morganmorse",
+      "status": "confirmed",
+      "type": "profile photo"
+    },
+    {
+      "evidence": "The 2024-25 SUNY Canton men's basketball roster lists '[Image 17: Mark Tomford - View Profile]' (Forward, So., Gouverneur NY \u2014 matching his individual player page: 6'7', Gouverneur HS, Criminal Justice), filename MarkTomford.jpg. Extracted URL was the width=80 thumbnail (Sidearm); filed at the verified width=600 size of the same headshot, same as the other Sidearm roster fixes.",
+      "name": "Mark Tomford",
+      "photo_url": "https://rooathletics.com/images/2024/10/29/MarkTomford.jpg?width=600&quality=90",
+      "source_page": "https://rooathletics.com/sports/mens-basketball/roster/2024-25",
+      "status": "confirmed",
+      "type": "roster headshot"
+    },
+    {
+      "evidence": "His on-file Merit stories are text-only listings; no photo-bearing Merit profile surfaced. The newzjunky source is policy-blocked (permanent gap) and LinkedIn is auth-walled.",
+      "name": "Merrick Sinclair",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Her own first-person blog (branded 'Louissa Tabolt') \u2014 both assigned posts extracted text-only, no photo of any kind.",
+      "name": "Louissa Sinclair Tabolt",
+      "photo_url": null,
+      "source_page": "http://www.louissa.com/2010/06/17/company/",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Clarkson healthcare-major feature built around her ('Meet Chidi: A Global Student Leader at Clarkson') carries three photos each captioned for her; this one is captioned 'Chidi presenting at the Ignite Project Expo 2024.' Two more caption-confirmed photos on the same page (CUEMS mock-casualty drill; International Center). Clarkson blog talent-show post names her but its photos are not tied to her \u2014 not filed from there.",
+      "name": "Chidiogor Ofodum",
+      "photo_url": "https://diy.clarkson.edu/wp-content/uploads/2025/05/Ignite-Project-Expo-2024-58-1024x683.jpg",
+      "source_page": "https://diy.clarkson.edu/apply-to-clarkson/the-healthcare-major-a-program-designed-for-the-future/",
+      "status": "confirmed",
+      "type": "article photo (presenting)"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Khosa Muno",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit profile (SUNY Potsdam, Business Administration) returned story listings only \u2014 no profile photo, unlike the Merit profiles that carry one. Airmen record text-only; LinkedIn/Facebook auth.",
+      "name": "Nabil El-labban",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/Nabil-El-Labban/6675174",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Only links on file are Facebook and LinkedIn (auth).",
+      "name": "Dimitri Damon",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Candlelight 2017 program PDF is text-only ('Nancy Hull, piano'); the readMedia concert article's sole photo is a wide concert shot captioned for Dean Michael Sitton, not her. She is text-only on both sources.",
+      "name": "Nancy Hull",
+      "photo_url": null,
+      "source_page": "https://www.potsdam.edu/sites/default/files/Candlelight%20program%202017%20final.pdf",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "Merit profile (Clarkson Presidential Scholar, La Fargeville NY, biology) extracted text-only, no profile photo. GAP: her priority source, the WWNY Academic All-Star profile, is blocked by browser policy (same class as newzjunky) and could not be checked at all \u2014 this grade rests on the Merit page only.",
+      "name": "Natalie Waterman",
+      "photo_url": null,
+      "source_page": "https://meritpages.com/Natalie-Darcy-Waterman/8189722",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Nevaeh Phillips",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Nicole Seward",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Noah Adams",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "The 90 Miler article leads with her ('Norah Pease 24 and Kelly Bloom 25 ease their canoe into the cold water...') and the first photos sit immediately after that paragraph \u2014 uncaptioned in extraction, so the pair in the canoe is not text-confirmed as her. The page's captioned photos are of other people. Her Merit profile is text-only.",
+      "name": "Norah Pease",
+      "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2025-09/02_0.JPG?itok=RNs-nYWJ",
+      "source_page": "https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler",
+      "status": "possible",
+      "type": "article photo (canoe launch, uncaptioned)"
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Olga Lindsey",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Olivia Rose",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Olivia Grant",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Olivia Miller",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "CCE staff profile places '[Image 0: Olivia Briggs]' directly above her name and title (21st Century Afterschool Site Director @ Edwards-Knox) \u2014 filename Olivia_Briggs_Photo.jpg in Cornell's people-photo store.",
+      "name": "Olivia Briggs",
+      "photo_url": "https://s3.amazonaws.com/assets.cce.cornell.edu/people/3860/photo/sized/Olivia_Briggs_Photo.jpg?1680531993",
+      "source_page": "https://stlawrence.cce.cornell.edu/staff/olivia-briggs",
+      "status": "confirmed",
+      "type": "staff photo"
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Olivia Smith",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "Lead photo caption explicitly states: 'SUNY Potsdam alumnus Joe Kelly 16, left, talks with alumnus Jeff McGrath 84, the vice president of the Nicholville Telephone Company, during the Economic Fusion event last year.' The separate Dr. Belkhir image was not used.",
+      "name": "Jeff McGrath",
+      "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/Economic%20Fusion.jpg?itok=dYKik1a7",
+      "source_page": "https://www.potsdam.edu/news/physicist-dr-lotfi-belkhir-will-provide-keynote-address-during-suny-potsdams-third-annual",
+      "status": "confirmed",
+      "type": "group"
+    },
+    {
+      "evidence": "Spring 2026 honors page lists 'Peyton Sheehan, Physical Therapist Assistant' in text only; no photo tied to her.",
+      "name": "Peyton Sheehan",
+      "photo_url": null,
+      "source_page": "https://www.canton.edu/news/2026/honors-s26.php",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Philip Dennis",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "The alumni-spotlight page extraction returned no photo. The readMedia Model Senate article is solely about Philip Paige 15, and its Related Media file is explicitly named 'Philip_Paige_5830_0.jpg' \u2014 the medium rendition of that tied image is filed.",
+      "name": "Philip Lloyd Paige",
+      "photo_url": "https://s3.amazonaws.com/attachments.readmedia.com/files/58834/medium/Paige_5830_0.jpg?1399992992",
+      "source_page": "http://readme.readmedia.com/From-SUNY-Potsdam-to-the-Legislature-Undergraduate-Intern-Leads-Model-Senate-and-Lands-Job/8575822/print",
+      "status": "confirmed",
+      "type": "article photo"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Philip Wangerin",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Patrick Murphy",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Merit graduation story for Ramsey Thomas is text-only, no profile photo.",
+      "name": "Ramsey Clary Thomas",
+      "photo_url": null,
+      "source_page": "https://canton.meritpages.com/stories/Congratulations-Ramsey-Thomas-For-Graduating-From-SUNY-Canton-/11316529",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Renee Ockrin",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "ACPHS Phi Lambda Sigma induction page: group photo placed with the PLS inductee list naming Ria Amo first among ~20 inductees \u2014 no caption identifies individuals or positions. A second ACPHS group photo (Fall 2025 awards dinner) also lists her among 21 awardees, not individually identifiable. Possible.",
+      "name": "Ria Amo",
+      "photo_url": "https://www.acphs.edu/wp-content/uploads/2025/08/PLS-2025_0.jpg",
+      "source_page": "https://www.acphs.edu/news/rho-chi-and-pls-induction-ceremony/",
+      "status": "possible",
+      "type": "group"
+    },
+    {
+      "evidence": "His own NCPR reporter page (St. Lawrence Valley Reporter) places [Image 0] at the head of his bio; filename RichardHaller.jpg. Second confirmed photo: SUNY Canton Chancellor's Award article, alt 'Richard Haller sits at desk with a laptop' (canton.edu/media/Richard-Haller-hero.jpg).",
+      "name": "Richard Haller",
+      "photo_url": "https://www.northcountrypublicradio.org/news/images/RichardHaller.jpg",
+      "source_page": "https://www.northcountrypublicradio.org/news/reporters/309/richard-haller",
+      "status": "confirmed",
+      "type": "headshot"
+    },
+    {
+      "evidence": "CFC Potsdam page's Lead Pastor section places [Image 0: Rick Sinclair] directly above his heading and pastor bio. Second confirmed photo: Religion News Service article image explicitly captioned 'Rick Sinclair, senior pastor for the Christian Fellowship Center' (religionnews.com). The RNS article's other images are church buildings, excluded.",
+      "name": "Rick Sinclair",
+      "photo_url": "https://www.cfconline.org/wp-content/cfc-leadership/483.webp?v=1779404586",
+      "source_page": "https://www.cfconline.org/potsdam/",
+      "status": "confirmed",
+      "type": "leadership headshot"
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Riley Mulligan",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
+      "type": null
+    },
+    {
+      "evidence": "Bank's 'Meet the Personal Bankers' page places [Image 10: Ryleigh Leeder Headshot] directly above her heading (Potsdam Branch, Relationship Banker), in the same named-headshot series as every other banker; repeated on the Potsdam branch page staff list with the same URL.",
+      "name": "Ryleigh Leeder",
+      "photo_url": "https://www.northcountrysavings.bank/sites/default/files/2026-07/Ryleigh%20Leeder%20headshot%20website.jpeg",
+      "source_page": "https://www.northcountrysavings.bank/banking/bankers",
+      "status": "confirmed",
+      "type": "headshot"
+    },
+    {
+      "evidence": "Only link on file is Facebook (auth).",
+      "name": "Rosalie Smith",
+      "photo_url": null,
+      "source_page": null,
+      "status": "auth_only",
+      "type": null
+    },
+    {
+      "evidence": "BizProfile page for Sage Tech LLC is a text-only business record naming Ryan Paul Daniels as registered agent \u2014 no photo of any kind. Other listings are the same record type.",
+      "name": "Ryan Daniels",
+      "photo_url": null,
+      "source_page": "https://www.bizprofile.net/ny/norwood/sage-tech-llc",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "His own SUNY Potsdam Bears coach page carries [Image 1: Sam Mace 2020 head shot] with his title (Volunteer Assistant Women's Lacrosse Coach). URL verbatim as extracted (width=300).",
+      "name": "Sam Mace",
+      "photo_url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/potsdam.sidearmsports.com/images/2020/2/7/mace_hs20_web.jpg?width=300",
+      "source_page": "https://potsdambears.com/sports/womens-lacrosse/roster/coaches/sam-mace/970",
+      "status": "confirmed",
+      "type": "headshot"
+    },
+    {
+      "evidence": "Strict BY-vs-OF QC: his name occurs exactly once on the XC page \u2014 as a photographer credit ('(Sam Wangerin photo)') under a women's race photo. A photo BY him is not a photo OF him. Other race photos are generic pack shots credited to others.",
+      "name": "Sam Wangerin",
+      "photo_url": null,
+      "source_page": "https://www.northcountrysports.net/c_xc.html",
+      "status": "no_photo",
+      "type": null
+    },
+    {
+      "evidence": "No source links on file.",
+      "name": "Sandra Mills Tallo",
+      "photo_url": null,
+      "source_page": null,
+      "status": "no_source",
       "type": null
     }
   ]
