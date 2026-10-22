@@ -1550,6 +1550,14 @@ html,body{background:var(--bg)}
 .pha-item.on{border-color:#e30613;background:#161616;color:#fff}
 @media (max-width:900px){ .pha{grid-template-columns:1fr} .pha-view{position:static} .pha-qgrid{max-height:320px} }
 
+/* Photos header viewer + sorting (V2.27.0) */
+.ph-top{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;align-items:start;margin-bottom:14px}
+.ph-top .phrail{position:static;width:auto;order:0}
+.ph-topmain{min-width:0}
+.ph-topmain .pagehead{margin-bottom:10px}
+.phsort-ctl{margin-left:2px}
+@media (max-width:1000px){ .ph-top{grid-template-columns:1fr} }
+
 /* Photos slim chrome + persistent viewer (V2.24.0) */
 .phhead{margin-bottom:8px}
 .phhead .sub{margin-top:2px}
