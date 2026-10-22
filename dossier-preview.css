@@ -750,8 +750,7 @@ details.quick[open]>summary{margin-bottom:10px}
 /* Network: canvas edge-to-edge + right panel (selected card + map stats) */
 .netcols{display:flex;flex:1 1 auto;min-height:0;position:relative}
 .netpage .netwrap{flex:1 1 auto;min-width:0;height:auto;min-height:0;border:0;border-radius:0}
-.netpanel{display:none}
-.netcols.sel .netpanel{display:flex;flex-direction:column;gap:14px;width:320px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);padding:14px 16px;overflow-y:auto}
+.netpanel{display:flex;flex-direction:column;gap:14px;width:320px;flex:0 0 auto;border-left:1px solid var(--line);background:var(--card);padding:14px 16px;overflow-y:auto}
 #netpcard{display:flex;flex-direction:column;gap:10px;background:var(--card2);border:1px solid var(--line2);border-radius:var(--r);padding:12px 14px}
 #netpcard[hidden]{display:none}
 /* Family: full-bleed space + right summary panel */
@@ -770,7 +769,8 @@ details.quick[open]>summary{margin-bottom:10px}
   .profile .pcols{display:flex;flex-direction:column}
   .profile .pcols .pcol{display:contents}
   #p-hero .hmain h1{font-size:24px}
-  .netcols.sel .netpanel{position:absolute;right:0;top:0;bottom:0;width:min(320px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
+  .netpanel{display:none}
+  .netcols.sel .netpanel{display:flex;position:absolute;right:0;top:0;bottom:0;width:min(320px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
   .fampanel{position:absolute;right:0;top:0;bottom:0;width:min(300px,88%);z-index:8;box-shadow:-18px 0 44px rgba(0,0,0,.45)}
 }
 
@@ -1220,87 +1220,6 @@ html,body{background:var(--bg)}
 .sk-big{height:52vh;border-radius:2px;margin-top:16px}
 @media (prefers-reduced-motion:reduce){.skl::after{animation:none}}
 
-/* ---------- FLYOVER ROLL CALL 2026-10-16: one plate per call ----------
-   The roll call's single information plate, anchored over the person
-   being called in the Network view. The layer never takes pointer
-   events; the plate is positioned per-frame (transform only) and its
-   lines animate in staggered on the motion tokens — name first, then
-   tier + score, then the two facts, 120ms apart. Swiss Mono paint:
-   flat #0a0a0a plate, hairline border, 2px corners, Space Grotesk
-   name; signal red stays on the canvas (the pulse), never here. */
-.netfly{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:5}
-.flyplate{position:absolute;left:0;top:0;width:232px;padding:11px 14px 12px;background:rgba(10,10,10,.94);border:1px solid var(--line2);border-radius:2px;opacity:0;transition:opacity .25s ease;will-change:transform,opacity}
-.flyplate .fp-name,.flyplate .fp-meta,.flyplate .fp-fact{display:block;opacity:0;transform:translateY(7px);transition:opacity .3s ease,transform .3s ease}
-.flyplate .fp-name{font-family:var(--serif);font-size:19px;font-weight:700;line-height:1.15;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.flyplate .fp-meta{margin-top:5px;font-size:10.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.flyplate .fp-fact{margin-top:4px;font-size:12.5px;font-weight:400;line-height:1.35;letter-spacing:0;text-transform:none;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.flyplate.in{opacity:1}
-.flyplate.in .fp-name{opacity:1;transform:none;transition-delay:0ms}
-.flyplate.in .fp-meta{opacity:1;transform:none;transition-delay:120ms}
-.flyplate.in .fp-f1{opacity:1;transform:none;transition-delay:240ms}
-.flyplate.in .fp-f2{opacity:1;transform:none;transition-delay:360ms}
-
-/* Grand Flyover stage (V2.7.0, JD 2026-10-16): the WebGL takeover
-   layer inside the network wrap. The scene itself is flyover3d.js;
-   this is only its chrome — the hero panel (the flyplate grown up,
-   same Swiss Mono paint, anchored in 3D by CSS2D so the type stays
-   crisp and upright while the camera orbits), the satellite name
-   tags, and the exit affordance. Signal red appears on the exit
-   hover only; the stage rations it the way the map does. */
-.fly3d{position:absolute;inset:0;z-index:9;background:#0a0a0a;opacity:0;transition:opacity .3s ease;overflow:hidden;container-type:size;overscroll-behavior:contain;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-.fly3d.on{opacity:1}
-.fly3d .f3-gl{position:absolute;inset:0;z-index:1}
-.fly3d .f3-gl canvas{display:block;width:100%;height:100%}
-/* reading scrim: lets the plate sit on the field without a box */
-.f3-scrim{position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(10,10,10,.78) 0,rgba(10,10,10,.5) 28%,rgba(10,10,10,0) 52%)}
-.f3-leader{position:absolute;inset:0;z-index:3;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .3s ease}
-.f3-leader line{stroke:#9a9a9a;stroke-width:1}
-.f3-leader circle{fill:#9a9a9a}
-.f3-tags{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
-.f3-tags>*{position:absolute;left:0;top:0;will-change:transform,opacity}
-.f3-sattag{display:flex;align-items:center;gap:6px;font-family:var(--sans);font-size:11.5px;font-weight:600;letter-spacing:.13em;line-height:15px;text-transform:uppercase;color:#e8e8e8;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.95);opacity:0}
-.f3-sattag.og{font-size:10.5px;letter-spacing:.11em}
-.f3-sdot{display:block;width:5px;height:5px;border-radius:50%;flex:none}
-.f3-mono{display:flex;align-items:center;justify-content:center;width:96px;height:96px;border-radius:50%;border:2px solid currentColor;background:rgba(10,10,10,.55);font-family:var(--serif);font-size:38px;font-weight:700;letter-spacing:.03em;opacity:0;transform-origin:center;text-shadow:0 0 14px rgba(0,0,0,.65)}
-/* the plate: a typographic block, not a card */
-.f3-plate{position:absolute;z-index:5;left:max(24px,5cqw);top:50%;translate:0 -50%;width:min(36cqw,460px);pointer-events:none;opacity:0;transition:opacity .3s ease}
-.f3-plate.in{opacity:1}
-.f3-plate.out{opacity:0;transition-duration:.25s}
-.f3-roll{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);font-variant-numeric:tabular-nums}
-.f3-rn{color:var(--txt)}
-.f3-prog{display:block;flex:1;height:1px;background:var(--line);overflow:hidden}
-.f3-prog b{display:block;height:100%;background:var(--mut);transform-origin:left;transform:scaleX(0)}
-.f3-name{margin:14px 0 0;font-family:var(--serif);font-weight:700;font-size:clamp(30px,5.4cqw,64px);line-height:1.04;letter-spacing:-.01em;color:var(--txt);text-wrap:balance;overflow-wrap:anywhere}
-.f3-name .w{display:inline-block;white-space:nowrap}
-.f3-name .c{display:inline-block;opacity:0;transform:translateY(.32em);transition:opacity .28s ease,transform .38s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i)*22ms)}
-.f3-plate.in .f3-name .c{opacity:1;transform:none}
-.f3-meta,.f3-fact{opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease}
-.f3-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-top:16px;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--txt)}
-.f3-tier{display:inline-flex;align-items:center;gap:8px}
-.f3-dot{display:block;width:8px;height:8px;border-radius:50%}
-.f3-score{display:inline-flex;align-items:baseline;gap:8px}
-.f3-score small{font-size:inherit;color:var(--mut)}
-.f3-num{font:700 20px/1 var(--serif);letter-spacing:0;font-variant-numeric:tabular-nums;min-width:2ch;text-align:right}
-.f3-pin{color:#e30613}
-.f3-fact{margin:8px 0 0;font-size:14px;line-height:1.4;letter-spacing:0;text-transform:none;color:var(--mut);text-wrap:pretty}
-.f3-plate.in .f3-meta{opacity:1;transform:none;transition-delay:.45s}
-.f3-plate.in .f3-f1{opacity:1;transform:none;transition-delay:.75s}
-.f3-plate.in .f3-f2{opacity:1;transform:none;transition-delay:1s}
-.f3-exit{position:absolute;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:6;display:inline-flex;align-items:center;gap:10px;min-height:36px;padding:0 14px;background:rgba(10,10,10,.82);border:1px solid var(--line2);border-radius:2px;color:var(--txt);font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;transition:border-color .15s,color .15s}
-.f3-exit kbd{font:inherit;color:var(--mut);letter-spacing:.08em}
-.f3-exit:focus-visible{outline:2px solid var(--txt);outline-offset:2px}
-@media (hover:hover){.f3-exit:hover{border-color:#e30613;color:#e30613}.f3-exit:hover kbd{color:inherit}}
-.f3-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-@media (max-aspect-ratio:9/10),(max-width:620px){
-  .f3-scrim{background:linear-gradient(0deg,rgba(10,10,10,.85) 0,rgba(10,10,10,.55) 34%,rgba(10,10,10,0) 58%)}
-  .f3-plate{left:max(18px,5cqw);right:max(18px,5cqw);top:auto;bottom:max(22px,env(safe-area-inset-bottom));translate:none;width:auto}
-  .f3-name{font-size:clamp(28px,9cqw,44px);margin-top:10px}
-  .f3-fact{font-size:13px}
-  .f3-sattag{font-size:9.5px;letter-spacing:.1em;gap:5px;line-height:13px}
-  .f3-sattag.og{font-size:9px}
-}
-@media (prefers-reduced-motion:reduce){.f3-name .c,.f3-meta,.f3-fact{transition-duration:.01s;transition-delay:0s}}
-
 /* Cluster labels (JD 2026-10-16): "NAME — N" orientation plates for the biggest
    Groups + Organizations on the network map. Swiss Mono paint, quieter than the
    Flyover person plates: flat plate, hairline border, 2px corners, Space Grotesk
@@ -1308,15 +1227,6 @@ html,body{background:var(--bg)}
    events; positions and fades are set every frame from the node projections. */
 .netclust{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:2}
 .clab{position:absolute;left:0;top:0;padding:5px 10px 6px;background:rgba(10,10,10,.85);border:1px solid var(--line);border-radius:var(--r);font-family:var(--serif);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#c9c9c9;white-space:nowrap;opacity:0;will-change:transform,opacity}
-/* Orbits dressing (JD 2026-10-20): a soft aura orb behind each cluster
-   name plate — Orbits layout only — and the traveler name plates that
-   exist only while a person is gliding between wells. Both layers are
-   furniture: no pointer events, no layout effect. */
-.netclust.orbits .clab{isolation:isolate}
-.netclust.orbits .clab::before{content:"";position:absolute;left:50%;top:50%;width:176px;height:176px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12) 0,rgba(255,255,255,.045) 38%,rgba(255,255,255,0) 68%);z-index:-1;pointer-events:none}
-.netorb{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:4}
-.orblab{position:absolute;left:0;top:0;padding:4px 8px 5px;background:rgba(10,10,10,.88);border:1px solid var(--line);border-radius:var(--r);font-family:var(--serif);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#e8e8e8;white-space:nowrap;opacity:0;will-change:transform,opacity}
-
 /* Groups manage mode (JD 2026-10-16) */
 .gmgr{padding:12px;border-bottom:1px solid var(--line)}
 .gmgr-h{margin:0 0 10px;font-size:12px;line-height:1.55;color:var(--mut)}
@@ -1348,7 +1258,16 @@ html,body{background:var(--bg)}
    Network redesign (V2.5.0) — consolidated strip / hover / dock rules.
    These supersede the historical .netctl and .netlegend layers above
    where they conflict; panel, canvas and plate basics stay above.
-   One strip, three labeled groups: VIEW / LAYOUT / ACTIONS. */
+   Design A (2026-10-22): the strip keeps only ACTIONS — the layout
+   is fixed (Score rings + org hubs), there is no other view. */
+/* Organization index in the panel: ranked hub rows, tap to focus. */
+.netorgs{display:flex;flex-direction:column;gap:2px}
+.netorg{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;background:none;border:1px solid transparent;border-radius:2px;padding:6px 9px;color:var(--txt);font:inherit;font-size:12.5px;text-align:left;cursor:pointer}
+.netorg span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.netorg b{color:var(--mut);font-variant-numeric:tabular-nums;flex:none}
+.netorg:hover{border-color:var(--line)}
+.netorg.on{border-color:#e30613}
+.netorgmore{font-size:11.5px;margin-top:6px}
 .netctl{gap:14px;align-items:flex-start}
 .netgrp{display:flex;flex-direction:column;gap:5px}
 .netgrp + .netgrp{border-left:1px solid var(--line);padding-left:14px}
@@ -1365,8 +1284,6 @@ html,body{background:var(--bg)}
 /* full screen: the whole Network page is the fullscreen element */
 .netpage:fullscreen{background:#0a0a0a;display:flex;flex-direction:column}
 .netpage:fullscreen .netcols{flex:1 1 auto;min-height:0}
-.netpage:fullscreen .flyplate{width:268px;padding:14px 17px 15px}
-.netpage:fullscreen .flyplate .fp-name{font-size:22px}
 @media (prefers-reduced-motion: reduce){
   .nethov{transition:none}
 }
