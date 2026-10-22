@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.21.0';
+var APP_VERSION = '2.22.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4943,7 +4943,7 @@ function viewDaily(v){
    are listed too, so coverage is honest. Data: data/photos.json,
    written by the Photos on File batches; read-only here.
    ============================================================ */
-var PH = null, PH_LOADING = false, PH_SHOW = 24, PH_HIDE_LOW = false;
+var PH = null, PH_LOADING = false, PH_SHOW = 24, PH_SEL = null;
 var PH_COLS = Math.min(12, Math.max(3, parseInt(store('ncc_photos_cols_v1') || '12', 10) || 12));
 function phLoad(){
   if(PH || PH_LOADING) return;
@@ -5058,7 +5058,7 @@ function phEditor(name){
 
 function viewPhotos(v){
   phLoad();
-  var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Photos</h1><p class="sub">Photos on file: each profile&rsquo;s web source links, checked for a photo of that person. A photo only counts when the page itself ties it to them &mdash; a caption, alt text, a roster headshot, a staff or profile photo. Confirm or reject each one below: confirming removes the grade badge, rejecting removes the photo. Headshots are framed on the rule of thirds &mdash; eyes on the upper third line, with padding around the subject; hover any photo to see the thirds grid.</p></div></div>';
+  var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Photos</h1><p class="sub">Photos on file: each profile&rsquo;s web source links, checked for a photo of that person. A photo only counts when the page itself ties it to them &mdash; a caption, alt text, a roster headshot, a staff or profile photo. Confirm or reject each one below: confirming removes the grade badge, rejecting removes the photo. Select any photo to review it in the side panel: confirm it, mark it a bad photo, reject it, or adjust the framing. Headshots are framed on the rule of thirds &mdash; eyes on the upper third line, with padding around the subject.</p></div></div>';
   if(!PH){
     v.innerHTML = head + '<div class="asskel"><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div></div></div>';
     return;
@@ -5070,10 +5070,7 @@ function viewPhotos(v){
   var counts = { confirmed:0, likely:0, possible:0, no_photo:0, no_source:0, auth_only:0 };
   PH.people.forEach(function(p){ if(counts[p.status] != null) counts[p.status]++; });
   var foundAll = PH.people.filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely' || p.status === 'possible'); });
-  var lowAll = foundAll.filter(function(p){ return p.lowres; });
-  var lowList = foundAll.filter(function(p){ return p.lowres && revOf(p) !== 'bad'; });
   var found = foundAll.filter(function(p){ return revOf(p) !== 'rejected'; });
-  if(PH_HIDE_LOW) found = found.filter(function(p){ return !p.lowres; });
   var awaiting = found.filter(function(p){ return revOf(p) !== 'confirmed' && revOf(p) !== 'bad'; }).length;
   var flagged = foundAll.filter(function(p){ return revOf(p) === 'bad'; });
   var stats = '<section class="card aspanel"><div class="cbody"><div class="asstats">' +
@@ -5083,46 +5080,44 @@ function viewPhotos(v){
     '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b>' + (counts.no_photo + counts.no_source + counts.auth_only) + '</b><span>No photo found yet</span></div>' +
     '</div></div></section>';
   function photoCard(p){
+    var rev = revOf(p);
+    var sel = PH_SEL && PH_SEL.toLowerCase() === String(p.name).toLowerCase();
+    var grade = rev === 'bad' ? '<span class="phg bad">BAD</span>' : rev === 'confirmed' ? '<span class="phg ok">' + ic('check', 11) + '</span>' : p.status === 'confirmed' ? '<span class="phg conf">C</span>' : p.status === 'likely' ? '<span class="phg lik">L</span>' : '<span class="phg poss">P</span>';
+    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' +
+      '<div class="phnm"><b>' + esc(p.name) + '</b>' + grade + '</div></section>';
+  }
+  function phRail(p){
     var di = diOf(p.name), e = di != null ? D.directory[di] : null;
     var rev = revOf(p);
-    var portrait = /headshot|portrait|staff|profile/i.test(p.type || '');
-    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO</span>' : rev === 'confirmed' ? '' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
-    if(p.lowres && rev !== 'bad') badge += '<span class="phbadge low">LOW-RES ' + (p.px ? p.px + 'PX' : '') + '</span>';
-    var adjBtn = '<button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust</button>';
+    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO</span>' : rev === 'confirmed' ? '<span class="phbadge conf">CONFIRMED BY YOU</span>' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
     var review = rev === 'confirmed'
-      ? '<div class="phrev"><span class="phok">' + ic('check', 13) + ' Confirmed by you</span><span class="sp"></span>' + adjBtn + '<button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
+      ? '<div class="phrev"><span class="phok">' + ic('check', 13) + ' Confirmed by you</span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
       : rev === 'bad'
-      ? '<div class="phrev"><span class="phok bad">Right person, bad photo &mdash; keep looking</span><span class="sp"></span>' + adjBtn + '<button type="button" class="btn ghost sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">Confirm</button><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
-      : '<div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 13) + ' Confirm</button><button type="button" class="btn ghost sm" data-act="phbad" data-pname="' + esc(p.name) + '">Bad photo</button><button type="button" class="btn ghost sm" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('x', 13) + ' Reject</button><span class="sp"></span>' + adjBtn + '</div>';
-    return '<section class="card phcard' + (portrait ? ' is-portrait' : '') + '"><a class="phimg" href="' + esc(p.source_page || p.photo_url) + '" target="_blank" rel="noopener"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></a><div class="cbody">' +
-      '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') +
-      '<small class="dim">' + esc(p.type || 'photo') + '</small></div>' + badge + '</div>' +
-      '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
-      (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
-      review +
-      '</div></section>';
+      ? '<div class="phrev"><span class="phok bad">Right person, bad photo &mdash; keep looking</span></div><div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">Confirm instead</button><span class="sp"></span><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
+      : '<div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 13) + ' Confirm</button><button type="button" class="btn ghost sm" data-act="phbad" data-pname="' + esc(p.name) + '">Bad photo</button><button type="button" class="btn ghost sm" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('x', 13) + ' Reject</button></div>';
+    var alts = (p.also || []).length ? '<p class="dim phrail-pad">' + (p.also.length + 1) + ' photos on file for this person &mdash; switch between them in Adjust.</p>' : '';
+    return '<aside class="phrail"><div class="phrail-h"><b>' + esc(p.name) + '</b><button type="button" class="ib" data-act="phclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+      '<span class="phimg phrail-img"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' +
+      '<div class="phrail-meta">' + badge + '<span class="dim">' + esc(p.type || 'photo') + '</span></div>' +
+      '<p class="ph-ev phrail-pad">' + esc(p.evidence || '') + '</p>' + alts +
+      (p.source_page ? '<p class="phrail-pad"><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
+      '<div class="phrail-pad">' + review + '</div>' +
+      '<div class="phrev phrail-pad"><button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button>' + (e ? '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>' : '') + '</div>' +
+      '</aside>';
   }
   found.sort(function(a, b){ var ra = revOf(a) === 'confirmed' ? 1 : 0, rb = revOf(b) === 'confirmed' ? 1 : 0; if(ra !== rb) return ra - rb; var r = { confirmed:0, likely:1, possible:2 }; return r[a.status] - r[b.status] || a.name.localeCompare(b.name); });
   var shown = found.slice(0, Math.max(PH_SHOW, PH_COLS * 2));
   var moreHtml = found.length > shown.length ? '<div class="phmore"><button type="button" class="btn ghost" data-act="phmore">Show more photos &mdash; ' + (found.length - shown.length) + ' more</button></div>' : '';
   var flagHtml = flagged.length ? '<div class="phrej"><span>Flagged for a better photo (right person, bad photo): ' + flagged.map(function(p){ return esc(p.name); }).join(', ') + '</span></div>' : '';
-  var lowHtml = lowList.length ? '<div class="phrej"><span>Low fidelity (150px placeholders, keep looking): ' + lowList.map(function(p){ return esc(p.name); }).join(', ') + '</span></div>' : '';
   var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
-  var toolsHtml = '<div class="phtools">' + (lowAll.length ? '<button type="button" class="phtoggle' + (PH_HIDE_LOW ? ' on' : '') + '" data-act="phfilter">' + (PH_HIDE_LOW ? 'Low-fidelity photos are hidden' : 'Hide low-fidelity photos') + ' &middot; ' + lowAll.length + ' low-res</button>' : '') + colsHtml + '</div>';
-  var foundHtml = (found.length || lowAll.length) ? toolsHtml + '<div class="assec-t">ON FILE &mdash; ' + found.length + (awaiting ? ' &middot; ' + awaiting + ' AWAITING REVIEW' : '') + (PH_HIDE_LOW ? ' &middot; LOW-FIDELITY HIDDEN' : '') + '</div><div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml + flagHtml + lowHtml : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
-  function chip(p){
-    var di = diOf(p.name), label = esc(p.name);
-    var why = revOf(p) === 'rejected' ? 'photo rejected by you' : p.status === 'possible' ? 'photo exists, URL pending' : p.status === 'no_photo' ? 'checked, no photo' : p.status === 'auth_only' ? 'Facebook / LinkedIn only' : 'no source links on file';
-    var inner = (di != null ? avatar(D.directory[di], 'sm') : '') + '<span>' + label + '</span><small class="dim">' + why + '</small>';
-    if(di == null) return '<span class="aschip">' + inner + '</span>';
-    return '<a class="aschip" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>';
-  }
-  var rest = PH.people.filter(function(p){ return revOf(p) === 'rejected' || !p.photo_url || (p.status !== 'confirmed' && p.status !== 'likely' && p.status !== 'possible'); });
+  var toolsHtml = '<div class="phtools">' + colsHtml + '</div>';
   var rejected = PH.people.filter(function(p){ return revOf(p) === 'rejected'; });
   var rejHtml = rejected.length ? '<div class="phrej"><span>Rejected by you: ' + rejected.map(function(p){ return esc(p.name); }).join(', ') + '</span>' + rejected.map(function(p){ return '<button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo ' + esc(p.name) + '</button>'; }).join('') + '</div>' : '';
-  var restHtml = rest.length ? '<section class="card" style="margin-top:14px"><header><h3>No photo yet</h3><em class="cnt">' + rest.length + '</em></header><div class="cbody"><div class="aschips">' + rest.map(chip).join('') + '</div>' + rejHtml +
-    '<p class="dim" style="margin-top:10px">Checked ' + esc(PH.updated || '') + (PH.batches ? ' &middot; ' + esc(PH.batches) : '') + '. Facebook, LinkedIn and Instagram links are counted as not checkable here &mdash; they sit behind sign-in. Confirm / reject choices are kept in this browser.</p></div></section>' : '';
-  v.innerHTML = head + stats + foundHtml + restHtml + '</div>';
+  if(PH_SEL && !found.some(function(p){ return p.name.toLowerCase() === PH_SEL.toLowerCase(); })) PH_SEL = null;
+  var railHtml = '';
+  if(PH_SEL){ var sp = found.filter(function(p){ return p.name.toLowerCase() === PH_SEL.toLowerCase(); })[0]; if(sp) railHtml = phRail(sp); }
+  var foundHtml = found.length ? toolsHtml + '<div class="assec-t">ON FILE &mdash; ' + found.length + (awaiting ? ' &middot; ' + awaiting + ' AWAITING REVIEW' : '') + '</div><div class="phwrap"><div class="phmain"><div class="phgrid' + (PH_COLS >= 8 ? ' dense' : '') + '" style="--phcols:' + PH_COLS + '">' + shown.map(photoCard).join('') + '</div>' + moreHtml + flagHtml + rejHtml + '</div>' + railHtml + '</div>' : '<section class="card"><div class="cbody"><p class="dim">No photos on file in the checked batches yet.</p></div></section>';
+  v.innerHTML = head + stats + foundHtml + '</div>';
 }
 
 
@@ -6931,7 +6926,8 @@ function onClick(ev){
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
     case 'phbad': phSetReview(el.getAttribute('data-pname'), 'bad'); break;
     case 'phmore': PH_SHOW += 24; if(S.route.name === 'photos') viewPhotos($('#view')); break;
-    case 'phfilter': PH_HIDE_LOW = !PH_HIDE_LOW; PH_SHOW = 24; if(S.route.name === 'photos') viewPhotos($('#view')); break;
+    case 'phsel': { var pn = el.getAttribute('data-pname'); var sy = window.scrollY; PH_SEL = (PH_SEL && pn && PH_SEL.toLowerCase() === pn.toLowerCase()) ? null : pn; if(S.route.name === 'photos'){ viewPhotos($('#view')); window.scrollTo(0, sy); } break; }
+    case 'phclose': PH_SEL = null; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'phcols': PH_COLS = parseInt(el.getAttribute('data-n'), 10) || 12; store('ncc_photos_cols_v1', String(PH_COLS)); PH_SHOW = PH_COLS * 4; if(S.route.name === 'photos') viewPhotos($('#view')); break;
     case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
     case 'home': goHome(); break;
