@@ -1268,6 +1268,15 @@ html,body{background:var(--bg)}
 .netorg:hover{border-color:var(--line)}
 .netorg.on{border-color:#e30613}
 .netorgmore{font-size:11.5px;margin-top:6px}
+/* Network panel starts at the very top of the map area (JD 2026-10-22) */
+.netpanel{padding-top:6px}
+/* Richer network readouts (JD 2026-10-22): the hover card's
+   organization line wraps instead of truncating, and the
+   selection card's label/value rows wrap long values. */
+.nethov{max-width:264px}
+.nethov .nh-orgs{white-space:normal}
+.nc-rows{margin-top:10px}
+.nc-rows .srow2 b{max-width:62%;white-space:normal;line-height:1.35}
 .netctl{gap:14px;align-items:flex-start}
 .netgrp{display:flex;flex-direction:column;gap:5px}
 .netgrp + .netgrp{border-left:1px solid var(--line);padding-left:14px}
@@ -1549,6 +1558,14 @@ html,body{background:var(--bg)}
 .pha-item:hover{border-color:#3d3d3d}
 .pha-item.on{border-color:#e30613;background:#161616;color:#fff}
 @media (max-width:900px){ .pha{grid-template-columns:1fr} .pha-view{position:static} .pha-qgrid{max-height:320px} }
+
+/* Photos header viewer + sorting (V2.27.0) */
+.ph-top{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;align-items:start;margin-bottom:14px}
+.ph-top .phrail{position:static;width:auto;order:0}
+.ph-topmain{min-width:0}
+.ph-topmain .pagehead{margin-bottom:10px}
+.phsort-ctl{margin-left:2px}
+@media (max-width:1000px){ .ph-top{grid-template-columns:1fr} }
 
 /* Photos slim chrome + persistent viewer (V2.24.0) */
 .phhead{margin-bottom:8px}
