@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.16.0';
+var APP_VERSION = '2.17.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4965,7 +4965,7 @@ function viewPhotos(v){
     var review = rev === 'confirmed'
       ? '<div class="phrev"><span class="phok">' + ic('check', 13) + ' Confirmed by you</span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo</button></div>'
       : '<div class="phrev"><button type="button" class="btn primary sm" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 13) + ' Confirm</button><button type="button" class="btn ghost sm" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('x', 13) + ' Reject</button></div>';
-    return '<section class="card phcard' + (portrait ? ' is-portrait' : '') + '"><a class="phimg" href="' + esc(p.source_page || p.photo_url) + '" target="_blank" rel="noopener"><img src="' + esc(p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" referrerpolicy="no-referrer"><span class="phthirds"></span></a><div class="cbody">' +
+    return '<section class="card phcard' + (portrait ? ' is-portrait' : '') + '"><a class="phimg" href="' + esc(p.source_page || p.photo_url) + '" target="_blank" rel="noopener"><img src="' + esc(p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" referrerpolicy="no-referrer"' + (p.focus ? ' style="object-position:' + esc(p.focus) + (p.zoom ? ';transform:scale(' + p.zoom + ')' : '') + '"' : '') + '><span class="phthirds"></span></a><div class="cbody">' +
       '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') +
       '<small class="dim">' + esc(p.type || 'photo') + '</small></div>' + badge + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
