@@ -1572,8 +1572,8 @@ html,body{background:var(--bg)}
    upper third line, with a padded inset frame so nothing is cropped
    tight. Hover shows the thirds grid. */
 .phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
-.phcard{overflow:hidden}
-.phcard .phimg{display:block;position:relative;background:#0c0c0c;aspect-ratio:1/1;padding:10px;box-sizing:border-box}
+.phcard{overflow:hidden;content-visibility:auto;contain-intrinsic-size:auto 520px}
+.phcard .phimg{display:block;position:relative;background:#0c0c0c;aspect-ratio:1/1;padding:10px;box-sizing:border-box;overflow:hidden}
 .phcard .phimg img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}
 .phthirds{position:absolute;inset:10px;pointer-events:none;opacity:0;transition:opacity .16s ease;
   background:
@@ -1586,6 +1586,9 @@ html,body{background:var(--bg)}
 .phbadge.conf{color:#fff;border-color:#e30613}
 .phbadge.lik{color:#d8d8d8}
 .phbadge.poss{color:#8a8a8a}
+.phbadge.bad{color:#f5b942;border-color:#f5b942}
+.phok.bad{color:#f5b942}
+.phmore{margin-top:12px;text-align:center}
 .ph-ev{font-size:13px;color:#bdbdbd;margin:8px 0 4px}
 .phrev{display:flex;align-items:center;gap:8px;margin-top:10px}
 .phrev .sp{flex:1}
@@ -1595,7 +1598,8 @@ html,body{background:var(--bg)}
 
 /* Profile hero photo + framing editor (JD 2026-10-22) */
 .hphoto{margin-left:auto;flex:none;text-align:center}
-.hphoto img{width:118px;height:118px;object-fit:cover;display:block;border:1px solid #333;border-radius:2px;background:#0c0c0c}
+.hphoto-box{display:block;width:118px;height:118px;overflow:hidden;border:1px solid #333;border-radius:2px;background:#0c0c0c}
+.hphoto img{width:100%;height:100%;object-fit:cover;display:block}
 .hphoto-adj{margin-top:6px;font-size:11.5px;color:#9a9a9a;letter-spacing:.04em}
 .hphoto-adj:hover{color:#fff;text-decoration:underline}
 .phed-wrap{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;background:rgba(4,6,10,.72)}
@@ -1611,4 +1615,4 @@ html,body{background:var(--bg)}
 .phed-thumbs{display:flex;gap:8px}
 .phed-thumbs button{padding:5px 12px;border:1px solid #333;border-radius:2px;font-size:12.5px;color:#bdbdbd}
 .phed-thumbs button.on{border-color:#e30613;color:#fff}
-@media (max-width:640px){ .hphoto img{width:88px;height:88px} }
+@media (max-width:640px){ .hphoto-box{width:88px;height:88px} }
