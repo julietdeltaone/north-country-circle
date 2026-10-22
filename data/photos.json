@@ -52,7 +52,7 @@
       "type": null
     },
     {
-      "evidence": "Photo caption names her in the line-up: 'Left to right: First-place winner Adriana Levendusky, third-place winner Leah Morgan, fourth-place winner Paul French, Potsdam Rotary President Sunday Smith...' \u2014 group photo, she is in it per caption, but image URL could not be extracted from the page (no Images footnote returned) \u2014 needs re-extraction before the photo itself can be filed.",
+      "evidence": "Photo caption names her in the line-up: 'Left to right: First-place winner Adriana Levendusky, third-place winner Leah Morgan, fourth-place winner Paul French, Potsdam Rotary President Sunday Smith...' \u2014 group photo, she is in it per caption, but image URL could not be extracted from the page (no Images footnote returned) \u2014 needs re-extraction before the photo itself can be filed. Requeue retry: extraction again returned no image URL \u2014 caption confirms her presence/position, photo itself still unfiled.",
       "name": "Adriana Levendusky",
       "photo_url": null,
       "source_page": "https://www.potsdamrotary.org/Stories/students-win-2-000-in-rotary-essay-contest",
@@ -572,7 +572,7 @@
       "type": "profile photo"
     },
     {
-      "evidence": "Merit graduation story and SLU Dean's List page both text-only, no images. Caveat: newzjunky source blocked by browser policy, unchecked. LinkedIn auth.",
+      "evidence": "Merit graduation story and SLU Dean's List page both text-only, no images. Caveat: newzjunky source blocked by browser policy, unchecked. LinkedIn auth. Requeue: the newzjunky source is blocked by browser policy (not a rate limit) and remains honestly unchecked; all readable sources are text-only.",
       "name": "Courtney Delosh",
       "photo_url": null,
       "source_page": "https://stlawu.meritpages.com/stories/Courtney-Delosh-Graduates-from-St-Lawrence-University/110114099",
@@ -692,7 +692,7 @@
       "type": null
     },
     {
-      "evidence": "Utica roster/coach bio page is person-specific but extraction returned no Images/no headshot URL. Flagged: Sidearm roster pages often carry a headshot text extraction may miss \u2014 worth a second look in the requeue pass.",
+      "evidence": "Utica roster/coach bio page is person-specific but extraction returned no Images/no headshot URL. Flagged: Sidearm roster pages often carry a headshot text extraction may miss \u2014 worth a second look in the requeue pass. Requeue second look confirmed: extraction again returned no image URL of any kind from this source.",
       "name": "Haydn Demers-St.Hilaire",
       "photo_url": null,
       "source_page": "https://uticapioneers.com/sports/baseball/roster/coaches/haydn-demers-st-hilaire/1728",
@@ -780,7 +780,7 @@
       "type": null
     },
     {
-      "evidence": "Clarkson business-plan article and Merit Presidential Scholar story both text-only, no photos. Gap: Clarkson Ignite entrepreneurship page could not be checked (fetch rate-limited 429) \u2014 no_photo on pages actually checked.",
+      "evidence": "Clarkson business-plan article and Merit Presidential Scholar story both text-only, no photos. Gap: Clarkson Ignite entrepreneurship page could not be checked (fetch rate-limited 429) \u2014 no_photo on pages actually checked. Requeue: the previously unchecked Clarkson Ignite page is now checked \u2014 text-only winners listing, no photo. All his sources are now checked.",
       "name": "Ethan Flamand",
       "photo_url": null,
       "source_page": "https://www.clarkson.edu/news-events/clarkson-students-win-big-nys-business-plan-competition",
