@@ -1268,6 +1268,15 @@ html,body{background:var(--bg)}
 .netorg:hover{border-color:var(--line)}
 .netorg.on{border-color:#e30613}
 .netorgmore{font-size:11.5px;margin-top:6px}
+/* Network panel starts at the very top of the map area (JD 2026-10-22) */
+.netpanel{padding-top:6px}
+/* Richer network readouts (JD 2026-10-22): the hover card's
+   organization line wraps instead of truncating, and the
+   selection card's label/value rows wrap long values. */
+.nethov{max-width:264px}
+.nethov .nh-orgs{white-space:normal}
+.nc-rows{margin-top:10px}
+.nc-rows .srow2 b{max-width:62%;white-space:normal;line-height:1.35}
 .netctl{gap:14px;align-items:flex-start}
 .netgrp{display:flex;flex-direction:column;gap:5px}
 .netgrp + .netgrp{border-left:1px solid var(--line);padding-left:14px}
