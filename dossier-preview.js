@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.31.0';
+var APP_VERSION = '2.32.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4025,37 +4025,142 @@ function grpNamesFor(kind){
   if(kind === 'groups'){ var m = allGroups(); return Object.keys(m).sort().map(function(n){ return { n:n, c:m[n].length }; }); }
   return orgNames(kind).map(function(n){ return { n:n, c:orgMembers(kind, n).length }; }).filter(function(x){ return x.c > 0; }).sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); });
 }
+/* ============================================================
+   Groups, rebuilt (V2.32.0) — a card grid you can scan: every
+   group is a card with its size, a face stack (photos where on
+   file, tier-colored initials otherwise) and a name preview;
+   opening one gives the full member list. Membership still lives
+   in each person's own 'groups' list (the Sheet auto-fill keeps
+   org/family groups complete); every write still flows through
+   setPersonGroups -> queuePatch. Manage mode (combine) ticks
+   cards instead of rows; its semantics are unchanged.
+   ============================================================ */
+var GRPV = { q:'', mq:'', scrollY:null, detail:null, lastKind:'', lastName:'' };
+function grpMembersOf(kind, name){
+  var mem = kind === 'groups' ? (allGroups()[name] || []) : orgMembers(kind, name);
+  return mem.slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+}
+function grpOrgValues(){
+  var seen = {};
+  D.directory.forEach(function(e){ if(!liveEntry(e)) return; ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ seen[regApply(o)] = 1; }); }); });
+  return seen;
+}
+/* the derivation signal shown on cards and detail headers: where
+   this group's membership comes from (JD 2026-10-22 auto-fill) */
+function grpSignal(kind, name){
+  if(kind === 'churches') return 'From Churches on profiles';
+  if(kind === 'companies') return 'From Employers on profiles';
+  if(kind === 'universities') return 'From Schools on profiles';
+  var canon = regResolve(name), kinds = canon ? (ORGREG.kinds[regKey(canon)] || []) : [];
+  if(kinds.some(function(k){ return k === 'churches' || k === 'companies' || k === 'universities'; })) return 'From organization: ' + canon;
+  if(grpOrgValues()[name]) return 'From organization: ' + name;
+  if(/27th|ibct/i.test(name)) return 'From the 27th IBCT roster';
+  if(/family/i.test(name)) return 'From family links';
+  return 'Your group';
+}
+function grpFace(e, cls){
+  var nm = dispName(e), letter = esc((nm.replace(/^@/, '').trim().charAt(0) || '·').toUpperCase());
+  var idx = phIndex();
+  if(idx){
+    var p = idx[nm];
+    if(p && p.photo_url && phReview()[String(p.name).toLowerCase()] !== 'rejected'){
+      var f = phFrameFor(p.name, p);
+      return '<span class="gface ' + (cls || '') + '" style="--tc:' + tierCol(e) + '"><span class="gini">' + letter + '</span><img src="' + esc(f.url || p.photo_url) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.opacity=\'0\'" style="' + phFrameStyle(p) + '"></span>';
+    }
+  }
+  return '<span class="gface ini ' + (cls || '') + '" style="--tc:' + tierCol(e) + '">' + letter + '</span>';
+}
+function grpFaces(mems){
+  return '<span class="gfaces">' + mems.slice(0, 5).map(function(di){ return grpFace(D.directory[di]); }).join('') + '</span>';
+}
+function grpCard(kind, x, mems){
+  mems = mems || grpMembersOf(kind, x.n);
+  var prev = mems.slice(0, 3).map(function(di){ return dispName(D.directory[di]); }).join(', ');
+  if(mems.length > 3) prev += ' · +' + (mems.length - 3) + ' more';
+  return '<a class="gcard" href="#/groups/' + kind + '/' + encodeURIComponent(x.n) + '" data-act="gcard">' +
+    '<span class="gc-top"><h3>' + esc(x.n) + '</h3><span class="gc-n"><b>' + x.c + '</b><small>' + (x.c === 1 ? 'person' : 'people') + '</small></span></span>' +
+    (x.c ? grpFaces(mems) : '<span class="gc-none">No members yet — open it to add people.</span>') +
+    (prev ? '<span class="gc-prev">' + esc(prev) + '</span>' : '') +
+    '<span class="gc-sig">' + esc(grpSignal(kind, x.n)) + '</span></a>';
+}
+function grpMgrCard(kind, x){
+  var key = kind + '|' + x.n, on = !!GMGR.sel[key];
+  return '<label class="gcard gmgr-c' + (on ? ' on' : '') + '"><span class="gc-top"><h3>' + esc(x.n) + '</h3><span class="gc-n"><b>' + x.c + '</b></span></span>' +
+    '<span class="gc-pick"><input type="checkbox" data-gmsel="' + esc(key) + '"' + (on ? ' checked' : '') + '> ' + (on ? 'Selected to combine' : 'Tick to combine') + '</span></label>';
+}
+function grpCardsHTML(kind){
+  var names = grpNamesFor(kind).slice().sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); });
+  var q = GRPV.q.trim().toLowerCase();
+  if(q) names = names.filter(function(x){ return x.n.toLowerCase().indexOf(q) >= 0; });
+  if(GMGR.on) return names.length ? '<div class="gcards">' + names.map(function(x){ return grpMgrCard(kind, x); }).join('') + '</div>' : '<p class="dim pad">No names match.</p>';
+  var full = names.filter(function(x){ return x.c > 0; }), zero = names.filter(function(x){ return x.c === 0; });
+  var h = '';
+  if(full.length) h += '<div class="gcards">' + full.map(function(x){ return grpCard(kind, x); }).join('') + '</div>';
+  if(zero.length) h += '<h4 class="gc-sech">No members yet</h4><div class="gcards">' + zero.map(function(x){ return grpCard(kind, x, []); }).join('') + '</div>';
+  if(!h) h = q ? '<div class="empty"><h3>No matches</h3><p>No group name matches &ldquo;' + esc(GRPV.q.trim()) + '&rdquo;.</p></div>' : emptyState('Nothing here yet', 'Groups show up here once someone is in one.');
+  return h;
+}
+function grpPaintCards(){
+  var box = $('#gcards'); if(!box) return;
+  var kind = S.route.seg[0] || 'groups';
+  if(!GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
+  box.innerHTML = grpCardsHTML(kind);
+}
+function grpMemberRow(kind, name, di){
+  var e = D.directory[di];
+  return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '">' + grpFace(e, 'lg') +
+    '<span class="pn"><b>' + esc(dispName(e)) + '</b> ' + milBadge(e) + '<small>' + esc(infoLine(e)) + '</small></span>' +
+    '<i class="gtdot" style="background:' + tierCol(e) + '" title="' + esc(tierName(e) || 'No tier') + '"></i></a>' +
+    (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>';
+}
+function grpPaintMembers(){
+  var box = $('#gmlist'); if(!box || !GRPV.detail) return;
+  var kind = GRPV.detail.kind, name = GRPV.detail.name;
+  var mem = grpMembersOf(kind, name);
+  var q = GRPV.mq.trim().toLowerCase();
+  var shown = q ? mem.filter(function(di){ return dispName(D.directory[di]).toLowerCase().indexOf(q) >= 0; }) : mem;
+  box.innerHTML = shown.length ? shown.map(function(di){ return grpMemberRow(kind, name, di); }).join('') : '<p class="dim pad">' + (mem.length ? 'No one in this group matches.' : 'No one yet.') + '</p>';
+  var cnt = $('#gmcount'); if(cnt) cnt.textContent = q ? shown.length + ' of ' + mem.length : String(mem.length);
+}
 function viewGroups(v){
   var kind = S.route.seg[0] || 'groups', name = S.route.seg[1] || '';
   if(!GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
-  var names = grpNamesFor(kind);
+  if(kind !== GRPV.lastKind || name !== GRPV.lastName){ GRPV.mq = ''; }
+  GRPV.lastKind = kind; GRPV.lastName = name;
+  try{ phLoad(); }catch(x){}
   var tabs = '<nav class="tabrow" aria-label="Group kinds">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
+  var head = '<div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>';
+  if(name){
+    GRPV.detail = { kind:kind, name:name };
+    var mem = grpMembersOf(kind, name);
+    v.innerHTML = '<div class="page groups">' + head + tabs + '<div class="gdet">' +
+      '<div class="gdh"><a class="ib backm" href="#/groups/' + kind + '" aria-label="Back to groups">' + ic('chevl', 18) + '</a>' +
+      '<div><h2>' + esc(name) + '</h2><small><span id="gmcount">' + mem.length + '</span> ' + (mem.length === 1 ? 'person' : 'people') + ' &middot; ' + esc(grpSignal(kind, name)) + '</small></div><span class="sp"></span>' +
+      (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
+      '<div class="gtools"><label class="gsearchbox">' + ic('search', 15) + '<input id="gmq" placeholder="Search members" autocomplete="off" value="' + esc(GRPV.mq) + '"></label></div>' +
+      (kind === 'groups' ? '<div class="finder"><input id="gaddq" data-g="' + esc(name) + '" placeholder="Add a person to this group" autocomplete="off"><div id="gaddr" class="hits"></div></div>' : '<p class="note">Membership comes from each profile’s Background section.</p>') +
+      '<div class="plist" id="gmlist"></div></div></div>';
+    grpPaintMembers();
+    return;
+  }
+  GRPV.detail = null;
+  var names = grpNamesFor(kind);
   var selCount = names.filter(function(x){ return GMGR.sel[kind + '|' + x.n]; }).length;
   var mgr = '';
   if(GMGR.on){
-    mgr = '<div class="gmgr"><p class="gmgr-h">Tick the names to merge, type or pick the surviving name, then combine. Ticked names stay on file as aliases of the survivor, so old spellings keep resolving to it.</p>' +
+    mgr = '<div class="gmgr"><p class="gmgr-h">Tick the cards to merge, type or pick the surviving name, then combine. Ticked names stay on file as aliases of the survivor, so old spellings keep resolving to it.</p>' +
       '<div class="finder inline"><input id="gmgrt" list="gmgrdl" placeholder="Surviving name" autocomplete="off"><datalist id="gmgrdl">' + names.map(function(x){ return '<option value="' + esc(x.n) + '">'; }).join('') + '</datalist></div>' +
       '<div class="gmgr-row2"><button type="button" class="btn sm primary" data-act="gmgrgo" data-k="' + kind + '"' + (selCount ? '' : ' disabled') + '>Combine ' + selCount + ' selected</button>' +
       (selCount ? '<button type="button" class="btn ghost sm" data-act="gmgrclear">Clear</button>' : '') + '</div></div>';
   }
-  var list = GMGR.on
-    ? (names.map(function(x){ var on = !!GMGR.sel[kind + '|' + x.n]; return '<label class="grow gmgr-r' + (on ? ' on' : '') + '"><input type="checkbox" data-gmsel="' + kind + '|' + esc(x.n) + '"' + (on ? ' checked' : '') + '><span>' + esc(x.n) + '</span><em>' + x.c + '</em></label>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>')
-    : (names.map(function(x){ return '<a href="#/groups/' + kind + '/' + encodeURIComponent(x.n) + '" class="grow' + (x.n === name ? ' on' : '') + '"><span>' + esc(x.n) + '</span><em>' + x.c + '</em></a>'; }).join('') || '<p class="dim pad">Nothing here yet.</p>');
-  var add = kind === 'groups' ? '<div class="finder inline"><input id="gnew" placeholder="New group name" autocomplete="off"><button type="button" class="btn sm" data-act="gnew">Create</button></div>' : '';
-  var detail = '';
-  if(name){
-    var mem = kind === 'groups' ? (allGroups()[name] || []) : orgMembers(kind, name);
-    mem = mem.slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
-    detail = '<div class="gdet"><div class="gdh"><a class="ib backm" href="#/groups/' + kind + '" aria-label="Back to list">' + ic('chevl', 18) + '</a><div><h2>' + esc(name) + '</h2><small>' + mem.length + ' ' + (mem.length === 1 ? 'person' : 'people') + '</small></div><span class="sp"></span>' +
-      (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
-      (kind === 'groups' ? '<div class="finder"><input id="gaddq" data-g="' + esc(name) + '" placeholder="Add a person to this group" autocomplete="off"><div id="gaddr" class="hits"></div></div>' : '<p class="note">Membership comes from each profile’s Background section.</p>') +
-      '<div class="plist">' + (mem.map(function(di, i){ var e = D.directory[di];
-        return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="popen1" data-di="' + di + '">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(infoLine(e)) + '</small></span></a>' +
-          (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>'; }).join('') || '<p class="dim pad">No one yet.</p>') + '</div></div>';
-  }
-  v.innerHTML = '<div class="page groups' + (name ? ' has-detail' : '') + '"><div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>' + tabs +
-    '<div class="ggrid"><aside class="glist">' + mgr + add + list + '</aside><section class="gmain">' + (detail || '<div class="empty"><h3>Pick one</h3><p>Choose a name on the left to see who is in it.</p></div>') + '</section></div></div>';
+  var add = kind === 'groups' && !GMGR.on ? '<div class="finder inline gnewrow"><input id="gnew" placeholder="New group name" autocomplete="off"><button type="button" class="btn sm" data-act="gnew">Create</button></div>' : '';
+  v.innerHTML = '<div class="page groups">' + head + tabs +
+    '<div class="gtools"><label class="gsearchbox">' + ic('search', 15) + '<input id="gq" placeholder="Search groups" autocomplete="off" value="' + esc(GRPV.q) + '"></label>' +
+    '<span class="dim gcount">' + names.length + ' ' + (kind === 'groups' ? 'groups' : 'names') + ' &middot; sorted by size</span></div>' + mgr + add +
+    '<div id="gcards">' + grpCardsHTML(kind) + '</div></div>';
+  if(GRPV.scrollY != null){ var y = GRPV.scrollY; GRPV.scrollY = null; requestAnimationFrame(function(){ var vw = $('#view'); if(vw) vw.scrollTop = y; }); }
 }
+
 function groupRename(oldN, newN){
   newN = newN.trim(); if(!newN || newN === oldN) return;
   txn('Rename group', function(){
@@ -4598,7 +4703,7 @@ function phLoad(){
   PH_LOADING = true;
   fetch('data/photos.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if(S.route.name === 'audit') render(); else if(S.route.name === 'home') render(); else if($('#p-hero')) repaintTop(); })
+    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if(S.route.name === 'audit') render(); else if(S.route.name === 'home') render(); else if(S.route.name === 'groups'){ grpPaintCards(); grpPaintMembers(); } else if($('#p-hero')) repaintTop(); })
     .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos' || S.route.name === 'home') render(); });
 }
 
@@ -7043,6 +7148,7 @@ function onClick(ev){
     case 'famzoom': FAMV.cam.z = Math.max(0.2, Math.min(1.6, FAMV.cam.z * (+el.getAttribute('data-d') > 0 ? 1.25 : 0.8))); famApply(); break;
     case 'famfit': famFit(); break;
     /* groups */
+    case 'gcard': { var gvw = $('#view'); GRPV.scrollY = gvw ? gvw.scrollTop : 0; prevent = false; break; }
     case 'gmgr': GMGR.on = !GMGR.on; if(!GMGR.on) GMGR.sel = {}; render(); break;
     case 'gmgrclear': GMGR.sel = {}; render(); break;
     case 'gmgrgo': {
@@ -7084,6 +7190,8 @@ function onInput(ev){
   if(t.id === 'assocq'){ var e = D.directory[S.prof.di]; pickerHits(t, '#assocr', 'assocadd', [S.prof.di].concat(knownAssociates(e).map(function(n){ return BYN[(n.u || '').toLowerCase()]; }))); return; }
   if(t.id === 'famq'){ pickerHits(t, '#famr', 'famadd', [S.prof.di]); return; }
   if(t.id === 'gaddq'){ var g = t.getAttribute('data-g'); pickerHits(t, '#gaddr', 'gadd', (allGroups()[g] || [])); return; }
+  if(t.id === 'gq'){ GRPV.q = t.value; grpPaintCards(); return; }
+  if(t.id === 'gmq'){ GRPV.mq = t.value; grpPaintMembers(); return; }
   if(t.id === 'mq'){
     var q = t.value.trim(), box = $('#mr'); if(q.length < 2){ box.innerHTML = ''; return; }
     var hits = searchPeople(q, 6, people().filter(function(d){ return d !== MG.a; }));
