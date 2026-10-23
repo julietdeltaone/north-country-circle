@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.33.0';
+var APP_VERSION = '2.34.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1668,7 +1668,10 @@ function renderChrome(){
     '<div class="railfoot"><a href="index.html" class="nv">' + ic('network', 20) + '<span>Visual map</span></a>' +
     '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
     '<small id="fresh">' + (D ? 'Data ' + esc(D.updated || '') : '') + '</small></div>';
-  $('#tabs').innerHTML = '<button type="button" class="nv" data-act="home" aria-label="Home">' + ic('home', 20) + '<span>Home</span></button>' + items;
+  /* NAV includes Home since V2.28.0, so the tabs are just the NAV items;
+     a prepended Home button here rendered as a duplicate Home tab. The
+     reset-and-go-home action stays on the top-bar house button. */
+  $('#tabs').innerHTML = items;
   var top = $('#top');
   var onProfile = S.route.name === 'profile';
   top.innerHTML =
