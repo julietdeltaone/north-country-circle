@@ -7,7 +7,7 @@
 /* App version — one number shared by both apps (explorer + dossier); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-const APP_VERSION = "2.28.0";
+const APP_VERSION = "2.29.0";
 const D = window.CIRCLE_DATA || {};
 const PEOPLE = D.people || [];
 const EDGES = D.edges || [];
@@ -79,9 +79,14 @@ function normName(s) {
     .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/^(dr|mr|mrs|ms|miss|rev) /, "");
 }
 let dossierHandles = null, dossierNames = null;
+/* Military rank badge (V2.29.0): ranks ride the same dossier.json
+   cross-walk as membership — profile.rank keyed by handle and by
+   normalized display name — and nameHTML appends the chip. */
+let rankByHandle = null, rankByName = null;
 function loadDossierMembership() {
   if (dossierHandles) return;
   dossierHandles = new Set(); dossierNames = new Set();
+  rankByHandle = new Map(); rankByName = new Map();
   fetch("data/dossier.json").then(r => r.json()).then(dj => {
     for (const e of (dj.directory || [])) {
       const nm = String(e.name || "");
@@ -89,8 +94,15 @@ function loadDossierMembership() {
       if (e.ig) dossierHandles.add(String(e.ig));
       const dn = normName(e.display);
       if (dn) dossierNames.add(dn);
+      const rk = e.profile && e.profile.rank ? String(e.profile.rank).trim().toUpperCase() : "";
+      if (rk) {
+        if (nm && !nm.includes(":")) rankByHandle.set(nm, rk);
+        if (e.ig) rankByHandle.set(String(e.ig), rk);
+        if (dn) rankByName.set(dn, rk);
+      }
     }
     if (!document.getElementById("directory").hidden) paintDir();
+    renderDetail();
   }).catch(() => {});
 }
 function inDossier(i) {
@@ -187,9 +199,28 @@ function igLink(u) { return `<a href="https://www.instagram.com/${esc(u)}/" targ
 /* display name as HTML: real name plain, inferred name purple, else username */
 function nameHTML(i) {
   const p = PEOPLE[i];
-  if (p.name && p.name.trim()) return esc(p.name);
-  if (INF[i]) return `<span class="infname">${esc(INF[i])}</span>`;
-  return esc(p.username);
+  let base;
+  if (p.name && p.name.trim()) base = esc(p.name);
+  else if (INF[i]) base = `<span class="infname">${esc(INF[i])}</span>`;
+  else base = esc(p.username);
+  return base + milBadgeFor(i);
+}
+/* flag + rank chip for explorer names (same .milbadge family as the
+   dossier app); empty until the dossier cross-walk has loaded, and
+   empty for everyone without a rank */
+const MIL_FLAG = (() => {
+  let s = `<svg class="milflag" viewBox="0 0 16 11" width="16" height="11" aria-hidden="true" focusable="false"><rect width="16" height="11" fill="#f2f2f2"/>`;
+  for (let k = 0; k < 13; k += 2) s += `<rect y="${(k * 11 / 13).toFixed(2)}" width="16" height="${(11 / 13).toFixed(2)}" fill="#b31942"/>`;
+  s += `<rect width="7.4" height="${(77 / 13).toFixed(2)}" fill="#0a3161"/>`;
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 4; c++)
+    s += `<circle cx="${(1.05 + c * 1.75).toFixed(2)}" cy="${(0.95 + r * 1.05).toFixed(2)}" r="0.34" fill="#fff"/>`;
+  return s + "</svg>";
+})();
+function milBadgeFor(i) {
+  if (!rankByHandle) return "";
+  const rk = rankByHandle.get(PEOPLE[i].username) || rankByName.get(normName(PEOPLE[i].name)) || "";
+  if (!rk) return "";
+  return `<span class="milbadge" title="Military rank: ${esc(rk)}">${MIL_FLAG}<span class="milrank">${esc(rk)}</span></span>`;
 }
 
 /* ---------- canvas + view ---------- */
@@ -947,7 +978,7 @@ function paintDir() {
     <tbody>` + shown.map(({p, i, total}) => `
     <tr>
       <td>${igLink(p.username)}</td>
-      <td>${(p.name && p.name.trim()) ? esc(p.name) : (INF[i] ? `<span class="infname">${esc(INF[i])}</span>` : "—")}</td>
+      <td>${(p.name && p.name.trim()) ? esc(p.name) : (INF[i] ? `<span class="infname">${esc(INF[i])}</span>` : "—")}${milBadgeFor(i)}</td>
       <td>${p.in_degree}</td><td>${p.out_degree}</td><td><strong>${total}</strong></td>
       <td>${p.num_lists || ""}${p.has_list ? " ●" : (p.list_status === "private" ? " P" : (p.list_status === "failed" ? " !" : ""))}</td>
       <td>${p.jd_follows ? "Yes" : ""}</td>
