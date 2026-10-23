@@ -1336,6 +1336,49 @@ html,body{background:var(--bg)}
   .netlegchip{display:inline-flex;align-items:center;position:absolute;left:10px;bottom:10px;z-index:6;min-height:44px;padding:0 14px;background:rgba(10,10,10,.85);border:1px solid var(--line);border-radius:2px;color:var(--txt);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 }
 
+/* ---------- Network chrome (V2.35.0): collapsible panel, find, focus chips ---------- */
+.netfind{position:relative}
+#netq{width:210px;height:38px;padding:0 12px;border:1px solid var(--line);border-radius:2px;background:var(--card);color:var(--txt);font:inherit;outline:none}
+#netq:focus{border-color:var(--acc)}
+.netfr{position:absolute;top:44px;left:0;width:280px;max-width:82vw;background:#161616;border:1px solid var(--line2);border-radius:2px;box-shadow:0 24px 54px rgba(0,0,0,.62);padding:6px;z-index:60}
+.netfr:not([hidden]){animation:popIn var(--d-state) var(--ease-out);transform-origin:top left}
+.netf-row{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border:0;border-radius:2px;background:none;text-align:left;color:var(--txt);font:inherit;cursor:pointer}
+.netf-row:hover,.netf-row.on{background:var(--accbg)}
+.netf-row .netf-tx{flex:1;min-width:0}
+.netf-row b{font-weight:500}
+.netf-row small{display:block;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.netfnone{padding:9px 10px;color:var(--mut);font-size:12.5px}
+/* focus chips over the map (bottom-left; the legend owns top-left) */
+.netfocus{position:absolute;left:12px;bottom:12px;z-index:6;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.netfocus[hidden]{display:none}
+.nf-chip{display:inline-flex;align-items:center;gap:7px;background:rgba(10,10,10,.9);border:1px solid var(--line2);border-radius:2px;padding:5px 5px 5px 11px;font-size:12.5px;color:var(--mut)}
+.nf-chip .nf-tx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
+.nf-chip b{color:var(--txt);font-weight:600}
+.nf-chip .ib{min-width:26px;min-height:26px}
+/* collapsible panel: body wrapper + slim rail when closed */
+.netpbody{display:flex;flex-direction:column;gap:14px;min-height:0}
+.netprail{display:flex;justify-content:flex-end;align-items:center;flex:none}
+.netprail-orgs{display:none}
+.netpchev svg{transition:transform var(--d-state) var(--ease-std)}
+.netpanel.closed{width:48px;padding:8px 0;align-items:center;overflow:hidden}
+.netpanel.closed .netpbody{display:none}
+.netpanel.closed .netprail{flex-direction:column;justify-content:flex-start;gap:10px}
+.netpanel.closed .netpchev svg{transform:rotate(180deg)}
+.netpanel.closed .netprail-orgs{display:block;writing-mode:vertical-rl;background:none;border:0;padding:8px 0;font:600 10px/1 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--mut);cursor:pointer}
+.netpanel.closed .netprail-orgs:hover{color:var(--txt)}
+@media (prefers-reduced-motion: reduce){
+  .netfr:not([hidden]){animation:none}
+  .netpchev svg{transition:none}
+}
+@media (max-width:899px){
+  /* a closed panel never summons the narrow overlay */
+  .netcols.sel .netpanel.closed{display:none}
+}
+@media (max-width:700px){
+  .netfocus{bottom:64px}
+  #netq{width:170px}
+}
+
 /* ---------- Lima Charlie (V2.6.0): deck of four + fit-to-screen profile ---------- */
 .lc-deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:18px}
 .lc-card{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:left;background:var(--card);border:1px solid var(--line2);border-radius:2px;padding:18px;min-height:172px;color:var(--txt)}
