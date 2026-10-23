@@ -1648,7 +1648,7 @@ function renderChrome(){
   var top = $('#top');
   var onProfile = S.route.name === 'profile';
   top.innerHTML =
-    '<button type="button" class="ib homebtn" data-act="home" aria-label="Home" title="Home: People, with search and filters cleared">' + ic('home', 20) + '</button>' +
+    '<button type="button" class="ib homebtn" data-act="home" aria-label="Home" title="Home: the overview, with search and filters cleared">' + ic('home', 20) + '</button>' +
     (onProfile ? '<button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' : '<span class="logo-s"><i></i></span>') +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
     '<div class="topr">' +
@@ -1744,7 +1744,7 @@ function goHome(){
   S.ctx = null;
   if(S.audit) S.audit.lcOpen = null;
   S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side };
-  go('people');
+  go('home');   /* V2.28.0: the landing is the Home overview now; the state clearing above is unchanged */
 }
 addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
 function openPerson(di, ctx, o){
