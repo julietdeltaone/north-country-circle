@@ -1669,18 +1669,14 @@ html,body{background:var(--bg)}
 .hm h4{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--mut);margin-bottom:10px}
 .hm .hm-sub2{margin-top:16px}
 .hm-note{font-size:12.5px;margin-top:8px}
-.hm-shape{display:grid;grid-template-columns:1.05fr 1fr 1fr;gap:20px}
-.hm-donutwrap{display:flex;gap:14px;align-items:center}
-.hm-donut{flex:none}
-.hm-donut-n{font:700 21px var(--serif);fill:var(--txt)}
-.hm-donut-l{font:600 8.5px var(--sans);letter-spacing:.14em;fill:var(--mut)}
-.hm-seg{transition:stroke-dasharray .6s var(--ease-out)}
-.hm-legend{display:flex;flex-direction:column;gap:6px;font-size:13px;min-width:0}
-.hm-leg{display:flex;align-items:center;gap:8px}
-.hm-sw{width:9px;height:9px;border-radius:2px;flex:none}
-.hm-leg-l{flex:1;white-space:nowrap}
-.hm-leg b{font-family:var(--serif)}
-.hm-leg-p{color:var(--mut);font-size:12px;width:42px;text-align:right}
+.hm-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 24px}
+.hm-stat{min-width:0}
+.hm-stat.wide{grid-column:span 2}
+.hm-years{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+.hm-bar.slim{margin:3px 0;font-size:12px}
+.hm-bar.slim .hm-bl{width:64px}
+.hm-bar.slim .hm-bv{width:28px}
+.hm-more{font-size:12px;margin-top:6px}
 .hm-bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:12.5px;color:var(--txt)}
 .hm-bl{width:118px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hm-tr{flex:1;height:8px;background:#1c1c1c;border-radius:2px;overflow:hidden}
@@ -1754,10 +1750,11 @@ a.hm-gap:hover span:first-child{text-decoration:underline}
 @media (max-width:1080px){
   .hm-wrap{grid-template-columns:1fr}
   .hm-rail{position:static;max-height:none}
-  .hm-shape{grid-template-columns:1fr 1fr}
+  .hm-stats{grid-template-columns:1fr 1fr}
 }
 @media (max-width:760px){
-  .hm-shape,.hm-cov,.hm-netgrid{grid-template-columns:1fr}
+  .hm-stats,.hm-cov,.hm-netgrid{grid-template-columns:1fr}
+  .hm-stat.wide{grid-column:auto}
   .hm-kpis{grid-template-columns:repeat(2,1fr)}
   .hm-bl{width:96px}
 }
