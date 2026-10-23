@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.34.0';
+var APP_VERSION = '2.35.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -3188,7 +3188,7 @@ function netLowConf(nd){ if(!SCORE.byDi) return false; var s = SCORE.byDi[nd.di]
    diamond (or its row in the panel) to focus an organization.
    Display-only: nothing here ever writes data.
    ============================================================ */
-var NET = { nodes:[], hubs:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, tilt:1.02, lastT:0 };
+var NET = { nodes:[], hubs:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, tilt:1.02, lastT:0, pulse:null };
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 /* Camera glide: the one motion the page still has. A glide moves
    camera values (pan / zoom / panel compensation) with the house
@@ -3358,16 +3358,26 @@ function viewNetwork(v){
     '<div class="netgrp"><span class="netkick">View</span><span class="netacts">' +
     '<button type="button" class="btn ghost sm' + (S.net.view === '2d' ? ' on' : '') + '" data-act="netview" data-v="2d" aria-pressed="' + (S.net.view === '2d' ? 'true' : 'false') + '">2D</button>' +
     '<button type="button" class="btn ghost sm' + (S.net.view === '3d' ? ' on' : '') + '" data-act="netview" data-v="3d" aria-pressed="' + (S.net.view === '3d' ? 'true' : 'false') + '">3D</button></span></div>' +
+    '<div class="netgrp"><span class="netkick">Find</span><div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div></div>' +
     '<div class="netgrp"><span class="netkick">Actions</span><span class="netacts">' +
+    '<button type="button" class="btn ghost sm" data-act="netreset">Reset view</button>' +
     '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button></span></div>' +
     '</div></div>' +
     '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netclust" id="netclust" aria-hidden="true"></div>' +
+    '<div class="netfocus" id="netfocus" hidden></div>' +
     '<div class="nethov" id="nethov" hidden></div>' +
     '<div class="netlegend" id="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
     '<button type="button" class="netlegchip" data-act="netlegend" aria-expanded="false" aria-controls="netlegend">Legend</button>' +
     '<div class="netzoom"><button type="button" class="ib" data-act="netzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="netzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="netfit" aria-label="Reset view">' + ic('target', 18) + '</button></div>' +
     '</div>' +
-    '<aside class="netpanel" id="netpanel"><div id="netpcard" hidden></div><div class="netporgs" id="netporgs"></div><div class="netpstats" id="netpstats"></div></aside></div></div>';
+    '<aside class="netpanel" id="netpanel"><div class="netprail">' +
+    '<button type="button" class="ib sm netpchev" data-act="netpanel" aria-expanded="true" aria-label="Collapse panel">' + ic('chevr', 16) + '</button>' +
+    '<button type="button" class="netprail-orgs" data-act="netpanel" aria-label="Expand panel">Orgs</button></div>' +
+    '<div class="netpbody"><div id="netpcard" hidden></div><div class="netporgs" id="netporgs"></div><div class="netpstats" id="netpstats"></div></div></aside></div></div>';
+  /* Panel state on entry: the stored preference, except that
+     arriving with a person selected always opens it — the
+     selection card lives in the panel. */
+  netSetPanel(S.net.sel != null ? true : netPanelOpen());
   if(!NET.nodes.length || NET.stamp !== VER) { netBuild(); NET.stamp = VER; }
   NET.cv = $('#netcv'); NET.ctx = NET.cv.getContext('2d'); NET.hovEl = $('#nethov'); NET.hovDi = null;
   NET.hoverDi = null; NET.glide = null; NET.cxOff = 0;
@@ -3414,7 +3424,7 @@ function viewNetwork(v){
     if(had && !NET.moved && Object.keys(NET.ptr).length === 0){
       var r = cv.getBoundingClientRect(), sx = ev.clientX - r.left, sy = ev.clientY - r.top;
       var n = netHit(sx, sy);
-      if(n){ S.net.sel = n.di; }
+      if(n){ S.net.sel = n.di; netSetPanel(true); }
       else {
         var hub = netHubHit(sx, sy);
         if(hub) S.net.org = (S.net.org === hub.name) ? null : hub.name;
@@ -3446,6 +3456,9 @@ function viewNetwork(v){
     }
     NET.lastT = now;
     netGlideStep(now);
+    /* Search pulse: keep redrawing while the found person's
+       ring expands (900ms); reduced motion never starts one. */
+    if(NET.pulse && !REDUCED_MOTION){ if(now - NET.pulse.t0 >= 900) NET.pulse = null; else NET.dirty = true; }
     if(NET.dirty){ netDraw(); NET.dirty = false; }
     NET.raf = requestAnimationFrame(frame);
   })();
@@ -3550,6 +3563,18 @@ function netResize(){
 function netFit(){
   /* Reset is a 450ms glide home, not a snap. */
   netGlide(450, { c2x:0, c2y:0, c2z:netFitZ() });
+}
+/* Reset view (V2.35.0): fitted default framing, and every focus
+   cleared — organization, person, search text, pulse. In 3D the
+   disc's rotation and tilt also return to their defaults. Both
+   controls labeled "Reset view" (toolbar button, zoom-cluster
+   target icon) run this. */
+function netResetView(){
+  S.net.org = null; S.net.sel = null; NET.pulse = null;
+  var nq = $('#netq'); if(nq) nq.value = '';
+  var nb = $('#netfr'); if(nb) nb.hidden = true;
+  if(NET.view === '3d'){ NET.rot = 0; NET.tilt = 1.02; }
+  netFit(); netCard(); NET.dirty = true;
 }
 function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2 + NET.cxOff, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
 /* ---------- 3D view (JD 2026-10-22): the same Design A disc,
@@ -3711,6 +3736,11 @@ function netDraw(){
     if(n.nw){ ctx.fillStyle = hexA(col, 0.18); ctx.beginPath(); ctx.arc(p[0], p[1], rr + 5, 0, 6.2832); ctx.fill(); }
     ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p[0], p[1], rr, 0, 6.2832); ctx.fill();
     if(isSel){ ctx.strokeStyle = '#e30613'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(p[0], p[1], rr + 3.5, 0, 6.2832); ctx.stroke(); }
+    /* Search-found pulse: one expanding ring over 900ms. */
+    if(isSel && NET.pulse && NET.pulse.di === n.di && !REDUCED_MOTION){
+      var pt = (performance.now() - NET.pulse.t0) / 900;
+      if(pt >= 0 && pt < 1){ ctx.strokeStyle = 'rgba(227,6,19,' + (0.65 * (1 - pt)).toFixed(3) + ')'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p[0], p[1], rr + 4 + pt * 16, 0, 6.2832); ctx.stroke(); }
+    }
   });
   ctx.globalAlpha = 1;
   /* --- JD at the center --- */
@@ -3779,6 +3809,69 @@ function netCard(){
   /* the panel opening or closing changes the canvas size; refit the
      backing store, flagged so netResize can glide the compensation */
   if(NET.cv && document.body.contains(NET.cv)){ NET._panelFlag = true; requestAnimationFrame(function(){ netResize(); }); }
+  netFocusPaint();
+}
+
+/* ---------- Network chrome (V2.35.0): collapsible panel,
+   find-a-person, focus chips. Display-state only — the panel
+   preference persists per device like the other view prefs. --- */
+function netPanelOpen(){
+  var v = store('ncc_netpanel');
+  if(v === '1') return true;
+  if(v === '0') return false;
+  /* First run on this device: open on wide screens, collapsed
+     on narrow ones (the <=899px layout where the panel is an
+     overlay, not a column). */
+  return window.innerWidth > 899;
+}
+function netSetPanel(open, glide){
+  store('ncc_netpanel', open ? '1' : '0');
+  var p = $('#netpanel'); if(!p) return;
+  p.classList.toggle('closed', !open);
+  var b = $('.netpchev', p);
+  if(b){ b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.setAttribute('aria-label', open ? 'Collapse panel' : 'Expand panel'); }
+  /* Width change resizes the canvas; ride the same flagged
+     compensation glide the selection card uses. */
+  if(glide && NET.cv && document.body.contains(NET.cv)){ NET._panelFlag = true; requestAnimationFrame(function(){ netResize(); }); }
+}
+/* Focus chips over the map: what is focused, with a way out.
+   Repainted by netCard, so every focus path (panel row, hub
+   tap, Home arrival, selection) stays in sync. */
+function netFocusPaint(){
+  var f = $('#netfocus'); if(!f) return;
+  var html = '';
+  if(S.net.org) html += '<span class="nf-chip"><span class="nf-tx">Focused: <b>' + esc(S.net.org) + '</b></span><button type="button" class="ib sm" data-act="netfocusx" data-v="org" aria-label="Clear organization focus">' + ic('x', 14) + '</button></span>';
+  if(S.net.sel != null && D.directory[S.net.sel]){
+    var e = D.directory[S.net.sel];
+    html += '<span class="nf-chip"><span class="nf-tx"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '</span><button type="button" class="ib sm" data-act="netfocusx" data-v="sel" aria-label="Clear selection">' + ic('x', 14) + '</button></span>';
+  }
+  f.innerHTML = html; f.hidden = !html;
+}
+/* Find a person: name matches over the people actually on the
+   map (searchPeople's ranking, filtered to NET.byDi). Picking
+   selects the person, opens the panel card, and glides the
+   camera to them with a one-shot ring pulse. */
+function netPaintFind(){
+  var inp = $('#netq'), box = $('#netfr'); if(!inp || !box) return;
+  var q = inp.value.trim();
+  if(!q){ box.hidden = true; box.innerHTML = ''; return; }
+  var hits = searchPeople(q, 40).filter(function(di){ return !!NET.byDi[di]; }).slice(0, 7);
+  box.innerHTML = hits.length ? hits.map(function(di, i){
+    var e = D.directory[di], nd = NET.byDi[di];
+    return '<button type="button" class="netf-row' + (i === 0 ? ' on' : '') + '" data-act="netfindpick" data-di="' + di + '">' + avatar(e, 'sm') +
+      '<span class="netf-tx"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(nd.primary || tierName(e) || 'No tier yet') + '</small></span></button>';
+  }).join('') : '<div class="netfnone">No match</div>';
+  box.hidden = false;
+}
+function netPickFind(di){
+  var nd = NET.byDi[di]; if(!nd) return;
+  var box = $('#netfr'); if(box) box.hidden = true;
+  S.net.sel = di;
+  netSetPanel(true);
+  netCard();
+  NET.pulse = REDUCED_MOTION ? null : { di:di, t0:performance.now() };
+  var p2 = netP2(nd);
+  netGlide(300, { c2x:p2[0], c2y:p2[1], c2z:Math.max(NET.cam.z, 1.6) });
 }
 
 /* ============================================================
@@ -7019,6 +7112,7 @@ function onClick(ev){
   var t = ev.target;
   if(!t.closest('.menu')) $$('.menu-pop').forEach(function(m){ m.hidden = true; });
   if(!t.closest('.gsearch')){ var gb = $('#gsr'); if(gb) gb.hidden = true; }
+  if(!t.closest('.netfind')){ var nb = $('#netfr'); if(nb) nb.hidden = true; }
   var el = t.closest('[data-act]'); if(!el) return;
   if(el.tagName === 'INPUT') return;   /* checkboxes and radios are handled on change */
   var act = el.getAttribute('data-act'), di = curDi(el);
@@ -7185,12 +7279,16 @@ function onClick(ev){
     case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
     case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
     case 'netorg': { var ov = el.getAttribute('data-v'); S.net.org = ov && ov !== S.net.org ? ov : null; netCard(); NET.dirty = true; break; }
+    case 'netpanel': { var pn = $('#netpanel'); if(pn) netSetPanel(pn.classList.contains('closed'), true); NET.dirty = true; break; }
+    case 'netfindpick': netPickFind(di); break;
+    case 'netreset': netResetView(); break;
+    case 'netfocusx': { var fx = el.getAttribute('data-v'); if(fx === 'org') S.net.org = null; else S.net.sel = null; netCard(); NET.dirty = true; break; }
     case 'hmorg': { var hn = el.getAttribute('data-v'); S.net.org = hn || null; S.net.sel = null; go('network'); break; }
     case 'netview': { var vv = el.getAttribute('data-v') === '3d' ? '3d' : '2d'; S.net.view = vv; NET.view = vv; store('ncc_netview', vv); $$('.netacts [data-act="netview"]').forEach(function(b){ var on = b.getAttribute('data-v') === vv; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); if(vv === '3d') netGlide(300, { c2x:0, c2y:0 }); NET.dirty = true; break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
     case 'netzoom': { var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; netGlide(200, { c2z:Math.max(0.3, Math.min(4, NET.cam.z * zf)) }); break; }
-    case 'netfit': netFit(); break;
+    case 'netfit': netResetView(); break;
     case 'netclose': S.net.sel = null; netCard(); NET.dirty = true; break;
     case 'fnode': { if(FAMV.moved) break; S.fam.focus = di; $$('.fn.foc').forEach(function(n){ n.classList.remove('foc'); }); el.classList.add('foc'); famCard(); famGlide(di); break; }
     case 'famclose': S.fam.focus = null; $$('.fn.foc').forEach(function(n){ n.classList.remove('foc'); }); famCard(); break;
@@ -7234,6 +7332,7 @@ function refreshAfterUndo(dir){
 function onInput(ev){
   var t = ev.target;
   if(t.id === 'gs'){ paintSearch(); return; }
+  if(t.id === 'netq'){ netPaintFind(); return; }
   if(t.id === 'pq'){ S.ppl.q = t.value; paintPeople(); return; }
   if(t.id === 'phq'){ PH_QUERY = t.value; phPaintList(); return; }
   if(t.id === 'assocq'){ var e = D.directory[S.prof.di]; pickerHits(t, '#assocr', 'assocadd', [S.prof.di].concat(knownAssociates(e).map(function(n){ return BYN[(n.u || '').toLowerCase()]; }))); return; }
@@ -7374,6 +7473,11 @@ function onKey(ev){
   if(ev.key === 'Enter' && t.id === 'gnew'){ ev.preventDefault(); var b = $('[data-act="gnew"]'); if(b) b.click(); return; }
   if(ev.key === 'Enter' && t.id === 'dtitle'){ ev.preventDefault(); var d = $('[data-act="docgo"]'); if(d) d.click(); return; }
   if(ev.key === 'Enter' && t.id === 'ekey'){ ev.preventDefault(); var s = $('[data-act="savekey"]'); if(s) s.click(); return; }
+  if(t.id === 'netq'){
+    if(ev.key === 'Enter'){ ev.preventDefault(); var nf1 = $('#netfr .netf-row'); if(nf1) nf1.click(); }
+    else if(ev.key === 'Escape'){ t.value = ''; var nb3 = $('#netfr'); if(nb3) nb3.hidden = true; t.blur(); }
+    return;
+  }
   if(t.id === 'gs'){
     if(ev.key === 'Enter'){ ev.preventDefault(); var first = $('#gsr .gsi-row'); if(first) first.click(); else if(t.value.trim()){ S.ppl.q = t.value; go('people'); } }
     else if(ev.key === 'Escape'){ t.value = ''; paintSearch(); t.blur(); }
