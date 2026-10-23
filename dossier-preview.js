@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.27.0';
+var APP_VERSION = '2.28.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1620,6 +1620,7 @@ function askEditKey(){
 
 /* ---------- global chrome ---------- */
 var NAV = [
+  { k:'home',    l:'Home',    ic:'home' },
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
   { k:'daily',   l:'Live Records', ic:'search' },
@@ -1638,7 +1639,7 @@ function renderChrome(){
   var items = NAV.map(function(n){
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span></a>';
   }).join('');
-  $('#rail').innerHTML = '<a class="brand" href="#/people" aria-label="North Country Circle"><i></i><b>North Country Circle</b></a>' +
+  $('#rail').innerHTML = '<a class="brand" href="#/home" aria-label="North Country Circle"><i></i><b>North Country Circle</b></a>' +
     '<div class="navlist">' + items + '</div>' +
     '<div class="railfoot"><a href="index.html" class="nv">' + ic('network', 20) + '<span>Visual map</span></a>' +
     '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
@@ -1712,11 +1713,11 @@ function paintSearch(){
 
 /* ---------- router ---------- */
 function parseRoute(){
-  var h = (location.hash || '#/people').replace(/^#\/?/, '');
+  var h = (location.hash || '#/home').replace(/^#\/?/, '');
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
-  var name = seg[0] || 'people';
+  var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['people','profile','network','family','groups','settings','audit','daily','photos'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','photos'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -1770,7 +1771,8 @@ function render(){
   if(render._pv !== n){ render._pv = n; v.classList.remove('vin'); void v.offsetWidth; v.classList.add('vin'); clearTimeout(render._vt); render._vt = setTimeout(function(){ v.classList.remove('vin'); }, 380); }
   try{
     renderChrome();
-    if(n === 'people') viewPeople(v);
+    if(n === 'home') viewHome(v);
+    else if(n === 'people') viewPeople(v);
     else if(n === 'profile') viewProfile(v);
     else if(n === 'network') viewNetwork(v);
     else if(n === 'family') viewFamily(v);
@@ -4050,6 +4052,319 @@ function groupDelete(n){
    ============================================================ */
 
 /* ============================================================
+   Home (JD 2026-10-22, V2.28.0): the overview landing. JD
+   picked the merge from the preview set: Shape of the Network
+   (config 3) on top, then the Network map preview (5),
+   Coverage & Gaps (4), Photos (6), Organizations & Groups (7),
+   with What's New (2) as a sticky activity rail on the right.
+   Every number is computed at runtime from the app's own data
+   (the directory, data/photos.json, data/changes.json,
+   data/daily-ten.json) — nothing is baked in. Read-only:
+   nothing here writes data.
+   ============================================================ */
+var HM_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function hmFmtD(iso){
+  if(!iso) return '';
+  var p = String(iso).split('-');
+  if(p.length === 2) return HM_MON[parseInt(p[1], 10) - 1] + ' ' + p[0];
+  if(p.length < 3) return String(iso);
+  return HM_MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0];
+}
+function hmDiOf(name){ var di = BYN[String(name || '').toLowerCase()]; return di == null ? null : di; }
+function hmPersonLink(name, display){
+  var di = hmDiOf(name), label = esc(display || name || '');
+  if(di == null) return '<b>' + label + '</b>';
+  return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>';
+}
+function hmBar(label, val, max, muted){
+  var pct = max > 0 ? Math.max(2, Math.round(1000 * val / max) / 10) : 0;
+  return '<div class="hm-bar"><span class="hm-bl">' + esc(label) + '</span><span class="hm-tr"><span class="hm-fill' + (muted ? ' mut' : '') + '" data-w="' + pct + '" style="width:0"></span></span><span class="hm-bv" data-hmn="' + val + '">0</span></div>';
+}
+function hmProg(label, num, den){
+  var pct = den > 0 ? Math.round(1000 * num / den) / 10 : 0;
+  return '<div class="hm-prog"><div class="hm-pr"><span>' + esc(label) + '</span><b><span data-hmn="' + num + '">0</span> / ' + den + ' &middot; ' + pct + '%</b></div>' +
+    '<div class="hm-ptr"><div class="hm-fill" data-w="' + Math.max(1.5, pct) + '" style="width:0"></div></div></div>';
+}
+function hmGap(label, n, href){
+  return '<a class="hm-gap" href="' + href + '"><span>' + esc(label) + '</span><span class="hm-gn" data-hmn="' + n + '">0</span></a>';
+}
+
+/* --- Config 3: Shape of the Network --- */
+function hmShapeCard(pop, N){
+  var tc = { vetted:0, associate:0, open:0, none:0 };
+  var dec = {}, decMax = 0, undated = 0;
+  var towns = {}, rels = {}, relMax = 0, relBlank = 0;
+  pop.forEach(function(di){
+    var e = D.directory[di], t = tierOf(e);
+    if(t === 'vetted') tc.vetted++; else if(t === 'associate') tc.associate++; else if(t === 'open') tc.open++; else tc.none++;
+    var y = knownSinceYear(e);
+    if(y){ var dk = Math.floor(y / 10) * 10 + 's'; dec[dk] = (dec[dk] || 0) + 1; if(dec[dk] > decMax) decMax = dec[dk]; } else undated++;
+    var loc = ptLocVal(e), town = loc ? loc.split(',')[0].trim() : '';
+    if(town) towns[town] = (towns[town] || 0) + 1;
+    var rv = String(gv(e, 'relationship') || '').trim();
+    if(rv){ var rk = rv.toLowerCase(); rels[rk] = (rels[rk] || 0) + 1; if(rels[rk] > relMax) relMax = rels[rk]; } else relBlank++;
+  });
+  var C = 2 * Math.PI * 48, off = 0;
+  var segs = [
+    { n:tc.vetted, c:TIERS.vetted.c, l:'Vetted' },
+    { n:tc.associate, c:TIERS.associate.c, l:'Associate' },
+    { n:tc.open, c:TIERS.open.c, l:'Open' },
+    { n:tc.none, c:RING_C[3], l:'No tier yet' }
+  ];
+  var circles = '', legend = '';
+  segs.forEach(function(sg, i){
+    if(sg.n > 0){
+      var len = sg.n / N * C, arc = Math.max(0, len - 2.5);
+      circles += '<circle class="hm-seg" cx="60" cy="60" r="48" fill="none" stroke="' + sg.c + '" stroke-width="17" stroke-dasharray="0 ' + C.toFixed(1) + '" data-da="' + arc.toFixed(1) + ' ' + (C - arc).toFixed(1) + '" stroke-dashoffset="' + (-off).toFixed(1) + '" style="transition-delay:' + (i * 90) + 'ms"/>';
+      off += len;
+    }
+    legend += '<div class="hm-leg"><span class="hm-sw" style="background:' + sg.c + '"></span><span class="hm-leg-l">' + sg.l + '</span><b data-hmn="' + sg.n + '">0</b><span class="hm-leg-p">' + (N ? Math.round(1000 * sg.n / N) / 10 : 0) + '%</span></div>';
+  });
+  var donut = '<div class="hm-donutwrap"><svg class="hm-donut" viewBox="0 0 120 120" width="118" height="118" role="img" aria-label="Tier mix"><g transform="rotate(-90 60 60)">' + circles + '</g>' +
+    '<text x="60" y="59" class="hm-donut-n" text-anchor="middle">' + N + '</text><text x="60" y="75" class="hm-donut-l" text-anchor="middle">PEOPLE</text></svg>' +
+    '<div class="hm-legend">' + legend + '</div></div>';
+  var decBars = Object.keys(dec).sort().map(function(k){ return hmBar(k, dec[k], decMax); }).join('') +
+    (undated ? '<p class="dim hm-note">' + undated + ' with no start year on file.</p>' : '');
+  var townTop = Object.keys(towns).map(function(k){ return { n:k, c:towns[k] }; }).sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); }).slice(0, 6);
+  var townMax = townTop.length ? townTop[0].c : 0;
+  var townBars = townTop.map(function(t){ return hmBar(t.n, t.c, townMax, true); }).join('');
+  var relTop = Object.keys(rels).map(function(k){ return { n:k, c:rels[k] }; }).sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); }).slice(0, 5);
+  var relBars = relTop.map(function(r){ return hmBar(cap(r.n), r.c, relMax); }).join('') +
+    (relBlank ? '<p class="dim hm-note">' + relBlank + ' of ' + N + ' have no relationship type on file.</p>' : '');
+  return '<section class="card hm-blk"><header><h3>Shape of the network</h3><em class="cnt">' + N + ' people</em></header><div class="cbody"><div class="hm-shape">' +
+    '<div class="hm-sub"><h4>Tier mix</h4>' + donut + '</div>' +
+    '<div class="hm-sub"><h4>Known since</h4>' + decBars + '<h4 class="hm-sub2">Where they are</h4>' + townBars + '</div>' +
+    '<div class="hm-sub"><h4>Relationship types</h4>' + relBars + '</div>' +
+    '</div></div></section>';
+}
+
+/* --- Config 5: the Network, in miniature. Same layout the
+   Network view computes (netBuild: score rings, org hubs at
+   member centroids, tier colors), drawn as one SVG. The whole
+   plotted group drifts at the Network 3D view's rate (one
+   revolution per 90 s); hub name plates counter-rotate so
+   they stay upright. Hover pauses the drift. --- */
+var HM_NET_RAF = 0;
+function hmNetCard(){
+  netBuild();
+  var parts = [], rot = [], i;
+  for(i = 0; i < SCORE_RADII.length; i++){
+    parts.push('<circle cx="0" cy="0" r="' + SCORE_RADII[i] + '" class="hm-ring"/>');
+    parts.push('<text class="hm-guide" x="14" y="' + (-SCORE_RADII[i] + 32) + '">' + esc(SCORE_GUIDES[i]) + '</text>');
+  }
+  NET.hubs.forEach(function(h){ rot.push('<line class="hm-hubspoke" x1="0" y1="0" x2="' + h.x.toFixed(1) + '" y2="' + h.y.toFixed(1) + '"/>'); });
+  NET.hubs.slice(0, 6).forEach(function(h){ h.nds.forEach(function(nd){ rot.push('<line class="hm-spoke" x1="' + h.x.toFixed(1) + '" y1="' + h.y.toFixed(1) + '" x2="' + nd.sx.toFixed(1) + '" y2="' + nd.sy.toFixed(1) + '"/>'); }); });
+  NET.nodes.forEach(function(nd){ rot.push('<circle class="hm-node" cx="' + nd.sx.toFixed(1) + '" cy="' + nd.sy.toFixed(1) + '" r="' + (nd.r * 2.6).toFixed(1) + '" fill="' + netColor(nd) + '"/>'); });
+  NET.hubs.forEach(function(h){
+    rot.push('<rect class="hm-hubmark" x="' + (h.x - 9).toFixed(1) + '" y="' + (h.y - 9).toFixed(1) + '" width="18" height="18" transform="rotate(45 ' + h.x.toFixed(1) + ' ' + h.y.toFixed(1) + ')"/>');
+  });
+  NET.hubs.slice(0, 5).forEach(function(h){
+    rot.push('<text class="hm-hublabel" data-hx="' + h.x.toFixed(1) + '" data-hy="' + h.y.toFixed(1) + '" x="' + h.x.toFixed(1) + '" y="' + (h.y - 26).toFixed(1) + '" text-anchor="middle">' + esc(h.name) + '</text>');
+  });
+  var svg = '<svg class="hm-netsvg" viewBox="-1040 -1040 2080 2080" role="img" aria-label="Network preview: everyone in the directory on closeness rings around JD">' +
+    parts.join('') + '<g class="hm-rot">' + rot.join('') + '</g>' +
+    '<circle cx="0" cy="0" r="17" class="hm-jddot"/><text class="hm-jd" x="0" y="64" text-anchor="middle">JD</text></svg>';
+  var orgRows = NET.hubs.slice(0, 8).map(function(h){
+    return '<button type="button" class="hm-org" data-act="hmorg" data-v="' + esc(h.name) + '"><span>' + esc(h.name) + '</span><b data-hmn="' + h.nds.length + '">0</b></button>';
+  }).join('');
+  return '<section class="card hm-blk"><header><h3>Network</h3><em class="cnt">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</em></header><div class="cbody">' +
+    '<div class="hm-netgrid"><a class="hm-netlink" href="#/network" aria-label="Open the full Network">' + svg + '</a>' +
+    '<div><h4>Organizations &mdash; tap to focus</h4><div class="hm-orgs">' + orgRows + '</div>' +
+    '<p class="dim hm-note">Everyone in the directory on closeness rings; each tie routes through the person&rsquo;s largest organization. Tap the map for the full Network.</p></div></div>' +
+    '</div></section>';
+}
+function hmNetDrift(){
+  cancelAnimationFrame(HM_NET_RAF);
+  var g = $('.hm-rot'), svg = $('.hm-netsvg');
+  if(!g || !svg || REDUCED_MOTION) return;
+  var labels = $$('.hm-hublabel', svg), paused = false, ang = 0, last = performance.now();
+  svg.addEventListener('pointerenter', function(){ paused = true; });
+  svg.addEventListener('pointerleave', function(){ paused = false; });
+  function frame(now){
+    if(!document.body.contains(g) || S.route.name !== 'home') return;
+    var dt = now - last; last = now;
+    if(!paused) ang = (ang + dt * 0.004) % 360;   /* 0.004 deg/ms = one revolution per 90 s, the Network 3D drift rate */
+    g.setAttribute('transform', 'rotate(' + ang.toFixed(2) + ')');
+    for(var i = 0; i < labels.length; i++) labels[i].setAttribute('transform', 'rotate(' + (-ang).toFixed(2) + ' ' + labels[i].getAttribute('data-hx') + ' ' + labels[i].getAttribute('data-hy') + ')');
+    HM_NET_RAF = requestAnimationFrame(frame);
+  }
+  HM_NET_RAF = requestAnimationFrame(frame);
+}
+/* --- Config 4: Coverage & Gaps --- */
+function hmCoverageCard(pop, N, ph){
+  var locN = 0, yrsN = 0, phN = 0, relBlank = 0;
+  pop.forEach(function(di){
+    var e = D.directory[di];
+    if(ptLocVal(e)) locN++;
+    if(knownSinceYear(e)) yrsN++;
+    if(gv(e, 'phone')) phN++;
+    if(!String(gv(e, 'relationship') || '').trim()) relBlank++;
+  });
+  var rows = '', gaps = '';
+  if(ph.ok) rows += hmProg('Photos on file', ph.onFile, N);
+  if(DT && DT.coverage) rows += hmProg('Live Records rotation', DT.coverage.checked_total, DT.coverage.of);
+  rows += hmProg('Location on file', locN, N);
+  rows += hmProg('Years known dated', yrsN, N);
+  rows += hmProg('Phone numbers filed', phN, N);
+  if(DT && DT.coverage) gaps += hmGap('Not yet checked by Live Records', Math.max(0, DT.coverage.of - DT.coverage.checked_total), '#/daily');
+  gaps += hmGap('No location on file', N - locN, '#/people');
+  if(ph.ok) gaps += hmGap('No photo yet', ph.noPhoto, '#/photos');
+  gaps += hmGap('No phone number', N - phN, '#/people');
+  gaps += hmGap('Relationship type untyped', relBlank, '#/people');
+  return '<section class="card hm-blk"><header><h3>Coverage &amp; gaps</h3></header><div class="cbody"><div class="hm-cov">' +
+    '<div>' + rows + '</div><div><h4>Biggest gaps</h4>' + gaps + '</div>' +
+    '</div></div></section>';
+}
+
+/* --- Config 6: Photos. "On file" mirrors the Photos view's
+   own rule (a URL plus a confirmed / likely / possible grade,
+   minus anything JD rejected). The wall leads with the most
+   recently filed photos — the change log's order — then by
+   grade, the same ordering the Photos page opens with. --- */
+function hmPhotoStats(){
+  if(!PH || !PH.people) return { ok:false };
+  var REV = phReview();
+  function revOf(p){ return REV[String(p.name || '').toLowerCase()] || ''; }
+  var counts = { no_photo:0, no_source:0, auth_only:0 };
+  PH.people.forEach(function(p){ if(counts[p.status] != null) counts[p.status]++; });
+  var found = PH.people.filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely' || p.status === 'possible') && revOf(p) !== 'rejected'; });
+  var chRank = {};
+  if(CH && CH.entries) CH.entries.forEach(function(c, i){ var k = String(c.name || '').toLowerCase(); if(chRank[k] == null) chRank[k] = i; });
+  var gradeR = { confirmed:0, likely:1, possible:2 };
+  var wall = found.slice().sort(function(a, b){
+    var ca = chRank[String(a.name).toLowerCase()], cb = chRank[String(b.name).toLowerCase()];
+    if(ca != null || cb != null){ if(ca == null) return 1; if(cb == null) return -1; if(ca !== cb) return ca - cb; }
+    return (gradeR[a.status] - gradeR[b.status]) || a.name.localeCompare(b.name);
+  }).slice(0, 17);
+  var ig = 0;
+  found.forEach(function(p){ if(String(p.type || '').indexOf('Instagram') >= 0) ig++; });
+  return { ok:true, onFile:found.length, noPhoto:counts.no_photo + counts.no_source + counts.auth_only, checked:PH.people.length, total:PH.total || PH.people.length, ig:ig, wall:wall };
+}
+function hmPhotosCard(ph){
+  if(!ph.ok) return '<section class="card hm-blk"><header><h3>Photos</h3></header><div class="cbody"><p class="dim">' + (PH ? 'No photo data yet.' : 'Loading photo data&hellip;') + '</p></div></section>';
+  var kpis = '<div class="hm-kpis">' +
+    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.onFile + '">0</div><div class="hm-kl">Photos on file</div></div>' +
+    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.noPhoto + '">0</div><div class="hm-kl">No photo yet</div></div>' +
+    '<div class="hm-kpi"><div class="hm-kn">' + ph.checked + '<small> / ' + ph.total + '</small></div><div class="hm-kl">Profiles checked</div></div>' +
+    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.ig + '">0</div><div class="hm-kl">From Instagram</div></div></div>';
+  var tiles = ph.wall.map(function(p){
+    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + '</span></a>';
+  }).join('');
+  tiles += '<a class="hm-tile miss" href="#/photos"><b data-hmn="' + ph.noPhoto + '">0</b><span>still missing a photo</span></a>';
+  return '<section class="card hm-blk"><header><h3>Photos</h3><em class="cnt">recently filed first</em></header><div class="cbody">' + kpis +
+    '<div class="hm-tiles">' + tiles + '</div></div></section>';
+}
+
+/* --- Config 7: Organizations & Groups --- */
+function hmOrgsCard(pop){
+  var counts = {}, catOf = {}, sets = [];
+  pop.forEach(function(di){
+    var e = D.directory[di], seen = {};
+    ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ var cn = regApply(o); if(cn && !seen[cn]){ seen[cn] = 1; counts[cn] = (counts[cn] || 0) + 1; if(!catOf[cn]) catOf[cn] = c.k; } }); });
+    sets.push(seen);
+  });
+  var top = Object.keys(counts).map(function(k){ return { n:k, c:counts[k] }; }).sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); });
+  var top8 = top.slice(0, 8), max = top8.length ? top8[0].c : 0;
+  var bars = top8.map(function(o){
+    var pct = max > 0 ? Math.max(2, Math.round(1000 * o.c / max) / 10) : 0;
+    return '<a class="hm-bar hm-barlink" href="#/groups/' + catOf[o.n] + '/' + encodeURIComponent(o.n) + '"><span class="hm-bl">' + esc(o.n) + '</span><span class="hm-tr"><span class="hm-fill" data-w="' + pct + '" style="width:0"></span></span><span class="hm-bv" data-hmn="' + o.c + '">0</span></a>';
+  }).join('');
+  var pairs = [], top6 = top.slice(0, 6), i, j;
+  for(i = 0; i < top6.length; i++) for(j = i + 1; j < top6.length; j++){
+    var n = 0;
+    sets.forEach(function(s){ if(s[top6[i].n] && s[top6[j].n]) n++; });
+    if(n > 0) pairs.push({ a:top6[i].n, b:top6[j].n, n:n });
+  }
+  pairs.sort(function(a, b){ return b.n - a.n; });
+  var pairRows = pairs.slice(0, 4).map(function(p){ return '<div class="hm-gap static"><span>' + esc(p.a) + ' + ' + esc(p.b) + '</span><span class="hm-gn" data-hmn="' + p.n + '">0</span></div>'; }).join('');
+  var gCounts = {};
+  pop.forEach(function(di){ personGroups(D.directory[di]).forEach(function(g){ gCounts[g] = (gCounts[g] || 0) + 1; }); });
+  var gTop = Object.keys(gCounts).map(function(k){ return { n:k, c:gCounts[k] }; }).sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); }).slice(0, 8);
+  var chips = gTop.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g.n) + '">' + esc(g.n) + ' <b>' + g.c + '</b></a>'; }).join('');
+  return '<section class="card hm-blk"><header><h3>Organizations &amp; groups</h3><em class="cnt">' + Object.keys(counts).length + ' organizations</em></header><div class="cbody"><div class="hm-cov">' +
+    '<div><h4>Leaderboard &middot; members</h4>' + bars + '</div>' +
+    '<div><h4>Where they intersect</h4>' + (pairRows || '<p class="dim">No shared memberships among the largest organizations.</p>') +
+    '<h4 class="hm-sub2">Groups</h4><div class="chips ro">' + chips + '</div></div>' +
+    '</div></div></section>';
+}
+
+/* --- Config 2: What's New, the activity rail --- */
+function hmRail(){
+  var out = '<aside class="hm-rail hm-blk"><div class="hm-rail-h"><span>What&rsquo;s new</span>' + (DT && DT.date ? '<em>' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</div>';
+  var freshF = null, freshX = null;
+  if(DT && DT.filed) DT.filed.forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh && !freshX){ freshF = f; freshX = x; } }); });
+  if(freshF){
+    out += '<div class="hm-hero"><div class="hm-hk">New record &mdash; past 3 weeks</div>' +
+      '<div class="hm-hname">' + hmPersonLink(freshF.name, freshF.display) + '</div>' +
+      '<p class="hm-hfact">' + esc(freshX.text) + (freshX.url ? ' <a class="assrc" href="' + esc(freshX.url) + '" target="_blank" rel="noopener">' + esc(freshX.source || 'source') + ' ' + ic('ext', 11) + '</a>' : '') + '</p>' +
+      '<div class="hm-hmeta">' + (freshX.published ? 'Published ' + esc(hmFmtD(freshX.published)) + ' &middot; ' : '') + 'Filed ' + esc(hmFmtD(DT.date)) + '</div></div>';
+  }
+  out += '<div class="hm-counters">' +
+    '<div class="hm-counter"><b>' + (CH && CH.entries ? '<span data-hmn="' + CH.entries.length + '">0</span>' : '&mdash;') + '</b><span class="hm-cl">Changes logged</span></div>' +
+    '<div class="hm-counter"><b>' + (DT && DT.coverage ? '<span data-hmn="' + DT.coverage.checked_total + '">0</span><small> / ' + DT.coverage.of + '</small>' : '&mdash;') + '</b><span class="hm-cl">Checked this rotation</span></div>' +
+    '<div class="hm-counter"><b>' + (DT && DT.checked ? '<span data-hmn="' + DT.checked.length + '">0</span>' : '&mdash;') + '</b><span class="hm-cl">Checked in latest brief</span></div>' +
+    '</div>';
+  out += '<div class="hm-rail-h sub"><span>Change log</span>' + (CH && CH.entries ? '<em>' + CH.entries.length + '</em>' : '') + '</div>';
+  if(CH && CH.entries && CH.entries.length){
+    out += CH.entries.slice(0, 8).map(function(c, i){
+      return '<div class="chg hm-fi" style="--d:' + (i * 60) + 'ms"><div class="chg-name">' + hmPersonLink(c.name) + '</div>' +
+        '<p class="chg-what">' + esc(c.what || '') + '</p>' +
+        '<div class="chg-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
+        (c.source_date ? ' &middot; source ' + esc(hmFmtD(c.source_date)) : '') +
+        (c.filed ? '<span class="chg-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' : '') + '</div></div>';
+    }).join('');
+    out += '<a class="hm-raillink" href="#/daily">Open Live Records ' + ic('arrow', 12) + '</a>';
+  } else {
+    out += '<p class="dim hm-railpad">' + (CH ? 'No changes logged yet.' : 'Loading the change log&hellip;') + '</p>';
+  }
+  return out + '</aside>';
+}
+
+/* Home animations: data-tied only (JD's motion rules). Numbers
+   count up, bars and coverage fills grow to their true value,
+   the tier donut sweeps its arcs in — each when its block
+   scrolls into view, once. Reduced motion lands everything in
+   its final state instantly (hmNetDrift also stands down). */
+function hmAnimate(){
+  var blocks = $$('.hm-blk');
+  if(!blocks.length) return;
+  function run(blk){
+    if(blk.classList.contains('hm-done')) return;
+    blk.classList.add('hm-done');
+    $$('[data-hmn]', blk).forEach(function(el){
+      var target = parseFloat(el.getAttribute('data-hmn'));
+      if(REDUCED_MOTION){ el.textContent = target; return; }
+      var t0 = null;
+      function step(ts){ if(!t0) t0 = ts; var p = Math.min(1, (ts - t0) / 600); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(step); }
+      requestAnimationFrame(step);
+    });
+    $$('.hm-fill[data-w]', blk).forEach(function(el){ el.style.width = el.getAttribute('data-w') + '%'; });
+    $$('.hm-seg[data-da]', blk).forEach(function(el){ el.setAttribute('stroke-dasharray', el.getAttribute('data-da')); });
+  }
+  if(REDUCED_MOTION || !('IntersectionObserver' in window)){ blocks.forEach(run); return; }
+  var io = new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){ run(en.target); io.unobserve(en.target); } }); }, { threshold:0.15 });
+  blocks.forEach(function(b){ io.observe(b); });
+  setTimeout(function(){ blocks.forEach(run); }, 1600);   /* safety net: nothing sits at zero if the observer never fires */
+}
+
+function viewHome(v){
+  phLoad(); dtLoad(); chLoad();
+  var pop = people(), N = pop.length;
+  var ph = hmPhotoStats();
+  v.innerHTML = '<div class="page hm"><div class="pagehead"><div><h1 class="display">Home</h1>' +
+    '<p class="sub">The whole circle at a glance: its shape, the map, coverage, photos, organizations, and what changed lately.</p></div></div>' +
+    '<div class="hm-wrap"><div class="hm-main">' +
+    hmShapeCard(pop, N) +
+    hmNetCard() +
+    hmCoverageCard(pop, N, ph) +
+    hmPhotosCard(ph) +
+    hmOrgsCard(pop) +
+    '</div>' + hmRail() + '</div></div>';
+  hmAnimate();
+  hmNetDrift();
+}
+
+/* ============================================================
    Daily Ten (JD 2026-10-19): the currency routine's brief.
    Every morning Luna checks 25 profiles against the public
    record and files the strongest verified updates into the
@@ -4062,8 +4377,8 @@ function dtLoad(){
   DT_LOADING = true;
   fetch('data/daily-ten.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ DT = d; DT_LOADING = false; if(S.route.name === 'daily') render(); })
-    .catch(function(){ DT = { empty:true }; DT_LOADING = false; if(S.route.name === 'daily') render(); });
+    .then(function(d){ DT = d; DT_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); })
+    .catch(function(){ DT = { empty:true }; DT_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); });
 }
 var CH = null, CH_LOADING = false;
 function chLoad(){
@@ -4071,7 +4386,7 @@ function chLoad(){
   CH_LOADING = true;
   fetch('data/changes.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ CH = d; CH_LOADING = false; if(S.route.name === 'daily') render(); })
+    .then(function(d){ CH = d; CH_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); })
     .catch(function(){ CH = { entries:[] }; CH_LOADING = false; });
 }
 function dtAnimate(){
@@ -4218,8 +4533,8 @@ function phLoad(){
   PH_LOADING = true;
   fetch('data/photos.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if(S.route.name === 'audit') render(); else if($('#p-hero')) repaintTop(); })
-    .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos') render(); });
+    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if(S.route.name === 'audit') render(); else if(S.route.name === 'home') render(); else if($('#p-hero')) repaintTop(); })
+    .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos' || S.route.name === 'home') render(); });
 }
 
 function phReview(){
@@ -6486,6 +6801,7 @@ function onClick(ev){
     case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
     case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
     case 'netorg': { var ov = el.getAttribute('data-v'); S.net.org = ov && ov !== S.net.org ? ov : null; netCard(); NET.dirty = true; break; }
+    case 'hmorg': { var hn = el.getAttribute('data-v'); S.net.org = hn || null; S.net.sel = null; go('network'); break; }
     case 'netview': { var vv = el.getAttribute('data-v') === '3d' ? '3d' : '2d'; S.net.view = vv; NET.view = vv; store('ncc_netview', vv); $$('.netacts [data-act="netview"]').forEach(function(b){ var on = b.getAttribute('data-v') === vv; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); if(vv === '3d') netGlide(300, { c2x:0, c2y:0 }); NET.dirty = true; break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
@@ -6717,6 +7033,8 @@ function skeletonHTML(note){
     body = '<div class="skl sk-hero"></div><div class="sk-cols"><div class="skl"></div><div class="skl"></div><div class="skl"></div></div>';
   } else if(h.indexOf('network') >= 0 || h.indexOf('family') >= 0){
     body = '<div class="skl sk-big"></div>';
+  } else if(h === '' || h === '#/' || h.indexOf('home') >= 0){
+    body = '<div class="skl sk-big"></div><div class="sk-cols"><div class="skl"></div><div class="skl"></div><div class="skl"></div></div>';
   } else {
     var rows = '';
     for(i = 0; i < 6; i++) rows += '<div class="skl-row"><span class="skl av"></span><span class="skl tx" style="width:' + (58 - (i % 3) * 8) + '%"></span><span class="skl tx s" style="width:22%"></span></div>';
@@ -6758,7 +7076,7 @@ function boot(){
         try{ applyOutbox(); }catch(px){}
         winsApplyAll();
         computeNewGain();
-        history.replaceState({ d:0 }, '', location.hash || '#/people');
+        history.replaceState({ d:0 }, '', location.hash || '#/home');
         render();
         outKick(); fetchChanges();
       })
