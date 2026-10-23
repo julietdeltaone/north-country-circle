@@ -1528,7 +1528,16 @@ html,body{background:var(--bg)}
 .phcols-ctl>span{font:600 11px Archivo,sans-serif;letter-spacing:.08em;color:#8f8f8f;text-transform:uppercase}
 .phcolbtn{background:none;border:1px solid #2b2b2b;color:#cfcfcf;border-radius:2px;padding:7px 10px;font:600 11px Archivo,sans-serif;cursor:pointer}
 .phcolbtn.on{border-color:#e30613;color:#fff}
-.phcard{overflow:hidden;content-visibility:auto;contain-intrinsic-size:auto 320px;cursor:pointer;position:relative}
+.phcard{overflow:hidden;content-visibility:auto;contain-intrinsic-size:auto 320px;cursor:pointer;position:relative;container-type:inline-size}
+/* Name strip on very narrow cards: the rank badge + grade chip cannot
+   share the strip with any of the name, so the name wins (the same rule
+   .phgrid.dense applies to .phg). Badge and chip stay in the viewer. */
+@container (max-width:88px){.phnm .milbadge,.phnm .phg{display:none}}
+/* A badged card never carries the grade chip in the strip: name + badge
+   + chip overflowed the strip and flex shrank the name itself to ~1px
+   (a short name vanished entirely). Grade still shows in the section
+   headers and the viewer. */
+.phnm:has(.milbadge) .phg{display:none}
 .phcard:hover{border-color:#3d3d3d}
 .phcard.sel{border-color:#e30613;box-shadow:0 0 0 1px #e30613}
 .phnm{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px}
