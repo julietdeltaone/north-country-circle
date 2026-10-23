@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.28.0';
+var APP_VERSION = '2.29.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -314,6 +314,30 @@ function raw(e, k){ var v = (e.profile || {})[k]; return v == null ? '' : String
 function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
 function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || RING_C[3]; }
 function tierName(e){ return (TIERS[tierOf(e)] || {}).n || ''; }
+/* Military rank badge (JD 2026-10-22, V2.29.0): a small US flag + rank
+   chip that follows anyone whose profile carries a rank (the Sheet's
+   Rank column, baked as profile.rank — the 27th IBCT roster) everywhere
+   their name renders. No rank, no chip: everyone else renders exactly
+   as before. One helper (milBadge) + one CSS family (.milbadge). */
+var MIL_FLAG = (function(){
+  var s = '<svg class="milflag" viewBox="0 0 16 11" width="16" height="11" aria-hidden="true" focusable="false">' +
+    '<rect width="16" height="11" fill="#f2f2f2"/>';
+  for(var i = 0; i < 13; i += 2) s += '<rect y="' + (i * 11 / 13).toFixed(2) + '" width="16" height="' + (11 / 13).toFixed(2) + '" fill="#b31942"/>';
+  s += '<rect width="7.4" height="' + (77 / 13).toFixed(2) + '" fill="#0a3161"/>';
+  for(var r = 0; r < 5; r++) for(var c = 0; c < 4; c++)
+    s += '<circle cx="' + (1.05 + c * 1.75).toFixed(2) + '" cy="' + (0.95 + r * 1.05).toFixed(2) + '" r="0.34" fill="#fff"/>';
+  return s + '</svg>';
+})();
+function milRank(e){ var r = gv(e, 'rank'); return r ? r.trim().toUpperCase() : ''; }
+function milBadge(e){
+  var r = e ? milRank(e) : '';
+  if(!r) return '';
+  return '<span class="milbadge" title="Military rank: ' + esc(r) + '">' + MIL_FLAG + '<span class="milrank">' + esc(r) + '</span></span>';
+}
+function milBadgeName(name){
+  var di = BYN[String(name || '').toLowerCase()];
+  return di == null || !D.directory[di] ? '' : milBadge(D.directory[di]);
+}
 function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
 function knownSinceYear(e){
   var v = String(gv(e, 'years_known') || '').trim();
@@ -1706,7 +1730,7 @@ function paintSearch(){
   box.innerHTML = hits.map(function(di, i){
     var e = D.directory[di];
     return '<button type="button" class="gsi-row' + (i === 0 ? ' on' : '') + '" data-act="gsopen" data-di="' + di + '">' + avatar(e, 'sm') +
-      '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + '</button>';
+      '<span><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + '</button>';
   }).join('') + (hits.length ? '<button type="button" class="gsi-all" data-act="gsall">See all matches in People</button>' : '<div class="gsi-none">No one matches</div>');
   box.hidden = false;
 }
@@ -1920,7 +1944,7 @@ function prow(di, i){
   var e = D.directory[di];
   var sub = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
-    '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + prowMeta(e) + '</span></button>';
+    '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + (sub ? '<small>' + esc(sub) + '</small>' : '') + prowMeta(e) + '</span></button>';
 }
 /* People right column: filter shortcuts + counts by tier and group.
    Tucked until opened; S.ppl.side remembers an explicit open/close. */
@@ -2039,7 +2063,7 @@ function ptLocVal(e){ return gv(e, 'location_on_file') || gv(e, 'city') || gv(e,
 var PTCELL = {
   name: function(e){
     var sub = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
-    return '<div class="cname-in">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span></div>';
+    return '<div class="cname-in">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span></div>';
   },
   tier: function(e){ return ptierCell(e); },
   loc: function(e){ return esc(ptLocVal(e)); },
@@ -2692,7 +2716,7 @@ function heroHTML(di){
     return '<span class="dbadge">' + ic('cap', 12) + '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits ? '<i>' + esc(bits) + '</i>' : '') + '</span>';
   }).join('');
   var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
-  return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
+  return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
     (loc ? '<p class="hloc">' + ic('pin', 13) + esc(loc) + '</p>' : '') +
     '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
     ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') +
@@ -2859,9 +2883,9 @@ function familyMiniTree(di){
   var P = lab(f.parents), SP = lab(f.spouses), C = lab(f.children), SB = lab(f.siblings);
   if(!P.length && !SP.length && !C.length && !SB.length) return '';
   function node(o, cls){
-    return '<a class="fnode ' + cls + '" href="#/p/' + encodeURIComponent(personId(D.directory[o.di])) + '" data-act="openp" data-di="' + o.di + '"><span>' + esc(famInitials(o.label)) + '</span><small>' + esc(o.label) + '</small></a>';
+    return '<a class="fnode ' + cls + '" href="#/p/' + encodeURIComponent(personId(D.directory[o.di])) + '" data-act="openp" data-di="' + o.di + '"><span>' + esc(famInitials(o.label)) + '</span><small>' + esc(o.label) + '</small>' + milBadge(D.directory[o.di]) + '</a>';
   }
-  var self = '<div class="fnode self"><span>' + esc(famInitials(dispName(e))) + '</span><small>' + esc(dispName(e)) + '</small></div>';
+  var self = '<div class="fnode self"><span>' + esc(famInitials(dispName(e))) + '</span><small>' + esc(dispName(e)) + '</small>' + milBadge(e) + '</div>';
   return '<div class="ftree">' +
     (P.length ? '<div class="fr"><label>Parents</label><div>' + P.map(function(o){ return node(o, 'par'); }).join('') + '</div></div>' : '') +
     '<div class="fr"><label>' + (SP.length ? 'Self and spouse' : 'Self') + '</label><div>' + self + SP.map(function(o){ return node(o, 'sp'); }).join('') + '</div></div>' +
@@ -3437,7 +3461,7 @@ function netHovPaint(ev, nd){
     var e = D.directory[nd.di], s = scoreFor(nd.di), f = flyFact(e);
     var sy = knownSinceYear(e), yrs = sy ? new Date().getFullYear() - sy : null;
     var ka = knownAssociates(e).length, rel = cap(gv(e, 'relationship') || '');
-    el.innerHTML = '<b>' + esc(dispName(e)) + '</b>' +
+    el.innerHTML = '<b>' + esc(dispName(e)) + '</b>' + milBadge(e) +
       '<span class="nh-l2">' + esc(tierName(e) || 'No tier yet') + (s ? ' · Score ' + s.score : '') + (ka ? ' · ' + ka + ' associate' + (ka === 1 ? '' : 's') : '') + '</span>' +
       ((rel || yrs != null) ? '<span>' + esc([rel, yrs != null ? 'Known ' + yrs + ' yr' + (yrs === 1 ? '' : 's') : ''].filter(Boolean).join(' · ')) + '</span>' : '') +
       (nd.orgs.length ? '<span class="nh-orgs">' + esc(nd.orgs.join(', ')) + '</span>' : '') +
@@ -3739,7 +3763,7 @@ function netCard(){
     drows.push(['Connections through', nd && nd.hub ? nd.hub.name : 'Direct to JD']);
     var detail = '<div class="statrows nc-rows">' + drows.map(function(r){ return '<div class="srow2"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>';
     cardBox.hidden = false;
-    cardBox.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' +
+    cardBox.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' +
       '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
       '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
       (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
@@ -3892,7 +3916,7 @@ function famCard(){
   var plural = function(n, w, ws){ return n ? n + ' ' + (n === 1 ? w : ws) : ''; };
   var bits = [plural(f.parents.length, 'parent', 'parents'), f.spouses.length ? 'spouse' : '', plural(f.children.length, 'child', 'children'), plural(f.siblings.length, 'sibling', 'siblings')].filter(Boolean);
   box.hidden = false;
-  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b><small>' + esc(bits.join(' · ') || 'No links') + '</small></div><span class="sp"></span>' +
+  box.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(bits.join(' · ') || 'No links') + '</small></div><span class="sp"></span>' +
     '<button type="button" class="ib" data-act="famclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
     '<div class="nc-f"><span class="sp"></span><button type="button" class="btn ghost sm" data-act="openedit" data-di="' + di + '" data-sec="connections">Edit links</button><button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>';
 }
@@ -4025,7 +4049,7 @@ function viewGroups(v){
       (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
       (kind === 'groups' ? '<div class="finder"><input id="gaddq" data-g="' + esc(name) + '" placeholder="Add a person to this group" autocomplete="off"><div id="gaddr" class="hits"></div></div>' : '<p class="note">Membership comes from each profile’s Background section.</p>') +
       '<div class="plist">' + (mem.map(function(di, i){ var e = D.directory[di];
-        return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="popen1" data-di="' + di + '">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span></a>' +
+        return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="popen1" data-di="' + di + '">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(infoLine(e)) + '</small></span></a>' +
           (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>'; }).join('') || '<p class="dim pad">No one yet.</p>') + '</div></div>';
   }
   v.innerHTML = '<div class="page groups' + (name ? ' has-detail' : '') + '"><div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>' + tabs +
@@ -4074,7 +4098,7 @@ function hmDiOf(name){ var di = BYN[String(name || '').toLowerCase()]; return di
 function hmPersonLink(name, display){
   var di = hmDiOf(name), label = esc(display || name || '');
   if(di == null) return '<b>' + label + '</b>';
-  return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>';
+  return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>' + milBadge(D.directory[di]);
 }
 function hmBar(label, val, max, muted){
   var pct = max > 0 ? Math.max(2, Math.round(1000 * val / max) / 10) : 0;
@@ -4248,7 +4272,7 @@ function hmPhotosCard(ph){
     '<div class="hm-kpi"><div class="hm-kn">' + ph.checked + '<small> / ' + ph.total + '</small></div><div class="hm-kl">Profiles checked</div></div>' +
     '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.ig + '">0</div><div class="hm-kl">From Instagram</div></div></div>';
   var tiles = ph.wall.map(function(p){
-    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + '</span></a>';
+    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + milBadgeName(p.name) + '</span></a>';
   }).join('');
   tiles += '<a class="hm-tile miss" href="#/photos"><b data-hmn="' + ph.noPhoto + '">0</b><span>still missing a photo</span></a>';
   return '<section class="card hm-blk"><header><h3>Photos</h3><em class="cnt">recently filed first</em></header><div class="cbody">' + kpis +
@@ -4423,7 +4447,7 @@ function viewDaily(v){
     var di = diOf(name);
     var label = esc(display || name || '');
     if(di == null) return '<b>' + label + '</b>';
-    return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>';
+    return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>' + milBadge(D.directory[di]);
   }
   function factLine(x){
     return esc(x.text) + (x.url ? ' <a class="assrc" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.source || 'source') + ' ' + ic('ext', 11) + '</a>' : ' <span class="dim">(' + esc(x.source || '') + ')</span>');
@@ -4440,7 +4464,7 @@ function viewDaily(v){
       '<div class="ashero-top"><span class="askicker">' + ic('sparkle', 13) + ' NEW RECORD &mdash; PAST 3 WEEKS</span>' +
       (freshX.published ? '<span class="ashero-pub">PUBLISHED ' + esc(fmtD(freshX.published)).toUpperCase() + '</span>' : '') + '</div>' +
       '<div class="ashero-main"><div class="ashero-av">' + (fe ? avatar(fe, 'xl') : '') + '</div>' +
-      '<div class="ashero-body"><div class="ashero-name display">' + esc(freshF.display || freshF.name) + '</div>' +
+      '<div class="ashero-body"><div class="ashero-name display">' + esc(freshF.display || freshF.name) + (fe ? milBadge(fe) : '') + '</div>' +
       '<p class="ashero-fact">' + factLine(freshX) + '</p>' +
       '<div class="astl"><span class="astl-dot"></span><span>Published ' + esc(fmtD(freshX.published)) + '</span><span class="astl-line"></span><span class="astl-dot red"></span><span>Filed ' + esc(fmtD(DT.date)) + (age != null && age >= 0 ? ' &middot; ' + age + ' day' + (age === 1 ? '' : 's') + ' from publication to profile' : '') + '</span></div>' +
       '<div class="ashero-link">' + (fe ? '<a href="#/p/' + encodeURIComponent(personId(fe)) + '" data-act="openp" data-di="' + fdi + '">Open the profile ' + ic('arrow', 12) + '</a>' : '') + '</div>' +
@@ -4475,7 +4499,7 @@ function viewDaily(v){
   var updList = Object.keys(updNames).map(function(k){ return updNames[k]; });
   function chip(c, kind){
     var di = diOf(c.name);
-    var inner = (di != null ? avatar(D.directory[di], 'sm') : '') + '<span>' + esc(c.display || c.name) + '</span>' + (kind === 'upd' ? ic('sparkle', 12) : ic('check', 12));
+    var inner = (di != null ? avatar(D.directory[di], 'sm') : '') + '<span>' + esc(c.display || c.name) + '</span>' + (di != null ? milBadge(D.directory[di]) : '') + (kind === 'upd' ? ic('sparkle', 12) : ic('check', 12));
     if(di == null) return '<span class="aschip ' + kind + '">' + inner + '</span>';
     return '<a class="aschip ' + kind + '" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>';
   }
@@ -4713,7 +4737,7 @@ function phaRender(){
     var curUrl = phFrameFor(p.name, p).url || p.photo_url;
     var thumbs = (p.also && p.also.length) ? '<div class="pha-alts">' + [p.photo_url].concat(p.also.map(function(a){ return a.url; })).map(function(u){ return '<button type="button" class="pha-alt' + (u === curUrl ? ' on' : '') + '" data-act="phaalt" data-pname="' + esc(p.name) + '" data-u="' + esc(u) + '"><img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></button>'; }).join('') + '</div>' : '';
     view = '<div class="pha-view"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs +
-      '<div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + badge + '</div>' +
+      '<div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + (e ? milBadge(e) : '') + badge + '</div>' +
       '<div class="pha-pos">' + (idx >= 0 ? (idx + 1) + ' of ' + q.length + ' in this queue' : 'Outside this queue') + ' &middot; ' + esc(p.type || 'photo') + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
       (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
@@ -4795,13 +4819,13 @@ function viewPhotos(v){
   function photoCard(p){
     var sel = PH_SEL && PH_SEL.toLowerCase() === String(p.name).toLowerCase();
     return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' +
-      '<div class="phnm"><b>' + esc(p.name) + '</b></div></section>';
+      '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + '</div></section>';
   }
   function phRail(p){
     var di = diOf(p.name), e = di != null ? D.directory[di] : null;
     var badge = p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
     var alts = (p.also || []).length ? '<p class="dim phrail-pad">' + (p.also.length + 1) + ' photos on file for this person &mdash; switch between them in Adjust.</p>' : '';
-    return '<aside class="phrail"><div class="phrail-h"><b>' + esc(p.name) + '</b><button type="button" class="ib" data-act="phclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+    return '<aside class="phrail"><div class="phrail-h"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + '<button type="button" class="ib" data-act="phclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
       '<span class="phimg phrail-img"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' +
       '<div class="phrail-meta">' + badge + '<span class="dim">' + esc(p.type || 'photo') + '</span></div>' +
       '<p class="ph-ev phrail-pad">' + esc(p.evidence || '') + '</p>' + alts +
@@ -4855,7 +4879,7 @@ function viewSettings(v){
     '<section class="card"><header><h3>Merged profiles</h3><em class="cnt">' + merged.length + '</em></header><div class="cbody">' +
     (merged.length ? '<p class="dim">Combined profiles stay in the sheet with a pointer to the survivor. Restoring one brings it back as its own profile.</p>' + merged.map(function(di){
       var e = D.directory[di], tgt = BYN[String(e.profile.merged_into).toLowerCase()];
-      return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b><small>into ' + esc(tgt != null ? dispName(D.directory[tgt]) : e.profile.merged_into) + '</small></div><div class="ea"><button type="button" class="btn ghost sm" data-act="unmerge" data-di="' + di + '">Restore</button></div></div>';
+      return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>into ' + esc(tgt != null ? dispName(D.directory[tgt]) : e.profile.merged_into) + '</small></div><div class="ea"><button type="button" class="btn ghost sm" data-act="unmerge" data-di="' + di + '">Restore</button></div></div>';
     }).join('') : '<p class="dim">Nothing has been merged.</p>') + '</div></section>' +
     '<section class="card"><header><h3>Keyboard</h3></header><div class="cbody"><div class="keys"><kbd>/</kbd><span>Search</span><kbd>Esc</kbd><span>Close or go back</span><kbd>Ctrl Z</kbd><span>Undo</span></div></div></section></div>';
   paintSync();
@@ -4890,7 +4914,7 @@ function mergeStep2(){
   if(pv.carried.length) lines.push('Carries over: ' + pv.carried.join(', '));
   $('#sheetwrap .sbody').innerHTML = '<p class="dim">Choose which profile stays. The other one\'s details combine into it, and it stops showing as its own profile. Nothing is deleted, and you can undo this.</p>' + [MG.a, MG.b].map(function(di){
     var e = D.directory[di];
-    return '<label class="dm' + (di === MG.surv ? ' on' : '') + '"><input type="radio" name="msv" data-act="msv" data-di="' + di + '"' + (di === MG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc([effHandle(e) ? '@' + effHandle(e) : '', tierName(e), e.city].filter(Boolean).join(' · ')) + '</small></span></label>';
+    return '<label class="dm' + (di === MG.surv ? ' on' : '') + '"><input type="radio" name="msv" data-act="msv" data-di="' + di + '"' + (di === MG.surv ? ' checked' : '') + '>' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc([effHandle(e) ? '@' + effHandle(e) : '', tierName(e), e.city].filter(Boolean).join(' · ')) + '</small></span></label>';
   }).join('') + '<div class="rb quiet"><h4>What moves over</h4>' + (lines.length ? '<ul class="issues">' + lines.map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' : '<p>Nothing extra to carry over.</p>') + '</div>' +
     '<div class="row end"><button type="button" class="btn ghost" data-act="sheetx">Cancel</button><button type="button" class="btn primary" data-act="mergego">Merge into ' + esc(dispName(D.directory[MG.surv])) + '</button></div>';
 }
@@ -5104,7 +5128,7 @@ function audCardHTML(x, i){
   var ctx = [cap(gv(e, 'relationship')), ptHandle(e) ? '@' + ptHandle(e) : '', ptLocVal(e)].filter(Boolean).join(' · ');
   return '<article class="aud-card" data-di="' + di + '" data-gap="' + gap + '" style="animation-delay:' + Math.min(i * 45, 405) + 'ms">' +
     '<div class="aud-top">' + avatar(e, 'md') +
-    '<span class="pn"><button type="button" class="aud-name" data-act="audopen" data-di="' + di + '" title="Open profile">' + esc(dispName(e)) + '</button>' +
+    '<span class="pn"><button type="button" class="aud-name" data-act="audopen" data-di="' + di + '" title="Open profile">' + esc(dispName(e)) + '</button>' + milBadge(e) +
     (ctx ? '<small class="aud-ctx">' + esc(ctx) + '</small>' : '') + '</span></div>' +
     '<div class="aud-gaps" role="group" aria-label="Missing items for this person">' + audChipsHTML(x) + '</div>' +
     '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span></p>' +
@@ -6305,7 +6329,7 @@ function lcDeckCardHTML(di){
   var orgs = orgsOf(e).slice(0, 2).join(' · ');
   return '<button type="button" class="lc-card" data-act="lcopen" data-di="' + di + '">' +
     '<span class="lc-card-top">' + avatar(e, 'md') + (note ? '<span class="lc-mark" title="A Lima Charlie note is waiting on this profile">LC</span>' : '') + '</span>' +
-    '<span class="lc-card-name">' + esc(dispName(e)) + '</span>' +
+    '<span class="lc-card-name">' + esc(dispName(e)) + milBadge(e) + '</span>' +
     (line2 ? '<span class="lc-card-line">' + esc(line2) + '</span>' : '') +
     (orgs ? '<span class="lc-card-line dim">' + esc(orgs) + '</span>' : '') +
     (note ? '<span class="lc-card-note">' + esc(note.length > 90 ? note.slice(0, 90) + '…' : note) + '</span>' : '') +
@@ -6338,7 +6362,7 @@ function lcText(label, txt){
    shared editors work untouched. */
 function lcOpenHTML(di){
   var e = D.directory[di];
-  var head = '<div class="lc-head">' + avatar(e, 'lg') + '<div class="lc-hmain"><h2 class="display">' + esc(dispName(e)) + '</h2>' +
+  var head = '<div class="lc-head">' + avatar(e, 'lg') + '<div class="lc-hmain"><h2 class="display">' + esc(dispName(e)) + milBadge(e) + '</h2>' +
     '<p class="lc-hsub">' + esc([infoLine(e), ptNormLoc(ptLocVal(e))].filter(Boolean).join(' · ') || 'Not yet classified') + '</p></div>' +
     '<div class="lc-hscore">' + scoreBadgeHTML(di) + '</div></div>';
   function colSecs(col){
@@ -6360,7 +6384,7 @@ function lcRepaint(){
   var di = S.audit.lcOpen, e = D.directory[di]; if(!e) return;
   fit.innerHTML = lcOpenHTML(di);
   var dn = $('.lc-dockname');
-  if(dn) dn.innerHTML = esc(dispName(e)) + (lcNote(e).trim() ? ' <span class="lc-mark">LC note waiting</span>' : '');
+  if(dn) dn.innerHTML = esc(dispName(e)) + milBadge(e) + (lcNote(e).trim() ? ' <span class="lc-mark">LC note waiting</span>' : '');
   lcFitSoon();
 }
 /* Fit-to-screen: the profile block is laid out at natural size,
@@ -6436,7 +6460,7 @@ function lcRenderOpen(v){
     '<div class="lc-fitwrap" id="lcfitwrap"><div class="lc-fit" id="lcfit">' + lcOpenHTML(di) + '</div></div>' +
     '<div class="lc-dock" id="lcdock">' +
       '<div class="lc-dockrow"><button type="button" class="btn ghost" data-act="lcback">' + ic('chevl', 15) + '<span>Back to the deck</span></button>' +
-      '<span class="lc-dockname">' + esc(dispName(e)) + (note.trim() ? ' <span class="lc-mark">LC note waiting</span>' : '') + '</span><span class="sp"></span>' +
+      '<span class="lc-dockname">' + esc(dispName(e)) + milBadge(e) + (note.trim() ? ' <span class="lc-mark">LC note waiting</span>' : '') + '</span><span class="sp"></span>' +
       '<button type="button" class="btn primary" data-act="lcsave">Save note</button></div>' +
       '<label class="lc-notelab" for="lcnote">Lima Charlie note — dictate every change for this profile. Luna applies it on the next run, then clears it.</label>' +
       '<textarea id="lcnote" rows="3" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now. Known him since 2019. Add SUNY Potsdam.">' + esc(draft != null ? draft : note) + '</textarea>' +
@@ -6630,7 +6654,7 @@ function pickerHits(inp, boxId, act, exclude){
   var q = inp.value.trim();
   if(q.length < 2){ box.innerHTML = ''; return; }
   var hits = searchPeople(q, 6, people().filter(function(d){ return exclude.indexOf(d) < 0; }));
-  box.innerHTML = hits.length ? hits.map(function(d){ return '<button type="button" class="hit" data-act="' + act + '" data-di="' + d + '" data-g="' + esc(inp.getAttribute('data-g') || '') + '">' + avatar(D.directory[d], 'sm') + '<span>' + esc(dispName(D.directory[d])) + '<small>' + esc(infoLine(D.directory[d])) + '</small></span></button>'; }).join('') : '<div class="hit none">No matches</div>';
+  box.innerHTML = hits.length ? hits.map(function(d){ return '<button type="button" class="hit" data-act="' + act + '" data-di="' + d + '" data-g="' + esc(inp.getAttribute('data-g') || '') + '">' + avatar(D.directory[d], 'sm') + '<span>' + esc(dispName(D.directory[d])) + milBadge(D.directory[d]) + '<small>' + esc(infoLine(D.directory[d])) + '</small></span></button>'; }).join('') : '<div class="hit none">No matches</div>';
 }
 
 function onClick(ev){
@@ -6856,7 +6880,7 @@ function onInput(ev){
   if(t.id === 'mq'){
     var q = t.value.trim(), box = $('#mr'); if(q.length < 2){ box.innerHTML = ''; return; }
     var hits = searchPeople(q, 6, people().filter(function(d){ return d !== MG.a; }));
-    box.innerHTML = hits.length ? hits.map(function(d){ return '<button type="button" class="hit" data-act="mpick" data-di="' + d + '">' + avatar(D.directory[d], 'sm') + '<span>' + esc(dispName(D.directory[d])) + '<small>' + esc(infoLine(D.directory[d])) + '</small></span></button>'; }).join('') : '<div class="hit none">No matches</div>';
+    box.innerHTML = hits.length ? hits.map(function(d){ return '<button type="button" class="hit" data-act="mpick" data-di="' + d + '">' + avatar(D.directory[d], 'sm') + '<span>' + esc(dispName(D.directory[d])) + milBadge(D.directory[d]) + '<small>' + esc(infoLine(D.directory[d])) + '</small></span></button>'; }).join('') : '<div class="hit none">No matches</div>';
   }
 }
 function onChange(ev){
