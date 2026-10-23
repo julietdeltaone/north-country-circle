@@ -1761,3 +1761,20 @@ a.hm-gap:hover span:first-child{text-decoration:underline}
   .hm-kpis{grid-template-columns:repeat(2,1fr)}
   .hm-bl{width:96px}
 }
+
+/* ---------- Military rank badge (V2.29.0) ----------
+   One chip family for the flag + rank badge (milBadge in dossier.js):
+   an inline-flex hairline chip that sits right after the person's
+   name in every view. Only the flag SVG itself carries color; the
+   chip surface and text stay on the Swiss Mono tokens. */
+.milbadge{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 7px 2px 3px;border:1px solid var(--line2);border-radius:2px;background:var(--card2);vertical-align:2px;white-space:nowrap;text-decoration:none}
+.milbadge .milflag{flex:none;display:block;border-radius:1px}
+.milbadge .milrank{font:600 10.5px/1 var(--sans);letter-spacing:.09em;color:var(--txt);text-transform:uppercase}
+h1 .milbadge,h2 .milbadge{vertical-align:6px}
+.ashero-name .milbadge{vertical-align:8px}
+.nc-h .milbadge,.pha-name .milbadge{margin-left:6px}
+.phnm .milbadge{margin-left:0}
+.hm-tile .milbadge{margin-left:5px;padding:1px 5px 1px 2px}
+.hm-tile .milbadge .milflag{width:12px;height:9px}
+.aschip .milbadge{margin-left:2px;padding:1px 5px 1px 2px}
+.lc-dockname .milbadge,.lc-card-name .milbadge{vertical-align:0}
