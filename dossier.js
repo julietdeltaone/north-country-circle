@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.27.0';
+var APP_VERSION = '2.28.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1620,6 +1620,7 @@ function askEditKey(){
 
 /* ---------- global chrome ---------- */
 var NAV = [
+  { k:'home',    l:'Home',    ic:'home' },
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
   { k:'daily',   l:'Live Records', ic:'search' },
@@ -1638,7 +1639,7 @@ function renderChrome(){
   var items = NAV.map(function(n){
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span></a>';
   }).join('');
-  $('#rail').innerHTML = '<a class="brand" href="#/people" aria-label="North Country Circle"><i></i><b>North Country Circle</b></a>' +
+  $('#rail').innerHTML = '<a class="brand" href="#/home" aria-label="North Country Circle"><i></i><b>North Country Circle</b></a>' +
     '<div class="navlist">' + items + '</div>' +
     '<div class="railfoot"><a href="index.html" class="nv">' + ic('network', 20) + '<span>Visual map</span></a>' +
     '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
@@ -1712,11 +1713,11 @@ function paintSearch(){
 
 /* ---------- router ---------- */
 function parseRoute(){
-  var h = (location.hash || '#/people').replace(/^#\/?/, '');
+  var h = (location.hash || '#/home').replace(/^#\/?/, '');
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
-  var name = seg[0] || 'people';
+  var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['people','profile','network','family','groups','settings','audit','daily','photos'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','photos'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -1770,7 +1771,8 @@ function render(){
   if(render._pv !== n){ render._pv = n; v.classList.remove('vin'); void v.offsetWidth; v.classList.add('vin'); clearTimeout(render._vt); render._vt = setTimeout(function(){ v.classList.remove('vin'); }, 380); }
   try{
     renderChrome();
-    if(n === 'people') viewPeople(v);
+    if(n === 'home') viewHome(v);
+    else if(n === 'people') viewPeople(v);
     else if(n === 'profile') viewProfile(v);
     else if(n === 'network') viewNetwork(v);
     else if(n === 'family') viewFamily(v);
@@ -4062,8 +4064,8 @@ function dtLoad(){
   DT_LOADING = true;
   fetch('data/daily-ten.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ DT = d; DT_LOADING = false; if(S.route.name === 'daily') render(); })
-    .catch(function(){ DT = { empty:true }; DT_LOADING = false; if(S.route.name === 'daily') render(); });
+    .then(function(d){ DT = d; DT_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); })
+    .catch(function(){ DT = { empty:true }; DT_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); });
 }
 var CH = null, CH_LOADING = false;
 function chLoad(){
@@ -4071,7 +4073,7 @@ function chLoad(){
   CH_LOADING = true;
   fetch('data/changes.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ CH = d; CH_LOADING = false; if(S.route.name === 'daily') render(); })
+    .then(function(d){ CH = d; CH_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); })
     .catch(function(){ CH = { entries:[] }; CH_LOADING = false; });
 }
 function dtAnimate(){
@@ -4218,8 +4220,8 @@ function phLoad(){
   PH_LOADING = true;
   fetch('data/photos.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if(S.route.name === 'audit') render(); else if($('#p-hero')) repaintTop(); })
-    .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos') render(); });
+    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if(S.route.name === 'audit') render(); else if(S.route.name === 'home') render(); else if($('#p-hero')) repaintTop(); })
+    .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos' || S.route.name === 'home') render(); });
 }
 
 function phReview(){
@@ -6486,6 +6488,7 @@ function onClick(ev){
     case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
     case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
     case 'netorg': { var ov = el.getAttribute('data-v'); S.net.org = ov && ov !== S.net.org ? ov : null; netCard(); NET.dirty = true; break; }
+    case 'hmorg': { var hn = el.getAttribute('data-v'); S.net.org = hn || null; S.net.sel = null; go('network'); break; }
     case 'netview': { var vv = el.getAttribute('data-v') === '3d' ? '3d' : '2d'; S.net.view = vv; NET.view = vv; store('ncc_netview', vv); $$('.netacts [data-act="netview"]').forEach(function(b){ var on = b.getAttribute('data-v') === vv; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); if(vv === '3d') netGlide(300, { c2x:0, c2y:0 }); NET.dirty = true; break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
@@ -6717,6 +6720,8 @@ function skeletonHTML(note){
     body = '<div class="skl sk-hero"></div><div class="sk-cols"><div class="skl"></div><div class="skl"></div><div class="skl"></div></div>';
   } else if(h.indexOf('network') >= 0 || h.indexOf('family') >= 0){
     body = '<div class="skl sk-big"></div>';
+  } else if(h === '' || h === '#/' || h.indexOf('home') >= 0){
+    body = '<div class="skl sk-big"></div><div class="sk-cols"><div class="skl"></div><div class="skl"></div><div class="skl"></div></div>';
   } else {
     var rows = '';
     for(i = 0; i < 6; i++) rows += '<div class="skl-row"><span class="skl av"></span><span class="skl tx" style="width:' + (58 - (i % 3) * 8) + '%"></span><span class="skl tx s" style="width:22%"></span></div>';
@@ -6758,7 +6763,7 @@ function boot(){
         try{ applyOutbox(); }catch(px){}
         winsApplyAll();
         computeNewGain();
-        history.replaceState({ d:0 }, '', location.hash || '#/people');
+        history.replaceState({ d:0 }, '', location.hash || '#/home');
         render();
         outKick(); fetchChanges();
       })
