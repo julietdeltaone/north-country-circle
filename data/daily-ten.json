@@ -102,11 +102,76 @@
    "display": "Timothy Kunkle"
   }
  ],
- "filed": [],
+ "filed": [
+  {
+   "name": "colleendcheney",
+   "display": "Colleen Cheney",
+   "facts": [
+    {
+     "text": "From West Stockholm, New York; a Graphic and Multimedia Design major at SUNY Canton who in February 2024 established the SUNY Canton chapter of the National Society of Leadership and Success and served as its president",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/plm/name-131731-en.html"
+    },
+    {
+     "text": "Graduated from SUNY Canton in 2025 in Graphic and Multimedia Design",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2025/graduates.php"
+    },
+    {
+     "text": "Received the Leaders of Tomorrow award at SUNY Canton's 2025 Student Excellence Awards Ceremony",
+     "source": "SUNY Canton",
+     "url": "https://canton.edu/news/2025/student-excellence.php"
+    }
+   ]
+  },
+  {
+   "name": "sf:judith-tomford",
+   "display": "Judith Tomford",
+   "facts": [
+    {
+     "text": "Academic Intervention Service (AIS) teacher at St. James School in Gouverneur since 2020, providing math and ELA support for students from kindergarten through sixth grade",
+     "source": "St. James School",
+     "url": "https://stjamesk-6.org/staff"
+    },
+    {
+     "text": "Holds permanent certification in Nursery, Kindergarten and Grades 1-6; her 0.30 FTE Title I teacher position assigned to St. James School was continued by the Gouverneur Central School District for the 2026-27 school year",
+     "source": "Gouverneur Central School District",
+     "url": "https://www.gcsk12.org/boe/2026_2027/08_17_26/8_17_26_minutes.pdf"
+    }
+   ]
+  },
+  {
+   "name": "sf:ryan-blount",
+   "display": "Ryan Blount",
+   "facts": [
+    {
+     "text": "Awarded the Expert Soldier Badge on October 1, 2021 at Fort Drum, one of the first four New York Army National Guard soldiers to earn it; at the time he was a sergeant first class serving full-time as a personnel specialist with the 427th Brigade Support Battalion",
+     "source": "New York Division of Military and Naval Affairs",
+     "url": "https://dmna-ny.meritpages.com/news/ny-army-guard-sgt--1st-class-ryan-blount--a-liverpool-resident--awarded-expert-soldier-badge-/22569/print"
+    }
+   ]
+  },
+  {
+   "name": "sf:bob-blewett",
+   "display": "Bob Blewett",
+   "facts": [
+    {
+     "text": "Author of 'Property Rights as a Cause of the Tragedy of the Commons: Institutional Change and the Pastoral Maasai of Kenya' (Eastern Economic Journal, Fall 1995), co-author of a 1995 New York Economic Review note on the aggregate demand and supply model, and co-author of a 1998 chapter on institutional constraints on entrepreneurship in Kenya's popular music industry",
+     "source": "St. Lawrence University",
+     "url": "http://www.stlawu.edu/offices/economics/publications-current-faculty"
+    },
+    {
+     "text": "His St. Lawrence University research areas include economic development, minority middleman and supply chain networks, and the impact of foreign direct investment on economic development and growth",
+     "source": "St. Lawrence University",
+     "url": "https://www.stlawu.edu/offices/ciis/connect-campus-experiences-campus-courses"
+    }
+   ]
+  }
+ ],
  "coverage": {
   "checked_total": 226,
   "of": 678,
   "window_days": 30
  },
- "note": "Fresh sweep: no qualifying item published in the past 21 days about a directory member was found today (current October items surfaced for non-directory people only; a Clarkson hockey player surnamed Murray could not be tied to the surname-only Murray profile and was not filed). Rotation: no new facts passed the two-anchor verification gate for today's 25."
+ "note": "Fresh sweep: no qualifying item published in the past 21 days about a directory member was found today (current October items surfaced for non-directory people only; a Clarkson hockey player surnamed Murray could not be tied to the surname-only Murray profile and was not filed)."
 }
