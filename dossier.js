@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.32.0';
+var APP_VERSION = '2.33.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4473,12 +4473,9 @@ function hmRail(){
     '</div>';
   out += '<div class="hm-rail-h sub"><span>Change log</span>' + (CH && CH.entries ? '<em>' + CH.entries.length + '</em>' : '') + '</div>';
   if(CH && CH.entries && CH.entries.length){
-    out += CH.entries.slice(0, 8).map(function(c, i){
-      return '<div class="chg hm-fi" style="--d:' + (i * 60) + 'ms"><div class="chg-name">' + hmPersonLink(c.name) + '</div>' +
-        '<p class="chg-what">' + esc(c.what || '') + '</p>' +
-        '<div class="chg-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
-        (c.source_date ? ' &middot; source ' + esc(hmFmtD(c.source_date)) : '') +
-        (c.filed ? '<span class="chg-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' : '') + '</div></div>';
+    out += chgRows(CH.entries).slice(0, 8).map(function(g, i){
+      var st = ' style="--d:' + (i * 60) + 'ms"';
+      return g.items.length > 1 ? chgGroupRow(g, hmPersonLink, hmFmtD, 'hm-fi', st) : chgEntryRow(g.first, hmPersonLink, hmFmtD, 'hm-fi', st);
     }).join('');
     out += '<a class="hm-raillink" href="#/daily">Open Live Records ' + ic('arrow', 12) + '</a>';
   } else {
@@ -4555,6 +4552,58 @@ function chLoad(){
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
     .then(function(d){ CH = d; CH_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); })
     .catch(function(){ CH = { entries:[] }; CH_LOADING = false; });
+}
+/* --- Change-log grouping (JD 2026-10-22): Apple-style batching.
+   Entries sharing a filed date, a normalized "what" (the person's
+   own name stripped out, so "Instagram profile picture filed."
+   is one kind of event no matter whose it was) and a source
+   collapse into a single expandable row with a count chip, so a
+   bulk run reads as one line instead of hundreds. Render layer
+   only: changes.json is untouched and every counter still counts
+   individual entries. Groups order by their newest entry (the
+   list is newest-first, so first appearance wins); members keep
+   their order inside the group. --- */
+function chgNormWhat(c){
+  var w = String(c.what || ''), nm = String(c.name || '');
+  if(nm) w = w.split(nm).join(' ');
+  return w.replace(/\s+/g, ' ').trim().toLowerCase();
+}
+function chgGroupKey(c){ return String(c.filed || '') + '|' + chgNormWhat(c) + '|' + String(c.source || ''); }
+function chgRows(entries){
+  var order = [], byKey = {};
+  (entries || []).forEach(function(c){
+    var k = chgGroupKey(c);
+    if(!byKey[k]){ byKey[k] = { key:k, first:c, items:[] }; order.push(byKey[k]); }
+    byKey[k].items.push(c);
+  });
+  return order;
+}
+function chgEntryRow(c, linkFn, fmtFn, cls, style){
+  return '<div class="chg' + (cls ? ' ' + cls : '') + '"' + (style || '') + '><div class="chg-name">' + linkFn(c.name) + '</div>' +
+    '<p class="chg-what">' + esc(c.what || '') + '</p>' +
+    '<div class="chg-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
+    (c.source_date ? ' &middot; source ' + esc(fmtFn(c.source_date)) : '') +
+    (c.filed ? '<span class="chg-filed">Filed ' + esc(fmtFn(c.filed)) + '</span>' : '') + '</div></div>';
+}
+function chgGroupRow(g, linkFn, fmtFn, cls, style){
+  var c = g.first, sd = c.source_date, uniform = true;
+  g.items.forEach(function(x){ if(x.source_date !== sd) uniform = false; });
+  var members = g.items.map(function(x){ return chgEntryRow(x, linkFn, fmtFn); }).join('');
+  return '<div class="chg-grp' + (cls ? ' ' + cls : '') + '"' + (style || '') + '>' +
+    '<button type="button" class="chg-grp-h" data-act="chggrp" aria-expanded="false">' +
+    '<span class="chg-cnt">' + g.items.length + '</span>' +
+    '<span class="chg-grp-main"><span class="chg-grp-what">' + esc(c.what || '') + '</span>' +
+    '<span class="chg-src">' + esc(c.source || '') + (uniform && sd ? ' &middot; source ' + esc(fmtFn(sd)) : '') +
+    (c.filed ? '<span class="chg-filed">Filed ' + esc(fmtFn(c.filed)) + '</span>' : '') + '</span></span>' +
+    '<span class="chg-chev">' + ic('chev', 14) + '</span></button>' +
+    '<div class="chg-members"><div class="chg-members-in">' + members + '</div></div></div>';
+}
+function chgToggle(el){
+  var wrap = el.closest('.chg-grp'); if(!wrap) return;
+  var rail = el.closest('.hm-rail, .dtrail') || document;
+  var wasOpen = wrap.classList.contains('open');
+  $$('.chg-grp.open', rail).forEach(function(g){ g.classList.remove('open'); var b = $('.chg-grp-h', g); if(b) b.setAttribute('aria-expanded', 'false'); });
+  if(!wasOpen){ wrap.classList.add('open'); el.setAttribute('aria-expanded', 'true'); }
 }
 function dtAnimate(){
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -4669,12 +4718,8 @@ function viewDaily(v){
   }
   var rail = '';
   if(CH && CH.entries && CH.entries.length){
-    var citems = CH.entries.slice(0, 80).map(function(c){
-      return '<div class="chg"><div class="chg-name">' + personLink(c.name) + '</div>' +
-        '<p class="chg-what">' + esc(c.what || '') + '</p>' +
-        '<div class="chg-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
-        (c.source_date ? ' &middot; source ' + esc(fmtSrc(c.source_date)) : '') +
-        (c.filed ? '<span class="chg-filed">Filed ' + esc(fmtSrc(c.filed)) + '</span>' : '') + '</div></div>';
+    var citems = chgRows(CH.entries).map(function(g){
+      return g.items.length > 1 ? chgGroupRow(g, personLink, fmtSrc) : chgEntryRow(g.first, personLink, fmtSrc);
     }).join('');
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
@@ -6982,6 +7027,7 @@ function onClick(ev){
     case 'undo': doUndo(); refreshAfterUndo('undo'); break;
     case 'redo': doRedo(); refreshAfterUndo('redo'); break;
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
+    case 'chggrp': chgToggle(el); break;
     case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phreject': phSetReview(el.getAttribute('data-pname'), 'rejected'); break;
