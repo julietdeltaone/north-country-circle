@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.35.0';
+var APP_VERSION = '2.36.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -3183,12 +3183,13 @@ function netLowConf(nd){ if(!SCORE.byDi) return false; var s = SCORE.byDi[nd.di]
    so the org structure rides the same lines. Ambient spokes are
    hairline texture; the focused person's (or organization's)
    route is full strength. One layout, two views: the flat 2D
-   disc, or a tilted, slowly rotating 3D projection of the same
-   coordinates (JD 2026-10-22). Tap a dot for a card; tap a hub
+   disc, or the 3D universe view (JD 2026-10-23) — the same
+   people lifted onto closeness shells around JD, a free-
+   floating sphere the reader orbits. Tap a dot for a card; tap a hub
    diamond (or its row in the panel) to focus an organization.
    Display-only: nothing here ever writes data.
    ============================================================ */
-var NET = { nodes:[], hubs:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, tilt:1.02, lastT:0, pulse:null };
+var NET = { nodes:[], hubs:[], cam:{ x:0, y:0, z:1 }, cv:null, ctx:null, W:0, H:0, dpr:1, raf:0, ptr:{}, pinch:0, moved:false, dirty:true, byDi:{}, hoverDi:null, cxOff:0, glide:null, hovEl:null, hovDi:null, _camInit:false, _panelFlag:false, view:'2d', rot:0, pitch:0.45, lastT:0, pulse:null };
 var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 /* Camera glide: the one motion the page still has. A glide moves
    camera values (pan / zoom / panel compensation) with the house
@@ -3197,11 +3198,13 @@ var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced
 function netEase(p){ return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; }
 var NET_CH = {
   c2x:function(v){ NET.cam.x = v; }, c2y:function(v){ NET.cam.y = v; },
-  c2z:function(v){ NET.cam.z = v; }, cxoff:function(v){ NET.cxOff = v; }
+  c2z:function(v){ NET.cam.z = v; }, cxoff:function(v){ NET.cxOff = v; },
+  r3:function(v){ NET.rot = v; }, p3:function(v){ NET.pitch = v; }
 };
 var NET_CH_GET = {
   c2x:function(){ return NET.cam.x; }, c2y:function(){ return NET.cam.y; },
-  c2z:function(){ return NET.cam.z; }, cxoff:function(){ return NET.cxOff; }
+  c2z:function(){ return NET.cam.z; }, cxoff:function(){ return NET.cxOff; },
+  r3:function(){ return NET.rot; }, p3:function(){ return NET.pitch; }
 };
 function netGlide(dur, to, onDone){
   if(REDUCED_MOTION || !dur){
@@ -3230,6 +3233,7 @@ function netFitNow(){
 /* Frame the selection, arrived at by glide instead of in one frame. */
 function netFrameSel(){
   var nd = NET.byDi[S.net.sel]; if(!nd) return;
+  if(NET.view === '3d'){ netFaceNode(nd, 450); return; }
   var p2 = netP2(nd);
   netGlide(450, { c2x:p2[0], c2y:p2[1], c2z:Math.max(NET.cam.z, 1.6) });
 }
@@ -3322,6 +3326,21 @@ function netBuild(){
         var ang = start + (m - k + 0.5) * slot + (rng() - 0.5) * slot * 0.25 + layer * 0.7;
         var rad = SCORE_RADII[layer] + (rng() - 0.5) * 2 * SCORE_SPREAD[layer];
         nd2.sring = layer; nd2.sx = nd2.dx = Math.cos(ang) * rad; nd2.sy = nd2.dy = Math.sin(ang) * rad;
+        /* Universe (3D) position, derived from this same slot:
+           longitude = the 2D sector angle (org wedges survive
+           as longitude wedges), latitude = the member's place
+           within its org run, spread over ±60°. The place is
+           interleaved by the golden ratio rather than swept in
+           order — a straight sweep draws each org as a diagonal
+           ribbon across the sphere, while the interleave fills
+           the wedge evenly, the way the flat ring fills its arc.
+           The shell radius is exactly the layer's ring radius —
+           no spread jitter — so each closeness layer is a clean
+           sphere. Deterministic: a pure function of the run
+           index, so these coordinates never change between loads. */
+        var lat = (((m - k) * 0.61803398875) % 1 - 0.5) * 2.1, clat = Math.cos(lat), R3 = SCORE_RADII[layer];
+        nd2.lat = lat; nd2.lon = ang;
+        nd2.px = R3 * clat * Math.cos(ang); nd2.py = R3 * Math.sin(lat); nd2.pz = R3 * clat * Math.sin(ang);
       }
       k = j;
     }
@@ -3340,6 +3359,12 @@ function netBuild(){
     var sx = 0, sy = 0;
     h.nds.forEach(function(nd){ sx += nd.sx; sy += nd.sy; });
     h.x = sx / h.nds.length; h.y = sy / h.nds.length;
+    /* 3D hub point: the mean of the members' sphere positions —
+       the spherical centroid, pulled toward the center by the
+       averaging exactly as the flat centroid sits inside its ring. */
+    var ax = 0, ay = 0, az = 0;
+    h.nds.forEach(function(nd){ ax += nd.px || 0; ay += nd.py || 0; az += nd.pz || 0; });
+    h.px = ax / h.nds.length; h.py = ay / h.nds.length; h.pz = az / h.nds.length;
   });
   hubOrder.sort(function(a, b){ return b.nds.length - a.nds.length || a.name.localeCompare(b.name); });
   NET.hubs = hubOrder;
@@ -3408,7 +3433,7 @@ function viewNetwork(v){
     if(ks.length === 1){
       var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
       if(Math.abs(dx) + Math.abs(dy) > 3) NET.moved = true;
-      if(NET.view === '3d'){ NET.rot += dx * 0.005; NET.tilt = Math.max(0.3, Math.min(1.35, NET.tilt + dy * 0.003)); }
+      if(NET.view === '3d'){ NET.rot -= dx * 0.005; NET.pitch = Math.max(-1.25, Math.min(1.25, NET.pitch - dy * 0.003)); }
       else { NET.cam.x -= dx / NET.cam.z; NET.cam.y -= dy / NET.cam.z; }
     }
     p.x = ev.clientX; p.y = ev.clientY;
@@ -3447,10 +3472,11 @@ function viewNetwork(v){
   (function frame(){
     if(!document.body.contains(NET.cv) || document.body.getAttribute('data-view') !== 'network') return;
     var now = performance.now();
-    /* 3D idle motion: the disc turns in-plane at one revolution
-       per 90 seconds. A hand on the map (any pointer down) pauses
-       it, and reduced motion holds the tilted view still. */
-    if(NET.view === '3d' && !REDUCED_MOTION && !Object.keys(NET.ptr).length){
+    /* 3D idle motion: the sphere yaws at one revolution per 90
+       seconds. A hand on the map (any pointer down) or a camera
+       glide in flight pauses it, and reduced motion holds the
+       sphere still. */
+    if(NET.view === '3d' && !REDUCED_MOTION && !NET.glide && !Object.keys(NET.ptr).length){
       var dt = Math.min(100, now - (NET.lastT || now));
       if(dt > 0){ NET.rot = (NET.rot + dt / 1000 * (Math.PI * 2 / 90)) % (Math.PI * 2); NET.dirty = true; }
     }
@@ -3535,7 +3561,7 @@ function netClustPaint(){
     var focus = !!(S.net.org && S.net.org === p.h.name);
     var op = focus ? 1 : fade;
     if(op <= 0.02){ p.el.style.opacity = '0'; return; }
-    var s = netPS(p.h.x, p.h.y), x = s[0], y = s[1], w = p.w || 90, h = p.hgt || 24, show = true;
+    var s = netHS(p.h), x = s[0], y = s[1], w = p.w || 90, h = p.hgt || 24, show = true;
     for(var k = 0; k < kept.length; k++){
       var o = kept[k];
       if(Math.abs(o.x - x) < (o.w + w) / 2 + 8 && Math.abs(o.y - y) < (o.h + h) / 2 + 8){ show = false; break; }
@@ -3566,38 +3592,73 @@ function netFit(){
 }
 /* Reset view (V2.35.0): fitted default framing, and every focus
    cleared — organization, person, search text, pulse. In 3D the
-   disc's rotation and tilt also return to their defaults. Both
+   sphere's yaw and pitch also glide back to their defaults. Both
    controls labeled "Reset view" (toolbar button, zoom-cluster
    target icon) run this. */
 function netResetView(){
   S.net.org = null; S.net.sel = null; NET.pulse = null;
   var nq = $('#netq'); if(nq) nq.value = '';
   var nb = $('#netfr'); if(nb) nb.hidden = true;
-  if(NET.view === '3d'){ NET.rot = 0; NET.tilt = 1.02; }
-  netFit(); netCard(); NET.dirty = true;
+  if(NET.view === '3d'){
+    netGlide(450, { c2x:0, c2y:0, c2z:netFitZ(), r3:NET.rot + netAngDelta(0 - NET.rot), p3:NETU_PITCH0 });
+  } else netFit();
+  netCard(); NET.dirty = true;
 }
 function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2 + NET.cxOff, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
-/* ---------- 3D view (JD 2026-10-22): the same Design A disc,
-   projected. A world point is rotated in-plane by NET.rot,
-   tilted back by NET.tilt (~58 deg), then scaled by a simple
-   perspective divide; the returned scale drives dot size and
-   alpha, so the far side reads smaller and dimmer. Draw and
-   picking both route through this projection, so hover and tap
-   stay exact in either view. ---------- */
-var NET3_F = 2300; /* perspective focal distance, world units */
-function netP3(x, y){
-  var dx = x - NET.cam.x, dy = y - NET.cam.y;
-  var cr = Math.cos(NET.rot), sr = Math.sin(NET.rot);
-  var xr = dx * cr - dy * sr, yr = dx * sr + dy * cr;
-  var ps = NET3_F / (NET3_F + yr * Math.sin(NET.tilt));
-  return [NET.W / 2 + NET.cxOff + xr * ps * NET.cam.z, NET.H / 2 + yr * Math.cos(NET.tilt) * ps * NET.cam.z, ps];
+/* ---------- 3D view: the universe (JD 2026-10-23). The Design
+   A layout lifted onto spheres: every person sits on the
+   closeness shell of their layer (netBuild stores px/py/pz —
+   longitude from their 2D sector angle, latitude from their
+   place in the org run), JD at the center, hubs at their
+   members' spherical centroid. The camera orbits the sphere:
+   NET.rot is yaw, NET.pitch is pitch, NET.cam.z dollies. The
+   projection is the same hand-rolled perspective divide the
+   old tilted disc used — no WebGL. The fourth return value is
+   view depth (negative = the near side); draw order, alpha
+   and picking all read it, and picking never reaches through
+   the sphere to the far side. ---------- */
+var NETU_F = 2300; /* perspective focal distance, world units */
+var NETU_PITCH0 = 0.45; /* the default orbit pitch, radians */
+function netP3U(x, y, z){
+  var cA = Math.cos(NET.rot), sA = Math.sin(NET.rot), cB = Math.cos(NET.pitch), sB = Math.sin(NET.pitch);
+  var xr = x * cA + z * sA, z1 = -x * sA + z * cA;
+  var yr = y * cB - z1 * sB, zr = y * sB + z1 * cB;
+  var ps = NETU_F / (NETU_F + zr);
+  return [NET.W / 2 + NET.cxOff + xr * ps * NET.cam.z, NET.H / 2 - yr * ps * NET.cam.z, ps, zr];
 }
-function netPS(x, y){ if(NET.view === '3d'){ var p = netP3(x, y); return [p[0], p[1]]; } return w2s(x, y); }
+/* Camera basis in world space (right, up) — the guide shells
+   are drawn as the great circles facing the camera. */
+function netCamBasis(){
+  var cA = Math.cos(NET.rot), sA = Math.sin(NET.rot), cB = Math.cos(NET.pitch), sB = Math.sin(NET.pitch);
+  return { r:[cA, sA * sB, -sA * cB], u:[0, cB, sB] };
+}
+/* Nearness from view depth: 1 at the closest point of the
+   outermost shell, 0 at the farthest. */
+function netNearF(d){ var f = 0.5 - d / 1840; return f < 0 ? 0 : f > 1 ? 1 : f; }
+function netAngDelta(d){ var TAU = Math.PI * 2; while(d > Math.PI) d -= TAU; while(d < -Math.PI) d += TAU; return d; }
+/* Turn the sphere so a person faces the camera, centered:
+   yaw λ + π/2 and pitch −φ put their direction at the front
+   (λ = their longitude, φ = their latitude). The yaw target
+   is the equivalent angle nearest the current one, so the
+   glide always takes the short way around. */
+function netFaceNode(nd, dur){
+  if(nd.px == null) return;
+  var lam = Math.atan2(nd.pz, nd.px), phi = Math.atan2(nd.py, Math.hypot(nd.px, nd.pz));
+  netGlide(dur == null ? 450 : dur, {
+    r3:NET.rot + netAngDelta(lam + Math.PI / 2 - NET.rot),
+    p3:-phi,
+    c2z:Math.max(NET.cam.z, netFitZ() * 1.3)
+  });
+}
+/* A hub's screen position in either view (hub plates, hub picking). */
+function netHS(h){ if(NET.view === '3d'){ var p = netP3U(h.px, h.py, h.pz); return [p[0], p[1]]; } return w2s(h.x, h.y); }
 function netHit(sx, sy){
   if(NET.view === '3d'){
     var best3 = null, bd3 = 1e9;
     NET.nodes.forEach(function(n){
-      var p = netP3(n.dx, n.dy), d = Math.hypot(p[0] - sx, p[1] - sy), lim = Math.max(10, n.r * Math.sqrt(NET.cam.z) * p[2] + 7);
+      var p = netP3U(n.px, n.py, n.pz);
+      if(p[3] >= 0) return; /* the far side is never clickable through the sphere */
+      var d = Math.hypot(p[0] - sx, p[1] - sy), lim = Math.max(10, n.r * Math.sqrt(NET.cam.z) * p[2] + 7);
       if(d < lim && d < bd3){ bd3 = d; best3 = n; }
     });
     return best3;
@@ -3609,7 +3670,7 @@ function netHit(sx, sy){
 function netHubHit(sx, sy){
   var best = null, bd = 1e9;
   NET.hubs.forEach(function(h){
-    var s = netPS(h.x, h.y), d = Math.hypot(s[0] - sx, s[1] - sy);
+    var s = netHS(h), d = Math.hypot(s[0] - sx, s[1] - sy);
     if(d < 13 && d < bd){ bd = d; best = h; }
   });
   return best;
@@ -3617,17 +3678,28 @@ function netHubHit(sx, sy){
 function netDraw(){
   var ctx = NET.ctx, z = NET.cam.z, is3 = NET.view === '3d';
   ctx.setTransform(NET.dpr, 0, 0, NET.dpr, 0, 0); ctx.clearRect(0, 0, NET.W, NET.H);
-  /* One projection for the whole frame: flat w2s in 2D, the
-     tilted perspective netP3 in 3D (third value = depth scale). */
-  var P = is3 ? netP3 : function(x, y){ var s = w2s(x, y); return [s[0], s[1], 1]; };
-  var c = P(0, 0);
-  /* Painter order in 3D: far side first, so near dots and hubs
-     draw over far ones. Depth grows with the rotated y. */
-  var yrOf = function(x, y){ return x * Math.sin(NET.rot) + y * Math.cos(NET.rot); };
+  /* One projection for the whole frame: flat w2s in 2D; in 3D
+     every node and hub projects once from its sphere position
+     (netP3U — third value = perspective scale, fourth = view
+     depth) and the rest of the frame reads the cached points. */
+  var P = function(x, y){ var s = w2s(x, y); return [s[0], s[1], 1, 0]; };
+  var NP, HP;
+  if(is3){
+    NET.nodes.forEach(function(n){ n._p = netP3U(n.px, n.py, n.pz); });
+    NET.hubs.forEach(function(h){ h._p = netP3U(h.px, h.py, h.pz); });
+    NP = function(n){ return n._p; };
+    HP = function(h){ return h._p; };
+  } else {
+    NP = function(n){ return P(n.dx, n.dy); };
+    HP = function(h){ return P(h.x, h.y); };
+  }
+  var c = is3 ? netP3U(0, 0, 0) : P(0, 0);
+  /* Painter order in 3D: far side first (largest depth), so
+     near dots and hubs draw over far ones. */
   var nodeOrder = NET.nodes, hubOrder = NET.hubs;
   if(is3){
-    nodeOrder = NET.nodes.slice().sort(function(a, b){ return yrOf(b.dx, b.dy) - yrOf(a.dx, a.dy); });
-    hubOrder = NET.hubs.slice().sort(function(a, b){ return yrOf(b.x, b.y) - yrOf(a.x, a.y); });
+    nodeOrder = NET.nodes.slice().sort(function(a, b){ return b._p[3] - a._p[3]; });
+    hubOrder = NET.hubs.slice().sort(function(a, b){ return b._p[3] - a._p[3]; });
   }
   /* guide rings: the Dunbar layers, neutral strokes (tier keeps color), labeled */
   ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
@@ -3635,11 +3707,18 @@ function netDraw(){
     ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1;
     ctx.beginPath();
     if(is3){
-      for(var a2 = 0; a2 <= 72; a2++){ var t2 = a2 / 72 * 6.2832, gp = P(Math.cos(t2) * r, Math.sin(t2) * r); if(a2 === 0) ctx.moveTo(gp[0], gp[1]); else ctx.lineTo(gp[0], gp[1]); }
+      /* the shell's outline: the great circle of this closeness
+         shell that faces the camera */
+      var bs = netCamBasis();
+      for(var a2 = 0; a2 <= 72; a2++){
+        var t2 = a2 / 72 * 6.2832, co2 = Math.cos(t2), si2 = Math.sin(t2);
+        var gp = netP3U(r * (co2 * bs.r[0] + si2 * bs.u[0]), r * (co2 * bs.r[1] + si2 * bs.u[1]), r * (co2 * bs.r[2] + si2 * bs.u[2]));
+        if(a2 === 0) ctx.moveTo(gp[0], gp[1]); else ctx.lineTo(gp[0], gp[1]);
+      }
     } else ctx.arc(c[0], c[1], r * z, 0, 6.2832);
     ctx.stroke();
     ctx.fillStyle = 'rgba(255,255,255,0.42)';
-    if(is3){ var lp = P(0, -r); ctx.fillText(SCORE_GUIDES[i], lp[0], lp[1] - 5); }
+    if(is3){ var lp = netP3U(r * bs.u[0], r * bs.u[1], r * bs.u[2]); ctx.fillText(SCORE_GUIDES[i], lp[0], lp[1] - 5); }
     else ctx.fillText(SCORE_GUIDES[i], c[0], c[1] - r * z - 5);
   });
   var sel = S.net.sel != null ? NET.byDi[S.net.sel] : null;
@@ -3659,30 +3738,38 @@ function netDraw(){
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'rgba(255,255,255,' + (0.10 * amb * (orgF ? 0.35 : 1)).toFixed(3) + ')';
     ctx.beginPath();
-    NET.hubs.forEach(function(h){ var p = P(h.x, h.y); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); });
+    NET.hubs.forEach(function(h){ var p = HP(h); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); });
     ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,' + (0.05 * amb * (orgF ? 0.3 : 1)).toFixed(3) + ')';
-    ctx.beginPath();
-    NET.nodes.forEach(function(n){
-      var p = P(n.dx, n.dy);
-      if(p[0] < -80 || p[1] < -80 || p[0] > NET.W + 80 || p[1] > NET.H + 80) return;
-      if(n.hub){ var hp = P(n.hub.x, n.hub.y); ctx.moveTo(hp[0], hp[1]); ctx.lineTo(p[0], p[1]); }
-      else { ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); }
-    });
-    ctx.stroke();
+    /* Member spokes: one batch in 2D; in 3D two batches, the
+       far side at a fraction of the alpha, so depth reads in
+       the lines as well as in the dots. */
+    var spokeBatch = function(farSide, alpha){
+      ctx.strokeStyle = 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
+      ctx.beginPath();
+      NET.nodes.forEach(function(n){
+        var p = NP(n);
+        if(is3 && (p[3] >= 0) !== farSide) return;
+        if(p[0] < -80 || p[1] < -80 || p[0] > NET.W + 80 || p[1] > NET.H + 80) return;
+        if(n.hub){ var hp = HP(n.hub); ctx.moveTo(hp[0], hp[1]); ctx.lineTo(p[0], p[1]); }
+        else { ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); }
+      });
+      ctx.stroke();
+    };
+    if(is3){ spokeBatch(true, 0.05 * amb * (orgF ? 0.3 : 1) * 0.4); spokeBatch(false, 0.05 * amb * (orgF ? 0.3 : 1)); }
+    else spokeBatch(false, 0.05 * amb * (orgF ? 0.3 : 1));
   }
   /* --- Spokes, tier two: the focused organization's route at
      full strength — JD -> its hub, and the hub -> every member
      (membership, not just primary routing: a person in several
      orgs lights up under each of them). --- */
   if(orgF){
-    var op = P(orgF.x, orgF.y);
-    ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 1.3;
+    var op = HP(orgF), of3 = is3 ? 0.35 + 0.65 * netNearF(op[3]) : 1;
+    ctx.strokeStyle = 'rgba(255,255,255,' + (0.55 * of3).toFixed(3) + ')'; ctx.lineWidth = 1.3;
     ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(op[0], op[1]); ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,0.38)'; ctx.lineWidth = 1.1;
+    ctx.strokeStyle = 'rgba(255,255,255,' + (0.38 * of3).toFixed(3) + ')'; ctx.lineWidth = 1.1;
     ctx.beginPath();
     orgF.nds.forEach(function(n){
-      var p = P(n.dx, n.dy);
+      var p = NP(n);
       if(p[0] < -80 || p[1] < -80 || p[0] > NET.W + 80 || p[1] > NET.H + 80) return;
       ctx.moveTo(op[0], op[1]); ctx.lineTo(p[0], p[1]);
     });
@@ -3692,30 +3779,31 @@ function netDraw(){
      the old map: the one transient line set that earned its ink) --- */
   var hot = {};
   if(sel){
-    var se = D.directory[sel.di], sp2 = netP2(sel), a = P(sp2[0], sp2[1]);
+    var se = D.directory[sel.di], a = NP(sel);
     ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1;
     knownAssociates(se).forEach(function(nb){
       var t = BYN[(nb.u || '').toLowerCase()], nd = t != null ? NET.byDi[t] : null; if(!nd) return;
       hot[t] = 1;
-      var b = P(nd.dx, nd.dy); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      var b = NP(nd); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     });
   }
   /* --- Spokes, tier two (person): the focused person's own
      route, full strength — through their hub when they have one. --- */
   if(focus){
-    var fp = P(focus.dx, focus.dy);
-    ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 1.4;
+    var fp = NP(focus);
+    ctx.strokeStyle = 'rgba(255,255,255,' + (is3 ? (0.9 * (0.45 + 0.55 * netNearF(fp[3]))).toFixed(3) : '0.9') + ')'; ctx.lineWidth = 1.4;
     ctx.beginPath();
-    if(focus.hub){ var fhp = P(focus.hub.x, focus.hub.y); ctx.moveTo(c[0], c[1]); ctx.lineTo(fhp[0], fhp[1]); ctx.lineTo(fp[0], fp[1]); }
+    if(focus.hub){ var fhp = HP(focus.hub); ctx.moveTo(c[0], c[1]); ctx.lineTo(fhp[0], fhp[1]); ctx.lineTo(fp[0], fp[1]); }
     else { ctx.moveTo(c[0], c[1]); ctx.lineTo(fp[0], fp[1]); }
     ctx.stroke();
   }
   /* --- hub diamonds --- */
   hubOrder.forEach(function(h){
-    var p = P(h.x, h.y);
+    var p = HP(h);
     if(p[0] < -20 || p[1] < -20 || p[0] > NET.W + 20 || p[1] > NET.H + 20) return;
     var s = 4.5 * (is3 ? p[2] : 1), foc = orgF === h;
     ctx.save(); ctx.translate(p[0], p[1]); ctx.rotate(Math.PI / 4);
+    if(is3) ctx.globalAlpha = 0.30 + 0.70 * netNearF(p[3]);
     ctx.fillStyle = foc ? '#e30613' : '#0a0a0a';
     ctx.strokeStyle = foc ? '#e30613' : 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.rect(-s, -s, s * 2, s * 2); ctx.fill(); ctx.stroke();
@@ -3723,12 +3811,12 @@ function netDraw(){
   });
   /* --- people --- */
   nodeOrder.forEach(function(n){
-    var p = P(n.dx, n.dy);
+    var p = NP(n);
     if(p[0] < -10 || p[1] < -10 || p[0] > NET.W + 10 || p[1] > NET.H + 10) return;
     var rr = n.r * Math.sqrt(z) * (is3 ? p[2] : 1), col = netColor(n), isSel = sel && sel.di === n.di;
     var al = 1;
-    /* depth: the far side of the tilted disc reads dimmer */
-    if(is3) al = Math.max(0.45, Math.min(1, 0.28 + 0.46 * p[2]));
+    /* depth: the far side of the sphere reads dimmer */
+    if(is3) al = 0.30 + 0.70 * netNearF(p[3]);
     if(orgF && !memberOf(n, orgF)) al = Math.min(al, 0.16);
     if(sel && !isSel && !hot[n.di]) al = Math.min(al, 0.28);
     if(netLowConf(n)) al *= 0.45;
@@ -3746,6 +3834,23 @@ function netDraw(){
   /* --- JD at the center --- */
   ctx.fillStyle = '#e30613'; ctx.beginPath(); ctx.arc(c[0], c[1], Math.max(7, 10 * Math.sqrt(z)), 0, 6.2832); ctx.fill();
   ctx.fillStyle = '#ffffff'; ctx.font = '700 ' + Math.max(8, 10 * Math.sqrt(z)) + 'px Archivo,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('JD', c[0], c[1] + 0.5);
+  /* In 3D, a person turned to face the camera (search) sits at
+     the exact screen center — the same point as JD's disc,
+     which would swallow their dot. Redraw the selected person
+     over the center disc (near side only; she was already drawn
+     in the people pass, this only lifts her above JD). */
+  if(is3 && sel){
+    var sp3 = NP(sel);
+    if(sp3[3] < 0){
+      var sr3 = sel.r * Math.sqrt(z) * sp3[2];
+      ctx.fillStyle = netColor(sel); ctx.beginPath(); ctx.arc(sp3[0], sp3[1], sr3, 0, 6.2832); ctx.fill();
+      ctx.strokeStyle = '#e30613'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(sp3[0], sp3[1], sr3 + 3.5, 0, 6.2832); ctx.stroke();
+      if(NET.pulse && NET.pulse.di === sel.di && !REDUCED_MOTION){
+        var pt3 = (performance.now() - NET.pulse.t0) / 900;
+        if(pt3 >= 0 && pt3 < 1){ ctx.strokeStyle = 'rgba(227,6,19,' + (0.65 * (1 - pt3)).toFixed(3) + ')'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(sp3[0], sp3[1], sr3 + 4 + pt3 * 16, 0, 6.2832); ctx.stroke(); }
+      }
+    }
+  }
   netClustPaint();
 }
 /* Map stats for the Network right panel. Display-only counts over what is on the map. */
@@ -3870,6 +3975,7 @@ function netPickFind(di){
   netSetPanel(true);
   netCard();
   NET.pulse = REDUCED_MOTION ? null : { di:di, t0:performance.now() };
+  if(NET.view === '3d'){ netFaceNode(nd, 300); return; }
   var p2 = netP2(nd);
   netGlide(300, { c2x:p2[0], c2y:p2[1], c2z:Math.max(NET.cam.z, 1.6) });
 }
