@@ -1,171 +1,210 @@
 {
- "date": "2026-10-24",
+ "date": "2026-10-25",
  "checked": [
   {
-   "name": "courtney_delosh",
-   "display": "Courtney Delosh"
+   "name": "brendan.bombard_19",
+   "display": "Brendan Bombard"
   },
   {
-   "name": "ct:andrew haas",
-   "display": "Andrew Haas"
+   "name": "sf:nina-criscitello",
+   "display": "Nina Criscitello"
   },
   {
-   "name": "haller.paula",
-   "display": "Paula Haller"
+   "name": "sf:ilene-lashomb",
+   "display": "Ilene Lashomb"
   },
   {
-   "name": "fdb:b._ryan_dunphey",
-   "display": "B. Ryan Dunphey"
+   "name": "sf:emma turell",
+   "display": "Emma Turell"
   },
   {
-   "name": "sf:beka-martin",
-   "display": "Beka Martin"
+   "name": "sf:chelsea-mg",
+   "display": "Chelsea MG"
   },
   {
-   "name": "ct:natalie southworth",
-   "display": "Natalie Southworth"
+   "name": "meggreg4",
+   "display": "Meg Lapinski"
   },
   {
-   "name": "sf:avery-charleson",
-   "display": "Avery Charleson"
+   "name": "debbiegordon7",
+   "display": "Debbie Gordon"
   },
   {
-   "name": "cloutlord_420",
-   "display": "Avery Criscitello"
+   "name": "fdb:silas_smith",
+   "display": "Silas Smith"
   },
   {
-   "name": "sf:salako-gbenga-oladoyin",
-   "display": "Salako Gbenga Oladoyin"
+   "name": "sf:hunter-woodrow",
+   "display": "Hunter Woodrow"
   },
   {
-   "name": "certified.sauce",
-   "display": "Alfredo Rodriguez"
+   "name": "sf:karen-hoover",
+   "display": "Karen Hoover"
   },
   {
-   "name": "sf:emily-zimmer",
-   "display": "Emily Zimmer"
+   "name": "michaeljent1",
+   "display": "Michael Jent"
   },
   {
-   "name": "ct:julie mcormond",
-   "display": "Julie McOrmond"
+   "name": "mallory_greene",
+   "display": "Mallory Greene"
   },
   {
-   "name": "sf:morgan-arquette",
-   "display": "Morgan Arquette"
+   "name": "sf:patrick-tombs",
+   "display": "Patrick Tombs"
   },
   {
-   "name": "stefaniiabulakh",
-   "display": "Stefaniia Bulakh"
+   "name": "annecatherina7",
+   "display": "Anne Katherin Wolf"
   },
   {
-   "name": "ct:ryleigh combs",
-   "display": "Ryleigh Combs"
+   "name": "jeevesgreen",
+   "display": "Jeeves Green"
   },
   {
-   "name": "sf:sian-miller",
-   "display": "Sian Miller"
+   "name": "malyssar_7",
+   "display": "Malyssa Shenko"
   },
   {
-   "name": "sf:grace-zehr-cassulis",
-   "display": "Grace Zehr Cassulis"
+   "name": "ct:danny wangerin",
+   "display": "Danny Wangerin"
   },
   {
-   "name": "andrea247_",
-   "display": "Andrea Vetere"
+   "name": "sf:david-irving",
+   "display": "David Irving"
   },
   {
-   "name": "sf:emily-kendall",
-   "display": "Emily Kendall"
+   "name": "kylepmoulton",
+   "display": "Kyle Moulton"
   },
   {
-   "name": "muno_khosa",
-   "display": "Khosa Muno"
+   "name": "em_anuel_xa",
+   "display": "Emmanuel Atindama"
   },
   {
-   "name": "ct:kyle deschaine",
-   "display": "Kyle Deschaine"
+   "name": "katrina.cutler",
+   "display": "Katrina Lee Cutler"
   },
   {
-   "name": "sf:maria-tallo",
-   "display": "Maria Tallo"
+   "name": "sf:elliot-martin",
+   "display": "Elliot Martin"
   },
   {
-   "name": "sarah.ellabb",
-   "display": "Sarah El-Labban"
+   "name": "summerdorrphoto",
+   "display": "Summer Dorr"
   },
   {
-   "name": "mauramayer",
-   "display": "Maura Mayer"
+   "name": "dr.angelesfelix",
+   "display": "Angeles Felix"
   },
   {
-   "name": "trentondaniels4",
-   "display": "Trenton Daniels"
+   "name": "sf:skyler-trumble",
+   "display": "Skyler Trumble"
   }
  ],
  "filed": [
   {
-   "name": "sf:morgan-arquette",
-   "display": "Morgan Arquette",
+   "name": "sf:ilene-lashomb",
+   "display": "Ilene Lashomb",
    "facts": [
     {
-     "text": "Program Coordinator at the Seaway Valley Prevention Council, where she also serves as its Reality Check Coordinator",
-     "source": "Seaway Valley Prevention Council",
-     "url": "https://svpc.net/our-friendly-team/"
-    },
-    {
-     "text": "Graduated from SUNY Potsdam with a bachelor's degree in Public Health",
-     "source": "Seaway Valley Prevention Council",
-     "url": "https://svpc.net/our-friendly-team/"
+     "text": "Teaches dancing and performs in community theater productions through The Arts Program of NNY",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/people/ilene-lashomb"
     }
    ]
   },
   {
-   "name": "sf:avery-charleson",
-   "display": "Avery Charleson",
+   "name": "sf:karen-hoover",
+   "display": "Karen Hoover",
    "facts": [
     {
-     "text": "Bachelor of Science in Nursing student at SUNY Canton who earned Part-Time Honors for the Fall 2025 semester",
-     "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2026/honors-f25.php"
-    },
-    {
-     "text": "Earned Part-Time Honors at SUNY Canton again for the Spring 2026 semester, in the Bachelor of Science in Nursing program",
-     "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2026/honors-s26.php"
+     "text": "Was key personnel as Assistant Professor on Seton Hall University's five-year, over-$1.2 million U.S. Department of Education \"Project Write to Learn\" grant to prepare occupational therapists and speech-language pathologists to improve written expression in children with specific learning disabilities; Clarkson lists the award as $1,230,342, 2017-2022",
+     "source": "The Setonian",
+     "url": "https://www.thesetonian.com/article/2018/02/shu-s-interprofessional-team-receives-grant"
     }
    ]
   },
   {
-   "name": "sf:salako-gbenga-oladoyin",
-   "display": "Salako Gbenga Oladoyin",
+   "name": "michaeljent1",
+   "display": "Michael Jent",
    "facts": [
     {
-     "text": "Process Champion for scale-up excellence of Catalytic Products at Saint-Gobain NorPro, supporting the operational excellence, quality assurance and WCM teams of its catalytic business unit",
-     "source": "Michael Taiwo Scholarships",
-     "url": "https://mtscholarships.org/team-members/salako-gbenga/"
+     "text": "Named to SUNY Canton's President's List for Fall 2022 as a Bachelor of Science in Nursing student",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2023/honorsf22.php"
     },
     {
-     "text": "Now lives in the Houston, Texas metropolitan area with his family",
-     "source": "Michael Taiwo Scholarships",
-     "url": "https://mtscholarships.org/team-members/salako-gbenga/"
+     "text": "Named to SUNY Canton's President's List for Spring 2023 as a Bachelor of Science in Nursing student",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2023/honorss23.php"
+    }
+   ]
+  },
+  {
+   "name": "sf:patrick-tombs",
+   "display": "Patrick Tombs",
+   "facts": [
+    {
+     "text": "Played Crutchie in Disney's NEWSIES at the Axelrod Performing Arts Center, June 1-17, 2018, born with arthrogryposis and reported as the first actor with a disability to play the role",
+     "source": "BroadwayWorld",
+     "url": "https://www.broadwayworld.com/new-jersey/article/Disabled-Actor-To-Play-The-Role-Of-Crutchie-In-Disneys-NEWSIES-20180522"
     },
     {
-     "text": "Previously worked as a Research and Development Chemical Engineer at Isovolta, leading full-cycle development of new products, and earlier as a Process Engineer for Mistykay Oil and Gas Limited in Nigeria",
-     "source": "Michael Taiwo Scholarships",
-     "url": "https://mtscholarships.org/team-members/salako-gbenga/"
+     "text": "Starred as Quasimodo in \"The Hunchback of Notre Dame\" with the New Paradigm Theatre Company, as a Summer Youth Musical Theater Workshop alumnus whose first musical was \"Titanic\" at age 15, and was a full-time working actor based in the New York City area in 2018",
+     "source": "Press & Sun-Bulletin",
+     "url": "https://www.ndinsider.com/story/news/local/2018/08/01/summer-youth-musical-theater-workshop-ends-binghamton/843469002/"
+    }
+   ]
+  },
+  {
+   "name": "em_anuel_xa",
+   "display": "Emmanuel Atindama",
+   "facts": [
+    {
+     "text": "First author of \"Impact of targeted interventions on success of high-risk engineering students: a focus on historically underrepresented students in STEM,\" published in Frontiers in Education in 2025",
+     "source": "Frontiers in Education",
+     "url": "https://www.frontiersin.org/journals/education/articles/10.3389/feduc.2025.1435279/pdf"
+    }
+   ]
+  },
+  {
+   "name": "katrina.cutler",
+   "display": "Katrina Lee Cutler",
+   "facts": [
+    {
+     "text": "Set to graduate cum laude from SUNY Potsdam with a Bachelor of Science degree in Public Health",
+     "source": "SUNY Potsdam \u00b7 Merit Pages",
+     "url": "https://potsdam.meritpages.com/stories/Katrina-Cutler-Set-to-Graduate-from-SUNY-Potsdam/133057533"
     },
     {
-     "text": "Holds a Lean Six Sigma Black Belt (LSSBB) certification from Kent State University and a Power BI for Business Analytics training certificate from Saint-Gobain University",
-     "source": "Michael Taiwo Scholarships",
-     "url": "https://mtscholarships.org/team-members/salako-gbenga/"
+     "text": "Named to SUNY Potsdam President's List for Spring 2023",
+     "source": "SUNY Potsdam \u00b7 Merit Pages",
+     "url": "https://potsdam.meritpages.com/stories/Katrina-Cutler-Named-to-SUNY-Potsdam-President-s-List/110719773"
+    }
+   ]
+  },
+  {
+   "name": "dr.angelesfelix",
+   "display": "Angeles Felix",
+   "facts": [
+    {
+     "text": "Completed The Dawson Academy's extensive continuing education courses",
+     "source": "Dental Associates of Cumberland",
+     "url": "https://cumberlandsmile.com/team"
+    },
+    {
+     "text": "Active member of the American Dental Association, the Rhode Island Dental Association, and The Dawson Alumni Association",
+     "source": "Dental Associates of Cumberland",
+     "url": "https://cumberlandsmile.com/team"
     }
    ]
   }
  ],
  "coverage": {
-  "checked_total": 251,
-  "of": 678,
+  "checked_total": 276,
+  "of": 677,
   "window_days": 30
  },
- "note": "Fresh sweep: no qualifying item published in the past 21 days about a directory member was found today (current October items surfaced for non-directory people only; directory members who appeared in current coverage \u2014 Ben Hull, Zvi Szafran, Richard Haller \u2014 had no new personal fact in the window)."
+ "note": "Fresh sweep: none found - current October items surfaced for non-directory people only; directory members in current coverage (Zvi Szafran, Richard Haller, Ben Hull) had no new personal fact in the window."
 }
