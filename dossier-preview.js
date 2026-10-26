@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.36.0';
+var APP_VERSION = '2.37.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -314,18 +314,19 @@ function raw(e, k){ var v = (e.profile || {})[k]; return v == null ? '' : String
 function tierOf(e){ return (((e || {}).profile || {}).tier || '').toLowerCase(); }
 function tierCol(e){ return (TIERS[tierOf(e)] || {}).c || RING_C[3]; }
 function tierName(e){ return (TIERS[tierOf(e)] || {}).n || ''; }
-/* Military rank badge (JD 2026-10-22, V2.29.0): a small US flag + rank
+/* Military rank badge (JD 2026-10-22, V2.29.0; flag made subdued
+   grayscale at JD's direction 2026-10-26): a small US flag + rank
    chip that follows anyone whose profile carries a rank (the Sheet's
    Rank column, baked as profile.rank — the 27th IBCT roster) everywhere
    their name renders. No rank, no chip: everyone else renders exactly
    as before. One helper (milBadge) + one CSS family (.milbadge). */
 var MIL_FLAG = (function(){
   var s = '<svg class="milflag" viewBox="0 0 16 11" width="16" height="11" aria-hidden="true" focusable="false">' +
-    '<rect width="16" height="11" fill="#f2f2f2"/>';
-  for(var i = 0; i < 13; i += 2) s += '<rect y="' + (i * 11 / 13).toFixed(2) + '" width="16" height="' + (11 / 13).toFixed(2) + '" fill="#b31942"/>';
-  s += '<rect width="7.4" height="' + (77 / 13).toFixed(2) + '" fill="#0a3161"/>';
+    '<rect width="16" height="11" fill="#cfcfc9"/>';
+  for(var i = 0; i < 13; i += 2) s += '<rect y="' + (i * 11 / 13).toFixed(2) + '" width="16" height="' + (11 / 13).toFixed(2) + '" fill="#55565a"/>';
+  s += '<rect width="7.4" height="' + (77 / 13).toFixed(2) + '" fill="#232326"/>';
   for(var r = 0; r < 5; r++) for(var c = 0; c < 4; c++)
-    s += '<circle cx="' + (1.05 + c * 1.75).toFixed(2) + '" cy="' + (0.95 + r * 1.05).toFixed(2) + '" r="0.34" fill="#fff"/>';
+    s += '<circle cx="' + (1.05 + c * 1.75).toFixed(2) + '" cy="' + (0.95 + r * 1.05).toFixed(2) + '" r="0.34" fill="#cfcfc9"/>';
   return s + '</svg>';
 })();
 function milRank(e){ var r = gv(e, 'rank'); return r ? r.trim().toUpperCase() : ''; }
@@ -337,6 +338,15 @@ function milBadge(e){
 function milBadgeName(name){
   var di = BYN[String(name || '').toLowerCase()];
   return di == null || !D.directory[di] ? '' : milBadge(D.directory[di]);
+}
+/* Rank seniority for the Groups sort-by-rank option (JD 2026-10-26):
+   commissioned, then warrant, then enlisted; CSM over SGM and 1SG over
+   MSG inside their grades. Lower index = more senior; unranked last. */
+var MIL_RANK_ORDER = ['GEN','LTG','MG','BG','COL','LTC','MAJ','CPT','1LT','2LT','CW5','CW4','CW3','CW2','WO1','CSM','SGM','1SG','MSG','SFC','SSG','SGT','CPL','SPC','PFC','PV2','PVT'];
+function milRankIdx(e){
+  var r = milRank(e); if(!r) return 999;
+  var i = MIL_RANK_ORDER.indexOf(r);
+  return i < 0 ? 500 : i;
 }
 function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
 function knownSinceYear(e){
@@ -2892,7 +2902,7 @@ function familyMiniTree(di){
   var self = '<div class="fnode self"><span>' + esc(famInitials(dispName(e))) + '</span><small>' + esc(dispName(e)) + '</small>' + milBadge(e) + '</div>';
   return '<div class="ftree">' +
     (P.length ? '<div class="fr"><label>Parents</label><div>' + P.map(function(o){ return node(o, 'par'); }).join('') + '</div></div>' : '') +
-    '<div class="fr"><label>' + (SP.length ? 'Self and spouse' : 'Self') + '</label><div>' + self + SP.map(function(o){ return node(o, 'sp'); }).join('') + '</div></div>' +
+    '<div class="fr"><label>' + (SP.length ? 'Spouse' : 'Self') + '</label><div>' + self + SP.map(function(o){ return node(o, 'sp'); }).join('') + '</div></div>' +
     (SB.length ? '<div class="fr"><label>Siblings</label><div>' + SB.map(function(o){ return node(o, 'sib'); }).join('') + '</div></div>' : '') +
     (C.length ? '<div class="fr"><label>Children</label><div>' + C.map(function(o){ return node(o, 'chi'); }).join('') + '</div></div>' : '') + '</div>';
 }
@@ -4237,7 +4247,7 @@ function grpNamesFor(kind){
    setPersonGroups -> queuePatch. Manage mode (combine) ticks
    cards instead of rows; its semantics are unchanged.
    ============================================================ */
-var GRPV = { q:'', mq:'', scrollY:null, detail:null, lastKind:'', lastName:'' };
+var GRPV = { q:'', mq:'', scrollY:null, detail:null, lastKind:'', lastName:'', sort:(typeof store === 'function' ? store('ncc_grp_sort_v1') : '') || 'name' };
 function grpMembersOf(kind, name){
   var mem = kind === 'groups' ? (allGroups()[name] || []) : orgMembers(kind, name);
   return mem.slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
@@ -4319,6 +4329,10 @@ function grpPaintMembers(){
   var box = $('#gmlist'); if(!box || !GRPV.detail) return;
   var kind = GRPV.detail.kind, name = GRPV.detail.name;
   var mem = grpMembersOf(kind, name);
+  if(GRPV.sort === 'rank') mem = mem.slice().sort(function(a, b){
+    var d = milRankIdx(D.directory[a]) - milRankIdx(D.directory[b]);
+    return d || dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+  });
   var q = GRPV.mq.trim().toLowerCase();
   var shown = q ? mem.filter(function(di){ return dispName(D.directory[di]).toLowerCase().indexOf(q) >= 0; }) : mem;
   box.innerHTML = shown.length ? shown.map(function(di){ return grpMemberRow(kind, name, di); }).join('') : '<p class="dim pad">' + (mem.length ? 'No one in this group matches.' : 'No one yet.') + '</p>';
@@ -4335,11 +4349,13 @@ function viewGroups(v){
   if(name){
     GRPV.detail = { kind:kind, name:name };
     var mem = grpMembersOf(kind, name);
+    var hasRanks = mem.some(function(di){ return !!milRank(D.directory[di]); });
     v.innerHTML = '<div class="page groups">' + head + tabs + '<div class="gdet">' +
       '<div class="gdh"><a class="ib backm" href="#/groups/' + kind + '" aria-label="Back to groups">' + ic('chevl', 18) + '</a>' +
       '<div><h2>' + esc(name) + '</h2><small><span id="gmcount">' + mem.length + '</span> ' + (mem.length === 1 ? 'person' : 'people') + ' &middot; ' + esc(grpSignal(kind, name)) + '</small></div><span class="sp"></span>' +
       (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
-      '<div class="gtools"><label class="gsearchbox">' + ic('search', 15) + '<input id="gmq" placeholder="Search members" autocomplete="off" value="' + esc(GRPV.mq) + '"></label></div>' +
+      '<div class="gtools"><label class="gsearchbox">' + ic('search', 15) + '<input id="gmq" placeholder="Search members" autocomplete="off" value="' + esc(GRPV.mq) + '"></label>' +
+      (hasRanks ? '<span class="gsort"><span>Sort</span>' + [['name', 'Name'], ['rank', 'Rank']].map(function(s){ return '<button type="button" class="phcolbtn' + (GRPV.sort === s[0] ? ' on' : '') + '" data-act="grpsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '</span>' : '') + '</div>' +
       (kind === 'groups' ? '<div class="finder"><input id="gaddq" data-g="' + esc(name) + '" placeholder="Add a person to this group" autocomplete="off"><div id="gaddr" class="hits"></div></div>' : '<p class="note">Membership comes from each profile’s Background section.</p>') +
       '<div class="plist" id="gmlist"></div></div></div>';
     grpPaintMembers();
@@ -4910,6 +4926,20 @@ function viewDaily(v){
       '<p class="dim">At ' + (DT.checked || []).length + ' checks a day, the full circle completes about every ' + rotationDays + ' days, so every profile is re-verified roughly once a month.</p></div>' : '') +
     '</div></section>';
   var updHead = (DT.filed || []).length ? '<div class="assec-t asanim" style="--d:120ms">UPDATED RECORDS</div>' : '';
+  /* --- Currency strip (JD 2026-10-26): freshness at a glance, what the
+     fresh sweep found, and who the rotation visits next --- */
+  var nowD = new Date();
+  var todayIso = nowD.getFullYear() + '-' + ('0' + (nowD.getMonth() + 1)).slice(-2) + '-' + ('0' + nowD.getDate()).slice(-2);
+  var ageDays = daysBetween(DT.date, todayIso);
+  var ageLabel = ageDays <= 0 ? 'TODAY' : ageDays === 1 ? 'YESTERDAY' : ageDays + ' DAYS AGO';
+  var freshLine = freshF ? 'Fresh sweep of the past 21 days: <b>1 new record found</b> — ' + esc(freshF.display || freshF.name) + ', filed at the top of this page.' : 'Fresh sweep of the past 21 days: nothing new found.';
+  var nextUp = DT.next_up || [];
+  var remaining = typeof DT.unchecked_remaining === 'number' ? DT.unchecked_remaining : 0;
+  var cur = '<section class="card dtcur asanim" style="--d:0ms"><div class="cbody">' +
+    '<div class="dtcur-top"><span class="dtcur-dot"></span><span class="dtcur-state">CURRENT AS OF ' + esc(fmtD(DT.date)).toUpperCase() + ' &middot; <span class="dtcur-age">' + ageLabel + '</span></span><span class="dtcur-next">Next run tomorrow morning</span></div>' +
+    '<div class="dtcur-fresh">' + freshLine + '</div>' +
+    (nextUp.length ? '<div class="dtcur-nu"><span class="dtcur-nu-t">Next in the rotation</span><span class="dtcur-nu-names">' + nextUp.map(function(x){ return personLink(x.name, x.display); }).join(' &middot; ') + (remaining > nextUp.length ? ' &middot; +' + (remaining - nextUp.length) + ' more not yet checked' : '') + '</span></div>' : '') +
+    '</div></section>';
   var top = '<div class="astop' + (hero ? '' : ' astop-solo') + '">' + hero + stats + '</div>';
   /* --- Change log rail (JD 2026-10-22): every amendment from the photo/info passes, with the date of its source --- */
   function fmtSrc(iso){
@@ -4923,9 +4953,9 @@ function viewDaily(v){
     var citems = chgRows(CH.entries).map(function(g){
       return g.items.length > 1 ? chgGroupRow(g, personLink, fmtSrc) : chgEntryRow(g.first, personLink, fmtSrc);
     }).join('');
-    rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
+    rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
-  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + top + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div></div>';
+  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + cur + top + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div></div>';
   dtAnimate();
 }
 
@@ -7248,6 +7278,7 @@ function onClick(ev){
     case 'phclose': phCloseViewer(); break;
     case 'phcols': PH_COLS = parseInt(el.getAttribute('data-n'), 10) || 12; store('ncc_photos_cols_v1', String(PH_COLS)); phPaintList(); break;
     case 'phsort': PH_SORT = el.getAttribute('data-s') || 'grade'; store('ncc_photos_sort_v1', PH_SORT); phPaintList(); break;
+    case 'grpsort': GRPV.sort = el.getAttribute('data-s') || 'name'; store('ncc_grp_sort_v1', GRPV.sort); render(); break;
     case 'phsdir': PH_SDIR = PH_SDIR < 0 ? 1 : -1; store('ncc_photos_sdir_v1', PH_SDIR < 0 ? 'desc' : 'asc'); phPaintList(); break;
     case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
     case 'home': goHome(); break;
