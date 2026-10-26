@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.37.0';
+var APP_VERSION = '2.38.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -347,6 +347,28 @@ function milRankIdx(e){
   var r = milRank(e); if(!r) return 999;
   var i = MIL_RANK_ORDER.indexOf(r);
   return i < 0 ? 500 : i;
+}
+/* Branch rank lists + detection for the profile rank picker (JD
+   2026-10-26): anyone in a military capacity gets a Rank dropdown on
+   their profile, preloaded with the rank set of the branch they are
+   marked under (their groups and orgs decide the branch). */
+var MIL_RANKS = {
+  ar: { label:'U.S. Army', ranks:['PVT','PV2','PFC','SPC','CPL','SGT','SSG','SFC','MSG','1SG','SGM','CSM','WO1','CW2','CW3','CW4','CW5','2LT','1LT','CPT','MAJ','LTC','COL','BG','MG','LTG','GEN'] },
+  af: { label:'U.S. Air Force', ranks:['AB','Amn','A1C','SrA','SSgt','TSgt','MSgt','SMSgt','CMSgt','2d Lt','1st Lt','Capt','Maj','Lt Col','Col','Brig Gen','Maj Gen','Lt Gen','Gen'] },
+  mc: { label:'U.S. Marine Corps', ranks:['Pvt','PFC','LCpl','Cpl','Sgt','SSgt','GySgt','MSgt','1stSgt','MGySgt','SgtMaj','WO','CWO2','CWO3','CWO4','CWO5','2ndLt','1stLt','Capt','Maj','LtCol','Col','BGen','MajGen','LtGen','Gen'] },
+  nv: { label:'U.S. Navy', ranks:['SR','SA','SN','PO3','PO2','PO1','CPO','SCPO','MCPO','CWO2','CWO3','CWO4','CWO5','ENS','LTJG','LT','LCDR','CDR','CAPT','RDML','VADM','ADM'] },
+  sf: { label:'U.S. Space Force', ranks:['Spc1','Spc2','Spc3','Spc4','Sgt','TSgt','MSgt','SMSgt','CMSgt','2d Lt','1st Lt','Capt','Maj','Lt Col','Col','Brig Gen','Maj Gen','Lt Gen','Gen'] },
+  cg: { label:'U.S. Coast Guard', ranks:['SR','SA','SN','PO3','PO2','PO1','CPO','SCPO','MCPO','CWO2','CWO3','CWO4','ENS','LTJG','LT','LCDR','CDR','CAPT','RDML','VADM','ADM'] }
+};
+function milBranch(e){
+  var hay = (personGroups(e) || []).concat(vals(e, 'companies'), vals(e, 'universities'), vals(e, 'churches')).join(' ').toLowerCase();
+  if(/space force/.test(hay)) return 'sf';
+  if(/air force/.test(hay)) return 'af';
+  if(/marine/.test(hay)) return 'mc';
+  if(/coast guard/.test(hay)) return 'cg';
+  if(/navy|naval/.test(hay)) return 'nv';
+  if(/army|ibct|national guard/.test(hay)) return 'ar';
+  return '';
 }
 function momVal(e){ var v = gv(e, 'momentum'); return (v === '-' || v === '+' || v === '0') ? v : ''; }
 function knownSinceYear(e){
@@ -2793,8 +2815,21 @@ function secView(di, id){
     var tiles = [['Tier', tierOf(e) ? TIERS[tierOf(e)].n : ''], ['Relationship', cap(gv(e, 'relationship'))], ['Context', cap(gv(e, 'context'))], ['Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1]],
       ['Known since', knownSinceYear(e) ? knownSinceYear(e) + ' (' + Math.max(0, new Date().getFullYear() - knownSinceYear(e)) + ' yrs)' : ''], ['Momentum', momVal(e) ? MOM_LABELS[momVal(e)] : '']];
     var gs = personGroups(e);
+    /* Rank picker (JD 2026-10-26): shown when the person is in a
+       military capacity (branch detected from groups/orgs) or already
+       carries a rank; the dropdown is preloaded with that branch's
+       ranks. Picking one writes the Rank field immediately. */
+    var brB = milBranch(e), curRank = milRank(e), rankCtl = '';
+    if(brB || curRank){
+      var rlist = (brB ? MIL_RANKS[brB].ranks : MIL_RANKS.ar.ranks).slice();
+      if(curRank && rlist.indexOf(curRank) < 0) rlist.unshift(curRank);
+      rankCtl = '<div class="sub-h">Rank' + (brB ? ' · ' + esc(MIL_RANKS[brB].label) : '') + '</div>' +
+        '<select class="ranksel" data-act="ranksel" data-di="' + di + '" aria-label="Military rank">' +
+        '<option value="">No rank</option>' +
+        rlist.map(function(r){ return '<option value="' + esc(r) + '"' + (r === curRank ? ' selected' : '') + '>' + esc(r) + '</option>'; }).join('') + '</select>';
+    }
     return '<div class="tiles">' + tiles.map(function(t){ return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b></div>'; }).join('') + '</div>' +
-      (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '');
+      (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '') + rankCtl;
   }
   if(id === 'about'){
     var syn = gv(e, 'synopsis'), fp = footprintOf(e), out = '';
@@ -4796,12 +4831,23 @@ function chgRows(entries){
   });
   return order;
 }
+/* Novelty traffic light (JD 2026-10-26): a subtle horizontal bar on
+   filed facts — green = new information that was not on the profile,
+   yellow = expands on something similar already there, red = near-
+   duplicate that needs a look. Unlabeled; the title carries the
+   meaning on hover. Unclassified entries render nothing. */
+function novBar(n){
+  if(n === 'new') return '<span class="novbar nov-new" title="New information: not on the profile before"></span>';
+  if(n === 'expands') return '<span class="novbar nov-exp" title="Expands on something already on the profile"></span>';
+  if(n === 'redundant') return '<span class="novbar nov-red" title="Near-duplicate: may already be filed — worth a look"></span>';
+  return '';
+}
 function chgEntryRow(c, linkFn, fmtFn, cls, style){
   return '<div class="chg' + (cls ? ' ' + cls : '') + '"' + (style || '') + '><div class="chg-name">' + linkFn(c.name) + '</div>' +
     '<p class="chg-what">' + esc(c.what || '') + '</p>' +
     '<div class="chg-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
     (c.source_date ? ' &middot; source ' + esc(fmtFn(c.source_date)) : '') +
-    (c.filed ? '<span class="chg-filed">Filed ' + esc(fmtFn(c.filed)) + '</span>' : '') + '</div></div>';
+    (c.filed ? '<span class="chg-filed">Filed ' + esc(fmtFn(c.filed)) + '</span>' : '') + '</div>' + novBar(c.novelty) + '</div>';
 }
 function chgGroupRow(g, linkFn, fmtFn, cls, style){
   var c = g.first, sd = c.source_date, uniform = true;
@@ -4860,7 +4906,7 @@ function viewDaily(v){
     return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>' + milBadge(D.directory[di]);
   }
   function factLine(x){
-    return esc(x.text) + (x.url ? ' <a class="assrc" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.source || 'source') + ' ' + ic('ext', 11) + '</a>' : ' <span class="dim">(' + esc(x.source || '') + ')</span>');
+    return esc(x.text) + (x.url ? ' <a class="assrc" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.source || 'source') + ' ' + ic('ext', 11) + '</a>' : ' <span class="dim">(' + esc(x.source || '') + ')</span>') + novBar(x.novelty);
   }
   /* --- Fresh hero --- */
   var freshF = null, freshX = null;
@@ -7497,6 +7543,11 @@ function onChange(ev){
     paintProfile(S.prof.di); return;
   }
   if(act === 'msv'){ MG.surv = +t.getAttribute('data-di'); mergeStep2(); return; }
+  if(act === 'ranksel'){
+    var rdi = +t.getAttribute('data-di'), rv = t.value;
+    txn(rv ? 'Set rank' : 'Clear rank', function(){ queuePatch(rdi, { rank: rv }); });
+    paintProfile(rdi); return;
+  }
   if(t.hasAttribute && t.hasAttribute('data-pk')){
     var k = t.getAttribute('data-pk');
     var pkV = (t.tagName === 'TEXTAREA') ? t.value : t.value.trim();
