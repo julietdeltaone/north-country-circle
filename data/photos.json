@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22",
+ "updated": "2026-10-26",
  "total": 670,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles",
  "people": [
@@ -5428,6 +5428,16 @@
    "source_page": "https://www.canton.edu/news/2026/ogdensburg-promise.php",
    "status": "no_photo",
    "type": null
+  },
+  {
+   "name": "Kathleen DeLage",
+   "photo_url": "https://s3.amazonaws.com/rm3.attachments.prod.readmedia.com/files/122345/news/PXL_20230113_072032083.PORTRAIT_3.jpg?1673991200",
+   "source_page": "https://dmna-ny.meritpages.com/achievements/Campville-resident-recognized-for-excellence-in-NY-Army-National-Guard-while-serving-in-Germany/158033",
+   "status": "confirmed",
+   "type": "Merit Pages (DMNA)",
+   "evidence": "DMNA Merit story photo: Spc. Kathleen E. Delage (name tape visible) receiving the Army Achievement Medal, Grafenwoehr Training Area, Germany, Jan 13, 2023; she is on the left, shaking hands with the presenter. Added at JD's direction 2026-10-26; focus set on her.",
+   "focus": "24% 30%",
+   "zoom": 1.5
   }
  ]
 }
