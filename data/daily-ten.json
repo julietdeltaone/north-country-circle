@@ -2,151 +2,3785 @@
  "date": "2026-10-26",
  "checked": [
   {
-   "name": "sf:kayla-ervin",
-   "display": "Kayla Ervin"
+   "name": "sf:aaron-cote",
+   "display": "Aaron Cote"
   },
   {
-   "name": "sf:ashley-stdenis",
-   "display": "Ashley StDenis"
+   "name": "ig:aaronjdaniels",
+   "display": "Aaron Daniels"
   },
   {
-   "name": "sf:martha-martin",
-   "display": "Martha Martin"
+   "name": "ig:abbystiles_",
+   "display": "Abby Stiles"
   },
   {
-   "name": "ct:colby criscitello",
-   "display": "Colby Criscitello"
+   "name": "ig:abbydaniels03",
+   "display": "Abigail Daniels"
   },
   {
-   "name": "annabellerose.07",
-   "display": "Annabelle Dowling"
+   "name": "sf:acacia-white",
+   "display": "Acacia White"
   },
   {
-   "name": "jamesphilipm",
-   "display": "James Meyers"
+   "name": "ig:adria.t18",
+   "display": "Adria Tebo"
   },
   {
-   "name": "callindsey",
-   "display": "Caleb Lindsey"
+   "name": "ig:adhope2006",
+   "display": "Adriana Levendusky"
+  },
+  {
+   "name": "ig:askinnerusa",
+   "display": "Aeriel Skinner"
+  },
+  {
+   "name": "ig:aidantruth",
+   "display": "Aidan Daniels"
+  },
+  {
+   "name": "sf:alan-k-daniels",
+   "display": "Alan K Daniels"
+  },
+  {
+   "name": "ig:alanahoover",
+   "display": "Alana Hoover"
+  },
+  {
+   "name": "ig:aleeparker_",
+   "display": "Alessandra Parker"
+  },
+  {
+   "name": "ig:alexfornyassembly_",
+   "display": "Alex Hammond"
+  },
+  {
+   "name": "sf:alex-koberda",
+   "display": "Alex Koberda"
+  },
+  {
+   "name": "sf:alexander-hacker",
+   "display": "Alexander Hacker"
+  },
+  {
+   "name": "ig:alex_conn504",
+   "display": "Alexandra Colbert"
+  },
+  {
+   "name": "ct:alexis donnely",
+   "display": "Alexis Donnely"
+  },
+  {
+   "name": "ig:alexis_krapf",
+   "display": "Alexis Nicole"
+  },
+  {
+   "name": "sf:alexis-sullivan",
+   "display": "Alexis Sullivan"
+  },
+  {
+   "name": "ig:certified.sauce",
+   "display": "Alfredo Rodriguez"
+  },
+  {
+   "name": "sf:alicia-taillon",
+   "display": "Alicia Taillon"
+  },
+  {
+   "name": "sf:alisha-ohl",
+   "display": "Alisha Ohl"
+  },
+  {
+   "name": "ig:alli.potter17",
+   "display": "Alli Potter"
+  },
+  {
+   "name": "ig:acole313",
+   "display": "Allison Cole"
+  },
+  {
+   "name": "ig:ally.dubbioso",
+   "display": "Ally Dubbioso"
+  },
+  {
+   "name": "ig:ally.sabre",
+   "display": "Allyssa Sabre"
+  },
+  {
+   "name": "sf:alycia-miller-lynch",
+   "display": "Alycia Miller-Lynch"
+  },
+  {
+   "name": "ig:alyssalramsay",
+   "display": "Alyssa L Ramsay"
+  },
+  {
+   "name": "sf:amber-erwin",
+   "display": "Amber Erwin"
+  },
+  {
+   "name": "fdb:amber_ingram",
+   "display": "Amber Ingram"
+  },
+  {
+   "name": "ig:ambikab.09",
+   "display": "Ambika Banavara"
+  },
+  {
+   "name": "ct:ana miller",
+   "display": "Ana Miller"
+  },
+  {
+   "name": "sf:anastasia-colbert",
+   "display": "Anastasia Colbert"
+  },
+  {
+   "name": "ig:anastasiasbakery",
+   "display": "Anastasia Cote"
+  },
+  {
+   "name": "ig:anastasia_g_daniels",
+   "display": "Anastasia Daniels"
+  },
+  {
+   "name": "ig:andrea247_",
+   "display": "Andrea Vetere"
+  },
+  {
+   "name": "ct:andrew haas",
+   "display": "Andrew Haas"
+  },
+  {
+   "name": "ig:drewspov_",
+   "display": "Andrew Matott"
+  },
+  {
+   "name": "ct:andrew wiseman",
+   "display": "Andrew Wiseman"
+  },
+  {
+   "name": "ig:andy.dennis777",
+   "display": "Andy Dennis"
+  },
+  {
+   "name": "ig:marblehilldesigns",
+   "display": "Angela Quant"
+  },
+  {
+   "name": "ig:dr.angelesfelix",
+   "display": "Angeles Felix"
+  },
+  {
+   "name": "ct:angie canales",
+   "display": "Angie Canales"
+  },
+  {
+   "name": "sf:ann-parow-mackey",
+   "display": "Ann Parow Mackey"
   },
   {
    "name": "sf:anna-molinero",
    "display": "Anna Molinero"
   },
   {
-   "name": "fulton.julia",
-   "display": "Julia Fulton"
+   "name": "ct:annabelle boudreau",
+   "display": "Annabelle Boudreau"
+  },
+  {
+   "name": "ig:annabellerose.07",
+   "display": "Annabelle Dowling"
+  },
+  {
+   "name": "ig:annecatherina7",
+   "display": "Anne Katherin Wolf"
+  },
+  {
+   "name": "sf:anne-shaver",
+   "display": "Anne Shaver"
+  },
+  {
+   "name": "ig:lise.cevallos",
+   "display": "Annelise Cevallos"
+  },
+  {
+   "name": "sf:annika-greco",
+   "display": "Annika Greco"
+  },
+  {
+   "name": "ig:ariannamason91",
+   "display": "Arianna Mason"
+  },
+  {
+   "name": "ig:ariannarider",
+   "display": "Arianna Rider"
+  },
+  {
+   "name": "sf:asher-cragg",
+   "display": "Asher Cragg"
+  },
+  {
+   "name": "sf:ashleigh-graveline",
+   "display": "Ashleigh Graveline"
+  },
+  {
+   "name": "sf:ashley-lafay",
+   "display": "Ashley LaFay"
+  },
+  {
+   "name": "sf:ashley-stdenis",
+   "display": "Ashley StDenis"
+  },
+  {
+   "name": "sf:ashlin-elliott",
+   "display": "Ashlin Elliott"
+  },
+  {
+   "name": "ig:autumn.zellweger",
+   "display": "Autumn Zellweger"
+  },
+  {
+   "name": "sf:avery-charleson",
+   "display": "Avery Charleson"
+  },
+  {
+   "name": "ig:cloutlord_420",
+   "display": "Avery Criscitello"
+  },
+  {
+   "name": "fdb:b._ryan_dunphey",
+   "display": "B. Ryan Dunphey"
+  },
+  {
+   "name": "sf:bartlomiej-brodzki",
+   "display": "Bartlomiej Brodzki"
+  },
+  {
+   "name": "fdb:baxter_brown",
+   "display": "Baxter Brown"
+  },
+  {
+   "name": "ig:becca_emmett",
+   "display": "Becca Emmett"
+  },
+  {
+   "name": "sf:beka-martin",
+   "display": "Beka Martin"
+  },
+  {
+   "name": "ct:ben hull",
+   "display": "Ben Hull"
+  },
+  {
+   "name": "ig:benlevendusky",
+   "display": "Ben Levendusky"
+  },
+  {
+   "name": "sf:ben-newton",
+   "display": "Ben Newton"
+  },
+  {
+   "name": "sf:ben-roberts",
+   "display": "Ben Roberts"
+  },
+  {
+   "name": "sf:benjamin-emmanuel",
+   "display": "Benjamin Emmanuel"
+  },
+  {
+   "name": "sf:benjamin-horner",
+   "display": "Benjamin Horner"
+  },
+  {
+   "name": "sf:beth-randall",
+   "display": "Beth Randall"
   },
   {
    "name": "sf:betty-cryderman-parlow",
    "display": "Betty Cryderman Parlow"
   },
   {
-   "name": "kaylawatkins8",
-   "display": "Kayla Hettel"
+   "name": "ct:blake amo",
+   "display": "Blake Amo"
   },
   {
-   "name": "ct:susan buckley",
-   "display": "Susan Buckley"
+   "name": "ct:blake burr",
+   "display": "Blake Burr"
+  },
+  {
+   "name": "sf:bob-blewett",
+   "display": "Bob Blewett"
+  },
+  {
+   "name": "sf:bob-dale",
+   "display": "Bob Dale"
+  },
+  {
+   "name": "ct:brad ingram",
+   "display": "Brad Ingram"
+  },
+  {
+   "name": "sf:brayden-amo",
+   "display": "Brayden Amo"
+  },
+  {
+   "name": "ig:bree.rogers545",
+   "display": "Bree Rogers"
+  },
+  {
+   "name": "ig:brendan.bombard_19",
+   "display": "Brendan Bombard"
+  },
+  {
+   "name": "sf:brenden-vanhorn",
+   "display": "Brenden Vanhorn"
+  },
+  {
+   "name": "sf:brenna-mcgrath",
+   "display": "Brenna McGrath"
+  },
+  {
+   "name": "ct:brian hanlin",
+   "display": "Brian Hanlin"
+  },
+  {
+   "name": "ig:brian.m.zehr",
+   "display": "Brian M. Zehr"
+  },
+  {
+   "name": "ct:brian patraw",
+   "display": "Brian Patraw"
+  },
+  {
+   "name": "sf:briana-mcgrath",
+   "display": "Briana McGrath"
+  },
+  {
+   "name": "ig:brianna.hammond",
+   "display": "Brianna Hammond"
+  },
+  {
+   "name": "ig:awretchlikebri",
+   "display": "Brianna McCarthy"
+  },
+  {
+   "name": "ig:briettapaladin",
+   "display": "Brietta Paladin"
+  },
+  {
+   "name": "sf:brittany-disalvo",
+   "display": "Brittany DiSalvo"
+  },
+  {
+   "name": "sf:brittany-fountain-sharlow",
+   "display": "Brittany Fountain Sharlow"
+  },
+  {
+   "name": "sf:brittney-carnicelli",
+   "display": "Brittney Carnicelli"
+  },
+  {
+   "name": "ig:brocktulley",
+   "display": "Brock Tulley"
+  },
+  {
+   "name": "ig:bronwynpaladin",
+   "display": "Bronwyn Paladin"
+  },
+  {
+   "name": "ig:brookemariejoyce",
+   "display": "Brooke Joyce"
+  },
+  {
+   "name": "ct:brooke larrabee",
+   "display": "Brooke Larrabee"
+  },
+  {
+   "name": "ig:brookelynnmoore_",
+   "display": "Brooke Moore"
+  },
+  {
+   "name": "ct:bryan noble",
+   "display": "Bryan Noble"
+  },
+  {
+   "name": "ig:cadencolbert",
+   "display": "Caden Colbert"
+  },
+  {
+   "name": "ig:caelin.ramsay",
+   "display": "Caelin Ramsay"
+  },
+  {
+   "name": "ig:cbresett20",
+   "display": "Caleb Bresett"
+  },
+  {
+   "name": "sf:caleb-dollinger",
+   "display": "Caleb Dollinger"
+  },
+  {
+   "name": "ig:callindsey",
+   "display": "Caleb Lindsey"
+  },
+  {
+   "name": "sf:calvin-brown",
+   "display": "Calvin Brown"
+  },
+  {
+   "name": "ig:carina_gilchrist",
+   "display": "Carina Gilchrist"
+  },
+  {
+   "name": "sf:carol-harris-huckle",
+   "display": "Carol Harris Huckle"
+  },
+  {
+   "name": "ig:carolinaxxmedina",
+   "display": "Carolina Medina"
+  },
+  {
+   "name": "ig:caroline.lafountain",
+   "display": "Caroline LaFountain"
+  },
+  {
+   "name": "sf:caroline-willis",
+   "display": "Caroline Willis"
+  },
+  {
+   "name": "sf:carson-hayes-ryan",
+   "display": "Carson Hayes Ryan"
+  },
+  {
+   "name": "ig:cashhyyy",
+   "display": "Cashlynn Colbert"
+  },
+  {
+   "name": "ig:_cathaccino_",
+   "display": "Catherine Green"
+  },
+  {
+   "name": "sf:catherine-m-thomas",
+   "display": "Catherine M Thomas"
+  },
+  {
+   "name": "ig:cathie_deschaine",
+   "display": "Cathie Deschaine"
+  },
+  {
+   "name": "sf:cathy-boyle",
+   "display": "Cathy Boyle"
+  },
+  {
+   "name": "ct:cayden stickney",
+   "display": "Cayden Stickney"
+  },
+  {
+   "name": "ig:eastmoewest",
+   "display": "Cayden Westwood"
+  },
+  {
+   "name": "ig:ceciliesmith2025",
+   "display": "Cecilie Smith"
+  },
+  {
+   "name": "ig:charlie_garrelts",
+   "display": "Charlie Garrelts"
+  },
+  {
+   "name": "sf:charlie-sharon-sweet",
+   "display": "Charlie-Sharon Sweet"
+  },
+  {
+   "name": "ig:charlotte_clark04",
+   "display": "Charlotte Clark"
+  },
+  {
+   "name": "ig:chelsea__mcgrath",
+   "display": "Chelsea McGrath"
+  },
+  {
+   "name": "sf:chelsea-mg",
+   "display": "Chelsea MG"
+  },
+  {
+   "name": "ig:chiara.frasc",
+   "display": "Chiara"
+  },
+  {
+   "name": "ig:ms_dior.gor",
+   "display": "Chidiogor Ofodum"
+  },
+  {
+   "name": "sf:christa-scott",
+   "display": "Christa Scott"
+  },
+  {
+   "name": "sf:christine-johnson",
+   "display": "Christine Johnson"
+  },
+  {
+   "name": "sf:christine-sinicropi-anderson",
+   "display": "Christine Sinicropi Anderson"
+  },
+  {
+   "name": "ct:christine sutter",
+   "display": "Christine Sutter"
+  },
+  {
+   "name": "sf:christopher-pagan",
+   "display": "Christopher Pagan"
+  },
+  {
+   "name": "sf:christopher-towler",
+   "display": "Christopher Towler"
+  },
+  {
+   "name": "ig:cierrahitchman",
+   "display": "Cierra Hitchman"
+  },
+  {
+   "name": "sf:cj-tomford",
+   "display": "CJ Tomford"
+  },
+  {
+   "name": "ig:c.w.bailey64",
+   "display": "Cliff Bailey"
+  },
+  {
+   "name": "sf:cody-benham",
+   "display": "Cody Benham"
+  },
+  {
+   "name": "sf:cody-dennis",
+   "display": "Cody Dennis"
+  },
+  {
+   "name": "ct:colby criscitello",
+   "display": "Colby Criscitello"
+  },
+  {
+   "name": "sf:colin-mackey",
+   "display": "Colin Mackey"
+  },
+  {
+   "name": "ig:colleendcheney",
+   "display": "Colleen Cheney"
+  },
+  {
+   "name": "ig:colleenhackett",
+   "display": "Colleen Hackett"
+  },
+  {
+   "name": "sf:connor-caldwell",
+   "display": "Connor Caldwell"
+  },
+  {
+   "name": "sf:cora-capozzi",
+   "display": "Cora Capozzi"
+  },
+  {
+   "name": "sf:corbin-ladison",
+   "display": "Corbin Ladison"
+  },
+  {
+   "name": "ig:coreyd123103",
+   "display": "Corey Delisa"
+  },
+  {
+   "name": "ct:corey laprad",
+   "display": "Corey Laprad"
+  },
+  {
+   "name": "ig:cornbrain",
+   "display": "Corinne O'Brien"
+  },
+  {
+   "name": "ig:cameramancory",
+   "display": "Cory Williams"
+  },
+  {
+   "name": "sf:courtney-cabaniss",
+   "display": "Courtney Cabaniss"
+  },
+  {
+   "name": "ig:courtney_delosh",
+   "display": "Courtney Delosh"
+  },
+  {
+   "name": "sf:courtney-kelly",
+   "display": "Courtney Kelly"
+  },
+  {
+   "name": "sf:courtney letiecq",
+   "display": "Courtney Letiecq"
+  },
+  {
+   "name": "sf:cristian-ruiz-marquez",
+   "display": "Cristian Ruiz-Marquez"
+  },
+  {
+   "name": "ig:cy.cy.17",
+   "display": "Cynthia"
+  },
+  {
+   "name": "sf:dale-fournier",
+   "display": "Dale Fournier"
+  },
+  {
+   "name": "ig:daniel__manor",
+   "display": "Daniel Manor"
+  },
+  {
+   "name": "ig:daniel_ursus_arctos",
+   "display": "Daniel Moulton"
+  },
+  {
+   "name": "ig:dpaladin",
+   "display": "Daniel Paladin"
+  },
+  {
+   "name": "ig:dsmithroc",
+   "display": "Daniel Smith"
+  },
+  {
+   "name": "sf:daniel-todhunter",
+   "display": "Daniel Todhunter"
+  },
+  {
+   "name": "ig:danielzufall",
+   "display": "Daniel Zufall"
+  },
+  {
+   "name": "ig:daniellecaskinett",
+   "display": "Danielle Caskinett"
+  },
+  {
+   "name": "ct:danielle guimond",
+   "display": "Danielle Guimond"
+  },
+  {
+   "name": "ct:danielle mcpherson",
+   "display": "Danielle McPherson"
+  },
+  {
+   "name": "ig:daniveteree",
+   "display": "Danielle Vetere"
+  },
+  {
+   "name": "ct:danny wangerin",
+   "display": "Danny Wangerin"
+  },
+  {
+   "name": "ct:danny witkop",
+   "display": "Danny Witkop"
+  },
+  {
+   "name": "ig:darlenesinclair3643",
+   "display": "Darlene Sinclair"
+  },
+  {
+   "name": "sf:david-disalvo",
+   "display": "David DiSalvo"
+  },
+  {
+   "name": "ct:david hartman",
+   "display": "David Hartman"
+  },
+  {
+   "name": "sf:david-irving",
+   "display": "David Perry"
+  },
+  {
+   "name": "ct:david tomford",
+   "display": "David Tomford"
+  },
+  {
+   "name": "ig:david.tulloch.10",
+   "display": "David Tulloch"
+  },
+  {
+   "name": "ig:davidzufall",
+   "display": "David Zufall"
+  },
+  {
+   "name": "ig:dawsonwiegandt",
+   "display": "Dawson Wiegandt"
+  },
+  {
+   "name": "sf:deanna-colbert-dennis",
+   "display": "Deanna Colbert Dennis"
+  },
+  {
+   "name": "ig:debbiegordon7",
+   "display": "Debbie Gordon"
+  },
+  {
+   "name": "ig:desknaebel",
+   "display": "Debbie Knaebel"
+  },
+  {
+   "name": "ct:debbie swyka",
+   "display": "Debbie Swyka"
+  },
+  {
+   "name": "ig:the_nonsters",
+   "display": "Debra Criscitello"
+  },
+  {
+   "name": "ig:delany._.durant",
+   "display": "Delany Durant"
+  },
+  {
+   "name": "ig:d_grant234",
+   "display": "Derek Grant"
+  },
+  {
+   "name": "ct:destiny ingram",
+   "display": "Destiny Ingram"
+  },
+  {
+   "name": "ct:destiny snyder",
+   "display": "Destiny Snyder"
+  },
+  {
+   "name": "sf:devon-sutton",
+   "display": "Devon Sutton"
+  },
+  {
+   "name": "sf:dianalyn-martin",
+   "display": "Dianalyn Martin"
+  },
+  {
+   "name": "ig:dillynngrant16",
+   "display": "Dillynn Grant"
+  },
+  {
+   "name": "ig:nahhhhhhh.hhh",
+   "display": "Dimitri Damon"
+  },
+  {
+   "name": "ig:dgruneisen",
+   "display": "Don Gruneisen"
+  },
+  {
+   "name": "sf:donald-colbert",
+   "display": "Donald Colbert"
+  },
+  {
+   "name": "ig:doriejreiter",
+   "display": "Dorie Colbert Reiter"
+  },
+  {
+   "name": "ct:dr kring",
+   "display": "Dr Kring"
+  },
+  {
+   "name": "ig:eileen_mackenzie",
+   "display": "Eileen Mackenzie"
+  },
+  {
+   "name": "ig:kale_hitchman",
+   "display": "Elak Namhctih"
+  },
+  {
+   "name": "ig:_lanie_brown",
+   "display": "Elena Brown"
+  },
+  {
+   "name": "ct:elena trempe",
+   "display": "Elena Trempe"
+  },
+  {
+   "name": "ig:eli.e.thomas",
+   "display": "Eli Thomas"
+  },
+  {
+   "name": "ig:elisameyers",
+   "display": "Elisa Meyers"
+  },
+  {
+   "name": "ig:elisedeuel",
+   "display": "Elise Deuel"
+  },
+  {
+   "name": "sf:eliza-sullivan",
+   "display": "Eliza Sullivan"
+  },
+  {
+   "name": "ig:elizabethadaniels",
+   "display": "Elizabeth Daniels"
+  },
+  {
+   "name": "ig:elizabeth.deschaine",
+   "display": "Elizabeth Deschaine"
+  },
+  {
+   "name": "ig:liz.zehr",
+   "display": "Elizabeth Kelly Zehr"
+  },
+  {
+   "name": "sf:elizabeth-marquez",
+   "display": "Elizabeth Marquez"
+  },
+  {
+   "name": "sf:ellen-m-miller",
+   "display": "Ellen M Miller"
+  },
+  {
+   "name": "ig:elliecriscitello",
+   "display": "Ellie Criscitello"
+  },
+  {
+   "name": "ig:ellie.jent",
+   "display": "Ellie Jent"
+  },
+  {
+   "name": "sf:elliot-martin",
+   "display": "Elliot Martin"
+  },
+  {
+   "name": "sf:ellison-pertuz",
+   "display": "Ellison Pertuz"
+  },
+  {
+   "name": "ig:ejb1203",
+   "display": "Elsie Breen"
+  },
+  {
+   "name": "ct:emilee mcadoo",
+   "display": "Emilee McAdoo"
+  },
+  {
+   "name": "ig:emiliealbertt",
+   "display": "Emilie Albert"
+  },
+  {
+   "name": "sf:emily-baxter",
+   "display": "Emily Baxter"
+  },
+  {
+   "name": "ig:hello3milyy",
+   "display": "Emily Bouchard"
+  },
+  {
+   "name": "ct:emily criscitello",
+   "display": "Emily Criscitello"
+  },
+  {
+   "name": "sf:emily-elliott",
+   "display": "Emily Elliott"
+  },
+  {
+   "name": "sf:emily-kendall",
+   "display": "Emily Kendall"
+  },
+  {
+   "name": "ig:ejarvis8",
+   "display": "Emily LaShomb"
+  },
+  {
+   "name": "ig:emijent",
+   "display": "Emily R. Jent"
+  },
+  {
+   "name": "ig:emily_g_ramer",
+   "display": "Emily Ramer"
+  },
+  {
+   "name": "ig:emilywangerin",
+   "display": "Emily Wangerin"
+  },
+  {
+   "name": "sf:emily-ward",
+   "display": "Emily Ward"
+  },
+  {
+   "name": "sf:emily-zimmer",
+   "display": "Emily Zimmer"
+  },
+  {
+   "name": "ig:emma_bortnick5",
+   "display": "Emma Bortnick"
+  },
+  {
+   "name": "ct:emma gravlin",
+   "display": "Emma Gravlin"
+  },
+  {
+   "name": "sf:emma-kormanyos",
+   "display": "Emma Kormanyos"
+  },
+  {
+   "name": "ig:emma_morse315",
+   "display": "Emma Morse"
+  },
+  {
+   "name": "sf:emma turell",
+   "display": "Emma Turell"
+  },
+  {
+   "name": "ig:em_anuel_xa",
+   "display": "Emmanuel Atindama"
+  },
+  {
+   "name": "ig:madstop136",
+   "display": "Eric Criscitello"
+  },
+  {
+   "name": "ig:catchandtrelease",
+   "display": "Eric Trelease"
+  },
+  {
+   "name": "sf:erica-arnold",
+   "display": "Erica Arnold"
+  },
+  {
+   "name": "sf:erin-dunham",
+   "display": "Erin Dunham"
+  },
+  {
+   "name": "fdb:esther_brown",
+   "display": "Esther Brown"
+  },
+  {
+   "name": "ig:ethan_j_bates",
+   "display": "Ethan Bates"
+  },
+  {
+   "name": "ig:e._.flam",
+   "display": "Ethan Flamand"
+  },
+  {
+   "name": "sf:ethan-hackett",
+   "display": "Ethan Hackett"
+  },
+  {
+   "name": "ct:ethan ryan",
+   "display": "Ethan Ryan"
   },
   {
    "name": "sf:ethan-thompson",
    "display": "Ethan Thompson"
   },
   {
-   "name": "sf:molly-criscitello",
-   "display": "Molly Criscitello"
+   "name": "ig:evan_dennis_",
+   "display": "Evan Dennis"
   },
   {
-   "name": "boylemarky",
-   "display": "Mark Joseph Boyle"
+   "name": "sf:evan-dimakas",
+   "display": "Evan Dimakas"
   },
   {
-   "name": "brianna.hammond",
-   "display": "Brianna Hammond"
+   "name": "ig:hamiltonezra",
+   "display": "Ezra Hamilton"
   },
   {
-   "name": "sf:toni-squires",
-   "display": "Toni Squires"
+   "name": "ig:frannie_anniee",
+   "display": "Franny Olsen"
+  },
+  {
+   "name": "sf:frederick-laud-amoah-darko-jr",
+   "display": "Frederick Laud Amoah-Darko Jr."
+  },
+  {
+   "name": "sf:g-c-jaggs",
+   "display": "G.C. Jaggs"
+  },
+  {
+   "name": "ig:gabematthis",
+   "display": "Gabe Matthis"
+  },
+  {
+   "name": "ig:gabepaladin",
+   "display": "Gabe Paladin"
+  },
+  {
+   "name": "ct:gabi ramsdell",
+   "display": "Gabi Ramsdell"
+  },
+  {
+   "name": "ig:gabi_paige",
+   "display": "Gabi White"
+  },
+  {
+   "name": "ig:gabeockrin",
+   "display": "Gabriel Ockrin"
+  },
+  {
+   "name": "ig:gab20n",
+   "display": "Gabriela Melendez"
+  },
+  {
+   "name": "sf:gavin-matthews",
+   "display": "Gavin Matthews"
+  },
+  {
+   "name": "ig:ginnylou507",
+   "display": "Ginny L. Hunter"
+  },
+  {
+   "name": "sf:grace cicchinelli",
+   "display": "Grace Cicchinelli"
+  },
+  {
+   "name": "sf:grace-lapointe",
+   "display": "Grace LaPointe"
+  },
+  {
+   "name": "sf:grace-martin",
+   "display": "Grace Martin"
+  },
+  {
+   "name": "ct:grace ockrin",
+   "display": "Grace Ockrin"
+  },
+  {
+   "name": "ig:grace.serene",
+   "display": "Grace Serene"
+  },
+  {
+   "name": "sf:grace-zehr-cassulis",
+   "display": "Grace Zehr Cassulis"
+  },
+  {
+   "name": "ig:gracyn_elizabeth",
+   "display": "Gracyn Denny"
+  },
+  {
+   "name": "sf:greg-lapinski",
+   "display": "Greg Lapinski"
+  },
+  {
+   "name": "sf:gregory-hurlbut",
+   "display": "Gregory Hurlbut"
+  },
+  {
+   "name": "ig:spurgeonfiddle",
+   "display": "Haddon Brown"
+  },
+  {
+   "name": "ig:haleydlutz",
+   "display": "Haley Lutz"
+  },
+  {
+   "name": "sf:haley-quinlan-keough",
+   "display": "Haley Quinlan Keough"
+  },
+  {
+   "name": "ig:aspecthammy_",
+   "display": "Hamza Hmyene"
+  },
+  {
+   "name": "ig:hnnbraun",
+   "display": "Hannah Braun"
+  },
+  {
+   "name": "ig:hholt_777",
+   "display": "Hannah Holt"
+  },
+  {
+   "name": "ig:hannahkhughes_",
+   "display": "Hannah Hughes"
+  },
+  {
+   "name": "ig:hannahllbanana",
+   "display": "Hannah McConnell"
+  },
+  {
+   "name": "ig:hpuglia12",
+   "display": "Hannah Puglia"
+  },
+  {
+   "name": "ig:havenfern",
+   "display": "Haven Fern"
+  },
+  {
+   "name": "ig:demers_st.hilaire",
+   "display": "Haydn Demers-St.Hilaire"
+  },
+  {
+   "name": "ig:heatherjdowling",
+   "display": "Heather Dowling"
+  },
+  {
+   "name": "ig:heathergamue",
+   "display": "Heather Gamue"
+  },
+  {
+   "name": "sf:heather-marie",
+   "display": "Heather Marie"
+  },
+  {
+   "name": "sf:heather-ramsdell",
+   "display": "Heather Ramsdell"
+  },
+  {
+   "name": "sf:heather-shattuck",
+   "display": "Heather Shattuck"
+  },
+  {
+   "name": "ig:hjlevendusky",
+   "display": "Heidi Jo Levendusky"
+  },
+  {
+   "name": "ig:hopiek_09",
+   "display": "Hope Kilcollins"
+  },
+  {
+   "name": "sf:hudson-brown",
+   "display": "Hudson Brown"
+  },
+  {
+   "name": "sf:hunter-woodrow",
+   "display": "Hunter Woodrow"
+  },
+  {
+   "name": "sf:ian-bailey",
+   "display": "Ian Bailey"
+  },
+  {
+   "name": "sf:ian-blunt",
+   "display": "Ian Blunt"
+  },
+  {
+   "name": "sf:ian-conner",
+   "display": "Ian Conner"
+  },
+  {
+   "name": "sf:ian-wilson",
+   "display": "Ian Wilson"
+  },
+  {
+   "name": "sf:ilene-lashomb",
+   "display": "Ilene Lashomb"
+  },
+  {
+   "name": "sf:ilene-rose",
+   "display": "Ilene Rose"
+  },
+  {
+   "name": "ig:inawangerin",
+   "display": "Ina Wangerin"
+  },
+  {
+   "name": "sf:indira-quintana-lala",
+   "display": "Indira Quintana"
+  },
+  {
+   "name": "ct:irvin otero",
+   "display": "Irvin Otero"
+  },
+  {
+   "name": "ig:isacriscitello",
+   "display": "Isa Luciano Criscitello"
+  },
+  {
+   "name": "ig:instabellaphoebe",
+   "display": "Isabella Phoebe"
+  },
+  {
+   "name": "sf:isabelle-westerman",
+   "display": "Isabelle Westerman"
+  },
+  {
+   "name": "ig:isaiahreiter",
+   "display": "Isaiah Reiter"
+  },
+  {
+   "name": "sf:isreal-tyler",
+   "display": "Isreal Tyler"
+  },
+  {
+   "name": "sf:jacinta-gomes",
+   "display": "Jacinta Gomes"
+  },
+  {
+   "name": "ct:jack kessler",
+   "display": "Jack Kessler"
+  },
+  {
+   "name": "sf:jackie-shampine",
+   "display": "Jackie Shampine"
+  },
+  {
+   "name": "ig:jackson.paladin",
+   "display": "Jackson Paladin"
+  },
+  {
+   "name": "sf:jacob-bellucci",
+   "display": "Jacob Bellucci"
+  },
+  {
+   "name": "sf:jaime-bicknell",
+   "display": "Jaime Bicknell"
+  },
+  {
+   "name": "ig:jake_seguin",
+   "display": "Jake Seguin"
+  },
+  {
+   "name": "ig:jalesturkishdelights",
+   "display": "Jale -"
+  },
+  {
+   "name": "sf:jamal-moses",
+   "display": "Jamal Moses"
+  },
+  {
+   "name": "ct:james fortunato",
+   "display": "James Fortunato"
+  },
+  {
+   "name": "sf:james-gilchrist",
+   "display": "James Gilchrist"
+  },
+  {
+   "name": "sf:james-harmer",
+   "display": "James Harmer"
+  },
+  {
+   "name": "ig:jamesphilipm",
+   "display": "James Meyers"
+  },
+  {
+   "name": "ig:jamesondunphey",
+   "display": "Jameson Dunphey"
+  },
+  {
+   "name": "ig:jamiesinclair",
+   "display": "Jamie Sinclair"
+  },
+  {
+   "name": "ig:janelc8",
+   "display": "Janel Colbert"
+  },
+  {
+   "name": "ig:jartib",
+   "display": "Jared T"
+  },
+  {
+   "name": "sf:jared-thibodeau",
+   "display": "Jared Thibodeau"
+  },
+  {
+   "name": "ig:big_dawg_j",
+   "display": "Jason Deschaine"
+  },
+  {
+   "name": "ct:jason sweet",
+   "display": "Jason Sweet"
+  },
+  {
+   "name": "ig:jazmynkyara",
+   "display": "Jazmyn Villnave"
+  },
+  {
+   "name": "ig:jazmine_albin",
+   "display": "Jazzy Dunn"
+  },
+  {
+   "name": "ig:jeevesgreen",
+   "display": "Jeeves Green"
+  },
+  {
+   "name": "ig:outrageouslyloved",
+   "display": "Jeff McGrath"
+  },
+  {
+   "name": "ig:jemma.cooper4",
+   "display": "Jemma Cooper"
+  },
+  {
+   "name": "ig:haashaus",
+   "display": "Jen Haas"
+  },
+  {
+   "name": "ig:hulton2moulton",
+   "display": "Jenna Moulton"
+  },
+  {
+   "name": "ig:jennakesner",
+   "display": "Jenna White"
+  },
+  {
+   "name": "sf:jennifer-gallagher-moore",
+   "display": "Jennifer Gallagher Moore"
+  },
+  {
+   "name": "sf:jennifer-meyer",
+   "display": "Jennifer Meyer"
+  },
+  {
+   "name": "ig:wholehearted_wife",
+   "display": "Jennifer Trelease"
+  },
+  {
+   "name": "sf:jennifer-kevin-blanchard",
+   "display": "Jennifer-Kevin Blanchard"
+  },
+  {
+   "name": "sf:jeremy-taylor",
+   "display": "Jeremy Taylor"
+  },
+  {
+   "name": "ig:jessicaeevans",
+   "display": "Jess Evans"
+  },
+  {
+   "name": "sf:jesse-braun",
+   "display": "Jesse Braun"
+  },
+  {
+   "name": "sf:jessica-atindama",
+   "display": "Jessica Atindama"
+  },
+  {
+   "name": "ct:jessica braman",
+   "display": "Jessica Braman"
+  },
+  {
+   "name": "ig:jessicahurlbut",
+   "display": "Jessica Hurlbut"
+  },
+  {
+   "name": "sf:jessica-osypiewski",
+   "display": "Jessica Osypiewski"
+  },
+  {
+   "name": "sf:jillian-chapman",
+   "display": "Jillian Chapman"
+  },
+  {
+   "name": "ct:jillian ferrante",
+   "display": "Jillian Ferrante"
+  },
+  {
+   "name": "sf:jim-holt",
+   "display": "Jim Holt"
+  },
+  {
+   "name": "sf:jim-wing",
+   "display": "Jim Wing"
+  },
+  {
+   "name": "sf:joann-duclos",
+   "display": "Joann Duclos"
+  },
+  {
+   "name": "ig:jocelynrose04",
+   "display": "Jocelyn Daniels"
+  },
+  {
+   "name": "sf:joe-charlebois",
+   "display": "Joe Charlebois"
+  },
+  {
+   "name": "ct:joe mastro",
+   "display": "Joe Mastro"
+  },
+  {
+   "name": "sf:joe-n-lydia-moore",
+   "display": "Joe Moore"
+  },
+  {
+   "name": "ig:jtmoulton",
+   "display": "Joel Moulton"
+  },
+  {
+   "name": "sf:joelle-kowalka",
+   "display": "Joelle Kowalka"
+  },
+  {
+   "name": "ig:johnaeastmond",
+   "display": "John Eastmond"
+  },
+  {
+   "name": "ig:johnmeyers_sr",
+   "display": "John Meyers"
+  },
+  {
+   "name": "sf:john-molinero",
+   "display": "John Molinero"
+  },
+  {
+   "name": "ig:john_zufall",
+   "display": "John Zufall"
+  },
+  {
+   "name": "ig:johnnny_martinnn_",
+   "display": "Johnny Martin"
+  },
+  {
+   "name": "ig:jjcyph",
+   "display": "Jon Cyphers"
+  },
+  {
+   "name": "ct:jon mart",
+   "display": "Jon Mart"
+  },
+  {
+   "name": "ig:jonah_black01",
+   "display": "Jonah Black"
+  },
+  {
+   "name": "ct:jonathan daniels",
+   "display": "Jonathan Daniels"
+  },
+  {
+   "name": "ct:jonathan puglia",
+   "display": "Jonathan Puglia"
+  },
+  {
+   "name": "ig:jordynbrothers5",
+   "display": "Jordyn Brothers"
+  },
+  {
+   "name": "sf:jordyn-hill",
+   "display": "Jordyn Hill"
+  },
+  {
+   "name": "sf:joseph-baxter",
+   "display": "Joseph Baxter"
+  },
+  {
+   "name": "ig:joetherockboyle",
+   "display": "Joseph Boyle"
+  },
+  {
+   "name": "ig:jj750d",
+   "display": "Josh De Voe"
+  },
+  {
+   "name": "ig:joshuamcgrath",
+   "display": "Josh McGrath"
+  },
+  {
+   "name": "ig:joshcparker_",
+   "display": "Josh Parker"
+  },
+  {
+   "name": "sf:joshua-dsouza",
+   "display": "Joshua Dsouza"
+  },
+  {
+   "name": "ig:joshua_white3",
+   "display": "Joshua White"
+  },
+  {
+   "name": "ig:josiahjmartin",
+   "display": "Josiah Martin"
+  },
+  {
+   "name": "ig:josiahbounce",
+   "display": "Josiah McGrath"
+  },
+  {
+   "name": "sf:josiah-tabolt",
+   "display": "Josiah Tabolt"
+  },
+  {
+   "name": "ig:jlevens18",
+   "display": "Joye Levendusky"
+  },
+  {
+   "name": "ig:cyrusking.47",
+   "display": "Judah Pare"
+  },
+  {
+   "name": "sf:judith-tomford",
+   "display": "Judith Tomford"
+  },
+  {
+   "name": "ig:judder_budder",
+   "display": "Judson Colbert"
   },
   {
    "name": "sf:judson-foote",
    "display": "Judson Foote"
   },
   {
-   "name": "ct:savannah adams",
-   "display": "Savannah Adams"
+   "name": "ct:julia andryuk",
+   "display": "Julia Andryuk"
   },
   {
-   "name": "sf:adepegba",
-   "display": "Ray Adepegba"
+   "name": "ig:fulton.julia",
+   "display": "Julia Fulton"
   },
   {
-   "name": "nancyhull9",
-   "display": "Nancy Hull"
+   "name": "ct:julia sinclair",
+   "display": "Julia Sinclair"
   },
   {
-   "name": "pmurphy_00",
-   "display": "Patrick Murphy"
+   "name": "ig:juliacarmella1",
+   "display": "Julia Swy"
   },
   {
-   "name": "emijent",
-   "display": "Emily R. Jent"
+   "name": "ct:julia tomford",
+   "display": "Julia Tomford"
+  },
+  {
+   "name": "ig:julianna_shatraw",
+   "display": "Julianna Shatraw"
+  },
+  {
+   "name": "ig:juliefelicianosec",
+   "display": "Julie Feliciano"
+  },
+  {
+   "name": "ct:julie mcormond",
+   "display": "Julie McOrmond"
+  },
+  {
+   "name": "sf:julie-rose-lashomb",
+   "display": "Julie Rose LaShomb"
+  },
+  {
+   "name": "ct:justin cardinal",
+   "display": "Justin Cardinal"
+  },
+  {
+   "name": "ct:justin daniels",
+   "display": "Justin Daniels"
+  },
+  {
+   "name": "ct:justin estep",
+   "display": "Justin Estep"
+  },
+  {
+   "name": "sf:kailee paige",
+   "display": "Kailee Paige"
+  },
+  {
+   "name": "ig:kalbelleau",
+   "display": "Kallie Belleau"
+  },
+  {
+   "name": "ig:karajdaniels",
+   "display": "Kara Daniels"
+  },
+  {
+   "name": "sf:kara-ferguson",
+   "display": "Kara Ferguson"
+  },
+  {
+   "name": "sf:karen-hoover",
+   "display": "Karen Hoover"
+  },
+  {
+   "name": "ig:karijmoulton",
+   "display": "Kari Moulton"
+  },
+  {
+   "name": "ct:karle mccormick",
+   "display": "Karle McCormick"
+  },
+  {
+   "name": "ig:katelynmatthews10",
+   "display": "Katelyn Matthews"
+  },
+  {
+   "name": "ig:katepersun",
+   "display": "Katelyn Persun"
+  },
+  {
+   "name": "ct:katelyn tomford",
+   "display": "Katelyn Tomford"
+  },
+  {
+   "name": "sf:katelynne-kulp",
+   "display": "Katelynne Kulp"
+  },
+  {
+   "name": "ig:katerina_islost",
+   "display": "Katerina Cavellos"
+  },
+  {
+   "name": "sf:katherine-whitson",
+   "display": "Katherine Whitson"
+  },
+  {
+   "name": "sf:kathleen-delage",
+   "display": "Kathleen DeLage"
+  },
+  {
+   "name": "ct:kathy eggleson",
+   "display": "Kathy Eggleson"
+  },
+  {
+   "name": "ig:kathy.moulton",
+   "display": "Kathy Moulton"
+  },
+  {
+   "name": "ig:katie_marie162",
+   "display": "Katie Bertrand"
+  },
+  {
+   "name": "ig:katiie.huestis",
+   "display": "Katie Huestis"
+  },
+  {
+   "name": "ig:kaitance.jenks19",
+   "display": "Katie Jenks"
+  },
+  {
+   "name": "ig:labellek14",
+   "display": "Katie LaBelle"
+  },
+  {
+   "name": "ig:krlap315",
+   "display": "Katie Lapinski"
+  },
+  {
+   "name": "ct:katie mcgrath",
+   "display": "Katie McGrath"
+  },
+  {
+   "name": "sf:katie-wolstenholme",
+   "display": "Katie Wolstenholme"
+  },
+  {
+   "name": "ig:katrina.cutler",
+   "display": "Katrina Lee Cutler"
+  },
+  {
+   "name": "sf:kayla-ervin",
+   "display": "Kayla Ervin"
+  },
+  {
+   "name": "ig:kaylawatkins8",
+   "display": "Kayla Hettel"
+  },
+  {
+   "name": "ig:kaylemmccormick",
+   "display": "Kayle McCormick"
+  },
+  {
+   "name": "sf:kaylee-gilbert",
+   "display": "Kaylee Gilbert"
+  },
+  {
+   "name": "sf:kaylee-hartley",
+   "display": "Kaylee Hartley"
+  },
+  {
+   "name": "sf:kayleigh-clary",
+   "display": "Kayleigh Clary"
+  },
+  {
+   "name": "ig:kdusky",
+   "display": "Keila Levendusky"
+  },
+  {
+   "name": "sf:kelsey-wilbur",
+   "display": "Kelsey Wilbur"
+  },
+  {
+   "name": "sf:kenna-leigh",
+   "display": "Kenna Leigh"
+  },
+  {
+   "name": "ig:kevindaniels7",
+   "display": "Kevin Daniels"
+  },
+  {
+   "name": "sf:kevin-lynch",
+   "display": "Kevin Lynch"
+  },
+  {
+   "name": "ig:muno_khosa",
+   "display": "Khosa Muno"
+  },
+  {
+   "name": "sf:kim-sisk",
+   "display": "Kim Sisk"
+  },
+  {
+   "name": "ig:kimberlymitchelldamon",
+   "display": "Kimberly Damon"
+  },
+  {
+   "name": "ig:kourtneyypeets",
+   "display": "Kourtney Peets"
+  },
+  {
+   "name": "sf:krysten-emily",
+   "display": "Krysten Emily"
+  },
+  {
+   "name": "sf:kundai-mugugu",
+   "display": "Kundai Mugugu"
+  },
+  {
+   "name": "sf:kwadwo-appiah-kubi",
+   "display": "Kwadwo Appiah-Kubi"
+  },
+  {
+   "name": "sf:kyle-davis",
+   "display": "Kyle Davis"
+  },
+  {
+   "name": "ct:kyle deschaine",
+   "display": "Kyle Deschaine"
+  },
+  {
+   "name": "ig:kylgot",
+   "display": "Kyle Gotham"
+  },
+  {
+   "name": "ig:kylepmoulton",
+   "display": "Kyle Moulton"
+  },
+  {
+   "name": "sf:kyle-prescott",
+   "display": "Kyle Prescott"
   },
   {
    "name": "fdb:lacey_matott",
    "display": "Lacey Matott"
   },
   {
+   "name": "ig:laelcard",
+   "display": "Lael Card"
+  },
+  {
+   "name": "ig:daddy_cheesebutt",
+   "display": "Leilani Leal"
+  },
+  {
+   "name": "sf:lennart-johns",
+   "display": "Lennart Johns"
+  },
+  {
+   "name": "ig:countess_lepevi",
+   "display": "Leslie Perri"
+  },
+  {
+   "name": "ig:levi_white90",
+   "display": "Levi White"
+  },
+  {
+   "name": "sf:lexi-kennedy-labombard",
+   "display": "Lexi Kennedy LaBombard"
+  },
+  {
+   "name": "ig:liammillerlynch",
+   "display": "Liam Miller-Lynch"
+  },
+  {
+   "name": "ig:libbycriscitello",
+   "display": "Libby Criscitello"
+  },
+  {
+   "name": "ct:libby thomas",
+   "display": "Libby Thomas"
+  },
+  {
+   "name": "sf:lindsey-elaine",
+   "display": "Lindsey Elaine"
+  },
+  {
+   "name": "ig:lynzeelou",
+   "display": "Lindsey Sorrento"
+  },
+  {
+   "name": "sf:lisa-arquette",
+   "display": "Lisa Arquette"
+  },
+  {
+   "name": "sf:lisa-criscitello",
+   "display": "Lisa Criscitello"
+  },
+  {
+   "name": "sf:liz-wangerin",
+   "display": "Liz Wangerin"
+  },
+  {
+   "name": "ig:lochlan_bower",
+   "display": "Lochlan Bower"
+  },
+  {
+   "name": "sf:loni-hughes-recker",
+   "display": "Loni Hughes Recker"
+  },
+  {
+   "name": "ig:mrstabolt",
+   "display": "Louissa Sinclair Tabolt"
+  },
+  {
+   "name": "ig:luannbailey",
+   "display": "Luann Bailey"
+  },
+  {
+   "name": "sf:luke-boyle",
+   "display": "Luke Boyle"
+  },
+  {
+   "name": "ct:lydia bartlett",
+   "display": "Lydia Bartlett"
+  },
+  {
    "name": "sf:lydia-d-m",
    "display": "Lydia Dale"
+  },
+  {
+   "name": "ig:lydia_rose_martin",
+   "display": "Lydia Martin"
+  },
+  {
+   "name": "sf:mackenzie-leigh",
+   "display": "Mackenzie Leigh"
+  },
+  {
+   "name": "ig:m.bsouth02",
+   "display": "Maddie Barton"
+  },
+  {
+   "name": "sf:maddie-morgan",
+   "display": "Maddie Morgan"
+  },
+  {
+   "name": "sf:maddy-cusworth",
+   "display": "Maddy Cusworth"
+  },
+  {
+   "name": "ig:madi_kerr_",
+   "display": "Madison Kerr"
+  },
+  {
+   "name": "ig:m4gali3",
+   "display": "Magalie Filion-Maponda"
+  },
+  {
+   "name": "ig:magzta89",
+   "display": "Maggie Ecker"
+  },
+  {
+   "name": "ig:maggienjones_",
+   "display": "Maggie Jones"
+  },
+  {
+   "name": "ct:maggie lapinski",
+   "display": "Maggie Lapinski"
+  },
+  {
+   "name": "fdb:maggie_marceau",
+   "display": "Maggie Marceau"
+  },
+  {
+   "name": "ct:maggie thibodeau",
+   "display": "Maggie Thibodeau"
+  },
+  {
+   "name": "sf:maggie-tibs",
+   "display": "Maggie Tibs"
+  },
+  {
+   "name": "sf:makiah-barber",
+   "display": "Makiah Barber"
+  },
+  {
+   "name": "ig:maliahwright",
+   "display": "Maliah Wright"
+  },
+  {
+   "name": "ig:mallory_greene",
+   "display": "Mallory Greene"
+  },
+  {
+   "name": "ig:malyssar_7",
+   "display": "Malyssa Shenko"
+  },
+  {
+   "name": "ig:margaretnordberg",
+   "display": "Margaret Nordberg"
+  },
+  {
+   "name": "sf:maria-tallo",
+   "display": "Maria Tallo"
+  },
+  {
+   "name": "sf:marissa-carl",
+   "display": "Marissa Carl"
+  },
+  {
+   "name": "ig:marissachelan",
+   "display": "Marissa Chelan"
+  },
+  {
+   "name": "ig:marissa.k19",
+   "display": "Marissa Kelley"
+  },
+  {
+   "name": "ig:marissa989",
+   "display": "Marissa Wood"
+  },
+  {
+   "name": "ig:walczykmark",
+   "display": "Mark C Walczyk"
+  },
+  {
+   "name": "ct:mark dehoff",
+   "display": "Mark Dehoff"
+  },
+  {
+   "name": "ig:boylemarky",
+   "display": "Mark Joseph Boyle"
+  },
+  {
+   "name": "ig:mark.it5",
+   "display": "Mark Miller"
+  },
+  {
+   "name": "ig:mr.muggy",
+   "display": "Mark Tomford"
+  },
+  {
+   "name": "ct:mark wentworth",
+   "display": "Mark Wentworth"
+  },
+  {
+   "name": "sf:martha-martin",
+   "display": "Martha Martin"
+  },
+  {
+   "name": "ig:martinlovell.8",
+   "display": "Martin Lovell"
+  },
+  {
+   "name": "ig:m_atkinson03",
+   "display": "Mary Atkinson"
+  },
+  {
+   "name": "ig:mbartell99",
+   "display": "Mason Bartell"
+  },
+  {
+   "name": "sf:matthew-cote",
+   "display": "Matthew Cote"
+  },
+  {
+   "name": "sf:matthew-hazen",
+   "display": "Matthew Hazen"
+  },
+  {
+   "name": "ct:matthew tomford",
+   "display": "Matthew Tomford"
+  },
+  {
+   "name": "sf:matthew-volz",
+   "display": "Matthew Volz"
+  },
+  {
+   "name": "ig:mauramayer",
+   "display": "Maura Mayer"
+  },
+  {
+   "name": "ig:max_ferran06",
+   "display": "Max Ferran"
+  },
+  {
+   "name": "ig:mayaatchan",
+   "display": "Maya M. Atchan"
+  },
+  {
+   "name": "ig:mckinley.22",
+   "display": "McKinley Heather Belle Boyer"
+  },
+  {
+   "name": "ct:meg howard",
+   "display": "Meg Howard"
+  },
+  {
+   "name": "ig:meggreg4",
+   "display": "Meg Lapinski"
+  },
+  {
+   "name": "ig:meganrconverse",
+   "display": "Megan Converse"
+  },
+  {
+   "name": "ct:megan daniels",
+   "display": "Megan Daniels"
+  },
+  {
+   "name": "ct:megan davis",
+   "display": "Megan Davis"
+  },
+  {
+   "name": "sf:megan-eddy",
+   "display": "Megan Eddy"
+  },
+  {
+   "name": "sf:megan-eurto",
+   "display": "Megan Eurto"
+  },
+  {
+   "name": "ig:megan.furner",
+   "display": "Megan Furner"
+  },
+  {
+   "name": "ig:meg.peddle",
+   "display": "Megan Peddle"
+  },
+  {
+   "name": "ig:megphill_",
+   "display": "Megan Phillips"
+  },
+  {
+   "name": "sf:meghan-arquette",
+   "display": "Meghan Arquette"
+  },
+  {
+   "name": "sf:mel-zeallor",
+   "display": "Mel Zeallor"
+  },
+  {
+   "name": "ig:melody_maurer",
+   "display": "Melody Maurer"
+  },
+  {
+   "name": "ig:mercy.maurer",
+   "display": "Mercy Maurer"
+  },
+  {
+   "name": "sf:merria-figueiredo",
+   "display": "Merria Figueiredo"
+  },
+  {
+   "name": "ig:mr_writers_block",
+   "display": "Merrick Sinclair"
+  },
+  {
+   "name": "ig:micahmcculley_",
+   "display": "Micah McCulley"
+  },
+  {
+   "name": "ig:michaeljent1",
+   "display": "Michael Jent"
+  },
+  {
+   "name": "ct:michaela hosmer",
+   "display": "Michaela Hosmer"
+  },
+  {
+   "name": "sf:michelle-chartier",
+   "display": "Michelle Chartier"
+  },
+  {
+   "name": "ig:michelledaniels9",
+   "display": "Michelle Daniels"
+  },
+  {
+   "name": "ig:m.not.a.lobster",
+   "display": "Michelle Johnston"
+  },
+  {
+   "name": "ct:michelle larson",
+   "display": "Michelle Larson"
+  },
+  {
+   "name": "sf:michelle-shirley",
+   "display": "Michelle Shirley"
+  },
+  {
+   "name": "ct:mike coventry",
+   "display": "Mike Coventry"
+  },
+  {
+   "name": "ig:mdknaebel",
+   "display": "Mike Knaebel"
+  },
+  {
+   "name": "ct:mike tomford",
+   "display": "Mike Tomford"
+  },
+  {
+   "name": "ig:molliiwhitee",
+   "display": "Molli Sue"
+  },
+  {
+   "name": "sf:molly-criscitello",
+   "display": "Molly Criscitello"
+  },
+  {
+   "name": "ig:mlapins7",
+   "display": "Molly Lapinski"
+  },
+  {
+   "name": "sf:morgan-arquette",
+   "display": "Morgan Arquette"
+  },
+  {
+   "name": "ig:morse_like_the_code",
+   "display": "Morgan Morse"
+  },
+  {
+   "name": "sf:morgan-williams",
+   "display": "Morgan Williams"
+  },
+  {
+   "name": "sf:murray",
+   "display": "Murray"
+  },
+  {
+   "name": "ig:furious_myles",
+   "display": "Myles Laramay"
+  },
+  {
+   "name": "ig:nabil.o3",
+   "display": "Nabil El-labban"
+  },
+  {
+   "name": "sf:nadia-thomas",
+   "display": "Nadia Thomas"
+  },
+  {
+   "name": "ig:nancyhull9",
+   "display": "Nancy Hull"
+  },
+  {
+   "name": "sf:nanette-yervasi-holt",
+   "display": "Nanette Yervasi Holt"
+  },
+  {
+   "name": "ct:natalie southworth",
+   "display": "Natalie Southworth"
+  },
+  {
+   "name": "ig:nat.waterman",
+   "display": "Natalie Waterman"
+  },
+  {
+   "name": "sf:natalie-wilson",
+   "display": "Natalie Wilson"
+  },
+  {
+   "name": "ig:lafaverspainting",
+   "display": "Nathan LaFaver"
+  },
+  {
+   "name": "ig:tom_nate_ford",
+   "display": "Nathaniel Tomford"
+  },
+  {
+   "name": "ig:nevaeh_phillips",
+   "display": "Nevaeh Phillips"
+  },
+  {
+   "name": "sf:nicholas-dailey",
+   "display": "Nicholas Dailey"
+  },
+  {
+   "name": "sf:nicole-lee-haverstock",
+   "display": "Nicole Lee Haverstock"
+  },
+  {
+   "name": "ig:nikki.sew",
+   "display": "Nicole Seward"
+  },
+  {
+   "name": "sf:nina-criscitello",
+   "display": "Nina Criscitello"
+  },
+  {
+   "name": "ig:noah_adams24",
+   "display": "Noah Adams"
+  },
+  {
+   "name": "ig:the.ndrx",
+   "display": "Noah Diederich"
+  },
+  {
+   "name": "ct:noah marshall",
+   "display": "Noah Marshall"
+  },
+  {
+   "name": "sf:noah-michael",
+   "display": "Noah Michael"
+  },
+  {
+   "name": "ig:norahpease",
+   "display": "Norah Pease"
+  },
+  {
+   "name": "ig:lena_musiienko",
+   "display": "Olena Musiienko"
+  },
+  {
+   "name": "ig:ol9a",
+   "display": "Olga Lindsey"
+  },
+  {
+   "name": "ig:oliviarorybrown",
+   "display": "Olivia Briggs"
+  },
+  {
+   "name": "ct:olivia brown",
+   "display": "Olivia Brown"
+  },
+  {
+   "name": "ig:goodrowolivia",
+   "display": "Olivia Goodrow"
+  },
+  {
+   "name": "ig:oliviamariegrant",
+   "display": "Olivia Grant"
+  },
+  {
+   "name": "ct:olivia huntly",
+   "display": "Olivia Huntly"
+  },
+  {
+   "name": "ig:oliviamiller9334",
+   "display": "Olivia Miller"
+  },
+  {
+   "name": "ig:livparker5",
+   "display": "Olivia Parker"
+  },
+  {
+   "name": "ig:oliviaa.rose.01",
+   "display": "Olivia Rose"
+  },
+  {
+   "name": "ig:oliviasandra04",
+   "display": "Olivia Smith"
+  },
+  {
+   "name": "sf:owen-kennedy",
+   "display": "Owen Kennedy"
+  },
+  {
+   "name": "ct:paige alves",
+   "display": "Paige Alves"
+  },
+  {
+   "name": "sf:paige-davis",
+   "display": "Paige Davis"
+  },
+  {
+   "name": "ig:pmurphy_00",
+   "display": "Patrick Murphy"
+  },
+  {
+   "name": "sf:patrick-tombs",
+   "display": "Patrick Tombs"
+  },
+  {
+   "name": "ig:haller.paula",
+   "display": "Paula Haller"
+  },
+  {
+   "name": "sf:pete-molinero",
+   "display": "Pete Molinero"
+  },
+  {
+   "name": "sf:peter-johnson",
+   "display": "Peter Johnson"
+  },
+  {
+   "name": "sf:peter-michael",
+   "display": "Peter Michael"
+  },
+  {
+   "name": "ig:peyt0nsheehan",
+   "display": "Peyton Sheehan"
+  },
+  {
+   "name": "ig:philip__dennis",
+   "display": "Philip Dennis"
+  },
+  {
+   "name": "ct:philip hubbe",
+   "display": "Philip Hubbe"
+  },
+  {
+   "name": "ig:philiplloydpaige",
+   "display": "Philip Lloyd Paige"
+  },
+  {
+   "name": "ig:philipwangerin",
+   "display": "Philip Wangerin"
+  },
+  {
+   "name": "sf:phyllis-paladin",
+   "display": "Phyllis Paladin"
+  },
+  {
+   "name": "sf:rachael-marshall",
+   "display": "Rachael Marshall"
+  },
+  {
+   "name": "sf:rachel-kushner",
+   "display": "Rachel Kushner"
+  },
+  {
+   "name": "ig:amotwinsmom",
+   "display": "Rachelle Amo"
+  },
+  {
+   "name": "ig:ramseyclary",
+   "display": "Ramsey Clary Thomas"
+  },
+  {
+   "name": "sf:adepegba",
+   "display": "Ray Adepegba"
+  },
+  {
+   "name": "sf:raymond-persons",
+   "display": "Raymond Persons"
+  },
+  {
+   "name": "sf:rebecca-guldan",
+   "display": "Rebecca Guldan"
+  },
+  {
+   "name": "sf:renee-dale",
+   "display": "Renee Dale"
+  },
+  {
+   "name": "sf:renee-lia-de-voe",
+   "display": "Renee Lia De Voe"
+  },
+  {
+   "name": "ig:reneeockrin",
+   "display": "Renee Ockrin"
+  },
+  {
+   "name": "ig:ria.amo",
+   "display": "Ria Amo"
+  },
+  {
+   "name": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist"
+  },
+  {
+   "name": "ig:richard.haller",
+   "display": "Richard Haller"
+  },
+  {
+   "name": "ct:richard tacchino",
+   "display": "Richard Tacchino"
+  },
+  {
+   "name": "ig:richardsinclair",
+   "display": "Rick Sinclair"
+  },
+  {
+   "name": "ig:criscitello_riley",
+   "display": "Riley Criscitello"
+  },
+  {
+   "name": "ig:rileyymulligan",
+   "display": "Riley Mulligan"
+  },
+  {
+   "name": "sf:rina-nicole",
+   "display": "Rina Nicole"
+  },
+  {
+   "name": "sf:rob-larrabee",
+   "display": "Rob Larrabee"
+  },
+  {
+   "name": "sf:robert-castro",
+   "display": "Robert Castro"
+  },
+  {
+   "name": "sf:robin-dipasquale",
+   "display": "Robin DiPasquale"
+  },
+  {
+   "name": "ct:rochester regional it",
+   "display": "Rochester regional IT"
+  },
+  {
+   "name": "sf:rohallah-hakimvand",
+   "display": "Rohallah Hakimvand"
+  },
+  {
+   "name": "sf:wisdom",
+   "display": "Rojanni Wisdom"
+  },
+  {
+   "name": "ig:rosalie_page_smith",
+   "display": "Rosalie Smith"
+  },
+  {
+   "name": "sf:rumbidzai-mushamba",
+   "display": "Rumbidzai Mushamba"
+  },
+  {
+   "name": "sf:ryan-blount",
+   "display": "Ryan Blount"
+  },
+  {
+   "name": "ig:ryanpdaniels",
+   "display": "Ryan Daniels"
+  },
+  {
+   "name": "ct:ryleigh combs",
+   "display": "Ryleigh Combs"
+  },
+  {
+   "name": "ig:rleeder_",
+   "display": "Ryleigh Leeder"
+  },
+  {
+   "name": "sf:salako-gbenga-oladoyin",
+   "display": "Salako Gbenga Oladoyin"
+  },
+  {
+   "name": "ig:choppa_salwa",
+   "display": "Salwa Hmyene"
+  },
+  {
+   "name": "ig:slaminsam22",
+   "display": "Sam"
+  },
+  {
+   "name": "ig:sammace11",
+   "display": "Sam Mace"
+  },
+  {
+   "name": "ig:samwangerin",
+   "display": "Sam Wangerin"
+  },
+  {
+   "name": "sf:antolik",
+   "display": "Samantha Antolik"
+  },
+  {
+   "name": "sf:samantha-marocco",
+   "display": "Samantha Marocco"
+  },
+  {
+   "name": "ct:samarah martin",
+   "display": "Samarah Martin"
+  },
+  {
+   "name": "sf:sandie-waite-colbert",
+   "display": "Sandie Waite Colbert"
+  },
+  {
+   "name": "ig:sandytallo",
+   "display": "Sandra Mills Tallo"
+  },
+  {
+   "name": "sf:sara-badeau",
+   "display": "Sara Badeau"
+  },
+  {
+   "name": "sf:sara-hargrave",
+   "display": "Sara Hargrave"
+  },
+  {
+   "name": "ig:sarahdarah34",
+   "display": "Sarah Dahar"
+  },
+  {
+   "name": "ct:sarah darabon",
+   "display": "Sarah Darabon"
+  },
+  {
+   "name": "ig:sarah.ellabb",
+   "display": "Sarah El-Labban"
+  },
+  {
+   "name": "ct:sarah garber",
+   "display": "Sarah Garber"
+  },
+  {
+   "name": "ig:sarahchristinehaller",
+   "display": "Sarah Haller"
+  },
+  {
+   "name": "ct:sarah pederson",
+   "display": "Sarah Pederson"
+  },
+  {
+   "name": "ct:savannah adams",
+   "display": "Savannah Adams"
+  },
+  {
+   "name": "sf:savannah-durant",
+   "display": "Savannah Durant"
+  },
+  {
+   "name": "sf:savannah-gabriella",
+   "display": "Savannah Gabriella"
+  },
+  {
+   "name": "ig:savannah2416",
+   "display": "Savannah Newtown"
+  },
+  {
+   "name": "sf:scott-hanlin",
+   "display": "Scott Hanlin"
+  },
+  {
+   "name": "sf:shania-clayton",
+   "display": "Shania Clayton"
+  },
+  {
+   "name": "ig:the_harpist",
+   "display": "Shannon Boyle"
+  },
+  {
+   "name": "ig:dragon.n.hobbes",
+   "display": "Shannon Brown"
+  },
+  {
+   "name": "sf:shannon-zych",
+   "display": "Shannon Zych"
+  },
+  {
+   "name": "sf:shelleymae-bartlett",
+   "display": "Shelleymae Bartlett"
+  },
+  {
+   "name": "sf:sian-miller",
+   "display": "Sian Miller"
+  },
+  {
+   "name": "ig:sierra_damon",
+   "display": "Sierra Damon"
+  },
+  {
+   "name": "ig:si3rragrace",
+   "display": "Sierra Smith"
+  },
+  {
+   "name": "fdb:silas_smith",
+   "display": "Silas Smith"
+  },
+  {
+   "name": "sf:skyler-trumble",
+   "display": "Skyler Trumble"
+  },
+  {
+   "name": "sf:song-yi-lee",
+   "display": "Song Yi Lee"
+  },
+  {
+   "name": "ig:stefaniiabulakh",
+   "display": "Stefaniia Bulakh"
+  },
+  {
+   "name": "ig:stephanieadamss",
+   "display": "Stephanie Adams"
+  },
+  {
+   "name": "sf:stephanie-elisa",
+   "display": "Stephanie Elisa"
+  },
+  {
+   "name": "ig:sregan1717",
+   "display": "Stephanie Regan"
+  },
+  {
+   "name": "sf:stephy-michele",
+   "display": "Stephy Michele"
+  },
+  {
+   "name": "ig:summerdorrphoto",
+   "display": "Summer Dorr"
+  },
+  {
+   "name": "ig:midwifesunday",
+   "display": "Sunday Wright Smith"
+  },
+  {
+   "name": "sf:susan-blewett",
+   "display": "Susan Blewett"
+  },
+  {
+   "name": "ct:susan brown",
+   "display": "Susan Brown"
+  },
+  {
+   "name": "ct:susan buckley",
+   "display": "Susan Buckley"
+  },
+  {
+   "name": "ig:syd.collins11",
+   "display": "Sydney Storrin"
+  },
+  {
+   "name": "ig:sphip_06",
+   "display": "Sydnie Phippen"
+  },
+  {
+   "name": "sf:tammy-monroe",
+   "display": "Tammy Monroe"
+  },
+  {
+   "name": "sf:tasha-bernard",
+   "display": "Tasha Bernard"
+  },
+  {
+   "name": "ig:t.fetterley",
+   "display": "Tasia Fetterley"
+  },
+  {
+   "name": "ig:taylorchudyk",
+   "display": "Taylor Chudyk"
+  },
+  {
+   "name": "ig:taylor_rawson_",
+   "display": "Taylor Rawson"
+  },
+  {
+   "name": "sf:taylynn-britton",
+   "display": "Taylynn Britton"
+  },
+  {
+   "name": "ig:teri_thebatemom",
+   "display": "Teri Bates"
+  },
+  {
+   "name": "sf:thea-krywanczyk",
+   "display": "Thea Krywanczyk"
+  },
+  {
+   "name": "sf:thomas-quant",
+   "display": "Thomas Quant"
+  },
+  {
+   "name": "sf:ticia-cudjoe",
+   "display": "Ticia Cudjoe"
+  },
+  {
+   "name": "ct:tim gault",
+   "display": "Tim Gault"
+  },
+  {
+   "name": "sf:tim-lashomb",
+   "display": "Tim Lashomb"
+  },
+  {
+   "name": "ct:tim parker",
+   "display": "Tim Parker"
+  },
+  {
+   "name": "ig:taswyka",
+   "display": "Tim Swyka"
+  },
+  {
+   "name": "ig:tcriscitello",
+   "display": "Timothy Criscitello"
+  },
+  {
+   "name": "ct:timothy jenkins",
+   "display": "Timothy Jenkins"
+  },
+  {
+   "name": "ct:timothy kunkle",
+   "display": "Timothy Kunkle"
+  },
+  {
+   "name": "sf:timothy-moulton",
+   "display": "Timothy Moulton"
+  },
+  {
+   "name": "sf:tom-allan-green",
+   "display": "Tom Allan Green"
+  },
+  {
+   "name": "sf:toni-ajayi",
+   "display": "Toni Ajayi"
+  },
+  {
+   "name": "sf:toni-squires",
+   "display": "Toni Squires"
+  },
+  {
+   "name": "sf:tori-brunet",
+   "display": "Tori Brunet"
+  },
+  {
+   "name": "ig:traci.laing",
+   "display": "Traci Laing"
+  },
+  {
+   "name": "sf:tracy-lynn-stowe",
+   "display": "Tracy Lynn Stowe"
+  },
+  {
+   "name": "ig:trentondaniels4",
+   "display": "Trenton Daniels"
+  },
+  {
+   "name": "sf:tyreese-brown",
+   "display": "Tyreese Brown"
+  },
+  {
+   "name": "sf:ujuu-tate",
+   "display": "Ujuu Tate"
+  },
+  {
+   "name": "ig:vale_zhuu",
+   "display": "Valeria Zhukova"
+  },
+  {
+   "name": "sf:vanessa-bevilacqua",
+   "display": "Vanessa Bevilacqua"
+  },
+  {
+   "name": "sf:victor-njoku",
+   "display": "Victor Njoku"
+  },
+  {
+   "name": "sf:victoria-fitch",
+   "display": "Victoria Fitch"
+  },
+  {
+   "name": "sf:victoria lucas",
+   "display": "Victoria Lucas"
+  },
+  {
+   "name": "ig:hennykv",
+   "display": "Vimbai Kuzanga"
+  },
+  {
+   "name": "ig:vinnyvetere",
+   "display": "Vinny Vetere"
+  },
+  {
+   "name": "ig:vivian_de_voe",
+   "display": "Vivian De Voe"
+  },
+  {
+   "name": "ig:wayne_brown_ii",
+   "display": "Wayne Brown"
+  },
+  {
+   "name": "ct:wayne lougheed",
+   "display": "Wayne Lougheed"
+  },
+  {
+   "name": "ct:wayne ogs enterprise",
+   "display": "Wayne Ogs Enterprise"
+  },
+  {
+   "name": "sf:wesley-hissong",
+   "display": "Wesley Hissong"
+  },
+  {
+   "name": "sf:whitney-verbeck",
+   "display": "Whitney Verbeck"
+  },
+  {
+   "name": "ct:william dunphey",
+   "display": "William Dunphey"
+  },
+  {
+   "name": "sf:willow-rosemarie",
+   "display": "Willow Edwards"
+  },
+  {
+   "name": "ig:ysabellamcolbert",
+   "display": "Ysabella Colbert"
+  },
+  {
+   "name": "sf:zalika-ajamu",
+   "display": "Zalika Ajamu"
+  },
+  {
+   "name": "ct:zenna dale",
+   "display": "Zenna Dale"
+  },
+  {
+   "name": "ig:zoeytaylor018",
+   "display": "Zoey Taylor"
+  },
+  {
+   "name": "sf:zvi-szafran",
+   "display": "Zvi Szafran"
   }
  ],
  "filed": [
   {
-   "name": "sf:lydia-d-m",
-   "display": "Lydia Dale",
+   "name": "ig:walczykmark",
+   "display": "Mark C Walczyk",
    "facts": [
     {
-     "text": "Received the SUNY Chancellor's Award for Student Excellence in 2014 as a Graphic and Multimedia Design major at SUNY Canton; listed as Lydia C. Dale of Norwood, NY",
+     "text": "Walczyk now holds the rank of Major in the U.S. Army Reserve.",
+     "source": "North Country Public Radio",
+     "url": "https://www.northcountrypublicradio.org/news/story/54120/20261022/a-republican-incumbent-and-democratic-newcomer-battle-for-the-49th-state-senate-district",
+     "novelty": "expands",
+     "fresh": true,
+     "published": "2026-10-23"
+    },
+    {
+     "text": "Walczyk was deployed to the Middle East in 2024 while serving in the U.S. Army Reserve.",
+     "source": "North Country Public Radio",
+     "url": "https://www.northcountrypublicradio.org/news/story/54120/20261022/a-republican-incumbent-and-democratic-newcomer-battle-for-the-49th-state-senate-district",
+     "novelty": "new",
+     "fresh": true,
+     "published": "2026-10-23"
+    },
+    {
+     "text": "Walczyk was endorsed by MIPAC, the Manufacturers Association of Central New York's political action committee, for the 2026 general election in State Senate District 49.",
+     "source": "MACNY",
+     "url": "https://www.macny.org/mipac-announces-2026-senate-and-assembly-candidate-endorsements/",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:adria.t18",
+   "display": "Adria Tebo",
+   "facts": [
+    {
+     "text": "Returns for her senior season as a forward on the University of New England women's ice hockey team in 2026-27, after finishing second on the team in assists during 2025-26.",
+     "source": "Conference of New England",
+     "url": "https://cnesports.org/news/2026/10/21/2026-27-season-preview-womens-ice-hockey.aspx?utm_source=ig&utm_medium=social&utm_content=link_in_bio",
+     "novelty": "expands",
+     "fresh": true,
+     "published": "2026-10-21"
+    }
+   ]
+  },
+  {
+   "name": "sf:ian-bailey",
+   "display": "Ian Bailey",
+   "facts": [
+    {
+     "text": "Founded Vivid Coffee Roasters in Burlington, Vermont, and was featured in an October 2026 interview about the company's sustainable coffee sourcing.",
+     "source": "Anew Caf\u00e9 & Goods",
+     "url": "https://anewhq.substack.com/p/a-conversation-with-vivid-coffee",
+     "novelty": "expands",
+     "fresh": true,
+     "published": "2026-10-08"
+    },
+    {
+     "text": "Competed in the U.S. Coffee Champs qualifying event in Nashville in January 2020 as the owner of Vivid Coffee.",
+     "source": "Vermont Coffee",
+     "url": "https://www.vtcoffee.org/blog",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:askinnerusa",
+   "display": "Aeriel Skinner",
+   "facts": [
+    {
+     "text": "Serves as a Specialist on the U.S. Army Marksmanship Unit Shotgun Team at Fort Benning, having joined the U.S. Army in January 2025.",
+     "source": "U.S. Army Recruiting Command",
+     "url": "https://recruiting.army.mil/About-USAREC/USAREC-Command-Bios/Bio-Display/Article/4201372/us-army-marksmanship-unit-shotgun-team/",
+     "novelty": "new"
+    },
+    {
+     "text": "Earned a bachelor's degree in psychology from the University of Arizona, where she competed on the college shooting team.",
+     "source": "U.S. Army Recruiting Command",
+     "url": "https://recruiting.army.mil/About-USAREC/USAREC-Command-Bios/Bio-Display/Article/4201372/us-army-marksmanship-unit-shotgun-team/",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:alanahoover",
+   "display": "Alana Hoover",
+   "facts": [
+    {
+     "text": "Graduated summa cum laude from SUNY Potsdam in May 2023 with a Bachelor of Arts in Childhood/Early Childhood Education.",
+     "source": "SUNY Potsdam \u00b7 Merit Pages",
+     "url": "https://meritpages.com/Alana-M-Hoover/5361990",
+     "novelty": "redundant"
+    },
+    {
+     "text": "Completed the 'Writing Your Way In' training in SUNY Potsdam's Summit Leadership Program in 2022.",
+     "source": "SUNY Potsdam \u00b7 Merit Pages",
+     "url": "https://potsdam.meritpages.com/stories/Alana-Hoover-Completes-Writing-Your-Way-In-Training-at-SUNY-Potsdam/82693269",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:alexfornyassembly_",
+   "display": "Alex Hammond",
+   "facts": [
+    {
+     "text": "Holds an Associate of Liberal Arts from Valley Forge Military College and a Bachelor of Science from Cornell University.",
+     "source": "DVIDS",
+     "url": "https://www.dvidshub.net/news/573239/new-york-army-national-guard-officer-gets-promoted-site-historic-french-and-indian-war-battlefield",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:anastasiasbakery",
+   "display": "Anastasia Cote",
+   "facts": [
+    {
+     "text": "Founded Anastasia's Bakery in 2014; it now operates as a bakery and caf\u00e9 in Madrid, New York.",
+     "source": "Giftly",
+     "url": "https://www.giftly.com/gift-card/anastasias-bakery-madrid",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:dr.angelesfelix",
+   "display": "Angeles Felix",
+   "facts": [
+    {
+     "text": "Dr. Angeles Felix practices dentistry at Dental Associates of Cumberland in Cumberland, Rhode Island.",
+     "source": "Dental Associates of Cumberland",
+     "url": "https://cumberlandsmile.com/staff",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:ashleigh-graveline",
+   "display": "Ashleigh Graveline",
+   "facts": [
+    {
+     "text": "Ashleigh Graveline serves as Chair of the Interprofessional Education (IPE) committee at Clarkson University, working to expand interprofessional learning opportunities for graduate healthcare students.",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/people/ashleigh-graveline",
+     "novelty": "expands"
+    },
+    {
+     "text": "Before joining Clarkson University, Ashleigh Graveline worked as an occupational therapist at Claxton Hepburn Medical Center, providing acute care ranging from general surgical recovery to orthopedics and outpatient therapy.",
+     "source": "Clarkson University",
+     "url": "http://readme.readmedia.com/Ashleigh-Graveline-Appointed-Clinical-Assistant-Professor-of-Occupational-Therapy-at-Clarkson-University/15880436/print",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:ashley-lafay",
+   "display": "Ashley LaFay",
+   "facts": [
+    {
+     "text": "Ashley LaFay graduated from SUNY Canton in spring 2019 with a Bachelor of Science in Nursing.",
      "source": "SUNY Canton",
-     "url": "http://readme.readmedia.com/Students-Celebrate-Commencement-at-SUNY-Canton/8561761/print",
-     "novelty": "new"
-    },
-    {
-     "text": "At SUNY Canton, served as vice president of the American Institute of Graphic Arts, won first place in Drawing and Painting in the Optic Appeal Art Show, and illustrated a children's book",
-     "source": "SUNY",
-     "url": "https://system.suny.edu/media/suny/content-assets/documents/university-life/CASEProgram2014.pdf",
+     "url": "https://www.canton.edu/news/2019/2019graduates.php",
      "novelty": "new"
     }
    ]
   },
   {
-   "name": "fulton.julia",
-   "display": "Julia Fulton",
+   "name": "sf:ashlin-elliott",
+   "display": "Ashlin Elliott",
    "facts": [
     {
-     "text": "Received Holland's 2017 Youth Social Justice Award as a Hope College junior for helping organize the October 31 DACA \"Blessing Not a Burden\" march and rally",
-     "source": "Hope College",
-     "url": "https://hope.edu/news/2018/campus-life/students-to-receive-hollands-2017-youth-social-justice-award-for-organizing-daca-march-and-rally.html.amp",
-     "novelty": "new"
-    },
-    {
-     "text": "Worked in summer 2018 for Lighthouse Immigrant Advocates in Holland, Michigan, providing low-cost legal services to immigrant families",
-     "source": "Hope College",
-     "url": "https://blogs.hope.edu/stories-of-hope/social-sciences/a-summer-for-advocacy-into-action/",
+     "text": "Ashlin Elliott competed on Alfred University's equestrian team as a senior, coming from Massena Central in Massena, New York.",
+     "source": "Alfred University Saxons",
+     "url": "https://gosaxons.com/services/download_file.ashx?file_location=https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/alfred.sidearmsports.com/documents/2022/2/25/DGP_Hunt_EQUEST_02_26_22.pdf",
      "novelty": "new"
     }
    ]
   },
   {
-   "name": "kaylawatkins8",
-   "display": "Kayla Hettel",
+   "name": "fdb:baxter_brown",
+   "display": "Baxter Brown",
    "facts": [
     {
-     "text": "Licensed Midwife (LM, CPM) at Puget Sound Birth Center in Kirkland, Washington, and has attended more than 700 births",
-     "source": "Puget Sound Birth Center",
-     "url": "https://www.birthcenter.com/midwives-and-staff/kaylawatkins-lm-cpm",
+     "text": "Baxter Brown earned his bachelor's degree in viola performance at Wheaton College and is pursuing a Master of Music in viola performance at Northern Illinois University.",
+     "source": "American Viola Society",
+     "url": "https://journaloftheamericanviolasociety.cld.bz/2024-Primrose-International-Viola-Competition-American-Viola-Society-Festival-Program-Book/80/",
+     "novelty": "new"
+    },
+    {
+     "text": "Baxter Brown plays viola in the Kishwaukee Symphony Orchestra.",
+     "source": "Kishwaukee Symphony Orchestra",
+     "url": "https://kishorchestra.org/musicians/",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:brenden-vanhorn",
+   "display": "Brenden Vanhorn",
+   "facts": [
+    {
+     "text": "Vanhorn was named to SUNY Canton's Spring 2026 honors list as a Cybersecurity student.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2026/honors-s26.php",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:brianna.hammond",
+   "display": "Brianna Hammond",
+   "facts": [
+    {
+     "text": "Hammond was a 2018 Jules of Life Scholarship winner who went on to study at SUNY Broome after graduating from Madrid-Waddington Central School.",
+     "source": "Jules of Life Foundation",
+     "url": "https://julesoflife.org/scholarship",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:brittany-disalvo",
+   "display": "Brittany DiSalvo",
+   "facts": [
+    {
+     "text": "DiSalvo earned a Vestibular Rehabilitation & Concussion certification through the American Institute of Balance in 2022.",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/node/14024",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:bronwynpaladin",
+   "display": "Bronwyn Paladin",
+   "facts": [
+    {
+     "text": "Paladin played Lauretta in Lee University Opera Theatre's February 2026 production of Gianni Schicchi, singing the aria \"O mio babbino caro.\"",
+     "source": "Lee Clarion",
+     "url": "https://www.leeclarion.com/2026/lee-opera-theatre-to-perform-gianni-schicchi",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:caroline-willis",
+   "display": "Caroline Willis",
+   "facts": [
+    {
+     "text": "Served as an assistant coach for the SUNY Potsdam women's lacrosse team after playing Division I lacrosse at Liberty University, where she graduated in 2015 having studied advertising and public relations.",
+     "source": "SUNY Potsdam Athletics",
+     "url": "https://potsdambears.com/coaches.aspx?rc=480",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:cashhyyy",
+   "display": "Cashlynn Colbert",
+   "facts": [
+    {
+     "text": "As a SUNY Potsdam art student, she painted a commissioned work presented to honor outgoing SUNY Chancellor Nancy L. Zimpher.",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/news/suny-potsdam-art-student-paints-commissioned-work-honor-chancellor-nancy-l-zimpher",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:cathie_deschaine",
+   "display": "Cathie Deschaine",
+   "facts": [
+    {
+     "text": "Listed as the contact for the Christian Fellowship Center food pantry in Madrid, which serves Madrid, Potsdam, Canton, Norwood, Norfolk, and Lisbon.",
+     "source": "GardenShare",
+     "url": "https://wp.gshare.org/entity/christian-fellowship-center-food-pantry/",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:charlie_garrelts",
+   "display": "Charlie Garrelts",
+   "facts": [
+    {
+     "text": "Commented publicly as Ogdensburg International Airport manager on the airport's completed $25 million renovation, which added a new entrance, ticketing counter, security area, and baggage claim.",
+     "source": "New York Airport News",
+     "url": "https://newyorkairportnews.com/north-countrys-ambitious-airport-renovations-aim-to-win-back-canadian-travelers/",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:chelsea-mg",
+   "display": "Chelsea MG",
+   "facts": [
+    {
+     "text": "Enrolled at St. Lawrence University as a member of the Class of 2018 after attending St. Lawrence Central High School.",
+     "source": "St. Lawrence University",
+     "url": "https://stlawu.meritpages.com/stories/Chelsea-Zahler-of-Winthrop-Enrolled-at-St-Lawrence-University/4526569",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:ms_dior.gor",
+   "display": "Chidiogor Ofodum",
+   "facts": [
+    {
+     "text": "Named to Clarkson University's Dean's List for the Fall 2025 semester as a junior majoring in healthcare.",
+     "source": "Clarkson University",
+     "url": "https://clarkson.meritpages.com/stories/Chidiogor-Divine-Ofodum-of-Lekki-Nigeria-has-been-named-to-Clarkson-University-s-Dean-s-List/177694391",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ct:christine sutter",
+   "display": "Christine Sutter",
+   "facts": [
+    {
+     "text": "Holds New York LMSW license #113035 and offers online therapy through Inner Lakes Therapy, with specialties including trauma, substance use, and somatic therapy.",
+     "source": "Open Path Collective",
+     "url": "https://openpathcollective.org/therapist/christine-sutter/",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:cora-capozzi",
+   "display": "Cora Capozzi",
+   "facts": [
+    {
+     "text": "She was named the Rotary Club of Potsdam's BOCES Student of the Month for October as a Health Careers student at BOCES Seaway Tech while attending St. Lawrence Central School, and was commended for her academic excellence.",
+     "source": "Rotary Club of Potsdam",
+     "url": "https://potsdamrotary.org/stories",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:daniel__manor",
+   "display": "Daniel Manor",
+   "facts": [
+    {
+     "text": "He earned academic honors at SUNY Canton for the Fall 2025 semester as an HVAC Trades student.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2026/honors-f25.php",
+     "novelty": "new"
+    },
+    {
+     "text": "He was named to SUNY Canton's President's List for the Spring 2026 semester as an HVAC Engineering Technology student.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2026/honors-s26.php",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:darlenesinclair3643",
+   "display": "Darlene Sinclair",
+   "facts": [
+    {
+     "text": "She is listed as a sermon speaker at Christian Fellowship Center in Madrid.",
+     "source": "Christian Fellowship Center",
+     "url": "https://www.cfconline.org/sermons/page/102",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:devon-sutton",
+   "display": "Devon Sutton",
+   "facts": [
+    {
+     "text": "He is named as the LC Drives applicant contact for the Congdon Hall Equipment project, a $5,116,656 manufacturing project in Potsdam's Downtown Revitalization Initiative application.",
+     "source": "Potsdam Downtown Revitalization Initiative application",
+     "url": "https://www.sambuz.com/doc/potsdam-dri-potsdam-dri-pdf-document-35103",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:dillynngrant16",
+   "display": "Dillynn Grant",
+   "facts": [
+    {
+     "text": "She competed in figure skating with the Potsdam Figure Skating Club, placing third in High Beginner Free Skating at the 2017 State Games of America.",
+     "source": "U.S. Figure Skating",
+     "url": "https://static1.squarespace.com/static/5a2b3461f09ca46ae540f77e/t/5af1a7066d2a738b7ff73816/1767811554668/FigureSkating_USFS_2017.pdf",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:dgruneisen",
+   "display": "Don Gruneisen",
+   "facts": [
+    {
+     "text": "He earned a B.S. in Accounting from Clarkson University in 1977 and an MBA from Clarkson University in 1980.",
+     "source": "PraBook",
+     "url": "https://prabook.com/web/donald_w.gruneisen/3555294",
+     "novelty": "expands"
+    },
+    {
+     "text": "He has served as vice president, treasurer, and a board member of the Nicholville Telephone Company since 1986.",
+     "source": "PraBook",
+     "url": "https://prabook.com/web/donald_w.gruneisen/3555294",
+     "novelty": "new"
+    },
+    {
+     "text": "He served as president of the National Association of Accountants in 1984-85.",
+     "source": "PraBook",
+     "url": "https://prabook.com/web/donald_w.gruneisen/3555294",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ct:elena trempe",
+   "display": "Elena Trempe",
+   "facts": [
+    {
+     "text": "She was named a 2022-23 NHIAA/NHADA Scholar Athlete at Mascoma Valley Regional High School.",
+     "source": "Mascoma Valley Regional School District newsletter",
+     "url": "https://cdnsm5-ss19.sharpschool.com/UserFiles/Servers/Server_27296946/File/22-23/22-23%20Spring%20Newsletter.pdf",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:evan-dimakas",
+   "display": "Evan Dimakas",
+   "facts": [
+    {
+     "text": "Was named a Distinguished Military Student in Army ROTC at the University of Scranton, an honor requiring a top-10% ranking in the Military Science program.",
+     "source": "University of Scranton",
+     "url": "https://scranton.edu/academics/provost/PDFs/Fac%20Sen%20Reports/2011-2012/Provost%20Fac_senate%20report%20Sept2011.pdf",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:frederick-laud-amoah-darko-jr",
+   "display": "Frederick Laud Amoah-Darko Jr.",
+   "facts": [
+    {
+     "text": "Works as a machine learning engineer at Unearthly Materials in Rochester, New York.",
+     "source": "Clarkson University",
+     "url": "https://clarkson.us/academics/schools-colleges/engineering/mathematics-department/mathematics-alumni",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ct:grace ockrin",
+   "display": "Grace Ockrin",
+   "facts": [
+    {
+     "text": "Grace Ockrin attended Webster Schroeder High School before enrolling at St. Lawrence University as a member of the Class of 2025.",
+     "source": "St. Lawrence University",
+     "url": "https://stlawu.meritpages.com/stories/Grace-Ockrin-Enrolled-at-St-Lawrence-University/65535564",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:grace.serene",
+   "display": "Grace Serene",
+   "facts": [
+    {
+     "text": "Grace Serene now lives in Nashville, Tennessee, while continuing to front the Rochester-based band Grace Serene and the Super Clean.",
+     "source": "Humanitix",
+     "url": "https://events.humanitix.com/grace-serene-and-the-super-clean-album-release-w-arron-rizzo-band-the-sideways",
+     "novelty": "new"
+    },
+    {
+     "text": "Grace Serene and the Super Clean performed as a supporting act at the 2024 Rochester Lilac Festival.",
+     "source": "NYS Music",
+     "url": "https://nysmusic.com/2024/03/04/dopapod-and-ghost-note-perform-at-2024-rochester-lilac-festival/",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:hnnbraun",
+   "display": "Hannah Braun",
+   "facts": [
+    {
+     "text": "While studying Animal Science at Cornell University, Hannah Braun planned to attend veterinary school and earn a DVM to work in dairy herd health.",
+     "source": "Hoard's Dairyman",
+     "url": "https://hoards.com/article-29775-twenty-students-receive-a-total-of-$20000-in-2021-premier-select-sires-scholarships.html",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:demers_st.hilaire",
+   "display": "Haydn Demers-St.Hilaire",
+   "facts": [
+    {
+     "text": "Haydn Demers-St.Hilaire was named a Utica Pioneer Athlete of the Week for baseball on April 3, 2017.",
+     "source": "Utica University Athletics",
+     "url": "https://uticapioneers.com/awards.aspx?aow=848&page=18",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:heather-shattuck",
+   "display": "Heather Shattuck",
+   "facts": [
+    {
+     "text": "Heather Shattuck began her physical therapy career in outpatient orthopedics in Texas before returning to the North Country to specialize in pediatric physical therapy, and she coaches children with special needs.",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/people/heather-shattuck",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:isreal-tyler",
+   "display": "Isreal Tyler",
+   "facts": [
+    {
+     "text": "Played the 2012-13 season for SUNY Canton's women's ice hockey team, recording three goals and three assists in 21 games.",
+     "source": "Elite Prospects",
+     "url": "https://www.eliteprospects.com/team/20819/suny-canton/stats/all-time?sort=ppg",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:jaime-bicknell",
+   "display": "Jaime Bicknell",
+   "facts": [
+    {
+     "text": "Also holds the title of Clinical Assistant Professor in Clarkson University's Department of Physical Therapy, in addition to serving as Director of Clinical Education.",
+     "source": "Clarkson University",
+     "url": "https://clarkson.edu/people/jaime-bicknell",
+     "novelty": "expands"
+    },
+    {
+     "text": "Worked as a physical therapist at Canton-Potsdam Hospital from 2007 to 2022, including as lead physical therapist and later per diem.",
+     "source": "Clarkson University",
+     "url": "https://clarkson.edu/people/jaime-bicknell",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:jake_seguin",
+   "display": "Jake Seguin",
+   "facts": [
+    {
+     "text": "Serves as a Staff Sergeant recruiter with the New York Army National Guard, based at the Guard's recruiting office in Morey Hall at SUNY Potsdam.",
+     "source": "SUNY Potsdam",
+     "url": "http://www.potsdam.edu/news/suny-potsdam-new-york-army-national-guard-hold-ribboncutting-campus-recruiting-office",
+     "novelty": "expands"
+    },
+    {
+     "text": "Has recruited 18 new members into the New York Army National Guard since the SUNY Potsdam recruiting office opened.",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/news/NAddisonNationalGuard",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:jessicahurlbut",
+   "display": "Jessica Hurlbut",
+   "facts": [
+    {
+     "text": "Author of the book Unlimited Motherhood, published by Baker Books in 2024.",
+     "source": "Baker Books",
+     "url": "https://www.logos.com/product/298446/unlimited-motherhood-overcome-12-limits-that-overwhelm-and-conflict-our-hearts",
+     "novelty": "expands"
+    },
+    {
+     "text": "Serves as a pastor at New Testament Church in Massena, New York.",
+     "source": "Ministers Fellowship International",
+     "url": "https://www.listennotes.com/ko/podcasts/mfi-leaders-podcast/stretched-thin-juggling-ajOzEANuU39/",
+     "novelty": "new"
+    },
+    {
+     "text": "Co-hosts the Full Spectrum Parent Podcast, a faith-based parenting podcast.",
+     "source": "Ministers Fellowship International",
+     "url": "https://www.listennotes.com/ko/podcasts/mfi-leaders-podcast/stretched-thin-juggling-ajOzEANuU39/",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:jocelynrose04",
+   "display": "Jocelyn Daniels",
+   "facts": [
+    {
+     "text": "Serves as a student ambassador at SUNY Canton while enrolled in the Pre-Physical Therapist Assistant program.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/media/pdf/Student-Bio-Jocelyn-Daniels.pdf",
+     "novelty": "new"
+    },
+    {
+     "text": "Named to SUNY Canton's academic honors list for the Fall 2025 semester as an Individual Studies student.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2026/honors-f25.php",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:jjcyph",
+   "display": "Jon Cyphers",
+   "facts": [
+    {
+     "text": "Works as a Christian singer-songwriter in Nashville, Tennessee, having moved there in October 2021 to pursue songwriting after leaving full-time ministry and a stint in freelance graphic design.",
+     "source": "Nashville Voyager",
+     "url": "https://nashvillevoyager.com/interview/meet-jonathan-cyphers-of-belle-meade/",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:jonah_black01",
+   "display": "Jonah Black",
+   "facts": [
+    {
+     "text": "Served as Student Government President at SUNY Canton during the 2021-22 academic year and completed honors research projects on the FBI's impact on forensics and the cultural psychology of the FBI.",
+     "source": "SUNY Canton Athletics",
+     "url": "https://rooathletics.com/news/2023/5/23/general-dayter-and-black-earn-suny-chancellors-award-for-student-excellence.aspx",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:joetherockboyle",
+   "display": "Joseph Boyle",
+   "facts": [
+    {
+     "text": "Serves as an adjunct instructor in SUNY Potsdam's Early College Programs while teaching Spanish at Massena High School.",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/about/directory/faculty/boyleje",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:jlevens18",
+   "display": "Joye Levendusky",
+   "facts": [
+    {
+     "text": "Joined King University in 2025 as Director of Strength and Conditioning and as an assistant coach for the women's wrestling program.",
+     "source": "King University Athletics",
+     "url": "https://kingtornado.com/news/2025/10/7/general-tornado-athletics-adds-joye-levendusky-as-director-of-strength-and-conditioning.aspx",
+     "novelty": "new"
+    },
+    {
+     "text": "Served as interim head coach of the Southern Oregon University women's wrestling team for the 2024-25 season after joining its staff as an assistant coach in 2023-24.",
+     "source": "Southern Oregon University Athletics",
+     "url": "https://souraiders.com/sports/womens-wrestling/roster/coaches/joye-levendusky/867",
+     "novelty": "new"
+    },
+    {
+     "text": "Is a five-time collegiate wrestling All-American who wrestled at McKendree University and Southern Oregon University, earned a degree in exercise science and sports performance from McKendree, and completed an MBA at Southern Oregon.",
+     "source": "Southern Oregon University Athletics",
+     "url": "https://souraiders.com/sports/womens-wrestling/roster/coaches/joye-levendusky/867",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:katelynmatthews10",
+   "display": "Katelyn Matthews",
+   "facts": [
+    {
+     "text": "Named to the SUNY Canton Dean's List for the Spring 2026 semester in the Bachelor of Science in Nursing program.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2026/honors-s26.php",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:kourtneyypeets",
+   "display": "Kourtney Peets",
+   "facts": [
+    {
+     "text": "Graduated from SUNY Canton in 2025 with a nursing degree.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2025/graduates.php",
+     "novelty": "new"
+    },
+    {
+     "text": "Received the Alex Sabo Mentoring Annual Scholarship as a nursing student at SUNY Canton in fall 2023.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2023/scholarships.php",
+     "novelty": "new"
+    },
+    {
+     "text": "Named to SUNY Canton's honor rolls as a Bachelor of Science in Nursing student in Fall 2022, Spring 2023, Fall 2023, and Spring 2024.",
+     "source": "SUNY Canton",
+     "url": "https://canton.edu/news/2024/honors-spring24.php",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:kwadwo-appiah-kubi",
+   "display": "Kwadwo Appiah-Kubi",
+   "facts": [
+    {
+     "text": "Led a study published in Methods and Protocols validating the GaitSIT virtual-reality walking-balance assessment in 29 healthy young adults across six sensory conditions.",
+     "source": "Clarkson University",
+     "url": "http://clarkson.edu/news-events/clarkson-university-study-uses-virtual-reality-improve-walking-balance-assessment",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:lennart-johns",
+   "display": "Lennart Johns",
+   "facts": [
+    {
+     "text": "As founding dean of Clarkson's Lewis School of Health & Life Sciences, Johns announced the launch of a new Bachelor of Science in Healthcare degree program.",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/news-events/clarkson-university-launches-new-bachelors-healthcare",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:marissa-carl",
+   "display": "Marissa Carl",
+   "facts": [
+    {
+     "text": "Marissa Chelan Carl earned a Bachelor of Arts from Mount Holyoke College in 2023, graduating magna cum laude.",
+     "source": "Mount Holyoke College",
+     "url": "https://www.mtholyoke.edu/student-experience/campus-experience/traditions-and-annual-events/commencement/class-2023-degree-recipients-and-awards-and-honors",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ct:meg howard",
+   "display": "Meg Howard",
+   "facts": [
+    {
+     "text": "She was a standout lacrosse goalie at Canton High School, earning All-Northern honors three straight years and top-goalie honors in the league as a junior and senior, and also lettered in volleyball and basketball, winning several Section X championships.",
+     "source": "SUNY Canton Athletics",
+     "url": "https://rooathletics.com/staff-directory/megan-howard/298",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:meg.peddle",
+   "display": "Megan Peddle",
+   "facts": [
+    {
+     "text": "She resigned from her position as an Individual Aide with the Gouverneur Central School District, effective at the close of business on April 24, 2026.",
+     "source": "Gouverneur Central School District",
+     "url": "https://www.gcsk12.org/boe/2025_2026/03_09_26/3_9_26_minutes.pdf",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:megphill_",
+   "display": "Megan Phillips",
+   "facts": [
+    {
+     "text": "She moderated a session on Warren County's Thriving Hamlets initiative at the Adirondack Park Agency's 2026 Local Government Day Conference.",
+     "source": "Adirondack Park Agency",
+     "url": "https://ru.apa.ny.gov/files/planning/forum/2026/APF2026-Agenda-20260318.pdf",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:m.not.a.lobster",
+   "display": "Michelle Johnston",
+   "facts": [
+    {
+     "text": "Her research interests listed for SUNY Canton's Center for Criminal Justice, Intelligence, and Cybersecurity also include media and the criminal justice system and evidence-based criminal justice practice.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/cjic/faculty.html",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ct:michelle larson",
+   "display": "Michelle Larson",
+   "facts": [
+    {
+     "text": "She completed postdoctoral work at Caltech, where she managed a geographically distributed cosmic ray experiment, and served as Deputy Director of a National Science Foundation Physics Frontier Center at Penn State.",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/about/university-leadership/presidents-page",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:nancyhull9",
+   "display": "Nancy Hull",
+   "facts": [
+    {
+     "text": "She performed on piano for the Potsdam Community Chorus at its November 22 concert at Helen M. Hosmer Hall during the 2009-2010 season.",
+     "source": "SUNY Potsdam",
+     "url": "https://webspace.potsdam.edu/groups/craneperformance/VSM%20442.pdf",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:norahpease",
+   "display": "Norah Pease",
+   "facts": [
+    {
+     "text": "She competed in the Adirondack Canoe Classic 90-Miler for a second year as a 2024 history graduate.",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:patrick-tombs",
+   "display": "Patrick Tombs",
+   "facts": [
+    {
+     "text": "His stage credits also include Henri de Toulouse-Lautrec in the off-Broadway staged reading of Lautrec in Paris, the Warthog in Animal Story at the Duke Theatre, and the Overseer in Matata and Jesse James: An American Tragedy at the Castillo Theatre.",
+     "source": "BroadwayWorld",
+     "url": "https://www.broadwayworld.com/people/news/Patrick-Tombs/",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:philiplloydpaige",
+   "display": "Philip Lloyd Paige",
+   "facts": [
+    {
+     "text": "New York licensing records list Philip L. Paige as a Limited Liability Broker affiliated with NOCO Homestead LLC of Madrid, New York, with the license expiring March 9, 2026.",
+     "source": "OpenGovNY (New York Department of State licensing data)",
+     "url": "https://opengovny.com/real-estate-license/10991232594",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:richard.haller",
+   "display": "Richard Haller",
+   "facts": [
+    {
+     "text": "He earned President's List honors throughout his four years at SUNY Canton and received the college's award for the highest GPA in his major.",
+     "source": "SUNY Canton",
+     "url": "https://www.canton.edu/news/2026/haller.php",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:rileyymulligan",
+   "display": "Riley Mulligan",
+   "facts": [
+    {
+     "text": "Riley Mulligan received the Katya Czerepak Greer Memorial Scholarship for Art Education from SUNY Potsdam's Art Department, presented at the spring School of Arts and Sciences honors convocation.",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/sites/default/files/inline-files/ArtNews%202020-21.pdf",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:rob-larrabee",
+   "display": "Rob Larrabee",
+   "facts": [
+    {
+     "text": "St. Lawrence University identifies Rob Larrabee as a member of its Class of 1997 who also earned a master's degree there in 1999.",
+     "source": "St. Lawrence University",
+     "url": "https://www.stlawu.edu/events/inside-scoop-new-york-state-police",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:ryan-blount",
+   "display": "Ryan Blount",
+   "facts": [
+    {
+     "text": "Ryan Blount is a resident of Liverpool, New York.",
+     "source": "New York Division of Military and Naval Affairs",
+     "url": "https://dmna-ny.meritpages.com/news/ny-army-guard-sgt--1st-class-ryan-blount--a-liverpool-resident--awarded-expert-soldier-badge-/22569/print",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:antolik",
+   "display": "Samantha Antolik",
+   "facts": [
+    {
+     "text": "Samantha Antolik competed in the New York Army National Guard's state Best Warrior Competition at Camp Smith in April 2016, when she served as a cryptologic linguist and operations noncommissioned officer.",
+     "source": "U.S. Army",
+     "url": "https://www.army.mil/article/166747/Realistic_Challenges_Highlight_New_York_National_Guard_Best_Warrior_Competition/",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:samantha-marocco",
+   "display": "Samantha Marocco",
+   "facts": [
+    {
+     "text": "Samantha Marocco is completing a Fellowship in Higher Education Leadership through the American Physical Therapy Association.",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/people/samantha-marocco",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:sara-hargrave",
+   "display": "Sara Hargrave",
+   "facts": [
+    {
+     "text": "Sara Hargrave was employed as a laborer by the Carthage Central School District in 2023.",
+     "source": "GovSalaries",
+     "url": "https://govsalaries.com/hargrave-sara-168924795",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:sarahchristinehaller",
+   "display": "Sarah Haller",
+   "facts": [
+    {
+     "text": "Sarah Haller competed for SUNY Potsdam's women's track and field team in the discus and hammer throw as a sophomore from Huntington, New York.",
+     "source": "SUNY Potsdam Athletics",
+     "url": "https://potsdambears.com/news/2019/4/8/general-suny-potsdam-weekly-sports-recap-april-1-7-2019.aspx",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:the_harpist",
+   "display": "Shannon Boyle",
+   "facts": [
+    {
+     "text": "She earned a graduate degree in harp performance at the Crane School of Music, graduating in 2022, after first taking harp lessons as a child through Crane's National String Project.",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle",
+     "novelty": "expands"
+    },
+    {
+     "text": "She placed second in the 2018 Crane Concerto Competition and performed as a soloist with the Crane Symphony Orchestra in its spring 2019 concerto concert.",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle",
+     "novelty": "new"
+    },
+    {
+     "text": "She taught young harp students through the National String Project while completing her undergraduate and graduate studies at Crane.",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "ig:midwifesunday",
+   "display": "Sunday Wright Smith",
+   "facts": [
+    {
+     "text": "She is a certified nurse-midwife based in Potsdam whose practice serves clients across the North Country, from Saranac Lake to Watertown.",
+     "source": "North Country Public Radio",
+     "url": "https://www.northcountrypublicradio.org/news/story/41093/20200409/giving-birth-during-a-pandemic-what-north-country-maternity-wards-and-expecting-families-are-doing",
+     "novelty": "expands"
+    },
+    {
+     "text": "Her North Country midwifery practice was profiled in The New Yorker's December 2019 feature \"A Midwife in the North Country.\"",
+     "source": "The New Yorker",
+     "url": "https://newyorkmidwives.org/a-midwife-in-the-north-country-from-the-new-yorker-magazine/",
      "novelty": "new"
     }
    ]
@@ -156,81 +3790,101 @@
    "display": "Susan Buckley",
    "facts": [
     {
-     "text": "Associate Professor of Practice at SUNY Canton, teaching in the college's Criminal Justice programs",
+     "text": "She helped organize SUNY Canton's 10th annual Law Enforcement Day, a \"Resilience and Recovery\" program presented November 16, 2020, through the college's Center for Criminal Justice, Intelligence and Cybersecurity.",
      "source": "SUNY Canton",
      "url": "https://www.canton.edu/news/2020/law-enforcement.php",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:tcriscitello",
+   "display": "Timothy Criscitello",
+   "facts": [
+    {
+     "text": "From the Heart Cabinetry, his Potsdam custom cabinetry business, was recommended for a $95,000 North Country REDC award in November 2018 toward an $885,512 business investment project.",
+     "source": "New York Power Authority",
+     "url": "https://edge.sitecorecloud.io/newyorkpowe1810-nypa32f6-prodnewd354-e629/media/NYPA/Documents/Document-Library/Meeting-Minutes/NNYPPAB111418.pdf",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:tori-brunet",
+   "display": "Tori Brunet",
+   "facts": [
+    {
+     "text": "She was approved by the Gouverneur Central School District board as a returning substitute teacher for the 2026-27 school year.",
+     "source": "Gouverneur Central School District",
+     "url": "https://www.gcsk12.org/boe/2026_2027/08_17_26/8_17_26_minutes.pdf",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "ig:trentondaniels4",
+   "display": "Trenton Daniels",
+   "facts": [
+    {
+     "text": "He was named to the SUNY Plattsburgh Dean's List for Fall 2014, Spring 2015, and Spring 2016.",
+     "source": "SUNY Plattsburgh",
+     "url": "https://www.plattsburgh.edu/news/news-archive/suny-plattsburgh-announces-spring-2016-deans-list.html",
      "novelty": "new"
     }
    ]
   },
   {
-   "name": "sf:judson-foote",
-   "display": "Judson Foote",
+   "name": "sf:wesley-hissong",
+   "display": "Wesley Hissong",
    "facts": [
     {
-     "text": "Graduated from SUNY Canton in the Class of 2022 with credentials in Individual Studies and Nursing",
+     "text": "Clarkson University's 2026 Annual Security & Fire Safety Report again names him Director of Campus Safety & Security and the office's point of contact.",
+     "source": "Clarkson University",
+     "url": "https://clarkson.edu/sites/default/files/2026-10/Clarkson-2026-Annual-Security-Report-SEPT.pdf",
+     "novelty": "redundant"
+    }
+   ]
+  },
+  {
+   "name": "sf:zvi-szafran",
+   "display": "Zvi Szafran",
+   "facts": [
+    {
+     "text": "As SUNY Canton president, he announced the college's participation in the SUNY Reconnect initiative, offering free associate degrees to eligible adult learners, in June 2026.",
      "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2022/graduates.php",
-     "novelty": "new"
+     "url": "https://www.canton.edu/news/2026/reconnect.php",
+     "novelty": "expands"
     },
     {
-     "text": "Before nursing, worked as a commercial truck driver; also an ordained minister and a private pilot",
+     "text": "He commented as SUNY Canton president on the college's September 2026 U.S. News rankings, including 22nd among Regional Colleges (North) and 11th among Top Public Schools (North).",
      "source": "SUNY Canton",
-     "url": "https://www.canton.edu/plm/",
-     "novelty": "new"
-    }
-   ]
-  },
-  {
-   "name": "brianna.hammond",
-   "display": "Brianna Hammond",
-   "facts": [
-    {
-     "text": "Joined Madrid-Waddington Central School as a second-grade teacher, starting fall 2022",
-     "source": "Madrid-Waddington Central School",
-     "url": "https://www.mwcsk12.org/Downloads/June(1)%202022.pdf",
-     "novelty": "new"
-    },
-    {
-     "text": "Received a $750 Union Plus Scholarship in 2021 as a student from Waddington, New York",
-     "source": "Union Plus",
-     "url": "https://teamster.org/2021/06/ibt-members-family-members-awarded-2021-union-plus-scholarships/",
-     "novelty": "new"
-    }
-   ]
-  },
-  {
-   "name": "nancyhull9",
-   "display": "Nancy Hull",
-   "facts": [
-    {
-     "text": "Performed as an accordionist with the Crane Chorus in the 2016 Crane Candlelight Concerts at SUNY Potsdam",
-     "source": "SUNY Potsdam",
-     "url": "https://www.potsdam.edu/news/crane-candlelight-concerts-be-broadcast-public-tv-across-us-canada-again-holiday-season",
-     "novelty": "new"
-    },
-    {
-     "text": "Served as rehearsal pianist for the Crane Chorus, including for Britten's War Requiem on May 4, 2013, at Helen M. Hosmer Concert Hall, SUNY Potsdam",
-     "source": "SUNY Potsdam",
-     "url": "https://webspace.potsdam.edu/groups/craneperformance/CHO%20139.pdf",
+     "url": "https://www.canton.edu/news/2026/usnews.php",
      "novelty": "expands"
     }
    ]
   }
  ],
  "coverage": {
-  "checked_total": 301,
-  "of": 677,
+  "checked_total": 699,
+  "of": 699,
   "window_days": 30
  },
- "note": "Fresh sweep: none found - directory members in current October coverage (Kwadwo Appiah-Kubi, whose tenure item was already filed; Richard Haller; Adria Tebo; Ben Hull) had no new personal fact in the window. Held, not filed: Martha Martin (Martin's Country Store co-founder fact sourced only from the family business's own site) and Toni Squires (nurse-manager lead from a single aggregator listing).",
+ "note": "Accelerated full-directory sweep (JD-directed): all 699 profiles in the rotation checked in one run, no filing cap; the routine returns to its daily maintenance pace from here. Fresh sweep: the dedicated news sweep found no qualifying item, but per-person research surfaced three in-window items - Mark C Walczyk (NCPR, Oct 23), Adria Tebo (CNE season preview, Oct 21), and Ian Bailey (Vivid Coffee interview, Oct 8). Held, not filed: Benjamin Horner, Betty Cryderman Parlow, and Brittney Carnicelli (obituary/family material); Jamie Sinclair (CFC Canton zoning litigation); Jessica Hurlbut and Katherine Whitson (family details in bios); Phyllis Paladin (possible obituary match, unconfirmed). Also held for an identity ruling: Jess Evans and Sarah El-Labban (blank profiles - corroborated public records exist but there are no profile anchors to tie them to), and an Alexis Donnely deacon item sourced under the surname Krapf. Four leads rejected at the gate as aggregator-only or single-source (Andy Dennis, B. Ryan Dunphey, Courtney Cabaniss, Cayden Westwood).",
  "next_up": [
   {
    "name": "sf:aaron-cote",
    "display": "Aaron Cote"
   },
   {
-   "name": "abbydaniels03",
+   "name": "ig:aaronjdaniels",
+   "display": "Aaron Daniels"
+  },
+  {
+   "name": "ig:abbystiles_",
+   "display": "Abby Stiles"
+  },
+  {
+   "name": "ig:abbydaniels03",
    "display": "Abigail Daniels"
   },
   {
@@ -238,36 +3892,31 @@
    "display": "Acacia White"
   },
   {
-   "name": "adria.t18",
+   "name": "ig:adria.t18",
    "display": "Adria Tebo"
   },
   {
-   "name": "adhope2006",
+   "name": "ig:adhope2006",
    "display": "Adriana Levendusky"
   },
   {
-   "name": "aidantruth",
+   "name": "ig:askinnerusa",
+   "display": "Aeriel Skinner"
+  },
+  {
+   "name": "ig:aidantruth",
    "display": "Aidan Daniels"
   },
   {
-   "name": "alanahoover",
-   "display": "Alana Hoover"
-  },
-  {
-   "name": "aleeparker_",
-   "display": "Alessandra Parker"
-  },
-  {
-   "name": "alexfornyassembly_",
-   "display": "Alex Hammond"
-  },
-  {
-   "name": "alex_conn504",
-   "display": "Alexandra Colbert"
+   "name": "sf:alan-k-daniels",
+   "display": "Alan K Daniels"
   }
  ],
- "unchecked_remaining": 375,
+ "unchecked_remaining": 0,
  "fresh": {
-  "found": false
+  "found": true,
+  "name": "ig:walczykmark",
+  "display": "Mark C Walczyk",
+  "published": "2026-10-23"
  }
 }
