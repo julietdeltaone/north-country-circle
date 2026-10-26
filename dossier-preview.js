@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.39.0';
+var APP_VERSION = '2.39.1';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -361,7 +361,7 @@ var MIL_RANKS = {
   cg: { label:'U.S. Coast Guard', ranks:['SR','SA','SN','PO3','PO2','PO1','CPO','SCPO','MCPO','CWO2','CWO3','CWO4','ENS','LTJG','LT','LCDR','CDR','CAPT','RDML','VADM','ADM'] }
 };
 function milBranch(e){
-  var hay = (personGroups(e) || []).concat(vals(e, 'companies'), vals(e, 'universities'), vals(e, 'churches')).join(' ').toLowerCase();
+  var hay = (personGroups(e) || []).concat(tagList(gv(e, 'companies')), tagList(gv(e, 'universities')), tagList(gv(e, 'churches'))).join(' ').toLowerCase();
   if(/space force/.test(hay)) return 'sf';
   if(/air force/.test(hay)) return 'af';
   if(/marine/.test(hay)) return 'mc';
@@ -4738,7 +4738,7 @@ function hmPhotosCard(ph){
     '<div class="hm-kpi"><div class="hm-kn">' + ph.checked + '<small> / ' + ph.total + '</small></div><div class="hm-kl">Profiles checked</div></div>' +
     '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.ig + '">0</div><div class="hm-kl">From Instagram</div></div></div>';
   var tiles = ph.wall.map(function(p){
-    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + milBadgeName(p.name) + '</span></a>';
+    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + milBadgeName(p.name) + (phAddedLabel(p) ? '<small class="hm-td">' + phAddedLabel(p) + '</small>' : '') + '</span></a>';
   }).join('');
   tiles += '<a class="hm-tile miss" href="#/photos"><b data-hmn="' + ph.noPhoto + '">0</b><span>still missing a photo</span></a>';
   return '<section class="card hm-blk"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em></header><div class="cbody">' + kpis +
@@ -5152,6 +5152,15 @@ function phFrameStyle(p){
   var f = phFrameFor(p.name, p);
   return 'object-position:' + f.x + '% ' + f.y + '%;' + (f.z && f.z !== 1 ? 'transform-origin:' + f.x + '% ' + f.y + '%;transform:scale(' + f.z + ')' : '');
 }
+/* Glanceable photo currency (JD 2026-10-26): when the photo was
+   added — exact date where the change log records it, otherwise the
+   Photos on File census month. */
+function phAddedLabel(p){
+  if(!p || !p.photo_url) return '';
+  if(p.added) return 'Added ' + fmtIsoD(p.added);
+  if(p.added_approx) return 'Added ' + p.added_approx;
+  return '';
+}
 function phHeroHTML(e){
   var idx = phIndex(); if(!idx) return '';
   var p = idx[dispName(e)]; if(!p || !p.photo_url) return '';
@@ -5431,7 +5440,7 @@ function phCard(p){
   var sel = PH_SEL && PH_SEL.toLowerCase() === String(p.name).toLowerCase();
   if(phHasPhoto(p)){
     return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' +
-      '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + phGradeChip(p) + '</div></section>';
+      '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + phGradeChip(p) + '</div>' + (phAddedLabel(p) ? '<div class="phdt">' + phAddedLabel(p) + '</div>' : '') + '</section>';
   }
   return '<section class="card phcard noph' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg phnoimg">' + ic('camera', 22) + '<em>NO PHOTO</em></span>' +
     '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + '</div></section>';
