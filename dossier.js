@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.46.0';
+var APP_VERSION = '2.47.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -3004,16 +3004,19 @@ function secEdit(di, id){
       '<p class="note">Instagram, Facebook, Lives in, From and Languages are derived and read only. Correct them at the source (the FB Profiles tab or a subject file).</p>' + secView(di, 'identity');
   }
   if(id === 'relationship'){
-    var ksYear = knownSinceYear(e), thisY = new Date().getFullYear(), ksUsed = {};
-    D.directory.forEach(function(x){ var y0 = knownSinceYear(x); if(y0) ksUsed[y0] = (ksUsed[y0] || 0) + 1; });
-    var ksList = Object.keys(ksUsed).map(Number).sort(function(a, b){ return ksUsed[b] - ksUsed[a] || b - a; });
-    var ksDl = ksList.map(function(y){ return '<option value="' + y + '">' + y + ' · ' + (thisY - y) + ' yrs</option>'; }).join('');
-    var ksChips = '<button type="button" class="tchip ksy' + (ksYear ? '' : ' on') + '" data-act="kspick" data-y="">Not set</button>';
-    for(var ky = thisY; ky >= 1990; ky--) ksChips += '<button type="button" class="tchip ksy' + (ksYear === ky ? ' on' : '') + '" data-act="kspick" data-y="' + ky + '">' + ky + '</button>';
-    ksList.forEach(function(y){ if(y < 1990 || y > thisY) ksChips += '<button type="button" class="tchip ksy' + (ksYear === y ? ' on' : '') + '" data-act="kspick" data-y="' + y + '">' + y + '</button>'; });
-    var ksP0 = ksParts(e), ksMonNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var ksMChips = '<button type="button" class="tchip ksm' + (!ksP0 || !ksP0.mo ? ' on' : '') + '" data-act="kspickm" data-m="">No month</button>';
-    ksMonNames.forEach(function(mn, ix){ ksMChips += '<button type="button" class="tchip ksm' + (ksP0 && ksP0.mo === ix + 1 ? ' on' : '') + '" data-act="kspickm" data-m="' + (ix + 1) + '">' + mn + '</button>'; });
+    var ksP0 = ksParts(e) || { y:0, mo:0, d:0 }, thisY = new Date().getFullYear();
+    var ksYrs = ''; for(var ky2 = thisY; ky2 >= 1990; ky2--) ksYrs += '<option value="' + ky2 + '"' + (ksP0.y === ky2 ? ' selected' : '') + '>' + ky2 + '</option>';
+    if(ksP0.y && (ksP0.y < 1990 || ksP0.y > thisY)) ksYrs = '<option value="' + ksP0.y + '" selected>' + ksP0.y + '</option>' + ksYrs;
+    var ksMos = ''; KS_MONTHS.forEach(function(mn, ix){ ksMos += '<option value="' + (ix + 1) + '"' + (ksP0.mo === ix + 1 ? ' selected' : '') + '>' + mn + '</option>'; });
+    var ksDim = ksP0.mo ? new Date(ksP0.y, ksP0.mo, 0).getDate() : 31, ksDas = '';
+    for(var kd = 1; kd <= ksDim; kd++) ksDas += '<option value="' + kd + '"' + (ksP0.d === kd ? ' selected' : '') + '>' + kd + '</option>';
+    var ksRaw = String(gv(e, 'years_known') || '').trim();
+    var ksPrev = ksParts(e) ? (knownSinceLabel(e) + (ksP0.y ? ' \u00b7 ' + Math.max(0, thisY - ksP0.y) + ' yrs' : '')) : (ksRaw ? ksRaw : 'Not set');
+    var ksRow = '<div class="ksrow">' +
+      '<select class="kssel" data-act="kssel" data-part="y" data-di="' + di + '" aria-label="Known since: year"><option value="">Year</option>' + ksYrs + '</select>' +
+      '<select class="kssel" data-act="kssel" data-part="m" data-di="' + di + '" aria-label="Known since: month"' + (ksP0.y ? '' : ' disabled') + '><option value="">Month</option>' + ksMos + '</select>' +
+      '<select class="kssel" data-act="kssel" data-part="d" data-di="' + di + '" aria-label="Known since: day"' + (ksP0.mo ? '' : ' disabled') + '><option value="">Day</option>' + ksDas + '</select>' +
+      '<span class="kslab">' + esc(ksPrev) + '</span></div>';
     var gs = Object.keys(allGroups()).sort(), mine = personGroups(e);
     return lab('Tier') + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Momentum') + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '" data-sec="relationship"') +
@@ -3022,9 +3025,7 @@ function secEdit(di, id){
       lab('Context') + seg('context', CTX_OPTS, gv(e, 'context'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Category') + seg('category', CAT_OPTS, gv(e, 'category'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Score pin', 'Optional: a fixed score from 0 to 100 that overrides the computed closeness score') + '<input data-pk="score_pin" type="number" min="0" max="100" step="1" value="' + esc(gv(e, 'score_pin')) + '" placeholder="Not pinned" autocomplete="off">' +
-      lab('Known since', 'Year, plus the month and day if you know them') + '<input data-pk="years_known" id="ksin" inputmode="text" list="kslist" value="' + esc(gv(e, 'years_known')) + '" placeholder="2019, 2019-03 or 2019-03-14" autocomplete="off"><datalist id="kslist">' + ksDl + '</datalist>' +
-      '<div class="kschips">' + ksChips + '</div>' +
-      '<div class="kschips ksmonths">' + ksMChips + '</div>' +
+      lab('Known since', 'Pick the year, then the month and day if you know them') + ksRow +
       lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
       '<input class="tadd" data-grpnew placeholder="New group" autocomplete="off"></div>';
   }
@@ -5246,6 +5247,19 @@ function phAddedLabel(p){
   if(p.added_approx) return 'Added ' + p.added_approx;
   return '';
 }
+var PH_NEW_DAYS = 21;
+function phAddedTs(p){
+  if(!p || !p.photo_url) return 0;
+  if(p.added){ var t = Date.parse(p.added); if(!isNaN(t)) return t; }
+  if(p.added_approx){ var t2 = Date.parse('1 ' + p.added_approx); if(!isNaN(t2)) return t2; }
+  return 0;
+}
+function phIsNew(p){
+  if(!p || !p.added || !p.photo_url) return false;
+  var t = Date.parse(p.added); if(isNaN(t)) return false;
+  return (Date.now() - t) <= PH_NEW_DAYS * 864e5 && t <= Date.now() + 864e5;
+}
+function phNewCount(all){ return all.filter(phIsNew).length; }
 function phHeroHTML(e){
   var idx = phIndex(); if(!idx) return '';
   var p = idx[dispName(e)]; if(!p || !p.photo_url) return '';
@@ -5567,6 +5581,7 @@ function phTopOrgs(all){
 function phFiltered(all){
   return all.filter(function(p){
     if(PH_FILT === 'photo' && !phHasPhoto(p)) return false;
+    if(PH_FILT === 'new' && !phIsNew(p)) return false;
     if(PH_FILT === 'nophoto' && phHasPhoto(p)) return false;
     if(PH_FILT.indexOf('tier:') === 0){ var e = phEntryOf(p); if((e ? tierOf(e) : '') !== PH_FILT.slice(5)) return false; }
     if(PH_FILT.indexOf('org:') === 0 && phOrgOf(p) !== PH_FILT.slice(4)) return false;
@@ -5591,6 +5606,7 @@ function phSortList(list){
     if(PH_SORT === 'name') c = a.name.localeCompare(b.name);
     else if(PH_SORT === 'org'){ var oa = phOrgOf(a), ob = phOrgOf(b); c = ((oa === '' ? 1 : 0) - (ob === '' ? 1 : 0)) || oa.localeCompare(ob) || a.name.localeCompare(b.name); }
     else if(PH_SORT === 'years') c = (phYearsCountOf(b) - phYearsCountOf(a)) || a.name.localeCompare(b.name);
+    else if(PH_SORT === 'newest') c = (phAddedTs(b) - phAddedTs(a)) || a.name.localeCompare(b.name);
     else if(PH_SORT === 'tier'){ var tr = { vetted:0, associate:1, open:2 }; var ea = phEntryOf(a), eb = phEntryOf(b); var ta = tr[ea ? tierOf(ea) : ''], tb = tr[eb ? tierOf(eb) : '']; c = ((ta == null ? 3 : ta) - (tb == null ? 3 : tb)) || a.name.localeCompare(b.name); }
     else c = (phGradeRank(a) - phGradeRank(b)) || a.name.localeCompare(b.name);
     return PH_SDIR < 0 ? -c : c;
@@ -5611,6 +5627,7 @@ function phSections(list){
     else if(PH_SORT === 'years'){ var y = phStartYearOf(p); label = y ? (Math.floor(y / 10) * 10) + 's' : 'Unknown'; }
     else if(PH_SORT === 'tier'){ var e = phEntryOf(p), t = e ? tierOf(e) : ''; label = t ? TIERS[t].n : 'No tier'; }
     else if(PH_SORT === 'grade') label = phGradeLabel(p);
+    else if(PH_SORT === 'newest') label = p.added ? fmtIsoD(p.added) : (p.added_approx ? 'Added ' + p.added_approx : 'No date recorded');
     if(PH_SORT === 'name'){ if(!secs.length) sec(''); secs[0].items.push(p); }
     else sec(label).items.push(p);
   });
@@ -5751,6 +5768,7 @@ function viewPhotos(v){
     '<span class="phst">' + ic('search', 13) + '<b>' + (all.length - withPh) + '</b> no photo yet</span>' +
     (PH.updated ? '<span class="phst">' + ic('calendar', 13) + 'Updated <b>' + esc(fmtIsoD(PH.updated)) + '</b></span>' : '') +
     (unchecked ? '<span class="phst">' + ic('search', 13) + '<b>' + unchecked + '</b> not yet checked</span>' : '') +
+    (phNewCount(all) ? '<span class="phst">' + ic('sparkle', 13) + '<b>' + phNewCount(all) + '</b> new in the last 3 weeks</span>' : '') +
     '</div>';
   var tierN = { vetted:0, associate:0, open:0, '':0 };
   all.forEach(function(p){ var e = phEntryOf(p); var t = e ? tierOf(e) : ''; if(tierN[t] == null) tierN[t] = 0; tierN[t]++; });
@@ -5758,13 +5776,13 @@ function viewPhotos(v){
   var rail = '<aside class="ph-side">' +
     '<input id="phq" type="search" placeholder="Search names" autocomplete="off" value="' + esc(PH_QUERY) + '">' +
     '<div class="ph-side-h">Show</div>' +
-    fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
+    fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
     '<div class="ph-side-h">Tier</div>' +
     fbtn('tier:vetted', 'Vetted', tierN.vetted) + fbtn('tier:associate', 'Associate', tierN.associate) + fbtn('tier:open', 'Open', tierN.open) + fbtn('tier:', 'No tier', tierN['']) +
     '<div class="ph-side-h">Organizations</div>' +
     phTopOrgs(all).map(function(o){ return fbtn('org:' + o.name, o.name, o.n); }).join('') +
     '</aside>';
-  var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Tier']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" id="phsdirbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
+  var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['newest', 'Newest'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Tier']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" id="phsdirbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
   var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
   var main = '<div class="ph-main"><div class="phbar"><span class="ph-count" id="phcount"></span>' + sortHtml + colsHtml + '</div><div id="phlist"></div></div>';
   v.innerHTML = '<div class="page asearch pg-photos">' + head + stats + '<div class="ph-layout">' + rail + main + '</div></div>';
@@ -7005,12 +7023,12 @@ function audPaintEmpty(){
    ============================================================ */
 var AUD_MODES = [
   { k:'cards',  l:'Cards' },
+  { k:'years',  l:'Years Known' },
   { k:'rapid',  l:'Rapid Fire' },
   { k:'cat',    l:'Category Run' },
   { k:'finish', l:'Finish Line' },
   { k:'lima',   l:'Lima Charlie' },
-  { k:'photos', l:'Photo Audit' },
-  { k:'years',  l:'Years Known' }
+  { k:'photos', l:'Photo Audit' }
 ];
 function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' || m === 'lima' || m === 'photos' || m === 'years' ? m : 'cards'; }
 /* Daily goal (Duolingo pattern, minus the nagging): fills today vs a
@@ -7638,6 +7656,7 @@ function viewAudit(v){
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
   var m = audMode();
+  var ykMissN = people().filter(function(di){ return !knownSinceYear(D.directory[di]); }).length;
   if(m === 'lima' && S.audit.lcOpen != null && D.directory[S.audit.lcOpen]){ lcRenderOpen(v); return; }
   v.innerHTML = '<div class="page audit"><div class="pagehead"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
     '<span class="aud-head-btns"><button type="button" class="btn ghost" data-act="audlater" id="audlaterbtn" hidden>' + ic('today', 15) + '<span>Saved for later (<span id="audlaterN">0</span>)</span></button>' +
@@ -7646,6 +7665,7 @@ function viewAudit(v){
     '<span class="aud-goal"><span class="aud-goal-l">Today\'s goal</span><span class="aud-goal-bar"><i id="audgoalfill"></i></span><span id="audgoalt"></span>' +
     '<button type="button" class="aud-goal-b" data-act="audgoal" data-d="-5" aria-label="Lower the goal by 5">−</button><button type="button" class="aud-goal-b" data-act="audgoal" data-d="5" aria-label="Raise the goal by 5">+</button></span></div>' +
     '<div id="audmodebar">' + audModeBarHTML() + '</div>' +
+    (m === 'years' ? '' : '<button type="button" class="aud-ykstrip" data-act="audmode" data-m="years">' + ic('calendar', 15) + '<span class="aud-ykstrip-t"><b>Years Known</b><small>One person at a time \u2014 big year, month and day lists, keyboard friendly</small></span><span class="sp"></span><span class="aud-ykstrip-n">' + ykMissN + ' missing a year</span><span class="aud-ykstrip-go">Open &rarr;</span></button>') +
     (m === 'rapid'
       ? '<div class="aud-stage-wrap"><div class="aud-stack" id="audstack"><div class="aud-peek p2"></div><div class="aud-peek p1"></div><div class="aud-grid aud-stage" id="audgrid"></div></div></div>'
       : m === 'lima' ? '<div id="lcwrap"></div>' : m === 'photos' ? '<div id="phawrap"></div>' : m === 'years' ? '<div id="ykwrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
@@ -8008,6 +8028,18 @@ function onChange(ev){
     var rdi = +t.getAttribute('data-di'), rv = t.value;
     txn(rv ? 'Set rank' : 'Clear rank', function(){ queuePatch(rdi, { rank: rv }); });
     paintProfile(rdi); return;
+  }
+  if(act === 'kssel'){
+    var kdi = +t.getAttribute('data-di'), ke = D.directory[kdi]; if(!ke) return;
+    var kp = ksParts(ke) || { y:0, mo:0, d:0 }, kpart = t.getAttribute('data-part'), kvv = +t.value || 0;
+    if(kpart === 'y') kp.y = kvv; else if(kpart === 'm') kp.mo = kvv; else kp.d = kvv;
+    if(!kp.y){ kp.mo = 0; kp.d = 0; }
+    if(!kp.mo) kp.d = 0;
+    if(kp.mo && kp.d){ var kdim = new Date(kp.y, kp.mo, 0).getDate(); if(kp.d > kdim) kp.d = kdim; }
+    var knv = !kp.y ? '' : String(kp.y) + (kp.mo ? '-' + String(kp.mo).padStart(2, '0') + (kp.d ? '-' + String(kp.d).padStart(2, '0') : '') : '');
+    if(String(gv(ke, 'years_known') || '') !== knv) setField(kdi, 'years_known', knv);
+    repaintSec('relationship');
+    return;
   }
   if(t.hasAttribute && t.hasAttribute('data-pk')){
     var k = t.getAttribute('data-pk');
