@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.48.0';
+var APP_VERSION = '2.49.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4618,6 +4618,7 @@ function hmStatsCard(pop, N){
   var tierCounts = { vetted:0, associate:0, open:0, none:0 };
   var curY = new Date().getFullYear(), yr = {}, yrMax = 0, preN = 0, lastY = curY, undated = 0;
   var towns = {}, rels = {}, relBlank = 0, orgCounts = {}, skills = {}, groupCounts = {};
+  var fpCounts = {}, fpPeople = 0, fpTotal = 0;
   pop.forEach(function(di){
     var e = D.directory[di], t = tierOf(e);
     if(t === 'vetted') tierCounts.vetted++; else if(t === 'associate') tierCounts.associate++; else if(t === 'open') tierCounts.open++; else tierCounts.none++;
@@ -4633,6 +4634,8 @@ function hmStatsCard(pop, N){
     ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ var cn = regApply(o); if(cn && !seen[cn]){ seen[cn] = 1; orgCounts[cn] = (orgCounts[cn] || 0) + 1; } }); });
     tagList(gv(e, 'specialty')).forEach(function(s){ hmCount(skills, s); });
     personGroups(e).forEach(function(g){ groupCounts[g] = (groupCounts[g] || 0) + 1; });
+    var fpn = String(gv(e, 'public_footprint') || '').split('\n').filter(function(b){ return b.trim(); }).length;
+    if(fpn){ fpPeople++; fpTotal += fpn; fpCounts[dispName(e)] = fpn; }
   });
   var tierTop = hmSortTop([
     { label:'Vetted', c:tierCounts.vetted, col:TIERS.vetted.c },
@@ -4690,6 +4693,9 @@ function hmStatsCard(pop, N){
     hmStatCard('Organizations', hmPlainTop(orgCounts, 5), Object.keys(orgCounts).length) +
     hmStatCard('Skills', hmFormsTop(skills, 5, true), Object.keys(skills).length) +
     hmCardWrap('Groups', hmRankRows(hmPlainTop(groupCounts, 5)), Object.keys(groupCounts).length, 5) +
+    hmStatCard('Public footprint', hmPlainTop(fpCounts, 5), fpPeople,
+      '<p class="dim hm-note">' + fpTotal + ' facts on file across ' + fpPeople + ' of ' + N + ' people (' + (N ? Math.round(100 * fpPeople / N) : 0) + '%).</p>' +
+      (fpPeople ? '<p class="dim hm-note">Average ' + (fpTotal / fpPeople).toFixed(1) + ' facts per documented person.</p>' : '')) +
     '</div></div></section>';
 }
 
