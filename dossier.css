@@ -1812,6 +1812,42 @@ html,body{background:var(--bg)}
 .hm-bv{width:36px;flex:none;text-align:right;font-weight:600;font-family:var(--serif)}
 a.hm-barlink:hover{text-decoration:none}
 a.hm-barlink:hover .hm-bl{text-decoration:underline}
+/* Home chart forms (JD 2026-10-26): donut / columns / dot plot /
+   stacked share / leaderboard / type cloud — labels in legends and
+   sparse axis slots only, never on the marks. */
+.hm-donut{display:flex;align-items:center;gap:16px}
+.hm-dsvg{width:118px;height:118px;flex:none}
+.hm-dn{font:700 27px "Space Grotesk",sans-serif;fill:#f2f2f2;text-anchor:middle}
+.hm-dt{font:600 10px Archivo,sans-serif;letter-spacing:.14em;fill:#8f8f8f;text-anchor:middle;text-transform:uppercase}
+.hm-dlegs{flex:1;min-width:0}
+.hm-dleg{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:12.5px}
+.hm-dldot{width:8px;height:8px;flex:none}
+.hm-dll{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#d7d7d7}
+.hm-dleg b{font-family:var(--serif);font-weight:600}
+.hm-dlp{width:36px;flex:none;text-align:right;color:#8f8f8f;font-size:11.5px}
+.hm-cols{display:block;width:100%;height:auto}
+.hm-col{fill:#c9c9c9}
+.hm-cv{font:600 10.5px Archivo,sans-serif;fill:#f2f2f2;text-anchor:middle}
+.hm-cx{font:600 10px Archivo,sans-serif;fill:#8f8f8f;text-anchor:middle}
+.hm-axis{stroke:#2b2b2b;stroke-width:1}
+.hm-dot{display:flex;align-items:center;gap:8px;margin:9px 0;font-size:12.5px;color:var(--txt)}
+.hm-dtr{flex:1;position:relative;height:14px}
+.hm-dtr::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px dotted #3a3a3a}
+.hm-dfill{position:absolute;left:0;top:50%;height:2px;margin-top:-1px;background:#5c5c5c}
+.hm-dotp{position:absolute;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:#f2f2f2}
+.hm-dotp.top{background:var(--acc)}
+.hm-stack{display:flex;height:16px;border-radius:2px;overflow:hidden;background:#161616;margin:4px 0 10px}
+.hm-seg{display:block;height:100%}
+.hm-seg.rest{background:#1c1c1c}
+.hm-dlegs.stack{margin-top:2px}
+.hm-rk{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12.5px}
+.hm-rkn{font:700 15px "Space Grotesk",sans-serif;color:#5c5c5c;width:26px;flex:none}
+.hm-rk:first-child .hm-rkn{color:var(--acc)}
+.hm-bl.grow{flex:1;width:auto}
+.hm-cloud{line-height:1.9;padding:2px 0}
+.hm-cw{font-weight:700;color:#d7d7d7;margin-right:12px;white-space:nowrap}
+.hm-cw sup{font-size:10px;color:#8f8f8f;font-weight:600}
+.hm-cw:first-child{color:#fff}
 .hm-netgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:18px;align-items:start}
 .hm-netlink{display:block;border:1px solid var(--line);border-radius:2px;background:#0c0c0c}
 .hm-netlink:hover{border-color:var(--line2);text-decoration:none}
