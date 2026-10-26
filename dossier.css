@@ -1621,6 +1621,8 @@ html,body{background:var(--bg)}
 .phnm{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px}
 .phnm b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .phg{font:700 10px Archivo,sans-serif;letter-spacing:.06em;border:1px solid #333;border-radius:2px;padding:2px 5px;color:#9a9a9a;flex:none;line-height:1}
+.phmulti{position:absolute;top:6px;right:6px;font:700 10px Archivo,sans-serif;letter-spacing:.06em;padding:3px 6px;border-radius:2px;background:rgba(0,0,0,.78);color:#fff;border:1px solid rgba(255,255,255,.25);line-height:1;pointer-events:none}
+.phbadge.key{background:#e30613;border-color:#e30613;color:#fff}
 .phg.conf{color:#fff;border-color:#e30613}
 .phg.lik{color:#d8d8d8}
 .phg.poss{color:#8a8a8a}
