@@ -1708,6 +1708,23 @@ html,body{background:var(--bg)}
 .dtrail::-webkit-scrollbar{width:5px}
 .dtrail::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
 .dtrail-h{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #262626;font:700 11px "Space Grotesk",sans-serif;letter-spacing:.14em;position:sticky;top:0;background:#101010;z-index:1}
+.dtrail-upd{display:block;margin-top:3px;font:600 10px Archivo,sans-serif;letter-spacing:.08em;color:#8f8f8f;text-transform:uppercase}
+/* Live Records currency strip (JD 2026-10-26): freshness at a glance —
+   how current the brief is, what the fresh sweep found, who is next. */
+.dtcur{margin-bottom:14px}
+.dtcur-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.dtcur-dot{width:8px;height:8px;background:var(--acc);flex:none}
+.dtcur-state{font:700 11.5px "Space Grotesk",sans-serif;letter-spacing:.13em;color:var(--txt)}
+.dtcur-age{color:var(--acc)}
+.dtcur-next{margin-left:auto;font:600 10.5px Archivo,sans-serif;letter-spacing:.09em;color:#8f8f8f;text-transform:uppercase}
+.dtcur-fresh{margin-top:8px;font-size:13px;color:#d7d7d7}
+.dtcur-nu{margin-top:10px;padding-top:10px;border-top:1px solid #1c1c1c;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.dtcur-nu-t{font:700 10.5px "Space Grotesk",sans-serif;letter-spacing:.13em;color:#8f8f8f;flex:none}
+.dtcur-nu-names{font-size:13px;color:#d7d7d7}
+.dtcur-nu-names a{color:inherit;text-decoration:none}
+.dtcur-nu-names a:hover{text-decoration:underline}
+.gsort{display:inline-flex;align-items:center;gap:6px}
+.gsort>span{font:600 11px Archivo,sans-serif;letter-spacing:.08em;color:#8f8f8f;text-transform:uppercase}
 .chg{padding:10px 14px;border-bottom:1px solid #1c1c1c}
 .chg-name{font-size:13.5px}
 .chg-name a{color:inherit;text-decoration:none}
