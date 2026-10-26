@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.49.0';
+var APP_VERSION = '2.50.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -5296,22 +5296,36 @@ function phKeyMap(){
   if(typeof D !== 'undefined' && D) D.directory.forEach(function(e){ var u = String(gv(e, 'primary_photo') || '').trim(); if(u) PH_KEY[String(dispName(e)).toLowerCase()] = u; });
   return PH_KEY;
 }
+var PH_ORDER = null;   /* display name (lowercase) -> [urls] from the baked photo_order field */
+function phOrderMap(){
+  if(PH_ORDER) return PH_ORDER;
+  PH_ORDER = {};
+  if(typeof D !== 'undefined' && D) D.directory.forEach(function(e){
+    var raw = String(gv(e, 'photo_order') || '').trim();
+    if(raw){ try{ var arr = JSON.parse(raw); if(Array.isArray(arr) && arr.length) PH_ORDER[String(dispName(e)).toLowerCase()] = arr; }catch(x){} }
+  });
+  return PH_ORDER;
+}
 function phKeyUrl(p){
   if(!p || !p.photo_url) return p ? p.photo_url : null;
   var u = phKeyMap()[String(p.name).toLowerCase()];
   if(u && phAllPhotos(p).some(function(x){ return x.url === u; })) return u;
   return p.photo_url;
 }
+function phApplyKey(name, url){
+  var di = phDiOf(name); if(di == null) return false;
+  txn('Set key photo', function(){ queuePatch(di, { primary_photo: url }); });
+  if(!PH_KEY) PH_KEY = {};
+  PH_KEY[String(name).toLowerCase()] = url;
+  var p = (phIndex() || {})[name];
+  if(p){ var f = phFrameFor(name, p); phFrameSet(name, { z:f.z, x:f.x, y:f.y, url: url }); }
+  return true;
+}
 function phSetKey(name){
   var p = (phIndex() || {})[name]; if(!p) return;
   var photos = phAllPhotos(p); if(photos.length < 2) return;
   var cur = photos[Math.max(0, Math.min(photos.length - 1, PHV_IDX || 0))]; if(!cur) return;
-  var di = phDiOf(name); if(di == null) return;
-  txn('Set key photo', function(){ queuePatch(di, { primary_photo: cur.url }); });
-  if(!PH_KEY) PH_KEY = {};
-  PH_KEY[String(name).toLowerCase()] = cur.url;
-  var f = phFrameFor(name, p);
-  phFrameSet(name, { z:f.z, x:f.x, y:f.y, url: cur.url });
+  if(!phApplyKey(name, cur.url)) return;
   phPaintViewer(true);
   if(S.route.name === 'photos') phPaintList();
   if($('#p-hero')) repaintTop();
@@ -5572,6 +5586,13 @@ function phAllPhotos(p){
   if(!p || !p.photo_url) return [];
   var list = [{url: p.photo_url, note: ''}];
   (p.also || []).forEach(function(a){ if(a && a.url) list.push({url: a.url, note: a.note || ''}); });
+  var ord = phOrderMap()[String(p.name || '').toLowerCase()];
+  if(ord && ord.length){
+    var pos = {}; ord.forEach(function(u, i){ pos[u] = i; });
+    list = list.map(function(x, i){ return { x:x, i:i }; })
+      .sort(function(a, b){ var pa = pos[a.x.url] != null ? pos[a.x.url] : 1000 + a.i, pb = pos[b.x.url] != null ? pos[b.x.url] : 1000 + b.i; return pa - pb; })
+      .map(function(w){ return w.x; });
+  }
   return list;
 }
 function phFrameStyleFor(p, url){
@@ -5669,6 +5690,7 @@ function phFiltered(all){
   return all.filter(function(p){
     if(PH_FILT === 'photo' && !phHasPhoto(p)) return false;
     if(PH_FILT === 'new' && !phIsNew(p)) return false;
+    if(PH_FILT === 'multi' && phAllPhotos(p).length < 2) return false;
     if(PH_FILT === 'nophoto' && phHasPhoto(p)) return false;
     if(PH_FILT.indexOf('tier:') === 0){ var e = phEntryOf(p); if((e ? tierOf(e) : '') !== PH_FILT.slice(5)) return false; }
     if(PH_FILT.indexOf('org:') === 0 && phOrgOf(p) !== PH_FILT.slice(4)) return false;
@@ -5729,7 +5751,7 @@ function phGradeChip(p){
 function phCard(p){
   var sel = PH_SEL && PH_SEL.toLowerCase() === String(p.name).toLowerCase();
   if(phHasPhoto(p)){
-    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span>' + (phAllPhotos(p).length > 1 ? '<span class="phmulti">' + phAllPhotos(p).length + ' PHOTOS</span>' : '') + '</span>' +
+    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span>' + (PH_FILT === 'multi' && phAllPhotos(p).length > 1 ? '<span class="phmulti">' + phAllPhotos(p).length + ' PHOTOS</span>' : '') + '</span>' +
       '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + phGradeChip(p) + '</div>' + (phAddedLabel(p) ? '<div class="phdt">' + phAddedLabel(p) + '</div>' : '') + '</section>';
   }
   return '<section class="card phcard noph' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg phnoimg">' + ic('camera', 22) + '<em>NO PHOTO</em></span>' +
@@ -5807,6 +5829,7 @@ function phPaintViewer(instant){
     (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
     '<div class="phov-nav"><button type="button" class="btn ghost sm" data-act="phnav" data-d="-1">&larr; Prev</button>' +
     '<button type="button" class="btn ghost sm" data-act="phnav" data-d="1">Next &rarr;</button><span class="sp"></span>' +
+    (has && photos.length > 1 ? '<button type="button" class="btn ghost sm" data-act="phmgr" data-pname="' + esc(p.name) + '">Manage photos</button>' : '') +
     (has && photos.length > 1 && !isKey ? '<button type="button" class="btn ghost sm" data-act="phsetkey" data-pname="' + esc(p.name) + '">Set as key photo</button>' : '') +
     (has ? '<button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button>' : '') +
     (e ? '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>' : '') +
@@ -5816,6 +5839,82 @@ function phPaintViewer(instant){
   if(instant) ov.classList.add('open');
   else requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('open'); }); });
   phMarkSel();
+}
+var PHM = null;   /* { name, urls:[{url,note}], dirty } */
+function phMgrOpen(name){
+  var p = (phIndex() || {})[name]; if(!p) return;
+  var photos = phAllPhotos(p); if(photos.length < 2) return;
+  PHM = { name:name, urls:photos.map(function(x){ return { url:x.url, note:x.note || '' }; }), dirty:false };
+  var old = document.querySelector('.phmgr-wrap'); if(old) old.remove();
+  var ov = document.createElement('div');
+  ov.className = 'phmgr-wrap';
+  ov.innerHTML = '<div class="phmgr-scrim" data-act="phmx"></div><aside class="phmgr" role="dialog" aria-label="Manage photos">' +
+    '<div class="phmgr-h"><b>Photos \u2014 ' + esc(name) + '</b><button type="button" class="ib" data-act="phmx" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+    '<p class="dim phmgr-sub">Reorder with the arrows, set the key photo (the one shown first everywhere), or adjust a photo\u2019s framing. Order and key photo save to the sheet.</p>' +
+    '<div id="phmgrlist"></div>' +
+    '<div class="phmgr-f"><span class="dim" id="phmgrstat"></span><span class="sp"></span>' +
+    '<button type="button" class="btn ghost sm" data-act="phmx">Done</button>' +
+    '<button type="button" class="btn primary sm" data-act="phmsave" id="phmgrsave">Save order</button></div></aside>';
+  document.body.appendChild(ov);
+  document.body.classList.add('sheet-open');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('open'); }); });
+  phMgrRender();
+}
+function phMgrRender(){
+  var box = $('#phmgrlist'); if(!box || !PHM) return;
+  var p = (phIndex() || {})[PHM.name], keyU = p ? phKeyUrl(p) : null;
+  box.innerHTML = PHM.urls.map(function(x, i){
+    var isKey = keyU && x.url === keyU;
+    return '<div class="phmgr-row">' +
+      '<span class="phmgr-n">' + (i + 1) + '</span>' +
+      '<span class="phmgr-th"><img src="' + esc(x.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></span>' +
+      '<span class="phmgr-meta">' + (isKey ? '<span class="phbadge key">KEY PHOTO</span>' : '<span class="dim">Photo ' + (i + 1) + '</span>') + (x.note ? '<small>' + esc(x.note) + '</small>' : '') + '</span>' +
+      '<span class="phmgr-btns">' +
+      '<button type="button" class="btn ghost sm" data-act="phmup" data-i="' + i + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Move up">&uarr;</button>' +
+      '<button type="button" class="btn ghost sm" data-act="phmdn" data-i="' + i + '"' + (i === PHM.urls.length - 1 ? ' disabled' : '') + ' aria-label="Move down">&darr;</button>' +
+      (isKey ? '' : '<button type="button" class="btn ghost sm" data-act="phmkey" data-i="' + i + '">Set as key</button>') +
+      '<button type="button" class="btn ghost sm" data-act="phmadj" data-i="' + i + '">Adjust</button>' +
+      '</span></div>';
+  }).join('');
+  var st = $('#phmgrstat'); if(st) st.textContent = PHM.dirty ? 'Order changed \u2014 not saved yet' : PHM.urls.length + ' photos';
+  var sv = $('#phmgrsave'); if(sv) sv.disabled = !PHM.dirty;
+}
+function phMgrMove(i, d){
+  if(!PHM) return;
+  var j = i + d; if(j < 0 || j >= PHM.urls.length) return;
+  var t = PHM.urls[i]; PHM.urls[i] = PHM.urls[j]; PHM.urls[j] = t;
+  PHM.dirty = true; phMgrRender();
+}
+function phMgrKey(i){
+  if(!PHM) return;
+  if(phApplyKey(PHM.name, PHM.urls[i].url)) phMgrRender();
+}
+function phMgrAdjust(i){
+  if(!PHM) return;
+  var url = PHM.urls[i].url, name = PHM.name;
+  phMgrClose(true);
+  phEditor(name);
+  setTimeout(function(){
+    $$('.phed-thumbs button').forEach(function(b){ if(b.getAttribute('data-u') === url) b.click(); });
+  }, 60);
+}
+function phMgrSave(){
+  if(!PHM || !PHM.dirty) return;
+  var di = phDiOf(PHM.name); if(di == null) return;
+  var urls = PHM.urls.map(function(x){ return x.url; });
+  txn('Save photo order', function(){ queuePatch(di, { photo_order: JSON.stringify(urls) }); });
+  if(!PH_ORDER) PH_ORDER = {};
+  PH_ORDER[String(PHM.name).toLowerCase()] = urls;
+  PHM.dirty = false; phMgrRender();
+}
+function phMgrClose(keepSheet){
+  var ov = document.querySelector('.phmgr-wrap');
+  PHM = null;
+  if(ov){ ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 280); }
+  if(!keepSheet && !document.querySelector('.phed-wrap') && !PH_SEL) document.body.classList.remove('sheet-open');
+  if(PH_SEL) phPaintViewer(true);
+  if(S.route.name === 'photos') phPaintList();
+  if($('#p-hero')) repaintTop();
 }
 function phCloseViewer(){
   var ov = document.querySelector('.phov-wrap');
@@ -5868,7 +5967,7 @@ function viewPhotos(v){
   var rail = '<aside class="ph-side">' +
     '<input id="phq" type="search" placeholder="Search names" autocomplete="off" value="' + esc(PH_QUERY) + '">' +
     '<div class="ph-side-h">Show</div>' +
-    fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
+    fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('multi', 'Multiple photos', all.filter(function(p){ return phAllPhotos(p).length > 1; }).length) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
     '<div class="ph-side-h">Tier</div>' +
     fbtn('tier:vetted', 'Vetted', tierN.vetted) + fbtn('tier:associate', 'Associate', tierN.associate) + fbtn('tier:open', 'Open', tierN.open) + fbtn('tier:', 'No tier', tierN['']) +
     '<div class="ph-side-h">Organizations</div>' +
@@ -7859,6 +7958,13 @@ function onClick(ev){
     case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phsetkey': phSetKey(el.getAttribute('data-pname')); break;
+    case 'phmgr': phMgrOpen(el.getAttribute('data-pname')); break;
+    case 'phmx': phMgrClose(); break;
+    case 'phmup': phMgrMove(+el.getAttribute('data-i'), -1); break;
+    case 'phmdn': phMgrMove(+el.getAttribute('data-i'), 1); break;
+    case 'phmkey': phMgrKey(+el.getAttribute('data-i')); break;
+    case 'phmadj': phMgrAdjust(+el.getAttribute('data-i')); break;
+    case 'phmsave': phMgrSave(); break;
     case 'heroph': phHeroStep(el.getAttribute('data-pname'), parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'herodot': (function(){ var idx2 = phIndex(), pp = idx2 && idx2[el.getAttribute('data-pname')]; if(pp){ PH_HERO_IDX[String(pp.name).toLowerCase()] = parseInt(el.getAttribute('data-i'), 10) || 0; phHeroPaint(pp.name); } })(); break;
     case 'phvph': phViewerStep(parseInt(el.getAttribute('data-d'), 10) || 1); break;
