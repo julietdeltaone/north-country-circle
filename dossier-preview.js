@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.43.0';
+var APP_VERSION = '2.44.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4641,6 +4641,33 @@ function hmStatsCard(pop, N){
   var yrCard = '<div class="hm-stat wide"><h4>Known since</h4>' + hmYearCols(yrEntries, yrMax) +
     (undated ? '<p class="dim hm-note">' + undated + ' with no start year on file.</p>' : '') + '</div>';
   var relTop = hmFormsTop(rels, 5, true);
+  /* Persona makeup (JD 2026-10-26, quantity-weighted): the bars are
+     total rated POINTS per trait — every score of every rated person
+     counts at its full value, so the makeup is the composition of
+     all the persona data on file, not one vote per person. Shares
+     and per-trait averages ride in the notes. */
+  var PTRAITS = [['openness','Openness'],['conscientiousness','Conscientiousness'],['extraversion','Extraversion'],['agreeableness','Agreeableness'],['neuroticism','Neuroticism'],['ego','Ego']];
+  var tPts = {}, tSumF = {}, tN = {}, pRated = 0, totPts = 0;
+  pop.forEach(function(di){
+    var e = D.directory[di], any = false;
+    PTRAITS.forEach(function(t){
+      var v = parseInt(gv(e, t[0]), 10);
+      if(!(v >= 1 && v <= 5)) return;
+      any = true;
+      tPts[t[1]] = (tPts[t[1]] || 0) + v;
+      tSumF[t[0]] = (tSumF[t[0]] || 0) + v; tN[t[0]] = (tN[t[0]] || 0) + 1;
+      totPts += v;
+    });
+    if(any) pRated++;
+  });
+  var shareLine = PTRAITS.map(function(t){ return { l:t[1], s:(tPts[t[1]] || 0) }; })
+    .sort(function(a, b){ return b.s - a.s; })
+    .map(function(x){ return x.l + ' ' + (totPts ? Math.round(100 * x.s / totPts) : 0) + '%'; }).join(' · ');
+  var avgLine = PTRAITS.map(function(t){ return tN[t[0]] ? t[1] + ' ' + (tSumF[t[0]] / tN[t[0]]).toFixed(1) : ''; }).filter(Boolean).join(' · ');
+  var personaCard = hmStatCard('Persona makeup', hmPlainTop(tPts, 6), Object.keys(tPts).length,
+    '<p class="dim hm-note">Share of all rated points: ' + shareLine + '.</p>' +
+    (avgLine ? '<p class="dim hm-note">Averages: ' + avgLine + '</p>' : '') +
+    '<p class="dim hm-note">' + pRated + ' of ' + N + ' rated.</p>');
   return '<section class="card hm-blk"><header><h3>Shape of the network</h3><em class="cnt">' + N + ' people</em></header><div class="cbody"><div class="hm-stats">' +
     tierCard + yrCard +
     hmStatCard('Where they are', hmFormsTop(towns, 5), Object.keys(towns).length) +
@@ -4648,6 +4675,7 @@ function hmStatsCard(pop, N){
       relBlank ? '<p class="dim hm-note">' + relBlank + ' of ' + N + ' have no relationship type on file.</p>' : '') +
     hmStatCard('Organizations', hmPlainTop(orgCounts, 5), Object.keys(orgCounts).length) +
     hmStatCard('Skills', hmFormsTop(skills, 5, true), Object.keys(skills).length) +
+    personaCard +
     hmCardWrap('Groups', hmRankRows(hmPlainTop(groupCounts, 5)), Object.keys(groupCounts).length, 5) +
     '</div></div></section>';
 }
