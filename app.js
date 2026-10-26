@@ -209,11 +209,11 @@ function nameHTML(i) {
    dossier app); empty until the dossier cross-walk has loaded, and
    empty for everyone without a rank */
 const MIL_FLAG = (() => {
-  let s = `<svg class="milflag" viewBox="0 0 16 11" width="16" height="11" aria-hidden="true" focusable="false"><rect width="16" height="11" fill="#f2f2f2"/>`;
-  for (let k = 0; k < 13; k += 2) s += `<rect y="${(k * 11 / 13).toFixed(2)}" width="16" height="${(11 / 13).toFixed(2)}" fill="#b31942"/>`;
-  s += `<rect width="7.4" height="${(77 / 13).toFixed(2)}" fill="#0a3161"/>`;
+  let s = `<svg class="milflag" viewBox="0 0 16 11" width="16" height="11" aria-hidden="true" focusable="false"><rect width="16" height="11" fill="#cfcfc9"/>`;
+  for (let k = 0; k < 13; k += 2) s += `<rect y="${(k * 11 / 13).toFixed(2)}" width="16" height="${(11 / 13).toFixed(2)}" fill="#55565a"/>`;
+  s += `<rect width="7.4" height="${(77 / 13).toFixed(2)}" fill="#232326"/>`;
   for (let r = 0; r < 5; r++) for (let c = 0; c < 4; c++)
-    s += `<circle cx="${(1.05 + c * 1.75).toFixed(2)}" cy="${(0.95 + r * 1.05).toFixed(2)}" r="0.34" fill="#fff"/>`;
+    s += `<circle cx="${(1.05 + c * 1.75).toFixed(2)}" cy="${(0.95 + r * 1.05).toFixed(2)}" r="0.34" fill="#cfcfc9"/>`;
   return s + "</svg>";
 })();
 function milBadgeFor(i) {
