@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.50.0';
+var APP_VERSION = '2.51.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4856,46 +4856,66 @@ function hmOrgsCard(pop){
 /* --- Config 2: What's New, the activity rail --- */
 var HM_SIDE = null;   /* {kind, key} when a Shape stat is selected; null = What's New */
 function hmSideRows(kind, key){
-  var rows = [];
-  var TRAITK = { Openness:'openness', Conscientiousness:'conscientiousness', Extraversion:'extraversion', Agreeableness:'agreeableness', Neuroticism:'neuroticism', Ego:'ego' };
-  var TIERL = { vetted:'Vetted', associate:'Associate', open:'Open', '':'No tier yet' };
-  people().forEach(function(di){
-    var e = D.directory[di], nm = dispName(e);
-    function meta(){ var loc = ptLocVal(e); return [loc, TIERL[tierOf(e)]].filter(Boolean).join(' \u00b7 '); }
-    if(kind === 'tier'){ if(TIERL[tierOf(e)] === key) rows.push({ di:di, name:nm, meta:meta() }); }
-    else if(kind === 'persona'){ var f = TRAITK[key], v = f ? parseInt(gv(e, f), 10) : 0; if(v >= 1 && v <= 5) rows.push({ di:di, name:nm, meta:key + ' ' + v + ' of 5', s:-v }); }
-    else if(kind === 'years'){ var y = knownSinceYear(e); if(key === 'Before 2010' ? (y && y < 2010) : y === +key) rows.push({ di:di, name:nm, meta:meta() }); }
-    else if(kind === 'town'){ var loc2 = ptLocVal(e), town = loc2 ? loc2.split(',')[0].trim() : ''; if(town && (town === key || cap(town) === key)) rows.push({ di:di, name:nm, meta:meta() }); }
-    else if(kind === 'rel'){ var rv = String(gv(e, 'relationship') || '').trim(); if(rv && cap(rv) === key) rows.push({ di:di, name:nm, meta:meta() }); }
-    else if(kind === 'org'){ var seen = {}; ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ var cn = regApply(o); if(cn) seen[cn] = 1; }); }); if(seen[key]) rows.push({ di:di, name:nm, meta:meta() }); }
-    else if(kind === 'skill'){ if(tagList(gv(e, 'specialty')).some(function(s){ return s === key || cap(s) === key; })) rows.push({ di:di, name:nm, meta:meta() }); }
-    else if(kind === 'group'){ if(personGroups(e).indexOf(key) >= 0) rows.push({ di:di, name:nm, meta:meta() }); }
-  });
-  rows.sort(function(a, b){ return (a.s || 0) - (b.s || 0) || a.name.localeCompare(b.name); });
+  var enc = {};
+  function push(di, val){ var e = D.directory[di], ky = String(gv(e, 'known_since') || ''), ys = ky ? yearsSince(ky) : null;
+    enc[di] = { di:di, name:dispName(e), tier:gv(e, 'tier'), town:(ptLocVal(e) || '').split(',')[0] || '',
+      rel:cap(gv(e, 'relationship')) || '', ys:(ys == null ? '' : 'known ' + Math.round(ys) + 'y'), val:(val == null ? null : val) }; }
+  if(kind === 'tier'){ var want = Object.keys(TIERL).filter(function(t){ return TIERL[t] === key; })[0];
+    D.directory.forEach(function(e, di){ if(gv(e, 'tier') === want) push(di); }); }
+  else if(kind === 'persona'){ var tf = TRAITK[key]; if(tf) D.directory.forEach(function(e, di){ var v = +gv(e, tf) || 0; if(v > 0) push(di, v); }); }
+  else if(kind === 'years'){ D.directory.forEach(function(e, di){ var ky = String(gv(e, 'known_since') || ''); if(!ky) return; var lab = ky < '2010' ? 'Before 2010' : ky.slice(0, 4); if(lab === key) push(di); }); }
+  else if(kind === 'town'){ D.directory.forEach(function(e, di){ if(((ptLocVal(e) || '').split(',')[0] || 'Unknown') === key) push(di); }); }
+  else if(kind === 'rel'){ D.directory.forEach(function(e, di){ if((cap(gv(e, 'relationship')) || 'Unspecified') === key) push(di); }); }
+  else if(kind === 'org'){ var reg = orgRegistry(); D.directory.forEach(function(e, di){ if(ORG_CATS.some(function(c){ return regApply(c.cat, gv(e, c.f)) === key; })) push(di); }); }
+  else if(kind === 'skill'){ D.directory.forEach(function(e, di){ if(tagList(gv(e, 'specialty')).indexOf(key) >= 0) push(di); }); }
+  else if(kind === 'group'){ D.directory.forEach(function(e, di){ if(personGroups(e).indexOf(key) >= 0) push(di); }); }
+  var rows = Object.keys(enc).map(function(k){ return enc[k]; });
+  rows.sort(function(a, b){ if(kind === 'persona') return (b.val || 0) - (a.val || 0) || a.name.localeCompare(b.name); return a.name.localeCompare(b.name); });
   return rows;
+}
+function hmsAvatar(r){
+  var idx = phIndex(), p = idx ? idx[r.name] : null;
+  if(p && p.photo_url && phAllPhotos(p).length) return '<span class="hms-av"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"></span>';
+  return avatar(D.directory[r.di], 'sm');
 }
 function hmSideHTML(){
   var kind = HM_SIDE.kind, key = HM_SIDE.key;
-  var TITLES = { tier:'Tier', persona:'Persona', years:'Known since', town:'Where they are', rel:'Relationship', org:'Organization', skill:'Skill', group:'Group', footprint:'Public footprint' };
-  var head = '<aside class="hm-rail hm-blk"><div class="hm-rail-h"><span>' + esc(TITLES[kind] || 'Detail') + '</span><button type="button" class="ib" data-act="hmsidex" aria-label="Back to What\u2019s new">' + ic('x', 14) + '</button></div>';
+  var titles = { tier:'Tier', persona:'Persona', years:'Known since', town:'Where they are', rel:'Relationship', org:'Organization', skill:'Skill', group:'Group', footprint:'Public footprint' };
+  var head = '<div class="wn-h"><span>' + esc(titles[kind] || kind) + '</span><span class="sp"></span><button type="button" class="ib" data-act="hmsidex" aria-label="Back to What\u2019s New">' + ic('x', 15) + '</button></div>';
   if(kind === 'footprint'){
-    var di = people().find(function(x){ return dispName(D.directory[x]) === key; });
-    if(di == null) return head + '<p class="dim hm-railpad">Not found.</p></aside>';
-    var e = D.directory[di];
-    var bullets = String(gv(e, 'public_footprint') || '').split('\n').filter(function(b){ return b.trim(); });
-    return head + '<div class="hms-person">' + hmPersonLink(key) + '</div>' +
-      '<p class="dim hms-sub">' + bullets.length + ' facts on file. Tap the name for the full profile, including source links.</p>' +
-      '<div class="hms-facts">' + bullets.map(function(b){ return '<p class="hms-fact">' + esc(b.replace(/^\u2022\s*/, '')) + '</p>'; }).join('') + '</div></aside>';
+    var p = (phIndex() || {})[key] || D.directory.map(function(e, di){ return { e:e, di:di }; }).filter(function(x){ return dispName(x.e) === key; })[0];
+    var e2 = null, di2 = null;
+    D.directory.forEach(function(e, di){ if(dispName(e) === key){ e2 = e; di2 = di; } });
+    if(!e2) return head + '<p class="dim">Not found.</p>';
+    var r0 = { di:di2, name:key };
+    var facts = footprintList(gv(e2, 'public_footprint'));
+    var meta = [gv(e2, 'tier') ? cap(gv(e2, 'tier')) : '', (ptLocVal(e2) || '').split(',')[0] || '', cap(gv(e2, 'relationship')) || ''].filter(Boolean).join(' \u00b7 ');
+    return head + '<div class="hms-pcard">' + hmsAvatar(r0) + '<div><div class="hms-pname">' + hmPersonLink(key) + '</div>' +
+      (meta ? '<div class="hms-meta">' + esc(meta) + '</div>' : '') +
+      '<div class="hms-meta">' + facts.length + ' public facts on file</div></div></div>' +
+      '<div class="hms-facts">' + facts.map(function(f){ return '<p class="hms-fact">' + esc(f.replace(/^\u2022\s*/, '')) + '</p>'; }).join('') + '</div>' +
+      '<a class="btn ghost sm hms-open" href="#/p/' + personId(e2) + '" data-act="openp" data-di="' + di2 + '">Open full profile</a>';
   }
   var rows = hmSideRows(kind, key);
-  var shown = rows.slice(0, 80);
-  return head + '<p class="dim hms-sub">' + esc(key) + ' \u00b7 ' + rows.length + (rows.length === 1 ? ' person' : ' people') + '</p>' +
-    '<div class="hms-rows">' + shown.map(function(r){
-      return '<a class="hms-row" href="#/p/' + encodeURIComponent(personId(D.directory[r.di])) + '" data-act="openp" data-di="' + r.di + '"><span class="hms-nm">' + esc(r.name) + '</span>' + (r.meta ? '<span class="hms-meta">' + esc(r.meta) + '</span>' : '') + '</a>';
-    }).join('') + '</div>' +
-    (rows.length > shown.length ? '<p class="dim hm-railpad">+ ' + (rows.length - shown.length) + ' more</p>' : '') +
-    (kind === 'group' ? '<a class="hm-raillink" href="#/groups">Open Groups ' + ic('arrow', 12) + '</a>' : '') +
-    '</aside>';
+  var total = D.directory.length;
+  var mix = {};
+  rows.forEach(function(r){ var t = r.tier || 'open'; mix[t] = (mix[t] || 0) + 1; });
+  var mixTxt = ['vetted', 'associate', 'open'].filter(function(t){ return mix[t]; }).map(function(t){ return mix[t] + ' ' + t; }).join(' \u00b7 ');
+  var stats = '<div class="hms-stats"><div class="hms-stat"><b>' + rows.length + '</b><span>' + (rows.length === 1 ? 'person' : 'people') + '</span></div>' +
+    '<div class="hms-stat"><b>' + Math.round(rows.length / total * 100) + '%</b><span>of network</span></div>' +
+    (kind === 'group' ? '<div class="hms-stat"><a href="#/groups">Groups &rarr;</a></div>' : '') + '</div>' +
+    (mixTxt ? '<p class="hms-mix">' + esc(mixTxt) + '</p>' : '');
+  var list = rows.slice(0, 80).map(function(r){
+    var meta = [r.town, r.rel, r.ys].filter(Boolean).join(' \u00b7 ');
+    var val = '';
+    if(kind === 'persona' && r.val != null) val = '<span class="hms-val"><span class="hms-bar"><i style="width:' + (r.val * 20) + '%"></i></span>' + r.val + '</span>';
+    else if(r.tier) val = '<span class="hms-tier t-' + esc(r.tier) + '">' + esc(cap(r.tier)) + '</span>';
+    return '<a class="hms-row" href="#/p/' + personId(D.directory[r.di]) + '" data-act="openp" data-di="' + r.di + '">' + hmsAvatar(r) +
+      '<span class="hms-main"><span class="hms-nm">' + esc(r.name) + ' ' + milBadge(D.directory[r.di]) + '</span>' +
+      (meta ? '<span class="hms-meta">' + esc(meta) + '</span>' : '') + '</span>' + val + '</a>';
+  }).join('');
+  return head + '<p class="hms-key">' + esc(key) + '</p>' + stats + '<div class="hms-rows">' + list + '</div>' +
+    (rows.length > 80 ? '<p class="dim">+ ' + (rows.length - 80) + ' more</p>' : '');
 }
 function hmRail(){
   if(HM_SIDE) return hmSideHTML();
@@ -5287,6 +5307,8 @@ function phFrameFor(name, p){
   if(s){ if(s.z) f.z = +s.z; if(s.x != null) f.x = +s.x; if(s.y != null) f.y = +s.y; if(s.url) f.url = s.url; }
   var ku = phKeyMap()[String(name).toLowerCase()];
   if(ku && p && phAllPhotos(p).some(function(x){ return x.url === ku; })) f.url = ku;
+  var hidF = phHiddenFor(name);
+  if(hidF.length && p && hidF.indexOf(f.url) >= 0) f.url = phKeyUrl(p);
   return f;
 }
 var PH_KEY = null;   /* display name (lowercase) -> key photo url, from the baked primary_photo field */
@@ -5306,11 +5328,24 @@ function phOrderMap(){
   });
   return PH_ORDER;
 }
+var PH_HIDDEN = null;   /* display name (lowercase) -> [urls] removed in the photo editor */
+function phHiddenMap(){
+  if(PH_HIDDEN) return PH_HIDDEN;
+  PH_HIDDEN = {};
+  if(typeof D !== 'undefined' && D) D.directory.forEach(function(e){
+    var raw = String(gv(e, 'photo_hidden') || '').trim();
+    if(raw){ try{ var arr = JSON.parse(raw); if(Array.isArray(arr) && arr.length) PH_HIDDEN[String(dispName(e)).toLowerCase()] = arr; }catch(x){} }
+  });
+  return PH_HIDDEN;
+}
+function phHiddenFor(name){ return phHiddenMap()[String(name || '').toLowerCase()] || []; }
 function phKeyUrl(p){
   if(!p || !p.photo_url) return p ? p.photo_url : null;
+  var vis = phAllPhotos(p);
+  if(!vis.length) return p.photo_url;
   var u = phKeyMap()[String(p.name).toLowerCase()];
-  if(u && phAllPhotos(p).some(function(x){ return x.url === u; })) return u;
-  return p.photo_url;
+  if(u && vis.some(function(x){ return x.url === u; })) return u;
+  return vis[0].url;
 }
 function phApplyKey(name, url){
   var di = phDiOf(name); if(di == null) return false;
@@ -5386,6 +5421,7 @@ function phEditor(name){
   var urls = [p.photo_url].concat((p.also || []).map(function(a){ return a.url; }).filter(Boolean));
   var f0 = phFrameFor(name, p);
   var cur = { z:f0.z, x:f0.x, y:f0.y, url:f0.url || p.photo_url };
+  if(window.__phedStart){ var su = window.__phedStart; window.__phedStart = null; if(urls.indexOf(su) >= 0 && su !== cur.url) cur = { z:1, x:50, y:22, url:su }; }
   var ov = document.createElement('div');
   ov.className = 'phed-wrap';
   ov.innerHTML = '<div class="phed"><header><h3>Photo \u2014 ' + esc(name) + '</h3><button type="button" class="ib" data-x aria-label="Close">' + ic('x', 18) + '</button></header>' +
@@ -5578,11 +5614,11 @@ function phaKeys(){
 function phDiOf(name){ var di = BYN[String(name || '').toLowerCase()]; return di == null ? null : di; }
 function phEntryOf(p){ var di = phDiOf(p.name); return di != null ? D.directory[di] : null; }
 function phRevOf(p){ return phReview()[String(p.name || '').toLowerCase()] || ''; }
-function phHasPhoto(p){ return !!p.photo_url && phRevOf(p) !== 'rejected'; }
+function phHasPhoto(p){ return !!p.photo_url && phRevOf(p) !== 'rejected' && phAllPhotos(p).length > 0; }
 function phStartYearOf(p){ var e = phEntryOf(p); return e ? knownSinceYear(e) : 0; }
 function phYearsCountOf(p){ var y = phStartYearOf(p); return y ? new Date().getFullYear() - y : -1; }
 function phOrgOf(p){ var e = phEntryOf(p); if(!e) return ''; var o = orgsOf(e); return o.length ? regApply(o[0]) : ''; }
-function phAllPhotos(p){
+function phAllPhotos(p, raw){
   if(!p || !p.photo_url) return [];
   var list = [{url: p.photo_url, note: ''}];
   (p.also || []).forEach(function(a){ if(a && a.url) list.push({url: a.url, note: a.note || ''}); });
@@ -5593,6 +5629,7 @@ function phAllPhotos(p){
       .sort(function(a, b){ var pa = pos[a.x.url] != null ? pos[a.x.url] : 1000 + a.i, pb = pos[b.x.url] != null ? pos[b.x.url] : 1000 + b.i; return pa - pb; })
       .map(function(w){ return w.x; });
   }
+  if(!raw){ var hid = phHiddenFor(p.name); if(hid.length) list = list.filter(function(x){ return hid.indexOf(x.url) < 0; }); }
   return list;
 }
 function phFrameStyleFor(p, url){
@@ -5829,7 +5866,7 @@ function phPaintViewer(instant){
     (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
     '<div class="phov-nav"><button type="button" class="btn ghost sm" data-act="phnav" data-d="-1">&larr; Prev</button>' +
     '<button type="button" class="btn ghost sm" data-act="phnav" data-d="1">Next &rarr;</button><span class="sp"></span>' +
-    (has && photos.length > 1 ? '<button type="button" class="btn ghost sm" data-act="phmgr" data-pname="' + esc(p.name) + '">Manage photos</button>' : '') +
+    (has ? '<button type="button" class="btn ghost sm" data-act="phmgr" data-pname="' + esc(p.name) + '">Edit photos</button>' : '') +
     (has && photos.length > 1 && !isKey ? '<button type="button" class="btn ghost sm" data-act="phsetkey" data-pname="' + esc(p.name) + '">Set as key photo</button>' : '') +
     (has ? '<button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button>' : '') +
     (e ? '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>' : '') +
@@ -5840,68 +5877,102 @@ function phPaintViewer(instant){
   else requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('open'); }); });
   phMarkSel();
 }
-var PHM = null;   /* { name, urls:[{url,note}], dirty } */
+var PHM = null;   /* { name, work:[{url,note}], sel, dirty, confirmDel } */
+function phMgrLists(name){
+  var p = (phIndex() || {})[name]; if(!p) return null;
+  var all = phAllPhotos(p, true), hid = phHiddenFor(name);
+  return { p:p, all:all, hidden:all.filter(function(x){ return hid.indexOf(x.url) >= 0; }),
+           visible:all.filter(function(x){ return hid.indexOf(x.url) < 0; }) };
+}
 function phMgrOpen(name){
-  var p = (phIndex() || {})[name]; if(!p) return;
-  var photos = phAllPhotos(p); if(photos.length < 2) return;
-  PHM = { name:name, urls:photos.map(function(x){ return { url:x.url, note:x.note || '' }; }), dirty:false };
+  var L = phMgrLists(name); if(!L) return;
+  PHM = { name:name, work:L.visible.slice(), sel:0, dirty:false, confirmDel:false };
+  var keyU = phKeyUrl(L.p);
+  var ki = PHM.work.findIndex(function(x){ return x.url === keyU; });
+  if(ki > 0) PHM.sel = ki;
   var old = document.querySelector('.phmgr-wrap'); if(old) old.remove();
   var ov = document.createElement('div');
   ov.className = 'phmgr-wrap';
-  ov.innerHTML = '<div class="phmgr-scrim" data-act="phmx"></div><aside class="phmgr" role="dialog" aria-label="Manage photos">' +
+  ov.innerHTML = '<div class="phmgr-scrim" data-act="phmx"></div><aside class="phmgr" role="dialog" aria-label="Edit photos">' +
     '<div class="phmgr-h"><b>Photos \u2014 ' + esc(name) + '</b><button type="button" class="ib" data-act="phmx" aria-label="Close">' + ic('x', 16) + '</button></div>' +
-    '<p class="dim phmgr-sub">Reorder with the arrows, set the key photo (the one shown first everywhere), or adjust a photo\u2019s framing. Order and key photo save to the sheet.</p>' +
-    '<div id="phmgrlist"></div>' +
-    '<div class="phmgr-f"><span class="dim" id="phmgrstat"></span><span class="sp"></span>' +
-    '<button type="button" class="btn ghost sm" data-act="phmx">Done</button>' +
-    '<button type="button" class="btn primary sm" data-act="phmsave" id="phmgrsave">Save order</button></div></aside>';
+    '<div id="phmgrbody"></div></aside>';
   document.body.appendChild(ov);
   document.body.classList.add('sheet-open');
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('open'); }); });
   phMgrRender();
 }
 function phMgrRender(){
-  var box = $('#phmgrlist'); if(!box || !PHM) return;
-  var p = (phIndex() || {})[PHM.name], keyU = p ? phKeyUrl(p) : null;
-  box.innerHTML = PHM.urls.map(function(x, i){
-    var isKey = keyU && x.url === keyU;
-    return '<div class="phmgr-row">' +
-      '<span class="phmgr-n">' + (i + 1) + '</span>' +
-      '<span class="phmgr-th"><img src="' + esc(x.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></span>' +
-      '<span class="phmgr-meta">' + (isKey ? '<span class="phbadge key">KEY PHOTO</span>' : '<span class="dim">Photo ' + (i + 1) + '</span>') + (x.note ? '<small>' + esc(x.note) + '</small>' : '') + '</span>' +
-      '<span class="phmgr-btns">' +
-      '<button type="button" class="btn ghost sm" data-act="phmup" data-i="' + i + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Move up">&uarr;</button>' +
-      '<button type="button" class="btn ghost sm" data-act="phmdn" data-i="' + i + '"' + (i === PHM.urls.length - 1 ? ' disabled' : '') + ' aria-label="Move down">&darr;</button>' +
-      (isKey ? '' : '<button type="button" class="btn ghost sm" data-act="phmkey" data-i="' + i + '">Set as key</button>') +
-      '<button type="button" class="btn ghost sm" data-act="phmadj" data-i="' + i + '">Adjust</button>' +
-      '</span></div>';
-  }).join('');
-  var st = $('#phmgrstat'); if(st) st.textContent = PHM.dirty ? 'Order changed \u2014 not saved yet' : PHM.urls.length + ' photos';
-  var sv = $('#phmgrsave'); if(sv) sv.disabled = !PHM.dirty;
+  var box = $('#phmgrbody'); if(!box || !PHM) return;
+  var L = phMgrLists(PHM.name); if(!L) return;
+  var p = L.p, keyU = phKeyUrl(p);
+  PHM.sel = Math.max(0, Math.min(PHM.work.length - 1, PHM.sel));
+  var cur = PHM.work[PHM.sel] || null;
+  var isKey = !!(cur && keyU && cur.url === keyU);
+  var preview = cur
+    ? '<div class="phmgr-prev"><img src="' + esc(cur.url) + '" alt="" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, cur.url) + '">' +
+      (isKey ? '<span class="phbadge key phmgr-keybadge">KEY PHOTO</span>' : '') + '</div>' +
+      (cur.note ? '<p class="dim phmgr-note">' + esc(cur.note) + '</p>' : '')
+    : '<p class="dim">No photos left. Restore one from Removed below.</p>';
+  var thumbs = PHM.work.length ? '<div class="phmgr-thumbs">' + PHM.work.map(function(x, i){
+      return '<button type="button" class="phmgr-thb' + (i === PHM.sel ? ' on' : '') + '" data-act="phmsel" data-i="' + i + '"><img src="' + esc(x.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
+        (keyU && x.url === keyU ? '<span class="phmgr-kdot" title="Key photo"></span>' : '') +
+        '<span class="phmgr-tn">' + (i + 1) + '</span></button>';
+    }).join('') + '</div>' : '';
+  var actions = cur ? '<div class="phmgr-acts">' +
+      '<button type="button" class="btn ghost sm" data-act="phmleft"' + (PHM.sel === 0 ? ' disabled' : '') + '>&larr; Move</button>' +
+      '<button type="button" class="btn ghost sm" data-act="phmright"' + (PHM.sel === PHM.work.length - 1 ? ' disabled' : '') + '>Move &rarr;</button>' +
+      '<span class="sp"></span>' +
+      (isKey ? '' : '<button type="button" class="btn ghost sm" data-act="phmkey">Set as key</button>') +
+      '<button type="button" class="btn ghost sm" data-act="phmadj">Adjust</button>' +
+      (PHM.confirmDel
+        ? '<button type="button" class="btn danger sm" data-act="phmdel">Remove this photo?</button><button type="button" class="btn ghost sm" data-act="phmdelx">Keep</button>'
+        : '<button type="button" class="btn ghost sm danger" data-act="phmdelq">Remove</button>') +
+      '</div>' : '';
+  var removed = L.hidden.length ? '<div class="phmgr-rm"><div class="phmgr-rmh">Removed</div>' + L.hidden.map(function(x){
+      return '<div class="phmgr-rmrow"><span class="phmgr-th sm"><img src="' + esc(x.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></span><span class="dim">Hidden everywhere</span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="phmrestore" data-u="' + esc(x.url) + '">Restore</button></div>';
+    }).join('') + '</div>' : '';
+  box.innerHTML = preview + thumbs + actions + removed +
+    '<div class="phmgr-f"><span class="dim">' + (PHM.dirty ? 'Order changed \u2014 not saved yet' : PHM.work.length + (PHM.work.length === 1 ? ' photo' : ' photos')) + '</span><span class="sp"></span>' +
+    '<button type="button" class="btn ghost sm" data-act="phmx">Done</button>' +
+    '<button type="button" class="btn primary sm" data-act="phmsave"' + (PHM.dirty ? '' : ' disabled') + '>Save order</button></div>';
 }
-function phMgrMove(i, d){
+function phMgrMoveSel(d){
   if(!PHM) return;
-  var j = i + d; if(j < 0 || j >= PHM.urls.length) return;
-  var t = PHM.urls[i]; PHM.urls[i] = PHM.urls[j]; PHM.urls[j] = t;
-  PHM.dirty = true; phMgrRender();
+  var j = PHM.sel + d; if(j < 0 || j >= PHM.work.length) return;
+  var t = PHM.work[PHM.sel]; PHM.work[PHM.sel] = PHM.work[j]; PHM.work[j] = t;
+  PHM.sel = j; PHM.dirty = true; PHM.confirmDel = false; phMgrRender();
 }
-function phMgrKey(i){
-  if(!PHM) return;
-  if(phApplyKey(PHM.name, PHM.urls[i].url)) phMgrRender();
+function phMgrPatchHidden(name, hid){
+  var di = phDiOf(name); if(di == null) return;
+  txn(hid.length ? 'Remove photo' : 'Restore photo', function(){ queuePatch(di, { photo_hidden: hid.length ? JSON.stringify(hid) : '' }); });
+  if(!PH_HIDDEN) PH_HIDDEN = {};
+  if(hid.length) PH_HIDDEN[String(name).toLowerCase()] = hid; else delete PH_HIDDEN[String(name).toLowerCase()];
 }
-function phMgrAdjust(i){
+function phMgrRemove(){
   if(!PHM) return;
-  var url = PHM.urls[i].url, name = PHM.name;
-  phMgrClose(true);
-  phEditor(name);
-  setTimeout(function(){
-    $$('.phed-thumbs button').forEach(function(b){ if(b.getAttribute('data-u') === url) b.click(); });
-  }, 60);
+  var cur = PHM.work[PHM.sel]; if(!cur) return;
+  var hid = phHiddenFor(PHM.name).concat([cur.url]);
+  phMgrPatchHidden(PHM.name, hid);
+  PHM.work.splice(PHM.sel, 1);
+  PHM.confirmDel = false;
+  phMgrRender();
+  if(S.route.name === 'photos') phPaintList();
+}
+function phMgrRestore(url){
+  if(!PHM) return;
+  var hid = phHiddenFor(PHM.name).filter(function(u){ return u !== url; });
+  phMgrPatchHidden(PHM.name, hid);
+  var L = phMgrLists(PHM.name);
+  PHM.work = L.visible.slice();
+  var ni = PHM.work.findIndex(function(x){ return x.url === url; });
+  if(ni >= 0) PHM.sel = ni;
+  phMgrRender();
+  if(S.route.name === 'photos') phPaintList();
 }
 function phMgrSave(){
   if(!PHM || !PHM.dirty) return;
   var di = phDiOf(PHM.name); if(di == null) return;
-  var urls = PHM.urls.map(function(x){ return x.url; });
+  var urls = PHM.work.map(function(x){ return x.url; });
   txn('Save photo order', function(){ queuePatch(di, { photo_order: JSON.stringify(urls) }); });
   if(!PH_ORDER) PH_ORDER = {};
   PH_ORDER[String(PHM.name).toLowerCase()] = urls;
@@ -7960,10 +8031,15 @@ function onClick(ev){
     case 'phsetkey': phSetKey(el.getAttribute('data-pname')); break;
     case 'phmgr': phMgrOpen(el.getAttribute('data-pname')); break;
     case 'phmx': phMgrClose(); break;
-    case 'phmup': phMgrMove(+el.getAttribute('data-i'), -1); break;
-    case 'phmdn': phMgrMove(+el.getAttribute('data-i'), 1); break;
-    case 'phmkey': phMgrKey(+el.getAttribute('data-i')); break;
-    case 'phmadj': phMgrAdjust(+el.getAttribute('data-i')); break;
+    case 'phmsel': if(PHM){ PHM.sel = +el.getAttribute('data-i'); PHM.confirmDel = false; phMgrRender(); } break;
+    case 'phmleft': phMgrMoveSel(-1); break;
+    case 'phmright': phMgrMoveSel(1); break;
+    case 'phmkey': if(PHM && PHM.work[PHM.sel]){ if(phApplyKey(PHM.name, PHM.work[PHM.sel].url)) phMgrRender(); } break;
+    case 'phmadj': if(PHM && PHM.work[PHM.sel]){ var _au = PHM.work[PHM.sel].url, _an = PHM.name; phMgrClose(true); window.__phedStart = _au; phEditor(_an); } break;
+    case 'phmdelq': if(PHM){ PHM.confirmDel = true; phMgrRender(); } break;
+    case 'phmdelx': if(PHM){ PHM.confirmDel = false; phMgrRender(); } break;
+    case 'phmdel': phMgrRemove(); break;
+    case 'phmrestore': phMgrRestore(el.getAttribute('data-u')); break;
     case 'phmsave': phMgrSave(); break;
     case 'heroph': phHeroStep(el.getAttribute('data-pname'), parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'herodot': (function(){ var idx2 = phIndex(), pp = idx2 && idx2[el.getAttribute('data-pname')]; if(pp){ PH_HERO_IDX[String(pp.name).toLowerCase()] = parseInt(el.getAttribute('data-i'), 10) || 0; phHeroPaint(pp.name); } })(); break;
