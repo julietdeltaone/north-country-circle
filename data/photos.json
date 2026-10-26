@@ -1,7 +1,7 @@
 {
  "updated": "2026-10-26",
  "total": 675,
- "batches": "All batches complete \u2014 all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles",
+ "batches": "All batches complete \u2014 all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -150,12 +150,13 @@
    ]
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "SUNY Canton Roos 2021-22 women\u2019s basketball roster headshot: Alexis Sullivan, sophomore guard, hometown Madrid, NY / Madrid-Waddington Central School; nursing major, three-sport athlete at Madrid-Waddington.",
    "name": "Alexis Sullivan",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/rooathletics.com/images/2021/11/4/AlexisSullivan.jpg",
+   "source_page": "https://rooathletics.com/roster.aspx?rp_id=4662",
+   "status": "confirmed",
+   "type": "roster photo",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Team section lists him by name/role directly under the image ('Alfredo Rodriguez \u2014 Chaplain & Bible Instructor'); filename alfredo_rodriguez.webp.",
@@ -915,12 +916,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "Atlantic Insurance Group team page headshot: Caroline Milwicz-Willis \u2014 played D1 lacrosse at Liberty University (Marketing and Public Relations), lives in upstate New York with husband Zachary; cross-confirmed by her SUNY Potsdam women\u2019s lacrosse assistant-coach bio.",
    "name": "Caroline Willis",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://b2059373.assetcdn.net/2.0/2059373/wp-content/uploads/2019/03/Team-Caroline-Milwicz-Willis.png?lossy=1&strip=1&webp=1",
+   "source_page": "https://atlanticinsgroup.com/about-our-agency/meet-our-team/team-member/caroline-milwicz-willis/",
+   "status": "confirmed",
+   "type": "staff headshot",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1754,12 +1756,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "Grand Slam Safety team page: staff headshot heading Elliot Martin\u2019s Engineering entry (Customer Solutions Engineer); company address 9793 Bridge Street, Croghan, NY.",
    "name": "Elliot Martin",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://static.wixstatic.com/media/372b3d_e5a1abb72f7f49479abb3cf6aefde75c~mv2.jpg/v1/crop/x_0,y_117,w_2825,h_3533/fill/w_423,h_529,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/_DSC3099.jpg",
+   "source_page": "https://www.grandslamsafety.com/jeanette-chamberlain",
+   "status": "confirmed",
+   "type": "staff headshot",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Instagram profile @ejb1203 (display name \"Elsie Breen\").",
@@ -2389,12 +2392,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "Vermont Moms business highlight photo, captioned \u201cIan of Vivid Coffee Roasters\u201d: Ian Bailey, owner/creator of Vivid Coffee Roasters, founded in Winooski, Vermont in 2015; grew up in Hawaii.",
    "name": "Ian Bailey",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://cdn.vermontmoms.com/wp-content/uploads/2017/10/08145652/ianvivid-e1508266251660.jpg",
+   "source_page": "https://vermontmoms.com/local-business-highlight-vivid-coffee-roasters/",
+   "status": "confirmed",
+   "type": "profile photo",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Her Clarkson people profile is a text-only Q&A biography with no image. Her Project Casting profile matches her but returned no image \u2014 gap: a headshot may exist there that extraction didn't surface. The peoplesartist page doesn't mention her; the Towle Chiropractic site has no content about her.",
@@ -2873,12 +2877,13 @@
    "type": null
   },
   {
-   "evidence": "Village of Canton board minutes (March 20, 2024) are text-only; he appears only as a text item (board accepted his resignation effective April 7) \u2014 no images in the document.",
+   "evidence": "SUNY Canton news photo, captioned with his name: SUNY Canton Criminal Investigation senior of Canton, NY, taking notes in the Law Enforcement Academy; hired by the Canton Police Department.",
    "name": "Joe Mastro",
-   "photo_url": null,
-   "source_page": "https://cms3.revize.com/revize/canton/2024 03 20 Village Board Meeting Minutes.pdf?t=202406141425540&t=202406141425540",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://www.canton.edu/media/Joseph-Mastro.jpg",
+   "source_page": "https://www.canton.edu/news/2023/academy.php",
+   "status": "confirmed",
+   "type": "news photo",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3145,12 +3150,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "SUNY Canton \u201cPeople Like Me\u201d profile photo, labeled with his name: Judson Foote of Hermon, nursing student, 36-year-old father of four, former commercial truck driver, ordained minister and private pilot.",
    "name": "Judson Foote",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://www.canton.edu/media/foote.jpg",
+   "source_page": "https://www.canton.edu/plm/",
+   "status": "confirmed",
+   "type": "profile photo",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "No source links on file.",
@@ -4410,12 +4416,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "Seaway Valley Prevention Council team page: Morgan Arquette, Program Coordinator / Reality Check Coordinator; bachelor\u2019s in Public Health from SUNY Potsdam. Image file named for her in her staff roster slot.",
    "name": "Morgan Arquette",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://svpc.net/wp-content/uploads/2024/01/Morgan-Arquette-2024.jpg",
+   "source_page": "https://svpc.net/our-friendly-team/",
+   "status": "confirmed",
+   "type": "staff headshot",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Her own Merit profile (SUNY Potsdam, Childhood/Early Childhood Education, Class of 2020, Gouverneur NY) carries [Image 0] at the top \u2014 a student photo file (IMG_2917.JPG) in her own Merit photo directory. Remaining images are the Merit logo and award badges.",
@@ -4732,12 +4739,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "BroadwayWorld profile headshot (labeled \u201cPatrick Tombs Headshot\u201d): credits include Crutchie in Newsies at Axelrod Performing Arts Center and Quasimodo in The Hunchback of Notre Dame at New Paradigm Theatre; born in Binghamton, NY.",
    "name": "Patrick Tombs",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://cloudimages2.broadwayworld.com/headshots/445969sm.jpg?format=auto&width=464",
+   "source_page": "https://www.broadwayworld.com/people/Patrick-Tombs/",
+   "status": "confirmed",
+   "type": "profile headshot",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Instagram profile @haller.paula (display name \"Paula Haller\").",
@@ -5395,12 +5403,13 @@
    "type": null
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "SUNY Canton news photo (Jun 19, 2012): caption names the pictured group in order \u2014 Lt. Brian E. Kurish, Chief Lisa E. Colbert, Eli Max, Criminal Investigation Associate Professor Susan Buckley (4th), Instructor Elizabeth A. Erickson. Group shot; her position follows the caption order.",
    "name": "Susan Buckley",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://s3.amazonaws.com/attachments.readmedia.com/files/41844/medium/SUNY_Canton_Eli_Max_June_19_2012.jpeg?1341001645",
+   "source_page": "http://readme.readmedia.com/SUNY-Canton-Criminal-Investigation-Major-Eli-Max-of-Freeport-N-Y-11520-Wins-Wins-Award-From-SUNY-Police/4511157/print",
+   "status": "possible",
+   "type": "news photo",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Instagram profile @syd.collins11 (display name \"Sydney Storrin\").",
@@ -5580,12 +5589,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "Merit Pages profile (SUNY Canton-verified): Tori Brunet, SUNY Canton Class of 2023, Criminal Investigation major / Forensic Science minor, from Hermon, NY; Hermon-DeKalb Central School.",
    "name": "Tori Brunet",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/7174518/medium/5B40BF04-C87F-4B5B-95F0-3BB4923823A0.jpeg?1655944227",
+   "source_page": "https://meritpages.com/Tori-Brunet/7174518",
+   "status": "confirmed",
+   "type": "profile photo",
+   "added_approx": "Oct 2026"
   },
   {
    "evidence": "Instagram profile @traci.laing (display name \"Traci Laing\"); bio: \"Wife, Mom, Mimi and organic farmer enjoying life in Northern New York :)\".",
@@ -5777,12 +5787,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "On the SUNY Canton Ogdensburg Promise page he appears only as a quoted name; its images are a generic graduation photo and an unveiling group shot captioned only as local officials \u2014 neither labeled as him. The NCPR story mentions him in text; its photos are demolition-site shots.",
+   "evidence": "SUNY Canton president\u2019s bio page headshot: Zvi Szafran, fourth President of SUNY Canton (from July 2014), residing in Canton; PhD in chemistry, University of South Carolina; bachelor\u2019s, Worcester Polytechnic Institute; prior VP posts at Southern Polytechnic and New England College.",
    "name": "Zvi Szafran",
-   "photo_url": null,
-   "source_page": "https://www.canton.edu/news/2026/ogdensburg-promise.php",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://www.canton.edu/media/szafran4.jpg",
+   "source_page": "https://www.canton.edu/president/bio.html",
+   "status": "confirmed",
+   "type": "staff headshot",
+   "added_approx": "Oct 2026"
   },
   {
    "name": "Kathleen DeLage",
@@ -5854,6 +5865,33 @@
    "evidence": "DVIDS caption names SSG Samantha Antolik, health care sergeant, HHT 2nd Squadron 101st Cavalry, at the squadron Best Warrior Competition, Ellicottville NY, May 22, 2021; photo link supplied and confirmed by JD Oct 26",
    "type": "DVIDS",
    "added": "2026-10-26"
+  },
+  {
+   "evidence": "DVIDS image 7671110: U.S. Army Master Sgt. Zalika Ajamu, 369th Sustainment Brigade, NY Army National Guard, promoted from sergeant first class at Camp Arifjan, Kuwait, Mar 2, 2023; companion DVIDS story: from Buffalo, NY, brigade Sexual Assault Response Coordinator, 20 years of service.",
+   "name": "Zalika Ajamu",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2302/7671110/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/7671110/master-sgt-zalika-ajamu-promoted",
+   "status": "confirmed",
+   "type": "DVIDS portrait",
+   "added_approx": "Oct 2026"
+  },
+  {
+   "evidence": "Syracuse University OVMA \u201cHometown Hero\u201d profile photo (captioned): Katherine Whitson \u2014 Georgia Military College 2022 (two associate degrees, summa cum laude), commissioned 2LT in 2024 via the Early Commissioning Program, Syracuse sociology student from Aug 2024, serves in HHC, 27th IBCT.",
+   "name": "Katherine Whitson",
+   "photo_url": "https://veterans.syracuse.edu/wp-content/uploads/2026/03/katherine-whitson-arny-1024x583.jpeg",
+   "source_page": "https://veterans.syracuse.edu/news/hth-kat-whitson/",
+   "status": "confirmed",
+   "type": "profile photo",
+   "added_approx": "Oct 2026"
+  },
+  {
+   "evidence": "DVIDS image 6884312 (Fort Drum, Oct 1, 2021): caption identifies the posed group by position \u2014 Sgt. 1st Class Ryan Blount is 4th/rightmost, name tape visible \u2014 after earning the Expert Soldier Badge; 427th Brigade Support Battalion; hometown Liverpool, NY per DMNA.",
+   "name": "Ryan Blount",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2110/6884312/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/6884312/ny-army-guard-soldiers-earn-expert-soldier-badge",
+   "status": "confirmed",
+   "type": "news photo",
+   "added_approx": "Oct 2026"
   }
  ]
 }
