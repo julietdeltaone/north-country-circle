@@ -1,6 +1,6 @@
 {
  "updated": "2026-10-26",
- "total": 670,
+ "total": 674,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles",
  "people": [
   {
@@ -5814,8 +5814,55 @@
     {
      "url": "https://s3.amazonaws.com/rm3.attachments.prod.readmedia.com/files/122345/news/PXL_20230113_072032083.PORTRAIT_3.jpg?1673991200",
      "note": "Full Merit photo (600x400); DeLage on the left, receiving the award"
+    },
+    {
+     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2303/7698519/1000w_q95.jpg",
+     "note": "Commander’s coin presentation by MG Michael Natali, Syracuse, Jun 28, 2022 (DVIDS 7698519)"
+    },
+    {
+     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2301/7608226/1000w_q95.jpg",
+     "note": "Apache cockpit overview at a professional development event, Katterbach, Germany, Jan 4, 2023 (DVIDS 7608226)"
     }
    ],
+   "added": "2026-10-26"
+  },
+  {
+   "name": "Ian Blunt",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459549/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/8459549/ny-national-guard-fires-mortars-morocco",
+   "status": "confirmed",
+   "evidence": "DVIDS caption names SFC Ian Blunt, HHC 27th IBCT, holding an M931 mortar training round at African Lion, Morocco, May 28, 2024; JD confirmed Oct 26",
+   "type": "DVIDS",
+   "added": "2026-10-26",
+   "also": [
+    {
+     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8444236/1000w_q95.jpg",
+     "note": "Blunt (right) with CSM Roeser and COL Frank observing the joint live-fire rehearsal, African Lion, May 26, 2024 (DVIDS 8444236)"
+    }
+   ]
+  },
+  {
+   "name": "Jordyn Hill",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459605/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/8459605/ny-national-guard-soldiers-train-with-new-radio-morocco",
+   "status": "confirmed",
+   "evidence": "DVIDS caption names PFC Jordyn Hill, IT specialist, HHC 27th IBCT, training on the AN/PRC-160(V) radio at African Lion, Morocco, May 29, 2024; JD confirmed Oct 26",
+   "type": "DVIDS",
+   "added": "2026-10-26",
+   "also": [
+    {
+     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459612/1000w_q95.jpg",
+     "note": "Hill (left) with SGT Parsons displaying the 27th IBCT and African Lion patches, May 29, 2024 (DVIDS 8459612)"
+    }
+   ]
+  },
+  {
+   "name": "Shannon Zych",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2303/7655947/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/7655947/medical-readiness-command-europe-recognizes-soldiers-supporting-us-led-training-ukrainian-armed-forces",
+   "status": "confirmed",
+   "evidence": "DVIDS caption: 1LT Shannon Zych presented a commander's coin by BG Clinton Murray at Grafenwoehr, Germany, Feb 24, 2023; JD confirmed Oct 26",
+   "type": "DVIDS",
    "added": "2026-10-26"
   }
  ]
