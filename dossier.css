@@ -1725,6 +1725,14 @@ html,body{background:var(--bg)}
 .dtcur-nu-names a:hover{text-decoration:underline}
 .gsort{display:inline-flex;align-items:center;gap:6px}
 .gsort>span{font:600 11px Archivo,sans-serif;letter-spacing:.08em;color:#8f8f8f;text-transform:uppercase}
+.ranksel{max-width:280px}
+/* Novelty traffic light (JD 2026-10-26): subtle horizontal bar, no
+   label; green new / yellow expands / red near-duplicate. */
+.novbar{display:inline-block;width:44px;height:3px;border-radius:2px;vertical-align:middle;margin-left:10px;background:#3a3a3a}
+.nov-new{background:#2f9e44}
+.nov-exp{background:#d9a404}
+.nov-red{background:#e30613}
+.chg .novbar{display:block;margin:7px 0 0}
 .chg{padding:10px 14px;border-bottom:1px solid #1c1c1c}
 .chg-name{font-size:13.5px}
 .chg-name a{color:inherit;text-decoration:none}
