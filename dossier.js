@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.39.2';
+var APP_VERSION = '2.40.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4542,9 +4542,8 @@ function hmYearCols(entries, max){
     var h = max > 0 && t.c > 0 ? Math.max(3, Math.round(t.c / max * (base - 30))) : 0;
     var cx = i * bw + bw / 2;
     if(t.c > 0) cols += '<rect x="' + (i * bw + bw * 0.2).toFixed(1) + '" y="' + (base - h) + '" width="' + (bw * 0.6).toFixed(1) + '" height="' + h + '" class="hm-col"><title>' + esc(t.label) + ' · ' + t.c + '</title></rect>';
-    if(t.c > 0 && t.c >= max * 0.55) tops += '<text x="' + cx + '" y="' + (base - h - 6) + '" class="hm-cv">' + t.c + '</text>';
-    var y = parseInt(t.label, 10);
-    if(i === 0 || i === entries.length - 1 || (y && y % 5 === 0)) labs += '<text x="' + cx + '" y="' + (H - 12) + '" class="hm-cx">' + (i === 0 ? '’00–’10' : '’' + String(t.label).slice(2)) + '</text>';
+    if(t.c > 0) tops += '<text x="' + cx + '" y="' + (base - h - 6) + '" class="hm-cv">' + t.c + '</text>';
+    labs += '<text x="' + cx + '" y="' + (H - 12) + '" class="hm-cx">' + (i === 0 ? 'pre-\u201910' : '\u2019' + String(t.label).slice(2)) + '</text>';
   });
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="hm-cols" role="img">' + cols + tops + labs +
     '<line x1="0" y1="' + base + '" x2="' + W + '" y2="' + base + '" class="hm-axis"/></svg>';
@@ -4594,7 +4593,7 @@ function hmStatsCard(pop, N){
     if(t === 'vetted') tierCounts.vetted++; else if(t === 'associate') tierCounts.associate++; else if(t === 'open') tierCounts.open++; else tierCounts.none++;
     var y = knownSinceYear(e);
     if(!y) undated++;
-    else if(y <= 2010){ preN++; if(preN > yrMax) yrMax = preN; }
+    else if(y < 2010){ preN++; if(preN > yrMax) yrMax = preN; }
     else { yr[y] = (yr[y] || 0) + 1; if(yr[y] > yrMax) yrMax = yr[y]; if(y > lastY) lastY = y; }
     var loc = ptLocVal(e), town = loc ? loc.split(',')[0].trim() : '';
     if(town) hmCount(towns, town);
@@ -4612,19 +4611,18 @@ function hmStatsCard(pop, N){
     { label:'No tier yet', c:tierCounts.none, col:RING_C[3] }
   ], 4);
   var tierCard = '<div class="hm-stat"><h4>Tier</h4>' + hmDonut(tierTop, N) + '</div>';
-  var yrEntries = [{ label:'2000\u20132010', c:preN }], yy;
-  for(yy = 2011; yy <= lastY; yy++) yrEntries.push({ label:String(yy), c:yr[yy] || 0 });
+  var yrEntries = [{ label:'Before 2010', c:preN }], yy;
+  for(yy = 2010; yy <= lastY; yy++) yrEntries.push({ label:String(yy), c:yr[yy] || 0 });
   var yrCard = '<div class="hm-stat wide"><h4>Known since</h4>' + hmYearCols(yrEntries, yrMax) +
     (undated ? '<p class="dim hm-note">' + undated + ' with no start year on file.</p>' : '') + '</div>';
-  var townsTop = hmFormsTop(towns, 5);
   var relTop = hmFormsTop(rels, 5, true);
   return '<section class="card hm-blk"><header><h3>Shape of the network</h3><em class="cnt">' + N + ' people</em></header><div class="cbody"><div class="hm-stats">' +
     tierCard + yrCard +
-    hmCardWrap('Where they are', hmDots(townsTop, townsTop.length ? townsTop[0].c : 0), Object.keys(towns).length, townsTop.length) +
+    hmStatCard('Where they are', hmFormsTop(towns, 5), Object.keys(towns).length) +
     hmCardWrap('Relationship types', hmStack(relTop, N - relBlank), Object.keys(rels).length, relTop.length,
       relBlank ? '<p class="dim hm-note">' + relBlank + ' of ' + N + ' have no relationship type on file.</p>' : '') +
     hmStatCard('Organizations', hmPlainTop(orgCounts, 5), Object.keys(orgCounts).length) +
-    hmCardWrap('Skills', hmCloud(hmFormsTop(skills, 8, true)), Object.keys(skills).length, 8) +
+    hmStatCard('Skills', hmFormsTop(skills, 5, true), Object.keys(skills).length) +
     hmCardWrap('Groups', hmRankRows(hmPlainTop(groupCounts, 5)), Object.keys(groupCounts).length, 5) +
     '</div></div></section>';
 }
@@ -4636,6 +4634,7 @@ function hmStatsCard(pop, N){
    revolution per 90 s); hub name plates counter-rotate so
    they stay upright. Hover pauses the drift. --- */
 var HM_NET_RAF = 0;
+var HM_DATES = store('ncc_hm_dates') === '1';   /* Home Photos "Added" dates: collapsed by default, toggle in the card header (JD 2026-10-26) */
 function hmNetCard(){
   netBuild();
   var parts = [], rot = [], i;
@@ -4742,7 +4741,7 @@ function hmPhotosCard(ph){
     return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + milBadgeName(p.name) + (phAddedLabel(p) ? '<small class="hm-td">' + phAddedLabel(p) + '</small>' : '') + '</span></a>';
   }).join('');
   tiles += '<a class="hm-tile miss" href="#/photos"><b data-hmn="' + ph.noPhoto + '">0</b><span>still missing a photo</span></a>';
-  return '<section class="card hm-blk"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em></header><div class="cbody">' + kpis +
+  return '<section class="card hm-blk' + (HM_DATES ? ' hm-showdates' : '') + '"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em><span class="sp"></span><button type="button" class="btn ghost sm" data-act="hmdates">' + (HM_DATES ? 'Hide added dates' : 'Show added dates') + '</button></header><div class="cbody">' + kpis +
     '<div class="hm-tiles">' + tiles + '</div></div></section>';
 }
 
@@ -7551,6 +7550,7 @@ function onClick(ev){
     case 'netreset': netResetView(); break;
     case 'netfocusx': { var fx = el.getAttribute('data-v'); if(fx === 'org') S.net.org = null; else S.net.sel = null; netCard(); NET.dirty = true; break; }
     case 'hmorg': { var hn = el.getAttribute('data-v'); S.net.org = hn || null; S.net.sel = null; go('network'); break; }
+    case 'hmdates': HM_DATES = !HM_DATES; store('ncc_hm_dates', HM_DATES ? '1' : '0'); render(); break;
     case 'netview': { var vv = el.getAttribute('data-v') === '3d' ? '3d' : '2d'; S.net.view = vv; NET.view = vv; store('ncc_netview', vv); $$('.netacts [data-act="netview"]').forEach(function(b){ var on = b.getAttribute('data-v') === vv; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); if(vv === '3d') netGlide(300, { c2x:0, c2y:0 }); NET.dirty = true; break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
