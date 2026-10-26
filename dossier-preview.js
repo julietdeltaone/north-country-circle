@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.49.0';
+var APP_VERSION = '2.50.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4532,16 +4532,17 @@ function hmFormsTop(map, n, capIt){
 function hmPlainTop(counts, n){
   return hmSortTop(Object.keys(counts).map(function(k){ return { label:k, c:counts[k] }; }), n);
 }
-function hmStatBars(top, max, colorOf){
+function hmStatBars(top, max, colorOf, kind){
   return top.map(function(t){
     var pct = t.c > 0 && max > 0 ? Math.max(2, Math.round(1000 * t.c / max) / 10) : 0;
-    return '<div class="hm-bar"><span class="hm-bl">' + esc(t.label) + '</span><span class="hm-tr"><span class="hm-fill" data-w="' + pct + '" style="width:0' + (colorOf ? ';background:' + colorOf(t) : '') + '"></span></span><span class="hm-bv" data-hmn="' + t.c + '">0</span></div>';
+    var act = kind ? ' data-act="hmstat" data-kind="' + kind + '" data-key="' + esc(t.label) + '" title="See who is in ' + esc(t.label) + '"' : '';
+    return '<div class="hm-bar"' + act + '><span class="hm-bl">' + esc(t.label) + '</span><span class="hm-tr"><span class="hm-fill" data-w="' + pct + '" style="width:0' + (colorOf ? ';background:' + colorOf(t) : '') + '"></span></span><span class="hm-bv" data-hmn="' + t.c + '">0</span></div>';
   }).join('');
 }
-function hmStatCard(title, top, distinct, note){
+function hmStatCard(title, top, distinct, note, kind){
   var max = top.length ? top[0].c : 0;
   var more = distinct > top.length ? '<p class="dim hm-more">+' + (distinct - top.length) + ' more</p>' : '';
-  return '<div class="hm-stat"><h4>' + esc(title) + '</h4>' + hmStatBars(top, max) + more + (note || '') + '</div>';
+  return '<div class="hm-stat"><h4>' + esc(title) + '</h4>' + hmStatBars(top, max, null, kind) + more + (note || '') + '</div>';
 }
 function hmCardWrap(title, inner, distinct, shown, note){
   var more = distinct > shown ? '<p class="dim hm-more">+' + (distinct - shown) + ' more</p>' : '';
@@ -4550,11 +4551,11 @@ function hmCardWrap(title, inner, distinct, shown, note){
 /* Chart forms matched to the data (JD 2026-10-26: not everything is a
    bar chart). All are label-safe by construction: legends and axis
    labels live in HTML/sparse slots, never on the marks themselves. */
-function hmDonut(segs, total){
+function hmDonut(segs, total, kind){
   var R = 52, C = 2 * Math.PI * R, off = 0;
   var arcs = segs.filter(function(s){ return s.c > 0; }).map(function(s){
     var frac = total ? s.c / total : 0, len = Math.max(0, frac * C - 2.5);
-    var el = '<circle cx="70" cy="70" r="' + R + '" fill="none" stroke="' + s.col + '" stroke-width="13" stroke-dasharray="' + len.toFixed(1) + ' ' + (C - len).toFixed(1) + '" stroke-dashoffset="' + (-off).toFixed(1) + '" transform="rotate(-90 70 70)"><title>' + esc(s.label) + ' · ' + s.c + '</title></circle>';
+    var el = '<circle cx="70" cy="70" r="' + R + '" fill="none" stroke="' + s.col + '" stroke-width="13" stroke-dasharray="' + len.toFixed(1) + ' ' + (C - len).toFixed(1) + '" stroke-dashoffset="' + (-off).toFixed(1) + '" transform="rotate(-90 70 70)"' + (kind ? ' data-act="hmstat" data-kind="' + kind + '" data-key="' + esc(s.label) + '"' : '') + '><title>' + esc(s.label) + ' · ' + s.c + '</title></circle>';
     off += frac * C;
     return el;
   }).join('');
@@ -4571,7 +4572,7 @@ function hmYearCols(entries, max){
   entries.forEach(function(t, i){
     var h = max > 0 && t.c > 0 ? Math.max(3, Math.round(t.c / max * (base - 30))) : 0;
     var cx = i * bw + bw / 2;
-    if(t.c > 0) cols += '<rect x="' + (i * bw + bw * 0.2).toFixed(1) + '" y="' + (base - h) + '" width="' + (bw * 0.6).toFixed(1) + '" height="' + h + '" class="hm-col"><title>' + esc(t.label) + ' · ' + t.c + '</title></rect>';
+    if(t.c > 0) cols += '<rect x="' + (i * bw + bw * 0.2).toFixed(1) + '" y="' + (base - h) + '" width="' + (bw * 0.6).toFixed(1) + '" height="' + h + '" class="hm-col" data-act="hmstat" data-kind="years" data-key="' + esc(t.label) + '"><title>' + esc(t.label) + ' · ' + t.c + '</title></rect>';
     if(t.c > 0) tops += '<text x="' + cx + '" y="' + (base - h - 6) + '" class="hm-cv">' + t.c + '</text>';
     labs += '<text x="' + cx + '" y="' + (H - 12) + '" class="hm-cx">' + (i === 0 ? 'pre-\u201910' : '\u2019' + String(t.label).slice(2)) + '</text>';
   });
@@ -4593,13 +4594,14 @@ function hmStack(top, totalAll){
   }).join('');
   if(tot > shown) segs += '<span class="hm-seg rest" style="width:' + (100 * (tot - shown) / tot) + '%" title="Other types · ' + (tot - shown) + '"></span>';
   var legend = top.map(function(t, i){
-    return '<div class="hm-dleg"><span class="hm-dldot" style="background:' + cols[i % cols.length] + '"></span><span class="hm-dll">' + esc(t.label) + '</span><b>' + t.c + '</b><span class="hm-dlp">' + Math.round(100 * t.c / tot) + '%</span></div>';
+    return '<div class="hm-dleg" data-act="hmstat" data-kind="rel" data-key="' + esc(t.label) + '" title="See people"><span class="hm-dldot" style="background:' + cols[i % cols.length] + '"></span><span class="hm-dll">' + esc(t.label) + '</span><b>' + t.c + '</b><span class="hm-dlp">' + Math.round(100 * t.c / tot) + '%</span></div>';
   }).join('');
   return '<div class="hm-stack">' + segs + '</div><div class="hm-dlegs stack">' + legend + '</div>';
 }
-function hmRankRows(top){
+function hmRankRows(top, kind){
   return top.map(function(t, i){
-    return '<div class="hm-rk"><span class="hm-rkn">' + ('0' + (i + 1)).slice(-2) + '</span><span class="hm-bl grow">' + esc(t.label) + '</span><span class="hm-bv">' + t.c + '</span></div>';
+    var act = kind ? ' data-act="hmstat" data-kind="' + kind + '" data-key="' + esc(t.label) + '" title="See members"' : '';
+    return '<div class="hm-rk"' + act + '><span class="hm-rkn">' + ('0' + (i + 1)).slice(-2) + '</span><span class="hm-bl grow">' + esc(t.label) + '</span><span class="hm-bv">' + t.c + '</span></div>';
   }).join('');
 }
 function hmCloud(top){
@@ -4643,7 +4645,7 @@ function hmStatsCard(pop, N){
     { label:'Open', c:tierCounts.open, col:TIERS.open.c },
     { label:'No tier yet', c:tierCounts.none, col:RING_C[3] }
   ], 4);
-  var tierCard = '<div class="hm-stat"><h4>Tier</h4>' + hmDonut(tierTop, N) + '</div>';
+  var tierCard = '<div class="hm-stat"><h4>Tier</h4>' + hmDonut(tierTop, N, 'tier') + '</div>';
   var yrEntries = [{ label:'Before 2010', c:preN }], yy;
   for(yy = 2010; yy <= lastY; yy++) yrEntries.push({ label:String(yy), c:yr[yy] || 0 });
   var yrCard = '<div class="hm-stat wide"><h4>Known since</h4>' + hmYearCols(yrEntries, yrMax) +
@@ -4677,7 +4679,7 @@ function hmStatsCard(pop, N){
   var byAvg = ranked.filter(function(x){ return x.avg > 0; }).sort(function(a, b){ return b.avg - a.avg; });
   var callout = byAvg.length ? '<p class="dim hm-note">Most pronounced: ' + byAvg[0].l + ' (avg ' + byAvg[0].avg.toFixed(1) + ') · Least: ' + byAvg[byAvg.length - 1].l + ' (' + byAvg[byAvg.length - 1].avg.toFixed(1) + ')</p>' : '';
   var pToggle = '<div class="hm-ptoggle"><button type="button" class="tchip' + (HM_PERSONA_MODE === 'points' ? ' on' : '') + '" data-act="hmpersona" data-m="points">Points</button><button type="button" class="tchip' + (HM_PERSONA_MODE === 'share' ? ' on' : '') + '" data-act="hmpersona" data-m="share">Share %</button></div>';
-  var pBars = HM_PERSONA_MODE === 'share' ? hmStatBars(shareTop, shareTop.length ? shareTop[0].c : 0) : hmStatBars(hmPlainTop(tPts, 6), ranked.length ? ranked[0].pts : 0);
+  var pBars = HM_PERSONA_MODE === 'share' ? hmStatBars(shareTop, shareTop.length ? shareTop[0].c : 0, null, 'persona') : hmStatBars(hmPlainTop(tPts, 6), ranked.length ? ranked[0].pts : 0, null, 'persona');
   var personaCard = hmCardWrap('Persona makeup', pToggle + pBars, 6, 6,
     callout +
     (HM_PERSONA_MODE === 'share'
@@ -4687,15 +4689,15 @@ function hmStatsCard(pop, N){
     '<p class="dim hm-note">' + pRated + ' of ' + N + ' rated.</p>');
   return '<section class="card hm-blk"><header><h3>Shape of the network</h3><em class="cnt">' + N + ' people</em></header><div class="cbody"><div class="hm-stats">' +
     tierCard + personaCard + yrCard +
-    hmStatCard('Where they are', hmFormsTop(towns, 5), Object.keys(towns).length) +
+    hmStatCard('Where they are', hmFormsTop(towns, 5), Object.keys(towns).length, '', 'town') +
     hmCardWrap('Relationship types', hmStack(relTop, N - relBlank), Object.keys(rels).length, relTop.length,
       relBlank ? '<p class="dim hm-note">' + relBlank + ' of ' + N + ' have no relationship type on file.</p>' : '') +
-    hmStatCard('Organizations', hmPlainTop(orgCounts, 5), Object.keys(orgCounts).length) +
-    hmStatCard('Skills', hmFormsTop(skills, 5, true), Object.keys(skills).length) +
-    hmCardWrap('Groups', hmRankRows(hmPlainTop(groupCounts, 5)), Object.keys(groupCounts).length, 5) +
+    hmStatCard('Organizations', hmPlainTop(orgCounts, 5), Object.keys(orgCounts).length, '', 'org') +
+    hmStatCard('Skills', hmFormsTop(skills, 5, true), Object.keys(skills).length, '', 'skill') +
+    hmCardWrap('Groups', hmRankRows(hmPlainTop(groupCounts, 5), 'group'), Object.keys(groupCounts).length, 5) +
     hmStatCard('Public footprint', hmPlainTop(fpCounts, 5), fpPeople,
       '<p class="dim hm-note">' + fpTotal + ' facts on file across ' + fpPeople + ' of ' + N + ' people (' + (N ? Math.round(100 * fpPeople / N) : 0) + '%).</p>' +
-      (fpPeople ? '<p class="dim hm-note">Average ' + (fpTotal / fpPeople).toFixed(1) + ' facts per documented person.</p>' : '')) +
+      (fpPeople ? '<p class="dim hm-note">Average ' + (fpTotal / fpPeople).toFixed(1) + ' facts per documented person.</p>' : ''), 'footprint') +
     '</div></div></section>';
 }
 
@@ -4852,7 +4854,51 @@ function hmOrgsCard(pop){
 }
 
 /* --- Config 2: What's New, the activity rail --- */
+var HM_SIDE = null;   /* {kind, key} when a Shape stat is selected; null = What's New */
+function hmSideRows(kind, key){
+  var rows = [];
+  var TRAITK = { Openness:'openness', Conscientiousness:'conscientiousness', Extraversion:'extraversion', Agreeableness:'agreeableness', Neuroticism:'neuroticism', Ego:'ego' };
+  var TIERL = { vetted:'Vetted', associate:'Associate', open:'Open', '':'No tier yet' };
+  people().forEach(function(di){
+    var e = D.directory[di], nm = dispName(e);
+    function meta(){ var loc = ptLocVal(e); return [loc, TIERL[tierOf(e)]].filter(Boolean).join(' \u00b7 '); }
+    if(kind === 'tier'){ if(TIERL[tierOf(e)] === key) rows.push({ di:di, name:nm, meta:meta() }); }
+    else if(kind === 'persona'){ var f = TRAITK[key], v = f ? parseInt(gv(e, f), 10) : 0; if(v >= 1 && v <= 5) rows.push({ di:di, name:nm, meta:key + ' ' + v + ' of 5', s:-v }); }
+    else if(kind === 'years'){ var y = knownSinceYear(e); if(key === 'Before 2010' ? (y && y < 2010) : y === +key) rows.push({ di:di, name:nm, meta:meta() }); }
+    else if(kind === 'town'){ var loc2 = ptLocVal(e), town = loc2 ? loc2.split(',')[0].trim() : ''; if(town && (town === key || cap(town) === key)) rows.push({ di:di, name:nm, meta:meta() }); }
+    else if(kind === 'rel'){ var rv = String(gv(e, 'relationship') || '').trim(); if(rv && cap(rv) === key) rows.push({ di:di, name:nm, meta:meta() }); }
+    else if(kind === 'org'){ var seen = {}; ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ var cn = regApply(o); if(cn) seen[cn] = 1; }); }); if(seen[key]) rows.push({ di:di, name:nm, meta:meta() }); }
+    else if(kind === 'skill'){ if(tagList(gv(e, 'specialty')).some(function(s){ return s === key || cap(s) === key; })) rows.push({ di:di, name:nm, meta:meta() }); }
+    else if(kind === 'group'){ if(personGroups(e).indexOf(key) >= 0) rows.push({ di:di, name:nm, meta:meta() }); }
+  });
+  rows.sort(function(a, b){ return (a.s || 0) - (b.s || 0) || a.name.localeCompare(b.name); });
+  return rows;
+}
+function hmSideHTML(){
+  var kind = HM_SIDE.kind, key = HM_SIDE.key;
+  var TITLES = { tier:'Tier', persona:'Persona', years:'Known since', town:'Where they are', rel:'Relationship', org:'Organization', skill:'Skill', group:'Group', footprint:'Public footprint' };
+  var head = '<aside class="hm-rail hm-blk"><div class="hm-rail-h"><span>' + esc(TITLES[kind] || 'Detail') + '</span><button type="button" class="ib" data-act="hmsidex" aria-label="Back to What\u2019s new">' + ic('x', 14) + '</button></div>';
+  if(kind === 'footprint'){
+    var di = people().find(function(x){ return dispName(D.directory[x]) === key; });
+    if(di == null) return head + '<p class="dim hm-railpad">Not found.</p></aside>';
+    var e = D.directory[di];
+    var bullets = String(gv(e, 'public_footprint') || '').split('\n').filter(function(b){ return b.trim(); });
+    return head + '<div class="hms-person">' + hmPersonLink(key) + '</div>' +
+      '<p class="dim hms-sub">' + bullets.length + ' facts on file. Tap the name for the full profile, including source links.</p>' +
+      '<div class="hms-facts">' + bullets.map(function(b){ return '<p class="hms-fact">' + esc(b.replace(/^\u2022\s*/, '')) + '</p>'; }).join('') + '</div></aside>';
+  }
+  var rows = hmSideRows(kind, key);
+  var shown = rows.slice(0, 80);
+  return head + '<p class="dim hms-sub">' + esc(key) + ' \u00b7 ' + rows.length + (rows.length === 1 ? ' person' : ' people') + '</p>' +
+    '<div class="hms-rows">' + shown.map(function(r){
+      return '<a class="hms-row" href="#/p/' + encodeURIComponent(personId(D.directory[r.di])) + '" data-act="openp" data-di="' + r.di + '"><span class="hms-nm">' + esc(r.name) + '</span>' + (r.meta ? '<span class="hms-meta">' + esc(r.meta) + '</span>' : '') + '</a>';
+    }).join('') + '</div>' +
+    (rows.length > shown.length ? '<p class="dim hm-railpad">+ ' + (rows.length - shown.length) + ' more</p>' : '') +
+    (kind === 'group' ? '<a class="hm-raillink" href="#/groups">Open Groups ' + ic('arrow', 12) + '</a>' : '') +
+    '</aside>';
+}
 function hmRail(){
+  if(HM_SIDE) return hmSideHTML();
   var out = '<aside class="hm-rail hm-blk"><div class="hm-rail-h"><span>What&rsquo;s new</span>' + (DT && DT.date ? '<em>' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</div>';
   var freshF = null, freshX = null;
   if(DT && DT.filed) DT.filed.forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh && !freshX){ freshF = f; freshX = x; } }); });
@@ -4919,9 +4965,15 @@ function viewHome(v){
     hmCoverageCard(pop, N, ph) +
     hmPhotosCard(ph) +
     hmOrgsCard(pop) +
-    '</div>' + hmRail() + '</div></div>';
+    '</div><div id="hmrail">' + hmRail() + '</div></div></div>';
   hmAnimate();
   hmNetDrift();
+}
+
+function hmRailPaint(){
+  var r = $('#hmrail'); if(!r) return;
+  r.innerHTML = hmRail();
+  $$('#hmrail [data-hmn]').forEach(function(el){ el.textContent = el.getAttribute('data-hmn'); });
 }
 
 /* ============================================================
@@ -5244,22 +5296,36 @@ function phKeyMap(){
   if(typeof D !== 'undefined' && D) D.directory.forEach(function(e){ var u = String(gv(e, 'primary_photo') || '').trim(); if(u) PH_KEY[String(dispName(e)).toLowerCase()] = u; });
   return PH_KEY;
 }
+var PH_ORDER = null;   /* display name (lowercase) -> [urls] from the baked photo_order field */
+function phOrderMap(){
+  if(PH_ORDER) return PH_ORDER;
+  PH_ORDER = {};
+  if(typeof D !== 'undefined' && D) D.directory.forEach(function(e){
+    var raw = String(gv(e, 'photo_order') || '').trim();
+    if(raw){ try{ var arr = JSON.parse(raw); if(Array.isArray(arr) && arr.length) PH_ORDER[String(dispName(e)).toLowerCase()] = arr; }catch(x){} }
+  });
+  return PH_ORDER;
+}
 function phKeyUrl(p){
   if(!p || !p.photo_url) return p ? p.photo_url : null;
   var u = phKeyMap()[String(p.name).toLowerCase()];
   if(u && phAllPhotos(p).some(function(x){ return x.url === u; })) return u;
   return p.photo_url;
 }
+function phApplyKey(name, url){
+  var di = phDiOf(name); if(di == null) return false;
+  txn('Set key photo', function(){ queuePatch(di, { primary_photo: url }); });
+  if(!PH_KEY) PH_KEY = {};
+  PH_KEY[String(name).toLowerCase()] = url;
+  var p = (phIndex() || {})[name];
+  if(p){ var f = phFrameFor(name, p); phFrameSet(name, { z:f.z, x:f.x, y:f.y, url: url }); }
+  return true;
+}
 function phSetKey(name){
   var p = (phIndex() || {})[name]; if(!p) return;
   var photos = phAllPhotos(p); if(photos.length < 2) return;
   var cur = photos[Math.max(0, Math.min(photos.length - 1, PHV_IDX || 0))]; if(!cur) return;
-  var di = phDiOf(name); if(di == null) return;
-  txn('Set key photo', function(){ queuePatch(di, { primary_photo: cur.url }); });
-  if(!PH_KEY) PH_KEY = {};
-  PH_KEY[String(name).toLowerCase()] = cur.url;
-  var f = phFrameFor(name, p);
-  phFrameSet(name, { z:f.z, x:f.x, y:f.y, url: cur.url });
+  if(!phApplyKey(name, cur.url)) return;
   phPaintViewer(true);
   if(S.route.name === 'photos') phPaintList();
   if($('#p-hero')) repaintTop();
@@ -5520,6 +5586,13 @@ function phAllPhotos(p){
   if(!p || !p.photo_url) return [];
   var list = [{url: p.photo_url, note: ''}];
   (p.also || []).forEach(function(a){ if(a && a.url) list.push({url: a.url, note: a.note || ''}); });
+  var ord = phOrderMap()[String(p.name || '').toLowerCase()];
+  if(ord && ord.length){
+    var pos = {}; ord.forEach(function(u, i){ pos[u] = i; });
+    list = list.map(function(x, i){ return { x:x, i:i }; })
+      .sort(function(a, b){ var pa = pos[a.x.url] != null ? pos[a.x.url] : 1000 + a.i, pb = pos[b.x.url] != null ? pos[b.x.url] : 1000 + b.i; return pa - pb; })
+      .map(function(w){ return w.x; });
+  }
   return list;
 }
 function phFrameStyleFor(p, url){
@@ -5617,6 +5690,7 @@ function phFiltered(all){
   return all.filter(function(p){
     if(PH_FILT === 'photo' && !phHasPhoto(p)) return false;
     if(PH_FILT === 'new' && !phIsNew(p)) return false;
+    if(PH_FILT === 'multi' && phAllPhotos(p).length < 2) return false;
     if(PH_FILT === 'nophoto' && phHasPhoto(p)) return false;
     if(PH_FILT.indexOf('tier:') === 0){ var e = phEntryOf(p); if((e ? tierOf(e) : '') !== PH_FILT.slice(5)) return false; }
     if(PH_FILT.indexOf('org:') === 0 && phOrgOf(p) !== PH_FILT.slice(4)) return false;
@@ -5677,7 +5751,7 @@ function phGradeChip(p){
 function phCard(p){
   var sel = PH_SEL && PH_SEL.toLowerCase() === String(p.name).toLowerCase();
   if(phHasPhoto(p)){
-    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span>' + (phAllPhotos(p).length > 1 ? '<span class="phmulti">' + phAllPhotos(p).length + ' PHOTOS</span>' : '') + '</span>' +
+    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span>' + (PH_FILT === 'multi' && phAllPhotos(p).length > 1 ? '<span class="phmulti">' + phAllPhotos(p).length + ' PHOTOS</span>' : '') + '</span>' +
       '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + phGradeChip(p) + '</div>' + (phAddedLabel(p) ? '<div class="phdt">' + phAddedLabel(p) + '</div>' : '') + '</section>';
   }
   return '<section class="card phcard noph' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg phnoimg">' + ic('camera', 22) + '<em>NO PHOTO</em></span>' +
@@ -5755,6 +5829,7 @@ function phPaintViewer(instant){
     (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
     '<div class="phov-nav"><button type="button" class="btn ghost sm" data-act="phnav" data-d="-1">&larr; Prev</button>' +
     '<button type="button" class="btn ghost sm" data-act="phnav" data-d="1">Next &rarr;</button><span class="sp"></span>' +
+    (has && photos.length > 1 ? '<button type="button" class="btn ghost sm" data-act="phmgr" data-pname="' + esc(p.name) + '">Manage photos</button>' : '') +
     (has && photos.length > 1 && !isKey ? '<button type="button" class="btn ghost sm" data-act="phsetkey" data-pname="' + esc(p.name) + '">Set as key photo</button>' : '') +
     (has ? '<button type="button" class="btn ghost sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust photo</button>' : '') +
     (e ? '<a class="btn ghost sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a>' : '') +
@@ -5764,6 +5839,82 @@ function phPaintViewer(instant){
   if(instant) ov.classList.add('open');
   else requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('open'); }); });
   phMarkSel();
+}
+var PHM = null;   /* { name, urls:[{url,note}], dirty } */
+function phMgrOpen(name){
+  var p = (phIndex() || {})[name]; if(!p) return;
+  var photos = phAllPhotos(p); if(photos.length < 2) return;
+  PHM = { name:name, urls:photos.map(function(x){ return { url:x.url, note:x.note || '' }; }), dirty:false };
+  var old = document.querySelector('.phmgr-wrap'); if(old) old.remove();
+  var ov = document.createElement('div');
+  ov.className = 'phmgr-wrap';
+  ov.innerHTML = '<div class="phmgr-scrim" data-act="phmx"></div><aside class="phmgr" role="dialog" aria-label="Manage photos">' +
+    '<div class="phmgr-h"><b>Photos \u2014 ' + esc(name) + '</b><button type="button" class="ib" data-act="phmx" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+    '<p class="dim phmgr-sub">Reorder with the arrows, set the key photo (the one shown first everywhere), or adjust a photo\u2019s framing. Order and key photo save to the sheet.</p>' +
+    '<div id="phmgrlist"></div>' +
+    '<div class="phmgr-f"><span class="dim" id="phmgrstat"></span><span class="sp"></span>' +
+    '<button type="button" class="btn ghost sm" data-act="phmx">Done</button>' +
+    '<button type="button" class="btn primary sm" data-act="phmsave" id="phmgrsave">Save order</button></div></aside>';
+  document.body.appendChild(ov);
+  document.body.classList.add('sheet-open');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('open'); }); });
+  phMgrRender();
+}
+function phMgrRender(){
+  var box = $('#phmgrlist'); if(!box || !PHM) return;
+  var p = (phIndex() || {})[PHM.name], keyU = p ? phKeyUrl(p) : null;
+  box.innerHTML = PHM.urls.map(function(x, i){
+    var isKey = keyU && x.url === keyU;
+    return '<div class="phmgr-row">' +
+      '<span class="phmgr-n">' + (i + 1) + '</span>' +
+      '<span class="phmgr-th"><img src="' + esc(x.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></span>' +
+      '<span class="phmgr-meta">' + (isKey ? '<span class="phbadge key">KEY PHOTO</span>' : '<span class="dim">Photo ' + (i + 1) + '</span>') + (x.note ? '<small>' + esc(x.note) + '</small>' : '') + '</span>' +
+      '<span class="phmgr-btns">' +
+      '<button type="button" class="btn ghost sm" data-act="phmup" data-i="' + i + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Move up">&uarr;</button>' +
+      '<button type="button" class="btn ghost sm" data-act="phmdn" data-i="' + i + '"' + (i === PHM.urls.length - 1 ? ' disabled' : '') + ' aria-label="Move down">&darr;</button>' +
+      (isKey ? '' : '<button type="button" class="btn ghost sm" data-act="phmkey" data-i="' + i + '">Set as key</button>') +
+      '<button type="button" class="btn ghost sm" data-act="phmadj" data-i="' + i + '">Adjust</button>' +
+      '</span></div>';
+  }).join('');
+  var st = $('#phmgrstat'); if(st) st.textContent = PHM.dirty ? 'Order changed \u2014 not saved yet' : PHM.urls.length + ' photos';
+  var sv = $('#phmgrsave'); if(sv) sv.disabled = !PHM.dirty;
+}
+function phMgrMove(i, d){
+  if(!PHM) return;
+  var j = i + d; if(j < 0 || j >= PHM.urls.length) return;
+  var t = PHM.urls[i]; PHM.urls[i] = PHM.urls[j]; PHM.urls[j] = t;
+  PHM.dirty = true; phMgrRender();
+}
+function phMgrKey(i){
+  if(!PHM) return;
+  if(phApplyKey(PHM.name, PHM.urls[i].url)) phMgrRender();
+}
+function phMgrAdjust(i){
+  if(!PHM) return;
+  var url = PHM.urls[i].url, name = PHM.name;
+  phMgrClose(true);
+  phEditor(name);
+  setTimeout(function(){
+    $$('.phed-thumbs button').forEach(function(b){ if(b.getAttribute('data-u') === url) b.click(); });
+  }, 60);
+}
+function phMgrSave(){
+  if(!PHM || !PHM.dirty) return;
+  var di = phDiOf(PHM.name); if(di == null) return;
+  var urls = PHM.urls.map(function(x){ return x.url; });
+  txn('Save photo order', function(){ queuePatch(di, { photo_order: JSON.stringify(urls) }); });
+  if(!PH_ORDER) PH_ORDER = {};
+  PH_ORDER[String(PHM.name).toLowerCase()] = urls;
+  PHM.dirty = false; phMgrRender();
+}
+function phMgrClose(keepSheet){
+  var ov = document.querySelector('.phmgr-wrap');
+  PHM = null;
+  if(ov){ ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 280); }
+  if(!keepSheet && !document.querySelector('.phed-wrap') && !PH_SEL) document.body.classList.remove('sheet-open');
+  if(PH_SEL) phPaintViewer(true);
+  if(S.route.name === 'photos') phPaintList();
+  if($('#p-hero')) repaintTop();
 }
 function phCloseViewer(){
   var ov = document.querySelector('.phov-wrap');
@@ -5816,7 +5967,7 @@ function viewPhotos(v){
   var rail = '<aside class="ph-side">' +
     '<input id="phq" type="search" placeholder="Search names" autocomplete="off" value="' + esc(PH_QUERY) + '">' +
     '<div class="ph-side-h">Show</div>' +
-    fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
+    fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('multi', 'Multiple photos', all.filter(function(p){ return phAllPhotos(p).length > 1; }).length) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
     '<div class="ph-side-h">Tier</div>' +
     fbtn('tier:vetted', 'Vetted', tierN.vetted) + fbtn('tier:associate', 'Associate', tierN.associate) + fbtn('tier:open', 'Open', tierN.open) + fbtn('tier:', 'No tier', tierN['']) +
     '<div class="ph-side-h">Organizations</div>' +
@@ -7807,6 +7958,13 @@ function onClick(ev){
     case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phsetkey': phSetKey(el.getAttribute('data-pname')); break;
+    case 'phmgr': phMgrOpen(el.getAttribute('data-pname')); break;
+    case 'phmx': phMgrClose(); break;
+    case 'phmup': phMgrMove(+el.getAttribute('data-i'), -1); break;
+    case 'phmdn': phMgrMove(+el.getAttribute('data-i'), 1); break;
+    case 'phmkey': phMgrKey(+el.getAttribute('data-i')); break;
+    case 'phmadj': phMgrAdjust(+el.getAttribute('data-i')); break;
+    case 'phmsave': phMgrSave(); break;
     case 'heroph': phHeroStep(el.getAttribute('data-pname'), parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'herodot': (function(){ var idx2 = phIndex(), pp = idx2 && idx2[el.getAttribute('data-pname')]; if(pp){ PH_HERO_IDX[String(pp.name).toLowerCase()] = parseInt(el.getAttribute('data-i'), 10) || 0; phHeroPaint(pp.name); } })(); break;
     case 'phvph': phViewerStep(parseInt(el.getAttribute('data-d'), 10) || 1); break;
@@ -7852,6 +8010,8 @@ function onClick(ev){
     case 'lcsave': if(S.audit) lcSaveNote(); break;
     case 'plcsave': plcSaveNote(); break;
     case 'set': doSet(el); break;
+    case 'hmstat': HM_SIDE = { kind: el.getAttribute('data-kind'), key: el.getAttribute('data-key') }; hmRailPaint(); break;
+    case 'hmsidex': HM_SIDE = null; hmRailPaint(); break;
     case 'kspick': { var ky2 = el.getAttribute('data-y'); var curv = String(gv(D.directory[S.prof.di], 'years_known') || ''); var suf = /^\d{4}(-.*)$/.exec(curv); setField(S.prof.di, 'years_known', ky2 ? ky2 + (suf ? suf[1] : '') : ''); repaintSec('relationship'); break; }
     case 'kspickm': { var km2 = parseInt(el.getAttribute('data-m'), 10) || 0; var kp2 = ksParts(D.directory[S.prof.di]); if(!kp2){ toast('Pick a year first'); break; } setField(S.prof.di, 'years_known', String(kp2.y) + (km2 ? '-' + String(km2).padStart(2, '0') + (kp2.d ? '-' + String(kp2.d).padStart(2, '0') : '') : '')); repaintSec('relationship'); break; }
     case 'mergeopen': openMergeSheet(di); break;
