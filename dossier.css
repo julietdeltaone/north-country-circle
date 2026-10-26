@@ -92,6 +92,16 @@ select{appearance:none;padding-right:30px;background-image:url("data:image/svg+x
 option,optgroup{background:#111111;color:var(--txt)}
 .kschips{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 14px}
 .kschips .tchip{min-height:32px;padding:0 11px;font-size:12.5px}
+.ksrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:2px 0 14px}
+.ksrow .kssel{width:auto;min-width:110px;flex:0 1 auto}
+.ksrow .kslab{color:var(--mut);font-size:13px}
+.aud-ykstrip{display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin:12px 0 0;padding:12px 14px;border:1px solid var(--line2);border-radius:2px;background:var(--bg2);cursor:pointer;color:var(--txt)}
+.aud-ykstrip:hover{border-color:var(--acc)}
+.aud-ykstrip .sp{flex:1}
+.aud-ykstrip-t{display:flex;flex-direction:column;gap:1px}
+.aud-ykstrip-t small{color:var(--mut);font-size:12px}
+.aud-ykstrip-n{color:var(--mut);font-size:12.5px;white-space:nowrap}
+.aud-ykstrip-go{color:var(--acc);font-weight:600;white-space:nowrap}
 .lab{display:block;margin:16px 0 6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
 .lab small{display:block;text-transform:none;letter-spacing:0;font-weight:400;margin-top:2px}
 .cbody>.lab:first-child{margin-top:0}
