@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.39.1';
+var APP_VERSION = '2.39.2';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -342,7 +342,7 @@ function milBadgeName(name){
 /* Rank seniority for the Groups sort-by-rank option (JD 2026-10-26):
    commissioned, then warrant, then enlisted; CSM over SGM and 1SG over
    MSG inside their grades. Lower index = more senior; unranked last. */
-var MIL_RANK_ORDER = ['GEN','LTG','MG','BG','COL','LTC','MAJ','CPT','1LT','2LT','CW5','CW4','CW3','CW2','WO1','CSM','SGM','1SG','MSG','SFC','SSG','SGT','CPL','SPC','PFC','PV2','PVT'];
+var MIL_RANK_ORDER = ['GEN','LTG','MG','BG','COL','LTC','MAJ','CPT','1LT','2LT','CDT','CW5','CW4','CW3','CW2','WO1','CSM','SGM','1SG','MSG','SFC','SSG','SGT','CPL','SPC','PFC','PV2','PVT'];
 function milRankIdx(e){
   var r = milRank(e); if(!r) return 999;
   var i = MIL_RANK_ORDER.indexOf(r);
@@ -353,7 +353,7 @@ function milRankIdx(e){
    their profile, preloaded with the rank set of the branch they are
    marked under (their groups and orgs decide the branch). */
 var MIL_RANKS = {
-  ar: { label:'U.S. Army', ranks:['PVT','PV2','PFC','SPC','CPL','SGT','SSG','SFC','MSG','1SG','SGM','CSM','WO1','CW2','CW3','CW4','CW5','2LT','1LT','CPT','MAJ','LTC','COL','BG','MG','LTG','GEN'] },
+  ar: { label:'U.S. Army', ranks:['PVT','PV2','PFC','SPC','CPL','SGT','SSG','SFC','MSG','1SG','SGM','CSM','WO1','CW2','CW3','CW4','CW5','CDT','2LT','1LT','CPT','MAJ','LTC','COL','BG','MG','LTG','GEN'] },
   af: { label:'U.S. Air Force', ranks:['AB','Amn','A1C','SrA','SSgt','TSgt','MSgt','SMSgt','CMSgt','2d Lt','1st Lt','Capt','Maj','Lt Col','Col','Brig Gen','Maj Gen','Lt Gen','Gen'] },
   mc: { label:'U.S. Marine Corps', ranks:['Pvt','PFC','LCpl','Cpl','Sgt','SSgt','GySgt','MSgt','1stSgt','MGySgt','SgtMaj','WO','CWO2','CWO3','CWO4','CWO5','2ndLt','1stLt','Capt','Maj','LtCol','Col','BGen','MajGen','LtGen','Gen'] },
   nv: { label:'U.S. Navy', ranks:['SR','SA','SN','PO3','PO2','PO1','CPO','SCPO','MCPO','CWO2','CWO3','CWO4','CWO5','ENS','LTJG','LT','LCDR','CDR','CAPT','RDML','VADM','ADM'] },
@@ -4355,7 +4355,7 @@ function grpPaintCards(){
 }
 function grpMemberRow(kind, name, di){
   var e = D.directory[di];
-  return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '">' + grpFace(e, 'lg') +
+  return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="gopen" data-di="' + di + '">' + grpFace(e, 'lg') +
     '<span class="pn"><b>' + esc(dispName(e)) + '</b> ' + milBadge(e) + '<small>' + esc(infoLine(e)) + '</small></span>' +
     '<i class="gtdot" style="background:' + tierCol(e) + '" title="' + esc(tierName(e) || 'No tier') + '"></i></a>' +
     (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>';
@@ -4370,6 +4370,7 @@ function grpPaintMembers(){
   });
   var q = GRPV.mq.trim().toLowerCase();
   var shown = q ? mem.filter(function(di){ return dispName(D.directory[di]).toLowerCase().indexOf(q) >= 0; }) : mem;
+  GRPV.shown = shown;   /* the exact on-screen order — gopen builds the profile context from it */
   box.innerHTML = shown.length ? shown.map(function(di){ return grpMemberRow(kind, name, di); }).join('') : '<p class="dim pad">' + (mem.length ? 'No one in this group matches.' : 'No one yet.') + '</p>';
   var cnt = $('#gmcount'); if(cnt) cnt.textContent = q ? shown.length + ' of ' + mem.length : String(mem.length);
 }
@@ -7408,7 +7409,7 @@ function onClick(ev){
     case 'phsort': PH_SORT = el.getAttribute('data-s') || 'grade'; store('ncc_photos_sort_v1', PH_SORT); phPaintList(); break;
     case 'grpsort': GRPV.sort = el.getAttribute('data-s') || 'name'; store('ncc_grp_sort_v1', GRPV.sort); render(); break;
     case 'phsdir': PH_SDIR = PH_SDIR < 0 ? 1 : -1; store('ncc_photos_sdir_v1', PH_SDIR < 0 ? 'desc' : 'asc'); phPaintList(); break;
-    case 'back': back(S.ctx && S.ctx.from ? S.ctx.from : 'people'); break;
+    case 'back': { var bfb = S.ctx && S.ctx.from ? S.ctx.from : 'people'; if(bfb === 'groups' && S.ctx && S.ctx.grp) bfb = 'groups/' + S.ctx.grp; back(bfb); break; }
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
     case 'audgap': { var audC4 = el.closest('.aud-card'); if(audC4){ var gTo = el.getAttribute('data-gap'); if(gTo && gTo !== audC4.getAttribute('data-gap')) audSetGap(audC4, gTo); } break; }
@@ -7460,6 +7461,7 @@ function onClick(ev){
     case 'popen': { var cur = S.ppl.cur || []; openPerson(di, ctxFrom('People', cur, +el.getAttribute('data-i'), 'people')); break; }
     case 'popen1': { var nw = (typeof NET !== 'undefined' && NET.nodes && NET.nodes.length) ? NET.nodes.map(function(n){ return n.di; }) : []; if(nw.indexOf(di) < 0) nw = people(); openPerson(di, nw.length ? ctxFrom('Network', nw, nw.indexOf(di), 'network') : null); break; }
     case 'gsopen': { var box = $('#gsr'); if(box) box.hidden = true; var gw = (S.ppl.cur && S.ppl.cur.length) ? S.ppl.cur : []; if(gw.indexOf(di) < 0) gw = people(); openPerson(di, ctxFrom('People', gw, gw.indexOf(di), 'people')); break; }
+    case 'gopen': { var gmem = (GRPV.shown && GRPV.shown.length) ? GRPV.shown : (GRPV.detail ? grpMembersOf(GRPV.detail.kind, GRPV.detail.name) : []); if(gmem.indexOf(di) < 0) gmem = [di]; var gctx = ctxFrom(GRPV.detail ? GRPV.detail.name : 'Groups', gmem, gmem.indexOf(di), 'groups'); if(GRPV.detail) gctx.grp = GRPV.detail.kind + '/' + encodeURIComponent(GRPV.detail.name); openPerson(di, gctx); break; }
     case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; go('people'); break; }
     case 'openedit': openPerson(di, (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
     case 'openfam': S.fam.focus = di; go('family'); break;
