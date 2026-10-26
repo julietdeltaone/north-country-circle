@@ -211,5 +211,51 @@
   "of": 677,
   "window_days": 30
  },
- "note": "Fresh sweep: none found - directory members in current October coverage (Kwadwo Appiah-Kubi, whose tenure item was already filed; Richard Haller; Adria Tebo; Ben Hull) had no new personal fact in the window. Held, not filed: Martha Martin (Martin's Country Store co-founder fact sourced only from the family business's own site) and Toni Squires (nurse-manager lead from a single aggregator listing)."
+ "note": "Fresh sweep: none found - directory members in current October coverage (Kwadwo Appiah-Kubi, whose tenure item was already filed; Richard Haller; Adria Tebo; Ben Hull) had no new personal fact in the window. Held, not filed: Martha Martin (Martin's Country Store co-founder fact sourced only from the family business's own site) and Toni Squires (nurse-manager lead from a single aggregator listing).",
+ "next_up": [
+  {
+   "name": "sf:aaron-cote",
+   "display": "Aaron Cote"
+  },
+  {
+   "name": "abbydaniels03",
+   "display": "Abigail Daniels"
+  },
+  {
+   "name": "sf:acacia-white",
+   "display": "Acacia White"
+  },
+  {
+   "name": "adria.t18",
+   "display": "Adria Tebo"
+  },
+  {
+   "name": "adhope2006",
+   "display": "Adriana Levendusky"
+  },
+  {
+   "name": "aidantruth",
+   "display": "Aidan Daniels"
+  },
+  {
+   "name": "alanahoover",
+   "display": "Alana Hoover"
+  },
+  {
+   "name": "aleeparker_",
+   "display": "Alessandra Parker"
+  },
+  {
+   "name": "alexfornyassembly_",
+   "display": "Alex Hammond"
+  },
+  {
+   "name": "alex_conn504",
+   "display": "Alexandra Colbert"
+  }
+ ],
+ "unchecked_remaining": 375,
+ "fresh": {
+  "found": false
+ }
 }
