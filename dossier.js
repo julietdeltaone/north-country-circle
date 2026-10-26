@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.44.0';
+var APP_VERSION = '2.45.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -280,7 +280,7 @@ var PERSONA = [
   ['neuroticism','Neuroticism','Reactive vs. steady (high is worse)'],
   ['ego','Ego','Self-important (high is worse)']
 ];
-var REL_OPTS = ['family','friend','coworker','client','online','acquaintance','by association','other'];
+var REL_OPTS = ['family','friend','coworker','military','client','online','acquaintance','by association','other'];
 var CTX_OPTS = ['work','school','military','community','church','online','other'];
 var CAT_OPTS = [['peer','Peer'],['rom','Romantic'],['fam','Family'],['auth','Authority'],['ment','Mentor'],['conf','Conflict']];
 var CP_LABELS = ['Acquaintances','Friends','Close friends','Best friends','Drifted apart','Reconnected','Working together','Dating','Roommates','Teammates','Mentor','Fell out'];
@@ -3011,6 +3011,9 @@ function secEdit(di, id){
     var ksChips = '<button type="button" class="tchip ksy' + (ksYear ? '' : ' on') + '" data-act="kspick" data-y="">Not set</button>';
     for(var ky = thisY; ky >= 1990; ky--) ksChips += '<button type="button" class="tchip ksy' + (ksYear === ky ? ' on' : '') + '" data-act="kspick" data-y="' + ky + '">' + ky + '</button>';
     ksList.forEach(function(y){ if(y < 1990 || y > thisY) ksChips += '<button type="button" class="tchip ksy' + (ksYear === y ? ' on' : '') + '" data-act="kspick" data-y="' + y + '">' + y + '</button>'; });
+    var ksP0 = ksParts(e), ksMonNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var ksMChips = '<button type="button" class="tchip ksm' + (!ksP0 || !ksP0.mo ? ' on' : '') + '" data-act="kspickm" data-m="">No month</button>';
+    ksMonNames.forEach(function(mn, ix){ ksMChips += '<button type="button" class="tchip ksm' + (ksP0 && ksP0.mo === ix + 1 ? ' on' : '') + '" data-act="kspickm" data-m="' + (ix + 1) + '">' + mn + '</button>'; });
     var gs = Object.keys(allGroups()).sort(), mine = personGroups(e);
     return lab('Tier') + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Momentum') + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '" data-sec="relationship"') +
@@ -3021,6 +3024,7 @@ function secEdit(di, id){
       lab('Score pin', 'Optional: a fixed score from 0 to 100 that overrides the computed closeness score') + '<input data-pk="score_pin" type="number" min="0" max="100" step="1" value="' + esc(gv(e, 'score_pin')) + '" placeholder="Not pinned" autocomplete="off">' +
       lab('Known since', 'Year, plus the month and day if you know them') + '<input data-pk="years_known" id="ksin" inputmode="text" list="kslist" value="' + esc(gv(e, 'years_known')) + '" placeholder="2019, 2019-03 or 2019-03-14" autocomplete="off"><datalist id="kslist">' + ksDl + '</datalist>' +
       '<div class="kschips">' + ksChips + '</div>' +
+      '<div class="kschips ksmonths">' + ksMChips + '</div>' +
       lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
       '<input class="tadd" data-grpnew placeholder="New group" autocomplete="off"></div>';
   }
@@ -4664,18 +4668,26 @@ function hmStatsCard(pop, N){
     .sort(function(a, b){ return b.s - a.s; })
     .map(function(x){ return x.l + ' ' + (totPts ? Math.round(100 * x.s / totPts) : 0) + '%'; }).join(' · ');
   var avgLine = PTRAITS.map(function(t){ return tN[t[0]] ? t[1] + ' ' + (tSumF[t[0]] / tN[t[0]]).toFixed(1) : ''; }).filter(Boolean).join(' · ');
-  var personaCard = hmStatCard('Persona makeup', hmPlainTop(tPts, 6), Object.keys(tPts).length,
-    '<p class="dim hm-note">Share of all rated points: ' + shareLine + '.</p>' +
+  var ranked = PTRAITS.map(function(t){ return { k:t[0], l:t[1], pts:(tPts[t[1]] || 0), avg: tN[t[0]] ? tSumF[t[0]] / tN[t[0]] : 0 }; }).sort(function(a, b){ return b.pts - a.pts; });
+  var shareTop = ranked.map(function(x){ return { label:x.l, c: totPts ? Math.round(100 * x.pts / totPts) : 0 }; });
+  var byAvg = ranked.filter(function(x){ return x.avg > 0; }).sort(function(a, b){ return b.avg - a.avg; });
+  var callout = byAvg.length ? '<p class="dim hm-note">Most pronounced: ' + byAvg[0].l + ' (avg ' + byAvg[0].avg.toFixed(1) + ') · Least: ' + byAvg[byAvg.length - 1].l + ' (' + byAvg[byAvg.length - 1].avg.toFixed(1) + ')</p>' : '';
+  var pToggle = '<div class="hm-ptoggle"><button type="button" class="tchip' + (HM_PERSONA_MODE === 'points' ? ' on' : '') + '" data-act="hmpersona" data-m="points">Points</button><button type="button" class="tchip' + (HM_PERSONA_MODE === 'share' ? ' on' : '') + '" data-act="hmpersona" data-m="share">Share %</button></div>';
+  var pBars = HM_PERSONA_MODE === 'share' ? hmStatBars(shareTop, shareTop.length ? shareTop[0].c : 0) : hmStatBars(hmPlainTop(tPts, 6), ranked.length ? ranked[0].pts : 0);
+  var personaCard = hmCardWrap('Persona makeup', pToggle + pBars, 6, 6,
+    callout +
+    (HM_PERSONA_MODE === 'share'
+      ? '<p class="dim hm-note">Bars are shares of all ' + totPts + ' rated points.</p>'
+      : '<p class="dim hm-note">Share of all rated points: ' + shareLine + '.</p>') +
     (avgLine ? '<p class="dim hm-note">Averages: ' + avgLine + '</p>' : '') +
     '<p class="dim hm-note">' + pRated + ' of ' + N + ' rated.</p>');
   return '<section class="card hm-blk"><header><h3>Shape of the network</h3><em class="cnt">' + N + ' people</em></header><div class="cbody"><div class="hm-stats">' +
-    tierCard + yrCard +
+    tierCard + personaCard + yrCard +
     hmStatCard('Where they are', hmFormsTop(towns, 5), Object.keys(towns).length) +
     hmCardWrap('Relationship types', hmStack(relTop, N - relBlank), Object.keys(rels).length, relTop.length,
       relBlank ? '<p class="dim hm-note">' + relBlank + ' of ' + N + ' have no relationship type on file.</p>' : '') +
     hmStatCard('Organizations', hmPlainTop(orgCounts, 5), Object.keys(orgCounts).length) +
     hmStatCard('Skills', hmFormsTop(skills, 5, true), Object.keys(skills).length) +
-    personaCard +
     hmCardWrap('Groups', hmRankRows(hmPlainTop(groupCounts, 5)), Object.keys(groupCounts).length, 5) +
     '</div></div></section>';
 }
@@ -4688,6 +4700,7 @@ function hmStatsCard(pop, N){
    they stay upright. Hover pauses the drift. --- */
 var HM_NET_RAF = 0;
 var HM_DATES = store('ncc_hm_dates') === '1';   /* Home Photos "Added" dates: collapsed by default, toggle in the card header (JD 2026-10-26) */
+var HM_PERSONA_MODE = store('ncc_hm_persona') === 'share' ? 'share' : 'points';   /* Persona makeup bars: total points or share % (JD 2026-10-26) */
 function hmNetCard(){
   netBuild();
   var parts = [], rot = [], i;
@@ -5218,7 +5231,7 @@ function phHeroHTML(e){
   var idx = phIndex(); if(!idx) return '';
   var p = idx[dispName(e)]; if(!p || !p.photo_url) return '';
   if(phReview()[String(p.name).toLowerCase()] === 'rejected') return '';
-  phSwipeInit();
+  phSwipeInit(); phKeysInit();
   var photos = phAllPhotos(p), key = String(p.name).toLowerCase();
   var cur = PH_HERO_IDX[key];
   if(cur == null){
@@ -5493,6 +5506,19 @@ function phSwipeInit(){
     } else phViewerStep(dx < 0 ? 1 : -1);
   }, {passive: true});
 }
+function phKeysInit(){
+  if(window.__phKeys) return; window.__phKeys = true;
+  document.addEventListener('keydown', function(ev){
+    if(ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
+    var t = ev.target; if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+    var d = ev.key === 'ArrowRight' ? 1 : -1;
+    if(PH_SEL){ phViewerStep(d); ev.preventDefault(); return; }
+    if(S.route.name === 'profile' && !document.body.classList.contains('sheet-open')){
+      var h = document.querySelector('.hphoto');
+      if(h){ phHeroStep(h.getAttribute('data-pname'), d); ev.preventDefault(); }
+    }
+  });
+}
 function phAllEntries(){
   /* the checked set from photos.json, plus anyone in the directory the
      batches have not reached yet (status 'unchecked') so the page
@@ -5606,7 +5632,7 @@ function phMarkSel(){
 function phSelIdx(){ return PH_LIST.findIndex(function(p){ return PH_SEL && p.name.toLowerCase() === PH_SEL.toLowerCase(); }); }
 function phOpenViewer(name){
   if(!name) return;
-  PH_SEL = name; PHV_IDX = 0; phSwipeInit();
+  PH_SEL = name; PHV_IDX = 0; phSwipeInit(); phKeysInit();
   if(phSelIdx() < 0) PH_LIST = phSortList(phFiltered(phAllEntries()));
   phPaintViewer();
   phovKeys();
@@ -5985,7 +6011,7 @@ function audCardHTML(x, i){
   var ctx = [cap(gv(e, 'relationship')), ptHandle(e) ? '@' + ptHandle(e) : '', ptLocVal(e)].filter(Boolean).join(' · ');
   return '<article class="aud-card" data-di="' + di + '" data-gap="' + gap + '" style="animation-delay:' + Math.min(i * 45, 405) + 'ms">' +
     '<div class="aud-top">' + avatar(e, 'md') +
-    '<span class="pn"><button type="button" class="aud-name" data-act="audopen" data-di="' + di + '" title="Open profile">' + esc(dispName(e)) + '</button>' + milBadge(e) +
+    '<span class="pn"><span class="pn-row"><button type="button" class="aud-name" data-act="audopen" data-di="' + di + '" title="Open profile">' + esc(dispName(e)) + '</button>' + milBadge(e) + '</span>' +
     (ctx ? '<small class="aud-ctx">' + esc(ctx) + '</small>' : '') + '</span>' + audXHTML(di) + '</div>' +
     '<div class="aud-gaps" role="group" aria-label="Missing items for this person">' + audChipsHTML(x) + '</div>' +
     '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span></p>' +
@@ -7579,6 +7605,7 @@ function onClick(ev){
     case 'plcsave': plcSaveNote(); break;
     case 'set': doSet(el); break;
     case 'kspick': { var ky2 = el.getAttribute('data-y'); var curv = String(gv(D.directory[S.prof.di], 'years_known') || ''); var suf = /^\d{4}(-.*)$/.exec(curv); setField(S.prof.di, 'years_known', ky2 ? ky2 + (suf ? suf[1] : '') : ''); repaintSec('relationship'); break; }
+    case 'kspickm': { var km2 = parseInt(el.getAttribute('data-m'), 10) || 0; var kp2 = ksParts(D.directory[S.prof.di]); if(!kp2){ toast('Pick a year first'); break; } setField(S.prof.di, 'years_known', String(kp2.y) + (km2 ? '-' + String(km2).padStart(2, '0') + (kp2.d ? '-' + String(kp2.d).padStart(2, '0') : '') : '')); repaintSec('relationship'); break; }
     case 'mergeopen': openMergeSheet(di); break;
     case 'mpick': MG.b = di; MG.surv = null; mergeStep2(); break;
     case 'mergego': {
@@ -7709,6 +7736,7 @@ function onClick(ev){
     case 'netfocusx': { var fx = el.getAttribute('data-v'); if(fx === 'org') S.net.org = null; else S.net.sel = null; netCard(); NET.dirty = true; break; }
     case 'hmorg': { var hn = el.getAttribute('data-v'); S.net.org = hn || null; S.net.sel = null; go('network'); break; }
     case 'hmdates': HM_DATES = !HM_DATES; store('ncc_hm_dates', HM_DATES ? '1' : '0'); render(); break;
+    case 'hmpersona': HM_PERSONA_MODE = el.getAttribute('data-m') === 'share' ? 'share' : 'points'; store('ncc_hm_persona', HM_PERSONA_MODE); render(); break;
     case 'netview': { var vv = el.getAttribute('data-v') === '3d' ? '3d' : '2d'; S.net.view = vv; NET.view = vv; store('ncc_netview', vv); $$('.netacts [data-act="netview"]').forEach(function(b){ var on = b.getAttribute('data-v') === vv; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); if(vv === '3d') netGlide(300, { c2x:0, c2y:0 }); NET.dirty = true; break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
