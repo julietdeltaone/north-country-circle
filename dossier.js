@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.42.0';
+var APP_VERSION = '2.43.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -394,6 +394,13 @@ function knownSinceLabel(e){
   if(p) return (p.mo ? KS_MONTHS[p.mo - 1] + (p.d ? ' ' + p.d + ', ' : ' ') : '') + p.y;
   var y = knownSinceYear(e); return y ? String(y) : '';
 }
+(function(){
+  if(window.__kbdShift) return; window.__kbdShift = true;
+  var set = function(on){ if(document.body) document.body.classList.toggle('kbd-shift', on); };
+  document.addEventListener('keydown', function(ev){ if(ev.key === 'Shift') set(true); });
+  document.addEventListener('keyup', function(ev){ if(ev.key === 'Shift') set(false); });
+  window.addEventListener('blur', function(){ set(false); });
+})();
 function audXHTML(di){
   return '<button type="button" class="aud-x" data-act="auddel" data-di="' + di + '" title="Remove this person from the circle (Shift-click to skip the confirmation)" aria-label="Remove this person">' + ic('x', 13) + '</button>';
 }
@@ -4634,6 +4641,25 @@ function hmStatsCard(pop, N){
   var yrCard = '<div class="hm-stat wide"><h4>Known since</h4>' + hmYearCols(yrEntries, yrMax) +
     (undated ? '<p class="dim hm-note">' + undated + ' with no start year on file.</p>' : '') + '</div>';
   var relTop = hmFormsTop(rels, 5, true);
+  /* Persona makeup (JD 2026-10-26): what the rated people are made
+     of — dominant-trait bars (unique top trait per person) plus the
+     per-trait averages underneath. Only JD-rated profiles count. */
+  var PTRAITS = [['openness','Openness'],['conscientiousness','Conscientiousness'],['extraversion','Extraversion'],['agreeableness','Agreeableness'],['neuroticism','Neuroticism'],['ego','Ego']];
+  var domCounts = {}, pRated = 0, pTies = 0, tSum = {}, tN = {};
+  pop.forEach(function(di){
+    var e = D.directory[di], best = null, bestV = 0, tie = false, any = false;
+    PTRAITS.forEach(function(t){
+      var v = parseInt(gv(e, t[0]), 10);
+      if(!(v >= 1 && v <= 5)) return;
+      any = true; tSum[t[0]] = (tSum[t[0]] || 0) + v; tN[t[0]] = (tN[t[0]] || 0) + 1;
+      if(v > bestV){ bestV = v; best = t[1]; tie = false; } else if(v === bestV) tie = true;
+    });
+    if(any){ pRated++; if(best && !tie) domCounts[best] = (domCounts[best] || 0) + 1; else if(best) pTies++; }
+  });
+  var avgLine = PTRAITS.map(function(t){ return tN[t[0]] ? t[1] + ' ' + (tSum[t[0]] / tN[t[0]]).toFixed(1) : ''; }).filter(Boolean).join(' · ');
+  var personaCard = hmStatCard('Persona makeup', hmPlainTop(domCounts, 6), Object.keys(domCounts).length,
+    '<p class="dim hm-note">' + pRated + ' of ' + N + ' rated' + (pTies ? ' · ' + pTies + ' tied at the top and left out of the bars' : '') + '.</p>' +
+    (avgLine ? '<p class="dim hm-note">Averages: ' + avgLine + '</p>' : ''));
   return '<section class="card hm-blk"><header><h3>Shape of the network</h3><em class="cnt">' + N + ' people</em></header><div class="cbody"><div class="hm-stats">' +
     tierCard + yrCard +
     hmStatCard('Where they are', hmFormsTop(towns, 5), Object.keys(towns).length) +
@@ -4641,6 +4667,7 @@ function hmStatsCard(pop, N){
       relBlank ? '<p class="dim hm-note">' + relBlank + ' of ' + N + ' have no relationship type on file.</p>' : '') +
     hmStatCard('Organizations', hmPlainTop(orgCounts, 5), Object.keys(orgCounts).length) +
     hmStatCard('Skills', hmFormsTop(skills, 5, true), Object.keys(skills).length) +
+    personaCard +
     hmCardWrap('Groups', hmRankRows(hmPlainTop(groupCounts, 5)), Object.keys(groupCounts).length, 5) +
     '</div></div></section>';
 }
