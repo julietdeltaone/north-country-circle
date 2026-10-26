@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.45.0';
+var APP_VERSION = '2.46.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -5166,8 +5166,25 @@ function phLoad(){
     .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos' || S.route.name === 'home') render(); });
 }
 
+function phDiByName(name){
+  var k = String(name || '').toLowerCase();
+  return people().find(function(di){ return String(dispName(D.directory[di])).toLowerCase() === k; });
+}
+function phSyncPerson(name, rev, reason){
+  var di = phDiByName(name); if(di === undefined) return;
+  var e = D.directory[di], patch = {};
+  if(rev !== null && rev !== undefined && String(gv(e, 'photo_review') || '') !== rev) patch.photo_review = rev;
+  if(reason !== null && reason !== undefined && String(gv(e, 'photo_bad_reason') || '') !== reason) patch.photo_bad_reason = reason;
+  if(Object.keys(patch).length) queuePatch(di, patch);
+}
+/* Photo verdicts persist server-side too (JD 2026-10-26): the baked
+   photo_review / photo_bad_reason profile fields are the cross-device
+   base; this browser's localStorage overlays them within the sync lag. */
 function phReview(){
-  try{ return JSON.parse(store('ncc_photos_review_v1') || '{}') || {}; }catch(x){ return {}; }
+  var out = {};
+  if(D) D.directory.forEach(function(e){ var v = String(gv(e, 'photo_review') || '').trim(); if(v) out[String(dispName(e)).toLowerCase()] = v; });
+  try{ var loc = JSON.parse(store('ncc_photos_review_v1') || '{}') || {}; Object.keys(loc).forEach(function(k){ out[k] = loc[k]; }); }catch(x){}
+  return out;
 }
 function phSetReview(name, val){
   if(!name) return;
@@ -5176,10 +5193,12 @@ function phSetReview(name, val){
     var q0 = phaQueue(phaState().filter), i0 = q0.findIndex(function(p){ return p.name === name; });
     if(i0 >= 0) adv = (q0[i0 + 1] || q0[i0 - 1] || {}).name || null;
   }
-  var r = phReview(), k = String(name).toLowerCase();
-  if(val) r[k] = val; else delete r[k];
-  store('ncc_photos_review_v1', JSON.stringify(r));
-  if(val !== 'bad'){ var bm = phBadReasons(); if(bm[k]){ delete bm[k]; store('ncc_photos_badreason_v1', JSON.stringify(bm)); } }
+  var loc = {}; try{ loc = JSON.parse(store('ncc_photos_review_v1') || '{}') || {}; }catch(x){}
+  var k = String(name).toLowerCase();
+  if(val) loc[k] = val; else delete loc[k];
+  store('ncc_photos_review_v1', JSON.stringify(loc));
+  phSyncPerson(name, val || '', (val && val !== 'bad') ? '' : null);
+  if(val !== 'bad'){ var bm2 = {}; try{ bm2 = JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){} if(bm2[k]){ delete bm2[k]; store('ncc_photos_badreason_v1', JSON.stringify(bm2)); } }
   if(S.route.name === 'photos') viewPhotos($('#view'));
   else if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){ if(adv && val && val !== 'bad') phaState().cur = adv; viewAudit($('#view')); }
 }
@@ -5322,20 +5341,29 @@ function phaQueue(f){
   return q;
 }
 var PHA_REASONS = [ ['younger', 'Younger photo'], ['dog', 'Dog'], ['object', 'Object / thing'], ['landscape', 'Landscape'], ['group', 'Group shot'], ['blurry', 'Blurry / low quality'], ['other', 'Other'] ];
-function phBadReasons(){ try{ return JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){ return {}; } }
+function phBadReasons(){
+  var out = {};
+  if(D) D.directory.forEach(function(e){ var v = String(gv(e, 'photo_bad_reason') || '').trim(); if(v) out[String(dispName(e)).toLowerCase()] = v; });
+  try{ var loc = JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; Object.keys(loc).forEach(function(k){ out[k] = loc[k]; }); }catch(x){}
+  return out;
+}
 function phBadReason(name){ return phBadReasons()[String(name || '').toLowerCase()] || ''; }
 function phReasonLabel(r){ for(var i = 0; i < PHA_REASONS.length; i++) if(PHA_REASONS[i][0] === r) return PHA_REASONS[i][1]; return ''; }
 function phSetBadReason(name, r){
-  var m = phBadReasons(), k = String(name).toLowerCase();
+  var m = {}; try{ m = JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){}
+  var k = String(name).toLowerCase();
   if(r) m[k] = r; else delete m[k];
   store('ncc_photos_badreason_v1', JSON.stringify(m));
+  phSyncPerson(name, null, r || '');
   phaRender();
 }
 function phClearVerdict(name){
-  var r = phReview(), k = String(name).toLowerCase();
-  delete r[k];
-  store('ncc_photos_review_v1', JSON.stringify(r));
-  var m = phBadReasons(); if(m[k]){ delete m[k]; store('ncc_photos_badreason_v1', JSON.stringify(m)); }
+  var k = String(name).toLowerCase();
+  var loc = {}; try{ loc = JSON.parse(store('ncc_photos_review_v1') || '{}') || {}; }catch(x){}
+  delete loc[k]; store('ncc_photos_review_v1', JSON.stringify(loc));
+  var m = {}; try{ m = JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){}
+  if(m[k]){ delete m[k]; store('ncc_photos_badreason_v1', JSON.stringify(m)); }
+  phSyncPerson(name, '', '');
   phaState().cur = name;
   viewAudit($('#view'));
 }
@@ -5885,8 +5913,48 @@ function audGaps(e){
    entry per gap still open on the card, so none of them is dealt again. */
 var AUD_DISMISS = (function(){ try{ return JSON.parse(store('ncc_aud_skip') || '{}') || {}; }catch(x){ return {}; } })();
 function audPair(di, gap){ var e = D.directory[di]; return e ? pkey(e) + '|' + gap : ''; }
+/* Server-side audit state (JD 2026-10-26): dismissals used to live
+   ONLY in this browser's localStorage, so audited gaps (phones he
+   passed on, photos he already judged) resurrected on any other
+   browser, profile, or storage reset. Dismissals now also persist
+   per person in the Sheet (audit_dismissed = comma list of gap ids)
+   through the normal outbox, and the baked value counts as dismissed
+   on every device. localStorage remains as the within-lag cache. */
+function audDismissedServer(di){
+  return String(gv(D.directory[di], 'audit_dismissed') || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+}
+function audDismissSyncPerson(di){
+  var e = D.directory[di]; if(!e) return;
+  var pk = pkey(e), list = [];
+  Object.keys(AUD_DISMISS).forEach(function(p){ var ix = p.lastIndexOf('|'); if(p.slice(0, ix) === pk) list.push(p.slice(ix + 1)); });
+  list.sort();
+  var want = list.join(',');
+  if(String(gv(e, 'audit_dismissed') || '') !== want) queuePatch(di, { audit_dismissed: want });
+}
+function audDismissSyncPairs(pairs){
+  var seen = {};
+  (pairs || []).forEach(function(p){ var ix = p.lastIndexOf('|'); var di = PK2I[p.slice(0, ix)]; if(di !== undefined && !seen[di]){ seen[di] = 1; audDismissSyncPerson(di); } });
+}
 function audOpenGaps(di){
-  return audGaps(D.directory[di]).filter(function(g){ return !AUD_DISMISS[audPair(di, g)]; });
+  var srv = audDismissedServer(di);
+  return audGaps(D.directory[di]).filter(function(g){ return !AUD_DISMISS[audPair(di, g)] && srv.indexOf(g) < 0; });
+}
+/* One-time migration: seed the local dismissal store from the baked
+   server values, then push every locally-held dismissal and photo
+   verdict up through the outbox so this browser's audit history
+   becomes permanent and visible on every device. */
+function auditStateMigrate(){
+  if(store('ncc_state_migrated_v1')) return;
+  D.directory.forEach(function(e, di){ audDismissedServer(di).forEach(function(g){ AUD_DISMISS[audPair(di, g)] = 1; }); });
+  store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+  var touched = {};
+  Object.keys(AUD_DISMISS).forEach(function(p){ var ix = p.lastIndexOf('|'); var di = PK2I[p.slice(0, ix)]; if(di !== undefined) touched[di] = 1; });
+  Object.keys(touched).forEach(function(di){ audDismissSyncPerson(+di); });
+  var r = {}; try{ r = JSON.parse(store('ncc_photos_review_v1') || '{}') || {}; }catch(x){}
+  Object.keys(r).forEach(function(k){ if(r[k]) phSyncPerson(k, r[k], null); });
+  var bm = {}; try{ bm = JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){}
+  Object.keys(bm).forEach(function(k){ if(bm[k]) phSyncPerson(k, null, bm[k]); });
+  store('ncc_state_migrated_v1', '1');
 }
 /* Saved for later: { pkey: gap } in localStorage ncc_aud_later — the gap
    that was on show when JD parked the person, so the card reopens on it.
@@ -6154,6 +6222,7 @@ function audUndoLast(){
   else if(act.kind === 'pass'){
     (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+    audDismissSyncPairs(act.pairs);
     if(x && card){
       if(x.gaps.indexOf(act.gap) < 0) x.gaps.splice(Math.min(act.gapIndex == null ? x.gaps.length : act.gapIndex, x.gaps.length), 0, act.gap);
       if(x.dropped) x.dropped--;
@@ -6165,11 +6234,13 @@ function audUndoLast(){
        phone gaps are back on the wall exactly as before */
     (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+    audDismissSyncPairs(act.pairs);
     if(S.audit){ S.audit.shown = null; viewAudit($('#view')); }
   }
   else if(act.kind === 'done'){
     (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+    audDismissSyncPairs(act.pairs);
     if(act.submit){ audReverseEntry(act.submit.entry); if(S.audit) S.audit.done = Math.max(0, S.audit.done - 1); audNoteUnfill(act.submit); }
     audRestock(act.di, act.submit ? act.submit.gap : null);
   }
@@ -6256,6 +6327,7 @@ function audFinish(card, kb, submitFirst){
   var pairs = [];
   x.gaps.forEach(function(g){ var p = audPair(di, g); AUD_DISMISS[p] = 1; pairs.push(p); });
   if(pairs.length) store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+  if(pairs.length) audDismissSyncPairs(pairs);
   var n = pairs.length;
   x.gaps = [];
   var text = r ? ('Done · ' + r.val + ' saved' + (n ? ', ' + n + ' more closed out' : '')) : ('Done · ' + n + ' closed out for ' + dispName(D.directory[di]));
@@ -6285,6 +6357,7 @@ function audPass(card){
   var pair = audPair(di, gap);
   AUD_DISMISS[pair] = 1;
   store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+  audDismissSyncPerson(di);
   x.gaps = x.gaps.filter(function(g){ return g !== gap; });
   var text = 'Passed · ' + AUD_GAPS[gap].tag + ' closed out';
   audLog({ kind:'pass', di:di, gap:gap, gapIndex:gapIndex, pairs:[pair], text:text });
@@ -6309,6 +6382,7 @@ function audBulkPhone(){
   var pairs = targets.map(function(di){ return audPair(di, 'phone'); });
   pairs.forEach(function(p){ AUD_DISMISS[p] = 1; });
   store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
+  targets.forEach(function(di){ audDismissSyncPerson(di); });
   var text = 'Phone gaps closed out · ' + targets.length + ' ' + (targets.length === 1 ? 'person' : 'people');
   A.shown = null;
   viewAudit($('#view'));
@@ -6935,9 +7009,10 @@ var AUD_MODES = [
   { k:'cat',    l:'Category Run' },
   { k:'finish', l:'Finish Line' },
   { k:'lima',   l:'Lima Charlie' },
-  { k:'photos', l:'Photo Audit' }
+  { k:'photos', l:'Photo Audit' },
+  { k:'years',  l:'Years Known' }
 ];
-function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' || m === 'lima' || m === 'photos' ? m : 'cards'; }
+function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' || m === 'lima' || m === 'photos' || m === 'years' ? m : 'cards'; }
 /* Daily goal (Duolingo pattern, minus the nagging): fills today vs a
    goal JD sets himself, persisted per calendar day. */
 function audDay(){
@@ -7052,6 +7127,7 @@ function audDealMode(){
   else if(m === 'cat') audDealCat();
   else if(m === 'lima') lcEnsureDeck();
   else if(m === 'photos'){ /* the photo desk manages its own queue */ }
+  else if(m === 'years'){ /* the Years Known runner manages its own queue */ }
   else audDeal();
 }
 function audSetMode(m){
@@ -7446,9 +7522,119 @@ function audWatchCols(){
   });
 }
 
+/* ============================================================
+   Years Known run (JD 2026-10-26): a full-screen, one-contact-at-a-
+   time runner for the Known Since field. Expanded year / month /
+   day lists with full keyboard control: Up/Down move, Left/Right
+   or Tab switch column, digits type the value (4-digit years jump
+   ahead a column), Enter saves and moves on, S skips, Backspace
+   clears a segment, Esc leaves. Saves ride setField, the same path
+   as every other editor. The queue runs missing-years first. */
+var YK = null;
+function ykQueue(){
+  var miss = [], have = [];
+  people().forEach(function(di){ (knownSinceYear(D.directory[di]) ? have : miss).push(di); });
+  var byName = function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); };
+  miss.sort(byName); have.sort(byName);
+  return miss.concat(have);
+}
+function ykState(){
+  if(!YK) YK = { q: ykQueue(), i: 0, col: 0, y: 0, m: 0, d: 0, buf: '', bufT: 0, saved: 0 };
+  return YK;
+}
+function ykLoad(){
+  var st = ykState(), e = D.directory[st.q[st.i]];
+  var p = e ? ksParts(e) : null;
+  st.y = p ? p.y : 0; st.m = p ? p.mo : 0; st.d = p ? p.d : 0; st.buf = '';
+}
+function ykCols(){
+  var curY = new Date().getFullYear(), yrs = [{ v: 0, l: 'Not set' }];
+  for(var y = curY; y >= 1990; y--) yrs.push({ v: y, l: String(y) });
+  var mons = [{ v: 0, l: '—' }]; KS_MONTHS.forEach(function(mn, ix){ mons.push({ v: ix + 1, l: mn }); });
+  var days = [{ v: 0, l: '—' }]; for(var d = 1; d <= 31; d++) days.push({ v: d, l: String(d) });
+  return [yrs, mons, days];
+}
+function ykVal(){
+  var st = ykState();
+  if(!st.y) return '';
+  var dim = [31, (st.y % 4 === 0 && (st.y % 100 !== 0 || st.y % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  var d = st.d; if(st.m && d > dim[st.m - 1]) d = dim[st.m - 1];
+  return String(st.y) + (st.m ? '-' + String(st.m).padStart(2, '0') + (d ? '-' + String(d).padStart(2, '0') : '') : '');
+}
+function ykRender(){
+  var w = $('#ykwrap'); if(!w) return;
+  var st = ykState();
+  if(!st.q.length){ w.innerHTML = '<div class="aud-caught"><h3>Nobody in the directory</h3></div>'; return; }
+  if(st.i >= st.q.length){
+    w.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Run complete</h3><p>' + st.saved + ' saved this run. Everyone has had a pass.</p><p><button type="button" class="btn primary" data-act="ykrestart">Start over</button></p></div>';
+    return;
+  }
+  var di = st.q[st.i], e = D.directory[di];
+  var missing = st.q.filter(function(x){ return !knownSinceYear(D.directory[x]); }).length;
+  var cols = ykCols(), sel = [st.y, st.m, st.d], heads = ['Year', 'Month', 'Day'];
+  var colsHTML = cols.map(function(items, ci){
+    return '<div class="yk-col' + (st.col === ci ? ' focus' : '') + '"><h4>' + heads[ci] + '</h4><div class="yk-list" data-col="' + ci + '">' +
+      items.map(function(it){ return '<button type="button" class="yk-it' + (sel[ci] === it.v ? ' on' : '') + '" data-act="ykpick" data-c="' + ci + '" data-v="' + it.v + '">' + esc(it.l) + '</button>'; }).join('') + '</div></div>';
+  }).join('');
+  var nv = ykVal();
+  w.innerHTML = '<div class="yk">' +
+    '<div class="yk-head">' + avatar(e, 'lg') + '<div class="yk-who"><button type="button" class="aud-name yk-name" data-act="audopen" data-di="' + di + '">' + esc(dispName(e)) + '</button>' +
+    '<p class="dim yk-cur">On file: ' + (knownSinceLabel(e) || 'not set') + ' &middot; Will save: <b>' + (nv ? esc(knownSinceLabel({ profile: { years_known: nv } })) : 'not set') + '</b></p>' +
+    '<p class="dim yk-prog">Person ' + (st.i + 1) + ' of ' + st.q.length + ' &middot; ' + missing + ' still missing a year &middot; ' + st.saved + ' saved this run</p></div></div>' +
+    '<div class="yk-cols">' + colsHTML + '</div>' +
+    '<div class="yk-foot"><button type="button" class="btn ghost" data-act="ykskip">Skip (S)</button><button type="button" class="btn primary" data-act="yksave">Save &amp; next (Enter)</button>' +
+    '<span class="dim yk-keys">Up/Down move &middot; Left/Right column &middot; type digits to jump &middot; Backspace clears &middot; Esc exits</span></div></div>';
+  var on = w.querySelector('.yk-col.focus .yk-it.on');
+  if(on) on.scrollIntoView({ block: 'nearest' });
+}
+function ykAdvance(){ var st = ykState(); st.i++; st.col = 0; if(st.i < st.q.length) ykLoad(); ykRender(); }
+function ykSave(){
+  var st = ykState(); if(st.i >= st.q.length) return;
+  var di = st.q[st.i], e = D.directory[di], v = ykVal();
+  if(String(gv(e, 'years_known') || '') !== v){ setField(di, 'years_known', v); st.saved++; }
+  ykAdvance();
+}
+function ykKeysInit(){
+  if(window.__ykKeys) return; window.__ykKeys = true;
+  document.addEventListener('keydown', function(ev){
+    if(S.route.name !== 'audit' || !S.audit || audMode() !== 'years') return;
+    if(document.body.classList.contains('sheet-open')) return;
+    var t = ev.target; if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+    var st = ykState(); if(st.i >= st.q.length) return;
+    var cols = ykCols(), items = cols[st.col], sel = [st.y, st.m, st.d][st.col];
+    var ix = items.findIndex(function(it){ return it.v === sel; }); if(ix < 0) ix = 0;
+    var set = function(v){ if(st.col === 0) st.y = v; else if(st.col === 1) st.m = v; else st.d = v; };
+    var k = ev.key;
+    if(k === 'ArrowDown'){ set(items[Math.min(items.length - 1, ix + 1)].v); st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'ArrowUp'){ set(items[Math.max(0, ix - 1)].v); st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'ArrowRight' || (k === 'Tab' && !ev.shiftKey)){ st.col = (st.col + 1) % 3; st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'ArrowLeft' || (k === 'Tab' && ev.shiftKey)){ st.col = (st.col + 2) % 3; st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'Home'){ set(items[0].v); st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'End'){ set(items[items.length - 1].v); st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'PageDown'){ set(items[Math.min(items.length - 1, ix + 10)].v); st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'PageUp'){ set(items[Math.max(0, ix - 10)].v); st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'Enter'){ ykSave(); ev.preventDefault(); }
+    else if(k === 'Backspace' || k === 'Delete'){ set(0); st.buf = ''; ykRender(); ev.preventDefault(); }
+    else if(k === 'Escape'){ audSetMode('cards'); ev.preventDefault(); }
+    else if((k === 's' || k === 'S') && !ev.metaKey && !ev.ctrlKey){ ykAdvance(); ev.preventDefault(); }
+    else if(/^[0-9]$/.test(k)){
+      var now = Date.now(); if(now - st.bufT > 900) st.buf = '';
+      st.buf += k; st.bufT = now;
+      var num = parseInt(st.buf, 10);
+      var hit = items.find(function(it){ return it.v === num; });
+      if(hit){ set(hit.v); if(st.buf.length >= (st.col === 0 ? 4 : 2)){ st.col = Math.min(2, st.col + 1); st.buf = ''; } }
+      ykRender(); ev.preventDefault();
+    }
+    else if(st.col === 1 && /^[a-zA-Z]$/.test(k)){
+      var hits = items.filter(function(it){ return it.v > 0 && it.l.toLowerCase().indexOf(k.toLowerCase()) === 0; });
+      if(hits.length){ var cur = hits.findIndex(function(it){ return it.v === st.m; }); set(hits[(cur + 1) % hits.length].v); ykRender(); ev.preventDefault(); }
+    }
+  });
+}
+
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
-  if(['cards', 'rapid', 'cat', 'finish', 'lima', 'photos'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
+  if(['cards', 'rapid', 'cat', 'finish', 'lima', 'photos', 'years'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
   var m = audMode();
@@ -7462,12 +7648,13 @@ function viewAudit(v){
     '<div id="audmodebar">' + audModeBarHTML() + '</div>' +
     (m === 'rapid'
       ? '<div class="aud-stage-wrap"><div class="aud-stack" id="audstack"><div class="aud-peek p2"></div><div class="aud-peek p1"></div><div class="aud-grid aud-stage" id="audgrid"></div></div></div>'
-      : m === 'lima' ? '<div id="lcwrap"></div>' : m === 'photos' ? '<div id="phawrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
+      : m === 'lima' ? '<div id="lcwrap"></div>' : m === 'photos' ? '<div id="phawrap"></div>' : m === 'years' ? '<div id="ykwrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
     '<div id="audempty"></div>' +
     '<div class="aud-toast" id="audtoast" hidden role="status"></div></div>';
   var grid = $('#audgrid');
   if(m === 'lima'){ lcRender(); }
   else if(m === 'photos'){ phaRender(); }
+  else if(m === 'years'){ if(!YK) ykLoad(); ykKeysInit(); ykRender(); }
   else if(S.audit.blitzDone){
     grid.innerHTML = '<div class="aud-caught aud-blitzsum"><h3>Blitz over</h3>' +
       '<p class="aud-blitzstats"><b>' + S.audit.blitzDone.fills + '</b> fills · best streak <b>' + S.audit.blitzDone.best + '</b> · <b>' + (S.audit.blitzDone.fills / 2).toFixed(1) + '</b> per minute</p>' +
@@ -7737,6 +7924,10 @@ function onClick(ev){
     case 'hmorg': { var hn = el.getAttribute('data-v'); S.net.org = hn || null; S.net.sel = null; go('network'); break; }
     case 'hmdates': HM_DATES = !HM_DATES; store('ncc_hm_dates', HM_DATES ? '1' : '0'); render(); break;
     case 'hmpersona': HM_PERSONA_MODE = el.getAttribute('data-m') === 'share' ? 'share' : 'points'; store('ncc_hm_persona', HM_PERSONA_MODE); render(); break;
+    case 'ykpick': { var yst = ykState(); yst.col = +el.getAttribute('data-c'); var yvv = +el.getAttribute('data-v'); if(yst.col === 0) yst.y = yvv; else if(yst.col === 1) yst.m = yvv; else yst.d = yvv; yst.buf = ''; ykRender(); break; }
+    case 'yksave': ykSave(); break;
+    case 'ykskip': ykAdvance(); break;
+    case 'ykrestart': YK = null; ykLoad(); ykRender(); break;
     case 'netview': { var vv = el.getAttribute('data-v') === '3d' ? '3d' : '2d'; S.net.view = vv; NET.view = vv; store('ncc_netview', vv); $$('.netacts [data-act="netview"]').forEach(function(b){ var on = b.getAttribute('data-v') === vv; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); if(vv === '3d') netGlide(300, { c2x:0, c2y:0 }); NET.dirty = true; break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
@@ -8026,6 +8217,7 @@ function boot(){
         });
         try{ applyOutbox(); }catch(px){}
         winsApplyAll();
+        try{ auditStateMigrate(); }catch(mx){}
         computeNewGain();
         history.replaceState({ d:0 }, '', location.hash || '#/home');
         render();
