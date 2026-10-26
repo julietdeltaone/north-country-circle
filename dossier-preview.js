@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.42.0';
+var APP_VERSION = '2.43.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -394,6 +394,13 @@ function knownSinceLabel(e){
   if(p) return (p.mo ? KS_MONTHS[p.mo - 1] + (p.d ? ' ' + p.d + ', ' : ' ') : '') + p.y;
   var y = knownSinceYear(e); return y ? String(y) : '';
 }
+(function(){
+  if(window.__kbdShift) return; window.__kbdShift = true;
+  var set = function(on){ if(document.body) document.body.classList.toggle('kbd-shift', on); };
+  document.addEventListener('keydown', function(ev){ if(ev.key === 'Shift') set(true); });
+  document.addEventListener('keyup', function(ev){ if(ev.key === 'Shift') set(false); });
+  window.addEventListener('blur', function(){ set(false); });
+})();
 function audXHTML(di){
   return '<button type="button" class="aud-x" data-act="auddel" data-di="' + di + '" title="Remove this person from the circle (Shift-click to skip the confirmation)" aria-label="Remove this person">' + ic('x', 13) + '</button>';
 }
