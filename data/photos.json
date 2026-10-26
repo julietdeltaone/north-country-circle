@@ -135,22 +135,19 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "City on a Hill Somerville staff page photo sits directly above the heading 'Alexis Krapf, Director of Discipleship, Deacon' \u2014 a labeled staff photo. Likely the same person: originally from Upstate NY, self-described grammar/language lover (modern English and ancient Greek) matching her SUNY Potsdam Presidential Scholars profile (Alexis Donnelly, Spanish/English-Writing, Linguistics minor), with two 2025 Gordon-Conwell master's degrees; 'Krapf' appears to be a married name. Strongly suggested but not explicitly proven \u2014 likely, not confirmed. Her Potsdam profile also embeds an alt-tied photo ('Alexis Donnelly Image') whose URL could not be extracted.",
-   "name": "Alexis Donnely",
-   "photo_url": "https://images.squarespace-cdn.com/content/v1/5ba6c72ae5f7d1371ddb3b72/36ddbc3e-8498-42d7-922e-50bf40ce1ba8/147+Angelina+Rose+.jpg",
-   "source_page": "https://www.coahsomerville.org/leadership-staff",
-   "status": "likely",
-   "type": "staff photo",
-   "added_approx": "Oct 2026"
-  },
-  {
    "evidence": "Instagram profile @alexis_krapf (display name \"Alexis Nicole\"); bio: \"saved by grace. always learning. \ud83e\udd0d\".",
-   "name": "Alexis Nicole",
+   "name": "Alexis Donnely",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/793640019_18622001695057848_7921613203729665776_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=MkHmBVcErIsQ7kNvwEhKWqt&_nc_oc=Adoe17RYofYp6EOw1PRwGH2m-rChD0EwS6yMFcHg8J63t7zndrmKjVfXuf9IRPOJlqNlwjerzfUy-h8qMFaGvOpo&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=YeGfST8aLsEvoTOS-O7klw&oh=00_AQMwPbpTgT9c4n5QDLVAQPQNjWpRnx-lvbPL-LKtsQDMvQ&oe=6AE026AE",
    "source_page": "https://www.instagram.com/alexis_krapf/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://images.squarespace-cdn.com/content/v1/5ba6c72ae5f7d1371ddb3b72/36ddbc3e-8498-42d7-922e-50bf40ce1ba8/147+Angelina+Rose+.jpg",
+     "note": "Earlier filed photo (Squarespace), status was likely"
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -271,14 +268,6 @@
    "photo_url": null,
    "source_page": "https://4.files.edl.io/4911/05/08/24/114028-07c836f4-2825-4820-8002-2d78e26719e8.pdf",
    "status": "no_photo",
-   "type": null
-  },
-  {
-   "evidence": "Only link on file is Facebook (auth).",
-   "name": "Anastasia Colbert",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
    "type": null
   },
   {
@@ -3988,16 +3977,8 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
-   "name": "Marissa Carl",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
-  },
-  {
    "evidence": "Instagram profile @marissachelan (display name \"marissa\"); bio: \"i apologize for any convenience\".",
-   "name": "Marissa Chelan",
+   "name": "Marissa Carl",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/670141189_18586534906054649_5102502110924176538_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=p97utRJXCyUQ7kNvwGQi3lF&_nc_oc=Adrzc7_58uNpnDfNfvwOM-VHMbnGyPVOax4qSXBz64P19In0VMiy_YslOVu1d-8R0ZyKWEx5JokarRc6g546t1Ca&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=XiHOkhZDGu4lnLmWOUaKuA&oh=00_AQOhYwae64raSMA-f_UupaNbAvpZuKAscJ066hlhEDKatA&oe=6AE040C9",
    "source_page": "https://www.instagram.com/marissachelan/",
    "status": "confirmed",
