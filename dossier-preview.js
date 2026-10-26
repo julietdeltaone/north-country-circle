@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.41.0';
+var APP_VERSION = '2.42.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -378,6 +378,24 @@ function knownSinceYear(e){
   if(n >= 1900 && n <= 2100) return n;
   if(n > 0 && n < 100) return new Date().getFullYear() - n;
   return 0;
+}
+var KS_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function ksParts(e){
+  var v = String(gv(e, 'years_known') || '').trim();
+  var m = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(v);
+  if(!m) return null;
+  var y = +m[1]; if(y < 1900 || y > 2100) return null;
+  var mo = m[2] ? +m[2] : 0, d = m[3] ? +m[3] : 0;
+  if(mo > 12 || d > 31) return null;
+  return { y:y, mo:mo, d:d };
+}
+function knownSinceLabel(e){
+  var p = ksParts(e);
+  if(p) return (p.mo ? KS_MONTHS[p.mo - 1] + (p.d ? ' ' + p.d + ', ' : ' ') : '') + p.y;
+  var y = knownSinceYear(e); return y ? String(y) : '';
+}
+function audXHTML(di){
+  return '<button type="button" class="aud-x" data-act="auddel" data-di="' + di + '" title="Remove this person from the circle (Shift-click to skip the confirmation)" aria-label="Remove this person">' + ic('x', 13) + '</button>';
 }
 function liveEntry(e){ var p = e.profile || {}; return p.deleted !== '1' && p.audit !== 'trash' && !(p.merged_into || '').trim(); }
 function isChecked(e){ return (e.profile || {}).audit === 'audited'; }
@@ -1408,7 +1426,7 @@ function buildDossierDoc(e){
   var evs = sortedEvents(e).map(function(o){ return { date:o.ev.date || '', summary:o.ev.summary || '', detail:o.ev.detail || '' }; });
   var T = {
     name:name, aka:aka, handle:handle, classif:classif, rel:gv(e, 'relationship'), ctx:gv(e, 'context'), tierCol:tierCol(e), contact:contact, synBody:synBody,
-    locCity:e.city || '', locHome:e.hometown || '', knownSince:knownSinceYear(e),
+    locCity:e.city || '', locHome:e.hometown || '', knownSince:knownSinceLabel(e),
     bars:bars, extras:extras, assoc:assocNames,
     notesText:gv(e, 'notes') ? String(gv(e, 'notes')) : '', fpText:fp ? String(fp) : '',
     evs:evs, tier:tierName(e), initial:(name || '·').trim().charAt(0).toUpperCase()
@@ -2419,7 +2437,7 @@ function ptEdHTML(di, k){
   if(k === 'loc'){
     return '<div class="pted-h">Location on file</div><p class="pted-note">One location for this person — it replaces the Facebook-derived place everywhere. Clear it to go back to the derived place.</p>' + ptTextEd(gv(e, 'location_on_file'), ptLocVal(e) || 'Town');
   }
-  if(k === 'years') return '<div class="pted-h">Known since</div>' + ptTextEd(knownSinceYear(e) ? String(knownSinceYear(e)) : '', 'Year, e.g. 2019');
+  if(k === 'years') return '<div class="pted-h">Known since</div>' + ptTextEd(String(gv(e, 'years_known') || ''), 'Year, e.g. 2019, 2019-03 or 2019-03-14');
   if(k === 'phone') return '<div class="pted-h">Phone</div>' + ptTextEd(gv(e, 'phone'), 'Phone number');
   if(k === 'email') return '<div class="pted-h">Email</div>' + ptTextEd(gv(e, 'email'), 'Email address');
   if(k === 'orgs'){
@@ -2744,7 +2762,7 @@ function repaintTop(){
 }
 
 function heroHTML(di){
-  var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context')), knownSinceYear(e) ? 'Known since ' + knownSinceYear(e) : ''].filter(Boolean).join(' · ');
+  var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context')), knownSinceLabel(e) ? 'Known since ' + knownSinceLabel(e) : ''].filter(Boolean).join(' · ');
   /* Location on file gets its own line under the name (JD 2026-10-15): resolved location_on_file -> city -> hometown, normalized; the @handle never renders in the hero (it lives in the Contact card). */
   var loc = ptNormLoc(ptLocVal(e));
   var ds = sortDegrees(degreesOf(e)).slice(0, 3).map(function(d){
@@ -2813,7 +2831,7 @@ function secView(di, id){
   }
   if(id === 'relationship'){
     var tiles = [['Tier', tierOf(e) ? TIERS[tierOf(e)].n : ''], ['Relationship', cap(gv(e, 'relationship'))], ['Context', cap(gv(e, 'context'))], ['Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1]],
-      ['Known since', knownSinceYear(e) ? knownSinceYear(e) + ' (' + Math.max(0, new Date().getFullYear() - knownSinceYear(e)) + ' yrs)' : ''], ['Momentum', momVal(e) ? MOM_LABELS[momVal(e)] : '']];
+      ['Known since', knownSinceLabel(e) ? knownSinceLabel(e) + ' (' + Math.max(0, new Date().getFullYear() - knownSinceYear(e)) + ' yrs)' : ''], ['Momentum', momVal(e) ? MOM_LABELS[momVal(e)] : '']];
     var gs = personGroups(e);
     /* Rank picker (JD 2026-10-26): shown when the person is in a
        military capacity (branch detected from groups/orgs) or already
@@ -2994,7 +3012,7 @@ function secEdit(di, id){
       lab('Context') + seg('context', CTX_OPTS, gv(e, 'context'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Category') + seg('category', CAT_OPTS, gv(e, 'category'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Score pin', 'Optional: a fixed score from 0 to 100 that overrides the computed closeness score') + '<input data-pk="score_pin" type="number" min="0" max="100" step="1" value="' + esc(gv(e, 'score_pin')) + '" placeholder="Not pinned" autocomplete="off">' +
-      lab('Known since', 'Type a year (suggestions appear), or tap one') + '<input data-pk="years_known" id="ksin" inputmode="numeric" list="kslist" value="' + (ksYear || '') + '" placeholder="e.g. 2019" autocomplete="off"><datalist id="kslist">' + ksDl + '</datalist>' +
+      lab('Known since', 'Year, plus the month and day if you know them') + '<input data-pk="years_known" id="ksin" inputmode="text" list="kslist" value="' + esc(gv(e, 'years_known')) + '" placeholder="2019, 2019-03 or 2019-03-14" autocomplete="off"><datalist id="kslist">' + ksDl + '</datalist>' +
       '<div class="kschips">' + ksChips + '</div>' +
       lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
       '<input class="tadd" data-grpnew placeholder="New group" autocomplete="off"></div>';
@@ -5297,7 +5315,7 @@ function phaRender(){
     var curUrl = phFrameFor(p.name, p).url || p.photo_url;
     var thumbs = (p.also && p.also.length) ? '<div class="pha-alts">' + [p.photo_url].concat(p.also.map(function(a){ return a.url; })).map(function(u){ return '<button type="button" class="pha-alt' + (u === curUrl ? ' on' : '') + '" data-act="phaalt" data-pname="' + esc(p.name) + '" data-u="' + esc(u) + '"><img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></button>'; }).join('') + '</div>' : '';
     view = '<div class="pha-view"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs +
-      '<div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + (e ? milBadge(e) : '') + badge + '</div>' +
+      '<div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + (e ? milBadge(e) : '') + badge + (e ? audXHTML(di) : '') + '</div>' +
       '<div class="pha-pos">' + (idx >= 0 ? (idx + 1) + ' of ' + q.length + ' in this queue' : 'Outside this queue') + ' &middot; ' + esc(p.type || 'photo') + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
       (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
@@ -5838,9 +5856,13 @@ function audYearList(){
 }
 function audYearOk(v){
   v = String(v || '').trim();
-  if(!/^\d{4}$/.test(v)) return false;
-  var n = +v;
-  return n >= 1900 && n <= new Date().getFullYear();
+  var m = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(v);
+  if(!m) return false;
+  var n = +m[1];
+  if(n < 1900 || n > new Date().getFullYear()) return false;
+  if(m[2] && (+m[2] < 1 || +m[2] > 12)) return false;
+  if(m[3] && (+m[3] < 1 || +m[3] > 31)) return false;
+  return true;
 }
 function audRemaining(){
   var n = 0;
@@ -5902,7 +5924,7 @@ function audEdHTML(di, gap){
     }).join('') + '</div>';
   }
   if(gap === 'loc') return '<div class="pted-add"><input class="aud-in" placeholder="Town, ST — e.g. Potsdam, NY" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
-  if(gap === 'years') return '<div class="pted-add"><input class="aud-in aud-year" inputmode="numeric" placeholder="Year, e.g. 2019" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
+  if(gap === 'years') return '<div class="pted-add"><input class="aud-in aud-year" inputmode="text" placeholder="Year, e.g. 2019, 2019-03 or 2019-03-14" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'phone') return '<input class="aud-in" type="tel" placeholder="Phone number" autocomplete="off">';
   if(gap === 'orgs') return '<div class="pted-add"><input class="aud-in" placeholder="Add an organization" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'skills') return '<div class="pted-add"><input class="aud-in" placeholder="Add a skill" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
@@ -5929,7 +5951,7 @@ function audCardHTML(x, i){
   return '<article class="aud-card" data-di="' + di + '" data-gap="' + gap + '" style="animation-delay:' + Math.min(i * 45, 405) + 'ms">' +
     '<div class="aud-top">' + avatar(e, 'md') +
     '<span class="pn"><button type="button" class="aud-name" data-act="audopen" data-di="' + di + '" title="Open profile">' + esc(dispName(e)) + '</button>' + milBadge(e) +
-    (ctx ? '<small class="aud-ctx">' + esc(ctx) + '</small>' : '') + '</span></div>' +
+    (ctx ? '<small class="aud-ctx">' + esc(ctx) + '</small>' : '') + '</span>' + audXHTML(di) + '</div>' +
     '<div class="aud-gaps" role="group" aria-label="Missing items for this person">' + audChipsHTML(x) + '</div>' +
     '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span></p>' +
     '<div class="aud-ed">' + audEdHTML(di, gap) + '</div>' +
@@ -7127,13 +7149,13 @@ function lcDeckCardHTML(di){
   var e = D.directory[di], note = lcNote(e).trim();
   var line2 = [infoLine(e), ptLocVal(e)].filter(Boolean).join(' · ');
   var orgs = orgsOf(e).slice(0, 2).join(' · ');
-  return '<button type="button" class="lc-card" data-act="lcopen" data-di="' + di + '">' +
+  return '<span class="lc-wrap"><button type="button" class="lc-card" data-act="lcopen" data-di="' + di + '">' +
     '<span class="lc-card-top">' + avatar(e, 'md') + (note ? '<span class="lc-mark" title="A Lima Charlie note is waiting on this profile">LC</span>' : '') + '</span>' +
     '<span class="lc-card-name">' + esc(dispName(e)) + milBadge(e) + '</span>' +
     (line2 ? '<span class="lc-card-line">' + esc(line2) + '</span>' : '') +
     (orgs ? '<span class="lc-card-line dim">' + esc(orgs) + '</span>' : '') +
     (note ? '<span class="lc-card-note">' + esc(note.length > 90 ? note.slice(0, 90) + '…' : note) + '</span>' : '') +
-    '</button>';
+    '</button>' + audXHTML(di) + '</span>';
 }
 function lcRender(){
   var wrap = $('#lcwrap'); if(!wrap) return;
@@ -7521,7 +7543,7 @@ function onClick(ev){
     case 'lcsave': if(S.audit) lcSaveNote(); break;
     case 'plcsave': plcSaveNote(); break;
     case 'set': doSet(el); break;
-    case 'kspick': setField(S.prof.di, 'years_known', el.getAttribute('data-y')); repaintSec('relationship'); break;
+    case 'kspick': { var ky2 = el.getAttribute('data-y'); var curv = String(gv(D.directory[S.prof.di], 'years_known') || ''); var suf = /^\d{4}(-.*)$/.exec(curv); setField(S.prof.di, 'years_known', ky2 ? ky2 + (suf ? suf[1] : '') : ''); repaintSec('relationship'); break; }
     case 'mergeopen': openMergeSheet(di); break;
     case 'mpick': MG.b = di; MG.surv = null; mergeStep2(); break;
     case 'mergego': {
@@ -7535,6 +7557,18 @@ function onClick(ev){
       var sids = (el.getAttribute('data-sid') || '').split(',').filter(Boolean), on = el.getAttribute('data-off') ? false : true;
       txn(on ? 'Waive section' : 'Restore section', function(){ setWaivers(di, sids, on); });
       if(S.route.name === 'profile'){ paintProfile(S.prof.di); } else if(lcActive()) lcRepaint(); else refreshAfterStatus();
+      break;
+    }
+    case 'auddel': {
+      var de2 = D.directory[di]; if(!de2) break;
+      if(!ev.shiftKey && !confirm('Remove ' + dispName(de2) + ' from the circle?\n\nThey move to the Trash sheet and can be restored from there. (Shift-click the X to skip this confirmation.)')) break;
+      txn('Remove ' + dispName(de2), function(){ queuePatch(di, { deleted:'1' }); });
+      toast('Removed ' + dispName(de2) + '.', { undo:true });
+      var acd = el.closest('.aud-card');
+      if(acd) audRetire(acd, false);
+      else if(audMode() === 'photos'){ phaState().cur = null; viewAudit($('#view')); }
+      else if(lcActive()) lcRepaint();
+      else refreshAfterStatus();
       break;
     }
     case 'delperson': {
@@ -7725,6 +7759,7 @@ function onChange(ev){
     var k = t.getAttribute('data-pk');
     var pkV = (t.tagName === 'TEXTAREA') ? t.value : t.value.trim();
     if(k === 'location_on_file') pkV = ptNormLoc(pkV);   /* same normalization the table + Audit editors write */
+    if(k === 'years_known' && pkV && !audYearOk(pkV)){ toast('Known since needs a year, or year-month, or a full date: 2019, 2019-03, 2019-03-14.'); repaintSec('relationship'); return; }
     setField(S.prof.di, k, pkV);
     if(k === 'first_name' || k === 'last_name') repaintTop();
     if(k === 'public_footprint' || k === 'synopsis') repaintTop();
