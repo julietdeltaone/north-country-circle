@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.38.0';
+var APP_VERSION = '2.39.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -4512,6 +4512,78 @@ function hmStatCard(title, top, distinct, note){
   var more = distinct > top.length ? '<p class="dim hm-more">+' + (distinct - top.length) + ' more</p>' : '';
   return '<div class="hm-stat"><h4>' + esc(title) + '</h4>' + hmStatBars(top, max) + more + (note || '') + '</div>';
 }
+function hmCardWrap(title, inner, distinct, shown, note){
+  var more = distinct > shown ? '<p class="dim hm-more">+' + (distinct - shown) + ' more</p>' : '';
+  return '<div class="hm-stat"><h4>' + esc(title) + '</h4>' + inner + more + (note || '') + '</div>';
+}
+/* Chart forms matched to the data (JD 2026-10-26: not everything is a
+   bar chart). All are label-safe by construction: legends and axis
+   labels live in HTML/sparse slots, never on the marks themselves. */
+function hmDonut(segs, total){
+  var R = 52, C = 2 * Math.PI * R, off = 0;
+  var arcs = segs.filter(function(s){ return s.c > 0; }).map(function(s){
+    var frac = total ? s.c / total : 0, len = Math.max(0, frac * C - 2.5);
+    var el = '<circle cx="70" cy="70" r="' + R + '" fill="none" stroke="' + s.col + '" stroke-width="13" stroke-dasharray="' + len.toFixed(1) + ' ' + (C - len).toFixed(1) + '" stroke-dashoffset="' + (-off).toFixed(1) + '" transform="rotate(-90 70 70)"><title>' + esc(s.label) + ' · ' + s.c + '</title></circle>';
+    off += frac * C;
+    return el;
+  }).join('');
+  var legend = segs.map(function(s){
+    return '<div class="hm-dleg"><span class="hm-dldot" style="background:' + s.col + '"></span><span class="hm-dll">' + esc(s.label) + '</span><b>' + s.c + '</b><span class="hm-dlp">' + (total ? Math.round(100 * s.c / total) : 0) + '%</span></div>';
+  }).join('');
+  return '<div class="hm-donut"><svg viewBox="0 0 140 140" class="hm-dsvg" role="img">' + arcs +
+    '<text x="70" y="67" class="hm-dn">' + total + '</text><text x="70" y="85" class="hm-dt">people</text></svg>' +
+    '<div class="hm-dlegs">' + legend + '</div></div>';
+}
+function hmYearCols(entries, max){
+  var W = 620, H = 150, base = 116, bw = W / entries.length;
+  var cols = '', labs = '', tops = '';
+  entries.forEach(function(t, i){
+    var h = max > 0 && t.c > 0 ? Math.max(3, Math.round(t.c / max * (base - 30))) : 0;
+    var cx = i * bw + bw / 2;
+    if(t.c > 0) cols += '<rect x="' + (i * bw + bw * 0.2).toFixed(1) + '" y="' + (base - h) + '" width="' + (bw * 0.6).toFixed(1) + '" height="' + h + '" class="hm-col"><title>' + esc(t.label) + ' · ' + t.c + '</title></rect>';
+    if(t.c > 0 && t.c >= max * 0.55) tops += '<text x="' + cx + '" y="' + (base - h - 6) + '" class="hm-cv">' + t.c + '</text>';
+    var y = parseInt(t.label, 10);
+    if(i === 0 || i === entries.length - 1 || (y && y % 5 === 0)) labs += '<text x="' + cx + '" y="' + (H - 12) + '" class="hm-cx">' + (i === 0 ? '’00–’10' : '’' + String(t.label).slice(2)) + '</text>';
+  });
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="hm-cols" role="img">' + cols + tops + labs +
+    '<line x1="0" y1="' + base + '" x2="' + W + '" y2="' + base + '" class="hm-axis"/></svg>';
+}
+function hmDots(top, max){
+  return top.map(function(t, i){
+    var pct = t.c > 0 && max > 0 ? Math.round(1000 * t.c / max) / 10 : 0;
+    return '<div class="hm-dot"><span class="hm-bl">' + esc(t.label) + '</span><span class="hm-dtr"><span class="hm-dfill" style="width:' + pct + '%"></span><span class="hm-dotp' + (i === 0 ? ' top' : '') + '" style="left:' + pct + '%"></span></span><span class="hm-bv">' + t.c + '</span></div>';
+  }).join('');
+}
+function hmStack(top, totalAll){
+  var cols = ['#f2f2f2', '#9a9a9a', '#5c5c5c', '#333333', '#e30613'];
+  var tot = Math.max(1, totalAll || top.reduce(function(a, t){ return a + t.c; }, 0));
+  var shown = top.reduce(function(a, t){ return a + t.c; }, 0);
+  var segs = top.map(function(t, i){
+    return '<span class="hm-seg" style="width:' + (100 * t.c / tot) + '%;background:' + cols[i % cols.length] + '" title="' + esc(t.label) + ' · ' + t.c + ' (' + Math.round(100 * t.c / tot) + '%)"></span>';
+  }).join('');
+  if(tot > shown) segs += '<span class="hm-seg rest" style="width:' + (100 * (tot - shown) / tot) + '%" title="Other types · ' + (tot - shown) + '"></span>';
+  var legend = top.map(function(t, i){
+    return '<div class="hm-dleg"><span class="hm-dldot" style="background:' + cols[i % cols.length] + '"></span><span class="hm-dll">' + esc(t.label) + '</span><b>' + t.c + '</b><span class="hm-dlp">' + Math.round(100 * t.c / tot) + '%</span></div>';
+  }).join('');
+  return '<div class="hm-stack">' + segs + '</div><div class="hm-dlegs stack">' + legend + '</div>';
+}
+function hmRankRows(top){
+  return top.map(function(t, i){
+    return '<div class="hm-rk"><span class="hm-rkn">' + ('0' + (i + 1)).slice(-2) + '</span><span class="hm-bl grow">' + esc(t.label) + '</span><span class="hm-bv">' + t.c + '</span></div>';
+  }).join('');
+}
+function hmCloud(top){
+  var max = top.length ? top[0].c : 1;
+  return '<div class="hm-cloud">' + top.map(function(t){
+    var sz = 12 + Math.round(9 * (t.c / max));
+    return '<span class="hm-cw" style="font-size:' + sz + 'px" title="' + esc(t.label) + ' · ' + t.c + '">' + esc(t.label) + ' <sup>' + t.c + '</sup></span>';
+  }).join('') + '</div>';
+}
+function fmtIsoD(iso){
+  if(!iso) return '';
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], p = String(iso).split('-');
+  return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0];
+}
 function hmStatsCard(pop, N){
   var tierCounts = { vetted:0, associate:0, open:0, none:0 };
   var curY = new Date().getFullYear(), yr = {}, yrMax = 0, preN = 0, lastY = curY, undated = 0;
@@ -4538,23 +4610,21 @@ function hmStatsCard(pop, N){
     { label:'Open', c:tierCounts.open, col:TIERS.open.c },
     { label:'No tier yet', c:tierCounts.none, col:RING_C[3] }
   ], 4);
-  var tierCard = '<div class="hm-stat"><h4>Tier</h4>' + hmStatBars(tierTop, tierTop.length ? tierTop[0].c : 0, function(t){ return t.col; }) + '</div>';
+  var tierCard = '<div class="hm-stat"><h4>Tier</h4>' + hmDonut(tierTop, N) + '</div>';
   var yrEntries = [{ label:'2000\u20132010', c:preN }], yy;
   for(yy = 2011; yy <= lastY; yy++) yrEntries.push({ label:String(yy), c:yr[yy] || 0 });
-  var yrBars = yrEntries.map(function(t){
-    var pct = t.c > 0 && yrMax > 0 ? Math.max(2, Math.round(1000 * t.c / yrMax) / 10) : 0;
-    return '<div class="hm-bar slim"><span class="hm-bl">' + t.label + '</span><span class="hm-tr"><span class="hm-fill" data-w="' + pct + '" style="width:0"></span></span><span class="hm-bv" data-hmn="' + t.c + '">0</span></div>';
-  }).join('');
-  var yrCard = '<div class="hm-stat wide"><h4>Known since</h4><div class="hm-years">' + yrBars + '</div>' +
+  var yrCard = '<div class="hm-stat wide"><h4>Known since</h4>' + hmYearCols(yrEntries, yrMax) +
     (undated ? '<p class="dim hm-note">' + undated + ' with no start year on file.</p>' : '') + '</div>';
+  var townsTop = hmFormsTop(towns, 5);
+  var relTop = hmFormsTop(rels, 5, true);
   return '<section class="card hm-blk"><header><h3>Shape of the network</h3><em class="cnt">' + N + ' people</em></header><div class="cbody"><div class="hm-stats">' +
     tierCard + yrCard +
-    hmStatCard('Where they are', hmFormsTop(towns, 5), Object.keys(towns).length) +
-    hmStatCard('Relationship types', hmFormsTop(rels, 5, true), Object.keys(rels).length,
+    hmCardWrap('Where they are', hmDots(townsTop, townsTop.length ? townsTop[0].c : 0), Object.keys(towns).length, townsTop.length) +
+    hmCardWrap('Relationship types', hmStack(relTop, N - relBlank), Object.keys(rels).length, relTop.length,
       relBlank ? '<p class="dim hm-note">' + relBlank + ' of ' + N + ' have no relationship type on file.</p>' : '') +
     hmStatCard('Organizations', hmPlainTop(orgCounts, 5), Object.keys(orgCounts).length) +
-    hmStatCard('Skills', hmFormsTop(skills, 5, true), Object.keys(skills).length) +
-    hmStatCard('Groups', hmPlainTop(groupCounts, 5), Object.keys(groupCounts).length) +
+    hmCardWrap('Skills', hmCloud(hmFormsTop(skills, 8, true)), Object.keys(skills).length, 8) +
+    hmCardWrap('Groups', hmRankRows(hmPlainTop(groupCounts, 5)), Object.keys(groupCounts).length, 5) +
     '</div></div></section>';
 }
 
@@ -4658,7 +4728,7 @@ function hmPhotoStats(){
   }).slice(0, 17);
   var ig = 0;
   found.forEach(function(p){ if(String(p.type || '').indexOf('Instagram') >= 0) ig++; });
-  return { ok:true, onFile:found.length, noPhoto:counts.no_photo + counts.no_source + counts.auth_only, checked:PH.people.length, total:PH.total || PH.people.length, ig:ig, wall:wall };
+  return { ok:true, onFile:found.length, noPhoto:counts.no_photo + counts.no_source + counts.auth_only, checked:PH.people.length, total:PH.total || PH.people.length, ig:ig, wall:wall, updated:PH.updated || '', unchecked:phAllEntries().filter(function(p){ return p.status === 'unchecked'; }).length };
 }
 function hmPhotosCard(ph){
   if(!ph.ok) return '<section class="card hm-blk"><header><h3>Photos</h3></header><div class="cbody"><p class="dim">' + (PH ? 'No photo data yet.' : 'Loading photo data&hellip;') + '</p></div></section>';
@@ -4671,7 +4741,7 @@ function hmPhotosCard(ph){
     return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + milBadgeName(p.name) + '</span></a>';
   }).join('');
   tiles += '<a class="hm-tile miss" href="#/photos"><b data-hmn="' + ph.noPhoto + '">0</b><span>still missing a photo</span></a>';
-  return '<section class="card hm-blk"><header><h3>Photos</h3><em class="cnt">recently filed first</em></header><div class="cbody">' + kpis +
+  return '<section class="card hm-blk"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em></header><div class="cbody">' + kpis +
     '<div class="hm-tiles">' + tiles + '</div></div></section>';
 }
 
@@ -5473,10 +5543,13 @@ function viewPhotos(v){
   if(PH.empty || !PH.people){ v.innerHTML = '<div class="page asearch">' + head + '<section class="card"><div class="cbody"><p class="dim">No photo checks yet. The first batch lands today.</p></div></section></div>'; return; }
   var all = phAllEntries();
   var withPh = all.filter(phHasPhoto).length;
+  var unchecked = all.filter(function(p){ return p.status === 'unchecked'; }).length;
   var stats = '<div class="phstrip">' +
     '<span class="phst">' + ic('camera', 13) + '<b>' + (PH.total || PH.people.length) + '</b> checked</span>' +
     '<span class="phst">' + ic('check', 13) + '<b>' + withPh + '</b> on file</span>' +
     '<span class="phst">' + ic('search', 13) + '<b>' + (all.length - withPh) + '</b> no photo yet</span>' +
+    (PH.updated ? '<span class="phst">' + ic('calendar', 13) + 'Updated <b>' + esc(fmtIsoD(PH.updated)) + '</b></span>' : '') +
+    (unchecked ? '<span class="phst">' + ic('search', 13) + '<b>' + unchecked + '</b> not yet checked</span>' : '') +
     '</div>';
   var tierN = { vetted:0, associate:0, open:0, '':0 };
   all.forEach(function(p){ var e = phEntryOf(p); var t = e ? tierOf(e) : ''; if(tierN[t] == null) tierN[t] = 0; tierN[t]++; });
