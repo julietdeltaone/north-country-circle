@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.5.1';
+var APP_VERSION = '3.6.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9208,7 +9208,7 @@ function skeletonHTML(note){
    ============================================================ */
 var SB = {
   ready:false, loading:null,
-  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null,
+  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null,
   tool:'home',
   grid:{ q:'', sort:'name', dir:1, view:'all', cols:null },
   sel:{},                       /* pkey -> di, bulk selection from the grid */
@@ -9226,6 +9226,7 @@ var SB_TOOLS = [
   { k:'raw',     g:'See',    t:'Raw viewers',      d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry.', ic:'search' },
   { k:'reports', g:'Check',  t:'Reports',          d:'Coverage gaps, source coverage, Live Records staleness, distributions.', ic:'spark' },
   { k:'integ',   g:'Check',  t:'Integrity',        d:'Count reconciliation with its work shown, duplicate hunter, orphans, malformed keys.', ic:'shield' },
+  { k:'council', g:'Check',  t:'Council',          d:'The six directors: roster, budget pace, findings logs, open flags, run history.', ic:'award' },
   { k:'lab',     g:'Connect',t:'Connection lab',   d:'Path finder, mutual connections, indirect connections, bridge ranking.', ic:'network' },
   { k:'play',    g:'Connect',t:'Playground',       d:'Scatter, histograms and timelines computed from the live data.', ic:'target' },
   { k:'merge',   g:'Admin',  t:'Merge studio',     d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
@@ -9253,7 +9254,8 @@ function sbEnsure(){
     sbFetch('photos.json', 'photos'), sbFetch('daily-ten.json', 'dt'),
     sbFetch('changes.json', 'changes'), sbFetch('trash.json', 'trash'),
     sbFetch('snapchat.json', 'snap'), sbFetch('recon.json', 'recon'),
-    sbFetch('sandbox-log.json', 'serverLog'), sbFetch('org-registry.json', 'orgreg')
+    sbFetch('sandbox-log.json', 'serverLog'), sbFetch('org-registry.json', 'orgreg'),
+    sbFetch('council.json', 'council')
   ]).then(function(){ SB.ready = true; SB.loading = null; if(S.route.name === 'sandbox') render(); });
   return SB.loading;
 }
@@ -9331,7 +9333,7 @@ function viewSandbox(v){
     return;
   }
   var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, reports:sbReports, integ:sbInteg, lab:sbLab,
-             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
+             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView, council:sbCouncil }[SB.tool] || sbHome;
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -9502,7 +9504,8 @@ var SB_RAW_META = {
   snapchat:{ l:'Snapchat sidecar', f:'snapchat.json' }, photos:{ l:'Photos', f:'photos.json' },
   daily:{ l:'Live Records (daily-ten)', f:'daily-ten.json' }, changes:{ l:'Change log', f:'changes.json' },
   trash:{ l:'Trash / blocklist', f:'trash.json' }, orgreg:{ l:'Org registry', f:'org-registry.json' },
-  log:{ l:'Sandbox action log (server)', f:'sandbox-log.json' }
+  log:{ l:'Sandbox action log (server)', f:'sandbox-log.json' },
+  council:{ l:'Council', f:'council.json' }
 };
 function sbRaw(){
   var w = SB.raw.which, q = SB.raw.q.toLowerCase();
@@ -9560,6 +9563,15 @@ function sbRaw(){
     var se = (SB.serverLog && SB.serverLog.entries) || [];
     h += '<p class="sb-note">' + se.length + ' server-side entries (written by sandbox_ops.py). Your in-browser entries live in the Action log tool.</p>' + tbl(['When', 'Type', 'Detail'],
       se.slice().reverse().map(function(e2){ return '<tr><td>' + esc(String(e2.ts || '').slice(0, 10)) + '</td><td>' + esc(e2.type || e2.op || '') + '</td><td>' + esc(e2.detail || e2.title || '') + '</td></tr>'; }).join(''));
+  }
+  else if(w === 'council' && SB.council){
+    var cn = SB.council;
+    h += '<p class="sb-note">Adopted ' + esc(cn.adopted || '') + ' · updated ' + esc(cn.updated || '') + ' · budget: ' + esc(String((cn.budget || {}).used_pct != null ? (cn.budget || {}).used_pct : '—')) + '% used (read ' + esc((cn.budget || {}).read_at || '') + ')</p>';
+    h += tbl(['Role', 'Status', 'Next run'],
+      (cn.roster || []).map(function(r){ return '<tr><td>' + esc(r.name || '') + '</td><td>' + esc(r.status || '') + '</td><td>' + esc(r.next_run || '') + '</td></tr>'; }).join(''));
+    h += '<h3 class="sb-h3">Open flags (' + (cn.flags || []).length + ')</h3>';
+    h += (cn.flags || []).length ? tbl(['Date', 'From', 'Flag'], (cn.flags || []).map(function(f){ return '<tr><td>' + esc(f.date || '') + '</td><td>' + esc(f.from || '') + '</td><td>' + esc(f.title || '') + '</td></tr>'; }).join(''))
+      : '<p class="sb-note">Nothing waiting on JD.</p>';
   }
   else h += '<div class="empty"><h3>Not loaded</h3><p>That file could not be read.</p></div>';
   return h;
@@ -10445,6 +10457,78 @@ function sbLogUndo(id){
   }
   render();
 }
+
+/* ---------------- 11. council (V3.6.0) ----------------
+   The Dossier Council (charter adopted by JD 2026-10-27): six
+   directors with standing logs in the goal's hidden_files/council/.
+   Read-only render of site/data/council.json — the display snapshot
+   the council routines refresh when they append to the logs. */
+var CN_ORDER = ['photos', 'ux', 'content', 'resource', 'progress', 'ops'];
+function sbCnFindRow(e){
+  return '<div class="cn-frow"><span class="cn-fdate">' + esc(e.date || '') + '</span>' +
+    '<span class="cn-fmain"><b>' + esc(e.title || '') + '</b>' + (e.summary ? ' — ' + esc(e.summary) : '') + '</span></div>';
+}
+function sbCouncil(){
+  var h = sbHead('Council', 'The Dossier Council — six directors keeping the dossier covered, readable, and sensible. JD sees only the Operations roll-up; this page is the council\u2019s own board. Read-only: the council routines write council.json when they run.');
+  var cn = SB.council;
+  if(!cn) return h + '<div class="empty"><h3>council.json not loaded</h3><p>The council snapshot could not be read. It ships with the site as data/council.json.</p></div>';
+  h += '<p class="sb-note">' + esc(cn.charter_note || '') + ' Snapshot updated ' + esc(cn.updated || '') + '.</p>';
+  /* (a) roster */
+  h += '<h3 class="sb-h3">Roster</h3><div class="sb-grid2">';
+  (cn.roster || []).forEach(function(r){
+    h += '<div class="sb-card2"><div class="cn-rhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
+      '<span class="sb-card2-t">' + esc(r.name || '') + '</span></div>' +
+      '<p class="sb-card2-n">' + esc(r.mission || '') + '</p>' +
+      '<p class="cn-auth"><b>Authority:</b> ' + esc(r.authority || '') + '</p>' +
+      (r.subs || []).map(function(s){
+        return '<div class="cn-sub"><b>' + esc(s.name || '') + '</b><span>' + esc(s.mission || '') + '</span>' +
+          '<span class="cn-auth"><b>Authority:</b> ' + esc(s.authority || '') + '</span></div>';
+      }).join('') +
+      '<div class="cn-status"><span>' + esc(r.status || '') + '</span>' +
+      '<span class="cn-runs">Last: ' + esc(r.last_run || '—') + ' · Next: ' + esc(r.next_run || '—') + '</span></div></div>';
+  });
+  h += '</div>';
+  /* (b) resource panel */
+  var b = cn.budget || {};
+  h += '<h3 class="sb-h3">Resource — budget pace</h3><div class="sb-card2">' +
+    '<div class="sb-kpis cn-kpis">' +
+    sbKpi((b.used_pct != null ? b.used_pct + '%' : '—'), 'of the weekly allowance used') +
+    sbKpi((b.expected_pct != null ? '~' + b.expected_pct + '%' : '—'), 'even pace for this point in the week') +
+    sbKpi((b.daily_tranche_pct != null ? '~' + b.daily_tranche_pct + '%' : '—'), 'daily tranche (1/7 of the week)') +
+    sbKpi(esc(b.plan || '—'), 'plan') +
+    '</div>' +
+    '<div class="cn-bar"><div class="cn-bar-pace" style="left:' + (b.expected_pct || 0) + '%"></div>' +
+    '<div class="cn-bar-fill" style="width:' + Math.min(100, b.used_pct || 0) + '%"></div></div>' +
+    '<div class="cn-bar-l"><span>0%</span><span>bar = used · tick = even pace</span><span>100%</span></div>' +
+    '<p class="cn-verdict">' + esc(b.verdict || '') + '</p>' +
+    '<p class="sb-note">Gauge read ' + esc(b.read_at || '—') + ' · week resets ' + esc(b.week_resets || '—') + '. ' + esc(b.measure || '') + '</p></div>';
+  /* (c) findings logs */
+  h += '<h3 class="sb-h3">Findings logs</h3><div class="sb-grid2">';
+  CN_ORDER.forEach(function(k){
+    var r = (cn.roster || []).filter(function(x){ return x.key === k; })[0] || {};
+    var es = ((cn.findings || {})[k] || []).slice(0, 6);
+    h += '<div class="sb-card2"><div class="sb-card2-t">' + esc(r.name || k) + '</div>' +
+      (es.length ? es.map(sbCnFindRow).join('') : '<p class="sb-note">No entries yet.</p>') + '</div>';
+  });
+  h += '</div>';
+  /* (d) open flags */
+  var fl = cn.flags || [];
+  h += '<h3 class="sb-h3">Open flags — waiting on JD (' + fl.length + ')</h3><div class="sb-card2">' +
+    (fl.length ? fl.map(function(f){
+      return '<div class="cn-frow"><span class="cn-fdate">' + esc(f.date || '') + '</span>' +
+        '<span class="cn-fmain"><b>' + esc(f.title || '') + '</b>' + (f.from ? ' <span class="cn-from">' + esc(f.from) + '</span>' : '') +
+        (f.detail ? ' — ' + esc(f.detail) : '') + '</span></div>';
+    }).join('') : '<p class="sb-note">Nothing waiting on JD. Flags appear here when a director stages something only JD can rule on.</p>') + '</div>';
+  /* (e) run history */
+  var runs = cn.runs || [];
+  h += '<h3 class="sb-h3">Run history</h3><div class="sb-card2">' +
+    (runs.length ? runs.map(function(r2){
+      return '<div class="cn-frow"><span class="cn-fdate">' + esc(r2.date || '') + '</span>' +
+        '<span class="cn-fmain"><b>' + esc(r2.title || '') + '</b>' + (r2.outcome ? ' — ' + esc(r2.outcome) : '') + '</span></div>';
+    }).join('') : '<p class="sb-note">No runs yet.</p>') + '</div>';
+  return h;
+}
+
 
 /* ---------------- sandbox events (own delegation; data-sb) ---------------- */
 var SB_CONFIRM = null;
