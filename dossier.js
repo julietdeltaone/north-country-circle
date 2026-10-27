@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.1.3';
+var APP_VERSION = '3.2.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1809,10 +1809,9 @@ function renderChrome(){
      reset-and-go-home action stays on the top-bar house button. */
   $('#tabs').innerHTML = items;
   var top = $('#top');
-  var onProfile = S.route.name === 'profile';
   top.innerHTML =
     '<button type="button" class="ib homebtn" data-act="home" aria-label="Home" title="Home: the overview, with search and filters cleared">' + ic('home', 20) + '</button>' +
-    (onProfile ? '<button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' : '<span class="logo-s"><i></i></span>') +
+    '<button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: one step — closes the top layer, leaves a runner, or returns to the previous view">' + ic('chevl', 20) + '</button>' +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
     '<div class="topr">' +
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
@@ -1895,6 +1894,44 @@ function back(fallback){
   if(S.depth > 0) history.back();
   else go(fallback || 'people', { replace:true });
 }
+/* Persistent Back (JD 2026-10-27): one button in the top bar, every
+   view, every scroll position. Each press peels exactly one layer:
+   theme pop, batch modal, photo editor/inspector, the Home inspector
+   drill stack (one drill level per press, then close), sheet, menu,
+   search results; then an open Lima Charlie profile or a non-Cards
+   audit mode returns to Audit home; then the real view history
+   (history.back, in sync with the browser buttons); with an empty
+   stack it lands on Home. Never a dead button. */
+function topBack(){
+  var pop = document.getElementById('tpop');
+  if(pop && !pop.hidden){ closeThemePop(); return; }
+  if(document.querySelector('.ykb-wrap')){ ykBatchClose(); return; }
+  if(document.querySelector('.phed-wrap')){
+    if(window.PHI && PHI.adj && PHI.adjClose) PHI.adjClose();
+    else if(typeof ptEditClose === 'function') ptEditClose();
+    else phInspClose(true);
+    return;
+  }
+  if(document.querySelector('.phi-wrap')){ phInspClose(); return; }
+  if(HMI){ if(HMI.stack.length > 1) hmiBack(); else hmiClose(); return; }
+  var sw = document.getElementById('sheetwrap');
+  if(sw && !sw.hidden){ closeSheet(); return; }
+  var mp = document.querySelector('.menu-pop:not([hidden])');
+  if(mp){ mp.hidden = true; return; }
+  var gsr = document.getElementById('gsr');
+  if(gsr && !gsr.hidden){ gsr.hidden = true; return; }
+  if(S.route.name === 'audit' && S.audit){
+    if(S.audit.lcOpen != null){ S.audit.lcOpen = null; viewAudit($('#view')); return; }
+    if(audMode() !== 'cards'){ audSetMode('cards'); return; }
+  }
+  if(S.route.name === 'profile'){
+    var fb = S.ctx && S.ctx.from ? S.ctx.from : 'people';
+    if(fb === 'groups' && S.ctx && S.ctx.grp) fb = 'groups/' + S.ctx.grp;
+    back(fb);
+    return;
+  }
+  back('home');
+}
 /* Home (JD 2026-10-17): one tap from anywhere — including inside the
    Lima Charlie expanded view — back to the People landing in its
    default state. Clears TRANSIENT view state only: the global search
@@ -1903,6 +1940,10 @@ function back(fallback){
    local-wins, the org registry overlay, pending Lima Charlie notes
    and the outbox all survive. */
 function goHome(){
+  closeThemePop();
+  if(document.querySelector('.ykb-wrap')) ykBatchClose();
+  if(document.querySelector('.phi-wrap')) phInspClose(true);
+  if(HMI) hmiClose(true);
   closeSheet();
   $$('.menu-pop').forEach(function(m){ m.hidden = true; });
   S.ctx = null;
@@ -8655,6 +8696,7 @@ function onClick(ev){
     case 'grpsort': GRPV.sort = el.getAttribute('data-s') || 'name'; store('ncc_grp_sort_v1', GRPV.sort); render(); break;
     case 'phsdir': PH_SDIR = PH_SDIR < 0 ? 1 : -1; store('ncc_photos_sdir_v1', PH_SDIR < 0 ? 'desc' : 'asc'); phPaintList(); break;
     case 'back': { var bfb = S.ctx && S.ctx.from ? S.ctx.from : 'people'; if(bfb === 'groups' && S.ctx && S.ctx.grp) bfb = 'groups/' + S.ctx.grp; back(bfb); break; }
+    case 'topback': topBack(); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
     case 'audgap': { var audC4 = el.closest('.aud-card'); if(audC4){ var gTo = el.getAttribute('data-gap'); if(gTo && gTo !== audC4.getAttribute('data-gap')) audSetGap(audC4, gTo); } break; }
