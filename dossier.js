@@ -9385,6 +9385,7 @@ function sbHead(title, sub){
   return '<div class="sb-head"><div class="sb-headrow"><h2>' + esc(title) + '</h2>' +
     (z ? '<span class="sb-zonechip">' + esc(z) + '</span>' : '') + '</div><p>' + esc(sub || '') + '</p></div>';
 }
+function sbKpi(n, l){ return '<div class="sb-kpi"><div class="sb-kpin">' + esc(String(n)) + '</div><div class="sb-kpil">' + esc(l) + '</div></div>'; }
 /* Open integrity findings, counted exactly (the Insights sections cap
    their display lists at 60; this counter does not). */
 function sbFindingsCount(){
@@ -9416,24 +9417,27 @@ function sbHome(){
   var cn = SB.council || {}, bd = cn.budget || {};
   var flagsOpen = (cn.flags || []).filter(function(f){ return String(f.status || '').indexOf('Closed') !== 0; }).length;
   var last = ((SB.changes && SB.changes.entries) || [])[0];
-  var chMonths = {};
-  ((SB.changes && SB.changes.entries) || []).forEach(function(en){ if(en.filed) chMonths[en.filed.slice(0, 7)] = (chMonths[en.filed.slice(0, 7)] || 0) + 1; });
-  var mks = Object.keys(chMonths).sort(), mx = Math.max.apply(null, mks.map(function(k){ return chMonths[k]; }).concat([1]));
+  var chMonths = {}, chDays = {};
+  ((SB.changes && SB.changes.entries) || []).forEach(function(en){ if(en.filed){ chMonths[en.filed.slice(0, 7)] = (chMonths[en.filed.slice(0, 7)] || 0) + 1; chDays[en.filed] = (chDays[en.filed] || 0) + 1; } });
+  /* facts filed by month; while the log spans fewer than 3 months a
+     monthly series is a single point, so plot per day instead */
+  var byMonth = Object.keys(chMonths).length >= 3, series = byMonth ? chMonths : chDays;
+  var mks = Object.keys(series).sort(), mx = Math.max.apply(null, mks.map(function(k){ return series[k]; }).concat([1]));
   var spark = mks.length > 1 ? '<svg class="sb-spark" viewBox="0 0 260 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="' +
-    mks.map(function(k, i){ return (4 + i * 252 / (mks.length - 1)).toFixed(1) + ',' + (40 - 34 * chMonths[k] / mx).toFixed(1); }).join(' ') + '"/></svg>' : '';
+    mks.map(function(k, i){ return (4 + i * 252 / (mks.length - 1)).toFixed(1) + ',' + (40 - 34 * series[k] / mx).toFixed(1); }).join(' ') + '"/></svg>' : '';
   var C = (2 * Math.PI * 34).toFixed(1), ringOff = (2 * Math.PI * 34 * (1 - pct / 100)).toFixed(1);
   var h = '<div class="sb-hero">' +
     '<div class="sb-hero-main"><div class="sb-hero-num asnum" data-n="' + ppl + '">' + ppl + '</div>' +
     '<div class="sb-hero-lab">people in the directory</div>' +
     (last ? '<div class="sb-hero-last">Latest change: <b>' + esc(last.name || '') + '</b> — ' + esc(last.what || '') + ' <span>· filed ' + esc(last.filed || '') + '</span></div>' : '') +
-    (spark ? '<div class="sb-hero-spark">' + spark + '<div class="sb-spark-lab">Facts filed by month · ' + esc(mks[0] || '') + ' → ' + esc(mks[mks.length - 1] || '') + '</div></div>' : '') +
+    (spark ? '<div class="sb-hero-spark">' + spark + '<div class="sb-spark-lab">Facts filed by ' + (byMonth ? 'month' : 'day') + ' · ' + esc(mks[0] || '') + ' → ' + esc(mks[mks.length - 1] || '') + '</div></div>' : '') +
     '</div>' +
     '<div class="sb-hero-side">' +
     '<div class="sb-hero-ring"><svg width="92" height="92" viewBox="0 0 84 84"><defs><linearGradient id="sbhg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--ga)"/><stop offset="1" style="stop-color:var(--gb)"/></linearGradient></defs>' +
-    '<circle class="sb-hring-bg" cx="42" cy="42" r="34"/><circle class="sb-hring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '" data-off="' + ringOff + '"/></svg>' +
+    '<circle class="sb-hring-bg" cx="42" cy="42" r="34"/><circle class="sb-hring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C + '" stroke-dashoffset="' + ringOff + '" data-off="' + ringOff + '" data-full="' + C + '"/></svg>' +
     '<div class="sb-hring-c"><b>' + pct + '%</b><span>with a usable photo</span></div></div>' +
     (bd.used_pct != null ? '<div class="sb-hero-pace"><div class="sb-pace-t">Council budget pace <span>' + esc(String(bd.used_pct)) + '% used · expected ~' + esc(String(bd.expected_pct)) + '%</span></div>' +
-      '<div class="sb-pacebar"><span class="sb-pace-fill" data-w="' + esc(String(bd.used_pct)) + '%" style="width:0"></span><i class="sb-pace-tick" style="left:' + esc(String(bd.expected_pct)) + '%"></i></div>' +
+      '<div class="sb-pacebar"><span class="sb-pace-fill" data-w="' + esc(String(bd.used_pct)) + '%" style="width:' + esc(String(bd.used_pct)) + '%"></span><i class="sb-pace-tick" style="left:' + esc(String(bd.expected_pct)) + '%"></i></div>' +
       '<div class="sb-pace-v">' + esc(bd.verdict || '') + ' <a href="#/sandbox/council">' + (flagsOpen ? flagsOpen + ' flag' + (flagsOpen === 1 ? '' : 's') + ' waiting on JD →' : 'Council board →') + '</a></div></div>' : '') +
     '</div></div>';
   h += '<p class="sb-herosub">' + esc(String(rec.sheet ? rec.sheet.keyed_rows : '—')) + ' keyed Sheet rows' + (rec.verdict ? ' · ' + esc(rec.verdict.toLowerCase()) : '') +
@@ -9465,10 +9469,14 @@ function sbAfterRender(){
        motion and later visits land on final values instantly */
     SB._heroDone = true;
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduced) return; /* markup already carries final values */
+    var ring0 = document.querySelector('.sb-hring-fg');
+    if(ring0) ring0.style.strokeDashoffset = ring0.getAttribute('data-full');
+    var fill0 = document.querySelector('.sb-pace-fill');
+    if(fill0) fill0.style.width = '0';
     setTimeout(function(){
       document.querySelectorAll('.sb-hero .asnum[data-n]').forEach(function(el){
         var target = parseFloat(el.getAttribute('data-n'));
-        if(reduced){ el.textContent = target; return; }
         var t0 = null;
         function step(ts){ if(!t0) t0 = ts; var p = Math.min(1, (ts - t0) / 800); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(step); }
         requestAnimationFrame(step);
@@ -9596,7 +9604,7 @@ var SB_RAW_META = {
 };
 function sbRaw(){
   var w = SB.raw.which, q = SB.raw.q.toLowerCase();
-  var h = sbHead('Raw viewers', 'The baked sidecar files, as they sit on disk. Read-only.');
+  var h = sbHead('Raw data', 'The baked sidecar files, as they sit on disk. Read-only.');
   h += '<div class="sb-toolbar">' + Object.keys(SB_RAW_META).map(function(k){
     return '<button type="button" class="btn sm ' + (w === k ? 'primary' : 'ghost') + '" data-sb="rawtab" data-k="' + k + '">' + esc(SB_RAW_META[k].l) + '</button>';
   }).join('') + '<input type="text" data-sbi="rawq" placeholder="Filter…" value="' + esc(SB.raw.q) + '"></div>';
@@ -9690,12 +9698,11 @@ function sbPersonRows(dis, cap){
   if(dis.length > show.length) h += '<p class="sb-note">…and ' + (dis.length - show.length) + ' more (use the Data grid to see them all).</p>';
   return h;
 }
-function sbReports(){
-  var tab = SB.rep.tab;
-  var h = sbHead('Reports', 'Computed live from the baked directory and sidecars. Every list opens the profile.');
-  h += '<div class="sb-toolbar">' + [['coverage', 'Coverage gaps'], ['sources', 'Source coverage'], ['stale', 'Live Records staleness'], ['dist', 'Distributions']].map(function(t){
-    return '<button type="button" class="btn sm ' + (tab === t[0] ? 'primary' : 'ghost') + '" data-sb="reptab" data-k="' + t[0] + '">' + t[1] + '</button>';
-  }).join('') + '</div>';
+/* V3.10.0: Reports + Integrity are ONE tool, Insights — one scroll,
+   sectioned. sbRepBlock returns one old Reports tab's body; the four
+   sbInteg* sections keep their original render logic untouched. */
+function sbRepBlock(tab){
+  var h = '';
   var ph = sbPhotoByName();
   var listed = [];
   D.directory.forEach(function(e, di){ if(liveEntry(e)) listed.push(di); });
@@ -9771,17 +9778,18 @@ function sbReports(){
   return h;
 }
 
-/* ---------------- 4. integrity ---------------- */
-function sbInteg(){
-  var tab = SB.integ.tab;
-  var h = sbHead('Integrity', 'Trust, but verify. Everything below is recomputed in the browser from the live bake, except the reconciliation, which reads the Sheet fresh via scripts/sandbox_recon.py.');
-  h += '<div class="sb-toolbar">' + [['recon', 'Count reconciliation'], ['dup', 'Duplicate hunter'], ['orphan', 'Orphan & malformed'], ['photos', 'Photo links']].map(function(t){
-    return '<button type="button" class="btn sm ' + (tab === t[0] ? 'primary' : 'ghost') + '" data-sb="integtab" data-k="' + t[0] + '">' + t[1] + '</button>';
-  }).join('') + '</div>';
-  if(tab === 'recon') h += sbIntegRecon();
-  else if(tab === 'dup') h += sbIntegDup();
-  else if(tab === 'orphan') h += sbIntegOrphan();
-  else if(tab === 'photos') h += sbIntegPhotos();
+/* ---------------- 4. integrity (inside Insights since V3.10.0) ---------------- */
+function sbInsights(){
+  var h = sbHead('Insights', 'Coverage, distributions and integrity on one page. Everything is computed live from the baked directory and sidecars, except the reconciliation, which reads the Sheet fresh via scripts/sandbox_recon.py. Every list opens the profile.');
+  function sec(t){ return '<div class="sb-sec">' + esc(t) + '</div>'; }
+  h += sec('Coverage gaps') + sbRepBlock('coverage');
+  h += sec('Source coverage') + sbRepBlock('sources');
+  h += sec('Live Records staleness') + sbRepBlock('stale');
+  h += sec('Distributions') + sbRepBlock('dist');
+  h += '<div class="sb-sec">Integrity — count reconciliation</div>' + sbIntegRecon();
+  h += '<div class="sb-sec">Integrity — duplicate hunter</div>' + sbIntegDup();
+  h += '<div class="sb-sec">Integrity — orphans &amp; malformed</div>' + sbIntegOrphan();
+  h += '<div class="sb-sec">Integrity — photo links</div>' + sbIntegPhotos();
   return h;
 }
 function sbIntegRecon(){
@@ -9935,7 +9943,7 @@ function sbRunDead(){
   var pp = ((SB.photos && SB.photos.people) || []).filter(function(p){ return p.photo_url; });
   var bad = [], i = 0; SB.integ.deadDone = 0;
   function next(){
-    if(S.route.name !== 'sandbox' || SB.tool !== 'integ'){ SB.integ.deadBusy = false; SB.integ._deadRun = false; return; }
+    if(S.route.name !== 'sandbox' || SB.tool !== 'insights'){ SB.integ.deadBusy = false; SB.integ._deadRun = false; return; }
     if(i >= pp.length){ SB.integ.dead = bad; SB.integ.deadBusy = false; SB.integ._deadRun = false; render(); return; }
     var p = pp[i++];
     var host = ''; try{ host = new URL(p.photo_url).hostname; }catch(x){}
@@ -9946,9 +9954,25 @@ function sbRunDead(){
 }
 
 
-/* ---------------- 5. connection lab ---------------- */
+/* ---------------- 5. The Lab (V3.10.0): connection lab, profiling,
+   suspect pool and playground under one tab bar. Tabs are buttons, not
+   history layers — Back from any tab goes to Sandbox home. Each lab
+   keeps its own state, storage keys and sidecars; only the shell is new. */
+function sbLabTool(){
+  var tab = sbLabTab();
+  var h = sbHead('The Lab', 'Four experiments on the live data. Hypotheses, paths and visuals live here — nothing in the lab writes to a profile.');
+  h += '<div class="sb-toolbar sb-labtabs">' + SB_LABS.map(function(l){
+    return '<button type="button" class="btn sm ' + (tab === l.k ? 'primary' : 'ghost') + '" data-sb="labtab" data-k="' + l.k + '">' + esc(l.t) + '</button>';
+  }).join('') + '</div>';
+  var fn = { paths:sbLab, prof:sbProf, pool:sbPool, visuals:sbPlay }[tab] || sbLab;
+  SB._inLab = true;
+  var body = fn();
+  SB._inLab = false;
+  return h + '<div class="sb-labwrap t-' + esc(tab) + '">' + body + '</div>';
+}
+
 function sbLab(){
-  var h = sbHead('Connection lab', 'Paths, mutuals and the indirect connections — the shared employers, schools and groups that quietly tie the circle together.');
+  var h = SB._inLab ? '' : sbHead('Connection lab', 'Paths, mutuals and the indirect connections — the shared employers, schools and groups that quietly tie the circle together.');
   h += '<div class="sb-card2"><div class="sb-card2-t">Path finder & mutual connections</div>' +
     '<div class="sb-pickrow">' + sbPersonPicker('labA', 'Person A', SB.lab.aName || '') + sbPersonPicker('labB', 'Person B', SB.lab.bName || '') +
     '<button type="button" class="btn primary" data-sb="labgo">Find path + mutuals</button></div>' +
@@ -10046,12 +10070,12 @@ function sbComputeBridges(){
   });
   SB.lab.bridges = nodes.map(function(n){ return { di:n, score:cb[n] / 2, deg:Object.keys(adj[n]).length }; })
     .sort(function(a, b){ return b.score - a.score; }).slice(0, 25);
-  if(S.route.name === 'sandbox' && SB.tool === 'lab') render();
+  if(S.route.name === 'sandbox' && SB.tool === 'lab' && sbLabTab() === 'paths') render();
 }
 
 /* ---------------- 9. playground shelf ---------------- */
 function sbPlay(){
-  var h = sbHead('Playground', 'Experiments computed from the live data. Nothing here writes.');
+  var h = SB._inLab ? '' : sbHead('Playground', 'Experiments computed from the live data. Nothing here writes.');
   /* scatter data */
   var pts = [];
   D.directory.forEach(function(e, di){
@@ -10663,7 +10687,7 @@ function sbProfConclusionCard(c, byId){
   return h;
 }
 function sbProf(){
-  var h = sbHead('Profiling inferences', 'A cross-reference lab. Hypotheses are built by inductive reasoning from the dossier\u2019s own data and graded against JD\u2019s Persona inputs \u2014 then left here, unfiled, to be argued with.');
+  var h = SB._inLab ? '' : sbHead('Profiling inferences', 'A cross-reference lab. Hypotheses are built by inductive reasoning from the dossier\u2019s own data and graded against JD\u2019s Persona inputs \u2014 then left here, unfiled, to be argued with.');
   var pf = SB.prof;
   if(!pf) return h + '<div class="empty"><h3>profiling.json not loaded</h3><p>The lab run could not be read. It ships with the site as data/profiling.json and is regenerated by scripts/build_profiling.py.</p></div>';
   var cov = pf.coverage || {}, cs = pf.crosscheck_summary || {};
@@ -10999,7 +11023,7 @@ function spHitStats(preds){
   return { resolved:res.length, hits:hits, rate:res.length ? Math.round(100 * hits / res.length) : null };
 }
 function sbPool(){
-  var h = sbHead('Suspect Pool', 'The thought experiment from JD\u2019s coursework: narrow a pool by observable behavior, weigh every trait by how rare it is, then check the result with a prediction. A shortlist, never a conclusion.');
+  var h = SB._inLab ? '' : sbHead('Suspect Pool', 'The thought experiment from JD\u2019s coursework: narrow a pool by observable behavior, weigh every trait by how rare it is, then check the result with a prediction. A shortlist, never a conclusion.');
   var sp = SB.spool;
   if(!sp) return h + '<div class="empty"><h3>suspect-pool.json not loaded</h3><p>The lab data could not be read. It ships with the site as data/suspect-pool.json and is regenerated by scripts/build_suspect_pool.py.</p></div>';
   spSeedMirror();
@@ -11278,6 +11302,7 @@ document.addEventListener('click', function(ev){
   else if(act === 'pfgrade'){ SB.pf.grade = t.getAttribute('data-k'); R(); }
   else if(act === 'pfclear'){ SB.pf.sel = null; R(); }
   else if(act === 'pftab'){ SB.pf.tab = t.getAttribute('data-k'); R(); }
+  else if(act === 'labtab'){ SB.labtab = t.getAttribute('data-k'); sbStore('ncc_sbx_labtab', SB.labtab); R(); }
   else if(act === 'pfasel'){ SB.pf.asel = t.getAttribute('data-k'); R(); }
   else if(act === 'pfaclear'){ SB.pf.asel = null; R(); }
   else if(act === 'pfsel'){ SB.pf.sel = t.getAttribute('data-k'); R(); }
@@ -11618,7 +11643,7 @@ document.addEventListener('input', function(ev){
   else if(k === 'spqtext'){
     SB.pool.qtext = t.value;
     clearTimeout(SB_DEB);
-    SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox' && SB.tool === 'pool') render(); }, 450);
+    SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox' && SB.tool === 'lab' && SB.labtab === 'pool') render(); }, 450);
   }
   else if(k === 'sppredevent'){ SB.pool.prEvent = t.value; }
   else if(k === 'spoutnote'){ SB.pool.outNote[t.getAttribute('data-id')] = t.value; }
