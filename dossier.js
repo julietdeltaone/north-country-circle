@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.9.0';
+var APP_VERSION = '3.10.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9209,7 +9209,7 @@ function skeletonHTML(note){
 var SB = {
   ready:false, loading:null,
   photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null, prof:null, spool:null,
-  tool:'home',
+  tool:'home', labtab:null,
   pf:{ field:'all', grade:'all', sel:null, tab:'accuracy', asel:null },
   pool:{ src:'seed', seedId:'cfc', optKind:'groups', optName:'', picks:[], qid:'volunteer', qtext:'', cats:null,
          obsDi:null, obsName:'', obDate:'', obEvent:'', obBeh:'', obCat:'action', obCatX:'', obAlt:'',
@@ -9225,20 +9225,31 @@ var SB = {
   dg:{ tab:'delete', one:null, bulkField:'tier', bulkVal:'', bulkCat:'companies', bulkName:'', dry:null },
   lg:{ filter:'all' }
 };
+/* V3.10.0 IA: the Sandbox has exactly three jobs — LOOK at the data,
+   PLAY with it in labs, FIX it with admin tools. The home screen is a
+   hero dashboard + three zones of large tiles; there is no rail. */
 var SB_TOOLS = [
-  { k:'grid',    g:'See',    t:'Data grid',        d:'Every field, one table. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
-  { k:'raw',     g:'See',    t:'Raw viewers',      d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry.', ic:'search' },
-  { k:'reports', g:'Check',  t:'Reports',          d:'Coverage gaps, source coverage, Live Records staleness, distributions.', ic:'spark' },
-  { k:'integ',   g:'Check',  t:'Integrity',        d:'Count reconciliation with its work shown, duplicate hunter, orphans, malformed keys.', ic:'shield' },
-  { k:'council', g:'Check',  t:'Council',          d:'The six directors: roster, budget pace, findings logs, open flags, run history.', ic:'award' },
-  { k:'lab',     g:'Connect',t:'Connection lab',   d:'Path finder, mutual connections, indirect connections, bridge ranking.', ic:'network' },
-  { k:'prof',    g:'Connect',t:'Profiling inferences', d:'A lab that cross-references on-file data into graded hypotheses (inductive profiler). First lens: field of study vs JD\u2019s Persona inputs. Display-only \u2014 nothing is ever filed.', ic:'cap' },
-  { k:'pool',    g:'Connect',t:'Suspect Pool',     d:'The thought experiment: define a pool, ask a yes/no question, filter by observable behavior (never demographics), weigh by base rate, then check it with a prediction. Logs live on this device only.', ic:'filter' },
-  { k:'play',    g:'Connect',t:'Playground',       d:'Scatter, histograms and timelines computed from the live data.', ic:'target' },
-  { k:'merge',   g:'Admin',  t:'Merge studio',     d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
-  { k:'danger',  g:'Admin',  t:'Danger area',      d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
-  { k:'log',     g:'Admin',  t:'Action log',       d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
+  { k:'grid',     z:'Look', t:'Data grid',    d:'Every person, one row. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
+  { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
+  { k:'insights', z:'Look', t:'Insights',     d:'Coverage, distributions and integrity on one page: gaps, sources, staleness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
+  { k:'council',  z:'Look', t:'Council',      d:'The six directors: roster, budget pace, findings logs, open flags, run history.', ic:'award' },
+  { k:'lab',      z:'Play', t:'The Lab',      d:'Four experiments on the live data: paths & bridges, profiling inferences, Suspect Pool, visuals. Nothing in the lab writes to a profile.', ic:'network' },
+  { k:'merge',    z:'Fix',  t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
+  { k:'danger',   z:'Fix',  t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
+  { k:'log',      z:'Fix',  t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
 ];
+var SB_LABS = [
+  { k:'paths',   t:'Paths & bridges' },
+  { k:'prof',    t:'Profiling' },
+  { k:'pool',    t:'Suspect Pool' },
+  { k:'visuals', t:'Visuals' }
+];
+function sbZoneOf(tool){ return ({ grid:'Look', raw:'Look', insights:'Look', council:'Look', lab:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
+function sbLabTab(){
+  if(SB.labtab == null) SB.labtab = sbStore('ncc_sbx_labtab') || 'paths';
+  if(!SB_LABS.some(function(l){ return l.k === SB.labtab; })) SB.labtab = 'paths';
+  return SB.labtab;
+}
 function sbStore(k, v){ try{ if(v === undefined){ var s = localStorage.getItem(k); return s ? JSON.parse(s) : null; } localStorage.setItem(k, JSON.stringify(v)); }catch(x){ return null; } }
 function sbLogGet(){ return sbStore('ncc_sbx_log') || []; }
 function sbOpsGet(){ return sbStore('ncc_sbx_ops') || []; }
@@ -9333,74 +9344,141 @@ function sbPostBatch(items){
 }
 
 function viewSandbox(v){
-  SB.tool = (S.route.seg && S.route.seg[0]) || 'home';
+  var seg = (S.route.seg && S.route.seg[0]) || 'home';
+  /* V3.10.0 routes: the old thirteen destinations consolidate to eight.
+     Pre-3.10 deep links keep working as aliases into the new surfaces. */
+  if(seg === 'reports' || seg === 'integ') SB.tool = 'insights';
+  else if(seg === 'prof'){ SB.tool = 'lab'; SB.labtab = 'prof'; }
+  else if(seg === 'pool'){ SB.tool = 'lab'; SB.labtab = 'pool'; }
+  else if(seg === 'play'){ SB.tool = 'lab'; SB.labtab = 'visuals'; }
+  else SB.tool = seg;
+  if(SB.tool === 'lab' && S.route.seg && S.route.seg[1]) SB.labtab = S.route.seg[1];
   if(!SB.ready){
     v.innerHTML = sbShell('<div class="sb-wrap"><div class="empty"><h3>Sandbox</h3><p>Loading the sidecar data…</p></div></div>');
     sbEnsure();
     return;
   }
-  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, reports:sbReports, integ:sbInteg, lab:sbLab,
-             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView, council:sbCouncil, prof:sbProf, pool:sbPool }[SB.tool] || sbHome;
+  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, insights:sbInsights, council:sbCouncil,
+             lab:sbLabTool, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
+  if(!({ home:1, grid:1, raw:1, insights:1, council:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
-/* Full-screen Sandbox (JD 2026-10-27): the workbench takes the whole
-   viewport (body[data-view="sandbox"] hides the dossier rail/top/tabs
-   in CSS). Its own rail carries Back (data-act topback — one peel:
-   tool -> Sandbox home -> previous view) and Home (data-act home),
-   plus the tool navigation. SB state is module-level, so tool state
-   survives entering and leaving. */
+/* Full-screen Sandbox (JD 2026-10-27; IA regraded V3.10.0): the
+   workbench takes the whole viewport (body[data-view="sandbox"] hides
+   the dossier rail/top/tabs in CSS). Chrome is ONE slim top bar —
+   Back (data-act topback: tool -> Sandbox home -> previous view),
+   Home (data-act home), the Sandbox wordmark, and the current zone.
+   There is no rail: navigation lives on the home screen. SB state is
+   module-level, so tool state survives entering and leaving. */
 function sbShell(inner){
-  var groups = {};
-  SB_TOOLS.forEach(function(t){ (groups[t.g] = groups[t.g] || []).push(t); });
-  var nav = '<a class="sb-nav-it' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox">' + ic('shield', 16) + '<span>Overview</span></a>';
-  ['See', 'Check', 'Connect', 'Admin'].forEach(function(g){
-    if(!(groups[g] || []).length) return;
-    nav += '<div class="sb-nav-g">' + esc(g) + '</div>' + groups[g].map(function(t){
-      return '<a class="sb-nav-it' + (SB.tool === t.k ? ' on' : '') + '" href="#/sandbox/' + t.k + '">' + ic(t.ic, 16) + '<span>' + esc(t.t) + '</span></a>';
-    }).join('');
-  });
-  return '<div class="sb-shell t-' + esc(SB.tool) + '"><aside class="sb-rail2">' +
+  var z = sbZoneOf(SB.tool);
+  return '<div class="sb-shell t-' + esc(SB.tool) + '"><header class="sb-top">' +
     '<div class="sb-rail-top"><button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: tool, then Sandbox home, then the previous view">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="ib" data-act="home" aria-label="Home" title="Home">' + ic('home', 20) + '</button><b>Sandbox</b></div>' +
-    nav + '</aside><div class="sb-canvas">' + inner + '</div></div>';
+    (z ? '<span class="sb-zonechip">' + esc(z) + '</span>' : '<span class="sb-topsub">Look · Play · Fix</span>') +
+    '</header><div class="sb-canvas">' + inner + '</div></div>';
 }
+/* One template for every tool page: title + zone chip + purpose line. */
 function sbHead(title, sub){
-  return '<div class="sb-head"><a class="sb-back" href="#/sandbox">← Sandbox</a>' +
-    '<h2>' + esc(title) + '</h2><p>' + esc(sub || '') + '</p></div>';
+  var z = sbZoneOf(SB.tool);
+  return '<div class="sb-head"><div class="sb-headrow"><h2>' + esc(title) + '</h2>' +
+    (z ? '<span class="sb-zonechip">' + esc(z) + '</span>' : '') + '</div><p>' + esc(sub || '') + '</p></div>';
+}
+/* Open integrity findings, counted exactly (the Insights sections cap
+   their display lists at 60; this counter does not). */
+function sbFindingsCount(){
+  var ok = sbStore('ncc_sbx_dupok') || {};
+  var n = sbDupPairs().filter(function(p){ return !ok[[pkey(D.directory[p.a]), pkey(D.directory[p.b])].sort().join('|')]; }).length;
+  var names = {};
+  D.directory.forEach(function(e){ names[String(e.name || '').toLowerCase()] = 1; });
+  D.directory.forEach(function(e){
+    if(!liveEntry(e)) return;
+    (e.neighbors || []).forEach(function(nb){ if(!names[String(nb.u || '').toLowerCase()]) n++; });
+    splitTags(gv(e, 'close_add'), ', ').forEach(function(nm){ if(BYN[nm.toLowerCase()] == null) n++; });
+    famLinks(e).forEach(function(l){ if(BYN[String(l[1] || '').toLowerCase()] == null) n++; });
+    if(/[A-Z\s]/.test(e.name || '') && !/^ct:/.test(e.name)) n++;
+  });
+  var tk = sbTrashKeys();
+  D.directory.forEach(function(e){ if(liveEntry(e) && tk[pkey(e)]) n++; });
+  return n;
+}
+function sbLogToday(){
+  var ds = new Date().toDateString(), n = 0;
+  sbLogGet().forEach(function(e){ if(e.ts && new Date(e.ts).toDateString() === ds) n++; });
+  ((SB.serverLog && SB.serverLog.entries) || []).forEach(function(e){ if(e.ts && new Date(e.ts).toDateString() === ds) n++; });
+  return n;
 }
 function sbHome(){
   var ppl = people().length, rec = SB.recon || {};
   var conf = ((SB.photos && SB.photos.people) || []).filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely'); }).length;
-  var snapN = SB.snap ? Object.keys(SB.snap.people || {}).length : 0;
-  var ops = sbOpsGet().length, logs = sbLogGet().length + ((SB.serverLog && SB.serverLog.entries) || []).length;
-  var h = '<div class="sb-head"><h2>Sandbox</h2><p>The admin workbench. Read-only tools compute from the data already in the app; write tools go through the same paths the app itself uses, always with a confirm step and an action-log entry.</p></div>';
-  h += '<div class="sb-kpis">' +
-    sbKpi(ppl, 'people in the app') +
-    sbKpi(rec.sheet ? rec.sheet.keyed_rows : '—', 'keyed Sheet rows' + (rec.verdict ? ' · ' + rec.verdict.toLowerCase() : '')) +
-    sbKpi(conf, 'people with a usable photo') +
-    sbKpi(snapN, 'Snapchat profiles filed') +
-    sbKpi(Object.keys(sbTrashKeys()).length, 'keys in Trash (blocklist)') +
-    sbKpi(ops, 'ops queued for sandbox_ops.py') +
-    '</div>';
-  var groups = {};
-  SB_TOOLS.forEach(function(t){ (groups[t.g] = groups[t.g] || []).push(t); });
-  ['See', 'Check', 'Connect', 'Admin'].forEach(function(g){
-    h += '<div class="sb-group">' + esc(g) + '</div><div class="sb-cards">';
-    (groups[g] || []).forEach(function(t){
-      h += '<a class="sb-card" href="#/sandbox/' + t.k + '"><span class="sb-card-ic">' + ic(t.ic, 20) + '</span>' +
-        '<span class="sb-card-t">' + esc(t.t) + '</span><span class="sb-card-d">' + esc(t.d) + '</span></a>';
+  var pct = ppl ? Math.round(100 * conf / ppl) : 0;
+  var cn = SB.council || {}, bd = cn.budget || {};
+  var flagsOpen = (cn.flags || []).filter(function(f){ return String(f.status || '').indexOf('Closed') !== 0; }).length;
+  var last = ((SB.changes && SB.changes.entries) || [])[0];
+  var chMonths = {};
+  ((SB.changes && SB.changes.entries) || []).forEach(function(en){ if(en.filed) chMonths[en.filed.slice(0, 7)] = (chMonths[en.filed.slice(0, 7)] || 0) + 1; });
+  var mks = Object.keys(chMonths).sort(), mx = Math.max.apply(null, mks.map(function(k){ return chMonths[k]; }).concat([1]));
+  var spark = mks.length > 1 ? '<svg class="sb-spark" viewBox="0 0 260 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="' +
+    mks.map(function(k, i){ return (4 + i * 252 / (mks.length - 1)).toFixed(1) + ',' + (40 - 34 * chMonths[k] / mx).toFixed(1); }).join(' ') + '"/></svg>' : '';
+  var C = (2 * Math.PI * 34).toFixed(1), ringOff = (2 * Math.PI * 34 * (1 - pct / 100)).toFixed(1);
+  var h = '<div class="sb-hero">' +
+    '<div class="sb-hero-main"><div class="sb-hero-num asnum" data-n="' + ppl + '">' + ppl + '</div>' +
+    '<div class="sb-hero-lab">people in the directory</div>' +
+    (last ? '<div class="sb-hero-last">Latest change: <b>' + esc(last.name || '') + '</b> — ' + esc(last.what || '') + ' <span>· filed ' + esc(last.filed || '') + '</span></div>' : '') +
+    (spark ? '<div class="sb-hero-spark">' + spark + '<div class="sb-spark-lab">Facts filed by month · ' + esc(mks[0] || '') + ' → ' + esc(mks[mks.length - 1] || '') + '</div></div>' : '') +
+    '</div>' +
+    '<div class="sb-hero-side">' +
+    '<div class="sb-hero-ring"><svg width="92" height="92" viewBox="0 0 84 84"><defs><linearGradient id="sbhg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--ga)"/><stop offset="1" style="stop-color:var(--gb)"/></linearGradient></defs>' +
+    '<circle class="sb-hring-bg" cx="42" cy="42" r="34"/><circle class="sb-hring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '" data-off="' + ringOff + '"/></svg>' +
+    '<div class="sb-hring-c"><b>' + pct + '%</b><span>with a usable photo</span></div></div>' +
+    (bd.used_pct != null ? '<div class="sb-hero-pace"><div class="sb-pace-t">Council budget pace <span>' + esc(String(bd.used_pct)) + '% used · expected ~' + esc(String(bd.expected_pct)) + '%</span></div>' +
+      '<div class="sb-pacebar"><span class="sb-pace-fill" data-w="' + esc(String(bd.used_pct)) + '%" style="width:0"></span><i class="sb-pace-tick" style="left:' + esc(String(bd.expected_pct)) + '%"></i></div>' +
+      '<div class="sb-pace-v">' + esc(bd.verdict || '') + ' <a href="#/sandbox/council">' + (flagsOpen ? flagsOpen + ' flag' + (flagsOpen === 1 ? '' : 's') + ' waiting on JD →' : 'Council board →') + '</a></div></div>' : '') +
+    '</div></div>';
+  h += '<p class="sb-herosub">' + esc(String(rec.sheet ? rec.sheet.keyed_rows : '—')) + ' keyed Sheet rows' + (rec.verdict ? ' · ' + esc(rec.verdict.toLowerCase()) : '') +
+    ' · ' + Object.keys(sbTrashKeys()).length + ' keys in Trash · ' + (SB.snap ? Object.keys(SB.snap.people || {}).length : 0) + ' Snapchat profiles filed · ' + sbOpsGet().length + ' ops queued</p>';
+  var stats = {
+    grid: ppl + ' rows', raw: Object.keys(SB_RAW_META).length + ' sidecar files',
+    insights: sbFindingsCount() + ' open findings', council: flagsOpen ? flagsOpen + ' flags waiting on JD' : 'nothing waiting on JD',
+    lab: '4 labs', merge: sbDupPairs().length + ' candidate pairs', danger: Object.keys(sbTrashKeys()).length + ' keys in Trash',
+    log: sbLogToday() + ' entries today'
+  };
+  ['Look', 'Play', 'Fix'].forEach(function(z){
+    h += '<div class="sb-group">' + esc(z) + '</div><div class="sb-cards">';
+    SB_TOOLS.filter(function(t){ return t.z === z; }).forEach(function(t){
+      h += '<a class="sb-card" href="#/sandbox/' + t.k + '"><span class="sb-card-ic">' + ic(t.ic, 22) + '</span>' +
+        '<span class="sb-card-t">' + esc(t.t) + '</span><span class="sb-card-d">' + esc(t.d) + '</span>' +
+        '<span class="sb-card-s">' + esc(stats[t.k] || '') + '</span></a>';
     });
     h += '</div>';
   });
-  if(logs) h += '<p class="sb-note">' + logs + ' action-log entries on file — see the Action log tool.</p>';
   return h;
 }
-function sbKpi(n, l){ return '<div class="sb-kpi"><div class="sb-kpin">' + esc(String(n)) + '</div><div class="sb-kpil">' + esc(l) + '</div></div>'; }
 function sbAfterRender(){
   var t = SB.tool;
-  if(t === 'lab' && SB.lab.bridges === 'pending') sbComputeBridges();
-  if(t === 'integ' && SB.integ.deadBusy && !SB.integ._deadRun){ SB.integ._deadRun = true; sbRunDead(); }
+  if(t === 'lab' && sbLabTab() === 'paths' && SB.lab.bridges === 'pending') sbComputeBridges();
+  if(t === 'insights' && SB.integ.deadBusy && !SB.integ._deadRun){ SB.integ._deadRun = true; sbRunDead(); }
+  if(t === 'home' && !SB._heroDone){
+    /* hero count-up + ring/pace sweep: one deliberate motion on first
+       entry (feedback/state), same 800ms ease as dtAnimate; reduced
+       motion and later visits land on final values instantly */
+    SB._heroDone = true;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(function(){
+      document.querySelectorAll('.sb-hero .asnum[data-n]').forEach(function(el){
+        var target = parseFloat(el.getAttribute('data-n'));
+        if(reduced){ el.textContent = target; return; }
+        var t0 = null;
+        function step(ts){ if(!t0) t0 = ts; var p = Math.min(1, (ts - t0) / 800); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(step); }
+        requestAnimationFrame(step);
+      });
+      var ring = document.querySelector('.sb-hring-fg');
+      if(ring) ring.style.strokeDashoffset = ring.getAttribute('data-off');
+      var fill = document.querySelector('.sb-pace-fill');
+      if(fill) fill.style.width = fill.getAttribute('data-w');
+    }, 40);
+  }
 }
 
 
