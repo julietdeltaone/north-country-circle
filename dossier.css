@@ -2412,3 +2412,79 @@ html[data-mode="dark"] #plxmid .plx-num{color:color-mix(in srgb,var(--ga) 9%,tra
 .hm-ybar>span{display:block;width:100%;border-radius:2px 2px 0 0;background-image:linear-gradient(90deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%,rgba(0,0,0,.10)),linear-gradient(180deg,var(--gb),var(--ga));box-shadow:inset 1px 0 0 rgba(255,255,255,.4)}
 .hm-ycol:hover .hm-ybar>span{filter:brightness(1.12)}
 .hm-ycl{font:600 10px var(--sans);color:var(--mut);white-space:nowrap;margin-top:5px}
+
+/* ============ JD REVIEW FIXES — V3.1.1 (2026-10-27) ============
+   1. Live Records fact rows get real layout (name / fact / source stacked, spaced).
+   2. Light-mode text deepened; mix segments use per-mode --seg vars with real tonal separation.
+   3. Alignment: stagger offsets retired (depth now from parallax + overlap + shadows only);
+      KPI row equal heights, rank cards stretch-aligned, profile grids stretch, YK panels fill,
+      Network right panel floats inset as a glass card.
+   4. Home: activity moves into a full-height right rail; deck takes the main column.
+   5. Parallax hardened strictly behind content; mid-plane wash toned down in light mode. */
+
+/* --- light-mode readability: near-black primaries, deepened muted --- */
+html[data-mode="light"]{
+  --txt:#0d131b; --txt2:#28323f; --mut:#3f4c5b; --dim:#47545f;
+  --seg-0:#c2cedd; --seg-1:#92a7bd; --seg-2:#637b95; --seg-3:#47607d;
+  --seg-4:#344b63; --seg-5:#26394e; --seg-6:#1b2939; --seg-7:#111b27; --seg-8:#090f16;
+}
+html[data-mode="dark"]{
+  --seg-0:#f2f2f2; --seg-1:#b5b5b5; --seg-2:#7d7d7d; --seg-3:#4a4a4a;
+  --seg-4:#3a3a3a; --seg-5:#2b2b2b; --seg-6:#1f1f1f; --seg-7:#171717; --seg-8:#121212;
+}
+.hm-seg{box-shadow:inset -1px 0 0 var(--line2)}
+.hm-segbar{box-shadow:inset 0 0 0 1px var(--line)}
+
+/* --- Live Records fact rows: name / fact / source, stacked and spaced --- */
+.hma-frow{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;
+  padding:10px 0;border:0;border-top:1px solid var(--line);background:none;text-align:left;
+  font:inherit;color:inherit;cursor:pointer}
+div.hma-frow{cursor:default}
+.hma-fname{font:600 13.5px var(--sans);color:var(--txt);display:flex;align-items:center;gap:8px}
+.hma-fact{font-size:12.5px;line-height:1.5;color:var(--txt2)}
+.hma-fsrc{font-size:11.5px;color:var(--mut)}
+.hma-fsrc a{color:var(--mut);text-decoration:none}
+.hma-fsrc a:hover{color:var(--acc)}
+.hma-tag{font:700 9.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:#fff;
+  background:#e30613;border-radius:99px;padding:2px 7px}
+button.hma-frow:hover .hma-fname{color:var(--acc)}
+
+/* --- alignment: stagger offsets retired --- */
+.hm .hmk-kpi:nth-child(2),.hm .hmk-kpi:nth-child(3),.hm .hmk-kpi:nth-child(4),.hm .hmk-kpi:nth-child(5){transform:none}
+.hm .hm-mixrow>.hm-blk:nth-child(2){transform:none}
+.hm .hm-ranks>.hm-blk:nth-child(3n+2),.hm .hm-ranks>.hm-blk:nth-child(3n){transform:none}
+.hm .hm-row2>.hm-blk:nth-child(2){transform:none}
+.hm .hm-mixrow{grid-template-columns:1fr 1fr}
+.hm .hmk-strip{align-items:stretch}
+.hm .hmk-kpi{height:100%}
+.hm .hm-ranks{align-items:stretch}
+.hm .hm-mixrow,.hm .hm-row2{align-items:stretch}
+.pgrid{align-items:stretch}
+.pgrid>.card{height:100%}
+.yk-cols{align-items:stretch}
+.yk-col{display:flex;flex-direction:column}
+.yk-list{flex:1 1 auto;min-height:0}
+
+/* --- Home layout: deck main column + full-height activity rail --- */
+.hm-layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px;align-items:start}
+.hm-main{min-width:0}
+.hm-main>.hm-blk{margin-top:26px}
+.hm-rail{position:sticky;top:6px;max-height:calc(100dvh - 106px);overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;border-radius:18px}
+.hm-rail .hm-act{margin:0;box-shadow:var(--sh-lift)}
+@media (max-width:1240px){.hm-layout{grid-template-columns:minmax(0,1fr) 318px}}
+@media (max-width:1020px){
+  .hm-layout{grid-template-columns:1fr}
+  .hm-rail{position:static;max-height:none;overflow:visible}
+}
+
+/* --- Network: right panel floats inset as a glass card --- */
+.netpage .netpanel{margin:14px 14px 14px 2px;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh)}
+.netcols.sel .netpanel{top:12px;right:12px;bottom:12px;border:1px solid var(--line);border-radius:16px}
+
+/* --- parallax strictly behind content; softer wash + top-bar shadow in light --- */
+#plxmid{z-index:-1}
+html[data-mode="light"] #plxmid .plx-b1{background:radial-gradient(circle,color-mix(in srgb,var(--ga) 10%,transparent),transparent 68%)}
+html[data-mode="light"] #plxmid .plx-b2{background:radial-gradient(circle,color-mix(in srgb,var(--gb) 9%,transparent),transparent 68%)}
+html[data-mode="light"] .plx-num{color:color-mix(in srgb,var(--ga) 5.5%,transparent)}
+@media (min-width:900px){ #top{box-shadow:var(--sh)} }
