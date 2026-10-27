@@ -46,7 +46,6 @@ var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, fun
 function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0;
   var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
   return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-function hash32(s){ var h = 2166136261; s = String(s); for(var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 function tagList(v){ return String(v || '').split(',').map(function(x){ return x.trim(); }).filter(Boolean); }
 function splitTags(v, sep){
   var re = String(sep || ', ').indexOf(';') >= 0 ? /\s*;\s*/ : (String(sep).indexOf('|') >= 0 ? /\s*\|\s*/ : /\s*,\s*/);
@@ -93,12 +92,6 @@ function parseArr(v){
 function todayStr(){
   var t = new Date();
   return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-}
-function weekKey(){
-  var d = new Date(), t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  var day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day);
-  var y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
-  return t.getUTCFullYear() + '-W' + String(Math.ceil(((t - y0) / 864e5 + 1) / 7)).padStart(2, '0');
 }
 
 /* one stroke family so every icon sits together */
@@ -398,6 +391,15 @@ function knownSinceLabel(e){
   if(window.__kbdShift) return; window.__kbdShift = true;
   var set = function(on){ if(document.body) document.body.classList.toggle('kbd-shift', on); };
   document.addEventListener('keydown', function(ev){ if(ev.key === 'Shift') set(true); });
+  /* Keyboard path for clickable Home stat rows (audit F23): the rows are
+     focusable (tabindex=0); Enter/Space activates them like a click. */
+  document.addEventListener('keydown', function(ev){
+    if(ev.key !== 'Enter' && ev.key !== ' ') return;
+    var t = ev.target && ev.target.closest ? ev.target.closest('[data-act="hmstat"]') : null;
+    if(!t) return;
+    ev.preventDefault();
+    t.dispatchEvent(new MouseEvent('click', { bubbles:true }));
+  });
   document.addEventListener('keyup', function(ev){ if(ev.key === 'Shift') set(false); });
   window.addEventListener('blur', function(){ set(false); });
 })();
@@ -405,7 +407,6 @@ function audXHTML(di){
   return '<button type="button" class="aud-x" data-act="auddel" data-di="' + di + '" title="Remove this person from the circle (Shift-click to skip the confirmation)" aria-label="Remove this person">' + ic('x', 13) + '</button>';
 }
 function liveEntry(e){ var p = e.profile || {}; return p.deleted !== '1' && p.audit !== 'trash' && !(p.merged_into || '').trim(); }
-function isChecked(e){ return (e.profile || {}).audit === 'audited'; }
 function igURL(h){ return 'https://www.instagram.com/' + encodeURIComponent(String(h).replace(/^@/, '')) + '/'; }
 function hasHandle(e){ return e.src !== 'contacts' && e.src !== 'subject' && !/^(ig|ct|sf|fdb):/.test(String(e.name || '')) && !!e.name; }
 /* the handle a profile answers to: its own name for IG entries, or the handle a merged-away IG profile handed it (e.ig, set by the build) */
@@ -1366,18 +1367,6 @@ function mergePreview(loserDi, survDi){
   else if(lh && sh && lh.toLowerCase() !== sh.toLowerCase()) out.carried.push('Instagram stays @' + sh);
   return out;
 }
-function mergeInto(loserDi, survDi){
-  var L = D.directory[loserDi], S = D.directory[survDi];
-  if(!L || !S || loserDi === survDi) return false;
-  var target = mergeTarget(survDi);
-  if(!target) return false;
-  txn('Merge ' + dispName(L), function(){
-    queuePatch(loserDi, { merged_into:target });
-    if(raw(S, 'review_flag') === 'duplicate') queuePatch(survDi, { review_flag:'' });
-    if(raw(L, 'review_flag') === 'duplicate') queuePatch(loserDi, { review_flag:'' });
-  });
-  return true;
-}
 function unmerge(di){ txn('Unmerge', function(){ queuePatch(di, { merged_into:'' }); }); }
 
 /* ============================================================
@@ -1452,7 +1441,6 @@ function buildDossierDoc(e){
 function docY(s){ return s.replace(/\b(?:19|20)\d{2}\b/g, '<b>$&</b>'); }
 function docT(s){ return docY(esc(s)); }
 function docBR(s){ return docT(s).replace(/\n/g, '<br>'); }
-function docRateLabel(T){ return T.bars.length ? 'PROFILE RATINGS' : 'DETAILS'; }
 
 /* ---------- Case File "Sidebar File": the single export design ----------
    Layout (JD, 2026-10-15): a full-width header band carries the name and the
@@ -2663,20 +2651,21 @@ function ptAttach(){
    Edit is per section, in place; no global edit mode.
    ============================================================ */
 function isInner(e){ var t = tierOf(e); return t === 'vetted' || t === 'associate'; }
-/* Layout (JD 2026-10-15): Contact + Connections stack on the left; About leads
-   the wide center; Relationship, Persona and Files condense into the right
-   sidebar. ord doubles as the single-column (mobile) sequence: About, Contact,
-   Connections, Relationship, Persona, Files, then the rest. */
+/* Layout (JD 2026-10-26 overnight sweep, audit F1/F24): two stacked
+   movements — "About [Name]" holds everything that is just about the
+   person; "Connection" holds everything about JD's tie to them. ord is
+   the order inside the movement and therefore the single-column
+   (mobile) sequence too (F2). wide sections span the movement grid. */
 var SECS = [
-  { id:'identity',    t:'Contact',        col:'l', ord:2, w:['identity'] },
-  { id:'about',       t:'About',          col:'c', ord:1, w:['onfile'] },
-  { id:'connections', t:'Connections',    col:'l', ord:3, w:['connections'] },
-  { id:'relationship',t:'Relationship',   col:'r', ord:4, w:['relationship'] },
-  { id:'persona',     t:'Persona',        col:'r', ord:5, w:['ratings'] },
-  { id:'files',       t:'Files',          col:'r', ord:6, w:['files'] },
-  { id:'lima',        t:'Lima Charlie note', col:'r', ord:9, w:['lima'] },
-  { id:'background',  t:'Background',     col:'c', ord:7, w:['background', 'education'] },
-  { id:'timeline',    t:'Timeline',       col:'c', ord:8, w:['timeline'] }
+  { id:'about',       t:'About',          mv:'a', ord:1, wide:1, w:['onfile'] },
+  { id:'identity',    t:'Contact',        mv:'a', ord:2, w:['identity'] },
+  { id:'background',  t:'Background',     mv:'a', ord:3, w:['background', 'education'] },
+  { id:'persona',     t:'Persona',        mv:'a', ord:4, w:['ratings'] },
+  { id:'files',       t:'Files',          mv:'a', ord:5, w:['files'] },
+  { id:'relationship',t:'Relationship',   mv:'c', ord:1, w:['relationship'] },
+  { id:'connections', t:'Connections',    mv:'c', ord:2, w:['connections'] },
+  { id:'timeline',    t:'Timeline',       mv:'c', ord:3, wide:1, w:['timeline'] },
+  { id:'lima',        t:'Lima Charlie note', mv:'c', ord:4, w:['lima'] }
 ];
 function secDef(id){ return SECS.filter(function(s){ return s.id === id; })[0]; }
 function secWaivedUI(e, id){ var d = secDef(id); return d.w.every(function(w){ return secWaived(e, w); }); }
@@ -2733,19 +2722,28 @@ function viewProfile(v){
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
     '<section id="p-hero" class="hero"></section>' +
-    '<div class="pcols"><div class="pcol" id="pc-l"></div><div class="pcol" id="pc-c"></div><div class="pcol" id="pc-r"></div></div><div id="p-add"></div></div>';
+    '<div class="pmove" id="pm-a"><div class="pmove-h">About ' + esc(dispName(e).split(' ')[0]) + '</div><div class="pgrid" id="pmg-a"></div></div>' +
+    '<div class="pmove" id="pm-c"><div class="pmove-h">Connection</div><div class="pgrid" id="pmg-c"></div></div><div id="p-add"></div></div>';
   paintProfile(di);
 }
 function paintProfile(di){
   if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
   phLoad();
   var e = D.directory[di];
+  /* Wholesale repaint is the fallback path (audit F14): preserve the
+     reader's place across it — scroll position survives a re-render. */
+  var _sy = $('#p-hero') ? window.scrollY : null;
   $('#p-hero').innerHTML = heroHTML(di);
-  ['l', 'c', 'r'].forEach(function(col){
-    var secs = SECS.filter(function(s){ return s.col === col && secShown(e, s.id); }).map(function(s){ return secHTML(di, s.id); }).join('');
-    $('#pc-' + col).innerHTML = secs;
+  ['a', 'c'].forEach(function(mv){
+    var secs = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id); })
+      .sort(function(x, y){ return x.ord - y.ord; })
+      .map(function(s){ return secHTML(di, s.id); }).join('');
+    var grid = $('#pmg-' + mv), wrap = $('#pm-' + mv);
+    if(grid) grid.innerHTML = secs;
+    if(wrap) wrap.style.display = secs ? '' : 'none';
   });
   SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
+  if(_sy != null) window.scrollTo(0, _sy);
   var hidden = SECS.filter(function(s){ return !secShown(e, s.id); });
   var legacy = ['relationship_type', 'sources', 'mentions'].filter(function(k){ return String(gv(e, k)).trim(); });
   $('#p-add').innerHTML = (hidden.length ? '<div class="addrow"><span>Add to this profile</span>' + hidden.map(function(s){
@@ -2769,7 +2767,7 @@ function repaintTop(){
 }
 
 function heroHTML(di){
-  var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context')), knownSinceLabel(e) ? 'Known since ' + knownSinceLabel(e) : ''].filter(Boolean).join(' · ');
+  var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ');
   /* Location on file gets its own line under the name (JD 2026-10-15): resolved location_on_file -> city -> hometown, normalized; the @handle never renders in the hero (it lives in the Contact card). */
   var loc = ptNormLoc(ptLocVal(e));
   var ds = sortDegrees(degreesOf(e)).slice(0, 3).map(function(d){
@@ -2799,7 +2797,7 @@ function secHTML(di, id){
   if(waived && !editing){
     body = '<p class="dim waivedmsg">Waived: insufficient data. <button type="button" class="lnk" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '" data-off="1">Restore</button></p>';
   } else body = editing ? secEdit(di, id) : secView(di, id);
-  return '<section class="card' + (editing ? ' editing' : '') + (waived ? ' waived' : '') + '" id="sec-' + id + '" data-sec="' + id + '"><header><h3>' + d.t + '</h3>' + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header><div class="cbody">' + body + '</div></section>';
+  return '<section class="card' + (editing ? ' editing' : '') + (waived ? ' waived' : '') + (d.wide ? ' wide' : '') + '" id="sec-' + id + '" data-sec="' + id + '"><header><h3>' + d.t + '</h3>' + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header><div class="cbody">' + body + '</div></section>';
 }
 function secSummary(e, id){
   if(id === 'lima') return lcNote(e).trim() ? '<span class="lc-mark" title="A Lima Charlie note is waiting on this profile">LC</span>' : '';
@@ -4490,17 +4488,13 @@ function hmPersonLink(name, display){
   if(di == null) return '<b>' + label + '</b>';
   return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>' + milBadge(D.directory[di]);
 }
-function hmBar(label, val, max, muted){
-  var pct = max > 0 ? Math.max(2, Math.round(1000 * val / max) / 10) : 0;
-  return '<div class="hm-bar"><span class="hm-bl">' + esc(label) + '</span><span class="hm-tr"><span class="hm-fill' + (muted ? ' mut' : '') + '" data-w="' + pct + '" style="width:0"></span></span><span class="hm-bv" data-hmn="' + val + '">0</span></div>';
-}
 function hmProg(label, num, den){
   var pct = den > 0 ? Math.round(1000 * num / den) / 10 : 0;
-  return '<div class="hm-prog"><div class="hm-pr"><span>' + esc(label) + '</span><b><span data-hmn="' + num + '">0</span> / ' + den + ' &middot; ' + pct + '%</b></div>' +
+  return '<div class="hm-prog"><div class="hm-pr"><span>' + esc(label) + '</span><b><span data-hmn="' + num + '">' + num + '</span> / ' + den + ' &middot; ' + pct + '%</b></div>' +
     '<div class="hm-ptr"><div class="hm-fill" data-w="' + Math.max(1.5, pct) + '" style="width:0"></div></div></div>';
 }
 function hmGap(label, n, href){
-  return '<a class="hm-gap" href="' + href + '"><span>' + esc(label) + '</span><span class="hm-gn" data-hmn="' + n + '">0</span></a>';
+  return '<a class="hm-gap" href="' + href + '"><span>' + esc(label) + '</span><span class="hm-gn" data-hmn="' + n + '">' + n + '</span></a>';
 }
 
 /* --- Home stats (V2.30.0): one stats area under the page head.
@@ -4535,8 +4529,8 @@ function hmPlainTop(counts, n){
 function hmStatBars(top, max, colorOf, kind){
   return top.map(function(t){
     var pct = t.c > 0 && max > 0 ? Math.max(2, Math.round(1000 * t.c / max) / 10) : 0;
-    var act = kind ? ' data-act="hmstat" data-kind="' + kind + '" data-key="' + esc(t.label) + '" title="See who is in ' + esc(t.label) + '"' : '';
-    return '<div class="hm-bar"' + act + '><span class="hm-bl">' + esc(t.label) + '</span><span class="hm-tr"><span class="hm-fill" data-w="' + pct + '" style="width:0' + (colorOf ? ';background:' + colorOf(t) : '') + '"></span></span><span class="hm-bv" data-hmn="' + t.c + '">0</span></div>';
+    var act = kind ? ' data-act="hmstat" tabindex="0" role="button" data-kind="' + kind + '" data-key="' + esc(t.label) + '" title="See who is in ' + esc(t.label) + '"' : '';
+    return '<div class="hm-bar"' + act + '><span class="hm-bl">' + esc(t.label) + '</span><span class="hm-tr"><span class="hm-fill" data-w="' + pct + '" style="width:0' + (colorOf ? ';background:' + colorOf(t) : '') + '"></span></span><span class="hm-bv" data-hmn="' + t.c + '">' + t.c + '</span></div>';
   }).join('');
 }
 function hmStatCard(title, top, distinct, note, kind){
@@ -4555,7 +4549,7 @@ function hmDonut(segs, total, kind){
   var R = 52, C = 2 * Math.PI * R, off = 0;
   var arcs = segs.filter(function(s){ return s.c > 0; }).map(function(s){
     var frac = total ? s.c / total : 0, len = Math.max(0, frac * C - 2.5);
-    var el = '<circle cx="70" cy="70" r="' + R + '" fill="none" stroke="' + s.col + '" stroke-width="13" stroke-dasharray="' + len.toFixed(1) + ' ' + (C - len).toFixed(1) + '" stroke-dashoffset="' + (-off).toFixed(1) + '" transform="rotate(-90 70 70)"' + (kind ? ' data-act="hmstat" data-kind="' + kind + '" data-key="' + esc(s.label) + '"' : '') + '><title>' + esc(s.label) + ' · ' + s.c + '</title></circle>';
+    var el = '<circle cx="70" cy="70" r="' + R + '" fill="none" stroke="' + s.col + '" stroke-width="13" stroke-dasharray="' + len.toFixed(1) + ' ' + (C - len).toFixed(1) + '" stroke-dashoffset="' + (-off).toFixed(1) + '" transform="rotate(-90 70 70)"' + (kind ? ' data-act="hmstat" tabindex="0" data-kind="' + kind + '" data-key="' + esc(s.label) + '"' : '') + '><title>' + esc(s.label) + ' · ' + s.c + '</title></circle>';
     off += frac * C;
     return el;
   }).join('');
@@ -4572,18 +4566,12 @@ function hmYearCols(entries, max){
   entries.forEach(function(t, i){
     var h = max > 0 && t.c > 0 ? Math.max(3, Math.round(t.c / max * (base - 30))) : 0;
     var cx = i * bw + bw / 2;
-    if(t.c > 0) cols += '<rect x="' + (i * bw + bw * 0.2).toFixed(1) + '" y="' + (base - h) + '" width="' + (bw * 0.6).toFixed(1) + '" height="' + h + '" class="hm-col" data-act="hmstat" data-kind="years" data-key="' + esc(t.label) + '"><title>' + esc(t.label) + ' · ' + t.c + '</title></rect>';
+    if(t.c > 0) cols += '<rect x="' + (i * bw + bw * 0.2).toFixed(1) + '" y="' + (base - h) + '" width="' + (bw * 0.6).toFixed(1) + '" height="' + h + '" class="hm-col" data-act="hmstat" tabindex="0" data-kind="years" data-key="' + esc(t.label) + '"><title>' + esc(t.label) + ' · ' + t.c + '</title></rect>';
     if(t.c > 0) tops += '<text x="' + cx + '" y="' + (base - h - 6) + '" class="hm-cv">' + t.c + '</text>';
     labs += '<text x="' + cx + '" y="' + (H - 12) + '" class="hm-cx">' + (i === 0 ? 'pre-\u201910' : '\u2019' + String(t.label).slice(2)) + '</text>';
   });
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="hm-cols" role="img">' + cols + tops + labs +
     '<line x1="0" y1="' + base + '" x2="' + W + '" y2="' + base + '" class="hm-axis"/></svg>';
-}
-function hmDots(top, max){
-  return top.map(function(t, i){
-    var pct = t.c > 0 && max > 0 ? Math.round(1000 * t.c / max) / 10 : 0;
-    return '<div class="hm-dot"><span class="hm-bl">' + esc(t.label) + '</span><span class="hm-dtr"><span class="hm-dfill" style="width:' + pct + '%"></span><span class="hm-dotp' + (i === 0 ? ' top' : '') + '" style="left:' + pct + '%"></span></span><span class="hm-bv">' + t.c + '</span></div>';
-  }).join('');
 }
 function hmStack(top, totalAll){
   var cols = ['#f2f2f2', '#9a9a9a', '#5c5c5c', '#333333', '#e30613'];
@@ -4594,22 +4582,15 @@ function hmStack(top, totalAll){
   }).join('');
   if(tot > shown) segs += '<span class="hm-seg rest" style="width:' + (100 * (tot - shown) / tot) + '%" title="Other types · ' + (tot - shown) + '"></span>';
   var legend = top.map(function(t, i){
-    return '<div class="hm-dleg" data-act="hmstat" data-kind="rel" data-key="' + esc(t.label) + '" title="See people"><span class="hm-dldot" style="background:' + cols[i % cols.length] + '"></span><span class="hm-dll">' + esc(t.label) + '</span><b>' + t.c + '</b><span class="hm-dlp">' + Math.round(100 * t.c / tot) + '%</span></div>';
+    return '<div class="hm-dleg" data-act="hmstat" tabindex="0" role="button" data-kind="rel" data-key="' + esc(t.label) + '" title="See people"><span class="hm-dldot" style="background:' + cols[i % cols.length] + '"></span><span class="hm-dll">' + esc(t.label) + '</span><b>' + t.c + '</b><span class="hm-dlp">' + Math.round(100 * t.c / tot) + '%</span></div>';
   }).join('');
   return '<div class="hm-stack">' + segs + '</div><div class="hm-dlegs stack">' + legend + '</div>';
 }
 function hmRankRows(top, kind){
   return top.map(function(t, i){
-    var act = kind ? ' data-act="hmstat" data-kind="' + kind + '" data-key="' + esc(t.label) + '" title="See members"' : '';
+    var act = kind ? ' data-act="hmstat" tabindex="0" role="button" data-kind="' + kind + '" data-key="' + esc(t.label) + '" title="See members"' : '';
     return '<div class="hm-rk"' + act + '><span class="hm-rkn">' + ('0' + (i + 1)).slice(-2) + '</span><span class="hm-bl grow">' + esc(t.label) + '</span><span class="hm-bv">' + t.c + '</span></div>';
   }).join('');
-}
-function hmCloud(top){
-  var max = top.length ? top[0].c : 1;
-  return '<div class="hm-cloud">' + top.map(function(t){
-    var sz = 12 + Math.round(9 * (t.c / max));
-    return '<span class="hm-cw" style="font-size:' + sz + 'px" title="' + esc(t.label) + ' · ' + t.c + '">' + esc(t.label) + ' <sup>' + t.c + '</sup></span>';
-  }).join('') + '</div>';
 }
 function fmtIsoD(iso){
   if(!iso) return '';
@@ -4730,7 +4711,7 @@ function hmNetCard(){
     parts.join('') + '<g class="hm-rot">' + rot.join('') + '</g>' +
     '<circle cx="0" cy="0" r="17" class="hm-jddot"/><text class="hm-jd" x="0" y="64" text-anchor="middle">JD</text></svg>';
   var orgRows = NET.hubs.slice(0, 8).map(function(h){
-    return '<button type="button" class="hm-org" data-act="hmorg" data-v="' + esc(h.name) + '"><span>' + esc(h.name) + '</span><b data-hmn="' + h.nds.length + '">0</b></button>';
+    return '<button type="button" class="hm-org" data-act="hmorg" data-v="' + esc(h.name) + '"><span>' + esc(h.name) + '</span><b data-hmn="' + h.nds.length + '">' + h.nds.length + '</b></button>';
   }).join('');
   return '<section class="card hm-blk"><header><h3>Network</h3><em class="cnt">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</em></header><div class="cbody">' +
     '<div class="hm-netgrid"><a class="hm-netlink" href="#/network" aria-label="Open the full Network">' + svg + '</a>' +
@@ -4786,6 +4767,20 @@ function hmCoverageCard(pop, N, ph){
    minus anything JD rejected). The wall leads with the most
    recently filed photos — the change log's order — then by
    grade, the same ordering the Photos page opens with. --- */
+/* Audit F19: one canonical source for the counts every view shows.
+   Photo counts use the Photos page's own definition (phHasPhoto over
+   all tracked entries) so Home and Photos can never disagree. */
+function statsOf(){
+  var st = { people: people().length, photosOnFile: 0, photosMissing: 0, photoEntries: 0, igPhotos: 0 };
+  if(PH && PH.people){
+    var all = phAllEntries(), withPh = all.filter(phHasPhoto);
+    st.photoEntries = all.length;
+    st.photosOnFile = withPh.length;
+    st.photosMissing = all.length - withPh.length;
+    withPh.forEach(function(p){ if(String(p.type || '').indexOf('Instagram') >= 0) st.igPhotos++; });
+  }
+  return st;
+}
 function hmPhotoStats(){
   if(!PH || !PH.people) return { ok:false };
   var REV = phReview();
@@ -4801,21 +4796,20 @@ function hmPhotoStats(){
     if(ca != null || cb != null){ if(ca == null) return 1; if(cb == null) return -1; if(ca !== cb) return ca - cb; }
     return (gradeR[a.status] - gradeR[b.status]) || a.name.localeCompare(b.name);
   }).slice(0, 17);
-  var ig = 0;
-  found.forEach(function(p){ if(String(p.type || '').indexOf('Instagram') >= 0) ig++; });
-  return { ok:true, onFile:found.length, noPhoto:counts.no_photo + counts.no_source + counts.auth_only, checked:PH.people.length, total:PH.total || PH.people.length, ig:ig, wall:wall, updated:PH.updated || '', unchecked:phAllEntries().filter(function(p){ return p.status === 'unchecked'; }).length };
+  var _st = statsOf();
+  return { ok:true, onFile:_st.photosOnFile, noPhoto:_st.photosMissing, checked:PH.people.length, total:PH.total || PH.people.length, ig:_st.igPhotos, wall:wall, updated:PH.updated || '', unchecked:phAllEntries().filter(function(p){ return p.status === 'unchecked'; }).length };
 }
 function hmPhotosCard(ph){
   if(!ph.ok) return '<section class="card hm-blk"><header><h3>Photos</h3></header><div class="cbody"><p class="dim">' + (PH ? 'No photo data yet.' : 'Loading photo data&hellip;') + '</p></div></section>';
   var kpis = '<div class="hm-kpis">' +
-    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.onFile + '">0</div><div class="hm-kl">Photos on file</div></div>' +
-    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.noPhoto + '">0</div><div class="hm-kl">No photo yet</div></div>' +
+    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.onFile + '">' + ph.onFile + '</div><div class="hm-kl">Photos on file</div></div>' +
+    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.noPhoto + '">' + ph.noPhoto + '</div><div class="hm-kl">No photo yet</div></div>' +
     '<div class="hm-kpi"><div class="hm-kn">' + ph.checked + '<small> / ' + ph.total + '</small></div><div class="hm-kl">Profiles checked</div></div>' +
-    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.ig + '">0</div><div class="hm-kl">From Instagram</div></div></div>';
+    '<div class="hm-kpi"><div class="hm-kn" data-hmn="' + ph.ig + '">' + ph.ig + '</div><div class="hm-kl">From Instagram</div></div></div>';
   var tiles = ph.wall.map(function(p){
     return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + milBadgeName(p.name) + (phAddedLabel(p) ? '<small class="hm-td">' + phAddedLabel(p) + '</small>' : '') + '</span></a>';
   }).join('');
-  tiles += '<a class="hm-tile miss" href="#/photos"><b data-hmn="' + ph.noPhoto + '">0</b><span>still missing a photo</span></a>';
+  tiles += '<a class="hm-tile miss" href="#/photos"><b data-hmn="' + ph.noPhoto + '">' + ph.noPhoto + '</b><span>still missing a photo</span></a>';
   return '<section class="card hm-blk' + (HM_DATES ? ' hm-showdates' : '') + '"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em><span class="sp"></span><button type="button" class="btn ghost sm" data-act="hmdates">' + (HM_DATES ? 'Hide added dates' : 'Show added dates') + '</button></header><div class="cbody">' + kpis +
     '<div class="hm-tiles">' + tiles + '</div></div></section>';
 }
@@ -4832,7 +4826,7 @@ function hmOrgsCard(pop){
   var top8 = top.slice(0, 8), max = top8.length ? top8[0].c : 0;
   var bars = top8.map(function(o){
     var pct = max > 0 ? Math.max(2, Math.round(1000 * o.c / max) / 10) : 0;
-    return '<a class="hm-bar hm-barlink" href="#/groups/' + catOf[o.n] + '/' + encodeURIComponent(o.n) + '"><span class="hm-bl">' + esc(o.n) + '</span><span class="hm-tr"><span class="hm-fill" data-w="' + pct + '" style="width:0"></span></span><span class="hm-bv" data-hmn="' + o.c + '">0</span></a>';
+    return '<a class="hm-bar hm-barlink" href="#/groups/' + catOf[o.n] + '/' + encodeURIComponent(o.n) + '"><span class="hm-bl">' + esc(o.n) + '</span><span class="hm-tr"><span class="hm-fill" data-w="' + pct + '" style="width:0"></span></span><span class="hm-bv" data-hmn="' + o.c + '">' + o.c + '</span></a>';
   }).join('');
   var pairs = [], top6 = top.slice(0, 6), i, j;
   for(i = 0; i < top6.length; i++) for(j = i + 1; j < top6.length; j++){
@@ -4841,7 +4835,7 @@ function hmOrgsCard(pop){
     if(n > 0) pairs.push({ a:top6[i].n, b:top6[j].n, n:n });
   }
   pairs.sort(function(a, b){ return b.n - a.n; });
-  var pairRows = pairs.slice(0, 4).map(function(p){ return '<div class="hm-gap static"><span>' + esc(p.a) + ' + ' + esc(p.b) + '</span><span class="hm-gn" data-hmn="' + p.n + '">0</span></div>'; }).join('');
+  var pairRows = pairs.slice(0, 4).map(function(p){ return '<div class="hm-gap static"><span>' + esc(p.a) + ' + ' + esc(p.b) + '</span><span class="hm-gn" data-hmn="' + p.n + '">' + p.n + '</span></div>'; }).join('');
   var gCounts = {};
   pop.forEach(function(di){ personGroups(D.directory[di]).forEach(function(g){ gCounts[g] = (gCounts[g] || 0) + 1; }); });
   var gTop = Object.keys(gCounts).map(function(k){ return { n:k, c:gCounts[k] }; }).sort(function(a, b){ return b.c - a.c || a.n.localeCompare(b.n); }).slice(0, 8);
@@ -4855,7 +4849,10 @@ function hmOrgsCard(pop){
 
 /* --- Config 2: What's New, the activity rail --- */
 var HM_SIDE = null;   /* {kind, key} when a Shape stat is selected; null = What's New */
+var HM_INDEX = {};   /* audit F16: member lists computed once per Home mount, not per click */
 function hmSideRows(kind, key){
+  var ck = kind + '|' + key;
+  if(HM_INDEX[ck]) return HM_INDEX[ck];
   var enc = {};
   function push(di, val){ var e = D.directory[di], ky = String(gv(e, 'known_since') || ''), ys = ky ? yearsSince(ky) : null;
     enc[di] = { di:di, name:dispName(e), tier:gv(e, 'tier'), town:(ptLocVal(e) || '').split(',')[0] || '',
@@ -4871,6 +4868,7 @@ function hmSideRows(kind, key){
   else if(kind === 'group'){ D.directory.forEach(function(e, di){ if(personGroups(e).indexOf(key) >= 0) push(di); }); }
   var rows = Object.keys(enc).map(function(k){ return enc[k]; });
   rows.sort(function(a, b){ if(kind === 'persona') return (b.val || 0) - (a.val || 0) || a.name.localeCompare(b.name); return a.name.localeCompare(b.name); });
+  HM_INDEX[ck] = rows;
   return rows;
 }
 function hmsAvatar(r){
@@ -4929,9 +4927,9 @@ function hmRail(){
       '<div class="hm-hmeta">' + (freshX.published ? 'Published ' + esc(hmFmtD(freshX.published)) + ' &middot; ' : '') + 'Filed ' + esc(hmFmtD(DT.date)) + '</div></div>';
   }
   out += '<div class="hm-counters">' +
-    '<div class="hm-counter"><b>' + (CH && CH.entries ? '<span data-hmn="' + CH.entries.length + '">0</span>' : '&mdash;') + '</b><span class="hm-cl">Changes logged</span></div>' +
-    '<div class="hm-counter"><b>' + (DT && DT.coverage ? '<span data-hmn="' + DT.coverage.checked_total + '">0</span><small> / ' + DT.coverage.of + '</small>' : '&mdash;') + '</b><span class="hm-cl">Checked this rotation</span></div>' +
-    '<div class="hm-counter"><b>' + (DT && DT.checked ? '<span data-hmn="' + DT.checked.length + '">0</span>' : '&mdash;') + '</b><span class="hm-cl">Checked in latest brief</span></div>' +
+    '<div class="hm-counter"><b>' + (CH && CH.entries ? '<span data-hmn="' + CH.entries.length + '">' + CH.entries.length + '</span>' : '&mdash;') + '</b><span class="hm-cl">Changes logged</span></div>' +
+    '<div class="hm-counter"><b>' + (DT && DT.coverage ? '<span data-hmn="' + DT.coverage.checked_total + '">' + DT.coverage.checked_total + '</span><small> / ' + DT.coverage.of + '</small>' : '&mdash;') + '</b><span class="hm-cl">Checked this rotation</span></div>' +
+    '<div class="hm-counter"><b>' + (DT && DT.checked ? '<span data-hmn="' + DT.checked.length + '">' + DT.checked.length + '</span>' : '&mdash;') + '</b><span class="hm-cl">Checked in latest brief</span></div>' +
     '</div>';
   out += '<div class="hm-rail-h sub"><span>Change log</span>' + (CH && CH.entries ? '<em>' + CH.entries.length + '</em>' : '') + '</div>';
   if(CH && CH.entries && CH.entries.length){
@@ -4960,6 +4958,7 @@ function hmAnimate(){
     $$('[data-hmn]', blk).forEach(function(el){
       var target = parseFloat(el.getAttribute('data-hmn'));
       if(REDUCED_MOTION){ el.textContent = target; return; }
+      el.textContent = '0';   /* visual count-up only — the template already carries the true value (audit F12) */
       var t0 = null;
       function step(ts){ if(!t0) t0 = ts; var p = Math.min(1, (ts - t0) / 600); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(step); }
       requestAnimationFrame(step);
@@ -4977,14 +4976,17 @@ function viewHome(v){
   phLoad(); dtLoad(); chLoad();
   var pop = people(), N = pop.length;
   var ph = hmPhotoStats();
+  HM_INDEX = {};
   v.innerHTML = '<div class="page hm"><div class="pagehead"><div><h1 class="display">Home</h1>' +
     '<p class="sub">The whole circle at a glance: its shape, the map, coverage, photos, organizations, and what changed lately.</p></div></div>' +
     '<div class="hm-wrap"><div class="hm-main">' +
+    '<div class="hm-band">The Circle</div>' +
     hmStatsCard(pop, N) +
     hmNetCard() +
-    hmCoverageCard(pop, N, ph) +
     hmPhotosCard(ph) +
     hmOrgsCard(pop) +
+    '<div class="hm-band">My activity</div>' +
+    hmCoverageCard(pop, N, ph) +
     '</div><div id="hmrail">' + hmRail() + '</div></div></div>';
   hmAnimate();
   hmNetDrift();
@@ -5003,14 +5005,24 @@ function hmRailPaint(){
    Sheet automatically. This view renders the latest brief
    (data/daily-ten.json, written by the routine); read-only.
    ============================================================ */
+/* One dispatcher for async data arrivals (audit F11): every loader
+   repaints through here, so a new view joins one list, not three. */
+function repaintForData(kind){
+  var r = S.route.name;
+  if(kind === 'ph'){
+    if(r === 'photos' || r === 'audit' || r === 'home') render();
+    else if(r === 'groups'){ grpPaintCards(); grpPaintMembers(); }
+    else if($('#p-hero')) repaintTop();
+  } else if(r === 'daily' || r === 'home') render();
+}
 var DT = null, DT_LOADING = false;
 function dtLoad(){
   if(DT || DT_LOADING) return;
   DT_LOADING = true;
   fetch('data/daily-ten.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ DT = d; DT_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); })
-    .catch(function(){ DT = { empty:true }; DT_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); });
+    .then(function(d){ DT = d; DT_LOADING = false; repaintForData('dt'); })
+    .catch(function(){ DT = { empty:true }; DT_LOADING = false; repaintForData('dt'); });
 }
 var CH = null, CH_LOADING = false;
 function chLoad(){
@@ -5018,8 +5030,8 @@ function chLoad(){
   CH_LOADING = true;
   fetch('data/changes.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ CH = d; CH_LOADING = false; if(S.route.name === 'daily' || S.route.name === 'home') render(); })
-    .catch(function(){ CH = { entries:[] }; CH_LOADING = false; });
+    .then(function(d){ CH = d; CH_LOADING = false; repaintForData('ch'); })
+    .catch(function(){ CH = { entries:[] }; CH_LOADING = false; repaintForData('ch'); });
 }
 /* --- Change-log grouping (JD 2026-10-22): Apple-style batching.
    Entries sharing a filed date, a normalized "what" (the person's
@@ -5236,13 +5248,18 @@ var PH_SDIR = store('ncc_photos_sdir_v1') === 'desc' ? -1 : 1;
 var PH_FILT = store('ncc_photos_filter_v1') || 'all';
 var PH_QUERY = '';
 var PH_LIST = [];   /* photos-page entries in current display order (sections flattened) — drives the slide-over's prev/next */
+/* Audit F13: every photo write routes its cache upkeep through here —
+   the name index is derived from PH and is rebuilt lazily after any
+   write; key/order/hidden caches are updated by their write fns and
+   re-derived from the bake on the next phLoad. */
+function phInvalidate(){ PH_BY_NAME = null; }
 function phLoad(){
   if(PH || PH_LOADING) return;
   PH_LOADING = true;
   fetch('data/photos.json', { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ PH = d; PH_BY_NAME = null; PH_LOADING = false; if(S.route.name === 'photos') render(); else if(S.route.name === 'audit') render(); else if(S.route.name === 'home') render(); else if(S.route.name === 'groups'){ grpPaintCards(); grpPaintMembers(); } else if($('#p-hero')) repaintTop(); })
-    .catch(function(){ PH = { empty:true }; PH_LOADING = false; if(S.route.name === 'photos' || S.route.name === 'home') render(); });
+    .then(function(d){ PH = d; phInvalidate(); PH_LOADING = false; repaintForData('ph'); })
+    .catch(function(){ PH = { empty:true }; PH_LOADING = false; repaintForData('ph'); });
 }
 
 function phDiByName(name){
@@ -5350,6 +5367,7 @@ function phKeyUrl(p){
 function phApplyKey(name, url){
   var di = phDiOf(name); if(di == null) return false;
   txn('Set key photo', function(){ queuePatch(di, { primary_photo: url }); });
+  phInvalidate();
   if(!PH_KEY) PH_KEY = {};
   PH_KEY[String(name).toLowerCase()] = url;
   var p = (phIndex() || {})[name];
@@ -5453,7 +5471,9 @@ function phEditor(name){
     apply();
   });
   stage.addEventListener('pointerup', function(){ drag = null; });
-  function close(){ ov.remove(); document.body.classList.remove('sheet-open'); }
+  var _pfEd = document.activeElement;
+  var _xbEd = ov.querySelector('[data-cancel]'); if(_xbEd) _xbEd.focus();
+  function close(){ ov.remove(); document.body.classList.remove('sheet-open'); if(_pfEd && _pfEd.focus) _pfEd.focus(); }
   ov.querySelector('[data-x]').addEventListener('click', close);
   ov.querySelector('[data-cancel]').addEventListener('click', close);
   ov.addEventListener('click', function(ev){ if(ev.target === ov) close(); });
@@ -5821,14 +5841,17 @@ function phMarkSel(){
 /* ---------- slide-over viewer: overlays the grid, never re-renders
    it, so closing returns JD to the exact scroll position he left --- */
 function phSelIdx(){ return PH_LIST.findIndex(function(p){ return PH_SEL && p.name.toLowerCase() === PH_SEL.toLowerCase(); }); }
+var PHV_PREV_FOCUS = null;
 function phOpenViewer(name){
   if(!name) return;
+  PHV_PREV_FOCUS = document.activeElement;
   PH_SEL = name;
   var _kp = (phIndex() || {})[name], _ki = 0;
   if(_kp){ var _ku = phKeyUrl(_kp); _ki = phAllPhotos(_kp).findIndex(function(x){ return x.url === _ku; }); if(_ki < 0) _ki = 0; }
   PHV_IDX = _ki; phSwipeInit(); phKeysInit();
   if(phSelIdx() < 0) PH_LIST = phSortList(phFiltered(phAllEntries()));
   phPaintViewer();
+  var _vcb = document.querySelector('.phov-wrap [data-act="phclose"]'); if(_vcb) _vcb.focus();
   phovKeys();
 }
 function phPaintViewer(instant){
@@ -5856,7 +5879,7 @@ function phPaintViewer(instant){
     : p.status === 'unchecked' ? '<p class="ph-ev">Not checked yet &mdash; no photo batch has covered this profile.</p>' : '';
   var keyU = has ? phKeyUrl(p) : null, isKey = !!(curPh && keyU && curPh.url === keyU);
   var ov = document.createElement('div');
-  ov.className = 'phov-wrap';
+  ov.className = 'phov-wrap'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Photo viewer');
   ov.innerHTML = '<div class="phov-scrim" data-act="phclose"></div>' +
     '<aside class="phov" role="dialog" aria-label="Photo viewer">' +
     '<div class="phov-h"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + '<button type="button" class="ib" data-act="phclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
@@ -5892,12 +5915,14 @@ function phMgrOpen(name){
   if(ki > 0) PHM.sel = ki;
   var old = document.querySelector('.phmgr-wrap'); if(old) old.remove();
   var ov = document.createElement('div');
-  ov.className = 'phmgr-wrap';
+  ov.className = 'phmgr-wrap'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true');
   ov.innerHTML = '<div class="phmgr-scrim" data-act="phmx"></div><aside class="phmgr" role="dialog" aria-label="Edit photos">' +
     '<div class="phmgr-h"><b>Photos \u2014 ' + esc(name) + '</b><button type="button" class="ib" data-act="phmx" aria-label="Close">' + ic('x', 16) + '</button></div>' +
     '<div id="phmgrbody"></div></aside>';
   document.body.appendChild(ov);
   document.body.classList.add('sheet-open');
+  PHM.prevFocus = document.activeElement;
+  var _xb = ov.querySelector('[data-act="phmx"]'); if(_xb) _xb.focus();
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('open'); }); });
   phMgrRender();
 }
@@ -5944,6 +5969,7 @@ function phMgrMoveSel(d){
 }
 function phMgrPatchHidden(name, hid){
   var di = phDiOf(name); if(di == null) return;
+  phInvalidate();
   txn(hid.length ? 'Remove photo' : 'Restore photo', function(){ queuePatch(di, { photo_hidden: hid.length ? JSON.stringify(hid) : '' }); });
   if(!PH_HIDDEN) PH_HIDDEN = {};
   if(hid.length) PH_HIDDEN[String(name).toLowerCase()] = hid; else delete PH_HIDDEN[String(name).toLowerCase()];
@@ -5973,6 +5999,7 @@ function phMgrSave(){
   if(!PHM || !PHM.dirty) return;
   var di = phDiOf(PHM.name); if(di == null) return;
   var urls = PHM.work.map(function(x){ return x.url; });
+  phInvalidate();
   txn('Save photo order', function(){ queuePatch(di, { photo_order: JSON.stringify(urls) }); });
   if(!PH_ORDER) PH_ORDER = {};
   PH_ORDER[String(PHM.name).toLowerCase()] = urls;
@@ -5980,7 +6007,9 @@ function phMgrSave(){
 }
 function phMgrClose(keepSheet){
   var ov = document.querySelector('.phmgr-wrap');
+  var _pf = PHM && PHM.prevFocus;
   PHM = null;
+  if(!keepSheet && _pf && _pf.focus) _pf.focus();
   if(ov){ ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 280); }
   if(!keepSheet && !document.querySelector('.phed-wrap') && !PH_SEL) document.body.classList.remove('sheet-open');
   if(PH_SEL) phPaintViewer(true);
@@ -5990,6 +6019,8 @@ function phMgrClose(keepSheet){
 function phCloseViewer(){
   var ov = document.querySelector('.phov-wrap');
   PH_SEL = null;
+  if(PHV_PREV_FOCUS && PHV_PREV_FOCUS.focus) PHV_PREV_FOCUS.focus();
+  PHV_PREV_FOCUS = null;
   if(ov){ ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 280); }
   if(!document.querySelector('.phed-wrap')) document.body.classList.remove('sheet-open');
   phMarkSel();
@@ -7581,13 +7612,6 @@ function lcRender(){
     '<div class="lc-deckbar"><button type="button" class="btn primary" data-act="lcshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button>' +
     '<span class="dim">Four at a time, anyone in the directory. Tap a card for the whole profile on one screen.</span></div>';
 }
-function lcKV(label, val){ return val ? '<div class="lc-kv"><span>' + esc(label) + '</span><b>' + esc(val) + '</b></div>' : ''; }
-function lcChips(label, list){
-  return list && list.length ? '<div class="lc-sec"><h4>' + esc(label) + '</h4><p class="lc-chips">' + list.map(function(x){ return '<span class="lc-chip">' + esc(x) + '</span>'; }).join('') + '</p></div>' : '';
-}
-function lcText(label, txt){
-  return txt ? '<div class="lc-sec"><h4>' + esc(label) + '</h4><p class="lc-txt">' + esc(txt) + '</p></div>' : '';
-}
 /* The whole profile on one screen, built from the profile's OWN
    section cards (JD 2026-10-17, V2.8.2): every value the profile
    shows is here, and every value the profile can edit can be edited
@@ -7604,10 +7628,10 @@ function lcOpenHTML(di){
   var head = '<div class="lc-head">' + avatar(e, 'lg') + '<div class="lc-hmain"><h2 class="display">' + esc(dispName(e)) + milBadge(e) + '</h2>' +
     '<p class="lc-hsub">' + esc([infoLine(e), ptNormLoc(ptLocVal(e))].filter(Boolean).join(' · ') || 'Not yet classified') + '</p></div>' +
     '<div class="lc-hscore">' + scoreBadgeHTML(di) + '</div></div>';
-  function colSecs(col){
-    return SECS.filter(function(s){ return s.col === col && s.id !== 'lima'; }).map(function(s){ return secHTML(di, s.id); }).join('');
+  function grpSecs(ids){
+    return ids.map(function(id){ return secHTML(di, id); }).join('');
   }
-  return head + '<div class="lc-cols"><div class="lc-col">' + colSecs('l') + '</div><div class="lc-col">' + colSecs('c') + '</div><div class="lc-col">' + colSecs('r') + '</div></div>';
+  return head + '<div class="lc-cols"><div class="lc-col">' + grpSecs(['identity', 'relationship']) + '</div><div class="lc-col">' + grpSecs(['about', 'background']) + '</div><div class="lc-col">' + grpSecs(['persona', 'files', 'connections', 'timeline']) + '</div></div>';
 }
 /* Is the Lima Charlie expanded view the live screen right now? The
    shared profile painters check this and re-render the LC view
@@ -8270,17 +8294,19 @@ function refreshAfterUndo(dir){
   afterWrite();
 }
 
+var DEB_T = {};
+function debPaint(k, fn){ clearTimeout(DEB_T[k]); DEB_T[k] = setTimeout(fn, 120); }
 function onInput(ev){
   var t = ev.target;
-  if(t.id === 'gs'){ paintSearch(); return; }
+  if(t.id === 'gs'){ debPaint('gs', paintSearch); return; }
   if(t.id === 'netq'){ netPaintFind(); return; }
-  if(t.id === 'pq'){ S.ppl.q = t.value; paintPeople(); return; }
-  if(t.id === 'phq'){ PH_QUERY = t.value; phPaintList(); return; }
+  if(t.id === 'pq'){ S.ppl.q = t.value; debPaint('pq', paintPeople); return; }
+  if(t.id === 'phq'){ PH_QUERY = t.value; debPaint('phq', phPaintList); return; }
   if(t.id === 'assocq'){ var e = D.directory[S.prof.di]; pickerHits(t, '#assocr', 'assocadd', [S.prof.di].concat(knownAssociates(e).map(function(n){ return BYN[(n.u || '').toLowerCase()]; }))); return; }
   if(t.id === 'famq'){ pickerHits(t, '#famr', 'famadd', [S.prof.di]); return; }
   if(t.id === 'gaddq'){ var g = t.getAttribute('data-g'); pickerHits(t, '#gaddr', 'gadd', (allGroups()[g] || [])); return; }
-  if(t.id === 'gq'){ GRPV.q = t.value; grpPaintCards(); return; }
-  if(t.id === 'gmq'){ GRPV.mq = t.value; grpPaintMembers(); return; }
+  if(t.id === 'gq'){ GRPV.q = t.value; debPaint('gq', grpPaintCards); return; }
+  if(t.id === 'gmq'){ GRPV.mq = t.value; debPaint('gmq', grpPaintMembers); return; }
   if(t.id === 'mq'){
     var q = t.value.trim(), box = $('#mr'); if(q.length < 2){ box.innerHTML = ''; return; }
     var hits = searchPeople(q, 6, people().filter(function(d){ return d !== MG.a; }));
@@ -8513,6 +8539,14 @@ function boot(){
       .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(d){
         D = d;
+        /* Bake self-check (audit F20): if a build drops the profile field
+           list, every profile quietly loses its sections. Warn loudly. */
+        (function(){ try {
+          var e0 = (D.directory || []).find(function(x){ return x.profile && x.profile.synopsis; }) || (D.directory || [])[0];
+          var want = ['relationship','synopsis','public_footprint','events','files','tier','first_name','groups'];
+          var miss = e0 && e0.profile ? want.filter(function(k){ return !(k in e0.profile); }) : want;
+          if(miss.length) console.warn('[bake] dossier.json profiles are missing fields:', miss.join(', '));
+        } catch(_e){} })();
         regLoad();
         D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; var dn = String(((r.profile || {}).display_name || r.display || '')).toLowerCase(); if(dn && !(dn in BYN)) BYN[dn] = i; normEntry(r); PK2I[pkey(r)] = i; });
         outLoad(); winsLoad();
