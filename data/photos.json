@@ -1461,16 +1461,17 @@
    "source_page": "https://www.instagram.com/davidzufall/",
    "status": "possible",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
-  },
-  {
-   "evidence": "Instagram profile @davidzufallphotography (display name \"𝑫𝒂𝒗𝒊𝒅 𝒁𝒖𝒇𝒂𝒍𝒍 𝑷𝒉𝒐𝒕𝒐𝒈𝒓𝒂𝒑𝒉𝒚\"); bio: \"Photographer in Upstate NY. DM for bookings.  Personal page and landcapes @davidzufall\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
-   "name": "David Zufall Photography",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/624287746_18343158550210714_7483392019107157034_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=7_PB5fIi1bYQ7kNvwHcO-4z&_nc_oc=AdrrcFiymmVAqW3TcPTQTYD-wVD8PBp_ORpuo7-R62hud1zh06N8jbbjRFSEFIFkOwBM3BfKSUHSdvuyV8H_Dg9b&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=G63hooMZsAFtiMMgKGQ8fQ&oh=00_AQMDPGG7pARxm311l5f6wliZdczZj7jlwle1YRYzUa-XNg&oe=6AE018D9",
-   "source_page": "https://www.instagram.com/davidzufallphotography/",
-   "status": "possible",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/624287746_18343158550210714_7483392019107157034_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=7_PB5fIi1bYQ7kNvwHcO-4z&_nc_oc=AdrrcFiymmVAqW3TcPTQTYD-wVD8PBp_ORpuo7-R62hud1zh06N8jbbjRFSEFIFkOwBM3BfKSUHSdvuyV8H_Dg9b&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=G63hooMZsAFtiMMgKGQ8fQ&oh=00_AQMDPGG7pARxm311l5f6wliZdczZj7jlwle1YRYzUa-XNg&oe=6AE018D9",
+     "status": "possible",
+     "type": "Instagram profile picture",
+     "source_page": "https://www.instagram.com/davidzufallphotography/",
+     "evidence": "Instagram profile @davidzufallphotography (display name \"𝑫𝒂𝒗𝒊𝒅 𝒁𝒖𝒇𝒂𝒍𝒍 𝑷𝒉𝒐𝒕𝒐𝒈𝒓𝒂𝒑𝒉𝒚\"); bio: \"Photographer in Upstate NY. DM for bookings.  Personal page and landcapes @davidzufall\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+     "added_approx": "Oct 2026"
+    }
+   ]
   },
   {
    "evidence": "Instagram profile @dawsonwiegandt (display name \"Dawson Anthony\"). Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
@@ -2101,14 +2102,6 @@
    "status": "confirmed",
    "type": "Instagram profile picture",
    "added_approx": "Oct 2026"
-  },
-  {
-   "evidence": "Only link on file is Facebook (auth).",
-   "name": "Gabi Ramsdell",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
   },
   {
    "evidence": "Instagram profile @gabi_paige (display name \"Gabi White\").",
