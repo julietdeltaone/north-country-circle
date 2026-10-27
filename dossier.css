@@ -2257,6 +2257,10 @@ a.gcard:hover,
 .aud-goal-bar i.met{background:var(--acc)}
 .hmk-strip .hmk-kpi:nth-child(odd) .hmk-v,.hm-kpis .hm-kpi:nth-child(odd) .hm-kn{color:var(--ga-t)}
 .hmk-strip .hmk-kpi:nth-child(even) .hmk-v,.hm-kpis .hm-kpi:nth-child(even) .hm-kn{color:var(--gb-t)}
+/* network overlays float on the canvas: they take the mode glass, not a hard dark fill */
+.dbadge,.netlegend,.netcard,.clab,.nethov,.netlegchip,.nf-chip{background:var(--glass2)}
+.netlegend{border-color:var(--line)}
+.thero,.fixstrip{background:var(--glass2)}
 /* light-mode state fills (the dark-era white sheens read wrong on light glass) */
 html[data-mode="light"] .qrow.on{background:linear-gradient(90deg,color-mix(in srgb,var(--ga) 18%,transparent),color-mix(in srgb,var(--ga) 6%,transparent));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ga) 45%,transparent)}
 html[data-mode="light"] .prow:hover,html[data-mode="light"] .ptrow:hover,html[data-mode="light"] .srow:hover{background:var(--fill2)}
