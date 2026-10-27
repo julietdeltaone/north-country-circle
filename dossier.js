@@ -4889,7 +4889,7 @@ function hmiRows(kind, key){
   } else if(kind === 'group'){
     pop.forEach(function(di){ if(personGroups(D.directory[di]).indexOf(key) >= 0) push(di); });
   } else if(kind === 'years'){
-    pop.forEach(function(di){ var ky = String(gv(D.directory[di], 'known_since') || ''); if(!ky) return; var lab = ky < '2010' ? 'Before 2010' : ky.slice(0, 4); if(lab === key) push(di); });
+    pop.forEach(function(di){ var y = knownSinceYear(D.directory[di]); if(!y) return; var lab = y < 2010 ? 'Before 2010' : String(y); if(lab === key) push(di); });
   } else if(kind === 'decade'){
     var lo = key === 'pre2010' ? 0 : key === '2010s' ? 2010 : 2020, hi = key === 'pre2010' ? 2009 : key === '2010s' ? 2019 : 2100;
     pop.forEach(function(di){ var y = knownSinceYear(D.directory[di]); if(y && y >= lo && y <= hi) push(di); });
