@@ -129,13 +129,42 @@ html[data-mode="light"] .v-forest{--bd-base:#e6f2e2; --glow1:rgba(134,239,172,.6
   --glass:rgba(255,255,255,.50); --glass2:rgba(255,255,255,.68); --edge:rgba(255,255,255,.80); --edge-soft:rgba(255,255,255,.88);
   --ink:#17301e; --dim:rgba(43,84,54,.80); --accent:#1e7a46; --accent2:#65a30d; --track:rgba(30,100,55,.13); --shadow:rgba(40,110,60,.28); --chip:rgba(30,122,70,.12)}
 /* 6 CLEAR */
-html[data-mode="dark"] .v-clear{--bd-base:#060607; --glow1:rgba(148,178,220,.26); --glow2:rgba(220,200,170,.18); --glow3:rgba(120,130,150,.25); --blob1:#5f7086; --blob2:#6e6250;
+html[data-mode="dark"] .v-clear{--bd-base:#060607; --glow1:rgba(196,202,212,.24); --glow2:rgba(210,210,214,.15); --glow3:rgba(150,156,166,.20); --blob1:#767c85; --blob2:#5b5f66;
   --glass:rgba(255,255,255,.055); --glass2:rgba(255,255,255,.10); --edge:rgba(255,255,255,.30); --edge-soft:rgba(255,255,255,.16);
-  --ink:#f7f7f8; --dim:rgba(240,240,244,.72); --accent:#ffffff; --accent2:#c9d4e2; --track:rgba(255,255,255,.15); --shadow:rgba(0,0,0,.55); --chip:rgba(255,255,255,.12)}
-html[data-mode="light"] .v-clear{--bd-base:#eef3f7; --glow1:rgba(186,220,250,.65); --glow2:rgba(255,232,200,.55); --glow3:rgba(210,235,220,.55); --blob1:#bcdcfb; --blob2:#ffe3ba;
+  --ink:#f7f7f8; --dim:rgba(240,240,244,.72); --accent:#ffffff; --accent2:#c9d4e2; --track:rgba(255,255,255,.15); --shadow:rgba(0,0,0,.55); --chip:rgba(255,255,255,.12);
+  --a-sky:#4db2ff; --a-amber:#f5a83c; --a-green:#4ade8c; --a-violet:#b79aff; --a-red:#ff4653}
+html[data-mode="light"] .v-clear{--bd-base:#eef0f1; --glow1:rgba(255,255,255,.80); --glow2:rgba(206,213,221,.50); --glow3:rgba(226,229,233,.60); --blob1:#ffffff; --blob2:#ccd3da;
   --glass:rgba(255,255,255,.30); --glass2:rgba(255,255,255,.46); --edge:rgba(255,255,255,.72); --edge-soft:rgba(255,255,255,.85);
-  --ink:#141a20; --dim:rgba(38,50,62,.80); --accent:#141a20; --accent2:#4a6076; --track:rgba(25,40,55,.11); --shadow:rgba(80,100,120,.24); --chip:rgba(20,26,32,.07)}
+  --ink:#141a20; --dim:rgba(38,50,62,.80); --accent:#141a20; --accent2:#4a6076; --track:rgba(25,40,55,.11); --shadow:rgba(80,100,120,.24); --chip:rgba(20,26,32,.07);
+  --a-sky:#0f7fd4; --a-amber:#b96e00; --a-green:#128a4c; --a-violet:#7a5ae0; --a-red:#d1050f}
 .v-clear .glass{ -webkit-backdrop-filter:blur(26px) saturate(150%); backdrop-filter:blur(26px) saturate(150%) }
+/* CLEAR accent system — the glass stays neutral; the data carries the color */
+.v-clear .kpi:nth-child(1) .k-num{color:var(--a-sky)}
+.v-clear .kpi:nth-child(2) .k-num{color:var(--a-violet)}
+.v-clear .kpi:nth-child(3) .k-num{color:var(--a-amber)}
+.v-clear .kpi:nth-child(4) .k-num{color:var(--a-green)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(1) .b-fill{background:var(--a-amber)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(2) .b-fill{background:var(--a-sky)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(3) .b-fill{background:var(--a-green)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(4) .b-fill{background:var(--a-violet)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(5) .b-fill{background:var(--a-sky)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(1) .b-val{color:var(--a-amber)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(2) .b-val{color:var(--a-sky)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(3) .b-val{color:var(--a-green)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(4) .b-val{color:var(--a-violet)}
+.v-clear [aria-label="Where they are"] .bar-row:nth-of-type(5) .b-val{color:var(--a-sky)}
+.v-clear .person:nth-of-type(1) .avatar{background:color-mix(in srgb, var(--a-sky) 20%, transparent); border-color:color-mix(in srgb, var(--a-sky) 55%, transparent); color:var(--a-sky)}
+.v-clear .person:nth-of-type(2) .avatar{background:color-mix(in srgb, var(--a-amber) 20%, transparent); border-color:color-mix(in srgb, var(--a-amber) 55%, transparent); color:var(--a-amber)}
+.v-clear .person:nth-of-type(3) .avatar{background:color-mix(in srgb, var(--a-green) 20%, transparent); border-color:color-mix(in srgb, var(--a-green) 55%, transparent); color:var(--a-green)}
+.v-clear .person:nth-of-type(4) .avatar{background:color-mix(in srgb, var(--a-violet) 20%, transparent); border-color:color-mix(in srgb, var(--a-violet) 55%, transparent); color:var(--a-violet)}
+.v-clear .p-tier{display:inline-flex; align-items:center; gap:6px; background:color-mix(in srgb, var(--a-green) 14%, transparent); border-color:color-mix(in srgb, var(--a-green) 45%, transparent); color:var(--ink)}
+.v-clear .p-tier::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--a-green)}
+.v-clear .person:nth-of-type(4) .p-tier{background:color-mix(in srgb, var(--a-sky) 14%, transparent); border-color:color-mix(in srgb, var(--a-sky) 45%, transparent)}
+.v-clear .person:nth-of-type(4) .p-tier::before{background:var(--a-sky)}
+.v-clear .chip{border-color:color-mix(in srgb, var(--a-red) 60%, transparent)}
+.v-clear .i-kick{color:var(--a-red)}
+.v-clear .i-btn{border-color:color-mix(in srgb, var(--a-red) 50%, transparent)}
+.pick-badge{font-family:var(--disp); font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#e30613; border:1px solid #e30613; border-radius:999px; padding:4px 11px}
 </style>
 </head>
 <body>
@@ -202,13 +231,14 @@ var VARIANTS = [
   { cls:'v-midnight', name:'Midnight',   note:'Deep navy glass, cool and sleek. Blue glow fields, ice-edge panes, sky accent. Light mode turns it pale sky.' },
   { cls:'v-mono',     name:'Mono Frost', note:'Grayscale glass: charcoal and graphite with neutral panes and no color at all. The closest of the six to your current taste.' },
   { cls:'v-forest',   name:'Forest',     note:'Deep botanical glass: emerald and lime glow under dark green panes. Light mode goes pale sage.' },
-  { cls:'v-clear',    name:'Clear',      note:'Almost no tint at all — the glass is purely the blur and the edge light. Maximum frost over a bright airy field in light mode, near-black in dark.' }
+  { cls:'v-clear',    name:'Clear',      pick:true, note:'The glass itself stays neutral — pure blur, no tint, in both modes. All color lives in the accents: KPI numbers, bars, avatars, and tier chips carry a five-color palette (sky, amber, green, violet, signal red), and the inspector and version markers take the red.' }
 ];
 var main = document.getElementById('concepts');
 VARIANTS.forEach(function(v, i){
   var sec = document.createElement('section');
   sec.className = 'concept'; sec.id = 'c' + (i + 1);
-  sec.innerHTML = '<div class="c-head"><span class="n">' + (i + 1) + ' / 6</span><h2>' + v.name + '</h2></div>' +
+  sec.innerHTML = '<div class="c-head"><span class="n">' + (i + 1) + ' / 6</span><h2>' + v.name + '</h2>' +
+    (v.pick ? '<span class="pick-badge">JD\u2019s pick — accents carry the color</span>' : '') + '</div>' +
     '<p class="c-note">' + v.note + '</p>' +
     '<div class="stage ' + v.cls + '">' + MOCK + '</div>';
   main.appendChild(sec);
