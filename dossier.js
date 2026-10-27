@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.8.0';
+var APP_VERSION = '3.9.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9208,9 +9208,12 @@ function skeletonHTML(note){
    ============================================================ */
 var SB = {
   ready:false, loading:null,
-  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null, prof:null,
+  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null, prof:null, spool:null,
   tool:'home',
   pf:{ field:'all', grade:'all', sel:null, tab:'accuracy', asel:null },
+  pool:{ src:'seed', seedId:'cfc', optKind:'groups', optName:'', picks:[], qid:'volunteer', qtext:'', cats:null,
+         obsDi:null, obsName:'', obDate:'', obEvent:'', obBeh:'', obCat:'action', obCatX:'', obAlt:'',
+         prEvent:'', prDate:'', prPerson:'', outNote:{} },
   grid:{ q:'', sort:'name', dir:1, view:'all', cols:null },
   sel:{},                       /* pkey -> di, bulk selection from the grid */
   raw:{ which:'snapchat', q:'' },
@@ -9230,6 +9233,7 @@ var SB_TOOLS = [
   { k:'council', g:'Check',  t:'Council',          d:'The six directors: roster, budget pace, findings logs, open flags, run history.', ic:'award' },
   { k:'lab',     g:'Connect',t:'Connection lab',   d:'Path finder, mutual connections, indirect connections, bridge ranking.', ic:'network' },
   { k:'prof',    g:'Connect',t:'Profiling inferences', d:'A lab that cross-references on-file data into graded hypotheses (inductive profiler). First lens: field of study vs JD\u2019s Persona inputs. Display-only \u2014 nothing is ever filed.', ic:'cap' },
+  { k:'pool',    g:'Connect',t:'Suspect Pool',     d:'The thought experiment: define a pool, ask a yes/no question, filter by observable behavior (never demographics), weigh by base rate, then check it with a prediction. Logs live on this device only.', ic:'filter' },
   { k:'play',    g:'Connect',t:'Playground',       d:'Scatter, histograms and timelines computed from the live data.', ic:'target' },
   { k:'merge',   g:'Admin',  t:'Merge studio',     d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',  g:'Admin',  t:'Danger area',      d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
@@ -9257,7 +9261,8 @@ function sbEnsure(){
     sbFetch('changes.json', 'changes'), sbFetch('trash.json', 'trash'),
     sbFetch('snapchat.json', 'snap'), sbFetch('recon.json', 'recon'),
     sbFetch('sandbox-log.json', 'serverLog'), sbFetch('org-registry.json', 'orgreg'),
-    sbFetch('council.json', 'council'), sbFetch('profiling.json', 'prof')
+    sbFetch('council.json', 'council'), sbFetch('profiling.json', 'prof'),
+    sbFetch('suspect-pool.json', 'spool')
   ]).then(function(){ SB.ready = true; SB.loading = null; if(S.route.name === 'sandbox') render(); });
   return SB.loading;
 }
@@ -9335,7 +9340,7 @@ function viewSandbox(v){
     return;
   }
   var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, reports:sbReports, integ:sbInteg, lab:sbLab,
-             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView, council:sbCouncil, prof:sbProf }[SB.tool] || sbHome;
+             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView, council:sbCouncil, prof:sbProf, pool:sbPool }[SB.tool] || sbHome;
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -9508,7 +9513,8 @@ var SB_RAW_META = {
   trash:{ l:'Trash / blocklist', f:'trash.json' }, orgreg:{ l:'Org registry', f:'org-registry.json' },
   log:{ l:'Sandbox action log (server)', f:'sandbox-log.json' },
   council:{ l:'Council', f:'council.json' },
-  profiling:{ l:'Profiling inferences', f:'profiling.json' }
+  profiling:{ l:'Profiling inferences', f:'profiling.json' },
+  suspect:{ l:'Suspect Pool', f:'suspect-pool.json' }
 };
 function sbRaw(){
   var w = SB.raw.which, q = SB.raw.q.toLowerCase();
@@ -9581,6 +9587,14 @@ function sbRaw(){
     h += '<p class="sb-note">Run of ' + esc(pf.generated || '') + ' · lens: ' + esc(pf.lens || '') + ' · ' + (cov.with_field || 0) + ' people with a stated field, ' + (cov.with_field_and_persona || 0) + ' of them Persona-rated · ' + (pf.conclusions || []).length + ' graded conclusions · ' + (pf.lines || []).length + ' cross-field lines. Lab only — nothing in this file is filed to a profile.</p>';
     h += tbl(['Field cohort', 'People', 'Persona-rated', 'Conclusions'],
       (pf.cohorts || []).map(function(c){ return '<tr><td>' + esc(c.field) + '</td><td>' + c.n + '</td><td>' + c.n_persona + '</td><td>' + (c.conclusion_ids || []).length + '</td></tr>'; }).join(''));
+  }
+  else if(w === 'suspect' && SB.spool){
+    var sp = SB.spool, ex = sp.default_experiment || {};
+    h += '<p class="sb-note">Generated ' + esc(sp.generated || '') + ' · ' + (sp.directory_n || 0) + ' people in the directory · ' + Object.keys(sp.people_evidence || {}).length + ' with on-file behavior evidence · default experiment: ' + esc(ex.pool_name || '') + ' — ' + ((ex.funnel || []).map(function(f){ return f.n; }).join(' → ')) + ' · shortlist of ' + (ex.shortlist || []).length + '. A shortlist, not a conclusion.</p>';
+    h += '<h3 class="sb-h3">Behavior categories (demographics are banned by construction)</h3>' + tbl(['Category', 'In directory', 'Evidence rule'],
+      (sp.categories || []).map(function(c){ return '<tr><td>' + esc(c.name || '') + '</td><td>' + (c.directory_n || 0) + '</td><td>' + esc(c.evidence_rule || '') + '</td></tr>'; }).join(''));
+    h += '<h3 class="sb-h3">Seed pools</h3>' + tbl(['Pool', 'Members', 'Supported'],
+      (sp.pools || []).map(function(p){ return '<tr><td>' + esc(p.name || '') + '</td><td>' + (p.supported ? (p.members || []).length : '—') + '</td><td>' + (p.supported ? 'yes' : 'no — see the Suspect Pool tool') + '</td></tr>'; }).join(''));
   }
   else h += '<div class="empty"><h3>Not loaded</h3><p>That file could not be read.</p></div>';
   return h;
@@ -10792,6 +10806,355 @@ function sbProfAccPerson(){
   return h + '</div>';
 }
 
+/* ---------------- 13. suspect pool (V3.9.0) ----------------
+   JD's thought experiment (2026-10-27, from his criminal-justice
+   coursework): define the pool exactly, ask a yes/no question, filter
+   by OBSERVABLE BEHAVIOR categories only — demographics are banned by
+   construction, the category library in the sidecar holds behavior
+   patterns each tied to a real on-file snippet — weigh by base rate,
+   and CHECK the result with a registered prediction. The funnel and
+   the engine's first experiment render from the static sidecar
+   site/data/suspect-pool.json (scripts/build_suspect_pool.py).
+   The observation log and prediction tracker live ON THIS DEVICE
+   ONLY (localStorage ncc_sbx_spool, the same pattern as the Sandbox
+   action log): nothing here is filed to a profile, queued to the
+   outbox, or written to the Sheet — browsing and logging create no
+   outbox entry. Survivors of a funnel are a shortlist, not a
+   conclusion, and are labeled that way everywhere they appear. */
+function spStoreGet(){
+  var s = sbStore('ncc_sbx_spool');
+  if(!s || typeof s !== 'object') s = { obs:[], preds:[], prereg:{}, added:{} };
+  if(!Array.isArray(s.obs)) s.obs = [];
+  if(!Array.isArray(s.preds)) s.preds = [];
+  if(!s.prereg) s.prereg = {};
+  if(!s.added) s.added = {};
+  return s;
+}
+function spStoreSave(s){ sbStore('ncc_sbx_spool', s); }
+var SP_K2DI = null;
+function spK2DI(){
+  if(SP_K2DI) return SP_K2DI;
+  var m = {};
+  D.directory.forEach(function(e, di){ if(liveEntry(e)) m[pkey(e)] = di; });
+  SP_K2DI = m;
+  return m;
+}
+function spName(k){ return (SB.spool && (SB.spool.names || {})[k]) || k; }
+function spEv(k){ return (SB.spool && (SB.spool.people_evidence || {})[k]) || {}; }
+function spCat(id){ return ((SB.spool && SB.spool.categories) || []).filter(function(c){ return c.id === id; })[0] || { id:id, name:id }; }
+function spToday(){ return new Date().toISOString().slice(0, 10); }
+function spSeedMirror(){
+  var ex = SB.spool && SB.spool.default_experiment, pr = ex && ex.prediction;
+  if(!pr) return;
+  var s = spStoreGet();
+  if(s.preds.some(function(p){ return p.id === pr.id; })) return;
+  s.preds.unshift({ id:pr.id, seeded:true, registered:pr.registered, event:pr.event,
+    eventDate:pr.event_date, personKey:pr.predicted_key, personName:pr.predicted_name,
+    question:pr.question, cats:(ex.categories || []).slice(), basis:pr.basis || [],
+    predictedText:pr.predicted_text || '', status:'PENDING OUTCOME', outcomeNote:'', outcomeAt:'' });
+  spStoreSave(s);
+}
+function spPoolInfo(){
+  var P = SB.pool, sp = SB.spool;
+  if(P.src === 'seed'){
+    var p = (sp.pools || []).filter(function(x){ return x.id === P.seedId; })[0];
+    if(!p) return { desc:'', keys:[], supported:false, reason:'Pool not found in the sidecar.' };
+    return { desc:p.name + ' — ' + p.definition, keys:(p.members || []).slice(),
+             supported:!!p.supported, reason:p.unsupported_reason || '', pool:p };
+  }
+  if(P.src === 'opt'){
+    var opts = ((sp.pool_options || {})[P.optKind] || []);
+    var o = opts.filter(function(x){ return x.name === P.optName; })[0] || opts[0];
+    if(!o) return { desc:'No ' + P.optKind + ' options in the sidecar.', keys:[], supported:true, reason:'' };
+    SB.pool.optName = o.name;
+    return { desc:o.name + ' (' + P.optKind + ') — everyone in the directory carrying it', keys:(o.keys || []).slice(), supported:true, reason:'' };
+  }
+  return { desc:'Hand-picked set (' + P.picks.length + ' picked)', keys:P.picks.slice(), supported:true, reason:'' };
+}
+function spQuestion(){
+  var P = SB.pool;
+  if((P.qtext || '').trim()) return P.qtext.trim();
+  var q = ((SB.spool && SB.spool.questions) || []).filter(function(x){ return x.id === P.qid; })[0];
+  return q ? q.text : '';
+}
+function spComboKey(info){
+  var P = SB.pool;
+  var pk = P.src === 'seed' ? 'seed:' + P.seedId : P.src === 'opt' ? 'opt:' + P.optKind + ':' + (P.optName || '') : 'custom:' + P.picks.slice().sort().join(',');
+  return pk + '|' + spQuestion();
+}
+function spCurCats(){
+  var P = SB.pool;
+  var lib = ((SB.spool && SB.spool.categories) || []).map(function(c){ return c.id; });
+  var want = P.cats || ((SB.spool.default_experiment || {}).categories || ['role', 'action', 'recurrence']);
+  return lib.filter(function(id){ return want.indexOf(id) >= 0; });
+}
+function spFunnel(keys, cats){
+  var stages = [{ label:'Pool', keys:keys.slice() }];
+  var cur = keys;
+  cats.forEach(function(c){
+    cur = cur.filter(function(k){ return !!spEv(k)[c]; });
+    stages.push({ label:spCat(c).name, cat:c, keys:cur.slice() });
+  });
+  return stages;
+}
+function spObsApprox(k, cats){
+  var seen = {}, ctx = {}, n = 0;
+  cats.forEach(function(c){
+    (spEv(k)[c] || []).forEach(function(h){
+      var t = String(h.snippet || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      ctx[h.src] = 1;
+      if(!seen[t]){ seen[t] = 1; n++; }
+    });
+  });
+  return { n:n, contexts:Object.keys(ctx).length };
+}
+function spGradeApprox(k, cats){
+  var o = spObsApprox(k, cats);
+  if(o.n >= 5 && o.contexts >= 3) return 'Strong';
+  if(o.n >= 3) return 'Probable';
+  if(o.n >= 1) return 'Tentative';
+  return null;
+}
+function spHitStats(preds){
+  var res = preds.filter(function(p){ return p.status === 'HIT' || p.status === 'MISS'; });
+  var hits = res.filter(function(p){ return p.status === 'HIT'; }).length;
+  return { resolved:res.length, hits:hits, rate:res.length ? Math.round(100 * hits / res.length) : null };
+}
+function sbPool(){
+  var h = sbHead('Suspect Pool', 'The thought experiment from JD\u2019s coursework: narrow a pool by observable behavior, weigh every trait by how rare it is, then check the result with a prediction. A shortlist, never a conclusion.');
+  var sp = SB.spool;
+  if(!sp) return h + '<div class="empty"><h3>suspect-pool.json not loaded</h3><p>The lab data could not be read. It ships with the site as data/suspect-pool.json and is regenerated by scripts/build_suspect_pool.py.</p></div>';
+  spSeedMirror();
+  var store = spStoreGet();
+  var ex = sp.default_experiment || {};
+  var hs = spHitStats(store.preds);
+  h += '<div class="pf-banner"><b>A thought experiment, kept honest.</b> ' + esc(sp.method || '') + '</div>';
+  h += '<p class="sb-note">The observation log and prediction tracker below live <b>on this device only</b> — nothing in this tool is filed to a profile, queued, or written to the Sheet.</p>';
+  h += '<div class="sb-kpis cn-kpis">' +
+    sbKpi(sp.directory_n != null ? sp.directory_n : '—', 'people in the directory (the widest pool)') +
+    sbKpi((ex.shortlist || []).length, 'on the first experiment\u2019s shortlist') +
+    sbKpi(store.obs.length, 'observations logged on this device') +
+    sbKpi(store.preds.filter(function(p){ return p.status === 'PENDING OUTCOME'; }).length, 'predictions awaiting an outcome') +
+    sbKpi(hs.rate != null ? hs.rate + '%' : '—', 'prediction hit rate (' + hs.hits + ' of ' + hs.resolved + ' resolved; unclear excluded)') +
+    '</div>';
+
+  /* ---- the first experiment (engine record, verbatim) ---- */
+  h += '<h3 class="sb-h3">The first experiment — as the engine ran it</h3>';
+  h += '<div class="sb-card2"><p class="sb-card2-n"><b>Pool:</b> ' + esc(ex.pool_name || '') + ' — ' + esc(ex.pool_definition || '') + '</p>' +
+    '<p class="sp-q">\u201C' + esc(ex.question || '') + '\u201D</p>' +
+    '<p class="sb-note">Categories pre-registered ' + esc(ex.categories_registered || '') + ', before scoring: ' +
+    (ex.categories || []).map(function(c){ return esc(spCat(c).name); }).join(' · ') + '. ' + esc(ex.categories_note || '') + '</p>' +
+    '<div class="sp-funnel">' + (ex.funnel || []).map(function(f, i){
+      var pct = (ex.funnel[0] && ex.funnel[0].n) ? Math.round(100 * f.n / ex.funnel[0].n) : 0;
+      return '<div class="sp-frow"><span class="sp-fl">' + esc(f.stage || '') + '</span>' +
+        '<span class="sp-fbar"><i style="width:' + Math.max(pct, 2) + '%"></i></span>' +
+        '<span class="sp-fn">' + f.n + '</span></div>';
+    }).join('') + '</div>' +
+    '<p class="sb-note">Base rates in this pool: ' + (ex.categories || []).map(function(c){
+      var br = (ex.base_rates || {})[c] || {};
+      return esc(spCat(c).name) + ' — ' + (br.n || 0) + ' of ' + ((ex.funnel || [])[0] || {}).n + ' (' + (br.pct || 0) + '%)' + (br.barely_narrows ? ' — barely narrows, consider dropping' : '');
+    }).join(' · ') + '.</p></div>';
+  h += '<p class="sp-shortlabel">' + esc(ex.shortlist_label || 'A shortlist, not a conclusion') + ' — ' + (ex.shortlist || []).length + ' of ' + (((ex.funnel || [])[0] || {}).n || 0) + ' pass every filter</p>';
+  h += (ex.shortlist || []).map(function(s2){
+    var di = spK2DI()[s2.key];
+    var ev = Object.keys(s2.evidence || {}).map(function(c){
+      var hits = s2.evidence[c] || [];
+      if(!hits.length) return '';
+      return '<div class="pf-sec"><b>' + esc(spCat(c).name) + '</b><ul class="pf-obs">' +
+        hits.map(function(x){ return '<li><span class="pf-src">' + esc(x.src || '') + '</span> ' + esc(x.snippet || '') + '</li>'; }).join('') + '</ul></div>';
+    }).join('');
+    return '<div class="sb-card2 pf-cc"><div class="pf-chead">' + pfGradeChip(s2.grade || '') +
+      (di != null ? '<button type="button" class="btn sm ghost" data-sb="openprof" data-di="' + di + '">' + esc(s2.name || '') + '</button>' : '<span class="pf-cfield">' + esc(s2.name || '') + '</span>') +
+      '<span class="pf-cmeta">' + (s2.observations || 0) + ' on-file observations · ' + (s2.contexts || 0) + ' contexts</span></div>' +
+      (s2.presence_note ? '<p class="sb-note">' + esc(s2.presence_note) + '</p>' : '') + ev +
+      '<p class="pf-sec"><b>Falsifier:</b> ' + esc(s2.falsifier || '') + '</p>' +
+      '<p class="pf-sec"><b>Scope:</b> ' + esc(s2.scope || '') + '</p></div>';
+  }).join('');
+  if((ex.honesty_notes || []).length)
+    h += '<div class="sb-card2"><div class="sb-card2-t">Where the data refused — stated, not papered over</div>' +
+      ex.honesty_notes.map(function(n2){ return '<p class="cn-auth">' + esc(n2) + '</p>'; }).join('') + '</div>';
+
+  /* ---- run your own ---- */
+  h += '<h3 class="sb-h3">Run your own</h3>';
+  h += sbPoolRun(store);
+
+  /* ---- observation log ---- */
+  h += '<h3 class="sb-h3">Observation log</h3><div class="sb-card2">' +
+    '<p class="sb-card2-n">The method\u2019s paper log: date, event, person, behavior, the category it supports — and an <b>alternative explanation</b> (schedule, money, circumstance, mood). An entry cannot be saved without one. On this device only.</p>' +
+    '<div class="sb-formrow"><label>Date <input type="date" data-sbi="spobdate" value="' + esc(SB.pool.obDate || spToday()) + '"></label>' +
+    '<label>Event <input type="text" data-sbi="spobevent" placeholder="e.g. CFC Sunday gathering" value="' + esc(SB.pool.obEvent || '') + '"></label></div>' +
+    '<div class="sb-pick"><label>Person</label><input type="text" data-sbi="spobq" placeholder="Type a name\u2026" value="' + esc(SB.pool.obsName || '') + '" autocomplete="off">' +
+    '<div class="sb-pickres" id="spobres"></div></div>' +
+    '<div class="sb-formrow"><label>Behavior observed <input type="text" data-sbi="spobbeh" placeholder="What they actually did" value="' + esc(SB.pool.obBeh || '') + '"></label></div>' +
+    '<div class="sb-formrow"><label>Category it supports <select data-sbi="spobcat">' +
+      (sp.categories || []).map(function(c){ return '<option value="' + esc(c.id) + '"' + (SB.pool.obCat === c.id ? ' selected' : '') + '>' + esc(c.name) + '</option>'; }).join('') +
+      '<option value="custom"' + (SB.pool.obCat === 'custom' ? ' selected' : '') + '>A new category (name it)</option></select></label>' +
+    (SB.pool.obCat === 'custom' ? '<label>New category <input type="text" data-sbi="spobcatx" placeholder="Behavior only — demographics are banned" value="' + esc(SB.pool.obCatX || '') + '"></label>' : '') + '</div>' +
+    '<div class="sb-formrow"><label>Alternative explanation (required) <input type="text" data-sbi="spobalt" placeholder="A non-character explanation: schedule, money, circumstance, mood\u2026" value="' + esc(SB.pool.obAlt || '') + '"></label></div>' +
+    '<div class="sb-formrow"><button type="button" class="btn primary" data-sb="spobsave">Save observation</button>' +
+    '<span class="sb-note">' + store.obs.length + ' logged on this device. Logged observations are your own record — they do not change anyone\u2019s profile.</span></div>' +
+    (store.obs.length ? store.obs.slice(0, 60).map(function(o){
+      return '<div class="cn-frow"><span class="cn-fdate">' + esc(o.date || '') + '</span>' +
+        '<span class="cn-fmain"><b>' + esc(o.personName || '') + '</b> — ' + esc(o.behavior || '') +
+        ' <span class="chip">' + esc(o.categoryName || o.category || '') + '</span>' +
+        '<span class="sb-note">Event: ' + esc(o.event || '—') + ' · Alternative: ' + esc(o.alt || '') + '</span></span>' +
+        '<button type="button" class="btn sm ghost" data-sb="spobdel" data-id="' + esc(o.id) + '">Delete</button></div>';
+    }).join('') : '<p class="sb-note">No observations logged yet. The method says: log behaviors for a while before trusting any category.</p>') +
+    '</div>';
+
+  /* ---- prediction tracker ---- */
+  h += '<h3 class="sb-h3">Prediction tracker — the check that keeps it honest</h3><div class="sb-card2">' +
+    '<p class="sb-card2-n">Register a prediction <b>before</b> the event, from the current shortlist above. Mark the outcome after. Hit rate counts hits and misses; \u201Cunclear\u201D is excluded.</p>' +
+    sbPoolPredForm(store) +
+    (function(){
+      var per = (sp.categories || []).map(function(c){
+        var sub = store.preds.filter(function(p){ return (p.cats || []).indexOf(c.id) >= 0; });
+        var st = spHitStats(sub);
+        return st.resolved ? esc(c.name) + ': ' + st.hits + '/' + st.resolved + ' (' + st.rate + '%)' : null;
+      }).filter(Boolean);
+      return per.length ? '<p class="sb-note">Hit rate by category — ' + per.join(' · ') + '.</p>' : '';
+    })() +
+    (store.preds.length ? store.preds.map(function(p){ return sbPoolPredCard(p); }).join('') : '<p class="sb-note">No predictions registered yet.</p>') +
+    '</div>';
+
+  /* ---- pitfalls ---- */
+  h += '<h3 class="sb-h3">The pitfalls — from the method document</h3><div class="sb-cards">' +
+    (sp.pitfalls || []).map(function(p){ return '<div class="sb-card2"><div class="sb-card2-t">' + esc(p.t || '') + '</div><p class="sb-card2-n">' + esc(p.d || '') + '</p></div>'; }).join('') + '</div>';
+  return h;
+}
+function sbPoolRun(store){
+  var sp = SB.spool, P = SB.pool;
+  var info = spPoolInfo();
+  var q = spQuestion();
+  var cats = spCurCats();
+  var combo = spComboKey(info);
+  var prereg = store.prereg[combo];
+  if(!prereg){
+    prereg = { poolDesc:info.desc, question:q, cats:cats.slice(), at:spToday() };
+    store.prereg[combo] = prereg;
+    spStoreSave(store);
+  }
+  var h = '<div class="sb-card2">';
+  /* pool picker */
+  h += '<div class="sb-card2-t">1 · The pool — defined exactly, or the results are vague</div>' +
+    '<div class="sb-toolbar">' +
+    [['seed', 'Seed pools'], ['opt', 'By group / church / employer'], ['custom', 'Hand-picked set']].map(function(x){
+      return '<button type="button" class="btn sm ' + (P.src === x[0] ? 'primary' : 'ghost') + '" data-sb="spsrc" data-k="' + x[0] + '">' + x[1] + '</button>';
+    }).join('') + '</div>';
+  if(P.src === 'seed'){
+    h += '<div class="sb-toolbar">' + (sp.pools || []).map(function(p){
+      return '<button type="button" class="btn sm ' + (P.seedId === p.id ? 'primary' : 'ghost') + '" data-sb="spseed" data-k="' + esc(p.id) + '">' + esc(p.name) + (p.supported ? ' (' + (p.members || []).length + ')' : ' — unsupported') + '</button>';
+    }).join('') + '</div>';
+  } else if(P.src === 'opt'){
+    h += '<div class="sb-toolbar">' + [['groups', 'Groups'], ['churches', 'Churches'], ['companies', 'Employers']].map(function(x){
+      return '<button type="button" class="btn sm ' + (P.optKind === x[0] ? 'primary' : 'ghost') + '" data-sb="spokind" data-k="' + x[0] + '">' + x[1] + '</button>';
+    }).join('') +
+    '<select data-sbi="spoptsel">' + (((sp.pool_options || {})[P.optKind] || []).map(function(o){
+      return '<option value="' + esc(o.name) + '"' + (info.desc.indexOf(o.name) === 0 ? ' selected' : '') + '>' + esc(o.name) + ' (' + o.n + ')</option>';
+    }).join('')) + '</select></div>';
+  } else {
+    h += '<div class="sb-pick"><label>Pick people</label><input type="text" data-sbi="sppickq" placeholder="Type a name\u2026" value="" autocomplete="off">' +
+      '<div class="sb-pickres" id="sppickres"></div></div>' +
+      (P.picks.length ? '<div class="sb-toolbar">' + P.picks.map(function(k){
+        return '<span class="chip">' + esc(spName(k)) + ' <button type="button" class="btn sm ghost" data-sb="sppickrm" data-k="' + esc(k) + '">×</button></span>';
+      }).join('') + '</div>' : '<p class="sb-note">No one picked yet.</p>');
+  }
+  h += '<p class="sb-note"><b>Pool:</b> ' + esc(info.desc) + ' — <b>' + info.keys.length + ' people</b>.</p>';
+  if(!info.supported){
+    h += '<div class="pf-banner"><b>This pool cannot be defined from the dossier.</b> ' + esc(info.reason) + '</div>';
+    var mm = (info.pool && info.pool.mention_only_members) || [];
+    if(mm.length) h += '<p class="sb-note">Mention-only profiles (not a roster): ' + mm.map(function(m){ return esc(m.name); }).join(', ') + '.</p>';
+    return h + '</div>';
+  }
+  /* question */
+  h += '<div class="sb-card2-t">2 · The question — yes or no, low stakes first</div>' +
+    '<div class="sb-toolbar">' + (sp.questions || []).map(function(x){
+      return '<button type="button" class="btn sm ' + (P.qid === x.id && !(P.qtext || '').trim() ? 'primary' : 'ghost') + '" data-sb="spq" data-k="' + esc(x.id) + '">' + esc(x.text) + '</button>';
+    }).join('') + '</div>' +
+    '<div class="sb-formrow"><label>Or your own question <input type="text" data-sbi="spqtext" placeholder="Type a yes/no question\u2026" value="' + esc(P.qtext || '') + '"></label></div>';
+  var selQ = (sp.questions || []).filter(function(x){ return x.id === P.qid; })[0];
+  if(selQ && !(P.qtext || '').trim() && selQ.evidence_status) h += '<p class="sb-note">' + esc(selQ.evidence_status) + '</p>';
+  h += '<p class="sp-q">\u201C' + esc(q) + '\u201D</p>';
+  /* categories */
+  var loggedByCat = {};
+  store.obs.forEach(function(o){ if(info.keys.indexOf(o.personKey) >= 0){ var ck = o.category || ''; loggedByCat[ck] = (loggedByCat[ck] || 0) + 1; } });
+  h += '<div class="sb-card2-t">3 · Categories — observable behavior only (demographics are banned)</div>' +
+    '<p class="sb-note">Pre-registered for this pool + question on ' + esc(prereg.at) + ' with: ' + prereg.cats.map(function(c){ return esc(spCat(c).name); }).join(' · ') + '. A category switched on after that is stamped <b>added after results</b> — the method\u2019s rule, applied literally.</p>' +
+    '<div class="sb-cards">' + (sp.categories || []).map(function(c){
+      var on = cats.indexOf(c.id) >= 0;
+      var inPool = info.keys.filter(function(k){ return !!spEv(k)[c.id]; }).length;
+      var pct = info.keys.length ? Math.round(100 * inPool / info.keys.length) : 0;
+      var added = on && prereg.cats.indexOf(c.id) < 0;
+      return '<div class="sb-card2 sp-cat' + (on ? ' on' : '') + '"><div class="pf-chead"><b>' + esc(c.name) + '</b>' +
+        '<button type="button" class="btn sm ' + (on ? 'primary' : 'ghost') + '" data-sb="spcat" data-k="' + esc(c.id) + '">' + (on ? 'Filtering' : 'Add filter') + '</button></div>' +
+        '<p class="sb-card2-n">' + esc(c.definition) + '</p>' +
+        '<p class="sb-note">Base rate in this pool: ' + inPool + ' of ' + info.keys.length + ' (' + pct + '%)' +
+        (pct > 85 ? ' — <b>barely narrows the pool; the method says consider dropping it</b>' : '') +
+        ' · ' + (loggedByCat[c.id] || 0) + ' logged observations in this pool' +
+        (inPool < 3 ? ' · <b>small sample: under 3 on-file observations in this pool</b>' : '') +
+        (added ? ' · <b>added after results</b> (pre-registration was ' + esc(prereg.at) + ')' : '') + '</p>' +
+        '<p class="sb-note">' + esc(c.evidence_rule) + '</p></div>';
+    }).join('') + '</div>';
+  /* funnel */
+  var stages = spFunnel(info.keys, cats);
+  var poolN = info.keys.length || 1;
+  h += '<div class="sb-card2-t">4 · The funnel — each filter removes people</div>' +
+    '<div class="sp-funnel">' + stages.map(function(f, i){
+      var pct = Math.round(100 * f.keys.length / poolN);
+      return '<div class="sp-frow"><span class="sp-fl">' + (i === 0 ? 'Pool' : 'After: ' + esc(f.label)) + '</span>' +
+        '<span class="sp-fbar"><i style="width:' + Math.max(pct, 2) + '%"></i></span>' +
+        '<span class="sp-fn">' + f.keys.length + '</span></div>';
+    }).join('') + '</div>';
+  var surv = stages[stages.length - 1].keys;
+  h += '<p class="sp-shortlabel">A shortlist, not a conclusion — ' + surv.length + ' of ' + info.keys.length + ' pass every filter</p>';
+  if(!cats.length) h += '<p class="sb-note">No categories selected — switch on at least one filter.</p>';
+  else if(!surv.length) h += '<p class="sb-note">Nobody passes every filter. That is a result: either the pool, the question, or the categories need rethinking — the method says revisit, not force it.</p>';
+  else h += surv.map(function(k){
+    var di = spK2DI()[k], o = spObsApprox(k, cats), g = spGradeApprox(k, cats);
+    var per = cats.map(function(c){ return esc(spCat(c).name) + ': ' + ((spEv(k)[c] || []).length); }).join(' · ');
+    return '<div class="cn-frow"><span class="cn-fmain">' +
+      (di != null ? '<button type="button" class="btn sm ghost" data-sb="openprof" data-di="' + di + '">' + esc(spName(k)) + '</button>' : '<b>' + esc(spName(k)) + '</b>') +
+      ' — ' + o.n + ' on-file observations across ' + o.contexts + ' contexts (' + per + ')</span>' +
+      (g ? pfGradeChip(g) : '') + '</div>';
+  }).join('');
+  h += '<p class="sb-note">Pool size ' + info.keys.length + ' · observations behind this funnel: ' +
+    info.keys.reduce(function(a, k){ return a + spObsApprox(k, cats).n; }, 0) + ' on-file, across the selected categories. ' +
+    'Grades follow the inductive-profiler rule — Tentative 1–2 observations, Probable 3+, Strong 5+ across 3+ contexts — and describe the recorded pattern only.</p>';
+  return h + '</div>';
+}
+function sbPoolPredForm(store){
+  var info = spPoolInfo();
+  var cats = spCurCats();
+  var stages = spFunnel(info.keys, cats);
+  var surv = info.supported ? stages[stages.length - 1].keys : [];
+  var h = '<div class="sb-formrow"><label>Event <input type="text" data-sbi="sppredevent" placeholder="e.g. CFC Canton Sunday gathering" value="' + esc(SB.pool.prEvent || '') + '"></label>' +
+    '<label>Date <input type="date" data-sbi="sppreddate" value="' + esc(SB.pool.prDate || '') + '"></label>' +
+    '<label>Predicted person <select data-sbi="sppredperson">' +
+    (surv.length ? surv.map(function(k){ return '<option value="' + esc(k) + '"' + (SB.pool.prPerson === k ? ' selected' : '') + '>' + esc(spName(k)) + '</option>'; }).join('') : '<option value="">— shortlist is empty —</option>') +
+    '</select></label>' +
+    '<button type="button" class="btn primary" data-sb="sppredsave">Register prediction</button></div>' +
+    '<p class="sb-note">The pick list is the current shortlist from \u201CRun your own\u201D — predictions are drawn from the shortlist, registered before the event, and never edited afterward; only the outcome gets marked.</p>';
+  return h;
+}
+function sbPoolPredCard(p){
+  var chip = p.status === 'PENDING OUTCOME' ? '<span class="pf-verdict v-none">PENDING OUTCOME</span>'
+    : p.status === 'HIT' ? '<span class="pf-verdict v-agree">HIT</span>'
+    : p.status === 'MISS' ? '<span class="pf-verdict v-diverge">MISS</span>' : '<span class="pf-verdict v-range">UNCLEAR</span>';
+  var h = '<div class="cn-frow"><span class="cn-fmain"><b>' + esc(p.personName || '') + '</b> — ' + esc(p.event || '') +
+    (p.eventDate ? ' · ' + esc(p.eventDate) : '') + '<br><span class="sb-note">' + esc(p.predictedText || ('Predicted: among the first to act on \u201C' + (p.question || '') + '\u201D')) + '</span>' +
+    (p.basis && p.basis.length ? '<span class="sb-note">Basis: ' + p.basis.map(esc).join(' · ') + '</span>' : '') +
+    '<span class="sb-note">Registered ' + esc(p.registered || '') + (p.seeded ? ' (seeded by the engine\u2019s first experiment)' : '') + ' · categories: ' + (p.cats || []).map(function(c){ return esc(spCat(c).name); }).join(' · ') + '</span>' +
+    (p.status !== 'PENDING OUTCOME' ? '<span class="sb-note">Outcome marked ' + esc(p.outcomeAt || '') + (p.outcomeNote ? ' — ' + esc(p.outcomeNote) : '') + '</span>' : '') +
+    '</span>' + chip + '</div>';
+  if(p.status === 'PENDING OUTCOME'){
+    h += '<div class="sb-formrow"><label>Outcome note <input type="text" data-sbi="spoutnote" data-id="' + esc(p.id) + '" placeholder="What actually happened\u2026" value="' + esc((SB.pool.outNote || {})[p.id] || '') + '"></label>' +
+      '<button type="button" class="btn sm primary" data-sb="spout" data-id="' + esc(p.id) + '" data-k="HIT">It happened (hit)</button>' +
+      '<button type="button" class="btn sm ghost" data-sb="spout" data-id="' + esc(p.id) + '" data-k="MISS">It did not (miss)</button>' +
+      '<button type="button" class="btn sm ghost" data-sb="spout" data-id="' + esc(p.id) + '" data-k="UNCLEAR">Unclear</button></div>';
+  }
+  return h;
+}
+
 /* ---------------- sandbox events (own delegation; data-sb) ---------------- */
 var SB_CONFIRM = null;
 function sbConfirm2(title, body, okLabel, danger, fn){ SB_CONFIRM = fn; sbConfirm(title, body, okLabel, danger); }
@@ -10840,6 +11203,81 @@ document.addEventListener('click', function(ev){
   else if(act === 'pfasel'){ SB.pf.asel = t.getAttribute('data-k'); R(); }
   else if(act === 'pfaclear'){ SB.pf.asel = null; R(); }
   else if(act === 'pfsel'){ SB.pf.sel = t.getAttribute('data-k'); R(); }
+  /* suspect pool — all state is on-device (localStorage ncc_sbx_spool);
+     none of these actions touch the outbox, queuePatch, or the Sheet */
+  else if(act === 'spsrc'){ SB.pool.src = t.getAttribute('data-k'); R(); }
+  else if(act === 'spseed'){ SB.pool.seedId = t.getAttribute('data-k'); SB.pool.src = 'seed'; R(); }
+  else if(act === 'spokind'){ SB.pool.optKind = t.getAttribute('data-k'); SB.pool.optName = ''; R(); }
+  else if(act === 'spq'){ SB.pool.qid = t.getAttribute('data-k'); SB.pool.qtext = ''; R(); }
+  else if(act === 'spcat'){
+    var cid = t.getAttribute('data-k'), cur = spCurCats().slice();
+    var ix = cur.indexOf(cid);
+    if(ix >= 0) cur.splice(ix, 1); else cur.push(cid);
+    SB.pool.cats = cur; R();
+  }
+  else if(act === 'sppickadd'){
+    var pdi = +t.getAttribute('data-di'), pk2 = pkey(D.directory[pdi]);
+    if(SB.pool.picks.indexOf(pk2) < 0) SB.pool.picks.push(pk2);
+    var pres = document.getElementById('sppickres'); if(pres) pres.innerHTML = '';
+    R();
+  }
+  else if(act === 'sppickrm'){
+    var rk = t.getAttribute('data-k');
+    SB.pool.picks = SB.pool.picks.filter(function(x){ return x !== rk; }); R();
+  }
+  else if(act === 'spobpick'){
+    var odi = +t.getAttribute('data-di');
+    SB.pool.obsDi = odi; SB.pool.obsName = dispName(D.directory[odi]);
+    var ores = document.getElementById('spobres'); if(ores) ores.innerHTML = '';
+    var oinp = document.querySelector('input[data-sbi="spobq"]'); if(oinp) oinp.value = SB.pool.obsName;
+  }
+  else if(act === 'spobsave'){
+    var st1 = spStoreGet(), P1 = SB.pool;
+    var catName = P1.obCat === 'custom' ? (P1.obCatX || '').trim() : (spCat(P1.obCat).name || P1.obCat);
+    if(P1.obsDi == null){ toast('Pick the person first'); return; }
+    if(!(P1.obBeh || '').trim()){ toast('Describe the behavior observed'); return; }
+    if(P1.obCat === 'custom' && !catName){ toast('Name the new category'); return; }
+    if(!(P1.obAlt || '').trim()){ toast('An alternative explanation is required — schedule, money, circumstance, mood'); return; }
+    st1.obs.unshift({ id:'sp' + Date.now().toString(36), ts:new Date().toISOString(),
+      date:P1.obDate || spToday(), event:(P1.obEvent || '').trim(),
+      personKey:pkey(D.directory[P1.obsDi]), personName:SB.pool.obsName || dispName(D.directory[P1.obsDi]),
+      behavior:P1.obBeh.trim(), category:(P1.obCat === 'custom' ? 'custom' : P1.obCat), categoryName:catName,
+      alt:P1.obAlt.trim() });
+    spStoreSave(st1);
+    SB.pool.obBeh = ''; SB.pool.obAlt = ''; SB.pool.obsDi = null; SB.pool.obsName = '';
+    toast('Observation logged on this device'); R();
+  }
+  else if(act === 'spobdel'){
+    var st2 = spStoreGet(), did = t.getAttribute('data-id');
+    st2.obs = st2.obs.filter(function(o){ return o.id !== did; });
+    spStoreSave(st2); R();
+  }
+  else if(act === 'sppredsave'){
+    var st3 = spStoreGet(), P3 = SB.pool;
+    var info3 = spPoolInfo(), cats3 = spCurCats();
+    var stages3 = spFunnel(info3.keys, cats3), surv3 = info3.supported ? stages3[stages3.length - 1].keys : [];
+    var pk3 = P3.prPerson && surv3.indexOf(P3.prPerson) >= 0 ? P3.prPerson : surv3[0];
+    if(!(P3.prEvent || '').trim()){ toast('Name the event first'); return; }
+    if(!pk3){ toast('The current shortlist is empty — a prediction needs a shortlist to draw from'); return; }
+    st3.preds.unshift({ id:'sp' + Date.now().toString(36) + 'p', ts:new Date().toISOString(),
+      registered:spToday(), event:P3.prEvent.trim(), eventDate:P3.prDate || '',
+      personKey:pk3, personName:spName(pk3), question:spQuestion(), cats:cats3.slice(),
+      basis:['Shortlist survivor in the current run: pool ' + info3.keys.length + ' narrowed to ' + surv3.length + ' by ' + cats3.map(function(c){ return spCat(c).name; }).join(' · ') + '.'],
+      predictedText:'', status:'PENDING OUTCOME', outcomeNote:'', outcomeAt:'' });
+    spStoreSave(st3);
+    SB.pool.prEvent = ''; SB.pool.prDate = ''; SB.pool.prPerson = '';
+    toast('Prediction registered — mark the outcome after the event'); R();
+  }
+  else if(act === 'spout'){
+    var st4 = spStoreGet(), oid = t.getAttribute('data-id'), res4 = t.getAttribute('data-k');
+    var pr4 = st4.preds.filter(function(p){ return p.id === oid; })[0];
+    if(pr4 && pr4.status === 'PENDING OUTCOME'){
+      pr4.status = res4; pr4.outcomeAt = spToday();
+      pr4.outcomeNote = (SB.pool.outNote || {})[oid] || '';
+      spStoreSave(st4);
+    }
+    R();
+  }
   else if(act === 'integtab'){ SB.integ.tab = t.getAttribute('data-k'); R(); }
   else if(act === 'dgtab'){ SB.dg.tab = t.getAttribute('data-k'); SB.dg.dry = null; R(); }
   else if(act === 'pairmerge'){
@@ -11043,6 +11481,11 @@ document.addEventListener('change', function(ev){
   else if(k === 'bulkcat'){ SB.dg.bulkCat = t.value; SB.dg.dry = null; }
   else if(k === 'logfilter'){ SB.lg.filter = t.value; render(); }
   else if(k === 'crtier'){ SB.dg.crTier = t.value; }
+  else if(k === 'spoptsel'){ SB.pool.optName = t.value; SB.pool.src = 'opt'; render(); }
+  else if(k === 'spobcat'){ SB.pool.obCat = t.value; render(); }
+  else if(k === 'spobdate'){ SB.pool.obDate = t.value; }
+  else if(k === 'sppredperson'){ SB.pool.prPerson = t.value; }
+  else if(k === 'sppreddate'){ SB.pool.prDate = t.value; }
 });
 var SB_DEB = null;
 document.addEventListener('input', function(ev){
@@ -11066,6 +11509,41 @@ document.addEventListener('input', function(ev){
       return '<button type="button" class="sb-pickitem" data-sb="pfsel" data-k="' + esc(kk) + '">' + esc(v2.name || '') + '<span>' + esc(v2.field || '') + (v2.degree_level ? ' \u00b7 ' + esc(v2.degree_level) : '') + '</span></button>';
     }).join('') : '<p class="sb-note">No one with a stated field matches that.</p>';
   }
+  else if(k === 'spobq'){
+    SB.pool.obsName = t.value; SB.pool.obsDi = null;
+    var ores2 = document.getElementById('spobres');
+    if(!ores2) return;
+    var oq = t.value.trim();
+    if(oq.length < 2){ ores2.innerHTML = ''; return; }
+    var ohits = searchPeople(oq).slice(0, 8);
+    ores2.innerHTML = ohits.map(function(di){
+      var e = D.directory[di];
+      return '<button type="button" class="sb-pickitem" data-sb="spobpick" data-di="' + di + '">' + esc(dispName(e)) + '<span>' + esc(infoLine(e)) + '</span></button>';
+    }).join('');
+  }
+  else if(k === 'sppickq'){
+    var pres2 = document.getElementById('sppickres');
+    if(!pres2) return;
+    var pq = t.value.trim();
+    if(pq.length < 2){ pres2.innerHTML = ''; return; }
+    var phits = searchPeople(pq).slice(0, 8);
+    pres2.innerHTML = phits.map(function(di){
+      var e = D.directory[di];
+      return '<button type="button" class="sb-pickitem" data-sb="sppickadd" data-di="' + di + '">' + esc(dispName(e)) + '<span>' + esc(infoLine(e)) + '</span></button>';
+    }).join('');
+  }
+  else if(k === 'spobdate'){ SB.pool.obDate = t.value; }
+  else if(k === 'spobevent'){ SB.pool.obEvent = t.value; }
+  else if(k === 'spobbeh'){ SB.pool.obBeh = t.value; }
+  else if(k === 'spobcatx'){ SB.pool.obCatX = t.value; }
+  else if(k === 'spobalt'){ SB.pool.obAlt = t.value; }
+  else if(k === 'spqtext'){
+    SB.pool.qtext = t.value;
+    clearTimeout(SB_DEB);
+    SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox' && SB.tool === 'pool') render(); }, 450);
+  }
+  else if(k === 'sppredevent'){ SB.pool.prEvent = t.value; }
+  else if(k === 'spoutnote'){ SB.pool.outNote[t.getAttribute('data-id')] = t.value; }
   else if(k === 'pfaq'){
     var resa = document.getElementById('pfares');
     if(!resa || !SB.prof || !SB.prof.accuracy) return;
