@@ -319,3 +319,16 @@ html.ncc-tfreeze *,html.ncc-tfreeze *::before,html.ncc-tfreeze *::after{transiti
 :root{--plx-bg:0px}
 body::before{inset:-180px -70px;transform:translate3d(0,var(--plx-bg),0);will-change:transform}
 @media (prefers-reduced-motion:reduce){body::before{transform:none!important}}
+
+/* ============ V3.1.3 — radius completion (glass sweep leftovers) ============
+   Interactive elements the V3 sweep lists missed — still rendering
+   at the Swiss-era 2px: directory rows, connection rows, the path
+   button, location chips/buttons, the military badge, the filter
+   panel. Brought to the glass radii (panels 16, controls 12/10,
+   chips pill). The full-height drawer and the left-accent result
+   items keep their shapes by design. */
+.brow{border-radius:10px}
+.conn,.crumb{border-radius:8px}
+.pathbtn{border-radius:12px}
+.dir-filters{border-radius:16px}
+.lchip,.locate,.milbadge{border-radius:999px}
