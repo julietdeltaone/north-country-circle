@@ -3,11 +3,11 @@
  "budget": {
   "daily_tranche_pct": 14.3,
   "expected_pct": 62,
-  "measure": "Usage is reported as a percentage of the weekly allowance, not a token count \u2014 the allowance's token size is not published, so the council budgets in percent.",
+  "measure": "Usage is reported as a percentage of the weekly allowance, not a token count — the allowance's token size is not published, so the council budgets in percent.",
   "plan": "Power",
   "read_at": "Oct 27, 2026, 3:45 PM ET",
   "used_pct": 38,
-  "verdict": "Under pace \u2014 38% used against ~62% even pace with the week resetting Thu Oct 30, 7:38 AM EDT. About 62% of the allowance remains for the last ~2.7 days (~23%/day available vs the 14.3% tranche). Headroom is real; no extension needed.",
+  "verdict": "Under pace — 38% used against ~62% even pace with the week resetting Thu Oct 30, 7:38 AM EDT. About 62% of the allowance remains for the last ~2.7 days (~23%/day available vs the 14.3% tranche). Headroom is real; no extension needed.",
   "week_resets": "Thu Oct 30, 2026, 7:38 AM EDT"
  },
  "charter_note": "Charter adopted Oct 27, 2026 (JD). Six directors; JD interacts only with the Operations roll-up. Everything reports change-only; \"no findings\" is a valid report.",
@@ -16,7 +16,7 @@
    {
     "date": "2026-10-27",
     "title": "Inaugural pass: 13 flags staged",
-    "summary": "3 possible matches (shared phone/email, one-letter names), Guard\u2192Army inferences for Hannah McConnell, Jake Seguin and Alex Hammond, JD's predicted bare-'clarkson' org on 2 profiles, 'roch' truncation fragments on 5, a registry alias still live, and one reversed display name. Full list under Open flags."
+    "summary": "3 possible matches (shared phone/email, one-letter names), Guard→Army inferences for Hannah McConnell, Jake Seguin and Alex Hammond, JD's predicted bare-'clarkson' org on 2 profiles, 'roch' truncation fragments on 5, a registry alias still live, and one reversed display name. Full list under Open flags."
    },
    {
     "date": "2026-10-27",
@@ -40,7 +40,7 @@
    {
     "date": "2026-10-27",
     "title": "QC pass: 8 of 8 Oct 27 photos verified",
-    "summary": "Every photo filed Oct 27 re-checked live: all serve 200 as real images and match their filing evidence. One note: Isreal Tyler's is an 80\u00d7120 thumbnail (her roster photo) \u2014 keep-or-remove is JD's standing call."
+    "summary": "Every photo filed Oct 27 re-checked live: all serve 200 as real images and match their filing evidence. One note: Isreal Tyler's is an 80×120 thumbnail (her roster photo) — keep-or-remove is JD's standing call."
    },
    {
     "date": "2026-10-27",
@@ -57,7 +57,7 @@
    {
     "date": "2026-10-27",
     "title": "Test drive traction: no tripwires fired",
-    "summary": "Every directorate returned new evidence; the verify gate caught one bad filing before it landed. One external signal: the resource cron's first fire reported a contradictory pace reading \u2014 its math is flagged unreliable in the progress log; this run's numbers are from direct reads."
+    "summary": "Every directorate returned new evidence; the verify gate caught one bad filing before it landed. One external signal: the resource cron's first fire reported a contradictory pace reading — its math is flagged unreliable in the progress log; this run's numbers are from direct reads."
    },
    {
     "date": "2026-10-27",
@@ -73,14 +73,14 @@
    },
    {
     "date": "2026-10-27",
-    "summary": "Power plan; week resets Thu Oct 30, 2026, 7:38 AM EDT. 38% actual vs ~61% even pace \u2014 under pace, headroom exists. Daily tranche \u224814.3%.",
+    "summary": "Power plan; week resets Thu Oct 30, 2026, 7:38 AM EDT. 38% actual vs ~61% even pace — under pace, headroom exists. Daily tranche ≈14.3%.",
     "title": "Founding gauge reading: 38% used"
    }
   ],
   "ux": [
    {
     "date": "2026-10-27",
-    "title": "Inaugural crawl: 9 views \u00d7 2 themes, no defects",
+    "title": "Inaugural crawl: 9 views × 2 themes, no defects",
     "summary": "Home, People, a profile, Live Records, Audit, Photos, Network, Sandbox and Council all load clean in light and dark: no error screens, no horizontal overflow, contrast spot checks pass, nav responds everywhere. No fixes needed."
    },
    {
@@ -92,21 +92,21 @@
  },
  "flags": [
   {
-   "evidence": "Both profiles carry phone 5183178734 (ig:maggienjones_ / fdb:maggie_marceau). Same number on two 'Maggie' profiles \u2014 same person under two names, or a shared/typo number. JD rules.",
+   "evidence": "Both profiles carry phone 5183178734 (ig:maggienjones_ / fdb:maggie_marceau). Same number on two 'Maggie' profiles — same person under two names, or a shared/typo number. JD rules.",
    "kind": "possible-match",
-   "title": "Maggie Jones vs Maggie Marceau \u2014 same phone",
+   "title": "Maggie Jones vs Maggie Marceau — same phone",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
   {
-   "evidence": "Both profiles carry lydiawangerin1@gmail.com (ig:lydia_rose_martin / sf:lydia-wangerin). The address itself reads 'Lydia Wangerin' \u2014 Lydia Martin may be the same person under a married name, or the email was filed on the wrong profile.",
+   "evidence": "Both profiles carry lydiawangerin1@gmail.com (ig:lydia_rose_martin / sf:lydia-wangerin). The address itself reads 'Lydia Wangerin' — Lydia Martin may be the same person under a married name, or the email was filed on the wrong profile.",
    "kind": "possible-match",
-   "title": "Lydia Martin vs Lydia Wangerin \u2014 same email",
+   "title": "Lydia Martin vs Lydia Wangerin — same email",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
   {
-   "evidence": "3152686666 is on Connor Caldwell, Hunter Woodrow, and Matthew Volz simultaneously. At most one can be right unless it is a shared household/work number \u2014 worth a data check.",
+   "evidence": "3152686666 is on Connor Caldwell, Hunter Woodrow, and Matthew Volz simultaneously. At most one can be right unless it is a shared household/work number — worth a data check.",
    "kind": "duplicate-info",
    "title": "One phone number on three profiles",
    "date": "2026-10-27",
@@ -117,26 +117,27 @@
    "kind": "possible-match",
    "title": "Karle McCormick vs Kayle McCormick",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "status": "Closed — JD ruling",
+   "resolution": "Karle McCormick and Kayle McCormick are twin sisters — two different people. Never merge. Ruled by JD; flag closed Oct 27, 2026."
   },
   {
    "evidence": "Companies say 'Army National Guard' but her Groups are empty. Per JD's approved inference class, she likely belongs in the U.S. Army group (and/or Army National Guard). Staged, not filed.",
    "kind": "inference",
-   "title": "Hannah McConnell \u2014 Army National Guard, no Army group",
+   "title": "Hannah McConnell — Army National Guard, no Army group",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
   {
    "evidence": "Companies say 'Army National Guard' but his Groups are empty. Same approved inference class as Hannah McConnell. Staged, not filed.",
    "kind": "inference",
-   "title": "Jake Seguin \u2014 Army National Guard, no Army group",
+   "title": "Jake Seguin — Army National Guard, no Army group",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
   {
-   "evidence": "Groups: 27th IBCT only; footprint documents his National Guard service (promoted to Major Aug 2026). 47 profiles carry the U.S. Army group; his lacks it. Note: his HHC exclusion is JD's standing ruling \u2014 this flag is only about the U.S. Army group. Staged, not filed.",
+   "evidence": "Groups: 27th IBCT only; footprint documents his National Guard service (promoted to Major Aug 2026). 47 profiles carry the U.S. Army group; his lacks it. Note: his HHC exclusion is JD's standing ruling — this flag is only about the U.S. Army group. Staged, not filed.",
    "kind": "inference",
-   "title": "Alex Hammond \u2014 in 27th IBCT but not U.S. Army group",
+   "title": "Alex Hammond — in 27th IBCT but not U.S. Army group",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
@@ -148,35 +149,35 @@
    "status": "Awaiting JD ruling"
   },
   {
-   "evidence": "Hannah Hughes, Heather Marie, Marissa Carl, Megan Eddy, and Megan Peddle each carry companies value 'roch' \u2014 an apparent truncation of 'Rochester Regional Health'. Allison Cole carries the similar fragment 'roc'.",
+   "evidence": "Hannah Hughes, Heather Marie, Marissa Carl, Megan Eddy, and Megan Peddle each carry companies value 'roch' — an apparent truncation of 'Rochester Regional Health'. Allison Cole carries the similar fragment 'roc'.",
    "kind": "near-duplicate-org",
    "title": "Truncated 'roch' org fragments on 5 profiles",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
   {
-   "evidence": "Colleen Cheney 'SUNY can' (she also carries full 'SUNY Canton' \u2014 same-profile duplicate); Elak Namhctih 'new york stat'; Grace LaPointe 'U'; Bob Dale 'SUNY'; B. Ryan Dunphey 'Park' and Franny Olsen 'park' (cf. canonical 'Park Bros.'); Colin Mackey and Megan Eurto 'New York'; Renee Dale 'Gouverneur' (a town, not an org). Each is a fragment or misfit beside a canonical value.",
+   "evidence": "Colleen Cheney 'SUNY can' (she also carries full 'SUNY Canton' — same-profile duplicate); Elak Namhctih 'new york stat'; Grace LaPointe 'U'; Bob Dale 'SUNY'; B. Ryan Dunphey 'Park' and Franny Olsen 'park' (cf. canonical 'Park Bros.'); Colin Mackey and Megan Eurto 'New York'; Renee Dale 'Gouverneur' (a town, not an org). Each is a fragment or misfit beside a canonical value.",
    "kind": "near-duplicate-org",
    "title": "Fragment org values: 'SUNY can', 'new york stat', 'U', 'SUNY', 'Park'/'park', 'New York', 'Gouverneur'",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
   {
-   "evidence": "Jaime Bicknell carries companies value 'Canton-Potsdam Hospital', which the org registry maps to 'Rochester Regional Health' \u2014 the alias was never flattened on her profile.",
+   "evidence": "Jaime Bicknell carries companies value 'Canton-Potsdam Hospital', which the org registry maps to 'Rochester Regional Health' — the alias was never flattened on her profile.",
    "kind": "near-duplicate-org",
    "title": "'Canton-Potsdam Hospital' still live on 1 profile",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
   {
-   "evidence": "~19 profiles carry both an institution and its sub-unit (e.g. Cornell University + Cornell ILR School; Wheaton College + Wheaton College Conservatory; Florida State University + FSU College on Alex Koberda). Most look like deliberate detail, not accidents \u2014 flagged as a class so JD can rule whether sub-units should stay, not as individual errors.",
+   "evidence": "~19 profiles carry both an institution and its sub-unit (e.g. Cornell University + Cornell ILR School; Wheaton College + Wheaton College Conservatory; Florida State University + FSU College on Alex Koberda). Most look like deliberate detail, not accidents — flagged as a class so JD can rule whether sub-units should stay, not as individual errors.",
    "kind": "near-duplicate-org",
    "title": "Same-profile org + sub-unit pairs (granularity question)",
    "date": "2026-10-27",
    "status": "Awaiting JD ruling"
   },
   {
-   "evidence": "Profile ig:kale_hitchman displays as 'Elak Namhctih' \u2014 'Kale Hitchman' spelled backwards, while the key/handle say Kale Hitchman. Looks like a reversed-string data error at creation.",
+   "evidence": "Profile ig:kale_hitchman displays as 'Elak Namhctih' — 'Kale Hitchman' spelled backwards, while the key/handle say Kale Hitchman. Looks like a reversed-string data error at creation.",
    "kind": "data-quality",
    "title": "Display name reversed: 'Elak Namhctih'",
    "date": "2026-10-27",
@@ -189,10 +190,10 @@
    "icon": "camera",
    "key": "photos",
    "last_run": "Oct 27, 2026 (test drive)",
-   "mission": "Own photo coverage \u2014 recruit hunter experts, keep finding new search routes, never accept that everything has been tried.",
+   "mission": "Own photo coverage — recruit hunter experts, keep finding new search routes, never accept that everything has been tried.",
    "name": "Photos Director",
-   "next_run": "Mon Nov 2, 2026 \u2014 weekly cycle",
-   "status": "Active \u2014 QC 8/8 pass; slice 1 hunted (1 filed); rotation at cycle 1.",
+   "next_run": "Mon Nov 2, 2026 — weekly cycle",
+   "status": "Active — QC 8/8 pass; slice 1 hunted (1 filed); rotation at cycle 1.",
    "subs": [
     {
      "authority": "May hide a bad photo. May never delete one.",
@@ -208,8 +209,8 @@
    "last_run": "Oct 27, 2026 (test drive)",
    "mission": "Walk the app as JD in both themes: every button works, all text readable, navigation simple, no overlaps or layout flaws.",
    "name": "UX Director",
-   "next_run": "Mon Nov 2, 2026 \u2014 weekly cycle",
-   "status": "Active \u2014 inaugural crawl clean in both themes."
+   "next_run": "Mon Nov 2, 2026 — weekly cycle",
+   "status": "Active — inaugural crawl clean in both themes."
   },
   {
    "authority": "Flags and stages only. Merges and meaning changes are never executed without JD's ruling.",
@@ -218,8 +219,8 @@
    "last_run": "Oct 27, 2026 (test drive)",
    "mission": "Runs last. Audit the universe for sense: duplicates, possible matches, missed connections, re-sort ideas, near-duplicate orgs and groups.",
    "name": "Content Director",
-   "next_run": "Mon Nov 2, 2026 \u2014 weekly cycle",
-   "status": "Active \u2014 13 flags staged for JD."
+   "next_run": "Mon Nov 2, 2026 — weekly cycle",
+   "status": "Active — 13 flags staged for JD."
   },
   {
    "authority": "No director starts a large run without Resource clearance. Extensions come only from actual headroom.",
@@ -229,17 +230,17 @@
    "mission": "Own the token budget: read the gauge against pace, authorize extra work from real headroom, call a halt when the day's tranche is spent.",
    "name": "Resource Manager",
    "next_run": "Daily, 8:00 AM ET",
-   "status": "Active \u2014 test drive reading 38%, under pace."
+   "status": "Active — test drive reading 38%, under pace."
   },
   {
    "authority": "Can stop a spinning worker and re-task it. Tripwires: 3 attempts on one route with no new evidence; a run with no state change in its window.",
    "icon": "target",
    "key": "progress",
    "last_run": "Oct 27, 2026 (test drive)",
-   "mission": "Own traction: catch spinning tires \u2014 repeated routes, stalls, work with no new evidence \u2014 and force a different approach.",
+   "mission": "Own traction: catch spinning tires — repeated routes, stalls, work with no new evidence — and force a different approach.",
    "name": "Progress Auditor",
-   "next_run": "Mon Nov 2, 2026 \u2014 weekly cycle",
-   "status": "Active \u2014 no tripwires fired on the test drive."
+   "next_run": "Mon Nov 2, 2026 — weekly cycle",
+   "status": "Active — no tripwires fired on the test drive."
   },
   {
    "authority": "Final authority below JD. Directors never report to JD separately.",
@@ -249,14 +250,14 @@
    "mission": "Everyone reports here. Schedule runs, deconflict file access, enforce budget and tripwires, deliver one consolidated roll-up.",
    "name": "Director of Operations",
    "next_run": "Roll-up in Monday's The Week in Full",
-   "status": "Active \u2014 council stood up Oct 27, 2026."
+   "status": "Active — council stood up Oct 27, 2026."
   }
  ],
  "runs": [
   {
    "date": "2026-10-27",
    "title": "Inaugural test drive",
-   "outcome": "Resource 38% vs ~62% pace (headroom). Photos: QC 8/8 pass; 40-profile hunt, 1 confirmed filed (Aeriel Skinner), 1 rejected at the verify gate, 6 live-browser leads queued. UX: 9 views \u00d7 2 themes, no defects. Content: 13 flags staged for JD. Progress: no tripwires."
+   "outcome": "Resource 38% vs ~62% pace (headroom). Photos: QC 8/8 pass; 40-profile hunt, 1 confirmed filed (Aeriel Skinner), 1 rejected at the verify gate, 6 live-browser leads queued. UX: 9 views × 2 themes, no defects. Content: 13 flags staged for JD. Progress: no tripwires."
   },
   {
    "date": "2026-10-27",
