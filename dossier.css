@@ -2624,3 +2624,10 @@ html[data-mode="light"] .plx-num{color:color-mix(in srgb,var(--ga) 5.5%,transpar
 .netorg{border-radius:10px}
 .hm-netlink{border-radius:16px}
 .phi-hidth{border-radius:10px}
+
+/* ============ SNAPCHAT ONLINE-CONNECTION BADGE — V3.3.0 (2026-10-27) ============
+   Sits inside the Known since tile: Snapchat friend-added year, shown for
+   everyone with Snapchat data regardless of the Known Since value (JD rule:
+   the Snapchat date never sets Known Since; it is an online-connection fact). */
+.ocs-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:.01em;color:var(--txt2);background:color-mix(in srgb,var(--ga) 16%,transparent);border:1px solid color-mix(in srgb,var(--ga) 38%,transparent)}
+.ocs-badge svg{flex:none;opacity:.85}
