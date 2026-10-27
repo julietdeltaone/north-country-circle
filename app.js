@@ -7,7 +7,7 @@
 /* App version — one number shared by both apps (explorer + dossier); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-const APP_VERSION = "3.0.1";
+const APP_VERSION = "3.1.0";
 /* Clear glass canvas palette: ink flips with the theme mode (V3.0.0) */
 const PAL_DARK = { ghost:"rgba(255,255,255,0.018)", whisper:"rgba(255,255,255,0.03)", faint:"rgba(255,255,255,0.05)", soft:"rgba(255,255,255,0.06)", mid:"rgba(255,255,255,0.22)", strong:"rgba(255,255,255,0.38)", core:"rgba(255,255,255,0.7)", nodeDim:"rgba(255,255,255,0.35)", ringHi:"rgba(255,255,255,0.85)", nodeBase:"rgba(195,195,195,0.26)", nodeWhite:"#ffffff", nodeHi:"#d4d4d4", label:"#f2f2f2", labelDim:"rgba(219,226,238,0.85)", labelHi:"rgba(255,255,255,0.92)" };
 const PAL_LIGHT = { ghost:"rgba(23,38,56,0.05)", whisper:"rgba(23,38,56,0.07)", faint:"rgba(23,38,56,0.10)", soft:"rgba(23,38,56,0.13)", mid:"rgba(23,38,56,0.32)", strong:"rgba(23,38,56,0.5)", core:"rgba(23,38,56,0.55)", nodeDim:"rgba(23,38,56,0.35)", ringHi:"rgba(23,38,56,0.65)", nodeBase:"rgba(23,38,56,0.30)", nodeWhite:"#10161d", nodeHi:"#2a3542", label:"#131a22", labelDim:"rgba(23,38,56,0.78)", labelHi:"rgba(13,20,28,0.92)" };
@@ -1261,3 +1261,15 @@ requestAnimationFrame(() => {
   if (b) { b.classList.add("done"); setTimeout(() => b.remove(), 320); }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw());
 });
+
+/* Depth pass (V3.1.0): backdrop drift — the scene plane moves
+   slowest against window scroll; flattens under reduced motion. */
+(function(){ try {
+  var mq = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq && mq.matches) return;
+  var tick = false;
+  function upd(){ tick = false; var S = window.scrollY || 0; var k = 1 - Math.exp(-S / 850);
+    document.documentElement.style.setProperty('--plx-bg', (-58 * k).toFixed(1) + 'px'); }
+  window.addEventListener('scroll', function(){ if(!tick){ tick = true; requestAnimationFrame(upd); } }, { passive: true });
+  upd();
+} catch(e){} })();
