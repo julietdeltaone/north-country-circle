@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#e9eff4">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <title>North Country Circle</title>
 <link rel="stylesheet" href="styles.css">
+<script>try{var m=localStorage.getItem('ncc_theme_mode'),s=localStorage.getItem('ncc_theme_scheme');document.documentElement.setAttribute('data-mode',m==='dark'?'dark':'light');document.documentElement.setAttribute('data-scheme',['bluegreen','blueviolet','tealsky','violetpink','amberrose','slate'].indexOf(s)>=0?s:'bluegreen');}catch(e){document.documentElement.setAttribute('data-mode','light');document.documentElement.setAttribute('data-scheme','bluegreen');}</script>
 </head>
 <body>
 <div id="bootload" aria-hidden="true"><div class="bl-brand"><span class="bl-dot"></span>North Country Circle</div><div class="bl-track"><i></i></div><div class="bl-sub">Loading the map</div></div>
@@ -36,6 +37,7 @@ setTimeout(function(){var b=document.getElementById("bootload");if(b&&!b.classLi
   </div>
 
   <div class="hud hud-tr">
+    <span class="themesec" role="group" aria-label="Theme"><span class="tlabel">Theme</span><button type="button" class="tbtn" id="theme-mode" aria-pressed="false">Light</button><span id="theme-swatches" style="display:contents"></span></span>
     <a class="tbtn" href="dossier.html" title="Profiles, editor, family" style="text-decoration:none;display:inline-block">Dossier</a>
     <button id="btn-filters" class="tbtn" title="Navigation filters">Filters</button>
     <button id="btn-hubs" class="tbtn" title="Highlight the top connectors">Hubs</button>
