@@ -5615,7 +5615,7 @@ function viewDaily(v){
   var stats = '<section class="card aspanel asanim" style="--d:70ms"><div class="cbody"><div class="asstats">' +
     '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b class="asnum" data-n="' + (DT.checked || []).length + '">0</b><span>Checked today</span></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + (DT.filed || []).length + '">0</b><span>Updated records</span></div>' +
-    '<div class="asstat asstat-ring"><svg class="asring" width="84" height="84" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this month &middot; ' + covPct + '%</span></div></div>' +
+    '<div class="asstat asstat-ring"><svg class="asring" width="84" height="84" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/><text class="asring-t" x="42" y="48" text-anchor="middle">' + Math.round(covPct) + '%</text></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this month &middot; ' + covPct + '%</span></div></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('calendar', 16) + '</span><b>' + esc(fmtD(DT.date)) + '</b><span>Latest brief</span></div>' +
     '</div></div></section>';
   /* --- Updated packets --- */
@@ -8295,7 +8295,13 @@ function audWatchCols(){
 var YK = null;
 function ykQueue(){
   var miss = [], have = [];
-  people().forEach(function(di){ (knownSinceYear(D.directory[di]) ? have : miss).push(di); });
+  /* A years gap JD already dismissed ("Done with them") stays closed here
+     too — the runner used to ignore audit_dismissed entirely, so a
+     dismissed person kept resurfacing in this queue (JD 2026-10-27). */
+  people().forEach(function(di){
+    if(audDismissedServer(di).indexOf('years') >= 0 || AUD_DISMISS[audPair(di, 'years')]) return;
+    (knownSinceYear(D.directory[di]) ? have : miss).push(di);
+  });
   var byName = function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); };
   miss.sort(byName); have.sort(byName);
   return miss.concat(have);
@@ -8591,7 +8597,7 @@ function viewAudit(v){
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
   var m = audMode();
-  var ykMissN = people().filter(function(di){ return !knownSinceYear(D.directory[di]); }).length;
+  var ykMissN = people().filter(function(di){ return !knownSinceYear(D.directory[di]) && audDismissedServer(di).indexOf('years') < 0 && !AUD_DISMISS[audPair(di, 'years')]; }).length;
   if(m === 'lima' && S.audit.lcOpen != null && D.directory[S.audit.lcOpen]){ lcRenderOpen(v); return; }
   v.innerHTML = '<div class="page audit"><div class="pagehead"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
     '<span class="aud-head-btns"><button type="button" class="btn ghost" data-act="audlater" id="audlaterbtn" hidden>' + ic('today', 15) + '<span>Saved for later (<span id="audlaterN">0</span>)</span></button>' +
