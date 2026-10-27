@@ -1,0 +1,134 @@
+{
+ "generated_at": "2026-10-27T17:29:52+00:00",
+ "sheet": {
+  "rows_incl_header": 742,
+  "data_rows": 741,
+  "blank_rows": [
+   2,
+   3,
+   4,
+   5
+  ],
+  "keyed_rows": 737,
+  "duplicate_keys": [],
+  "merged": [
+   {
+    "key": "ig:alexis_krapf",
+    "into": "ct:alexis donnely"
+   },
+   {
+    "key": "sf:anastasia-colbert",
+    "into": "anastasiasbakery"
+   },
+   {
+    "key": "ig:marissachelan",
+    "into": "sf:marissa-carl"
+   }
+  ],
+  "deleted_flagged": [],
+  "trash_keys": 764,
+  "sheet_keys_also_in_trash": []
+ },
+ "bake": {
+  "entries": 733,
+  "listed": 733,
+  "unique_pkeys": 732,
+  "duplicate_pkeys": {
+   "sf:jdmeyers_": [
+    "jdmeyers_",
+    "sf:jdmeyers_"
+   ]
+  },
+  "dir_pkeys_in_trash": [],
+  "updated": "2026-10-27 17:21 UTC"
+ },
+ "waterfall": [
+  {
+   "label": "Rows in the Profiles tab (including the header row)",
+   "count": 742,
+   "detail": "741 data rows + 1 header"
+  },
+  {
+   "label": "The header row itself",
+   "count": -1
+  },
+  {
+   "label": "Fully blank rows (no Key, no content)",
+   "count": -4,
+   "keys": [
+    "Sheet row 2",
+    "Sheet row 3",
+    "Sheet row 4",
+    "Sheet row 5"
+   ]
+  },
+  {
+   "label": "Keyed profile rows",
+   "count": 737,
+   "equals": true
+  },
+  {
+   "label": "Rows carrying merged_into (folded into their survivor at bake time)",
+   "count": -3,
+   "keys": [
+    "ig:alexis_krapf \u2192 ct:alexis donnely",
+    "sf:anastasia-colbert \u2192 anastasiasbakery",
+    "ig:marissachelan \u2192 sf:marissa-carl"
+   ]
+  },
+  {
+   "label": "Rows flagged deleted",
+   "count": 0,
+   "keys": []
+  },
+  {
+   "label": "Keyed rows that never become a directory entry (explained below)",
+   "count": -1,
+   "keys": [
+    "ig:test_deploy_check"
+   ]
+  },
+  {
+   "label": "Directory entries in dossier.json",
+   "count": 733,
+   "equals": true,
+   "detail": "but only 732 unique app keys (pkeys): sf:jdmeyers_ is shared by entries jdmeyers_, sf:jdmeyers_"
+  },
+  {
+   "label": "In-app people() count (isListed)",
+   "count": 733,
+   "equals": true
+  }
+ ],
+ "explained": [
+  {
+   "key": "ig:alexis_krapf",
+   "reason": "merged_into ct:alexis donnely \u2014 folded into the survivor at bake time, no standalone entry"
+  },
+  {
+   "key": "ig:jdmeyers_",
+   "reason": "profile attaches to the graph entry named 'jdmeyers_', whose app pkey computes as 'sf:jdmeyers_' (subject record) \u2014 the profile IS in the app, under that pkey"
+  },
+  {
+   "key": "ig:marissachelan",
+   "reason": "merged_into sf:marissa-carl \u2014 folded into the survivor at bake time, no standalone entry"
+  },
+  {
+   "key": "ig:test_deploy_check",
+   "reason": "ig: profile with no graph node, no phone contact, no subject file and no family involvement \u2014 the bake only mints entries for ig: orphans that are family-linked, so this row never becomes a directory entry"
+  },
+  {
+   "key": "sf:anastasia-colbert",
+   "reason": "merged_into anastasiasbakery \u2014 folded into the survivor at bake time, no standalone entry"
+  }
+ ],
+ "sheet_keys_not_in_directory": [
+  "ig:alexis_krapf",
+  "ig:jdmeyers_",
+  "ig:marissachelan",
+  "ig:test_deploy_check",
+  "sf:anastasia-colbert"
+ ],
+ "directory_pkeys_not_in_sheet": [],
+ "verdict": "RECONCILED"
+}
