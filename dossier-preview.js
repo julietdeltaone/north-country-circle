@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.9.0';
+var APP_VERSION = '3.10.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9209,7 +9209,7 @@ function skeletonHTML(note){
 var SB = {
   ready:false, loading:null,
   photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null, prof:null, spool:null,
-  tool:'home',
+  tool:'home', labtab:null,
   pf:{ field:'all', grade:'all', sel:null, tab:'accuracy', asel:null },
   pool:{ src:'seed', seedId:'cfc', optKind:'groups', optName:'', picks:[], qid:'volunteer', qtext:'', cats:null,
          obsDi:null, obsName:'', obDate:'', obEvent:'', obBeh:'', obCat:'action', obCatX:'', obAlt:'',
@@ -9225,20 +9225,31 @@ var SB = {
   dg:{ tab:'delete', one:null, bulkField:'tier', bulkVal:'', bulkCat:'companies', bulkName:'', dry:null },
   lg:{ filter:'all' }
 };
+/* V3.10.0 IA: the Sandbox has exactly three jobs — LOOK at the data,
+   PLAY with it in labs, FIX it with admin tools. The home screen is a
+   hero dashboard + three zones of large tiles; there is no rail. */
 var SB_TOOLS = [
-  { k:'grid',    g:'See',    t:'Data grid',        d:'Every field, one table. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
-  { k:'raw',     g:'See',    t:'Raw viewers',      d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry.', ic:'search' },
-  { k:'reports', g:'Check',  t:'Reports',          d:'Coverage gaps, source coverage, Live Records staleness, distributions.', ic:'spark' },
-  { k:'integ',   g:'Check',  t:'Integrity',        d:'Count reconciliation with its work shown, duplicate hunter, orphans, malformed keys.', ic:'shield' },
-  { k:'council', g:'Check',  t:'Council',          d:'The six directors: roster, budget pace, findings logs, open flags, run history.', ic:'award' },
-  { k:'lab',     g:'Connect',t:'Connection lab',   d:'Path finder, mutual connections, indirect connections, bridge ranking.', ic:'network' },
-  { k:'prof',    g:'Connect',t:'Profiling inferences', d:'A lab that cross-references on-file data into graded hypotheses (inductive profiler). First lens: field of study vs JD\u2019s Persona inputs. Display-only \u2014 nothing is ever filed.', ic:'cap' },
-  { k:'pool',    g:'Connect',t:'Suspect Pool',     d:'The thought experiment: define a pool, ask a yes/no question, filter by observable behavior (never demographics), weigh by base rate, then check it with a prediction. Logs live on this device only.', ic:'filter' },
-  { k:'play',    g:'Connect',t:'Playground',       d:'Scatter, histograms and timelines computed from the live data.', ic:'target' },
-  { k:'merge',   g:'Admin',  t:'Merge studio',     d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
-  { k:'danger',  g:'Admin',  t:'Danger area',      d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
-  { k:'log',     g:'Admin',  t:'Action log',       d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
+  { k:'grid',     z:'Look', t:'Data grid',    d:'Every person, one row. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
+  { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
+  { k:'insights', z:'Look', t:'Insights',     d:'Coverage, distributions and integrity on one page: gaps, sources, staleness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
+  { k:'council',  z:'Look', t:'Council',      d:'The six directors: roster, budget pace, findings logs, open flags, run history.', ic:'award' },
+  { k:'lab',      z:'Play', t:'The Lab',      d:'Four experiments on the live data: paths & bridges, profiling inferences, Suspect Pool, visuals. Nothing in the lab writes to a profile.', ic:'network' },
+  { k:'merge',    z:'Fix',  t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
+  { k:'danger',   z:'Fix',  t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
+  { k:'log',      z:'Fix',  t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
 ];
+var SB_LABS = [
+  { k:'paths',   t:'Paths & bridges' },
+  { k:'prof',    t:'Profiling' },
+  { k:'pool',    t:'Suspect Pool' },
+  { k:'visuals', t:'Visuals' }
+];
+function sbZoneOf(tool){ return ({ grid:'Look', raw:'Look', insights:'Look', council:'Look', lab:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
+function sbLabTab(){
+  if(SB.labtab == null) SB.labtab = sbStore('ncc_sbx_labtab') || 'paths';
+  if(!SB_LABS.some(function(l){ return l.k === SB.labtab; })) SB.labtab = 'paths';
+  return SB.labtab;
+}
 function sbStore(k, v){ try{ if(v === undefined){ var s = localStorage.getItem(k); return s ? JSON.parse(s) : null; } localStorage.setItem(k, JSON.stringify(v)); }catch(x){ return null; } }
 function sbLogGet(){ return sbStore('ncc_sbx_log') || []; }
 function sbOpsGet(){ return sbStore('ncc_sbx_ops') || []; }
@@ -9333,41 +9344,46 @@ function sbPostBatch(items){
 }
 
 function viewSandbox(v){
-  SB.tool = (S.route.seg && S.route.seg[0]) || 'home';
+  var seg = (S.route.seg && S.route.seg[0]) || 'home';
+  /* V3.10.0 routes: the old thirteen destinations consolidate to eight.
+     Pre-3.10 deep links keep working as aliases into the new surfaces. */
+  if(seg === 'reports' || seg === 'integ') SB.tool = 'insights';
+  else if(seg === 'prof'){ SB.tool = 'lab'; SB.labtab = 'prof'; }
+  else if(seg === 'pool'){ SB.tool = 'lab'; SB.labtab = 'pool'; }
+  else if(seg === 'play'){ SB.tool = 'lab'; SB.labtab = 'visuals'; }
+  else SB.tool = seg;
+  if(SB.tool === 'lab' && S.route.seg && S.route.seg[1]) SB.labtab = S.route.seg[1];
   if(!SB.ready){
     v.innerHTML = sbShell('<div class="sb-wrap"><div class="empty"><h3>Sandbox</h3><p>Loading the sidecar data…</p></div></div>');
     sbEnsure();
     return;
   }
-  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, reports:sbReports, integ:sbInteg, lab:sbLab,
-             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView, council:sbCouncil, prof:sbProf, pool:sbPool }[SB.tool] || sbHome;
+  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, insights:sbInsights, council:sbCouncil,
+             lab:sbLabTool, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
+  if(!({ home:1, grid:1, raw:1, insights:1, council:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
-/* Full-screen Sandbox (JD 2026-10-27): the workbench takes the whole
-   viewport (body[data-view="sandbox"] hides the dossier rail/top/tabs
-   in CSS). Its own rail carries Back (data-act topback — one peel:
-   tool -> Sandbox home -> previous view) and Home (data-act home),
-   plus the tool navigation. SB state is module-level, so tool state
-   survives entering and leaving. */
+/* Full-screen Sandbox (JD 2026-10-27; IA regraded V3.10.0): the
+   workbench takes the whole viewport (body[data-view="sandbox"] hides
+   the dossier rail/top/tabs in CSS). Chrome is ONE slim top bar —
+   Back (data-act topback: tool -> Sandbox home -> previous view),
+   Home (data-act home), the Sandbox wordmark, and the current zone.
+   There is no rail: navigation lives on the home screen. SB state is
+   module-level, so tool state survives entering and leaving. */
 function sbShell(inner){
-  var groups = {};
-  SB_TOOLS.forEach(function(t){ (groups[t.g] = groups[t.g] || []).push(t); });
-  var nav = '<a class="sb-nav-it' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox">' + ic('shield', 16) + '<span>Overview</span></a>';
-  ['See', 'Check', 'Connect', 'Admin'].forEach(function(g){
-    if(!(groups[g] || []).length) return;
-    nav += '<div class="sb-nav-g">' + esc(g) + '</div>' + groups[g].map(function(t){
-      return '<a class="sb-nav-it' + (SB.tool === t.k ? ' on' : '') + '" href="#/sandbox/' + t.k + '">' + ic(t.ic, 16) + '<span>' + esc(t.t) + '</span></a>';
-    }).join('');
-  });
-  return '<div class="sb-shell t-' + esc(SB.tool) + '"><aside class="sb-rail2">' +
+  var z = sbZoneOf(SB.tool);
+  return '<div class="sb-shell t-' + esc(SB.tool) + '"><header class="sb-top">' +
     '<div class="sb-rail-top"><button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: tool, then Sandbox home, then the previous view">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="ib" data-act="home" aria-label="Home" title="Home">' + ic('home', 20) + '</button><b>Sandbox</b></div>' +
-    nav + '</aside><div class="sb-canvas">' + inner + '</div></div>';
+    (z ? '<span class="sb-zonechip">' + esc(z) + '</span>' : '<span class="sb-topsub">Look · Play · Fix</span>') +
+    '</header><div class="sb-canvas">' + inner + '</div></div>';
 }
+/* One template for every tool page: title + zone chip + purpose line. */
 function sbHead(title, sub){
-  return '<div class="sb-head"><a class="sb-back" href="#/sandbox">← Sandbox</a>' +
-    '<h2>' + esc(title) + '</h2><p>' + esc(sub || '') + '</p></div>';
+  var z = sbZoneOf(SB.tool);
+  return '<div class="sb-head"><div class="sb-headrow"><h2>' + esc(title) + '</h2>' +
+    (z ? '<span class="sb-zonechip">' + esc(z) + '</span>' : '') + '</div><p>' + esc(sub || '') + '</p></div>';
 }
 function sbHome(){
   var ppl = people().length, rec = SB.recon || {};
