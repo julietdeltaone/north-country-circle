@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.2.1';
+var APP_VERSION = '3.3.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -216,6 +216,7 @@ var IC = {
   reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
   ig:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/>',
   fb:'<path d="M15.5 3.5h-2.6a4 4 0 0 0-4 4v2.6H6.5v3h2.4v7.4h3v-7.4h2.5l.5-3h-3V7.7a1.2 1.2 0 0 1 1.2-1.2h2.4z"/>',
+  snap:'<path d="M12 3c-3 0-5 2.2-5 5.2V16l-1.7 2.4c-.3.4-.1.9.4 1l1.8.4c.3.1.5.3.5.6V21h1.9v-1.8l2.1 1.3 2.1-1.3V21H16v-.6c0-.3.2-.5.5-.6l1.8-.4c.5-.1.7-.6.4-1L17 16V8.2C17 5.2 15 3 12 3z"/><circle cx="9.7" cy="10" r=".4"/><circle cx="14.3" cy="10" r=".4"/>',
   sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
   cap:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/><path d="M22 10v6"/>',
   pin:'<path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/>',
@@ -2957,6 +2958,7 @@ function secView(di, id){
     function r(icn, lab, val, note){ if(val) rows.push('<div class="irow"><span class="il">' + ic(icn, 15) + lab + '</span><div class="iv">' + val + (note ? ' <small class="derived">' + note + '</small>' : '') + '</div></div>'); }
     if(effHandle(e)) r('ig', 'Instagram', '<a class="iglink ' + (e.relation === 'mutual' ? 'mutual' : 'oneway') + '" href="' + igURL(effHandle(e)) + '" target="_blank" rel="noopener">@' + esc(effHandle(e)) + '</a>', e.relation ? RELN[e.relation] : '');
     if(e.fb_url) r('fb', 'Facebook', '<a class="iglink" href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">' + (e.fb_handle ? '@' + esc(e.fb_handle) : 'Profile') + '</a>');
+    if((e.snap_handles || []).length) r('snap', 'Snapchat', e.snap_handles.map(function(h){ return '<a class="iglink" href="https://www.snapchat.com/add/' + encodeURIComponent(h) + '" target="_blank" rel="noopener">@' + esc(h) + '</a>'; }).join(' '), e.snap_since ? 'online connection since ' + e.snap_since : '');
     if(personIsAka(e) && gv(e, 'also_known_as')) r('user', 'Also known as', '<b>' + esc(gv(e, 'also_known_as')) + '</b>');
     if(gv(e, 'location_on_file')) r('pin', 'Location on file', esc(ptNormLoc(gv(e, 'location_on_file'))));
     var ph = String(gv(e, 'phone')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
@@ -2985,7 +2987,7 @@ function secView(di, id){
         '<option value="">No rank</option>' +
         rlist.map(function(r){ return '<option value="' + esc(r) + '"' + (r === curRank ? ' selected' : '') + '>' + esc(r) + '</option>'; }).join('') + '</select>';
     }
-    return '<div class="tiles">' + tiles.map(function(t){ return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b></div>'; }).join('') + '</div>' +
+    return '<div class="tiles">' + tiles.map(function(t){ var ocs = (t[0] === 'Known since' && e.snap_since) ? '<span class="ocs-badge">' + ic('snap', 11) + 'Online connection since ' + e.snap_since + '</span>' : ''; return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b>' + ocs + '</div>'; }).join('') + '</div>' +
       (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '') + rankCtl;
   }
   if(id === 'about'){
@@ -3133,7 +3135,7 @@ function secEdit(di, id){
       lab('Phone', 'Several numbers: separate with commas') + '<input data-pk="phone" inputmode="tel" value="' + esc(gv(e, 'phone')) + '" autocomplete="off">' +
       (personIsAka(e) ? lab('Also known as') + '<input data-pk="also_known_as" value="' + esc(gv(e, 'also_known_as')) + '" autocomplete="off">' : '') +
       lab('Location on file', 'One place for this person: it replaces the derived city/hometown everywhere it appears') + '<input data-pk="location_on_file" value="' + esc(gv(e, 'location_on_file')) + '" placeholder="Town, ST" autocomplete="off">' +
-      '<p class="note">Instagram, Facebook, Lives in, From and Languages are derived and read only. Correct them at the source (the FB Profiles tab or a subject file).</p>' + secView(di, 'identity');
+      '<p class="note">Instagram, Facebook, Snapchat, Lives in, From and Languages are derived and read only. Correct them at the source (the FB Profiles tab, the Snapchat data file, or a subject file).</p>' + secView(di, 'identity');
   }
   if(id === 'relationship'){
     var ksP0 = ksParts(e) || { y:0, mo:0, d:0 }, thisY = new Date().getFullYear();
