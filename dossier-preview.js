@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.4.0';
+var APP_VERSION = '3.5.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1926,6 +1926,7 @@ function topBack(){
     if(S.audit.lcOpen != null){ S.audit.lcOpen = null; viewAudit($('#view')); return; }
     if(audMode() !== 'cards'){ audSetMode('cards'); return; }
   }
+  if(S.route.name === 'sandbox' && typeof SB !== 'undefined' && SB.tool && SB.tool !== 'home'){ go('sandbox'); return; }
   if(S.route.name === 'profile'){
     var fb = S.ctx && S.ctx.from ? S.ctx.from : 'people';
     if(fb === 'groups' && S.ctx && S.ctx.grp) fb = 'groups/' + S.ctx.grp;
@@ -2799,6 +2800,7 @@ var SECS = [
   { id:'background',  t:'Background',     mv:'a', ord:3, w:['background', 'education'] },
   { id:'persona',     t:'Persona',        mv:'a', ord:4, w:['ratings'] },
   { id:'files',       t:'Files',          mv:'a', ord:5, w:['files'] },
+  { id:'business',    t:'Business Owner', mv:'a', ord:6, w:['business'] },
   { id:'relationship',t:'Relationship',   mv:'c', ord:1, w:['relationship'] },
   { id:'connections', t:'Connections',    mv:'c', ord:2, w:['connections'] },
   { id:'timeline',    t:'Timeline',       mv:'c', ord:3, wide:1, w:['timeline'] },
@@ -2815,6 +2817,7 @@ function secHasContent(e, id){
     case 'connections': return !!(knownAssociates(e).length || famLinks(e).length);
     case 'timeline': return !!((e.events || []).length || connPhases(e).length);
     case 'files': return !!(e.files || []).length;
+    case 'business': return !!((e.businesses || []).length);
     case 'persona': return PERSONA.some(function(p){ return gv(e, p[0]) !== ''; });
   }
   return false;
@@ -2825,6 +2828,9 @@ function secShown(e, id){
      while a note is waiting (or its editor is open); with no note it folds
      into the "Add to this profile" row like any unfilled section. */
   if(id === 'lima') return !!lcNote(e).trim();
+  /* Business Owner (JD 2026-10-27): a derived section — it exists only
+     while the Business Pulse sidecar maps a business to this person. */
+  if(id === 'business') return secHasContent(e, 'business');
   if(secWaivedUI(e, id)) return id !== 'persona';
   if(secHasContent(e, id)) return true;
   if(id === 'persona') return false;
@@ -2881,7 +2887,7 @@ function paintProfile(di){
   });
   SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
   if(_sy != null) window.scrollTo(0, _sy);
-  var hidden = SECS.filter(function(s){ return !secShown(e, s.id); });
+  var hidden = SECS.filter(function(s){ return s.id !== 'business' && !secShown(e, s.id); });
   var legacy = ['relationship_type', 'sources', 'mentions'].filter(function(k){ return String(gv(e, k)).trim(); });
   $('#p-add').innerHTML = (hidden.length ? '<div class="addrow"><span>Add to this profile</span>' + hidden.map(function(s){
       return '<button type="button" class="btn ghost sm" data-act="secedit" data-sec="' + s.id + '">' + ic('plus', 13) + esc(s.id === 'persona' ? 'Rate' : s.t) + '</button>'; }).join('') + '</div>' : '') +
@@ -2942,6 +2948,7 @@ function secSummary(e, id){
   if(id === 'connections') n = knownAssociates(e).length + famLinks(e).length;
   else if(id === 'timeline') n = (e.events || []).length;
   else if(id === 'files') n = (e.files || []).length;
+  else if(id === 'business') n = (e.businesses || []).length;
   return n ? '<em class="cnt">' + n + '</em>' : '';
 }
 function emptyPrompt(di, id, text){
@@ -2971,6 +2978,31 @@ function secView(di, id){
     r('pin', 'From', esc(e.hometown || ''), 'from Facebook');
     if((e.languages || []).length) r('book', 'Languages', e.languages.map(esc).join(', '), 'from subject file');
     return rows.length ? '<div class="irows">' + rows.join('') + '</div>' : '<p class="dim">No contact details yet.</p>' + emptyPrompt(di, id, 'Add a phone number');
+  }
+  if(id === 'business'){
+    /* Business Owner (JD 2026-10-27): overview cards from the Business
+       Pulse sidecar (entry.businesses, attached at bake). Read-only —
+       the data lives in Business Pulse. */
+    function brow(lab, val){ return val ? '<div class="biz-row"><span>' + lab + '</span><div>' + val + '</div></div>' : ''; }
+    return (e.businesses || []).map(function(b){
+      var meta = [b.town, b.county ? b.county + ' County' : '', b.specialty, b.est ? 'Est. ' + b.est : ''].filter(Boolean).join(' · ');
+      var links = '';
+      if(b.website) links += '<a class="iglink" href="' + esc(b.website_url || ('https://' + b.website)) + '" target="_blank" rel="noopener">' + esc(b.website) + '</a>';
+      if(b.ig) links += (links ? ' ' : '') + '<a class="iglink" href="https://www.instagram.com/' + encodeURIComponent(b.ig) + '" target="_blank" rel="noopener">@' + esc(b.ig) + '</a>';
+      var stats = [];
+      if(b.rating) stats.push('Rated ' + b.rating + (b.reviews ? ' · ' + b.reviews + ' reviews' + (b.review_source ? ' (' + esc(b.review_source) + ')' : '') : ''));
+      else if(b.reviews) stats.push(b.reviews + ' reviews' + (b.review_source ? ' (' + esc(b.review_source) + ')' : ''));
+      if(b.followers) stats.push(Number(b.followers).toLocaleString('en-US') + ' Instagram followers');
+      return '<div class="bizcard">' +
+        '<div class="biz-h"><b>' + esc(b.name) + '</b>' + (b.status ? '<span class="vchip">' + esc(cap(b.status)) + '</span>' : '') + '</div>' +
+        (meta ? '<div class="biz-meta">' + esc(meta) + '</div>' : '') +
+        (links ? '<div class="biz-links">' + links + '</div>' : '') +
+        brow('Services', esc(b.services || '')) +
+        brow('Pricing', esc(b.pricing || '')) +
+        (stats.length ? '<div class="biz-stats">' + stats.join(' · ') + '</div>' : '') +
+        (b.note ? '<p class="biz-note">' + esc(b.note) + '</p>' : '') +
+        '</div>';
+    }).join('') + '<p class="note">Business data from Business Pulse; it refreshes with that roster.</p>';
   }
   if(id === 'relationship'){
     var tiles = [['Tier', tierOf(e) ? TIERS[tierOf(e)].n : ''], ['Relationship', cap(gv(e, 'relationship'))], ['Context', cap(gv(e, 'context'))], ['Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1]],
@@ -3131,6 +3163,7 @@ function skillFlow(di){
 function lab(t, sub){ return '<label class="lab">' + esc(t) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</label>'; }
 function secEdit(di, id){
   var e = D.directory[di];
+  if(id === 'business') return '<p class="note">Business Owner is derived from Business Pulse and read only here. Correct it in the Business Pulse roster.</p>' + secView(di, 'business');
   if(id === 'identity'){
     return lab('First name') + '<input data-pk="first_name" value="' + esc(gv(e, 'first_name')) + '" autocomplete="off">' +
       lab('Last name') + '<input data-pk="last_name" value="' + esc(gv(e, 'last_name')) + '" autocomplete="off">' +
@@ -9180,7 +9213,6 @@ var SB = {
   play:{},
   mg:{ a:null, b:null, surv:'a', picks:{}, plan:null },
   dg:{ tab:'delete', one:null, bulkField:'tier', bulkVal:'', bulkCat:'companies', bulkName:'', dry:null },
-  imp:{ rows:null, result:null },
   lg:{ filter:'all' }
 };
 var SB_TOOLS = [
@@ -9192,7 +9224,6 @@ var SB_TOOLS = [
   { k:'play',    g:'Connect',t:'Playground',       d:'Scatter, histograms and timelines computed from the live data.', ic:'target' },
   { k:'merge',   g:'Admin',  t:'Merge studio',     d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',  g:'Admin',  t:'Danger area',      d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
-  { k:'import',  g:'Admin',  t:'Import workbench', d:'Stage a friends export and auto-match it. Never writes by itself.', ic:'download' },
   { k:'log',     g:'Admin',  t:'Action log',       d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
 ];
 function sbStore(k, v){ try{ if(v === undefined){ var s = localStorage.getItem(k); return s ? JSON.parse(s) : null; } localStorage.setItem(k, JSON.stringify(v)); }catch(x){ return null; } }
@@ -9289,14 +9320,35 @@ function sbPostBatch(items){
 function viewSandbox(v){
   SB.tool = (S.route.seg && S.route.seg[0]) || 'home';
   if(!SB.ready){
-    v.innerHTML = '<div class="sb-wrap"><div class="empty"><h3>Sandbox</h3><p>Loading the sidecar data…</p></div></div>';
+    v.innerHTML = sbShell('<div class="sb-wrap"><div class="empty"><h3>Sandbox</h3><p>Loading the sidecar data…</p></div></div>');
     sbEnsure();
     return;
   }
   var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, reports:sbReports, integ:sbInteg, lab:sbLab,
-             play:sbPlay, merge:sbMerge, danger:sbDanger, import:sbImport, log:sbLogView }[SB.tool] || sbHome;
-  v.innerHTML = '<div class="sb-wrap">' + fn() + '</div>';
+             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
+  v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
+}
+/* Full-screen Sandbox (JD 2026-10-27): the workbench takes the whole
+   viewport (body[data-view="sandbox"] hides the dossier rail/top/tabs
+   in CSS). Its own rail carries Back (data-act topback — one peel:
+   tool -> Sandbox home -> previous view) and Home (data-act home),
+   plus the tool navigation. SB state is module-level, so tool state
+   survives entering and leaving. */
+function sbShell(inner){
+  var groups = {};
+  SB_TOOLS.forEach(function(t){ (groups[t.g] = groups[t.g] || []).push(t); });
+  var nav = '<a class="sb-nav-it' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox">' + ic('shield', 16) + '<span>Overview</span></a>';
+  ['See', 'Check', 'Connect', 'Admin'].forEach(function(g){
+    if(!(groups[g] || []).length) return;
+    nav += '<div class="sb-nav-g">' + esc(g) + '</div>' + groups[g].map(function(t){
+      return '<a class="sb-nav-it' + (SB.tool === t.k ? ' on' : '') + '" href="#/sandbox/' + t.k + '">' + ic(t.ic, 16) + '<span>' + esc(t.t) + '</span></a>';
+    }).join('');
+  });
+  return '<div class="sb-shell t-' + esc(SB.tool) + '"><aside class="sb-rail2">' +
+    '<div class="sb-rail-top"><button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: tool, then Sandbox home, then the previous view">' + ic('chevl', 20) + '</button>' +
+    '<button type="button" class="ib" data-act="home" aria-label="Home" title="Home">' + ic('home', 20) + '</button><b>Sandbox</b></div>' +
+    nav + '</aside><div class="sb-canvas">' + inner + '</div></div>';
 }
 function sbHead(title, sub){
   return '<div class="sb-head"><a class="sb-back" href="#/sandbox">← Sandbox</a>' +
@@ -10328,118 +10380,6 @@ function sbDgRebuild(){
 }
 
 
-/* ---------------- 8. import workbench ---------------- */
-function sbImport(){
-  var h = sbHead('Import workbench', 'Stage a Snapchat-style friends export — the HTML table, or CSV/JSON of the same shape — and auto-match it against the directory.');
-  h += '<div class="sb-card2"><div class="sb-warn">This tool never writes anything. It produces a staged match and a filing brief; filing stays a ruled step, exactly like the October 27 sweep.</div>' +
-    '<div class="sb-formrow"><input type="file" data-sbi="impfile" accept=".html,.htm,.csv,.json,.txt">' +
-    '<span class="sb-note">…or paste the export below</span></div>' +
-    '<textarea data-sbi="imptext" class="sb-textarea" placeholder="Paste a friends-table HTML, CSV (username, display name, added), or JSON array">' + esc(SB.imp.text || '') + '</textarea>' +
-    '<div class="sb-confrow"><button type="button" class="btn primary" data-sb="impparse">Parse & match</button></div></div>';
-  var R = SB.imp.result;
-  if(R){
-    h += '<div class="sb-kpis">' + sbKpi(R.rows.length, 'rows parsed') + sbKpi(R.matched.length, 'matched to the directory') +
-      sbKpi(R.probable.length, 'probable matches') + sbKpi(R.candidates.length, 'not in the directory') + '</div>';
-    function tbl2(title, list, cols){
-      if(!list.length) return '';
-      return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + ' (' + list.length + ')</div><table class="sb-table"><thead><tr>' +
-        cols.map(function(c){ return '<th>' + esc(c[0]) + '</th>'; }).join('') + '</tr></thead><tbody>' +
-        list.slice(0, 120).map(function(r){ return '<tr>' + cols.map(function(c){ return '<td>' + esc(c[1](r)) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
-    }
-    h += tbl2('Matched', R.matched, [['Export row', function(r){ return r.display + ' (@' + r.username + ')'; }], ['Directory person', function(r){ return dispName(D.directory[r.di]); }], ['Added', function(r){ return r.added; }], ['Snap already filed?', function(r){ return r.already ? 'yes' : 'no'; }]]);
-    h += tbl2('Probable — needs a ruling', R.probable, [['Export row', function(r){ return r.display + ' (@' + r.username + ')'; }], ['Closest directory person', function(r){ return dispName(D.directory[r.di]); }], ['Why', function(r){ return r.why; }]]);
-    h += tbl2('Candidates — not in the directory', R.candidates, [['Display name', function(r){ return r.display; }], ['Username', function(r){ return '@' + r.username; }], ['Added', function(r){ return r.added; }]]);
-    h += '<div class="sb-confrow"><button type="button" class="btn primary" data-sb="impbrief">Copy the filing brief</button></div>';
-  }
-  return h;
-}
-function sbImpParse(text){
-  text = String(text || '').trim();
-  if(!text) return null;
-  var rows = [];
-  function pushRow(u, d, a){ u = String(u || '').trim().replace(/^@/, ''); d = String(d || '').trim(); if(u || d) rows.push({ username:u, display:d || u, added:String(a || '').trim() }); }
-  if(/<table/i.test(text)){
-    var doc = new DOMParser().parseFromString(text, 'text/html');
-    var tables = doc.querySelectorAll('table'), best = null;
-    /* Snapchat exports carry several lists (Friends first, then others) —
-       the Friends table is the first one headed Username / Display Name */
-    tables.forEach(function(t){
-      var head = t.querySelector('tr');
-      var isFriends = head && /username/i.test(head.textContent) && /display/i.test(head.textContent);
-      if(isFriends && !best) best = t;
-    });
-    if(!best) tables.forEach(function(t){ if(!best || t.querySelectorAll('tr').length > best.querySelectorAll('tr').length) best = t; });
-    if(best) best.querySelectorAll('tr').forEach(function(tr, i){
-      var cells = Array.prototype.map.call(tr.querySelectorAll('td,th'), function(c){ return c.textContent.trim(); });
-      if(i === 0 && /user/i.test(cells.join(' '))) return;
-      if(cells.length >= 2) pushRow(cells[0], cells[1], cells[2]);
-    });
-  } else if(text.charAt(0) === '[' || text.charAt(0) === '{'){
-    try{
-      var j = JSON.parse(text); var arr = Array.isArray(j) ? j : (j.friends || j.people || []);
-      arr.forEach(function(o){ pushRow(o.username || o.user || o.handle, o.display_name || o.display || o.name, o.added || o.created || o.creation_timestamp || o.since_date || o.since); });
-    }catch(x){ return null; }
-  } else {
-    text.split(/\r?\n/).forEach(function(line, i){
-      var cells = line.split(/\t|,/).map(function(c){ return c.trim(); });
-      if(i === 0 && /user/i.test(line)) return;
-      if(cells.length >= 2) pushRow(cells[0], cells[1], cells[2]);
-    });
-  }
-  return rows.length ? rows : null;
-}
-function sbImpMatch(rows){
-  var byDisp = {}, byHandle = {}, byNorm = {};
-  function norm(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
-  D.directory.forEach(function(e, di){
-    if(!liveEntry(e)) return;
-    byDisp[dispName(e).toLowerCase()] = di;
-    if(effHandle(e)) byHandle[effHandle(e).toLowerCase()] = di;
-    byNorm[norm(dispName(e))] = di;
-  });
-  function lev(a, b){
-    var m = []; for(var i = 0; i <= b.length; i++) m[i] = [i];
-    for(var j = 0; j <= a.length; j++) m[0][j] = j;
-    for(i = 1; i <= b.length; i++) for(j = 1; j <= a.length; j++)
-      m[i][j] = Math.min(m[i - 1][j] + 1, m[i][j - 1] + 1, m[i - 1][j - 1] + (b.charAt(i - 1) === a.charAt(j - 1) ? 0 : 1));
-    return m[b.length][a.length];
-  }
-  var matched = [], probable = [], candidates = [];
-  rows.forEach(function(r){
-    var di = byDisp[r.display.toLowerCase()];
-    if(di == null && r.username && byHandle[r.username.toLowerCase()] != null) di = byHandle[r.username.toLowerCase()];
-    if(di == null && byNorm[norm(r.display)] != null) di = byNorm[norm(r.display)];
-    if(di == null && byNorm[norm(r.username)] != null) di = byNorm[norm(r.username)];
-    if(di != null){
-      var e = D.directory[di];
-      matched.push({ username:r.username, display:r.display, added:r.added, di:di,
-        already: !!((e.snap_handles || []).some(function(x){ return x.toLowerCase() === r.username.toLowerCase(); })) });
-      return;
-    }
-    var bestDi = null, bestD = 99;
-    Object.keys(byNorm).forEach(function(n){
-      var d = lev(norm(r.display), n);
-      if(d < bestD){ bestD = d; bestDi = byNorm[n]; }
-    });
-    if(bestDi != null && bestD <= 2) probable.push({ username:r.username, display:r.display, added:r.added, di:bestDi, why:'name within edit distance ' + bestD });
-    else candidates.push(r);
-  });
-  return { rows:rows, matched:matched, probable:probable, candidates:candidates };
-}
-function sbImpBrief(){
-  var R = SB.imp.result; if(!R) return '';
-  var lines = ['# Import staging brief — ' + new Date().toISOString().slice(0, 10), '',
-    'Parsed ' + R.rows.length + ' rows · matched ' + R.matched.length + ' · probable ' + R.probable.length + ' · not in directory ' + R.candidates.length + '.', '',
-    '## Matched (handle not yet filed marked *)'];
-  R.matched.forEach(function(r){ lines.push('- ' + r.display + ' (@' + r.username + ', added ' + (r.added || '?') + ') → ' + dispName(D.directory[r.di]) + (r.already ? '' : ' *')); });
-  lines.push('', '## Probable');
-  R.probable.forEach(function(r){ lines.push('- ' + r.display + ' (@' + r.username + ') → maybe ' + dispName(D.directory[r.di]) + ' (' + r.why + ')'); });
-  lines.push('', '## Not in the directory');
-  R.candidates.forEach(function(r){ lines.push('- ' + r.display + ' (@' + r.username + ', added ' + (r.added || '?') + ')'); });
-  lines.push('', 'Filing stays a ruled step — nothing was written by the import workbench.');
-  return lines.join('\n');
-}
-
 /* ---------------- 10. action log ---------------- */
 function sbLogView(){
   var local = sbLogGet();
@@ -10709,18 +10649,6 @@ document.addEventListener('click', function(ev){
     sbLogAdd({ type:'recon', title:'Queued a fresh reconciliation', detail:'Runs sandbox_recon.py via sandbox_ops.py.', queuedOps:[{ op:'recon' }] });
     toast('Reconciliation queued'); R();
   }
-  else if(act === 'impparse'){
-    var ta = document.querySelector('[data-sbi="imptext"]');
-    var rows = sbImpParse(SB.imp.fileText || (ta ? ta.value : ''));
-    if(!rows){ toast('Could not parse that export — expected a friends table, CSV, or JSON'); return; }
-    SB.imp.result = sbImpMatch(rows);
-    toast('Parsed ' + rows.length + ' rows'); R();
-  }
-  else if(act === 'impbrief'){
-    var brief = sbImpBrief();
-    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(brief).then(function(){ toast('Filing brief copied'); }, function(){ sbDownload('import-brief.md', brief); });
-    else sbDownload('import-brief.md', brief);
-  }
   else if(act === 'logundo'){ sbLogUndo(t.getAttribute('data-id')); }
   else if(act === 'opexport'){
     sbDownload('sandbox-ops.json', JSON.stringify({ ops: sbOpsGet() }, null, 1), 'application/json');
@@ -10756,10 +10684,6 @@ document.addEventListener('change', function(ev){
   else if(k === 'bulkcat'){ SB.dg.bulkCat = t.value; SB.dg.dry = null; }
   else if(k === 'logfilter'){ SB.lg.filter = t.value; render(); }
   else if(k === 'crtier'){ SB.dg.crTier = t.value; }
-  else if(k === 'impfile'){
-    var f = t.files && t.files[0];
-    if(f){ var rd = new FileReader(); rd.onload = function(){ SB.imp.fileText = String(rd.result || ''); toast('File loaded — Parse & match when ready'); }; rd.readAsText(f); }
-  }
 });
 var SB_DEB = null;
 document.addEventListener('input', function(ev){
@@ -10787,13 +10711,12 @@ document.addEventListener('input', function(ev){
   else if(k === 'crfirst'){ SB.dg.crFirst = t.value; }
   else if(k === 'crlast'){ SB.dg.crLast = t.value; }
   else if(k === 'crkey'){ SB.dg.crKey = t.value; }
-  else if(k === 'imptext'){ SB.imp.text = t.value; SB.imp.fileText = null; }
   else if(k === 'gvname'){ SB.gvName = t.value; }
 });
 function sbGridRefresh(){
   if(S.route.name !== 'sandbox' || SB.tool !== 'grid') return;
   var v = $('#view'); if(!v) return;
-  v.innerHTML = '<div class="sb-wrap">' + sbGrid() + '</div>';
+  v.innerHTML = sbShell('<div class="sb-wrap">' + sbGrid() + '</div>');
   var inp = v.querySelector('[data-sbi="gridq"]');
   if(inp && SB.grid.q){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
 }
