@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.53.0';
+var APP_VERSION = '2.54.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -7873,7 +7873,8 @@ function ykRender(){
   var st = ykState();
   if(!st.q.length){ w.innerHTML = '<div class="aud-caught"><h3>Nobody in the directory</h3></div>'; return; }
   if(st.i >= st.q.length){
-    w.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Run complete</h3><p>' + st.saved + ' saved this run. Everyone has had a pass.</p><p><button type="button" class="btn primary" data-act="ykrestart">Start over</button></p></div>';
+    w.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Run complete</h3><p>' + st.saved + ' saved this run. Everyone has had a pass.</p><p><button type="button" class="btn primary" data-act="ykrestart">Start over</button></p></div>' + ykToolsHTML();
+    ykWirePresetEdit(w);
     return;
   }
   var di = st.q[st.i], e = D.directory[di];
@@ -7887,12 +7888,24 @@ function ykRender(){
   w.innerHTML = '<div class="yk">' +
     '<div class="yk-head">' + avatar(e, 'lg') + '<div class="yk-who"><button type="button" class="aud-name yk-name" data-act="audopen" data-di="' + di + '">' + esc(dispName(e)) + '</button>' +
     '<p class="dim yk-cur">On file: ' + (knownSinceLabel(e) || 'not set') + ' &middot; Will save: <b>' + (nv ? esc(knownSinceLabel({ profile: { years_known: nv } })) : 'not set') + '</b></p>' +
-    '<p class="dim yk-prog">Person ' + (st.i + 1) + ' of ' + st.q.length + ' &middot; ' + missing + ' still missing a year &middot; ' + st.saved + ' saved this run</p></div></div>' +
+    '<p class="dim yk-prog">Person ' + (st.i + 1) + ' of ' + st.q.length + ' &middot; ' + missing + ' still missing a year &middot; ' + st.saved + ' saved this run</p>' + ykToolsHTML() + '</div></div>' +
     '<div class="yk-cols">' + colsHTML + '</div>' +
     '<div class="yk-foot"><button type="button" class="btn ghost" data-act="ykskip">Skip (S)</button><button type="button" class="btn primary" data-act="yksave">Save &amp; next (Enter)</button>' +
     '<span class="dim yk-keys">Up/Down move &middot; Left/Right column &middot; type digits to jump &middot; Backspace clears &middot; Esc exits</span></div></div>';
   var on = w.querySelector('.yk-col.focus .yk-it.on');
   if(on) on.scrollIntoView({ block: 'nearest' });
+  ykWirePresetEdit(w);
+}
+function ykWirePresetEdit(w){
+  if(YK_EDIT == null) return;
+  var inp = (w || document).querySelector('#ykpe');
+  if(!inp) return;
+  inp.focus(); inp.select();
+  inp.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter'){ ykPresetEditCommit(); ev.preventDefault(); }
+    else if(ev.key === 'Escape'){ YK_EDIT = null; ykRender(); ev.preventDefault(); }
+    ev.stopPropagation();
+  });
 }
 function ykAdvance(){ var st = ykState(); st.i++; st.col = 0; if(st.i < st.q.length) ykLoad(); ykRender(); }
 function ykSave(){
@@ -7937,6 +7950,184 @@ function ykKeysInit(){
       if(hits.length){ var cur = hits.findIndex(function(it){ return it.v === st.m; }); set(hits[(cur + 1) % hits.length].v); ykRender(); ev.preventDefault(); }
     }
   });
+}
+
+/* ============================================================
+   Years Known tools (JD 2026-10-27): preset dates + batch
+   assign, living in the runner's header. Presets persist in
+   localStorage like the app's other remembered UI state. A
+   preset click is a pick: it applies the date to the current
+   person and saves through ykSave/setField, the mode's
+   standard path. Batch assign writes Known Since for a whole
+   selection at once (overwrite included — that is the point
+   for cohort corrections), also via setField.
+   ============================================================ */
+var YK_EDIT = null;   /* index of the preset being edited inline */
+var YK_DEL = null;    /* index of the preset awaiting a delete confirm */
+function ykDateVal(s){
+  /* the Known Since field's own accepted formats: YYYY, YYYY-MM,
+     YYYY-MM-DD (same ranges ksParts reads back) */
+  s = String(s || '').trim();
+  var m = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(s);
+  if(!m) return null;
+  var y = +m[1]; if(y < 1900 || y > 2100) return null;
+  var mo = m[2] ? +m[2] : 0, d = m[3] ? +m[3] : 0;
+  if(mo > 12 || d > 31) return null;
+  if(mo && d){
+    var dim = [31, (y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][mo - 1];
+    if(d > dim) return null;
+  }
+  return s;
+}
+function ykLabelOf(v){ return knownSinceLabel({ profile:{ years_known: v } }); }
+function ykPresets(){
+  try{ var a = JSON.parse(store('ncc_yk_presets') || '[]'); return Array.isArray(a) ? a.filter(function(x){ return !!ykDateVal(x); }) : []; }catch(x){ return []; }
+}
+function ykSetPresets(a){ store('ncc_yk_presets', JSON.stringify(a)); }
+function ykToolsHTML(){
+  var ps = ykPresets(), v = ykVal();
+  var chips = ps.map(function(pv, i){
+    if(YK_EDIT === i){
+      return '<span class="yk-chip editing"><input id="ykpe" type="text" value="' + esc(pv) + '" size="11" autocomplete="off" aria-label="Edit preset date"><button type="button" class="yk-chipb ok" data-act="ykpesave" title="Save preset">' + ic('check', 12) + '</button><button type="button" class="yk-chipb" data-act="ykpecancel" title="Cancel">' + ic('x', 12) + '</button></span>';
+    }
+    if(YK_DEL === i){
+      return '<span class="yk-chip confirm"><span class="yk-chil">Delete ' + esc(ykLabelOf(pv)) + '?</span><button type="button" class="yk-chipb danger" data-act="ykpedel" data-i="' + i + '">Delete</button><button type="button" class="yk-chipb" data-act="ykpedelx">Keep</button></span>';
+    }
+    return '<span class="yk-chip"><button type="button" class="yk-chipb main" data-act="ykpreset" data-i="' + i + '" title="Apply this date to the current person and save">' + esc(ykLabelOf(pv)) + '</button><button type="button" class="yk-chipb icob" data-act="ykpeedit" data-i="' + i + '" title="Edit preset">' + ic('edit', 11) + '</button><button type="button" class="yk-chipb icob" data-act="ykpedel" data-i="' + i + '" title="Delete preset">' + ic('x', 11) + '</button></span>';
+  }).join('');
+  var canAdd = !!v && ps.indexOf(v) < 0;
+  return '<div class="yk-tools"><span class="yk-tools-l">Presets</span>' + chips +
+    '<button type="button" class="btn ghost sm" data-act="ykpeadd"' + (canAdd ? '' : ' disabled') + '>Save as preset</button>' +
+    '<span class="sp"></span><button type="button" class="btn ghost sm" data-act="ykbatch">Batch assign</button></div>';
+}
+function ykPresetApply(i){
+  var v = ykPresets()[i]; if(!v) return;
+  var p = ksParts({ profile:{ years_known: v } }); if(!p) return;
+  var st = ykState(); st.y = p.y; st.m = p.mo; st.d = p.d; st.buf = '';
+  ykSave();
+}
+function ykPresetEditCommit(){
+  var inp = document.querySelector('#ykpe'); if(!inp || YK_EDIT == null) return;
+  var v = ykDateVal(inp.value);
+  if(!v){ inp.classList.add('bad'); inp.focus(); return; }
+  var a = ykPresets();
+  a[YK_EDIT] = v;
+  a = a.filter(function(x, ix){ return a.indexOf(x) === ix; });
+  ykSetPresets(a); YK_EDIT = null; ykRender();
+}
+
+/* ---------- Batch assign panel ---------- */
+var YKB = null;   /* {date, q, sel:{di:true}, prevFocus, done:{saved, fails, v}|null} */
+function ykBatchGroups(){
+  var map = {};
+  people().forEach(function(di){ personGroups(D.directory[di]).forEach(function(g){ (map[g] = map[g] || []).push(di); }); });
+  return Object.keys(map).sort(function(a, b){ return a.localeCompare(b); }).map(function(g){ return { name:g, dis:map[g] }; });
+}
+function ykBatchResults(){
+  if(!YKB) return [];
+  var q = YKB.q.trim().toLowerCase();
+  return people().filter(function(di){ return !q || dispName(D.directory[di]).toLowerCase().indexOf(q) >= 0; });
+}
+function ykBatchOpen(opener){
+  if(YKB) ykBatchClose(true);
+  YKB = { date:'', q:'', sel:{}, prevFocus: opener || document.activeElement, done:null };
+  var groups = ykBatchGroups();
+  var ov = document.createElement('div');
+  ov.className = 'ykb-wrap'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Batch assign Known Since');
+  ov.innerHTML = '<div class="ykb-scrim" data-act="ykbx"></div>' +
+    '<div class="ykb"><div class="ykb-h"><b>Batch assign &mdash; Known Since</b><span class="sp"></span><button type="button" class="ib" data-act="ykbx" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+    '<div class="ykb-row"><label class="ykb-lab">Date <input id="ykbdate" type="text" placeholder="YYYY, YYYY-MM, or YYYY-MM-DD" autocomplete="off"></label><span id="ykbdateok" class="dim"></span></div>' +
+    '<div class="ykb-row"><input id="ykbq" type="search" placeholder="Search names" autocomplete="off">' +
+    '<select id="ykbgrp" aria-label="Select all in group"><option value="">Select all in group&hellip;</option>' + groups.map(function(g){ return '<option value="' + esc(g.name) + '">' + esc(g.name) + ' (' + g.dis.length + ')</option>'; }).join('') + '</select></div>' +
+    '<div class="ykb-bar"><button type="button" class="btn ghost sm" data-act="ykball">Select all results</button><button type="button" class="btn ghost sm" data-act="ykbclear">Clear</button><span id="ykbcount" class="dim"></span></div>' +
+    '<div class="ykb-list" id="ykblist"></div>' +
+    '<p id="ykbconfirm" class="ykb-confirm"></p><div id="ykbdone"></div>' +
+    '<div class="ykb-foot"><span class="sp"></span><button type="button" class="btn ghost" data-act="ykbx">Cancel</button><button type="button" class="btn primary" data-act="ykbassign" id="ykbassignbtn" disabled>Assign</button></div></div>';
+  document.body.appendChild(ov);
+  document.body.classList.add('sheet-open');
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('open'); }); });
+  var dInp = ov.querySelector('#ykbdate'), qInp = ov.querySelector('#ykbq'), gSel = ov.querySelector('#ykbgrp');
+  dInp.addEventListener('input', function(){ YKB.date = dInp.value; YKB.done = null; ykBatchPaintMeta(); });
+  qInp.addEventListener('input', function(){ YKB.q = qInp.value; ykBatchPaintList(); });
+  gSel.addEventListener('change', function(){
+    if(!gSel.value) return;
+    var g = ykBatchGroups().filter(function(x){ return x.name === gSel.value; })[0];
+    if(g) g.dis.forEach(function(di){ YKB.sel[di] = true; });
+    gSel.value = '';
+    ykBatchPaintList();
+  });
+  ov.querySelector('#ykblist').addEventListener('change', function(ev){
+    var cb = ev.target; if(!cb || cb.type !== 'checkbox') return;
+    var di = +cb.getAttribute('data-di');
+    if(cb.checked) YKB.sel[di] = true; else delete YKB.sel[di];
+    ykBatchPaintMeta();
+  });
+  ykBatchPaintList();
+  dInp.focus();
+  ykBatchKeysInit();
+}
+function ykBatchPaintList(){
+  var box = document.getElementById('ykblist'); if(!box || !YKB) return;
+  var res = ykBatchResults(), CAP = 300;
+  var html = res.slice(0, CAP).map(function(di){
+    var e = D.directory[di], gs = personGroups(e);
+    return '<label class="ykb-it"><input type="checkbox" data-di="' + di + '"' + (YKB.sel[di] ? ' checked' : '') + '><span class="ykb-nm">' + esc(dispName(e)) + '</span><span class="ykb-ks">' + (knownSinceLabel(e) || 'not set') + '</span>' + (gs.length ? '<span class="ykb-grp">' + esc(gs.join(', ')) + '</span>' : '') + '</label>';
+  }).join('');
+  if(!res.length) html = '<p class="dim ykb-none">No names match.</p>';
+  else if(res.length > CAP) html += '<p class="dim ykb-none">Showing ' + CAP + ' of ' + res.length + ' &mdash; refine the search to see the rest. Select all results still covers all ' + res.length + '.</p>';
+  box.innerHTML = html;
+  ykBatchPaintMeta();
+}
+function ykBatchPaintMeta(){
+  if(!YKB) return;
+  var dis = Object.keys(YKB.sel).filter(function(k){ return YKB.sel[k]; });
+  var blank = 0, over = 0;
+  dis.forEach(function(k){ var e = D.directory[k]; if(e && String(gv(e, 'years_known') || '').trim()) over++; else blank++; });
+  var cnt = document.getElementById('ykbcount'); if(cnt) cnt.textContent = dis.length + ' selected';
+  var v = ykDateVal(YKB.date);
+  var ok = document.getElementById('ykbdateok');
+  if(ok){ ok.textContent = YKB.date.trim() ? (v ? ykLabelOf(v) : 'Not a valid date') : ''; ok.classList.toggle('bad', !!YKB.date.trim() && !v); }
+  var cf = document.getElementById('ykbconfirm');
+  if(cf) cf.innerHTML = (v && dis.length) ? 'Assign <b>' + esc(ykLabelOf(v)) + '</b> to <b>' + dis.length + '</b> ' + (dis.length === 1 ? 'person' : 'people') + ' &mdash; ' + blank + (blank === 1 ? ' has' : ' have') + ' no date yet, ' + over + ' will be overwritten.' : '';
+  var btn = document.getElementById('ykbassignbtn'); if(btn) btn.disabled = !(v && dis.length);
+  var dn = document.getElementById('ykbdone');
+  if(dn){
+    if(YKB.done){
+      dn.innerHTML = '<p class="ykb-done">' + ic('check', 14) + ' Saved ' + YKB.done.saved + ' with ' + esc(ykLabelOf(YKB.done.v)) + '.' + (YKB.done.fails.length ? ' ' + YKB.done.fails.length + ' failed:' : '') + '</p>' +
+        (YKB.done.fails.length ? '<ul class="ykb-fails">' + YKB.done.fails.map(function(f){ return '<li>' + esc(f.name) + ' &mdash; ' + esc(f.why) + '</li>'; }).join('') + '</ul>' : '');
+    } else dn.innerHTML = '';
+  }
+}
+function ykBatchRun(){
+  if(!YKB) return;
+  var v = ykDateVal(YKB.date); if(!v) return;
+  var dis = Object.keys(YKB.sel).filter(function(k){ return YKB.sel[k]; });
+  var saved = 0, fails = [];
+  dis.forEach(function(k){
+    var di = +k, e = D.directory[di];
+    if(!e){ fails.push({ name:'Person #' + k, why:'not in the directory' }); return; }
+    try{ setField(di, 'years_known', v); saved++; }
+    catch(err){ fails.push({ name: dispName(e), why: String((err && err.message) || err) }); }
+  });
+  YKB.done = { saved: saved, fails: fails, v: v };
+  ykBatchPaintMeta(); ykBatchPaintList();
+  ykRender();
+}
+function ykBatchClose(instant){
+  var ov = document.querySelector('.ykb-wrap');
+  var pf = YKB && YKB.prevFocus;
+  YKB = null;
+  if(ov){ if(instant) ov.remove(); else { ov.classList.remove('open'); setTimeout(function(){ ov.remove(); }, 240); } }
+  if(!document.querySelector('.phi-wrap') && !document.querySelector('.phed-wrap')) document.body.classList.remove('sheet-open');
+  if(pf && document.contains(pf) && pf.focus) pf.focus();
+  else { var nb = document.querySelector('[data-act="ykbatch"]'); if(nb) nb.focus(); }
+}
+function ykBatchKeysInit(){
+  if(window.__ykbKeys) return; window.__ykbKeys = true;
+  document.addEventListener('keydown', function(ev){
+    if(!YKB) return;
+    if(ev.key === 'Escape'){ ykBatchClose(); ev.preventDefault(); ev.stopPropagation(); }
+  }, true);
 }
 
 function viewAudit(v){
@@ -8246,6 +8437,18 @@ function onClick(ev){
     case 'hmdates': HM_DATES = !HM_DATES; store('ncc_hm_dates', HM_DATES ? '1' : '0'); render(); break;
     case 'hmpersona': HM_PERSONA_MODE = el.getAttribute('data-m') === 'share' ? 'share' : 'points'; store('ncc_hm_persona', HM_PERSONA_MODE); render(); break;
     case 'ykpick': { var yst = ykState(); yst.col = +el.getAttribute('data-c'); var yvv = +el.getAttribute('data-v'); if(yst.col === 0) yst.y = yvv; else if(yst.col === 1) yst.m = yvv; else yst.d = yvv; yst.buf = ''; ykRender(); break; }
+    case 'ykpreset': ykPresetApply(+el.getAttribute('data-i')); break;
+    case 'ykpeadd': { var _pv = ykVal(); if(_pv && ykPresets().indexOf(_pv) < 0){ var _pa = ykPresets(); _pa.push(_pv); ykSetPresets(_pa); } ykRender(); break; }
+    case 'ykpeedit': YK_EDIT = +el.getAttribute('data-i'); YK_DEL = null; ykRender(); break;
+    case 'ykpesave': ykPresetEditCommit(); break;
+    case 'ykpecancel': YK_EDIT = null; ykRender(); break;
+    case 'ykpedel': { var _pi = +el.getAttribute('data-i'); if(YK_DEL === _pi){ var _pd = ykPresets(); _pd.splice(_pi, 1); ykSetPresets(_pd); YK_DEL = null; } else YK_DEL = _pi; ykRender(); break; }
+    case 'ykpedelx': YK_DEL = null; ykRender(); break;
+    case 'ykbatch': ykBatchOpen(el); break;
+    case 'ykbx': ykBatchClose(); break;
+    case 'ykball': if(YKB){ ykBatchResults().forEach(function(di){ YKB.sel[di] = true; }); ykBatchPaintList(); } break;
+    case 'ykbclear': if(YKB){ YKB.sel = {}; YKB.done = null; ykBatchPaintList(); } break;
+    case 'ykbassign': ykBatchRun(); break;
     case 'yksave': ykSave(); break;
     case 'ykskip': ykAdvance(); break;
     case 'ykrestart': YK = null; ykLoad(); ykRender(); break;
