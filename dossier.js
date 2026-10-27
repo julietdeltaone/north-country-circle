@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.1.0';
+var APP_VERSION = '3.1.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -4841,9 +4841,11 @@ function hmActivity(){
   if(DT && DT.next_up && DT.next_up.length){
     out += '<div class="hma-sec"><span>Next up in the rotation</span></div><div class="hma-nextup">' +
       DT.next_up.map(function(nm){
-        var di = hmDiOf(nm);
-        return di == null ? '<span class="hma-nchip">' + esc(nm) + '</span>'
-          : '<button type="button" class="hma-nchip" data-act="hmgoto" data-di="' + di + '">' + esc(nm) + '</button>';
+        var key = nm && nm.name ? nm.name : nm;
+        var label = nm && nm.display ? nm.display : nm;
+        var di = hmDiOf(key);
+        return di == null ? '<span class="hma-nchip">' + esc(label) + '</span>'
+          : '<button type="button" class="hma-nchip" data-act="hmgoto" data-di="' + di + '">' + esc(label) + '</button>';
       }).join('') + '</div>';
   }
   out += '<div class="hma-sec"><span>Change log</span>' + (CH && CH.entries ? '<em>' + CH.entries.length + '</em>' : '') + '</div>';
@@ -5146,7 +5148,7 @@ function hmiLiveRecords(opener){
     }).join('') + '</div>';
   if(DT.next_up && DT.next_up.length){
     body += '<div class="hmi-sec">Next up</div><div class="hmi-rows">' +
-      DT.next_up.map(function(nm){ var di = hmDiOf(nm); if(di == null) return ''; return hmiRow(di, hmiTierTag(D.directory[di])); }).join('') + '</div>';
+      DT.next_up.map(function(nm){ var di = hmDiOf(nm && nm.name ? nm.name : nm); if(di == null) return ''; return hmiRow(di, hmiTierTag(D.directory[di])); }).join('') + '</div>';
   }
   body += '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmidaily">Open Live Records</button></div>';
   hmiShow('Live Records', hmFmtD(DT.date), body, opener);
@@ -5299,15 +5301,15 @@ function viewHome(v){
   if(HMI) hmiClose(true);
   var dd = HM_DECK, pd = HM_PD;
   var tierSegs = [
-    { label:'Vetted', key:'vetted', kind:'tier', c:dd.tierCounts.vetted, col:HM_GRAY[0] },
-    { label:'Associate', key:'associate', kind:'tier', c:dd.tierCounts.associate, col:HM_GRAY[1] },
-    { label:'Open', key:'open', kind:'tier', c:dd.tierCounts.open, col:HM_GRAY[2] },
-    { label:'No tier yet', key:'none', kind:'tier', c:dd.tierCounts.none, col:HM_GRAY[4] }
+    { label:'Vetted', key:'vetted', kind:'tier', c:dd.tierCounts.vetted, col:'var(--seg-0)' },
+    { label:'Associate', key:'associate', kind:'tier', c:dd.tierCounts.associate, col:'var(--seg-1)' },
+    { label:'Open', key:'open', kind:'tier', c:dd.tierCounts.open, col:'var(--seg-2)' },
+    { label:'No tier yet', key:'none', kind:'tier', c:dd.tierCounts.none, col:'var(--seg-4)' }
   ];
   var relSegs = hmFormsTop(dd.rels, 12, true).map(function(t, i){
-    return { label:t.label, key:t.label, kind:'rel', c:t.c, col:HM_GRAY[i % HM_GRAY.length] };
+    return { label:t.label, key:t.label, kind:'rel', c:t.c, col:'var(--seg-' + (i % 9) + ')' };
   });
-  if(dd.relBlank) relSegs.push({ label:'Untyped', key:'Unspecified', kind:'rel', c:dd.relBlank, col:HM_GRAY[HM_GRAY.length - 1] });
+  if(dd.relBlank) relSegs.push({ label:'Untyped', key:'Unspecified', kind:'rel', c:dd.relBlank, col:'var(--seg-8)' });
   var townsTop = hmFormsTop(dd.towns, 8), townMax = townsTop.length ? townsTop[0].c : 0;
   var skillsTop = hmFormsTop(dd.skills, 8, true), skillMax = skillsTop.length ? skillsTop[0].c : 0;
   var groupsTop = hmPlainTop(dd.groupCounts, 8), groupMax = groupsTop.length ? groupsTop[0].c : 0;
@@ -5330,7 +5332,7 @@ function viewHome(v){
   var pairRows = pairs.slice(0, 4).map(function(p){
     return '<button type="button" class="hm-gaprow" data-act="hmiopen" data-kind="orgpair" data-ka="' + esc(p.a) + '" data-kb="' + esc(p.b) + '"><span>' + esc(p.a) + ' + ' + esc(p.b) + '</span><span class="hm-gn alt">' + p.n + '</span></button>';
   }).join('');
-  v.innerHTML = '<div class="page hm"><div class="pagehead"><div><h1 class="display">Home</h1>' +
+  v.innerHTML = '<div class="page hm"><div class="hm-layout"><div class="hm-main"><div class="pagehead"><div><h1 class="display">Home</h1>' +
     '<p class="sub">The whole circle at a glance: its shape, coverage, photos, and what changed lately. Everything opens a closer look.</p></div></div>' +
     '<div class="hmk-strip">' +
     hmKpi('people', hmFmtN(N), 'People', 'in the directory') +
@@ -5355,10 +5357,9 @@ function viewHome(v){
     hmPersonaCard(dd) +
     '</div>' +
     '<div class="hm-row2">' + hmYearsCard(dd) + hmCoverageCard(dd, pd) + '</div>' +
-    hmActivity() +
     hmPhotosCard(ph) +
     hmNetCard() +
-    '</div>';
+    '</div><aside class="hm-rail">' + hmActivity() + '</aside></div></div>';
   hmNetDrift();
 }
 
