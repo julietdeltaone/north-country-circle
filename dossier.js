@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.3.0';
+var APP_VERSION = '3.4.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1788,7 +1788,8 @@ var NAV = [
   { k:'photos',  l:'Photos', ic:'camera' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
-  { k:'groups',  l:'Groups',  ic:'groups' }
+  { k:'groups',  l:'Groups',  ic:'groups' },
+  { k:'sandbox', l:'Sandbox', ic:'shield' }
 ];
 function activeNav(){
   var n = S.route.name;
@@ -1881,7 +1882,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','photos'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -1989,6 +1990,7 @@ function render(){
     else if(n === 'audit') viewAudit(v);
     else if(n === 'daily') viewDaily(v);
     else if(n === 'photos') viewPhotos(v);
+    else if(n === 'sandbox') viewSandbox(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
