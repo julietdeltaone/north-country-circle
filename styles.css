@@ -332,3 +332,11 @@ body::before{inset:-180px -70px;transform:translate3d(0,var(--plx-bg),0);will-ch
 .pathbtn{border-radius:12px}
 .dir-filters{border-radius:16px}
 .lchip,.locate,.milbadge{border-radius:999px}
+
+/* ============ V3.2.0 — persistent Home/Back clearance ============
+   Home + Back joined the top-right row, which grew into the
+   centered search box at desktop widths. The search shifts left
+   and narrows slightly so its right edge clears the row (JD's
+   1920px screen measured: row starts ~1140px, search now ends
+   ~1055px). Placement only — no behavior change. */
+.hud-tc{left:44%;width:min(420px,36vw)}
