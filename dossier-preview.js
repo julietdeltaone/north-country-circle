@@ -9375,8 +9375,12 @@ function sbGridCols(){
   SB.grid.cols = cols;
   return cols;
 }
+function sbSavedViews(){ return sbStore('ncc_sbx_views') || {}; }
 function sbGridRows(){
-  var ph = sbPhotoByName(), sc = scoreAll(), q = SB.grid.q.toLowerCase(), vf = SB_VIEWS[SB.grid.view] || SB_VIEWS.all;
+  var ph = sbPhotoByName(), sc = scoreAll(), q = SB.grid.q.toLowerCase();
+  var vkey = SB.grid.view;
+  if(vkey.indexOf('saved:') === 0){ var d0 = sbSavedViews()[vkey.slice(6)]; vkey = d0 ? (d0.view || 'all') : 'all'; }
+  var vf = SB_VIEWS[vkey] || SB_VIEWS.all;
   var rows = [];
   D.directory.forEach(function(e, di){
     if(!liveEntry(e)) return;
@@ -9403,7 +9407,9 @@ function sbGrid(){
   var selN = Object.keys(SB.sel).length;
   var h = sbHead('Data grid', 'Every person as one row. Click a header to sort; click a row to open the profile. Nothing here writes until you send a selection to the Danger area.');
   h += '<div class="sb-toolbar"><input type="text" data-sbi="gridq" placeholder="Filter by name, key, handle, org, town…" value="' + esc(SB.grid.q) + '">' +
-    '<select data-sbi="gridview">' + Object.keys(SB_VIEWS).map(function(k){ return '<option value="' + k + '"' + (SB.grid.view === k ? ' selected' : '') + '>' + SB_VIEWS[k].l + '</option>'; }).join('') + '</select>' +
+    '<select data-sbi="gridview">' + Object.keys(SB_VIEWS).map(function(k){ return '<option value="' + k + '"' + (SB.grid.view === k ? ' selected' : '') + '>' + SB_VIEWS[k].l + '</option>'; }).join('') +
+    Object.keys(sbSavedViews()).map(function(nm){ return '<option value="saved:' + esc(nm) + '"' + (SB.grid.view === 'saved:' + nm ? ' selected' : '') + '>Saved: ' + esc(nm) + '</option>'; }).join('') + '</select>' +
+    '<button type="button" class="btn ghost sm" data-sb="gridviewsave">Save view</button>' +
     '<button type="button" class="btn ghost sm" data-sb="gridcols">Columns</button>' +
     '<button type="button" class="btn ghost sm" data-sb="gridcsv">Export CSV</button>' +
     '<span class="sb-count">' + rows.length + ' rows</span></div>';
@@ -10512,6 +10518,20 @@ document.addEventListener('click', function(ev){
     }).join('') + '</div>', {});
   }
   else if(act === 'gridcsv'){ sbGridCsv(); }
+  else if(act === 'gridviewsave'){
+    openSheet('Save this view', '<p class="sb-note">Saves the current preset, filter text, columns and sort on this device.</p>' +
+      '<div class="sb-formrow"><input type="text" data-sbi="gvname" placeholder="View name" value="">' +
+      '<button type="button" class="btn primary" data-sb="gridviewsaveok">Save view</button></div>', {});
+  }
+  else if(act === 'gridviewsaveok'){
+    var nm = (SB.gvName || '').trim();
+    if(!nm){ toast('Name the view first'); return; }
+    var all = sbSavedViews();
+    all[nm] = { view: SB.grid.view.indexOf('saved:') === 0 ? 'all' : SB.grid.view, q: SB.grid.q, cols: sbGridCols(), sort: SB.grid.sort, dir: SB.grid.dir };
+    sbStore('ncc_sbx_views', all);
+    SB.grid.view = 'saved:' + nm;
+    closeSheet(); toast('View saved'); R();
+  }
   else if(act === 'gridsort'){
     var k = t.getAttribute('data-k');
     if(SB.grid.sort === k) SB.grid.dir *= -1; else { SB.grid.sort = k; SB.grid.dir = 1; }
@@ -10722,7 +10742,14 @@ document.addEventListener('change', function(ev){
     if(t.checked) SB.sel[pk] = di; else delete SB.sel[pk];
     sbGridRefresh();
   }
-  else if(k === 'gridview'){ SB.grid.view = t.value; sbGridRefresh(); }
+  else if(k === 'gridview'){
+    if(t.value.indexOf('saved:') === 0){
+      var def = sbSavedViews()[t.value.slice(6)];
+      if(def){ SB.grid.q = def.q || ''; SB.grid.cols = def.cols || null; SB.grid.sort = def.sort || 'name'; SB.grid.dir = def.dir || 1; }
+    }
+    SB.grid.view = t.value;
+    sbGridRefresh();
+  }
   else if(k === 'gridcol'){ var cols = sbGridCols(); cols[t.getAttribute('data-k')] = t.checked; sbStore('ncc_sbx_grid', cols); sbGridRefresh(); }
   else if(k === 'bulkfield'){ SB.dg.bulkField = t.value; SB.dg.dry = null; render(); }
   else if(k === 'bulkval'){ SB.dg.bulkVal = t.value; SB.dg.dry = null; }
@@ -10761,6 +10788,7 @@ document.addEventListener('input', function(ev){
   else if(k === 'crlast'){ SB.dg.crLast = t.value; }
   else if(k === 'crkey'){ SB.dg.crKey = t.value; }
   else if(k === 'imptext'){ SB.imp.text = t.value; SB.imp.fileText = null; }
+  else if(k === 'gvname'){ SB.gvName = t.value; }
 });
 function sbGridRefresh(){
   if(S.route.name !== 'sandbox' || SB.tool !== 'grid') return;
