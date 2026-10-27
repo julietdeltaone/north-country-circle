@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.6.0';
+var APP_VERSION = '3.7.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9208,8 +9208,9 @@ function skeletonHTML(note){
    ============================================================ */
 var SB = {
   ready:false, loading:null,
-  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null,
+  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null, prof:null,
   tool:'home',
+  pf:{ field:'all', grade:'all', sel:null },
   grid:{ q:'', sort:'name', dir:1, view:'all', cols:null },
   sel:{},                       /* pkey -> di, bulk selection from the grid */
   raw:{ which:'snapchat', q:'' },
@@ -9228,6 +9229,7 @@ var SB_TOOLS = [
   { k:'integ',   g:'Check',  t:'Integrity',        d:'Count reconciliation with its work shown, duplicate hunter, orphans, malformed keys.', ic:'shield' },
   { k:'council', g:'Check',  t:'Council',          d:'The six directors: roster, budget pace, findings logs, open flags, run history.', ic:'award' },
   { k:'lab',     g:'Connect',t:'Connection lab',   d:'Path finder, mutual connections, indirect connections, bridge ranking.', ic:'network' },
+  { k:'prof',    g:'Connect',t:'Profiling inferences', d:'A lab that cross-references on-file data into graded hypotheses (inductive profiler). First lens: field of study vs JD\u2019s Persona inputs. Display-only \u2014 nothing is ever filed.', ic:'cap' },
   { k:'play',    g:'Connect',t:'Playground',       d:'Scatter, histograms and timelines computed from the live data.', ic:'target' },
   { k:'merge',   g:'Admin',  t:'Merge studio',     d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',  g:'Admin',  t:'Danger area',      d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
@@ -9255,7 +9257,7 @@ function sbEnsure(){
     sbFetch('changes.json', 'changes'), sbFetch('trash.json', 'trash'),
     sbFetch('snapchat.json', 'snap'), sbFetch('recon.json', 'recon'),
     sbFetch('sandbox-log.json', 'serverLog'), sbFetch('org-registry.json', 'orgreg'),
-    sbFetch('council.json', 'council')
+    sbFetch('council.json', 'council'), sbFetch('profiling.json', 'prof')
   ]).then(function(){ SB.ready = true; SB.loading = null; if(S.route.name === 'sandbox') render(); });
   return SB.loading;
 }
@@ -9333,7 +9335,7 @@ function viewSandbox(v){
     return;
   }
   var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, reports:sbReports, integ:sbInteg, lab:sbLab,
-             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView, council:sbCouncil }[SB.tool] || sbHome;
+             play:sbPlay, merge:sbMerge, danger:sbDanger, log:sbLogView, council:sbCouncil, prof:sbProf }[SB.tool] || sbHome;
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -9505,7 +9507,8 @@ var SB_RAW_META = {
   daily:{ l:'Live Records (daily-ten)', f:'daily-ten.json' }, changes:{ l:'Change log', f:'changes.json' },
   trash:{ l:'Trash / blocklist', f:'trash.json' }, orgreg:{ l:'Org registry', f:'org-registry.json' },
   log:{ l:'Sandbox action log (server)', f:'sandbox-log.json' },
-  council:{ l:'Council', f:'council.json' }
+  council:{ l:'Council', f:'council.json' },
+  profiling:{ l:'Profiling inferences', f:'profiling.json' }
 };
 function sbRaw(){
   var w = SB.raw.which, q = SB.raw.q.toLowerCase();
@@ -9572,6 +9575,12 @@ function sbRaw(){
     h += '<h3 class="sb-h3">Open flags (' + (cn.flags || []).length + ')</h3>';
     h += (cn.flags || []).length ? tbl(['Date', 'From', 'Flag'], (cn.flags || []).map(function(f){ return '<tr><td>' + esc(f.date || '') + '</td><td>' + esc(f.from || '') + '</td><td>' + esc(f.title || '') + '</td></tr>'; }).join(''))
       : '<p class="sb-note">Nothing waiting on JD.</p>';
+  }
+  else if(w === 'profiling' && SB.prof){
+    var pf = SB.prof, cov = pf.coverage || {};
+    h += '<p class="sb-note">Run of ' + esc(pf.generated || '') + ' · lens: ' + esc(pf.lens || '') + ' · ' + (cov.with_field || 0) + ' people with a stated field, ' + (cov.with_field_and_persona || 0) + ' of them Persona-rated · ' + (pf.conclusions || []).length + ' graded conclusions · ' + (pf.lines || []).length + ' cross-field lines. Lab only — nothing in this file is filed to a profile.</p>';
+    h += tbl(['Field cohort', 'People', 'Persona-rated', 'Conclusions'],
+      (pf.cohorts || []).map(function(c){ return '<tr><td>' + esc(c.field) + '</td><td>' + c.n + '</td><td>' + c.n_persona + '</td><td>' + (c.conclusion_ids || []).length + '</td></tr>'; }).join(''));
   }
   else h += '<div class="empty"><h3>Not loaded</h3><p>That file could not be read.</p></div>';
   return h;
@@ -10530,6 +10539,140 @@ function sbCouncil(){
 }
 
 
+/* ---------------- 12. profiling inferences (V3.7.0) ----------------
+   JD's lab (2026-10-27): cross-reference on-file data into graded
+   hypotheses under the inductive-profiler skill — conclusions cite
+   their observations, carry a grade, a falsifier, and a scope.
+   DISPLAY-ONLY by construction: this view reads the static sidecar
+   site/data/profiling.json (written by scripts/build_profiling.py
+   from the baked dossier data) and contains no write path at all —
+   no queuePatch, no outbox, no ops. Nothing here is ever filed to
+   a profile or written to the Sheet. */
+var PF_TRAITS = [['openness', 'Openness'], ['conscientiousness', 'Conscientiousness'],
+  ['extraversion', 'Extraversion'], ['agreeableness', 'Agreeableness'],
+  ['neuroticism', 'Neuroticism'], ['ego', 'Ego']];
+function pfGradeChip(g){
+  return '<span class="pf-grade g-' + esc(String(g || '').toLowerCase()) + '">' + esc(g || '') + '</span>';
+}
+function pfVerdictChip(v){
+  var cls = v === 'AGREES' ? 'v-agree' : v === 'DIVERGES' ? 'v-diverge' : (v === 'WITHIN RANGE' ? 'v-range' : 'v-none');
+  return '<span class="pf-verdict ' + cls + '">' + esc(v || '') + '</span>';
+}
+function sbProfConclusionCard(c, byId){
+  var h = '<div class="sb-card2 pf-cc">' +
+    '<div class="pf-chead">' + pfGradeChip(c.grade) +
+    '<span class="pf-cfield">' + esc(c.field || '') + ' · ' + esc((PF_TRAITS.filter(function(t){ return t[0] === c.trait; })[0] || [])[1] || c.trait || '') + '</span>' +
+    '<span class="pf-cmeta">' + (c.n_support || 0) + ' supporting · ' + (c.n_contra || 0) + ' contradicting · ' + (c.n_rated || 0) + ' rated</span></div>' +
+    '<p class="pf-concl"><b>Conclusion:</b> ' + esc(c.conclusion || '') + '</p>' +
+    '<div class="pf-sec"><b>Evidence</b><ol class="pf-ev">' +
+    (c.evidence || []).map(function(e2){ return '<li>' + esc(e2) + '</li>'; }).join('') + '</ol></div>' +
+    '<p class="pf-sec"><b>Falsifier:</b> ' + esc(c.falsifier || '') + '</p>' +
+    '<p class="pf-sec"><b>Scope:</b> ' + esc(c.scope || '') + '</p></div>';
+  return h;
+}
+function sbProf(){
+  var h = sbHead('Profiling inferences', 'A cross-reference lab. Hypotheses are built by inductive reasoning from the dossier\u2019s own data and graded against JD\u2019s Persona inputs \u2014 then left here, unfiled, to be argued with.');
+  var pf = SB.prof;
+  if(!pf) return h + '<div class="empty"><h3>profiling.json not loaded</h3><p>The lab run could not be read. It ships with the site as data/profiling.json and is regenerated by scripts/build_profiling.py.</p></div>';
+  var cov = pf.coverage || {}, cs = pf.crosscheck_summary || {};
+  h += '<div class="pf-banner"><b>Lab only</b> \u2014 graded hypotheses from on-file data. Nothing here is filed to profiles, and nothing here writes anywhere. ' +
+    'Run of ' + esc(pf.generated || '') + '. Method: ' + esc(pf.method || '') + '</div>';
+  h += '<div class="sb-kpis cn-kpis">' +
+    sbKpi(cov.with_field != null ? cov.with_field : '—', 'people with a stated field of study') +
+    sbKpi(cov.with_field_and_persona != null ? cov.with_field_and_persona : '—', 'of those, with Persona ratings to test against') +
+    sbKpi(cov.persona_rated_total != null ? cov.persona_rated_total : '—', 'people Persona-rated in the directory') +
+    sbKpi((pf.conclusions || []).length, 'graded conclusions this run') +
+    sbKpi((pf.lines || []).length, 'cross-field lines') +
+    '</div>';
+  /* lens picker — one lens has run; the rest are honestly parked */
+  h += '<h3 class="sb-h3">Lens</h3><div class="sb-toolbar">' +
+    '<button type="button" class="btn sm primary" data-sb="pflens" data-k="field">Field of study</button>' +
+    '<button type="button" class="btn sm ghost" disabled title="Not built yet">Organizations \u2014 later</button>' +
+    '<button type="button" class="btn sm ghost" disabled title="Not built yet">Occupation \u2014 later</button>' +
+    '<span class="sb-note">More lenses later \u2014 only the field-of-study lens has run.</span></div>';
+  /* conclusion filters */
+  var concl = pf.conclusions || [];
+  var fieldsWith = [];
+  concl.forEach(function(c){ if(fieldsWith.indexOf(c.field) < 0) fieldsWith.push(c.field); });
+  fieldsWith.sort();
+  var F = SB.pf.field, G = SB.pf.grade;
+  h += '<h3 class="sb-h3">Cohort conclusions</h3><div class="sb-toolbar">' +
+    '<button type="button" class="btn sm ' + (F === 'all' ? 'primary' : 'ghost') + '" data-sb="pffield" data-k="all">All fields</button>' +
+    fieldsWith.map(function(f){ return '<button type="button" class="btn sm ' + (F === f ? 'primary' : 'ghost') + '" data-sb="pffield" data-k="' + esc(f) + '">' + esc(f) + '</button>'; }).join('') +
+    '</div><div class="sb-toolbar">' +
+    ['all', 'Tentative', 'Probable', 'Strong'].map(function(g){ return '<button type="button" class="btn sm ' + (G === g ? 'primary' : 'ghost') + '" data-sb="pfgrade" data-k="' + g + '">' + (g === 'all' ? 'All grades' : g) + '</button>'; }).join('') +
+    '</div>';
+  var shown = concl.filter(function(c){ return (F === 'all' || c.field === F) && (G === 'all' || c.grade === G); });
+  if(!concl.length) h += '<div class="sb-card2"><p class="sb-note">No conclusions this run \u2014 no cohort cleared the evidence bar. That is a valid run under the method.</p></div>';
+  else if(!shown.length) h += '<div class="sb-card2"><p class="sb-note">No conclusions match that filter.</p></div>';
+  else h += shown.map(function(c){ return sbProfConclusionCard(c); }).join('');
+  if((pf.thin_cohorts || []).length)
+    h += '<p class="sb-note">Not concluded \u2014 cohorts too thin to grade (fewer than 2 Persona-rated members, or no consistent direction): ' +
+      (pf.thin_cohorts || []).map(esc).join(', ') + '.</p>';
+  /* people cross-check */
+  h += '<h3 class="sb-h3">People cross-check</h3><div class="sb-card2">' +
+    '<p class="sb-card2-n">Pick a person with a stated field. Their card shows the observations on file, the cohort conclusions that apply to them, and how JD\u2019s own Persona ratings for them line up, trait by trait.</p>' +
+    '<div class="sb-pick"><label>Person</label>' +
+    '<input type="text" data-sbi="pfq" placeholder="Type a name\u2026" value="" autocomplete="off">' +
+    '<div class="sb-pickres" id="pfres"></div></div>' +
+    '<div id="pfperson">' + sbProfPerson() + '</div></div>';
+  /* cross-check summary */
+  h += '<h3 class="sb-h3">Cross-check summary</h3><div class="sb-card2">' +
+    '<p class="cn-verdict">' + (cs.agrees || 0) + ' trait ratings agree with their cohort conclusion \u00b7 ' + (cs.diverges || 0) + ' diverge.</p>' +
+    ((cs.sharpest_divergences || []).length ?
+      '<div class="pf-sec"><b>Sharpest divergences</b>' + (cs.sharpest_divergences || []).map(function(s2){
+        return '<div class="cn-frow"><span class="cn-fmain"><b>' + esc(s2.name || '') + '</b> \u2014 ' + esc(s2.field || '') + ' \u00b7 ' +
+          esc((PF_TRAITS.filter(function(t){ return t[0] === s2.trait; })[0] || [])[1] || s2.trait || '') + ': rated ' + esc(s2.value) +
+          ' against a cohort prediction of ' + esc(s2.predicted || '') + ' (directory mean ' + esc(s2.directory_mean) + ')</span></div>';
+      }).join('') + '</div>' : '<p class="sb-note">No divergences this run.</p>') + '</div>';
+  /* lines */
+  h += '<h3 class="sb-h3">Lines \u2014 cross-field convergences</h3>';
+  if((pf.lines || []).length){
+    h += (pf.lines || []).map(function(l){
+      return '<div class="sb-card2"><div class="pf-chead"><span class="pf-cfield">' +
+        esc((PF_TRAITS.filter(function(t){ return t[0] === l.trait; })[0] || [])[1] || l.trait || '') + ' \u00b7 ' + esc(l.direction || '') + '</span>' +
+        '<span class="pf-cmeta">' + (l.fields || []).length + ' fields converge</span></div>' +
+        '<p class="pf-concl">' + (l.fields || []).map(esc).join(' \u00b7 ') + '</p>' +
+        '<p class="pf-sec">' + esc(l.note || '') + '</p></div>';
+    }).join('');
+  } else h += '<div class="sb-card2"><p class="sb-note">No cross-field lines in this run \u2014 no two field cohorts converge on the same trait in the same direction.</p></div>';
+  return h;
+}
+function sbProfPerson(){
+  var pf = SB.prof, key = SB.pf.sel;
+  if(!pf) return '';
+  if(!key) return '<p class="sb-note">No one picked yet. Only people with a stated field of study appear in the search \u2014 ' + ((pf.coverage || {}).with_field || 0) + ' of them this run.</p>';
+  var v = (pf.people || {})[key];
+  if(!v) return '<p class="sb-note">That person has no stated field of study on file, so the lab has nothing to test.</p>';
+  var byId = {};
+  (pf.conclusions || []).forEach(function(c){ byId[c.id] = c; });
+  var h = '<div class="pf-person">' +
+    '<div class="pf-phead"><b>' + esc(v.name || '') + '</b>' +
+    '<span class="chip">' + esc(v.field || '') + (v.degree_level ? ' \u00b7 ' + esc(v.degree_level) : '') + '</span>' +
+    (v.fields && v.fields.length > 1 ? '<span class="sb-note">also on file: ' + v.fields.slice(1).map(esc).join(', ') + '</span>' : '') +
+    '<button type="button" class="btn sm ghost" data-sb="pfclear">Clear</button></div>';
+  h += '<div class="pf-sec"><b>Observations on file</b><ul class="pf-obs">' +
+    (v.degree_evidence || []).map(function(e2){ return '<li><span class="pf-src">' + esc(e2.source || '') + '</span> ' + esc(e2.snippet || '') + '</li>'; }).join('') +
+    (v.orgs && v.orgs.length ? '<li><span class="pf-src">Organizations</span> ' + v.orgs.map(esc).join(', ') + '</li>' : '') +
+    (v.groups && v.groups.length ? '<li><span class="pf-src">Groups</span> ' + v.groups.map(esc).join(', ') + '</li>' : '') +
+    '</ul></div>';
+  h += '<div class="pf-sec"><b>Persona cross-check</b> <span class="sb-note">JD\u2019s ratings, exactly as entered; the verdict tests each against the cohort conclusion for that trait.</span>' +
+    '<div class="sb-tablewrap"><table class="sb-table pf-ptable"><thead><tr><th>Trait</th><th>JD\u2019s rating</th><th>Cohort prediction</th><th>Verdict</th></tr></thead><tbody>' +
+    PF_TRAITS.map(function(t){
+      var cc = (v.crosscheck || {})[t[0]] || {};
+      return '<tr><td>' + t[1] + '</td><td>' + (cc.value != null ? esc(cc.value) + ' / 5' : '<span class="sb-note">not rated</span>') + '</td>' +
+        '<td>' + (cc.predicted ? esc(cc.predicted) + ' than directory mean ' + esc(((pf.directory_means || {})[t[0]] != null ? pf.directory_means[t[0]] : '—')) : '<span class="sb-note">no conclusion</span>') + '</td>' +
+        '<td>' + pfVerdictChip(cc.verdict || 'NO PERSONA ON FILE') + '</td></tr>';
+    }).join('') + '</tbody></table></div></div>';
+  var applies = (v.applies || []).map(function(id){ return byId[id]; }).filter(Boolean);
+  h += '<div class="pf-sec"><b>Applies to them</b>' +
+    (applies.length ? applies.map(function(c){
+      return '<div class="pf-apply">' + pfGradeChip(c.grade) + '<span>' + esc(c.conclusion || '') + '</span></div>';
+    }).join('') : '<p class="sb-note">No cohort conclusion covers this person \u2014 their cohort is too thin to grade, or no trait showed a consistent direction.</p>') + '</div>';
+  return h + '</div>';
+}
+
+
 /* ---------------- sandbox events (own delegation; data-sb) ---------------- */
 var SB_CONFIRM = null;
 function sbConfirm2(title, body, okLabel, danger, fn){ SB_CONFIRM = fn; sbConfirm(title, body, okLabel, danger); }
@@ -10571,6 +10714,10 @@ document.addEventListener('click', function(ev){
   else if(act === 'selclear'){ SB.sel = {}; R(); }
   else if(act === 'rawtab'){ SB.raw.which = t.getAttribute('data-k'); R(); }
   else if(act === 'reptab'){ SB.rep.tab = t.getAttribute('data-k'); R(); }
+  else if(act === 'pffield'){ SB.pf.field = t.getAttribute('data-k'); R(); }
+  else if(act === 'pfgrade'){ SB.pf.grade = t.getAttribute('data-k'); R(); }
+  else if(act === 'pfclear'){ SB.pf.sel = null; R(); }
+  else if(act === 'pfsel'){ SB.pf.sel = t.getAttribute('data-k'); R(); }
   else if(act === 'integtab'){ SB.integ.tab = t.getAttribute('data-k'); R(); }
   else if(act === 'dgtab'){ SB.dg.tab = t.getAttribute('data-k'); SB.dg.dry = null; R(); }
   else if(act === 'pairmerge'){
@@ -10783,6 +10930,20 @@ document.addEventListener('input', function(ev){
   if(k === 'gridq'){ SB.grid.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbGridRefresh, 250); }
   else if(k === 'rawq'){ SB.raw.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') render(); }, 400); }
   else if(k === 'trashq'){ SB.dg.trashQ = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') render(); }, 400); }
+  else if(k === 'pfq'){
+    var res2 = document.getElementById('pfres');
+    if(!res2 || !SB.prof) return;
+    var q2 = t.value.trim().toLowerCase();
+    if(q2.length < 2){ res2.innerHTML = ''; return; }
+    var hits2 = Object.keys(SB.prof.people || {}).filter(function(kk){
+      var v2 = SB.prof.people[kk];
+      return (v2.name || '').toLowerCase().indexOf(q2) >= 0 || (v2.field || '').toLowerCase().indexOf(q2) >= 0;
+    }).sort(function(a, b){ return (SB.prof.people[a].name || '').localeCompare(SB.prof.people[b].name || ''); }).slice(0, 8);
+    res2.innerHTML = hits2.length ? hits2.map(function(kk){
+      var v2 = SB.prof.people[kk];
+      return '<button type="button" class="sb-pickitem" data-sb="pfsel" data-k="' + esc(kk) + '">' + esc(v2.name || '') + '<span>' + esc(v2.field || '') + (v2.degree_level ? ' \u00b7 ' + esc(v2.degree_level) : '') + '</span></button>';
+    }).join('') : '<p class="sb-note">No one with a stated field matches that.</p>';
+  }
   else if(k === 'pickq'){
     var pid = t.getAttribute('data-pick'), res = document.getElementById('pick-' + pid);
     if(!res) return;
