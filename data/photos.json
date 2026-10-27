@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-26",
- "total": 675,
+ "updated": "2026-10-27",
+ "total": 676,
  "batches": "All batches complete \u2014 all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
   {
@@ -806,12 +806,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "SLU Saints roster page extraction returned her bio/player history but only the site logo as an image \u2014 no headshot URL extractable. Canton Fire Dept members page lists her (FF/EMT-B since 2020) in a text-only table. Gap: a headshot may exist on the live roster page that extraction missed.",
+   "evidence": "anchor 1: St. Lawrence Valley Prevention Council team page (WordPress) places this image directly under the heading 'Brooke Larrabee / Health Educator' with bio 'graduated from St. Lawrence University with a bachelor's degree in psychology... experience working in the medical field'; anchor 2: SLU Merit + Saints softball roster records Brooke Larrabee of Canton, NY, St. Lawrence University Class of 2025, psychology major, Hugh C. Williams HS, softball outfielder \u2014 matches profile (St. Lawrence University). Prior photos.json status was no_photo.",
    "name": "Brooke Larrabee",
-   "photo_url": null,
-   "source_page": "https://saintsathletics.com/sports/softball/roster/brooke-larrabee/17227",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://svpc.net/wp-content/uploads/2026/03/2026-B.-Larrabee.jpg",
+   "source_page": "https://svpc.net/our-friendly-team/",
+   "status": "confirmed",
+   "type": "portrait",
+   "added": "2026-10-27"
   },
   {
    "evidence": "Instagram profile @brookelynnmoore_ (display name \"Brooke Moore\"); bio: \"Lucky girl syndrome\ud83c\udf40\".",
@@ -2406,6 +2407,21 @@
    "added": "2026-10-26"
   },
   {
+   "name": "Ian Blunt",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459549/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/8459549/ny-national-guard-fires-mortars-morocco",
+   "status": "confirmed",
+   "evidence": "DVIDS caption names SFC Ian Blunt, HHC 27th IBCT, holding an M931 mortar training round at African Lion, Morocco, May 28, 2024; JD confirmed Oct 26",
+   "type": "DVIDS",
+   "added": "2026-10-26",
+   "also": [
+    {
+     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8444236/1000w_q95.jpg",
+     "note": "Blunt (right) with CSM Roeser and COL Frank observing the joint live-fire rehearsal, African Lion, May 26, 2024 (DVIDS 8444236)"
+    }
+   ]
+  },
+  {
    "evidence": "Her Clarkson people profile is a text-only Q&A biography with no image. Her Project Casting profile matches her but returned no image \u2014 gap: a headshot may exist there that extraction didn't surface. The peoplesartist page doesn't mention her; the Towle Chiropractic site has no content about her.",
    "name": "Ilene Lashomb",
    "photo_url": null,
@@ -3034,6 +3050,21 @@
    "added_approx": "Oct 2026"
   },
   {
+   "name": "Jordyn Hill",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459605/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/8459605/ny-national-guard-soldiers-train-with-new-radio-morocco",
+   "status": "confirmed",
+   "evidence": "DVIDS caption names PFC Jordyn Hill, IT specialist, HHC 27th IBCT, training on the AN/PRC-160(V) radio at African Lion, Morocco, May 29, 2024; JD confirmed Oct 26",
+   "type": "DVIDS",
+   "added": "2026-10-26",
+   "also": [
+    {
+     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459612/1000w_q95.jpg",
+     "note": "Hill (left) with SGT Parsons displaying the 27th IBCT and African Lion patches, May 29, 2024 (DVIDS 8459612)"
+    }
+   ]
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Joseph Baxter",
    "photo_url": null,
@@ -3370,6 +3401,39 @@
    "added_approx": "Oct 2026"
   },
   {
+   "evidence": "Syracuse University OVMA \u201cHometown Hero\u201d profile photo (captioned): Katherine Whitson \u2014 Georgia Military College 2022 (two associate degrees, summa cum laude), commissioned 2LT in 2024 via the Early Commissioning Program, Syracuse sociology student from Aug 2024, serves in HHC, 27th IBCT.",
+   "name": "Katherine Whitson",
+   "photo_url": "https://veterans.syracuse.edu/wp-content/uploads/2026/03/katherine-whitson-arny-1024x583.jpeg",
+   "source_page": "https://veterans.syracuse.edu/news/hth-kat-whitson/",
+   "status": "confirmed",
+   "type": "profile photo",
+   "added_approx": "Oct 2026",
+   "added": "2026-10-26"
+  },
+  {
+   "name": "Kathleen DeLage",
+   "photo_url": "photos/kathleen-delage.jpg",
+   "source_page": "https://dmna-ny.meritpages.com/achievements/Campville-resident-recognized-for-excellence-in-NY-Army-National-Guard-while-serving-in-Germany/158033",
+   "status": "confirmed",
+   "type": "Merit Pages (DMNA)",
+   "evidence": "DMNA Merit story photo: Spc. Kathleen E. Delage (name tape visible) receiving the Army Achievement Medal, Grafenwoehr Training Area, Germany, Jan 13, 2023; she is on the left, shaking hands with the presenter. Added at JD's direction 2026-10-26; focus set on her.",
+   "also": [
+    {
+     "url": "https://s3.amazonaws.com/rm3.attachments.prod.readmedia.com/files/122345/news/PXL_20230113_072032083.PORTRAIT_3.jpg?1673991200",
+     "note": "Full Merit photo (600x400); DeLage on the left, receiving the award"
+    },
+    {
+     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2303/7698519/1000w_q95.jpg",
+     "note": "Commander\u2019s coin presentation by MG Michael Natali, Syracuse, Jun 28, 2022 (DVIDS 7698519)"
+    },
+    {
+     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2301/7608226/1000w_q95.jpg",
+     "note": "Apache cockpit overview at a professional development event, Katterbach, Germany, Jan 4, 2023 (DVIDS 7608226)"
+    }
+   ],
+   "added": "2026-10-26"
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Kathy Eggleson",
    "photo_url": null,
@@ -3466,12 +3530,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "NCPR staff page lists her in text only ('Kayle McCormick, Development Coordinator') \u2014 the fetch returned no staff photos at all.",
+   "evidence": "anchor 1: Health Workforce Collaborative NAHEC page 'Meet your Career Support Team' shows image with alt text 'Kayle McCormick' labeled 'Kayle McCormick, Program Manager' at the Northern Area Health Education Center \u2014 matches profile employer (North Area Health Education Center); anchor 2: Current.org (July 2026) reports 'Kayle McCormick joined [North Country Public Radio] as a development coordinator. She previously worked for the North Area Health Education Center as a program manager... and a patient access representative for Rochester Regional Health' \u2014 the RRH detail also matches her profile, tying the NAHEC program manager to this person.",
    "name": "Kayle McCormick",
-   "photo_url": null,
-   "source_page": "https://www.northcountrypublicradio.org/about/staff.html",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://hwcollab.org/wp-content/uploads/2024/07/KayleMcCormickHeadshot.jpeg",
+   "source_page": "https://hwcollab.org/nahec/",
+   "status": "confirmed",
+   "type": "portrait",
+   "added": "2026-10-27"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4876,6 +4941,15 @@
    "added_approx": "Oct 2026"
   },
   {
+   "name": "Raymond Persons",
+   "photo_url": "https://dmna.ny.gov/home/images/thumbnails_small/thumb100_080509-A-5130P-0965_web.jpg",
+   "source_page": "https://dmna.ny.gov/units/?unit=1204913129&page=featured",
+   "status": "confirmed",
+   "evidence": "anchor 1: DMNA (NY Division of Military & Naval Affairs) caption on the unit page: 'Holding the American Flag on the peak of Ghar Mountain on May 9 (from left) is Spc. Raymond Persons, Spc. Bill Rose and Staff Sgt. James Waleski from the Headquarters and Headquarters Company, 427th Support Battalion' (photo dated May 22, 2008); anchor 2: independent MiLB article (milb.com/news/gcs-395931) lists 'Raymond Persons, CF (Syracuse, NY)' on the Hellfire One roster of 27th Brigade (Syracuse) soldiers in Afghanistan, 2008 \u2014 matches profile (U.S. Army, 27th IBCT orbit). Note: only the 100px thumbnail URL was extractable from the DMNA page; a larger version likely exists on dmna.ny.gov under the same photo ID (080509-A-5130P-0965).",
+   "type": "group",
+   "added": "2026-10-27"
+  },
+  {
    "evidence": "Only link on file is Facebook (auth).",
    "name": "Rebecca Guldan",
    "photo_url": null,
@@ -5036,6 +5110,16 @@
    "type": null
   },
   {
+   "evidence": "DVIDS image 6884312 (Fort Drum, Oct 1, 2021): caption identifies the posed group by position \u2014 Sgt. 1st Class Ryan Blount is 4th/rightmost, name tape visible \u2014 after earning the Expert Soldier Badge; 427th Brigade Support Battalion; hometown Liverpool, NY per DMNA.",
+   "name": "Ryan Blount",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2110/6884312/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/6884312/ny-army-guard-soldiers-earn-expert-soldier-badge",
+   "status": "confirmed",
+   "type": "news photo",
+   "added_approx": "Oct 2026",
+   "added": "2026-10-26"
+  },
+  {
    "evidence": "Instagram profile @ryanpdaniels (display name \"Ryan Daniels\").",
    "name": "Ryan Daniels",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/10665576_575687925891114_572627503_a.jpg?_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xNTAuQzMifQ%3D%3D&_nc_ohc=dE04aod0Yo8Q7kNvwE7OJeW&_nc_oc=AdrIkQ0f-1hoghdmLKZx7uohogvOmIHaNf8rCFmurI180n2_h2dkXqwaC1mXzzNwv15Pc00Qhf61QfYll5ZbSrLy&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQP3HwjyLxXmKJQZZJuPelYWo4sQOZfDiX0sao-SxZsU0Q&oe=6AE00BE7",
@@ -5104,6 +5188,15 @@
    "status": "confirmed",
    "type": "Instagram profile picture",
    "added_approx": "Oct 2026"
+  },
+  {
+   "name": "Samantha Antolik",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2105/6664060/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/6664060/soldiers-compete-cavalry-squadron-best-warrior-competition-with-sights-set-representing-new-york",
+   "status": "confirmed",
+   "evidence": "DVIDS caption names SSG Samantha Antolik, health care sergeant, HHT 2nd Squadron 101st Cavalry, at the squadron Best Warrior Competition, Ellicottville NY, May 22, 2021; photo link supplied and confirmed by JD Oct 26",
+   "type": "DVIDS",
+   "added": "2026-10-26"
   },
   {
    "evidence": "Her Clarkson people page is text-only in extraction, but her org-chart block carries the directory image keyed to her username 'smarocco' above her name and title (Professor & Program Director, Physical Therapy).",
@@ -5275,6 +5368,15 @@
    "status": "confirmed",
    "type": "Instagram profile picture",
    "added_approx": "Oct 2026"
+  },
+  {
+   "name": "Shannon Zych",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2303/7655947/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/7655947/medical-readiness-command-europe-recognizes-soldiers-supporting-us-led-training-ukrainian-armed-forces",
+   "status": "confirmed",
+   "evidence": "DVIDS caption: 1LT Shannon Zych presented a commander's coin by BG Clinton Murray at Grafenwoehr, Germany, Feb 24, 2023; JD confirmed Oct 26",
+   "type": "DVIDS",
+   "added": "2026-10-26"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5583,12 +5685,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "anchor 1: Polongo TV article 'Music: Don't Give Up - Toni Ajayi' (2020) names her and describes the Potsdam tie \u2014 'actively served on the worship team at New Hope Community Church in Potsdam', US-based gospel artist and environmental engineer from Ibadan \u2014 consistent with her North Country church profile; the image is the cover art for her single 'Don't Give Up', alt-titled with her name. Marked possible: from text extraction alone it cannot be verified that the cover art depicts her (vs. graphic-only art).",
    "name": "Toni Ajayi",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhYkPZaWyHqMTC157-u-ZaRbf4S_8ptpbYp6NTORabA3uwszu8eiCqF_87AQc1ezm6qNhnRJTp9rc8vncmU5VT087HCoIRUbCUZ4E-TBzQL6ulRA_ARLeDNNmqznXdciu5fvdYyB54uHP6z/s400-rw/Song+Art+2.jpg",
+   "source_page": "https://www.polongotv.net/2020/08/music-dont-give-up-toni-ajayi.html",
+   "status": "possible",
+   "type": "portrait",
+   "added": "2026-10-27"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5677,12 +5780,13 @@
    "type": null
   },
   {
-   "evidence": "The JCC Spring 2023 nursing pinning article's group-photo caption places her by name ('Top row (l-r): \u2026 Victoria Lucas of Gouverneur \u2026'); she is also named as the Samaritan Medical Center HEART Award recipient. The fetch returned no image URL, so the photo cannot be filed \u2014 possible, not confirmed.",
+   "evidence": "anchor 1: Jefferson Community College nurse pinning article (published June 6, 2023) captions the group photo 'Top row (l-r): Jeremy Thomas Reff of Redwood, Kylie Saleen Vaughan of Hammond, Victoria Lucas of Gouverneur, Kathryn Joyce Carey...' \u2014 she is third in the top row; anchor 2: the same page names Victoria Lucas of Gouverneur as recipient of the Samaritan Medical Center HEART Award, matching profile (JCC AAS Nursing Spring 2023, RN at Rochester Regional Health, Gouverneur, NY). Marked possible because it is a large group photo and position ID rests on caption ordering alone. Upgrades her prior photos.json entry, which was 'possible' with no extractable image URL.",
    "name": "Victoria Lucas",
-   "photo_url": null,
+   "photo_url": "https://sunyjefferson.edu/news/documents/Nurse%20Pinning%20May%202023%20web.jpg",
    "source_page": "https://sunyjefferson.edu/news/nurse_pinning_spring2023.php",
    "status": "possible",
-   "type": "group"
+   "type": "group",
+   "added": "2026-10-27"
   },
   {
    "evidence": "Instagram profile @hennykv (display name \"Vimbai Kuzanga\"); bio: \"I believe that hard work is only your carriage, faith is what keeps it running and support keeps the journey c\".",
@@ -5781,6 +5885,16 @@
    "added_approx": "Oct 2026"
   },
   {
+   "evidence": "DVIDS image 7671110: U.S. Army Master Sgt. Zalika Ajamu, 369th Sustainment Brigade, NY Army National Guard, promoted from sergeant first class at Camp Arifjan, Kuwait, Mar 2, 2023; companion DVIDS story: from Buffalo, NY, brigade Sexual Assault Response Coordinator, 20 years of service.",
+   "name": "Zalika Ajamu",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2302/7671110/1000w_q95.jpg",
+   "source_page": "https://www.dvidshub.net/image/7671110/master-sgt-zalika-ajamu-promoted",
+   "status": "confirmed",
+   "type": "DVIDS portrait",
+   "added_approx": "Oct 2026",
+   "added": "2026-10-26"
+  },
+  {
    "evidence": "No source links on file.",
    "name": "Zenna Dale",
    "photo_url": null,
@@ -5804,107 +5918,6 @@
    "source_page": "https://www.canton.edu/president/bio.html",
    "status": "confirmed",
    "type": "staff headshot",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-26"
-  },
-  {
-   "name": "Kathleen DeLage",
-   "photo_url": "photos/kathleen-delage.jpg",
-   "source_page": "https://dmna-ny.meritpages.com/achievements/Campville-resident-recognized-for-excellence-in-NY-Army-National-Guard-while-serving-in-Germany/158033",
-   "status": "confirmed",
-   "type": "Merit Pages (DMNA)",
-   "evidence": "DMNA Merit story photo: Spc. Kathleen E. Delage (name tape visible) receiving the Army Achievement Medal, Grafenwoehr Training Area, Germany, Jan 13, 2023; she is on the left, shaking hands with the presenter. Added at JD's direction 2026-10-26; focus set on her.",
-   "also": [
-    {
-     "url": "https://s3.amazonaws.com/rm3.attachments.prod.readmedia.com/files/122345/news/PXL_20230113_072032083.PORTRAIT_3.jpg?1673991200",
-     "note": "Full Merit photo (600x400); DeLage on the left, receiving the award"
-    },
-    {
-     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2303/7698519/1000w_q95.jpg",
-     "note": "Commander\u2019s coin presentation by MG Michael Natali, Syracuse, Jun 28, 2022 (DVIDS 7698519)"
-    },
-    {
-     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2301/7608226/1000w_q95.jpg",
-     "note": "Apache cockpit overview at a professional development event, Katterbach, Germany, Jan 4, 2023 (DVIDS 7608226)"
-    }
-   ],
-   "added": "2026-10-26"
-  },
-  {
-   "name": "Ian Blunt",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459549/1000w_q95.jpg",
-   "source_page": "https://www.dvidshub.net/image/8459549/ny-national-guard-fires-mortars-morocco",
-   "status": "confirmed",
-   "evidence": "DVIDS caption names SFC Ian Blunt, HHC 27th IBCT, holding an M931 mortar training round at African Lion, Morocco, May 28, 2024; JD confirmed Oct 26",
-   "type": "DVIDS",
-   "added": "2026-10-26",
-   "also": [
-    {
-     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8444236/1000w_q95.jpg",
-     "note": "Blunt (right) with CSM Roeser and COL Frank observing the joint live-fire rehearsal, African Lion, May 26, 2024 (DVIDS 8444236)"
-    }
-   ]
-  },
-  {
-   "name": "Jordyn Hill",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459605/1000w_q95.jpg",
-   "source_page": "https://www.dvidshub.net/image/8459605/ny-national-guard-soldiers-train-with-new-radio-morocco",
-   "status": "confirmed",
-   "evidence": "DVIDS caption names PFC Jordyn Hill, IT specialist, HHC 27th IBCT, training on the AN/PRC-160(V) radio at African Lion, Morocco, May 29, 2024; JD confirmed Oct 26",
-   "type": "DVIDS",
-   "added": "2026-10-26",
-   "also": [
-    {
-     "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459612/1000w_q95.jpg",
-     "note": "Hill (left) with SGT Parsons displaying the 27th IBCT and African Lion patches, May 29, 2024 (DVIDS 8459612)"
-    }
-   ]
-  },
-  {
-   "name": "Shannon Zych",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2303/7655947/1000w_q95.jpg",
-   "source_page": "https://www.dvidshub.net/image/7655947/medical-readiness-command-europe-recognizes-soldiers-supporting-us-led-training-ukrainian-armed-forces",
-   "status": "confirmed",
-   "evidence": "DVIDS caption: 1LT Shannon Zych presented a commander's coin by BG Clinton Murray at Grafenwoehr, Germany, Feb 24, 2023; JD confirmed Oct 26",
-   "type": "DVIDS",
-   "added": "2026-10-26"
-  },
-  {
-   "name": "Samantha Antolik",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2105/6664060/1000w_q95.jpg",
-   "source_page": "https://www.dvidshub.net/image/6664060/soldiers-compete-cavalry-squadron-best-warrior-competition-with-sights-set-representing-new-york",
-   "status": "confirmed",
-   "evidence": "DVIDS caption names SSG Samantha Antolik, health care sergeant, HHT 2nd Squadron 101st Cavalry, at the squadron Best Warrior Competition, Ellicottville NY, May 22, 2021; photo link supplied and confirmed by JD Oct 26",
-   "type": "DVIDS",
-   "added": "2026-10-26"
-  },
-  {
-   "evidence": "DVIDS image 7671110: U.S. Army Master Sgt. Zalika Ajamu, 369th Sustainment Brigade, NY Army National Guard, promoted from sergeant first class at Camp Arifjan, Kuwait, Mar 2, 2023; companion DVIDS story: from Buffalo, NY, brigade Sexual Assault Response Coordinator, 20 years of service.",
-   "name": "Zalika Ajamu",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2302/7671110/1000w_q95.jpg",
-   "source_page": "https://www.dvidshub.net/image/7671110/master-sgt-zalika-ajamu-promoted",
-   "status": "confirmed",
-   "type": "DVIDS portrait",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-26"
-  },
-  {
-   "evidence": "Syracuse University OVMA \u201cHometown Hero\u201d profile photo (captioned): Katherine Whitson \u2014 Georgia Military College 2022 (two associate degrees, summa cum laude), commissioned 2LT in 2024 via the Early Commissioning Program, Syracuse sociology student from Aug 2024, serves in HHC, 27th IBCT.",
-   "name": "Katherine Whitson",
-   "photo_url": "https://veterans.syracuse.edu/wp-content/uploads/2026/03/katherine-whitson-arny-1024x583.jpeg",
-   "source_page": "https://veterans.syracuse.edu/news/hth-kat-whitson/",
-   "status": "confirmed",
-   "type": "profile photo",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-26"
-  },
-  {
-   "evidence": "DVIDS image 6884312 (Fort Drum, Oct 1, 2021): caption identifies the posed group by position \u2014 Sgt. 1st Class Ryan Blount is 4th/rightmost, name tape visible \u2014 after earning the Expert Soldier Badge; 427th Brigade Support Battalion; hometown Liverpool, NY per DMNA.",
-   "name": "Ryan Blount",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2110/6884312/1000w_q95.jpg",
-   "source_page": "https://www.dvidshub.net/image/6884312/ny-army-guard-soldiers-earn-expert-soldier-badge",
-   "status": "confirmed",
-   "type": "news photo",
    "added_approx": "Oct 2026",
    "added": "2026-10-26"
   }
