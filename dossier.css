@@ -2871,3 +2871,15 @@ body[data-view="sandbox"] #view{max-width:none;width:100%;margin:0;padding:0;fle
 .pf-afill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ga,#3a9bff),var(--gb,#34d399))}
 .pf-acounts{white-space:nowrap}
 .cn-frow .sb-note{display:block;margin-top:2px}
+
+/* suspect pool (V3.9.0) */
+.sp-q{font-size:19px;font-weight:600;line-height:1.45;margin:10px 0;color:var(--txt)}
+.sp-funnel{display:flex;flex-direction:column;gap:7px;margin:12px 0}
+.sp-frow{display:flex;align-items:center;gap:10px;font-size:13px}
+.sp-fl{width:300px;flex:none;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-fbar{flex:1;height:10px;border-radius:99px;background:var(--line2);overflow:hidden}
+.sp-fbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ga,#3a9bff),var(--gb,#34d399))}
+.sp-fn{width:44px;flex:none;text-align:right;font-weight:700;color:var(--txt)}
+.sp-shortlabel{font-size:13px;font-weight:700;letter-spacing:.03em;color:var(--txt);border:1px dashed var(--line2);border-radius:var(--r-lg);padding:9px 13px;margin:14px 0 10px;background:var(--card)}
+.sp-cat.on{border-color:var(--ga,#3a9bff);box-shadow:inset 0 0 0 1px var(--ga,#3a9bff)}
+@media (max-width:760px){ .sp-fl{width:150px} }
