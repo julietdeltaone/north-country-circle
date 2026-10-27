@@ -19,8 +19,60 @@
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
-   (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.55.0';
+   (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
+var APP_VERSION = '3.0.0';
+
+/* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
+   The boot script in the HTML head sets data-mode / data-scheme on
+   <html> before first paint; this module renders the Theme section
+   in the top bar and keeps it, the attributes and localStorage in
+   sync. Keys: ncc_theme_mode / ncc_theme_scheme. */
+var THEME_SCHEMES = ['bluegreen','blueviolet','tealsky','violetpink','amberrose','slate'];
+var THEME_NAMES = { bluegreen:'Blue / Green', blueviolet:'Blue / Violet', tealsky:'Teal / Sky', violetpink:'Violet / Pink', amberrose:'Amber / Rose', slate:'Slate' };
+function themeState(){
+  var m = 'light', s = 'bluegreen';
+  try {
+    m = localStorage.getItem('ncc_theme_mode') === 'dark' ? 'dark' : 'light';
+    s = localStorage.getItem('ncc_theme_scheme');
+    if (THEME_SCHEMES.indexOf(s) < 0) s = 'bluegreen';
+  } catch (e) {}
+  return { mode: m, scheme: s };
+}
+function applyTheme(mode, scheme, save){
+  var r = document.documentElement;
+  r.classList.add('ncc-tfreeze');
+  r.setAttribute('data-mode', mode);
+  r.setAttribute('data-scheme', scheme);
+  if (save !== false) {
+    try { localStorage.setItem('ncc_theme_mode', mode); localStorage.setItem('ncc_theme_scheme', scheme); } catch (e) {}
+  }
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', mode === 'dark' ? '#0a0e13' : '#e9eff4');
+  paintTheme();
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ r.classList.remove('ncc-tfreeze'); }); });
+}
+function themeSecHTML(){
+  var t = themeState();
+  var sw = THEME_SCHEMES.map(function(s){
+    return '<button type="button" class="tsw" data-tscheme="' + s + '" data-s="' + s + '" aria-pressed="' + (t.scheme === s) + '" aria-label="Gradient: ' + THEME_NAMES[s] + '" title="' + THEME_NAMES[s] + '"></button>';
+  }).join('');
+  return '<div class="themesec" role="group" aria-label="Theme"><span class="tlabel">Theme</span>' +
+    '<button type="button" class="tmode" data-tmode aria-pressed="' + (t.mode === 'dark') + '" aria-label="Toggle dark mode" title="Light / dark">' + (t.mode === 'dark' ? 'Dark' : 'Light') + '</button>' + sw + '</div>';
+}
+function paintTheme(){
+  var t = themeState();
+  var mb = document.querySelector('[data-tmode]');
+  if (mb) { mb.setAttribute('aria-pressed', String(t.mode === 'dark')); mb.textContent = t.mode === 'dark' ? 'Dark' : 'Light'; }
+  var sws = document.querySelectorAll('[data-tscheme]');
+  for (var i = 0; i < sws.length; i++) sws[i].setAttribute('aria-pressed', String(sws[i].getAttribute('data-tscheme') === t.scheme));
+}
+document.addEventListener('click', function(ev){
+  var el = ev.target && ev.target.closest ? ev.target.closest('[data-tmode],[data-tscheme]') : null;
+  if (!el) return;
+  var t = themeState();
+  if (el.hasAttribute('data-tmode')) applyTheme(t.mode === 'dark' ? 'light' : 'dark', t.scheme);
+  else applyTheme(t.mode, el.getAttribute('data-tscheme'));
+});
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -1730,8 +1782,9 @@ function renderChrome(){
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
     '<button type="button" class="syncp" id="sync" data-act="retry"></button>' +
     '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a>' +
+    themeSecHTML() +
     '<span class="ver" title="App version">V' + APP_VERSION + '</span></div>';
-  paintSync(); paintUndo();
+  paintSync(); paintUndo(); paintTheme();
 }
 function paintSync(){
   var p = $('#sync'); if(!p) return;
@@ -3751,6 +3804,7 @@ function netHubHit(sx, sy){
   });
   return best;
 }
+function netInk(){ return document.documentElement.getAttribute('data-mode') === 'dark' ? '255,255,255' : '23,38,56'; }
 function netDraw(){
   var ctx = NET.ctx, z = NET.cam.z, is3 = NET.view === '3d';
   ctx.setTransform(NET.dpr, 0, 0, NET.dpr, 0, 0); ctx.clearRect(0, 0, NET.W, NET.H);
@@ -3780,7 +3834,7 @@ function netDraw(){
   /* guide rings: the Dunbar layers, neutral strokes (tier keeps color), labeled */
   ctx.font = '600 10px Archivo, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
   SCORE_RADII.forEach(function(r, i){
-    ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(' + netInk() + ',0.10)'; ctx.lineWidth = 1;
     ctx.beginPath();
     if(is3){
       /* the shell's outline: the great circle of this closeness
@@ -3793,7 +3847,7 @@ function netDraw(){
       }
     } else ctx.arc(c[0], c[1], r * z, 0, 6.2832);
     ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.42)';
+    ctx.fillStyle = 'rgba(' + netInk() + ',0.42)';
     if(is3){ var lp = netP3U(r * bs.u[0], r * bs.u[1], r * bs.u[2]); ctx.fillText(SCORE_GUIDES[i], lp[0], lp[1] - 5); }
     else ctx.fillText(SCORE_GUIDES[i], c[0], c[1] - r * z - 5);
   });
@@ -3812,7 +3866,7 @@ function netDraw(){
   var amb = z <= 1.2 ? 1 : Math.max(0, 1 - (z - 1.2) / 0.5);
   if(amb > 0){
     ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(255,255,255,' + (0.10 * amb * (orgF ? 0.35 : 1)).toFixed(3) + ')';
+    ctx.strokeStyle = 'rgba(' + netInk() + ',' + (0.10 * amb * (orgF ? 0.35 : 1)).toFixed(3) + ')';
     ctx.beginPath();
     NET.hubs.forEach(function(h){ var p = HP(h); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); });
     ctx.stroke();
@@ -3820,7 +3874,7 @@ function netDraw(){
        far side at a fraction of the alpha, so depth reads in
        the lines as well as in the dots. */
     var spokeBatch = function(farSide, alpha){
-      ctx.strokeStyle = 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
+      ctx.strokeStyle = 'rgba(' + netInk() + ',' + alpha.toFixed(3) + ')';
       ctx.beginPath();
       NET.nodes.forEach(function(n){
         var p = NP(n);
@@ -3840,9 +3894,9 @@ function netDraw(){
      orgs lights up under each of them). --- */
   if(orgF){
     var op = HP(orgF), of3 = is3 ? 0.35 + 0.65 * netNearF(op[3]) : 1;
-    ctx.strokeStyle = 'rgba(255,255,255,' + (0.55 * of3).toFixed(3) + ')'; ctx.lineWidth = 1.3;
+    ctx.strokeStyle = 'rgba(' + netInk() + ',' + (0.55 * of3).toFixed(3) + ')'; ctx.lineWidth = 1.3;
     ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(op[0], op[1]); ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,' + (0.38 * of3).toFixed(3) + ')'; ctx.lineWidth = 1.1;
+    ctx.strokeStyle = 'rgba(' + netInk() + ',' + (0.38 * of3).toFixed(3) + ')'; ctx.lineWidth = 1.1;
     ctx.beginPath();
     orgF.nds.forEach(function(n){
       var p = NP(n);
@@ -3856,7 +3910,7 @@ function netDraw(){
   var hot = {};
   if(sel){
     var se = D.directory[sel.di], a = NP(sel);
-    ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(' + netInk() + ',.4)'; ctx.lineWidth = 1;
     knownAssociates(se).forEach(function(nb){
       var t = BYN[(nb.u || '').toLowerCase()], nd = t != null ? NET.byDi[t] : null; if(!nd) return;
       hot[t] = 1;
@@ -3867,7 +3921,7 @@ function netDraw(){
      route, full strength — through their hub when they have one. --- */
   if(focus){
     var fp = NP(focus);
-    ctx.strokeStyle = 'rgba(255,255,255,' + (is3 ? (0.9 * (0.45 + 0.55 * netNearF(fp[3]))).toFixed(3) : '0.9') + ')'; ctx.lineWidth = 1.4;
+    ctx.strokeStyle = 'rgba(' + netInk() + ',' + (is3 ? (0.9 * (0.45 + 0.55 * netNearF(fp[3]))).toFixed(3) : '0.9') + ')'; ctx.lineWidth = 1.4;
     ctx.beginPath();
     if(focus.hub){ var fhp = HP(focus.hub); ctx.moveTo(c[0], c[1]); ctx.lineTo(fhp[0], fhp[1]); ctx.lineTo(fp[0], fp[1]); }
     else { ctx.moveTo(c[0], c[1]); ctx.lineTo(fp[0], fp[1]); }
@@ -3881,7 +3935,7 @@ function netDraw(){
     ctx.save(); ctx.translate(p[0], p[1]); ctx.rotate(Math.PI / 4);
     if(is3) ctx.globalAlpha = 0.30 + 0.70 * netNearF(p[3]);
     ctx.fillStyle = foc ? '#e30613' : '#0a0a0a';
-    ctx.strokeStyle = foc ? '#e30613' : 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1.2;
+    ctx.strokeStyle = foc ? '#e30613' : 'rgba(' + netInk() + ',0.6)'; ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.rect(-s, -s, s * 2, s * 2); ctx.fill(); ctx.stroke();
     ctx.restore();
   });
