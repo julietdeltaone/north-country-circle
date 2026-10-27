@@ -7,7 +7,12 @@
 /* App version — one number shared by both apps (explorer + dossier); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-const APP_VERSION = "2.55.0";
+const APP_VERSION = "3.0.0";
+/* Clear glass canvas palette: ink flips with the theme mode (V3.0.0) */
+const PAL_DARK = { ghost:"rgba(255,255,255,0.018)", whisper:"rgba(255,255,255,0.03)", faint:"rgba(255,255,255,0.05)", soft:"rgba(255,255,255,0.06)", mid:"rgba(255,255,255,0.22)", strong:"rgba(255,255,255,0.38)", core:"rgba(255,255,255,0.7)", nodeDim:"rgba(255,255,255,0.35)", ringHi:"rgba(255,255,255,0.85)", nodeBase:"rgba(195,195,195,0.26)", nodeWhite:"#ffffff", nodeHi:"#d4d4d4", label:"#f2f2f2", labelDim:"rgba(219,226,238,0.85)", labelHi:"rgba(255,255,255,0.92)" };
+const PAL_LIGHT = { ghost:"rgba(23,38,56,0.05)", whisper:"rgba(23,38,56,0.07)", faint:"rgba(23,38,56,0.10)", soft:"rgba(23,38,56,0.13)", mid:"rgba(23,38,56,0.32)", strong:"rgba(23,38,56,0.5)", core:"rgba(23,38,56,0.55)", nodeDim:"rgba(23,38,56,0.35)", ringHi:"rgba(23,38,56,0.65)", nodeBase:"rgba(23,38,56,0.30)", nodeWhite:"#10161d", nodeHi:"#2a3542", label:"#131a22", labelDim:"rgba(23,38,56,0.78)", labelHi:"rgba(13,20,28,0.92)" };
+const PAL = () => document.documentElement.getAttribute("data-mode") === "dark" ? PAL_DARK : PAL_LIGHT;
+
 const D = window.CIRCLE_DATA || {};
 const PEOPLE = D.people || [];
 const EDGES = D.edges || [];
@@ -396,7 +401,7 @@ function draw() {
     ctx.stroke();
   };
   if (pathSet) {
-    drawEdges(false, "rgba(255,255,255,0.05)", 1);
+    drawEdges(false, PAL().faint, 1);
     /* path edges in amber */
     ctx.strokeStyle = "rgba(245,185,66,0.85)"; ctx.lineWidth = 2.5; ctx.beginPath();
     for (const key of pathEdgeSet) {
@@ -409,20 +414,20 @@ function draw() {
     if (resFilter) {
       /* ghost pass: all non-highlight edges near-invisible; highlight edges
          between two amber-set people stay amber, other highlight edges ice */
-      drawEdges(false, "rgba(255,255,255,0.018)", 1);
+      drawEdges(false, PAL().ghost, 1);
       drawEdges(true, "rgba(245,185,66,0.50)", 1, (a, b) => !!resVis(a) && !!resVis(b));
-      drawEdges(true, "rgba(255,255,255,0.22)", 1, (a, b) => !(resVis(a) && resVis(b)));
+      drawEdges(true, PAL().mid, 1, (a, b) => !(resVis(a) && resVis(b)));
     } else {
-      drawEdges(false, "rgba(255,255,255,0.03)", 1);
-      drawEdges(true, "rgba(255,255,255,0.38)", 1);
+      drawEdges(false, PAL().whisper, 1);
+      drawEdges(true, PAL().strong, 1);
     }
   } else {
-    drawEdges(false, resFilter ? "rgba(255,255,255,0.018)" : (bridgeMode ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.06)"), 1);
+    drawEdges(false, resFilter ? PAL().ghost : (bridgeMode ? PAL().faint : PAL().soft), 1);
   }
 
   /* long-range bridges: glow underlay + bright core, selected one in amber */
   if (bridgeMode && bridgeThresh > 0) {
-    for (const [style, w] of [["rgba(255,255,255,0.06)", 6], ["rgba(255,255,255,0.7)", 2]]) {
+    for (const [style, w] of [[PAL().soft, 6], [PAL().core, 2]]) {
       ctx.strokeStyle = style;
       ctx.lineWidth = w;
       ctx.beginPath();
@@ -463,15 +468,15 @@ function draw() {
     }
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
-    if (resFilter) ctx.fillStyle = res ? "#f5b942" : "rgba(255,255,255,0.05)";
+    if (resFilter) ctx.fillStyle = res ? "#f5b942" : PAL().faint;
     else if (pathSet && pathSet.has(i)) ctx.fillStyle = "#f5b942";
     else if (res) ctx.fillStyle = isHi ? "#f5b942" : "rgba(245,185,66,0.25)";
-    else if (hubMode && hubSet.has(i)) ctx.fillStyle = isHi ? "#ffffff" : "rgba(255,255,255,0.35)";
-    else ctx.fillStyle = isHi ? "#d4d4d4" : "rgba(195,195,195,0.26)";
+    else if (hubMode && hubSet.has(i)) ctx.fillStyle = isHi ? PAL().nodeWhite : PAL().nodeDim;
+    else ctx.fillStyle = isHi ? PAL().nodeHi : PAL().nodeBase;
     ctx.fill();
     if (i === jdIndex || layerSet.has(i) || i === hover || (hubMode && hubSet.has(i) && isHi)) {
       ctx.lineWidth = i === jdIndex ? 2.5 : 2;
-      ctx.strokeStyle = i === jdIndex ? "#e30613" : (hubMode && hubSet.has(i) && !layerSet.has(i) && i !== hover ? "rgba(255,255,255,0.85)" : "#e30613");
+      ctx.strokeStyle = i === jdIndex ? "#e30613" : (hubMode && hubSet.has(i) && !layerSet.has(i) && i !== hover ? PAL().ringHi : "#e30613");
       ctx.stroke();
     }
   }
@@ -483,12 +488,12 @@ function draw() {
   ctx.textAlign = "center";
   const labelZoom = baseScale * 6;
   if (fLabels && jdIndex >= 0 && visible[jdIndex]) {
-    ctx.fillStyle = "#f2f2f2";
+    ctx.fillStyle = PAL().label;
     ctx.fillText("@jdmeyers_", SX[jdIndex], SY[jdIndex] - rad(jdIndex) - 5);
   }
   /* big-node labels when zoomed in */
   if (fLabels && scale >= labelZoom) {
-    ctx.fillStyle = "rgba(219,226,238,0.85)";
+    ctx.fillStyle = PAL().labelDim;
     let drawn = 0;
     const cutoff = totalOf([...hubSet][79]);
     for (let i = 0; i < N && drawn < 220; i++) {
@@ -503,7 +508,7 @@ function draw() {
 
   /* labels for every connection of each layered person */
   if (layers.length) {
-    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.fillStyle = PAL().labelHi;
     for (const s of layers) {
       const nbs = undAdj[s].filter(j => visible[j] && j !== s)
         .sort((a, b) => totalOf(b) - totalOf(a)).slice(0, 80);
@@ -1099,6 +1104,50 @@ function initToolbar() {
   ver.title = "App version";
   ver.textContent = "V" + APP_VERSION;
   document.querySelector(".hud-tr").appendChild(ver);
+  /* Clear glass theme section (shared skin with the dossier app) */
+  const THEME_SCHEMES_X = ["bluegreen", "blueviolet", "tealsky", "violetpink", "amberrose", "slate"];
+  const THEME_NAMES_X = { bluegreen: "Blue / Green", blueviolet: "Blue / Violet", tealsky: "Teal / Sky", violetpink: "Violet / Pink", amberrose: "Amber / Rose", slate: "Slate" };
+  const themeStateX = () => {
+    let m = "light", s = "bluegreen";
+    try {
+      m = localStorage.getItem("ncc_theme_mode") === "dark" ? "dark" : "light";
+      s = localStorage.getItem("ncc_theme_scheme");
+      if (!THEME_SCHEMES_X.includes(s)) s = "bluegreen";
+    } catch (e) {}
+    return { mode: m, scheme: s };
+  };
+  const paintThemeX = () => {
+    const t = themeStateX();
+    const mb = document.getElementById("theme-mode");
+    if (mb) { mb.setAttribute("aria-pressed", String(t.mode === "dark")); mb.textContent = t.mode === "dark" ? "Dark" : "Light"; }
+    document.querySelectorAll("#theme-swatches .tsw").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === t.scheme)));
+  };
+  const applyThemeX = (mode, scheme) => {
+    const r = document.documentElement;
+    r.classList.add("ncc-tfreeze");
+    r.setAttribute("data-mode", mode);
+    r.setAttribute("data-scheme", scheme);
+    try { localStorage.setItem("ncc_theme_mode", mode); localStorage.setItem("ncc_theme_scheme", scheme); } catch (e) {}
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", mode === "dark" ? "#0a0e13" : "#e9eff4");
+    paintThemeX();
+    draw();
+    requestAnimationFrame(() => requestAnimationFrame(() => r.classList.remove("ncc-tfreeze")));
+  };
+  const swHost = document.getElementById("theme-swatches");
+  if (swHost) {
+    THEME_SCHEMES_X.forEach(s => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "tsw"; b.dataset.s = s;
+      b.setAttribute("aria-label", "Gradient: " + THEME_NAMES_X[s]);
+      b.title = THEME_NAMES_X[s];
+      b.addEventListener("click", () => applyThemeX(themeStateX().mode, s));
+      swHost.appendChild(b);
+    });
+  }
+  const mbX = document.getElementById("theme-mode");
+  if (mbX) mbX.addEventListener("click", () => { const t = themeStateX(); applyThemeX(t.mode === "dark" ? "light" : "dark", t.scheme); });
+  paintThemeX();
   const gb = document.getElementById("btn-guide"), gp = document.getElementById("guide");
   const setGuide = v => { gp.hidden = !v; gb.classList.toggle("on", v); };
   gb.addEventListener("click", () => setGuide(gp.hidden));
