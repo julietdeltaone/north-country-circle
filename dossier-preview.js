@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.0.0';
+var APP_VERSION = '3.0.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -53,25 +53,62 @@ function applyTheme(mode, scheme, save){
 }
 function themeSecHTML(){
   var t = themeState();
-  var sw = THEME_SCHEMES.map(function(s){
-    return '<button type="button" class="tsw" data-tscheme="' + s + '" data-s="' + s + '" aria-pressed="' + (t.scheme === s) + '" aria-label="Gradient: ' + THEME_NAMES[s] + '" title="' + THEME_NAMES[s] + '"></button>';
+  return '<button type="button" class="topen" data-topen aria-haspopup="dialog" aria-expanded="false" title="Theme: mode and gradient"><span class="tpdot" data-s="' + t.scheme + '"></span>Theme</button>';
+}
+function themePopHTML(){
+  var t = themeState();
+  var sws = THEME_SCHEMES.map(function(s){
+    return '<button type="button" class="tpsw" data-tpscheme="' + s + '" data-s="' + s + '" aria-pressed="' + (t.scheme === s) + '"><span class="tpdot"></span><span class="tpn">' + THEME_NAMES[s] + '</span><span class="tpck" aria-hidden="true">✓</span></button>';
   }).join('');
-  return '<div class="themesec" role="group" aria-label="Theme"><span class="tlabel">Theme</span>' +
-    '<button type="button" class="tmode" data-tmode aria-pressed="' + (t.mode === 'dark') + '" aria-label="Toggle dark mode" title="Light / dark">' + (t.mode === 'dark' ? 'Dark' : 'Light') + '</button>' + sw + '</div>';
+  return '<div class="tpop-scrim" data-tpclose></div>' +
+    '<div class="tpop-card" role="dialog" aria-modal="true" aria-label="Theme">' +
+    '<div class="tpop-h"><span class="tpop-t">Theme</span><button type="button" class="tpop-x" data-tpclose aria-label="Close theme">×</button></div>' +
+    '<div class="tpop-sub">Mode and gradient apply instantly and are remembered on this device.</div>' +
+    '<div class="tpop-lab">Mode</div><div class="tpop-modes">' +
+    '<button type="button" class="tpm" data-tpmode="light" aria-pressed="' + (t.mode === 'light') + '">Light</button>' +
+    '<button type="button" class="tpm" data-tpmode="dark" aria-pressed="' + (t.mode === 'dark') + '">Dark</button></div>' +
+    '<div class="tpop-lab">Gradient</div><div class="tpop-sws">' + sws + '</div></div>';
+}
+var TPOP_LAST = null;
+function openThemePop(opener){
+  var pop = document.getElementById('tpop');
+  if (!pop) { pop = document.createElement('div'); pop.className = 'tpop'; pop.id = 'tpop'; document.body.appendChild(pop); }
+  pop.innerHTML = themePopHTML();
+  pop.hidden = false;
+  TPOP_LAST = opener || document.querySelector('[data-topen]');
+  var btn = document.querySelector('[data-topen]'); if (btn) btn.setAttribute('aria-expanded', 'true');
+  var x = pop.querySelector('.tpop-x'); if (x) x.focus();
+}
+function closeThemePop(){
+  var pop = document.getElementById('tpop');
+  if (!pop || pop.hidden) return;
+  pop.hidden = true;
+  var btn = document.querySelector('[data-topen]'); if (btn) btn.setAttribute('aria-expanded', 'false');
+  if (TPOP_LAST && TPOP_LAST.focus) TPOP_LAST.focus();
+  TPOP_LAST = null;
 }
 function paintTheme(){
   var t = themeState();
-  var mb = document.querySelector('[data-tmode]');
-  if (mb) { mb.setAttribute('aria-pressed', String(t.mode === 'dark')); mb.textContent = t.mode === 'dark' ? 'Dark' : 'Light'; }
-  var sws = document.querySelectorAll('[data-tscheme]');
-  for (var i = 0; i < sws.length; i++) sws[i].setAttribute('aria-pressed', String(sws[i].getAttribute('data-tscheme') === t.scheme));
+  var dot = document.querySelector('[data-topen] .tpdot');
+  if (dot) dot.setAttribute('data-s', t.scheme);
+  var modes = document.querySelectorAll('[data-tpmode]');
+  for (var i = 0; i < modes.length; i++) modes[i].setAttribute('aria-pressed', String(modes[i].getAttribute('data-tpmode') === t.mode));
+  var sws = document.querySelectorAll('[data-tpscheme]');
+  for (var j = 0; j < sws.length; j++) sws[j].setAttribute('aria-pressed', String(sws[j].getAttribute('data-tpscheme') === t.scheme));
 }
 document.addEventListener('click', function(ev){
-  var el = ev.target && ev.target.closest ? ev.target.closest('[data-tmode],[data-tscheme]') : null;
+  var el = ev.target && ev.target.closest ? ev.target.closest('[data-topen],[data-tpmode],[data-tpscheme],[data-tpclose]') : null;
   if (!el) return;
   var t = themeState();
-  if (el.hasAttribute('data-tmode')) applyTheme(t.mode === 'dark' ? 'light' : 'dark', t.scheme);
-  else applyTheme(t.mode, el.getAttribute('data-tscheme'));
+  if (el.hasAttribute('data-topen')) { openThemePop(el); return; }
+  if (el.hasAttribute('data-tpclose')) { closeThemePop(); return; }
+  if (el.hasAttribute('data-tpmode')) applyTheme(el.getAttribute('data-tpmode'), t.scheme);
+  else if (el.hasAttribute('data-tpscheme')) applyTheme(t.mode, el.getAttribute('data-tpscheme'));
+});
+document.addEventListener('keydown', function(ev){
+  if (ev.key !== 'Escape') return;
+  var pop = document.getElementById('tpop');
+  if (pop && !pop.hidden) { ev.stopPropagation(); closeThemePop(); }
 });
 
 var TIERS = {
