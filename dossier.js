@@ -5943,7 +5943,7 @@ function phiRender(){
   var foot = '<div class="phi-foot"><span class="dim">' + (PHI.dirty ? 'Order changed \u2014 not saved yet' : PHI.vis.length + (PHI.vis.length === 1 ? ' photo' : ' photos')) + '</span><span class="sp"></span>' +
     (PHI.dirty ? '<button type="button" class="btn primary sm" data-act="phisave">Save order</button>' : '') +
     '<button type="button" class="btn ghost sm" data-act="phix">Done</button></div>';
-  var strip = PHI.vis.length > 1 ? '<div class="phi-strip">' + PHI.vis.map(function(x, i){
+  var strip = (!PHI.adj && PHI.vis.length > 1) ? '<div class="phi-strip">' + PHI.vis.map(function(x, i){
       return '<button type="button" class="phi-th' + (i === PHI.idx && !viewingHid ? ' on' : '') + '" data-act="phidot" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + esc(x.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (keyU && x.url === keyU ? '<span class="phi-kdot" title="Key photo"></span>' : '') + '<span class="phi-tn">' + (i + 1) + '</span></button>';
     }).join('') + '</div>' : '';
   var ov = document.createElement('div');
