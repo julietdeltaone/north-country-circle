@@ -312,3 +312,10 @@ html.ncc-tfreeze *,html.ncc-tfreeze *::before,html.ncc-tfreeze *::after{transiti
 #theme-open .tpdot[data-s="violetpink"],.tpsw[data-s="violetpink"] .tpdot{background:linear-gradient(135deg,#8b5cf6,#ec4899)}
 #theme-open .tpdot[data-s="amberrose"],.tpsw[data-s="amberrose"] .tpdot{background:linear-gradient(135deg,#f59e0b,#f43f5e)}
 #theme-open .tpdot[data-s="slate"],.tpsw[data-s="slate"] .tpdot{background:linear-gradient(135deg,#64748b,#94a3b8)}
+
+/* Depth pass (V3.1.0): the scene plane drifts slowest against
+   scroll (damped, transform-only; set from app.js). Overscan
+   keeps the drift from ever baring an edge. */
+:root{--plx-bg:0px}
+body::before{inset:-180px -70px;transform:translate3d(0,var(--plx-bg),0);will-change:transform}
+@media (prefers-reduced-motion:reduce){body::before{transform:none!important}}
