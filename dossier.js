@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.1.2';
+var APP_VERSION = '3.1.3';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -5951,7 +5951,7 @@ function phaRender(){
     var thumbs = (p.also && p.also.length) ? '<div class="pha-alts">' + [p.photo_url].concat(p.also.map(function(a){ return a.url; })).map(function(u){ return '<button type="button" class="pha-alt' + (u === curUrl ? ' on' : '') + '" data-act="phaalt" data-pname="' + esc(p.name) + '" data-u="' + esc(u) + '"><img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></button>'; }).join('') + '</div>' : '';
     view = '<div class="pha-view"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs +
       '<div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + (e ? milBadge(e) : '') + badge + (e ? audXHTML(di) : '') + '</div>' +
-      '<div class="pha-pos">' + (idx >= 0 ? (idx + 1) + ' of ' + q.length + ' in this queue' : 'Outside this queue') + ' &middot; ' + esc(p.type || 'photo') + '</div>' +
+      '<div class="pha-pos">' + (idx >= 0 ? '<span class="ahn-s">' + (idx + 1) + ' of ' + q.length + '</span> in this queue' : 'Outside this queue') + ' &middot; ' + esc(p.type || 'photo') + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
       (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
       '</div>';
@@ -7669,7 +7669,7 @@ function audPaintCounts(){
   audLaterPaint(); audPaintGoal(); audPaintModeBar();
   var s = $('#audsub'); if(!s) return;
   var left = audRemaining(), done = S.audit ? S.audit.done : 0;
-  s.textContent = left ? left.toLocaleString('en-US') + ' quick win' + (left === 1 ? '' : 's') + ' left' + (done ? ' · ' + done + ' filled in this visit' : '') : 'Nothing left to fill in';
+  s.innerHTML = left ? '<span class="ahn">' + left.toLocaleString('en-US') + '</span> quick win' + (left === 1 ? '' : 's') + ' left' + (done ? ' &middot; <span class="ahn-s">' + done + '</span> filled in this visit' : '') : 'Nothing left to fill in';
 }
 function audPaintEmpty(){
   var box = $('#audempty'), grid = $('#audgrid');
@@ -7719,7 +7719,7 @@ function audPaintGoal(){
   var d = audDay();
   f.style.width = Math.min(100, Math.round(d.n / d.goal * 100)) + '%';
   f.classList.toggle('met', d.n >= d.goal);
-  t.textContent = d.n + ' of ' + d.goal + ' filled today' + (d.n >= d.goal ? ' — goal reached' : '');
+  t.innerHTML = '<span class="ahn-s">' + d.n + '</span> of ' + d.goal + ' filled today' + (d.n >= d.goal ? ' — goal reached' : '');
 }
 /* One real fill landed (a value written, never a re-edit): session
    tallies, the streak, the daily goal, milestone notes. Milestones go
@@ -7914,7 +7914,7 @@ function audPaintCatProg(){
   var counts = audCatCounts();
   Object.keys(AUD_GAPS).forEach(function(g){ var s = $('#audcatn-' + g); if(s) s.textContent = counts[g]; });
   var cleared = (A.catDone && A.catDone[A.cat]) || 0;
-  el.textContent = AUD_GAPS[A.cat].tag + ': ' + counts[A.cat] + ' still open' + (cleared ? ' · ' + cleared + ' cleared this run' : '');
+  el.innerHTML = AUD_GAPS[A.cat].tag + ': <span class="ahn-s">' + counts[A.cat] + '</span> still open' + (cleared ? ' &middot; <span class="ahn-s">' + cleared + '</span> cleared this run' : '');
 }
 function audPaintModeBar(){
   var A = S.audit; if(!A) return;
@@ -8250,7 +8250,7 @@ function ykRender(){
   var st = ykState();
   if(!st.q.length){ w.innerHTML = '<div class="aud-caught"><h3>Nobody in the directory</h3></div>'; return; }
   if(st.i >= st.q.length){
-    w.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Run complete</h3><p>' + st.saved + ' saved this run. Everyone has had a pass.</p><p><button type="button" class="btn primary" data-act="ykrestart">Start over</button></p></div>' + ykToolsHTML();
+    w.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Run complete</h3><p><span class="ahn-s">' + st.saved + '</span> saved this run. Everyone has had a pass.</p><p><button type="button" class="btn primary" data-act="ykrestart">Start over</button></p></div>' + ykToolsHTML();
     ykWirePresetEdit(w);
     return;
   }
@@ -8265,7 +8265,7 @@ function ykRender(){
   w.innerHTML = '<div class="yk">' +
     '<div class="yk-head">' + avatar(e, 'lg') + '<div class="yk-who"><button type="button" class="aud-name yk-name" data-act="audopen" data-di="' + di + '">' + esc(dispName(e)) + '</button>' +
     '<p class="dim yk-cur">On file: ' + (knownSinceLabel(e) || 'not set') + ' &middot; Will save: <b>' + (nv ? esc(knownSinceLabel({ profile: { years_known: nv } })) : 'not set') + '</b></p>' +
-    '<p class="dim yk-prog">Person ' + (st.i + 1) + ' of ' + st.q.length + ' &middot; ' + missing + ' still missing a year &middot; ' + st.saved + ' saved this run</p>' + ykToolsHTML() + '</div></div>' +
+    '<p class="dim yk-prog">Person <span class="ahn-s">' + (st.i + 1) + '</span> of ' + st.q.length + ' &middot; <span class="ahn-s">' + missing + '</span> still missing a year &middot; <span class="ahn-s">' + st.saved + '</span> saved this run</p>' + ykToolsHTML() + '</div></div>' +
     '<div class="yk-cols">' + colsHTML + '</div>' +
     '<div class="yk-foot"><button type="button" class="btn ghost" data-act="ykskip">Skip (S)</button><button type="button" class="btn primary" data-act="yksave">Save &amp; next (Enter)</button>' +
     '<span class="dim yk-keys">Up/Down move &middot; Left/Right column &middot; type digits to jump &middot; Backspace clears &middot; Esc exits</span></div></div>';
