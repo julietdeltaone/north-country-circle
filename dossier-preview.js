@@ -9412,7 +9412,11 @@ function sbLogToday(){
 }
 function sbHome(){
   var ppl = people().length, rec = SB.recon || {};
-  var conf = ((SB.photos && SB.photos.people) || []).filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely'); }).length;
+  /* usable-photo people, counted the same way Insights counts them
+     (photo sidecar name-matched onto listed people) so the numbers
+     agree on every surface */
+  var phn = sbPhotoByName();
+  var conf = people().filter(function(di){ var p = phn[dispName(D.directory[di]).toLowerCase()]; return !!(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely')); }).length;
   var pct = ppl ? Math.round(100 * conf / ppl) : 0;
   var cn = SB.council || {}, bd = cn.budget || {};
   var flagsOpen = (cn.flags || []).filter(function(f){ return String(f.status || '').indexOf('Closed') !== 0; }).length;
@@ -9664,7 +9668,7 @@ function sbRaw(){
     h += '<p class="sb-note">Adopted ' + esc(cn.adopted || '') + ' · updated ' + esc(cn.updated || '') + ' · budget: ' + esc(String((cn.budget || {}).used_pct != null ? (cn.budget || {}).used_pct : '—')) + '% used (read ' + esc((cn.budget || {}).read_at || '') + ')</p>';
     h += tbl(['Role', 'Status', 'Next run'],
       (cn.roster || []).map(function(r){ return '<tr><td>' + esc(r.name || '') + '</td><td>' + esc(r.status || '') + '</td><td>' + esc(r.next_run || '') + '</td></tr>'; }).join(''));
-    h += '<h3 class="sb-h3">Open flags (' + (cn.flags || []).length + ')</h3>';
+    h += '<h3 class="sb-h3">Open flags (' + (cn.flags || []).filter(function(f){ return String(f.status || '').indexOf('Closed') !== 0; }).length + ')</h3>';
     h += (cn.flags || []).length ? tbl(['Date', 'From', 'Flag'], (cn.flags || []).map(function(f){ return '<tr><td>' + esc(f.date || '') + '</td><td>' + esc(f.from || '') + '</td><td>' + esc(f.title || '') + '</td></tr>'; }).join(''))
       : '<p class="sb-note">Nothing waiting on JD.</p>';
   }
@@ -10638,7 +10642,7 @@ function sbCouncil(){
   h += '</div>';
   /* (d) open flags */
   var fl = cn.flags || [];
-  h += '<h3 class="sb-h3">Open flags — waiting on JD (' + fl.length + ')</h3><div class="sb-card2">' +
+  h += '<h3 class="sb-h3">Open flags — waiting on JD (' + fl.filter(function(f){ return String(f.status || '').indexOf('Closed') !== 0; }).length + ')</h3><div class="sb-card2">' +
     (fl.length ? fl.map(function(f){
       return '<div class="cn-frow"><span class="cn-fdate">' + esc(f.date || '') + '</span>' +
         '<span class="cn-fmain"><b>' + esc(f.title || '') + '</b>' + (f.from ? ' <span class="cn-from">' + esc(f.from) + '</span>' : '') +
