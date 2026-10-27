@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.0.1';
+var APP_VERSION = '3.1.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9152,4 +9152,51 @@ function boot(){
    an IIFE; without this, camera/selection state is unmeasurable) */
 window.__NCC__ = { NET:NET, S:S, scoreFor:scoreFor, dispName:dispName };
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+
+/* ============================================================
+   Depth pass (V3.1.0): parallax planes. Builds the mid plane
+   (#plxmid: glow blobs, rings, one giant faint numeral) and
+   drifts the scene + mid plane against the #view scroll —
+   damped, transform-only, rAF-throttled, passive. Distances
+   asymptote at -58px (scene) / -108px (mid) across a page
+   scroll. Under prefers-reduced-motion nothing is set and the
+   CSS flattens both layers. The numeral mirrors the Home
+   People KPI when Home is on screen; hidden elsewhere.
+   ============================================================ */
+(function(){
+  var mid = document.createElement('div');
+  mid.id = 'plxmid'; mid.setAttribute('aria-hidden', 'true');
+  mid.innerHTML = '<div class="plx-blob plx-b1"></div><div class="plx-blob plx-b2"></div>' +
+    '<div class="plx-ring plx-r1"></div><div class="plx-ring plx-r2"></div><div class="plx-num"></div>';
+  document.body.appendChild(mid);
+  var num = mid.querySelector('.plx-num');
+  function numSync(){
+    var v = document.querySelector('.hm .hmk-strip .hmk-kpi .hmk-v');
+    var t = v ? (v.textContent || '').trim() : '';
+    if(t){ if(num.textContent !== t) num.textContent = t; num.classList.add('on'); }
+    else num.classList.remove('on');
+  }
+  numSync();
+  var view = document.getElementById('view');
+  if(window.MutationObserver && view){
+    var nt = null;
+    new MutationObserver(function(){ if(nt) return; nt = setTimeout(function(){ nt = null; numSync(); }, 150); })
+      .observe(view, { childList: true });
+  }
+  var mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  if(mq && mq.matches) return;
+  var ticking = false;
+  function upd(){
+    ticking = false;
+    var S = Math.max(view ? view.scrollTop : 0, window.scrollY || 0);
+    var k = 1 - Math.exp(-S / 850);
+    var r = document.documentElement.style;
+    r.setProperty('--plx-bg', (-58 * k).toFixed(1) + 'px');
+    r.setProperty('--plx-mid', (-108 * k).toFixed(1) + 'px');
+  }
+  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(upd); } }
+  if(view) view.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  upd();
 })();
