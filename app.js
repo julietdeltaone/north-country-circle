@@ -7,7 +7,7 @@
 /* App version — one number shared by both apps (explorer + dossier); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-const APP_VERSION = "3.0.0";
+const APP_VERSION = "3.0.1";
 /* Clear glass canvas palette: ink flips with the theme mode (V3.0.0) */
 const PAL_DARK = { ghost:"rgba(255,255,255,0.018)", whisper:"rgba(255,255,255,0.03)", faint:"rgba(255,255,255,0.05)", soft:"rgba(255,255,255,0.06)", mid:"rgba(255,255,255,0.22)", strong:"rgba(255,255,255,0.38)", core:"rgba(255,255,255,0.7)", nodeDim:"rgba(255,255,255,0.35)", ringHi:"rgba(255,255,255,0.85)", nodeBase:"rgba(195,195,195,0.26)", nodeWhite:"#ffffff", nodeHi:"#d4d4d4", label:"#f2f2f2", labelDim:"rgba(219,226,238,0.85)", labelHi:"rgba(255,255,255,0.92)" };
 const PAL_LIGHT = { ghost:"rgba(23,38,56,0.05)", whisper:"rgba(23,38,56,0.07)", faint:"rgba(23,38,56,0.10)", soft:"rgba(23,38,56,0.13)", mid:"rgba(23,38,56,0.32)", strong:"rgba(23,38,56,0.5)", core:"rgba(23,38,56,0.55)", nodeDim:"rgba(23,38,56,0.35)", ringHi:"rgba(23,38,56,0.65)", nodeBase:"rgba(23,38,56,0.30)", nodeWhite:"#10161d", nodeHi:"#2a3542", label:"#131a22", labelDim:"rgba(23,38,56,0.78)", labelHi:"rgba(13,20,28,0.92)" };
@@ -1104,7 +1104,7 @@ function initToolbar() {
   ver.title = "App version";
   ver.textContent = "V" + APP_VERSION;
   document.querySelector(".hud-tr").appendChild(ver);
-  /* Clear glass theme section (shared skin with the dossier app) */
+  /* Clear glass theme pop-up (shared skin with the dossier app) */
   const THEME_SCHEMES_X = ["bluegreen", "blueviolet", "tealsky", "violetpink", "amberrose", "slate"];
   const THEME_NAMES_X = { bluegreen: "Blue / Green", blueviolet: "Blue / Violet", tealsky: "Teal / Sky", violetpink: "Violet / Pink", amberrose: "Amber / Rose", slate: "Slate" };
   const themeStateX = () => {
@@ -1118,9 +1118,10 @@ function initToolbar() {
   };
   const paintThemeX = () => {
     const t = themeStateX();
-    const mb = document.getElementById("theme-mode");
-    if (mb) { mb.setAttribute("aria-pressed", String(t.mode === "dark")); mb.textContent = t.mode === "dark" ? "Dark" : "Light"; }
-    document.querySelectorAll("#theme-swatches .tsw").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === t.scheme)));
+    const dot = document.querySelector("#theme-open .tpdot");
+    if (dot) dot.dataset.s = t.scheme;
+    document.querySelectorAll("[data-tpmode]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tpmode === t.mode)));
+    document.querySelectorAll("[data-tpscheme]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tpscheme === t.scheme)));
   };
   const applyThemeX = (mode, scheme) => {
     const r = document.documentElement;
@@ -1134,19 +1135,53 @@ function initToolbar() {
     draw();
     requestAnimationFrame(() => requestAnimationFrame(() => r.classList.remove("ncc-tfreeze")));
   };
-  const swHost = document.getElementById("theme-swatches");
-  if (swHost) {
-    THEME_SCHEMES_X.forEach(s => {
-      const b = document.createElement("button");
-      b.type = "button"; b.className = "tsw"; b.dataset.s = s;
-      b.setAttribute("aria-label", "Gradient: " + THEME_NAMES_X[s]);
-      b.title = THEME_NAMES_X[s];
-      b.addEventListener("click", () => applyThemeX(themeStateX().mode, s));
-      swHost.appendChild(b);
-    });
-  }
-  const mbX = document.getElementById("theme-mode");
-  if (mbX) mbX.addEventListener("click", () => { const t = themeStateX(); applyThemeX(t.mode === "dark" ? "light" : "dark", t.scheme); });
+  let tpopLastX = null;
+  const closeThemePopX = () => {
+    const pop = document.getElementById("tpop");
+    if (!pop || pop.hidden) return;
+    pop.hidden = true;
+    const btn = document.getElementById("theme-open");
+    if (btn) btn.setAttribute("aria-expanded", "false");
+    if (tpopLastX && tpopLastX.focus) tpopLastX.focus();
+    tpopLastX = null;
+  };
+  const openThemePopX = () => {
+    let pop = document.getElementById("tpop");
+    if (!pop) {
+      pop = document.createElement("div");
+      pop.className = "tpop"; pop.id = "tpop";
+      document.body.appendChild(pop);
+      pop.addEventListener("click", ev => {
+        const el = ev.target.closest("[data-tpclose],[data-tpmode],[data-tpscheme]");
+        if (!el) return;
+        const t = themeStateX();
+        if (el.hasAttribute("data-tpclose")) closeThemePopX();
+        else if (el.hasAttribute("data-tpmode")) applyThemeX(el.dataset.tpmode, t.scheme);
+        else applyThemeX(t.mode, el.dataset.tpscheme);
+      });
+      document.addEventListener("keydown", ev => {
+        if (ev.key === "Escape" && !pop.hidden) { ev.stopPropagation(); closeThemePopX(); }
+      });
+    }
+    const t = themeStateX();
+    pop.innerHTML = '<div class="tpop-scrim" data-tpclose></div>' +
+      '<div class="tpop-card" role="dialog" aria-modal="true" aria-label="Theme">' +
+      '<div class="tpop-h"><span class="tpop-t">Theme</span><button type="button" class="tpop-x" data-tpclose aria-label="Close theme">×</button></div>' +
+      '<div class="tpop-sub">Mode and gradient apply instantly and are remembered on this device.</div>' +
+      '<div class="tpop-lab">Mode</div><div class="tpop-modes">' +
+      '<button type="button" class="tpm" data-tpmode="light" aria-pressed="' + (t.mode === "light") + '">Light</button>' +
+      '<button type="button" class="tpm" data-tpmode="dark" aria-pressed="' + (t.mode === "dark") + '">Dark</button></div>' +
+      '<div class="tpop-lab">Gradient</div><div class="tpop-sws">' +
+      THEME_SCHEMES_X.map(s => '<button type="button" class="tpsw" data-tpscheme="' + s + '" data-s="' + s + '" aria-pressed="' + (t.scheme === s) + '"><span class="tpdot"></span><span class="tpn">' + THEME_NAMES_X[s] + '</span><span class="tpck" aria-hidden="true">✓</span></button>').join("") +
+      '</div></div>';
+    pop.hidden = false;
+    tpopLastX = document.getElementById("theme-open");
+    if (tpopLastX) tpopLastX.setAttribute("aria-expanded", "true");
+    const x = pop.querySelector(".tpop-x");
+    if (x) x.focus();
+  };
+  const topenX = document.getElementById("theme-open");
+  if (topenX) topenX.addEventListener("click", openThemePopX);
   paintThemeX();
   const gb = document.getElementById("btn-guide"), gp = document.getElementById("guide");
   const setGuide = v => { gp.hidden = !v; gb.classList.toggle("on", v); };
