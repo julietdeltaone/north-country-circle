@@ -1926,7 +1926,7 @@ function topBack(){
     if(S.audit.lcOpen != null){ S.audit.lcOpen = null; viewAudit($('#view')); return; }
     if(audMode() !== 'cards'){ audSetMode('cards'); return; }
   }
-  if(S.route.name === 'sandbox' && typeof SB !== 'undefined' && SB.tool && SB.tool !== 'home'){ go('sandbox'); return; }
+  if(S.route.name === 'sandbox' && typeof SB !== 'undefined' && SB.tool && SB.tool !== 'home'){ go('sandbox', { replace:true }); return; }
   if(S.route.name === 'profile'){
     var fb = S.ctx && S.ctx.from ? S.ctx.from : 'people';
     if(fb === 'groups' && S.ctx && S.ctx.grp) fb = 'groups/' + S.ctx.grp;
