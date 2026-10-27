@@ -2402,3 +2402,13 @@ html[data-mode="dark"] #plxmid .plx-num{color:color-mix(in srgb,var(--ga) 9%,tra
   #top{margin:12px 16px 6px;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-up)}
   #rail{height:auto;margin:12px 0 12px 12px;border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh)}
 }
+/* QA find while shooting this pass (pre-existing — NOT caused by
+   the depth work): the Known Since columns' inner classes
+   (.hm-ybar/.hm-ycv/.hm-ycl) shipped without any styles in the
+   V2.55 rebuild, so the year bars never rendered — only counts
+   and labels showed. Styled here with the skin's tube-lit bar. */
+.hm-ycv{font:600 10.5px var(--sans);color:var(--txt)}
+.hm-ybar{display:flex;align-items:flex-end;width:100%;height:60px;margin-top:5px}
+.hm-ybar>span{display:block;width:100%;border-radius:2px 2px 0 0;background-image:linear-gradient(90deg,rgba(255,255,255,.35),rgba(255,255,255,0) 55%,rgba(0,0,0,.10)),linear-gradient(180deg,var(--gb),var(--ga));box-shadow:inset 1px 0 0 rgba(255,255,255,.4)}
+.hm-ycol:hover .hm-ybar>span{filter:brightness(1.12)}
+.hm-ycl{font:600 10px var(--sans);color:var(--mut);white-space:nowrap;margin-top:5px}
