@@ -9278,8 +9278,12 @@ function sbDownload(name, text, mime){
 /* direct batch POST to the same endpoint the outbox flush uses — for row
    creates (restore / new profile / re-key), where no directory index exists */
 function sbPostBatch(items){
-  return fetch(EXEC_URL, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-    body: JSON.stringify({ kind:'batch', items: items }) }).then(function(){ return true; }).catch(function(){ return false; });
+  /* the exact envelope the outbox flush uses: {password, kind:'batch', id:'batch', patch:{items}} */
+  return fetch(WEBAPP_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify({ password:getPw(), kind:'batch', id:'batch', patch:{ items: items } }) })
+    .then(function(r){ return r.json(); })
+    .then(function(res){ return !!(res && res.ok); })
+    .catch(function(){ return false; });
 }
 
 function viewSandbox(v){
