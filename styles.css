@@ -262,7 +262,7 @@ html[data-mode="light"] .hint{text-shadow:0 1px 8px rgba(255,255,255,.7),0 0 2px
 ::selection{background:color-mix(in srgb,var(--ga) 35%,transparent)}
 html.ncc-tfreeze *,html.ncc-tfreeze *::before,html.ncc-tfreeze *::after{transition:none!important}
 /* ---- Theme section (HUD top bar) ---- */
-.themesec{display:flex;align-items:center;gap:6px}
+.themesec{display:flex;align-items:center;gap:6px;position:absolute;top:52px;right:0;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 10px;-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);box-shadow:0 12px 28px -12px rgba(0,0,0,.35)}
 .themesec .tlabel{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
 .themesec #theme-mode{border-radius:999px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
 .themesec .tsw{width:18px;height:18px;border-radius:50%;border:1px solid var(--line2);padding:0;cursor:pointer;flex:none;background:transparent}
@@ -274,4 +274,4 @@ html.ncc-tfreeze *,html.ncc-tfreeze *::before,html.ncc-tfreeze *::after{transiti
 .themesec .tsw[data-s="slate"]{background:linear-gradient(135deg,#64748b,#94a3b8)}
 .themesec .tsw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--field),0 0 0 4px var(--txt)}
 .themesec .tsw:focus-visible,.themesec #theme-mode:focus-visible{outline:2px solid var(--red);outline-offset:2px}
-@media (max-width:760px){.themesec .tlabel{display:none}.themesec .tsw{width:15px;height:15px}.themesec{gap:4px}}
+@media (max-width:900px){.themesec{position:static}.themesec .tlabel{display:none}.themesec .tsw{width:15px;height:15px}.themesec{gap:4px}}
