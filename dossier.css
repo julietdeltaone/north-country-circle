@@ -2333,3 +2333,72 @@ html.ncc-tfreeze *,html.ncc-tfreeze *::before,html.ncc-tfreeze *::after{transiti
 .topen .tpdot[data-s="violetpink"],.tpsw[data-s="violetpink"] .tpdot{background:linear-gradient(135deg,#8b5cf6,#ec4899)}
 .topen .tpdot[data-s="amberrose"],.tpsw[data-s="amberrose"] .tpdot{background:linear-gradient(135deg,#f59e0b,#f43f5e)}
 .topen .tpdot[data-s="slate"],.tpsw[data-s="slate"] .tpdot{background:linear-gradient(135deg,#64748b,#94a3b8)}
+
+/* ============================================================
+   DEPTH PASS — V3.1.0 (JD 2026-10-27): 2D objects with depth.
+   No 3D: zero perspective / rotateX / rotateY / extrusion.
+   Depth = layering, overlap, shadow separation, translucency
+   stacking, and parallax drift across three planes:
+     scene  (body::before — drifts slowest, ~0.45x feel)
+     mid    (#plxmid — glow shapes, rings, one giant faint
+             numeral; drifts between scene and content)
+     content (the app — scrolls at 1x)
+   Drift is damped (asymptotes at -58px / -108px across a page
+   scroll), transform-only, rAF-throttled from dossier.js, and
+   flattens entirely under prefers-reduced-motion.
+   The flush grid breaks too: the KPI strip overlaps the Home
+   header band, cards sit at staggered offsets on different
+   tiers, and the chrome (top bar / rail / page heads) floats
+   as its own planes instead of meeting edge to edge.
+   ============================================================ */
+:root{--plx-bg:0px;--plx-mid:0px}
+/* scene plane: overscanned so the drift never bares an edge */
+body::before{inset:-180px -70px;transform:translate3d(0,var(--plx-bg),0);will-change:transform}
+/* ---- mid plane ---- */
+#plxmid{position:fixed;inset:-160px -60px;z-index:-1;pointer-events:none;transform:translate3d(0,var(--plx-mid),0);will-change:transform}
+#plxmid .plx-blob{position:absolute;border-radius:50%}
+#plxmid .plx-b1{width:64vmax;height:64vmax;right:-16vmax;top:14%;background:radial-gradient(circle,color-mix(in srgb,var(--ga) 16%,transparent),transparent 65%)}
+#plxmid .plx-b2{width:56vmax;height:56vmax;left:-18vmax;top:56%;background:radial-gradient(circle,color-mix(in srgb,var(--gb) 14%,transparent),transparent 65%)}
+#plxmid .plx-ring{position:absolute;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--ga) 12%,transparent)}
+#plxmid .plx-r1{width:46vmax;height:46vmax;left:-13vmax;top:-12%}
+#plxmid .plx-r2{width:31vmax;height:31vmax;right:-9vmax;top:62%;border-color:color-mix(in srgb,var(--gb) 11%,transparent)}
+#plxmid .plx-num{position:absolute;right:-1%;top:31%;font:700 43vmin var(--serif);line-height:1;letter-spacing:-.02em;color:color-mix(in srgb,var(--ga) 7%,transparent);opacity:0;transition:opacity .45s var(--ease-std)}
+#plxmid .plx-num.on{opacity:1}
+html[data-mode="dark"] #plxmid .plx-b1{background:radial-gradient(circle,color-mix(in srgb,var(--ga) 21%,transparent),transparent 65%)}
+html[data-mode="dark"] #plxmid .plx-b2{background:radial-gradient(circle,color-mix(in srgb,var(--gb) 18%,transparent),transparent 65%)}
+html[data-mode="dark"] #plxmid .plx-ring{border-color:color-mix(in srgb,var(--ga) 15%,transparent)}
+html[data-mode="dark"] #plxmid .plx-r2{border-color:color-mix(in srgb,var(--gb) 14%,transparent)}
+html[data-mode="dark"] #plxmid .plx-num{color:color-mix(in srgb,var(--ga) 9%,transparent)}
+@media (prefers-reduced-motion:reduce){
+  body::before,#plxmid{transform:none!important}
+  #plxmid .plx-num{transition:none}
+}
+/* ---- header bands: pages get a resting glass band; the Home
+   band is a lower plane that the KPI strip overlaps ---- */
+.pagehead{background:linear-gradient(180deg,var(--glass2),var(--glass));border:1px solid var(--line);border-radius:16px;padding:16px 20px;margin-bottom:18px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%)}
+.hm .pagehead{padding:20px 22px 46px;margin-bottom:0;border-radius:18px}
+.hm .hmk-strip{position:relative;z-index:2;margin:-28px 16px 0;gap:14px}
+.hm .hmk-kpi:nth-child(2){transform:translateY(8px)}
+.hm .hmk-kpi:nth-child(3){transform:translateY(14px)}
+.hm .hmk-kpi:nth-child(4){transform:translateY(8px)}
+.hm .hmk-kpi:nth-child(5){transform:translateY(2px)}
+.hm .hmk-kpi:nth-child(even){background:var(--card2)}
+/* mix row: unequal columns, second card dropped a plane-step */
+.hm .hm-mixrow{grid-template-columns:1.05fr .95fr;gap:16px;margin-top:32px}
+.hm .hm-mixrow>.hm-blk:nth-child(2){transform:translateY(12px);box-shadow:var(--sh)}
+/* ranking cards: staggered offsets, alternating translucency */
+.hm .hm-ranks{gap:28px 16px;margin-top:30px}
+.hm .hm-ranks>.hm-blk:nth-child(3n+2){transform:translateY(14px)}
+.hm .hm-ranks>.hm-blk:nth-child(3n){transform:translateY(6px)}
+.hm .hm-ranks>.hm-blk:nth-child(even){background:var(--card2)}
+/* years + coverage: second plane-step, uneven split */
+.hm .hm-row2{grid-template-columns:1.92fr 1.08fr;gap:16px;margin-top:32px}
+.hm .hm-row2>.hm-blk:nth-child(2){transform:translateY(16px);box-shadow:var(--sh)}
+/* the long blocks below keep their own rhythm, not the grid's */
+.hm>.hm-blk{margin-top:26px}
+.hm>.hm-blk.hm-act{box-shadow:var(--sh)}
+/* ---- floating chrome (desktop): top bar + rail are planes ---- */
+@media (min-width:900px){
+  #top{margin:12px 16px 6px;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-up)}
+  #rail{height:auto;margin:12px 0 12px 12px;border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh)}
+}
