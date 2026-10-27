@@ -1,7 +1,7 @@
 {
  "updated": "2026-10-27",
  "total": 678,
- "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
+ "batches": "All batches complete \u2014 all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -12,7 +12,7 @@
    "type": null
   },
   {
-   "evidence": "Page titled 'Meet The Owner | Adept Detailing' carries a single lead image directly above 'Aaron Daniels is the founder and owner of Adept Detailing...' — no explicit caption/alt naming him in the image itself, so likely not confirmed. Both SUNY Canton Merit stories text-only.",
+   "evidence": "Page titled 'Meet The Owner | Adept Detailing' carries a single lead image directly above 'Aaron Daniels is the founder and owner of Adept Detailing...' \u2014 no explicit caption/alt naming him in the image itself, so likely not confirmed. Both SUNY Canton Merit stories text-only.",
    "name": "Aaron Daniels",
    "photo_url": "https://static.wixstatic.com/media/6349cb_caabf0d69b77421e903fd82b6c683933~mv2.jpg/v1/fill/w_341,h_339,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/6349cb_caabf0d69b77421e903fd82b6c683933~mv2.jpg",
    "source_page": "https://www.adeptdetailing.online/about-5",
@@ -21,7 +21,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @abbystiles_ (display name \"abby stiles\"); bio: \"ED RN 🩺\".",
+   "evidence": "Instagram profile @abbystiles_ (display name \"abby stiles\"); bio: \"ED RN \ud83e\ude7a\".",
    "name": "Abby Stiles",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/689538733_18552458239064954_944975226861876613_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=pnoHHUcrtjUQ7kNvwF1wSMB&_nc_oc=AdpColjlQMan-dU52IVwoa7zSaKZgcqwP6a6aQOAjPA1t7fvqveqTg_7HQswackyzr-_s4AlyJpZ180hTB63DgPg&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=AdRtPSNksfXXveNDxlWb_w&oh=00_AQPVcjzDvtJ7A_pm9WMksBItNWNtQE-MRgHeweOdg92seQ&oe=6AE005EA",
    "source_page": "https://www.instagram.com/abbystiles_/",
@@ -47,7 +47,7 @@
    "type": null
   },
   {
-   "evidence": "UNE Athletics roster page 'Adria Tebo — 2026-2027 Women's Ice Hockey Roster' (Senior, Forward, Canton NY, Northwood School); sole player image file WIH_Tebo_09159.jpg — roster headshot tied to her by page and filename. Note: on-file URL path says mens-soccer but serves her women's ice hockey roster page.",
+   "evidence": "UNE Athletics roster page 'Adria Tebo \u2014 2026-2027 Women's Ice Hockey Roster' (Senior, Forward, Canton NY, Northwood School); sole player image file WIH_Tebo_09159.jpg \u2014 roster headshot tied to her by page and filename. Note: on-file URL path says mens-soccer but serves her women's ice hockey roster page.",
    "name": "Adria Tebo",
    "photo_url": "https://athletics.une.edu/images/2026/10/20/WIH_Tebo_09159.jpg?width=300",
    "source_page": "https://athletics.une.edu/sports/mens-soccer/roster/adria-tebo/8118",
@@ -65,13 +65,20 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Caption under image: 'Trap Men and Women National Teams'; article reports Aeriel Skinner gold in Women's Open Trap at same Tucson selection match, but caption does not name her and Women's Trap National Team list does not include her — presence unconfirmed. Other image on page rejected (captioned Carey Garrison, different person). Priority SSUSA article returned 404.",
+   "evidence": "CONFIRMED (Dossier Council inaugural hunt, 2026-10-27). Anchor 1: SSUSA (NRA) article 'What's In Your Range Bag, Aeriel Skinner?' carries this photo with alt text naming her ('Aeriel Skinner'). Anchor 2: the article states she attended the University of Arizona and shot on its team all four years, matching the profile (U.S. Army + University of Arizona); a second source (MN2S talent roster page for 'Aeriel Alease Skinner') independently confirms she joined the U.S. Army in Jan 2025 and was assigned to the Army Marksmanship Unit Shotgun Team. URL GET-verified 200 image/jpeg immediately before filing.",
    "name": "Aeriel Skinner",
-   "photo_url": "https://usashooting.org/app/uploads/2025/12/trap-national-teams-300x225.png",
-   "source_page": "https://sitemaps.usashooting.org/2026-shotgun-national-teams/",
-   "status": "possible",
-   "type": "group",
-   "added_approx": "Oct 2026"
+   "photo_url": "https://www.ssusa.org/media/hkma4sun/2023-skinner-issf3.jpg?quality=60",
+   "source_page": "https://www.ssusa.org/content/what-s-in-your-range-bag-aeriel-skinner/",
+   "status": "confirmed",
+   "type": "portrait",
+   "also": [
+    {
+     "url": "https://usashooting.org/app/uploads/2025/12/trap-national-teams-300x225.png",
+     "note": "Earlier 'possible' filing (Oct 2026): USA Shooting national-teams group graphic; the article caption did not name her, so her presence was unconfirmed. Superseded as key photo by the confirmed SSUSA portrait on 2026-10-27.",
+     "source_page": "https://sitemaps.usashooting.org/2026-shotgun-national-teams/"
+    }
+   ],
+   "added": "2026-10-27"
   },
   {
    "evidence": "Instagram profile @aidantruth (display name \"Aidan Daniels\").",
@@ -100,7 +107,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @aleeparker_ (display name \"Alessandra Parker\"); bio: \"Wife to @joshcparker_  Boy Mom x3 🧸🤎 Girl Mom x1 🩰✨                                            Catholic 🙏🏼 NY \".",
+   "evidence": "Instagram profile @aleeparker_ (display name \"Alessandra Parker\"); bio: \"Wife to @joshcparker_  Boy Mom x3 \ud83e\uddf8\ud83e\udd0e Girl Mom x1 \ud83e\ude70\u2728                                            Catholic \ud83d\ude4f\ud83c\udffc NY \".",
    "name": "Alessandra Parker",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.75761-19/491441522_18500087464047843_2636575453776856186_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=raj6HXnzszsQ7kNvwF7XQZ6&_nc_oc=Ado_BYr8yoCzmswX3dfA_t3_msUaqciNKAlHw-UZdeOulvE03hn1TnXALA1mWpmynNXeW-n6Ox8HdL66-5DLrks5&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=v_rYWX8OexwRCLlUfuSRGw&oh=00_AQO8iemrQGt3468UCu4QCvg46nkWCCjPmtgXFNXGYxM3cw&oe=6AE020BD",
    "source_page": "https://www.instagram.com/aleeparker_/",
@@ -135,7 +142,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @alexis_krapf (display name \"Alexis Nicole\"); bio: \"saved by grace. always learning. 🤍\".",
+   "evidence": "Instagram profile @alexis_krapf (display name \"Alexis Nicole\"); bio: \"saved by grace. always learning. \ud83e\udd0d\".",
    "name": "Alexis Donnely",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/793640019_18622001695057848_7921613203729665776_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=MkHmBVcErIsQ7kNvwEhKWqt&_nc_oc=Adoe17RYofYp6EOw1PRwGH2m-rChD0EwS6yMFcHg8J63t7zndrmKjVfXuf9IRPOJlqNlwjerzfUy-h8qMFaGvOpo&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=YeGfST8aLsEvoTOS-O7klw&oh=00_AQMwPbpTgT9c4n5QDLVAQPQNjWpRnx-lvbPL-LKtsQDMvQ&oe=6AE026AE",
    "source_page": "https://www.instagram.com/alexis_krapf/",
@@ -151,7 +158,7 @@
    "added": "2026-10-26"
   },
   {
-   "evidence": "SUNY Canton Roos 2021-22 women’s basketball roster headshot: Alexis Sullivan, sophomore guard, hometown Madrid, NY / Madrid-Waddington Central School; nursing major, three-sport athlete at Madrid-Waddington.",
+   "evidence": "SUNY Canton Roos 2021-22 women\u2019s basketball roster headshot: Alexis Sullivan, sophomore guard, hometown Madrid, NY / Madrid-Waddington Central School; nursing major, three-sport athlete at Madrid-Waddington.",
    "name": "Alexis Sullivan",
    "photo_url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/rooathletics.com/images/2021/11/4/AlexisSullivan.jpg",
    "source_page": "https://rooathletics.com/roster.aspx?rp_id=4662",
@@ -161,7 +168,7 @@
    "added": "2026-10-26"
   },
   {
-   "evidence": "Team section lists him by name/role directly under the image ('Alfredo Rodriguez — Chaplain & Bible Instructor'); filename alfredo_rodriguez.webp.",
+   "evidence": "Team section lists him by name/role directly under the image ('Alfredo Rodriguez \u2014 Chaplain & Bible Instructor'); filename alfredo_rodriguez.webp.",
    "name": "Alfredo Rodriguez",
    "photo_url": "https://www.awakeningchristianacademy.org/images/team/alfredo_rodriguez.webp",
    "source_page": "https://www.awakeningchristianacademy.org/",
@@ -196,7 +203,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @acole313 (display name \"Allison Cole\"); bio: \"-Mom of 9 beautiful children -Registered nurse  -Chasing all things spiritual -☀️\".",
+   "evidence": "Instagram profile @acole313 (display name \"Allison Cole\"); bio: \"-Mom of 9 beautiful children -Registered nurse  -Chasing all things spiritual -\u2600\ufe0f\".",
    "name": "Allison Cole",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/756535419_18329708392260392_6350520712941618355_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=SYQTskKlh-AQ7kNvwG9BrTu&_nc_oc=AdquahssWXLvmYISdCxVQ4gGIY_k8io4BrhXsSwBjqruUnEPClq_VEno9PDzDI4LB2Q-ioGL31VHkHJoEi7hQYQY&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=6e9fLxse7LXIsPA3TKvsMQ&oh=00_AQMI8iLpH5P5XWP12aZ3UVni2ApvZlEdH2D-106Vg5TFuw&oe=6AE01881",
    "source_page": "https://www.instagram.com/acole313/",
@@ -205,7 +212,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @ally.dubbioso (display name \"al ッ\"); bio: \"NY \\\\ pdam alum 👩🏻‍🏫\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @ally.dubbioso (display name \"al \u30c3\"); bio: \"NY \\\\ pdam alum \ud83d\udc69\ud83c\udffb\u200d\ud83c\udfeb\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
    "name": "Ally Dubbioso",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/574785316_18542148250046520_2036318862179494693_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=u_5-6mXZwPgQ7kNvwGYH9Kr&_nc_oc=AdoUk36RWr8ym11iv1UrhFNC-FXUhnaqpFGtmGe-VDH1qzU5-mhBLHZLFEyTgx45VYucHyj7z8ePNEnUo4ywADbE&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=jFUGnsPKs1HEVHlUgh6RJw&oh=00_AQMAVR5-HHIFBkm0EdJikJM9iiE0ZDVwM_oPrI0o_bfuMw&oe=6AE03192",
    "source_page": "https://www.instagram.com/ally.dubbioso/",
@@ -231,7 +238,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @alyssalramsay (display name \"Alyssa L Ramsay\"); bio: \"follower of christ  @caelin.ramsay’s wife  environmental scientist suny potsdam ‘26\".",
+   "evidence": "Instagram profile @alyssalramsay (display name \"Alyssa L Ramsay\"); bio: \"follower of christ  @caelin.ramsay\u2019s wife  environmental scientist suny potsdam \u201826\".",
    "name": "Alyssa L Ramsay",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/307459001_141997061873905_6863069575727406548_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=jTBe7IMVxyUQ7kNvwHA3LLS&_nc_oc=AdpjpYWLQYjXAhpejlF0qGuyFcD_B35NVI7mPqxOKrWu3v4nh55BM6JaI4qfP5Ohnf-BE4LCfVslwQXu5YT5v9pI&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPDLipKTjMZqbcFbl90OZj0lHHXW4DhsVZ8r4vdJ9VsCA&oe=6AE0355C",
    "source_page": "https://www.instagram.com/alyssalramsay/",
@@ -240,7 +247,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "SUNY Canton Spring 2026 honors page lists her (Nursing BS) as a text-only entry among 1,500+ names; the commencement PDF likewise lists her in a text-only program — no images.",
+   "evidence": "SUNY Canton Spring 2026 honors page lists her (Nursing BS) as a text-only entry among 1,500+ names; the commencement PDF likewise lists her in a text-only program \u2014 no images.",
    "name": "Amber Erwin",
    "photo_url": null,
    "source_page": "https://www.canton.edu/news/2026/honors-s26.php",
@@ -274,7 +281,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @anastasiasbakery (display name \"Anastasia Cote\"); bio: \"A seasonal bakery truck driving around the North Country with fresh, homemade goodies 🚙\".",
+   "evidence": "Instagram profile @anastasiasbakery (display name \"Anastasia Cote\"); bio: \"A seasonal bakery truck driving around the North Country with fresh, homemade goodies \ud83d\ude99\".",
    "name": "Anastasia Cote",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/340342465_1112800083445639_9098980757329435270_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=Fe8PlTDUVNYQ7kNvwHXTwQD&_nc_oc=AdqqzBDeS7po1bnkTKryuoq1y5SbvsrPv-lHCyvtioojSWIm39qH-QUOQzg9pBkvKwp8sw3k5qnHHpKd330s-pMa&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOplXPh-EjHiurxoO2oJJOx1YzjIYtgJBGfvf91vqxKwA&oe=6AE00784",
    "source_page": "https://www.instagram.com/anastasiasbakery/",
@@ -344,7 +351,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Dental team page heading 'Dr. Angeles Felix, DMD, CAGS' with image directly under it labeled '[Image 0: dr felix]', followed by her bio — staff photo tied by name and placement. NPI profile text-only. Fixed 2026-10-22: the page-extraction URL (cumberlandsmile.com/mediaManagerImagedr-felix.jpg) 404s when loaded directly; a live-browser check shows the photo renders on the practice's own page and its real CDN src is the URL now filed.",
+   "evidence": "Dental team page heading 'Dr. Angeles Felix, DMD, CAGS' with image directly under it labeled '[Image 0: dr felix]', followed by her bio \u2014 staff photo tied by name and placement. NPI profile text-only. Fixed 2026-10-22: the page-extraction URL (cumberlandsmile.com/mediaManagerImagedr-felix.jpg) 404s when loaded directly; a live-browser check shows the photo renders on the practice's own page and its real CDN src is the URL now filed.",
    "name": "Angeles Felix",
    "photo_url": "https://cdcssl.ibsrv.net/ibimg/smb/430x430_80/webmgr/0v/o/k/dr-felix.jpg.webp?b8b50b506902b486890a5da74d95a594",
    "source_page": "https://cumberlandsmile.com/team",
@@ -385,7 +392,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @annabellerose.07 (display name \"Annabelle Dowling\"); bio: \"Child of God • Musical theater • Dancer • Ice cream lover • Jesus Saves  @theartsprogramofnny Dance teacher\".",
+   "evidence": "Instagram profile @annabellerose.07 (display name \"Annabelle Dowling\"); bio: \"Child of God \u2022 Musical theater \u2022 Dancer \u2022 Ice cream lover \u2022 Jesus Saves  @theartsprogramofnny Dance teacher\".",
    "name": "Annabelle Dowling",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/841903528_18376250737240265_3701142148410485143_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43MzAuQzMifQ%3D%3D&_nc_ohc=VQ5t9FhjR5oQ7kNvwHiecfV&_nc_oc=AdpidNN80gNl0JLsXGiBX0YDd737Lghdsr8sVi8WfQG-A4hyuuqjBywQnXmqbOhVdiU0Vi32U-LsgbORc8IOYdbb&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=4jXmmARMDKFp5e96pLjgtQ&oh=00_AQPJJOFVwl7YFfXVygshJRl1E6qSNttUywgk5sWs3VR43w&oe=6AE03039",
    "source_page": "https://www.instagram.com/annabellerose.07/",
@@ -411,7 +418,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @lise.cevallos (display name \"Annelise Cevallos\"); bio: \"Boy mama of twins♥️♥️♥️  Happily married 💍♥️\".",
+   "evidence": "Instagram profile @lise.cevallos (display name \"Annelise Cevallos\"); bio: \"Boy mama of twins\u2665\ufe0f\u2665\ufe0f\u2665\ufe0f  Happily married \ud83d\udc8d\u2665\ufe0f\".",
    "name": "Annelise Cevallos",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/590771611_18019663220792927_5763661343509103366_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=WxZ8EQvLA0gQ7kNvwGr1wPx&_nc_oc=Adppc-Owvv8fxoBmqlTwUEMNUnX4gwXTN0-qlMDG_Ui_N57V0UBFXcETW77Tn5HUnALRZX2UN-nhJh2bIFOjMFYq&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=jQ8Y9GI92B1kT7U-Cj_5cA&oh=00_AQNndhrmwbyauImYRM-jF9dPjoy4eoIXvQErbSDWrDndPw&oe=6AE00F0B",
    "source_page": "https://www.instagram.com/lise.cevallos/",
@@ -454,7 +461,7 @@
    "type": null
   },
   {
-   "evidence": "Clarkson Merit appointment story carries a single media attachment named ashleigh-graveline.jpg captioned 'Ashleigh Graveline' — the story announces her appointment as clinical assistant professor of OT at Clarkson, so the labeled attachment is her photo. Her Clarkson people profile is text-only.",
+   "evidence": "Clarkson Merit appointment story carries a single media attachment named ashleigh-graveline.jpg captioned 'Ashleigh Graveline' \u2014 the story announces her appointment as clinical assistant professor of OT at Clarkson, so the labeled attachment is her photo. Her Clarkson people profile is text-only.",
    "name": "Ashleigh Graveline",
    "photo_url": "https://s3.amazonaws.com/rm3.attachments.prod.readmedia.com/files/42190/inline/ashleigh-graveline.jpg?1537449223",
    "source_page": "https://clarkson.meritpages.com/news/ashleigh-graveline-appointed-clinical-assistant-professor-of-occupational-therapy-at-clarkson-university/5392/print",
@@ -487,7 +494,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @autumn.zellweger (display name \"Autumn Zellweger ♡\"); bio: \"my life, shared with you\".",
+   "evidence": "Instagram profile @autumn.zellweger (display name \"Autumn Zellweger \u2661\"); bio: \"my life, shared with you\".",
    "name": "Autumn Zellweger",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/671034072_18579371146016826_7117688331488150182_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=NyMs4Z13AnAQ7kNvwGu-pJk&_nc_oc=AdrlNbZQtXzh-SNYLaFAJeQnaR69o_hGE1av-dSQ5D7t5mVXR_loMZzWkXMqkN8NoHAU7y6OZeq5nNNKoIEVgmOG&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=xU8EMruwfHFAET_AA4BwvQ&oh=00_AQOYwUG6qZYMc8wVIqSjXVS-5swxgxJdAx_RksKeIbvB5Q&oe=6AE01B32",
    "source_page": "https://www.instagram.com/autumn.zellweger/",
@@ -546,7 +553,7 @@
    "type": null
   },
   {
-   "evidence": "NCPR article's sole editorial photo (filename benjosh.jpg) sits directly above the caption 'Joshua McGrath, Potsdam, and Ben Hull, Madrid, leave for Uganda this weekend' — the caption names both men pictured, the two filmmakers the article is about (documentary on Uganda water relief, July 2011). WWNY source is policy-blocked.",
+   "evidence": "NCPR article's sole editorial photo (filename benjosh.jpg) sits directly above the caption 'Joshua McGrath, Potsdam, and Ben Hull, Madrid, leave for Uganda this weekend' \u2014 the caption names both men pictured, the two filmmakers the article is about (documentary on Uganda water relief, July 2011). WWNY source is policy-blocked.",
    "name": "Ben Hull",
    "photo_url": "https://www.northcountrypublicradio.org/news/images/benjosh.jpg",
    "source_page": "https://www.northcountrypublicradio.org/news/story/18077/20110726/north-country-filmmakers-turn-the-camera-on-uganda-s-water-crisis",
@@ -555,7 +562,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CFC leadership page lists '[Image 1: Ben Levendusky]' directly above heading 'Ben Levendusky — Pastor at CFC Madrid'. Same image on /madrid/ as Lead Pastor. Second distinct confirmed photo on americanwomenswrestling.com/who-we-are captioned 'Ben Levendusky - Photo by Richard Sinclair': https://images.squarespace-cdn.com/content/v1/5d646c0f2d707d0001489778/1612557628612-D8EG1I7PFGRQ8FSZ9KAW/Ben.jpg",
+   "evidence": "CFC leadership page lists '[Image 1: Ben Levendusky]' directly above heading 'Ben Levendusky \u2014 Pastor at CFC Madrid'. Same image on /madrid/ as Lead Pastor. Second distinct confirmed photo on americanwomenswrestling.com/who-we-are captioned 'Ben Levendusky - Photo by Richard Sinclair': https://images.squarespace-cdn.com/content/v1/5d646c0f2d707d0001489778/1612557628612-D8EG1I7PFGRQ8FSZ9KAW/Ben.jpg",
    "name": "Ben Levendusky",
    "photo_url": "https://www.cfconline.org/wp-content/cfc-leadership/485.webp?v=1779404586",
    "source_page": "https://www.cfconline.org/leadership/",
@@ -694,7 +701,7 @@
    "type": null
   },
   {
-   "evidence": "State Police release names Deputy Brian Hanlin as a responding deputy but carries no photo at all — no portrait or scene photo to file.",
+   "evidence": "State Police release names Deputy Brian Hanlin as a responding deputy but carries no photo at all \u2014 no portrait or scene photo to file.",
    "name": "Brian Hanlin",
    "photo_url": null,
    "source_page": "https://troopers.ny.gov/news/state-police-investigating-officer-involved-shooting-jefferson-county",
@@ -736,7 +743,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @awretchlikebri (display name \"Brianna McCarthy\"); bio: \"Daughter of the king and mother to four princesses ❤️\".",
+   "evidence": "Instagram profile @awretchlikebri (display name \"Brianna McCarthy\"); bio: \"Daughter of the king and mother to four princesses \u2764\ufe0f\".",
    "name": "Brianna McCarthy",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/527452932_18519233341046497_500939133071108633_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=WR3pZuQQbewQ7kNvwGVSlss&_nc_oc=AdpQPeEr-_PQ4np4nzCWPiYpXhxmS8AkA2sLBu8AsYWYb_jijIm90U_rJAKpAQE906j-TObZHtsSRzj6gCE7cw9f&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=Om4SkeMayV2K5ChiZAZcNQ&oh=00_AQPmdB8O_5yf_brFQC8F7VrqUu2BGarhVe0R-M3ejogIoQ&oe=6AE016B2",
    "source_page": "https://www.instagram.com/awretchlikebri/",
@@ -797,7 +804,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @brookemariejoyce (display name \"brooke ✮\"); bio: \"𐙚 ⋆｡𖦹°🫧⋆.ೃ࿔*:･✁ new y𖦹rk → fl𖦹rida @brookedoesitbetter\".",
+   "evidence": "Instagram profile @brookemariejoyce (display name \"brooke \u272e\"); bio: \"\ud801\ude5a \u22c6\uff61\ud81a\uddb9\u00b0\ud83e\udee7\u22c6.\u0cc3\u0fd4*:\uff65\u2701 new y\ud81a\uddb9rk \u2192 fl\ud81a\uddb9rida @brookedoesitbetter\".",
    "name": "Brooke Joyce",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/542877120_18400734688138154_8020430973955537715_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy42MDIuQzMifQ%3D%3D&_nc_ohc=CzBw36evJAEQ7kNvwG_Xsoy&_nc_oc=Ado8cLZt2n1UjWTQ3HQohDa9bEdA2SWAyw0Pm7XeWZlnztis39oUR0vCSFg4qmXe1_Q8ybkz7cz7dq5C8q4-bu4M&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=RpIU6L5DemG-5TGyyWRWYg&oh=00_AQMlF0odpyZqmTI6lzHyZBzZrKnFFy4CRfumff114LepBA&oe=6AE0281F",
    "source_page": "https://www.instagram.com/brookemariejoyce/",
@@ -806,7 +813,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "anchor 1: St. Lawrence Valley Prevention Council team page (WordPress) places this image directly under the heading 'Brooke Larrabee / Health Educator' with bio 'graduated from St. Lawrence University with a bachelor's degree in psychology... experience working in the medical field'; anchor 2: SLU Merit + Saints softball roster records Brooke Larrabee of Canton, NY, St. Lawrence University Class of 2025, psychology major, Hugh C. Williams HS, softball outfielder — matches profile (St. Lawrence University). Prior photos.json status was no_photo.",
+   "evidence": "anchor 1: St. Lawrence Valley Prevention Council team page (WordPress) places this image directly under the heading 'Brooke Larrabee / Health Educator' with bio 'graduated from St. Lawrence University with a bachelor's degree in psychology... experience working in the medical field'; anchor 2: SLU Merit + Saints softball roster records Brooke Larrabee of Canton, NY, St. Lawrence University Class of 2025, psychology major, Hugh C. Williams HS, softball outfielder \u2014 matches profile (St. Lawrence University). Prior photos.json status was no_photo.",
    "name": "Brooke Larrabee",
    "photo_url": "https://svpc.net/wp-content/uploads/2026/03/2026-B.-Larrabee.jpg",
    "source_page": "https://svpc.net/our-friendly-team/",
@@ -815,7 +822,7 @@
    "added": "2026-10-27"
   },
   {
-   "evidence": "Instagram profile @brookelynnmoore_ (display name \"Brooke Moore\"); bio: \"Lucky girl syndrome🍀\".",
+   "evidence": "Instagram profile @brookelynnmoore_ (display name \"Brooke Moore\"); bio: \"Lucky girl syndrome\ud83c\udf40\".",
    "name": "Brooke Moore",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.75761-19/502207918_18507137821055534_5704890746690039972_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=nuTZLVMIYSwQ7kNvwGdZvOt&_nc_oc=AdptAz4I2QGAv7vpti3a2u_5nx6beFQv6AMTHKTauNJtPqoUr57WrNQ8asxKUpFvDhFfDbRfIOeEGAs93BSmiU2e&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=A9tUB12Ttti7voK1n7jxyQ&oh=00_AQOWaJ2CHevdoFDDN0r_T8EeJI53NL5ILMoZ-qGP4fooMg&oe=6AE02332",
    "source_page": "https://www.instagram.com/brookelynnmoore_/",
@@ -824,7 +831,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Canton Fire Dept members page lists him (FF/EMT-B since 2019) in a text-only roster table — no member photos on the page.",
+   "evidence": "Canton Fire Dept members page lists him (FF/EMT-B since 2019) in a text-only roster table \u2014 no member photos on the page.",
    "name": "Bryan Noble",
    "photo_url": null,
    "source_page": "https://www.cantonfd.org/content/members/",
@@ -850,7 +857,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @cbresett20 (display name \"Caleb Bresett\"); bio: \"ECU 23’ Norwood, NY\".",
+   "evidence": "Instagram profile @cbresett20 (display name \"Caleb Bresett\"); bio: \"ECU 23\u2019 Norwood, NY\".",
    "name": "Caleb Bresett",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/730854609_18600847006001214_3695203125231204601_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy42MjEuQzMifQ%3D%3D&_nc_ohc=Q38jNfNquDAQ7kNvwFiMfW6&_nc_oc=AdqZ2nWVvFvPWmzT-iNLY_o30YFGtEFeQvoxUl0rH5WypxL6eTtYY-f8c39GyEUwZUE1b0juirdU7Olhaf9kMsq1&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=_-54jjFuimqI3enNNs-IGA&oh=00_AQPNQWTJ_qqG_blEsIouI3WMVE-guPtQbdig0M26ZoN_QA&oe=6AE00A80",
    "source_page": "https://www.instagram.com/cbresett20/",
@@ -919,7 +926,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Atlantic Insurance Group team page headshot: Caroline Milwicz-Willis — played D1 lacrosse at Liberty University (Marketing and Public Relations), lives in upstate New York with husband Zachary; cross-confirmed by her SUNY Potsdam women’s lacrosse assistant-coach bio.",
+   "evidence": "Atlantic Insurance Group team page headshot: Caroline Milwicz-Willis \u2014 played D1 lacrosse at Liberty University (Marketing and Public Relations), lives in upstate New York with husband Zachary; cross-confirmed by her SUNY Potsdam women\u2019s lacrosse assistant-coach bio.",
    "name": "Caroline Willis",
    "photo_url": "https://b2059373.assetcdn.net/2.0/2059373/wp-content/uploads/2019/03/Team-Caroline-Milwicz-Willis.png?lossy=1&strip=1&webp=1",
    "source_page": "https://atlanticinsgroup.com/about-our-agency/meet-our-team/team-member/caroline-milwicz-willis/",
@@ -937,7 +944,7 @@
    "type": null
   },
   {
-   "evidence": "Explicit caption: 'Cashlynn (Jaggers) Colbert, right, with SUNY Chancellor Nancy Zipher and her unveiled watercolor painting.' Page is her art profile. BFA news page image generic/uncaptioned — excluded.",
+   "evidence": "Explicit caption: 'Cashlynn (Jaggers) Colbert, right, with SUNY Chancellor Nancy Zipher and her unveiled watercolor painting.' Page is her art profile. BFA news page image generic/uncaptioned \u2014 excluded.",
    "name": "Cashlynn Colbert",
    "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2021-08/Jaggers1.jpg?itok=kSzyANLC",
    "source_page": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert",
@@ -988,7 +995,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @eastmoewest (display name \"Cayden Westwood\"); bio: \"ny-sd  Dangelli💗\".",
+   "evidence": "Instagram profile @eastmoewest (display name \"Cayden Westwood\"); bio: \"ny-sd  Dangelli\ud83d\udc97\".",
    "name": "Cayden Westwood",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/543670790_18407128462116237_2184416314882395714_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=XKwCXwUUg0IQ7kNvwHsbIU1&_nc_oc=AdpAUAakMmXmFPPCLu6DEgXWlKcsJ3BjN3YJ28K-2Jar57dDok0UW7wIsQj-mZQMG5jaekHUdwLe5ktbVJLye_4L&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=NqE0UvzZi6B2P1CuV-LO9A&oh=00_AQNCAGNcT2C5KhalYEtap_AA-hv0jpSQ7zBeuLSrfhNBuA&oe=6AE03706",
    "source_page": "https://www.instagram.com/eastmoewest/",
@@ -997,7 +1004,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @ceciliesmith2025 (display name \"✩𝚌𝚎𝚌𝚒𝚕𝚒𝚎\"); bio: \"✩𝚌 -𝙶𝚘𝚍 𝚏𝚒𝚛𝚜𝚝 ♡︎   -𝚓𝚘𝚑𝚗 𝟹:𝟷𝟼  𝐅𝐚𝐬𝐡𝐢𝐨𝐧 | 𝐥𝐢𝐟𝐞 | 𝐟𝐚𝐦𝐢𝐥𝐲 (✯◡✯) 𝚂𝚣𝚗 𝚘𝚏 𝚕𝚘𝚟𝚎 ❤︎︎♡︎🪷\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @ceciliesmith2025 (display name \"\u2729\ud835\ude8c\ud835\ude8e\ud835\ude8c\ud835\ude92\ud835\ude95\ud835\ude92\ud835\ude8e\"); bio: \"\u2729\ud835\ude8c -\ud835\ude76\ud835\ude98\ud835\ude8d \ud835\ude8f\ud835\ude92\ud835\ude9b\ud835\ude9c\ud835\ude9d \u2661\ufe0e   -\ud835\ude93\ud835\ude98\ud835\ude91\ud835\ude97 \ud835\udff9:\ud835\udff7\ud835\udffc  \ud835\udc05\ud835\udc1a\ud835\udc2c\ud835\udc21\ud835\udc22\ud835\udc28\ud835\udc27 | \ud835\udc25\ud835\udc22\ud835\udc1f\ud835\udc1e | \ud835\udc1f\ud835\udc1a\ud835\udc26\ud835\udc22\ud835\udc25\ud835\udc32 (\u272f\u25e1\u272f) \ud835\ude82\ud835\udea3\ud835\ude97 \ud835\ude98\ud835\ude8f \ud835\ude95\ud835\ude98\ud835\ude9f\ud835\ude8e \u2764\ufe0e\ufe0e\u2661\ufe0e\ud83e\udeb7\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
    "name": "Cecilie Smith",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/824709802_17920787580438351_8855908938269282601_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=vK2Uw2cXR0wQ7kNvwHsFC4p&_nc_oc=Adqgco60pEujehSVAzXKvnraxrccJkdw2DzshSXeH1ByGNUXWYfdZdy4wQSDVmFaXAAus2c9objr90zYGvdrCuUN&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=bTTGVB1SSdSCQ_8wD5YMzw&oh=00_AQP_1xiFsV2kiBnPhe1_UQ4q-SN6LzPeAWLgMpC6X3eMug&oe=6AE01BBA",
    "source_page": "https://www.instagram.com/ceciliesmith2025/",
@@ -1006,7 +1013,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @charlie_garrelts (display name \"Charlie Garrelts\"); bio: \"🔹Keep smiling, because life is a beautiful thing 🔹Airport Manager 🔹(MPA) 🔹FL ⇔ AR ⇔ NY 🔹Love Ning 🔹Asian Proud\".",
+   "evidence": "Instagram profile @charlie_garrelts (display name \"Charlie Garrelts\"); bio: \"\ud83d\udd39Keep smiling, because life is a beautiful thing \ud83d\udd39Airport Manager \ud83d\udd39(MPA) \ud83d\udd39FL \u21d4 AR \u21d4 NY \ud83d\udd39Love Ning \ud83d\udd39Asian Proud\".",
    "name": "Charlie Garrelts",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/834122921_18634209205034801_3802175950084548508_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=rRI_OqDOoiUQ7kNvwHmSWCw&_nc_oc=Ado3KuekQsN81xS49f1pfN3xDf7DtmO3tqXtEbGzU0jEOhBNE-NkCQa4jdr9SYWEOPMvRukJhROYssjzog3L3xMK&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=9oLn3Vfy0eoob1Pv7SQBtw&oh=00_AQPJGCxfZWaSBLfPh7vVEFjlretfa1FH1yPB5OL9Yj1VjA&oe=6AE0228C",
    "source_page": "https://www.instagram.com/charlie_garrelts/",
@@ -1015,7 +1022,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Redeeming Love Church leadership page places the photo (chalrie.jpg) directly above the heading 'Pastor Charlie & Sharon Sweet — Apostolic Elder', in the same image-then-name layout used for every leader on the page; the bio confirms Charlie and his wife Sharon serve as Apostolic Elders there.",
+   "evidence": "Redeeming Love Church leadership page places the photo (chalrie.jpg) directly above the heading 'Pastor Charlie & Sharon Sweet \u2014 Apostolic Elder', in the same image-then-name layout used for every leader on the page; the bio confirms Charlie and his wife Sharon serve as Apostolic Elders there.",
    "name": "Charlie-Sharon Sweet",
    "photo_url": "https://www.redeeminglovechurch.org/chalrie.jpg",
    "source_page": "https://www.redeeminglovechurch.org/leadership",
@@ -1033,7 +1040,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @chelsea__mcgrath (display name \"C H E L S E A   M C G R A T H\"); bio: \"Follower of Jesus. Wife of Josiah. Mama of Adalie, Sutton + Emery. Maker of Jewelry. (@clay_bychels ) Fan of 💐\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @chelsea__mcgrath (display name \"C H E L S E A   M C G R A T H\"); bio: \"Follower of Jesus. Wife of Josiah. Mama of Adalie, Sutton + Emery. Maker of Jewelry. (@clay_bychels ) Fan of \ud83d\udc90\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
    "name": "Chelsea McGrath",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/657949714_18568974376006963_5261770777254353554_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=BMmhDkUX8GUQ7kNvwEUnfby&_nc_oc=AdpMimXorZv_sENBfD72pe9nwPYHzjjJHpbbQUc-gKB7x6kv1d2f3F7Xo8oQO_IIZelQhgcUPvRmDfEcjy8Xo0-_&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=bqotFDtkJz4Joew-l503Wg&oh=00_AQN5Rp3LPXKGhb_7tGjzvEFb_pYIB63ujJoKcHbWxLUbXA&oe=6AE02125",
    "source_page": "https://www.instagram.com/chelsea__mcgrath/",
@@ -1050,7 +1057,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @chiara.frasc (display name \"chiara🧃\"); bio: \"meow  @fracsat\".",
+   "evidence": "Instagram profile @chiara.frasc (display name \"chiara\ud83e\uddc3\"); bio: \"meow  @fracsat\".",
    "name": "Chiara",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/441155480_1471147563487795_160168722977776457_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy40NDUuQzMifQ%3D%3D&_nc_ohc=azGlnWVxd9AQ7kNvwFQfdXZ&_nc_oc=Adpi_KJv71Hrr_VKqJLdIMm83zT3355XFcAqA2k1lDANz0Q56ZE_as1t9h9Y5cRb2c9kHQzeogcvdWpkskHIkEFF&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMbe_zpg9HnEpd3HTl5aOWP16jF2-wgtTDSZsXzR57IZw&oe=6AE033B5",
    "source_page": "https://www.instagram.com/chiara.frasc/",
@@ -1059,7 +1066,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Clarkson healthcare-major feature built around her ('Meet Chidi: A Global Student Leader at Clarkson') carries three photos each captioned for her; this one is captioned 'Chidi presenting at the Ignite Project Expo 2024.' Two more caption-confirmed photos on the same page (CUEMS mock-casualty drill; International Center). Clarkson blog talent-show post names her but its photos are not tied to her — not filed from there.",
+   "evidence": "Clarkson healthcare-major feature built around her ('Meet Chidi: A Global Student Leader at Clarkson') carries three photos each captioned for her; this one is captioned 'Chidi presenting at the Ignite Project Expo 2024.' Two more caption-confirmed photos on the same page (CUEMS mock-casualty drill; International Center). Clarkson blog talent-show post names her but its photos are not tied to her \u2014 not filed from there.",
    "name": "Chidiogor Ofodum",
    "photo_url": "https://diy.clarkson.edu/wp-content/uploads/2025/05/Ignite-Project-Expo-2024-58-1024x683.jpg",
    "source_page": "https://diy.clarkson.edu/apply-to-clarkson/the-healthcare-major-a-program-designed-for-the-future/",
@@ -1110,7 +1117,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @cierrahitchman (display name \"Cierra Hitchman\"); bio: \"💑👩👧🧒👧 Hitchmanlife1\".",
+   "evidence": "Instagram profile @cierrahitchman (display name \"Cierra Hitchman\"); bio: \"\ud83d\udc91\ud83d\udc69\ud83d\udc67\ud83e\uddd2\ud83d\udc67 Hitchmanlife1\".",
    "name": "Cierra Hitchman",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/658747187_18571403014026955_6951946646539132417_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=9ifIWOYrWbsQ7kNvwG8Fn3c&_nc_oc=AdrnenDYx3uC3Ukmer1Oe-yPXN31zUHl3V2HgeuF8NN0Nzx6Xl-_Fd9mqwd7Y9r6h25sbXqFruKhRhlOGRPnGSge&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=NOa4FgOrB_ImP1XjdilB_Q&oh=00_AQNANvsWITiOhZERs2sAbkpLqw6kOnIBhea5ah110mg-6Q&oe=6AE02798",
    "source_page": "https://www.instagram.com/cierrahitchman/",
@@ -1119,7 +1126,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "His WayUp profile carries an image labeled 'Christian Tomford's profile photo' (shown twice on the page), but the fetch's Images footnote returned only the WayUp logo — his photo URL could not be extracted. TheOrg lists him as a Software Engineer at IDI Billing Solutions with no photo.",
+   "evidence": "His WayUp profile carries an image labeled 'Christian Tomford's profile photo' (shown twice on the page), but the fetch's Images footnote returned only the WayUp logo \u2014 his photo URL could not be extracted. TheOrg lists him as a Software Engineer at IDI Billing Solutions with no photo.",
    "name": "CJ Tomford",
    "photo_url": null,
    "source_page": "https://www.wayup.com/profile/Christian-Tomford-734aee08b7/",
@@ -1168,7 +1175,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @colleendcheney (display name \"Colleen!\"); bio: \"canton tech ‘25 NY-> MI\".",
+   "evidence": "Instagram profile @colleendcheney (display name \"Colleen!\"); bio: \"canton tech \u201825 NY-> MI\".",
    "name": "Colleen Cheney",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/683791438_18582040294052429_2184154184044471516_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=tfFDGUq09DcQ7kNvwGLjcTJ&_nc_oc=AdoXBSTBkoHmM1C1rI7kqST5MA8vrvypIDvP3qkmuo1xEIVHrOsKQUtKF80RYYe3PhBtN4RVg_A3_o93SAmeSXZl&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=3heYBF9yI_F6jViO0bWmYA&oh=00_AQNwxTbMbMOiJ2gTyl42zgt8-W2tHp-n77aEFCAeGWvrUg&oe=6AE01BFE",
    "source_page": "https://www.instagram.com/colleendcheney/",
@@ -1203,7 +1210,7 @@
    "type": null
   },
   {
-   "evidence": "Canton Fire Dept members page lists him (FF, since 2022) in a text-only roster table — no member photos on the page.",
+   "evidence": "Canton Fire Dept members page lists him (FF, since 2022) in a text-only roster table \u2014 no member photos on the page.",
    "name": "Corbin Ladison",
    "photo_url": null,
    "source_page": "https://www.cantonfd.org/content/members/",
@@ -1211,7 +1218,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @coreyd123103 (display name \"Corey Delisa\"); bio: \"MAC <3 “I know a guy”\".",
+   "evidence": "Instagram profile @coreyd123103 (display name \"Corey Delisa\"); bio: \"MAC <3 \u201cI know a guy\u201d\".",
    "name": "Corey Delisa",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/542396612_18290862580256737_2105656952416265578_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=2mWoOKkQceMQ7kNvwFJeHjJ&_nc_oc=AdrMmBm-oBRz4D5fh3B4iu99ZsGZQ5KTY-C4bLXq7KIplEtnlrNgKCUs6MERobh8dYWh6080wKU4z3HVzgYj-vFy&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=tDOjjPOhZbXH8bAyBqRMYw&oh=00_AQPUquNY2GxzG7hoLlfj3eC1LT0uX10zJlwpdzx35tXsDQ&oe=6AE03479",
    "source_page": "https://www.instagram.com/coreyd123103/",
@@ -1237,7 +1244,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Chamber entry for Railroad Productions lists Cory Williams as business contact; its Photo Gallery includes a file named '1.Headshot.JPG' alongside portfolio shots — no caption names the headshot's subject, so possible not confirmed. The Knot listing is review text only. Third source (Potsdam Crane page) is about Alex Mariano — its photos are Mariano, Cory is only the video credit; those photos were rejected for Cory.",
+   "evidence": "Chamber entry for Railroad Productions lists Cory Williams as business contact; its Photo Gallery includes a file named '1.Headshot.JPG' alongside portfolio shots \u2014 no caption names the headshot's subject, so possible not confirmed. The Knot listing is review text only. Third source (Potsdam Crane page) is about Alex Mariano \u2014 its photos are Mariano, Cory is only the video credit; those photos were rejected for Cory.",
    "name": "Cory Williams",
    "photo_url": "https://www.potsdamchamber.com/wp-content/uploads/gravity_forms/14-3176f72419867ca7663517d4107e18b0/2025/12/1.Headshot.JPG",
    "source_page": "https://www.potsdamchamber.com/view/business-leaders-table-view/entry/2784/?pagenum=3&sort",
@@ -1254,7 +1261,7 @@
    "type": null
   },
   {
-   "evidence": "LinkedIn profile photo from her on-file LinkedIn profile (headline: Barista at Loud'n Roasted Coffee Roasters, Ashburn VA; verified badge) — retrieved 2026-10-22. Her newzjunky source is browser policy-blocked. Note: the LinkedIn CDN URL carries an expiry (Dec 2026) and may need a refresh later.",
+   "evidence": "LinkedIn profile photo from her on-file LinkedIn profile (headline: Barista at Loud'n Roasted Coffee Roasters, Ashburn VA; verified badge) \u2014 retrieved 2026-10-22. Her newzjunky source is browser policy-blocked. Note: the LinkedIn CDN URL carries an expiry (Dec 2026) and may need a refresh later.",
    "name": "Courtney Delosh",
    "photo_url": "https://media.licdn.com/dms/image/v2/D4E03AQFr0GV93AloiQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1708115107213?e=1794441600&v=beta&t=P7lGmgmAIYdj3gC3TkCDrvjUafZLKYLTW0LkyX_SEvY",
    "source_page": "https://www.linkedin.com/in/courtney-delosh",
@@ -1271,7 +1278,7 @@
    "type": null
   },
   {
-   "evidence": "APW 2024 graduation newsletter names her only in the Class of 2024 list — no photo/caption tied to her, no image URL for her. The Oswego County Today article returned 404; RunSignup is text by type.",
+   "evidence": "APW 2024 graduation newsletter names her only in the Class of 2024 list \u2014 no photo/caption tied to her, no image URL for her. The Oswego County Today article returned 404; RunSignup is text by type.",
    "name": "Courtney Letiecq",
    "photo_url": null,
    "source_page": "http://psqr-site-content-migration.s3-website-us-west-2.amazonaws.com/Site-Backups/ALTMAR_PARISH_WILLIAMSTOWN_CSD/www.apwschools.org/site/handlers/APW_2024GraduationNewsletterc6ea.pdf?moduleinstanceid=5202&dataid=4489&FileName=APW_2024GraduationNewsletter.pdf",
@@ -1279,7 +1286,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @cy.cy.17 (display name \"Cynthia🌸\"); bio: \"-‘A little progress each day adds up to big results’ -‘No moment is ever wrong. It just is.’ - Matthew 17:20\".",
+   "evidence": "Instagram profile @cy.cy.17 (display name \"Cynthia\ud83c\udf38\"); bio: \"-\u2018A little progress each day adds up to big results\u2019 -\u2018No moment is ever wrong. It just is.\u2019 - Matthew 17:20\".",
    "name": "Cynthia",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/774033442_17944418061277578_7442285219200393658_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=d_VkgjrYSkMQ7kNvwGM-TxQ&_nc_oc=AdoB7I_yABHlB7HjcG8-n1SOkda5SZKFdFBlGmPhVb3O5MbaMb4G-DdTjp9Lyku8HRpRn00cfDUgZUUoVIphMQTl&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=lnv_agqWyNYVJ6czOA0Dng&oh=00_AQPDKJjSrpYW4QJ0S4FyGsAeYxNC2xoA_gW-bneWyfaQxg&oe=6AE03C38",
    "source_page": "https://www.instagram.com/cy.cy.17/",
@@ -1359,7 +1366,7 @@
    "type": null
   },
   {
-   "evidence": "Merit profile photo slot is the default missing.png placeholder — excluded. The 2021-22 Chemistry Dept annual report PDF names her only in the graduates list, no photo.",
+   "evidence": "Merit profile photo slot is the default missing.png placeholder \u2014 excluded. The 2021-22 Chemistry Dept annual report PDF names her only in the graduates list, no photo.",
    "name": "Danielle McPherson",
    "photo_url": null,
    "source_page": "https://meritpages.com/Danielle-McPherson/4251063",
@@ -1367,7 +1374,7 @@
    "type": null
   },
   {
-   "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book — its only image is the book cover, rejected. Cover caption list confirms '34 - Danielle Vetere 22, childhood/early childhood education student'; JD confirmed 2026-10-22. SUNY Potsdam Instagram checked 2026-10-22 — no usable post of her found.",
+   "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book \u2014 its only image is the book cover, rejected. Cover caption list confirms '34 - Danielle Vetere 22, childhood/early childhood education student'; JD confirmed 2026-10-22. SUNY Potsdam Instagram checked 2026-10-22 \u2014 no usable post of her found.",
    "name": "Danielle Vetere",
    "photo_url": "https://www.potsdam.edu/sites/default/files/inline-images/cover1_0.jpg",
    "source_page": "https://www.potsdam.edu/PotsdamPeopleCover",
@@ -1412,7 +1419,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "His Merit profile (Legal Studies, SUNY Canton Class of 2022, Rensselaer Falls NY) carries a real uploaded student profile photo in the profile slot — an S3 photo file, not the missing.png placeholder.",
+   "evidence": "His Merit profile (Legal Studies, SUNY Canton Class of 2022, Rensselaer Falls NY) carries a real uploaded student profile photo in the profile slot \u2014 an S3 photo file, not the missing.png placeholder.",
    "name": "David Hartman",
    "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/6056211/medium/1100D60C-6450-4922-A07C-EFC31BCCE0D3.jpeg?1610756431",
    "source_page": "https://meritpages.com/hartm104",
@@ -1455,7 +1462,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @davidzufall (display name \"𝔻𝕒𝕧𝕚𝕕 ℤ𝕦𝕗𝕒𝕝𝕝\"); bio: \"Lisbon, NY 📸  @davidzufallphotography Website currently under reconstruction\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @davidzufall (display name \"\ud835\udd3b\ud835\udd52\ud835\udd67\ud835\udd5a\ud835\udd55 \u2124\ud835\udd66\ud835\udd57\ud835\udd52\ud835\udd5d\ud835\udd5d\"); bio: \"Lisbon, NY \ud83d\udcf8  @davidzufallphotography Website currently under reconstruction\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
    "name": "David Zufall",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/683632911_18584424055040806_803995140661807441_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=6z03dpRkdjcQ7kNvwEUD5wZ&_nc_oc=Adqc-8FJGCozavfAmNFnomqBodnvvTB0tydEi3UV48Y7om5YDYKamq-2yPFvopXJGkuTh3SzRty6HcciwKphx5PB&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=Yo_aOT9nIlsyDQO1lj7_dg&oh=00_AQO6O1gPvTGYBvXhDvgThmFLTt7XBwU5dKLDb2b_zoelkg&oe=6AE0096B",
    "source_page": "https://www.instagram.com/davidzufall/",
@@ -1468,7 +1475,7 @@
      "status": "possible",
      "type": "Instagram profile picture",
      "source_page": "https://www.instagram.com/davidzufallphotography/",
-     "evidence": "Instagram profile @davidzufallphotography (display name \"𝑫𝒂𝒗𝒊𝒅 𝒁𝒖𝒇𝒂𝒍𝒍 𝑷𝒉𝒐𝒕𝒐𝒈𝒓𝒂𝒑𝒉𝒚\"); bio: \"Photographer in Upstate NY. DM for bookings.  Personal page and landcapes @davidzufall\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+     "evidence": "Instagram profile @davidzufallphotography (display name \"\ud835\udc6b\ud835\udc82\ud835\udc97\ud835\udc8a\ud835\udc85 \ud835\udc81\ud835\udc96\ud835\udc87\ud835\udc82\ud835\udc8d\ud835\udc8d \ud835\udc77\ud835\udc89\ud835\udc90\ud835\udc95\ud835\udc90\ud835\udc88\ud835\udc93\ud835\udc82\ud835\udc91\ud835\udc89\ud835\udc9a\"); bio: \"Photographer in Upstate NY. DM for bookings.  Personal page and landcapes @davidzufall\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
      "added_approx": "Oct 2026"
     }
    ]
@@ -1526,7 +1533,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "anchor 1: Seaway Valley Prevention Council team page places this staff headshot directly under the heading 'Delany Durant / Clubhouse Coordinator' with her bio (St. Lawrence University bachelor's in Psychology, minor in Sport Studies and Exercise Science; Clubhouse Coordinator at the Horizons Youth Clubhouse in Massena) — matches profile (SLU Psychology + Exercise Science minor) and her on-file SVPC Clubhouse Coordinator footprint. anchor 2: the same role was independently filed to her profile from this page by the Oct 27, 2026 Live Records run (svpc.net team page). Photo quality: 504x504 staff headshot (Oct 2026 upload) vs. her prior 280x280 Merit Pages student profile photo from 2021, which is kept as an alternate. Original Merit evidence: her own Merit Pages profile (St. Lawrence University, Class of 2025, Psychology, Chase Mills NY) carried the earlier photo at the top of her own directory.",
+   "evidence": "anchor 1: Seaway Valley Prevention Council team page places this staff headshot directly under the heading 'Delany Durant / Clubhouse Coordinator' with her bio (St. Lawrence University bachelor's in Psychology, minor in Sport Studies and Exercise Science; Clubhouse Coordinator at the Horizons Youth Clubhouse in Massena) \u2014 matches profile (SLU Psychology + Exercise Science minor) and her on-file SVPC Clubhouse Coordinator footprint. anchor 2: the same role was independently filed to her profile from this page by the Oct 27, 2026 Live Records run (svpc.net team page). Photo quality: 504x504 staff headshot (Oct 2026 upload) vs. her prior 280x280 Merit Pages student profile photo from 2021, which is kept as an alternate. Original Merit evidence: her own Merit Pages profile (St. Lawrence University, Class of 2025, Psychology, Chase Mills NY) carried the earlier photo at the top of her own directory.",
    "name": "Delany Durant",
    "photo_url": "https://svpc.net/wp-content/uploads/2026/10/Delany-Durant.jpg",
    "source_page": "https://svpc.net/our-friendly-team/",
@@ -1560,7 +1567,7 @@
    "type": null
   },
   {
-   "evidence": "Winning-team photo caption names everyone left to right, ending '...Destiny Snyder and Nasierra Daniels' — she is identified by name and position (fifth from left); the article lists Destiny Snyder of Potsdam on the winning team.",
+   "evidence": "Winning-team photo caption names everyone left to right, ending '...Destiny Snyder and Nasierra Daniels' \u2014 she is identified by name and position (fifth from left); the article lists Destiny Snyder of Potsdam on the winning team.",
    "name": "Destiny Snyder",
    "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/WinningTeamcopy_0.jpg?itok=EYKWXsFW",
    "source_page": "https://www.potsdam.edu/news/businessadministrationstudentscampusentrepreneurialcompetition",
@@ -1594,7 +1601,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @nahhhhhhh.hhh (display name \"Dimitri Damon\"); bio: \"I used to do drugs, now I don’t\".",
+   "evidence": "Instagram profile @nahhhhhhh.hhh (display name \"Dimitri Damon\"); bio: \"I used to do drugs, now I don\u2019t\".",
    "name": "Dimitri Damon",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/72587989_2592062707518024_7538096718957510656_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43NTAuQzMifQ%3D%3D&_nc_ohc=SDiHwE0Jvz4Q7kNvwHtD31u&_nc_oc=AdonOAb647MYRXH3sEwEb8C8KJh32VbzNXf0nlqAPD2O7RtdZpFRURBEH03uUVA-4-v48mC7lEy2OhKnKSSAzVia&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMtXsEBwiVg5bFiW2B74bNBLVw8VhfRAm0h_QzrrmappQ&oe=6AE02AFA",
    "source_page": "https://www.instagram.com/nahhhhhhh.hhh/",
@@ -1637,7 +1644,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @eileen_mackenzie (display name \"Eileen Mackenzie\"); bio: \"AHS’17|Potsdam ‘21|🎭\".",
+   "evidence": "Instagram profile @eileen_mackenzie (display name \"Eileen Mackenzie\"); bio: \"AHS\u201917|Potsdam \u201821|\ud83c\udfad\".",
    "name": "Eileen Mackenzie",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/275063079_1851770621879129_6486175056530066688_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43MzEuQzMifQ%3D%3D&_nc_ohc=bKErPNCWiuYQ7kNvwGUiUy7&_nc_oc=Adomvhx1MzkpygyCIfxFJ7yDwMD4E6t2uwebwi_9D9YTJEv4P9Mpczy-t6x5cNJf6bo2o296YAhJeW_eMWW5Oxtk&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMLwMaceyxpdBU9Ys6MzILGL8vo2cWappHW10DOankDpw&oe=6AE02D8D",
    "source_page": "https://www.instagram.com/eileen_mackenzie/",
@@ -1664,7 +1671,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "St. Lawrence 2024-25 roster labels her entry 'Elena Trempe - View Profile' (Sophomore, Enfield NH, Mascoma Valley Regional) and the matching roster image is her file Elena_Trempe.jpg — roster headshot tied to her by the roster page. Filed at the larger render size of the same file (extracted at width=80).",
+   "evidence": "St. Lawrence 2024-25 roster labels her entry 'Elena Trempe - View Profile' (Sophomore, Enfield NH, Mascoma Valley Regional) and the matching roster image is her file Elena_Trempe.jpg \u2014 roster headshot tied to her by the roster page. Filed at the larger render size of the same file (extracted at width=80).",
    "name": "Elena Trempe",
    "photo_url": "https://saintsathletics.com/images/2025/1/14/Elena_Trempe.jpg?width=600&quality=90",
    "source_page": "https://saintsathletics.com/sports/womens-track-and-field/roster/2024-25",
@@ -1691,7 +1698,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @elisedeuel (display name \"elise\"); bio: \"🐌👋\".",
+   "evidence": "Instagram profile @elisedeuel (display name \"elise\"); bio: \"\ud83d\udc0c\ud83d\udc4b\".",
    "name": "Elise Deuel",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/769412366_18380979220228675_1592144747435943765_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=CYDG2CIE_MQQ7kNvwHB1A2L&_nc_oc=AdpQ6cM5O9DNhSo7Gl1vx-uNCq96AVIK7k-LSgiwPnIFJJlVfdqLO8wib6mdLyeWdZCl27cdDp2oRhPXra5y8_R4&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=GwSgSpG9gN5m19qzm-H1aA&oh=00_AQOh6vFyrCk1UJ4mkhMkVYTz5QfJ_7AoQDXBbr-aKVhMfQ&oe=6AE01D0F",
    "source_page": "https://www.instagram.com/elisedeuel/",
@@ -1717,7 +1724,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @elizabeth.deschaine (display name \"Elizabeth Deschaine\"); bio: \"✰ potsdam state alum ✰ midwestern university PA-S🩺\".",
+   "evidence": "Instagram profile @elizabeth.deschaine (display name \"Elizabeth Deschaine\"); bio: \"\u2730 potsdam state alum \u2730 midwestern university PA-S\ud83e\ude7a\".",
    "name": "Elizabeth Deschaine",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/753396424_18607378840012380_8303630557987869792_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDc4LkMzIn0%3D&_nc_ohc=lA0_2wtyciEQ7kNvwFvLtba&_nc_oc=AdrkWSkc1rpcurIJ1VlVd6L0J9S0pUstOqGO1IWOgQy8tmSTT6Ab-jFdVkVVQ6UJuBLLLvMccBikIKbgaTr0nZZs&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=WQ8mqYDz2U0fiq8rbIyZBA&oh=00_AQMD2cUsHPuwJhuCiIH0BBcLurNZ3Fev7JSfbH6C0a9QzA&oe=6AE006F7",
    "source_page": "https://www.instagram.com/elizabeth.deschaine/",
@@ -1751,7 +1758,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @elliecriscitello (display name \"Ellie Criscitello\"); bio: \"-Follower of Jesus @tcriscitello ❤️ - Mama to Gia and Luna  @ellieroseart_co\".",
+   "evidence": "Instagram profile @elliecriscitello (display name \"Ellie Criscitello\"); bio: \"-Follower of Jesus @tcriscitello \u2764\ufe0f - Mama to Gia and Luna  @ellieroseart_co\".",
    "name": "Ellie Criscitello",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/209855013_178865234204073_8909875462034878684_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=rzfowh3CG5AQ7kNvwFZJWv0&_nc_oc=AdoPuoP9ZKt5b_irhqiztwdzB1SB5J3J-1SiW0K5RONbrLS6FHzWP0ILUbY6OaL5M5CINxnRSw88faXw3uPYyCnE&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPp0_1kshuHpOhVgBS6ldMG6XmGhEb9oxPhM2kSpnl13w&oe=6AE025D4",
    "source_page": "https://www.instagram.com/elliecriscitello/",
@@ -1769,7 +1776,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Grand Slam Safety team page: staff headshot heading Elliot Martin’s Engineering entry (Customer Solutions Engineer); company address 9793 Bridge Street, Croghan, NY.",
+   "evidence": "Grand Slam Safety team page: staff headshot heading Elliot Martin\u2019s Engineering entry (Customer Solutions Engineer); company address 9793 Bridge Street, Croghan, NY.",
    "name": "Elliot Martin",
    "photo_url": "https://static.wixstatic.com/media/372b3d_e5a1abb72f7f49479abb3cf6aefde75c~mv2.jpg/v1/crop/x_0,y_117,w_2825,h_3533/fill/w_423,h_529,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/_DSC3099.jpg",
    "source_page": "https://www.grandslamsafety.com/jeanette-chamberlain",
@@ -1796,7 +1803,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @emiliealbertt (display name \"Em🌻\"); bio: \"MSW Binghamton '27\".",
+   "evidence": "Instagram profile @emiliealbertt (display name \"Em\ud83c\udf3b\"); bio: \"MSW Binghamton '27\".",
    "name": "Emilie Albert",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/786213667_18062731295785084_1456601042619252232_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=WKc7wXL4QagQ7kNvwEz_SH5&_nc_oc=AdoiejFs3S5tKfru6SY1Sx9SN8rTbZmqocPlLDZE0-uozUAj5zBmg1mQO5apL4mcEfVphNo2AC7-tZjoG7zaO8nb&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=QafhP6w_umTqc1PTc5_eeQ&oh=00_AQOmzgoc8W7Wmpbxp--7njZnpqP0XlxKhXu5rQ5y1MkwcA&oe=6AE02BC4",
    "source_page": "https://www.instagram.com/emiliealbertt/",
@@ -1846,7 +1853,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @ejarvis8 (display name \"Emily LaShomb\"); bio: \"2/20/18 M.L. ❤️ Potsdam ‘24 ΦΚΠ SP ‘21\".",
+   "evidence": "Instagram profile @ejarvis8 (display name \"Emily LaShomb\"); bio: \"2/20/18 M.L. \u2764\ufe0f Potsdam \u201824 \u03a6\u039a\u03a0 SP \u201821\".",
    "name": "Emily LaShomb",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/791820055_18618526468017923_3310714851166421990_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=YpaanbBNGs4Q7kNvwFiVCYs&_nc_oc=Adrc7_6JlTqeCDX9F-0dIJ_L2ke44Kwp6fV3l0ORYHJfFFCMyAljAeIKOr1AVn-XwRqU3oLl_UXBVFMpCdtcj3XS&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=fRSItdC2EKd3puhdBjmk6w&oh=00_AQM8t-a8v5XqOkRbSf2NpCR55qgYawaqOYA6A0A0Ccs1Dw&oe=6AE02A80",
    "source_page": "https://www.instagram.com/ejarvis8/",
@@ -1855,7 +1862,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @emijent (display name \"Emily R. Jent\"); bio: \"🩺 travel nurse and infusion therapy 🖤 michael and my animal menagerie\".",
+   "evidence": "Instagram profile @emijent (display name \"Emily R. Jent\"); bio: \"\ud83e\ude7a travel nurse and infusion therapy \ud83d\udda4 michael and my animal menagerie\".",
    "name": "Emily R. Jent",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/671227649_18574579390013875_3376333542992215428_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=WFbEO0Qg7osQ7kNvwHM3guc&_nc_oc=AdormcSBeO5f8at1I3eBucHmGoMIxfjk1Bdr5jYLJ3BjH-7LDcXf5wFVfIxG_VToGafsnZ0tuaYkDCV9U8Fji8jp&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=c6cbKxq1ytXorTUBs50NPA&oh=00_AQOENXfdB9bGSMVAZtZt2weGXpMiByG-sCyC1g1e1FF3Jw&oe=6AE028DD",
    "source_page": "https://www.instagram.com/emijent/",
@@ -1873,7 +1880,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @emilywangerin (display name \"Emily Wangerin\"); bio: \"why should two dads be sad when there’s fun to be had @emilywangerinart\".",
+   "evidence": "Instagram profile @emilywangerin (display name \"Emily Wangerin\"); bio: \"why should two dads be sad when there\u2019s fun to be had @emilywangerinart\".",
    "name": "Emily Wangerin",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/82491716_482384939050750_8894278092013436928_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43MjAuQzMifQ%3D%3D&_nc_ohc=diTVrt0u1toQ7kNvwE4o4GO&_nc_oc=AdrYa-mn45NlvEDDJ0ZNB3LbagqSB2nFJ_CwdL5tRLnfU0AM54jzTwryYT_TjOsc22s0WdfEqBnbNn3JTPLYSBz0&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPRN5QILIdoV1t0ILgJSI1fZIMgF1mCTsHbxonejpLktQ&oe=6AE039D2",
    "source_page": "https://www.instagram.com/emilywangerin/",
@@ -1898,7 +1905,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @emma_bortnick5 (display name \"Emma Bortnick\"); bio: \"Registered Nurse 🩺💞\".",
+   "evidence": "Instagram profile @emma_bortnick5 (display name \"Emma Bortnick\"); bio: \"Registered Nurse \ud83e\ude7a\ud83d\udc9e\".",
    "name": "Emma Bortnick",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/825323889_18632740273017033_319527363284810669_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTcuQzMifQ%3D%3D&_nc_ohc=ehXFygTR744Q7kNvwEvTsx-&_nc_oc=Ado6-b3ENud9wHul9yL2cH9j1AoR4i-AiauifIyxRwHMb0R8_TixnjB1TWawJTTBKnML6Hjx8J8bbhNW215PcPu7&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=FDZdXsoCbQtTzXcE-2FmEg&oh=00_AQO9QhmBSeV1GZM5RVm6nyM4Qt-b7yjdWgJMX7XvOsS4Ew&oe=6AE03C53",
    "source_page": "https://www.instagram.com/emma_bortnick5/",
@@ -1932,7 +1939,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her SLU people page is a text-only contact block (Library Assistant V) with no photo. The Hill News piece names her only in a signatory list — no photo tied to her. Merit story text-only.",
+   "evidence": "Her SLU people page is a text-only contact block (Library Assistant V) with no photo. The Hill News piece names her only in a signatory list \u2014 no photo tied to her. Merit story text-only.",
    "name": "Emma Turell",
    "photo_url": null,
    "source_page": "https://www.stlawu.edu/people/emma-turell",
@@ -1967,7 +1974,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The Clarkson org-chart profile block for Erica Arnold (Director of Health, Safety, and Emergency Management) carries the directory image keyed to her username 'earnold' in her own block — the established Clarkson directory photo pattern.",
+   "evidence": "The Clarkson org-chart profile block for Erica Arnold (Director of Health, Safety, and Emergency Management) carries the directory image keyed to her username 'earnold' in her own block \u2014 the established Clarkson directory photo pattern.",
    "name": "Erica Arnold",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=earnold",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=earnold",
@@ -2018,7 +2025,7 @@
    "type": null
   },
   {
-   "evidence": "Graduates page lists Ethan Ryan (AAS Criminal Justice) but its only image is captioned 'President Zvi Szafran speaks during Commencement 2024' — not him. Merit listings text-only.",
+   "evidence": "Graduates page lists Ethan Ryan (AAS Criminal Justice) but its only image is captioned 'President Zvi Szafran speaks during Commencement 2024' \u2014 not him. Merit listings text-only.",
    "name": "Ethan Ryan",
    "photo_url": null,
    "source_page": "http://www.canton.edu/news/2024/graduates.php",
@@ -2061,7 +2068,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED. Anchor 1: Clarkson University Mathematics Alumni page leads with 'Dr. Freddie Amoah-Darko, Machine Learning Engineer at Unearthly Materials' (Rochester NY; worked with Prof. Diana White) — matching the directory profile (Clarkson PhD in Mathematics, Aug 2023; machine learning engineer in the Rochester area). Anchor 2: photo file Freddie-Amoah-Darko-900x900.jpg hosted on clarkson.edu and indexed on that exact alumni page. Curl-verified 200 image/jpeg, 900x900. Note: he had a photos.json entry with status no_source before this run.",
+   "evidence": "CONFIRMED. Anchor 1: Clarkson University Mathematics Alumni page leads with 'Dr. Freddie Amoah-Darko, Machine Learning Engineer at Unearthly Materials' (Rochester NY; worked with Prof. Diana White) \u2014 matching the directory profile (Clarkson PhD in Mathematics, Aug 2023; machine learning engineer in the Rochester area). Anchor 2: photo file Freddie-Amoah-Darko-900x900.jpg hosted on clarkson.edu and indexed on that exact alumni page. Curl-verified 200 image/jpeg, 900x900. Note: he had a photos.json entry with status no_source before this run.",
    "name": "Frederick Laud Amoah-Darko Jr.",
    "photo_url": "https://www.clarkson.edu/sites/default/files/2024-04/Freddie-Amoah-Darko-900x900.jpg",
    "source_page": "https://www.clarkson.edu/index.php/academics/schools-colleges/engineering/mathematics-department/mathematics-alumni",
@@ -2070,7 +2077,7 @@
    "added": "2026-10-27"
   },
   {
-   "evidence": "Caption-confirmed, URL unextracted: Woodshop News feature carries a captioned photo 'Tim Criscitello aligning the knives on a toolhead for its Weinig Unimat 218 molder/shaper' (credit Michael Gordon) plus two other captioned team photos; product/portfolio shots not filed. Page returned no Images footnote, so no direct URL — graded possible until re-extraction. Note the article's principal is Eric Criscitello (owner); Tim is his son and business partner.",
+   "evidence": "Caption-confirmed, URL unextracted: Woodshop News feature carries a captioned photo 'Tim Criscitello aligning the knives on a toolhead for its Weinig Unimat 218 molder/shaper' (credit Michael Gordon) plus two other captioned team photos; product/portfolio shots not filed. Page returned no Images footnote, so no direct URL \u2014 graded possible until re-extraction. Note the article's principal is Eric Criscitello (owner); Tim is his son and business partner.",
    "name": "From the Heart Cabinetry",
    "photo_url": null,
    "source_page": "https://www.woodshopnews.com/features/positioned-in-potsdam",
@@ -2095,7 +2102,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @gabepaladin (display name \"Gabe Paladin\"); bio: \"Enacting allegiance to Jesus the King ✝️ @bridgecitypgh ⛪️ @gabepaladinmusic 🎶 Pittsburgh PA📍\".",
+   "evidence": "Instagram profile @gabepaladin (display name \"Gabe Paladin\"); bio: \"Enacting allegiance to Jesus the King \u271d\ufe0f @bridgecitypgh \u26ea\ufe0f @gabepaladinmusic \ud83c\udfb6 Pittsburgh PA\ud83d\udccd\".",
    "name": "Gabe Paladin",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/522269395_18076948030921073_2948474425533659723_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43OTEuQzMifQ%3D%3D&_nc_ohc=mQwqKWcClqcQ7kNvwG3-afF&_nc_oc=Adpy2Qz9eRBNoND89fWUmKSDqmeOTFhlyYGTEcTLDBtYgR6Nkz5VVYy4o11uYNrIhGQtdL_vAZsdf_FAvSAMlotX&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=7pv-Tn-haWVyuFILQackhg&oh=00_AQO0cN752Fk-kp1l1qFZ_APUYaSJ2TRVydjZx7eZ8v8ObA&oe=6AE00E97",
    "source_page": "https://www.instagram.com/gabepaladin/",
@@ -2122,7 +2129,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @gab20n (display name \"-Gabriela🪽\"); bio: \"🇵🇷\".",
+   "evidence": "Instagram profile @gab20n (display name \"-Gabriela\ud83e\udebd\"); bio: \"\ud83c\uddf5\ud83c\uddf7\".",
    "name": "Gabriela Melendez",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/723663998_18106785842085286_1649467211867369315_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=z9p7qcDgbxkQ7kNvwGeKpIR&_nc_oc=AdqdzJTblBxgW_91NNbEeuIMAQFjmF9l5xqA_RjqTN3EaG-8CUoAWvTyrh6pSEi_kY6HGl0YVZbZ6Lkq45DQI0TV&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=AnIjG8Ri8gS7a0dgYpz0pA&oh=00_AQP2xdv1tqwZCNVw2qB2zyns3-YOwXmtfg4JFLwf4OfPzg&oe=6AE01381",
    "source_page": "https://www.instagram.com/gab20n/",
@@ -2139,7 +2146,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @ginnylou507 (display name \"Ginny L. Hunter\"); bio: \"She didn’t come all this way to lose 💪🏼 -Former Elopea Wedding Planner -Former NA Miss Competitor -Former Bar \".",
+   "evidence": "Instagram profile @ginnylou507 (display name \"Ginny L. Hunter\"); bio: \"She didn\u2019t come all this way to lose \ud83d\udcaa\ud83c\udffc -Former Elopea Wedding Planner -Former NA Miss Competitor -Former Bar \".",
    "name": "Ginny L. Hunter",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/471576329_1059834249489561_6896564416814622028_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4zMjAuQzMifQ%3D%3D&_nc_ohc=fTWhsEErr5oQ7kNvwFb6x9z&_nc_oc=Ado29dT7vUkz1XnWaydjh9Um7F8ZOs8owOUFQbxaCS6oUDGDDTcoMfABkg7x_2CUrYFFK5taLV8zL3AV_CzhA0B5&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPnmWgimaSCq2KjtkSFOkg2IGQSFnmV8jsffuPR3cvMMA&oe=6AE01DDF",
    "source_page": "https://www.instagram.com/ginnylou507/",
@@ -2148,7 +2155,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her St. Lawrence University Scholar profile carries a single portrait with alt text 'Grace Cicchinelli smiling at the camera in front of a bright blue sky', filed under the site's /portrait/ directory — a profile photo tied to her by page and alt text. The SLU news story names her in text (Veoci hire, Class of 2023) but carries no photo of her.",
+   "evidence": "Her St. Lawrence University Scholar profile carries a single portrait with alt text 'Grace Cicchinelli smiling at the camera in front of a bright blue sky', filed under the site's /portrait/ directory \u2014 a profile photo tied to her by page and alt text. The SLU news story names her in text (Veoci hire, Class of 2023) but carries no photo of her.",
    "name": "Grace Cicchinelli",
    "photo_url": "https://scholar.stlawu.edu/sites/default/files/styles/square_thumbnail_large/public/portrait/2022-09/prof.jpg?h=1200bf75&itok=D71vqXaW",
    "source_page": "https://scholar.stlawu.edu/grace-cicchinelli",
@@ -2198,7 +2205,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @gracyn_elizabeth (display name \"Gracyn, MSN, BSN, RN🩺\"); bio: \"Registered Nurse🩺💉 EMT🚑 Dog Mama🐾💗 Vintage Thrifter ✨\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @gracyn_elizabeth (display name \"Gracyn, MSN, BSN, RN\ud83e\ude7a\"); bio: \"Registered Nurse\ud83e\ude7a\ud83d\udc89 EMT\ud83d\ude91 Dog Mama\ud83d\udc3e\ud83d\udc97 Vintage Thrifter \u2728\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
    "name": "Gracyn Denny",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/811437976_18615112546018568_4993004891842459935_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=h9B1LeMA200Q7kNvwHYW5qB&_nc_oc=AdpaiYU2F8itBybcu6wROyjfQPE4L_6NOZlkD2mGJ_nYAsva8Q7b_3_VTvT9Oh8I20ME3iE3dcn5fYmr3tRPx4NL&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=HTPAchjQ3I-i7Gz-fMu8TA&oh=00_AQMZUEOTgjzJyDizjYnbgCaRGqFlBxcspYA3h5rs-LtCvA&oe=6AE02C0D",
    "source_page": "https://www.instagram.com/gracyn_elizabeth/",
@@ -2232,7 +2239,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @haleydlutz (display name \"Haley Lutz\"); bio: \"RI 📍⚓️\".",
+   "evidence": "Instagram profile @haleydlutz (display name \"Haley Lutz\"); bio: \"RI \ud83d\udccd\u2693\ufe0f\".",
    "name": "Haley Lutz",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/745236130_18609817381012743_3554178285214726777_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=PHKFXvrCBz4Q7kNvwFxUB3i&_nc_oc=AdpCQA6KiA5sxGwyuQtNGmnEJrbSZEwd0WhCxwAZXUroIilofq28QJEXFSVowuElazaTWLqek4JAPcamq-mtSw7F&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=4KxCYHq3fHnQe8Md4UAyhw&oh=00_AQPtN0f9DBhVzQe3TpfTABF2tkxu-I1RMJbONLgKs82NaA&oe=6AE00C72",
    "source_page": "https://www.instagram.com/haleydlutz/",
@@ -2249,7 +2256,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @aspecthammy_ (display name \"\"); bio: \"🧿🪬\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @aspecthammy_ (display name \"\"); bio: \"\ud83e\uddff\ud83e\udeac\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
    "name": "Hamza Hmyene",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/587386360_18547198735026879_2342265832526164123_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45MzIuQzMifQ%3D%3D&_nc_ohc=J-xTHjbWOd8Q7kNvwH6rAj9&_nc_oc=Adotv-24JiZOXM6q3p3SAltQ5HtmJgSYs8pf5Krslw_H0f4d7vVFMGdTAisdIpDMievvczzIzFclmK9Q0WdqrHLD&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=SjvoU2czRG397iCpJUidmA&oh=00_AQP44iEe1er7QG9i9RVWJfYQOLcdqmcXpQao8xfyjPR0-w&oe=6AE02437",
    "source_page": "https://www.instagram.com/aspecthammy_/",
@@ -2258,7 +2265,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @hnnbraun (display name \"Hannah Braun\"); bio: \"Isn’t it pretty to think so || Cornell -> CSU\".",
+   "evidence": "Instagram profile @hnnbraun (display name \"Hannah Braun\"); bio: \"Isn\u2019t it pretty to think so || Cornell -> CSU\".",
    "name": "Hannah Braun",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.75761-19/500483376_18502687858065337_4686239192890963109_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=spP1HVre8ugQ7kNvwFMtAGi&_nc_oc=AdpF1rhkamFXCNhKxutdFmL86IJ-HaMPimcu2cJNctmHV-dt2MAU1TjPYbwXdzCT9mWDB_jUn8A9yKAZ57NtUdDj&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=1dy7O68Y8ffXrE99mBUGjw&oh=00_AQNyKwOlr2dhaBHBwtZxvJ66jIUOAfuUvtpsZoaXbTrS1A&oe=6AE024C7",
    "source_page": "https://www.instagram.com/hnnbraun/",
@@ -2276,7 +2283,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @hannahkhughes_ (display name \"Hannah Hughes\"); bio: \"le moyne nursing 25’| registered nurse🤍\".",
+   "evidence": "Instagram profile @hannahkhughes_ (display name \"Hannah Hughes\"); bio: \"le moyne nursing 25\u2019| registered nurse\ud83e\udd0d\".",
    "name": "Hannah Hughes",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/822466120_18629912599029242_3197695071319339720_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=gz_pu9eRvpYQ7kNvwH7xHzU&_nc_oc=AdobBB-TIh1lki_oxvQwv4XZLlo5G373rcQqkArapIpIEOumvvpt_b4rR0zpVYNLI0T0IBXxB3SxtAmBTf7SmEZl&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=2T8HSGwPXqAoaZvXSxVUOQ&oh=00_AQN5D3zCbxDNG0yq7dnwOjcFCO_7SPPdKvN05xImljPUfA&oe=6AE0125C",
    "source_page": "https://www.instagram.com/hannahkhughes_/",
@@ -2285,7 +2292,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @hannahllbanana (display name \"Hannah McConnell\"); bio: \"momma 🌻\".",
+   "evidence": "Instagram profile @hannahllbanana (display name \"Hannah McConnell\"); bio: \"momma \ud83c\udf3b\".",
    "name": "Hannah McConnell",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/857323405_18643403698021274_7996741931335301425_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=s7O8YRcieNUQ7kNvwE0u4V_&_nc_oc=AdoYaf7nVYGNgPXc_gMJ9cEpww10g413X5vIyiCu-DiYVW0NfkFpiH8q5c2qtbeMawQUupPGO6uqvNe1zDVAZU8Q&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=8b3DEil6Vf8wXEODMzv1SQ&oh=00_AQOOCmmpdiXjMaHKzvxa9aWoK5uS3dqhIWNGzTMOGNUb3g&oe=6AE031FC",
    "source_page": "https://www.instagram.com/hannahllbanana/",
@@ -2312,7 +2319,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @demers_st.hilaire (display name \"Haydn Demers-St.Hilaire\"); bio: \"Never Panic, Just Manage 2025 TRC Men’s Invitational “E” Champion\".",
+   "evidence": "Instagram profile @demers_st.hilaire (display name \"Haydn Demers-St.Hilaire\"); bio: \"Never Panic, Just Manage 2025 TRC Men\u2019s Invitational \u201cE\u201d Champion\".",
    "name": "Haydn Demers-St.Hilaire",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/398161006_1461409457760800_6305540115106572526_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43MzEuQzMifQ%3D%3D&_nc_ohc=5TvUlA9LyYYQ7kNvwFJ7E_r&_nc_oc=AdohjbsUcHai5PD0Wh4UTqgxZa6rMR7Pi72Cnvc-naP2r6WeLwLdrMSCjOFvLT36NP31BV8LqCxMGxnKu2NjEr8P&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNFzv7U93BHRgqH4-I-ZgPYnDLTL56mi-Fe1yTGDzzA2Q&oe=6AE00C83",
    "source_page": "https://www.instagram.com/demers_st.hilaire/",
@@ -2321,7 +2328,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @heatherjdowling (display name \"Heather Dowling\"); bio: \"Child of God • Wife to the best • Homeschooling Mom• Homebody • Upstate NY #dowlingabbey\".",
+   "evidence": "Instagram profile @heatherjdowling (display name \"Heather Dowling\"); bio: \"Child of God \u2022 Wife to the best \u2022 Homeschooling Mom\u2022 Homebody \u2022 Upstate NY #dowlingabbey\".",
    "name": "Heather Dowling",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/457376611_2909750082511326_2313843153321698539_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTguQzMifQ%3D%3D&_nc_ohc=TfGgCBtuHcEQ7kNvwHiaCoO&_nc_oc=AdrktYsqKTFVul2x_JzAZHN6cjdCW4GksHVytuhFdUuC_q3XmPRFMcPhz4K6k79d6BM4QOtjtr90JqsebH4VLFvo&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPtkUMO5Jl6XtB2yjarVkHyfzOKllVk0yvBArDzYekd_w&oe=6AE013D7",
    "source_page": "https://www.instagram.com/heatherjdowling/",
@@ -2330,7 +2337,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @heathergamue (display name \"Heather Gamue\"); bio: \"Follower of Jesus ✝️ Data Scientist 👩🏾‍💻📊 Wifed ~ Mrs. M💍❤️\".",
+   "evidence": "Instagram profile @heathergamue (display name \"Heather Gamue\"); bio: \"Follower of Jesus \u271d\ufe0f Data Scientist \ud83d\udc69\ud83c\udffe\u200d\ud83d\udcbb\ud83d\udcca Wifed ~ Mrs. M\ud83d\udc8d\u2764\ufe0f\".",
    "name": "Heather Gamue",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/709844016_17967648735072725_5577968344875974094_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=zdkPROHcHzgQ7kNvwEZz1_D&_nc_oc=AdqOstOJFccRKyvpeNNmYG9p3BvU7ooHk36l-otLYdPWdiqdKRSGwFMoF-kVP3oKRq-MTuMqnbHPkb3Bq3uds-rH&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=uv5gsELFjcN2saoi3K_i1Q&oh=00_AQOZyR-3uSRUPx_RnDqEetkhJr73Y1cIi8k4yXkEMdan1Q&oe=6AE026C3",
    "source_page": "https://www.instagram.com/heathergamue/",
@@ -2355,7 +2362,7 @@
    "type": null
   },
   {
-   "evidence": "Her Clarkson org-chart block carries the directory image labeled 'hshattuc' beside her name and title (Clinical Associate Professor, Physical Therapy) — the directory headshot keyed to her username. Her Clarkson people page is a text-only biography.",
+   "evidence": "Her Clarkson org-chart block carries the directory image labeled 'hshattuc' beside her name and title (Clinical Associate Professor, Physical Therapy) \u2014 the directory headshot keyed to her username. Her Clarkson people page is a text-only biography.",
    "name": "Heather Shattuck",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=hshattuc",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=hshattuc",
@@ -2373,7 +2380,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @hopiek_09 (display name \"Hope Kilcollins\"); bio: \"evie’s godmother  ✨\".",
+   "evidence": "Instagram profile @hopiek_09 (display name \"Hope Kilcollins\"); bio: \"evie\u2019s godmother  \u2728\".",
    "name": "Hope Kilcollins",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/527606078_18469945306077152_6265988537863701627_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=UP2jSd6EliYQ7kNvwE5i8Fm&_nc_oc=AdowSULqPW8P9C5p0GTu-YVBGoJf_QSlaw9r_rD8bi9Oc_lj8n4C8Z_A45CQEm4BCFVso8IeE0F7gfSmSYDBRhrO&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=D7hyoHOWwfGNqvOG9SGbbg&oh=00_AQN7BATeDipytoVZqtAkisJlshse5XyXgheZxOMyFnusTQ&oe=6AE017FB",
    "source_page": "https://www.instagram.com/hopiek_09/",
@@ -2382,7 +2389,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The museum newsletter caption places him in the Fort Tribute cannoneers group photo: 'Cannoneers are (l-r) James Miller, Daniel Zufall, Scott Wilson, Hudson Brown, David Zufall, Kirke Perry, John Zufall, and Gilbert Rivers.' The PDF extraction returned no image URLs, so the photo itself cannot be filed — possible, not confirmed.",
+   "evidence": "The museum newsletter caption places him in the Fort Tribute cannoneers group photo: 'Cannoneers are (l-r) James Miller, Daniel Zufall, Scott Wilson, Hudson Brown, David Zufall, Kirke Perry, John Zufall, and Gilbert Rivers.' The PDF extraction returned no image URLs, so the photo itself cannot be filed \u2014 possible, not confirmed.",
    "name": "Hudson Brown",
    "photo_url": null,
    "source_page": "https://slpowermuseum.com/wp-content/uploads/2026/06/Newsletter-26-28.1-Mar-May.pdf",
@@ -2390,7 +2397,7 @@
    "type": "group"
   },
   {
-   "evidence": "His Clarkson org-chart block carries the directory image labeled 'hwoodrow' above his name and title (Campus Safety & Security Officer) — the directory headshot keyed to his username.",
+   "evidence": "His Clarkson org-chart block carries the directory image labeled 'hwoodrow' above his name and title (Campus Safety & Security Officer) \u2014 the directory headshot keyed to his username.",
    "name": "Hunter Woodrow",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=hwoodrow",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=hwoodrow",
@@ -2399,7 +2406,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Vermont Moms business highlight photo, captioned “Ian of Vivid Coffee Roasters”: Ian Bailey, owner/creator of Vivid Coffee Roasters, founded in Winooski, Vermont in 2015; grew up in Hawaii.",
+   "evidence": "Vermont Moms business highlight photo, captioned \u201cIan of Vivid Coffee Roasters\u201d: Ian Bailey, owner/creator of Vivid Coffee Roasters, founded in Winooski, Vermont in 2015; grew up in Hawaii.",
    "name": "Ian Bailey",
    "photo_url": "https://cdn.vermontmoms.com/wp-content/uploads/2017/10/08145652/ianvivid-e1508266251660.jpg",
    "source_page": "https://vermontmoms.com/local-business-highlight-vivid-coffee-roasters/",
@@ -2424,7 +2431,7 @@
    ]
   },
   {
-   "evidence": "Her Clarkson people profile is a text-only Q&A biography with no image. Her Project Casting profile matches her but returned no image — gap: a headshot may exist there that extraction didn't surface. The peoplesartist page doesn't mention her; the Towle Chiropractic site has no content about her.",
+   "evidence": "Her Clarkson people profile is a text-only Q&A biography with no image. Her Project Casting profile matches her but returned no image \u2014 gap: a headshot may exist there that extraction didn't surface. The peoplesartist page doesn't mention her; the Towle Chiropractic site has no content about her.",
    "name": "Ilene Lashomb",
    "photo_url": null,
    "source_page": "https://projectcasting.com/professional/ilene-lashomb",
@@ -2449,7 +2456,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Merit profile (filed as 'Indaira Quintana', SUNY Potsdam Psychology) is text-only achievement listings — no profile photo, not even the placeholder.",
+   "evidence": "Merit profile (filed as 'Indaira Quintana', SUNY Potsdam Psychology) is text-only achievement listings \u2014 no profile photo, not even the placeholder.",
    "name": "Indira Quintana",
    "photo_url": null,
    "source_page": "https://meritpages.com/Indaira-F-Quintana/4251319",
@@ -2500,7 +2507,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED. Anchor 1: SUNY Canton 2012-13 women's ice hockey roster (rooathletics.com) lists Isreal Tyler with alt text 'Isreal Tyler - View Profile'; her roster bio page (#14, Canton NY, Hugh C. Williams HS) matches the directory profile (SUNY Canton women's ice hockey, Canton NY). Anchor 2: headshot file israeltyler.jpg served from the official rooathletics.com CDN on that roster. Curl-verified 200 image/webp via GET (HEAD returns 405 on this host). Caveat: the image is an 80px-wide thumbnail — small but genuine; coordinator decides whether to file as-is.",
+   "evidence": "CONFIRMED. Anchor 1: SUNY Canton 2012-13 women's ice hockey roster (rooathletics.com) lists Isreal Tyler with alt text 'Isreal Tyler - View Profile'; her roster bio page (#14, Canton NY, Hugh C. Williams HS) matches the directory profile (SUNY Canton women's ice hockey, Canton NY). Anchor 2: headshot file israeltyler.jpg served from the official rooathletics.com CDN on that roster. Curl-verified 200 image/webp via GET (HEAD returns 405 on this host). Caveat: the image is an 80px-wide thumbnail \u2014 small but genuine; coordinator decides whether to file as-is.",
    "name": "Isreal Tyler",
    "photo_url": "https://rooathletics.com/images/2012/10/19/israeltyler.jpg?width=80&quality=90",
    "source_page": "https://rooathletics.com/roster.aspx?path=whock&season=2012-13",
@@ -2533,7 +2540,7 @@
    "type": null
   },
   {
-   "evidence": "His own Merit Pages profile (Lee University, Biblical & Theological Studies and Classics, Class of 2027, Potsdam NY) carries [Image 0] as the profile image above his name — file 'Banquet.jpg' in his own Merit photo directory. Lee symposium article quotes him; its group photo (40 participants, no individual caption) not used.",
+   "evidence": "His own Merit Pages profile (Lee University, Biblical & Theological Studies and Classics, Class of 2027, Potsdam NY) carries [Image 0] as the profile image above his name \u2014 file 'Banquet.jpg' in his own Merit photo directory. Lee symposium article quotes him; its group photo (40 participants, no individual caption) not used.",
    "name": "Jackson Paladin",
    "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/8218301/medium/Banquet.jpg?1771512781",
    "source_page": "https://meritpages.com/jackpaladin",
@@ -2542,7 +2549,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED. Anchor 1: E5 Support Services team page pairs this headshot (alt 'Jacob Bellucci') with his named bio — North Country Regional Manager; EMS driver 2018, EMT-B 2019, A-EMT 2021; ER work; wife and son; local rescue-squad family. Anchor 2: bio details match the directory profile (Potsdam native, EMS career, Italy Rome Mission vs the bio's 'passion for all things Italian', Potsdam/Utah address history). Curl-verified 200 image/png, 185,685 bytes. (The prior run hit a bot-verification interstitial on this page; it loaded fully this run.)",
+   "evidence": "CONFIRMED. Anchor 1: E5 Support Services team page pairs this headshot (alt 'Jacob Bellucci') with his named bio \u2014 North Country Regional Manager; EMS driver 2018, EMT-B 2019, A-EMT 2021; ER work; wife and son; local rescue-squad family. Anchor 2: bio details match the directory profile (Potsdam native, EMS career, Italy Rome Mission vs the bio's 'passion for all things Italian', Potsdam/Utah address history). Curl-verified 200 image/png, 185,685 bytes. (The prior run hit a bot-verification interstitial on this page; it loaded fully this run.)",
    "name": "Jacob Bellucci",
    "photo_url": "https://e5supportservices.com/imgC/headshots/Jacob.png",
    "source_page": "https://e5supportservices.com/team.php",
@@ -2551,7 +2558,7 @@
    "added": "2026-10-27"
   },
   {
-   "evidence": "Clarkson org-chart page shows the directory image labeled 'jbicknel' directly above her name block (Clinical Associate Professor / Director of Clinical Education, Physical Therapy) — the directory headshot keyed to her username. Her Clarkson people page is a text biography.",
+   "evidence": "Clarkson org-chart page shows the directory image labeled 'jbicknel' directly above her name block (Clinical Associate Professor / Director of Clinical Education, Physical Therapy) \u2014 the directory headshot keyed to her username. Her Clarkson people page is a text biography.",
    "name": "Jaime Bicknell",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=jbicknel",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=jbicknel",
@@ -2637,7 +2644,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Norwood-Norfolk CSD staff directory entry: '[Image 51: JanelColbert's Profile Photo] — Janel Colbert — Instructional Aide.' A real uploaded photo file, not the site's empty_profile placeholder used for staff without photos. County sales PDF is text-only.",
+   "evidence": "Norwood-Norfolk CSD staff directory entry: '[Image 51: JanelColbert's Profile Photo] \u2014 Janel Colbert \u2014 Instructional Aide.' A real uploaded photo file, not the site's empty_profile placeholder used for staff without photos. County sales PDF is text-only.",
    "name": "Janel Colbert",
    "photo_url": "https://3.files.edl.io/2b22/25/08/20/164600-05c8b1d3-de14-487f-b2ea-9af01adb2ef3.jpg",
    "source_page": "https://nncsk12.org/apps/staff/",
@@ -2655,7 +2662,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The 2024 Potsdam Tentative Assessment Roll is a 156-page text-table report (parcel IDs, owner names, values) — no images of any kind.",
+   "evidence": "The 2024 Potsdam Tentative Assessment Roll is a 156-page text-table report (parcel IDs, owner names, values) \u2014 no images of any kind.",
    "name": "Jared Thibodeau",
    "photo_url": null,
    "source_page": "https://www.stlawco.gov/sites/default/files/RealProperty/2024%20Tentative%20Rolls/2024%20Potsdam%20Tentative%20Assessment%20Roll.pdf",
@@ -2698,7 +2705,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @jdmeyers_ (display name \"JD Meyers\"); bio: \"• Romans 5:8 “If only life didn't need us to be this brave But we don't live in the world of if only's.” SUNY \".",
+   "evidence": "Instagram profile @jdmeyers_ (display name \"JD Meyers\"); bio: \"\u2022 Romans 5:8 \u201cIf only life didn't need us to be this brave But we don't live in the world of if only's.\u201d SUNY \".",
    "name": "JD Meyers",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/634546311_18558558691035006_5956289500485272520_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=wcj7VFFImx8Q7kNvwFunvdG&_nc_oc=AdoraQCIlZTUxfcGPniMf2jjwsC8xD0LvGyxHusaXYbuW7MddlX3Rvrnng5_TGpKURQJ1hP2w_s2p2HbjWzCOc0k&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=c2PBKbNm4VUxnTDe_5IqtQ&oh=00_AQPM9I5jMGq6NBfEk27fj-K5h3oYKmBtClR00kmW5A2bbg&oe=6AE011D3",
    "source_page": "https://www.instagram.com/jdmeyers_/",
@@ -2707,7 +2714,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "No source links on file — duplicate shell entry.",
+   "evidence": "No source links on file \u2014 duplicate shell entry.",
    "name": "Jdmeyers",
    "photo_url": null,
    "source_page": null,
@@ -2733,7 +2740,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @jemma.cooper4 (display name \"jem🌈\").",
+   "evidence": "Instagram profile @jemma.cooper4 (display name \"jem\ud83c\udf08\").",
    "name": "Jemma Cooper",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/788750953_18624039121005196_2737726052495022119_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43MjAuQzMifQ%3D%3D&_nc_ohc=MUhh_WrWL-YQ7kNvwE1yAaw&_nc_oc=AdpoiA8u3yUaoAkt69QX2ORypOGLCu3xbUOVD1WmZE3hVLqp1q8lS-a1nRlrJ1BoP5usnfkKBn23KIWXWK7L2zwS&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=CuHw7eYswiCi90XbxBLDwQ&oh=00_AQOo9fKsopmDa2jU1oEU_ruFMJexCzksme8eERjSVz9VTA&oe=6AE02353",
    "source_page": "https://www.instagram.com/jemma.cooper4/",
@@ -2802,7 +2809,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @jessicaeevans (display name \"Jess Evans\"); bio: \"ny ⇾  fl photographer @jessicaevansphoto  💌jessicarevanss@gmail.com\".",
+   "evidence": "Instagram profile @jessicaeevans (display name \"Jess Evans\"); bio: \"ny \u21fe  fl photographer @jessicaevansphoto  \ud83d\udc8cjessicarevanss@gmail.com\".",
    "name": "Jess Evans",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/848751786_18641437762022372_2680874929149580351_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=DsZK8pcsVEEQ7kNvwFBG8Sx&_nc_oc=AdrZGI_GGYbd71qYUgxdQ6irCYnbvkQssIyDNahIof2oh8bklHaw13u7TEOsQz92uB68CoLcQTKgUQkOLSHTme0L&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=O1ig9Sy-Buo00YqUMCsoAQ&oh=00_AQPHVPDQl-LZv4kQ02qJ3Ab7uoMmD2RAe_DRDORTM8dpJg&oe=6AE026E8",
    "source_page": "https://www.instagram.com/jessicaeevans/",
@@ -2811,7 +2818,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Columbia Climate School article's lead photo caption: 'The Interlock-It team. From right to left: Vanessa Ho (CC '22), Jesse Braun (CC '21), Jason Wong (advisor)…' — the caption identifies him by name and position. The Bullvine scholarship story names him beside a winner-photo collage that doesn't identify him within it; the Columbia swimming recap is text.",
+   "evidence": "Columbia Climate School article's lead photo caption: 'The Interlock-It team. From right to left: Vanessa Ho (CC '22), Jesse Braun (CC '21), Jason Wong (advisor)\u2026' \u2014 the caption identifies him by name and position. The Bullvine scholarship story names him beside a winner-photo collage that doesn't identify him within it; the Columbia swimming recap is text.",
    "name": "Jesse Braun",
    "photo_url": "https://media.news.climate.columbia.edu/wp-content/uploads/2019/11/interlock-it-team-637x478.png",
    "source_page": "https://news.climate.columbia.edu/2019/11/19/undergrads-circular-economy-competition/",
@@ -2937,7 +2944,7 @@
    "added": "2026-10-22"
   },
   {
-   "evidence": "Her Merit profile (Clarkson communication, Class of 2019) is text-only achievement listings — no profile photo extractable.",
+   "evidence": "Her Merit profile (Clarkson communication, Class of 2019) is text-only achievement listings \u2014 no profile photo extractable.",
    "name": "Joelle Kowalka",
    "photo_url": null,
    "source_page": "https://meritpages.com/Joelle-Elizabeth-Kowalka/2938066",
@@ -2954,7 +2961,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Adirondack Explorer profile 'Meet John Meyers, a one-man taxi service in NY's North Country' — lead photo captioned 'John Meyers stands with his Taxi Zero car' (photo provided by Zachariah Morehouse). JD directed this as his primary photo. A second captioned photo of him from the same article is on file, as is the earlier NCPR taxi photo (kept below).",
+   "evidence": "Adirondack Explorer profile 'Meet John Meyers, a one-man taxi service in NY's North Country' \u2014 lead photo captioned 'John Meyers stands with his Taxi Zero car' (photo provided by Zachariah Morehouse). JD directed this as his primary photo. A second captioned photo of him from the same article is on file, as is the earlier NCPR taxi photo (kept below).",
    "name": "John Meyers",
    "photo_url": "https://i0.wp.com/www.adirondackexplorer.org/wp-content/uploads/2026/10/IMG_0113-scaled.jpeg?fit=2000%2C1500&ssl=1",
    "source_page": "https://www.adirondackexplorer.org/communities/adirondackers-people/meet-john-meyers-a-one-man-taxi-service-in-nys-north-country/",
@@ -2971,7 +2978,7 @@
      "url": "https://www.northcountrypublicradio.org/news/images/twotaxis.jpg",
      "source_page": "https://www.northcountrypublicradio.org/news/story/27462/20150211/one-small-town-two-taxi-companies",
      "status": "possible",
-     "note": "NCPR story lead photo (two taxis) — package is about both owners; John not individually identified in the caption. Kept on file per JD."
+     "note": "NCPR story lead photo (two taxis) \u2014 package is about both owners; John not individually identified in the caption. Kept on file per JD."
     }
    ],
    "added_approx": "Oct 2026"
@@ -2985,7 +2992,7 @@
    "type": null
   },
   {
-   "evidence": "Image sits directly under his section heading 'Zufall Family Farm | John Zufall, Lisbon, NY (Owner)', labeled 'Zufall farm photos' — a farm photo grid tied to his farm's section. The label does not state John himself is pictured (photos credited to others) — possible only.",
+   "evidence": "Image sits directly under his section heading 'Zufall Family Farm | John Zufall, Lisbon, NY (Owner)', labeled 'Zufall farm photos' \u2014 a farm photo grid tied to his farm's section. The label does not state John himself is pictured (photos credited to others) \u2014 possible only.",
    "name": "John Zufall",
    "photo_url": "https://www.natureupnorth.org/sites/default/files/inline-images/Zufall_grid.jpg",
    "source_page": "https://www.natureupnorth.org/justmynature/kathryn-jepson/north-country-voices-canton-farmers-market",
@@ -3095,7 +3102,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "His Kickstarter 'About the creator' page (About Josh McGrath, Potsdam NY, first-person bio) carries this single image as his creator profile photo, same avatar shown beside 'Created by Josh McGrath'. No caption/alt names him in the image, so likely not confirmed. Campaign main image is book art — excluded.",
+   "evidence": "His Kickstarter 'About the creator' page (About Josh McGrath, Potsdam NY, first-person bio) carries this single image as his creator profile photo, same avatar shown beside 'Created by Josh McGrath'. No caption/alt names him in the image, so likely not confirmed. Campaign main image is book art \u2014 excluded.",
    "name": "Josh McGrath",
    "photo_url": "https://i.kickstarter.com/assets/039/307/223/b4e0a00804f6ea5c01362861e98e5dec_original.jpg?anim=false&blur=false&fit=cover&height=200&origin=ugc&q=92&v=1669234450&width=200&sig=02SdDWWTZdRCMTjqEvuRZ7%2F%2BLfnDxnEpYFCT2d2Sjf4%3D",
    "source_page": "https://www.kickstarter.com/projects/joshmcgrath/nora-hollingsworth-fantasy-book-series/creator",
@@ -3104,7 +3111,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "NCPR article lead photo caption: 'Josh Parker stands next to his pellet-fired evaporator at his sugar shack near Canton. Photo: Todd Moe.' A second captioned photo of him is on the page (josh3.jpg, hydrometer). Daily Meal Shark Tank piece is the same Joshua Parker of Parker's Maple, but its images are Shutterstock stock — nothing filed from it.",
+   "evidence": "NCPR article lead photo caption: 'Josh Parker stands next to his pellet-fired evaporator at his sugar shack near Canton. Photo: Todd Moe.' A second captioned photo of him is on the page (josh3.jpg, hydrometer). Daily Meal Shark Tank piece is the same Joshua Parker of Parker's Maple, but its images are Shutterstock stock \u2014 nothing filed from it.",
    "name": "Josh Parker",
    "photo_url": "https://www.northcountrypublicradio.org/news/images/josh4.jpg",
    "source_page": "https://www.northcountrypublicradio.org/news/story/24189/20140228/canton-teen-is-young-maple-syrup-entrepreneur",
@@ -3121,7 +3128,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @joshua_white3 (display name \"Joshua White\"); bio: \"I Love The Outdoors, Family, Friends, Any Sport Ever, and Jesus 🙏🏼💯\".",
+   "evidence": "Instagram profile @joshua_white3 (display name \"Joshua White\"); bio: \"I Love The Outdoors, Family, Friends, Any Sport Ever, and Jesus \ud83d\ude4f\ud83c\udffc\ud83d\udcaf\".",
    "name": "Joshua White",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/124294573_127647052183149_2718036445290335038_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy42NDguQzMifQ%3D%3D&_nc_ohc=x-NydvSa5SEQ7kNvwHlv3Kv&_nc_oc=AdolGlIBHaonnHGGTXVFYB-lVO8PSREG48h3kXB1cloHtBb2oqRP6OVL8tUHPnPt6MiomymxnYnjRi3mw_382cg-&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNjOLQwYv9R5S91m2dDa1-oOhIbqPnvak289p0a0vs5Mg&oe=6AE01AA7",
    "source_page": "https://www.instagram.com/joshua_white3/",
@@ -3156,7 +3163,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @jlevens18 (display name \"Joye Levendusky\"); bio: \"Jesus saves ✝️ Team USA Wrestler 🇺🇸 Assistant Coach @king_wwrestling 🌪️\".",
+   "evidence": "Instagram profile @jlevens18 (display name \"Joye Levendusky\"); bio: \"Jesus saves \u271d\ufe0f Team USA Wrestler \ud83c\uddfa\ud83c\uddf8 Assistant Coach @king_wwrestling \ud83c\udf2a\ufe0f\".",
    "name": "Joye Levendusky",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/355166870_3201268640172970_597303464404217557_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDA4LkMzIn0%3D&_nc_ohc=5UGYBW-8_PIQ7kNvwGfWOyX&_nc_oc=AdoNHLJoBygx22oKtagRl8nIvGYPUgmfgX_DyAA-Ta6sY4WUuQ4VmLqZBjqPlUQv5GinEchDKzQKviTqDMfg_Vrb&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMdMqOOZEazr2kIk55B0uxdHwSYCRrmQbRMPhtQ946Wbg&oe=6AE034F8",
    "source_page": "https://www.instagram.com/jlevens18/",
@@ -3191,7 +3198,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "SUNY Canton “People Like Me” profile photo, labeled with his name: Judson Foote of Hermon, nursing student, 36-year-old father of four, former commercial truck driver, ordained minister and private pilot.",
+   "evidence": "SUNY Canton \u201cPeople Like Me\u201d profile photo, labeled with his name: Judson Foote of Hermon, nursing student, 36-year-old father of four, former commercial truck driver, ordained minister and private pilot.",
    "name": "Judson Foote",
    "photo_url": "https://www.canton.edu/media/foote.jpg",
    "source_page": "https://www.canton.edu/plm/",
@@ -3218,7 +3225,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The NCPR index and linked story identify her as the guitarist, but the story's only subject image is a generic uncaptioned guitar photo — no caption or label ties it to her.",
+   "evidence": "The NCPR index and linked story identify her as the guitarist, but the story's only subject image is a generic uncaptioned guitar photo \u2014 no caption or label ties it to her.",
    "name": "Julia Sinclair",
    "photo_url": null,
    "source_page": "https://www.northcountrypublicradio.org/news/pages/st-lawrence-valley-ny?nophotos&limit=30&start=2528",
@@ -3235,7 +3242,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Company record is text-only. FindGlocal names Julia Kia Photography but its extracted images are labeled for other photography businesses — none tied to Julia herself (photos BY her don't count).",
+   "evidence": "Company record is text-only. FindGlocal names Julia Kia Photography but its extracted images are labeled for other photography businesses \u2014 none tied to Julia herself (photos BY her don't count).",
    "name": "Julia Tomford",
    "photo_url": null,
    "source_page": "https://www.findglocal.com/US/Potsdam-NY/232302-22/genre/181475575221097/Photographers",
@@ -3243,7 +3250,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @julianna_shatraw (display name \"Juli\"); bio: \"🤎🤎🤎 Ultrasound tech🩻\".",
+   "evidence": "Instagram profile @julianna_shatraw (display name \"Juli\"); bio: \"\ud83e\udd0e\ud83e\udd0e\ud83e\udd0e Ultrasound tech\ud83e\ude7b\".",
    "name": "Julianna Shatraw",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/791074766_18620317348029936_263523638019275794_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=6mOIL3lPctIQ7kNvwF3EYTv&_nc_oc=Adpx7tBYmB336eMUyTKctJ3XNWEvWibpter-YXtbugL93LktLSraxhywaGh6mnC8ek-TfxH7EJVm4XHMpkh7JkhK&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=u3z1wCCjW9dcVLhAg7qA5A&oh=00_AQNCq9YLNeB770uMXE3onJ8zgroysjxpjPXeOt2TjZ4hYw&oe=6AE03521",
    "source_page": "https://www.instagram.com/julianna_shatraw/",
@@ -3252,7 +3259,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her own About page, first-person: 'Hi, I'm Julie Feliciano, the founder of Aja Performance Media... I'm a car photographer,' directly under the single lead photo (alt: a person in a cap using a camera in a wooden hide). Strong person-specific context but no caption names her in the image — likely.",
+   "evidence": "Her own About page, first-person: 'Hi, I'm Julie Feliciano, the founder of Aja Performance Media... I'm a car photographer,' directly under the single lead photo (alt: a person in a cap using a camera in a wooden hide). Strong person-specific context but no caption names her in the image \u2014 likely.",
    "name": "Julie Feliciano",
    "photo_url": "https://img1.wsimg.com/isteam/ip/44e0e498-a0e8-4e04-885b-489187b149d5/IMG_20250411_220240_476.webp/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:600,h:600,cg:true",
    "source_page": "https://ajaperformancemedia.com/about-me",
@@ -3277,7 +3284,7 @@
    "type": null
   },
   {
-   "evidence": "NTC Massena preacher page is a text-only list of his sermon posts — no photo URL tied to him. Opengovny inspection record text-only. The AEDC newsletter on file was not opened in this pass.",
+   "evidence": "NTC Massena preacher page is a text-only list of his sermon posts \u2014 no photo URL tied to him. Opengovny inspection record text-only. The AEDC newsletter on file was not opened in this pass.",
    "name": "Justin Cardinal",
    "photo_url": null,
    "source_page": "https://www.ntcmassena.com/preacher/justin-cardinal/",
@@ -3301,7 +3308,7 @@
    "type": null
   },
   {
-   "evidence": "Her Merit profile (SUNY Potsdam Biomedical Sciences) is text-only President's List/graduation listings — no profile photo at all.",
+   "evidence": "Her Merit profile (SUNY Potsdam Biomedical Sciences) is text-only President's List/graduation listings \u2014 no profile photo at all.",
    "name": "Kailee Paige",
    "photo_url": null,
    "source_page": "https://meritpages.com/Kailee-Paige/8881107",
@@ -3309,7 +3316,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @kalbelleau (display name \"Kallie Belleau\"); bio: \"💕🏩🐾\".",
+   "evidence": "Instagram profile @kalbelleau (display name \"Kallie Belleau\"); bio: \"\ud83d\udc95\ud83c\udfe9\ud83d\udc3e\".",
    "name": "Kallie Belleau",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/34330939_186340942072521_8839864945181982720_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NzAuQzMifQ%3D%3D&_nc_ohc=inTBxUZQwVoQ7kNvwEVJZWM&_nc_oc=AdpaA2UdivSxhOFwOTB18-petjA_gVi0j1id7k_e2OEMXLMnDdi9ydiOzKLV6SHWcBJRBJImMNn_Rs0N5Nqn1_4-&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNxnaZ1ve4cYQXzSYsCapCQpkmV6pUAM-mwOPlD8DXcgg&oe=6AE036EC",
    "source_page": "https://www.instagram.com/kalbelleau/",
@@ -3327,7 +3334,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her Clarkson people page is biography text only, but her org-chart block carries the directory image labeled 'kferguso' alongside her name and title (Clinical Assistant Professor, Physical Therapy) — the directory headshot keyed to her username.",
+   "evidence": "Her Clarkson people page is biography text only, but her org-chart block carries the directory image labeled 'kferguso' alongside her name and title (Clinical Assistant Professor, Physical Therapy) \u2014 the directory headshot keyed to her username.",
    "name": "Kara Ferguson",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=kferguso",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=kferguso",
@@ -3336,7 +3343,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her practice site's only real image heads 'The Therapy Garage Story' section, which names Karen Hoover and Regis Quirin as co-owners — tied to her by section context but with no caption/alt naming her, so likely rather than confirmed. Her Clarkson people page is text only.",
+   "evidence": "Her practice site's only real image heads 'The Therapy Garage Story' section, which names Karen Hoover and Regis Quirin as co-owners \u2014 tied to her by section context but with no caption/alt naming her, so likely rather than confirmed. Her Clarkson people page is text only.",
    "name": "Karen Hoover",
    "photo_url": "https://img1.wsimg.com/isteam/ip/92484fc8-1a54-4715-9016-1887b461c88b/39e09cd5106cf116588847433fd704c8.png/:/rs=w:400,cg:true,m",
    "source_page": "http://thetherapygarage.com/",
@@ -3345,7 +3352,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her own Merit Pages profile (Business Administration, SNHU, Class of 2020, Potsdam NY) carries [Image 0] at the top — her student photo file in her own Merit photo directory. Only other image is the Merit logo, excluded.",
+   "evidence": "Her own Merit Pages profile (Business Administration, SNHU, Class of 2020, Potsdam NY) carries [Image 0] at the top \u2014 her student photo file in her own Merit photo directory. Only other image is the Merit logo, excluded.",
    "name": "Kari Moulton",
    "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/6250529/medium/79BCE884-82FB-49E3-A119-447D32A7F249.jpeg?1621371347",
    "source_page": "https://meritpages.com/karimoulton",
@@ -3354,7 +3361,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Leone Timing and MileSplit pages are text-only results tables (Karle McCormick, Ogdensburg Free Academy) — no images. This is Karle the OFA runner, not her twin Kayle the NCPR journalist.",
+   "evidence": "Leone Timing and MileSplit pages are text-only results tables (Karle McCormick, Ogdensburg Free Academy) \u2014 no images. This is Karle the OFA runner, not her twin Kayle the NCPR journalist.",
    "name": "Karle McCormick",
    "photo_url": null,
    "source_page": "https://www.leonetiming.com/2015/XC/Adirondack/GV1.htm",
@@ -3362,7 +3369,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @katelynmatthews10 (display name \"Katelyn Matthews\"); bio: \"SUNY Canton Nursing🩺 Med Surg | RN, BSN 🤍\".",
+   "evidence": "Instagram profile @katelynmatthews10 (display name \"Katelyn Matthews\"); bio: \"SUNY Canton Nursing\ud83e\ude7a Med Surg | RN, BSN \ud83e\udd0d\".",
    "name": "Katelyn Matthews",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/559498501_18411510448113143_5823320303726426739_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=Gss2Uv763bUQ7kNvwE8hovi&_nc_oc=AdpC9k3qS56cT0BnU_HegMUHkIgYtxaYbSYP32xXqdv9MS98CPmJ87XshE4bG1voUUeaJAYh8Eh5bs0bmkwusj77&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=JxBLsZmPKfsYyezBkVhn7w&oh=00_AQPbHD-xfRJ096kDmyPoqk_KLQuEeUqKIYnfadNAHrA7LQ&oe=6AE03592",
    "source_page": "https://www.instagram.com/katelynmatthews10/",
@@ -3396,7 +3403,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @katerina_islost (display name \"Katerina ☆\"); bio: \"I love when it snows\".",
+   "evidence": "Instagram profile @katerina_islost (display name \"Katerina \u2606\"); bio: \"I love when it snows\".",
    "name": "Katerina Cavellos",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/731134121_18052401176767291_6962653005119785660_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4zNTguQzMifQ%3D%3D&_nc_ohc=2RZRP5IWKeAQ7kNvwHRlRmr&_nc_oc=Adq_eQbmkAnbP-sDo75nVnnev-SJPO1wKjyNSAmX-6kzdz03LluzSbWmU5NlO5Bxl2ueq7tJnhCy51NIlfaO4UM1&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=b3Ws8idsz-G-nLlL0Izr0A&oh=00_AQOKUcL2dTowTj6uvM6__7szfHFNjGeCAVzFbq2rb_ALOA&oe=6AE03764",
    "source_page": "https://www.instagram.com/katerina_islost/",
@@ -3405,7 +3412,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Syracuse University OVMA “Hometown Hero” profile photo (captioned): Katherine Whitson — Georgia Military College 2022 (two associate degrees, summa cum laude), commissioned 2LT in 2024 via the Early Commissioning Program, Syracuse sociology student from Aug 2024, serves in HHC, 27th IBCT.",
+   "evidence": "Syracuse University OVMA \u201cHometown Hero\u201d profile photo (captioned): Katherine Whitson \u2014 Georgia Military College 2022 (two associate degrees, summa cum laude), commissioned 2LT in 2024 via the Early Commissioning Program, Syracuse sociology student from Aug 2024, serves in HHC, 27th IBCT.",
    "name": "Katherine Whitson",
    "photo_url": "https://veterans.syracuse.edu/wp-content/uploads/2026/03/katherine-whitson-arny-1024x583.jpeg",
    "source_page": "https://veterans.syracuse.edu/news/hth-kat-whitson/",
@@ -3428,7 +3435,7 @@
     },
     {
      "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2303/7698519/1000w_q95.jpg",
-     "note": "Commander’s coin presentation by MG Michael Natali, Syracuse, Jun 28, 2022 (DVIDS 7698519)"
+     "note": "Commander\u2019s coin presentation by MG Michael Natali, Syracuse, Jun 28, 2022 (DVIDS 7698519)"
     },
     {
      "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2301/7608226/1000w_q95.jpg",
@@ -3464,7 +3471,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @katiie.huestis (display name \"Katie Huestis\"); bio: \"•| Oswego ‘23 | Spanish Ed | CHS Spanish Teacher |•\".",
+   "evidence": "Instagram profile @katiie.huestis (display name \"Katie Huestis\"); bio: \"\u2022| Oswego \u201823 | Spanish Ed | CHS Spanish Teacher |\u2022\".",
    "name": "Katie Huestis",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/480143123_895854009160660_7221410486811844863_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NjAuQzMifQ%3D%3D&_nc_ohc=E6A-LVviNlkQ7kNvwGTseB_&_nc_oc=AdogqY1T83k3s7_BpkTHpDMktKitFKqEUSXdXI9kEJddkME02BlLUxU1JlVqXf82eSzQ-JmBRO2W4gEhYE3ioxLs&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNLcRFFEbfiDeqPC2PUw6gJ7poHodfHPQiY5A0sqzW9Rw&oe=6AE034C9",
    "source_page": "https://www.instagram.com/katiie.huestis/",
@@ -3473,7 +3480,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @kaitance.jenks19 (display name \"Katie Jenks\"); bio: \"🎀🥎🩰 ofa 26’ @hair_bykatej\".",
+   "evidence": "Instagram profile @kaitance.jenks19 (display name \"Katie Jenks\"); bio: \"\ud83c\udf80\ud83e\udd4e\ud83e\ude70 ofa 26\u2019 @hair_bykatej\".",
    "name": "Katie Jenks",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/520753685_18065872859327829_6881503308702138666_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=-bftVohkOFoQ7kNvwE-PcPi&_nc_oc=Adp0XwUWNW1OswfLF4CQ3NTwpfmk8Hy7FVjugZ77mKM8PQe6uEptqWpSNVaFaQ0DPnXOJ6XJUmIwBIwZCdZBfUsg&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=uC58MkkqFUQkCb6EMPmNig&oh=00_AQMFd5PF2zusO3dncSywxXUiv_DA2jW-ABn95MNTTSZMtw&oe=6AE02A2E",
    "source_page": "https://www.instagram.com/kaitance.jenks19/",
@@ -3482,7 +3489,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @labellek14 (display name \"Katie LaBelle\"); bio: \"🩺MA/Student Health:                                Lab Manager💉🏳️‍🌈🇨🇦🇺🇸   SUNY Potsdam🐻           🥎🏀\".",
+   "evidence": "Instagram profile @labellek14 (display name \"Katie LaBelle\"); bio: \"\ud83e\ude7aMA/Student Health:                                Lab Manager\ud83d\udc89\ud83c\udff3\ufe0f\u200d\ud83c\udf08\ud83c\udde8\ud83c\udde6\ud83c\uddfa\ud83c\uddf8   SUNY Potsdam\ud83d\udc3b           \ud83e\udd4e\ud83c\udfc0\".",
    "name": "Katie LaBelle",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/853604785_18116756453077138_3835368247129890657_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=iyUnKdIcea4Q7kNvwFhjVl5&_nc_oc=AdqdCwX9oFUlmSHV9dLl0xcJIJXqk6ZJczWgP_QbuCImECdJs27rqySdhJBARd2lr_S-iGnGbD_KESVpqq0GmAOP&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=gOTDX7NCjufVCwtUK8jsQQ&oh=00_AQOWd6iIcJh_p8GyJoKsLlRb3KHjvgzpJ7-sLNIAKKsBCA&oe=6AE04112",
    "source_page": "https://www.instagram.com/labellek14/",
@@ -3516,7 +3523,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @katrina.cutler (display name \"Katrina Lee Cutler\"); bio: \"PDAM 24’ “Hank, why do you roll smoke” @rusaw_23_\".",
+   "evidence": "Instagram profile @katrina.cutler (display name \"Katrina Lee Cutler\"); bio: \"PDAM 24\u2019 \u201cHank, why do you roll smoke\u201d @rusaw_23_\".",
    "name": "Katrina Lee Cutler",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/726716360_18603853231003429_1849956586070798326_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NjAuQzMifQ%3D%3D&_nc_ohc=cutBjseRroUQ7kNvwH4LzE8&_nc_oc=AdoEJVUIxpsoY1m2W271utZovRYYbA8v6ntoMzHm6JohtfxavN6fIiPZVnnYsv-Yl3AbKZXr7BFi8apIvLBqeK8L&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=DffK0zEwvshCBBDmSjtt6w&oh=00_AQPYTCtW9Skqs7cUOxMSVpn35PKwvxblEFLiQXyvsoTvWA&oe=6AE02762",
    "source_page": "https://www.instagram.com/katrina.cutler/",
@@ -3525,7 +3532,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @kaylawatkins8 (display name \"Kayla Hettel\"); bio: \"Until all have heard  |Missions|Midwifery|SE Asia| ♥️\".",
+   "evidence": "Instagram profile @kaylawatkins8 (display name \"Kayla Hettel\"); bio: \"Until all have heard  |Missions|Midwifery|SE Asia| \u2665\ufe0f\".",
    "name": "Kayla Hettel",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/572128998_18301009855255896_6581251143464198869_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=05ICZshd7jcQ7kNvwFCyp6E&_nc_oc=AdoDqdOsrLdES9Z-eimKCy0PazbxrcZXmnWeNOFxkoye5UsnKDP92ok_Fmep6aYm_7nd7PISwFJvmgXOE0QWZH9j&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=2ViL_3rW1kA7QEd9ZpvwLA&oh=00_AQMFtGxw_j9k4D48x9OuCGJ-oRZ1FJ1nT6ch-9G5M9vRXg&oe=6AE01F4B",
    "source_page": "https://www.instagram.com/kaylawatkins8/",
@@ -3534,7 +3541,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "anchor 1: Health Workforce Collaborative NAHEC page 'Meet your Career Support Team' shows image with alt text 'Kayle McCormick' labeled 'Kayle McCormick, Program Manager' at the Northern Area Health Education Center — matches profile employer (North Area Health Education Center); anchor 2: Current.org (July 2026) reports 'Kayle McCormick joined [North Country Public Radio] as a development coordinator. She previously worked for the North Area Health Education Center as a program manager... and a patient access representative for Rochester Regional Health' — the RRH detail also matches her profile, tying the NAHEC program manager to this person.",
+   "evidence": "anchor 1: Health Workforce Collaborative NAHEC page 'Meet your Career Support Team' shows image with alt text 'Kayle McCormick' labeled 'Kayle McCormick, Program Manager' at the Northern Area Health Education Center \u2014 matches profile employer (North Area Health Education Center); anchor 2: Current.org (July 2026) reports 'Kayle McCormick joined [North Country Public Radio] as a development coordinator. She previously worked for the North Area Health Education Center as a program manager... and a patient access representative for Rochester Regional Health' \u2014 the RRH detail also matches her profile, tying the NAHEC program manager to this person.",
    "name": "Kayle McCormick",
    "photo_url": "https://hwcollab.org/wp-content/uploads/2024/07/KayleMcCormickHeadshot.jpeg",
    "source_page": "https://hwcollab.org/nahec/",
@@ -3601,7 +3608,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The Colgate appointment story's sole image carries the alt/caption 'Kevin Lynch' (filename Kevin-Lynch1.jpg) directly above the announcement naming him Colgate's new CIO — a labeled headshot tied to him by the page.",
+   "evidence": "The Colgate appointment story's sole image carries the alt/caption 'Kevin Lynch' (filename Kevin-Lynch1.jpg) directly above the announcement naming him Colgate's new CIO \u2014 a labeled headshot tied to him by the page.",
    "name": "Kevin Lynch",
    "photo_url": "http://news.colgate.edu/wp-content/uploads/2012/11/Kevin-Lynch1.jpg",
    "source_page": "https://www.colgate.edu/news/stories/colgate-appoints-kevin-lynch-chief-information-officer",
@@ -3635,7 +3642,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @kourtneyypeets (display name \"Kourtney\"); bio: \"Emergency Room BSN, RN🩺💉 Mom ~~g.s.h👶🏼 g♡︎ 24🫧\".",
+   "evidence": "Instagram profile @kourtneyypeets (display name \"Kourtney\"); bio: \"Emergency Room BSN, RN\ud83e\ude7a\ud83d\udc89 Mom ~~g.s.h\ud83d\udc76\ud83c\udffc g\u2661\ufe0e 24\ud83e\udee7\".",
    "name": "Kourtney Peets",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/780323071_18619022026027067_2928827272540059603_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=t-roBFF90XEQ7kNvwGt28SI&_nc_oc=AdrY5zLCmkWEm89PGum57yclO-NMwf64vQ0o4hPlodg-Xsf7ffhHsWLJUThVTn2sVU2SFY7EaLzntscydYEEemYp&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=MfixZ0XjIy8WuNY8cn8sBg&oh=00_AQNp-zyVhkuoDCWAud2uESGI7gkvOQuoySInUf3rGmbq-g&oe=6AE03820",
    "source_page": "https://www.instagram.com/kourtneyypeets/",
@@ -3669,7 +3676,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Merit profile is text-only achievement listings — no profile photo, not even a placeholder URL.",
+   "evidence": "Merit profile is text-only achievement listings \u2014 no profile photo, not even a placeholder URL.",
    "name": "Kyle Deschaine",
    "photo_url": null,
    "source_page": "https://meritpages.com/Kyle-B-Deschaine/2786218",
@@ -3711,7 +3718,7 @@
    "type": null
   },
   {
-   "evidence": "Her own Houghton University women's lacrosse roster page (2021, Sophomore, Norwood NY) carries [Image 2] in the player slot — filename 'Lael_1.jpg' — the roster headshot tied to her by placement and filename. Page's other images are site logos, excluded.",
+   "evidence": "Her own Houghton University women's lacrosse roster page (2021, Sophomore, Norwood NY) carries [Image 2] in the player slot \u2014 filename 'Lael_1.jpg' \u2014 the roster headshot tied to her by placement and filename. Page's other images are site logos, excluded.",
    "name": "Lael Card",
    "photo_url": "https://athletics.houghton.edu/images/2021/3/24/Lael_1.jpg?width=300",
    "source_page": "https://athletics.houghton.edu/sports/womens-lacrosse/roster/lael-card/3723",
@@ -3747,7 +3754,7 @@
    "added": "2026-10-22"
   },
   {
-   "evidence": "Her own Merit Pages profile (SUNY Canton, Criminal Investigation, Class of 2022, Watertown NY, first-person bio); [Image 0] at top of profile is her student photo file. Canton honors page yielded only the SUNY Canton logo — excluded.",
+   "evidence": "Her own Merit Pages profile (SUNY Canton, Criminal Investigation, Class of 2022, Watertown NY, first-person bio); [Image 0] at top of profile is her student photo file. Canton honors page yielded only the SUNY Canton logo \u2014 excluded.",
    "name": "Leslie Perri",
    "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/6055846/medium/image_55415491.JPG?1610778457",
    "source_page": "https://meritpages.com/leslie-perri-686264",
@@ -3807,7 +3814,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @lynzeelou (display name \"Lindsey Sorrento\"); bio: \"Labor & Delivery RN 🤰🏼\".",
+   "evidence": "Instagram profile @lynzeelou (display name \"Lindsey Sorrento\"); bio: \"Labor & Delivery RN \ud83e\udd30\ud83c\udffc\".",
    "name": "Lindsey Sorrento",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/473334755_612482521333019_6721806732114127958_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=-U5xfhZjipIQ7kNvwGj9nAc&_nc_oc=Adrd-CskrrzZifKAyaUSjBsVa7vqqWfkzjCCPmjkL-VpAiXFKUmGLadxCUWc4xcMJc8_4ne8KnwuX4kRux7XCTFH&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPXo1H1yBrEFXK5JEUOyvSuopLliVD1GtoVUJcOjcw0iQ&oe=6AE040B6",
    "source_page": "https://www.instagram.com/lynzeelou/",
@@ -3840,7 +3847,7 @@
    "type": null
   },
   {
-   "evidence": "Caption: 'Academy Cadets Lochlan Bower and Brian Hanlin during a defensive tactics class in the Dana Hall gym'; body caption names them left to right — Lochlan B. Bower of Hogansburg (joining St. Regis Tribal Police) and Brian S. Hanlin.",
+   "evidence": "Caption: 'Academy Cadets Lochlan Bower and Brian Hanlin during a defensive tactics class in the Dana Hall gym'; body caption names them left to right \u2014 Lochlan B. Bower of Hogansburg (joining St. Regis Tribal Police) and Brian S. Hanlin.",
    "name": "Lochlan Bower",
    "photo_url": "https://www.canton.edu/media/police-academy-DT.jpg",
    "source_page": "https://www.canton.edu/news/2023/academy.php",
@@ -3866,7 +3873,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @luannbailey (display name \"Luann Bailey\"); bio: \"lady of many trades and affections. •BTV• mom•creative•painter•clay•kids @vividcoffee • @graceandlilikoi •\".",
+   "evidence": "Instagram profile @luannbailey (display name \"Luann Bailey\"); bio: \"lady of many trades and affections. \u2022BTV\u2022 mom\u2022creative\u2022painter\u2022clay\u2022kids @vividcoffee \u2022 @graceandlilikoi \u2022\".",
    "name": "Luann Bailey",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/452581209_500652235660644_8673947756642619143_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=_vYWsoSFweoQ7kNvwEUeq4E&_nc_oc=Adp05mg6PAvd6a-HhVhBz_8FdSoj5tiljNTV-e0QaCXSb9AQkkaEAg5VOkuWP1nyN0WDIPtg4Yc8ARzlIJtz69N6&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNcPfpsfwQFS3zGdSpB4-J5kGsVzFK6jXfGy6m4Y0dbnw&oe=6AE022A2",
    "source_page": "https://www.instagram.com/luannbailey/",
@@ -3890,7 +3897,7 @@
    "added": "2026-10-22"
   },
   {
-   "evidence": "POSSIBLE. Her own Coroflot profile — bio matches the directory person exactly (SUNY Canton Graphic & Multimedia Design 2014, Chancellor's Award for Student Excellence, Norwood NY origin, now Watertown NY teaching art at SUNY Canton). The profile avatar is served from Coroflot's S3 (curl-verified 200 image/jpg, 75,697 bytes), but as a working illustrator her avatar may be artwork rather than a photograph — one anchor only; a visual check is recommended before treating as confirmed.",
+   "evidence": "POSSIBLE. Her own Coroflot profile \u2014 bio matches the directory person exactly (SUNY Canton Graphic & Multimedia Design 2014, Chancellor's Award for Student Excellence, Norwood NY origin, now Watertown NY teaching art at SUNY Canton). The profile avatar is served from Coroflot's S3 (curl-verified 200 image/jpg, 75,697 bytes), but as a working illustrator her avatar may be artwork rather than a photograph \u2014 one anchor only; a visual check is recommended before treating as confirmed.",
    "name": "Lydia Dale",
    "photo_url": "https://s3images.coroflot.com/user_files/individual_files/avatars/large_avatar_530596_kjsy3lpubqb9se4goyxcxmj4f.jpg",
    "source_page": "https://www.coroflot.com/LydiaDale/profile",
@@ -3924,7 +3931,7 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; profile display name is Maddie Barton and the explorer person-index ties this handle to her, BUT the bio says Kentucky — she may have moved, or this could be a different Maddie Barton. One name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; profile display name is Maddie Barton and the explorer person-index ties this handle to her, BUT the bio says Kentucky \u2014 she may have moved, or this could be a different Maddie Barton. One name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Maddie Barton",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/762864024_18373213480232259_8948022842898521937_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy44OTIuQzMifQ%3D%3D&_nc_ohc=8T7XotvnUsEQ7kNvwGDQytQ&_nc_oc=AdozH6jDDzd2P4B2TTa-digczmljy3faQ99TKON3R0-2PmmRfwSce6DxA4U4HPqLXoS2cv5quEfKirUt5_1yWV9X&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=dfkZDDWgG7SeaF6Q1eTEJA&oh=00_AQNmSTav6bG7ZU4FI80LK2RzM6I9du0jZGohexPZ4w18wg&oe=6AE00536",
    "source_page": "https://www.instagram.com/m.bsouth02",
@@ -3958,7 +3965,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @m4gali3 (display name \"Magalie Filion-Maponda\"); bio: \"🫀\".",
+   "evidence": "Instagram profile @m4gali3 (display name \"Magalie Filion-Maponda\"); bio: \"\ud83e\udec0\".",
    "name": "Magalie Filion-Maponda",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/749042104_17878402893681251_1541848547782363294_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=cgekJSC04P0Q7kNvwH7O6JE&_nc_oc=AdpKX3WTUcs8c7q_2vJLLgHUg9_V5BkFVvEhQQA3D6F1XRmVZO3fqk7RRkv6bkKB1kb8llbRXcQIQT95TRULvXp-&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=7-8zveBBau3CzFeZiYPStw&oh=00_AQNrRK1RxCmH-z0Gkwmbqnk7Uyj51Gy7oT213ZX3e4HonA&oe=6AE0182F",
    "source_page": "https://www.instagram.com/m4gali3/",
@@ -4025,7 +4032,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @maliahwright (display name \"Maliah\"); bio: \"Home Baker👩‍🍳 🍪+ Dog lover 💛+ Earth conscious  💚🐝🦋🐦‍⬛🐾🌿🌷🐬🌎🌈\".",
+   "evidence": "Instagram profile @maliahwright (display name \"Maliah\"); bio: \"Home Baker\ud83d\udc69\u200d\ud83c\udf73 \ud83c\udf6a+ Dog lover \ud83d\udc9b+ Earth conscious  \ud83d\udc9a\ud83d\udc1d\ud83e\udd8b\ud83d\udc26\u200d\u2b1b\ud83d\udc3e\ud83c\udf3f\ud83c\udf37\ud83d\udc2c\ud83c\udf0e\ud83c\udf08\".",
    "name": "Maliah Wright",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/97960663_1116262965411691_3032558158666006528_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=3yNFReDpE5MQ7kNvwG_GZcR&_nc_oc=AdpZdYspw30KSLKST9WOKVsVJdsDIuxpbIseXBp7702Lh4N6CkVQ_ztgUdU4UcAyL4TGuRDI_XOE6xeYpQ9SCGI_&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOp1COrLLAZ0-BZHwlae7WMEC2SVJCxWeNYn0eaVIL64g&oe=6AE027F9",
    "source_page": "https://www.instagram.com/maliahwright/",
@@ -4034,7 +4041,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @mallory_greene (display name \"mallory\"); bio: \"@sunypotsdam ‘26 🐻 b ♡\".",
+   "evidence": "Instagram profile @mallory_greene (display name \"mallory\"); bio: \"@sunypotsdam \u201826 \ud83d\udc3b b \u2661\".",
    "name": "Mallory Greene",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/241363120_2919588911588919_6609858914304928321_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45MDIuQzMifQ%3D%3D&_nc_ohc=D6lupV6AHr8Q7kNvwFQr2ls&_nc_oc=AdryLLYHb0IKVmDhTnX81TdN_WhQ99oex5Vd9ejhb7Iq9d89TDgCa2qfGsA2Fh91XO6CHeheFdr5trPWZiCOo3iN&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOf6tWDnghb0xhHYjYBFxWatgFyKyXtdLMJMlorRThUwQ&oe=6AE00DE3",
    "source_page": "https://www.instagram.com/mallory_greene/",
@@ -4061,7 +4068,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her Merit profile (SUNY Potsdam Business Administration '19) is text-only — no profile photo. The MealTrain page on file is a train for Nick Waite and Molly Criscitello; its photo is captioned for them, not for her.",
+   "evidence": "Her Merit profile (SUNY Potsdam Business Administration '19) is text-only \u2014 no profile photo. The MealTrain page on file is a train for Nick Waite and Molly Criscitello; its photo is captioned for them, not for her.",
    "name": "Maria Tallo",
    "photo_url": null,
    "source_page": "https://meritpages.com/nntallo",
@@ -4078,7 +4085,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Seaway Valley Prevention Council team page places [Image 15] directly above the heading 'Marissa Kelley / Health Educator' and her bio — the same position every other staff member's named headshot occupies. BUT the file is generically named '2023-Headshot-Template.jpg', unlike colleagues' personally named files, so it cannot be verified from text as her actual photo rather than a template image — possible, flagged for visual review.",
+   "evidence": "Seaway Valley Prevention Council team page places [Image 15] directly above the heading 'Marissa Kelley / Health Educator' and her bio \u2014 the same position every other staff member's named headshot occupies. BUT the file is generically named '2023-Headshot-Template.jpg', unlike colleagues' personally named files, so it cannot be verified from text as her actual photo rather than a template image \u2014 possible, flagged for visual review.",
    "name": "Marissa Kelley",
    "photo_url": "https://svpc.net/wp-content/uploads/2025/09/2023-Headshot-Template.jpg",
    "source_page": "https://svpc.net/our-friendly-team/",
@@ -4131,7 +4138,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The 2024-25 SUNY Canton men's basketball roster lists '[Image 17: Mark Tomford - View Profile]' (Forward, So., Gouverneur NY — matching his individual player page: 6'7', Gouverneur HS, Criminal Justice), filename MarkTomford.jpg. Extracted URL was the width=80 thumbnail (Sidearm); filed at the verified width=600 size of the same headshot, same as the other Sidearm roster fixes.",
+   "evidence": "The 2024-25 SUNY Canton men's basketball roster lists '[Image 17: Mark Tomford - View Profile]' (Forward, So., Gouverneur NY \u2014 matching his individual player page: 6'7', Gouverneur HS, Criminal Justice), filename MarkTomford.jpg. Extracted URL was the width=80 thumbnail (Sidearm); filed at the verified width=600 size of the same headshot, same as the other Sidearm roster fixes.",
    "name": "Mark Tomford",
    "photo_url": "https://rooathletics.com/images/2024/10/29/MarkTomford.jpg?width=600&quality=90",
    "source_page": "https://rooathletics.com/sports/mens-basketball/roster/2024-25",
@@ -4156,7 +4163,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @martinlovell.8 (display name \"Martin Lovell\"); bio: \"All for Him⬆️🙏 Tree monkey by profession 🤙🏻”In the world you will have tribulation. But take heart; I have ove\".",
+   "evidence": "Instagram profile @martinlovell.8 (display name \"Martin Lovell\"); bio: \"All for Him\u2b06\ufe0f\ud83d\ude4f Tree monkey by profession \ud83e\udd19\ud83c\udffb\u201dIn the world you will have tribulation. But take heart; I have ove\".",
    "name": "Martin Lovell",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/729594514_18420259603182209_3241871008944985374_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=NeIfAnR_MyAQ7kNvwHepQkt&_nc_oc=AdoFKMba8qrty-Zcn1p5JsNKTU0DgZPEUvhFffDNsT43_nheeWDrYFFQJITtkgOm5_KKQ0VgPaPhtFnwLgiAYz9q&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=omTkTscwWoYELaNEUW4slA&oh=00_AQMgzTnl4iZrCKxzw02UZUbrEaV7cPa8WwmqIK8t7RwKFA&oe=6AE012C8",
    "source_page": "https://www.instagram.com/martinlovell.8/",
@@ -4191,7 +4198,7 @@
    "type": null
   },
   {
-   "evidence": "Merit profile returned story listings only — no profile-photo URL at all. Clarkson Merit stories text-only.",
+   "evidence": "Merit profile returned story listings only \u2014 no profile-photo URL at all. Clarkson Merit stories text-only.",
    "name": "Matthew Tomford",
    "photo_url": null,
    "source_page": "https://meritpages.com/Matthew-Tomford/303340",
@@ -4199,7 +4206,7 @@
    "type": null
   },
   {
-   "evidence": "His Clarkson org-chart block (Campus Safety & Security Sergeant) carries the directory image labeled 'mvolz' — the directory headshot keyed to his username. His Clarkson people page is a contact block only.",
+   "evidence": "His Clarkson org-chart block (Campus Safety & Security Sergeant) carries the directory image labeled 'mvolz' \u2014 the directory headshot keyed to his username. His Clarkson people page is a contact block only.",
    "name": "Matthew Volz",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=mvolz",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=mvolz",
@@ -4226,7 +4233,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @mayaatchan (display name \"Maya M. Atchan\"); bio: \"✨Life is Beautiful✨ ☀️🪴🐝🦋 🎨🦊🎭 @maya.atchan ✍🏼 @whispers.of.illusion 🧚🏻\".",
+   "evidence": "Instagram profile @mayaatchan (display name \"Maya M. Atchan\"); bio: \"\u2728Life is Beautiful\u2728 \u2600\ufe0f\ud83e\udeb4\ud83d\udc1d\ud83e\udd8b \ud83c\udfa8\ud83e\udd8a\ud83c\udfad @maya.atchan \u270d\ud83c\udffc @whispers.of.illusion \ud83e\uddda\ud83c\udffb\".",
    "name": "Maya M. Atchan",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/257755863_420891429615296_7786935579107822079_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=UK9fvo0u7G8Q7kNvwEP6nXx&_nc_oc=Adrva18syillZvKOKH8M1Qz6LJhvClLYSZHoGbrCGT5gAj0eWafF31UkxU164qf0mOVDef15itbMElh9uj6q02F1&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNgZSUtFBHNFvnJcJq5oxX0UogCfz9oJPT0MXDtyO0K_A&oe=6AE01409",
    "source_page": "https://www.instagram.com/mayaatchan/",
@@ -4235,7 +4242,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @mckinley.22 (display name \"McKinley Heather Belle Boyer\"); bio: \"Alaska raised Miss Alaska Teen USA 2018                 @_joshboyer_ ❤️          @hairbymckinleyboyer\".",
+   "evidence": "Instagram profile @mckinley.22 (display name \"McKinley Heather Belle Boyer\"); bio: \"Alaska raised Miss Alaska Teen USA 2018                 @_joshboyer_ \u2764\ufe0f          @hairbymckinleyboyer\".",
    "name": "McKinley Heather Belle Boyer",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/52899053_2183982448381370_8382371531392548864_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=2KCI3-JfERAQ7kNvwHdVU_u&_nc_oc=AdqpnPQ8nX74cWt1z_QnBZMVZcgo82v7G15qBAadX6srN2s8CRjETw5kb2-e-YkDhW4w9ErOvWOqjzVA3QhLx6vs&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPiCauuafhp3LMgDYuSZAD8SUBe4CikhPSFLsDGsfdHew&oe=6AE03CBB",
    "source_page": "https://www.instagram.com/mckinley.22/",
@@ -4244,7 +4251,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED. Anchor 1: SUNY Canton athletics (SIDEARM) coach bio page names Megan Howard, Assistant Women's Lacrosse Coach — Canton HS goalie, SUNY Canton psychology — matching the directory profile (SUNY Canton, assistant women's lacrosse coach, Applied Psychology BS 2021, Canton NY). Anchor 2: headshot file MeganHoward.jpg served from the official rooathletics.com SIDEARM CDN and indexed on that exact coach page. Curl-verified 200 image/jpeg. Technique: image-search CLI index (the prior run's page-HTML extraction missed this JS roster image).",
+   "evidence": "CONFIRMED. Anchor 1: SUNY Canton athletics (SIDEARM) coach bio page names Megan Howard, Assistant Women's Lacrosse Coach \u2014 Canton HS goalie, SUNY Canton psychology \u2014 matching the directory profile (SUNY Canton, assistant women's lacrosse coach, Applied Psychology BS 2021, Canton NY). Anchor 2: headshot file MeganHoward.jpg served from the official rooathletics.com SIDEARM CDN and indexed on that exact coach page. Curl-verified 200 image/jpeg. Technique: image-search CLI index (the prior run's page-HTML extraction missed this JS roster image).",
    "name": "Meg Howard",
    "photo_url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/rooathletics.com/images/2025/2/20/MeganHoward.jpg?width=300",
    "source_page": "https://rooathletics.com/sports/womens-lacrosse/roster/coaches/megan-howard/1938",
@@ -4303,7 +4310,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @megan.furner (display name \"Megan ♡\"); bio: \"@mkf_camera_roll\".",
+   "evidence": "Instagram profile @megan.furner (display name \"Megan \u2661\"); bio: \"@mkf_camera_roll\".",
    "name": "Megan Furner",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/655661900_18354966550230408_6296499756691641811_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDI0LkMzIn0%3D&_nc_ohc=q7DFaaobpYAQ7kNvwGa0E5I&_nc_oc=Adr5yDoXg9OxzK1ZmJA_JYPgBx_hZhhUy95Mq8zoGui2nY2nRwE5GUTdkd5fr2qW0PqLsFaGpbWKo54CjXRdiShQ&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=WSSxkxHzWLPMeX3npOOy2g&oh=00_AQPdE2rkxnSQ1o8wbXUCr1_d1psN83JeTBCCka7gyqDt8A&oe=6AE01242",
    "source_page": "https://www.instagram.com/megan.furner/",
@@ -4312,7 +4319,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @meg.peddle (display name \"Megan Peddle\"); bio: \"OUR rank 🤪🤪🇺🇸\".",
+   "evidence": "Instagram profile @meg.peddle (display name \"Megan Peddle\"); bio: \"OUR rank \ud83e\udd2a\ud83e\udd2a\ud83c\uddfa\ud83c\uddf8\".",
    "name": "Megan Peddle",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/385863472_850108416431134_4527141172776145225_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43NzIuQzMifQ%3D%3D&_nc_ohc=B9aayaM-reAQ7kNvwE2z0ib&_nc_oc=AdowogMju9651RRg9ErWMvWMKr0mY5iOV42FrdREJZB_Xspsfe1DRTZ6efnIJ5XWWn1b9RQCmgWrH5N0mCN6DQre&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNdh5aDjwXiTmu7f7Do_0mwZCM64XP_OTYEx1whGfjzjQ&oe=6AE039A0",
    "source_page": "https://www.instagram.com/meg.peddle/",
@@ -4355,7 +4362,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @mercy.maurer (display name \"Mer\"); bio: \"🫶🏻💌🎀\".",
+   "evidence": "Instagram profile @mercy.maurer (display name \"Mer\"); bio: \"\ud83e\udef6\ud83c\udffb\ud83d\udc8c\ud83c\udf80\".",
    "name": "Mercy Maurer",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/839914204_18639660097051245_7478590713562546328_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=0z03L6hYKqYQ7kNvwGYuIrD&_nc_oc=AdqEO36KjF-JhGDRCGLs6ZKC6VIWNtBXB1z2Peus18b6ddpoRZBppSI20-A2TlLOyrKk_OE3VCfAvLf8geAttHRe&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=ORy9Uuh3Jv2AVoV82LjSJA&oh=00_AQNgxtpMr204jfth2kXOWLgUPuX-cOOh0ol-G4jhKAXlQw&oe=6AE021C4",
    "source_page": "https://www.instagram.com/mercy.maurer/",
@@ -4381,7 +4388,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @micahmcculley_ (display name \"Micah McCulley\"); bio: \"geneseo xc/tf alum eastman ‘28\".",
+   "evidence": "Instagram profile @micahmcculley_ (display name \"Micah McCulley\"); bio: \"geneseo xc/tf alum eastman \u201828\".",
    "name": "Micah McCulley",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/397439017_658203456300098_150946437655912516_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=ULj1OgY1u7wQ7kNvwGz_9Sh&_nc_oc=AdrDxX662tc9pFzAenc6NqdjD1Ki4xfjLUUeEjZXQXhM26nJEbJKDAsH_hdIkTBqoRn2Dva7d9Wbn88anZ_A86Hi&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNRLzRkl7x1h42ly8l9klit3GB8trNB9WhtuK1-EvbOZg&oe=6AE02012",
    "source_page": "https://www.instagram.com/micahmcculley_/",
@@ -4433,7 +4440,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Women In Academia Report article's sole photo (filename Larson-300x300.jpg) sits immediately before the lede naming her: Michelle B. Larson, nineteenth president of Clarkson University, first woman president in its 128-year history. Identity verified: astrophysicist, 12 years president/CEO of Adler Planetarium, formerly Utah State vice provost, PhD Montana State — the Clarkson president, not a namesake.",
+   "evidence": "Women In Academia Report article's sole photo (filename Larson-300x300.jpg) sits immediately before the lede naming her: Michelle B. Larson, nineteenth president of Clarkson University, first woman president in its 128-year history. Identity verified: astrophysicist, 12 years president/CEO of Adler Planetarium, formerly Utah State vice provost, PhD Montana State \u2014 the Clarkson president, not a namesake.",
    "name": "Michelle Larson",
    "photo_url": "https://www.wiareport.com/wordpress/wp-content/uploads/2025/03/Larson-300x300.jpg",
    "source_page": "http://wiareport.com/2025/03/michelle-larson-named-the-first-woman-president-of-clarkson-university/",
@@ -4458,7 +4465,7 @@
    "type": null
   },
   {
-   "evidence": "Clarkson Love Stories page section headed 'Debbie Knaebel 15 and Michael Knaebel' has a single photo directly under the heading — alt 'A couple smiling into the camera on wedding day', filename Deborah-Knaebel.jpg. Section text confirms Michael works for Clarkson OIT. Tied to the named couple by placement and filename.",
+   "evidence": "Clarkson Love Stories page section headed 'Debbie Knaebel 15 and Michael Knaebel' has a single photo directly under the heading \u2014 alt 'A couple smiling into the camera on wedding day', filename Deborah-Knaebel.jpg. Section text confirms Michael works for Clarkson OIT. Tied to the named couple by placement and filename.",
    "name": "Mike Knaebel",
    "photo_url": "https://diy.clarkson.edu/wp-content/uploads/2021/02/Deborah-Knaebel.jpg",
    "source_page": "https://diy.clarkson.edu/uncategorized/clarkson-love-stories/",
@@ -4467,7 +4474,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Mixcloud's sole image is episode-specific artwork labeled with the full sermon title naming Pastor Mike Tomford, and neighboring episodes carry different artwork, so it is not generic show art — but the page does not explicitly state the artwork depicts him. Hubhopper yielded no image; Gouverneur Tribune Press page 404.",
+   "evidence": "Mixcloud's sole image is episode-specific artwork labeled with the full sermon title naming Pastor Mike Tomford, and neighboring episodes carry different artwork, so it is not generic show art \u2014 but the page does not explicitly state the artwork depicts him. Hubhopper yielded no image; Gouverneur Tribune Press page 404.",
    "name": "Mike Tomford",
    "photo_url": "https://thumbnailer.mixcloud.com/unsafe/290x290/extaudio/b/1/b/f/64b8-d22e-4acc-adfe-82bea25db508",
    "source_page": "https://www.mixcloud.com/rcfgcf/sermon-psalm-57-singing-praises-in-the-cave-pastor-mike-tomford-june-21-2020/",
@@ -4503,7 +4510,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Seaway Valley Prevention Council team page: Morgan Arquette, Program Coordinator / Reality Check Coordinator; bachelor’s in Public Health from SUNY Potsdam. Image file named for her in her staff roster slot.",
+   "evidence": "Seaway Valley Prevention Council team page: Morgan Arquette, Program Coordinator / Reality Check Coordinator; bachelor\u2019s in Public Health from SUNY Potsdam. Image file named for her in her staff roster slot.",
    "name": "Morgan Arquette",
    "photo_url": "https://svpc.net/wp-content/uploads/2024/01/Morgan-Arquette-2024.jpg",
    "source_page": "https://svpc.net/our-friendly-team/",
@@ -4513,7 +4520,7 @@
    "added": "2026-10-26"
   },
   {
-   "evidence": "Her own Merit profile (SUNY Potsdam, Childhood/Early Childhood Education, Class of 2020, Gouverneur NY) carries [Image 0] at the top — a student photo file (IMG_2917.JPG) in her own Merit photo directory. Remaining images are the Merit logo and award badges.",
+   "evidence": "Her own Merit profile (SUNY Potsdam, Childhood/Early Childhood Education, Class of 2020, Gouverneur NY) carries [Image 0] at the top \u2014 a student photo file (IMG_2917.JPG) in her own Merit photo directory. Remaining images are the Merit logo and award badges.",
    "name": "Morgan Morse",
    "photo_url": "https://s3.amazonaws.com/rm3.photos.prod.readmedia.com/students/4251136/medium/IMG_2917.JPG?1515905115",
    "source_page": "https://meritpages.com/Morganmorse",
@@ -4608,7 +4615,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @nevaeh_phillips (display name \"Nevaeh Phillips\"); bio: \"Love with a big heart, stay humble, create a happier, better safe space for others❤️\".",
+   "evidence": "Instagram profile @nevaeh_phillips (display name \"Nevaeh Phillips\"); bio: \"Love with a big heart, stay humble, create a happier, better safe space for others\u2764\ufe0f\".",
    "name": "Nevaeh Phillips",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/550562480_18526272400009607_7017482107786060051_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=C_rNGzzxji0Q7kNvwHrnStx&_nc_oc=AdrQfk0KK6_U2jEELadobGGovs9KSJs-O9WjWEbE42_pd8Ty_T9qMblJy59Dy-EjAkfFNprIwucfcrhMNFjnONcC&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=gGtbXZaaWjSvnJwxF-cwIw&oh=00_AQMRsNXjPEcXvsYtENkv_uwUDpKJ7yt2-tujA_Uj1RLRyg&oe=6AE02174",
    "source_page": "https://www.instagram.com/nevaeh_phillips/",
@@ -4625,7 +4632,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @nikki.sew (display name \"Nicole Robyn\"); bio: \"Love anyways // Trees have the answers Doctor of Physical Therapy 📍All business inquiries to @rootspt\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @nikki.sew (display name \"Nicole Robyn\"); bio: \"Love anyways // Trees have the answers Doctor of Physical Therapy \ud83d\udccdAll business inquiries to @rootspt\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
    "name": "Nicole Seward",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/404939089_1333402120875742_4345262454377851922_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=63zD0mU3wQoQ7kNvwG6Umpk&_nc_oc=AdoETmsgBKwp5hgoT3l-cih32fyJdty85fBaDl5D-za3AVzyzUQsU_lH4uwkSd9lUMpp1upK0t4M89ADXWFCe6b0&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNc6G2lcgFvD_hvyk-8xt_8HiLfQL5wROVAA1cimiaNig&oe=6AE02E95",
    "source_page": "https://www.instagram.com/nikki.sew/",
@@ -4642,7 +4649,7 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; name matches, but the bio (\"Based in Jacksonville Florida\", selling vintage) does not tie to any known North Country anchor — one name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from the linked Instagram profile; name matches, but the bio (\"Based in Jacksonville Florida\", selling vintage) does not tie to any known North Country anchor \u2014 one name anchor only; needs JD's eye. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Noah Adams",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/798467534_18461260798138062_8804818832181941739_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=89bfOgJETW8Q7kNvwEakeB-&_nc_oc=Adrc5X3xJ-EVm1ZmZNPh4Ad3YOh_ahWreek__scZoE0g44gm_lEgDO8VB5iErclsTWzcqzrHlIkvMAZe2limI2Zh&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=wOiyR7gbAOgD0IO0zqXIOw&oh=00_AQNbajOaiwmmJoaOnTVwZtjFiR0xizdMlGCLpbsTk1QBlg&oe=6AE00D2D",
    "source_page": "https://www.instagram.com/noah_adams24",
@@ -4682,7 +4689,7 @@
    "type": null
   },
   {
-   "evidence": "The 90 Miler article leads with her ('Norah Pease 24 and Kelly Bloom 25 ease their canoe into the cold water...') and the first photos sit immediately after that paragraph — uncaptioned in extraction, so the pair in the canoe is not text-confirmed as her. The page's captioned photos are of other people. Her Merit profile is text-only. JD flagged the original as a bad photo 2026-10-22; alternate lead photo (Fin1.JPG, finish line) from the same Sufferfest article now primary: it sits in the lead photo position after the paragraph naming Pease and Bloom, before her interview quote. Original kept as alternate.",
+   "evidence": "The 90 Miler article leads with her ('Norah Pease 24 and Kelly Bloom 25 ease their canoe into the cold water...') and the first photos sit immediately after that paragraph \u2014 uncaptioned in extraction, so the pair in the canoe is not text-confirmed as her. The page's captioned photos are of other people. Her Merit profile is text-only. JD flagged the original as a bad photo 2026-10-22; alternate lead photo (Fin1.JPG, finish line) from the same Sufferfest article now primary: it sits in the lead photo position after the paragraph naming Pease and Bloom, before her interview quote. Original kept as alternate.",
    "name": "Norah Pease",
    "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2025-09/Fin1.JPG?itok=Dc1jsnaD",
    "source_page": "https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler",
@@ -4697,7 +4704,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @lena_musiienko (display name \"ФІТНЕС ТРЕНЕР• ОНЛАЙН\"); bio: \"Proud to be UKRAINIAN 🇺🇦 Тренуюся і показую своє життя 💫 Люблю тіло і особистість, які будую❤️\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @lena_musiienko (display name \"\u0424\u0406\u0422\u041d\u0415\u0421 \u0422\u0420\u0415\u041d\u0415\u0420\u2022 \u041e\u041d\u041b\u0410\u0419\u041d\"); bio: \"Proud to be UKRAINIAN \ud83c\uddfa\ud83c\udde6 \u0422\u0440\u0435\u043d\u0443\u044e\u0441\u044f \u0456 \u043f\u043e\u043a\u0430\u0437\u0443\u044e \u0441\u0432\u043e\u0454 \u0436\u0438\u0442\u0442\u044f \ud83d\udcab \u041b\u044e\u0431\u043b\u044e \u0442\u0456\u043b\u043e \u0456 \u043e\u0441\u043e\u0431\u0438\u0441\u0442\u0456\u0441\u0442\u044c, \u044f\u043a\u0456 \u0431\u0443\u0434\u0443\u044e\u2764\ufe0f\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
    "name": "Olena Musiienko",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/490885124_1321561368949387_6137703258104825599_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=QQnQHXYXLHgQ7kNvwEGxT0z&_nc_oc=AdojZKEJjWwPRhRQ7ARG35sIQqEexUZgRaIJHya6WKvcuSQOeQpjA3Y6xjfj2m5huT6MRnTYM4c8P0mfbKm2YA8K&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPb_74HyI_ycOv87Md4EenhwPToupybD-4agBSfyM5paw&oe=6AE0190E",
    "source_page": "https://www.instagram.com/lena_musiienko/",
@@ -4706,7 +4713,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @ol9a (display name \"Olga Lindsey\"); bio: \"CAL ♡ LULU ♡ LEON ♡ CLARA on earth as it is in heaven 🕊️ @awakeningkids\".",
+   "evidence": "Instagram profile @ol9a (display name \"Olga Lindsey\"); bio: \"CAL \u2661 LULU \u2661 LEON \u2661 CLARA on earth as it is in heaven \ud83d\udd4a\ufe0f @awakeningkids\".",
    "name": "Olga Lindsey",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/457017338_8153077354740086_2959242469912371956_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=R-gQwDo9oD4Q7kNvwGuzxBI&_nc_oc=AdqtPjjkZ8-lvsEdDkYZg16gTgxmYCGLL_O0Bjyre_KfqiyGlUkd6qcHXmUfO7PC2NfmMVpFAn4gI8Sd68OraFtQ&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNWgrgmynURvIsoPkgLRqwTkgqM7rDgWemi3H8winEqOA&oe=6AE03368",
    "source_page": "https://www.instagram.com/ol9a/",
@@ -4715,7 +4722,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CCE staff profile places '[Image 0: Olivia Briggs]' directly above her name and title (21st Century Afterschool Site Director @ Edwards-Knox) — filename Olivia_Briggs_Photo.jpg in Cornell's people-photo store.",
+   "evidence": "CCE staff profile places '[Image 0: Olivia Briggs]' directly above her name and title (21st Century Afterschool Site Director @ Edwards-Knox) \u2014 filename Olivia_Briggs_Photo.jpg in Cornell's people-photo store.",
    "name": "Olivia Briggs",
    "photo_url": "https://s3.amazonaws.com/assets.cce.cornell.edu/people/3860/photo/sized/Olivia_Briggs_Photo.jpg?1680531993",
    "source_page": "https://stlawrence.cce.cornell.edu/staff/olivia-briggs",
@@ -4732,7 +4739,7 @@
    "type": null
   },
   {
-   "evidence": "Caption for the page's only photo: 'Schyler Oakes, David Valeske, Michael Bernard, Jennie Hutton, Ciara Spicer, and Olivia Goodrow are shown with their Isabella Graham Hart School of Practical Nursing pins' (LPN graduation, Dec 15 2023). Caption confirms she is among the six pictured but gives no position/order — possible, not individually identifiable from text.",
+   "evidence": "Caption for the page's only photo: 'Schyler Oakes, David Valeske, Michael Bernard, Jennie Hutton, Ciara Spicer, and Olivia Goodrow are shown with their Isabella Graham Hart School of Practical Nursing pins' (LPN graduation, Dec 15 2023). Caption confirms she is among the six pictured but gives no position/order \u2014 possible, not individually identifiable from text.",
    "name": "Olivia Goodrow",
    "photo_url": "https://edge.sitecorecloud.io/rochesterred189-rrh4822-prodb67b-4284/media/project/rrh/rrh/health-and-news-hub/thumbnails/igh-nursing-graduation-lg-010824.jpg?h=563&iar=0&w=1000",
    "source_page": "https://www.rochesterregional.org/hub/lpns-graduate-from-potsdam-nursing-school",
@@ -4741,7 +4748,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @oliviamariegrant (display name \"Olivia Grant\"); bio: \"Faith  |  Adoption  |  Infertility  my 5ever love @joshgrantlive  mama to Aryana & Maeve 👧🏾👶🏽 \"Have courage an\".",
+   "evidence": "Instagram profile @oliviamariegrant (display name \"Olivia Grant\"); bio: \"Faith  |  Adoption  |  Infertility  my 5ever love @joshgrantlive  mama to Aryana & Maeve \ud83d\udc67\ud83c\udffe\ud83d\udc76\ud83c\udffd \"Have courage an\".",
    "name": "Olivia Grant",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/812817343_18637702966047106_1025306977749882301_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=WTc9dIj83mEQ7kNvwE0s77I&_nc_oc=Adrlk4c8f1TJMI-M3Wz1oQPsZlu7078WfsSWX3vEj5BPp8IbHXjW3JKJzrbTGeTdb2MHo_BfjrES32FaF1hiAyud&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=h53EamL9pJZOeNHJTWqUBg&oh=00_AQMRyB6Ca5BWEj_fJ55tz9GSSxDsujSol1qomoBWz5MeGg&oe=6AE03313",
    "source_page": "https://www.instagram.com/oliviamariegrant/",
@@ -4750,7 +4757,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Merit profile (filed under the 'Huntley' spelling — Olivia Huntley of Potsdam, SUNY Potsdam Criminal Justice) is text-only listings. DirectAthletics page is text results tables only.",
+   "evidence": "Merit profile (filed under the 'Huntley' spelling \u2014 Olivia Huntley of Potsdam, SUNY Potsdam Criminal Justice) is text-only listings. DirectAthletics page is text results tables only.",
    "name": "Olivia Huntly",
    "photo_url": null,
    "source_page": "https://meritpages.com/Olivia-Huntley/7054475",
@@ -4776,7 +4783,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @oliviaa.rose.01 (display name \"Olivia Rose\"); bio: \"🎓WGU ‘26  Psalm 121\".",
+   "evidence": "Instagram profile @oliviaa.rose.01 (display name \"Olivia Rose\"); bio: \"\ud83c\udf93WGU \u201826  Psalm 121\".",
    "name": "Olivia Rose",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/843405331_18447169906123375_7276918427783734685_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=SSaWlGIyyrEQ7kNvwE7yRqX&_nc_oc=AdrHcQgOqtnJLcanMbEsnkV6Ih1bM81Yar-IuMs3s-kiJ-OtLu1UgRm4LIePOyhBRWJCgJjZHONyeA0jObK4f6lb&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=MJXr9yaZyQWnBWbIFpUGPg&oh=00_AQMQC0cYSXMXdBvI_27TrSyZfuVlux4BJAko2o02E8zGRw&oe=6AE03533",
    "source_page": "https://www.instagram.com/oliviaa.rose.01/",
@@ -4827,7 +4834,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "BroadwayWorld profile headshot (labeled “Patrick Tombs Headshot”): credits include Crutchie in Newsies at Axelrod Performing Arts Center and Quasimodo in The Hunchback of Notre Dame at New Paradigm Theatre; born in Binghamton, NY.",
+   "evidence": "BroadwayWorld profile headshot (labeled \u201cPatrick Tombs Headshot\u201d): credits include Crutchie in Newsies at Axelrod Performing Arts Center and Quasimodo in The Hunchback of Notre Dame at New Paradigm Theatre; born in Binghamton, NY.",
    "name": "Patrick Tombs",
    "photo_url": "https://cloudimages2.broadwayworld.com/headshots/445969sm.jpg?format=auto&width=464",
    "source_page": "https://www.broadwayworld.com/people/Patrick-Tombs/",
@@ -4854,7 +4861,7 @@
    "type": null
   },
   {
-   "evidence": "The Ombra news post names him as Potsdam site lead in text, but its sole image is an unlabeled header graphic with no caption tying it to him — excluded. His other source is Facebook (auth).",
+   "evidence": "The Ombra news post names him as Potsdam site lead in text, but its sole image is an unlabeled header graphic with no caption tying it to him \u2014 excluded. His other source is Facebook (auth).",
    "name": "Peter Johnson",
    "photo_url": null,
    "source_page": "https://ombra.us/ombra-opens-new-office-in-potsdam-ny-1/",
@@ -4896,7 +4903,7 @@
    "type": null
   },
   {
-   "evidence": "The alumni-spotlight page extraction returned no photo. The readMedia Model Senate article is solely about Philip Paige 15, and its Related Media file is explicitly named 'Philip_Paige_5830_0.jpg' — the medium rendition of that tied image is filed.",
+   "evidence": "The alumni-spotlight page extraction returned no photo. The readMedia Model Senate article is solely about Philip Paige 15, and its Related Media file is explicitly named 'Philip_Paige_5830_0.jpg' \u2014 the medium rendition of that tied image is filed.",
    "name": "Philip Lloyd Paige",
    "photo_url": "https://s3.amazonaws.com/attachments.readmedia.com/files/58834/medium/Paige_5830_0.jpg?1399992992",
    "source_page": "http://readme.readmedia.com/From-SUNY-Potsdam-to-the-Legislature-Undergraduate-Intern-Leads-Model-Senate-and-Lands-Job/8575822/print",
@@ -4960,7 +4967,7 @@
    "photo_url": "https://dmna.ny.gov/home/images/thumbnails_small/thumb100_080509-A-5130P-0965_web.jpg",
    "source_page": "https://dmna.ny.gov/units/?unit=1204913129&page=featured",
    "status": "confirmed",
-   "evidence": "anchor 1: DMNA (NY Division of Military & Naval Affairs) caption on the unit page: 'Holding the American Flag on the peak of Ghar Mountain on May 9 (from left) is Spc. Raymond Persons, Spc. Bill Rose and Staff Sgt. James Waleski from the Headquarters and Headquarters Company, 427th Support Battalion' (photo dated May 22, 2008); anchor 2: independent MiLB article (milb.com/news/gcs-395931) lists 'Raymond Persons, CF (Syracuse, NY)' on the Hellfire One roster of 27th Brigade (Syracuse) soldiers in Afghanistan, 2008 — matches profile (U.S. Army, 27th IBCT orbit). Note: only the 100px thumbnail URL was extractable from the DMNA page; a larger version likely exists on dmna.ny.gov under the same photo ID (080509-A-5130P-0965).",
+   "evidence": "anchor 1: DMNA (NY Division of Military & Naval Affairs) caption on the unit page: 'Holding the American Flag on the peak of Ghar Mountain on May 9 (from left) is Spc. Raymond Persons, Spc. Bill Rose and Staff Sgt. James Waleski from the Headquarters and Headquarters Company, 427th Support Battalion' (photo dated May 22, 2008); anchor 2: independent MiLB article (milb.com/news/gcs-395931) lists 'Raymond Persons, CF (Syracuse, NY)' on the Hellfire One roster of 27th Brigade (Syracuse) soldiers in Afghanistan, 2008 \u2014 matches profile (U.S. Army, 27th IBCT orbit). Note: only the 100px thumbnail URL was extractable from the DMNA page; a larger version likely exists on dmna.ny.gov under the same photo ID (080509-A-5130P-0965).",
    "type": "group",
    "added": "2026-10-27"
   },
@@ -4973,7 +4980,7 @@
    "type": null
   },
   {
-   "evidence": "The St. James School staff page lists 'Renee Dale — Art Director' with a photo slot under her bio, the same layout as every other staff member — but the fetch only supplied the first staff image's URL, so her photo's URL could not be extracted or filed.",
+   "evidence": "The St. James School staff page lists 'Renee Dale \u2014 Art Director' with a photo slot under her bio, the same layout as every other staff member \u2014 but the fetch only supplied the first staff image's URL, so her photo's URL could not be extracted or filed.",
    "name": "Renee Dale",
    "photo_url": null,
    "source_page": "https://stjamesk-6.org/staff",
@@ -4998,7 +5005,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "ACPHS Phi Lambda Sigma induction page: group photo placed with the PLS inductee list naming Ria Amo first among ~20 inductees — no caption identifies individuals or positions. A second ACPHS group photo (Fall 2025 awards dinner) also lists her among 21 awardees, not individually identifiable. Possible.",
+   "evidence": "ACPHS Phi Lambda Sigma induction page: group photo placed with the PLS inductee list naming Ria Amo first among ~20 inductees \u2014 no caption identifies individuals or positions. A second ACPHS group photo (Fall 2025 awards dinner) also lists her among 21 awardees, not individually identifiable. Possible.",
    "name": "Ria Amo",
    "photo_url": "https://www.acphs.edu/wp-content/uploads/2025/08/PLS-2025_0.jpg",
    "source_page": "https://www.acphs.edu/news/rho-chi-and-pls-induction-ceremony/",
@@ -5042,7 +5049,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "PDGA and UDisc results pages are text-only scores listings — no photos on either.",
+   "evidence": "PDGA and UDisc results pages are text-only scores listings \u2014 no photos on either.",
    "name": "Riley Criscitello",
    "photo_url": null,
    "source_page": "https://www.pdga.com/tour/event/50063",
@@ -5067,7 +5074,7 @@
    "type": null
   },
   {
-   "evidence": "The SUNY Canton Law Enforcement Day article names Trooper Robert Larrabee as a presenter, but the page carries no photos at all — text-only mention.",
+   "evidence": "The SUNY Canton Law Enforcement Day article names Trooper Robert Larrabee as a presenter, but the page carries no photos at all \u2014 text-only mention.",
    "name": "Rob Larrabee",
    "photo_url": null,
    "source_page": "https://canton.edu/news/2023/led.php",
@@ -5083,7 +5090,7 @@
    "type": null
   },
   {
-   "evidence": "Her Clarkson people page is text-only in extraction, but her org-chart block carries the directory image keyed to her username 'rdipasq' above her name and title (Assistant Professor – Anatomist, Physical Therapy).",
+   "evidence": "Her Clarkson people page is text-only in extraction, but her org-chart block carries the directory image keyed to her username 'rdipasq' above her name and title (Assistant Professor \u2013 Anatomist, Physical Therapy).",
    "name": "Robin DiPasquale",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=rdipasq",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=rdipasq",
@@ -5108,7 +5115,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @rosalie_page_smith (display name \"Rosalie Smith\"); bio: \"You had me at yellow 🍋 🎨\".",
+   "evidence": "Instagram profile @rosalie_page_smith (display name \"Rosalie Smith\"); bio: \"You had me at yellow \ud83c\udf4b \ud83c\udfa8\".",
    "name": "Rosalie Smith",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/314661066_3286666564995952_5674253162895435412_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=77hpXtmInnkQ7kNvwEzTv3q&_nc_oc=AdogOlILxz7MXdMcC7AuJBS-r_NlAJs_WyhWAgRINbEMkoQwH-qqeTW3UE9fh7eD1l57dRmlkidzXnywaM2zOU37&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQM_8AXYN3RzvmOD1kqJoEUcMZhLdxjJFSLh4GwQwreXig&oe=6AE01593",
    "source_page": "https://www.instagram.com/rosalie_page_smith/",
@@ -5125,7 +5132,7 @@
    "type": null
   },
   {
-   "evidence": "DVIDS image 6884312 (Fort Drum, Oct 1, 2021): caption identifies the posed group by position — Sgt. 1st Class Ryan Blount is 4th/rightmost, name tape visible — after earning the Expert Soldier Badge; 427th Brigade Support Battalion; hometown Liverpool, NY per DMNA.",
+   "evidence": "DVIDS image 6884312 (Fort Drum, Oct 1, 2021): caption identifies the posed group by position \u2014 Sgt. 1st Class Ryan Blount is 4th/rightmost, name tape visible \u2014 after earning the Expert Soldier Badge; 427th Brigade Support Battalion; hometown Liverpool, NY per DMNA.",
    "name": "Ryan Blount",
    "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2110/6884312/1000w_q95.jpg",
    "source_page": "https://www.dvidshub.net/image/6884312/ny-army-guard-soldiers-earn-expert-soldier-badge",
@@ -5144,7 +5151,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "SUNY Potsdam newsletter PDF fetch failed (empty response) — gap; her Merit stories are text-only.",
+   "evidence": "SUNY Potsdam newsletter PDF fetch failed (empty response) \u2014 gap; her Merit stories are text-only.",
    "name": "Ryleigh Combs",
    "photo_url": null,
    "source_page": "https://www.potsdam.edu/sites/default/files/2016SOE%26PSnewsletter.pdf",
@@ -5161,7 +5168,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED. Anchor 1: Michael Taiwo Scholarships 'Meet the team' page (mtscholarships.org/about) carries this headshot with alt text 'Salako Gbenga' and filename Salako-Gbenga.png in his named team slot; his team-page bio is an exact identity match (Clarkson CARES air-quality researcher — directory: Clarkson University, Saint-Gobain NorPro, Obafemi Awolowo University). Anchor 2: independent PubMed co-authorship record for Salako Gbenga Oladoyin at Clarkson (established in the prior run). Curl-verified 200 image/png. Note: the site displays his name as 'Salako Gbenga' (order swapped vs directory).",
+   "evidence": "CONFIRMED. Anchor 1: Michael Taiwo Scholarships 'Meet the team' page (mtscholarships.org/about) carries this headshot with alt text 'Salako Gbenga' and filename Salako-Gbenga.png in his named team slot; his team-page bio is an exact identity match (Clarkson CARES air-quality researcher \u2014 directory: Clarkson University, Saint-Gobain NorPro, Obafemi Awolowo University). Anchor 2: independent PubMed co-authorship record for Salako Gbenga Oladoyin at Clarkson (established in the prior run). Curl-verified 200 image/png. Note: the site displays his name as 'Salako Gbenga' (order swapped vs directory).",
    "name": "Salako Gbenga Oladoyin",
    "photo_url": "https://mtscholarships.org/wp-content/uploads/2025/05/Salako-Gbenga.png",
    "source_page": "https://mtscholarships.org/about/",
@@ -5179,7 +5186,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @slaminsam22 (display name \"Sam\"); bio: \"🙃\".",
+   "evidence": "Instagram profile @slaminsam22 (display name \"Sam\"); bio: \"\ud83d\ude43\".",
    "name": "Sam",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/158159344_260224785651892_5829824415757883625_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43NTAuQzMifQ%3D%3D&_nc_ohc=3CxvyBDEn-AQ7kNvwHZAJDW&_nc_oc=Ado8FRU31cLXSRRffGgQh6_s-0hiPEqDnvXJQ8thuFgoV1RNmx5m3ehgCsFOgRdpewDCUERI9e57qBNLLNWGGTtz&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOOlRd2dYkcLM4bH9QYbi99rw0lX0U81vZJeMSlr5n0RQ&oe=6AE01EDB",
    "source_page": "https://www.instagram.com/slaminsam22/",
@@ -5224,7 +5231,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Merit profile (SUNY Canton President's List, Canton NY) is text-only listings — no profile photo extractable. The on-file newspaper PDF failed to load (empty response) — that source remains unchecked.",
+   "evidence": "Merit profile (SUNY Canton President's List, Canton NY) is text-only listings \u2014 no profile photo extractable. The on-file newspaper PDF failed to load (empty response) \u2014 that source remains unchecked.",
    "name": "Samarah Martin",
    "photo_url": null,
    "source_page": "https://meritpages.com/Samarah-Martin/3121843",
@@ -5283,7 +5290,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Clarkson people profile is a contact block only (email, phone, offices) — no headshot/photo URL in the fetch.",
+   "evidence": "Clarkson people profile is a contact block only (email, phone, offices) \u2014 no headshot/photo URL in the fetch.",
    "name": "Sarah Darabon",
    "photo_url": null,
    "source_page": "https://www.clarkson.edu/people/sarah-darabon",
@@ -5349,7 +5356,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @savannah2416 (display name \"Savannah Newtown\"); bio: \"ASU alumni•          Emerson college ‘27•.    SLP2B          ✝️\".",
+   "evidence": "Instagram profile @savannah2416 (display name \"Savannah Newtown\"); bio: \"ASU alumni\u2022          Emerson college \u201827\u2022.    SLP2B          \u271d\ufe0f\".",
    "name": "Savannah Newtown",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/707393795_18588590302013488_3161680570780110113_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=9ue1uB1ag6gQ7kNvwEIw-_X&_nc_oc=Adp51FY28g1kDFqLOYDwtitPx0mJvAcj78mqzGUzzVLjbuMOEj-oYSLKhx0oM1opiq_StZ-xbykawSmxfn9OC5my&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=cZbACaiMczLh-uTZhqzQtQ&oh=00_AQNjuflffKJpXhPpKW-TsUC3RGqA9n3qvHbrC9XFfsjIpA&oe=6AE03D0F",
    "source_page": "https://www.instagram.com/savannah2416/",
@@ -5411,7 +5418,7 @@
    "type": null
   },
   {
-   "evidence": "Potsdam article names her on the semifinal team ('Bradley Sweet, Himani Shaker, McKenna Middlebrook, and Sierra Damon') and quotes her; the page's group photos show the Potsdam business students at the Buffalo finals but no caption identifies her individually — she is one of eight Potsdam students at the event. Merit profile text-only; Bright Beginnings daycare page names her in team text but yielded no photo URL.",
+   "evidence": "Potsdam article names her on the semifinal team ('Bradley Sweet, Himani Shaker, McKenna Middlebrook, and Sierra Damon') and quotes her; the page's group photos show the Potsdam business students at the Buffalo finals but no caption identifies her individually \u2014 she is one of eight Potsdam students at the event. Merit profile text-only; Bright Beginnings daycare page names her in team text but yielded no photo URL.",
    "name": "Sierra Damon",
    "photo_url": "https://www.potsdam.edu/sites/default/files/inline-images/Business-Students%5B1%5Dmid2.jpg",
    "source_page": "https://www.potsdam.edu/news/four-suny-potsdam-students-advance-business-competition-finals-buffalo",
@@ -5530,7 +5537,7 @@
    "type": null
   },
   {
-   "evidence": "SUNY Canton news photo (Jun 19, 2012): caption names the pictured group in order — Lt. Brian E. Kurish, Chief Lisa E. Colbert, Eli Max, Criminal Investigation Associate Professor Susan Buckley (4th), Instructor Elizabeth A. Erickson. Group shot; her position follows the caption order.",
+   "evidence": "SUNY Canton news photo (Jun 19, 2012): caption names the pictured group in order \u2014 Lt. Brian E. Kurish, Chief Lisa E. Colbert, Eli Max, Criminal Investigation Associate Professor Susan Buckley (4th), Instructor Elizabeth A. Erickson. Group shot; her position follows the caption order.",
    "name": "Susan Buckley",
    "photo_url": "https://s3.amazonaws.com/attachments.readmedia.com/files/41844/medium/SUNY_Canton_Eli_Max_June_19_2012.jpeg?1341001645",
    "source_page": "http://readme.readmedia.com/SUNY-Canton-Criminal-Investigation-Major-Eli-Max-of-Freeport-N-Y-11520-Wins-Wins-Award-From-SUNY-Police/4511157/print",
@@ -5549,7 +5556,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @sphip_06 (display name \"Sydnie :)\"); bio: \"Parishville NY👑 👻:sydphip20\".",
+   "evidence": "Instagram profile @sphip_06 (display name \"Sydnie :)\"); bio: \"Parishville NY\ud83d\udc51 \ud83d\udc7b:sydphip20\".",
    "name": "Sydnie Phippen",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/274487317_658630518892932_4540821446868423859_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=X1zQ-f5UOG8Q7kNvwFnvD1m&_nc_oc=Adpfla3WsW3_OESBmegaL_f1zeZQjySHkJGXrluSffdTbE9yYw5aTpVcC4xNt5WMNbP5Ll-5dnJ1oDAxPWX3N0LO&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMPJs05P6ed5_WbG_eaJtHouydjEQz2s984WCxlFEq2mw&oe=6AE0393D",
    "source_page": "https://www.instagram.com/sphip_06/",
@@ -5558,7 +5565,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her Clarkson people profile is contact details only — no headshot. The Clarkson NYSSPA story mentions her only as the event contact and carries no images.",
+   "evidence": "Her Clarkson people profile is contact details only \u2014 no headshot. The Clarkson NYSSPA story mentions her only as the event contact and carries no images.",
    "name": "Tammy Monroe",
    "photo_url": null,
    "source_page": "https://www.clarkson.edu/people/tammy-monroe",
@@ -5583,7 +5590,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @taylorchudyk (display name \"Taylor ☀️♐️♑️♎️\"); bio: \"“ Those who move forward with a happy spirit will find things always work out”- GBH.\".",
+   "evidence": "Instagram profile @taylorchudyk (display name \"Taylor \u2600\ufe0f\u2650\ufe0f\u2651\ufe0f\u264e\ufe0f\"); bio: \"\u201c Those who move forward with a happy spirit will find things always work out\u201d- GBH.\".",
    "name": "Taylor Chudyk",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/375820294_1365068764443953_1533486205386558955_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=aGZWI0Q6i-IQ7kNvwFSI3A8&_nc_oc=Adoy7N9pLuJtXdyBObUww_Vt-ajkdI4pmZ1jmy9KDRHjVKtOBGHU4ApuYUtL1qIP0vlm90ACBcqxWriy2RWT9rZj&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQN3ckVXIBnYl4dlb3lSnUZjSj7dFmL9WBK8BMgyP_ObXQ&oe=6AE00FE1",
    "source_page": "https://www.instagram.com/taylorchudyk/",
@@ -5651,7 +5658,7 @@
    "type": null
   },
   {
-   "evidence": "Sources on file are arXiv papers only — text-only by type.",
+   "evidence": "Sources on file are arXiv papers only \u2014 text-only by type.",
    "name": "Tim Swyka",
    "photo_url": null,
    "source_page": null,
@@ -5668,7 +5675,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "LETI graduation photo caption identifies everyone clockwise from top left, ending '...Connor Palmer, Timothy Jenkins and Sabrina Feit' — he is named and position-identified; the article lists Timothy Jenkins of North Rose among the eight graduating cadets.",
+   "evidence": "LETI graduation photo caption identifies everyone clockwise from top left, ending '...Connor Palmer, Timothy Jenkins and Sabrina Feit' \u2014 he is named and position-identified; the article lists Timothy Jenkins of North Rose among the eight graduating cadets.",
    "name": "Timothy Jenkins",
    "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/LETI-grads-Fall-2017a.jpg?itok=fqmPGiAG",
    "source_page": "https://www.potsdam.edu/news/cadets-complete-suny-potsdam-law-enforcement-training-institute",
@@ -5701,7 +5708,7 @@
    "type": null
   },
   {
-   "evidence": "anchor 1: Polongo TV article 'Music: Don't Give Up - Toni Ajayi' (2020) names her and describes the Potsdam tie — 'actively served on the worship team at New Hope Community Church in Potsdam', US-based gospel artist and environmental engineer from Ibadan — consistent with her North Country church profile; the image is the cover art for her single 'Don't Give Up', alt-titled with her name. Marked possible: from text extraction alone it cannot be verified that the cover art depicts her (vs. graphic-only art).",
+   "evidence": "anchor 1: Polongo TV article 'Music: Don't Give Up - Toni Ajayi' (2020) names her and describes the Potsdam tie \u2014 'actively served on the worship team at New Hope Community Church in Potsdam', US-based gospel artist and environmental engineer from Ibadan \u2014 consistent with her North Country church profile; the image is the cover art for her single 'Don't Give Up', alt-titled with her name. Marked possible: from text extraction alone it cannot be verified that the cover art depicts her (vs. graphic-only art).",
    "name": "Toni Ajayi",
    "photo_url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhYkPZaWyHqMTC157-u-ZaRbf4S_8ptpbYp6NTORabA3uwszu8eiCqF_87AQc1ezm6qNhnRJTp9rc8vncmU5VT087HCoIRUbCUZ4E-TBzQL6ulRA_ARLeDNNmqznXdciu5fvdYyB54uHP6z/s400-rw/Song+Art+2.jpg",
    "source_page": "https://www.polongotv.net/2020/08/music-dont-give-up-toni-ajayi.html",
@@ -5796,7 +5803,7 @@
    "type": null
   },
   {
-   "evidence": "anchor 1: Jefferson Community College nurse pinning article (published June 6, 2023) captions the group photo 'Top row (l-r): Jeremy Thomas Reff of Redwood, Kylie Saleen Vaughan of Hammond, Victoria Lucas of Gouverneur, Kathryn Joyce Carey...' — she is third in the top row; anchor 2: the same page names Victoria Lucas of Gouverneur as recipient of the Samaritan Medical Center HEART Award, matching profile (JCC AAS Nursing Spring 2023, RN at Rochester Regional Health, Gouverneur, NY). Marked possible because it is a large group photo and position ID rests on caption ordering alone. Upgrades her prior photos.json entry, which was 'possible' with no extractable image URL.",
+   "evidence": "anchor 1: Jefferson Community College nurse pinning article (published June 6, 2023) captions the group photo 'Top row (l-r): Jeremy Thomas Reff of Redwood, Kylie Saleen Vaughan of Hammond, Victoria Lucas of Gouverneur, Kathryn Joyce Carey...' \u2014 she is third in the top row; anchor 2: the same page names Victoria Lucas of Gouverneur as recipient of the Samaritan Medical Center HEART Award, matching profile (JCC AAS Nursing Spring 2023, RN at Rochester Regional Health, Gouverneur, NY). Marked possible because it is a large group photo and position ID rests on caption ordering alone. Upgrades her prior photos.json entry, which was 'possible' with no extractable image URL.",
    "name": "Victoria Lucas",
    "photo_url": "https://sunyjefferson.edu/news/documents/Nurse%20Pinning%20May%202023%20web.jpg",
    "source_page": "https://sunyjefferson.edu/news/nurse_pinning_spring2023.php",
@@ -5823,7 +5830,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @vivian_de_voe (display name \"Vivian De Voe\"); bio: \"🧿 I like art and food NYC Actor\".",
+   "evidence": "Instagram profile @vivian_de_voe (display name \"Vivian De Voe\"); bio: \"\ud83e\uddff I like art and food NYC Actor\".",
    "name": "Vivian De Voe",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/762864550_18600321490010158_8789822518751410160_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=kHrhQ3pnCWcQ7kNvwFKqg30&_nc_oc=AdrrMnv2gcaPd4UDmdrIoLsNoE8SgbOAoxHLnFcOPTGG2Ev8tO-qGXKya8fMKGuDLAaxK9w3vUN8UnzTzOyKV_wY&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=VKjSmlMEoH6cgmE3sUJmUQ&oh=00_AQMZzsEpKb20VaihRYTtVIWlLf2H2D7DMrY5ecUGvewlRQ&oe=6AE03CCD",
    "source_page": "https://www.instagram.com/vivian_de_voe/",
@@ -5857,7 +5864,7 @@
    "type": null
   },
   {
-   "evidence": "His Clarkson org-chart block (Director, Campus Safety & Security) carries the directory image labeled 'whissong' — the directory headshot keyed to his username.",
+   "evidence": "His Clarkson org-chart block (Director, Campus Safety & Security) carries the directory image labeled 'whissong' \u2014 the directory headshot keyed to his username.",
    "name": "Wesley Hissong",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=whissong",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=whissong",
@@ -5892,7 +5899,7 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @ysabellamcolbert (display name \"Ysabella Colbert\"); bio: \"𝘉𝘦 𝘰𝘯 𝘨𝘶𝘢𝘳𝘥. 𝘚𝘵𝘢𝘯𝘥 𝘧𝘪𝘳𝘮 𝘪𝘯 𝘧𝘢𝘪𝘵𝘩. 𝘉𝘦 𝘤𝘰𝘶𝘳𝘢𝘨𝘦𝘰𝘶𝘴. 𝘉𝘦 𝘴𝘵𝘳𝘰𝘯𝘨. 𝘈𝘯𝘥 𝘥𝘰 𝘌𝘝𝘌𝘙𝘠𝘛𝘏𝘐𝘕𝘎 𝘸𝘪𝘵𝘩 𝘓𝘰𝘷𝘦. 𝟣𝘊𝘰𝘳𝘪𝘯𝘵𝘩𝘪𝘢𝘯𝘴 𝟣𝟨\".",
+   "evidence": "Instagram profile @ysabellamcolbert (display name \"Ysabella Colbert\"); bio: \"\ud835\ude09\ud835\ude26 \ud835\ude30\ud835\ude2f \ud835\ude28\ud835\ude36\ud835\ude22\ud835\ude33\ud835\ude25. \ud835\ude1a\ud835\ude35\ud835\ude22\ud835\ude2f\ud835\ude25 \ud835\ude27\ud835\ude2a\ud835\ude33\ud835\ude2e \ud835\ude2a\ud835\ude2f \ud835\ude27\ud835\ude22\ud835\ude2a\ud835\ude35\ud835\ude29. \ud835\ude09\ud835\ude26 \ud835\ude24\ud835\ude30\ud835\ude36\ud835\ude33\ud835\ude22\ud835\ude28\ud835\ude26\ud835\ude30\ud835\ude36\ud835\ude34. \ud835\ude09\ud835\ude26 \ud835\ude34\ud835\ude35\ud835\ude33\ud835\ude30\ud835\ude2f\ud835\ude28. \ud835\ude08\ud835\ude2f\ud835\ude25 \ud835\ude25\ud835\ude30 \ud835\ude0c\ud835\ude1d\ud835\ude0c\ud835\ude19\ud835\ude20\ud835\ude1b\ud835\ude0f\ud835\ude10\ud835\ude15\ud835\ude0e \ud835\ude38\ud835\ude2a\ud835\ude35\ud835\ude29 \ud835\ude13\ud835\ude30\ud835\ude37\ud835\ude26. \ud835\udfe3\ud835\ude0a\ud835\ude30\ud835\ude33\ud835\ude2a\ud835\ude2f\ud835\ude35\ud835\ude29\ud835\ude2a\ud835\ude22\ud835\ude2f\ud835\ude34 \ud835\udfe3\ud835\udfe8\".",
    "name": "Ysabella Colbert",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/828305869_18633588313059258_4149746797950182962_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=829oA3gIwFEQ7kNvwFvdcfp&_nc_oc=AdoDdtQ4Wj9l5YTpTmOzWB07nQj3go3qOfmnx1-w3Ca5cunIHmdJz-L6DVQCZ3YUUra_KfGoRU5aZTjU6Y3LjX0l&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=FybLbulqrl2bE0lEow59Cg&oh=00_AQM4O1vZaD4FPegZgo3aUyllCRi_4iFgAZHXqAsjY5Z6Gg&oe=6AE03025",
    "source_page": "https://www.instagram.com/ysabellamcolbert/",
@@ -5928,7 +5935,7 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "SUNY Canton president’s bio page headshot: Zvi Szafran, fourth President of SUNY Canton (from July 2014), residing in Canton; PhD in chemistry, University of South Carolina; bachelor’s, Worcester Polytechnic Institute; prior VP posts at Southern Polytechnic and New England College.",
+   "evidence": "SUNY Canton president\u2019s bio page headshot: Zvi Szafran, fourth President of SUNY Canton (from July 2014), residing in Canton; PhD in chemistry, University of South Carolina; bachelor\u2019s, Worcester Polytechnic Institute; prior VP posts at Southern Polytechnic and New England College.",
    "name": "Zvi Szafran",
    "photo_url": "https://www.canton.edu/media/szafran4.jpg",
    "source_page": "https://www.canton.edu/president/bio.html",
@@ -5943,7 +5950,7 @@
    "source_page": "https://www.army.mil/article/272148/new_york_national_guard_soldiers_return_from_southern_vanguard_24_in_brazil",
    "status": "confirmed",
    "type": "group",
-   "evidence": "anchor 1: the army.mil article 'New York National Guard Soldiers return from Southern Vanguard 24 in Brazil' captions this photo: 'New York Army National Guard Cpt. Kyle Davis, assigned to the 258th Field Artillery Regiment, and Brazilian Army Sergeant 3rd Class Irwing Carvalho Marques, assigned to the 2nd Jungle Infantry Battalion, examine a starting point during a night time land navigation exercise prior to the start of Exercise Southern Vanguard 24 in Belém, Brazil on Nov. 3, 2023' (U.S. Army photo by Spc. Joseph Liggio). anchor 2: the identical DVIDS record (Photo ID 8109436, VIRIN 231103-Z-EL715-1544, 6720x4480) carries the same caption naming Cpt. Kyle Davis of the 258th Field Artillery Regiment — matches profile (CPT, HHC 27th IBCT; his 258th Field Artillery Southern Vanguard 24 service is already on file). Filed URL is the DVIDS public-domain 1000w version of the same photo.",
+   "evidence": "anchor 1: the army.mil article 'New York National Guard Soldiers return from Southern Vanguard 24 in Brazil' captions this photo: 'New York Army National Guard Cpt. Kyle Davis, assigned to the 258th Field Artillery Regiment, and Brazilian Army Sergeant 3rd Class Irwing Carvalho Marques, assigned to the 2nd Jungle Infantry Battalion, examine a starting point during a night time land navigation exercise prior to the start of Exercise Southern Vanguard 24 in Bel\u00e9m, Brazil on Nov. 3, 2023' (U.S. Army photo by Spc. Joseph Liggio). anchor 2: the identical DVIDS record (Photo ID 8109436, VIRIN 231103-Z-EL715-1544, 6720x4480) carries the same caption naming Cpt. Kyle Davis of the 258th Field Artillery Regiment \u2014 matches profile (CPT, HHC 27th IBCT; his 258th Field Artillery Southern Vanguard 24 service is already on file). Filed URL is the DVIDS public-domain 1000w version of the same photo.",
    "added": "2026-10-27"
   }
  ]
