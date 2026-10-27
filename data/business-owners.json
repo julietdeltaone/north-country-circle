@@ -1,0 +1,133 @@
+{
+ "updated": "2026-10-27",
+ "source": "Business Pulse roster (business-pulse/data/competitors.json) via scripts/build_business_owners.py; owner map per JD 2026-10-27 (JD himself excluded).",
+ "people": {
+  "sf:emily-elliott": [
+   {
+    "name": "Emily Murphy Photography",
+    "town": "Canton, NY",
+    "specialty": "Photography",
+    "services": "weddings, seniors, families, photobooth",
+    "status": "active",
+    "county": "St. Lawrence",
+    "website": "emilymurphyphoto.com",
+    "website_url": "https://emilymurphyphoto.com",
+    "ig": "emilymurphy_photo",
+    "pricing": "Weddings: micro/elopement $1,800; 6hr $3,200; 8hr $4,000 (incl. second shooter)",
+    "followers": 2427
+   },
+   {
+    "name": "Upstate Selfie Co",
+    "town": "Canton, NY",
+    "specialty": "Photography",
+    "services": "photobooth for weddings/events",
+    "status": "active",
+    "county": "St. Lawrence",
+    "website": "upstateselfieco.com",
+    "website_url": "https://upstateselfieco.com",
+    "ig": "upstateselfieco",
+    "pricing": "Photo booth: half day $450; full day $650"
+   }
+  ],
+  "ct:julia tomford": [
+   {
+    "name": "Julia Kia Photography",
+    "town": "Potsdam, NY",
+    "specialty": "Photography",
+    "services": "weddings, couples, families, seniors",
+    "status": "active",
+    "county": "St. Lawrence",
+    "website": "juliakia.com",
+    "website_url": "https://juliakia.com",
+    "ig": "juliakiaphotos",
+    "pricing": "Weddings from $500/hr; couples from $450; families from $500; seniors from $300",
+    "reviews": 45,
+    "review_source": "facebook",
+    "followers": 3257
+   }
+  ],
+  "ig:davidzufall": [
+   {
+    "name": "Zufall Photography",
+    "town": "Lisbon, NY",
+    "specialty": "Photography",
+    "services": "weddings, portraits, elopements, couples",
+    "status": "active",
+    "county": "St. Lawrence",
+    "website": "zufallphotography.com",
+    "website_url": "https://zufallphotography.com",
+    "ig": "davidzufallphotography",
+    "pricing": "Weddings $2,400 / $3,400 / $4,400; portraits $250 / $450 / $750",
+    "followers": 462,
+    "note": "Rebranded from David Zufall Photography in Oct 2026."
+   }
+  ],
+  "ct:samarah martin": [
+   {
+    "name": "Samarah Martin Photography",
+    "town": "SLC area, NY",
+    "specialty": "Photography",
+    "services": "wedding, lifestyle photography",
+    "status": "active",
+    "county": "St. Lawrence",
+    "website": "samarahmartinphoto.mypixieset.com",
+    "website_url": "https://samarahmartinphoto.mypixieset.com",
+    "ig": "samarahmartinphoto",
+    "followers": 528
+   }
+  ],
+  "sf:kaylee-gilbert": [
+   {
+    "name": "Kaptured by Kaylee",
+    "town": "Northern NY — town TBD",
+    "specialty": "Photography",
+    "services": "portrait sessions",
+    "status": "uncertain",
+    "pricing": "sessions from $50 (Mini), $100 (Basic), $150 (Premium) (posted Sep 2026)",
+    "note": "Listed in Business Pulse under her own name, Kaylee Gilbert."
+   }
+  ],
+  "ig:cameramancory": [
+   {
+    "name": "Railroad Productions",
+    "town": "Canton, NY",
+    "specialty": "Videography",
+    "services": "commercial filmmaking, drone",
+    "status": "active",
+    "county": "St. Lawrence",
+    "website": "railroadproductions.com",
+    "website_url": "https://railroadproductions.com"
+   }
+  ],
+  "sf:gabby-olivia": [
+   {
+    "name": "Gabby Olivia Photography",
+    "town": "Upstate NY — town TBD",
+    "specialty": "Photography",
+    "services": "",
+    "status": "uncertain",
+    "ig": "gabbyoliviaphotography",
+    "followers": 174
+   }
+  ],
+  "ig:jessicaeevans": [
+   {
+    "name": "Jessica Evans Photography",
+    "town": "Lisbon, NY",
+    "specialty": "Photography",
+    "services": "couples, weddings, seniors, branding",
+    "status": "active",
+    "county": "St. Lawrence",
+    "website": "www.jessicaevansphotographyllc.com",
+    "website_url": "https://www.jessicaevansphotographyllc.com",
+    "ig": "jessicaevansphoto",
+    "pricing": "Weddings: 4hr $1,750 / 6hr $2,500 / 8hr $3,250",
+    "rating": 5.0,
+    "reviews": 33,
+    "review_source": "google",
+    "est": 2022,
+    "note": "LLC filed 2022. Now marketing as St. Augustine/Jacksonville FL based, available worldwide (per her bio)."
+   }
+  ]
+ }
+}
