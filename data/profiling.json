@@ -10626,5 +10626,2358 @@
   "Speech Language Pathology",
   "Sports Management",
   "master's degree (M'99)"
- ]
+ ],
+ "accuracy": {
+  "generated": "2026-10-27",
+  "method": "Persona accuracy check (JD's design, 2026-10-27): for every person with BOTH a stated field of study and at least one Persona rating, Luna formed an expected Persona profile BLIND — from the field/degree and the person's on-file evidence (organizations, groups, synopsis, public footprint, events, skills) with all Persona values mechanically stripped — and saved the expectations BEFORE loading JD's ratings. Person-specific evidence outranks field-general expectation where they conflict. Comparison is mechanical: AGREE if |expected - JD| <= 1, DIVERGE if >= 2. Signed difference = JD - expected (negative means Luna expected higher than JD rated). Each expectation carries its basis and an inductive-profiler grade. Lab only — nothing is filed.",
+  "blindness": {
+   "pass1_artifact": "qa/profiling-accuracy/pass1_input.json",
+   "expectations_artifact": "qa/profiling-accuracy/expectations.json",
+   "assertions": "The pass-1 build walks the artifact and fails if any Persona field name appears as a key; expectations were formed from that file alone and saved before pass 2 loaded any rating; pass 2 refuses to run if the expectations file predates the pass-1 file.",
+   "expectations_saved_at": "2026-10-27T20:43:26+00:00",
+   "expectations_file_mtime": "2026-10-27T20:44:20"
+  },
+  "test_set_n": 35,
+  "overall": {
+   "tested": 99,
+   "agree": 90,
+   "diverge": 9,
+   "agree_rate": 0.909,
+   "mean_signed_diff": -0.35,
+   "mean_abs_diff": 0.8
+  },
+  "per_trait": {
+   "openness": {
+    "tested": 25,
+    "agree": 23,
+    "diverge": 2,
+    "agree_rate": 0.92,
+    "mean_signed_diff": 0,
+    "mean_abs_diff": 0.8
+   },
+   "conscientiousness": {
+    "tested": 34,
+    "agree": 32,
+    "diverge": 2,
+    "agree_rate": 0.941,
+    "mean_signed_diff": -0.47,
+    "mean_abs_diff": 0.71
+   },
+   "extraversion": {
+    "tested": 18,
+    "agree": 16,
+    "diverge": 2,
+    "agree_rate": 0.889,
+    "mean_signed_diff": -0.22,
+    "mean_abs_diff": 0.89
+   },
+   "agreeableness": {
+    "tested": 13,
+    "agree": 13,
+    "diverge": 0,
+    "agree_rate": 1.0,
+    "mean_signed_diff": -0.46,
+    "mean_abs_diff": 0.62
+   },
+   "neuroticism": {
+    "tested": 3,
+    "agree": 3,
+    "diverge": 0,
+    "agree_rate": 1.0,
+    "mean_signed_diff": 0,
+    "mean_abs_diff": 0.67
+   },
+   "ego": {
+    "tested": 6,
+    "agree": 3,
+    "diverge": 3,
+    "agree_rate": 0.5,
+    "mean_signed_diff": -1.5,
+    "mean_abs_diff": 1.5
+   }
+  },
+  "per_field_bias": [
+   {
+    "field": "Childhood & Early Childhood Education",
+    "trait": "conscientiousness",
+    "n": 5,
+    "mean_signed_diff": -0.8,
+    "note": "For Childhood & Early Childhood Education, Luna's blind expectations run higher than JD's ratings on Conscientiousness by 0.80 points on average (signed diff = JD - expected, n=5)."
+   },
+   {
+    "field": "Nursing",
+    "trait": "conscientiousness",
+    "n": 5,
+    "mean_signed_diff": -0.8,
+    "note": "For Nursing, Luna's blind expectations run higher than JD's ratings on Conscientiousness by 0.80 points on average (signed diff = JD - expected, n=5)."
+   },
+   {
+    "field": "Nursing",
+    "trait": "agreeableness",
+    "n": 4,
+    "mean_signed_diff": -0.75,
+    "note": "For Nursing, Luna's blind expectations run higher than JD's ratings on Agreeableness by 0.75 points on average (signed diff = JD - expected, n=4)."
+   }
+  ],
+  "per_person": [
+   {
+    "key": "ig:askinnerusa",
+    "name": "Aeriel Skinner",
+    "field": "Psychology",
+    "fields": [
+     "Psychology"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "Psychology bachelor's (field prior: study of mind/behavior) is the only observation; her competitive record is narrow-focus.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Sustained elite training output: ISSF World Cup team golds 2022 and 2023, Fall Selection gold 2025, National Championship 2026, plus U.S. Army Marksmanship Unit service — disciplined practice across 4+ seasons/contexts.",
+      "grade": "Probable",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "International team competition puts her on public stages, but the record shows no social-leadership or spotlight-seeking observation.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "neuroticism": {
+      "expected": 2,
+      "basis": "Won the 2025 Fall Selection gold in a shoot-off against Kayle Browning and repeated finals golds across 2022-2026 — composure under direct competitive pressure in 3+ distinct events.",
+      "grade": "Probable",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "ego": {
+      "expected": 4,
+      "basis": "National-champion status and a chosen elite-unit assignment imply strong competitive self-belief; no direct self-promotion evidence on file.",
+      "grade": "Tentative",
+      "jd": 2,
+      "verdict": "DIVERGE",
+      "diff": -2
+     }
+    }
+   },
+   {
+    "key": "ig:aidantruth",
+    "name": "Aidan Daniels",
+    "field": "Mechanical Engineering",
+    "fields": [
+     "Mechanical Engineering"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "Engineering field prior (systems/design curiosity) only; no person-specific observation.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Clarkson Presidential Scholar across four semesters (Spring/Fall 2024, Spring/Fall 2025) plus Dean's List as a freshman — top-tier academic diligence repeated across 5 semesters.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:alanahoover",
+    "name": "Alana Hoover",
+    "field": "Childhood & Early Childhood Education",
+    "fields": [
+     "Childhood & Early Childhood Education",
+     "Education"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "Graduate literacy study prior only; no person-specific observation.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Summa cum laude bachelor's, an MS in Education (Literacy) earned with distinction while employed, plus a concurrent JV coaching appointment — 3 distinct diligence contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": 4,
+      "basis": "Elementary/special-education classroom teaching and girls' JV volleyball coaching are people-facing roles she holds simultaneously.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Career chosen in early-childhood and special education (care-oriented field), a literacy specialization serving struggling readers, and youth coaching — 3 care-directed observations.",
+      "grade": "Probable",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:alexfornyassembly_",
+    "name": "Alex Hammond",
+    "field": "Liberal Arts / General Studies",
+    "fields": [
+     "Liberal Arts / General Studies",
+     "Legislative Affairs"
+    ],
+    "degree_level": "Master's",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Working life spans military personnel work, municipal government, policy graduate study, and stage music — varied domains across 2+ contexts.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Cornell EMPA completed (2025), a second master's (GWU Legislative Affairs) in progress, and promotion to Major — sustained output across 3 concurrent careers.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": 5,
+      "basis": "Elected town supervisor while still a student, performs as lead vocalist/rhythm guitarist in two bands, and was selected for the Army Congressional Fellowship — public-facing roles in 3 distinct contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": 4,
+      "basis": "Won elected office young and fronts bands publicly; the file shows prominence but no direct self-promotion record, so the grade stays Tentative.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     }
+    }
+   },
+   {
+    "key": "ct:alexis donnely",
+    "name": "Alexis Donnely",
+    "field": "English Writing and Spanish",
+    "fields": [
+     "English Writing and Spanish",
+     "English Writing"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Bilingual writing/Spanish degree and a later move into theological graduate study and ministry in another state — cross-domain, cross-cultural movement in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Summa cum laude BA, two master's degrees completed at Gordon-Conwell in 2025, and a five-year staff tenure at SUNY Potsdam — 3 diligence contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "Directs discipleship and community groups (people-facing) against a solitary writing background — evidence points both ways and nets to mid-scale.",
+      "grade": "Tentative",
+      "jd": 2,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Director of Discipleship overseeing community groups and children's education, plus deacon service — community-care roles in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "sf:alisha-ohl",
+    "name": "Alisha Ohl",
+    "field": "Occupational Therapy",
+    "fields": [
+     "Occupational Therapy"
+    ],
+    "degree_level": "Doctorate",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "A research career — doctoral dissertation work and 14 refereed publications — is inquiry-driven across 2 contexts.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "BS, MS, and PhD completed in sequence, 14 refereed journal publications, and faculty posts at three institutions — output sustained across 3+ contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Occupational therapy is a helping profession (field prior) and her clinical evaluator roles served schoolchildren — 2 care-directed observations.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:ally.dubbioso",
+    "name": "Ally Dubbioso",
+    "field": "Childhood & Early Childhood Education",
+    "fields": [
+     "Childhood & Early Childhood Education"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Magna cum laude graduation is the single observation on file; the rest of her record is thin.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Early-childhood education field prior alone — a care-oriented field choice is the only observation; no person-specific evidence on file.",
+      "grade": "Tentative",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:ally.sabre",
+    "name": "Allyssa Sabre",
+    "field": "Nursing",
+    "fields": [
+     "Nursing"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "RN licensure, repeated SUNY Canton honor rolls (2017, 2021, 2022), and a BSN pursued while working clinical jobs — 3 diligence contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": 4,
+      "basis": "Person-specific evidence outranks the neutral field prior: her school record is performance-heavy (cheerleading, chorus, theater, club vice-president) across several activity contexts.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Nursing field prior (patient care, including labor and delivery support) plus a pharmacy-technician service role — 2 care-directed observations.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "fdb:baxter_brown",
+    "name": "Baxter Brown",
+    "field": "Music Performance",
+    "fields": [
+     "Music Performance"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Classical performance field prior plus graduate study in viola performance — artistic practice in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Orchestral viola performance requires years of daily practice discipline, and he is continuing into a Master of Music while playing in the Kishwaukee Symphony — 2 observations.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:bronwynpaladin",
+    "name": "Bronwyn Paladin",
+    "field": "Vocal Performance",
+    "fields": [
+     "Vocal Performance"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Performance artistry across opera, chorale, and recital work, plus graduate study in choral conducting — 2 creative contexts.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Presser Undergraduate Scholar (the university's top music honor), repeated Dean's Lists, Senior Honors Concert selection, and simultaneous TA/tutor/teaching-assistant workloads — 3+ distinction contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": 5,
+      "basis": "Solo senior recital, opera theatre roles, chorale soloist selections, and president of Ladies of Lee — repeated public spotlight across 3+ contexts.",
+      "grade": "Probable",
+      "jd": 3,
+      "verdict": "DIVERGE",
+      "diff": -2
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Tutors theory and aural skills, teaches voice and piano, and volunteers with Honor Choir and A Night to Shine — service observations in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": 4,
+      "basis": "Named the university's Presser Scholar and repeatedly selected as a featured vocalist — high-visibility achievement in 2 contexts; no self-promotion record, so Tentative.",
+      "grade": "Tentative",
+      "jd": 2,
+      "verdict": "DIVERGE",
+      "diff": -2
+     }
+    }
+   },
+   {
+    "key": "ig:cashhyyy",
+    "name": "Cashlynn Colbert",
+    "field": "Art Education",
+    "fields": [
+     "Art Education",
+     "Educational Technology Specialist master's"
+    ],
+    "degree_level": "Master's",
+    "traits": {
+     "openness": {
+      "expected": 5,
+      "basis": "Practicing artist under her own art identity (The Painted Sun), a commissioned painting for the SUNY Chancellor while still a student, and two creative degrees — art-making across 3 contexts.",
+      "grade": "Probable",
+      "jd": 3,
+      "verdict": "DIVERGE",
+      "diff": -2
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Two degrees (Art Education 2019, M.S.Ed. 2021) with a 100-hour internship completed while teaching full-time — 2 observations.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Art teacher in a public school district and a BOCES educational-technology intern supporting other teachers — service roles in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:charlie_garrelts",
+    "name": "Charlie Garrelts",
+    "field": "Aviation Management",
+    "fields": [
+     "Aviation Management",
+     "Public Administration"
+    ],
+    "degree_level": "Master's",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "Aviation management plus public administration is a systems/operations mix; the field prior is the only observation.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Progression from operations specialist to airport duty manager to airport manager, a master's degree, and restaurant co-ownership — sustained responsibility in 3 contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": 4,
+      "basis": "Public-facing airport manager who comments on the record, and co-owner of a Canton restaurant — people-facing work in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "ego": {
+      "expected": 4,
+      "basis": "Appointed manager of an international airport and co-founder/co-owner of a restaurant — ownership and top-of-org roles in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     }
+    }
+   },
+   {
+    "key": "ct:christine sutter",
+    "name": "Christine Sutter",
+    "field": "Social Work",
+    "fields": [
+     "Social Work"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Somatic-therapy practice and an undergraduate research concentration — integrative, inquiry-leaning approaches in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "LMSW licensure and a clinical career sustained across Denver and St. Lawrence County roles — 2 observations.",
+      "grade": "Tentative",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 5,
+      "basis": "Therapy practice (family, substance-use, trauma), caregiver-liaison work at a child psychology clinic, and hotline case work — direct care for people in difficulty across 3+ contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:colleendcheney",
+    "name": "Colleen Cheney",
+    "field": "Graphic and Multimedia Design",
+    "fields": [
+     "Graphic and Multimedia Design"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Graphic and multimedia design field prior (visual-creative work) is the main observation.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Founded a campus leadership-society chapter while a student and received the Leaders of Tomorrow award at the 2025 excellence awards — initiative plus institutional recognition, 2 observations.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": 4,
+      "basis": "Person-specific evidence governs: she established and presided over the SUNY Canton chapter of the National Society of Leadership and Success — public organizing and presiding, 1 context with 2 roles.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": 4,
+      "basis": "Founder-and-president of a chapter that did not exist before her, capped by a leadership award — self-starting prominence in 2 observations; grade held at Tentative because both sit in one college context.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     }
+    }
+   },
+   {
+    "key": "ig:daniveteree",
+    "name": "Danielle Vetere",
+    "field": "Childhood & Early Childhood Education",
+    "fields": [
+     "Childhood & Early Childhood Education",
+     "Education"
+    ],
+    "degree_level": "Master's",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "A literacy-focused master's is the only observation; field prior is weak.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Cum laude bachelor's with multiple President's List honors, then an MS in Education (Literacy) completed in 2025 while working as a teacher — 3 diligence contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "Joined a church lifegroup on arriving at SUNY Potsdam and stayed in an overlapping social network for years — social integration without spotlight evidence; nets to mid-scale.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Early-childhood field prior plus her teaching role — 2 care-directed observations.",
+      "grade": "Tentative",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:delany._.durant",
+    "name": "Delany Durant",
+    "field": "Psychology",
+    "fields": [
+     "Psychology"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Psychology field prior plus youth prevention work — people-and-behavior focus in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Dean's List honors, Omicron Delta Kappa and Tri-Alpha initiations, and a degree carried alongside AFROTC commitments — 3 distinction/structure contexts.",
+      "grade": "Probable",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": 4,
+      "basis": "Coordinates a youth clubhouse (daily youth-facing work), served as a student ex-officio school-board member, and held AFROTC membership — public/people roles in 3 contexts.",
+      "grade": "Probable",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Prevention-council youth work is a service role aimed at teenagers' welfare — field prior plus role, 2 observations.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "neuroticism": {
+      "expected": 3,
+      "basis": "AFROTC participation implies functioning inside evaluated, high-structure settings; one context only, so mid-scale and Tentative.",
+      "grade": "Tentative",
+      "jd": 2,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:elizabeth.deschaine",
+    "name": "Elizabeth Deschaine",
+    "field": "Biology",
+    "fields": [
+     "Biology"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Magna cum laude with repeated President's Lists, two clinical certifications, and responsibility for training new phlebotomists — 3 diligence contexts.",
+      "grade": "Probable",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "Teaches horseback riding and trains new staff (people-facing instruction) with no spotlight evidence — 2 weak observations, mid-scale.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Hospital support roles (phlebotomy, pharmacy) plus teaching and staff-training — care/service work in 2 contexts.",
+      "grade": "Tentative",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:elliecriscitello",
+    "name": "Ellie Criscitello",
+    "field": "English",
+    "fields": [
+     "English"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "English studies, commissioned custom painting work, and a stage role in community theater — creative output in 3 related arts contexts, graded Tentative because they cluster in one life area.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Summa cum laude plus a departmental-scholar designation and a public-health annual fund award — one academic-distinction context with several honors.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "A community-theater stage role and public-facing barista work held since 2017 — 2 people-facing observations, no spotlight pattern.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:emiliealbertt",
+    "name": "Emilie Albert",
+    "field": "Applied Psychology",
+    "fields": [
+     "Applied Psychology"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "Applied psychology field prior only.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 3,
+      "basis": "Degree completed in 2025 with Dean's List honors in the final semester — a single, late honors observation; thin record.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 5,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Applied psychology field prior plus hospital registration work, a patient-facing service role — 2 observations.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:emma_bortnick5",
+    "name": "Emma Bortnick",
+    "field": "Nursing",
+    "fields": [
+     "Nursing"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "President's List (3.75+ GPA) and Dean's List honors while working a hospital med-surg unit through her final two years and supervising a fitness center — diligence across 3+ concurrent contexts.",
+      "grade": "Probable",
+      "jd": 3,
+      "verdict": "DIVERGE",
+      "diff": -2
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "Fitness-center supervisor is a public-facing role; the rest of the record is clinical and academic — 1 weak observation.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Nursing field prior plus two years of direct med-surg patient care while a student — 2 care-directed observations.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:ethan_j_bates",
+    "name": "Ethan Bates",
+    "field": "Music Education",
+    "fields": [
+     "Music Education"
+    ],
+    "degree_level": "",
+    "traits": {
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Summa cum laude degree, the Director's Award at police training graduation, and two concurrent uniformed careers (police officer, commissioned Guard signal officer) — top-end diligence in 3 contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "Orchestra/opera ensemble playing is group performance and police work is public-facing, but neither is spotlight-seeking — evidence nets to mid-scale.",
+      "grade": "Tentative",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": 2,
+      "basis": "Law-enforcement and military-officer roles select for and train composure under pressure (2 role contexts), but the file holds no direct incident evidence, so the grade stays Tentative.",
+      "grade": "Tentative",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:hopiek_09",
+    "name": "Hope Kilcollins",
+    "field": "Nursing",
+    "fields": [
+     "Nursing"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "Presented her own caffeine research at a state STEP conference while in high school — one inquiry observation.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Honors recognition in two successive programs (Health and Fitness Promotion, then Nursing BS) and a competitive nurse-residency placement — 3 contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 5,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Nursing field prior plus a hospital nurse-residency role — 2 care-directed observations.",
+      "grade": "Tentative",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "sf:ilene-lashomb",
+    "name": "Ilene Lashomb",
+    "field": "Pastoral Ministries",
+    "fields": [
+     "Pastoral Ministries"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Sustained theater work (acting, choreography, dance, singing) plus prompt-writing on Reedsy and co-founding an arts nonprofit — creative practice in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "extraversion": {
+      "expected": 5,
+      "basis": "Nine community-theater productions between 2017 and 2024 in performing roles, plus helping start a nonprofit arts program — repeated public spotlight across many contexts.",
+      "grade": "Probable",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Pastoral ministries degree and helping-desk roles (chiropractic assistant, university administrative assistant) — service orientation in 2 contexts.",
+      "grade": "Tentative",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "sf:indira-quintana-lala",
+    "name": "Indira Quintana",
+    "field": "Psychology",
+    "fields": [
+     "Psychology"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Psychology field prior plus presenting a research-fair project — 2 observations.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "President's List (2021) and Dean's List (2020) honors plus a completed research project — academic diligence in 2 observations (both honors sit in one context type).",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 5,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:jamesphilipm",
+    "name": "James Meyers",
+    "field": "English Writing",
+    "fields": [
+     "English Writing"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Writing field prior plus a published letter to the editor engaging a public political question — 2 observations.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Summa cum laude, Departmental Scholar for English Writing, Sigma Tau Delta induction, and repeated President's Lists — multiple distinction contexts.",
+      "grade": "Probable",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 5,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 1,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:josiahbounce",
+    "name": "Josiah McGrath",
+    "field": "Heating & Plumbing Service",
+    "fields": [
+     "Heating & Plumbing Service"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "President's List in three separate semesters (Fall 2016, Spring 2017, Fall 2017) and completion of the State Police academy with the 214th session — diligence in 2 context types, repeated.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 1,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": 2,
+      "basis": "State trooper role prior: the job selects for and trains composure under pressure; role-based observation only, so Tentative.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:katelynmatthews10",
+    "name": "Katelyn Matthews",
+    "field": "Nursing",
+    "fields": [
+     "Nursing"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "She began in Criminal Justice (Dean's List, Fall 2023) and switched to Nursing — one field-change observation suggesting exploratory breadth; weak.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "President's List (Spring 2024) and Dean's Lists across two different programs and multiple years — honors repeated in 3 contexts.",
+      "grade": "Probable",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Nursing field prior plus her registered-nurse role — 2 care-directed observations.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:kourtneyypeets",
+    "name": "Kourtney Peets",
+    "field": "Nursing",
+    "fields": [
+     "Nursing"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Honor rolls across four consecutive semesters and degree completion — diligence observations, all in one context type (academic lists).",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Nursing field prior plus receipt of the Alex Sabo Mentoring Scholarship, a mentorship-named award — 2 observations.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:lydia_rose_martin",
+    "name": "Lydia Martin",
+    "field": "Business Administration",
+    "fields": [
+     "Business Administration"
+    ],
+    "degree_level": "Associate",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Cum laude associate degree with Dean's List or honors standing in multiple semesters — 2 observations.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "Cast member in a 2022 staged reading and singing listed as a specialty — performance exposure in 2 weak observations, no spotlight pattern.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:mr_writers_block",
+    "name": "Merrick Sinclair",
+    "field": "Speech Communication",
+    "fields": [
+     "Speech Communication"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Creative production across bass, singing, film, and video — artistic practice in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Dean's List in multiple semesters (2018, 2019, 2020) — repeated academic diligence, one context type.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": 4,
+      "basis": "Speech communication field prior (a public-speaking discipline) plus performing-arts skills — 2 observations.",
+      "grade": "Tentative",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 5,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:morse_like_the_code",
+    "name": "Morgan Morse",
+    "field": "Childhood & Early Childhood Education",
+    "fields": [
+     "Childhood & Early Childhood Education"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Magna cum laude BA, an academic award for the highest GPA in her cohort, and repeated President's Lists across two institutions — 3 distinction contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": 3,
+      "basis": "Full-time pre-K/kindergarten teaching is people-intensive daily work; no spotlight evidence — 1 context, mid-scale.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Early-childhood field prior plus full-time pre-K/kindergarten teaching in two settings — 2 care-directed observations.",
+      "grade": "Tentative",
+      "jd": null,
+      "verdict": "NOT RATED BY JD",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:tom_nate_ford",
+    "name": "Nathaniel Tomford",
+    "field": "Legal Studies",
+    "fields": [
+     "Legal Studies"
+    ],
+    "degree_level": "",
+    "traits": {
+     "openness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "President's List honors repeatedly from 2020 through 2023 (3.75+ GPA each time) plus a contracts-coordinator role built on detail accuracy — diligence repeated across years and into employment.",
+      "grade": "Probable",
+      "jd": 2,
+      "verdict": "DIVERGE",
+      "diff": -3
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "ig:richardsinclair",
+    "name": "Rick Sinclair",
+    "field": "Music",
+    "fields": [
+     "Music"
+    ],
+    "degree_level": "Master's",
+    "traits": {
+     "openness": {
+      "expected": 3,
+      "basis": "A master's in music (artistic training) is the only observation; his ministry record shows institutional continuity rather than novelty-seeking.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "conscientiousness": {
+      "expected": 4,
+      "basis": "Senior pastor of the same church network continuously since 1981 while also serving as executive pastor and lead pastor — one role sustained across 45 years, an extreme tenure observation, plus multi-campus responsibility.",
+      "grade": "Probable",
+      "jd": 5,
+      "verdict": "AGREE",
+      "diff": 1
+     },
+     "extraversion": {
+      "expected": 5,
+      "basis": "Weekly preaching is the core of a role held since 1981, leading a five-church network as its senior and lead pastor — public speaking at scale across decades and campuses.",
+      "grade": "Probable",
+      "jd": 3,
+      "verdict": "DIVERGE",
+      "diff": -2
+     },
+     "ego": {
+      "expected": 4,
+      "basis": "He is the long-tenured top leader and public face of a five-church network — leadership prominence in 2 observations (role, tenure); no direct self-promotion record on file, so Tentative.",
+      "grade": "Tentative",
+      "jd": 1,
+      "verdict": "DIVERGE",
+      "diff": -3
+     }
+    }
+   },
+   {
+    "key": "ig:stefaniiabulakh",
+    "name": "Stefaniia Bulakh",
+    "field": "Business Administration",
+    "fields": [
+     "Business Administration",
+     "International Economics"
+    ],
+    "degree_level": "Bachelor's",
+    "traits": {
+     "openness": {
+      "expected": 5,
+      "basis": "Completed degrees in two countries and two disciplines, relocated mid-degree from wartime Ukraine to SUNY Potsdam, and tutored across languages — novelty and adaptation repeated across 3 contexts.",
+      "grade": "Probable",
+      "jd": 3,
+      "verdict": "DIVERGE",
+      "diff": -2
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "First graduate of a dual-degree program (two bachelor's degrees, 2024), an MBA finished the following year, and President's List honors — output across 3 programs/institutions.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Tutored peers and children in English and donated the earnings to Ukraine's war effort — prosocial action in 2 observations.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "neuroticism": {
+      "expected": 2,
+      "basis": "Studied in wartime Ukraine, then completed a senior year abroad and an MBA on schedule — functioning sustained under extreme disruption; 2 observations, no direct composure record.",
+      "grade": "Tentative",
+      "jd": 2,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   },
+   {
+    "key": "sf:whitney-verbeck",
+    "name": "Whitney Verbeck",
+    "field": "Childhood & Early Childhood Education",
+    "fields": [
+     "Childhood & Early Childhood Education",
+     "Education"
+    ],
+    "degree_level": "Master's",
+    "traits": {
+     "openness": {
+      "expected": 4,
+      "basis": "Began as a History major, earned Phi Alpha Theta (history honor society) alongside education degrees — cross-discipline breadth in 2 observations.",
+      "grade": "Tentative",
+      "jd": 3,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "conscientiousness": {
+      "expected": 5,
+      "basis": "Summa cum laude bachelor's, an MS in Education completed two years later, and repeated President's Lists across both degrees — 3 distinction contexts.",
+      "grade": "Probable",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": -1
+     },
+     "extraversion": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 4,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "agreeableness": {
+      "expected": 4,
+      "basis": "Early-childhood field prior, undergraduate mentoring of middle-school students, and elementary teaching — care/service observations in 2 contexts.",
+      "grade": "Tentative",
+      "jd": 4,
+      "verdict": "AGREE",
+      "diff": 0
+     },
+     "neuroticism": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 3,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     },
+     "ego": {
+      "expected": null,
+      "basis": "",
+      "grade": "",
+      "jd": 2,
+      "verdict": "NO EXPECTATION",
+      "diff": null
+     }
+    }
+   }
+  ],
+  "conclusions": [
+   {
+    "id": "a1",
+    "kind": "headline",
+    "trait": "",
+    "field": "",
+    "conclusion": "JD's Persona ratings agree with independent, blind-formed expectations in 90 of 99 testable trait judgments (91%) across the 35 people who carry both a stated field of study and a rating.",
+    "grade": "Probable",
+    "evidence": [
+     "90 of 99 compared trait judgments AGREE (|expected - JD| <= 1) — an agreement rate of 91% across 35 people and 24 field cohorts.",
+     "Openness: 23/25 agree (92%), mean signed difference +0.00 (JD - expected).",
+     "Conscientiousness: 32/34 agree (94%), mean signed difference -0.47 (JD - expected).",
+     "Extraversion: 16/18 agree (89%), mean signed difference -0.22 (JD - expected).",
+     "Agreeableness: 13/13 agree (100%), mean signed difference -0.46 (JD - expected).",
+     "Neuroticism: 3/3 agree (100%), mean signed difference +0.00 (JD - expected).",
+     "Ego: 3/6 agree (50%), mean signed difference -1.50 (JD - expected)."
+    ],
+    "falsifier": "A fresh accuracy run over at least 10 newly rated people (stated field + Persona) showing agreement below 50% would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 99
+   },
+   {
+    "id": "a2",
+    "kind": "trait",
+    "trait": "openness",
+    "field": "",
+    "conclusion": "On Openness, JD's ratings track independent expectations closely: 23 of 25 compared judgments agree (92%), mean signed difference +0.00.",
+    "grade": "Probable",
+    "evidence": [
+     "Aeriel Skinner (Psychology): expected 3, JD rated 4 — agrees.",
+     "Aidan Daniels (Mechanical Engineering): expected 3, JD rated 4 — agrees.",
+     "Alana Hoover (Childhood & Early Childhood Education): expected 3, JD rated 4 — agrees.",
+     "Alex Hammond (Liberal Arts / General Studies): expected 4, JD rated 4 — agrees.",
+     "Alexis Donnely (English Writing and Spanish): expected 4, JD rated 4 — agrees.",
+     "Alisha Ohl (Occupational Therapy): expected 4, JD rated 3 — agrees.",
+     "Baxter Brown (Music Performance): expected 4, JD rated 3 — agrees.",
+     "Bronwyn Paladin (Vocal Performance): expected 4, JD rated 3 — agrees.",
+     "Cashlynn Colbert (Art Education): expected 5, JD rated 3 — DIVERGES.",
+     "Charlie Garrelts (Aviation Management): expected 3, JD rated 4 — agrees.",
+     "Christine Sutter (Social Work): expected 4, JD rated 4 — agrees.",
+     "Colleen Cheney (Graphic and Multimedia Design): expected 4, JD rated 4 — agrees.",
+     "Danielle Vetere (Childhood & Early Childhood Education): expected 3, JD rated 4 — agrees.",
+     "Delany Durant (Psychology): expected 4, JD rated 5 — agrees.",
+     "Ellie Criscitello (English): expected 4, JD rated 3 — agrees.",
+     "Emilie Albert (Applied Psychology): expected 3, JD rated 4 — agrees.",
+     "Hope Kilcollins (Nursing): expected 3, JD rated 4 — agrees.",
+     "Ilene Lashomb (Pastoral Ministries): expected 4, JD rated 5 — agrees.",
+     "Indira Quintana (Psychology): expected 4, JD rated 4 — agrees.",
+     "James Meyers (English Writing): expected 4, JD rated 3 — agrees.",
+     "Katelyn Matthews (Nursing): expected 3, JD rated 3 — agrees.",
+     "Merrick Sinclair (Speech Communication): expected 4, JD rated 4 — agrees.",
+     "Rick Sinclair (Music): expected 3, JD rated 4 — agrees.",
+     "Stefaniia Bulakh (Business Administration): expected 5, JD rated 3 — DIVERGES.",
+     "Whitney Verbeck (Childhood & Early Childhood Education): expected 4, JD rated 3 — agrees."
+    ],
+    "falsifier": "Three or more new Openness comparisons diverging by 2+ points would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 25
+   },
+   {
+    "id": "a3",
+    "kind": "trait",
+    "trait": "conscientiousness",
+    "field": "",
+    "conclusion": "On Conscientiousness, JD's ratings track independent expectations closely: 32 of 34 compared judgments agree (94%), mean signed difference -0.47.",
+    "grade": "Probable",
+    "evidence": [
+     "Aeriel Skinner (Psychology): expected 5, JD rated 5 — agrees.",
+     "Aidan Daniels (Mechanical Engineering): expected 5, JD rated 4 — agrees.",
+     "Alana Hoover (Childhood & Early Childhood Education): expected 5, JD rated 4 — agrees.",
+     "Alex Hammond (Liberal Arts / General Studies): expected 4, JD rated 4 — agrees.",
+     "Alexis Donnely (English Writing and Spanish): expected 5, JD rated 4 — agrees.",
+     "Alisha Ohl (Occupational Therapy): expected 5, JD rated 4 — agrees.",
+     "Ally Dubbioso (Childhood & Early Childhood Education): expected 4, JD rated 3 — agrees.",
+     "Allyssa Sabre (Nursing): expected 4, JD rated 4 — agrees.",
+     "Baxter Brown (Music Performance): expected 4, JD rated 4 — agrees.",
+     "Bronwyn Paladin (Vocal Performance): expected 5, JD rated 4 — agrees.",
+     "Cashlynn Colbert (Art Education): expected 4, JD rated 4 — agrees.",
+     "Charlie Garrelts (Aviation Management): expected 4, JD rated 4 — agrees.",
+     "Christine Sutter (Social Work): expected 4, JD rated 5 — agrees.",
+     "Colleen Cheney (Graphic and Multimedia Design): expected 4, JD rated 4 — agrees.",
+     "Danielle Vetere (Childhood & Early Childhood Education): expected 4, JD rated 4 — agrees.",
+     "Delany Durant (Psychology): expected 4, JD rated 3 — agrees.",
+     "Elizabeth Deschaine (Biology): expected 4, JD rated 5 — agrees.",
+     "Ellie Criscitello (English): expected 4, JD rated 4 — agrees.",
+     "Emilie Albert (Applied Psychology): expected 3, JD rated 4 — agrees.",
+     "Emma Bortnick (Nursing): expected 5, JD rated 3 — DIVERGES.",
+     "Ethan Bates (Music Education): expected 5, JD rated 4 — agrees.",
+     "Hope Kilcollins (Nursing): expected 4, JD rated 4 — agrees.",
+     "Indira Quintana (Psychology): expected 4, JD rated 3 — agrees.",
+     "James Meyers (English Writing): expected 5, JD rated 5 — agrees.",
+     "Josiah McGrath (Heating & Plumbing Service): expected 4, JD rated 4 — agrees.",
+     "Katelyn Matthews (Nursing): expected 4, JD rated 3 — agrees.",
+     "Kourtney Peets (Nursing): expected 4, JD rated 3 — agrees.",
+     "Lydia Martin (Business Administration): expected 4, JD rated 4 — agrees.",
+     "Merrick Sinclair (Speech Communication): expected 4, JD rated 3 — agrees.",
+     "Morgan Morse (Childhood & Early Childhood Education): expected 5, JD rated 4 — agrees.",
+     "Nathaniel Tomford (Legal Studies): expected 5, JD rated 2 — DIVERGES.",
+     "Rick Sinclair (Music): expected 4, JD rated 5 — agrees.",
+     "Stefaniia Bulakh (Business Administration): expected 5, JD rated 4 — agrees.",
+     "Whitney Verbeck (Childhood & Early Childhood Education): expected 5, JD rated 4 — agrees."
+    ],
+    "falsifier": "Three or more new Conscientiousness comparisons diverging by 2+ points would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 34
+   },
+   {
+    "id": "a4",
+    "kind": "trait",
+    "trait": "extraversion",
+    "field": "",
+    "conclusion": "On Extraversion, JD's ratings track independent expectations closely: 16 of 18 compared judgments agree (89%), mean signed difference -0.22.",
+    "grade": "Probable",
+    "evidence": [
+     "Aeriel Skinner (Psychology): expected 3, JD rated 4 — agrees.",
+     "Alana Hoover (Childhood & Early Childhood Education): expected 4, JD rated 3 — agrees.",
+     "Alex Hammond (Liberal Arts / General Studies): expected 5, JD rated 4 — agrees.",
+     "Alexis Donnely (English Writing and Spanish): expected 3, JD rated 2 — agrees.",
+     "Allyssa Sabre (Nursing): expected 4, JD rated 3 — agrees.",
+     "Bronwyn Paladin (Vocal Performance): expected 5, JD rated 3 — DIVERGES.",
+     "Charlie Garrelts (Aviation Management): expected 4, JD rated 3 — agrees.",
+     "Colleen Cheney (Graphic and Multimedia Design): expected 4, JD rated 3 — agrees.",
+     "Danielle Vetere (Childhood & Early Childhood Education): expected 3, JD rated 3 — agrees.",
+     "Delany Durant (Psychology): expected 4, JD rated 5 — agrees.",
+     "Elizabeth Deschaine (Biology): expected 3, JD rated 3 — agrees.",
+     "Ellie Criscitello (English): expected 3, JD rated 3 — agrees.",
+     "Emma Bortnick (Nursing): expected 3, JD rated 4 — agrees.",
+     "Ilene Lashomb (Pastoral Ministries): expected 5, JD rated 5 — agrees.",
+     "Lydia Martin (Business Administration): expected 3, JD rated 4 — agrees.",
+     "Merrick Sinclair (Speech Communication): expected 4, JD rated 5 — agrees.",
+     "Morgan Morse (Childhood & Early Childhood Education): expected 3, JD rated 4 — agrees.",
+     "Rick Sinclair (Music): expected 5, JD rated 3 — DIVERGES."
+    ],
+    "falsifier": "Three or more new Extraversion comparisons diverging by 2+ points would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 18
+   },
+   {
+    "id": "a5",
+    "kind": "trait",
+    "trait": "agreeableness",
+    "field": "",
+    "conclusion": "On Agreeableness, JD's ratings track independent expectations closely: 13 of 13 compared judgments agree (100%), mean signed difference -0.46.",
+    "grade": "Probable",
+    "evidence": [
+     "Alexis Donnely (English Writing and Spanish): expected 4, JD rated 5 — agrees.",
+     "Alisha Ohl (Occupational Therapy): expected 4, JD rated 3 — agrees.",
+     "Allyssa Sabre (Nursing): expected 4, JD rated 4 — agrees.",
+     "Bronwyn Paladin (Vocal Performance): expected 4, JD rated 4 — agrees.",
+     "Cashlynn Colbert (Art Education): expected 4, JD rated 4 — agrees.",
+     "Christine Sutter (Social Work): expected 5, JD rated 4 — agrees.",
+     "Delany Durant (Psychology): expected 4, JD rated 3 — agrees.",
+     "Emilie Albert (Applied Psychology): expected 4, JD rated 3 — agrees.",
+     "Emma Bortnick (Nursing): expected 4, JD rated 3 — agrees.",
+     "Katelyn Matthews (Nursing): expected 4, JD rated 3 — agrees.",
+     "Kourtney Peets (Nursing): expected 4, JD rated 3 — agrees.",
+     "Stefaniia Bulakh (Business Administration): expected 4, JD rated 4 — agrees.",
+     "Whitney Verbeck (Childhood & Early Childhood Education): expected 4, JD rated 4 — agrees."
+    ],
+    "falsifier": "Three or more new Agreeableness comparisons diverging by 2+ points would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 13
+   },
+   {
+    "id": "a6",
+    "kind": "trait-bias",
+    "trait": "ego",
+    "field": "",
+    "conclusion": "On Ego, JD rates systematically lower than blind expectations: mean signed difference -1.50 over 6 compared judgments.",
+    "grade": "Tentative",
+    "evidence": [
+     "Aeriel Skinner (Psychology): expected 4, JD rated 2 (diff -2).",
+     "Alex Hammond (Liberal Arts / General Studies): expected 4, JD rated 3 (diff -1).",
+     "Bronwyn Paladin (Vocal Performance): expected 4, JD rated 2 (diff -2).",
+     "Charlie Garrelts (Aviation Management): expected 4, JD rated 4 (diff +0).",
+     "Colleen Cheney (Graphic and Multimedia Design): expected 4, JD rated 3 (diff -1).",
+     "Rick Sinclair (Music): expected 4, JD rated 1 (diff -3)."
+    ],
+    "falsifier": "New Ego comparisons bringing the mean signed difference inside +/-0.3 would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 6
+   },
+   {
+    "id": "a7",
+    "kind": "field-bias",
+    "trait": "conscientiousness",
+    "field": "Childhood & Early Childhood Education",
+    "conclusion": "For the Childhood & Early Childhood Education cohort, blind expectations for Conscientiousness run higher than JD's ratings by 0.80 points on average (n=5).",
+    "grade": "Probable",
+    "evidence": [
+     "Alana Hoover: expected 5 (Probable grade), JD rated 4 (diff -1). Basis: Summa cum laude bachelor's, an MS in Education (Literacy) earned with distinction while employed, plus a concurrent JV coaching appointment — 3 distinct diligence contexts.",
+     "Ally Dubbioso: expected 4 (Tentative grade), JD rated 3 (diff -1). Basis: Magna cum laude graduation is the single observation on file; the rest of her record is thin.",
+     "Danielle Vetere: expected 4 (Probable grade), JD rated 4 (diff +0). Basis: Cum laude bachelor's with multiple President's List honors, then an MS in Education (Literacy) completed in 2025 while working as a teacher — 3 diligence contexts.",
+     "Morgan Morse: expected 5 (Probable grade), JD rated 4 (diff -1). Basis: Magna cum laude BA, an academic award for the highest GPA in her cohort, and repeated President's Lists across two institutions — 3 distinction contexts.",
+     "Whitney Verbeck: expected 5 (Probable grade), JD rated 4 (diff -1). Basis: Summa cum laude bachelor's, an MS in Education completed two years later, and repeated President's Lists across both degrees — 3 distinction contexts."
+    ],
+    "falsifier": "Two or more additional Childhood & Early Childhood Education members whose Conscientiousness ratings match or exceed the blind expectations would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 5
+   },
+   {
+    "id": "a8",
+    "kind": "field-bias",
+    "trait": "conscientiousness",
+    "field": "Nursing",
+    "conclusion": "For the Nursing cohort, blind expectations for Conscientiousness run higher than JD's ratings by 0.80 points on average (n=5).",
+    "grade": "Probable",
+    "evidence": [
+     "Allyssa Sabre: expected 4 (Probable grade), JD rated 4 (diff +0). Basis: RN licensure, repeated SUNY Canton honor rolls (2017, 2021, 2022), and a BSN pursued while working clinical jobs — 3 diligence contexts.",
+     "Emma Bortnick: expected 5 (Probable grade), JD rated 3 (diff -2). Basis: President's List (3.75+ GPA) and Dean's List honors while working a hospital med-surg unit through her final two years and supervising a fitness center — diligence across 3+ concurrent contexts.",
+     "Hope Kilcollins: expected 4 (Probable grade), JD rated 4 (diff +0). Basis: Honors recognition in two successive programs (Health and Fitness Promotion, then Nursing BS) and a competitive nurse-residency placement — 3 contexts.",
+     "Katelyn Matthews: expected 4 (Probable grade), JD rated 3 (diff -1). Basis: President's List (Spring 2024) and Dean's Lists across two different programs and multiple years — honors repeated in 3 contexts.",
+     "Kourtney Peets: expected 4 (Tentative grade), JD rated 3 (diff -1). Basis: Honor rolls across four consecutive semesters and degree completion — diligence observations, all in one context type (academic lists)."
+    ],
+    "falsifier": "Two or more additional Nursing members whose Conscientiousness ratings match or exceed the blind expectations would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 5
+   },
+   {
+    "id": "a9",
+    "kind": "field-bias",
+    "trait": "agreeableness",
+    "field": "Nursing",
+    "conclusion": "For the Nursing cohort, blind expectations for Agreeableness run higher than JD's ratings by 0.75 points on average (n=4).",
+    "grade": "Tentative",
+    "evidence": [
+     "Allyssa Sabre: expected 4 (Tentative grade), JD rated 4 (diff +0). Basis: Nursing field prior (patient care, including labor and delivery support) plus a pharmacy-technician service role — 2 care-directed observations.",
+     "Emma Bortnick: expected 4 (Tentative grade), JD rated 3 (diff -1). Basis: Nursing field prior plus two years of direct med-surg patient care while a student — 2 care-directed observations.",
+     "Katelyn Matthews: expected 4 (Tentative grade), JD rated 3 (diff -1). Basis: Nursing field prior plus her registered-nurse role — 2 care-directed observations.",
+     "Kourtney Peets: expected 4 (Tentative grade), JD rated 3 (diff -1). Basis: Nursing field prior plus receipt of the Alex Sabo Mentoring Scholarship, a mentorship-named award — 2 observations."
+    ],
+    "falsifier": "Two or more additional Nursing members whose Agreeableness ratings match or exceed the blind expectations would withdraw this conclusion.",
+    "scope": "Covers only the accuracy test set: directory members with a stated field of study AND at least one Persona rating by JD. Expectations were formed blind from on-file non-Persona evidence before any rating was loaded. Agreement measures the match between JD's ratings and an independent reading of the same file — it is not a measurement of anyone's actual personality, character, or ability.",
+    "n_tested": 4
+   }
+  ],
+  "sharpest_divergences": [
+   {
+    "key": "ig:tom_nate_ford",
+    "name": "Nathaniel Tomford",
+    "field": "Legal Studies",
+    "trait": "conscientiousness",
+    "expected": 5,
+    "jd": 2,
+    "diff": -3,
+    "basis": "President's List honors repeatedly from 2020 through 2023 (3.75+ GPA each time) plus a contracts-coordinator role built on detail accuracy — diligence repeated across years and into employment.",
+    "expectation_grade": "Probable"
+   },
+   {
+    "key": "ig:richardsinclair",
+    "name": "Rick Sinclair",
+    "field": "Music",
+    "trait": "ego",
+    "expected": 4,
+    "jd": 1,
+    "diff": -3,
+    "basis": "He is the long-tenured top leader and public face of a five-church network — leadership prominence in 2 observations (role, tenure); no direct self-promotion record on file, so Tentative.",
+    "expectation_grade": "Tentative"
+   },
+   {
+    "key": "ig:askinnerusa",
+    "name": "Aeriel Skinner",
+    "field": "Psychology",
+    "trait": "ego",
+    "expected": 4,
+    "jd": 2,
+    "diff": -2,
+    "basis": "National-champion status and a chosen elite-unit assignment imply strong competitive self-belief; no direct self-promotion evidence on file.",
+    "expectation_grade": "Tentative"
+   },
+   {
+    "key": "ig:bronwynpaladin",
+    "name": "Bronwyn Paladin",
+    "field": "Vocal Performance",
+    "trait": "ego",
+    "expected": 4,
+    "jd": 2,
+    "diff": -2,
+    "basis": "Named the university's Presser Scholar and repeatedly selected as a featured vocalist — high-visibility achievement in 2 contexts; no self-promotion record, so Tentative.",
+    "expectation_grade": "Tentative"
+   },
+   {
+    "key": "ig:bronwynpaladin",
+    "name": "Bronwyn Paladin",
+    "field": "Vocal Performance",
+    "trait": "extraversion",
+    "expected": 5,
+    "jd": 3,
+    "diff": -2,
+    "basis": "Solo senior recital, opera theatre roles, chorale soloist selections, and president of Ladies of Lee — repeated public spotlight across 3+ contexts.",
+    "expectation_grade": "Probable"
+   },
+   {
+    "key": "ig:cashhyyy",
+    "name": "Cashlynn Colbert",
+    "field": "Art Education",
+    "trait": "openness",
+    "expected": 5,
+    "jd": 3,
+    "diff": -2,
+    "basis": "Practicing artist under her own art identity (The Painted Sun), a commissioned painting for the SUNY Chancellor while still a student, and two creative degrees — art-making across 3 contexts.",
+    "expectation_grade": "Probable"
+   },
+   {
+    "key": "ig:emma_bortnick5",
+    "name": "Emma Bortnick",
+    "field": "Nursing",
+    "trait": "conscientiousness",
+    "expected": 5,
+    "jd": 3,
+    "diff": -2,
+    "basis": "President's List (3.75+ GPA) and Dean's List honors while working a hospital med-surg unit through her final two years and supervising a fitness center — diligence across 3+ concurrent contexts.",
+    "expectation_grade": "Probable"
+   },
+   {
+    "key": "ig:richardsinclair",
+    "name": "Rick Sinclair",
+    "field": "Music",
+    "trait": "extraversion",
+    "expected": 5,
+    "jd": 3,
+    "diff": -2,
+    "basis": "Weekly preaching is the core of a role held since 1981, leading a five-church network as its senior and lead pastor — public speaking at scale across decades and campuses.",
+    "expectation_grade": "Probable"
+   },
+   {
+    "key": "ig:stefaniiabulakh",
+    "name": "Stefaniia Bulakh",
+    "field": "Business Administration",
+    "trait": "openness",
+    "expected": 5,
+    "jd": 3,
+    "diff": -2,
+    "basis": "Completed degrees in two countries and two disciplines, relocated mid-degree from wartime Ukraine to SUNY Potsdam, and tutored across languages — novelty and adaptation repeated across 3 contexts.",
+    "expectation_grade": "Probable"
+   }
+  ]
+ }
 }
