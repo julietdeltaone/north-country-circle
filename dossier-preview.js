@@ -9156,6 +9156,1617 @@ function skeletonHTML(note){
     (note ? '<p class="dim center">' + esc(note) + '</p>' : '') + '</div>';
 }
 
+
+/* ============================================================
+   9b. SANDBOX (V3.4.0) — the admin workbench. Read-only tools
+   compute from the baked data already in the app plus the raw
+   sidecar files; write tools go through the established paths
+   (queuePatch/outbox for profile fields, the same batch endpoint
+   for row creates) or queue an op for scripts/sandbox_ops.py.
+   Every write is confirmed first and written to the action log
+   (localStorage, exported into site/data/sandbox-log.json by
+   the ops script; server-side entries are read back from there).
+   ============================================================ */
+var SB = {
+  ready:false, loading:null,
+  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null,
+  tool:'home',
+  grid:{ q:'', sort:'name', dir:1, view:'all', cols:null },
+  sel:{},                       /* pkey -> di, bulk selection from the grid */
+  raw:{ which:'snapchat', q:'' },
+  rep:{ tab:'coverage' },
+  integ:{ tab:'recon', dead:null, deadBusy:false },
+  lab:{ a:null, b:null, path:null, mutual:null, bridges:null },
+  play:{},
+  mg:{ a:null, b:null, surv:'a', picks:{}, plan:null },
+  dg:{ tab:'delete', one:null, bulkField:'tier', bulkVal:'', bulkCat:'companies', bulkName:'', dry:null },
+  imp:{ rows:null, result:null },
+  lg:{ filter:'all' }
+};
+var SB_TOOLS = [
+  { k:'grid',    g:'See',    t:'Data grid',        d:'Every field, one table. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
+  { k:'raw',     g:'See',    t:'Raw viewers',      d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry.', ic:'search' },
+  { k:'reports', g:'Check',  t:'Reports',          d:'Coverage gaps, source coverage, Live Records staleness, distributions.', ic:'spark' },
+  { k:'integ',   g:'Check',  t:'Integrity',        d:'Count reconciliation with its work shown, duplicate hunter, orphans, malformed keys.', ic:'shield' },
+  { k:'lab',     g:'Connect',t:'Connection lab',   d:'Path finder, mutual connections, indirect connections, bridge ranking.', ic:'network' },
+  { k:'play',    g:'Connect',t:'Playground',       d:'Scatter, histograms and timelines computed from the live data.', ic:'target' },
+  { k:'merge',   g:'Admin',  t:'Merge studio',     d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
+  { k:'danger',  g:'Admin',  t:'Danger area',      d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
+  { k:'import',  g:'Admin',  t:'Import workbench', d:'Stage a friends export and auto-match it. Never writes by itself.', ic:'download' },
+  { k:'log',     g:'Admin',  t:'Action log',       d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
+];
+function sbStore(k, v){ try{ if(v === undefined){ var s = localStorage.getItem(k); return s ? JSON.parse(s) : null; } localStorage.setItem(k, JSON.stringify(v)); }catch(x){ return null; } }
+function sbLogGet(){ return sbStore('ncc_sbx_log') || []; }
+function sbOpsGet(){ return sbStore('ncc_sbx_ops') || []; }
+function sbLogAdd(entry){
+  entry.id = 'sb' + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36);
+  entry.ts = new Date().toISOString();
+  var log = sbLogGet(); log.unshift(entry); sbStore('ncc_sbx_log', log.slice(0, 300));
+  (entry.queuedOps || []).forEach(function(op){ var q = sbOpsGet(); q.push(op); sbStore('ncc_sbx_ops', q); });
+  return entry;
+}
+function sbFetch(name, key){
+  return fetch('data/' + name + '?v=' + APP_VERSION).then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ SB[key] = j; }).catch(function(){ SB[key] = null; });
+}
+function sbEnsure(){
+  if(SB.ready) return Promise.resolve();
+  if(SB.loading) return SB.loading;
+  SB.loading = Promise.all([
+    sbFetch('photos.json', 'photos'), sbFetch('daily-ten.json', 'dt'),
+    sbFetch('changes.json', 'changes'), sbFetch('trash.json', 'trash'),
+    sbFetch('snapchat.json', 'snap'), sbFetch('recon.json', 'recon'),
+    sbFetch('sandbox-log.json', 'serverLog'), sbFetch('org-registry.json', 'orgreg')
+  ]).then(function(){ SB.ready = true; SB.loading = null; if(S.route.name === 'sandbox') render(); });
+  return SB.loading;
+}
+function sbPhotoByName(){
+  var m = {};
+  ((SB.photos && SB.photos.people) || []).forEach(function(p){ m[String(p.name || '').trim().toLowerCase()] = p; });
+  return m;
+}
+function sbPhotoCount(p){
+  if(!p) return 0;
+  var n = p.photo_url ? 1 : 0;
+  return n + ((p.also || []).length);
+}
+function sbFootCount(e){
+  var t = String(gv(e, 'public_footprint') || '').trim();
+  if(!t) return 0;
+  return t.split('\n').filter(function(x){ return x.trim(); }).length;
+}
+function sbYear(v){
+  var m = String(v || '').match(/(19|20)\d\d/);
+  return m ? +m[0] : null;
+}
+function sbTrashKeys(){
+  var s = {};
+  var list = Array.isArray(SB.trash) ? SB.trash : ((SB.trash && SB.trash.people) || []);
+  list.forEach(function(p){ var k = typeof p === 'string' ? p : (p && p.key); if(k) s[k] = 1; });
+  return s;
+}
+/* adjacency for the connection lab: Known associates + family + close_add */
+function sbAdj(){
+  if(SB._adj) return SB._adj;
+  var adj = {};
+  function add(a, b, rel){ if(a == null || b == null || a === b) return; (adj[a] = adj[a] || {})[b] = rel; (adj[b] = adj[b] || {})[a] = rel; }
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    (e.neighbors || []).forEach(function(n){ var t = BYN[String(n.u || '').toLowerCase()]; if(t != null) add(di, t, 'associate'); });
+    famLinks(e).forEach(function(l){ var t = BYN[String(l[1] || '').toLowerCase()]; if(t != null) add(di, t, l[0] || 'family'); });
+    splitTags(gv(e, 'close_add'), ', ').forEach(function(nm){ var t = BYN[nm.toLowerCase()]; if(t != null) add(di, t, 'associate'); });
+  });
+  SB._adj = adj;
+  return adj;
+}
+function sbPersonPicker(id, label, val){
+  return '<div class="sb-pick"><label>' + esc(label) + '</label>' +
+    '<input type="text" data-sbi="pickq" data-pick="' + id + '" placeholder="Type a name…" value="' + esc(val || '') + '" autocomplete="off">' +
+    '<div class="sb-pickres" id="pick-' + id + '"></div></div>';
+}
+function sbOpenProfile(di){ var e = D.directory[di]; if(e) go('p/' + encodeURIComponent(personId(e))); }
+function sbConfirm(title, bodyHtml, okLabel, danger){
+  openSheet(title, '<div class="sb-confirm">' + bodyHtml + '</div>' +
+    '<div class="sb-confrow"><button type="button" class="btn ghost" data-sb="sheetx">Cancel</button>' +
+    '<button type="button" class="btn ' + (danger ? 'danger2' : 'primary') + '" data-sb="confirmok">' + esc(okLabel || 'Confirm') + '</button></div>', { wide:true });
+}
+function sbDownload(name, text, mime){
+  var b = new Blob([text], { type: mime || 'text/plain' }), u = URL.createObjectURL(b);
+  var a = document.createElement('a'); a.href = u; a.download = name; a.click();
+  setTimeout(function(){ URL.revokeObjectURL(u); }, 4000);
+}
+/* direct batch POST to the same endpoint the outbox flush uses — for row
+   creates (restore / new profile / re-key), where no directory index exists */
+function sbPostBatch(items){
+  return fetch(EXEC_URL, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body: JSON.stringify({ kind:'batch', items: items }) }).then(function(){ return true; }).catch(function(){ return false; });
+}
+
+function viewSandbox(v){
+  SB.tool = (S.route.seg && S.route.seg[0]) || 'home';
+  if(!SB.ready){
+    v.innerHTML = '<div class="sb-wrap"><div class="empty"><h3>Sandbox</h3><p>Loading the sidecar data…</p></div></div>';
+    sbEnsure();
+    return;
+  }
+  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, reports:sbReports, integ:sbInteg, lab:sbLab,
+             play:sbPlay, merge:sbMerge, danger:sbDanger, import:sbImport, log:sbLogView }[SB.tool] || sbHome;
+  v.innerHTML = '<div class="sb-wrap">' + fn() + '</div>';
+  sbAfterRender();
+}
+function sbHead(title, sub){
+  return '<div class="sb-head"><a class="sb-back" href="#/sandbox">← Sandbox</a>' +
+    '<h2>' + esc(title) + '</h2><p>' + esc(sub || '') + '</p></div>';
+}
+function sbHome(){
+  var ppl = people().length, rec = SB.recon || {};
+  var conf = ((SB.photos && SB.photos.people) || []).filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely'); }).length;
+  var snapN = SB.snap ? Object.keys(SB.snap.people || {}).length : 0;
+  var ops = sbOpsGet().length, logs = sbLogGet().length + ((SB.serverLog && SB.serverLog.entries) || []).length;
+  var h = '<div class="sb-head"><h2>Sandbox</h2><p>The admin workbench. Read-only tools compute from the data already in the app; write tools go through the same paths the app itself uses, always with a confirm step and an action-log entry.</p></div>';
+  h += '<div class="sb-kpis">' +
+    sbKpi(ppl, 'people in the app') +
+    sbKpi(rec.sheet ? rec.sheet.keyed_rows : '—', 'keyed Sheet rows' + (rec.verdict ? ' · ' + rec.verdict.toLowerCase() : '')) +
+    sbKpi(conf, 'people with a usable photo') +
+    sbKpi(snapN, 'Snapchat profiles filed') +
+    sbKpi(Object.keys(sbTrashKeys()).length, 'keys in Trash (blocklist)') +
+    sbKpi(ops, 'ops queued for sandbox_ops.py') +
+    '</div>';
+  var groups = {};
+  SB_TOOLS.forEach(function(t){ (groups[t.g] = groups[t.g] || []).push(t); });
+  ['See', 'Check', 'Connect', 'Admin'].forEach(function(g){
+    h += '<div class="sb-group">' + esc(g) + '</div><div class="sb-cards">';
+    (groups[g] || []).forEach(function(t){
+      h += '<a class="sb-card" href="#/sandbox/' + t.k + '"><span class="sb-card-ic">' + ic(t.ic, 20) + '</span>' +
+        '<span class="sb-card-t">' + esc(t.t) + '</span><span class="sb-card-d">' + esc(t.d) + '</span></a>';
+    });
+    h += '</div>';
+  });
+  if(logs) h += '<p class="sb-note">' + logs + ' action-log entries on file — see the Action log tool.</p>';
+  return h;
+}
+function sbKpi(n, l){ return '<div class="sb-kpi"><div class="sb-kpin">' + esc(String(n)) + '</div><div class="sb-kpil">' + esc(l) + '</div></div>'; }
+function sbAfterRender(){
+  var t = SB.tool;
+  if(t === 'lab' && SB.lab.bridges === 'pending') sbComputeBridges();
+  if(t === 'integ' && SB.integ.deadBusy && !SB.integ._deadRun){ SB.integ._deadRun = true; sbRunDead(); }
+}
+
+
+/* ---------------- 1. data grid ---------------- */
+var SB_COLS = [
+  { k:'name', l:'Name', v:function(e){ return dispName(e); } },
+  { k:'key', l:'Key', v:function(e){ return pkey(e); } },
+  { k:'tier', l:'Tier', v:function(e){ return tierName(e); } },
+  { k:'rel', l:'Relationship', v:function(e){ return gv(e, 'relationship') || ''; } },
+  { k:'years', l:'Known since', v:function(e){ return gv(e, 'years_known') || ''; }, n:function(e){ return sbYear(gv(e, 'years_known')) || 9999; } },
+  { k:'snap', l:'Snapchat', v:function(e){ return (e.snap_handles || []).map(function(x){ return '@' + x; }).join(' '); } },
+  { k:'online', l:'Online since', v:function(e){ return e.snap_since ? String(e.snap_since) : ''; }, n:function(e){ return e.snap_since || 9999; } },
+  { k:'ig', l:'Instagram', v:function(e){ return effHandle(e) ? '@' + effHandle(e) : ''; } },
+  { k:'fb', l:'Facebook', v:function(e){ return e.fb_handle || ''; } },
+  { k:'email', l:'Email', v:function(e){ return gv(e, 'email') || ''; } },
+  { k:'phone', l:'Phone', v:function(e){ return gv(e, 'phone') || ''; } },
+  { k:'orgs', l:'Organizations', v:function(e){ return orgsOf(e).join(', '); } },
+  { k:'groups', l:'Groups', v:function(e){ return personGroups(e).join(', '); } },
+  { k:'town', l:'Town', v:function(e){ return e.city || gv(e, 'location_on_file') || ''; } },
+  { k:'photo', l:'Photo', v:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return p ? (p.status || '') + (sbPhotoCount(p) > 1 ? ' ×' + sbPhotoCount(p) : '') : '—'; } },
+  { k:'foot', l:'Footprint facts', v:function(e){ return String(sbFootCount(e)); }, n:function(e){ return sbFootCount(e); } },
+  { k:'conn', l:'Connections', v:function(e){ return String((e.neighbors || []).length); }, n:function(e){ return (e.neighbors || []).length; } },
+  { k:'close', l:'Closeness', v:function(e, ph, sc){ var s = sc[e._di]; return s ? String(s.total) : ''; }, n:function(e, ph, sc){ var s = sc[e._di]; return s ? s.total : -1; } }
+];
+var SB_VIEWS = {
+  all:{ l:'Everyone', f:function(){ return true; } },
+  snap:{ l:'Has Snapchat data', f:function(e){ return !!(e.snap_handles && e.snap_handles.length); } },
+  nophoto:{ l:'No usable photo', f:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return !(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely')); } },
+  army:{ l:'Army', f:function(e){ return personGroups(e).indexOf('U.S. Army') >= 0 || !!gv(e, 'rank'); } },
+  noknown:{ l:'No Known Since', f:function(e){ return !String(gv(e, 'years_known') || '').trim(); } },
+  shells:{ l:'Shells (no footprint, no connections)', f:function(e){ return !sbFootCount(e) && !(e.neighbors || []).length; } }
+};
+function sbGridCols(){
+  if(SB.grid.cols) return SB.grid.cols;
+  var saved = sbStore('ncc_sbx_grid');
+  var cols = {};
+  SB_COLS.forEach(function(c){ cols[c.k] = !(saved && saved[c.k] === 0); });
+  if(!saved){ ['email', 'phone', 'fb'].forEach(function(k){ cols[k] = false; }); }
+  SB.grid.cols = cols;
+  return cols;
+}
+function sbGridRows(){
+  var ph = sbPhotoByName(), sc = scoreAll(), q = SB.grid.q.toLowerCase(), vf = SB_VIEWS[SB.grid.view] || SB_VIEWS.all;
+  var rows = [];
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    e._di = di;
+    if(!vf.f(e, ph)) return;
+    if(q){
+      var hay = (dispName(e) + ' ' + pkey(e) + ' ' + (e.snap_handles || []).join(' ') + ' ' + orgsOf(e).join(' ') + ' ' + (e.city || '')).toLowerCase();
+      if(hay.indexOf(q) < 0) return;
+    }
+    rows.push(e);
+  });
+  var col = SB_COLS.filter(function(c){ return c.k === SB.grid.sort; })[0] || SB_COLS[0];
+  rows.sort(function(a, b){
+    var va = col.n ? col.n(a, ph, sc) : String(col.v(a, ph, sc)).toLowerCase();
+    var vb = col.n ? col.n(b, ph, sc) : String(col.v(b, ph, sc)).toLowerCase();
+    return (va < vb ? -1 : va > vb ? 1 : 0) * SB.grid.dir;
+  });
+  return { rows:rows, ph:ph, sc:sc };
+}
+function sbGrid(){
+  var cols = sbGridCols();
+  var vis = SB_COLS.filter(function(c){ return cols[c.k]; });
+  var got = sbGridRows(), rows = got.rows;
+  var selN = Object.keys(SB.sel).length;
+  var h = sbHead('Data grid', 'Every person as one row. Click a header to sort; click a row to open the profile. Nothing here writes until you send a selection to the Danger area.');
+  h += '<div class="sb-toolbar"><input type="text" data-sbi="gridq" placeholder="Filter by name, key, handle, org, town…" value="' + esc(SB.grid.q) + '">' +
+    '<select data-sbi="gridview">' + Object.keys(SB_VIEWS).map(function(k){ return '<option value="' + k + '"' + (SB.grid.view === k ? ' selected' : '') + '>' + SB_VIEWS[k].l + '</option>'; }).join('') + '</select>' +
+    '<button type="button" class="btn ghost sm" data-sb="gridcols">Columns</button>' +
+    '<button type="button" class="btn ghost sm" data-sb="gridcsv">Export CSV</button>' +
+    '<span class="sb-count">' + rows.length + ' rows</span></div>';
+  if(selN) h += '<div class="sb-selbar"><b>' + selN + ' selected</b><button type="button" class="btn danger2 sm" data-sb="seltodanger">Send to Danger area</button><button type="button" class="btn ghost sm" data-sb="selclear">Clear selection</button></div>';
+  h += '<div class="sb-tablewrap"><table class="sb-table"><thead><tr><th class="sb-ck"></th>' +
+    vis.map(function(c){ return '<th data-sb="gridsort" data-k="' + c.k + '">' + esc(c.l) + (SB.grid.sort === c.k ? (SB.grid.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }).join('') + '</tr></thead><tbody>';
+  rows.slice(0, 800).forEach(function(e){
+    var di = e._di, pk = pkey(e);
+    h += '<tr><td class="sb-ck"><input type="checkbox" data-sbi="gridsel" data-di="' + di + '"' + (SB.sel[pk] ? ' checked' : '') + '></td>';
+    vis.forEach(function(c, ci){
+      var val = c.v(e, got.ph, got.sc);
+      h += '<td' + (ci === 0 ? ' class="sb-namecell" data-sb="gridopen" data-di="' + di + '"' : '') + '>' + esc(val) + '</td>';
+    });
+    h += '</tr>';
+  });
+  h += '</tbody></table></div>';
+  if(rows.length > 800) h += '<p class="sb-note">Showing the first 800 of ' + rows.length + ' — narrow the filter to see the rest.</p>';
+  return h;
+}
+function sbGridCsv(){
+  var cols = sbGridCols(), vis = SB_COLS.filter(function(c){ return cols[c.k]; });
+  var got = sbGridRows();
+  function q(s){ s = String(s == null ? '' : s); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+  var out = [vis.map(function(c){ return q(c.l); }).join(',')];
+  got.rows.forEach(function(e){ out.push(vis.map(function(c){ return q(c.v(e, got.ph, got.sc)); }).join(',')); });
+  sbDownload('sandbox-grid.csv', out.join('\n'), 'text/csv');
+  toast('CSV exported — ' + got.rows.length + ' rows');
+}
+
+/* ---------------- 2. raw viewers ---------------- */
+var SB_RAW_META = {
+  snapchat:{ l:'Snapchat sidecar', f:'snapchat.json' }, photos:{ l:'Photos', f:'photos.json' },
+  daily:{ l:'Live Records (daily-ten)', f:'daily-ten.json' }, changes:{ l:'Change log', f:'changes.json' },
+  trash:{ l:'Trash / blocklist', f:'trash.json' }, orgreg:{ l:'Org registry', f:'org-registry.json' },
+  log:{ l:'Sandbox action log (server)', f:'sandbox-log.json' }
+};
+function sbRaw(){
+  var w = SB.raw.which, q = SB.raw.q.toLowerCase();
+  var h = sbHead('Raw viewers', 'The baked sidecar files, as they sit on disk. Read-only.');
+  h += '<div class="sb-toolbar">' + Object.keys(SB_RAW_META).map(function(k){
+    return '<button type="button" class="btn sm ' + (w === k ? 'primary' : 'ghost') + '" data-sb="rawtab" data-k="' + k + '">' + esc(SB_RAW_META[k].l) + '</button>';
+  }).join('') + '<input type="text" data-sbi="rawq" placeholder="Filter…" value="' + esc(SB.raw.q) + '"></div>';
+  function tbl(head, rowsHtml){ return '<div class="sb-tablewrap"><table class="sb-table"><thead><tr>' + head.map(function(x){ return '<th>' + esc(x) + '</th>'; }).join('') + '</tr></thead><tbody>' + rowsHtml + '</tbody></table></div>'; }
+  if(w === 'snapchat' && SB.snap){
+    var ks = Object.keys(SB.snap.people || {}).sort();
+    h += '<p class="sb-note">' + ks.length + ' people · file updated ' + esc(SB.snap.updated || '') + '</p>' + tbl(['Key', 'Name', 'Handles', 'Online since'],
+      ks.filter(function(k){ return !q || (k + ' ' + (SB.snap.people[k].name || '')).toLowerCase().indexOf(q) >= 0; }).map(function(k){
+        var p = SB.snap.people[k];
+        return '<tr><td>' + esc(k) + '</td><td>' + esc(p.name || '') + '</td><td>' + esc((p.handles || []).map(function(x){ return '@' + x; }).join(' ')) + '</td><td>' + esc(p.since_date || String(p.since || '')) + '</td></tr>';
+      }).join(''));
+  }
+  else if(w === 'photos' && SB.photos){
+    var pp = SB.photos.people || [];
+    h += '<p class="sb-note">' + pp.length + ' people · ' + esc(SB.photos.updated || '') + '</p>' + tbl(['Name', 'Status', 'Type', 'Photos', 'Host', 'Added'],
+      pp.filter(function(p){ return !q || String(p.name || '').toLowerCase().indexOf(q) >= 0; }).map(function(p){
+        var host = ''; try{ host = new URL(p.photo_url).hostname; }catch(x){}
+        return '<tr><td>' + esc(p.name || '') + '</td><td>' + esc(p.status || '') + '</td><td>' + esc(p.type || '') + '</td><td>' + sbPhotoCount(p) + '</td><td>' + esc(host) + '</td><td>' + esc(p.added || p.added_approx || '') + '</td></tr>';
+      }).join(''));
+  }
+  else if(w === 'daily' && SB.dt){
+    var dt = SB.dt;
+    h += '<p class="sb-note">Brief date ' + esc(dt.date || '') + ' · coverage ' + esc(String((dt.coverage || {}).checked_total || 0)) + ' of ' + esc(String((dt.coverage || {}).of || 0)) + ' in the last ' + esc(String((dt.coverage || {}).window_days || 30)) + ' days · fresh: ' + esc((dt.fresh || {}).headline || 'none') + '</p>';
+    h += '<h3 class="sb-h3">Checked in this brief (' + (dt.checked || []).length + ')</h3>' + tbl(['Key', 'Name'],
+      (dt.checked || []).map(function(c){ return '<tr><td>' + esc(c.name || '') + '</td><td>' + esc(c.display || '') + '</td></tr>'; }).join(''));
+    h += '<h3 class="sb-h3">Filed (' + (dt.filed || []).length + ')</h3>' + tbl(['Name', 'Facts'],
+      (dt.filed || []).map(function(f2){ return '<tr><td>' + esc(f2.display || '') + '</td><td>' + esc((f2.facts || []).map(function(x){ return x.text; }).join(' · ')) + '</td></tr>'; }).join(''));
+    h += '<h3 class="sb-h3">Next up (' + (dt.next_up || []).length + ')</h3>' + tbl(['Key', 'Name'],
+      (dt.next_up || []).map(function(c){ return '<tr><td>' + esc(c.name || '') + '</td><td>' + esc(c.display || '') + '</td></tr>'; }).join(''));
+  }
+  else if(w === 'changes' && SB.changes){
+    var es = (SB.changes.entries || []).slice().reverse();
+    h += '<p class="sb-note">' + es.length + ' entries</p>' + tbl(['Filed', 'Name', 'What', 'Source'],
+      es.filter(function(e2){ return !q || (e2.name + ' ' + e2.what).toLowerCase().indexOf(q) >= 0; }).slice(0, 400).map(function(e2){
+        return '<tr><td>' + esc(e2.filed || '') + '</td><td>' + esc(e2.name || '') + '</td><td>' + esc(e2.what || '') + '</td><td>' + esc(e2.source || '') + '</td></tr>';
+      }).join(''));
+  }
+  else if(w === 'trash'){
+    var tk = sbTrashKeys(), keys = Object.keys(tk).sort();
+    h += '<p class="sb-note">' + keys.length + ' keys. Trash is the archive AND the build blocklist — a key here keeps its person out of the directory.</p>' + tbl(['Key'],
+      keys.filter(function(k){ return !q || k.indexOf(q) >= 0; }).map(function(k){ return '<tr><td>' + esc(k) + '</td></tr>'; }).join(''));
+  }
+  else if(w === 'orgreg' && SB.orgreg){
+    var can = SB.orgreg.canonicals || {}, al = SB.orgreg.aliases || {};
+    h += '<h3 class="sb-h3">Canonicals (' + Object.keys(can).length + ')</h3>' + tbl(['Category', 'Canonical'],
+      Object.keys(can).sort().map(function(k){ return '<tr><td>' + esc(k) + '</td><td>' + esc((can[k] || []).join(', ')) + '</td></tr>'; }).join(''));
+    h += '<h3 class="sb-h3">Aliases (' + Object.keys(al).length + ')</h3>' + tbl(['Alias', 'Canonical'],
+      Object.keys(al).sort().map(function(k){ return '<tr><td>' + esc(k) + '</td><td>' + esc(al[k]) + '</td></tr>'; }).join(''));
+  }
+  else if(w === 'log'){
+    var se = (SB.serverLog && SB.serverLog.entries) || [];
+    h += '<p class="sb-note">' + se.length + ' server-side entries (written by sandbox_ops.py). Your in-browser entries live in the Action log tool.</p>' + tbl(['When', 'Type', 'Detail'],
+      se.slice().reverse().map(function(e2){ return '<tr><td>' + esc(String(e2.ts || '').slice(0, 10)) + '</td><td>' + esc(e2.type || e2.op || '') + '</td><td>' + esc(e2.detail || e2.title || '') + '</td></tr>'; }).join(''));
+  }
+  else h += '<div class="empty"><h3>Not loaded</h3><p>That file could not be read.</p></div>';
+  return h;
+}
+
+
+/* ---------------- 3. reports ---------------- */
+function sbPersonRows(dis, cap){
+  var show = dis.slice(0, cap || 120);
+  var h = '<div class="sb-plist">' + show.map(function(di){
+    var e = D.directory[di];
+    return '<button type="button" class="sb-prow" data-sb="openprof" data-di="' + di + '">' + avatar(e, 'sm') +
+      '<span class="sb-pname">' + esc(dispName(e)) + '</span><span class="sb-pmeta">' + esc(infoLine(e)) + '</span></button>';
+  }).join('') + '</div>';
+  if(dis.length > show.length) h += '<p class="sb-note">…and ' + (dis.length - show.length) + ' more (use the Data grid to see them all).</p>';
+  return h;
+}
+function sbReports(){
+  var tab = SB.rep.tab;
+  var h = sbHead('Reports', 'Computed live from the baked directory and sidecars. Every list opens the profile.');
+  h += '<div class="sb-toolbar">' + [['coverage', 'Coverage gaps'], ['sources', 'Source coverage'], ['stale', 'Live Records staleness'], ['dist', 'Distributions']].map(function(t){
+    return '<button type="button" class="btn sm ' + (tab === t[0] ? 'primary' : 'ghost') + '" data-sb="reptab" data-k="' + t[0] + '">' + t[1] + '</button>';
+  }).join('') + '</div>';
+  var ph = sbPhotoByName();
+  var listed = [];
+  D.directory.forEach(function(e, di){ if(liveEntry(e)) listed.push(di); });
+  function gapCard(title, test){
+    var missing = listed.filter(function(di){ return !test(D.directory[di], di); });
+    var pct = listed.length ? Math.round(100 * (listed.length - missing.length) / listed.length) : 0;
+    return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + '</div>' +
+      '<div class="sb-bar"><span style="width:' + pct + '%"></span></div>' +
+      '<div class="sb-card2-n">' + (listed.length - missing.length) + ' of ' + listed.length + ' have it · ' + missing.length + ' missing</div>' +
+      (missing.length ? '<details class="sb-det"><summary>See who is missing it</summary>' + sbPersonRows(missing) + '</details>' : '<p class="sb-note">Complete.</p>') + '</div>';
+  }
+  if(tab === 'coverage'){
+    h += '<div class="sb-grid2">' +
+      gapCard('Usable photo (confirmed / likely)', function(e){ var p = ph[dispName(e).toLowerCase()]; return !!(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely')); }) +
+      gapCard('Known Since', function(e){ return !!String(gv(e, 'years_known') || '').trim(); }) +
+      gapCard('Any organization', function(e){ return orgsOf(e).length > 0; }) +
+      gapCard('Town on file', function(e){ return !!(e.city || gv(e, 'location_on_file')); }) +
+      gapCard('At least one connection', function(e){ return (e.neighbors || []).length > 0 || famLinks(e).length > 0; }) +
+      gapCard('Footprint facts', function(e){ return sbFootCount(e) > 0; }) +
+      '</div>';
+  }
+  else if(tab === 'sources'){
+    h += '<div class="sb-grid2">' +
+      gapCard('Snapchat handle', function(e){ return !!(e.snap_handles && e.snap_handles.length); }) +
+      gapCard('Instagram handle', function(e){ return !!effHandle(e); }) +
+      gapCard('Facebook link', function(e){ return !!e.fb_url; }) +
+      gapCard('Email', function(e){ return !!gv(e, 'email'); }) +
+      gapCard('Phone', function(e){ return !!gv(e, 'phone'); }) +
+      gapCard('Any of Snapchat / Instagram / Facebook', function(e){ return !!((e.snap_handles && e.snap_handles.length) || effHandle(e) || e.fb_url); }) +
+      '</div>';
+  }
+  else if(tab === 'stale'){
+    var dt = SB.dt || {};
+    var checkedKeys = {};
+    (dt.checked || []).forEach(function(c){ checkedKeys[String(c.name || '').toLowerCase()] = 1; });
+    var checkedDis = listed.filter(function(di){ var e = D.directory[di]; return checkedKeys[pkey(e).toLowerCase()] || checkedKeys[String(e.name || '').toLowerCase()]; });
+    var notChecked = listed.filter(function(di){ return checkedDis.indexOf(di) < 0; });
+    h += '<div class="sb-grid2"><div class="sb-card2"><div class="sb-card2-t">Latest brief</div>' +
+      '<div class="sb-card2-n">' + esc(dt.date || '—') + ' · coverage ' + esc(String((dt.coverage || {}).checked_total || 0)) + ' of ' + esc(String((dt.coverage || {}).of || 0)) + ' checked in the last ' + esc(String((dt.coverage || {}).window_days || 30)) + ' days · ' + esc(String(dt.unchecked_remaining || 0)) + ' unchecked in the rotation</div>' +
+      '<div class="sb-card2-t" style="margin-top:10px">Checked in the latest brief (' + checkedDis.length + ')</div>' + sbPersonRows(checkedDis, 40) +
+      '</div><div class="sb-card2"><div class="sb-card2-t">Next up in the rotation (' + (dt.next_up || []).length + ')</div>' + sbPersonRows((dt.next_up || []).map(function(c){ var di = PK2I[String(c.name || '').toLowerCase()]; if(di == null) di = BYN[String(c.name || '').toLowerCase()]; return di; }).filter(function(x){ return x != null; }), 40) +
+      '<div class="sb-card2-t" style="margin-top:10px">Not in the latest brief\u2019s checked set (' + notChecked.length + ')</div>' +
+      '<p class="sb-note">The rotation covers everyone about monthly; per-person last-checked dates live in the routine\u2019s state file, not the bake, so this list is \u201cnot checked in the most recent brief\u201d rather than a true 30-day staleness measure.</p>' +
+      sbPersonRows(notChecked, 60) + '</div></div>';
+  }
+  else if(tab === 'dist'){
+    function distCard(title, keyFn){
+      var counts = {};
+      listed.forEach(function(di){ var k = keyFn(D.directory[di]) || '(blank)'; counts[k] = (counts[k] || 0) + 1; });
+      var keys = Object.keys(counts).sort(function(a, b){ return counts[b] - counts[a]; });
+      var max = Math.max.apply(null, keys.map(function(k){ return counts[k]; }).concat([1]));
+      return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + '</div>' + keys.slice(0, 14).map(function(k){
+        return '<div class="sb-distrow"><span class="sb-distl">' + esc(k) + '</span><span class="sb-distbar"><span style="width:' + Math.round(100 * counts[k] / max) + '%"></span></span><span class="sb-distn">' + counts[k] + '</span></div>';
+      }).join('') + '</div>';
+    }
+    var snapYears = {}, photoMonths = {};
+    listed.forEach(function(di){ var e = D.directory[di]; if(e.snap_since) snapYears[e.snap_since] = (snapYears[e.snap_since] || 0) + 1; });
+    ((SB.photos && SB.photos.people) || []).forEach(function(p){ if(p.added && /^\d{4}-\d{2}/.test(p.added)) photoMonths[p.added.slice(0, 7)] = (photoMonths[p.added.slice(0, 7)] || 0) + 1; });
+    function seriesCard(title, obj){
+      var keys = Object.keys(obj).sort();
+      var max = Math.max.apply(null, keys.map(function(k){ return obj[k]; }).concat([1]));
+      return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + '</div>' + keys.map(function(k){
+        return '<div class="sb-distrow"><span class="sb-distl">' + esc(k) + '</span><span class="sb-distbar"><span style="width:' + Math.round(100 * obj[k] / max) + '%"></span></span><span class="sb-distn">' + obj[k] + '</span></div>';
+      }).join('') + '</div>';
+    }
+    h += '<div class="sb-grid2">' +
+      distCard('Tier mix', function(e){ return tierName(e); }) +
+      distCard('Relationship mix', function(e){ return gv(e, 'relationship') || ''; }) +
+      seriesCard('Snapchat adds by year (year the connection was made)', snapYears) +
+      seriesCard('Photos filed by month (entries with an exact added date)', photoMonths) +
+      '</div>';
+  }
+  return h;
+}
+
+/* ---------------- 4. integrity ---------------- */
+function sbInteg(){
+  var tab = SB.integ.tab;
+  var h = sbHead('Integrity', 'Trust, but verify. Everything below is recomputed in the browser from the live bake, except the reconciliation, which reads the Sheet fresh via scripts/sandbox_recon.py.');
+  h += '<div class="sb-toolbar">' + [['recon', 'Count reconciliation'], ['dup', 'Duplicate hunter'], ['orphan', 'Orphan & malformed'], ['photos', 'Photo links']].map(function(t){
+    return '<button type="button" class="btn sm ' + (tab === t[0] ? 'primary' : 'ghost') + '" data-sb="integtab" data-k="' + t[0] + '">' + t[1] + '</button>';
+  }).join('') + '</div>';
+  if(tab === 'recon') h += sbIntegRecon();
+  else if(tab === 'dup') h += sbIntegDup();
+  else if(tab === 'orphan') h += sbIntegOrphan();
+  else if(tab === 'photos') h += sbIntegPhotos();
+  return h;
+}
+function sbIntegRecon(){
+  var r = SB.recon;
+  /* live recompute of the app side */
+  var pkSeen = {}, dups = {};
+  D.directory.forEach(function(e){ var k = pkey(e); if(pkSeen[k]) (dups[k] = dups[k] || [pkSeen[k]]).push(e.name); pkSeen[k] = e.name; });
+  var h = '<div class="sb-card2"><div class="sb-card2-t">Live recompute (this browser, right now)</div>' +
+    '<div class="sb-card2-n">Directory entries: <b>' + D.directory.length + '</b> · people() count: <b>' + people().length + '</b> · unique app keys: <b>' + Object.keys(pkSeen).length + '</b>' +
+    (Object.keys(dups).length ? ' · shared keys: ' + Object.keys(dups).map(function(k){ return '<b>' + esc(k) + '</b> (' + dups[k].map(esc).join(', ') + ')'; }).join('; ') : ' · no shared keys') + '</div></div>';
+  if(!r) return h + '<div class="empty"><h3>recon.json not loaded</h3><p>Run scripts/sandbox_recon.py and push, or queue a recon op from the Danger area.</p></div>';
+  var run = null;
+  h += '<div class="sb-card2"><div class="sb-card2-t">Sheet vs bake — the waterfall <span class="sb-verdict">' + esc(r.verdict || '') + '</span></div>' +
+    '<p class="sb-note">Generated ' + esc(r.generated_at || '') + ' by scripts/sandbox_recon.py (fresh Sheet read). Bake updated ' + esc((r.bake || {}).updated || '') + '.</p>' +
+    '<table class="sb-table sb-wf"><tbody>' + (r.waterfall || []).map(function(w){
+      var left;
+      if(w.equals){ run = w.count; left = '<b>' + w.count + '</b>'; }
+      else if(run == null){ run = w.count; left = '<b>' + w.count + '</b>'; }
+      else { run += w.count; left = (w.count > 0 ? '+' : '') + w.count + ' → ' + run; }
+      return '<tr><td>' + esc(w.label) + (w.detail ? '<div class="sb-wfd">' + esc(w.detail) + '</div>' : '') +
+        (w.keys && w.keys.length ? '<div class="sb-wfk">' + w.keys.map(esc).join(' · ') + '</div>' : '') +
+        '</td><td class="sb-wfn">' + left + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+  if((r.explained || []).length){
+    h += '<div class="sb-card2"><div class="sb-card2-t">Every differing key, explained</div>' + (r.explained || []).map(function(x){
+      return '<div class="sb-expl"><b>' + esc(x.key) + '</b><span>' + esc(x.reason) + '</span></div>';
+    }).join('') + '</div>';
+  }
+  h += '<div class="sb-card2"><div class="sb-card2-t">The short answer</div><p class="sb-note" style="font-size:13px">The Sheet holds ' +
+    esc(String((r.sheet || {}).keyed_rows || '')) + ' keyed profile rows. Three are folded into survivors by merges, one (ig:test_deploy_check) is a leftover deploy-check row the bake never turns into a person, and JD\u2019s own profile (ig:jdmeyers_) attaches to his graph entry, whose app key computes as sf:jdmeyers_ — a key it shares with a malformed twin row, which is why 733 people answer to 732 unique keys. Nothing is missing and nobody is double-counted in people().</p></div>';
+  return h;
+}
+function sbDupPairs(){
+  var byName = {}, pairs = [], seenPair = {};
+  function addPair(a, b, why){
+    if(a === b) return;
+    var k = [pkey(D.directory[a]), pkey(D.directory[b])].sort().join('|') + '|' + why;
+    if(seenPair[k]) return; seenPair[k] = 1; pairs.push({ a:a, b:b, why:why });
+  }
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    var nm = dispName(e).toLowerCase();
+    (byName[nm] = byName[nm] || []).push(di);
+  });
+  Object.keys(byName).forEach(function(nm){ var g = byName[nm]; for(var i = 0; i < g.length; i++) for(var j = i + 1; j < g.length; j++) addPair(g[i], g[j], 'same name'); });
+  /* same surname + same first initial, different full name */
+  var bySig = {};
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    var parts = dispName(e).toLowerCase().split(/\s+/).filter(Boolean);
+    if(parts.length < 2) return;
+    var sig = parts[parts.length - 1] + '|' + parts[0].charAt(0);
+    (bySig[sig] = bySig[sig] || []).push(di);
+  });
+  Object.keys(bySig).forEach(function(sig){
+    var g = bySig[sig];
+    for(var i = 0; i < g.length; i++) for(var j = i + 1; j < g.length; j++)
+      if(dispName(D.directory[g[i]]).toLowerCase() !== dispName(D.directory[g[j]]).toLowerCase()) addPair(g[i], g[j], 'similar name');
+  });
+  /* shared identifiers */
+  [['phone', function(e){ var p = String(gv(e, 'phone') || '').replace(/\D/g, ''); return p.length >= 7 ? p.slice(-10) : ''; }, 'same phone'],
+   ['email', function(e){ return String(gv(e, 'email') || '').split(',')[0].trim().toLowerCase(); }, 'same email'],
+   ['ig', function(e){ return effHandle(e).toLowerCase(); }, 'same Instagram'],
+   ['snap', function(e){ return (e.snap_handles || []).map(function(x){ return x.toLowerCase(); }); }, 'same Snapchat']]
+  .forEach(function(spec){
+    var map = {};
+    D.directory.forEach(function(e, di){
+      if(!liveEntry(e)) return;
+      var vals = spec[1](e); if(!Array.isArray(vals)) vals = [vals];
+      vals.forEach(function(val){ if(val) (map[val] = map[val] || []).push(di); });
+    });
+    Object.keys(map).forEach(function(val){ var g = map[val]; for(var i = 0; i < g.length; i++) for(var j = i + 1; j < g.length; j++) addPair(g[i], g[j], spec[2]); });
+  });
+  return pairs;
+}
+function sbIntegDup(){
+  var ok = sbStore('ncc_sbx_dupok') || {};
+  var pairs = sbDupPairs().filter(function(p){
+    return !ok[[pkey(D.directory[p.a]), pkey(D.directory[p.b])].sort().join('|')];
+  });
+  var h = '<div class="sb-card2"><div class="sb-card2-t">Candidate duplicate pairs (' + pairs.length + ')</div>' +
+    '<p class="sb-note">Same or similar names, or a shared phone / email / Instagram / Snapchat identifier. This is also the Merge studio\u2019s queue. \u201cNot duplicates\u201d is remembered on this device.</p>';
+  if(!pairs.length) h += '<p class="sb-note">No unresolved candidate pairs.</p>';
+  pairs.slice(0, 80).forEach(function(p, i){
+    var A = D.directory[p.a], B = D.directory[p.b];
+    h += '<div class="sb-pair"><div class="sb-pair-why">' + esc(p.why) + '</div>' +
+      '<button type="button" class="sb-prow" data-sb="openprof" data-di="' + p.a + '">' + avatar(A, 'sm') + '<span class="sb-pname">' + esc(dispName(A)) + '</span><span class="sb-pmeta">' + esc(pkey(A)) + '</span></button>' +
+      '<span class="sb-pair-x">×</span>' +
+      '<button type="button" class="sb-prow" data-sb="openprof" data-di="' + p.b + '">' + avatar(B, 'sm') + '<span class="sb-pname">' + esc(dispName(B)) + '</span><span class="sb-pmeta">' + esc(pkey(B)) + '</span></button>' +
+      '<span class="sb-pair-btns"><button type="button" class="btn primary sm" data-sb="pairmerge" data-a="' + p.a + '" data-b="' + p.b + '">Merge →</button>' +
+      '<button type="button" class="btn ghost sm" data-sb="pairnotdup" data-a="' + p.a + '" data-b="' + p.b + '">Not duplicates</button></span></div>';
+  });
+  return h + '</div>';
+}
+function sbIntegOrphan(){
+  var names = {};
+  D.directory.forEach(function(e){ names[String(e.name || '').toLowerCase()] = 1; });
+  var orphN = [], orphC = [], orphF = [];
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    (e.neighbors || []).forEach(function(n){ if(!names[String(n.u || '').toLowerCase()] && orphN.length < 60) orphN.push({ di:di, what:'@' + n.u }); });
+    splitTags(gv(e, 'close_add'), ', ').forEach(function(nm){ if(BYN[nm.toLowerCase()] == null && orphC.length < 60) orphC.push({ di:di, what:nm }); });
+    famLinks(e).forEach(function(l){ if(BYN[String(l[1] || '').toLowerCase()] == null && orphF.length < 60) orphF.push({ di:di, what:String(l[1]) }); });
+  });
+  function block(title, items, note){
+    return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + ' (' + items.length + (items.length >= 60 ? '+' : '') + ')</div><p class="sb-note">' + esc(note) + '</p>' +
+      (items.length ? '<div class="sb-plist">' + items.map(function(x){
+        return '<button type="button" class="sb-prow" data-sb="openprof" data-di="' + x.di + '"><span class="sb-pname">' + esc(dispName(D.directory[x.di])) + '</span><span class="sb-pmeta">→ ' + esc(x.what) + '</span></button>';
+      }).join('') + '</div>' : '<p class="sb-note">None.</p>') + '</div>';
+  }
+  var tk = sbTrashKeys(), overlap = [];
+  D.directory.forEach(function(e, di){ if(liveEntry(e) && tk[pkey(e)]) overlap.push(di); });
+  var malformed = [];
+  D.directory.forEach(function(e, di){ if(/[A-Z\s]/.test(e.name || '') && !/^ct:/.test(e.name)) malformed.push({ di:di, what:e.name }); });
+  var snapOrph = [];
+  if(SB.snap) Object.keys(SB.snap.people || {}).forEach(function(k){ if(PK2I[k.toLowerCase()] == null) snapOrph.push(k); });
+  var phNames = {};
+  D.directory.forEach(function(e){ phNames[dispName(e).toLowerCase()] = 1; });
+  var photoOrph = ((SB.photos && SB.photos.people) || []).filter(function(p){ return !phNames[String(p.name || '').toLowerCase()]; }).map(function(p){ return p.name; });
+  var shells = [];
+  D.directory.forEach(function(e, di){ if(liveEntry(e) && !sbFootCount(e) && !(e.neighbors || []).length && !(e.record && e.record.body)) shells.push(di); });
+  var grpMap = allGroups(), emptyGroups = Object.keys(grpMap).filter(function(g){ return !grpMap[g].length; });
+  var h = '<div class="sb-grid2">' +
+    block('Associate links pointing nowhere', orphN, 'Graph neighbors whose username has no directory entry (they left the graph or were renamed).') +
+    block('Close-add names that don\u2019t resolve', orphC, 'Names in \u201cclose associates\u201d that match no profile — typos and name changes land here.') +
+    block('Family links that don\u2019t resolve', orphF, 'Family entries whose target key matches no profile.') +
+    block('Malformed entry names', malformed.slice(0, 60), 'Directory names carrying capitals or spaces (contact entries are exempt).') +
+    '</div>';
+  h += '<div class="sb-card2"><div class="sb-card2-t">Cross-checks</div>' +
+    '<div class="sb-expl"><b>Live keys also in Trash</b><span>' + (overlap.length ? overlap.map(function(di){ return esc(pkey(D.directory[di])); }).join(', ') : 'none — the blocklist and the directory agree') + '</span></div>' +
+    '<div class="sb-expl"><b>Snapchat sidecar entries with no profile</b><span>' + (snapOrph.length ? snapOrph.map(esc).join(', ') : 'none') + '</span></div>' +
+    '<div class="sb-expl"><b>Photo entries with no matching profile</b><span>' + (photoOrph.length ? photoOrph.slice(0, 30).map(esc).join(', ') + (photoOrph.length > 30 ? ' …' : '') : 'none') + '</span></div>' +
+    '<div class="sb-expl"><b>Empty groups</b><span>' + (emptyGroups.length ? emptyGroups.map(esc).join(', ') : 'none') + '</span></div>' +
+    '<div class="sb-expl"><b>Shell profiles</b><span>' + shells.length + ' listed people with no footprint, no connections and no written record' + (shells.length ? ' — ' + shells.slice(0, 20).map(function(di){ return esc(dispName(D.directory[di])); }).join(', ') : '') + '</span></div></div>';
+  return h;
+}
+function sbIntegPhotos(){
+  var pp = ((SB.photos && SB.photos.people) || []).filter(function(p){ return p.photo_url; });
+  var h = '<div class="sb-card2"><div class="sb-card2-t">Photo link check (' + pp.length + ' filed URLs)</div>' +
+    '<p class="sb-note">Fetches every filed photo URL from this browser. \u201cNo response\u201d means the host didn\u2019t answer OR it blocks cross-origin reads (CORS) — either way the dossier can\u2019t display it, but only a confirmed 404 is certainly dead, so treat the list as suspects, not verdicts.</p>';
+  if(SB.integ.deadBusy) h += '<p class="sb-note">Checking… ' + (SB.integ.deadDone || 0) + ' / ' + pp.length + '</p>';
+  else if(SB.integ.dead){
+    var bad = SB.integ.dead;
+    h += '<p class="sb-note">' + (pp.length - bad.length) + ' responded · ' + bad.length + ' gave no response:</p><div class="sb-plist">' +
+      bad.slice(0, 80).map(function(x){ return '<span class="sb-prow sb-static"><span class="sb-pname">' + esc(x.name) + '</span><span class="sb-pmeta">' + esc(x.host) + '</span></span>'; }).join('') + '</div>';
+  }
+  else h += '<button type="button" class="btn primary" data-sb="deadcheck">Run the check</button>';
+  return h + '</div>';
+}
+function sbRunDead(){
+  var pp = ((SB.photos && SB.photos.people) || []).filter(function(p){ return p.photo_url; });
+  var bad = [], i = 0; SB.integ.deadDone = 0;
+  function next(){
+    if(S.route.name !== 'sandbox' || SB.tool !== 'integ'){ SB.integ.deadBusy = false; SB.integ._deadRun = false; return; }
+    if(i >= pp.length){ SB.integ.dead = bad; SB.integ.deadBusy = false; SB.integ._deadRun = false; render(); return; }
+    var p = pp[i++];
+    var host = ''; try{ host = new URL(p.photo_url).hostname; }catch(x){}
+    fetch(p.photo_url, { method:'GET', mode:'no-cors' }).then(function(){ SB.integ.deadDone++; }).catch(function(){ bad.push({ name:p.name, host:host }); SB.integ.deadDone++; })
+      .then(function(){ if(i % 12 === 0) render(); next(); });
+  }
+  var workers = []; for(var w = 0; w < 6; w++) workers.push(next());
+}
+
+
+/* ---------------- 5. connection lab ---------------- */
+function sbLab(){
+  var h = sbHead('Connection lab', 'Paths, mutuals and the indirect connections — the shared employers, schools and groups that quietly tie the circle together.');
+  h += '<div class="sb-card2"><div class="sb-card2-t">Path finder & mutual connections</div>' +
+    '<div class="sb-pickrow">' + sbPersonPicker('labA', 'Person A', SB.lab.aName || '') + sbPersonPicker('labB', 'Person B', SB.lab.bName || '') +
+    '<button type="button" class="btn primary" data-sb="labgo">Find path + mutuals</button></div>' +
+    '<div id="labout">' + sbLabOut() + '</div></div>';
+  /* indirect connections */
+  var shared = {};
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    orgsOf(e).forEach(function(o){ (shared['org · ' + o] = shared['org · ' + o] || []).push(di); });
+    personGroups(e).forEach(function(g){ (shared['group · ' + g] = shared['group · ' + g] || []).push(di); });
+  });
+  var keys = Object.keys(shared).filter(function(k){ return shared[k].length >= 2; }).sort(function(a, b){ return shared[b].length - shared[a].length; });
+  h += '<div class="sb-card2"><div class="sb-card2-t">Indirect connections — shared organizations & groups (' + keys.length + ')</div>' +
+    '<p class="sb-note">Ranked by how many profiles each one links. This is the SVPC pattern: one page or employer quietly connecting people who may never have met on paper.</p>';
+  keys.slice(0, 40).forEach(function(k, i){
+    var members = shared[k];
+    h += '<details class="sb-det"><summary>' + esc(k) + ' — links ' + members.length + ' profiles</summary>' + sbPersonRows(members, 60) + '</details>';
+  });
+  h += '</div>';
+  /* bridges */
+  h += '<div class="sb-card2"><div class="sb-card2-t">Bridge ranking</div>' +
+    '<p class="sb-note">Betweenness centrality over the Known-associates graph as baked (associates + family + close-add). An approximation — computed in your browser on the visible graph, so private or unfiled ties don\u2019t count.</p>';
+  if(SB.lab.bridges === 'pending') h += '<p class="sb-note">Computing…</p>';
+  else if(Array.isArray(SB.lab.bridges)){
+    h += '<div class="sb-plist">' + SB.lab.bridges.map(function(x, i){
+      return '<button type="button" class="sb-prow" data-sb="openprof" data-di="' + x.di + '"><span class="sb-rank">' + (i + 1) + '</span>' + avatar(D.directory[x.di], 'sm') + '<span class="sb-pname">' + esc(dispName(D.directory[x.di])) + '</span><span class="sb-pmeta">score ' + x.score.toFixed(1) + ' · ' + x.deg + ' connections</span></button>';
+    }).join('') + '</div>';
+  }
+  else h += '<button type="button" class="btn ghost" data-sb="bridges">Compute bridge ranking</button>';
+  return h + '</div>';
+}
+function sbLabOut(){
+  var L = SB.lab;
+  if(L.a == null || L.b == null) return '<p class="sb-note">Pick two people to see the shortest path between them and who they both know.</p>';
+  var A = D.directory[L.a], B = D.directory[L.b];
+  var h = '';
+  if(L.path === null) h += '<p class="sb-note">No path through filed connections between ' + esc(dispName(A)) + ' and ' + esc(dispName(B)) + '.</p>';
+  else if(L.path){
+    h += '<div class="sb-path">' + L.path.map(function(step, i){
+      return (i ? '<span class="sb-path-rel">— ' + esc(step.rel) + ' →</span>' : '') +
+        '<button type="button" class="sb-path-p" data-sb="openprof" data-di="' + step.di + '">' + esc(dispName(D.directory[step.di])) + '</button>';
+    }).join('') + '</div><p class="sb-note">' + (L.path.length - 1) + ' hop' + (L.path.length === 2 ? '' : 's') + ' apart.</p>';
+  }
+  if(L.mutual && L.mutual.length) h += '<div class="sb-card2-t" style="margin-top:12px">Mutual connections (' + L.mutual.length + ')</div>' + sbPersonRows(L.mutual, 60);
+  else if(L.mutual) h += '<p class="sb-note">No mutual connections on file.</p>';
+  return h;
+}
+function sbLabRun(){
+  var adj = sbAdj(), a = SB.lab.a, b = SB.lab.b;
+  if(a == null || b == null){ toast('Pick both people first'); return; }
+  /* BFS */
+  var prev = {}, rel = {}, seen = {}, queue = [a]; seen[a] = 1; prev[a] = null;
+  while(queue.length){
+    var cur = queue.shift();
+    if(cur === b) break;
+    Object.keys(adj[cur] || {}).forEach(function(k){
+      var nb = +k;
+      if(!seen[nb]){ seen[nb] = 1; prev[nb] = cur; rel[nb] = adj[cur][k]; queue.push(nb); }
+    });
+  }
+  if(!seen[b]) SB.lab.path = null;
+  else {
+    var path = [], cur2 = b;
+    while(cur2 != null){ path.unshift({ di:cur2, rel: rel[cur2] || '' }); cur2 = prev[cur2]; }
+    SB.lab.path = path;
+  }
+  var aa = adj[a] || {}, bb = adj[b] || {};
+  SB.lab.mutual = Object.keys(aa).filter(function(k){ return bb[k] != null; }).map(Number)
+    .sort(function(x, y){ return dispName(D.directory[x]).localeCompare(dispName(D.directory[y])); });
+  render();
+}
+function sbComputeBridges(){
+  var adj = sbAdj();
+  var nodes = Object.keys(adj).map(Number);
+  var cb = {}; nodes.forEach(function(n){ cb[n] = 0; });
+  /* Brandes' algorithm on the unweighted undirected graph */
+  nodes.forEach(function(s){
+    var stack = [], pred = {}, sigma = {}, dist = {}, delta = {};
+    nodes.forEach(function(n){ sigma[n] = 0; dist[n] = -1; delta[n] = 0; pred[n] = []; });
+    sigma[s] = 1; dist[s] = 0;
+    var queue = [s];
+    while(queue.length){
+      var v = queue.shift(); stack.push(v);
+      Object.keys(adj[v] || {}).forEach(function(k){
+        var w = +k;
+        if(dist[w] < 0){ dist[w] = dist[v] + 1; queue.push(w); }
+        if(dist[w] === dist[v] + 1){ sigma[w] += sigma[v]; pred[w].push(v); }
+      });
+    }
+    while(stack.length){
+      var w2 = stack.pop();
+      pred[w2].forEach(function(v2){ delta[v2] += (sigma[v2] / sigma[w2]) * (1 + delta[w2]); });
+      if(w2 !== s) cb[w2] += delta[w2];
+    }
+  });
+  SB.lab.bridges = nodes.map(function(n){ return { di:n, score:cb[n] / 2, deg:Object.keys(adj[n]).length }; })
+    .sort(function(a, b){ return b.score - a.score; }).slice(0, 25);
+  if(S.route.name === 'sandbox' && SB.tool === 'lab') render();
+}
+
+/* ---------------- 9. playground shelf ---------------- */
+function sbPlay(){
+  var h = sbHead('Playground', 'Experiments computed from the live data. Nothing here writes.');
+  /* scatter data */
+  var pts = [];
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    var ky = sbYear(gv(e, 'years_known'));
+    if(e.snap_since && ky) pts.push({ di:di, x:e.snap_since, y:ky, n:dispName(e) });
+  });
+  h += '<div class="sb-card2"><div class="sb-card2-t">Online since vs Known since (' + pts.length + ' people have both)</div>' +
+    '<p class="sb-note">Each dot is a person: across = the year the Snapchat connection was made, up = the year JD has known them since. Dots below the diagonal are people known in person before the online connection existed. Click a dot to open the profile.</p>' +
+    sbScatter(pts) + '</div>';
+  /* histogram */
+  var hist = {}, unknown = 0;
+  D.directory.forEach(function(e){ if(!liveEntry(e)) return; var y = sbYear(gv(e, 'years_known')); if(y) hist[y] = (hist[y] || 0) + 1; else unknown++; });
+  var years = Object.keys(hist).map(Number).sort(function(a, b){ return a - b; });
+  var maxH = Math.max.apply(null, years.map(function(y){ return hist[y]; }).concat([1]));
+  h += '<div class="sb-card2"><div class="sb-card2-t">Known Since histogram (' + unknown + ' people have no year on file)</div><div class="sb-hist">' +
+    years.map(function(y){
+      return '<div class="sb-histcol" title="' + y + ': ' + hist[y] + '"><span class="sb-histn">' + hist[y] + '</span><span class="sb-histbar" style="height:' + Math.max(3, Math.round(90 * hist[y] / maxH)) + 'px"></span><span class="sb-histl">' + String(y).slice(2) + '</span></div>';
+    }).join('') + '</div></div>';
+  /* adds over time */
+  var adds = {};
+  D.directory.forEach(function(e){ if(liveEntry(e) && e.snap_since) adds[e.snap_since] = (adds[e.snap_since] || 0) + 1; });
+  var chMonths = {};
+  ((SB.changes && SB.changes.entries) || []).forEach(function(en){ if(en.filed) chMonths[en.filed.slice(0, 7)] = (chMonths[en.filed.slice(0, 7)] || 0) + 1; });
+  function series(title, obj, note){
+    var ks = Object.keys(obj).sort(), mx = Math.max.apply(null, ks.map(function(k){ return obj[k]; }).concat([1]));
+    return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + '</div><p class="sb-note">' + esc(note) + '</p>' + ks.map(function(k){
+      return '<div class="sb-distrow"><span class="sb-distl">' + esc(k) + '</span><span class="sb-distbar"><span style="width:' + Math.round(100 * obj[k] / mx) + '%"></span></span><span class="sb-distn">' + obj[k] + '</span></div>';
+    }).join('') + '</div>';
+  }
+  /* persona */
+  var traits = [['openness', 'Openness'], ['conscientiousness', 'Conscientiousness'], ['extraversion', 'Extraversion'], ['agreeableness', 'Agreeableness'], ['neuroticism', 'Neuroticism'], ['ego', 'Ego']];
+  var pRows = traits.map(function(t){
+    var sum = 0, n = 0;
+    D.directory.forEach(function(e){ if(!liveEntry(e)) return; var v = parseFloat(gv(e, t[0])); if(v >= 1 && v <= 5){ sum += v; n++; } });
+    return { l:t[1], avg:n ? sum / n : 0, n:n };
+  });
+  h += '<div class="sb-grid2">' + series('Snapchat connections by year', adds, 'When the online connections were made (people currently in the directory).') +
+    series('Facts filed by month', chMonths, 'From the change log — the dossier\u2019s own paper trail.') + '</div>';
+  h += '<div class="sb-card2"><div class="sb-card2-t">Persona distribution (averages across rated profiles)</div>' + pRows.map(function(r){
+    return '<div class="sb-distrow"><span class="sb-distl">' + esc(r.l) + '</span><span class="sb-distbar"><span style="width:' + Math.round(100 * r.avg / 5) + '%"></span></span><span class="sb-distn">' + (r.n ? r.avg.toFixed(2) + ' / 5 · ' + r.n + ' rated' : 'nobody rated yet') + '</span></div>';
+  }).join('') + '</div>';
+  return h;
+}
+function sbScatter(pts){
+  if(!pts.length) return '<p class="sb-note">No one has both dates yet.</p>';
+  var xs = pts.map(function(p){ return p.x; }), ys = pts.map(function(p){ return p.y; });
+  var x0 = Math.min.apply(null, xs) - 1, x1 = Math.max.apply(null, xs) + 1;
+  var y0 = Math.min.apply(null, ys) - 1, y1 = Math.max.apply(null, ys) + 1;
+  var W = 720, H = 380, PL = 44, PB = 26, PT = 10, PR = 10;
+  function X(x){ return PL + (x - x0) / (x1 - x0) * (W - PL - PR); }
+  function Y(y){ return PT + (y1 - y) / (y1 - y0) * (H - PT - PB); }
+  var s = '<svg class="sb-scatter" viewBox="0 0 ' + W + ' ' + H + '" role="img">';
+  s += '<line x1="' + X(Math.max(x0, y0)) + '" y1="' + Y(Math.max(x0, y0)) + '" x2="' + X(Math.min(x1, y1)) + '" y2="' + Y(Math.min(x1, y1)) + '" class="sb-diag"/>';
+  for(var gx = Math.ceil(x0); gx <= x1; gx += 2) s += '<text x="' + X(gx) + '" y="' + (H - 6) + '" class="sb-ax">' + gx + '</text>';
+  for(var gy = Math.ceil(y0); gy <= y1; gy += 2) s += '<text x="6" y="' + (Y(gy) + 3) + '" class="sb-ax">' + gy + '</text>';
+  pts.forEach(function(p){
+    s += '<circle cx="' + X(p.x).toFixed(1) + '" cy="' + Y(p.y).toFixed(1) + '" r="4" class="sb-dot" data-sb="openprof" data-di="' + p.di + '"><title>' + esc(p.n) + ' — known since ' + p.y + ', online since ' + p.x + '</title></circle>';
+  });
+  return s + '</svg>';
+}
+
+
+/* ---------------- 6+7. merge studio ---------------- */
+var SB_MFIELDS = ['first_name', 'last_name', 'display_name', 'relationship', 'relationship_type', 'context', 'category',
+  'tier', 'momentum', 'rank', 'years_known', 'phone', 'email', 'location_on_file', 'closeness', 'score_pin',
+  'specialty', 'interests', 'churches', 'companies', 'universities', 'groups', 'close_add', 'close_hide',
+  'highlights', 'achievements', 'also_known_as', 'chips', 'degrees', 'waivers', 'mentions', 'shared_interests', 'sources',
+  'synopsis', 'public_footprint', 'lima_charlie_notes', 'events', 'files', 'family',
+  'openness', 'conscientiousness', 'extraversion', 'agreeableness', 'neuroticism', 'ego',
+  'audit', 'review_flag', 'audit_dismissed', 'photo_review', 'photo_bad_reason', 'primary_photo', 'photo_order', 'photo_hidden', 'conn_phases'];
+var SB_M_UNION = { specialty:1, interests:1, churches:1, companies:1, universities:1, groups:1, close_add:1, close_hide:1, highlights:1, achievements:1, also_known_as:1, chips:1, degrees:1, waivers:1 };
+var SB_M_APPEND = { synopsis:1, public_footprint:1 };
+var SB_M_JSON = { events:1, files:1, family:1 };
+function sbMClass(f){ return SB_M_UNION[f] ? 'union' : SB_M_APPEND[f] ? 'append' : SB_M_JSON[f] ? 'json' : 'single'; }
+function sbMVal(e, f){
+  if(SB_M_JSON[f]){
+    try{ var arr = JSON.parse(raw(e, f) || '[]'); return Array.isArray(arr) ? arr.length + ' item' + (arr.length === 1 ? '' : 's') : String(raw(e, f) || '').slice(0, 60); }
+    catch(x){ return String(raw(e, f) || '').slice(0, 60); }
+  }
+  var v = String(gv(e, f) || '');
+  return v.length > 90 ? v.slice(0, 90) + '…' : v;
+}
+function sbMerge(){
+  var h = sbHead('Merge studio', 'Combine, never overwrite. Lists union, narratives append, single values keep the survivor\u2019s with blanks filled — unless you pick otherwise, field by field. Connections re-point both directions; Known Since keeps the earlier year; the Snapchat badge keeps the earlier year; the loser\u2019s full record is archived in the action log.');
+  /* queue */
+  var ok = sbStore('ncc_sbx_dupok') || {};
+  var pairs = sbDupPairs().filter(function(p){ return !ok[[pkey(D.directory[p.a]), pkey(D.directory[p.b])].sort().join('|')]; });
+  h += '<div class="sb-card2"><div class="sb-card2-t">Merge queue — from the duplicate hunter (' + pairs.length + ')</div>';
+  if(!pairs.length) h += '<p class="sb-note">No unresolved candidate pairs. You can still merge any two profiles below.</p>';
+  pairs.slice(0, 30).forEach(function(p){
+    h += '<div class="sb-pair"><div class="sb-pair-why">' + esc(p.why) + '</div><span class="sb-pname">' + esc(dispName(D.directory[p.a])) + '</span><span class="sb-pair-x">×</span><span class="sb-pname">' + esc(dispName(D.directory[p.b])) + '</span>' +
+      '<span class="sb-pair-btns"><button type="button" class="btn primary sm" data-sb="pairmerge" data-a="' + p.a + '" data-b="' + p.b + '">Open in studio</button></span></div>';
+  });
+  h += '</div>';
+  /* studio */
+  var M = SB.mg;
+  h += '<div class="sb-card2"><div class="sb-card2-t">Studio</div>' +
+    '<div class="sb-pickrow">' + sbPersonPicker('mgA', 'Profile A', M.aName || '') + sbPersonPicker('mgB', 'Profile B', M.bName || '') + '</div>';
+  if(M.a != null && M.b != null){
+    var A = D.directory[M.a], B = D.directory[M.b];
+    h += '<div class="sb-survrow"><span>Survivor (the profile that stays):</span>' +
+      '<button type="button" class="btn sm ' + (M.surv === 'a' ? 'primary' : 'ghost') + '" data-sb="mgsurv" data-v="a">' + esc(dispName(A)) + '</button>' +
+      '<button type="button" class="btn sm ' + (M.surv === 'b' ? 'primary' : 'ghost') + '" data-sb="mgsurv" data-v="b">' + esc(dispName(B)) + '</button></div>';
+    h += sbMgDiff();
+  } else h += '<p class="sb-note">Pick both profiles to see the field-by-field diff.</p>';
+  return h + '</div>';
+}
+function sbMgPair(){
+  var M = SB.mg;
+  var survDi = M.surv === 'a' ? M.a : M.b, loserDi = M.surv === 'a' ? M.b : M.a;
+  return { survDi:survDi, loserDi:loserDi, S:D.directory[survDi], L:D.directory[loserDi] };
+}
+function sbMgDiff(){
+  var pr = sbMgPair(), S = pr.S, L = pr.L, M = SB.mg;
+  var rows = '';
+  SB_MFIELDS.forEach(function(f){
+    var sv = String(raw(S, f) || ''), lv = String(raw(L, f) || '');
+    var sgv = String(gv(S, f) || ''), lgv = String(gv(L, f) || '');
+    if(!sv.trim() && !lv.trim() && !sgv.trim() && !lgv.trim()) return;
+    var cls = sbMClass(f);
+    var pick = M.picks[f] || (f === 'years_known' ? 'earlier' : (cls === 'single' ? 'surv' : 'combined'));
+    var opts;
+    if(f === 'years_known') opts = [['earlier', 'Earlier year'], ['surv', 'Survivor'], ['other', 'Other']];
+    else if(cls === 'single') opts = [['surv', 'Survivor'], ['other', 'Other']];
+    else opts = [['combined', 'Combined'], ['surv', 'Survivor only'], ['other', 'Other only']];
+    rows += '<tr><td class="sb-mf">' + esc(f.replace(/_/g, ' ')) + '<span class="sb-mcls">' + cls + '</span></td>' +
+      '<td>' + esc(sbMVal(S, f)) + '</td><td>' + esc(sbMVal(L, f)) + '</td>' +
+      '<td><div class="seg sb-seg">' + opts.map(function(o){
+        return '<button type="button" class="' + (pick === o[0] ? 'on' : '') + '" data-sb="mgpick" data-f="' + f + '" data-v="' + o[0] + '">' + o[1] + '</button>';
+      }).join('') + '</div></td></tr>';
+  });
+  var extras = [];
+  if((S.snap_handles && S.snap_handles.length) || (L.snap_handles && L.snap_handles.length))
+    extras.push('Snapchat: handles combine, earlier online-since year wins (' + esc((L.snap_handles || []).join(', ')) + ' / ' + esc((S.snap_handles || []).join(', ')) + ') — applied by the queued sidecar op.');
+  var ph = sbPhotoByName();
+  if(ph[dispName(S).toLowerCase()] || ph[dispName(L).toLowerCase()]) extras.push('Photos: both people have photo entries — a combine op is queued for the ops script (best status becomes the key photo).');
+  if(famLinks(L).length || famLinks(S).length) extras.push('Family links and close-associates pointing at the loser are re-pointed to the survivor (both directions).');
+  return '<table class="sb-table sb-mtable"><thead><tr><th>Field</th><th>Survivor — ' + esc(dispName(S)) + '</th><th>Other — ' + esc(dispName(L)) + '</th><th>Result</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+    (extras.length ? '<div class="sb-extras">' + extras.map(function(x){ return '<p>' + x + '</p>'; }).join('') + '</div>' : '') +
+    '<div class="sb-confrow"><button type="button" class="btn primary" data-sb="mgplan">Review the merge summary</button></div>';
+}
+function sbMgBuildPlan(){
+  var pr = sbMgPair(), S = pr.S, L = pr.L, M = SB.mg;
+  var wS = {}, wL = {};
+  SB_MFIELDS.forEach(function(f){ wS[f] = String(raw(S, f) || ''); wL[f] = String(raw(L, f) || ''); });
+  SB_MFIELDS.forEach(function(f){
+    var cls = sbMClass(f), pick = M.picks[f] || (f === 'years_known' ? 'earlier' : (cls === 'single' ? 'surv' : 'combined'));
+    if(wS[f] === wL[f] && f !== 'years_known') return;
+    if(cls === 'union'){
+      if(pick === 'surv') wL[f] = '';
+      else if(pick === 'other') wS[f] = '';
+    } else if(cls === 'append'){
+      if(pick === 'surv') wL[f] = '';
+      else if(pick === 'other'){ wS[f] = wL[f]; wL[f] = ''; }
+    } else if(cls === 'json'){
+      if(pick === 'surv') wL[f] = '';
+      else if(pick === 'other') wS[f] = '';
+    } else if(f === 'years_known'){
+      var sy = sbYear(wS[f]), ly = sbYear(wL[f]);
+      if(pick === 'other' || (pick === 'earlier' && ly && (!sy || ly < sy))) wS[f] = wL[f];
+    } else if(pick === 'other'){
+      wS[f] = String(gv(L, f) || wL[f]);
+    }
+  });
+  /* the two must not end up listing each other as a close associate */
+  function stripName(val, name){
+    return splitTags(val, ', ').filter(function(x){ return x.toLowerCase() !== name.toLowerCase(); }).join(', ');
+  }
+  wS.close_add = stripName(wS.close_add || '', dispName(L)); wS.close_hide = stripName(wS.close_hide || '', dispName(L));
+  wL.close_add = stripName(wL.close_add || '', dispName(S)); wL.close_hide = stripName(wL.close_hide || '', dispName(S));
+  var preWrites = [];
+  SB_MFIELDS.forEach(function(f){
+    if(wS[f] !== String(raw(S, f) || '')) preWrites.push({ di:pr.survDi, who:'survivor', field:f, from:String(raw(S, f) || ''), to:wS[f] });
+    if(wL[f] !== String(raw(L, f) || '')) preWrites.push({ di:pr.loserDi, who:'loser', field:f, from:String(raw(L, f) || ''), to:wL[f] });
+  });
+  /* re-point third parties */
+  var loserNames = {};
+  [String(L.name || '').toLowerCase(), pkey(L).toLowerCase(), dispName(L).toLowerCase(), String(L.name || '').toLowerCase().replace(/^(ig|ct|sf|fdb):/, '')].forEach(function(x){ if(x) loserNames[x] = 1; });
+  var survNameKey = String(S.name || '').toLowerCase();
+  var repoints = [];
+  D.directory.forEach(function(e, di){
+    if(di === pr.survDi || di === pr.loserDi || !liveEntry(e)) return;
+    var patch = {}, notes = [];
+    var fam = famLinks(e), famHit = false;
+    var newFam = fam.map(function(l){
+      if(loserNames[String(l[1] || '').toLowerCase()]){ famHit = true; return [l[0], survNameKey]; }
+      return l;
+    });
+    if(famHit){
+      var seenF = {}, ded = [];
+      newFam.forEach(function(l){ var k = l[0] + '|' + l[1]; if(!seenF[k]){ seenF[k] = 1; ded.push(l); } });
+      patch.family = JSON.stringify(ded); notes.push('family link');
+    }
+    ['close_add', 'close_hide'].forEach(function(cf){
+      var names = splitTags(gv(e, cf), ', ');
+      if(names.some(function(n){ return n.toLowerCase() === dispName(L).toLowerCase(); })){
+        var rep = names.map(function(n){ return n.toLowerCase() === dispName(L).toLowerCase() ? dispName(S) : n; });
+        var seenC = {}, dedC = [];
+        rep.forEach(function(n){ if(!seenC[n.toLowerCase()]){ seenC[n.toLowerCase()] = 1; dedC.push(n); } });
+        patch[cf] = dedC.join(', '); notes.push(cf.replace('_', ' '));
+      }
+    });
+    if(Object.keys(patch).length) repoints.push({ di:di, name:dispName(e), patch:patch, notes:notes });
+  });
+  /* sidecar ops */
+  var ops = [], sk = pkey(S), lk = pkey(L);
+  var sHas = SB.snap && SB.snap.people && SB.snap.people[sk], lHas = SB.snap && SB.snap.people && SB.snap.people[lk];
+  if(sHas && lHas) ops.push({ op:'snapmerge', survivor_key:sk, loser_key:lk });
+  else if(lHas) ops.push({ op:'snaprename', old_key:lk, new_key:sk });
+  var ph = sbPhotoByName(), sPh = ph[dispName(S).toLowerCase()], lPh = ph[dispName(L).toLowerCase()];
+  if(sPh && lPh) ops.push({ op:'photomerge', survivor_name:dispName(S), loser_name:dispName(L) });
+  else if(lPh) ops.push({ op:'photorename', old_name:dispName(L), new_name:dispName(S) });
+  return { survDi:pr.survDi, loserDi:pr.loserDi, preWrites:preWrites, repoints:repoints, ops:ops,
+           mergedInto: mergeTarget(pr.survDi),
+           archive:{ loser:{ key:lk, name:dispName(L), entry_name:L.name, profile:Object.assign({}, L.profile || {}) },
+                     survivor:{ key:sk, name:dispName(S) } } };
+}
+function sbMgSummaryHtml(plan){
+  var S = D.directory[plan.survDi], L = D.directory[plan.loserDi];
+  var h = '<p><b>' + esc(dispName(L)) + '</b> merges into <b>' + esc(dispName(S)) + '</b>. The loser\u2019s profile is archived in full in the action log, its row is marked merged (the bake folds it into the survivor on the next sync), and Settings keeps an unmerge path.</p>';
+  if(plan.preWrites.length){
+    h += '<h4>Field adjustments before the fold</h4><ul class="sb-ul">' + plan.preWrites.map(function(pw){
+      return '<li>' + esc(pw.who) + ' · ' + esc(pw.field.replace(/_/g, ' ')) + ': ' + esc(String(pw.from).slice(0, 60) || '(blank)') + ' → ' + esc(String(pw.to).slice(0, 60) || '(cleared)') + '</li>';
+    }).join('') + '</ul>';
+  } else h += '<p>No field adjustments — the standard combine produces exactly the picks you made.</p>';
+  if(plan.repoints.length) h += '<h4>Connections re-pointed (' + plan.repoints.length + ' people)</h4><ul class="sb-ul">' + plan.repoints.map(function(r){ return '<li>' + esc(r.name) + ' — ' + esc(r.notes.join(', ')) + '</li>'; }).join('') + '</ul>';
+  if(plan.ops.length) h += '<h4>Queued for sandbox_ops.py</h4><ul class="sb-ul">' + plan.ops.map(function(o){ return '<li>' + esc(o.op) + ' — ' + esc(o.survivor_key || o.old_key || o.survivor_name || '') + '</li>'; }).join('') + '</ul><p class="sb-note">Sidecar files (snapchat.json, photos.json) are repo files the browser cannot write; export the ops from the Action log and run the script, or leave them — the next ops run picks them up.</p>';
+  h += '<p class="sb-note">Everything else combines at bake time: lists union, synopsis and footprint append, blanks fill from the loser.</p>';
+  return h;
+}
+function sbMgExecute(plan){
+  var S = D.directory[plan.survDi], L = D.directory[plan.loserDi];
+  txn('Sandbox merge', function(){
+    plan.preWrites.forEach(function(pw){ var p = {}; p[pw.field] = pw.to; queuePatch(pw.di, p); });
+    plan.repoints.forEach(function(r){ queuePatch(r.di, r.patch); });
+    queuePatch(plan.loserDi, { merged_into: plan.mergedInto });
+  });
+  var entry = sbLogAdd({ type:'merge', title:'Merged ' + dispName(L) + ' into ' + dispName(S),
+    detail: plan.preWrites.length + ' field adjustment(s), ' + plan.repoints.length + ' connection re-point(s)',
+    archive: plan.archive, queuedOps: plan.ops,
+    undo:{ kind:'unmerge', loserKey: plan.archive.loser.key, survKey: plan.archive.survivor.key } });
+  toast('Merged — ' + dispName(L) + ' now folds into ' + dispName(S));
+  closeSheet();
+  SB.mg = { a:null, b:null, surv:'a', picks:{}, plan:null };
+  sbOpenProfile(plan.survDi);
+  return entry;
+}
+
+
+/* ---------------- 7. danger area ---------------- */
+SB.pick = {};
+function sbSelDis(){
+  return Object.keys(SB.sel).map(function(k){ return SB.sel[k]; }).filter(function(di){ return D.directory[di] && liveEntry(D.directory[di]); });
+}
+function sbDanger(){
+  var tab = SB.dg.tab;
+  var h = sbHead('Danger area', 'Every operation here asks first, shows exactly who it touches, and writes an action-log entry. Deletes ride the app\u2019s own path (a deleted flag the 10-minute sync sweeps into Trash); restores and purges that need the Trash tab or a repo file are queued for scripts/sandbox_ops.py.');
+  h += '<div class="sb-toolbar">' + [['delete', 'Delete'], ['restore', 'Restore & purge'], ['bulk', 'Bulk edit'], ['rename', 'Rename'], ['rekey', 'Re-key'], ['create', 'New profile'], ['rebuild', 'Rebuild']].map(function(t){
+    return '<button type="button" class="btn sm ' + (tab === t[0] ? 'primary' : 'ghost') + '" data-sb="dgtab" data-k="' + t[0] + '">' + t[1] + '</button>';
+  }).join('') + '</div>';
+  if(tab === 'delete') h += sbDgDelete();
+  else if(tab === 'restore') h += sbDgRestore();
+  else if(tab === 'bulk') h += sbDgBulk();
+  else if(tab === 'rename') h += sbDgRename();
+  else if(tab === 'rekey') h += sbDgRekey();
+  else if(tab === 'create') h += sbDgCreate();
+  else if(tab === 'rebuild') h += sbDgRebuild();
+  return h;
+}
+function sbDgDelete(){
+  var dis = sbSelDis();
+  var h = '<div class="sb-card2"><div class="sb-card2-t">Delete to Trash</div>';
+  if(dis.length){
+    h += '<p class="sb-note">' + dis.length + ' people selected in the Data grid:</p>' + sbPersonRows(dis, 200) +
+      '<div class="sb-confrow"><button type="button" class="btn danger2" data-sb="delreview">Review delete…</button></div>';
+  } else {
+    h += sbPersonPicker('dgOne', 'Or pick one person', (SB.pick.dgOne || {}).name || '');
+    if(SB.dg.one != null){
+      h += sbPersonRows([SB.dg.one], 1) + '<div class="sb-confrow"><button type="button" class="btn danger2" data-sb="delreview1">Review delete…</button></div>';
+    } else h += '<p class="sb-note">Bulk deletes start in the Data grid (tick the boxes, then \u201cSend to Danger area\u201d).</p>';
+  }
+  return h + '</div>';
+}
+function sbDoDelete(dis){
+  var archives = dis.map(function(di){
+    var e = D.directory[di];
+    return { key:pkey(e), name:dispName(e), entry_name:e.name, profile:Object.assign({}, e.profile || {}) };
+  });
+  txn('Sandbox delete', function(){ dis.forEach(function(di){ queuePatch(di, { deleted:'1' }); }); });
+  sbLogAdd({ type:'delete', title:'Deleted ' + dis.length + ' profile' + (dis.length === 1 ? '' : 's') + ' to Trash',
+    detail: archives.map(function(a){ return a.name; }).join(', '), archives:archives,
+    undo:{ kind:'undelete', keys:archives.map(function(a){ return a.key; }) } });
+  SB.sel = {};
+  toast(dis.length + ' deleted — the sync sweeps them into Trash within ~10 minutes');
+  render();
+}
+function sbDgRestore(){
+  var h = '<div class="sb-card2"><div class="sb-card2-t">Restore from Sandbox archives</div>' +
+    '<p class="sb-note">Deletes and merges done here carry the full profile in the action log, so they can be brought back. If the row is still in Profiles, restore is instant; if the sync already swept it to Trash, restore re-creates the row and queues the Trash removal.</p>';
+  var arch = [];
+  sbLogGet().forEach(function(en){
+    (en.archives || []).forEach(function(a){ arch.push({ entry:en, a:a }); });
+    if(en.archive && en.archive.loser) arch.push({ entry:en, a:en.archive.loser });
+  });
+  if(!arch.length) h += '<p class="sb-note">No archived profiles yet.</p>';
+  arch.slice(0, 40).forEach(function(x){
+    var di = PK2I[String(x.a.key || '').toLowerCase()];
+    var state = di == null ? 'row swept to Trash (or never landed)' : (String(raw(D.directory[di], 'merged_into') || '').trim() ? 'merged into ' + raw(D.directory[di], 'merged_into') : (String(raw(D.directory[di], 'deleted') || '') === '1' ? 'flagged deleted, still in Profiles' : 'currently live'));
+    h += '<div class="sb-pair"><span class="sb-pname">' + esc(x.a.name) + '</span><span class="sb-pmeta">' + esc(x.a.key) + ' · ' + esc(state) + '</span>' +
+      '<span class="sb-pair-btns"><button type="button" class="btn primary sm" data-sb="restorearch" data-key="' + esc(x.a.key) + '">Restore</button></span></div>';
+  });
+  h += '</div>';
+  var tk = sbTrashKeys(), keys = Object.keys(tk).sort();
+  var q = (SB.dg.trashQ || '').toLowerCase();
+  var shown = keys.filter(function(k){ return !q || k.indexOf(q) >= 0; });
+  h += '<div class="sb-card2"><div class="sb-card2-t">Trash — all ' + keys.length + ' keys</div>' +
+    '<p class="sb-note">Pre-existing Trash entries carry no profile data in the app, so their restore runs through the ops script (it reads the Trash row itself). Purge is permanent: it removes the key from Trash AND from the build blocklist.</p>' +
+    '<div class="sb-toolbar"><input type="text" data-sbi="trashq" placeholder="Filter keys…" value="' + esc(SB.dg.trashQ || '') + '"></div>' +
+    shown.slice(0, 100).map(function(k){
+      return '<div class="sb-pair"><span class="sb-pname sb-mono">' + esc(k) + '</span><span class="sb-pair-btns">' +
+        '<button type="button" class="btn ghost sm" data-sb="trashrestore" data-key="' + esc(k) + '">Queue restore</button>' +
+        '<button type="button" class="btn danger2 sm" data-sb="trashpurge" data-key="' + esc(k) + '">Purge…</button></span></div>';
+    }).join('') + (shown.length > 100 ? '<p class="sb-note">…and ' + (shown.length - 100) + ' more — filter to narrow.</p>' : '') + '</div>';
+  return h;
+}
+function sbRestoreArchived(key){
+  var found = null;
+  sbLogGet().forEach(function(en){
+    (en.archives || []).concat(en.archive && en.archive.loser ? [en.archive.loser] : []).forEach(function(a){ if(a.key === key) found = a; });
+  });
+  if(!found){ toast('Archive not found for ' + key); return; }
+  var di = PK2I[key.toLowerCase()];
+  if(di != null){
+    var e = D.directory[di], patch = {};
+    if(String(raw(e, 'merged_into') || '').trim()) patch.merged_into = '';
+    if(String(raw(e, 'deleted') || '') === '1') patch.deleted = '';
+    if(!Object.keys(patch).length){ toast(found.name + ' is already live'); return; }
+    txn('Sandbox restore', function(){ queuePatch(di, patch); });
+    sbLogAdd({ type:'restore', title:'Restored ' + found.name, detail:'Cleared ' + Object.keys(patch).join(' + ') + ' on ' + key });
+    toast('Restored ' + found.name);
+    render();
+    return;
+  }
+  var prof = {};
+  Object.keys(found.profile || {}).forEach(function(k){
+    if(['key', 'merged_into', 'deleted', 'updated_at'].indexOf(k) < 0) prof[k] = found.profile[k];
+  });
+  prof.merged_into = ''; prof.deleted = '';
+  var ops = [];
+  if(sbTrashKeys()[key]) ops.push({ op:'trashremove', key:key });
+  sbPostBatch([{ id:key, patch:prof }]).then(function(ok){
+    sbLogAdd({ type:'restore', title:'Re-created ' + found.name + ' in Profiles', detail:key + (ops.length ? ' · Trash removal queued' : ''), queuedOps:ops });
+    toast(ok ? 'Restore sent — ' + found.name + ' returns on the next bake' + (ops.length ? ' (after the queued Trash removal runs)' : '') : 'Restore POST failed');
+    render();
+  });
+}
+function sbDgBulk(){
+  var dis = sbSelDis();
+  var h = '<div class="sb-card2"><div class="sb-card2-t">Bulk edit</div>';
+  if(!dis.length) return h + '<p class="sb-note">No selection. Tick people in the Data grid first — bulk edit applies one change to everyone ticked.</p></div>';
+  var B = SB.dg;
+  h += '<p class="sb-note">' + dis.length + ' people selected.</p><div class="sb-formrow">' +
+    '<select data-sbi="bulkfield">' + [['tier', 'Set tier'], ['addgroup', 'Add group'], ['delgroup', 'Remove group'], ['addorg', 'Add organization'], ['delorg', 'Remove organization']].map(function(o){ return '<option value="' + o[0] + '"' + (B.bulkField === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
+  if(B.bulkField === 'tier') h += '<select data-sbi="bulkval">' + ['vetted', 'associate', 'open', ''].map(function(t){ return '<option value="' + t + '"' + (B.bulkVal === t ? ' selected' : '') + '>' + (t || '(blank)') + '</option>'; }).join('') + '</select>';
+  else if(B.bulkField === 'addorg' || B.bulkField === 'delorg') h += '<select data-sbi="bulkcat">' + ORG_CATS.map(function(c){ return '<option value="' + c.k + '"' + (B.bulkCat === c.k ? ' selected' : '') + '>' + esc(c.label || c.k) + '</option>'; }).join('') + '</select><input type="text" data-sbi="bulkname" placeholder="Organization name" value="' + esc(B.bulkName) + '">';
+  else h += '<input type="text" data-sbi="bulkname" placeholder="Group name" value="' + esc(B.bulkName) + '">';
+  h += '<button type="button" class="btn ghost" data-sb="bulkdry">Dry run</button></div>';
+  if(B.dry){
+    h += '<div class="sb-dry"><div class="sb-card2-t">Dry run — ' + B.dry.length + ' people touched</div>' +
+      B.dry.slice(0, 120).map(function(d){ return '<div class="sb-expl"><b>' + esc(d.name) + '</b><span>' + esc(d.field) + ': ' + esc(d.from || '(blank)') + ' → ' + esc(d.to || '(blank)') + '</span></div>'; }).join('') +
+      '<div class="sb-confrow"><button type="button" class="btn primary" data-sb="bulkexec">Apply to all ' + B.dry.length + '</button></div></div>';
+  }
+  return h + '</div>';
+}
+function sbBulkCompute(){
+  var dis = sbSelDis(), B = SB.dg, out = [];
+  dis.forEach(function(di){
+    var e = D.directory[di], patch = null, field = '', from = '', to = '';
+    if(B.bulkField === 'tier'){ field = 'tier'; from = String(raw(e, 'tier') || ''); to = B.bulkVal; patch = { tier:to }; }
+    else if(B.bulkField === 'addgroup' || B.bulkField === 'delgroup'){
+      field = 'groups'; var cur = personGroups(e);
+      var has = cur.some(function(g){ return g.toLowerCase() === B.bulkName.toLowerCase(); });
+      var nxt = B.bulkField === 'addgroup' ? (has ? cur : cur.concat([B.bulkName])) : cur.filter(function(g){ return g.toLowerCase() !== B.bulkName.toLowerCase(); });
+      from = cur.join(', '); to = nxt.join(', '); patch = { groups:to };
+    } else {
+      field = B.bulkCat; var cur2 = tagList(gv(e, B.bulkCat));
+      var has2 = cur2.some(function(g){ return g.toLowerCase() === B.bulkName.toLowerCase(); });
+      var nxt2 = B.bulkField === 'addorg' ? (has2 ? cur2 : cur2.concat([B.bulkName])) : cur2.filter(function(g){ return g.toLowerCase() !== B.bulkName.toLowerCase(); });
+      from = cur2.join(', '); to = nxt2.join(', '); var p2 = {}; p2[B.bulkCat] = to; patch = p2;
+    }
+    if(patch && from !== to) out.push({ di:di, name:dispName(e), key:pkey(e), field:field, from:from, to:to, patch:patch });
+  });
+  return out;
+}
+function sbDgRename(){
+  var h = '<div class="sb-card2"><div class="sb-card2-t">Rename</div>' + sbPersonPicker('rnOne', 'Person', (SB.pick.rnOne || {}).name || '');
+  var di = SB.dg.rnDi;
+  if(di == null) return h + '<p class="sb-note">Renaming rewrites first/last/display name, then propagates: close-associate name references and family links that use the display name are re-pointed, and the photos file (keyed by name) gets a queued rename op. Group memberships and the profile key do not change.</p></div>';
+  var e = D.directory[di];
+  if(SB.dg.rnFirst == null){ SB.dg.rnFirst = gv(e, 'first_name') || ''; SB.dg.rnLast = gv(e, 'last_name') || ''; }
+  h += '<div class="sb-formrow"><input type="text" data-sbi="rnfirst" value="' + esc(SB.dg.rnFirst) + '" placeholder="First name"><input type="text" data-sbi="rnlast" value="' + esc(SB.dg.rnLast) + '" placeholder="Last name">' +
+    '<button type="button" class="btn ghost" data-sb="rnscan">Scan propagation</button></div>';
+  if(SB.dg.rnScan) h += '<div class="sb-dry">' + SB.dg.rnScan + '<div class="sb-confrow"><button type="button" class="btn primary" data-sb="rnexec">Review rename…</button></div></div>';
+  return h + '</div>';
+}
+function sbRenameScan(di){
+  var e = D.directory[di], oldName = dispName(e), entryKey = String(e.name || '').toLowerCase();
+  var famRefs = 0, closeRefs = 0;
+  D.directory.forEach(function(x, xi){
+    if(xi === di || !liveEntry(x)) return;
+    famLinks(x).forEach(function(l){ var t = String(l[1] || '').toLowerCase(); if(t === entryKey || t === oldName.toLowerCase()) famRefs++; });
+    ['close_add', 'close_hide'].forEach(function(cf){ splitTags(gv(x, cf), ', ').forEach(function(n){ if(n.toLowerCase() === oldName.toLowerCase()) closeRefs++; }); });
+  });
+  var ph = sbPhotoByName()[oldName.toLowerCase()];
+  return { famRefs:famRefs, closeRefs:closeRefs, hasPhoto:!!ph, oldName:oldName };
+}
+function sbDgRekey(){
+  var h = '<div class="sb-card2"><div class="sb-card2-t">Re-key</div>' + sbPersonPicker('rkOne', 'Person', (SB.pick.rkOne || {}).name || '');
+  var di = SB.dg.rkDi;
+  if(di == null) return h + '<p class="sb-note">Re-keying mints a new Profiles row under the new key with a copy of every field, re-points any merged_into references, then deletes the old row (it sweeps to Trash, which also retires the old key). The Snapchat sidecar follows via a queued op. Use it for malformed keys — the classic case is the sf:jdmeyers_ twin.</p></div>';
+  var e = D.directory[di];
+  h += '<p class="sb-note">Current key: <b class="sb-mono">' + esc(pkey(e)) + '</b> (entry name <span class="sb-mono">' + esc(e.name) + '</span>)</p>' +
+    '<div class="sb-formrow"><input type="text" data-sbi="rknew" placeholder="new-key (e.g. sf:jane-doe)" value="' + esc(SB.dg.rkNew || '') + '" style="min-width:260px">' +
+    '<button type="button" class="btn danger2" data-sb="rkexec">Review re-key…</button></div>' +
+    '<p class="sb-note">Prefixes: ig: needs a graph node or family links to stay visible; sf:/fdb: rows always mint an entry; ct: needs a phone contact. The new row is created immediately; the old row\u2019s delete rides the outbox.</p>';
+  return h + '</div>';
+}
+function sbDgCreate(){
+  return '<div class="sb-card2"><div class="sb-card2-t">New profile</div>' +
+    '<p class="sb-note">Creates a Profiles row through the same batch endpoint the app writes with. An sf: key always mints a directory entry at the next bake (~10 minutes).</p>' +
+    '<div class="sb-formrow"><input type="text" data-sbi="crfirst" placeholder="First name" value="' + esc(SB.dg.crFirst || '') + '">' +
+    '<input type="text" data-sbi="crlast" placeholder="Last name" value="' + esc(SB.dg.crLast || '') + '">' +
+    '<input type="text" data-sbi="crkey" placeholder="Key (blank = sf: slug)" value="' + esc(SB.dg.crKey || '') + '" style="min-width:220px">' +
+    '<select data-sbi="crtier">' + ['open', 'associate', 'vetted'].map(function(t){ return '<option value="' + t + '"' + (SB.dg.crTier === t ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select>' +
+    '<button type="button" class="btn primary" data-sb="createexec">Create profile</button></div></div>';
+}
+function sbDgRebuild(){
+  return '<div class="sb-card2"><div class="sb-card2-t">Rebuild & repush</div>' +
+    '<p class="sb-note">The browser cannot run the sync — but the 10-minute subject sync rebuilds and republishes everything on its own, so most Sandbox writes are live within ~10 minutes without any rebuild. When you want it now, queue a rebuild op and run the ops file, or run the sync directly:</p>' +
+    '<p class="sb-mono sb-code">python3 scripts/sync_subjects.py</p>' +
+    '<div class="sb-confrow"><button type="button" class="btn ghost" data-sb="rebuildq">Queue rebuild op</button>' +
+    '<button type="button" class="btn ghost" data-sb="reconq">Queue fresh reconciliation</button></div>' +
+    '<p class="sb-note">Queued ops: ' + sbOpsGet().length + ' waiting — export them from the Action log.</p></div>';
+}
+
+
+/* ---------------- 8. import workbench ---------------- */
+function sbImport(){
+  var h = sbHead('Import workbench', 'Stage a Snapchat-style friends export — the HTML table, or CSV/JSON of the same shape — and auto-match it against the directory.');
+  h += '<div class="sb-card2"><div class="sb-warn">This tool never writes anything. It produces a staged match and a filing brief; filing stays a ruled step, exactly like the October 27 sweep.</div>' +
+    '<div class="sb-formrow"><input type="file" data-sbi="impfile" accept=".html,.htm,.csv,.json,.txt">' +
+    '<span class="sb-note">…or paste the export below</span></div>' +
+    '<textarea data-sbi="imptext" class="sb-textarea" placeholder="Paste a friends-table HTML, CSV (username, display name, added), or JSON array">' + esc(SB.imp.text || '') + '</textarea>' +
+    '<div class="sb-confrow"><button type="button" class="btn primary" data-sb="impparse">Parse & match</button></div></div>';
+  var R = SB.imp.result;
+  if(R){
+    h += '<div class="sb-kpis">' + sbKpi(R.rows.length, 'rows parsed') + sbKpi(R.matched.length, 'matched to the directory') +
+      sbKpi(R.probable.length, 'probable matches') + sbKpi(R.candidates.length, 'not in the directory') + '</div>';
+    function tbl2(title, list, cols){
+      if(!list.length) return '';
+      return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + ' (' + list.length + ')</div><table class="sb-table"><thead><tr>' +
+        cols.map(function(c){ return '<th>' + esc(c[0]) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        list.slice(0, 120).map(function(r){ return '<tr>' + cols.map(function(c){ return '<td>' + esc(c[1](r)) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+    }
+    h += tbl2('Matched', R.matched, [['Export row', function(r){ return r.display + ' (@' + r.username + ')'; }], ['Directory person', function(r){ return dispName(D.directory[r.di]); }], ['Added', function(r){ return r.added; }], ['Snap already filed?', function(r){ return r.already ? 'yes' : 'no'; }]]);
+    h += tbl2('Probable — needs a ruling', R.probable, [['Export row', function(r){ return r.display + ' (@' + r.username + ')'; }], ['Closest directory person', function(r){ return dispName(D.directory[r.di]); }], ['Why', function(r){ return r.why; }]]);
+    h += tbl2('Candidates — not in the directory', R.candidates, [['Display name', function(r){ return r.display; }], ['Username', function(r){ return '@' + r.username; }], ['Added', function(r){ return r.added; }]]);
+    h += '<div class="sb-confrow"><button type="button" class="btn primary" data-sb="impbrief">Copy the filing brief</button></div>';
+  }
+  return h;
+}
+function sbImpParse(text){
+  text = String(text || '').trim();
+  if(!text) return null;
+  var rows = [];
+  function pushRow(u, d, a){ u = String(u || '').trim().replace(/^@/, ''); d = String(d || '').trim(); if(u || d) rows.push({ username:u, display:d || u, added:String(a || '').trim() }); }
+  if(/<table/i.test(text)){
+    var doc = new DOMParser().parseFromString(text, 'text/html');
+    var tables = doc.querySelectorAll('table'), best = null;
+    /* Snapchat exports carry several lists (Friends first, then others) —
+       the Friends table is the first one headed Username / Display Name */
+    tables.forEach(function(t){
+      var head = t.querySelector('tr');
+      var isFriends = head && /username/i.test(head.textContent) && /display/i.test(head.textContent);
+      if(isFriends && !best) best = t;
+    });
+    if(!best) tables.forEach(function(t){ if(!best || t.querySelectorAll('tr').length > best.querySelectorAll('tr').length) best = t; });
+    if(best) best.querySelectorAll('tr').forEach(function(tr, i){
+      var cells = Array.prototype.map.call(tr.querySelectorAll('td,th'), function(c){ return c.textContent.trim(); });
+      if(i === 0 && /user/i.test(cells.join(' '))) return;
+      if(cells.length >= 2) pushRow(cells[0], cells[1], cells[2]);
+    });
+  } else if(text.charAt(0) === '[' || text.charAt(0) === '{'){
+    try{
+      var j = JSON.parse(text); var arr = Array.isArray(j) ? j : (j.friends || j.people || []);
+      arr.forEach(function(o){ pushRow(o.username || o.user || o.handle, o.display_name || o.display || o.name, o.added || o.created || o.creation_timestamp || o.since_date || o.since); });
+    }catch(x){ return null; }
+  } else {
+    text.split(/\r?\n/).forEach(function(line, i){
+      var cells = line.split(/\t|,/).map(function(c){ return c.trim(); });
+      if(i === 0 && /user/i.test(line)) return;
+      if(cells.length >= 2) pushRow(cells[0], cells[1], cells[2]);
+    });
+  }
+  return rows.length ? rows : null;
+}
+function sbImpMatch(rows){
+  var byDisp = {}, byHandle = {}, byNorm = {};
+  function norm(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    byDisp[dispName(e).toLowerCase()] = di;
+    if(effHandle(e)) byHandle[effHandle(e).toLowerCase()] = di;
+    byNorm[norm(dispName(e))] = di;
+  });
+  function lev(a, b){
+    var m = []; for(var i = 0; i <= b.length; i++) m[i] = [i];
+    for(var j = 0; j <= a.length; j++) m[0][j] = j;
+    for(i = 1; i <= b.length; i++) for(j = 1; j <= a.length; j++)
+      m[i][j] = Math.min(m[i - 1][j] + 1, m[i][j - 1] + 1, m[i - 1][j - 1] + (b.charAt(i - 1) === a.charAt(j - 1) ? 0 : 1));
+    return m[b.length][a.length];
+  }
+  var matched = [], probable = [], candidates = [];
+  rows.forEach(function(r){
+    var di = byDisp[r.display.toLowerCase()];
+    if(di == null && r.username && byHandle[r.username.toLowerCase()] != null) di = byHandle[r.username.toLowerCase()];
+    if(di == null && byNorm[norm(r.display)] != null) di = byNorm[norm(r.display)];
+    if(di == null && byNorm[norm(r.username)] != null) di = byNorm[norm(r.username)];
+    if(di != null){
+      var e = D.directory[di];
+      matched.push({ username:r.username, display:r.display, added:r.added, di:di,
+        already: !!((e.snap_handles || []).some(function(x){ return x.toLowerCase() === r.username.toLowerCase(); })) });
+      return;
+    }
+    var bestDi = null, bestD = 99;
+    Object.keys(byNorm).forEach(function(n){
+      var d = lev(norm(r.display), n);
+      if(d < bestD){ bestD = d; bestDi = byNorm[n]; }
+    });
+    if(bestDi != null && bestD <= 2) probable.push({ username:r.username, display:r.display, added:r.added, di:bestDi, why:'name within edit distance ' + bestD });
+    else candidates.push(r);
+  });
+  return { rows:rows, matched:matched, probable:probable, candidates:candidates };
+}
+function sbImpBrief(){
+  var R = SB.imp.result; if(!R) return '';
+  var lines = ['# Import staging brief — ' + new Date().toISOString().slice(0, 10), '',
+    'Parsed ' + R.rows.length + ' rows · matched ' + R.matched.length + ' · probable ' + R.probable.length + ' · not in directory ' + R.candidates.length + '.', '',
+    '## Matched (handle not yet filed marked *)'];
+  R.matched.forEach(function(r){ lines.push('- ' + r.display + ' (@' + r.username + ', added ' + (r.added || '?') + ') → ' + dispName(D.directory[r.di]) + (r.already ? '' : ' *')); });
+  lines.push('', '## Probable');
+  R.probable.forEach(function(r){ lines.push('- ' + r.display + ' (@' + r.username + ') → maybe ' + dispName(D.directory[r.di]) + ' (' + r.why + ')'); });
+  lines.push('', '## Not in the directory');
+  R.candidates.forEach(function(r){ lines.push('- ' + r.display + ' (@' + r.username + ', added ' + (r.added || '?') + ')'); });
+  lines.push('', 'Filing stays a ruled step — nothing was written by the import workbench.');
+  return lines.join('\n');
+}
+
+/* ---------------- 10. action log ---------------- */
+function sbLogView(){
+  var local = sbLogGet();
+  var server = ((SB.serverLog && SB.serverLog.entries) || []).map(function(e){
+    return { ts:e.ts, type:e.type || 'ops', title:(e.op ? e.op + ' — ' : '') + (e.detail || ''), detail:e.detail || '', server:true, ok:e.ok };
+  });
+  var all = local.concat(server).sort(function(a, b){ return String(b.ts).localeCompare(String(a.ts)); });
+  var f = SB.lg.filter;
+  if(f !== 'all') all = all.filter(function(e){ return e.type === f; });
+  var h = sbHead('Action log', 'Every Sandbox write, with before → after detail. This browser\u2019s entries persist in local storage; ops outcomes land in site/data/sandbox-log.json and appear here after a push. Export the queued ops to run them.');
+  h += '<div class="sb-toolbar"><select data-sbi="logfilter">' + ['all', 'merge', 'delete', 'restore', 'bulk', 'rename', 'rekey', 'create', 'ops', 'rebuild', 'recon'].map(function(t){ return '<option value="' + t + '"' + (f === t ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select>' +
+    '<button type="button" class="btn ghost sm" data-sb="opexport">Export ops file (' + sbOpsGet().length + ' queued)</button>' +
+    '<button type="button" class="btn ghost sm" data-sb="logexport">Download full log</button>' +
+    (sbOpsGet().length ? '<button type="button" class="btn ghost sm" data-sb="opclear">Clear exported queue</button>' : '') + '</div>';
+  if(!all.length) h += '<div class="empty"><h3>Nothing logged yet</h3><p>Writes from the Merge studio and the Danger area land here.</p></div>';
+  all.slice(0, 120).forEach(function(e){
+    h += '<div class="sb-logrow"><div class="sb-logmain"><span class="sb-logtype ' + esc(e.type || '') + '">' + esc(e.type || '') + '</span>' +
+      '<span class="sb-logtitle">' + esc(e.title || e.detail || '') + '</span>' +
+      '<span class="sb-logts">' + esc(String(e.ts || '').replace('T', ' ').slice(0, 16)) + (e.server ? ' · server' : '') + '</span></div>' +
+      (e.detail && e.detail !== e.title ? '<div class="sb-logdet">' + esc(e.detail) + '</div>' : '') +
+      ((e.queuedOps && e.queuedOps.length) ? '<div class="sb-logdet">Queued: ' + e.queuedOps.map(function(o){ return esc(o.op); }).join(', ') + '</div>' : '') +
+      '<div class="sb-logbtns">' +
+      (e.undo && !e.server ? '<button type="button" class="btn ghost sm" data-sb="logundo" data-id="' + esc(e.id) + '">Undo</button>' : '') +
+      '<details class="sb-det"><summary>Detail</summary><pre class="sb-pre">' + esc(JSON.stringify(e, null, 1)).slice(0, 4000) + '</pre></details></div></div>';
+  });
+  return h;
+}
+function sbLogUndo(id){
+  var en = sbLogGet().filter(function(e){ return e.id === id; })[0];
+  if(!en || !en.undo){ toast('Nothing to undo on that entry'); return; }
+  var u = en.undo;
+  if(u.kind === 'unmerge'){
+    var di = PK2I[String(u.loserKey || '').toLowerCase()];
+    if(di == null){ toast('The loser profile is not in the current bake — restore it from the archive instead'); return; }
+    txn('Undo merge', function(){ queuePatch(di, { merged_into:'' }); });
+    sbLogAdd({ type:'restore', title:'Undid merge — ' + u.loserKey + ' stands alone again', detail:'Field adjustments made before the fold are NOT auto-restored; the full pre-merge record is in the merge entry\u2019s archive.' });
+    toast('Unmerge sent');
+  } else if(u.kind === 'undelete'){
+    var n = 0;
+    txn('Undo delete', function(){ (u.keys || []).forEach(function(k){ var d2 = PK2I[k.toLowerCase()]; if(d2 != null){ queuePatch(d2, { deleted:'' }); n++; } }); });
+    sbLogAdd({ type:'restore', title:'Undid delete for ' + n + ' profile(s)', detail:(u.keys || []).join(', ') });
+    toast(n ? 'Delete undone for ' + n : 'Those rows already left Profiles — restore from the archive instead');
+  } else if(u.kind === 'bulk'){
+    var n2 = 0;
+    txn('Undo bulk edit', function(){ (u.items || []).forEach(function(it){ var d3 = PK2I[it.key.toLowerCase()]; if(d3 != null){ var p = {}; p[it.field] = it.before; queuePatch(d3, p); n2++; } }); });
+    sbLogAdd({ type:'bulk', title:'Undid a bulk edit (' + n2 + ' people)', detail:'' });
+    toast('Bulk edit undone for ' + n2);
+  } else if(u.kind === 'rename'){
+    var d4 = PK2I[String(u.key || '').toLowerCase()];
+    if(d4 == null){ toast('Profile not in the current bake'); return; }
+    txn('Undo rename', function(){
+      queuePatch(d4, { first_name:u.before.first_name, last_name:u.before.last_name, display_name:u.before.display_name });
+      (u.referrers || []).forEach(function(r){ var d5 = PK2I[r.key.toLowerCase()]; if(d5 != null) queuePatch(d5, r.patch); });
+    });
+    sbLogAdd({ type:'rename', title:'Undid rename of ' + u.key, detail:'Back to ' + u.before.display_name });
+    toast('Rename undone');
+  }
+  render();
+}
+
+/* ---------------- sandbox events (own delegation; data-sb) ---------------- */
+var SB_CONFIRM = null;
+function sbConfirm2(title, body, okLabel, danger, fn){ SB_CONFIRM = fn; sbConfirm(title, body, okLabel, danger); }
+document.addEventListener('click', function(ev){
+  var t = ev.target.closest ? ev.target.closest('[data-sb]') : null;
+  if(!t) return;
+  var act = t.getAttribute('data-sb');
+  function R(){ render(); }
+  if(act === 'sheetx'){ closeSheet(); }
+  else if(act === 'confirmok'){ var f = SB_CONFIRM; SB_CONFIRM = null; closeSheet(); if(f) f(); }
+  else if(act === 'openprof'){ sbOpenProfile(+t.getAttribute('data-di')); }
+  else if(act === 'gridcols'){
+    var cols = sbGridCols();
+    openSheet('Grid columns', '<div class="sb-colchecks">' + SB_COLS.map(function(c){
+      return '<label><input type="checkbox" data-sbi="gridcol" data-k="' + c.k + '"' + (cols[c.k] ? ' checked' : '') + '> ' + esc(c.l) + '</label>';
+    }).join('') + '</div>', {});
+  }
+  else if(act === 'gridcsv'){ sbGridCsv(); }
+  else if(act === 'gridsort'){
+    var k = t.getAttribute('data-k');
+    if(SB.grid.sort === k) SB.grid.dir *= -1; else { SB.grid.sort = k; SB.grid.dir = 1; }
+    sbGridRefresh();
+  }
+  else if(act === 'seltodanger'){ SB.dg.tab = 'delete'; go('sandbox/danger'); }
+  else if(act === 'selclear'){ SB.sel = {}; R(); }
+  else if(act === 'rawtab'){ SB.raw.which = t.getAttribute('data-k'); R(); }
+  else if(act === 'reptab'){ SB.rep.tab = t.getAttribute('data-k'); R(); }
+  else if(act === 'integtab'){ SB.integ.tab = t.getAttribute('data-k'); R(); }
+  else if(act === 'dgtab'){ SB.dg.tab = t.getAttribute('data-k'); SB.dg.dry = null; R(); }
+  else if(act === 'pairmerge'){
+    SB.mg = { a:+t.getAttribute('data-a'), b:+t.getAttribute('data-b'), surv:'a', picks:{}, plan:null,
+      aName:dispName(D.directory[+t.getAttribute('data-a')]), bName:dispName(D.directory[+t.getAttribute('data-b')]) };
+    SB.pick.mgA = { di:SB.mg.a, name:SB.mg.aName }; SB.pick.mgB = { di:SB.mg.b, name:SB.mg.bName };
+    if(S.route.name === 'sandbox' && SB.tool === 'merge') R(); else go('sandbox/merge');
+  }
+  else if(act === 'pairnotdup'){
+    var ok = sbStore('ncc_sbx_dupok') || {};
+    ok[[pkey(D.directory[+t.getAttribute('data-a')]), pkey(D.directory[+t.getAttribute('data-b')])].sort().join('|')] = 1;
+    sbStore('ncc_sbx_dupok', ok); toast('Marked not duplicates'); R();
+  }
+  else if(act === 'deadcheck'){ SB.integ.deadBusy = true; SB.integ.dead = null; R(); }
+  else if(act === 'pickset'){
+    var pid = t.getAttribute('data-pick'), di = +t.getAttribute('data-di'), nm = dispName(D.directory[di]);
+    SB.pick[pid] = { di:di, name:nm };
+    if(pid === 'labA'){ SB.lab.a = di; SB.lab.aName = nm; SB.lab.path = undefined; SB.lab.mutual = null; }
+    if(pid === 'labB'){ SB.lab.b = di; SB.lab.bName = nm; SB.lab.path = undefined; SB.lab.mutual = null; }
+    if(pid === 'mgA'){ SB.mg.a = di; SB.mg.aName = nm; SB.mg.picks = {}; }
+    if(pid === 'mgB'){ SB.mg.b = di; SB.mg.bName = nm; SB.mg.picks = {}; }
+    if(pid === 'dgOne') SB.dg.one = di;
+    if(pid === 'rnOne'){ SB.dg.rnDi = di; SB.dg.rnFirst = null; SB.dg.rnScan = null; }
+    if(pid === 'rkOne') SB.dg.rkDi = di;
+    var res = document.getElementById('pick-' + pid); if(res) res.innerHTML = '';
+    var inp = document.querySelector('input[data-pick="' + pid + '"]'); if(inp) inp.value = nm;
+    if(pid === 'mgA' || pid === 'mgB' || pid === 'rnOne' || pid === 'rkOne' || pid === 'dgOne') R();
+  }
+  else if(act === 'labgo'){ sbLabRun(); }
+  else if(act === 'bridges'){ SB.lab.bridges = 'pending'; R(); }
+  else if(act === 'mgsurv'){ SB.mg.surv = t.getAttribute('data-v'); SB.mg.picks = {}; R(); }
+  else if(act === 'mgpick'){ SB.mg.picks[t.getAttribute('data-f')] = t.getAttribute('data-v'); R(); }
+  else if(act === 'mgplan'){
+    var plan = sbMgBuildPlan(); SB.mg.plan = plan;
+    sbConfirm2('Merge summary — read before executing', sbMgSummaryHtml(plan), 'Execute merge', false, function(){ sbMgExecute(SB.mg.plan); });
+  }
+  else if(act === 'delreview' || act === 'delreview1'){
+    var dis = act === 'delreview' ? sbSelDis() : (SB.dg.one != null ? [SB.dg.one] : []);
+    if(!dis.length){ toast('Nobody selected'); return; }
+    sbConfirm2('Delete ' + dis.length + ' profile' + (dis.length === 1 ? '' : 's') + ' to Trash?',
+      '<p>These profiles get the deleted flag now; the 10-minute sync moves their rows into the Trash tab (which also blocklists their keys). Their full records are archived in the action log first, and Restore lives in the Danger area.</p><ul class="sb-ul">' +
+      dis.map(function(d2){ return '<li>' + esc(dispName(D.directory[d2])) + ' <span class="sb-mono">' + esc(pkey(D.directory[d2])) + '</span></li>'; }).join('') + '</ul>',
+      'Delete ' + dis.length, true, function(){ sbDoDelete(dis); });
+  }
+  else if(act === 'restorearch'){ sbRestoreArchived(t.getAttribute('data-key')); }
+  else if(act === 'trashrestore'){
+    var key = t.getAttribute('data-key');
+    sbLogAdd({ type:'restore', title:'Queued restore of ' + key, detail:'Runs via sandbox_ops.py (reads the Trash row, maps it back into Profiles by header name, deletes the Trash row).', queuedOps:[{ op:'restore', key:key }] });
+    toast('Restore queued — export the ops from the Action log'); R();
+  }
+  else if(act === 'trashpurge'){
+    var key2 = t.getAttribute('data-key');
+    sbConfirm2('Purge ' + key2 + ' permanently?',
+      '<p>Purging removes this key from the Trash tab AND from the build blocklist — the graph or contacts can resurrect this person on the next build.</p><p>There is no undo. The purge itself runs via sandbox_ops.py.</p>',
+      'Queue purge', true, function(){
+        sbLogAdd({ type:'delete', title:'Queued purge of ' + key2, detail:'Permanent removal from Trash + blocklist, via sandbox_ops.py.', queuedOps:[{ op:'purge', key:key2 }] });
+        toast('Purge queued'); R();
+      });
+  }
+  else if(act === 'bulkdry'){
+    if(!SB.dg.bulkName && SB.dg.bulkField !== 'tier'){ toast('Name the group / organization first'); return; }
+    SB.dg.dry = sbBulkCompute();
+    if(!SB.dg.dry.length) toast('That change touches nobody (already in that state)');
+    R();
+  }
+  else if(act === 'bulkexec'){
+    var dry = SB.dg.dry || [];
+    sbConfirm2('Apply this bulk edit to ' + dry.length + ' people?',
+      '<ul class="sb-ul">' + dry.slice(0, 60).map(function(d){ return '<li>' + esc(d.name) + ' — ' + esc(d.field) + ': ' + esc(d.from || '(blank)') + ' → ' + esc(d.to || '(blank)') + '</li>'; }).join('') + '</ul>',
+      'Apply', false, function(){
+        txn('Sandbox bulk edit', function(){ dry.forEach(function(d){ queuePatch(d.di, d.patch); }); });
+        sbLogAdd({ type:'bulk', title:'Bulk edit: ' + SB.dg.bulkField + ' on ' + dry.length + ' people',
+          detail:dry.map(function(d){ return d.name + ' (' + d.field + ': ' + (d.from || 'blank') + ' → ' + (d.to || 'blank') + ')'; }).join('; '),
+          undo:{ kind:'bulk', items:dry.map(function(d){ return { key:d.key, field:d.field, before:d.from }; }) } });
+        SB.dg.dry = null; toast('Bulk edit sent for ' + dry.length); R();
+      });
+  }
+  else if(act === 'rnscan'){
+    if(SB.dg.rnDi == null){ toast('Pick a person first'); return; }
+    var sc = sbRenameScan(SB.dg.rnDi);
+    SB.dg.rnScanData = sc;
+    SB.dg.rnScan = '<p><b>' + esc(sc.oldName) + '</b> → <b>' + esc(((SB.dg.rnFirst || '') + ' ' + (SB.dg.rnLast || '')).trim()) + '</b></p>' +
+      '<p class="sb-note">Propagation: ' + sc.famRefs + ' family link(s) reference this person, ' + sc.closeRefs + ' close-associate name reference(s) will be re-pointed' + (sc.hasPhoto ? ', and a photos entry under the old name gets a queued rename op' : '') + '. The Snapchat sidecar is keyed by profile key, which does not change.</p>';
+    R();
+  }
+  else if(act === 'rnexec'){
+    var di2 = SB.dg.rnDi, e2 = D.directory[di2];
+    var before = { first_name:String(raw(e2, 'first_name') || ''), last_name:String(raw(e2, 'last_name') || ''), display_name:String(raw(e2, 'display_name') || '') };
+    var nf = (SB.dg.rnFirst || '').trim(), nl = (SB.dg.rnLast || '').trim(), full = (nf + ' ' + nl).trim();
+    if(!full){ toast('Enter the new name'); return; }
+    var sc2 = SB.dg.rnScanData || sbRenameScan(di2);
+    sbConfirm2('Rename ' + sc2.oldName + ' → ' + full + '?',
+      '<p>First/last/display name change on the profile, plus re-pointing ' + sc2.closeRefs + ' close-associate reference(s) and any family links that use the display name.' + (sc2.hasPhoto ? ' A photos rename op is queued.' : '') + '</p>',
+      'Rename', false, function(){
+        var referrers = [];
+        txn('Sandbox rename', function(){
+          queuePatch(di2, { first_name:nf, last_name:nl, display_name:full });
+          D.directory.forEach(function(x, xi){
+            if(xi === di2 || !liveEntry(x)) return;
+            var patch = {}, changed = false;
+            ['close_add', 'close_hide'].forEach(function(cf){
+              var names = splitTags(gv(x, cf), ', ');
+              if(names.some(function(n){ return n.toLowerCase() === sc2.oldName.toLowerCase(); })){
+                patch[cf] = names.map(function(n){ return n.toLowerCase() === sc2.oldName.toLowerCase() ? full : n; }).join(', '); changed = true;
+              }
+            });
+            var fam = famLinks(x), famHit = false;
+            var newFam = fam.map(function(l){ if(String(l[1] || '').toLowerCase() === sc2.oldName.toLowerCase()){ famHit = true; return [l[0], full.toLowerCase()]; } return l; });
+            if(famHit){ patch.family = JSON.stringify(newFam); changed = true; }
+            if(changed){
+              var beforePatch = {};
+              Object.keys(patch).forEach(function(k){ beforePatch[k] = String(raw(x, k) || ''); });
+              queuePatch(xi, patch);
+              referrers.push({ key:pkey(x), patch:beforePatch });
+            }
+          });
+        });
+        var ops = sc2.hasPhoto ? [{ op:'photorename', old_name:sc2.oldName, new_name:full }] : [];
+        sbLogAdd({ type:'rename', title:'Renamed ' + sc2.oldName + ' → ' + full, detail:referrers.length + ' referrer(s) re-pointed', queuedOps:ops,
+          undo:{ kind:'rename', key:pkey(e2), before:before, referrers:referrers.map(function(r){ return { key:r.key, patch:r.patch }; }) } });
+        SB.dg.rnFirst = null; SB.dg.rnScan = null; toast('Rename sent'); R();
+      });
+  }
+  else if(act === 'rkexec'){
+    var di3 = SB.dg.rkDi; if(di3 == null){ toast('Pick a person first'); return; }
+    var e3 = D.directory[di3], nk = String(SB.dg.rkNew || '').trim().toLowerCase();
+    if(!/^(ig|ct|sf|fdb):.+/.test(nk)){ toast('New key needs an ig:/ct:/sf:/fdb: prefix'); return; }
+    if(PK2I[nk] != null){ toast('That key is already in use'); return; }
+    sbConfirm2('Re-key ' + dispName(e3) + '?',
+      '<p>Old key <span class="sb-mono">' + esc(pkey(e3)) + '</span> → new key <span class="sb-mono">' + esc(nk) + '</span>.</p><ul class="sb-ul"><li>A new Profiles row is created under the new key with a copy of every field.</li><li>Any merged_into references to the old entry are re-pointed.</li><li>The old row is flagged deleted and sweeps to Trash (retiring the old key).</li><li>The Snapchat sidecar re-key is queued for the ops script.</li></ul>',
+      'Re-key', true, function(){
+        var prof = {};
+        SB_MFIELDS.forEach(function(f){ var val = String(raw(e3, f) || ''); if(val) prof[f] = val; });
+        prof.display_name = String(raw(e3, 'display_name') || dispName(e3)); prof.merged_into = ''; prof.deleted = '';
+        sbPostBatch([{ id:nk, patch:prof }]).then(function(ok){
+          if(!ok){ toast('Row create failed — nothing else was touched'); return; }
+          var oldTarget = mergeTarget(di3), refs = 0;
+          txn('Sandbox re-key', function(){
+            D.directory.forEach(function(x, xi){ if(xi !== di3 && String(raw(x, 'merged_into') || '').trim().toLowerCase() === oldTarget){ queuePatch(xi, { merged_into:nk }); refs++; } });
+            queuePatch(di3, { deleted:'1' });
+          });
+          var ops = (SB.snap && SB.snap.people && SB.snap.people[pkey(e3)]) ? [{ op:'snaprename', old_key:pkey(e3), new_key:nk }] : [];
+          sbLogAdd({ type:'rekey', title:'Re-keyed ' + dispName(e3) + ': ' + pkey(e3) + ' → ' + nk, detail:refs + ' merged_into reference(s) re-pointed; old row flagged deleted', queuedOps:ops });
+          toast('Re-key sent — the new row lands on the next bake'); R();
+        });
+      });
+  }
+  else if(act === 'createexec'){
+    var fn = (SB.dg.crFirst || '').trim(), ln = (SB.dg.crLast || '').trim();
+    if(!fn && !ln){ toast('Enter a name'); return; }
+    var full2 = (fn + ' ' + ln).trim();
+    var key = String(SB.dg.crKey || '').trim().toLowerCase() || ('sf:' + full2.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
+    if(PK2I[key] != null){ toast('That key already exists'); return; }
+    sbConfirm2('Create profile for ' + full2 + '?', '<p>Key <span class="sb-mono">' + esc(key) + '</span>, tier ' + esc(SB.dg.crTier || 'open') + '. The row is created through the batch endpoint; the person appears at the next bake (~10 minutes).</p>', 'Create', false, function(){
+      sbPostBatch([{ id:key, patch:{ first_name:fn, last_name:ln, display_name:full2, display:full2, tier:SB.dg.crTier || 'open' } }]).then(function(ok){
+        sbLogAdd({ type:'create', title:'Created profile ' + full2, detail:key });
+        toast(ok ? 'Profile create sent' : 'Create POST failed'); R();
+      });
+    });
+  }
+  else if(act === 'rebuildq'){
+    sbLogAdd({ type:'rebuild', title:'Queued a rebuild + repush', detail:'Runs sync_subjects.py via sandbox_ops.py.', queuedOps:[{ op:'rebuild' }] });
+    toast('Rebuild queued'); R();
+  }
+  else if(act === 'reconq'){
+    sbLogAdd({ type:'recon', title:'Queued a fresh reconciliation', detail:'Runs sandbox_recon.py via sandbox_ops.py.', queuedOps:[{ op:'recon' }] });
+    toast('Reconciliation queued'); R();
+  }
+  else if(act === 'impparse'){
+    var ta = document.querySelector('[data-sbi="imptext"]');
+    var rows = sbImpParse(SB.imp.fileText || (ta ? ta.value : ''));
+    if(!rows){ toast('Could not parse that export — expected a friends table, CSV, or JSON'); return; }
+    SB.imp.result = sbImpMatch(rows);
+    toast('Parsed ' + rows.length + ' rows'); R();
+  }
+  else if(act === 'impbrief'){
+    var brief = sbImpBrief();
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(brief).then(function(){ toast('Filing brief copied'); }, function(){ sbDownload('import-brief.md', brief); });
+    else sbDownload('import-brief.md', brief);
+  }
+  else if(act === 'logundo'){ sbLogUndo(t.getAttribute('data-id')); }
+  else if(act === 'opexport'){
+    sbDownload('sandbox-ops.json', JSON.stringify({ ops: sbOpsGet() }, null, 1), 'application/json');
+    toast('Ops file downloaded — run: python3 scripts/sandbox_ops.py sandbox-ops.json --push');
+  }
+  else if(act === 'opclear'){
+    sbConfirm2('Clear the queued ops?', '<p>Only clear after sandbox_ops.py has run them — the log entries keep the record either way.</p>', 'Clear queue', true, function(){ sbStore('ncc_sbx_ops', []); toast('Queue cleared'); R(); });
+  }
+  else if(act === 'logexport'){
+    sbDownload('sandbox-log-export.json', JSON.stringify({ entries: sbLogGet(), ops: sbOpsGet() }, null, 1), 'application/json');
+  }
+});
+document.addEventListener('change', function(ev){
+  var t = ev.target.closest ? ev.target.closest('[data-sbi]') : null;
+  if(!t) return;
+  var k = t.getAttribute('data-sbi');
+  if(k === 'gridsel'){
+    var di = +t.getAttribute('data-di'), pk = pkey(D.directory[di]);
+    if(t.checked) SB.sel[pk] = di; else delete SB.sel[pk];
+    sbGridRefresh();
+  }
+  else if(k === 'gridview'){ SB.grid.view = t.value; sbGridRefresh(); }
+  else if(k === 'gridcol'){ var cols = sbGridCols(); cols[t.getAttribute('data-k')] = t.checked; sbStore('ncc_sbx_grid', cols); sbGridRefresh(); }
+  else if(k === 'bulkfield'){ SB.dg.bulkField = t.value; SB.dg.dry = null; render(); }
+  else if(k === 'bulkval'){ SB.dg.bulkVal = t.value; SB.dg.dry = null; }
+  else if(k === 'bulkcat'){ SB.dg.bulkCat = t.value; SB.dg.dry = null; }
+  else if(k === 'logfilter'){ SB.lg.filter = t.value; render(); }
+  else if(k === 'crtier'){ SB.dg.crTier = t.value; }
+  else if(k === 'impfile'){
+    var f = t.files && t.files[0];
+    if(f){ var rd = new FileReader(); rd.onload = function(){ SB.imp.fileText = String(rd.result || ''); toast('File loaded — Parse & match when ready'); }; rd.readAsText(f); }
+  }
+});
+var SB_DEB = null;
+document.addEventListener('input', function(ev){
+  var t = ev.target.closest ? ev.target.closest('[data-sbi]') : null;
+  if(!t) return;
+  var k = t.getAttribute('data-sbi');
+  if(k === 'gridq'){ SB.grid.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbGridRefresh, 250); }
+  else if(k === 'rawq'){ SB.raw.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') render(); }, 400); }
+  else if(k === 'trashq'){ SB.dg.trashQ = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') render(); }, 400); }
+  else if(k === 'pickq'){
+    var pid = t.getAttribute('data-pick'), res = document.getElementById('pick-' + pid);
+    if(!res) return;
+    var q = t.value.trim();
+    if(q.length < 2){ res.innerHTML = ''; return; }
+    var hits = searchPeople(q).slice(0, 8);
+    res.innerHTML = hits.map(function(di){
+      var e = D.directory[di];
+      return '<button type="button" class="sb-pickitem" data-sb="pickset" data-pick="' + pid + '" data-di="' + di + '">' + esc(dispName(e)) + '<span>' + esc(infoLine(e)) + '</span></button>';
+    }).join('');
+  }
+  else if(k === 'bulkname'){ SB.dg.bulkName = t.value; SB.dg.dry = null; }
+  else if(k === 'rnfirst'){ SB.dg.rnFirst = t.value; }
+  else if(k === 'rnlast'){ SB.dg.rnLast = t.value; }
+  else if(k === 'rknew'){ SB.dg.rkNew = t.value; }
+  else if(k === 'crfirst'){ SB.dg.crFirst = t.value; }
+  else if(k === 'crlast'){ SB.dg.crLast = t.value; }
+  else if(k === 'crkey'){ SB.dg.crKey = t.value; }
+  else if(k === 'imptext'){ SB.imp.text = t.value; SB.imp.fileText = null; }
+});
+function sbGridRefresh(){
+  if(S.route.name !== 'sandbox' || SB.tool !== 'grid') return;
+  var v = $('#view'); if(!v) return;
+  v.innerHTML = '<div class="sb-wrap">' + sbGrid() + '</div>';
+  var inp = v.querySelector('[data-sbi="gridq"]');
+  if(inp && SB.grid.q){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+}
+
+
 /* ============================================================
    10. boot
    ============================================================ */
