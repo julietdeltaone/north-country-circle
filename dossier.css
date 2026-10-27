@@ -2864,3 +2864,10 @@ body[data-view="sandbox"] #view{max-width:none;width:100%;margin:0;padding:0;fle
 .pf-verdict.v-none{color:var(--dim)}
 .pf-apply{display:flex;gap:9px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.55;color:var(--mut)}
 .pf-apply:first-of-type{border-top:none}
+.pf-tabs{margin:0 0 14px}
+.pf-abar{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:12.5px;color:var(--mut)}
+.pf-abar .pf-at{width:132px;flex:none;font-weight:600;color:var(--txt)}
+.pf-atrack{flex:1;min-width:70px;height:8px;border-radius:99px;background:var(--line2);overflow:hidden}
+.pf-afill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ga,#3a9bff),var(--gb,#34d399))}
+.pf-acounts{white-space:nowrap}
+.cn-frow .sb-note{display:block;margin-top:2px}
