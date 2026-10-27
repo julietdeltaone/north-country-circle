@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.1.1';
+var APP_VERSION = '3.1.2';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -4577,6 +4577,19 @@ function hmFmtD(iso){
   return HM_MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0];
 }
 function hmDiOf(name){ var di = BYN[String(name || '').toLowerCase()]; return di == null ? null : di; }
+/* Daily-ten brief entries carry prefixed keys ('ig:user', 'sf:slug',
+   'ct:Full Name') while BYN is keyed by the bare directory name plus
+   display names — resolve a brief entry through the raw key, the
+   prefix-stripped key, then its display name, so nobody is dropped
+   or rendered as an unlinked fallback. */
+function hmDtDi(x){
+  if(x == null) return null;
+  var nm = typeof x === 'object' ? x.name : x;
+  var di = hmDiOf(nm);
+  if(di == null && nm && String(nm).indexOf(':') > 0) di = hmDiOf(String(nm).split(':').slice(1).join(':'));
+  if(di == null && typeof x === 'object' && x.display) di = hmDiOf(x.display);
+  return di;
+}
 /* ============================================================
    Home — Command Deck (JD 2026-10-27, V2.55.0): the concept-1
    layout made real and live-wired. KPI strip across the top,
@@ -4841,9 +4854,8 @@ function hmActivity(){
   if(DT && DT.next_up && DT.next_up.length){
     out += '<div class="hma-sec"><span>Next up in the rotation</span></div><div class="hma-nextup">' +
       DT.next_up.map(function(nm){
-        var key = nm && nm.name ? nm.name : nm;
         var label = nm && nm.display ? nm.display : nm;
-        var di = hmDiOf(key);
+        var di = hmDtDi(nm);
         return di == null ? '<span class="hma-nchip">' + esc(label) + '</span>'
           : '<button type="button" class="hma-nchip" data-act="hmgoto" data-di="' + di + '">' + esc(label) + '</button>';
       }).join('') + '</div>';
@@ -5143,12 +5155,12 @@ function hmiLiveRecords(opener){
   }
   body += '<div class="hmi-sec">Checked in the latest brief</div><div class="hmi-rows">' +
     DT.checked.map(function(nm){
-      var di = hmDiOf(nm && nm.name ? nm.name : nm); if(di == null) return '';
+      var di = hmDtDi(nm); if(di == null) return '';
       return hmiRow(di, hmiTierTag(D.directory[di]));
     }).join('') + '</div>';
   if(DT.next_up && DT.next_up.length){
     body += '<div class="hmi-sec">Next up</div><div class="hmi-rows">' +
-      DT.next_up.map(function(nm){ var di = hmDiOf(nm && nm.name ? nm.name : nm); if(di == null) return ''; return hmiRow(di, hmiTierTag(D.directory[di])); }).join('') + '</div>';
+      DT.next_up.map(function(nm){ var di = hmDtDi(nm); if(di == null) return ''; return hmiRow(di, hmiTierTag(D.directory[di])); }).join('') + '</div>';
   }
   body += '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmidaily">Open Live Records</button></div>';
   hmiShow('Live Records', hmFmtD(DT.date), body, opener);
