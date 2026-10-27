@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (2 = Swiss Mono), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '2.52.0';
+var APP_VERSION = '2.53.0';
 
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
@@ -5247,7 +5247,7 @@ var PH_SORT = store('ncc_photos_sort_v1') || 'grade';
 var PH_SDIR = store('ncc_photos_sdir_v1') === 'desc' ? -1 : 1;
 var PH_FILT = store('ncc_photos_filter_v1') || 'all';
 var PH_QUERY = '';
-var PH_LIST = [];   /* photos-page entries in current display order (sections flattened) — drives the slide-over's prev/next */
+var PH_LIST = [];   /* photos-page entries in current display order (sections flattened) */
 /* Audit F13: every photo write routes its cache upkeep through here —
    the name index is derived from PH and is rebuilt lazily after any
    write; key/order/hidden caches are updated by their write fns and
@@ -5638,9 +5638,10 @@ function phaKeys(){
    Now: everything renders (no chunking, no Show more — lazy
    images + content-visibility carry the weight), the sort
    SECTIONS the grid under labeled headers with counts, a left
-   rail filters by counted buckets, and clicking a card opens a
-   slide-over viewer that leaves the grid and its exact scroll
-   position untouched. Reviewing still lives in Photo Audit.
+   rail filters by counted buckets, and clicking a card opens
+   the photo inspector (JD 2026-10-27) in a pop-up that leaves
+   the grid and its exact scroll position untouched. Reviewing
+   still lives in Photo Audit.
    ============================================================ */
 function phDiOf(name){ var di = BYN[String(name || '').toLowerCase()]; return di == null ? null : di; }
 function phEntryOf(p){ var di = phDiOf(p.name); return di != null ? D.directory[di] : null; }
@@ -5804,12 +5805,6 @@ function phSections(list){
   });
   return secs;
 }
-function phGradeChip(p){
-  var rev = phRevOf(p);
-  if(rev === 'confirmed') return '<span class="phg ok">CONFIRMED</span>';
-  if(rev === 'bad') return '<span class="phg bad">BAD PHOTO</span>';
-  return p.status === 'confirmed' ? '<span class="phg conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phg lik">LIKELY</span>' : '<span class="phg poss">POSSIBLE</span>';
-}
 function phCard(p){
   var sel = PHI && PHI.name.toLowerCase() === String(p.name).toLowerCase();
   if(phHasPhoto(p)){
@@ -5948,7 +5943,7 @@ function phiRender(){
   var foot = '<div class="phi-foot"><span class="dim">' + (PHI.dirty ? 'Order changed \u2014 not saved yet' : PHI.vis.length + (PHI.vis.length === 1 ? ' photo' : ' photos')) + '</span><span class="sp"></span>' +
     (PHI.dirty ? '<button type="button" class="btn primary sm" data-act="phisave">Save order</button>' : '') +
     '<button type="button" class="btn ghost sm" data-act="phix">Done</button></div>';
-  var strip = PHI.vis.length > 1 ? '<div class="phi-strip">' + PHI.vis.map(function(x, i){
+  var strip = (!PHI.adj && PHI.vis.length > 1) ? '<div class="phi-strip">' + PHI.vis.map(function(x, i){
       return '<button type="button" class="phi-th' + (i === PHI.idx && !viewingHid ? ' on' : '') + '" data-act="phidot" data-i="' + i + '" aria-label="Photo ' + (i + 1) + '"><img src="' + esc(x.url) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (keyU && x.url === keyU ? '<span class="phi-kdot" title="Key photo"></span>' : '') + '<span class="phi-tn">' + (i + 1) + '</span></button>';
     }).join('') + '</div>' : '';
   var ov = document.createElement('div');
@@ -8060,27 +8055,25 @@ function onClick(ev){
     case 'chggrp': chgToggle(el); break;
     case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
-    case 'phsetkey': phSetKey(el.getAttribute('data-pname')); break;
-    case 'phmgr': phMgrOpen(el.getAttribute('data-pname')); break;
-    case 'phmx': phMgrClose(); break;
-    case 'phmsel': if(PHM){ PHM.sel = +el.getAttribute('data-i'); PHM.confirmDel = false; phMgrRender(); } break;
-    case 'phmleft': phMgrMoveSel(-1); break;
-    case 'phmright': phMgrMoveSel(1); break;
-    case 'phmkey': if(PHM && PHM.work[PHM.sel]){ if(phApplyKey(PHM.name, PHM.work[PHM.sel].url)) phMgrRender(); } break;
-    case 'phmadj': if(PHM && PHM.work[PHM.sel]){ var _au = PHM.work[PHM.sel].url, _an = PHM.name; phMgrClose(true); window.__phedStart = _au; phEditor(_an); } break;
-    case 'phmdelq': if(PHM){ PHM.confirmDel = true; phMgrRender(); } break;
-    case 'phmdelx': if(PHM){ PHM.confirmDel = false; phMgrRender(); } break;
-    case 'phmdel': phMgrRemove(); break;
-    case 'phmrestore': phMgrRestore(el.getAttribute('data-u')); break;
-    case 'phmsave': phMgrSave(); break;
+    case 'phinsp': { var _pn = el.getAttribute('data-pname'); phInspOpen(_pn, PH_HERO_IDX[String(_pn || '').toLowerCase()]); break; }
+    case 'phix': phInspClose(); break;
+    case 'phidot': if(PHI && !PHI.adj) phiGo(parseInt(el.getAttribute('data-i'), 10) || 0); break;
+    case 'phikey': if(PHI && !PHI.viewHid && phiCur()){ if(phApplyKey(PHI.name, phiCur().url)){ phiRender(); phiAfterEdit(); } } break;
+    case 'phimove': if(PHI) phiMove(parseInt(el.getAttribute('data-d'), 10) || 0); break;
+    case 'phiadj': if(PHI && !PHI.viewHid && phiCur()){ PHI.adj = true; PHI.confirmDel = false; phiRender(); } break;
+    case 'phidelq': if(PHI){ PHI.confirmDel = true; phiRender(); } break;
+    case 'phidelx': if(PHI){ PHI.confirmDel = false; phiRender(); } break;
+    case 'phidel': phiRemove(); break;
+    case 'phihidtog': if(PHI){ PHI.showHidden = !PHI.showHidden; phiRender(); } break;
+    case 'phihprev': if(PHI){ PHI.viewHid = el.getAttribute('data-u'); PHI.showHidden = true; PHI.confirmDel = false; phiRender(); } break;
+    case 'phiback': if(PHI){ PHI.viewHid = null; phiRender(); } break;
+    case 'phirestore': phiRestore(el.getAttribute('data-u')); break;
+    case 'phisave': phiSaveOrder(); break;
     case 'heroph': phHeroStep(el.getAttribute('data-pname'), parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'herodot': (function(){ var idx2 = phIndex(), pp = idx2 && idx2[el.getAttribute('data-pname')]; if(pp){ PH_HERO_IDX[String(pp.name).toLowerCase()] = parseInt(el.getAttribute('data-i'), 10) || 0; phHeroPaint(pp.name); } })(); break;
-    case 'phvph': phViewerStep(parseInt(el.getAttribute('data-d'), 10) || 1); break;
-    case 'phvdot': phViewerGo(parseInt(el.getAttribute('data-i'), 10) || 0); break;
     case 'phreject': phSetReview(el.getAttribute('data-pname'), 'rejected'); break;
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
     case 'phbad': phSetReview(el.getAttribute('data-pname'), 'bad'); break;
-    case 'phnav': phNavViewer(parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'phfilt': PH_FILT = el.getAttribute('data-f') || 'all'; store('ncc_photos_filter_v1', PH_FILT); phPaintList(); break;
     case 'phafilter': phaState().filter = el.getAttribute('data-f') || 'todo'; phaState().cur = null; viewAudit($('#view')); break;
     case 'phacur': phaState().cur = el.getAttribute('data-pname'); phaRender(); break;
@@ -8088,8 +8081,7 @@ function onClick(ev){
     case 'phaalt': { var anm = el.getAttribute('data-pname'); var afr = phFrameFor(anm); afr.url = el.getAttribute('data-u'); phFrameSet(anm, afr); phaRender(); break; }
     case 'phareason': phSetBadReason(el.getAttribute('data-pname'), el.getAttribute('data-r')); break;
     case 'phareaudit': phClearVerdict(el.getAttribute('data-pname')); break;
-    case 'phsel': phOpenViewer(el.getAttribute('data-pname')); break;
-    case 'phclose': phCloseViewer(); break;
+    case 'phsel': phInspOpen(el.getAttribute('data-pname')); break;
     case 'phcols': PH_COLS = parseInt(el.getAttribute('data-n'), 10) || 12; store('ncc_photos_cols_v1', String(PH_COLS)); phPaintList(); break;
     case 'phsort': PH_SORT = el.getAttribute('data-s') || 'grade'; store('ncc_photos_sort_v1', PH_SORT); phPaintList(); break;
     case 'grpsort': GRPV.sort = el.getAttribute('data-s') || 'name'; store('ncc_grp_sort_v1', GRPV.sort); render(); break;
