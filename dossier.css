@@ -2488,3 +2488,46 @@ html[data-mode="light"] #plxmid .plx-b1{background:radial-gradient(circle,color-
 html[data-mode="light"] #plxmid .plx-b2{background:radial-gradient(circle,color-mix(in srgb,var(--gb) 9%,transparent),transparent 68%)}
 html[data-mode="light"] .plx-num{color:color-mix(in srgb,var(--ga) 5.5%,transparent)}
 @media (min-width:900px){ #top{box-shadow:var(--sh)} }
+
+/* ============ JD REVIEW FIXES — V3.1.2 (2026-10-27) ============
+   1. Home header band removed: the title/sub sit directly on the
+      backdrop (no glass card, no border, no shadow behind the KPI
+      row) and the KPI strip leads the deck at full deck width —
+      the V3.1.0 straddle collision (the band's bottom border
+      slicing behind the KPI cards) is gone at any scroll position.
+   2. Rotation chips: .hma-nextup gets the flex chip layout (the
+      rule only ever existed for the unused .hma-nchips class) and
+      chips never wrap mid-name; brief entries resolve to real
+      buttons via hmDtDi in dossier.js.
+   3. Rail section headings: flex row with the card-heading gap;
+      the count takes the .cnt treatment (12px / 600 / dim /
+      upright) instead of the label's tracked caps.
+   4. Mix row: cards are flex columns whose legend block anchors
+      to the bottom, so tier (one legend line) and relationship
+      (two legend lines) fill the shared card height identically —
+      segbars share the top edge, legends share the bottom edge.
+   5. Rhythm: one inter-row gap (32px) down the deck; the header
+      to KPI step is a plain 20px on the backdrop. */
+
+/* 1 — header on the backdrop; strip leads at full deck width */
+.hm .pagehead{background:none;border:0;border-radius:0;box-shadow:none;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+  padding:2px 2px 0;margin-bottom:0}
+.hm .hmk-strip{position:static;margin:20px 0 0;gap:14px}
+
+/* 2 — chips: one chip, one full name, never split */
+.hma-nextup{display:flex;flex-wrap:wrap;gap:6px}
+.hma-nchip{white-space:nowrap;flex:none}
+
+/* 3 — rail headings: label + count, card-heading treatment */
+.hma-sec{display:flex;align-items:baseline;gap:10px}
+.hma-sec em{font:600 12px var(--sans);font-style:normal;letter-spacing:.02em;
+  text-transform:none;color:var(--dim)}
+
+/* 4 — mix cards: content fills the shared height */
+.hm .hm-mixrow>.hm-blk{display:flex;flex-direction:column;height:100%}
+.hm .hm-mixrow .cbody{flex:1;display:flex;flex-direction:column}
+.hm .hm-mixrow .hm-legs{margin-top:auto;padding-top:9px}
+
+/* 5 — uniform inter-row gap down the deck */
+.hm .hm-ranks{margin-top:32px}
