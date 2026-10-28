@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "total": 678,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
@@ -177,12 +177,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE via ChatGPT professional search, checked 2026-10-28. NCPR (Feb 22, 2021) caption names 'owners Josh and Alicia Taillon' of The Blue House in Madrid, pictured with sous-chef Brad Rookey. Anchors: name + Madrid. The directory's employer (Frary Medical Transport) is NOT confirmed by this source — graded possible, held for JD's ruling.",
    "name": "Alicia Taillon",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://www.northcountrypublicradio.org/news/images/loading/bluehpic1.jpg",
+   "source_page": "https://www.northcountrypublicradio.org/news/story/43239/20210222/madrid-s-toast-to-local-food-launching-their-dream-restaurant-during-a-pandemic",
+   "status": "possible",
+   "type": "News photo (group of three)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Associate Professor and Program Director, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern (photo served from directories.clarkson.edu/view_image.php inside the person's own block).",
@@ -427,12 +428,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Sojourners' contributor biography names Annika Greco and describes her Youth for Christ work in Lebanon with Syrian refugee youth; this headshot accompanies the bio.",
    "name": "Annika Greco",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://sojo.net/files/styles/large/public/headshots/img_4414.jpg",
+   "source_page": "https://sojo.net/biography/annika-greco",
+   "status": "confirmed",
+   "type": "Contributor headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @ariannamason91 (display name \"Arianna Mason\"); bio: \"\"Treat others the way you wish to be treated\"\".",
@@ -1428,12 +1430,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28 (Squarespace CDN serves the image to the dossier site; the earlier OnPay hotlink failure was a different photo). Latitude Bookkeeping's official About page names David Perry as founder and labels this portrait.",
    "name": "David Perry",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://images.squarespace-cdn.com/content/v1/5a5a9251b1ffb6c7b79e3335/1584811435815-JEA8OAEUCC42IYN6ZLT2/David%2BPerry%2BITP%2BPhoto.jpg",
+   "source_page": "https://latitudebks.com/about",
+   "status": "confirmed",
+   "type": "Business portrait",
+   "added": "2026-10-28"
   },
   {
    "also": [
@@ -1576,12 +1579,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The Siena Academy governing-board page does not list Devon Sutton at all and its single image is unlabeled. Gap: the Spectrum Local News story is policy-blocked for the fetcher and could not be checked.",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. NY MEP's services page places this portrait beside Devon Sutton's name and title, Director of Strategic Operations at LC Drives. Small file (5.5 KB) but a real portrait. The page's image alt text misspells 'Devin'; the attribution reads Devon Sutton.",
    "name": "Devon Sutton",
-   "photo_url": null,
-   "source_page": "https://www.sienaacademy.org/governing-board",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://old.newyorkmep.org/wp-content/uploads/2021/06/1550075657507.jpeg",
+   "source_page": "https://old.newyorkmep.org/services/",
+   "status": "confirmed",
+   "type": "Professional portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -2222,12 +2226,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Ministers Fellowship International's About page names Greg Hurlbut with New Testament Church (Massena lead pastor) and a Northeast regional leadership role; this is his named portrait.",
    "name": "Gregory Hurlbut",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://mfiglobal.org/wp-content/uploads/2026/03/MFI-Greg-Hurlbut.webp",
+   "source_page": "https://mfiglobal.org/about/",
+   "status": "confirmed",
+   "type": "Professional portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @spurgeonfiddle (display name \"Haddon Brown\").",
@@ -2431,12 +2436,13 @@
    ]
   },
   {
-   "evidence": "Her Clarkson people profile is a text-only Q&A biography with no image. Her Project Casting profile matches her but returned no image — gap: a headshot may exist there that extraction didn't surface. The peoplesartist page doesn't mention her; the Towle Chiropractic site has no content about her.",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28 (URL returns a live JPEG). Clarkson's official people page names Ilene Lashomb as an administrative assistant in Admissions; the directory image endpoint serves her staff headshot.",
    "name": "Ilene Lashomb",
-   "photo_url": null,
-   "source_page": "https://projectcasting.com/professional/ilene-lashomb",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=ilashomb",
+   "source_page": "https://www.clarkson.edu/people/ilene-lashomb",
+   "status": "confirmed",
+   "type": "Staff headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4853,12 +4859,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Laterna Studio's official About page identifies Pete Molinero by name and describes his operation of the Potsdam studio; this is the business portrait published with his introduction.",
    "name": "Pete Molinero",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://laternastudio.com/wp-content/uploads/2017/09/peteBizCas-1024x1024.jpg",
+   "source_page": "https://laternastudio.com/about/",
+   "status": "confirmed",
+   "type": "Business portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "The Ombra news post names him as Potsdam site lead in text, but its sole image is an unlabeled header graphic with no caption tying it to him — excluded. His other source is Facebook (auth).",
@@ -5283,12 +5290,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Clarkson people profile is a contact block only (email, phone, offices) — no headshot/photo URL in the fetch.",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Clarkson's official people page names Sarah Darabon as a Campus Safety & Security Sergeant and serves this labeled headshot from the Clarkson directory.",
    "name": "Sarah Darabon",
-   "photo_url": null,
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=sdarabon",
    "source_page": "https://www.clarkson.edu/people/sarah-darabon",
-   "status": "no_photo",
-   "type": null
+   "status": "confirmed",
+   "type": "Staff headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @sarah.ellabb (display name \"sarah\"); bio: \"NY | DePaul\".",
@@ -5333,12 +5341,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED 2026-10-28. NNY360 health magazine (Jan 2026), page 1 caption: 'Isabella Graham Hart (IGH) School of Practical Nursing - St. Lawrence Region graduates, from left: Isabel Hanisch, Savannah Durant, Marius Griffin, Nicole Whitmarsh and Sydni Boring.' Photo cropped to Savannah (second from left) and hosted locally, DeLage-style; the full group photo is in the source PDF.",
    "name": "Savannah Durant",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/savannah-durant.jpg",
+   "source_page": "https://bloximages.newyork1.vip.townnews.com/nny360.com/content/tncms/assets/v3/editorial/5/6d/56de831c-52bf-47a2-9f4b-0989ebf7f207/694ed7cd18345.pdf.pdf",
+   "status": "confirmed",
+   "type": "News photo (cropped from captioned group photo)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
