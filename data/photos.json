@@ -1,6 +1,6 @@
 {
  "updated": "2026-10-28",
- "total": 678,
+ "total": 680,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
   {
@@ -201,11 +201,18 @@
   {
    "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Associate Professor and Program Director, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern (photo served from directories.clarkson.edu/view_image.php inside the person's own block).",
    "name": "Alisha Ohl",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=aohl",
+   "photo_url": "photos/alisha-ohl-aligned.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=aohl",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://directories.clarkson.edu/view_image.php?image_id=aohl",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://www.clarkson.edu/organizational-chart?u=aohl"
+    }
+   ]
   },
   {
    "evidence": "Instagram profile @alli.potter17 (display name \"Alli potter\").",
@@ -948,12 +955,19 @@
   {
    "evidence": "Atlantic Insurance Group team page headshot: Caroline Milwicz-Willis — played D1 lacrosse at Liberty University (Marketing and Public Relations), lives in upstate New York with husband Zachary; cross-confirmed by her SUNY Potsdam women’s lacrosse assistant-coach bio.",
    "name": "Caroline Willis",
-   "photo_url": "https://b2059373.assetcdn.net/2.0/2059373/wp-content/uploads/2019/03/Team-Caroline-Milwicz-Willis.png?lossy=1&strip=1&webp=1",
+   "photo_url": "photos/caroline-willis-aligned.jpg",
    "source_page": "https://atlanticinsgroup.com/about-our-agency/meet-our-team/team-member/caroline-milwicz-willis/",
    "status": "confirmed",
    "type": "staff headshot",
    "added_approx": "Oct 2026",
-   "added": "2026-10-26"
+   "added": "2026-10-26",
+   "also": [
+    {
+     "url": "https://b2059373.assetcdn.net/2.0/2059373/wp-content/uploads/2019/03/Team-Caroline-Milwicz-Willis.png?lossy=1&strip=1&webp=1",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://atlanticinsgroup.com/about-our-agency/meet-our-team/team-member/caroline-milwicz-willis/"
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1269,11 +1283,18 @@
   {
    "evidence": "Chamber entry for Railroad Productions lists Cory Williams as business contact; its Photo Gallery includes a file named '1.Headshot.JPG' alongside portfolio shots — no caption names the headshot's subject, so possible not confirmed. The Knot listing is review text only. Third source (Potsdam Crane page) is about Alex Mariano — its photos are Mariano, Cory is only the video credit; those photos were rejected for Cory.",
    "name": "Cory Williams",
-   "photo_url": "https://www.potsdamchamber.com/wp-content/uploads/gravity_forms/14-3176f72419867ca7663517d4107e18b0/2025/12/1.Headshot.JPG",
+   "photo_url": "photos/cory-williams-aligned.jpg",
    "source_page": "https://www.potsdamchamber.com/view/business-leaders-table-view/entry/2784/?pagenum=3&sort",
    "status": "possible",
    "type": "business gallery headshot",
-   "added_approx": "Oct 2026"
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://www.potsdamchamber.com/wp-content/uploads/gravity_forms/14-3176f72419867ca7663517d4107e18b0/2025/12/1.Headshot.JPG",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://www.potsdamchamber.com/view/business-leaders-table-view/entry/2784/?pagenum=3&sort"
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1454,11 +1475,18 @@
   {
    "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28 (Squarespace CDN serves the image to the dossier site; the earlier OnPay hotlink failure was a different photo). Latitude Bookkeeping's official About page names David Perry as founder and labels this portrait.",
    "name": "David Perry",
-   "photo_url": "https://images.squarespace-cdn.com/content/v1/5a5a9251b1ffb6c7b79e3335/1584811435815-JEA8OAEUCC42IYN6ZLT2/David%2BPerry%2BITP%2BPhoto.jpg",
+   "photo_url": "photos/david-perry-aligned.jpg",
    "source_page": "https://latitudebks.com/about",
    "status": "confirmed",
    "type": "Business portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-28",
+   "also": [
+    {
+     "url": "https://images.squarespace-cdn.com/content/v1/5a5a9251b1ffb6c7b79e3335/1584811435815-JEA8OAEUCC42IYN6ZLT2/David%2BPerry%2BITP%2BPhoto.jpg",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://latitudebks.com/about"
+    }
+   ]
   },
   {
    "also": [
@@ -1496,12 +1524,12 @@
    "added_approx": "Oct 2026",
    "also": [
     {
-     "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/624287746_18343158550210714_7483392019107157034_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=7_PB5fIi1bYQ7kNvwHcO-4z&_nc_oc=AdrrcFiymmVAqW3TcPTQTYD-wVD8PBp_ORpuo7-R62hud1zh06N8jbbjRFSEFIFkOwBM3BfKSUHSdvuyV8H_Dg9b&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=G63hooMZsAFtiMMgKGQ8fQ&oh=00_AQMDPGG7pARxm311l5f6wliZdczZj7jlwle1YRYzUa-XNg&oe=6AE018D9",
      "status": "possible",
      "type": "Instagram profile picture",
      "source_page": "https://www.instagram.com/davidzufallphotography/",
      "evidence": "Instagram profile @davidzufallphotography (display name \"𝑫𝒂𝒗𝒊𝒅 𝒁𝒖𝒇𝒂𝒍𝒍 𝑷𝒉𝒐𝒕𝒐𝒈𝒓𝒂𝒑𝒉𝒚\"); bio: \"Photographer in Upstate NY. DM for bookings.  Personal page and landcapes @davidzufall\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
-     "added_approx": "Oct 2026"
+     "added_approx": "Oct 2026",
+     "url": "https://scontent.cdninstagram.com/v/t51.82787-19/624287746_18343158550210714_7483392019107157034_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=7_PB5fIi1bYQ7kNvwHcO-4z&_nc_oc=AdrrcFiymmVAqW3TcPTQTYD-wVD8PBp_ORpuo7-R62hud1zh06N8jbbjRFSEFIFkOwBM3BfKSUHSdvuyV8H_Dg9b&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=G63hooMZsAFtiMMgKGQ8fQ&oh=00_AQMDPGG7pARxm311l5f6wliZdczZj7jlwle1YRYzUa-XNg&oe=6AE018D9"
     }
    ]
   },
@@ -1708,11 +1736,18 @@
   {
    "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in a SUNY Canton Basketball hoodie, holding a ball toward the camera in the college gym). SUNY Canton's official athletics roster names Eli Larson (#20, forward, 6-8, Greenville, NY) on the men's basketball team, and the portrait is the college media-library file named for him. NOTE: Eli Larson has no profile in the contacts directory — this entry was created from JD's lead and is held for his ruling.",
    "name": "Eli Larson",
-   "photo_url": "https://www.canton.edu/media/Eli-Larson.jpg",
+   "photo_url": "photos/eli-larson-aligned.jpg",
    "source_page": "https://rooathletics.com/sports/mens-basketball/roster/2022-23",
    "status": "confirmed",
    "type": "College basketball portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-28",
+   "also": [
+    {
+     "url": "https://www.canton.edu/media/Eli-Larson.jpg",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://rooathletics.com/sports/mens-basketball/roster/2022-23"
+    }
+   ]
   },
   {
    "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; name matches; bio (\"Follower of Christ Jesus\", \"Husband to @sarahbthomas\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
@@ -2184,12 +2219,17 @@
   {
    "evidence": "CONFIRMED via JD-supplied professional search + Luna live-site retrieval, verified 2026-10-28 (image loads, 750x1000 solo gym portrait). The photo sits on Bjorn Fitness's own site under a page headed 'Gavin Matthews'; member reviews on the site name Gavin as a Shapesmith (coach) there. ChatGPT's pass reported a coaching bio styling him 'Master Shapesmith' with NASM certifications; that bio text is NOT on the current site (possibly an earlier version), so the title/certs were not filed as fact.",
    "name": "Gavin Matthews",
-   "photo_url": "https://bjornfitness.com/wp-content/uploads/2023/09/Gavin-Matthews.jpg",
+   "photo_url": "photos/gavin-matthews-aligned.jpg",
    "source_page": "https://bjornfitness.com/home-12/gavin-matthews/",
    "status": "confirmed",
    "type": "Gym coach portrait",
    "added": "2026-10-28",
    "also": [
+    {
+     "url": "https://bjornfitness.com/wp-content/uploads/2023/09/Gavin-Matthews.jpg",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://bjornfitness.com/home-12/gavin-matthews/"
+    },
     {
      "url": "https://bjornfitness.com/wp-content/uploads/2023/12/IMG_1386-1.jpeg",
      "note": "Second Bjorn Fitness photo of Gavin (gym, bear-paw mural), surfaced by JD's follow-up as the image tied to his name on the official coach page; visually confirmed as the same man, 2026-10-28.",
@@ -2436,11 +2476,18 @@
   {
    "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. North Country Savings Bank's own article profiles Hudson Brown, its Canton floating relationship banker who grew up locally and plays viola at church, with this portrait (viewed; 5828x3911 JPEG). His directory anchor is Christian Fellowship Center, which the article does not name - graded possible.",
    "name": "Hudson Brown",
-   "photo_url": "https://www.northcountrysavings.bank/sites/default/files/2023-05/NCSB_RelationshipBanker_HBrown_1.jpg",
+   "photo_url": "photos/hudson-brown-aligned.jpg",
    "source_page": "https://www.northcountrysavings.bank/blog-article/hudson-brown-ncsb-floating-relationship-banker",
    "status": "possible",
    "type": "Employer profile portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-28",
+   "also": [
+    {
+     "url": "https://www.northcountrysavings.bank/sites/default/files/2023-05/NCSB_RelationshipBanker_HBrown_1.jpg",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://www.northcountrysavings.bank/blog-article/hudson-brown-ncsb-floating-relationship-banker"
+    }
+   ]
   },
   {
    "evidence": "His Clarkson org-chart block carries the directory image labeled 'hwoodrow' above his name and title (Campus Safety & Security Officer) — the directory headshot keyed to his username.",
@@ -3046,11 +3093,18 @@
   {
    "evidence": "Image sits directly under his section heading 'Zufall Family Farm | John Zufall, Lisbon, NY (Owner)', labeled 'Zufall farm photos' — a farm photo grid tied to his farm's section. The label does not state John himself is pictured (photos credited to others) — possible only.",
    "name": "John Zufall",
-   "photo_url": "https://www.natureupnorth.org/sites/default/files/inline-images/Zufall_grid.jpg",
+   "photo_url": "photos/john-zufall-aligned.jpg",
    "source_page": "https://www.natureupnorth.org/justmynature/kathryn-jepson/north-country-voices-canton-farmers-market",
    "status": "possible",
    "type": "gallery / farm photo grid",
-   "added_approx": "Oct 2026"
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://www.natureupnorth.org/sites/default/files/inline-images/Zufall_grid.jpg",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://www.natureupnorth.org/justmynature/kathryn-jepson/north-country-voices-canton-farmers-market"
+    }
+   ]
   },
   {
    "evidence": "Instagram profile @johnnny_martinnn_ (display name \"Johnny Martin\"); bio: \"broken and scattered..... .....mended and new\".",
@@ -3254,12 +3308,19 @@
   {
    "evidence": "SUNY Canton “People Like Me” profile photo, labeled with his name: Judson Foote of Hermon, nursing student, 36-year-old father of four, former commercial truck driver, ordained minister and private pilot.",
    "name": "Judson Foote",
-   "photo_url": "https://www.canton.edu/media/foote.jpg",
+   "photo_url": "photos/judson-foote-aligned.jpg",
    "source_page": "https://www.canton.edu/plm/",
    "status": "confirmed",
    "type": "profile photo",
    "added_approx": "Oct 2026",
-   "added": "2026-10-26"
+   "added": "2026-10-26",
+   "also": [
+    {
+     "url": "https://www.canton.edu/media/foote.jpg",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://www.canton.edu/plm/"
+    }
+   ]
   },
   {
    "evidence": "No source links on file.",
@@ -3956,21 +4017,13 @@
    "added": "2026-10-22"
   },
   {
-   "evidence": "POSSIBLE. Her own Coroflot profile — bio matches the directory person exactly (SUNY Canton Graphic & Multimedia Design 2014, Chancellor's Award for Student Excellence, Norwood NY origin, now Watertown NY teaching art at SUNY Canton). The profile avatar is served from Coroflot's S3 (curl-verified 200 image/jpg, 75,697 bytes), but as a working illustrator her avatar may be artwork rather than a photograph — one anchor only; a visual check is recommended before treating as confirmed.",
+   "evidence": "POSSIBLE. Her own Coroflot profile — bio matches the directory person exactly (SUNY Canton Graphic & Multimedia Design 2014, Chancellor's Award for Student Excellence, Norwood NY origin, now Watertown NY teaching art at SUNY Canton). The profile avatar is served from Coroflot's S3 (curl-verified 200 image/jpg, 75,697 bytes), but as a working illustrator her avatar may be artwork rather than a photograph — one anchor only; a visual check is recommended before treating as confirmed. Also on file: Only link on file is Facebook (auth).",
    "name": "Lydia Dale",
    "photo_url": "https://s3images.coroflot.com/user_files/individual_files/avatars/large_avatar_530596_kjsy3lpubqb9se4goyxcxmj4f.jpg",
    "source_page": "https://www.coroflot.com/LydiaDale/profile",
    "status": "possible",
    "type": "portrait",
    "added": "2026-10-27"
-  },
-  {
-   "evidence": "Only link on file is Facebook (auth).",
-   "name": "Lydia Dale",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
   },
   {
    "evidence": "Instagram profile @lydia_rose_martin (display name \"Lydia Martin\"); bio: \"Chosen, not forsaken.\".",
@@ -4053,11 +4106,18 @@
   {
    "evidence": "CONFIRMED 2026-10-28 via the ChatGPT broad-search relay, verified against the source. North Central College's 2012 women's track and field roster prints this headshot beside Maggie Lapinski's name with hometown Canton, N.Y., matching her directory anchor (Canton / Christian Fellowship Center). Photo viewed; the server serves WebP bytes under a .JPG name, which browsers render normally. Maggie Lapinski is a distinct person from Meg Lapinski (JD's ruling).",
    "name": "Maggie Lapinski",
-   "photo_url": "https://northcentralcardinals.com/images/2012/1/4/lapinski_maggie.JPG",
+   "photo_url": "photos/maggie-lapinski-aligned.jpg",
    "source_page": "https://northcentralcardinals.com/sports/womens-track-and-field/roster/2012",
    "status": "confirmed",
    "type": "College athletics roster headshot",
-   "added": "2026-10-28"
+   "added": "2026-10-28",
+   "also": [
+    {
+     "url": "https://northcentralcardinals.com/images/2012/1/4/lapinski_maggie.JPG",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://northcentralcardinals.com/sports/womens-track-and-field/roster/2012"
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5333,10 +5393,16 @@
    "added_approx": "Oct 2026"
   },
   {
-   "also": [],
+   "also": [
+    {
+     "url": "https://gosaxons.com/images/2022/2/6/DSC04512_Sara_Badeau.jpg?width=600",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://gosaxons.com/sports/cheerleading/roster/sara-badeau/9285"
+    }
+   ],
    "evidence": "Her Alfred Saxons cheerleading roster profile's photo is the file named for her (DSC04512_Sara_Badeau.jpg) beside her listed position, Backspot. Her track & field roster profile confirms the same way. Filed at the verified Sidearm width=600 size of the same file (extraction served the width=40 thumbnail). Note 2026-10-27: the secondary gosaxons.com image (W_Badeau_Sara.jpg) now 404s and was removed; the key photo is unaffected.",
    "name": "Sara Badeau",
-   "photo_url": "https://gosaxons.com/images/2022/2/6/DSC04512_Sara_Badeau.jpg?width=600",
+   "photo_url": "photos/sara-badeau-aligned.jpg",
    "source_page": "https://gosaxons.com/sports/cheerleading/roster/sara-badeau/9285",
    "status": "confirmed",
    "type": "roster headshot",
@@ -5968,11 +6034,18 @@
   {
    "name": "William Dunphey",
    "status": "confirmed",
-   "photo_url": "https://images-pw.pixieset.com/site/2Yxwpp/nMV3K0/_K3A1988-fa9824e9-1500.jpg",
+   "photo_url": "photos/william-dunphey-aligned.jpg",
    "source_page": "https://www.davidzufallphotography.com/",
    "type": "portrait",
    "evidence": "Photo by David Zufall, sitting mislabeled as the About photo on David Zufall's own site. JD confirmed 2026-10-22 that the subject is William Dunphey (son of B. Ryan Dunphey; Clarkson Engineering & Management). Filed for William as confirmed on JD's identification.",
-   "added_approx": "Oct 2026"
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://images-pw.pixieset.com/site/2Yxwpp/nMV3K0/_K3A1988-fa9824e9-1500.jpg",
+     "note": "Original full frame (QC alignment crop applied 2026-10-28)",
+     "source_page": "https://www.davidzufallphotography.com/"
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
