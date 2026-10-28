@@ -1,0 +1,103 @@
+{
+ "version": 1,
+ "types": {
+  "CFC": "church",
+  "CFA": "program",
+  "U.S. Army": "military",
+  "Army National Guard": "military",
+  "27th IBCT": "military",
+  "HHC 27th IBCT": "military",
+  "S1": "military",
+  "U.S. Air Force": "military",
+  "U.S. Marine Corps": "military"
+ },
+ "parents": {
+  "CFC": {
+   "p": "Church",
+   "edge": "part"
+  },
+  "NTC": {
+   "p": "Church",
+   "edge": "part"
+  },
+  "Calvary Baptist": {
+   "p": "Church",
+   "edge": "part"
+  },
+  "Redeeming Love Church": {
+   "p": "Church",
+   "edge": "part"
+  },
+  "New Testament Church": {
+   "p": "Church",
+   "edge": "part"
+  },
+  "CFA": {
+   "p": "CFC",
+   "edge": "runby"
+  },
+  "U.S. Army": {
+   "p": "Military",
+   "edge": "part"
+  },
+  "U.S. Air Force": {
+   "p": "Military",
+   "edge": "part"
+  },
+  "U.S. Marine Corps": {
+   "p": "Military",
+   "edge": "part"
+  },
+  "Army National Guard": {
+   "p": "U.S. Army",
+   "edge": "part"
+  },
+  "27th IBCT": {
+   "p": "Army National Guard",
+   "edge": "part"
+  },
+  "HHC 27th IBCT": {
+   "p": "27th IBCT",
+   "edge": "part"
+  },
+  "S1": {
+   "p": "HHC 27th IBCT",
+   "edge": "part"
+  },
+  "Park Bros. Potsdam": {
+   "p": "Park Bros.",
+   "edge": "part"
+  },
+  "Park Bros. Canton": {
+   "p": "Park Bros.",
+   "edge": "part"
+  }
+ },
+ "cats": {
+  "Church": "church",
+  "University": "university",
+  "Military": "military"
+ },
+ "added": [
+  {
+   "name": "S1",
+   "kinds": [
+    "groups"
+   ]
+  },
+  {
+   "name": "Park Bros. Potsdam",
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  },
+  {
+   "name": "Park Bros. Canton",
+   "kinds": [
+    "companies",
+    "groups"
+   ]
+  }
+ ]
+}
