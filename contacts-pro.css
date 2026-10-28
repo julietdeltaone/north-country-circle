@@ -3584,3 +3584,57 @@ html[data-focus="1"] #app:has(> #pool) #pool{grid-column:2}
 .lay-mparts{text-align:left;margin-top:4px}
 .lay-mparts .lay-part{padding:14px 16px 4px;border-radius:14px}
 @media(max-width:520px){.lay-body{padding:13px}.lay-hero{padding:16px}.lay-name{font-size:23px}.lay-name.big{font-size:29px}.lay-part{padding:15px 15px 6px}}
+
+/* ================================================================
+   PEOPLE VIEW PASS 2026-10-28 — fixed controls, full screen, no
+   sideways scroll. The People page fills the shell like the
+   Network page: title + toolbar stay put, the table region
+   scrolls under sticky column headers, and the table compresses
+   (values ellipsis in-cell) instead of scrolling sideways.
+   Audit: people-view-audit-2026-10-28.md
+   ================================================================ */
+.page.people{flex:1 1 0%;min-height:0;padding:0;gap:0}
+.page.people .pagehead{padding:20px 24px 0}
+.page.people .ppl-cols{flex:1 1 auto;min-height:0;align-items:stretch;padding:14px 24px 20px}
+.page.people .ppl-main{gap:12px;min-height:0}
+.page.people .toolbar{flex:none}
+.page.people .tool-r{flex-wrap:wrap;justify-content:flex-end}
+.page.people .plist{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.page.people .ptwrap{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;max-width:none}
+.page.people .ppl-side{max-height:100%;overflow-y:auto}
+/* the table compresses: fixed floors off, headers may wrap */
+.page.people .ptable{min-width:0}
+.page.people .ptable .c-name{min-width:0}
+.page.people .ptable th{white-space:normal}
+.page.people .ptable .pn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.page.people .ptable td.c-email{overflow-wrap:anywhere}
+/* column headers stick to the top of the scrolling region */
+.page.people .ptable thead th{position:sticky;top:0;z-index:3;background:var(--glass-solid);-webkit-backdrop-filter:blur(18px) saturate(1.45);backdrop-filter:blur(18px) saturate(1.45);box-shadow:0 1px 0 var(--line2)}
+/* fully opaque sticky header per mode: glass-solid alone is 94% and the
+   blurred row underneath stays readable — JD reads screenshots, not specs */
+html[data-mode="light"] .page.people .ptable thead th{background:#f4f8f8}
+html[data-mode="dark"] .page.people .ptable thead th{background:#0a0d12}
+/* recency grouping + contact cells */
+.ptable .ptgroup td{padding:16px 16px 7px;font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--txt);border-bottom:1px solid var(--line)}
+.ptable .ptgroup span{color:var(--dim);font-weight:600;margin-left:6px;letter-spacing:.03em}
+.ptable .ptlc{white-space:nowrap}
+.ptable .ptlc .lc-globe{vertical-align:-1px;color:var(--acc2)}
+.ppl-viewseg button{white-space:nowrap}
+@media (max-width:1199px){
+  .page.people .ptable th,.page.people .ptable td{padding-left:10px;padding-right:10px}
+  .page.people .ptable .clip{max-width:170px}
+}
+@media (max-width:899px){
+  .page.people .pagehead{padding:14px 14px 0}
+  .page.people .ppl-cols{padding:10px 14px 14px;flex-direction:column}
+  .page.people .ppl-main{width:100%;flex:1 1 auto;min-height:0}
+  .page.people .ppl-side{width:100%;flex:none;max-height:42%}
+  .page.people .ptable .clip{max-width:140px}
+}
+/* People pass, part 2: fixed table layout — the colgroup shares above
+   govern widths, so the table is exactly its region's width at any size */
+.page.people .pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.page.people .ptable{table-layout:fixed}
+.page.people .ptable td.c-handle,.page.people .ptable td.c-phone,.page.people .ptable td.c-updated,.page.people .ptable td.c-firstc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.page.people .ptable .ptlc{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.page.people .ptable .ptier{white-space:normal}
