@@ -488,12 +488,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads; solo equestrian headshot). Alfred University's official 2021-22 Hunt Seat Equestrian roster names Ashlin Elliott, Massena NY / Massena Central, senior. Matches the directory's Alfred + equestrian record.",
    "name": "Ashlin Elliott",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://gosaxons.com/images/2021/11/23/DSC01189_Ashlin_Elliott.jpg",
+   "source_page": "https://gosaxons.com/sports/equestrian/roster/ashlin-elliott/9564",
+   "status": "confirmed",
+   "type": "Team roster portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @autumn.zellweger (display name \"Autumn Zellweger ♡\"); bio: \"my life, shared with you\".",
@@ -2359,12 +2360,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE via ChatGPT professional search batch 2, checked 2026-10-28. Living Hope Church Malone's official leadership page identifies Heather Ramsdell as Executive Pastor with her portrait beside her name; identity matches the directory (Living Hope Church, Winthrop, New Testament Church). Graded possible ONLY because the image host is unreachable from Luna's network (connection dropped on every route tried), so the hotlink could not be load-verified. Held for JD's ruling / browser check.",
    "name": "Heather Ramsdell",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://www.lhcmalone.com/wp-content/uploads/2023/04/Heather-1.jpeg",
+   "source_page": "https://www.lhcmalone.com/who-we-are/",
+   "status": "possible",
+   "type": "Church leadership portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Her Clarkson org-chart block carries the directory image labeled 'hshattuc' beside her name and title (Clinical Associate Professor, Physical Therapy) — the directory headshot keyed to her username. Her Clarkson people page is a text-only biography.",
@@ -4944,12 +4946,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads, 1.3 MB JPEG). University of Michigan LSA's official CHGD Summer Fellows page names Rachel Kushner, labels her photograph, psychology program, Class of 2021. Matches the directory's University of Michigan record.",
    "name": "Rachel Kushner",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://lsa.umich.edu/content/michigan-lsa/urop/en/current-urop-students/summer-fellows/chgd-summer-fellows/jcr%3Acontent/par/responsivegrid_395737925/image.transform/none/image.jpg",
+   "source_page": "https://lsa.umich.edu/urop/current-urop-students/summer-fellows/chgd-summer-fellows.html",
+   "status": "confirmed",
+   "type": "University fellow portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @amotwinsmom (display name \"Rachelle\").",
@@ -5567,12 +5570,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her Clarkson people profile is contact details only — no headshot. The Clarkson NYSSPA story mentions her only as the event contact and carries no images.",
+   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads). Clarkson's official staff page names Tammy Monroe, Administrative Coordinator in Physician Assistant Studies, Lewis School of Health Sciences, and labels her headshot. Matches the directory's Clarkson Lewis School record.",
    "name": "Tammy Monroe",
-   "photo_url": null,
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=tmonroe",
    "source_page": "https://www.clarkson.edu/people/tammy-monroe",
-   "status": "no_photo",
-   "type": null
+   "status": "confirmed",
+   "type": "Staff directory headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
