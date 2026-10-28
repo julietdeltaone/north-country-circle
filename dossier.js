@@ -11925,6 +11925,7 @@ function mlDelete(ent){
   if(ov.types) delete ov.types[ent.name];
   if(ov.parents) delete ov.parents[ent.name];
   taxSaveOverlay(ov);
+  if(GRP_EXTRA.indexOf(ent.name) >= 0){ GRP_EXTRA = GRP_EXTRA.filter(function(g){ return g !== ent.name; }); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
   if(MLV.open === ent.key) MLV.open = null;
   toast(ent.name + ' removed from the Master List.');
   mlRender();
@@ -12107,6 +12108,7 @@ function viewLists(v){
           '<button type="button" class="btn sm" data-act="mlsus" data-loser="' + esc(s2.a.key) + '" data-winner="' + esc(s2.b.key) + '">Keep ' + esc(s2.b.name) + '</button></div></div>';
       }).join('') + '</section>';
   }
+  if(q && h.indexOf('ml-row') < 0) h += '<div class="ml-none" style="padding:18px 2px">No names match "' + esc(MLV.q.trim()) + '".</div>';
   h += '</div></div>';
   v.innerHTML = h;
   var qi = v.querySelector('#mlq');
