@@ -3383,13 +3383,14 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her practice site's only real image heads 'The Therapy Garage Story' section, which names Karen Hoover and Regis Quirin as co-owners — tied to her by section context but with no caption/alt naming her, so likely rather than confirmed. Her Clarkson people page is text only.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 2). Clarkson's Lewis School of Health Sciences faculty page lists Karen Hoover, Clinical Associate Professor (khoover@clarkson.edu), beside this directory headshot. URL load-verified (600x900 JPEG) and the portrait viewed.",
    "name": "Karen Hoover",
-   "photo_url": "https://img1.wsimg.com/isteam/ip/92484fc8-1a54-4715-9016-1887b461c88b/39e09cd5106cf116588847433fd704c8.png/:/rs=w:400,cg:true,m",
-   "source_page": "http://thetherapygarage.com/",
-   "status": "likely",
-   "type": "practice photo",
-   "added_approx": "Oct 2026"
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=khoover",
+   "source_page": "https://www.clarkson.edu/academics/schools-colleges/health/faculty-staff?page=1",
+   "status": "confirmed",
+   "type": "University directory headshot",
+   "added_approx": "Oct 2026",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Her own Merit Pages profile (Business Administration, SNHU, Class of 2020, Potsdam NY) carries [Image 0] at the top — her student photo file in her own Merit photo directory. Only other image is the Merit logo, excluded.",
@@ -5994,6 +5995,16 @@
    "type": "group",
    "evidence": "anchor 1: the army.mil article 'New York National Guard Soldiers return from Southern Vanguard 24 in Brazil' captions this photo: 'New York Army National Guard Cpt. Kyle Davis, assigned to the 258th Field Artillery Regiment, and Brazilian Army Sergeant 3rd Class Irwing Carvalho Marques, assigned to the 2nd Jungle Infantry Battalion, examine a starting point during a night time land navigation exercise prior to the start of Exercise Southern Vanguard 24 in Belém, Brazil on Nov. 3, 2023' (U.S. Army photo by Spc. Joseph Liggio). anchor 2: the identical DVIDS record (Photo ID 8109436, VIRIN 231103-Z-EL715-1544, 6720x4480) carries the same caption naming Cpt. Kyle Davis of the 258th Field Artillery Regiment — matches profile (CPT, HHC 27th IBCT; his 258th Field Artillery Southern Vanguard 24 service is already on file). Filed URL is the DVIDS public-domain 1000w version of the same photo.",
    "added": "2026-10-27"
+  },
+  {
+   "evidence": "CONFIRMED 2026-10-28. The AEDC March 2024 newsletter photo is captioned Victoria Duley (AEDC), Julie and Justin Cardinal (Esther's Coffee House, Massena), and Jamie Cecilia (AEDC) - the caption names Julie directly; cofounder with Justin. Group photo; individual positions not separately mapped.",
+   "name": "Julie Cardinal",
+   "photo_url": "https://files.constantcontact.com/e6c941d2901/8e4f7ff0-d1a5-430e-b196-5dfadb855e2d.jpg",
+   "source_page": "https://myemail.constantcontact.com/AEDC-Newsletter--March-2024.html?aid=z8NBiWE290c&soid=1138922658926",
+   "status": "confirmed",
+   "type": "Business event group photo",
+   "added": "2026-10-28",
+   "also": []
   }
  ]
 }
