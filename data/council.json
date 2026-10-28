@@ -2,13 +2,13 @@
  "adopted": "2026-10-27",
  "budget": {
   "daily_tranche_pct": 14.3,
-  "expected_pct": 62,
+  "expected_pct": 72,
   "measure": "Usage is reported as a percentage of the weekly allowance, not a token count — the allowance's token size is not published, so the council budgets in percent.",
   "plan": "Power",
-  "read_at": "Oct 27, 2026, 3:45 PM ET",
-  "used_pct": 38,
-  "verdict": "Under pace — 38% used against ~62% even pace with the week resetting Thu Oct 30, 7:38 AM EDT. About 62% of the allowance remains for the last ~2.7 days (~23%/day available vs the 14.3% tranche). Headroom is real; no extension needed.",
-  "week_resets": "Thu Oct 30, 2026, 7:38 AM EDT"
+  "read_at": "Oct 28, 2026, 7:59 AM ET",
+  "used_pct": 47,
+  "verdict": "Under pace — 47% used against ~72% even pace, with the week resetting Fri Oct 30, 2026, 7:38 AM EDT.",
+  "week_resets": "Fri Oct 30, 2026, 7:38 AM EDT"
  },
  "charter_note": "Charter adopted Oct 27, 2026 (JD). Six directors; JD interacts only with the Operations roll-up. Everything reports change-only; \"no findings\" is a valid report.",
  "findings": {
@@ -66,6 +66,11 @@
    }
   ],
   "resource": [
+   {
+    "date": "2026-10-28",
+    "title": "Daily gauge check: 47% used",
+    "summary": "Under pace — 47% used vs ~72% even pace (week resets Fri Oct 30, 2026, 7:38 AM EDT)."
+   },
    {
     "date": "2026-10-27",
     "title": "Inaugural test drive reading: 38% used",
@@ -1234,7 +1239,7 @@
    "authority": "No director starts a large run without Resource clearance. Extensions come only from actual headroom.",
    "icon": "sparkle",
    "key": "resource",
-   "last_run": "Oct 27, 2026 (test drive reading)",
+   "last_run": "Oct 28, 2026",
    "mission": "Own the token budget: read the gauge against pace, authorize extra work from real headroom, call a halt when the day's tranche is spent.",
    "name": "Resource Manager",
    "next_run": "Daily, 8:00 AM ET",
@@ -1273,7 +1278,7 @@
    "title": "Council founded (V3.6.0)"
   }
  ],
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "staging": {
   "mechanism": "Staged council actions are stored as a JSON queue in the Profiles column \"Council Staged\" (BH) on JD's row ig:jdmeyers_ (Sheet row 314). The app writes it through the Apps Script batch endpoint ADDRESSED BY KEY — never through the directory: JD has two directory entries (ig:jdmeyers_ and an sf:jdmeyers_ shell at row 673) and pkey() resolves both to 'sf:jdmeyers_', so a directory patch would land on the wrong row. The endpoint resolves patch fields against the Profiles header row by name (Location-on-file precedent, no endpoint code change). The board reads the queue from the baked profiles.json (sync pull range widened to BH; council_staged added to PROFILE_FIELDS); Luna's passes read the same cell via the Sheets API.",
   "entry_shape": "{flag, action, label, kind, patches?, merge?, state: staged|done, ts, by, outcome?}",
