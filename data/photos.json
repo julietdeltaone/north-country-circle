@@ -4811,12 +4811,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via JD-supplied finding + Luna retrieval, 2026-10-28. Owen Kennedy of Empire Real Estate Firm LLC (Latham, NY area) is the listing agent on the exact Schenectady listings already in his footprint (912 Strong St, 27 Steuben St). His agent headshot is identical on his Homes.com and Zillow profiles; realtor.com carries his profile too but bot-walled Luna's browser, so the portrait was taken from the Zillow copy and is hosted locally (site/photos/owen-kennedy.jpg). Homes.com's own image CDN refuses Luna's network.",
    "name": "Owen Kennedy",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/owen-kennedy.jpg",
+   "source_page": "https://www.homes.com/real-estate-agents/owen-kennedy/gtdtx4w/",
+   "status": "confirmed",
+   "type": "Real estate agent headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "No source links on file.",
