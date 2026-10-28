@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.21.1';
+var APP_VERSION = '3.21.2';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -13038,6 +13038,7 @@ document.addEventListener('click', function(ev){
   if(act === 'sheetx'){ closeSheet(); }
   else if(act === 'confirmok'){ var f = SB_CONFIRM; SB_CONFIRM = null; closeSheet(); if(f) f(); }
   else if(act === 'openprof'){ sbOpenProfile(+t.getAttribute('data-di')); }
+  else if(act === 'gridopen'){ sbOpenProfile(+t.getAttribute('data-di')); }
   else if(act === 'gridcols'){
     var cols = sbGridCols();
     openSheet('Grid columns', '<div class="sb-colchecks">' + SB_COLS.map(function(c){
@@ -13380,8 +13381,8 @@ document.addEventListener('input', function(ev){
   var k = t.getAttribute('data-sbi');
   if(k === 'gridq'){ SB.grid.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbGridRefresh, 250); }
   else if(k === 'discq'){ SB.dsc.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbDiscPaintList, 200); }
-  else if(k === 'rawq'){ SB.raw.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') render(); }, 400); }
-  else if(k === 'trashq'){ SB.dg.trashQ = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') render(); }, 400); }
+  else if(k === 'rawq'){ SB.raw.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') sbRenderKeepFocus('rawq'); }, 400); }
+  else if(k === 'trashq'){ SB.dg.trashQ = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') sbRenderKeepFocus('trashq'); }, 400); }
   else if(k === 'pfq'){
     var res2 = document.getElementById('pfres');
     if(!res2 || !SB.prof) return;
@@ -13427,7 +13428,7 @@ document.addEventListener('input', function(ev){
   else if(k === 'spqtext'){
     SB.pool.qtext = t.value;
     clearTimeout(SB_DEB);
-    SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox' && SB.tool === 'lab' && SB.labtab === 'pool') render(); }, 450);
+    SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox' && SB.tool === 'lab' && SB.labtab === 'pool') sbRenderKeepFocus('spqtext'); }, 450);
   }
   else if(k === 'sppredevent'){ SB.pool.prEvent = t.value; }
   else if(k === 'spoutnote'){ SB.pool.outNote[t.getAttribute('data-id')] = t.value; }
@@ -13469,6 +13470,15 @@ function sbGridRefresh(){
   v.innerHTML = sbShell('<div class="sb-wrap">' + sbGrid() + '</div>');
   var inp = v.querySelector('[data-sbi="gridq"]');
   if(inp && SB.grid.q){ inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+}
+/* Audit sweep 2026-10-28: a full render() for a filter keystroke rebuilt
+   #view and dropped the caret (focus fell to BODY), so typing after the
+   debounce pause went nowhere. Same restore pattern as sbGridRefresh /
+   mlRenderKeepSearch: re-focus the same [data-sbi] input, caret at end. */
+function sbRenderKeepFocus(k){
+  render();
+  var inp = document.querySelector('[data-sbi="' + k + '"]');
+  if(inp){ inp.focus(); try{ inp.setSelectionRange(inp.value.length, inp.value.length); }catch(x){} }
 }
 
 
