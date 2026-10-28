@@ -3023,3 +3023,112 @@ body[data-view="council"] #view{max-width:none;padding:0;margin:0}
   .cnc-decided{margin-left:16px;margin-right:16px}
   .cnc-strip{flex-wrap:wrap}
 }
+
+/* ============================================================
+   V3.12.0 — the intuitive pass
+   ============================================================ */
+
+/* ---- Live Records: even 14px rhythm down the main column. The
+   person-card grid zeroed its cards' margins (correct inside the
+   grid) but had no margin of its own, so the Checked Today card
+   sat flush against it. Same class of defect swept: every block
+   in .dtmain now owns exactly one 14px step. ---- */
+.page.asearch .asgrid{margin-bottom:14px}
+.page.asearch .astop{margin-bottom:0}
+.dtwrap .dtmain>*:last-child{margin-bottom:0}
+
+/* ---- Focus mode: html[data-focus="1"] hides the app chrome; the
+   view takes the whole window. Mirrors the sandbox full-screen
+   pattern. The exit pill is the always-visible way back. ---- */
+html[data-focus="1"] #rail,
+html[data-focus="1"] #top,
+html[data-focus="1"] #tabs{display:none}
+html[data-focus="1"] #app{grid-template-columns:1fr}
+#focusb.on{background:var(--txt);color:var(--bg)}
+.focusexit{position:fixed;right:16px;bottom:16px;z-index:120;display:inline-flex;align-items:center;gap:7px;
+  padding:9px 15px;border-radius:var(--pill);border:1px solid var(--line2);
+  background:var(--card);color:var(--txt);font:600 12.5px var(--sans);cursor:pointer;
+  backdrop-filter:blur(18px) saturate(1.3);box-shadow:0 8px 28px rgba(0,0,0,.25)}
+.focusexit:hover{border-color:var(--txt)}
+.focusexit[hidden]{display:none}
+
+/* ---- Photos in focus: edge-to-edge, chrome auto-hides ---- */
+html[data-focus="1"] body[data-view="photos"] #view{padding:0}
+html[data-focus="1"] .pg-photos{padding:12px 14px}
+.pg-photos .pagehead,.pg-photos .phstrip,.pg-photos .ph-side,.pg-photos .phbar{transition:opacity .28s ease,visibility .28s}
+.pg-photos.ph-idle .pagehead,.pg-photos.ph-idle .phstrip,.pg-photos.ph-idle .phbar{opacity:0;visibility:hidden;height:0;margin:0;overflow:hidden}
+.pg-photos.ph-idle .ph-layout{grid-template-columns:1fr}
+.pg-photos.ph-idle .ph-side{opacity:0;visibility:hidden;position:absolute;pointer-events:none}
+html[data-focus="1"] .phi{width:100vw;max-height:100dvh;height:100dvh;border-radius:0;border:none}
+html[data-focus="1"] .phi-stage{max-width:min(92vmin,860px)}
+
+/* ---- Council field reports ---- */
+.cnc-dept{display:flex;flex-direction:column;gap:12px}
+.cnc-fr{border:1px solid var(--line);border-radius:12px;background:var(--fill);padding:11px 13px;display:flex;flex-direction:column;gap:8px}
+.cnc-fr-h{font:700 10.5px var(--sans);letter-spacing:.11em;text-transform:uppercase;color:var(--dim)}
+.cnc-fr-row{display:grid;grid-template-columns:74px 1fr;gap:10px;align-items:start}
+.cnc-fr-lab{font:700 10px var(--sans);letter-spacing:.08em;text-transform:uppercase;padding:3px 0;color:var(--mut)}
+.cnc-fr-row p{margin:0;font-size:12.8px;line-height:1.55;color:var(--txt)}
+.cnc-fr-row.s .cnc-fr-lab{color:var(--cn-blu)}
+.cnc-fr-row.w .cnc-fr-lab{color:var(--cn-grn)}
+.cnc-fr-row.b .cnc-fr-lab{color:var(--cn-amb)}
+.cnc-fr-row.k .cnc-fr-lab{color:#e30613}
+.cnc-fr-row.k p{color:var(--mut)}
+
+/* ---- Groups: two-column detail ---- */
+.gdet{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px;max-width:1180px;align-items:start}
+.gdet .gdh{grid-column:1/-1}
+.gdet-main{display:flex;flex-direction:column;gap:10px;min-width:0}
+.gdet-side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.gdet-side .gside{margin:0}
+.gside-row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:13px}
+.gside-row span{color:var(--mut)}
+.gside-row b{color:var(--txt);text-align:right;font-weight:600}
+.gside-faces{margin-top:9px}
+.gside-lab{font:700 10.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:13px 0 6px}
+.gside-lab:first-child{margin-top:0}
+.gside-bar{display:grid;grid-template-columns:86px 1fr 26px;gap:9px;align-items:center;padding:3px 0;font-size:12.5px}
+.gside-bar span{color:var(--mut)}
+.gside-bar b{text-align:right;color:var(--txt)}
+.gside-track{height:8px;border-radius:99px;background:var(--fill2,var(--line));overflow:hidden}
+.gside-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ga),var(--gb))}
+@media (max-width:980px){ .gdet{grid-template-columns:1fr} }
+
+/* ---- Family: the generation list (winner of family-concepts) ---- */
+.page.fampage{flex:none;min-height:0;padding:20px 24px 44px;display:flex;flex-direction:column;gap:16px}
+.fampage .netbar{padding:0}
+.famcols2{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.famcols2 .fampanel{position:sticky;top:12px}
+.famlist{display:flex;flex-direction:column;gap:18px;min-width:0}
+.famfocus{position:static;margin:0}
+.ftree{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--card);padding:18px 20px;backdrop-filter:blur(18px) saturate(1.3)}
+.ftree-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.ftree-h h2{font:600 21px var(--serif);margin:0}
+.ftree-n{font:700 11px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
+.ftree-note{font-size:12.3px;color:var(--mut)}
+.fgen{display:grid;grid-template-columns:128px minmax(0,1fr);gap:0 18px;padding:14px 0;position:relative}
+.fgen + .fgen{border-top:1px solid var(--line)}
+.fgen::before{content:"";position:absolute;left:128px;top:0;bottom:0;width:3px;border-radius:2px;background:var(--txt);opacity:.26}
+.fgen-lab{font:700 10.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);line-height:1.5}
+.fgen-lab span{display:block;color:var(--dim);letter-spacing:.06em}
+.fgen-people{display:flex;flex-direction:column;gap:8px;padding-left:18px;min-width:0}
+.fgrp-lab{font:700 10.5px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin-top:6px}
+.fp-row{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.fchip{display:inline-flex;align-items:center;gap:9px;padding:6px 14px 6px 7px;border:1px solid var(--line2);border-radius:var(--pill);background:var(--fill2);color:var(--txt);font:600 13.5px var(--sans);cursor:pointer}
+.fchip:hover{border-color:var(--txt)}
+.fchip.foc{border-color:var(--txt);box-shadow:0 0 0 1.5px var(--txt)}
+.fcouple{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border:1.5px dashed var(--line2);border-radius:var(--pill)}
+.fmrg{display:inline-flex;align-items:center;gap:5px;font:700 10px var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+.fmrg i{display:block;width:20px;height:3px;border-radius:2px;background:var(--txt);opacity:.6}
+.fp-rel{color:var(--mut);font-size:12.5px;line-height:1.45}
+@media (max-width:980px){
+  .famcols2{grid-template-columns:1fr}
+  .famcols2 .fampanel{position:static}
+  .fgen{grid-template-columns:104px minmax(0,1fr)}
+  .fgen::before{left:104px}
+}
+
+/* ---- Sandbox: layered Insights + wider use of the screen ---- */
+.sb-insgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.sb-insnav a.btn{text-decoration:none}
+.sb-wrap{max-width:1560px}
