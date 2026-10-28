@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.11.0';
+var APP_VERSION = '3.12.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -111,6 +111,48 @@ document.addEventListener('keydown', function(ev){
   if (pop && !pop.hidden) { ev.stopPropagation(); closeThemePop(); }
 });
 
+/* ---- Focus mode (V3.12.0) ----
+   One global control hides the app chrome (rail, tabs, top bar) so
+   the current view takes the whole window; Photos leans in further
+   (edge-to-edge grid, chrome that auto-hides and returns on mouse
+   move / tap — see phFocusChromeKick). Persisted like the theme
+   keys: ncc_focus. The head boot script stamps data-focus on <html>
+   before first paint; CSS keys off html[data-focus="1"]. Esc exits
+   when no higher layer (pop, sheet, inspector) is open; a floating
+   exit pill is always visible while focus is on. */
+function focusOn(){ try { return localStorage.getItem('ncc_focus') === '1'; } catch (e) { return false; } }
+function focusExitEl(){
+  var x = document.getElementById('focusexit');
+  if (!x) {
+    x = document.createElement('button');
+    x.type = 'button'; x.id = 'focusexit'; x.className = 'focusexit';
+    x.innerHTML = ic('contract', 15) + '<span>Exit focus</span>';
+    x.addEventListener('click', function(){ setFocus(false); });
+    document.body.appendChild(x);
+  }
+  return x;
+}
+function applyFocus(on){
+  document.documentElement.setAttribute('data-focus', on ? '1' : '0');
+  var b = document.getElementById('focusb');
+  if (b) { b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+  focusExitEl().hidden = !on;
+}
+function setFocus(on){
+  try { localStorage.setItem('ncc_focus', on ? '1' : '0'); } catch (e) {}
+  applyFocus(on);
+  if (on && S.route && S.route.name === 'photos') phFocusChromeKick();
+}
+document.addEventListener('keydown', function(ev){
+  if (ev.key !== 'Escape' || !focusOn()) return;
+  if (document.querySelector('.phi-wrap, .phed-wrap, .ykb-wrap')) return;
+  var sw = document.getElementById('sheetwrap');
+  if (sw && !sw.hidden) return;
+  var pop = document.getElementById('tpop');
+  if (pop && !pop.hidden) return;
+  setFocus(false);
+});
+
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
   associate:{ n:'Associate', c:'#7db3e8' },
@@ -186,6 +228,8 @@ function todayStr(){
 /* one stroke family so every icon sits together */
 var IC = {
   minus:'<path d="M5 12h14"/>', target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  expand:'<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>',
+  contract:'<path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3"/>',
   today:'<path d="M3 7.5 12 3l9 4.5-9 4.5z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/>',
   people:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
   network:'<circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="12" r="9"/><circle cx="19.4" cy="7.6" r="1.4"/>',
@@ -1821,9 +1865,10 @@ function renderChrome(){
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
     '<button type="button" class="syncp" id="sync" data-act="retry"></button>' +
     '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a>' +
+    '<button type="button" class="ib" id="focusb" data-act="focus" aria-label="Focus mode" aria-pressed="false" title="Focus mode: hide the sidebar and bars so the view fills the window (Esc exits)">' + ic('expand', 18) + '</button>' +
     themeSecHTML() +
     '<span class="ver" title="App version">V' + APP_VERSION + '</span></div>';
-  paintSync(); paintUndo(); paintTheme();
+  paintSync(); paintUndo(); paintTheme(); applyFocus(focusOn());
 }
 function paintSync(){
   var p = $('#sync'); if(!p) return;
@@ -1927,7 +1972,10 @@ function topBack(){
     if(S.audit.lcOpen != null){ S.audit.lcOpen = null; viewAudit($('#view')); return; }
     if(audMode() !== 'cards'){ audSetMode('cards'); return; }
   }
-  if(S.route.name === 'sandbox' && typeof SB !== 'undefined' && SB.tool && SB.tool !== 'home'){ go('sandbox', { replace:true }); return; }
+  if(S.route.name === 'sandbox' && typeof SB !== 'undefined' && SB.tool && SB.tool !== 'home'){
+    if(SB.tool === 'insights' && SB.ins && SB.ins.view){ go('sandbox/insights', { replace:true }); return; }
+    go('sandbox', { replace:true }); return;
+  }
   if(S.route.name === 'profile'){
     var fb = S.ctx && S.ctx.from ? S.ctx.from : 'people';
     if(fb === 'groups' && S.ctx && S.ctx.grp) fb = 'groups/' + S.ctx.grp;
@@ -4587,6 +4635,60 @@ function grpPaintMembers(){
   box.innerHTML = shown.length ? shown.map(function(di){ return grpMemberRow(kind, name, di); }).join('') : '<p class="dim pad">' + (mem.length ? 'No one in this group matches.' : 'No one yet.') + '</p>';
   var cnt = $('#gmcount'); if(cnt) cnt.textContent = q ? shown.length + ' of ' + mem.length : String(mem.length);
 }
+/* Group detail side column (V3.12.0): the facts about the group
+   itself, beside the member list instead of above it — derivation,
+   tier mix, photo coverage, where members are, and the other
+   affiliations they share (the indirect-connection signal). All
+   computed live from the same membership grpMembersOf returns. */
+function grpDetailSide(kind, name, mem){
+  var kindLab = (GKINDS.filter(function(k){ return k[0] === kind; })[0] || [])[1] || kind;
+  var tiers = {}, towns = {}, shared = {}, withPh = 0;
+  var idx = phIndex();
+  mem.forEach(function(di){
+    var e = D.directory[di];
+    var t = tierName(e) || 'No tier'; tiers[t] = (tiers[t] || 0) + 1;
+    var tw = e.city || ''; if(tw) towns[tw] = (towns[tw] || 0) + 1;
+    if(idx){ var p = idx[dispName(e)]; if(p && p.photo_url) withPh++; }
+    var seen = {};
+    orgsOf(e).concat(personGroups(e)).forEach(function(o){
+      if(o === name || seen[o]) return; seen[o] = 1; shared[o] = (shared[o] || 0) + 1;
+    });
+  });
+  function topList(obj, n, min){
+    return Object.keys(obj).filter(function(k){ return obj[k] >= (min || 1); })
+      .sort(function(a, b){ return obj[b] - obj[a] || a.localeCompare(b); }).slice(0, n);
+  }
+  var canon = regResolve(name);
+  var aliases = Object.keys(ORGREG.aliases || {}).filter(function(a){ return ORGREG.aliases[a] === (canon || name) && regKey(a) !== regKey(name); })
+    .map(function(a){ return ORGREG.aliasDisp[a] || a; });
+  var maxT = Math.max.apply(null, Object.keys(tiers).map(function(k){ return tiers[k]; }).concat([1]));
+  var h = '<section class="card gside"><header><h3>About this ' + (kind === 'groups' ? 'group' : 'list') + '</h3></header><div class="cbody">' +
+    '<div class="gside-row"><span>Type</span><b>' + esc(kindLab) + '</b></div>' +
+    '<div class="gside-row"><span>Members</span><b>' + mem.length + '</b></div>' +
+    '<div class="gside-row"><span>With a photo</span><b>' + withPh + ' of ' + mem.length + '</b></div>' +
+    '<div class="gside-row"><span>Comes from</span><b>' + esc(grpSignal(kind, name)) + '</b></div>' +
+    (canon && canon !== name ? '<div class="gside-row"><span>Canonical name</span><b>' + esc(canon) + '</b></div>' : '') +
+    (aliases.length ? '<div class="gside-row"><span>Also filed as</span><b>' + aliases.map(esc).join(', ') + '</b></div>' : '') +
+    (mem.length ? '<div class="gside-faces">' + grpFaces(mem.slice(0, 10)) + '</div>' : '') +
+    '</div></section>';
+  if(mem.length > 1){
+    h += '<section class="card gside"><header><h3>Composition</h3></header><div class="cbody">' +
+      '<div class="gside-lab">Tier mix</div>' +
+      topList(tiers, 4).map(function(t){
+        return '<div class="gside-bar"><span>' + esc(t) + '</span><div class="gside-track"><div class="gside-fill" style="width:' + Math.round(100 * tiers[t] / maxT) + '%"></div></div><b>' + tiers[t] + '</b></div>';
+      }).join('');
+    var tw = topList(towns, 5);
+    if(tw.length) h += '<div class="gside-lab">Where they are</div>' + tw.map(function(t){
+      return '<div class="gside-row"><span>' + esc(t) + '</span><b>' + towns[t] + '</b></div>';
+    }).join('');
+    var sh = topList(shared, 6, 2);
+    if(sh.length) h += '<div class="gside-lab">Members also share</div>' + sh.map(function(s2){
+      return '<div class="gside-row"><span>' + esc(s2) + '</span><b>' + shared[s2] + ' members</b></div>';
+    }).join('');
+    h += '</div></section>';
+  }
+  return h;
+}
 function viewGroups(v){
   var kind = S.route.seg[0] || 'groups', name = S.route.seg[1] || '';
   if(!GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
@@ -4603,10 +4705,13 @@ function viewGroups(v){
       '<div class="gdh"><a class="ib backm" href="#/groups/' + kind + '" aria-label="Back to groups">' + ic('chevl', 18) + '</a>' +
       '<div><h2>' + esc(name) + '</h2><small><span id="gmcount">' + mem.length + '</span> ' + (mem.length === 1 ? 'person' : 'people') + ' &middot; ' + esc(grpSignal(kind, name)) + '</small></div><span class="sp"></span>' +
       (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
+      '<div class="gdet-main">' +
       '<div class="gtools"><label class="gsearchbox">' + ic('search', 15) + '<input id="gmq" placeholder="Search members" autocomplete="off" value="' + esc(GRPV.mq) + '"></label>' +
       (hasRanks ? '<span class="gsort"><span>Sort</span>' + [['name', 'Name'], ['rank', 'Rank']].map(function(s){ return '<button type="button" class="phcolbtn' + (GRPV.sort === s[0] ? ' on' : '') + '" data-act="grpsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '</span>' : '') + '</div>' +
       (kind === 'groups' ? '<div class="finder"><input id="gaddq" data-g="' + esc(name) + '" placeholder="Add a person to this group" autocomplete="off"><div id="gaddr" class="hits"></div></div>' : '<p class="note">Membership comes from each profile’s Background section.</p>') +
-      '<div class="plist" id="gmlist"></div></div></div>';
+      '<div class="plist" id="gmlist"></div></div>' +
+      '<aside class="gdet-side">' + grpDetailSide(kind, name, mem) + '</aside>' +
+      '</div></div>';
     grpPaintMembers();
     return;
   }
@@ -6552,6 +6657,28 @@ function viewPhotos(v){
   v.innerHTML = '<div class="page asearch pg-photos">' + head + stats + '<div class="ph-layout">' + rail + main + '</div></div>';
   phPaintList();
   if(PHI) phiRender();
+  phFocusChromeArm();
+}
+/* Focus mode on Photos (V3.12.0): while focus is on, the page's own
+   chrome (head, stats strip, filter rail, sort bar) fades away after
+   ~2.6s without a pointer move and returns on the next move / tap,
+   so the grid runs edge-to-edge, photo to photo. The inspector is
+   already a full overlay; focus stretches it edge-to-edge in CSS. */
+var PH_FOCUS_T = 0;
+function phFocusChromeKick(){
+  var pg = document.querySelector('.pg-photos'); if(!pg) return;
+  pg.classList.remove('ph-idle');
+  clearTimeout(PH_FOCUS_T);
+  PH_FOCUS_T = setTimeout(function(){
+    var p2 = document.querySelector('.pg-photos');
+    if(p2 && focusOn() && S.route && S.route.name === 'photos') p2.classList.add('ph-idle');
+  }, 2600);
+}
+function phFocusChromeArm(){
+  var pg = document.querySelector('.pg-photos'); if(!pg || !focusOn()) return;
+  pg.addEventListener('pointermove', phFocusChromeKick);
+  pg.addEventListener('pointerdown', phFocusChromeKick);
+  phFocusChromeKick();
 }
 function viewSettings(v){
   var merged = [];
@@ -8768,6 +8895,7 @@ function onClick(ev){
     case 'grpsort': GRPV.sort = el.getAttribute('data-s') || 'name'; store('ncc_grp_sort_v1', GRPV.sort); render(); break;
     case 'phsdir': PH_SDIR = PH_SDIR < 0 ? 1 : -1; store('ncc_photos_sdir_v1', PH_SDIR < 0 ? 'desc' : 'asc'); phPaintList(); break;
     case 'back': { var bfb = S.ctx && S.ctx.from ? S.ctx.from : 'people'; if(bfb === 'groups' && S.ctx && S.ctx.grp) bfb = 'groups/' + S.ctx.grp; back(bfb); break; }
+    case 'focus': setFocus(!focusOn()); break;
     case 'topback': topBack(); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
@@ -9320,6 +9448,7 @@ var SB = {
   sel:{},                       /* pkey -> di, bulk selection from the grid */
   raw:{ which:'snapchat', q:'' },
   rep:{ tab:'coverage' },
+  ins:{ view:null },
   integ:{ tab:'recon', dead:null, deadBusy:false },
   lab:{ a:null, b:null, path:null, mutual:null, bridges:null },
   play:{},
@@ -9333,19 +9462,19 @@ var SB = {
 var SB_TOOLS = [
   { k:'grid',     z:'Look', t:'Data grid',    d:'Every person, one row. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
   { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
-  { k:'insights', z:'Look', t:'Insights',     d:'Coverage, distributions and integrity on one page: gaps, sources, staleness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
-  { k:'lab',      z:'Play', t:'The Lab',      d:'Four experiments on the live data: paths & bridges, profiling inferences, Suspect Pool, visuals. Nothing in the lab writes to a profile.', ic:'network' },
+  { k:'insights', z:'Look', t:'Insights',     d:'Eight named checks, each on its own page: coverage, sources, freshness, distributions, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
+  { k:'lab',      z:'Play', t:'The Lab',      d:'Three experiments on the live data: paths & bridges, Suspect Pool, visuals. Nothing in the lab writes to a profile.', ic:'network' },
+  { k:'profiling', z:'Play', t:'Profiling inferences', d:'The inductive lab, promoted out of the Lab: Luna\u2019s blind Persona expectations vs JD\u2019s ratings — headline accuracy first, cohorts second, evidence on drill-in. Read-only.', ic:'eye' },
   { k:'merge',    z:'Fix',  t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',   z:'Fix',  t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
   { k:'log',      z:'Fix',  t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
 ];
 var SB_LABS = [
   { k:'paths',   t:'Paths & bridges' },
-  { k:'prof',    t:'Profiling' },
   { k:'pool',    t:'Suspect Pool' },
   { k:'visuals', t:'Visuals' }
 ];
-function sbZoneOf(tool){ return ({ grid:'Look', raw:'Look', insights:'Look', lab:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
+function sbZoneOf(tool){ return ({ grid:'Look', raw:'Look', insights:'Look', lab:'Play', profiling:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
 function sbLabTab(){
   if(SB.labtab == null) SB.labtab = sbStore('ncc_sbx_labtab') || 'paths';
   if(!SB_LABS.some(function(l){ return l.k === SB.labtab; })) SB.labtab = 'paths';
@@ -9449,19 +9578,24 @@ function viewSandbox(v){
   /* V3.10.0 routes: the old thirteen destinations consolidate to eight.
      Pre-3.10 deep links keep working as aliases into the new surfaces. */
   if(seg === 'reports' || seg === 'integ') SB.tool = 'insights';
-  else if(seg === 'prof'){ SB.tool = 'lab'; SB.labtab = 'prof'; }
+  else if(seg === 'prof' || seg === 'profiling') SB.tool = 'profiling';
   else if(seg === 'pool'){ SB.tool = 'lab'; SB.labtab = 'pool'; }
   else if(seg === 'play'){ SB.tool = 'lab'; SB.labtab = 'visuals'; }
   else SB.tool = seg;
   if(SB.tool === 'lab' && S.route.seg && S.route.seg[1]) SB.labtab = S.route.seg[1];
+  if(SB.tool === 'insights'){
+    var iv = (S.route.seg && S.route.seg[1]) || null;
+    SB.ins.view = SB_INSIGHTS.some(function(x){ return x.k === iv; }) ? iv : null;
+  }
   if(!SB.ready){
     v.innerHTML = sbShell('<div class="sb-wrap"><div class="empty"><h3>Sandbox</h3><p>Loading the sidecar data…</p></div></div>');
     sbEnsure();
     return;
   }
   var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, insights:sbInsights,
+             profiling:function(){ return '<div class="sb-labwrap t-prof">' + sbProf() + '</div>'; },
              lab:sbLabTool, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
-  if(!({ home:1, grid:1, raw:1, insights:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
+  if(!({ home:1, grid:1, raw:1, insights:1, profiling:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -9550,7 +9684,8 @@ function sbHome(){
   var stats = {
     grid: ppl + ' rows', raw: Object.keys(SB_RAW_META).length + ' sidecar files',
     insights: sbFindingsCount() + ' open findings',
-    lab: '4 labs', merge: sbDupPairs().length + ' candidate pairs', danger: Object.keys(sbTrashKeys()).length + ' keys in Trash',
+    lab: '3 labs', profiling: (SB.prof && SB.prof.accuracy && SB.prof.accuracy.overall) ? Math.round(SB.prof.accuracy.overall.agree_rate * 100) + '% blind accuracy · ' + (SB.prof.accuracy.test_set_n || 0) + ' tested' : 'run 2 on file',
+    merge: sbDupPairs().length + ' candidate pairs', danger: Object.keys(sbTrashKeys()).length + ' keys in Trash',
     log: sbLogToday() + ' entries today'
   };
   ['Look', 'Play', 'Fix'].forEach(function(z){
@@ -9883,18 +10018,74 @@ function sbRepBlock(tab){
   return h;
 }
 
-/* ---------------- 4. integrity (inside Insights since V3.10.0) ---------------- */
+/* ---------------- 4. insights (layered since V3.12.0) ----------------
+   JD: the old Insights page was eight reports "slapped on one page —
+   just names and dropdowns", so nothing could be found. Now it is a
+   parent with eight named children: the index says in plain language
+   what each check is FOR and shows one live number; each child page
+   carries exactly one report, with a sub-nav strip to move between
+   siblings without going back up. Routes: #/sandbox/insights (index)
+   and #/sandbox/insights/<child>. Back peels child -> index -> home. */
+var SB_INSIGHTS = [
+  { k:'coverage', t:'Coverage', sec:'Coverage gaps',
+    d:'Who is missing what — no usable photo, no Known Since, no footprint, no connections. The gap lists, one click from the profile.' },
+  { k:'sources', t:'Sources', sec:'Source coverage',
+    d:'Where the record comes from — which sidecars and sources actually cover which people, so a thin source is visible before it is trusted.' },
+  { k:'stale', t:'Freshness', sec:'Live Records staleness',
+    d:'How current the directory is — when each person was last re-checked by Live Records, and who has gone longest without a check.' },
+  { k:'dist', t:'Distributions', sec:'Distributions',
+    d:'How the directory breaks down — tiers, towns, groups, orgs and photo filings over time. The shape of the circle at a glance.' },
+  { k:'recon', t:'Count reconciliation', sec:'Integrity — count reconciliation',
+    d:'Why the numbers differ: Sheet rows vs baked directory vs the app\u2019s people count, reconciled key by key so nobody is missing or double-counted.' },
+  { k:'dup', t:'Duplicate hunter', sec:'Integrity — duplicate hunter',
+    d:'Candidate duplicate pairs — same or similar names, or a shared phone, email or handle. This is also the Merge studio\u2019s queue.' },
+  { k:'orphan', t:'Orphans & malformed', sec:'Integrity — orphans & malformed',
+    d:'Links pointing nowhere, names that don\u2019t resolve, malformed entries and shell profiles — the residue that quietly breaks other views.' },
+  { k:'photolinks', t:'Photo link check', sec:'Integrity — photo links',
+    d:'Fetches every filed photo URL and lists the ones that no longer respond, so dead photos are found before JD finds them.' }
+];
+function sbInsStat(k){
+  try {
+    if(k === 'coverage'){
+      var phn = sbPhotoByName();
+      var conf = people().filter(function(di){ var p = phn[dispName(D.directory[di]).toLowerCase()]; return !!(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely')); }).length;
+      return (people().length - conf) + ' without a usable photo';
+    }
+    if(k === 'sources') return Object.keys(SB_RAW_META).length + ' baked sidecars';
+    if(k === 'stale') return (SB.dt && typeof SB.dt.unchecked_remaining === 'number') ? SB.dt.unchecked_remaining + ' not yet checked this cycle' : 'rotation state';
+    if(k === 'dist') return people().length + ' people, broken down';
+    if(k === 'recon') return (SB.recon && SB.recon.verdict) ? SB.recon.verdict : 'Sheet vs bake';
+    if(k === 'dup') return sbDupPairs().length + ' candidate pairs';
+    if(k === 'orphan') return 'links, names, shells';
+    if(k === 'photolinks') return ((SB.photos && SB.photos.people) || []).filter(function(p){ return p.photo_url; }).length + ' filed URLs';
+  } catch(x) {}
+  return '';
+}
 function sbInsights(){
-  var h = sbHead('Insights', 'Coverage, distributions and integrity on one page. Everything is computed live from the baked directory and sidecars, except the reconciliation, which reads the Sheet fresh via scripts/sandbox_recon.py. Every list opens the profile.');
-  function sec(t){ return '<div class="sb-sec">' + esc(t) + '</div>'; }
-  h += sec('Coverage gaps') + sbRepBlock('coverage');
-  h += sec('Source coverage') + sbRepBlock('sources');
-  h += sec('Live Records staleness') + sbRepBlock('stale');
-  h += sec('Distributions') + sbRepBlock('dist');
-  h += '<div class="sb-sec">Integrity — count reconciliation</div>' + sbIntegRecon();
-  h += '<div class="sb-sec">Integrity — duplicate hunter</div>' + sbIntegDup();
-  h += '<div class="sb-sec">Integrity — orphans &amp; malformed</div>' + sbIntegOrphan();
-  h += '<div class="sb-sec">Integrity — photo links</div>' + sbIntegPhotos();
+  var cur = SB_INSIGHTS.filter(function(x){ return x.k === SB.ins.view; })[0] || null;
+  if(!cur){
+    var h = sbHead('Insights', 'Eight checks on the directory\u2019s health, each on its own page. Pick the question you are asking — every page says what it is for and opens the profiles it names.');
+    h += '<div class="sb-insgrid">' + SB_INSIGHTS.map(function(x){
+      return '<a class="sb-card" href="#/sandbox/insights/' + x.k + '"><span class="sb-card-t">' + esc(x.t) + '</span>' +
+        '<span class="sb-card-d">' + esc(x.d) + '</span>' +
+        '<span class="sb-card-s">' + esc(sbInsStat(x.k)) + '</span></a>';
+    }).join('') + '</div>';
+    return h;
+  }
+  var h = sbHead(cur.t, cur.d);
+  h += '<div class="sb-toolbar sb-insnav"><a class="btn sm ghost" href="#/sandbox/insights">All insights</a>' +
+    SB_INSIGHTS.map(function(x){
+      return '<a class="btn sm ' + (x.k === cur.k ? 'primary' : 'ghost') + '" href="#/sandbox/insights/' + x.k + '">' + esc(x.t) + '</a>';
+    }).join('') + '</div>';
+  h += '<div class="sb-sec">' + cur.sec + '</div>';
+  if(cur.k === 'coverage') h += sbRepBlock('coverage');
+  else if(cur.k === 'sources') h += sbRepBlock('sources');
+  else if(cur.k === 'stale') h += sbRepBlock('stale');
+  else if(cur.k === 'dist') h += sbRepBlock('dist');
+  else if(cur.k === 'recon') h += sbIntegRecon();
+  else if(cur.k === 'dup') h += sbIntegDup();
+  else if(cur.k === 'orphan') h += sbIntegOrphan();
+  else if(cur.k === 'photolinks') h += sbIntegPhotos();
   return h;
 }
 function sbIntegRecon(){
@@ -10049,11 +10240,11 @@ function sbRunDead(){
   var bad = [], i = 0; SB.integ.deadDone = 0;
   function next(){
     if(S.route.name !== 'sandbox' || SB.tool !== 'insights'){ SB.integ.deadBusy = false; SB.integ._deadRun = false; return; }
-    if(i >= pp.length){ SB.integ.dead = bad; SB.integ.deadBusy = false; SB.integ._deadRun = false; render(); return; }
+    if(i >= pp.length){ SB.integ.dead = bad; SB.integ.deadBusy = false; SB.integ._deadRun = false; if(SB.ins.view === 'photolinks') render(); return; }
     var p = pp[i++];
     var host = ''; try{ host = new URL(p.photo_url).hostname; }catch(x){}
     fetch(p.photo_url, { method:'GET', mode:'no-cors' }).then(function(){ SB.integ.deadDone++; }).catch(function(){ bad.push({ name:p.name, host:host }); SB.integ.deadDone++; })
-      .then(function(){ if(i % 12 === 0) render(); next(); });
+      .then(function(){ if(i % 12 === 0 && SB.ins.view === 'photolinks') render(); next(); });
   }
   var workers = []; for(var w = 0; w < 6; w++) workers.push(next());
 }
@@ -10065,11 +10256,11 @@ function sbRunDead(){
    keeps its own state, storage keys and sidecars; only the shell is new. */
 function sbLabTool(){
   var tab = sbLabTab();
-  var h = sbHead('The Lab', 'Four experiments on the live data. Hypotheses, paths and visuals live here — nothing in the lab writes to a profile.');
+  var h = sbHead('The Lab', 'Three experiments on the live data. Paths, pools and visuals live here — nothing in the lab writes to a profile. Profiling inferences has its own home now, one level up in Play.');
   h += '<div class="sb-toolbar sb-labtabs">' + SB_LABS.map(function(l){
     return '<button type="button" class="btn sm ' + (tab === l.k ? 'primary' : 'ghost') + '" data-sb="labtab" data-k="' + l.k + '">' + esc(l.t) + '</button>';
   }).join('') + '</div>';
-  var fn = { paths:sbLab, prof:sbProf, pool:sbPool, visuals:sbPlay }[tab] || sbLab;
+  var fn = { paths:sbLab, pool:sbPool, visuals:sbPlay }[tab] || sbLab;
   SB._inLab = true;
   var body = fn();
   SB._inLab = false;
@@ -10760,10 +10951,26 @@ function cnQueue(){
   }
   return [];
 }
-function cnSaveQueue(q){
+/* Optimistic staging (V3.12.0, JD: "when I hit one of the action
+   buttons, it's immediate"): the tap paints FIRST — CN_Q is the
+   board's truth and cnRepaint is synchronous — and the Sheet write
+   runs behind it. If the write fails, the pre-tap queue is restored
+   and repainted (a visible rollback) with a failure toast: the
+   board never sits showing a state the Sheet refused. The payload
+   is unchanged: the same single batch item, addressed by key to
+   ig:jdmeyers_. A rollback is skipped when a newer save has already
+   superseded this one (queues are cumulative snapshots). */
+var CN_SAVE_SEQ = 0;
+function cnSaveQueue(q, prevQ, failMsg){
   CN_Q = q;
-  sbPostBatch([{ key:'ig:jdmeyers_', patch:{ council_staged: JSON.stringify(q) } }])
-    .then(function(ok){ if(!ok) toast('Staging write did not land — check the edit key; the queue is held in this tab for now'); });
+  var seq = ++CN_SAVE_SEQ;
+  return sbPostBatch([{ key:'ig:jdmeyers_', patch:{ council_staged: JSON.stringify(q) } }])
+    .then(function(ok){
+      if(ok) return true;
+      if(seq === CN_SAVE_SEQ && prevQ){ CN_Q = prevQ; cnRepaint(); }
+      toast(failMsg || 'Staging write did not land — the board was rolled back to what the Sheet holds');
+      return false;
+    });
 }
 function cnRepaint(){
   var v = $('#view'); if(!v || !S.route || S.route.name !== 'council') return;
@@ -10787,22 +10994,24 @@ function cnToday(iso){
 /* ---- staging ---- */
 function cnStage(flagId, actionId){
   var act = cnAction(flagId, actionId); if(!act) return;
-  var q = cnQueue();
-  if(q.some(function(e){ return e.flag === flagId && e.action === actionId && e.state === 'staged'; })) return;
-  q.push({ flag:flagId, action:actionId, label:act.label, kind:act.kind,
+  var prev = cnQueue().slice();
+  if(prev.some(function(e){ return e.flag === flagId && e.action === actionId && e.state === 'staged'; })) return;
+  var q = prev.concat([{ flag:flagId, action:actionId, label:act.label, kind:act.kind,
     patches:act.patches || undefined, merge:act.merge || undefined,
-    state:'staged', ts:new Date().toISOString(), by:'board' });
-  cnSaveQueue(q);
+    state:'staged', ts:new Date().toISOString(), by:'board' }]);
+  cnSaveQueue(q, prev);
   toast('Staged — Luna picks this up on the next council pass');
   cnRepaint();
 }
 function cnUnstage(flagId, actionId){
-  var q = cnQueue().filter(function(e){ return !(e.flag === flagId && e.action === actionId && e.state === 'staged'); });
-  cnSaveQueue(q); toast('Removed from the staged queue'); cnRepaint();
+  var prev = cnQueue().slice();
+  var q = prev.filter(function(e){ return !(e.flag === flagId && e.action === actionId && e.state === 'staged'); });
+  cnSaveQueue(q, prev); toast('Removed from the staged queue'); cnRepaint();
 }
 function cnClearStaged(){
-  var q = cnQueue().filter(function(e){ return e.state !== 'staged'; });
-  cnSaveQueue(q); toast('Staged queue cleared'); cnRepaint();
+  var prev = cnQueue().slice();
+  var q = prev.filter(function(e){ return e.state !== 'staged'; });
+  cnSaveQueue(q, prev); toast('Staged queue cleared'); cnRepaint();
 }
 /* ---- execution ---- */
 function cnFieldVal(key, field){
@@ -10868,9 +11077,21 @@ function cnDoNow(flagId, actionId){
   if(act.kind === 'merge'){ cnStage(flagId, actionId); cnOpenMerge(act); return; }
   if(act.kind === 'task'){ cnStage(flagId, actionId); return; }
   var entry = { flag:flagId, action:actionId, label:act.label, kind:act.kind, patches:act.patches || [] };
+  /* optimistic: the flag flips to decided on tap; the execution
+     itself still runs through cnExecEntries with its acks awaited
+     exactly as before — a failure rolls the board back and the flag
+     reopens, it is never left fake-done */
+  var prev = cnQueue().slice();
+  CN_Q = cnMarkDone(prev.slice(), entry, 'Executed from the board');
+  cnRepaint();
   cnExecEntries([entry], function(res){
-    if(!res.ok){ toast('Execution hit a problem on ' + res.failed.join(', ') + ' — left unstaged for Luna'); return; }
-    cnSaveQueue(cnMarkDone(cnQueue(), entry, 'Executed from the board'));
+    if(!res.ok){
+      CN_Q = cnQueue().filter(function(e){ return !(e.flag === flagId && e.action === actionId && e.state === 'done'); });
+      cnRepaint();
+      toast('Execution hit a problem on ' + res.failed.join(', ') + ' — rolled back, the flag is open again');
+      return;
+    }
+    cnSaveQueue(cnQueue(), prev, 'Executed, but recording it in the queue failed — Luna will reconcile from the Sheet');
     toast('Executed — Luna verifies it against the Sheet on the next pass');
     cnRepaint();
   });
@@ -10879,12 +11100,28 @@ function cnExecAll(){
   var q = cnQueue();
   var exec = q.filter(function(e){ return e.state === 'staged' && (e.kind === 'fix' || e.kind === 'decision'); });
   if(!exec.length){ toast('Nothing executable is staged — tasks and merges stay queued for Luna / the Merge studio'); return; }
+  var prev = q.slice(), oq = prev.slice();
+  exec.forEach(function(e){ oq = cnMarkDone(oq, e, 'Executed from the board (execute all)'); });
+  CN_Q = oq; cnRepaint();
   cnExecEntries(exec, function(res){
-    var q2 = cnQueue();
-    exec.forEach(function(e){ q2 = cnMarkDone(q2, e, 'Executed from the board (execute all)'); });
-    cnSaveQueue(q2);
-    toast(res.ok ? 'Executed ' + exec.length + ' staged action' + (exec.length === 1 ? '' : 's')
-      : 'Executed with problems on ' + res.failed.join(', ') + ' — Luna will reconcile');
+    if(!res.ok){
+      /* roll the failed entries back to staged so the work is not
+         lost and the board never shows them done */
+      var badFlags = {};
+      res.failed.forEach(function(f){ badFlags[String(f).split(':')[0]] = 1; });
+      var rq = cnQueue().filter(function(e){
+        return !(e.state === 'done' && badFlags[e.flag] && exec.some(function(x){ return x.flag === e.flag && x.action === e.action; }));
+      });
+      exec.forEach(function(e){
+        if(badFlags[e.flag]) rq.push({ flag:e.flag, action:e.action, label:e.label, kind:e.kind, patches:e.patches || undefined, merge:e.merge || undefined, state:'staged', ts:e.ts || new Date().toISOString(), by:'board' });
+      });
+      cnSaveQueue(rq, prev);
+      cnRepaint();
+      toast('Executed with problems on ' + res.failed.join(', ') + ' — those are back in the staged queue');
+      return;
+    }
+    cnSaveQueue(cnQueue(), prev);
+    toast('Executed ' + exec.length + ' staged action' + (exec.length === 1 ? '' : 's'));
     cnRepaint();
   });
 }
@@ -10996,6 +11233,22 @@ function cnDeptGraphic(key, cn, q){
   return '<div class="cnc-bignum">' + es.length + '</div><div class="cnc-gcap">findings on file' +
     (es[0] && es[0].date ? '<br>latest ' + esc(es[0].date) : '') + '</div>';
 }
+/* Field reports (V3.12.0): each department section opens with its
+   director's own field report — current strategy, what's working,
+   the barriers, and what they're stuck on — so JD can think through
+   the problem, not just the findings. The text lives in council.json
+   (field_reports, one block per department, refreshed by council
+   runs from the working logs); nothing is hardcoded here. */
+function cnFieldReport(key, cn){
+  var fr = ((cn.field_reports || {})[key]) || null;
+  if(!fr) return '';
+  function row(lab, txt, cls){
+    return txt ? '<div class="cnc-fr-row ' + cls + '"><span class="cnc-fr-lab">' + lab + '</span><p>' + esc(txt) + '</p></div>' : '';
+  }
+  return '<div class="cnc-fr"><div class="cnc-fr-h">Field report — ' + esc(CN_DEPT_NAMES[key] || key) + ' Director</div>' +
+    row('Strategy', fr.strategy, 's') + row('Working', fr.working, 'w') +
+    row('Barriers', fr.barriers, 'b') + row('Stuck on', fr.stuck, 'k') + '</div>';
+}
 function viewCouncil(v){
   cnLoad();
   if(!CN){
@@ -11041,6 +11294,7 @@ function viewCouncil(v){
     h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
       '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' +
       '<span class="cnc-dstatus">' + esc(r.status || '') + '</span></div>' +
+      cnFieldReport(key, cn) +
       '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
       (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest · ' + esc(latest.date || '') + '</div>' +
         '<b>' + esc(latest.title || '') + '</b><p>' + esc(latest.summary || '') + '</p></div>' : '<p class="sb-note">No findings yet.</p>') +
