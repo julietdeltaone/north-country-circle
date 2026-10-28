@@ -9083,17 +9083,7 @@ function onClick(ev){
         fres.innerHTML = hits.slice(0, 8).map(function(d2){ return '<button type="button" class="btn sm ml-hit" data-act="mladd" data-key="' + esc(fke.key) + '" data-di="' + d2 + '">' + esc(dispName(D.directory[d2])) + '</button>'; }).join('') || '<span class="ml-none">No matches who are not already in.</span>';
       } break; }
     case 'mladd': { var ake = taxEntities().ents[el.getAttribute('data-key')]; if(ake) mlAddMember(ake, +(el.getAttribute('data-di'))); break; }
-    case 'mlrename': { var rne = taxEntities().ents[el.getAttribute('data-key')]; var rdet = el.closest('.ml-det'); var rin = rdet ? rdet.querySelector('.ml-ren-in') : null; if(rne && rin) mlRename(rne, rin.value); break; }
-    case 'mlmerge': { var mge = taxEntities().ents[el.getAttribute('data-key')]; var mdet = el.closest('.ml-det'); var min2 = mdet ? mdet.querySelector('.ml-mer-in') : null; var T9 = taxEntities();
-      if(mge && min2 && min2.value.trim()){ var wnr = T9.ents[regKey(regApply(min2.value.trim()))]; if(wnr && wnr.key !== mge.key) mlMerge(mge, wnr); else toast('Pick the name that stays from the list.'); } break; }
-    case 'mlsetpar': { var spe = taxEntities().ents[el.getAttribute('data-key')]; var sdet = el.closest('.ml-det'); var spar = sdet ? sdet.querySelector('.ml-par-in') : null; var sedge = sdet ? sdet.querySelector('.ml-edge-in') : null;
-      if(spe && spar) mlSetParent(spe, spar.value, sedge ? sedge.value : 'part'); break; }
-    case 'mlsettype': { var ste = taxEntities().ents[el.getAttribute('data-key')]; var tdet = el.closest('.ml-det'); var tin = tdet ? tdet.querySelector('.ml-type-in') : null; if(ste && tin) mlSetType(ste, tin.value); break; }
-    case 'mldelete': { var dle = taxEntities().ents[el.getAttribute('data-key')];
-      if(dle){ if(el.getAttribute('data-armed')) mlDelete(dle); else { el.setAttribute('data-armed', '1'); el.textContent = 'Tap again to delete'; } } break; }
-    case 'mlsus': { var T10 = taxEntities(); var lsr = T10.ents[el.getAttribute('data-loser')]; var wnr2 = T10.ents[el.getAttribute('data-winner')]; if(lsr && wnr2) mlMerge(lsr, wnr2); break; }
     case 'mlmore': { var msec = el.getAttribute('data-sec'); MLV.more[msec] = !MLV.more[msec]; mlRender(); break; }
-    case 'mlnew': { var nnm = ($('#mlnew-name') || {}).value || ''; var ntp = ($('#mlnew-type') || {}).value || 'list'; mlNew(nnm, ntp); break; }
     case 'chggrp': chgToggle(el); break;
     case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
@@ -12044,7 +12034,7 @@ function viewLists(v){
   Object.keys(ents).forEach(function(k){
     var ent = ents[k];
     if(ent.cat && ['Church', 'University', 'Military'].indexOf(ent.name) < 0) return;
-    if(ent.parent && ents[ent.parent] && ent.type !== 'skill') return;   /* rendered under its parent */
+    if(ent.parent && ents[ent.parent] && ent.type !== 'skill' && ents[ent.parent].name !== 'University') return;   /* rendered under its parent; University children form the flat Universities section */
     secs[sectionOf(ent)].push(k);
   });
   /* skills grouped by their taxonomy category */
@@ -12066,7 +12056,7 @@ function viewLists(v){
     return '<section class="ml-sec"><h3>' + title + '</h3>' + inner + '</section>';
   }
   function flatTree(keys){
-    var roots = keys.slice().sort(function(a, b){ return (ents[b].total - ents[a].total) || ents[a].name.localeCompare(ents[b].name); });
+    var roots = keys.filter(function(k){ return !ents[k].cat; }).slice().sort(function(a, b){ return (ents[b].total - ents[a].total) || ents[a].name.localeCompare(ents[b].name); });
     if(q) return roots.map(function(k){ return mlTree(ents, [k], q); }).join('');
     var big = roots.filter(function(k){ return ents[k].total >= 3; });
     var shown = MLV.more[keys] ? roots : (big.length ? big : roots.slice(0, 5));
