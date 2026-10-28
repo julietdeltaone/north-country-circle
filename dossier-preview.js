@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.12.0';
+var APP_VERSION = '3.12.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10994,7 +10994,7 @@ function cnDi(key){
    and pkey() resolves BOTH to 'sf:jdmeyers_', so a directory patch
    would land on the wrong row and the read would never find it. Reads
    come from the baked profiles.json (the same row Luna's passes read
-   in the Sheet); writes go through the batch endpoint by key. CN_Q is
+   in the Sheet); writes go through the batch endpoint by id. CN_Q is
    the in-tab copy, set on every save so the board reflects staging
    immediately. */
 var CN_Q = null;
@@ -11025,7 +11025,7 @@ var CN_SAVE_SEQ = 0;
 function cnSaveQueue(q, prevQ, failMsg){
   CN_Q = q;
   var seq = ++CN_SAVE_SEQ;
-  return sbPostBatch([{ key:'ig:jdmeyers_', patch:{ council_staged: JSON.stringify(q) } }])
+  return sbPostBatch([{ id:'ig:jdmeyers_', patch:{ council_staged: JSON.stringify(q) } }])
     .then(function(ok){
       if(ok) return true;
       if(seq === CN_SAVE_SEQ && prevQ){ CN_Q = prevQ; cnRepaint(); }
@@ -11045,7 +11045,7 @@ function cnAction(flagId, actionId){
   return (f.actions || []).filter(function(a){ return a.id === actionId; })[0] || null;
 }
 function cnFlagState(f, q){
-  var done = q.some(function(e){ return e.flag === f.id && e.state === 'done' && (e.kind === 'fix' || e.kind === 'decision'); });
+  var done = q.some(function(e){ return e.flag === f.id && e.state === 'done' && (e.kind === 'fix' || e.kind === 'decision' || e.kind === 'merge'); });
   if(f.state === 'closed' || done) return 'closed';
   return q.some(function(e){ return e.flag === f.id && e.state === 'staged'; }) ? 'staged' : 'open';
 }
@@ -11106,7 +11106,7 @@ function cnApplyPatch(p){
      through the batch endpoint and AWAIT its ack: a rejected write
      must surface as a failure, never as a done entry. (sbPostBatch
      resolves true/false rather than rejecting.) */
-  return sbPostBatch([{ key:p.key, patch:patch }]).then(function(ok){ return !!ok; });
+  return sbPostBatch([{ id:p.key, patch:patch }]).then(function(ok){ return !!ok; });
 }
 function cnExecEntries(entries, cb){
   var needProf = entries.some(function(e){
