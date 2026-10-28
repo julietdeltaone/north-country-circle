@@ -1,152 +1,178 @@
 {
-  "date": "2026-10-27",
+  "date": "2026-10-28",
   "checked": [
     {
-      "name": "sf:stephy-michele",
-      "display": "Stephy Michele"
+      "name": "sf:andrew-fox",
+      "display": "Andrew Fox"
     },
     {
-      "name": "ig:delany._.durant",
-      "display": "Delany Durant"
+      "name": "sf:brianna-brothers",
+      "display": "Brianna Brothers"
     },
     {
-      "name": "ct:maggie thibodeau",
-      "display": "Maggie Thibodeau"
+      "name": "sf:carol-fox",
+      "display": "Carol Fox"
     },
     {
-      "name": "ig:oliviamariegrant",
-      "display": "Olivia Grant"
+      "name": "sf:conor-miller-lynch",
+      "display": "Conor Miller-Lynch"
     },
     {
-      "name": "ig:acole313",
-      "display": "Allison Cole"
+      "name": "sf:damaris-duarte",
+      "display": "Damaris Duarte"
     },
     {
-      "name": "sf:kyle-davis",
-      "display": "Kyle Davis"
+      "name": "sf:danica-dunphey",
+      "display": "Danica Dunphey"
     },
     {
-      "name": "sf:mackenzie-leigh",
-      "display": "Mackenzie Leigh"
+      "name": "sf:debbie-flack",
+      "display": "Debbie Flack"
     },
     {
-      "name": "ig:aleeparker_",
-      "display": "Alessandra Parker"
+      "name": "sf:donovan-patraw",
+      "display": "Donovan Patraw"
     },
     {
-      "name": "sf:chelsea-mg",
-      "display": "Chelsea MG"
+      "name": "sf:eleora-trelease",
+      "display": "Eleora Trelease"
     },
     {
-      "name": "ig:gabepaladin",
-      "display": "Gabe Paladin"
+      "name": "sf:gabby-olivia",
+      "display": "Gabby Olivia"
     },
     {
-      "name": "sf:elizabeth-marquez",
-      "display": "Elizabeth Marquez"
+      "name": "sf:hannah-whiteford",
+      "display": "Hannah Whiteford"
     },
     {
-      "name": "sf:owen-kennedy",
-      "display": "Owen Kennedy"
+      "name": "sf:heather-foster-barrigar",
+      "display": "Heather Foster-Barrigar"
     },
     {
-      "name": "ig:cloutlord_420",
-      "display": "Avery Criscitello"
+      "name": "sf:jackie-card",
+      "display": "Jackie Card"
     },
     {
-      "name": "ig:t.fetterley",
-      "display": "Tasia Fetterley"
+      "name": "sf:jai-dane",
+      "display": "Jai Dane"
     },
     {
-      "name": "sf:ilene-lashomb",
-      "display": "Ilene Lashomb"
+      "name": "sf:janice-dane",
+      "display": "Janice Dane"
     },
     {
-      "name": "ig:ginnylou507",
-      "display": "Ginny L. Hunter"
+      "name": "sf:julianna-smith",
+      "display": "Julianna Smith"
     },
     {
-      "name": "sf:ann-parow-mackey",
-      "display": "Ann Parow Mackey"
+      "name": "sf:julie-cardinal",
+      "display": "Julie Cardinal"
     },
     {
-      "name": "ig:jj750d",
-      "display": "Josh De Voe"
+      "name": "sf:kathy-whiteford",
+      "display": "Kathy Whiteford"
     },
     {
-      "name": "ig:sarah.ellabb",
-      "display": "Sarah El-Labban"
+      "name": "sf:kayla-watkins",
+      "display": "Kayla Watkins"
     },
     {
-      "name": "sf:nicholas-dailey",
-      "display": "Nicholas Dailey"
+      "name": "sf:liana-sinclair",
+      "display": "Liana Sinclair"
     },
     {
-      "name": "ig:jamesondunphey",
-      "display": "Jameson Dunphey"
+      "name": "sf:mark-cornett",
+      "display": "Mark Cornett"
     },
     {
-      "name": "sf:maddie-morgan",
-      "display": "Maddie Morgan"
+      "name": "sf:nelson-dane",
+      "display": "Nelson Dane"
     },
     {
-      "name": "sf:lexi-kennedy-labombard",
-      "display": "Lexi Kennedy LaBombard"
+      "name": "sf:nicholas-matott",
+      "display": "Nicholas Matott"
     },
     {
-      "name": "sf:nicole-lee-haverstock",
-      "display": "Nicole Lee Haverstock"
+      "name": "sf:peyton-mussaw",
+      "display": "Peyton Mussaw"
     },
     {
-      "name": "sf:marissa-carl",
-      "display": "Marissa Carl"
+      "name": "sf:raegan-grant",
+      "display": "Raegan Grant"
     }
   ],
   "filed": [
     {
-      "name": "ig:delany._.durant",
-      "display": "Delany Durant",
+      "name": "sf:heather-foster-barrigar",
+      "display": "Heather Foster-Barrigar",
       "facts": [
         {
-          "text": "Clubhouse Coordinator at the Horizons Youth Clubhouse in Massena for Seaway Valley Prevention Council",
-          "source": "Seaway Valley Prevention Council",
-          "url": "https://svpc.net/our-friendly-team/",
+          "text": "Appointed Personnel Officer for St. Lawrence County in July 2025 after more than a decade in county Human Resources, previously serving as a Human Resource Technician",
+          "source": "New York State Association of Personnel and Civil Service Officers",
+          "url": "http://nysapcso.org/2025/09/19/member-spotlight-heather-foster-barrigar/",
+          "novelty": "new"
+        },
+        {
+          "text": "Earned an associate's degree in Professional Communication from SUNY Onondaga Community College and a bachelor's degree in Political Science from SUNY Plattsburgh, and earned SHRM-CP certification",
+          "source": "New York State Association of Personnel and Civil Service Officers",
+          "url": "http://nysapcso.org/2025/09/19/member-spotlight-heather-foster-barrigar/",
           "novelty": "new"
         }
       ]
     },
     {
-      "name": "sf:kyle-davis",
-      "display": "Kyle Davis",
+      "name": "sf:donovan-patraw",
+      "display": "Donovan Patraw",
       "facts": [
         {
-          "text": "Served with the 258th Field Artillery Regiment, New York Army National Guard, and participated in Exercise Southern Vanguard 24 in Bel\u00e9m, Brazil, in November 2023",
-          "source": "U.S. Army",
-          "url": "https://www.army.mil/article/272148/new_york_national_guard_soldiers_return_from_southern_vanguard_24_in_brazil",
+          "text": "Earned New York State DCJS State Instructor Certification through SUNY Potsdam's Law Enforcement Training Institute Instructor Development Course, as a SUNY Potsdam University Police officer",
+          "source": "SUNY Potsdam",
+          "url": "https://www.potsdam.edu/news/LawEnforcementGraduatesPolice",
           "novelty": "new"
-        }
-      ]
-    },
-    {
-      "name": "ig:aleeparker_",
-      "display": "Alessandra Parker",
-      "facts": [
-        {
-          "text": "Named to SUNY Canton's President's List for the fall 2021 semester as a Graphic and Multimedia Design student",
-          "source": "SUNY Canton",
-          "url": "https://www.canton.edu/news/2022/honorsf21.php",
-          "novelty": "expands"
         }
       ]
     }
   ],
   "coverage": {
-    "checked_total": 696,
-    "of": 696,
+    "checked_total": 717,
+    "of": 724,
     "window_days": 30
   },
-  "note": "Checked 25, filed 3 (Delany Durant, Kyle Davis, Alessandra Parker). Fresh sweep: none found (in-window items surfaced for non-directory people only - Clarkson/SLU athletes not in the directory; the one directory member with October coverage, Zvi Szafran, had no new personal fact). Held, not filed: Sarah El-Labban (blank profile, no anchors - Potsdam HS / SUNY Potsdam records exist but cannot be tied), Nicole Lee Haverstock (June 2026 Brasher Falls substitute-nurse approval cannot be proven distinct from the fact already on file). Kyle Davis identity rests on rank (CPT) + New York Army National Guard + 258th Field Artillery (the 27th IBCT's artillery battalion).",
+  "note": "Checked 25, filed 2 (Heather Foster-Barrigar, Donovan Patraw). Today's rotation was the never-checked tier: 25 newly added shell profiles, most with a single email-era anchor, so the 2-anchor gate rejected nearly everything. Fresh sweep: none found (in-window items were about non-directory people, businesses, or events; the one in-window directory name, SUNY Canton President Zvi Szafran, appeared only as an institutional contact with no new personal fact). Rejected after direct verification: Gabby Olivia EXP Realty claim, Peyton Mussaw Clarkson commencement-honors claim, Julie Cardinal town-minutes claim, and Damaris Duarte GoBe blog (login-walled, self-authored) \u2014 none could be confirmed on a real source page; a claimed St. Lawrence County Legislature appointment for Foster-Barrigar was also wrong (that page names a different acting personnel officer) and was replaced by her verified NYSAPCSO spotlight. Patraw also has Oct 2025 Life Saving Award coverage (North Country Now) confirmed in article text, but its canonical URL could not be captured, so only the instructor-certification fact was filed.",
   "next_up": [
+    {
+      "name": "sf:rosie-hoover",
+      "display": "Rosie Hoover"
+    },
+    {
+      "name": "sf:sam-rusaw",
+      "display": "Sam Rusaw"
+    },
+    {
+      "name": "sf:sarah-diederich",
+      "display": "Sarah Diederich"
+    },
+    {
+      "name": "sf:shari-smith",
+      "display": "Shari Smith"
+    },
+    {
+      "name": "sf:stephanie-reasoner",
+      "display": "Stephanie Reasoner"
+    },
+    {
+      "name": "sf:stephen-blackwood-smith",
+      "display": "Stephen Blackwood Smith"
+    },
+    {
+      "name": "sf:theresa-smith",
+      "display": "Theresa Smith"
+    },
+    {
+      "name": "sf:murray",
+      "display": "1LT Murray"
+    },
     {
       "name": "sf:aaron-cote",
       "display": "Aaron Cote"
@@ -154,43 +180,11 @@
     {
       "name": "ig:aaronjdaniels",
       "display": "Aaron Daniels"
-    },
-    {
-      "name": "ig:abbystiles_",
-      "display": "Abby Stiles"
-    },
-    {
-      "name": "ig:abbydaniels03",
-      "display": "Abigail Daniels"
-    },
-    {
-      "name": "sf:acacia-white",
-      "display": "Acacia White"
-    },
-    {
-      "name": "ig:adria.t18",
-      "display": "Adria Tebo"
-    },
-    {
-      "name": "ig:adhope2006",
-      "display": "Adriana Levendusky"
-    },
-    {
-      "name": "ig:askinnerusa",
-      "display": "Aeriel Skinner"
-    },
-    {
-      "name": "ig:aidantruth",
-      "display": "Aidan Daniels"
-    },
-    {
-      "name": "sf:alan-k-daniels",
-      "display": "Alan K Daniels"
     }
   ],
-  "unchecked_remaining": 0,
+  "unchecked_remaining": 7,
   "fresh": {
     "found": false,
-    "note": "Sweep of North Country Now, NCPR, NNY360, WWNY, Clarkson/SLU/SUNY Potsdam/SUNY Canton news and athletics, honors and health-system news for 2026-10-06 to 2026-10-27 found no new, not-already-filed item about a confirmed directory member."
+    "note": "Sweep of North Country Now, NCPR, NNY360, WWNY, ClickNNY, Clarkson/SLU/SUNY Potsdam/SUNY Canton news and athletics, honors and health-system news for 2026-10-07 to 2026-10-28 found no new, not-already-filed item about a confirmed directory member."
   }
 }
