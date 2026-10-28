@@ -1129,12 +1129,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "His WayUp profile carries an image labeled 'Christian Tomford's profile photo' (shown twice on the page), but the fetch's Images footnote returned only the WayUp logo — his photo URL could not be extracted. TheOrg lists him as a Software Engineer at IDI Billing Solutions with no photo.",
+   "evidence": "CONFIRMED via JD-supplied follow-up + Luna LinkedIn retrieval, 2026-10-28. The public LinkedIn profile of Christian Tomford (Software Engineer @ IDI Billing Solutions; previously Software Support Specialist there and a TEKsystems IT Technician in Rochester) lists a SUNY Canton associate degree (2016-2017) — matching CJ Tomford's directory context of SUNY Canton — plus a Houghton computer-science degree. Filed on CJ Tomford on the strength of the SUNY Canton anchor; the 'Christian James' expansion itself remains JD's to ratify. Headshot hosted locally because the signed LinkedIn URL expires.",
    "name": "CJ Tomford",
-   "photo_url": null,
-   "source_page": "https://www.wayup.com/profile/Christian-Tomford-734aee08b7/",
-   "status": "possible",
-   "type": "profile photo (URL unextracted)"
+   "photo_url": "photos/christian-tomford.jpg",
+   "source_page": "https://www.linkedin.com/in/christian-tomford",
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @c.w.bailey64 (display name \"Cliff Bailey\"); bio: \"Hello. My name is Cliff Bailey. I am a solo entrepreneur whom just entered the business world.\".",
@@ -2149,7 +2150,14 @@
    "source_page": "https://bjornfitness.com/home-12/gavin-matthews/",
    "status": "confirmed",
    "type": "Gym coach portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-28",
+   "also": [
+    {
+     "url": "https://bjornfitness.com/wp-content/uploads/2023/12/IMG_1386-1.jpeg",
+     "note": "Second Bjorn Fitness photo of Gavin (gym, bear-paw mural), surfaced by JD's follow-up as the image tied to his name on the official coach page; visually confirmed as the same man, 2026-10-28.",
+     "source_page": "https://bjornfitness.com/"
+    }
+   ]
   },
   {
    "evidence": "Instagram profile @ginnylou507 (display name \"Ginny L. Hunter\"); bio: \"She didn’t come all this way to lose 💪🏼 -Former Elopea Wedding Planner -Former NA Miss Competitor -Former Bar \".",
@@ -2361,11 +2369,11 @@
    "type": null
   },
   {
-   "evidence": "POSSIBLE via ChatGPT professional search batch 2, checked 2026-10-28. Living Hope Church Malone's official leadership page identifies Heather Ramsdell as Executive Pastor with her portrait beside her name; identity matches the directory (Living Hope Church, Winthrop, New Testament Church). Graded possible ONLY because the image host is unreachable from Luna's network (connection dropped on every route tried), so the hotlink could not be load-verified. Held for JD's ruling / browser check.",
+   "evidence": "CONFIRMED via ChatGPT professional search batch 2; JD directed retention of this portrait on 2026-10-28. Living Hope Church Malone's official leadership page identifies Heather Ramsdell as Executive Pastor with her portrait beside her name; identity matches the directory (Living Hope Church, Winthrop, New Testament Church). The image host is unreachable from Luna's network (connection dropped on every route tried), so the hotlink itself was not load-verified from Luna's side.",
    "name": "Heather Ramsdell",
    "photo_url": "https://www.lhcmalone.com/wp-content/uploads/2023/04/Heather-1.jpeg",
    "source_page": "https://www.lhcmalone.com/who-we-are/",
-   "status": "possible",
+   "status": "confirmed",
    "type": "Church leadership portrait",
    "added": "2026-10-28"
   },
@@ -3294,12 +3302,13 @@
    "type": null
   },
   {
-   "evidence": "NTC Massena preacher page is a text-only list of his sermon posts — no photo URL tied to him. Opengovny inspection record text-only. The AEDC newsletter on file was not opened in this pass.",
+   "evidence": "CONFIRMED by JD, 2026-10-28 (his follow-up notes record the existing photo as correct). AEDC's March 2024 newsletter photo is captioned Victoria Duley (AEDC), Julie and Justin Cardinal (Esther's Coffee House, Massena), and Jamie Cecilia (AEDC). Group photo; individual positions not separately mapped.",
    "name": "Justin Cardinal",
-   "photo_url": null,
-   "source_page": "https://www.ntcmassena.com/preacher/justin-cardinal/",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://files.constantcontact.com/e6c941d2901/8e4f7ff0-d1a5-430e-b196-5dfadb855e2d.jpg",
+   "source_page": "https://myemail.constantcontact.com/AEDC-Newsletter--March-2024.html?aid=z8NBiWE290c&soid=1138922658926",
+   "status": "confirmed",
+   "type": "Business event group photo",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3866,12 +3875,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED by JD, 2026-10-28 (his follow-up notes record his confirmation of this photo). Cornell Cooperative Extension's Fruition blog profile of Loni Recker carries a banner whose image description identifies Loni among garden photos; her panel (seated with a horse) is filed as a crop, hosted locally. The banner itself is a wide composite, not a headshot.",
    "name": "Loni Hughes Recker",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/loni-recker.jpg",
+   "source_page": "https://blogs.cornell.edu/fruition/2023/02/09/recker/",
+   "status": "confirmed",
+   "type": "Program banner panel (cropped)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @mrstabolt (display name \"Louissa Sinclair Tabolt\").",
@@ -4767,12 +4777,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Merit profile (filed under the 'Huntley' spelling — Olivia Huntley of Potsdam, SUNY Potsdam Criminal Justice) is text-only listings. DirectAthletics page is text results tables only.",
+   "evidence": "CONFIRMED via JD-supplied follow-up, verified 2026-10-28. SUNY Potsdam's official June 2026 article names Officer Olivia M. Huntley of the Norwood-Norfolk Police Departments and identifies her in the Law Enforcement Training Institute graduation photo as front row, third from left. Filed as a 1:1 crop of her position, hosted locally. NOTE: the source spells the surname Huntley; the directory has Huntly — discrepancy retained for JD's ruling.",
    "name": "Olivia Huntly",
-   "photo_url": null,
-   "source_page": "https://meritpages.com/Olivia-Huntley/7054475",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/olivia-huntley.jpg",
+   "source_page": "https://www.potsdam.edu/news/potsdamlawenforcementgraduates26",
+   "status": "confirmed",
+   "type": "Academy graduation photo (cropped)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @oliviamiller9334 (display name \"Olivia Miller\").",
