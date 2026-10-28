@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.15.1';
+var APP_VERSION = '3.16.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1900,6 +1900,7 @@ var NAV = [
   { k:'audit',   l:'Audit',   ic:'target' },
   { k:'daily',   l:'Live Records', ic:'search' },
   { k:'council', l:'Council', ic:'award' },
+  { k:'lists',   l:'Master List', ic:'groups' },
   { k:'photos',  l:'Photos', ic:'camera' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
@@ -2060,7 +2061,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox','council'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox','council','lists'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -2181,6 +2182,7 @@ function render(){
     else if(n === 'photos') viewPhotos(v);
     else if(n === 'sandbox') viewSandbox(v);
     else if(n === 'council') viewCouncil(v);
+    else if(n === 'lists') viewLists(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -9069,6 +9071,26 @@ function onClick(ev){
     case 'poolretry': OUT.items.forEach(function(x){ x.tries = 0; x.stuck = ''; }); OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
     case 'poolretry1': { var prid = el.getAttribute('data-id'); OUT.items.forEach(function(x){ if(x.id === prid){ x.tries = 0; x.stuck = ''; x.err = ''; } }); OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break; }
     case 'pooldrop': { var pdid = el.getAttribute('data-id'); if(el.getAttribute('data-armed')){ OUT.items = OUT.items.filter(function(x){ return x.id !== pdid; }); outSave(); paintSync(); toast('Change discarded. It never reached the Sheet.'); } else { el.setAttribute('data-armed', '1'); el.textContent = 'Tap again to discard'; } break; }
+    case 'mlx': { var mk = el.getAttribute('data-key'); MLV.open = (MLV.open === mk) ? null : mk; mlRender(); break; }
+    case 'mlopen': { var mdis = MLV.shown.length ? MLV.shown : [di]; if(mdis.indexOf(di) < 0) mdis = [di]; openPerson(di, ctxFrom('Master List', mdis, mdis.indexOf(di), 'lists')); break; }
+    case 'mlrm': { var rke = taxEntities().ents[el.getAttribute('data-key')]; if(rke) mlRemoveMember(rke, +(el.getAttribute('data-di'))); break; }
+    case 'mlfind': { var fke = taxEntities().ents[el.getAttribute('data-key')]; var fdet = el.closest('.ml-det'); var fin = fdet ? fdet.querySelector('.ml-add-in') : null; var fres = fdet ? fdet.querySelector('.ml-res') : null;
+      if(fke && fin && fres){ var fq = fin.value.trim().toLowerCase(); var hits = [];
+        if(fq) D.directory.forEach(function(e2, d2){ if(dispName(e2).toLowerCase().indexOf(fq) >= 0 && fke.direct.indexOf(d2) < 0) hits.push(d2); });
+        fres.innerHTML = hits.slice(0, 8).map(function(d2){ return '<button type="button" class="btn sm ml-hit" data-act="mladd" data-key="' + esc(fke.key) + '" data-di="' + d2 + '">' + esc(dispName(D.directory[d2])) + '</button>'; }).join('') || '<span class="ml-none">No matches who are not already in.</span>';
+      } break; }
+    case 'mladd': { var ake = taxEntities().ents[el.getAttribute('data-key')]; if(ake) mlAddMember(ake, +(el.getAttribute('data-di'))); break; }
+    case 'mlrename': { var rne = taxEntities().ents[el.getAttribute('data-key')]; var rdet = el.closest('.ml-det'); var rin = rdet ? rdet.querySelector('.ml-ren-in') : null; if(rne && rin) mlRename(rne, rin.value); break; }
+    case 'mlmerge': { var mge = taxEntities().ents[el.getAttribute('data-key')]; var mdet = el.closest('.ml-det'); var min2 = mdet ? mdet.querySelector('.ml-mer-in') : null; var T9 = taxEntities();
+      if(mge && min2 && min2.value.trim()){ var wnr = T9.ents[regKey(regApply(min2.value.trim()))]; if(wnr && wnr.key !== mge.key) mlMerge(mge, wnr); else toast('Pick the name that stays from the list.'); } break; }
+    case 'mlsetpar': { var spe = taxEntities().ents[el.getAttribute('data-key')]; var sdet = el.closest('.ml-det'); var spar = sdet ? sdet.querySelector('.ml-par-in') : null; var sedge = sdet ? sdet.querySelector('.ml-edge-in') : null;
+      if(spe && spar) mlSetParent(spe, spar.value, sedge ? sedge.value : 'part'); break; }
+    case 'mlsettype': { var ste = taxEntities().ents[el.getAttribute('data-key')]; var tdet = el.closest('.ml-det'); var tin = tdet ? tdet.querySelector('.ml-type-in') : null; if(ste && tin) mlSetType(ste, tin.value); break; }
+    case 'mldelete': { var dle = taxEntities().ents[el.getAttribute('data-key')];
+      if(dle){ if(el.getAttribute('data-armed')) mlDelete(dle); else { el.setAttribute('data-armed', '1'); el.textContent = 'Tap again to delete'; } } break; }
+    case 'mlsus': { var T10 = taxEntities(); var lsr = T10.ents[el.getAttribute('data-loser')]; var wnr2 = T10.ents[el.getAttribute('data-winner')]; if(lsr && wnr2) mlMerge(lsr, wnr2); break; }
+    case 'mlmore': { var msec = el.getAttribute('data-sec'); MLV.more[msec] = !MLV.more[msec]; mlRender(); break; }
+    case 'mlnew': { var nnm = ($('#mlnew-name') || {}).value || ''; var ntp = ($('#mlnew-type') || {}).value || 'list'; mlNew(nnm, ntp); break; }
     case 'chggrp': chgToggle(el); break;
     case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
@@ -9717,7 +9739,7 @@ function sbEnsure(){
     sbFetch('snapchat.json', 'snap'), sbFetch('recon.json', 'recon'),
     sbFetch('sandbox-log.json', 'serverLog'), sbFetch('org-registry.json', 'orgreg'),
     sbFetch('council.json', 'council'), sbFetch('profiling.json', 'prof'),
-    sbFetch('suspect-pool.json', 'spool'), sbFetch('discovery.json', 'discData')
+    sbFetch('suspect-pool.json', 'spool'), sbFetch('discovery.json', 'discData'), sbFetch('taxonomy.json', 'tax')
   ]).then(function(){ SB.ready = true; SB.loading = null; if(S.route.name === 'sandbox') render(); });
   return SB.loading;
 }
@@ -11680,6 +11702,431 @@ function cnFieldReport(key, cn){
     row('Strategy', fr.strategy, 's') + row('Working', fr.working, 'w') +
     row('Barriers', fr.barriers, 'b') + row('Stuck on', fr.stuck, 'k') + '</div>';
 }
+/* ============================================================
+   Master List (JD 2026-10-28, V3.16.0)
+   One registry over churches / companies / universities / groups /
+   skills. Structure (types, parents, added entities) comes from the
+   Sheet Settings key 'taxonomy', baked to data/taxonomy.json and
+   merged with the on-device overlay ncc_taxonomy_v1 (the same
+   pattern as the org registry overlay). Two edge kinds: 'part'
+   (membership counts up into the parent) and 'runby' (a link only,
+   no count-up: CFA is run by CFC, its people are not CFC people).
+   Membership edits, renames and merges write to the Sheet through
+   queuePatch like every other edit in the app.
+   ============================================================ */
+var TAX = { cache: null, cacheVer: -1 };
+var MLV = { q: '', open: null, more: {}, shown: [] };
+var TAX_KINDS = ['churches', 'companies', 'universities', 'groups', 'specialty'];
+var TAX_PRIMARY = { church: 'churches', university: 'universities', business: 'companies', military: 'companies', program: 'companies', list: 'groups', skill: 'specialty', other: 'companies' };
+var TAX_TYPES = [['church', 'Church'], ['university', 'University'], ['business', 'Business / employer'], ['military', 'Military'], ['program', 'Program'], ['list', 'My list'], ['skill', 'Skill'], ['other', 'Other organization']];
+
+function taxOverlay(){ try{ return JSON.parse(store('ncc_taxonomy_v1') || 'null') || {}; }catch(x){ return {}; } }
+function taxSaveOverlay(o){ store('ncc_taxonomy_v1', JSON.stringify(o)); TAX.cache = null; }
+function taxStruct(){
+  var base = (typeof SB !== 'undefined' && SB && SB.tax) || {};
+  var ov = taxOverlay();
+  var ren = ov.renames || {};
+  function rk(n){ return ren[n] || n; }
+  var types = {}, parents = {}, cats = {}, added = [], noparent = {};
+  Object.keys(base.types || {}).forEach(function(n){ types[rk(n)] = base.types[n]; });
+  Object.keys(ov.types || {}).forEach(function(n){ types[n] = ov.types[n]; });
+  Object.keys(base.cats || {}).forEach(function(n){ cats[rk(n)] = base.cats[n]; });
+  Object.keys(base.parents || {}).forEach(function(n){ parents[rk(n)] = { p: rk(base.parents[n].p), edge: base.parents[n].edge || 'part' }; });
+  Object.keys(ov.parents || {}).forEach(function(n){
+    if(ov.parents[n]) parents[n] = ov.parents[n]; else { delete parents[n]; noparent[n] = true; }
+  });
+  (base.added || []).forEach(function(a){ added.push({ name: rk(a.name), kinds: (a.kinds || []).slice() }); });
+  (ov.added || []).forEach(function(a){ if(!added.some(function(x){ return regKey(x.name) === regKey(a.name); })) added.push(a); });
+  (ov.killed || []).forEach(function(n){ added = added.filter(function(a){ return regKey(a.name) !== regKey(n); }); });
+  return { types: types, parents: parents, cats: cats, added: added, noparent: noparent };
+}
+
+function taxEntities(){
+  if(TAX.cache && TAX.cacheVer === VER) return TAX.cache;
+  var st = taxStruct();
+  var ents = {};
+  function ensure(name){
+    var k = regKey(name); if(!k) return null;
+    if(!ents[k]) ents[k] = { key: k, name: name, kinds: {}, mem: {}, cat: false, added: false, direct: [], total: 0, kids: [] };
+    return ents[k];
+  }
+  D.directory.forEach(function(e, di){
+    TAX_KINDS.forEach(function(kind){
+      tagList(gv(e, kind)).forEach(function(val){
+        var ent = ensure(regApply(val)); if(!ent) return;
+        ent.kinds[kind] = true;
+        (ent.mem[kind] = ent.mem[kind] || {})[di] = true;
+      });
+    });
+  });
+  st.added.forEach(function(a){ var ent = ensure(a.name); if(ent){ ent.added = true; (a.kinds || []).forEach(function(kd){ ent.kinds[kd] = true; }); } });
+  Object.keys(st.cats).forEach(function(n){ var ent = ensure(n); if(ent){ ent.cat = true; ent.type = 'category'; } });
+  Object.keys(ents).forEach(function(k){
+    var ent = ents[k];
+    if(!ent.cat){
+      ent.type = st.types[ent.name] ||
+        (ent.kinds.churches ? 'church' :
+         ent.kinds.universities ? 'university' :
+         (ent.kinds.specialty && !ent.kinds.companies && !ent.kinds.groups && !ent.kinds.churches && !ent.kinds.universities) ? 'skill' :
+         (ent.kinds.groups && !ent.kinds.companies && !ent.kinds.churches && !ent.kinds.universities) ? 'list' : 'business');
+      var par = st.parents[ent.name];
+      if(st.noparent[ent.name]){ ent.parent = null; }
+      else if(par && ents[regKey(par.p)]){ ent.parent = regKey(par.p); ent.edge = par.edge || 'part'; }
+      else if(ent.type === 'church'){ ent.parent = regKey('Church'); ent.edge = 'part'; }
+      else if(ent.type === 'university'){ ent.parent = regKey('University'); ent.edge = 'part'; }
+    }
+    var dm = {};
+    TAX_KINDS.forEach(function(kind){ Object.keys(ent.mem[kind] || {}).forEach(function(di){ dm[di] = true; }); });
+    ent.direct = Object.keys(dm).map(Number).sort(function(a, b){ return a - b; });
+  });
+  var kids = {};
+  Object.keys(ents).forEach(function(k){ var e2 = ents[k]; if(e2.parent && ents[e2.parent]) (kids[e2.parent] = kids[e2.parent] || []).push(k); });
+  function totalOf(k, seen){
+    var ent = ents[k]; if(!ent) return {};
+    var out = {};
+    ent.direct.forEach(function(di){ out[di] = true; });
+    (kids[k] || []).forEach(function(ck){
+      if(seen[ck] || ents[ck].edge !== 'part') return;
+      seen[ck] = true;
+      var sub = totalOf(ck, seen);
+      Object.keys(sub).forEach(function(di){ out[di] = true; });
+    });
+    return out;
+  }
+  Object.keys(ents).forEach(function(k){ ents[k].kids = kids[k] || []; ents[k].total = Object.keys(totalOf(k, {})).length; ents[k].totalSet = totalOf(k, {}); });
+  TAX.cache = { ents: ents, st: st };
+  TAX.cacheVer = VER;
+  return TAX.cache;
+}
+
+function mlPrimaryKind(ent){
+  var pk = TAX_PRIMARY[ent.type] || 'companies';
+  if(ent.kinds[pk]) return pk;
+  for(var i = 0; i < TAX_KINDS.length; i++) if(ent.kinds[TAX_KINDS[i]]) return TAX_KINDS[i];
+  return pk;
+}
+function mlPatchObj(kind, val){ var p = {}; p[kind] = val; return p; }
+function mlRender(){
+  var sv = $('#view'), st = sv ? sv.scrollTop : 0;
+  render();
+  requestAnimationFrame(function(){ var s2 = $('#view'); if(s2) s2.scrollTop = st; });
+}
+/* apply fn to every cell value of ent's members, across all five fields.
+   fn(value) returns the replacement, the same value, or null to drop it. */
+function mlRewrite(ent, fn, label){
+  txn(label || 'Master List edit', function(){
+    ent.direct.forEach(function(di){
+      var e = D.directory[di]; if(!e) return;
+      TAX_KINDS.forEach(function(kind){
+        var cur = gv(e, kind); if(!cur) return;
+        var out = [], changed = false;
+        tagList(cur).forEach(function(val){
+          var nv = fn(val);
+          if(nv === null){ changed = true; return; }
+          if(nv !== val) changed = true;
+          if(out.indexOf(nv) < 0) out.push(nv);
+        });
+        if(changed) queuePatch(di, mlPatchObj(kind, out.join(', ')));
+      });
+    });
+  });
+}
+function mlIsEnt(val, ent){ return regKey(regApply(val)) === ent.key; }
+
+function mlAddMember(ent, di){
+  var e = D.directory[di]; if(!e) return;
+  var already = TAX_KINDS.some(function(kind){ return tagList(gv(e, kind)).some(function(val){ return mlIsEnt(val, ent); }); });
+  if(already) return;
+  var kind = mlPrimaryKind(ent);
+  var list = tagList(gv(e, kind)); list.push(ent.name);
+  txn('Add to ' + ent.name, function(){ queuePatch(di, mlPatchObj(kind, list.join(', '))); });
+  mlRender();
+}
+function mlRemoveMember(ent, di){
+  var e = D.directory[di]; if(!e) return;
+  txn('Remove from ' + ent.name, function(){
+    TAX_KINDS.forEach(function(kind){
+      var cur = gv(e, kind); if(!cur) return;
+      var list = tagList(cur);
+      var out = list.filter(function(val){ return !mlIsEnt(val, ent); });
+      if(out.length !== list.length) queuePatch(di, mlPatchObj(kind, out.join(', ')));
+    });
+  });
+  mlRender();
+}
+function mlRename(ent, newName){
+  newName = String(newName || '').trim();
+  if(!newName || regKey(newName) === ent.key) return;
+  var T = taxEntities();
+  if(T.ents[regKey(newName)]){ toast('That name already exists. Use Merge instead.'); return; }
+  mlRewrite(ent, function(val){ return mlIsEnt(val, ent) ? newName : val; }, 'Rename ' + ent.name);
+  var ov = taxOverlay();
+  ov.renames = ov.renames || {};
+  ov.renames[ent.name] = newName;
+  ['types', 'parents'].forEach(function(sec){
+    if(ov[sec]){
+      var nxt = {};
+      Object.keys(ov[sec]).forEach(function(n){
+        var v = ov[sec][n];
+        if(sec === 'parents' && v && v.p === ent.name) v = { p: newName, edge: v.edge };
+        nxt[n === ent.name ? newName : n] = v;
+      });
+      ov[sec] = nxt;
+    }
+  });
+  if(ov.added) ov.added.forEach(function(a){ if(regKey(a.name) === ent.key) a.name = newName; });
+  taxSaveOverlay(ov);
+  regRegisterCanon(newName, mlPrimaryKind(ent));
+  MLV.open = regKey(newName);
+  toast('Renamed to ' + newName + '. The new name is saving to the Sheet.');
+  mlRender();
+}
+function mlMerge(loser, winner){
+  if(!loser || !winner || loser.key === winner.key) return;
+  mlRewrite(loser, function(val){ return mlIsEnt(val, loser) ? winner.name : val; }, 'Merge ' + loser.name + ' into ' + winner.name);
+  regRegisterAlias(loser.name, winner.name);
+  var ov = taxOverlay();
+  ov.parents = ov.parents || {}; ov.types = ov.types || {};
+  var T = taxEntities();
+  loser.kids.forEach(function(ck){
+    var ch = T.ents[ck];
+    if(ch) ov.parents[ch.name] = { p: winner.name, edge: ch.edge || 'part' };
+  });
+  if(!ov.parents[winner.name] && taxStruct().parents[loser.name]) ov.parents[winner.name] = taxStruct().parents[loser.name];
+  delete ov.parents[loser.name]; delete ov.types[loser.name];
+  if(ov.added) ov.added = ov.added.filter(function(a){ return regKey(a.name) !== loser.key; });
+  if(loser.added && !(ov.added || []).some(function(a){ return regKey(a.name) === loser.key; })){
+    ov.killed = ov.killed || []; if(ov.killed.indexOf(loser.name) < 0) ov.killed.push(loser.name);
+  }
+  taxSaveOverlay(ov);
+  MLV.open = winner.key;
+  toast(loser.name + ' merged into ' + winner.name + '. Saving to the Sheet.');
+  mlRender();
+}
+function mlSetParent(ent, parentName, edge){
+  var ov = taxOverlay();
+  ov.parents = ov.parents || {};
+  if(!parentName) ov.parents[ent.name] = null;
+  else ov.parents[ent.name] = { p: parentName, edge: edge || 'part' };
+  taxSaveOverlay(ov);
+  mlRender();
+}
+function mlSetType(ent, type){
+  var ov = taxOverlay();
+  ov.types = ov.types || {};
+  ov.types[ent.name] = type;
+  taxSaveOverlay(ov);
+  mlRender();
+}
+function mlDelete(ent){
+  var ov = taxOverlay();
+  if(ov.added) ov.added = ov.added.filter(function(a){ return regKey(a.name) !== ent.key; });
+  if(ent.added){ ov.killed = ov.killed || []; if(ov.killed.indexOf(ent.name) < 0) ov.killed.push(ent.name); }
+  if(ov.types) delete ov.types[ent.name];
+  if(ov.parents) delete ov.parents[ent.name];
+  taxSaveOverlay(ov);
+  if(MLV.open === ent.key) MLV.open = null;
+  toast(ent.name + ' removed from the Master List.');
+  mlRender();
+}
+function mlNew(name, type){
+  name = String(name || '').trim(); if(!name) return;
+  var T = taxEntities();
+  if(T.ents[regKey(name)]){ MLV.open = regKey(name); mlRender(); toast(name + ' is already on the list.'); return; }
+  var kind = TAX_PRIMARY[type] || 'companies';
+  var ov = taxOverlay();
+  ov.added = ov.added || []; ov.types = ov.types || {};
+  ov.added.push({ name: name, kinds: [kind] });
+  ov.types[name] = type;
+  taxSaveOverlay(ov);
+  regRegisterCanon(name, kind);
+  if(kind === 'groups' && GRP_EXTRA.indexOf(name) < 0){ GRP_EXTRA.push(name); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
+  MLV.open = regKey(name);
+  toast(name + ' added. Now add people to it.');
+  mlRender();
+}
+function mlSuspects(ents){
+  var list = Object.keys(ents).map(function(k){ return ents[k]; }).filter(function(e){ return !e.cat; });
+  var out = [], seen = {};
+  function lev(a, b){
+    if(Math.abs(a.length - b.length) > 2) return 99;
+    var d = [], i, j;
+    for(i = 0; i <= a.length; i++) d.push([i]);
+    for(j = 0; j <= b.length; j++) d[0][j] = j;
+    for(i = 1; i <= a.length; i++) for(j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[a.length][b.length];
+  }
+  function normCU(n){ return regKey(n).replace(/college/g, 'university'); }
+  for(var i = 0; i < list.length; i++) for(var j = i + 1; j < list.length; j++){
+    var a = list[i], b = list[j], why = null;
+    if(normCU(a.name) === normCU(b.name) && a.key !== b.key) why = 'same place, old and new name';
+    else if(a.key.indexOf(b.key + ' ') === 0 || b.key.indexOf(a.key + ' ') === 0) why = 'one name is the start of the other';
+    else if(a.type === 'skill' && b.type === 'skill' && ((/teach/i.test(a.name) && /teach/i.test(b.name)) || ((/teach/i.test(a.name) || a.name === 'Education') && (/teach/i.test(b.name) || b.name === 'Education')))) why = 'same skill, two wordings';
+    else if(a.key.length >= 7 && b.key.length >= 7 && a.key.slice(0, 3) === b.key.slice(0, 3) && lev(a.key, b.key) <= 2) why = 'names are nearly the same';
+    if(why){
+      var id = [a.key, b.key].sort().join('|');
+      if(!seen[id]){ seen[id] = true; out.push({ a: a, b: b, why: why }); }
+    }
+  }
+  return out.slice(0, 12);
+}
+
+function mlRow(ent, depth){
+  var open = MLV.open === ent.key;
+  var typeLabel = ent.cat ? 'Category' : (TAX_TYPES.filter(function(t){ return t[0] === ent.type; })[0] || ['', ent.type])[1];
+  var ct = ent.direct.length + ' people';
+  if(ent.cat) ct = ent.total + ' people in total';
+  else if(ent.total !== ent.direct.length) ct += ' · ' + ent.total + ' counting everything inside';
+  if(!ent.direct.length && !ent.kids.length) ct = 'empty for now';
+  var h = '<div class="ml-row' + (open ? ' open' : '') + '" style="margin-left:' + (depth * 22) + 'px">' +
+    '<button type="button" class="ml-tog" data-act="mlx" data-key="' + esc(ent.key) + '">' + (open ? '▾' : '▸') + '</button>' +
+    '<div class="ml-main"><div class="ml-nm">' + esc(ent.name) +
+    '<span class="ml-chip">' + esc(typeLabel) + '</span>' +
+    (ent.edge === 'runby' ? '<span class="ml-chip runby">run by ' + esc((taxEntities().ents[ent.parent] || {}).name || 'its parent') + '</span>' : '') +
+    (ent.added ? '<span class="ml-chip">new</span>' : '') +
+    '</div><div class="ml-ct">' + ct + '</div></div></div>';
+  if(open) h += mlDetail(ent, depth);
+  return h;
+}
+function mlDetail(ent, depth){
+  var T = taxEntities();
+  MLV.shown = ent.direct.slice();
+  var mem = ent.direct.map(function(di){
+    var e = D.directory[di];
+    return '<div class="ml-mem"><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="mlopen" data-di="' + di + '">' + esc(dispName(e)) + '</a>' +
+      '<button type="button" class="ml-x" data-act="mlrm" data-key="' + esc(ent.key) + '" data-di="' + di + '" title="Remove from ' + esc(ent.name) + '">×</button></div>';
+  }).join('');
+  var parentOpts = '<option value="">No parent</option>' + Object.keys(T.ents).map(function(k){ return T.ents[k]; })
+    .filter(function(x){ return x.key !== ent.key; })
+    .sort(function(a, b){ return a.name.localeCompare(b.name); })
+    .map(function(x){ return '<option value="' + esc(x.name) + '"' + (ent.parent && T.ents[ent.parent] && T.ents[ent.parent].name === x.name ? ' selected' : '') + '>' + esc(x.name) + '</option>'; }).join('');
+  var typeOpts = TAX_TYPES.map(function(t){ return '<option value="' + t[0] + '"' + (ent.type === t[0] ? ' selected' : '') + '>' + t[1] + '</option>'; }).join('');
+  var h = '<div class="ml-det" style="margin-left:' + (depth * 22 + 14) + 'px" data-ent="' + esc(ent.key) + '">' +
+    '<div class="ml-mems">' + (mem || '<div class="ml-none">Nobody is in this one yet. Add people below.</div>') + '</div>' +
+    '<div class="ml-tools">' +
+      '<div class="ml-tool"><label>Add people</label><div class="ml-inline"><input type="text" class="ml-add-in" placeholder="Type a name"><button type="button" class="btn sm" data-act="mlfind" data-key="' + esc(ent.key) + '">Find</button></div><div class="ml-res"></div></div>' +
+      '<div class="ml-tool"><label>Rename</label><div class="ml-inline"><input type="text" class="ml-ren-in" value="' + esc(ent.name) + '"><button type="button" class="btn sm" data-act="mlrename" data-key="' + esc(ent.key) + '">Rename</button></div><div class="ml-hint">The new name lands on every person who has the old one.</div></div>' +
+      '<div class="ml-tool"><label>Merge into</label><div class="ml-inline"><input type="text" class="ml-mer-in" list="ml-names" placeholder="Name that stays"><button type="button" class="btn sm" data-act="mlmerge" data-key="' + esc(ent.key) + '">Merge</button></div><div class="ml-hint">Everyone in ' + esc(ent.name) + ' moves to the other name. This one goes away.</div></div>' +
+      '<div class="ml-tool"><label>Parent</label><div class="ml-inline"><select class="ml-par-in">' + parentOpts + '</select><select class="ml-edge-in"><option value="part"' + (ent.edge !== 'runby' ? ' selected' : '') + '>Part of</option><option value="runby"' + (ent.edge === 'runby' ? ' selected' : '') + '>Run by</option></select><button type="button" class="btn sm" data-act="mlsetpar" data-key="' + esc(ent.key) + '">Set</button></div><div class="ml-hint">Part of: people count up into the parent. Run by: a link only, people do not carry over.</div></div>' +
+      '<div class="ml-tool"><label>Type</label><div class="ml-inline"><select class="ml-type-in">' + typeOpts + '</select><button type="button" class="btn sm" data-act="mlsettype" data-key="' + esc(ent.key) + '">Set type</button></div></div>' +
+      (!ent.cat && !ent.direct.length && !ent.kids.length ? '<div class="ml-tool"><button type="button" class="btn ghost sm" data-act="mldelete" data-key="' + esc(ent.key) + '">Delete this name</button></div>' : '') +
+    '</div></div>';
+  return h;
+}
+function mlTree(ents, rootKeys, q){
+  var out = [];
+  function walk(k, depth, seen){
+    if(seen[k] || depth > 6) return;
+    seen[k] = true;
+    var ent = ents[k]; if(!ent) return;
+    if(!q || ent.name.toLowerCase().indexOf(q) >= 0) out.push(mlRow(ent, q ? 0 : depth));
+    var kids = ent.kids.slice().sort(function(a, b){ return (ents[b].total - ents[a].total) || ents[a].name.localeCompare(ents[b].name); });
+    kids.forEach(function(ck){ walk(ck, depth + 1, seen); });
+  }
+  rootKeys.forEach(function(k){ walk(k, 0, {}); });
+  return out.join('');
+}
+function viewLists(v){
+  if(!SB.ready){
+    v.innerHTML = '<div class="page"><div class="empty"><h3>Master List</h3><p>Loading…</p></div></div>';
+    sbEnsure().then(function(){ if(S.route.name === 'lists') render(); });
+    return;
+  }
+  var T = taxEntities(), ents = T.ents;
+  var q = MLV.q.trim().toLowerCase();
+  function rootOf(ent){
+    var cur = ent, seen = {};
+    while(cur && cur.parent && ents[cur.parent] && !seen[cur.key]){ seen[cur.key] = true; cur = ents[cur.parent]; }
+    return cur;
+  }
+  function sectionOf(ent){
+    if(ent.type === 'skill') return 'skills';
+    var r = rootOf(ent);
+    if(r.cat) return r.name === 'Church' ? 'churches' : r.name === 'University' ? 'universities' : r.name === 'Military' ? 'military' : 'biz';
+    return r.type === 'list' ? 'lists' : 'biz';
+  }
+  var secs = { churches: [], universities: [], military: [], biz: [], lists: [], skills: [] };
+  Object.keys(ents).forEach(function(k){
+    var ent = ents[k];
+    if(ent.cat && ['Church', 'University', 'Military'].indexOf(ent.name) < 0) return;
+    if(ent.parent && ents[ent.parent] && ent.type !== 'skill') return;   /* rendered under its parent */
+    secs[sectionOf(ent)].push(k);
+  });
+  /* skills grouped by their taxonomy category */
+  var skillCats = {};
+  Object.keys(ents).forEach(function(k){
+    var ent = ents[k];
+    if(ent.type !== 'skill') return;
+    var c = SKILL_PARENT[ent.name] || 'Other skills';
+    (skillCats[c] = skillCats[c] || []).push(ent);
+  });
+  var nEnt = Object.keys(ents).filter(function(k){ return !ents[k].cat; }).length;
+  var h = '<div class="page ml"><header class="ml-hd"><h2>Master List</h2>' +
+    '<p class="ml-sub">Every organization, group, and skill in one place. ' + nEnt + ' names. Rename, merge, nest, and move people here — changes save to the Sheet like any other edit, and the Save Pool shows them land.</p>' +
+    '<div class="ml-bar"><input type="text" id="mlq" placeholder="Search names" value="' + esc(MLV.q) + '">' +
+    '<span class="ml-new"><input type="text" id="mlnew-name" placeholder="New name"><select id="mlnew-type">' +
+    TAX_TYPES.map(function(t){ return '<option value="' + t[0] + '">' + t[1] + '</option>'; }).join('') +
+    '</select><button type="button" class="btn sm" data-act="mlnew">Add</button></span></div></header>' +
+    '<datalist id="ml-names">' + Object.keys(ents).filter(function(k){ return !ents[k].cat; }).map(function(k){ return '<option value="' + esc(ents[k].name) + '">'; }).join('') + '</datalist>' +
+    '<div id="mlsecs">';
+  function secBlock(id, title, inner){
+    if(!inner) return '';
+    return '<section class="ml-sec"><h3>' + title + '</h3>' + inner + '</section>';
+  }
+  function flatTree(keys){
+    var roots = keys.slice().sort(function(a, b){ return (ents[b].total - ents[a].total) || ents[a].name.localeCompare(ents[b].name); });
+    if(q) return roots.map(function(k){ return mlTree(ents, [k], q); }).join('');
+    var LIM = 30;
+    var shown = MLV.more[keys] ? roots : roots.slice(0, LIM);
+    var out = shown.map(function(k){ return mlTree(ents, [k], ''); }).join('');
+    if(roots.length > LIM) out += '<button type="button" class="btn ghost sm ml-more" data-act="mlmore" data-sec="' + keys + '">' + (MLV.more[keys] ? 'Show fewer' : 'Show all ' + roots.length) + '</button>';
+    return out;
+  }
+  h += secBlock('churches', 'Churches', mlTree(ents, [regKey('Church')], q));
+  h += secBlock('universities', 'Universities', flatTree(secs.universities));
+  h += secBlock('military', 'Military', mlTree(ents, [regKey('Military')], q));
+  h += secBlock('biz', 'Businesses and other organizations', flatTree(secs.biz));
+  h += secBlock('lists', 'My lists', flatTree(secs.lists));
+  var sk = '';
+  Object.keys(skillCats).sort(function(a, b){ return a.localeCompare(b); }).forEach(function(c){
+    var members = skillCats[c];
+    if(q && !members.some(function(e){ return e.name.toLowerCase().indexOf(q) >= 0; }) && c.toLowerCase().indexOf(q) < 0) return;
+    var tot = {};
+    members.forEach(function(e){ e.direct.forEach(function(di){ tot[di] = true; }); });
+    sk += '<div class="ml-skillcat"><div class="ml-skillcat-h">' + esc(c) + '<span>' + Object.keys(tot).length + ' people</span></div>' +
+      members.sort(function(a, b){ return (b.direct.length - a.direct.length) || a.name.localeCompare(b.name); }).map(function(e){ return mlRow(e, 0); }).join('') + '</div>';
+  });
+  h += secBlock('skills', 'Skills', sk);
+  var sus = mlSuspects(ents);
+  if(sus.length && !q){
+    h += '<section class="ml-sec"><h3>Possible matches</h3><p class="ml-sub">Names that look like the same thing twice. Merging moves everyone to the name that stays.</p>' +
+      sus.map(function(s2){
+        return '<div class="ml-sus"><div class="ml-sus-t"><b>' + esc(s2.a.name) + '</b> and <b>' + esc(s2.b.name) + '</b><span>' + esc(s2.why) + '</span></div>' +
+          '<div class="ml-sus-b"><button type="button" class="btn sm" data-act="mlsus" data-loser="' + esc(s2.b.key) + '" data-winner="' + esc(s2.a.key) + '">Keep ' + esc(s2.a.name) + '</button>' +
+          '<button type="button" class="btn sm" data-act="mlsus" data-loser="' + esc(s2.a.key) + '" data-winner="' + esc(s2.b.key) + '">Keep ' + esc(s2.b.name) + '</button></div></div>';
+      }).join('') + '</section>';
+  }
+  h += '</div></div>';
+  v.innerHTML = h;
+  var qi = v.querySelector('#mlq');
+  if(qi) qi.addEventListener('input', function(){
+    MLV.q = qi.value;
+    clearTimeout(MLV._qt);
+    MLV._qt = setTimeout(mlRenderKeepSearch, 220);
+  });
+}
+function mlRenderKeepSearch(){
+  var sv = $('#view'), st = sv ? sv.scrollTop : 0;
+  render();
+  requestAnimationFrame(function(){
+    var s2 = $('#view'); if(s2) s2.scrollTop = st;
+    var qi = document.querySelector('#mlq');
+    if(qi){ qi.focus(); qi.setSelectionRange(qi.value.length, qi.value.length); }
+  });
+}
+
+
 function viewCouncil(v){
   cnLoad();
   if(!CN){
