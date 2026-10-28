@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.19.0';
+var APP_VERSION = '3.20.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9740,7 +9740,7 @@ var SB_TOOLS = [
   { k:'insights', z:'Look', t:'Insights',     d:'Eight named checks, each on its own page: coverage, sources, freshness, distributions, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
   { k:'discovery', z:'Look', t:'Discovery trails', d:'How each person was found — the searches, routes and anchors behind every photo and fact, and which methods actually produce finds.', ic:'search' },
   { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
-  { k:'lab',      z:'Play', t:'The Lab',      d:'Three experiments on the live data: paths & bridges, Suspect Pool, visuals. Nothing in the lab writes to a profile.', ic:'network' },
+  { k:'lab',      z:'Play', t:'The Lab',      d:'Experiments on the live data: paths & bridges, Suspect Pool, visuals, profile layouts. Read-only, except the layouts mobile card’s Lima Charlie box.', ic:'network' },
   { k:'profiling', z:'Play', t:'Profiling inferences', d:'The inductive lab, promoted out of the Lab: Luna\u2019s blind Persona expectations vs JD\u2019s ratings — headline accuracy first, cohorts second, evidence on drill-in. Read-only.', ic:'eye' },
   { k:'merge',    z:'Fix',  t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',   z:'Fix',  t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
@@ -9749,7 +9749,8 @@ var SB_TOOLS = [
 var SB_LABS = [
   { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through known associates and family, mutual connections, and the bridge people who hold the circle together.' },
   { k:'pool',    t:'Suspect Pool', d:'The disciplined thought experiment: an exact pool, one yes/no behavioral question, observable behavior only, a pre-registered prediction. On-device only.' },
-  { k:'visuals', t:'Visuals', d:'Playground renderings of the live data — layouts and diagrams being tried out before anything earns a permanent home.' }
+  { k:'visuals', t:'Visuals', d:'Playground renderings of the live data — layouts and diagrams being tried out before anything earns a permanent home.' },
+  { k:'layouts', t:'Profile layouts', d:'Ten ways to arrange a profile — simplified, minimal, expanded, centered, right-railed, tiled, and a mobile quick card. The two partitions (About / Connection) never move.' }
 ];
 function sbZoneOf(tool){ return ({ grid:'Look', insights:'Look', discovery:'Look', raw:'Look', lab:'Play', profiling:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
 function sbLabTab(){
@@ -10719,16 +10720,209 @@ function sbDiscPaintList(){
 function sbLabTool(){
   var tab = sbLabTab();
   var cur = SB_LABS.filter(function(l){ return l.k === tab; })[0] || SB_LABS[0];
-  var h = sbHead('The Lab', 'Three experiments on the live data — nothing in the lab writes to a profile. Profiling inferences has its own home now, one level up in Play.');
+  var h = sbHead('The Lab', 'Experiments on the live data. Almost nothing in the lab writes to a profile — the one exception is the mobile quick card in Profile layouts, whose Lima Charlie box files for real through the Save Pool. Profiling inferences has its own home now, one level up in Play.');
   h += '<div class="sb-toolbar sb-labtabs">' + SB_LABS.map(function(l){
     return '<button type="button" class="btn sm ' + (tab === l.k ? 'primary' : 'ghost') + '" data-sb="labtab" data-k="' + l.k + '">' + esc(l.t) + '</button>';
   }).join('') + '</div>';
   h += '<p class="sb-labsub"><b>' + esc(cur.t) + '.</b> ' + esc(cur.d || '') + '</p>';
-  var fn = { paths:sbLab, pool:sbPool, visuals:sbPlay }[tab] || sbLab;
+  var fn = { paths:sbLab, pool:sbPool, visuals:sbPlay, layouts:sbLayouts }[tab] || sbLab;
   SB._inLab = true;
   var body = fn();
   SB._inLab = false;
   return h + '<div class="sb-labwrap t-' + esc(tab) + '">' + body + '</div>';
+}
+
+/* ============================================================
+   Profile Layouts lab (JD 2026-10-28) — ten ways to arrange a
+   profile, all keeping the two partitions: About (the individual
+   notes) and Connection (the contextual notes). Demo people are
+   the fullest records on file so every block has real content.
+   Read-only, except the mobile card's Lima Charlie box, which
+   files through lcCommitNote like the profile's own editor.
+   ============================================================ */
+var LAY_ROSTER = ['Ellie Criscitello', 'Catherine Green', 'Nathaniel Tomford', 'Bronwyn Paladin', 'Lydia Martin', 'Merrick Sinclair'];
+var LAY_DEFS = [
+  { k:'classic',  t:'1 · Classic movements', d:'Today\u2019s profile, condensed: hero on top, About stacked, then Connection stacked. The baseline everything else is judged against.' },
+  { k:'twin',     t:'2 · Twin partitions', d:'The two partitions as equal side-by-side columns. Symmetry: mirrored. Best when both halves carry similar weight.' },
+  { k:'centered', t:'3 · Centered', d:'Everything centered — photo, name, chips, both partitions as centered stacks. Symmetry: radial around the name.' },
+  { k:'rightrail',t:'4 · Right rail', d:'Identity lives on a right rail (photo, contact, key stats); the two partitions flow down the left. Justification: right for identity, left for notes.' },
+  { k:'minimal',  t:'5 · Minimal', d:'The simplified cut: photo, name, one line of context, then the two partitions as tight note lists. No chip walls, no stats.' },
+  { k:'ledger',   t:'6 · Expanded ledger', d:'The maximal cut: every datum as a labeled row inside its partition. Nothing summarized, nothing hidden.' },
+  { k:'index',    t:'7 · Index card', d:'A ruled card. Partitions are two ruled sections with red headers — the paper-dossier feel, minimal decoration.' },
+  { k:'magazine', t:'8 · Magazine', d:'Editorial: the synopsis leads with a drop cap, pull-stats sit between the partitions, notes run in two text columns.' },
+  { k:'tiles',    t:'9 · Tile grid', d:'Each block is a tile in a symmetric grid; the partitions are full-width bands over their tiles.' },
+  { k:'mobile',   t:'10 · Mobile quick card', d:'The phone shape: a contact card for the moment you spot someone — who they are, last contact, and a Lima Charlie box that files the note for real.' }
+];
+function layDi(){
+  var want = sbStore('ncc_sbx_layperson') || LAY_ROSTER[0];
+  var found = null;
+  D.directory.forEach(function(e, di){ if(found == null && liveEntry(e) && dispName(e) === want) found = di; });
+  if(found == null) D.directory.forEach(function(e, di){ if(found == null && liveEntry(e) && dispName(e) === LAY_ROSTER[0]) found = di; });
+  return found;
+}
+function layModel(di){
+  var e = D.directory[di]; if(!e) return null;
+  var name = dispName(e);
+  var p = (typeof phIndex === 'function' ? (phIndex() || {}) : {})[name];
+  var photo = p ? phKeyUrl(p) : null;
+  var fp = footprintOf(e);
+  var chips = { orgs:[], groups:personGroups(e), skills:[] };
+  ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(x){ if(chips.orgs.indexOf(x) < 0) chips.orgs.push(x); }); });
+  tagList(gv(e, 'specialty')).concat(tagList(gv(e, 'interests'))).forEach(function(x){ if(chips.skills.indexOf(x) < 0) chips.skills.push(x); });
+  var persona = [];
+  PERSONA.forEach(function(pr){ var v = gv(e, pr[0]); if(v !== '' && v != null) persona.push([pr[1], v]); });
+  var stats = [];
+  var ks = knownSinceLabel(e); if(ks) stats.push(['Known since', ks]);
+  var lc = lcLabel(e); if(lc) stats.push(['Last contact', lc + (lcOnline(e) ? ' · online' : '')]);
+  if(gv(e, 'tier')) stats.push(['Tier', String(gv(e, 'tier'))]);
+  if(gv(e, 'closeness') !== '' && gv(e, 'closeness') != null) stats.push(['Closeness', String(gv(e, 'closeness'))]);
+  var mv = momVal(e); if(mv) stats.push(['Momentum', mv]);
+  var assoc = knownAssociates(e).slice(0, 8).map(function(a){ return a.u; });
+  var fam = famLinks(e).map(function(f){ return (f.name || f.u || f.key || '') + (f.rel ? ' (' + f.rel + ')' : ''); }).filter(Boolean);
+  var evs = sortedEvents(e).slice(-4).reverse().map(function(x){ return x.ev; });
+  var key = pkey(e);
+  return { di:di, e:e, name:name, first:name.split(' ')[0], aka:String(gv(e, 'also_known_as') || ''),
+    photo:photo, initials:name.split(' ').map(function(w){ return w[0] || ''; }).slice(0, 2).join('').toUpperCase(),
+    rel:String(gv(e, 'relationship') || ''), ctx:String(gv(e, 'context') || ''),
+    loc:String(gv(e, 'city') || ''), home:String(gv(e, 'hometown') || ''),
+    phone:String(gv(e, 'phone') || ''), email:String(gv(e, 'email') || ''),
+    ig:key.indexOf('ig:') === 0 ? '@' + key.slice(3) : '',
+    syn:String(gv(e, 'synopsis') || ''), bullets:fp.blocks.map(function(b){ return b.text.replace(/^[•·\-*]\s*/, ''); }),
+    chips:chips, degrees:degreesOf(e), persona:persona,
+    biz:(e.businesses || []).map(function(b){ return b.name || String(b); }),
+    files:(e.files || []).map(function(f){ return f.name || f.url || ''; }).filter(Boolean),
+    highlights:String(gv(e, 'highlights') || ''), achievements:String(gv(e, 'achievements') || ''),
+    stats:stats, assoc:assoc, fam:fam, evs:evs, lc:lcNote(e) };
+}
+function layPhoto(m, cls){
+  if(m.photo) return '<img class="lay-ph ' + cls + '" src="' + esc(m.photo) + '" alt="">';
+  return '<span class="lay-ph lay-ini ' + cls + '">' + esc(m.initials) + '</span>';
+}
+function layChips(list){ return list.length ? '<div class="lay-chips">' + list.map(function(c){ return '<span class="lay-chip">' + esc(c) + '</span>'; }).join('') + '</div>' : ''; }
+function layAboutBlocks(m){
+  var b = [];
+  if(m.syn) b.push({ t:'Synopsis', h:'<p class="lay-syn">' + esc(m.syn) + '</p>' });
+  if(m.bullets.length) b.push({ t:'Field notes', h:'<ul class="lay-ul">' + m.bullets.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' });
+  var contact = [];
+  if(m.loc) contact.push(['Location', m.loc]); if(m.home) contact.push(['Hometown', m.home]);
+  if(m.phone) contact.push(['Phone', m.phone]); if(m.email) contact.push(['Email', m.email]); if(m.ig) contact.push(['Instagram', m.ig]);
+  if(contact.length) b.push({ t:'Contact', h:'<div class="lay-rows">' + contact.map(function(r){ return '<div class="lay-row"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' });
+  var bg = '';
+  if(m.chips.orgs.length) bg += '<div class="lay-lab">Organizations</div>' + layChips(m.chips.orgs);
+  if(m.chips.skills.length) bg += '<div class="lay-lab">Skills</div>' + layChips(m.chips.skills);
+  if(m.degrees.length) bg += '<div class="lay-lab">Education</div><ul class="lay-ul">' + m.degrees.map(function(d){ return '<li>' + esc([d.degree, d.major, d.school, d.year].filter(Boolean).join(' · ')) + '</li>'; }).join('') + '</ul>';
+  if(m.highlights) bg += '<div class="lay-lab">Highlights</div><p>' + esc(m.highlights) + '</p>';
+  if(m.achievements) bg += '<div class="lay-lab">Achievements</div><p>' + esc(m.achievements) + '</p>';
+  if(bg) b.push({ t:'Background', h:bg });
+  if(m.persona.length) b.push({ t:'Persona', h:'<div class="lay-rows">' + m.persona.map(function(r){ return '<div class="lay-row"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + ' / 5</b></div>'; }).join('') + '</div>' });
+  if(m.biz.length) b.push({ t:'Business owner', h:layChips(m.biz) });
+  if(m.files.length) b.push({ t:'Files', h:'<ul class="lay-ul">' + m.files.slice(0, 5).map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' });
+  return b;
+}
+function layConnBlocks(m){
+  var b = [];
+  var head = [];
+  if(m.rel) head.push(['Relationship', m.rel]); if(m.ctx) head.push(['Context', m.ctx]);
+  m.stats.forEach(function(s){ head.push(s); });
+  if(head.length) b.push({ t:'The tie', h:'<div class="lay-rows">' + head.map(function(r){ return '<div class="lay-row"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' });
+  if(m.assoc.length || m.fam.length){
+    var h = '';
+    if(m.fam.length) h += '<div class="lay-lab">Family</div>' + layChips(m.fam);
+    if(m.assoc.length) h += '<div class="lay-lab">Known associates</div>' + layChips(m.assoc);
+    b.push({ t:'Connections', h:h });
+  }
+  if(m.evs.length) b.push({ t:'Timeline', h:'<ul class="lay-ul lay-tl">' + m.evs.map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + (ev.kind === 'contact' ? ' <span class="lay-tag">contact' + (ev.online ? ' · online' : '') + '</span>' : '') + '</li>'; }).join('') + '</ul>' });
+  if(m.lc.trim()) b.push({ t:'Lima Charlie note', h:'<p class="lay-lcnote">' + esc(m.lc) + '</p>' });
+  return b;
+}
+function layBlocksHTML(blocks, cls){
+  return blocks.map(function(b){ return '<div class="lay-blk ' + (cls || '') + '"><div class="lay-blk-t">' + esc(b.t) + '</div>' + b.h + '</div>'; }).join('');
+}
+function layPart(title, inner, cls){ return '<div class="lay-part ' + (cls || '') + '"><div class="lay-part-t">' + esc(title) + '</div>' + inner + '</div>'; }
+function layHero(m, mode){
+  var sub = [m.rel, m.ctx, m.loc].filter(Boolean).join(' · ');
+  return '<div class="lay-hero ' + mode + '">' + layPhoto(m, 'lg') + '<div class="lay-hero-tx"><div class="lay-name">' + esc(m.name) + '</div>' +
+    (m.aka ? '<div class="lay-aka">also known as ' + esc(m.aka) + '</div>' : '') +
+    (sub ? '<div class="lay-sub">' + esc(sub) + '</div>' : '') + '</div></div>';
+}
+function layRender(k, m){
+  var A = layAboutBlocks(m), C = layConnBlocks(m);
+  var aboutT = 'About ' + m.first, connT = 'Connection';
+  if(k === 'classic') return layHero(m, '') + layPart(aboutT, layBlocksHTML(A)) + layPart(connT, layBlocksHTML(C));
+  if(k === 'twin') return layHero(m, '') + '<div class="lay-cols2">' + layPart(aboutT, layBlocksHTML(A)) + layPart(connT, layBlocksHTML(C)) + '</div>';
+  if(k === 'centered') return layHero(m, 'ctr') + layPart(aboutT, layBlocksHTML(A, 'ctr'), 'ctr') + layPart(connT, layBlocksHTML(C, 'ctr'), 'ctr');
+  if(k === 'rightrail'){
+    var rail = '<div class="lay-rail">' + layPhoto(m, 'xl') + '<div class="lay-name sm">' + esc(m.name) + '</div>' +
+      (m.rel ? '<div class="lay-sub">' + esc(m.rel) + '</div>' : '') +
+      '<div class="lay-rows">' + m.stats.map(function(s){ return '<div class="lay-row"><span>' + esc(s[0]) + '</span><b>' + esc(s[1]) + '</b></div>'; }).join('') + '</div>' +
+      (m.phone ? '<div class="lay-row"><span>Phone</span><b>' + esc(m.phone) + '</b></div>' : '') + (m.ig ? '<div class="lay-row"><span>Instagram</span><b>' + esc(m.ig) + '</b></div>' : '') + '</div>';
+    return '<div class="lay-railwrap"><div class="lay-railmain">' + layPart(aboutT, layBlocksHTML(A)) + layPart(connT, layBlocksHTML(C)) + '</div>' + rail + '</div>';
+  }
+  if(k === 'minimal'){
+    var one = [m.rel, m.ctx, m.loc].filter(Boolean).join(' · ');
+    var listA = m.bullets.slice(0, 4).map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('');
+    var listC = m.evs.slice(0, 3).map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + '</li>'; }).join('');
+    return '<div class="lay-min"><div class="lay-min-h">' + layPhoto(m, 'md') + '<div><div class="lay-name sm">' + esc(m.name) + '</div><div class="lay-sub">' + esc(one) + '</div></div></div>' +
+      '<div class="lay-min-p"><div class="lay-part-t">' + esc(aboutT) + '</div>' + (m.syn ? '<p class="lay-syn">' + esc(m.syn) + '</p>' : '') + (listA ? '<ul class="lay-ul">' + listA + '</ul>' : '') + '</div>' +
+      '<div class="lay-min-p"><div class="lay-part-t">' + esc(connT) + '</div>' + (listC ? '<ul class="lay-ul">' + listC + '</ul>' : '') + (m.lc.trim() ? '<p class="lay-lcnote">' + esc(m.lc) + '</p>' : '') + '</div></div>';
+  }
+  if(k === 'ledger'){
+    var rowsA = [], rowsC = [];
+    if(m.loc) rowsA.push(['Location', m.loc]); if(m.phone) rowsA.push(['Phone', m.phone]); if(m.email) rowsA.push(['Email', m.email]); if(m.ig) rowsA.push(['Instagram', m.ig]);
+    m.chips.orgs.forEach(function(o){ rowsA.push(['Organization', o]); }); m.chips.groups.forEach(function(g){ rowsA.push(['Group', g]); }); m.chips.skills.forEach(function(s){ rowsA.push(['Skill', s]); });
+    m.degrees.forEach(function(d){ rowsA.push(['Education', [d.degree, d.major, d.school, d.year].filter(Boolean).join(' · ')]); });
+    m.persona.forEach(function(p){ rowsA.push(['Persona · ' + p[0], p[1] + ' / 5']); });
+    if(m.rel) rowsC.push(['Relationship', m.rel]); if(m.ctx) rowsC.push(['Context', m.ctx]);
+    m.stats.forEach(function(s){ rowsC.push(s); });
+    m.assoc.forEach(function(a){ rowsC.push(['Associate', a]); }); m.fam.forEach(function(f){ rowsC.push(['Family', f]); });
+    var tbl = function(rows, extra){ return '<table class="lay-tbl">' + rows.map(function(r){ return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>' + (extra || ''); };
+    var exA = (m.syn ? '<p class="lay-syn">' + esc(m.syn) + '</p>' : '') + (m.bullets.length ? '<ul class="lay-ul">' + m.bullets.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '');
+    var exC = m.evs.length ? '<ul class="lay-ul">' + m.evs.map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + '</li>'; }).join('') + '</ul>' : '';
+    return layHero(m, '') + layPart(aboutT, tbl(rowsA, exA)) + layPart(connT, tbl(rowsC, exC));
+  }
+  if(k === 'index') return '<div class="lay-idx">' + layHero(m, '') + layPart(aboutT, layBlocksHTML(A)) + layPart(connT, layBlocksHTML(C)) + '</div>';
+  if(k === 'magazine'){
+    var syn = m.syn || (m.bullets[0] || '');
+    var pull = m.stats.slice(0, 3).map(function(s){ return '<div class="lay-pull"><b>' + esc(s[1]) + '</b><span>' + esc(s[0]) + '</span></div>'; }).join('');
+    return '<div class="lay-mag"><div class="lay-mag-h">' + layPhoto(m, 'md') + '<div><div class="lay-name">' + esc(m.name) + '</div><div class="lay-sub">' + esc([m.rel, m.ctx].filter(Boolean).join(' · ')) + '</div></div></div>' +
+      (syn ? '<p class="lay-mag-syn">' + esc(syn) + '</p>' : '') + (pull ? '<div class="lay-pulls">' + pull + '</div>' : '') +
+      '<div class="lay-cols2">' + layPart(aboutT, layBlocksHTML(A.slice(1))) + layPart(connT, layBlocksHTML(C)) + '</div></div>';
+  }
+  if(k === 'tiles'){
+    var tile = function(b){ return '<div class="lay-tile"><div class="lay-blk-t">' + esc(b.t) + '</div>' + b.h + '</div>'; };
+    return layHero(m, '') + '<div class="lay-band">About ' + esc(m.first) + '</div><div class="lay-tiles">' + A.map(tile).join('') + '</div>' +
+      '<div class="lay-band">' + esc(connT) + '</div><div class="lay-tiles">' + C.map(tile).join('') + '</div>';
+  }
+  if(k === 'mobile'){
+    var last = m.stats.filter(function(s){ return s[0] === 'Last contact'; })[0];
+    var ks = m.stats.filter(function(s){ return s[0] === 'Known since'; })[0];
+    var flash = (SB.lay && SB.lay.flash) ? '<div class="lay-flash">' + esc(SB.lay.flash) + '</div>' : '';
+    return '<div class="lay-phone"><div class="lay-notch"></div><div class="lay-mcard">' + layPhoto(m, 'xl') +
+      '<div class="lay-name">' + esc(m.name) + '</div>' + (m.rel ? '<div class="lay-sub">' + esc(m.rel) + (m.ctx ? ' · ' + esc(m.ctx) : '') + '</div>' : '') +
+      '<div class="lay-mstats">' + (last ? '<div><b>' + esc(last[1]) + '</b><span>last contact</span></div>' : '') + (ks ? '<div><b>' + esc(ks[1]) + '</b><span>known since</span></div>' : '') + (m.loc ? '<div><b>' + esc(m.loc) + '</b><span>location</span></div>' : '') + '</div>' +
+      (m.phone ? '<div class="lay-mrow">' + esc(m.phone) + '</div>' : '') + (m.ig ? '<div class="lay-mrow">' + esc(m.ig) + '</div>' : '') +
+      '<div class="lay-lcbox"><div class="lay-part-t">Lima Charlie — quick note</div>' + flash +
+      '<textarea id="laylc-note" rows="3" placeholder="Saw ' + esc(m.first) + ' — what happened, what changed, what to file…"></textarea>' +
+      '<button type="button" class="btn primary" data-sb="laylc" data-di="' + m.di + '">File to Lima Charlie</button>' +
+      (m.lc.trim() ? '<div class="lay-lcpend"><span>Waiting in Lima Charlie:</span> ' + esc(m.lc) + '</div>' : '') + '</div>' +
+      '<div class="lay-mparts">' + layPart(aboutT, layBlocksHTML(A.slice(0, 2))) + layPart(connT, layBlocksHTML(C.slice(0, 2))) + '</div>' +
+      '</div></div>';
+  }
+  return '';
+}
+function sbLayouts(){
+  if(!SB.lay) SB.lay = {};
+  var h = SB._inLab ? '' : sbHead('Profile layouts', 'Layout experiments for the profile page.');
+  var di = layDi();
+  if(di == null) return h + '<p class="sb-note">No demo profile found.</p>';
+  var m = layModel(di);
+  h += '<div class="sb-card2"><div class="sb-card2-t">Demo profile — the fullest records on file</div>' +
+    '<div class="sb-pickrow">' + LAY_ROSTER.map(function(n){ return '<button type="button" class="btn sm ' + (m.name === n ? 'primary' : 'ghost') + '" data-sb="layperson" data-k="' + esc(n) + '">' + esc(n) + '</button>'; }).join('') + '</div>' +
+    '<p class="sb-note">Every layout below renders the same live record for ' + esc(m.name) + '. The only fixed rule: the two partitions — <b>About</b> (individual notes) and <b>Connection</b> (contextual notes) — always stay separate and labeled. Everything else moves.</p></div>';
+  LAY_DEFS.forEach(function(d){
+    h += '<div class="sb-card2 lay-frame"><div class="sb-card2-t">' + esc(d.t) + '</div><p class="sb-note">' + esc(d.d) + '</p><div class="lay-body lay-' + d.k + '">' + layRender(d.k, m) + '</div></div>';
+  });
+  return h;
 }
 
 function sbLab(){
@@ -12871,6 +13065,18 @@ document.addEventListener('click', function(ev){
   else if(act === 'pfclear'){ SB.pf.sel = null; R(); }
   else if(act === 'pftab'){ SB.pf.tab = t.getAttribute('data-k'); R(); }
   else if(act === 'labtab'){ SB.labtab = t.getAttribute('data-k'); sbStore('ncc_sbx_labtab', SB.labtab); R(); }
+  else if(act === 'layperson'){ sbStore('ncc_sbx_layperson', t.getAttribute('data-k')); if(!SB.lay) SB.lay = {}; SB.lay.flash = ''; R(); }
+  else if(act === 'laylc'){
+    if(!SB.lay) SB.lay = {};
+    var ldi = parseInt(t.getAttribute('data-di'), 10), lta = document.getElementById('laylc-note');
+    var ltxt = lta ? lta.value.trim() : '';
+    if(ldi >= 0 && ltxt){
+      var le = D.directory[ldi], lcur = lcNote(le);
+      lcCommitNote(ldi, (lcur.trim() ? lcur.replace(/\s+$/, '') + '\n' : '') + ltxt);
+      SB.lay.flash = 'Filed to ' + dispName(le).split(' ')[0] + '\u2019s Lima Charlie note — it rides the Save Pool like any edit.';
+    }
+    R();
+  }
   else if(act === 'discsel'){ SB.dsc.sel = t.getAttribute('data-k'); sbDiscPaintList(); var dl = document.querySelector('.sb-dlist'); var on = dl && dl.querySelector('.sb-drow.on'); if(on) on.scrollIntoView({ block:'nearest' }); }
   else if(act === 'pfasel'){ SB.pf.asel = t.getAttribute('data-k'); R(); }
   else if(act === 'pfaclear'){ SB.pf.asel = null; R(); }
