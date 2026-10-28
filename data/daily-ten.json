@@ -2,208 +2,6 @@
   "date": "2026-10-28",
   "checked": [
     {
-      "name": "sf:andrew-fox",
-      "display": "Andrew Fox"
-    },
-    {
-      "name": "sf:brianna-brothers",
-      "display": "Brianna Brothers"
-    },
-    {
-      "name": "sf:carol-fox",
-      "display": "Carol Fox"
-    },
-    {
-      "name": "sf:conor-miller-lynch",
-      "display": "Conor Miller-Lynch"
-    },
-    {
-      "name": "sf:damaris-duarte",
-      "display": "Damaris Duarte"
-    },
-    {
-      "name": "sf:danica-dunphey",
-      "display": "Danica Dunphey"
-    },
-    {
-      "name": "sf:debbie-flack",
-      "display": "Debbie Flack"
-    },
-    {
-      "name": "sf:donovan-patraw",
-      "display": "Donovan Patraw"
-    },
-    {
-      "name": "sf:eleora-trelease",
-      "display": "Eleora Trelease"
-    },
-    {
-      "name": "sf:gabby-olivia",
-      "display": "Gabby Olivia"
-    },
-    {
-      "name": "sf:hannah-whiteford",
-      "display": "Hannah Whiteford"
-    },
-    {
-      "name": "sf:heather-foster-barrigar",
-      "display": "Heather Foster-Barrigar"
-    },
-    {
-      "name": "sf:jackie-card",
-      "display": "Jackie Card"
-    },
-    {
-      "name": "sf:jai-dane",
-      "display": "Jai Dane"
-    },
-    {
-      "name": "sf:janice-dane",
-      "display": "Janice Dane"
-    },
-    {
-      "name": "sf:julianna-smith",
-      "display": "Julianna Smith"
-    },
-    {
-      "name": "sf:julie-cardinal",
-      "display": "Julie Cardinal"
-    },
-    {
-      "name": "sf:kathy-whiteford",
-      "display": "Kathy Whiteford"
-    },
-    {
-      "name": "sf:kayla-watkins",
-      "display": "Kayla Watkins"
-    },
-    {
-      "name": "sf:liana-sinclair",
-      "display": "Liana Sinclair"
-    },
-    {
-      "name": "sf:mark-cornett",
-      "display": "Mark Cornett"
-    },
-    {
-      "name": "sf:nelson-dane",
-      "display": "Nelson Dane"
-    },
-    {
-      "name": "sf:nicholas-matott",
-      "display": "Nicholas Matott"
-    },
-    {
-      "name": "sf:peyton-mussaw",
-      "display": "Peyton Mussaw"
-    },
-    {
-      "name": "sf:raegan-grant",
-      "display": "Raegan Grant"
-    }
-  ],
-  "filed": [
-    {
-      "name": "sf:heather-foster-barrigar",
-      "display": "Heather Foster-Barrigar",
-      "facts": [
-        {
-          "text": "Appointed Personnel Officer for St. Lawrence County in July 2025 after more than a decade in county Human Resources, previously serving as a Human Resource Technician",
-          "source": "New York State Association of Personnel and Civil Service Officers",
-          "url": "http://nysapcso.org/2025/09/19/member-spotlight-heather-foster-barrigar/",
-          "novelty": "new"
-        },
-        {
-          "text": "Earned an associate's degree in Professional Communication from SUNY Onondaga Community College and a bachelor's degree in Political Science from SUNY Plattsburgh, and earned SHRM-CP certification",
-          "source": "New York State Association of Personnel and Civil Service Officers",
-          "url": "http://nysapcso.org/2025/09/19/member-spotlight-heather-foster-barrigar/",
-          "novelty": "new"
-        }
-      ]
-    },
-    {
-      "name": "sf:donovan-patraw",
-      "display": "Donovan Patraw",
-      "facts": [
-        {
-          "text": "Earned New York State DCJS State Instructor Certification through SUNY Potsdam's Law Enforcement Training Institute Instructor Development Course, as a SUNY Potsdam University Police officer",
-          "source": "SUNY Potsdam",
-          "url": "https://www.potsdam.edu/news/LawEnforcementGraduatesPolice",
-          "novelty": "new"
-        }
-      ]
-    },
-    {
-      "name": "sf:jackie-card",
-      "display": "Jackie Card",
-      "facts": [
-        {
-          "text": "Community Engagement Coordinator at GardenShare in Canton, New York; came to St. Lawrence County to attend SUNY Potsdam",
-          "source": "GardenShare",
-          "url": "https://gardenshare.org/meet-the-staff/",
-          "novelty": "new"
-        }
-      ]
-    },
-    {
-      "name": "sf:julie-cardinal",
-      "display": "Julie Cardinal",
-      "facts": [
-        {
-          "text": "Quoted for New Testament Church in Massena in 2020 on distributing 3,276 USDA Farmers to Families food boxes to the community, reaching over 800 households",
-          "source": "CityServe",
-          "url": "https://www.prweb.com/releases/cityserve_produce_alliance_inc_deliver_over_54_million_pounds_of_food/prweb17524810.htm",
-          "novelty": "new"
-        }
-      ]
-    },
-    {
-      "name": "ig:walczykmark",
-      "display": "Mark C Walczyk",
-      "facts": [
-        {
-          "text": "Facing the first contested re-election of his State Senate career in 2026, running against Democratic newcomer Cassie Robbins-Forbus for the 49th District seat in the November 3, 2026 election",
-          "source": "North Country Public Radio",
-          "url": "https://www.northcountrypublicradio.org/news/story/54120/20261023/a-republican-incumbent-and-democratic-newcomer-battle-for-the-49th-state-senate-district",
-          "novelty": "new",
-          "fresh": true,
-          "published": "2026-10-23"
-        }
-      ]
-    },
-    {
-      "name": "sf:mark-cornett",
-      "display": "Mark Cornett",
-      "facts": [
-        {
-          "text": "Senior Sales Director at Precise Biometrics; quoted in 2021 on Precise's YOUNiQ facial-recognition access agreement with Clarkson University's North Country Incubator in Potsdam",
-          "source": "Biometric Update",
-          "url": "https://www.biometricupdate.com/202102/precise-biometrics-signs-commercial-access-control-agreement-with-clarkson-university",
-          "novelty": "new"
-        }
-      ]
-    },
-    {
-      "name": "sf:nicholas-matott",
-      "display": "Nicholas Matott",
-      "facts": [
-        {
-          "text": "Named to SUNY Canton's President's List for the fall 2021 semester as a Legal Studies student",
-          "source": "SUNY Canton",
-          "url": "https://www.canton.edu/news/2022/honorsf21.php",
-          "novelty": "expands"
-        }
-      ]
-    }
-  ],
-  "coverage": {
-    "checked_total": 717,
-    "of": 724,
-    "window_days": 30
-  },
-  "note": "Checked 25, filed 7 (Heather Foster-Barrigar, Donovan Patraw, Jackie Card, Julie Cardinal, Mark Cornett, Nicholas Matott, plus fresh-sweep winner Mark C Walczyk). Today's rotation was the never-checked tier: 25 newly added shell profiles, most with a single email-era anchor, so the 2-anchor gate rejected nearly everything. Fresh sweep: FOUND \u2014 NCPR's Oct 23, 2026 profile of the 49th Senate District race reports Mark C Walczyk facing the first contested re-election of his Senate career (vs. Cassie Robbins-Forbus, election Nov. 3); filed as the day's fresh fact. His Army Reserve rank from the same article was already filed Oct. 26 and was not re-filed. Zvi Szafran's in-window items were already filed or carried no new personal fact. Rejected after direct verification: Gabby Olivia EXP Realty claim, Peyton Mussaw Clarkson commencement-honors claim, Julie Cardinal town-minutes claim, and Damaris Duarte GoBe blog (login-walled, self-authored) \u2014 none could be confirmed on a real source page; a claimed St. Lawrence County Legislature appointment for Foster-Barrigar was also wrong (that page names a different acting personnel officer) and was replaced by her verified NYSAPCSO spotlight. Patraw also has Oct 2025 Life Saving Award coverage (North Country Now) confirmed in article text, but its canonical URL could not be captured, so only the instructor-certification fact was filed. Supplement filed the same day from a late research report, verified on the source pages: Jackie Card is GardenShare's Community Engagement Coordinator (GardenShare staff page), and Julie Cardinal was quoted for New Testament Church, Massena, in CityServe's Nov 2020 USDA food-box release. An earlier unverified town-minutes claim for Julie Cardinal was not used. Held, not filed: Conor Miller-Lynch (Clarkson research/athletics rest on his distinctive name + Potsdam only, with no source tying him to his Christian Fellowship Academy anchors), Debbie Flack (SUNY Canton communications student lead cannot be tied to her ACC publicity anchor), Eleora Trelease (2025 scholarship item ties to Potsdam only).",
-  "next_up": [
-    {
       "name": "sf:rosie-hoover",
       "display": "Rosie Hoover"
     },
@@ -232,24 +30,143 @@
       "display": "Theresa Smith"
     },
     {
-      "name": "sf:murray",
-      "display": "1LT Murray"
+      "name": "sf:kaylee-gilbert",
+      "display": "Kaylee Gilbert"
     },
+    {
+      "name": "mallory_greene",
+      "display": "Mallory Greene"
+    },
+    {
+      "name": "sf:zalika-ajamu",
+      "display": "Zalika Ajamu"
+    },
+    {
+      "name": "aspecthammy_",
+      "display": "Hamza Hmyene"
+    },
+    {
+      "name": "taylor_rawson_",
+      "display": "Taylor Rawson"
+    },
+    {
+      "name": "sf:jessica-atindama",
+      "display": "Jessica Atindama"
+    },
+    {
+      "name": "sf:carol-harris-huckle",
+      "display": "Carol Harris Huckle"
+    },
+    {
+      "name": "annabellerose.07",
+      "display": "Annabelle Dowling"
+    },
+    {
+      "name": "micahmcculley_",
+      "display": "Micah McCulley"
+    },
+    {
+      "name": "ct:olivia huntly",
+      "display": "Olivia Huntly"
+    },
+    {
+      "name": "benlevendusky",
+      "display": "Ben Levendusky"
+    },
+    {
+      "name": "sf:mel-zeallor",
+      "display": "Mel Zeallor"
+    },
+    {
+      "name": "bree.rogers545",
+      "display": "Bree Rogers"
+    },
+    {
+      "name": "adhope2006",
+      "display": "Adriana Levendusky"
+    },
+    {
+      "name": "ct:ana miller",
+      "display": "Ana Miller"
+    },
+    {
+      "name": "sf:hudson-brown",
+      "display": "Hudson Brown"
+    },
+    {
+      "name": "ct:mike tomford",
+      "display": "Mike Tomford"
+    },
+    {
+      "name": "gabi_paige",
+      "display": "Gabi White"
+    }
+  ],
+  "filed": [
+    {
+      "name": "sf:rosie-hoover",
+      "display": "Rosie Hoover",
+      "facts": [
+        {
+          "text": "On the Belmont University Architecture Studio 3 team whose parklet design \"Symphony of the Senses\" won at Nashville PARKing Day in Germantown on September 21, 2025, serving on the original design team and the documentation group",
+          "source": "Belmont University",
+          "url": "https://www.belmont.edu/stories/articles/2025/nashville-parking-day.html",
+          "novelty": "expands"
+        }
+      ]
+    }
+  ],
+  "coverage": {
+    "checked_total": 722,
+    "of": 722,
+    "window_days": 30
+  },
+  "note": "PM run (second of the day under the new twice-daily cadence). Checked 25, filed 1 (Rosie Hoover). The batch was the last 7 never-checked profiles plus 18 from the oldest (2026-10-26) tier; most profiles were thin single-anchor shells or already current from the Oct 26 full sweep, so the 2-anchor gate rejected nearly everything. Hoover's filing is an expansion: the PARKing Day win was already on file via Merit Pages; Belmont's own story adds the design name, her design-team and documentation-group roles, and a new source (corroborated by the Civic Design Center). Fresh sweep: none found \u2014 date-verified in-window items (Oct 14 Health Hero awards, Oct 20 SLU Metcalf obituary, Oct 27 NCPR NY-21 profile) were about people who are not directory members, and the directory members in current coverage (Zvi Szafran's Midtown Plaza item, Ben Hull's legislature resignation) were already on their profiles. Held, not filed: Sarah Diederich (Lisbon music teacher / SUNY Potsdam alumna cannot be tied to the CFA/CFC theater profile) and Hudson Brown (North Country Savings Bank banker page carries only one profile anchor) \u2014 both need JD's word on identity.",
+  "next_up": [
     {
       "name": "sf:aaron-cote",
       "display": "Aaron Cote"
     },
     {
-      "name": "ig:aaronjdaniels",
+      "name": "aaronjdaniels",
       "display": "Aaron Daniels"
+    },
+    {
+      "name": "abbystiles_",
+      "display": "Abby Stiles"
+    },
+    {
+      "name": "abbydaniels03",
+      "display": "Abigail Daniels"
+    },
+    {
+      "name": "sf:acacia-white",
+      "display": "Acacia White"
+    },
+    {
+      "name": "adria.t18",
+      "display": "Adria Tebo"
+    },
+    {
+      "name": "askinnerusa",
+      "display": "Aeriel Skinner"
+    },
+    {
+      "name": "aidantruth",
+      "display": "Aidan Daniels"
+    },
+    {
+      "name": "sf:alan-k-daniels",
+      "display": "Alan K Daniels"
+    },
+    {
+      "name": "alanahoover",
+      "display": "Alana Hoover"
     }
   ],
-  "unchecked_remaining": 7,
+  "unchecked_remaining": 0,
   "fresh": {
-    "found": true,
-    "name": "ig:walczykmark",
-    "display": "Mark C Walczyk",
-    "published": "2026-10-23",
-    "note": "NCPR, Oct 23, 2026: Walczyk faces the first contested re-election of his State Senate career (49th District, vs. Cassie Robbins-Forbus, election Nov. 3, 2026). Filed as a fresh fact on his profile."
+    "found": false,
+    "note": "Sweep of North Country Now, NCPR, NNY360, WWNY, ClickNNY, Clarkson/SLU/SUNY Potsdam/SUNY Canton news and athletics, honors and health-system news for 2026-10-07 to 2026-10-28 found no new, not-already-filed item about a confirmed directory member; in-window items were about non-directory people, and directory members in coverage (Zvi Szafran, Ben Hull) had their facts already on file."
   }
 }
