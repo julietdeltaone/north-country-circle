@@ -55,7 +55,7 @@ padding:5px 10px;font-size:12.5px}
 </head>
 <body>
 <header class="top">
-  <a class="back" href="dossier.html">&larr; Dossier</a>
+  <a class="back" href="contacts-pro.html">&larr; Contacts Pro</a>
   <h1>Organizations</h1><small>who's involved where</small>
   <label class="tsearch"><input id="q" type="search" placeholder="Search people or orgs&hellip;" autocomplete="off"></label>
 </header>
@@ -111,7 +111,7 @@ function render(){
                  e.relation === 'mutual' ? 'mutual' : null,
                  p.phone ? 'has phone' : null].filter(Boolean).join(' · ');
       var av = (disp(e).replace(/^@/,'').trim().charAt(0) || '·').toUpperCase();
-      return '<div class="person"><span class="ava">'+av+'</span><a href="dossier.html#'+encodeURIComponent(e.name || '')+'">'+disp(e)+'</a>'+
+      return '<div class="person"><span class="ava">'+av+'</span><a href="contacts-pro.html#'+encodeURIComponent(e.name || '')+'">'+disp(e)+'</a>'+
         (sub ? '<span class="sub">'+sub+'</span>' : '') + '</div>';
     }).join('');
     return '<div class="org" style="--c:'+cat.c+'"><header><span class="dot"></span><h3>'+o+
