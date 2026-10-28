@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.21.2';
+var APP_VERSION = '3.22.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1830,7 +1830,7 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    ============================================================ */
 var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
-  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null },
+  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null, view:'list' },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ sel:null, org:null, view:'2d' },
   fam:{ editing:null, focus:null, sheet:false, side:null },
@@ -2136,7 +2136,7 @@ function goHome(){
   $$('.menu-pop').forEach(function(m){ m.hidden = true; });
   S.ctx = null;
   if(S.audit) S.audit.lcOpen = null;
-  S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side };
+  S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:(S.ppl && S.ppl.view) || 'list' };
   go('home');   /* V2.28.0: the landing is the Home overview now; the state clearing above is unchanged */
 }
 addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
@@ -2264,14 +2264,16 @@ function pplSort(dis){
       years: knownSinceYear(e),
       phone: gv(e, 'phone'),
       email: gv(e, 'email').toLowerCase(),
-      updated: Date.parse(raw(e, 'updated_at')) || 0
+      updated: Date.parse(raw(e, 'updated_at')) || 0,
+      lastc: flexKey(gv(e, 'last_contact')) || 0,
+      firstc: flexKey(firstContactOf(e)) || 0
     };
   });
   dis.sort(function(a, b){
     var ka = K[a], kb = K[b], r = 0;
     if(ts.k === 'tier') r = (ka.tier - kb.tier) * d;
     else if(ts.k === 'assoc') r = (ka.assoc - kb.assoc) * d;
-    else if(ts.k === 'years' || ts.k === 'updated' || ts.k === 'close'){
+    else if(ts.k === 'years' || ts.k === 'updated' || ts.k === 'close' || ts.k === 'lastc' || ts.k === 'firstc'){
       var na = ka[ts.k], nb = kb[ts.k];
       if(na && nb) r = (na - nb) * d; else if(na) r = -1; else if(nb) r = 1;
     }
@@ -2352,7 +2354,8 @@ function viewPeople(v){
       return '<button type="button" class="fc' + (cur === o[0] ? ' on' : '') + '" data-act="pf" data-k="' + key + '" data-v="' + o[0] + '">' + o[1] + '</button>';
     }).join('') + '</div>';
   }
-  v.innerHTML = '<div class="page people"><div class="pagehead"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div></div>' +
+  v.innerHTML = '<div class="page people"><div class="pagehead"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
+    '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view !== 'recent' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button></div></div>' +
     '<div class="ppl-cols"><div class="ppl-main">' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
@@ -2391,9 +2394,30 @@ function ptrowHTML(di, i){
 function paintPeople(){
   var box = $('#plist'); if(!box) return;
   var dis = peopleFiltered();
-  S.ppl.cur = dis;
-  box.innerHTML = (dis.length ? '<div class="ptwrap"><table class="ptable">' + ptheadHTML() + '<tbody>' + dis.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>' : '') +
-    (!dis.length ? emptyState('No one matches.', 'Loosen a filter or clear the search.') : '');
+  var body = '';
+  if(dis.length && S.ppl.view === 'recent'){
+    /* By-last-contact view: bucket the filtered roster, most recent first
+       inside each bucket; the pager context follows the displayed order. */
+    var byB = LC_BUCKETS.map(function(){ return []; });
+    dis.forEach(function(di){ byB[lcBucket(D.directory[di])].push(di); });
+    var ordered = [], rows = '';
+    byB.forEach(function(mems, bi){
+      if(!mems.length) return;
+      mems.sort(function(a, b){
+        var ka = flexKey(gv(D.directory[a], 'last_contact')) || 0, kb = flexKey(gv(D.directory[b], 'last_contact')) || 0;
+        if(kb !== ka) return kb - ka;
+        return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+      });
+      rows += '<tr class="ptgroup"><td colspan="' + ptVisibleCols().length + '">' + LC_BUCKETS[bi] + ' <span>' + mems.length + '</span></td></tr>';
+      mems.forEach(function(di){ rows += ptrowHTML(di, ordered.length); ordered.push(di); });
+    });
+    S.ppl.cur = ordered;
+    body = '<div class="ptwrap"><table class="ptable">' + ptColgroupHTML() + ptheadHTML() + '<tbody>' + rows + '</tbody></table></div>';
+  } else {
+    S.ppl.cur = dis;
+    body = dis.length ? '<div class="ptwrap"><table class="ptable">' + ptColgroupHTML() + ptheadHTML() + '<tbody>' + dis.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>' : '';
+  }
+  box.innerHTML = body + (!dis.length ? emptyState('No one matches.', 'Loosen a filter or clear the search.') : '');
   var c = $('#pcount'); if(c) c.textContent = dis.length === people().length ? dis.length + ' people' : dis.length + ' of ' + people().length + ' people';
 }
 function openMoreFilters(){
@@ -2427,10 +2451,12 @@ var PT_ALL = [
   { k:'years',    label:'Years known', num:true },
   { k:'phone',    label:'Phone' },
   { k:'email',    label:'Email' },
-  { k:'updated',  label:'Last updated', num:true }
+  { k:'updated',  label:'Last updated', num:true },
+  { k:'lastc',    label:'Last contact', num:true },
+  { k:'firstc',   label:'First contact', num:true }
 ];
-var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1 };
-var PT_NUMDIR = { assoc:1, years:1, updated:1, close:1 };   /* first click on these sorts high-to-low */
+var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1, lastc:1 };
+var PT_NUMDIR = { assoc:1, years:1, updated:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
 var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', close:'close', groups:'groups', years:'years', phone:'phone', email:'email' };
 var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
 var PT_SEED_ORGS = {
@@ -2459,7 +2485,9 @@ var PTCELL = {
   years: function(e){ var y = knownSinceYear(e); return y ? String(y) : ''; },
   phone: function(e){ var p = gv(e, 'phone'); return p ? esc(fmtPhone(p)) : ''; },
   email: function(e){ return esc(gv(e, 'email')); },
-  updated: function(e){ var u = raw(e, 'updated_at'); return u ? esc(String(u).slice(0, 10)) : ''; }
+  updated: function(e){ var u = raw(e, 'updated_at'); return u ? esc(String(u).slice(0, 10)) : ''; },
+  lastc: function(e){ var v = String(gv(e, 'last_contact') || '').trim(); return v ? '<span class="ptlc">' + esc(lcLabel(e)) + (lcOnline(e) ? ' ' + lcGlobe(11) : '') + '</span>' : ''; },
+  firstc: function(e){ var v = firstContactOf(e); return v ? esc(lcDateLabel(v)) : ''; }
 };
 /* column state: [{k, on}] in display order */
 var PTC = null;
@@ -2478,6 +2506,12 @@ function ptCols(){
 }
 function ptColDef(k){ for(var i = 0; i < PT_ALL.length; i++) if(PT_ALL[i].k === k) return PT_ALL[i]; return null; }
 function ptVisibleCols(){ return ptCols().filter(function(c){ return c.on; }).map(function(c){ return ptColDef(c.k); }); }
+/* fixed-layout column shares (People pass 2026-10-28): the table is
+   table-layout:fixed at 100% width, so these are proportions, not pixels —
+   any visible set is rescaled to fill the row and nothing can push the
+   table wider than its region. */
+var PT_W = { name:21, tier:10, loc:12, orgs:15, assoc:7, skills:13, rel:9, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:14, firstc:13 };
+function ptColgroupHTML(){ return '<colgroup>' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
 function ptSaveCols(){ store('ncc_pt_cols', JSON.stringify(ptCols())); }
 function ptColsSheet(){
   var cols = ptCols(), onCount = cols.filter(function(c){ return c.on; }).length;
@@ -2491,7 +2525,7 @@ function ptColsSheet(){
         '<button type="button" class="btn ghost sm' + (c.on ? ' on' : '') + '" data-act="ptvis" data-k="' + c.k + '"' + (c.on && onCount === 1 ? ' disabled' : '') + '>' + (c.on ? 'Shown' : 'Hidden') + '</button>' +
         '</span></div>';
     }).join('') +
-    '<p class="note">Tip: Shift-click any cell (except Known associates, Handle and Last updated) to edit it in place. On a touch screen, press and hold the cell.</p>', { focus:false });
+    '<p class="note">Tip: Shift-click any cell (except Known associates, Handle, Last updated, Last contact and First contact) to edit it in place. On a touch screen, press and hold the cell.</p>', { focus:false });
 }
 /* ----- autocomplete: live directory values first, seeded county values added ----- */
 function ptDedupe(list){
@@ -8827,6 +8861,45 @@ function lcOnline(e){ return String(gv(e, 'last_contact_online') || '').trim().t
 function lcDateLabel(d){ return d ? ykLabelOf(String(d)) : ''; }
 function lcGlobe(sz){ return '<svg class="lc-globe" width="' + (sz || 12) + '" height="' + (sz || 12) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Online"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg>'; }
 function lcTag(ev){ return ev.kind === 'contact' ? ' <span class="lc-tag">' + (ev.online ? lcGlobe(11) : '') + 'Contact</span>' : ''; }
+/* flexible-date sort key (People pass 2026-10-28): the START of the stated
+   period in ms — 2026 counts from Jan 1, 2026-10 from Oct 1 — or null when
+   the value is not a parseable flexible date. */
+function flexKey(v){
+  var m = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(String(v || '').trim());
+  if(!m) return null;
+  var y = +m[1]; if(y < 1900 || y > 2100) return null;
+  var mo = m[2] ? +m[2] : 1, d = m[3] ? +m[3] : 1;
+  if(mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+  return new Date(y, mo - 1, d).getTime();
+}
+/* First known contact (JD 2026-10-28): the Sheet's First Contact value when
+   set, else the earliest contact event on file. Returns the stored string. */
+function firstContactOf(e){
+  var bk = String(gv(e, 'first_contact') || '').trim();
+  if(bk) return bk;
+  var best = '', bk2 = null;
+  (e.events || []).forEach(function(ev){
+    if(!ev || ev.kind !== 'contact' || !ev.date) return;
+    var k = flexKey(ev.date);
+    if(k == null) return;
+    if(bk2 == null || k < bk2){ bk2 = k; best = String(ev.date); }
+  });
+  return best;
+}
+/* Recency buckets for the By-last-contact view: rolling windows ending
+   today (week <= 7d, month <= 31d, quarter <= 92d, year <= 366d). */
+var LC_BUCKETS = ['This week', 'This month', 'This quarter', 'This year', 'Over a year', 'No contact logged'];
+function lcBucket(e){
+  var k = flexKey(gv(e, 'last_contact'));
+  if(k == null) return 5;
+  var now = new Date(), start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  var days = Math.floor((start - k) / 86400000);
+  if(days <= 7) return 0;
+  if(days <= 31) return 1;
+  if(days <= 92) return 2;
+  if(days <= 366) return 3;
+  return 4;
+}
 function ykPresets(){
   try{ var a = JSON.parse(store('ncc_yk_presets') || '[]'); return Array.isArray(a) ? a.filter(function(x){ return !!ykDateVal(x); }) : []; }catch(x){ return []; }
 }
@@ -9240,7 +9313,8 @@ function onClick(ev){
     case 'ptvis': { var pvk = el.getAttribute('data-k'), pvc = null; ptCols().forEach(function(c){ if(c.k === pvk) pvc = c; }); if(pvc){ if(pvc.on && ptCols().filter(function(c){ return c.on; }).length === 1) break; pvc.on = !pvc.on; ptSaveCols(); paintPeople(); ptColsSheet(); var pvb = $('#sheetwrap [data-act="ptvis"][data-k="' + pvk + '"]'); if(pvb && !pvb.disabled) pvb.focus(); } break; }
     case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); var pmb = $('#sheetwrap [data-act="ptmv"][data-k="' + pmk + '"][data-d="' + pmd + '"]'); if(!pmb || pmb.disabled) pmb = $('#sheetwrap [data-act="ptvis"][data-k="' + pmk + '"]'); if(pmb && !pmb.disabled) pmb.focus(); } break; }
     case 'morefilters': openMoreFilters(); break;
-    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side }; closeSheet(); viewPeople($('#view')); break;
+    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:S.ppl.view }; closeSheet(); viewPeople($('#view')); break;
+    case 'pplview': S.ppl.view = el.getAttribute('data-v') === 'recent' ? 'recent' : 'list'; viewPeople($('#view')); break;
     case 'pplside': S.ppl.side = !sideOpen(S.ppl.side); viewPeople($('#view')); break;
     /* profile chrome */
     case 'menu': { var mp = $('.menu-pop', el.parentNode); var was = mp.hidden; $$('.menu-pop').forEach(function(m){ m.hidden = true; }); mp.hidden = !was; if(!mp.hidden){ var mfb = $('button', mp); if(mfb) mfb.focus(); } break; }
