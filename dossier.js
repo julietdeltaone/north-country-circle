@@ -10489,7 +10489,7 @@ function sbDiscovery(){
   }
   var cov = d.coverage || {};
   h += '<div class="sb-verdict"><div class="sb-verdict-t">Which methods actually produce finds</div>' +
-    '<p class="sb-verdict-m">Documented trails exist for ' + (cov.documented || 0) + ' of ' + (cov.total || 0) + ' people. The routes below are ranked by confirmed photo finds on file.</p>' +
+    '<p class="sb-verdict-m">Documented trails exist for ' + (cov.documented || 0) + ' of the ' + people().length + ' people in the directory. The routes below are ranked by confirmed photo finds on file.</p>' +
     '<div class="sb-meths">' + (d.methods || []).slice(0, 7).map(function(m){
       var mx = Math.max.apply(null, (d.methods || []).map(function(x){ return x.confirmed || 0; }).concat([1]));
       return '<div class="sb-meth"><span class="sb-meth-l">' + esc(m.route) + '</span><span class="sb-meth-bar"><span style="width:' + Math.round(100 * (m.confirmed || 0) / mx) + '%"></span></span><span class="sb-meth-n">' + (m.confirmed || 0) + ' confirmed' + (m.possible ? ' · ' + m.possible + ' possible' : '') + '</span></div>';
