@@ -177,13 +177,25 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "POSSIBLE via ChatGPT professional search, checked 2026-10-28. NCPR (Feb 22, 2021) caption names 'owners Josh and Alicia Taillon' of The Blue House in Madrid, pictured with sous-chef Brad Rookey. Anchors: name + Madrid. The directory's employer (Frary Medical Transport) is NOT confirmed by this source — graded possible, held for JD's ruling.",
+   "evidence": "CONFIRMED 2026-10-28. NCPR's Feb 22, 2021 photo is captioned 'Blue House sous-chef Brad Rookey, and owners Josh and Alicia Taillon in front of their wood-fired oven and grill' and the arrangement matches the caption: Alicia is the woman at right. Filed as a 1:1 crop of her, hosted locally. IMPORTANT: the URL filed in batch 1 (…/news/images/loading/bluehpic1.jpg) serves a blank gray placeholder GIF, not the photo — the real file is …/news/images/bluehpic1.jpg (200, JPEG, verified + viewed). JD accepted this photo on 2026-10-28.",
    "name": "Alicia Taillon",
-   "photo_url": "https://www.northcountrypublicradio.org/news/images/loading/bluehpic1.jpg",
+   "photo_url": "photos/alicia-taillon.jpg",
    "source_page": "https://www.northcountrypublicradio.org/news/story/43239/20210222/madrid-s-toast-to-local-food-launching-their-dream-restaurant-during-a-pandemic",
-   "status": "possible",
-   "type": "News photo (group of three)",
-   "added": "2026-10-28"
+   "status": "confirmed",
+   "type": "News photo (cropped from captioned group photo)",
+   "added": "2026-10-28",
+   "also": [
+    {
+     "url": "https://www.northcountrypublicradio.org/news/images/bluehpic1.jpg",
+     "note": "Full captioned photo: Brad Rookey, Josh Taillon, and Alicia Taillon at The Blue House, Madrid (NCPR, Todd Moe).",
+     "source_page": "https://www.northcountrypublicradio.org/news/story/43239/20210222/madrid-s-toast-to-local-food-launching-their-dream-restaurant-during-a-pandemic"
+    },
+    {
+     "url": "https://www.northcountrypublicradio.org/news/images/bluehpic6.jpg",
+     "note": "Josh and Alicia Taillon at The Blue House (NCPR, Todd Moe).",
+     "source_page": "https://www.northcountrypublicradio.org/news/story/43239/20210222/madrid-s-toast-to-local-food-launching-their-dream-restaurant-during-a-pandemic"
+    }
+   ]
   },
   {
    "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Associate Professor and Program Director, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern (photo served from directories.clarkson.edu/view_image.php inside the person's own block).",
