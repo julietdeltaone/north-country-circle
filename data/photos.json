@@ -6005,6 +6005,34 @@
    "type": "Business event group photo",
    "added": "2026-10-28",
    "also": []
+  },
+  {
+   "name": "Donovan Patraw",
+   "also": [],
+   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/faculty/patrawdj.jpeg?itok=ljuhuwuk",
+   "source_page": "https://www.potsdam.edu/about/directory/units/university-police",
+   "status": "confirmed",
+   "type": "University staff directory photo",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 3). The SUNY Potsdam University Police directory lists Donovan J Patraw, University Police Officer 1 (patrawdj@potsdam.edu), with this staff photo beside his entry; the officer's vest name tape reads D. PATRAW. URL load-verified (370x518 JPEG) and the portrait viewed.",
+   "added": "2026-10-28"
+  },
+  {
+   "name": "Mark Cornett",
+   "photo_url": "https://www.precisebiometrics.com/images/ab8cb889-289a-4752-ad84-81d6f13b4f26/sp/Mark-C.png",
+   "source_page": "https://www.precisebiometrics.com/contact/sales-contact-systems/",
+   "status": "confirmed",
+   "type": "Company contact-page headshot",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 3). Precise Biometrics' official sales-contact page pairs this headshot directly with 'North America, Mark Cornett' and his phone number. URL load-verified (375x253 PNG) and the portrait viewed.",
+   "added": "2026-10-28"
+  },
+  {
+   "name": "Christopher Pagan",
+   "photo_url": "https://cdn.prod.website-files.com/68d82df43f4cafabca6b8877/69123e6b6ba13624a1a26185_Christopher-p-500.jpg",
+   "source_page": "https://prudenteng.com/search-results",
+   "status": "possible",
+   "type": "Employer website headshot",
+   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). A professional headshot asset named 'Christopher' is hosted on the Webflow CDN serving prudenteng.com, Prudent Engineering - the firm JD's 2026-10-26 research batch confirmed Christopher Pagan joined in Sep 2025. No firm page naming him beside the photo could be opened, so the pairing is graded possible, not confirmed. URL load-verified (500x544 JPEG) and the portrait viewed.",
+   "added": "2026-10-28"
   }
  ]
 }
