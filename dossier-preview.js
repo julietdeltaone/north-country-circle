@@ -4307,83 +4307,130 @@ function famSideHTML(lay){
     '<div class="statrows">' + rows.map(function(r){ return '<div class="srow2"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' +
     '<div class="side-sec"><h4>Trees</h4>' + treeRows + '</div></aside>';
 }
-function viewFamily(v){
-  var disp = famDisplay(), ft = famTrees(disp), lay = famSpaceLayout(disp, ft);
-  FAMV.lay = lay; FAMV.pos = {}; FAMV.hover = null; FAMV.off = null; FAMV.dk = 0;
-  lay.clusters.forEach(function(c){
-    c.model.nodes.forEach(function(n){ if(c.tree.blood[n.di] || !FAMV.pos[n.di]) FAMV.pos[n.di] = { x:c.ox + n.x + DFT.NW / 2, y:c.oy + n.y + DFT.CY, tree:c.tree.id }; });
+/* Family view (V3.12.0) — the generation list. JD found the old
+   zoomable plane unreadable: hairline connectors, grayscale
+   generation tints, labels that only read zoomed in, and a
+   zoomed-out layout that was never proven. Three concepts were
+   prototyped against the real trees (family-concepts.html): a tidy
+   org-chart whose thickened connectors still became a thicket on
+   the 29-person Daniels tree, a radial ring chart whose labels
+   collided outright, and this list — the winner in both themes.
+   Each bloodline is a section; generations are labeled blocks on a
+   thick spine; siblings are clustered under their parents; couples
+   render as one unit; and every relationship is written as text
+   next to the name, so nothing needs zooming, panning or decoding.
+   The data model is untouched (famDisplay + famTrees); the canvas
+   helpers below stay for the profile mini-tree. */
+var FAM_GENLAB = ['Roots', 'Children', 'Grandchildren', 'Great-grandchildren', 'Great-great-grandchildren'];
+var FAM_SCROLL = false;
+function famGensOf(disp, tree){
+  var inT = {}; tree.members.forEach(function(di){ inT[di] = 1; });
+  function rel(di, rk){ return ((disp[di] && disp[di][rk]) || []).map(function(x){ return x.di; }).filter(function(x){ return inT[x]; }); }
+  var gen = {}, guard = 0, again = true;
+  tree.members.forEach(function(di){ gen[di] = 0; });
+  while(again && guard++ < 14){
+    again = false;
+    tree.members.forEach(function(di){
+      rel(di, 'parents').forEach(function(p){ if(gen[di] <= gen[p]){ gen[di] = gen[p] + 1; again = true; } });
+    });
+    tree.members.forEach(function(di){
+      rel(di, 'spouses').forEach(function(s){ if(!rel(s, 'parents').length && gen[s] !== gen[di]){ gen[s] = gen[di]; again = true; } });
+    });
+  }
+  var byGen = {};
+  tree.members.forEach(function(di){ (byGen[gen[di]] = byGen[gen[di]] || []).push(di); });
+  return Object.keys(byGen).sort(function(a, b){ return a - b; }).map(function(g){ return { g:+g, members:byGen[g] }; });
+}
+function famRelCaption(disp, tree, di){
+  var inT = {}; tree.members.forEach(function(x){ inT[x] = 1; });
+  function rel(rk){ return ((disp[di] && disp[di][rk]) || []).filter(function(x){ return inT[x.di]; }); }
+  var ps = rel('parents').map(function(x){ return dispName(D.directory[x.di]); });
+  var sp = rel('spouses').map(function(x){ return dispName(D.directory[x.di]); });
+  var ch = rel('children').length;
+  var bits = [];
+  if(ps.length) bits.push('child of ' + ps.join(' & '));
+  if(sp.length) bits.push('married to ' + sp.join(', '));
+  if(ch) bits.push(ch + (ch === 1 ? ' child' : ' children') + ' in this tree');
+  if(!bits.length) bits.push(tree.blood[di] ? 'root of this line' : 'married in');
+  return bits.join(' · ');
+}
+function famChipHTML(di){
+  var e = D.directory[di];
+  return '<button type="button" class="fn fchip' + (S.fam.focus === di ? ' foc' : '') + '" data-act="fnode" data-di="' + di + '">' + avatar(e, 'sm') + '<b>' + esc(dispName(e)) + '</b></button>';
+}
+function famGenHTML(disp, tree, G){
+  var inGen = {}; G.members.forEach(function(di){ inGen[di] = 1; });
+  function rel(di, rk){ return ((disp[di] && disp[di][rk]) || []).map(function(x){ return x.di; }); }
+  /* sibling clusters: group by parent set (in-tree), biggest first */
+  var groups = {}, order = [];
+  G.members.forEach(function(di){
+    var key = rel(di, 'parents').filter(function(p){ return tree.blood[p] || inGen[p]; }).sort(function(a, b){ return a - b; }).join('|');
+    if(!groups[key]){ groups[key] = []; order.push(key); }
+    groups[key].push(di);
   });
-  if(!lay.clusters.length){ v.innerHTML = '<div class="page">' + emptyState('No family trees yet.', 'Add a parent, spouse, child or sibling from a profile and the tree appears here.') + '</div>'; return; }
-  var svg = '<svg class="flines" width="' + lay.W + '" height="' + lay.H + '" viewBox="0 0 ' + lay.W + ' ' + lay.H + '">';
-  lay.clusters.forEach(function(c){
-    c.model.lines.forEach(function(l){ svg += '<line x1="' + (c.ox + l.x1) + '" y1="' + (c.oy + l.y1) + '" x2="' + (c.ox + l.x2) + '" y2="' + (c.oy + l.y2) + '"/>'; });
-  });
-  lay.links.forEach(function(l){ svg += '<path class="xlink" data-di="' + l.di + '" d="M' + l.x1 + ' ' + l.y1 + ' C' + l.x1 + ' ' + (l.y1 + 120) + ' ' + l.x2 + ' ' + (l.y2 - 120) + ' ' + l.x2 + ' ' + l.y2 + '"/>'; });
-  svg += '</svg>';
-  var html = '';
-  lay.clusters.forEach(function(c){
-    html += '<div class="ftitle" style="left:' + c.ox + 'px;top:' + c.labelY + 'px">' + esc(c.tree.title) + ' <small>' + c.tree.members.length + '</small></div>';
-    c.model.nodes.forEach(function(n){
-      var e = D.directory[n.di], st = c.model.styleOf(n.di), foc = S.fam.focus === n.di;
-      html += '<button type="button" class="fn' + (foc ? ' foc' : '') + '" data-act="fnode" data-di="' + n.di + '" style="left:' + (c.ox + n.x) + 'px;top:' + (c.oy + n.y) + 'px;--fc:' + st.c + '"><span class="fc">' + esc(famInitials(dispName(e))) + '</span><b>' + esc(dispName(e)) + '</b><small>' + esc(st.cap) + '</small></button>';
+  order.sort(function(a, b){ return groups[b].length - groups[a].length || (a < b ? -1 : 1); });
+  var used = {}, h = '';
+  order.forEach(function(key){
+    var ms = groups[key].filter(function(di){ return !used[di]; });
+    if(!ms.length) return;
+    if(key && groups[key].length >= 2){
+      var pnames = key.split('|').map(function(p){ return dispName(D.directory[+p]); }).join(' & ');
+      h += '<div class="fgrp-lab">Children of ' + esc(pnames) + '</div>';
+    }
+    ms.forEach(function(di){
+      if(used[di]) return;
+      var sp = rel(di, 'spouses').filter(function(s){ return inGen[s] && !used[s]; })[0];
+      if(sp != null){
+        used[di] = 1; used[sp] = 1;
+        h += '<div class="fp-row"><span class="fcouple">' + famChipHTML(di) + '<span class="fmrg"><i></i>married<i></i></span>' + famChipHTML(sp) + '</span>' +
+          '<span class="fp-rel">' + esc(famRelCaption(disp, tree, di)) + '</span></div>';
+      } else {
+        used[di] = 1;
+        h += '<div class="fp-row">' + famChipHTML(di) + '<span class="fp-rel">' + esc(famRelCaption(disp, tree, di)) + '</span></div>';
+      }
     });
   });
-  v.innerHTML = '<div class="page fampage"><div class="netbar"><div><h1 class="display">Family</h1><p class="sub">' + lay.trees.length + ' bloodline' + (lay.trees.length === 1 ? '' : 's') + '. Married-in spouses also appear in their own tree.</p></div>' +
+  return h;
+}
+function famIndexHTML(ft){
+  var total = 0;
+  ft.forEach(function(t){ total += t.members.length; });
+  var rows = [['Trees', String(ft.length)], ['People in trees', String(total)]];
+  if(ft.length) rows.push(['Largest family', ft[0].title + ' · ' + ft[0].members.length]);
+  var treeRows = ft.map(function(t){
+    var rep = t.roots && t.roots.length ? t.roots[0] : t.members[0];
+    return '<button type="button" class="srow' + (S.fam.focus === rep ? ' on' : '') + '" data-act="famtree" data-di="' + rep + '"><span>' + esc(t.title) + '</span><b>' + t.members.length + '</b></button>';
+  }).join('');
+  return '<aside class="fampanel"><div class="side-h"><h3>Summary</h3><button type="button" class="ib sm" data-act="famside" aria-label="Close summary">' + ic('x', 15) + '</button></div>' +
+    '<div class="statrows">' + rows.map(function(r){ return '<div class="srow2"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' +
+    '<div class="side-sec"><h4>Trees</h4>' + treeRows + '</div></aside>';
+}
+function viewFamily(v){
+  var disp = famDisplay(), ft = famTrees(disp);
+  FAMV.lay = null; FAMV.pos = {}; FAMV.hover = null; FAMV.el = null;
+  if(!ft.length){ v.innerHTML = '<div class="page">' + emptyState('No family trees yet.', 'Add a parent, spouse, child or sibling from a profile and the tree appears here.') + '</div>'; return; }
+  var total = 0; ft.forEach(function(t){ total += t.members.length; });
+  var sections = ft.map(function(t){
+    var gens = famGensOf(disp, t);
+    var body = gens.map(function(G, gi){
+      return '<div class="fgen"><div class="fgen-lab">Generation ' + (gi + 1) + '<span>' + esc(FAM_GENLAB[gi] || '') + '</span></div>' +
+        '<div class="fgen-people">' + famGenHTML(disp, t, G) + '</div></div>';
+    }).join('');
+    return '<section class="ftree" id="' + esc(t.id) + '"><header class="ftree-h"><h2>' + esc(t.title) + '</h2><span class="ftree-n">' + t.members.length + ' people</span>' +
+      ((t.spousesFrom && t.spousesFrom.length) ? '<span class="ftree-note">Married-in spouses also appear in ' + t.spousesFrom.map(function(x){ return esc(x.title); }).join(', ') + '</span>' : '') +
+      '</header>' + body + '</section>';
+  }).join('');
+  v.innerHTML = '<div class="page fampage"><div class="netbar"><div><h1 class="display">Family</h1><p class="sub">' + ft.length + ' bloodline' + (ft.length === 1 ? '' : 's') + ' · ' + total + ' people. Generations read top to bottom; every relationship is written next to the name.</p></div>' +
     '<div class="netctl"><button type="button" class="btn ghost sm" data-act="famside" aria-expanded="' + (sideOpen(S.fam.side) ? 'true' : 'false') + '">Summary</button></div></div>' +
-    '<div class="famcols"><div class="fspace" id="fspace"><div class="fworld" id="fworld" style="width:' + lay.W + 'px;height:' + lay.H + 'px">' + svg + html + '</div>' +
-    '<div class="netzoom"><button type="button" class="ib" data-act="famzoom" data-d="1" aria-label="Zoom in">' + ic('plus', 18) + '</button><button type="button" class="ib" data-act="famzoom" data-d="-1" aria-label="Zoom out">' + ic('minus', 18) + '</button><button type="button" class="ib" data-act="famfit" aria-label="Fit all">' + ic('target', 18) + '</button></div>' +
-    '<div class="netcard" id="famcard" hidden></div></div>' +
-    (sideOpen(S.fam.side) ? famSideHTML(lay) : '') + '</div></div>';
-  FAMV.el = $('#fspace');
-  famFit();
-  if(S.fam.focus != null && FAMV.pos[S.fam.focus]){ var p = FAMV.pos[S.fam.focus]; FAMV.cam = { x:p.x, y:p.y, z:0.9 }; famApply(); }
+    '<div class="netcard famfocus" id="famcard" hidden></div>' +
+    '<div class="famcols2"><div class="famlist">' + sections + '</div>' +
+    (sideOpen(S.fam.side) ? famIndexHTML(ft) : '') + '</div></div>';
   famCard();
-  var el = FAMV.el; FAMV.ptr = {}; FAMV.pinch = 0;
-  el.addEventListener('pointerdown', function(ev){
-    if(ev.target.closest('.netzoom, .netcard')) return;
-    el.setPointerCapture(ev.pointerId); FAMV.ptr[ev.pointerId] = { x:ev.clientX, y:ev.clientY, t:ev.target }; FAMV.moved = false; FAMV.vel = { x:0, y:0 }; FAMV.glide = null;
-    if(Object.keys(FAMV.ptr).length === 2) FAMV.pinch = famPinchDist();
-  });
-  el.addEventListener('pointermove', function(ev){
-    var p = FAMV.ptr[ev.pointerId]; if(!p) return;
-    var ks = Object.keys(FAMV.ptr);
-    if(ks.length === 1){
-      var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
-      if(Math.abs(dx) + Math.abs(dy) > 4) FAMV.moved = true;
-      if(FAMV.moved){ FAMV.cam.x -= dx / FAMV.cam.z; FAMV.cam.y -= dy / FAMV.cam.z; FAMV.vel = { x:dx / FAMV.cam.z, y:dy / FAMV.cam.z }; famApply(); }
-    }
-    p.x = ev.clientX; p.y = ev.clientY;
-    if(ks.length === 2){
-      var d = famPinchDist(); if(FAMV.pinch) FAMV.cam.z = Math.max(0.2, Math.min(1.6, FAMV.cam.z * d / FAMV.pinch));
-      FAMV.pinch = d; FAMV.moved = true; famApply();
-    }
-  });
-  function fup(ev){
-    var had = FAMV.ptr[ev.pointerId]; delete FAMV.ptr[ev.pointerId]; FAMV.pinch = 0;
-    if(had && FAMV.moved && Object.keys(FAMV.ptr).length === 0) famCoast();
+  if(FAM_SCROLL){
+    FAM_SCROLL = false;
+    var n = document.querySelector('.fchip[data-di="' + S.fam.focus + '"]');
+    if(n) n.scrollIntoView({ block:'center' });
   }
-  el.addEventListener('pointerup', fup); el.addEventListener('pointercancel', fup);
-  el.addEventListener('wheel', function(ev){
-    ev.preventDefault();
-    var z0 = FAMV.cam.z, z2 = Math.max(0.2, Math.min(1.6, z0 * Math.exp(-ev.deltaY * 0.0011)));
-    var r = el.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top, W = r.width, H = r.height;
-    var wx = (mx - W / 2) / z0 + FAMV.cam.x, wy = (my - H / 2) / z0 + FAMV.cam.y;
-    FAMV.cam.z = z2; FAMV.cam.x = wx - (mx - W / 2) / z2; FAMV.cam.y = wy - (my - H / 2) / z2; famApply();
-  }, { passive:false });
-  el.addEventListener('pointermove', function(){ FAMV._pmoveT = performance.now(); });
-  el.addEventListener('pointerover', function(ev){
-    var b = ev.target.closest ? ev.target.closest('.fn') : null, di = b ? +b.getAttribute('data-di') : null;
-    if(di !== FAMV.hover){ FAMV.hover = di; if(di != null) FAMV._hoverT = performance.now(); famHi(); }
-  });
-  el.addEventListener('pointerout', function(ev){
-    var to = ev.relatedTarget;
-    if(to && to.closest && to.closest('.fn')) return;
-    /* the idle drift can slide a node out from under a still cursor — that is
-       the world moving, not the user leaving, so it does not clear the hover */
-    if(FAMV._pmoveT && FAMV._hoverT && FAMV._pmoveT <= FAMV._hoverT) return;
-    if(FAMV.hover != null){ FAMV.hover = null; famHi(); }
-  });
-  famDriftStart();
 }
 function famPinchDist(){ var k = Object.keys(FAMV.ptr).map(function(i){ return FAMV.ptr[i]; }); return k.length < 2 ? 0 : Math.hypot(k[0].x - k[1].x, k[0].y - k[1].y); }
 function famApply(){
@@ -9055,7 +9102,7 @@ function onClick(ev){
     }
     /* network + family */
     case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
-    case 'famtree': S.fam.focus = di; viewFamily($('#view')); break;
+    case 'famtree': S.fam.focus = di; FAM_SCROLL = true; viewFamily($('#view')); break;
     case 'netorg': { var ov = el.getAttribute('data-v'); S.net.org = ov && ov !== S.net.org ? ov : null; netCard(); NET.dirty = true; break; }
     case 'netpanel': { var pn = $('#netpanel'); if(pn) netSetPanel(pn.classList.contains('closed'), true); NET.dirty = true; break; }
     case 'netfindpick': netPickFind(di); break;
