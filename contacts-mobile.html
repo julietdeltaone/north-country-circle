@@ -75,7 +75,7 @@ html[data-mode="dark"] body::before{background:
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;background:none;border:0;padding:0;touch-action:manipulation}
 a{touch-action:manipulation}
-:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+:focus-visible{outline:2px solid var(--ga);outline-offset:2px}
 h1,h2,h3,p{margin:0}
 img{max-width:100%}
 #app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;overflow-x:hidden;position:relative}
@@ -95,34 +95,43 @@ img{max-width:100%}
 .ib:active{background:var(--fill2);color:var(--txt)}
 /* ---------- scroll region ---------- */
 #scroll{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;position:relative;scrollbar-width:thin}
-.view{padding:14px 14px 28px;max-width:640px;margin:0 auto;width:100%}
-/* ---------- select screen ---------- */
-.searchbar{position:sticky;top:0;z-index:20;padding:2px 0 10px}
+.view{padding:12px 16px 30px;max-width:640px;margin:0 auto;width:100%}
+/* ---------- select screen control deck: fixed, solid, never overlapped ---------- */
+#deck{flex:none;position:relative;z-index:30;display:flex;flex-direction:column;gap:8px;padding:10px 16px 11px;background:linear-gradient(180deg,var(--glass-solid),var(--glass2));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border-bottom:1px solid var(--line2);box-shadow:0 14px 24px -18px rgba(56,78,104,.45)}
+#deck[hidden]{display:none}
+html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .searchwrap{position:relative;display:flex;align-items:center}
 .searchwrap svg{position:absolute;left:12px;color:var(--dim);pointer-events:none}
-#q{width:100%;height:46px;padding:0 40px 0 38px;border-radius:14px;border:1px solid var(--line2);background:var(--glass-solid);outline:none;font-size:16px}
-#q:focus{border-color:var(--acc)}
+#q{width:100%;height:44px;padding:0 40px 0 38px;border-radius:14px;border:1px solid var(--line2);background:var(--glass-solid);outline:none;font-size:16px}
+#q:focus{border-color:var(--ga)}
+#q::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 #qclear{position:absolute;right:4px;width:36px;height:36px;display:none;align-items:center;justify-content:center;color:var(--mut);border-radius:10px}
-.sortrow{display:flex;align-items:center;gap:8px;margin-top:2px}
+.sortrow{display:flex;align-items:center;gap:8px}
 .sortrow label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);flex:none}
 .sortrow select{flex:1;min-width:0;height:40px;padding:0 30px 0 12px;border-radius:12px;border:1px solid var(--line2);background:var(--glass-solid);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2368727f' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
-.countline{color:var(--mut);font-size:12.5px;margin:8px 2px 2px}
-.lhead{position:sticky;top:66px;z-index:10;font:700 12px var(--sans);letter-spacing:.14em;color:var(--txt2);padding:7px 10px;margin:10px 0 4px;border-radius:10px;background:linear-gradient(90deg,color-mix(in srgb,var(--ga) 18%,transparent),color-mix(in srgb,var(--gb) 12%,transparent)),var(--glass-solid);border:1px solid var(--line);scroll-margin-top:66px}
-.prow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:9px 8px;border-radius:14px;content-visibility:auto;contain-intrinsic-size:auto 58px}
+.countline{flex:none;max-width:42%;color:var(--mut);font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lhead{position:sticky;top:0;z-index:10;font:700 12px var(--sans);letter-spacing:.14em;color:var(--txt2);padding:7px 10px;margin:10px 0 4px;border-radius:10px;background:linear-gradient(90deg,color-mix(in srgb,var(--ga) 16%,var(--field)),color-mix(in srgb,var(--gb) 12%,var(--field)));border:1px solid var(--line);scroll-margin-top:0}
+.lsec:first-child .lhead{margin-top:2px}
+#plist{padding-bottom:52px}
+#plist.railpad{padding-right:24px}
+.prow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 6px;border-radius:14px;content-visibility:auto;contain-intrinsic-size:auto 58px;position:relative}
+.prow::after{content:"";position:absolute;left:59px;right:2px;bottom:0;height:1px;background:var(--line)}
 .prow:active{background:var(--fill2)}
 .av{display:inline-flex;align-items:center;justify-content:center;flex:none;border-radius:50%;font-weight:600;overflow:hidden;background:linear-gradient(150deg,color-mix(in srgb,var(--ga) 26%,var(--glass2)),color-mix(in srgb,var(--gb) 22%,var(--glass)));border:1px solid var(--line);color:var(--txt)}
 .av img{width:100%;height:100%;object-fit:cover;display:block}
 .av-sm{width:42px;height:42px;font-size:14px}
-.av-lg{width:64px;height:64px;font-size:22px;font-family:var(--serif)}
+.av-lg{width:60px;height:60px;font-size:21px;font-family:var(--serif)}
 .prow .pmain{flex:1;min-width:0}
 .prow b{display:block;font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prow small{display:block;color:var(--mut);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .prow .chev{color:var(--dim);flex:none}
-#rail{position:absolute;right:2px;top:170px;bottom:96px;width:24px;display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;z-index:30;padding:4px 0}
+#rail{position:absolute;right:0;top:180px;bottom:150px;width:36px;display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;z-index:30;padding:2px 0;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #rail.on{display:flex}
-#rail button{flex:1;width:24px;min-height:14px;font-size:10px;font-weight:700;color:var(--mut);display:flex;align-items:center;justify-content:center;border-radius:6px}
+#rail button{flex:1;width:100%;min-height:13px;font-size:10.5px;font-weight:700;color:var(--mut);display:flex;align-items:center;justify-content:center;border-radius:6px;padding-right:4px}
 #rail button:active,#rail button.hit{background:var(--acc);color:#fff}
-#rail button.off{opacity:.28;pointer-events:none}
+#rail button.off{opacity:.28}
+#scrubbub{position:fixed;right:54px;top:0;width:70px;height:70px;margin-top:-35px;border-radius:22px;background:var(--glass-solid);border:1px solid var(--line2);box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;font:700 36px var(--serif);color:var(--txt);z-index:60;opacity:0;pointer-events:none;transition:opacity var(--d-press) var(--ease-out)}
+#scrubbub.on{opacity:1}
 #totop{position:absolute;right:14px;bottom:14px;z-index:35;width:44px;height:44px;border-radius:50%;display:none;align-items:center;justify-content:center;background:var(--glass-solid);border:1px solid var(--line2);box-shadow:var(--sh-chip);color:var(--txt)}
 #totop.on{display:inline-flex}
 .empty{padding:44px 18px;text-align:center;color:var(--mut)}
@@ -136,26 +145,29 @@ img{max-width:100%}
 /* ---------- contact page ---------- */
 .backrow{display:flex;align-items:center;gap:4px;margin-bottom:10px}
 .backbtn{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:0 10px 0 4px;color:var(--txt);font-weight:600;border-radius:12px}
-.hero{display:flex;gap:14px;align-items:center;padding:16px;border-radius:16px;background:linear-gradient(180deg,var(--glass2),var(--glass));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border:1px solid var(--line);box-shadow:var(--sh)}
-.hero h1{font:600 23px/1.15 var(--serif);letter-spacing:-.2px;overflow-wrap:anywhere}
+.hero{display:flex;gap:12px;align-items:center;padding:14px;border-radius:16px;background:linear-gradient(180deg,var(--glass2),var(--glass));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border:1px solid var(--line);box-shadow:var(--sh)}
+.hero h1{font:600 22px/1.15 var(--serif);letter-spacing:-.2px;overflow-wrap:anywhere}
 .hero .hloc{color:var(--txt2);font-size:13.5px;margin-top:3px;display:flex;align-items:center;gap:5px}
 .hero .hsub{color:var(--mut);font-size:13.5px;margin-top:2px}
 .hero .hlc{color:var(--mut);font-size:12.5px;margin-top:5px}
 .hero .hlc b{color:var(--txt)}
-.glasscard{margin-top:14px;padding:14px;border-radius:16px;background:linear-gradient(180deg,var(--glass2),var(--glass));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border:1px solid var(--line);box-shadow:var(--sh)}
+.glasscard{margin-top:12px;padding:14px;border-radius:16px;background:linear-gradient(180deg,var(--glass2),var(--glass));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border:1px solid var(--line);box-shadow:var(--sh)}
 .glasscard h2{font:700 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--txt);margin-bottom:10px}
-.qa-grid{display:flex;flex-direction:column;gap:8px}
-.qa-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;min-height:50px;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--glass);color:var(--txt);font-weight:600}
-.qa-btn:active{border-color:var(--acc)}
+.qa-grid{display:flex;flex-direction:column;gap:8px;min-width:0}
+.qa-item{border:1px solid var(--line);border-radius:12px;background:var(--glass);overflow:hidden;min-width:0}
+.qa-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;min-height:50px;padding:10px 12px;color:var(--txt);font-weight:600}
 .qa-btn small{display:block;font-weight:400;color:var(--mut);font-size:12px}
-.qa-btn .chev{margin-left:auto;color:var(--dim);flex:none}
-.qa-form{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:2px;background:var(--fill)}
+.qa-btn .chev{margin-left:auto;color:var(--dim);flex:none;transition:transform var(--d-state) var(--ease-std)}
+.qa-item.open .qa-btn .chev{transform:rotate(90deg)}
+.qa-form{border-top:1px solid var(--line);padding:12px;min-width:0}
 .qa-form[hidden]{display:none}
+.qa-form .btn{margin-top:12px}
 .lab{display:block;margin:10px 0 5px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
 .lab:first-child{margin-top:0}
-input[type="date"],input[type="text"],textarea,select.inp{width:100%;min-height:44px;padding:9px 12px;border-radius:10px;border:1px solid var(--line2);background:var(--glass-solid);outline:none;font-size:16px}
+input[type="date"],input[type="text"],textarea,select.inp{width:100%;min-width:0;min-height:44px;padding:9px 12px;border-radius:10px;border:1px solid var(--line2);background:var(--glass-solid);outline:none;font-size:16px}
+input[type="date"]{display:block}
 textarea{resize:vertical;line-height:1.5;min-height:76px}
-input:focus,textarea:focus,select.inp:focus{border-color:var(--acc)}
+input:focus,textarea:focus,select.inp:focus{border-color:var(--ga)}
 .tog{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--txt);font-size:14.5px}
 .tog input{width:22px;height:22px;accent-color:var(--acc);flex:none}
 .seg{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--fill);border:1px solid var(--line)}
@@ -230,10 +242,12 @@ button.chip:active{border-color:var(--acc)}
     <button type="button" class="syncp" id="syncp" aria-label="Save status"><i></i><span id="synctxt">Saved</span></button>
     <button type="button" class="ib" id="menubtn" aria-label="Menu" aria-haspopup="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </header>
+  <div id="deck" hidden></div>
   <div id="scroll">
     <main id="view" class="view"><div class="skel">Loading contacts…</div></main>
   </div>
   <nav id="rail" aria-label="Alphabet index"></nav>
+  <div id="scrubbub" aria-hidden="true"></div>
   <button type="button" id="totop" aria-label="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
   <nav id="tabs" aria-label="Primary">
     <a href="#/contacts" data-tab="contacts"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Contacts<span class="dot"></span></a>
@@ -266,7 +280,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.0.0';
+var MOBILE_VERSION = '1.1.0';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -603,6 +617,7 @@ function render(){
     a.classList.toggle('on', on);
   });
   $('#rail').classList.remove('on'); $('#totop').classList.remove('on');
+  if(r.name !== 'contacts'){ var dk0 = $('#deck'); dk0.hidden = true; dk0.innerHTML = ''; }
   var v = $('#view');
   if(r.name === 'person'){
     var di = diFromId(r.id);
@@ -613,6 +628,7 @@ function render(){
   else if(r.name === 'lists') viewLists(v);
   else if(r.name === 'list') viewMembers(v, listTitle(r.kind, r.id), r.id, listMembers(r.kind, r.id));
   else viewContacts(v);
+  layoutChrome();
   $('#scroll').scrollTop = 0;
 }
 
@@ -662,8 +678,9 @@ function filteredPeople(){
 }
 var renderToken = 0;
 function viewContacts(v){
-  v.innerHTML =
-    '<div class="searchbar"><div class="searchwrap">' +
+  var dk = $('#deck');
+  dk.innerHTML =
+    '<div class="searchwrap">' +
     '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>' +
     '<input id="q" type="search" placeholder="Search contacts" autocomplete="off" aria-label="Search contacts" value="' + esc(S.q) + '">' +
     '<button type="button" id="qclear" aria-label="Clear search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>' +
@@ -672,8 +689,9 @@ function viewContacts(v){
     '<option value="za"' + (S.sort === 'za' ? ' selected' : '') + '>Name Z–A</option>' +
     '<option value="contacted"' + (S.sort === 'contacted' ? ' selected' : '') + '>Most recently contacted</option>' +
     '<option value="changed"' + (S.sort === 'changed' ? ' selected' : '') + '>Recently changed</option>' +
-    '</select></div>' +
-    '<div class="countline" id="countline"></div></div>' +
+    '</select><span class="countline" id="countline"></span></div>';
+  dk.hidden = false;
+  v.innerHTML =
     '<div id="plist"></div>' +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
   var q = $('#q'), qc = $('#qclear');
@@ -693,7 +711,10 @@ function paintList(){
   var list = $('#plist'); if(!list) return;
   var dis = filteredPeople();
   var cl = $('#countline');
-  if(cl) cl.textContent = dis.length + (dis.length === 1 ? ' contact' : ' contacts') + (S.q ? ' matching “' + S.q + '”' : '') + ' · data ' + (D.updated || '');
+  if(cl){
+    cl.textContent = dis.length + (dis.length === 1 ? ' contact' : ' contacts') + (S.q ? ' · “' + S.q + '”' : '');
+    cl.setAttribute('title', dis.length + (dis.length === 1 ? ' contact' : ' contacts') + (S.q ? ' matching “' + S.q + '”' : '') + ' · data ' + (D.updated || ''));
+  }
   if(!dis.length){ list.innerHTML = '<div class="empty"><h3>No matches.</h3><p>Try a different search.</p></div>'; $('#rail').classList.remove('on'); return; }
   /* group into sticky-header blocks */
   var groups = [], cur = null;
@@ -710,7 +731,10 @@ function paintList(){
     var html = '', n = 0;
     while(gi < groups.length && n < 220){
       var g = groups[gi++];
-      html += '<div class="lhead" data-letter="' + esc(g.k) + '">' + esc(g.k) + '</div>' + g.dis.map(personRow).join('');
+      /* each section is its own wrapper so the sticky header is constrained
+         to its section and gets pushed off by the next one (iOS behavior) —
+         flat siblings would all pile up stuck at the top together */
+      html += '<div class="lsec"><div class="lhead" data-letter="' + esc(g.k) + '">' + esc(g.k) + '</div>' + g.dis.map(personRow).join('') + '</div>';
       n += g.dis.length;
     }
     list.insertAdjacentHTML('beforeend', html);
@@ -719,25 +743,117 @@ function paintList(){
   }
   chunk();
 }
+/* ---------- chrome layout: rail + back-to-top clear the header, deck and tabs ---------- */
+function layoutChrome(){
+  var rail = $('#rail'), tt = $('#totop'), dk = $('#deck'), tabs = $('#tabs'), hdr = $('#hdr');
+  if(!rail || !tt) return;
+  var top = (hdr ? hdr.offsetHeight : 56) + (dk && !dk.hidden ? dk.offsetHeight : 0);
+  rail.style.top = (top + 4) + 'px';
+  var tabsH = tabs ? tabs.offsetHeight : 60;
+  rail.style.bottom = (tabsH + 62) + 'px';
+  tt.style.bottom = (tabsH + 12) + 'px';
+}
+addEventListener('resize', layoutChrome);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ layoutChrome(); });
+
+/* ---------- A-Z rail: tap to jump, press-and-slide to scrub (iOS Contacts style) ---------- */
+var RAIL = { sections:{} };
+var jumpToken = 0;
+function alignHead(head){
+  var sc = $('#scroll');
+  var delta = head.getBoundingClientRect().top - sc.getBoundingClientRect().top;
+  if(Math.abs(delta) > 1) sc.scrollTop = Math.max(0, sc.scrollTop + delta);
+  return Math.abs(delta);
+}
+function jumpToLetter(L){
+  if(!L || !RAIL.sections[L]) return;
+  var head = null;
+  $$('#plist .lhead').forEach(function(h){ if(h.getAttribute('data-letter') === L) head = h; });
+  if(!head) return;
+  $$('#rail button').forEach(function(b){ b.classList.toggle('hit', b.getAttribute('data-rail') === L); });
+  /* rows far down the list carry estimated heights (content-visibility)
+     until they render, so one jump can land short — re-measure the target
+     header over a few frames and settle it exactly onto the top */
+  var tok = ++jumpToken;
+  alignHead(head);
+  (function settle(n){
+    if(tok !== jumpToken || n >= 3) return;
+    setTimeout(function(){
+      requestAnimationFrame(function(){
+        if(tok !== jumpToken) return;
+        if(alignHead(head) > 1) settle(n + 1);
+      });
+    }, 55);
+  })(0);
+}
 function buildRail(groups){
-  var rail = $('#rail');
-  if(S.sort !== 'az' && S.sort !== 'za'){ rail.classList.remove('on'); rail.innerHTML = ''; return; }
-  var have = {};
-  groups.forEach(function(g){ have[g.k] = 1; });
+  var rail = $('#rail'), list = $('#plist');
+  RAIL = { sections:{} };
+  groups.forEach(function(g){ RAIL.sections[g.k] = 1; });
+  var usable = (S.sort === 'az' || S.sort === 'za') && groups.length > 1;
+  if(list) list.classList.toggle('railpad', !!usable);
+  if(!usable){ rail.classList.remove('on'); rail.innerHTML = ''; return; }
   var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'.split('');
   rail.innerHTML = letters.map(function(L){
-    return '<button type="button" data-rail="' + L + '"' + (have[L] ? '' : ' class="off"') + ' aria-label="Jump to ' + L + '">' + L + '</button>';
+    return '<button type="button" data-rail="' + L + '"' + (RAIL.sections[L] ? '' : ' class="off"') + ' aria-label="Jump to ' + L + '">' + L + '</button>';
   }).join('');
   rail.classList.add('on');
-  $$('#rail button').forEach(function(b){
-    b.addEventListener('click', function(){
-      var L = b.getAttribute('data-rail');
-      var head = null;
-      $$('#plist .lhead').forEach(function(h){ if(h.getAttribute('data-letter') === L) head = h; });
-      if(head) head.scrollIntoView({ block:'start' });
-    });
-  });
+  layoutChrome();
 }
+var scrub = { on:false, letter:'', lastAt:0, hideT:null };
+function railLetterAt(y){
+  var rail = $('#rail'), r = rail.getBoundingClientRect(), btns = $$('#rail button');
+  if(!btns.length || !r.height) return '';
+  var idx = Math.floor((y - r.top) / r.height * btns.length);
+  idx = Math.max(0, Math.min(btns.length - 1, idx));
+  if(RAIL.sections[btns[idx].getAttribute('data-rail')]) return btns[idx].getAttribute('data-rail');
+  for(var d = 1; d < btns.length; d++){
+    var lo = btns[idx - d], hi = btns[idx + d];
+    if(lo && RAIL.sections[lo.getAttribute('data-rail')]) return lo.getAttribute('data-rail');
+    if(hi && RAIL.sections[hi.getAttribute('data-rail')]) return hi.getAttribute('data-rail');
+  }
+  return '';
+}
+function scrubTo(y){
+  var L = railLetterAt(y);
+  if(!L) return;
+  var bub = $('#scrubbub');
+  bub.textContent = L;
+  bub.style.top = Math.max(96, Math.min(window.innerHeight - 130, y)) + 'px';
+  bub.classList.add('on');
+  if(L !== scrub.letter){ scrub.letter = L; jumpToLetter(L); }
+}
+function scrubEnd(){
+  if(!scrub.on) return;
+  scrub.on = false; scrub.lastAt = Date.now();
+  clearTimeout(scrub.hideT);
+  scrub.hideT = setTimeout(function(){
+    $('#scrubbub').classList.remove('on');
+    $$('#rail button.hit').forEach(function(b){ b.classList.remove('hit'); });
+    scrub.letter = '';
+  }, 260);
+}
+(function(){
+  var railEl = $('#rail');
+  railEl.addEventListener('pointerdown', function(ev){
+    if(!railEl.classList.contains('on')) return;
+    ev.preventDefault();
+    clearTimeout(scrub.hideT);
+    scrub.on = true; scrub.letter = '';
+    try{ railEl.setPointerCapture(ev.pointerId); }catch(x){}
+    scrubTo(ev.clientY);
+  });
+  railEl.addEventListener('pointermove', function(ev){ if(scrub.on){ ev.preventDefault(); scrubTo(ev.clientY); } });
+  railEl.addEventListener('pointerup', scrubEnd);
+  railEl.addEventListener('pointercancel', scrubEnd);
+  railEl.addEventListener('click', function(ev){
+    /* pointer scrub already jumped — ignore the trailing click; a bare click
+       (keyboard Enter, assistive tech) still jumps on its own */
+    if(scrub.on || Date.now() - scrub.lastAt < 400) return;
+    var b = ev.target && ev.target.closest ? ev.target.closest('[data-rail]') : null;
+    if(b && !b.classList.contains('off')) jumpToLetter(b.getAttribute('data-rail'));
+  });
+})();
 $('#scroll').addEventListener('scroll', function(){
   var sc = $('#scroll');
   $('#totop').classList.toggle('on', sc.scrollTop > 700 && S.route === 'contacts');
@@ -859,18 +975,18 @@ function viewPerson(v, di){
     '</div></div>' +
     /* quick entry — the point of this page */
     '<div class="glasscard"><h2>Quick entry</h2><div class="qa-grid">' +
-    '<button type="button" class="qa-btn" data-qa="stamp"><span>Stamp last contact<small>Date defaults to today · online toggle</small></span>' + CHEV + '</button>' +
+    '<div class="qa-item"><button type="button" class="qa-btn" data-qa="stamp" aria-expanded="false"><span>Stamp last contact<small>Date defaults to today · online toggle</small></span>' + CHEV + '</button>' +
     '<div class="qa-form" id="form-stamp" hidden>' +
       '<label class="lab" for="st-date">Date</label><input type="date" id="st-date" value="' + todayStr() + '">' +
       '<label class="tog"><input type="checkbox" id="st-online"> Online</label>' +
       '<button type="button" class="btn primary" id="st-save">Stamp it</button>' +
-      '<p class="savestat" id="st-stat"></p></div>' +
-    '<button type="button" class="qa-btn" data-qa="lc"><span>Lima Charlie note<small>A note for Luna to apply on the next run</small></span>' + CHEV + '</button>' +
+      '<p class="savestat" id="st-stat"></p></div></div>' +
+    '<div class="qa-item"><button type="button" class="qa-btn" data-qa="lc" aria-expanded="false"><span>Lima Charlie note<small>A note for Luna to apply on the next run</small></span>' + CHEV + '</button>' +
     '<div class="qa-form" id="form-lc" hidden>' +
       '<label class="lab" for="lc-text">Note</label><textarea id="lc-text" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now.">' + esc(lcNote(e)) + '</textarea>' +
       '<button type="button" class="btn primary" id="lc-save">Save note</button>' +
-      '<p class="savestat" id="lc-stat"></p></div>' +
-    '<button type="button" class="qa-btn" data-qa="log"><span>Log a contact / event<small>Adds a Timeline entry</small></span>' + CHEV + '</button>' +
+      '<p class="savestat" id="lc-stat"></p></div></div>' +
+    '<div class="qa-item"><button type="button" class="qa-btn" data-qa="log" aria-expanded="false"><span>Log a contact / event<small>Adds a Timeline entry</small></span>' + CHEV + '</button>' +
     '<div class="qa-form" id="form-log" hidden>' +
       '<div class="seg" role="group" aria-label="Entry kind"><button type="button" id="lg-k-contact" class="on">Contact</button><button type="button" id="lg-k-event">Event</button></div>' +
       '<label class="lab" for="lg-date">Date</label><input type="date" id="lg-date" value="' + todayStr() + '">' +
@@ -878,18 +994,25 @@ function viewPerson(v, di){
       '<label class="lab" for="lg-det">Detail (optional)</label><input type="text" id="lg-det" placeholder="" autocomplete="off">' +
       '<label class="tog" id="lg-onl-wrap"><input type="checkbox" id="lg-online"> Online</label>' +
       '<button type="button" class="btn primary" id="lg-save">Log it</button>' +
-      '<p class="savestat" id="lg-stat"></p></div>' +
+      '<p class="savestat" id="lg-stat"></p></div></div>' +
     '</div></div>' +
     '<div id="secs"></div>' +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
   $('#pback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
-  /* quick-entry open/close (forms only — profile sections stay collapsed) */
+  /* quick-entry open/close (forms only — profile sections stay collapsed);
+     each action is ONE surface: trigger row + form share a .qa-item shell */
   $$('#view [data-qa]').forEach(function(b){
     b.addEventListener('click', function(){
       var f = $('#form-' + b.getAttribute('data-qa'));
       var willOpen = f.hidden;
       ['stamp', 'lc', 'log'].forEach(function(k){ $('#form-' + k).hidden = true; });
-      f.hidden = !willOpen;
+      $$('#view .qa-item').forEach(function(it){ it.classList.remove('open'); });
+      $$('#view [data-qa]').forEach(function(x){ x.setAttribute('aria-expanded', 'false'); });
+      if(willOpen){
+        f.hidden = false;
+        b.parentNode.classList.add('open');
+        b.setAttribute('aria-expanded', 'true');
+      }
     });
   });
   /* save wiring — status line walks Queued -> Written to the Sheet */
