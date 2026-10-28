@@ -723,7 +723,7 @@ function outLoad(){
 function outSave(){ try{ localStorage.setItem(OUT_KEY, JSON.stringify(OUT.items)); }catch(x){} }
 function poolLoad(){ try{ POOL.log = JSON.parse(localStorage.getItem(POOL_KEY) || '[]'); if(!Array.isArray(POOL.log)) POOL.log = []; }catch(x){ POOL.log = []; } }
 function poolSave(){ try{ localStorage.setItem(POOL_KEY, JSON.stringify(POOL.log.slice(0, 60))); }catch(x){} }
-function poolName(id){ var di = (typeof PK2I !== 'undefined') ? PK2I[id] : undefined; var e = (di !== undefined && typeof D !== 'undefined' && D) ? D.directory[di] : null; return e ? dispName(e) : id; }
+function poolName(id){ var di = (typeof diFromId === 'function') ? diFromId(id) : null; var e = (di != null && typeof D !== 'undefined' && D) ? D.directory[di] : null; return e ? dispName(e) : id; }
 var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Tier', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Lima Charlie notes', merged_into:'Merged into', review_flag:'Review flag' };
 function poolFieldLabel(k){ return POOL_LABELS[k] || String(k).replace(/_/g, ' '); }
 function poolValSummary(k, v){
@@ -1880,7 +1880,8 @@ function closeSheet(){
   w.hidden = true; w.innerHTML = ''; document.body.classList.remove('sheet-open');
   var f = S.sheetOnClose; S.sheetOnClose = null; if(f) f();
 }
-function askEditKey(){
+function askEditKey(){ try{ poolClose(); }catch(x){}
+
   openSheet('Edit key needed',
     '<p class="dim">The sheet rejected the last save. Enter the edit key (the EDIT_TOKEN from the Apps Script project). It is stored in this browser only.</p>' +
     '<input type="password" id="ekey" placeholder="Edit key" autocomplete="off">' +
