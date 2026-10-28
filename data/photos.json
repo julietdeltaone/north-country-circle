@@ -12,13 +12,14 @@
    "type": null
   },
   {
-   "evidence": "Page titled 'Meet The Owner | Adept Detailing' carries a single lead image directly above 'Aaron Daniels is the founder and owner of Adept Detailing...' — no explicit caption/alt naming him in the image itself, so likely not confirmed. Both SUNY Canton Merit stories text-only.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Adept Detailing's Meet The Owner page (Potsdam/Plattsburgh NY) places this portrait directly beside text naming Aaron Daniels as founder and owner; the wedding attire matches his 2022 marriage timeline noted in JD's research. URL load-verified (JPEG, 341x339) and the portrait viewed.",
    "name": "Aaron Daniels",
    "photo_url": "https://static.wixstatic.com/media/6349cb_caabf0d69b77421e903fd82b6c683933~mv2.jpg/v1/fill/w_341,h_339,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/6349cb_caabf0d69b77421e903fd82b6c683933~mv2.jpg",
    "source_page": "https://www.adeptdetailing.online/about-5",
-   "status": "likely",
-   "type": "portrait",
-   "added_approx": "Oct 2026"
+   "status": "confirmed",
+   "type": "Business owner portrait",
+   "added_approx": "Oct 2026",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @abbystiles_ (display name \"abby stiles\"); bio: \"ED RN 🩺\".",
@@ -628,12 +629,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Her Potsdam obituary (Dignity Memorial) carries this portrait and identifies her as the daughter of Charles J. and Marjorie (Bradley) Cryderman of Madrid, matching the directory identity. URL load-verified and the portrait viewed.",
    "name": "Betty Cryderman Parlow",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://d3eguztg5751m.cloudfront.net/as/assets-mem-com/cmi/0/2/9/8/12248920/20250221_122913434_0_orig.jpg/-/betty-parlow-potsdam-ny-obituary.jpg?crop=%28154.66666666666666%2C0%2C464%2C464%29&cropxunits=464&cropyunits=464",
+   "source_page": "https://www.dignitymemorial.com/fr-ca/obituaries/potsdam-ny/betty-parlow-12248920",
+   "status": "confirmed",
+   "type": "Obituary portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "No source links on file.",
@@ -917,12 +919,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Clarkson University's people page names Carol Huckle (chuckle@clarkson.edu, Potsdam campus) and the university directory serves her headshot under image_id=chuckle. URL load-verified and the portrait viewed.",
    "name": "Carol Harris Huckle",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=chuckle",
+   "source_page": "https://clarkson.us/people/carol-huckle",
+   "status": "confirmed",
+   "type": "University directory headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @carolinaxxmedina (display name \"Carolina Medina\").",
@@ -1185,12 +1188,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Mohawk Valley Community College's President's Cabinet page places this portrait beside Colin Mackey, Executive Director of Budget and Finance/CFO, listing his SUNY Potsdam master's and St. Bonaventure bachelor's, matching the directory. URL load-verified and the portrait viewed.",
    "name": "Colin Mackey",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://www.mvcc.edu/governance/images/cabinet/colinmackey.jpg",
+   "source_page": "https://mvcc.edu/governance/presidents-cabinet.php",
+   "status": "confirmed",
+   "type": "College cabinet portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @colleendcheney (display name \"Colleen!\"); bio: \"canton tech ‘25 NY-> MI\".",
@@ -1934,12 +1938,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is a Facebook post (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). SUNY Potsdam's Fall 2025 LETI article caption position-maps the front row standing left to right, ending '...and Emma Gravlin of Lisbon (Class of 2026)' — she is the fifth, at the far right. Filed as a 1:1 crop of her position, hosted locally. NOTE: the sources place her at SUNY Potsdam (Criminal Justice '26, LETI graduate Dec 12, 2025), which conflicts with the directory's Clarkson University anchor — flagged for JD to correct her school fields.",
    "name": "Emma Gravlin",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/emma-gravlin.jpg",
+   "source_page": "https://www.potsdam.edu/news/lawenforcementfallgraduates25",
+   "status": "confirmed",
+   "type": "Academy graduation photo (cropped)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -2037,12 +2042,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). The photo is the sole image in his employer NextStepU's team-introduction post about webmaster Ethan Hackett; his public employment record matches both directory anchors (Apple Mac Specialist/mentor; Manchester Community College graphic-design degree). Full-size URL load-verified (1200x1709) and the portrait viewed.",
    "name": "Ethan Hackett",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://nextstepu.files.wordpress.com/2012/06/ethan-laugh.jpeg",
+   "source_page": "http://blog.nextstepu.com/meet-our-new-team-member-ethan/",
+   "status": "confirmed",
+   "type": "Employer team introduction photo",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Graduates page lists Ethan Ryan (AAS Criminal Justice) but its only image is captioned 'President Zvi Szafran speaks during Commencement 2024' — not him. Merit listings text-only.",
