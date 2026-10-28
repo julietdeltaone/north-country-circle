@@ -1883,7 +1883,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox','council'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -10711,24 +10711,59 @@ function sbLogUndo(id){
 var CN_ORDER = ['photos', 'ux', 'content', 'resource', 'progress', 'ops'];
 var CN_DEPT_NAMES = { photos:'Photos', ux:'UX', content:'Content', resource:'Resource', progress:'Progress', ops:'Operations' };
 var CN = null, CN_PROF = null;
+var CN_LOADING = false, CN_PROF_LOADING = false;
+function cnProfLoad(cb){
+  if(CN_PROF){ cb && cb(); return; }
+  if(CN_PROF_LOADING) return;
+  CN_PROF_LOADING = true;
+  fetch('data/profiles.json', { cache:'no-store' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(rows){ CN_PROF_LOADING = false; CN_PROF = rows; cb && cb(); })
+    .catch(function(){ CN_PROF_LOADING = false; cb && cb(); });
+}
 function cnLoad(){
-  if(CN) return;
+  cnProfLoad(function(){ if(S.route && S.route.name === 'council') render(); });
+  if(CN || CN_LOADING) return;
+  CN_LOADING = true;
   if(typeof SB !== 'undefined' && SB.council) CN = SB.council;
-  loadJSON('data/council.json', function(d){ if(d){ CN = d; if(S.route && S.route.name === 'council') render(); } });
+  fetch('data/council.json', { cache:'no-store' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){ CN_LOADING = false; if(d) CN = d; if(S.route && S.route.name === 'council') render(); })
+    .catch(function(){ CN_LOADING = false; });
 }
 function cnDi(key){
   if(!D || !D.directory) return -1;
   for(var i = 0; i < D.directory.length; i++) if(pkey(D.directory[i]) === key) return i;
   return -1;
 }
+/* The staged queue lives on JD's Sheet row ig:jdmeyers_ — addressed BY
+   KEY, never through the directory: JD has two directory entries
+   (ig:jdmeyers_ at Sheet row 314 and an sf:jdmeyers_ shell at row 673)
+   and pkey() resolves BOTH to 'sf:jdmeyers_', so a directory patch
+   would land on the wrong row and the read would never find it. Reads
+   come from the baked profiles.json (the same row Luna's passes read
+   in the Sheet); writes go through the batch endpoint by key. CN_Q is
+   the in-tab copy, set on every save so the board reflects staging
+   immediately. */
+var CN_Q = null;
 function cnQueue(){
-  var di = cnDi('ig:jdmeyers_'); if(di < 0) return [];
-  try{ var q = JSON.parse(gv(D.directory[di], 'council_staged') || '[]'); return Array.isArray(q) ? q : []; }
-  catch(x){ return []; }
+  if(CN_Q) return CN_Q;
+  if(CN_PROF && CN_PROF.length){
+    var ci = CN_PROF[0].indexOf('Council Staged');
+    if(ci >= 0) for(var i = 1; i < CN_PROF.length; i++){
+      if(CN_PROF[i][0] === 'ig:jdmeyers_'){
+        try{ var q = JSON.parse(CN_PROF[i][ci] || '[]'); CN_Q = Array.isArray(q) ? q : []; }
+        catch(x){ CN_Q = []; }
+        return CN_Q;
+      }
+    }
+  }
+  return [];
 }
 function cnSaveQueue(q){
-  var di = cnDi('ig:jdmeyers_'); if(di < 0) return;
-  queuePatch(di, { council_staged: JSON.stringify(q) });
+  CN_Q = q;
+  sbPostBatch([{ key:'ig:jdmeyers_', patch:{ council_staged: JSON.stringify(q) } }])
+    .then(function(ok){ if(!ok) toast('Staging write did not land — check the edit key; the queue is held in this tab for now'); });
 }
 function cnRepaint(){
   var v = $('#view'); if(!v || !S.route || S.route.name !== 'council') return;
@@ -10799,8 +10834,9 @@ function cnApplyPatch(p){
   if(di >= 0){ queuePatch(di, patch); return true; }
   /* Folded rows (merged_into) have no directory index — write by key
      through the batch endpoint and AWAIT its ack: a rejected write
-     must surface as a failure, never as a done entry. */
-  return sbPostBatch([{ key:p.key, patch:patch }]).then(function(){ return true; }, function(){ return false; });
+     must surface as a failure, never as a done entry. (sbPostBatch
+     resolves true/false rather than rejecting.) */
+  return sbPostBatch([{ key:p.key, patch:patch }]).then(function(ok){ return !!ok; });
 }
 function cnExecEntries(entries, cb){
   var needProf = entries.some(function(e){
@@ -10817,7 +10853,7 @@ function cnExecEntries(entries, cb){
     });
     Promise.all(jobs).then(function(){ cb && cb({ ok:!failed.length, failed:failed }); });
   };
-  if(needProf && !CN_PROF) loadJSON('data/profiles.json', function(rows){ CN_PROF = rows; run(); });
+  if(needProf && !CN_PROF) cnProfLoad(run);
   else run();
 }
 function cnMarkDone(q, entry, outcome){
@@ -11025,7 +11061,7 @@ function viewCouncil(v){
   h += closed.length ? closed.map(function(f){
     var res = q.filter(function(e){ return e.flag === f.id && e.state === 'done'; })[0];
     return '<div class="cnc-drow"><b>' + esc(f.title || '') + '</b>' +
-      (f.ruling ? '<p>' + esc(f.ruling) + '</p>' : '') +
+      ((f.ruling || f.resolution) ? '<p>' + esc(f.ruling || f.resolution) + '</p>' : '') +
       (res ? '<p class="cnc-dres">Resolved from the board ' + esc(String(res.ts || '').slice(0, 10)) + ' — ' + esc(res.label || '') + (res.outcome ? ' (' + esc(res.outcome) + ')' : '') + '</p>' : '') + '</div>';
   }).join('') : '<p class="sb-note">No closed flags yet.</p>';
   h += '</div></details>';
