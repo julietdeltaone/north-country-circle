@@ -2143,12 +2143,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via JD-supplied professional search + Luna live-site retrieval, verified 2026-10-28 (image loads, 750x1000 solo gym portrait). The photo sits on Bjorn Fitness's own site under a page headed 'Gavin Matthews'; member reviews on the site name Gavin as a Shapesmith (coach) there. ChatGPT's pass reported a coaching bio styling him 'Master Shapesmith' with NASM certifications; that bio text is NOT on the current site (possibly an earlier version), so the title/certs were not filed as fact.",
    "name": "Gavin Matthews",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://bjornfitness.com/wp-content/uploads/2023/09/Gavin-Matthews.jpg",
+   "source_page": "https://bjornfitness.com/home-12/gavin-matthews/",
+   "status": "confirmed",
+   "type": "Gym coach portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @ginnylou507 (display name \"Ginny L. Hunter\"); bio: \"She didn’t come all this way to lose 💪🏼 -Former Elopea Wedding Planner -Former NA Miss Competitor -Former Bar \".",
@@ -2670,12 +2671,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The 2024 Potsdam Tentative Assessment Roll is a 156-page text-table report (parcel IDs, owner names, values) — no images of any kind.",
+   "evidence": "CONFIRMED via JD-supplied finding + Luna LinkedIn retrieval, 2026-10-28. Public LinkedIn profile (linkedin.com/in/jaredthibodeau) headlines 'Sales Manager - Americas @ QED Technologies'; experience: QED Technologies International LLC from Sep 2026, Zygo Corporation Account Manager (Northeast US and Eastern Canada) from Apr 2021. Optics career coheres with the directory's Corning Glass record. The signed LinkedIn image URL expires, so the headshot is hosted locally (site/photos/jared-thibodeau.jpg).",
    "name": "Jared Thibodeau",
-   "photo_url": null,
-   "source_page": "https://www.stlawco.gov/sites/default/files/RealProperty/2024%20Tentative%20Rolls/2024%20Potsdam%20Tentative%20Assessment%20Roll.pdf",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/jared-thibodeau.jpg",
+   "source_page": "https://www.linkedin.com/in/jaredthibodeau/",
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @big_dawg_j (display name \"Jason\").",
