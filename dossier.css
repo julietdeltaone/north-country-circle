@@ -3378,3 +3378,12 @@ body.pool-open #app:has(> #pool){grid-template-columns:var(--rail) 1fr 236px}
 .ml-new input{width:180px;flex:0 1 auto}
 .ml-new select{width:auto;flex:0 1 auto}
 .ml-inline input,.ml-inline select{width:auto}
+
+/* Last known contact (V3.18.0) */
+.hlc{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:13px;margin-top:3px}
+.hlc b{color:var(--txt);font-weight:600}
+.lc-globe{flex:0 0 auto;vertical-align:-2px}
+.lc-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:1px 7px;margin-left:7px;vertical-align:1px}
+.lc-onl{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mut);cursor:pointer}
+.lcform .lc-onl{margin:2px 0 8px}
+.aud-onlrow{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mut);margin-top:8px;cursor:pointer}
