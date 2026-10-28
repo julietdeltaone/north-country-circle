@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.13.0';
+var APP_VERSION = '3.13.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -11300,15 +11300,32 @@ function cnFieldVal(key, field){
   }
   return null;
 }
+/* Value equality for council patch matching: tolerant of case, spacing,
+   and phone formatting. A patch spec written as bare digits ("5183178734")
+   must match the stored formatted value ("518-317-8734") — the Oct 28
+   execute-all failure: remove/replace specs silently matched nothing and
+   the nv===cur shortcut below reported them as applied. */
+function cnValEq(a, b){
+  var x = String(a == null ? '' : a).trim().replace(/\s+/g, ' ').toLowerCase();
+  var y = String(b == null ? '' : b).trim().replace(/\s+/g, ' ').toLowerCase();
+  if(x === y) return true;
+  var dx = x.replace(/\D/g, ''), dy = y.replace(/\D/g, '');
+  if(dx.length >= 7 && dy.length >= 7){
+    if(dx.length === 11 && dx.charAt(0) === '1') dx = dx.slice(1);
+    if(dy.length === 11 && dy.charAt(0) === '1') dy = dy.slice(1);
+    return dx === dy;
+  }
+  return false;
+}
 function cnApplyPatch(p){
   var cur = cnFieldVal(p.key, p.field); if(cur == null) return false;
   var nv = cur;
   if(p.op === 'set') nv = p.value;
   else{
     var a = tagList(cur);
-    if(p.op === 'add'){ if(a.indexOf(p.value) < 0) a.push(p.value); }
-    else if(p.op === 'remove'){ a = a.filter(function(x){ return x !== p.value; }); }
-    else if(p.op === 'replace'){ a = a.map(function(x){ return x === p.from ? p.to : x; }); }
+    if(p.op === 'add'){ if(!a.some(function(x){ return cnValEq(x, p.value); })) a.push(p.value); }
+    else if(p.op === 'remove'){ a = a.filter(function(x){ return !cnValEq(x, p.value); }); }
+    else if(p.op === 'replace'){ a = a.map(function(x){ return cnValEq(x, p.from) ? p.to : x; }); }
     else return false;
     nv = a.join(', ');
   }
