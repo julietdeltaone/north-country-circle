@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="light" data-scheme="bluegreen" data-focus="0">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Family view — layout concepts (V3.12.0 intuitive pass)</title>
+<link rel="stylesheet" href="dossier.css">
+<style>
+  body{ margin:0; font-family:Archivo, system-ui, sans-serif; color:var(--txt); }
+  .wrap{ max-width:1180px; margin:0 auto; padding:28px 22px 80px; }
+  .bar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:14px 0 6px; }
+  .bar .btn.on{ background:var(--txt); color:var(--bg); }
+  .note{ color:var(--mut); font-size:13.5px; line-height:1.55; max-width:75ch; }
+  .judge{ border-left:3px solid var(--ga); padding:8px 12px; margin:14px 0 22px; background:var(--fill); border-radius:0 12px 12px 0; font-size:13.5px; line-height:1.55; }
+  .judge b{ color:var(--txt); }
+  h1{ font-family:"Space Grotesk", sans-serif; font-size:30px; margin:6px 0 2px; }
+  h2{ font-family:"Space Grotesk", sans-serif; font-size:20px; margin:34px 0 4px; }
+  .stage{ position:relative; border:1px solid var(--line); border-radius:16px; background:var(--glass); padding:22px; overflow:auto; }
+  /* shared chips */
+  .pchip{ display:inline-flex; align-items:center; gap:9px; padding:7px 13px 7px 8px; border:1px solid var(--line2); border-radius:999px; background:var(--fill2); white-space:nowrap; }
+  .pchip .av{ width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:700; background:var(--fill3); color:var(--txt); border:1px solid var(--line2); flex:none; }
+  .pchip b{ font-size:13.5px; }
+  .pchip small{ display:block; color:var(--mut); font-size:11px; font-weight:500; }
+  .pchip .tx{ line-height:1.15; text-align:left; }
+  .mrg{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--mut); padding:0 2px; }
+  .mrg i{ display:block; width:22px; height:3px; border-radius:2px; background:var(--txt); opacity:.65; }
+  .couple{ display:inline-flex; align-items:center; gap:4px; padding:5px 8px; border:1.5px dashed var(--line2); border-radius:999px; }
+  .genlab{ font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--mut); }
+  /* concept A: tidy tree rows */
+  .ca-gen{ position:relative; padding:16px 0 26px; }
+  .ca-gen + .ca-gen{ border-top:1px solid var(--line); }
+  .ca-row{ display:flex; flex-wrap:wrap; gap:14px 26px; margin-top:12px; position:relative; z-index:1; }
+  .ca-svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .ca-svg path{ stroke:var(--txt); stroke-width:2.5; fill:none; opacity:.5; }
+  /* concept B: generation list with spine + captions */
+  .cb-gen{ display:grid; grid-template-columns:128px 1fr; gap:0 18px; padding:14px 0; position:relative; }
+  .cb-gen + .cb-gen{ border-top:1px solid var(--line); }
+  .cb-gen::before{ content:""; position:absolute; left:128px; top:0; bottom:0; width:3px; border-radius:2px; background:var(--txt); opacity:.28; }
+  .cb-people{ display:flex; flex-direction:column; gap:8px; padding-left:18px; }
+  .cb-person{ display:flex; align-items:center; gap:10px; }
+  .cb-rel{ color:var(--mut); font-size:12.5px; }
+  /* concept C: rings */
+  .cc-box{ display:flex; justify-content:center; }
+  .cc-svg text{ fill:var(--txt); font-size:12.5px; font-weight:600; }
+  .cc-svg .sub{ fill:var(--mut); font-size:10px; font-weight:500; }
+  .cc-svg circle.node{ fill:var(--fill2); stroke:var(--line2); stroke-width:1.5; }
+  .cc-svg line{ stroke:var(--txt); stroke-width:2.5; opacity:.45; }
+  .cc-svg circle.ring{ fill:none; stroke:var(--line2); stroke-width:1.5; stroke-dasharray:3 6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="genlab">North Country Circle · V3.12.0 intuitive pass</div>
+  <h1>Family view — three layout concepts</h1>
+  <p class="note">The current Family view draws every bloodline into one zoomable plane: hairline connectors (1.6px),
+  grayscale generation tints, small labels that only read when zoomed in. These three concepts render the SAME real
+  tree three ways, at 100% zoom, nothing to pan or pinch. Judge on: can you tell who belongs to whom in five seconds,
+  in both themes?</p>
+  <div class="bar">
+    <span class="genlab">Tree</span><span id="trees"></span>
+    <span style="flex:1"></span>
+    <span class="genlab">Theme</span>
+    <button type="button" class="btn sm on" id="m-light">Light</button>
+    <button type="button" class="btn sm" id="m-dark">Dark</button>
+  </div>
+  <div id="out"><p class="note">Loading the real family data…</p></div>
+</div>
+<script>
+'use strict';
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+function initials(n){ var w = String(n || '').trim().split(/\s+/).filter(Boolean); return w.length ? (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase() : '?'; }
+function dispName(e){ var pr = e.profile || {}; var fn = (pr.first_name || '').trim(), ln = (pr.last_name || '').trim(); if(fn || ln) return (fn + ' ' + ln).trim(); return e.display || e.name || ''; }
+function famRaw(e){ var v = (e.profile || {}).family; if(v == null || v === '') v = e.family; try { var a = JSON.parse(v || '[]'); return Array.isArray(a) ? a : []; } catch(x){ return []; } }
+
+var D = null, BYN = {}, DISP = {}, TREES = [], CUR = 0;
+fetch('data/dossier.json').then(function(r){ return r.json(); }).then(function(d){
+  D = d;
+  D.directory.forEach(function(e, di){ BYN[String(e.name || '').toLowerCase()] = di; if(BYN[dispName(e).toLowerCase()] == null) BYN[dispName(e).toLowerCase()] = di; });
+  buildDisp(); buildTrees(); paintPicker(); render();
+}).catch(function(e){ document.getElementById('out').innerHTML = '<p class="note">Could not load data/dossier.json — serve this page from the site root.</p>'; });
+
+function buildDisp(){
+  DISP = {};
+  function slot(di){ return DISP[di] || (DISP[di] = { parents:[], spouses:[], children:[], siblings:[] }); }
+  function push(di, k, o){ if(di == null || o == null || di === o) return; var a = slot(di)[k]; if(!a.some(function(x){ return x.di === o; })) a.push({ di:o }); }
+  var INV = { parent:'children', spouse:'spouses', child:'parents', sibling:'siblings' };
+  var MINE = { parent:'parents', spouse:'spouses', child:'children', sibling:'siblings' };
+  D.directory.forEach(function(e, di){
+    famRaw(e).forEach(function(l){
+      var t = BYN[String(l[1] || '').toLowerCase()]; if(t == null || !MINE[l[0]]) return;
+      push(di, MINE[l[0]], t); push(t, INV[l[0]], di);
+    });
+  });
+  Object.keys(DISP).forEach(function(k){
+    var di = +k;
+    DISP[di].parents.forEach(function(p){
+      D.directory.forEach(function(r, ri){
+        if(ri === di || !DISP[ri]) return;
+        if(DISP[ri].parents.some(function(pp){ return pp.di === p.di; })) push(di, 'siblings', ri);
+      });
+    });
+  });
+}
+function surname(di){ var p = dispName(D.directory[di]).split(/\s+/).filter(Boolean); return p.length ? p[p.length - 1] : ''; }
+function buildTrees(){
+  var parent = {};
+  function find(x){ while(parent[x] !== x){ parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+  function union(a, b){ parent[find(a)] = find(b); }
+  Object.keys(DISP).forEach(function(k){ parent[k] = +k; });
+  Object.keys(DISP).forEach(function(k){
+    var di = +k, f = DISP[di];
+    f.parents.concat(f.children, f.siblings).forEach(function(x){ union(di, x.di); });
+  });
+  var byRoot = {};
+  Object.keys(DISP).forEach(function(k){ var di = +k; (byRoot[find(di)] = byRoot[find(di)] || []).push(di); });
+  TREES = Object.keys(byRoot).map(function(rk){
+    var members = byRoot[rk];
+    /* spouses who married in and carry no blood edge land in their own
+       component; attach them to their partner's tree */
+    var blood = {};
+    members.forEach(function(di){ blood[di] = 1; });
+    var counts = {};
+    members.forEach(function(di){ var s = surname(di); if(s) counts[s] = (counts[s] || 0) + 1; });
+    var title = Object.keys(counts).sort(function(a, b){ return counts[b] - counts[a]; })[0] || 'Family';
+    return { title:title, members:members, blood:blood };
+  }).filter(function(t){ return t.members.length >= 3; });
+  /* fold spouse-only components into their partner's tree */
+  var moved = true;
+  while(moved){
+    moved = false;
+    for(var i = 0; i < TREES.length && !moved; i++){
+      for(var j = 0; j < TREES.length && !moved; j++){
+        if(i === j) continue;
+        var link = TREES[j].members.some(function(di){ return (DISP[di] || { spouses:[] }).spouses.some(function(s){ return TREES[i].blood[s.di]; }); });
+        if(link){ TREES[j].members.forEach(function(di){ if(!TREES[i].blood[di]){ TREES[i].members.push(di); } }); TREES.splice(j, 1); moved = true; }
+      }
+    }
+  }
+  TREES.sort(function(a, b){ return b.members.length - a.members.length; });
+}
+function gensOf(tree){
+  var inT = {}; tree.members.forEach(function(di){ inT[di] = 1; });
+  function parentsIn(di){ return ((DISP[di] || {}).parents || []).filter(function(x){ return inT[x.di]; }).map(function(x){ return x.di; }); }
+  var gen = {}, again = true, guard = 0;
+  tree.members.forEach(function(di){ gen[di] = 0; });
+  while(again && guard++ < 12){
+    again = false;
+    tree.members.forEach(function(di){
+      parentsIn(di).forEach(function(p){ if(gen[di] <= gen[p]){ gen[di] = gen[p] + 1; again = true; } });
+    });
+    /* spouses share a generation */
+    tree.members.forEach(function(di){
+      ((DISP[di] || {}).spouses || []).forEach(function(s){ if(inT[s.di] && !parentsIn(s.di).length && gen[s.di] !== gen[di]){ gen[s.di] = gen[di]; again = true; } });
+    });
+  }
+  var byGen = {};
+  tree.members.forEach(function(di){ (byGen[gen[di]] = byGen[gen[di]] || []).push(di); });
+  return Object.keys(byGen).sort(function(a, b){ return a - b; }).map(function(g){ return { g:+g, members:byGen[g] }; });
+}
+function relCaption(tree, di){
+  var inT = {}; tree.members.forEach(function(x){ inT[x] = 1; });
+  var f = DISP[di] || { parents:[], spouses:[], children:[] };
+  var ps = f.parents.filter(function(x){ return inT[x.di]; }).map(function(x){ return dispName(D.directory[x.di]); });
+  var sp = f.spouses.filter(function(x){ return inT[x.di]; }).map(function(x){ return dispName(D.directory[x.di]); });
+  var ch = f.children.filter(function(x){ return inT[x.di]; }).length;
+  var bits = [];
+  if(ps.length) bits.push('child of ' + ps.join(' & '));
+  if(sp.length) bits.push('married to ' + sp.join(', '));
+  if(ch) bits.push(ch + (ch === 1 ? ' child' : ' children') + ' below');
+  if(!bits.length && tree.blood[di]) bits.push('root of this line');
+  if(!bits.length) bits.push('married in');
+  return bits.join(' · ');
+}
+function chip(di, withCap){
+  var e = D.directory[di];
+  return '<span class="pchip"><span class="av">' + esc(initials(dispName(e))) + '</span><span class="tx"><b>' + esc(dispName(e)) + '</b>' +
+    (withCap ? '<small>' + esc(relCaption(CURT, di)) + '</small>' : '') + '</span></span>';
+}
+function coupleUnits(tree, members){
+  var inGen = {}; members.forEach(function(di){ inGen[di] = 1; });
+  var used = {}, units = [];
+  members.forEach(function(di){
+    if(used[di]) return;
+    var sp = ((DISP[di] || {}).spouses || []).filter(function(x){ return inGen[x.di] && !used[x.di]; })[0];
+    if(sp){ units.push([di, sp.di]); used[di] = 1; used[sp.di] = 1; }
+    else { units.push([di]); used[di] = 1; }
+  });
+  return units;
+}
+var GENLAB = ['Roots', 'Children', 'Grandchildren', 'Great-grandchildren', 'Great-great-grandchildren'];
+var CURT = null;
+
+function conceptA(tree){
+  var gens = gensOf(tree);
+  var h = gens.map(function(G, gi){
+    var units = coupleUnits(tree, G.members);
+    return '<div class="ca-gen" data-gen="' + gi + '"><div class="genlab">Generation ' + (gi + 1) + ' · ' + (GENLAB[gi] || '') + '</div>' +
+      '<div class="ca-row">' + units.map(function(u){
+        if(u.length === 2) return '<span class="couple" data-di="' + u[0] + '">' + chip(u[0], false) + '<span class="mrg"><i></i>married<i></i></span>' + chip(u[1], false) + '</span>';
+        return '<span class="ca-single" data-di="' + u[0] + '">' + chip(u[0], false) + '</span>';
+      }).join('') + '</div></div>';
+  }).join('');
+  return '<div class="stage" id="ca-stage">' + h + '</div>' +
+    '<div class="judge"><b>Concept A — tidy tree, drawn honestly.</b> Classic org-chart rows, but the connectors are 2.5px solid at half ink instead of hairlines, couples are ringed as one unit, and every generation is labeled. Lines are drawn after layout from each child up to their parents. Still a diagram: on a wide generation it wraps, and a wrapped line stops meaning anything.</div>';
+}
+function drawA(){
+  var st = document.getElementById('ca-stage'); if(!st) return;
+  st.querySelectorAll('.ca-svg').forEach(function(s){ s.remove(); });
+  var sr = st.getBoundingClientRect();
+  var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'ca-svg'); svg.setAttribute('width', st.scrollWidth); svg.setAttribute('height', st.scrollHeight);
+  var inT = {}; CURT.members.forEach(function(di){ inT[di] = 1; });
+  function centerOf(di){
+    var el = st.querySelector('[data-di="' + di + '"]'); if(!el) return null;
+    var r = el.getBoundingClientRect();
+    return { x:r.left - sr.left + r.width / 2, y:r.top - sr.top, yb:r.top - sr.top + r.height };
+  }
+  var paths = '';
+  CURT.members.forEach(function(di){
+    var ps = ((DISP[di] || {}).parents || []).filter(function(x){ return inT[x.di]; });
+    if(!ps.length) return;
+    var c = centerOf(di); if(!c) return;
+    var px = null, py = null;
+    ps.forEach(function(p){ var pc = centerOf(p.di); if(pc){ px = pc.x; py = pc.yb; } });
+    if(px == null) return;
+    var my = (py + c.y) / 2;
+    paths += '<path d="M' + px.toFixed(1) + ' ' + py.toFixed(1) + ' L' + px.toFixed(1) + ' ' + my.toFixed(1) + ' L' + c.x.toFixed(1) + ' ' + my.toFixed(1) + ' L' + c.x.toFixed(1) + ' ' + c.y.toFixed(1) + '"/>';
+  });
+  svg.innerHTML = paths;
+  st.insertBefore(svg, st.firstChild);
+}
+function conceptB(tree){
+  var gens = gensOf(tree);
+  return '<div class="stage">' + gens.map(function(G, gi){
+    return '<div class="cb-gen"><div class="genlab">Generation ' + (gi + 1) + '<br>' + (GENLAB[gi] || '') + '</div>' +
+      '<div class="cb-people">' + G.members.map(function(di){
+        return '<div class="cb-person">' + chip(di, false) + '<span class="cb-rel">' + esc(relCaption(tree, di)) + '</span></div>';
+      }).join('') + '</div></div>';
+  }).join('') + '</div>' +
+  '<div class="judge"><b>Concept B — the list. No diagram at all.</b> Generations are labeled rows on one thick spine; every relationship is written out as text next to the name ("child of X & Y · married to Z · 3 children below"). Nothing can be misread, nothing needs zoom, and it reflows to any screen. It gives up the at-a-glance shape of a tree.</div>';
+}
+function conceptC(tree){
+  var gens = gensOf(tree);
+  var R = [0, 150, 260], cx = 340, cy = 340, size = 680;
+  var pos = {}, svg = '';
+  gens.forEach(function(G, gi){
+    if(gi > 2) return;
+    var ms = G.members;
+    if(gi === 0){
+      ms.forEach(function(di, i){ var x = cx + (i - (ms.length - 1) / 2) * 130; pos[di] = { x:x, y:cy }; });
+    } else {
+      ms.forEach(function(di, i){
+        var a = (i / ms.length) * Math.PI * 2 - Math.PI / 2;
+        pos[di] = { x:cx + Math.cos(a) * R[gi], y:cy + Math.sin(a) * R[gi] };
+      });
+      svg += '<circle class="ring" cx="' + cx + '" cy="' + cy + '" r="' + R[gi] + '"/>';
+    }
+  });
+  var inT = {}; tree.members.forEach(function(di){ inT[di] = 1; });
+  tree.members.forEach(function(di){
+    if(!pos[di]) return;
+    ((DISP[di] || {}).parents || []).forEach(function(p){ if(pos[p.di]) svg += '<line x1="' + pos[p.di].x + '" y1="' + pos[p.di].y + '" x2="' + pos[di].x + '" y2="' + pos[di].y + '"/>'; });
+    ((DISP[di] || {}).spouses || []).forEach(function(s){ if(pos[s.di] && s.di > di) svg += '<line x1="' + pos[s.di].x + '" y1="' + pos[s.di].y + '" x2="' + pos[di].x + '" y2="' + pos[di].y + '"/>'; });
+  });
+  tree.members.forEach(function(di){
+    if(!pos[di]) return;
+    svg += '<circle class="node" cx="' + pos[di].x + '" cy="' + pos[di].y + '" r="17"/>' +
+      '<text x="' + pos[di].x + '" y="' + (pos[di].y + 4) + '" text-anchor="middle" class="sub">' + esc(initials(dispName(D.directory[di]))) + '</text>' +
+      '<text x="' + pos[di].x + '" y="' + (pos[di].y + 32) + '" text-anchor="middle">' + esc(dispName(D.directory[di]).split(' ')[0]) + '</text>';
+  });
+  return '<div class="stage cc-box"><svg class="cc-svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">' + svg + '</svg></div>' +
+  '<div class="judge"><b>Concept C — rings.</b> The root couple at the center, children on the first ring, grandchildren on the second. Pretty, and the shape reads instantly — but labels collide as families grow, only first names fit, and anyone past the second ring falls off. Included as the control: it is the current view\u2019s failure mode in a different shape.</div>';
+}
+function paintPicker(){
+  document.getElementById('trees').innerHTML = TREES.slice(0, 6).map(function(t, i){
+    return '<button type="button" class="btn sm' + (i === CUR ? ' on' : '') + '" data-tree="' + i + '">' + esc(t.title) + ' · ' + t.members.length + '</button>';
+  }).join('');
+  document.querySelectorAll('[data-tree]').forEach(function(b){ b.addEventListener('click', function(){ CUR = +b.getAttribute('data-tree'); paintPicker(); render(); }); });
+}
+function render(){
+  CURT = TREES[CUR]; if(!CURT){ document.getElementById('out').innerHTML = '<p class="note">No family trees with 3+ people in the data.</p>'; return; }
+  document.getElementById('out').innerHTML =
+    '<h2>A — Tidy tree</h2>' + conceptA(CURT) +
+    '<h2>B — Generation list</h2>' + conceptB(CURT) +
+    '<h2>C — Rings</h2>' + conceptC(CURT);
+  requestAnimationFrame(function(){ drawA(); });
+}
+document.getElementById('m-light').addEventListener('click', function(){ document.documentElement.setAttribute('data-mode', 'light'); this.classList.add('on'); document.getElementById('m-dark').classList.remove('on'); setTimeout(drawA, 60); });
+document.getElementById('m-dark').addEventListener('click', function(){ document.documentElement.setAttribute('data-mode', 'dark'); this.classList.add('on'); document.getElementById('m-light').classList.remove('on'); setTimeout(drawA, 60); });
+addEventListener('resize', function(){ drawA(); });
+</script>
+</body>
+</html>
