@@ -2407,15 +2407,6 @@
    "type": null
   },
   {
-   "evidence": "CONFIRMED via ChatGPT professional search batch 2; JD directed retention of this portrait on 2026-10-28. Living Hope Church Malone's official leadership page identifies Heather Ramsdell as Executive Pastor with her portrait beside her name; identity matches the directory (Living Hope Church, Winthrop, New Testament Church). The image host is unreachable from Luna's network (connection dropped on every route tried), so the hotlink itself was not load-verified from Luna's side.",
-   "name": "Heather Ramsdell",
-   "photo_url": "https://www.lhcmalone.com/wp-content/uploads/2023/04/Heather-1.jpeg",
-   "source_page": "https://www.lhcmalone.com/who-we-are/",
-   "status": "confirmed",
-   "type": "Church leadership portrait",
-   "added": "2026-10-28"
-  },
-  {
    "evidence": "Her Clarkson org-chart block carries the directory image labeled 'hshattuc' beside her name and title (Clinical Associate Professor, Physical Therapy) — the directory headshot keyed to her username. Her Clarkson people page is a text-only biography.",
    "name": "Heather Shattuck",
    "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=hshattuc",
