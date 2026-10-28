@@ -10796,20 +10796,26 @@ function cnApplyPatch(p){
   if(nv === cur) return true;   /* already in the desired state — counts as applied */
   var patch = {}; patch[p.field] = nv;
   var di = cnDi(p.key);
-  if(di >= 0) queuePatch(di, patch);
-  else sbPostBatch([{ key:p.key, patch:patch }]);   /* folded rows (merged_into) have no directory index — write by key */
-  return true;
+  if(di >= 0){ queuePatch(di, patch); return true; }
+  /* Folded rows (merged_into) have no directory index — write by key
+     through the batch endpoint and AWAIT its ack: a rejected write
+     must surface as a failure, never as a done entry. */
+  return sbPostBatch([{ key:p.key, patch:patch }]).then(function(){ return true; }, function(){ return false; });
 }
 function cnExecEntries(entries, cb){
   var needProf = entries.some(function(e){
     return (e.patches || []).some(function(p){ return cnDi(p.key) < 0; });
   });
   var run = function(){
-    var failed = [];
+    var failed = [], jobs = [];
     entries.forEach(function(e){
-      (e.patches || []).forEach(function(p){ if(!cnApplyPatch(p)) failed.push(e.flag + ':' + p.key); });
+      (e.patches || []).forEach(function(p){
+        var r = cnApplyPatch(p);
+        if(r && typeof r.then === 'function') jobs.push(r.then(function(ok){ if(!ok) failed.push(e.flag + ':' + p.key); }));
+        else if(!r) failed.push(e.flag + ':' + p.key);
+      });
     });
-    cb && cb({ ok:!failed.length, failed:failed });
+    Promise.all(jobs).then(function(){ cb && cb({ ok:!failed.length, failed:failed }); });
   };
   if(needProf && !CN_PROF) loadJSON('data/profiles.json', function(rows){ CN_PROF = rows; run(); });
   else run();
