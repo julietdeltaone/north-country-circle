@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.13.1';
+var APP_VERSION = '3.14.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -696,7 +696,18 @@ function rebuildNeighbors(e){
 /* ============================================================
    3. outbox + undo
    ============================================================ */
-var OUT = { items:[], busy:false, timer:null, retry:0, err:'', auth:false };
+var OUT = { items:[], busy:false, timer:null, retry:0, err:'', auth:false, kickedAt:0 };
+/* Save Pool (V3.14.0): every queued change is a visible pool entry with a
+   state (queued -> sending -> written to the Sheet, or stuck after repeated
+   failures). POOL.log is the on-device journal of Sheet-confirmed writes:
+   the endpoint answers per item only after the cell is written, so an ack
+   means the value is hard-coded in the Sheet. The journal survives refresh
+   so JD can see what actually landed, and a stuck item parks in the pool
+   instead of silently wedging every change behind it. */
+var POOL = { log:[], open:false };
+var POOL_KEY = 'ncc_save_journal';
+var POOL_MAX_TRIES = 5;
+var POOL_TIMEOUT = 25000;
 var OUT_KEY = 'ncc_outbox_v2';
 var UNDO = { stack:[], redo:[], collect:null, suspend:false };
 
@@ -710,6 +721,37 @@ function outLoad(){
   });
 }
 function outSave(){ try{ localStorage.setItem(OUT_KEY, JSON.stringify(OUT.items)); }catch(x){} }
+function poolLoad(){ try{ POOL.log = JSON.parse(localStorage.getItem(POOL_KEY) || '[]'); if(!Array.isArray(POOL.log)) POOL.log = []; }catch(x){ POOL.log = []; } }
+function poolSave(){ try{ localStorage.setItem(POOL_KEY, JSON.stringify(POOL.log.slice(0, 60))); }catch(x){} }
+function poolName(id){ var di = (typeof PK2I !== 'undefined') ? PK2I[id] : undefined; var e = (di !== undefined && typeof D !== 'undefined' && D) ? D.directory[di] : null; return e ? dispName(e) : id; }
+var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Tier', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Lima Charlie notes', merged_into:'Merged into', review_flag:'Review flag' };
+function poolFieldLabel(k){ return POOL_LABELS[k] || String(k).replace(/_/g, ' '); }
+function poolValSummary(k, v){
+  v = String(v == null ? '' : v);
+  if(!v) return 'cleared';
+  if(k === 'council_staged'){ try{ var q = JSON.parse(v); return q.length + ' decision' + (q.length === 1 ? '' : 's'); }catch(x){ return 'decision queue'; } }
+  if(k === 'audit_dismissed') return 'dismissed: ' + v;
+  return v.length > 64 ? v.slice(0, 64) + '\u2026' : v;
+}
+function poolNote(it){
+  var srcv = it.sending || {};
+  var fields = Object.keys(srcv);
+  if(!fields.length) return;
+  POOL.log.unshift({ t:Date.now(), id:it.id, name:poolName(it.id), fields:fields.map(function(k){ return { k:k, v:poolValSummary(k, srcv[k]) }; }) });
+  if(POOL.log.length > 60) POOL.log.length = 60;
+  poolSave();
+}
+function outStuck(){ return OUT.items.filter(function(it){ return it.stuck; }).length; }
+function outFailItem(it, msg){
+  it.patch = Object.assign({}, it.sending || {}, it.patch);
+  it.sending = null;
+  it.tries = (it.tries || 0) + 1;
+  it.err = msg;
+  if(it.tries >= POOL_MAX_TRIES && !it.stuck){
+    it.stuck = msg;
+    toast('A change for ' + poolName(it.id) + ' is stuck after ' + it.tries + ' tries. It is parked in the Save Pool. Everything else keeps saving.');
+  }
+}
 function outPending(){ return OUT.items.filter(function(it){ return Object.keys(it.patch || {}).length || it.sending; }).length; }
 /* Local-wins overlay (JD 2026-10-16): every value saved in the app is
    remembered here, keyed by profile + field, until a FRESH dataset
@@ -855,39 +897,62 @@ function outKick(){
   if(OUT.busy || OUT.auth) return;
   var batch = [];
   OUT.items.forEach(function(it){
-    if(batch.length < 25 && Object.keys(it.patch).length){ it.sending = it.patch; it.patch = {}; batch.push(it); }
+    if(batch.length < 25 && !it.stuck && Object.keys(it.patch).length){ it.sending = it.patch; it.patch = {}; batch.push(it); }
   });
-  if(!batch.length){ OUT.items = OUT.items.filter(function(it){ return it.sending; }); outSave(); paintSync(); return; }
+  if(!batch.length){ OUT.items = OUT.items.filter(function(it){ return Object.keys(it.patch).length || it.sending || it.stuck; }); outSave(); paintSync(); return; }
   if(!WEBAPP_URL){ batch.forEach(function(it){ it.patch = it.sending; it.sending = null; }); return; }
-  OUT.busy = true; outSave(); paintSync();
-  fetch(WEBAPP_URL, {
-    method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
-    body:JSON.stringify({ password:getPw(), kind:'batch', id:'batch', patch:{ items:batch.map(function(it){ return { id:it.id, patch:it.sending }; }) } })
-  }).then(function(r){ return r.json(); }).then(function(res){
-    if(!res || !res.ok) throw new Error((res && res.error) || 'unknown');
-    var warn = [], made = [];
+  OUT.busy = true; OUT.kickedAt = Date.now(); outSave(); paintSync();
+  var ctrl = null, to = null;
+  try{
+    if(typeof AbortController !== 'undefined'){ ctrl = new AbortController(); to = setTimeout(function(){ try{ ctrl.abort(); }catch(x){} }, POOL_TIMEOUT); }
+  }catch(x){ ctrl = null; to = null; }
+  var opts = { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+    body:JSON.stringify({ password:getPw(), kind:'batch', id:'batch', patch:{ items:batch.map(function(it){ return { id:it.id, patch:it.sending }; }) } }) };
+  if(ctrl) opts.signal = ctrl.signal;
+  fetch(WEBAPP_URL, opts).then(function(r){ return r.json(); }).then(function(res){
+    if(to) clearTimeout(to);
+    if(!res) throw new Error('empty response');
+    var results = res.results || null;
+    if(!res.ok && !results) throw new Error(res.error || 'unknown');
+    var warn = [], made = [], failed = 0;
     batch.forEach(function(it, i){
-      var r = (res.results || [])[i] || {};
+      var r = results ? (results[i] || {}) : {};
+      var itemOk = res.ok ? true : (r.ok === true);
+      if(!itemOk){ failed++; outFailItem(it, r.error || res.error || 'rejected by the sheet'); return; }
       if(r.ignored && r.ignored.length) warn.push(r.ignored.join(', '));
       if(r.created) made.push(it.id);
-      it.sending = null;
+      poolNote(it);
+      it.tries = 0; it.stuck = ''; it.err = ''; it.sending = null;
     });
-    OUT.busy = false; OUT.retry = 0; OUT.err = '';
-    OUT.items = OUT.items.filter(function(it){ return Object.keys(it.patch).length || it.sending; });
+    OUT.busy = false;
+    if(failed){ OUT.err = res.error || 'some changes were rejected'; if(/unauthorized/i.test(OUT.err)){ OUT.auth = true; askEditKey(); } }
+    else { OUT.retry = 0; OUT.err = ''; }
+    OUT.items = OUT.items.filter(function(it){ return Object.keys(it.patch).length || it.sending || it.stuck; });
     outSave(); paintSync();
     if(warn.length) toast('Some fields are not columns in the sheet and were skipped: ' + warn.join('; '));
     else if(made.length) toast('No sheet row matched ' + made[0] + '. A new row was created.');
     if(OUT.items.length) outKick();
   }).catch(function(err){
+    if(to) clearTimeout(to);
     OUT.busy = false;
-    batch.forEach(function(it){ it.patch = Object.assign({}, it.sending, it.patch); it.sending = null; });
-    var msg = String(err && err.message || err);
+    var msg = (err && err.name === 'AbortError') ? 'timed out after 25s' : String(err && err.message || err);
+    batch.forEach(function(it){ outFailItem(it, msg); });
     OUT.retry++; OUT.err = msg; outSave(); paintSync();
     if(/unauthorized/i.test(msg)){ OUT.auth = true; askEditKey(); return; }
-    OUT.timer = setTimeout(outKick, Math.min(30000, 2000 * Math.pow(2, OUT.retry - 1)));
+    if(OUT.items.some(function(it){ return !it.stuck && Object.keys(it.patch).length; }))
+      OUT.timer = setTimeout(outKick, Math.min(30000, 2000 * Math.pow(2, OUT.retry - 1)));
   });
 }
 addEventListener('online', function(){ OUT.retry = 0; outKick(); });
+document.addEventListener('visibilitychange', function(){ if(!document.hidden && !OUT.auth){ OUT.retry = 0; outKick(); } });
+addEventListener('storage', function(ev){ if(ev.key === OUT_KEY && !OUT.busy){ outLoad(); paintSync(); } });
+/* watchdog: a send that somehow never settles unsticks itself, and a queue
+   that somehow never got kicked gets kicked. Runs every 15s, costs nothing. */
+setInterval(function(){
+  if(OUT.auth) return;
+  if(OUT.busy && OUT.kickedAt && Date.now() - OUT.kickedAt > 60000){ OUT.busy = false; OUT.err = 'a send stalled and was restarted'; outKick(); return; }
+  if(!OUT.busy && OUT.items.some(function(it){ return !it.stuck && Object.keys(it.patch).length; }) && Date.now() - (OUT.kickedAt || 0) > 30000){ OUT.kickedAt = Date.now(); outKick(); }
+}, 15000);
 addEventListener('pagehide', function(){
   if(!outPending() || !navigator.sendBeacon || !WEBAPP_URL) return;
   var items = OUT.items.map(function(it){ return { id:it.id, patch:Object.assign({}, it.sending || {}, it.patch || {}) }; })
@@ -1863,7 +1928,7 @@ function renderChrome(){
     '<div class="topr">' +
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
-    '<button type="button" class="syncp" id="sync" data-act="retry"></button>' +
+    '<button type="button" class="syncp" id="sync" data-act="pool"></button>' +
     '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a>' +
     '<button type="button" class="ib" id="focusb" data-act="focus" aria-label="Focus mode" aria-pressed="false" title="Focus mode: hide the sidebar and bars so the view fills the window (Esc exits)">' + ic('expand', 18) + '</button>' +
     themeSecHTML() +
@@ -1871,15 +1936,77 @@ function renderChrome(){
   paintSync(); paintUndo(); paintTheme(); applyFocus(focusOn());
 }
 function paintSync(){
-  var p = $('#sync'); if(!p) return;
-  var n = outPending(), txt, cls = 'ok';
-  if(!n){ txt = 'Saved'; }
-  else if(OUT.err){ txt = n + ' not saved · retrying'; cls = 'err'; }
-  else if(OUT.busy){ txt = 'Saving'; cls = 'busy'; }
-  else { txt = 'Unsaved'; cls = 'busy'; }
-  p.className = 'syncp ' + cls; p.innerHTML = '<i></i>' + esc(txt);
-  p.title = OUT.err ? 'Last error: ' + OUT.err + '. Tap to retry now.' : 'Every edit is stored in this browser first, then sent to the sheet.';
+  var p = $('#sync');
+  var n = outPending(), stuck = outStuck(), txt, cls = 'ok';
+  if(stuck){ txt = stuck + ' stuck \u00b7 Save Pool'; cls = 'err'; }
+  else if(!n){ txt = 'Saved'; }
+  else if(OUT.err){ txt = n + ' not saved \u00b7 retrying'; cls = 'err'; }
+  else if(OUT.busy){ txt = 'Saving \u00b7 ' + n; cls = 'busy'; }
+  else { txt = n + ' queued'; cls = 'busy'; }
+  if(p){
+    p.className = 'syncp ' + cls; p.innerHTML = '<i></i>' + esc(txt);
+    p.title = stuck ? 'Some changes could not be written after repeated tries. Tap to open the Save Pool.' : (OUT.err ? 'Last error: ' + OUT.err + '. Tap to open the Save Pool.' : 'Save Pool: every change, tracked until the Sheet confirms it. Tap to open.');
+  }
   var sp = $('#syncs'); if(sp) sp.textContent = txt;
+  paintPool();
+}
+/* ---------- Save Pool drawer ---------- */
+function poolEnsure(){
+  if($('#pool')) return;
+  var scrim = document.createElement('div'); scrim.id = 'poolscrim'; scrim.hidden = true; scrim.setAttribute('data-act', 'poolclose');
+  var as = document.createElement('aside'); as.id = 'pool'; as.hidden = true; as.setAttribute('aria-label', 'Save pool');
+  as.innerHTML = '<div class="pool-hd"><b>Save Pool</b><span class="pool-sub" id="poolsub"></span><span class="sp"></span>' +
+    '<button type="button" class="btn ghost sm" data-act="poolretry">Retry all</button>' +
+    '<button type="button" class="btn ghost sm" data-act="poolclose">Close</button></div>' +
+    '<div class="pool-note">A change sits here until the Sheet confirms the write, then it moves to Written to the Sheet below. Stuck changes park here with their error instead of blocking everything behind them. Nothing in this list is lost on refresh.</div>' +
+    '<div id="poolbody"></div>';
+  document.body.appendChild(scrim); document.body.appendChild(as);
+  document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape' && POOL.open) poolClose(); });
+}
+function poolOpen(){ poolEnsure(); POOL.open = true; var p = $('#pool'), s = $('#poolscrim'); if(p) p.hidden = false; if(s) s.hidden = false; paintPool(); }
+function poolClose(){ POOL.open = false; var p = $('#pool'), s = $('#poolscrim'); if(p) p.hidden = true; if(s) s.hidden = true; }
+function poolAge(t){ var s = Math.max(0, Math.round((Date.now() - t) / 1000)); if(s < 60) return s + 's ago'; var m = Math.round(s / 60); if(m < 60) return m + 'm ago'; return Math.round(m / 60) + 'h ago'; }
+function poolItemRows(it){
+  var srcv = Object.assign({}, it.sending || {}, it.patch || {});
+  return Object.keys(srcv).map(function(k){ return '<div class="pool-f"><span>' + esc(poolFieldLabel(k)) + '</span><b>' + esc(poolValSummary(k, srcv[k])) + '</b></div>'; }).join('');
+}
+function paintPool(){
+  var strip = $('#audpool');
+  var n = outPending(), stuck = outStuck();
+  if(strip){
+    var last = POOL.log[0];
+    strip.innerHTML = '<b>Save Pool</b><span class="' + (stuck ? 'bad' : n ? 'warn' : 'ok') + '">' + (stuck ? stuck + ' stuck' : n ? n + ' saving' : 'all saved') + '</span>' +
+      (last ? '<span class="pool-last">Last in the Sheet: ' + esc(last.name) + ' \u00b7 ' + esc(last.fields.map(function(f){ return poolFieldLabel(f.k); }).join(', ')) + ' \u00b7 ' + poolAge(last.t) + '</span>' : '') +
+      '<button type="button" class="btn ghost sm" data-act="pool">Open</button>';
+  }
+  if(!POOL.open) return;
+  poolEnsure();
+  var sub = $('#poolsub'); if(sub) sub.textContent = stuck ? stuck + ' stuck' : n ? n + ' in flight' : 'all saved';
+  var body = $('#poolbody'); if(!body) return;
+  var h = '';
+  var stuckItems = OUT.items.filter(function(it){ return it.stuck; });
+  var active = OUT.items.filter(function(it){ return !it.stuck && (Object.keys(it.patch || {}).length || it.sending); });
+  if(stuckItems.length){
+    h += '<div class="pool-sec bad">Needs attention</div>' + stuckItems.map(function(it){
+      return '<div class="pool-it stuck"><div class="pool-nm">' + esc(poolName(it.id)) + '<span class="pool-st bad">Stuck \u00b7 ' + (it.tries || 0) + ' tries</span></div>' + poolItemRows(it) +
+        '<div class="pool-err">' + esc(it.stuck || it.err || '') + '</div>' +
+        '<div class="pool-btns"><button type="button" class="btn sm" data-act="poolretry1" data-id="' + esc(it.id) + '">Retry</button>' +
+        '<button type="button" class="btn ghost sm" data-act="pooldrop" data-id="' + esc(it.id) + '">Discard change</button></div></div>';
+    }).join('');
+  }
+  if(active.length){
+    h += '<div class="pool-sec">On its way to the Sheet</div>' + active.map(function(it){
+      return '<div class="pool-it"><div class="pool-nm">' + esc(poolName(it.id)) + '<span class="pool-st ' + (it.sending ? 'busy' : '') + '">' + (it.sending ? 'Sending' : 'Queued') + '</span></div>' + poolItemRows(it) + '</div>';
+    }).join('');
+  }
+  if(POOL.log.length){
+    h += '<div class="pool-sec ok">Written to the Sheet</div>' + POOL.log.slice(0, 25).map(function(en){
+      return '<div class="pool-it done"><div class="pool-nm">' + esc(en.name) + '<span class="pool-st ok">' + poolAge(en.t) + '</span></div>' +
+        en.fields.map(function(f){ return '<div class="pool-f"><span>' + esc(poolFieldLabel(f.k)) + '</span><b>' + esc(f.v) + '</b></div>'; }).join('') + '</div>';
+    }).join('');
+  }
+  if(!h) h = '<div class="pool-empty">Pool is empty. Every change is in the Sheet.</div>';
+  body.innerHTML = h;
 }
 function paintUndo(){
   var u = $('#undob'), r = $('#redob');
@@ -2053,6 +2180,7 @@ function render(){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
   }
+  paintPool();
 }
 function afterWrite(di){
   /* undo buttons after any write; never re-render a view the user is typing in */
@@ -8826,6 +8954,7 @@ function viewAudit(v){
     '<div class="aud-tools">' + audModesHTML() +
     '<span class="aud-goal"><span class="aud-goal-l">Today\'s goal</span><span class="aud-goal-bar"><i id="audgoalfill"></i></span><span id="audgoalt"></span>' +
     '<button type="button" class="aud-goal-b" data-act="audgoal" data-d="-5" aria-label="Lower the goal by 5">−</button><button type="button" class="aud-goal-b" data-act="audgoal" data-d="5" aria-label="Raise the goal by 5">+</button></span></div>' +
+    '<div id="audpool" class="audpool"></div>' +
     '<div id="audmodebar">' + audModeBarHTML() + '</div>' +
     (m === 'years' ? '' : '<button type="button" class="aud-ykstrip" data-act="audmode" data-m="years">' + ic('calendar', 15) + '<span class="aud-ykstrip-t"><b>Years Known</b><small>One person at a time \u2014 big year, month and day lists, keyboard friendly</small></span><span class="sp"></span><span class="aud-ykstrip-n">' + ykMissN + ' missing a year</span><span class="aud-ykstrip-go">Open &rarr;</span></button>') +
     (m === 'rapid'
@@ -8930,6 +9059,11 @@ function onClick(ev){
     case 'undo': doUndo(); refreshAfterUndo('undo'); break;
     case 'redo': doRedo(); refreshAfterUndo('redo'); break;
     case 'retry': OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
+    case 'pool': poolOpen(); break;
+    case 'poolclose': poolClose(); break;
+    case 'poolretry': OUT.items.forEach(function(x){ x.tries = 0; x.stuck = ''; }); OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break;
+    case 'poolretry1': { var prid = el.getAttribute('data-id'); OUT.items.forEach(function(x){ if(x.id === prid){ x.tries = 0; x.stuck = ''; x.err = ''; } }); OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break; }
+    case 'pooldrop': { var pdid = el.getAttribute('data-id'); if(el.getAttribute('data-armed')){ OUT.items = OUT.items.filter(function(x){ return x.id !== pdid; }); outSave(); paintSync(); toast('Change discarded. It never reached the Sheet.'); } else { el.setAttribute('data-armed', '1'); el.textContent = 'Tap again to discard'; } break; }
     case 'chggrp': chgToggle(el); break;
     case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
@@ -12678,7 +12812,7 @@ function boot(){
         } catch(_e){} })();
         regLoad();
         D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; var dn = String(((r.profile || {}).display_name || r.display || '')).toLowerCase(); if(dn && !(dn in BYN)) BYN[dn] = i; normEntry(r); PK2I[pkey(r)] = i; });
-        outLoad(); winsLoad();
+        outLoad(); winsLoad(); poolLoad();
         /* Local-wins overlay vs the fresh bake (2026-10-16): retire
            what the bake already shows, then the outbox and the
            overlay's survivors re-apply on top — a value JD saved can
