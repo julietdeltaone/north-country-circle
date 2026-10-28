@@ -1388,12 +1388,13 @@
    "type": null
   },
   {
-   "evidence": "Merit profile photo slot is the default missing.png placeholder — excluded. The 2021-22 Chemistry Dept annual report PDF names her only in the graduates list, no photo.",
+   "evidence": "CONFIRMED 2026-10-28 via the ChatGPT broad-search relay (its SUNY Potsdam chem-page lead, verified against the page source). SUNY Potsdam's chemistry research page captions this photo 'Danielle McPherson and Allison Rust with Dr. David Gingrich at the 2019 Learning & Research Fair' - Gingrich is at left; the two students (center and right) are not position-mapped in the caption. The image file defeated extraction three times earlier in the day as a CSS background; the direct file URL was recovered from the page source and load-verified (1920x1080 JPEG), and the photo viewed.",
    "name": "Danielle McPherson",
-   "photo_url": null,
-   "source_page": "https://meritpages.com/Danielle-McPherson/4251063",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2020-01/GingrichMcPhersonRust.jpg?itok=IzXTtUCW",
+   "source_page": "https://www.potsdam.edu/academics/AAS/depts/chem/activities-opportunities/research",
+   "status": "confirmed",
+   "type": "University research-fair group photo",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book — its only image is the book cover, rejected. Cover caption list confirms '34 - Danielle Vetere 22, childhood/early childhood education student'; JD confirmed 2026-10-22. SUNY Potsdam Instagram checked 2026-10-22 — no usable post of her found.",
@@ -2425,12 +2426,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The museum newsletter caption places him in the Fort Tribute cannoneers group photo: 'Cannoneers are (l-r) James Miller, Daniel Zufall, Scott Wilson, Hudson Brown, David Zufall, Kirke Perry, John Zufall, and Gilbert Rivers.' The PDF extraction returned no image URLs, so the photo itself cannot be filed — possible, not confirmed.",
+   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. North Country Savings Bank's own article profiles Hudson Brown, its Canton floating relationship banker who grew up locally and plays viola at church, with this portrait (viewed; 5828x3911 JPEG). His directory anchor is Christian Fellowship Center, which the article does not name - graded possible.",
    "name": "Hudson Brown",
-   "photo_url": null,
-   "source_page": "https://slpowermuseum.com/wp-content/uploads/2026/06/Newsletter-26-28.1-Mar-May.pdf",
+   "photo_url": "https://www.northcountrysavings.bank/sites/default/files/2023-05/NCSB_RelationshipBanker_HBrown_1.jpg",
+   "source_page": "https://www.northcountrysavings.bank/blog-article/hudson-brown-ncsb-floating-relationship-banker",
    "status": "possible",
-   "type": "group"
+   "type": "Employer profile portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "His Clarkson org-chart block carries the directory image labeled 'hwoodrow' above his name and title (Campus Safety & Security Officer) — the directory headshot keyed to his username.",
@@ -2898,12 +2900,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. The Northern New York Community Foundation's Evergreen STEM Scholars article captions its group photo with Jillian Chapman of Massena Central School (biology/pre-med, Class of 2020) position-mapped front row, first from left - consistent with a later Daemen University student (her directory anchor), though the article does not name Daemen. Photo viewed.",
    "name": "Jillian Chapman",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://nnycf.org/wp-content/uploads/2019/11/NNYCF_EvergreenSTEM_111419-1024x632.jpg",
+   "source_page": "https://nnycf.org/evergreen-stem-scholars-honored/",
+   "status": "possible",
+   "type": "Scholarship group photo (position-mapped)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3083,12 +3086,13 @@
    "type": null
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. Christian Fellowship Center's leadership page names Jonathan Puglia, Pastor at CFC Moira, beside this photo (a family portrait the church uses as his leadership image; viewed). His directory anchor is Shippensburg University, which the page does not mention - graded possible.",
    "name": "Jonathan Puglia",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://www.cfconline.org/wp-content/cfc-leadership/487.webp?v=1779404586",
+   "source_page": "https://www.cfconline.org/leadership/",
+   "status": "possible",
+   "type": "Church leadership page photo",
+   "added": "2026-10-28"
   },
   {
    "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Jordyn Brothers and headline: Chemical Dependency Counselor (LinkedIn headline).",
@@ -4037,12 +4041,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "No source links on file. (Kept distinct from Meg Lapinski per JD's ruling.)",
+   "evidence": "CONFIRMED 2026-10-28 via the ChatGPT broad-search relay, verified against the source. North Central College's 2012 women's track and field roster prints this headshot beside Maggie Lapinski's name with hometown Canton, N.Y., matching her directory anchor (Canton / Christian Fellowship Center). Photo viewed; the server serves WebP bytes under a .JPG name, which browsers render normally. Maggie Lapinski is a distinct person from Meg Lapinski (JD's ruling).",
    "name": "Maggie Lapinski",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://northcentralcardinals.com/images/2012/1/4/lapinski_maggie.JPG",
+   "source_page": "https://northcentralcardinals.com/sports/womens-track-and-field/roster/2012",
+   "status": "confirmed",
+   "type": "College athletics roster headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4777,12 +4782,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "CONFIRMED 2026-10-28 via the ChatGPT broad-search relay, verified against the source. SUNY Potsdam's news article on the Blanding's turtle research captions this photo 'Olivia Brown, left' and identifies her in the text as a Clarkson University biology student, matching her directory anchor exactly. She is the researcher at left in waders (face in profile); the photo was viewed and byte-verified (1600x1100 JPEG).",
    "name": "Olivia Brown",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/web_turtle_main.jpg?itok=CzhAiLsz",
+   "source_page": "https://www.potsdam.edu/news/Race-to-Save-Threatened-Turtles-Continues-Despite-Pandemic",
+   "status": "confirmed",
+   "type": "University news field photo (captioned)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Caption for the page's only photo: 'Schyler Oakes, David Valeske, Michael Bernard, Jennie Hutton, Ciara Spicer, and Olivia Goodrow are shown with their Isabella Graham Hart School of Practical Nursing pins' (LPN graduation, Dec 15 2023). Caption confirms she is among the six pictured but gives no position/order — possible, not individually identifiable from text.",
@@ -5683,12 +5689,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. Clarkson University's directory serves this headshot (150x200, viewed) under the username tquant from Thomas Quant's Clarkson org-chart entry. His directory anchor on file is Alfred State College and the Clarkson people page itself was unreachable during verification, so the employer tie is graded possible.",
    "name": "Thomas Quant",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=tquant",
+   "source_page": "https://www.clarkson.edu/people/thomas-quant",
+   "status": "possible",
+   "type": "University directory headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "No source links on file.",
