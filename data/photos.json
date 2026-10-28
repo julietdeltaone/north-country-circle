@@ -1164,12 +1164,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: a beach disc-throw silhouette at sunset). The photo is Cody Benham's profile picture on his official PDGA player page (#288527), which lists his location as Watertown, New York — matching the directory record (lives in Watertown, NY). His face is in silhouette, so the tie rests on the PDGA profile itself plus the location match. The PDGA image URL carries a token, so the photo is hosted locally.",
    "name": "Cody Benham",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/cody-benham.jpg",
+   "source_page": "https://prod.pdga.com/player/288527/details",
+   "status": "confirmed",
+   "type": "PDGA profile photo",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1705,6 +1706,15 @@
    "added_approx": "Oct 2026"
   },
   {
+   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in a SUNY Canton Basketball hoodie, holding a ball toward the camera in the college gym). SUNY Canton's official athletics roster names Eli Larson (#20, forward, 6-8, Greenville, NY) on the men's basketball team, and the portrait is the college media-library file named for him. NOTE: Eli Larson has no profile in the contacts directory — this entry was created from JD's lead and is held for his ruling.",
+   "name": "Eli Larson",
+   "photo_url": "https://www.canton.edu/media/Eli-Larson.jpg",
+   "source_page": "https://rooathletics.com/sports/mens-basketball/roster/2022-23",
+   "status": "confirmed",
+   "type": "College basketball portrait",
+   "added": "2026-10-28"
+  },
+  {
    "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; name matches; bio (\"Follower of Christ Jesus\", \"Husband to @sarahbthomas\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
    "name": "Eli Thomas",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/386817353_558235439781787_4872730248183847931_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=OYNP4N1bXF8Q7kNvwEwkoe6&_nc_oc=AdroOCx2ek4Fkm38mp3jRg6tMCs4cS0yBqrfSRyvh-6VUrU9F9QcpfW43y5UtapyA84VyPETUTqka-yNriB01QGI&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMtqAiV6_0Ct7YuUXQgmyDhjrgG3eULRQKvu5b71naoQA&oe=6AE0185F",
@@ -1930,13 +1940,20 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @emma_bortnick5 (display name \"Emma Bortnick\"); bio: \"Registered Nurse 🩺💞\".",
+   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in nursing scrubs against a SUNY Canton backdrop). SUNY Canton's media-library portrait of Emma Bortnick; the college's People Like Me series profiles Emma Bortnick of Canton, who attended SUNY Canton to become a nurse — matching the directory record (BS Nursing, SUNY Canton 2022; Registered Nurse at Rochester Regional Health). This institutional portrait replaces her expiring Instagram profile picture as primary; the Instagram photo is kept as an also.",
    "name": "Emma Bortnick",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/825323889_18632740273017033_319527363284810669_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTcuQzMifQ%3D%3D&_nc_ohc=ehXFygTR744Q7kNvwEvTsx-&_nc_oc=Ado6-b3ENud9wHul9yL2cH9j1AoR4i-AiauifIyxRwHMb0R8_TixnjB1TWawJTTBKnML6Hjx8J8bbhNW215PcPu7&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=FDZdXsoCbQtTzXcE-2FmEg&oh=00_AQO9QhmBSeV1GZM5RVm6nyM4Qt-b7yjdWgJMX7XvOsS4Ew&oe=6AE03C53",
-   "source_page": "https://www.instagram.com/emma_bortnick5/",
+   "photo_url": "https://www.canton.edu/media/Emma-Bortnick.jpg",
+   "source_page": "https://www.canton.edu/plm/",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Nursing portrait (SUNY Canton)",
+   "added": "2026-10-28",
+   "also": [
+    {
+     "url": "https://scontent.cdninstagram.com/v/t51.82787-19/825323889_18632740273017033_319527363284810669_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTcuQzMifQ%3D%3D&_nc_ohc=ehXFygTR744Q7kNvwEvTsx-&_nc_oc=Ado6-b3ENud9wHul9yL2cH9j1AoR4i-AiauifIyxRwHMb0R8_TixnjB1TWawJTTBKnML6Hjx8J8bbhNW215PcPu7&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=FDZdXsoCbQtTzXcE-2FmEg&oh=00_AQO9QhmBSeV1GZM5RVm6nyM4Qt-b7yjdWgJMX7XvOsS4Ew&oe=6AE03C53",
+     "note": "Instagram profile picture (@emma_bortnick5), previously the primary; signed scontent URL, expires.",
+     "source_page": "https://www.instagram.com/emma_bortnick5/"
+    }
+   ]
   },
   {
    "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). SUNY Potsdam's Fall 2025 LETI article caption position-maps the front row standing left to right, ending '...and Emma Gravlin of Lisbon (Class of 2026)' — she is the fifth, at the far right. Filed as a 1:1 crop of her position, hosted locally. NOTE: the sources place her at SUNY Potsdam (Criminal Justice '26, LETI graduate Dec 12, 2025), which conflicts with the directory's Clarkson University anchor — flagged for JD to correct her school fields.",
@@ -2833,12 +2850,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is a Facebook couple profile (auth).",
+   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: a couple standing at the entrance of Willow Tree Florist in Potsdam). The photo is the primary image of NCPR's story and its caption names Kevin and Jennifer Blanchard, whose Willow Tree Florist and Landscaping in Potsdam hosted an artisan gallery — matching the directory's combined Jennifer-Kevin Blanchard record (Potsdam, NY). Photo: Todd Moe for NCPR.",
    "name": "Jennifer-Kevin Blanchard",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://www.northcountrypublicradio.org/news/images/willowtreepic1.jpg",
+   "source_page": "https://www.northcountrypublicradio.org/news/story/26949/20141219/small-businesses-and-artists-find-synergy-sharing-space-in-potsdam",
+   "status": "confirmed",
+   "type": "Couple portrait at their shop (NCPR)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -2917,12 +2935,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed). New Hope Community Church's own leadership page captions this photo 'Church Council 2021 – 2022: (from left to right) Brendan Lennox, Jim Holt, Glen Ewart, Allison Aldrich, Marianne Augenstein, Karen Stauffer, Aaron Reardon, Ed Noble, Victoria Hocking, Martin Walker, Juby Varghese and Carol Hoyt' — Jim Holt is second from left. The same page names him Lead Pastor, matching the directory record (Lead Pastor, New Hope Community Church, Potsdam).",
    "name": "Jim Holt",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://www.newhopepotsdam.org/wp-content/uploads/2021/05/Church-Council-2021-1024x576.jpg",
+   "source_page": "https://www.newhopepotsdam.org/new-here/our-leadership-team/",
+   "status": "confirmed",
+   "type": "Church council group photo",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4673,6 +4692,15 @@
    "status": "confirmed",
    "type": "Instagram profile picture",
    "added_approx": "Oct 2026"
+  },
+  {
+   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in a SUNY Canton cap with a backpack, at a covered bridge). SUNY Canton's official People Like Me profile names Nicholas Oddey of Malone, a Criminal Investigation student, and the portrait is the college media-library file named for him; Merit Pages records his SUNY Canton graduation in Criminal Investigation (2024). NOTE: Nicholas Oddey has no profile in the contacts directory — this entry was created from JD's lead and is held for his ruling.",
+   "name": "Nicholas Oddey",
+   "photo_url": "https://www.canton.edu/media/Nicholas-Oddey.jpg",
+   "source_page": "https://www.canton.edu/plm/name-94250-en.html",
+   "status": "confirmed",
+   "type": "College profile portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "The Brasher Falls CSD board minutes are text-only; she appears only as a name in a staff appointment list. Her other source is Facebook (auth).",
