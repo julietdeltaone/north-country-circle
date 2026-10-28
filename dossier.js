@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.15.0';
+var APP_VERSION = '3.15.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -407,8 +407,8 @@ var PERSONA = [
   ['neuroticism','Neuroticism','Reactive vs. steady (high is worse)'],
   ['ego','Ego','Self-important (high is worse)']
 ];
-var REL_OPTS = ['family','friend','coworker','military','client','online','acquaintance','by association','other'];
-var CTX_OPTS = ['work','school','military','community','church','online','other'];
+var REL_OPTS = ['family','friend','coworker','military','client','professional','online','acquaintance','by association','other'];
+var CTX_OPTS = ['work','professional','school','military','community','church','online','other'];
 var CAT_OPTS = [['peer','Peer'],['rom','Romantic'],['fam','Family'],['auth','Authority'],['ment','Mentor'],['conf','Conflict']];
 var CP_LABELS = ['Acquaintances','Friends','Close friends','Best friends','Drifted apart','Reconnected','Working together','Dating','Roommates','Teammates','Mentor','Fell out'];
 var AKA_KEY = 'sf:indira-quintana-lala';   /* the one person who may carry an AKA (contract, rule 7) */
@@ -3516,7 +3516,7 @@ var SCORE_CFG = {
   weights: { closeness:40, tier:25, relationship:15, years:10, fabric:10 },
   closeness: { 'distant':0, 'less than close':0.33, 'close':0.67, 'especially close':1 },
   tier: { vetted:1, associate:0.5, open:0 },
-  relationship: { family:1.0, friend:0.85, coworker:0.6, client:0.55, acquaintance:0.35, 'by association':0.2, online:0.15 },
+  relationship: { family:1.0, friend:0.85, coworker:0.6, client:0.55, professional:0.5, acquaintance:0.35, 'by association':0.2, online:0.15 },
   yearsCap: 20
 };
 var SCORE_LABELS = { closeness:'Closeness', tier:'Tier', relationship:'Relationship', years:'Years', fabric:'Fabric' };
