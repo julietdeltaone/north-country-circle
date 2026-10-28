@@ -120,11 +120,10 @@
   }
  },
  "aliases": {
-  "CFC Potsdam": "CFC",
-  "CFC Canton": "CFC",
-  "CFC Madrid": "CFC",
-  "Christian Fellowship Center": "CFC",
-  "Christian Fellowship Center Potsdam": "CFC",
+  "CFC Potsdam": "Christian Fellowship Center",
+  "CFC Canton": "Christian Fellowship Center",
+  "CFC Madrid": "Christian Fellowship Center",
+  "Christian Fellowship Center Potsdam": "Christian Fellowship Center",
   "Canton-Potsdam Hospital": "Rochester Regional Health",
   "CPH": "Rochester Regional Health",
   "St. Lawrence Health": "Rochester Regional Health",
