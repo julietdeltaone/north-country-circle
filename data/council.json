@@ -80,6 +80,11 @@
   "ux": [
    {
     "date": "2026-10-27",
+    "title": "Input-tool audit: 3 fragment defects found and fixed",
+    "summary": "Keyboard-flow exercise of the Audit, profile and table editors found how truncated orgs got filed: (1) the Audit orgs Enter veto filed raw fragments ('roch' proven in the outbox), (2) the profile tag editors had no autocomplete at all — blur committed raw text, (3) the profile New group box wrote to a field literally named 'null'. All fixed in V3.11.0 with prefix completion at every write path; Sheet verified untouched by the tests. Detail: council/ux-log.md."
+   },
+   {
+    "date": "2026-10-27",
     "title": "Inaugural crawl: 9 views × 2 themes, no defects",
     "summary": "Home, People, a profile, Live Records, Audit, Photos, Network, Sandbox and Council all load clean in light and dark: no error screens, no horizontal overflow, contrast spot checks pass, nav responds everywhere. No fixes needed."
    },
