@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.21.0';
+var APP_VERSION = '3.21.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -13038,6 +13038,7 @@ document.addEventListener('click', function(ev){
   if(act === 'sheetx'){ closeSheet(); }
   else if(act === 'confirmok'){ var f = SB_CONFIRM; SB_CONFIRM = null; closeSheet(); if(f) f(); }
   else if(act === 'openprof'){ sbOpenProfile(+t.getAttribute('data-di')); }
+  else if(act === 'gridopen'){ sbOpenProfile(+t.getAttribute('data-di')); }
   else if(act === 'gridcols'){
     var cols = sbGridCols();
     openSheet('Grid columns', '<div class="sb-colchecks">' + SB_COLS.map(function(c){
