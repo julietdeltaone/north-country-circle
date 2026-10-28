@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.14.0';
+var APP_VERSION = '3.15.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -721,7 +721,11 @@ function outLoad(){
   });
 }
 function outSave(){ try{ localStorage.setItem(OUT_KEY, JSON.stringify(OUT.items)); }catch(x){} }
-function poolLoad(){ try{ POOL.log = JSON.parse(localStorage.getItem(POOL_KEY) || '[]'); if(!Array.isArray(POOL.log)) POOL.log = []; }catch(x){ POOL.log = []; } }
+function poolLoad(){
+  try{ POOL.log = JSON.parse(localStorage.getItem(POOL_KEY) || '[]'); if(!Array.isArray(POOL.log)) POOL.log = []; }catch(x){ POOL.log = []; }
+  POOL.open = store('ncc_pool_open') === '1';
+  if(POOL.open && document.body) document.body.classList.add('pool-open');
+}
 function poolSave(){ try{ localStorage.setItem(POOL_KEY, JSON.stringify(POOL.log.slice(0, 60))); }catch(x){} }
 function poolName(id){ var di = (typeof diFromId === 'function') ? diFromId(id) : null; var e = (di != null && typeof D !== 'undefined' && D) ? D.directory[di] : null; return e ? dispName(e) : id; }
 var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Tier', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Lima Charlie notes', merged_into:'Merged into', review_flag:'Review flag' };
@@ -731,7 +735,7 @@ function poolValSummary(k, v){
   if(!v) return 'cleared';
   if(k === 'council_staged'){ try{ var q = JSON.parse(v); return q.length + ' decision' + (q.length === 1 ? '' : 's'); }catch(x){ return 'decision queue'; } }
   if(k === 'audit_dismissed') return 'dismissed: ' + v;
-  return v.length > 64 ? v.slice(0, 64) + '\u2026' : v;
+  return v.length > 40 ? v.slice(0, 40) + '\u2026' : v;
 }
 function poolNote(it){
   var srcv = it.sending || {};
@@ -1954,18 +1958,17 @@ function paintSync(){
 /* ---------- Save Pool drawer ---------- */
 function poolEnsure(){
   if($('#pool')) return;
-  var scrim = document.createElement('div'); scrim.id = 'poolscrim'; scrim.hidden = true; scrim.setAttribute('data-act', 'poolclose');
-  var as = document.createElement('aside'); as.id = 'pool'; as.hidden = true; as.setAttribute('aria-label', 'Save pool');
-  as.innerHTML = '<div class="pool-hd"><b>Save Pool</b><span class="pool-sub" id="poolsub"></span><span class="sp"></span>' +
+  var as = document.createElement('aside'); as.id = 'pool'; as.setAttribute('aria-label', 'Save pool');
+  as.innerHTML = '<div class="pool-in"><div class="pool-hd"><b>Save Pool</b><span class="pool-sub" id="poolsub"></span><span class="sp"></span>' +
     '<button type="button" class="btn ghost sm" data-act="poolretry">Retry all</button>' +
     '<button type="button" class="btn ghost sm" data-act="poolclose">Close</button></div>' +
     '<div class="pool-note">A change sits here until the Sheet confirms the write, then it moves to Written to the Sheet below. Stuck changes park here with their error instead of blocking everything behind them. Nothing in this list is lost on refresh.</div>' +
-    '<div id="poolbody"></div>';
-  document.body.appendChild(scrim); document.body.appendChild(as);
+    '<div id="poolbody"></div></div>';
+  var app = $('#app'); (app || document.body).appendChild(as);
   document.addEventListener('keydown', function(ev){ if(ev.key === 'Escape' && POOL.open) poolClose(); });
 }
-function poolOpen(){ poolEnsure(); POOL.open = true; var p = $('#pool'), s = $('#poolscrim'); if(p) p.hidden = false; if(s) s.hidden = false; paintPool(); }
-function poolClose(){ POOL.open = false; var p = $('#pool'), s = $('#poolscrim'); if(p) p.hidden = true; if(s) s.hidden = true; }
+function poolOpen(){ poolEnsure(); POOL.open = true; try{ store('ncc_pool_open', '1'); }catch(x){} document.body.classList.add('pool-open'); paintPool(); }
+function poolClose(){ POOL.open = false; try{ store('ncc_pool_open', '0'); }catch(x){} document.body.classList.remove('pool-open'); }
 function poolAge(t){ var s = Math.max(0, Math.round((Date.now() - t) / 1000)); if(s < 60) return s + 's ago'; var m = Math.round(s / 60); if(m < 60) return m + 'm ago'; return Math.round(m / 60) + 'h ago'; }
 function poolItemRows(it){
   var srcv = Object.assign({}, it.sending || {}, it.patch || {});
@@ -1989,20 +1992,21 @@ function paintPool(){
   var active = OUT.items.filter(function(it){ return !it.stuck && (Object.keys(it.patch || {}).length || it.sending); });
   if(stuckItems.length){
     h += '<div class="pool-sec bad">Needs attention</div>' + stuckItems.map(function(it){
-      return '<div class="pool-it stuck"><div class="pool-nm">' + esc(poolName(it.id)) + '<span class="pool-st bad">Stuck \u00b7 ' + (it.tries || 0) + ' tries</span></div>' + poolItemRows(it) +
+      return '<div class="pool-it st-stuck"><div class="pool-nm"><i class="pdot st-stuck"></i>' + esc(poolName(it.id)) + '<span class="pool-st bad">Stuck \u00b7 ' + (it.tries || 0) + ' tries</span></div>' + poolItemRows(it) +
         '<div class="pool-err">' + esc(it.stuck || it.err || '') + '</div>' +
         '<div class="pool-btns"><button type="button" class="btn sm" data-act="poolretry1" data-id="' + esc(it.id) + '">Retry</button>' +
         '<button type="button" class="btn ghost sm" data-act="pooldrop" data-id="' + esc(it.id) + '">Discard change</button></div></div>';
     }).join('');
   }
   if(active.length){
-    h += '<div class="pool-sec">On its way to the Sheet</div>' + active.map(function(it){
-      return '<div class="pool-it"><div class="pool-nm">' + esc(poolName(it.id)) + '<span class="pool-st ' + (it.sending ? 'busy' : '') + '">' + (it.sending ? 'Sending' : 'Queued') + '</span></div>' + poolItemRows(it) + '</div>';
+    h += '<div class="pool-sec way">On its way to the Sheet</div>' + active.map(function(it){
+      var sending = !!it.sending;
+      return '<div class="pool-it ' + (sending ? 'st-sending' : 'st-queued') + '"><div class="pool-nm"><i class="pdot ' + (sending ? 'st-sending' : 'st-queued') + '"></i>' + esc(poolName(it.id)) + '<span class="pool-st ' + (sending ? 'busy' : '') + '">' + (sending ? 'Sending' : 'Queued') + '</span></div>' + poolItemRows(it) + '</div>';
     }).join('');
   }
   if(POOL.log.length){
-    h += '<div class="pool-sec ok">Written to the Sheet</div>' + POOL.log.slice(0, 25).map(function(en){
-      return '<div class="pool-it done"><div class="pool-nm">' + esc(en.name) + '<span class="pool-st ok">' + poolAge(en.t) + '</span></div>' +
+    h += '<div class="pool-sec ok">Written to the Sheet</div>' + POOL.log.slice(0, 25).map(function(en, ix){
+      return '<div class="pool-it done' + (ix === 0 ? ' fresh' : '') + '"><div class="pool-nm"><i class="pdot st-done"></i>' + esc(en.name) + '<span class="pool-st ok">' + poolAge(en.t) + '</span></div>' +
         en.fields.map(function(f){ return '<div class="pool-f"><span>' + esc(poolFieldLabel(f.k)) + '</span><b>' + esc(f.v) + '</b></div>'; }).join('') + '</div>';
     }).join('');
   }
