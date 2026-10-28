@@ -2665,7 +2665,7 @@ function ptEdWire(pop, di, k){
       var list = k === 'orgs' ? ptOrgSug(fieldK) : ptSugList('skill', fieldK);
       function addVal(val){
         val = String(val || '').trim(); if(!val) return;
-        if(k === 'orgs'){ val = regApply(val); if(!ORGREG.canon[regKey(val)]) regRegisterCanon(val, fieldK); }
+        if(k === 'orgs'){ val = regApply(val); val = orgPrefixComplete(val, fieldK); if(!ORGREG.canon[regKey(val)]) regRegisterCanon(val, fieldK); }
         ptTagsMutate(di, fieldK, function(a){
           if(a.map(function(x){ return x.toLowerCase(); }).indexOf(val.toLowerCase()) < 0) a.push(val);
           return a;
@@ -2689,16 +2689,25 @@ function ptEdWire(pop, di, k){
       });
     });
     var gn = $('#pted-grpnew', pop);
-    if(gn) gn.addEventListener('keydown', function(ev){
-      if(ev.key !== 'Enter') return;
-      ev.preventDefault();
-      var n = regApply(gn.value.trim()); if(!n) return;
-      if(!allGroups()[n]){ GRP_EXTRA.push(n); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
-      if(!ORGREG.canon[regKey(n)]) regRegisterCanon(n, 'groups');
-      var e = D.directory[di], gl = personGroups(e);
-      if(gl.indexOf(n) < 0){ gl.push(n); txn('Edit groups', function(){ setPersonGroups(di, gl); }); if(PTED) PTED.dirty = true; }
-      ptEdRefresh();
-    });
+    if(gn){
+      gn.addEventListener('keydown', function(ev){
+        if(ev.key !== 'Enter') return;
+        ev.preventDefault();
+        var n = regApply(gn.value.trim()); if(!n) return;
+        if(!allGroups()[n]){ GRP_EXTRA.push(n); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
+        if(!ORGREG.canon[regKey(n)]) regRegisterCanon(n, 'groups');
+        var e = D.directory[di], gl = personGroups(e);
+        if(gl.indexOf(n) < 0){ gl.push(n); txn('Edit groups', function(){ setPersonGroups(di, gl); }); if(PTED) PTED.dirty = true; }
+        ptEdRefresh();
+      });
+      /* Existing-group autocomplete (JD 2026-10-27): a pick fills the
+         box; the Enter handler above still does the commit, so typing
+         a near-match no longer spawns a duplicate group. */
+      var gnBox = document.createElement('div'); gnBox.className = 'pted-ac'; gnBox.hidden = true;
+      gn.parentNode.appendChild(gnBox);
+      ptAcWire(gn, ptDedupe(Object.keys(allGroups()).concat(regCanonFor('groups') || [])).sort(function(a, b){ return a.localeCompare(b); }),
+        function(v){ gn.value = v; gn.focus(); });
+    }
     return;
   }
   /* single-value text editors */
@@ -2892,6 +2901,7 @@ function paintProfile(di){
   $('#p-add').innerHTML = (hidden.length ? '<div class="addrow"><span>Add to this profile</span>' + hidden.map(function(s){
       return '<button type="button" class="btn ghost sm" data-act="secedit" data-sec="' + s.id + '">' + ic('plus', 13) + esc(s.id === 'persona' ? 'Rate' : s.t) + '</button>'; }).join('') + '</div>' : '') +
     (legacy.length ? '<details class="legacy"><summary>Legacy notes (read only)</summary>' + legacy.map(function(k){ return '<div><b>' + esc({ relationship_type:'Type', sources:'Sources', mentions:'Mentions' }[k]) + '</b><p>' + esc(gv(e, k)) + '</p></div>'; }).join('') + '</details>' : '');
+  profWireAc();
 }
 function repaintSec(id){
   var di = S.prof.di, e = D.directory[di]; if(di == null) return;
@@ -2901,6 +2911,7 @@ function repaintSec(id){
   var wrap = document.createElement('div'); wrap.innerHTML = secHTML(di, id);
   var nu = wrap.firstChild; nu.style.order = secDef(id).ord;
   el.parentNode.insertBefore(nu, el); el.remove();
+  profWireAc();
 }
 function repaintTop(){
   var di = S.prof.di; if(di == null) return;
@@ -3140,13 +3151,13 @@ function tagEditor(di, k, sep, ph){
   var e = D.directory[di], cur = splitTags(gv(e, k), sep);
   return '<div class="tags" data-k="' + k + '" data-sep="' + esc(sep) + '">' + cur.map(function(x){
     return '<span class="tchip on">' + esc(x) + '<button type="button" data-act="tagrm" data-k="' + k + '" data-sep="' + esc(sep) + '" data-v="' + esc(x) + '" aria-label="Remove">' + ic('x', 11) + '</button></span>'; }).join('') +
-    '<input class="tadd" data-k="' + k + '" data-sep="' + esc(sep) + '" placeholder="' + esc(ph) + '" autocomplete="off"></div>';
+    '<span class="pted-add"><input class="tadd" data-k="' + k + '" data-sep="' + esc(sep) + '" placeholder="' + esc(ph) + '" autocomplete="off"><div class="pted-ac" hidden></div></span></div>';
 }
 function pickEditor(di, k, options, ph){
   var e = D.directory[di], cur = tagList(gv(e, k)).map(regApply), all = options.concat(cur.filter(function(x){ return options.indexOf(x) < 0; }));
   return '<div class="tags">' + all.map(function(o){
     return '<button type="button" class="tchip tog' + (cur.indexOf(o) >= 0 ? ' on' : '') + '" data-act="tagtog" data-k="' + k + '" data-sep=", " data-v="' + esc(o) + '">' + esc(o) + '</button>'; }).join('') +
-    '<input class="tadd" data-k="' + k + '" data-sep=", " placeholder="' + esc(ph || 'Add another') + '" autocomplete="off"></div>';
+    '<span class="pted-add"><input class="tadd" data-k="' + k + '" data-sep=", " placeholder="' + esc(ph || 'Add another') + '" autocomplete="off"><div class="pted-ac" hidden></div></span></div>';
 }
 function skillFlow(di){
   var e = D.directory[di], cur = tagList(gv(e, 'specialty')), open = S.prof.skOpen;
@@ -3196,7 +3207,7 @@ function secEdit(di, id){
       lab('Score pin', 'Optional: a fixed score from 0 to 100 that overrides the computed closeness score') + '<input data-pk="score_pin" type="number" min="0" max="100" step="1" value="' + esc(gv(e, 'score_pin')) + '" placeholder="Not pinned" autocomplete="off">' +
       lab('Known since', 'Pick the year, then the month and day if you know them') + ksRow +
       lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
-      '<input class="tadd" data-grpnew placeholder="New group" autocomplete="off"></div>';
+      '<span class="pted-add"><input class="tadd" data-grpnew placeholder="New group" autocomplete="off"><div class="pted-ac" hidden></div></span></div>';
   }
   if(id === 'about'){
     return lab('Synopsis', 'One topic per line, starting with a label and a colon. Keep it general: facts, never intimate detail.') +
@@ -7173,9 +7184,18 @@ function audWireCard(card){
   if(!inp) return;
   var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : gap === 'orgs' ? audOrgPool() : gap === 'years' ? audYearList() : null;
   if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audCommitGesture(card); },
-    gap === 'orgs' ? { label:regSugLabel, resolve:regApply, enterPick:function(){ return false; } }
-    /* Enter must reach the field's own handler (audEnterKey), which
-       applies the completeness gates to what was actually TYPED —
+    gap === 'orgs' ? { label:regSugLabel, resolve:regApply }
+    /* ORGS split from the veto (JD 2026-10-27): an org value comes from
+       a known pool, so Enter accepts the highlighted completion — that
+       IS the intent when typing a fragment of a known org ("roch" ->
+       Rochester Regional Health). With the veto, Enter fell through to
+       audEnterKey and filed the raw fragment, which is exactly how the
+       directory filled with truncated orgs. When the list is closed
+       (no suggestions), Enter still reaches audEnterKey and commits the
+       typed value as a genuinely new org. The veto below stays for
+       years / loc / skills: there the TYPED text is the data, and
+       Enter must reach the field's own handler (audEnterKey), which
+       applies the completeness gates to what was actually typed —
        UNLESS JD has deliberately arrowed to a suggestion, in which
        case ptAcWire treats Enter as the pick it is (see ptAcWire's
        "deliberate" flag). Without this veto, typing the fragment "Po"
@@ -7612,6 +7632,7 @@ function audWriteValue(di, card, gap){
   if(gap === 'orgs'){
     var io = $('.aud-in', card), ov = io ? regApply(io.value.trim()) : '';
     if(!ov) return null;
+    ov = orgPrefixComplete(ov, null);   /* choke point: picked or typed, a fragment of one known org files as that org */
     var xo = audEntry(di), priorO = (xo && xo.done.indexOf(gap) >= 0 && xo.vals) ? xo.vals[gap] : '';
     if(priorO && priorO.toLowerCase() !== ov.toLowerCase())
       return { entry:audReplaceTag(di, audOrgCat(priorO), audOrgCat(ov), priorO, ov), val:ov };
@@ -8107,6 +8128,7 @@ function lcRepaint(){
   var dn = $('.lc-dockname');
   if(dn) dn.innerHTML = esc(dispName(e)) + milBadge(e) + (lcNote(e).trim() ? ' <span class="lc-mark">LC note waiting</span>' : '');
   lcFitSoon();
+  profWireAc();
 }
 /* Fit-to-screen: the profile block is laid out at natural size,
    then scaled down (CSS zoom, so layout and visuals agree) to
@@ -9028,25 +9050,88 @@ function onChange(ev){
     if(k === 'public_footprint' || k === 'synopsis') repaintTop();
     return;
   }
+  if(t.hasAttribute && t.hasAttribute('data-grpnew')){ grpNewCommit(t); return; }
   if(t.classList && t.classList.contains('tadd')){ addTag(t); return; }
-  if(t.hasAttribute && t.hasAttribute('data-grpnew')){
-    var n = regApply(t.value.trim()); if(!n) return;
-    if(!allGroups()[n]){ GRP_EXTRA.push(n); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
-    if(!ORGREG.canon[regKey(n)]) regRegisterCanon(n, 'groups');
-    var gl = personGroups(D.directory[S.prof.di]); if(gl.indexOf(n) < 0) gl.push(n);
-    txn('Edit groups', function(){ setPersonGroups(S.prof.di, gl); }); repaintSec('relationship'); return;
-  }
   if(t.closest && t.closest('.cprow')){
     if(t.classList.contains('cp-now')){ var row = t.closest('.cprow'), tt = $('.cp-t', row); tt.disabled = t.checked; if(t.checked) tt.value = ''; }
     savePhases(); return;
   }
   if(t.id === 'dd-school'){ var o = $('#dd-other'); if(o) o.style.display = t.value === '__other' ? '' : 'none'; }
 }
+/* New-group commit from the profile editor's group box. This MUST be
+   checked BEFORE the generic .tadd path in onChange/onKey: the input
+   carries the tadd class (styling) but no data-k, and the tadd path
+   routed the typed name into a patch field literally named "null" —
+   the group silently never existed (proven Oct 27, 2026: an outbox
+   patch {"null": "ZZ Test Group"}; the input cleared as if saved). */
+function grpNewCommit(t){
+  var n = regApply(t.value.trim()); if(!n) return;
+  if(!allGroups()[n]){ GRP_EXTRA.push(n); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
+  if(!ORGREG.canon[regKey(n)]) regRegisterCanon(n, 'groups');
+  var di = S.prof.di; if(di == null) return;
+  var gl = personGroups(D.directory[di]); if(gl.indexOf(n) < 0) gl.push(n);
+  txn('Edit groups', function(){ setPersonGroups(di, gl); }); repaintSec('relationship');
+}
+/* Fragment completion for org values (JD 2026-10-27): a typed value that
+   is not itself a known org but is the unambiguous prefix of exactly one
+   known org resolves to that org — "roch" -> Rochester Regional Health,
+   "clarkson" -> Clarkson University, "SUNY can" -> SUNY Canton. Safety
+   net under every commit path with no live dropdown (the profile
+   editor's blur/change commit): a fragment of a known org can no
+   longer be filed as-is. Ambiguous prefixes ("park" -> Park Bros. /
+   Parkway Ford) and unknown values pass through untouched — genuinely
+   new orgs still file exactly as typed. */
+function orgPrefixComplete(v, tk){
+  var lv = String(v || '').toLowerCase();
+  if(lv.length < 3) return v;
+  var pools = tk ? [ptSugList('org', tk)]
+    : ORG_CATS.map(function(c){ return ptSugList('org', c.k); });
+  var exact = false, hits = [], seen = {};
+  pools.forEach(function(pool){ pool.forEach(function(x){
+    /* Candidates are compared by their CANONICAL form: alias spellings
+       of the same org collapse into one hit, and the fragment itself
+       (still live on other profiles, in no registry) never counts as
+       an exact match that would block its own completion. */
+    var cx = regApply(x), lx = x.toLowerCase(), lc = cx.toLowerCase();
+    if(lx === lv && ORGREG.canon[regKey(cx)]) exact = true;
+    else if(lc !== lv && (lx.indexOf(lv) === 0 || lc.indexOf(lv) === 0) && !seen[lc]){ seen[lc] = 1; hits.push(cx); }
+  }); });
+  if(exact || hits.length !== 1) return v;
+  return hits[0];
+}
 function addTag(t){
   var v = t.value.trim().replace(/[,|]+$/, ''); t.value = ''; if(!v) return;
   var tk = t.getAttribute('data-k');
-  if(ORG_CATS.some(function(c){ return c.k === tk; })){ v = regApply(v); if(!ORGREG.canon[regKey(v)]) regRegisterCanon(v, tk); }
+  if(!tk) return;   /* a tag input with no field is a wiring bug — never patch a "null" field */
+  if(ORG_CATS.some(function(c){ return c.k === tk; })){ v = regApply(v); v = orgPrefixComplete(v, tk); if(!ORGREG.canon[regKey(v)]) regRegisterCanon(v, tk); }
   saveTags(t, function(a){ if(a.map(function(x){ return x.toLowerCase(); }).indexOf(v.toLowerCase()) < 0) a.push(v); return a; });
+}
+/* Autocomplete for the profile editor's free-text tag inputs (JD
+   2026-10-27): the .tadd boxes had NO suggestion dropdown at all —
+   Enter, and even a plain blur, filed whatever fragment was typed.
+   Wires the same ptAcWire dropdown the table and Audit editors use:
+   a pick fills the input (org/skill picks also commit, like Enter),
+   and Enter with the list open selects the highlighted suggestion.
+   The new-group box gets a fill-only dropdown of existing groups, so a
+   near-match is one tap away instead of a duplicate group. */
+function profWireAc(){
+  $$('#view .tadd').forEach(function(inp){
+    if(inp._acw) return;
+    var isGrp = inp.hasAttribute('data-grpnew'), k = inp.getAttribute('data-k');
+    if(!isGrp && !k) return;
+    var isOrg = !isGrp && ORG_CATS.some(function(c){ return c.k === k; });
+    if(!isGrp && !isOrg && k !== 'specialty') return;
+    if(!$('.pted-ac', inp.parentNode)) return;
+    inp._acw = 1;
+    if(isGrp){
+      ptAcWire(inp, ptDedupe(Object.keys(allGroups()).concat(regCanonFor('groups') || [])).sort(function(a, b){ return a.localeCompare(b); }),
+        function(v){ inp.value = v; inp.focus(); });
+    } else if(isOrg){
+      ptAcWire(inp, ptOrgSug(k), function(v){ inp.value = v; addTag(inp); }, { label:regSugLabel, resolve:regApply });
+    } else {
+      ptAcWire(inp, ptSugList('skill'), function(v){ inp.value = v; addTag(inp); });
+    }
+  });
 }
 /* Keyboard navigation (JD 2026-10-15), registered BEFORE onKey so consumed
    keys never fall through to it: arrows/Home/End move through open menus
@@ -9126,6 +9211,7 @@ function onNavKey(ev){
 }
 function onKey(ev){
   var t = ev.target, tag = t.tagName, isField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+  if(ev.key === 'Enter' && t.hasAttribute && t.hasAttribute('data-grpnew')){ ev.preventDefault(); grpNewCommit(t); return; }
   if(ev.key === 'Enter' && t.classList && t.classList.contains('tadd')){ ev.preventDefault(); addTag(t); return; }
   if((ev.key === 'Enter' || ev.key === ' ') && t.classList && t.classList.contains('dm') && t.classList.contains('pick')){ ev.preventDefault(); t.click(); return; }
   if((ev.key === 'Enter' || ev.key === ' ') && t.classList && t.classList.contains('ptrow')){ ev.preventDefault(); t.click(); return; }
