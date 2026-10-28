@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.16.0';
+var APP_VERSION = '3.17.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -287,7 +287,7 @@ function ic(n, s){
 var D = null, BYN = {}, PK2I = {}, VER = 0;
 
 var ORG_CATS = [
-  { k:'churches',     label:'Churches',     ic:'church',    options:['CFC','NTC','Calvary Baptist'] },
+  { k:'churches',     label:'Churches',     ic:'church',    options:['Christian Fellowship Center','New Testament Church','Calvary Baptist'] },
   { k:'companies',    label:'Companies',    ic:'briefcase', options:['Rochester Regional Health','Clarkson University','Park Bros.'] },
   { k:'universities', label:'Universities', ic:'cap',       options:['Clarkson University','SUNY Potsdam','SUNY Canton','St. Lawrence University'] }
 ];
@@ -377,22 +377,25 @@ function ptOrgSug(catK){
 
 var DEGREE_TYPES = ['AA','AAS','AS','BA','BS','BFA','BBA','BTech','MA','MS','MBA','MEd','MPA','PhD','EdD','DPT','OTD','JD','MD','Certificate','Attended (no degree)','Other'];
 var SKILL_TAXONOMY = [
-  { cat:'Healthcare', skills:['Registered Nurse','CNA','LPN','EMT','Mental Health','Physical Therapist','Occupational Therapist','Home Health Aide','Medical Technician'] },
-  { cat:'Public Safety', skills:['Law Enforcement','Corrections','Security','Firefighter','Emergency Dispatcher'] },
-  { cat:'Education', skills:['Teacher','Teaching','Professor','Student Worker','Admissions','Tutor','Coach','Librarian','Mathematics'] },
-  { cat:'Technology', skills:['IT','Electrical Engineering','Civil Engineering','Mechanical Engineering','Environmental Engineering','Drones'] },
-  { cat:'Transportation', skills:['Airline','Airlines','Airplanes','Pilot','Taxi Driver','Truck Driver','Delivery Driver'] },
-  { cat:'Food Service', skills:['Cook','Server','Bartender','Barista','Baker'] },
-  { cat:'Construction', skills:['Carpentry','Electrician','Plumber','HVAC','Welder','Mechanic'] },
-  { cat:'Administration', skills:['Administrator','Administrative Assistant','Office Manager','Receptionist','Human Resources'] },
-  { cat:'Business', skills:['Business Owner','Manager','Marketing','Accounting','Banking','Real Estate'] },
-  { cat:'Sales', skills:['Retail','Car Sales'] },
+  { cat:'Healthcare', skills:['Registered Nurse','Licensed Practical Nurse','Certified Nurse Aide','Nursing','Emergency Medical Technician','Emergency Medical Services','Physical Therapist','Occupational Therapist','Mental Health','Internal Medicine','Phlebotomy','Medical Assistant','Patient Experience','Patient Access','Healthcare Administration','Home Health Aide','Medical Technician'] },
+  { cat:'Public Safety', skills:['Law Enforcement','Corrections','Security','Firefighter','Emergency Dispatcher','Border Patrol','Health and Safety'] },
+  { cat:'Education', skills:['Teaching','Professor','Student Worker','Admissions','Tutor','Coach','Librarian','Mathematics','Interpreter'] },
+  { cat:'Ministry', skills:['Pastor','Worship Leading'] },
+  { cat:'Technology', skills:['Information Technology','Computer Science','Electrical Engineering','Civil Engineering','Mechanical Engineering','Environmental Engineering','Drones','Robotics'] },
+  { cat:'Transportation', skills:['Airline Operations','Pilot','Taxi Driver','Truck Driver','Delivery Driver'] },
+  { cat:'Food Service', skills:['Cook','Server','Bartender','Barista','Baking','Confectionery','Food Service'] },
+  { cat:'Construction', skills:['Carpentry','Electrician','Plumber','HVAC','Welder','Mechanic','Construction'] },
+  { cat:'Administration', skills:['Administration','Office Manager','Receptionist','Human Resources'] },
+  { cat:'Business', skills:['Business Owner','Management','Marketing','Accounting','Banking','Real Estate','Finance','Insurance'] },
+  { cat:'Sales', skills:['Retail','Car Sales','Sales'] },
   { cat:'Customer Service', skills:['Cashier','Front Desk'] },
   { cat:'Social Services', skills:['Social Work','Counselor','Case Manager','Childcare'] },
   { cat:'Agriculture', skills:['Farmer','Dairy Farmer','Farmhand','Veterinarian'] },
-  { cat:'Creative Media', skills:['Photography','Video','Film','Content Creation','Coloring','Graphic Design','Writing'] },
-  { cat:'Music', skills:['Singing','Guitar','Piano','Bass','Clarinet','Drums','Violin','Trumpet','Saxophone','Flute','Cello','Banjo','Ukulele','Choir','Songwriting','Music Production','DJ','Worship Leading'] },
-  { cat:'Outdoors', skills:['Skiing','Golf','Running','Hiking','Horseback Riding','Ultimate Frisbee','Travel','Fishing','Hunting','Landscaping'] }
+  { cat:'Creative Media', skills:['Photography','Videography','Content Creation','Graphic Design','Design','Writing'] },
+  { cat:'Art', skills:['Art','Painting','Watercolor','Coloring','Quilting'] },
+  { cat:'Music', skills:['Music','Singing','Guitar','Piano','Bass','Clarinet','Drums','Violin','Viola','Trumpet','Saxophone','Flute','Cello','Banjo','Ukulele','Harp','Choir','Songwriting','Music Production','DJ'] },
+  { cat:'Military', skills:['42A','68W','Cavalry Scout'] },
+  { cat:'Outdoors', skills:['Skiing','Golf','Running','Hiking','Horseback Riding','Ultimate Frisbee','Travel','Fishing','Hunting','Landscaping','Wrestling','Fitness'] }
 ];
 var SKILL_PARENT = {};
 SKILL_TAXONOMY.forEach(function(g){
@@ -11998,20 +12001,10 @@ function mlDetail(ent, depth){
     return '<div class="ml-mem"><a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="mlopen" data-di="' + di + '">' + esc(dispName(e)) + '</a>' +
       '<button type="button" class="ml-x" data-act="mlrm" data-key="' + esc(ent.key) + '" data-di="' + di + '" title="Remove from ' + esc(ent.name) + '">×</button></div>';
   }).join('');
-  var parentOpts = '<option value="">No parent</option>' + Object.keys(T.ents).map(function(k){ return T.ents[k]; })
-    .filter(function(x){ return x.key !== ent.key; })
-    .sort(function(a, b){ return a.name.localeCompare(b.name); })
-    .map(function(x){ return '<option value="' + esc(x.name) + '"' + (ent.parent && T.ents[ent.parent] && T.ents[ent.parent].name === x.name ? ' selected' : '') + '>' + esc(x.name) + '</option>'; }).join('');
-  var typeOpts = TAX_TYPES.map(function(t){ return '<option value="' + t[0] + '"' + (ent.type === t[0] ? ' selected' : '') + '>' + t[1] + '</option>'; }).join('');
   var h = '<div class="ml-det" style="margin-left:' + (depth * 22 + 14) + 'px" data-ent="' + esc(ent.key) + '">' +
     '<div class="ml-mems">' + (mem || '<div class="ml-none">Nobody is in this one yet. Add people below.</div>') + '</div>' +
     '<div class="ml-tools">' +
       '<div class="ml-tool"><label>Add people</label><div class="ml-inline"><input type="text" class="ml-add-in" placeholder="Type a name"><button type="button" class="btn sm" data-act="mlfind" data-key="' + esc(ent.key) + '">Find</button></div><div class="ml-res"></div></div>' +
-      '<div class="ml-tool"><label>Rename</label><div class="ml-inline"><input type="text" class="ml-ren-in" value="' + esc(ent.name) + '"><button type="button" class="btn sm" data-act="mlrename" data-key="' + esc(ent.key) + '">Rename</button></div><div class="ml-hint">The new name lands on every person who has the old one.</div></div>' +
-      '<div class="ml-tool"><label>Merge into</label><div class="ml-inline"><input type="text" class="ml-mer-in" list="ml-names" placeholder="Name that stays"><button type="button" class="btn sm" data-act="mlmerge" data-key="' + esc(ent.key) + '">Merge</button></div><div class="ml-hint">Everyone in ' + esc(ent.name) + ' moves to the other name. This one goes away.</div></div>' +
-      '<div class="ml-tool"><label>Parent</label><div class="ml-inline"><select class="ml-par-in">' + parentOpts + '</select><select class="ml-edge-in"><option value="part"' + (ent.edge !== 'runby' ? ' selected' : '') + '>Part of</option><option value="runby"' + (ent.edge === 'runby' ? ' selected' : '') + '>Run by</option></select><button type="button" class="btn sm" data-act="mlsetpar" data-key="' + esc(ent.key) + '">Set</button></div><div class="ml-hint">Part of: people count up into the parent. Run by: a link only, people do not carry over.</div></div>' +
-      '<div class="ml-tool"><label>Type</label><div class="ml-inline"><select class="ml-type-in">' + typeOpts + '</select><button type="button" class="btn sm" data-act="mlsettype" data-key="' + esc(ent.key) + '">Set type</button></div></div>' +
-      (!ent.cat && !ent.direct.length && !ent.kids.length ? '<div class="ml-tool"><button type="button" class="btn ghost sm" data-act="mldelete" data-key="' + esc(ent.key) + '">Delete this name</button></div>' : '') +
     '</div></div>';
   return h;
 }
@@ -12064,11 +12057,8 @@ function viewLists(v){
   });
   var nEnt = Object.keys(ents).filter(function(k){ return !ents[k].cat; }).length;
   var h = '<div class="page ml"><header class="ml-hd"><h2>Master List</h2>' +
-    '<p class="ml-sub">Every organization, group, and skill in one place. ' + nEnt + ' names. Rename, merge, nest, and move people here — changes save to the Sheet like any other edit, and the Save Pool shows them land.</p>' +
-    '<div class="ml-bar"><input type="text" id="mlq" placeholder="Search names" value="' + esc(MLV.q) + '">' +
-    '<span class="ml-new"><input type="text" id="mlnew-name" placeholder="New name"><select id="mlnew-type">' +
-    TAX_TYPES.map(function(t){ return '<option value="' + t[0] + '">' + t[1] + '</option>'; }).join('') +
-    '</select><button type="button" class="btn sm" data-act="mlnew">Add</button></span></div></header>' +
+    '<p class="ml-sub">Every organization, group, and skill in one place. ' + nEnt + ' names. Tap a name to see its people and add or remove them. Renames, merges, and nesting go through Luna so they land clean.</p>' +
+    '<div class="ml-bar"><input type="text" id="mlq" placeholder="Search names" value="' + esc(MLV.q) + '"></div></header>' +
     '<datalist id="ml-names">' + Object.keys(ents).filter(function(k){ return !ents[k].cat; }).map(function(k){ return '<option value="' + esc(ents[k].name) + '">'; }).join('') + '</datalist>' +
     '<div id="mlsecs">';
   function secBlock(id, title, inner){
@@ -12078,10 +12068,10 @@ function viewLists(v){
   function flatTree(keys){
     var roots = keys.slice().sort(function(a, b){ return (ents[b].total - ents[a].total) || ents[a].name.localeCompare(ents[b].name); });
     if(q) return roots.map(function(k){ return mlTree(ents, [k], q); }).join('');
-    var LIM = 30;
-    var shown = MLV.more[keys] ? roots : roots.slice(0, LIM);
+    var big = roots.filter(function(k){ return ents[k].total >= 3; });
+    var shown = MLV.more[keys] ? roots : (big.length ? big : roots.slice(0, 5));
     var out = shown.map(function(k){ return mlTree(ents, [k], ''); }).join('');
-    if(roots.length > LIM) out += '<button type="button" class="btn ghost sm ml-more" data-act="mlmore" data-sec="' + keys + '">' + (MLV.more[keys] ? 'Show fewer' : 'Show all ' + roots.length) + '</button>';
+    if(roots.length > shown.length || MLV.more[keys]) out += '<button type="button" class="btn ghost sm ml-more" data-act="mlmore" data-sec="' + keys + '">' + (MLV.more[keys] ? 'Show fewer' : 'Show all ' + roots.length + ' (including 1-2 people)') + '</button>';
     return out;
   }
   h += secBlock('churches', 'Churches', mlTree(ents, [regKey('Church')], q));
@@ -12099,15 +12089,6 @@ function viewLists(v){
       members.sort(function(a, b){ return (b.direct.length - a.direct.length) || a.name.localeCompare(b.name); }).map(function(e){ return mlRow(e, 0); }).join('') + '</div>';
   });
   h += secBlock('skills', 'Skills', sk);
-  var sus = mlSuspects(ents);
-  if(sus.length && !q){
-    h += '<section class="ml-sec"><h3>Possible matches</h3><p class="ml-sub">Names that look like the same thing twice. Merging moves everyone to the name that stays.</p>' +
-      sus.map(function(s2){
-        return '<div class="ml-sus"><div class="ml-sus-t"><b>' + esc(s2.a.name) + '</b> and <b>' + esc(s2.b.name) + '</b><span>' + esc(s2.why) + '</span></div>' +
-          '<div class="ml-sus-b"><button type="button" class="btn sm" data-act="mlsus" data-loser="' + esc(s2.b.key) + '" data-winner="' + esc(s2.a.key) + '">Keep ' + esc(s2.a.name) + '</button>' +
-          '<button type="button" class="btn sm" data-act="mlsus" data-loser="' + esc(s2.a.key) + '" data-winner="' + esc(s2.b.key) + '">Keep ' + esc(s2.b.name) + '</button></div></div>';
-      }).join('') + '</section>';
-  }
   if(q && h.indexOf('ml-row') < 0) h += '<div class="ml-none" style="padding:18px 2px">No names match "' + esc(MLV.q.trim()) + '".</div>';
   h += '</div></div>';
   v.innerHTML = h;
