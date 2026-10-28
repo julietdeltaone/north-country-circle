@@ -5030,12 +5030,13 @@
    "type": null
   },
   {
-   "evidence": "The St. James School staff page lists 'Renee Dale — Art Director' with a photo slot under her bio, the same layout as every other staff member — but the fetch only supplied the first staff image's URL, so her photo's URL could not be extracted or filed.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep. The St. James School (Gouverneur NY) staff page sets this portrait (11th in the staff sequence) in the block headed 'Renee Dale, Art Director' - extracted from the page source and the portrait viewed. URL load-verified (200x200 JPEG).",
    "name": "Renee Dale",
-   "photo_url": null,
+   "photo_url": "https://stjamesk-6.org/images/nicepage-images/10.jpg",
    "source_page": "https://stjamesk-6.org/staff",
-   "status": "possible",
-   "type": "staff photo"
+   "status": "confirmed",
+   "type": "School staff page portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
