@@ -3220,12 +3220,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep. The St. James School (Gouverneur NY) staff page sets this portrait in the block headed 'Judith Tomford, AIS Teacher.' URL load-verified (200x200 JPEG, 42.5 KB) and the portrait viewed.",
    "name": "Judith Tomford",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://stjamesk-6.org/images/nicepage-images/judy.jpg",
+   "source_page": "https://stjamesk-6.org/staff",
+   "status": "confirmed",
+   "type": "School staff page portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @judder_budder (display name \"Judson Colbert\"); bio: \"Juddy\".",
@@ -3264,12 +3265,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The NCPR index and linked story identify her as the guitarist, but the story's only subject image is a generic uncaptioned guitar photo — no caption or label ties it to her.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (name-only wave). Atwood Magazine's feature on Nashville artist Sinclair captions this photo 'Sinclair (c) Tobias Ortmann' and the article states she left her home in Madrid, New York for Nashville - matching the directory identity JD confirmed (Julia Sinclair, recording artist performing as Sinclair). URL load-verified (1344x896 JPEG) and the portrait viewed.",
    "name": "Julia Sinclair",
-   "photo_url": null,
-   "source_page": "https://www.northcountrypublicradio.org/news/pages/st-lawrence-valley-ny?nophotos&limit=30&start=2528",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://atwoodmagazine.com/wp-content/uploads/2019/03/Sinclair-music-2019-1.jpg",
+   "source_page": "https://atwoodmagazine.com/scpc-sinclair-pop-champagne-interview/",
+   "status": "confirmed",
+   "type": "Press photo (artist feature)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @juliacarmella1 (display name \"Julia Swy\").",
@@ -3281,12 +3283,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Company record is text-only. FindGlocal names Julia Kia Photography but its extracted images are labeled for other photography businesses — none tied to Julia herself (photos BY her don't count).",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep. Her own Julia Kia Photography About page presents this 'founder' portrait of Julia (seated, holding her Canon camera). URL load-verified (1024x1536 JPEG) and the portrait viewed.",
    "name": "Julia Tomford",
-   "photo_url": null,
-   "source_page": "https://www.findglocal.com/US/Potsdam-NY/232302-22/genre/181475575221097/Photographers",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://static.showit.co/file/DiehZsLzU21_TRaANMwL-A/shared/juliakiaphotos-founder_1.jpg",
+   "source_page": "https://juliakia.com/about",
+   "status": "confirmed",
+   "type": "Business About page portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @julianna_shatraw (display name \"Juli\"); bio: \"🤎🤎🤎 Ultrasound tech🩻\".",
@@ -5171,12 +5174,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). Image search ties this portrait to her personal site rumbidzai.com (her own name domain); the portrait was viewed and byte-checks as a real 800x649 JPEG. The site would not open for text verification, so the Harare Institute of Technology tie is unconfirmed - graded possible.",
    "name": "Rumbidzai Mushamba",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://files.cdn-files-a.com/uploads/10911418/800_697ac8094c3e9.jpg",
+   "source_page": "https://rumbidzai.com",
+   "status": "possible",
+   "type": "Personal website portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "DVIDS image 6884312 (Fort Drum, Oct 1, 2021): caption identifies the posed group by position — Sgt. 1st Class Ryan Blount is 4th/rightmost, name tape visible — after earning the Expert Soldier Badge; 427th Brigade Support Battalion; hometown Liverpool, NY per DMNA.",
@@ -5390,12 +5394,13 @@
    "added": "2026-10-28"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). A headshot file named 'savannahs-headshot' is hosted on Anderson University's site (her directory anchor is Anderson University) from its SGA pages; the current page no longer lists her, so the caption could not be re-verified - graded possible. Portrait viewed; real 333x500 JPEG.",
    "name": "Savannah Gabriella",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://andersonuniversity.edu/wp-content/uploads/2025/10/savannahs-headshot.jpg-optimized.jpg",
+   "source_page": "https://andersonuniversity.edu/about-sga/",
+   "status": "possible",
+   "type": "University SGA headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @savannah2416 (display name \"Savannah Newtown\"); bio: \"ASU alumni•          Emerson college ‘27•.    SLP2B          ✝️\".",
@@ -5478,12 +5483,20 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The SUNY Potsdam 'Something Rotten!' article names him in the cast list, but its only image is an uncaptioned lead graphic not tied to him. The ONNY article about his first-place harp win is text-only.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 3). ONNY's Young Artist Competition brochure (p.2, 'A Sampling of Past YAC Winners') prints his photo directly beside the caption '2018 Silas Smith, HARP - Malone' and his winner testimonial. Cropped from the PDF and hosted locally; the portrait was viewed (young man in a tuxedo at a harp).",
    "name": "Silas Smith",
-   "photo_url": null,
-   "source_page": "https://www.potsdam.edu/news/CPS2025SomethingRotten",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/silas-smith.jpg",
+   "source_page": "https://onny.org/sites/default/files/2022-11/YAC_2023.pdf",
+   "status": "confirmed",
+   "type": "Competition brochure photo (cropped, locally hosted)",
+   "added": "2026-10-28",
+   "also": [
+    {
+     "url": "https://onny.org/sites/default/files/2022-11/YAC_2023.pdf",
+     "note": "Full ONNY Young Artist Competition brochure (2023) - Silas Smith 2018 winner photo and testimonial, page 2.",
+     "source_page": "https://onny.org/sites/default/files/2022-11/YAC_2023.pdf"
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5494,12 +5507,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). Image search associates this SUNY ResearchConnect portrait asset with 'Song Yi Lee SUNY Potsdam' (her directory anchor is SUNY Potsdam); no ResearchConnect profile page naming her could be located to confirm the tie - graded possible. Portrait viewed; real 260x447 JPEG.",
    "name": "Song Yi Lee",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://researchconnect.suny.edu/files-asset/58428458/38271817.jpg/",
+   "source_page": "https://researchconnect.suny.edu",
+   "status": "possible",
+   "type": "SUNY ResearchConnect portrait",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Her SUNY Potsdam profile story 'The Right Time for Me' (filed under the Stephanie spelling) carries a photo with alt text 'stephanie at the brooklyn bridge', tied to her in the text about her spring-break NYC trip; article credits 'Portraits by Jason Hunter.' Merit profile is text-only listings.",
