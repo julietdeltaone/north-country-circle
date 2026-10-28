@@ -1,8 +1,8 @@
 {
  "version": 1,
  "types": {
-  "CFC": "church",
-  "CFA": "program",
+  "Christian Fellowship Center": "church",
+  "Christian Fellowship Academy": "program",
   "U.S. Army": "military",
   "Army National Guard": "military",
   "27th IBCT": "military",
@@ -12,11 +12,11 @@
   "U.S. Marine Corps": "military"
  },
  "parents": {
-  "CFC": {
+  "Christian Fellowship Center": {
    "p": "Church",
    "edge": "part"
   },
-  "NTC": {
+  "New Testament Church": {
    "p": "Church",
    "edge": "part"
   },
@@ -28,12 +28,8 @@
    "p": "Church",
    "edge": "part"
   },
-  "New Testament Church": {
-   "p": "Church",
-   "edge": "part"
-  },
-  "CFA": {
-   "p": "CFC",
+  "Christian Fellowship Academy": {
+   "p": "Christian Fellowship Center",
    "edge": "runby"
   },
   "U.S. Army": {
