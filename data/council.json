@@ -92,96 +92,1061 @@
  },
  "flags": [
   {
-   "evidence": "Both profiles carry phone 5183178734 (ig:maggienjones_ / fdb:maggie_marceau). Same number on two 'Maggie' profiles — same person under two names, or a shared/typo number. JD rules.",
+   "id": "maggie-phone",
    "kind": "possible-match",
-   "title": "Maggie Jones vs Maggie Marceau — same phone",
+   "priority": 1,
+   "director": "content",
+   "title": "Maggie Jones vs Maggie Marceau — same phone 518-317-8734",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "ruling": "JD ruled Oct 27: Maggie Jones and Maggie Marceau are two different people. The shared phone is an entry error — never merge.",
+   "theory": {
+    "grade": "Probable",
+    "text": "The number belongs to Maggie Marceau; the copy on Maggie Jones is the entry error. Marceau’s phone arrived inside her own Facebook-sourced record in Facebook-export format, and 518 is her Malone area code — while Jones sits in the CFC Potsdam (315) orbit and her phone carries no source attribution at all.",
+    "falsifier": "JD’s phone contacts showing 518-317-8734 saved under Maggie Jones’s name."
+   },
+   "evidence": [
+    "Both profiles carry phone 5183178734: ig:maggienjones_ as \"518-317-8734\", fdb:maggie_marceau as \"(518) 317-8734\" in Facebook-export format with the export’s unicode marks.",
+    "Marceau’s entire profile is Facebook data (Bokie’s Drive In, North Country Community College, Malone NY) — the phone on a person’s own Facebook profile is self-reported.",
+    "518 is the Albany/Plattsburgh/Malone area code; Marceau lives in Malone. Jones’s context is CFC Potsdam.",
+    "Jones’s other contact datum (gogirl2003@icloud.com) is distinctly hers — the phone is the one field with no attribution on her profile."
+   ],
+   "actions": [
+    {
+     "id": "clear-jones",
+     "label": "Clear phone from Maggie Jones",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:maggienjones_",
+       "field": "phone",
+       "op": "remove",
+       "value": "5183178734"
+      }
+     ],
+     "note": "Theory’s pick: Jones’s copy is the error."
+    },
+    {
+     "id": "clear-marceau",
+     "label": "Clear phone from Maggie Marceau",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "fdb:maggie_marceau",
+       "field": "phone",
+       "op": "remove",
+       "value": "5183178734"
+      }
+     ],
+     "note": "Pick this instead if JD knows the number is Jones’s."
+    },
+    {
+     "id": "verify-owner",
+     "label": "Stage: verify owner first",
+     "kind": "task",
+     "note": "Luna checks JD’s contacts and the two message threads on the next pass before either profile is touched."
+    }
+   ]
   },
   {
-   "evidence": "Both profiles carry lydiawangerin1@gmail.com (ig:lydia_rose_martin / sf:lydia-wangerin). The address itself reads 'Lydia Wangerin' — Lydia Martin may be the same person under a married name, or the email was filed on the wrong profile.",
+   "id": "lydia-email",
    "kind": "possible-match",
+   "priority": 2,
+   "director": "content",
    "title": "Lydia Martin vs Lydia Wangerin — same email",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "Same person. The sf:lydia-wangerin shell is Lydia Martin before her marriage: her own footprint states she is née Wangerin and married Johnny Martin in May 2024, and the shell’s only facts (CFA cast 2018, Wangerin sibling set, from a Dec 2019 email) all describe that earlier identity. Merge the shell into Lydia Martin.",
+    "falsifier": "JD knows a second Lydia in the Wangerin family who uses lydiawangerin1@gmail.com."
+   },
+   "evidence": [
+    "Identical personal email lydiawangerin1@gmail.com on both profiles (ig:lydia_rose_martin and sf:lydia-wangerin).",
+    "Lydia Martin’s footprint: \"Née Wangerin (Lydia R. Wangerin); married Johnny Martin (SUNY Canton)\" — married May 25, 2024; JD filmed the wedding.",
+    "The shell’s footprint: \"Christian Fellowship Academy cast member in 2018; one of a Wangerin sibling set with Ina Wangerin and Gabe Wangerin (Email, Dec 2019)\" — all pre-marriage facts.",
+    "The shell carries nothing that conflicts: no phone, location, employer, or synopsis of its own; its one family link (sibling of Ina Wangerin) matches the Wangerin sibling set in Lydia Martin’s orbit.",
+    "The shell was created Oct 27, 2026 in the email-mine filing, from an email that used her maiden name."
+   ],
+   "actions": [
+    {
+     "id": "merge-lydia",
+     "label": "Merge Lydia Wangerin into Lydia Martin",
+     "kind": "merge",
+     "merge": {
+      "survivor": "ig:lydia_rose_martin",
+      "loser": "sf:lydia-wangerin"
+     },
+     "note": "Carries the footprint bullet and the Ina Wangerin sibling link onto the survivor and adds \"Lydia Wangerin\" to Also known as. Merges execute in the Merge studio, which opens preloaded with this pair."
+    },
+    {
+     "id": "keep-both",
+     "label": "Keep both — two people",
+     "kind": "decision",
+     "note": "Records JD’s ruling that these are two people and closes the flag."
+    },
+    {
+     "id": "verify-lydia",
+     "label": "Stage: verify first",
+     "kind": "task",
+     "note": "Luna re-checks the Dec 2019 email thread on the next pass before any merge."
+    }
+   ]
   },
   {
-   "evidence": "3152686666 is on Connor Caldwell, Hunter Woodrow, and Matthew Volz simultaneously. At most one can be right unless it is a shared household/work number — worth a data check.",
+   "id": "phone-3152686666",
    "kind": "duplicate-info",
-   "title": "One phone number on three profiles",
+   "priority": 3,
+   "director": "content",
+   "title": "One phone number on three profiles — Connor Caldwell, Hunter Woodrow, Matthew Volz",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "315-268-6666 is not any of theirs personally — it is Clarkson University’s Campus Safety & Security department line, published on clarkson.edu. All three men are Clarkson Campus Safety officers; the number was filed on each as a work number during a team contact pass.",
+    "falsifier": "One of the three confirming 315-268-6666 is his personal cell."
+   },
+   "evidence": [
+    "clarkson.edu publishes \"Campus Safety & Security: 315-268-6666\" (Parent Resources department contacts); the Reporting page and the CUEMS emergency page both direct callers to Campus Safety at 315-268-6666.",
+    "All three carriers are Clarkson Campus Safety & Security officers: Caldwell (officer), Woodrow (officer, ERC), Volz (sergeant, ERC) — and all three are in the Clarkson Security group.",
+    "No other profile in the directory carries the number."
+   ],
+   "actions": [
+    {
+     "id": "clear-6666-all",
+     "label": "Clear the phone from all three",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "sf:connor-caldwell",
+       "field": "phone",
+       "op": "remove",
+       "value": "3152686666"
+      },
+      {
+       "key": "sf:hunter-woodrow",
+       "field": "phone",
+       "op": "remove",
+       "value": "3152686666"
+      },
+      {
+       "key": "sf:matthew-volz",
+       "field": "phone",
+       "op": "remove",
+       "value": "3152686666"
+      }
+     ],
+     "note": "The number is the department’s, not a personal contact for any of them."
+    },
+    {
+     "id": "keep-6666-shared",
+     "label": "Keep on all three as the shared work number",
+     "kind": "decision",
+     "note": "Records JD’s ruling that the shared department line stays on each officer’s profile."
+    },
+    {
+     "id": "keep-6666-volz",
+     "label": "Clear from Caldwell and Woodrow — keep on Volz",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "sf:connor-caldwell",
+       "field": "phone",
+       "op": "remove",
+       "value": "3152686666"
+      },
+      {
+       "key": "sf:hunter-woodrow",
+       "field": "phone",
+       "op": "remove",
+       "value": "3152686666"
+      }
+     ],
+     "note": "Keeps the department line on the sergeant’s profile only."
+    }
+   ]
   },
   {
-   "evidence": "Same surname, first names one letter apart (ct:karle mccormick / ig:kaylemmccormick). Could be two people, could be one person filed twice under a spelling variant. (Separate known item: Kayle's mccormickkayle self-reference.)",
-   "kind": "possible-match",
-   "title": "Karle McCormick vs Kayle McCormick",
-   "date": "2026-10-27",
-   "status": "Closed — JD ruling",
-   "resolution": "Karle McCormick and Kayle McCormick are twin sisters — two different people. Never merge. Ruled by JD; flag closed Oct 27, 2026."
-  },
-  {
-   "evidence": "Companies say 'Army National Guard' but her Groups are empty. Per JD's approved inference class, she likely belongs in the U.S. Army group (and/or Army National Guard). Staged, not filed.",
+   "id": "mcconnell-guard",
    "kind": "inference",
+   "priority": 4,
+   "director": "content",
    "title": "Hannah McConnell — Army National Guard, no Army group",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "Same gap class as Seguin, one wrinkle: she serves in the Idaho Army National Guard (Boise), outside the NY orbit the U.S. Army group was built around. The affiliation is documented; whether the group means \"Army-affiliated\" or \"JD’s Army orbit\" is the decision. Peer check: only 3 profiles carry the \"Army National Guard\" company value at all — the third (Ethan Bates) IS in the group, so Guard profiles are normally grouped.",
+    "falsifier": "JD confirms the U.S. Army group is NY-orbit only and out-of-area Guard service stays out."
+   },
+   "evidence": [
+    "Her footprint: serves in the Idaho Army National Guard; Customer Service Associate at Saia LTL Freight, Boise; BYU-Idaho. Groups: none.",
+    "Directory norm: 46 of 47 U.S. Army group members carry company \"U.S. Army\"; Guard-affiliated profiles are grouped, not left out.",
+    "Only 3 of 737 profiles carry company \"Army National Guard\": Bates (grouped), McConnell, Seguin."
+   ],
+   "actions": [
+    {
+     "id": "add-army-mcconnell",
+     "label": "Add U.S. Army group",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:hannahllbanana",
+       "field": "groups",
+       "op": "add",
+       "value": "U.S. Army"
+      }
+     ]
+    },
+    {
+     "id": "leave-mcconnell",
+     "label": "Leave — out-of-area Guard service",
+     "kind": "decision",
+     "note": "Records JD’s ruling that the group stays NY-orbit."
+    }
+   ]
   },
   {
-   "evidence": "Companies say 'Army National Guard' but his Groups are empty. Same approved inference class as Hannah McConnell. Staged, not filed.",
+   "id": "seguin-guard",
    "kind": "inference",
+   "priority": 5,
+   "director": "content",
    "title": "Jake Seguin — Army National Guard, no Army group",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "A plain oversight. Seguin is a Staff Sergeant recruiter with the New York Army National Guard based at SUNY Potsdam — the exact profile of the 47 people already in the group. The comparable Guard profile (Ethan Bates) is grouped; Seguin and McConnell are the only two who are not.",
+    "falsifier": "JD knows a reason Seguin was deliberately left out of the group."
+   },
+   "evidence": [
+    "His footprint: \"Staff Sergeant recruiter with the New York Army National Guard, based at the Guard’s recruiting office in Morey Hall at SUNY Potsdam\" (SUNY Potsdam). Groups: none.",
+    "Peer check: only 3 profiles carry company \"Army National Guard\" — Bates (in U.S. Army group), Seguin, McConnell.",
+    "46 of the 47 U.S. Army group members carry company \"U.S. Army\"; the group is the directory’s home for exactly this affiliation."
+   ],
+   "actions": [
+    {
+     "id": "add-army-seguin",
+     "label": "Add U.S. Army group",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:jake_seguin",
+       "field": "groups",
+       "op": "add",
+       "value": "U.S. Army"
+      }
+     ]
+    },
+    {
+     "id": "leave-seguin",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave Seguin ungrouped."
+    }
+   ]
   },
   {
-   "evidence": "Groups: 27th IBCT only; footprint documents his National Guard service (promoted to Major Aug 2026). 47 profiles carry the U.S. Army group; his lacks it. Note: his HHC exclusion is JD's standing ruling — this flag is only about the U.S. Army group. Staged, not filed.",
+   "id": "hammond-army",
    "kind": "inference",
+   "priority": 6,
+   "director": "content",
    "title": "Alex Hammond — in 27th IBCT but not U.S. Army group",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "Oversight. Hammond is a serving Major (promoted Aug 2026) in the 27th IBCT, and the U.S. Army group is the parent set for the brigade — of the 36 IBCT profiles, only he and Natalie Southworth lack it. His HHC exclusion is JD’s standing ruling and is not part of this flag.",
+    "falsifier": "JD confirms Hammond was deliberately kept out of the U.S. Army group."
+   },
+   "evidence": [
+    "Groups: 27th IBCT only. Rank: MAJ. Footprint documents his National Guard service and Aug 2026 promotion to Major.",
+    "34 of 36 profiles in the 27th IBCT group also carry the U.S. Army group; the only exceptions are Hammond and Southworth."
+   ],
+   "actions": [
+    {
+     "id": "add-army-hammond",
+     "label": "Add U.S. Army group",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:alexfornyassembly_",
+       "field": "groups",
+       "op": "add",
+       "value": "U.S. Army"
+      }
+     ],
+     "note": "U.S. Army group only — no HHC change (standing ruling)."
+    },
+    {
+     "id": "leave-hammond",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave Hammond ungrouped."
+    }
+   ]
   },
   {
-   "evidence": "Debbie Swyka and Eleora Trelease carry companies value 'clarkson' (lowercase, bare) beside the canonical 'Clarkson University' (85 profiles). Exactly the accidental-autocomplete class JD described.",
-   "kind": "near-duplicate-org",
-   "title": "Bare 'clarkson' org value on 2 profiles (JD's example, live)",
+   "id": "southworth-army",
+   "kind": "inference",
+   "priority": 7,
+   "director": "content",
+   "title": "Natalie Southworth — in 27th IBCT but not U.S. Army group",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "Same gap as Hammond, found in the same census: a serving SPC in the 27th IBCT who lacks the parent U.S. Army group membership that 34 of the 36 brigade profiles carry. Flagged by the Content Director as the same class rather than left for the next sweep.",
+    "falsifier": "JD confirms Southworth was deliberately kept out of the U.S. Army group."
+   },
+   "evidence": [
+    "Groups: 27th IBCT only. Rank: SPC. She is one of only two IBCT profiles (with Hammond) missing the U.S. Army group."
+   ],
+   "actions": [
+    {
+     "id": "add-army-southworth",
+     "label": "Add U.S. Army group",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ct:natalie southworth",
+       "field": "groups",
+       "op": "add",
+       "value": "U.S. Army"
+      }
+     ]
+    },
+    {
+     "id": "leave-southworth",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave Southworth ungrouped."
+    }
+   ]
   },
   {
-   "evidence": "Hannah Hughes, Heather Marie, Marissa Carl, Megan Eddy, and Megan Peddle each carry companies value 'roch' — an apparent truncation of 'Rochester Regional Health'. Allison Cole carries the similar fragment 'roc'.",
+   "id": "frag-roch",
    "kind": "near-duplicate-org",
-   "title": "Truncated 'roch' org fragments on 5 profiles",
+   "priority": 8,
+   "director": "content",
+   "title": "Fragment 'roch' / 'roc' — truncated Rochester Regional Health",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "JD’s own typing, truncated where autocomplete did not complete it: \"roch\" (and Allison Cole’s \"roc\") are prefixes of Rochester Regional Health — the only \"Roc…\" organization in the directory and the flattened home of all health entries. The Marissa Chelan copy sits on a merged-away row whose values union onto Marissa Carl at bake, so both rows are patched or the fragment returns.",
+    "falsifier": "JD recognizes \"roch\" on any of these profiles as a different, real organization."
+   },
+   "evidence": [
+    "\"roch\" is the whole companies value on Hannah Hughes, Heather Marie, Marissa Carl, Megan Eddy, Megan Peddle — and on ig:marissachelan, the row merged into Marissa Carl.",
+    "\"roc\" is the whole companies value on Allison Cole, a nurse (United Helpers home care).",
+    "Rochester Regional Health is a 71-member group and the registry canonical for every health alias (Canton-Potsdam Hospital, St. Lawrence Health, RRH…)."
+   ],
+   "actions": [
+    {
+     "id": "fix-roch",
+     "label": "Replace roch/roc with Rochester Regional Health (7 profiles)",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:hannahkhughes_",
+       "field": "companies",
+       "op": "replace",
+       "from": "roch",
+       "to": "Rochester Regional Health"
+      },
+      {
+       "key": "sf:heather-marie",
+       "field": "companies",
+       "op": "replace",
+       "from": "roch",
+       "to": "Rochester Regional Health"
+      },
+      {
+       "key": "sf:marissa-carl",
+       "field": "companies",
+       "op": "replace",
+       "from": "roch",
+       "to": "Rochester Regional Health"
+      },
+      {
+       "key": "ig:marissachelan",
+       "field": "companies",
+       "op": "replace",
+       "from": "roch",
+       "to": "Rochester Regional Health"
+      },
+      {
+       "key": "sf:megan-eddy",
+       "field": "companies",
+       "op": "replace",
+       "from": "roch",
+       "to": "Rochester Regional Health"
+      },
+      {
+       "key": "ig:meg.peddle",
+       "field": "companies",
+       "op": "replace",
+       "from": "roch",
+       "to": "Rochester Regional Health"
+      },
+      {
+       "key": "ig:acole313",
+       "field": "companies",
+       "op": "replace",
+       "from": "roc",
+       "to": "Rochester Regional Health"
+      }
+     ]
+    },
+    {
+     "id": "leave-roch",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave the fragments."
+    }
+   ]
   },
   {
-   "evidence": "Colleen Cheney 'SUNY can' (she also carries full 'SUNY Canton' — same-profile duplicate); Elak Namhctih 'new york stat'; Grace LaPointe 'U'; Bob Dale 'SUNY'; B. Ryan Dunphey 'Park' and Franny Olsen 'park' (cf. canonical 'Park Bros.'); Colin Mackey and Megan Eurto 'New York'; Renee Dale 'Gouverneur' (a town, not an org). Each is a fragment or misfit beside a canonical value.",
+   "id": "frag-clarkson",
    "kind": "near-duplicate-org",
-   "title": "Fragment org values: 'SUNY can', 'new york stat', 'U', 'SUNY', 'Park'/'park', 'New York', 'Gouverneur'",
+   "priority": 9,
+   "director": "content",
+   "title": "Bare 'clarkson' org value on 2 profiles",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "The exact accident JD predicted: \"clarkson\" typed and committed before autocomplete could complete it to Clarkson University, the canonical carried by 85 profiles.",
+    "falsifier": "JD knows either profile means a different Clarkson (e.g. the town or a namesake business)."
+   },
+   "evidence": [
+    "Debbie Swyka and Eleora Trelease carry companies value \"clarkson\" (lowercase, bare) as their only org.",
+    "Canonical \"Clarkson University\" is carried by 85 profiles and is a registry canonical."
+   ],
+   "actions": [
+    {
+     "id": "fix-clarkson",
+     "label": "Replace clarkson with Clarkson University (2 profiles)",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ct:debbie swyka",
+       "field": "companies",
+       "op": "replace",
+       "from": "clarkson",
+       "to": "Clarkson University"
+      },
+      {
+       "key": "sf:eleora-trelease",
+       "field": "companies",
+       "op": "replace",
+       "from": "clarkson",
+       "to": "Clarkson University"
+      }
+     ]
+    },
+    {
+     "id": "leave-clarkson",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave them."
+    }
+   ]
   },
   {
-   "evidence": "Jaime Bicknell carries companies value 'Canton-Potsdam Hospital', which the org registry maps to 'Rochester Regional Health' — the alias was never flattened on her profile.",
+   "id": "frag-suny-can",
    "kind": "near-duplicate-org",
-   "title": "'Canton-Potsdam Hospital' still live on 1 profile",
+   "priority": 10,
+   "director": "content",
+   "title": "Fragment 'SUNY can' on Colleen Cheney",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "A truncation of SUNY Canton caught mid-type: her universities field already carries the full \"SUNY Canton\", so the companies chip is the same value, unfinished.",
+    "falsifier": "JD knows Cheney works for a different \"SUNY can…\" institution."
+   },
+   "evidence": [
+    "Colleen Cheney: companies = \"SUNY can\" (her only company); universities = \"SUNY Canton\".",
+    "\"SUNY Canton\" is a registry canonical carried across companies and universities."
+   ],
+   "actions": [
+    {
+     "id": "fix-suny-can",
+     "label": "Replace SUNY can with SUNY Canton",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:colleendcheney",
+       "field": "companies",
+       "op": "replace",
+       "from": "SUNY can",
+       "to": "SUNY Canton"
+      }
+     ]
+    },
+    {
+     "id": "leave-suny-can",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave it."
+    }
+   ]
   },
   {
-   "evidence": "~19 profiles carry both an institution and its sub-unit (e.g. Cornell University + Cornell ILR School; Wheaton College + Wheaton College Conservatory; Florida State University + FSU College on Alex Koberda). Most look like deliberate detail, not accidents — flagged as a class so JD can rule whether sub-units should stay, not as individual errors.",
+   "id": "frag-new-york-stat",
    "kind": "near-duplicate-org",
-   "title": "Same-profile org + sub-unit pairs (granularity question)",
+   "priority": 11,
+   "director": "content",
+   "title": "Fragment 'new york stat' on Kayle Hitchman",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "A letter-prefix truncation of New York State Police — JD identifies Hitchman as NYSP, and no other \"New York Stat…\" organization exists in the directory. The same autocomplete failure class as the other fragments.",
+    "falsifier": "JD knows Hitchman’s employer is a different New York state agency."
+   },
+   "evidence": [
+    "ig:kale_hitchman carries companies = \"new york stat\" as his only org.",
+    "Per JD (Oct 27 ruling): Hitchman is New York State Police."
+   ],
+   "actions": [
+    {
+     "id": "fix-new-york-stat",
+     "label": "Replace new york stat with New York State Police",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:kale_hitchman",
+       "field": "companies",
+       "op": "replace",
+       "from": "new york stat",
+       "to": "New York State Police"
+      }
+     ]
+    },
+    {
+     "id": "leave-new-york-stat",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave it."
+    }
+   ]
   },
   {
-   "evidence": "Profile ig:kale_hitchman displays as 'Elak Namhctih' — 'Kale Hitchman' spelled backwards, while the key/handle say Kale Hitchman. Looks like a reversed-string data error at creation.",
+   "id": "frag-park",
+   "kind": "near-duplicate-org",
+   "priority": 12,
+   "director": "content",
+   "title": "Fragments 'Park' / 'park' — truncated Park Bros.",
+   "date": "2026-10-27",
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "Truncations of Park Bros. — the directory’s only Park organization (org on 29 profiles, group of 23) and a registry canonical. JD asked whether more than one \"Park Bros\" exists: it does not — \"Park Bros.\" (with the period) is the single spelling in orgs and groups; the registry maps \"Park Bros\" and \"Park Bros Coffee\" onto it.",
+    "falsifier": "JD knows Dunphey or Olsen worked at a different Park business."
+   },
+   "evidence": [
+    "B. Ryan Dunphey carries companies = \"Park\"; Franny Olsen carries companies = \"park\" (lowercase).",
+    "\"Park Bros.\" is carried by 29 profiles as an org and 23 as a group; no \"Park Bros\" (no period) variant exists anywhere as an org or group value."
+   ],
+   "actions": [
+    {
+     "id": "fix-park",
+     "label": "Replace Park/park with Park Bros. (2 profiles)",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "fdb:b._ryan_dunphey",
+       "field": "companies",
+       "op": "replace",
+       "from": "Park",
+       "to": "Park Bros."
+      },
+      {
+       "key": "ig:frannie_anniee",
+       "field": "companies",
+       "op": "replace",
+       "from": "park",
+       "to": "Park Bros."
+      }
+     ]
+    },
+    {
+     "id": "leave-park",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave them."
+    }
+   ]
+  },
+  {
+   "id": "frag-svpc",
+   "kind": "near-duplicate-org",
+   "priority": 13,
+   "director": "content",
+   "title": "Abbreviation 'SVPC' on Morgan Arquette",
+   "date": "2026-10-27",
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "The abbreviation was filed instead of the full name: her own synopsis says she works at the Seaway Valley Prevention Council, the canonical carried by 3 profiles (Delany Durant among them).",
+    "falsifier": "JD knows Arquette’s SVPC is a different organization than Durant’s council."
+   },
+   "evidence": [
+    "Morgan Arquette: companies = \"SVPC, Rochester Regional Health\"; synopsis names the Seaway Valley Prevention Council as her employer (Program Coordinator; she is also on the SVPC team page).",
+    "\"Seaway Valley Prevention Council\" is carried in full by 3 profiles."
+   ],
+   "actions": [
+    {
+     "id": "fix-svpc",
+     "label": "Replace SVPC with Seaway Valley Prevention Council",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "sf:morgan-arquette",
+       "field": "companies",
+       "op": "replace",
+       "from": "SVPC",
+       "to": "Seaway Valley Prevention Council"
+      }
+     ]
+    },
+    {
+     "id": "leave-svpc",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave it."
+    }
+   ]
+  },
+  {
+   "id": "frag-air",
+   "kind": "near-duplicate-org",
+   "priority": 14,
+   "director": "content",
+   "title": "Fragment 'air' on Mark Dehoff",
+   "date": "2026-10-27",
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "A mangled Air Force entry from the Oct 27 profile-creation pass: the registry alias map resolves \"Air Force\" to U.S. Air Force, and Dehoff’s only other affiliation value is the U.S. Air Force ROTC group. Full context is on the \"Just Air\" flag.",
+    "falsifier": "JD knows Dehoff’s \"air\" refers to something else (e.g. an HVAC or aviation business)."
+   },
+   "evidence": [
+    "Mark Dehoff (created Oct 27, 2026 in the email-mine batch): companies = \"air\" (his only org); Groups = \"U.S. Air Force ROTC\" (sole member).",
+    "The org registry lists \"Air Force\" as an alias of the canonical \"U.S. Air Force\"."
+   ],
+   "actions": [
+    {
+     "id": "fix-air",
+     "label": "Replace air with U.S. Air Force",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ct:mark dehoff",
+       "field": "companies",
+       "op": "replace",
+       "from": "air",
+       "to": "U.S. Air Force"
+      }
+     ]
+    },
+    {
+     "id": "leave-air",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave it."
+    }
+   ]
+  },
+  {
+   "id": "just-air",
    "kind": "data-quality",
-   "title": "Display name reversed: 'Elak Namhctih'",
+   "priority": 15,
+   "director": "content",
+   "title": "\"Just Air\" group — the Mark Dehoff Air Force tangle",
    "date": "2026-10-27",
-   "status": "Awaiting JD ruling"
+   "state": "open",
+   "theory": {
+    "grade": "Tentative",
+    "text": "No group named \"Just Air\" exists in any record the council can see — not in the Sheet, the bake, any sidecar, or Trash. What exists is Mark Dehoff’s half-finished Air Force data from the Oct 27 creation pass: the org fragment \"air\" (separate flag) and a one-man \"U.S. Air Force ROTC\" group where an Air Force group was likely intended. If \"Just Air\" was created in the app, it never reached the Sheet and lives only in JD’s browser state.",
+    "falsifier": "The string \"Just Air\" surfacing in any Sheet tab or sidecar on a later pass."
+   },
+   "evidence": [
+    "Full-text search (Oct 27 evening) of the Sheet export, the baked dossier data, all site/data sidecars, Trash, and the goal files: zero occurrences of \"Just Air\".",
+    "The directory has 17 groups; the only Air Force one is \"U.S. Air Force ROTC\" with exactly one member: Mark Dehoff.",
+    "No \"U.S. Air Force\" group exists yet, though it is a registry canonical (companies + groups). Connor Caldwell carries \"U.S. Air Force\" as a company but is in no Air Force group."
+   ],
+   "actions": [
+    {
+     "id": "usaf-group-dehoff",
+     "label": "Create U.S. Air Force group — add Mark Dehoff",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ct:mark dehoff",
+       "field": "groups",
+       "op": "add",
+       "value": "U.S. Air Force"
+      }
+     ],
+     "note": "Group membership creates the group; Dehoff becomes its first member."
+    },
+    {
+     "id": "leave-rotc",
+     "label": "Remove Dehoff from U.S. Air Force ROTC group",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ct:mark dehoff",
+       "field": "groups",
+       "op": "remove",
+       "value": "U.S. Air Force ROTC"
+      }
+     ],
+     "note": "Only if the ROTC membership itself was the mistake; the group then has no members."
+    },
+    {
+     "id": "leave-just-air",
+     "label": "Leave both as they are",
+     "kind": "decision",
+     "note": "Records JD’s ruling that the ROTC group and the fragment stay untouched."
+    }
+   ]
+  },
+  {
+   "id": "cph-alias",
+   "kind": "near-duplicate-org",
+   "priority": 16,
+   "director": "content",
+   "title": "'Canton-Potsdam Hospital' still live on Jaime Bicknell",
+   "date": "2026-10-27",
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "A registry alias that was never flattened in the Sheet cell: the registry maps \"Canton-Potsdam Hospital\" to Rochester Regional Health under JD’s health-flattening rule, and Bicknell is the only profile still carrying the alias.",
+    "falsifier": "JD rules the alias should stay on her profile as the specific facility name."
+   },
+   "evidence": [
+    "Jaime Bicknell: companies = \"Canton-Potsdam Hospital\" (her only company value).",
+    "Org registry alias: \"Canton-Potsdam Hospital\" → \"Rochester Regional Health\". She is the last of the 737 profiles carrying it."
+   ],
+   "actions": [
+    {
+     "id": "fix-cph",
+     "label": "Replace with Rochester Regional Health",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "sf:jaime-bicknell",
+       "field": "companies",
+       "op": "replace",
+       "from": "Canton-Potsdam Hospital",
+       "to": "Rochester Regional Health"
+      }
+     ]
+    },
+    {
+     "id": "leave-cph",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to keep the facility name."
+    }
+   ]
+  },
+  {
+   "id": "frag-u",
+   "kind": "near-duplicate-org",
+   "priority": 17,
+   "director": "content",
+   "title": "Fragment 'U' on Grace LaPointe — unresolvable",
+   "date": "2026-10-27",
+   "state": "open",
+   "theory": {
+    "grade": "Tentative",
+    "text": "A truncation of some \"U…\" institution, but her record is nearly empty (Facebook \"not listed\", Salem, Massachusetts) and no surviving context points to a specific school or employer. This one cannot be mapped honestly — it needs JD’s memory or removal.",
+    "falsifier": "Any source naming LaPointe’s school or employer."
+   },
+   "evidence": [
+    "Grace LaPointe: companies = \"U\" (her only org); no synopsis, footprint, location, or university on file."
+   ],
+   "actions": [
+    {
+     "id": "remove-u",
+     "label": "Remove the 'U' value",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "sf:grace-lapointe",
+       "field": "companies",
+       "op": "remove",
+       "value": "U"
+      }
+     ]
+    },
+    {
+     "id": "leave-u",
+     "label": "Leave — JD will identify it",
+     "kind": "decision",
+     "note": "Records that the value stays until JD identifies the institution."
+    }
+   ]
+  },
+  {
+   "id": "frag-ntc",
+   "kind": "near-duplicate-org",
+   "priority": 18,
+   "director": "content",
+   "title": "Lowercase 'ntc' church value on Micah McCulley",
+   "date": "2026-10-27",
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "A case variant of the canonical church value NTC, carried by 24 profiles in proper case; his is the only lowercase copy.",
+    "falsifier": "JD knows McCulley’s \"ntc\" is a different church than NTC."
+   },
+   "evidence": [
+    "Micah McCulley: churches = \"ntc\" — the only lowercase church value in the directory; \"NTC\" is carried by 24 profiles."
+   ],
+   "actions": [
+    {
+     "id": "fix-ntc",
+     "label": "Replace ntc with NTC",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:micahmcculley_",
+       "field": "churches",
+       "op": "replace",
+       "from": "ntc",
+       "to": "NTC"
+      }
+     ]
+    },
+    {
+     "id": "leave-ntc",
+     "label": "Leave as is",
+     "kind": "decision",
+     "note": "Records JD’s ruling to leave it."
+    }
+   ]
+  },
+  {
+   "id": "comma-shatter",
+   "kind": "data-quality",
+   "priority": 19,
+   "director": "content",
+   "title": "Comma-shatter cells — values with \", City, ST\" inside them (11 profiles)",
+   "date": "2026-10-27",
+   "state": "open",
+   "theory": {
+    "grade": "Strong",
+    "text": "A different failure from the typing fragments: these are Facebook-style values whose names contain commas (\"St. James School, Gouverneur, NY\"). The app splits org fields on commas, so each one shatters into junk chips — \"New York\", \"Gouverneur\", \"NY\", \"CT\" — that masquerade as organizations. Rewriting the cells without internal commas ends the shatter.",
+    "falsifier": "Any listed cell turning out to be two genuinely separate organizations."
+   },
+   "evidence": [
+    "Megan Eurto companies: \"Canton, New York, Village of Canton\" → chips Canton / New York / Village of Canton. She is deputy village clerk for the Village of Canton.",
+    "Renee Dale companies: \"St. James School, Gouverneur, NY\" → St. James School / Gouverneur / NY. She teaches art at St. James School in Gouverneur.",
+    "Colin Mackey companies include \"Herkimer County, New York\" (a county employer) → a stray \"New York\" chip.",
+    "Acacia White companies include \"Chase Mills, NY\" — a hamlet, not an organization at all.",
+    "Universities column: Bob Dale \"University at Albany, SUNY\"; Brittney Carnicelli \"St. Joseph’s College of Nursing - Syracuse, NY\"; Ellen M Miller \"Mater Dei College, Ogdensburg, NY\" plus a duplicated \"North Country Community College-Malone, NY\"; Elliot Martin \"Jefferson Community College, Watertown, NY\"; Ethan Hackett \"Manchester Community College, Manchester, CT\"; Courtney Delosh \"St. Lawrence University (B.S., 2023\" (an unclosed parenthesis fragment)."
+   ],
+   "actions": [
+    {
+     "id": "fix-shatter",
+     "label": "Rewrite all 11 cells without internal commas",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "sf:megan-eurto",
+       "field": "companies",
+       "op": "set",
+       "value": "Village of Canton"
+      },
+      {
+       "key": "sf:renee-dale",
+       "field": "companies",
+       "op": "set",
+       "value": "St. James School"
+      },
+      {
+       "key": "sf:colin-mackey",
+       "field": "companies",
+       "op": "set",
+       "value": "SUNY Canton, Mohawk Valley Community College, Herkimer County, SUNY Morrisville, Madison County Department of Social Services, St. Lawrence County Department of Social Services, Liberty - New York Gas, Self-Employed, CFC"
+      },
+      {
+       "key": "sf:acacia-white",
+       "field": "companies",
+       "op": "set",
+       "value": "Rochester Regional Health, Massena Hospital, North Country Family Health NP PLLC, Wilson's Country Store, United Helpers, Price Chopper Supermarkets"
+      },
+      {
+       "key": "sf:pete-molinero",
+       "field": "companies",
+       "op": "set",
+       "value": "Laterna Studio, Jobsrus.com, Enterprise Resource Center, Mom's Schoolhouse Diner"
+      },
+      {
+       "key": "sf:bob-dale",
+       "field": "universities",
+       "op": "set",
+       "value": "University at Albany (SUNY)"
+      },
+      {
+       "key": "sf:brittney-carnicelli",
+       "field": "universities",
+       "op": "set",
+       "value": "St. Joseph's College of Nursing - Syracuse, Cayuga Community College, St. Joseph's College"
+      },
+      {
+       "key": "sf:ellen-m-miller",
+       "field": "universities",
+       "op": "set",
+       "value": "Mater Dei College, North Country Community College-Malone, North Country Community College"
+      },
+      {
+       "key": "sf:elliot-martin",
+       "field": "universities",
+       "op": "set",
+       "value": "Clarkson University, Jefferson Community College"
+      },
+      {
+       "key": "sf:ethan-hackett",
+       "field": "universities",
+       "op": "set",
+       "value": "Manchester Community College"
+      },
+      {
+       "key": "ig:courtney_delosh",
+       "field": "universities",
+       "op": "set",
+       "value": "St. Lawrence University"
+      }
+     ],
+     "note": "Each rewrite is a whole-cell set to the cleaned value listed in the research note; employers and schools themselves are unchanged."
+    },
+    {
+     "id": "leave-shatter",
+     "label": "Leave — cosmetic chip artifact only",
+     "kind": "decision",
+     "note": "Records JD’s ruling that the shattered chips are acceptable."
+    }
+   ]
+  },
+  {
+   "id": "subunit-class",
+   "kind": "near-duplicate-org",
+   "priority": 20,
+   "director": "content",
+   "title": "Same-profile org + sub-unit pairs — one class ruling (~19 instances)",
+   "date": "2026-10-27",
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "A mixed class, which is why it is one ruling and not 19 errors: true sub-units look like deliberate detail (Cornell + Cornell ILR School; Florida State + Jim Moran College; UVM Health + its named hospitals), while same-school name variants filed twice look like import duplication (Shippensburg University / …of Pennsylvania; Wheaton College Conservatory / …of Music).",
+    "falsifier": "JD confirms every pair was filed deliberately, variants included."
+   },
+   "evidence": [
+    "19 same-profile parent/child instances across companies and universities (census, Oct 27).",
+    "True sub-units: Alex Hammond (Cornell University + Cornell University ILR School), Alex Koberda (Florida State University + Jim Moran College), Bronwyn Paladin (Lee University + School of Music), Maddie Morgan (UVM Health + Alice Hyde Medical Center + Champlain Valley Physicians Hospital).",
+    "Name variants of one school: Jonathan Puglia (Shippensburg University + Shippensburg University of Pennsylvania), Calvin Brown (Wheaton College Conservatory + Wheaton College Conservatory of Music), Ellen M Miller (North Country Community College + NCCC-Malone)."
+   ],
+   "actions": [
+    {
+     "id": "keep-subunits",
+     "label": "Keep sub-units as filed",
+     "kind": "decision",
+     "note": "Closes the class: granularity stays."
+    },
+    {
+     "id": "flatten-subunits",
+     "label": "Stage: flatten all to parent",
+     "kind": "task",
+     "note": "Luna removes every sub-unit/variant chip on the next pass, keeping the parent value, and reports the per-profile list before it lands."
+    },
+    {
+     "id": "flatten-variants",
+     "label": "Stage: flatten same-school variants only",
+     "kind": "task",
+     "note": "Luna removes only the duplicated name variants on the next pass; true sub-units (ILR, Jim Moran, named hospitals) stay."
+    }
+   ]
+  },
+  {
+   "id": "hitchman-name",
+   "kind": "data-quality",
+   "priority": 21,
+   "director": "content",
+   "title": "Display name reversed: 'Elak Namhctih' (Kayle Hitchman)",
+   "date": "2026-10-27",
+   "state": "open",
+   "ruling": "JD ruled Oct 27: his first name is Kayle; he is New York State Police; the reversed display is deliberate law-enforcement self-masking, not a data error.",
+   "theory": {
+    "grade": "Strong",
+    "text": "The reversal is a presentation choice by a law-enforcement officer masking his social identity — JD has ruled it is not an error. The open question is only whether the dossier should mirror the mask or carry his real name with the mask preserved as an alias. Spelling, surfaced rather than resolved: JD says \"Kayle\"; the Instagram handle spells \"kale_hitchman\"; the reversed display decodes to \"Kale Hitchman\".",
+    "falsifier": "Hitchman himself publishing his name in standard form on the account."
+   },
+   "evidence": [
+    "Profile ig:kale_hitchman: First Name \"Elak\", Last Name \"Namhctih\" — the reversal is baked into the name columns, so every surface shows it.",
+    "His companies value is the fragment \"new york stat\" (separate flag) — JD identifies him as New York State Police.",
+    "Footprint: educated at Potsdam Senior High School; lives in Colton, NY; hometown Star Lake, NY."
+   ],
+   "actions": [
+    {
+     "id": "rename-hitchman",
+     "label": "Rename display to Kayle Hitchman — keep \"Elak Namhctih\" as AKA",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:kale_hitchman",
+       "field": "first_name",
+       "op": "set",
+       "value": "Kayle"
+      },
+      {
+       "key": "ig:kale_hitchman",
+       "field": "last_name",
+       "op": "set",
+       "value": "Hitchman"
+      },
+      {
+       "key": "ig:kale_hitchman",
+       "field": "display_name",
+       "op": "set",
+       "value": "Kayle Hitchman"
+      },
+      {
+       "key": "ig:kale_hitchman",
+       "field": "also_known_as",
+       "op": "add",
+       "value": "Elak Namhctih"
+      }
+     ],
+     "note": "Uses JD’s spelling \"Kayle\". The key/handle ig:kale_hitchman is identity and does not change."
+    },
+    {
+     "id": "leave-hitchman",
+     "label": "Leave exactly as is — masking respected",
+     "kind": "decision",
+     "note": "Records JD’s ruling that the reversed display stays untouched."
+    }
+   ]
+  },
+  {
+   "id": "mccormick-twins",
+   "kind": "possible-match",
+   "priority": 99,
+   "director": "content",
+   "title": "Karle McCormick vs Kayle McCormick",
+   "date": "2026-10-27",
+   "state": "closed",
+   "resolution": "Karle McCormick and Kayle McCormick are twin sisters — two different people. Never merge. Ruled by JD; flag closed Oct 27, 2026.",
+   "evidence": [
+    "Same surname, first names one letter apart (ct:karle mccormick / ig:kaylemmccormick). (Separate known item: Kayle’s mccormickkayle self-reference.)"
+   ]
   }
  ],
  "roster": [
@@ -220,7 +1185,7 @@
    "mission": "Runs last. Audit the universe for sense: duplicates, possible matches, missed connections, re-sort ideas, near-duplicate orgs and groups.",
    "name": "Content Director",
    "next_run": "Mon Nov 2, 2026 — weekly cycle",
-   "status": "Active — 13 flags staged for JD."
+   "status": "Active — 21 open flags with theories and actions staged for JD in the Command Center."
   },
   {
    "authority": "No director starts a large run without Resource clearance. Extensions come only from actual headroom.",
@@ -250,7 +1215,7 @@
    "mission": "Everyone reports here. Schedule runs, deconflict file access, enforce budget and tripwires, deliver one consolidated roll-up.",
    "name": "Director of Operations",
    "next_run": "Roll-up in Monday's The Week in Full",
-   "status": "Active — council stood up Oct 27, 2026."
+   "status": "Active — Command Center live (V3.11.0): Council is its own sidebar section; open flags are the hero queue."
   }
  ],
  "runs": [
@@ -265,5 +1230,11 @@
    "title": "Council founded (V3.6.0)"
   }
  ],
- "updated": "2026-10-27"
+ "updated": "2026-10-27",
+ "staging": {
+  "mechanism": "Staged council actions are stored as a JSON queue in the Profiles column \"Council Staged\" (BH) on JD’s own row (ig:jdmeyers_), written by the app through the same Apps Script batch endpoint the outbox uses (the deployed endpoint resolves patch fields against the Profiles header row by name — Location-on-file precedent, no endpoint code change). Luna’s passes read that one cell via the Sheets API. The bake carries the field (council_staged in PROFILE_FIELDS; sync pull range widened to BH) so the board renders the live queue after any reload.",
+  "entry_shape": "{flag, action, label, kind, patches?, merge?, state: staged|done, ts, by, outcome?}",
+  "execution": "Do-now runs the action’s patches through queuePatch / sbPostBatch (batch endpoint, by profile key), then the result is verified against the Sheet. Executed entries are marked done in the queue cell and folded into council.json by Luna’s next pass.",
+  "actions_schema": "kind fix = field patches [{key, field, op: set|add|remove|replace, value|from/to}]; kind decision = a JD ruling that closes the flag when chosen; kind task = work staged for Luna’s next council pass (no direct patches); kind merge = opens the Merge studio preloaded with {survivor, loser}."
+ }
 }
