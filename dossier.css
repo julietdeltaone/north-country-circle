@@ -3374,3 +3374,7 @@ body.pool-open #app:has(> #pool){grid-template-columns:var(--rail) 1fr 236px}
 .ml-sus-t span{color:var(--mut);font-size:12px;margin-left:9px}
 .ml-sus-b{display:flex;gap:7px}
 .ml-more{margin-top:6px}
+.ml-bar #mlq{flex:1 1 200px;width:auto}
+.ml-new input{width:180px;flex:0 1 auto}
+.ml-new select{width:auto;flex:0 1 auto}
+.ml-inline input,.ml-inline select{width:auto}
