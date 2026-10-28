@@ -95,6 +95,44 @@
    }
   ]
  },
+ "field_reports": {
+  "photos": {
+   "strategy": "Coverage by rotation: hunt profiles in slices of about 40 through the photo playbook's routes — staff pages, rosters, news, DVIDS — with three workarounds attempted before any source is abandoned. Every candidate is GET-verified (200 + real image bytes) before filing; two identity anchors = confirmed, one anchor = possible (Confirm/Reject).",
+   "working": "The GET-verify gate caught a placeholder 'loading' GIF that looked like a real photo URL (Alicia Taillon) — nothing unverified has landed on a profile. QC passed all 8 of Oct 27's filings, and roster / staff pages are the most productive routes (Kyle Davis via DVIDS, Aeriel Skinner from hunt slice 1).",
+   "barriers": "Fetcher walls: several staff and roster pages sit behind bot checks or return 403 to the text fetcher (Calvary Baptist's WordPress, Stewardship UK, Alfred's SIDEARM roster), and JS-only galleries (Pixieset, Wix) hide their image URLs from text extraction entirely. Those sources need a live-browser pass — queued, not blocked.",
+   "stuck": "Six leads are parked waiting on a live-browser session: Annika Greco, Ashlin Elliott, Asher Cragg, Bob Blewett, Brad Ingram, Acacia White. Two calls sit with JD: Isreal Tyler's only photo is an 80x120 thumbnail (keep or remove), and David Perry's confirmed photo is hotlink-protected (403) and needs a download / rehost decision."
+  },
+  "ux": {
+   "strategy": "Crawl every view in both themes after each ship and weekly. Check computed text/background pairs on every feedback element — buttons, chips, toasts, focus rings, badges, selection markers — not just screenshots, because a pairing can look fine in one theme and vanish in the other.",
+   "working": "The inaugural crawl found zero visual defects across 9 views in both themes. The keyboard-flow audit — real key presses, not code reading — caught all three autocomplete defects that were filing fragments into profiles (see Content's flags). Presentation fixes ship directly; behavior changes go to JD first.",
+   "barriers": "Headless checks can't feel lag or judge whether a layout makes sense — that call stays JD's. Some flows deal one card per session (the Audit deck), so a couple of post-fix legs couldn't be re-run end-to-end in Audit even though they share the fixed code path.",
+   "stuck": "Nothing open. Watching two things: whether the orgs Enter-fix holds in live use, and the ArrowDown-then-Enter and click-pick legs in Audit, which run through the same pick() the fix feeds but weren't re-run after it."
+  },
+  "content": {
+   "strategy": "Runs last in every cycle. Sweeps for duplicates, near-duplicates, fragment values and inference candidates, and stages everything as flags carrying a graded theory, numbered evidence and a falsifier. Executes nothing meaning-changing — JD rules from the card, then the fix files.",
+   "working": "The inaugural pass staged 13 flags and every one carried enough evidence for JD to rule from the card alone. JD's fragment theory — his own typing that failed to autocomplete — explained the whole fragment class at once and pointed at the editor fix, not just the cleanup.",
+   "barriers": "Identity calls can't be settled from data alone: same-name pairs and shared-contact cases (the Maggie Jones / Maggie Marceau phone) need JD's knowledge of the people. The V3.11.0 autocomplete fixes should shrink the fragment class going forward, but the historical values still need rulings.",
+   "stuck": "The open flags on this board are the stuck list: phone ownership, the Lydia Martin / Lydia Wangerin pair, Guard-to-Army group adds, the fragment replacements, and the sub-unit keep-or-flatten class call. Nothing here moves until JD rules."
+  },
+  "resource": {
+   "strategy": "Track usage as a percentage of the weekly allowance — Muse publishes no token count, so all planning is in pace points. The daily tranche is about 14.3% (a seventh of the week) and underspend rolls forward. Readings are quoted verbatim from the status tool, never converted to tokens or minutes.",
+   "working": "At the last reading the week stood at 38% used against about 62% elapsed — roughly 24 points under pace, so the full test-drive cycle cleared with room to spare. The daily 8 AM check runs silent unless the pace breaks.",
+   "barriers": "The allowance only exists as a percentage; there is no published token budget to plan against. The check cron's first fire garbled its own numbers into a self-contradictory pace reading — its instructions were tightened to quote the tool verbatim.",
+   "stuck": "Nothing open. The week resets Thu Oct 30, 2026, 7:38 AM EDT."
+  },
+  "progress": {
+   "strategy": "Watch for stalls, not activity: three failed attempts on one route forces a switch, and a pass that produces nothing gets flagged instead of quietly repeated. Exhausted routes are named, with the next route stated.",
+   "working": "No tripwires hit in the test drive — every department produced output or an honest negative. The watchdog also caught the resource cron's garbled first reading and forced the instruction fix the same day.",
+   "barriers": "Search-tool routes saturate quietly: a route can look alive while returning the same dead ends, and the auditor can only see attempts that get logged. Discipline in the department logs is what makes the stall detection real.",
+   "stuck": "Alex Koberda's CFACT / Wayback route has failed twice through search tools and is exhausted for that method — the next attempt must be a live-browser pass, or the lead closes."
+  },
+  "ops": {
+   "strategy": "One consolidated roll-up, never six reports. Council passes run in charter order (Photos, UX, Content, Resource, Progress, Operations), read the staged queue on this board first, execute what JD staged, and fold the outcomes back into council.json for the next cycle.",
+   "working": "The staging contract works: actions staged here land in the Sheet addressed by key, the next pass picks them up, and Do-now writes await their ack and surface failure instead of pretending. The inaugural test drive ran end-to-end with zero meaning-changing executions.",
+   "barriers": "JD's ruling queue is the bottleneck by design — flags wait for his calls, so the board's job is to make each ruling a one-tap decision with the theory and evidence attached. Two of JD's directory rows share one app key, which is why the queue is addressed by Sheet key and never through the directory.",
+   "stuck": "Nothing blocked. Next full cycle: Mon Nov 2, 2026 (weekly cycle, 5:30 AM ET); the roll-up folds into The Week in Full the same morning."
+  }
+ },
  "flags": [
   {
    "id": "maggie-phone",
