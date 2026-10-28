@@ -3276,6 +3276,19 @@ html[data-focus="1"] .phcard{border-radius:8px}
 #app:has(> #pool){grid-template-columns:var(--rail) 1fr 0px;transition:grid-template-columns var(--d-state,.24s) var(--ease-out,ease-out)}
 body.pool-open #app:has(> #pool){grid-template-columns:var(--rail) 1fr 236px}
 #pool{min-width:0;overflow:hidden}
+/* Audit sweep 2026-10-28: the dock must be PLACED, not auto-placed. In the
+   Sandbox the rail/tabs are display:none, so auto-placement put #pool in
+   the main 1fr column (980px wide, panel visible even when "closed") and
+   crushed #col into the rail column. Pin the dock to the last column, and
+   in the Sandbox give the app exactly two columns: content + dock. */
+#app:has(> #pool) #pool{grid-column:3;grid-row:1}
+body[data-view="sandbox"] #app:has(> #pool){grid-template-columns:1fr 0px}
+body[data-view="sandbox"].pool-open #app:has(> #pool){grid-template-columns:1fr 236px}
+body[data-view="sandbox"] #app:has(> #pool) #pool{grid-column:2}
+/* Focus mode hides the same chrome the same way — same two-column fix. */
+html[data-focus="1"] #app:has(> #pool){grid-template-columns:1fr 0px}
+html[data-focus="1"] body.pool-open #app:has(> #pool){grid-template-columns:1fr 236px}
+html[data-focus="1"] #app:has(> #pool) #pool{grid-column:2}
 .pool-in{width:236px;height:100%;max-height:100vh;max-height:100dvh;display:flex;flex-direction:column;background:var(--glass-solid);background:rgb(from var(--glass-solid) r g b / 1);border-left:1px solid var(--line)}
 .pool-hd{display:flex;align-items:center;gap:7px;padding:12px 12px 10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .pool-hd b{font-size:15px}
