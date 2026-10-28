@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.20.2';
+var APP_VERSION = '3.21.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10795,10 +10795,19 @@ function layModel(di){
     stats:stats, assoc:assoc, fam:fam, evs:evs, lc:lcNote(e) };
 }
 function layPhoto(m, cls){
-  if(m.photo) return '<img class="lay-ph ' + cls + '" src="' + esc(m.photo) + '" alt="">';
-  return '<span class="lay-ph lay-ini ' + cls + '">' + esc(m.initials) + '</span>';
+  var inner = m.photo ? '<img class="lay-ph ' + cls + '" src="' + esc(m.photo) + '" alt="">' : '<span class="lay-ph lay-ini ' + cls + '">' + esc(m.initials) + '</span>';
+  return '<span class="lay-av">' + inner + '</span>';
 }
 function layChips(list){ return list.length ? '<div class="lay-chips">' + list.map(function(c){ return '<span class="lay-chip">' + esc(c) + '</span>'; }).join('') + '</div>' : ''; }
+function layMeta(m){
+  var items = [];
+  if(m.rel) items.push(m.rel); if(m.ctx) items.push(m.ctx); if(m.loc) items.push(m.loc);
+  return items.length ? '<div class="lay-meta">' + items.map(function(x){ return '<span class="lay-mchip"><i></i>' + esc(x) + '</span>'; }).join('') + '</div>' : '';
+}
+function layStats(m, n){
+  var s = m.stats.slice(0, n || 4);
+  return s.length ? '<div class="lay-stats">' + s.map(function(r){ return '<div class="lay-stat"><b>' + esc(r[1]) + '</b><span>' + esc(r[0]) + '</span></div>'; }).join('') + '</div>' : '';
+}
 function layAboutBlocks(m){
   var b = [];
   if(m.syn) b.push({ t:'Synopsis', h:'<p class="lay-syn">' + esc(m.syn) + '</p>' });
@@ -10814,7 +10823,7 @@ function layAboutBlocks(m){
   if(m.highlights) bg += '<div class="lay-lab">Highlights</div><p>' + esc(m.highlights) + '</p>';
   if(m.achievements) bg += '<div class="lay-lab">Achievements</div><p>' + esc(m.achievements) + '</p>';
   if(bg) b.push({ t:'Background', h:bg });
-  if(m.persona.length) b.push({ t:'Persona', h:'<div class="lay-rows">' + m.persona.map(function(r){ return '<div class="lay-row"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + ' / 5</b></div>'; }).join('') + '</div>' });
+  if(m.persona.length) b.push({ t:'Persona', h:m.persona.map(function(r){ var v = parseFloat(r[1]); var pct = isNaN(v) ? 0 : Math.max(0, Math.min(100, v / 5 * 100)); return '<div class="lay-row"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + ' / 5</b></div><span class="lay-pbar"><i style="width:' + pct + '%"></i></span>'; }).join('') });
   if(m.biz.length) b.push({ t:'Business owner', h:layChips(m.biz) });
   if(m.files.length) b.push({ t:'Files', h:'<ul class="lay-ul">' + m.files.slice(0, 5).map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' });
   return b;
@@ -10838,33 +10847,33 @@ function layConnBlocks(m){
 function layBlocksHTML(blocks, cls){
   return blocks.map(function(b){ return '<div class="lay-blk ' + (cls || '') + '"><div class="lay-blk-t">' + esc(b.t) + '</div>' + b.h + '</div>'; }).join('');
 }
-function layPart(title, inner, cls){ return '<div class="lay-part ' + (cls || '') + '"><div class="lay-part-t">' + esc(title) + '</div>' + inner + '</div>'; }
+function layPart(title, inner, cls, kind){ return '<div class="lay-part ' + (kind || '') + ' ' + (cls || '') + '"><div class="lay-part-t">' + esc(title) + '</div>' + inner + '</div>'; }
 function layHero(m, mode){
   var sub = [m.rel, m.ctx, m.loc].filter(Boolean).join(' · ');
-  return '<div class="lay-hero ' + mode + '">' + layPhoto(m, 'lg') + '<div class="lay-hero-tx"><div class="lay-name">' + esc(m.name) + '</div>' +
+  return '<div class="lay-hero lay-glass ' + mode + '">' + layPhoto(m, mode === 'ctr' ? 'xl' : 'lg') + '<div class="lay-hero-tx"><div class="lay-kick">Profile</div><div class="lay-name grad">' + esc(m.name) + '</div>' +
     (m.aka ? '<div class="lay-aka">also known as ' + esc(m.aka) + '</div>' : '') +
-    (sub ? '<div class="lay-sub">' + esc(sub) + '</div>' : '') + '</div></div>';
+    (mode === 'ctr' ? layMeta(m) : (sub ? '<div class="lay-sub">' + esc(sub) + '</div>' + layMeta(m) : '')) + '</div></div>';
 }
 function layRender(k, m){
   var A = layAboutBlocks(m), C = layConnBlocks(m);
   var aboutT = 'About ' + m.first, connT = 'Connection';
-  if(k === 'classic') return layHero(m, '') + layPart(aboutT, layBlocksHTML(A)) + layPart(connT, layBlocksHTML(C));
-  if(k === 'twin') return layHero(m, '') + '<div class="lay-cols2">' + layPart(aboutT, layBlocksHTML(A)) + layPart(connT, layBlocksHTML(C)) + '</div>';
-  if(k === 'centered') return layHero(m, 'ctr') + layPart(aboutT, layBlocksHTML(A, 'ctr'), 'ctr') + layPart(connT, layBlocksHTML(C, 'ctr'), 'ctr');
+  if(k === 'classic') return layHero(m, '') + layStats(m, 4) + layPart(aboutT, layBlocksHTML(A), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn');
+  if(k === 'twin') return layHero(m, '') + layStats(m, 4) + '<div class="lay-cols2">' + layPart(aboutT, layBlocksHTML(A), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn') + '</div>';
+  if(k === 'centered') return layHero(m, 'ctr') + layStats(m, 3) + layPart(aboutT, layBlocksHTML(A, 'ctr'), 'ctr', 'about') + layPart(connT, layBlocksHTML(C, 'ctr'), 'ctr', 'conn');
   if(k === 'rightrail'){
-    var rail = '<div class="lay-rail">' + layPhoto(m, 'xl') + '<div class="lay-name sm">' + esc(m.name) + '</div>' +
-      (m.rel ? '<div class="lay-sub">' + esc(m.rel) + '</div>' : '') +
-      '<div class="lay-rows">' + m.stats.map(function(s){ return '<div class="lay-row"><span>' + esc(s[0]) + '</span><b>' + esc(s[1]) + '</b></div>'; }).join('') + '</div>' +
-      (m.phone ? '<div class="lay-row"><span>Phone</span><b>' + esc(m.phone) + '</b></div>' : '') + (m.ig ? '<div class="lay-row"><span>Instagram</span><b>' + esc(m.ig) + '</b></div>' : '') + '</div>';
-    return '<div class="lay-railwrap"><div class="lay-railmain">' + layPart(aboutT, layBlocksHTML(A)) + layPart(connT, layBlocksHTML(C)) + '</div>' + rail + '</div>';
+    var rail = '<aside class="lay-rail lay-glass"><div class="lay-kick">Identity</div>' + layPhoto(m, 'xl') + '<div class="lay-name sm">' + esc(m.name) + '</div>' +
+      (m.aka ? '<div class="lay-aka">also known as ' + esc(m.aka) + '</div>' : '') + layMeta(m) +
+      '<div class="lay-rows">' + m.stats.map(function(s){ return '<div class="lay-row"><span>' + esc(s[0]) + '</span><b>' + esc(s[1]) + '</b></div>'; }).join('') +
+      (m.phone ? '<div class="lay-row"><span>Phone</span><b>' + esc(m.phone) + '</b></div>' : '') + (m.ig ? '<div class="lay-row"><span>Instagram</span><b>' + esc(m.ig) + '</b></div>' : '') + '</div></aside>';
+    return '<div class="lay-railwrap"><div class="lay-railmain">' + layPart(aboutT, layBlocksHTML(A), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn') + '</div>' + rail + '</div>';
   }
   if(k === 'minimal'){
     var one = [m.rel, m.ctx, m.loc].filter(Boolean).join(' · ');
     var listA = m.bullets.slice(0, 4).map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('');
     var listC = m.evs.slice(0, 3).map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + '</li>'; }).join('');
-    return '<div class="lay-min"><div class="lay-min-h">' + layPhoto(m, 'md') + '<div><div class="lay-name sm">' + esc(m.name) + '</div><div class="lay-sub">' + esc(one) + '</div></div></div>' +
-      '<div class="lay-min-p"><div class="lay-part-t">' + esc(aboutT) + '</div>' + (m.syn ? '<p class="lay-syn">' + esc(m.syn) + '</p>' : '') + (listA ? '<ul class="lay-ul">' + listA + '</ul>' : '') + '</div>' +
-      '<div class="lay-min-p"><div class="lay-part-t">' + esc(connT) + '</div>' + (listC ? '<ul class="lay-ul">' + listC + '</ul>' : '') + (m.lc.trim() ? '<p class="lay-lcnote">' + esc(m.lc) + '</p>' : '') + '</div></div>';
+    return '<div class="lay-min"><div class="lay-min-h lay-glass-lite">' + layPhoto(m, 'md') + '<div><div class="lay-name sm">' + esc(m.name) + '</div><div class="lay-sub">' + esc(one) + '</div></div></div>' +
+      '<div class="lay-min-p lay-glass-lite"><div class="lay-part-t">' + esc(aboutT) + '</div>' + (m.syn ? '<p class="lay-syn">' + esc(m.syn) + '</p>' : '') + (listA ? '<ul class="lay-ul">' + listA + '</ul>' : '') + '</div>' +
+      '<div class="lay-min-p lay-glass-lite"><div class="lay-part-t">' + esc(connT) + '</div>' + (listC ? '<ul class="lay-ul">' + listC + '</ul>' : '') + (m.lc.trim() ? '<p class="lay-lcnote">' + esc(m.lc) + '</p>' : '') + '</div></div>';
   }
   if(k === 'ledger'){
     var rowsA = [], rowsC = [];
@@ -10877,35 +10886,35 @@ function layRender(k, m){
     m.assoc.forEach(function(a){ rowsC.push(['Associate', a]); }); m.fam.forEach(function(f){ rowsC.push(['Family', f]); });
     var tbl = function(rows, extra){ return '<table class="lay-tbl">' + rows.map(function(r){ return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>' + (extra || ''); };
     var exA = (m.syn ? '<p class="lay-syn">' + esc(m.syn) + '</p>' : '') + (m.bullets.length ? '<ul class="lay-ul">' + m.bullets.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '');
-    var exC = m.evs.length ? '<ul class="lay-ul">' + m.evs.map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + '</li>'; }).join('') + '</ul>' : '';
-    return layHero(m, '') + layPart(aboutT, tbl(rowsA, exA)) + layPart(connT, tbl(rowsC, exC));
+    var exC = m.evs.length ? '<ul class="lay-ul lay-tl">' + m.evs.map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + '</li>'; }).join('') + '</ul>' : '';
+    return layHero(m, '') + layPart(aboutT, tbl(rowsA, exA), '', 'about') + layPart(connT, tbl(rowsC, exC), '', 'conn');
   }
-  if(k === 'index') return '<div class="lay-idx">' + layHero(m, '') + layPart(aboutT, layBlocksHTML(A)) + layPart(connT, layBlocksHTML(C)) + '</div>';
+  if(k === 'index') return '<div class="lay-idx"><div class="lay-hero flat">' + layPhoto(m, 'lg') + '<div class="lay-hero-tx"><div class="lay-kick">Index card · file copy</div><div class="lay-name">' + esc(m.name) + '</div>' + (m.aka ? '<div class="lay-aka">also known as ' + esc(m.aka) + '</div>' : '') + layMeta(m) + '</div></div>' + layPart(aboutT, layBlocksHTML(A), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn') + '</div>';
   if(k === 'magazine'){
     var syn = m.syn || (m.bullets[0] || '');
-    var pull = m.stats.slice(0, 3).map(function(s){ return '<div class="lay-pull"><b>' + esc(s[1]) + '</b><span>' + esc(s[0]) + '</span></div>'; }).join('');
-    return '<div class="lay-mag"><div class="lay-mag-h">' + layPhoto(m, 'md') + '<div><div class="lay-name">' + esc(m.name) + '</div><div class="lay-sub">' + esc([m.rel, m.ctx].filter(Boolean).join(' · ')) + '</div></div></div>' +
-      (syn ? '<p class="lay-mag-syn">' + esc(syn) + '</p>' : '') + (pull ? '<div class="lay-pulls">' + pull + '</div>' : '') +
-      '<div class="lay-cols2">' + layPart(aboutT, layBlocksHTML(A.slice(1))) + layPart(connT, layBlocksHTML(C)) + '</div></div>';
+    var pull = m.stats.slice(0, 3).map(function(s){ return '<div class="lay-pull"><span>' + esc(s[0]) + '</span><b>' + esc(s[1]) + '</b></div>'; }).join('');
+    return '<div class="lay-mag"><div class="lay-mag-mast lay-glass"><div class="lay-hero flat">' + layPhoto(m, 'lg') + '<div><div class="lay-kick">The profile, in full</div><div class="lay-name big grad">' + esc(m.name) + '</div><div class="lay-sub">' + esc([m.rel, m.ctx, m.loc].filter(Boolean).join(' · ')) + '</div>' + layMeta(m) + '</div></div><div class="lay-mag-rule"></div></div>' +
+      (syn ? '<div class="lay-part about" style="margin-top:0"><p class="lay-mag-syn">' + esc(syn) + '</p></div>' : '') + (pull ? '<div class="lay-pulls">' + pull + '</div>' : '') +
+      '<div class="lay-cols2">' + layPart(aboutT, layBlocksHTML(A.slice(1)), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn') + '</div></div>';
   }
   if(k === 'tiles'){
-    var tile = function(b){ return '<div class="lay-tile"><div class="lay-blk-t">' + esc(b.t) + '</div>' + b.h + '</div>'; };
-    return layHero(m, '') + '<div class="lay-band">About ' + esc(m.first) + '</div><div class="lay-tiles">' + A.map(tile).join('') + '</div>' +
-      '<div class="lay-band">' + esc(connT) + '</div><div class="lay-tiles">' + C.map(tile).join('') + '</div>';
+    var tile = function(b){ return '<div class="lay-tile"><div class="lay-blk"><div class="lay-blk-t">' + esc(b.t) + '</div>' + b.h + '</div></div>'; };
+    return layHero(m, '') + layStats(m, 4) + '<div class="lay-band">About ' + esc(m.first) + '</div><div class="lay-tgrid">' + A.map(tile).join('') + '</div>' +
+      '<div class="lay-band">' + esc(connT) + '</div><div class="lay-tgrid">' + C.map(tile).join('') + '</div>';
   }
   if(k === 'mobile'){
     var last = m.stats.filter(function(s){ return s[0] === 'Last contact'; })[0];
     var ks = m.stats.filter(function(s){ return s[0] === 'Known since'; })[0];
     var flash = (SB.lay && SB.lay.flash) ? '<div class="lay-flash">' + esc(SB.lay.flash) + '</div>' : '';
     return '<div class="lay-phone"><div class="lay-notch"></div><div class="lay-mcard">' + layPhoto(m, 'xl') +
-      '<div class="lay-name">' + esc(m.name) + '</div>' + (m.rel ? '<div class="lay-sub">' + esc(m.rel) + (m.ctx ? ' · ' + esc(m.ctx) : '') + '</div>' : '') +
+      '<div class="lay-kick">Quick card</div><div class="lay-name grad">' + esc(m.name) + '</div>' + (m.rel ? '<div class="lay-sub">' + esc(m.rel) + (m.ctx ? ' · ' + esc(m.ctx) : '') + '</div>' : '') + layMeta(m) +
       '<div class="lay-mstats">' + (last ? '<div><b>' + esc(last[1]) + '</b><span>last contact</span></div>' : '') + (ks ? '<div><b>' + esc(ks[1]) + '</b><span>known since</span></div>' : '') + (m.loc ? '<div><b>' + esc(m.loc) + '</b><span>location</span></div>' : '') + '</div>' +
-      (m.phone ? '<div class="lay-mrow">' + esc(m.phone) + '</div>' : '') + (m.ig ? '<div class="lay-mrow">' + esc(m.ig) + '</div>' : '') +
-      '<div class="lay-lcbox"><div class="lay-part-t">Lima Charlie — quick note</div>' + flash +
+      (m.phone ? '<div class="lay-mrow"><span>' + esc(m.phone) + '</span><small>call</small></div>' : '') + (m.ig ? '<div class="lay-mrow"><span>' + esc(m.ig) + '</span><small>instagram</small></div>' : '') +
+      '<div class="lay-lcbox lay-glass"><div class="lay-part-t">Lima Charlie — quick note</div>' + flash +
       '<textarea id="laylc-note" rows="3" placeholder="Saw ' + esc(m.first) + ' — what happened, what changed, what to file…"></textarea>' +
       '<button type="button" class="btn primary" data-sb="laylc" data-di="' + m.di + '">File to Lima Charlie</button>' +
       (m.lc.trim() ? '<div class="lay-lcpend"><span>Waiting in Lima Charlie:</span> ' + esc(m.lc) + '</div>' : '') + '</div>' +
-      '<div class="lay-mparts">' + layPart(aboutT, layBlocksHTML(A.slice(0, 2))) + layPart(connT, layBlocksHTML(C.slice(0, 2))) + '</div>' +
+      '<div class="lay-mparts">' + layPart(aboutT, layBlocksHTML(A.slice(0, 2)), '', 'about') + layPart(connT, layBlocksHTML(C.slice(0, 2)), '', 'conn') + '</div>' +
       '</div></div>';
   }
   return '';
@@ -10924,7 +10933,6 @@ function sbLayouts(){
   });
   return h;
 }
-
 function sbLab(){
   var h = SB._inLab ? '' : sbHead('Connection lab', 'Paths, mutuals and the indirect connections — the shared employers, schools and groups that quietly tie the circle together.');
   h += '<div class="sb-card2"><div class="sb-card2-t">Path finder & mutual connections</div>' +
