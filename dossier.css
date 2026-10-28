@@ -3262,3 +3262,9 @@ html[data-focus="1"] .phcard{border-radius:8px}
   .sb-meth{grid-template-columns:1fr auto}
   .sb-meth-bar{display:none}
 }
+
+/* V3.13.0 (cont.): when the Photos chrome auto-hides in focus, it also
+   gives up its height — the stream starts at the top of the window
+   instead of under a blank band where the header used to be. */
+.pg-photos.ph-idle .pagehead,.pg-photos.ph-idle .phstrip,.pg-photos.ph-idle .phbar{
+  height:0;min-height:0;margin:0;padding-top:0;padding-bottom:0;border:none;overflow:hidden}
