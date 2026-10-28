@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.11.0';
+var APP_VERSION = '3.12.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -111,6 +111,48 @@ document.addEventListener('keydown', function(ev){
   if (pop && !pop.hidden) { ev.stopPropagation(); closeThemePop(); }
 });
 
+/* ---- Focus mode (V3.12.0) ----
+   One global control hides the app chrome (rail, tabs, top bar) so
+   the current view takes the whole window; Photos leans in further
+   (edge-to-edge grid, chrome that auto-hides and returns on mouse
+   move / tap — see phFocusChromeKick). Persisted like the theme
+   keys: ncc_focus. The head boot script stamps data-focus on <html>
+   before first paint; CSS keys off html[data-focus="1"]. Esc exits
+   when no higher layer (pop, sheet, inspector) is open; a floating
+   exit pill is always visible while focus is on. */
+function focusOn(){ try { return localStorage.getItem('ncc_focus') === '1'; } catch (e) { return false; } }
+function focusExitEl(){
+  var x = document.getElementById('focusexit');
+  if (!x) {
+    x = document.createElement('button');
+    x.type = 'button'; x.id = 'focusexit'; x.className = 'focusexit';
+    x.innerHTML = ic('contract', 15) + '<span>Exit focus</span>';
+    x.addEventListener('click', function(){ setFocus(false); });
+    document.body.appendChild(x);
+  }
+  return x;
+}
+function applyFocus(on){
+  document.documentElement.setAttribute('data-focus', on ? '1' : '0');
+  var b = document.getElementById('focusb');
+  if (b) { b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }
+  focusExitEl().hidden = !on;
+}
+function setFocus(on){
+  try { localStorage.setItem('ncc_focus', on ? '1' : '0'); } catch (e) {}
+  applyFocus(on);
+  if (on && S.route && S.route.name === 'photos') phFocusChromeKick();
+}
+document.addEventListener('keydown', function(ev){
+  if (ev.key !== 'Escape' || !focusOn()) return;
+  if (document.querySelector('.phi-wrap, .phed-wrap, .ykb-wrap')) return;
+  var sw = document.getElementById('sheetwrap');
+  if (sw && !sw.hidden) return;
+  var pop = document.getElementById('tpop');
+  if (pop && !pop.hidden) return;
+  setFocus(false);
+});
+
 var TIERS = {
   vetted:   { n:'Vetted',    c:'#f5b942' },
   associate:{ n:'Associate', c:'#7db3e8' },
@@ -186,6 +228,8 @@ function todayStr(){
 /* one stroke family so every icon sits together */
 var IC = {
   minus:'<path d="M5 12h14"/>', target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  expand:'<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>',
+  contract:'<path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3"/>',
   today:'<path d="M3 7.5 12 3l9 4.5-9 4.5z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/>',
   people:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
   network:'<circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="12" r="9"/><circle cx="19.4" cy="7.6" r="1.4"/>',
@@ -1821,9 +1865,10 @@ function renderChrome(){
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
     '<button type="button" class="syncp" id="sync" data-act="retry"></button>' +
     '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a>' +
+    '<button type="button" class="ib" id="focusb" data-act="focus" aria-label="Focus mode" aria-pressed="false" title="Focus mode: hide the sidebar and bars so the view fills the window (Esc exits)">' + ic('expand', 18) + '</button>' +
     themeSecHTML() +
     '<span class="ver" title="App version">V' + APP_VERSION + '</span></div>';
-  paintSync(); paintUndo(); paintTheme();
+  paintSync(); paintUndo(); paintTheme(); applyFocus(focusOn());
 }
 function paintSync(){
   var p = $('#sync'); if(!p) return;
@@ -6552,6 +6597,28 @@ function viewPhotos(v){
   v.innerHTML = '<div class="page asearch pg-photos">' + head + stats + '<div class="ph-layout">' + rail + main + '</div></div>';
   phPaintList();
   if(PHI) phiRender();
+  phFocusChromeArm();
+}
+/* Focus mode on Photos (V3.12.0): while focus is on, the page's own
+   chrome (head, stats strip, filter rail, sort bar) fades away after
+   ~2.6s without a pointer move and returns on the next move / tap,
+   so the grid runs edge-to-edge, photo to photo. The inspector is
+   already a full overlay; focus stretches it edge-to-edge in CSS. */
+var PH_FOCUS_T = 0;
+function phFocusChromeKick(){
+  var pg = document.querySelector('.pg-photos'); if(!pg) return;
+  pg.classList.remove('ph-idle');
+  clearTimeout(PH_FOCUS_T);
+  PH_FOCUS_T = setTimeout(function(){
+    var p2 = document.querySelector('.pg-photos');
+    if(p2 && focusOn() && S.route && S.route.name === 'photos') p2.classList.add('ph-idle');
+  }, 2600);
+}
+function phFocusChromeArm(){
+  var pg = document.querySelector('.pg-photos'); if(!pg || !focusOn()) return;
+  pg.addEventListener('pointermove', phFocusChromeKick);
+  pg.addEventListener('pointerdown', phFocusChromeKick);
+  phFocusChromeKick();
 }
 function viewSettings(v){
   var merged = [];
@@ -8768,6 +8835,7 @@ function onClick(ev){
     case 'grpsort': GRPV.sort = el.getAttribute('data-s') || 'name'; store('ncc_grp_sort_v1', GRPV.sort); render(); break;
     case 'phsdir': PH_SDIR = PH_SDIR < 0 ? 1 : -1; store('ncc_photos_sdir_v1', PH_SDIR < 0 ? 'desc' : 'asc'); phPaintList(); break;
     case 'back': { var bfb = S.ctx && S.ctx.from ? S.ctx.from : 'people'; if(bfb === 'groups' && S.ctx && S.ctx.grp) bfb = 'groups/' + S.ctx.grp; back(bfb); break; }
+    case 'focus': setFocus(!focusOn()); break;
     case 'topback': topBack(); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
