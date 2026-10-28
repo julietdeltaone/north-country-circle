@@ -10950,14 +10950,28 @@ var CN_ORDER = ['photos', 'ux', 'content', 'resource', 'progress', 'ops'];
 var CN_DEPT_NAMES = { photos:'Photos', ux:'UX', content:'Content', resource:'Resource', progress:'Progress', ops:'Operations' };
 var CN = null, CN_PROF = null;
 var CN_LOADING = false, CN_PROF_LOADING = false;
+/* V3.12.0 lag fix — the worst offender in the intuitive-pass hunt.
+   The old cnProfLoad fired its callback SYNCHRONOUSLY once
+   profiles.json was cached, and the callback is render(): every
+   council repaint (each Stage click, each nav back) recursed
+   render -> viewCouncil -> cnLoad -> cnProfLoad -> render until
+   the call stack gave out — 2,636 DOM rebuilds and ~8s of main
+   thread for one tap, measured. Callbacks now queue and fire once,
+   from the async completion only, matching phLoad/dtLoad/chLoad. */
+var CN_PROF_CBS = [];
 function cnProfLoad(cb){
-  if(CN_PROF){ cb && cb(); return; }
+  if(CN_PROF) return;
+  if(cb) CN_PROF_CBS.push(cb);
   if(CN_PROF_LOADING) return;
   CN_PROF_LOADING = true;
   fetch('data/profiles.json', { cache:'no-store' })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(rows){ CN_PROF_LOADING = false; CN_PROF = rows; cb && cb(); })
-    .catch(function(){ CN_PROF_LOADING = false; cb && cb(); });
+    .then(function(rows){ CN_PROF_LOADING = false; CN_PROF = rows; cnProfFlush(); })
+    .catch(function(){ CN_PROF_LOADING = false; cnProfFlush(); });
+}
+function cnProfFlush(){
+  var cbs = CN_PROF_CBS.splice(0);
+  cbs.forEach(function(f){ if(f) f(); });
 }
 function cnLoad(){
   cnProfLoad(function(){ if(S.route && S.route.name === 'council') render(); });
