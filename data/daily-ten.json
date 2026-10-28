@@ -132,6 +132,30 @@
           "novelty": "new"
         }
       ]
+    },
+    {
+      "name": "sf:jackie-card",
+      "display": "Jackie Card",
+      "facts": [
+        {
+          "text": "Community Engagement Coordinator at GardenShare in Canton, New York; came to St. Lawrence County to attend SUNY Potsdam",
+          "source": "GardenShare",
+          "url": "https://gardenshare.org/meet-the-staff/",
+          "novelty": "new"
+        }
+      ]
+    },
+    {
+      "name": "sf:julie-cardinal",
+      "display": "Julie Cardinal",
+      "facts": [
+        {
+          "text": "Quoted for New Testament Church in Massena in 2020 on distributing 3,276 USDA Farmers to Families food boxes to the community, reaching over 800 households",
+          "source": "CityServe",
+          "url": "https://www.prweb.com/releases/cityserve_produce_alliance_inc_deliver_over_54_million_pounds_of_food/prweb17524810.htm",
+          "novelty": "new"
+        }
+      ]
     }
   ],
   "coverage": {
@@ -139,7 +163,7 @@
     "of": 724,
     "window_days": 30
   },
-  "note": "Checked 25, filed 2 (Heather Foster-Barrigar, Donovan Patraw). Today's rotation was the never-checked tier: 25 newly added shell profiles, most with a single email-era anchor, so the 2-anchor gate rejected nearly everything. Fresh sweep: none found (in-window items were about non-directory people, businesses, or events; the one in-window directory name, SUNY Canton President Zvi Szafran, appeared only as an institutional contact with no new personal fact). Rejected after direct verification: Gabby Olivia EXP Realty claim, Peyton Mussaw Clarkson commencement-honors claim, Julie Cardinal town-minutes claim, and Damaris Duarte GoBe blog (login-walled, self-authored) \u2014 none could be confirmed on a real source page; a claimed St. Lawrence County Legislature appointment for Foster-Barrigar was also wrong (that page names a different acting personnel officer) and was replaced by her verified NYSAPCSO spotlight. Patraw also has Oct 2025 Life Saving Award coverage (North Country Now) confirmed in article text, but its canonical URL could not be captured, so only the instructor-certification fact was filed.",
+  "note": "Checked 25, filed 4 (Heather Foster-Barrigar, Donovan Patraw, Jackie Card, Julie Cardinal). Today's rotation was the never-checked tier: 25 newly added shell profiles, most with a single email-era anchor, so the 2-anchor gate rejected nearly everything. Fresh sweep: none found (in-window items were about non-directory people, businesses, or events; the one in-window directory name, SUNY Canton President Zvi Szafran, appeared only as an institutional contact with no new personal fact). Rejected after direct verification: Gabby Olivia EXP Realty claim, Peyton Mussaw Clarkson commencement-honors claim, Julie Cardinal town-minutes claim, and Damaris Duarte GoBe blog (login-walled, self-authored) \u2014 none could be confirmed on a real source page; a claimed St. Lawrence County Legislature appointment for Foster-Barrigar was also wrong (that page names a different acting personnel officer) and was replaced by her verified NYSAPCSO spotlight. Patraw also has Oct 2025 Life Saving Award coverage (North Country Now) confirmed in article text, but its canonical URL could not be captured, so only the instructor-certification fact was filed. Supplement filed the same day from a late research report, verified on the source pages: Jackie Card is GardenShare's Community Engagement Coordinator (GardenShare staff page), and Julie Cardinal was quoted for New Testament Church, Massena, in CityServe's Nov 2020 USDA food-box release. An earlier unverified town-minutes claim for Julie Cardinal was not used.",
   "next_up": [
     {
       "name": "sf:rosie-hoover",
