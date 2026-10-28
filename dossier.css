@@ -3290,7 +3290,7 @@ body.pool-open #app:has(> #pool){grid-template-columns:var(--rail) 1fr 236px}
 .pool-sec.bad{color:var(--bad)}
 .pool-sec.way{color:var(--warn)}
 .pool-sec.ok{color:var(--ok)}
-.pool-it{border:1px solid var(--line);border-left:2px solid var(--line);border-radius:2px;padding:8px 10px;margin-bottom:7px;background:color-mix(in srgb, var(--mut) 5%, transparent);animation:poolenter var(--d-enter,.16s) var(--ease-out,ease-out)}
+.pool-it{border:1px solid var(--line);border-left:2px solid var(--line);border-radius:2px;padding:8px 10px;margin-bottom:7px;background:color-mix(in srgb, var(--mut) 5%, transparent)}
 .pool-it.st-queued{border-left-color:var(--dim)}
 .pool-it.st-sending{border-left-color:var(--warn)}
 .pool-it.st-stuck{border-left-color:var(--bad)}
