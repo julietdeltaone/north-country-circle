@@ -610,12 +610,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 photo rerun. His public LinkedIn profile (Social Worker, St. Lawrence County; SUNY Canton Criminal Investigation bachelor's 2023) carries this photo; filed as a crop excluding LinkedIn's #OPENTOWORK frame band and a partial second person, hosted locally because the signed URL expires.",
    "name": "Benjamin Horner",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/benjamin-horner.jpg",
+   "source_page": "https://www.linkedin.com/in/benjamin-horner-478129348",
+   "status": "confirmed",
+   "type": "LinkedIn profile photo (cropped)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Clinical Associate Professor, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
@@ -682,12 +683,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 photo rerun (JD's catch: the original pass recorded the source links without extracting the photos). The Thumbtack business profile for Window Cleaning Plus carries this as the pro's profile portrait; the same profile's Credentials section names Brayden Amo, and the BBB names him as the business owner. Image URL verified loading (972x972) and visually matched to the profile portrait.",
    "name": "Brayden Amo",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://production-next-images-cdn.thumbtack.com/i/462764646454820864/width/1024/aspect/1-1.jpeg",
+   "source_page": "https://www.thumbtack.com/co/littleton/window-cleaners/window-cleaning-plus-holiday-lighting/service/462764240087769097",
+   "status": "confirmed",
+   "type": "Business profile portrait (Thumbtack)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Instagram profile @bree.rogers545 (display name \"Bree Rogers\").",
@@ -3014,12 +3016,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED on the 2026-10-28 photo rerun. His public LinkedIn profile (Freelance Artist/Illustrator, Willow Spring NC; Evans & White Ace Hardware freight worker 2014-2015) carries this headshot; filed as a crop excluding LinkedIn's #OPENTOWORK frame band, hosted locally because the signed URL expires.",
    "name": "John Molinero",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/john-molinero.jpg",
+   "source_page": "https://www.linkedin.com/in/john-molinero-abaa07119",
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot (cropped)",
+   "added": "2026-10-28"
   },
   {
    "evidence": "Image sits directly under his section heading 'Zufall Family Farm | John Zufall, Lisbon, NY (Owner)', labeled 'Zufall farm photos' — a farm photo grid tied to his farm's section. The label does not state John himself is pictured (photos credited to others) — possible only.",
@@ -4230,12 +4233,13 @@
    "type": null
   },
   {
-   "evidence": "Merit profile returned story listings only — no profile-photo URL at all. Clarkson Merit stories text-only.",
+   "evidence": "CONFIRMED on the 2026-10-28 photo rerun. His public LinkedIn profile (Director of Sales, Jewett Automation; Wake Forest NC) carries this headshot. Only the 100x100 size is publicly exposed, so the file is small; hosted locally because the signed URL expires.",
    "name": "Matthew Tomford",
-   "photo_url": null,
-   "source_page": "https://meritpages.com/Matthew-Tomford/303340",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/matthew-tomford.jpg",
+   "source_page": "https://www.linkedin.com/in/matthew-tomford-21952369",
+   "status": "confirmed",
+   "type": "LinkedIn profile headshot",
+   "added": "2026-10-28"
   },
   {
    "evidence": "His Clarkson org-chart block (Campus Safety & Security Sergeant) carries the directory image labeled 'mvolz' — the directory headshot keyed to his username. His Clarkson people page is a contact block only.",
