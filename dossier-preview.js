@@ -4356,7 +4356,7 @@ function famRelCaption(disp, tree, di){
 }
 function famChipHTML(di){
   var e = D.directory[di];
-  return '<button type="button" class="fn fchip' + (S.fam.focus === di ? ' foc' : '') + '" data-act="fnode" data-di="' + di + '">' + avatar(e, 'sm') + '<b>' + esc(dispName(e)) + '</b></button>';
+  return '<button type="button" class="fchip' + (S.fam.focus === di ? ' foc' : '') + '" data-act="fnode" data-di="' + di + '">' + avatar(e, 'sm') + '<b>' + esc(dispName(e)) + '</b></button>';
 }
 function famGenHTML(disp, tree, G){
   var inGen = {}; G.members.forEach(function(di){ inGen[di] = 1; });
@@ -4406,7 +4406,7 @@ function famIndexHTML(ft){
     '<div class="side-sec"><h4>Trees</h4>' + treeRows + '</div></aside>';
 }
 function viewFamily(v){
-  var disp = famDisplay(), ft = famTrees(disp);
+  var disp = famDisplay(), ftRes = famTrees(disp), ft = ftRes.trees || [];
   FAMV.lay = null; FAMV.pos = {}; FAMV.hover = null; FAMV.el = null;
   if(!ft.length){ v.innerHTML = '<div class="page">' + emptyState('No family trees yet.', 'Add a parent, spouse, child or sibling from a profile and the tree appears here.') + '</div>'; return; }
   var total = 0; ft.forEach(function(t){ total += t.members.length; });
