@@ -24,7 +24,7 @@ setTimeout(function(){var b=document.getElementById("bootload");if(b&&!b.classLi
   <div class="hud hud-tl">
     <div class="brand">NORTH COUNTRY <span>CIRCLE</span></div>
     <div class="stats" id="stats"></div>
-    <div class="reslegend"><span class="resdot"></span><span>Amber = researched, not in the dossier &middot; bigger = more on file <span id="rescount"></span></span></div>
+    <div class="reslegend"><span class="resdot"></span><span>Amber = researched, not in Contacts Pro &middot; bigger = more on file <span id="rescount"></span></span></div>
   </div>
 
   <div class="hud hud-tc">
@@ -40,7 +40,7 @@ setTimeout(function(){var b=document.getElementById("bootload");if(b&&!b.classLi
     <button type="button" class="tbtn" id="btn-home" title="Home: reset the map to its root view">Home</button>
     <button type="button" class="tbtn" id="btn-back" title="Back one step: close the top panel, undo the last hop or selection, or return home">&#8249; Back</button>
     <button type="button" class="tbtn" id="theme-open" aria-haspopup="dialog" aria-expanded="false" title="Theme: mode and gradient"><span class="tpdot" data-s="bluegreen"></span>Theme</button>
-    <a class="tbtn" href="dossier.html" title="Profiles, editor, family" style="text-decoration:none;display:inline-block">Dossier</a>
+    <a class="tbtn" href="contacts-pro.html" title="Profiles, editor, family" style="text-decoration:none;display:inline-block">Contacts Pro</a>
     <button id="btn-filters" class="tbtn" title="Navigation filters">Filters</button>
     <button id="btn-hubs" class="tbtn" title="Highlight the top connectors">Hubs</button>
     <button id="btn-bridges" class="tbtn" title="Highlights the ~150 longest connections: links between people in far-apart parts of the map">Bridges</button>
@@ -55,7 +55,7 @@ setTimeout(function(){var b=document.getElementById("bootload");if(b&&!b.classLi
     <input type="range" id="minconn" min="0" max="100" value="0" step="1">
     <label class="check"><input type="checkbox" id="f-jd"> Followed by JD</label>
     <label class="check"><input type="checkbox" id="f-list"> List collected</label>
-    <label class="check"><input type="checkbox" id="f-resfilter"> Researched &middot; not in dossier <span id="resfilter-n"></span></label>
+    <label class="check"><input type="checkbox" id="f-resfilter"> Researched &middot; not in Contacts Pro <span id="resfilter-n"></span></label>
     <label class="check"><input type="checkbox" id="f-isolate"> Isolate selected neighbors</label>
     <label class="check"><input type="checkbox" id="f-labels" checked> Default name labels</label>
     <div class="note" id="vis-count"></div>
@@ -84,7 +84,7 @@ setTimeout(function(){var b=document.getElementById("bootload");if(b&&!b.classLi
     <div id="dir-grip" title="Drag to resize"></div>
     <div class="drawer-head">
       <h3>Directory</h3>
-      <a href="dossier.html" target="_blank" rel="noopener" class="tbtn" style="text-decoration:none" title="Open the dossier">Dossier ↗</a>
+      <a href="contacts-pro.html" target="_blank" rel="noopener" class="tbtn" style="text-decoration:none" title="Open Contacts Pro">Contacts Pro ↗</a>
       <button id="dir-close" class="tbtn">Close</button>
     </div>
     <div class="dir-filters">
@@ -92,7 +92,7 @@ setTimeout(function(){var b=document.getElementById("bootload");if(b&&!b.classLi
       <input type="range" id="d-minconn" min="0" max="100" value="0" step="1">
       <label class="check"><input type="checkbox" id="d-f-jd"> Followed by JD</label>
       <label class="check"><input type="checkbox" id="d-f-list"> List collected</label>
-      <label class="check"><input type="checkbox" id="d-f-resfilter"> Researched &middot; not in dossier <span id="d-resfilter-n"></span></label>
+      <label class="check"><input type="checkbox" id="d-f-resfilter"> Researched &middot; not in Contacts Pro <span id="d-resfilter-n"></span></label>
       <label class="check"><input type="checkbox" id="d-f-isolate"> Isolate selected neighbors</label>
       <label class="check"><input type="checkbox" id="d-f-labels" checked> Default name labels</label>
     </div>
@@ -105,7 +105,7 @@ setTimeout(function(){var b=document.getElementById("bootload");if(b&&!b.classLi
         <option value="username">Username</option>
         <option value="total" selected>Connections</option>
         <option value="research">Research findings</option>
-        <option value="dossier">Dossier status</option>
+        <option value="dossier">Contacts Pro status</option>
         <option value="in_degree">In</option>
         <option value="out_degree">Out</option>
         <option value="num_lists">Lists</option>
