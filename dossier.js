@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.10.0';
+var APP_VERSION = '3.11.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1785,6 +1785,7 @@ var NAV = [
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
   { k:'daily',   l:'Live Records', ic:'search' },
+  { k:'council', l:'Council', ic:'award' },
   { k:'photos',  l:'Photos', ic:'camera' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
@@ -1992,6 +1993,7 @@ function render(){
     else if(n === 'daily') viewDaily(v);
     else if(n === 'photos') viewPhotos(v);
     else if(n === 'sandbox') viewSandbox(v);
+    else if(n === 'council') viewCouncil(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -8721,6 +8723,11 @@ function onClick(ev){
   if(el.tagName === 'A' && (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button === 1)) return;
   var prevent = true;
   switch(act){
+    case 'cn-stage': cnStage(el.getAttribute('data-flag'), el.getAttribute('data-action')); break;
+    case 'cn-now': cnDoNow(el.getAttribute('data-flag'), el.getAttribute('data-action')); break;
+    case 'cn-unstage': cnUnstage(el.getAttribute('data-flag'), el.getAttribute('data-action')); break;
+    case 'cn-exec-all': cnExecAll(); break;
+    case 'cn-clear': cnClearStaged(); break;
     case 'sheetx': closeSheet(); break;
     case 'savekey': { var kv = ($('#ekey') || {}).value || ''; store('ncc_edit_key', kv.trim()); OUT.auth = false; closeSheet(); OUT.retry = 0; outKick(); toast('Key saved. Retrying.'); break; }
     case 'undo': doUndo(); refreshAfterUndo('undo'); break;
@@ -9096,7 +9103,16 @@ function orgPrefixComplete(v, tk){
     if(lx === lv && ORGREG.canon[regKey(cx)]) exact = true;
     else if(lc !== lv && (lx.indexOf(lv) === 0 || lc.indexOf(lv) === 0) && !seen[lc]){ seen[lc] = 1; hits.push(cx); }
   }); });
-  if(exact || hits.length !== 1) return v;
+  if(exact) return v;
+  if(hits.length !== 1){
+    /* Several values share the prefix ("clark" -> Clarkson University /
+       Clarkson Security): if exactly one is a registered CANONICAL org,
+       that is the completion — canonicals are the filing targets, the
+       rest are raw directory values. ("park" likewise lands on the
+       canonical Park Bros., not the raw value Parkway Ford.) */
+    var can = hits.filter(function(h){ return !!ORGREG.canon[regKey(h)]; });
+    return can.length === 1 ? can[0] : v;
+  }
   return hits[0];
 }
 function addTag(t){
@@ -9318,7 +9334,6 @@ var SB_TOOLS = [
   { k:'grid',     z:'Look', t:'Data grid',    d:'Every person, one row. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
   { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
   { k:'insights', z:'Look', t:'Insights',     d:'Coverage, distributions and integrity on one page: gaps, sources, staleness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
-  { k:'council',  z:'Look', t:'Council',      d:'The six directors: roster, budget pace, findings logs, open flags, run history.', ic:'award' },
   { k:'lab',      z:'Play', t:'The Lab',      d:'Four experiments on the live data: paths & bridges, profiling inferences, Suspect Pool, visuals. Nothing in the lab writes to a profile.', ic:'network' },
   { k:'merge',    z:'Fix',  t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',   z:'Fix',  t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
@@ -9330,7 +9345,7 @@ var SB_LABS = [
   { k:'pool',    t:'Suspect Pool' },
   { k:'visuals', t:'Visuals' }
 ];
-function sbZoneOf(tool){ return ({ grid:'Look', raw:'Look', insights:'Look', council:'Look', lab:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
+function sbZoneOf(tool){ return ({ grid:'Look', raw:'Look', insights:'Look', lab:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
 function sbLabTab(){
   if(SB.labtab == null) SB.labtab = sbStore('ncc_sbx_labtab') || 'paths';
   if(!SB_LABS.some(function(l){ return l.k === SB.labtab; })) SB.labtab = 'paths';
@@ -9444,9 +9459,9 @@ function viewSandbox(v){
     sbEnsure();
     return;
   }
-  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, insights:sbInsights, council:sbCouncil,
+  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, insights:sbInsights,
              lab:sbLabTool, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
-  if(!({ home:1, grid:1, raw:1, insights:1, council:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
+  if(!({ home:1, grid:1, raw:1, insights:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -9505,7 +9520,7 @@ function sbHome(){
   var conf = people().filter(function(di){ var p = phn[dispName(D.directory[di]).toLowerCase()]; return !!(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely')); }).length;
   var pct = ppl ? Math.round(100 * conf / ppl) : 0;
   var cn = SB.council || {}, bd = cn.budget || {};
-  var flagsOpen = (cn.flags || []).filter(function(f){ return String(f.status || '').indexOf('Closed') !== 0; }).length;
+  var flagsOpen = (cn.flags || []).filter(function(f){ return f.state !== 'closed'; }).length;
   var last = ((SB.changes && SB.changes.entries) || [])[0];
   var chMonths = {}, chDays = {};
   ((SB.changes && SB.changes.entries) || []).forEach(function(en){ if(en.filed){ chMonths[en.filed.slice(0, 7)] = (chMonths[en.filed.slice(0, 7)] || 0) + 1; chDays[en.filed] = (chDays[en.filed] || 0) + 1; } });
@@ -9528,13 +9543,13 @@ function sbHome(){
     '<div class="sb-hring-c"><b>' + pct + '%</b><span>with a usable photo</span></div></div>' +
     (bd.used_pct != null ? '<div class="sb-hero-pace"><div class="sb-pace-t">Council budget pace <span>' + esc(String(bd.used_pct)) + '% used · expected ~' + esc(String(bd.expected_pct)) + '%</span></div>' +
       '<div class="sb-pacebar"><span class="sb-pace-fill" data-w="' + esc(String(bd.used_pct)) + '%" style="width:' + esc(String(bd.used_pct)) + '%"></span><i class="sb-pace-tick" style="left:' + esc(String(bd.expected_pct)) + '%"></i></div>' +
-      '<div class="sb-pace-v">' + esc(bd.verdict || '') + ' <a href="#/sandbox/council">' + (flagsOpen ? flagsOpen + ' flag' + (flagsOpen === 1 ? '' : 's') + ' waiting on JD →' : 'Council board →') + '</a></div></div>' : '') +
+      '<div class="sb-pace-v">' + esc(bd.verdict || '') + ' <a href="#/council">' + (flagsOpen ? flagsOpen + ' flag' + (flagsOpen === 1 ? '' : 's') + ' waiting on JD →' : 'Council board →') + '</a></div></div>' : '') +
     '</div></div>';
   h += '<p class="sb-herosub">' + esc(String(rec.sheet ? rec.sheet.keyed_rows : '—')) + ' keyed Sheet rows' + (rec.verdict ? ' · ' + esc(rec.verdict.toLowerCase()) : '') +
     ' · ' + Object.keys(sbTrashKeys()).length + ' keys in Trash · ' + (SB.snap ? Object.keys(SB.snap.people || {}).length : 0) + ' Snapchat profiles filed · ' + sbOpsGet().length + ' ops queued</p>';
   var stats = {
     grid: ppl + ' rows', raw: Object.keys(SB_RAW_META).length + ' sidecar files',
-    insights: sbFindingsCount() + ' open findings', council: flagsOpen ? flagsOpen + ' flags waiting on JD' : 'nothing waiting on JD',
+    insights: sbFindingsCount() + ' open findings',
     lab: '4 labs', merge: sbDupPairs().length + ' candidate pairs', danger: Object.keys(sbTrashKeys()).length + ' keys in Trash',
     log: sbLogToday() + ' entries today'
   };
@@ -10673,77 +10688,344 @@ function sbLogUndo(id){
   render();
 }
 
-/* ---------------- 11. council (V3.6.0) ----------------
-   The Dossier Council (charter adopted by JD 2026-10-27): six
-   directors with standing logs in the goal's hidden_files/council/.
-   Read-only render of site/data/council.json — the display snapshot
-   the council routines refresh when they append to the logs. */
+/* ---------------- 11. Council Command Center (V3.11.0) ----------------
+   JD 2026-10-27: the Council is a TOP-LEVEL section, not a Sandbox
+   tool, and it is ACTIVE, not a report. Open flags are the hero: every
+   flag carries Luna's theory (graded Tentative / Probable / Strong,
+   inductive-profiler discipline), the evidence behind it, and action
+   buttons. Clicking an action STAGES it; "Do now" executes it
+   immediately. Information and actions are visually separate zones of
+   every card.
+   STAGING IS DURABLE: the staged queue is a JSON array in the Profiles
+   column "Council Staged" (BH) on JD's own row (ig:jdmeyers_), written
+   through the same Apps Script batch endpoint as every other edit (the
+   deployed endpoint resolves patch fields against the Profiles header
+   row by name — the Location-on-file precedent; no endpoint change).
+   Luna's council passes (weekly cycle cron + on-demand) read that one
+   cell via the Sheets API; the bake carries it (council_staged in
+   PROFILE_FIELDS, sync range widened to BH) so the board renders the
+   live queue after any reload. council.json stays the directors'
+   snapshot (theories / evidence / findings); the queue cell is the
+   live workflow state layered over it. LocalStorage alone was
+   rejected: server-side passes cannot see it. */
 var CN_ORDER = ['photos', 'ux', 'content', 'resource', 'progress', 'ops'];
-function sbCnFindRow(e){
-  return '<div class="cn-frow"><span class="cn-fdate">' + esc(e.date || '') + '</span>' +
-    '<span class="cn-fmain"><b>' + esc(e.title || '') + '</b>' + (e.summary ? ' — ' + esc(e.summary) : '') + '</span></div>';
+var CN_DEPT_NAMES = { photos:'Photos', ux:'UX', content:'Content', resource:'Resource', progress:'Progress', ops:'Operations' };
+var CN = null, CN_PROF = null;
+function cnLoad(){
+  if(CN) return;
+  if(typeof SB !== 'undefined' && SB.council) CN = SB.council;
+  loadJSON('data/council.json', function(d){ if(d){ CN = d; if(S.route && S.route.name === 'council') render(); } });
 }
-function sbCouncil(){
-  var h = sbHead('Council', 'The Dossier Council — six directors keeping the dossier covered, readable, and sensible. JD sees only the Operations roll-up; this page is the council\u2019s own board. Read-only: the council routines write council.json when they run.');
-  var cn = SB.council;
-  if(!cn) return h + '<div class="empty"><h3>council.json not loaded</h3><p>The council snapshot could not be read. It ships with the site as data/council.json.</p></div>';
-  h += '<p class="sb-note">' + esc(cn.charter_note || '') + ' Snapshot updated ' + esc(cn.updated || '') + '.</p>';
-  /* (a) roster */
-  h += '<h3 class="sb-h3">Roster</h3><div class="sb-grid2">';
-  (cn.roster || []).forEach(function(r){
-    h += '<div class="sb-card2"><div class="cn-rhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
-      '<span class="sb-card2-t">' + esc(r.name || '') + '</span></div>' +
-      '<p class="sb-card2-n">' + esc(r.mission || '') + '</p>' +
-      '<p class="cn-auth"><b>Authority:</b> ' + esc(r.authority || '') + '</p>' +
-      (r.subs || []).map(function(s){
-        return '<div class="cn-sub"><b>' + esc(s.name || '') + '</b><span>' + esc(s.mission || '') + '</span>' +
-          '<span class="cn-auth"><b>Authority:</b> ' + esc(s.authority || '') + '</span></div>';
-      }).join('') +
-      '<div class="cn-status"><span>' + esc(r.status || '') + '</span>' +
-      '<span class="cn-runs">Last: ' + esc(r.last_run || '—') + ' · Next: ' + esc(r.next_run || '—') + '</span></div></div>';
+function cnDi(key){
+  if(!D || !D.directory) return -1;
+  for(var i = 0; i < D.directory.length; i++) if(pkey(D.directory[i]) === key) return i;
+  return -1;
+}
+function cnQueue(){
+  var di = cnDi('ig:jdmeyers_'); if(di < 0) return [];
+  try{ var q = JSON.parse(gv(D.directory[di], 'council_staged') || '[]'); return Array.isArray(q) ? q : []; }
+  catch(x){ return []; }
+}
+function cnSaveQueue(q){
+  var di = cnDi('ig:jdmeyers_'); if(di < 0) return;
+  queuePatch(di, { council_staged: JSON.stringify(q) });
+}
+function cnRepaint(){
+  var v = $('#view'); if(!v || !S.route || S.route.name !== 'council') return;
+  var y = window.scrollY; viewCouncil(v); window.scrollTo(0, y);
+}
+function cnFlag(id){
+  return ((CN && CN.flags) || []).filter(function(f){ return f.id === id; })[0] || null;
+}
+function cnAction(flagId, actionId){
+  var f = cnFlag(flagId); if(!f) return null;
+  return (f.actions || []).filter(function(a){ return a.id === actionId; })[0] || null;
+}
+function cnFlagState(f, q){
+  var done = q.some(function(e){ return e.flag === f.id && e.state === 'done' && (e.kind === 'fix' || e.kind === 'decision'); });
+  if(f.state === 'closed' || done) return 'closed';
+  return q.some(function(e){ return e.flag === f.id && e.state === 'staged'; }) ? 'staged' : 'open';
+}
+function cnToday(iso){
+  return iso && new Date(iso).toDateString() === new Date().toDateString();
+}
+/* ---- staging ---- */
+function cnStage(flagId, actionId){
+  var act = cnAction(flagId, actionId); if(!act) return;
+  var q = cnQueue();
+  if(q.some(function(e){ return e.flag === flagId && e.action === actionId && e.state === 'staged'; })) return;
+  q.push({ flag:flagId, action:actionId, label:act.label, kind:act.kind,
+    patches:act.patches || undefined, merge:act.merge || undefined,
+    state:'staged', ts:new Date().toISOString(), by:'board' });
+  cnSaveQueue(q);
+  toast('Staged — Luna picks this up on the next council pass');
+  cnRepaint();
+}
+function cnUnstage(flagId, actionId){
+  var q = cnQueue().filter(function(e){ return !(e.flag === flagId && e.action === actionId && e.state === 'staged'); });
+  cnSaveQueue(q); toast('Removed from the staged queue'); cnRepaint();
+}
+function cnClearStaged(){
+  var q = cnQueue().filter(function(e){ return e.state !== 'staged'; });
+  cnSaveQueue(q); toast('Staged queue cleared'); cnRepaint();
+}
+/* ---- execution ---- */
+function cnFieldVal(key, field){
+  var di = cnDi(key);
+  if(di >= 0) return gv(D.directory[di], field);
+  if(CN_PROF && CN_PROF.length){
+    var norm = function(s){ return String(s || '').toLowerCase().replace(/_/g, ' '); }, ci = -1;
+    for(var j = 0; j < CN_PROF[0].length; j++) if(norm(CN_PROF[0][j]) === norm(field)) ci = j;
+    if(ci < 0) return null;
+    for(var i = 1; i < CN_PROF.length; i++) if(CN_PROF[i][0] === key) return CN_PROF[i][ci] || '';
+  }
+  return null;
+}
+function cnApplyPatch(p){
+  var cur = cnFieldVal(p.key, p.field); if(cur == null) return false;
+  var nv = cur;
+  if(p.op === 'set') nv = p.value;
+  else{
+    var a = tagList(cur);
+    if(p.op === 'add'){ if(a.indexOf(p.value) < 0) a.push(p.value); }
+    else if(p.op === 'remove'){ a = a.filter(function(x){ return x !== p.value; }); }
+    else if(p.op === 'replace'){ a = a.map(function(x){ return x === p.from ? p.to : x; }); }
+    else return false;
+    nv = a.join(', ');
+  }
+  if(nv === cur) return true;   /* already in the desired state — counts as applied */
+  var patch = {}; patch[p.field] = nv;
+  var di = cnDi(p.key);
+  if(di >= 0) queuePatch(di, patch);
+  else sbPostBatch([{ key:p.key, patch:patch }]);   /* folded rows (merged_into) have no directory index — write by key */
+  return true;
+}
+function cnExecEntries(entries, cb){
+  var needProf = entries.some(function(e){
+    return (e.patches || []).some(function(p){ return cnDi(p.key) < 0; });
   });
-  h += '</div>';
-  /* (b) resource panel */
-  var b = cn.budget || {};
-  h += '<h3 class="sb-h3">Resource — budget pace</h3><div class="sb-card2">' +
-    '<div class="sb-kpis cn-kpis">' +
-    sbKpi((b.used_pct != null ? b.used_pct + '%' : '—'), 'of the weekly allowance used') +
-    sbKpi((b.expected_pct != null ? '~' + b.expected_pct + '%' : '—'), 'even pace for this point in the week') +
-    sbKpi((b.daily_tranche_pct != null ? '~' + b.daily_tranche_pct + '%' : '—'), 'daily tranche (1/7 of the week)') +
-    sbKpi(esc(b.plan || '—'), 'plan') +
-    '</div>' +
-    '<div class="cn-bar"><div class="cn-bar-pace" style="left:' + (b.expected_pct || 0) + '%"></div>' +
-    '<div class="cn-bar-fill" style="width:' + Math.min(100, b.used_pct || 0) + '%"></div></div>' +
-    '<div class="cn-bar-l"><span>0%</span><span>bar = used · tick = even pace</span><span>100%</span></div>' +
-    '<p class="cn-verdict">' + esc(b.verdict || '') + '</p>' +
-    '<p class="sb-note">Gauge read ' + esc(b.read_at || '—') + ' · week resets ' + esc(b.week_resets || '—') + '. ' + esc(b.measure || '') + '</p></div>';
-  /* (c) findings logs */
-  h += '<h3 class="sb-h3">Findings logs</h3><div class="sb-grid2">';
-  CN_ORDER.forEach(function(k){
-    var r = (cn.roster || []).filter(function(x){ return x.key === k; })[0] || {};
-    var es = ((cn.findings || {})[k] || []).slice(0, 6);
-    h += '<div class="sb-card2"><div class="sb-card2-t">' + esc(r.name || k) + '</div>' +
-      (es.length ? es.map(sbCnFindRow).join('') : '<p class="sb-note">No entries yet.</p>') + '</div>';
+  var run = function(){
+    var failed = [];
+    entries.forEach(function(e){
+      (e.patches || []).forEach(function(p){ if(!cnApplyPatch(p)) failed.push(e.flag + ':' + p.key); });
+    });
+    cb && cb({ ok:!failed.length, failed:failed });
+  };
+  if(needProf && !CN_PROF) loadJSON('data/profiles.json', function(rows){ CN_PROF = rows; run(); });
+  else run();
+}
+function cnMarkDone(q, entry, outcome){
+  for(var i = 0; i < q.length; i++)
+    if(q[i].flag === entry.flag && q[i].action === entry.action && q[i].state === 'staged'){ q.splice(i, 1); break; }
+  q.push({ flag:entry.flag, action:entry.action, label:entry.label, kind:entry.kind,
+    state:'done', ts:new Date().toISOString(), by:'board', outcome:outcome });
+  return q;
+}
+function cnDoNow(flagId, actionId){
+  var act = cnAction(flagId, actionId); if(!act) return;
+  if(act.kind === 'merge'){ cnStage(flagId, actionId); cnOpenMerge(act); return; }
+  if(act.kind === 'task'){ cnStage(flagId, actionId); return; }
+  var entry = { flag:flagId, action:actionId, label:act.label, kind:act.kind, patches:act.patches || [] };
+  cnExecEntries([entry], function(res){
+    if(!res.ok){ toast('Execution hit a problem on ' + res.failed.join(', ') + ' — left unstaged for Luna'); return; }
+    cnSaveQueue(cnMarkDone(cnQueue(), entry, 'Executed from the board'));
+    toast('Executed — Luna verifies it against the Sheet on the next pass');
+    cnRepaint();
   });
-  h += '</div>';
-  /* (d) open flags */
-  var fl = cn.flags || [];
-  h += '<h3 class="sb-h3">Open flags — waiting on JD (' + fl.filter(function(f){ return String(f.status || '').indexOf('Closed') !== 0; }).length + ')</h3><div class="sb-card2">' +
-    (fl.length ? fl.map(function(f){
-      return '<div class="cn-frow"><span class="cn-fdate">' + esc(f.date || '') + '</span>' +
-        '<span class="cn-fmain"><b>' + esc(f.title || '') + '</b>' + (f.from ? ' <span class="cn-from">' + esc(f.from) + '</span>' : '') +
-        (f.detail ? ' — ' + esc(f.detail) : '') + '</span></div>';
-    }).join('') : '<p class="sb-note">Nothing waiting on JD. Flags appear here when a director stages something only JD can rule on.</p>') + '</div>';
-  /* (e) run history */
-  var runs = cn.runs || [];
-  h += '<h3 class="sb-h3">Run history</h3><div class="sb-card2">' +
-    (runs.length ? runs.map(function(r2){
-      return '<div class="cn-frow"><span class="cn-fdate">' + esc(r2.date || '') + '</span>' +
-        '<span class="cn-fmain"><b>' + esc(r2.title || '') + '</b>' + (r2.outcome ? ' — ' + esc(r2.outcome) : '') + '</span></div>';
-    }).join('') : '<p class="sb-note">No runs yet.</p>') + '</div>';
+}
+function cnExecAll(){
+  var q = cnQueue();
+  var exec = q.filter(function(e){ return e.state === 'staged' && (e.kind === 'fix' || e.kind === 'decision'); });
+  if(!exec.length){ toast('Nothing executable is staged — tasks and merges stay queued for Luna / the Merge studio'); return; }
+  cnExecEntries(exec, function(res){
+    var q2 = cnQueue();
+    exec.forEach(function(e){ q2 = cnMarkDone(q2, e, 'Executed from the board (execute all)'); });
+    cnSaveQueue(q2);
+    toast(res.ok ? 'Executed ' + exec.length + ' staged action' + (exec.length === 1 ? '' : 's')
+      : 'Executed with problems on ' + res.failed.join(', ') + ' — Luna will reconcile');
+    cnRepaint();
+  });
+}
+function cnOpenMerge(act){
+  var m = act.merge || {};
+  var sDi = cnDi(m.survivor), lDi = cnDi(m.loser);
+  if(sDi < 0 || lDi < 0){ toast('Merge pair not found in the directory'); return; }
+  SB.tool = 'merge';
+  SB.mg = { a:sDi, b:lDi, surv:'a', aName:dispName(D.directory[sDi]), bName:dispName(D.directory[lDi]), picks:{} };
+  location.hash = '#/sandbox/merge';
+}
+/* ---- rendering ---- */
+function cnKindLabel(k){
+  return String(k || '').replace(/-/g, ' ').replace(/^./, function(c){ return c.toUpperCase(); });
+}
+function cnFlagCard(f, q){
+  var st = cnFlagState(f, q);
+  var stagedIds = {};
+  q.forEach(function(e){ if(e.flag === f.id && e.state === 'staged') stagedIds[e.action] = 1; });
+  var h = '<article class="cnc-flag" id="cnf-' + esc(f.id) + '">';
+  h += '<div class="cnc-finfo">' +
+    '<div class="cnc-fhead"><span class="cnc-pri p' + (f.priority || 3) + '">P' + (f.priority || 3) + '</span>' +
+    '<h3>' + esc(f.title || '') + '</h3></div>' +
+    '<div class="cnc-fmeta"><span class="cnc-kind">' + esc(cnKindLabel(f.kind)) + '</span>' +
+    '<span class="cnc-fdir">' + esc(CN_DEPT_NAMES[f.director] || f.director || '') + ' Director</span>' +
+    '<span class="cnc-fdate">' + esc(f.date || '') + '</span></div>';
+  if(f.ruling) h += '<div class="cnc-ruling"><b>JD’s ruling</b>' + esc(f.ruling) + '</div>';
+  if(f.theory){
+    h += '<div class="cnc-theory"><div class="cnc-thead"><span class="pf-grade g-' +
+      esc(String(f.theory.grade || '').toLowerCase()) + '">' + esc(f.theory.grade || '') + ' theory</span>' +
+      '<span class="cnc-tlab">Luna’s read</span></div>' +
+      '<p>' + esc(f.theory.text || '') + '</p>' +
+      (f.theory.falsifier ? '<p class="cnc-fals"><b>Would change the read:</b> ' + esc(f.theory.falsifier) + '</p>' : '') + '</div>';
+  }
+  if(f.evidence && f.evidence.length){
+    h += '<div class="cnc-ev"><div class="cnc-evlab">Evidence</div><ol>' +
+      f.evidence.map(function(e){ return '<li>' + esc(e) + '</li>'; }).join('') + '</ol></div>';
+  }
+  h += '</div><div class="cnc-facts"><div class="cnc-alab">Actions — click stages it for Luna’s next pass</div>';
+  (f.actions || []).forEach(function(a){
+    h += '<div class="cnc-actrow' + (stagedIds[a.id] ? ' is-staged' : '') + '">' +
+      '<div class="cnc-actlab"><b>' + esc(a.label || '') + '</b>' +
+      (a.note ? '<span>' + esc(a.note) + '</span>' : '') + '</div><div class="cnc-actbtns">';
+    if(stagedIds[a.id]){
+      h += '<span class="cnc-stagedchip">' + ic('check', 12) + ' Staged</span>';
+      if(a.kind === 'fix' || a.kind === 'decision' || a.kind === 'merge')
+        h += '<button type="button" class="btn primary sm" data-act="cn-now" data-flag="' + esc(f.id) + '" data-action="' + esc(a.id) + '">Do now</button>';
+      h += '<button type="button" class="btn ghost sm" data-act="cn-unstage" data-flag="' + esc(f.id) + '" data-action="' + esc(a.id) + '">Unstage</button>';
+    } else {
+      h += '<button type="button" class="btn sm cnc-stagebtn" data-act="cn-stage" data-flag="' + esc(f.id) + '" data-action="' + esc(a.id) + '">Stage</button>';
+      if(a.kind === 'merge')
+        h += '<button type="button" class="btn primary sm" data-act="cn-now" data-flag="' + esc(f.id) + '" data-action="' + esc(a.id) + '">Open in Merge studio</button>';
+      else if(a.kind !== 'task')
+        h += '<button type="button" class="btn primary sm" data-act="cn-now" data-flag="' + esc(f.id) + '" data-action="' + esc(a.id) + '">Do now</button>';
+    }
+    h += '</div></div>';
+  });
+  h += '</div></article>';
   return h;
 }
-
+function cnDeptGraphic(key, cn, q){
+  if(key === 'photos'){
+    var txt = ((cn.findings || {}).photos || []).map(function(e){ return (e.title || '') + ' ' + (e.summary || ''); }).join(' ');
+    var m = txt.match(/(\d+)\s+of\s+(\d+)/);
+    if(m){
+      var pct = Math.round(100 * (+m[1]) / (+m[2])), c = 2 * Math.PI * 26;
+      return '<svg class="cnc-ring" viewBox="0 0 64 64" role="img" aria-label="Photo coverage ' + pct + '%">' +
+        '<circle cx="32" cy="32" r="26" class="cnc-ring-bg"></circle>' +
+        '<circle cx="32" cy="32" r="26" class="cnc-ring-fg" stroke-dasharray="' + (c * pct / 100).toFixed(1) + ' ' + c.toFixed(1) + '"></circle>' +
+        '<text x="32" y="37" class="cnc-ring-t">' + pct + '%</text></svg>' +
+        '<div class="cnc-gcap">' + esc(m[1]) + ' of ' + esc(m[2]) + ' people<br>name-matched photos</div>';
+    }
+  }
+  if(key === 'resource'){
+    var b = cn.budget || {};
+    return '<div class="cn-bar cnc-pace"><div class="cn-bar-pace" style="left:' + (b.expected_pct || 0) + '%"></div>' +
+      '<div class="cn-bar-fill" style="width:' + Math.min(100, b.used_pct || 0) + '%"></div></div>' +
+      '<div class="cnc-gcap"><b>' + (b.used_pct != null ? b.used_pct + '%' : '—') + '</b> used · even pace ~' +
+      (b.expected_pct != null ? b.expected_pct : '—') + '%<br>' + esc(b.verdict || '') + '</div>';
+  }
+  if(key === 'progress'){
+    var open = 0, staged = 0, done = 0;
+    (cn.flags || []).forEach(function(f){
+      var s = cnFlagState(f, q);
+      if(s === 'closed') done++; else if(s === 'staged') staged++; else open++;
+    });
+    var tot = Math.max(1, open + staged + done);
+    return '<div class="cnc-funnel">' +
+      [['Needs JD', open, 'amb'], ['Staged', staged, 'blu'], ['Decided / done', done, 'grn']].map(function(r){
+        return '<div class="cnc-frow2"><span>' + r[0] + '</span><div class="cnc-ftrack"><div class="cnc-ffill ' + r[2] + '" style="width:' + Math.round(100 * r[1] / tot) + '%"></div></div><b>' + r[1] + '</b></div>';
+      }).join('') + '</div><div class="cnc-gcap">Flag funnel — live from this board</div>';
+  }
+  if(key === 'content'){
+    var counts = {};
+    (cn.flags || []).forEach(function(f){ if(cnFlagState(f, q) === 'open') counts[f.kind] = (counts[f.kind] || 0) + 1; });
+    var ks = Object.keys(counts);
+    return '<div class="cnc-kindchips">' + (ks.length ? ks.map(function(k){
+      return '<span class="cnc-kchip"><b>' + counts[k] + '</b> ' + esc(cnKindLabel(k)) + '</span>';
+    }).join('') : '<span class="cnc-kchip"><b>0</b> open</span>') + '</div>' +
+    '<div class="cnc-gcap">Open flags by kind</div>';
+  }
+  if(key === 'ops'){
+    return '<div class="cnc-kindchips">' + (cn.roster || []).map(function(r){
+      return '<span class="cnc-kchip"><span class="cnc-dot ' + (/watch|attention/i.test(r.status || '') ? 'amb' : 'grn') + '"></span>' + esc(CN_DEPT_NAMES[r.key] || r.name || '') + '</span>';
+    }).join('') + '</div><div class="cnc-gcap">Directorate status at a glance</div>';
+  }
+  /* ux + fallback: latest finding date as the stat */
+  var es = ((cn.findings || {})[key] || []);
+  return '<div class="cnc-bignum">' + es.length + '</div><div class="cnc-gcap">findings on file' +
+    (es[0] && es[0].date ? '<br>latest ' + esc(es[0].date) : '') + '</div>';
+}
+function viewCouncil(v){
+  cnLoad();
+  if(!CN){
+    v.innerHTML = '<div class="cnc"><div class="empty"><h3>Council</h3><p>Loading the council board…</p></div></div>';
+    return;
+  }
+  var cn = CN, q = cnQueue();
+  var flags = (cn.flags || []).slice().sort(function(a, b){ return (a.priority || 3) - (b.priority || 3); });
+  var open = flags.filter(function(f){ return cnFlagState(f, q) === 'open'; });
+  var stagedOnly = flags.filter(function(f){ return cnFlagState(f, q) === 'staged'; });
+  var closed = flags.filter(function(f){ return cnFlagState(f, q) === 'closed'; });
+  var stagedEntries = q.filter(function(e){ return e.state === 'staged'; });
+  var doneToday = q.filter(function(e){ return e.state === 'done' && cnToday(e.ts); }).length;
+  var h = '<div class="cnc">';
+  /* ---- hero: open flags action queue ---- */
+  h += '<header class="cnc-hero"><div class="cnc-herotop"><div>' +
+    '<div class="cnc-eyebrow">Dossier Council · Command Center</div>' +
+    '<h2>Open flags</h2>' +
+    '<p class="cnc-sub">Every flag carries Luna’s theory, the evidence, and the fix. Stage an action and it lands on the next council pass — or do it now. Snapshot ' + esc(cn.updated || '') + '.</p></div>' +
+    '<div class="cnc-strip">' +
+    '<div class="cnc-stat amb"><b>' + open.length + '</b><span>Needs JD</span></div>' +
+    '<div class="cnc-stat blu"><b>' + stagedEntries.length + '</b><span>Staged</span></div>' +
+    '<div class="cnc-stat grn"><b>' + doneToday + '</b><span>Executed today</span></div>' +
+    '</div></div>';
+  if(stagedEntries.length){
+    h += '<div class="cnc-queuebar"><span class="cnc-qlab">' + ic('check', 13) + ' Staged queue</span>' +
+      '<span class="cnc-qitems">' + stagedEntries.map(function(e){ return esc(e.label); }).join(' · ') + '</span>' +
+      '<span class="cnc-qbtns"><button type="button" class="btn primary sm" data-act="cn-exec-all">Execute all now</button>' +
+      '<button type="button" class="btn ghost sm" data-act="cn-clear">Clear</button></span></div>';
+  }
+  h += '</header>';
+  h += '<section class="cnc-flags">';
+  var hero = open.concat(stagedOnly);
+  h += hero.length ? hero.map(function(f){ return cnFlagCard(f, q); }).join('')
+    : '<div class="empty"><h3>Nothing waiting on JD</h3><p>Every flag is decided or staged. New flags appear here when a director stages something only JD can rule on.</p></div>';
+  h += '</section>';
+  /* ---- departments ---- */
+  h += '<section class="cnc-depts"><h2 class="cnc-h2">Departments</h2><div class="cnc-dgrid">';
+  CN_ORDER.forEach(function(key){
+    var r = (cn.roster || []).filter(function(x){ return x.key === key; })[0] || {};
+    var es = ((cn.findings || {})[key] || []);
+    var latest = es[0];
+    h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
+      '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' +
+      '<span class="cnc-dstatus">' + esc(r.status || '') + '</span></div>' +
+      '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
+      (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest · ' + esc(latest.date || '') + '</div>' +
+        '<b>' + esc(latest.title || '') + '</b><p>' + esc(latest.summary || '') + '</p></div>' : '<p class="sb-note">No findings yet.</p>') +
+      '<div class="cnc-druns">Last: ' + esc(r.last_run || '—') + ' · Next: ' + esc(r.next_run || '—') + '</div></article>';
+  });
+  h += '</div></section>';
+  /* ---- runs ---- */
+  var runs = cn.runs || [];
+  if(runs.length){
+    h += '<section class="cnc-runs"><h2 class="cnc-h2">Run history</h2><div class="cnc-runlist">' +
+      runs.slice(0, 8).map(function(r2){
+        return '<div class="cn-frow"><span class="cn-fdate">' + esc(r2.date || '') + '</span>' +
+          '<span class="cn-fmain"><b>' + esc(r2.title || '') + '</b>' + (r2.outcome ? ' — ' + esc(r2.outcome) : '') + '</span></div>';
+      }).join('') + '</div></section>';
+  }
+  /* ---- decided ---- */
+  h += '<details class="cnc-decided"><summary>Decided (' + closed.length + ') — settled law</summary><div class="cnc-dlist">';
+  h += closed.length ? closed.map(function(f){
+    var res = q.filter(function(e){ return e.flag === f.id && e.state === 'done'; })[0];
+    return '<div class="cnc-drow"><b>' + esc(f.title || '') + '</b>' +
+      (f.ruling ? '<p>' + esc(f.ruling) + '</p>' : '') +
+      (res ? '<p class="cnc-dres">Resolved from the board ' + esc(String(res.ts || '').slice(0, 10)) + ' — ' + esc(res.label || '') + (res.outcome ? ' (' + esc(res.outcome) + ')' : '') + '</p>' : '') + '</div>';
+  }).join('') : '<p class="sb-note">No closed flags yet.</p>';
+  h += '</div></details>';
+  h += '</div>';
+  v.innerHTML = h;
+}
 
 /* ---------------- 12. profiling inferences (V3.7.0) ----------------
    JD's lab (2026-10-27): cross-reference on-file data into graded
