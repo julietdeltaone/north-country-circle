@@ -3132,3 +3132,133 @@ html[data-focus="1"] .phi-stage{max-width:min(92vmin,860px)}
 .sb-insgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .sb-insnav a.btn{text-decoration:none}
 .sb-wrap{max-width:1560px}
+
+/* ================================================================
+   V3.13.0 — single-surface photo frames, one Photos control bar,
+   focus that actually fills, a Sandbox with a real left column,
+   Insights verdicts, Discovery trails.
+   ================================================================ */
+
+/* ---- Photo frames: the photo IS the surface (JD). The image fills
+   the frame; the frame's rounded corners clip the image itself; the
+   name is a caption scrim ON the photo — no square photo stacked on
+   a rounded name bar. Applies to the Home wall and the Photos grid,
+   which shared the defect. ---- */
+.hm-tile{position:relative;aspect-ratio:1/1;border-radius:14px}
+.hm-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hm-tile .hm-tcap{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;align-items:center;gap:5px;flex-wrap:wrap;
+  padding:20px 8px 7px;background:linear-gradient(180deg,rgba(4,6,10,0),rgba(4,6,10,.62) 52%,rgba(4,6,10,.8));
+  color:#fff;font-size:11px;line-height:1.25}
+.hm-tile .hm-tn{font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.hm-tile .hm-tcap .hm-td{color:rgba(255,255,255,.78);text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.hm-tile.miss{border-radius:14px}
+.phcard{aspect-ratio:1/1;border-radius:14px}
+.phcard .phimg{position:absolute;inset:0;padding:0;aspect-ratio:auto}
+.phgrid.dense .phcard .phimg{padding:0}
+.phcard .phimg img{width:100%;height:100%;object-fit:cover;display:block}
+.phcard .phnm{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 9px 7px;justify-content:flex-start;
+  background:linear-gradient(180deg,rgba(4,6,10,0),rgba(4,6,10,.62) 52%,rgba(4,6,10,.8));color:#fff}
+.phcard .phnm b{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.phcard.noph .phimg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.phcard.noph .phnm{background:none}
+.phcard.noph .phnm b{color:var(--txt);text-shadow:none}
+
+/* ---- Photos: ONE control bar above the grid (the filter rail is
+   gone — no second sidebar beside the app rail) ---- */
+.ph-layout2{display:flex;flex-direction:column;gap:14px;min-width:0}
+.phtoolbar{display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:10px 12px;backdrop-filter:blur(18px) saturate(1.3)}
+.phtb-row{display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap}
+.phtb-row #phq{flex:0 1 264px;min-width:170px;height:36px;padding:0 11px;border-radius:10px;border:1px solid var(--line2);
+  background:var(--bg);color:var(--txt);outline:none;font:inherit;font-size:13px}
+.phtb-row #phq:focus{border-color:#e30613}
+.phtb-group{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.phtb-lab{font:700 10px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-right:1px}
+.phtoolbar .ph-fbtn{width:auto;display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:99px;
+  border:1px solid var(--line);background:var(--fill);font-size:12px}
+.phtoolbar .ph-fbtn:hover{border-color:var(--line2)}
+.phtoolbar .ph-fbtn.on{border-color:#e30613;background:var(--card2);color:var(--txt)}
+.pg-photos .phtoolbar{transition:opacity .28s ease,visibility .28s}
+.pg-photos.ph-idle .phtoolbar{opacity:0;visibility:hidden;height:0;margin:0;padding:0;border:none;overflow:hidden}
+
+/* ---- Focus mode actually fills the window: remaining width caps
+   lift, Photos runs as a true full-bleed stream ---- */
+html[data-focus="1"] .gdet{max-width:none}
+html[data-focus="1"] .pg-photos{padding:10px}
+html[data-focus="1"] .phgrid{gap:8px}
+html[data-focus="1"] .phcard{border-radius:8px}
+
+/* ---- Sandbox: left column + edge-to-edge canvas ---- */
+.sb-body{flex:1;display:grid;grid-template-columns:252px minmax(0,1fr);min-height:0}
+.sb-nav{border-right:1px solid var(--line);background:var(--bg2);padding:12px 10px 30px;overflow-y:auto;
+  display:flex;flex-direction:column;gap:2px;min-height:0}
+.sb-nav-z{font:700 10px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:14px 8px 5px}
+.sb-navhome,.sb-navitem{display:block;padding:8px 9px;border-radius:10px;color:var(--txt);text-decoration:none}
+.sb-navhome:hover,.sb-navitem:hover{background:var(--fill);text-decoration:none}
+.sb-navitem.on,.sb-navhome.on{background:var(--fill2);box-shadow:inset 0 0 0 1px var(--line2)}
+.sb-nav-t{display:block;font:600 13.5px var(--sans)}
+.sb-nav-d{display:block;font-size:11.3px;line-height:1.42;color:var(--mut);margin-top:2px}
+.sb-navkids{display:flex;flex-direction:column;gap:1px;margin:2px 0 6px 12px;padding-left:10px;border-left:1px solid var(--line)}
+.sb-navkid{padding:5px 8px;border-radius:8px;font-size:12.5px;color:var(--mut);text-decoration:none}
+.sb-navkid:hover{color:var(--txt);background:var(--fill);text-decoration:none}
+.sb-navkid.on{color:var(--txt);background:var(--fill2)}
+.sb-canvas .sb-wrap{max-width:none;padding:20px 26px 70px}
+@media (max-width:900px){
+  .sb-body{grid-template-columns:1fr}
+  .sb-nav{flex-direction:row;flex-wrap:wrap;align-items:center;overflow:visible;border-right:none;border-bottom:1px solid var(--line);padding:8px}
+  .sb-nav-z{width:100%;margin:8px 4px 2px}
+  .sb-nav-d{display:none}
+  .sb-navkids{flex-direction:row;flex-wrap:wrap;border-left:none;margin:0;padding:0;width:100%}
+}
+
+/* ---- Insights verdicts + Lab purpose lines ---- */
+.sb-verdict{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px;margin:0 0 14px;
+  backdrop-filter:blur(18px) saturate(1.3)}
+.sb-verdict-t{font:700 10.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.sb-verdict-m{font-size:15.5px;line-height:1.5;margin:0;color:var(--txt)}
+.sb-verdict-s{font-size:12.8px;color:var(--mut);margin:6px 0 0;line-height:1.55}
+.sb-vchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sb-vchip{border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12px;color:var(--mut);background:var(--fill)}
+.sb-vchip b{color:var(--txt);font-size:13px}
+.sb-labsub{color:var(--mut);font-size:13.5px;line-height:1.55;max-width:84ch;margin:2px 0 14px}
+.sb-labsub b{color:var(--txt)}
+
+/* ---- Discovery trails ---- */
+.sb-meths{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.sb-meth{display:grid;grid-template-columns:minmax(150px,250px) 1fr auto;gap:10px;align-items:center;font-size:12.5px}
+.sb-meth-l{color:var(--txt)}
+.sb-meth-bar{height:8px;border-radius:99px;background:var(--fill2,var(--line));overflow:hidden}
+.sb-meth-bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ga),var(--gb))}
+.sb-meth-n{color:var(--mut);white-space:nowrap}
+.sb-disc{display:grid;grid-template-columns:304px minmax(0,1fr);gap:16px;align-items:start}
+.sb-dlistwrap{position:sticky;top:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.sb-dlistwrap input{height:38px;padding:0 12px;border-radius:10px;border:1px solid var(--line2);background:var(--card);color:var(--txt);font:inherit;font-size:13px}
+.sb-dlist{display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 250px);overflow-y:auto;padding-right:2px}
+.sb-drow{display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left;padding:7px 9px;
+  border:1px solid transparent;border-radius:10px;background:none;color:var(--txt);cursor:pointer;font:inherit;width:100%}
+.sb-drow:hover{background:var(--fill)}
+.sb-drow.on{background:var(--fill2);border-color:var(--line2)}
+.sb-dname{font:600 13px var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-dkinds{display:inline-flex;gap:4px;flex:none}
+.sb-dkind{font:700 9.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line2);
+  border-radius:99px;padding:2px 7px;color:var(--mut);white-space:nowrap}
+.sb-dkind.big{font-size:10.5px;padding:3px 9px;color:var(--txt)}
+.sb-dnone{font-size:11px;color:var(--dim);flex:none}
+.sb-dtrail{border-top:1px solid var(--line);padding:12px 0 6px}
+.sb-dtrail-h{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.sb-dtrail-h b{font-size:14px}
+.sb-dstatus{font-size:11.5px;color:var(--mut)}
+.sb-ddate{margin-left:auto;font-size:11.5px;color:var(--dim)}
+.sb-dsum{font-size:13.3px;line-height:1.6;color:var(--txt);margin:8px 0 0}
+.sb-dfail{margin-top:9px;font-size:12.5px;color:var(--mut)}
+.sb-dfail>span{font:700 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.sb-dfail ul{margin:4px 0 0;padding-left:18px;line-height:1.55}
+.sb-dmeta{margin-top:9px;font-size:12px;color:var(--mut)}
+.sb-dempty{border:1px dashed var(--line2);border-radius:12px;padding:14px;margin-top:10px}
+.sb-dempty p{color:var(--mut);font-size:13px;line-height:1.55;margin:6px 0 0}
+@media (max-width:900px){
+  .sb-disc{grid-template-columns:1fr}
+  .sb-dlist{max-height:300px}
+  .sb-meth{grid-template-columns:1fr auto}
+  .sb-meth-bar{display:none}
+}
