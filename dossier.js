@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.12.1';
+var APP_VERSION = '3.13.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2021,6 +2021,13 @@ function render(){
   cancelAnimationFrame(renderTimer);
   S.route = parseRoute();
   var v = $('#view'), n = S.route.name;
+  /* V3.13.0: a route CHANGE starts at the top. #view is a persistent
+     scroller, so without this a forward navigation inherited the last
+     view's scroll position and landed mid-page (JD's "pages jumping /
+     weird navigation"). Same-route repaints (data loads, quiet
+     refresh) keep the scroll exactly where it is. */
+  var rk = n + '/' + (S.route.seg || []).join('/');
+  if(render._rk !== rk){ render._rk = rk; if(v) v.scrollTop = 0; window.scrollTo(0, 0); }
   closeSheet();
   if(render._pv && render._pv !== n) phInspClose(true);
   if(HMI && n !== 'home') hmiClose(true);
@@ -5540,7 +5547,12 @@ function hmPhotosCard(ph){
     '<button type="button" class="hm-kpi" data-act="hmikpi" data-k="photos"><div class="hm-kn">' + ph.checked + '<small> / ' + ph.total + '</small></div><div class="hm-kl">Profiles checked</div></button>' +
     '<button type="button" class="hm-kpi" data-act="hmiopen" data-kind="igsrc" data-label="From Instagram"><div class="hm-kn">' + ph.ig + '</div><div class="hm-kl">From Instagram</div></button></div>';
   var tiles = ph.wall.map(function(p){
-    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '" data-act="phinsp" data-pname="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span>' + esc(p.name) + milBadgeName(p.name) + (phAddedLabel(p) ? '<small class="hm-td">' + phAddedLabel(p) + '</small>' : '') + '</span></a>';
+    /* V3.13.0: the photo IS the tile — it fills the frame and the
+       frame's rounded corners clip the image itself; the name rides
+       on the photo as a caption scrim, part of the same surface.
+       (Was: square photo block stacked on a separate name bar, so
+       the glass radius rounded the bar and left the photo square.) */
+    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '" data-act="phinsp" data-pname="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="hm-tcap"><span class="hm-tn">' + esc(p.name) + '</span>' + milBadgeName(p.name) + (phAddedLabel(p) ? '<small class="hm-td">' + phAddedLabel(p) + '</small>' : '') + '</span></a>';
   }).join('');
   tiles += '<button type="button" class="hm-tile miss" data-act="hmiopen" data-kind="nophoto" data-label="No photo yet"><b>' + ph.noPhoto + '</b><span>still missing a photo</span></button>';
   return '<section class="card hm-blk' + (HM_DATES ? ' hm-showdates' : '') + '"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em><span class="sp"></span><button type="button" class="btn ghost sm" data-act="hmdates">' + (HM_DATES ? 'Hide added dates' : 'Show added dates') + '</button></header><div class="cbody">' + kpis +
@@ -6427,6 +6439,9 @@ function phSections(list){
 }
 function phCard(p){
   var sel = PHI && PHI.name.toLowerCase() === String(p.name).toLowerCase();
+  /* V3.13.0: same single-surface design as the Home wall — the photo
+     fills the card, the rounded corners clip the image, and the name
+     is a caption scrim on the photo, not a separate bar under it. */
   if(phHasPhoto(p)){
     return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' +
       '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + '</div></section>';
@@ -6689,19 +6704,27 @@ function viewPhotos(v){
   var tierN = { vetted:0, associate:0, open:0, '':0 };
   all.forEach(function(p){ var e = phEntryOf(p); var t = e ? tierOf(e) : ''; if(tierN[t] == null) tierN[t] = 0; tierN[t]++; });
   function fbtn(f, label, n){ return '<button type="button" class="ph-fbtn' + (PH_FILT === f ? ' on' : '') + '" data-act="phfilt" data-f="' + esc(f) + '"><span>' + esc(label) + '</span><b>' + n + '</b></button>'; }
-  var rail = '<aside class="ph-side">' +
-    '<input id="phq" type="search" placeholder="Search names" autocomplete="off" value="' + esc(PH_QUERY) + '">' +
-    '<div class="ph-side-h">Show</div>' +
+  /* V3.13.0 — first principles (JD): the Photos page carried TWO
+     sidebars on the left at once (the app rail + this page's own
+     filter rail), and the rail ate a quarter of the grid's width in
+     every mode. Filters are controls, not content: they now live in
+     ONE bar above the grid — search, Show, Tier, Organizations as
+     labeled chip groups — and the grid takes the full width. The
+     inspector remains the single side surface, inside its modal. */
+  var rail = '<div class="phtoolbar">' +
+    '<div class="phtb-row"><input id="phq" type="search" placeholder="Search names" autocomplete="off" value="' + esc(PH_QUERY) + '">' +
+    '<span class="phtb-group"><span class="phtb-lab">Show</span>' +
     fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('multi', 'Multiple photos', all.filter(function(p){ return phAllPhotos(p).length > 1; }).length) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
-    '<div class="ph-side-h">Tier</div>' +
+    '</span></div>' +
+    '<div class="phtb-row"><span class="phtb-group"><span class="phtb-lab">Tier</span>' +
     fbtn('tier:vetted', 'Vetted', tierN.vetted) + fbtn('tier:associate', 'Associate', tierN.associate) + fbtn('tier:open', 'Open', tierN.open) + fbtn('tier:', 'No tier', tierN['']) +
-    '<div class="ph-side-h">Organizations</div>' +
+    '</span><span class="phtb-group"><span class="phtb-lab">Organizations</span>' +
     phTopOrgs(all).map(function(o){ return fbtn('org:' + o.name, o.name, o.n); }).join('') +
-    '</aside>';
+    '</span></div></div>';
   var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['newest', 'Newest'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Tier']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" id="phsdirbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
   var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
   var main = '<div class="ph-main"><div class="phbar"><span class="ph-count" id="phcount"></span>' + sortHtml + colsHtml + '</div><div id="phlist"></div></div>';
-  v.innerHTML = '<div class="page asearch pg-photos">' + head + stats + '<div class="ph-layout">' + rail + main + '</div></div>';
+  v.innerHTML = '<div class="page asearch pg-photos">' + head + stats + '<div class="ph-layout2">' + rail + main + '</div></div>';
   phPaintList();
   if(PHI) phiRender();
   phFocusChromeArm();
@@ -9485,7 +9508,7 @@ function skeletonHTML(note){
    ============================================================ */
 var SB = {
   ready:false, loading:null,
-  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null, prof:null, spool:null,
+  photos:null, dt:null, changes:null, trash:null, snap:null, recon:null, serverLog:null, orgreg:null, council:null, prof:null, spool:null, discData:null,
   tool:'home', labtab:null,
   pf:{ field:'all', grade:'all', sel:null, tab:'accuracy', asel:null },
   pool:{ src:'seed', seedId:'cfc', optKind:'groups', optName:'', picks:[], qid:'volunteer', qtext:'', cats:null,
@@ -9496,6 +9519,7 @@ var SB = {
   raw:{ which:'snapchat', q:'' },
   rep:{ tab:'coverage' },
   ins:{ view:null },
+  dsc:{ q:'', sel:null },
   integ:{ tab:'recon', dead:null, deadBusy:false },
   lab:{ a:null, b:null, path:null, mutual:null, bridges:null },
   play:{},
@@ -9506,10 +9530,14 @@ var SB = {
 /* V3.10.0 IA: the Sandbox has exactly three jobs — LOOK at the data,
    PLAY with it in labs, FIX it with admin tools. The home screen is a
    hero dashboard + three zones of large tiles; there is no rail. */
+/* V3.13.0 order (JD: prioritize what goes where): the everyday work
+   first — Data grid, Insights, Discovery trails — then Raw data,
+   then Play, then Fix. */
 var SB_TOOLS = [
   { k:'grid',     z:'Look', t:'Data grid',    d:'Every person, one row. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
-  { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
   { k:'insights', z:'Look', t:'Insights',     d:'Eight named checks, each on its own page: coverage, sources, freshness, distributions, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
+  { k:'discovery', z:'Look', t:'Discovery trails', d:'How each person was found — the searches, routes and anchors behind every photo and fact, and which methods actually produce finds.', ic:'search' },
+  { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
   { k:'lab',      z:'Play', t:'The Lab',      d:'Three experiments on the live data: paths & bridges, Suspect Pool, visuals. Nothing in the lab writes to a profile.', ic:'network' },
   { k:'profiling', z:'Play', t:'Profiling inferences', d:'The inductive lab, promoted out of the Lab: Luna\u2019s blind Persona expectations vs JD\u2019s ratings — headline accuracy first, cohorts second, evidence on drill-in. Read-only.', ic:'eye' },
   { k:'merge',    z:'Fix',  t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
@@ -9517,11 +9545,11 @@ var SB_TOOLS = [
   { k:'log',      z:'Fix',  t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
 ];
 var SB_LABS = [
-  { k:'paths',   t:'Paths & bridges' },
-  { k:'pool',    t:'Suspect Pool' },
-  { k:'visuals', t:'Visuals' }
+  { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through known associates and family, mutual connections, and the bridge people who hold the circle together.' },
+  { k:'pool',    t:'Suspect Pool', d:'The disciplined thought experiment: an exact pool, one yes/no behavioral question, observable behavior only, a pre-registered prediction. On-device only.' },
+  { k:'visuals', t:'Visuals', d:'Playground renderings of the live data — layouts and diagrams being tried out before anything earns a permanent home.' }
 ];
-function sbZoneOf(tool){ return ({ grid:'Look', raw:'Look', insights:'Look', lab:'Play', profiling:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
+function sbZoneOf(tool){ return ({ grid:'Look', insights:'Look', discovery:'Look', raw:'Look', lab:'Play', profiling:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
 function sbLabTab(){
   if(SB.labtab == null) SB.labtab = sbStore('ncc_sbx_labtab') || 'paths';
   if(!SB_LABS.some(function(l){ return l.k === SB.labtab; })) SB.labtab = 'paths';
@@ -9550,7 +9578,7 @@ function sbEnsure(){
     sbFetch('snapchat.json', 'snap'), sbFetch('recon.json', 'recon'),
     sbFetch('sandbox-log.json', 'serverLog'), sbFetch('org-registry.json', 'orgreg'),
     sbFetch('council.json', 'council'), sbFetch('profiling.json', 'prof'),
-    sbFetch('suspect-pool.json', 'spool')
+    sbFetch('suspect-pool.json', 'spool'), sbFetch('discovery.json', 'discData')
   ]).then(function(){ SB.ready = true; SB.loading = null; if(S.route.name === 'sandbox') render(); });
   return SB.loading;
 }
@@ -9639,10 +9667,10 @@ function viewSandbox(v){
     sbEnsure();
     return;
   }
-  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, insights:sbInsights,
+  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, insights:sbInsights, discovery:sbDiscovery,
              profiling:function(){ return '<div class="sb-labwrap t-prof">' + sbProf() + '</div>'; },
              lab:sbLabTool, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
-  if(!({ home:1, grid:1, raw:1, insights:1, profiling:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
+  if(!({ home:1, grid:1, raw:1, insights:1, discovery:1, profiling:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -9659,7 +9687,39 @@ function sbShell(inner){
     '<div class="sb-rail-top"><button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: tool, then Sandbox home, then the previous view">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="ib" data-act="home" aria-label="Home" title="Home">' + ic('home', 20) + '</button><b>Sandbox</b></div>' +
     (z ? '<span class="sb-zonechip">' + esc(z) + '</span>' : '<span class="sb-topsub">Look · Play · Fix</span>') +
-    '</header><div class="sb-canvas">' + inner + '</div></div>';
+    '</header><div class="sb-body">' + sbNav() + '<div class="sb-canvas">' + inner + '</div></div></div>';
+}
+/* V3.13.0 — the Sandbox gets a real left column (JD: "still all
+   concentrated to the center... I'm clicking on things like the Lab
+   and it's right in the center, not looking like anything useful").
+   The column is the map of the whole workbench: zones, then tools
+   with a one-line purpose under each, and — for the tool you are in —
+   its children listed before you ever have to enter them (Insights'
+   eight checks, the Lab's three labs). The canvas beside it runs
+   edge-to-edge; the old 1240px centered wrap is gone. */
+function sbNav(){
+  var h = '<nav class="sb-nav" aria-label="Sandbox tools">';
+  h += '<a class="sb-navhome' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox"><span class="sb-nav-t">Home</span><span class="sb-nav-d">The dashboard — directory size, photo coverage, council pace.</span></a>';
+  ['Look', 'Play', 'Fix'].forEach(function(z){
+    h += '<div class="sb-nav-z">' + esc(z) + '</div>';
+    SB_TOOLS.filter(function(t){ return t.z === z; }).forEach(function(t){
+      var on = SB.tool === t.k;
+      h += '<a class="sb-navitem' + (on ? ' on' : '') + '" href="#/sandbox/' + t.k + '"><span class="sb-nav-t">' + esc(t.t) + '</span><span class="sb-nav-d">' + esc(t.d) + '</span></a>';
+      if(on && t.k === 'insights'){
+        h += '<div class="sb-navkids">' + SB_INSIGHTS.map(function(x){
+          return '<a class="sb-navkid' + (SB.ins.view === x.k ? ' on' : '') + '" href="#/sandbox/insights/' + x.k + '">' + esc(x.t) + '</a>';
+        }).join('') + '</div>';
+      }
+      if(on && t.k === 'lab'){
+        h += '<div class="sb-navkids">' + SB_LABS.map(function(l){
+          return '<a class="sb-navkid' + (sbLabTab() === l.k ? ' on' : '') + '" href="#/sandbox/lab/' + l.k + '">' + esc(l.t) + '</a>';
+        }).join('') + '</div>';
+      }
+    });
+  });
+  h += '<div class="sb-nav-z">Boards</div>' +
+    '<a class="sb-navitem" href="#/council"><span class="sb-nav-t">Council \u2192</span><span class="sb-nav-d">The Dossier Council board — flags, theories, your rulings. Lives outside the Sandbox.</span></a>';
+  return h + '</nav>';
 }
 /* One template for every tool page: title + zone chip + purpose line. */
 function sbHead(title, sub){
@@ -9731,6 +9791,7 @@ function sbHome(){
   var stats = {
     grid: ppl + ' rows', raw: Object.keys(SB_RAW_META).length + ' sidecar files',
     insights: sbFindingsCount() + ' open findings',
+    discovery: SB.discData ? (SB.discData.coverage ? SB.discData.coverage.documented + ' documented trails' : '') : 'building index\u2026',
     lab: '3 labs', profiling: (SB.prof && SB.prof.accuracy && SB.prof.accuracy.overall) ? Math.round(SB.prof.accuracy.overall.agree_rate * 100) + '% blind accuracy · ' + (SB.prof.accuracy.test_set_n || 0) + ' tested' : 'run 2 on file',
     merge: sbDupPairs().length + ' candidate pairs', danger: Object.keys(sbTrashKeys()).length + ' keys in Trash',
     log: sbLogToday() + ' entries today'
@@ -10027,13 +10088,17 @@ function sbRepBlock(tab){
     (dt.checked || []).forEach(function(c){ checkedKeys[String(c.name || '').toLowerCase()] = 1; });
     var checkedDis = listed.filter(function(di){ var e = D.directory[di]; return checkedKeys[pkey(e).toLowerCase()] || checkedKeys[String(e.name || '').toLowerCase()]; });
     var notChecked = listed.filter(function(di){ return checkedDis.indexOf(di) < 0; });
+    /* V3.13.0: the name lists fold away — the verdict above carries
+       the answer; the lists are evidence, opened on demand. */
+    var nextDis = (dt.next_up || []).map(function(c){ var di = PK2I[String(c.name || '').toLowerCase()]; if(di == null) di = BYN[String(c.name || '').toLowerCase()]; return di; }).filter(function(x){ return x != null; });
     h += '<div class="sb-grid2"><div class="sb-card2"><div class="sb-card2-t">Latest brief</div>' +
       '<div class="sb-card2-n">' + esc(dt.date || '—') + ' · coverage ' + esc(String((dt.coverage || {}).checked_total || 0)) + ' of ' + esc(String((dt.coverage || {}).of || 0)) + ' checked in the last ' + esc(String((dt.coverage || {}).window_days || 30)) + ' days · ' + esc(String(dt.unchecked_remaining || 0)) + ' unchecked in the rotation</div>' +
-      '<div class="sb-card2-t" style="margin-top:10px">Checked in the latest brief (' + checkedDis.length + ')</div>' + sbPersonRows(checkedDis, 40) +
-      '</div><div class="sb-card2"><div class="sb-card2-t">Next up in the rotation (' + (dt.next_up || []).length + ')</div>' + sbPersonRows((dt.next_up || []).map(function(c){ var di = PK2I[String(c.name || '').toLowerCase()]; if(di == null) di = BYN[String(c.name || '').toLowerCase()]; return di; }).filter(function(x){ return x != null; }), 40) +
-      '<div class="sb-card2-t" style="margin-top:10px">Not in the latest brief\u2019s checked set (' + notChecked.length + ')</div>' +
+      '<details class="sb-det"><summary>Checked in the latest brief (' + checkedDis.length + ')</summary>' + sbPersonRows(checkedDis, 200) + '</details>' +
+      '</div><div class="sb-card2"><div class="sb-card2-t">The rotation queue</div>' +
+      '<details class="sb-det"><summary>Next up in the rotation (' + nextDis.length + ')</summary>' + sbPersonRows(nextDis, 200) + '</details>' +
+      '<details class="sb-det"><summary>Not in the latest brief\u2019s checked set (' + notChecked.length + ')</summary>' +
       '<p class="sb-note">The rotation covers everyone about monthly; per-person last-checked dates live in the routine\u2019s state file, not the bake, so this list is \u201cnot checked in the most recent brief\u201d rather than a true 30-day staleness measure.</p>' +
-      sbPersonRows(notChecked, 60) + '</div></div>';
+      sbPersonRows(notChecked, 300) + '</details></div></div>';
   }
   else if(tab === 'dist'){
     function distCard(title, keyFn){
@@ -10108,6 +10173,72 @@ function sbInsStat(k){
   } catch(x) {}
   return '';
 }
+/* V3.13.0 (JD: Insights children were "a row of sheets and numbers
+   and messy information" — he couldn't tell what a page was FOR).
+   Every child now LEADS with the answer: one plain-language verdict
+   sentence + the two or three numbers that decide it, then the
+   supporting detail below. If the verdict says nothing needs
+   attention, the detail is there to check, not to dig through. */
+function sbInsVerdict(k){
+  var ppl = people().length, chips = [], main = '', sub = '';
+  function chip(l, v){ chips.push('<span class="sb-vchip"><b>' + esc(String(v)) + '</b> ' + esc(l) + '</span>'); }
+  try {
+    if(k === 'coverage'){
+      var phn = sbPhotoByName(), noPh = 0, noY = 0, noOrg = 0, noConn = 0;
+      people().forEach(function(di){ var e = D.directory[di]; var p = phn[dispName(e).toLowerCase()];
+        if(!(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely'))) noPh++;
+        if(!String(gv(e, 'years_known') || '').trim()) noY++;
+        if(!orgsOf(e).length) noOrg++;
+        if(!(e.neighbors || []).length && !famLinks(e).length) noConn++; });
+      var worst = [['a usable photo', noPh], ['Known Since', noY], ['any organization', noOrg], ['any connection', noConn]].sort(function(a, b){ return b[1] - a[1]; })[0];
+      main = noPh === 0 && noY === 0 && noOrg === 0 ? 'Coverage is complete \u2014 every listed person has the basics.' :
+        'The widest gap is ' + worst[0] + ': ' + worst[1] + ' of ' + ppl + ' people are missing it.';
+      sub = 'Each card below is one gap, with the full list of who is missing it one click away.';
+      chip('without a usable photo', noPh); chip('without Known Since', noY); chip('without any org', noOrg);
+    } else if(k === 'sources'){
+      var sN = 0, iN = 0, fN = 0, noneN = 0;
+      people().forEach(function(di){ var e = D.directory[di]; var s = !!(e.snap_handles && e.snap_handles.length), i = !!effHandle(e), f = !!e.fb_url;
+        if(s) sN++; if(i) iN++; if(f) fN++; if(!s && !i && !f) noneN++; });
+      main = noneN ? noneN + ' people have none of the three social sources \u2014 they are reachable only by web research or email.' :
+        'Every listed person carries at least one social source.';
+      sub = 'Where the record comes from, source by source \u2014 a thin source is visible here before it gets trusted elsewhere.';
+      chip('Snapchat', sN); chip('Instagram', iN); chip('Facebook', fN);
+    } else if(k === 'stale'){
+      var dt = SB.dt || {}, cov = dt.coverage || {};
+      main = 'Live Records has checked ' + (cov.checked_total || 0) + ' of ' + (cov.of || ppl) + ' people in the current cycle' +
+        (dt.unchecked_remaining ? '; ' + dt.unchecked_remaining + ' are still waiting for their turn.' : ' \u2014 the rotation is fully caught up.');
+      sub = 'Who was checked in the latest brief, who is next, and who has not been reached yet \u2014 the lists are folded away below.';
+      chip('checked this cycle', cov.checked_total || 0); chip('unchecked', dt.unchecked_remaining || 0);
+    } else if(k === 'dist'){
+      main = 'The shape of the circle at a glance \u2014 nothing here needs action unless a mix looks wrong to you.';
+      sub = 'Tiers, relationships, when Snapchat connections were made, and when photos were filed.';
+      chip('people', ppl);
+    } else if(k === 'recon'){
+      var r = SB.recon || {};
+      main = r.verdict ? esc(r.verdict) + '.' : 'Sheet rows vs the baked directory, reconciled key by key.';
+      sub = 'Every differing key is explained below \u2014 nobody is missing and nobody is double-counted.';
+      if(r.sheet) chip('keyed Sheet rows', r.sheet.keyed_rows); chip('people in the app', ppl);
+    } else if(k === 'dup'){
+      var n = sbDupPairs().length;
+      main = n ? n + ' candidate pairs are open \u2014 each is either a merge waiting to happen or a \u201cnot duplicates\u201d ruling.' : 'No candidate duplicate pairs are open.';
+      sub = 'This list is also the Merge studio\u2019s queue.';
+      chip('open pairs', n);
+    } else if(k === 'orphan'){
+      main = 'Links that point nowhere, names that don\u2019t resolve, and shell profiles \u2014 the residue that quietly breaks other views.';
+      sub = 'Each row opens the profile that carries the problem.';
+      chip('open findings (all integrity)', sbFindingsCount());
+    } else if(k === 'photolinks'){
+      var n2 = ((SB.photos && SB.photos.people) || []).filter(function(p){ return p.photo_url; }).length;
+      main = n2 + ' filed photo URLs. The check runs from this browser, so a host that blocks cross-origin reads reports as \u201cno response\u201d \u2014 suspects, not verdicts.';
+      sub = 'A confirmed 404 is certainly dead; everything else deserves a second look before it is touched.';
+      chip('filed URLs', n2);
+    }
+  } catch(x) { main = ''; }
+  if(!main) return '';
+  return '<div class="sb-verdict"><div class="sb-verdict-t">The short answer</div><p class="sb-verdict-m">' + main + '</p>' +
+    (sub ? '<p class="sb-verdict-s">' + esc(sub) + '</p>' : '') +
+    (chips.length ? '<div class="sb-vchips">' + chips.join('') + '</div>' : '') + '</div>';
+}
 function sbInsights(){
   var cur = SB_INSIGHTS.filter(function(x){ return x.k === SB.ins.view; })[0] || null;
   if(!cur){
@@ -10124,6 +10255,7 @@ function sbInsights(){
     SB_INSIGHTS.map(function(x){
       return '<a class="btn sm ' + (x.k === cur.k ? 'primary' : 'ghost') + '" href="#/sandbox/insights/' + x.k + '">' + esc(x.t) + '</a>';
     }).join('') + '</div>';
+  h += sbInsVerdict(cur.k);
   h += '<div class="sb-sec">' + cur.sec + '</div>';
   if(cur.k === 'coverage') h += sbRepBlock('coverage');
   else if(cur.k === 'sources') h += sbRepBlock('sources');
@@ -10297,16 +10429,98 @@ function sbRunDead(){
 }
 
 
+/* ---------------- 4b. Discovery trails (V3.13.0, JD) ----------------
+   "How did you FIND these people?" — the reverse engineering of every
+   find: what was searched, which route produced the photo or the
+   facts, the identity anchors that made it fileable, and what failed
+   first. Built by scripts/build_discovery.py from the REAL records
+   only (photos.json evidence, the council photo hunts, the email /
+   Snapchat / web-research filing records, the change log). A person
+   with no documented trail says so — nothing is reconstructed or
+   invented here. The header ranks the routes by documented yield so
+   JD can see which methods actually produce finds. */
+function sbDiscTrail(name){ var d = SB.discData; if(!d || !d.people) return null; return d.people[String(name || '').toLowerCase()] || null; }
+function sbDiscRows(){
+  var q = (SB.dsc.q || '').trim().toLowerCase();
+  var dis = people().slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+  var out = [];
+  dis.forEach(function(di){
+    var e = D.directory[di], nm = dispName(e);
+    if(q && nm.toLowerCase().indexOf(q) < 0) return;
+    var tr = sbDiscTrail(nm);
+    var kinds = tr ? tr.trails.map(function(t){ return t.kind; }).filter(function(v, i, a){ return a.indexOf(v) === i; }) : [];
+    out.push('<button type="button" class="sb-drow' + (SB.dsc.sel === nm.toLowerCase() ? ' on' : '') + '" data-sb="discsel" data-k="' + esc(nm.toLowerCase()) + '">' +
+      '<span class="sb-dname">' + esc(nm) + '</span>' +
+      (tr ? '<span class="sb-dkinds">' + kinds.map(function(k){ return '<span class="sb-dkind">' + esc(k) + '</span>'; }).join('') + '</span>'
+          : '<span class="sb-dnone">No documented trail</span>') + '</button>');
+  });
+  return out.length ? out.join('') : '<p class="sb-note" style="padding:10px">Nobody matches that search.</p>';
+}
+function sbDiscDetail(){
+  var nm = SB.dsc.sel;
+  if(!nm) return '<div class="sb-card2"><div class="sb-card2-t">Pick a person</div><p class="sb-note">The list on the left is the whole directory. People with a documented discovery trail carry chips; select anyone to see how they were found — or that no trail is documented yet.</p></div>';
+  var di = BYN[nm]; var e = di != null ? D.directory[di] : null;
+  var name = e ? dispName(e) : nm;
+  var tr = sbDiscTrail(name);
+  var h = '<div class="sb-card2"><div class="sb-card2-t">' + esc(name) + '</div>' +
+    (e ? '<p class="sb-note">' + esc(infoLine(e) || '') + '</p><p><button type="button" class="btn sm ghost" data-sb="openprof" data-di="' + di + '">Open profile</button></p>' : '');
+  if(!tr || !tr.trails.length){
+    return h + '<div class="sb-dempty"><b>No documented trail yet.</b><p>This person entered the directory without a recorded search story — no photo hunt, filing record, or research-batch entry names them. When a future pass documents how they were found, the trail will appear here.</p></div></div>';
+  }
+  h += tr.trails.map(function(t){
+    var s = '<div class="sb-dtrail"><div class="sb-dtrail-h"><span class="sb-dkind big">' + esc(t.kind) + '</span><b>' + esc(t.route) + '</b>' +
+      (t.status ? '<span class="sb-dstatus">' + esc(t.status) + '</span>' : '') +
+      (t.date ? '<span class="sb-ddate">' + esc(t.date) + '</span>' : '') + '</div>';
+    if(t.summary) s += '<p class="sb-dsum">' + esc(t.summary) + '</p>';
+    if(t.failed && t.failed.length) s += '<div class="sb-dfail"><span>What didn\u2019t work first</span><ul>' + t.failed.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul></div>';
+    var meta = [];
+    if(t.source) meta.push('<a href="' + esc(t.source) + '" target="_blank" rel="noopener">Source page</a>');
+    if(t.record) meta.push('<span>Record: ' + esc(t.record) + '</span>');
+    if(meta.length) s += '<div class="sb-dmeta">' + meta.join(' · ') + '</div>';
+    return s + '</div>';
+  }).join('');
+  return h + '</div>';
+}
+function sbDiscovery(){
+  var d = SB.discData;
+  var h = sbHead('Discovery trails', 'How each person was found — the route that produced their photo or facts, the anchors behind it, and what failed first. Built only from the written records; no trail is reconstructed after the fact.');
+  if(!d){
+    return h + '<div class="empty"><h3>discovery.json not loaded</h3><p>Run scripts/build_discovery.py and push. It reads the filing records and photo evidence — it never invents a search.</p></div>';
+  }
+  var cov = d.coverage || {};
+  h += '<div class="sb-verdict"><div class="sb-verdict-t">Which methods actually produce finds</div>' +
+    '<p class="sb-verdict-m">Documented trails exist for ' + (cov.documented || 0) + ' of ' + (cov.total || 0) + ' people. The routes below are ranked by confirmed photo finds on file.</p>' +
+    '<div class="sb-meths">' + (d.methods || []).slice(0, 7).map(function(m){
+      var mx = Math.max.apply(null, (d.methods || []).map(function(x){ return x.confirmed || 0; }).concat([1]));
+      return '<div class="sb-meth"><span class="sb-meth-l">' + esc(m.route) + '</span><span class="sb-meth-bar"><span style="width:' + Math.round(100 * (m.confirmed || 0) / mx) + '%"></span></span><span class="sb-meth-n">' + (m.confirmed || 0) + ' confirmed' + (m.possible ? ' · ' + m.possible + ' possible' : '') + '</span></div>';
+    }).join('') + '</div>' +
+    ((d.hunt_stats || []).length ? '<p class="sb-verdict-s">' + d.hunt_stats.map(function(s){ return esc(s); }).join(' ') + '</p>' : '') + '</div>';
+  if(SB.dsc.sel == null){
+    var first = people().map(function(di){ return dispName(D.directory[di]); }).filter(function(nm){ return !!sbDiscTrail(nm); }).sort()[0];
+    if(first) SB.dsc.sel = first.toLowerCase();
+  }
+  h += '<div class="sb-disc"><div class="sb-dlistwrap"><input type="search" data-sbi="discq" placeholder="Search names\u2026" autocomplete="off" value="' + esc(SB.dsc.q || '') + '">' +
+    '<div class="sb-dlist" id="disclist">' + sbDiscRows() + '</div></div>' +
+    '<div class="sb-dpanel" id="discpanel">' + sbDiscDetail() + '</div></div>';
+  return h;
+}
+function sbDiscPaintList(){
+  var box = document.getElementById('disclist'); if(box) box.innerHTML = sbDiscRows();
+  var pan = document.getElementById('discpanel'); if(pan) pan.innerHTML = sbDiscDetail();
+}
+
 /* ---------------- 5. The Lab (V3.10.0): connection lab, profiling,
    suspect pool and playground under one tab bar. Tabs are buttons, not
    history layers — Back from any tab goes to Sandbox home. Each lab
    keeps its own state, storage keys and sidecars; only the shell is new. */
 function sbLabTool(){
   var tab = sbLabTab();
-  var h = sbHead('The Lab', 'Three experiments on the live data. Paths, pools and visuals live here — nothing in the lab writes to a profile. Profiling inferences has its own home now, one level up in Play.');
+  var cur = SB_LABS.filter(function(l){ return l.k === tab; })[0] || SB_LABS[0];
+  var h = sbHead('The Lab', 'Three experiments on the live data — nothing in the lab writes to a profile. Profiling inferences has its own home now, one level up in Play.');
   h += '<div class="sb-toolbar sb-labtabs">' + SB_LABS.map(function(l){
     return '<button type="button" class="btn sm ' + (tab === l.k ? 'primary' : 'ghost') + '" data-sb="labtab" data-k="' + l.k + '">' + esc(l.t) + '</button>';
   }).join('') + '</div>';
+  h += '<p class="sb-labsub"><b>' + esc(cur.t) + '.</b> ' + esc(cur.d || '') + '</p>';
   var fn = { paths:sbLab, pool:sbPool, visuals:sbPlay }[tab] || sbLab;
   SB._inLab = true;
   var body = fn();
@@ -12032,6 +12246,7 @@ document.addEventListener('click', function(ev){
   else if(act === 'pfclear'){ SB.pf.sel = null; R(); }
   else if(act === 'pftab'){ SB.pf.tab = t.getAttribute('data-k'); R(); }
   else if(act === 'labtab'){ SB.labtab = t.getAttribute('data-k'); sbStore('ncc_sbx_labtab', SB.labtab); R(); }
+  else if(act === 'discsel'){ SB.dsc.sel = t.getAttribute('data-k'); sbDiscPaintList(); var dl = document.querySelector('.sb-dlist'); var on = dl && dl.querySelector('.sb-drow.on'); if(on) on.scrollIntoView({ block:'nearest' }); }
   else if(act === 'pfasel'){ SB.pf.asel = t.getAttribute('data-k'); R(); }
   else if(act === 'pfaclear'){ SB.pf.asel = null; R(); }
   else if(act === 'pfsel'){ SB.pf.sel = t.getAttribute('data-k'); R(); }
@@ -12325,6 +12540,7 @@ document.addEventListener('input', function(ev){
   if(!t) return;
   var k = t.getAttribute('data-sbi');
   if(k === 'gridq'){ SB.grid.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbGridRefresh, 250); }
+  else if(k === 'discq'){ SB.dsc.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbDiscPaintList, 200); }
   else if(k === 'rawq'){ SB.raw.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') render(); }, 400); }
   else if(k === 'trashq'){ SB.dg.trashQ = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') render(); }, 400); }
   else if(k === 'pfq'){
