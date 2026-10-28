@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (dossier + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.17.0';
+var APP_VERSION = '3.18.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -731,7 +731,7 @@ function poolLoad(){
 }
 function poolSave(){ try{ localStorage.setItem(POOL_KEY, JSON.stringify(POOL.log.slice(0, 60))); }catch(x){} }
 function poolName(id){ var di = (typeof diFromId === 'function') ? diFromId(id) : null; var e = (di != null && typeof D !== 'undefined' && D) ? D.directory[di] : null; return e ? dispName(e) : id; }
-var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Tier', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Lima Charlie notes', merged_into:'Merged into', review_flag:'Review flag' };
+var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Tier', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Lima Charlie notes', merged_into:'Merged into', review_flag:'Review flag', last_contact:'Last known contact', last_contact_online:'Contact online', events:'Timeline' };
 function poolFieldLabel(k){ return POOL_LABELS[k] || String(k).replace(/_/g, ' '); }
 function poolValSummary(k, v){
   v = String(v == null ? '' : v);
@@ -3127,6 +3127,7 @@ function heroHTML(di){
   return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
     (loc ? '<p class="hloc">' + ic('pin', 13) + esc(loc) + '</p>' : '') +
     '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
+    (lcLabel(e) ? '<p class="hlc">' + (lcOnline(e) ? lcGlobe(12) : '') + '<span>Last known contact <b>' + esc(lcLabel(e)) + '</b></span></p>' : '') +
     ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') +
     '<div class="hscore">' + scoreBadgeHTML(di) + '</div></div>' + phHeroHTML(e);
 }
@@ -3284,7 +3285,7 @@ function secView(di, id){
     }).join('') + '</div>';
     if(evs.length) out4 += '<div class="sub-h' + (out4 ? '' : ' first') + '">Events</div><div class="tl">' + evs.slice(0, S.prof.open.ev ? 999 : 6).map(function(o){
       var ev = o.ev;
-      return '<div class="ev"><i></i><time>' + esc(evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
+      return '<div class="ev"><i></i><time>' + esc(ev.kind === 'contact' ? lcDateLabel(ev.date) : evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + lcTag(ev) + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
     }).join('') + '</div>' + (evs.length > 6 && !S.prof.open.ev ? '<button type="button" class="btn ghost sm" data-act="opentog" data-k="ev">Show all ' + evs.length + ' events</button>' : '');
     return out4 || emptyPrompt(di, id, 'Add an event');
   }
@@ -3401,6 +3402,7 @@ function secEdit(di, id){
       lab('Category') + seg('category', CAT_OPTS, gv(e, 'category'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Score pin', 'Optional: a fixed score from 0 to 100 that overrides the computed closeness score') + '<input data-pk="score_pin" type="number" min="0" max="100" step="1" value="' + esc(gv(e, 'score_pin')) + '" placeholder="Not pinned" autocomplete="off">' +
       lab('Known since', 'Pick the year, then the month and day if you know them') + ksRow +
+      lab('Last known contact', 'Year, year-month, or a full date. Tick Online if it was not in person.') + '<div class="ksrow"><input data-pk="last_contact" value="' + esc(gv(e, 'last_contact')) + '" placeholder="e.g. 2026, 2026-10 or 2026-10-28" autocomplete="off" spellcheck="false"><label class="lc-onl"><input type="checkbox" data-act="lconline" data-di="' + di + '"' + (lcOnline(e) ? ' checked' : '') + '> Online</label><span class="kslab">' + esc(lcLabel(e) || 'Not set') + '</span></div>' +
       lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
       '<span class="pted-add"><input class="tadd" data-grpnew placeholder="New group" autocomplete="off"><div class="pted-ac" hidden></div></span></div>';
   }
@@ -3429,12 +3431,17 @@ function secEdit(di, id){
   if(id === 'timeline'){
     var cur = S.prof.evEdit != null ? (e.events || [])[S.prof.evEdit] : null;
     var rows = sortedEvents(e).map(function(o){
-      return '<div class="evrow' + (S.prof.evEdit === o.i ? ' editing' : '') + '"><div><time>' + esc(evDate(o.ev.date)) + '</time><b>' + esc(o.ev.summary || '') + '</b></div>' +
+      return '<div class="evrow' + (S.prof.evEdit === o.i ? ' editing' : '') + '"><div><time>' + esc(o.ev.kind === 'contact' ? lcDateLabel(o.ev.date) : evDate(o.ev.date)) + '</time>' + lcTag(o.ev) + '<b>' + esc(o.ev.summary || '') + '</b></div>' +
         '<div class="ea"><button type="button" class="btn ghost sm" data-act="evedit" data-i="' + o.i + '">Edit</button><button type="button" class="btn ghost sm danger" data-act="evdel" data-i="' + o.i + '">Remove</button></div></div>';
     }).join('');
     cur = cur || {};
     var ps = connPhases(e);
-    return (rows || '<p class="dim">No events yet.</p>') +
+    var lcForm = '<div class="form lcform"><h5>Log contact</h5>' +
+      '<input id="lc-date" placeholder="Date: 2026, 2026-10 or 2026-10-28" autocomplete="off" spellcheck="false">' +
+      '<input id="lc-sum" placeholder="One line: what happened" autocomplete="off">' +
+      '<label class="lc-onl"><input type="checkbox" id="lc-online"> Online</label>' +
+      '<div class="row"><button type="button" class="btn primary sm" data-act="lcadd">Add to log</button></div></div>';
+    return lcForm + (rows || '<p class="dim">No events yet.</p>') +
       '<div class="form"><h5>' + (S.prof.evEdit != null ? 'Edit event' : 'Add event') + '</h5>' +
       '<input type="date" id="ev-date" value="' + esc((cur.date && /^\d{4}-\d{2}-\d{2}$/.test(cur.date)) ? cur.date : todayStr()) + '">' +
       '<input id="ev-sum" placeholder="Headline, e.g. Started a new job" value="' + esc(cur.summary || '') + '" autocomplete="off">' +
@@ -7010,6 +7017,7 @@ var AUD_GAPS = {
   loc:   { tag:'Location',      short:'Location', prompt:'No location on file' },
   rel:   { tag:'Relationship',  short:'Relation', prompt:'Relationship not set' },
   years: { tag:'Years known',   short:'Years',    prompt:'How long have you known them?' },
+  lastc: { tag:'Last contact',  short:'Contact',  prompt:'When was the last contact with them?' },
   phone: { tag:'Phone',         short:'Phone',    prompt:'No phone number' },
   orgs:  { tag:'Organizations', short:'Orgs',     prompt:'No organizations on file' },
   skills:{ tag:'Skills',        short:'Skills',   prompt:'No skills on file' }
@@ -7020,6 +7028,7 @@ function audGaps(e){
   if(!ptLocVal(e)) g.push('loc');
   if(!gv(e, 'relationship')) g.push('rel');
   if(!knownSinceYear(e)) g.push('years');
+  if(!String(gv(e, 'last_contact') || '').trim()) g.push('lastc');
   if(!gv(e, 'phone')) g.push('phone');
   if(!orgsOf(e).length) g.push('orgs');
   if(!tagList(gv(e, 'specialty')).length) g.push('skills');
@@ -7171,6 +7180,7 @@ function audEdHTML(di, gap){
   }
   if(gap === 'loc') return '<div class="pted-add"><input class="aud-in" placeholder="Town, ST — e.g. Potsdam, NY" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'years') return '<div class="pted-add"><input class="aud-in aud-year" inputmode="text" placeholder="Year, e.g. 2019, 2019-03 or 2019-03-14" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
+  if(gap === 'lastc') return '<div class="pted-add"><input class="aud-in aud-year" inputmode="text" placeholder="Year, e.g. 2026, 2026-10 or 2026-10-28" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div><label class="aud-onlrow"><input type="checkbox" class="aud-onl"> Online</label>';
   if(gap === 'phone') return '<input class="aud-in" type="tel" placeholder="Phone number" autocomplete="off">';
   if(gap === 'orgs') return '<div class="pted-add"><input class="aud-in" placeholder="Add an organization" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
   if(gap === 'skills') return '<div class="pted-add"><input class="aud-in" placeholder="Add a skill" autocomplete="off" spellcheck="false"><div class="pted-ac" hidden></div></div>';
@@ -7828,6 +7838,7 @@ function audReady(card){
   var gap = card.getAttribute('data-gap');
   if(gap === 'tier' || gap === 'rel') return !!card.getAttribute('data-pick');
   if(gap === 'years'){ var yi = $('.aud-year', card); return !!(yi && audYearOk(yi.value)); }
+  if(gap === 'lastc'){ var li2 = $('.aud-year', card); return !!(li2 && audYearOk(li2.value)); }
   var inp = $('.aud-in', card);
   return !!(inp && inp.value.trim());
 }
@@ -7858,6 +7869,7 @@ function audComplete(card){
   var v = inp.value.trim();
   if(!v) return false;
   if(gap === 'years') return audYearOk(v);
+  if(gap === 'lastc') return audYearOk(v);
   if(gap === 'loc') return audLocComplete(v);
   if(gap === 'phone') return audPhoneOk(v);
   if(gap === 'skills' || gap === 'orgs'){
@@ -7960,6 +7972,12 @@ function audWriteValue(di, card, gap){
     var yi = $('.aud-year', card), yv = yi ? yi.value.trim() : '';
     if(!audYearOk(yv)) return null;
     return { entry:txn('Set years known', function(){ queuePatch(di, { years_known:yv }); }), val:yv };
+  }
+  if(gap === 'lastc'){
+    var li3 = $('.aud-year', card), lv3 = li3 ? li3.value.trim() : '';
+    if(!audYearOk(lv3)) return null;
+    var lo3 = $('.aud-onl', card), onv3 = lo3 && lo3.checked ? 'yes' : '';
+    return { entry:txn('Set last contact', function(){ queuePatch(di, { last_contact:lv3, last_contact_online:onv3 }); }), val: lv3 + (onv3 ? ' (online)' : '') };
   }
   if(gap === 'phone'){
     var ip = $('.aud-in', card), pv = ip ? ip.value.trim() : '';
@@ -8800,6 +8818,15 @@ function ykDateVal(s){
   return s;
 }
 function ykLabelOf(v){ return knownSinceLabel({ profile:{ years_known: v } }); }
+/* Last known contact (JD 2026-10-28): a typable flexible date (year,
+   year-month, or full date — same grammar as years_known) plus a binary
+   online tick. Contact history itself lives in the events stream as
+   kind:'contact' entries; the field is the headline the hero shows. */
+function lcLabel(e){ var v = String(gv(e, 'last_contact') || '').trim(); return v ? ykLabelOf(v) : ''; }
+function lcOnline(e){ return String(gv(e, 'last_contact_online') || '').trim().toLowerCase() === 'yes'; }
+function lcDateLabel(d){ return d ? ykLabelOf(String(d)) : ''; }
+function lcGlobe(sz){ return '<svg class="lc-globe" width="' + (sz || 12) + '" height="' + (sz || 12) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Online"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg>'; }
+function lcTag(ev){ return ev.kind === 'contact' ? ' <span class="lc-tag">' + (ev.online ? lcGlobe(11) : '') + 'Contact</span>' : ''; }
 function ykPresets(){
   try{ var a = JSON.parse(store('ncc_yk_presets') || '[]'); return Array.isArray(a) ? a.filter(function(x){ return !!ykDateVal(x); }) : []; }catch(x){ return []; }
 }
@@ -9252,9 +9279,24 @@ function onClick(ev){
     case 'evsave': {
       var sum = $('#ev-sum').value.trim(), dt = $('#ev-date').value; if(!sum){ toast('Write a headline first.'); break; }
       var ev = { date:dt || todayStr(), summary:sum }, det = $('#ev-det').value.trim(); if(det) ev.detail = det;
+      var oldEv = S.prof.evEdit != null ? (D.directory[S.prof.di].events || [])[S.prof.evEdit] : null;
+      if(oldEv && oldEv.kind) ev.kind = oldEv.kind;
+      if(oldEv && oldEv.online) ev.online = true;
       var ib = $('#ev-init .on'); if(ib && ib.getAttribute('data-v')) ev.init = ib.getAttribute('data-v');
       var arr2 = (D.directory[S.prof.di].events || []).slice(); if(S.prof.evEdit != null && arr2[S.prof.evEdit]) arr2[S.prof.evEdit] = ev; else arr2.push(ev);
       saveEvents(arr2, S.prof.evEdit != null ? 'Edit event' : 'Add event'); break;
+    }
+    case 'lcadd': {
+      var ld = $('#lc-date').value.trim(), lsum = $('#lc-sum').value.trim(), lon = $('#lc-online').checked;
+      if(!lsum){ toast('Write the one line first.'); break; }
+      if(ld && !audYearOk(ld)){ toast('Date needs a year, a year-month, or a full date.'); break; }
+      var ldate = ld || todayStr();
+      var lev = { date:ldate, summary:lsum, kind:'contact' }; if(lon) lev.online = true;
+      var larr = (D.directory[S.prof.di].events || []).slice(); larr.push(lev);
+      txn('Log contact', function(){ queuePatch(S.prof.di, { events:JSON.stringify(larr) }); });
+      var curLc = String(gv(D.directory[S.prof.di], 'last_contact') || '').trim();
+      if(!curLc || ldate >= curLc){ setField(S.prof.di, 'last_contact', ldate); setField(S.prof.di, 'last_contact_online', lon ? 'yes' : ''); }
+      repaintSec('timeline'); repaintTop(); break;
     }
     case 'cpadd': { var cr = document.createElement('div'); cr.innerHTML = phaseRow({}, $$('#cprows .cprow').length); $('#cprows').appendChild(cr.firstChild); break; }
     case 'cpdel': el.closest('.cprow').remove(); savePhases(); break;
@@ -9387,6 +9429,11 @@ function onChange(ev){
     txn(rv ? 'Set rank' : 'Clear rank', function(){ queuePatch(rdi, { rank: rv }); });
     paintProfile(rdi); return;
   }
+  if(act === 'lconline'){
+    setField(S.prof.di, 'last_contact_online', t.checked ? 'yes' : '');
+    repaintSec('relationship'); repaintTop();
+    return;
+  }
   if(act === 'kssel'){
     var kdi = +t.getAttribute('data-di'), ke = D.directory[kdi]; if(!ke) return;
     var kp = ksParts(ke) || { y:0, mo:0, d:0 }, kpart = t.getAttribute('data-part'), kvv = +t.value || 0;
@@ -9404,6 +9451,7 @@ function onChange(ev){
     var pkV = (t.tagName === 'TEXTAREA') ? t.value : t.value.trim();
     if(k === 'location_on_file') pkV = ptNormLoc(pkV);   /* same normalization the table + Audit editors write */
     if(k === 'years_known' && pkV && !audYearOk(pkV)){ toast('Known since needs a year, or year-month, or a full date: 2019, 2019-03, 2019-03-14.'); repaintSec('relationship'); return; }
+    if(k === 'last_contact' && pkV && !audYearOk(pkV)){ toast('Last known contact needs a year, or year-month, or a full date: 2026, 2026-10, 2026-10-28.'); repaintSec('relationship'); return; }
     setField(S.prof.di, k, pkV);
     if(k === 'first_name' || k === 'last_name') repaintTop();
     if(k === 'public_footprint' || k === 'synopsis') repaintTop();
@@ -9999,6 +10047,7 @@ var SB_COLS = [
   { k:'tier', l:'Tier', v:function(e){ return tierName(e); } },
   { k:'rel', l:'Relationship', v:function(e){ return gv(e, 'relationship') || ''; } },
   { k:'years', l:'Known since', v:function(e){ return gv(e, 'years_known') || ''; }, n:function(e){ return sbYear(gv(e, 'years_known')) || 9999; } },
+  { k:'lastc', l:'Last contact', v:function(e){ return gv(e, 'last_contact') || ''; }, n:function(e){ return sbYear(gv(e, 'last_contact')) || 9999; } },
   { k:'snap', l:'Snapchat', v:function(e){ return (e.snap_handles || []).map(function(x){ return '@' + x; }).join(' '); } },
   { k:'online', l:'Online since', v:function(e){ return e.snap_since ? String(e.snap_since) : ''; }, n:function(e){ return e.snap_since || 9999; } },
   { k:'ig', l:'Instagram', v:function(e){ return effHandle(e) ? '@' + effHandle(e) : ''; } },
