@@ -3268,3 +3268,40 @@ html[data-focus="1"] .phcard{border-radius:8px}
    instead of under a blank band where the header used to be. */
 .pg-photos.ph-idle .pagehead,.pg-photos.ph-idle .phstrip,.pg-photos.ph-idle .phbar{
   height:0;min-height:0;margin:0;padding-top:0;padding-bottom:0;border:none;overflow:hidden}
+
+/* Save Pool (V3.14.0) */
+#poolscrim{position:fixed;inset:0;background:rgba(3,6,10,.48);z-index:140}
+#poolscrim[hidden]{display:none}
+#pool{position:fixed;top:0;right:0;bottom:0;width:min(410px,94vw);background:var(--card);border-left:1px solid var(--line);z-index:141;display:flex;flex-direction:column;box-shadow:-20px 0 44px rgba(0,0,0,.38);animation:poolin var(--d-state,.24s) var(--ease-out,ease-out)}
+#pool[hidden]{display:none}
+@keyframes poolin{from{transform:translateX(24px);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){#pool{animation:none}}
+.pool-hd{display:flex;align-items:center;gap:8px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.pool-hd b{font-size:16px}
+.pool-sub{color:var(--mut);font-size:12.5px}
+.pool-note{padding:10px 16px;color:var(--mut);font-size:12.5px;border-bottom:1px solid var(--line);line-height:1.45}
+#poolbody{flex:1;overflow-y:auto;padding:6px 16px 18px}
+.pool-sec{margin:16px 0 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.pool-sec.bad{color:var(--bad)}
+.pool-sec.ok{color:var(--ok)}
+.pool-it{border:1px solid var(--line);border-radius:2px;padding:10px 12px;margin-bottom:8px;background:var(--bg)}
+.pool-it.stuck{border-color:rgba(224,118,111,.45)}
+.pool-nm{display:flex;align-items:baseline;gap:8px;font-weight:600;font-size:13.5px}
+.pool-st{margin-left:auto;font-size:11px;color:var(--mut);font-weight:500;white-space:nowrap}
+.pool-st.busy{color:var(--warn)}
+.pool-st.ok{color:var(--ok)}
+.pool-st.bad{color:var(--bad)}
+.pool-f{display:flex;gap:8px;font-size:12.5px;padding:2px 0;color:var(--mut)}
+.pool-f span{flex:0 0 108px}
+.pool-f b{color:var(--txt);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pool-err{color:var(--bad);font-size:12px;padding-top:4px;overflow-wrap:anywhere}
+.pool-btns{display:flex;gap:8px;padding-top:8px}
+.pool-empty{padding:28px 0;color:var(--mut);font-size:13px;text-align:center}
+.audpool{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:2px;padding:7px 12px;margin-bottom:10px;font-size:12.5px;color:var(--mut);background:var(--card)}
+.audpool:empty{display:none}
+.audpool b{color:var(--txt)}
+.audpool .ok{color:var(--ok)}
+.audpool .warn{color:var(--warn)}
+.audpool .bad{color:var(--bad)}
+.audpool .pool-last{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audpool .btn{margin-left:auto;flex:0 0 auto}
