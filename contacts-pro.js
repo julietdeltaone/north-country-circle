@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.28.1';
+var APP_VERSION = '3.29.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2329,6 +2329,217 @@ function prow(di, i){
   return '<button type="button" class="prow" data-act="popen" data-di="' + di + '" data-i="' + i + '">' + avatar(e, 'md') +
     '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + (sub ? '<small>' + esc(sub) + '</small>' : '') + prowMeta(e) + '</span></button>';
 }
+/* ============================================================
+   TIMELINE — the shared time view (JD 2026-10-29).
+   JD: anywhere the app sorts by time, the timeline is an option
+   view — and not a default timeline. One component, three
+   surfaces: People (the contact stream for the filtered roster),
+   the Home Last contacts card, and a profile's own event log.
+   Three zooms, each with its own layout language:
+   · Week — seven day columns under big date numerals, today
+     ringed; events are compact cards inside their day.
+   · Month — an editorial rail: sticky day markers on a hairline,
+     event rows flowing down the right side.
+   · Year — month bands with ghost numerals, compact day rows.
+   A density strip under the header draws the period's shape
+   (events per day / per month) so the rhythm is visible before
+   a single name is read. Dates carry their recorded precision:
+   a month-only date never pretends to be a day — it lands in a
+   "dated by month" group inside its month instead of on a
+   fabricated day. Empty periods offer a jump to the nearest
+   period that actually has something in it.
+   Items: { k (ms, period start), prec ('d'|'m'|'y'), di, e, ev }
+   ============================================================ */
+var TL_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var TL_MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var TL_DOW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+var TL_DOW3 = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+var TL_SRC = { 'gmail-seed':'Email', 'ig-seed':'Instagram', 'messenger-seed':'Messenger', 'imessage-seed':'iMessage', 'lc':'Lima Charlie', 'field':'On file' };
+function tlState(scope){
+  if(scope === 'ppl'){ if(!S.tlPpl) S.tlPpl = { mode:'month', off:0, exp:{} }; return S.tlPpl; }
+  if(scope === 'hm'){ if(!S.tlHm) S.tlHm = { mode:'month', off:0, exp:{} }; return S.tlHm; }
+  if(!S.tlProf) S.tlProf = { mode:'year', off:0, exp:{} }; return S.tlProf;
+}
+function tlPrec(dateStr){
+  var s = String(dateStr || '').trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return 'd';
+  if(/^\d{4}-\d{2}$/.test(s)) return 'm';
+  if(/^\d{4}$/.test(s)) return 'y';
+  return null;
+}
+function tlPeriod(mode, off){
+  var now = new Date(), t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if(mode === 'week'){
+    var dow = (t0.getDay() + 6) % 7, st = new Date(t0.getFullYear(), t0.getMonth(), t0.getDate() - dow + off * 7);
+    var en = new Date(st.getFullYear(), st.getMonth(), st.getDate() + 7), last = new Date(en.getTime() - 86400000);
+    return { start:st.getTime(), end:en.getTime(), st:st,
+      label: TL_MON3[st.getMonth()] + ' ' + st.getDate() + ' – ' + TL_MON3[last.getMonth()] + ' ' + last.getDate() + ', ' + last.getFullYear() };
+  }
+  if(mode === 'year'){
+    var y = now.getFullYear() + off, st2 = new Date(y, 0, 1), en2 = new Date(y + 1, 0, 1);
+    return { start:st2.getTime(), end:en2.getTime(), st:st2, label:String(y) };
+  }
+  var m0 = new Date(now.getFullYear(), now.getMonth() + off, 1), m1 = new Date(m0.getFullYear(), m0.getMonth() + 1, 1);
+  return { start:m0.getTime(), end:m1.getTime(), st:m0, label:TL_MON[m0.getMonth()] + ' ' + m0.getFullYear() };
+}
+function tlRel(k){
+  var now = new Date(), t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  var d = Math.round((t0 - new Date(new Date(k).getFullYear(), new Date(k).getMonth(), new Date(k).getDate()).getTime()) / 86400000);
+  if(d === 0) return 'Today';
+  if(d === 1) return 'Yesterday';
+  if(d === -1) return 'Tomorrow';
+  if(d > 1 && d < 7) return d + ' days ago';
+  if(d >= 7 && d < 30) return Math.round(d / 7) + (Math.round(d / 7) === 1 ? ' week ago' : ' weeks ago');
+  if(d < 0 && d > -7) return 'in ' + (-d) + ' days';
+  if(d < 0) return 'in ' + Math.round(-d / 7) + ' weeks';
+  return '';
+}
+function tlMeta(it){
+  var ev = it.ev || {}, parts = [];
+  if(ev.kind === 'contact') parts.push((ev.online ? 'Online contact' : 'Contact'));
+  else if(ev.kind) parts.push(cap(ev.kind));
+  var src = TL_SRC[ev.src || '']; if(src) parts.push(src);
+  if(it.prec === 'm') parts.push('day not recorded');
+  if(it.prec === 'y') parts.push('month not recorded');
+  return parts.join(' · ');
+}
+function tlItemHTML(it, compact, link){
+  var e = it.e, ev = it.ev || {};
+  var sum = String(ev.summary || '').trim();
+  var inner = avatar(e, 'sm') +
+    '<span class="tl-evmain"><span class="tl-evname">' + esc(dispName(e)) + milBadge(e) + '</span>' +
+    (sum ? '<span class="tl-evsum">' + esc(sum) + '</span>' : '') +
+    '<span class="tl-evmeta">' + esc(tlMeta(it)) + '</span></span>' +
+    '<span class="tl-evdot" style="background:' + tierCol(e) + '"></span>';
+  if(link === false) return '<div class="tl-ev' + (compact ? ' compact' : '') + ' static">' + inner + '</div>';
+  return '<button type="button" class="tl-ev' + (compact ? ' compact' : '') + '" data-act="popen" data-di="' + it.di + '">' + inner + '</button>';
+}
+function tlDensity(items, per){
+  var buckets = [], n, i;
+  if(per.mode === 'year'){ n = 12; for(i = 0; i < n; i++) buckets.push(0); items.forEach(function(it){ var d = new Date(it.k); if(it.k >= per.start && it.k < per.end) buckets[d.getMonth()]++; }); }
+  else { n = Math.round((per.end - per.start) / 86400000); for(i = 0; i < n; i++) buckets.push(0); items.forEach(function(it){ if(it.k >= per.start && it.k < per.end && it.prec === 'd') buckets[Math.floor((it.k - per.start) / 86400000)]++; }); }
+  var mx = Math.max.apply(null, buckets.concat([1]));
+  var now = new Date(), t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  return '<div class="tl-density" aria-hidden="true">' + buckets.map(function(c, ix){
+    var isToday = per.mode !== 'year' && per.start + ix * 86400000 === t0;
+    return '<span class="tl-dbar' + (isToday ? ' today' : '') + '" style="height:' + Math.max(8, Math.round(c / mx * 100)) + '%"></span>';
+  }).join('') + '</div>';
+}
+function tlEmpty(scope, st, items, per){
+  var prev = null, next = null;
+  items.forEach(function(it){
+    if(it.k < per.start && (!prev || it.k > prev.k)) prev = it;
+    if(it.k >= per.end && (!next || it.k < next.k)) next = it;
+  });
+  function offFor(it){
+    var d = new Date(it.k), now = new Date();
+    if(st.mode === 'week'){
+      var monday = function(x){ var t = new Date(x.getFullYear(), x.getMonth(), x.getDate()); return t.getTime() - ((t.getDay() + 6) % 7) * 86400000; };
+      return Math.round((monday(d) - monday(now)) / 604800000);
+    }
+    if(st.mode === 'year') return d.getFullYear() - now.getFullYear();
+    return (d.getFullYear() - now.getFullYear()) * 12 + (d.getMonth() - now.getMonth());
+  }
+  var h = '<div class="tl-empty"><p>Nothing logged in this ' + st.mode + '.</p><div class="tl-emptyj">';
+  if(prev) h += '<button type="button" class="btn ghost sm" data-act="tljump" data-scope="' + scope + '" data-off="' + offFor(prev) + '">&larr; ' + esc(tlPeriod(st.mode, offFor(prev)).label) + '</button>';
+  if(next) h += '<button type="button" class="btn ghost sm" data-act="tljump" data-scope="' + scope + '" data-off="' + offFor(next) + '">' + esc(tlPeriod(st.mode, offFor(next)).label) + ' &rarr;</button>';
+  return h + '</div></div>';
+}
+function tlWeekBody(scope, st, items, per){
+  var days = [];
+  for(var i = 0; i < 7; i++){
+    var ds = per.start + i * 86400000, de = ds + 86400000;
+    days.push({ t:ds, items:items.filter(function(it){ return it.prec === 'd' && it.k >= ds && it.k < de; }) });
+  }
+  var now = new Date(), t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  return '<div class="tl-week">' + days.map(function(d){
+    var dt = new Date(d.t);
+    return '<div class="tl-day' + (d.t === t0 ? ' today' : '') + '"><div class="tl-dayhead"><span class="tl-dow">' + TL_DOW3[dt.getDay()] + '</span><span class="tl-dnum">' + dt.getDate() + '</span>' + (d.t === t0 ? '<span class="tl-today">Today</span>' : '') + '</div>' +
+      (d.items.length ? d.items.map(function(it){ return tlItemHTML(it, true, scope !== 'prof'); }).join('') : '<div class="tl-daynone">·</div>') + '</div>';
+  }).join('') + '</div>';
+}
+function tlMonthBody(scope, st, items, per){
+  var dayItems = items.filter(function(it){ return it.prec === 'd'; });
+  var coarse = items.filter(function(it){ return it.prec !== 'd'; });
+  var byDay = {};
+  dayItems.forEach(function(it){ var d = new Date(it.k), key = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); (byDay[key] = byDay[key] || { t:it.k, items:[] }).items.push(it); });
+  var days = Object.keys(byDay).map(function(k){ return byDay[k]; }).sort(function(a, b){ return b.t - a.t; });
+  var h = '<div class="tl-stream">';
+  days.forEach(function(d){
+    var dt = new Date(d.t);
+    h += '<div class="tl-sday"><div class="tl-smark"><span class="tl-sdow">' + TL_DOW3[dt.getDay()] + '</span><span class="tl-snum">' + dt.getDate() + '</span><span class="tl-srel">' + esc(tlRel(d.t)) + '</span></div>' +
+      '<div class="tl-sevs">' + d.items.map(function(it){ return tlItemHTML(it, false, scope !== 'prof'); }).join('') + '</div></div>';
+  });
+  if(coarse.length){
+    h += '<div class="tl-sday coarse"><div class="tl-smark"><span class="tl-sdow">~</span><span class="tl-srel">dated by month</span></div>' +
+      '<div class="tl-sevs">' + coarse.map(function(it){ return tlItemHTML(it, false, scope !== 'prof'); }).join('') + '</div></div>';
+  }
+  return h + '</div>';
+}
+function tlYearBody(scope, st, items, per){
+  var h = '<div class="tl-year">';
+  for(var m = 11; m >= 0; m--){
+    var ms = new Date(per.st.getFullYear(), m, 1).getTime(), me = new Date(per.st.getFullYear(), m + 1, 1).getTime();
+    var mi = items.filter(function(it){ return it.k >= ms && it.k < me; });
+    if(!mi.length) continue;
+    var expKey = per.st.getFullYear() + '-' + m, open = !!st.exp[expKey];
+    var shown = open ? mi : mi.slice(0, 10);
+    h += '<section class="tl-mband"><div class="tl-mhead"><span class="tl-mghost">' + (m + 1) + '</span><div><h4>' + TL_MON[m] + '</h4><em>' + mi.length + ' event' + (mi.length === 1 ? '' : 's') + '</em></div></div>' +
+      '<div class="tl-mevs">' + shown.map(function(it){
+        var dt = new Date(it.k);
+        return '<div class="tl-yrow"><span class="tl-ydate">' + (it.prec === 'd' ? TL_MON3[dt.getMonth()] + ' ' + dt.getDate() : it.prec === 'm' ? TL_MON3[dt.getMonth()] + ' ·' : 'Year only') + '</span>' + tlItemHTML(it, true, scope !== 'prof') + '</div>';
+      }).join('') + '</div>' +
+      (mi.length > 10 ? '<button type="button" class="btn ghost sm tl-more" data-act="tlmore" data-scope="' + scope + '" data-k="' + expKey + '">' + (open ? 'Show less' : 'Show all ' + mi.length) + '</button>' : '') + '</section>';
+  }
+  return h + '</div>';
+}
+function tlShell(scope, items){
+  var st = tlState(scope), per = tlPeriod(st.mode, st.off);
+  var inPer = items.filter(function(it){ return it.k >= per.start && it.k < per.end; }).sort(function(a, b){ return b.k - a.k; });
+  var seg = [['week', 'Week'], ['month', 'Month'], ['year', 'Year']].map(function(o){
+    return '<button type="button" data-act="tlmode" data-scope="' + scope + '" data-m="' + o[0] + '"' + (st.mode === o[0] ? ' class="on"' : '') + '>' + o[1] + '</button>';
+  }).join('');
+  var h = '<div class="tlx"><div class="tl-head"><div class="tl-title"><h3>' + esc(per.label) + '</h3>' +
+    '<span class="tl-count">' + inPer.length + ' event' + (inPer.length === 1 ? '' : 's') + (st.off !== 0 ? '' : ' · current ' + st.mode) + '</span></div>' +
+    '<div class="tl-nav"><button type="button" class="ib" data-act="tlnav" data-scope="' + scope + '" data-d="-1" aria-label="Previous ' + st.mode + '">' + ic('chevl', 16) + '</button>' +
+    (st.off !== 0 ? '<button type="button" class="btn ghost sm" data-act="tlnav" data-scope="' + scope + '" data-d="0">Today</button>' : '') +
+    '<button type="button" class="ib" data-act="tlnav" data-scope="' + scope + '" data-d="1" aria-label="Next ' + st.mode + '">' + ic('chevr', 16) + '</button>' +
+    '<div class="seg tl-seg" role="group" aria-label="Timeline zoom">' + seg + '</div></div></div>' +
+    tlDensity(inPer, per);
+  if(!inPer.length) h += tlEmpty(scope, st, items, per);
+  else if(st.mode === 'week') h += tlWeekBody(scope, st, inPer, per);
+  else if(st.mode === 'month') h += tlMonthBody(scope, st, inPer, per);
+  else h += tlYearBody(scope, st, inPer, per);
+  return h + '</div>';
+}
+/* Contact-stream items for a roster slice: every contact event on
+   file, plus one point for a person whose Last Contact stamp exists
+   without any event behind it — so the timeline and the By-last-
+   contact view always agree about who has been contacted. */
+function tlContactItems(dis){
+  var out = [];
+  dis.forEach(function(di){
+    var e = D.directory[di], has = false;
+    (e.events || []).forEach(function(ev){
+      if(!ev || ev.kind !== 'contact') return;
+      var k = flexKey(ev.date), p = tlPrec(ev.date);
+      if(k == null || !p) return;
+      has = true;
+      out.push({ k:k, prec:p, di:di, e:e, ev:ev });
+    });
+    if(!has){
+      var v = String(gv(e, 'last_contact') || '').trim(), k2 = flexKey(v), p2 = tlPrec(v);
+      if(k2 != null && p2) out.push({ k:k2, prec:p2, di:di, e:e, ev:{ kind:'contact', date:v, summary:'', online:lcOnline(e), src:'field' } });
+    }
+  });
+  return out;
+}
+function tlRepaint(scope){
+  if(scope === 'ppl') paintPeople();
+  else if(scope === 'hm') viewHome($('#view'));
+  else repaintSec('timeline');
+}
+
 /* People right column: filter shortcuts + counts by tier and group.
    Tucked until opened; S.ppl.side remembers an explicit open/close. */
 function viewPeople(v){
@@ -2343,7 +2554,7 @@ function viewPeople(v){
      banner now — search, tier chips and the More/Columns buttons sit
      in the banner's second row, so the table starts right under it. */
   v.innerHTML = '<div class="page people"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
-    '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="reach"' + (f.view === 'reach' ? ' class="on"' : '') + '>Reach back out</button></div></div>' +
+    '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="reach"' + (f.view === 'reach' ? ' class="on"' : '') + '>Reach back out</button><button type="button" data-act="pplview" data-v="timeline"' + (f.view === 'timeline' ? ' class="on"' : '') + '>Timeline</button></div></div>' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
     '<div class="tool-r">' +
@@ -2383,6 +2594,16 @@ function paintPeople(){
   var box = $('#plist'); if(!box) return;
   var dis = peopleFiltered();
   var body = '';
+  if(dis.length && S.ppl.view === 'timeline'){
+    /* Timeline view (JD 2026-10-29): the contact stream for the
+       filtered roster, in the shared timeline component. S.ppl.cur
+       follows the visible order for pager context. */
+    var items = tlContactItems(dis);
+    S.ppl.cur = dis;
+    box.innerHTML = tlShell('ppl', items);
+    var tc = $('#pcount'); if(tc) tc.textContent = items.length + ' contact events on file';
+    return;
+  }
   if(dis.length && S.ppl.view === 'reach'){
     /* Reach back out (JD 2026-10-28): everyone with at least one contact
        event or a note on file, longest-quiet first (Last Contact
@@ -3467,10 +3688,26 @@ function secView(di, id){
     if(ps.length) out4 += '<div class="sub-h first">Phases</div><div class="phases">' + ps.map(function(p){
       return '<div class="ph"><b>' + esc(p.l || 'Untitled phase') + '</b><small>' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</small>' + (p.n ? '<p>' + esc(p.n) + '</p>' : '') + '</div>';
     }).join('') + '</div>';
-    if(evs.length) out4 += '<div class="sub-h' + (out4 ? '' : ' first') + '">Events</div><div class="tl">' + evs.slice(0, S.prof.open.ev ? 999 : 6).map(function(o){
-      var ev = o.ev;
-      return '<div class="ev"><i></i><time>' + esc(ev.kind === 'contact' ? lcDateLabel(ev.date) : evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + lcTag(ev) + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
-    }).join('') + '</div>' + (evs.length > 6 && !S.prof.open.ev ? '<button type="button" class="btn ghost sm" data-act="opentog" data-k="ev">Show all ' + evs.length + ' events</button>' : '');
+    if(evs.length){
+      var tlVis = !!S.prof.tlVisual;
+      out4 += '<div class="sub-h' + (out4 ? '' : ' first') + '">Events</div>' +
+        '<div class="tl-secbar"><div class="seg" role="group" aria-label="Events view"><button type="button" data-act="tltog" data-v="list"' + (!tlVis ? ' class="on"' : '') + '>List</button><button type="button" data-act="tltog" data-v="visual"' + (tlVis ? ' class="on"' : '') + '>Timeline</button></div></div>';
+      if(tlVis){
+        var pitems = [];
+        (e.events || []).forEach(function(ev){
+          if(!ev) return;
+          var k = flexKey(ev.date), p = tlPrec(ev.date);
+          if(k == null || !p) return;
+          pitems.push({ k:k, prec:p, di:di, e:e, ev:ev });
+        });
+        out4 += tlShell('prof', pitems);
+      } else {
+        out4 += '<div class="tl">' + evs.slice(0, S.prof.open.ev ? 999 : 6).map(function(o){
+          var ev = o.ev;
+          return '<div class="ev"><i></i><time>' + esc(ev.kind === 'contact' ? lcDateLabel(ev.date) : evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + lcTag(ev) + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
+        }).join('') + '</div>' + (evs.length > 6 && !S.prof.open.ev ? '<button type="button" class="btn ghost sm" data-act="opentog" data-k="ev">Show all ' + evs.length + ' events</button>' : '');
+      }
+    }
     return out4 || emptyPrompt(di, id, 'Add an event');
   }
   if(id === 'files'){
@@ -5924,9 +6161,13 @@ function hmContactsCard(){
       (prev ? '<span class="hm-lcprev">' + esc(prev) + '</span>' : '') + '</span>' +
       '<span class="hm-lcwhen">' + esc(when) + '</span></button>';
   }
-  return '<section class="card hm-blk"><header><h3>Last contacts</h3><em class="cnt">' + rows.length + ' with contact on file</em><span class="sp"></span><a class="hma-link" href="#/people">Reach back out ' + ic('arrow', 12) + '</a></header><div class="cbody">' +
-    '<div class="hm-lc-cols"><div><h4>Most recent</h4>' + recent.map(function(r){ return row(r, 'recent'); }).join('') + '</div>' +
-    '<div><h4>Quiet the longest</h4>' + quiet.map(function(r){ return row(r, 'quiet'); }).join('') + '</div></div>' +
+  var tlOn = S.hmTlView === 'timeline';
+  return '<section class="card hm-blk"><header><h3>Last contacts</h3><em class="cnt">' + rows.length + ' with contact on file</em><span class="sp"></span>' +
+    '<div class="seg hm-tlseg" role="group" aria-label="Last contacts view"><button type="button" data-act="hmtlview" data-v="list"' + (!tlOn ? ' class="on"' : '') + '>List</button><button type="button" data-act="hmtlview" data-v="timeline"' + (tlOn ? ' class="on"' : '') + '>Timeline</button></div>' +
+    '<a class="hma-link" href="#/people">Reach back out ' + ic('arrow', 12) + '</a></header><div class="cbody">' +
+    (tlOn ? tlShell('hm', tlContactItems(people()))
+      : '<div class="hm-lc-cols"><div><h4>Most recent</h4>' + recent.map(function(r){ return row(r, 'recent'); }).join('') + '</div>' +
+        '<div><h4>Quiet the longest</h4>' + quiet.map(function(r){ return row(r, 'quiet'); }).join('') + '</div></div>') +
     '</div></section>';
 }
 /* --- Home: Network at a glance (JD 2026-10-28) — the full map
@@ -9394,7 +9635,13 @@ function onClick(ev){
     case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); var pmb = $('#sheetwrap [data-act="ptmv"][data-k="' + pmk + '"][data-d="' + pmd + '"]'); if(!pmb || pmb.disabled) pmb = $('#sheetwrap [data-act="ptvis"][data-k="' + pmk + '"]'); if(pmb && !pmb.disabled) pmb.focus(); } break; }
     case 'morefilters': openMoreFilters(); break;
     case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:S.ppl.view }; closeSheet(); viewPeople($('#view')); break;
-    case 'pplview': { var pvv = el.getAttribute('data-v'); S.ppl.view = (pvv === 'recent' || pvv === 'reach') ? pvv : 'list'; viewPeople($('#view')); break; }
+    case 'pplview': { var pvv = el.getAttribute('data-v'); S.ppl.view = (pvv === 'recent' || pvv === 'reach' || pvv === 'timeline') ? pvv : 'list'; viewPeople($('#view')); break; }
+    case 'tlmode': { var tls1 = tlState(el.getAttribute('data-scope')); tls1.mode = el.getAttribute('data-m'); tls1.off = 0; tls1.exp = {}; tlRepaint(el.getAttribute('data-scope')); break; }
+    case 'hmtlview': S.hmTlView = el.getAttribute('data-v') === 'timeline' ? 'timeline' : 'list'; viewHome($('#view')); break;
+    case 'tltog': S.prof.tlVisual = el.getAttribute('data-v') === 'visual'; repaintSec('timeline'); break;
+    case 'tlnav': { var tls2 = tlState(el.getAttribute('data-scope')), tld = +el.getAttribute('data-d'); tls2.off = tld === 0 ? 0 : tls2.off + tld; tlRepaint(el.getAttribute('data-scope')); break; }
+    case 'tljump': { var tls3 = tlState(el.getAttribute('data-scope')); tls3.off = +el.getAttribute('data-off'); tlRepaint(el.getAttribute('data-scope')); break; }
+    case 'tlmore': { var tls4 = tlState(el.getAttribute('data-scope')), tlk = el.getAttribute('data-k'); tls4.exp[tlk] = !tls4.exp[tlk]; tlRepaint(el.getAttribute('data-scope')); break; }
     /* profile chrome */
     case 'menu': { var mp = $('.menu-pop', el.parentNode); var was = mp.hidden; $$('.menu-pop').forEach(function(m){ m.hidden = true; }); mp.hidden = !was; if(!mp.hidden){ var mfb = $('button', mp); if(mfb) mfb.focus(); } break; }
     case 'export': $$('.menu-pop').forEach(function(m){ m.hidden = true; }); doExport(di, 'dl'); break;
