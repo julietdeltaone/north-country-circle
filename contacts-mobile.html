@@ -150,6 +150,12 @@ html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .glasscard{margin-top:12px;padding:14px;border-radius:16px;background:linear-gradient(180deg,var(--glass2),var(--glass));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border:1px solid var(--line);box-shadow:var(--sh)}
 .glasscard h2{font:700 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--txt);margin-bottom:10px}
 .qa-grid{display:flex;flex-direction:column;gap:8px;min-width:0}
+.briefcard .brow{display:flex;gap:12px;padding:6px 0;border-top:1px solid var(--line)}
+.briefcard .brow:first-of-type{border-top:none;padding-top:0}
+.briefcard .blab{flex:0 0 84px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);padding-top:3px}
+.briefcard .bval{font-size:13.5px;line-height:1.45;color:var(--txt);min-width:0}
+.briefcard .bprov{color:var(--dim);font-size:11px;white-space:nowrap}
+.briefcard .bcare .blab{color:var(--acc)}
 .qa-item{border:1px solid var(--line);border-radius:12px;background:var(--glass);overflow:hidden;min-width:0}
 .qa-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;min-height:50px;padding:10px 12px;color:var(--txt);font-weight:600}
 .qa-btn small{display:block;font-weight:400;color:var(--mut);font-size:12px}
@@ -276,7 +282,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.1.0';
+var MOBILE_VERSION = '1.2.0';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -944,6 +950,108 @@ function viewMembers(v, crumb, title, dis){
   $('#mback').addEventListener('click', function(){ history.back(); });
 }
 
+/* ---------- Brief (question-fuel package, mirrors the desktop card) ----------
+   Five derived lines from data already on file; nothing is stored, and a
+   line exists only when its data exists. Mobile has no changes.json feed,
+   so In motion derives from the footprint alone (Live Records findings
+   land there as bullets anyway). */
+var BRIEF_OPEN_RE = /left off|ask about|follow[\s-]?up/i;
+var BRIEF_CARE_RE = /\b(died|death|passed away|funeral|obituar\w*|cancer|hospice|terminal)\b/i;
+var BRIEF_MON = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+function briefTextDate(t){
+  var m = String(t || '').match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{4})\b/i);
+  if(m) return (+m[2]) * 100 + (BRIEF_MON[m[1].slice(0, 3).toLowerCase()] || 1);
+  var y = String(t || '').match(/\b(19|20)\d{2}\b/);
+  return y ? (+y[0]) * 100 + 1 : null;
+}
+function briefClean(t){ return String(t || '').replace(/\s*\([^()]*\)\s*$/, '').trim(); }
+function briefSentence(text){
+  var parts = String(text || '').split(/(?<=[.!?])\s+/);
+  for(var i = 0; i < parts.length; i++){ if(BRIEF_OPEN_RE.test(parts[i])) return parts[i].trim(); }
+  return '';
+}
+function briefClip(t, n){ t = String(t || '').trim(); return t.length > n ? t.slice(0, n - 1).trim() + '…' : t; }
+var BRIEF_JD = undefined;
+function briefJdGroups(){
+  if(BRIEF_JD === undefined){
+    BRIEF_JD = [];
+    D.directory.forEach(function(x){ if(pkey(x) === 'ig:jdmeyers_') BRIEF_JD = personGroups(x); });
+  }
+  return BRIEF_JD;
+}
+function briefOf(e){
+  var out = {};
+  var evs = (e.events || []).filter(function(ev){ return ev && ev.date; });
+  var contacts = evs.filter(function(ev){ return ev.kind === 'contact'; })
+    .sort(function(a, b){ return (flexKey(b.date) || 0) - (flexKey(a.date) || 0); });
+  var lastEv = contacts[0] || null;
+  var blocks = String(gv(e, 'public_footprint') || '').split(/\n+/).map(function(s){ return s.replace(/^•\s*/, '').trim(); }).filter(Boolean);
+  var items = [];
+  blocks.forEach(function(t){
+    String(t).split(/\s*•\s*/).forEach(function(s){ s = s.trim(); if(s) items.push(s); });
+  });
+  var motion = '', bestK = -1;
+  items.forEach(function(t){ var k = briefTextDate(t); if(k != null && k > bestK){ bestK = k; motion = t; } });
+  if(!motion && items.length) motion = items[items.length - 1];
+  if(motion) out.motion = briefClip(briefClean(motion), 180);
+  var note = lcNote(e).trim();
+  /* The stamp is the headline: the mobile bake's event stream can lag the
+     Sheet, so a newer stamp outranks an older last event. */
+  var stampK = flexKey(gv(e, 'last_contact'));
+  if(lastEv && (stampK == null || (flexKey(lastEv.date) || 0) >= stampK)) out.last = fmtDate(lastEv.date) + (lastEv.summary ? ' — ' + briefClip(lastEv.summary, 140) : '');
+  else if(note) out.last = 'Note waiting — ' + briefClip(note, 140);
+  else if(String(gv(e, 'last_contact') || '').trim()) out.last = fmtDate(gv(e, 'last_contact'));
+  var ask = '', prov = '';
+  if(note){ var s1 = briefSentence(note); if(s1){ ask = s1; prov = 'from your last note'; } }
+  if(!ask && lastEv && lastEv.summary){ var s2 = briefSentence(lastEv.summary); if(s2){ ask = s2; prov = 'from your last note'; } }
+  if(!ask && out.motion){ ask = out.motion; prov = 'from their record'; }
+  if(!ask && evs.length){
+    var sev = evs.slice().sort(function(a, b){ return (flexKey(b.date) || 0) - (flexKey(a.date) || 0); })[0];
+    if(sev && sev.summary){ ask = briefClip(sev.summary, 160); prov = 'from their record'; }
+  }
+  if(!ask){ var ints = tagList(gv(e, 'interests')); if(ints.length){ ask = ints[0]; prov = 'from their record'; } }
+  if(ask) out.ask = { text: briefClip(ask, 180), prov: prov };
+  var shared = personGroups(e).filter(function(g){ return briefJdGroups().indexOf(g) >= 0; });
+  if(shared.length) out.shared = 'Both in ' + shared[0];
+  else {
+    var ka = knownAssociates(e), bestA = null, bestAk = -1;
+    ka.forEach(function(nb){
+      var adi = BYN[(nb.u || '').toLowerCase()]; if(adi == null) adi = BYN[(nb.d || '').toLowerCase()];
+      if(adi == null) return;
+      var ae = D.directory[adi], k = flexKey(gv(ae, 'last_contact')) || 0;
+      (ae.events || []).forEach(function(ev){ var ek = flexKey(ev.date) || 0; if(ek > k) k = ek; });
+      if(k > bestAk){ bestAk = k; bestA = { di: adi, e: ae }; }
+    });
+    if(bestA) out.shared = { name: dispName(bestA.e), di: bestA.di };
+    else if(ka.length) out.shared = { name: ka[0].d || ka[0].u, di: null };
+  }
+  var nowD = new Date();
+  var cutoff = new Date(nowD.getFullYear() - 2, nowD.getMonth(), nowD.getDate()).getTime();
+  var care = null;
+  evs.forEach(function(ev){
+    if(ev.kind === 'contact') return;
+    var k = flexKey(ev.date); if(k == null || k < cutoff) return;
+    if(BRIEF_CARE_RE.test(String(ev.summary || '') + ' ' + String(ev.detail || ''))){
+      if(!care || k > care.k) care = { k: k, ev: ev };
+    }
+  });
+  if(care) out.careful = fmtDate(care.ev.date) + ' — ' + briefClip(care.ev.summary || '', 140);
+  return out;
+}
+function briefHTMLm(e){
+  var b = briefOf(e), rows = '';
+  function row(lab, html, cls){
+    return '<div class="brow' + (cls ? ' ' + cls : '') + '"><span class="blab">' + lab + '</span><div class="bval">' + html + '</div></div>';
+  }
+  if(b.motion) rows += row('In motion', esc(b.motion));
+  if(b.last) rows += row('Last contact', esc(b.last));
+  if(b.ask) rows += row('Ask about', esc(b.ask.text) + ' <small class="bprov">' + esc(b.ask.prov) + '</small>');
+  if(b.shared) rows += row('Shared world', typeof b.shared === 'string' ? esc(b.shared) : esc(b.shared.name));
+  if(b.careful) rows += row('Careful', esc(b.careful), 'bcare');
+  if(!rows) return '';
+  return '<div class="glasscard briefcard"><h2>Brief</h2>' + rows + '</div>';
+}
+
 /* ---------- Contact page ---------- */
 function kvRow(k, valHTML){
   if(!valHTML) return '';
@@ -969,6 +1077,7 @@ function viewPerson(v, di){
     '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
     (lc ? '<p class="hlc">Last contact <b>' + esc(fmtDate(lc)) + '</b>' + (lcOnline(e) ? ' · online' : '') + '</p>' : '<p class="hlc">No contact logged yet</p>') +
     '</div></div>' +
+    briefHTMLm(e) +
     /* quick entry — the point of this page */
     '<div class="glasscard"><h2>Quick entry</h2><div class="qa-grid">' +
     '<div class="qa-item"><button type="button" class="qa-btn" data-qa="stamp" aria-expanded="false"><span>Stamp last contact<small>Date defaults to today · online toggle</small></span>' + CHEV + '</button>' +
@@ -979,7 +1088,7 @@ function viewPerson(v, di){
       '<p class="savestat" id="st-stat"></p></div></div>' +
     '<div class="qa-item"><button type="button" class="qa-btn" data-qa="lc" aria-expanded="false"><span>Lima Charlie note<small>A note for Luna to apply on the next run</small></span>' + CHEV + '</button>' +
     '<div class="qa-form" id="form-lc" hidden>' +
-      '<label class="lab" for="lc-text">Note</label><textarea id="lc-text" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now.">' + esc(lcNote(e)) + '</textarea>' +
+      '<label class="lab" for="lc-text">Note — where did you leave off?</label><textarea id="lc-text" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now.">' + esc(lcNote(e)) + '</textarea>' +
       '<button type="button" class="btn primary" id="lc-save">Save note</button>' +
       '<p class="savestat" id="lc-stat"></p></div></div>' +
     '<div class="qa-item"><button type="button" class="qa-btn" data-qa="log" aria-expanded="false"><span>Log a contact / event<small>Adds a Timeline entry</small></span>' + CHEV + '</button>' +
@@ -1130,14 +1239,17 @@ function paintSections(di){
       ((ev.kind === 'contact' || ev.type === 'contact') ? '<span class="tag">Contact</span>' : '') + (ev.online ? '<span class="tag">Online</span>' : '') + '</div>' +
       (ev.detail ? '<div class="tdet">' + esc(ev.detail) + '</div>' : '') + '</li>';
   }).join('') + '</ul>' : '<p class="none">No timeline entries yet.</p>';
-  /* EVERY section starts collapsed — nothing is opened here, by design. */
+  /* EVERY section starts collapsed — nothing is opened here, by design.
+     Order follows the question-fuel layout (JD 2026-10-28): connection and
+     timeline first, the About material consolidated into one "Background"
+     accordion at the bottom. */
   wrap.innerHTML =
-    secHTML('details', 'Contact details', '', contactBody) +
-    secHTML('about', 'About', '', aboutBody) +
     secHTML('connection', 'Connection', assoc.length ? String(assoc.length) : '', connBody) +
+    secHTML('timeline', 'Timeline', evs.length ? String(evs.length) : '', tlBody) +
     secHTML('groups', 'Groups & orgs', groups.length + orgBits.length ? String(groups.length + orgBits.length) : '', goBody) +
     secHTML('photos', 'Photos', photos.length ? String(photos.length) : '', photoBody) +
-    secHTML('timeline', 'Timeline', evs.length ? String(evs.length) : '', tlBody);
+    secHTML('details', 'Contact details', '', contactBody) +
+    secHTML('about', 'Background', '', aboutBody);
   $$('#secs .sec-h').forEach(function(h){
     h.addEventListener('click', function(){
       var sec = h.parentNode, open = sec.classList.toggle('open');
