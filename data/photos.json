@@ -1708,13 +1708,14 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "Instagram profile @dgruneisen (display name \"Don\").",
+   "evidence": "Senior portrait, Clarksonian 1977 (Clarkson University yearbook), p. 177: captioned 'Donald W. Gruneisen, Accounting', bottom row, right. Cropped from the full-resolution scan in the New York Heritage digital archive (Clarkson University collection) and hosted locally. His profile ties him to Clarkson University in 1977. Replaces his prior Instagram-CDN primary, which expired in Oct 2026.",
    "name": "Don Gruneisen",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/11282714_1640282739592072_249603953_a.jpg?_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xNTAuQzMifQ%3D%3D&_nc_ohc=olQ49SxpFRcQ7kNvwGhWOqF&_nc_oc=Adquu7x960LWyCT2Xmv7HfDwwQIcm1wHtOlS4q7gFCQJ6pNGVpIMik2RD1eN1gZzXg0KhseeE_375vMlyUQnOawm&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMw4NW-3Gqjix6RaUlMnRHZ2oGrwbEqHgrzCWp-MMZJNQ&oe=6AE013F1",
-   "source_page": "https://www.instagram.com/dgruneisen/",
+   "photo_url": "photos/don-gruneisen-clarkson-1977.jpg",
+   "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/clarkson/id/7362",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added_approx": "Oct 2026",
+   "added": "2026-10-29"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
