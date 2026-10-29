@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.34.0';
+var APP_VERSION = '3.35.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -109,6 +109,14 @@ document.addEventListener('keydown', function(ev){
   if (ev.key !== 'Escape') return;
   var pop = document.getElementById('tpop');
   if (pop && !pop.hidden) { ev.stopPropagation(); closeThemePop(); }
+});
+/* Search dropdown: hovering a row moves the keyboard highlight to it,
+   so mouse and arrows never point at different rows (UI arena 2026-10-29). */
+document.addEventListener('mouseover', function(ev){
+  var row = ev.target && ev.target.closest ? ev.target.closest('#gsr .gsi-row') : null;
+  if(!row || row.classList.contains('on')) return;
+  document.querySelectorAll('#gsr .gsi-row.on').forEach(function(r){ r.classList.remove('on'); });
+  row.classList.add('on');
 });
 
 /* ---- Focus mode (V3.12.0) ----
@@ -712,7 +720,7 @@ var POOL_KEY = 'ncc_save_journal';
 var POOL_MAX_TRIES = 5;
 var POOL_TIMEOUT = 25000;
 var OUT_KEY = 'ncc_outbox_v2';
-var UNDO = { stack:[], redo:[], collect:null, suspend:false };
+var UNDO = { stack:[], redo:[], collect:null, suspend:false, lastKind:'' };
 
 function outLoad(){
   var a = [];
@@ -867,6 +875,7 @@ function txn(label, fn){
   if(entry.items.length && !UNDO.suspend){
     UNDO.stack.push(entry); if(UNDO.stack.length > 100) UNDO.stack.shift();
     UNDO.redo = [];
+    UNDO.lastKind = 'txn';
     paintUndo();
   }
   return entry;
@@ -880,6 +889,10 @@ function applyEntry(entry, useNext){
   } finally { UNDO.suspend = false; }
 }
 function doUndo(){
+  /* Undo honesty (UI arena 2026-10-29): if the newest change was a text
+     edit, it is not on this stack — say so instead of popping an older,
+     unrelated structural change. */
+  if(UNDO.lastKind === 'text'){ UNDO.lastKind = ''; toast('That was a text edit. It is not on the undo stack — change it in the field.'); return; }
   var en = UNDO.stack.pop();
   if(!en){ toast('Nothing to undo.'); return; }
   applyEntry(en, false); UNDO.redo.push(en); paintUndo();
@@ -898,6 +911,7 @@ function setField(di, k, v){
   if(gv(e, k) === v) return;
   var p = {}; p[k] = v;
   UNDO.suspend = true; try{ queuePatch(di, p); } finally { UNDO.suspend = false; }
+  UNDO.lastKind = 'text';
 }
 function outKick(){
   clearTimeout(OUT.timer);
@@ -1873,7 +1887,9 @@ function emptyState(title, body){ return '<div class="empty"><h3>' + esc(title) 
 /* ---------- sheet (dialog on desktop, bottom sheet on phones) ---------- */
 function openSheet(title, body, o){
   o = o || {};
-  closeSheet();
+  var ae = document.activeElement;
+  S.sheetReturn = null; closeSheet();
+  S.sheetReturn = (ae && ae !== document.body && ae.focus) ? ae : null;
   var w = $('#sheetwrap');
   w.innerHTML = '<div class="scrim" data-act="sheetx"></div><div class="sheet' + (o.wide ? ' wide' : '') + '" role="dialog" aria-modal="true" aria-label="' + esc(title) + '">' +
     '<header><h2>' + esc(title) + '</h2><button type="button" class="ib" data-act="sheetx" aria-label="Close">' + ic('x', 18) + '</button></header>' +
@@ -1886,6 +1902,8 @@ function closeSheet(){
   var w = $('#sheetwrap'); if(!w || w.hidden) return;
   w.hidden = true; w.innerHTML = ''; document.body.classList.remove('sheet-open');
   var f = S.sheetOnClose; S.sheetOnClose = null; if(f) f();
+  var r = S.sheetReturn; S.sheetReturn = null;
+  if(r && document.contains(r)){ try{ r.focus(); }catch(x){} }
 }
 function askEditKey(){ try{ poolClose(); }catch(x){}
 
@@ -1920,9 +1938,10 @@ function renderChrome(){
   var items = NAV.map(function(n){
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span></a>';
   }).join('');
+  var ffExit = ''; try{ if(localStorage.getItem('ncc_force_full') && window.innerWidth <= 899) ffExit = '<a href="#" class="nv" data-act="gomobile">' + ic('phone', 20) + '<span>Mobile version</span></a>'; }catch(x){}
   $('#rail').innerHTML = '<a class="brand" href="#/home" aria-label="Contacts Pro"><i></i><b>Contacts Pro</b></a>' +
     '<div class="navlist">' + items + '</div>' +
-    '<div class="railfoot">' +
+    '<div class="railfoot">' + ffExit +
     '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
     '<small id="fresh">' + (D ? 'Data ' + esc(D.updated || '') : '') + '</small></div>';
   /* NAV includes Home since V2.28.0, so the tabs are just the NAV items;
@@ -2045,6 +2064,27 @@ function searchPeople(q, limit, pool){
   out.sort(function(a, b){ return a.s - b.s || (D.directory[b.di].strength || 0) - (D.directory[a.di].strength || 0); });
   return out.slice(0, limit || 8).map(function(o){ return o.di; });
 }
+/* Why a search row matched, when the match was not on the name itself
+   (UI arena 2026-10-29): checks the same fields matchText() searches. */
+function searchReason(e, q){
+  var toks = String(q || '').toLowerCase().split(/\s+/).filter(Boolean);
+  var nm = dispName(e).toLowerCase();
+  var miss = toks.filter(function(t){ return nm.indexOf(t) < 0; });
+  if(!miss.length) return '';
+  var fields = [
+    ['Skill', gv(e, 'specialty')], ['Employer', gv(e, 'companies')],
+    ['School', gv(e, 'universities')], ['Group', personGroups(e).join(', ')],
+    ['Church', gv(e, 'churches')], ['Location', [ptLocVal(e), e.city || '', e.hometown || ''].filter(Boolean).join(', ')]
+  ];
+  for(var f = 0; f < fields.length; f++){
+    var items = String(fields[f][1] || '').split(/[,;]/).map(function(s){ return s.trim(); }).filter(Boolean);
+    for(var i = 0; i < items.length; i++){
+      var it = items[i].toLowerCase();
+      if(miss.some(function(t){ return it.indexOf(t) >= 0; })) return fields[f][0] + ' · ' + items[i];
+    }
+  }
+  return '';
+}
 function paintSearch(){
   var inp = $('#gs'), box = $('#gsr'); if(!inp || !box) return;
   var q = inp.value.trim();
@@ -2052,9 +2092,11 @@ function paintSearch(){
   var hits = searchPeople(q, 7);
   box.innerHTML = hits.map(function(di, i){
     var e = D.directory[di];
+    var rsn = searchReason(e, q);
     return '<button type="button" class="gsi-row' + (i === 0 ? ' on' : '') + '" data-act="gsopen" data-di="' + di + '">' + avatar(e, 'sm') +
-      '<span><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + '</button>';
-  }).join('') + (hits.length ? '<button type="button" class="gsi-all" data-act="gsall">See all matches in People</button>' : '<div class="gsi-none">No one matches</div>');
+      '<span><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + (rsn ? '<span class="gsr-rsn">' + esc(rsn) + '</span> · ' : '') + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></span>' + '</button>';
+  }).join('') + (hits.length ? '<button type="button" class="gsi-all" data-act="gsall">See all matches in People</button>' :
+    '<div class="gsi-none">No one matches</div><button type="button" class="gsi-all" data-act="gsall">See in People</button><button type="button" class="gsi-all" data-act="gsclear">Clear search</button>');
   box.hidden = false;
 }
 
@@ -2697,7 +2739,7 @@ function paintPeople(){
     S.ppl.cur = dis;
     body = dis.length ? '<div class="ptwrap"><table class="ptable">' + ptColgroupHTML() + ptheadHTML() + '<tbody>' + dis.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>' : '';
   }
-  box.innerHTML = body + (!dis.length ? emptyState('No one matches.', 'Loosen a filter or clear the search.') : '');
+  box.innerHTML = body + (!dis.length ? '<div class="empty"><h3>No one matches.</h3><p>Loosen a filter or clear the search.</p><div class="row"><button type="button" class="btn sm" data-act="pclear">Clear search and filters</button></div></div>' : '');
   var c = $('#pcount'); if(c) c.textContent = dis.length === people().length ? dis.length + ' people' : dis.length + ' of ' + people().length + ' people';
 }
 function openMoreFilters(){
@@ -2771,7 +2813,7 @@ var PTCELL = {
   years: function(e){ var y = knownSinceYear(e); return y ? String(y) : ''; },
   phone: function(e){ var p = gv(e, 'phone'); return p ? esc(fmtPhone(p)) : ''; },
   email: function(e){ return esc(gv(e, 'email')); },
-  lastc: function(e){ var v = String(gv(e, 'last_contact') || '').trim(); return v ? '<span class="ptlc">' + esc(lcLabel(e)) + (lcOnline(e) ? ' ' + lcGlobe(11) : '') + '</span>' : ''; },
+  lastc: function(e){ var v = String(gv(e, 'last_contact') || '').trim(); if(!v) return ''; return lcOnline(e) ? '<span class="ptlc onl">Online · ' + esc(lcLabel(e)) + '</span>' : '<span class="ptlc">' + esc(lcLabel(e)) + '</span>'; },
   firstc: function(e){ var v = firstContactOf(e); return v ? esc(lcDateLabel(v)) : ''; }
 };
 /* column state: [{k, on}] in display order */
@@ -3401,7 +3443,7 @@ function viewProfile(v){
     '<button type="button" data-act="newdoc" data-di="' + di + '">' + ic('file', 16) + 'New Drive doc</button>' +
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
-    '<section id="p-hero" class="hero"></section>' +
+    '<section id="p-hero" class="hero"></section><div id="p-lastline"></div>' +
     '<div class="pmove" id="pm-a"><div class="pmove-h">About ' + esc(dispName(e).split(' ')[0]) + '</div><div class="pgrid" id="pmg-a"></div></div>' +
     '<div class="pmove" id="pm-c"><div class="pmove-h">Connection</div><div class="pgrid" id="pmg-c"></div></div><div id="p-add"></div></div>';
   paintProfile(di);
@@ -3414,6 +3456,7 @@ function paintProfile(di){
      reader's place across it — scroll position survives a re-render. */
   var _sy = $('#p-hero') ? window.scrollY : null;
   $('#p-hero').innerHTML = heroHTML(di);
+  var ll1 = $('#p-lastline'); if(ll1) ll1.innerHTML = lastLineHTML(di);
   ['a', 'c'].forEach(function(mv){
     var secs = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id); })
       .sort(function(x, y){ return x.ord - y.ord; })
@@ -3446,8 +3489,23 @@ function repaintTop(){
   if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
   if(!$('#p-hero')) return;
   $('#p-hero').innerHTML = heroHTML(di);
+  var ll2 = $('#p-lastline'); if(ll2) ll2.innerHTML = lastLineHTML(di);
 }
 
+/* The latest filed contact event as one plain line under the hero
+   (UI arena 2026-10-29: Teams B + C merged item). Exactly as filed —
+   date label + the preserved thread sentence, no derivation, no card.
+   The Log contact door at its end opens the existing Timeline editor. */
+function lastLineHTML(di){
+  var e = D.directory[di]; if(!e) return '';
+  var cs = (e.events || []).filter(function(ev){ return ev && ev.kind === 'contact' && ev.date; })
+    .sort(function(a, b){ return (flexKey(b.date) || 0) - (flexKey(a.date) || 0); });
+  if(!cs.length) return '';
+  var ev = cs[0];
+  return '<span class="pll-when">' + esc(lcDateLabel(ev.date)) + '</span>' +
+    (ev.summary ? '<span class="pll-sum">' + esc(briefClip(ev.summary, 170)) + '</span>' : '') +
+    '<button type="button" class="pll-log" data-act="logcontact">Log contact</button>';
+}
 function heroHTML(di){
   var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ');
   /* Location on file gets its own line under the name (JD 2026-10-15): resolved location_on_file -> city -> hometown, normalized; the @handle never renders in the hero (it lives in the Contact card). */
@@ -3463,7 +3521,7 @@ function heroHTML(di){
   var meta = [];
   if(loc) meta.push('<span class="hm-loc">' + ic('pin', 13) + esc(loc) + '</span>');
   meta.push('<span>' + esc(sub || 'Not yet classified') + '</span>');
-  if(lcLabel(e)) meta.push('<span class="hm-lc">' + (lcOnline(e) ? lcGlobe(12) : '') + 'Last known contact <b>' + esc(lcLabel(e)) + '</b></span>');
+  if(lcLabel(e)) meta.push('<span class="hm-lc">' + (lcOnline(e) ? 'Last contact online ' : 'Last known contact ') + '<b>' + esc(lcLabel(e)) + '</b></span>');
   var brow = ds + cs + scoreBadgeHTML(di);
   return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
     '<p class="hmeta">' + meta.join('<span class="hsep">·</span>') + '</p>' +
@@ -3586,7 +3644,7 @@ function secHTML(di, id){
        toggle and no header Done, so there is one obvious save path. */
     acts = id === 'lima' ? '' :
       (id !== 'persona' ? '<label class="wv" title="Insufficient data: this section stops counting against the profile"><input type="checkbox" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '"' + (waived ? ' checked' : '') + '><span>Insufficient data</span></label>' : '') +
-      '<button type="button" class="btn sm primary" data-act="secdone" data-sec="' + id + '">Done</button>';
+      '<button type="button" class="btn sm primary" data-act="secdone" data-sec="' + id + '">Close</button>';
   } else acts = '<button type="button" class="ib sm" data-act="secedit" data-sec="' + id + '" aria-label="Edit ' + d.t + '" title="Edit">' + ic('edit', 15) + '</button>';
   var body;
   if(waived && !editing){
@@ -3741,7 +3799,7 @@ function secView(di, id){
     return (ka.length || links.length) ? out3 : emptyPrompt(di, id, 'Add family or known associates');
   }
   if(id === 'timeline'){
-    var evs = sortedEvents(e), ps = connPhases(e).slice().sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); }), out4 = '';
+    var evs = sortedEvents(e), ps = connPhases(e).slice().sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); }), out4 = '<div class="tl-logrow"><button type="button" class="btn ghost sm" data-act="logcontact">' + ic('edit', 13) + 'Log contact</button></div>';
     if(ps.length) out4 += '<div class="sub-h first">Phases</div><div class="phases">' + ps.map(function(p){
       return '<div class="ph"><b>' + esc(p.l || 'Untitled phase') + '</b><small>' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</small>' + (p.n ? '<p>' + esc(p.n) + '</p>' : '') + '</div>';
     }).join('') + '</div>';
@@ -3765,7 +3823,7 @@ function secView(di, id){
         }).join('') + '</div>' + (evs.length > 6 && !S.prof.open.ev ? '<button type="button" class="btn ghost sm" data-act="opentog" data-k="ev">Show all ' + evs.length + ' events</button>' : '');
       }
     }
-    return out4 || emptyPrompt(di, id, 'Add an event');
+    return evs.length || ps.length ? out4 : out4 + emptyPrompt(di, id, 'Add an event');
   }
   if(id === 'files'){
     var fs = e.files || [], mf = msgFor(e);
@@ -6412,15 +6470,10 @@ function chgToggle(el){
   if(!wasOpen){ wrap.classList.add('open'); el.setAttribute('aria-expanded', 'true'); }
 }
 function dtAnimate(){
-  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Numbers render at their final values in the markup (UI arena
+     2026-10-29 — the 800ms count-up from literal 0 could be misread at a
+     glance on the trust surface). Only the ring/bar settle remains. */
   setTimeout(function(){
-    document.querySelectorAll('.asnum[data-n]').forEach(function(el){
-      var target = parseFloat(el.getAttribute('data-n'));
-      if(reduced){ el.textContent = target; return; }
-      var t0 = null;
-      function step(ts){ if(!t0) t0 = ts; var p = Math.min(1, (ts - t0) / 800); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(step); }
-      requestAnimationFrame(step);
-    });
     var ring = document.querySelector('.asring-fg');
     if(ring) ring.style.strokeDashoffset = ring.getAttribute('data-off');
     var bar = document.querySelector('.asbar-fill');
@@ -6501,9 +6554,9 @@ function viewDaily(v){
       }).join('') + '</div></div>';
   }
   var stats = '<section class="card lrflow asanim" style="--d:0ms"><div class="cbody"><div class="asstats">' +
-    '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b class="asnum" data-n="' + (DT.checked || []).length + '">0</b><span>Checked today</span></div>' +
-    '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + (DT.filed || []).length + '">0</b><span>Updated records</span></div>' +
-    '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + freshList.length + '">0</b><span>New records</span></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b class="asnum">' + (DT.checked || []).length + '</b><span>Checked today</span></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum">' + (DT.filed || []).length + '</b><span>Updated records</span></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum">' + freshList.length + '</b><span>New records</span></div>' +
     '<div class="asstat asstat-ring"><svg class="asring" width="62" height="62" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/><text class="asring-t" x="42" y="48" text-anchor="middle">' + Math.round(covPct) + '%</text></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this cycle</span></div></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('calendar', 16) + '</span><b>' + esc(fmtD(DT.date)) + '</b><span>Latest brief</span></div>' +
     '</div>' + frBar + '</div></section>';
@@ -9752,6 +9805,10 @@ function onClick(ev){
     case 'gsopen': { var box = $('#gsr'); if(box) box.hidden = true; var gw = (S.ppl.cur && S.ppl.cur.length) ? S.ppl.cur : []; if(gw.indexOf(di) < 0) gw = people(); openPerson(di, ctxFrom('People', gw, gw.indexOf(di), 'people')); break; }
     case 'gopen': { var gmem = (GRPV.shown && GRPV.shown.length) ? GRPV.shown : (GRPV.detail ? grpMembersOf(GRPV.detail.kind, GRPV.detail.name) : []); if(gmem.indexOf(di) < 0) gmem = [di]; var gctx = ctxFrom(GRPV.detail ? GRPV.detail.name : 'Groups', gmem, gmem.indexOf(di), 'groups'); if(GRPV.detail) gctx.grp = GRPV.detail.kind + '/' + encodeURIComponent(GRPV.detail.name); openPerson(di, gctx); break; }
     case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; go('people'); break; }
+    case 'gsclear': { var gi = $('#gs'); if(gi){ gi.value = ''; paintSearch(); gi.focus(); } break; }
+    case 'logcontact': { S.prof.edit.timeline = true; if($('#sec-timeline')) repaintSec('timeline'); else paintProfile(S.prof.di);
+      setTimeout(function(){ var s = $('#lc-sum'); if(s){ s.focus(); try{ s.scrollIntoView({ block:'center' }); }catch(x){} } }, 30); break; }
+    case 'gomobile': { try{ localStorage.removeItem('ncc_force_full'); }catch(x){} location.href = 'contacts-mobile.html'; break; }
     case 'openedit': openPerson(di, (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
     case 'openfam': S.fam.focus = di; go('family'); break;
     case 'shownet': S.net.sel = di; go('network'); break;
@@ -10171,7 +10228,13 @@ function onKey(ev){
     return;
   }
   if(t.id === 'gs'){
-    if(ev.key === 'Enter'){ ev.preventDefault(); var first = $('#gsr .gsi-row'); if(first) first.click(); else if(t.value.trim()){ S.ppl.q = t.value; go('people'); } }
+    if(ev.key === 'Enter'){ ev.preventDefault(); var first = $('#gsr .gsi-row.on') || $('#gsr .gsi-row'); if(first) first.click(); else if(t.value.trim()){ S.ppl.q = t.value; go('people'); } }
+    else if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+      var rows = Array.prototype.slice.call(document.querySelectorAll('#gsr .gsi-row'));
+      if(rows.length){ ev.preventDefault(); var ci = rows.findIndex(function(r){ return r.classList.contains('on'); });
+        var ni = ev.key === 'ArrowDown' ? Math.min(rows.length - 1, ci + 1) : Math.max(0, ci - 1);
+        rows.forEach(function(r, j){ r.classList.toggle('on', j === ni); }); }
+    }
     else if(ev.key === 'Escape'){ t.value = ''; paintSearch(); t.blur(); }
     return;
   }
@@ -10184,7 +10247,7 @@ function onKey(ev){
       return;
     }
     if(S.route.name === 'audit' && S.audit && S.audit.mode === 'rapid'){ audSetMode('cards'); return; }
-    if(S.route.name === 'profile'){ var open = Object.keys(S.prof.edit); if(open.length){ S.prof.edit = {}; paintProfile(S.prof.di); } else back('people'); }
+    if(S.route.name === 'profile'){ var open = Object.keys(S.prof.edit); if(open.length){ var lastSec = open[open.length - 1]; delete S.prof.edit[lastSec]; if(lastSec === 'timeline'){ S.prof.evEdit = null; } if(!Object.keys(S.prof.edit).length){ S.prof.degEdit = null; } paintProfile(S.prof.di); } else back('people'); }
     return;
   }
   if(isField) return;
