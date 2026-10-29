@@ -3938,3 +3938,17 @@ body[data-mdl="1"] #view{max-width:none;width:100%;margin:0;padding:0;flex:1;min
   .page.profile .hphoto-box{width:88px;height:88px}
   #p-hero .hmain h1{font-size:24px}
 }
+
+/* Correspondence window (V3.32.0): iMessage thread timeline */
+.sheet.wide{width:min(780px,calc(100vw - 32px))}
+.msg-head{margin:0 0 6px;line-height:1.55}
+.msg-warn{color:var(--warn)}
+.msg-list{display:flex;flex-direction:column;padding:4px 2px 10px}
+.msg-day{align-self:center;margin:16px 0 9px;padding:3px 11px;border:1px solid var(--line);border-radius:var(--pill);font:600 10.5px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--dim)}
+.msg-day:first-child{margin-top:2px}
+.msg-row{display:flex;flex-direction:column;max-width:78%;margin:0 0 7px}
+.msg-row.in{align-self:flex-start;align-items:flex-start}
+.msg-row.out{align-self:flex-end;align-items:flex-end}
+.msg-bub{padding:8px 12px;border:1px solid var(--line);border-radius:2px;background:var(--card2);color:var(--txt);font-size:13.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left}
+.msg-row.out .msg-bub{background:var(--accbg);border-color:var(--line2)}
+.msg-row time{margin-top:3px;font-size:10.5px;color:var(--dim)}
