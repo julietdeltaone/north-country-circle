@@ -3966,8 +3966,9 @@ body[data-mdl="1"] #view{max-width:none;width:100%;margin:0;padding:0;flex:1;min
 .hrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px}
 /* Contact card: short facts pair two per row */
 .ipair{display:grid;grid-template-columns:1fr 1fr;gap:10px 26px;padding:8px 0;border-bottom:1px solid var(--line)}
-.ihalf{display:grid;grid-template-columns:100px 1fr;gap:10px;min-width:0;align-items:baseline}
-.ihalf .iv{min-width:0;overflow-wrap:anywhere}
+.ihalf{display:block;min-width:0}
+.ihalf .il{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+#sec-identity .ihalf .iv{display:block;margin-top:2px;font-size:13.5px;min-width:0;overflow-wrap:anywhere}
 @media (max-width:899px){.ipair{grid-template-columns:1fr}}
 /* Relationship tiles: label and value on one line, auto-fit across */
 .tiles{grid-template-columns:repeat(auto-fit,minmax(175px,1fr))}
