@@ -10538,7 +10538,7 @@ function mdlCadence(c, gen){
       '<p class="mdl-note">These profiles have a last-contact stamp but fewer than 3 dated contacts, so there is no rhythm to judge against. Plain recency only.</p><div class="mdl-chips">' +
       c.recent.slice(0, 24).map(function(e){ return '<span class="mdl-chip">' + mdlPerson(e.pid, e.name) + '<small>' + esc(e.last_label) + '</small></span>'; }).join('') + '</div></div>';
   }
-  return mdlChapter('01', 'Model one &middot; cadence', c.question, c.headline, h);
+  return mdlChapter('01', 'Model one \u00b7 cadence', c.question, c.headline, h);
 }
 
 /* --- chapter 2: who has news ------------------------------------ */
@@ -10548,7 +10548,7 @@ function mdlNews(n){
   h += '<div class="mdl-grid2"><div class="mdl-panel"><h3 class="mdl-ph">What makes someone likely to have news?</h3>' +
     n.segments.map(function(s){
       return mdlBar(s.label, s.rate / maxr * 100,
-        Math.round(s.rate * 100) + '%' + (s.lift ? ' &middot; ' + s.lift + '&times;' : ''),
+        Math.round(s.rate * 100) + '%' + (s.lift ? ' \u00b7 ' + s.lift + '\u00d7' : ''),
         s.rate >= n.sample.base_rate ? '' : 'dim');
     }).join('') +
     '<p class="mdl-note">Each rate is the share of checks inside that group that produced a filing, over ' + n.sample.checks + ' labeled checks; the &times; compares it with the overall rate. Groups overlap &mdash; one person can sit in several.</p></div>';
@@ -10556,7 +10556,7 @@ function mdlNews(n){
   n.next_up.forEach(function(e, i){
     h += '<div class="mdl-prow"><span class="mdl-rank">' + (i + 1) + '</span>' +
       '<span class="mdl-pmain">' + mdlPerson(e.pid, e.name) +
-      (e.why.length ? '<small>' + esc(e.why.join(' &middot; ')) + '</small>' : '<small>No strong signals either way</small>') + '</span>' +
+      (e.why.length ? '<small>' + esc(e.why.join(' \u00b7 ')) + '</small>' : '<small>No strong signals either way</small>') + '</span>' +
       '<span class="mdl-meter"><span class="mdl-fill" style="--w:' + e.score + '%"></span></span>' +
       '<span class="mdl-oval">' + e.score + ' / 100</span></div>';
   });
@@ -10574,7 +10574,7 @@ function mdlNews(n){
   } else {
     h += mdlAcc('&mdash;', 'Still collecting.', 'With ' + n.sample.checks + ' labeled checks across ' + n.sample.runs + ' runs, the history is too thin for an honest holdout test. The rates above are real counts; the ranking is a first read and is labeled as such until the sample grows.');
   }
-  return mdlChapter('02', 'Model two &middot; Live Records yield', n.question, n.headline, h);
+  return mdlChapter('02', 'Model two \u00b7 Live Records yield', n.question, n.headline, h);
 }
 
 /* --- chapter 3: same person twice ------------------------------- */
@@ -10601,7 +10601,7 @@ function mdlPairs(p){
     h += '<div class="mdl-ruled mdl-rev"><h3 class="mdl-ph">Already ruled: two people</h3>' +
       p.ruled_apart.map(function(r){ return '<p><b>' + esc(r.a) + '</b> and <b>' + esc(r.b) + '</b> &mdash; ' + esc(r.note) + '</p>'; }).join('') + '</div>';
   }
-  return mdlChapter('03', 'Model three &middot; record linkage', p.question, p.headline, h);
+  return mdlChapter('03', 'Model three \u00b7 record linkage', p.question, p.headline, h);
 }
 
 /* --- the section -------------------------------------------------- */
