@@ -685,12 +685,13 @@
    "type": null
   },
   {
-   "evidence": "No source links on file.",
+   "evidence": "POSSIBLE in the 2026-10-29 video-lane workaround pass. Solo frame of the speaker addressing the camera, served by YouTube's own image CDN as the poster frame of 'Calvary Baptist Church 06/28/2020' (youtube.com/watch?v=v0SN5P_zsq0). The channel was verified via YouTube oEmbed as 'Calvary Baptist Church of Canton, NY' — the Canton church, not Massena — and Brad Ingram is that church's pastor (his directory seed), preaching his own congregation's service during COVID-era remote recording. No on-screen name or title credit on this asset, so graded possible; his title-credited cover video (eRwJw7VfKnI) serves only placeholder thumbnails on every variant. Frame viewed and cropped by the coordinator.",
    "name": "Brad Ingram",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "photos/brad-ingram.jpg",
+   "source_page": "https://www.youtube.com/watch?v=v0SN5P_zsq0",
+   "status": "possible",
+   "type": "Sermon video frame",
+   "added": "2026-10-29"
   },
   {
    "evidence": "CONFIRMED on the 2026-10-28 photo rerun (JD's catch: the original pass recorded the source links without extracting the photos). The Thumbtack business profile for Window Cleaning Plus carries this as the pro's profile portrait; the same profile's Credentials section names Brayden Amo, and the BBB names him as the business owner. Image URL verified loading (972x972) and visually matched to the profile portrait.",
@@ -2976,13 +2977,20 @@
    "type": null
   },
   {
-   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed). New Hope Community Church's own leadership page captions this photo 'Church Council 2021 – 2022: (from left to right) Brendan Lennox, Jim Holt, Glen Ewart, Allison Aldrich, Marianne Augenstein, Karen Stauffer, Aaron Reardon, Ed Noble, Victoria Hocking, Martin Walker, Juby Varghese and Carol Hoyt' — Jim Holt is second from left. The same page names him Lead Pastor, matching the directory record (Lead Pastor, New Hope Community Church, Potsdam).",
+   "evidence": "CONFIRMED in the 2026-10-29 video-lane workaround pass. Solo frame of Jim Holt preaching, served by YouTube's own image CDN as the poster frame of 'Life in Community by Jim Holt' on the New Hope Potsdam channel (youtube.com/watch?v=6J1rhrcGpWE) — the title itself credits him as the speaker, and he is Lead Pastor of New Hope Community Church, Potsdam, matching the directory record. Frame viewed and cropped by the coordinator. Supersedes the 2021-2022 church council group photo as primary (kept under also).",
    "name": "Jim Holt",
-   "photo_url": "https://www.newhopepotsdam.org/wp-content/uploads/2021/05/Church-Council-2021-1024x576.jpg",
-   "source_page": "https://www.newhopepotsdam.org/new-here/our-leadership-team/",
+   "photo_url": "photos/jim-holt.jpg",
+   "source_page": "https://www.youtube.com/watch?v=6J1rhrcGpWE",
    "status": "confirmed",
-   "type": "Church council group photo",
-   "added": "2026-10-28"
+   "type": "Sermon video frame (solo)",
+   "added": "2026-10-29",
+   "also": [
+    {
+     "url": "https://www.newhopepotsdam.org/wp-content/uploads/2021/05/Church-Council-2021-1024x576.jpg",
+     "note": "Previous primary (filed 2026-10-28): New Hope Community Church Council 2021-2022 group photo, captioned on the church leadership page; Jim Holt is second from left.",
+     "source_page": "https://www.newhopepotsdam.org/new-here/our-leadership-team/"
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -6156,6 +6164,15 @@
    "source_page": "https://nyheritage.contentdm.oclc.org/digital/api/collection/sllboces/id/141922/download",
    "type": "Group photo crop (caption-order position)",
    "evidence": "POSSIBLE in the 2026-10-29 public-lanes photo hunt (Lane 3: yearbook archives). Artistic Congress group photo, Sandstoner 2013 (Potsdam Central High School yearbook), printed p. 129: the caption reads 'Row 1: Allyssa Theobald, Stephanie Reasoner, Marie Amell' for the three seated students, and the crop centers the middle one (red top, glasses). Anchors: printed caption naming her in this photo + Potsdam Central HS Class of 2014 / SUNY Canton seeds. Graded possible under the group-photo rule: identity rests on caption-order position mapping, verified by the coordinator against the full page image. Hosted locally.",
+   "added": "2026-10-29"
+  },
+  {
+   "evidence": "CONFIRMED in the 2026-10-29 video-lane workaround pass (publisher-side route). The photo sits on his own Merit Pages profile (meritpages.com/nicholasmatott), which names him 'Nicholas Matott, Majoring in Legal Studies, SUNY Canton, From Canton, NY' — every element matching his directory seeds (Canton NY; Potsdam High School; SUNY Canton Legal Studies, President's List). A self-posted profile photo on his own named profile; viewed by the coordinator. 280x280 as published by Merit.",
+   "name": "Nicholas Matott",
+   "photo_url": "photos/nicholas-matott.jpg",
+   "source_page": "https://meritpages.com/nicholasmatott",
+   "status": "confirmed",
+   "type": "Profile photo (Merit Pages)",
    "added": "2026-10-29"
   }
  ]
