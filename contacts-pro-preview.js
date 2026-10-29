@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.33.1';
+var APP_VERSION = '3.34.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1901,9 +1901,9 @@ var NAV = [
   { k:'home',    l:'Home',    ic:'home' },
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
-  { k:'daily',   l:'Live Records', ic:'search' },
+  { k:'daily',   l:'Live Records', ic:'sparkle' },
   { k:'council', l:'Council', ic:'award' },
-  { k:'lists',   l:'Master List', ic:'groups' },
+  { k:'lists',   l:'Master List', ic:'file' },
   { k:'photos',  l:'Photos', ic:'camera' },
   { k:'network', l:'Network', ic:'network' },
   { k:'family',  l:'Family',  ic:'tree' },
@@ -6334,7 +6334,7 @@ var DT = null, DT_LOADING = false;
 function dtLoad(){
   if(DT || DT_LOADING) return;
   DT_LOADING = true;
-  fetch('data/daily-ten.json', { cache:'no-store' })
+  fetch('data/daily-ten.json', { cache:'no-cache' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
     .then(function(d){ DT = d; DT_LOADING = false; repaintForData('dt'); })
     .catch(function(){ DT = { empty:true }; DT_LOADING = false; repaintForData('dt'); });
@@ -6343,7 +6343,7 @@ var CH = null, CH_LOADING = false;
 function chLoad(){
   if(CH || CH_LOADING) return;
   CH_LOADING = true;
-  fetch('data/changes.json', { cache:'no-store' })
+  fetch('data/changes.json', { cache:'no-cache' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
     .then(function(d){ CH = d; CH_LOADING = false; repaintForData('ch'); })
     .catch(function(){ CH = { entries:[] }; CH_LOADING = false; repaintForData('ch'); });
@@ -6591,7 +6591,7 @@ function phInvalidate(){ PH_BY_NAME = null; }
 function phLoad(){
   if(PH || PH_LOADING) return;
   PH_LOADING = true;
-  fetch('data/photos.json', { cache:'no-store' })
+  fetch('data/photos.json', { cache:'no-cache' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
     .then(function(d){ PH = d; phInvalidate(); PH_LOADING = false; repaintForData('ph'); })
     .catch(function(){ PH = { empty:true }; PH_LOADING = false; repaintForData('ph'); });
@@ -6613,7 +6613,7 @@ var MSG = null, MSG_LOADING = false;
 function msgLoad(){
   if(MSG || MSG_LOADING) return;
   MSG_LOADING = true;
-  fetch('data/messages.json', { cache:'no-store' })
+  fetch('data/messages.json', { cache:'no-cache' })
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
     .then(function(d){ MSG = d; MSG_LOADING = false; repaintForData('msg'); })
     .catch(function(){ MSG = { empty:true }; MSG_LOADING = false; });
@@ -10571,7 +10571,7 @@ function sbAfterRender(){
 var MDL = { data:null, loading:null };
 function mdlEnsure(){
   if(MDL.data || MDL.loading) return;
-  MDL.loading = fetch('data/models.json', { cache:'no-store' })
+  MDL.loading = fetch('data/models.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(j){ MDL.data = j; MDL.loading = null;
       if(S.route.name === 'sandbox' && SB.tool === 'models') render(); })
@@ -12039,7 +12039,7 @@ function cnProfLoad(cb){
   if(cb) CN_PROF_CBS.push(cb);
   if(CN_PROF_LOADING) return;
   CN_PROF_LOADING = true;
-  fetch('data/profiles.json', { cache:'no-store' })
+  fetch('data/profiles.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(rows){ CN_PROF_LOADING = false; CN_PROF = rows; cnProfFlush(); })
     .catch(function(){ CN_PROF_LOADING = false; cnProfFlush(); });
@@ -12053,7 +12053,7 @@ function cnLoad(){
   if(CN || CN_LOADING) return;
   CN_LOADING = true;
   if(typeof SB !== 'undefined' && SB.council) CN = SB.council;
-  fetch('data/council.json', { cache:'no-store' })
+  fetch('data/council.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(d){ CN_LOADING = false; if(d) CN = d; if(S.route && S.route.name === 'council') render(); })
     .catch(function(){ CN_LOADING = false; });
@@ -13942,7 +13942,7 @@ function boot(){
   var tries = 0;
   (function attempt(){
     tries++;
-    fetch('data/dossier.json', { cache:'no-store' })
+    fetch('data/dossier.json', { cache:'no-cache' })
       .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(d){
         D = d;
