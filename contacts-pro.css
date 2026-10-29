@@ -4007,3 +4007,16 @@ body[data-mdl="1"] #view{max-width:none;width:100%;margin:0;padding:0;flex:1;min
 .tl-logrow{display:flex;justify-content:flex-end;margin-bottom:8px}
 .gsr-rsn{color:var(--acc2);font-weight:600}
 .ptlc.onl{color:var(--mut)}
+
+/* Possible photos queue (V3.36.0, JD 2026-10-29) */
+.ph-poss{border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:8px;padding:14px 16px;margin:0 0 16px;background:var(--card)}
+.ph-poss-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.ph-poss-h h3{font:600 16px var(--serif);margin:0}
+.ph-poss-h span{color:var(--mut);font-size:12.5px}
+.ph-poss-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.ph-poss-th{flex:none;width:54px;height:54px;border:0;border-radius:6px;overflow:hidden;padding:0;cursor:pointer;background:var(--line)}
+.ph-poss-th img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-poss-mid{flex:1;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ph-poss-mid small{flex-basis:100%;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph-poss-act{flex:none;display:flex;gap:8px}
+.hphoto-verdict{flex-basis:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
