@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.29.0';
+var APP_VERSION = '3.29.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2495,7 +2495,10 @@ function tlYearBody(scope, st, items, per){
 }
 function tlShell(scope, items){
   var st = tlState(scope), per = tlPeriod(st.mode, st.off);
-  var inPer = items.filter(function(it){ return it.k >= per.start && it.k < per.end; }).sort(function(a, b){ return b.k - a.k; });
+  var inPer = items.filter(function(it){ return it.k >= per.start && it.k < per.end; }).sort(function(a, b){
+    if(b.k !== a.k) return b.k - a.k;
+    return dispName(a.e).localeCompare(dispName(b.e));
+  });
   var seg = [['week', 'Week'], ['month', 'Month'], ['year', 'Year']].map(function(o){
     return '<button type="button" data-act="tlmode" data-scope="' + scope + '" data-m="' + o[0] + '"' + (st.mode === o[0] ? ' class="on"' : '') + '>' + o[1] + '</button>';
   }).join('');
