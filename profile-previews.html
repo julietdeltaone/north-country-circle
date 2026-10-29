@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contacts Pro — Profile Skin Previews</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #3a3f46; }
+  /* ---------- switcher chrome ---------- */
+  .pvbar { position: sticky; top: 0; z-index: 50; background: #17191d; color: #e8eaed; padding: 10px 16px 12px; box-shadow: 0 2px 14px rgba(0,0,0,.45); }
+  .pvbar .t { font-size: 11px; letter-spacing: .18em; font-weight: 700; color: #9aa3ad; text-transform: uppercase; }
+  .pvrow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pvbtn { border: 1px solid #3c424b; background: #22262c; color: #cfd4da; font: 600 12.5px/1 inherit; padding: 7px 11px; border-radius: 8px; cursor: pointer; }
+  .pvbtn b { color: #fff; margin-right: 5px; }
+  .pvbtn.on { background: #e30613; border-color: #e30613; color: #fff; }
+  .pvdesc { margin-top: 9px; font-size: 13px; color: #c3c9d1; max-width: 980px; line-height: 1.45; }
+  .pvdesc b { color: #fff; }
+  .stage { padding: 22px 14px 60px; }
+  .design { display: none; max-width: 1060px; margin: 0 auto; }
+  .design.on { display: block; }
+  .ph { background: repeating-linear-gradient(45deg, #b9c0c9, #b9c0c9 10px, #aeb6c0 10px, #aeb6c0 20px); display: flex; align-items: center; justify-content: center; color: #5a636e; font-weight: 700; letter-spacing: .08em; }
+</style>
+</head>
+<body>
+<div class="pvbar">
+  <div class="t">Contacts Pro · Profile skin previews · same profile (Haven Fern) in all 8</div>
+  <div class="pvrow" id="pvrow"></div>
+  <div class="pvdesc" id="pvdesc"></div>
+</div>
+<div class="stage">
+
+<!-- ================= 1 · FILLED SECTIONS ================= -->
+<section class="design" id="d1">
+<style>
+  #d1 { background:#eef0f3; border-radius:18px; padding:22px; color:#171a1f; font-size:14px; }
+  #d1 .hero { background:#171a1f; color:#fff; border-radius:14px; padding:18px 20px; display:flex; gap:16px; align-items:center; }
+  #d1 .ava { width:62px; height:62px; border-radius:50%; background:#e30613; color:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; flex:none; }
+  #d1 h1 { font-size:25px; letter-spacing:.02em; }
+  #d1 .meta { color:#b9bfc9; font-size:13px; margin-top:3px; }
+  #d1 .score { margin-left:auto; text-align:center; background:#23262d; border-radius:12px; padding:8px 14px; }
+  #d1 .score b { font-size:22px; display:block; }
+  #d1 .score span { font-size:10px; letter-spacing:.14em; color:#9aa3ad; }
+  #d1 .photo { width:86px; height:104px; border-radius:10px; flex:none; font-size:10px; }
+  #d1 .grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px; }
+  #d1 .card { border-radius:14px; padding:0 0 12px; overflow:hidden; }
+  #d1 .card.wide { grid-column: span 3; }
+  #d1 .card.half { grid-column: span 2; }
+  #d1 .ch { padding:8px 14px; font-size:11px; font-weight:800; letter-spacing:.16em; color:#fff; display:flex; justify-content:space-between; }
+  #d1 .cb { padding:12px 14px 0; line-height:1.55; }
+  #d1 .c-syn { background:#e3e6ec; } #d1 .c-syn .ch { background:#3c434e; }
+  #d1 .c-con { background:#dbe7fd; } #d1 .c-con .ch { background:#2563eb; }
+  #d1 .c-bak { background:#e9e2fd; } #d1 .c-bak .ch { background:#7c3aed; }
+  #d1 .c-web { background:#fceed3; } #d1 .c-web .ch { background:#d97706; }
+  #d1 .c-fil { background:#d5f0ec; } #d1 .c-fil .ch { background:#0f766e; }
+  #d1 .c-rel { background:#fde3e4; } #d1 .c-rel .ch { background:#e30613; }
+  #d1 table { width:100%; border-collapse:collapse; }
+  #d1 td { padding:5px 0; vertical-align:top; }
+  #d1 td.k { width:96px; font-size:11px; font-weight:700; letter-spacing:.08em; color:#5a636e; padding-right:10px; }
+  #d1 .src { color:#8a6d1a; font-size:12px; font-weight:600; }
+  #d1 .rec { padding:7px 0; border-bottom:1px dashed rgba(0,0,0,.14); }
+  #d1 .rec:last-child { border-bottom:none; }
+  #d1 .pill { display:inline-block; background:rgba(255,255,255,.65); border-radius:20px; padding:3px 10px; font-size:12.5px; font-weight:600; margin:0 5px 6px 0; }
+  #d1 .file { display:flex; justify-content:space-between; padding:6px 0; }
+</style>
+  <div class="hero">
+    <div class="ava">H</div>
+    <div><h1>HAVEN FERN</h1><div class="meta">Charleston, SC &nbsp;·&nbsp; Online &nbsp;·&nbsp; Known since 2024</div></div>
+    <div class="score"><b>10</b><span>SCORE</span></div>
+    <div class="ph photo">PHOTO</div>
+  </div>
+  <div class="grid">
+    <div class="card wide c-syn"><div class="ch"><span>ABOUT · SYNOPSIS</span><span>WHO SHE IS</span></div>
+      <div class="cb">Haven Fern is a music educator who has taught PK-12 general music and chorus at Edwards-Knox Central School and in the Ogdensburg City School District. She also works as a photographer under Haven Gotham Photography and previously served as a lifeguard and assistant chief lifeguard at Thousand Islands State Park.</div></div>
+    <div class="card c-con"><div class="ch"><span>CONTACT</span><span>REACH</span></div><div class="cb">
+      <table>
+        <tr><td class="k">INSTAGRAM</td><td>@havenfern · Mutual</td></tr>
+        <tr><td class="k">FACEBOOK</td><td>@haven.gotham</td></tr>
+        <tr><td class="k">LOCATION</td><td>Charleston, SC</td></tr>
+        <tr><td class="k">LIVES IN</td><td>Charleston, SC</td></tr>
+        <tr><td class="k">FROM</td><td>Edwards, NY</td></tr>
+      </table></div></div>
+    <div class="card c-bak"><div class="ch"><span>BACKGROUND</span><span>WORK + SKILLS</span></div><div class="cb">
+      <div><span class="pill">Photography</span><span class="pill">Music Education</span><span class="pill">Chorus</span></div>
+      <table>
+        <tr><td class="k">WORK</td><td>Beanstack · Haven Gotham Photography · PK-12 Music &amp; Chorus, Edwards-Knox Central · Music Teacher, Ogdensburg City Schools</td></tr>
+        <tr><td class="k">EDUCATION</td><td>Edwards Knox Junior Senior High School</td></tr>
+        <tr><td class="k">EARLIER</td><td>Lifeguard + assistant chief lifeguard, Thousand Islands State Park (2018–2021)</td></tr>
+      </table></div></div>
+    <div class="card c-fil"><div class="ch"><span>FILES</span><span>2</span></div><div class="cb">
+      <div class="file"><span>Source: facebook.com</span><b>Open</b></div>
+      <div class="file"><span>Source: opengovpay.com</span><b>Open</b></div>
+    </div></div>
+    <div class="card wide c-web"><div class="ch"><span>WEB RECORD</span><span>SOURCED</span></div><div class="cb">
+      <div class="rec">Works at Beanstack; photographer at Haven Gotham Photography; PK-12 General Music &amp; Chorus Teacher at Edwards-Knox Central School; Music Teacher with the Ogdensburg City School District <span class="src">(Facebook)</span></div>
+      <div class="rec">As Haven Gotham, worked as a lifeguard and assistant chief lifeguard at Thousand Islands State Park, per New York State payroll records from 2018 to 2021 <span class="src">(OpenGovPay)</span></div>
+      <div class="rec">Educated at Edwards Knox Junior Senior High School; hometown Edwards, New York; lives in Charleston, South Carolina <span class="src">(Facebook)</span></div>
+    </div></div>
+    <div class="card wide c-rel"><div class="ch"><span>CONNECTION</span><span>YOUR SIDE</span></div><div class="cb">
+      <table><tr><td class="k">RELATIONSHIP</td><td>Online</td><td class="k">KNOWN SINCE</td><td>2024</td><td class="k">CONNECTIONS</td><td>5 known associates</td></tr></table>
+    </div></div>
+  </div>
+</section>
+
+<!-- ================= 2 · SPEC SHEET ================= -->
+<section class="design" id="d2">
+<style>
+  #d2 { background:#f7f5ef; border-radius:6px; padding:0; color:#1c1c1c; font-size:13.5px; overflow:hidden; border:1px solid #c9c2ae; }
+  #d2 .hd { display:flex; align-items:stretch; border-bottom:3px double #1c1c1c; }
+  #d2 .hd .nm { padding:14px 18px; flex:1; }
+  #d2 .hd h1 { font-size:24px; letter-spacing:.04em; }
+  #d2 .hd .sub { font-size:12px; color:#55503e; margin-top:2px; letter-spacing:.06em; }
+  #d2 .hd .cell { border-left:1px solid #c9c2ae; padding:10px 16px; text-align:center; min-width:96px; }
+  #d2 .hd .cell b { font-size:19px; display:block; }
+  #d2 .hd .cell span { font-size:9.5px; letter-spacing:.14em; color:#6b6552; }
+  #d2 table { width:100%; border-collapse:collapse; }
+  #d2 th, #d2 td { border-bottom:1px solid #ddd6c2; padding:7px 12px; vertical-align:top; text-align:left; }
+  #d2 th.gut { width:118px; font-size:10px; letter-spacing:.14em; color:#fff; text-align:right; padding-right:12px; }
+  #d2 td.k { width:130px; font-size:11px; font-weight:700; letter-spacing:.07em; color:#55503e; white-space:nowrap; }
+  #d2 .g-syn { background:#3c434e; } #d2 .g-con { background:#2563eb; } #d2 .g-bak { background:#7c3aed; }
+  #d2 .g-web { background:#d97706; } #d2 .g-fil { background:#0f766e; } #d2 .g-rel { background:#e30613; }
+  #d2 .src { color:#8a6d1a; font-weight:600; font-size:12px; }
+  #d2 .syn { font-size:14px; line-height:1.55; }
+</style>
+  <div class="hd">
+    <div class="nm"><h1>HAVEN FERN</h1><div class="sub">CHARLESTON, SC · ONLINE · MUSIC EDUCATOR + PHOTOGRAPHER</div></div>
+    <div class="cell"><b>10</b><span>SCORE</span></div>
+    <div class="cell"><b>2024</b><span>KNOWN SINCE</span></div>
+    <div class="cell"><b>5</b><span>CONNECTIONS</span></div>
+  </div>
+  <table>
+    <tr><th class="gut g-syn" rowspan="1">ABOUT</th><td class="k">SYNOPSIS</td><td class="syn">Haven Fern is a music educator who has taught PK-12 general music and chorus at Edwards-Knox Central School and in the Ogdensburg City School District. She also works as a photographer under Haven Gotham Photography and previously served as a lifeguard and assistant chief lifeguard at Thousand Islands State Park.</td></tr>
+    <tr><th class="gut g-con" rowspan="5">CONTACT</th><td class="k">INSTAGRAM</td><td>@havenfern · Mutual</td></tr>
+    <tr><td class="k">FACEBOOK</td><td>@haven.gotham</td></tr>
+    <tr><td class="k">LOCATION</td><td>Charleston, SC</td></tr>
+    <tr><td class="k">LIVES IN</td><td>Charleston, SC</td></tr>
+    <tr><td class="k">FROM</td><td>Edwards, NY</td></tr>
+    <tr><th class="gut g-bak" rowspan="4">BACKGROUND</th><td class="k">SKILLS</td><td>Photography · Music Education · Chorus</td></tr>
+    <tr><td class="k">WORK</td><td>Beanstack · Haven Gotham Photography · PK-12 Music &amp; Chorus, Edwards-Knox Central · Music Teacher, Ogdensburg City Schools</td></tr>
+    <tr><td class="k">EDUCATION</td><td>Edwards Knox Junior Senior High School</td></tr>
+    <tr><td class="k">EARLIER</td><td>Lifeguard + assistant chief lifeguard, Thousand Islands State Park (2018–2021)</td></tr>
+    <tr><th class="gut g-web" rowspan="3">WEB RECORD</th><td class="k">RECORD 1</td><td>Works at Beanstack; photographer at Haven Gotham Photography; PK-12 General Music &amp; Chorus Teacher at Edwards-Knox Central School; Music Teacher, Ogdensburg City Schools <span class="src">(Facebook)</span></td></tr>
+    <tr><td class="k">RECORD 2</td><td>Lifeguard and assistant chief lifeguard at Thousand Islands State Park, per NY State payroll records 2018–2021 <span class="src">(OpenGovPay)</span></td></tr>
+    <tr><td class="k">RECORD 3</td><td>Educated at Edwards Knox Junior Senior High School; hometown Edwards, NY; lives in Charleston, SC <span class="src">(Facebook)</span></td></tr>
+    <tr><th class="gut g-fil" rowspan="2">FILES</th><td class="k">SOURCE</td><td>facebook.com — profile of record</td></tr>
+    <tr><td class="k">SOURCE</td><td>opengovpay.com — NY State payroll record</td></tr>
+    <tr><th class="gut g-rel" rowspan="2">CONNECTION</th><td class="k">RELATIONSHIP</td><td>Online</td></tr>
+    <tr><td class="k">ASSOCIATES</td><td>5 known associates</td></tr>
+  </table>
+</section>
+
+<!-- ================= 3 · COLOR RAIL ================= -->
+<section class="design" id="d3">
+<style>
+  #d3 { border-radius:16px; overflow:hidden; color:#171a1f; font-size:14px; box-shadow:0 4px 24px rgba(0,0,0,.25); }
+  #d3 .wrap { display:flex; align-items:stretch; }
+  #d3 .rail { width:262px; flex:none; background:#14161c; color:#eef0f4; padding:20px 18px; }
+  #d3 .rail .photo { height:190px; border-radius:12px; font-size:11px; margin-bottom:14px; }
+  #d3 .rail h1 { font-size:23px; line-height:1.15; }
+  #d3 .rail .loc { color:#9aa3ad; font-size:12.5px; margin:4px 0 14px; }
+  #d3 .rail .stat { display:flex; justify-content:space-between; padding:7px 0; border-top:1px solid #2a2e37; font-size:13px; }
+  #d3 .rail .stat span { color:#9aa3ad; font-size:11px; letter-spacing:.1em; }
+  #d3 .rail .stat.blue b { color:#7aa5f8; } #d3 .rail .stat.red b { color:#ff6b72; }
+  #d3 .main { flex:1; background:#eceef1; padding:14px; display:flex; flex-direction:column; gap:12px; }
+  #d3 .blk { border-radius:12px; overflow:hidden; }
+  #d3 .bh { padding:7px 14px; color:#fff; font-size:11px; font-weight:800; letter-spacing:.16em; }
+  #d3 .bb { padding:11px 14px; line-height:1.55; }
+  #d3 .b-syn { background:#dde1e8; } #d3 .b-syn .bh { background:#3c434e; }
+  #d3 .b-bak { background:#e9e2fd; } #d3 .b-bak .bh { background:#7c3aed; }
+  #d3 .b-web { background:#fceed3; } #d3 .b-web .bh { background:#d97706; }
+  #d3 .b-fil { background:#d5f0ec; } #d3 .b-fil .bh { background:#0f766e; }
+  #d3 .b-rel { background:#fde3e4; } #d3 .b-rel .bh { background:#e30613; }
+  #d3 table { width:100%; border-collapse:collapse; }
+  #d3 td { padding:4px 0; vertical-align:top; }
+  #d3 td.k { width:96px; font-size:11px; font-weight:700; letter-spacing:.08em; color:#5a636e; }
+  #d3 .pill { display:inline-block; background:rgba(255,255,255,.65); border-radius:20px; padding:3px 10px; font-size:12.5px; font-weight:600; margin:0 5px 6px 0; }
+  #d3 .rec { padding:6px 0; border-bottom:1px dashed rgba(0,0,0,.14); }
+  #d3 .rec:last-child { border-bottom:none; }
+  #d3 .src { color:#8a6d1a; font-size:12px; font-weight:600; }
+  #d3 .cols { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+</style>
+  <div class="wrap">
+  <div class="rail">
+    <div class="ph photo">PHOTO</div>
+    <h1>HAVEN FERN</h1>
+    <div class="loc">Charleston, SC · Online</div>
+    <div class="stat"><span>SCORE</span><b>10</b></div>
+    <div class="stat"><span>KNOWN SINCE</span><b>2024</b></div>
+    <div class="stat blue"><span>INSTAGRAM</span><b>@havenfern</b></div>
+    <div class="stat blue"><span>FACEBOOK</span><b>@haven.gotham</b></div>
+    <div class="stat"><span>LIVES IN</span><b>Charleston, SC</b></div>
+    <div class="stat"><span>FROM</span><b>Edwards, NY</b></div>
+    <div class="stat red"><span>CONNECTIONS</span><b>5 associates</b></div>
+  </div>
+  <div class="main">
+    <div class="blk b-syn"><div class="bh">ABOUT · SYNOPSIS</div><div class="bb">Haven Fern is a music educator who has taught PK-12 general music and chorus at Edwards-Knox Central School and in the Ogdensburg City School District. She also works as a photographer under Haven Gotham Photography and previously served as a lifeguard and assistant chief lifeguard at Thousand Islands State Park.</div></div>
+    <div class="blk b-bak"><div class="bh">BACKGROUND · WORK + SKILLS</div><div class="bb">
+      <div><span class="pill">Photography</span><span class="pill">Music Education</span><span class="pill">Chorus</span></div>
+      <table>
+        <tr><td class="k">WORK</td><td>Beanstack · Haven Gotham Photography · PK-12 Music &amp; Chorus, Edwards-Knox Central · Music Teacher, Ogdensburg City Schools</td></tr>
+        <tr><td class="k">EDUCATION</td><td>Edwards Knox Junior Senior High School</td></tr>
+        <tr><td class="k">EARLIER</td><td>Lifeguard + assistant chief lifeguard, Thousand Islands State Park (2018–2021)</td></tr>
+      </table></div></div>
+    <div class="cols">
+      <div class="blk b-web"><div class="bh">WEB RECORD</div><div class="bb">
+        <div class="rec">Beanstack; Haven Gotham Photography; music posts at Edwards-Knox + Ogdensburg <span class="src">(Facebook)</span></div>
+        <div class="rec">Lifeguard / assistant chief, Thousand Islands State Park, 2018–2021 <span class="src">(OpenGovPay)</span></div>
+        <div class="rec">Edwards Knox JSHS; hometown Edwards, NY <span class="src">(Facebook)</span></div>
+      </div></div>
+      <div>
+        <div class="blk b-fil" style="margin-bottom:12px"><div class="bh">FILES · 2</div><div class="bb">
+          <table><tr><td>Source: facebook.com</td><td style="text-align:right"><b>Open</b></td></tr>
+          <tr><td>Source: opengovpay.com</td><td style="text-align:right"><b>Open</b></td></tr></table>
+        </div></div>
+        <div class="blk b-rel"><div class="bh">CONNECTION</div><div class="bb">
+          <table><tr><td class="k">RELATIONSHIP</td><td>Online</td></tr>
+          <tr><td class="k">LAST CONTACT</td><td>Online only</td></tr></table>
+        </div></div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ================= 4 · TILE MOSAIC ================= -->
+<section class="design" id="d4">
+<style>
+  #d4 { background:#101216; border-radius:18px; padding:16px; color:#eef0f4; font-size:13.5px; }
+  #d4 .hero { display:flex; gap:14px; align-items:center; background:#1d2026; border-radius:14px; padding:14px 16px; }
+  #d4 .ava { width:54px; height:54px; border-radius:14px; background:#e30613; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; flex:none; }
+  #d4 h1 { font-size:23px; }
+  #d4 .meta { color:#9aa3ad; font-size:12.5px; margin-top:2px; }
+  #d4 .score { margin-left:auto; background:#e30613; border-radius:12px; padding:8px 14px; text-align:center; }
+  #d4 .score b { font-size:20px; display:block; } #d4 .score span { font-size:9px; letter-spacing:.14em; }
+  #d4 .mos { display:grid; grid-template-columns:repeat(4, 1fr); gap:9px; margin-top:9px; }
+  #d4 .tile { border-radius:12px; padding:11px 12px; line-height:1.5; }
+  #d4 .tile .tk { font-size:9.5px; font-weight:800; letter-spacing:.15em; opacity:.85; display:block; margin-bottom:5px; }
+  #d4 .w2 { grid-column: span 2; } #d4 .w4 { grid-column: span 4; } #d4 .w3 { grid-column: span 3; }
+  #d4 .t-syn { background:#2e3440; } #d4 .t-con { background:#1d4ed8; } #d4 .t-bak { background:#6d28d9; }
+  #d4 .t-web { background:#b45309; } #d4 .t-fil { background:#0f766e; } #d4 .t-rel { background:#b00510; }
+  #d4 .big { font-size:15px; font-weight:700; }
+  #d4 .pill { display:inline-block; background:rgba(255,255,255,.22); border-radius:16px; padding:2px 9px; font-size:12px; font-weight:600; margin:0 4px 4px 0; }
+  #d4 .src { opacity:.8; font-size:11.5px; font-weight:600; }
+</style>
+  <div class="hero"><div class="ava">H</div>
+    <div><h1>HAVEN FERN</h1><div class="meta">Charleston, SC · Online · Known since 2024</div></div>
+    <div class="score"><b>10</b><span>SCORE</span></div></div>
+  <div class="mos">
+    <div class="tile w4 t-syn"><span class="tk">SYNOPSIS</span>Haven Fern is a music educator who has taught PK-12 general music and chorus at Edwards-Knox Central School and in the Ogdensburg City School District. She also works as a photographer under Haven Gotham Photography and previously served as a lifeguard and assistant chief lifeguard at Thousand Islands State Park.</div>
+    <div class="tile w2 t-bak"><span class="tk">CURRENT WORK</span><span class="big">Beanstack</span><br>Haven Gotham Photography<br>PK-12 Music &amp; Chorus, Edwards-Knox Central<br>Music Teacher, Ogdensburg City Schools</div>
+    <div class="tile t-con"><span class="tk">INSTAGRAM</span><span class="big">@havenfern</span><br>Mutual</div>
+    <div class="tile t-con"><span class="tk">FACEBOOK</span><span class="big">@haven.gotham</span></div>
+    <div class="tile t-bak"><span class="tk">SKILLS</span><span class="pill">Photography</span><span class="pill">Music Education</span><span class="pill">Chorus</span></div>
+    <div class="tile t-bak"><span class="tk">EDUCATION</span>Edwards Knox Junior Senior High School</div>
+    <div class="tile t-con"><span class="tk">LIVES IN</span><span class="big">Charleston, SC</span></div>
+    <div class="tile t-con"><span class="tk">FROM</span><span class="big">Edwards, NY</span></div>
+    <div class="tile w2 t-bak"><span class="tk">EARLIER</span>Lifeguard + assistant chief lifeguard, Thousand Islands State Park (2018–2021)</div>
+    <div class="tile w2 t-web"><span class="tk">WEB RECORD</span>Beanstack; Haven Gotham Photography; music posts, Edwards-Knox + Ogdensburg <span class="src">(Facebook)</span> · Lifeguard record 2018–2021 <span class="src">(OpenGovPay)</span> · Edwards Knox JSHS; hometown Edwards, NY <span class="src">(Facebook)</span></div>
+    <div class="tile t-fil"><span class="tk">FILES · 2</span>facebook.com<br>opengovpay.com</div>
+    <div class="tile t-rel"><span class="tk">CONNECTIONS</span><span class="big">5</span> known associates</div>
+    <div class="tile w2 t-rel"><span class="tk">RELATIONSHIP</span><span class="big">Online</span> · known since 2024 · no in-person contact on file</div>
+  </div>
+</section>
+
+<!-- ================= 5 · LEDGER ================= -->
+<section class="design" id="d5">
+<style>
+  #d5 { background:#fbfaf7; border:1px solid #d8d3c3; border-radius:8px; padding:18px 20px; color:#1c1c1c; font-size:13.5px; }
+  #d5 .hd { display:flex; align-items:baseline; gap:14px; border-bottom:2px solid #1c1c1c; padding-bottom:10px; }
+  #d5 h1 { font-size:24px; letter-spacing:.03em; }
+  #d5 .hd .m { color:#55503e; font-size:12.5px; }
+  #d5 .hd .sc { margin-left:auto; font-weight:800; font-size:15px; }
+  #d5 .hd .sc span { color:#e30613; }
+  #d5 table { width:100%; border-collapse:collapse; margin-top:6px; font-family:"SF Mono", ui-monospace, Menlo, Consolas, monospace; font-size:12.8px; }
+  #d5 th { text-align:left; font-size:10px; letter-spacing:.16em; color:#8a8474; padding:8px 8px 4px; border-bottom:1px solid #1c1c1c; }
+  #d5 td { padding:6.5px 8px; border-bottom:1px solid #e7e2d2; vertical-align:top; }
+  #d5 td.ty { width:104px; } #d5 td.fd { width:128px; font-weight:700; color:#55503e; } #d5 td.sr { width:110px; color:#8a6d1a; font-weight:600; }
+  #d5 .tag { display:inline-block; color:#fff; font-size:9.5px; font-weight:800; letter-spacing:.1em; border-radius:4px; padding:2.5px 7px; font-family:-apple-system,"Segoe UI",Roboto,sans-serif; }
+  #d5 .a-syn { background:#3c434e; } #d5 .a-con { background:#2563eb; } #d5 .a-bak { background:#7c3aed; }
+  #d5 .a-web { background:#d97706; } #d5 .a-fil { background:#0f766e; } #d5 .a-rel { background:#e30613; }
+  #d5 .synrow td { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; font-size:13.5px; line-height:1.55; }
+</style>
+  <div class="hd"><h1>HAVEN FERN</h1><div class="m">CHARLESTON, SC · ONLINE · KNOWN SINCE 2024</div><div class="sc">SCORE <span>10</span></div></div>
+  <table>
+    <tr><th>TYPE</th><th>FIELD</th><th>VALUE</th><th>SOURCE</th></tr>
+    <tr class="synrow"><td class="ty"><span class="tag a-syn">ABOUT</span></td><td class="fd">Synopsis</td><td>Haven Fern is a music educator who has taught PK-12 general music and chorus at Edwards-Knox Central School and in the Ogdensburg City School District. She also works as a photographer under Haven Gotham Photography and previously served as a lifeguard and assistant chief lifeguard at Thousand Islands State Park.</td><td class="sr">—</td></tr>
+    <tr><td class="ty"><span class="tag a-con">CONTACT</span></td><td class="fd">Instagram</td><td>@havenfern · Mutual</td><td class="sr">Instagram</td></tr>
+    <tr><td class="ty"><span class="tag a-con">CONTACT</span></td><td class="fd">Facebook</td><td>@haven.gotham</td><td class="sr">Facebook</td></tr>
+    <tr><td class="ty"><span class="tag a-con">CONTACT</span></td><td class="fd">Lives in</td><td>Charleston, SC</td><td class="sr">Facebook</td></tr>
+    <tr><td class="ty"><span class="tag a-con">CONTACT</span></td><td class="fd">From</td><td>Edwards, NY</td><td class="sr">Facebook</td></tr>
+    <tr><td class="ty"><span class="tag a-bak">BACKGROUND</span></td><td class="fd">Skills</td><td>Photography · Music Education · Chorus</td><td class="sr">—</td></tr>
+    <tr><td class="ty"><span class="tag a-bak">BACKGROUND</span></td><td class="fd">Work</td><td>Beanstack · Haven Gotham Photography · Edwards-Knox Central · Ogdensburg City Schools</td><td class="sr">Facebook</td></tr>
+    <tr><td class="ty"><span class="tag a-bak">BACKGROUND</span></td><td class="fd">Education</td><td>Edwards Knox Junior Senior High School</td><td class="sr">Facebook</td></tr>
+    <tr><td class="ty"><span class="tag a-bak">BACKGROUND</span></td><td class="fd">Earlier</td><td>Lifeguard + assistant chief, Thousand Islands State Park</td><td class="sr">OpenGovPay</td></tr>
+    <tr><td class="ty"><span class="tag a-web">WEB RECORD</span></td><td class="fd">Record</td><td>Lifeguard and assistant chief lifeguard, NY State payroll records 2018 to 2021</td><td class="sr">OpenGovPay</td></tr>
+    <tr><td class="ty"><span class="tag a-web">WEB RECORD</span></td><td class="fd">Record</td><td>Educated at Edwards Knox JSHS; hometown Edwards, NY; lives in Charleston, SC</td><td class="sr">Facebook</td></tr>
+    <tr><td class="ty"><span class="tag a-fil">FILES</span></td><td class="fd">Source file</td><td>facebook.com — profile of record</td><td class="sr">Open</td></tr>
+    <tr><td class="ty"><span class="tag a-fil">FILES</span></td><td class="fd">Source file</td><td>opengovpay.com — payroll record</td><td class="sr">Open</td></tr>
+    <tr><td class="ty"><span class="tag a-rel">CONNECTION</span></td><td class="fd">Relationship</td><td>Online · 5 known associates</td><td class="sr">—</td></tr>
+  </table>
+</section>
+
+<!-- ================= 6 · STRATA BANDS ================= -->
+<section class="design" id="d6">
+<style>
+  #d6 { border-radius:16px; overflow:hidden; color:#171a1f; font-size:14px; box-shadow:0 4px 24px rgba(0,0,0,.25); }
+  #d6 .band { padding:16px 20px; }
+  #d6 .bl { font-size:10.5px; font-weight:800; letter-spacing:.18em; margin-bottom:9px; display:flex; justify-content:space-between; }
+  #d6 .b-id { background:#171a1f; color:#fff; display:flex; gap:16px; align-items:center; }
+  #d6 .b-id .ava { width:58px; height:58px; border-radius:50%; background:#e30613; display:flex; align-items:center; justify-content:center; font-size:23px; font-weight:800; flex:none; }
+  #d6 .b-id h1 { font-size:24px; } #d6 .b-id .m { color:#9aa3ad; font-size:12.5px; margin-top:2px; }
+  #d6 .b-id .sc { margin-left:auto; background:#23262d; border-radius:12px; padding:8px 14px; text-align:center; }
+  #d6 .b-id .sc b { font-size:20px; display:block; } #d6 .b-id .sc span { font-size:9px; letter-spacing:.14em; color:#9aa3ad; }
+  #d6 .b-id .photo { width:76px; height:92px; border-radius:9px; font-size:9px; flex:none; }
+  #d6 .b-syn { background:#dfe3ea; line-height:1.6; } #d6 .b-syn .bl { color:#3c434e; }
+  #d6 .b-con { background:#c9dcfc; } #d6 .b-con .bl { color:#1d4ed8; }
+  #d6 .b-bak { background:#ddd0fc; } #d6 .b-bak .bl { color:#6d28d9; }
+  #d6 .b-web { background:#fbe3b7; } #d6 .b-web .bl { color:#b45309; }
+  #d6 .b-fil { background:#bfe8e1; } #d6 .b-fil .bl { color:#0f766e; }
+  #d6 .b-rel { background:#fbd0d2; } #d6 .b-rel .bl { color:#b00510; }
+  #d6 .row { display:grid; grid-template-columns:repeat(5, 1fr); gap:10px 18px; }
+  #d6 .row3 { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px 18px; }
+  #d6 .f .fk { font-size:10px; font-weight:700; letter-spacing:.1em; opacity:.65; }
+  #d6 .f .fv { font-weight:600; margin-top:1px; }
+  #d6 .rec { padding:5px 0; line-height:1.55; }
+  #d6 .src { font-weight:700; font-size:12px; opacity:.75; }
+  #d6 .pill { display:inline-block; background:rgba(255,255,255,.6); border-radius:16px; padding:2px 9px; font-size:12.5px; font-weight:600; margin-right:5px; }
+</style>
+  <div class="band b-id">
+    <div class="ava">H</div>
+    <div><h1>HAVEN FERN</h1><div class="m">Charleston, SC · Online · Known since 2024</div></div>
+    <div class="sc"><b>10</b><span>SCORE</span></div>
+    <div class="ph photo">PHOTO</div>
+  </div>
+  <div class="band b-syn"><div class="bl"><span>ABOUT</span><span>SYNOPSIS</span></div>
+    Haven Fern is a music educator who has taught PK-12 general music and chorus at Edwards-Knox Central School and in the Ogdensburg City School District. She also works as a photographer under Haven Gotham Photography and previously served as a lifeguard and assistant chief lifeguard at Thousand Islands State Park.</div>
+  <div class="band b-con"><div class="bl"><span>CONTACT</span><span>REACH</span></div>
+    <div class="row">
+      <div class="f"><div class="fk">INSTAGRAM</div><div class="fv">@havenfern · Mutual</div></div>
+      <div class="f"><div class="fk">FACEBOOK</div><div class="fv">@haven.gotham</div></div>
+      <div class="f"><div class="fk">LOCATION</div><div class="fv">Charleston, SC</div></div>
+      <div class="f"><div class="fk">LIVES IN</div><div class="fv">Charleston, SC</div></div>
+      <div class="f"><div class="fk">FROM</div><div class="fv">Edwards, NY</div></div>
+    </div></div>
+  <div class="band b-bak"><div class="bl"><span>BACKGROUND</span><span>WORK · SKILLS · EDUCATION</span></div>
+    <div class="row3">
+      <div class="f"><div class="fk">WORK</div><div class="fv">Beanstack · Haven Gotham Photography · Edwards-Knox Central · Ogdensburg City Schools</div></div>
+      <div class="f"><div class="fk">SKILLS</div><div class="fv"><span class="pill">Photography</span><span class="pill">Music Education</span><span class="pill">Chorus</span></div></div>
+      <div class="f"><div class="fk">EDUCATION + EARLIER</div><div class="fv">Edwards Knox JSHS · Lifeguard, Thousand Islands State Park (2018–2021)</div></div>
+    </div></div>
+  <div class="band b-web"><div class="bl"><span>WEB RECORD</span><span>SOURCED</span></div>
+    <div class="rec">Works at Beanstack; photographer at Haven Gotham Photography; PK-12 music + chorus posts at Edwards-Knox and Ogdensburg <span class="src">(Facebook)</span></div>
+    <div class="rec">Lifeguard and assistant chief lifeguard at Thousand Islands State Park, NY State payroll records 2018 to 2021 <span class="src">(OpenGovPay)</span></div>
+    <div class="rec">Educated at Edwards Knox Junior Senior High School; hometown Edwards, New York; lives in Charleston, South Carolina <span class="src">(Facebook)</span></div>
+  </div>
+  <div class="band b-fil"><div class="bl"><span>FILES</span><span>2 ON RECORD</span></div>
+    <div class="row3">
+      <div class="f"><div class="fk">SOURCE</div><div class="fv">facebook.com</div></div>
+      <div class="f"><div class="fk">SOURCE</div><div class="fv">opengovpay.com</div></div>
+      <div class="f"><div class="fk">STATUS</div><div class="fv">Photo confirmed</div></div>
+    </div></div>
+  <div class="band b-rel"><div class="bl"><span>CONNECTION</span><span>YOUR SIDE</span></div>
+    <div class="row3">
+      <div class="f"><div class="fk">RELATIONSHIP</div><div class="fv">Online</div></div>
+      <div class="f"><div class="fk">KNOWN SINCE</div><div class="fv">2024</div></div>
+      <div class="f"><div class="fk">KNOWN ASSOCIATES</div><div class="fv">5</div></div>
+    </div></div>
+</section>
+
+<!-- ================= 7 · COMMAND DECK ================= -->
+<section class="design" id="d7">
+<style>
+  #d7 { background:#0a0c10; border-radius:14px; padding:16px; color:#dfe4ea; font-size:13.5px; border:1px solid #232830; }
+  #d7 .hd { display:flex; gap:14px; align-items:center; background:#11141a; border:1px solid #232830; border-left:4px solid #e30613; border-radius:10px; padding:13px 16px; }
+  #d7 .ava { width:52px; height:52px; border-radius:10px; background:#e30613; color:#fff; display:flex; align-items:center; justify-content:center; font-size:21px; font-weight:800; flex:none; }
+  #d7 h1 { font-size:22px; letter-spacing:.05em; color:#fff; }
+  #d7 .m { color:#8b95a3; font-size:12px; margin-top:2px; letter-spacing:.06em; }
+  #d7 .sc { margin-left:auto; text-align:center; background:#171b22; border:1px solid #2a3038; border-radius:10px; padding:7px 14px; }
+  #d7 .sc b { font-size:20px; color:#fff; display:block; } #d7 .sc span { font-size:9px; letter-spacing:.16em; color:#8b95a3; }
+  #d7 .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+  #d7 .pnl { background:#11141a; border:1px solid #232830; border-radius:10px; padding:12px 14px; }
+  #d7 .pnl.wide { grid-column: span 2; }
+  #d7 .ph2 { font-size:10px; font-weight:800; letter-spacing:.18em; margin-bottom:9px; display:flex; align-items:center; gap:7px; }
+  #d7 .dot { width:8px; height:8px; border-radius:2px; display:inline-block; }
+  #d7 .c-syn { color:#aeb8c4; } #d7 .c-con { color:#5b94ff; } #d7 .c-bak { color:#b07fff; }
+  #d7 .c-web { color:#ffb03a; } #d7 .c-fil { color:#2dd4bf; } #d7 .c-rel { color:#ff5258; }
+  #d7 table { width:100%; border-collapse:collapse; }
+  #d7 td { padding:4.5px 0; border-bottom:1px solid #1b1f27; vertical-align:top; }
+  #d7 tr:last-child td { border-bottom:none; }
+  #d7 td.k { width:104px; font-size:10.5px; font-weight:700; letter-spacing:.1em; color:#69727f; }
+  #d7 .syn { line-height:1.6; color:#c6cdd6; }
+  #d7 .pill { display:inline-block; border:1px solid #7c3aed; color:#c9a8ff; border-radius:14px; padding:2px 9px; font-size:12px; font-weight:600; margin:0 4px 5px 0; }
+  #d7 .rec { padding:5px 0; border-bottom:1px solid #1b1f27; line-height:1.55; color:#c6cdd6; }
+  #d7 .rec:last-child { border-bottom:none; }
+  #d7 .src { color:#ffb03a; font-size:11.5px; font-weight:700; }
+</style>
+  <div class="hd"><div class="ava">H</div>
+    <div><h1>HAVEN FERN</h1><div class="m">CHARLESTON, SC // ONLINE // KNOWN SINCE 2024</div></div>
+    <div class="sc"><b>10</b><span>SCORE</span></div></div>
+  <div class="grid">
+    <div class="pnl wide"><div class="ph2 c-syn"><span class="dot" style="background:#aeb8c4"></span>ABOUT · SYNOPSIS</div>
+      <div class="syn">Haven Fern is a music educator who has taught PK-12 general music and chorus at Edwards-Knox Central School and in the Ogdensburg City School District. She also works as a photographer under Haven Gotham Photography and previously served as a lifeguard and assistant chief lifeguard at Thousand Islands State Park.</div></div>
+    <div class="pnl"><div class="ph2 c-con"><span class="dot" style="background:#5b94ff"></span>CONTACT</div>
+      <table>
+        <tr><td class="k">INSTAGRAM</td><td>@havenfern · Mutual</td></tr>
+        <tr><td class="k">FACEBOOK</td><td>@haven.gotham</td></tr>
+        <tr><td class="k">LOCATION</td><td>Charleston, SC</td></tr>
+        <tr><td class="k">LIVES IN</td><td>Charleston, SC</td></tr>
+        <tr><td class="k">FROM</td><td>Edwards, NY</td></tr>
+      </table></div>
+    <div class="pnl"><div class="ph2 c-bak"><span class="dot" style="background:#b07fff"></span>BACKGROUND</div>
+      <div><span class="pill">Photography</span><span class="pill">Music Education</span><span class="pill">Chorus</span></div>
+      <table>
+        <tr><td class="k">WORK</td><td>Beanstack · Haven Gotham Photography · Edwards-Knox Central · Ogdensburg City Schools</td></tr>
+        <tr><td class="k">EDUCATION</td><td>Edwards Knox Junior Senior High School</td></tr>
+        <tr><td class="k">EARLIER</td><td>Lifeguard, Thousand Islands State Park (2018–2021)</td></tr>
+      </table></div>
+    <div class="pnl wide"><div class="ph2 c-web"><span class="dot" style="background:#ffb03a"></span>WEB RECORD · SOURCED</div>
+      <div class="rec">Works at Beanstack; photographer at Haven Gotham Photography; PK-12 music + chorus, Edwards-Knox Central and Ogdensburg <span class="src">(FACEBOOK)</span></div>
+      <div class="rec">Lifeguard and assistant chief lifeguard, Thousand Islands State Park, NY payroll 2018–2021 <span class="src">(OPENGOVPAY)</span></div>
+      <div class="rec">Edwards Knox JSHS; hometown Edwards, NY; lives in Charleston, SC <span class="src">(FACEBOOK)</span></div></div>
+    <div class="pnl"><div class="ph2 c-fil"><span class="dot" style="background:#2dd4bf"></span>FILES · 2</div>
+      <table><tr><td>Source: facebook.com</td><td style="text-align:right">OPEN</td></tr>
+      <tr><td>Source: opengovpay.com</td><td style="text-align:right">OPEN</td></tr></table></div>
+    <div class="pnl"><div class="ph2 c-rel"><span class="dot" style="background:#ff5258"></span>CONNECTION</div>
+      <table><tr><td class="k">RELATIONSHIP</td><td>Online</td></tr>
+      <tr><td class="k">ASSOCIATES</td><td>5 known</td></tr></table></div>
+  </div>
+</section>
+
+<!-- ================= 8 · PERSONNEL FILE ================= -->
+<section class="design" id="d8">
+<style>
+  #d8 { background:#f3efe3; border-radius:8px; padding:20px; color:#22201a; font-size:13.5px; border:1px solid #cfc8ae; box-shadow:0 4px 20px rgba(0,0,0,.2); }
+  #d8 .stamp { display:inline-block; border:2px solid #b00510; color:#b00510; font-weight:800; letter-spacing:.14em; font-size:10px; padding:3px 8px; border-radius:4px; transform:rotate(-2deg); }
+  #d8 .hd { display:flex; gap:16px; align-items:flex-start; border-bottom:2px solid #22201a; padding-bottom:13px; }
+  #d8 .photo { width:92px; height:112px; border-radius:4px; flex:none; font-size:9px; border:1px solid #a89f83; }
+  #d8 h1 { font-size:25px; letter-spacing:.03em; }
+  #d8 .m { color:#5c5744; font-size:12.5px; margin-top:3px; }
+  #d8 .hd .side { margin-left:auto; text-align:right; }
+  #d8 .hd .sc { font-size:21px; font-weight:800; }
+  #d8 .hd .sc span { font-size:10px; letter-spacing:.14em; color:#5c5744; display:block; }
+  #d8 .sec { margin-top:15px; }
+  #d8 .sh { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+  #d8 .sh .t { font-size:11px; font-weight:800; letter-spacing:.17em; }
+  #d8 .sh .ln { flex:1; border-top:1px solid #b6ae8f; }
+  #d8 .s-con { color:#1d4ed8; } #d8 .s-bak { color:#6d28d9; } #d8 .s-web { color:#b45309; } #d8 .s-fil { color:#0f766e; } #d8 .s-rel { color:#b00510; } #d8 .s-syn { color:#3c434e; }
+  #d8 .flds { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; }
+  #d8 .flds.c2 { grid-template-columns:repeat(2, 1fr); } #d8 .flds.c5 { grid-template-columns:repeat(5, 1fr); }
+  #d8 .fld { background:#e9e4cf; border:1px solid #c4bc9c; border-radius:5px; padding:7px 10px 8px; }
+  #d8 .fld.wide { grid-column: span 3; }
+  #d8 .fld .fk { font-size:9px; font-weight:800; letter-spacing:.14em; color:#77714f; }
+  #d8 .fld .fv { font-weight:600; margin-top:2px; line-height:1.45; }
+  #d8 .synbox { background:#e9e4cf; border:1px solid #c4bc9c; border-radius:5px; padding:10px 12px; line-height:1.6; }
+  #d8 .rec { padding:5px 0; border-bottom:1px dashed #b6ae8f; line-height:1.55; }
+  #d8 .rec:last-child { border-bottom:none; }
+  #d8 .src { color:#8a6d1a; font-weight:700; font-size:12px; }
+</style>
+  <div class="hd">
+    <div class="ph photo">PHOTO</div>
+    <div><h1>HAVEN FERN</h1><div class="m">Charleston, SC · Online · Known since 2024</div>
+      <div style="margin-top:8px"><span class="stamp">PERSONNEL FILE</span></div></div>
+    <div class="side"><div class="sc">10<span>SCORE</span></div></div>
+  </div>
+  <div class="sec"><div class="sh"><span class="t s-syn">ABOUT</span><span class="ln"></span></div>
+    <div class="synbox">Haven Fern is a music educator who has taught PK-12 general music and chorus at Edwards-Knox Central School and in the Ogdensburg City School District. She also works as a photographer under Haven Gotham Photography and previously served as a lifeguard and assistant chief lifeguard at Thousand Islands State Park.</div></div>
+  <div class="sec"><div class="sh"><span class="t s-con">CONTACT</span><span class="ln"></span></div>
+    <div class="flds c5">
+      <div class="fld"><div class="fk">INSTAGRAM</div><div class="fv">@havenfern · Mutual</div></div>
+      <div class="fld"><div class="fk">FACEBOOK</div><div class="fv">@haven.gotham</div></div>
+      <div class="fld"><div class="fk">LOCATION</div><div class="fv">Charleston, SC</div></div>
+      <div class="fld"><div class="fk">LIVES IN</div><div class="fv">Charleston, SC</div></div>
+      <div class="fld"><div class="fk">FROM</div><div class="fv">Edwards, NY</div></div>
+    </div></div>
+  <div class="sec"><div class="sh"><span class="t s-bak">BACKGROUND</span><span class="ln"></span></div>
+    <div class="flds">
+      <div class="fld"><div class="fk">SKILLS</div><div class="fv">Photography · Music Education · Chorus</div></div>
+      <div class="fld"><div class="fk">EDUCATION</div><div class="fv">Edwards Knox Junior Senior High School</div></div>
+      <div class="fld"><div class="fk">EARLIER</div><div class="fv">Lifeguard, Thousand Islands State Park (2018–2021)</div></div>
+      <div class="fld wide"><div class="fk">WORK</div><div class="fv">Beanstack · Haven Gotham Photography · PK-12 Music &amp; Chorus, Edwards-Knox Central · Music Teacher, Ogdensburg City Schools</div></div>
+    </div></div>
+  <div class="sec"><div class="sh"><span class="t s-web">WEB RECORD</span><span class="ln"></span></div>
+    <div class="rec">Works at Beanstack; photographer at Haven Gotham Photography; PK-12 music + chorus posts, Edwards-Knox and Ogdensburg <span class="src">(Facebook)</span></div>
+    <div class="rec">Lifeguard and assistant chief lifeguard, Thousand Islands State Park, per NY State payroll records 2018 to 2021 <span class="src">(OpenGovPay)</span></div>
+    <div class="rec">Educated at Edwards Knox Junior Senior High School; hometown Edwards, New York; lives in Charleston, South Carolina <span class="src">(Facebook)</span></div></div>
+  <div class="sec"><div class="sh"><span class="t s-fil">FILES</span><span class="ln"></span><span class="t s-rel">CONNECTION</span></div>
+    <div class="flds">
+      <div class="fld"><div class="fk">SOURCE FILE</div><div class="fv">facebook.com</div></div>
+      <div class="fld"><div class="fk">SOURCE FILE</div><div class="fv">opengovpay.com</div></div>
+      <div class="fld"><div class="fk">RELATIONSHIP</div><div class="fv">Online · 5 known associates</div></div>
+    </div></div>
+</section>
+</div>
+<script>
+  var DESIGNS = [
+    ["Filled Sections", "The current card layout, but every card is <b>filled with its type color</b> and headed by a solid color band. Contact is always blue, Background violet, Web Record amber, Files teal, Connection red. The least change from today; the color does the separating."],
+    ["Spec Sheet", "One <b>single aligned table</b> for the whole profile. A colored gutter down the left names the type of each block, a fixed label column names each field, values line up in one column. Nothing floats; reads like a spec sheet."],
+    ["Color Rail", "A <b>solid dark identity rail</b> fixed on the left (photo, name, score, reach facts), content blocks stacked on the right, each filled and color-banded. Identity never scrolls away from the facts."],
+    ["Tile Mosaic", "Every fact becomes a <b>filled tile</b> in a tight mosaic: big tiles for the synopsis and current work, small tiles for single facts. Tile fill = information type. Uses space like a dashboard, nothing is a paragraph on a blank card."],
+    ["Ledger", "A <b>ruled ledger</b>: one row per fact with aligned TYPE / FIELD / VALUE / SOURCE columns and a filled type tag on every row. The web record stops being a wall of bullets and becomes entries you can scan by column."],
+    ["Strata Bands", "The profile as <b>stacked full-width bands</b>, one solid color wash per information type, each band internally gridded. You read type by altitude: dark identity on top, red connection at the bottom."],
+    ["Command Deck", "Dark deck, <b>filled panels with saturated type colors</b> and compact aligned rows. Same color code, higher contrast, denser type. The cyber-military lean."],
+    ["Personnel File", "A filled <b>form</b>: every field sits in its own shaded box with the label inside the box, like a completed personnel form. Type shown by the stamp color on each section. Print-record feel, zero free text."]
+  ];
+  var row = document.getElementById('pvrow'), desc = document.getElementById('pvdesc');
+  DESIGNS.forEach(function(d, i){
+    var b = document.createElement('button');
+    b.className = 'pvbtn'; b.innerHTML = '<b>' + (i+1) + '</b>' + d[0];
+    b.onclick = function(){ show(i); };
+    row.appendChild(b);
+  });
+  function show(i){
+    document.querySelectorAll('.design').forEach(function(s){ s.classList.remove('on'); });
+    document.getElementById('d' + (i+1)).classList.add('on');
+    document.querySelectorAll('.pvbtn').forEach(function(b, j){ b.classList.toggle('on', i === j); });
+    desc.innerHTML = '<b>' + (i+1) + ' · ' + DESIGNS[i][0] + '.</b> ' + DESIGNS[i][1];
+    localStorage.setItem('pvsel', i);
+  }
+  document.addEventListener('keydown', function(e){ var n = parseInt(e.key, 10); if (n >= 1 && n <= 8) show(n-1); });
+  var qd = parseInt((location.search.match(/[?&]d=(\d)/) || [])[1] || '0', 10);
+  show(qd >= 1 && qd <= 8 ? qd - 1 : Math.min(7, Math.max(0, parseInt(localStorage.getItem('pvsel') || '0', 10))));
+</script>
+</body>
+</html>
