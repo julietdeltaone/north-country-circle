@@ -3444,8 +3444,10 @@ function viewProfile(v){
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
     '<section id="p-hero" class="hero"></section><div id="p-lastline"></div>' +
-    '<div class="pmove" id="pm-a"><div class="pmove-h">About ' + esc(dispName(e).split(' ')[0]) + '</div><div class="pgrid" id="pmg-a"></div></div>' +
-    '<div class="pmove" id="pm-c"><div class="pmove-h">Connection</div><div class="pgrid" id="pmg-c"></div></div><div id="p-add"></div></div>';
+    '<div class="psheets">' +
+    '<div class="pmove sheet-a" id="pm-a"><div class="pmove-h"><span class="pmh-t">About ' + esc(dispName(e).split(' ')[0]) + '</span><span class="pmh-ln"></span><span class="pmh-n" id="pmn-a"></span></div><div class="pgrid" id="pmg-a"></div></div>' +
+    '<div class="pmove sheet-c" id="pm-c"><div class="pmove-h"><span class="pmh-t">Connection</span><span class="pmh-ln"></span><span class="pmh-n" id="pmn-c"></span></div><div class="pgrid" id="pmg-c"></div></div>' +
+    '</div><div id="p-add"></div></div>';
   paintProfile(di);
 }
 function paintProfile(di){
@@ -3466,6 +3468,14 @@ function paintProfile(di){
     if(wrap) wrap.style.display = secs ? '' : 'none';
   });
   SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
+  /* Sheet header counts (Split Partitions, V3.37.0): the About sheet
+     counts Synopsis and Web Record as separate sections when present. */
+  var cntA = (gv(e, 'synopsis') ? 1 : 0) + (footprintOf(e).blocks.length ? 1 : 0) +
+    ['identity', 'background', 'persona', 'files', 'business'].filter(function(id){ return secShown(e, id); }).length;
+  var cntC = ['relationship', 'connections', 'timeline', 'lima'].filter(function(id){ return secShown(e, id); }).length;
+  var na = $('#pmn-a'), nc2 = $('#pmn-c');
+  if(na) na.textContent = cntA + (cntA === 1 ? ' SECTION' : ' SECTIONS');
+  if(nc2) nc2.textContent = cntC + (cntC === 1 ? ' SECTION' : ' SECTIONS');
   if(_sy != null) window.scrollTo(0, _sy);
   var hidden = SECS.filter(function(s){ return s.id !== 'business' && !secShown(e, s.id); });
   var legacy = ['relationship_type', 'sources', 'mentions'].filter(function(k){ return String(gv(e, k)).trim(); });
@@ -3506,26 +3516,126 @@ function lastLineHTML(di){
     (ev.summary ? '<span class="pll-sum">' + esc(briefClip(ev.summary, 170)) + '</span>' : '') +
     '<button type="button" class="pll-log" data-act="logcontact">Log contact</button>';
 }
+/* ---------- Entity pills (Split Partitions, V3.37.0) ----------
+   Known places and organizations inside narrative text render as small
+   color-coded pills. The dictionary is built ONLY from entities the
+   profile itself defines (its org lists, degree schools, groups, places,
+   plus org-registry aliases of those canonicals). Longest match wins;
+   no guessing, no global lookup. Applied to: synopsis, web record,
+   background highlights, relationship context, timeline notes. */
+var PILL_IC = { place:'pin', employer:'briefcase', school:'cap', church:'church', group:'people' };
+var PILL_TY = { place:'Place', employer:'Employer', school:'School', church:'Church', group:'Group' };
+var US_STATES = { AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California', CO:'Colorado', CT:'Connecticut', DE:'Delaware', DC:'District of Columbia', FL:'Florida', GA:'Georgia', HI:'Hawaii', ID:'Idaho', IL:'Illinois', IN:'Indiana', IA:'Iowa', KS:'Kansas', KY:'Kentucky', LA:'Louisiana', ME:'Maine', MD:'Maryland', MA:'Massachusetts', MI:'Michigan', MN:'Minnesota', MS:'Mississippi', MO:'Missouri', MT:'Montana', NE:'Nebraska', NV:'Nevada', NH:'New Hampshire', NJ:'New Jersey', NM:'New Mexico', NY:'New York', NC:'North Carolina', ND:'North Dakota', OH:'Ohio', OK:'Oklahoma', OR:'Oregon', PA:'Pennsylvania', RI:'Rhode Island', SC:'South Carolina', SD:'South Dakota', TN:'Tennessee', TX:'Texas', UT:'Utah', VT:'Vermont', VA:'Virginia', WA:'Washington', WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming' };
+var PILL_CACHE = {};
+function pillExpandPlace(pl){
+  pl = String(pl || '').trim(); if(!pl) return [];
+  var out = [pl], m = pl.match(/^(.+?),\s*([A-Za-z]{2})$/);
+  if(m && US_STATES[m[2].toUpperCase()]){ out.push(m[1] + ', ' + US_STATES[m[2].toUpperCase()]); out.push(m[1]); }
+  else { var m2 = pl.match(/^(.+?),\s*([A-Za-z ]+)$/); if(m2) out.push(m2[1]); }
+  return out;
+}
+function pillDict(di){
+  var e = D.directory[di]; if(!e) return null;
+  var key = pkey(e);
+  if(PILL_CACHE[key]) return PILL_CACHE[key];
+  var ents = [], seen = {};
+  function add(name, type, canon){
+    name = String(name || '').trim(); if(name.length < 3) return;
+    var k = name.toLowerCase(); if(seen[k]) return; seen[k] = 1;
+    ents.push({ name:name, type:type, canon:canon || name });
+  }
+  tagList(gv(e, 'companies')).forEach(function(o){ add(o, 'employer'); });
+  degreesOf(e).forEach(function(d){ add(d.school, 'school'); });
+  tagList(gv(e, 'universities')).forEach(function(o){ add(o, 'school'); });
+  tagList(gv(e, 'churches')).forEach(function(o){ add(o, 'church'); });
+  personGroups(e).forEach(function(o){ add(o, 'group'); });
+  var byCanon = {};
+  ents.slice().forEach(function(x){ byCanon[regKey(x.canon)] = x; });
+  Object.keys(ORGREG.aliases || {}).forEach(function(ak){
+    var cx = byCanon[regKey(ORGREG.aliases[ak])];
+    if(cx) add(ORGREG.aliasDisp[ak] || ak, cx.type, cx.canon);
+  });
+  [gv(e, 'location_on_file'), e.city, e.hometown].forEach(function(pl){
+    pillExpandPlace(pl).forEach(function(v){ add(v, 'place', String(pl || '').trim()); });
+  });
+  if(!ents.length){ PILL_CACHE[key] = null; return null; }
+  ents.sort(function(a, b){ return b.name.length - a.name.length; });
+  var map = {};
+  ents.forEach(function(x){ map[x.name.toLowerCase()] = x; });
+  var rx = new RegExp('(?<![A-Za-z0-9-])(' + ents.map(function(x){ return x.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|') + ')(?![A-Za-z0-9-])', 'gi');
+  PILL_CACHE[key] = { rx:rx, map:map };
+  return PILL_CACHE[key];
+}
+function pillify(text, di){
+  text = String(text == null ? '' : text); if(!text) return '';
+  var pd = pillDict(di); if(!pd) return esc(text);
+  var out = '', last = 0, m; pd.rx.lastIndex = 0;
+  while((m = pd.rx.exec(text))){
+    var ent = pd.map[m[1].toLowerCase()]; if(!ent) continue;
+    /* A bare city name followed by another capitalized word is part of a
+       longer proper name (Edwards Knox High School), not the place. */
+    if(ent.type === 'place' && ent.name.indexOf(',') < 0 && /^\s+[A-Z]/.test(text.slice(m.index + m[1].length))) continue;
+    out += esc(text.slice(last, m.index)) +
+      '<span class="epill t-' + ent.type + '" title="' + esc(PILL_TY[ent.type] + (ent.canon !== m[1] ? ' · ' + ent.canon : '')) + '">' + ic(PILL_IC[ent.type], 11) + esc(m[1]) + '</span>';
+    last = m.index + m[1].length;
+  }
+  return out + esc(text.slice(last));
+}
+/* ---------- Instrument header (Split Partitions, V3.37.0) ---------- */
+function ringScoreSVG(v){
+  var r = 25, c = 2 * Math.PI * r, off = c * (1 - Math.max(0, Math.min(100, v)) / 100);
+  return '<svg class="ring" viewBox="0 0 64 64" width="62" height="62" aria-hidden="true"><circle cx="32" cy="32" r="' + r + '" fill="none" stroke="var(--ringtrk)" stroke-width="6"/>' +
+    '<circle cx="32" cy="32" r="' + r + '" fill="none" stroke="#e30613" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '" transform="rotate(-90 32 32)"/>' +
+    '<text x="32" y="39" text-anchor="middle" class="ring-n">' + v + '</text></svg>';
+}
+function ringSecsSVG(pres){
+  var cx = 32, cy = 32, r = 25, n = pres.length, step = 360 / n, gap = 5, out = '';
+  function pol(a){ var t = (a - 90) * Math.PI / 180; return (cx + r * Math.cos(t)).toFixed(1) + ' ' + (cy + r * Math.sin(t)).toFixed(1); }
+  for(var i = 0; i < n; i++){
+    var a0 = i * step + gap / 2, a1 = (i + 1) * step - gap / 2;
+    out += '<path d="M ' + pol(a0) + ' A ' + r + ' ' + r + ' 0 0 1 ' + pol(a1) + '" fill="none" stroke="' + (pres[i][2] ? pres[i][1] : 'var(--ringtrk)') + '" stroke-width="6.5"/>';
+  }
+  var cnt = pres.filter(function(p){ return p[2]; }).length;
+  return '<svg class="ring" viewBox="0 0 64 64" width="62" height="62" aria-hidden="true">' + out +
+    '<text x="32" y="37.5" text-anchor="middle" class="ring-s">' + cnt + '/' + n + '</text></svg>';
+}
+function profileSections(di){
+  var e = D.directory[di];
+  var hasContact = !!(effHandle(e) || e.fb_url || (e.snap_handles || []).length || gv(e, 'phone') || gv(e, 'email') || gv(e, 'location_on_file') || e.city || e.hometown || gv(e, 'also_known_as') || (e.languages || []).length);
+  return [
+    ['Synopsis', '#475569', !!gv(e, 'synopsis')],
+    ['Web Record', '#d97706', footprintOf(e).blocks.length > 0],
+    ['Contact', '#2563eb', hasContact],
+    ['Background', '#7c3aed', secHasContent(e, 'background')],
+    ['Persona', '#4d7c0f', secHasContent(e, 'persona')],
+    ['Files', '#0d9488', secHasContent(e, 'files')],
+    ['Connection', '#e30613', true]
+  ];
+}
 function heroHTML(di){
-  var e = D.directory[di], sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ');
-  /* Location on file gets its own line under the name (JD 2026-10-15): resolved location_on_file -> city -> hometown, normalized; the @handle never renders in the hero (it lives in the Contact card). */
+  var e = D.directory[di];
+  /* Location resolved location_on_file -> city -> hometown, normalized;
+     the @handle never renders in the hero (it lives in the Contact card). */
   var loc = ptNormLoc(ptLocVal(e));
   var ds = sortDegrees(degreesOf(e)).slice(0, 3).map(function(d){
     var bits = [d.degree, d.year ? yy(d.year) : ''].filter(Boolean).join(' ');
     return '<span class="dbadge">' + ic('cap', 12) + '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits ? '<i>' + esc(bits) + '</i>' : '') + '</span>';
   }).join('');
   var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
-  /* Condensed hero (JD 2026-10-29): location, relationship/context and
-     last contact share ONE meta line; degree/cert badges and the score
-     share ONE row under it. No value gets a row of its own. */
-  var meta = [];
-  if(loc) meta.push('<span class="hm-loc">' + ic('pin', 13) + esc(loc) + '</span>');
-  meta.push('<span>' + esc(sub || 'Not yet classified') + '</span>');
-  if(lcLabel(e)) meta.push('<span class="hm-lc">' + (lcOnline(e) ? 'Last contact online ' : 'Last known contact ') + '<b>' + esc(lcLabel(e)) + '</b></span>');
-  var brow = ds + cs + scoreBadgeHTML(di);
-  return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
-    '<p class="hmeta">' + meta.join('<span class="hsep">·</span>') + '</p>' +
-    (brow ? '<div class="hrow">' + brow + '</div>' : '') + '</div>' + phHeroHTML(e);
+  function mi(lab, val){ return val ? '<div class="ih-mi"><small>' + lab + '</small><b>' + esc(val) + '</b></div>' : ''; }
+  var meta = mi('Location', loc) + mi('Relationship', cap(gv(e, 'relationship'))) + mi('Context', cap(gv(e, 'context'))) +
+    mi('Known since', knownSinceLabel(e)) + (lcLabel(e) ? mi(lcOnline(e) ? 'Last contact online' : 'Last contact', lcLabel(e)) : '');
+  var ph = phHeroHTML(e);
+  var sc = scoreFor(di), pres = profileSections(di);
+  return '<div class="ih-id">' + (ph ? '' : avatar(e, 'xl')) +
+    '<div class="ih-main"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
+    (meta ? '<div class="ih-meta">' + meta + '</div>' : '') +
+    ((ds || cs) ? '<div class="hrow">' + ds + cs + '</div>' : '') + '</div></div>' +
+    (ph ? '<div class="ih-photo">' + ph + '</div>' : '') +
+    '<div class="ih-score">' + ringScoreSVG(sc ? sc.score : 0) + '<div class="ih-slab"><b>Score</b><span>of 100</span></div></div>' +
+    '<div class="ih-secs">' + ringSecsSVG(pres) + '<div class="ih-legend">' + pres.map(function(p){
+      return '<span class="lg' + (p[2] ? '' : ' off') + '"><i style="--lgc:' + p[1] + '"></i>' + p[0] + '</span>';
+    }).join('') + '</div></div>';
 }
 /* ---------- Brief derivations (JD 2026-10-28; profile card retired
    V3.31.0, JD 2026-10-29) ----------
@@ -3646,11 +3756,28 @@ function secHTML(di, id){
       (id !== 'persona' ? '<label class="wv" title="Insufficient data: this section stops counting against the profile"><input type="checkbox" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '"' + (waived ? ' checked' : '') + '><span>Insufficient data</span></label>' : '') +
       '<button type="button" class="btn sm primary" data-act="secdone" data-sec="' + id + '">Close</button>';
   } else acts = '<button type="button" class="ib sm" data-act="secedit" data-sec="' + id + '" aria-label="Edit ' + d.t + '" title="Edit">' + ic('edit', 15) + '</button>';
+  var head = '<header><h3>' + d.t + '</h3>' + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header>';
+  var SPINE = { about:'About', identity:'Contact', background:'Background', persona:'Persona', files:'Files', business:'Business', relationship:'Relationship', connections:'Associates', timeline:'Timeline', lima:'Lima Charlie' };
+  function band(cls, spine, inner){
+    return '<div class="band ' + cls + '"><div class="spine"><span>' + spine + '</span></div><div class="band-in">' + inner + '</div></div>';
+  }
+  /* About renders as two bands (Synopsis / Web Record) in view mode
+     (Split Partitions, V3.37.0); editing and waived states stay one band. */
+  if(id === 'about' && !editing && !waived){
+    var synH = aboutSynHTML(di), webH = aboutWebHTML(di);
+    if(synH || webH){
+      var inner = '';
+      if(synH) inner += band('b-syn', 'Synopsis', head + '<div class="cbody">' + synH + '</div>');
+      if(webH) inner += band('b-web', 'Web Record', (synH ? '' : head) + '<div class="cbody">' + webH + '</div>');
+      return '<section class="card multi" id="sec-about" data-sec="about">' + inner + '</section>';
+    }
+  }
   var body;
   if(waived && !editing){
     body = '<p class="dim waivedmsg">Waived: insufficient data. <button type="button" class="lnk" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '" data-off="1">Restore</button></p>';
   } else body = editing ? secEdit(di, id) : secView(di, id);
-  return '<section class="card' + (editing ? ' editing' : '') + (waived ? ' waived' : '') + (d.wide ? ' wide' : '') + '" id="sec-' + id + '" data-sec="' + id + '"><header><h3>' + d.t + '</h3>' + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header><div class="cbody">' + body + '</div></section>';
+  return '<section class="card bandwrap b-' + id + (editing ? ' editing' : '') + (waived ? ' waived' : '') + (d.wide ? ' wide' : '') + '" id="sec-' + id + '" data-sec="' + id + '">' +
+    band('b-' + id, SPINE[id] || d.t, head + '<div class="cbody">' + body + '</div>') + '</section>';
 }
 function secSummary(e, id){
   if(id === 'lima') return lcNote(e).trim() ? '<span class="lc-mark" title="A Lima Charlie note is waiting on this profile">LC</span>' : '';
@@ -3670,6 +3797,24 @@ function chipsHTML(list, cls, icn){
 function sourceChips(urls){
   return urls.map(function(u){ return /^https?:/i.test(u) ? '<a class="src" href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(hostOf(u)) + ic('ext', 11) + '</a>' : '<span class="src plain">' + esc(u) + '</span>'; }).join('');
 }
+function aboutSynHTML(di){
+  var e = D.directory[di], syn = gv(e, 'synopsis');
+  if(!syn) return '';
+  return '<div class="narr">' + String(syn).split(/\n+/).map(function(line){
+    var m = line.match(/^([A-Z][A-Za-z &\/'-]{1,28}):\s+(.*)$/);
+    return m ? '<p><span class="lab">' + esc(m[1]) + '</span>' + pillify(m[2], di) + '</p>' : '<p>' + pillify(line, di) + '</p>';
+  }).join('') + '</div>';
+}
+function aboutWebHTML(di){
+  var e = D.directory[di], fp = footprintOf(e);
+  if(!fp.blocks.length) return '';
+  var fsrc = (e.files || []).some(function(f){ return f && f.kind === 'source' && f.url; });
+  var wrSourced = fp.sourced || fsrc;
+  return '<div class="band-note"><span class="conf ' + (wrSourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (wrSourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
+    fp.blocks.map(function(b){
+      return '<div class="fpb ' + (b.urls.length || fsrc ? 'ok' : 'no') + '"><p>' + pillify(b.text, di) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : (fsrc ? '' : '<div class="srcs"><span class="src none">No source attached</span></div>')) + '</div>';
+    }).join('');
+}
 function secView(di, id){
   var e = D.directory[di];
   if(id === 'identity'){
@@ -3687,15 +3832,12 @@ function secView(di, id){
     r('pin', 'Lives in', esc(e.city || ''), 'from Facebook', true);
     r('pin', 'From', esc(e.hometown || ''), 'from Facebook', true);
     if((e.languages || []).length) r('book', 'Languages', e.languages.map(esc).join(', '), 'from subject file', true);
-    /* Condensed (JD 2026-10-29): short facts pair up two per row
-       (.ipair); link rows keep a full row of their own. */
     function ifact(o, cls){ return '<div class="' + cls + '"><span class="il">' + ic(o.icn, 15) + o.lab + '</span><div class="iv">' + o.val + (o.note ? ' <small class="derived">' + o.note + '</small>' : '') + '</div></div>'; }
-    var out = '', ri = 0;
-    while(ri < rows.length){
-      if(rows[ri].half && rows[ri + 1] && rows[ri + 1].half){ out += '<div class="ipair">' + ifact(rows[ri], 'ihalf') + ifact(rows[ri + 1], 'ihalf') + '</div>'; ri += 2; }
-      else if(rows[ri].half){ out += '<div class="ipair">' + ifact(rows[ri], 'ihalf') + '<div class="ihalf"></div></div>'; ri += 1; }
-      else { out += ifact(rows[ri], 'irow'); ri += 1; }
-    }
+    /* Split Partitions (V3.37.0): one filled row per fact, aligned label
+       column; Phone and Email lead when present. */
+    var pri = rows.filter(function(o){ return o.lab === 'Phone' || o.lab === 'Email'; });
+    var rest = rows.filter(function(o){ return o.lab !== 'Phone' && o.lab !== 'Email'; });
+    var out = pri.concat(rest).map(function(o){ return ifact(o, 'irow'); }).join('');
     return rows.length ? '<div class="irows">' + out + '</div>' : '<p class="dim">No contact details yet.</p>' + emptyPrompt(di, id, 'Add a phone number');
   }
   if(id === 'business'){
@@ -3744,30 +3886,15 @@ function secView(di, id){
        no value on file does not render at all; the Known-since tile
        survives on its Snapchat badge alone since the badge is content. */
     var shownTiles = tiles.filter(function(t){ return t[1] || (t[0] === 'Known since' && e.snap_since); });
-    var relBody = (shownTiles.length ? '<div class="tiles">' + shownTiles.map(function(t){ var ocs = (t[0] === 'Known since' && e.snap_since) ? '<span class="ocs-badge">' + ic('snap', 11) + 'Online connection since ' + e.snap_since + '</span>' : ''; return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b>' + ocs + '</div>'; }).join('') + '</div>' : '') +
+    var relBody = (shownTiles.length ? '<div class="tiles">' + shownTiles.map(function(t){ var ocs = (t[0] === 'Known since' && e.snap_since) ? '<span class="ocs-badge">' + ic('snap', 11) + 'Online connection since ' + e.snap_since + '</span>' : ''; return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + (t[0] === 'Context' && t[1] ? pillify(t[1], di) : esc(t[1] || 'Not set')) + '</b>' + ocs + '</div>'; }).join('') + '</div>' : '') +
       (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '') + rankCtl;
     return relBody || emptyPrompt(di, id, 'Add relationship details');
   }
   if(id === 'about'){
-    var syn = gv(e, 'synopsis'), fp = footprintOf(e), out = '';
-    var fsrc = (e.files || []).some(function(f){ return f && f.kind === 'source' && f.url; });
-    var wrSourced = fp.sourced || fsrc;
-    /* Synopsis-led order (JD 2026-10-29, reverting the 2026-10-28
-       question-fuel order): the narrative packet leads; the web record
-       follows as supporting material. */
-    if(syn){
-      out += (fp.blocks.length ? '<div class="sub-h">Synopsis</div>' : '') + '<div class="narr">' + String(syn).split(/\n+/).map(function(line){
-        var m = line.match(/^([A-Z][A-Za-z &\/'-]{1,28}):\s+(.*)$/);
-        return m ? '<p><span class="lab">' + esc(m[1]) + '</span>' + esc(m[2]) + '</p>' : '<p>' + esc(line) + '</p>';
-      }).join('') + '</div>';
-    }
-    if(fp.blocks.length){
-      out += '<div class="sub-h">Web record <span class="conf ' + (wrSourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (wrSourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
-        fp.blocks.map(function(b){
-          return '<div class="fpb ' + (b.urls.length || fsrc ? 'ok' : 'no') + '"><p>' + esc(b.text) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : (fsrc ? '' : '<div class="srcs"><span class="src none">No source attached</span></div>')) + '</div>';
-        }).join('');
-    }
-    return out || emptyPrompt(di, id, 'Write a synopsis');
+    /* Synopsis-led order: the narrative packet leads; the web record
+       follows as supporting material. In the profile view the two render
+       as separate bands via aboutSynHTML/aboutWebHTML (see secHTML). */
+    return (aboutSynHTML(di) + aboutWebHTML(di)) || emptyPrompt(di, id, 'Write a synopsis');
   }
   if(id === 'background'){
     var out2 = '', sk = tagList(gv(e, 'specialty'));
@@ -3780,9 +3907,13 @@ function secView(di, id){
     var ach = honorsOf(e);
     if(ach.length) out2 += '<div class="sub-h">Honors</div>' + chipsHTML(ach, 'hon', 'award');
     var hl = parsePipe(gv(e, 'highlights'));
-    if(hl.length) out2 += '<div class="sub-h">Highlights</div>' + chipsHTML(hl, 'hl');
+    if(hl.length) out2 += '<div class="sub-h">Highlights</div><div class="hlrows">' + hl.map(function(h){
+      var m = String(h).match(/^([^:]{2,24}):\s*(.*)$/);
+      return m ? '<div class="hlrow"><span class="hl-k">' + esc(m[1]) + '</span><div class="hl-v">' + pillify(m[2], di) + '</div></div>' :
+        '<div class="hlrow"><div class="hl-v">' + pillify(h, di) + '</div></div>';
+    }).join('') + '</div>';
     var orgs = '';
-    ORG_CATS.forEach(function(c){ if(c.k === 'universities') return; tagList(gv(e, c.k)).forEach(function(o){ orgs += '<a class="vchip link" href="#/groups/' + c.k + '/' + encodeURIComponent(o) + '">' + ic(c.ic, 12) + esc(o) + '</a>'; }); });
+    ORG_CATS.forEach(function(c){ if(c.k === 'universities') return; tagList(gv(e, c.k)).forEach(function(o){ orgs += '<a class="vchip link oc-' + c.k + '" href="#/groups/' + c.k + '/' + encodeURIComponent(o) + '">' + ic(c.ic, 12) + esc(o) + '</a>'; }); });
     if(orgs) out2 += '<div class="sub-h">Organizations</div><div class="chips ro">' + orgs + '</div>';
     return out2 || emptyPrompt(di, id, 'Add skills, work, school');
   }
@@ -3801,7 +3932,7 @@ function secView(di, id){
   if(id === 'timeline'){
     var evs = sortedEvents(e), ps = connPhases(e).slice().sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); }), out4 = '<div class="tl-logrow"><button type="button" class="btn ghost sm" data-act="logcontact">' + ic('edit', 13) + 'Log contact</button></div>';
     if(ps.length) out4 += '<div class="sub-h first">Phases</div><div class="phases">' + ps.map(function(p){
-      return '<div class="ph"><b>' + esc(p.l || 'Untitled phase') + '</b><small>' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</small>' + (p.n ? '<p>' + esc(p.n) + '</p>' : '') + '</div>';
+      return '<div class="ph"><b>' + esc(p.l || 'Untitled phase') + '</b><small>' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</small>' + (p.n ? '<p>' + pillify(p.n, di) + '</p>' : '') + '</div>';
     }).join('') + '</div>';
     if(evs.length){
       var tlVis = !!S.prof.tlVisual;
@@ -3819,7 +3950,7 @@ function secView(di, id){
       } else {
         out4 += '<div class="tl">' + evs.slice(0, S.prof.open.ev ? 999 : 6).map(function(o){
           var ev = o.ev;
-          return '<div class="ev"><i></i><time>' + esc(ev.kind === 'contact' ? lcDateLabel(ev.date) : evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + lcTag(ev) + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
+          return '<div class="ev"><i></i><time>' + esc(ev.kind === 'contact' ? lcDateLabel(ev.date) : evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + lcTag(ev) + '</time><b>' + pillify(ev.summary || '', di) + '</b>' + (ev.detail ? '<p>' + pillify(ev.detail, di) + '</p>' : '') + '</div>';
         }).join('') + '</div>' + (evs.length > 6 && !S.prof.open.ev ? '<button type="button" class="btn ghost sm" data-act="opentog" data-k="ev">Show all ' + evs.length + ' events</button>' : '');
       }
     }
@@ -3842,7 +3973,7 @@ function secView(di, id){
        shows exactly the rated ones. The editor still offers all six. */
     return '<div class="persona">' + PERSONA.filter(function(p){ return (parseInt(gv(e, p[0]), 10) || 0) > 0; }).map(function(p){
       var n = parseInt(gv(e, p[0]), 10) || 0;
-      return '<div class="pt"><span>' + p[1] + '</span><div class="pb"><i style="width:' + (n * 20) + '%"></i></div><b>' + n + '/5</b></div>';
+      return '<div class="pt"><span>' + p[1] + '</span><div class="psegs">' + [1, 2, 3, 4, 5].map(function(i){ return '<i class="' + (i <= n ? 'on' : '') + '"></i>'; }).join('') + '</div><b>' + n + '/5</b></div>';
     }).join('') + '</div>';
   }
   if(id === 'lima'){
