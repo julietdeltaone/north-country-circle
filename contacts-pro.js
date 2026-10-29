@@ -20,15 +20,15 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.23.0';
+var APP_VERSION = '3.22.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
    <html> before first paint; this module renders the Theme section
    in the top bar and keeps it, the attributes and localStorage in
    sync. Keys: ncc_theme_mode / ncc_theme_scheme. */
-var THEME_SCHEMES = ['bluegreen','slate'];
-var THEME_NAMES = { bluegreen:'Blue / Green', slate:'Slate' };
+var THEME_SCHEMES = ['bluegreen','blueviolet','tealsky','violetpink','amberrose','slate'];
+var THEME_NAMES = { bluegreen:'Blue / Green', blueviolet:'Blue / Violet', tealsky:'Teal / Sky', violetpink:'Violet / Pink', amberrose:'Amber / Rose', slate:'Slate' };
 function themeState(){
   var m = 'light', s = 'bluegreen';
   try {
@@ -1922,7 +1922,7 @@ function renderChrome(){
   }).join('');
   $('#rail').innerHTML = '<a class="brand" href="#/home" aria-label="Contacts Pro"><i></i><b>Contacts Pro</b></a>' +
     '<div class="navlist">' + items + '</div>' +
-    '<div class="railfoot">' +
+    '<div class="railfoot"><a href="index.html" class="nv">' + ic('network', 20) + '<span>Visual map</span></a>' +
     '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
     '<small id="fresh">' + (D ? 'Data ' + esc(D.updated || '') : '') + '</small></div>';
   /* NAV includes Home since V2.28.0, so the tabs are just the NAV items;
@@ -2264,6 +2264,7 @@ function pplSort(dis){
       years: knownSinceYear(e),
       phone: gv(e, 'phone'),
       email: gv(e, 'email').toLowerCase(),
+      updated: Date.parse(raw(e, 'updated_at')) || 0,
       lastc: flexKey(gv(e, 'last_contact')) || 0,
       firstc: flexKey(firstContactOf(e)) || 0
     };
@@ -2272,7 +2273,7 @@ function pplSort(dis){
     var ka = K[a], kb = K[b], r = 0;
     if(ts.k === 'tier') r = (ka.tier - kb.tier) * d;
     else if(ts.k === 'assoc') r = (ka.assoc - kb.assoc) * d;
-    else if(ts.k === 'years' || ts.k === 'close' || ts.k === 'lastc' || ts.k === 'firstc'){
+    else if(ts.k === 'years' || ts.k === 'updated' || ts.k === 'close' || ts.k === 'lastc' || ts.k === 'firstc'){
       var na = ka[ts.k], nb = kb[ts.k];
       if(na && nb) r = (na - nb) * d; else if(na) r = -1; else if(nb) r = 1;
     }
@@ -2331,6 +2332,20 @@ function prow(di, i){
 }
 /* People right column: filter shortcuts + counts by tier and group.
    Tucked until opened; S.ppl.side remembers an explicit open/close. */
+function pplSideHTML(f){
+  var tc = { vetted:0, associate:0, open:0, none:0 };
+  people().forEach(function(di){ var t = tierOf(D.directory[di]); tc[(t === 'vetted' || t === 'associate' || t === 'open') ? t : 'none']++; });
+  var tiers = [['vetted', 'Vetted', (TIERS.vetted || {}).c], ['associate', 'Associate', (TIERS.associate || {}).c], ['open', 'Open', (TIERS.open || {}).c], ['none', 'Untiered', RING_C[3]]];
+  var gm = allGroups();
+  var grows = Object.keys(gm).map(function(g){ return [g, gm[g].length]; }).sort(function(a, b){ return b[1] - a[1] || a[0].localeCompare(b[0]); }).slice(0, 14);
+  return '<aside class="ppl-side" id="pplside"><div class="side-h"><h3>Counts</h3><button type="button" class="ib sm" data-act="pplside" aria-label="Close counts">' + ic('x', 15) + '</button></div>' +
+    '<div class="side-sec"><h4>By tier</h4>' + tiers.map(function(t){
+      return '<button type="button" class="srow' + (f.tier === t[0] ? ' on' : '') + '" data-act="pf" data-k="tier" data-v="' + t[0] + '"><i style="background:' + (t[2] || '#4b5468') + '"></i><span>' + t[1] + '</span><b>' + tc[t[0]] + '</b></button>';
+    }).join('') + (f.tier !== 'all' ? '<button type="button" class="srow sub" data-act="pf" data-k="tier" data-v="all"><span>Any tier</span></button>' : '') + '</div>' +
+    '<div class="side-sec"><h4>Groups</h4>' + grows.map(function(g){
+      return '<button type="button" class="srow' + (f.group === g[0] ? ' on' : '') + '" data-act="pf" data-k="group" data-v="' + esc(g[0]) + '"><span>' + esc(g[0]) + '</span><b>' + g[1] + '</b></button>';
+    }).join('') + (f.group ? '<button type="button" class="srow sub" data-act="pf" data-k="group" data-v=""><span>Any group</span></button>' : '') + '</div>' + '</aside>';
+}
 function viewPeople(v){
   ptEditClose();
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
@@ -2347,9 +2362,9 @@ function viewPeople(v){
     '<div class="tool-r">' +
     '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
     '<button type="button" class="btn ghost sm" data-act="ptcols">' + ic('settings', 14) + 'Columns</button>' +
-    '</div></div>' +
+    '<button type="button" class="btn ghost sm" data-act="pplside" aria-expanded="' + (sideOpen(f.side) ? 'true' : 'false') + '">Counts</button></div></div>' +
     '<div class="plist" id="plist"></div></div>' +
-    '</div></div>';
+    (sideOpen(f.side) ? pplSideHTML(f) : '') + '</div></div>';
   paintPeople();
   ptAttach();
 }
@@ -2436,11 +2451,12 @@ var PT_ALL = [
   { k:'years',    label:'Years known', num:true },
   { k:'phone',    label:'Phone' },
   { k:'email',    label:'Email' },
+  { k:'updated',  label:'Last updated', num:true },
   { k:'lastc',    label:'Last contact', num:true },
   { k:'firstc',   label:'First contact', num:true }
 ];
 var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1, lastc:1 };
-var PT_NUMDIR = { assoc:1, years:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
+var PT_NUMDIR = { assoc:1, years:1, updated:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
 var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', close:'close', groups:'groups', years:'years', phone:'phone', email:'email' };
 var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
 var PT_SEED_ORGS = {
@@ -2469,6 +2485,7 @@ var PTCELL = {
   years: function(e){ var y = knownSinceYear(e); return y ? String(y) : ''; },
   phone: function(e){ var p = gv(e, 'phone'); return p ? esc(fmtPhone(p)) : ''; },
   email: function(e){ return esc(gv(e, 'email')); },
+  updated: function(e){ var u = raw(e, 'updated_at'); return u ? esc(String(u).slice(0, 10)) : ''; },
   lastc: function(e){ var v = String(gv(e, 'last_contact') || '').trim(); return v ? '<span class="ptlc">' + esc(lcLabel(e)) + (lcOnline(e) ? ' ' + lcGlobe(11) : '') + '</span>' : ''; },
   firstc: function(e){ var v = firstContactOf(e); return v ? esc(lcDateLabel(v)) : ''; }
 };
@@ -2508,7 +2525,7 @@ function ptColsSheet(){
         '<button type="button" class="btn ghost sm' + (c.on ? ' on' : '') + '" data-act="ptvis" data-k="' + c.k + '"' + (c.on && onCount === 1 ? ' disabled' : '') + '>' + (c.on ? 'Shown' : 'Hidden') + '</button>' +
         '</span></div>';
     }).join('') +
-    '<p class="note">Tip: Shift-click any cell (except Known associates, Handle, Last contact and First contact) to edit it in place. On a touch screen, press and hold the cell.</p>', { focus:false });
+    '<p class="note">Tip: Shift-click any cell (except Known associates, Handle, Last updated, Last contact and First contact) to edit it in place. On a touch screen, press and hold the cell.</p>', { focus:false });
 }
 /* ----- autocomplete: live directory values first, seeded county values added ----- */
 function ptDedupe(list){
@@ -3851,17 +3868,18 @@ function netColor(nd){
 }
 function viewNetwork(v){
   var legend = TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
-  S.net.view = '2d'; NET.view = '2d';
+  S.net.view = store('ncc_netview') === '3d' ? '3d' : '2d'; NET.view = S.net.view;
   v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1></div>' +
     '<div class="netctl">' +
     '<div class="netgrp"><span class="netkick">View</span><span class="netacts">' +
     '<button type="button" class="btn ghost sm' + (S.net.view === '2d' ? ' on' : '') + '" data-act="netview" data-v="2d" aria-pressed="' + (S.net.view === '2d' ? 'true' : 'false') + '">2D</button>' +
+    '<button type="button" class="btn ghost sm' + (S.net.view === '3d' ? ' on' : '') + '" data-act="netview" data-v="3d" aria-pressed="' + (S.net.view === '3d' ? 'true' : 'false') + '">3D</button></span></div>' +
     '<div class="netgrp"><span class="netkick">Find</span><div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div></div>' +
     '<div class="netgrp"><span class="netkick">Actions</span><span class="netacts">' +
     '<button type="button" class="btn ghost sm" data-act="netreset">Reset view</button>' +
     '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button></span></div>' +
     '</div></div>' +
-    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
+    '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas><div class="netclust" id="netclust" aria-hidden="true"></div>' +
     '<div class="netfocus" id="netfocus" hidden></div>' +
     '<div class="nethov" id="nethov" hidden></div>' +
     '<div class="netlegend" id="netlegend">' + legend.map(function(l){ return '<span><i style="background:' + l[0] + '"></i>' + l[1] + '</span>'; }).join('') + '</div>' +
@@ -4011,7 +4029,39 @@ function flyFact(e){
    orientation is no longer the question — except the focused
    organization's plate, which stays. Never takes pointer
    events; no person labels exist at any zoom (hard rule). ----- */
-
+var CLUST = { box:null, plates:[] };
+function clustEnsure(){
+  var box = $('#netclust'); if(!box) return null;
+  if(CLUST.box !== box){
+    CLUST.box = box; CLUST.plates = []; box.innerHTML = '';
+    NET.hubs.slice(0, HUB_LABEL_MAX).forEach(function(h){
+      var d = document.createElement('div'); d.className = 'clab';
+      d.textContent = h.name + ' \u2014 ' + h.nds.length;
+      box.appendChild(d);
+      CLUST.plates.push({ h:h, el:d, w:0, hgt:0 });
+    });
+    CLUST.plates.forEach(function(p){ p.w = p.el.offsetWidth; p.hgt = p.el.offsetHeight; });
+  }
+  return box;
+}
+function netClustPaint(){
+  if(!clustEnsure()) return;
+  var fade = Math.max(0, Math.min(1, (1.5 - NET.cam.z) / 0.5));
+  var kept = [];
+  CLUST.plates.forEach(function(p){
+    var focus = !!(S.net.org && S.net.org === p.h.name);
+    var op = focus ? 1 : fade;
+    if(op <= 0.02){ p.el.style.opacity = '0'; return; }
+    var s = netHS(p.h), x = s[0], y = s[1], w = p.w || 90, h = p.hgt || 24, show = true;
+    for(var k = 0; k < kept.length; k++){
+      var o = kept[k];
+      if(Math.abs(o.x - x) < (o.w + w) / 2 + 8 && Math.abs(o.y - y) < (o.h + h) / 2 + 8){ show = false; break; }
+    }
+    if(show) kept.push({ x:x, y:y, w:w, h:h });
+    p.el.style.opacity = show ? op.toFixed(3) : '0';
+    if(show) p.el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) translate(-50%,-50%)';
+  });
+}
 
 function netPinchDist(){ var k = Object.keys(NET.ptr).map(function(i){ return NET.ptr[i]; }); return k.length < 2 ? 0 : Math.hypot(k[0].x - k[1].x, k[0].y - k[1].y); }
 function netResize(){
@@ -4293,6 +4343,7 @@ function netDraw(){
       }
     }
   }
+  netClustPaint();
 }
 /* Map stats for the Network right panel. Display-only counts over what is on the map. */
 function netStatsHTML(){
@@ -5111,6 +5162,24 @@ function hmMixCard(title, segs, total){
   return '<section class="card hm-blk"><header><h3>' + esc(title) + '</h3></header><div class="cbody">' +
     '<div class="hm-segbar">' + bar + '</div><div class="hm-legs">' + leg + '</div></div></section>';
 }
+function hmPersonaCard(dd){
+  var ranked = HM_TRAITS.map(function(t){ return { k:t[0], l:t[1], pts:(dd.tPts[t[1]] || 0), avg: dd.tN[t[0]] ? dd.tSumF[t[0]] / dd.tN[t[0]] : 0 }; }).sort(function(a, b){ return b.pts - a.pts; });
+  var shareTop = ranked.map(function(x){ return { label:x.l, c: dd.totPts ? Math.round(100 * x.pts / dd.totPts) : 0 }; });
+  var byAvg = ranked.filter(function(x){ return x.avg > 0; }).sort(function(a, b){ return b.avg - a.avg; });
+  var shareLine = ranked.map(function(x){ return x.l + ' ' + (dd.totPts ? Math.round(100 * x.pts / dd.totPts) : 0) + '%'; }).join(' \u00b7 ');
+  var avgLine = HM_TRAITS.map(function(t){ return dd.tN[t[0]] ? t[1] + ' ' + (dd.tSumF[t[0]] / dd.tN[t[0]]).toFixed(1) : ''; }).filter(Boolean).join(' \u00b7 ');
+  var callout = byAvg.length ? '<p class="dim hm-note">Most pronounced: ' + byAvg[0].l + ' (avg ' + byAvg[0].avg.toFixed(1) + ') \u00b7 Least: ' + byAvg[byAvg.length - 1].l + ' (' + byAvg[byAvg.length - 1].avg.toFixed(1) + ')</p>' : '';
+  var pToggle = '<div class="hm-ptoggle"><button type="button" class="tchip' + (HM_PERSONA_MODE === 'points' ? ' on' : '') + '" data-act="hmpersona" data-m="points">Points</button><button type="button" class="tchip' + (HM_PERSONA_MODE === 'share' ? ' on' : '') + '" data-act="hmpersona" data-m="share">Share %</button></div>';
+  var rows = HM_PERSONA_MODE === 'share'
+    ? shareTop.map(function(t){ return hmBarRow('persona', t.label, t.label, t.c, shareTop.length ? shareTop[0].c : 0); }).join('')
+    : ranked.map(function(x){ return hmBarRow('persona', x.l, x.l, x.pts, ranked.length ? ranked[0].pts : 0); }).join('');
+  return hmRankCard('Persona makeup', pToggle + rows + callout +
+    (HM_PERSONA_MODE === 'share'
+      ? '<p class="dim hm-note">Bars are shares of all ' + dd.totPts + ' rated points.</p>'
+      : '<p class="dim hm-note">Share of all rated points: ' + shareLine + '.</p>') +
+    (avgLine ? '<p class="dim hm-note">Averages: ' + avgLine + '</p>' : '') +
+    '<p class="dim hm-note">' + dd.pRated + ' of ' + dd.N + ' rated.</p>');
+}
 function hmYearsCard(dd){
   var cols = dd.yrEntries.map(function(t){
     var h = dd.yrMax > 0 && t.c > 0 ? Math.max(4, Math.round(1000 * t.c / dd.yrMax) / 10) : 0;
@@ -5566,6 +5635,7 @@ function hmiDispatchOpen(el){
    they stay upright. Hover pauses the drift. --- */
 var HM_NET_RAF = 0;
 var HM_DATES = store('ncc_hm_dates') === '1';   /* Home Photos "Added" dates: collapsed by default, toggle in the card header (JD 2026-10-26) */
+var HM_PERSONA_MODE = store('ncc_hm_persona') === 'share' ? 'share' : 'points';   /* Persona makeup bars: total points or share % (JD 2026-10-26) */
 function hmNetCard(){
   netBuild();
   var parts = [], rot = [], i;
@@ -5691,6 +5761,23 @@ function viewHome(v){
   var groupsTop = hmPlainTop(dd.groupCounts, 8), groupMax = groupsTop.length ? groupsTop[0].c : 0;
   var orgsTop = hmPlainTop(dd.orgCounts, 8), orgMax = orgsTop.length ? orgsTop[0].c : 0;
   var fpTop = hmPlainTop(dd.fpCounts, 8), fpMax = fpTop.length ? fpTop[0].c : 0;
+  /* organization intersections (folded in from the old Orgs card) */
+  var sets = [];
+  pop.forEach(function(di){
+    var e = D.directory[di], seen = {};
+    ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ var cn = regApply(o); if(cn) seen[cn] = 1; }); });
+    sets.push(seen);
+  });
+  var pairs = [], top6 = hmPlainTop(dd.orgCounts, 6), ii, jj;
+  for(ii = 0; ii < top6.length; ii++) for(jj = ii + 1; jj < top6.length; jj++){
+    var pn = 0;
+    sets.forEach(function(s){ if(s[top6[ii].label] && s[top6[jj].label]) pn++; });
+    if(pn > 0) pairs.push({ a:top6[ii].label, b:top6[jj].label, n:pn });
+  }
+  pairs.sort(function(a, b){ return b.n - a.n; });
+  var pairRows = pairs.slice(0, 4).map(function(p){
+    return '<button type="button" class="hm-gaprow" data-act="hmiopen" data-kind="orgpair" data-ka="' + esc(p.a) + '" data-kb="' + esc(p.b) + '"><span>' + esc(p.a) + ' + ' + esc(p.b) + '</span><span class="hm-gn alt">' + p.n + '</span></button>';
+  }).join('');
   v.innerHTML = '<div class="page hm"><div class="hm-layout"><div class="hm-main"><div class="pagehead"><div><h1 class="display">Home</h1>' +
     '<p class="sub">The whole circle at a glance: its shape, coverage, photos, and what changed lately. Everything opens a closer look.</p></div></div>' +
     '<div class="hmk-strip">' +
@@ -5709,9 +5796,11 @@ function viewHome(v){
     hmRankCard('Groups', groupsTop.map(function(t){ return hmBarRow('group', t.key, t.label, t.c, groupMax); }).join('') +
       (Object.keys(dd.groupCounts).length > groupsTop.length ? hmMoreBtn('data-act="hmivlist" data-vk="group"', '+' + (Object.keys(dd.groupCounts).length - groupsTop.length) + ' more groups') : ''), Object.keys(dd.groupCounts).length + ' total') +
     hmRankCard('Organizations', orgsTop.map(function(t){ return hmBarRow('org', t.key, t.label, t.c, orgMax); }).join('') +
+      (pairRows ? '<h4 class="hm-sub2">Where they intersect</h4>' + pairRows : '') +
       (Object.keys(dd.orgCounts).length > orgsTop.length ? hmMoreBtn('data-act="hmivlist" data-vk="org"', '+' + (Object.keys(dd.orgCounts).length - orgsTop.length) + ' more organizations') : ''), 'top 8') +
     hmRankCard('Footprint leaders', fpTop.map(function(t){ return hmBarRow('footprint', t.key, t.label, t.c, fpMax); }).join('') +
       hmMoreBtn('data-act="hmikpi" data-k="footprint"', 'All footprint coverage'), 'facts each') +
+    hmPersonaCard(dd) +
     '</div>' +
     '<div class="hm-row2">' + hmYearsCard(dd) + hmCoverageCard(dd, pd) + '</div>' +
     hmPhotosCard(ph) +
@@ -7348,7 +7437,8 @@ function audUndoLast(){
       var sq = null;
       for(var qi = 0; qi < S.audit.deck.length; qi++) if(S.audit.deck[qi].di === act.di){ sq = S.audit.deck[qi]; break; }
       if(sq){
-        S.audit.deck.splice(S.audit.deck.indexOf(sq), 1); S.audit.deck.unshift(sq);
+        if(audMode() === 'rapid') audStageSwapTo(sq);
+        else { S.audit.deck.splice(S.audit.deck.indexOf(sq), 1); S.audit.deck.unshift(sq); }
       }
     }
   }
@@ -7684,6 +7774,19 @@ function audStageRender(x){
 /* Swap the Rapid Fire stage to a specific entry: the current entry
    returns to the FRONT of the deck (it deals again on the next
    advance, untouched), the target takes the stage. */
+function audStageSwapTo(x){
+  var A = S.audit, grid = $('#audgrid');
+  if(!grid || !x) return;
+  var cur = $('.aud-card', grid);
+  if(cur){
+    var cx = audEntry(+cur.getAttribute('data-di'));
+    audDisarm(cur);
+    cur.remove();
+    A.shown = A.shown.filter(function(y){ return !cx || y.di !== cx.di; });
+    if(cx && cx !== x) A.deck.unshift(cx);
+  }
+  audStageRender(x);
+}
 
 /* Skip for now (flow modes): the card leaves the stage with NO
    dismissal — its entry goes to the BACK of the deck and deals again
@@ -7722,11 +7825,46 @@ function audSkipNow(card){
    chip counts as the pending pick, and a complete org/skill value
    adds and then advances — otherwise the card is skipped for now
    (never the permanent pass; Cards mode keeps that, see onNavKey). */
+function audRapidShiftRight(card){
+  var di = +card.getAttribute('data-di'), gap = card.getAttribute('data-gap');
+  if((gap === 'orgs' || gap === 'skills') && $('.aud-in', card) && $('.aud-in', card).value.trim()){
+    audSave(di, card);        /* the commit closes the gap out now (JD 2026-10-16): audSave itself advances the card, like any other field */
+    return;
+  }
+  if((gap === 'tier' || gap === 'rel') && !card.getAttribute('data-pick')){
+    var a = document.activeElement;
+    if(a && card.contains(a) && a.classList && a.classList.contains('aud-pick')){
+      card.setAttribute('data-pick', a.getAttribute('data-v'));
+      $$('.aud-pick', card).forEach(function(b){ b.classList.toggle('on', b === a); });
+    }
+  }
+  if(audComplete(card)){
+    if(gap === 'years'){ audDisarm(card); audSave(di, card); }   /* Enter-only rule: no countdown */
+    else audTryArm(card);
+    return;
+  }
+  audSkipNow(card);
+}
 
 /* Shift+Left in Rapid Fire (JD 2026-10-16): deal the previous card
    back, its editor focused. Entries with nothing left to show (no
    open gap and nothing filled this visit) are passed over; the
    current card returns to the front of the deck. */
+function audRapidBack(card){
+  var A = S.audit;
+  if(!A || !A.hist || !A.hist.length){ audNudge(card); return; }
+  audFinalizeStacks(card);
+  var curDi = +card.getAttribute('data-di'), y = null;
+  while(A.hist.length){
+    var cand = A.hist.pop();
+    if(cand.di === curDi) continue;
+    if(!cand.gaps.length && !cand.done.length) continue;
+    y = cand; break;
+  }
+  if(!y){ audNudge(card); return; }
+  if(y.gaps.indexOf(y.cur) < 0) y.cur = y.gaps[0] || y.done[y.done.length - 1];
+  audStageSwapTo(y);
+}
 
 /* A card is submittable only with a complete value: a chip picked, a
    non-empty text field, or a plausible 4-digit year (1900–current). */
@@ -8047,10 +8185,13 @@ function audPaintEmpty(){
 var AUD_MODES = [
   { k:'cards',  l:'Cards' },
   { k:'years',  l:'Years Known' },
+  { k:'rapid',  l:'Rapid Fire' },
+  { k:'cat',    l:'Category Run' },
+  { k:'finish', l:'Finish Line' },
   { k:'lima',   l:'Lima Charlie' },
   { k:'photos', l:'Photo Audit' }
 ];
-function audMode(){ var m = S.audit && S.audit.mode; return m === 'lima' || m === 'photos' || m === 'years' ? m : 'cards'; }
+function audMode(){ var m = S.audit && S.audit.mode; return m === 'rapid' || m === 'cat' || m === 'finish' || m === 'lima' || m === 'photos' || m === 'years' ? m : 'cards'; }
 /* Daily goal (Duolingo pattern, minus the nagging): fills today vs a
    goal JD sets himself, persisted per calendar day. */
 function audDay(){
@@ -8097,6 +8238,18 @@ function audNoteUnfill(act){
   if(act.finishedProfile && A.finished) A.finished--;
   audPaintGoal();
 }
+function audPace(){
+  var A = S.audit; if(!A || !A.fills || A.fills.length < 5) return null;
+  var cut = Date.now() - 60000, n = 0;
+  for(var i = A.fills.length - 1; i >= 0; i--){ if(A.fills[i] >= cut) n++; else break; }
+  return n;
+}
+function audCatCounts(){
+  var out = {};
+  Object.keys(AUD_GAPS).forEach(function(g){ out[g] = 0; });
+  people().forEach(function(di){ audOpenGaps(di).forEach(function(g){ out[g]++; }); });
+  return out;
+}
 /* Pool builders for the new modes. Cards' audDeal above is untouched;
    these share its entry shape and the parked-first rule. */
 function audPoolEntries(){
@@ -8112,9 +8265,46 @@ function audPoolEntries(){
 function audShuffleInPlace(a){
   for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
 }
+function audDealRapid(){
+  var A = S.audit, p = audPoolEntries();
+  audShuffleInPlace(p.pool);
+  var all = p.later.concat(p.pool);
+  A.shown = all.slice(0, 1);
+  A.deck = all.slice(1);
+  A.shown.forEach(function(x){ if(x.parked) audUnpark(pkey(D.directory[x.di])); });
+}
+function audDealFinish(){
+  var A = S.audit, p = audPoolEntries();
+  audShuffleInPlace(p.pool);
+  /* fewest gaps first; the shuffle underneath keeps ties random
+     (Array.prototype.sort is stable) */
+  p.pool.sort(function(a, b){ return a.gaps.length - b.gaps.length; });
+  var all = p.later.concat(p.pool);
+  A.shown = all.slice(0, AUD_WALL);
+  A.deck = all.slice(AUD_WALL);
+  A.shown.forEach(function(x){ if(x.parked) audUnpark(pkey(D.directory[x.di])); });
+}
+function audDealCat(){
+  var A = S.audit, gap = A.cat, later = [], pool = [];
+  if(!gap){ A.shown = []; A.deck = []; return; }
+  people().forEach(function(di){
+    if(audOpenGaps(di).indexOf(gap) < 0) return;
+    var parked = AUD_LATER[pkey(D.directory[di])] !== undefined;
+    var x = { di:di, gaps:[gap], done:[], cur:gap, vals:{}, dropped:0, parked:parked };
+    (parked ? later : pool).push(x);
+  });
+  audShuffleInPlace(pool);
+  var all = later.concat(pool);
+  A.shown = all.slice(0, AUD_WALL);
+  A.deck = all.slice(AUD_WALL);
+  A.shown.forEach(function(x){ if(x.parked) audUnpark(pkey(D.directory[x.di])); });
+}
 function audDealMode(){
   var m = audMode();
-  if(m === 'lima') lcEnsureDeck();
+  if(m === 'rapid') audDealRapid();
+  else if(m === 'finish') audDealFinish();
+  else if(m === 'cat') audDealCat();
+  else if(m === 'lima') lcEnsureDeck();
   else if(m === 'photos'){ /* the photo desk manages its own queue */ }
   else if(m === 'years'){ /* the Years Known runner manages its own queue */ }
   else audDeal();
@@ -8132,6 +8322,23 @@ function audSetMode(m){
 /* ---- Blitz: a 2-minute Rapid Fire round with an end-of-round
    summary (peak-end rule: the recap is what the round is remembered
    by). Fills during the round are counted on the blitz state. ---- */
+function audStartBlitz(){
+  var A = S.audit; if(!A) return;
+  if(!audRemaining()){ toast('Nothing left to fill in.'); return; }
+  if(A.blitzDone){ A.blitzDone = null; viewAudit($('#view')); }
+  A.blitz = { ends:Date.now() + 120000, fills:0, best:(A.streak || 0) };
+  if(A._blitzIv) clearInterval(A._blitzIv);
+  A._blitzIv = setInterval(audBlitzTick, 250);
+  audBlitzTick();
+  audPaintModeBar();
+}
+function audBlitzTick(){
+  var A = S.audit, b = A && A.blitz;
+  if(!b){ if(A && A._blitzIv){ clearInterval(A._blitzIv); A._blitzIv = null; } return; }
+  if(Date.now() >= b.ends){ audEndBlitz(false); return; }
+  var el = $('#audblitz-t');
+  if(el) el.textContent = 'Blitz ' + Math.max(1, Math.ceil((b.ends - Date.now()) / 1000)) + 's · ' + b.fills + ' filled';
+}
 function audEndBlitz(silent){
   var A = S.audit, b = A && A.blitz; if(!b) return;
   A.blitz = null;
@@ -8153,6 +8360,27 @@ function audModesHTML(){
 }
 function audModeBarHTML(){
   var A = S.audit, m = audMode();
+  if(m === 'rapid'){
+    return '<div class="aud-modebar"><span id="audstreak">Streak <b>0</b></span>' +
+      '<span>Filled this session: <b id="audsessfill">0</b></span><span id="audpace"></span>' +
+      '<span class="sp"></span><span id="audblitz-t" class="aud-blitz-t"></span>' +
+      '<button type="button" class="btn ghost" data-act="audblitz" id="audblitzbtn">Start 2-minute Blitz</button></div>';
+  }
+  if(m === 'finish'){
+    return '<div class="aud-modebar"><span>Profiles finished this session: <b id="audfin">0</b></span>' +
+      '<span>Filled this session: <b id="audsessfill2">0</b></span>' +
+      '<span class="dim">Fewest gaps first — clear people off the board.</span></div>';
+  }
+  if(m === 'cat'){
+    var counts = audCatCounts();
+    return '<div class="aud-catrow" role="group" aria-label="Pick a category">' + Object.keys(AUD_GAPS).map(function(g){
+      return '<button type="button" class="aud-catbtn' + (A.cat === g ? ' on' : '') + '" data-act="audcat" data-g="' + g + '" aria-pressed="' + (A.cat === g ? 'true' : 'false') + '">' + AUD_GAPS[g].tag + ' <span class="aud-catn" id="audcatn-' + g + '">' + counts[g] + '</span></button>';
+    }).join('') +
+    '<button type="button" class="aud-catbtn" data-act="audcatall">All categories</button>' +
+    (A.cat === 'phone' ? '<button type="button" class="aud-catbtn aud-bulkphone" data-act="audbulkphone">Mark all phone gaps done</button>' : '') +
+    '</div>' +
+    '<p class="aud-catprog" id="audcatprog"></p>';
+  }
   if(m === 'lima'){
     var np = lcPendingCount();
     return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Lima Charlie run</span>' +
@@ -8167,10 +8395,32 @@ function audModeBarHTML(){
   return '<div class="aud-modebar"><button type="button" class="btn ghost" data-act="audbulkphone">Mark all phone gaps done</button>' +
     '<span class="dim">Close out the phone gap for everyone you have no number for.</span></div>';
 }
+function audPaintCatProg(){
+  var el = $('#audcatprog'); if(!el) return;
+  var A = S.audit;
+  if(!A.cat){ el.textContent = 'Pick a category — the wall deals only that one, person after person.'; return; }
+  var counts = audCatCounts();
+  Object.keys(AUD_GAPS).forEach(function(g){ var s = $('#audcatn-' + g); if(s) s.textContent = counts[g]; });
+  var cleared = (A.catDone && A.catDone[A.cat]) || 0;
+  el.innerHTML = AUD_GAPS[A.cat].tag + ': <span class="ahn-s">' + counts[A.cat] + '</span> still open' + (cleared ? ' &middot; <span class="ahn-s">' + cleared + '</span> cleared this run' : '');
+}
 function audPaintModeBar(){
   var A = S.audit; if(!A) return;
   var m = audMode();
-  if(m === 'lima'){ var lp = $('#lcpend'); if(lp) lp.textContent = lcPendingCount(); }
+  if(m === 'rapid'){
+    var st = $('#audstreak');
+    if(st) st.innerHTML = 'Streak <b>' + (A.streak || 0) + '</b>' + (A.best ? ' · Best <b>' + A.best + '</b>' : '');
+    var sf = $('#audsessfill'); if(sf) sf.textContent = A.done || 0;
+    var pc = $('#audpace'); if(pc){ var p = audPace(); pc.textContent = p != null ? 'Pace: ' + p + ' in the last minute' : ''; pc.hidden = p == null; }
+    var btn = $('#audblitzbtn'); if(btn) btn.hidden = !!A.blitz;
+    var stack = $('#audstack'); if(stack) stack.classList.toggle('nopeek', !(A.deck && A.deck.length));
+  }
+  else if(m === 'finish'){
+    var ff = $('#audfin'); if(ff) ff.textContent = A.finished || 0;
+    var sf2 = $('#audsessfill2'); if(sf2) sf2.textContent = A.done || 0;
+  }
+  else if(m === 'cat'){ audPaintCatProg(); }
+  else if(m === 'lima'){ var lp = $('#lcpend'); if(lp) lp.textContent = lcPendingCount(); }
 }
 
 /* ============================================================
@@ -8802,7 +9052,7 @@ function ykBatchKeysInit(){
 
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
-  if(['cards', 'lima', 'photos', 'years'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
+  if(['cards', 'rapid', 'cat', 'finish', 'lima', 'photos', 'years'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
   var m = audMode();
@@ -8843,6 +9093,7 @@ function viewAudit(v){
     audBuildWall(grid);
     audWatchCols();
   }
+  if(m === 'rapid' && !pvReducedMotion()) S.audit._paceIv = setInterval(function(){ audPaintModeBar(); }, 5000);
   audPaintCounts(); audPaintEmpty();
 }
 
@@ -8982,6 +9233,8 @@ function onClick(ev){
     case 'audcatall': if(S.audit) audSetMode('cards'); break;
     case 'audbulkphone': audBulkPhone(); break;
     case 'audgoal': { var gd = audDay(); gd.goal = Math.max(5, Math.min(500, gd.goal + (+el.getAttribute('data-d')))); if(gd.n < gd.goal) gd.met = false; audDaySave(gd); audPaintGoal(); break; }
+    case 'audblitz': audStartBlitz(); break;
+    case 'audblitzx': if(S.audit){ S.audit.blitzDone = null; } viewAudit($('#view')); break;
     case 'audopen': if(di != null){ var aw = (S.audit && S.audit.shown) ? S.audit.shown.map(function(x){ return x.di; }) : []; openPerson(di, aw.length ? ctxFrom('Audit', aw, aw.indexOf(di), 'audit') : null); } break;
     case 'audshuffle': if(S.audit){ if(audMode() === 'lima'){ lcShuffleDeck(); break; } S.audit.shown = null; } viewAudit($('#view')); break;
     case 'audlater': if(S.audit){ S.audit.shown = null; } viewAudit($('#view')); break;   /* redeal: saved-for-later people come first (audDeal) */
@@ -9062,6 +9315,7 @@ function onClick(ev){
     case 'morefilters': openMoreFilters(); break;
     case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:S.ppl.view }; closeSheet(); viewPeople($('#view')); break;
     case 'pplview': S.ppl.view = el.getAttribute('data-v') === 'recent' ? 'recent' : 'list'; viewPeople($('#view')); break;
+    case 'pplside': S.ppl.side = !sideOpen(S.ppl.side); viewPeople($('#view')); break;
     /* profile chrome */
     case 'menu': { var mp = $('.menu-pop', el.parentNode); var was = mp.hidden; $$('.menu-pop').forEach(function(m){ m.hidden = true; }); mp.hidden = !was; if(!mp.hidden){ var mfb = $('button', mp); if(mfb) mfb.focus(); } break; }
     case 'export': $$('.menu-pop').forEach(function(m){ m.hidden = true; }); doExport(di, 'dl'); break;
@@ -9149,6 +9403,7 @@ function onClick(ev){
     case 'netfocusx': { var fx = el.getAttribute('data-v'); if(fx === 'org') S.net.org = null; else S.net.sel = null; netCard(); NET.dirty = true; break; }
     case 'hmorg': { var hn = el.getAttribute('data-v'); S.net.org = hn || null; S.net.sel = null; go('network'); break; }
     case 'hmdates': HM_DATES = !HM_DATES; store('ncc_hm_dates', HM_DATES ? '1' : '0'); render(); break;
+    case 'hmpersona': HM_PERSONA_MODE = el.getAttribute('data-m') === 'share' ? 'share' : 'points'; store('ncc_hm_persona', HM_PERSONA_MODE); render(); break;
     case 'ykpick': { var yst = ykState(); yst.col = +el.getAttribute('data-c'); var yvv = +el.getAttribute('data-v'); if(yst.col === 0) yst.y = yvv; else if(yst.col === 1) yst.m = yvv; else yst.d = yvv; yst.buf = ''; ykRender(); break; }
     case 'ykpreset': ykPresetApply(+el.getAttribute('data-i')); break;
     case 'ykpeadd': { var _pv = ykVal(); if(_pv && ykPresets().indexOf(_pv) < 0){ var _pa = ykPresets(); _pa.push(_pv); ykSetPresets(_pa); } ykRender(); break; }
@@ -9165,6 +9420,7 @@ function onClick(ev){
     case 'yksave': ykSave(); break;
     case 'ykskip': ykAdvance(); break;
     case 'ykrestart': YK = null; ykLoad(); ykRender(); break;
+    case 'netview': { var vv = el.getAttribute('data-v') === '3d' ? '3d' : '2d'; S.net.view = vv; NET.view = vv; store('ncc_netview', vv); $$('.netacts [data-act="netview"]').forEach(function(b){ var on = b.getAttribute('data-v') === vv; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); if(vv === '3d') netGlide(300, { c2x:0, c2y:0 }); NET.dirty = true; break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
     case 'netzoom': { var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; netGlide(200, { c2z:Math.max(0.3, Math.min(4, NET.cam.z * zf)) }); break; }
@@ -9387,7 +9643,7 @@ function onNavKey(ev){
     var audCard = t.closest('.aud-card');
     if(audCard && S.route && S.route.name === 'audit'){
       ev.preventDefault(); ev.stopImmediatePropagation();
-      audPass(audCard);
+      if(audMode() === 'rapid') audRapidShiftRight(audCard); else audPass(audCard);
       return;
     }
   }
@@ -9404,6 +9660,7 @@ function onNavKey(ev){
     if(audCard2 && S.route && S.route.name === 'audit'){
       ev.preventDefault(); ev.stopImmediatePropagation();
       if(key === 'ArrowDown') audFinish(audCard2, true, true);
+      else if(audMode() === 'rapid') audRapidBack(audCard2);
       else audPark(audCard2, true);
       return;
     }
@@ -9554,10 +9811,10 @@ var SB = {
    then Play, then Fix. */
 var SB_TOOLS = [
   { k:'grid',     z:'Look', t:'Data grid',    d:'Every person, one row. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
-  { k:'insights', z:'Look', t:'Insights',     d:'Seven named checks, each on its own page: coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
+  { k:'insights', z:'Look', t:'Insights',     d:'Eight named checks, each on its own page: coverage, sources, freshness, distributions, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
   { k:'discovery', z:'Look', t:'Discovery trails', d:'How each person was found — the searches, routes and anchors behind every photo and fact, and which methods actually produce finds.', ic:'search' },
   { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
-  { k:'lab',      z:'Play', t:'The Lab',      d:'Experiments on the live data: paths & bridges and the Suspect Pool. Read-only.', ic:'network' },
+  { k:'lab',      z:'Play', t:'The Lab',      d:'Experiments on the live data: paths & bridges, Suspect Pool, visuals, profile layouts. Read-only, except the layouts mobile card’s Lima Charlie box.', ic:'network' },
   { k:'profiling', z:'Play', t:'Profiling inferences', d:'The inductive lab, promoted out of the Lab: Luna\u2019s blind Persona expectations vs JD\u2019s ratings — headline accuracy first, cohorts second, evidence on drill-in. Read-only.', ic:'eye' },
   { k:'merge',    z:'Fix',  t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',   z:'Fix',  t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
@@ -9566,6 +9823,8 @@ var SB_TOOLS = [
 var SB_LABS = [
   { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through known associates and family, mutual connections, and the bridge people who hold the circle together.' },
   { k:'pool',    t:'Suspect Pool', d:'The disciplined thought experiment: an exact pool, one yes/no behavioral question, observable behavior only, a pre-registered prediction. On-device only.' },
+  { k:'visuals', t:'Visuals', d:'Playground renderings of the live data — layouts and diagrams being tried out before anything earns a permanent home.' },
+  { k:'layouts', t:'Profile layouts', d:'Ten ways to arrange a profile — simplified, minimal, expanded, centered, right-railed, tiled, and a mobile quick card. The two partitions (About / Connection) never move.' }
 ];
 function sbZoneOf(tool){ return ({ grid:'Look', insights:'Look', discovery:'Look', raw:'Look', lab:'Play', profiling:'Play', merge:'Fix', danger:'Fix', log:'Fix' })[tool] || ''; }
 function sbLabTab(){
@@ -9717,7 +9976,7 @@ function sbShell(inner){
    edge-to-edge; the old 1240px centered wrap is gone. */
 function sbNav(){
   var h = '<nav class="sb-nav" aria-label="Sandbox tools">';
-  h += '<a class="sb-navhome' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox"><span class="sb-nav-t">Home</span><span class="sb-nav-d">What is active, and the index of every tool.</span></a>';
+  h += '<a class="sb-navhome' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox"><span class="sb-nav-t">Home</span><span class="sb-nav-d">The dashboard — directory size, photo coverage, council pace.</span></a>';
   ['Look', 'Play', 'Fix'].forEach(function(z){
     h += '<div class="sb-nav-z">' + esc(z) + '</div>';
     SB_TOOLS.filter(function(t){ return t.z === z; }).forEach(function(t){
@@ -9771,46 +10030,55 @@ function sbLogToday(){
   return n;
 }
 function sbHome(){
-  var ppl = people().length;
+  var ppl = people().length, rec = SB.recon || {};
   /* usable-photo people, counted the same way Insights counts them
      (photo sidecar name-matched onto listed people) so the numbers
      agree on every surface */
   var phn = sbPhotoByName();
   var conf = people().filter(function(di){ var p = phn[dispName(D.directory[di]).toLowerCase()]; return !!(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely')); }).length;
   var pct = ppl ? Math.round(100 * conf / ppl) : 0;
-  var h = '<p class="sb-compact">' + ppl + ' people in the directory \u00b7 ' + pct + '% with a usable photo \u00b7 ' +
-    Object.keys(sbTrashKeys()).length + ' keys in Trash \u00b7 ' + sbOpsGet().length + ' ops queued</p>';
-  function row(href, t, d, s, icn){
-    return '<a class="sb-row" href="' + href + '"><span class="sb-row-ic">' + ic(icn, 18) + '</span>' +
-      '<span class="sb-row-main"><span class="sb-row-t">' + esc(t) + '</span><span class="sb-row-d">' + d + '</span></span>' +
-      (s ? '<span class="sb-row-s">' + esc(s) + '</span>' : '') + '<span class="sb-row-go">' + ic('chevr', 15) + '</span></a>';
-  }
-  /* Active: the surfaces with live state or an ongoing purpose,
-     as compact rows. Everything else is filed in the index below. */
-  var pr = SB.spool && SB.spool.default_experiment && SB.spool.default_experiment.prediction;
-  var spState = pr ? ('Open prediction: ' + esc(pr.predicted_name || '') + ' \u2014 ' + esc(pr.event || '') + (pr.event_date ? ', ' + esc(pr.event_date) : '') + ' \u00b7 ' + esc(pr.status || '')) : 'The pre-registered prediction tracker.';
-  var pf = SB.prof || {}, acc = pf.accuracy || {};
-  var pfState = acc.overall ? (Math.round((acc.overall.agree_rate || 0) * 100) + '% blind accuracy \u00b7 ' + (acc.test_set_n || 0) + ' tested \u00b7 ' + (pf.conclusions || []).length + ' graded conclusions') : 'Blind Persona expectations vs JD\u2019s ratings.';
-  h += '<div class="sb-group">Active</div><div class="sb-rows">' +
-    row('#/sandbox/lab/pool', 'Suspect Pool', spState, '', 'target') +
-    row('#/sandbox/profiling', 'Profiling inferences', pfState, '', 'eye') +
-    '</div>';
-  /* The index: every remaining tool, one grouped list, one tap each. */
+  var cn = SB.council || {}, bd = cn.budget || {};
+  var flagsOpen = (cn.flags || []).filter(function(f){ return f.state !== 'closed'; }).length;
+  var last = ((SB.changes && SB.changes.entries) || [])[0];
+  var chMonths = {}, chDays = {};
+  ((SB.changes && SB.changes.entries) || []).forEach(function(en){ if(en.filed){ chMonths[en.filed.slice(0, 7)] = (chMonths[en.filed.slice(0, 7)] || 0) + 1; chDays[en.filed] = (chDays[en.filed] || 0) + 1; } });
+  /* facts filed by month; while the log spans fewer than 3 months a
+     monthly series is a single point, so plot per day instead */
+  var byMonth = Object.keys(chMonths).length >= 3, series = byMonth ? chMonths : chDays;
+  var mks = Object.keys(series).sort(), mx = Math.max.apply(null, mks.map(function(k){ return series[k]; }).concat([1]));
+  var spark = mks.length > 1 ? '<svg class="sb-spark" viewBox="0 0 260 46" preserveAspectRatio="none" aria-hidden="true"><polyline points="' +
+    mks.map(function(k, i){ return (4 + i * 252 / (mks.length - 1)).toFixed(1) + ',' + (40 - 34 * series[k] / mx).toFixed(1); }).join(' ') + '"/></svg>' : '';
+  var C = (2 * Math.PI * 34).toFixed(1), ringOff = (2 * Math.PI * 34 * (1 - pct / 100)).toFixed(1);
+  var h = '<div class="sb-hero">' +
+    '<div class="sb-hero-main"><div class="sb-hero-num asnum" data-n="' + ppl + '">' + ppl + '</div>' +
+    '<div class="sb-hero-lab">people in the directory</div>' +
+    (last ? '<div class="sb-hero-last">Latest change: <b>' + esc(last.name || '') + '</b> — ' + esc(last.what || '') + ' <span>· filed ' + esc(last.filed || '') + '</span></div>' : '') +
+    (spark ? '<div class="sb-hero-spark">' + spark + '<div class="sb-spark-lab">Facts filed by ' + (byMonth ? 'month' : 'day') + ' · ' + esc(mks[0] || '') + ' → ' + esc(mks[mks.length - 1] || '') + '</div></div>' : '') +
+    '</div>' +
+    '<div class="sb-hero-side">' +
+    '<div class="sb-hero-ring"><svg width="92" height="92" viewBox="0 0 84 84"><defs><linearGradient id="sbhg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--ga)"/><stop offset="1" style="stop-color:var(--gb)"/></linearGradient></defs>' +
+    '<circle class="sb-hring-bg" cx="42" cy="42" r="34"/><circle class="sb-hring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C + '" stroke-dashoffset="' + ringOff + '" data-off="' + ringOff + '" data-full="' + C + '"/></svg>' +
+    '<div class="sb-hring-c"><b>' + pct + '%</b><span>with a usable photo</span></div></div>' +
+    (bd.used_pct != null ? '<div class="sb-hero-pace"><div class="sb-pace-t">Council budget pace <span>' + esc(String(bd.used_pct)) + '% used · expected ~' + esc(String(bd.expected_pct)) + '%</span></div>' +
+      '<div class="sb-pacebar"><span class="sb-pace-fill" data-w="' + esc(String(bd.used_pct)) + '%" style="width:' + esc(String(bd.used_pct)) + '%"></span><i class="sb-pace-tick" style="left:' + esc(String(bd.expected_pct)) + '%"></i></div>' +
+      '<div class="sb-pace-v">' + esc(bd.verdict || '') + ' <a href="#/council">' + (flagsOpen ? flagsOpen + ' flag' + (flagsOpen === 1 ? '' : 's') + ' waiting on JD →' : 'Council board →') + '</a></div></div>' : '') +
+    '</div></div>';
+  h += '<p class="sb-herosub">' + esc(String(rec.sheet ? rec.sheet.keyed_rows : '—')) + ' keyed Sheet rows' + (rec.verdict ? ' · ' + esc(rec.verdict.toLowerCase()) : '') +
+    ' · ' + Object.keys(sbTrashKeys()).length + ' keys in Trash · ' + (SB.snap ? Object.keys(SB.snap.people || {}).length : 0) + ' Snapchat profiles filed · ' + sbOpsGet().length + ' ops queued</p>';
   var stats = {
     grid: ppl + ' rows', raw: Object.keys(SB_RAW_META).length + ' sidecar files',
     insights: sbFindingsCount() + ' open findings',
-    discovery: SB.discData ? (SB.discData.coverage ? SB.discData.coverage.documented + ' documented trails' : '') : '',
-    lab: '2 labs',
+    discovery: SB.discData ? (SB.discData.coverage ? SB.discData.coverage.documented + ' documented trails' : '') : 'building index\u2026',
+    lab: '3 labs', profiling: (SB.prof && SB.prof.accuracy && SB.prof.accuracy.overall) ? Math.round(SB.prof.accuracy.overall.agree_rate * 100) + '% blind accuracy · ' + (SB.prof.accuracy.test_set_n || 0) + ' tested' : 'run 2 on file',
     merge: sbDupPairs().length + ' candidate pairs', danger: Object.keys(sbTrashKeys()).length + ' keys in Trash',
     log: sbLogToday() + ' entries today'
   };
-  [['Look', ['grid', 'insights', 'discovery', 'raw']],
-   ['Play', ['lab']],
-   ['Fix', ['merge', 'danger', 'log']]].forEach(function(g){
-    h += '<div class="sb-group">' + g[0] + '</div><div class="sb-rows">';
-    g[1].forEach(function(k){
-      var t = SB_TOOLS.filter(function(x){ return x.k === k; })[0];
-      if(t) h += row('#/sandbox/' + t.k, t.t, esc(t.d), stats[t.k] || '', t.ic);
+  ['Look', 'Play', 'Fix'].forEach(function(z){
+    h += '<div class="sb-group">' + esc(z) + '</div><div class="sb-cards">';
+    SB_TOOLS.filter(function(t){ return t.z === z; }).forEach(function(t){
+      h += '<a class="sb-card" href="#/sandbox/' + t.k + '"><span class="sb-card-ic">' + ic(t.ic, 22) + '</span>' +
+        '<span class="sb-card-t">' + esc(t.t) + '</span><span class="sb-card-d">' + esc(t.d) + '</span>' +
+        '<span class="sb-card-s">' + esc(stats[t.k] || '') + '</span></a>';
     });
     h += '</div>';
   });
@@ -9820,6 +10088,30 @@ function sbAfterRender(){
   var t = SB.tool;
   if(t === 'lab' && sbLabTab() === 'paths' && SB.lab.bridges === 'pending') sbComputeBridges();
   if(t === 'insights' && SB.integ.deadBusy && !SB.integ._deadRun){ SB.integ._deadRun = true; sbRunDead(); }
+  if(t === 'home' && !SB._heroDone){
+    /* hero count-up + ring/pace sweep: one deliberate motion on first
+       entry (feedback/state), same 800ms ease as dtAnimate; reduced
+       motion and later visits land on final values instantly */
+    SB._heroDone = true;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduced) return; /* markup already carries final values */
+    var ring0 = document.querySelector('.sb-hring-fg');
+    if(ring0) ring0.style.strokeDashoffset = ring0.getAttribute('data-full');
+    var fill0 = document.querySelector('.sb-pace-fill');
+    if(fill0) fill0.style.width = '0';
+    setTimeout(function(){
+      document.querySelectorAll('.sb-hero .asnum[data-n]').forEach(function(el){
+        var target = parseFloat(el.getAttribute('data-n'));
+        var t0 = null;
+        function step(ts){ if(!t0) t0 = ts; var p = Math.min(1, (ts - t0) / 800); el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(step); }
+        requestAnimationFrame(step);
+      });
+      var ring = document.querySelector('.sb-hring-fg');
+      if(ring) ring.style.strokeDashoffset = ring.getAttribute('data-off');
+      var fill = document.querySelector('.sb-pace-fill');
+      if(fill) fill.style.width = fill.getAttribute('data-w');
+    }, 40);
+  }
 }
 
 
@@ -10086,7 +10378,34 @@ function sbRepBlock(tab){
       '<p class="sb-note">The rotation covers everyone about monthly; per-person last-checked dates live in the routine\u2019s state file, not the bake, so this list is \u201cnot checked in the most recent brief\u201d rather than a true 30-day staleness measure.</p>' +
       sbPersonRows(notChecked, 300) + '</details></div></div>';
   }
-    return h;
+  else if(tab === 'dist'){
+    function distCard(title, keyFn){
+      var counts = {};
+      listed.forEach(function(di){ var k = keyFn(D.directory[di]) || '(blank)'; counts[k] = (counts[k] || 0) + 1; });
+      var keys = Object.keys(counts).sort(function(a, b){ return counts[b] - counts[a]; });
+      var max = Math.max.apply(null, keys.map(function(k){ return counts[k]; }).concat([1]));
+      return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + '</div>' + keys.slice(0, 14).map(function(k){
+        return '<div class="sb-distrow"><span class="sb-distl">' + esc(k) + '</span><span class="sb-distbar"><span style="width:' + Math.round(100 * counts[k] / max) + '%"></span></span><span class="sb-distn">' + counts[k] + '</span></div>';
+      }).join('') + '</div>';
+    }
+    var snapYears = {}, photoMonths = {};
+    listed.forEach(function(di){ var e = D.directory[di]; if(e.snap_since) snapYears[e.snap_since] = (snapYears[e.snap_since] || 0) + 1; });
+    ((SB.photos && SB.photos.people) || []).forEach(function(p){ if(p.added && /^\d{4}-\d{2}/.test(p.added)) photoMonths[p.added.slice(0, 7)] = (photoMonths[p.added.slice(0, 7)] || 0) + 1; });
+    function seriesCard(title, obj){
+      var keys = Object.keys(obj).sort();
+      var max = Math.max.apply(null, keys.map(function(k){ return obj[k]; }).concat([1]));
+      return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + '</div>' + keys.map(function(k){
+        return '<div class="sb-distrow"><span class="sb-distl">' + esc(k) + '</span><span class="sb-distbar"><span style="width:' + Math.round(100 * obj[k] / max) + '%"></span></span><span class="sb-distn">' + obj[k] + '</span></div>';
+      }).join('') + '</div>';
+    }
+    h += '<div class="sb-grid2">' +
+      distCard('Tier mix', function(e){ return tierName(e); }) +
+      distCard('Relationship mix', function(e){ return gv(e, 'relationship') || ''; }) +
+      seriesCard('Snapchat adds by year (year the connection was made)', snapYears) +
+      seriesCard('Photos filed by month (entries with an exact added date)', photoMonths) +
+      '</div>';
+  }
+  return h;
 }
 
 /* ---------------- 4. insights (layered since V3.12.0) ----------------
@@ -10104,6 +10423,8 @@ var SB_INSIGHTS = [
     d:'Where the record comes from — which sidecars and sources actually cover which people, so a thin source is visible before it is trusted.' },
   { k:'stale', t:'Freshness', sec:'Live Records staleness',
     d:'How current the directory is — when each person was last re-checked by Live Records, and who has gone longest without a check.' },
+  { k:'dist', t:'Distributions', sec:'Distributions',
+    d:'How the directory breaks down — tiers, towns, groups, orgs and photo filings over time. The shape of the circle at a glance.' },
   { k:'recon', t:'Count reconciliation', sec:'Integrity — count reconciliation',
     d:'Why the numbers differ: Sheet rows vs baked directory vs the app\u2019s people count, reconciled key by key so nobody is missing or double-counted.' },
   { k:'dup', t:'Duplicate hunter', sec:'Integrity — duplicate hunter',
@@ -10122,6 +10443,7 @@ function sbInsStat(k){
     }
     if(k === 'sources') return Object.keys(SB_RAW_META).length + ' baked sidecars';
     if(k === 'stale') return (SB.dt && typeof SB.dt.unchecked_remaining === 'number') ? SB.dt.unchecked_remaining + ' not yet checked this cycle' : 'rotation state';
+    if(k === 'dist') return people().length + ' people, broken down';
     if(k === 'recon') return (SB.recon && SB.recon.verdict) ? SB.recon.verdict : 'Sheet vs bake';
     if(k === 'dup') return sbDupPairs().length + ' candidate pairs';
     if(k === 'orphan') return 'links, names, shells';
@@ -10165,7 +10487,11 @@ function sbInsVerdict(k){
         (dt.unchecked_remaining ? '; ' + dt.unchecked_remaining + ' are still waiting for their turn.' : ' \u2014 the rotation is fully caught up.');
       sub = 'Who was checked in the latest brief, who is next, and who has not been reached yet \u2014 the lists are folded away below.';
       chip('checked this cycle', cov.checked_total || 0); chip('unchecked', dt.unchecked_remaining || 0);
-    }  else if(k === 'recon'){
+    } else if(k === 'dist'){
+      main = 'The shape of the circle at a glance \u2014 nothing here needs action unless a mix looks wrong to you.';
+      sub = 'Tiers, relationships, when Snapchat connections were made, and when photos were filed.';
+      chip('people', ppl);
+    } else if(k === 'recon'){
       var r = SB.recon || {};
       main = r.verdict ? esc(r.verdict) + '.' : 'Sheet rows vs the baked directory, reconciled key by key.';
       sub = 'Every differing key is explained below \u2014 nobody is missing and nobody is double-counted.';
@@ -10212,6 +10538,7 @@ function sbInsights(){
   if(cur.k === 'coverage') h += sbRepBlock('coverage');
   else if(cur.k === 'sources') h += sbRepBlock('sources');
   else if(cur.k === 'stale') h += sbRepBlock('stale');
+  else if(cur.k === 'dist') h += sbRepBlock('dist');
   else if(cur.k === 'recon') h += sbIntegRecon();
   else if(cur.k === 'dup') h += sbIntegDup();
   else if(cur.k === 'orphan') h += sbIntegOrphan();
@@ -10467,18 +10794,219 @@ function sbDiscPaintList(){
 function sbLabTool(){
   var tab = sbLabTab();
   var cur = SB_LABS.filter(function(l){ return l.k === tab; })[0] || SB_LABS[0];
-  var h = sbHead('The Lab', 'Experiments on the live data. Read-only — nothing in the Lab writes to a profile. Profiling inferences has its own home now, one level up in Play.');
+  var h = sbHead('The Lab', 'Experiments on the live data. Almost nothing in the lab writes to a profile — the one exception is the mobile quick card in Profile layouts, whose Lima Charlie box files for real through the Save Pool. Profiling inferences has its own home now, one level up in Play.');
   h += '<div class="sb-toolbar sb-labtabs">' + SB_LABS.map(function(l){
     return '<button type="button" class="btn sm ' + (tab === l.k ? 'primary' : 'ghost') + '" data-sb="labtab" data-k="' + l.k + '">' + esc(l.t) + '</button>';
   }).join('') + '</div>';
   h += '<p class="sb-labsub"><b>' + esc(cur.t) + '.</b> ' + esc(cur.d || '') + '</p>';
-  var fn = { paths:sbLab, pool:sbPool }[tab] || sbLab;
+  var fn = { paths:sbLab, pool:sbPool, visuals:sbPlay, layouts:sbLayouts }[tab] || sbLab;
   SB._inLab = true;
   var body = fn();
   SB._inLab = false;
   return h + '<div class="sb-labwrap t-' + esc(tab) + '">' + body + '</div>';
 }
 
+/* ============================================================
+   Profile Layouts lab (JD 2026-10-28) — ten ways to arrange a
+   profile, all keeping the two partitions: About (the individual
+   notes) and Connection (the contextual notes). Demo people are
+   the fullest records on file so every block has real content.
+   Read-only, except the mobile card's Lima Charlie box, which
+   files through lcCommitNote like the profile's own editor.
+   ============================================================ */
+var LAY_ROSTER = ['Ellie Criscitello', 'Catherine Green', 'Nathaniel Tomford', 'Bronwyn Paladin', 'Lydia Martin', 'Merrick Sinclair'];
+var LAY_DEFS = [
+  { k:'classic',  t:'1 · Classic movements', d:'Today\u2019s profile, condensed: hero on top, About stacked, then Connection stacked. The baseline everything else is judged against.' },
+  { k:'twin',     t:'2 · Twin partitions', d:'The two partitions as equal side-by-side columns. Symmetry: mirrored. Best when both halves carry similar weight.' },
+  { k:'centered', t:'3 · Centered', d:'Everything centered — photo, name, chips, both partitions as centered stacks. Symmetry: radial around the name.' },
+  { k:'rightrail',t:'4 · Right rail', d:'Identity lives on a right rail (photo, contact, key stats); the two partitions flow down the left. Justification: right for identity, left for notes.' },
+  { k:'minimal',  t:'5 · Minimal', d:'The simplified cut: photo, name, one line of context, then the two partitions as tight note lists. No chip walls, no stats.' },
+  { k:'ledger',   t:'6 · Expanded ledger', d:'The maximal cut: every datum as a labeled row inside its partition. Nothing summarized, nothing hidden.' },
+  { k:'index',    t:'7 · Index card', d:'A ruled card. Partitions are two ruled sections with red headers — the paper-file feel, minimal decoration.' },
+  { k:'magazine', t:'8 · Magazine', d:'Editorial: the synopsis leads with a drop cap, pull-stats sit between the partitions, notes run in two text columns.' },
+  { k:'tiles',    t:'9 · Tile grid', d:'Each block is a tile in a symmetric grid; the partitions are full-width bands over their tiles.' },
+  { k:'mobile',   t:'10 · Mobile quick card', d:'The phone shape: a contact card for the moment you spot someone — who they are, last contact, and a Lima Charlie box that files the note for real.' }
+];
+function layDi(){
+  var want = sbStore('ncc_sbx_layperson') || LAY_ROSTER[0];
+  var found = null;
+  D.directory.forEach(function(e, di){ if(found == null && liveEntry(e) && dispName(e) === want) found = di; });
+  if(found == null) D.directory.forEach(function(e, di){ if(found == null && liveEntry(e) && dispName(e) === LAY_ROSTER[0]) found = di; });
+  return found;
+}
+function layModel(di){
+  var e = D.directory[di]; if(!e) return null;
+  var name = dispName(e);
+  var p = (typeof phIndex === 'function' ? (phIndex() || {}) : {})[name];
+  var photo = p ? phKeyUrl(p) : null;
+  var fp = footprintOf(e);
+  var chips = { orgs:[], groups:personGroups(e), skills:[] };
+  ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(x){ if(chips.orgs.indexOf(x) < 0) chips.orgs.push(x); }); });
+  tagList(gv(e, 'specialty')).concat(tagList(gv(e, 'interests'))).forEach(function(x){ if(chips.skills.indexOf(x) < 0) chips.skills.push(x); });
+  var persona = [];
+  PERSONA.forEach(function(pr){ var v = gv(e, pr[0]); if(v !== '' && v != null) persona.push([pr[1], v]); });
+  var stats = [];
+  var ks = knownSinceLabel(e); if(ks) stats.push(['Known since', ks]);
+  var lc = lcLabel(e); if(lc) stats.push(['Last contact', lc + (lcOnline(e) ? ' · online' : '')]);
+  if(gv(e, 'tier')) stats.push(['Tier', String(gv(e, 'tier'))]);
+  if(gv(e, 'closeness') !== '' && gv(e, 'closeness') != null) stats.push(['Closeness', String(gv(e, 'closeness'))]);
+  var mv = momVal(e); if(mv) stats.push(['Momentum', mv]);
+  var assoc = knownAssociates(e).slice(0, 8).map(function(a){ return a.u; });
+  var fam = famLinks(e).map(function(f){ return (f.name || f.u || f.key || '') + (f.rel ? ' (' + f.rel + ')' : ''); }).filter(Boolean);
+  var evs = sortedEvents(e).slice(-4).reverse().map(function(x){ return x.ev; });
+  var key = pkey(e);
+  return { di:di, e:e, name:name, first:name.split(' ')[0], aka:String(gv(e, 'also_known_as') || ''),
+    photo:photo, initials:name.split(' ').map(function(w){ return w[0] || ''; }).slice(0, 2).join('').toUpperCase(),
+    rel:String(gv(e, 'relationship') || ''), ctx:String(gv(e, 'context') || ''),
+    loc:String(gv(e, 'city') || ''), home:String(gv(e, 'hometown') || ''),
+    phone:String(gv(e, 'phone') || ''), email:String(gv(e, 'email') || ''),
+    ig:key.indexOf('ig:') === 0 ? '@' + key.slice(3) : '',
+    syn:String(gv(e, 'synopsis') || ''), bullets:fp.blocks.map(function(b){ return b.text.replace(/^[•·\-*]\s*/, ''); }),
+    chips:chips, degrees:degreesOf(e), persona:persona,
+    biz:(e.businesses || []).map(function(b){ return b.name || String(b); }),
+    files:(e.files || []).map(function(f){ return f.name || f.url || ''; }).filter(Boolean),
+    highlights:String(gv(e, 'highlights') || ''), achievements:String(gv(e, 'achievements') || ''),
+    stats:stats, assoc:assoc, fam:fam, evs:evs, lc:lcNote(e) };
+}
+function layPhoto(m, cls){
+  var inner = m.photo ? '<img class="lay-ph ' + cls + '" src="' + esc(m.photo) + '" alt="">' : '<span class="lay-ph lay-ini ' + cls + '">' + esc(m.initials) + '</span>';
+  return '<span class="lay-av">' + inner + '</span>';
+}
+function layChips(list){ return list.length ? '<div class="lay-chips">' + list.map(function(c){ return '<span class="lay-chip">' + esc(c) + '</span>'; }).join('') + '</div>' : ''; }
+function layMeta(m){
+  var items = [];
+  if(m.rel) items.push(m.rel); if(m.ctx) items.push(m.ctx); if(m.loc) items.push(m.loc);
+  return items.length ? '<div class="lay-meta">' + items.map(function(x){ return '<span class="lay-mchip"><i></i>' + esc(x) + '</span>'; }).join('') + '</div>' : '';
+}
+function layStats(m, n){
+  var s = m.stats.slice(0, n || 4);
+  return s.length ? '<div class="lay-stats">' + s.map(function(r){ return '<div class="lay-stat"><b>' + esc(r[1]) + '</b><span>' + esc(r[0]) + '</span></div>'; }).join('') + '</div>' : '';
+}
+function layAboutBlocks(m){
+  var b = [];
+  if(m.syn) b.push({ t:'Synopsis', h:'<p class="lay-syn">' + esc(m.syn) + '</p>' });
+  if(m.bullets.length) b.push({ t:'Field notes', h:'<ul class="lay-ul">' + m.bullets.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' });
+  var contact = [];
+  if(m.loc) contact.push(['Location', m.loc]); if(m.home) contact.push(['Hometown', m.home]);
+  if(m.phone) contact.push(['Phone', m.phone]); if(m.email) contact.push(['Email', m.email]); if(m.ig) contact.push(['Instagram', m.ig]);
+  if(contact.length) b.push({ t:'Contact', h:'<div class="lay-rows">' + contact.map(function(r){ return '<div class="lay-row"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' });
+  var bg = '';
+  if(m.chips.orgs.length) bg += '<div class="lay-lab">Organizations</div>' + layChips(m.chips.orgs);
+  if(m.chips.skills.length) bg += '<div class="lay-lab">Skills</div>' + layChips(m.chips.skills);
+  if(m.degrees.length) bg += '<div class="lay-lab">Education</div><ul class="lay-ul">' + m.degrees.map(function(d){ return '<li>' + esc([d.degree, d.major, d.school, d.year].filter(Boolean).join(' · ')) + '</li>'; }).join('') + '</ul>';
+  if(m.highlights) bg += '<div class="lay-lab">Highlights</div><p>' + esc(m.highlights) + '</p>';
+  if(m.achievements) bg += '<div class="lay-lab">Achievements</div><p>' + esc(m.achievements) + '</p>';
+  if(bg) b.push({ t:'Background', h:bg });
+  if(m.persona.length) b.push({ t:'Persona', h:m.persona.map(function(r){ var v = parseFloat(r[1]); var pct = isNaN(v) ? 0 : Math.max(0, Math.min(100, v / 5 * 100)); return '<div class="lay-row"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + ' / 5</b></div><span class="lay-pbar"><i style="width:' + pct + '%"></i></span>'; }).join('') });
+  if(m.biz.length) b.push({ t:'Business owner', h:layChips(m.biz) });
+  if(m.files.length) b.push({ t:'Files', h:'<ul class="lay-ul">' + m.files.slice(0, 5).map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' });
+  return b;
+}
+function layConnBlocks(m){
+  var b = [];
+  var head = [];
+  if(m.rel) head.push(['Relationship', m.rel]); if(m.ctx) head.push(['Context', m.ctx]);
+  m.stats.forEach(function(s){ head.push(s); });
+  if(head.length) b.push({ t:'The tie', h:'<div class="lay-rows">' + head.map(function(r){ return '<div class="lay-row"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' });
+  if(m.assoc.length || m.fam.length){
+    var h = '';
+    if(m.fam.length) h += '<div class="lay-lab">Family</div>' + layChips(m.fam);
+    if(m.assoc.length) h += '<div class="lay-lab">Known associates</div>' + layChips(m.assoc);
+    b.push({ t:'Connections', h:h });
+  }
+  if(m.evs.length) b.push({ t:'Timeline', h:'<ul class="lay-ul lay-tl">' + m.evs.map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + (ev.kind === 'contact' ? ' <span class="lay-tag">contact' + (ev.online ? ' · online' : '') + '</span>' : '') + '</li>'; }).join('') + '</ul>' });
+  if(m.lc.trim()) b.push({ t:'Lima Charlie note', h:'<p class="lay-lcnote">' + esc(m.lc) + '</p>' });
+  return b;
+}
+function layBlocksHTML(blocks, cls){
+  return blocks.map(function(b){ return '<div class="lay-blk ' + (cls || '') + '"><div class="lay-blk-t">' + esc(b.t) + '</div>' + b.h + '</div>'; }).join('');
+}
+function layPart(title, inner, cls, kind){ return '<div class="lay-part ' + (kind || '') + ' ' + (cls || '') + '"><div class="lay-part-t">' + esc(title) + '</div>' + inner + '</div>'; }
+function layHero(m, mode){
+  var sub = [m.rel, m.ctx, m.loc].filter(Boolean).join(' · ');
+  return '<div class="lay-hero lay-glass ' + mode + '">' + layPhoto(m, mode === 'ctr' ? 'xl' : 'lg') + '<div class="lay-hero-tx"><div class="lay-kick">Profile</div><div class="lay-name grad">' + esc(m.name) + '</div>' +
+    (m.aka ? '<div class="lay-aka">also known as ' + esc(m.aka) + '</div>' : '') +
+    (mode === 'ctr' ? layMeta(m) : (sub ? '<div class="lay-sub">' + esc(sub) + '</div>' + layMeta(m) : '')) + '</div></div>';
+}
+function layRender(k, m){
+  var A = layAboutBlocks(m), C = layConnBlocks(m);
+  var aboutT = 'About ' + m.first, connT = 'Connection';
+  if(k === 'classic') return layHero(m, '') + layStats(m, 4) + layPart(aboutT, layBlocksHTML(A), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn');
+  if(k === 'twin') return layHero(m, '') + layStats(m, 4) + '<div class="lay-cols2">' + layPart(aboutT, layBlocksHTML(A), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn') + '</div>';
+  if(k === 'centered') return layHero(m, 'ctr') + layStats(m, 3) + layPart(aboutT, layBlocksHTML(A, 'ctr'), 'ctr', 'about') + layPart(connT, layBlocksHTML(C, 'ctr'), 'ctr', 'conn');
+  if(k === 'rightrail'){
+    var rail = '<aside class="lay-rail lay-glass"><div class="lay-kick">Identity</div>' + layPhoto(m, 'xl') + '<div class="lay-name sm">' + esc(m.name) + '</div>' +
+      (m.aka ? '<div class="lay-aka">also known as ' + esc(m.aka) + '</div>' : '') + layMeta(m) +
+      '<div class="lay-rows">' + m.stats.map(function(s){ return '<div class="lay-row"><span>' + esc(s[0]) + '</span><b>' + esc(s[1]) + '</b></div>'; }).join('') +
+      (m.phone ? '<div class="lay-row"><span>Phone</span><b>' + esc(m.phone) + '</b></div>' : '') + (m.ig ? '<div class="lay-row"><span>Instagram</span><b>' + esc(m.ig) + '</b></div>' : '') + '</div></aside>';
+    return '<div class="lay-railwrap"><div class="lay-railmain">' + layPart(aboutT, layBlocksHTML(A), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn') + '</div>' + rail + '</div>';
+  }
+  if(k === 'minimal'){
+    var one = [m.rel, m.ctx, m.loc].filter(Boolean).join(' · ');
+    var listA = m.bullets.slice(0, 4).map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('');
+    var listC = m.evs.slice(0, 3).map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + '</li>'; }).join('');
+    return '<div class="lay-min"><div class="lay-min-h lay-glass-lite">' + layPhoto(m, 'md') + '<div><div class="lay-name sm">' + esc(m.name) + '</div><div class="lay-sub">' + esc(one) + '</div></div></div>' +
+      '<div class="lay-min-p lay-glass-lite"><div class="lay-part-t">' + esc(aboutT) + '</div>' + (m.syn ? '<p class="lay-syn">' + esc(m.syn) + '</p>' : '') + (listA ? '<ul class="lay-ul">' + listA + '</ul>' : '') + '</div>' +
+      '<div class="lay-min-p lay-glass-lite"><div class="lay-part-t">' + esc(connT) + '</div>' + (listC ? '<ul class="lay-ul">' + listC + '</ul>' : '') + (m.lc.trim() ? '<p class="lay-lcnote">' + esc(m.lc) + '</p>' : '') + '</div></div>';
+  }
+  if(k === 'ledger'){
+    var rowsA = [], rowsC = [];
+    if(m.loc) rowsA.push(['Location', m.loc]); if(m.phone) rowsA.push(['Phone', m.phone]); if(m.email) rowsA.push(['Email', m.email]); if(m.ig) rowsA.push(['Instagram', m.ig]);
+    m.chips.orgs.forEach(function(o){ rowsA.push(['Organization', o]); }); m.chips.groups.forEach(function(g){ rowsA.push(['Group', g]); }); m.chips.skills.forEach(function(s){ rowsA.push(['Skill', s]); });
+    m.degrees.forEach(function(d){ rowsA.push(['Education', [d.degree, d.major, d.school, d.year].filter(Boolean).join(' · ')]); });
+    m.persona.forEach(function(p){ rowsA.push(['Persona · ' + p[0], p[1] + ' / 5']); });
+    if(m.rel) rowsC.push(['Relationship', m.rel]); if(m.ctx) rowsC.push(['Context', m.ctx]);
+    m.stats.forEach(function(s){ rowsC.push(s); });
+    m.assoc.forEach(function(a){ rowsC.push(['Associate', a]); }); m.fam.forEach(function(f){ rowsC.push(['Family', f]); });
+    var tbl = function(rows, extra){ return '<table class="lay-tbl">' + rows.map(function(r){ return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>'; }).join('') + '</table>' + (extra || ''); };
+    var exA = (m.syn ? '<p class="lay-syn">' + esc(m.syn) + '</p>' : '') + (m.bullets.length ? '<ul class="lay-ul">' + m.bullets.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '');
+    var exC = m.evs.length ? '<ul class="lay-ul lay-tl">' + m.evs.map(function(ev){ return '<li><b>' + esc(evDate(ev.date)) + '</b> — ' + esc(ev.summary || '') + '</li>'; }).join('') + '</ul>' : '';
+    return layHero(m, '') + layPart(aboutT, tbl(rowsA, exA), '', 'about') + layPart(connT, tbl(rowsC, exC), '', 'conn');
+  }
+  if(k === 'index') return '<div class="lay-idx"><div class="lay-hero flat">' + layPhoto(m, 'lg') + '<div class="lay-hero-tx"><div class="lay-kick">Index card · file copy</div><div class="lay-name">' + esc(m.name) + '</div>' + (m.aka ? '<div class="lay-aka">also known as ' + esc(m.aka) + '</div>' : '') + layMeta(m) + '</div></div>' + layPart(aboutT, layBlocksHTML(A), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn') + '</div>';
+  if(k === 'magazine'){
+    var syn = m.syn || (m.bullets[0] || '');
+    var pull = m.stats.slice(0, 3).map(function(s){ return '<div class="lay-pull"><span>' + esc(s[0]) + '</span><b>' + esc(s[1]) + '</b></div>'; }).join('');
+    return '<div class="lay-mag"><div class="lay-mag-mast lay-glass"><div class="lay-hero flat">' + layPhoto(m, 'lg') + '<div><div class="lay-kick">The profile, in full</div><div class="lay-name big grad">' + esc(m.name) + '</div><div class="lay-sub">' + esc([m.rel, m.ctx, m.loc].filter(Boolean).join(' · ')) + '</div>' + layMeta(m) + '</div></div><div class="lay-mag-rule"></div></div>' +
+      (syn ? '<div class="lay-part about" style="margin-top:0"><p class="lay-mag-syn">' + esc(syn) + '</p></div>' : '') + (pull ? '<div class="lay-pulls">' + pull + '</div>' : '') +
+      '<div class="lay-cols2">' + layPart(aboutT, layBlocksHTML(A.slice(1)), '', 'about') + layPart(connT, layBlocksHTML(C), '', 'conn') + '</div></div>';
+  }
+  if(k === 'tiles'){
+    var tile = function(b){ return '<div class="lay-tile"><div class="lay-blk"><div class="lay-blk-t">' + esc(b.t) + '</div>' + b.h + '</div></div>'; };
+    return layHero(m, '') + layStats(m, 4) + '<div class="lay-band">About ' + esc(m.first) + '</div><div class="lay-tgrid">' + A.map(tile).join('') + '</div>' +
+      '<div class="lay-band">' + esc(connT) + '</div><div class="lay-tgrid">' + C.map(tile).join('') + '</div>';
+  }
+  if(k === 'mobile'){
+    var last = m.stats.filter(function(s){ return s[0] === 'Last contact'; })[0];
+    var ks = m.stats.filter(function(s){ return s[0] === 'Known since'; })[0];
+    var flash = (SB.lay && SB.lay.flash) ? '<div class="lay-flash">' + esc(SB.lay.flash) + '</div>' : '';
+    return '<div class="lay-phone"><div class="lay-notch"></div><div class="lay-mcard">' + layPhoto(m, 'xl') +
+      '<div class="lay-kick">Quick card</div><div class="lay-name grad">' + esc(m.name) + '</div>' + (m.rel ? '<div class="lay-sub">' + esc(m.rel) + (m.ctx ? ' · ' + esc(m.ctx) : '') + '</div>' : '') + layMeta(m) +
+      '<div class="lay-mstats">' + (last ? '<div><b>' + esc(last[1]) + '</b><span>last contact</span></div>' : '') + (ks ? '<div><b>' + esc(ks[1]) + '</b><span>known since</span></div>' : '') + (m.loc ? '<div><b>' + esc(m.loc) + '</b><span>location</span></div>' : '') + '</div>' +
+      (m.phone ? '<div class="lay-mrow"><span>' + esc(m.phone) + '</span><small>call</small></div>' : '') + (m.ig ? '<div class="lay-mrow"><span>' + esc(m.ig) + '</span><small>instagram</small></div>' : '') +
+      '<div class="lay-lcbox lay-glass"><div class="lay-part-t">Lima Charlie — quick note</div>' + flash +
+      '<textarea id="laylc-note" rows="3" placeholder="Saw ' + esc(m.first) + ' — what happened, what changed, what to file…"></textarea>' +
+      '<button type="button" class="btn primary" data-sb="laylc" data-di="' + m.di + '">File to Lima Charlie</button>' +
+      (m.lc.trim() ? '<div class="lay-lcpend"><span>Waiting in Lima Charlie:</span> ' + esc(m.lc) + '</div>' : '') + '</div>' +
+      '<div class="lay-mparts">' + layPart(aboutT, layBlocksHTML(A.slice(0, 2)), '', 'about') + layPart(connT, layBlocksHTML(C.slice(0, 2)), '', 'conn') + '</div>' +
+      '</div></div>';
+  }
+  return '';
+}
+function sbLayouts(){
+  if(!SB.lay) SB.lay = {};
+  var h = SB._inLab ? '' : sbHead('Profile layouts', 'Layout experiments for the profile page.');
+  var di = layDi();
+  if(di == null) return h + '<p class="sb-note">No demo profile found.</p>';
+  var m = layModel(di);
+  h += '<div class="sb-card2"><div class="sb-card2-t">Demo profile — the fullest records on file</div>' +
+    '<div class="sb-pickrow">' + LAY_ROSTER.map(function(n){ return '<button type="button" class="btn sm ' + (m.name === n ? 'primary' : 'ghost') + '" data-sb="layperson" data-k="' + esc(n) + '">' + esc(n) + '</button>'; }).join('') + '</div>' +
+    '<p class="sb-note">Every layout below renders the same live record for ' + esc(m.name) + '. The only fixed rule: the two partitions — <b>About</b> (individual notes) and <b>Connection</b> (contextual notes) — always stay separate and labeled. Everything else moves.</p></div>';
+  LAY_DEFS.forEach(function(d){
+    h += '<div class="sb-card2 lay-frame"><div class="sb-card2-t">' + esc(d.t) + '</div><p class="sb-note">' + esc(d.d) + '</p><div class="lay-body lay-' + d.k + '">' + layRender(d.k, m) + '</div></div>';
+  });
+  return h;
+}
 function sbLab(){
   var h = SB._inLab ? '' : sbHead('Connection lab', 'Paths, mutuals and the indirect connections — the shared employers, schools and groups that quietly tie the circle together.');
   h += '<div class="sb-card2"><div class="sb-card2-t">Path finder & mutual connections</div>' +
@@ -10582,6 +11110,69 @@ function sbComputeBridges(){
 }
 
 /* ---------------- 9. playground shelf ---------------- */
+function sbPlay(){
+  var h = SB._inLab ? '' : sbHead('Playground', 'Experiments computed from the live data. Nothing here writes.');
+  /* scatter data */
+  var pts = [];
+  D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;
+    var ky = sbYear(gv(e, 'years_known'));
+    if(e.snap_since && ky) pts.push({ di:di, x:e.snap_since, y:ky, n:dispName(e) });
+  });
+  h += '<div class="sb-card2"><div class="sb-card2-t">Online since vs Known since (' + pts.length + ' people have both)</div>' +
+    '<p class="sb-note">Each dot is a person: across = the year the Snapchat connection was made, up = the year JD has known them since. Dots below the diagonal are people known in person before the online connection existed. Click a dot to open the profile.</p>' +
+    sbScatter(pts) + '</div>';
+  /* histogram */
+  var hist = {}, unknown = 0;
+  D.directory.forEach(function(e){ if(!liveEntry(e)) return; var y = sbYear(gv(e, 'years_known')); if(y) hist[y] = (hist[y] || 0) + 1; else unknown++; });
+  var years = Object.keys(hist).map(Number).sort(function(a, b){ return a - b; });
+  var maxH = Math.max.apply(null, years.map(function(y){ return hist[y]; }).concat([1]));
+  h += '<div class="sb-card2"><div class="sb-card2-t">Known Since histogram (' + unknown + ' people have no year on file)</div><div class="sb-hist">' +
+    years.map(function(y){
+      return '<div class="sb-histcol" title="' + y + ': ' + hist[y] + '"><span class="sb-histn">' + hist[y] + '</span><span class="sb-histbar" style="height:' + Math.max(3, Math.round(90 * hist[y] / maxH)) + 'px"></span><span class="sb-histl">' + String(y).slice(2) + '</span></div>';
+    }).join('') + '</div></div>';
+  /* adds over time */
+  var adds = {};
+  D.directory.forEach(function(e){ if(liveEntry(e) && e.snap_since) adds[e.snap_since] = (adds[e.snap_since] || 0) + 1; });
+  var chMonths = {};
+  ((SB.changes && SB.changes.entries) || []).forEach(function(en){ if(en.filed) chMonths[en.filed.slice(0, 7)] = (chMonths[en.filed.slice(0, 7)] || 0) + 1; });
+  function series(title, obj, note){
+    var ks = Object.keys(obj).sort(), mx = Math.max.apply(null, ks.map(function(k){ return obj[k]; }).concat([1]));
+    return '<div class="sb-card2"><div class="sb-card2-t">' + esc(title) + '</div><p class="sb-note">' + esc(note) + '</p>' + ks.map(function(k){
+      return '<div class="sb-distrow"><span class="sb-distl">' + esc(k) + '</span><span class="sb-distbar"><span style="width:' + Math.round(100 * obj[k] / mx) + '%"></span></span><span class="sb-distn">' + obj[k] + '</span></div>';
+    }).join('') + '</div>';
+  }
+  /* persona */
+  var traits = [['openness', 'Openness'], ['conscientiousness', 'Conscientiousness'], ['extraversion', 'Extraversion'], ['agreeableness', 'Agreeableness'], ['neuroticism', 'Neuroticism'], ['ego', 'Ego']];
+  var pRows = traits.map(function(t){
+    var sum = 0, n = 0;
+    D.directory.forEach(function(e){ if(!liveEntry(e)) return; var v = parseFloat(gv(e, t[0])); if(v >= 1 && v <= 5){ sum += v; n++; } });
+    return { l:t[1], avg:n ? sum / n : 0, n:n };
+  });
+  h += '<div class="sb-grid2">' + series('Snapchat connections by year', adds, 'When the online connections were made (people currently in the directory).') +
+    series('Facts filed by month', chMonths, 'From the change log — Contacts Pro\u2019s own paper trail.') + '</div>';
+  h += '<div class="sb-card2"><div class="sb-card2-t">Persona distribution (averages across rated profiles)</div>' + pRows.map(function(r){
+    return '<div class="sb-distrow"><span class="sb-distl">' + esc(r.l) + '</span><span class="sb-distbar"><span style="width:' + Math.round(100 * r.avg / 5) + '%"></span></span><span class="sb-distn">' + (r.n ? r.avg.toFixed(2) + ' / 5 · ' + r.n + ' rated' : 'nobody rated yet') + '</span></div>';
+  }).join('') + '</div>';
+  return h;
+}
+function sbScatter(pts){
+  if(!pts.length) return '<p class="sb-note">No one has both dates yet.</p>';
+  var xs = pts.map(function(p){ return p.x; }), ys = pts.map(function(p){ return p.y; });
+  var x0 = Math.min.apply(null, xs) - 1, x1 = Math.max.apply(null, xs) + 1;
+  var y0 = Math.min.apply(null, ys) - 1, y1 = Math.max.apply(null, ys) + 1;
+  var W = 720, H = 380, PL = 44, PB = 26, PT = 10, PR = 10;
+  function X(x){ return PL + (x - x0) / (x1 - x0) * (W - PL - PR); }
+  function Y(y){ return PT + (y1 - y) / (y1 - y0) * (H - PT - PB); }
+  var s = '<svg class="sb-scatter" viewBox="0 0 ' + W + ' ' + H + '" role="img">';
+  s += '<line x1="' + X(Math.max(x0, y0)) + '" y1="' + Y(Math.max(x0, y0)) + '" x2="' + X(Math.min(x1, y1)) + '" y2="' + Y(Math.min(x1, y1)) + '" class="sb-diag"/>';
+  for(var gx = Math.ceil(x0); gx <= x1; gx += 2) s += '<text x="' + X(gx) + '" y="' + (H - 6) + '" class="sb-ax">' + gx + '</text>';
+  for(var gy = Math.ceil(y0); gy <= y1; gy += 2) s += '<text x="6" y="' + (Y(gy) + 3) + '" class="sb-ax">' + gy + '</text>';
+  pts.forEach(function(p){
+    s += '<circle cx="' + X(p.x).toFixed(1) + '" cy="' + Y(p.y).toFixed(1) + '" r="4" class="sb-dot" data-sb="openprof" data-di="' + p.di + '"><title>' + esc(p.n) + ' — known since ' + p.y + ', online since ' + p.x + '</title></circle>';
+  });
+  return s + '</svg>';
+}
 
 
 /* ---------------- 6+7. merge studio ---------------- */
@@ -11959,6 +12550,12 @@ function sbProf(){
     sbKpi((pf.conclusions || []).length, 'graded conclusions this run') +
     sbKpi((pf.lines || []).length, 'cross-field lines') +
     '</div>';
+  /* lens picker — one lens has run; the rest are honestly parked */
+  h += '<h3 class="sb-h3">Lens</h3><div class="sb-toolbar">' +
+    '<button type="button" class="btn sm primary" data-sb="pflens" data-k="field">Field of study</button>' +
+    '<button type="button" class="btn sm ghost" disabled title="Not built yet">Organizations \u2014 later</button>' +
+    '<button type="button" class="btn sm ghost" disabled title="Not built yet">Occupation \u2014 later</button>' +
+    '<span class="sb-note">More lenses later \u2014 only the field-of-study lens has run.</span></div>';
   /* conclusion filters */
   var concl = pf.conclusions || [];
   var fieldsWith = [];
@@ -12551,7 +13148,19 @@ document.addEventListener('click', function(ev){
   else if(act === 'pfclear'){ SB.pf.sel = null; R(); }
   else if(act === 'pftab'){ SB.pf.tab = t.getAttribute('data-k'); R(); }
   else if(act === 'labtab'){ SB.labtab = t.getAttribute('data-k'); sbStore('ncc_sbx_labtab', SB.labtab); R(); }
-    else if(act === 'discsel'){ SB.dsc.sel = t.getAttribute('data-k'); sbDiscPaintList(); var dl = document.querySelector('.sb-dlist'); var on = dl && dl.querySelector('.sb-drow.on'); if(on) on.scrollIntoView({ block:'nearest' }); }
+  else if(act === 'layperson'){ sbStore('ncc_sbx_layperson', t.getAttribute('data-k')); if(!SB.lay) SB.lay = {}; SB.lay.flash = ''; R(); }
+  else if(act === 'laylc'){
+    if(!SB.lay) SB.lay = {};
+    var ldi = parseInt(t.getAttribute('data-di'), 10), lta = document.getElementById('laylc-note');
+    var ltxt = lta ? lta.value.trim() : '';
+    if(ldi >= 0 && ltxt){
+      var le = D.directory[ldi], lcur = lcNote(le);
+      lcCommitNote(ldi, (lcur.trim() ? lcur.replace(/\s+$/, '') + '\n' : '') + ltxt);
+      SB.lay.flash = 'Filed to ' + dispName(le).split(' ')[0] + '\u2019s Lima Charlie note — it rides the Save Pool like any edit.';
+    }
+    R();
+  }
+  else if(act === 'discsel'){ SB.dsc.sel = t.getAttribute('data-k'); sbDiscPaintList(); var dl = document.querySelector('.sb-dlist'); var on = dl && dl.querySelector('.sb-drow.on'); if(on) on.scrollIntoView({ block:'nearest' }); }
   else if(act === 'pfasel'){ SB.pf.asel = t.getAttribute('data-k'); R(); }
   else if(act === 'pfaclear'){ SB.pf.asel = null; R(); }
   else if(act === 'pfsel'){ SB.pf.sel = t.getAttribute('data-k'); R(); }
