@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.25.0';
+var APP_VERSION = '3.26.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -5284,7 +5284,7 @@ function hmRankCard(title, inner, cnt){
 function hmMoreBtn(attrs, label){
   return '<button type="button" class="hm-more" ' + attrs + '>' + label + '</button>';
 }
-function hmMixCard(title, segs, total){
+function hmMixInner(title, segs, total){
   var bar = segs.filter(function(s){ return s.c > 0; }).map(function(s){
     return '<button type="button" class="hm-seg" data-act="hmiopen" data-kind="' + s.kind + '" data-key="' + esc(s.key) + '" data-label="' + esc(s.label) + '" style="width:' + (100 * s.c / total) + '%;background:' + s.col + '" title="' + esc(s.label) + ' \u00b7 ' + s.c + '" aria-label="' + esc(s.label) + ', ' + s.c + ' people"></button>';
   }).join('');
@@ -5293,8 +5293,40 @@ function hmMixCard(title, segs, total){
       '<span class="hm-dldot" style="background:' + s.col + '"></span><span class="hm-dll">' + esc(s.label) + '</span><b>' + s.c + '</b>' +
       '<span class="hm-dlp">' + (total ? Math.round(100 * s.c / total) : 0) + '%</span></button>';
   }).join('');
-  return '<section class="card hm-blk"><header><h3>' + esc(title) + '</h3></header><div class="cbody">' +
-    '<div class="hm-segbar">' + bar + '</div><div class="hm-legs">' + leg + '</div></div></section>';
+  return '<header><h3>' + esc(title) + '</h3></header><div class="cbody">' +
+    '<div class="hm-segbar">' + bar + '</div><div class="hm-legs">' + leg + '</div></div>';
+}
+function hmMixCard(title, segs, total){
+  return '<section class="card hm-blk">' + hmMixInner(title, segs, total) + '</section>';
+}
+/* --- Home Shape card (JD 2026-10-28, V3.26.0 consolidation): tier
+   mix, relationship mix and the network line in ONE card instead of
+   three stacked surfaces. --- */
+function hmShapeCard(dd, tierSegs, relSegs, N){
+  netBuild();
+  var seg = [
+    { l:'Vetted', c:dd.tierCounts.vetted, col:(TIERS.vetted || {}).c || 'var(--seg-0)' },
+    { l:'Associate', c:dd.tierCounts.associate, col:(TIERS.associate || {}).c || 'var(--seg-1)' },
+    { l:'Open', c:dd.tierCounts.open, col:(TIERS.open || {}).c || 'var(--seg-2)' },
+    { l:'No tier yet', c:dd.tierCounts.none, col:RING_C[3] }
+  ];
+  return '<section class="card hm-blk"><div class="hm-shapegrid">' +
+    '<div class="hm-shapehalf">' + hmMixInner('Tier mix', tierSegs, N) + '</div>' +
+    '<div class="hm-shapehalf">' + hmMixInner('Relationship mix', relSegs, N) + '</div></div>' +
+    '<div class="hm-ns-row hm-shape-net">' +
+    '<span class="hm-ns-t">Network</span>' +
+    seg.map(function(s){ return '<span class="hm-ns-seg"><i style="background:' + s.col + '"></i>' + s.l + ' <b>' + s.c + '</b></span>'; }).join('') +
+    '<span class="hm-ns-seg dim">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</span>' +
+    '<span class="sp"></span><a class="hma-link" href="#/network">Open Network ' + ic('arrow', 12) + '</a>' +
+    '</div></section>';
+}
+/* --- Home Rankings (V3.26.0 consolidation): the five leader boards
+   as columns of ONE card, top 5 each. --- */
+function hmRanksCard(cols){
+  return '<section class="card hm-blk"><header><h3>Rankings</h3></header><div class="cbody"><div class="hm-rankgrid">' +
+    cols.map(function(c){
+      return '<div class="hm-rankcol"><h4>' + esc(c.title) + '</h4>' + c.rows + (c.more || '') + '</div>';
+    }).join('') + '</div></div></section>';
 }
 function hmYearsCard(dd){
   var cols = dd.yrEntries.map(function(t){
@@ -5875,7 +5907,7 @@ function hmContactsCard(){
     var b = briefOf(r.e);
     var when = lcDateLabel(new Date(r.k).getFullYear() + '-' + ('0' + (new Date(r.k).getMonth() + 1)).slice(-2) + '-' + ('0' + new Date(r.k).getDate()).slice(-2));
     var prev = '';
-    if(mode === 'recent') prev = b.last ? briefClip(b.last.replace(/^[^\u2014]*\u2014\s*/, ''), 130) : '';
+    if(mode === 'recent') prev = b.last ? briefClip(b.last.replace(/^[^\u2014]*\u2014\s*/, ''), 110) : '';
     if(!prev && b.ask) prev = 'Ask about: ' + b.ask.text;
     return '<button type="button" class="hm-lcrow" data-act="hmgoto" data-di="' + r.di + '">' +
       avatar(r.e, 'sm') + '<span class="hm-lcmain"><span class="hm-lcname">' + esc(dispName(r.e)) + '</span>' +
@@ -5927,30 +5959,33 @@ function viewHome(v){
   var groupsTop = hmPlainTop(dd.groupCounts, 8), groupMax = groupsTop.length ? groupsTop[0].c : 0;
   var orgsTop = hmPlainTop(dd.orgCounts, 8), orgMax = orgsTop.length ? orgsTop[0].c : 0;
   var fpTop = hmPlainTop(dd.fpCounts, 8), fpMax = fpTop.length ? fpTop[0].c : 0;
+  /* V3.26.0 consolidation (JD): the KPI strip rides inside the
+     banner, the two mixes + network line are one Shape card, and
+     the five leader boards are one Rankings card — three surfaces
+     where there were nine, so the content starts at the top. */
   v.innerHTML = '<div class="page hm"><div class="hm-layout"><div class="hm-main"><div class="pagehead"><div><h1 class="display">Home</h1>' +
-    '<p class="sub">The whole circle at a glance: who you last talked to, its shape, and what changed lately. Everything opens a closer look.</p></div></div>' +
+    '<p class="sub">The whole circle at a glance: who you last talked to, its shape, and what changed lately. Everything opens a closer look.</p></div>' +
     '<div class="hmk-strip">' +
     hmKpi('people', hmFmtN(N), 'People', 'in the directory') +
     hmKpi('footprint', hmFmtN(dd.fpTotal), 'Footprint facts', 'across ' + dd.fpPeople + ' people') +
     hmKpi('photos', pd.onFile, 'Photos on file', hmFmtN(pd.totalPhotos) + ' photos total') +
     hmKpi('located', dd.locN, 'Located', Object.keys(dd.towns).length + ' towns on file') +
     hmKpi('dated', dd.dated, 'Known since', dd.undated + ' still missing a year') +
-    '</div>' +
-    '<div class="hm-mixrow">' + hmMixCard('Tier mix', tierSegs, N) + hmMixCard('Relationship mix', relSegs, N) + '</div>' +
+    '</div></div>' +
+    hmShapeCard(dd, tierSegs, relSegs, N) +
     hmContactsCard() +
-    hmNetStrip(dd) +
-    '<div class="hm-ranks">' +
-    hmRankCard('Where they are', townsTop.map(function(t, ix){ return hmBarRow('town', t.key, t.label, t.c, townMax, ix === 0); }).join('') +
-      (Object.keys(dd.towns).length > townsTop.length ? hmMoreBtn('data-act="hmikpi" data-k="located"', '+' + (Object.keys(dd.towns).length - townsTop.length) + ' more towns') : ''), 'top 8 of ' + Object.keys(dd.towns).length) +
-    hmRankCard('Skills', skillsTop.map(function(t){ return hmBarRow('skill', t.key, t.label, t.c, skillMax); }).join('') +
-      (Object.keys(dd.skills).length > skillsTop.length ? hmMoreBtn('data-act="hmivlist" data-vk="skill"', '+' + (Object.keys(dd.skills).length - skillsTop.length) + ' more skills') : ''), 'top 8') +
-    hmRankCard('Groups', groupsTop.map(function(t){ return hmBarRow('group', t.key, t.label, t.c, groupMax); }).join('') +
-      (Object.keys(dd.groupCounts).length > groupsTop.length ? hmMoreBtn('data-act="hmivlist" data-vk="group"', '+' + (Object.keys(dd.groupCounts).length - groupsTop.length) + ' more groups') : ''), Object.keys(dd.groupCounts).length + ' total') +
-    hmRankCard('Organizations', orgsTop.map(function(t){ return hmBarRow('org', t.key, t.label, t.c, orgMax); }).join('') +
-      (Object.keys(dd.orgCounts).length > orgsTop.length ? hmMoreBtn('data-act="hmivlist" data-vk="org"', '+' + (Object.keys(dd.orgCounts).length - orgsTop.length) + ' more organizations') : ''), 'top 8') +
-    hmRankCard('Footprint leaders', fpTop.map(function(t){ return hmBarRow('footprint', t.key, t.label, t.c, fpMax); }).join('') +
-      hmMoreBtn('data-act="hmikpi" data-k="footprint"', 'All footprint coverage'), 'facts each') +
-    '</div>' +
+    hmRanksCard([
+      { title:'Where they are', rows: townsTop.slice(0, 5).map(function(t, ix){ return hmBarRow('town', t.key, t.label, t.c, townMax, ix === 0); }).join(''),
+        more: Object.keys(dd.towns).length > 5 ? hmMoreBtn('data-act="hmikpi" data-k="located"', '+' + (Object.keys(dd.towns).length - 5) + ' more towns') : '' },
+      { title:'Skills', rows: skillsTop.slice(0, 5).map(function(t){ return hmBarRow('skill', t.key, t.label, t.c, skillMax); }).join(''),
+        more: Object.keys(dd.skills).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="skill"', '+' + (Object.keys(dd.skills).length - 5) + ' more skills') : '' },
+      { title:'Groups', rows: groupsTop.slice(0, 5).map(function(t){ return hmBarRow('group', t.key, t.label, t.c, groupMax); }).join(''),
+        more: Object.keys(dd.groupCounts).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="group"', '+' + (Object.keys(dd.groupCounts).length - 5) + ' more groups') : '' },
+      { title:'Organizations', rows: orgsTop.slice(0, 5).map(function(t){ return hmBarRow('org', t.key, t.label, t.c, orgMax); }).join(''),
+        more: Object.keys(dd.orgCounts).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="org"', '+' + (Object.keys(dd.orgCounts).length - 5) + ' more organizations') : '' },
+      { title:'Footprint leaders', rows: fpTop.slice(0, 5).map(function(t){ return hmBarRow('footprint', t.key, t.label, t.c, fpMax); }).join(''),
+        more: hmMoreBtn('data-act="hmikpi" data-k="footprint"', 'All footprint coverage') }
+    ]) +
     '<div class="hm-years-slim">' + hmYearsCard(dd) + '</div>' +
     '</div><aside class="hm-rail">' + hmActivity() + '</aside></div></div>';
 }
@@ -6146,7 +6181,7 @@ function viewDaily(v){
     '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b class="asnum" data-n="' + (DT.checked || []).length + '">0</b><span>Checked today</span></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + (DT.filed || []).length + '">0</b><span>Updated records</span></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + freshList.length + '">0</b><span>New records</span></div>' +
-    '<div class="asstat asstat-ring"><svg class="asring" width="84" height="84" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/><text class="asring-t" x="42" y="48" text-anchor="middle">' + Math.round(covPct) + '%</text></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this cycle</span></div></div>' +
+    '<div class="asstat asstat-ring"><svg class="asring" width="62" height="62" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/><text class="asring-t" x="42" y="48" text-anchor="middle">' + Math.round(covPct) + '%</text></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this cycle</span></div></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('calendar', 16) + '</span><b>' + esc(fmtD(DT.date)) + '</b><span>Latest brief</span></div>' +
     '</div>' + frBar + '</div></section>';
   /* --- Updated packets --- */
@@ -8425,7 +8460,7 @@ function audModeBarHTML(){
     return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> to review</span><span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
       '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; B bad photo &middot; X reject &middot; U undo &middot; A adjust &middot; 1&ndash;7 why bad</span></div>';
   }
-  return '<div class="aud-modebar"><button type="button" class="btn ghost" data-act="audbulkphone">Mark all phone gaps done</button></div>';
+  return '<div class="aud-modebar"><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button></div>';
 }
 function audPaintModeBar(){
   var A = S.audit; if(!A) return;
