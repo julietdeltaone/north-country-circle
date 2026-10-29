@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.31.0';
+var APP_VERSION = '3.32.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3312,7 +3312,7 @@ function secHasContent(e, id){
     case 'background': return !!(gv(e, 'specialty') || ORG_CATS.some(function(c){ return tagList(gv(e, c.k)).length; }) || degreesOf(e).length || gv(e, 'highlights') || gv(e, 'achievements') || (e.languages || []).length);
     case 'connections': return !!(knownAssociates(e).length || famLinks(e).length);
     case 'timeline': return !!((e.events || []).length || connPhases(e).length);
-    case 'files': return !!(e.files || []).length;
+    case 'files': return !!((e.files || []).length || msgFor(e));
     case 'business': return !!((e.businesses || []).length);
     case 'persona': return PERSONA.some(function(p){ return gv(e, p[0]) !== ''; });
   }
@@ -3367,7 +3367,7 @@ function viewProfile(v){
 }
 function paintProfile(di){
   if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
-  phLoad();
+  phLoad(); msgLoad();
   var e = D.directory[di];
   /* Wholesale repaint is the fallback path (audit F14): preserve the
      reader's place across it — scroll position survives a re-render. */
@@ -3553,7 +3553,7 @@ function secSummary(e, id){
   var n = 0;
   if(id === 'connections') n = knownAssociates(e).length + famLinks(e).length;
   else if(id === 'timeline') n = (e.events || []).length;
-  else if(id === 'files') n = (e.files || []).length;
+  else if(id === 'files') n = (e.files || []).length + (msgFor(e) ? 1 : 0);
   else if(id === 'business') n = (e.businesses || []).length;
   return n ? '<em class="cnt">' + n + '</em>' : '';
 }
@@ -3713,12 +3713,15 @@ function secView(di, id){
     return out4 || emptyPrompt(di, id, 'Add an event');
   }
   if(id === 'files'){
-    var fs = e.files || [];
-    return fs.length ? fs.map(function(f){
+    var fs = e.files || [], mf = msgFor(e);
+    var mrow = mf ? '<div class="file"><span>' + ic('mail', 17) + '</span><div><b>Correspondence</b><small>iMessage thread · ' + mf.n + ' messages · ' + esc(msgSpan(mf)) + (mf.group ? ' · may include group messages' : '') + '</small></div>' +
+      '<button type="button" class="btn ghost sm" data-act="msgopen" data-di="' + di + '">Open</button></div>' : '';
+    var frows = fs.map(function(f){
       var isDoc = f.kind === 'gdoc';
       return '<div class="file"><span>' + ic(isDoc ? 'file' : 'link', 17) + '</span><div><b>' + esc(f.name || 'Untitled') + '</b><small>' + (isDoc ? 'Google Doc' : (f.kind === 'source' ? 'Source' : 'Link')) + (f.note ? ' · ' + esc(f.note) : '') + '</small></div>' +
         (f.url ? '<a class="btn ghost sm" href="' + esc(f.url) + '" target="_blank" rel="noopener">Open' + ic('ext', 12) + '</a>' : '') + '</div>';
-    }).join('') : emptyPrompt(di, id, 'Attach a link or create a doc');
+    }).join('');
+    return mrow + (frows || (mf ? '' : emptyPrompt(di, id, 'Attach a link or create a doc')));
   }
   if(id === 'persona'){
     /* Unrated traits vanish in view (JD 2026-10-29 condense): the card
@@ -6257,6 +6260,13 @@ function viewHome(v){
    repaints through here, so a new view joins one list, not three. */
 function repaintForData(kind){
   var r = S.route.name;
+  if(kind === 'msg'){
+    /* Correspondence data landing mid-profile: rebuild the profile so
+       the Files section appears, unless JD is mid-edit (the entry
+       shows on the next natural render instead). */
+    if($('#p-hero') && !Object.keys(S.prof.edit || {}).some(function(k){ return S.prof.edit[k]; })) render();
+    return;
+  }
   if(kind === 'ph'){
     if(r === 'photos' || r === 'audit' || r === 'home') render();
     else if(r === 'groups'){ grpPaintCards(); grpPaintMembers(); }
@@ -6528,6 +6538,58 @@ function phLoad(){
     .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
     .then(function(d){ PH = d; phInvalidate(); PH_LOADING = false; repaintForData('ph'); })
     .catch(function(){ PH = { empty:true }; PH_LOADING = false; repaintForData('ph'); });
+}
+
+/* ============================================================
+   Correspondence (JD 2026-10-29): JD's iMessage threads from his
+   own contents exports, baked by scripts/build_messages.py into
+   data/messages.json, keyed by lowercase display name (the same
+   lookup photos.json uses). Read-only here: the profile Files
+   section gains a Correspondence entry per person with a thread,
+   opening a timeline window of the messages. The exports do not
+   mark group threads; mf.group carries the filing record's
+   group-suspected flag and the window says so.
+   ============================================================ */
+var MSG = null, MSG_LOADING = false;
+function msgLoad(){
+  if(MSG || MSG_LOADING) return;
+  MSG_LOADING = true;
+  fetch('data/messages.json', { cache:'no-store' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ MSG = d; MSG_LOADING = false; repaintForData('msg'); })
+    .catch(function(){ MSG = { empty:true }; MSG_LOADING = false; });
+}
+function msgFor(e){
+  if(!MSG || !MSG.people) return null;
+  return MSG.people[String(dispName(e)).toLowerCase()] || null;
+}
+var MSG_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var MSG_MONL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var MSG_DAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+function msgMonYr(dstr){ var p = String(dstr || '').split('-'); return p.length < 2 ? '' : MSG_MON[+p[1] - 1] + ' ' + p[0]; }
+function msgSpan(mf){ var a = msgMonYr(mf.first), b = msgMonYr(mf.last); return a === b ? a : a + ' – ' + b; }
+function msgDayLabel(dstr){
+  var p = String(dstr || '').split('-').map(Number);
+  if(p.length < 3) return String(dstr || '');
+  return MSG_DAY[new Date(p[0], p[1] - 1, p[2]).getDay()] + ', ' + MSG_MONL[p[1] - 1] + ' ' + p[2] + ', ' + p[0];
+}
+function msgTimeLabel(ts){
+  var t = String(ts || '').slice(11, 16).split(':');
+  if(t.length < 2 || t[0] === '') return '';
+  var h = +t[0], ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+  return h + ':' + t[1] + ' ' + ap;
+}
+function openCorrespondence(di){
+  var e = D.directory[di], mf = msgFor(e); if(!mf) return;
+  var name = dispName(e), lastDay = '', rows = '';
+  (mf.msgs || []).forEach(function(m){
+    var day = String(m[0]).slice(0, 10);
+    if(day !== lastDay){ lastDay = day; rows += '<div class="msg-day">' + esc(msgDayLabel(day)) + '</div>'; }
+    rows += '<div class="msg-row ' + (m[1] === 'o' ? 'out' : 'in') + '"><div class="msg-bub">' + esc(m[2]) + '</div><time>' + esc(msgTimeLabel(m[0])) + '</time></div>';
+  });
+  var head = '<p class="dim msg-head">iMessage thread · ' + mf.n + ' messages · ' + esc(msgSpan(mf)) +
+    (mf.group ? '<br><span class="msg-warn">This thread may include group messages. Received messages are not guaranteed to be from ' + esc(name.split(' ')[0]) + ' alone.</span>' : '') + '</p>';
+  openSheet('Correspondence — ' + name, head + '<div class="msg-list">' + rows + '</div>', { wide:true, focus:false });
 }
 
 function phDiByName(name){
@@ -9712,6 +9774,7 @@ function onClick(ev){
       var fa = (D.directory[S.prof.di].files || []).slice(); fa.push(f);
       txn('Attach file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fa) }); }); repaintSec('files'); break;
     }
+    case 'msgopen': openCorrespondence(+el.getAttribute('data-di')); break;
     case 'fdel': { var fl = (D.directory[S.prof.di].files || []).slice(), fi = +el.getAttribute('data-i'); if(!fl[fi] || !confirm('Remove this attachment?')) break; fl.splice(fi, 1); txn('Remove file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fl) }); }); repaintSec('files'); break; }
     case 'degedit': S.prof.degEdit = +el.getAttribute('data-i'); repaintSec('background'); break;
     case 'degcancel': S.prof.degEdit = null; repaintSec('background'); break;
