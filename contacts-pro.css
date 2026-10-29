@@ -3996,3 +3996,14 @@ body[data-mdl="1"] #view{max-width:none;width:100%;margin:0;padding:0;flex:1;min
 .msg-tl{margin-top:8px}
 .ptmsg{display:inline-flex;align-items:center;gap:6px;color:var(--txt)}
 .ptmsg svg{color:var(--acc)}
+
+/* UI arena build (V3.35.0): hero last-contact line, timeline log row,
+   search match reasons, online stamp label */
+#p-lastline{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-top:2px}
+#p-lastline:empty{display:none}
+.pll-when{font-weight:600;color:var(--txt);white-space:nowrap}
+.pll-sum{color:var(--mut)}
+.pll-log{margin-left:auto;background:none;border:0;cursor:pointer;font:inherit;color:var(--acc2);font-weight:600;white-space:nowrap;padding:0}
+.tl-logrow{display:flex;justify-content:flex-end;margin-bottom:8px}
+.gsr-rsn{color:var(--acc2);font-weight:600}
+.ptlc.onl{color:var(--mut)}
