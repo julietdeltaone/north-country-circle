@@ -1,0 +1,941 @@
+{
+ "generated": "2026-10-29",
+ "summary": {
+  "directory": 726,
+  "with_rhythm": 16,
+  "with_stamp": 283,
+  "labeled_checks": 300,
+  "labeled_findings": 34,
+  "pair_candidates": 6
+ },
+ "cadence": {
+  "question": "Who am I about to lose touch with?",
+  "headline": "16 people have enough contact history to show a rhythm. 4 of them are past due on their own pattern.",
+  "coverage": {
+   "with_rhythm": 16,
+   "with_stamp": 283,
+   "stamp_only": 267,
+   "directory": 726
+  },
+  "ranked": [
+   {
+    "name": "Ysabella Colbert",
+    "pid": "ysabellamcolbert",
+    "events": 3,
+    "median_days": 95,
+    "rhythm": "about every 3 months",
+    "last": "2018-07-26",
+    "last_label": "8.3 years ago",
+    "since_days": 3017,
+    "overdue": 31.76,
+    "steady": true,
+    "dates": [
+     "2018-01-17",
+     "2018-03-22",
+     "2018-07-26"
+    ]
+   },
+   {
+    "name": "Lael Card",
+    "pid": "laelcard",
+    "events": 4,
+    "median_days": 420,
+    "rhythm": "about every 14 months",
+    "last": "2021-10-14",
+    "last_label": "5 years ago",
+    "since_days": 1841,
+    "overdue": 4.38,
+    "steady": true,
+    "dates": [
+     "2017-12-05",
+     "2018-07-16",
+     "2020-08-20",
+     "2021-10-14"
+    ]
+   },
+   {
+    "name": "Brietta Paladin",
+    "pid": "briettapaladin",
+    "events": 3,
+    "median_days": 646,
+    "rhythm": "about every 1.8 years",
+    "last": "2020-09-03",
+    "last_label": "6.2 years ago",
+    "since_days": 2247,
+    "overdue": 3.48,
+    "steady": true,
+    "dates": [
+     "2017-02-20",
+     "2018-08-08",
+     "2020-09-03"
+    ]
+   },
+   {
+    "name": "Joshua White",
+    "pid": "joshua_white3",
+    "events": 3,
+    "median_days": 763,
+    "rhythm": "about every 2.1 years",
+    "last": "2021-04-30",
+    "last_label": "5.5 years ago",
+    "since_days": 2008,
+    "overdue": 2.63,
+    "steady": true,
+    "dates": [
+     "2017-02-24",
+     "2019-08-29",
+     "2021-04-30"
+    ]
+   },
+   {
+    "name": "Nabil El-labban",
+    "pid": "nabil.o3",
+    "events": 3,
+    "median_days": 13,
+    "rhythm": "about every 2 weeks",
+    "last": "2026-10-22",
+    "last_label": "7 days ago",
+    "since_days": 7,
+    "overdue": 0.54,
+    "steady": false,
+    "dates": [
+     "2026-09-26",
+     "2026-09-30",
+     "2026-10-22"
+    ]
+   },
+   {
+    "name": "Megan Furner",
+    "pid": "megan.furner",
+    "events": 3,
+    "median_days": 894,
+    "rhythm": "about every 2.4 years",
+    "last": "2025-11-17",
+    "last_label": "11 months ago",
+    "since_days": 346,
+    "overdue": 0.39,
+    "steady": true,
+    "dates": [
+     "2020-12-25",
+     "2024-04-09",
+     "2025-11-17"
+    ]
+   },
+   {
+    "name": "Hope Kilcollins",
+    "pid": "hopiek_09",
+    "events": 3,
+    "median_days": 215,
+    "rhythm": "about every 7 months",
+    "last": "2026-10-10",
+    "last_label": "19 days ago",
+    "since_days": 19,
+    "overdue": 0.09,
+    "steady": true,
+    "dates": [
+     "2025-08-06",
+     "2025-11-16",
+     "2026-10-10"
+    ]
+   },
+   {
+    "name": "David Zufall",
+    "pid": "davidzufall",
+    "events": 4,
+    "median_days": 13,
+    "rhythm": "about every 2 weeks",
+    "last": "2026-10-28",
+    "last_label": "yesterday",
+    "since_days": 1,
+    "overdue": 0.08,
+    "steady": false,
+    "dates": [
+     "2019-04-20",
+     "2026-10-14",
+     "2026-10-27",
+     "2026-10-28"
+    ]
+   },
+   {
+    "name": "Gabe Paladin",
+    "pid": "gabepaladin",
+    "events": 4,
+    "median_days": 788,
+    "rhythm": "about every 2.2 years",
+    "last": "2026-08-25",
+    "last_label": "2 months ago",
+    "since_days": 65,
+    "overdue": 0.08,
+    "steady": false,
+    "dates": [
+     "2019-09-04",
+     "2019-12-30",
+     "2024-06-28",
+     "2026-08-25"
+    ]
+   },
+   {
+    "name": "Melody Maurer",
+    "pid": "melody_maurer",
+    "events": 4,
+    "median_days": 190,
+    "rhythm": "about every 6 months",
+    "last": "2026-10-21",
+    "last_label": "8 days ago",
+    "since_days": 8,
+    "overdue": 0.04,
+    "steady": false,
+    "dates": [
+     "2025-05-25",
+     "2026-04-04",
+     "2026-10-11",
+     "2026-10-21"
+    ]
+   },
+   {
+    "name": "Jeeves Green",
+    "pid": "jeevesgreen",
+    "events": 3,
+    "median_days": 1307,
+    "rhythm": "about every 3.6 years",
+    "last": "2026-10-04",
+    "last_label": "25 days ago",
+    "since_days": 25,
+    "overdue": 0.02,
+    "steady": true,
+    "dates": [
+     "2019-08-08",
+     "2024-12-04",
+     "2026-10-04"
+    ]
+   },
+   {
+    "name": "Catherine Green",
+    "pid": "_cathaccino_",
+    "events": 4,
+    "median_days": 133,
+    "rhythm": "about every 4 months",
+    "last": "2026-10-28",
+    "last_label": "yesterday",
+    "since_days": 1,
+    "overdue": 0.01,
+    "steady": false,
+    "dates": [
+     "2020-08-04",
+     "2026-06-04",
+     "2026-10-15",
+     "2026-10-28"
+    ]
+   },
+   {
+    "name": "Danielle Vetere",
+    "pid": "daniveteree",
+    "events": 3,
+    "median_days": 1022,
+    "rhythm": "about every 2.8 years",
+    "last": "2026-10-18",
+    "last_label": "11 days ago",
+    "since_days": 11,
+    "overdue": 0.01,
+    "steady": false,
+    "dates": [
+     "2021-03-13",
+     "2021-03-25",
+     "2026-10-18"
+    ]
+   },
+   {
+    "name": "John Meyers",
+    "pid": "johnmeyers_sr",
+    "events": 3,
+    "median_days": 538,
+    "rhythm": "about every 18 months",
+    "last": "2026-10-25",
+    "last_label": "4 days ago",
+    "since_days": 4,
+    "overdue": 0.01,
+    "steady": false,
+    "dates": [
+     "2023-11-15",
+     "2026-05-21",
+     "2026-10-25"
+    ]
+   },
+   {
+    "name": "Lydia Martin",
+    "pid": "lydia_rose_martin",
+    "events": 4,
+    "median_days": 456,
+    "rhythm": "about every 15 months",
+    "last": "2026-10-26",
+    "last_label": "3 days ago",
+    "since_days": 3,
+    "overdue": 0.01,
+    "steady": false,
+    "dates": [
+     "2020-08-30",
+     "2021-11-29",
+     "2026-09-29",
+     "2026-10-26"
+    ]
+   },
+   {
+    "name": "Merrick Sinclair",
+    "pid": "mr_writers_block",
+    "events": 5,
+    "median_days": 670,
+    "rhythm": "about every 1.8 years",
+    "last": "2026-10-28",
+    "last_label": "yesterday",
+    "since_days": 1,
+    "overdue": 0.0,
+    "steady": false,
+    "dates": [
+     "2020-08-22",
+     "2022-06-23",
+     "2026-10-27",
+     "2026-10-27",
+     "2026-10-28"
+    ]
+   }
+  ],
+  "distribution": [
+   {
+    "label": "Not yet due",
+    "count": 12
+   },
+   {
+    "label": "Due now",
+    "count": 0
+   },
+   {
+    "label": "Overdue",
+    "count": 0
+   },
+   {
+    "label": "Well overdue",
+    "count": 2
+   },
+   {
+    "label": "Long overdue",
+    "count": 2
+   }
+  ],
+  "rhythm_split": {
+   "steady": 7,
+   "scattered": 9
+  },
+  "recent": [
+   {
+    "name": "Julianna Smith",
+    "pid": "sf:julianna-smith",
+    "last": "2015-05-11",
+    "last_label": "11.5 years ago",
+    "since_days": 4189,
+    "events": 1
+   },
+   {
+    "name": "Emma Morse",
+    "pid": "emma_morse315",
+    "last": "2015-11-11",
+    "last_label": "11 years ago",
+    "since_days": 4005,
+    "events": 1
+   },
+   {
+    "name": "Kathy Whiteford",
+    "pid": "sf:kathy-whiteford",
+    "last": "2015-12-23",
+    "last_label": "10.9 years ago",
+    "since_days": 3963,
+    "events": 1
+   },
+   {
+    "name": "Hannah Whiteford",
+    "pid": "sf:hannah-whiteford",
+    "last": "2016-08-10",
+    "last_label": "10.2 years ago",
+    "since_days": 3732,
+    "events": 1
+   },
+   {
+    "name": "Savannah Newtown",
+    "pid": "savannah2416",
+    "last": "2016-09-01",
+    "last_label": "10.2 years ago",
+    "since_days": 3710,
+    "events": 1
+   },
+   {
+    "name": "Carol Fox",
+    "pid": "sf:carol-fox",
+    "last": "2017-04-06",
+    "last_label": "9.6 years ago",
+    "since_days": 3493,
+    "events": 1
+   },
+   {
+    "name": "Jai Dane",
+    "pid": "sf:jai-dane",
+    "last": "2018-01-01",
+    "last_label": "8.8 years ago",
+    "since_days": 3223,
+    "events": 1
+   },
+   {
+    "name": "Mark Miller",
+    "pid": "mark.it5",
+    "last": "2018-03-02",
+    "last_label": "8.7 years ago",
+    "since_days": 3163,
+    "events": 1
+   },
+   {
+    "name": "Elizabeth Daniels",
+    "pid": "elizabethadaniels",
+    "last": "2018-03-07",
+    "last_label": "8.6 years ago",
+    "since_days": 3158,
+    "events": 1
+   },
+   {
+    "name": "Evan Dennis",
+    "pid": "evan_dennis_",
+    "last": "2018-03-11",
+    "last_label": "8.6 years ago",
+    "since_days": 3154,
+    "events": 1
+   },
+   {
+    "name": "Gabi White",
+    "pid": "gabi_paige",
+    "last": "2018-03-22",
+    "last_label": "8.6 years ago",
+    "since_days": 3143,
+    "events": 1
+   },
+   {
+    "name": "Isaiah Reiter",
+    "pid": "isaiahreiter",
+    "last": "2018-03-22",
+    "last_label": "8.6 years ago",
+    "since_days": 3143,
+    "events": 1
+   },
+   {
+    "name": "Liana Sinclair",
+    "pid": "sf:liana-sinclair",
+    "last": "2018-03-28",
+    "last_label": "8.6 years ago",
+    "since_days": 3137,
+    "events": 1
+   },
+   {
+    "name": "Andrew Fox",
+    "pid": "sf:andrew-fox",
+    "last": "2018-07-07",
+    "last_label": "8.3 years ago",
+    "since_days": 3036,
+    "events": 1
+   },
+   {
+    "name": "Matthew Tomford",
+    "pid": "ct:matthew tomford",
+    "last": "2018-08-05",
+    "last_label": "8.2 years ago",
+    "since_days": 3007,
+    "events": 1
+   },
+   {
+    "name": "Paula Haller",
+    "pid": "haller.paula",
+    "last": "2018-08-27",
+    "last_label": "8.2 years ago",
+    "since_days": 2985,
+    "events": 1
+   },
+   {
+    "name": "Alexandra Colbert",
+    "pid": "alex_conn504",
+    "last": "2019-01-02",
+    "last_label": "7.8 years ago",
+    "since_days": 2857,
+    "events": 1
+   },
+   {
+    "name": "Philip Dennis",
+    "pid": "philip__dennis",
+    "last": "2019-01-03",
+    "last_label": "7.8 years ago",
+    "since_days": 2856,
+    "events": 1
+   },
+   {
+    "name": "Kayla Watkins",
+    "pid": "sf:kayla-watkins",
+    "last": "2019-01-10",
+    "last_label": "7.8 years ago",
+    "since_days": 2849,
+    "events": 2
+   },
+   {
+    "name": "Marissa Wood",
+    "pid": "marissa989",
+    "last": "2019-01-13",
+    "last_label": "7.8 years ago",
+    "since_days": 2846,
+    "events": 1
+   },
+   {
+    "name": "Conor Miller-Lynch",
+    "pid": "sf:conor-miller-lynch",
+    "last": "2019-01-19",
+    "last_label": "7.8 years ago",
+    "since_days": 2840,
+    "events": 1
+   },
+   {
+    "name": "Blake Amo",
+    "pid": "ct:blake amo",
+    "last": "2019-02-06",
+    "last_label": "7.7 years ago",
+    "since_days": 2822,
+    "events": 1
+   },
+   {
+    "name": "Judith Tomford",
+    "pid": "sf:judith-tomford",
+    "last": "2019-02-26",
+    "last_label": "7.7 years ago",
+    "since_days": 2802,
+    "events": 1
+   },
+   {
+    "name": "Valeria Zhukova",
+    "pid": "vale_zhuu",
+    "last": "2019-03-16",
+    "last_label": "7.6 years ago",
+    "since_days": 2784,
+    "events": 1
+   },
+   {
+    "name": "Caden Colbert",
+    "pid": "cadencolbert",
+    "last": "2019-05-22",
+    "last_label": "7.4 years ago",
+    "since_days": 2717,
+    "events": 1
+   },
+   {
+    "name": "Jackie Card",
+    "pid": "sf:jackie-card",
+    "last": "2019-05-24",
+    "last_label": "7.4 years ago",
+    "since_days": 2715,
+    "events": 1
+   },
+   {
+    "name": "Maria Tallo",
+    "pid": "sf:maria-tallo",
+    "last": "2019-06-09",
+    "last_label": "7.4 years ago",
+    "since_days": 2699,
+    "events": 2
+   },
+   {
+    "name": "Maggie Lapinski",
+    "pid": "ct:maggie lapinski",
+    "last": "2019-06-24",
+    "last_label": "7.3 years ago",
+    "since_days": 2684,
+    "events": 1
+   },
+   {
+    "name": "Meg Lapinski",
+    "pid": "meggreg4",
+    "last": "2019-06-30",
+    "last_label": "7.3 years ago",
+    "since_days": 2678,
+    "events": 1
+   },
+   {
+    "name": "Angeles Felix",
+    "pid": "dr.angelesfelix",
+    "last": "2019-07-01",
+    "last_label": "7.3 years ago",
+    "since_days": 2677,
+    "events": 1
+   },
+   {
+    "name": "Susan Brown",
+    "pid": "ct:susan brown",
+    "last": "2019-07-17",
+    "last_label": "7.3 years ago",
+    "since_days": 2661,
+    "events": 1
+   },
+   {
+    "name": "Alfredo Rodriguez",
+    "pid": "certified.sauce",
+    "last": "2019-08-13",
+    "last_label": "7.2 years ago",
+    "since_days": 2634,
+    "events": 1
+   },
+   {
+    "name": "Mike Tomford",
+    "pid": "ct:mike tomford",
+    "last": "2019-09-08",
+    "last_label": "7.1 years ago",
+    "since_days": 2608,
+    "events": 1
+   },
+   {
+    "name": "Cashlynn Colbert",
+    "pid": "cashhyyy",
+    "last": "2019-09-23",
+    "last_label": "7.1 years ago",
+    "since_days": 2593,
+    "events": 2
+   },
+   {
+    "name": "Alycia Miller-Lynch",
+    "pid": "sf:alycia-miller-lynch",
+    "last": "2019-09-24",
+    "last_label": "7.1 years ago",
+    "since_days": 2592,
+    "events": 1
+   },
+   {
+    "name": "Zenna Dale",
+    "pid": "ct:zenna dale",
+    "last": "2019-10-14",
+    "last_label": "7 years ago",
+    "since_days": 2572,
+    "events": 2
+   },
+   {
+    "name": "Danielle McPherson",
+    "pid": "ct:danielle mcpherson",
+    "last": "2019-11-01",
+    "last_label": "7 years ago",
+    "since_days": 2554,
+    "events": 1
+   },
+   {
+    "name": "Debbie Flack",
+    "pid": "sf:debbie-flack",
+    "last": "2019-12-11",
+    "last_label": "6.9 years ago",
+    "since_days": 2514,
+    "events": 1
+   },
+   {
+    "name": "Brayden Amo",
+    "pid": "sf:brayden-amo",
+    "last": "2019-12-17",
+    "last_label": "6.9 years ago",
+    "since_days": 2508,
+    "events": 2
+   },
+   {
+    "name": "Theresa Smith",
+    "pid": "sf:theresa-smith",
+    "last": "2019-12-24",
+    "last_label": "6.8 years ago",
+    "since_days": 2501,
+    "events": 1
+   }
+  ],
+  "backtest": {
+   "n": 7,
+   "hits": 2,
+   "rate": 0.286,
+   "note": "Tested on the 7 people with 4 or more dated contacts: hide their latest contact, and ask whether the rhythm from the earlier ones alone lands within half a normal gap of when contact actually resumed."
+  }
+ },
+ "news": {
+  "question": "Who is most likely to have something new?",
+  "headline": "Live Records has checked 300 people across 10 runs and filed findings for 34 of them — about 11 in every 100 checks.",
+  "sample": {
+   "runs": 10,
+   "checks": 300,
+   "findings": 34,
+   "base_rate": 0.113
+  },
+  "segments": [
+   {
+    "key": "school_staff",
+    "label": "Works at a school or district",
+    "checks": 9,
+    "findings": 2,
+    "rate": 0.222,
+    "lift": null
+   },
+   {
+    "key": "student_alum",
+    "label": "Student or alum, no employer on file",
+    "checks": 77,
+    "findings": 16,
+    "rate": 0.208,
+    "lift": 1.8
+   },
+   {
+    "key": "athletics",
+    "label": "Tied to college or school athletics",
+    "checks": 17,
+    "findings": 3,
+    "rate": 0.176,
+    "lift": 1.6
+   },
+   {
+    "key": "university_staff",
+    "label": "Works at a university or college",
+    "checks": 18,
+    "findings": 3,
+    "rate": 0.167,
+    "lift": 1.5
+   },
+   {
+    "key": "footprint_rich",
+    "label": "Three or more facts already on file",
+    "checks": 116,
+    "findings": 17,
+    "rate": 0.147,
+    "lift": 1.3
+   },
+   {
+    "key": "health",
+    "label": "Works in health care",
+    "checks": 29,
+    "findings": 3,
+    "rate": 0.103,
+    "lift": 0.9
+   },
+   {
+    "key": "no_org",
+    "label": "No organization on file at all",
+    "checks": 81,
+    "findings": 8,
+    "rate": 0.099,
+    "lift": 0.9
+   },
+   {
+    "key": "blank",
+    "label": "Nothing on file yet (blank footprint)",
+    "checks": 84,
+    "findings": 7,
+    "rate": 0.083,
+    "lift": 0.7
+   },
+   {
+    "key": "church",
+    "label": "Has a church on file",
+    "checks": 41,
+    "findings": 1,
+    "rate": 0.024,
+    "lift": 0.2
+   }
+  ],
+  "next_up": [
+   {
+    "name": "Adria Tebo",
+    "pid": "adria.t18",
+    "score": 36,
+    "why": [
+     "Tied to college or school athletics",
+     "Student or alum, no employer on file"
+    ]
+   },
+   {
+    "name": "Alessandra Parker",
+    "pid": "aleeparker_",
+    "score": 26,
+    "why": [
+     "Student or alum, no employer on file",
+     "Three or more facts already on file"
+    ]
+   },
+   {
+    "name": "Aeriel Skinner",
+    "pid": "askinnerusa",
+    "score": 15,
+    "why": [
+     "Three or more facts already on file"
+    ]
+   },
+   {
+    "name": "Aidan Daniels",
+    "pid": "aidantruth",
+    "score": 15,
+    "why": [
+     "Three or more facts already on file"
+    ]
+   },
+   {
+    "name": "Alan K Daniels",
+    "pid": "sf:alan-k-daniels",
+    "score": 15,
+    "why": [
+     "Three or more facts already on file"
+    ]
+   },
+   {
+    "name": "Abby Stiles",
+    "pid": "abbystiles_",
+    "score": 13,
+    "why": [
+     "Three or more facts already on file"
+    ]
+   },
+   {
+    "name": "Acacia White",
+    "pid": "sf:acacia-white",
+    "score": 13,
+    "why": [
+     "Three or more facts already on file"
+    ]
+   },
+   {
+    "name": "Aaron Cote",
+    "pid": "sf:aaron-cote",
+    "score": 10,
+    "why": []
+   },
+   {
+    "name": "Abigail Daniels",
+    "pid": "abbydaniels03",
+    "score": 8,
+    "why": []
+   },
+   {
+    "name": "Aaron Daniels",
+    "pid": "aaronjdaniels",
+    "score": 7,
+    "why": [
+     "Student or alum, no employer on file",
+     "Three or more facts already on file"
+    ]
+   }
+  ],
+  "expected_per_run": 8,
+  "holdout": {
+   "train_checks": 150,
+   "test_checks": 150,
+   "test_findings": 6,
+   "top_rate": 0.053,
+   "rest_rate": 0.027,
+   "note": "Fitted on the runs through Oct 26, then tested on the 150 later checks it had never seen."
+  },
+  "collecting": false
+ },
+ "pairs": {
+  "question": "Which profiles might secretly be the same person?",
+  "headline": "6 candidate pairs scored worth a look. The scorer never merges anything — it ranks, shows its reasons, and you rule.",
+  "candidates": [
+   {
+    "a": "Haddon Brown",
+    "a_pid": "spurgeonfiddle",
+    "b": "Hudson Brown",
+    "b_pid": "sf:hudson-brown",
+    "score": 46,
+    "reasons": [
+     "Same last name, and first names that match or nearly match.",
+     "Same church: Christian Fellowship Center.",
+     "Both are linked to Baxter Brown.",
+     "Both are linked to Esther Brown.",
+     "Both are linked to Susan Brown."
+    ]
+   },
+   {
+    "a": "Darlene Sinclair",
+    "a_pid": "darlenesinclair3643",
+    "b": "Merrick Sinclair",
+    "b_pid": "mr_writers_block",
+    "score": 40,
+    "reasons": [
+     "Same last name.",
+     "Same school: SUNY Potsdam.",
+     "Same church: Christian Fellowship Center.",
+     "Both are linked to Brietta Paladin.",
+     "Both are linked to Jamie Sinclair.",
+     "Both are linked to Rick Sinclair."
+    ]
+   },
+   {
+    "a": "Bronwyn Paladin",
+    "a_pid": "bronwynpaladin",
+    "b": "Gabe Paladin",
+    "b_pid": "gabepaladin",
+    "score": 38,
+    "reasons": [
+     "Same last name.",
+     "Same employer: Park Bros.",
+     "Same church: Christian Fellowship Center.",
+     "Both are linked to Brietta Paladin.",
+     "Both are linked to Daniel Paladin."
+    ]
+   },
+   {
+    "a": "Avery Criscitello",
+    "a_pid": "cloutlord_420",
+    "b": "Emily Criscitello",
+    "b_pid": "ct:emily criscitello",
+    "score": 36,
+    "reasons": [
+     "Same last name.",
+     "Same employer: From the Heart Cabinetry.",
+     "Both are linked to Colby Criscitello.",
+     "Both are linked to Eric Criscitello.",
+     "Both are linked to Libby Criscitello."
+    ]
+   },
+   {
+    "a": "Avery Criscitello",
+    "a_pid": "cloutlord_420",
+    "b": "Timothy Criscitello",
+    "b_pid": "tcriscitello",
+    "score": 36,
+    "reasons": [
+     "Same last name.",
+     "Same employer: From the Heart Cabinetry.",
+     "Both are linked to Colby Criscitello.",
+     "Both are linked to Emily Criscitello.",
+     "Both are linked to Eric Criscitello."
+    ]
+   },
+   {
+    "a": "Emily Criscitello",
+    "a_pid": "ct:emily criscitello",
+    "b": "Timothy Criscitello",
+    "b_pid": "tcriscitello",
+    "score": 36,
+    "reasons": [
+     "Same last name.",
+     "Same employer: From the Heart Cabinetry.",
+     "Both are linked to Avery Criscitello.",
+     "Both are linked to Colby Criscitello.",
+     "Both are linked to Eric Criscitello."
+    ]
+   }
+  ],
+  "ruled_apart": [
+   {
+    "a": "Maggie Jones",
+    "b": "Maggie Marceau",
+    "note": "Ruled two people: the shared phone number was an entry error."
+   },
+   {
+    "a": "Karle McCormick",
+    "b": "Kayle McCormick",
+    "note": "Ruled two people: twin sisters."
+   },
+   {
+    "a": "Maggie Lapinski",
+    "b": "Meg Lapinski",
+    "note": "Ruled two people: different people, similar names."
+   }
+  ],
+  "check": "Check: the three pairs already ruled as two people are excluded from the candidates by name, so the scorer can never re-serve them as open questions."
+ }
+}
