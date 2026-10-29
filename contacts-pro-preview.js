@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.32.0';
+var APP_VERSION = '3.33.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2152,8 +2152,36 @@ function ctxFrom(label, dis, i, from){
 }
 
 var renderTimer = 0;
+/* ---------- Living background (JD 2026-10-29) ----------
+   A fixed texture layer behind the glass: two soft scheme-tinted
+   light fields over a faint survey grid. The fields drift at a
+   fraction of the scroll (parallax), so the frosted cards read as
+   glass over something real. Drift only; reduced-motion opts out. */
+var BGFX = null;
+function bgInit(){
+  if(BGFX || !document.body) return;
+  var d = document.createElement('div');
+  d.id = 'bgfx'; d.setAttribute('aria-hidden', 'true');
+  d.innerHTML = '<div class="bgf b1"></div><div class="bgf b2"></div>';
+  document.body.insertBefore(d, document.body.firstChild);
+  BGFX = d;
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var tick = false;
+  function upd(){
+    tick = false;
+    var vw = document.getElementById('view');
+    var y = (vw && vw.scrollTop) || window.scrollY || 0;
+    BGFX.children[0].style.transform = 'translate3d(0,' + (y * -0.05) + 'px,0)';
+    BGFX.children[1].style.transform = 'translate3d(0,' + (y * -0.11) + 'px,0)';
+  }
+  function onScr(){ if(!tick){ tick = true; requestAnimationFrame(upd); } }
+  window.addEventListener('scroll', onScr, { passive:true });
+  var vw2 = document.getElementById('view');
+  if(vw2) vw2.addEventListener('scroll', onScr, { passive:true });
+}
 function render(){
   if(!D) return;
+  bgInit();
   cancelAnimationFrame(renderTimer);
   S.route = parseRoute();
   var v = $('#view'), n = S.route.name;
@@ -2270,13 +2298,15 @@ function pplSort(dis){
       phone: gv(e, 'phone'),
       email: gv(e, 'email').toLowerCase(),
       lastc: flexKey(gv(e, 'last_contact')) || 0,
-      firstc: flexKey(firstContactOf(e)) || 0
+      firstc: flexKey(firstContactOf(e)) || 0,
+      msgs: (msgFor(e) || {}).n || 0
     };
   });
   dis.sort(function(a, b){
     var ka = K[a], kb = K[b], r = 0;
     if(ts.k === 'tier') r = (ka.tier - kb.tier) * d;
     else if(ts.k === 'assoc') r = (ka.assoc - kb.assoc) * d;
+    else if(ts.k === 'msgs') r = (ka.msgs - kb.msgs) * d;
     else if(ts.k === 'years' || ts.k === 'close' || ts.k === 'lastc' || ts.k === 'firstc'){
       var na = ka[ts.k], nb = kb[ts.k];
       if(na && nb) r = (na - nb) * d; else if(na) r = -1; else if(nb) r = 1;
@@ -2551,7 +2581,7 @@ function tlRepaint(scope){
 /* People right column: filter shortcuts + counts by tier and group.
    Tucked until opened; S.ppl.side remembers an explicit open/close. */
 function viewPeople(v){
-  ptEditClose();
+  ptEditClose(); msgLoad();
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
   function chips(key, opts, cur){
     return '<div class="chips" role="group">' + opts.map(function(o){
@@ -2693,6 +2723,7 @@ var PT_ALL = [
   { k:'loc',      label:'Location on file' },
   { k:'orgs',     label:'Organizations' },
   { k:'assoc',    label:'Associates', num:true },
+  { k:'msgs',     label:'Correspondence', num:true },
   { k:'skills',   label:'Skills' },
   { k:'rel',      label:'Relationship' },
   { k:'close',    label:'Closeness' },
@@ -2704,8 +2735,8 @@ var PT_ALL = [
   { k:'lastc',    label:'Last contact', num:true },
   { k:'firstc',   label:'First contact', num:true }
 ];
-var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1, rel:1, lastc:1 };
-var PT_NUMDIR = { assoc:1, years:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
+var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, msgs:1, skills:1, rel:1, lastc:1 };
+var PT_NUMDIR = { assoc:1, msgs:1, years:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
 var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', close:'close', groups:'groups', years:'years', phone:'phone', email:'email' };
 var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
 var PT_SEED_ORGS = {
@@ -2728,6 +2759,10 @@ var PTCELL = {
   loc: function(e){ return esc(ptLocVal(e)); },
   orgs: function(e){ var o = orgsOf(e); return '<span class="clip" title="' + esc(o.join(', ')) + '">' + esc(o.slice(0, 2).join(', ')) + '</span>'; },
   assoc: function(e){ return String(knownAssociates(e).length); },
+  /* Correspondence (JD 2026-10-29): one standard unit everywhere —
+     the exported iMessage thread's message count. Blank until an
+     export exists for the person; never an events count. */
+  msgs: function(e){ var mf = msgFor(e); return mf ? '<span class="ptmsg">' + ic('mail', 13) + mf.n + '</span>' : ''; },
   skills: function(e){ var s = tagList(gv(e, 'specialty')); return '<span class="clip" title="' + esc(s.join(', ')) + '">' + esc(s.slice(0, 2).join(', ')) + '</span>'; },
   rel: function(e){ var s = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · '); return '<span class="clip" title="' + esc(s) + '">' + esc(s) + '</span>'; },
   close: function(e){ return esc(cap(gv(e, 'closeness'))); },
@@ -2759,6 +2794,12 @@ function ptCols(){
     store('ncc_pt_rel_v1', '1');
     store('ncc_pt_cols', JSON.stringify(out));
   }
+  /* Same one-time turn-on for the Correspondence column (V3.33.0). */
+  if(!store('ncc_pt_msgs_v1')){
+    out.forEach(function(c){ if(c.k === 'msgs') c.on = true; });
+    store('ncc_pt_msgs_v1', '1');
+    store('ncc_pt_cols', JSON.stringify(out));
+  }
   PTC = out;
   return out;
 }
@@ -2768,7 +2809,7 @@ function ptVisibleCols(){ return ptCols().filter(function(c){ return c.on; }).ma
    table-layout:fixed at 100% width, so these are proportions, not pixels —
    any visible set is rescaled to fill the row and nothing can push the
    table wider than its region. */
-var PT_W = { name:19, tier:10, loc:12, orgs:14, assoc:8, skills:12, rel:11, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:13, firstc:12 };
+var PT_W = { name:19, tier:10, loc:12, orgs:14, assoc:8, msgs:9, skills:12, rel:11, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:13, firstc:12 };
 function ptColgroupHTML(){ return '<colgroup>' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
 function ptSaveCols(){ store('ncc_pt_cols', JSON.stringify(ptCols())); }
 function ptColsSheet(){
@@ -3386,7 +3427,7 @@ function paintProfile(di){
   var hidden = SECS.filter(function(s){ return s.id !== 'business' && !secShown(e, s.id); });
   var legacy = ['relationship_type', 'sources', 'mentions'].filter(function(k){ return String(gv(e, k)).trim(); });
   $('#p-add').innerHTML = (hidden.length ? '<div class="addrow"><span>Add to this profile</span>' + hidden.map(function(s){
-      return '<button type="button" class="btn ghost sm" data-act="secedit" data-sec="' + s.id + '">' + ic('plus', 13) + esc(s.id === 'persona' ? 'Rate' : s.t) + '</button>'; }).join('') + '</div>' : '') +
+      return '<button type="button" class="btn ghost sm" data-act="secedit" data-sec="' + s.id + '">' + ic('plus', 13) + esc(s.t) + '</button>'; }).join('') + '</div>' : '') +
     (legacy.length ? '<details class="legacy"><summary>Legacy notes (read only)</summary>' + legacy.map(function(k){ return '<div><b>' + esc({ relationship_type:'Type', sources:'Sources', mentions:'Mentions' }[k]) + '</b><p>' + esc(gv(e, k)) + '</p></div>'; }).join('') + '</details>' : '');
   profWireAc();
 }
@@ -3416,12 +3457,17 @@ function heroHTML(di){
     return '<span class="dbadge">' + ic('cap', 12) + '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits ? '<i>' + esc(bits) + '</i>' : '') + '</span>';
   }).join('');
   var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
+  /* Condensed hero (JD 2026-10-29): location, relationship/context and
+     last contact share ONE meta line; degree/cert badges and the score
+     share ONE row under it. No value gets a row of its own. */
+  var meta = [];
+  if(loc) meta.push('<span class="hm-loc">' + ic('pin', 13) + esc(loc) + '</span>');
+  meta.push('<span>' + esc(sub || 'Not yet classified') + '</span>');
+  if(lcLabel(e)) meta.push('<span class="hm-lc">' + (lcOnline(e) ? lcGlobe(12) : '') + 'Last known contact <b>' + esc(lcLabel(e)) + '</b></span>');
+  var brow = ds + cs + scoreBadgeHTML(di);
   return avatar(e, 'xl') + '<div class="hmain"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
-    (loc ? '<p class="hloc">' + ic('pin', 13) + esc(loc) + '</p>' : '') +
-    '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
-    (lcLabel(e) ? '<p class="hlc">' + (lcOnline(e) ? lcGlobe(12) : '') + '<span>Last known contact <b>' + esc(lcLabel(e)) + '</b></span></p>' : '') +
-    ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') +
-    '<div class="hscore">' + scoreBadgeHTML(di) + '</div></div>' + phHeroHTML(e);
+    '<p class="hmeta">' + meta.join('<span class="hsep">·</span>') + '</p>' +
+    (brow ? '<div class="hrow">' + brow + '</div>' : '') + '</div>' + phHeroHTML(e);
 }
 /* ---------- Brief derivations (JD 2026-10-28; profile card retired
    V3.31.0, JD 2026-10-29) ----------
@@ -3570,20 +3616,29 @@ function secView(di, id){
   var e = D.directory[di];
   if(id === 'identity'){
     var rows = [];
-    function r(icn, lab, val, note){ if(val) rows.push('<div class="irow"><span class="il">' + ic(icn, 15) + lab + '</span><div class="iv">' + val + (note ? ' <small class="derived">' + note + '</small>' : '') + '</div></div>'); }
+    function r(icn, lab, val, note, half){ if(val) rows.push({ icn:icn, lab:lab, val:val, note:note, half:!!half }); }
     if(effHandle(e)) r('ig', 'Instagram', '<a class="iglink ' + (e.relation === 'mutual' ? 'mutual' : 'oneway') + '" href="' + igURL(effHandle(e)) + '" target="_blank" rel="noopener">@' + esc(effHandle(e)) + '</a>', e.relation ? RELN[e.relation] : '');
     if(e.fb_url) r('fb', 'Facebook', '<a class="iglink" href="' + esc(e.fb_url) + '" target="_blank" rel="noopener">' + (e.fb_handle ? '@' + esc(e.fb_handle) : 'Profile') + '</a>');
     if((e.snap_handles || []).length) r('snap', 'Snapchat', e.snap_handles.map(function(h){ return '<a class="iglink" href="https://www.snapchat.com/add/' + encodeURIComponent(h) + '" target="_blank" rel="noopener">@' + esc(h) + '</a>'; }).join(' '), e.snap_since ? 'online connection since ' + e.snap_since : '');
-    if(personIsAka(e) && gv(e, 'also_known_as')) r('user', 'Also known as', '<b>' + esc(gv(e, 'also_known_as')) + '</b>');
-    if(gv(e, 'location_on_file')) r('pin', 'Location on file', esc(ptNormLoc(gv(e, 'location_on_file'))));
+    if(personIsAka(e) && gv(e, 'also_known_as')) r('user', 'Also known as', '<b>' + esc(gv(e, 'also_known_as')) + '</b>', '', true);
+    if(gv(e, 'location_on_file')) r('pin', 'Location', esc(ptNormLoc(gv(e, 'location_on_file'))), '', true);
     var ph = String(gv(e, 'phone')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
-    if(ph.length) r('phone', 'Phone', ph.map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join(' '));
+    if(ph.length) r('phone', 'Phone', ph.map(function(x){ var f = fmtPhone(x); return '<a href="tel:' + esc(f.replace(/[^\d+]/g, '')) + '">' + esc(f) + '</a>'; }).join(' '), '', true);
     var em = String(gv(e, 'email')).split(',').map(function(x){ return x.trim(); }).filter(Boolean);
-    if(em.length) r('mail', 'Email', em.map(function(x){ return '<a href="mailto:' + esc(x) + '">' + esc(x) + '</a>'; }).join(' '), 'on file');
-    r('pin', 'Lives in', esc(e.city || ''), 'from Facebook');
-    r('pin', 'From', esc(e.hometown || ''), 'from Facebook');
-    if((e.languages || []).length) r('book', 'Languages', e.languages.map(esc).join(', '), 'from subject file');
-    return rows.length ? '<div class="irows">' + rows.join('') + '</div>' : '<p class="dim">No contact details yet.</p>' + emptyPrompt(di, id, 'Add a phone number');
+    if(em.length) r('mail', 'Email', em.map(function(x){ return '<a href="mailto:' + esc(x) + '">' + esc(x) + '</a>'; }).join(' '), 'on file', true);
+    r('pin', 'Lives in', esc(e.city || ''), 'from Facebook', true);
+    r('pin', 'From', esc(e.hometown || ''), 'from Facebook', true);
+    if((e.languages || []).length) r('book', 'Languages', e.languages.map(esc).join(', '), 'from subject file', true);
+    /* Condensed (JD 2026-10-29): short facts pair up two per row
+       (.ipair); link rows keep a full row of their own. */
+    function ifact(o, cls){ return '<div class="' + cls + '"><span class="il">' + ic(o.icn, 15) + o.lab + '</span><div class="iv">' + o.val + (o.note ? ' <small class="derived">' + o.note + '</small>' : '') + '</div></div>'; }
+    var out = '', ri = 0;
+    while(ri < rows.length){
+      if(rows[ri].half && rows[ri + 1] && rows[ri + 1].half){ out += '<div class="ipair">' + ifact(rows[ri], 'ihalf') + ifact(rows[ri + 1], 'ihalf') + '</div>'; ri += 2; }
+      else if(rows[ri].half){ out += '<div class="ipair">' + ifact(rows[ri], 'ihalf') + '<div class="ihalf"></div></div>'; ri += 1; }
+      else { out += ifact(rows[ri], 'irow'); ri += 1; }
+    }
+    return rows.length ? '<div class="irows">' + out + '</div>' : '<p class="dim">No contact details yet.</p>' + emptyPrompt(di, id, 'Add a phone number');
   }
   if(id === 'business'){
     /* Business Owner (JD 2026-10-27): overview cards from the Business
@@ -6263,8 +6318,10 @@ function repaintForData(kind){
   if(kind === 'msg'){
     /* Correspondence data landing mid-profile: rebuild the profile so
        the Files section appears, unless JD is mid-edit (the entry
-       shows on the next natural render instead). */
+       shows on the next natural render instead). On People it fills
+       the Correspondence column in place. */
     if($('#p-hero') && !Object.keys(S.prof.edit || {}).some(function(k){ return S.prof.edit[k]; })) render();
+    else if(r === 'people' && $('#plist')) paintPeople();
     return;
   }
   if(kind === 'ph'){
@@ -6587,9 +6644,23 @@ function openCorrespondence(di){
     if(day !== lastDay){ lastDay = day; rows += '<div class="msg-day">' + esc(msgDayLabel(day)) + '</div>'; }
     rows += '<div class="msg-row ' + (m[1] === 'o' ? 'out' : 'in') + '"><div class="msg-bub">' + esc(m[2]) + '</div><time>' + esc(msgTimeLabel(m[0])) + '</time></div>';
   });
+  /* Narrative form (JD 2026-10-29): the thread's filed report — the
+     imessage-report events already on the profile, in date order.
+     The verbatim thread stays one tap away, untouched. Threads whose
+     filing produced no narrative events open straight to Verbatim. */
+  var narr = (e.events || []).filter(function(ev){ return ev && ev.src === 'imessage-report' && ev.date; })
+    .sort(function(a, b){ return (flexKey(a.date) || 0) - (flexKey(b.date) || 0); });
   var head = '<p class="dim msg-head">iMessage thread · ' + mf.n + ' messages · ' + esc(msgSpan(mf)) +
     (mf.group ? '<br><span class="msg-warn">This thread may include group messages. Received messages are not guaranteed to be from ' + esc(name.split(' ')[0]) + ' alone.</span>' : '') + '</p>';
-  openSheet('Correspondence — ' + name, head + '<div class="msg-list">' + rows + '</div>', { wide:true, focus:false });
+  var verb = '<div class="msg-list" id="msg-verb"' + (narr.length ? ' hidden' : '') + '>' + rows + '</div>';
+  var tabs = '', narrDiv = '';
+  if(narr.length){
+    tabs = '<div class="msgtabs" role="group" aria-label="Correspondence form"><button type="button" class="msgtab on" data-act="msgtab" data-v="narr">Narrative</button><button type="button" class="msgtab" data-act="msgtab" data-v="verb">Verbatim</button></div>';
+    narrDiv = '<div id="msg-narr"><div class="tl msg-tl">' + narr.map(function(ev){
+      return '<div class="ev"><i></i><time>' + esc(evDate(ev.date)) + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
+    }).join('') + '</div></div>';
+  }
+  openSheet('Correspondence — ' + name, head + tabs + narrDiv + verb, { wide:true, focus:false });
 }
 
 function phDiByName(name){
@@ -9775,6 +9846,13 @@ function onClick(ev){
       txn('Attach file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fa) }); }); repaintSec('files'); break;
     }
     case 'msgopen': openCorrespondence(+el.getAttribute('data-di')); break;
+    case 'msgtab': {
+      var mv = el.getAttribute('data-v'), mn = $('#msg-narr'), mb = $('#msg-verb');
+      if(mn) mn.hidden = mv !== 'narr';
+      if(mb) mb.hidden = mv !== 'verb';
+      $$('.msgtab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === mv); });
+      break;
+    }
     case 'fdel': { var fl = (D.directory[S.prof.di].files || []).slice(), fi = +el.getAttribute('data-i'); if(!fl[fi] || !confirm('Remove this attachment?')) break; fl.splice(fi, 1); txn('Remove file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fl) }); }); repaintSec('files'); break; }
     case 'degedit': S.prof.degEdit = +el.getAttribute('data-i'); repaintSec('background'); break;
     case 'degcancel': S.prof.degEdit = null; repaintSec('background'); break;
