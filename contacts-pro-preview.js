@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.27.0';
+var APP_VERSION = '3.28.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2463,7 +2463,7 @@ var PT_ALL = [
   { k:'tier',     label:'Tier' },
   { k:'loc',      label:'Location on file' },
   { k:'orgs',     label:'Organizations' },
-  { k:'assoc',    label:'Known associates', num:true },
+  { k:'assoc',    label:'Associates', num:true },
   { k:'skills',   label:'Skills' },
   { k:'rel',      label:'Relationship' },
   { k:'close',    label:'Closeness' },
@@ -2475,7 +2475,7 @@ var PT_ALL = [
   { k:'lastc',    label:'Last contact', num:true },
   { k:'firstc',   label:'First contact', num:true }
 ];
-var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1, lastc:1 };
+var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1, rel:1, lastc:1 };
 var PT_NUMDIR = { assoc:1, years:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
 var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', close:'close', groups:'groups', years:'years', phone:'phone', email:'email' };
 var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
@@ -2490,15 +2490,17 @@ function ptHandle(e){ return effHandle(e); }
 function ptLocVal(e){ return gv(e, 'location_on_file') || gv(e, 'city') || gv(e, 'hometown') || ''; }
 var PTCELL = {
   name: function(e){
-    var sub = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
-    return '<div class="cname-in">' + avatar(e, 'md') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span></div>';
+    /* JD 2026-10-28: names only — the relationship/handle sub-line
+       moved to its own Relationship column, so rows are one line
+       and thin. */
+    return '<div class="cname-in">' + avatar(e, 'sm') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '</span></div>';
   },
   tier: function(e){ return ptierCell(e); },
   loc: function(e){ return esc(ptLocVal(e)); },
   orgs: function(e){ var o = orgsOf(e); return '<span class="clip" title="' + esc(o.join(', ')) + '">' + esc(o.slice(0, 2).join(', ')) + '</span>'; },
   assoc: function(e){ return String(knownAssociates(e).length); },
   skills: function(e){ var s = tagList(gv(e, 'specialty')); return '<span class="clip" title="' + esc(s.join(', ')) + '">' + esc(s.slice(0, 2).join(', ')) + '</span>'; },
-  rel: function(e){ return esc(cap(gv(e, 'relationship'))); },
+  rel: function(e){ var s = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · '); return '<span class="clip" title="' + esc(s) + '">' + esc(s) + '</span>'; },
   close: function(e){ return esc(cap(gv(e, 'closeness'))); },
   handle: function(e){ var h = ptHandle(e); return h ? '@' + esc(h) : ''; },
   groups: function(e){ var g = personGroups(e); return '<span class="clip" title="' + esc(g.join(', ')) + '">' + esc(g.slice(0, 2).join(', ')) + '</span>'; },
@@ -2520,6 +2522,14 @@ function ptCols(){
   });
   PT_ALL.forEach(function(c){ if(!seen[c.k]) out.push({ k:c.k, on:!!PT_DEF_ON[c.k] }); });
   if(!out.some(function(c){ return c.on; })) out[0].on = true;
+  /* JD 2026-10-28: the Relationship column turns ON once for saved
+     column sets too (it carries the sub-line the Name cell dropped);
+     the Columns sheet can hide it again afterwards. */
+  if(!store('ncc_pt_rel_v1')){
+    out.forEach(function(c){ if(c.k === 'rel') c.on = true; });
+    store('ncc_pt_rel_v1', '1');
+    store('ncc_pt_cols', JSON.stringify(out));
+  }
   PTC = out;
   return out;
 }
@@ -2529,7 +2539,7 @@ function ptVisibleCols(){ return ptCols().filter(function(c){ return c.on; }).ma
    table-layout:fixed at 100% width, so these are proportions, not pixels —
    any visible set is rescaled to fill the row and nothing can push the
    table wider than its region. */
-var PT_W = { name:21, tier:10, loc:12, orgs:15, assoc:7, skills:13, rel:9, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:14, firstc:13 };
+var PT_W = { name:19, tier:10, loc:12, orgs:14, assoc:8, skills:12, rel:11, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:13, firstc:12 };
 function ptColgroupHTML(){ return '<colgroup>' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
 function ptSaveCols(){ store('ncc_pt_cols', JSON.stringify(ptCols())); }
 function ptColsSheet(){
@@ -2544,7 +2554,7 @@ function ptColsSheet(){
         '<button type="button" class="btn ghost sm' + (c.on ? ' on' : '') + '" data-act="ptvis" data-k="' + c.k + '"' + (c.on && onCount === 1 ? ' disabled' : '') + '>' + (c.on ? 'Shown' : 'Hidden') + '</button>' +
         '</span></div>';
     }).join('') +
-    '<p class="note">Tip: Shift-click any cell (except Known associates, Handle, Last contact and First contact) to edit it in place. On a touch screen, press and hold the cell.</p>', { focus:false });
+    '<p class="note">Tip: Shift-click any cell (except Associates, Handle, Last contact and First contact) to edit it in place. On a touch screen, press and hold the cell.</p>', { focus:false });
 }
 /* ----- autocomplete: live directory values first, seeded county values added ----- */
 function ptDedupe(list){
@@ -6294,7 +6304,7 @@ function phReview(){
   try{ var loc = JSON.parse(store('ncc_photos_review_v1') || '{}') || {}; Object.keys(loc).forEach(function(k){ out[k] = loc[k]; }); }catch(x){}
   return out;
 }
-function phSetReview(name, val){
+function phSetVerdict(name, val, reason){
   if(!name) return;
   var adv = null;
   if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){
@@ -6305,11 +6315,14 @@ function phSetReview(name, val){
   var k = String(name).toLowerCase();
   if(val) loc[k] = val; else delete loc[k];
   store('ncc_photos_review_v1', JSON.stringify(loc));
-  phSyncPerson(name, val || '', (val && val !== 'bad') ? '' : null);
-  if(val !== 'bad'){ var bm2 = {}; try{ bm2 = JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){} if(bm2[k]){ delete bm2[k]; store('ncc_photos_badreason_v1', JSON.stringify(bm2)); } }
+  var bm2 = {}; try{ bm2 = JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){}
+  if(reason !== undefined){ if(reason) bm2[k] = reason; else delete bm2[k]; store('ncc_photos_badreason_v1', JSON.stringify(bm2)); }
+  else if(!val || val === 'confirmed'){ if(bm2[k]){ delete bm2[k]; store('ncc_photos_badreason_v1', JSON.stringify(bm2)); } reason = ''; }
+  phSyncPerson(name, val || '', reason === undefined ? null : (reason || ''));
   if(S.route.name === 'photos') viewPhotos($('#view'));
   else if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){ if(adv && val && val !== 'bad') phaState().cur = adv; viewAudit($('#view')); }
 }
+function phSetReview(name, val){ phSetVerdict(name, val, undefined); }
 
 /* ---------- profile photos: framing store + hero + editor (JD 2026-10-22) ---------- */
 var PH_BY_NAME = null;
@@ -6534,7 +6547,20 @@ function phaQueue(f){
   q.sort(function(a, b){ return (rank[a.status] - rank[b.status]) || a.name.localeCompare(b.name); });
   return q;
 }
-var PHA_REASONS = [ ['younger', 'Younger photo'], ['dog', 'Dog'], ['object', 'Object / thing'], ['landscape', 'Landscape'], ['group', 'Group shot'], ['blurry', 'Blurry / low quality'], ['other', 'Other'] ];
+/* Verdict taxonomy (JD 2026-10-28): a plain "Reject" taught the
+   system nothing. Every negative verdict now carries WHY, and the
+   why decides what happens next —
+   · Wrong person: the candidate is discarded, the hunt for a real
+     photo of them continues.
+   · No person (pet / object / landscape / empty scene): the lead
+     is a dead end, recorded on the profile so future sweeps know
+     this person has no photo from that lead and never re-serve it.
+   · Bad photo: it IS them, just unusable (younger / group / blurry)
+     — keep looking for a better one.
+   Reasons persist through photo_bad_reason exactly like the bad
+   reasons always have. */
+var PHA_REASONS = [ ['younger', 'Younger photo'], ['group', 'Group shot'], ['blurry', 'Blurry / low quality'], ['other', 'Other'] ];
+var PHA_REJ_REASONS = [ ['wrong-person', 'Wrong person'], ['no-person', 'No person in it'], ['pet', 'Pet'], ['object', 'Object / logo'], ['landscape', 'Landscape / scene'] ];
 function phBadReasons(){
   var out = {};
   if(D) D.directory.forEach(function(e){ var v = String(gv(e, 'photo_bad_reason') || '').trim(); if(v) out[String(dispName(e)).toLowerCase()] = v; });
@@ -6542,7 +6568,8 @@ function phBadReasons(){
   return out;
 }
 function phBadReason(name){ return phBadReasons()[String(name || '').toLowerCase()] || ''; }
-function phReasonLabel(r){ for(var i = 0; i < PHA_REASONS.length; i++) if(PHA_REASONS[i][0] === r) return PHA_REASONS[i][1]; return ''; }
+function phReasonLabel(r){ var all = PHA_REASONS.concat(PHA_REJ_REASONS); for(var i = 0; i < all.length; i++) if(all[i][0] === r) return all[i][1]; return ''; }
+function phIsNoPerson(r){ return r === 'no-person' || r === 'pet' || r === 'object' || r === 'landscape'; }
 function phSetBadReason(name, r){
   var m = {}; try{ m = JSON.parse(store('ncc_photos_badreason_v1') || '{}') || {}; }catch(x){}
   var k = String(name).toLowerCase();
@@ -6574,14 +6601,14 @@ function phaRender(){
   if(!p && st.cur){ var ap = phaAll().filter(function(x){ return x.name === st.cur; })[0]; if(ap) p = ap; }
   if(!p && q.length){ st.cur = q[0].name; p = q[0]; idx = 0; }
   var chips = filters.map(function(f){ return '<button type="button" class="pha-chip' + (st.filter === f[0] ? ' on' : '') + '" data-act="phafilter" data-f="' + f[0] + '">' + f[1] + ' <b>' + f[2] + '</b></button>'; }).join('');
-  var list = q.map(function(x){ var r = phaRev(x); var tag = r === 'bad' ? 'BAD' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : r === 'confirmed' ? 'OK' : r === 'rejected' ? 'REJ' : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P'; return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span><em>' + tag + '</em></button>'; }).join('');
+  var list = q.map(function(x){ var r = phaRev(x); var tag = r === 'bad' ? 'BAD' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : r === 'confirmed' ? 'OK' : r === 'rejected' ? 'REJ' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P'; return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span><em>' + tag + '</em></button>'; }).join('');
   var view, main;
   if(p){
     var di = BYN[String(p.name).toLowerCase()]; if(di == null) di = null;
     var e = di != null ? D.directory[di] : null;
     var rev = phaRev(p);
     var reason = phBadReason(p.name);
-    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO' + (reason ? ' — ' + esc(phReasonLabel(reason)).toUpperCase() : '') + '</span>' : rev === 'confirmed' ? '<span class="phbadge conf">CONFIRMED BY YOU</span>' : rev === 'rejected' ? '<span class="phbadge poss">REJECTED</span>' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
+    var badge = rev === 'bad' ? '<span class="phbadge bad">BAD PHOTO' + (reason ? ' — ' + esc(phReasonLabel(reason)).toUpperCase() : '') + '</span>' : rev === 'confirmed' ? '<span class="phbadge conf">CONFIRMED BY YOU</span>' : rev === 'rejected' ? '<span class="phbadge poss">REJECTED' + (reason ? ' — ' + esc(phReasonLabel(reason)).toUpperCase() : '') + '</span>' : p.status === 'confirmed' ? '<span class="phbadge conf">CONFIRMED</span>' : p.status === 'likely' ? '<span class="phbadge lik">LIKELY</span>' : '<span class="phbadge poss">POSSIBLE</span>';
     var curUrl = phFrameFor(p.name, p).url || p.photo_url;
     var thumbs = (p.also && p.also.length) ? '<div class="pha-alts">' + [p.photo_url].concat(p.also.map(function(a){ return a.url; })).map(function(u){ return '<button type="button" class="pha-alt' + (u === curUrl ? ' on' : '') + '" data-act="phaalt" data-pname="' + esc(p.name) + '" data-u="' + esc(u) + '"><img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></button>'; }).join('') + '</div>' : '';
     view = '<div class="pha-view"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs +
@@ -6591,18 +6618,22 @@ function phaRender(){
       (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
       '</div>';
     var stateLine = rev === 'confirmed' ? '<span class="phok">' + ic('check', 14) + ' Confirmed by you</span>'
-      : rev === 'bad' ? '<span class="phok bad">Bad photo &mdash; keep looking for a better one</span>'
+      : rev === 'bad' ? '<span class="phok bad">Bad photo &mdash; it is them, but unusable. Keep looking for a better one.</span>'
+      : rev === 'rejected' && reason === 'wrong-person' ? '<span class="phok bad">Wrong person &mdash; discarded. We keep looking for a real photo of them.</span>'
+      : rev === 'rejected' && phIsNoPerson(reason) ? '<span class="phok bad">Not a photo of them &mdash; noted on their record. They stay on the needs-photo list and this lead won&rsquo;t be served again.</span>'
       : rev === 'rejected' ? '<span class="phok bad">Rejected by you</span>'
       : '<span class="dim">No verdict yet</span>';
-    var reasonRow = rev === 'bad' ? '<div class="pha-reasons"><span class="pha-rlabel">Why bad:</span>' + PHA_REASONS.map(function(r){ return '<button type="button" class="pha-rchip' + (reason === r[0] ? ' on' : '') + '" data-act="phareason" data-pname="' + esc(p.name) + '" data-r="' + r[0] + '">' + r[1] + '</button>'; }).join('') + '</div>' : '';
+    var reasonRow = rev === 'bad' ? '<div class="pha-reasons"><span class="pha-rlabel">Why bad:</span>' + PHA_REASONS.map(function(r){ return '<button type="button" class="pha-rchip' + (reason === r[0] ? ' on' : '') + '" data-act="phareason" data-pname="' + esc(p.name) + '" data-r="' + r[0] + '">' + r[1] + '</button>'; }).join('') + '</div>'
+      : rev === 'rejected' ? '<div class="pha-reasons"><span class="pha-rlabel">Why rejected:</span>' + PHA_REJ_REASONS.map(function(r){ return '<button type="button" class="pha-rchip' + (reason === r[0] ? ' on' : '') + '" data-act="phareason" data-pname="' + esc(p.name) + '" data-r="' + r[0] + '">' + r[1] + '</button>'; }).join('') + '</div>' : '';
     var controls = '<div class="pha-controls">' +
       '<div class="pha-crow">' + stateLine + '<span class="sp"></span>' +
       '<button type="button" class="btn ghost sm" data-act="phanav" data-d="-1">&larr; Prev</button>' +
       '<button type="button" class="btn ghost sm" data-act="phanav" data-d="1">Skip &rarr;</button></div>' +
       '<div class="pha-crow big">' +
       '<button type="button" class="btn primary pha-big" data-act="phconfirm" data-pname="' + esc(p.name) + '">' + ic('check', 15) + ' Confirm</button>' +
+      '<button type="button" class="btn pha-big' + (rev === 'rejected' && reason === 'wrong-person' ? ' onbad' : '') + '" data-act="phwrong" data-pname="' + esc(p.name) + '">Wrong person</button>' +
       '<button type="button" class="btn pha-big' + (rev === 'bad' ? ' onbad' : '') + '" data-act="phbad" data-pname="' + esc(p.name) + '">Bad photo</button>' +
-      '<button type="button" class="btn ghost pha-big" data-act="phreject" data-pname="' + esc(p.name) + '">' + ic('trash', 15) + ' Reject</button></div>' +
+      '<button type="button" class="btn ghost pha-big' + (rev === 'rejected' && phIsNoPerson(reason) ? ' onbad' : '') + '" data-act="phnoperson" data-pname="' + esc(p.name) + '">No person</button></div>' +
       reasonRow +
       '<div class="pha-crow">' +
       (rev ? '<button type="button" class="btn ghost sm" data-act="phareaudit" data-pname="' + esc(p.name) + '">Re-audit</button><button type="button" class="btn ghost sm" data-act="phundo" data-pname="' + esc(p.name) + '">Undo verdict</button>' : '') +
@@ -6635,10 +6666,12 @@ function phaKeys(){
     else if(k === 'ArrowLeft'){ phaNav(-1); ev.preventDefault(); }
     else if(k === 'c' || k === 'C') phSetReview(st.cur, 'confirmed');
     else if(k === 'b' || k === 'B') phSetReview(st.cur, 'bad');
-    else if(k === 'x' || k === 'X') phSetReview(st.cur, 'rejected');
+    else if(k === 'w' || k === 'W') phSetVerdict(st.cur, 'rejected', 'wrong-person');
+    else if(k === 'n' || k === 'N') phSetVerdict(st.cur, 'rejected', 'no-person');
+    else if(k === 'x' || k === 'X') phSetVerdict(st.cur, 'rejected', 'wrong-person');
     else if(k === 'u' || k === 'U') phSetReview(st.cur, null);
     else if(k === 'a' || k === 'A') phEditor(st.cur);
-    else if(k >= '1' && k <= '7'){ var cp = (phIndex() || {})[st.cur]; if(cp && phaRev(cp) === 'bad') phSetBadReason(st.cur, PHA_REASONS[+k - 1][0]); }
+    else if(k >= '1' && k <= '7'){ var cp = (phIndex() || {})[st.cur]; if(cp){ var rv = phaRev(cp); var lst = rv === 'bad' ? PHA_REASONS : rv === 'rejected' ? PHA_REJ_REASONS : null; if(lst && lst[+k - 1]) phSetBadReason(st.cur, lst[+k - 1][0]); } }
   });
 }
 
@@ -8458,7 +8491,7 @@ function audModeBarHTML(){
     phLoad();
     var pc = phaCounts();
     return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> to review</span><span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
-      '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; B bad photo &middot; X reject &middot; U undo &middot; A adjust &middot; 1&ndash;7 why bad</span></div>';
+      '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; W wrong person &middot; B bad photo &middot; N no person &middot; U undo &middot; A adjust &middot; 1&ndash;7 reason</span></div>';
   }
   return '<div class="aud-modebar"><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button></div>';
 }
@@ -9249,7 +9282,9 @@ function onClick(ev){
     case 'phisave': phiSaveOrder(); break;
     case 'heroph': phHeroStep(el.getAttribute('data-pname'), parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'herodot': (function(){ var idx2 = phIndex(), pp = idx2 && idx2[el.getAttribute('data-pname')]; if(pp){ PH_HERO_IDX[String(pp.name).toLowerCase()] = parseInt(el.getAttribute('data-i'), 10) || 0; phHeroPaint(pp.name); } })(); break;
-    case 'phreject': phSetReview(el.getAttribute('data-pname'), 'rejected'); break;
+    case 'phreject': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'wrong-person'); break;
+    case 'phwrong': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'wrong-person'); break;
+    case 'phnoperson': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'no-person'); break;
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
     case 'phbad': phSetReview(el.getAttribute('data-pname'), 'bad'); break;
     case 'phfilt': PH_FILT = el.getAttribute('data-f') || 'all'; store('ncc_photos_filter_v1', PH_FILT); phPaintList(); break;
@@ -9998,12 +10033,11 @@ function viewSandbox(v){
    There is no rail: navigation lives on the home screen. SB state is
    module-level, so tool state survives entering and leaving. */
 function sbShell(inner){
-  var z = sbZoneOf(SB.tool);
-  return '<div class="sb-shell t-' + esc(SB.tool) + '"><header class="sb-top">' +
-    '<div class="sb-rail-top"><button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: tool, then Sandbox home, then the previous view">' + ic('chevl', 20) + '</button>' +
-    '<button type="button" class="ib" data-act="home" aria-label="Home" title="Home">' + ic('home', 20) + '</button><b>Sandbox</b></div>' +
-    (z ? '<span class="sb-zonechip">' + esc(z) + '</span>' : '<span class="sb-topsub">Look · Play · Fix</span>') +
-    '</header><div class="sb-body">' + sbNav() + '<div class="sb-canvas">' + inner + '</div></div></div>';
+  /* JD 2026-10-28: no separate Sandbox chrome anymore — the view
+     lives in the app's own frame (rail + top bar stay put), and the
+     tool nav is the in-page column. The old full-screen shell with
+     its own top bar made the Sandbox feel like a different app. */
+  return '<div class="sb-shell t-' + esc(SB.tool) + '"><div class="sb-body">' + sbNav() + '<div class="sb-canvas">' + inner + '</div></div></div>';
 }
 /* V3.13.0 — the Sandbox gets a real left column (JD: "still all
    concentrated to the center... I'm clicking on things like the Lab
@@ -12167,6 +12201,13 @@ function viewCouncil(v){
     '<div class="cnc-stat blu"><b>' + stagedEntries.length + '</b><span>Staged</span></div>' +
     '<div class="cnc-stat grn"><b>' + doneToday + '</b><span>Executed today</span></div>' +
     '</div></div>';
+  /* Activity pulse (JD 2026-10-28): the board must show what Luna
+     is actually doing, not just static text — the latest pass,
+     up top where the queue lives. */
+  var lastRun = (cn.runs || [])[0];
+  if(lastRun){
+    h += '<div class="cnc-pulse"><span class="cnc-pdot"></span><span>Latest pass &middot; <b>' + esc(lastRun.title || '') + '</b>' + (lastRun.outcome ? ' &mdash; ' + esc(lastRun.outcome) : '') + ' &middot; ' + esc(lastRun.date || '') + '</span></div>';
+  }
   if(stagedEntries.length){
     h += '<div class="cnc-queuebar"><span class="cnc-qlab">' + ic('check', 13) + ' Staged queue</span>' +
       '<span class="cnc-qitems">' + stagedEntries.map(function(e){ return esc(e.label); }).join(' · ') + '</span>' +
@@ -12185,14 +12226,15 @@ function viewCouncil(v){
     var r = (cn.roster || []).filter(function(x){ return x.key === key; })[0] || {};
     var es = ((cn.findings || {})[key] || []);
     var latest = es[0];
+    var fr = cnFieldReport(key, cn);
     h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
       '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' +
       '<span class="cnc-dstatus">' + esc(r.status || '') + '</span></div>' +
-      cnFieldReport(key, cn) +
-      '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
       (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest · ' + esc(latest.date || '') + '</div>' +
         '<b>' + esc(latest.title || '') + '</b><p>' + esc(latest.summary || '') + '</p></div>' : '<p class="sb-note">No findings yet.</p>') +
-      '<div class="cnc-druns">Last: ' + esc(r.last_run || '—') + ' · Next: ' + esc(r.next_run || '—') + '</div></article>';
+      '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
+      '<div class="cnc-druns">Last: ' + esc(r.last_run || '—') + ' · Next: ' + esc(r.next_run || '—') + '</div>' +
+      (fr ? '<details class="cnc-frd"><summary>Field report</summary>' + fr + '</details>' : '') + '</article>';
   });
   h += '</div></section>';
   /* ---- runs ---- */
