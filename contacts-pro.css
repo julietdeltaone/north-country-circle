@@ -3421,14 +3421,6 @@ html[data-mode="dark"] .page.people .ptable thead th{background:#0a0d12}
 /* Brief card (V3.24.0, question-fuel package): derived lines at the top
    of every profile. Labels are quiet; the Careful label takes the accent. */
 #p-brief:empty{display:none}
-.brief{margin:14px 0 4px}
-.brief .brow{display:flex;gap:14px;padding:6px 0;border-top:1px solid var(--line)}
-.brief .brow:first-child{border-top:none;padding-top:0}
-.brief .blab{flex:0 0 96px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);padding-top:3px}
-.brief .bval{font-size:13.5px;line-height:1.45;color:var(--txt)}
-.brief .bval a{color:var(--txt);text-decoration:underline;text-underline-offset:3px}
-.brief .bprov{color:var(--dim);font-size:11px;white-space:nowrap}
-.brief .bcare .blab{color:var(--acc)}
 
 /* ================================================================
    Design cleanup (JD 2026-10-28, V3.25.0): every page's top gets
@@ -3911,3 +3903,38 @@ body[data-mdl="1"] #tabs{display:none}
 body[data-mdl="1"] #app{grid-template-columns:1fr;height:100vh;height:100dvh;min-height:0}
 body[data-mdl="1"] #col{height:100vh;height:100dvh;display:flex;flex-direction:column;min-width:0}
 body[data-mdl="1"] #view{max-width:none;width:100%;margin:0;padding:0;flex:1;min-height:0;display:flex;overflow:hidden}
+
+/* ================================================================
+   V3.31.0 (JD 2026-10-29) — PROFILE CONDENSE. The Brief card is
+   retired (profiles are a synopsis-led informational packet again)
+   and the profile view packs tight per the standing consolidation
+   principle: deflated hero, tighter section rhythm, cards hug their
+   content instead of stretching to the row. Scoped to .page.profile
+   so no other surface moves. ================================================================ */
+.page.profile{gap:12px}
+.page.profile .hero{padding:14px 18px;gap:16px}
+#p-hero .hmain h1{font-size:30px}
+#p-hero .hloc{margin-top:4px}
+#p-hero .hsub{margin-top:2px}
+#p-hero .hlc{margin-top:2px}
+#p-hero .dbadges{margin-top:8px}
+#p-hero .hscore{margin-top:8px}
+.page.profile .hphoto-box{width:100px;height:100px}
+.page.profile .pmove{margin-top:4px}
+.page.profile .pmove-h{padding-bottom:6px;margin-bottom:10px}
+.page.profile .pgrid{gap:12px;align-items:start}
+.page.profile .pgrid>.card{height:auto}
+.page.profile .card>header{padding:12px 16px 0}
+.page.profile .card .cbody{padding:10px 16px 14px}
+.page.profile .tile{padding:9px 12px}
+.page.profile .irow{padding:7px 0}
+.page.profile .sub-h{margin:12px 0 6px}
+.page.profile .sub-h.first{margin-top:0}
+.page.profile .fpb{padding:8px 10px;margin-bottom:6px}
+.page.profile .narr p{margin-bottom:6px}
+.page.profile .ev{padding-bottom:10px}
+@media (max-width:899px){
+  .page.profile .hero{padding:12px 14px;gap:12px}
+  .page.profile .hphoto-box{width:88px;height:88px}
+  #p-hero .hmain h1{font-size:24px}
+}
