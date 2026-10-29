@@ -302,13 +302,38 @@
    "display": "Joseph Baxter"
   }
  ],
- "filed": [],
+ "filed": [
+  {
+   "name": "adria.t18",
+   "display": "Adria Tebo",
+   "facts": [
+    {
+     "text": "Named team captain of the University of New England women's ice hockey team for her senior season, 2026-27",
+     "source": "University of New England Athletics",
+     "url": "https://athletics.une.edu/sports/womens-ice-hockey/roster/adria-tebo/8118",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "midwifesunday",
+   "display": "Sunday Wright Smith",
+   "facts": [
+    {
+     "text": "Completed a Doctor of Nursing Practice (DNP) scholarly project at the University of Massachusetts Boston, Spring 2025",
+     "source": "UMass Boston ScholarWorks",
+     "url": "https://scholarworks.umb.edu/nursing_dnp_capstone/52/",
+     "novelty": "new"
+    }
+   ]
+  }
+ ],
  "coverage": {
   "checked_total": 725,
   "of": 725,
   "window_days": 30
  },
- "note": "PM run (second of the day): checked 75, filed 0. The batch was 75 from the 2026-10-26 tier; most profiles are already current from the Oct 26 full sweep, and every candidate the research batches surfaced failed the 2-anchor gate on direct verification. Rejected: a Clarkson hockey captain item for Jonathan Puglia (a different person from the directory's Jonathan Puglia of South Colton, Shippensburg 2003-2007, National Coffee Corp); a Northrop Grumman program-manager title for Don Gruneisen resting only on his own LinkedIn; a Keene State / Canton-Potsdam Hospital lead for Myles Laramay and a Clarkson dean claim for Leslie Perri, neither verifiable in any independent source. Fresh sweep: none found - in-window items were about non-directory people, and directory members in current coverage (Zvi Szafran, Ben Hull) already had the facts on file.",
+ "note": "PM run (second of the day): checked 75, filed 2 (Adria Tebo, Sunday Wright Smith). CORRECTED after all final research reports arrived \u2014 the first brief was composed from truncated interim summaries and wrongly showed 0 filed. Tebo: the UNE roster lists her as a senior forward with the captain's 'C' for 2026-27 (the Oct 26 filing covered only her senior-season return); the same roster bio lists her major as health sciences, conflicting with the Athletic Training major on file \u2014 flagged, not filed. Smith: DNP scholarly project at UMass Boston, completed Spring 2025, on the St. Lawrence County birth center she runs in Potsdam; her blank Degrees and Universities fields were filled. Rejected on direct verification: a Clarkson hockey captain item for Jonathan Puglia (a different person from the directory's Jonathan Puglia of South Colton, Shippensburg 2003-2007, National Coffee Corp); a Northrop Grumman title for Don Gruneisen (his own LinkedIn only); Megan Converse's Alice Hyde OT role (already in her footprint verbatim \u2014 redundant). Fresh sweep: none found \u2014 in-window items were about non-directory people, and directory members in current coverage (Mark Walczyk, Zvi Szafran, Richard Haller, Ben Hull) already had the facts on file.",
  "next_up": [
   {
    "name": "sf:aaron-cote",
