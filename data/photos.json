@@ -1,15 +1,16 @@
 {
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "total": 680,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED in the 2026-10-29 public-lanes photo hunt (Lane 3: yearbook archives). Senior portrait in Memories 2009, the Madrid-Waddington High School yearbook, p. 9: the portrait appears under the printed heading 'Aaron Kenneth Cote' with his activities listed beside it (Varsity Soccer 9-12, Varsity Track 8-12, JV Soccer 8). Anchors: full name printed beside the portrait + Madrid-Waddington HS / Madrid NY seeds match the profile. Page image extracted from the CONTENTdm scan, viewed in full-page context by the coordinator, hosted locally.",
    "name": "Aaron Cote",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/aaron-cote.jpg",
+   "source_page": "https://cdm16694.contentdm.oclc.org/digital/api/singleitem/image/p16694coll80/9838/download",
+   "status": "confirmed",
+   "type": "Yearbook senior portrait",
+   "added": "2026-10-29"
   },
   {
    "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Adept Detailing's Meet The Owner page (Potsdam/Plattsburgh NY) places this portrait directly beside text naming Aaron Daniels as founder and owner; the wedding attire matches his 2022 marriage timeline noted in JD's research. URL load-verified (JPEG, 341x339) and the portrait viewed.",
@@ -3480,12 +3481,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Leone Timing and MileSplit pages are text-only results tables (Karle McCormick, Ogdensburg Free Academy) — no images. This is Karle the OFA runner, not her twin Kayle the NCPR journalist.",
+   "evidence": "CONFIRMED in the 2026-10-29 public-lanes photo hunt (Lane 3: yearbook archives). Class of 2020 portrait grid in the Devilog 2019 (Ogdensburg Free Academy yearbook), p. 22: her portrait is captioned 'Karle McCormick' directly beneath it, and twin sister Kayle McCormick is pictured and captioned separately in the adjacent cell, so the page itself distinguishes the twins. Anchors: printed name beneath the portrait + OFA seed, corroborated by her Leone Timing OFA cross-country record already on file. Page image extracted from the CONTENTdm scan, viewed in full-page context by the coordinator, hosted locally. (A UAlbany roster-headshot lead was checked and dropped: its image URL now returns 404.)",
    "name": "Karle McCormick",
-   "photo_url": null,
-   "source_page": "https://www.leonetiming.com/2015/XC/Adirondack/GV1.htm",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/karle-mccormick.jpg",
+   "source_page": "https://cdm.lampostareraser.com/digital/api/singleitem/image/17002/161745/download",
+   "status": "confirmed",
+   "type": "Yearbook portrait",
+   "added": "2026-10-29"
   },
   {
    "evidence": "Instagram profile @katelynmatthews10 (display name \"Katelyn Matthews\"); bio: \"SUNY Canton Nursing🩺 Med Surg | RN, BSN 🤍\".",
@@ -5368,12 +5370,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Merit profile (SUNY Canton President's List, Canton NY) is text-only listings — no profile photo extractable. The on-file newspaper PDF failed to load (empty response) — that source remains unchecked.",
+   "evidence": "POSSIBLE in the 2026-10-29 public-lanes photo hunt (Lane 3: yearbook archives). Canton 2014 Varsity Swim Team photo, Algonquin 2015 yearbook (archive.org/details/algonquin2015sain), printed p. 96: the caption's Front Row list names 'Samarah Martin' third of five, and the crop centers the third swimmer from the left in the front (seated) row. Anchors: printed caption naming her in this photo + Canton / Hugh C. Williams HS seeds. Graded possible under the group-photo rule: identity rests on caption-order position mapping, which the coordinator verified against the full page image. Hosted locally.",
    "name": "Samarah Martin",
-   "photo_url": null,
-   "source_page": "https://meritpages.com/Samarah-Martin/3121843",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/samarah-martin.jpg",
+   "source_page": "https://archive.org/details/algonquin2015sain",
+   "status": "possible",
+   "type": "Team photo crop (caption-order position)",
+   "added": "2026-10-29"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
