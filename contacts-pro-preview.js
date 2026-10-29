@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.30.0';
+var APP_VERSION = '3.31.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3361,9 +3361,8 @@ function viewProfile(v){
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
     '<section id="p-hero" class="hero"></section>' +
-    '<section id="p-brief"></section>' +
-    '<div class="pmove" id="pm-c"><div class="pmove-h">Connection</div><div class="pgrid" id="pmg-c"></div></div>' +
-    '<div class="pmove" id="pm-a"><div class="pmove-h">About ' + esc(dispName(e).split(' ')[0]) + '</div><div class="pgrid" id="pmg-a"></div></div><div id="p-add"></div></div>';
+    '<div class="pmove" id="pm-a"><div class="pmove-h">About ' + esc(dispName(e).split(' ')[0]) + '</div><div class="pgrid" id="pmg-a"></div></div>' +
+    '<div class="pmove" id="pm-c"><div class="pmove-h">Connection</div><div class="pgrid" id="pmg-c"></div></div><div id="p-add"></div></div>';
   paintProfile(di);
 }
 function paintProfile(di){
@@ -3374,7 +3373,6 @@ function paintProfile(di){
      reader's place across it — scroll position survives a re-render. */
   var _sy = $('#p-hero') ? window.scrollY : null;
   $('#p-hero').innerHTML = heroHTML(di);
-  var pbEl = $('#p-brief'); if(pbEl) pbEl.innerHTML = briefHTML(di);
   ['a', 'c'].forEach(function(mv){
     var secs = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id); })
       .sort(function(x, y){ return x.ord - y.ord; })
@@ -3425,10 +3423,14 @@ function heroHTML(di){
     ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') +
     '<div class="hscore">' + scoreBadgeHTML(di) + '</div></div>' + phHeroHTML(e);
 }
-/* ---------- Brief (JD 2026-10-28, question-fuel package) ----------
-   The first block of every profile: five derived lines rendered from
-   data already on file. Nothing is stored; a line exists only when
-   its data exists, and a profile with no usable data gets no card. */
+/* ---------- Brief derivations (JD 2026-10-28; profile card retired
+   V3.31.0, JD 2026-10-29) ----------
+   briefOf() derives five lines from data already on file (in motion,
+   last contact, ask-about, shared world, careful). The profile Brief
+   card that rendered them is gone — profiles are a synopsis-led
+   informational packet again, and JD infers the rest himself. The
+   derivations stay: Home's Last contacts card builds its thread
+   previews from them. Nothing is stored. */
 var BRIEF_OPEN_RE = /left off|ask about|follow[\s-]?up/i;
 var BRIEF_CARE_RE = /\b(died|death|passed away|funeral|obituar\w*|cancer|hospice|terminal)\b/i;
 var BRIEF_MON = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
@@ -3528,20 +3530,6 @@ function briefOf(e){
   if(care) out.careful = evDate(care.ev.date) + ' — ' + briefClip(care.ev.summary || '', 140);
   return out;
 }
-function briefHTML(di){
-  var e = D.directory[di], b = briefOf(e), rows = '';
-  function row(lab, html, cls){
-    return '<div class="brow' + (cls ? ' ' + cls : '') + '"><span class="blab">' + lab + '</span><div class="bval">' + html + '</div></div>';
-  }
-  if(b.motion) rows += row('In motion', esc(b.motion));
-  if(b.last) rows += row('Last contact', esc(b.last));
-  if(b.ask) rows += row('Ask about', esc(b.ask.text) + ' <small class="bprov">' + esc(b.ask.prov) + '</small>');
-  if(b.shared) rows += row('Shared world', typeof b.shared === 'string' ? esc(b.shared)
-    : (b.shared.di != null ? '<a href="#/p/' + encodeURIComponent(personId(D.directory[b.shared.di])) + '" data-act="openp" data-di="' + b.shared.di + '">' + esc(b.shared.name) + '</a>' : esc(b.shared.name)));
-  if(b.careful) rows += row('Careful', esc(b.careful), 'bcare');
-  if(!rows) return '';
-  return '<div class="card brief"><header><h3>Brief</h3></header><div class="cbody">' + rows + '</div></div>';
-}
 /* ---------- section cards ---------- */
 function secHTML(di, id){
   var e = D.directory[di], d = secDef(id), editing = !!S.prof.edit[id], waived = secWaivedUI(e, id);
@@ -3639,26 +3627,32 @@ function secView(di, id){
         '<option value="">No rank</option>' +
         rlist.map(function(r){ return '<option value="' + esc(r) + '"' + (r === curRank ? ' selected' : '') + '>' + esc(r) + '</option>'; }).join('') + '</select>';
     }
-    return '<div class="tiles">' + tiles.map(function(t){ var ocs = (t[0] === 'Known since' && e.snap_since) ? '<span class="ocs-badge">' + ic('snap', 11) + 'Online connection since ' + e.snap_since + '</span>' : ''; return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b>' + ocs + '</div>'; }).join('') + '</div>' +
+    /* Empty tiles vanish (JD 2026-10-29 condense): a labeled tile with
+       no value on file does not render at all; the Known-since tile
+       survives on its Snapchat badge alone since the badge is content. */
+    var shownTiles = tiles.filter(function(t){ return t[1] || (t[0] === 'Known since' && e.snap_since); });
+    var relBody = (shownTiles.length ? '<div class="tiles">' + shownTiles.map(function(t){ var ocs = (t[0] === 'Known since' && e.snap_since) ? '<span class="ocs-badge">' + ic('snap', 11) + 'Online connection since ' + e.snap_since + '</span>' : ''; return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + esc(t[1] || 'Not set') + '</b>' + ocs + '</div>'; }).join('') + '</div>' : '') +
       (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '') + rankCtl;
+    return relBody || emptyPrompt(di, id, 'Add relationship details');
   }
   if(id === 'about'){
     var syn = gv(e, 'synopsis'), fp = footprintOf(e), out = '';
     var fsrc = (e.files || []).some(function(f){ return f && f.kind === 'source' && f.url; });
     var wrSourced = fp.sourced || fsrc;
-    /* Question-fuel order (JD 2026-10-28): the web record (what is in
-       motion) renders above the synopsis (the static narrative). */
-    if(fp.blocks.length){
-      out += '<div class="sub-h">Web record <span class="conf ' + (wrSourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (wrSourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
-        fp.blocks.map(function(b){
-          return '<div class="fpb ' + (b.urls.length || fsrc ? 'ok' : 'no') + '"><p>' + esc(b.text) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : (fsrc ? '' : '<div class="srcs"><span class="src none">No source attached</span></div>')) + '</div>';
-        }).join('');
-    }
+    /* Synopsis-led order (JD 2026-10-29, reverting the 2026-10-28
+       question-fuel order): the narrative packet leads; the web record
+       follows as supporting material. */
     if(syn){
       out += (fp.blocks.length ? '<div class="sub-h">Synopsis</div>' : '') + '<div class="narr">' + String(syn).split(/\n+/).map(function(line){
         var m = line.match(/^([A-Z][A-Za-z &\/'-]{1,28}):\s+(.*)$/);
         return m ? '<p><span class="lab">' + esc(m[1]) + '</span>' + esc(m[2]) + '</p>' : '<p>' + esc(line) + '</p>';
       }).join('') + '</div>';
+    }
+    if(fp.blocks.length){
+      out += '<div class="sub-h">Web record <span class="conf ' + (wrSourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (wrSourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
+        fp.blocks.map(function(b){
+          return '<div class="fpb ' + (b.urls.length || fsrc ? 'ok' : 'no') + '"><p>' + esc(b.text) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : (fsrc ? '' : '<div class="srcs"><span class="src none">No source attached</span></div>')) + '</div>';
+        }).join('');
     }
     return out || emptyPrompt(di, id, 'Write a synopsis');
   }
@@ -3727,9 +3721,12 @@ function secView(di, id){
     }).join('') : emptyPrompt(di, id, 'Attach a link or create a doc');
   }
   if(id === 'persona'){
-    return '<div class="persona">' + PERSONA.map(function(p){
+    /* Unrated traits vanish in view (JD 2026-10-29 condense): the card
+       exists only when at least one trait is rated (secShown), and it
+       shows exactly the rated ones. The editor still offers all six. */
+    return '<div class="persona">' + PERSONA.filter(function(p){ return (parseInt(gv(e, p[0]), 10) || 0) > 0; }).map(function(p){
       var n = parseInt(gv(e, p[0]), 10) || 0;
-      return '<div class="pt"><span>' + p[1] + '</span><div class="pb"><i style="width:' + (n * 20) + '%"></i></div><b>' + (n ? n + '/5' : 'Not rated') + '</b></div>';
+      return '<div class="pt"><span>' + p[1] + '</span><div class="pb"><i style="width:' + (n * 20) + '%"></i></div><b>' + n + '/5</b></div>';
     }).join('') + '</div>';
   }
   if(id === 'lima'){
@@ -6144,7 +6141,7 @@ function hmPhotosCard(ph){
 /* --- Home: Last contacts (JD 2026-10-28). Home should have JD ready:
    who he last talked to, what was left open, and who has gone quiet
    longest — with the actual thread previews, not just dates. Built
-   from the same derivations the profile Brief uses. --- */
+   from the briefOf derivations. --- */
 function hmLastKey(e){
   var k = flexKey(gv(e, 'last_contact'));
   (e.events || []).forEach(function(ev){
