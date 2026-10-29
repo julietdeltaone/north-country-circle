@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.26.0';
+var APP_VERSION = '3.27.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10078,40 +10078,51 @@ function sbHome(){
   var pct = ppl ? Math.round(100 * conf / ppl) : 0;
   var h = '<p class="sb-compact">' + ppl + ' people in the directory \u00b7 ' + pct + '% with a usable photo \u00b7 ' +
     Object.keys(sbTrashKeys()).length + ' keys in Trash \u00b7 ' + sbOpsGet().length + ' ops queued</p>';
-  function row(href, t, d, s, icn){
-    return '<a class="sb-row" href="' + href + '"><span class="sb-row-ic">' + ic(icn, 18) + '</span>' +
-      '<span class="sb-row-main"><span class="sb-row-t">' + esc(t) + '</span><span class="sb-row-d">' + d + '</span></span>' +
-      (s ? '<span class="sb-row-s">' + esc(s) + '</span>' : '') + '<span class="sb-row-go">' + ic('chevr', 15) + '</span></a>';
+  /* Tile grid (JD 2026-10-28, V3.27.0): the landing is compact
+     tiles — icon, name, one line, live state with a dot — grouped
+     under Look / Play / Fix. Active surfaces pin as wide tiles on
+     top. Same destinations and state strings as the old index;
+     only the presentation changed. */
+  function tile(href, t, d, s, icn, tone, wide){
+    return '<a class="sb-tile' + (wide ? ' wide' : '') + '" href="' + href + '"><span class="sb-tile-ic">' + ic(icn, 17) + '</span>' +
+      '<span class="sb-tile-main"><span class="sb-tile-t">' + esc(t) + '</span><span class="sb-tile-d">' + d + '</span>' +
+      (s ? '<span class="sb-tile-s"><i class="sb-dot ' + (tone || 'dim') + '"></i>' + esc(s) + '</span>' : '') + '</span></a>';
   }
   /* Active: the surfaces with live state or an ongoing purpose,
-     as compact rows. Everything else is filed in the index below. */
+     pinned as wide tiles. Everything else files into the grid. */
   var pr = SB.spool && SB.spool.default_experiment && SB.spool.default_experiment.prediction;
   var spState = pr ? ('Open prediction: ' + esc(pr.predicted_name || '') + ' \u2014 ' + esc(pr.event || '') + (pr.event_date ? ', ' + esc(pr.event_date) : '') + ' \u00b7 ' + esc(pr.status || '')) : 'The pre-registered prediction tracker.';
   var pf = SB.prof || {}, acc = pf.accuracy || {};
   var pfState = acc.overall ? (Math.round((acc.overall.agree_rate || 0) * 100) + '% blind accuracy \u00b7 ' + (acc.test_set_n || 0) + ' tested \u00b7 ' + (pf.conclusions || []).length + ' graded conclusions') : 'Blind Persona expectations vs JD\u2019s ratings.';
-  h += '<div class="sb-group">Active</div><div class="sb-rows">' +
-    row('#/sandbox/lab/pool', 'Suspect Pool', spState, '', 'target') +
-    row('#/sandbox/profiling', 'Profiling inferences', pfState, '', 'eye') +
+  h += '<div class="sb-group">Active</div><div class="sb-tiles active">' +
+    tile('#/sandbox/lab/pool', 'Suspect Pool', spState, pr ? 'Prediction open' : 'Tracker', 'target', pr ? 'amber' : 'dim', true) +
+    tile('#/sandbox/profiling', 'Profiling inferences', pfState, acc.overall ? 'Graded' : 'Lab', 'eye', acc.overall ? 'green' : 'dim', true) +
     '</div>';
-  /* The index: every remaining tool, one grouped list, one tap each. */
+  /* The index: every remaining tool as a tile in its zone group. */
+  var findN = sbFindingsCount(), dupN = sbDupPairs().length, logN = sbLogToday();
   var stats = {
-    grid: ppl + ' rows', raw: Object.keys(SB_RAW_META).length + ' sidecar files',
-    insights: sbFindingsCount() + ' open findings',
-    discovery: SB.discData ? (SB.discData.coverage ? SB.discData.coverage.documented + ' documented trails' : '') : '',
-    lab: '2 labs',
-    merge: sbDupPairs().length + ' candidate pairs', danger: Object.keys(sbTrashKeys()).length + ' keys in Trash',
-    log: sbLogToday() + ' entries today'
+    grid: { s: ppl + ' rows', tone: 'green' },
+    raw: { s: Object.keys(SB_RAW_META).length + ' sidecar files', tone: 'dim' },
+    insights: { s: findN + ' open findings', tone: findN ? 'amber' : 'green' },
+    discovery: { s: SB.discData ? (SB.discData.coverage ? SB.discData.coverage.documented + ' documented trails' : '') : '', tone: 'dim' },
+    lab: { s: '2 labs', tone: 'dim' },
+    merge: { s: dupN + ' candidate pairs', tone: dupN ? 'amber' : 'green' },
+    danger: { s: Object.keys(sbTrashKeys()).length + ' keys in Trash', tone: 'dim' },
+    log: { s: logN + ' entries today', tone: logN ? 'green' : 'dim' }
   };
   [['Look', ['grid', 'insights', 'discovery', 'raw']],
    ['Play', ['lab']],
    ['Fix', ['merge', 'danger', 'log']]].forEach(function(g){
-    h += '<div class="sb-group">' + g[0] + '</div><div class="sb-rows">';
+    h += '<div class="sb-group">' + g[0] + '</div><div class="sb-tiles">';
     g[1].forEach(function(k){
       var t = SB_TOOLS.filter(function(x){ return x.k === k; })[0];
-      if(t) h += row('#/sandbox/' + t.k, t.t, esc(t.d), stats[t.k] || '', t.ic);
+      if(t) h += tile('#/sandbox/' + t.k, t.t, esc(t.d), (stats[t.k] || {}).s || '', t.ic, (stats[t.k] || {}).tone, false);
     });
     h += '</div>';
   });
+  h += '<div class="sb-group">Boards</div><div class="sb-tiles">' +
+    tile('#/council', 'Council', 'The Contacts Pro Council board \u2014 flags, theories, your rulings. Lives outside the Sandbox.', 'Board', 'check', 'dim', false) +
+    '</div>';
   return h;
 }
 function sbAfterRender(){
