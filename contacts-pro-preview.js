@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.29.1';
+var APP_VERSION = '3.30.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2168,6 +2168,11 @@ function render(){
   if(render._pv && render._pv !== n) phInspClose(true);
   if(HMI && n !== 'home') hmiClose(true);
   document.body.setAttribute('data-view', n);
+  /* V3.30.0: the Models section (and only it) takes the full viewport;
+     the attribute is restamped on every render so leaving restores the
+     app frame exactly. */
+  if(n === 'sandbox' && S.route.seg && S.route.seg[0] === 'models') document.body.setAttribute('data-mdl', '1');
+  else document.body.removeAttribute('data-mdl');
   /* skin 2026-10-15: route CHANGES earn a short entrance; same-route
      repaints (polls, quiet refresh, writes) stay instant */
   if(render._pv !== n){ render._pv = n; v.classList.remove('vin'); void v.offsetWidth; v.classList.add('vin'); clearTimeout(render._vt); render._vt = setTimeout(function(){ v.classList.remove('vin'); }, 380); }
@@ -10263,6 +10268,16 @@ function viewSandbox(v){
     var iv = (S.route.seg && S.route.seg[1]) || null;
     SB.ins.view = SB_INSIGHTS.some(function(x){ return x.k === iv; }) ? iv : null;
   }
+  if(SB.tool === 'models'){
+    /* V3.30.0 (JD 2026-10-29): the Models section is full screen,
+       edge-to-edge — the one deliberate exception to the in-frame
+       Sandbox rule. It renders straight into #view on its own data
+       (models.json), independent of the Sandbox sidecar load. */
+    v.innerHTML = mdlView();
+    mdlAfterRender();
+    mdlEnsure();
+    return;
+  }
   if(!SB.ready){
     v.innerHTML = sbShell('<div class="sb-wrap"><div class="empty"><h3>Sandbox</h3><p>Loading the sidecar data…</p></div></div>');
     sbEnsure();
@@ -10406,6 +10421,7 @@ function sbHome(){
   });
   h += '<div class="sb-group">Boards</div><div class="sb-tiles">' +
     tile('#/council', 'Council', 'The Contacts Pro Council board \u2014 flags, theories, your rulings. Lives outside the Sandbox.', 'Board', 'check', 'dim', false) +
+    tile('#/sandbox/models', 'Models', 'What the numbers can tell you \u2014 who you are about to lose touch with, who is most likely to have news, and which profiles might be the same person twice.', 'Full screen', 'spark', 'dim', false) +
     '</div>';
   return h;
 }
@@ -10415,6 +10431,244 @@ function sbAfterRender(){
   if(t === 'insights' && SB.integ.deadBusy && !SB.integ._deadRun){ SB.integ._deadRun = true; sbRunDead(); }
 }
 
+
+/* ============================================================
+   9c. MODELS (V3.30.0, JD 2026-10-29) — a full-screen, edge-to-edge
+   section of the Sandbox. Three read-only models, computed at build
+   time by scripts/build_models.py into data/models.json (fetched
+   no-store, like photos.json); the browser only renders. Each model
+   is a chapter: the plain-language question as the headline, the
+   chart, the ranked answer, a how-it-works diagram, and an accuracy
+   strip that reports a real backtest or says plainly that the
+   history is not there yet. Nothing here writes anything.
+   ============================================================ */
+var MDL = { data:null, loading:null };
+function mdlEnsure(){
+  if(MDL.data || MDL.loading) return;
+  MDL.loading = fetch('data/models.json', { cache:'no-store' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){ MDL.data = j; MDL.loading = null;
+      if(S.route.name === 'sandbox' && SB.tool === 'models') render(); })
+    .catch(function(){ MDL.loading = null; });
+}
+function mdlPerson(pid, name){
+  return '<a class="mdl-name" href="#/p/' + encodeURIComponent(pid) + '">' + esc(name) + '</a>';
+}
+function mdlBar(label, pct, val, tone){
+  return '<div class="mdl-bar-row"><span class="mdl-bar-l">' + esc(label) + '</span>' +
+    '<span class="mdl-bar-track"><span class="mdl-fill' + (tone ? ' ' + tone : '') + '" style="--w:' + Math.max(0, Math.min(100, pct)) + '%"></span></span>' +
+    '<span class="mdl-bar-v">' + esc(val) + '</span></div>';
+}
+function mdlSteps(steps){
+  return '<div class="mdl-steps">' + steps.map(function(s, i){
+    return (i ? '<span class="mdl-arrow" aria-hidden="true">&#8594;</span>' : '') +
+      '<div class="mdl-step"><span class="mdl-step-n">' + (i + 1) + '</span>' +
+      '<b>' + esc(s[0]) + '</b><span>' + esc(s[1]) + '</span></div>';
+  }).join('') + '</div>';
+}
+function mdlAcc(big, label, note){
+  return '<div class="mdl-acc mdl-rev"><div class="mdl-acc-big">' + big + '</div>' +
+    '<div class="mdl-acc-body"><div class="mdl-acc-l">How often has it been right?</div>' +
+    '<b>' + esc(label) + '</b><p>' + esc(note) + '</p></div></div>';
+}
+function mdlChapter(no, kick, q, headline, inner){
+  return '<section class="mdl-chapter mdl-rev"><div class="mdl-ch-head">' +
+    '<div class="mdl-ch-no">' + no + '</div><div><div class="mdl-kick">' + esc(kick) + '</div>' +
+    '<h2 class="mdl-q">' + esc(q) + '</h2><p class="mdl-headline">' + esc(headline) + '</p></div></div>' +
+    inner + '</section>';
+}
+
+/* --- chapter 1: losing touch ------------------------------------ */
+function mdlRhythmSVG(e, genISO){
+  var dates = (e.dates || []).map(function(s){ return Date.parse(s); }).filter(function(x){ return !isNaN(x); });
+  if(dates.length < 2) return '';
+  var today = Date.parse(genISO), t0 = Math.min(dates[0], today), t1 = today;
+  var span = Math.max(1, t1 - t0), W = 560, H = 34, y = 17;
+  function X(t){ return 8 + (t - t0) / span * (W - 16); }
+  var last = dates[dates.length - 1];
+  var due = last + e.median_days * 864e5;
+  var s = '<svg class="mdl-rhythm" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" aria-hidden="true">';
+  s += '<line x1="8" y1="' + y + '" x2="' + (W - 8) + '" y2="' + y + '" class="mdl-rl-base"/>';
+  if(due < t1) s += '<line x1="' + X(due) + '" y1="5" x2="' + X(due) + '" y2="' + (H - 5) + '" class="mdl-rl-due"/>';
+  dates.forEach(function(d){ s += '<circle cx="' + X(d) + '" cy="' + y + '" r="4" class="mdl-rl-dot"/>'; });
+  s += '<circle cx="' + X(t1) + '" cy="' + y + '" r="3" class="mdl-rl-now"/></svg>';
+  return s;
+}
+function mdlCadence(c, gen){
+  var h = '';
+  /* the answer, ranked */
+  h += '<div class="mdl-grid2"><div class="mdl-panel"><h3 class="mdl-ph">Most overdue first</h3>';
+  c.ranked.slice(0, 10).forEach(function(e, i){
+    h += '<div class="mdl-prow"><span class="mdl-rank">' + (i + 1) + '</span>' +
+      '<span class="mdl-pmain">' + mdlPerson(e.pid, e.name) +
+      '<small>You normally talk ' + esc(e.rhythm) + ' &middot; last contact ' + esc(e.last_label) + '</small></span>' +
+      '<span class="mdl-meter"><span class="mdl-fill bad" style="--w:' + Math.min(100, e.overdue / 4 * 100) + '%"></span></span>' +
+      '<span class="mdl-oval">' + (e.overdue >= 1 ? e.overdue.toFixed(1) + '&times; overdue' : 'on rhythm') + '</span></div>';
+  });
+  h += '<p class="mdl-note">Overdue is measured against each person&rsquo;s own rhythm, not a universal clock. ' +
+    c.coverage.with_stamp + ' people carry a last-contact stamp; only the ' + c.coverage.with_rhythm +
+    ' above have 3 or more dated contacts, enough to learn a rhythm from.</p></div>';
+  /* the chart */
+  var maxd = Math.max.apply(null, c.distribution.map(function(d){ return d.count; }).concat([1]));
+  h += '<div class="mdl-panel"><h3 class="mdl-ph">Where everyone with a rhythm stands</h3>' +
+    c.distribution.map(function(d){ return mdlBar(d.label, d.count / maxd * 100, d.count + (d.count === 1 ? ' person' : ' people')); }).join('') +
+    '<div class="mdl-split"><div><b>' + c.rhythm_split.steady + '</b><span>run on a rhythm &mdash; their gaps land within a fairly steady band</span></div>' +
+    '<div><b>' + c.rhythm_split.scattered + '</b><span>are all over the place &mdash; no steady gap to be overdue against</span></div></div></div></div>';
+  /* rhythm diagrams for the five most overdue */
+  h += '<div class="mdl-panel mdl-rev"><h3 class="mdl-ph">Their rhythms, drawn to scale</h3>' +
+    '<p class="mdl-note">Each dot is a real contact. The red line is when the next one fell due. The white dot is today.</p>';
+  c.ranked.slice(0, 5).forEach(function(e){
+    h += '<div class="mdl-rrow"><span class="mdl-rname">' + mdlPerson(e.pid, e.name) + '</span>' + mdlRhythmSVG(e, gen) +
+      '<span class="mdl-rmeta">' + esc(e.rhythm) + '</span></div>';
+  });
+  h += '</div>';
+  h += '<h3 class="mdl-sh">How it works</h3>' + mdlSteps([
+    ['Read the contact log', 'Every dated contact on every profile: messages, calls, in-person, all of it.'],
+    ['Learn each rhythm', 'For anyone with 3 or more contacts, take the middle gap between them. That is their normal.'],
+    ['Measure today against it', 'Days since the last contact, divided by their normal gap. Over 1.0 means past due.'],
+    ['Rank, never nag', 'The list is a nudge for you. Nothing is sent, scheduled, or written anywhere.']
+  ]);
+  var bt = c.backtest;
+  h += bt.rate != null
+    ? mdlAcc(Math.round(bt.rate * 100) + '%', 'Called the return window ' + bt.hits + ' times out of ' + bt.n + ' in backtesting.', bt.note + ' A small test set, so read it as a hint, not a verdict.')
+    : mdlAcc('&mdash;', 'Not enough history to test yet.', bt.note);
+  /* stamp-only recency, kept separate */
+  if(c.recent && c.recent.length){
+    h += '<div class="mdl-panel mdl-rev"><h3 class="mdl-ph">Quiet the longest &mdash; stamp only, no rhythm learned</h3>' +
+      '<p class="mdl-note">These profiles have a last-contact stamp but fewer than 3 dated contacts, so there is no rhythm to judge against. Plain recency only.</p><div class="mdl-chips">' +
+      c.recent.slice(0, 24).map(function(e){ return '<span class="mdl-chip">' + mdlPerson(e.pid, e.name) + '<small>' + esc(e.last_label) + '</small></span>'; }).join('') + '</div></div>';
+  }
+  return mdlChapter('01', 'Model one &middot; cadence', c.question, c.headline, h);
+}
+
+/* --- chapter 2: who has news ------------------------------------ */
+function mdlNews(n){
+  var h = '';
+  var maxr = Math.max.apply(null, n.segments.map(function(s){ return s.rate; }).concat([0.01]));
+  h += '<div class="mdl-grid2"><div class="mdl-panel"><h3 class="mdl-ph">What makes someone likely to have news?</h3>' +
+    n.segments.map(function(s){
+      return mdlBar(s.label, s.rate / maxr * 100,
+        Math.round(s.rate * 100) + '%' + (s.lift ? ' &middot; ' + s.lift + '&times;' : ''),
+        s.rate >= n.sample.base_rate ? '' : 'dim');
+    }).join('') +
+    '<p class="mdl-note">Each rate is the share of checks inside that group that produced a filing, over ' + n.sample.checks + ' labeled checks; the &times; compares it with the overall rate. Groups overlap &mdash; one person can sit in several.</p></div>';
+  h += '<div class="mdl-panel"><h3 class="mdl-ph">The next names in the rotation, reordered</h3>';
+  n.next_up.forEach(function(e, i){
+    h += '<div class="mdl-prow"><span class="mdl-rank">' + (i + 1) + '</span>' +
+      '<span class="mdl-pmain">' + mdlPerson(e.pid, e.name) +
+      (e.why.length ? '<small>' + esc(e.why.join(' &middot; ')) + '</small>' : '<small>No strong signals either way</small>') + '</span>' +
+      '<span class="mdl-meter"><span class="mdl-fill" style="--w:' + e.score + '%"></span></span>' +
+      '<span class="mdl-oval">' + e.score + ' / 100</span></div>';
+  });
+  h += '<p class="mdl-note">The score is the model&rsquo;s estimate that a check turns up a fileable finding, learned from the labeled history. Expected yield at the current pace: about <b>' + n.expected_per_run + ' findings per 75-check run</b>.</p></div></div>';
+  h += '<h3 class="mdl-sh">How it works</h3>' + mdlSteps([
+    ['Label the past', 'Every Live Records run already records who was checked and who produced a filing. That is the training set.'],
+    ['Compare groups', 'Athletics ties, employers, schools, how much is already on file &mdash; each group gets its own hit rate.'],
+    ['Score the queue', 'A person inherits the rates of the groups they sit in, blended into one number.'],
+    ['Reorder, never skip', 'The rotation still checks everyone. The model only decides who goes first.']
+  ]);
+  if(n.holdout){
+    h += mdlAcc(n.holdout.top_rate > n.holdout.rest_rate ? Math.round(n.holdout.top_rate * 100) + ' vs ' + Math.round(n.holdout.rest_rate * 100) : '&mdash;',
+      'On checks the model had never seen, its top half produced findings at ' + Math.round(n.holdout.top_rate * 100) + ' in 100, against ' + Math.round(n.holdout.rest_rate * 100) + ' in 100 for the bottom half.',
+      n.holdout.note + ' Only ' + n.holdout.test_findings + ' findings landed in the test window, so treat the edge as early evidence, not proof. Sample so far: ' + n.sample.runs + ' runs, ' + n.sample.checks + ' checks, ' + n.sample.findings + ' findings.');
+  } else {
+    h += mdlAcc('&mdash;', 'Still collecting.', 'With ' + n.sample.checks + ' labeled checks across ' + n.sample.runs + ' runs, the history is too thin for an honest holdout test. The rates above are real counts; the ranking is a first read and is labeled as such until the sample grows.');
+  }
+  return mdlChapter('02', 'Model two &middot; Live Records yield', n.question, n.headline, h);
+}
+
+/* --- chapter 3: same person twice ------------------------------- */
+function mdlPairs(p){
+  var h = '<div class="mdl-pairs">';
+  p.candidates.forEach(function(c){
+    h += '<div class="mdl-pair mdl-rev"><div class="mdl-pair-top"><span class="mdl-pair-names">' +
+      mdlPerson(c.a_pid, c.a) + '<span class="mdl-x">&times;</span>' + mdlPerson(c.b_pid, c.b) + '</span>' +
+      '<span class="mdl-score"><b>' + c.score + '</b><small>match score</small></span></div>' +
+      '<span class="mdl-meter wide"><span class="mdl-fill warn" style="--w:' + c.score + '%"></span></span>' +
+      '<ul class="mdl-reasons">' + c.reasons.map(function(r){ return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></div>';
+  });
+  h += '</div>';
+  if(!p.candidates.length) h += '<div class="mdl-panel"><p class="mdl-note">No pair currently scores high enough to be worth your time.</p></div>';
+  h += '<h3 class="mdl-sh">How it works</h3>' + mdlSteps([
+    ['Compare every pair', 'Names, also-known-as names, phone numbers, employers, schools, churches, shared associates.'],
+    ['Add up the evidence', 'Each match adds points: a shared phone number is heavy, a shared last name alone is light.'],
+    ['Show the reasons', 'Every candidate lists exactly why it scored. No black box, no hidden merge.'],
+    ['You rule', 'The scorer never merges anything. Deciding is the Council&rsquo;s and yours.']
+  ]);
+  h += mdlAcc('0', 'Ruled-apart pairs re-served as open candidates.', p.check +
+    ' The pairs most likely to be families &mdash; same last name, same church, same people around them &mdash; are exactly what this list surfaces, which is why it shows its reasons instead of acting.');
+  if(p.ruled_apart && p.ruled_apart.length){
+    h += '<div class="mdl-ruled mdl-rev"><h3 class="mdl-ph">Already ruled: two people</h3>' +
+      p.ruled_apart.map(function(r){ return '<p><b>' + esc(r.a) + '</b> and <b>' + esc(r.b) + '</b> &mdash; ' + esc(r.note) + '</p>'; }).join('') + '</div>';
+  }
+  return mdlChapter('03', 'Model three &middot; record linkage', p.question, p.headline, h);
+}
+
+/* --- the section -------------------------------------------------- */
+function mdlView(){
+  var top = '<div class="mdl-top"><a class="mdl-back" href="#/sandbox">&#8592; Sandbox</a>' +
+    '<span class="mdl-brand">Models</span><span class="mdl-topsub">Sandbox &middot; read-only</span></div>';
+  if(!MDL.data){
+    return '<div class="mdl">' + top + '<div class="mdl-load"><div class="mdl-load-t">Running the numbers&hellip;</div>' +
+      '<p>The models are computed ahead of time; this is just the file on its way.</p></div></div>';
+  }
+  var m = MDL.data, s = m.summary;
+  var stats = [
+    [s.directory, 'people in the directory'],
+    [s.with_rhythm, 'with a contact rhythm'],
+    [s.labeled_checks, 'labeled Live Records checks'],
+    [s.pair_candidates, 'candidate duplicate pairs']
+  ];
+  var h = '<div class="mdl">' + top + '<div class="mdl-scroll">';
+  h += '<header class="mdl-hero"><div class="mdl-kick">The Sandbox &middot; Models</div>' +
+    '<h1 class="mdl-title">What the numbers<br>can tell you.</h1>' +
+    '<p class="mdl-sub">Three small models over the data this app already keeps. Each one answers one plain question, ' +
+    'shows its work, and reports how often it has been right. Nothing here writes, sends, or merges anything.</p>' +
+    '<div class="mdl-stats">' + stats.map(function(x){
+      return '<div class="mdl-stat"><b data-cu="' + x[0] + '">0</b><span>' + esc(x[1]) + '</span></div>';
+    }).join('') + '</div>' +
+    '<nav class="mdl-toc"><button type="button" data-mdljump="mdl-c1">01 &middot; Losing touch</button><button type="button" data-mdljump="mdl-c2">02 &middot; Who has news</button><button type="button" data-mdljump="mdl-c3">03 &middot; Same person twice</button></nav></header>';
+  h += '<div id="mdl-c1">' + mdlCadence(m.cadence, m.generated) + '</div>';
+  h += '<div id="mdl-c2">' + mdlNews(m.news) + '</div>';
+  h += '<div id="mdl-c3">' + mdlPairs(m.pairs) + '</div>';
+  h += '<footer class="mdl-foot">Computed ' + esc(m.generated) + ' by the models build from the live directory, the contact log, and the Live Records run history. ' +
+    'Rebuilt with the site; the numbers move when the data does.</footer>';
+  return h + '</div></div>';
+}
+function mdlAfterRender(){
+  var root = document.querySelector('.mdl');
+  if(!root) return;
+  root.querySelectorAll('[data-mdljump]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var t = document.getElementById(b.getAttribute('data-mdljump'));
+      if(t) t.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+  /* count-up hero numbers */
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.querySelectorAll('[data-cu]').forEach(function(el){
+    var target = parseInt(el.getAttribute('data-cu'), 10) || 0;
+    if(reduce){ el.textContent = target; return; }
+    var t0 = null;
+    function tick(ts){
+      if(!t0) t0 = ts;
+      var k = Math.min(1, (ts - t0) / 900);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3)));
+      if(k < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+  /* reveal on scroll (bars animate via the .in class) */
+  var els = root.querySelectorAll('.mdl-rev, .mdl-chapter');
+  if(reduce || !('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, { root: root.querySelector('.mdl-scroll'), threshold: 0.08 });
+  els.forEach(function(el){ io.observe(el); });
+}
 
 /* ---------------- 1. data grid ---------------- */
 var SB_COLS = [
