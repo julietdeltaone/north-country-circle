@@ -2132,13 +2132,21 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @e._.flam (display name \"Ethan Flamand\"); bio: \"CU 2027\".",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. His own Merit Pages profile photo (meritpages.com/ethanflamand): the profile reads \"Majoring in Engineering And Management, Clarkson University\" \u2014 Clarkson plus that exact major matches his directory profile verbatim (Clarkson senior in Engineering and Management, co-launched Nuovo through Clarkson Ignite). Coordinator fetched the profile, verified both anchors on the page, downloaded and viewed the photo. Note: Merit profile pages are not search-indexed; this was found by direct profile-URL probing after the scout's search-based pass came up empty.",
    "name": "Ethan Flamand",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/719828480_18318988450278293_6544607288482178079_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=HVcR-G3mgaIQ7kNvwH0jaD6&_nc_oc=AdqHEyiXbzkITR4mfkbdOF6rWZZo_uXecukEDpKX8pC8U9aWNUOj3YCpWUyvBP0T5dTmq4sbfYHLkqip1QbPosMq&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=N-zMUMIKgfRjF2MnKYfurg&oh=00_AQM7zPS6dWL0RrFDoWjHBhksGWcGwJjSUON-53h7JU6RTA&oe=6AE037CA",
-   "source_page": "https://www.instagram.com/e._.flam/",
+   "photo_url": "photos/ethan-flamand.jpg",
+   "source_page": "https://meritpages.com/ethanflamand",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Merit Pages profile photo",
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://scontent.cdninstagram.com/v/t51.82787-19/719828480_18318988450278293_6544607288482178079_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=HVcR-G3mgaIQ7kNvwH0jaD6&_nc_oc=AdqHEyiXbzkITR4mfkbdOF6rWZZo_uXecukEDpKX8pC8U9aWNUOj3YCpWUyvBP0T5dTmq4sbfYHLkqip1QbPosMq&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=N-zMUMIKgfRjF2MnKYfurg&oh=00_AQM7zPS6dWL0RrFDoWjHBhksGWcGwJjSUON-53h7JU6RTA&oe=6AE037CA",
+     "note": "Prior primary (expired or remote URL).",
+     "source_page": "https://www.instagram.com/e._.flam/"
+    }
+   ],
+   "added": "2026-10-29"
   },
   {
    "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). The photo is the sole image in his employer NextStepU's team-introduction post about webmaster Ethan Hackett; his public employment record matches both directory anchors (Apple Mac Specialist/mentor; Manchester Community College graphic-design degree). Full-size URL load-verified (1200x1709) and the portrait viewed.",
