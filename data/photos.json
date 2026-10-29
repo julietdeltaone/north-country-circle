@@ -2342,12 +2342,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED in the 2026-10-29 public-lanes photo hunt (Lane 1: wedding websites). The couple's own Zola wedding site (Haley Quinlan and Brandon Keough, married July 9, 2022, Ithaca NY) captions this photo 'Haley's Potsdam graduation in 2019.' The image shows her in cap and gown holding a SUNY Potsdam diploma cover in front of the Potsdam clocktower, beside Brandon Keough. Anchors: the couple's names head the site and the caption names the occasion as hers + SUNY Potsdam seed (the site's story also states she started at SUNY Potsdam in 2015; Fairport/Rochester contacts match the remaining seeds). Full image byte-verified (1500x1500 JPEG) and viewed by the coordinator; the filed primary is a square crop centered on Haley, hosted locally. Filed on the lane scout's final report, which reached the coordinator after the run's first synthesis; see the correction note in the run record.",
    "name": "Haley Quinlan Keough",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/haley-quinlan-keough.jpg",
+   "source_page": "https://www.zola.com/wedding/quinlankeoughwedding/photo",
+   "status": "confirmed",
+   "type": "Graduation photo (cropped from captioned couple photo)",
+   "added": "2026-10-29"
   },
   {
    "evidence": "Instagram profile @aspecthammy_ (display name \"\"); bio: \"🧿🪬\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
