@@ -3716,7 +3716,7 @@ button.tl-ev:hover{background:var(--card2);border-color:var(--line)}
 .tl-mband{padding:16px 0 6px;border-top:1px solid var(--line)}
 .tl-mband:first-child{border-top:none}
 .tl-mhead{display:flex;align-items:center;gap:14px;margin-bottom:8px}
-.tl-mghost{font:700 44px/0.9 var(--disp);color:color-mix(in srgb,var(--txt) 13%,transparent);min-width:56px}
+.tl-mghost{font:700 44px/0.9 var(--disp);color:color-mix(in srgb,var(--txt) 19%,transparent);min-width:56px}
 .tl-mhead h4{margin:0;font:600 16px var(--sans)}
 .tl-mhead em{font-style:normal;font-size:12px;color:var(--dim)}
 .tl-mevs{display:flex;flex-direction:column;gap:2px}
