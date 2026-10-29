@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.23.0';
+var APP_VERSION = '3.24.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2340,7 +2340,7 @@ function viewPeople(v){
     }).join('') + '</div>';
   }
   v.innerHTML = '<div class="page people"><div class="pagehead"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
-    '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view !== 'recent' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button></div></div>' +
+    '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="reach"' + (f.view === 'reach' ? ' class="on"' : '') + '>Reach back out</button></div></div>' +
     '<div class="ppl-cols"><div class="ppl-main">' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
@@ -2380,6 +2380,39 @@ function paintPeople(){
   var box = $('#plist'); if(!box) return;
   var dis = peopleFiltered();
   var body = '';
+  if(dis.length && S.ppl.view === 'reach'){
+    /* Reach back out (JD 2026-10-28): everyone with at least one contact
+       event or a note on file, longest-quiet first (Last Contact
+       oldest-first; a note-only person with no date sorts last). Built
+       entirely from the existing filters and the flexible-date keys. */
+    var reach = dis.filter(function(di){
+      var e = D.directory[di];
+      return !!lcNote(e).trim() || (e.events || []).some(function(ev){ return ev && ev.kind === 'contact'; });
+    });
+    function reachKey(di){
+      var e = D.directory[di], k = flexKey(gv(e, 'last_contact'));
+      if(k != null) return k;
+      var m = null;
+      (e.events || []).forEach(function(ev){
+        if(ev && ev.kind === 'contact'){ var ek = flexKey(ev.date); if(ek != null && (m == null || ek > m)) m = ek; }
+      });
+      return m;
+    }
+    reach.sort(function(a, b){
+      var ka = reachKey(a), kb = reachKey(b);
+      if(ka == null && kb == null) return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+      if(ka == null) return 1;
+      if(kb == null) return -1;
+      if(ka !== kb) return ka - kb;
+      return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+    });
+    S.ppl.cur = reach;
+    box.innerHTML = (reach.length
+      ? '<div class="ptwrap"><table class="ptable">' + ptColgroupHTML() + ptheadHTML() + '<tbody>' + reach.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>'
+      : emptyState('No one to reach back out to yet.', 'Log a contact or leave a note on a profile and they queue here, longest-quiet first.'));
+    var rc = $('#pcount'); if(rc) rc.textContent = reach.length + ' to reach back out to';
+    return;
+  }
   if(dis.length && S.ppl.view === 'recent'){
     /* By-last-contact view: bucket the filtered roster, most recent first
        inside each bucket; the pager context follows the displayed order. */
@@ -3086,8 +3119,9 @@ function viewProfile(v){
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
     '<section id="p-hero" class="hero"></section>' +
-    '<div class="pmove" id="pm-a"><div class="pmove-h">About ' + esc(dispName(e).split(' ')[0]) + '</div><div class="pgrid" id="pmg-a"></div></div>' +
-    '<div class="pmove" id="pm-c"><div class="pmove-h">Connection</div><div class="pgrid" id="pmg-c"></div></div><div id="p-add"></div></div>';
+    '<section id="p-brief"></section>' +
+    '<div class="pmove" id="pm-c"><div class="pmove-h">Connection</div><div class="pgrid" id="pmg-c"></div></div>' +
+    '<div class="pmove" id="pm-a"><div class="pmove-h">About ' + esc(dispName(e).split(' ')[0]) + '</div><div class="pgrid" id="pmg-a"></div></div><div id="p-add"></div></div>';
   paintProfile(di);
 }
 function paintProfile(di){
@@ -3098,6 +3132,7 @@ function paintProfile(di){
      reader's place across it — scroll position survives a re-render. */
   var _sy = $('#p-hero') ? window.scrollY : null;
   $('#p-hero').innerHTML = heroHTML(di);
+  var pbEl = $('#p-brief'); if(pbEl) pbEl.innerHTML = briefHTML(di);
   ['a', 'c'].forEach(function(mv){
     var secs = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id); })
       .sort(function(x, y){ return x.ord - y.ord; })
@@ -3147,6 +3182,123 @@ function heroHTML(di){
     (lcLabel(e) ? '<p class="hlc">' + (lcOnline(e) ? lcGlobe(12) : '') + '<span>Last known contact <b>' + esc(lcLabel(e)) + '</b></span></p>' : '') +
     ((ds || cs) ? '<div class="dbadges">' + ds + cs + '</div>' : '') +
     '<div class="hscore">' + scoreBadgeHTML(di) + '</div></div>' + phHeroHTML(e);
+}
+/* ---------- Brief (JD 2026-10-28, question-fuel package) ----------
+   The first block of every profile: five derived lines rendered from
+   data already on file. Nothing is stored; a line exists only when
+   its data exists, and a profile with no usable data gets no card. */
+var BRIEF_OPEN_RE = /left off|ask about|follow[\s-]?up/i;
+var BRIEF_CARE_RE = /\b(died|death|passed away|funeral|obituar\w*|cancer|hospice|terminal)\b/i;
+var BRIEF_MON = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+function briefTextDate(t){
+  var m = String(t || '').match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{4})\b/i);
+  if(m) return (+m[2]) * 100 + (BRIEF_MON[m[1].slice(0, 3).toLowerCase()] || 1);
+  var y = String(t || '').match(/\b(19|20)\d{2}\b/);
+  return y ? (+y[0]) * 100 + 1 : null;
+}
+function briefClean(t){ return String(t || '').replace(/\s*\([^()]*\)\s*$/, '').trim(); }
+function briefSentence(text){
+  var parts = String(text || '').split(/(?<=[.!?])\s+/);
+  for(var i = 0; i < parts.length; i++){ if(BRIEF_OPEN_RE.test(parts[i])) return parts[i].trim(); }
+  return '';
+}
+function briefClip(t, n){ t = String(t || '').trim(); return t.length > n ? t.slice(0, n - 1).trim() + '…' : t; }
+var BRIEF_JD = undefined;
+function briefJdGroups(){
+  if(BRIEF_JD === undefined){
+    BRIEF_JD = [];
+    D.directory.forEach(function(x){ if(pkey(x) === 'ig:jdmeyers_') BRIEF_JD = personGroups(x); });
+  }
+  return BRIEF_JD;
+}
+function briefOf(e){
+  var out = {};
+  var evs = (e.events || []).filter(function(ev){ return ev && ev.date; });
+  var contacts = evs.filter(function(ev){ return ev.kind === 'contact'; })
+    .sort(function(a, b){ return (flexKey(b.date) || 0) - (flexKey(a.date) || 0); });
+  var lastEv = contacts[0] || null;
+  /* In motion: newest dated footprint item; else the latest Live Records
+     change logged for this person; else the newest footprint block. */
+  var blocks = footprintOf(e).blocks.map(function(b){ return b.text; }).filter(Boolean);
+  /* A parsed block can hold several bullets (separated only by •), so
+     split to single facts before dating — one bullet is one fact. */
+  var items = [];
+  blocks.forEach(function(t){
+    String(t).split(/\s*•\s*/).forEach(function(s){ s = s.trim(); if(s) items.push(s); });
+  });
+  var motion = '', bestK = -1;
+  items.forEach(function(t){ var k = briefTextDate(t); if(k != null && k > bestK){ bestK = k; motion = t; } });
+  if(!motion && typeof CH !== 'undefined' && CH && CH.entries){
+    var dn = dispName(e).toLowerCase();
+    for(var ci = 0; ci < CH.entries.length; ci++){
+      if(String(CH.entries[ci].name || '').toLowerCase() === dn){ motion = CH.entries[ci].what || ''; break; }
+    }
+  }
+  if(!motion && items.length) motion = items[items.length - 1];
+  if(motion) out.motion = briefClip(briefClean(motion), 180);
+  /* Last contact: the newest contact event; else a waiting note; else the stamp. */
+  var note = lcNote(e).trim();
+  if(lastEv) out.last = lcDateLabel(lastEv.date) + (lastEv.summary ? ' — ' + briefClip(lastEv.summary, 140) : '');
+  else if(note) out.last = 'Note waiting — ' + briefClip(note, 140);
+  else if(String(gv(e, 'last_contact') || '').trim()) out.last = lcLabel(e);
+  /* Ask about (deterministic): an open item in the latest note wins; then
+     the in-motion item; then the most recent timeline event; then the
+     first Interests chip. Provenance is tagged on the line. */
+  var ask = '', prov = '';
+  if(note){ var s1 = briefSentence(note); if(s1){ ask = s1; prov = 'from your last note'; } }
+  if(!ask && lastEv && lastEv.summary){ var s2 = briefSentence(lastEv.summary); if(s2){ ask = s2; prov = 'from your last note'; } }
+  if(!ask && out.motion){ ask = out.motion; prov = 'from their record'; }
+  if(!ask && evs.length){
+    var sev = sortedEvents(e)[0];
+    if(sev && sev.ev.summary){ ask = briefClip(sev.ev.summary, 160); prov = 'from their record'; }
+  }
+  if(!ask){ var ints = tagList(gv(e, 'interests')); if(ints.length){ ask = ints[0]; prov = 'from their record'; } }
+  if(ask) out.ask = { text: briefClip(ask, 180), prov: prov };
+  /* Shared world: a group JD and this person are both in; else the known
+     associate with the most recent activity on their own profile. */
+  var shared = personGroups(e).filter(function(g){ return briefJdGroups().indexOf(g) >= 0; });
+  if(shared.length) out.shared = 'Both in ' + shared[0];
+  else {
+    var ka = knownAssociates(e), bestA = null, bestAk = -1;
+    ka.forEach(function(nb){
+      var adi = BYN[(nb.u || '').toLowerCase()]; if(adi == null) return;
+      var ae = D.directory[adi], k = flexKey(gv(ae, 'last_contact')) || 0;
+      (ae.events || []).forEach(function(ev){ var ek = flexKey(ev.date) || 0; if(ek > k) k = ek; });
+      if(k > bestAk){ bestAk = k; bestA = { di: adi, e: ae }; }
+    });
+    if(bestA) out.shared = { name: dispName(bestA.e), di: bestA.di };
+    else if(ka.length){
+      var fdi = BYN[(ka[0].u || '').toLowerCase()];
+      out.shared = { name: ka[0].d || ka[0].u, di: fdi != null ? fdi : null };
+    }
+  }
+  /* Careful: a death or serious-illness timeline event within ~2 years. */
+  var nowD = new Date();
+  var cutoff = new Date(nowD.getFullYear() - 2, nowD.getMonth(), nowD.getDate()).getTime();
+  var care = null;
+  evs.forEach(function(ev){
+    if(ev.kind === 'contact') return;
+    var k = flexKey(ev.date); if(k == null || k < cutoff) return;
+    if(BRIEF_CARE_RE.test(String(ev.summary || '') + ' ' + String(ev.detail || ''))){
+      if(!care || k > care.k) care = { k: k, ev: ev };
+    }
+  });
+  if(care) out.careful = evDate(care.ev.date) + ' — ' + briefClip(care.ev.summary || '', 140);
+  return out;
+}
+function briefHTML(di){
+  var e = D.directory[di], b = briefOf(e), rows = '';
+  function row(lab, html, cls){
+    return '<div class="brow' + (cls ? ' ' + cls : '') + '"><span class="blab">' + lab + '</span><div class="bval">' + html + '</div></div>';
+  }
+  if(b.motion) rows += row('In motion', esc(b.motion));
+  if(b.last) rows += row('Last contact', esc(b.last));
+  if(b.ask) rows += row('Ask about', esc(b.ask.text) + ' <small class="bprov">' + esc(b.ask.prov) + '</small>');
+  if(b.shared) rows += row('Shared world', typeof b.shared === 'string' ? esc(b.shared)
+    : (b.shared.di != null ? '<a href="#/p/' + encodeURIComponent(personId(D.directory[b.shared.di])) + '" data-act="openp" data-di="' + b.shared.di + '">' + esc(b.shared.name) + '</a>' : esc(b.shared.name)));
+  if(b.careful) rows += row('Careful', esc(b.careful), 'bcare');
+  if(!rows) return '';
+  return '<div class="card brief"><header><h3>Brief</h3></header><div class="cbody">' + rows + '</div></div>';
 }
 /* ---------- section cards ---------- */
 function secHTML(di, id){
@@ -3252,17 +3404,19 @@ function secView(di, id){
     var syn = gv(e, 'synopsis'), fp = footprintOf(e), out = '';
     var fsrc = (e.files || []).some(function(f){ return f && f.kind === 'source' && f.url; });
     var wrSourced = fp.sourced || fsrc;
-    if(syn){
-      out += '<div class="narr">' + String(syn).split(/\n+/).map(function(line){
-        var m = line.match(/^([A-Z][A-Za-z &\/'-]{1,28}):\s+(.*)$/);
-        return m ? '<p><span class="lab">' + esc(m[1]) + '</span>' + esc(m[2]) + '</p>' : '<p>' + esc(line) + '</p>';
-      }).join('') + '</div>';
-    }
+    /* Question-fuel order (JD 2026-10-28): the web record (what is in
+       motion) renders above the synopsis (the static narrative). */
     if(fp.blocks.length){
       out += '<div class="sub-h">Web record <span class="conf ' + (wrSourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (wrSourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
         fp.blocks.map(function(b){
           return '<div class="fpb ' + (b.urls.length || fsrc ? 'ok' : 'no') + '"><p>' + esc(b.text) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : (fsrc ? '' : '<div class="srcs"><span class="src none">No source attached</span></div>')) + '</div>';
         }).join('');
+    }
+    if(syn){
+      out += (fp.blocks.length ? '<div class="sub-h">Synopsis</div>' : '') + '<div class="narr">' + String(syn).split(/\n+/).map(function(line){
+        var m = line.match(/^([A-Z][A-Za-z &\/'-]{1,28}):\s+(.*)$/);
+        return m ? '<p><span class="lab">' + esc(m[1]) + '</span>' + esc(m[2]) + '</p>' : '<p>' + esc(line) + '</p>';
+      }).join('') + '</div>';
     }
     return out || emptyPrompt(di, id, 'Write a synopsis');
   }
@@ -3479,7 +3633,7 @@ function secEdit(di, id){
   }
   if(id === 'lima'){
     var lcur = lcNote(e);
-    return lab('Lima Charlie note', 'Dictate every change for this profile. Nothing saves until you tap Save note.') +
+    return lab('Note — where did you leave off?', 'Dictate every change for this profile. Nothing saves until you tap Save note.') +
       '<textarea id="plima-note" rows="4" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now. Known him since 2019. Add SUNY Potsdam.">' + esc(lcur) + '</textarea>' +
       '<div class="row"><button type="button" class="btn primary sm" data-act="plcsave">Save note</button>' +
       '<button type="button" class="btn ghost sm" data-act="secdone" data-sec="lima">Cancel</button>' +
@@ -9061,7 +9215,7 @@ function onClick(ev){
     case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); var pmb = $('#sheetwrap [data-act="ptmv"][data-k="' + pmk + '"][data-d="' + pmd + '"]'); if(!pmb || pmb.disabled) pmb = $('#sheetwrap [data-act="ptvis"][data-k="' + pmk + '"]'); if(pmb && !pmb.disabled) pmb.focus(); } break; }
     case 'morefilters': openMoreFilters(); break;
     case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:S.ppl.view }; closeSheet(); viewPeople($('#view')); break;
-    case 'pplview': S.ppl.view = el.getAttribute('data-v') === 'recent' ? 'recent' : 'list'; viewPeople($('#view')); break;
+    case 'pplview': { var pvv = el.getAttribute('data-v'); S.ppl.view = (pvv === 'recent' || pvv === 'reach') ? pvv : 'list'; viewPeople($('#view')); break; }
     /* profile chrome */
     case 'menu': { var mp = $('.menu-pop', el.parentNode); var was = mp.hidden; $$('.menu-pop').forEach(function(m){ m.hidden = true; }); mp.hidden = !was; if(!mp.hidden){ var mfb = $('button', mp); if(mfb) mfb.focus(); } break; }
     case 'export': $$('.menu-pop').forEach(function(m){ m.hidden = true; }); doExport(di, 'dl'); break;
