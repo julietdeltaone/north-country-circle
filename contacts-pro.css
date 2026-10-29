@@ -3417,3 +3417,15 @@ html[data-mode="dark"] .page.people .ptable thead th{background:#0a0d12}
 .page.people .ptable td.c-handle,.page.people .ptable td.c-phone,.page.people .ptable td.c-updated,.page.people .ptable td.c-firstc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .page.people .ptable .ptlc{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .page.people .ptable .ptier{white-space:normal}
+
+/* Brief card (V3.24.0, question-fuel package): derived lines at the top
+   of every profile. Labels are quiet; the Careful label takes the accent. */
+#p-brief:empty{display:none}
+.brief{margin:14px 0 4px}
+.brief .brow{display:flex;gap:14px;padding:6px 0;border-top:1px solid var(--line)}
+.brief .brow:first-child{border-top:none;padding-top:0}
+.brief .blab{flex:0 0 96px;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);padding-top:3px}
+.brief .bval{font-size:13.5px;line-height:1.45;color:var(--txt)}
+.brief .bval a{color:var(--txt);text-decoration:underline;text-underline-offset:3px}
+.brief .bprov{color:var(--dim);font-size:11px;white-space:nowrap}
+.brief .bcare .blab{color:var(--acc)}
