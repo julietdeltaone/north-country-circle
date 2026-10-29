@@ -20,7 +20,7 @@
   --glass:rgba(255,255,255,.48); --glass2:rgba(255,255,255,.66);
   --glass-solid:rgba(250,251,252,.94); --card-grad:rgba(255,255,255,.66);
   --line:rgba(24,36,52,.13); --line2:rgba(24,36,52,.26);
-  --txt:#161c24; --txt2:#3d4754; --mut:#5b6673; --dim:#68727f;
+  --txt:#0d131b; --txt2:#28323f; --mut:#3f4c5b; --dim:#47545f;
   --fill:rgba(18,28,40,.05); --fill2:rgba(18,28,40,.09); --fill3:rgba(18,28,40,.14);
   --acc:#e30613; --accbg:rgba(227,6,19,.10);
   --ok:#161c24; --warn:#b96e00; --bad:#c2433c;
@@ -42,7 +42,7 @@ html[data-mode="dark"]{
   --glass:rgba(19,22,29,.50); --glass2:rgba(26,30,38,.62);
   --glass-solid:rgba(13,15,19,.94); --card-grad:rgba(26,30,38,.62);
   --line:rgba(255,255,255,.13); --line2:rgba(255,255,255,.26);
-  --txt:#f4f6f8; --txt2:#ccd3da; --mut:#a7aeb8; --dim:#7d8590;
+  --txt:#f4f6f8; --txt2:#ccd3da; --mut:#a7aeb8; --dim:#8a939e;
   --fill:rgba(255,255,255,.05); --fill2:rgba(255,255,255,.09); --fill3:rgba(255,255,255,.15);
   --accbg:rgba(227,6,19,.16);
   --ok:#f2f2f2; --warn:#e0a35a; --bad:#e0766f;
@@ -384,7 +384,7 @@ function initials(name){
 var PHOTOS = null, PHOTO_BY_NAME = {};
 function loadPhotos(){
   if(PHOTOS) return Promise.resolve();
-  return fetch('data/photos.json', { cache:'no-store' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+  return fetch('data/photos.json', { cache:'no-cache' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
     PHOTOS = j || { people:[] };
     (PHOTOS.people || []).forEach(function(p){ if(p && p.name) PHOTO_BY_NAME[String(p.name).trim().toLowerCase()] = p; });
   }).catch(function(){ PHOTOS = { people:[] }; });
@@ -1178,7 +1178,7 @@ function boot(){
   var tries = 0;
   (function attempt(){
     tries++;
-    fetch('data/dossier.json', { cache:'no-store' })
+    fetch('data/dossier.json', { cache:'no-cache' })
       .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function(d){
         D = d;
