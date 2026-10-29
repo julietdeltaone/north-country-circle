@@ -3650,3 +3650,11 @@ body[data-view="sandbox"] #app:has(> #pool) #pool{grid-column:3}
 .cnc-frd summary{cursor:pointer;font:600 12px var(--sans);color:var(--mut)}
 .cnc-frd .cnc-fr-h{display:none}
 .cnc-frd .cnc-fr{margin-top:8px}
+
+/* V3.28.1: the military rank badge was designed to sit beside the
+   name (inline-flex, margin-left) but .pn b{display:block} pushed
+   it to a second line, keeping soldier rows two-line after the
+   V3.28 single-line pass. In the People table the name cell is now
+   one flex row: avatar, name (ellipsis-clipped), badge. */
+.page.people .ptable .pn{display:flex;align-items:center;min-width:0}
+.page.people .ptable .pn b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
