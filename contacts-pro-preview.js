@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.24.0';
+var APP_VERSION = '3.25.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2339,15 +2339,18 @@ function viewPeople(v){
       return '<button type="button" class="fc' + (cur === o[0] ? ' on' : '') + '" data-act="pf" data-k="' + key + '" data-v="' + o[0] + '">' + o[1] + '</button>';
     }).join('') + '</div>';
   }
-  v.innerHTML = '<div class="page people"><div class="pagehead"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
+  /* Design cleanup (JD 2026-10-28): the toolbar lives INSIDE the hero
+     banner now — search, tier chips and the More/Columns buttons sit
+     in the banner's second row, so the table starts right under it. */
+  v.innerHTML = '<div class="page people"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
     '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="reach"' + (f.view === 'reach' ? ' class="on"' : '') + '>Reach back out</button></div></div>' +
-    '<div class="ppl-cols"><div class="ppl-main">' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
     '<div class="tool-r">' +
     '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
     '<button type="button" class="btn ghost sm" data-act="ptcols">' + ic('settings', 14) + 'Columns</button>' +
-    '</div></div>' +
+    '</div></div></div>' +
+    '<div class="ppl-cols"><div class="ppl-main">' +
     '<div class="plist" id="plist"></div></div>' +
     '</div></div>';
   paintPeople();
@@ -4006,14 +4009,15 @@ function netColor(nd){
 function viewNetwork(v){
   var legend = TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
   S.net.view = '2d'; NET.view = '2d';
+  /* Design cleanup (JD 2026-10-28): one clean bar — title, find,
+     view, reset, full screen. The old grouped/kicker stack was a
+     mess of nested rows (and unclosed tags). */
   v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1></div>' +
     '<div class="netctl">' +
-    '<div class="netgrp"><span class="netkick">View</span><span class="netacts">' +
+    '<div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div>' +
     '<button type="button" class="btn ghost sm' + (S.net.view === '2d' ? ' on' : '') + '" data-act="netview" data-v="2d" aria-pressed="' + (S.net.view === '2d' ? 'true' : 'false') + '">2D</button>' +
-    '<div class="netgrp"><span class="netkick">Find</span><div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div></div>' +
-    '<div class="netgrp"><span class="netkick">Actions</span><span class="netacts">' +
     '<button type="button" class="btn ghost sm" data-act="netreset">Reset view</button>' +
-    '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button></span></div>' +
+    '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button>' +
     '</div></div>' +
     '<div class="netcols"><div class="netwrap"><canvas id="netcv" aria-label="Connection map"></canvas>' +
     '<div class="netfocus" id="netfocus" hidden></div>' +
@@ -4061,7 +4065,7 @@ function viewNetwork(v){
       var dx = ev.clientX - p.x, dy = ev.clientY - p.y;
       if(Math.abs(dx) + Math.abs(dy) > 3) NET.moved = true;
       if(NET.view === '3d'){ NET.rot -= dx * 0.005; NET.pitch = Math.max(-1.25, Math.min(1.25, NET.pitch - dy * 0.003)); }
-      else { NET.cam.x -= dx / NET.cam.z; NET.cam.y -= dy / NET.cam.z; }
+      else { var sp = NET.spin || 0, sc = Math.cos(sp), ss = Math.sin(sp); NET.cam.x -= (dx * sc + dy * ss) / NET.cam.z; NET.cam.y -= (-dx * ss + dy * sc) / NET.cam.z; }
     }
     p.x = ev.clientX; p.y = ev.clientY;
     if(ks.length === 2){
@@ -4091,8 +4095,10 @@ function viewNetwork(v){
     var z2 = Math.max(0.3, Math.min(4, NET.cam.z * Math.exp(-ev.deltaY * 0.0011)));
     if(NET.view === '3d'){ NET.cam.z = z2; NET.dirty = true; return; }
     var r = cv.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
-    var wx = (mx - NET.W / 2) / NET.cam.z + NET.cam.x, wy = (my - NET.H / 2) / NET.cam.z + NET.cam.y;
-    NET.cam.z = z2; NET.cam.x = wx - (mx - NET.W / 2) / z2; NET.cam.y = wy - (my - NET.H / 2) / z2; NET.dirty = true;
+    var w0 = s2w(mx, my);
+    NET.cam.z = z2;
+    var dx2 = (mx - NET.W / 2 - NET.cxOff) / z2, dy2 = (my - NET.H / 2) / z2, sp = NET.spin || 0, sc = Math.cos(sp), ss = Math.sin(sp);
+    NET.cam.x = w0[0] - (dx2 * sc + dy2 * ss); NET.cam.y = w0[1] - (-dx2 * ss + dy2 * sc); NET.dirty = true;
   }, { passive:false });
   cv.addEventListener('pointerleave', function(){ NET.hoverDi = null; netHovHide(); NET.dirty = true; });
   cancelAnimationFrame(NET.raf);
@@ -4106,6 +4112,12 @@ function viewNetwork(v){
     if(NET.view === '3d' && !REDUCED_MOTION && !NET.glide && !Object.keys(NET.ptr).length){
       var dt = Math.min(100, now - (NET.lastT || now));
       if(dt > 0){ NET.rot = (NET.rot + dt / 1000 * (Math.PI * 2 / 90)) % (Math.PI * 2); NET.dirty = true; }
+    }
+    /* 2D idle spin (JD 2026-10-28): same 90-second revolution,
+       same pauses — a hand on the map, a glide, reduced motion. */
+    if(NET.view === '2d' && !REDUCED_MOTION && !NET.glide && !Object.keys(NET.ptr).length){
+      var dt2 = Math.min(100, now - (NET.lastT || now));
+      if(dt2 > 0){ NET.spin = ((NET.spin || 0) + dt2 / 1000 * (Math.PI * 2 / 90)) % (Math.PI * 2); NET.dirty = true; }
     }
     NET.lastT = now;
     netGlideStep(now);
@@ -4199,7 +4211,21 @@ function netResetView(){
   } else netFit();
   netCard(); NET.dirty = true;
 }
-function w2s(x, y){ return [(x - NET.cam.x) * NET.cam.z + NET.W / 2 + NET.cxOff, (y - NET.cam.y) * NET.cam.z + NET.H / 2]; }
+/* 2D projection with the idle spin (JD 2026-10-28): the flat map
+   slowly rotates about the view center at the house rate (one
+   revolution per 90 s), pausing under a hand, a glide, or reduced
+   motion. Every 2D screen<->world conversion funnels through
+   w2s/s2w, so drawing, picking, pan and zoom all stay in step. */
+function w2s(x, y){
+  var dx = x - NET.cam.x, dy = y - NET.cam.y, s = NET.spin || 0;
+  if(s){ var c = Math.cos(s), sn = Math.sin(s), rx = dx * c - dy * sn; dy = dx * sn + dy * c; dx = rx; }
+  return [dx * NET.cam.z + NET.W / 2 + NET.cxOff, dy * NET.cam.z + NET.H / 2];
+}
+function s2w(sx, sy){
+  var dx = (sx - NET.W / 2 - NET.cxOff) / NET.cam.z, dy = (sy - NET.H / 2) / NET.cam.z, s = NET.spin || 0;
+  if(s){ var c = Math.cos(s), sn = Math.sin(s); return [NET.cam.x + dx * c + dy * sn, NET.cam.y - dx * sn + dy * c]; }
+  return [NET.cam.x + dx, NET.cam.y + dy];
+}
 /* ---------- 3D view: the universe (JD 2026-10-23). The Design
    A layout lifted onto spheres: every person sits on the
    closeness shell of their layer (netBuild stores px/py/pz —
@@ -4258,7 +4284,7 @@ function netHit(sx, sy){
     });
     return best3;
   }
-  var wx = (sx - NET.W / 2 - NET.cxOff) / NET.cam.z + NET.cam.x, wy = (sy - NET.H / 2) / NET.cam.z + NET.cam.y, best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
+  var wp = s2w(sx, sy), wx = wp[0], wy = wp[1], best = null, bd = 1e9, lim = Math.max(8, 16 / NET.cam.z);
   NET.nodes.forEach(function(n){ var d = Math.hypot(n.dx - wx, n.dy - wy); if(d < lim && d < bd){ bd = d; best = n; } });
   return best;
 }
@@ -5032,12 +5058,16 @@ function viewGroups(v){
   GRPV.lastKind = kind; GRPV.lastName = name;
   try{ phLoad(); }catch(x){}
   var tabs = '<nav class="tabrow" aria-label="Group kinds">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
-  var head = '<div class="pagehead"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>';
+  /* Design cleanup (JD 2026-10-28): tabs and search live INSIDE the
+     banner — the old stack of head + tab row + tool row ate the top
+     of the page before any group appeared. */
+  var headTop = '<div class="pagehead"><div class="grp-headrow"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>';
+  var head = headTop + tabs + '</div>';
   if(name){
     GRPV.detail = { kind:kind, name:name };
     var mem = grpMembersOf(kind, name);
     var hasRanks = mem.some(function(di){ return !!milRank(D.directory[di]); });
-    v.innerHTML = '<div class="page groups">' + head + tabs + '<div class="gdet">' +
+    v.innerHTML = '<div class="page groups">' + head + '<div class="gdet">' +
       '<div class="gdh"><a class="ib backm" href="#/groups/' + kind + '" aria-label="Back to groups">' + ic('chevl', 18) + '</a>' +
       '<div><h2>' + esc(name) + '</h2><small><span id="gmcount">' + mem.length + '</span> ' + (mem.length === 1 ? 'person' : 'people') + ' &middot; ' + esc(grpSignal(kind, name)) + '</small></div><span class="sp"></span>' +
       (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
@@ -5062,9 +5092,10 @@ function viewGroups(v){
       (selCount ? '<button type="button" class="btn ghost sm" data-act="gmgrclear">Clear</button>' : '') + '</div></div>';
   }
   var add = kind === 'groups' && !GMGR.on ? '<div class="finder inline gnewrow"><input id="gnew" placeholder="New group name" autocomplete="off"><button type="button" class="btn sm" data-act="gnew">Create</button></div>' : '';
-  v.innerHTML = '<div class="page groups">' + head + tabs +
-    '<div class="gtools"><label class="gsearchbox">' + ic('search', 15) + '<input id="gq" placeholder="Search groups" autocomplete="off" value="' + esc(GRPV.q) + '"></label>' +
-    '<span class="dim gcount">' + names.length + ' ' + (kind === 'groups' ? 'groups' : 'names') + ' &middot; sorted by size</span></div>' + mgr + add +
+  var listHead = headTop + '<div class="grp-toolsrow">' + tabs +
+    '<label class="gsearchbox">' + ic('search', 15) + '<input id="gq" placeholder="Search groups" autocomplete="off" value="' + esc(GRPV.q) + '"></label>' +
+    '<span class="dim gcount">' + names.length + ' ' + (kind === 'groups' ? 'groups' : 'names') + ' &middot; sorted by size</span></div></div>';
+  v.innerHTML = '<div class="page groups">' + listHead + mgr + add +
     '<div id="gcards">' + grpCardsHTML(kind) + '</div></div>';
   if(GRPV.scrollY != null){ var y = GRPV.scrollY; GRPV.scrollY = null; requestAnimationFrame(function(){ var vw = $('#view'); if(vw) vw.scrollTop = y; }); }
 }
@@ -5823,6 +5854,57 @@ function hmPhotosCard(ph){
 }
 
 /* --- Config 2: What's New, the activity rail --- */
+/* --- Home: Last contacts (JD 2026-10-28). Home should have JD ready:
+   who he last talked to, what was left open, and who has gone quiet
+   longest — with the actual thread previews, not just dates. Built
+   from the same derivations the profile Brief uses. --- */
+function hmLastKey(e){
+  var k = flexKey(gv(e, 'last_contact'));
+  (e.events || []).forEach(function(ev){
+    if(ev && ev.kind === 'contact'){ var ek = flexKey(ev.date); if(ek != null && (k == null || ek > k)) k = ek; }
+  });
+  return k;
+}
+function hmContactsCard(){
+  var rows = people().map(function(di){
+    return { di:di, e:D.directory[di], k:hmLastKey(D.directory[di]) };
+  }).filter(function(r){ return r.k != null; });
+  var recent = rows.slice().sort(function(a, b){ return b.k - a.k; }).slice(0, 6);
+  var quiet = rows.slice().sort(function(a, b){ return a.k - b.k; }).slice(0, 5);
+  function row(r, mode){
+    var b = briefOf(r.e);
+    var when = lcDateLabel(new Date(r.k).getFullYear() + '-' + ('0' + (new Date(r.k).getMonth() + 1)).slice(-2) + '-' + ('0' + new Date(r.k).getDate()).slice(-2));
+    var prev = '';
+    if(mode === 'recent') prev = b.last ? briefClip(b.last.replace(/^[^\u2014]*\u2014\s*/, ''), 130) : '';
+    if(!prev && b.ask) prev = 'Ask about: ' + b.ask.text;
+    return '<button type="button" class="hm-lcrow" data-act="hmgoto" data-di="' + r.di + '">' +
+      avatar(r.e, 'sm') + '<span class="hm-lcmain"><span class="hm-lcname">' + esc(dispName(r.e)) + '</span>' +
+      (prev ? '<span class="hm-lcprev">' + esc(prev) + '</span>' : '') + '</span>' +
+      '<span class="hm-lcwhen">' + esc(when) + '</span></button>';
+  }
+  return '<section class="card hm-blk"><header><h3>Last contacts</h3><em class="cnt">' + rows.length + ' with contact on file</em><span class="sp"></span><a class="hma-link" href="#/people">Reach back out ' + ic('arrow', 12) + '</a></header><div class="cbody">' +
+    '<div class="hm-lc-cols"><div><h4>Most recent</h4>' + recent.map(function(r){ return row(r, 'recent'); }).join('') + '</div>' +
+    '<div><h4>Quiet the longest</h4>' + quiet.map(function(r){ return row(r, 'quiet'); }).join('') + '</div></div>' +
+    '</div></section>';
+}
+/* --- Home: Network at a glance (JD 2026-10-28) — the full map
+   preview is gone from Home; what stays is one color-coded line:
+   the tier mix (the "knows" colors) plus hub count. --- */
+function hmNetStrip(dd){
+  netBuild();
+  var seg = [
+    { l:'Vetted', c:dd.tierCounts.vetted, col:(TIERS.vetted || {}).c || 'var(--seg-0)' },
+    { l:'Associate', c:dd.tierCounts.associate, col:(TIERS.associate || {}).c || 'var(--seg-1)' },
+    { l:'Open', c:dd.tierCounts.open, col:(TIERS.open || {}).c || 'var(--seg-2)' },
+    { l:'No tier yet', c:dd.tierCounts.none, col:RING_C[3] }
+  ];
+  return '<section class="card hm-blk hm-netstrip"><div class="cbody"><div class="hm-ns-row">' +
+    '<span class="hm-ns-t">Network</span>' +
+    seg.map(function(s){ return '<span class="hm-ns-seg"><i style="background:' + s.col + '"></i>' + s.l + ' <b>' + s.c + '</b></span>'; }).join('') +
+    '<span class="hm-ns-seg dim">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</span>' +
+    '<span class="sp"></span><a class="hma-link" href="#/network">Open Network ' + ic('arrow', 12) + '</a>' +
+    '</div></div></section>';
+}
 function viewHome(v){
   phLoad(); dtLoad(); chLoad();
   var pop = people(), N = pop.length;
@@ -5846,7 +5928,7 @@ function viewHome(v){
   var orgsTop = hmPlainTop(dd.orgCounts, 8), orgMax = orgsTop.length ? orgsTop[0].c : 0;
   var fpTop = hmPlainTop(dd.fpCounts, 8), fpMax = fpTop.length ? fpTop[0].c : 0;
   v.innerHTML = '<div class="page hm"><div class="hm-layout"><div class="hm-main"><div class="pagehead"><div><h1 class="display">Home</h1>' +
-    '<p class="sub">The whole circle at a glance: its shape, coverage, photos, and what changed lately. Everything opens a closer look.</p></div></div>' +
+    '<p class="sub">The whole circle at a glance: who you last talked to, its shape, and what changed lately. Everything opens a closer look.</p></div></div>' +
     '<div class="hmk-strip">' +
     hmKpi('people', hmFmtN(N), 'People', 'in the directory') +
     hmKpi('footprint', hmFmtN(dd.fpTotal), 'Footprint facts', 'across ' + dd.fpPeople + ' people') +
@@ -5855,6 +5937,8 @@ function viewHome(v){
     hmKpi('dated', dd.dated, 'Known since', dd.undated + ' still missing a year') +
     '</div>' +
     '<div class="hm-mixrow">' + hmMixCard('Tier mix', tierSegs, N) + hmMixCard('Relationship mix', relSegs, N) + '</div>' +
+    hmContactsCard() +
+    hmNetStrip(dd) +
     '<div class="hm-ranks">' +
     hmRankCard('Where they are', townsTop.map(function(t, ix){ return hmBarRow('town', t.key, t.label, t.c, townMax, ix === 0); }).join('') +
       (Object.keys(dd.towns).length > townsTop.length ? hmMoreBtn('data-act="hmikpi" data-k="located"', '+' + (Object.keys(dd.towns).length - townsTop.length) + ' more towns') : ''), 'top 8 of ' + Object.keys(dd.towns).length) +
@@ -5867,11 +5951,8 @@ function viewHome(v){
     hmRankCard('Footprint leaders', fpTop.map(function(t){ return hmBarRow('footprint', t.key, t.label, t.c, fpMax); }).join('') +
       hmMoreBtn('data-act="hmikpi" data-k="footprint"', 'All footprint coverage'), 'facts each') +
     '</div>' +
-    '<div class="hm-row2">' + hmYearsCard(dd) + hmCoverageCard(dd, pd) + '</div>' +
-    hmPhotosCard(ph) +
-    hmNetCard() +
+    '<div class="hm-years-slim">' + hmYearsCard(dd) + '</div>' +
     '</div><aside class="hm-rail">' + hmActivity() + '</aside></div></div>';
-  hmNetDrift();
 }
 
 /* ============================================================
@@ -5990,7 +6071,7 @@ function dtAnimate(){
 }
 function viewDaily(v){
   dtLoad(); chLoad();
-  var head = '<div class="page asearch"><div class="pagehead"><div><h1 class="display">Live Records</h1><p class="sub">The currency routine, run daily: 25 profiles checked against the public record, a fresh-find hunt across the last three weeks, and the strongest verified updates filed automatically.</p></div></div>';
+  var head = '<div class="page asearch lr"><div class="pagehead"><div><h1 class="display">Live Records</h1></div></div>';
   if(!DT){
     v.innerHTML = head + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
     return;
@@ -6011,34 +6092,63 @@ function viewDaily(v){
   function factLine(x){
     return esc(x.text) + (x.url ? ' <a class="assrc" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.source || 'source') + ' ' + ic('ext', 11) + '</a>' : ' <span class="dim">(' + esc(x.source || '') + ')</span>') + novBar(x.novelty);
   }
-  /* --- Fresh hero --- */
-  var freshF = null, freshX = null;
-  (DT.filed || []).forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh && !freshX){ freshF = f; freshX = x; } }); });
-  var hero = '';
-  if(freshF){
-    var fdi = diOf(freshF.name), fe = fdi != null ? D.directory[fdi] : null;
-    var age = freshX.published ? daysBetween(freshX.published, DT.date) : null;
-    hero = '<section class="card ashero asanim" style="--d:0ms">' +
-      '<div class="ashero-wm">NEW</div>' +
-      '<div class="ashero-top"><span class="askicker">' + ic('sparkle', 13) + ' NEW RECORD &mdash; PAST 3 WEEKS</span>' +
-      (freshX.published ? '<span class="ashero-pub">PUBLISHED ' + esc(fmtD(freshX.published)).toUpperCase() + '</span>' : '') + '</div>' +
-      '<div class="ashero-main"><div class="ashero-av">' + (fe ? avatar(fe, 'xl') : '') + '</div>' +
-      '<div class="ashero-body"><div class="ashero-name display">' + esc(freshF.display || freshF.name) + (fe ? milBadge(fe) : '') + '</div>' +
-      '<p class="ashero-fact">' + factLine(freshX) + '</p>' +
-      '<div class="astl"><span class="astl-dot"></span><span>Published ' + esc(fmtD(freshX.published)) + '</span><span class="astl-line"></span><span class="astl-dot red"></span><span>Filed ' + esc(fmtD(DT.date)) + (age != null && age >= 0 ? ' &middot; ' + age + ' day' + (age === 1 ? '' : 's') + ' from publication to profile' : '') + '</span></div>' +
-      '<div class="ashero-link">' + (fe ? '<a href="#/p/' + encodeURIComponent(personId(fe)) + '" data-act="openp" data-di="' + fdi + '">Open the profile ' + ic('arrow', 12) + '</a>' : '') + '</div>' +
-      '</div></div></section>';
+  /* --- New records (JD 2026-10-28 cleanup): every fresh find from the
+     past 3 weeks gets its own compact card — at 150 checks a day there
+     are several, so the single hero is gone. --- */
+  var freshList = [];
+  (DT.filed || []).forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh) freshList.push({ f:f, x:x }); }); });
+  var freshF = freshList.length ? freshList[0].f : null;
+  var newCards = '';
+  if(freshList.length){
+    var shown = freshList.slice(0, 8);
+    newCards = '<div class="assec-t asanim" style="--d:60ms">NEW RECORDS &mdash; PAST 3 WEEKS <em class="cnt">' + freshList.length + '</em></div>' +
+      '<div class="lrnew-grid">' + shown.map(function(it, i){
+        var di = diOf(it.f.name), e = di != null ? D.directory[di] : null;
+        return '<section class="card lrnew asanim" style="--d:' + (80 + i * 50) + 'ms"><div class="cbody">' +
+          '<div class="lrnew-h">' + (e ? avatar(e, 'md') : '') + '<div class="lrnew-name">' + personLink(it.f.name, it.f.display) +
+          (it.x.published ? '<small class="dim">Published ' + esc(fmtD(it.x.published)) + '</small>' : '') + '</div>' +
+          '<span class="dtnew">NEW</span></div>' +
+          '<p class="lrnew-fact">' + factLine(it.x) + '</p></div></section>';
+      }).join('') + '</div>' +
+      (freshList.length > shown.length ? '<p class="dim lrnew-more">+ ' + (freshList.length - shown.length) + ' more in the updated records below.</p>' : '');
   }
-  /* --- Stats band --- */
+  /* --- Workflow strip (JD 2026-10-28 cleanup): the whole landing in
+     one band. Counts first; who was checked lives in a dropdown on
+     the checked card. Data liveliness is color-coded by the age of
+     each profile's last check (DT.freshness, written by the routine
+     from its rotation state): green <= 7 days, yellow-green 8-30,
+     amber 31-90, red over 90, gray never checked. --- */
   var covPct = DT.coverage ? Math.round(1000 * DT.coverage.checked_total / Math.max(1, DT.coverage.of)) / 10 : 0;
   var C = 2 * Math.PI * 34;
   var ringOff = (C * (1 - covPct / 100)).toFixed(1);
-  var stats = '<section class="card aspanel asanim" style="--d:70ms"><div class="cbody"><div class="asstats">' +
+  var FR = DT.freshness || null;
+  var frBar = '';
+  if(FR){
+    var frSegs = [
+      { k:'d7',    l:'Checked \u2264 7 days ago',  c:'#2f9e44' },
+      { k:'d30',   l:'8\u201330 days ago',        c:'#8ab324' },
+      { k:'d90',   l:'31\u201390 days ago',       c:'#d9a404' },
+      { k:'older', l:'Over 90 days ago',          c:'#e30613' },
+      { k:'never', l:'Never checked',             c:'#6b7280' }
+    ];
+    var frTot = frSegs.reduce(function(s, g){ return s + (FR[g.k] || 0); }, 0) || 1;
+    frBar = '<div class="lrfr"><div class="lrfr-h"><span>DATA FRESHNESS</span>' +
+      (FR.oldest ? '<span class="dim">Oldest check ' + esc(fmtD(FR.oldest)) + '</span>' : '') + '</div>' +
+      '<div class="lrfr-bar">' + frSegs.map(function(g){
+        var n = FR[g.k] || 0; if(!n) return '';
+        return '<span class="lrfr-seg" style="width:' + (100 * n / frTot) + '%;background:' + g.c + '" title="' + g.l + ' \u00b7 ' + n + '"></span>';
+      }).join('') + '</div>' +
+      '<div class="lrfr-leg">' + frSegs.map(function(g){
+        return '<span><i style="background:' + g.c + '"></i>' + g.l + ' <b>' + (FR[g.k] || 0) + '</b></span>';
+      }).join('') + '</div></div>';
+  }
+  var stats = '<section class="card lrflow asanim" style="--d:0ms"><div class="cbody"><div class="asstats">' +
     '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b class="asnum" data-n="' + (DT.checked || []).length + '">0</b><span>Checked today</span></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + (DT.filed || []).length + '">0</b><span>Updated records</span></div>' +
-    '<div class="asstat asstat-ring"><svg class="asring" width="84" height="84" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/><text class="asring-t" x="42" y="48" text-anchor="middle">' + Math.round(covPct) + '%</text></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this month &middot; ' + covPct + '%</span></div></div>' +
+    '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum" data-n="' + freshList.length + '">0</b><span>New records</span></div>' +
+    '<div class="asstat asstat-ring"><svg class="asring" width="84" height="84" viewBox="0 0 84 84"><circle class="asring-bg" cx="42" cy="42" r="34"/><circle class="asring-fg" cx="42" cy="42" r="34" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + C.toFixed(1) + '" data-off="' + ringOff + '"/><text class="asring-t" x="42" y="48" text-anchor="middle">' + Math.round(covPct) + '%</text></svg><div><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>Checked this cycle</span></div></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('calendar', 16) + '</span><b>' + esc(fmtD(DT.date)) + '</b><span>Latest brief</span></div>' +
-    '</div></div></section>';
+    '</div>' + frBar + '</div></section>';
   /* --- Updated packets --- */
   var cards = (DT.filed || []).length ? (DT.filed || []).map(function(f, i){
     var di = diOf(f.name), e = di != null ? D.directory[di] : null;
@@ -6062,34 +6172,25 @@ function viewDaily(v){
     if(di == null) return '<span class="aschip ' + kind + '">' + inner + '</span>';
     return '<a class="aschip ' + kind + '" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>';
   }
-  var barPct = DT.coverage ? Math.max(1.5, covPct) : 0;
-  var rotationDays = DT.coverage ? Math.ceil(DT.coverage.of / Math.max(1, (DT.checked || []).length)) : 0;
+  /* Checked today, consolidated (JD 2026-10-28): the count is the
+     headline; the names live in one dropdown. No "confirmed current"
+     section — checked-with-nothing-new is just the remainder. */
+  var allChecked = (DT.checked || []).slice().sort(function(a, b){
+    var au = filedNames[String(a.name || '').toLowerCase()] ? 0 : 1, bu = filedNames[String(b.name || '').toLowerCase()] ? 0 : 1;
+    if(au !== bu) return au - bu;
+    return String(a.display || a.name).localeCompare(String(b.display || b.name));
+  });
   var checkedCard = '<section class="card asanim" style="--d:' + (140 + (DT.filed || []).length * 70 + 60) + 'ms"><header><h3>Checked today</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody">' +
-    '<div class="asoutcomes"><div class="asoutcome"><b>' + updList.length + '</b><span>Updated &mdash; new information filed</span></div>' +
-    '<div class="asoutcome"><b>' + curNames.length + '</b><span>Confirmed current &mdash; checked, nothing new</span></div>' +
-    (freshF && !((DT.checked || []).some(function(c){ return String(c.name || '').toLowerCase() === String(freshF.name || '').toLowerCase(); })) ? '<div class="asoutcome"><b>+1</b><span>New record from the news sweep</span></div>' : '') + '</div>' +
-    (updList.length ? '<div class="asgroup-t">UPDATED</div><div class="aschips">' + updList.map(function(c){ return chip(c, 'upd'); }).join('') + '</div>' : '') +
-    (curNames.length ? '<div class="asgroup-t">CONFIRMED CURRENT</div><div class="aschips">' + curNames.map(function(c){ return chip(c, 'cur'); }).join('') + '</div>' : '') +
-    (DT.coverage ? '<div class="ascov"><div class="ascov-h"><span>ROTATION COVERAGE</span><span>' + DT.coverage.checked_total + ' of ' + DT.coverage.of + ' in the last ' + DT.coverage.window_days + ' days</span></div>' +
-      '<div class="asbar"><div class="asbar-fill" data-w="' + barPct + '%" style="width:0"></div></div>' +
-      '<p class="dim">At ' + (DT.checked || []).length + ' checks a day, the full circle completes about every ' + rotationDays + ' days, so every profile is re-verified roughly once a month.</p></div>' : '') +
+    '<div class="lrchk-line"><b>' + updList.length + '</b> updated <span class="dim">&middot;</span> <b>' + curNames.length + '</b> checked, nothing new' +
+    (typeof DT.unchecked_remaining === 'number' ? ' <span class="dim">&middot;</span> ' + DT.unchecked_remaining + ' not yet checked this cycle' : '') + '</div>' +
+    ((DT.checked || []).length ? '<details class="lrdrop"><summary>Who was checked <span class="dim">(' + (DT.checked || []).length + ')</span></summary>' +
+      '<div class="aschips">' + allChecked.map(function(c){ return chip(c, filedNames[String(c.name || '').toLowerCase()] ? 'upd' : 'cur'); }).join('') + '</div></details>' : '') +
     '</div></section>';
   var updHead = (DT.filed || []).length ? '<div class="assec-t asanim" style="--d:120ms">UPDATED RECORDS</div>' : '';
-  /* --- Currency strip (JD 2026-10-26): freshness at a glance, what the
-     fresh sweep found, and who the rotation visits next --- */
-  var nowD = new Date();
-  var todayIso = nowD.getFullYear() + '-' + ('0' + (nowD.getMonth() + 1)).slice(-2) + '-' + ('0' + nowD.getDate()).slice(-2);
-  var ageDays = daysBetween(DT.date, todayIso);
-  var ageLabel = ageDays <= 0 ? 'TODAY' : ageDays === 1 ? 'YESTERDAY' : ageDays + ' DAYS AGO';
-  var freshLine = freshF ? 'Fresh sweep of the past 21 days: <b>1 new record found</b> — ' + esc(freshF.display || freshF.name) + ', filed at the top of this page.' : 'Fresh sweep of the past 21 days: nothing new found.';
-  var nextUp = DT.next_up || [];
-  var remaining = typeof DT.unchecked_remaining === 'number' ? DT.unchecked_remaining : 0;
-  var cur = '<section class="card dtcur asanim" style="--d:0ms"><div class="cbody">' +
-    '<div class="dtcur-top"><span class="dtcur-dot"></span><span class="dtcur-state">CURRENT AS OF ' + esc(fmtD(DT.date)).toUpperCase() + ' &middot; <span class="dtcur-age">' + ageLabel + '</span></span><span class="dtcur-next">Next run tomorrow morning</span></div>' +
-    '<div class="dtcur-fresh">' + freshLine + '</div>' +
-    (nextUp.length ? '<div class="dtcur-nu"><span class="dtcur-nu-t">Next in the rotation</span><span class="dtcur-nu-names">' + nextUp.map(function(x){ return personLink(x.name, x.display); }).join(' &middot; ') + (remaining > nextUp.length ? ' &middot; +' + (remaining - nextUp.length) + ' more not yet checked' : '') + '</span></div>' : '') +
-    '</div></section>';
-  var top = '<div class="astop' + (hero ? '' : ' astop-solo') + '">' + hero + stats + '</div>';
+  /* The old currency strip is gone (JD 2026-10-28): its date lives in
+     the workflow strip, and "next in the rotation" named people the
+     landing doesn't need — only the not-yet-checked count remains,
+     on the checked card. */
   /* --- Change log rail (JD 2026-10-22): every amendment from the photo/info passes, with the date of its source --- */
   function fmtSrc(iso){
     if(!iso) return '';
@@ -6104,7 +6205,7 @@ function viewDaily(v){
     }).join('');
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
-  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + cur + top + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div></div>';
+  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div></div>';
   dtAnimate();
 }
 
@@ -6928,7 +7029,7 @@ function phInspClose(instant){
 
 function viewPhotos(v){
   phLoad();
-  var head = '<div class="pagehead phhead"><div><h1 class="display">Photos</h1><p class="sub">A photo counts only when its page ties it to the person. Click a card for the inspector; reviewing lives in Audit &rarr; Photo Audit.</p></div></div>';
+  var head = '<div class="pagehead phhead"><div><h1 class="display">Photos</h1></div></div>';
   if(!PH){
     v.innerHTML = '<div class="page asearch">' + head + '<div class="asskel"><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div></div></div>';
     return;
@@ -6937,14 +7038,18 @@ function viewPhotos(v){
   var all = phAllEntries();
   var withPh = all.filter(phHasPhoto).length;
   var unchecked = all.filter(function(p){ return p.status === 'unchecked'; }).length;
-  var stats = '<div class="phstrip">' +
+  /* Design cleanup (JD 2026-10-28): the stats ride in the banner as
+     one compact line, and every control fits in ONE toolbar row —
+     Tier/Organizations tuck behind Filters. The photos are the hero;
+     the grid gets the reclaimed height. */
+  var headFull = '<div class="pagehead phhead"><div><h1 class="display">Photos</h1></div><div class="ph-headstats">' +
     '<span class="phst">' + ic('camera', 13) + '<b>' + (PH.total || PH.people.length) + '</b> checked</span>' +
     '<span class="phst">' + ic('check', 13) + '<b>' + withPh + '</b> on file</span>' +
     '<span class="phst">' + ic('search', 13) + '<b>' + (all.length - withPh) + '</b> no photo yet</span>' +
     (PH.updated ? '<span class="phst">' + ic('calendar', 13) + 'Updated <b>' + esc(fmtIsoD(PH.updated)) + '</b></span>' : '') +
     (unchecked ? '<span class="phst">' + ic('search', 13) + '<b>' + unchecked + '</b> not yet checked</span>' : '') +
     (phNewCount(all) ? '<span class="phst">' + ic('sparkle', 13) + '<b>' + phNewCount(all) + '</b> new in the last 3 weeks</span>' : '') +
-    '</div>';
+    '</div></div>';
   var tierN = { vetted:0, associate:0, open:0, '':0 };
   all.forEach(function(p){ var e = phEntryOf(p); var t = e ? tierOf(e) : ''; if(tierN[t] == null) tierN[t] = 0; tierN[t]++; });
   function fbtn(f, label, n){ return '<button type="button" class="ph-fbtn' + (PH_FILT === f ? ' on' : '') + '" data-act="phfilt" data-f="' + esc(f) + '"><span>' + esc(label) + '</span><b>' + n + '</b></button>'; }
@@ -6955,20 +7060,23 @@ function viewPhotos(v){
      ONE bar above the grid — search, Show, Tier, Organizations as
      labeled chip groups — and the grid takes the full width. The
      inspector remains the single side surface, inside its modal. */
+  var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['newest', 'Newest'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Tier']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" id="phsdirbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
+  var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
   var rail = '<div class="phtoolbar">' +
     '<div class="phtb-row"><input id="phq" type="search" placeholder="Search names" autocomplete="off" value="' + esc(PH_QUERY) + '">' +
     '<span class="phtb-group"><span class="phtb-lab">Show</span>' +
     fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('multi', 'Multiple photos', all.filter(function(p){ return phAllPhotos(p).length > 1; }).length) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
-    '</span></div>' +
-    '<div class="phtb-row"><span class="phtb-group"><span class="phtb-lab">Tier</span>' +
+    '</span>' +
+    '<button type="button" class="phcolbtn" data-act="phmore" aria-expanded="false">Filters</button>' +
+    '<span class="sp"></span><span class="ph-count" id="phcount"></span>' + sortHtml + colsHtml +
+    '</div>' +
+    '<div class="phtb-row" id="phtb-more" hidden><span class="phtb-group"><span class="phtb-lab">Tier</span>' +
     fbtn('tier:vetted', 'Vetted', tierN.vetted) + fbtn('tier:associate', 'Associate', tierN.associate) + fbtn('tier:open', 'Open', tierN.open) + fbtn('tier:', 'No tier', tierN['']) +
     '</span><span class="phtb-group"><span class="phtb-lab">Organizations</span>' +
     phTopOrgs(all).map(function(o){ return fbtn('org:' + o.name, o.name, o.n); }).join('') +
     '</span></div></div>';
-  var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['newest', 'Newest'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Tier']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" id="phsdirbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
-  var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
-  var main = '<div class="ph-main"><div class="phbar"><span class="ph-count" id="phcount"></span>' + sortHtml + colsHtml + '</div><div id="phlist"></div></div>';
-  v.innerHTML = '<div class="page asearch pg-photos">' + head + stats + '<div class="ph-layout2">' + rail + main + '</div></div>';
+  var main = '<div class="ph-main"><div id="phlist"></div></div>';
+  v.innerHTML = '<div class="page asearch pg-photos">' + headFull + '<div class="ph-layout2">' + rail + main + '</div></div>';
   phPaintList();
   if(PHI) phiRender();
   phFocusChromeArm();
@@ -8309,8 +8417,7 @@ function audModeBarHTML(){
   var A = S.audit, m = audMode();
   if(m === 'lima'){
     var np = lcPendingCount();
-    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Lima Charlie run</span>' +
-      '<span class="dim">Tap a card to open the whole profile. Dictate everything that needs to change into the note box; Luna applies it on the next run.</span></div>';
+    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Lima Charlie run</span></div>';
   }
   if(m === 'photos'){
     phLoad();
@@ -8318,8 +8425,7 @@ function audModeBarHTML(){
     return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> to review</span><span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
       '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; B bad photo &middot; X reject &middot; U undo &middot; A adjust &middot; 1&ndash;7 why bad</span></div>';
   }
-  return '<div class="aud-modebar"><button type="button" class="btn ghost" data-act="audbulkphone">Mark all phone gaps done</button>' +
-    '<span class="dim">Close out the phone gap for everyone you have no number for.</span></div>';
+  return '<div class="aud-modebar"><button type="button" class="btn ghost" data-act="audbulkphone">Mark all phone gaps done</button></div>';
 }
 function audPaintModeBar(){
   var A = S.audit; if(!A) return;
@@ -8962,14 +9068,16 @@ function viewAudit(v){
   var m = audMode();
   var ykMissN = people().filter(function(di){ return !knownSinceYear(D.directory[di]) && audDismissedServer(di).indexOf('years') < 0 && !AUD_DISMISS[audPair(di, 'years')]; }).length;
   if(m === 'lima' && S.audit.lcOpen != null && D.directory[S.audit.lcOpen]){ lcRenderOpen(v); return; }
-  v.innerHTML = '<div class="page audit"><div class="pagehead"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
+  /* Design cleanup (JD 2026-10-28): modes, goal and the mode bar move
+     INTO the hero banner; the deck starts right under it. */
+  v.innerHTML = '<div class="page audit"><div class="pagehead"><div class="aud-headrow"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
     '<span class="aud-head-btns"><button type="button" class="btn ghost" data-act="audlater" id="audlaterbtn" hidden>' + ic('today', 15) + '<span>Saved for later (<span id="audlaterN">0</span>)</span></button>' +
     '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></span></div>' +
     '<div class="aud-tools">' + audModesHTML() +
     '<span class="aud-goal"><span class="aud-goal-l">Today\'s goal</span><span class="aud-goal-bar"><i id="audgoalfill"></i></span><span id="audgoalt"></span>' +
     '<button type="button" class="aud-goal-b" data-act="audgoal" data-d="-5" aria-label="Lower the goal by 5">−</button><button type="button" class="aud-goal-b" data-act="audgoal" data-d="5" aria-label="Raise the goal by 5">+</button></span></div>' +
+    '<div id="audmodebar">' + audModeBarHTML() + '</div></div>' +
     '<div id="audpool" class="audpool"></div>' +
-    '<div id="audmodebar">' + audModeBarHTML() + '</div>' +
     (m === 'years' ? '' : '<button type="button" class="aud-ykstrip" data-act="audmode" data-m="years">' + ic('calendar', 15) + '<span class="aud-ykstrip-t"><b>Years Known</b><small>One person at a time \u2014 big year, month and day lists, keyboard friendly</small></span><span class="sp"></span><span class="aud-ykstrip-n">' + ykMissN + ' missing a year</span><span class="aud-ykstrip-go">Open &rarr;</span></button>') +
     (m === 'rapid'
       ? '<div class="aud-stage-wrap"><div class="aud-stack" id="audstack"><div class="aud-peek p2"></div><div class="aud-peek p1"></div><div class="aud-grid aud-stage" id="audgrid"></div></div></div>'
@@ -9110,6 +9218,7 @@ function onClick(ev){
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
     case 'phbad': phSetReview(el.getAttribute('data-pname'), 'bad'); break;
     case 'phfilt': PH_FILT = el.getAttribute('data-f') || 'all'; store('ncc_photos_filter_v1', PH_FILT); phPaintList(); break;
+    case 'phmore': { var pm2 = $('#phtb-more'); if(pm2){ pm2.hidden = !pm2.hidden; el.setAttribute('aria-expanded', String(!pm2.hidden)); el.classList.toggle('on', !pm2.hidden); } break; }
     case 'phafilter': phaState().filter = el.getAttribute('data-f') || 'todo'; phaState().cur = null; viewAudit($('#view')); break;
     case 'phacur': phaState().cur = el.getAttribute('data-pname'); phaRender(); break;
     case 'phanav': phaNav(parseInt(el.getAttribute('data-d'), 10) || 1); break;
