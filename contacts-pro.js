@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.33.0';
+var APP_VERSION = '3.33.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6601,11 +6601,13 @@ function phLoad(){
    Correspondence (JD 2026-10-29): JD's iMessage threads from his
    own contents exports, baked by scripts/build_messages.py into
    data/messages.json, keyed by lowercase display name (the same
-   lookup photos.json uses). Read-only here: the profile Files
-   section gains a Correspondence entry per person with a thread,
-   opening a timeline window of the messages. The exports do not
-   mark group threads; mf.group carries the filing record's
-   group-suspected flag and the window says so.
+   lookup photos.json uses). messages.json is the storage
+   repository: the profile Files section gains a Correspondence
+   entry per person with a thread, and the window displays the
+   thread's enriched narrative only (JD 2026-10-29) — the verbatim
+   messages are never rendered. The exports do not mark group
+   threads; mf.group carries the filing record's group-suspected
+   flag and the window says so.
    ============================================================ */
 var MSG = null, MSG_LOADING = false;
 function msgLoad(){
@@ -6638,29 +6640,22 @@ function msgTimeLabel(ts){
 }
 function openCorrespondence(di){
   var e = D.directory[di], mf = msgFor(e); if(!mf) return;
-  var name = dispName(e), lastDay = '', rows = '';
-  (mf.msgs || []).forEach(function(m){
-    var day = String(m[0]).slice(0, 10);
-    if(day !== lastDay){ lastDay = day; rows += '<div class="msg-day">' + esc(msgDayLabel(day)) + '</div>'; }
-    rows += '<div class="msg-row ' + (m[1] === 'o' ? 'out' : 'in') + '"><div class="msg-bub">' + esc(m[2]) + '</div><time>' + esc(msgTimeLabel(m[0])) + '</time></div>';
-  });
-  /* Narrative form (JD 2026-10-29): the thread's filed report — the
-     imessage-report events already on the profile, in date order.
-     The verbatim thread stays one tap away, untouched. Threads whose
-     filing produced no narrative events open straight to Verbatim. */
+  var name = dispName(e);
+  /* Narrative only (JD 2026-10-29): the window shows the thread's
+     filed report — the imessage-report events on the profile, in
+     date order. The verbatim messages stay in messages.json as the
+     storage repository and are never displayed. A thread with no
+     narrative filed yet says so plainly. */
   var narr = (e.events || []).filter(function(ev){ return ev && ev.src === 'imessage-report' && ev.date; })
     .sort(function(a, b){ return (flexKey(a.date) || 0) - (flexKey(b.date) || 0); });
   var head = '<p class="dim msg-head">iMessage thread · ' + mf.n + ' messages · ' + esc(msgSpan(mf)) +
-    (mf.group ? '<br><span class="msg-warn">This thread may include group messages. Received messages are not guaranteed to be from ' + esc(name.split(' ')[0]) + ' alone.</span>' : '') + '</p>';
-  var verb = '<div class="msg-list" id="msg-verb"' + (narr.length ? ' hidden' : '') + '>' + rows + '</div>';
-  var tabs = '', narrDiv = '';
-  if(narr.length){
-    tabs = '<div class="msgtabs" role="group" aria-label="Correspondence form"><button type="button" class="msgtab on" data-act="msgtab" data-v="narr">Narrative</button><button type="button" class="msgtab" data-act="msgtab" data-v="verb">Verbatim</button></div>';
-    narrDiv = '<div id="msg-narr"><div class="tl msg-tl">' + narr.map(function(ev){
-      return '<div class="ev"><i></i><time>' + esc(evDate(ev.date)) + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
-    }).join('') + '</div></div>';
-  }
-  openSheet('Correspondence — ' + name, head + tabs + narrDiv + verb, { wide:true, focus:false });
+    (mf.group ? '<br><span class="msg-warn">This thread may include group messages, so the narrative is worded to hold either way.</span>' : '') + '</p>';
+  var body = narr.length
+    ? '<div class="tl msg-tl">' + narr.map(function(ev){
+        return '<div class="ev"><i></i><time>' + esc(evDate(ev.date)) + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
+      }).join('') + '</div>'
+    : '<p class="dim">No narrative has been filed for this thread yet. The raw thread (' + mf.n + ' messages) is held in storage.</p>';
+  openSheet('Correspondence — ' + name, head + body, { wide:true, focus:false });
 }
 
 function phDiByName(name){
@@ -9846,13 +9841,6 @@ function onClick(ev){
       txn('Attach file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fa) }); }); repaintSec('files'); break;
     }
     case 'msgopen': openCorrespondence(+el.getAttribute('data-di')); break;
-    case 'msgtab': {
-      var mv = el.getAttribute('data-v'), mn = $('#msg-narr'), mb = $('#msg-verb');
-      if(mn) mn.hidden = mv !== 'narr';
-      if(mb) mb.hidden = mv !== 'verb';
-      $$('.msgtab').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === mv); });
-      break;
-    }
     case 'fdel': { var fl = (D.directory[S.prof.di].files || []).slice(), fi = +el.getAttribute('data-i'); if(!fl[fi] || !confirm('Remove this attachment?')) break; fl.splice(fi, 1); txn('Remove file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fl) }); }); repaintSec('files'); break; }
     case 'degedit': S.prof.degEdit = +el.getAttribute('data-i'); repaintSec('background'); break;
     case 'degcancel': S.prof.degEdit = null; repaintSec('background'); break;
