@@ -3270,21 +3270,30 @@
    ]
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Senior portrait in Sandstoner 2013 (Potsdam Senior High School), Class of 2013, printed p. 53: portrait in the block headed \"Joseph A. Baxter\" (Nickname: Joey; Activities: Soccer 1,2,4, Track 1,2,3,4, Model UN 1,2,3,4, Orchestra 1,2,3,4). The page's OCR layer is empty, so search never surfaced it \u2014 found by reading the senior-section pages directly. Coordinator viewed the full page and cropped his portrait.",
    "name": "Joseph Baxter",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/joseph-baxter.jpg",
+   "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/141846",
+   "status": "confirmed",
+   "type": "Yearbook senior portrait",
+   "added": "2026-10-29"
   },
   {
-   "evidence": "Instagram profile @joetherockboyle (display name \"Joseph Boyle\").",
+   "evidence": "POSSIBLE (caption-order) in the 2026-10-29 arena photo hunt. Chess Club group photo in Tatler 2018 (Massena Central High School), printed p. 137, captioned \"Left to Right: Mr. Boyle, Axelle Langle, Dr. David Kistler, Jimmy Harvey, Micah Avery, Johnny Harvey, Miles LaFrance, Aidan Shanty\" \u2014 the far-left man (green shirt, glasses, beard) is cropped here. Identity rests on Massena HS + Spanish-department continuity across a decade of Tatlers (he is the school's Spanish teacher \"Mr. Boyle\"; a student namesake in class lists is a different person). Coordinator viewed the full page and located the far-left figure.",
    "name": "Joseph Boyle",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/453448963_1048926319917119_3693739310785806000_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTMuQzMifQ%3D%3D&_nc_ohc=sPXlBNRqxpcQ7kNvwEgWCS_&_nc_oc=Adrl8rDyVdmTfQaWgyavj_cYjy9z3nkuiXuFwBxsCsC0LNxoqqKFtbzlE1iw_UFd5YDVArLtAWFJBIPJGgX4go4K&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMyYWsbd-Xwf6Rl1FrHNvTVFavsqdjeXVDw2bAv8RTijA&oe=6AE0334A",
-   "source_page": "https://www.instagram.com/joetherockboyle/",
-   "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "photo_url": "photos/joseph-boyle.jpg",
+   "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/159176",
+   "status": "possible",
+   "type": "Yearbook group photo crop (caption order)",
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://scontent.cdninstagram.com/v/t51.2885-19/453448963_1048926319917119_3693739310785806000_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTMuQzMifQ%3D%3D&_nc_ohc=sPXlBNRqxpcQ7kNvwEgWCS_&_nc_oc=Adrl8rDyVdmTfQaWgyavj_cYjy9z3nkuiXuFwBxsCsC0LNxoqqKFtbzlE1iw_UFd5YDVArLtAWFJBIPJGgX4go4K&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMyYWsbd-Xwf6Rl1FrHNvTVFavsqdjeXVDw2bAv8RTijA&oe=6AE0334A",
+     "note": "Prior primary: Instagram profile picture (signature expired Oct 2026).",
+     "source_page": "https://www.instagram.com/joetherockboyle/"
+    }
+   ],
+   "added": "2026-10-29"
   },
   {
    "evidence": "Instagram profile @jj750d (display name \"Josh De Voe\").",
@@ -4810,12 +4819,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Individually captioned staff portrait in Sandstoner 2020 (Potsdam Senior High School), Special Ed Staff page (printed p. 70): her portrait cell (row 2, 2nd) is captioned \"Nanette Holt / Special Education Assistant\" directly beneath it. The book lists her under her married name Holt; the directory carries her as Nanette Yervasi Holt of Potsdam SHS. Note: the yearbook role reads Special Education Assistant while her profile emphasizes English teaching \u2014 a role-wording variance, not an identity conflict. Coordinator viewed the full page and cropped her cell.",
    "name": "Nanette Yervasi Holt",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/nanette-yervasi-holt.jpg",
+   "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/164086",
+   "status": "confirmed",
+   "type": "Yearbook staff portrait (captioned)",
+   "added": "2026-10-29"
   },
   {
    "evidence": "No source links on file.",
@@ -5445,7 +5455,14 @@
    "source_page": "https://berkeleycollege.prestosports.com/sports/wbkb/2024-25/bios/hmyene_salwa_hm4z",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "photos/salwa-hmyene.jpg",
+     "note": "Corroborating crop from the 2026-10-29 arena photo hunt: JV women's basketball team photo in Sandstoner 2020 (printed p. 124), captioned first row \"Salwa Hymene, Haliey Richards, Tati'ana Burks-Carista\" \u2014 1st player from the left, cropped. Caption-order (possible tier) on its own; filed as ALSO because her confirmed Berkeley College PrestoSports headshot remains primary (the PrestoSports host refuses connections from the research network, so the primary could not be re-verified byte-level in this run).",
+     "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/164140"
+    }
+   ]
   },
   {
    "evidence": "Instagram profile @slaminsam22 (display name \"Sam\"); bio: \"\ud83d\ude43\".",
@@ -5718,12 +5735,13 @@
    "also": []
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE (caption-order) in the 2026-10-29 arena photo hunt. Junior Varsity girls basketball team photo in Tatler 2016 (Massena Central High School), printed p. 99, captioned \"Back Row (L-R): Kayleigh Peets, Skyler Trumble, Liz George, Allainya Dumas, Hannah Greco, Chloe Violi, Lauren Laughman, and Alexandra Convertini\" \u2014 the 2nd player from the left in the back row is cropped here. Coordinator viewed the full page and located the figure by the printed left-to-right caption.",
    "name": "Skyler Trumble",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/skyler-trumble.jpg",
+   "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/152505",
+   "status": "possible",
+   "type": "Yearbook team photo crop (caption order)",
+   "added": "2026-10-29"
   },
   {
    "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). Image search associates this SUNY ResearchConnect portrait asset with 'Song Yi Lee SUNY Potsdam' (her directory anchor is SUNY Potsdam); no ResearchConnect profile page naming her could be located to confirm the tie - graded possible. Portrait viewed; real 260x447 JPEG.",
