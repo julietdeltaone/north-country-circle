@@ -118,13 +118,21 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @alexfornyassembly_ (display name \"Alex Hammond\").",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Senior portrait in Memories 2014 (Madrid-Waddington Central School), printed p. 12: color portrait at top-left of the page headed \"Alex Vincent Hammond\", with MWCS activities (NJHS 9 Co-President, NHS 10-12 President, Stardust 10-12 President, Drama Club 9-12 Vice President, MWCS Sound Technician) \u2014 a Madrid-Waddington senior feeding Cornell fits his Waddington/Cornell profile. Coordinator viewed the full page and cropped the senior portrait (not the baby photo in his entry).",
    "name": "Alex Hammond",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/84714815_873492166428725_5282582011964293120_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43NTAuQzMifQ%3D%3D&_nc_ohc=r-r0Y7yt7zUQ7kNvwHjakWU&_nc_oc=AdryfPnYlVKH7SeN7470T2LTwwTn2y4LSi1btQ5QJpxFYU6TKNnTn-mXyIJWkJzOn6VKQ3OCiIZmeMHz43mnbdyX&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMw-ImAOggzd8X1CSI0i5Z8B6f0b7MIyc8LSknQZXqeZw&oe=6AE02970",
-   "source_page": "https://www.instagram.com/alexfornyassembly_/",
+   "photo_url": "photos/alex-hammond.jpg",
+   "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/156796",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Yearbook senior portrait",
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://scontent.cdninstagram.com/v/t51.2885-19/84714815_873492166428725_5282582011964293120_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43NTAuQzMifQ%3D%3D&_nc_ohc=r-r0Y7yt7zUQ7kNvwHjakWU&_nc_oc=AdryfPnYlVKH7SeN7470T2LTwwTn2y4LSi1btQ5QJpxFYU6TKNnTn-mXyIJWkJzOn6VKQ3OCiIZmeMHz43mnbdyX&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMw-ImAOggzd8X1CSI0i5Z8B6f0b7MIyc8LSknQZXqeZw&oe=6AE02970",
+     "note": "Prior primary (remote URL).",
+     "source_page": "https://www.instagram.com/alexfornyassembly_/"
+    }
+   ],
+   "added": "2026-10-29"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5911,12 +5919,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Senior portrait in Keystoner 2017 (Norwood-Norfolk Central School): color portrait at top-left of her senior page, beside her printed Future Plans: \"I'm attending Le Moyne for the next four years to get a degree in Biology, then I will attend a vet school, become a Veterinarian\" \u2014 Le Moyne College matches her directory profile (Norwood-Norfolk CS, Le Moyne, SUNY Canton; RN at SUNY Upstate). The book prints her surname with a doubled letter (\"Krywancczyk\" per the scout's render) \u2014 a yearbook misspelling of Krywanczyk. Coordinator viewed the full page and cropped her portrait.",
    "name": "Thea Krywanczyk",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/thea-krywanczyk.jpg",
+   "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/161897",
+   "status": "confirmed",
+   "type": "Yearbook senior portrait",
+   "added": "2026-10-29"
   },
   {
    "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. Clarkson University's directory serves this headshot (150x200, viewed) under the username tquant from Thomas Quant's Clarkson org-chart entry. His directory anchor on file is Alfred State College and the Clarkson people page itself was unreachable during verification, so the employer tie is graded possible.",
