@@ -1495,7 +1495,7 @@ html,body{background:var(--bg)}
 .asbar-fill{width:auto}}
 .assec-t{font-family:"Space Grotesk",sans-serif;font-size:15px;font-weight:700;letter-spacing:.14em;margin:20px 0 10px}
 /* Live Records 2-column layout (V2.12.0) */
-#view:has(.page.asearch){max-width:1760px}
+#view:has(.pg-photos){max-width:1760px}
 .astop{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(290px,1fr);gap:14px;align-items:stretch}
 .page.asearch .astop .card{margin-bottom:0}
 .astop-solo{grid-template-columns:1fr}
@@ -3429,3 +3429,86 @@ html[data-mode="dark"] .page.people .ptable thead th{background:#0a0d12}
 .brief .bval a{color:var(--txt);text-decoration:underline;text-underline-offset:3px}
 .brief .bprov{color:var(--dim);font-size:11px;white-space:nowrap}
 .brief .bcare .blab{color:var(--acc)}
+
+/* ================================================================
+   Design cleanup (JD 2026-10-28, V3.25.0): every page's top gets
+   consolidated — controls move into the hero banner, content moves
+   up, explainer text is cut. Live Records: the page now runs at the
+   standard width (the 1760px override survives only on Photos,
+   where the grid is the hero), the workflow strip leads, new
+   records are a compact grid, checked names live in a dropdown,
+   and data freshness is color-coded by check age.
+   ================================================================ */
+.lrflow .asstats{align-items:flex-start}
+.lrfr{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.lrfr-h{display:flex;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:.12em;color:var(--mut);margin-bottom:8px;flex-wrap:wrap}
+.lrfr-bar{display:flex;height:10px;border-radius:2px;overflow:hidden;background:var(--line2)}
+.lrfr-seg{display:block;height:100%}
+.lrfr-leg{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--mut)}
+.lrfr-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.lrfr-leg b{color:var(--txt)}
+.lrnew-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.page.asearch .lrnew-grid .card{margin-bottom:0}
+.lrnew-h{display:flex;align-items:center;gap:10px}
+.lrnew-name{flex:1;min-width:0}
+.lrnew-name a{color:inherit;text-decoration:none}
+.lrnew-name small{display:block;margin-top:1px}
+.lrnew-fact{margin:10px 0 0;line-height:1.55}
+.lrnew-more{margin:-4px 0 14px}
+.lrchk-line{font-size:14px}
+.lrdrop{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.lrdrop summary{cursor:pointer;font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--txt);list-style:none;display:flex;align-items:center;gap:6px}
+.lrdrop summary::-webkit-details-marker{display:none}
+.lrdrop summary::after{content:"";border:solid var(--mut);border-width:0 1.5px 1.5px 0;padding:3px;transform:rotate(45deg);transition:transform .16s ease;margin-left:2px}
+.lrdrop[open ] summary::after{transform:rotate(225deg)}
+.lrdrop .aschips{margin-top:10px}
+@media (max-width:900px){.lrnew-grid{grid-template-columns:1fr}}
+/* People + Audit: controls inside the hero banner (V3.25.0) */
+.page.people .pagehead{flex-direction:column;align-items:stretch;padding:18px 24px 14px}
+.ppl-headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.page.people .pagehead .toolbar{margin-top:12px}
+.page.people .ppl-cols{padding-top:10px}
+.page.audit .pagehead{flex-direction:column;align-items:stretch}
+.aud-headrow{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.page.audit .aud-tools{margin-top:12px}
+.page.audit #audmodebar{margin-top:10px}
+.page.audit #audmodebar:empty{display:none}
+@media (max-width:899px){
+  .page.people .pagehead{padding:14px 14px 12px}
+  .page.people .ppl-cols{padding:10px 14px 14px}
+}
+/* Home cleanup (V3.25.0): Last contacts card, Network strip,
+   slim Known Since; Coverage & gaps and the Photos and Network
+   cards are off Home. */
+.hm-lc-cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}
+.hm-lc-cols h4{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:2px 0 6px}
+.hm-lcrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:8px 2px;cursor:pointer;color:inherit}
+.hm-lcrow:first-of-type{border-top:none}
+.hm-lcrow:hover .hm-lcname{text-decoration:underline}
+.hm-lcmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.hm-lcname{font-weight:600;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-lcprev{font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-lcwhen{font-size:11.5px;color:var(--mut);white-space:nowrap;flex:none}
+.hm-netstrip .cbody{padding-top:12px;padding-bottom:12px}
+.hm-ns-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.hm-ns-t{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.hm-ns-seg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mut)}
+.hm-ns-seg i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.hm-ns-seg b{color:var(--txt)}
+.hm-years-slim .hm-ybar{height:30px}
+.hm-years-slim .hm-ycols{height:auto;margin-top:2px}
+@media (max-width:760px){.hm-lc-cols{grid-template-columns:1fr}}
+/* Photos cleanup (V3.25.0): stats in the banner, one toolbar row */
+.ph-headstats{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pg-photos .ph-count{font-size:12.5px;color:var(--mut);white-space:nowrap}
+.phtb-row[hidden]{display:none}
+.pg-photos{gap:12px}
+/* Groups cleanup (V3.25.0): banner carries tabs + search */
+.grp-headrow{display:flex;align-items:flex-start;gap:16px}
+.page.groups .pagehead{flex-direction:column;align-items:stretch}
+.page.groups .pagehead .tabrow{margin-top:10px;border-bottom:none}
+.grp-toolsrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
+.grp-toolsrow .tabrow{margin-top:0;border-bottom:none;flex:none}
+.grp-toolsrow .gsearchbox{flex:0 1 320px}
+.grp-toolsrow .gcount{white-space:nowrap}
+.page.groups{gap:14px}
