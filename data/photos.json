@@ -2804,13 +2804,25 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @jdmeyers_ (display name \"JD Meyers\"); bio: \"• Romans 5:8 “If only life didn't need us to be this brave But we don't live in the world of if only's.” SUNY \".",
+   "evidence": "CONFIRMED in the 2026-10-29 self-refit. Primary: the 'Behind the Lens' portrait on his own business homepage (jdmeyersjr.com, alt text 'JD Meyers') - charcoal suit, golden-hour field backdrop; downloaded and hosted locally, viewed. Second portrait: his About page photo (alt 'JD Meyers - Photographer and Videographer, Potsdam NY') showing him outdoors in snow wearing a green 'HHC 27th IBCT SYRACUSE NY' hoodie - his own unit; hosted locally as an also, viewed. His Instagram profile picture (@jdmeyers_) is retained as an also: the scontent URL stored earlier had already expired ('URL signature expired'), so a fresh signed URL was pulled through the Instagram connector on 2026-10-29, downloaded immediately and hosted locally (same image asset as the original filing). Identity rests on his own site's placement/alt text and the unit insignia; the separate 'Jdmeyers' shell entry (no photo) is untouched.",
    "name": "JD Meyers",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/634546311_18558558691035006_5956289500485272520_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=wcj7VFFImx8Q7kNvwFunvdG&_nc_oc=AdoraQCIlZTUxfcGPniMf2jjwsC8xD0LvGyxHusaXYbuW7MddlX3Rvrnng5_TGpKURQJ1hP2w_s2p2HbjWzCOc0k&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=c2PBKbNm4VUxnTDe_5IqtQ&oh=00_AQPM9I5jMGq6NBfEk27fj-K5h3oYKmBtClR00kmW5A2bbg&oe=6AE011D3",
-   "source_page": "https://www.instagram.com/jdmeyers_/",
+   "photo_url": "photos/jd-meyers.jpg",
+   "source_page": "https://jdmeyersjr.com/",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Professional portrait (website)",
+   "added": "2026-10-29",
+   "also": [
+    {
+     "url": "photos/jd-meyers-about.jpg",
+     "note": "About page portrait (jdmeyersjr.com/about): outdoors in snow wearing his HHC 27th IBCT hoodie; alt text names him. Hosted locally.",
+     "source_page": "https://jdmeyersjr.com/about"
+    },
+    {
+     "url": "photos/jd-meyers-ig.jpg",
+     "note": "Instagram profile picture (@jdmeyers_), the previous primary (filed Oct 2026); re-downloaded 2026-10-29 via a fresh connector-issued URL after the original signed URL expired, and hosted locally.",
+     "source_page": "https://www.instagram.com/jdmeyers_/"
+    }
+   ]
   },
   {
    "evidence": "No source links on file — duplicate shell entry.",
