@@ -685,13 +685,20 @@
    "type": null
   },
   {
-   "evidence": "POSSIBLE in the 2026-10-29 video-lane workaround pass. Solo frame of the speaker addressing the camera, served by YouTube's own image CDN as the poster frame of 'Calvary Baptist Church 06/28/2020' (youtube.com/watch?v=v0SN5P_zsq0). The channel was verified via YouTube oEmbed as 'Calvary Baptist Church of Canton, NY' \u2014 the Canton church, not Massena \u2014 and Brad Ingram is that church's pastor (his directory seed), preaching his own congregation's service during COVID-era remote recording. No on-screen name or title credit on this asset, so graded possible; his title-credited cover video (eRwJw7VfKnI) serves only placeholder thumbnails on every variant. Frame viewed and cropped by the coordinator.",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Solo studio portrait published as the featured photo of the Calvary Baptist Church of Canton pastor page, which is dedicated solely to him: heading \"Pastor Brad Ingram\" with his bio (Canton since Oct 2018, husband and father of two \u2014 matching his profile). Coordinator viewed the full-resolution image. Replaces the possible-tier sermon frame as primary.",
    "name": "Brad Ingram",
    "photo_url": "photos/brad-ingram.jpg",
-   "source_page": "https://www.youtube.com/watch?v=v0SN5P_zsq0",
-   "status": "possible",
-   "type": "Sermon video frame",
-   "added": "2026-10-29"
+   "source_page": "https://cbcofcanton.wordpress.com/pastor/",
+   "status": "confirmed",
+   "type": "Church pastor page portrait",
+   "added": "2026-10-29",
+   "also": [
+    {
+     "url": "photos/brad-ingram-sermon.jpg",
+     "note": "Prior primary: sermon video frame (possible).",
+     "source_page": "https://www.youtube.com/@CalvaryBaptistChurchofCantonNY"
+    }
+   ]
   },
   {
    "evidence": "CONFIRMED on the 2026-10-28 photo rerun (JD's catch: the original pass recorded the source links without extracting the photos). The Thumbtack business profile for Window Cleaning Plus carries this as the pro's profile portrait; the same profile's Credentials section names Brayden Amo, and the BBB names him as the business owner. Image URL verified loading (972x972) and visually matched to the profile portrait.",
@@ -712,13 +719,21 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @brendan.bombard_19 (display name \"Bomby\"); bio: \"Keep pushing forward. Norfolk Ny\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Headshot embedded on his official Clarkson University people page (\"Brendan Bombard / Campus Safety & Security Officer\", bbombard@clarkson.edu), served by the Clarkson directory. Coordinator viewed the image. Low-resolution (150x200) but solo and identity-anchored by his own profile page.",
    "name": "Brendan Bombard",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/849773139_18498129307098746_2063723195533436121_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=X9UYz3RVz70Q7kNvwGbcBmn&_nc_oc=AdrF_r30CshjdUhhN30HliKFSQPCCbjG6PNu0O6SfRg9ec6eD1IoN4iEdDL-qiC2rmdGfSDkO1HCyxhOxSqokdia&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=ymEuLltD6rah_WcUon7Agg&oh=00_AQMnGiwEu0Xldlpm3ZPEv36hjaY9VVM2RAsggBcdSRXQCA&oe=6AE031D7",
-   "source_page": "https://www.instagram.com/brendan.bombard_19/",
-   "status": "possible",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "photo_url": "photos/brendan-bombard.jpg",
+   "source_page": "https://www.clarkson.edu/people/brendan-bombard",
+   "status": "confirmed",
+   "type": "University directory headshot",
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://scontent.cdninstagram.com/v/t51.82787-19/849773139_18498129307098746_2063723195533436121_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=X9UYz3RVz70Q7kNvwGbcBmn&_nc_oc=AdrF_r30CshjdUhhN30HliKFSQPCCbjG6PNu0O6SfRg9ec6eD1IoN4iEdDL-qiC2rmdGfSDkO1HCyxhOxSqokdia&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=ymEuLltD6rah_WcUon7Agg&oh=00_AQMnGiwEu0Xldlpm3ZPEv36hjaY9VVM2RAsggBcdSRXQCA&oe=6AE031D7",
+     "note": "Prior primary: Instagram profile picture (signature expired Oct 2026).",
+     "source_page": "https://www.instagram.com/brendan.bombard_19/"
+    }
+   ],
+   "added": "2026-10-29"
   },
   {
    "evidence": "No source links on file.",
@@ -1249,12 +1264,13 @@
    "type": null
   },
   {
-   "evidence": "Canton Fire Dept members page lists him (FF, since 2022) in a text-only roster table \u2014 no member photos on the page.",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Clarkson University directory headshot embedded on his official Clarkson people page (\"Corbin Ladison / Campus Safety & Security Officer\", cladison@clarkson.edu); \"Ofc. Ladison\" is visible on his uniform shirt with the Clarkson security patch. Coordinator viewed the image (face crop of the directory portrait).",
    "name": "Corbin Ladison",
-   "photo_url": null,
-   "source_page": "https://www.cantonfd.org/content/members/",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/corbin-ladison.jpg",
+   "source_page": "https://www.clarkson.edu/people/corbin-ladison",
+   "status": "confirmed",
+   "type": "University directory headshot",
+   "added": "2026-10-29"
   },
   {
    "evidence": "Instagram profile @coreyd123103 (display name \"Corey Delisa\"); bio: \"MAC <3 \u201cI know a guy\u201d\".",
@@ -2733,13 +2749,21 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @jamiesinclair (display name \"Jamie Sinclair\").",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Solo portrait on the Christian Fellowship Center leadership page; image alt text \"Jamie Sinclair\" and staff block \"Jamie Sinclair / Pastor at CFC Canton\". Coordinator viewed the image. Locally hosted copy of the CFC leadership portrait.",
    "name": "Jamie Sinclair",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/412541481_879915756846300_7730912189322798750_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTguQzMifQ%3D%3D&_nc_ohc=aEHGlhsQeewQ7kNvwE1I2RT&_nc_oc=Adr9BlXKwKO_TuUYUuEDMfOUBhZUPL8tM5wYJ5MPPqw5W2qQMR09Ms26m9FVChT1NzJTMXTNPJfWBClvEXrFmU4j&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNend0aXMHsBuB5hR-zMGOgwKp90MQbcThovYtPc-xPqg&oe=6AE0207F",
-   "source_page": "https://www.instagram.com/jamiesinclair/",
+   "photo_url": "photos/jamie-sinclair.jpg",
+   "source_page": "https://www.cfconline.org/leadership/",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Church leadership page portrait",
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://scontent.cdninstagram.com/v/t51.2885-19/412541481_879915756846300_7730912189322798750_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTguQzMifQ%3D%3D&_nc_ohc=aEHGlhsQeewQ7kNvwE1I2RT&_nc_oc=Adr9BlXKwKO_TuUYUuEDMfOUBhZUPL8tM5wYJ5MPPqw5W2qQMR09Ms26m9FVChT1NzJTMXTNPJfWBClvEXrFmU4j&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNend0aXMHsBuB5hR-zMGOgwKp90MQbcThovYtPc-xPqg&oe=6AE0207F",
+     "note": "Prior primary: Instagram profile picture (signature expired Oct 2026).",
+     "source_page": "https://www.instagram.com/jamiesinclair/"
+    }
+   ],
+   "added": "2026-10-29"
   },
   {
    "evidence": "Norwood-Norfolk CSD staff directory entry: '[Image 51: JanelColbert's Profile Photo] \u2014 Janel Colbert \u2014 Instructional Aide.' A real uploaded photo file, not the site's empty_profile placeholder used for staff without photos. County sales PDF is text-only.",
@@ -2955,13 +2979,21 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @jessicahurlbut (display name \"Jessica Hurlbut\"); bio: \"Pastor|Autism Mom x 2|Adoptive Mom x 2 Biblical Hope for Profound Autism Families  Grab my book UNLIMITED MOTH\".",
+   "evidence": "POSSIBLE in the 2026-10-29 arena photo hunt. The New Testament Church of Massena Who We Are page presents a single photo of a couple beside the text \"NTC is led by our Lead Pastors Greg and Jessica Hurlbut\"; the woman in the photo is filed as Jessica Hurlbut by page-context elimination (uncaptioned, hence possible). Coordinator viewed the image and cropped her side.",
    "name": "Jessica Hurlbut",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/558163022_18359729653081129_5375109249994809044_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=_4Vjh3aDefcQ7kNvwF84ikl&_nc_oc=AdppmrafkYqZxbddGEZppC1QVcqE0nLZSLjoWT2dOLZTYd_YSnQxJxFXrmZ0vE5UIzXB7qviAmxaGDoXklhUdbng&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=RWNQjuJFUJ1kaBSoRiCjYQ&oh=00_AQNfu-dzkNhnblB_oc0vxC7prk05ciGpK4AFgbOo543l6A&oe=6AE022C7",
-   "source_page": "https://www.instagram.com/jessicahurlbut/",
-   "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "photo_url": "photos/jessica-hurlbut.jpg",
+   "source_page": "https://www.ntcmassena.com/who-we-are/",
+   "status": "possible",
+   "type": "Church staff page photo (couple, cropped)",
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://scontent.cdninstagram.com/v/t51.82787-19/558163022_18359729653081129_5375109249994809044_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=_4Vjh3aDefcQ7kNvwF84ikl&_nc_oc=AdppmrafkYqZxbddGEZppC1QVcqE0nLZSLjoWT2dOLZTYd_YSnQxJxFXrmZ0vE5UIzXB7qviAmxaGDoXklhUdbng&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=RWNQjuJFUJ1kaBSoRiCjYQ&oh=00_AQNfu-dzkNhnblB_oc0vxC7prk05ciGpK4AFgbOo543l6A&oe=6AE022C7",
+     "note": "Prior primary: Instagram profile picture (signature expired Oct 2026).",
+     "source_page": "https://www.instagram.com/jessicahurlbut/"
+    }
+   ],
+   "added": "2026-10-29"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4298,12 +4330,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Village PDF mentions his police retirement in text only. The NCPR article quotes his testimony; its captioned photos show John Jones and Oral 'Nick' Hillary, not him.",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Clarkson University directory headshot embedded on his official Clarkson people page (\"Mark Wentworth / Campus Safety & Security Lieutenant\", mwentwor@clarkson.edu); his uniform shirt in the photo is embroidered \"Ofc. Wentworth\" with the Clarkson security patch. Coordinator viewed the image (face crop of the directory portrait).",
    "name": "Mark Wentworth",
-   "photo_url": null,
-   "source_page": "https://www.northcountrypublicradio.org/news/story/32598/20160920/hillary-trial-police-former-boyfriend-john-jones-testifies",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/mark-wentworth.jpg",
+   "source_page": "https://www.clarkson.edu/people/mark-wentworth",
+   "status": "confirmed",
+   "type": "University directory headshot",
+   "added": "2026-10-29"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4633,13 +4666,21 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Mixcloud's sole image is episode-specific artwork labeled with the full sermon title naming Pastor Mike Tomford, and neighboring episodes carry different artwork, so it is not generic show art \u2014 but the page does not explicitly state the artwork depicts him. Hubhopper yielded no image; Gouverneur Tribune Press page 404.",
+   "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Solo portrait on the Christian Fellowship Center leadership page; image alt text \"Mike Tomford\" and staff block \"Mike Tomford / Pastor at North Country Christian Fellowship (Gouverneur)\". Coordinator viewed the image. Replaces podcast episode artwork as primary.",
    "name": "Mike Tomford",
-   "photo_url": "https://thumbnailer.mixcloud.com/unsafe/290x290/extaudio/b/1/b/f/64b8-d22e-4acc-adfe-82bea25db508",
-   "source_page": "https://www.mixcloud.com/rcfgcf/sermon-psalm-57-singing-praises-in-the-cave-pastor-mike-tomford-june-21-2020/",
-   "status": "possible",
-   "type": "podcast episode artwork",
-   "added_approx": "Oct 2026"
+   "photo_url": "photos/mike-tomford.jpg",
+   "source_page": "https://www.cfconline.org/leadership/",
+   "status": "confirmed",
+   "type": "Church leadership page portrait",
+   "added_approx": "Oct 2026",
+   "also": [
+    {
+     "url": "https://thumbnailer.mixcloud.com/unsafe/290x290/extaudio/b/1/b/f/64b8-d22e-4acc-adfe-82bea25db508",
+     "note": "Prior primary: podcast episode artwork (not a portrait of him).",
+     "source_page": "https://www.mixcloud.com/rcfgcf/sermon-psalm-57-singing-praises-in-the-cave-pastor-mike-tomford-june-21-2020/"
+    }
+   ],
+   "added": "2026-10-29"
   },
   {
    "evidence": "Instagram profile @molliiwhitee (display name \"Molli Sue\"); bio: \"caffeine, tattoos & pickaxe lobotomies\".",
