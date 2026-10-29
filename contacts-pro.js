@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.35.0';
+var APP_VERSION = '3.36.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6874,8 +6874,14 @@ function phHeroHTML(e){
   var nav = photos.length > 1 ? '<div class="hphoto-nav"><button type="button" data-act="heroph" data-d="-1" data-pname="' + esc(p.name) + '" aria-label="Previous photo">&lsaquo;</button>' +
     '<span class="phdots">' + photos.map(function(ph, i){ return '<button type="button" class="phdot' + (i === cur ? ' on' : '') + '" data-act="herodot" data-i="' + i + '" data-pname="' + esc(p.name) + '" aria-label="Photo ' + (i + 1) + '"></button>'; }).join('') + '</span>' +
     '<button type="button" data-act="heroph" data-d="1" data-pname="' + esc(p.name) + '" aria-label="Next photo">&rsaquo;</button></div>' : '';
+  var verdict = '';
+  if((p.status === 'possible' || p.status === 'likely') && phReview()[key] !== 'confirmed'){
+    verdict = '<div class="hphoto-verdict"><span class="phbadge ' + (p.status === 'likely' ? 'lik' : 'poss') + '">' + p.status.toUpperCase() + ' — UNVALIDATED</span>' +
+      '<button type="button" class="btn sm primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Validate</button>' +
+      '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div>';
+  }
   return '<div class="hphoto" data-pname="' + esc(p.name) + '"><span class="hphoto-box" data-act="phinsp" data-pname="' + esc(p.name) + '" role="button" tabindex="0" title="Open the photo inspector"><img src="' + esc(photos[cur].url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, photos[cur].url) + '"></span>' +
-    nav + '</div>';
+    nav + '</div>' + verdict;
 }
 /* Framing editor core. Two mounts: the standalone overlay (Photo
    Audit's Adjust button) and in place of the photo inside the
@@ -7118,6 +7124,18 @@ function phaKeys(){
 function phDiOf(name){ var di = BYN[String(name || '').toLowerCase()]; return di == null ? null : di; }
 function phEntryOf(p){ var di = phDiOf(p.name); return di != null ? D.directory[di] : null; }
 function phRevOf(p){ return phReview()[String(p.name || '').toLowerCase()] || ''; }
+/* The Possible queue (JD 2026-10-29): every photo whose identity is only
+   suspected — graded possible or likely at filing — and not yet ruled on
+   by JD. These live in the Possible photos section on the Photos page
+   (and as a verdict bar on the profile) until he validates or rejects. */
+function phSuspects(){
+  if(!PH || !PH.people) return [];
+  return PH.people.filter(function(p){
+    if(!p.photo_url || (p.status !== 'possible' && p.status !== 'likely')) return false;
+    var r = phRevOf(p);
+    return r !== 'confirmed' && r !== 'rejected';
+  });
+}
 function phHasPhoto(p){ return !!p.photo_url && phRevOf(p) !== 'rejected' && phAllPhotos(p).length > 0; }
 function phStartYearOf(p){ var e = phEntryOf(p); return e ? knownSinceYear(e) : 0; }
 function phYearsCountOf(p){ var y = phStartYearOf(p); return y ? new Date().getFullYear() - y : -1; }
@@ -7571,7 +7589,16 @@ function viewPhotos(v){
     phTopOrgs(all).map(function(o){ return fbtn('org:' + o.name, o.name, o.n); }).join('') +
     '</span></div></div>';
   var main = '<div class="ph-main"><div id="phlist"></div></div>';
-  v.innerHTML = '<div class="page asearch pg-photos">' + headFull + '<div class="ph-layout2">' + rail + main + '</div></div>';
+  var sus = phSuspects();
+  var possHtml = sus.length ? '<section class="ph-poss"><div class="ph-poss-h"><h3>Possible photos</h3><span>Unconfirmed photos, waiting on your call. <b>' + sus.length + '</b> to review</span></div>' +
+    sus.map(function(p){
+      return '<div class="ph-poss-row"><button type="button" class="ph-poss-th" data-act="phinsp" data-pname="' + esc(p.name) + '" title="Open the photo inspector"><img src="' + esc(p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer"></button>' +
+        '<div class="ph-poss-mid"><b>' + esc(p.name) + '</b><span class="phbadge ' + (p.status === 'likely' ? 'lik' : 'poss') + '">' + p.status.toUpperCase() + '</span>' +
+        (p.evidence ? '<small>' + esc(briefClip(p.evidence, 150)) + '</small>' : '') + '</div>' +
+        '<div class="ph-poss-act"><button type="button" class="btn sm primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Validate</button>' +
+        '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div></div>';
+    }).join('') + '</section>' : '';
+  v.innerHTML = '<div class="page asearch pg-photos">' + headFull + possHtml + '<div class="ph-layout2">' + rail + main + '</div></div>';
   phPaintList();
   if(PHI) phiRender();
   phFocusChromeArm();
@@ -9691,7 +9718,7 @@ function onClick(ev){
     case 'mladd': { var ake = taxEntities().ents[el.getAttribute('data-key')]; if(ake) mlAddMember(ake, +(el.getAttribute('data-di'))); break; }
     case 'mlmore': { var msec = el.getAttribute('data-sec'); MLV.more[msec] = !MLV.more[msec]; mlRender(); break; }
     case 'chggrp': chgToggle(el); break;
-    case 'phconfirm': phSetReview(el.getAttribute('data-pname'), 'confirmed'); break;
+    case 'phconfirm': { phSetReview(el.getAttribute('data-pname'), 'confirmed'); if(S.route.name === 'profile') repaintTop(); break; }
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phinsp': { var _pn = el.getAttribute('data-pname'); phInspOpen(_pn, PH_HERO_IDX[String(_pn || '').toLowerCase()]); break; }
     case 'phix': phInspClose(); break;
@@ -9710,6 +9737,7 @@ function onClick(ev){
     case 'heroph': phHeroStep(el.getAttribute('data-pname'), parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'herodot': (function(){ var idx2 = phIndex(), pp = idx2 && idx2[el.getAttribute('data-pname')]; if(pp){ PH_HERO_IDX[String(pp.name).toLowerCase()] = parseInt(el.getAttribute('data-i'), 10) || 0; phHeroPaint(pp.name); } })(); break;
     case 'phreject': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'wrong-person'); break;
+    case 'phrejectq': { var pn2 = el.getAttribute('data-pname'); phSetVerdict(pn2, 'rejected', ''); if(S.route.name === 'profile') repaintTop(); break; }
     case 'phwrong': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'wrong-person'); break;
     case 'phnoperson': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'no-person'); break;
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
