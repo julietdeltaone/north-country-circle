@@ -3952,3 +3952,46 @@ body[data-mdl="1"] #view{max-width:none;width:100%;margin:0;padding:0;flex:1;min
 .msg-bub{padding:8px 12px;border:1px solid var(--line);border-radius:2px;background:var(--card2);color:var(--txt);font-size:13.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left}
 .msg-row.out .msg-bub{background:var(--accbg);border-color:var(--line2)}
 .msg-row time{margin-top:3px;font-size:10.5px;color:var(--dim)}
+
+/* ============================================================
+   V3.33.0 — condense + hierarchy + living background (JD 2026-10-29)
+   ============================================================ */
+/* hero: one meta line, one badges/score row */
+.hmeta{display:flex;flex-wrap:wrap;align-items:center;gap:3px 8px;margin-top:5px;color:var(--mut);font-size:13.5px}
+.hmeta b{color:var(--txt);font-weight:600}
+.hmeta .hsep{opacity:.45}
+.hmeta .hm-loc{display:inline-flex;align-items:center;gap:5px;color:var(--txt)}
+.hmeta .hm-loc svg{color:var(--mut);flex:none}
+.hmeta .hm-lc{display:inline-flex;align-items:center;gap:5px}
+.hrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:9px}
+/* Contact card: short facts pair two per row */
+.ipair{display:grid;grid-template-columns:1fr 1fr;gap:10px 26px;padding:8px 0;border-bottom:1px solid var(--line)}
+.ihalf{display:grid;grid-template-columns:100px 1fr;gap:10px;min-width:0;align-items:baseline}
+.ihalf .iv{min-width:0;overflow-wrap:anywhere}
+@media (max-width:899px){.ipair{grid-template-columns:1fr}}
+/* Relationship tiles: label and value on one line, auto-fit across */
+.tiles{grid-template-columns:repeat(auto-fit,minmax(175px,1fr))}
+.tile{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;padding:8px 11px}
+.tile small{flex:none}
+.tile .ocs-badge{flex-basis:100%}
+/* Movement hierarchy: About neutral-strong, Connection red-ticked */
+.page.profile .pmove-h{font-size:13px;color:var(--txt);display:flex;align-items:center;gap:9px}
+.page.profile .pmove-h::before{content:"";width:8px;height:8px;flex:none;background:var(--dim)}
+.page.profile #pm-c .pmove-h::before{background:var(--acc)}
+.page.profile #pm-c .card{border-left:2px solid color-mix(in srgb,var(--acc) 40%,transparent)}
+/* search results: solid, never see-through */
+.gsr{background:var(--glass-solid);-webkit-backdrop-filter:blur(18px) saturate(1.35);backdrop-filter:blur(18px) saturate(1.35);box-shadow:var(--sh-pop)}
+/* living background layer */
+#bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#bgfx .bgf{position:absolute;border-radius:50%;will-change:transform}
+#bgfx .b1{width:62vmax;height:62vmax;left:-14vmax;top:-18vmax;background:radial-gradient(circle,color-mix(in srgb,var(--ga) 17%,transparent) 0%,transparent 62%)}
+#bgfx .b2{width:54vmax;height:54vmax;right:-16vmax;top:22vh;background:radial-gradient(circle,color-mix(in srgb,var(--gb) 15%,transparent) 0%,transparent 62%)}
+#bgfx::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 76px),repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 76px);opacity:.32;-webkit-mask-image:radial-gradient(120% 90% at 50% 0%,#000 30%,transparent 100%);mask-image:radial-gradient(120% 90% at 50% 0%,#000 30%,transparent 100%)}
+/* correspondence: narrative/verbatim tabs + People column */
+.msgtabs{display:flex;gap:6px;margin:12px 0 4px}
+.msgtab{padding:6px 14px;border:1px solid var(--line2);border-radius:var(--pill);background:transparent;color:var(--mut);font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.msgtab.on{background:var(--accbg);color:var(--txt);border-color:var(--acc)}
+.msg-list[hidden],#msg-narr[hidden]{display:none}
+.msg-tl{margin-top:8px}
+.ptmsg{display:inline-flex;align-items:center;gap:6px;color:var(--txt)}
+.ptmsg svg{color:var(--acc)}
