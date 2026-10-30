@@ -105,7 +105,7 @@ html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .lhead{position:sticky;top:0;z-index:10;font:700 12px var(--sans);letter-spacing:.14em;color:var(--txt2);padding:7px 10px;margin:10px 0 4px;border-radius:10px;background:linear-gradient(90deg,color-mix(in srgb,var(--ga) 16%,var(--field)),color-mix(in srgb,var(--gb) 12%,var(--field)));border:1px solid var(--line);scroll-margin-top:0}
 .lsec:first-child .lhead{margin-top:2px}
 #plist{padding-bottom:52px}
-#plist.railpad{padding-right:24px}
+#plist.railpad{padding-right:40px}
 .prow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:12px 8px;min-height:68px;border-radius:14px;content-visibility:auto;contain-intrinsic-size:auto 68px;position:relative}
 .prow::after{content:"";position:absolute;left:67px;right:2px;bottom:0;height:1px;background:var(--line)}
 .prow:active{background:var(--fill2)}
@@ -259,7 +259,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.4.0';
+var MOBILE_VERSION = '1.4.1';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -576,7 +576,7 @@ function personRow(di){
 function openPerson(di){ location.hash = '#/p/' + encodeURIComponent(pkey(D.directory[di])); }
 
 /* ---------- router ---------- */
-var S = { route:'contacts', q:'', sort:'az', di:null, group:null, listKey:null };
+var S = { route:'contacts', q:'', sort:'contacted', di:null, group:null, listKey:null };
 function parseRoute(){
   var h = location.hash || '#/contacts';
   var parts = h.replace(/^#\//, '').split('/');
@@ -789,6 +789,8 @@ function scrubTo(y){
 function scrubEnd(){
   if(!scrub.on) return;
   scrub.on = false; scrub.lastAt = Date.now();
+  jumpToken++; /* a settle still nudging the scroll after a scrub moves rows
+                  out from under the next tap — kill it when the finger lifts */
   clearTimeout(scrub.hideT);
   scrub.hideT = setTimeout(function(){
     $('#scrubbub').classList.remove('on');
@@ -824,8 +826,33 @@ $('#scroll').addEventListener('scroll', function(){
 $('#totop').addEventListener('click', function(){ $('#scroll').scrollTo({ top:0, behavior:'smooth' }); });
 document.addEventListener('click', function(ev){
   var b = ev.target && ev.target.closest ? ev.target.closest('[data-open]') : null;
-  if(b){ openPerson(+b.getAttribute('data-open')); }
+  if(b){ TAP.doneSeq = TAP.seq; openPerson(+b.getAttribute('data-open')); }
 });
+/* tap insurance (JD 2026-10-30: "sometimes I have to tap a contact twice"):
+   iOS can swallow a row's click — the keyboard dismissing over the search
+   field, a list chunk re-rendering mid-tap, a rail settle still moving the
+   page. If a clean tap (down + up, barely moved) produced no navigation
+   within 220ms, navigate ourselves. When the real click does fire it marks
+   the tap done first, so this never double-navigates; a scroll gesture
+   moves too far to qualify, and a newer tap supersedes a pending one. */
+var TAP = { di:null, x:0, y:0, seq:0, doneSeq:0 };
+document.addEventListener('pointerdown', function(ev){
+  jumpToken++; /* any fresh touch ends leftover scroll settling */
+  var b = ev.target && ev.target.closest ? ev.target.closest('[data-open]') : null;
+  TAP.di = b ? +b.getAttribute('data-open') : null;
+  TAP.x = ev.clientX; TAP.y = ev.clientY; TAP.seq++;
+}, true);
+document.addEventListener('pointerup', function(ev){
+  if(TAP.di == null) return;
+  var di = TAP.di, seq = TAP.seq; TAP.di = null;
+  if(Math.abs(ev.clientX - TAP.x) > 12 || Math.abs(ev.clientY - TAP.y) > 12) return;
+  setTimeout(function(){
+    if(!D || TAP.doneSeq >= seq || TAP.seq !== seq) return;
+    if(di == null || !D.directory[di]) return;
+    var want = '#/p/' + encodeURIComponent(pkey(D.directory[di]));
+    if(location.hash !== want) openPerson(di);
+  }, 220);
+}, true);
 
 /* ---------- Groups + Lists ---------- */
 function groupMap(){
