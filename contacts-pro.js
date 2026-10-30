@@ -2114,11 +2114,29 @@ function go(path, o){
   var url = '#/' + path;
   if(o.replace) history.replaceState({ d:S.depth }, '', url);
   else { S.depth++; history.pushState({ d:S.depth }, '', url); }
+  histNote();
   render();
 }
 function back(fallback){
   if(S.depth > 0) history.back();
   else go(fallback || 'people', { replace:true });
+}
+/* ---------- View history labels + scroll restoration (V3.38.0) ----------
+   HIST mirrors the history stack by depth: each entry knows its hash
+   and a human label, so a Back control can say where it actually goes.
+   NAVSCR remembers #view's scroll per depth; a popstate render restores
+   it, so Back lands where you were, not at the top of the last view. */
+var HIST = [], NAVSCR = {};
+function histLabelFor(hash){
+  var seg = String(hash || '').replace(/^#\/?/, '').split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
+  var n = seg[0] || 'home';
+  if(n === 'p'){ var di = diFromId(seg[1]); return di != null && D && D.directory[di] ? dispName(D.directory[di]) : 'Profile'; }
+  if(n === 'groups') return seg[2] || 'Groups';
+  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings' }[n] || 'Back';
+}
+function histNote(){
+  HIST[S.depth] = { hash: location.hash, label: histLabelFor(location.hash) };
+  HIST.length = S.depth + 1;
 }
 /* Persistent Back (JD 2026-10-27): one button in the top bar, every
    view, every scroll position. Each press peels exactly one layer:
@@ -2181,7 +2199,7 @@ function goHome(){
   S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:(S.ppl && S.ppl.view) || 'list' };
   go('home');   /* V2.28.0: the landing is the Home overview now; the state clearing above is unchanged */
 }
-addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
+addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; S._pop = true; render(); });
 function openPerson(di, ctx, o){
   var e = D.directory[di]; if(!e) return;
   if(ctx) S.ctx = ctx; else if(!(o && o.keepCtx)) S.ctx = null;
@@ -2233,7 +2251,16 @@ function render(){
      weird navigation"). Same-route repaints (data loads, quiet
      refresh) keep the scroll exactly where it is. */
   var rk = n + '/' + (S.route.seg || []).join('/');
-  if(render._rk !== rk){ render._rk = rk; if(v) v.scrollTop = 0; window.scrollTo(0, 0); }
+  var popped = !!S._pop; S._pop = false;
+  if(!HIST[S.depth] || HIST[S.depth].hash !== location.hash) histNote();
+  if(render._rk !== rk){
+    if(v && render._rk != null) NAVSCR[render._depth || 0] = v.scrollTop;
+    render._rk = rk;
+    if(v) v.scrollTop = 0;
+    window.scrollTo(0, 0);
+    render._restore = popped ? (NAVSCR[S.depth || 0] || 0) : 0;
+  }
+  render._depth = S.depth;
   closeSheet();
   if(render._pv && render._pv !== n) phInspClose(true);
   if(HMI && n !== 'home') hmiClose(true);
@@ -2266,6 +2293,7 @@ function render(){
     if(window.console) console.error(err);
   }
   paintPool();
+  if(render._restore){ var vv = $('#view'); if(vv) vv.scrollTop = render._restore; render._restore = 0; }
 }
 function afterWrite(di){
   /* undo buttons after any write; never re-render a view the user is typing in */
@@ -3386,6 +3414,25 @@ var SECS = [
   { id:'lima',        t:'Lima Charlie note', mv:'c', ord:4, w:['lima'] }
 ];
 function secDef(id){ return SECS.filter(function(s){ return s.id === id; })[0]; }
+/* Rough content weight per section (V3.38.0): drives the adaptive sheet
+   ratio and short-section pairing in paintProfile. Counts only — the
+   layout heuristics never change what renders. */
+function secSize(e, id){
+  switch(id){
+    case 'about': return (gv(e, 'synopsis') ? 3 : 0) + Math.min(6, footprintOf(e).blocks.length);
+    case 'identity': return [effHandle(e), e.fb_url, (e.snap_handles || []).length, gv(e, 'also_known_as'), gv(e, 'location_on_file'), gv(e, 'phone'), gv(e, 'email'), e.city, e.hometown, (e.languages || []).length].filter(Boolean).length;
+    case 'background': return Math.min(10, tagList(gv(e, 'specialty')).length + degreesOf(e).length + honorsOf(e).length + parsePipe(gv(e, 'highlights')).length + ORG_CATS.reduce(function(n, c){ return n + tagList(gv(e, c.k)).length; }, 0));
+    case 'persona': return PERSONA.filter(function(p){ return (parseInt(gv(e, p[0]), 10) || 0) > 0; }).length;
+    case 'files': return (e.files || []).length + (msgFor(e) ? 1 : 0);
+    case 'business': return (e.businesses || []).length * 2;
+    case 'relationship': return [tierOf(e), gv(e, 'relationship'), gv(e, 'context'), gv(e, 'category'), knownSinceLabel(e), momVal(e)].filter(Boolean).length + personGroups(e).length;
+    case 'connections': return knownAssociates(e).length + famLinks(e).length;
+    case 'timeline': return Math.min(12, (e.events || []).length) + connPhases(e).length * 2;
+    case 'lima': return 3;
+  }
+  return 3;
+}
+function shortSec(it){ return it.size <= 4 && it.id !== 'about' && it.id !== 'files'; }
 function secWaivedUI(e, id){ var d = secDef(id); return d.w.every(function(w){ return secWaived(e, w); }); }
 function secHasContent(e, id){
   switch(id){
@@ -3424,6 +3471,10 @@ function viewProfile(v){
   }
   if(S.prof.di !== di) S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
   var e = D.directory[di];
+  /* The crumb names where Back actually lands (V3.38.0): the previous
+     history entry when there is one, else the context section. */
+  var prevE = S.depth > 0 ? HIST[S.depth - 1] : null;
+  var backTo = prevE && prevE.label ? prevE.label : (S.ctx && S.ctx.label ? S.ctx.label : 'People');
   var pager = '';
   if(S.ctx && S.ctx.keys){
     var i = S.ctx.keys.indexOf(pkey(e));
@@ -3435,7 +3486,7 @@ function viewProfile(v){
   }
   v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="ptop">' +
     '<div class="pback"><button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' +
-    '<button type="button" class="crumb" data-act="back" title="Back to ' + esc(S.ctx && S.ctx.label ? S.ctx.label : 'People') + '">' + esc(S.ctx && S.ctx.label ? S.ctx.label : 'People') + '</button></div>' + pager + '<span class="sp"></span>' +
+    '<button type="button" class="crumb" data-act="back" title="Back to ' + esc(backTo) + '">' + esc(backTo) + '</button></div>' + pager + '<span class="sp"></span>' +
     '<div class="menu"><button type="button" class="ib" data-act="menu" aria-haspopup="true" aria-label="More actions">' + ic('dots', 20) + '</button>' +
     '<div class="menu-pop" hidden>' +
     '<button type="button" data-act="export" data-di="' + di + '">' + ic('download', 16) + 'Download personnel file</button>' +
@@ -3459,14 +3510,34 @@ function paintProfile(di){
   var _sy = $('#p-hero') ? window.scrollY : null;
   $('#p-hero').innerHTML = heroHTML(di);
   var ll1 = $('#p-lastline'); if(ll1) ll1.innerHTML = lastLineHTML(di);
+  var weights = { a:0, c:0 };
   ['a', 'c'].forEach(function(mv){
-    var secs = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id); })
-      .sort(function(x, y){ return x.ord - y.ord; })
-      .map(function(s){ return secHTML(di, s.id); }).join('');
+    var list = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id); })
+      .sort(function(x, y){ return x.ord - y.ord; });
+    list.forEach(function(s){ weights[mv] += secSize(e, s.id); });
+    var secs;
+    if(mv === 'a'){
+      /* Adaptive packing (JD 2026-10-29): two short sections share a row
+         instead of each taking a full-width band over dead space. */
+      var items = list.map(function(s){ return { id:s.id, size:secSize(e, s.id), html:secHTML(di, s.id) }; });
+      var out = [];
+      for(var j = 0; j < items.length; j++){
+        var nx = items[j + 1];
+        if(nx && shortSec(items[j]) && shortSec(nx)){ out.push('<div class="bandrow">' + items[j].html + nx.html + '</div>'); j++; }
+        else out.push(items[j].html);
+      }
+      secs = out.join('');
+    } else secs = list.map(function(s){ return secHTML(di, s.id); }).join('');
     var grid = $('#pmg-' + mv), wrap = $('#pm-' + mv);
     if(grid) grid.innerHTML = secs;
     if(wrap) wrap.style.display = secs ? '' : 'none';
   });
+  var shEl = document.querySelector('.psheets');
+  if(shEl){
+    shEl.classList.remove('wide-a', 'wide-c');
+    if(weights.c <= 6 && weights.a >= 10) shEl.classList.add('wide-a');
+    else if(weights.c > weights.a) shEl.classList.add('wide-c');
+  }
   SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
   /* Sheet header counts (Split Partitions, V3.37.0): the About sheet
      counts Synopsis and Web Record as separate sections when present. */
@@ -3575,11 +3646,36 @@ function pillify(text, di){
     /* A bare city name followed by another capitalized word is part of a
        longer proper name (Edwards Knox High School), not the place. */
     if(ent.type === 'place' && ent.name.indexOf(',') < 0 && /^\s+[A-Z]/.test(text.slice(m.index + m[1].length))) continue;
-    out += esc(text.slice(last, m.index)) +
-      '<span class="epill t-' + ent.type + '" title="' + esc(PILL_TY[ent.type] + (ent.canon !== m[1] ? ' · ' + ent.canon : '')) + '">' + ic(PILL_IC[ent.type], 11) + esc(m[1]) + '</span>';
+    var ttl = esc(PILL_TY[ent.type] + (ent.canon !== m[1] ? ' · ' + ent.canon : '')), inner = ic(PILL_IC[ent.type], 11) + esc(m[1]);
+    out += esc(text.slice(last, m.index));
+    if(ent.type === 'place'){
+      out += '<button type="button" class="epill t-place" data-act="placeopen" data-city="' + esc(ent.canon.split(',')[0].trim()) + '" data-place="' + esc(ent.canon) + '" title="' + ttl + '">' + inner + '</button>';
+    } else {
+      var kind = { employer:'companies', school:'universities', church:'churches', group:'groups' }[ent.type];
+      out += '<a class="epill t-' + ent.type + '" href="#/groups/' + kind + '/' + encodeURIComponent(ent.canon) + '" title="' + ttl + '">' + inner + '</a>';
+    }
     last = m.index + m[1].length;
   }
   return out + esc(text.slice(last));
+}
+/* Place pills open a sheet of everyone filed under that place
+   (V3.38.0): the place's own "profile" is its people. */
+function placeOpen(city, place){
+  var cl = String(city || '').toLowerCase(), hits = [];
+  D.directory.forEach(function(x, xi){
+    if(!liveEntry(x)) return;
+    var cs = [x.city, x.hometown, gv(x, 'location_on_file')].map(function(s2){ return String(s2 || '').split(',')[0].trim().toLowerCase(); });
+    if(cs.indexOf(cl) >= 0) hits.push(xi);
+  });
+  hits.sort(function(a, b){
+    var sa = scoreFor(a), sb = scoreFor(b);
+    return ((sb ? sb.score : 0) - (sa ? sa.score : 0)) || dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+  });
+  var body = hits.length ? '<div class="plrows">' + hits.map(function(xi){
+    var x = D.directory[xi], sub = [cap(gv(x, 'relationship')), cap(gv(x, 'context'))].filter(Boolean).join(' · ');
+    return '<a class="plrow" href="#/p/' + encodeURIComponent(personId(x)) + '" data-act="openp" data-di="' + xi + '">' + avatar(x, 'sm') + '<span class="pl-main"><b>' + esc(dispName(x)) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span>' + ic('chevr', 15) + '</a>';
+  }).join('') + '</div>' : '<p class="dim">No one is filed under ' + esc(place || city) + '.</p>';
+  openSheet('People in ' + (place || city), body, { wide:true, focus:false });
 }
 /* ---------- Instrument header (Split Partitions, V3.37.0) ---------- */
 function ringScoreSVG(v){
@@ -9775,7 +9871,7 @@ function refreshAfterStatus(){
 }
 function ctxGo(di, j){
   S.ctx.i = j; S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
-  history.replaceState({ d:S.depth }, '', '#/p/' + encodeURIComponent(personId(D.directory[di]))); render(); window.scrollTo(0, 0); var vw = $('#view'); if(vw) vw.scrollTop = 0;
+  history.replaceState({ d:S.depth }, '', '#/p/' + encodeURIComponent(personId(D.directory[di]))); histNote(); render(); window.scrollTo(0, 0); var vw = $('#view'); if(vw) vw.scrollTop = 0;
 }
 function doSet(el){
   var di = curDi(el), k = el.getAttribute('data-k'), v = el.getAttribute('data-v'), e = D.directory[di];
@@ -10057,6 +10153,7 @@ function onClick(ev){
       txn('Attach file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fa) }); }); repaintSec('files'); break;
     }
     case 'msgopen': openCorrespondence(+el.getAttribute('data-di')); break;
+    case 'placeopen': placeOpen(el.getAttribute('data-city'), el.getAttribute('data-place')); break;
     case 'fdel': { var fl = (D.directory[S.prof.di].files || []).slice(), fi = +el.getAttribute('data-i'); if(!fl[fi] || !confirm('Remove this attachment?')) break; fl.splice(fi, 1); txn('Remove file', function(){ queuePatch(S.prof.di, { files:JSON.stringify(fl) }); }); repaintSec('files'); break; }
     case 'degedit': S.prof.degEdit = +el.getAttribute('data-i'); repaintSec('background'); break;
     case 'degcancel': S.prof.degEdit = null; repaintSec('background'); break;
