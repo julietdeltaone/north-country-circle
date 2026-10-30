@@ -4378,3 +4378,122 @@ html[data-mode="dark"] .epill.t-group{--epi:#ffb08a}
 @media (max-width:760px){
   .sbc-grid{grid-template-columns:1fr}
 }
+
+/* ============================================================
+   V3.46.0 (JD 2026-10-30) — THE ATLAS calendar. Zoomable year
+   heat-grid -> month -> week -> day sheet, with the sighting
+   score as the second color language. Gold #c9a227 reads on
+   both themes; density uses the accent at rising opacity.
+   ============================================================ */
+.ca-crumbs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 16px}
+.ca-crumb{font:inherit;font-size:14px;font-weight:600;padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:inherit;cursor:pointer}
+.ca-crumb.here{border-color:var(--acc);color:var(--acc)}
+span.ca-crumb{cursor:default}
+.ca-sep{color:var(--dim)}
+.ca-nav2{margin-left:6px;display:flex;gap:6px}
+.ca-step{font:inherit;font-size:16px;line-height:1;width:30px;height:30px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:inherit;cursor:pointer}
+.ca-step:hover{border-color:var(--acc);color:var(--acc)}
+.ca-toggle{margin-left:auto;display:flex;border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.ca-toggle button{font:inherit;font-size:13px;font-weight:600;padding:6px 14px;border:0;background:transparent;color:var(--dim);cursor:pointer}
+.ca-toggle button.on{background:var(--acc);color:#fff}
+.ca-layout{display:grid;grid-template-columns:minmax(0,1fr) 288px;gap:22px;align-items:start}
+/* year */
+.ca-yeargrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ca-mblock{border:1px solid var(--line);border-radius:14px;padding:13px 14px 15px;background:var(--card);cursor:pointer}
+.ca-mblock:hover{border-color:var(--acc)}
+.ca-mblock h3{margin:0 0 9px;font-size:15px;display:flex;justify-content:space-between;align-items:baseline}
+.ca-mblock h3 span{font-size:11.5px;font-weight:400;color:var(--dim)}
+.ca-dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.ca-dc{position:relative;aspect-ratio:1;border-radius:3px;background:var(--line);opacity:.38}
+.ca-dc.w1{background:var(--acc);opacity:.34}.ca-dc.w2{background:var(--acc);opacity:.52}.ca-dc.w3{background:var(--acc);opacity:.74}.ca-dc.w4{background:var(--acc);opacity:1}
+.ca-dc.gold{box-shadow:inset 0 0 0 2px #c9a227;opacity:1}
+.ca-dc.sight{background:#c9a227;opacity:1}
+.ca-dc.strong{background:var(--acc);opacity:.85}
+.ca-dc.venue{background:#c9a227;opacity:.30}
+.ca-dc.today{outline:2px solid var(--acc);outline-offset:1px;opacity:1}
+.ca-dot{position:absolute;right:2px;bottom:2px;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.ca-tick{position:absolute;left:2px;top:2px;width:4px;height:4px;border-radius:1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+/* month */
+.ca-monthgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.ca-dow{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);padding:2px}
+.ca-cell{border:1px solid var(--line);border-radius:10px;min-height:118px;padding:7px 8px;background:var(--card);cursor:pointer;overflow:hidden}
+.ca-cell:hover{border-color:var(--acc)}
+.ca-cell.dim{border:0;background:transparent;cursor:default}
+.ca-cell.today{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.ca-dn{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.ca-gdot{width:8px;height:8px;border-radius:50%;background:#c9a227;display:inline-block}
+.ca-rdot{width:8px;height:8px;border-radius:50%;background:var(--acc);display:inline-block}
+.ca-weeklink{margin-left:auto;font:inherit;font-weight:400;font-size:11px;color:var(--dim);background:none;border:0;cursor:pointer;padding:0}
+.ca-weeklink:hover{color:var(--acc)}
+.ca-mini{font-size:11.5px;line-height:1.35;padding:2.5px 6px;border-radius:5px;background:var(--field,rgba(127,127,127,.10));margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ca-mini .ca-tm{color:var(--dim);font-size:10.5px;margin-right:2px}
+.ca-mini.weak{opacity:.55}
+.ca-mini.ser{background:transparent;border:1px dashed var(--line)}
+.ca-mini.ser.venue{border-color:#c9a227;color:inherit}
+.ca-mini.more{background:transparent;color:var(--dim)}
+.ca-bands{margin-top:16px;border:1px solid var(--line);border-radius:12px;padding:13px 16px;background:var(--card)}
+.ca-bands-h{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.ca-band{display:flex;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--line);font-size:13.5px}
+.ca-band:first-of-type{border-top:0}
+.ca-band span{color:var(--dim);font-size:12.5px}
+.ca-band .ca-tchip{margin-left:auto}
+/* week */
+.ca-weekgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.ca-wcol{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--card);cursor:pointer;min-height:280px}
+.ca-wcol:hover{border-color:var(--acc)}
+.ca-wcol.today{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.ca-wcol h5{margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.ca-wd{font-size:21px;font-weight:700;margin:1px 0 8px}
+.ca-shelf{border-bottom:1px dashed var(--line);padding-bottom:6px;margin-bottom:6px}
+.ca-wev{border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-bottom:6px;font-size:12px;line-height:1.35}
+.ca-wev .ca-tm{display:block;color:var(--dim);font-size:10.5px}
+.ca-wev b{display:block;font-size:12.5px}
+.ca-wev span{color:var(--dim)}
+.ca-wev.ser{border-style:dashed}
+.ca-wev.ser.venue{border-color:#c9a227}
+.ca-wev.none{border:0;color:var(--dim)}
+/* day */
+.ca-sheet{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:22px 24px}
+.ca-sheet h2{margin:0 0 2px;font-size:23px}
+.ca-dsub{color:var(--dim);font-size:13px;margin:0 0 12px}
+.ca-evrow{display:flex;gap:14px;padding:9px 0;border-top:1px solid var(--line);align-items:baseline}
+.ca-evrow .ca-tm{flex:0 0 58px;color:var(--dim);font-size:12.5px}
+.ca-tt{min-width:0}
+.ca-tt b{font-size:15px;margin-right:8px}
+.ca-calname{display:block;color:var(--dim);font-size:12px;margin-top:2px}
+.ca-tchip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;border-radius:99px;padding:2px 9px;border:1px solid var(--line);color:var(--dim);vertical-align:2px}
+.ca-tchip.t-confirmed{background:#c9a227;border-color:#c9a227;color:#fff}
+.ca-tchip.t-corroborated{background:transparent;border:2px solid #c9a227;color:#c9a227;padding:1px 8px}
+.ca-tchip.t-strong{background:var(--acc);border-color:var(--acc);color:#fff}
+.ca-tchip.t-venue{border-color:#c9a227;color:#c9a227}
+.ca-evrow .cal-person{margin-left:6px}
+/* rail */
+.ca-rail{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:16px 18px;position:sticky;top:12px}
+.ca-rail h4{margin:16px 0 6px;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.ca-rail h4:first-child{margin-top:0}
+.ca-big{font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.ca-rsub,.ca-rfoot{color:var(--dim);font-size:12.5px;line-height:1.5}
+.ca-rfoot{margin-top:14px}
+.ca-legend{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--dim)}
+.ca-sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;background:var(--line)}
+.ca-sw.conf{background:#c9a227}
+.ca-sw.corr{background:transparent;border:2px solid #c9a227;width:7px;height:7px}
+.ca-sw.strg{background:var(--acc)}
+.ca-sw.ven{background:#c9a227;opacity:.35}
+.ca-longest{list-style:none;margin:0;padding:0}
+.ca-longest li{padding:5px 0;border-top:1px solid var(--line)}
+.ca-longest li:first-child{border-top:0}
+.ca-longest a,.ca-longest li>span{display:flex;justify-content:space-between;gap:10px;color:inherit;text-decoration:none;font-size:13.5px}
+.ca-longest b{color:var(--acc);white-space:nowrap}
+@media (max-width:1100px){
+  .ca-layout{grid-template-columns:1fr}
+  .ca-rail{position:static}
+  .ca-yeargrid{grid-template-columns:repeat(2,1fr)}
+  .ca-weekgrid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:760px){
+  .ca-yeargrid{grid-template-columns:1fr}
+  .ca-monthgrid{gap:4px}
+  .ca-cell{min-height:84px;padding:5px 6px}
+  .ca-weekgrid{grid-template-columns:1fr}
+}
