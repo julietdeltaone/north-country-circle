@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29",
+ "updated": "2026-10-30",
  "total": 680,
  "batches": "All batches complete \u2014 all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
@@ -1159,13 +1159,14 @@
    "type": null
   },
   {
-   "evidence": "LinkedIn profile photo harvested via Google Images (2026-10-22): the image result's landing page was verified as their exact on-file LinkedIn profile; indexed caption: 'Christine Sutter - LMSW | LinkedIn'. Her other sources had no photo of her (an aggregator page showed only a generic placeholder avatar; the Inner Lakes staff page carries her bio with no headshot).",
+   "evidence": "Set by JD's Lima Charlie note (2026-10-30) supplying this exact photo; downloaded and hosted locally, viewed by Luna: outdoor portrait of Christine Sutter. Replaces her expiring LinkedIn CDN photo.",
    "name": "Christine Sutter",
-   "photo_url": "https://media.licdn.com/dms/image/v2/C4D03AQFlE-NnLRO8Nw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1562393064777?e=2147483647&v=beta&t=Vr99N_Wi8rsAgT9elcdSxosiGoIuoGBt9JlYjQ-9ADg",
-   "source_page": "https://www.linkedin.com/in/christine-sutter-b179b082",
+   "photo_url": "photos/christine-sutter.jpg",
+   "source_page": "https://images.squarespace-cdn.com/content/v1/61c24f78776e61007bf55c7f/5c4fade6-29e2-4713-88de-35dbcc3f1968/Christine.jpg?format=1000w",
    "status": "confirmed",
-   "type": "profile photo (LinkedIn)",
-   "added_approx": "Oct 2026"
+   "type": "Portrait",
+   "added_approx": "Oct 2026",
+   "added": "2026-10-30"
   },
   {
    "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Associate Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
@@ -1873,13 +1874,14 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @elliecriscitello (display name \"Ellie Criscitello\"); bio: \"-Follower of Jesus @tcriscitello \u2764\ufe0f - Mama to Gia and Luna  @ellieroseart_co\".",
+   "evidence": "Set by JD's Lima Charlie note (2026-10-30) pointing at SUNY Potsdam's 'Motherhood and Education' feature on Ellie; lead portrait from that story, downloaded and hosted locally, viewed by Luna. Replaces her expired Instagram CDN photo.",
    "name": "Ellie Criscitello",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/209855013_178865234204073_8909875462034878684_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=rzfowh3CG5AQ7kNvwFZJWv0&_nc_oc=AdoPuoP9ZKt5b_irhqiztwdzB1SB5J3J-1SiW0K5RONbrLS6FHzWP0ILUbY6OaL5M5CINxnRSw88faXw3uPYyCnE&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPp0_1kshuHpOhVgBS6ldMG6XmGhEb9oxPhM2kSpnl13w&oe=6AE025D4",
-   "source_page": "https://www.instagram.com/elliecriscitello/",
+   "photo_url": "photos/ellie-criscitello.jpg",
+   "source_page": "https://www.potsdam.edu/academics/AAS/depts/engl/EllieCriscitello",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Profile story portrait",
+   "added_approx": "Oct 2026",
+   "added": "2026-10-30"
   },
   {
    "evidence": "Instagram profile @ellie.jent (display name \"Ellie\"); bio: \"Real estate page, currently not monitored!\".",
@@ -6040,13 +6042,14 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @tcriscitello (display name \"Timothy Criscitello\").",
+   "evidence": "Set by JD's Lima Charlie note (2026-10-30) supplying this exact photo; downloaded and hosted locally, viewed by Luna: Tim at work in the From the Heart Cabinetry shop (Woodshop News). Replaces his expiring Instagram CDN photo.",
    "name": "Timothy Criscitello",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/420563063_690191946319675_5837426455788481815_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy41ODkuQzMifQ%3D%3D&_nc_ohc=Ua7wTmbn1lEQ7kNvwEfO6wJ&_nc_oc=AdqaZNKd-cutpW9k8xGh66LvAGcrtOfbwMRV4iceeTAKMYDnDphl1vwWL8BiV2Cw4W1mD7BhFkt92q66i7oNDedj&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMt8WOTKSWCphXKSaBAKAEqwrsrdSwP9x7th3q5RpHAzA&oe=6AE03C1C",
-   "source_page": "https://www.instagram.com/tcriscitello/",
+   "photo_url": "photos/timothy-criscitello.jpg",
+   "source_page": "https://www.woodshopnews.com/uploads/MTY5OTQ5OTk4ODY2MjQ0OTg1/inside-4.jpg?format=auto&optimize=high&width=1440",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Workplace photo",
+   "added_approx": "Oct 2026",
+   "added": "2026-10-30"
   },
   {
    "evidence": "LETI graduation photo caption identifies everyone clockwise from top left, ending '...Connor Palmer, Timothy Jenkins and Sabrina Feit' \u2014 he is named and position-identified; the article lists Timothy Jenkins of North Rose among the eight graduating cadets.",
