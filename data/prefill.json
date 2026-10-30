@@ -3,6 +3,19 @@
  "count": 103,
  "suggestions": [
   {
+   "id": "pf-23d8fd3bd0",
+   "key": "sf:acacia-white",
+   "display": "Acacia White",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Massena, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Massena Hospital is in Massena."
+   ],
+   "conf": 55
+  },
+  {
    "id": "pf-81750b5f9d",
    "key": "adhope2006",
    "display": "Adriana Levendusky",
@@ -89,8 +102,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Potsdam Central School is in Potsdam.",
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Potsdam is in Potsdam.",
+    "Potsdam Central School is in Potsdam."
    ],
    "conf": 55
   },
@@ -399,19 +412,6 @@
    "id": "pf-4afd82fd14",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b9bc27d8bc",
-   "key": "emijent",
-   "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -769,8 +769,8 @@
    "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton.",
-    "St. Lawrence University is in Canton."
+    "St. Lawrence University is in Canton.",
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
