@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.46.0';
+var APP_VERSION = '3.47.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9711,11 +9711,12 @@ function audPaintEmpty(){
    ============================================================ */
 var AUD_MODES = [
   { k:'cards',  l:'Cards' },
+  { k:'prefill', l:'Prefill' },
   { k:'years',  l:'Years Known' },
   { k:'lima',   l:'Lima Charlie' },
   { k:'photos', l:'Photo Audit' }
 ];
-function audMode(){ var m = S.audit && S.audit.mode; return m === 'lima' || m === 'photos' || m === 'years' ? m : 'cards'; }
+function audMode(){ var m = S.audit && S.audit.mode; return m === 'lima' || m === 'photos' || m === 'years' || m === 'prefill' ? m : 'cards'; }
 /* Daily goal (Duolingo pattern, minus the nagging): fills today vs a
    goal JD sets himself, persisted per calendar day. */
 function audDay(){
@@ -9780,6 +9781,7 @@ function audShuffleInPlace(a){
 function audDealMode(){
   var m = audMode();
   if(m === 'lima') lcEnsureDeck();
+  else if(m === 'prefill'){ /* the prefill desk manages its own list */ }
   else if(m === 'photos'){ /* the photo desk manages its own queue */ }
   else if(m === 'years'){ /* the Years Known runner manages its own queue */ }
   else audDeal();
@@ -9822,6 +9824,11 @@ function audModeBarHTML(){
     var np = lcPendingCount();
     return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Lima Charlie run</span></div>';
   }
+  if(m === 'prefill'){
+    pfLoad();
+    var pn = PF ? pfRows().counts.pending : 0;
+    return '<div class="aud-modebar"><span><b>' + pn + '</b> inferred value' + (pn === 1 ? '' : 's') + ' waiting</span><span class="sp"></span><span class="dim">Approve files through the Save Pool &middot; Deny is remembered</span></div>';
+  }
   if(m === 'photos'){
     phLoad();
     var pc = phaCounts();
@@ -9834,6 +9841,7 @@ function audPaintModeBar(){
   var A = S.audit; if(!A) return;
   var m = audMode();
   if(m === 'lima'){ var lp = $('#lcpend'); if(lp) lp.textContent = lcPendingCount(); }
+  if(m === 'prefill'){ var mb = $('#audmodebar'); if(mb) mb.innerHTML = audModeBarHTML(); }
 }
 
 /* ============================================================
@@ -10463,12 +10471,161 @@ function ykBatchKeysInit(){
   }, true);
 }
 
+/* ============================================================
+   Prefill review (JD 2026-10-30, V3.47.0) — an Audit mode. Luna's
+   inference engine (scripts/build_prefill.py, rerun on every sync)
+   proposes values for blank fields into data/prefill.json, each
+   carrying graded inductive evidence (Tentative / Probable /
+   Strong) and the observations behind it. JD approves or denies
+   here. Approve files the value through the Save Pool in the same
+   undoable transaction that records the decision; Deny records
+   the decision only. Decisions persist per profile in the Sheet
+   column "Prefill Review" (field prefill_review, a JSON map by
+   suggestion id), and a decided suggestion never returns — the
+   generator dedupes against the same map. Tier and Momentum are
+   never inferred (JD's standing ruling); degrees are not inferred
+   (attendance is not a degree).
+   ============================================================ */
+var PF = null, PF_LOADING = false;
+var PF_VIEW = { field:'all', status:'pending', grade:'all', q:'' };
+var PF_LIST_FIELDS = ['companies', 'churches', 'universities', 'groups', 'specialty'];
+function pfLoad(){
+  if(PF || PF_LOADING) return;
+  PF_LOADING = true;
+  fetch('data/prefill.json', { cache:'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){ PF_LOADING = false; PF = d; if(S.route && S.route.name === 'audit'){ audPaintModeBar(); if(audMode() === 'prefill') pfRender(); } })
+    .catch(function(){ PF_LOADING = false; });
+}
+function pfReviewMap(e){
+  try{ var v = raw(e, 'prefill_review'); var m = v ? JSON.parse(v) : {}; return (m && typeof m === 'object' && !Array.isArray(m)) ? m : {}; }catch(x){ return {}; }
+}
+function pfDi(sg){
+  var di = BYN[String(sg.display || '').toLowerCase()];
+  if(di == null && sg.key) di = BYN[String(sg.key).toLowerCase()];
+  return di == null ? null : di;
+}
+function pfPresent(e, sg){
+  var cur = String(gv(e, sg.field) || '').trim();
+  if(!cur) return false;
+  if(PF_LIST_FIELDS.indexOf(sg.field) >= 0){
+    var has = false;
+    splitTags(cur, ', ').forEach(function(x){ if(x.toLowerCase() === String(sg.value).toLowerCase()) has = true; });
+    return has;
+  }
+  return true; /* scalar field filled at all: the suggestion is moot */
+}
+function pfStatus(sg){
+  var di = pfDi(sg);
+  if(di == null) return { k:'orphan', label:'Profile not found', at:'' };
+  var e = D.directory[di], dec = pfReviewMap(e)[sg.id];
+  if(dec && dec.decision === 'file') return { k:'filed', label:'Filed by JD', at:dec.at || '' };
+  if(dec && dec.decision === 'dismiss') return { k:'dismissed', label:'Denied by JD', at:dec.at || '' };
+  if(pfPresent(e, sg)) return { k:'already', label:'Already on file', at:'' };
+  return { k:'pending', label:'Pending', at:'' };
+}
+function pfDecide(id, decision){
+  if(!PF || !PF.suggestions) return;
+  var sg = null;
+  PF.suggestions.forEach(function(x){ if(x.id === id) sg = x; });
+  if(!sg) return;
+  var di = pfDi(sg);
+  if(di == null){ toast('That profile is no longer in the directory — the suggestion cannot be filed.'); return; }
+  var e = D.directory[di];
+  if(pfStatus(sg).k !== 'pending'){ toast('That suggestion was already decided.'); pfRender(); return; }
+  txn(decision === 'file' ? 'File prefill suggestion' : 'Deny prefill suggestion', function(){
+    var patch = {}, map = pfReviewMap(e);
+    map[sg.id] = { decision:decision, at:new Date().toISOString(), grade:sg.grade, field:sg.field, value:String(sg.value) };
+    patch.prefill_review = JSON.stringify(map);
+    if(decision === 'file'){
+      if(PF_LIST_FIELDS.indexOf(sg.field) >= 0){
+        var merged = rcUnion(gv(e, sg.field), String(sg.value), ', ');
+        if(merged !== String(gv(e, sg.field) || '')) patch[sg.field] = merged;
+      } else {
+        patch[sg.field] = String(sg.value);
+      }
+    }
+    queuePatch(di, patch);
+  });
+  toast(decision === 'file'
+    ? 'Filed ' + sg.field_label + ' for ' + (sg.display || '') + ': ' + sg.value + '. It saves through the Save Pool.'
+    : 'Denied for ' + (sg.display || '') + '. It will not be proposed again.', { undo:true });
+  pfRender();
+  audPaintModeBar();
+}
+function pfRows(){
+  var rows = (PF.suggestions || []).map(function(sg){ return { sg:sg, st:pfStatus(sg) }; });
+  var counts = { pending:0, filed:0, dismissed:0 };
+  rows.forEach(function(r){
+    if(r.st.k === 'pending') counts.pending++;
+    else if(r.st.k === 'filed' || r.st.k === 'already') counts.filed++;
+    else if(r.st.k === 'dismissed') counts.dismissed++;
+  });
+  return { rows:rows, counts:counts };
+}
+function pfRender(){
+  var wrap = document.getElementById('pfwrap');
+  if(!wrap) return;
+  if(!PF){ wrap.innerHTML = '<div class="pf-loading">Loading the prefill suggestions…</div>'; return; }
+  var built = pfRows(), counts = built.counts;
+  var labels = [];
+  (PF.suggestions || []).forEach(function(sg){ if(labels.indexOf(sg.field_label) < 0) labels.push(sg.field_label); });
+  function chip(act, val, cur, txt){
+    return '<button type="button" class="pf-chip' + (val === cur ? ' on' : '') + '" data-act="' + act + '" data-d="' + esc(val) + '">' + esc(txt) + '</button>';
+  }
+  var h = '<div class="pf-head"><p class="pf-intro">Luna\u2019s inferred values for blank fields, each with the evidence behind it. <b>Approve</b> files the value through the Save Pool. <b>Deny</b> is remembered — it will not be proposed again. Tier and Momentum are never inferred.</p>' +
+    '<div class="pf-filters"><span class="pf-flabel">Status</span>' +
+    chip('pfstatus', 'pending', PF_VIEW.status, 'Pending ' + counts.pending) +
+    chip('pfstatus', 'filed', PF_VIEW.status, 'Filed ' + counts.filed) +
+    chip('pfstatus', 'dismissed', PF_VIEW.status, 'Denied ' + counts.dismissed) +
+    '<span class="pf-flabel">Field</span>' + chip('pffield', 'all', PF_VIEW.field, 'All fields') +
+    labels.map(function(l){ return chip('pffield', l, PF_VIEW.field, l); }).join('') +
+    '<span class="pf-flabel">Grade</span>' +
+    chip('pfgrade', 'all', PF_VIEW.grade, 'All grades') + chip('pfgrade', 'Strong', PF_VIEW.grade, 'Strong') +
+    chip('pfgrade', 'Probable', PF_VIEW.grade, 'Probable') + chip('pfgrade', 'Tentative', PF_VIEW.grade, 'Tentative') +
+    '<input id="pfq" type="search" placeholder="Search person or value\u2026" value="' + esc(PF_VIEW.q || '') + '"></div></div>' +
+    '<div id="pfrows"></div>';
+  wrap.innerHTML = h;
+  pfPaintRows();
+}
+function pfPaintRows(){
+  var box = document.getElementById('pfrows');
+  if(!box || !PF) return;
+  var q = String(PF_VIEW.q || '').trim().toLowerCase();
+  var shown = pfRows().rows.filter(function(r){
+    var sg = r.sg;
+    if(PF_VIEW.status === 'pending' && r.st.k !== 'pending') return false;
+    if(PF_VIEW.status === 'filed' && !(r.st.k === 'filed' || r.st.k === 'already')) return false;
+    if(PF_VIEW.status === 'dismissed' && r.st.k !== 'dismissed') return false;
+    if(PF_VIEW.field !== 'all' && sg.field_label !== PF_VIEW.field) return false;
+    if(PF_VIEW.grade !== 'all' && sg.grade !== PF_VIEW.grade) return false;
+    if(q && (String(sg.display || '') + ' ' + String(sg.value || '')).toLowerCase().indexOf(q) < 0) return false;
+    return true;
+  });
+  var CAP = 250, total = shown.length;
+  shown = shown.slice(0, CAP);
+  if(!shown.length){ box.innerHTML = '<div class="pf-empty">Nothing in this view.</div>'; return; }
+  box.innerHTML = shown.map(function(r){
+    var sg = r.sg, di = pfDi(sg);
+    var name = di == null ? '<b>' + esc(sg.display || '') + '</b>'
+      : '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + esc(sg.display || '') + '</b></a>' + milBadge(D.directory[di]);
+    var acts = r.st.k === 'pending'
+      ? '<span class="pf-acts"><button type="button" class="btn primary sm" data-act="pfok" data-d="' + sg.id + '">Approve</button><button type="button" class="btn ghost sm" data-act="pfno" data-d="' + sg.id + '">Deny</button></span>'
+      : '<span class="pf-done">' + esc(r.st.label) + (r.st.at ? ' · ' + esc(String(r.st.at).slice(0, 10)) : '') + '</span>';
+    return '<div class="pf-row"><div class="pf-top">' + name +
+      '<span class="pf-field">' + esc(sg.field_label) + '</span>' +
+      '<b class="pf-val">' + esc(sg.value) + '</b>' +
+      '<span class="pf-grade g-' + String(sg.grade || '').toLowerCase() + '">' + esc(sg.grade) + '</span>' + acts + '</div>' +
+      '<div class="pf-ev">' + (sg.evidence || []).map(function(x){ return '<span>' + esc(x) + '</span>'; }).join('') + '</div></div>';
+  }).join('') + (total > CAP ? '<div class="pf-empty">Showing the first ' + CAP + ' of ' + total + ' — narrow by field or grade to work the rest.</div>' : '');
+}
+
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
   /* The Save Pool strip is painted synchronously by keepAnchor/render
      paths — left empty it fills a beat later when the outbox ticks,
      and everything under it jumps (the verdict-click jump, JD Oct 29). */
-  if(['cards', 'lima', 'photos', 'years'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
+  if(['cards', 'lima', 'photos', 'years', 'prefill'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
   var m = audMode();
@@ -10487,12 +10644,13 @@ function viewAudit(v){
     (m === 'years' ? '' : '<button type="button" class="aud-ykstrip" data-act="audmode" data-m="years">' + ic('calendar', 15) + '<span class="aud-ykstrip-t"><b>Years Known</b><small>One person at a time \u2014 big year, month and day lists, keyboard friendly</small></span><span class="sp"></span><span class="aud-ykstrip-n">' + ykMissN + ' missing a year</span><span class="aud-ykstrip-go">Open &rarr;</span></button>') +
     (m === 'rapid'
       ? '<div class="aud-stage-wrap"><div class="aud-stack" id="audstack"><div class="aud-peek p2"></div><div class="aud-peek p1"></div><div class="aud-grid aud-stage" id="audgrid"></div></div></div>'
-      : m === 'lima' ? '<div id="lcwrap"></div>' : m === 'photos' ? '<div id="phawrap"></div>' : m === 'years' ? '<div id="ykwrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
+      : m === 'lima' ? '<div id="lcwrap"></div>' : m === 'photos' ? '<div id="phawrap"></div>' : m === 'years' ? '<div id="ykwrap"></div>' : m === 'prefill' ? '<div id="pfwrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
     '<div id="audempty"></div>' +
     '<div class="aud-toast" id="audtoast" hidden role="status"></div></div>';
   var grid = $('#audgrid');
   paintPool();
   if(m === 'lima'){ lcRender(); }
+  else if(m === 'prefill'){ pfLoad(); pfRender(); }
   else if(m === 'photos'){ phaRender(); }
   else if(m === 'years'){ if(!YK) ykLoad(); ykKeysInit(); ykRender(); }
   else if(S.audit.blitzDone){
@@ -10658,6 +10816,11 @@ function onClick(ev){
     case 'audreopen': { var audC6 = el.closest('.aud-card'); if(audC6) audReopen(audC6, el.getAttribute('data-gap')); break; }
     case 'audundo': audUndoLast(); break;
     case 'audmode': if(S.audit) audSetMode(el.getAttribute('data-m')); break;
+    case 'pfok': pfDecide(el.getAttribute('data-d'), 'file'); break;
+    case 'pfno': pfDecide(el.getAttribute('data-d'), 'dismiss'); break;
+    case 'pffield': PF_VIEW.field = el.getAttribute('data-d'); pfRender(); break;
+    case 'pfstatus': PF_VIEW.status = el.getAttribute('data-d'); pfRender(); break;
+    case 'pfgrade': PF_VIEW.grade = el.getAttribute('data-d'); pfRender(); break;
     case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.shown = null; viewAudit($('#view')); } break;
     case 'audcatall': if(S.audit) audSetMode('cards'); break;
     case 'audbulkphone': audBulkPhone(); break;
@@ -10907,6 +11070,7 @@ function onInput(ev){
   var t = ev.target;
   if(t.id === 'gs'){ debPaint('gs', paintSearch); return; }
   if(t.id === 'rcq'){ RC_VIEW.q = t.value; rcSaveView(); debPaint('rcq', rcPaint); return; }
+  if(t.id === 'pfq'){ PF_VIEW.q = t.value; pfPaintRows(); return; }
   if(t.id === 'netq'){ netPaintFind(); return; }
   if(t.id === 'pq'){ S.ppl.q = t.value; debPaint('pq', paintPeople); return; }
   if(t.id === 'phq'){ PH_QUERY = t.value; debPaint('phq', phPaintList); return; }
