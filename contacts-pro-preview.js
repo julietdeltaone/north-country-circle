@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.37.0';
+var APP_VERSION = '3.38.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3519,11 +3519,11 @@ function paintProfile(di){
     if(mv === 'a'){
       /* Adaptive packing (JD 2026-10-29): two short sections share a row
          instead of each taking a full-width band over dead space. */
-      var items = list.map(function(s){ return { id:s.id, size:secSize(e, s.id), html:secHTML(di, s.id) }; });
+      var items = list.map(function(s){ return { id:s.id, ord:s.ord, size:secSize(e, s.id), html:secHTML(di, s.id) }; });
       var out = [];
       for(var j = 0; j < items.length; j++){
         var nx = items[j + 1];
-        if(nx && shortSec(items[j]) && shortSec(nx)){ out.push('<div class="bandrow">' + items[j].html + nx.html + '</div>'); j++; }
+        if(nx && shortSec(items[j]) && shortSec(nx)){ out.push('<div class="bandrow" style="order:' + items[j].ord + '">' + items[j].html + nx.html + '</div>'); j++; }
         else out.push(items[j].html);
       }
       secs = out.join('');
