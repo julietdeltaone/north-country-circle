@@ -55,6 +55,23 @@ html[data-mode="dark"]{
 /* ---------- sturdiness shell: never sideways, ever ---------- */
 *{box-sizing:border-box;max-width:100%}
 html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none;background:transparent}
+/* The app's base paint lives on the ROOT element too (JD 2026-10-30: a hard
+   white void cut the list mid-row in Chrome iOS — the page layer painted
+   shorter than the webview and the bare canvas showed through). The root
+   background is painted by the browser across the whole canvas no matter
+   how any element is sized, so the bottom of the screen can never be white. */
+html{background:
+  radial-gradient(1100px 700px at -6% -10%,color-mix(in srgb,var(--ga) 52%,transparent),transparent 64%),
+  radial-gradient(1200px 820px at 106% 112%,color-mix(in srgb,var(--gb) 46%,transparent),transparent 64%),
+  radial-gradient(760px 520px at 88% -12%,color-mix(in srgb,var(--gb) 20%,transparent),transparent 60%),
+  radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(31,48,71,.16) 100%),
+  linear-gradient(155deg,color-mix(in srgb,var(--ga) 13%,var(--field)),color-mix(in srgb,var(--gb) 11%,var(--field)))}
+html[data-mode="dark"]{background:
+  radial-gradient(1100px 700px at -6% -10%,color-mix(in srgb,var(--ga) 58%,transparent),transparent 64%),
+  radial-gradient(1200px 820px at 106% 112%,color-mix(in srgb,var(--gb) 52%,transparent),transparent 64%),
+  radial-gradient(760px 520px at 88% -12%,color-mix(in srgb,var(--gb) 24%,transparent),transparent 60%),
+  radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(0,0,0,.42) 100%),
+  linear-gradient(155deg,color-mix(in srgb,var(--ga) 14%,var(--field)),color-mix(in srgb,var(--gb) 12%,var(--field)))}
 body{font:15px/1.5 var(--sans);color:var(--txt);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
   radial-gradient(1100px 700px at -6% -10%,color-mix(in srgb,var(--ga) 52%,transparent),transparent 64%),
@@ -74,7 +91,10 @@ a{touch-action:manipulation}
 :focus-visible{outline:2px solid var(--ga);outline-offset:2px}
 h1,h2,h3,p{margin:0}
 img{max-width:100%}
-#app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;overflow-x:hidden;position:relative}
+/* fixed shell, inset 0: tracks the visible viewport in mobile browsers
+   (Chrome iOS especially) far more reliably than 100dvh, which is what let
+   the shell end short and expose the white canvas in the first place */
+#app{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;overflow-x:hidden}
 /* ---------- header ---------- */
 #hdr{flex:none;display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;background:linear-gradient(180deg,var(--glass2),var(--glass));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border-bottom:1px solid var(--line);z-index:40}
 #hdr .brand{display:flex;align-items:center;gap:8px;font:600 15px var(--serif);letter-spacing:.2px;color:var(--txt);min-width:0}
@@ -128,6 +148,20 @@ html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 #totop.on{display:inline-flex}
 .empty{padding:44px 18px;text-align:center;color:var(--mut)}
 .empty h3{font:500 19px var(--serif);color:var(--txt);margin-bottom:6px}
+/* ---------- home: two hero doors + recents (JD 2026-10-30) ---------- */
+.heroes{display:flex;flex-direction:column;gap:12px}
+.hero-btn{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;min-height:24vh;width:100%;padding:22px;border-radius:22px;border:1px solid var(--line2);text-align:left;color:var(--txt);box-shadow:var(--sh);-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%)}
+.hero-btn:active{transform:scale(.99)}
+.hero-btn .hb-ic{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:16px;background:var(--glass-solid);border:1px solid var(--line2);color:var(--txt)}
+.hero-btn b{font:700 31px/1.05 var(--serif);letter-spacing:-.3px}
+.hero-btn small{font-size:14.5px;color:var(--mut);font-weight:500}
+.hb-online{background:linear-gradient(150deg,color-mix(in srgb,var(--ga) 34%,var(--glass2)),color-mix(in srgb,var(--gb) 26%,var(--glass)))}
+.hb-loc{background:linear-gradient(150deg,color-mix(in srgb,var(--acc) 20%,var(--glass2)),var(--glass))}
+.seg2{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--fill);border:1px solid var(--line)}
+.seg2 button{flex:1;min-height:40px;border-radius:9px;color:var(--mut);font-weight:700;font-size:14px}
+.seg2 button.on{background:var(--acc);color:#fff}
+.scopeline{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut);font-weight:600}
+.scopeline button{margin-left:auto;min-height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--line2);color:var(--txt);font-weight:700;font-size:13px;background:var(--glass);flex:none}
 /* ---------- contact page ---------- */
 .backrow{display:flex;align-items:center;gap:4px;margin-bottom:10px}
 .backbtn{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:0 10px 0 4px;color:var(--txt);font-weight:600;border-radius:12px}
@@ -237,7 +271,8 @@ button.chip:active{border-color:var(--acc)}
 <div id="menu" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="scrim" data-menuclose></div>
   <div class="card">
-    <a href="#/contacts" data-menuclose>Contacts<small>Search and open anyone</small></a>
+    <a href="#/contacts" data-menuclose>Home<small>Online / Location logging + recents</small></a>
+    <a href="#/all" data-menuclose>Everyone<small>The full contact list</small></a>
     <a href="#/groups" data-menuclose>Groups<small>Every group and its members</small></a>
     <a href="#/lists" data-menuclose>Lists<small>Churches, companies, universities, skills</small></a>
     <hr>
@@ -259,7 +294,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.4.1';
+var MOBILE_VERSION = '1.5.0';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -568,10 +603,35 @@ function subLine(e){
   if(!bits.length){ var h = String(e.name || ''); if(h && !/^(ig|ct|sf|fdb):/.test(h)) bits.push('@' + h); }
   return bits.join(' · ');
 }
-function personRow(di){
+function personRow(di, attr){
   var e = D.directory[di];
-  return '<button type="button" class="prow" data-open="' + di + '">' + avatarHTML(e, 'av-sm') +
+  return '<button type="button" class="prow" ' + (attr || 'data-open') + '="' + di + '">' + avatarHTML(e, 'av-sm') +
     '<span class="pmain"><b>' + esc(dispName(e)) + '</b><small>' + esc(subLine(e)) + '</small></span>' + CHEV + '</button>';
+}
+function matchesQ(di, q){
+  var e = D.directory[di];
+  var hay = [dispName(e), e.name || '', gv(e, 'location_on_file'), gv(e, 'phone'), gv(e, 'email'),
+    tagList(gv(e, 'groups')).join(' '), tagList(gv(e, 'companies')).join(' '),
+    tagList(gv(e, 'churches')).join(' '), tagList(gv(e, 'universities')).join(' '), gv(e, 'specialty')].join(' ').toLowerCase();
+  return q.split(/\s+/).every(function(w){ return hay.indexOf(w) >= 0; });
+}
+/* the one logging write, shared by the profile form and both home flows:
+   a Timeline contact entry dated today + the Last Contact stamp (with the
+   online flag) when it is the newest — same rule as the main app */
+function saveLog(di, sum, det, on){
+  var e = D.directory[di]; if(!e) return false;
+  sum = String(sum || '').trim(); if(!sum) return false;
+  det = String(det || '').trim();
+  var d = todayStr();
+  var arr = (e.events || []).slice();
+  var lev = { date:d, summary:sum, kind:'contact' };
+  if(det) lev.detail = det;
+  if(on) lev.online = true;
+  arr.push(lev);
+  queuePatch(di, { events:JSON.stringify(arr) });
+  var curLc = String(gv(e, 'last_contact') || '').trim();
+  if(!curLc || flexKey(d) >= flexKey(curLc)){ setField(di, 'last_contact', d); setField(di, 'last_contact_online', on ? 'yes' : ''); }
+  return true;
 }
 function openPerson(di){ location.hash = '#/p/' + encodeURIComponent(pkey(D.directory[di])); }
 
@@ -585,14 +645,19 @@ function parseRoute(){
   if(parts[0] === 'groups') return { name:'groups' };
   if(parts[0] === 'lists' && parts[1] && parts[2]) return { name:'list', kind:decodeURIComponent(parts[1]), id:decodeURIComponent(parts[2]) };
   if(parts[0] === 'lists') return { name:'lists' };
-  return { name:'contacts' };
+  if(parts[0] === 'flow' && parts[1] === 'online' && parts[2] === 'log' && parts[3]) return { name:'fdetails', cat:'online', id:decodeURIComponent(parts.slice(3).join('/')) };
+  if(parts[0] === 'flow' && parts[1] === 'online') return { name:'pick', cat:'online' };
+  if(parts[0] === 'flow' && parts[1] === 'location' && parts[2] === 'pick') return { name:'pick', cat:'location' };
+  if(parts[0] === 'flow' && parts[1] === 'location') return { name:'fdetails', cat:'location' };
+  if(parts[0] === 'all') return { name:'all' };
+  return { name:'home' };
 }
 function render(){
   if(!D) return;
   var r = parseRoute();
   S.route = r.name;
   $('#rail').classList.remove('on'); $('#totop').classList.remove('on');
-  if(r.name !== 'contacts'){ var dk0 = $('#deck'); dk0.hidden = true; dk0.innerHTML = ''; }
+  if(r.name !== 'all' && r.name !== 'pick'){ var dk0 = $('#deck'); dk0.hidden = true; dk0.innerHTML = ''; }
   var v = $('#view');
   if(r.name === 'person'){
     var di = diFromId(r.id);
@@ -602,7 +667,10 @@ function render(){
   else if(r.name === 'group') viewMembers(v, 'Groups', r.id, groupMembers(r.id));
   else if(r.name === 'lists') viewLists(v);
   else if(r.name === 'list') viewMembers(v, listTitle(r.kind, r.id), r.id, listMembers(r.kind, r.id));
-  else viewContacts(v);
+  else if(r.name === 'pick') viewPick(v, r.cat);
+  else if(r.name === 'fdetails') viewFlowDetails(v, r.cat, r.id);
+  else if(r.name === 'all') viewContacts(v);
+  else viewHome(v);
   layoutChrome();
   $('#scroll').scrollTop = 0;
 }
@@ -642,13 +710,7 @@ function filteredPeople(){
   var dis = people();
   var q = S.q.trim().toLowerCase();
   if(!q) return sortPeople(dis);
-  var out = dis.filter(function(di){
-    var e = D.directory[di];
-    var hay = [dispName(e), e.name || '', gv(e, 'location_on_file'), gv(e, 'phone'), gv(e, 'email'),
-      tagList(gv(e, 'groups')).join(' '), tagList(gv(e, 'companies')).join(' '),
-      tagList(gv(e, 'churches')).join(' '), tagList(gv(e, 'universities')).join(' '), gv(e, 'specialty')].join(' ').toLowerCase();
-    return q.split(/\s+/).every(function(w){ return hay.indexOf(w) >= 0; });
-  });
+  var out = dis.filter(function(di){ return matchesQ(di, q); });
   return sortPeople(out);
 }
 var renderToken = 0;
@@ -697,7 +759,7 @@ function paintList(){
       /* each section is its own wrapper so the sticky header is constrained
          to its section and gets pushed off by the next one (iOS behavior) —
          flat siblings would all pile up stuck at the top together */
-      html += '<div class="lsec"><div class="lhead" data-letter="' + esc(g.k) + '">' + esc(g.k) + '</div>' + g.dis.map(personRow).join('') + '</div>';
+      html += '<div class="lsec"><div class="lhead" data-letter="' + esc(g.k) + '">' + esc(g.k) + '</div>' + g.dis.map(function(di){ return personRow(di); }).join('') + '</div>';
       n += g.dis.length;
     }
     list.insertAdjacentHTML('beforeend', html);
@@ -706,6 +768,186 @@ function paintList(){
   }
   chunk();
 }
+/* ---------- Home + logging flows (JD 2026-10-30) ----------
+   Landing is two stacked hero doors. ONLINE: pick the person first (list
+   scoped to people whose last contact was online), then enter the details.
+   LOCATION: enter the details first, then assign the person (list scoped
+   to people whose last contact was in person) — assigning IS the save.
+   Both pickers offer Most recent / A–Z, and searching (or "Show everyone")
+   widens past the category so nobody is unreachable. */
+var FLOW = { cat:'online', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
+var GLOBE_SVG = '<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.9 5.7 3.9 9S14.5 18.4 12 21c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg>';
+var PIN_SVG = '<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>';
+function catMembers(cat){
+  return people().filter(function(di){
+    var e = D.directory[di];
+    if(!String(gv(e, 'last_contact') || '').trim()) return false;
+    return lcOnline(e) === (cat === 'online');
+  });
+}
+function viewHome(v){
+  var recents = sortPeople(people().filter(function(di){
+    return !!String(gv(D.directory[di], 'last_contact') || '').trim();
+  })).slice(0, 8);
+  v.innerHTML =
+    '<div class="heroes">' +
+    '<button type="button" class="hero-btn hb-online" id="hb-online"><span class="hb-ic">' + GLOBE_SVG + '</span><b>Online</b><small>Log a message, call, or text</small></button>' +
+    '<button type="button" class="hero-btn hb-loc" id="hb-loc"><span class="hb-ic">' + PIN_SVG + '</span><b>Location</b><small>Log meeting someone in person</small></button>' +
+    '</div>' +
+    '<div class="ghead">Recents</div>' +
+    (recents.length ? recents.map(function(di){ return personRow(di); }).join('') : '<p class="none">No contacts logged yet.</p>') +
+    '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
+  $('#hb-online').addEventListener('click', function(){
+    FLOW = { cat:'online', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
+    location.hash = '#/flow/online';
+  });
+  $('#hb-loc').addEventListener('click', function(){
+    FLOW = { cat:'location', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
+    location.hash = '#/flow/location';
+  });
+}
+function pickSort(dis){
+  var out = dis.slice();
+  if(FLOW.sort === 'az') out.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+  else out.sort(function(a, b){
+    var x = flexKey(gv(D.directory[a], 'last_contact')), y = flexKey(gv(D.directory[b], 'last_contact'));
+    if(x !== y) return x < y ? 1 : -1;
+    return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+  });
+  return out;
+}
+function pickGroupKey(di){
+  if(FLOW.sort === 'az'){
+    var ch = dispName(D.directory[di]).trim().charAt(0).toUpperCase();
+    return /[A-Z]/.test(ch) ? ch : '#';
+  }
+  var k = flexKey(gv(D.directory[di], 'last_contact'));
+  return k ? fmtDate(k.slice(0, 7)) : 'No contact logged';
+}
+function viewPick(v, cat){
+  FLOW.cat = cat;
+  var dk = $('#deck');
+  dk.innerHTML =
+    '<div class="searchwrap">' +
+    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>' +
+    '<input id="pq" type="search" placeholder="Search everyone" autocomplete="off" aria-label="Search everyone" value="' + esc(FLOW.q) + '">' +
+    '<button type="button" id="pqclear" aria-label="Clear search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>' +
+    '<div class="seg2" role="group" aria-label="Sort people"><button type="button" id="pk-recent">Most recent</button><button type="button" id="pk-az">A–Z</button></div>' +
+    '<div class="scopeline"><span id="pk-scope"></span><button type="button" id="pk-all"></button></div>';
+  dk.hidden = false;
+  v.innerHTML =
+    '<div class="backrow"><button type="button" class="backbtn" id="pkback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'online' ? 'Home' : 'Details') + '</button></div>' +
+    '<div class="ghead">' + (cat === 'online' ? 'Who was it with?' : 'Who was it with? Tap to log it.') + '</div>' +
+    '<div id="plist"></div>' +
+    '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
+  $('#pkback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
+  var q = $('#pq'), qc = $('#pqclear');
+  function syncClear(){ qc.style.display = q.value ? 'inline-flex' : 'none'; }
+  syncClear();
+  var deb = null;
+  q.addEventListener('input', function(){
+    syncClear();
+    clearTimeout(deb);
+    deb = setTimeout(function(){ FLOW.q = q.value; paintPick(); }, 120);
+  });
+  qc.addEventListener('click', function(){ q.value = ''; FLOW.q = ''; syncClear(); paintPick(); q.focus(); });
+  $('#pk-recent').addEventListener('click', function(){ FLOW.sort = 'recent'; paintPick(); });
+  $('#pk-az').addEventListener('click', function(){ FLOW.sort = 'az'; paintPick(); });
+  $('#pk-all').addEventListener('click', function(){ FLOW.all = !FLOW.all; paintPick(); });
+  paintPick();
+}
+var pickToken = 0;
+function paintPick(){
+  var list = $('#plist'); if(!list) return;
+  $('#pk-recent').classList.toggle('on', FLOW.sort === 'recent');
+  $('#pk-az').classList.toggle('on', FLOW.sort === 'az');
+  var searching = !!FLOW.q.trim();
+  var base = (FLOW.all || searching) ? people() : catMembers(FLOW.cat);
+  var dis = searching ? base.filter(function(di){ return matchesQ(di, FLOW.q.trim().toLowerCase()); }) : base;
+  dis = pickSort(dis);
+  var scope = $('#pk-scope'), allBtn = $('#pk-all');
+  if(scope) scope.textContent = searching ? dis.length + ' matches · everyone'
+    : FLOW.all ? 'Everyone · ' + dis.length
+    : (FLOW.cat === 'online' ? 'Recent online contacts · ' : 'Recent in-person contacts · ') + dis.length;
+  if(allBtn) allBtn.textContent = FLOW.all ? (FLOW.cat === 'online' ? 'Only online' : 'Only in person') : 'Show everyone';
+  if(!dis.length){ list.innerHTML = '<div class="empty"><h3>Nobody here yet.</h3><p>' + (FLOW.all || searching ? 'Try a different search.' : 'Log one first, or show everyone.') + '</p></div>'; return; }
+  var groups = [], cur = null;
+  dis.forEach(function(di){
+    var k = pickGroupKey(di);
+    if(!cur || cur.k !== k){ cur = { k:k, dis:[] }; groups.push(cur); }
+    cur.dis.push(di);
+  });
+  var token = ++pickToken;
+  list.innerHTML = '';
+  var gi = 0;
+  (function chunk(){
+    if(token !== pickToken) return;
+    var html = '', n = 0;
+    while(gi < groups.length && n < 220){
+      var g = groups[gi++];
+      html += '<div class="lsec"><div class="lhead" data-letter="' + esc(g.k) + '">' + esc(g.k) + '</div>' + g.dis.map(function(di){ return personRow(di, 'data-pick'); }).join('') + '</div>';
+      n += g.dis.length;
+    }
+    list.insertAdjacentHTML('beforeend', html);
+    if(gi < groups.length) requestAnimationFrame(chunk);
+  })();
+}
+function doPick(di){
+  if(!D || !D.directory[di]) return;
+  if(FLOW.cat === 'online'){
+    FLOW.di = di;
+    location.hash = '#/flow/online/log/' + encodeURIComponent(pkey(D.directory[di]));
+    return;
+  }
+  /* location flow: assigning the person IS the save */
+  if(!FLOW.title){ location.hash = '#/flow/location'; return; }
+  if(saveLog(di, FLOW.title, FLOW.detail, false)){
+    toast('Logged for ' + dispName(D.directory[di]) + '.');
+    FLOW.title = ''; FLOW.detail = ''; FLOW.di = null;
+    location.hash = '#/contacts';
+  }
+}
+function viewFlowDetails(v, cat, id){
+  FLOW.cat = cat;
+  var di = null;
+  if(cat === 'online'){
+    di = diFromId(id || '');
+    if(di == null){ location.hash = '#/flow/online'; return; }
+    FLOW.di = di;
+  }
+  var e = di != null ? D.directory[di] : null;
+  var head = cat === 'online'
+    ? '<div class="hero">' + avatarHTML(e, 'av-lg') + '<div><h1>' + esc(dispName(e)) + '</h1><p class="hsub">Online contact · today</p></div></div>'
+    : '<div class="hero"><span class="av av-lg">' + PIN_SVG + '</span><div><h1>Location contact</h1><p class="hsub">Details first, then pick who it was with</p></div></div>';
+  v.innerHTML =
+    '<div class="backrow"><button type="button" class="backbtn" id="flback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'online' ? 'People' : 'Home') + '</button></div>' +
+    head +
+    '<div class="glasscard"><h2>What happened</h2>' +
+      '<label class="lab" for="fl-sum">Title</label><input type="text" id="fl-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off" value="' + esc(FLOW.title) + '">' +
+      '<label class="lab" for="fl-det">Description (optional)</label><textarea id="fl-det" placeholder="What happened, what was left open…" rows="3">' + esc(FLOW.detail) + '</textarea>' +
+      '<button type="button" class="btn primary big" id="fl-go">' + (cat === 'online' ? 'Log it' : 'Choose who it was with') + '</button>' +
+      '<p class="savestat" id="fl-stat"></p></div>' +
+    '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
+  $('#flback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
+  $('#fl-sum').addEventListener('input', function(){ FLOW.title = this.value; });
+  $('#fl-det').addEventListener('input', function(){ FLOW.detail = this.value; });
+  $('#fl-go').addEventListener('click', function(){
+    FLOW.title = $('#fl-sum').value; FLOW.detail = $('#fl-det').value;
+    if(!FLOW.title.trim()){
+      var st = $('#fl-stat'); st.textContent = 'Write the title first.'; st.className = 'savestat err'; $('#fl-sum').focus(); return;
+    }
+    if(cat === 'online'){
+      if(saveLog(FLOW.di, FLOW.title, FLOW.detail, true)){
+        toast('Logged for ' + dispName(D.directory[FLOW.di]) + '.');
+        FLOW.title = ''; FLOW.detail = ''; FLOW.di = null;
+        location.hash = '#/contacts';
+      }
+    } else {
+      location.hash = '#/flow/location/pick';
+    }
+  });
+}
+
 /* ---------- chrome layout: rail + back-to-top clear the header, deck and tabs ---------- */
 function layoutChrome(){
   var rail = $('#rail'), tt = $('#totop'), dk = $('#deck'), tabs = $('#tabs'), hdr = $('#hdr');
@@ -821,12 +1063,16 @@ function scrubEnd(){
 })();
 $('#scroll').addEventListener('scroll', function(){
   var sc = $('#scroll');
-  $('#totop').classList.toggle('on', sc.scrollTop > 700 && S.route === 'contacts');
+  $('#totop').classList.toggle('on', sc.scrollTop > 700 && (S.route === 'all' || S.route === 'pick'));
 }, { passive:true });
 $('#totop').addEventListener('click', function(){ $('#scroll').scrollTo({ top:0, behavior:'smooth' }); });
 document.addEventListener('click', function(ev){
   var b = ev.target && ev.target.closest ? ev.target.closest('[data-open]') : null;
   if(b){ TAP.doneSeq = TAP.seq; openPerson(+b.getAttribute('data-open')); }
+});
+document.addEventListener('click', function(ev){
+  var b = ev.target && ev.target.closest ? ev.target.closest('[data-pick]') : null;
+  if(b){ TAP.doneSeq = TAP.seq; doPick(+b.getAttribute('data-pick')); }
 });
 /* tap insurance (JD 2026-10-30: "sometimes I have to tap a contact twice"):
    iOS can swallow a row's click — the keyboard dismissing over the search
@@ -835,20 +1081,24 @@ document.addEventListener('click', function(ev){
    within 220ms, navigate ourselves. When the real click does fire it marks
    the tap done first, so this never double-navigates; a scroll gesture
    moves too far to qualify, and a newer tap supersedes a pending one. */
-var TAP = { di:null, x:0, y:0, seq:0, doneSeq:0 };
+var TAP = { di:null, act:null, x:0, y:0, seq:0, doneSeq:0 };
 document.addEventListener('pointerdown', function(ev){
   jumpToken++; /* any fresh touch ends leftover scroll settling */
-  var b = ev.target && ev.target.closest ? ev.target.closest('[data-open]') : null;
-  TAP.di = b ? +b.getAttribute('data-open') : null;
+  var t = ev.target && ev.target.closest ? ev.target : null;
+  var pb = t && t.closest ? t.closest('[data-pick]') : null;
+  var ob = t && t.closest ? t.closest('[data-open]') : null;
+  TAP.act = pb ? 'pick' : (ob ? 'open' : null);
+  TAP.di = pb ? +pb.getAttribute('data-pick') : (ob ? +ob.getAttribute('data-open') : null);
   TAP.x = ev.clientX; TAP.y = ev.clientY; TAP.seq++;
 }, true);
 document.addEventListener('pointerup', function(ev){
   if(TAP.di == null) return;
-  var di = TAP.di, seq = TAP.seq; TAP.di = null;
+  var di = TAP.di, act = TAP.act, seq = TAP.seq; TAP.di = null; TAP.act = null;
   if(Math.abs(ev.clientX - TAP.x) > 12 || Math.abs(ev.clientY - TAP.y) > 12) return;
   setTimeout(function(){
     if(!D || TAP.doneSeq >= seq || TAP.seq !== seq) return;
     if(di == null || !D.directory[di]) return;
+    if(act === 'pick'){ if(parseRoute().name === 'pick') doPick(di); return; }
     var want = '#/p/' + encodeURIComponent(pkey(D.directory[di]));
     if(location.hash !== want) openPerson(di);
   }, 220);
@@ -934,7 +1184,7 @@ function viewLists(v){
 function viewMembers(v, crumb, title, dis){
   v.innerHTML = '<div class="backrow"><button type="button" class="backbtn" id="mback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + esc(crumb) + '</button></div>' +
     '<div class="ghead">' + esc(title) + ' · ' + dis.length + '</div>' +
-    (dis.length ? dis.map(personRow).join('') : '<p class="none">Nobody here yet.</p>');
+    (dis.length ? dis.map(function(di){ return personRow(di); }).join('') : '<p class="none">Nobody here yet.</p>');
   $('#mback').addEventListener('click', function(){ history.back(); });
 }
 
@@ -1017,15 +1267,7 @@ function viewPerson(v, di){
   $('#lg-save').addEventListener('click', function(){
     var sum = $('#lg-sum').value.trim();
     if(!sum){ var st = $('#lg-stat'); st.textContent = 'Write the title first.'; st.className = 'savestat err'; $('#lg-sum').focus(); return; }
-    var d = todayStr(), det = $('#lg-det').value.trim(), on = $('#lg-online').checked;
-    var arr = (e.events || []).slice();
-    var lev = { date:d, summary:sum, kind:'contact' }; if(det) lev.detail = det; if(on) lev.online = true;
-    arr.push(lev);
-    queuePatch(di, { events:JSON.stringify(arr) });
-    /* every log is a contact: it also stamps Last Contact when it is the
-       newest one — same rule as the main app */
-    var curLc = String(gv(e, 'last_contact') || '').trim();
-    if(!curLc || flexKey(d) >= flexKey(curLc)) setField(di, 'last_contact', d), setField(di, 'last_contact_online', on ? 'yes' : '');
+    if(!saveLog(di, sum, $('#lg-det').value, $('#lg-online').checked)) return;
     $('#lg-sum').value = ''; $('#lg-det').value = ''; $('#lg-online').checked = false;
     arm('#lg-stat', pid, ['events']);
     toast('Logged for ' + name + '.');
