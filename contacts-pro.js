@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.43.0';
+var APP_VERSION = '3.44.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1920,6 +1920,7 @@ var NAV = [
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
   { k:'daily',   l:'Live Records', ic:'sparkle' },
+  { k:'calendar', l:'Calendar', ic:'calendar' },
   { k:'council', l:'Council', ic:'award' },
   { k:'lists',   l:'Master List', ic:'file' },
   { k:'photos',  l:'Photos', ic:'camera' },
@@ -2107,7 +2108,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox','council','lists'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox','council','lists','calendar'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -2138,7 +2139,7 @@ function histLabelFor(hash){
   var n = seg[0] || 'home';
   if(n === 'p'){ var di = diFromId(seg[1]); return di != null && D && D.directory[di] ? dispName(D.directory[di]) : 'Profile'; }
   if(n === 'groups') return seg[2] || 'Groups';
-  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings' }[n] || 'Back';
+  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings' }[n] || 'Back';
 }
 function navScroll(){ var v = $('#view'); return v ? v.scrollTop : 0; }
 function navTrack(){
@@ -2329,6 +2330,7 @@ function render(){
     else if(n === 'settings') viewSettings(v);
     else if(n === 'audit') viewAudit(v);
     else if(n === 'daily') viewDaily(v);
+    else if(n === 'calendar') viewCalendar(v);
     else if(n === 'photos') viewPhotos(v);
     else if(n === 'sandbox') viewSandbox(v);
     else if(n === 'council') viewCouncil(v);
@@ -6676,6 +6678,7 @@ function repaintForData(kind){
     else if(r === 'people' && $('#plist')) paintPeople();
     return;
   }
+  if(kind === 'cal'){ if(r === 'calendar') render(); return; }
   if(kind === 'ph'){
     if(r === 'photos' || r === 'audit' || r === 'home') render();
     else if(r === 'groups'){ grpPaintCards(); grpPaintMembers(); }
@@ -7007,6 +7010,102 @@ function rcPaint(){
   if(wasQ){
     var nq = document.getElementById('rcq');
     if(nq){ nq.focus(); try{ nq.setSelectionRange(pos, pos); }catch(x){} }
+  }
+}
+
+/* ============================================================
+   Calendar (JD 2026-10-30, draft): a vertical, center-spine
+   timeline of JD's 2026 — Google Calendar events from all seven
+   calendars, routine series collapsed to ribbons, merged with the
+   contact log (filed contact events + Last Contact stamps).
+   People are linked by attendee match and full names in titles.
+   Bake: data/calendar.json (titles, dates, calendar names, person
+   keys only — never locations, descriptions, or guest emails).
+   Last Contact stamps are NOT touched by calendar data (JD: hold).
+   ============================================================ */
+var CAL = null, CAL_LOADING = false, CAL_VIEW = { src:'all' }, CAL_SCROLLED = false, CAL_DI = null;
+function calLoad(){
+  if(CAL || CAL_LOADING) return;
+  CAL_LOADING = true;
+  fetch('data/calendar.json', { cache:'no-cache' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ CAL = d; CAL_LOADING = false; repaintForData('cal'); })
+    .catch(function(){ CAL = { empty:true, entries:[] }; CAL_LOADING = false; repaintForData('cal'); });
+}
+function calDi(key){
+  if(!CAL_DI){ CAL_DI = {}; D.directory.forEach(function(e, i){ CAL_DI[pkey(e)] = i; }); }
+  var di = CAL_DI[key];
+  return di == null ? null : di;
+}
+function calPersonChip(key){
+  var di = calDi(key);
+  if(di == null) return '';
+  var e = D.directory[di];
+  return '<a class="cal-person" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a>';
+}
+var CAL_COLORS = { 'Shared Calendar':'#2f7fd0', 'Business':'#7c3aed', 'Military':'#6b8f3d', 'Personal':'#d97706', 'School':'#2563eb', 'Appointment':'#0f766e', 'Work':'#64748b' };
+function calChip(cal){
+  if(!cal) return '';
+  var first = String(cal).split(' + ')[0];
+  var col = CAL_COLORS[first] || '#64748b';
+  return '<span class="cal-chip" style="--cc:' + col + '">' + esc(cal) + '</span>';
+}
+function viewCalendar(v){
+  calLoad();
+  var head = '<div class="page calpage"><div class="pagehead"><div><h1 class="display">Calendar</h1>' +
+    '<p class="cal-sub">Your 2026 on one line: every calendar you keep, with the routine series folded away, and your contact log woven in. People named in an event link straight to their profile.</p></div></div>';
+  if(!CAL){
+    v.innerHTML = head + '<div class="asskel"><div class="skl"></div><div class="skl"></div><div class="skl"></div></div></div>';
+    return;
+  }
+  var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  function fmtD(iso){ var p = String(iso).split('-'); var d = new Date(+p[0], +p[1] - 1, +p[2]); return DOW[d.getDay()] + ', ' + MONS[+p[1] - 1] + ' ' + (+p[2]); }
+  function fmtT(t){ if(!t) return ''; var h = +t.slice(0, 2), m = t.slice(3, 5); var ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return h + ':' + m + ' ' + ap; }
+  var all = CAL.entries || [];
+  var nPpl = all.filter(function(x){ return (x.people || []).length; }).length;
+  var seg = [['all', 'All', all.length], ['event', 'Calendar', all.filter(function(x){ return x.kind !== 'contact'; }).length], ['contact', 'Contact log', all.filter(function(x){ return x.kind === 'contact'; }).length]]
+    .map(function(b){ return '<button type="button" class="' + (CAL_VIEW.src === b[0] ? 'on' : '') + '" data-act="calfilter" data-v="' + b[0] + '">' + b[1] + ' <b>' + b[2] + '</b></button>'; }).join('');
+  var shown = all.filter(function(x){
+    if(CAL_VIEW.src === 'event') return x.kind !== 'contact';
+    if(CAL_VIEW.src === 'contact') return x.kind === 'contact';
+    return true;
+  });
+  var html = '', lastMonth = '', side = 0;
+  shown.forEach(function(x){
+    var mk = String(x.date || '').slice(0, 7);
+    if(mk !== lastMonth){
+      lastMonth = mk;
+      var p = mk.split('-');
+      html += '<div class="cal-month" id="cal-m-' + mk + '"><span>' + MON[+p[1] - 1] + ' ' + p[0] + '</span></div>';
+    }
+    var chips = (x.people || []).map(calPersonChip).join('');
+    if(x.kind === 'series'){
+      html += '<div class="cal-item series"><div class="cal-series"><div class="cal-series-main"><b>' + esc(x.title) + '</b>' +
+        '<span class="cal-count">' + x.count + ' times</span></div>' +
+        '<div class="cal-series-sub">' + fmtD(x.first) + ' \u2192 ' + fmtD(x.last) + '</div>' +
+        '<div class="cal-meta">' + calChip(x.cal) + chips + '</div></div></div>';
+      return;
+    }
+    var cls = x.kind === 'contact' ? 'contact' : 'event';
+    var when = fmtD(x.date) + (x.time ? ' \u00b7 ' + fmtT(x.time) : '') + (x.kind === 'contact' && x.online ? ' \u00b7 Online' : '');
+    html += '<div class="cal-item ' + cls + ' ' + (side % 2 ? 'r' : 'l') + '"><i class="cal-dot"></i><div class="cal-card">' +
+      '<div class="cal-when">' + esc(when) + '</div><div class="cal-title">' + esc(x.title || '') + '</div>' +
+      '<div class="cal-meta">' + (x.kind === 'contact' ? '<span class="cal-chip contact">Contact log</span>' : calChip(x.cal)) + chips + '</div></div></div>';
+    side++;
+  });
+  if(!shown.length) html = '<div class="rc-none">Nothing in this view.</div>';
+  v.innerHTML = head +
+    '<div class="cal-stats"><span><b>' + all.length + '</b> entries</span><span><b>' + nPpl + '</b> name someone in the directory</span><span><b>' + all.filter(function(x){ return x.kind === 'series'; }).length + '</b> routine series folded</span></div>' +
+    '<div class="rc-controls cal-controls"><div class="rc-seg" role="group">' + seg + '</div></div>' +
+    '<div class="cal-tl">' + html + '</div>' +
+    '<p class="rc-foot">Draft: January to December 2026, all seven calendars. Routine repeats (gym, shifts, classes, church) collapse into one ribbon per series. Calendar matches never change a Last Contact stamp.</p></div>';
+  if(!CAL_SCROLLED){
+    CAL_SCROLLED = true;
+    var now = new Date(), mk2 = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2);
+    var tgt = document.getElementById('cal-m-' + mk2), view = $('#view');
+    if(tgt && view) view.scrollTop = Math.max(0, tgt.offsetTop - 140);
   }
 }
 
@@ -10273,6 +10372,7 @@ function onClick(ev){
     case 'rcfile': rcDecide(el.getAttribute('data-id'), 'file'); break;
     case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
     case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; rcSaveView(); rcPaint(); break;
+    case 'calfilter': CAL_VIEW.src = el.getAttribute('data-v') || 'all'; render(); break;
     case 'rcphoto': rcTogglePhoto(el.getAttribute('data-id')); break;
     case 'rcphotoonly': RC_VIEW.photo = !RC_VIEW.photo; rcSaveView(); rcPaint(); break;
     case 'phconfirm': { var _pc = el.getAttribute('data-pname'); phSetReview(_pc, 'confirmed'); if(S.route.name === 'profile') keepAnchor(function(){ repaintTop(); }, '#pm-a'); break; }
