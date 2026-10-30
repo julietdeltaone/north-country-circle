@@ -1,33 +1,7 @@
 {
  "generated": "2026-10-30",
- "count": 511,
+ "count": 509,
  "suggestions": [
-  {
-   "id": "pf-16d584de81",
-   "key": "jamesphilipm",
-   "display": "James Meyers",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Strong",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Family on file in Potsdam: Elisa Meyers, John Meyers, Catherine Green, JD Meyers.",
-    "5 of 6 located known associates are in Potsdam."
-   ]
-  },
-  {
-   "id": "pf-c5a6568a4a",
-   "key": "acole313",
-   "display": "Allison Cole",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
   {
    "id": "pf-13034dae12",
    "key": "sf:andrew-fox",
@@ -609,6 +583,20 @@
     "Their own record says they lives in Canton, NY.",
     "SUNY Canton is in Canton.",
     "Their Facebook profile lists Canton, NY."
+   ]
+  },
+  {
+   "id": "pf-13aa27a997",
+   "key": "jartib",
+   "display": "Jared T",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Probable",
+   "evidence": [
+    "Their own record says they lives in Potsdam, NY.",
+    "Clarkson University is in Potsdam.",
+    "3 of 3 located known associates are in Potsdam."
    ]
   },
   {
@@ -2655,15 +2643,15 @@
    ]
   },
   {
-   "id": "pf-23d8fd3bd0",
+   "id": "pf-43c405c7d1",
    "key": "sf:acacia-white",
    "display": "Acacia White",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Massena, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Massena Hospital is in Massena."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -3261,15 +3249,15 @@
    ]
   },
   {
-   "id": "pf-74b54adaa1",
+   "id": "pf-0b96d86b92",
    "key": "david.tulloch.10",
    "display": "David Tulloch",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -3519,27 +3507,27 @@
    ]
   },
   {
-   "id": "pf-4afd82fd14",
+   "id": "pf-bd82a60013",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
-   "id": "pf-b9bc27d8bc",
+   "id": "pf-be4913ccf6",
    "key": "emijent",
    "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -3919,19 +3907,6 @@
    "evidence": [
     "Their own record says they lives in Washington, DC.",
     "Their Facebook profile lists Washington, DC."
-   ]
-  },
-  {
-   "id": "pf-13aa27a997",
-   "key": "jartib",
-   "display": "Jared T",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record says they lives in Potsdam, NY.",
-    "Clarkson University is in Potsdam."
    ]
   },
   {
@@ -4755,15 +4730,15 @@
    ]
   },
   {
-   "id": "pf-5f8e0acd40",
+   "id": "pf-3937cd47ee",
    "key": "m.not.a.lobster",
    "display": "Michelle Johnston",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
