@@ -3603,15 +3603,15 @@
    ]
   },
   {
-   "id": "pf-23d8fd3bd0",
+   "id": "pf-43c405c7d1",
    "key": "sf:acacia-white",
    "display": "Acacia White",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Massena, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Massena Hospital is in Massena."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -5369,8 +5369,8 @@
    "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton.",
-    "St. Lawrence University is in Canton."
+    "St. Lawrence University is in Canton.",
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -5703,15 +5703,15 @@
    ]
   },
   {
-   "id": "pf-3937cd47ee",
+   "id": "pf-5f8e0acd40",
    "key": "m.not.a.lobster",
    "display": "Michelle Johnston",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "SUNY Potsdam is in Potsdam."
    ]
   },
   {
