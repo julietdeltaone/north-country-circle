@@ -121,15 +121,15 @@
    "conf": 55
   },
   {
-   "id": "pf-31ffb32968",
+   "id": "pf-cee13a6e1c",
    "key": "sf:caleb-dollinger",
    "display": "Caleb Dollinger",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -316,19 +316,6 @@
    "conf": 55
   },
   {
-   "id": "pf-65c3323dbe",
-   "key": "sf:donovan-patraw",
-   "display": "Donovan Patraw",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-6295f7b1ab",
    "key": "doriejreiter",
    "display": "Dorie Colbert Reiter",
@@ -409,9 +396,22 @@
    "conf": 55
   },
   {
-   "id": "pf-4afd82fd14",
+   "id": "pf-bd82a60013",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Canton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Canton is in Canton."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-b9bc27d8bc",
+   "key": "emijent",
+   "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -769,8 +769,8 @@
    "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "St. Lawrence University is in Canton.",
-    "SUNY Canton is in Canton."
+    "SUNY Canton is in Canton.",
+    "St. Lawrence University is in Canton."
    ],
    "conf": 55
   },
@@ -1103,15 +1103,15 @@
    "conf": 55
   },
   {
-   "id": "pf-b93e1fce44",
+   "id": "pf-2c553f2d2e",
    "key": "sf:richard-gilchrist",
    "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
