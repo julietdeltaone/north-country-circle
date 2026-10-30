@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.40.0';
+var APP_VERSION = '3.41.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1844,7 +1844,7 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    ============================================================ */
 var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
-  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null, view:'list' },
+  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'lastc', d:-1 }, side:null, view:'list' },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ sel:null, org:null, view:'2d' },
   fam:{ editing:null, focus:null, sheet:false, side:null },
@@ -2244,7 +2244,7 @@ function goHome(){
   $$('.menu-pop').forEach(function(m){ m.hidden = true; });
   S.ctx = null;
   if(S.audit) S.audit.lcOpen = null;
-  S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:(S.ppl && S.ppl.view) || 'list' };
+  S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'lastc', d:-1 }, side:S.ppl.side, view:(S.ppl && S.ppl.view) || 'list' };
   go('home');   /* V2.28.0: the landing is the Home overview now; the state clearing above is unchanged */
 }
 addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
@@ -2396,7 +2396,7 @@ function orgsOf(e){
    order (Vetted, Associate, Open, No tier yet); associates is numeric. Ties
    fall to name, then directory order, so the ordering is total. */
 function pplSort(dis){
-  var ts = S.ppl.ts || { k:'name', d:1 }, d = ts.d < 0 ? -1 : 1, K = {};
+  var ts = S.ppl.ts || { k:'lastc', d:-1 }, d = ts.d < 0 ? -1 : 1, K = {};
   dis.forEach(function(di){
     var e = D.directory[di], tr = TIER_RANK[tierOf(e)];
     K[di] = {
@@ -10168,7 +10168,7 @@ function onClick(ev){
     case 'ptvis': { var pvk = el.getAttribute('data-k'), pvc = null; ptCols().forEach(function(c){ if(c.k === pvk) pvc = c; }); if(pvc){ if(pvc.on && ptCols().filter(function(c){ return c.on; }).length === 1) break; pvc.on = !pvc.on; ptSaveCols(); paintPeople(); ptColsSheet(); var pvb = $('#sheetwrap [data-act="ptvis"][data-k="' + pvk + '"]'); if(pvb && !pvb.disabled) pvb.focus(); } break; }
     case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); var pmb = $('#sheetwrap [data-act="ptmv"][data-k="' + pmk + '"][data-d="' + pmd + '"]'); if(!pmb || pmb.disabled) pmb = $('#sheetwrap [data-act="ptvis"][data-k="' + pmk + '"]'); if(pmb && !pmb.disabled) pmb.focus(); } break; }
     case 'morefilters': openMoreFilters(); break;
-    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:S.ppl.view }; closeSheet(); viewPeople($('#view')); break;
+    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'lastc', d:-1 }, side:S.ppl.side, view:S.ppl.view }; closeSheet(); viewPeople($('#view')); break;
     case 'pplview': { var pvv = el.getAttribute('data-v'); S.ppl.view = (pvv === 'recent' || pvv === 'reach' || pvv === 'timeline') ? pvv : 'list'; viewPeople($('#view')); break; }
     case 'tlmode': { var tls1 = tlState(el.getAttribute('data-scope')); tls1.mode = el.getAttribute('data-m'); tls1.off = 0; tls1.exp = {}; tlRepaint(el.getAttribute('data-scope')); break; }
     case 'hmtlview': S.hmTlView = el.getAttribute('data-v') === 'timeline' ? 'timeline' : 'list'; viewHome($('#view')); break;
