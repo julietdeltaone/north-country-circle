@@ -242,7 +242,7 @@
     "detail": 15
    },
    "fields": {
-    "degrees": "Business Administration — SUNY Potsdam (2024)",
+    "degrees": "Business Administration \u2014 SUNY Potsdam (2024)",
     "universities": "SUNY Potsdam"
    },
    "published": "",
@@ -413,7 +413,7 @@
    },
    "fields": {
     "highlights": [
-     "Section X Athlete of Distinction — Girls Soccer (Potsdam)"
+     "Section X Athlete of Distinction \u2014 Girls Soccer (Potsdam)"
     ]
    },
    "published": "",
@@ -444,7 +444,7 @@
    },
    "fields": {
     "companies": "Joint Council for Economic Opportunity",
-    "degrees": "B.A. Speech Communications — SUNY Potsdam",
+    "degrees": "B.A. Speech Communications \u2014 SUNY Potsdam",
     "universities": "SUNY Potsdam"
    },
    "published": "",
@@ -457,7 +457,7 @@
    "run_date": "2026-10-20",
    "run_label": "Special 100-check run",
    "category": "conflict",
-   "claim": "Summa cum laude in the SUNY Canton Class of 2026 commencement program — but the program lists an Abigail Stiles under the Nursing A.A.S.",
+   "claim": "Summa cum laude in the SUNY Canton Class of 2026 commencement program \u2014 but the program lists an Abigail Stiles under the Nursing A.A.S.",
    "file_text": "Graduated summa cum laude from SUNY Canton in the Class of 2026",
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/media/pdf/Commencement-Program2026.pdf",
@@ -619,7 +619,7 @@
    "display": "Katelyn Matthews",
    "run_date": "2026-10-20",
    "run_label": "Special 100-check run",
-   "category": "conflict",
+   "category": "identity",
    "claim": "Cum laude, Homeland Security B.Tech., in the SUNY Canton Class of 2026 program.",
    "file_text": "Graduated cum laude with a Homeland Security B.Tech. from SUNY Canton in 2026",
    "source": "SUNY Canton",
@@ -627,7 +627,7 @@
    "anchors": [
     "Name-only match in the official commencement program"
    ],
-   "missing_gate": "Name-only match, and her degree on file is Nursing (B.S., 2026); fails the two-anchor gate.",
+   "missing_gate": "JD corrected this on Oct 30, 2026: his Katelyn Matthews earned the B.S. in Nursing from SUNY Canton (already on file). The Homeland Security B.Tech. listing in the 2026 commencement program belongs to a different Katelyn Matthews; the program was misread. Luna was right to hold it. Do not file.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 18,
@@ -660,7 +660,7 @@
     "detail": 17
    },
    "fields": {
-    "degrees": "B.S. Emergency Management — SUNY Canton (2024)",
+    "degrees": "B.S. Emergency Management \u2014 SUNY Canton (2024)",
     "universities": "SUNY Canton"
    },
    "published": "2024",
@@ -740,7 +740,7 @@
     "detail": 14
    },
    "fields": {
-    "degrees": "A.A.S. Individual Studies — SUNY Canton (2021)",
+    "degrees": "A.A.S. Individual Studies \u2014 SUNY Canton (2021)",
     "universities": "SUNY Canton"
    },
    "published": "2021",
@@ -1165,7 +1165,7 @@
     "Full name",
     "Canton, New York"
    ],
-   "missing_gate": "The packet has no anchors to confirm identity — and JD has ruled Maggie Lapinski is not Meg Lapinski.",
+   "missing_gate": "The packet has no anchors to confirm identity \u2014 and JD has ruled Maggie Lapinski is not Meg Lapinski.",
    "confidence": 48,
    "confidence_parts": {
     "identity": 14,
@@ -1404,7 +1404,7 @@
    "anchors": [
     "Name match only"
    ],
-   "missing_gate": "Held as ambiguous — a likely namesake; no anchor ties the Tulum guide to this profile.",
+   "missing_gate": "Held as ambiguous \u2014 a likely namesake; no anchor ties the Tulum guide to this profile.",
    "confidence": 36,
    "confidence_parts": {
     "identity": 8,
@@ -1452,7 +1452,7 @@
    "source": "Kansas local coverage",
    "url": "https://www.kfdi.com/2019/03/05/kansas-teacher-wins-annual-shrove-tuesday-pancake-race/",
    "anchors": [
-    "Name only — zero anchors tie the Kansas person to this profile"
+    "Name only \u2014 zero anchors tie the Kansas person to this profile"
    ],
    "missing_gate": "Zero anchors tie the Kansas person to the packet; almost certainly a namesake.",
    "confidence": 26,
@@ -1630,7 +1630,7 @@
    "source": "Publisher / author records",
    "url": "https://en.wikipedia.org/wiki/Rachel_Kushner",
    "anchors": [
-    "Name match only — every biographical anchor conflicts"
+    "Name match only \u2014 every biographical anchor conflicts"
    ],
    "missing_gate": "A different person from the packet's University of Michigan / Trenton High School / Ann Arbor profile; not merged.",
    "confidence": 5,
