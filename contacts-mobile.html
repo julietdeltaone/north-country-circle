@@ -98,24 +98,20 @@ img{max-width:100%}
 html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .searchwrap{position:relative;display:flex;align-items:center}
 .searchwrap svg{position:absolute;left:12px;color:var(--dim);pointer-events:none}
-#q{width:100%;height:44px;padding:0 40px 0 38px;border-radius:14px;border:1px solid var(--line2);background:var(--glass-solid);outline:none;font-size:16px}
+#q{width:100%;height:52px;padding:0 44px 0 40px;border-radius:16px;border:1px solid var(--line2);background:var(--glass-solid);outline:none;font-size:16px}
 #q:focus{border-color:var(--ga)}
 #q::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 #qclear{position:absolute;right:4px;width:36px;height:36px;display:none;align-items:center;justify-content:center;color:var(--mut);border-radius:10px}
-.sortrow{display:flex;align-items:center;gap:8px}
-.sortrow label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);flex:none}
-.sortrow select{flex:1;min-width:0;height:40px;padding:0 30px 0 12px;border-radius:12px;border:1px solid var(--line2);background:var(--glass-solid);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2368727f' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
-.countline{flex:none;max-width:42%;color:var(--mut);font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lhead{position:sticky;top:0;z-index:10;font:700 12px var(--sans);letter-spacing:.14em;color:var(--txt2);padding:7px 10px;margin:10px 0 4px;border-radius:10px;background:linear-gradient(90deg,color-mix(in srgb,var(--ga) 16%,var(--field)),color-mix(in srgb,var(--gb) 12%,var(--field)));border:1px solid var(--line);scroll-margin-top:0}
 .lsec:first-child .lhead{margin-top:2px}
 #plist{padding-bottom:52px}
 #plist.railpad{padding-right:24px}
-.prow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 6px;border-radius:14px;content-visibility:auto;contain-intrinsic-size:auto 58px;position:relative}
-.prow::after{content:"";position:absolute;left:59px;right:2px;bottom:0;height:1px;background:var(--line)}
+.prow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:12px 8px;min-height:68px;border-radius:14px;content-visibility:auto;contain-intrinsic-size:auto 68px;position:relative}
+.prow::after{content:"";position:absolute;left:67px;right:2px;bottom:0;height:1px;background:var(--line)}
 .prow:active{background:var(--fill2)}
 .av{display:inline-flex;align-items:center;justify-content:center;flex:none;border-radius:50%;font-weight:600;overflow:hidden;background:linear-gradient(150deg,color-mix(in srgb,var(--ga) 26%,var(--glass2)),color-mix(in srgb,var(--gb) 22%,var(--glass)));border:1px solid var(--line);color:var(--txt)}
 .av img{width:100%;height:100%;object-fit:cover;display:block}
-.av-sm{width:42px;height:42px;font-size:14px}
+.av-sm{width:46px;height:46px;font-size:15px}
 .av-lg{width:60px;height:60px;font-size:21px;font-family:var(--serif)}
 .prow .pmain{flex:1;min-width:0}
 .prow b{display:block;font-weight:600;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -132,12 +128,6 @@ html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 #totop.on{display:inline-flex}
 .empty{padding:44px 18px;text-align:center;color:var(--mut)}
 .empty h3{font:500 19px var(--serif);color:var(--txt);margin-bottom:6px}
-/* ---------- bottom tabs ---------- */
-#tabs{flex:none;display:flex;background:var(--glass-solid);-webkit-backdrop-filter:blur(20px) saturate(1.3);backdrop-filter:blur(20px) saturate(1.3);border-top:1px solid var(--line);padding:4px 4px calc(4px + env(safe-area-inset-bottom));z-index:40}
-#tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px 3px;border-radius:12px;color:var(--mut);text-decoration:none;font-size:11px;font-weight:600}
-#tabs a.on{color:var(--txt);background:var(--fill)}
-#tabs a .dot{width:5px;height:5px;border-radius:50%;background:transparent}
-#tabs a.on .dot{background:var(--acc)}
 /* ---------- contact page ---------- */
 .backrow{display:flex;align-items:center;gap:4px;margin-bottom:10px}
 .backbtn{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:0 10px 0 4px;color:var(--txt);font-weight:600;border-radius:12px}
@@ -164,11 +154,9 @@ input[type="date"],input[type="text"],textarea,select.inp{width:100%;min-width:0
 input[type="date"]{display:block}
 textarea{resize:vertical;line-height:1.5;min-height:76px}
 input:focus,textarea:focus,select.inp:focus{border-color:var(--ga)}
-.tog{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--txt);font-size:14.5px}
-.tog input{width:22px;height:22px;accent-color:var(--acc);flex:none}
-.seg{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--fill);border:1px solid var(--line)}
-.seg button{flex:1;min-height:38px;border-radius:9px;color:var(--mut);font-weight:600;font-size:13.5px}
-.seg button.on{background:var(--acc);color:#fff}
+.tog{display:flex;align-items:center;gap:12px;min-height:54px;padding:6px 2px;color:var(--txt);font-size:15.5px;font-weight:600}
+.tog input{width:27px;height:27px;accent-color:var(--acc);flex:none}
+.btn.big{min-height:58px;font-size:16.5px;border-radius:14px;margin-top:14px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:46px;padding:0 18px;border-radius:12px;border:1px solid var(--line2);background:var(--glass2);font-weight:600;width:100%}
 .btn.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
 .btn.primary:active{background:#c4050f}
@@ -221,7 +209,7 @@ button.chip:active{border-color:var(--acc)}
 #menu .card a:active,#menu .card button:active{background:var(--fill2)}
 #menu .card small{display:block;font-weight:400;color:var(--mut);font-size:12px}
 #menu hr{border:0;border-top:1px solid var(--line);margin:6px 4px}
-#toasts{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:90;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#toasts{position:fixed;left:12px;right:12px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:90;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{background:var(--glass-solid);border:1px solid var(--line2);border-radius:12px;padding:11px 14px;box-shadow:var(--sh);font-size:14px;opacity:0;transition:opacity var(--d-enter) var(--ease-out)}
 .toast.show{opacity:1}
 .footver{text-align:center;color:var(--dim);font-size:11px;letter-spacing:.1em;margin-top:22px}
@@ -245,11 +233,6 @@ button.chip:active{border-color:var(--acc)}
   <nav id="rail" aria-label="Alphabet index"></nav>
   <div id="scrubbub" aria-hidden="true"></div>
   <button type="button" id="totop" aria-label="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
-  <nav id="tabs" aria-label="Primary">
-    <a href="#/contacts" data-tab="contacts"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Contacts<span class="dot"></span></a>
-    <a href="#/groups" data-tab="groups"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Groups<span class="dot"></span></a>
-    <a href="#/lists" data-tab="lists"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Lists<span class="dot"></span></a>
-  </nav>
 </div>
 <div id="menu" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="scrim" data-menuclose></div>
@@ -276,7 +259,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.3.0';
+var MOBILE_VERSION = '1.4.0';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -608,10 +591,6 @@ function render(){
   if(!D) return;
   var r = parseRoute();
   S.route = r.name;
-  $$('#tabs a').forEach(function(a){
-    var on = a.getAttribute('data-tab') === r.name || (r.name === 'person' && a.getAttribute('data-tab') === 'contacts') || (r.name === 'group' && a.getAttribute('data-tab') === 'groups') || (r.name === 'list' && a.getAttribute('data-tab') === 'lists');
-    a.classList.toggle('on', on);
-  });
   $('#rail').classList.remove('on'); $('#totop').classList.remove('on');
   if(r.name !== 'contacts'){ var dk0 = $('#deck'); dk0.hidden = true; dk0.innerHTML = ''; }
   var v = $('#view');
@@ -678,14 +657,8 @@ function viewContacts(v){
   dk.innerHTML =
     '<div class="searchwrap">' +
     '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>' +
-    '<input id="q" type="search" placeholder="Search contacts" autocomplete="off" aria-label="Search contacts" value="' + esc(S.q) + '">' +
-    '<button type="button" id="qclear" aria-label="Clear search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>' +
-    '<div class="sortrow"><label for="sortsel">Sort</label><select id="sortsel" aria-label="Sort contacts">' +
-    '<option value="az"' + (S.sort === 'az' ? ' selected' : '') + '>Name A–Z</option>' +
-    '<option value="za"' + (S.sort === 'za' ? ' selected' : '') + '>Name Z–A</option>' +
-    '<option value="contacted"' + (S.sort === 'contacted' ? ' selected' : '') + '>Most recently contacted</option>' +
-    '<option value="changed"' + (S.sort === 'changed' ? ' selected' : '') + '>Recently changed</option>' +
-    '</select><span class="countline" id="countline"></span></div>';
+    '<input id="q" type="search" placeholder="Find a person to log contact" autocomplete="off" aria-label="Search contacts" value="' + esc(S.q) + '">' +
+    '<button type="button" id="qclear" aria-label="Clear search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>';
   dk.hidden = false;
   v.innerHTML =
     '<div id="plist"></div>' +
@@ -700,17 +673,11 @@ function viewContacts(v){
     deb = setTimeout(function(){ S.q = q.value; paintList(); }, 120);
   });
   qc.addEventListener('click', function(){ q.value = ''; S.q = ''; syncClear(); paintList(); q.focus(); });
-  $('#sortsel').addEventListener('change', function(){ S.sort = this.value; paintList(); });
   paintList();
 }
 function paintList(){
   var list = $('#plist'); if(!list) return;
   var dis = filteredPeople();
-  var cl = $('#countline');
-  if(cl){
-    cl.textContent = dis.length + (dis.length === 1 ? ' contact' : ' contacts') + (S.q ? ' · “' + S.q + '”' : '');
-    cl.setAttribute('title', dis.length + (dis.length === 1 ? ' contact' : ' contacts') + (S.q ? ' matching “' + S.q + '”' : '') + ' · data ' + (D.updated || ''));
-  }
   if(!dis.length){ list.innerHTML = '<div class="empty"><h3>No matches.</h3><p>Try a different search.</p></div>'; $('#rail').classList.remove('on'); return; }
   /* group into sticky-header blocks */
   var groups = [], cur = null;
@@ -745,9 +712,9 @@ function layoutChrome(){
   if(!rail || !tt) return;
   var top = (hdr ? hdr.offsetHeight : 56) + (dk && !dk.hidden ? dk.offsetHeight : 0);
   rail.style.top = (top + 4) + 'px';
-  var tabsH = tabs ? tabs.offsetHeight : 60;
+  var tabsH = tabs ? tabs.offsetHeight : 0;
   rail.style.bottom = (tabsH + 62) + 'px';
-  tt.style.bottom = (tabsH + 12) + 'px';
+  tt.style.bottom = 'calc(' + (tabsH + 12) + 'px + env(safe-area-inset-bottom))';
 }
 addEventListener('resize', layoutChrome);
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ layoutChrome(); });
@@ -969,46 +936,34 @@ function viewPerson(v, di){
     '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
     (lc ? '<p class="hlc">Last contact <b>' + esc(fmtDate(lc)) + '</b>' + (lcOnline(e) ? ' · online' : '') + '</p>' : '<p class="hlc">No contact logged yet</p>') +
     '</div></div>' +
-    /* quick entry — the point of this page */
-    '<div class="glasscard"><h2>Quick entry</h2><div class="qa-grid">' +
-    '<div class="qa-item"><button type="button" class="qa-btn" data-qa="stamp" aria-expanded="false"><span>Stamp last contact<small>Date defaults to today · online toggle</small></span>' + CHEV + '</button>' +
-    '<div class="qa-form" id="form-stamp" hidden>' +
-      '<label class="lab" for="st-date">Date</label><input type="date" id="st-date" value="' + todayStr() + '">' +
-      '<label class="tog"><input type="checkbox" id="st-online"> Online</label>' +
-      '<button type="button" class="btn primary" id="st-save">Stamp it</button>' +
-      '<p class="savestat" id="st-stat"></p></div></div>' +
+    /* logging contact — the point of this page. One form, always open:
+       title + description + an Online tick. Saving files a Timeline contact
+       entry dated today and stamps Last Contact (with the online flag). */
+    '<div class="glasscard"><h2>Log contact</h2>' +
+      '<label class="lab" for="lg-sum">Title</label><input type="text" id="lg-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off">' +
+      '<label class="lab" for="lg-det">Description (optional)</label><textarea id="lg-det" placeholder="What happened, what was left open…" rows="3"></textarea>' +
+      '<label class="tog"><input type="checkbox" id="lg-online"> Online</label>' +
+      '<button type="button" class="btn primary big" id="lg-save">Log it</button>' +
+      '<p class="savestat" id="lg-stat"></p></div>' +
+    '<div class="glasscard"><div class="qa-grid">' +
     '<div class="qa-item"><button type="button" class="qa-btn" data-qa="lc" aria-expanded="false"><span>Lima Charlie note<small>A note for Luna to apply on the next run</small></span>' + CHEV + '</button>' +
     '<div class="qa-form" id="form-lc" hidden>' +
       '<label class="lab" for="lc-text">Note — where did you leave off?</label><textarea id="lc-text" placeholder="e.g. Moved to Canton. Works at Rochester Regional Health now.">' + esc(lcNote(e)) + '</textarea>' +
       '<button type="button" class="btn primary" id="lc-save">Save note</button>' +
       '<p class="savestat" id="lc-stat"></p></div></div>' +
-    '<div class="qa-item"><button type="button" class="qa-btn" data-qa="log" aria-expanded="false"><span>Log a contact / event<small>Adds a Timeline entry</small></span>' + CHEV + '</button>' +
-    '<div class="qa-form" id="form-log" hidden>' +
-      '<div class="seg" role="group" aria-label="Entry kind"><button type="button" id="lg-k-contact" class="on">Contact</button><button type="button" id="lg-k-event">Event</button></div>' +
-      '<label class="lab" for="lg-date">Date</label><input type="date" id="lg-date" value="' + todayStr() + '">' +
-      '<label class="lab" for="lg-sum">One line</label><input type="text" id="lg-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off">' +
-      '<label class="lab" for="lg-det">Detail (optional)</label><input type="text" id="lg-det" placeholder="" autocomplete="off">' +
-      '<label class="tog" id="lg-onl-wrap"><input type="checkbox" id="lg-online"> Online</label>' +
-      '<button type="button" class="btn primary" id="lg-save">Log it</button>' +
-      '<p class="savestat" id="lg-stat"></p></div></div>' +
     '</div></div>' +
     '<div id="secs"></div>' +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
   $('#pback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
-  /* quick-entry open/close (forms only — profile sections stay collapsed);
-     each action is ONE surface: trigger row + form share a .qa-item shell */
+  /* the Lima Charlie note is the only collapsible form left — the log form
+     above it is always open, so the page's main action never moves */
   $$('#view [data-qa]').forEach(function(b){
     b.addEventListener('click', function(){
       var f = $('#form-' + b.getAttribute('data-qa'));
       var willOpen = f.hidden;
-      ['stamp', 'lc', 'log'].forEach(function(k){ $('#form-' + k).hidden = true; });
-      $$('#view .qa-item').forEach(function(it){ it.classList.remove('open'); });
-      $$('#view [data-qa]').forEach(function(x){ x.setAttribute('aria-expanded', 'false'); });
-      if(willOpen){
-        f.hidden = false;
-        b.parentNode.classList.add('open');
-        b.setAttribute('aria-expanded', 'true');
-      }
+      f.hidden = !willOpen;
+      b.parentNode.classList.toggle('open', willOpen);
+      b.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
     });
   });
   /* save wiring — status line walks Queued -> Written to the Sheet */
@@ -1026,45 +981,25 @@ function viewPerson(v, di){
     }, 9000);
   }
   var pid = pkey(e);
-  $('#st-save').addEventListener('click', function(){
-    var d = $('#st-date').value || todayStr(), on = $('#st-online').checked;
-    queuePatch(di, { last_contact:d, last_contact_online:on ? 'yes' : '' });
-    arm('#st-stat', pid, ['last_contact']);
-    toast('Last contact stamped for ' + name + '.');
-  });
   $('#lc-save').addEventListener('click', function(){
     var val = $('#lc-text').value;
     queuePatch(di, { lima_charlie_notes:val });
     arm('#lc-stat', pid, ['lima_charlie_notes']);
     toast(val.trim() ? 'Lima Charlie note saved.' : 'Lima Charlie note cleared.');
   });
-  var logKind = 'contact';
-  function setKind(k){
-    logKind = k;
-    $('#lg-k-contact').classList.toggle('on', k === 'contact');
-    $('#lg-k-event').classList.toggle('on', k === 'event');
-    $('#lg-onl-wrap').style.display = k === 'contact' ? '' : 'none';
-  }
-  $('#lg-k-contact').addEventListener('click', function(){ setKind('contact'); });
-  $('#lg-k-event').addEventListener('click', function(){ setKind('event'); });
   $('#lg-save').addEventListener('click', function(){
     var sum = $('#lg-sum').value.trim();
-    if(!sum){ var st = $('#lg-stat'); st.textContent = 'Write the one line first.'; st.className = 'savestat err'; return; }
-    var d = $('#lg-date').value || todayStr(), det = $('#lg-det').value.trim(), on = $('#lg-online').checked;
+    if(!sum){ var st = $('#lg-stat'); st.textContent = 'Write the title first.'; st.className = 'savestat err'; $('#lg-sum').focus(); return; }
+    var d = todayStr(), det = $('#lg-det').value.trim(), on = $('#lg-online').checked;
     var arr = (e.events || []).slice();
-    if(logKind === 'contact'){
-      var lev = { date:d, summary:sum, kind:'contact' }; if(det) lev.detail = det; if(on) lev.online = true;
-      arr.push(lev);
-      queuePatch(di, { events:JSON.stringify(arr) });
-      /* logging a newest contact also stamps Last Contact — same rule as the main app */
-      var curLc = String(gv(e, 'last_contact') || '').trim();
-      if(!curLc || flexKey(d) >= flexKey(curLc)) setField(di, 'last_contact', d), setField(di, 'last_contact_online', on ? 'yes' : '');
-    } else {
-      var ev = { date:d, summary:sum }; if(det) ev.detail = det;
-      arr.push(ev);
-      queuePatch(di, { events:JSON.stringify(arr) });
-    }
-    $('#lg-sum').value = ''; $('#lg-det').value = '';
+    var lev = { date:d, summary:sum, kind:'contact' }; if(det) lev.detail = det; if(on) lev.online = true;
+    arr.push(lev);
+    queuePatch(di, { events:JSON.stringify(arr) });
+    /* every log is a contact: it also stamps Last Contact when it is the
+       newest one — same rule as the main app */
+    var curLc = String(gv(e, 'last_contact') || '').trim();
+    if(!curLc || flexKey(d) >= flexKey(curLc)) setField(di, 'last_contact', d), setField(di, 'last_contact_online', on ? 'yes' : '');
+    $('#lg-sum').value = ''; $('#lg-det').value = ''; $('#lg-online').checked = false;
     arm('#lg-stat', pid, ['events']);
     toast('Logged for ' + name + '.');
     paintSections(di);
