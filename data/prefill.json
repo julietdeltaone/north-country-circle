@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 590,
+ "count": 511,
  "suggestions": [
   {
    "id": "pf-16d584de81",
@@ -17,54 +17,6 @@
    ]
   },
   {
-   "id": "pf-265f54d6a9",
-   "key": "aaronjdaniels",
-   "display": "Aaron Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Indira Quintana, Michelle Daniels, Jonathan Daniels, Justin Daniels, Megan Danie), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-1eae1d5406",
-   "key": "abbydaniels03",
-   "display": "Abigail Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Ryan Daniels, Aidan Daniels, Jocelyn Daniels, Daniel Paladin), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-faa0115332",
-   "key": "adhope2006",
-   "display": "Adriana Levendusky",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Elena Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-fb281ad1bd",
-   "key": "aidantruth",
-   "display": "Aidan Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Abigail Daniels, Ryan Daniels, Jocelyn Daniels), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-c5a6568a4a",
    "key": "acole313",
    "display": "Allison Cole",
@@ -74,54 +26,6 @@
    "grade": "Probable",
    "evidence": [
     "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-1ca1ae5061",
-   "key": "fdb:amber_ingram",
-   "display": "Amber Ingram",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Brad Ingram, Destiny Ingram), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-c128effe9d",
-   "key": "anastasiasbakery",
-   "display": "Anastasia Cote",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Nancy Hull, Ben Hull), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-155b6c8ffa",
-   "key": "anastasia_g_daniels",
-   "display": "Anastasia Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Trenton Daniels, Baxter Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-dcdb2f98ce",
-   "key": "andrea247_",
-   "display": "Andrea Vetere",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Vinny Vetere), and family counts as the FAMILY group."
    ]
   },
   {
@@ -149,18 +53,6 @@
    ]
   },
   {
-   "id": "pf-2e889e023c",
-   "key": "fdb:baxter_brown",
-   "display": "Baxter Brown",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Susan Brown, Anastasia Daniels, Esther Brown, Hudson Brown, Haddon Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-80272d231c",
    "key": "ct:ben hull",
    "display": "Ben Hull",
@@ -173,54 +65,6 @@
    ]
   },
   {
-   "id": "pf-2ec0d7ed3b",
-   "key": "ct:ben hull",
-   "display": "Ben Hull",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Liana Hull, Nancy Hull, Anastasia Cote), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-0aa8efd3ad",
-   "key": "benlevendusky",
-   "display": "Ben Levendusky",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Elena Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-d5427b6dd4",
-   "key": "ct:blake amo",
-   "display": "Blake Amo",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Rachelle Amo), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-63434992cf",
-   "key": "ct:brad ingram",
-   "display": "Brad Ingram",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Amber Ingram, Destiny Ingram), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-e19392697e",
    "key": "sf:brianna-brothers",
    "display": "Brianna Brothers",
@@ -230,30 +74,6 @@
    "grade": "Probable",
    "evidence": [
     "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-3921528854",
-   "key": "briettapaladin",
-   "display": "Brietta Paladin",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Daniel Paladin, Darlene Sinclair, Rick Sinclair, Bronwyn Paladin, Gabe Paladin, ), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-c53257ce1e",
-   "key": "bronwynpaladin",
-   "display": "Bronwyn Paladin",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Brietta Paladin, Daniel Paladin, Gabe Paladin), and family counts as the FAMILY group."
    ]
   },
   {
@@ -278,30 +98,6 @@
    "grade": "Probable",
    "evidence": [
     "U.S. Marine Corps is filed as their organization, and U.S. Marine Corps is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-b4d67ddd7b",
-   "key": "chelsea__mcgrath",
-   "display": "Chelsea McGrath",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Josiah McGrath), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-da477e0ee7",
-   "key": "sf:cj-tomford",
-   "display": "CJ Tomford",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Mike Tomford, David Tomford, Matthew Tomford, Mark Tomford, Nathaniel Tomford), and family counts as the FAMILY group."
    ]
   },
   {
@@ -341,30 +137,6 @@
    ]
   },
   {
-   "id": "pf-8dda08b08b",
-   "key": "dpaladin",
-   "display": "Daniel Paladin",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Brietta Paladin, Bronwyn Paladin, Gabe Paladin, Abigail Daniels), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-3ecaf43619",
-   "key": "daniveteree",
-   "display": "Danielle Vetere",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Vinny Vetere), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-1a9a55cec2",
    "key": "ct:danny witkop",
    "display": "Danny Witkop",
@@ -374,30 +146,6 @@
    "grade": "Probable",
    "evidence": [
     "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-8d055a39f7",
-   "key": "darlenesinclair3643",
-   "display": "Darlene Sinclair",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Rick Sinclair, Brietta Paladin, Jamie Sinclair, Merrick Sinclair), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-68eb97912d",
-   "key": "ct:david tomford",
-   "display": "David Tomford",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Julia Tomford, Mike Tomford, Matthew Tomford, Mark Tomford, CJ Tomford, Nathanie), and family counts as the FAMILY group."
    ]
   },
   {
@@ -413,102 +161,6 @@
    ]
   },
   {
-   "id": "pf-f45439ffe8",
-   "key": "ct:destiny ingram",
-   "display": "Destiny Ingram",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Brad Ingram, Amber Ingram), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-a3df7e2c9e",
-   "key": "doriejreiter",
-   "display": "Dorie Colbert Reiter",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Julia Tomford), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-642601c65c",
-   "key": "_lanie_brown",
-   "display": "Elena Brown",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Haddon Brown, Ben Levendusky, Keila Levendusky, Adriana Levendusky), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-9ce13fdc4d",
-   "key": "sf:eleora-trelease",
-   "display": "Eleora Trelease",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Eric Trelease, Jennifer Trelease), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-b1778d2108",
-   "key": "elizabethadaniels",
-   "display": "Elizabeth Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Kevin Daniels), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-a0beac7802",
-   "key": "ellie.jent",
-   "display": "Ellie Jent",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Michael Jent), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-306f47d2a8",
-   "key": "catchandtrelease",
-   "display": "Eric Trelease",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Jennifer Trelease, Eleora Trelease), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-6d42f24689",
-   "key": "fdb:esther_brown",
-   "display": "Esther Brown",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Susan Brown, Baxter Brown, Hudson Brown, Haddon Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-dceec3f955",
    "key": "ethan_j_bates",
    "display": "Ethan Bates",
@@ -521,18 +173,6 @@
    ]
   },
   {
-   "id": "pf-e79386f2fc",
-   "key": "ethan_j_bates",
-   "display": "Ethan Bates",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Teri Bates), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-91366fedbb",
    "key": "sf:gabby-olivia",
    "display": "Gabby Olivia",
@@ -542,54 +182,6 @@
    "grade": "Probable",
    "evidence": [
     "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-39ea0218ef",
-   "key": "gabepaladin",
-   "display": "Gabe Paladin",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Brietta Paladin, Daniel Paladin, Bronwyn Paladin), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-cc7acc8cdd",
-   "key": "gabi_paige",
-   "display": "Gabi White",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Levi White), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-f82570501f",
-   "key": "spurgeonfiddle",
-   "display": "Haddon Brown",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Elena Brown, Susan Brown, Baxter Brown, Esther Brown, Hudson Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-6758b24612",
-   "key": "aspecthammy_",
-   "display": "Hamza Hmyene",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Salwa Hmyene), and family counts as the FAMILY group."
    ]
   },
   {
@@ -629,42 +221,6 @@
    ]
   },
   {
-   "id": "pf-04f7dd32e2",
-   "key": "sf:hudson-brown",
-   "display": "Hudson Brown",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Susan Brown, Baxter Brown, Esther Brown, Haddon Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-9ba9264494",
-   "key": "inawangerin",
-   "display": "Ina Wangerin",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Lydia Martin), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-6d46317bb7",
-   "key": "sf:indira-quintana-lala",
-   "display": "Indira Quintana",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Aaron Daniels), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-8ac17c1e2a",
    "key": "ct:irvin otero",
    "display": "Irvin Otero",
@@ -674,18 +230,6 @@
    "grade": "Probable",
    "evidence": [
     "U.S. Army is filed as their organization, and U.S. Army is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-e2f857da4b",
-   "key": "isaiahreiter",
-   "display": "Isaiah Reiter",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Julia Tomford), and family counts as the FAMILY group."
    ]
   },
   {
@@ -710,18 +254,6 @@
    "grade": "Probable",
    "evidence": [
     "Army National Guard is filed as their organization, and Army National Guard is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-af2a72b340",
-   "key": "jamiesinclair",
-   "display": "Jamie Sinclair",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Darlene Sinclair, Rick Sinclair, Brietta Paladin, Merrick Sinclair), and family counts as the FAMILY group."
    ]
   },
   {
@@ -769,19 +301,7 @@
    "value": "FAMILY",
    "grade": "Probable",
    "evidence": [
-    "Family links are on file (Elisa Meyers, John Meyers, Catherine Green, Ellie Criscitello, James Meyers), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-671b009f63",
-   "key": "wholehearted_wife",
-   "display": "Jennifer Trelease",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Eric Trelease, Eleora Trelease), and family counts as the FAMILY group."
+    "Family links connect them to JD \u2014 FAMILY is the label for JD's own family."
    ]
   },
   {
@@ -797,66 +317,6 @@
    ]
   },
   {
-   "id": "pf-47281eac58",
-   "key": "jocelynrose04",
-   "display": "Jocelyn Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Abigail Daniels, Ryan Daniels, Aidan Daniels), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-79a61c9a37",
-   "key": "ct:jonathan daniels",
-   "display": "Jonathan Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Kara Daniels, Michelle Daniels, Aaron Daniels, Justin Daniels, Megan Daniels, Ke), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-6257730fb9",
-   "key": "josiahbounce",
-   "display": "Josiah McGrath",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Chelsea McGrath), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-b2bb139cf8",
-   "key": "ct:julia tomford",
-   "display": "Julia Tomford",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (David Tomford, Dorie Colbert Reiter, Isaiah Reiter, Olivia Smith), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-d7d639228f",
-   "key": "sf:julie-cardinal",
-   "display": "Julie Cardinal",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Justin Cardinal), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-af9e127abb",
    "key": "ct:julie mcormond",
    "display": "Julie McOrmond",
@@ -866,78 +326,6 @@
    "grade": "Probable",
    "evidence": [
     "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-b8957a415a",
-   "key": "ct:justin cardinal",
-   "display": "Justin Cardinal",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Julie Cardinal), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-48feadb254",
-   "key": "ct:justin daniels",
-   "display": "Justin Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Michelle Daniels, Aaron Daniels, Jonathan Daniels, Megan Daniels, Kevin Daniels,), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-6495cf471d",
-   "key": "karajdaniels",
-   "display": "Kara Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Jonathan Daniels), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-b07e59acb6",
-   "key": "ct:katelyn tomford",
-   "display": "Katelyn Tomford",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Matthew Tomford), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-6441a2f1cc",
-   "key": "kdusky",
-   "display": "Keila Levendusky",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Elena Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-27c739dfb1",
-   "key": "kevindaniels7",
-   "display": "Kevin Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Elizabeth Daniels, Michelle Daniels, Aaron Daniels, Jonathan Daniels, Justin Dan), and family counts as the FAMILY group."
    ]
   },
   {
@@ -965,30 +353,6 @@
    ]
   },
   {
-   "id": "pf-51f34a9d55",
-   "key": "levi_white90",
-   "display": "Levi White",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Gabi White), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-bde1cb3934",
-   "key": "sf:liana-sinclair",
-   "display": "Liana Hull",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Ben Hull), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-ceafae3e9b",
    "key": "ct:libby thomas",
    "display": "Libby Thomas",
@@ -998,30 +362,6 @@
    "grade": "Probable",
    "evidence": [
     "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-8479f9e95f",
-   "key": "lydia_rose_martin",
-   "display": "Lydia Martin",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Ina Wangerin), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-d23f604ca7",
-   "key": "maggienjones_",
-   "display": "Maggie Jones",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Meg Lapinski), and family counts as the FAMILY group."
    ]
   },
   {
@@ -1049,18 +389,6 @@
    ]
   },
   {
-   "id": "pf-6f413cc32c",
-   "key": "maliahwright",
-   "display": "Maliah Wright",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Melody Maurer), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-31b0969b7e",
    "key": "sf:marissa-carl",
    "display": "Marissa Carl",
@@ -1073,42 +401,6 @@
    ]
   },
   {
-   "id": "pf-089ccb4081",
-   "key": "mr.muggy",
-   "display": "Mark Tomford",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Mike Tomford, David Tomford, Matthew Tomford, CJ Tomford, Nathaniel Tomford), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-7e4afea546",
-   "key": "ct:matthew tomford",
-   "display": "Matthew Tomford",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Katelyn Tomford, Mike Tomford, David Tomford, Mark Tomford, CJ Tomford, Nathanie), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-c3e075c7ca",
-   "key": "meggreg4",
-   "display": "Meg Lapinski",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Maggie Jones), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-869fd765b6",
    "key": "ct:megan daniels",
    "display": "Megan Daniels",
@@ -1118,18 +410,6 @@
    "grade": "Probable",
    "evidence": [
     "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-394ed951df",
-   "key": "ct:megan daniels",
-   "display": "Megan Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Michelle Daniels, Aaron Daniels, Jonathan Daniels, Justin Daniels, Kevin Daniels), and family counts as the FAMILY group."
    ]
   },
   {
@@ -1157,42 +437,6 @@
    ]
   },
   {
-   "id": "pf-0946ceb7ff",
-   "key": "melody_maurer",
-   "display": "Melody Maurer",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Maliah Wright, Mercy Maurer), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-cd8607a382",
-   "key": "mercy.maurer",
-   "display": "Mercy Maurer",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Melody Maurer), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-99aa55f606",
-   "key": "mr_writers_block",
-   "display": "Merrick Sinclair",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Darlene Sinclair, Rick Sinclair, Brietta Paladin, Jamie Sinclair), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-850be2725e",
    "key": "micahmcculley_",
    "display": "Micah McCulley",
@@ -1202,30 +446,6 @@
    "grade": "Probable",
    "evidence": [
     "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-b411d93571",
-   "key": "michaeljent1",
-   "display": "Michael Jent",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Ellie Jent), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-7ff18ec3db",
-   "key": "michelledaniels9",
-   "display": "Michelle Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Aaron Daniels, Jonathan Daniels, Justin Daniels, Megan Daniels, Kevin Daniels, R), and family counts as the FAMILY group."
    ]
   },
   {
@@ -1241,78 +461,6 @@
    ]
   },
   {
-   "id": "pf-b5d7c594c0",
-   "key": "ct:mike tomford",
-   "display": "Mike Tomford",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (David Tomford, Matthew Tomford, Mark Tomford, CJ Tomford, Nathaniel Tomford), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-1eeb44933d",
-   "key": "nancyhull9",
-   "display": "Nancy Hull",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Anastasia Cote, Ben Hull), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-c43b213d2b",
-   "key": "tom_nate_ford",
-   "display": "Nathaniel Tomford",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Mike Tomford, David Tomford, Matthew Tomford, Mark Tomford, CJ Tomford), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-4ab6f7f4b7",
-   "key": "oliviarorybrown",
-   "display": "Olivia Briggs",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Wayne Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-714a0161fc",
-   "key": "oliviasandra04",
-   "display": "Olivia Smith",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Julia Tomford), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-f7643767c8",
-   "key": "amotwinsmom",
-   "display": "Rachelle Amo",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Blake Amo), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-550f057491",
    "key": "sf:raegan-grant",
    "display": "Raegan Grant",
@@ -1322,42 +470,6 @@
    "grade": "Probable",
    "evidence": [
     "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-28e262eea8",
-   "key": "richardsinclair",
-   "display": "Rick Sinclair",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Darlene Sinclair, Brietta Paladin, Jamie Sinclair, Merrick Sinclair), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-540a767a04",
-   "key": "ryanpdaniels",
-   "display": "Ryan Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Abigail Daniels, Michelle Daniels, Aidan Daniels, Jocelyn Daniels, Aaron Daniels), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-83ac88adb6",
-   "key": "choppa_salwa",
-   "display": "Salwa Hmyene",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Hamza Hmyene), and family counts as the FAMILY group."
    ]
   },
   {
@@ -1397,30 +509,6 @@
    ]
   },
   {
-   "id": "pf-ca48a9d53c",
-   "key": "ct:susan brown",
-   "display": "Susan Brown",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Baxter Brown, Esther Brown, Hudson Brown, Haddon Brown), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-ee6a1e696f",
-   "key": "teri_thebatemom",
-   "display": "Teri Bates",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Ethan Bates), and family counts as the FAMILY group."
-   ]
-  },
-  {
    "id": "pf-92202360e5",
    "key": "ct:tim gault",
    "display": "Tim Gault",
@@ -1454,42 +542,6 @@
    "grade": "Probable",
    "evidence": [
     "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-93923ddbce",
-   "key": "trentondaniels4",
-   "display": "Trenton Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Anastasia Daniels, Michelle Daniels, Aaron Daniels, Jonathan Daniels, Justin Dan), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-c1f9c7019f",
-   "key": "vinnyvetere",
-   "display": "Vinny Vetere",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Andrea Vetere, Danielle Vetere), and family counts as the FAMILY group."
-   ]
-  },
-  {
-   "id": "pf-659cc41111",
-   "key": "wayne_brown_ii",
-   "display": "Wayne Brown",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "FAMILY",
-   "grade": "Probable",
-   "evidence": [
-    "Family links are on file (Olivia Briggs), and family counts as the FAMILY group."
    ]
   },
   {
@@ -3700,15 +2752,15 @@
    ]
   },
   {
-   "id": "pf-f1e78f8631",
+   "id": "pf-0dfcd4f83f",
    "key": "sf:ashleigh-graveline",
    "display": "Ashleigh Graveline",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "Clarkson University is in Potsdam."
    ]
   },
   {
@@ -3901,8 +2953,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Potsdam Central School is in Potsdam."
+    "Potsdam Central School is in Potsdam.",
+    "SUNY Potsdam is in Potsdam."
    ]
   },
   {
@@ -3918,15 +2970,15 @@
    ]
   },
   {
-   "id": "pf-cee13a6e1c",
+   "id": "pf-31ffb32968",
    "key": "sf:caleb-dollinger",
    "display": "Caleb Dollinger",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "Clarkson University is in Potsdam."
    ]
   },
   {
@@ -4915,8 +3967,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Clarkson University is in Potsdam."
+    "Clarkson University is in Potsdam.",
+    "SUNY Potsdam is in Potsdam."
    ]
   },
   {
@@ -5985,15 +5037,15 @@
    ]
   },
   {
-   "id": "pf-2c553f2d2e",
+   "id": "pf-b93e1fce44",
    "key": "sf:richard-gilchrist",
    "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "Clarkson University is in Potsdam."
    ]
   },
   {
