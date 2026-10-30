@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "updated": "2026-10-30",
  "range": [
   "2026-01-01",
@@ -12,7 +12,8 @@
    "time": "15:50",
    "title": "Massena to Clarkson",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -20,7 +21,8 @@
    "time": "14:00",
    "title": "Photos Beatrice",
    "cal": "Appointment + Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -29,7 +31,8 @@
    "people": [
     "ig:eileen_mackenzie"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -39,7 +42,8 @@
    "cal": "Appointment + Personal",
    "people": [
     "ig:davidzufall"
-   ]
+   ],
+   "tier": "strong"
   },
   {
    "kind": "series",
@@ -49,7 +53,39 @@
    "first": "2026-01-04",
    "last": "2026-09-20",
    "people": [],
-   "date": "2026-01-04"
+   "date": "2026-01-04",
+   "dates": [
+    "2026-01-04",
+    "2026-01-11",
+    "2026-01-18",
+    "2026-02-01",
+    "2026-02-08",
+    "2026-02-15",
+    "2026-03-01",
+    "2026-03-08",
+    "2026-03-22",
+    "2026-03-29",
+    "2026-04-05",
+    "2026-04-19",
+    "2026-04-26",
+    "2026-05-03",
+    "2026-05-10",
+    "2026-05-24",
+    "2026-05-31",
+    "2026-06-07",
+    "2026-06-21",
+    "2026-06-28",
+    "2026-07-05",
+    "2026-07-12",
+    "2026-07-19",
+    "2026-07-26",
+    "2026-08-02",
+    "2026-08-23",
+    "2026-08-30",
+    "2026-09-06",
+    "2026-09-20"
+   ],
+   "tier": "venue"
   },
   {
    "kind": "event",
@@ -57,7 +93,8 @@
    "time": "14:00",
    "title": "SYR - Clarkson",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -65,7 +102,8 @@
    "time": "12:00",
    "title": "Global entry interview",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -73,7 +111,8 @@
    "time": "12:30",
    "title": "OGS to Clarkson",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -81,7 +120,8 @@
    "time": "14:00",
    "title": "Joshua McGrath",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -91,7 +131,16 @@
    "first": "2026-01-13",
    "last": "2026-08-26",
    "people": [],
-   "date": "2026-01-13"
+   "date": "2026-01-13",
+   "dates": [
+    "2026-01-13",
+    "2026-03-12",
+    "2026-04-08",
+    "2026-05-06",
+    "2026-07-28",
+    "2026-08-26"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -99,7 +148,8 @@
    "time": "10:00",
    "title": "Haircut",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -107,7 +157,8 @@
    "time": "09:45",
    "title": "OFFICE VISIT with Lawrence Ivan Kring",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -115,7 +166,8 @@
    "time": "19:00",
    "title": "CUEMS Headshots with JD",
    "cal": "Appointment + Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -123,7 +175,8 @@
    "time": "16:57",
    "title": "Flight  UA3605 SYR to ORD",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -131,7 +184,8 @@
    "time": "20:45",
    "title": "Boka",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -139,7 +193,8 @@
    "time": "11:00",
    "title": "OGS enterprise",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -147,7 +202,8 @@
    "time": null,
    "title": "Stay: Hampton Inn Potsdam",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -155,7 +211,8 @@
    "time": "13:00",
    "title": "Biometric study",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -163,7 +220,8 @@
    "time": "18:00",
    "title": "Hotel Check in",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -173,7 +231,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:josiahbounce"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -181,7 +240,8 @@
    "time": "15:00",
    "title": "Your Upcoming Stay",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -189,7 +249,8 @@
    "time": "12:30",
    "title": "Tesla appointment",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -197,7 +258,8 @@
    "time": "09:00",
    "title": "Titus",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -205,7 +267,8 @@
    "time": "14:15",
    "title": "Flight: AA 5828 from SYR to BOS",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -213,7 +276,8 @@
    "time": null,
    "title": "Stay: Holiday Inn & Suites ORLANDO SW - CELEBRATION AREA by IHG",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -221,7 +285,8 @@
    "time": "13:12",
    "title": "Flight: AA 5860 from BOS to SYR",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -229,7 +294,8 @@
    "time": "16:57",
    "title": "Flight: UA 3605 from SYR to ORD",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -237,7 +303,8 @@
    "time": "21:02",
    "title": "Flight: UA 1555 from ORD to MCO",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -245,7 +312,8 @@
    "time": "06:00",
    "title": "Flight: UA 1875 from MCO to EWR",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -253,7 +321,8 @@
    "time": "11:07",
    "title": "Flight: UA 4479 from EWR to SYR",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -261,7 +330,8 @@
    "time": "14:00",
    "title": "Hair appointment",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -270,7 +340,8 @@
    "people": [
     "ig:brendan.bombard_19"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -280,7 +351,15 @@
    "first": "2026-02-19",
    "last": "2026-06-13",
    "people": [],
-   "date": "2026-02-19"
+   "date": "2026-02-19",
+   "dates": [
+    "2026-02-19",
+    "2026-03-13",
+    "2026-04-10",
+    "2026-05-15",
+    "2026-06-13"
+   ],
+   "tier": "venue"
   },
   {
    "kind": "series",
@@ -290,7 +369,15 @@
    "first": "2026-02-19",
    "last": "2026-06-13",
    "people": [],
-   "date": "2026-02-19"
+   "date": "2026-02-19",
+   "dates": [
+    "2026-02-19",
+    "2026-03-13",
+    "2026-04-10",
+    "2026-05-15",
+    "2026-06-13"
+   ],
+   "tier": "venue"
   },
   {
    "kind": "event",
@@ -298,7 +385,8 @@
    "time": null,
    "title": "Stay: Fairmont Chateau Laurier",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -306,7 +394,8 @@
    "time": "12:00",
    "title": "Tesla",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -314,7 +403,8 @@
    "time": "10:45",
    "title": "Biometric study",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -322,7 +412,8 @@
    "time": "13:00",
    "title": "Haircut",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -330,7 +421,8 @@
    "time": null,
    "title": "Stay: Hotel Saranac, Curio Collection by Hilton",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -339,7 +431,8 @@
    "people": [
     "ig:madi_kerr_"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -347,7 +440,8 @@
    "time": null,
    "title": "Josh White's birthday",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -357,7 +451,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:elliecriscitello"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -365,7 +460,8 @@
    "time": null,
    "title": "Stay: Fairmont Chateau Laurier",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -373,7 +469,8 @@
    "time": null,
    "title": "Anastasia Brown's birthday",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -381,7 +478,8 @@
    "time": "09:30",
    "title": "Bakery with David",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -389,7 +487,8 @@
    "time": "16:15",
    "title": "RESY",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -397,7 +496,8 @@
    "time": "21:30",
    "title": "Morgan Jay",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -407,7 +507,20 @@
    "first": "2026-04-01",
    "last": "2026-06-03",
    "people": [],
-   "date": "2026-04-01"
+   "date": "2026-04-01",
+   "dates": [
+    "2026-04-01",
+    "2026-04-08",
+    "2026-04-15",
+    "2026-04-22",
+    "2026-04-29",
+    "2026-05-06",
+    "2026-05-13",
+    "2026-05-20",
+    "2026-05-27",
+    "2026-06-03"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -417,7 +530,20 @@
    "first": "2026-04-01",
    "last": "2026-06-03",
    "people": [],
-   "date": "2026-04-01"
+   "date": "2026-04-01",
+   "dates": [
+    "2026-04-01",
+    "2026-04-08",
+    "2026-04-15",
+    "2026-04-22",
+    "2026-04-29",
+    "2026-05-06",
+    "2026-05-13",
+    "2026-05-20",
+    "2026-05-27",
+    "2026-06-03"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -425,7 +551,8 @@
    "time": "18:00",
    "title": "Movies with Catherine",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -435,7 +562,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:richardsinclair"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -443,7 +571,8 @@
    "time": "13:00",
    "title": "Haircut",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -452,7 +581,8 @@
    "people": [
     "ig:martinlovell.8"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -461,7 +591,8 @@
    "people": [
     "ct:mark dehoff"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -471,7 +602,8 @@
    "cal": "Appointment + Personal",
    "people": [
     "ig:_cathaccino_"
-   ]
+   ],
+   "tier": "strong"
   },
   {
    "kind": "contact",
@@ -480,7 +612,8 @@
    "people": [
     "ig:jazmynkyara"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -488,7 +621,8 @@
    "time": "14:10",
    "title": "Biometric study",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -496,7 +630,8 @@
    "time": "10:00",
    "title": "Canada photos",
    "cal": "Appointment + Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -504,7 +639,8 @@
    "time": null,
    "title": "Michael Tomford's birthday",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -513,7 +649,8 @@
    "people": [
     "sf:whitney-verbeck"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -522,7 +659,8 @@
    "people": [
     "sf:whitney-verbeck"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -530,7 +668,8 @@
    "time": "13:45",
    "title": "Onboarding SPOTHOPPER",
    "cal": "Appointment + Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -538,7 +677,8 @@
    "time": "12:00",
    "title": "Office visit",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -546,7 +686,8 @@
    "time": "13:00",
    "title": "Haircut",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -555,7 +696,8 @@
    "people": [
     "sf:kundai-mugugu"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -563,7 +705,8 @@
    "time": "16:00",
    "title": "Photos with Vimbai",
    "cal": "Appointment + Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -571,7 +714,8 @@
    "time": "19:00",
    "title": "Review for Behavioral management Class",
    "cal": "School",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -579,7 +723,8 @@
    "time": "08:30",
    "title": "Civil Service Exam",
    "cal": "Work",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -587,7 +732,8 @@
    "time": "11:00",
    "title": "Clarkson Security Graudation",
    "cal": "Work",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -595,7 +741,8 @@
    "time": "12:30",
    "title": "Francesca Mnenula",
    "cal": "Appointment + Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -603,7 +750,8 @@
    "time": "17:00",
    "title": "Maytal Slattery - Family Photo Session",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -611,7 +759,8 @@
    "time": "18:30",
    "title": "Suny Potsdam Photoshoot",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -619,7 +768,8 @@
    "time": "18:30",
    "title": "Grace Sheehan Photoshoot",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -629,7 +779,36 @@
    "first": "2026-05-11",
    "last": "2026-07-15",
    "people": [],
-   "date": "2026-05-11"
+   "date": "2026-05-11",
+   "dates": [
+    "2026-05-11",
+    "2026-05-12",
+    "2026-05-20",
+    "2026-05-21",
+    "2026-05-25",
+    "2026-05-26",
+    "2026-05-29",
+    "2026-05-31",
+    "2026-06-03",
+    "2026-06-04",
+    "2026-06-08",
+    "2026-06-09",
+    "2026-06-12",
+    "2026-06-17",
+    "2026-06-18",
+    "2026-06-22",
+    "2026-06-23",
+    "2026-06-26",
+    "2026-06-28",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-10",
+    "2026-07-12",
+    "2026-07-15"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -639,7 +818,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:mr_writers_block"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -647,7 +827,8 @@
    "time": null,
    "title": "Holiday Inn Express & Suites Watertown Stay",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -655,7 +836,8 @@
    "time": null,
    "title": "Stay at Holiday Inn Express & Suites Watertown-Thousand Islands by IHG",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -663,7 +845,8 @@
    "time": "12:00",
    "title": "Photos with Olena",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -671,7 +854,8 @@
    "time": "17:00",
    "title": "Jen Tice SUNY Potsdam Senior Photos",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -679,7 +863,8 @@
    "time": "15:30",
    "title": "Photoshoot",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -687,7 +872,8 @@
    "time": "15:30",
    "title": "Hannah Richards Photoshoot",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -695,7 +881,8 @@
    "time": "12:00",
    "title": "Zachary Gerow Wedding",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -703,7 +890,8 @@
    "time": "12:00",
    "title": "Zachary Gerow Wedding Photography",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -712,7 +900,8 @@
    "people": [
     "ig:danielzufall"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -720,7 +909,8 @@
    "time": "11:00",
    "title": "Tesla inspection",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -729,7 +919,8 @@
    "people": [
     "ig:d_grant234"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -738,7 +929,8 @@
    "people": [
     "ig:annecatherina7"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -746,7 +938,8 @@
    "time": "12:00",
    "title": "Photos with Olena",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -756,7 +949,8 @@
    "cal": "Business",
    "people": [
     "ig:danielzufall"
-   ]
+   ],
+   "tier": "strong"
   },
   {
    "kind": "contact",
@@ -765,7 +959,8 @@
    "people": [
     "ig:abbydaniels03"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -774,7 +969,8 @@
    "people": [
     "ig:ambikab.09"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -783,7 +979,8 @@
    "people": [
     "ig:ethan_j_bates"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -791,7 +988,8 @@
    "time": "13:00",
    "title": "Hair Studio",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -799,7 +997,8 @@
    "time": "13:15",
    "title": "Biometric",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -807,7 +1006,8 @@
    "time": "19:00",
    "title": "Game night",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -815,7 +1015,8 @@
    "time": null,
    "title": "Breenna McGrath",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -823,7 +1024,8 @@
    "time": "13:00",
    "title": "Breenna McGrath",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -831,7 +1033,8 @@
    "time": "19:00",
    "title": "Reservation at Jake's on the Water",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -839,7 +1042,8 @@
    "time": "14:45",
    "title": "Enterprise to Massena",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -848,7 +1052,8 @@
    "people": [
     "ct:jack kessler"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -858,7 +1063,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:dpaladin"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -868,7 +1074,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ct:justin cardinal"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -877,7 +1084,8 @@
    "people": [
     "ig:lena_musiienko"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -885,7 +1093,8 @@
    "time": "16:00",
    "title": "New Event",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -893,7 +1102,8 @@
    "time": "19:00",
    "title": "Daniel Tosh",
    "cal": "Appointment + Personal + Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -901,7 +1111,8 @@
    "time": "13:00",
    "title": "Caitlin Niles Wedding",
    "cal": "Appointment + Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -910,7 +1121,8 @@
    "people": [
     "ig:cameramancory"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -918,7 +1130,8 @@
    "time": "11:00",
    "title": "Interview Clarkson",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -927,7 +1140,8 @@
    "people": [
     "ig:katelynmatthews10"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -935,7 +1149,8 @@
    "time": "10:00",
    "title": "Clarkson interview 2",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -943,7 +1158,8 @@
    "time": null,
    "title": "Stay: Holiday Inn Express & Suites Vaudreuil - Dorion",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -953,7 +1169,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:judder_budder"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -961,7 +1178,8 @@
    "time": null,
    "title": "Stay at Holiday Inn Express & Suites Vaudreuil - Dorion",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -969,7 +1187,8 @@
    "time": "13:00",
    "title": "Haircut at the Hair Studio",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -979,7 +1198,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:daniveteree"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -988,7 +1208,8 @@
    "people": [
     "ct:mark wentworth"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -998,7 +1219,21 @@
    "first": "2026-07-14",
    "last": "2026-09-22",
    "people": [],
-   "date": "2026-07-14"
+   "date": "2026-07-14",
+   "dates": [
+    "2026-07-14",
+    "2026-07-20",
+    "2026-07-28",
+    "2026-08-04",
+    "2026-08-11",
+    "2026-08-18",
+    "2026-08-25",
+    "2026-09-01",
+    "2026-09-08",
+    "2026-09-15",
+    "2026-09-22"
+   ],
+   "tier": "venue"
   },
   {
    "kind": "contact",
@@ -1007,7 +1242,8 @@
    "people": [
     "sf:alex-koberda"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1016,7 +1252,8 @@
    "people": [
     "sf:alex-koberda"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1025,7 +1262,8 @@
    "people": [
     "sf:corbin-ladison"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1034,7 +1272,8 @@
    "people": [
     "ig:colleendcheney"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1042,7 +1281,8 @@
    "time": null,
    "title": "Stay: Holiday Inn Express Syracuse Airport",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1050,7 +1290,8 @@
    "time": null,
    "title": "Stay at Holiday Inn Express Syracuse Airport by IHG",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1059,7 +1300,8 @@
    "people": [
     "sf:corbin-ladison"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1067,7 +1309,8 @@
    "time": "18:00",
    "title": "MSG Duclos",
    "cal": "Work",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -1077,7 +1320,21 @@
    "first": "2026-07-17",
    "last": "2026-10-02",
    "people": [],
-   "date": "2026-07-17"
+   "date": "2026-07-17",
+   "dates": [
+    "2026-07-17",
+    "2026-07-24",
+    "2026-07-31",
+    "2026-08-07",
+    "2026-08-14",
+    "2026-08-21",
+    "2026-08-28",
+    "2026-09-04",
+    "2026-09-11",
+    "2026-09-18",
+    "2026-10-02"
+   ],
+   "tier": "venue"
   },
   {
    "kind": "event",
@@ -1085,7 +1342,8 @@
    "time": "11:00",
    "title": "The Odysey",
    "cal": "Work",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1094,7 +1352,8 @@
    "people": [
     "ig:norahpease"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1102,7 +1361,8 @@
    "time": "17:30",
    "title": "Amos",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -1112,7 +1372,113 @@
    "first": "2026-07-20",
    "last": "2026-12-31",
    "people": [],
-   "date": "2026-07-20"
+   "date": "2026-07-20",
+   "dates": [
+    "2026-07-20",
+    "2026-07-21",
+    "2026-07-22",
+    "2026-07-23",
+    "2026-07-24",
+    "2026-07-27",
+    "2026-07-28",
+    "2026-07-29",
+    "2026-07-30",
+    "2026-07-31",
+    "2026-08-03",
+    "2026-08-04",
+    "2026-08-05",
+    "2026-08-24",
+    "2026-08-25",
+    "2026-08-26",
+    "2026-08-27",
+    "2026-08-28",
+    "2026-09-01",
+    "2026-09-02",
+    "2026-09-03",
+    "2026-09-04",
+    "2026-09-07",
+    "2026-09-08",
+    "2026-09-09",
+    "2026-09-10",
+    "2026-09-11",
+    "2026-09-14",
+    "2026-09-15",
+    "2026-09-16",
+    "2026-09-17",
+    "2026-09-18",
+    "2026-09-21",
+    "2026-09-22",
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28",
+    "2026-09-29",
+    "2026-09-30",
+    "2026-10-01",
+    "2026-10-02",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-19",
+    "2026-10-20",
+    "2026-10-21",
+    "2026-10-22",
+    "2026-10-26",
+    "2026-10-27",
+    "2026-10-28",
+    "2026-10-29",
+    "2026-10-30",
+    "2026-11-02",
+    "2026-11-03",
+    "2026-11-04",
+    "2026-11-05",
+    "2026-11-09",
+    "2026-11-10",
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-23",
+    "2026-11-24",
+    "2026-11-25",
+    "2026-11-26",
+    "2026-11-27",
+    "2026-11-30",
+    "2026-12-01",
+    "2026-12-02",
+    "2026-12-03",
+    "2026-12-07",
+    "2026-12-08",
+    "2026-12-09",
+    "2026-12-10",
+    "2026-12-11",
+    "2026-12-14",
+    "2026-12-15",
+    "2026-12-16",
+    "2026-12-17",
+    "2026-12-18",
+    "2026-12-21",
+    "2026-12-22",
+    "2026-12-23",
+    "2026-12-24",
+    "2026-12-25",
+    "2026-12-28",
+    "2026-12-29",
+    "2026-12-30",
+    "2026-12-31"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1121,7 +1487,8 @@
    "people": [
     "sf:joann-duclos"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1130,7 +1497,8 @@
    "people": [
     "sf:ian-wilson"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1139,7 +1507,8 @@
    "people": [
     "sf:antolik"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1148,7 +1517,8 @@
    "people": [
     "ig:jamiesinclair"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1157,7 +1527,8 @@
    "people": [
     "ig:richardsinclair"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1167,7 +1538,8 @@
    "cal": "Personal",
    "people": [
     "ig:richardsinclair"
-   ]
+   ],
+   "tier": "corroborated"
   },
   {
    "kind": "event",
@@ -1175,7 +1547,8 @@
    "time": "16:30",
    "title": "Photoshoot with Martha",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1183,7 +1556,8 @@
    "time": "16:00",
    "title": "Photos",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1191,7 +1565,8 @@
    "time": "14:00",
    "title": "Wedding",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1199,7 +1574,8 @@
    "time": "08:00",
    "title": "SUTA",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1207,7 +1583,8 @@
    "time": "12:00",
    "title": "Brad",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1215,7 +1592,8 @@
    "time": "08:00",
    "title": "Dentist cleaning",
    "cal": "Appointment + Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1223,7 +1601,8 @@
    "time": null,
    "title": "National Guard Annual Training",
    "cal": "Appointment + Military",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1233,7 +1612,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:hopiek_09"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1243,7 +1623,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ct:christine sutter"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1252,7 +1633,8 @@
    "people": [
     "sf:ryan-blount"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1261,7 +1643,8 @@
    "people": [
     "ig:bronwynpaladin"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1271,7 +1654,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:melody_maurer"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1281,7 +1665,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:johnmeyers_sr"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1290,7 +1675,8 @@
    "people": [
     "ig:emiliealbertt"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1300,7 +1686,8 @@
    "cal": "Appointment + Business",
    "people": [
     "sf:megan-eddy"
-   ]
+   ],
+   "tier": "strong"
   },
   {
    "kind": "contact",
@@ -1309,7 +1696,8 @@
    "people": [
     "ig:gabepaladin"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1317,7 +1705,8 @@
    "time": "12:00",
    "title": "Department/Curriculum Committee Meeting",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1326,7 +1715,8 @@
    "people": [
     "ct:brad ingram"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1335,7 +1725,8 @@
    "people": [
     "ig:juliefelicianosec"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1343,7 +1734,8 @@
    "time": "08:00",
    "title": "Appointment: AFOQT - Air Force Officer Qualifying Test - English",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1351,7 +1743,8 @@
    "time": "08:00",
    "title": "AFOQT - Air Force Officer Qualifying Test - English (ENU)",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1359,7 +1752,8 @@
    "time": "12:00",
    "title": "OT Dept. Faculty Meetings (Room 3005 [OT Classroom])",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1368,7 +1762,8 @@
    "people": [
     "ig:john_zufall"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1377,7 +1772,8 @@
    "people": [
     "ig:johnaeastmond"
    ],
-   "online": false
+   "online": false,
+   "tier": "confirmed"
   },
   {
    "kind": "event",
@@ -1385,7 +1781,8 @@
    "time": "16:30",
    "title": "Photoshoot Maddy",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -1395,7 +1792,19 @@
    "first": "2026-09-03",
    "last": "2026-10-29",
    "people": [],
-   "date": "2026-09-03"
+   "date": "2026-09-03",
+   "dates": [
+    "2026-09-03",
+    "2026-09-10",
+    "2026-09-17",
+    "2026-09-24",
+    "2026-10-01",
+    "2026-10-08",
+    "2026-10-15",
+    "2026-10-22",
+    "2026-10-29"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1403,7 +1812,8 @@
    "time": "08:00",
    "title": "DPT Admissions Meeting",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1413,7 +1823,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:elisameyers"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1421,7 +1832,8 @@
    "time": "13:30",
    "title": "Photoshoot",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -1431,7 +1843,19 @@
    "first": "2026-09-07",
    "last": "2026-11-02",
    "people": [],
-   "date": "2026-09-07"
+   "date": "2026-09-07",
+   "dates": [
+    "2026-09-07",
+    "2026-09-14",
+    "2026-09-21",
+    "2026-09-28",
+    "2026-10-05",
+    "2026-10-12",
+    "2026-10-19",
+    "2026-10-26",
+    "2026-11-02"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -1441,7 +1865,19 @@
    "first": "2026-09-08",
    "last": "2026-11-03",
    "people": [],
-   "date": "2026-09-08"
+   "date": "2026-09-08",
+   "dates": [
+    "2026-09-08",
+    "2026-09-15",
+    "2026-09-22",
+    "2026-09-29",
+    "2026-10-06",
+    "2026-10-13",
+    "2026-10-20",
+    "2026-10-27",
+    "2026-11-03"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1450,7 +1886,8 @@
    "people": [
     "ct:julia tomford"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1458,7 +1895,8 @@
    "time": "16:30",
    "title": "Amos",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1466,7 +1904,8 @@
    "time": "18:00",
    "title": "Dinner with siblings at Mama Lucia's",
    "cal": "Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1474,7 +1913,8 @@
    "time": "12:00",
    "title": "Hair",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1482,7 +1922,8 @@
    "time": "13:30",
    "title": "PT500 Written exam 1",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "series",
@@ -1492,7 +1933,78 @@
    "first": "2026-09-25",
    "last": "2026-12-31",
    "people": [],
-   "date": "2026-09-25"
+   "date": "2026-09-25",
+   "dates": [
+    "2026-09-25",
+    "2026-09-28",
+    "2026-09-29",
+    "2026-09-30",
+    "2026-10-01",
+    "2026-10-02",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-19",
+    "2026-10-20",
+    "2026-10-21",
+    "2026-10-26",
+    "2026-10-27",
+    "2026-10-28",
+    "2026-10-29",
+    "2026-10-30",
+    "2026-11-02",
+    "2026-11-03",
+    "2026-11-04",
+    "2026-11-05",
+    "2026-11-06",
+    "2026-11-09",
+    "2026-11-10",
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20",
+    "2026-11-23",
+    "2026-11-24",
+    "2026-11-25",
+    "2026-11-26",
+    "2026-11-27",
+    "2026-11-30",
+    "2026-12-01",
+    "2026-12-02",
+    "2026-12-03",
+    "2026-12-04",
+    "2026-12-07",
+    "2026-12-08",
+    "2026-12-09",
+    "2026-12-10",
+    "2026-12-11",
+    "2026-12-14",
+    "2026-12-15",
+    "2026-12-16",
+    "2026-12-17",
+    "2026-12-18",
+    "2026-12-21",
+    "2026-12-22",
+    "2026-12-23",
+    "2026-12-24",
+    "2026-12-25",
+    "2026-12-28",
+    "2026-12-29",
+    "2026-12-30",
+    "2026-12-31"
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1502,7 +2014,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:elizabeth.deschaine"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1510,7 +2023,8 @@
    "time": "18:00",
    "title": "Hayride",
    "cal": "Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1520,7 +2034,8 @@
    "cal": "Personal",
    "people": [
     "ig:davidzufall"
-   ]
+   ],
+   "tier": "strong"
   },
   {
    "kind": "event",
@@ -1528,7 +2043,8 @@
    "time": "18:00",
    "title": "Kayla Bryson \u2014 Senior Photos",
    "cal": "Business",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1538,7 +2054,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:megan.furner"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1546,7 +2063,8 @@
    "time": "12:00",
    "title": "Doctors",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1555,7 +2073,8 @@
    "people": [
     "ig:nat.waterman"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1564,7 +2083,8 @@
    "people": [
     "ig:jeevesgreen"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1572,7 +2092,8 @@
    "time": "13:00",
    "title": "Med Term Exam- Old Main",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1581,7 +2102,8 @@
    "people": [
     "ig:katerina_islost"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1590,7 +2112,8 @@
    "people": [
     "ig:jamesphilipm"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1599,7 +2122,8 @@
    "people": [
     "ig:hopiek_09"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1608,7 +2132,8 @@
    "people": [
     "ig:tcriscitello"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1616,7 +2141,8 @@
    "time": "12:30",
    "title": "Event at Jericho",
    "cal": "Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1625,7 +2151,8 @@
    "people": [
     "ct:natalie southworth"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1633,7 +2160,8 @@
    "time": "08:00",
    "title": "Your iPhone Pre-order",
    "cal": "Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1642,7 +2170,8 @@
    "people": [
     "ig:daddy_cheesebutt"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1651,7 +2180,8 @@
    "people": [
     "ig:stefaniiabulakh"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1659,7 +2189,8 @@
    "time": null,
    "title": "Stay at Holiday Inn Express Canton - Potsdam by IHG",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1668,7 +2199,8 @@
    "people": [
     "ig:daniveteree"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1677,7 +2209,8 @@
    "people": [
     "sf:tim-lashomb"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1686,7 +2219,8 @@
    "people": [
     "ig:amotwinsmom"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1695,7 +2229,8 @@
    "people": [
     "sf:shari-smith"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1704,7 +2239,8 @@
    "people": [
     "ig:joshuamcgrath"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1713,7 +2249,8 @@
    "people": [
     "ig:melody_maurer"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1722,7 +2259,8 @@
    "people": [
     "sf:heather-foster-barrigar"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1731,7 +2269,8 @@
    "people": [
     "ig:ms_dior.gor"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1740,7 +2279,8 @@
    "people": [
     "ig:nabil.o3"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1748,7 +2288,8 @@
    "time": "16:30",
    "title": "Ogdensburg to Syracuse",
    "cal": "Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1756,7 +2297,8 @@
    "time": "20:00",
    "title": "Hotel \u2013 Quality Inn & Suites East Syracuse (Carrier Circle)",
    "cal": "Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1764,7 +2306,8 @@
    "time": "07:00",
    "title": "UTA Drill - MDMP, AFT, Staff Training (MUTA 6)",
    "cal": "Military",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1772,7 +2315,8 @@
    "time": "18:00",
    "title": "Haunted Infirmary: Bite Night",
    "cal": "Appointment",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1781,7 +2325,8 @@
    "people": [
     "sf:antolik"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1790,7 +2335,8 @@
    "people": [
     "ig:johnmeyers_sr"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1799,7 +2345,8 @@
    "people": [
     "ig:lydia_rose_martin"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1808,7 +2355,8 @@
    "people": [
     "ig:cy.cy.17"
    ],
-   "online": false
+   "online": false,
+   "tier": "confirmed"
   },
   {
    "kind": "contact",
@@ -1817,7 +2365,8 @@
    "people": [
     "ig:davidzufall"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1826,7 +2375,8 @@
    "people": [
     "ig:elizabeth.deschaine"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1835,7 +2385,8 @@
    "people": [
     "ig:mr_writers_block"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1844,7 +2395,8 @@
    "people": [
     "ct:richard tacchino"
    ],
-   "online": false
+   "online": false,
+   "tier": "confirmed"
   },
   {
    "kind": "contact",
@@ -1853,7 +2405,8 @@
    "people": [
     "ig:_cathaccino_"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1862,7 +2415,8 @@
    "people": [
     "ig:elisameyers"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1871,7 +2425,8 @@
    "people": [
     "ig:elliecriscitello"
    ],
-   "online": true
+   "online": true,
+   "tier": "weak"
   },
   {
    "kind": "contact",
@@ -1880,7 +2435,18 @@
    "people": [
     "sf:heather-foster-barrigar"
    ],
-   "online": false
+   "online": false,
+   "tier": "confirmed"
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-30",
+   "title": "Administered the Police Officer/Deputy Sheriff agility test at SUNY Canton (Roos House); remembered JD from the SUNY Canton Police Academy (winter/spring 2023)",
+   "people": [
+    "sf:matthew-merria"
+   ],
+   "online": false,
+   "tier": "confirmed"
   },
   {
    "kind": "contact",
@@ -1889,7 +2455,8 @@
    "people": [
     "ct:samarah martin"
    ],
-   "online": false
+   "online": false,
+   "tier": "confirmed"
   },
   {
    "kind": "contact",
@@ -1898,7 +2465,8 @@
    "people": [
     "ct:joe mastro"
    ],
-   "online": false
+   "online": false,
+   "tier": "confirmed"
   },
   {
    "kind": "event",
@@ -1906,7 +2474,8 @@
    "time": "08:30",
    "title": "Agility Test \u2013 Police Officer/Deputy Sheriff Examination",
    "cal": "Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1914,7 +2483,8 @@
    "time": "07:00",
    "title": "UTA Drill - HT/WT, MMCS, MDMP (MUTA 6)",
    "cal": "Military",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1924,7 +2494,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:tom_nate_ford"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1932,7 +2503,8 @@
    "time": "12:00",
    "title": "Hair appointment",
    "cal": "Personal",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1940,7 +2512,8 @@
    "time": null,
    "title": "Happy birthday!",
    "cal": "Shared Calendar",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1948,7 +2521,8 @@
    "time": "13:00",
    "title": "Outpatient",
    "cal": "School",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1956,7 +2530,8 @@
    "time": "07:00",
    "title": "UTA Drill - COA DEV Brief/Training (MUTA 5)",
    "cal": "Military",
-   "people": []
+   "people": [],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1966,7 +2541,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ct:christine sutter"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1976,7 +2552,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ct:david tomford"
-   ]
+   ],
+   "tier": "weak"
   },
   {
    "kind": "event",
@@ -1986,7 +2563,8 @@
    "cal": "Shared Calendar",
    "people": [
     "ig:davidzufall"
-   ]
+   ],
+   "tier": "weak"
   }
  ]
 }
