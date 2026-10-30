@@ -3603,15 +3603,15 @@
    ]
   },
   {
-   "id": "pf-23d8fd3bd0",
+   "id": "pf-43c405c7d1",
    "key": "sf:acacia-white",
    "display": "Acacia White",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Massena, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Massena Hospital is in Massena."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -3901,8 +3901,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Potsdam Central School is in Potsdam."
+    "Potsdam Central School is in Potsdam.",
+    "SUNY Potsdam is in Potsdam."
    ]
   },
   {
@@ -4479,15 +4479,15 @@
    ]
   },
   {
-   "id": "pf-b9bc27d8bc",
+   "id": "pf-be4913ccf6",
    "key": "emijent",
    "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
