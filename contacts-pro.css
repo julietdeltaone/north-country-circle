@@ -4124,6 +4124,7 @@ html[data-mode="dark"] .page.profile{--ringtrk:rgba(255,255,255,.18)}
   background-size:auto,auto,auto,1500px auto;background-position:0 0,0 0,0 0,top center;background-repeat:no-repeat;
   pointer-events:none;z-index:0}
 .page.profile>*{position:relative;z-index:1}
+.page.profile>.ptop{z-index:70}
 
 /* --- instrument header --- */
 .page.profile #p-hero{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:0;padding:14px 18px;align-items:center}
