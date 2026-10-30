@@ -4497,3 +4497,31 @@ span.ca-crumb{cursor:default}
   .ca-cell{min-height:84px;padding:5px 6px}
   .ca-weekgrid{grid-template-columns:1fr}
 }
+
+/* ============================================================
+   V3.47.0 (JD 2026-10-30) — Prefill review (Audit mode). Compact
+   rows in the Research Command register: person, field, proposed
+   value, inductive grade, readable evidence, Approve / Deny.
+   ============================================================ */
+.pf-loading,.pf-empty{padding:26px 4px;color:var(--dim);font-size:14px}
+.pf-intro{margin:0 0 12px;font-size:13.5px;line-height:1.55;color:var(--dim);max-width:880px}
+.pf-intro b{color:inherit}
+.pf-filters{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pf-flabel{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim);margin:0 2px 0 10px}
+.pf-flabel:first-child{margin-left:0}
+.pf-chip{font:inherit;font-size:12.5px;font-weight:600;padding:5px 11px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--dim);cursor:pointer}
+.pf-chip.on{border-color:var(--acc);color:var(--acc)}
+#pfq{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:inherit;min-width:210px;margin-left:auto}
+.pf-row{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:11px 14px;margin-bottom:8px}
+.pf-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pf-top a{color:inherit;text-decoration:none}
+.pf-top a:hover{color:var(--acc)}
+.pf-field{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);border:1px solid var(--line);border-radius:99px;padding:2px 9px}
+.pf-val{font-size:14.5px}
+.pf-grade{font-size:11px;font-weight:700;letter-spacing:.04em;border-radius:99px;padding:2px 9px;border:1px solid var(--line);color:var(--dim)}
+.pf-grade.g-strong{background:var(--acc);border-color:var(--acc);color:#fff}
+.pf-grade.g-probable{border-color:var(--acc);color:var(--acc)}
+.pf-acts{margin-left:auto;display:flex;gap:6px}
+.pf-done{margin-left:auto;font-size:12.5px;color:var(--dim)}
+.pf-ev{margin-top:7px;display:flex;flex-direction:column;gap:2px}
+.pf-ev span{font-size:13px;line-height:1.5}
