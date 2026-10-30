@@ -2338,6 +2338,7 @@ function render(){
     if(window.console) console.error(err);
   }
   paintPool();
+  try{ paintPool(); }catch(x){}
   if(render._restore){ var vv = $('#view'); if(vv) vv.scrollTop = render._restore; render._restore = 0; }
 }
 function afterWrite(di){
@@ -7032,6 +7033,7 @@ function keepAnchor(fn, sel){
   var y = v.scrollTop;
   var qg = document.querySelector('.pha-qgrid'); var qy = qg ? qg.scrollTop : null;
   fn();
+  try{ paintPool(); }catch(x){}
   var a2 = sel ? document.querySelector(sel) : null;
   if(a2 && relY != null) v.scrollTop = y + (a2.getBoundingClientRect().top - relY);
   else v.scrollTop = y;
@@ -9892,6 +9894,9 @@ function ykBatchKeysInit(){
 
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
+  /* The Save Pool strip is painted synchronously by keepAnchor/render
+     paths — left empty it fills a beat later when the outbox ticks,
+     and everything under it jumps (the verdict-click jump, JD Oct 29). */
   if(['cards', 'lima', 'photos', 'years'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
@@ -9915,6 +9920,7 @@ function viewAudit(v){
     '<div id="audempty"></div>' +
     '<div class="aud-toast" id="audtoast" hidden role="status"></div></div>';
   var grid = $('#audgrid');
+  paintPool();
   if(m === 'lima'){ lcRender(); }
   else if(m === 'photos'){ phaRender(); }
   else if(m === 'years'){ if(!YK) ykLoad(); ykKeysInit(); ykRender(); }
