@@ -4161,6 +4161,19 @@ html[data-mode="dark"] .psheets .vchip.oc-churches{color:#eda3f5}
 .psheets.wide-c .sheet-a{flex:0 0 calc(52% - 13px)}
 .bandrow{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
 @media (max-width:700px){ .bandrow{grid-template-columns:1fr} }
+
+/* Hero photo: direct Adjust chip (V3.40.0, JD) — opens the framing
+   editor straight from the profile photo, no inspector in between */
+.hphoto{position:relative}
+.hphoto-adj{position:absolute;top:6px;right:6px;z-index:3;border:1px solid rgba(255,255,255,.35);background:rgba(10,12,16,.72);color:#fff;font:700 10.5px/1 var(--sans);letter-spacing:.06em;padding:6px 9px;border-radius:999px;cursor:pointer;opacity:.85;backdrop-filter:blur(4px)}
+.hphoto-adj:hover{opacity:1;background:rgba(10,12,16,.9)}
+
+/* Content-hugging cards (V3.40.0, JD): paired columns and bullet
+   columns size to their own content — no equal-height stretching */
+.hlcols{align-items:flex-start}
+.hlcol .hlrow{height:auto}
+.fpcols{align-items:flex-start}
+.psheets .band .band-in{padding-bottom:9px}
 a.epill,button.epill{cursor:pointer;text-decoration:none}
 button.epill{font-family:inherit;text-align:left}
 a.epill:hover,button.epill:hover{border-color:rgba(var(--ep),.75);filter:brightness(1.05)}
