@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.42.0';
+var APP_VERSION = '3.42.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6933,7 +6933,7 @@ function rcConsoleHTML(){
   var body = shown.length ? shown.map(function(r){
     var c = r.c, band = rcBand(c.confidence), parts = c.confidence_parts || {};
     var anchors = (c.anchors || []).length ? '<ul class="rc-anchors">' + c.anchors.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
-    var src = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 11) + '</a>' : esc(c.source || '');
+    var src = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 11) + '</a>' : esc(c.source || '') + ' <span class="rc-nosrc">no source page found</span>';
     var actions = r.st.k === 'pending'
       ? '<div class="rc-actions"><button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c.id) + '">File it</button>' +
         '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' +
