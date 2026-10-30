@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.47.0';
+var APP_VERSION = '3.48.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2311,11 +2311,7 @@ function render(){
   if(render._pv && render._pv !== n) phInspClose(true);
   if(HMI && n !== 'home') hmiClose(true);
   document.body.setAttribute('data-view', n);
-  /* V3.30.0: the Models section (and only it) takes the full viewport;
-     the attribute is restamped on every render so leaving restores the
-     app frame exactly. */
-  if(n === 'sandbox' && S.route.seg && S.route.seg[0] === 'models') document.body.setAttribute('data-mdl', '1');
-  else document.body.removeAttribute('data-mdl');
+  document.body.removeAttribute('data-mdl');   /* Models retired V3.48.0 — the full-screen exception is gone with it */
   /* skin 2026-10-15: route CHANGES earn a short entrance; same-route
      repaints (polls, quiet refresh, writes) stay instant */
   if(render._pv !== n){ render._pv = n; v.classList.remove('vin'); void v.offsetWidth; v.classList.add('vin'); clearTimeout(render._vt); render._vt = setTimeout(function(){ v.classList.remove('vin'); }, 380); }
@@ -10549,6 +10545,7 @@ function pfDecide(id, decision){
     }
     queuePatch(di, patch);
   });
+  PFQ.decided++;
   toast(decision === 'file'
     ? 'Filed ' + sg.field_label + ' for ' + (sg.display || '') + ': ' + sg.value + '. It saves through the Save Pool.'
     : 'Denied for ' + (sg.display || '') + '. It will not be proposed again.', { undo:true });
@@ -10565,17 +10562,34 @@ function pfRows(){
   });
   return { rows:rows, counts:counts };
 }
+function pfFiltered(){
+  var q = String(PF_VIEW.q || '').trim().toLowerCase();
+  return pfRows().rows.filter(function(r){
+    var sg = r.sg;
+    if(PF_VIEW.status === 'pending' && r.st.k !== 'pending') return false;
+    if(PF_VIEW.status === 'filed' && !(r.st.k === 'filed' || r.st.k === 'already')) return false;
+    if(PF_VIEW.status === 'dismissed' && r.st.k !== 'dismissed') return false;
+    if(PF_VIEW.field !== 'all' && sg.field_label !== PF_VIEW.field) return false;
+    if(PF_VIEW.grade !== 'all' && sg.grade !== PF_VIEW.grade) return false;
+    if(q && (String(sg.display || '') + ' ' + String(sg.value || '')).toLowerCase().indexOf(q) < 0) return false;
+    return true;
+  });
+}
+/* Queue state (JD 2026-10-30): Pending works as a one-at-a-time
+   queue — position in the filtered pending list plus how many were
+   decided this visit. Filed / Denied keep the list view. */
+var PFQ = { i:0, decided:0 };
 function pfRender(){
   var wrap = document.getElementById('pfwrap');
   if(!wrap) return;
-  if(!PF){ wrap.innerHTML = '<div class="pf-loading">Loading the prefill suggestions…</div>'; return; }
+  if(!PF){ wrap.innerHTML = '<div class="pf-loading">Loading the prefill suggestions\u2026</div>'; return; }
   var built = pfRows(), counts = built.counts;
   var labels = [];
   (PF.suggestions || []).forEach(function(sg){ if(labels.indexOf(sg.field_label) < 0) labels.push(sg.field_label); });
   function chip(act, val, cur, txt){
     return '<button type="button" class="pf-chip' + (val === cur ? ' on' : '') + '" data-act="' + act + '" data-d="' + esc(val) + '">' + esc(txt) + '</button>';
   }
-  var h = '<div class="pf-head"><p class="pf-intro">Luna\u2019s inferred values for blank fields, each with the evidence behind it. <b>Approve</b> files the value through the Save Pool. <b>Deny</b> is remembered — it will not be proposed again. Tier and Momentum are never inferred.</p>' +
+  var h = '<div class="pf-head"><p class="pf-intro">Luna\u2019s inferred values for blank fields, worked as a queue, one at a time. Each card states exactly what approving will write before you decide. Tier and Momentum are never inferred.</p>' +
     '<div class="pf-filters"><span class="pf-flabel">Status</span>' +
     chip('pfstatus', 'pending', PF_VIEW.status, 'Pending ' + counts.pending) +
     chip('pfstatus', 'filed', PF_VIEW.status, 'Filed ' + counts.filed) +
@@ -10589,37 +10603,88 @@ function pfRender(){
     '<div id="pfrows"></div>';
   wrap.innerHTML = h;
   pfPaintRows();
+  pfKeysInit();
 }
 function pfPaintRows(){
   var box = document.getElementById('pfrows');
   if(!box || !PF) return;
-  var q = String(PF_VIEW.q || '').trim().toLowerCase();
-  var shown = pfRows().rows.filter(function(r){
-    var sg = r.sg;
-    if(PF_VIEW.status === 'pending' && r.st.k !== 'pending') return false;
-    if(PF_VIEW.status === 'filed' && !(r.st.k === 'filed' || r.st.k === 'already')) return false;
-    if(PF_VIEW.status === 'dismissed' && r.st.k !== 'dismissed') return false;
-    if(PF_VIEW.field !== 'all' && sg.field_label !== PF_VIEW.field) return false;
-    if(PF_VIEW.grade !== 'all' && sg.grade !== PF_VIEW.grade) return false;
-    if(q && (String(sg.display || '') + ' ' + String(sg.value || '')).toLowerCase().indexOf(q) < 0) return false;
-    return true;
-  });
-  var CAP = 250, total = shown.length;
-  shown = shown.slice(0, CAP);
+  if(PF_VIEW.status === 'pending'){ pfPaintQueue(box); return; }
+  var shown = pfFiltered();
   if(!shown.length){ box.innerHTML = '<div class="pf-empty">Nothing in this view.</div>'; return; }
   box.innerHTML = shown.map(function(r){
     var sg = r.sg, di = pfDi(sg);
     var name = di == null ? '<b>' + esc(sg.display || '') + '</b>'
       : '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + esc(sg.display || '') + '</b></a>' + milBadge(D.directory[di]);
-    var acts = r.st.k === 'pending'
-      ? '<span class="pf-acts"><button type="button" class="btn primary sm" data-act="pfok" data-d="' + sg.id + '">Approve</button><button type="button" class="btn ghost sm" data-act="pfno" data-d="' + sg.id + '">Deny</button></span>'
-      : '<span class="pf-done">' + esc(r.st.label) + (r.st.at ? ' · ' + esc(String(r.st.at).slice(0, 10)) : '') + '</span>';
     return '<div class="pf-row"><div class="pf-top">' + name +
       '<span class="pf-field">' + esc(sg.field_label) + '</span>' +
       '<b class="pf-val">' + esc(sg.value) + '</b>' +
-      '<span class="pf-grade g-' + String(sg.grade || '').toLowerCase() + '">' + esc(sg.grade) + '</span>' + acts + '</div>' +
+      '<span class="pf-grade g-' + String(sg.grade || '').toLowerCase() + '">' + esc(sg.grade) + '</span>' +
+      '<span class="pf-done">' + esc(r.st.label) + (r.st.at ? ' · ' + esc(String(r.st.at).slice(0, 10)) : '') + '</span></div>' +
       '<div class="pf-ev">' + (sg.evidence || []).map(function(x){ return '<span>' + esc(x) + '</span>'; }).join('') + '</div></div>';
-  }).join('') + (total > CAP ? '<div class="pf-empty">Showing the first ' + CAP + ' of ' + total + ' — narrow by field or grade to work the rest.</div>' : '');
+  }).join('');
+}
+/* The queue card: who, which blank field, the proposed value, the
+   grade, the evidence — and a plain statement of exactly what each
+   button writes, so there is never a guess about what Approve does. */
+function pfPaintQueue(box){
+  var rows = pfFiltered();
+  if(!rows.length){
+    box.innerHTML = '<div class="pf-caught">' + ic('check', 26) + '<h3>Queue clear</h3><p>Nothing pending in this view. ' + PFQ.decided + ' decided this visit.</p></div>';
+    return;
+  }
+  if(PFQ.i >= rows.length) PFQ.i = rows.length - 1;
+  if(PFQ.i < 0) PFQ.i = 0;
+  var r = rows[PFQ.i], sg = r.sg, di = pfDi(sg);
+  var e = di != null ? D.directory[di] : null;
+  var total = pfRows().counts.pending;
+  var isList = PF_LIST_FIELDS.indexOf(sg.field) >= 0;
+  var cur = e ? String(gv(e, sg.field) || '').trim() : '';
+  var writeLine = isList
+    ? 'Approve adds <b>' + esc(sg.field_label) + ': \u201C' + esc(sg.value) + '\u201D</b> to ' + esc(sg.display || 'this profile') + '\u2019s profile' + (cur ? ' (current: ' + esc(cur) + ')' : ' (the field is blank)') + '.'
+    : 'Approve sets <b>' + esc(sg.field_label) + ' to \u201C' + esc(sg.value) + '\u201D</b> on ' + esc(sg.display || 'this profile') + '\u2019s profile (the field is blank).';
+  var nxt = rows[PFQ.i + 1];
+  box.innerHTML = '<div class="pfq-card">' +
+    '<div class="pfq-prog"><span>Item <b>' + (PFQ.i + 1) + '</b> of <b>' + rows.length + '</b> in this view · <b>' + total + '</b> pending overall · <b>' + PFQ.decided + '</b> decided this visit</span>' +
+    '<span class="pfq-bar"><i style="width:' + (rows.length ? Math.round(100 * PFQ.i / rows.length) : 0) + '%"></i></span></div>' +
+    '<div class="pfq-who">' + (e ? avatar(e, 'lg') : '') + '<div><a class="pfq-name" href="#/p/' + (e ? encodeURIComponent(personId(e)) : '') + '" data-act="openp" data-di="' + di + '">' + esc(sg.display || '') + '</a>' + (e ? milBadge(e) : '') +
+    '<div class="pfq-sub">' + (e ? esc(infoLine(e) || '') : '') + '</div></div>' +
+    '<span class="pf-grade g-' + String(sg.grade || '').toLowerCase() + '">' + esc(sg.grade) + '</span></div>' +
+    '<div class="pfq-fill"><span class="pfq-flabel">Fill ' + esc(sg.field_label) + ' with</span><b class="pfq-val">' + esc(sg.value) + '</b></div>' +
+    '<div class="pfq-ev"><span class="pfq-elabel">Why Luna thinks so</span>' + (sg.evidence || []).map(function(x){ return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' +
+    '<div class="pfq-write"><p>' + writeLine + '</p>' +
+    '<p>It saves through the Save Pool in one undoable step, and your decision is recorded in Prefill Review. <b>Deny</b> writes nothing to the profile — it records \u201Cno\u201D in Prefill Review and this suggestion never comes back. <b>Skip</b> decides nothing and moves on.</p></div>' +
+    '<div class="pfq-acts">' +
+    '<button type="button" class="btn ghost" data-act="pfback"' + (PFQ.i === 0 ? ' disabled' : '') + '>&larr; Back <kbd>&larr;</kbd></button>' +
+    '<button type="button" class="btn ghost" data-act="pfskip">Skip <kbd>S</kbd></button>' +
+    '<button type="button" class="btn danger" data-act="pfno" data-d="' + sg.id + '">Deny <kbd>D</kbd></button>' +
+    '<button type="button" class="btn primary" data-act="pfok" data-d="' + sg.id + '">Approve <kbd>A</kbd></button>' +
+    '</div>' +
+    (nxt ? '<div class="pfq-next">Up next: <b>' + esc(nxt.sg.display || '') + '</b> · ' + esc(nxt.sg.field_label) + ' \u2192 \u201C' + esc(nxt.sg.value) + '\u201D</div>' : '<div class="pfq-next">This is the last one in this view.</div>') +
+    '<div class="pfq-keys">Keys: <b>A</b> approve · <b>D</b> deny · <b>S</b> or <b>&rarr;</b> skip · <b>&larr;</b> back · <b>U</b> undo last decision</div>' +
+    '</div>';
+}
+function pfCurId(){
+  var rows = pfFiltered();
+  if(!rows.length) return null;
+  if(PFQ.i >= rows.length) PFQ.i = rows.length - 1;
+  return rows[PFQ.i].sg.id;
+}
+function pfKeysInit(){
+  if(window.__pfKeys) return; window.__pfKeys = true;
+  document.addEventListener('keydown', function(ev){
+    if(!S.route || S.route.name !== 'audit' || !S.audit || audMode() !== 'prefill') return;
+    if(document.body.classList.contains('sheet-open')) return;
+    if(PF_VIEW.status !== 'pending') return;
+    var t = ev.target;
+    if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+    if(ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    var k = ev.key;
+    if(k === 'a' || k === 'A'){ var id1 = pfCurId(); if(id1) pfDecide(id1, 'file'); ev.preventDefault(); }
+    else if(k === 'd' || k === 'D'){ var id2 = pfCurId(); if(id2) pfDecide(id2, 'dismiss'); ev.preventDefault(); }
+    else if(k === 's' || k === 'S' || k === 'ArrowRight'){ var n = pfFiltered().length; if(PFQ.i < n - 1){ PFQ.i++; pfPaintRows(); } ev.preventDefault(); }
+    else if(k === 'ArrowLeft'){ if(PFQ.i > 0){ PFQ.i--; pfPaintRows(); } ev.preventDefault(); }
+    else if(k === 'u' || k === 'U'){ doUndo(); PFQ.decided = Math.max(0, PFQ.decided - 1); setTimeout(function(){ pfRender(); audPaintModeBar(); }, 60); ev.preventDefault(); }
+  });
 }
 
 function viewAudit(v){
@@ -10819,10 +10884,12 @@ function onClick(ev){
     case 'audundo': audUndoLast(); break;
     case 'audmode': if(S.audit) audSetMode(el.getAttribute('data-m')); break;
     case 'pfok': pfDecide(el.getAttribute('data-d'), 'file'); break;
+    case 'pfskip': { var _pn = pfFiltered().length; if(PFQ.i < _pn - 1){ PFQ.i++; pfPaintRows(); } break; }
+    case 'pfback': if(PFQ.i > 0){ PFQ.i--; pfPaintRows(); } break;
     case 'pfno': pfDecide(el.getAttribute('data-d'), 'dismiss'); break;
-    case 'pffield': PF_VIEW.field = el.getAttribute('data-d'); pfRender(); break;
-    case 'pfstatus': PF_VIEW.status = el.getAttribute('data-d'); pfRender(); break;
-    case 'pfgrade': PF_VIEW.grade = el.getAttribute('data-d'); pfRender(); break;
+    case 'pffield': PF_VIEW.field = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
+    case 'pfstatus': PF_VIEW.status = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
+    case 'pfgrade': PF_VIEW.grade = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
     case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.catDone = {}; S.audit.shown = null; viewAudit($('#view')); } break;
     case 'audcatall': if(S.audit) audSetMode('cards'); break;
     case 'audbulkphone': audBulkPhone(); break;
@@ -11421,14 +11488,13 @@ var SB = {
 var SB_TOOLS = [
   { k:'insights', z:'Sandbox', t:'Insights',     d:'Seven named checks, each on its own page: coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
   { k:'merge',    z:'Sandbox', t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
-  { k:'danger',   z:'Sandbox', t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
   { k:'log',      z:'Sandbox', t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
 ];
 var SB_LABS = [
   { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through known associates and family, mutual connections, and the bridge people who hold the circle together.' },
   { k:'pool',    t:'Suspect Pool', d:'The disciplined thought experiment: an exact pool, one yes/no behavioral question, observable behavior only, a pre-registered prediction. On-device only.' },
 ];
-function sbZoneOf(tool){ return ({ insights:'Sandbox', merge:'Sandbox', danger:'Sandbox', log:'Sandbox' })[tool] || ''; }
+function sbZoneOf(tool){ return ({ insights:'Sandbox', merge:'Sandbox', log:'Sandbox' })[tool] || ''; }
 function sbLabTab(){
   if(SB.labtab == null) SB.labtab = sbStore('ncc_sbx_labtab') || 'paths';
   if(!SB_LABS.some(function(l){ return l.k === SB.labtab; })) SB.labtab = 'paths';
@@ -11457,7 +11523,8 @@ function sbEnsure(){
     sbFetch('snapchat.json', 'snap'), sbFetch('recon.json', 'recon'),
     sbFetch('sandbox-log.json', 'serverLog'), sbFetch('org-registry.json', 'orgreg'),
     sbFetch('council.json', 'council'), sbFetch('profiling.json', 'prof'),
-    sbFetch('suspect-pool.json', 'spool'), sbFetch('discovery.json', 'discData'), sbFetch('taxonomy.json', 'tax')
+    sbFetch('suspect-pool.json', 'spool'), sbFetch('discovery.json', 'discData'), sbFetch('taxonomy.json', 'tax'),
+    sbFetch('prefill.json', 'prefill'), sbFetch('research-candidates.json', 'rcand'), sbFetch('calendar.json', 'cal')
   ]).then(function(){ SB.ready = true; SB.loading = null; if(S.route.name === 'sandbox') render(); });
   return SB.loading;
 }
@@ -11537,23 +11604,17 @@ function viewSandbox(v){
     var iv = (S.route.seg && S.route.seg[1]) || null;
     SB.ins.view = SB_INSIGHTS.some(function(x){ return x.k === iv; }) ? iv : null;
   }
-  if(SB.tool === 'models'){
-    /* V3.30.0 (JD 2026-10-29): the Models section is full screen,
-       edge-to-edge — the one deliberate exception to the in-frame
-       Sandbox rule. It renders straight into #view on its own data
-       (models.json), independent of the Sandbox sidecar load. */
-    v.innerHTML = mdlView();
-    mdlAfterRender();
-    mdlEnsure();
-    return;
-  }
   if(!SB.ready){
     v.innerHTML = sbShell('<div class="sb-wrap"><div class="empty"><h3>Sandbox</h3><p>Loading the sidecar data…</p></div></div>');
     sbEnsure();
     return;
   }
-  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
-  if(!({ home:1, insights:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
+  /* Models and the Danger area were retired (JD 2026-10-30): their
+     routes — and any other retired tool name — land on the stats
+     board. The Danger tools' data (Trash) is untouched in the Sheet;
+     only the surface is gone. */
+  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, log:sbLogView }[SB.tool] || sbHome;
+  if(!({ home:1, insights:1, merge:1, log:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -11584,7 +11645,7 @@ function sbNav(){
      flat list, no zones. Insights keeps its seven checks as kids
      when it is the open tool. */
   var h = '<nav class="sb-nav" aria-label="Sandbox tools">';
-  h += '<a class="sb-navhome' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox"><span class="sb-nav-t">Console</span><span class="sb-nav-d">Data health at a glance, and the five tools.</span></a>';
+  h += '<a class="sb-navhome' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox"><span class="sb-nav-t">Stats</span><span class="sb-nav-d">The master stats board — every number that does not fit on Home.</span></a>';
   SB_TOOLS.forEach(function(t){
     var on = SB.tool === t.k;
     h += '<a class="sb-navitem' + (on ? ' on' : '') + '" href="#/sandbox/' + t.k + '"><span class="sb-nav-t">' + esc(t.t) + '</span><span class="sb-nav-d">' + esc(t.d) + '</span></a>';
@@ -11594,7 +11655,6 @@ function sbNav(){
       }).join('') + '</div>';
     }
   });
-  h += '<a class="sb-navitem" href="#/sandbox/models"><span class="sb-nav-t">Models</span><span class="sb-nav-d">Losing touch, who has news, same person twice. Full screen.</span></a>';
   return h + '</nav>';
 }
 /* One template for every tool page: title + zone chip + purpose line. */
@@ -11629,29 +11689,114 @@ function sbLogToday(){
   return n;
 }
 function sbHome(){
-  /* V3.45.1 (JD 2026-10-30): the Sandbox console — five tools, each a
-     large panel carrying its live state. The old tile index (Look /
-     Play / Fix zones, nine tools) is gone: Data grid, Discovery
-     trails, Raw data, the Lab and Profiling are no longer Sandbox
-     destinations; their data files stay on disk untouched. */
+  /* V3.48.0 (JD 2026-10-30): the Sandbox home is the MASTER STATS
+     board — Home's extension. Everything numeric that does not fit
+     on Home lives here, in the Models board's skin (serif display
+     type, kicker labels, big stat cards, chapter panels) but inside
+     the normal app frame. Models itself is retired; the Danger area
+     is gone; the three remaining tools sit at the bottom as small
+     panels. Every number is computed live from the same data the
+     rest of the app reads. */
   var ppl = people().length;
   var phn = sbPhotoByName();
-  var conf = people().filter(function(di){ var p = phn[dispName(D.directory[di]).toLowerCase()]; return !!(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely')); }).length;
-  var pct = ppl ? Math.round(100 * conf / ppl) : 0;
-  var findN = sbFindingsCount(), dupN = sbDupPairs().length, logN = sbLogToday();
+  var phC = 0, phL = 0, phP = 0;
+  people().forEach(function(di){
+    var p = phn[dispName(D.directory[di]).toLowerCase()];
+    if(!p || !p.photo_url) return;
+    if(p.status === 'confirmed') phC++;
+    else if(p.status === 'likely') phL++;
+    else if(p.status === 'possible') phP++;
+  });
+  var usable = phC + phL, pct = ppl ? Math.round(100 * usable / ppl) : 0;
+  var gaps = audGapCounts(), quickWins = audRemaining();
+  var pfPending = 0;
+  if(SB.prefill && SB.prefill.suggestions) SB.prefill.suggestions.forEach(function(sg){ if(pfStatus(sg).k === 'pending') pfPending++; });
+  var rcPending = 0, rcTotal = 0;
+  if(SB.rcand && SB.rcand.candidates){
+    RC = SB.rcand;
+    rcTotal = SB.rcand.candidates.length;
+    SB.rcand.candidates.forEach(function(c){ if(rcStatus(c).k === 'pending') rcPending++; });
+  }
+  var decisions = pfPending + rcPending;
+  function stat(b, s){ return '<div class="mdl-stat"><b>' + esc(String(b)) + '</b><span>' + s + '</span></div>'; }
+  function bar(n, tot){ var p = tot ? Math.max(2, Math.round(100 * n / tot)) : 0; return '<span class="sbs-bar"><i style="width:' + p + '%"></i></span>'; }
+  function frow(label, have, tot){
+    return '<div class="sbs-frow"><span class="sbs-fl">' + esc(label) + '</span>' + bar(have, tot) +
+      '<span class="sbs-fn"><b>' + have.toLocaleString('en-US') + '</b> of ' + tot.toLocaleString('en-US') + ' · ' + (tot - have).toLocaleString('en-US') + ' missing</span></div>';
+  }
+  var h = '<div class="sbs">' +
+    '<div class="mdl-kick">Sandbox · Master stats</div>' +
+    '<h2 class="sbs-title">Every number that does not fit on Home.</h2>' +
+    '<p class="mdl-sub">The directory, the photos, the review queues and the routines, counted live. Home stays the front door; this is the ledger behind it.</p>' +
+    '<div class="mdl-stats">' +
+      stat(ppl.toLocaleString('en-US'), 'people in the directory') +
+      stat(pct + '%', 'have a usable photo (' + usable.toLocaleString('en-US') + ' confirmed or likely)') +
+      stat(quickWins.toLocaleString('en-US'), 'audit quick wins left across ' + Object.keys(AUD_GAPS).length + ' fields') +
+      stat(decisions.toLocaleString('en-US'), 'decisions waiting: ' + pfPending + ' prefill · ' + rcPending + ' research') +
+    '</div>';
+  /* Field coverage */
+  var fieldRows = [
+    ['Tier', ppl - gaps.tier], ['Location', ppl - gaps.loc], ['Relationship', ppl - gaps.rel],
+    ['Years known', ppl - gaps.years], ['Last contact', ppl - gaps.lastc], ['Phone', ppl - gaps.phone],
+    ['Organizations', ppl - gaps.orgs], ['Skills', ppl - gaps.skills]
+  ];
+  h += '<div class="mdl-panel"><h3 class="mdl-ph">Field coverage — what is on file, per field</h3>' +
+    fieldRows.map(function(r){ return frow(r[0], r[1], ppl); }).join('') + '</div>';
+  /* Photos + queues */
+  var dt = SB.dt || {}, ch = SB.changes || {};
+  var dtChecked = (dt.checked && dt.checked.length) || 0, dtFiled = (dt.filed && dt.filed.length) || 0;
+  var sightDays = 0;
+  if(SB.cal && SB.cal.entries){
+    var sd = {};
+    SB.cal.entries.forEach(function(en){ if(en.people && en.people.length && en.tier && en.tier !== 'weak') sd[en.date] = 1; });
+    sightDays = Object.keys(sd).length;
+  }
+  var cflags = (SB.council && SB.council.flags) || [];
+  var cOpen = cflags.filter(function(f){ return f.status === 'open' || f.status === 'staged'; }).length;
+  var tierMix = { vetted:0, associate:0, open:0, none:0 }, links = 0;
+  people().forEach(function(di){
+    var e = D.directory[di], t = tierOf(e);
+    if(t === 'vetted') tierMix.vetted++; else if(t === 'associate') tierMix.associate++; else if(t === 'open') tierMix.open++; else tierMix.none++;
+    links += (e.neighbors || []).length;
+  });
+  h += '<div class="mdl-grid2">' +
+    '<div class="mdl-panel"><h3 class="mdl-ph">Photos</h3>' +
+      frow('Confirmed', phC, ppl) + frow('Likely', phL, ppl) + frow('Possible (unvalidated)', phP, ppl) +
+      '<p class="sbs-note">' + (ppl - usable).toLocaleString('en-US') + ' people still need a usable photo.</p></div>' +
+    '<div class="mdl-panel"><h3 class="mdl-ph">Review queues</h3>' +
+      frow('Prefill suggestions pending', pfPending, (SB.prefill && SB.prefill.suggestions || []).length || 1) +
+      frow('Research candidates pending', rcPending, rcTotal || 1) +
+      '<p class="sbs-note">Prefill lives in Audit → Prefill; research in Live Records → Research Command.</p></div>' +
+    '</div>';
+  h += '<div class="mdl-grid2">' +
+    '<div class="mdl-panel"><h3 class="mdl-ph">Routines</h3>' +
+      '<div class="sbs-kv"><span>Live Records last run</span><b>' + esc(dt.date || '—') + '</b></div>' +
+      '<div class="sbs-kv"><span>Profiles checked</span><b>' + dtChecked + '</b></div>' +
+      '<div class="sbs-kv"><span>Facts filed</span><b>' + dtFiled + '</b></div>' +
+      '<div class="sbs-kv"><span>Still unchecked in the rotation</span><b>' + (dt.unchecked_remaining != null ? dt.unchecked_remaining : '—') + '</b></div>' +
+      '<div class="sbs-kv"><span>Changes logged</span><b>' + ((ch.entries || []).length) + '</b></div>' +
+      '<div class="sbs-kv"><span>Council flags open or staged</span><b>' + cOpen + ' of ' + cflags.length + '</b></div></div>' +
+    '<div class="mdl-panel"><h3 class="mdl-ph">Network & calendar</h3>' +
+      '<div class="sbs-kv"><span>Vetted</span><b>' + tierMix.vetted + '</b></div>' +
+      '<div class="sbs-kv"><span>Associate</span><b>' + tierMix.associate + '</b></div>' +
+      '<div class="sbs-kv"><span>Open</span><b>' + tierMix.open + '</b></div>' +
+      '<div class="sbs-kv"><span>No tier yet</span><b>' + tierMix.none + '</b></div>' +
+      '<div class="sbs-kv"><span>Known-associate links</span><b>' + links.toLocaleString('en-US') + '</b></div>' +
+      '<div class="sbs-kv"><span>Sighting days in 2026 (Atlas)</span><b>' + sightDays + '</b></div></div>' +
+    '</div>';
+  /* The three remaining tools, small. */
+  var dupN = sbDupPairs().length, findN = sbFindingsCount(), logN = sbLogToday();
   var trashN = Object.keys(sbTrashKeys()).length, opsN = sbOpsGet().length;
-  var lastLog = sbLogGet()[0];
-  function panel(href, t, big, unit, line){
-    return '<a class="sbc-p" href="' + href + '"><div class="ov-lab">' + esc(t) + ' <span class="ov-arrow">→</span></div>' +
+  function tool(href, t, big, unit, line){
+    return '<a class="mdl-panel sbs-tool" href="' + href + '"><div class="ov-lab">' + esc(t) + ' <span class="ov-arrow">→</span></div>' +
       '<div class="sbc-big"><b>' + esc(String(big)) + '</b><span>' + esc(unit) + '</span></div><p>' + line + '</p></a>';
   }
-  var h = '<p class="sb-compact">' + ppl + ' people in the directory · ' + pct + '% with a usable photo · ' + trashN + ' keys in Trash · ' + opsN + ' ops queued</p>';
-  h += '<div class="sbc-grid">' +
-    panel('#/sandbox/insights', 'Insights', findN, 'open findings', 'Coverage, sources, freshness, reconciliation, duplicates, orphans, photo links — the seven checks that keep the directory honest.') +
-    panel('#/sandbox/merge', 'Merge studio', dupN, 'candidate pairs', 'Combine two profiles field by field. Combine, never overwrite.') +
-    panel('#/sandbox/danger', 'Danger area', trashN, 'keys in Trash', 'Delete, restore, purge, bulk edit, rename, re-key, rebuild. Every operation asks first and shows exactly who it touches.') +
-    panel('#/sandbox/log', 'Action log', logN, 'entries today', lastLog ? ('Latest: ' + esc(lastLog.label || lastLog.type || 'a write') + '. Every Sandbox write, before → after, with undo.') : 'Every Sandbox write, before → after, with undo and the ops export.') +
-    panel('#/sandbox/models', 'Models', 3, 'models', 'Losing touch · Who has news · Same person twice. What the numbers can tell you, full screen.') +
+  h += '<h3 class="mdl-ph sbs-toolsh">Tools</h3><div class="sbs-tools">' +
+    tool('#/sandbox/insights', 'Insights', findN, 'open findings', 'Coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.') +
+    tool('#/sandbox/merge', 'Merge studio', dupN, 'candidate pairs', 'Combine two profiles field by field. Combine, never overwrite. The bar is high now: same surname alone no longer pairs anyone.') +
+    tool('#/sandbox/log', 'Action log', logN, 'entries today', 'Every Sandbox write, before → after, with undo and the ops export.') +
+    '</div>' +
+    '<p class="sb-compact">' + trashN + ' keys in Trash (archive and blocklist, in the Sheet) · ' + opsN + ' ops queued</p>' +
     '</div>';
   return h;
 }
@@ -12338,19 +12483,40 @@ function sbDupPairs(){
     (byName[nm] = byName[nm] || []).push(di);
   });
   Object.keys(byName).forEach(function(nm){ var g = byName[nm]; for(var i = 0; i < g.length; i++) for(var j = i + 1; j < g.length; j++) addPair(g[i], g[j], 'same name'); });
-  /* same surname + same first initial, different full name */
-  var bySig = {};
+  /* Name variants ONLY (threshold raised, JD 2026-10-30): sharing a
+     surname — even with the same first initial — is NOT a merge
+     signal; in a family-dense directory that lane produced 71 pairs
+     of relatives (the Daniels family alone was 10). A name pair now
+     needs the same surname AND first names that are plausible
+     variants of one name: one a prefix of the other (Mike/Michael,
+     Katie/Katelyn) or a single-letter difference on a longer name
+     (Sara/Sarah). Exact names and shared identifiers above and
+     below remain the strong lanes. */
+  function firstVariant(a, b){
+    if(a === b) return false;   /* exact full names handled above */
+    var s = a.length <= b.length ? a : b, l = a.length <= b.length ? b : a;
+    if(s.length >= 3 && l.indexOf(s) === 0) return true;
+    if(s.length >= 5 && l.length - s.length <= 1){
+      var diff = 0;
+      for(var i = 0; i < s.length; i++) if(s.charAt(i) !== l.charAt(i)) diff++;
+      if(l.length > s.length) diff++;
+      if(diff <= 1) return true;
+    }
+    return false;
+  }
+  var bySurname = {};
   D.directory.forEach(function(e, di){
     if(!liveEntry(e)) return;
     var parts = dispName(e).toLowerCase().split(/\s+/).filter(Boolean);
     if(parts.length < 2) return;
-    var sig = parts[parts.length - 1] + '|' + parts[0].charAt(0);
-    (bySig[sig] = bySig[sig] || []).push(di);
+    (bySurname[parts[parts.length - 1]] = bySurname[parts[parts.length - 1]] || []).push(di);
   });
-  Object.keys(bySig).forEach(function(sig){
-    var g = bySig[sig];
-    for(var i = 0; i < g.length; i++) for(var j = i + 1; j < g.length; j++)
-      if(dispName(D.directory[g[i]]).toLowerCase() !== dispName(D.directory[g[j]]).toLowerCase()) addPair(g[i], g[j], 'similar name');
+  Object.keys(bySurname).forEach(function(sn){
+    var g = bySurname[sn];
+    for(var i = 0; i < g.length; i++) for(var j = i + 1; j < g.length; j++){
+      var pa = dispName(D.directory[g[i]]).toLowerCase().split(/\s+/), pb = dispName(D.directory[g[j]]).toLowerCase().split(/\s+/);
+      if(pa.join(' ') !== pb.join(' ') && firstVariant(pa[0], pb[0])) addPair(g[i], g[j], 'name variant');
+    }
   });
   /* shared identifiers */
   [['phone', function(e){ var p = String(gv(e, 'phone') || '').replace(/\D/g, ''); return p.length >= 7 ? p.slice(-10) : ''; }, 'same phone'],
