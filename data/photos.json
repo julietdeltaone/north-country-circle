@@ -6412,6 +6412,15 @@
    "added": "2026-10-29",
    "also": [],
    "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Senior portrait in Sandstoner 2008 (Potsdam Senior High School), printed p. 22: portrait in the block headed \"Kale C. Hitchman\" (Nickname: Nacho; Activities: Yearbook 1-4, Leo Club 1-4, Lax 1,2, XC 2), with a four-year arc in the same collection (freshman grid 2005, sophomore list 2006, junior list 2007, \"Workaholics\" superlative 2008). Coordinator viewed the full page and cropped his portrait. This replaces the unusable masked entry filed under \"Elak Namhctih\" (an expired Instagram URL that never rendered)."
+  },
+  {
+   "evidence": "Filed under JD's Lima Charlie note (2026-10-30) supplying the Alamy page, and his explicit ruling the same day to file the enhanced crop anyway. Alamy's caption identifies the subject: Sgt. First Class Joann Duclose [sic], senior human resources sergeant, 642nd Aviation Support Battalion, waiting for nightfall before sling-load training, Camp Buehring, Kuwait, June 5, 2014 (N.Y. Army National Guard photo by Sgt. Harley Jelis, public domain; Alamy image KTP8CC). The clean original of this frame is not in the public DVIDS / National Guard gallery / Wikimedia Commons release set, so the only source is Alamy's watermarked comp: cropped on Joann (730x806) and enhanced with FSRCNN x4 super-resolution to 2920x3224, hosted locally. Watermarks from the comp remain visible; JD accepted them.",
+   "name": "Joann Duclos",
+   "photo_url": "photos/joann-duclos.jpg",
+   "source_page": "https://www.alamy.com/stock-photo-sgt-first-class-joann-duclose-front-a-senior-human-resources-sergeant-170134620.html",
+   "status": "confirmed",
+   "type": "Army photo, enhanced crop of watermarked comp (JD-directed)",
+   "added": "2026-10-30"
   }
  ]
 }
