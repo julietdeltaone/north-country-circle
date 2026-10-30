@@ -1,271 +1,7 @@
 {
  "generated": "2026-10-30",
- "count": 509,
+ "count": 467,
  "suggestions": [
-  {
-   "id": "pf-13034dae12",
-   "key": "sf:andrew-fox",
-   "display": "Andrew Fox",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-666bb77e6b",
-   "key": "ct:andrew haas",
-   "display": "Andrew Haas",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-80272d231c",
-   "key": "ct:ben hull",
-   "display": "Ben Hull",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "U.S. Air Force",
-   "grade": "Probable",
-   "evidence": [
-    "U.S. Air Force is filed as their organization, and U.S. Air Force is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-e19392697e",
-   "key": "sf:brianna-brothers",
-   "display": "Brianna Brothers",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "New Testament Church",
-   "grade": "Probable",
-   "evidence": [
-    "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-c42a26b55a",
-   "key": "sf:carol-fox",
-   "display": "Carol Fox",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-6a12f4ac1d",
-   "key": "charlotte_clark04",
-   "display": "Charlotte Clark",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "U.S. Marine Corps",
-   "grade": "Probable",
-   "evidence": [
-    "U.S. Marine Corps is filed as their organization, and U.S. Marine Corps is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-dfc7e38163",
-   "key": "sf:connor-caldwell",
-   "display": "Connor Caldwell",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "U.S. Air Force",
-   "grade": "Probable",
-   "evidence": [
-    "U.S. Air Force is filed as their organization, and U.S. Air Force is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-8a52253f70",
-   "key": "ct:corey laprad",
-   "display": "Corey Laprad",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-5752654c3c",
-   "key": "sf:danica-dunphey",
-   "display": "Danica Dunphey",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-1a9a55cec2",
-   "key": "ct:danny witkop",
-   "display": "Danny Witkop",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-2cf5e9746b",
-   "key": "sf:debbie-flack",
-   "display": "Debbie Flack",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-dceec3f955",
-   "key": "ethan_j_bates",
-   "display": "Ethan Bates",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Army National Guard",
-   "grade": "Probable",
-   "evidence": [
-    "Army National Guard is filed as their organization, and Army National Guard is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-91366fedbb",
-   "key": "sf:gabby-olivia",
-   "display": "Gabby Olivia",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "New Testament Church",
-   "grade": "Probable",
-   "evidence": [
-    "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-754bf2a648",
-   "key": "hannahkhughes_",
-   "display": "Hannah Hughes",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-7927a4fc00",
-   "key": "hannahllbanana",
-   "display": "Hannah McConnell",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Army National Guard",
-   "grade": "Probable",
-   "evidence": [
-    "Army National Guard is filed as their organization, and Army National Guard is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-ea36a950fa",
-   "key": "sf:heather-marie",
-   "display": "Heather Marie",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-8ac17c1e2a",
-   "key": "ct:irvin otero",
-   "display": "Irvin Otero",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "U.S. Army",
-   "grade": "Probable",
-   "evidence": [
-    "U.S. Army is filed as their organization, and U.S. Army is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-135482872f",
-   "key": "sf:jaime-bicknell",
-   "display": "Jaime Bicknell",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-e8521ff3c0",
-   "key": "jake_seguin",
-   "display": "Jake Seguin",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Army National Guard",
-   "grade": "Probable",
-   "evidence": [
-    "Army National Guard is filed as their organization, and Army National Guard is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-8edc52c156",
-   "key": "sf:janice-dane",
-   "display": "Janice Dane",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-4fc4f704db",
-   "key": "sf:jai-dane",
-   "display": "Janice Dane",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-067cbfcb15",
-   "key": "ct:jason sweet",
-   "display": "Jason Sweet",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "New Testament Church",
-   "grade": "Probable",
-   "evidence": [
-    "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
   {
    "id": "pf-f2727509a6",
    "key": "jdmeyers_",
@@ -276,246 +12,6 @@
    "grade": "Probable",
    "evidence": [
     "Family links connect them to JD \u2014 FAMILY is the label for JD's own family."
-   ]
-  },
-  {
-   "id": "pf-d71d4cbfa7",
-   "key": "jessicahurlbut",
-   "display": "Jessica Hurlbut",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "New Testament Church",
-   "grade": "Probable",
-   "evidence": [
-    "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-af9e127abb",
-   "key": "ct:julie mcormond",
-   "display": "Julie McOrmond",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-742a93b3aa",
-   "key": "sf:kevin-lynch",
-   "display": "Kevin Lynch",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "U.S. Air Force",
-   "grade": "Probable",
-   "evidence": [
-    "U.S. Air Force is filed as their organization, and U.S. Air Force is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-d1931980eb",
-   "key": "ct:dr kring",
-   "display": "Lawrence Kring",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-ceafae3e9b",
-   "key": "ct:libby thomas",
-   "display": "Libby Thomas",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-cf1e220b2a",
-   "key": "ct:maggie lapinski",
-   "display": "Maggie Lapinski",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-6155cfd218",
-   "key": "ct:maggie thibodeau",
-   "display": "Maggie Thibodeau",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-31b0969b7e",
-   "key": "sf:marissa-carl",
-   "display": "Marissa Carl",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-869fd765b6",
-   "key": "ct:megan daniels",
-   "display": "Megan Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-edefb0088a",
-   "key": "sf:megan-eddy",
-   "display": "Megan Eddy",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-d887b61fa7",
-   "key": "meg.peddle",
-   "display": "Megan Peddle",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-850be2725e",
-   "key": "micahmcculley_",
-   "display": "Micah McCulley",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "New Testament Church",
-   "grade": "Probable",
-   "evidence": [
-    "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-0ad30650b5",
-   "key": "ct:mike coventry",
-   "display": "Mike Coventry",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-550f057491",
-   "key": "sf:raegan-grant",
-   "display": "Raegan Grant",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-509b3e4a99",
-   "key": "sf:sam-rusaw",
-   "display": "Sam Rusaw",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "New Testament Church",
-   "grade": "Probable",
-   "evidence": [
-    "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-58627de21e",
-   "key": "ct:savannah adams",
-   "display": "Savannah Adams",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "New Testament Church",
-   "grade": "Probable",
-   "evidence": [
-    "New Testament Church is filed as their organization, and New Testament Church is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-c6eb9bfcc2",
-   "key": "ct:susan brown",
-   "display": "Susan Brown",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-92202360e5",
-   "key": "ct:tim gault",
-   "display": "Tim Gault",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-83cf528ded",
-   "key": "ct:tim parker",
-   "display": "Tim Parker",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "Christian Fellowship Center is filed as their organization, and Christian Fellowship Center is also a group on the Master List."
-   ]
-  },
-  {
-   "id": "pf-df79e89533",
-   "key": "sf:toni-squires",
-   "display": "Toni Squires",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Rochester Regional Health",
-   "grade": "Probable",
-   "evidence": [
-    "Rochester Regional Health is filed as their organization, and Rochester Regional Health is also a group on the Master List."
    ]
   },
   {
@@ -597,6 +93,19 @@
     "Their own record says they lives in Potsdam, NY.",
     "Clarkson University is in Potsdam.",
     "3 of 3 located known associates are in Potsdam."
+   ]
+  },
+  {
+   "id": "pf-02e92afafd",
+   "key": "libbycriscitello",
+   "display": "Libby Criscitello",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Probable",
+   "evidence": [
+    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello.",
+    "3 of 5 located known associates are in Potsdam."
    ]
   },
   {
@@ -2740,15 +2249,15 @@
    ]
   },
   {
-   "id": "pf-0dfcd4f83f",
+   "id": "pf-f1e78f8631",
    "key": "sf:ashleigh-graveline",
    "display": "Ashleigh Graveline",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -2941,8 +2450,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Potsdam Central School is in Potsdam.",
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Potsdam is in Potsdam.",
+    "Potsdam Central School is in Potsdam."
    ]
   },
   {
@@ -2958,15 +2467,15 @@
    ]
   },
   {
-   "id": "pf-31ffb32968",
+   "id": "pf-cee13a6e1c",
    "key": "sf:caleb-dollinger",
    "display": "Caleb Dollinger",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -4396,8 +3905,8 @@
    "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "St. Lawrence University is in Canton.",
-    "SUNY Canton is in Canton."
+    "SUNY Canton is in Canton.",
+    "St. Lawrence University is in Canton."
    ]
   },
   {
@@ -4434,18 +3943,6 @@
    "grade": "Tentative",
    "evidence": [
     "SUNY Potsdam is in Potsdam."
-   ]
-  },
-  {
-   "id": "pf-02e92afafd",
-   "key": "libbycriscitello",
-   "display": "Libby Criscitello",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello."
    ]
   },
   {
@@ -5012,15 +4509,15 @@
    ]
   },
   {
-   "id": "pf-b93e1fce44",
+   "id": "pf-2c553f2d2e",
    "key": "sf:richard-gilchrist",
    "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -6168,6 +5665,13 @@
    "evidence": [
     "Their own record states the profession: \"...18, 2025 board report welcomes her as Elementary Teacher, AIS, at South Davis (Orchard Park Central School...\""
    ]
+  }
+ ],
+ "auto_groups": [
+  {
+   "key": "sf:jai-dane",
+   "display": "Janice Dane",
+   "value": "Christian Fellowship Center"
   }
  ]
 }
