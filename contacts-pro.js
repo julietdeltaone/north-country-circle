@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.44.0';
+var APP_VERSION = '3.44.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6974,19 +6974,19 @@ function rcConsoleHTML(){
     var actions = r.st.k === 'pending'
       ? '<div class="rc-actions"><button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c.id) + '">File it</button>' +
         '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' + photoBtn +
-        '<span class="rc-actnote">File = the information is correct.<br>Dismiss = Luna was right.<br>Photo at source = the linked page has a usable photo of them; Luna tracks it for the photo pass.</span></div>'
+        '<span class="rc-actnote">File = the information is correct.<br>Dismiss = Luna was right.</span></div>'
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
-    return '<article class="rc-row rcb-' + band.k + '">' +
-      '<div class="rc-rhead"><div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><div class="rc-confmeta"><span class="rc-bandlab">' + band.label + '</span>' +
-      '<span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
-      '<span class="rc-parts">Identity ' + (+parts.identity || 0) + '/50 \u00b7 Source ' + (+parts.source || 0) + '/30 \u00b7 Detail ' + (+parts.detail || 0) + '/20</span></div></div>' +
-      '<div class="rc-rtitle"><div class="rc-person">' + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + '<span class="rc-cat">' + esc(RC_CATS[c.category] || c.category || '') + '</span>' +
+    return '<div class="rc-row rcb-' + band.k + '">' +
+      '<div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
+      '<span class="rc-parts">Identity ' + (+parts.identity || 0) + '/50<br>Source ' + (+parts.source || 0) + '/30<br>Detail ' + (+parts.detail || 0) + '/20</span></div>' +
+      '<div class="rc-main"><div class="rc-person">' + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + '<span class="rc-cat">' + esc(RC_CATS[c.category] || c.category || '') + '</span>' +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
-      '<p class="rc-claim">' + esc(c.claim || '') + '</p></div>' + actions + '</div>' +
-      '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p>' +
-      '<div class="rc-rpanels"><div class="rc-ev"><span class="rc-phead">Evidence</span><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
-      '<div class="rc-gate"><span class="rc-phead">Why it was held</span><p>' + esc(c.missing_gate || '') + '</p></div></div></article>';
+      '<p class="rc-claim">' + esc(c.claim || '') + '</p>' +
+      '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p></div>' +
+      '<div class="rc-ev"><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
+      '<div class="rc-gate"><span>Why it was held</span><p>' + esc(c.missing_gate || '') + '</p></div>' +
+      actions + '</div>';
   }).join('') : '<div class="rc-none">No candidates match this view.</div>';
   return '<section class="rcconsole" id="rcconsole">' +
     '<div class="rc-head"><div><div class="rc-kicker">RESEARCH COMMAND // UNFILED CANDIDATES</div>' +
@@ -6998,7 +6998,7 @@ function rcConsoleHTML(){
     '<button type="button" class="rc-photobtn' + (RC_VIEW.photo ? ' on' : '') + '" data-act="rcphotoonly">' + ic('camera', 14) + 'Photo leads <b>' + counts.photo + '</b></button>' +
     '<select id="rccat" aria-label="Candidate category">' + catOpts + '</select>' +
     '<input id="rcq" type="search" placeholder="Search person, claim, source\u2026" value="' + esc(RC_VIEW.q || '') + '"></div>' +
-    '<div class="rc-table">' + body + '</div>' +
+    '<div class="rc-table"><div class="rc-row rc-thead"><span>Confidence</span><span>Person / candidate</span><span>Evidence</span><span>Why held</span><span>Your call</span></div>' + body + '</div>' +
     '<p class="rc-foot">Confidence = identity match (50) + source strength (30) + claim detail (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
     '</section>';
 }
