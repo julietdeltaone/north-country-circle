@@ -1,20 +1,7 @@
 {
  "generated": "2026-10-30",
- "count": 104,
+ "count": 99,
  "suggestions": [
-  {
-   "id": "pf-23d8fd3bd0",
-   "key": "sf:acacia-white",
-   "display": "Acacia White",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Massena, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Massena Hospital is in Massena."
-   ],
-   "conf": 55
-  },
   {
    "id": "pf-81750b5f9d",
    "key": "adhope2006",
@@ -134,15 +121,15 @@
    "conf": 55
   },
   {
-   "id": "pf-cee13a6e1c",
+   "id": "pf-31ffb32968",
    "key": "sf:caleb-dollinger",
    "display": "Caleb Dollinger",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -225,19 +212,6 @@
    "conf": 55
   },
   {
-   "id": "pf-37b75ebc70",
-   "key": "cornbrain",
-   "display": "Corinne O'Brien",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "4 of 8 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-10e94ccd50",
    "key": "cy.cy.17",
    "display": "Cynthia",
@@ -290,15 +264,15 @@
    "conf": 55
   },
   {
-   "id": "pf-74b54adaa1",
+   "id": "pf-0b96d86b92",
    "key": "david.tulloch.10",
    "display": "David Tulloch",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -325,6 +299,19 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Canton: Amber Ingram."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-65c3323dbe",
+   "key": "sf:donovan-patraw",
+   "display": "Donovan Patraw",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Canton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -422,19 +409,6 @@
    "conf": 55
   },
   {
-   "id": "pf-b9bc27d8bc",
-   "key": "emijent",
-   "display": "Emily R. Jent",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-7179d2539d",
    "key": "sf:emma turell",
    "display": "Emma Turell",
@@ -470,19 +444,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Potsdam: Baxter Brown, Haddon Brown."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-34cb5a40f3",
-   "key": "evan_dennis_",
-   "display": "Evan Dennis",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Massena, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "3 of 6 located known associates are in Massena."
    ],
    "conf": 55
   },
@@ -828,19 +789,6 @@
    "conf": 55
   },
   {
-   "id": "pf-fca4d6fb9e",
-   "key": "sf:makiah-barber",
-   "display": "Makiah Barber",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-0ba08bbb21",
    "key": "maliahwright",
    "display": "Maliah Wright",
@@ -1012,19 +960,6 @@
    "conf": 55
   },
   {
-   "id": "pf-5f8e0acd40",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-194580ae1c",
    "key": "mdknaebel",
    "display": "Mike Knaebel",
@@ -1129,15 +1064,15 @@
    "conf": 55
   },
   {
-   "id": "pf-2c553f2d2e",
+   "id": "pf-b93e1fce44",
    "key": "sf:richard-gilchrist",
    "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -1366,6 +1301,30 @@
   }
  ],
  "auto_apply": [
+  {
+   "key": "cashhyyy",
+   "display": "Cashlynn Colbert",
+   "field": "churches",
+   "value": "New Testament Church",
+   "conf": 74,
+   "id": "pf-ffc860a8f2"
+  },
+  {
+   "key": "marissa989",
+   "display": "Marissa Wood",
+   "field": "churches",
+   "value": "Christian Fellowship Center",
+   "conf": 74,
+   "id": "pf-3f5cfa55c1"
+  },
+  {
+   "key": "sf:ann-parow-mackey",
+   "display": "Ann Parow Mackey",
+   "field": "churches",
+   "value": "Christian Fellowship Center",
+   "conf": 74,
+   "id": "pf-a410d53999"
+  },
   {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
