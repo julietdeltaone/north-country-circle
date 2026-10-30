@@ -3,6 +3,19 @@
  "count": 103,
  "suggestions": [
   {
+   "id": "pf-23d8fd3bd0",
+   "key": "sf:acacia-white",
+   "display": "Acacia White",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Massena, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Massena Hospital is in Massena."
+   ],
+   "conf": 55
+  },
+  {
    "id": "pf-81750b5f9d",
    "key": "adhope2006",
    "display": "Adriana Levendusky",
@@ -89,8 +102,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Potsdam Central School is in Potsdam."
+    "Potsdam Central School is in Potsdam.",
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -121,15 +134,15 @@
    "conf": 55
   },
   {
-   "id": "pf-cee13a6e1c",
+   "id": "pf-31ffb32968",
    "key": "sf:caleb-dollinger",
    "display": "Caleb Dollinger",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -277,15 +290,15 @@
    "conf": 55
   },
   {
-   "id": "pf-0b96d86b92",
+   "id": "pf-74b54adaa1",
    "key": "david.tulloch.10",
    "display": "David Tulloch",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -312,19 +325,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Canton: Amber Ingram."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-65c3323dbe",
-   "key": "sf:donovan-patraw",
-   "display": "Donovan Patraw",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -412,19 +412,6 @@
    "id": "pf-4afd82fd14",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b9bc27d8bc",
-   "key": "emijent",
-   "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -782,8 +769,8 @@
    "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton.",
-    "St. Lawrence University is in Canton."
+    "St. Lawrence University is in Canton.",
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -1012,6 +999,19 @@
    "conf": 55
   },
   {
+   "id": "pf-5f8e0acd40",
+   "key": "m.not.a.lobster",
+   "display": "Michelle Johnston",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Potsdam is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
    "id": "pf-194580ae1c",
    "key": "mdknaebel",
    "display": "Mike Knaebel",
@@ -1116,15 +1116,15 @@
    "conf": 55
   },
   {
-   "id": "pf-2c553f2d2e",
+   "id": "pf-b93e1fce44",
    "key": "sf:richard-gilchrist",
    "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -1354,132 +1354,12 @@
  ],
  "auto_apply": [
   {
-   "key": "gabepaladin",
-   "display": "Gabe Paladin",
+   "key": "sf:ashleigh-graveline",
+   "display": "Ashleigh Graveline",
    "field": "location_on_file",
    "value": "Potsdam, NY",
    "conf": 91,
-   "id": "pf-e29d982743"
-  },
-  {
-   "key": "hopiek_09",
-   "display": "Hope Kilcollins",
-   "field": "groups",
-   "value": "Rochester Regional Health",
-   "conf": 100,
-   "id": "pf-08b2cabf8a"
-  },
-  {
-   "key": "jonah_black01",
-   "display": "Jonah Black",
-   "field": "groups",
-   "value": "U.S. Coast Guard",
-   "conf": 100,
-   "id": "pf-d37b762866"
-  },
-  {
-   "key": "kylepmoulton",
-   "display": "Kyle Moulton",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-e578843df4"
-  },
-  {
-   "key": "lochlan_bower",
-   "display": "Lochlan Bower",
-   "field": "groups",
-   "value": "U.S. Air Force",
-   "conf": 100,
-   "id": "pf-2989518c12"
-  },
-  {
-   "key": "ct:justin cardinal",
-   "display": "Justin Cardinal",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 62,
-   "id": "pf-f665f1d5bd"
-  },
-  {
-   "key": "ct:brian patraw",
-   "display": "Brian Patraw",
-   "field": "location_on_file",
-   "value": "Potsdam, NY",
-   "conf": 91,
-   "id": "pf-e651d9b988"
-  },
-  {
-   "key": "ct:brian patraw",
-   "display": "Brian Patraw",
-   "field": "groups",
-   "value": "Rochester Regional Health",
-   "conf": 100,
-   "id": "pf-86ccd42f53"
-  },
-  {
-   "key": "ct:danielle mcpherson",
-   "display": "Danielle McPherson",
-   "field": "groups",
-   "value": "Rochester Regional Health",
-   "conf": 100,
-   "id": "pf-f787895b56"
-  },
-  {
-   "key": "ct:brad ingram",
-   "display": "Brad Ingram",
-   "field": "groups",
-   "value": "Rochester Regional Health",
-   "conf": 100,
-   "id": "pf-4f86e8b79c"
-  },
-  {
-   "key": "ct:david tomford",
-   "display": "David Tomford",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-6bfed775d2"
-  },
-  {
-   "key": "fdb:b._ryan_dunphey",
-   "display": "B. Ryan Dunphey",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-846bc1d334"
-  },
-  {
-   "key": "jdmeyers_",
-   "display": "JD Meyers",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-1b594f8916"
-  },
-  {
-   "key": "sf:jennifer-gallagher-moore",
-   "display": "Jennifer Gallagher Moore",
-   "field": "groups",
-   "value": "Rochester Regional Health",
-   "conf": 100,
-   "id": "pf-28003409e6"
-  },
-  {
-   "key": "sf:lindsey-elaine",
-   "display": "Lindsey Elaine",
-   "field": "groups",
-   "value": "New Testament Church",
-   "conf": 100,
-   "id": "pf-b1827ed7de"
-  },
-  {
-   "key": "sf:victoria lucas",
-   "display": "Victoria Lucas",
-   "field": "groups",
-   "value": "U.S. Navy",
-   "conf": 100,
-   "id": "pf-7e5e8f495b"
+   "id": "pf-0dfcd4f83f"
   },
   {
    "key": "sf:jdmeyers_",
@@ -1490,60 +1370,12 @@
    "id": "pf-05585543fe"
   },
   {
-   "key": "sf:ticia-cudjoe",
-   "display": "Ticia Cudjoe",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-9dd9bad6d7"
-  },
-  {
-   "key": "sf:kathleen-delage",
-   "display": "Kathleen DeLage",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-3e3ef5b30b"
-  },
-  {
-   "key": "sf:kayla-ervin",
-   "display": "Kayla Ervin",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-573d9f129a"
-  },
-  {
-   "key": "sf:wisdom",
-   "display": "Rojanni Wisdom",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-380717d9b4"
-  },
-  {
-   "key": "sf:adepegba",
-   "display": "Ray Adepegba",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-aef324bb3a"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
-  },
-  {
-   "key": "sf:jackie-card",
-   "display": "Jackie Card",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-0d9d8ac760"
   },
   {
    "key": "sf:jai-dane",
