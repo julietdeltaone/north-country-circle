@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.42.2';
+var APP_VERSION = '3.43.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3584,6 +3584,8 @@ function paintProfile(di){
     shEl.classList.remove('wide-a', 'wide-c');
     if(weights.c <= 6 && weights.a >= 10) shEl.classList.add('wide-a');
     else if(weights.c > weights.a) shEl.classList.add('wide-c');
+    var pgEl = shEl.closest('.page');
+    if(pgEl) pgEl.classList.toggle('sparse', (weights.a + weights.c) <= 22);
   }
   SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
   /* Sheet header counts (Split Partitions, V3.37.0): the About sheet
@@ -6786,8 +6788,8 @@ function dtAnimate(){
    ============================================================ */
 var RC = null, RC_LOADING = false;
 var RC_CATS = { close:'Close call', identity:'Identity not proven', source:'Source too weak', sensitive:'Sensitive / family', conflict:'Conflicting record', verification:'Failed verification' };
-var RC_VIEW = { status:'pending', cat:'all', q:'' };
-try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '' }; }catch(x){}
+var RC_VIEW = { status:'pending', cat:'all', q:'', photo:false };
+try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '', photo:!!_rcv.photo }; }catch(x){}
 function rcSaveView(){ try{ store('ncc_rc_view', JSON.stringify(RC_VIEW)); }catch(x){} }
 function rcLoad(){
   if(RC || RC_LOADING) return;
@@ -6812,6 +6814,29 @@ function rcDi(c){
 }
 function rcReviewMap(e){
   try{ var v = raw(e, 'research_review'); var m = v ? JSON.parse(v) : {}; return (m && typeof m === 'object' && !Array.isArray(m)) ? m : {}; }catch(x){ return {}; }
+}
+function rcPhotoFlag(e, c){
+  var dec = rcReviewMap(e)[c.id];
+  return !!(dec && dec.photo);
+}
+function rcTogglePhoto(id){
+  if(!RC || !RC.candidates) return;
+  var c = null;
+  RC.candidates.forEach(function(x){ if(x.id === id) c = x; });
+  if(!c) return;
+  var di = rcDi(c);
+  if(di == null){ toast('That profile is no longer in the directory — the photo lead cannot be tracked.'); return; }
+  var e = D.directory[di], on = !rcPhotoFlag(e, c);
+  txn(on ? 'Mark photo lead' : 'Clear photo lead', function(){
+    var patch = {}, map = rcReviewMap(e), entry = map[c.id] || {};
+    if(on){ entry.photo = true; entry.photo_at = new Date().toISOString(); if(c.url) entry.photo_url = c.url; }
+    else { delete entry.photo; delete entry.photo_at; delete entry.photo_url; }
+    if(Object.keys(entry).length) map[c.id] = entry; else delete map[c.id];
+    patch.research_review = JSON.stringify(map);
+    queuePatch(di, patch);
+  });
+  toast(on ? 'Photo lead marked for ' + (c.display || '') + '. Luna will pull the photo from the source page.' : 'Photo lead cleared for ' + (c.display || '') + '.', { undo:true });
+  rcPaint();
 }
 function rcNorm(s){
   return String(s || '').toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
@@ -6871,8 +6896,10 @@ function rcDecide(id, decision){
   var e = D.directory[di];
   if(rcStatus(c).k !== 'pending'){ toast('That candidate was already decided.'); rcPaint(); return; }
   txn(decision === 'file' ? 'File research candidate' : 'Dismiss research candidate', function(){
-    var patch = {}, map = rcReviewMap(e);
-    map[c.id] = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
+    var patch = {}, map = rcReviewMap(e), prev = map[c.id] || {};
+    var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
+    if(prev.photo){ entry.photo = true; if(prev.photo_at) entry.photo_at = prev.photo_at; if(prev.photo_url) entry.photo_url = prev.photo_url; }
+    map[c.id] = entry;
     patch.research_review = JSON.stringify(map);
     if(decision === 'file' && !rcAlreadyFiled(e, c)){
       var fp = String(gv(e, 'public_footprint') || '').trim();
@@ -6899,9 +6926,13 @@ function rcConsoleHTML(){
   var all = (RC.candidates || []).slice().sort(function(a, b){
     return (+b.confidence - +a.confidence) || String(b.run_date || '').localeCompare(String(a.run_date || '')) || String(a.display || '').localeCompare(String(b.display || ''));
   });
-  var rows = all.map(function(c){ return { c:c, st:rcStatus(c) }; });
-  var counts = { pending:0, filed:0, dismissed:0, close:0 };
+  var rows = all.map(function(c){
+    var di = rcDi(c);
+    return { c:c, st:rcStatus(c), photo:di != null && rcPhotoFlag(D.directory[di], c) };
+  });
+  var counts = { pending:0, filed:0, dismissed:0, close:0, photo:0 };
   rows.forEach(function(r){
+    if(r.photo) counts.photo++;
     if(r.st.k === 'pending'){ counts.pending++; if((+r.c.confidence || 0) >= 70) counts.close++; }
     else if(r.st.k === 'filed' || r.st.k === 'already') counts.filed++;
     else if(r.st.k === 'dismissed') counts.dismissed++;
@@ -6913,6 +6944,7 @@ function rcConsoleHTML(){
     if(RC_VIEW.status === 'filed' && !(r.st.k === 'filed' || r.st.k === 'already')) return false;
     if(RC_VIEW.status === 'dismissed' && r.st.k !== 'dismissed') return false;
     if(RC_VIEW.cat !== 'all' && c.category !== RC_VIEW.cat) return false;
+    if(RC_VIEW.photo && !r.photo) return false;
     if(q){
       var hay = (String(c.display || '') + ' ' + String(c.claim || '') + ' ' + String(c.source || '') + ' ' + (c.anchors || []).join(' ')).toLowerCase();
       if(hay.indexOf(q) < 0) return false;
@@ -6934,33 +6966,36 @@ function rcConsoleHTML(){
     var c = r.c, band = rcBand(c.confidence), parts = c.confidence_parts || {};
     var anchors = (c.anchors || []).length ? '<ul class="rc-anchors">' + c.anchors.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
     var src = c.url ? '<a class="rc-src-link" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span class="rc-src-open">Open source</span><span class="rc-src-name">' + esc(c.source || 'source') + '</span>' + ic('ext', 12) + '</a>' : esc(c.source || '') + ' <span class="rc-nosrc">no source page found</span>';
+    var photoBtn = r.st.k === 'orphan' ? '' :
+      '<button type="button" class="btn ghost sm rc-photo' + (r.photo ? ' on' : '') + '" data-act="rcphoto" data-id="' + esc(c.id) + '">' + ic('camera', 14) + (r.photo ? 'Photo lead set' : 'Photo at source?') + '</button>';
     var actions = r.st.k === 'pending'
       ? '<div class="rc-actions"><button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c.id) + '">File it</button>' +
-        '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' +
-        '<span class="rc-actnote">File = the information is correct.<br>Dismiss = Luna was right.</span></div>'
+        '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' + photoBtn +
+        '<span class="rc-actnote">File = the information is correct.<br>Dismiss = Luna was right.<br>Photo at source = the linked page has a usable photo of them; Luna tracks it for the photo pass.</span></div>'
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
-        (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + '</div>';
-    return '<div class="rc-row rcb-' + band.k + '">' +
-      '<div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
-      '<span class="rc-parts">Identity ' + (+parts.identity || 0) + '/50<br>Source ' + (+parts.source || 0) + '/30<br>Detail ' + (+parts.detail || 0) + '/20</span></div>' +
-      '<div class="rc-main"><div class="rc-person">' + personLink(c) + '<span class="rc-cat">' + esc(RC_CATS[c.category] || c.category || '') + '</span>' +
+        (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
+    return '<article class="rc-row rcb-' + band.k + '">' +
+      '<div class="rc-rhead"><div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><div class="rc-confmeta"><span class="rc-bandlab">' + band.label + '</span>' +
+      '<span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
+      '<span class="rc-parts">Identity ' + (+parts.identity || 0) + '/50 \u00b7 Source ' + (+parts.source || 0) + '/30 \u00b7 Detail ' + (+parts.detail || 0) + '/20</span></div></div>' +
+      '<div class="rc-rtitle"><div class="rc-person">' + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + '<span class="rc-cat">' + esc(RC_CATS[c.category] || c.category || '') + '</span>' +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
-      '<p class="rc-claim">' + esc(c.claim || '') + '</p>' +
-      '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p></div>' +
-      '<div class="rc-ev"><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
-      '<div class="rc-gate"><span>Why it was held</span><p>' + esc(c.missing_gate || '') + '</p></div>' +
-      actions + '</div>';
+      '<p class="rc-claim">' + esc(c.claim || '') + '</p></div>' + actions + '</div>' +
+      '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p>' +
+      '<div class="rc-rpanels"><div class="rc-ev"><span class="rc-phead">Evidence</span><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
+      '<div class="rc-gate"><span class="rc-phead">Why it was held</span><p>' + esc(c.missing_gate || '') + '</p></div></div></article>';
   }).join('') : '<div class="rc-none">No candidates match this view.</div>';
   return '<section class="rcconsole" id="rcconsole">' +
     '<div class="rc-head"><div><div class="rc-kicker">RESEARCH COMMAND // UNFILED CANDIDATES</div>' +
     '<h2>What the research found but did not file</h2>' +
-    '<p>Every concrete lead that stopped at the filing gate, closest calls first. <b>File it</b> means the information is correct: the exact claim is written to the profile through the Save Pool. <b>Dismiss</b> means Luna was right to hold it. Decisions are stored on the profile, so a decided candidate never comes back as pending.</p></div>' +
+    '<p>Every concrete lead that stopped at the filing gate, closest calls first. <b>File it</b> means the information is correct: the exact claim is written to the profile through the Save Pool. <b>Dismiss</b> means Luna was right to hold it. Decisions are stored on the profile, so a decided candidate never comes back as pending. If the linked page has a usable photo of them, mark <b>Photo at source</b> and it is tracked as a photo lead for the next photo pass.</p></div>' +
     '<div class="rc-legend">' + legend + '</div></div>' +
     '<div class="rc-stats"><div><b>' + counts.pending + '</b><span>Awaiting your call</span></div><div><b>' + counts.close + '</b><span>Close calls (70+)</span></div><div><b>' + counts.filed + '</b><span>Filed / on file</span></div><div><b>' + counts.dismissed + '</b><span>Dismissed</span></div></div>' +
     '<div class="rc-controls"><div class="rc-seg" role="group">' + statBtns + '</div>' +
+    '<button type="button" class="rc-photobtn' + (RC_VIEW.photo ? ' on' : '') + '" data-act="rcphotoonly">' + ic('camera', 14) + 'Photo leads <b>' + counts.photo + '</b></button>' +
     '<select id="rccat" aria-label="Candidate category">' + catOpts + '</select>' +
     '<input id="rcq" type="search" placeholder="Search person, claim, source\u2026" value="' + esc(RC_VIEW.q || '') + '"></div>' +
-    '<div class="rc-table"><div class="rc-row rc-thead"><span>Confidence</span><span>Person / candidate</span><span>Evidence</span><span>Why held</span><span>Your call</span></div>' + body + '</div>' +
+    '<div class="rc-table">' + body + '</div>' +
     '<p class="rc-foot">Confidence = identity match (50) + source strength (30) + claim detail (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
     '</section>';
 }
@@ -10238,6 +10273,8 @@ function onClick(ev){
     case 'rcfile': rcDecide(el.getAttribute('data-id'), 'file'); break;
     case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
     case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; rcSaveView(); rcPaint(); break;
+    case 'rcphoto': rcTogglePhoto(el.getAttribute('data-id')); break;
+    case 'rcphotoonly': RC_VIEW.photo = !RC_VIEW.photo; rcSaveView(); rcPaint(); break;
     case 'phconfirm': { var _pc = el.getAttribute('data-pname'); phSetReview(_pc, 'confirmed'); if(S.route.name === 'profile') keepAnchor(function(){ repaintTop(); }, '#pm-a'); break; }
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phinsp': { var _pn = el.getAttribute('data-pname'); phInspOpen(_pn, PH_HERO_IDX[String(_pn || '').toLowerCase()]); break; }
