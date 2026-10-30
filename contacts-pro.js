@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.48.0';
+var APP_VERSION = '3.49.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10485,7 +10485,7 @@ function ykBatchKeysInit(){
    (attendance is not a degree).
    ============================================================ */
 var PF = null, PF_LOADING = false;
-var PF_VIEW = { field:'all', status:'pending', grade:'all', q:'' };
+var PF_VIEW = { field:'all', status:'pending', grade:'all', q:'', sort:'def' };
 var PF_LIST_FIELDS = ['companies', 'churches', 'universities', 'groups', 'specialty'];
 function pfLoad(){
   if(PF || PF_LOADING) return;
@@ -10564,7 +10564,7 @@ function pfRows(){
 }
 function pfFiltered(){
   var q = String(PF_VIEW.q || '').trim().toLowerCase();
-  return pfRows().rows.filter(function(r){
+  var rows = pfRows().rows.filter(function(r){
     var sg = r.sg;
     if(PF_VIEW.status === 'pending' && r.st.k !== 'pending') return false;
     if(PF_VIEW.status === 'filed' && !(r.st.k === 'filed' || r.st.k === 'already')) return false;
@@ -10574,6 +10574,13 @@ function pfFiltered(){
     if(q && (String(sg.display || '') + ' ' + String(sg.value || '')).toLowerCase().indexOf(q) < 0) return false;
     return true;
   });
+  if(PF_VIEW.status === 'pending' && PF_VIEW.sort !== 'def'){
+    rows = rows.slice().sort(function(a, b){
+      var d = (a.sg.conf || 50) - (b.sg.conf || 50);
+      return PF_VIEW.sort === 'lo' ? d : -d;
+    });
+  }
+  return rows;
 }
 /* Queue state (JD 2026-10-30): Pending works as a one-at-a-time
    queue — position in the filtered pending list plus how many were
@@ -10599,6 +10606,8 @@ function pfRender(){
     '<span class="pf-flabel">Grade</span>' +
     chip('pfgrade', 'all', PF_VIEW.grade, 'All grades') + chip('pfgrade', 'Strong', PF_VIEW.grade, 'Strong') +
     chip('pfgrade', 'Probable', PF_VIEW.grade, 'Probable') + chip('pfgrade', 'Tentative', PF_VIEW.grade, 'Tentative') +
+    '<span class="pf-flabel">Sort</span>' +
+    chip('pfsort', 'def', PF_VIEW.sort, 'Grade order') + chip('pfsort', 'lo', PF_VIEW.sort, 'Confidence \u2191') + chip('pfsort', 'hi', PF_VIEW.sort, 'Confidence \u2193') +
     '<input id="pfq" type="search" placeholder="Search person or value\u2026" value="' + esc(PF_VIEW.q || '') + '"></div></div>' +
     '<div id="pfrows"></div>';
   wrap.innerHTML = h;
@@ -10619,6 +10628,7 @@ function pfPaintRows(){
       '<span class="pf-field">' + esc(sg.field_label) + '</span>' +
       '<b class="pf-val">' + esc(sg.value) + '</b>' +
       '<span class="pf-grade g-' + String(sg.grade || '').toLowerCase() + '">' + esc(sg.grade) + '</span>' +
+      (sg.conf ? '<span class="pf-done">conf ' + sg.conf + '</span>' : '') +
       '<span class="pf-done">' + esc(r.st.label) + (r.st.at ? ' · ' + esc(String(r.st.at).slice(0, 10)) : '') + '</span></div>' +
       '<div class="pf-ev">' + (sg.evidence || []).map(function(x){ return '<span>' + esc(x) + '</span>'; }).join('') + '</div></div>';
   }).join('');
@@ -10647,7 +10657,7 @@ function pfPaintQueue(box){
     '<div class="pfq-prog"><span>Item <b>' + (PFQ.i + 1) + '</b> of <b>' + rows.length + '</b> in this view · <b>' + total + '</b> pending overall · <b>' + PFQ.decided + '</b> decided this visit</span>' +
     '<span class="pfq-bar"><i style="width:' + (rows.length ? Math.round(100 * PFQ.i / rows.length) : 0) + '%"></i></span></div>' +
     '<div class="pfq-who">' + (e ? avatar(e, 'lg') : '') + '<div><a class="pfq-name" href="#/p/' + (e ? encodeURIComponent(personId(e)) : '') + '" data-act="openp" data-di="' + di + '">' + esc(sg.display || '') + '</a>' + (e ? milBadge(e) : '') +
-    '<div class="pfq-sub">' + (e ? esc(infoLine(e) || '') : '') + '</div></div>' +
+    '<div class="pfq-sub">' + (e ? esc(infoLine(e) || '') : '') + ' \u00B7 Confidence ' + (sg.conf || 50) + '</div></div>' +
     '<span class="pf-grade g-' + String(sg.grade || '').toLowerCase() + '">' + esc(sg.grade) + '</span></div>' +
     '<div class="pfq-fill"><span class="pfq-flabel">Fill ' + esc(sg.field_label) + ' with</span><b class="pfq-val">' + esc(sg.value) + '</b></div>' +
     '<div class="pfq-ev"><span class="pfq-elabel">Why Luna thinks so</span>' + (sg.evidence || []).map(function(x){ return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' +
@@ -10890,6 +10900,7 @@ function onClick(ev){
     case 'pffield': PF_VIEW.field = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
     case 'pfstatus': PF_VIEW.status = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
     case 'pfgrade': PF_VIEW.grade = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
+    case 'pfsort': PF_VIEW.sort = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
     case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.catDone = {}; S.audit.shown = null; viewAudit($('#view')); } break;
     case 'audcatall': if(S.audit) audSetMode('cards'); break;
     case 'audbulkphone': audBulkPhone(); break;
