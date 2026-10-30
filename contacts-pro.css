@@ -4589,3 +4589,8 @@ span.ca-crumb{cursor:default}
 #mlsecs .ml-sec{margin-top:14px;min-width:0}
 @media (max-width:1100px){ #mlsecs{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:680px){ #mlsecs{grid-template-columns:1fr} }
+
+/* V3.48.0 follow-up (JD 2026-10-30): Master List sections are real
+   cards, not floating columns. */
+#mlsecs .ml-sec{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--glass);padding:14px 16px 10px;margin-top:18px}
+#mlsecs .ml-sec>h3{border-bottom:none;padding-bottom:2px;margin-bottom:6px}
