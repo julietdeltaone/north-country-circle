@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.38.0';
+var APP_VERSION = '3.39.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1952,6 +1952,7 @@ function renderChrome(){
   top.innerHTML =
     '<button type="button" class="ib homebtn" data-act="home" aria-label="Home" title="Home: the overview, with search and filters cleared">' + ic('home', 20) + '</button>' +
     '<button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: one step — closes the top layer, leaves a runner, or returns to the previous view">' + ic('chevl', 20) + '</button>' +
+    '<button type="button" class="ib" data-act="topfwd"' + (HIST[S.depth + 1] ? '' : ' disabled') + ' aria-label="Forward" title="' + (HIST[S.depth + 1] ? 'Forward to ' + esc(HIST[S.depth + 1].label) : 'Forward: nothing ahead — go Back first') + '">' + ic('chevr', 20) + '</button>' +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
     '<div class="topr">' +
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
@@ -3486,7 +3487,8 @@ function viewProfile(v){
   }
   v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="ptop">' +
     '<div class="pback"><button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' +
-    '<button type="button" class="crumb" data-act="back" title="Back to ' + esc(backTo) + '">' + esc(backTo) + '</button></div>' + pager + '<span class="sp"></span>' +
+    '<button type="button" class="crumb" data-act="back" title="Back to ' + esc(backTo) + '">Back to ' + esc(backTo) + '</button>' +
+    (HIST[S.depth + 1] ? '<button type="button" class="crumb fwd" data-act="fwd" title="Forward to ' + esc(HIST[S.depth + 1].label) + '">Forward to ' + esc(HIST[S.depth + 1].label) + ' ' + ic('chevr', 13) + '</button>' : '') + '</div>' + pager + '<span class="sp"></span>' +
     '<div class="menu"><button type="button" class="ib" data-act="menu" aria-haspopup="true" aria-label="More actions">' + ic('dots', 20) + '</button>' +
     '<div class="menu-pop" hidden>' +
     '<button type="button" data-act="export" data-di="' + di + '">' + ic('download', 16) + 'Download personnel file</button>' +
@@ -3646,7 +3648,7 @@ function pillify(text, di){
     /* A bare city name followed by another capitalized word is part of a
        longer proper name (Edwards Knox High School), not the place. */
     if(ent.type === 'place' && ent.name.indexOf(',') < 0 && /^\s+[A-Z]/.test(text.slice(m.index + m[1].length))) continue;
-    var ttl = esc(PILL_TY[ent.type] + (ent.canon !== m[1] ? ' · ' + ent.canon : '')), inner = ic(PILL_IC[ent.type], 11) + esc(m[1]);
+    var ttl = esc(PILL_TY[ent.type] + (ent.canon !== m[1] ? ' · ' + ent.canon : '')), inner = ic(PILL_IC[ent.type], 10) + esc(m[1]);
     out += esc(text.slice(last, m.index));
     if(ent.type === 'place'){
       out += '<button type="button" class="epill t-place" data-act="placeopen" data-city="' + esc(ent.canon.split(',')[0].trim()) + '" data-place="' + esc(ent.canon) + '" title="' + ttl + '">' + inner + '</button>';
@@ -3908,7 +3910,19 @@ function aboutWebHTML(di){
   var wrSourced = fp.sourced || fsrc;
   return '<div class="band-note"><span class="conf ' + (wrSourced ? 'ok' : fp.inferred ? 'inf' : 'no') + '">' + (wrSourced ? 'Sourced' : fp.inferred ? 'Inferred' : 'No source') + '</span></div>' +
     fp.blocks.map(function(b){
-      return '<div class="fpb ' + (b.urls.length || fsrc ? 'ok' : 'no') + '"><p>' + pillify(b.text, di) + '</p>' + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : (fsrc ? '' : '<div class="srcs"><span class="src none">No source attached</span></div>')) + '</div>';
+      /* JD 2026-10-29: the record reads as real bullet columns — five
+         bullets per column, then a new column — not one text blob with
+         in-text bullet separators. */
+      var items = String(b.text).split(/\s*•\s*/).map(function(s){ return s.replace(/^[·\-*]\s*/, '').trim(); }).filter(Boolean);
+      var body;
+      if(items.length > 1){
+        var cols = [];
+        for(var ci = 0; ci < items.length; ci += 5) cols.push(items.slice(ci, ci + 5));
+        body = '<div class="fpcols">' + cols.map(function(col){
+          return '<ul class="fpcol">' + col.map(function(it){ return '<li>' + pillify(it, di) + '</li>'; }).join('') + '</ul>';
+        }).join('') + '</div>';
+      } else body = '<p>' + pillify(b.text, di) + '</p>';
+      return '<div class="fpb ' + (b.urls.length || fsrc ? 'ok' : 'no') + '">' + body + (b.urls.length ? '<div class="srcs">' + sourceChips(b.urls) + '</div>' : (fsrc ? '' : '<div class="srcs"><span class="src none">No source attached</span></div>')) + '</div>';
     }).join('');
 }
 function secView(di, id){
@@ -4003,11 +4017,17 @@ function secView(di, id){
     var ach = honorsOf(e);
     if(ach.length) out2 += '<div class="sub-h">Honors</div>' + chipsHTML(ach, 'hon', 'award');
     var hl = parsePipe(gv(e, 'highlights'));
-    if(hl.length) out2 += '<div class="sub-h">Highlights</div><div class="hlrows">' + hl.map(function(h){
-      var m = String(h).match(/^([^:]{2,24}):\s*(.*)$/);
-      return m ? '<div class="hlrow"><span class="hl-k">' + esc(m[1]) + '</span><div class="hl-v">' + pillify(m[2], di) + '</div></div>' :
-        '<div class="hlrow"><div class="hl-v">' + pillify(h, di) + '</div></div>';
-    }).join('') + '</div>';
+    if(hl.length){
+      /* Three rows per column, then a new column (JD 2026-10-29). */
+      var hlRows = hl.map(function(h){
+        var m = String(h).match(/^([^:]{2,24}):\s*(.*)$/);
+        return m ? '<div class="hlrow"><span class="hl-k">' + esc(m[1]) + '</span><div class="hl-v">' + pillify(m[2], di) + '</div></div>' :
+          '<div class="hlrow"><div class="hl-v">' + pillify(h, di) + '</div></div>';
+      });
+      var hlCols = [];
+      for(var hi = 0; hi < hlRows.length; hi += 3) hlCols.push(hlRows.slice(hi, hi + 3));
+      out2 += '<div class="sub-h">Highlights</div><div class="hlcols">' + hlCols.map(function(col){ return '<div class="hlcol">' + col.join('') + '</div>'; }).join('') + '</div>';
+    }
     var orgs = '';
     ORG_CATS.forEach(function(c){ if(c.k === 'universities') return; tagList(gv(e, c.k)).forEach(function(o){ orgs += '<a class="vchip link oc-' + c.k + '" href="#/groups/' + c.k + '/' + encodeURIComponent(o) + '">' + ic(c.ic, 12) + esc(o) + '</a>'; }); });
     if(orgs) out2 += '<div class="sub-h">Organizations</div><div class="chips ro">' + orgs + '</div>';
@@ -9985,6 +10005,8 @@ function onClick(ev){
     case 'back': { var bfb = S.ctx && S.ctx.from ? S.ctx.from : 'people'; if(bfb === 'groups' && S.ctx && S.ctx.grp) bfb = 'groups/' + S.ctx.grp; back(bfb); break; }
     case 'focus': setFocus(!focusOn()); break;
     case 'topback': topBack(); break;
+    case 'topfwd': if(HIST[S.depth + 1]) history.forward(); break;
+    case 'fwd': if(HIST[S.depth + 1]) history.forward(); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
     case 'audgap': { var audC4 = el.closest('.aud-card'); if(audC4){ var gTo = el.getAttribute('data-gap'); if(gTo && gTo !== audC4.getAttribute('data-gap')) audSetGap(audC4, gTo); } break; }
