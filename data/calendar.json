@@ -1,0 +1,1992 @@
+{
+ "version": 1,
+ "updated": "2026-10-30",
+ "range": [
+  "2026-01-01",
+  "2026-12-31"
+ ],
+ "entries": [
+  {
+   "kind": "event",
+   "date": "2026-01-01",
+   "time": "15:50",
+   "title": "Massena to Clarkson",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-02",
+   "time": "14:00",
+   "title": "Photos Beatrice",
+   "cal": "Appointment + Business",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-01-03",
+   "title": "Last contact",
+   "people": [
+    "ig:eileen_mackenzie"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-03",
+   "time": "10:00",
+   "title": "David Zufall",
+   "cal": "Appointment + Personal",
+   "people": [
+    "ig:davidzufall"
+   ]
+  },
+  {
+   "kind": "series",
+   "title": "Calvary Baptist Church",
+   "cal": "Personal",
+   "count": 29,
+   "first": "2026-01-04",
+   "last": "2026-09-20",
+   "people": [],
+   "date": "2026-01-04"
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-07",
+   "time": "14:00",
+   "title": "SYR - Clarkson",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-08",
+   "time": "12:00",
+   "title": "Global entry interview",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-08",
+   "time": "12:30",
+   "title": "OGS to Clarkson",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-08",
+   "time": "14:00",
+   "title": "Joshua McGrath",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "series",
+   "title": "Haircut",
+   "cal": "Personal",
+   "count": 6,
+   "first": "2026-01-13",
+   "last": "2026-08-26",
+   "people": [],
+   "date": "2026-01-13"
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-13",
+   "time": "10:00",
+   "title": "Haircut",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-14",
+   "time": "09:45",
+   "title": "OFFICE VISIT with Lawrence Ivan Kring",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-15",
+   "time": "19:00",
+   "title": "CUEMS Headshots with JD",
+   "cal": "Appointment + Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-16",
+   "time": "16:57",
+   "title": "Flight  UA3605 SYR to ORD",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-16",
+   "time": "20:45",
+   "title": "Boka",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-20",
+   "time": "11:00",
+   "title": "OGS enterprise",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-21",
+   "time": null,
+   "title": "Stay: Hampton Inn Potsdam",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-21",
+   "time": "13:00",
+   "title": "Biometric study",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-23",
+   "time": "18:00",
+   "title": "Hotel Check in",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-01-31",
+   "time": null,
+   "title": "Josiah McGrath's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:josiahbounce"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-04",
+   "time": "15:00",
+   "title": "Your Upcoming Stay",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-05",
+   "time": "12:30",
+   "title": "Tesla appointment",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-06",
+   "time": "09:00",
+   "title": "Titus",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-09",
+   "time": "14:15",
+   "title": "Flight: AA 5828 from SYR to BOS",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-10",
+   "time": null,
+   "title": "Stay: Holiday Inn & Suites ORLANDO SW - CELEBRATION AREA by IHG",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-10",
+   "time": "13:12",
+   "title": "Flight: AA 5860 from BOS to SYR",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-10",
+   "time": "16:57",
+   "title": "Flight: UA 3605 from SYR to ORD",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-10",
+   "time": "21:02",
+   "title": "Flight: UA 1555 from ORD to MCO",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-12",
+   "time": "06:00",
+   "title": "Flight: UA 1875 from MCO to EWR",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-12",
+   "time": "11:07",
+   "title": "Flight: UA 4479 from EWR to SYR",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-02-13",
+   "time": "14:00",
+   "title": "Hair appointment",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-02-15",
+   "title": "Last contact",
+   "people": [
+    "ig:brendan.bombard_19"
+   ],
+   "online": true
+  },
+  {
+   "kind": "series",
+   "title": "Army National Guard Drill",
+   "cal": "Appointment",
+   "count": 5,
+   "first": "2026-02-19",
+   "last": "2026-06-13",
+   "people": [],
+   "date": "2026-02-19"
+  },
+  {
+   "kind": "series",
+   "title": "Army National Guard Drill",
+   "cal": "Military",
+   "count": 5,
+   "first": "2026-02-19",
+   "last": "2026-06-13",
+   "people": [],
+   "date": "2026-02-19"
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-08",
+   "time": null,
+   "title": "Stay: Fairmont Chateau Laurier",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-09",
+   "time": "12:00",
+   "title": "Tesla",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-11",
+   "time": "10:45",
+   "title": "Biometric study",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-12",
+   "time": "13:00",
+   "title": "Haircut",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-17",
+   "time": null,
+   "title": "Stay: Hotel Saranac, Curio Collection by Hilton",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-03-17",
+   "title": "Last contact",
+   "people": [
+    "ig:madi_kerr_"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-18",
+   "time": null,
+   "title": "Josh White's birthday",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-18",
+   "time": null,
+   "title": "Ellie Criscitello's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:elliecriscitello"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-20",
+   "time": null,
+   "title": "Stay: Fairmont Chateau Laurier",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-21",
+   "time": null,
+   "title": "Anastasia Brown's birthday",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-27",
+   "time": "09:30",
+   "title": "Bakery with David",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-28",
+   "time": "16:15",
+   "title": "RESY",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-03-28",
+   "time": "21:30",
+   "title": "Morgan Jay",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "series",
+   "title": "OS 603",
+   "cal": "School",
+   "count": 10,
+   "first": "2026-04-01",
+   "last": "2026-06-03",
+   "people": [],
+   "date": "2026-04-01"
+  },
+  {
+   "kind": "series",
+   "title": "MK 610",
+   "cal": "School",
+   "count": 10,
+   "first": "2026-04-01",
+   "last": "2026-06-03",
+   "people": [],
+   "date": "2026-04-01"
+  },
+  {
+   "kind": "event",
+   "date": "2026-04-02",
+   "time": "18:00",
+   "title": "Movies with Catherine",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-04-03",
+   "time": null,
+   "title": "Rick Sinclair's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:richardsinclair"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-04-08",
+   "time": "13:00",
+   "title": "Haircut",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-04-14",
+   "title": "Last contact",
+   "people": [
+    "ig:martinlovell.8"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-04-14",
+   "title": "Last contact",
+   "people": [
+    "ct:mark dehoff"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-04-16",
+   "time": "12:00",
+   "title": "Massena, with Catherine Green",
+   "cal": "Appointment + Personal",
+   "people": [
+    "ig:_cathaccino_"
+   ]
+  },
+  {
+   "kind": "contact",
+   "date": "2026-04-23",
+   "title": "Last contact",
+   "people": [
+    "ig:jazmynkyara"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-04-24",
+   "time": "14:10",
+   "title": "Biometric study",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-04-25",
+   "time": "10:00",
+   "title": "Canada photos",
+   "cal": "Appointment + Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-04-26",
+   "time": null,
+   "title": "Michael Tomford's birthday",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-05-04",
+   "title": "iMessage exchange",
+   "people": [
+    "sf:whitney-verbeck"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-05-04",
+   "title": "The thread's last exchange left Whitney giving JD open permission to use photos from their SUNY shoot in a photography promotion graphic, saying he could use whatever, whenever.",
+   "people": [
+    "sf:whitney-verbeck"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-04",
+   "time": "13:45",
+   "title": "Onboarding SPOTHOPPER",
+   "cal": "Appointment + Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-05",
+   "time": "12:00",
+   "title": "Office visit",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-06",
+   "time": "13:00",
+   "title": "Haircut",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-05-08",
+   "title": "iMessage exchange",
+   "people": [
+    "sf:kundai-mugugu"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-08",
+   "time": "16:00",
+   "title": "Photos with Vimbai",
+   "cal": "Appointment + Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-08",
+   "time": "19:00",
+   "title": "Review for Behavioral management Class",
+   "cal": "School",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-09",
+   "time": "08:30",
+   "title": "Civil Service Exam",
+   "cal": "Work",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-09",
+   "time": "11:00",
+   "title": "Clarkson Security Graudation",
+   "cal": "Work",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-10",
+   "time": "12:30",
+   "title": "Francesca Mnenula",
+   "cal": "Appointment + Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-10",
+   "time": "17:00",
+   "title": "Maytal Slattery - Family Photo Session",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-10",
+   "time": "18:30",
+   "title": "Suny Potsdam Photoshoot",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-10",
+   "time": "18:30",
+   "title": "Grace Sheehan Photoshoot",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "series",
+   "title": "Clarkson Security \u2014 C Shift",
+   "cal": "Work",
+   "count": 26,
+   "first": "2026-05-11",
+   "last": "2026-07-15",
+   "people": [],
+   "date": "2026-05-11"
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-13",
+   "time": null,
+   "title": "Merrick Sinclair's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:mr_writers_block"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-14",
+   "time": null,
+   "title": "Holiday Inn Express & Suites Watertown Stay",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-14",
+   "time": null,
+   "title": "Stay at Holiday Inn Express & Suites Watertown-Thousand Islands by IHG",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-14",
+   "time": "12:00",
+   "title": "Photos with Olena",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-14",
+   "time": "17:00",
+   "title": "Jen Tice SUNY Potsdam Senior Photos",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-18",
+   "time": "15:30",
+   "title": "Photoshoot",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-18",
+   "time": "15:30",
+   "title": "Hannah Richards Photoshoot",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-19",
+   "time": "12:00",
+   "title": "Zachary Gerow Wedding",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-19",
+   "time": "12:00",
+   "title": "Zachary Gerow Wedding Photography",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-05-22",
+   "title": "Last contact",
+   "people": [
+    "ig:danielzufall"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-22",
+   "time": "11:00",
+   "title": "Tesla inspection",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-05-24",
+   "title": "Last contact",
+   "people": [
+    "ig:d_grant234"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-05-28",
+   "title": "Last contact",
+   "people": [
+    "ig:annecatherina7"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-28",
+   "time": "12:00",
+   "title": "Photos with Olena",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-05-30",
+   "time": "14:30",
+   "title": "Daniel Zufall Wedding",
+   "cal": "Business",
+   "people": [
+    "ig:danielzufall"
+   ]
+  },
+  {
+   "kind": "contact",
+   "date": "2026-06-01",
+   "title": "Last contact",
+   "people": [
+    "ig:abbydaniels03"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-06-01",
+   "title": "Last contact",
+   "people": [
+    "ig:ambikab.09"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-06-02",
+   "title": "Last contact",
+   "people": [
+    "ig:ethan_j_bates"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-03",
+   "time": "13:00",
+   "title": "Hair Studio",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-05",
+   "time": "13:15",
+   "title": "Biometric",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-05",
+   "time": "19:00",
+   "title": "Game night",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-06",
+   "time": null,
+   "title": "Breenna McGrath",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-06",
+   "time": "13:00",
+   "title": "Breenna McGrath",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-07",
+   "time": "19:00",
+   "title": "Reservation at Jake's on the Water",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-11",
+   "time": "14:45",
+   "title": "Enterprise to Massena",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-06-12",
+   "title": "Last contact",
+   "people": [
+    "ct:jack kessler"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-14",
+   "time": null,
+   "title": "Daniel Paladin's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:dpaladin"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-16",
+   "time": null,
+   "title": "Justin Cardinal's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ct:justin cardinal"
+   ]
+  },
+  {
+   "kind": "contact",
+   "date": "2026-06-17",
+   "title": "Last contact",
+   "people": [
+    "ig:lena_musiienko"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-19",
+   "time": "16:00",
+   "title": "New Event",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-24",
+   "time": "19:00",
+   "title": "Daniel Tosh",
+   "cal": "Appointment + Personal + Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-27",
+   "time": "13:00",
+   "title": "Caitlin Niles Wedding",
+   "cal": "Appointment + Business",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-06-29",
+   "title": "Last contact",
+   "people": [
+    "ig:cameramancory"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-06-30",
+   "time": "11:00",
+   "title": "Interview Clarkson",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-02",
+   "title": "Last contact",
+   "people": [
+    "ig:katelynmatthews10"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-02",
+   "time": "10:00",
+   "title": "Clarkson interview 2",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-03",
+   "time": null,
+   "title": "Stay: Holiday Inn Express & Suites Vaudreuil - Dorion",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-03",
+   "time": null,
+   "title": "Judson Colbert's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:judder_budder"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-03",
+   "time": null,
+   "title": "Stay at Holiday Inn Express & Suites Vaudreuil - Dorion",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-03",
+   "time": "13:00",
+   "title": "Haircut at the Hair Studio",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-07",
+   "time": null,
+   "title": "Danielle Vetere's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:daniveteree"
+   ]
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-10",
+   "title": "Last contact",
+   "people": [
+    "ct:mark wentworth"
+   ],
+   "online": true
+  },
+  {
+   "kind": "series",
+   "title": "Frisbee",
+   "cal": "Personal",
+   "count": 11,
+   "first": "2026-07-14",
+   "last": "2026-09-22",
+   "people": [],
+   "date": "2026-07-14"
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-14",
+   "title": "iMessage exchange",
+   "people": [
+    "sf:alex-koberda"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-14",
+   "title": "The last message in the thread said he was joining in after his signal died, with no open plan stated.",
+   "people": [
+    "sf:alex-koberda"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-15",
+   "title": "The latest open item is the BAT form / Sheets Apps Script access problem raised on July 15, 2026, with JD's multiple-Google-accounts explanation as the last word in the thread.",
+   "people": [
+    "sf:corbin-ladison"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-15",
+   "title": "Last contact",
+   "people": [
+    "ig:colleendcheney"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-16",
+   "time": null,
+   "title": "Stay: Holiday Inn Express Syracuse Airport",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-16",
+   "time": null,
+   "title": "Stay at Holiday Inn Express Syracuse Airport by IHG",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-16",
+   "title": "iMessage exchange",
+   "people": [
+    "sf:corbin-ladison"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-16",
+   "time": "18:00",
+   "title": "MSG Duclos",
+   "cal": "Work",
+   "people": []
+  },
+  {
+   "kind": "series",
+   "title": "Soccer",
+   "cal": "Personal",
+   "count": 11,
+   "first": "2026-07-17",
+   "last": "2026-10-02",
+   "people": [],
+   "date": "2026-07-17"
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-17",
+   "time": "11:00",
+   "title": "The Odysey",
+   "cal": "Work",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-18",
+   "title": "Last contact",
+   "people": [
+    "ig:norahpease"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-18",
+   "time": "17:30",
+   "title": "Amos",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "series",
+   "title": "Clarkson Hall",
+   "cal": "Work",
+   "count": 103,
+   "first": "2026-07-20",
+   "last": "2026-12-31",
+   "people": [],
+   "date": "2026-07-20"
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-20",
+   "title": "Email exchange \u2014 S1 Section // Best Wishes To All",
+   "people": [
+    "sf:joann-duclos"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-20",
+   "title": "Email exchange \u2014 Re: OTS Commissioning Inquiry",
+   "people": [
+    "sf:ian-wilson"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-22",
+   "title": "First iMessage contact on record",
+   "people": [
+    "sf:antolik"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-29",
+   "title": "Last contact",
+   "people": [
+    "ig:jamiesinclair"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-07-29",
+   "title": "Last contact",
+   "people": [
+    "ig:richardsinclair"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-29",
+   "time": "12:00",
+   "title": "Rick Sinclair",
+   "cal": "Personal",
+   "people": [
+    "ig:richardsinclair"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-29",
+   "time": "16:30",
+   "title": "Photoshoot with Martha",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-07-31",
+   "time": "16:00",
+   "title": "Photos",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-01",
+   "time": "14:00",
+   "title": "Wedding",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-03",
+   "time": "08:00",
+   "title": "SUTA",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-04",
+   "time": "12:00",
+   "title": "Brad",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-05",
+   "time": "08:00",
+   "title": "Dentist cleaning",
+   "cal": "Appointment + Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-06",
+   "time": null,
+   "title": "National Guard Annual Training",
+   "cal": "Appointment + Military",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-09",
+   "time": null,
+   "title": "Hope Kilcollins's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:hopiek_09"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-10",
+   "time": null,
+   "title": "Christine Sutter's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ct:christine sutter"
+   ]
+  },
+  {
+   "kind": "contact",
+   "date": "2026-08-10",
+   "title": "Email exchange \u2014 RTO Guide",
+   "people": [
+    "sf:ryan-blount"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-08-13",
+   "title": "Last contact",
+   "people": [
+    "ig:bronwynpaladin"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-20",
+   "time": null,
+   "title": "Melody Maurer's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:melody_maurer"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-21",
+   "time": null,
+   "title": "John Meyers's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:johnmeyers_sr"
+   ]
+  },
+  {
+   "kind": "contact",
+   "date": "2026-08-21",
+   "title": "Last contact",
+   "people": [
+    "ig:emiliealbertt"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-22",
+   "time": "10:00",
+   "title": "Megan Eddy Wedding",
+   "cal": "Appointment + Business",
+   "people": [
+    "sf:megan-eddy"
+   ]
+  },
+  {
+   "kind": "contact",
+   "date": "2026-08-25",
+   "title": "Last contact",
+   "people": [
+    "ig:gabepaladin"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-26",
+   "time": "12:00",
+   "title": "Department/Curriculum Committee Meeting",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-08-28",
+   "title": "Last contact",
+   "people": [
+    "ct:brad ingram"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-08-31",
+   "title": "Last contact",
+   "people": [
+    "ig:juliefelicianosec"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-31",
+   "time": "08:00",
+   "title": "Appointment: AFOQT - Air Force Officer Qualifying Test - English",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-31",
+   "time": "08:00",
+   "title": "AFOQT - Air Force Officer Qualifying Test - English (ENU)",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-08-31",
+   "time": "12:00",
+   "title": "OT Dept. Faculty Meetings (Room 3005 [OT Classroom])",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-09-01",
+   "title": "Last contact",
+   "people": [
+    "ig:john_zufall"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-09-01",
+   "title": "Last contact",
+   "people": [
+    "ig:johnaeastmond"
+   ],
+   "online": false
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-02",
+   "time": "16:30",
+   "title": "Photoshoot Maddy",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "series",
+   "title": "OM 603",
+   "cal": "School",
+   "count": 9,
+   "first": "2026-09-03",
+   "last": "2026-10-29",
+   "people": [],
+   "date": "2026-09-03"
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-03",
+   "time": "08:00",
+   "title": "DPT Admissions Meeting",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-05",
+   "time": null,
+   "title": "Elisa Meyers's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:elisameyers"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-05",
+   "time": "13:30",
+   "title": "Photoshoot",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "series",
+   "title": "Financial Management",
+   "cal": "School",
+   "count": 9,
+   "first": "2026-09-07",
+   "last": "2026-11-02",
+   "people": [],
+   "date": "2026-09-07"
+  },
+  {
+   "kind": "series",
+   "title": "IS 606",
+   "cal": "School",
+   "count": 9,
+   "first": "2026-09-08",
+   "last": "2026-11-03",
+   "people": [],
+   "date": "2026-09-08"
+  },
+  {
+   "kind": "contact",
+   "date": "2026-09-09",
+   "title": "Last contact",
+   "people": [
+    "ct:julia tomford"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-12",
+   "time": "16:30",
+   "title": "Amos",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-20",
+   "time": "18:00",
+   "title": "Dinner with siblings at Mama Lucia's",
+   "cal": "Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-24",
+   "time": "12:00",
+   "title": "Hair",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-24",
+   "time": "13:30",
+   "title": "PT500 Written exam 1",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "series",
+   "title": "Maxcy",
+   "cal": "Personal",
+   "count": 68,
+   "first": "2026-09-25",
+   "last": "2026-12-31",
+   "people": [],
+   "date": "2026-09-25"
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-25",
+   "time": null,
+   "title": "Elizabeth Deschaine's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:elizabeth.deschaine"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-25",
+   "time": "18:00",
+   "title": "Hayride",
+   "cal": "Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-26",
+   "time": "10:30",
+   "title": "Bakery",
+   "cal": "Personal",
+   "people": [
+    "ig:davidzufall"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-27",
+   "time": "18:00",
+   "title": "Kayla Bryson \u2014 Senior Photos",
+   "cal": "Business",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-09-29",
+   "time": null,
+   "title": "Megan Furner's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:megan.furner"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-01",
+   "time": "12:00",
+   "title": "Doctors",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-02",
+   "title": "Last contact",
+   "people": [
+    "ig:nat.waterman"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-04",
+   "title": "Last contact",
+   "people": [
+    "ig:jeevesgreen"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-05",
+   "time": "13:00",
+   "title": "Med Term Exam- Old Main",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-06",
+   "title": "Last contact",
+   "people": [
+    "ig:katerina_islost"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-08",
+   "title": "Last contact",
+   "people": [
+    "ig:jamesphilipm"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-10",
+   "title": "Last contact",
+   "people": [
+    "ig:hopiek_09"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-11",
+   "title": "Last contact",
+   "people": [
+    "ig:tcriscitello"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-11",
+   "time": "12:30",
+   "title": "Event at Jericho",
+   "cal": "Personal",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-13",
+   "title": "Last contact",
+   "people": [
+    "ct:natalie southworth"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-16",
+   "time": "08:00",
+   "title": "Your iPhone Pre-order",
+   "cal": "Personal",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-17",
+   "title": "Last contact",
+   "people": [
+    "ig:daddy_cheesebutt"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-17",
+   "title": "Last contact",
+   "people": [
+    "ig:stefaniiabulakh"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-18",
+   "time": null,
+   "title": "Stay at Holiday Inn Express Canton - Potsdam by IHG",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-18",
+   "title": "Last contact",
+   "people": [
+    "ig:daniveteree"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-19",
+   "title": "iMessage exchange",
+   "people": [
+    "sf:tim-lashomb"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-19",
+   "title": "Last contact",
+   "people": [
+    "ig:amotwinsmom"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-20",
+   "title": "Email exchange \u2014 RE: AFOQT Voucher Request",
+   "people": [
+    "sf:shari-smith"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-21",
+   "title": "Last contact",
+   "people": [
+    "ig:joshuamcgrath"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-21",
+   "title": "Last contact",
+   "people": [
+    "ig:melody_maurer"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-22",
+   "title": "Email exchange \u2014 Re: Agility Test Date Conflict",
+   "people": [
+    "sf:heather-foster-barrigar"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-22",
+   "title": "Last contact",
+   "people": [
+    "ig:ms_dior.gor"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-22",
+   "title": "Last contact",
+   "people": [
+    "ig:nabil.o3"
+   ],
+   "online": true
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-22",
+   "time": "16:30",
+   "title": "Ogdensburg to Syracuse",
+   "cal": "Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-22",
+   "time": "20:00",
+   "title": "Hotel \u2013 Quality Inn & Suites East Syracuse (Carrier Circle)",
+   "cal": "Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-23",
+   "time": "07:00",
+   "title": "UTA Drill - MDMP, AFT, Staff Training (MUTA 6)",
+   "cal": "Military",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-23",
+   "time": "18:00",
+   "title": "Haunted Infirmary: Bite Night",
+   "cal": "Appointment",
+   "people": []
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-24",
+   "title": "iMessage exchange",
+   "people": [
+    "sf:antolik"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-25",
+   "title": "Last contact",
+   "people": [
+    "ig:johnmeyers_sr"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-26",
+   "title": "Last contact",
+   "people": [
+    "ig:lydia_rose_martin"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-27",
+   "title": "Last contact",
+   "people": [
+    "ig:cy.cy.17"
+   ],
+   "online": false
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-28",
+   "title": "Last contact",
+   "people": [
+    "ig:davidzufall"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-28",
+   "title": "Last contact",
+   "people": [
+    "ig:elizabeth.deschaine"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-28",
+   "title": "Last contact",
+   "people": [
+    "ig:mr_writers_block"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-28",
+   "title": "Last contact",
+   "people": [
+    "ct:richard tacchino"
+   ],
+   "online": false
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-29",
+   "title": "Last contact",
+   "people": [
+    "ig:_cathaccino_"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-29",
+   "title": "Last contact",
+   "people": [
+    "ig:elisameyers"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-29",
+   "title": "Last contact",
+   "people": [
+    "ig:elliecriscitello"
+   ],
+   "online": true
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-30",
+   "title": "Suny Canton Agility Test",
+   "people": [
+    "sf:heather-foster-barrigar"
+   ],
+   "online": false
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-30",
+   "title": "Last contact",
+   "people": [
+    "ct:samarah martin"
+   ],
+   "online": false
+  },
+  {
+   "kind": "contact",
+   "date": "2026-10-30",
+   "title": "Last contact",
+   "people": [
+    "ct:joe mastro"
+   ],
+   "online": false
+  },
+  {
+   "kind": "event",
+   "date": "2026-10-30",
+   "time": "08:30",
+   "title": "Agility Test \u2013 Police Officer/Deputy Sheriff Examination",
+   "cal": "Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-11-06",
+   "time": "07:00",
+   "title": "UTA Drill - HT/WT, MMCS, MDMP (MUTA 6)",
+   "cal": "Military",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-11-08",
+   "time": null,
+   "title": "Nathaniel Tomford's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:tom_nate_ford"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-11-12",
+   "time": "12:00",
+   "title": "Hair appointment",
+   "cal": "Personal",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-11-17",
+   "time": null,
+   "title": "Happy birthday!",
+   "cal": "Shared Calendar",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-11-17",
+   "time": "13:00",
+   "title": "Outpatient",
+   "cal": "School",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-12-04",
+   "time": "07:00",
+   "title": "UTA Drill - COA DEV Brief/Training (MUTA 5)",
+   "cal": "Military",
+   "people": []
+  },
+  {
+   "kind": "event",
+   "date": "2026-12-08",
+   "time": null,
+   "title": "Christine Sutter's anniversary",
+   "cal": "Shared Calendar",
+   "people": [
+    "ct:christine sutter"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-12-10",
+   "time": null,
+   "title": "David Tomford's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ct:david tomford"
+   ]
+  },
+  {
+   "kind": "event",
+   "date": "2026-12-22",
+   "time": null,
+   "title": "David Zufall's birthday",
+   "cal": "Shared Calendar",
+   "people": [
+    "ig:davidzufall"
+   ]
+  }
+ ]
+}
