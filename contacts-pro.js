@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.41.0';
+var APP_VERSION = '3.42.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -739,7 +739,7 @@ function poolLoad(){
 }
 function poolSave(){ try{ localStorage.setItem(POOL_KEY, JSON.stringify(POOL.log.slice(0, 60))); }catch(x){} }
 function poolName(id){ var di = (typeof diFromId === 'function') ? diFromId(id) : null; var e = (di != null && typeof D !== 'undefined' && D) ? D.directory[di] : null; return e ? dispName(e) : id; }
-var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Tier', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Lima Charlie notes', merged_into:'Merged into', review_flag:'Review flag', last_contact:'Last known contact', last_contact_online:'Contact online', events:'Timeline' };
+var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Tier', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Lima Charlie notes', merged_into:'Merged into', review_flag:'Review flag', last_contact:'Last known contact', last_contact_online:'Contact online', events:'Timeline', research_review:'Research candidate decision' };
 function poolFieldLabel(k){ return POOL_LABELS[k] || String(k).replace(/_/g, ' '); }
 function poolValSummary(k, v){
   v = String(v == null ? '' : v);
@@ -6772,8 +6772,211 @@ function dtAnimate(){
     if(bar) bar.style.width = bar.getAttribute('data-w');
   }, 40);
 }
+
+/* ============================================================
+   Research Command (JD 2026-10-30): every concrete Live Records
+   candidate that did NOT clear the filing gate, listed under the
+   Live Records brief with a color-coded confidence score. JD can
+   file one (the exact claim is appended to the profile through
+   the Save Pool) or dismiss it (Luna was right). Decisions persist
+   in the profile's research_review field (Sheet column BL), so a
+   decided candidate never comes back as pending. Data:
+   data/research-candidates.json, written by the Live Records
+   routine (seeded 2026-10-30 from the recorded near-miss logs).
+   ============================================================ */
+var RC = null, RC_LOADING = false;
+var RC_CATS = { close:'Close call', identity:'Identity not proven', source:'Source too weak', sensitive:'Sensitive / family', conflict:'Conflicting record', verification:'Failed verification' };
+var RC_VIEW = { status:'pending', cat:'all', q:'' };
+try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '' }; }catch(x){}
+function rcSaveView(){ try{ store('ncc_rc_view', JSON.stringify(RC_VIEW)); }catch(x){} }
+function rcLoad(){
+  if(RC || RC_LOADING) return;
+  RC_LOADING = true;
+  fetch('data/research-candidates.json', { cache:'no-cache' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ RC = d; RC_LOADING = false; repaintForData('rc'); })
+    .catch(function(){ RC = { empty:true, candidates:[] }; RC_LOADING = false; repaintForData('rc'); });
+}
+function rcBand(conf){
+  conf = +conf || 0;
+  if(conf >= 85) return { k:'near', label:'Near certain' };
+  if(conf >= 70) return { k:'strong', label:'Strong' };
+  if(conf >= 55) return { k:'plausible', label:'Plausible' };
+  if(conf >= 40) return { k:'weak', label:'Weak' };
+  return { k:'unsupported', label:'Not supported' };
+}
+function rcDi(c){
+  var di = BYN[String(c.name || '').toLowerCase()];
+  if(di == null && c.display) di = BYN[String(c.display).toLowerCase()];
+  return di == null ? null : di;
+}
+function rcReviewMap(e){
+  try{ var v = raw(e, 'research_review'); var m = v ? JSON.parse(v) : {}; return (m && typeof m === 'object' && !Array.isArray(m)) ? m : {}; }catch(x){ return {}; }
+}
+function rcNorm(s){
+  return String(s || '').toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function rcAlreadyFiled(e, c){
+  var n = rcNorm(c.file_text || c.claim);
+  return !!n && rcNorm(gv(e, 'public_footprint')).indexOf(n) >= 0;
+}
+function rcStatus(c){
+  var di = rcDi(c);
+  if(di == null) return { k:'orphan', label:'Profile not found', at:'' };
+  var e = D.directory[di], dec = rcReviewMap(e)[c.id];
+  if(dec && dec.decision === 'file') return { k:'filed', label:'Filed by JD', at:dec.at || '' };
+  if(dec && dec.decision === 'dismiss') return { k:'dismissed', label:'Dismissed', at:dec.at || '' };
+  if(rcAlreadyFiled(e, c)) return { k:'already', label:'Already on file', at:'' };
+  return { k:'pending', label:'Pending', at:'' };
+}
+function rcUnion(cur, inc, sep){
+  var out = splitTags(cur, sep), seen = {};
+  out.forEach(function(x){ seen[x.toLowerCase()] = 1; });
+  splitTags(inc, sep).forEach(function(x){ if(!seen[x.toLowerCase()]){ seen[x.toLowerCase()] = 1; out.push(x); } });
+  return out.join(sep);
+}
+function rcApplyFields(e, c, patch){
+  var F = c.fields || {};
+  ['companies', 'universities', 'churches', 'groups'].forEach(function(k){
+    if(F[k] == null) return;
+    var inc = Array.isArray(F[k]) ? F[k].join(', ') : String(F[k]);
+    var merged = rcUnion(gv(e, k), inc, ', ');
+    if(merged !== String(gv(e, k) || '')) patch[k] = merged;
+  });
+  ['highlights', 'achievements'].forEach(function(k){
+    if(F[k] == null) return;
+    var inc = Array.isArray(F[k]) ? F[k].join(' | ') : String(F[k]);
+    var merged = rcUnion(gv(e, k), inc, ' | ');
+    if(merged !== String(gv(e, k) || '')) patch[k] = merged;
+  });
+  if(F.also_known_as != null){
+    var aka = rcUnion(gv(e, 'also_known_as'), Array.isArray(F.also_known_as) ? F.also_known_as.join('; ') : String(F.also_known_as), '; ');
+    if(aka !== String(gv(e, 'also_known_as') || '')) patch.also_known_as = aka;
+  }
+  if(F.degrees != null && !String(gv(e, 'degrees') || '').trim()){
+    patch.degrees = Array.isArray(F.degrees)
+      ? (F.degrees.length && typeof F.degrees[0] === 'object' ? JSON.stringify(F.degrees) : F.degrees.join('; '))
+      : String(F.degrees);
+  }
+  var loc = F.location_on_file || F.location;
+  if(loc && !String(gv(e, 'location_on_file') || '').trim()) patch.location_on_file = String(loc);
+}
+function rcDecide(id, decision){
+  if(!RC || !RC.candidates) return;
+  var c = null;
+  RC.candidates.forEach(function(x){ if(x.id === id) c = x; });
+  if(!c) return;
+  var di = rcDi(c);
+  if(di == null){ toast('That profile is no longer in the directory — the candidate cannot be filed.'); return; }
+  var e = D.directory[di];
+  if(rcStatus(c).k !== 'pending'){ toast('That candidate was already decided.'); rcPaint(); return; }
+  txn(decision === 'file' ? 'File research candidate' : 'Dismiss research candidate', function(){
+    var patch = {}, map = rcReviewMap(e);
+    map[c.id] = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
+    patch.research_review = JSON.stringify(map);
+    if(decision === 'file' && !rcAlreadyFiled(e, c)){
+      var fp = String(gv(e, 'public_footprint') || '').trim();
+      var bullet = '\u2022 ' + String(c.file_text || c.claim || '').trim() + (c.source ? ' (' + c.source + ')' : '');
+      patch.public_footprint = fp ? fp + '\n' + bullet : bullet;
+      if(c.url){
+        var files = (e.files || []).slice(), has = false;
+        files.forEach(function(f){ if(f && f.url === c.url) has = true; });
+        if(!has){ files.push({ name:'Source: ' + hostOf(c.url), kind:'source', url:c.url }); patch.files = JSON.stringify(files); }
+      }
+      rcApplyFields(e, c, patch);
+    }
+    queuePatch(di, patch);
+  });
+  toast(decision === 'file'
+    ? 'Filed for ' + (c.display || '') + '. It saves through the Save Pool.'
+    : 'Dismissed for ' + (c.display || '') + '. Luna\u2019s call stands.', { undo:true });
+  rcPaint();
+}
+function rcConsoleHTML(){
+  if(!RC) return '<section class="rcconsole" id="rcconsole"><div class="rc-loading">Loading the research ledger\u2026</div></section>';
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtD(iso){ if(!iso) return ''; var p = String(iso).split('-'); if(p.length < 3) return String(iso); return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]; }
+  var all = (RC.candidates || []).slice().sort(function(a, b){
+    return (+b.confidence - +a.confidence) || String(b.run_date || '').localeCompare(String(a.run_date || '')) || String(a.display || '').localeCompare(String(b.display || ''));
+  });
+  var rows = all.map(function(c){ return { c:c, st:rcStatus(c) }; });
+  var counts = { pending:0, filed:0, dismissed:0, close:0 };
+  rows.forEach(function(r){
+    if(r.st.k === 'pending'){ counts.pending++; if((+r.c.confidence || 0) >= 70) counts.close++; }
+    else if(r.st.k === 'filed' || r.st.k === 'already') counts.filed++;
+    else if(r.st.k === 'dismissed') counts.dismissed++;
+  });
+  var q = String(RC_VIEW.q || '').trim().toLowerCase();
+  var shown = rows.filter(function(r){
+    var c = r.c;
+    if(RC_VIEW.status === 'pending' && r.st.k !== 'pending') return false;
+    if(RC_VIEW.status === 'filed' && !(r.st.k === 'filed' || r.st.k === 'already')) return false;
+    if(RC_VIEW.status === 'dismissed' && r.st.k !== 'dismissed') return false;
+    if(RC_VIEW.cat !== 'all' && c.category !== RC_VIEW.cat) return false;
+    if(q){
+      var hay = (String(c.display || '') + ' ' + String(c.claim || '') + ' ' + String(c.source || '') + ' ' + (c.anchors || []).join(' ')).toLowerCase();
+      if(hay.indexOf(q) < 0) return false;
+    }
+    return true;
+  });
+  function personLink(c){
+    var di = rcDi(c), label = esc(c.display || c.name || '');
+    if(di == null) return '<b>' + label + '</b>';
+    return '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + label + '</b></a>' + milBadge(D.directory[di]);
+  }
+  var legend = [['near', '85\u2013100', 'Near certain'], ['strong', '70\u201384', 'Strong'], ['plausible', '55\u201369', 'Plausible'], ['weak', '40\u201354', 'Weak'], ['unsupported', '0\u201339', 'Not supported']]
+    .map(function(b){ return '<span class="rc-leg rcb-' + b[0] + '"><i></i>' + b[1] + ' ' + b[2] + '</span>'; }).join('');
+  var statBtns = [['pending', 'Pending', counts.pending], ['filed', 'Filed / on file', counts.filed], ['dismissed', 'Dismissed', counts.dismissed], ['all', 'All research', rows.length]]
+    .map(function(b){ return '<button type="button" class="' + (RC_VIEW.status === b[0] ? 'on' : '') + '" data-act="rcfilter" data-v="' + b[0] + '">' + b[1] + ' <b>' + b[2] + '</b></button>'; }).join('');
+  var catOpts = ['<option value="all"' + (RC_VIEW.cat === 'all' ? ' selected' : '') + '>All categories</option>']
+    .concat(Object.keys(RC_CATS).map(function(k){ return '<option value="' + k + '"' + (RC_VIEW.cat === k ? ' selected' : '') + '>' + RC_CATS[k] + '</option>'; })).join('');
+  var body = shown.length ? shown.map(function(r){
+    var c = r.c, band = rcBand(c.confidence), parts = c.confidence_parts || {};
+    var anchors = (c.anchors || []).length ? '<ul class="rc-anchors">' + c.anchors.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
+    var src = c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 11) + '</a>' : esc(c.source || '');
+    var actions = r.st.k === 'pending'
+      ? '<div class="rc-actions"><button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c.id) + '">File it</button>' +
+        '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' +
+        '<span class="rc-actnote">File = the information is correct.<br>Dismiss = Luna was right.</span></div>'
+      : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
+        (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + '</div>';
+    return '<div class="rc-row rcb-' + band.k + '">' +
+      '<div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
+      '<span class="rc-parts">Identity ' + (+parts.identity || 0) + '/50<br>Source ' + (+parts.source || 0) + '/30<br>Detail ' + (+parts.detail || 0) + '/20</span></div>' +
+      '<div class="rc-main"><div class="rc-person">' + personLink(c) + '<span class="rc-cat">' + esc(RC_CATS[c.category] || c.category || '') + '</span>' +
+      '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
+      '<p class="rc-claim">' + esc(c.claim || '') + '</p>' +
+      '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p></div>' +
+      '<div class="rc-ev"><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
+      '<div class="rc-gate"><span>Why it was held</span><p>' + esc(c.missing_gate || '') + '</p></div>' +
+      actions + '</div>';
+  }).join('') : '<div class="rc-none">No candidates match this view.</div>';
+  return '<section class="rcconsole" id="rcconsole">' +
+    '<div class="rc-head"><div><div class="rc-kicker">RESEARCH COMMAND // UNFILED CANDIDATES</div>' +
+    '<h2>What the research found but did not file</h2>' +
+    '<p>Every concrete lead that stopped at the filing gate, closest calls first. <b>File it</b> means the information is correct: the exact claim is written to the profile through the Save Pool. <b>Dismiss</b> means Luna was right to hold it. Decisions are stored on the profile, so a decided candidate never comes back as pending.</p></div>' +
+    '<div class="rc-legend">' + legend + '</div></div>' +
+    '<div class="rc-stats"><div><b>' + counts.pending + '</b><span>Awaiting your call</span></div><div><b>' + counts.close + '</b><span>Close calls (70+)</span></div><div><b>' + counts.filed + '</b><span>Filed / on file</span></div><div><b>' + counts.dismissed + '</b><span>Dismissed</span></div></div>' +
+    '<div class="rc-controls"><div class="rc-seg" role="group">' + statBtns + '</div>' +
+    '<select id="rccat" aria-label="Candidate category">' + catOpts + '</select>' +
+    '<input id="rcq" type="search" placeholder="Search person, claim, source\u2026" value="' + esc(RC_VIEW.q || '') + '"></div>' +
+    '<div class="rc-table"><div class="rc-row rc-thead"><span>Confidence</span><span>Person / candidate</span><span>Evidence</span><span>Why held</span><span>Your call</span></div>' + body + '</div>' +
+    '<p class="rc-foot">Confidence = identity match (50) + source strength (30) + claim detail (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
+    '</section>';
+}
+function rcPaint(){
+  var el = document.getElementById('rcconsole'); if(!el) return;
+  var wasQ = document.activeElement && document.activeElement.id === 'rcq';
+  var pos = wasQ ? document.activeElement.selectionStart : null;
+  el.outerHTML = rcConsoleHTML();
+  if(wasQ){
+    var nq = document.getElementById('rcq');
+    if(nq){ nq.focus(); try{ nq.setSelectionRange(pos, pos); }catch(x){} }
+  }
+}
+
 function viewDaily(v){
-  dtLoad(); chLoad();
+  dtLoad(); chLoad(); rcLoad();
   var head = '<div class="page asearch lr"><div class="pagehead"><div><h1 class="display">Live Records</h1></div></div>';
   if(!DT){
     v.innerHTML = head + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
@@ -6908,7 +7111,7 @@ function viewDaily(v){
     }).join('');
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
-  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div></div>';
+  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
   dtAnimate();
 }
 
@@ -10032,6 +10235,9 @@ function onClick(ev){
     case 'mladd': { var ake = taxEntities().ents[el.getAttribute('data-key')]; if(ake) mlAddMember(ake, +(el.getAttribute('data-di'))); break; }
     case 'mlmore': { var msec = el.getAttribute('data-sec'); MLV.more[msec] = !MLV.more[msec]; mlRender(); break; }
     case 'chggrp': chgToggle(el); break;
+    case 'rcfile': rcDecide(el.getAttribute('data-id'), 'file'); break;
+    case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
+    case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; rcSaveView(); rcPaint(); break;
     case 'phconfirm': { var _pc = el.getAttribute('data-pname'); phSetReview(_pc, 'confirmed'); if(S.route.name === 'profile') keepAnchor(function(){ repaintTop(); }, '#pm-a'); break; }
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phinsp': { var _pn = el.getAttribute('data-pname'); phInspOpen(_pn, PH_HERO_IDX[String(_pn || '').toLowerCase()]); break; }
@@ -10330,6 +10536,7 @@ function debPaint(k, fn){ clearTimeout(DEB_T[k]); DEB_T[k] = setTimeout(fn, 120)
 function onInput(ev){
   var t = ev.target;
   if(t.id === 'gs'){ debPaint('gs', paintSearch); return; }
+  if(t.id === 'rcq'){ RC_VIEW.q = t.value; rcSaveView(); debPaint('rcq', rcPaint); return; }
   if(t.id === 'netq'){ netPaintFind(); return; }
   if(t.id === 'pq'){ S.ppl.q = t.value; debPaint('pq', paintPeople); return; }
   if(t.id === 'phq'){ PH_QUERY = t.value; debPaint('phq', phPaintList); return; }
@@ -10346,6 +10553,7 @@ function onInput(ev){
 }
 function onChange(ev){
   var t = ev.target, act = t.getAttribute && t.getAttribute('data-act');
+  if(t.id === 'rccat'){ RC_VIEW.cat = t.value; rcSaveView(); rcPaint(); return; }
   if(t.hasAttribute && t.hasAttribute('data-gmsel')){
     var gmkey = t.getAttribute('data-gmsel');
     if(t.checked) GMGR.sel[gmkey] = 1; else delete GMGR.sel[gmkey];
