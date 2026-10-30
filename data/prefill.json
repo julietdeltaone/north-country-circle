@@ -1,83 +1,30 @@
 {
  "generated": "2026-10-30",
- "count": 237,
+ "count": 103,
  "suggestions": [
   {
-   "id": "pf-f6b342a1fd",
-   "key": "sf:eleora-trelease",
-   "display": "Eleora Trelease",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Probable",
-   "evidence": [
-    "Clarkson University is in Potsdam.",
-    "Family on file in Potsdam: Eric Trelease, Jennifer Trelease."
-   ],
-   "conf": 72
-  },
-  {
-   "id": "pf-e84f565ee1",
-   "key": "anastasia_g_daniels",
-   "display": "Anastasia Daniels",
+   "id": "pf-81750b5f9d",
+   "key": "adhope2006",
+   "display": "Adriana Levendusky",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Family on file in Potsdam: Baxter Brown."
+    "3 of 6 located known associates are in Potsdam."
    ],
    "conf": 55
   },
   {
-   "id": "pf-49fa5f15cf",
-   "key": "ct:ben hull",
-   "display": "Ben Hull",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Madrid, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Madrid: Nancy Hull, Anastasia Cote."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-dca4ef3c3f",
-   "key": "sf:ben-newton",
-   "display": "Ben Newton",
+   "id": "pf-725d5349b6",
+   "key": "annecatherina7",
+   "display": "Anne Katherin Wolf",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-89ad7b1769",
-   "key": "sf:benjamin-emmanuel",
-   "display": "Benjamin Emmanuel",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-ca645ba74e",
-   "key": "sf:beth-randall",
-   "display": "Beth Randall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
+    "3 of 5 located known associates are in Potsdam."
    ],
    "conf": 55
   },
@@ -121,19 +68,6 @@
    "conf": 55
   },
   {
-   "id": "pf-b0386c7058",
-   "key": "sf:brenden-vanhorn",
-   "display": "Brenden Vanhorn",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-e2bae311f0",
    "key": "briettapaladin",
    "display": "Brietta Paladin",
@@ -143,19 +77,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Canton: Jamie Sinclair, Merrick Sinclair."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-ac0135b8d0",
-   "key": "sf:brittany-disalvo",
-   "display": "Brittany DiSalvo",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -170,6 +91,19 @@
    "evidence": [
     "SUNY Potsdam is in Potsdam.",
     "Potsdam Central School is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-08cb0b26b8",
+   "key": "brookemariejoyce",
+   "display": "Brooke Joyce",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "4 of 7 located known associates are in Potsdam."
    ],
    "conf": 55
   },
@@ -200,45 +134,6 @@
    "conf": 55
   },
   {
-   "id": "pf-b8b262dc69",
-   "key": "carolinaxxmedina",
-   "display": "Carolina Medina",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-e272cd71dd",
-   "key": "caroline.lafountain",
-   "display": "Caroline LaFountain",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-893dfeaf5b",
-   "key": "cashhyyy",
-   "display": "Cashlynn Colbert",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-aa326bb4c2",
    "key": "chelsea__mcgrath",
    "display": "Chelsea McGrath",
@@ -261,32 +156,6 @@
    "grade": "Tentative",
    "evidence": [
     "St. Lawrence University is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-f251e8c842",
-   "key": "ms_dior.gor",
-   "display": "Chidiogor Ofodum",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-9f57749c54",
-   "key": "sf:christopher-towler",
-   "display": "Christopher Towler",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -330,19 +199,6 @@
    "conf": 55
   },
   {
-   "id": "pf-134d2c54f8",
-   "key": "sf:cora-capozzi",
-   "display": "Cora Capozzi",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Hopkinton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Their Facebook profile lists Hopkinton, NY."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-2097918e6f",
    "key": "coreyd123103",
    "display": "Corey Delisa",
@@ -382,19 +238,6 @@
    "conf": 55
   },
   {
-   "id": "pf-7a2cf9ac8a",
-   "key": "sf:dale-fournier",
-   "display": "Dale Fournier",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-10c2c6a106",
    "key": "dpaladin",
    "display": "Daniel Paladin",
@@ -417,19 +260,6 @@
    "grade": "Tentative",
    "evidence": [
     "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-120f347626",
-   "key": "sf:david-disalvo",
-   "display": "David DiSalvo",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -460,32 +290,6 @@
    "conf": 55
   },
   {
-   "id": "pf-2dc222013c",
-   "key": "debbiegordon7",
-   "display": "Debbie Gordon",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-7ac3199d09",
-   "key": "desknaebel",
-   "display": "Debbie Knaebel",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-103356155f",
    "key": "ct:debbie swyka",
    "display": "Debbie Swyka",
@@ -508,32 +312,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Canton: Amber Ingram."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-ac1faa11ee",
-   "key": "ct:destiny snyder",
-   "display": "Destiny Snyder",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-ccf58ede4f",
-   "key": "sf:devon-sutton",
-   "display": "Devon Sutton",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -565,19 +343,6 @@
    "conf": 55
   },
   {
-   "id": "pf-c58bac456c",
-   "key": "eileen_mackenzie",
-   "display": "Eileen Mackenzie",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-59709b5855",
    "key": "_lanie_brown",
    "display": "Elena Brown",
@@ -604,15 +369,15 @@
    "conf": 55
   },
   {
-   "id": "pf-6f9a20fa5e",
-   "key": "sf:eliza-sullivan",
-   "display": "Eliza Sullivan",
+   "id": "pf-8b39dc2098",
+   "key": "elisedeuel",
+   "display": "Elise Deuel",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "3 of 4 located known associates are in Potsdam."
    ],
    "conf": 55
   },
@@ -644,48 +409,9 @@
    "conf": 55
   },
   {
-   "id": "pf-7b9cc78fad",
-   "key": "ct:emilee mcadoo",
-   "display": "Emilee McAdoo",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-bd82a60013",
+   "id": "pf-4afd82fd14",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-be4913ccf6",
-   "key": "emijent",
-   "display": "Emily R. Jent",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-6746278c54",
-   "key": "emilywangerin",
-   "display": "Emily Wangerin",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -696,16 +422,15 @@
    "conf": 55
   },
   {
-   "id": "pf-04f7b2bb5d",
-   "key": "ct:emma gravlin",
-   "display": "Emma Gravlin",
+   "id": "pf-b9bc27d8bc",
+   "key": "emijent",
+   "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Clarkson University is in Potsdam."
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -719,32 +444,6 @@
    "grade": "Tentative",
    "evidence": [
     "St. Lawrence University is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-0edfc2ed4c",
-   "key": "em_anuel_xa",
-   "display": "Emmanuel Atindama",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-8e1443a16b",
-   "key": "sf:erica-arnold",
-   "display": "Erica Arnold",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -775,41 +474,15 @@
    "conf": 55
   },
   {
-   "id": "pf-fa7d8a8851",
-   "key": "e._.flam",
-   "display": "Ethan Flamand",
+   "id": "pf-34cb5a40f3",
+   "key": "evan_dennis_",
+   "display": "Evan Dennis",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Massena, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-528071b3ce",
-   "key": "sf:frederick-laud-amoah-darko-jr",
-   "display": "Frederick Laud Amoah-Darko Jr.",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-fa6590ad48",
-   "key": "gabepaladin",
-   "display": "Gabe Paladin",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Clevland, TN",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Clevland: Bronwyn Paladin."
+    "3 of 6 located known associates are in Massena."
    ],
    "conf": 55
   },
@@ -853,19 +526,6 @@
    "conf": 55
   },
   {
-   "id": "pf-343a0112e0",
-   "key": "sf:greg-lapinski",
-   "display": "Greg Lapinski",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Their Facebook profile lists Canton, NY."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-c90201e6e3",
    "key": "aspecthammy_",
    "display": "Hamza Hmyene",
@@ -874,20 +534,21 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Family on file in Potsdam: Salwa Hmyene."
+    "Family on file in Potsdam: Salwa Hmyene.",
+    "3 of 4 located known associates are in Potsdam."
    ],
    "conf": 55
   },
   {
-   "id": "pf-26b74b5594",
-   "key": "hannahllbanana",
-   "display": "Hannah McConnell",
+   "id": "pf-e3824b9bbc",
+   "key": "hannahkhughes_",
+   "display": "Hannah Hughes",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Boise, ID",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Their Facebook profile lists Boise, ID."
+    "3 of 3 located known associates are in Potsdam."
    ],
    "conf": 55
   },
@@ -931,32 +592,6 @@
    "conf": 55
   },
   {
-   "id": "pf-f496cf80b8",
-   "key": "sf:indira-quintana-lala",
-   "display": "Indira Quintana",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-0f89e0d2fd",
-   "key": "instabellaphoebe",
-   "display": "Isabella Phoebe",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-3eb64e71ff",
    "key": "ct:jack kessler",
    "display": "Jack Kessler",
@@ -979,33 +614,6 @@
    "grade": "Tentative",
    "evidence": [
     "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-6d92e4d371",
-   "key": "sf:jaime-bicknell",
-   "display": "Jaime Bicknell",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-bb952f0d94",
-   "key": "jake_seguin",
-   "display": "Jake Seguin",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Their Facebook profile lists Potsdam, NY."
    ],
    "conf": 55
   },
@@ -1036,46 +644,6 @@
    "conf": 55
   },
   {
-   "id": "pf-9d05a6cc1e",
-   "key": "jeevesgreen",
-   "display": "Jeeves Green",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-0f41b73c99",
-   "key": "jessicaeevans",
-   "display": "Jess Evans",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-ff4b460004",
-   "key": "sf:jesse-braun",
-   "display": "Jesse Braun",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "New York, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Their Facebook profile lists New York, NY."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-582dfe058e",
    "key": "sf:jessica-osypiewski",
    "display": "Jessica Osypiewski",
@@ -1098,32 +666,6 @@
    "grade": "Tentative",
    "evidence": [
     "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-f8b74400aa",
-   "key": "joshcparker_",
-   "display": "Josh Parker",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-0cef3d27ff",
-   "key": "cyrusking.47",
-   "display": "Judah Pare",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -1180,19 +722,6 @@
    "conf": 55
   },
   {
-   "id": "pf-65ebdf4984",
-   "key": "ct:justin estep",
-   "display": "Justin Estep",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-37018bbd52",
    "key": "karajdaniels",
    "display": "Kara Daniels",
@@ -1202,45 +731,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Potsdam: Jonathan Daniels."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-931ede80dd",
-   "key": "sf:kara-ferguson",
-   "display": "Kara Ferguson",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b3213833ac",
-   "key": "sf:karen-hoover",
-   "display": "Karen Hoover",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-5c0d79c8f0",
-   "key": "katelynmatthews10",
-   "display": "Katelyn Matthews",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -1258,58 +748,6 @@
    "conf": 55
   },
   {
-   "id": "pf-2a3aeab373",
-   "key": "sf:katelynne-kulp",
-   "display": "Katelynne Kulp",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-37e95df6bd",
-   "key": "katiie.huestis",
-   "display": "Katie Huestis",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-3aab95a341",
-   "key": "krlap315",
-   "display": "Katie Lapinski",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-8881215314",
-   "key": "sf:kayleigh-clary",
-   "display": "Kayleigh Clary",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-1eef386cfd",
    "key": "kevindaniels7",
    "display": "Kevin Daniels",
@@ -1323,48 +761,9 @@
    "conf": 55
   },
   {
-   "id": "pf-5dc5c2fcaa",
-   "key": "sf:kevin-lynch",
-   "display": "Kevin Lynch",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-e11c013926",
    "key": "muno_khosa",
    "display": "Khosa Muno",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-984befbd07",
-   "key": "sf:kim-sisk",
-   "display": "Kim Sisk",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Their Facebook profile lists Canton, NY."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-75d50c34bf",
-   "key": "sf:kwadwo-appiah-kubi",
-   "display": "Kwadwo Appiah-Kubi",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -1389,19 +788,6 @@
    "conf": 55
   },
   {
-   "id": "pf-e63828ead9",
-   "key": "sf:lennart-johns",
-   "display": "Lennart Johns",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-d356803329",
    "key": "levi_white90",
    "display": "Levi White",
@@ -1415,15 +801,15 @@
    "conf": 55
   },
   {
-   "id": "pf-961ae32962",
-   "key": "sf:lexi-kennedy-labombard",
-   "display": "Lexi Kennedy LaBombard",
+   "id": "pf-fa1fceac50",
+   "key": "sf:liana-sinclair",
+   "display": "Liana Hull",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Madrid, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "Family on file in Madrid: Ben Hull."
    ],
    "conf": 55
   },
@@ -1521,6 +907,19 @@
    "conf": 55
   },
   {
+   "id": "pf-7cbb6945da",
+   "key": "sf:mark-cornett",
+   "display": "Mark Cornett",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
    "id": "pf-60de11bef1",
    "key": "boylemarky",
    "display": "Mark Joseph Boyle",
@@ -1531,72 +930,6 @@
    "evidence": [
     "SUNY Potsdam is in Potsdam.",
     "3 of 4 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b4a453a95d",
-   "key": "mr.muggy",
-   "display": "Mark Tomford",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-55c05a4389",
-   "key": "sf:martha-martin",
-   "display": "Martha Martin",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Moira, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Their Facebook profile lists Moira, NY."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-bbb8936583",
-   "key": "mbartell99",
-   "display": "Mason Bartell",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Their Facebook profile lists Potsdam, NY."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-27b2c4708b",
-   "key": "sf:matthew-merria",
-   "display": "Matthew Merria",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-2c0f111019",
-   "key": "ct:matthew tomford",
-   "display": "Matthew Tomford",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -1617,19 +950,6 @@
    "id": "pf-33115176f6",
    "key": "max_ferran06",
    "display": "Max Ferran",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-2282a60b7b",
-   "key": "meganrconverse",
-   "display": "Megan Converse",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -1692,32 +1012,6 @@
    "conf": 55
   },
   {
-   "id": "pf-3937cd47ee",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-7b479c7eef",
-   "key": "ct:michelle larson",
-   "display": "Michelle Larson",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-194580ae1c",
    "key": "mdknaebel",
    "display": "Mike Knaebel",
@@ -1727,19 +1021,6 @@
    "grade": "Tentative",
    "evidence": [
     "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-3ec607b355",
-   "key": "nabil.o3",
-   "display": "Nabil El-labban",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -1757,19 +1038,6 @@
    "conf": 55
   },
   {
-   "id": "pf-c37f77eeea",
-   "key": "sf:nicholas-matott",
-   "display": "Nicholas Matott",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-b7f03a9822",
    "key": "nikki.sew",
    "display": "Nicole Seward",
@@ -1779,32 +1047,6 @@
    "grade": "Tentative",
    "evidence": [
     "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-1a6614ed4d",
-   "key": "the.ndrx",
-   "display": "Noah Diederich",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-d9014a0d60",
-   "key": "ct:noah marshall",
-   "display": "Noah Marshall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -1835,32 +1077,6 @@
    "conf": 55
   },
   {
-   "id": "pf-ff67d6c97a",
-   "key": "oliviamariegrant",
-   "display": "Olivia Grant",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-1ce6fcbc43",
-   "key": "ct:olivia huntly",
-   "display": "Olivia Huntly",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-e36445e875",
    "key": "oliviaa.rose.01",
    "display": "Olivia Rose",
@@ -1887,19 +1103,6 @@
    "conf": 55
   },
   {
-   "id": "pf-f440190c07",
-   "key": "sf:peyton-mussaw",
-   "display": "Peyton Mussaw",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-2ca53e235b",
    "key": "ct:philip hubbe",
    "display": "Philip Hubbe",
@@ -1909,19 +1112,6 @@
    "grade": "Tentative",
    "evidence": [
     "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-64d30133de",
-   "key": "sf:phyllis-paladin",
-   "display": "Phyllis Paladin",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Pittsburgh, PA",
-   "grade": "Tentative",
-   "evidence": [
-    "Their Facebook profile lists Pittsburgh, PA."
    ],
    "conf": 55
   },
@@ -1965,74 +1155,9 @@
    "conf": 55
   },
   {
-   "id": "pf-68158b07d7",
-   "key": "rileyymulligan",
-   "display": "Riley Mulligan",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-aade1ddc5a",
-   "key": "sf:robin-dipasquale",
-   "display": "Robin DiPasquale",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-357e8fec4a",
-   "key": "sf:rumbidzai-mushamba",
-   "display": "Rumbidzai Mushamba",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-f8bedd6730",
-   "key": "ct:ryleigh combs",
-   "display": "Ryleigh Combs",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-a1e8629094",
    "key": "sf:sara-badeau",
    "display": "Sara Badeau",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-1d9465c188",
-   "key": "sarahdarah34",
-   "display": "Sarah Dahar",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -2052,6 +1177,19 @@
    "grade": "Tentative",
    "evidence": [
     "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-9acc1965a8",
+   "key": "sarah.ellabb",
+   "display": "Sarah El-Labban",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "3 of 3 located known associates are in Potsdam."
    ],
    "conf": 55
   },
@@ -2090,7 +1228,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Potsdam is in Potsdam.",
+    "3 of 5 located known associates are in Potsdam."
    ],
    "conf": 55
   },
@@ -2121,35 +1260,9 @@
    "conf": 55
   },
   {
-   "id": "pf-30bbbf74c1",
-   "key": "sf:stephanie-reasoner",
-   "display": "Stephanie Reasoner",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-e941545484",
    "key": "sf:stephy-michele",
    "display": "Stephy Michele",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-bca4ed2b3a",
-   "key": "summerdorrphoto",
-   "display": "Summer Dorr",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -2169,19 +1282,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Potsdam: Baxter Brown, Haddon Brown."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-7bed67e95c",
-   "key": "ct:susan buckley",
-   "display": "Susan Buckley",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -2212,28 +1312,15 @@
    "conf": 55
   },
   {
-   "id": "pf-2aa4ff93e4",
-   "key": "teri_thebatemom",
-   "display": "Teri Bates",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "North Bangor, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record says they lives in North Bangor, NY."
-   ],
-   "conf": 82
-  },
-  {
-   "id": "pf-39afe1ba2a",
-   "key": "ct:timothy jenkins",
-   "display": "Timothy Jenkins",
+   "id": "pf-ce52c986ca",
+   "key": "taylor_rawson_",
+   "display": "Taylor Rawson",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "3 of 5 located known associates are in Potsdam."
    ],
    "conf": 55
   },
@@ -2263,848 +1350,200 @@
     "Family on file in Queens: Andrea Vetere."
    ],
    "conf": 55
-  },
-  {
-   "id": "pf-78291f969b",
-   "key": "sf:wesley-hissong",
-   "display": "Wesley Hissong",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-4b01799cae",
-   "key": "ariannamason91",
-   "display": "Arianna Mason",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Christian Fellowship Center: \"...Arianna Mason is part of New Testament Church and Christian Fellowship Center....\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-4e95f758c2",
-   "key": "fdb:b._ryan_dunphey",
-   "display": "B. Ryan Dunphey",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Christian Fellowship Center: \"...fter a 6 p.m. finish. Asked JD to drive Jameson to and from Christian Fellowship Center in Potsdam that day, leaving Madrid at 3:45 p.m. and return...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-a1a6728a2e",
-   "key": "ct:brad ingram",
-   "display": "Brad Ingram",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Rochester Regional Health",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Canton-Potsdam Hospital: \"...am sought replacement acoustic guitars in July 2024 for the Canton-Potsdam Hospital inpatient unit so the unit's own untunable guitars could be...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-ca93d6684e",
-   "key": "ct:brian patraw",
-   "display": "Brian Patraw",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Rochester Regional Health",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Canton-Potsdam Hospital: \"...(Village of Norwood minutes) \u2022 Brian Patraw was part of the Canton-Potsdam Hospital security shift-coverage pool in 2024, picking up day-shift...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-3b6ea0cb29",
-   "key": "ct:brian patraw",
-   "display": "Brian Patraw",
-   "field": "universities",
-   "field_label": "Organization",
-   "value": "SUNY Potsdam",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names SUNY Potsdam: \"...Brian Patraw works for the SUNY Potsdam University Police. \u2022 Named in historical Village of Norwood...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-0ed61a3343",
-   "key": "ct:danielle mcpherson",
-   "display": "Danielle McPherson",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Rochester Regional Health",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names CPH: \"...Danielle McPherson earned a Bachelor of Science degree in Biochemistry fr...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-c94df6f344",
-   "key": "ct:david tomford",
-   "display": "David Tomford",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Christian Fellowship Center: \"...d software for industrial equipment (WayUp) \u2022 Profile lists Christian Fellowship Center involvement and mentions Potsdam State (WayUp) \u2022 A public b...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-e04eda6b0c",
-   "key": "eli.e.thomas",
-   "display": "Eli Thomas",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "New Testament Church",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names New Testament Church: \"...affiliated with Christian Fellowship Center and is part of New Testament Church and Christian Fellowship Academy....\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-c5f4ee2f46",
-   "key": "ethan_j_bates",
-   "display": "Ethan Bates",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "U.S. Army",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army: \"...has served since 2023, and a Signal Officer in the New York Army National Guard. He completed pre-employment police training...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-5c75a2951c",
-   "key": "evan_dennis_",
-   "display": "Evan Dennis",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Christian Fellowship Center: \"...Evan Dennis works as a cook at Park Bros. and is part of Christian Fellowship Center....\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-5ef0927517",
-   "key": "gabepaladin",
-   "display": "Gabe Paladin",
-   "field": "universities",
-   "field_label": "Organization",
-   "value": "SUNY Potsdam",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names SUNY Potsdam: \"...Pastor at Christian Fellowship Center in Potsdam, New York (SUNY Potsdam \u00b7 YouTube) \u2022 Released the album Heart of Praise on October...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-beb773673e",
-   "key": "hannahllbanana",
-   "display": "Hannah McConnell",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "U.S. Army",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army: \"...Hannah McConnell serves in the Idaho Army National Guard and works as a Customer Service Associate wi...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-403fabd4cf",
-   "key": "sf:heather-foster-barrigar",
-   "display": "Heather Foster-Barrigar",
-   "field": "universities",
-   "field_label": "Organization",
-   "value": "SUNY Canton",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names SUNY Canton: \"...Plattsburgh Email exchange \u2014 Re: Agility Test Date Conflict Suny Canton Agility Test...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-a3955c13cc",
-   "key": "hopiek_09",
-   "display": "Hope Kilcollins",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Rochester Regional Health",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names St. Lawrence Health: \"...r Health and Fitness Promotion studies. She was named among St. Lawrence Health's nurse residents in December 2023. She is from Brasher Fal...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-e580851db5",
-   "key": "sf:jackie-card",
-   "display": "Jackie Card",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Christian Fellowship Center: \"...orrespondent on Card family and youth soccer threads in the Christian Fellowship Center orbit, 2016\u20132019 (Email, 2019) \u2022 Community Engagement Coord...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-255ae6fbc2",
-   "key": "jake_seguin",
-   "display": "Jake Seguin",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "U.S. Army",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army: \"...Jake Seguin serves as a recruiter with the Army National Guard. \u2022 Recruiter with the Army National Guard (F...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-070f705871",
-   "key": "jdmeyers_",
-   "display": "JD Meyers",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Army National Guard",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army National Guard: \"...ote Pilot Certificate since 2018. He serves in the New York Army National Guard as a Specialist (SPC) and 42A Human Resources Specialist wi...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-fcaf798e18",
-   "key": "sf:jennifer-gallagher-moore",
-   "display": "Jennifer Gallagher Moore",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Rochester Regional Health",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Canton-Potsdam Hospital: \"...s in Potsdam, New York, and is Director of Critical Care at Canton-Potsdam Hospital. She was educated at Utica University, SUNY Canton, and Pot...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-8a3dc879da",
-   "key": "jonah_black01",
-   "display": "Jonah Black",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "U.S. Coast Guard",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names U.S. Coast Guard: \"...n for four seasons (SUNY Canton) \u2022 Has volunteered with the U.S. Coast Guard Auxiliary since 2019 (SUNY Canton) \u2022 Named the highest-GPA...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-94fb451a8f",
-   "key": "sf:kathleen-delage",
-   "display": "Kathleen DeLage",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Army National Guard",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army National Guard: \"...S1 shop of HHC, 27th Infantry Brigade Combat Team (New York Army National Guard). Earlier in her career, as a specialist and human resource...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-bf7e178111",
-   "key": "sf:kayla-ervin",
-   "display": "Kayla Ervin",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Army National Guard",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army National Guard: \"...e S1 shop, HHC, 27th Infantry Brigade Combat Team (New York Army National Guard). Her SUTA was approved ahead of the October 2026 UTA. \u2022 SS...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-1f83710b17",
-   "key": "kaylemmccormick",
-   "display": "Kayle McCormick",
-   "field": "universities",
-   "field_label": "Organization",
-   "value": "SUNY Potsdam",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names SUNY Potsdam: \"...St. Lawrence Valley Renewal House (Facebook) \u2022 Educated at SUNY Potsdam and Ogdensburg Free Academy; hometown Ogdensburg, New York;...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-1b0ac8cde4",
-   "key": "kylepmoulton",
-   "display": "Kyle Moulton",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names CFC: \"...or Jenna Hulton and Jeremy Moulton, a ceremony performed by CFC elder Mike Tomford, the couple having met as St. Lawrence U...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-30c85b6508",
-   "key": "sf:lindsey-elaine",
-   "display": "Lindsey Elaine",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "New Testament Church",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names NTC: \"...Massachusetts. She was educated at the Graduate Center at Montclair State University, SUNY Potsdam, and Onondaga Community...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-434ef12b59",
-   "key": "lochlan_bower",
-   "display": "Lochlan Bower",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "U.S. Air Force",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names United States Air Force: \"...fety (Saint Regis Mohawk Tribal Police) \u2022 Crew Chief in the United States Air Force (Facebook) \u2022 Educated at Massena Central High School; lives...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-e6aac34171",
-   "key": "m.bsouth02",
-   "display": "Maddie Barton",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Christian Fellowship Center: \"...ie Barton is affiliated with Anastasia's Bakery, is part of Christian Fellowship Center and Christian Fellowship Academy, and works as a farmer. \u2022...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-534a514d78",
-   "key": "sf:mark-cornett",
-   "display": "Mark Cornett",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Clarkson University",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Clarkson University: \"...n Precise's YOUNiQ facial-recognition access agreement with Clarkson University's North Country Incubator in Potsdam (Biometric Update) Ema...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-83973c68af",
-   "key": "sf:murray",
-   "display": "Murray",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Army National Guard",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army National Guard: \"...tenant tracked in the 27th IBCT BDE S1 Shop group (New York Army National Guard). Murray\u2019s SUTA was approved ahead of the October 2026 UTA....\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-0aa88e73d9",
-   "key": "the.ndrx",
-   "display": "Noah Diederich",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Park Bros.",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Park Bros: \"...a Production Maintenance Engineer (LinkedIn) \u2022 He worked at Park Bros in 2021. (iMessage record) \u2022 He worked an airport job along...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-78533666b3",
-   "key": "philipwangerin",
-   "display": "Philip Wangerin",
-   "field": "churches",
-   "field_label": "Organization",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Christian Fellowship Center: \"...Philip Wangerin is part of Calvary Baptist and Christian Fellowship Center; he worked on the Precise Biometrics data-collection team i...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-362ccb0632",
-   "key": "sf:adepegba",
-   "display": "Ray Adepegba",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Army National Guard",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army National Guard: \"...ergeant of HHC, 27th Infantry Brigade Combat Team (New York Army National Guard). During the October 23\u201325, 2026 UTA Adepegba ran home-stat...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-8c9140d357",
-   "key": "sf:wisdom",
-   "display": "Rojanni Wisdom",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Army National Guard",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army National Guard: \"...officer in HHC, 27th Infantry Brigade Combat Team (New York Army National Guard), assisting 1SG Adepegba. During the October 23\u201325, 2026 UT...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-c5a771aa8a",
-   "key": "sf:ticia-cudjoe",
-   "display": "Ticia Cudjoe",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "Army National Guard",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Army National Guard: \"...S1 shop of HHC, 27th Infantry Brigade Combat Team (New York Army National Guard), based in Syracuse. She serves in the same S1 section as J...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-930b89b5d0",
-   "key": "sf:victoria lucas",
-   "display": "Victoria Lucas",
-   "field": "companies",
-   "field_label": "Organization",
-   "value": "U.S. Navy",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record names Navy: \"...vember 2024 (iMessage record) \u2022 Started a new job requiring navy-blue scrubs in November 2024 (iMessage record) Nursing (AAS...\" \u2014 not yet filed under their organizations."
-   ],
-   "conf": 74
-  },
-  {
-   "id": "pf-3e2446cf37",
-   "key": "anastasiasbakery",
-   "display": "Anastasia Cote",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Cooking",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...e is the owner of Anastasia's Bakery and a pastry chef at Lake Placid Lodge. She was educated at Paul Sm...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-5933561074",
-   "key": "sf:ann-parow-mackey",
-   "display": "Ann Parow Mackey",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Teaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...sales consultant with Norwex and a former English teacher at Ogdensburg Free Academy and South Jefferson Ce...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-dc83915955",
-   "key": "sf:annika-greco",
-   "display": "Annika Greco",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Teaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...ve Assistant at Youth for Christ Lebanon; Spanish teacher at Lexington Christian Academy; English and Spani...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-342fafa8cf",
-   "key": "benlevendusky",
-   "display": "Ben Levendusky",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Ben Levendusky is the Lead Pastor of Christian Fellowship Center in Madrid, New Yor...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-9799b4c748",
-   "key": "ct:brad ingram",
-   "display": "Brad Ingram",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Brad Ingram is the pastor of Calvary Baptist Church in Canton, New York. He...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-b4326dac0e",
-   "key": "briettapaladin",
-   "display": "Brietta Paladin",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...r in Potsdam, where her husband Daniel Paladin is pastor, and is a mother of eight who renovated a farmhou...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-dff7afd2ae",
-   "key": "darlenesinclair3643",
-   "display": "Darlene Sinclair",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...University of New York at Potsdam. \u2022 Wife of Lead Pastor Rick Sinclair of Christian Fellowship Center Pots...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-9a2f1eb934",
-   "key": "sf:david-irving",
-   "display": "David Perry",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Teaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...r at Plattsburgh Church of the Nazarene, and math teacher at Champlain Valley Educational Services, and he...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-74ffca46ee",
-   "key": "sf:ellen-m-miller",
-   "display": "Ellen M Miller",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Social Work",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...do (Facebook) Associates Degree In Human Services/Social Worker \u2014 North Country Community College-Malone, NY...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-5bd9db04bb",
-   "key": "sf:emily-elliott",
-   "display": "Emily Elliott",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Photography",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...ew York, her hometown, where she is the owner and photographer at Emily Murphy Photography and owner of Upstate...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-779abb2737",
-   "key": "catchandtrelease",
-   "display": "Eric Trelease",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...neonta, New York (Facebook) \u2022 Served as Associate Pastor at Christian Fellowship Center in Potsdam (Email,...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-64e6fdda39",
-   "key": "gabepaladin",
-   "display": "Gabe Paladin",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Gabe Paladin served as College Ministry Pastor at Christian Fellowship Center in Potsdam, New Yo...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-8878ae53d6",
-   "key": "sf:gregory-hurlbut",
-   "display": "Gregory Hurlbut",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Gregory Hurlbut is the Lead Pastor at New Testament Church of Massena in Massena, Ne...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-5ba1b3c540",
-   "key": "havenfern",
-   "display": "Haven Fern",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Teaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Gotham Photography; PK-12 General Music & Chorus Teacher at Edwards-Knox Central School; Music Teacher wit...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-61fca6b0f9",
-   "key": "sf:heather-ramsdell",
-   "display": "Heather Ramsdell",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Team Member at Living Hope Church and Children's Pastor at New Testament Church. She was educated at SUNY...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-274d38d202",
-   "key": "jessicahurlbut",
-   "display": "Jessica Hurlbut",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Baking",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...or of the book Unlimited Motherhood, published by Baker Books in 2024. (Baker Books) \u2022 Serves as a pastor...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-16d689a21b",
-   "key": "sf:jim-holt",
-   "display": "Jim Holt",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...er, and Developer at Holt Marketing Labs and Lead Pastor at New Hope Community Church, where he previously...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-dbb8cae1b3",
-   "key": "sf:joelle-kowalka",
-   "display": "Joelle Kowalka",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Photography",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...ant Editor at Samaritan's Purse; Videographer and Photographer at JoKo Media; Video Editor and VFX Compositor at...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-05004061c4",
-   "key": "joshua_white3",
-   "display": "Joshua White",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...from Brasher Falls, New York, serves as Community Pastor at New Testament Church in Potsdam and as Youth P...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-416ac91176",
-   "key": "josiahjmartin",
-   "display": "Josiah Martin",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Videography",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...people he knows or wants to do. (iMessage record) Videographer for Eliza Sullivan & Tyler Weller's wedding...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-580cce3600",
-   "key": "sf:judith-tomford",
-   "display": "Judith Tomford",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Teaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...(Facebook) \u2022 Academic Intervention Service (AIS) teacher at St. James School in Gouverneur since 2020, pro...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-1cf5802047",
-   "key": "ct:julia tomford",
-   "display": "Julia Tomford",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Photography",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...) \u2022 SUNY Potsdam attendee, 2018\u20132022 (LinkedIn) \u2022 Photographer and owner of Julia Kia Photography; educated at S...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-f665f1d5bd",
-   "key": "ct:justin cardinal",
-   "display": "Justin Cardinal",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Teaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...ervices, Server at Red Robin Gourmet Burgers, and Teacher at Mannahouse (Facebook) \u2022 Educated at Western Se...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-96f0f76c7f",
-   "key": "ct:justin cardinal",
-   "display": "Justin Cardinal",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Justin Cardinal is the pastor of the New Testament Church of Massena and co-ope...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-9bd258f2b5",
-   "key": "kdusky",
-   "display": "Keila Levendusky",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Keila Levendusky is listed under the pastor heading for Christian Fellowship Center in Madrid...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-5f7731c7cf",
-   "key": "walczykmark",
-   "display": "Mark C Walczyk",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Engineering",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...U.S. Army Reserve Captain with the 484th Forward Engineer Support Team (New York State Senate) \u2022 Educated a...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-96f721dd80",
-   "key": "sf:nanette-yervasi-holt",
-   "display": "Nanette Yervasi Holt",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Teaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...at Potsdam and Stony Brook University. \u2022 English teacher at Potsdam Senior High School; English Language A...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-5608cb492b",
-   "key": "richardsinclair",
-   "display": "Rick Sinclair",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Preaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...Rick Sinclair is senior pastor of the Christian Fellowship Center, a network of...\""
-   ],
-   "conf": 62
-  },
-  {
-   "id": "pf-c82fb75329",
-   "key": "sf:whitney-verbeck",
-   "display": "Whitney Verbeck",
-   "field": "specialty",
-   "field_label": "Skill",
-   "value": "Teaching",
-   "grade": "Tentative",
-   "evidence": [
-    "Their own record states the profession: \"...18, 2025 board report welcomes her as Elementary Teacher, AIS, at South Davis (Orchard Park Central School...\""
-   ],
-   "conf": 62
   }
  ],
  "auto_apply": [
   {
-   "key": "sf:antolik",
-   "display": "Samantha Antolik",
+   "key": "gabepaladin",
+   "display": "Gabe Paladin",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "conf": 91,
+   "id": "pf-e29d982743"
+  },
+  {
+   "key": "hopiek_09",
+   "display": "Hope Kilcollins",
+   "field": "groups",
+   "value": "Rochester Regional Health",
+   "conf": 100,
+   "id": "pf-08b2cabf8a"
+  },
+  {
+   "key": "jonah_black01",
+   "display": "Jonah Black",
+   "field": "groups",
+   "value": "U.S. Coast Guard",
+   "conf": 100,
+   "id": "pf-d37b762866"
+  },
+  {
+   "key": "kylepmoulton",
+   "display": "Kyle Moulton",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-e578843df4"
+  },
+  {
+   "key": "lochlan_bower",
+   "display": "Lochlan Bower",
+   "field": "groups",
+   "value": "U.S. Air Force",
+   "conf": 100,
+   "id": "pf-2989518c12"
+  },
+  {
+   "key": "ct:justin cardinal",
+   "display": "Justin Cardinal",
+   "field": "specialty",
+   "value": "Teaching",
+   "conf": 62,
+   "id": "pf-f665f1d5bd"
+  },
+  {
+   "key": "ct:brian patraw",
+   "display": "Brian Patraw",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "conf": 91,
+   "id": "pf-e651d9b988"
+  },
+  {
+   "key": "ct:brian patraw",
+   "display": "Brian Patraw",
+   "field": "groups",
+   "value": "Rochester Regional Health",
+   "conf": 100,
+   "id": "pf-86ccd42f53"
+  },
+  {
+   "key": "ct:danielle mcpherson",
+   "display": "Danielle McPherson",
+   "field": "groups",
+   "value": "Rochester Regional Health",
+   "conf": 100,
+   "id": "pf-f787895b56"
+  },
+  {
+   "key": "ct:brad ingram",
+   "display": "Brad Ingram",
+   "field": "groups",
+   "value": "Rochester Regional Health",
+   "conf": 100,
+   "id": "pf-4f86e8b79c"
+  },
+  {
+   "key": "ct:david tomford",
+   "display": "David Tomford",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-6bfed775d2"
+  },
+  {
+   "key": "fdb:b._ryan_dunphey",
+   "display": "B. Ryan Dunphey",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-846bc1d334"
+  },
+  {
+   "key": "jdmeyers_",
+   "display": "JD Meyers",
    "field": "groups",
    "value": "Army National Guard",
    "conf": 100,
-   "id": "pf-eb7209574f"
+   "id": "pf-1b594f8916"
+  },
+  {
+   "key": "sf:jennifer-gallagher-moore",
+   "display": "Jennifer Gallagher Moore",
+   "field": "groups",
+   "value": "Rochester Regional Health",
+   "conf": 100,
+   "id": "pf-28003409e6"
+  },
+  {
+   "key": "sf:lindsey-elaine",
+   "display": "Lindsey Elaine",
+   "field": "groups",
+   "value": "New Testament Church",
+   "conf": 100,
+   "id": "pf-b1827ed7de"
+  },
+  {
+   "key": "sf:victoria lucas",
+   "display": "Victoria Lucas",
+   "field": "groups",
+   "value": "U.S. Navy",
+   "conf": 100,
+   "id": "pf-7e5e8f495b"
+  },
+  {
+   "key": "sf:jdmeyers_",
+   "display": "Jdmeyers",
+   "field": "groups",
+   "value": "Army National Guard",
+   "conf": 100,
+   "id": "pf-05585543fe"
+  },
+  {
+   "key": "sf:ticia-cudjoe",
+   "display": "Ticia Cudjoe",
+   "field": "groups",
+   "value": "Army National Guard",
+   "conf": 100,
+   "id": "pf-9dd9bad6d7"
+  },
+  {
+   "key": "sf:kathleen-delage",
+   "display": "Kathleen DeLage",
+   "field": "groups",
+   "value": "Army National Guard",
+   "conf": 100,
+   "id": "pf-3e3ef5b30b"
+  },
+  {
+   "key": "sf:kayla-ervin",
+   "display": "Kayla Ervin",
+   "field": "groups",
+   "value": "Army National Guard",
+   "conf": 100,
+   "id": "pf-573d9f129a"
+  },
+  {
+   "key": "sf:wisdom",
+   "display": "Rojanni Wisdom",
+   "field": "groups",
+   "value": "Army National Guard",
+   "conf": 100,
+   "id": "pf-380717d9b4"
+  },
+  {
+   "key": "sf:adepegba",
+   "display": "Ray Adepegba",
+   "field": "groups",
+   "value": "Army National Guard",
+   "conf": 100,
+   "id": "pf-aef324bb3a"
+  },
+  {
+   "key": "sf:murray",
+   "display": "Murray",
+   "field": "groups",
+   "value": "Army National Guard",
+   "conf": 100,
+   "id": "pf-76ead40583"
+  },
+  {
+   "key": "sf:jackie-card",
+   "display": "Jackie Card",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-0d9d8ac760"
   },
   {
    "key": "sf:jai-dane",
