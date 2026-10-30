@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 258,
+ "count": 263,
  "suggestions": [
   {
    "id": "pf-0b36d81e7f",
@@ -11,7 +11,35 @@
    "value": "Potsdam, NY",
    "grade": "Probable",
    "evidence": [
-    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello.",
+    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello, Molly Criscitello.",
+    "4 of 5 located known associates are in Potsdam."
+   ],
+   "conf": 72
+  },
+  {
+   "id": "pf-ad99375d1a",
+   "key": "ct:colby criscitello",
+   "display": "Colby Criscitello",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Probable",
+   "evidence": [
+    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello, Molly Criscitello.",
+    "3 of 4 located known associates are in Potsdam."
+   ],
+   "conf": 72
+  },
+  {
+   "id": "pf-cd53fbe79c",
+   "key": "ct:emily criscitello",
+   "display": "Emily Criscitello",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Probable",
+   "evidence": [
+    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello, Molly Criscitello.",
     "3 of 4 located known associates are in Potsdam."
    ],
    "conf": 72
@@ -25,8 +53,8 @@
    "value": "Potsdam, NY",
    "grade": "Probable",
    "evidence": [
-    "Clarkson University is in Potsdam.",
     "SUNY Potsdam is in Potsdam.",
+    "Clarkson University is in Potsdam.",
     "Family on file in Potsdam: Jennifer Trelease."
    ],
    "conf": 72
@@ -40,7 +68,21 @@
    "value": "Potsdam, NY",
    "grade": "Probable",
    "evidence": [
-    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello.",
+    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello, Molly Criscitello.",
+    "4 of 6 located known associates are in Potsdam."
+   ],
+   "conf": 72
+  },
+  {
+   "id": "pf-b04c36ccef",
+   "key": "criscitello_riley",
+   "display": "Riley Criscitello",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Probable",
+   "evidence": [
+    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello, Molly Criscitello.",
     "3 of 5 located known associates are in Potsdam."
    ],
    "conf": 72
@@ -72,15 +114,15 @@
    "conf": 55
   },
   {
-   "id": "pf-23d8fd3bd0",
+   "id": "pf-43c405c7d1",
    "key": "sf:acacia-white",
    "display": "Acacia White",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Massena, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Massena Hospital is in Massena."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -163,15 +205,15 @@
    "conf": 55
   },
   {
-   "id": "pf-0dfcd4f83f",
+   "id": "pf-f1e78f8631",
    "key": "sf:ashleigh-graveline",
    "display": "Ashleigh Graveline",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -503,19 +545,6 @@
    "conf": 55
   },
   {
-   "id": "pf-ad99375d1a",
-   "key": "ct:colby criscitello",
-   "display": "Colby Criscitello",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-757f590ac1",
    "key": "sf:conor-miller-lynch",
    "display": "Conor Miller-Lynch",
@@ -646,15 +675,15 @@
    "conf": 55
   },
   {
-   "id": "pf-74b54adaa1",
+   "id": "pf-0b96d86b92",
    "key": "david.tulloch.10",
    "display": "David Tulloch",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -746,6 +775,19 @@
    "grade": "Tentative",
    "evidence": [
     "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-8c03e1b16f",
+   "key": "sf:donovan-patraw",
+   "display": "Donovan Patraw",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -870,19 +912,6 @@
    "conf": 55
   },
   {
-   "id": "pf-cd53fbe79c",
-   "key": "ct:emily criscitello",
-   "display": "Emily Criscitello",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-4afd82fd14",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
@@ -930,8 +959,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam.",
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Potsdam is in Potsdam.",
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
@@ -1205,6 +1234,19 @@
    "grade": "Tentative",
    "evidence": [
     "Potsdam Central School is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-acd3d52a54",
+   "key": "sf:jackie-card",
+   "display": "Jackie Card",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -1855,6 +1897,19 @@
    "conf": 55
   },
   {
+   "id": "pf-27b2c4708b",
+   "key": "sf:matthew-merria",
+   "display": "Matthew Merria",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Canton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Canton is in Canton."
+   ],
+   "conf": 55
+  },
+  {
    "id": "pf-2c0f111019",
    "key": "ct:matthew tomford",
    "display": "Matthew Tomford",
@@ -1960,15 +2015,15 @@
    "conf": 55
   },
   {
-   "id": "pf-3937cd47ee",
+   "id": "pf-5f8e0acd40",
    "key": "m.not.a.lobster",
    "display": "Michelle Johnston",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -2021,6 +2076,19 @@
    "grade": "Tentative",
    "evidence": [
     "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-c37f77eeea",
+   "key": "sf:nicholas-matott",
+   "display": "Nicholas Matott",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Canton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -2181,15 +2249,15 @@
    "conf": 55
   },
   {
-   "id": "pf-b93e1fce44",
+   "id": "pf-2c553f2d2e",
    "key": "sf:richard-gilchrist",
    "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -2216,19 +2284,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Canton: Jamie Sinclair, Merrick Sinclair."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b04c36ccef",
-   "key": "criscitello_riley",
-   "display": "Riley Criscitello",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Potsdam: Eric Criscitello, Lisa Criscitello."
    ],
    "conf": 55
   },
@@ -2399,6 +2454,19 @@
    "grade": "Tentative",
    "evidence": [
     "SUNY Potsdam is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-30bbbf74c1",
+   "key": "sf:stephanie-reasoner",
+   "display": "Stephanie Reasoner",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Canton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -3381,372 +3449,12 @@
  ],
  "auto_apply": [
   {
-   "key": "alexfornyassembly_",
-   "display": "Alex Hammond",
-   "field": "companies",
-   "value": "U.S. Army",
-   "conf": 92,
-   "id": "pf-49ac11c98f"
-  },
-  {
-   "key": "alexfornyassembly_",
-   "display": "Alex Hammond",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-6bbf9955d5"
-  },
-  {
-   "key": "catchandtrelease",
-   "display": "Eric Trelease",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-cad6ae3a99"
-  },
-  {
-   "key": "catchandtrelease",
-   "display": "Eric Trelease",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-2f1cc5244b"
-  },
-  {
-   "key": "liz.zehr",
-   "display": "Elizabeth Kelly Zehr",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-24e976a207"
-  },
-  {
-   "key": "sf:alan-k-daniels",
-   "display": "Alan K Daniels",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-68c1aefc0b"
-  },
-  {
-   "key": "sf:benjamin-emmanuel",
-   "display": "Benjamin Emmanuel",
-   "field": "specialty",
-   "value": "Social Work",
-   "conf": 90,
-   "id": "pf-e6540ee220"
-  },
-  {
-   "key": "sf:christine-johnson",
-   "display": "Christine Johnson",
-   "field": "specialty",
-   "value": "Registered Nurse",
-   "conf": 90,
-   "id": "pf-2445c136df"
-  },
-  {
-   "key": "sf:christopher-towler",
-   "display": "Christopher Towler",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-31365536f2"
-  },
-  {
-   "key": "sf:cj-tomford",
-   "display": "CJ Tomford",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 90,
-   "id": "pf-8b1dcd50d5"
-  },
-  {
-   "key": "sf:cj-tomford",
-   "display": "CJ Tomford",
-   "field": "specialty",
-   "value": "Software Development",
-   "conf": 90,
-   "id": "pf-d6ceafbbdf"
-  },
-  {
-   "key": "sf:cody-benham",
-   "display": "Cody Benham",
-   "field": "location_on_file",
-   "value": "Watertown, NY",
-   "conf": 95,
-   "id": "pf-86c148b451"
-  },
-  {
-   "key": "sf:courtney-cabaniss",
-   "display": "Courtney Cabaniss",
-   "field": "specialty",
-   "value": "Certified Nurse Aide",
-   "conf": 90,
-   "id": "pf-dec909bf65"
-  },
-  {
-   "key": "sf:dale-fournier",
-   "display": "Dale Fournier",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-cd5cbb9e9a"
-  },
-  {
-   "key": "sf:david-disalvo",
-   "display": "David DiSalvo",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-4b12d30c7b"
-  },
-  {
-   "key": "sf:david-irving",
-   "display": "David Perry",
-   "field": "specialty",
-   "value": "Preaching",
-   "conf": 90,
-   "id": "pf-2cdf1a6ac7"
-  },
-  {
-   "key": "sf:devon-sutton",
-   "display": "Devon Sutton",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-baa53378ab"
-  },
-  {
-   "key": "sf:dianalyn-martin",
-   "display": "Dianalyn Martin",
-   "field": "location_on_file",
-   "value": "Farmingville, NY",
-   "conf": 95,
-   "id": "pf-2a9eab0056"
-  },
-  {
-   "key": "sf:donald-colbert",
-   "display": "Donald Colbert",
-   "field": "location_on_file",
-   "value": "Norwood, NY",
-   "conf": 95,
-   "id": "pf-c943735497"
-  },
-  {
-   "key": "sf:ellen-m-miller",
-   "display": "Ellen M Miller",
-   "field": "specialty",
-   "value": "Certified Nurse Aide",
-   "conf": 90,
-   "id": "pf-8708fe235b"
-  },
-  {
-   "key": "sf:elliot-martin",
-   "display": "Elliot Martin",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 90,
-   "id": "pf-6203750b27"
-  },
-  {
-   "key": "sf:emily-kendall",
-   "display": "Emily Kendall",
-   "field": "specialty",
-   "value": "Registered Nurse",
-   "conf": 90,
-   "id": "pf-1deb5c0660"
-  },
-  {
-   "key": "sf:emma-kormanyos",
-   "display": "Emma Kormanyos",
-   "field": "location_on_file",
-   "value": "Massena, NY",
-   "conf": 95,
-   "id": "pf-fa513c50d9"
-  },
-  {
-   "key": "sf:ethan-hackett",
-   "display": "Ethan Hackett",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 90,
-   "id": "pf-e1d1ba5a75"
-  },
-  {
-   "key": "sf:ethan-thompson",
-   "display": "Ethan Thompson",
-   "field": "location_on_file",
-   "value": "Canton, NY",
-   "conf": 95,
-   "id": "pf-9a67005aa4"
-  },
-  {
-   "key": "sf:frederick-laud-amoah-darko-jr",
-   "display": "Frederick Laud Amoah-Darko Jr.",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 90,
-   "id": "pf-503f95ea4f"
-  },
-  {
-   "key": "sf:g-c-jaggs",
-   "display": "G.C. Jaggs",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-ad42a6fd25"
-  },
-  {
-   "key": "sf:gavin-matthews",
-   "display": "Gavin Matthews",
-   "field": "location_on_file",
-   "value": "Canton, NY",
-   "conf": 95,
-   "id": "pf-db32ea4acb"
-  },
-  {
-   "key": "sf:grace cicchinelli",
-   "display": "Grace Cicchinelli",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 90,
-   "id": "pf-288e5f9683"
-  },
-  {
-   "key": "sf:grace-lapointe",
-   "display": "Grace LaPointe",
-   "field": "location_on_file",
-   "value": "Salem, MA",
-   "conf": 95,
-   "id": "pf-190b9b4ee5"
-  },
-  {
-   "key": "sf:heather-marie",
-   "display": "Heather Marie",
-   "field": "location_on_file",
-   "value": "Massena, NY",
-   "conf": 95,
-   "id": "pf-762c32a0a9"
-  },
-  {
-   "key": "sf:isreal-tyler",
-   "display": "Isreal Tyler",
-   "field": "location_on_file",
-   "value": "Canton, NY",
-   "conf": 95,
-   "id": "pf-48a58c058a"
-  },
-  {
-   "key": "sf:jacob-bellucci",
-   "display": "Jacob Bellucci",
-   "field": "location_on_file",
-   "value": "Aurora, IL",
-   "conf": 95,
-   "id": "pf-aaf716998f"
-  },
-  {
-   "key": "sf:jacob-bellucci",
-   "display": "Jacob Bellucci",
-   "field": "specialty",
-   "value": "Emergency Medical Technician",
-   "conf": 90,
-   "id": "pf-0ba1a81479"
-  },
-  {
-   "key": "sf:jaime-bicknell",
-   "display": "Jaime Bicknell",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-ec8852d8f8"
-  },
-  {
-   "key": "sf:jamal-moses",
-   "display": "Jamal Moses",
-   "field": "location_on_file",
-   "value": "Washington, DC",
-   "conf": 95,
-   "id": "pf-f7dd80f15a"
-  },
-  {
    "key": "sf:james-gilchrist",
    "display": "James Gilchrist",
    "field": "specialty",
    "value": "Engineering",
    "conf": 90,
    "id": "pf-5f47a7d2a0"
-  },
-  {
-   "key": "sf:james-gilchrist",
-   "display": "James Gilchrist",
-   "field": "specialty",
-   "value": "Software Development",
-   "conf": 90,
-   "id": "pf-146cac3608"
-  },
-  {
-   "key": "sf:james-harmer",
-   "display": "James Harmer",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 90,
-   "id": "pf-36308f36e7"
-  },
-  {
-   "key": "jdmeyers_",
-   "display": "JD Meyers",
-   "field": "groups",
-   "value": "FAMILY",
-   "conf": 99,
-   "id": "pf-f2727509a6"
-  },
-  {
-   "key": "sf:jennifer-kevin-blanchard",
-   "display": "Jennifer-Kevin Blanchard",
-   "field": "location_on_file",
-   "value": "Potsdam, NY",
-   "conf": 95,
-   "id": "pf-207492b82b"
-  },
-  {
-   "key": "sf:jillian-chapman",
-   "display": "Jillian Chapman",
-   "field": "location_on_file",
-   "value": "Grand Junction, CO",
-   "conf": 95,
-   "id": "pf-27b26d44fe"
-  },
-  {
-   "key": "sf:joe-n-lydia-moore",
-   "display": "Joe Moore",
-   "field": "location_on_file",
-   "value": "Albany, NY",
-   "conf": 95,
-   "id": "pf-b96a0ae619"
-  },
-  {
-   "key": "sf:josiah-tabolt",
-   "display": "Josiah Tabolt",
-   "field": "location_on_file",
-   "value": "Lyons Falls, NY",
-   "conf": 95,
-   "id": "pf-8d68541786"
-  },
-  {
-   "key": "sf:judson-foote",
-   "display": "Judson Foote",
-   "field": "specialty",
-   "value": "Registered Nurse",
-   "conf": 90,
-   "id": "pf-b776b9cd25"
-  },
-  {
-   "key": "sf:kara-ferguson",
-   "display": "Kara Ferguson",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-c88e57ee58"
   },
   {
    "key": "sf:karen-hoover",
@@ -3757,36 +3465,12 @@
    "id": "pf-630d45ba44"
   },
   {
-   "key": "sf:katelynne-kulp",
-   "display": "Katelynne Kulp",
-   "field": "specialty",
-   "value": "Registered Nurse",
-   "conf": 90,
-   "id": "pf-4b46a5cea9"
-  },
-  {
-   "key": "sf:kelsey-wilbur",
-   "display": "Kelsey Wilbur",
-   "field": "location_on_file",
-   "value": "Binghamton, NY",
-   "conf": 95,
-   "id": "pf-f62b4de47c"
-  },
-  {
    "key": "sf:kelsey-wilbur",
    "display": "Kelsey Wilbur",
    "field": "specialty",
    "value": "Teaching",
    "conf": 90,
    "id": "pf-3de80310fa"
-  },
-  {
-   "key": "sf:kevin-lynch",
-   "display": "Kevin Lynch",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-3fe3c253b8"
   },
   {
    "key": "sf:krysten-emily",
@@ -3797,28 +3481,12 @@
    "id": "pf-681514d553"
   },
   {
-   "key": "sf:krysten-emily",
-   "display": "Krysten Emily",
-   "field": "specialty",
-   "value": "Certified Nurse Aide",
-   "conf": 90,
-   "id": "pf-2446705801"
-  },
-  {
    "key": "sf:kwadwo-appiah-kubi",
    "display": "Kwadwo Appiah-Kubi",
    "field": "specialty",
    "value": "Teaching",
    "conf": 90,
    "id": "pf-a1fb4eb01c"
-  },
-  {
-   "key": "sf:lisa-arquette",
-   "display": "Lisa Arquette",
-   "field": "specialty",
-   "value": "Real Estate",
-   "conf": 90,
-   "id": "pf-270af0fdd0"
   },
   {
    "key": "sf:maddie-morgan",
@@ -3829,36 +3497,12 @@
    "id": "pf-787bf8a2d3"
   },
   {
-   "key": "sf:maddy-cusworth",
-   "display": "Maddy Cusworth",
-   "field": "location_on_file",
-   "value": "Massena, NY",
-   "conf": 95,
-   "id": "pf-cb5eedb4e7"
-  },
-  {
    "key": "sf:matthew-cote",
    "display": "Matthew Cote",
    "field": "specialty",
    "value": "Counseling",
    "conf": 90,
    "id": "pf-2a990f48ad"
-  },
-  {
-   "key": "sf:molly-criscitello",
-   "display": "Molly Criscitello",
-   "field": "location_on_file",
-   "value": "Potsdam, NY",
-   "conf": 95,
-   "id": "pf-eef578b136"
-  },
-  {
-   "key": "sf:morgan-williams",
-   "display": "Morgan Williams",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-1a08a5bfac"
   },
   {
    "key": "sf:natalie-wilson",
@@ -3869,84 +3513,12 @@
    "id": "pf-e2de3c2ff3"
   },
   {
-   "key": "sf:nicole-lee-haverstock",
-   "display": "Nicole Lee Haverstock",
-   "field": "specialty",
-   "value": "Certified Nurse Aide",
-   "conf": 90,
-   "id": "pf-634ac56b01"
-  },
-  {
-   "key": "sf:noah-michael",
-   "display": "Noah Michael",
-   "field": "location_on_file",
-   "value": "Lake Placid, NY",
-   "conf": 95,
-   "id": "pf-e24451b385"
-  },
-  {
-   "key": "sf:owen-kennedy",
-   "display": "Owen Kennedy",
-   "field": "specialty",
-   "value": "Real Estate",
-   "conf": 90,
-   "id": "pf-a7836f4cd2"
-  },
-  {
    "key": "sf:patrick-tombs",
    "display": "Patrick Tombs",
    "field": "specialty",
    "value": "Cooking",
    "conf": 90,
    "id": "pf-35888a31b9"
-  },
-  {
-   "key": "sf:pete-molinero",
-   "display": "Pete Molinero",
-   "field": "specialty",
-   "value": "Cooking",
-   "conf": 90,
-   "id": "pf-fc322268aa"
-  },
-  {
-   "key": "sf:peter-michael",
-   "display": "Peter Michael",
-   "field": "location_on_file",
-   "value": "Madrid, NY",
-   "conf": 95,
-   "id": "pf-16e5d04e2f"
-  },
-  {
-   "key": "sf:rachael-marshall",
-   "display": "Rachael Marshall",
-   "field": "location_on_file",
-   "value": "Taylorsville, KY",
-   "conf": 95,
-   "id": "pf-c7a6395997"
-  },
-  {
-   "key": "sf:renee-dale",
-   "display": "Renee Dale",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-10ba9ad896"
-  },
-  {
-   "key": "sf:renee-lia-de-voe",
-   "display": "Renee Lia De Voe",
-   "field": "location_on_file",
-   "value": "Kansas City, MO",
-   "conf": 95,
-   "id": "pf-0e3a386519"
-  },
-  {
-   "key": "sf:rob-larrabee",
-   "display": "Rob Larrabee",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-466dc22f07"
   },
   {
    "key": "sf:salako-gbenga-oladoyin",
@@ -3965,44 +3537,12 @@
    "id": "pf-74b5123012"
   },
   {
-   "key": "sf:thomas-quant",
-   "display": "Thomas Quant",
-   "field": "location_on_file",
-   "value": "Norwood, NY",
-   "conf": 95,
-   "id": "pf-0a07556de0"
-  },
-  {
-   "key": "sf:tom-allan-green",
-   "display": "Tom Allan Green",
-   "field": "location_on_file",
-   "value": "Portland, OR",
-   "conf": 95,
-   "id": "pf-62b163e120"
-  },
-  {
-   "key": "sf:toni-squires",
-   "display": "Toni Squires",
-   "field": "location_on_file",
-   "value": "Potsdam, NY",
-   "conf": 95,
-   "id": "pf-139c9e0c27"
-  },
-  {
    "key": "sf:tori-brunet",
    "display": "Tori Brunet",
    "field": "specialty",
    "value": "Teaching",
    "conf": 90,
    "id": "pf-79b8c5c4b1"
-  },
-  {
-   "key": "sf:tracy-lynn-stowe",
-   "display": "Tracy Lynn Stowe",
-   "field": "specialty",
-   "value": "Registered Nurse",
-   "conf": 90,
-   "id": "pf-226bfbcc8b"
   },
   {
    "key": "sf:ticia-cudjoe",
@@ -4015,18 +3555,18 @@
   {
    "key": "sf:ryan-blount",
    "display": "Ryan Blount",
-   "field": "companies",
+   "field": "groups",
    "value": "Army National Guard",
-   "conf": 92,
-   "id": "pf-a318c1a849"
+   "conf": 100,
+   "id": "pf-a02e3b072e"
   },
   {
    "key": "sf:kyle-davis",
    "display": "Kyle Davis",
-   "field": "companies",
+   "field": "groups",
    "value": "Army National Guard",
-   "conf": 92,
-   "id": "pf-32dd1f21a5"
+   "conf": 100,
+   "id": "pf-627aa1d81d"
   },
   {
    "key": "sf:antolik",
@@ -4039,50 +3579,42 @@
   {
    "key": "sf:zalika-ajamu",
    "display": "Zalika Ajamu",
-   "field": "companies",
+   "field": "groups",
    "value": "Army National Guard",
-   "conf": 92,
-   "id": "pf-30a11f58b3"
+   "conf": 100,
+   "id": "pf-01d27a4c7a"
   },
   {
    "key": "sf:christopher-pagan",
    "display": "Christopher Pagan",
-   "field": "companies",
+   "field": "groups",
    "value": "Army National Guard",
-   "conf": 92,
-   "id": "pf-ec7cb924da"
+   "conf": 100,
+   "id": "pf-ca7b9d69e7"
   },
   {
    "key": "sf:ian-wilson",
    "display": "Ian Wilson",
-   "field": "companies",
+   "field": "groups",
    "value": "Army National Guard",
-   "conf": 92,
-   "id": "pf-6146bb325f"
-  },
-  {
-   "key": "sf:jackie-card",
-   "display": "Jackie Card",
-   "field": "universities",
-   "value": "SUNY Potsdam",
-   "conf": 92,
-   "id": "pf-ec9d9c4b81"
+   "conf": 100,
+   "id": "pf-9ad5694a00"
   },
   {
    "key": "sf:sarah-diederich",
    "display": "Sarah Diederich",
-   "field": "churches",
+   "field": "groups",
    "value": "Christian Fellowship Center",
-   "conf": 92,
-   "id": "pf-db2a3872f0"
+   "conf": 100,
+   "id": "pf-b6db5f50d8"
   },
   {
    "key": "sf:julie-cardinal",
    "display": "Julie Cardinal",
-   "field": "churches",
+   "field": "groups",
    "value": "New Testament Church",
-   "conf": 92,
-   "id": "pf-8c2c8ec744"
+   "conf": 100,
+   "id": "pf-7a04faaf84"
   },
   {
    "key": "sf:jai-dane",
@@ -4095,18 +3627,10 @@
   {
    "key": "sf:stephen-blackwood-smith",
    "display": "Stephen Blackwood Smith",
-   "field": "churches",
+   "field": "groups",
    "value": "Christian Fellowship Center",
-   "conf": 92,
-   "id": "pf-318ac4710b"
-  },
-  {
-   "key": "sf:nicholas-matott",
-   "display": "Nicholas Matott",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-e44d5c8505"
+   "conf": 100,
+   "id": "pf-dbb2187faa"
   },
   {
    "key": "sf:donovan-patraw",
@@ -4117,44 +3641,12 @@
    "id": "pf-87e57b7cfd"
   },
   {
-   "key": "sf:donovan-patraw",
-   "display": "Donovan Patraw",
-   "field": "universities",
-   "value": "SUNY Potsdam",
-   "conf": 92,
-   "id": "pf-de51ed0af1"
-  },
-  {
-   "key": "sf:donovan-patraw",
-   "display": "Donovan Patraw",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-2fc9caf409"
-  },
-  {
-   "key": "sf:stephanie-reasoner",
-   "display": "Stephanie Reasoner",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-7bebc5b626"
-  },
-  {
-   "key": "sf:matthew-merria",
-   "display": "Matthew Merria",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-0c8cd1afb8"
-  },
-  {
    "key": "sf:zachary-dean",
    "display": "Zachary Dean",
-   "field": "companies",
+   "field": "groups",
    "value": "Army National Guard",
-   "conf": 92,
-   "id": "pf-09a10ecb58"
+   "conf": 100,
+   "id": "pf-a2fd2e74b6"
   }
  ]
 }
