@@ -9841,6 +9841,7 @@ function audPaintModeBar(){
   var A = S.audit; if(!A) return;
   var m = audMode();
   if(m === 'lima'){ var lp = $('#lcpend'); if(lp) lp.textContent = lcPendingCount(); }
+  if(m === 'prefill'){ var mb = $('#audmodebar'); if(mb) mb.innerHTML = audModeBarHTML(); }
 }
 
 /* ============================================================
@@ -10550,6 +10551,7 @@ function pfDecide(id, decision){
     ? 'Filed ' + sg.field_label + ' for ' + (sg.display || '') + ': ' + sg.value + '. It saves through the Save Pool.'
     : 'Denied for ' + (sg.display || '') + '. It will not be proposed again.', { undo:true });
   pfRender();
+  audPaintModeBar();
 }
 function pfRows(){
   var rows = (PF.suggestions || []).map(function(sg){ return { sg:sg, st:pfStatus(sg) }; });
