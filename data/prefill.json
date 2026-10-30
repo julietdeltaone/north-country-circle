@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 103,
+ "count": 102,
  "suggestions": [
   {
    "id": "pf-81750b5f9d",
@@ -277,15 +277,15 @@
    "conf": 55
   },
   {
-   "id": "pf-74b54adaa1",
+   "id": "pf-0b96d86b92",
    "key": "david.tulloch.10",
    "display": "David Tulloch",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -312,6 +312,19 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Canton: Amber Ingram."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-65c3323dbe",
+   "key": "sf:donovan-patraw",
+   "display": "Donovan Patraw",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Canton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -399,19 +412,6 @@
    "id": "pf-4afd82fd14",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b9bc27d8bc",
-   "key": "emijent",
-   "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -995,19 +995,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Canton: Aaron Daniels."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-5f8e0acd40",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
