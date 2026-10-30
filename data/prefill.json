@@ -3901,8 +3901,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Potsdam Central School is in Potsdam.",
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Potsdam is in Potsdam.",
+    "Potsdam Central School is in Potsdam."
    ]
   },
   {
@@ -4479,15 +4479,15 @@
    ]
   },
   {
-   "id": "pf-be4913ccf6",
+   "id": "pf-b9bc27d8bc",
    "key": "emijent",
    "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "SUNY Potsdam is in Potsdam."
    ]
   },
   {
