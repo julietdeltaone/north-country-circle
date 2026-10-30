@@ -3507,6 +3507,7 @@ html[data-mode="light"] .rcb-unsupported{--rcband:#b91c1c}
 .rc-filetext{margin-top:8px;font-size:12.5px;line-height:1.5;color:var(--mut);border-left:3px solid var(--rcband);padding-left:9px}
 .rc-filetext span{font-weight:700;color:var(--txt)}
 .rc-src{font-size:13px}
+.rc-nosrc{display:inline-block;margin-left:6px;padding:1px 7px;border:1px dashed var(--line2);border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--dim);vertical-align:1px}
 .rc-anchors{margin:7px 0 0;padding-left:16px;color:var(--mut);font-size:12.5px;line-height:1.5}
 .rc-gate>span{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mut)}
 .rc-gate p{margin-top:4px;font-size:12.5px;line-height:1.55;color:var(--mut)}
