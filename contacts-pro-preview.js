@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.44.1';
+var APP_VERSION = '3.45.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1916,22 +1916,18 @@ function askEditKey(){ try{ poolClose(); }catch(x){}
 
 /* ---------- global chrome ---------- */
 var NAV = [
-  { k:'home',    l:'Home',    ic:'home' },
-  { k:'people',  l:'People',  ic:'people' },
-  { k:'audit',   l:'Audit',   ic:'target' },
-  { k:'daily',   l:'Live Records', ic:'sparkle' },
-  { k:'calendar', l:'Calendar', ic:'calendar' },
-  { k:'council', l:'Council', ic:'award' },
-  { k:'lists',   l:'Master List', ic:'file' },
-  { k:'photos',  l:'Photos', ic:'camera' },
-  { k:'network', l:'Network', ic:'network' },
-  { k:'family',  l:'Family',  ic:'tree' },
-  { k:'groups',  l:'Groups',  ic:'groups' },
-  { k:'sandbox', l:'Sandbox', ic:'shield' }
+  { k:'home',    l:'Overview',   ic:'home' },
+  { k:'people',  l:'Directory',  ic:'people' },
+  { k:'reach',   l:'Reach out',  ic:'spark' },
+  { k:'decide',  l:'Decide',     ic:'check' },
+  { k:'audit',   l:'Record',     ic:'target' },
+  { k:'sandbox', l:'Fix',        ic:'shield' }
 ];
 function activeNav(){
   var n = S.route.name;
   if(n === 'profile'){ var f = S.ctx && S.ctx.from; return NAV.some(function(x){ return x.k === f; }) ? f : 'people'; }
+  if(n === 'daily' || n === 'council' || n === 'photos') return 'decide';
+  if(n === 'network' || n === 'family' || n === 'groups' || n === 'lists' || n === 'calendar') return 'people';
   return n;
 }
 function renderChrome(){
@@ -2108,7 +2104,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox','council','lists','calendar'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox','council','lists','calendar','reach','decide'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -2139,7 +2135,7 @@ function histLabelFor(hash){
   var n = seg[0] || 'home';
   if(n === 'p'){ var di = diFromId(seg[1]); return di != null && D && D.directory[di] ? dispName(D.directory[di]) : 'Profile'; }
   if(n === 'groups') return seg[2] || 'Groups';
-  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings' }[n] || 'Back';
+  return { home:'Overview', people:'Directory', reach:'Reach out', decide:'Decide', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', calendar:'Calendar', audit:'Record', council:'Council', lists:'Master List', sandbox:'Fix', settings:'Settings' }[n] || 'Back';
 }
 function navScroll(){ var v = $('#view'); return v ? v.scrollTop : 0; }
 function navTrack(){
@@ -2322,6 +2318,8 @@ function render(){
   try{
     renderChrome();
     if(n === 'home') viewHome(v);
+    else if(n === 'reach') viewReach(v);
+    else if(n === 'decide') viewDecide(v);
     else if(n === 'people') viewPeople(v);
     else if(n === 'profile') viewProfile(v);
     else if(n === 'network') viewNetwork(v);
@@ -6606,56 +6604,178 @@ function hmNetStrip(dd){
     '</div></div></section>';
 }
 function viewHome(v){
-  phLoad(); dtLoad(); chLoad();
+  /* V3.45.0 (JD 2026-10-30): the Overview — a full-screen dashboard of
+     the five jobs as large widget panels with diagrams. Minimal
+     chrome: the left rail hides on this view (CSS body[data-view=
+     "home"]), the panels are the navigation. Every number is live
+     from the same data the job views use. */
+  phLoad(); dtLoad(); chLoad(); rcLoad(); cnLoad();
   var pop = people(), N = pop.length;
-  var ph = hmPhotoStats();
   HM_DECK = hmDeckData(pop); HM_PD = hmDeckPhotos(); HMI_INDEX = {};
   if(HMI) hmiClose(true);
   var dd = HM_DECK, pd = HM_PD;
-  var tierSegs = [
-    { label:'Vetted', key:'vetted', kind:'tier', c:dd.tierCounts.vetted, col:'var(--seg-0)' },
-    { label:'Associate', key:'associate', kind:'tier', c:dd.tierCounts.associate, col:'var(--seg-1)' },
-    { label:'Open', key:'open', kind:'tier', c:dd.tierCounts.open, col:'var(--seg-2)' },
-    { label:'No tier yet', key:'none', kind:'tier', c:dd.tierCounts.none, col:'var(--seg-4)' }
-  ];
-  var relSegs = hmFormsTop(dd.rels, 12, true).map(function(t, i){
-    return { label:t.label, key:t.label, kind:'rel', c:t.c, col:'var(--seg-' + (i % 9) + ')' };
+  var today = new Date();
+  var dateLine = today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+  var now = Date.now();
+  function lcDays(e){
+    var lc = String(gv(e, 'last_contact') || '').trim();
+    if(!lc) return null;
+    var t = new Date(lc.slice(0, 10) + 'T12:00:00').getTime();
+    return isNaN(t) ? null : Math.floor((now - t) / 86400000);
+  }
+  var bk = { wk:0, mo:0, q:0, yr:0, old:0, never:0 }, quiet = [];
+  pop.forEach(function(di){
+    var e = D.directory[di], d = lcDays(e);
+    if(d == null){ bk.never++; return; }
+    if(d <= 7) bk.wk++; else if(d <= 30) bk.mo++; else if(d <= 90) bk.q++; else if(d <= 365) bk.yr++; else bk.old++;
+    quiet.push({ di:di, e:e, d:d });
   });
-  if(dd.relBlank) relSegs.push({ label:'Untyped', key:'Unspecified', kind:'rel', c:dd.relBlank, col:'var(--seg-8)' });
-  var townsTop = hmFormsTop(dd.towns, 8), townMax = townsTop.length ? townsTop[0].c : 0;
-  var skillsTop = hmFormsTop(dd.skills, 8, true), skillMax = skillsTop.length ? skillsTop[0].c : 0;
-  var groupsTop = hmPlainTop(dd.groupCounts, 8), groupMax = groupsTop.length ? groupsTop[0].c : 0;
-  var orgsTop = hmPlainTop(dd.orgCounts, 8), orgMax = orgsTop.length ? orgsTop[0].c : 0;
-  var fpTop = hmPlainTop(dd.fpCounts, 8), fpMax = fpTop.length ? fpTop[0].c : 0;
-  /* V3.26.0 consolidation (JD): the KPI strip rides inside the
-     banner, the two mixes + network line are one Shape card, and
-     the five leader boards are one Rankings card — three surfaces
-     where there were nine, so the content starts at the top. */
-  v.innerHTML = '<div class="page hm"><div class="hm-layout"><div class="hm-main"><div class="pagehead"><div><h1 class="display">Home</h1>' +
-    '<p class="sub">The whole circle at a glance: who you last talked to, its shape, and what changed lately. Everything opens a closer look.</p></div>' +
-    '<div class="hmk-strip">' +
-    hmKpi('people', hmFmtN(N), 'People', 'in the directory') +
-    hmKpi('footprint', hmFmtN(dd.fpTotal), 'Footprint facts', 'across ' + dd.fpPeople + ' people') +
-    hmKpi('photos', pd.onFile, 'Photos on file', hmFmtN(pd.totalPhotos) + ' photos total') +
-    hmKpi('located', dd.locN, 'Located', Object.keys(dd.towns).length + ' towns on file') +
-    hmKpi('dated', dd.dated, 'Known since', dd.undated + ' still missing a year') +
-    '</div></div>' +
-    hmShapeCard(dd, tierSegs, relSegs, N) +
-    hmContactsCard() +
-    hmRanksCard([
-      { title:'Where they are', rows: townsTop.slice(0, 5).map(function(t, ix){ return hmBarRow('town', t.key, t.label, t.c, townMax, ix === 0); }).join(''),
-        more: Object.keys(dd.towns).length > 5 ? hmMoreBtn('data-act="hmikpi" data-k="located"', '+' + (Object.keys(dd.towns).length - 5) + ' more towns') : '' },
-      { title:'Skills', rows: skillsTop.slice(0, 5).map(function(t){ return hmBarRow('skill', t.key, t.label, t.c, skillMax); }).join(''),
-        more: Object.keys(dd.skills).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="skill"', '+' + (Object.keys(dd.skills).length - 5) + ' more skills') : '' },
-      { title:'Groups', rows: groupsTop.slice(0, 5).map(function(t){ return hmBarRow('group', t.key, t.label, t.c, groupMax); }).join(''),
-        more: Object.keys(dd.groupCounts).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="group"', '+' + (Object.keys(dd.groupCounts).length - 5) + ' more groups') : '' },
-      { title:'Organizations', rows: orgsTop.slice(0, 5).map(function(t){ return hmBarRow('org', t.key, t.label, t.c, orgMax); }).join(''),
-        more: Object.keys(dd.orgCounts).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="org"', '+' + (Object.keys(dd.orgCounts).length - 5) + ' more organizations') : '' },
-      { title:'Footprint leaders', rows: fpTop.slice(0, 5).map(function(t){ return hmBarRow('footprint', t.key, t.label, t.c, fpMax); }).join(''),
-        more: hmMoreBtn('data-act="hmikpi" data-k="footprint"', 'All footprint coverage') }
-    ]) +
-    '<div class="hm-years-slim">' + hmYearsCard(dd) + '</div>' +
-    '</div><aside class="hm-rail">' + hmActivity() + '</aside></div></div>';
+  quiet.sort(function(a, b){ return b.d - a.d; });
+  var stamped = Math.max(1, N - bk.never);
+  function pctOf(n){ return (100 * n / stamped).toFixed(1) + '%'; }
+  function fmtQuiet(d){ return d < 30 ? d + 'd' : (d < 365 ? Math.round(d / 30.4) + ' mo' : (d / 365).toFixed(1) + ' yr'); }
+  /* Directory diagram: tier donut */
+  var tc = dd.tierCounts, tTot = Math.max(1, tc.vetted + tc.associate + tc.open + tc.none);
+  var a1 = 360 * tc.vetted / tTot, a2 = a1 + 360 * tc.associate / tTot, a3 = a2 + 360 * tc.open / tTot;
+  var donut = 'background:conic-gradient(var(--seg-0) 0deg ' + a1 + 'deg, var(--seg-1) ' + a1 + 'deg ' + a2 + 'deg, var(--seg-2) ' + a2 + 'deg ' + a3 + 'deg, var(--seg-4) ' + a3 + 'deg 360deg)';
+  var relTop = hmFormsTop(dd.rels, 5, true), relMax = relTop.length ? relTop[0].c : 1;
+  /* Decide counts */
+  var rcPend = null, cnOpen = null, phPend = null;
+  if(RC && RC.candidates) rcPend = RC.candidates.filter(function(c){ return rcStatus(c).k === 'pending'; }).length;
+  if(CN){ var q0 = cnQueue(); cnOpen = (CN.flags || []).filter(function(f){ return cnFlagState(f, q0) === 'open'; }).length; }
+  if(PH && PH.people) phPend = phSuspects().length;
+  var decTot = (rcPend == null || cnOpen == null || phPend == null) ? null : rcPend + cnOpen + phPend;
+  function cnt(x){ return x == null ? '–' : String(x); }
+  /* Record */
+  var lcPend = 0;
+  pop.forEach(function(di){ if(String(raw(D.directory[di], 'lima_charlie_notes') || '').trim()) lcPend++; });
+  var filedToday = null;
+  if(CH && CH.entries){
+    var ts = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    filedToday = CH.entries.filter(function(c){ return String(c.filed || '').slice(0, 10) === ts; }).length;
+  }
+  /* Fix */
+  var cov = N ? Math.round(100 * (pd.onFile || 0) / N) : 0;
+  var ring = 'background:conic-gradient(var(--acc) 0deg ' + (3.6 * cov) + 'deg, var(--line) ' + (3.6 * cov) + 'deg 360deg)';
+  function laneRow(label, n){
+    return '<span class="ov-lane"><span>' + label + '</span><b>' + cnt(n) + '</b></span>';
+  }
+  v.innerHTML = '<div class="page ov">' +
+    '<div class="ov-top"><div><div class="ov-brand">Contacts Pro</div><div class="ov-date">' + esc(dateLine) + '</div></div>' +
+    '<div class="ov-stamp">Data ' + esc(D.updated || '') + '</div></div>' +
+    '<div class="ov-grid">' +
+    /* DIRECTORY */
+    '<a class="ov-p span3" href="#/people"><div class="ov-lab">Directory <span class="ov-arrow">→</span></div>' +
+      '<div class="ov-dirflex"><div class="ov-donut" style="' + donut + '"><div class="ov-donut-c"><b>' + N + '</b><span>people</span></div></div>' +
+      '<div class="ov-dirside"><div class="ov-tierline">Vetted ' + tc.vetted + ' · Associate ' + tc.associate + ' · Open ' + tc.open + ' · No tier ' + tc.none + '</div>' +
+      relTop.map(function(t){ return '<div class="ov-relrow"><span>' + esc(t.label) + '</span><span class="ov-relbar"><i style="width:' + Math.round(100 * t.c / relMax) + '%"></i></span><b>' + t.c + '</b></div>'; }).join('') +
+      '</div></div>' +
+      '<div class="ov-foot">' + dd.locN + ' located · ' + dd.dated + ' with a known-since year · ' + hmFmtN(dd.fpTotal) + ' footprint facts</div></a>' +
+    /* DECIDE */
+    '<a class="ov-p span3" href="#/decide"><div class="ov-lab">Decide <span class="ov-arrow">→</span></div>' +
+      '<div class="ov-bignum">' + cnt(decTot) + '</div><div class="ov-biglab">waiting on your ruling</div>' +
+      '<div class="ov-lanes">' + laneRow('Research candidates', rcPend) + laneRow('Council flags', cnOpen) + laneRow('Possible photos', phPend) + '</div></a>' +
+    /* REACH OUT */
+    '<a class="ov-p span2" href="#/reach"><div class="ov-lab">Reach out <span class="ov-arrow">→</span></div>' +
+      '<div class="ov-recbar" role="img" aria-label="Contact recency across the directory">' +
+      '<i style="width:' + pctOf(bk.wk) + '" class="rb0"></i><i style="width:' + pctOf(bk.mo) + '" class="rb1"></i><i style="width:' + pctOf(bk.q) + '" class="rb2"></i><i style="width:' + pctOf(bk.yr) + '" class="rb3"></i><i style="width:' + pctOf(bk.old) + '" class="rb4"></i></div>' +
+      '<div class="ov-recleg">This week ' + bk.wk + ' · Month ' + bk.mo + ' · Quarter ' + bk.q + ' · Year ' + bk.yr + ' · Older ' + bk.old + ' · No stamp ' + bk.never + '</div>' +
+      quiet.slice(0, 3).map(function(qq){ return '<div class="ov-quiet"><span>' + esc(dispName(qq.e)) + '</span><b>' + fmtQuiet(qq.d) + ' quiet</b></div>'; }).join('') + '</a>' +
+    /* RECORD */
+    '<a class="ov-p span2" href="#/audit"><div class="ov-lab">Record <span class="ov-arrow">→</span></div>' +
+      '<div class="ov-bignum">' + lcPend + '</div><div class="ov-biglab">Lima Charlie notes waiting</div>' +
+      '<div class="ov-foot">' + (filedToday == null ? 'Change log loading…' : filedToday + ' changes filed today') + ' · Dictate a note on any profile, or run the deck</div></a>' +
+    /* FIX */
+    '<a class="ov-p span2" href="#/sandbox"><div class="ov-lab">Fix <span class="ov-arrow">→</span></div>' +
+      '<div class="ov-fixflex"><div class="ov-ring" style="' + ring + '"><div class="ov-ring-c"><b>' + cov + '%</b></div></div>' +
+      '<div class="ov-fixside"><b>' + (pd.onFile || 0) + ' of ' + N + '</b><span>people with a photo on file</span></div></div>' +
+      '<div class="ov-foot">Insights · Merge · Danger area · Action log · Models</div></a>' +
+    '</div></div>';
+}
+
+/* ============================================================
+   Reach out (V3.45.0): one surface for who needs you — the
+   quietest people and the freshest conversations, both drawn
+   from Last Contact stamps only.
+   ============================================================ */
+function viewReach(v){
+  var pop = people(), now = Date.now();
+  function lcDays(e){
+    var lc = String(gv(e, 'last_contact') || '').trim();
+    if(!lc) return null;
+    var t = new Date(lc.slice(0, 10) + 'T12:00:00').getTime();
+    return isNaN(t) ? null : Math.floor((now - t) / 86400000);
+  }
+  function fmtD(d){ return d === 0 ? 'Today' : (d === 1 ? 'Yesterday' : (d < 30 ? d + ' days ago' : (d < 365 ? Math.round(d / 30.4) + ' months ago' : (d / 365).toFixed(1) + ' years ago'))); }
+  var rows = pop.map(function(di){ var e = D.directory[di]; return { di:di, e:e, d:lcDays(e) }; });
+  var quiet = rows.filter(function(r){ return r.d != null; }).sort(function(a, b){ return b.d - a.d; }).slice(0, 14);
+  var recent = rows.filter(function(r){ return r.d != null && r.d <= 7; }).sort(function(a, b){ return a.d - b.d; }).slice(0, 14);
+  var never = rows.filter(function(r){ return r.d == null; }).length;
+  function row(r){
+    return '<a class="ro-row" href="#/p/' + encodeURIComponent(personId(r.e)) + '" data-act="openp" data-di="' + r.di + '">' + avatar(r.e, 'sm') +
+      '<span class="ro-main"><b>' + esc(dispName(r.e)) + '</b><span>' + esc(gv(r.e, 'relationship') || '') + '</span></span>' +
+      '<span class="ro-when">' + fmtD(r.d) + '</span></a>';
+  }
+  v.innerHTML = '<div class="page ro"><div class="ro-top"><h1 class="display">Reach out</h1>' +
+    '<p class="sub">Who has gone quiet, and who you talked to this week. ' + never + ' people have no contact stamp yet.</p></div>' +
+    '<div class="ro-cols"><section class="ro-col"><h2>Quiet the longest</h2>' +
+    (quiet.length ? quiet.map(row).join('') : '<div class="empty"><p>No contact stamps yet.</p></div>') +
+    '</section><section class="ro-col"><h2>In touch this week</h2>' +
+    (recent.length ? recent.map(row).join('') : '<div class="empty"><p>No contacts stamped in the last 7 days.</p></div>') +
+    '</section></div></div>';
+}
+
+/* ============================================================
+   Decide (V3.45.0): the unified ruling inbox. Three lanes —
+   Research Command candidates, Council flags, Possible
+   photos — each with its count, its top items, and the door
+   to its full queue. Deciding itself still happens in the
+   lane's own surface, where the full evidence lives.
+   ============================================================ */
+function viewDecide(v){
+  rcLoad(); cnLoad(); phLoad();
+  var h = '<div class="page dc"><div class="dc-top"><h1 class="display">Decide</h1>' +
+    '<p class="sub">Everything waiting on your ruling, in one place.</p></div>';
+  /* Research candidates */
+  var rcBody;
+  if(!RC || !RC.candidates) rcBody = '<p class="dc-load">Loading the candidate ledger…</p>';
+  else {
+    var pend = RC.candidates.filter(function(c){ return rcStatus(c).k === 'pending'; })
+      .sort(function(a, b){ return (b.confidence || 0) - (a.confidence || 0); });
+    rcBody = pend.length ? pend.slice(0, 6).map(function(c){
+      var band = rcBand(c.confidence);
+      return '<div class="dc-row"><div class="dc-rmain"><b>' + esc(c.display || c.name || '') + '</b><p>' + esc(String(c.claim || c.file_text || '').slice(0, 120)) + '</p></div>' +
+        '<span class="dc-band b-' + band.k + '">' + band.label + ' · ' + (c.confidence || 0) + '</span></div>';
+    }).join('') : '<p class="dc-load">All caught up — no candidates waiting.</p>';
+    rcBody = '<div class="dc-count"><b>' + pend.length + '</b><span>pending</span></div>' + rcBody;
+  }
+  h += '<section class="dc-lane"><div class="dc-laneh"><h2>Research candidates</h2><a class="btn sm" href="#/daily">Open Research Command</a></div>' + rcBody + '</section>';
+  /* Council flags */
+  var cnBody;
+  if(!CN) cnBody = '<p class="dc-load">Loading the council board…</p>';
+  else {
+    var q = cnQueue();
+    var open = (CN.flags || []).filter(function(f){ return cnFlagState(f, q) === 'open'; })
+      .sort(function(a, b){ return (a.priority || 3) - (b.priority || 3); });
+    cnBody = open.length ? open.slice(0, 6).map(function(f){
+      return '<div class="dc-row"><div class="dc-rmain"><b>' + esc(f.title || '') + '</b></div>' +
+        '<span class="dc-band">Priority ' + (f.priority || 3) + '</span></div>';
+    }).join('') : '<p class="dc-load">Nothing waiting — every flag is decided or staged.</p>';
+    cnBody = '<div class="dc-count"><b>' + open.length + '</b><span>open flags</span></div>' + cnBody;
+  }
+  h += '<section class="dc-lane"><div class="dc-laneh"><h2>Council flags</h2><a class="btn sm" href="#/council">Open Council</a></div>' + cnBody + '</section>';
+  /* Possible photos */
+  var phBody;
+  if(!PH || !PH.people) phBody = '<p class="dc-load">Loading photos…</p>';
+  else {
+    var sus = phSuspects();
+    phBody = sus.length ? '<div class="dc-thumbs">' + sus.slice(0, 10).map(function(p){
+      return '<span class="dc-thumb"><img src="' + esc(p.photo_url) + '" alt="" loading="lazy"><span>' + esc(p.name || '') + '</span></span>';
+    }).join('') + '</div>' : '<p class="dc-load">The Possible queue is empty.</p>';
+    phBody = '<div class="dc-count"><b>' + sus.length + '</b><span>suspected photos</span></div>' + phBody;
+  }
+  h += '<section class="dc-lane"><div class="dc-laneh"><h2>Possible photos</h2><a class="btn sm" href="#/photos">Open Photos</a></div>' + phBody + '</section>';
+  v.innerHTML = h + '</div>';
 }
 
 /* ============================================================
@@ -6680,10 +6800,10 @@ function repaintForData(kind){
   }
   if(kind === 'cal'){ if(r === 'calendar') render(); return; }
   if(kind === 'ph'){
-    if(r === 'photos' || r === 'audit' || r === 'home') render();
+    if(r === 'photos' || r === 'audit' || r === 'home' || r === 'decide') render();
     else if(r === 'groups'){ grpPaintCards(); grpPaintMembers(); }
     else if($('#p-hero')) repaintTop();
-  } else if(r === 'daily' || r === 'home') render();
+  } else if(r === 'daily' || r === 'home' || r === 'decide') render();
 }
 var DT = null, DT_LOADING = false;
 function dtLoad(){
@@ -11020,15 +11140,10 @@ var SB = {
    first — Data grid, Insights, Discovery trails — then Raw data,
    then Play, then Fix. */
 var SB_TOOLS = [
-  { k:'grid',     z:'Look', t:'Data grid',    d:'Every person, one row. Sort, filter, save views, export CSV, bulk-select.', ic:'people' },
-  { k:'insights', z:'Look', t:'Insights',     d:'Seven named checks, each on its own page: coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
-  { k:'discovery', z:'Look', t:'Discovery trails', d:'How each person was found — the searches, routes and anchors behind every photo and fact, and which methods actually produce finds.', ic:'search' },
-  { k:'raw',      z:'Look', t:'Raw data',     d:'The baked sidecar files themselves: Snapchat, photos, changes, Trash, registry, council, labs.', ic:'search' },
-  { k:'lab',      z:'Play', t:'The Lab',      d:'Experiments on the live data: paths & bridges and the Suspect Pool. Read-only.', ic:'network' },
-  { k:'profiling', z:'Play', t:'Profiling inferences', d:'The inductive lab, promoted out of the Lab: Luna\u2019s blind Persona expectations vs JD\u2019s ratings — headline accuracy first, cohorts second, evidence on drill-in. Read-only.', ic:'eye' },
-  { k:'merge',    z:'Fix',  t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
-  { k:'danger',   z:'Fix',  t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
-  { k:'log',      z:'Fix',  t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
+  { k:'insights', z:'Fix', t:'Insights',     d:'Seven named checks, each on its own page: coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
+  { k:'merge',    z:'Fix', t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
+  { k:'danger',   z:'Fix', t:'Danger area',  d:'Delete, restore, purge, bulk edit, rename, re-key, rebuild.', ic:'trash' },
+  { k:'log',      z:'Fix', t:'Action log',   d:'Every Fix write, before → after, with undo and the ops export.', ic:'check' }
 ];
 var SB_LABS = [
   { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through known associates and family, mutual connections, and the bridge people who hold the circle together.' },
@@ -11138,11 +11253,7 @@ function viewSandbox(v){
   /* V3.10.0 routes: the old thirteen destinations consolidate to eight.
      Pre-3.10 deep links keep working as aliases into the new surfaces. */
   if(seg === 'reports' || seg === 'integ') SB.tool = 'insights';
-  else if(seg === 'prof' || seg === 'profiling') SB.tool = 'profiling';
-  else if(seg === 'pool'){ SB.tool = 'lab'; SB.labtab = 'pool'; }
-  else if(seg === 'play'){ SB.tool = 'lab'; SB.labtab = 'visuals'; }
   else SB.tool = seg;
-  if(SB.tool === 'lab' && S.route.seg && S.route.seg[1]) SB.labtab = S.route.seg[1];
   if(SB.tool === 'insights'){
     var iv = (S.route.seg && S.route.seg[1]) || null;
     SB.ins.view = SB_INSIGHTS.some(function(x){ return x.k === iv; }) ? iv : null;
@@ -11162,10 +11273,8 @@ function viewSandbox(v){
     sbEnsure();
     return;
   }
-  var fn = { home:sbHome, grid:sbGrid, raw:sbRaw, insights:sbInsights, discovery:sbDiscovery,
-             profiling:function(){ return '<div class="sb-labwrap t-prof">' + sbProf() + '</div>'; },
-             lab:sbLabTool, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
-  if(!({ home:1, grid:1, raw:1, insights:1, discovery:1, profiling:1, lab:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
+  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, danger:sbDanger, log:sbLogView }[SB.tool] || sbHome;
+  if(!({ home:1, insights:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -11192,27 +11301,21 @@ function sbShell(inner){
    eight checks, the Lab's three labs). The canvas beside it runs
    edge-to-edge; the old 1240px centered wrap is gone. */
 function sbNav(){
-  var h = '<nav class="sb-nav" aria-label="Sandbox tools">';
-  h += '<a class="sb-navhome' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox"><span class="sb-nav-t">Home</span><span class="sb-nav-d">What is active, and the index of every tool.</span></a>';
-  ['Look', 'Play', 'Fix'].forEach(function(z){
-    h += '<div class="sb-nav-z">' + esc(z) + '</div>';
-    SB_TOOLS.filter(function(t){ return t.z === z; }).forEach(function(t){
-      var on = SB.tool === t.k;
-      h += '<a class="sb-navitem' + (on ? ' on' : '') + '" href="#/sandbox/' + t.k + '"><span class="sb-nav-t">' + esc(t.t) + '</span><span class="sb-nav-d">' + esc(t.d) + '</span></a>';
-      if(on && t.k === 'insights'){
-        h += '<div class="sb-navkids">' + SB_INSIGHTS.map(function(x){
-          return '<a class="sb-navkid' + (SB.ins.view === x.k ? ' on' : '') + '" href="#/sandbox/insights/' + x.k + '">' + esc(x.t) + '</a>';
-        }).join('') + '</div>';
-      }
-      if(on && t.k === 'lab'){
-        h += '<div class="sb-navkids">' + SB_LABS.map(function(l){
-          return '<a class="sb-navkid' + (sbLabTab() === l.k ? ' on' : '') + '" href="#/sandbox/lab/' + l.k + '">' + esc(l.t) + '</a>';
-        }).join('') + '</div>';
-      }
-    });
+  /* V3.45.0: the Fix console has exactly five tools — the nav is a
+     flat list, no zones. Insights keeps its seven checks as kids
+     when it is the open tool. */
+  var h = '<nav class="sb-nav" aria-label="Fix tools">';
+  h += '<a class="sb-navhome' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox"><span class="sb-nav-t">Console</span><span class="sb-nav-d">Data health at a glance, and the five tools.</span></a>';
+  SB_TOOLS.forEach(function(t){
+    var on = SB.tool === t.k;
+    h += '<a class="sb-navitem' + (on ? ' on' : '') + '" href="#/sandbox/' + t.k + '"><span class="sb-nav-t">' + esc(t.t) + '</span><span class="sb-nav-d">' + esc(t.d) + '</span></a>';
+    if(on && t.k === 'insights'){
+      h += '<div class="sb-navkids">' + SB_INSIGHTS.map(function(x){
+        return '<a class="sb-navkid' + (SB.ins.view === x.k ? ' on' : '') + '" href="#/sandbox/insights/' + x.k + '">' + esc(x.t) + '</a>';
+      }).join('') + '</div>';
+    }
   });
-  h += '<div class="sb-nav-z">Boards</div>' +
-    '<a class="sb-navitem" href="#/council"><span class="sb-nav-t">Council \u2192</span><span class="sb-nav-d">The Contacts Pro Council board — flags, theories, your rulings. Lives outside the Sandbox.</span></a>';
+  h += '<a class="sb-navitem" href="#/sandbox/models"><span class="sb-nav-t">Models</span><span class="sb-nav-d">Losing touch, who has news, same person twice. Full screen.</span></a>';
   return h + '</nav>';
 }
 /* One template for every tool page: title + zone chip + purpose line. */
@@ -11247,60 +11350,29 @@ function sbLogToday(){
   return n;
 }
 function sbHome(){
+  /* V3.45.0 (JD 2026-10-30): the Fix console — five tools, each a
+     large panel carrying its live state. The old tile index (Look /
+     Play / Fix zones, nine tools) is gone: Data grid, Discovery
+     trails, Raw data, the Lab and Profiling are no longer Sandbox
+     destinations; their data files stay on disk untouched. */
   var ppl = people().length;
-  /* usable-photo people, counted the same way Insights counts them
-     (photo sidecar name-matched onto listed people) so the numbers
-     agree on every surface */
   var phn = sbPhotoByName();
   var conf = people().filter(function(di){ var p = phn[dispName(D.directory[di]).toLowerCase()]; return !!(p && p.photo_url && (p.status === 'confirmed' || p.status === 'likely')); }).length;
   var pct = ppl ? Math.round(100 * conf / ppl) : 0;
-  var h = '<p class="sb-compact">' + ppl + ' people in the directory \u00b7 ' + pct + '% with a usable photo \u00b7 ' +
-    Object.keys(sbTrashKeys()).length + ' keys in Trash \u00b7 ' + sbOpsGet().length + ' ops queued</p>';
-  /* Tile grid (JD 2026-10-28, V3.27.0): the landing is compact
-     tiles — icon, name, one line, live state with a dot — grouped
-     under Look / Play / Fix. Active surfaces pin as wide tiles on
-     top. Same destinations and state strings as the old index;
-     only the presentation changed. */
-  function tile(href, t, d, s, icn, tone, wide){
-    return '<a class="sb-tile' + (wide ? ' wide' : '') + '" href="' + href + '"><span class="sb-tile-ic">' + ic(icn, 17) + '</span>' +
-      '<span class="sb-tile-main"><span class="sb-tile-t">' + esc(t) + '</span><span class="sb-tile-d">' + d + '</span>' +
-      (s ? '<span class="sb-tile-s"><i class="sb-dot ' + (tone || 'dim') + '"></i>' + esc(s) + '</span>' : '') + '</span></a>';
-  }
-  /* Active: the surfaces with live state or an ongoing purpose,
-     pinned as wide tiles. Everything else files into the grid. */
-  var pr = SB.spool && SB.spool.default_experiment && SB.spool.default_experiment.prediction;
-  var spState = pr ? ('Open prediction: ' + esc(pr.predicted_name || '') + ' \u2014 ' + esc(pr.event || '') + (pr.event_date ? ', ' + esc(pr.event_date) : '') + ' \u00b7 ' + esc(pr.status || '')) : 'The pre-registered prediction tracker.';
-  var pf = SB.prof || {}, acc = pf.accuracy || {};
-  var pfState = acc.overall ? (Math.round((acc.overall.agree_rate || 0) * 100) + '% blind accuracy \u00b7 ' + (acc.test_set_n || 0) + ' tested \u00b7 ' + (pf.conclusions || []).length + ' graded conclusions') : 'Blind Persona expectations vs JD\u2019s ratings.';
-  h += '<div class="sb-group">Active</div><div class="sb-tiles active">' +
-    tile('#/sandbox/lab/pool', 'Suspect Pool', spState, pr ? 'Prediction open' : 'Tracker', 'target', pr ? 'amber' : 'dim', true) +
-    tile('#/sandbox/profiling', 'Profiling inferences', pfState, acc.overall ? 'Graded' : 'Lab', 'eye', acc.overall ? 'green' : 'dim', true) +
-    '</div>';
-  /* The index: every remaining tool as a tile in its zone group. */
   var findN = sbFindingsCount(), dupN = sbDupPairs().length, logN = sbLogToday();
-  var stats = {
-    grid: { s: ppl + ' rows', tone: 'green' },
-    raw: { s: Object.keys(SB_RAW_META).length + ' sidecar files', tone: 'dim' },
-    insights: { s: findN + ' open findings', tone: findN ? 'amber' : 'green' },
-    discovery: { s: SB.discData ? (SB.discData.coverage ? SB.discData.coverage.documented + ' documented trails' : '') : '', tone: 'dim' },
-    lab: { s: '2 labs', tone: 'dim' },
-    merge: { s: dupN + ' candidate pairs', tone: dupN ? 'amber' : 'green' },
-    danger: { s: Object.keys(sbTrashKeys()).length + ' keys in Trash', tone: 'dim' },
-    log: { s: logN + ' entries today', tone: logN ? 'green' : 'dim' }
-  };
-  [['Look', ['grid', 'insights', 'discovery', 'raw']],
-   ['Play', ['lab']],
-   ['Fix', ['merge', 'danger', 'log']]].forEach(function(g){
-    h += '<div class="sb-group">' + g[0] + '</div><div class="sb-tiles">';
-    g[1].forEach(function(k){
-      var t = SB_TOOLS.filter(function(x){ return x.k === k; })[0];
-      if(t) h += tile('#/sandbox/' + t.k, t.t, esc(t.d), (stats[t.k] || {}).s || '', t.ic, (stats[t.k] || {}).tone, false);
-    });
-    h += '</div>';
-  });
-  h += '<div class="sb-group">Boards</div><div class="sb-tiles">' +
-    tile('#/council', 'Council', 'The Contacts Pro Council board \u2014 flags, theories, your rulings. Lives outside the Sandbox.', 'Board', 'check', 'dim', false) +
-    tile('#/sandbox/models', 'Models', 'What the numbers can tell you \u2014 who you are about to lose touch with, who is most likely to have news, and which profiles might be the same person twice.', 'Full screen', 'spark', 'dim', false) +
+  var trashN = Object.keys(sbTrashKeys()).length, opsN = sbOpsGet().length;
+  var lastLog = sbLogGet()[0];
+  function panel(href, t, big, unit, line){
+    return '<a class="sbc-p" href="' + href + '"><div class="ov-lab">' + esc(t) + ' <span class="ov-arrow">→</span></div>' +
+      '<div class="sbc-big"><b>' + esc(String(big)) + '</b><span>' + esc(unit) + '</span></div><p>' + line + '</p></a>';
+  }
+  var h = '<p class="sb-compact">' + ppl + ' people in the directory · ' + pct + '% with a usable photo · ' + trashN + ' keys in Trash · ' + opsN + ' ops queued</p>';
+  h += '<div class="sbc-grid">' +
+    panel('#/sandbox/insights', 'Insights', findN, 'open findings', 'Coverage, sources, freshness, reconciliation, duplicates, orphans, photo links — the seven checks that keep the directory honest.') +
+    panel('#/sandbox/merge', 'Merge studio', dupN, 'candidate pairs', 'Combine two profiles field by field. Combine, never overwrite.') +
+    panel('#/sandbox/danger', 'Danger area', trashN, 'keys in Trash', 'Delete, restore, purge, bulk edit, rename, re-key, rebuild. Every operation asks first and shows exactly who it touches.') +
+    panel('#/sandbox/log', 'Action log', logN, 'entries today', lastLog ? ('Latest: ' + esc(lastLog.label || lastLog.type || 'a write') + '. Every Fix write, before → after, with undo.') : 'Every Fix write, before → after, with undo and the ops export.') +
+    panel('#/sandbox/models', 'Models', 3, 'models', 'Losing touch · Who has news · Same person twice. What the numbers can tell you, full screen.') +
     '</div>';
   return h;
 }
@@ -12802,13 +12874,13 @@ function cnProfFlush(){
   cbs.forEach(function(f){ if(f) f(); });
 }
 function cnLoad(){
-  cnProfLoad(function(){ if(S.route && S.route.name === 'council') render(); });
+  cnProfLoad(function(){ if(S.route && ['council','decide','home'].indexOf(S.route.name) >= 0) render(); });
   if(CN || CN_LOADING) return;
   CN_LOADING = true;
   if(typeof SB !== 'undefined' && SB.council) CN = SB.council;
   fetch('data/council.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(d){ CN_LOADING = false; if(d) CN = d; if(S.route && S.route.name === 'council') render(); })
+    .then(function(d){ CN_LOADING = false; if(d) CN = d; if(S.route && ['council','decide','home'].indexOf(S.route.name) >= 0) render(); })
     .catch(function(){ CN_LOADING = false; });
 }
 function cnDi(key){
