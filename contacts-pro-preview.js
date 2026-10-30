@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.39.0';
+var APP_VERSION = '3.40.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1952,7 +1952,7 @@ function renderChrome(){
   top.innerHTML =
     '<button type="button" class="ib homebtn" data-act="home" aria-label="Home" title="Home: the overview, with search and filters cleared">' + ic('home', 20) + '</button>' +
     '<button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: one step — closes the top layer, leaves a runner, or returns to the previous view">' + ic('chevl', 20) + '</button>' +
-    '<button type="button" class="ib" data-act="topfwd"' + (HIST[S.depth + 1] ? '' : ' disabled') + ' aria-label="Forward" title="' + (HIST[S.depth + 1] ? 'Forward to ' + esc(HIST[S.depth + 1].label) : 'Forward: nothing ahead — go Back first') + '">' + ic('chevr', 20) + '</button>' +
+    '<button type="button" class="ib" data-act="topfwd"' + (navNext() ? '' : ' disabled') + ' aria-label="Forward" title="' + (navNext() ? 'Forward to ' + esc(navNext().label) : 'Forward: nothing ahead — go Back first') + '">' + ic('chevr', 20) + '</button>' +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
     '<div class="topr">' +
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
@@ -2115,19 +2115,24 @@ function go(path, o){
   var url = '#/' + path;
   if(o.replace) history.replaceState({ d:S.depth }, '', url);
   else { S.depth++; history.pushState({ d:S.depth }, '', url); }
-  histNote();
   render();
 }
 function back(fallback){
+  if(navBack()) return;
   if(S.depth > 0) history.back();
   else go(fallback || 'people', { replace:true });
 }
-/* ---------- View history labels + scroll restoration (V3.38.0) ----------
-   HIST mirrors the history stack by depth: each entry knows its hash
-   and a human label, so a Back control can say where it actually goes.
-   NAVSCR remembers #view's scroll per depth; a popstate render restores
-   it, so Back lands where you were, not at the top of the last view. */
-var HIST = [], NAVSCR = {};
+/* ---------- In-app view stack (V3.40.0, JD) ----------
+   Back means "the thing I was on before" — always. The browser history
+   cannot promise that: pager steps and tool switches replace entries,
+   so history.back() overshoots to views from long ago. NAV is the
+   app's own stack of views as they were actually seen, each with its
+   scroll position. Every render that lands on a new route pushes;
+   navBack/navFwd walk the stack and restore scroll. The browser's own
+   back/forward are reconciled in navTrack (a landing that matches the
+   previous or next stack entry moves the stack pointer instead of
+   pushing a duplicate). Home stays the "all the way back" escape. */
+var NAVS = { stack: [], fwd: [], jumping: false };
 function histLabelFor(hash){
   var seg = String(hash || '').replace(/^#\/?/, '').split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var n = seg[0] || 'home';
@@ -2135,10 +2140,52 @@ function histLabelFor(hash){
   if(n === 'groups') return seg[2] || 'Groups';
   return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings' }[n] || 'Back';
 }
-function histNote(){
-  HIST[S.depth] = { hash: location.hash, label: histLabelFor(location.hash) };
-  HIST.length = S.depth + 1;
+function navScroll(){ var v = $('#view'); return v ? v.scrollTop : 0; }
+function navTrack(){
+  var rk = S.route.name + '/' + (S.route.seg || []).join('/');
+  var top = NAVS.stack[NAVS.stack.length - 1];
+  if(NAVS.jumping){ NAVS.jumping = false; return; }
+  if(top && top.rk === rk){ top.hash = location.hash; return; }
+  var prev = NAVS.stack[NAVS.stack.length - 2];
+  if(prev && prev.rk === rk){
+    var c = NAVS.stack.pop(); c.scroll = navScroll(); NAVS.fwd.push(c);
+    render._restore = prev.scroll || 0;
+    return;
+  }
+  var nxt = NAVS.fwd[NAVS.fwd.length - 1];
+  if(nxt && nxt.rk === rk){
+    NAVS.fwd.pop(); NAVS.stack.push(nxt);
+    render._restore = nxt.scroll || 0;
+    return;
+  }
+  if(top) top.scroll = navScroll();
+  NAVS.stack.push({ hash: location.hash, rk: rk, label: histLabelFor(location.hash), scroll: 0 });
+  if(NAVS.stack.length > 80) NAVS.stack.shift();
+  NAVS.fwd.length = 0;
 }
+function navGo(entry){
+  NAVS.jumping = true;
+  history.replaceState({ d: S.depth }, '', entry.hash);
+  render();
+  var v = $('#view'); if(v) v.scrollTop = entry.scroll || 0;
+  window.scrollTo(0, 0);
+}
+function navBack(){
+  if(NAVS.stack.length < 2) return false;
+  var cur = NAVS.stack.pop(); cur.scroll = navScroll();
+  NAVS.fwd.push(cur);
+  navGo(NAVS.stack[NAVS.stack.length - 1]);
+  return true;
+}
+function navFwd(){
+  if(!NAVS.fwd.length) return false;
+  var t = NAVS.fwd.pop();
+  NAVS.stack.push(t);
+  navGo(t);
+  return true;
+}
+function navPrev(){ return NAVS.stack.length > 1 ? NAVS.stack[NAVS.stack.length - 2] : null; }
+function navNext(){ return NAVS.fwd.length ? NAVS.fwd[NAVS.fwd.length - 1] : null; }
 /* Persistent Back (JD 2026-10-27): one button in the top bar, every
    view, every scroll position. Each press peels exactly one layer:
    theme pop, batch modal, photo editor/inspector, the Home inspector
@@ -2200,7 +2247,7 @@ function goHome(){
   S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:(S.ppl && S.ppl.view) || 'list' };
   go('home');   /* V2.28.0: the landing is the Home overview now; the state clearing above is unchanged */
 }
-addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; S._pop = true; render(); });
+addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
 function openPerson(di, ctx, o){
   var e = D.directory[di]; if(!e) return;
   if(ctx) S.ctx = ctx; else if(!(o && o.keepCtx)) S.ctx = null;
@@ -2252,16 +2299,13 @@ function render(){
      weird navigation"). Same-route repaints (data loads, quiet
      refresh) keep the scroll exactly where it is. */
   var rk = n + '/' + (S.route.seg || []).join('/');
-  var popped = !!S._pop; S._pop = false;
-  if(!HIST[S.depth] || HIST[S.depth].hash !== location.hash) histNote();
   if(render._rk !== rk){
-    if(v && render._rk != null) NAVSCR[render._depth || 0] = v.scrollTop;
     render._rk = rk;
+    render._restore = 0;
+    navTrack();
     if(v) v.scrollTop = 0;
     window.scrollTo(0, 0);
-    render._restore = popped ? (NAVSCR[S.depth || 0] || 0) : 0;
   }
-  render._depth = S.depth;
   closeSheet();
   if(render._pv && render._pv !== n) phInspClose(true);
   if(HMI && n !== 'home') hmiClose(true);
@@ -3474,7 +3518,7 @@ function viewProfile(v){
   var e = D.directory[di];
   /* The crumb names where Back actually lands (V3.38.0): the previous
      history entry when there is one, else the context section. */
-  var prevE = S.depth > 0 ? HIST[S.depth - 1] : null;
+  var prevE = navPrev();
   var backTo = prevE && prevE.label ? prevE.label : (S.ctx && S.ctx.label ? S.ctx.label : 'People');
   var pager = '';
   if(S.ctx && S.ctx.keys){
@@ -3488,7 +3532,7 @@ function viewProfile(v){
   v.innerHTML = '<div class="page profile" data-di="' + di + '"><div class="ptop">' +
     '<div class="pback"><button type="button" class="ib" data-act="back" aria-label="Back">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="crumb" data-act="back" title="Back to ' + esc(backTo) + '">Back to ' + esc(backTo) + '</button>' +
-    (HIST[S.depth + 1] ? '<button type="button" class="crumb fwd" data-act="fwd" title="Forward to ' + esc(HIST[S.depth + 1].label) + '">Forward to ' + esc(HIST[S.depth + 1].label) + ' ' + ic('chevr', 13) + '</button>' : '') + '</div>' + pager + '<span class="sp"></span>' +
+    (navNext() ? '<button type="button" class="crumb fwd" data-act="fwd" title="Forward to ' + esc(navNext().label) + '">Forward to ' + esc(navNext().label) + ' ' + ic('chevr', 13) + '</button>' : '') + '</div>' + pager + '<span class="sp"></span>' +
     '<div class="menu"><button type="button" class="ib" data-act="menu" aria-haspopup="true" aria-label="More actions">' + ic('dots', 20) + '</button>' +
     '<div class="menu-pop" hidden>' +
     '<button type="button" data-act="export" data-di="' + di + '">' + ic('download', 16) + 'Download personnel file</button>' +
@@ -6978,6 +7022,21 @@ function phReview(){
   try{ var loc = JSON.parse(store('ncc_photos_review_v1') || '{}') || {}; Object.keys(loc).forEach(function(k){ out[k] = loc[k]; }); }catch(x){}
   return out;
 }
+/* Run fn() (a repaint) without moving what is on screen (JD, Oct 29):
+   anchors the element matching sel to the same viewport position and
+   restores #view's scroll — verdicts stop making the page jump. */
+function keepAnchor(fn, sel){
+  var v = $('#view'); if(!v){ fn(); return; }
+  var a = sel ? document.querySelector(sel) : null;
+  var relY = a ? a.getBoundingClientRect().top : null;
+  var y = v.scrollTop;
+  var qg = document.querySelector('.pha-qgrid'); var qy = qg ? qg.scrollTop : null;
+  fn();
+  var a2 = sel ? document.querySelector(sel) : null;
+  if(a2 && relY != null) v.scrollTop = y + (a2.getBoundingClientRect().top - relY);
+  else v.scrollTop = y;
+  var qg2 = document.querySelector('.pha-qgrid'); if(qg2 && qy != null) qg2.scrollTop = qy;
+}
 function phSetVerdict(name, val, reason){
   if(!name) return;
   var adv = null;
@@ -6993,8 +7052,8 @@ function phSetVerdict(name, val, reason){
   if(reason !== undefined){ if(reason) bm2[k] = reason; else delete bm2[k]; store('ncc_photos_badreason_v1', JSON.stringify(bm2)); }
   else if(!val || val === 'confirmed'){ if(bm2[k]){ delete bm2[k]; store('ncc_photos_badreason_v1', JSON.stringify(bm2)); } reason = ''; }
   phSyncPerson(name, val || '', reason === undefined ? null : (reason || ''));
-  if(S.route.name === 'photos') viewPhotos($('#view'));
-  else if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){ if(adv && val && val !== 'bad') phaState().cur = adv; viewAudit($('#view')); }
+  if(S.route.name === 'photos') keepAnchor(function(){ viewPhotos($('#view')); }, '.ph-poss');
+  else if(S.route.name === 'audit' && S.audit && audMode() === 'photos'){ if(adv && val && val !== 'bad') phaState().cur = adv; keepAnchor(function(){ viewAudit($('#view')); }, '.pha'); }
 }
 function phSetReview(name, val){ phSetVerdict(name, val, undefined); }
 
@@ -7128,6 +7187,7 @@ function phHeroHTML(e){
       '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div>';
   }
   return '<div class="hphoto" data-pname="' + esc(p.name) + '"><span class="hphoto-box" data-act="phinsp" data-pname="' + esc(p.name) + '" role="button" tabindex="0" title="Open the photo inspector"><img src="' + esc(photos[cur].url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, photos[cur].url) + '"></span>' +
+    '<button type="button" class="hphoto-adj" data-act="phadjust" data-pname="' + esc(p.name) + '" title="Adjust this photo&rsquo;s framing — no inspector needed">Adjust</button>' +
     nav + '</div>' + verdict;
 }
 /* Framing editor core. Two mounts: the standalone overlay (Photo
@@ -7266,7 +7326,7 @@ function phClearVerdict(name){
   if(m[k]){ delete m[k]; store('ncc_photos_badreason_v1', JSON.stringify(m)); }
   phSyncPerson(name, '', '');
   phaState().cur = name;
-  viewAudit($('#view'));
+  keepAnchor(function(){ viewAudit($('#view')); }, '.pha');
 }
 function phaRender(){
   var w = $('#phawrap'); if(!w) return;
@@ -7843,6 +7903,7 @@ function viewPhotos(v){
         '<div class="ph-poss-mid"><b>' + esc(p.name) + '</b><span class="phbadge ' + (p.status === 'likely' ? 'lik' : 'poss') + '">' + p.status.toUpperCase() + '</span>' +
         (p.evidence ? '<small>' + esc(briefClip(p.evidence, 150)) + '</small>' : '') + '</div>' +
         '<div class="ph-poss-act"><button type="button" class="btn sm primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Validate</button>' +
+        '<button type="button" class="btn sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust</button>' +
         '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div></div>';
     }).join('') + '</section>' : '';
   v.innerHTML = '<div class="page asearch pg-photos">' + headFull + possHtml + '<div class="ph-layout2">' + rail + main + '</div></div>';
@@ -9891,7 +9952,7 @@ function refreshAfterStatus(){
 }
 function ctxGo(di, j){
   S.ctx.i = j; S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
-  history.replaceState({ d:S.depth }, '', '#/p/' + encodeURIComponent(personId(D.directory[di]))); histNote(); render(); window.scrollTo(0, 0); var vw = $('#view'); if(vw) vw.scrollTop = 0;
+  history.replaceState({ d:S.depth }, '', '#/p/' + encodeURIComponent(personId(D.directory[di]))); render(); window.scrollTo(0, 0); var vw = $('#view'); if(vw) vw.scrollTop = 0;
 }
 function doSet(el){
   var di = curDi(el), k = el.getAttribute('data-k'), v = el.getAttribute('data-v'), e = D.directory[di];
@@ -9965,7 +10026,7 @@ function onClick(ev){
     case 'mladd': { var ake = taxEntities().ents[el.getAttribute('data-key')]; if(ake) mlAddMember(ake, +(el.getAttribute('data-di'))); break; }
     case 'mlmore': { var msec = el.getAttribute('data-sec'); MLV.more[msec] = !MLV.more[msec]; mlRender(); break; }
     case 'chggrp': chgToggle(el); break;
-    case 'phconfirm': { phSetReview(el.getAttribute('data-pname'), 'confirmed'); if(S.route.name === 'profile') repaintTop(); break; }
+    case 'phconfirm': { var _pc = el.getAttribute('data-pname'); phSetReview(_pc, 'confirmed'); if(S.route.name === 'profile') keepAnchor(function(){ repaintTop(); }, '#pm-a'); break; }
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
     case 'phinsp': { var _pn = el.getAttribute('data-pname'); phInspOpen(_pn, PH_HERO_IDX[String(_pn || '').toLowerCase()]); break; }
     case 'phix': phInspClose(); break;
@@ -9984,7 +10045,7 @@ function onClick(ev){
     case 'heroph': phHeroStep(el.getAttribute('data-pname'), parseInt(el.getAttribute('data-d'), 10) || 1); break;
     case 'herodot': (function(){ var idx2 = phIndex(), pp = idx2 && idx2[el.getAttribute('data-pname')]; if(pp){ PH_HERO_IDX[String(pp.name).toLowerCase()] = parseInt(el.getAttribute('data-i'), 10) || 0; phHeroPaint(pp.name); } })(); break;
     case 'phreject': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'wrong-person'); break;
-    case 'phrejectq': { var pn2 = el.getAttribute('data-pname'); phSetVerdict(pn2, 'rejected', ''); if(S.route.name === 'profile') repaintTop(); break; }
+    case 'phrejectq': { var pn2 = el.getAttribute('data-pname'); phSetVerdict(pn2, 'rejected', ''); if(S.route.name === 'profile') keepAnchor(function(){ repaintTop(); }, '#pm-a'); break; }
     case 'phwrong': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'wrong-person'); break;
     case 'phnoperson': phSetVerdict(el.getAttribute('data-pname'), 'rejected', 'no-person'); break;
     case 'phundo': phSetReview(el.getAttribute('data-pname'), null); break;
@@ -10005,8 +10066,8 @@ function onClick(ev){
     case 'back': { var bfb = S.ctx && S.ctx.from ? S.ctx.from : 'people'; if(bfb === 'groups' && S.ctx && S.ctx.grp) bfb = 'groups/' + S.ctx.grp; back(bfb); break; }
     case 'focus': setFocus(!focusOn()); break;
     case 'topback': topBack(); break;
-    case 'topfwd': if(HIST[S.depth + 1]) history.forward(); break;
-    case 'fwd': if(HIST[S.depth + 1]) history.forward(); break;
+    case 'topfwd': navFwd(); break;
+    case 'fwd': navFwd(); break;
     case 'home': goHome(); break;
     case 'audpick': { var audC = el.closest('.aud-card'); if(audC){ audC.setAttribute('data-pick', el.getAttribute('data-v')); $$('.aud-pick', audC).forEach(function(b){ b.classList.toggle('on', b === el); }); audTryArm(audC); } break; }
     case 'audgap': { var audC4 = el.closest('.aud-card'); if(audC4){ var gTo = el.getAttribute('data-gap'); if(gTo && gTo !== audC4.getAttribute('data-gap')) audSetGap(audC4, gTo); } break; }
