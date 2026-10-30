@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 103,
+ "count": 102,
  "suggestions": [
   {
    "id": "pf-23d8fd3bd0",
@@ -102,8 +102,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Potsdam Central School is in Potsdam."
+    "Potsdam Central School is in Potsdam.",
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -409,15 +409,15 @@
    "conf": 55
   },
   {
-   "id": "pf-4afd82fd14",
+   "id": "pf-bd82a60013",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -995,19 +995,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Canton: Aaron Daniels."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-5f8e0acd40",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
