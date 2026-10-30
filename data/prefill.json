@@ -121,15 +121,15 @@
    "conf": 55
   },
   {
-   "id": "pf-31ffb32968",
+   "id": "pf-cee13a6e1c",
    "key": "sf:caleb-dollinger",
    "display": "Caleb Dollinger",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -1064,15 +1064,15 @@
    "conf": 55
   },
   {
-   "id": "pf-b93e1fce44",
+   "id": "pf-2c553f2d2e",
    "key": "sf:richard-gilchrist",
    "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ],
    "conf": 55
   },
@@ -1304,26 +1304,26 @@
   {
    "key": "cashhyyy",
    "display": "Cashlynn Colbert",
-   "field": "churches",
+   "field": "groups",
    "value": "New Testament Church",
-   "conf": 74,
-   "id": "pf-ffc860a8f2"
+   "conf": 100,
+   "id": "pf-e27a779d55"
   },
   {
    "key": "marissa989",
    "display": "Marissa Wood",
-   "field": "churches",
+   "field": "groups",
    "value": "Christian Fellowship Center",
-   "conf": 74,
-   "id": "pf-3f5cfa55c1"
+   "conf": 100,
+   "id": "pf-0165d7f0b8"
   },
   {
    "key": "sf:ann-parow-mackey",
    "display": "Ann Parow Mackey",
-   "field": "churches",
+   "field": "groups",
    "value": "Christian Fellowship Center",
-   "conf": 74,
-   "id": "pf-a410d53999"
+   "conf": 100,
+   "id": "pf-c12c556337"
   },
   {
    "key": "sf:jdmeyers_",
