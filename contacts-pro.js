@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.45.1';
+var APP_VERSION = '3.46.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7014,16 +7014,21 @@ function rcPaint(){
 }
 
 /* ============================================================
-   Calendar (JD 2026-10-30, draft): a vertical, center-spine
-   timeline of JD's 2026 — Google Calendar events from all seven
-   calendars, routine series collapsed to ribbons, merged with the
-   contact log (filed contact events + Last Contact stamps).
-   People are linked by attendee match and full names in titles.
-   Bake: data/calendar.json (titles, dates, calendar names, person
-   keys only — never locations, descriptions, or guest emails).
-   Last Contact stamps are NOT touched by calendar data (JD: hold).
+   Calendar (JD 2026-10-30): THE ATLAS — a zoomable year-map
+   (year -> month -> week -> day) of JD's 2026, picked from the
+   council's five concepts. Google Calendar events from all seven
+   calendars, routine series collapsed but carrying their
+   occurrence dates, merged with the contact log (filed contact
+   events + Last Contact stamps). Every entry carries a sighting
+   tier from the bake (confirmed / strong / corroborated / venue /
+   weak). People are linked by attendee match and full names in
+   titles. Bake: data/calendar.json (titles, dates, calendar names,
+   person keys only — never locations, descriptions, or guest
+   emails). Last Contact stamps are NOT touched by calendar data
+   (JD: hold).
    ============================================================ */
-var CAL = null, CAL_LOADING = false, CAL_VIEW = { src:'all' }, CAL_SCROLLED = false, CAL_DI = null;
+var CAL = null, CAL_LOADING = false, CAL_DI = null;
+var CALV = { level:'year', month:null, weekStart:null, date:null, mode:'density', idx:null };
 function calLoad(){
   if(CAL || CAL_LOADING) return;
   CAL_LOADING = true;
@@ -7051,62 +7056,291 @@ function calChip(cal){
   return '<span class="cal-chip" style="--cc:' + col + '">' + esc(cal) + '</span>';
 }
 function viewCalendar(v){
+  /* V3.46.0 (JD 2026-10-30): THE ATLAS — the calendar design JD
+     picked from the council's five. A zoomable year-map: the whole
+     year as a density heat-grid that opens in place month -> week
+     -> day. The second color language is the sighting score baked
+     into calendar.json (tier per entry): gold = confirmed or
+     corroborated in-person, solid mark = strong, halo = venue day.
+     The People toggle re-shades the map from density to sightings.
+     Calendar data never touches Last Contact stamps (JD: hold);
+     inferred sightings are labeled, never filed as contacts. */
   calLoad();
-  var head = '<div class="page calpage"><div class="pagehead"><div><h1 class="display">Calendar</h1>' +
-    '<p class="cal-sub">Your 2026 on one line: every calendar you keep, with the routine series folded away, and your contact log woven in. People named in an event link straight to their profile.</p></div></div>';
+  var head = '<div class="page calpage ca">';
   if(!CAL){
-    v.innerHTML = head + '<div class="asskel"><div class="skl"></div><div class="skl"></div><div class="skl"></div></div></div>';
+    v.innerHTML = head + '<div class="pagehead"><div><h1 class="display">Calendar</h1>' +
+      '<p class="sub">Loading your 2026…</p></div></div></div>';
     return;
   }
-  var MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  function fmtD(iso){ var p = String(iso).split('-'); var d = new Date(+p[0], +p[1] - 1, +p[2]); return DOW[d.getDay()] + ', ' + MONS[+p[1] - 1] + ' ' + (+p[2]); }
-  function fmtT(t){ if(!t) return ''; var h = +t.slice(0, 2), m = t.slice(3, 5); var ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return h + ':' + m + ' ' + ap; }
-  var all = CAL.entries || [];
-  var nPpl = all.filter(function(x){ return (x.people || []).length; }).length;
-  var seg = [['all', 'All', all.length], ['event', 'Calendar', all.filter(function(x){ return x.kind !== 'contact'; }).length], ['contact', 'Contact log', all.filter(function(x){ return x.kind === 'contact'; }).length]]
-    .map(function(b){ return '<button type="button" class="' + (CAL_VIEW.src === b[0] ? 'on' : '') + '" data-act="calfilter" data-v="' + b[0] + '">' + b[1] + ' <b>' + b[2] + '</b></button>'; }).join('');
-  var shown = all.filter(function(x){
-    if(CAL_VIEW.src === 'event') return x.kind !== 'contact';
-    if(CAL_VIEW.src === 'contact') return x.kind === 'contact';
-    return true;
-  });
-  var html = '', lastMonth = '', side = 0;
-  shown.forEach(function(x){
-    var mk = String(x.date || '').slice(0, 7);
-    if(mk !== lastMonth){
-      lastMonth = mk;
-      var p = mk.split('-');
-      html += '<div class="cal-month" id="cal-m-' + mk + '"><span>' + MON[+p[1] - 1] + ' ' + p[0] + '</span></div>';
-    }
-    var chips = (x.people || []).map(calPersonChip).join('');
-    if(x.kind === 'series'){
-      html += '<div class="cal-item series"><div class="cal-series"><div class="cal-series-main"><b>' + esc(x.title) + '</b>' +
-        '<span class="cal-count">' + x.count + ' times</span></div>' +
-        '<div class="cal-series-sub">' + fmtD(x.first) + ' \u2192 ' + fmtD(x.last) + '</div>' +
-        '<div class="cal-meta">' + calChip(x.cal) + chips + '</div></div></div>';
-      return;
-    }
-    var cls = x.kind === 'contact' ? 'contact' : 'event';
-    var when = fmtD(x.date) + (x.time ? ' \u00b7 ' + fmtT(x.time) : '') + (x.kind === 'contact' && x.online ? ' \u00b7 Online' : '');
-    html += '<div class="cal-item ' + cls + ' ' + (side % 2 ? 'r' : 'l') + '"><i class="cal-dot"></i><div class="cal-card">' +
-      '<div class="cal-when">' + esc(when) + '</div><div class="cal-title">' + esc(x.title || '') + '</div>' +
-      '<div class="cal-meta">' + (x.kind === 'contact' ? '<span class="cal-chip contact">Contact log</span>' : calChip(x.cal)) + chips + '</div></div></div>';
-    side++;
-  });
-  if(!shown.length) html = '<div class="rc-none">Nothing in this view.</div>';
-  v.innerHTML = head +
-    '<div class="cal-stats"><span><b>' + all.length + '</b> entries</span><span><b>' + nPpl + '</b> name someone in the directory</span><span><b>' + all.filter(function(x){ return x.kind === 'series'; }).length + '</b> routine series folded</span></div>' +
-    '<div class="rc-controls cal-controls"><div class="rc-seg" role="group">' + seg + '</div></div>' +
-    '<div class="cal-tl">' + html + '</div>' +
-    '<p class="rc-foot">Draft: January to December 2026, all seven calendars. Routine repeats (gym, shifts, classes, church) collapse into one ribbon per series. Calendar matches never change a Last Contact stamp.</p></div>';
-  if(!CAL_SCROLLED){
-    CAL_SCROLLED = true;
-    var now = new Date(), mk2 = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2);
-    var tgt = document.getElementById('cal-m-' + mk2), view = $('#view');
-    if(tgt && view) view.scrollTop = Math.max(0, tgt.offsetTop - 140);
+  if(CAL.empty){
+    v.innerHTML = head + '<div class="pagehead"><div><h1 class="display">Calendar</h1></div></div>' +
+      '<section class="card"><div class="cbody"><p class="dim">No calendar bake yet.</p></div></section></div>';
+    return;
   }
+  calAtlasInit();
+  var stage = CALV.level === 'year' ? caYearHTML()
+    : CALV.level === 'month' ? caMonthHTML(CALV.month)
+    : CALV.level === 'week' ? caWeekHTML(CALV.weekStart)
+    : caDayHTML(CALV.date);
+  v.innerHTML = head + caCrumbsHTML() +
+    '<div class="ca-layout"><div class="ca-main">' + stage + '</div>' +
+    '<aside class="ca-rail">' + caRailHTML() + '</aside></div></div>';
+}
+
+var CA_MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var CA_MS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var CA_DW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var CA_TIERL = { confirmed:'Confirmed', strong:'Strong', corroborated:'Corroborated', venue:'Venue', weak:'Weak' };
+var CA_SIGHT = { confirmed:1, strong:1, corroborated:1 };
+var CA_RANK = { corroborated:4, confirmed:3, strong:2, venue:1 };
+
+function caPad(n){ return String(n).padStart(2, '0'); }
+function caIso(y, m, d){ var t = new Date(y, m, d); return t.getFullYear() + '-' + caPad(t.getMonth() + 1) + '-' + caPad(t.getDate()); }
+function caParse(ds){ var p = String(ds).split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+function caAdd(ds, n){ var t = caParse(ds); t.setDate(t.getDate() + n); return caIso(t.getFullYear(), t.getMonth(), t.getDate()); }
+function caWeekStart(ds){ var t = caParse(ds); return caAdd(ds, -t.getDay()); }
+function caFmtD(ds){ var t = caParse(ds); return CA_DW[t.getDay()] + ' ' + CA_MS[t.getMonth()] + ' ' + t.getDate(); }
+function caToday(){ var t = new Date(); return caIso(t.getFullYear(), t.getMonth(), t.getDate()); }
+
+function calAtlasInit(){
+  if(CALV.month == null){
+    var t = caParse(caToday());
+    CALV.month = t.getFullYear() === 2026 ? t.getMonth() : 9;
+    CALV.date = t.getFullYear() === 2026 ? caToday() : '2026-10-30';
+    CALV.weekStart = caWeekStart(CALV.date);
+  }
+  if(!CALV.idx || CALV.idx.src !== CAL){
+    var byDate = {}, serByDate = {}, dayTier = {}, venueDay = {};
+    (CAL.entries || []).forEach(function(e){
+      if(e.kind === 'series'){
+        (e.dates || []).forEach(function(ds){ (serByDate[ds] = serByDate[ds] || []).push(e); });
+        return;
+      }
+      (byDate[e.date] = byDate[e.date] || []).push(e);
+      if((CA_RANK[e.tier] || 0) > (CA_RANK[dayTier[e.date]] || 0)) dayTier[e.date] = e.tier;
+    });
+    Object.keys(serByDate).forEach(function(ds){
+      if(serByDate[ds].some(function(s){ return s.tier === 'venue'; })) venueDay[ds] = 1;
+    });
+    CALV.idx = { src: CAL, byDate: byDate, serByDate: serByDate, dayTier: dayTier, venueDay: venueDay };
+  }
+}
+function caDayInfo(ds){
+  var idx = CALV.idx, es = idx.byDate[ds] || [];
+  var people = {}, contact = false;
+  es.forEach(function(e){
+    (e.people || []).forEach(function(k){ people[k] = 1; });
+    if(e.kind === 'contact') contact = true;
+  });
+  return { n: es.length, tier: idx.dayTier[ds] || null, people: Object.keys(people),
+           contact: contact, venue: !!idx.venueDay[ds], series: idx.serByDate[ds] || [] };
+}
+function caSightDays(scopeFn){
+  var idx = CALV.idx, days = {};
+  Object.keys(idx.byDate).forEach(function(ds){
+    if(!scopeFn(ds)) return;
+    if(idx.byDate[ds].some(function(e){ return CA_SIGHT[e.tier]; })) days[ds] = 1;
+  });
+  return Object.keys(days).length;
+}
+function caTierChip(tier){
+  return tier ? '<span class="ca-tchip t-' + tier + '">' + CA_TIERL[tier] + '</span>' : '';
+}
+function caPersonName(key){
+  var di = calDi(key);
+  return di == null ? '' : dispName(D.directory[di]);
+}
+
+function caCrumbsHTML(){
+  var h = '<div class="ca-crumbs">';
+  h += '<button type="button" class="ca-crumb' + (CALV.level === 'year' ? ' here' : '') + '" data-cal="year">2026</button>';
+  if(CALV.level !== 'year')
+    h += '<span class="ca-sep">/</span><button type="button" class="ca-crumb' + (CALV.level === 'month' ? ' here' : '') + '" data-cal="month" data-d="' + CALV.month + '">' + CA_MN[CALV.month] + '</button>';
+  if(CALV.level === 'week' || CALV.level === 'day')
+    h += '<span class="ca-sep">/</span><button type="button" class="ca-crumb' + (CALV.level === 'week' ? ' here' : '') + '" data-cal="week" data-d="' + CALV.weekStart + '">Week of ' + caFmtD(CALV.weekStart) + '</button>';
+  if(CALV.level === 'day')
+    h += '<span class="ca-sep">/</span><span class="ca-crumb here">' + caFmtD(CALV.date) + '</span>';
+  h += '<span class="ca-nav2"><button type="button" class="ca-step" data-cal="prev" aria-label="Previous">‹</button>' +
+       '<button type="button" class="ca-step" data-cal="next" aria-label="Next">›</button></span>';
+  h += '<span class="ca-toggle"><button type="button" class="' + (CALV.mode === 'density' ? 'on' : '') + '" data-cal="mode" data-d="density">Density</button>' +
+       '<button type="button" class="' + (CALV.mode === 'people' ? 'on' : '') + '" data-cal="mode" data-d="people">People</button></span>';
+  return h + '</div>';
+}
+
+function caYearHTML(){
+  var idx = CALV.idx, today = caToday();
+  var h = '<div class="ca-yeargrid">';
+  for(var m = 0; m < 12; m++){
+    var dim = new Date(2026, m + 1, 0).getDate(), lead = new Date(2026, m, 1).getDay();
+    var cnt = 0;
+    Object.keys(idx.byDate).forEach(function(ds){ if(ds.indexOf('2026-' + caPad(m + 1)) === 0) cnt += idx.byDate[ds].length; });
+    h += '<div class="ca-mblock" data-cal="month" data-d="' + m + '" role="button" tabindex="0"><h3>' + CA_MN[m] + '<span>' + cnt + ' entries</span></h3><div class="ca-dgrid">';
+    for(var i = 0; i < lead; i++) h += '<div></div>';
+    for(var d = 1; d <= dim; d++){
+      var ds = caIso(2026, m, d), info = caDayInfo(ds);
+      var cls = 'ca-dc', inner = '';
+      if(CALV.mode === 'people'){
+        if(info.tier === 'confirmed' || info.tier === 'corroborated') cls += ' sight';
+        else if(info.tier === 'strong') cls += ' strong';
+        else if(info.venue) cls += ' venue';
+      } else {
+        if(info.n) cls += ' w' + Math.min(4, info.n > 6 ? 4 : info.n > 3 ? 3 : info.n > 1 ? 2 : 1);
+        if(info.tier === 'confirmed' || info.tier === 'corroborated') cls += ' gold';
+        if(info.people.length) inner += '<span class="ca-dot"></span>';
+        if(info.contact) inner += '<span class="ca-tick"></span>';
+      }
+      if(ds === today) cls += ' today';
+      h += '<div class="' + cls + '" title="' + esc(caFmtD(ds) + ' · ' + info.n + ' entries') + '">' + inner + '</div>';
+    }
+    h += '</div></div>';
+  }
+  return h + '</div>';
+}
+
+function caMonthHTML(m){
+  var idx = CALV.idx, today = caToday();
+  var dim = new Date(2026, m + 1, 0).getDate(), lead = new Date(2026, m, 1).getDay();
+  var h = '<div class="ca-monthgrid">' + CA_DW.map(function(d){ return '<div class="ca-dow">' + d + '</div>'; }).join('');
+  for(var i = 0; i < lead; i++) h += '<div class="ca-cell dim"></div>';
+  for(var d = 1; d <= dim; d++){
+    var ds = caIso(2026, m, d), es = idx.byDate[ds] || [], info = caDayInfo(ds);
+    h += '<div class="ca-cell' + (ds === today ? ' today' : '') + '" data-cal="day" data-d="' + ds + '">' +
+      '<div class="ca-dn">' + d + (info.tier ? '<span class="' + (info.tier === 'strong' ? 'ca-rdot' : 'ca-gdot') + '"></span>' : '') +
+      '<button type="button" class="ca-weeklink" data-cal="week" data-d="' + caWeekStart(ds) + '">week →</button></div>' +
+      es.slice(0, 3).map(function(e){ return caMiniRow(e); }).join('') +
+      info.series.slice(0, Math.max(0, 3 - Math.min(3, es.length))).map(function(s){
+        return '<div class="ca-mini ser' + (s.tier === 'venue' ? ' venue' : '') + '">' + esc(s.title) + '</div>';
+      }).join('') +
+      (es.length + info.series.length > 3 ? '<div class="ca-mini more">+ ' + (es.length + info.series.length - 3) + ' more</div>' : '') +
+      '</div>';
+  }
+  h += '</div>';
+  var first = caIso(2026, m, 1), last = caIso(2026, m, dim), run = [];
+  (CAL.entries || []).forEach(function(e){
+    if(e.kind !== 'series') return;
+    var n = (e.dates || []).filter(function(ds){ return ds >= first && ds <= last; }).length;
+    if(n) run.push({ e: e, n: n });
+  });
+  if(run.length){
+    h += '<div class="ca-bands"><div class="ca-bands-h">Running this month</div>' + run.map(function(r){
+      return '<div class="ca-band' + (r.e.tier === 'venue' ? ' venue' : '') + '"><b>' + esc(r.e.title) + '</b><span>' + r.n + '× this month · ' + r.e.count + ' total · ' + caFmtD(r.e.first) + ' → ' + caFmtD(r.e.last) + '</span>' + caTierChip(r.e.tier) + '</div>';
+    }).join('') + '</div>';
+  }
+  return h;
+}
+function caMiniRow(e){
+  var who = (e.people && e.people.length) ? ' <b>' + esc(caPersonName(e.people[0])) + '</b>' : '';
+  var weak = e.tier === 'weak' && e.kind !== 'contact' ? ' weak' : '';
+  return '<div class="ca-mini' + weak + '"><span class="ca-tm">' + (e.time || '·') + '</span> ' + esc(e.title) + who + '</div>';
+}
+
+function caWeekHTML(ws){
+  var idx = CALV.idx, today = caToday();
+  var h = '<div class="ca-weekgrid">';
+  for(var i = 0; i < 7; i++){
+    var ds = caAdd(ws, i), t = caParse(ds), es = idx.byDate[ds] || [], info = caDayInfo(ds);
+    var allday = es.filter(function(e){ return !e.time; });
+    var timed = es.filter(function(e){ return e.time; }).sort(function(a, b){ return a.time < b.time ? -1 : 1; });
+    h += '<div class="ca-wcol' + (ds === today ? ' today' : '') + '" data-cal="day" data-d="' + ds + '">' +
+      '<h5>' + CA_DW[t.getDay()] + '</h5><div class="ca-wd">' + t.getDate() + '</div>' +
+      info.series.map(function(s){ return '<div class="ca-wev ser' + (s.tier === 'venue' ? ' venue' : '') + '"><b>' + esc(s.title) + '</b><span>series</span></div>'; }).join('') +
+      (allday.length ? '<div class="ca-shelf">' + allday.map(caWeekEv).join('') + '</div>' : '') +
+      timed.map(caWeekEv).join('') +
+      (!es.length && !info.series.length ? '<div class="ca-wev none">Nothing filed</div>' : '') + '</div>';
+  }
+  return h + '</div>';
+}
+function caWeekEv(e){
+  var who = (e.people && e.people.length) ? '<span>' + e.people.map(caPersonName).filter(Boolean).map(esc).join(', ') + '</span>' : '';
+  return '<div class="ca-wev"><span class="ca-tm">' + (e.time || 'all day') + '</span><b>' + esc(e.title) + '</b>' + who + '</div>';
+}
+
+function caDayHTML(ds){
+  var idx = CALV.idx, es = (idx.byDate[ds] || []).slice().sort(function(a, b){ return (a.time || '99') < (b.time || '99') ? -1 : 1; });
+  var t = caParse(ds), series = idx.serByDate[ds] || [];
+  var h = '<div class="ca-sheet"><h2>' + CA_DW[t.getDay()] + ', ' + CA_MN[t.getMonth()] + ' ' + t.getDate() + '</h2>' +
+    '<p class="ca-dsub">' + es.length + ' entries' + (series.length ? ' · ' + series.length + ' series running' : '') + ' · inferred sightings are labeled, never filed as contacts</p>';
+  if(!es.length && !series.length) h += '<div class="empty"><p>Nothing on this day.</p></div>';
+  h += es.map(function(e){
+    return '<div class="ca-evrow"><span class="ca-tm">' + (e.time || 'all day') + '</span><span class="ca-tt"><b>' + esc(e.title) + '</b>' +
+      caTierChip(e.tier) +
+      (e.people || []).map(calPersonChip).join('') +
+      (e.kind === 'contact' ? '<span class="ca-calname">Contact log · ' + (e.online ? 'online' : 'in person') + '</span>' : '<span class="ca-calname">' + calChip(e.cal) + '</span>') +
+      '</span></div>';
+  }).join('');
+  h += series.map(function(s){
+    return '<div class="ca-evrow"><span class="ca-tm">series</span><span class="ca-tt"><b>' + esc(s.title) + '</b>' +
+      caTierChip(s.tier) + '<span class="ca-calname">' + calChip(s.cal) + ' · one of ×' + s.count + ' · runs ' + caFmtD(s.first) + ' → ' + caFmtD(s.last) + '</span></span></div>';
+  }).join('');
+  return h + '</div>';
+}
+
+function caRailHTML(){
+  var idx = CALV.idx, scopeFn, scopeName, scopeDays;
+  if(CALV.level === 'year'){ scopeName = '2026'; scopeDays = 365; scopeFn = function(){ return true; }; }
+  else if(CALV.level === 'month'){ scopeName = CA_MN[CALV.month]; scopeDays = new Date(2026, CALV.month + 1, 0).getDate(); var pre = '2026-' + caPad(CALV.month + 1); scopeFn = function(ds){ return ds.indexOf(pre) === 0; }; }
+  else { scopeName = 'this week'; scopeDays = 7; var a = CALV.weekStart, b = caAdd(CALV.weekStart, 6); scopeFn = function(ds){ return ds >= a && ds <= b; }; }
+  var sight = caSightDays(scopeFn);
+  var today = caToday(), lastSeen = {};
+  (CAL.entries || []).forEach(function(e){
+    if(e.kind === 'series' || !CA_SIGHT[e.tier] || e.date > today) return;
+    (e.people || []).forEach(function(k){ if(!lastSeen[k] || e.date > lastSeen[k]) lastSeen[k] = e.date; });
+  });
+  var longest = Object.keys(lastSeen).map(function(k){
+    return { k: k, last: lastSeen[k], days: Math.round((caParse(today) - caParse(lastSeen[k])) / 86400000) };
+  }).sort(function(x, y){ return y.days - x.days; }).slice(0, 6);
+  var h = '<h4>Seen in person</h4><div class="ca-big">' + sight + '</div>' +
+    '<div class="ca-rsub">sighting days in ' + esc(scopeName) + ' of ' + scopeDays + ' — confirmed, strong, and corroborated only. Birthdays never count.</div>' +
+    '<h4>Legend</h4><div class="ca-legend">' +
+    '<span><i class="ca-sw conf"></i>Confirmed — contact log, in person</span>' +
+    '<span><i class="ca-sw corr"></i>Corroborated — event + contact, same day</span>' +
+    '<span><i class="ca-sw strg"></i>Strong — event names the person</span>' +
+    '<span><i class="ca-sw ven"></i>Venue — Frisbee, Soccer, church, Drill</span>' +
+    '<span><i class="ca-sw weak"></i>Weak — birthday / online / solo</span></div>' +
+    '<h4>Longest since seen in person</h4><ul class="ca-longest">' +
+    (longest.length ? longest.map(function(p){
+      var di = calDi(p.k);
+      var name = di == null ? '' : dispName(D.directory[di]);
+      var inner = '<span>' + esc(name) + '</span><b>' + p.days + 'd</b>';
+      return '<li>' + (di == null ? inner : '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>') + '</li>';
+    }).join('') : '<li><span>No in-person sightings on file yet.</span></li>') +
+    '</ul><div class="ca-rfoot">Venue days wash the map in People mode — a room full of people, the crowd unnamed. Inferred sightings are labeled and never filed as contacts.</div>';
+  return h;
+}
+
+function caGoDay(ds){
+  CALV.date = ds;
+  CALV.month = caParse(ds).getMonth();
+  CALV.weekStart = caWeekStart(ds);
+  CALV.level = 'day';
+}
+function caStep(dir){
+  if(CALV.level === 'month'){ CALV.month = Math.max(0, Math.min(11, CALV.month + dir)); }
+  else if(CALV.level === 'week'){ CALV.weekStart = caAdd(CALV.weekStart, 7 * dir); CALV.month = caParse(CALV.weekStart).getMonth(); }
+  else if(CALV.level === 'day'){ caGoDay(caAdd(CALV.date, dir)); CALV.level = 'day'; }
+}
+if(!window.__calAtlasBound){
+  window.__calAtlasBound = true;
+  document.addEventListener('click', function(e){
+    var t = e.target && e.target.closest ? e.target.closest('[data-cal]') : null;
+    if(!t) return;
+    var a = t.getAttribute('data-cal'), d = t.getAttribute('data-d');
+    if(a === 'month'){ CALV.month = +d; CALV.level = 'month'; }
+    else if(a === 'day'){ caGoDay(d); }
+    else if(a === 'week'){ CALV.weekStart = d; CALV.month = caParse(d).getMonth(); CALV.level = 'week'; }
+    else if(a === 'year'){ CALV.level = 'year'; }
+    else if(a === 'mode'){ CALV.mode = d; }
+    else if(a === 'prev'){ caStep(-1); }
+    else if(a === 'next'){ caStep(1); }
+    else return;
+    if(S.route && S.route.name === 'calendar') render();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Escape' || !S.route || S.route.name !== 'calendar') return;
+    if(CALV.level === 'day'){ CALV.level = 'week'; render(); }
+    else if(CALV.level === 'week'){ CALV.level = 'month'; render(); }
+    else if(CALV.level === 'month'){ CALV.level = 'year'; render(); }
+  });
 }
 
 function viewDaily(v){
@@ -10372,7 +10606,6 @@ function onClick(ev){
     case 'rcfile': rcDecide(el.getAttribute('data-id'), 'file'); break;
     case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
     case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; rcSaveView(); rcPaint(); break;
-    case 'calfilter': CAL_VIEW.src = el.getAttribute('data-v') || 'all'; render(); break;
     case 'rcphoto': rcTogglePhoto(el.getAttribute('data-id')); break;
     case 'rcphotoonly': RC_VIEW.photo = !RC_VIEW.photo; rcSaveView(); rcPaint(); break;
     case 'phconfirm': { var _pc = el.getAttribute('data-pname'); phSetReview(_pc, 'confirmed'); if(S.route.name === 'profile') keepAnchor(function(){ repaintTop(); }, '#pm-a'); break; }
