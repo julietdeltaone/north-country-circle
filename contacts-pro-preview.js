@@ -1844,7 +1844,7 @@ function personIsAka(e){ return pkey(e) === AKA_KEY; }
    ============================================================ */
 var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
-  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'lastc', d:-1 }, side:null, view:'list' },
+  ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null, view:'recent' },
   prof:{ di:null, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false },
   net:{ sel:null, org:null, view:'2d' },
   fam:{ editing:null, focus:null, sheet:false, side:null },
@@ -2245,7 +2245,7 @@ function goHome(){
   $$('.menu-pop').forEach(function(m){ m.hidden = true; });
   S.ctx = null;
   if(S.audit) S.audit.lcOpen = null;
-  S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'lastc', d:-1 }, side:S.ppl.side, view:(S.ppl && S.ppl.view) || 'list' };
+  S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:(S.ppl && S.ppl.view && S.ppl.view !== 'reach') ? S.ppl.view : 'recent' };
   go('home');   /* V2.28.0: the landing is the Home overview now; the state clearing above is unchanged */
 }
 addEventListener('popstate', function(ev){ S.depth = (ev.state && ev.state.d) || 0; render(); });
@@ -2398,7 +2398,7 @@ function orgsOf(e){
    order (Vetted, Associate, Open, No tier yet); associates is numeric. Ties
    fall to name, then directory order, so the ordering is total. */
 function pplSort(dis){
-  var ts = S.ppl.ts || { k:'lastc', d:-1 }, d = ts.d < 0 ? -1 : 1, K = {};
+  var ts = S.ppl.ts || { k:'name', d:1 }, d = ts.d < 0 ? -1 : 1, K = {};
   dis.forEach(function(di){
     var e = D.directory[di], tr = TIER_RANK[tierOf(e)];
     K[di] = {
@@ -2710,7 +2710,7 @@ function viewPeople(v){
      banner now — search, tier chips and the More/Columns buttons sit
      in the banner's second row, so the table starts right under it. */
   v.innerHTML = '<div class="page people"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
-    '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="reach"' + (f.view === 'reach' ? ' class="on"' : '') + '>Reach back out</button><button type="button" data-act="pplview" data-v="timeline"' + (f.view === 'timeline' ? ' class="on"' : '') + '>Timeline</button></div></div>' +
+    '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="timeline"' + (f.view === 'timeline' ? ' class="on"' : '') + '>Timeline</button></div></div>' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
     '<div class="tool-r">' +
@@ -2758,39 +2758,6 @@ function paintPeople(){
     S.ppl.cur = dis;
     box.innerHTML = tlShell('ppl', items);
     var tc = $('#pcount'); if(tc) tc.textContent = items.length + ' contact events on file';
-    return;
-  }
-  if(dis.length && S.ppl.view === 'reach'){
-    /* Reach back out (JD 2026-10-28): everyone with at least one contact
-       event or a note on file, longest-quiet first (Last Contact
-       oldest-first; a note-only person with no date sorts last). Built
-       entirely from the existing filters and the flexible-date keys. */
-    var reach = dis.filter(function(di){
-      var e = D.directory[di];
-      return !!lcNote(e).trim() || (e.events || []).some(function(ev){ return ev && ev.kind === 'contact'; });
-    });
-    function reachKey(di){
-      var e = D.directory[di], k = flexKey(gv(e, 'last_contact'));
-      if(k != null) return k;
-      var m = null;
-      (e.events || []).forEach(function(ev){
-        if(ev && ev.kind === 'contact'){ var ek = flexKey(ev.date); if(ek != null && (m == null || ek > m)) m = ek; }
-      });
-      return m;
-    }
-    reach.sort(function(a, b){
-      var ka = reachKey(a), kb = reachKey(b);
-      if(ka == null && kb == null) return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
-      if(ka == null) return 1;
-      if(kb == null) return -1;
-      if(ka !== kb) return ka - kb;
-      return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
-    });
-    S.ppl.cur = reach;
-    box.innerHTML = (reach.length
-      ? '<div class="ptwrap"><table class="ptable">' + ptColgroupHTML() + ptheadHTML() + '<tbody>' + reach.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>'
-      : emptyState('No one to reach back out to yet.', 'Log a contact or leave a note on a profile and they queue here, longest-quiet first.'));
-    var rc = $('#pcount'); if(rc) rc.textContent = reach.length + ' to reach back out to';
     return;
   }
   if(dis.length && S.ppl.view === 'recent'){
@@ -6565,8 +6532,7 @@ function hmContactsCard(){
   var rows = people().map(function(di){
     return { di:di, e:D.directory[di], k:hmLastKey(D.directory[di]) };
   }).filter(function(r){ return r.k != null; });
-  var recent = rows.slice().sort(function(a, b){ return b.k - a.k; }).slice(0, 6);
-  var quiet = rows.slice().sort(function(a, b){ return a.k - b.k; }).slice(0, 5);
+  var recent = rows.slice().sort(function(a, b){ return b.k - a.k; }).slice(0, 8);
   function row(r, mode){
     var b = briefOf(r.e);
     var when = lcDateLabel(new Date(r.k).getFullYear() + '-' + ('0' + (new Date(r.k).getMonth() + 1)).slice(-2) + '-' + ('0' + new Date(r.k).getDate()).slice(-2));
@@ -6581,10 +6547,9 @@ function hmContactsCard(){
   var tlOn = S.hmTlView === 'timeline';
   return '<section class="card hm-blk"><header><h3>Last contacts</h3><em class="cnt">' + rows.length + ' with contact on file</em><span class="sp"></span>' +
     '<div class="seg hm-tlseg" role="group" aria-label="Last contacts view"><button type="button" data-act="hmtlview" data-v="list"' + (!tlOn ? ' class="on"' : '') + '>List</button><button type="button" data-act="hmtlview" data-v="timeline"' + (tlOn ? ' class="on"' : '') + '>Timeline</button></div>' +
-    '<a class="hma-link" href="#/people">Reach back out ' + ic('arrow', 12) + '</a></header><div class="cbody">' +
+    '</header><div class="cbody">' +
     (tlOn ? tlShell('hm', tlContactItems(people()))
-      : '<div class="hm-lc-cols"><div><h4>Most recent</h4>' + recent.map(function(r){ return row(r, 'recent'); }).join('') + '</div>' +
-        '<div><h4>Quiet the longest</h4>' + quiet.map(function(r){ return row(r, 'quiet'); }).join('') + '</div></div>') +
+      : '<div class="hm-lc-list">' + recent.map(function(r){ return row(r, 'recent'); }).join('') + '</div>') +
     '</div></section>';
 }
 /* --- Home: Network at a glance (JD 2026-10-28) — the full map
@@ -7911,7 +7876,12 @@ function phaRender(){
   var q = phaQueue(st.filter);
   var idx = q.findIndex(function(p){ return p.name === st.cur; });
   var p = idx >= 0 ? q[idx] : null;
-  if(!p && st.cur){ var ap = phaAll().filter(function(x){ return x.name === st.cur; })[0]; if(ap) p = ap; }
+  /* The st.cur fallback exists for viewing a photo from OUTSIDE the
+     current queue — it must never fire when the queue itself is
+     empty, or the last reviewed photo lingers on screen after the
+     queue clears (JD 2026-10-30: "0 to review, but the last one
+     will stay"). An empty queue shows the clear state. */
+  if(!p && st.cur && q.length){ var ap = phaAll().filter(function(x){ return x.name === st.cur; })[0]; if(ap) p = ap; }
   if(!p && q.length){ st.cur = q[0].name; p = q[0]; idx = 0; }
   var chips = filters.map(function(f){ return '<button type="button" class="pha-chip' + (st.filter === f[0] ? ' on' : '') + '" data-act="phafilter" data-f="' + f[0] + '">' + f[1] + ' <b>' + f[2] + '</b></button>'; }).join('');
   var list = q.map(function(x){ var r = phaRev(x); var tag = r === 'bad' ? 'BAD' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : r === 'confirmed' ? 'OK' : r === 'rejected' ? 'REJ' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P'; return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span><em>' + tag + '</em></button>'; }).join('');
@@ -8734,12 +8704,28 @@ function audRemaining(){
   people().forEach(function(di){ n += audOpenGaps(di).length; });
   return n;
 }
+/* Per-category open counts for the Category Run strip (restored
+   V3.48.0, JD 2026-10-30: a past pass stripped the picker and its
+   counts — "how many of each thing is needed" belongs on the bar). */
+function audGapCounts(){
+  var c = {};
+  Object.keys(AUD_GAPS).forEach(function(g){ c[g] = 0; });
+  people().forEach(function(di){ audOpenGaps(di).forEach(function(g){ c[g]++; }); });
+  return c;
+}
 function audDeal(){
   var A = S.audit, later = audLaterEntries(), parkedDis = {}, pool = [];
+  /* Category Run (restored V3.48.0): with a category picked, the deck
+     carries ONLY that gap — parked entries included. */
+  if(A.cat){
+    later = later.filter(function(x){ return x.gaps.indexOf(A.cat) >= 0; })
+      .map(function(x){ return { di:x.di, gaps:[A.cat], done:[], cur:A.cat, vals:{}, parked:true, dropped:0 }; });
+  }
   later.forEach(function(x){ parkedDis[x.di] = 1; });
   people().forEach(function(di){
     if(parkedDis[di]) return;
     var g = audOpenGaps(di);
+    if(A.cat){ if(g.indexOf(A.cat) < 0) return; g = [A.cat]; }
     if(g.length) pool.push({ di:di, gaps:g.slice(), done:[], cur:g[0], vals:{}, dropped:0 });
   });
   for(var i = pool.length - 1; i > 0; i--){
@@ -9217,7 +9203,7 @@ function audWireCard(card){
    save-for-later) untouched. */
 /* The two "flow" modes — saves are instant there and the keyboard
    rules below apply. Mirrors the instant-arm grouping in audTryArm. */
-function audFlowMode(){ return !!(S.audit && (S.audit.mode === 'rapid' || S.audit.mode === 'cat')); }
+function audFlowMode(){ return !!(S.audit && (S.audit.mode === 'rapid' || S.audit.cat)); }
 
 /* The editor focus target inside a card: the text field when the gap
    has one, else the first pick chip (tier / relationship), else the
@@ -9465,7 +9451,7 @@ function audTryArm(card){
      kill the pace — the toast + Undo is the safety net instead.
      Category Run is instant too (JD 2026-10-16): once a value is
      confirmed entered it commits immediately, last gap included. */
-  var instantArm = !!(S.audit && (S.audit.mode === 'rapid' || S.audit.mode === 'cat'));
+  var instantArm = !!(S.audit && (S.audit.mode === 'rapid' || S.audit.cat));
   if(reeditArm || instantArm || !audCardLast(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audDisarm(card);
   var cdt = $('.aud-cdt', card), bar = $('.aud-bar i', card);
@@ -9691,7 +9677,7 @@ function audPaintEmpty(){
   if(!box || !grid) return;
   if(grid.querySelector('.aud-card')){ box.innerHTML = ''; return; }
   if(S.audit && S.audit.blitzDone){ box.innerHTML = ''; return; }   /* the Blitz summary owns the stage */
-  if(audMode() === 'cat' && !(S.audit && S.audit.cat)){ box.innerHTML = ''; return; }   /* waiting on a category pick */
+  if(S.audit && S.audit.cat){ box.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Lane clear</h3><p>Every ' + esc(AUD_GAPS[S.audit.cat].tag) + ' gap is filled or closed out. Pick another category above, or exit the run.</p></div>'; return; }
   if(audRemaining() === 0) box.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>All caught up</h3><p>Every profile has the basics filled in. Nice work.</p></div>';
   else box.innerHTML = '<div class="aud-caught">' + ic('target', 26) + '<h3>That is the whole deck</h3><p>Everything else is filled in or dismissed. Shuffle deals a fresh mix from what is left; dismissed items stay out for good.</p></div>';
 }
@@ -9744,7 +9730,7 @@ function audNoteFill(di, gap){
   A.fills.push(Date.now());
   A.streak = (A.streak || 0) + 1;
   if(A.streak > (A.best || 0)) A.best = A.streak;
-  if(A.mode === 'cat' && gap){ if(!A.catDone) A.catDone = {}; A.catDone[gap] = (A.catDone[gap] || 0) + 1; }
+  if(A.cat && gap === A.cat){ if(!A.catDone) A.catDone = {}; A.catDone[gap] = (A.catDone[gap] || 0) + 1; }
   if(A.blitz){ A.blitz.fills++; if(A.streak > A.blitz.best) A.blitz.best = A.streak; }
   var d = audDay(); d.n++;
   var met = d.n >= d.goal && !d.met; if(met) d.met = true;
@@ -9835,13 +9821,29 @@ function audModeBarHTML(){
     return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> to review</span><span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
       '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; W wrong person &middot; B bad photo &middot; N no person &middot; U undo &middot; A adjust &middot; 1&ndash;7 reason</span></div>';
   }
-  return '<div class="aud-modebar"><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button></div>';
+  /* Category Run (restored V3.48.0, JD 2026-10-30): the picker with
+     per-category open counts — "how many of each thing is needed" —
+     lives on the Cards mode bar; while a run is active the bar shows
+     the run's cleared/left tally instead. */
+  var catCounts = audGapCounts(), catBar;
+  if(A && A.cat){
+    var cleared = (A.catDone && A.catDone[A.cat]) || 0;
+    catBar = '<span class="aud-catrun"><b>Category Run · ' + esc(AUD_GAPS[A.cat].tag) + '</b>' +
+      '<span><b>' + cleared + '</b> cleared this run · <b>' + (catCounts[A.cat] || 0) + '</b> left in this lane</span>' +
+      '<button type="button" class="btn ghost sm" data-act="audcatall">Exit run</button></span>';
+  } else {
+    catBar = '<span class="aud-cats"><span class="aud-cats-l">Category Run</span>' + Object.keys(AUD_GAPS).map(function(g){
+      return '<button type="button" class="aud-catchip" data-act="audcat" data-g="' + g + '">' + esc(AUD_GAPS[g].tag) + ' <b>' + (catCounts[g] || 0) + '</b></button>';
+    }).join('') + '</span>';
+  }
+  return '<div class="aud-modebar">' + catBar + '<span class="sp"></span><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button></div>';
 }
 function audPaintModeBar(){
   var A = S.audit; if(!A) return;
   var m = audMode();
   if(m === 'lima'){ var lp = $('#lcpend'); if(lp) lp.textContent = lcPendingCount(); }
   if(m === 'prefill'){ var mb = $('#audmodebar'); if(mb) mb.innerHTML = audModeBarHTML(); }
+  if(m === 'cards'){ var cb = $('#audmodebar'); if(cb) cb.innerHTML = audModeBarHTML(); }
 }
 
 /* ============================================================
@@ -10821,7 +10823,7 @@ function onClick(ev){
     case 'pffield': PF_VIEW.field = el.getAttribute('data-d'); pfRender(); break;
     case 'pfstatus': PF_VIEW.status = el.getAttribute('data-d'); pfRender(); break;
     case 'pfgrade': PF_VIEW.grade = el.getAttribute('data-d'); pfRender(); break;
-    case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.shown = null; viewAudit($('#view')); } break;
+    case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.catDone = {}; S.audit.shown = null; viewAudit($('#view')); } break;
     case 'audcatall': if(S.audit) audSetMode('cards'); break;
     case 'audbulkphone': audBulkPhone(); break;
     case 'audgoal': { var gd = audDay(); gd.goal = Math.max(5, Math.min(500, gd.goal + (+el.getAttribute('data-d')))); if(gd.n < gd.goal) gd.met = false; audDaySave(gd); audPaintGoal(); break; }
@@ -10907,8 +10909,8 @@ function onClick(ev){
     case 'ptvis': { var pvk = el.getAttribute('data-k'), pvc = null; ptCols().forEach(function(c){ if(c.k === pvk) pvc = c; }); if(pvc){ if(pvc.on && ptCols().filter(function(c){ return c.on; }).length === 1) break; pvc.on = !pvc.on; ptSaveCols(); paintPeople(); ptColsSheet(); var pvb = $('#sheetwrap [data-act="ptvis"][data-k="' + pvk + '"]'); if(pvb && !pvb.disabled) pvb.focus(); } break; }
     case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); var pmb = $('#sheetwrap [data-act="ptmv"][data-k="' + pmk + '"][data-d="' + pmd + '"]'); if(!pmb || pmb.disabled) pmb = $('#sheetwrap [data-act="ptvis"][data-k="' + pmk + '"]'); if(pmb && !pmb.disabled) pmb.focus(); } break; }
     case 'morefilters': openMoreFilters(); break;
-    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'lastc', d:-1 }, side:S.ppl.side, view:S.ppl.view }; closeSheet(); viewPeople($('#view')); break;
-    case 'pplview': { var pvv = el.getAttribute('data-v'); S.ppl.view = (pvv === 'recent' || pvv === 'reach' || pvv === 'timeline') ? pvv : 'list'; viewPeople($('#view')); break; }
+    case 'pclear': S.ppl = { q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:S.ppl.side, view:S.ppl.view }; closeSheet(); viewPeople($('#view')); break;
+    case 'pplview': { var pvv = el.getAttribute('data-v'); S.ppl.view = (pvv === 'recent' || pvv === 'timeline') ? pvv : 'list'; viewPeople($('#view')); break; }
     case 'tlmode': { var tls1 = tlState(el.getAttribute('data-scope')); tls1.mode = el.getAttribute('data-m'); tls1.off = 0; tls1.exp = {}; tlRepaint(el.getAttribute('data-scope')); break; }
     case 'hmtlview': S.hmTlView = el.getAttribute('data-v') === 'timeline' ? 'timeline' : 'list'; viewHome($('#view')); break;
     case 'tltog': S.prof.tlVisual = el.getAttribute('data-v') === 'visual'; repaintSec('timeline'); break;
