@@ -3603,15 +3603,15 @@
    ]
   },
   {
-   "id": "pf-43c405c7d1",
+   "id": "pf-23d8fd3bd0",
    "key": "sf:acacia-white",
    "display": "Acacia White",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Massena, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "Massena Hospital is in Massena."
    ]
   },
   {
@@ -3700,15 +3700,15 @@
    ]
   },
   {
-   "id": "pf-0dfcd4f83f",
+   "id": "pf-f1e78f8631",
    "key": "sf:ashleigh-graveline",
    "display": "Ashleigh Graveline",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -3901,8 +3901,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam.",
-    "Potsdam Central School is in Potsdam."
+    "Potsdam Central School is in Potsdam.",
+    "SUNY Potsdam is in Potsdam."
    ]
   },
   {
@@ -4209,15 +4209,15 @@
    ]
   },
   {
-   "id": "pf-0b96d86b92",
+   "id": "pf-74b54adaa1",
    "key": "david.tulloch.10",
    "display": "David Tulloch",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "SUNY Potsdam is in Potsdam."
    ]
   },
   {
@@ -4467,27 +4467,27 @@
    ]
   },
   {
-   "id": "pf-bd82a60013",
+   "id": "pf-4afd82fd14",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Canton, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Canton is in Canton."
-   ]
-  },
-  {
-   "id": "pf-b9bc27d8bc",
-   "key": "emijent",
-   "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
     "SUNY Potsdam is in Potsdam."
+   ]
+  },
+  {
+   "id": "pf-be4913ccf6",
+   "key": "emijent",
+   "display": "Emily R. Jent",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Canton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Canton is in Canton."
    ]
   },
   {
@@ -4915,8 +4915,8 @@
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam.",
-    "SUNY Potsdam is in Potsdam."
+    "SUNY Potsdam is in Potsdam.",
+    "Clarkson University is in Potsdam."
    ]
   },
   {
@@ -5703,15 +5703,15 @@
    ]
   },
   {
-   "id": "pf-3937cd47ee",
+   "id": "pf-5f8e0acd40",
    "key": "m.not.a.lobster",
    "display": "Michelle Johnston",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Canton, NY",
+   "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Canton is in Canton."
+    "SUNY Potsdam is in Potsdam."
    ]
   },
   {
@@ -5985,15 +5985,15 @@
    ]
   },
   {
-   "id": "pf-b93e1fce44",
+   "id": "pf-2c553f2d2e",
    "key": "sf:richard-gilchrist",
    "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Canton, NY",
    "grade": "Tentative",
    "evidence": [
-    "Clarkson University is in Potsdam."
+    "SUNY Canton is in Canton."
    ]
   },
   {
