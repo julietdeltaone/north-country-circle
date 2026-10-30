@@ -11764,8 +11764,8 @@ function sbHome(){
       frow('Confirmed', phC, ppl) + frow('Likely', phL, ppl) + frow('Possible (unvalidated)', phP, ppl) +
       '<p class="sbs-note">' + (ppl - usable).toLocaleString('en-US') + ' people still need a usable photo.</p></div>' +
     '<div class="mdl-panel"><h3 class="mdl-ph">Review queues</h3>' +
-      frow('Prefill suggestions pending', pfPending, (SB.prefill && SB.prefill.suggestions || []).length || 1) +
-      frow('Research candidates pending', rcPending, rcTotal || 1) +
+      '<div class="sbs-kv"><span>Prefill suggestions pending</span><b>' + pfPending + ' of ' + ((SB.prefill && SB.prefill.suggestions || []).length) + '</b></div>' +
+      '<div class="sbs-kv"><span>Research candidates pending</span><b>' + rcPending + ' of ' + rcTotal + '</b></div>' +
       '<p class="sbs-note">Prefill lives in Audit → Prefill; research in Live Records → Research Command.</p></div>' +
     '</div>';
   h += '<div class="mdl-grid2">' +
