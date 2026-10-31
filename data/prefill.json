@@ -1,7 +1,34 @@
 {
  "generated": "2026-10-30",
- "count": 0,
- "suggestions": [],
+ "count": 2,
+ "suggestions": [
+  {
+   "id": "pf-4afd82fd14",
+   "key": "sf:emily-kendall",
+   "display": "Emily Kendall",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Potsdam is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-5f8e0acd40",
+   "key": "m.not.a.lobster",
+   "display": "Michelle Johnston",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Potsdam is in Potsdam."
+   ],
+   "conf": 55
+  }
+ ],
  "auto_apply": [
   {
    "key": "sf:jdmeyers_",
