@@ -1,21 +1,7 @@
 {
  "generated": "2026-10-30",
- "count": 1,
- "suggestions": [
-  {
-   "id": "pf-b93e1fce44",
-   "key": "sf:richard-gilchrist",
-   "display": "Richard Gilchrist",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  }
- ],
+ "count": 0,
+ "suggestions": [],
  "auto_apply": [
   {
    "key": "sf:jdmeyers_",
