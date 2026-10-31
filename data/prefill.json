@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 6,
+ "count": 7,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -64,6 +64,19 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Potsdam: Jonathan Daniels, Kevin Daniels."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-b93e1fce44",
+   "key": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   },
