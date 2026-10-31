@@ -4035,6 +4035,1125 @@
       "fields": {},
       "published": "",
       "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-lisa-arquette-serves-as-a-deputy-sheriff-with-the-",
+      "name": "sf:lisa-arquette",
+      "display": "Lisa Arquette",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "Criminal Justice Today (SUNY Potsdam's criminal justice newsletter, Fall 2024) carried a 'Where Are They Now?' item: 'Lisa Arquette, Polk County Deputy Sheriff (FL)' in its alumni news, naming alumni by class year 2017-2024.",
+      "file_text": "Serves as a deputy sheriff with the Polk County Sheriff's Office in Florida",
+      "source": "SUNY Potsdam (Criminal Justice Today newsletter)",
+      "url": "https://www.potsdam.edu/sites/default/files/documents/academics/AAS/criminal-justice/Criminal-Justice-Today-Fall2024.pdf",
+      "anchors": [
+        "Polk County Sheriff's Office (FL)",
+        "SUNY Potsdam criminal justice"
+      ],
+      "missing_gate": "The newsletter item gives no class year or hometown for her, and Lisa Arquette is a common North Country name, so the deputy cannot be tied to this profile by two anchors.",
+      "confidence": 62,
+      "confidence_parts": {
+        "identity": 28,
+        "source": 22,
+        "detail": 12
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-jenna-white-listed-as-a-suny-canton-foundation-c",
+      "name": "jennakesner",
+      "display": "Jenna White",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "The SUNY Canton Foundation's 2024-25 donor report was reported to list a Jenna Keeley among contributors at the $100-$249 level; she performs musically as Jenna Keeley and her profile carries the maiden name Keeley.",
+      "file_text": "Listed as a SUNY Canton Foundation contributor at the $100-$249 level in its 2024-25 donor report (as Jenna Keeley)",
+      "source": "SUNY Canton Foundation",
+      "url": "",
+      "anchors": [
+        "SUNY Canton",
+        "Canton, NY area"
+      ],
+      "missing_gate": "The cited donor-report URL no longer resolves (404 on the parent's read), so the listing could not be verified directly; no source page could be retrieved, so the URL is blank.",
+      "confidence": 74,
+      "confidence_parts": {
+        "identity": 40,
+        "source": 18,
+        "detail": 16
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-cody-dennis-authored-a-cancer-misdiagnosis-what-",
+      "name": "sf:cody-dennis",
+      "display": "Cody Dennis",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A paperback titled 'A Cancer Misdiagnosis: What to Consider and What not to Worry About' by Cody J. Dennis, framed around a 2023 misdiagnosed-cancer experience, is sold through online retailers with a Norwood, New York author tie.",
+      "file_text": "Authored 'A Cancer Misdiagnosis: What to Consider and What not to Worry About', a book about his 2023 misdiagnosed-cancer experience",
+      "source": "BookBaby",
+      "url": "https://store.bookbaby.com/book/a-cancer-misdiagnosis",
+      "anchors": [
+        "Norwood, NY",
+        "cancer experience (profile records a cancer-free follow-up in 2021)"
+      ],
+      "missing_gate": "The book is self-published and self-reported, with no independent source confirming the 2023 misdiagnosis, so it fails the independent-source gate.",
+      "confidence": 71,
+      "confidence_parts": {
+        "identity": 45,
+        "source": 12,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-song-yi-lee-won-first-prize-in-interpretation-at",
+      "name": "sf:song-yi-lee",
+      "display": "Song Yi Lee",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "Ewha Womans University reported in January 2018 that Song Yi Lee, an English Language and Literature major from Busan, won first prize in interpretation at the Seoul Shinmun foreign-language contest for high-school students (November 19, 2017).",
+      "file_text": "Won first prize in interpretation at the Seoul Shinmun foreign-language contest for high-school students, Nov 2017",
+      "source": "Ewha Womans University",
+      "url": "https://www.ewha.ac.kr/ewhaen/news/ewha-news.do?mode=view&articleNo=35147",
+      "anchors": [
+        "Busan, South Korea"
+      ],
+      "missing_gate": "The Ewha item ties the name to only one profile anchor (Busan origin); nothing in it mentions SUNY Potsdam, and Song Yi Lee is a common Korean name, so identity is not established.",
+      "confidence": 58,
+      "confidence_parts": {
+        "identity": 18,
+        "source": 26,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-merrick-sinclair-started-as-a-communications-speciali",
+      "name": "mr_writers_block",
+      "display": "Merrick Sinclair",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "In his own Substack newsletter (The Morning Formation, Mar 3, 2026), Merrick Sinclair wrote that he accepted a Communications Specialist position with New York State Parks, Recreation and Historic Preservation, telecommuting, starting February 27, 2026.",
+      "file_text": "Started as a Communications Specialist with the New York State Office of Parks, Recreation and Historic Preservation, Feb 2026",
+      "source": "The Morning Formation (Substack)",
+      "url": "https://themorningformation.substack.com/p/the-state-of-things",
+      "anchors": [
+        "Canton, NY",
+        "communications/writing work"
+      ],
+      "missing_gate": "The job change is reported only in his own newsletter, a self-reported claim with no independent corroboration.",
+      "confidence": 68,
+      "confidence_parts": {
+        "identity": 44,
+        "source": 12,
+        "detail": 12
+      },
+      "fields": {},
+      "published": "2026-03-03",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-julie-feliciano-named-a-2024-national-merit-2-500-sc",
+      "name": "juliefelicianosec",
+      "display": "Julie Feliciano",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "The National Merit Scholarship Corporation named Julie Feliciano as a 2024 National Merit $2,500 Scholarship winner.",
+      "file_text": "Named a 2024 National Merit $2,500 Scholarship winner",
+      "source": "National Merit Scholarship Corporation",
+      "url": "https://www.nationalmerit.org/s/1758/images/gid2/editor_documents/win-type24.pdf?gid=2&pgid=61",
+      "anchors": [],
+      "missing_gate": "Her profile is effectively blank (no location, school, or employer anchors) and Julie Feliciano is a common name, so the national award record cannot be tied to this profile.",
+      "confidence": 55,
+      "confidence_parts": {
+        "identity": 15,
+        "source": 26,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-maggie-marceau-honored-at-a-franklin-county-first-r",
+      "name": "fdb:maggie_marceau",
+      "display": "Maggie Marceau",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "North Country Radio reported that Franklin County first responders were honored at an awards ceremony in Malone, with Maggie Marceau among those named in coverage of the event.",
+      "file_text": "Honored at a Franklin County first responders awards ceremony in Malone, New York",
+      "source": "North Country Radio (WICY)",
+      "url": "https://northcountryradio.org/north-country-first-responders-honored-during-awards-ceremony-in-malone",
+      "anchors": [
+        "Malone, NY",
+        "North Country Community College"
+      ],
+      "missing_gate": "The article page could not be extracted on the parent's read, so the exact honor and her role in it could not be verified directly.",
+      "confidence": 83,
+      "confidence_parts": {
+        "identity": 42,
+        "source": 26,
+        "detail": 15
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-murray-played-men-s-ice-hockey-at-clarkson-",
+      "name": "sf:murray",
+      "display": "Murray",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "Clarkson University's men's hockey roster lists a Murray (Jared Murray), and a Murray also appears in Elmira College athletics records.",
+      "file_text": "Played men's ice hockey at Clarkson University",
+      "source": "Clarkson University Athletics",
+      "url": "https://clarksonathletics.com/sports/mens-ice-hockey/roster",
+      "anchors": [],
+      "missing_gate": "The profile is surname-only with no first name, location, or school anchors, so no roster record can be tied to it.",
+      "confidence": 42,
+      "confidence_parts": {
+        "identity": 8,
+        "source": 24,
+        "detail": 10
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-hannah-hughes-certified-as-an-emergency-medical-te",
+      "name": "hannahkhughes_",
+      "display": "Hannah Hughes",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A county EMS year-in-review was reported to state that Hannah Hughes of Potsdam completed EMT certification through a SUNY Potsdam / St. Lawrence County course in May 2025 and began responding as a certified EMT; a professional profile in her name also lists EMT work at Canton-Potsdam Hospital.",
+      "file_text": "Certified as an Emergency Medical Technician and began responding as an EMT, May 2025",
+      "source": "St. Lawrence County EMS year-in-review",
+      "url": "",
+      "anchors": [
+        "Potsdam, NY",
+        "Rochester Regional Health"
+      ],
+      "missing_gate": "The county document itself could not be opened on the parent's read and no source page was retrieved (URL blank), and the remaining support is a single professional-profile listing, so the certification is held for direct verification.",
+      "confidence": 68,
+      "confidence_parts": {
+        "identity": 40,
+        "source": 14,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-mercy-maurer-named-a-finalist-for-the-2026-fao-sc",
+      "name": "mercy.maurer",
+      "display": "Mercy Maurer",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "The 2026 FAO Schwarz Fellowship host announcement described Mercy Maurer, a Park Bros. barista from Norwood, New York, as a finalist for the FAO Schwarz Fellowship.",
+      "file_text": "Named a finalist for the 2026 FAO Schwarz Fellowship",
+      "source": "FAO Schwarz Fellowship",
+      "url": "https://faoschwarzfellowship.org",
+      "anchors": [
+        "Park Bros.",
+        "Norwood, NY"
+      ],
+      "missing_gate": "The only support found is the fellowship host's own social-media announcement, a social-only claim with no independent corroboration.",
+      "confidence": 60,
+      "confidence_parts": {
+        "identity": 38,
+        "source": 10,
+        "detail": 12
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-maddie-barton-works-at-anastasia-s-bakery-while-at",
+      "name": "m.bsouth02",
+      "display": "Maddie Barton",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "Anastasia's Bakery's own About/Our Team page lists Maddie Barton as a team member from Colton, New York who attends Potsdam High School.",
+      "file_text": "Works at Anastasia's Bakery while attending Potsdam High School; from Colton, New York",
+      "source": "Anastasia's Bakery",
+      "url": "https://anastasiasbakery.com/about",
+      "anchors": [
+        "Anastasia's Bakery"
+      ],
+      "missing_gate": "The only source is the bakery's own site, and her profile ties her to the bakery alone; the Colton and Potsdam High School details have no independent corroboration.",
+      "confidence": 66,
+      "confidence_parts": {
+        "identity": 40,
+        "source": 12,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-katie-huestis-member-of-chi-omega-at-suny-potsdam-",
+      "name": "katiie.huestis",
+      "display": "Katie Huestis",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A GreekYearbook chapter composite lists Katie Huestis as a member of Chi Omega's Kappa Alumnae chapter at SUNY Potsdam, class of 2027.",
+      "file_text": "Member of Chi Omega at SUNY Potsdam, class of 2027",
+      "source": "GreekYearbook",
+      "url": "https://greekyearbook.com",
+      "anchors": [
+        "SUNY Potsdam"
+      ],
+      "missing_gate": "The listing appears only on a single Greek-life aggregator with no university or chapter corroboration.",
+      "confidence": 59,
+      "confidence_parts": {
+        "identity": 32,
+        "source": 14,
+        "detail": 13
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-g-c-jaggs-earned-a-doctorate-from-the-universi",
+      "name": "sf:g-c-jaggs",
+      "display": "G.C. Jaggs",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A University at Albany alumni magazine class note reports that George Jaggs earned a doctorate from the University at Albany in 2004.",
+      "file_text": "Earned a doctorate from the University at Albany, 2004",
+      "source": "University at Albany Magazine",
+      "url": "",
+      "anchors": [
+        "University at Albany",
+        "Potsdam, NY"
+      ],
+      "missing_gate": "The doctorate rests on a self-submitted alumni class note with no independent corroboration; no source page URL was captured, so the URL is blank.",
+      "confidence": 74,
+      "confidence_parts": {
+        "identity": 44,
+        "source": 14,
+        "detail": 16
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-g-c-jaggs-holds-permanent-new-york-state-teach",
+      "name": "sf:g-c-jaggs",
+      "display": "G.C. Jaggs",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "New York State Education Department certification records list a George Jaggs holding permanent New York teaching certification in School District Administration and in English 7-12.",
+      "file_text": "Holds permanent New York State teaching certification in School District Administration and English 7-12",
+      "source": "New York State Education Department",
+      "url": "",
+      "anchors": [
+        "Salmon River Central School District (teaching)"
+      ],
+      "missing_gate": "The certification lookup names no employer or location and its result page is a transient search URL (URL blank), tying the record to his teaching profile by profession only, so it is held like other license-record leads.",
+      "confidence": 79,
+      "confidence_parts": {
+        "identity": 40,
+        "source": 24,
+        "detail": 15
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-renee-lia-de-voe-moved-to-kansas-city-missouri-in-202",
+      "name": "sf:renee-lia-de-voe",
+      "display": "Renee Lia De Voe",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "sensitive",
+      "claim": "A published memoir by De Voe describes her move to Kansas City, Missouri in 2022 and her work with The Culture House and Evanston Vineyard.",
+      "file_text": "Moved to Kansas City, Missouri, in 2022",
+      "source": "Published memoir (author's own account)",
+      "url": "",
+      "anchors": [
+        "Kansas City, MO",
+        "The Culture House",
+        "Evanston Vineyard"
+      ],
+      "missing_gate": "Held as a sensitive personal-history item sourced to her own memoir account, not filed as a routine footprint fact; no source page URL was captured, so the URL is blank.",
+      "confidence": 74,
+      "confidence_parts": {
+        "identity": 46,
+        "source": 16,
+        "detail": 12
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-olivia-briggs-enrolled-at-clarkson-university-clas",
+      "name": "oliviarorybrown",
+      "display": "Olivia Briggs",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "A Clarkson University student listing names an Olivia Briggs in the Class of 2028.",
+      "file_text": "Enrolled at Clarkson University, class of 2028",
+      "source": "Clarkson University",
+      "url": "",
+      "anchors": [
+        "Clarkson University"
+      ],
+      "missing_gate": "A single-line directory listing with no program, hometown, or second anchor cannot establish that the student is this profile; no source page URL was captured, so the URL is blank.",
+      "confidence": 66,
+      "confidence_parts": {
+        "identity": 30,
+        "source": 22,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-nabil-el-labban-serves-as-a-visiting-assistant-profe",
+      "name": "nabil.o3",
+      "display": "Nabil El-Labban",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "conflict",
+      "claim": "St. Lawrence University's Fall 2026 Courses of Instruction lists Nabil El-Labban as a Visiting Assistant Professor of Economics and as instructor for ECON 4470 (Economics of the Middle East and North Africa) and Arabic language courses; a University of Wisconsin page was reported to describe an economics PhD candidate of the same name who taught Arabic there in 2021-2025.",
+      "file_text": "Serves as a Visiting Assistant Professor of Economics at St. Lawrence University, Fall 2026",
+      "source": "St. Lawrence University",
+      "url": "https://www.stlawu.edu/sites/default/files/2025-11/Courses%20of%20Instruction_Fall%202026.pdf",
+      "anchors": [
+        "St. Lawrence University (name match only)"
+      ],
+      "missing_gate": "The academic's reported 2021-2025 Wisconsin teaching overlaps this profile's SUNY Potsdam undergraduate enrollment (President's List Spring 2024; BS Business Administration, May 2025), so the records conflict and identity is not established.",
+      "confidence": 54,
+      "confidence_parts": {
+        "identity": 12,
+        "source": 26,
+        "detail": 16
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-jon-cyphers-earned-a-doctor-of-worship-studies-f",
+      "name": "jjcyph",
+      "display": "Jon Cyphers",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "Liberty University's 2025 Commencement Program was reported to list Jonathan Cyphers under Doctor of Worship Studies among its 2025 graduates.",
+      "file_text": "Earned a Doctor of Worship Studies from Liberty University, 2025",
+      "source": "Liberty University",
+      "url": "https://www.liberty.edu/commencement/wp-content/uploads/sites/87/2025-Commencement-Program.pdf",
+      "anchors": [
+        "Nashville, TN",
+        "worship ministry (Wellspring Worship Center, Christian Fellowship Center)"
+      ],
+      "missing_gate": "The parent confirmed the program PDF and its Doctor of Worship Studies section exist but could not extract the name line from the scanned program, so the conferral is held for direct verification.",
+      "confidence": 81,
+      "confidence_parts": {
+        "identity": 45,
+        "source": 20,
+        "detail": 16
+      },
+      "fields": {
+        "Degrees": "Doctor of Worship Studies \u2014 Liberty University (2025)"
+      },
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-brayden-amo-earned-a-doctor-of-veterinary-medici",
+      "name": "sf:brayden-amo",
+      "display": "Brayden Amo",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "conflict",
+      "claim": "VIN News Service (June 27, 2025) profiled a Dr. Brayden Amo, a Cornell DVM (Class of 2019) in Denver who founded a veterinary lending firm, and Cornell's alumni directory corroborates a veterinarian of that name.",
+      "file_text": "Earned a Doctor of Veterinary Medicine from Cornell University in 2019 and founded a veterinary lending firm in Denver, Colorado",
+      "source": "VIN News Service",
+      "url": "https://news.vin.com/default.aspx?pid=210&Id=12716984&f5=1",
+      "anchors": [
+        "Denver, CO"
+      ],
+      "missing_gate": "The veterinarian's Cornell DVM record conflicts with this profile's Grand Canyon University education and Window Cleaning Plus ownership in Littleton, so he is a well-sourced namesake, not this profile.",
+      "confidence": 51,
+      "confidence_parts": {
+        "identity": 8,
+        "source": 27,
+        "detail": 16
+      },
+      "fields": {},
+      "published": "2025-06-27",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-ethan-bates-received-a-chief-s-challenge-coin-af",
+      "name": "ethan_j_bates",
+      "display": "Ethan Bates",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "NNY360 reported (Oct 2025) that Saranac Lake Police Officer Ethan Bates received a Chief's Challenge Coin after collecting 196 pounds of unused medication at the DEA National Prescription Drug Take Back event on April 26, 2025.",
+      "file_text": "Received a Chief's Challenge Coin after collecting 196 pounds of unused medication at the DEA National Prescription Drug Take Back event, Apr 2025",
+      "source": "NNY360",
+      "url": "https://www.nny360.com/news/stlawrencecounty/saranac-lake-cop-receives-chief-s-challenge-coin-for-collecting-unused-meds/article_51abb821-0d05-5742-90b8-503a129744b8.html",
+      "anchors": [
+        "Saranac Lake Police Department",
+        "Saranac Lake, NY"
+      ],
+      "missing_gate": "The parent could not read the article directly (NNY360 is policy-blocked for text fetch and paywalled in the live browser), so the reported details are held until the page can be read.",
+      "confidence": 84,
+      "confidence_parts": {
+        "identity": 46,
+        "source": 24,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "2025-10-27",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-james-meyers-co-owner-of-park-bros-coffee-in-pots",
+      "name": "jamesphilipm",
+      "display": "James Meyers",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "The Park Journal (coffee-industry trade magazine) quoted James Meyers as co-owner of Park Bros Coffee in Potsdam in an article about the shop.",
+      "file_text": "Co-owner of Park Bros Coffee in Potsdam, New York",
+      "source": "The Park Journal",
+      "url": "",
+      "anchors": [
+        "Park Bros.",
+        "Potsdam, NY"
+      ],
+      "missing_gate": "The ownership detail comes from his own quoted statements in a trade-magazine piece with no independent corroboration; no source page URL was captured, so the URL is blank.",
+      "confidence": 72,
+      "confidence_parts": {
+        "identity": 46,
+        "source": 13,
+        "detail": 13
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-rebecca-guldan-runs-a-christian-life-coaching-pract",
+      "name": "sf:rebecca-guldan",
+      "display": "Rebecca Guldan",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "Guldan's own ministry website describes her Christian life-coaching practice and Norfolk, New York base.",
+      "file_text": "Runs a Christian life-coaching practice based in Norfolk, New York",
+      "source": "Rebecca Guldan (ministry website)",
+      "url": "",
+      "anchors": [
+        "Norfolk, NY",
+        "Liberty University"
+      ],
+      "missing_gate": "The practice is described only on her own website, a self-reported claim with no independent corroboration; no source page URL was captured, so the URL is blank.",
+      "confidence": 64,
+      "confidence_parts": {
+        "identity": 42,
+        "source": 10,
+        "detail": 12
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-olga-lindsey-studied-nursing-at-bridgewater-state",
+      "name": "ol9a",
+      "display": "Olga Lindsey",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "A Bridgewater State University nursing item names an Olga Lindsey in its nursing program.",
+      "file_text": "Studied nursing at Bridgewater State University",
+      "source": "Bridgewater State University",
+      "url": "",
+      "anchors": [
+        "Bridgewater State University"
+      ],
+      "missing_gate": "The item ties the name to only her listed university, with no location, employer, or second anchor, so identity is not established; no source page URL was captured, so the URL is blank.",
+      "confidence": 68,
+      "confidence_parts": {
+        "identity": 30,
+        "source": 24,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-alessandra-parker-graduated-from-suny-canton-class-of-",
+      "name": "aleeparker_",
+      "display": "Alessandra Parker",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "SUNY Canton records name an Alessandra Parker among its Class of 2021 graduates.",
+      "file_text": "Graduated from SUNY Canton, class of 2021",
+      "source": "SUNY Canton",
+      "url": "",
+      "anchors": [
+        "SUNY Canton (hometown area)"
+      ],
+      "missing_gate": "The graduation record ties the common name to no second profile anchor (no hometown, program, or employer), so identity is not established; no source page URL was captured, so the URL is blank.",
+      "confidence": 65,
+      "confidence_parts": {
+        "identity": 30,
+        "source": 22,
+        "detail": 13
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-christine-johnson-worked-as-a-travel-nurse-through-fav",
+      "name": "sf:christine-johnson",
+      "display": "Christine Johnson",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "A travel-nurse aggregator profile in the name Christine Johnson lists travel-nursing assignments consistent with agency work.",
+      "file_text": "Worked as a travel nurse through Favorite Healthcare Staffing",
+      "source": "TravelNurseSource",
+      "url": "",
+      "anchors": [
+        "Favorite Healthcare Staffing"
+      ],
+      "missing_gate": "Christine Johnson is a very common name and the only source is an aggregator profile, so the record cannot be tied to this profile by two anchors; no source page URL was captured, so the URL is blank.",
+      "confidence": 51,
+      "confidence_parts": {
+        "identity": 28,
+        "source": 10,
+        "detail": 13
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-acacia-white-named-to-suny-canton-s-dean-s-list-f",
+      "name": "sf:acacia-white",
+      "display": "Acacia White",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "A research pass reported Acacia White on SUNY Canton's Dean's List for Fall 2023 (Health Care Management) on the college's Fall 2023 honors page.",
+      "file_text": "Named to SUNY Canton's Dean's List for Fall 2023 as a Health Care Management student",
+      "source": "SUNY Canton",
+      "url": "https://www.canton.edu/news/2024/honors-fall23.php",
+      "anchors": [
+        "SUNY Canton",
+        "healthcare work (Massena Hospital, Rochester Regional Health)"
+      ],
+      "missing_gate": "The parent read the cited honors page in full (President's List, Dean's List, and Part-Time Honors) and her name does not appear on it, so the claim failed direct verification.",
+      "confidence": 71,
+      "confidence_parts": {
+        "identity": 30,
+        "source": 26,
+        "detail": 15
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-brenna-mcgrath-certified-as-a-certified-nurse-aide-",
+      "name": "sf:brenna-mcgrath",
+      "display": "Brenna McGrath",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "A New York Nurse Aide Registry (Prometric) search was reported to return an active Certified Nurse Aide certification for Brenna McGrath issued in 2025.",
+      "file_text": "Certified as a Certified Nurse Aide in New York State, 2025",
+      "source": "Prometric (New York Nurse Aide Registry)",
+      "url": "",
+      "anchors": [],
+      "missing_gate": "Her profile carries no anchors to tie the registry entry to, the registry result page is a transient search URL (URL blank), and the NYSDOH document also cited in support does not name her, so the claim failed direct verification.",
+      "confidence": 56,
+      "confidence_parts": {
+        "identity": 30,
+        "source": 12,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-lydia-martin-attended-the-st-lawrence-lewis-boces",
+      "name": "lydia_rose_martin",
+      "display": "Lydia Martin",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "Heuvelton Central School District's June 2025 newsletter reported Lydia Martin of Gouverneur, a Potsdam High School student, attending the St. Lawrence-Lewis BOCES Cosmetology program and earning a BOCES cosmetology award.",
+      "file_text": "Attended the St. Lawrence-Lewis BOCES Cosmetology program and earned a BOCES cosmetology award, Jun 2025",
+      "source": "Heuvelton Central School District",
+      "url": "https://www.heuveltoncsd.org/cms/lib/NY01914005/Centricity/Domain/133/June%202025%20Newsletter.pdf",
+      "anchors": [
+        "St. Lawrence-Lewis BOCES"
+      ],
+      "missing_gate": "The newsletter ties the name to a Gouverneur residence and Potsdam High School, neither of which is on her Norwood / SUNY Canton profile, so identity is not established.",
+      "confidence": 74,
+      "confidence_parts": {
+        "identity": 35,
+        "source": 24,
+        "detail": 15
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-angela-quant-listed-as-an-attorney-in-new-york-st",
+      "name": "marblehilldesigns",
+      "display": "Angela Quant",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "A New York State Unified Court System attorney listing names an Angela Quant with a Norwood-area practice tie.",
+      "file_text": "Listed as an attorney in New York State court records",
+      "source": "New York State Unified Court System",
+      "url": "",
+      "anchors": [
+        "Norwood, NY"
+      ],
+      "missing_gate": "The listing could not be tied to her Marble Hill Designs profile by a second anchor and may be a namesake, so it is held; no source page URL was captured, so the URL is blank.",
+      "confidence": 62,
+      "confidence_parts": {
+        "identity": 40,
+        "source": 10,
+        "detail": 12
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-amber-ingram-listed-in-a-2025-conference-program-",
+      "name": "fdb:amber_ingram",
+      "display": "Amber Ingram",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A 2025 conference program listed Amber Ingram of Canton in a presenter or participant role.",
+      "file_text": "Listed in a 2025 conference program as a presenter from Canton, New York",
+      "source": "Conference program (2025)",
+      "url": "",
+      "anchors": [
+        "Canton, NY"
+      ],
+      "missing_gate": "A single conference-program listing with no independent corroboration or second source is held; no source page URL was captured, so the URL is blank.",
+      "confidence": 75,
+      "confidence_parts": {
+        "identity": 42,
+        "source": 18,
+        "detail": 15
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-brooke-moore-works-as-a-phlebotomist-at-canton-po",
+      "name": "brookelynnmoore_",
+      "display": "Brooke Moore",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "An NNY360 health-system article named a Brooke Moore of Heuvelton as a phlebotomist at Canton-Potsdam Hospital.",
+      "file_text": "Works as a phlebotomist at Canton-Potsdam Hospital",
+      "source": "NNY360",
+      "url": "",
+      "anchors": [
+        "phlebotomy / medical assisting"
+      ],
+      "missing_gate": "The article ties the name to a Heuvelton residence that is not on her Potsdam profile, and no second anchor confirms it is this Brooke Moore; no source page URL was captured, so the URL is blank.",
+      "confidence": 62,
+      "confidence_parts": {
+        "identity": 28,
+        "source": 20,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-jared-thibodeau-works-as-an-engineer-at-corning-inco",
+      "name": "sf:jared-thibodeau",
+      "display": "Jared Thibodeau",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "A LinkedIn profile in his name lists an engineering role at Corning Incorporated.",
+      "file_text": "Works as an engineer at Corning Incorporated",
+      "source": "LinkedIn",
+      "url": "https://www.linkedin.com/in/jared-thibodeau",
+      "anchors": [
+        "Corning (companies on file: Corning Glass)"
+      ],
+      "missing_gate": "The only source is a self-reported LinkedIn profile that the parent could not open (sign-in wall), so the role is held for direct verification.",
+      "confidence": 59,
+      "confidence_parts": {
+        "identity": 28,
+        "source": 18,
+        "detail": 13
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-avery-charleson-named-to-suny-canton-s-president-s-l",
+      "name": "sf:avery-charleson",
+      "display": "Avery Charleson",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "A research pass reported Avery Charleson on SUNY Canton's President's List for Spring 2025 in the Bachelor of Science in Nursing program, citing the college's Spring 2025 honors page.",
+      "file_text": "Named to SUNY Canton's President's List for Spring 2025 as a Bachelor of Science in Nursing student",
+      "source": "SUNY Canton",
+      "url": "https://www.canton.edu/news/2025/honors-sp25.php",
+      "anchors": [
+        "SUNY Canton",
+        "Bachelor of Science in Nursing program",
+        "Potsdam Senior High School"
+      ],
+      "missing_gate": "The parent read the cited honors page in full (President's List, Dean's List, and Part-Time Honors) and her name does not appear on it, so the claim failed direct verification.",
+      "confidence": 66,
+      "confidence_parts": {
+        "identity": 30,
+        "source": 26,
+        "detail": 10
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-jocelyn-daniels-named-to-suny-canton-s-president-s-l",
+      "name": "jocelynrose04",
+      "display": "Jocelyn Daniels",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "A research pass reported Jocelyn Daniels on SUNY Canton's President's List for Spring 2025 (listed under Legal Studies), citing the college's Spring 2025 honors page.",
+      "file_text": "Named to SUNY Canton's President's List for Spring 2025",
+      "source": "SUNY Canton",
+      "url": "https://www.canton.edu/news/2025/honors-sp25.php",
+      "anchors": [
+        "SUNY Canton"
+      ],
+      "missing_gate": "The parent read the cited honors page in full and her name does not appear on it; the reported Legal Studies program also conflicts with her Individual Studies / Physical Therapist Assistant programs on file, so the claim failed direct verification.",
+      "confidence": 66,
+      "confidence_parts": {
+        "identity": 30,
+        "source": 26,
+        "detail": 10
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-kari-moulton-received-a-lawson-products-president",
+      "name": "karijmoulton",
+      "display": "Kari Moulton",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A Lawson Products employee-giving profile in her name describes charitable work in the Potsdam area and a company President's Volunteer Service Award.",
+      "file_text": "Received a Lawson Products President's Volunteer Service Award",
+      "source": "Lawson Products (Employee Giving)",
+      "url": "https://employeegiving.lawsonproducts.com",
+      "anchors": [
+        "Potsdam, NY"
+      ],
+      "missing_gate": "Her profile carries no Lawson Products anchor and the only source is the company's own employee-giving page, so the award is held.",
+      "confidence": 72,
+      "confidence_parts": {
+        "identity": 44,
+        "source": 13,
+        "detail": 15
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-kari-moulton-named-civilian-of-the-quarter-at-for",
+      "name": "karijmoulton",
+      "display": "Kari Moulton",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A 10th Mountain Division (Fort Drum) social post was reported to name Kari Moulton as a Civilian of the Quarter for Q4 FY2020.",
+      "file_text": "Named Civilian of the Quarter at Fort Drum for Q4 FY2020",
+      "source": "10th Mountain Division (U.S. Army)",
+      "url": "",
+      "anchors": [
+        "Potsdam, NY"
+      ],
+      "missing_gate": "The claim rests on a single social-media post that the parent could not retrieve (URL blank), with no independent corroboration.",
+      "confidence": 65,
+      "confidence_parts": {
+        "identity": 40,
+        "source": 12,
+        "detail": 13
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-kari-moulton-received-a-st-lawrence-county-corone",
+      "name": "karijmoulton",
+      "display": "Kari Moulton",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "A St. Lawrence County press release (May 2024) was reported to give Kari Moulton a Coroner's Office Community Outreach Award for volunteer work.",
+      "file_text": "Received a St. Lawrence County Coroner's Office Community Outreach Award, May 2024",
+      "source": "St. Lawrence County",
+      "url": "",
+      "anchors": [
+        "Potsdam, NY",
+        "St. Lawrence County"
+      ],
+      "missing_gate": "The parent could not retrieve the county press release directly (URL blank), so the award is held for direct verification.",
+      "confidence": 76,
+      "confidence_parts": {
+        "identity": 42,
+        "source": 20,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-cayden-stickney-played-men-s-ice-hockey-at-st-lawren",
+      "name": "ct:cayden stickney",
+      "display": "Cayden Stickney",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "St. Lawrence University's men's hockey roster lists Cayden Stickney, a forward from Canton, New York (Canton Central School), wearing No. 14 in 2025-26 and 2026-27.",
+      "file_text": "Played men's ice hockey at St. Lawrence University as a forward from Canton, New York, 2025-26",
+      "source": "St. Lawrence University Athletics",
+      "url": "https://saintsathletics.com/sports/mens-ice-hockey/roster/cayden-stickney/13362",
+      "anchors": [],
+      "missing_gate": "His profile is essentially blank (a Music Production specialty only, no location, school, or employer anchors), so the roster record cannot be tied to two profile anchors.",
+      "confidence": 60,
+      "confidence_parts": {
+        "identity": 22,
+        "source": 24,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-katelynne-kulp-earned-a-master-of-science-in-nursin",
+      "name": "sf:katelynne-kulp",
+      "display": "Katelynne Kulp",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "Rochester Regional Health's provider profile for Katelynne Kulp, FNP at Canton-Potsdam Hospital was reported to state she began at the hospital in November 2018 and earned an MSN as a Family Nurse Practitioner from Utica University in 2024.",
+      "file_text": "Earned a Master of Science in Nursing as a Family Nurse Practitioner from Utica University, 2024; began at Canton-Potsdam Hospital in Nov 2018",
+      "source": "Rochester Regional Health",
+      "url": "https://www.rochesterregionalhealth.org/find-a-provider/katelynne-kulp",
+      "anchors": [
+        "Canton-Potsdam Hospital",
+        "Gouverneur High School",
+        "SUNY Canton"
+      ],
+      "missing_gate": "The provider page redirects to the system's homepage in both the text fetch and the live browser, so the reported education details could not be verified directly.",
+      "confidence": 75,
+      "confidence_parts": {
+        "identity": 44,
+        "source": 16,
+        "detail": 15
+      },
+      "fields": {
+        "Degrees": "Master of Science in Nursing, Family Nurse Practitioner \u2014 Utica University (2024)"
+      },
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-jillian-ferrante-listed-in-a-charleston-south-carolin",
+      "name": "ct:jillian ferrante",
+      "display": "Jillian Ferrante",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A Charleston, South Carolina school-board document lists a Jillian Ferrante in a district role.",
+      "file_text": "Listed in a Charleston, South Carolina school district role",
+      "source": "Charleston County School District",
+      "url": "",
+      "anchors": [
+        "Charleston, SC"
+      ],
+      "missing_gate": "A single district-document listing with no independent corroboration is held; no source page URL was captured, so the URL is blank.",
+      "confidence": 65,
+      "confidence_parts": {
+        "identity": 40,
+        "source": 12,
+        "detail": 13
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-sarah-el-labban-named-to-suny-potsdam-s-president-s-",
+      "name": "sarah.ellabb",
+      "display": "Sarah El-Labban",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "SUNY Potsdam's Fall 2024 President's List release (published Jan 14, 2025) lists Sarah El-Labban of Potsdam, a Psychology major, among President's List students.",
+      "file_text": "Named to SUNY Potsdam's President's List for Fall 2024 as a Psychology major",
+      "source": "SUNY Potsdam",
+      "url": "https://www.potsdam.edu/news/suny-potsdam-announces-fall-2024-presidents-and-deans-list-honorees",
+      "anchors": [
+        "Potsdam, NY"
+      ],
+      "missing_gate": "Her profile carries no school, employer, or program anchors beyond a Potsdam location, so the honors record cannot be tied to two profile anchors; prior runs held the same pattern.",
+      "confidence": 57,
+      "confidence_parts": {
+        "identity": 16,
+        "source": 26,
+        "detail": 15
+      },
+      "fields": {},
+      "published": "2025-01-14",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-catherine-green-named-in-a-st-lawrence-lewis-boces-e",
+      "name": "_cathaccino_",
+      "display": "Catherine Green",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "source",
+      "claim": "A St. Lawrence-Lewis BOCES social post named Catherine Green in an education-association role connected to the BOCES community.",
+      "file_text": "Named in a St. Lawrence-Lewis BOCES education-association role",
+      "source": "St. Lawrence-Lewis BOCES",
+      "url": "",
+      "anchors": [
+        "St. Lawrence County",
+        "education"
+      ],
+      "missing_gate": "The only support is the BOCES social post itself, a social-only claim with no independent corroboration, and the role does not match her Park Bros. profile anchors; no source page URL was captured, so the URL is blank.",
+      "confidence": 71,
+      "confidence_parts": {
+        "identity": 44,
+        "source": 13,
+        "detail": 14
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-whitney-verbeck-graduated-from-suny-potsdam-in-2015-",
+      "name": "sf:whitney-verbeck",
+      "display": "Whitney Verbeck",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "verification",
+      "claim": "SUNY Potsdam alumni coverage was reported to profile Whitney Verbeck, SUNY Potsdam Class of 2015, noting Chi Omega membership and Park Bros. coffee work in Potsdam.",
+      "file_text": "Graduated from SUNY Potsdam in 2015; member of Chi Omega; worked at Park Bros. in Potsdam, New York",
+      "source": "SUNY Potsdam (Enginemailer)",
+      "url": "",
+      "anchors": [
+        "SUNY Potsdam",
+        "Park Bros.",
+        "North Tonawanda, NY"
+      ],
+      "missing_gate": "The alumni page returned 403 to both the research pass and the parent, so the reported details could not be verified directly; no source page URL was captured, so the URL is blank.",
+      "confidence": 74,
+      "confidence_parts": {
+        "identity": 45,
+        "source": 14,
+        "detail": 15
+      },
+      "fields": {},
+      "published": "",
+      "novelty": "new"
+    },
+    {
+      "id": "lr-20261031-jamal-moses-promoted-to-staff-sergeant-in-the-44",
+      "name": "sf:jamal-moses",
+      "display": "Jamal Moses",
+      "run_date": "2026-10-31",
+      "run_label": "Daily rotation (PM)",
+      "category": "identity",
+      "claim": "DVIDS published a U.S. Army photo (Oct 10, 2025, Fort Drum) of Capt. Terrance Howard pinning Staff Sergeant rank on Sgt. Jamal Moses of the 442nd Signal Battalion at a promotion ceremony.",
+      "file_text": "Promoted to Staff Sergeant in the 442nd Signal Battalion at Fort Drum, New York, Oct 2025",
+      "source": "DVIDS (U.S. Army)",
+      "url": "https://www.dvidshub.net/image/9355386/442nd-signal-battalion-promotion-ceremony",
+      "anchors": [
+        "U.S. Army"
+      ],
+      "missing_gate": "The parent verified the promotion on DVIDS, but the record ties the name to only one profile anchor (U.S. Army service); his profile's Washington, DC / Baltimore anchors are not mentioned, so identity is not established.",
+      "confidence": 61,
+      "confidence_parts": {
+        "identity": 25,
+        "source": 24,
+        "detail": 12
+      },
+      "fields": {},
+      "published": "2025-10-10",
+      "novelty": "new"
     }
   ]
 }
