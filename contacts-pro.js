@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.51.0';
+var APP_VERSION = '3.52.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -5951,18 +5951,46 @@ function hmShapeCard(dd, tierSegs, relSegs, N){
     '<span class="sp"></span><a class="hma-link" href="#/network">Open Network ' + ic('arrow', 12) + '</a>' +
     '</div></section>';
 }
-/* --- Home Rankings (V3.26.0 consolidation): the five leader boards
-   as columns of ONE card, top 5 each. --- */
-function hmRanksCard(cols){
-  return '<section class="card hm-blk"><header><h3>Rankings</h3></header><div class="cbody"><div class="hm-rankgrid">' +
-    cols.map(function(c){
-      return '<div class="hm-rankcol"><h4>' + esc(c.title) + '</h4>' + c.rows + (c.more || '') + '</div>';
-    }).join('') + '</div></div></section>';
+/* --- Home Rankings (V3.52.0, JD): the five leader boards as TABS on
+   ONE card. The old 5-column grid squeezed every board into ~180px:
+   labels truncated ("Christian Fellowshi\u2026") and bars were stubs.
+   Now one board at a time renders at full card width, top 8, labels
+   untruncated, with a long proportional bar. Tab switches repaint
+   ONLY #hm-rankboard (no view re-render, no scroll movement). --- */
+var HM_RANKTAB = 'towns', HM_BOARDS = null;
+function hmRankRow(kind, key, label, c, max, hot, rank, N){
+  var pct = c > 0 && max > 0 ? Math.max(2, Math.round(1000 * c / max) / 10) : 0;
+  var val = N ? c + ' \u00b7 ' + Math.round(100 * c / N) + '%' : (kind === 'footprint' ? c + ' facts' : '' + c);
+  return '<button type="button" class="hm-rrow" data-act="hmiopen" data-kind="' + kind + '" data-key="' + esc(key) + '" data-label="' + esc(label) + '">' +
+    '<span class="hm-rk">' + rank + '</span>' +
+    '<span class="hm-rmain"><span class="hm-rl">' + esc(label) + '</span>' +
+    '<span class="hm-rtr"><span class="hm-rfill' + (hot ? ' hot' : '') + '" style="width:' + pct + '%"></span></span></span>' +
+    '<span class="hm-rv">' + val + '</span></button>';
+}
+function hmRanksCard(boards){
+  HM_BOARDS = {};
+  boards.forEach(function(b){ HM_BOARDS[b.tab] = b; });
+  if(!HM_BOARDS[HM_RANKTAB]) HM_RANKTAB = boards.length ? boards[0].tab : 'towns';
+  var tabs = boards.map(function(b){
+    return '<button type="button" class="hm-ranktab' + (b.tab === HM_RANKTAB ? ' on' : '') + '" data-act="hmranktab" data-tab="' + b.tab + '">' + esc(b.title) + '</button>';
+  }).join('');
+  var active = HM_BOARDS[HM_RANKTAB] || {};
+  return '<section class="card hm-blk"><header><h3>Rankings</h3><div class="hm-ranktabs">' + tabs + '</div></header>' +
+    '<div class="cbody"><div id="hm-rankboard">' + (active.rows || '') + (active.more || '') + '</div></div></section>';
+}
+function hmRankPaint(){
+  var board = document.getElementById('hm-rankboard');
+  if(!board || !HM_BOARDS) return;
+  var b = HM_BOARDS[HM_RANKTAB];
+  if(!b) return;
+  board.innerHTML = (b.rows || '') + (b.more || '');
+  var tabs = document.querySelectorAll('.hm-ranktab');
+  for(var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-tab') === HM_RANKTAB);
 }
 function hmYearsCard(dd){
   var cols = dd.yrEntries.map(function(t){
     var h = dd.yrMax > 0 && t.c > 0 ? Math.max(4, Math.round(1000 * t.c / dd.yrMax) / 10) : 0;
-    return '<button type="button" class="hm-ycol" data-act="hmiopen" data-kind="years" data-key="' + esc(t.label) + '" data-label="' + esc(t.label) + '" title="' + esc(t.label) + ' \u00b7 ' + t.c + '">' +
+    return '<button type="button" class="hm-ycol' + (t.c > 0 && t.c === dd.yrMax ? ' max' : '') + '" data-act="hmiopen" data-kind="years" data-key="' + esc(t.label) + '" data-label="' + esc(t.label) + '" title="' + esc(t.label) + ' \u00b7 ' + t.c + '">' +
       '<span class="hm-ycv">' + (t.c || '') + '</span><span class="hm-ybar"><span style="height:' + h + '%"></span></span>' +
       '<span class="hm-ycl">' + (t.label === 'Before 2010' ? 'pre-\u201910' : '\u2019' + t.label.slice(2)) + '</span></button>';
   }).join('');
@@ -6709,15 +6737,15 @@ function viewHome(v){
     hmShapeCard(dd, tierSegs, relSegs, N) +
     hmContactsCard() +
     hmRanksCard([
-      { title:'Where they are', rows: townsTop.slice(0, 5).map(function(t, ix){ return hmBarRow('town', t.key, t.label, t.c, townMax, ix === 0); }).join(''),
-        more: Object.keys(dd.towns).length > 5 ? hmMoreBtn('data-act="hmikpi" data-k="located"', '+' + (Object.keys(dd.towns).length - 5) + ' more towns') : '' },
-      { title:'Skills', rows: skillsTop.slice(0, 5).map(function(t){ return hmBarRow('skill', t.key, t.label, t.c, skillMax); }).join(''),
-        more: Object.keys(dd.skills).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="skill"', '+' + (Object.keys(dd.skills).length - 5) + ' more skills') : '' },
-      { title:'Groups', rows: groupsTop.slice(0, 5).map(function(t){ return hmBarRow('group', t.key, t.label, t.c, groupMax); }).join(''),
-        more: Object.keys(dd.groupCounts).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="group"', '+' + (Object.keys(dd.groupCounts).length - 5) + ' more groups') : '' },
-      { title:'Organizations', rows: orgsTop.slice(0, 5).map(function(t){ return hmBarRow('org', t.key, t.label, t.c, orgMax); }).join(''),
-        more: Object.keys(dd.orgCounts).length > 5 ? hmMoreBtn('data-act="hmivlist" data-vk="org"', '+' + (Object.keys(dd.orgCounts).length - 5) + ' more organizations') : '' },
-      { title:'Footprint leaders', rows: fpTop.slice(0, 5).map(function(t){ return hmBarRow('footprint', t.key, t.label, t.c, fpMax); }).join(''),
+      { tab:'towns', title:'Where they are', rows: townsTop.map(function(t, ix){ return hmRankRow('town', t.key, t.label, t.c, townMax, ix === 0, ix + 1, N); }).join(''),
+        more: Object.keys(dd.towns).length > 8 ? hmMoreBtn('data-act="hmikpi" data-k="located"', '+' + (Object.keys(dd.towns).length - 8) + ' more towns') : '' },
+      { tab:'skills', title:'Skills', rows: skillsTop.map(function(t, ix){ return hmRankRow('skill', t.key, t.label, t.c, skillMax, false, ix + 1, N); }).join(''),
+        more: Object.keys(dd.skills).length > 8 ? hmMoreBtn('data-act="hmivlist" data-vk="skill"', '+' + (Object.keys(dd.skills).length - 8) + ' more skills') : '' },
+      { tab:'groups', title:'Groups', rows: groupsTop.map(function(t, ix){ return hmRankRow('group', t.key, t.label, t.c, groupMax, false, ix + 1, N); }).join(''),
+        more: Object.keys(dd.groupCounts).length > 8 ? hmMoreBtn('data-act="hmivlist" data-vk="group"', '+' + (Object.keys(dd.groupCounts).length - 8) + ' more groups') : '' },
+      { tab:'orgs', title:'Organizations', rows: orgsTop.map(function(t, ix){ return hmRankRow('org', t.key, t.label, t.c, orgMax, false, ix + 1, N); }).join(''),
+        more: Object.keys(dd.orgCounts).length > 8 ? hmMoreBtn('data-act="hmivlist" data-vk="org"', '+' + (Object.keys(dd.orgCounts).length - 8) + ' more organizations') : '' },
+      { tab:'foot', title:'Footprint leaders', rows: fpTop.map(function(t, ix){ return hmRankRow('footprint', t.key, t.label, t.c, fpMax, false, ix + 1, 0); }).join(''),
         more: hmMoreBtn('data-act="hmikpi" data-k="footprint"', 'All footprint coverage') }
     ]) +
     '<div class="hm-years-slim">' + hmYearsCard(dd) + '</div>' +
@@ -11038,6 +11066,7 @@ function onClick(ev){
     case 'plcsave': plcSaveNote(); break;
     case 'set': doSet(el); break;
     case 'hmiopen': hmiDispatchOpen(el); break;
+    case 'hmranktab': HM_RANKTAB = el.getAttribute('data-tab') || 'towns'; hmRankPaint(); break;
     case 'hmivlist': hmiValueList(el.getAttribute('data-vk'), el); break;
     case 'hmikpi': hmiKpi(el.getAttribute('data-k'), el); break;
     case 'hmix': hmiClose(); break;
