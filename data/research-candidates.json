@@ -2725,6 +2725,29 @@
     "source": 15,
     "detail": 10
    }
+  },
+  {
+   "id": "fb-20261031-sadie-mcconnell-christian-fellowship-academy-classmate",
+   "name": "",
+   "display": "Sadie McConnell",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Sadie McConnell attended Christian Fellowship Academy in Madrid in the 2012-13 school year, as a classmate of Merrick Sinclair, and performed in the school musical Anything Goes in October 2012; she is not in the directory under that name.",
+   "file_text": "Attended Christian Fellowship Academy in Madrid in the 2012-13 school year and performed in Anything Goes (October 2012)",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1Wd9Hco0mNbeqwgufb8JMvH7mgpMy3jD65l2rpWhYu4g/edit?usp=drivesdk",
+   "anchors": [
+    "Messenger thread with Merrick William Sinclair, 2012-05-14 to 2018-03-05",
+    "Named as a classmate in the 2012-13 school-year exchanges"
+   ],
+   "missing_gate": "Not in the directory; identity rests on mentions in a single thread. New-person candidate for JD.",
+   "confidence": 64,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 22,
+    "detail": 12
+   }
   }
  ]
 }
