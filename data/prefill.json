@@ -1,134 +1,56 @@
 {
  "generated": "2026-10-30",
- "count": 10,
+ "count": 4,
  "suggestions": [
   {
-   "id": "pf-23d8fd3bd0",
-   "key": "sf:acacia-white",
-   "display": "Acacia White",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Massena, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Massena Hospital is in Massena."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-5ecd9da7ee",
-   "key": "ariannarider",
-   "display": "Arianna Rider",
+   "id": "pf-4afd82fd14",
+   "key": "sf:emily-kendall",
+   "display": "Emily Kendall",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "4 of 4 located known associates are in Potsdam."
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
   {
-   "id": "pf-f6f76db8b1",
-   "key": "sf:cj-tomford",
-   "display": "CJ Tomford",
+   "id": "pf-b9bc27d8bc",
+   "key": "emijent",
+   "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "Family on file in Potsdam: David Tomford, Nathaniel Tomford."
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
   {
-   "id": "pf-ae923cd49e",
-   "key": "gabematthis",
-   "display": "Gabe Matthis",
+   "id": "pf-5f8e0acd40",
+   "key": "m.not.a.lobster",
+   "display": "Michelle Johnston",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "3 of 4 located known associates are in Potsdam."
+    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
   {
-   "id": "pf-db8ca1883a",
-   "key": "hpuglia12",
-   "display": "Hannah Puglia",
+   "id": "pf-b93e1fce44",
+   "key": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "3 of 4 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-4b587831c7",
-   "key": "big_dawg_j",
-   "display": "Jason Deschaine",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "3 of 4 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-8eae682e00",
-   "key": "jemma.cooper4",
-   "display": "Jemma Cooper",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "3 of 3 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-6358fee597",
-   "key": "johnaeastmond",
-   "display": "John Eastmond",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "3 of 5 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-0f32205535",
-   "key": "julianna_shatraw",
-   "display": "Julianna Shatraw",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "4 of 5 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-bf06d9e241",
-   "key": "philip__dennis",
-   "display": "Philip Dennis",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "3 of 4 located known associates are in Potsdam."
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   }
