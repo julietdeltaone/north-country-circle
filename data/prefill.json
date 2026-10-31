@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 13,
+ "count": 10,
  "suggestions": [
   {
    "id": "pf-23d8fd3bd0",
@@ -38,19 +38,6 @@
    "grade": "Tentative",
    "evidence": [
     "Family on file in Potsdam: David Tomford, Nathaniel Tomford."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-4afd82fd14",
-   "key": "sf:emily-kendall",
-   "display": "Emily Kendall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
@@ -133,19 +120,6 @@
    "conf": 55
   },
   {
-   "id": "pf-5f8e0acd40",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-bf06d9e241",
    "key": "philip__dennis",
    "display": "Philip Dennis",
@@ -155,19 +129,6 @@
    "grade": "Tentative",
    "evidence": [
     "3 of 4 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b93e1fce44",
-   "key": "sf:richard-gilchrist",
-   "display": "Richard Gilchrist",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   }
