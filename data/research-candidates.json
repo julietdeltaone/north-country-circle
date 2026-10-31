@@ -3388,6 +3388,156 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-marcos-santos-supplement-to-his-existing-candidates-from-his-1",
+   "name": "",
+   "display": "Marcos Santos",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Supplement to his existing candidates from his 1:1 Messenger thread (75 messages, March 26 to April 30, 2015): the exchange is mostly Spanish-language banter and voice/video calls, including a 404-minute call on March 26, 2015; Marcos also referred to JD's brother as someone he had spoken with. A birthday exchange in the thread is garbled teasing and cannot be attributed to either party, so no birthday is asserted.",
+   "file_text": "Supplement to his existing candidates from his 1:1 Messenger thread (75 messages, March 26 to April 30, 2015): the exchange is mostly Spanish-language banter an",
+   "source": "Facebook export — Marcos Santos (1:1)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; held with his existing candidates for JD's decision. The 1:1 confirms the contact span and call pattern but adds no school, location, or family anchor.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 19,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-ethan-james-supplement-to-his-existing-candidate-in-the-bros",
+   "name": "",
+   "display": "Ethan James",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Supplement to his existing candidate: in the Bros_3 group thread on May 16, 2015, Ethan James stated he had just finished umpiring a baseball game ('Just finished umping a bb game'), indicating he worked as a youth baseball umpire in that period.",
+   "file_text": "Supplement to his existing candidate: in the Bros_3 group thread on May 16, 2015, Ethan James stated he had just finished umpiring a baseball game ('Just finish",
+   "source": "Facebook export — Bros_3",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; held with his existing candidates for JD's decision.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 21,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-joshua-loughren-airsoft-enthusiast-in-a-68-message-1-1-messenger",
+   "name": "",
+   "display": "Joshua Loughren",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Airsoft enthusiast in a 68-message 1:1 Messenger thread with JD (April 23, 2013 to August 27, 2014) who advised JD on airsoft gun purchases, recommending specific rifles, magazines, and gear (including Airsoft GI product links) in April-May 2013 and April 2014.",
+   "file_text": "Airsoft enthusiast in a 68-message 1:1 Messenger thread with JD (April 23, 2013 to August 27, 2014) who advised JD on airsoft gun purchases, recommending specif",
+   "source": "Facebook export — Joshua Loughren (1:1)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; the thread gives no school, location, or family anchor beyond the airsoft hobby context, so it is held as a thin new-person candidate.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 15,
+    "detail": 7
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-jsahio-dvdia-supplement-to-his-existing-candidate-in-his-1-1",
+   "name": "",
+   "display": "Jsahio Dvdia",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Supplement to his existing candidate: in his 1:1 Messenger thread (56 messages, May 29, 2013 to November 30, 2014), JD addressed him by the first name 'Josiah' ('Hey Josiah, do you know merricks pinger number'), and the November 30, 2014 exchange places him at a Christian Fellowship Center Potsdam service that day, discussing the service order with JD, Merrick Sinclair, and Liz Wangerin (some messages in the thread were typed by Merrick or Liz on shared devices).",
+   "file_text": "Supplement to his existing candidate: in his 1:1 Messenger thread (56 messages, May 29, 2013 to November 30, 2014), JD addressed him by the first name 'Josiah' ",
+   "source": "Facebook export — Jsahio Dvdia (1:1)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; first name Josiah is established by JD's own in-thread address, but no surname is given anywhere ('Dvdia' appears to be a scrambled display name), so the candidate stays held for JD.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 19,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-luke-boyle-luke-boyles-full-name-appears-as-luke-edward-boy",
+   "name": "",
+   "display": "Luke Boyle",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Luke Boyle's full name appears as 'Luke Edward Boyle' in an August 4, 2014 group-thread title set by JD in the 'Luke' thread (a variant title 'Luke Edward Boyles' also appears), indicating his middle name is Edward.",
+   "file_text": "Luke Boyle's full name appears as 'Luke Edward Boyle' in an August 4, 2014 group-thread title set by JD in the 'Luke' thread (a variant title 'Luke Edward Boyle",
+   "source": "Facebook export — Luke (group thread)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Single-source (a group title typed by JD in 2014) with a spelling variant present; held rather than filed so JD can confirm before it is added to Luke Boyle's profile.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 27,
+    "source": 20,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-laura-wurst-a-surprise-party-was-held-for-laura-wurst-in-may",
+   "name": "",
+   "display": "Laura Wurst",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "A surprise party was held for Laura Wurst in May 2015 by JD's youth circle; afterward (May 21-23, 2015) Morgan Morse organized a signed matted frame with a group cast photo for her, and JD and Josiah (Jsahio Dvdia) had filmed her walking in.",
+   "file_text": "A surprise party was held for Laura Wurst in May 2015 by JD's youth circle; afterward (May 21-23, 2015) Morgan Morse organized a signed matted frame with a grou",
+   "source": "Facebook export — Laura's surprise party",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; the thread gives her full name and the event but no school, location, or family anchor, so it is held as a thin new-person candidate.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 19,
+    "source": 14,
+    "detail": 7
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
