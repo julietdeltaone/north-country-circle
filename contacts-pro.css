@@ -1805,7 +1805,7 @@ html[data-mode="light"] .hot-card{background:color-mix(in srgb, var(--hot) 8%, v
 /* the V3.52 Home ink rule (.hm .card>header h3) outranks the chip rule for
    color + padding-bottom; restate them at higher specificity, and kill
    its ink underline segment, which otherwise pokes out under the chip */
-.hm .card.hot-card>header h3{color:#fff;padding:5px 12px 5px 10px}
+.page.hm .card.hot-card>header h3{color:#fff;padding:5px 12px 5px 10px}
 .hot-card>header h3::after{display:none!important}
 .hot-card .hot-dot{width:6px;height:6px;background:#fff;box-shadow:none}
 .hot-card .cnt{margin-left:auto;font:600 11px var(--sans);color:var(--hot);
