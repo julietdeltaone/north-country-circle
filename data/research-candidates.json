@@ -3538,6 +3538,56 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "web-20261031-ashleigh-graveline-web-sources-conflict-on-which-ashleigh-g",
+   "name": "",
+   "display": "Ashleigh Graveline",
+   "run_date": "2026-10-31",
+   "run_label": "Seeded web-search pass (continuation)",
+   "category": "identity",
+   "claim": "Web sources conflict on which Ashleigh Graveline is JD's contact: a SUNY Potsdam alumni spotlight (Class of 2010) describes an NYC-based alumna serving on the SUNY Potsdam Alumni Association Board of Directors, while Clarkson University appointed an occupational therapist named Ashleigh Graveline as Clinical Assistant Professor in 2018 (Utica College degrees; previously Claxton Hepburn Medical Center and St. Lawrence Psychiatric Center). JD's profile shares occupational-therapy and Utica College anchors.",
+   "file_text": "Web sources conflict on which Ashleigh Graveline is JD's contact: a SUNY Potsdam alumni spotlight (Class of 2010) describes an NYC-based alumna serving on the S",
+   "source": "SUNY Potsdam alumni spotlight; Clarkson University appointment release (readMedia, Sep 20, 2018); Clarkson University people page",
+   "url": "",
+   "anchors": [
+    "JD's existing profile seeds (occupation/university anchors)"
+   ],
+   "missing_gate": "Identity conflict between two same-name women with overlapping occupational-therapy anchors; the alumni spotlight URL also returned 404 on re-open. Held for JD to identify which Ashleigh Graveline is his contact before any location or board-service filing.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 21,
+    "source": 16,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "web-20261031-kwadwo-appiah-kubi-two-men-named-kwadwo-appiah-kubi-appear",
+   "name": "",
+   "display": "Kwadwo Appiah-Kubi",
+   "run_date": "2026-10-31",
+   "run_label": "Seeded web-search pass (continuation)",
+   "category": "identity",
+   "claim": "Two men named Kwadwo Appiah-Kubi appear in Potsdam records: a Clarkson University physical-therapy professor (PhD in neuromotor science, Temple University; gait and vestibular research; ORCID 0000-0001-6566-9758) and a Care.com Potsdam profile describing a software engineer offering Math and Computer Science tutoring. JD's profile describes a software engineer and CS student, matching the Care.com profile, but the name collision in the same town makes web attribution unsafe.",
+   "file_text": "Two men named Kwadwo Appiah-Kubi appear in Potsdam records: a Clarkson University physical-therapy professor (PhD in neuromotor science, Temple University; gait",
+   "source": "Care.com Potsdam tutor profile; ORCID 0000-0001-6566-9758; Clarkson University news",
+   "url": "",
+   "anchors": [
+    "JD's existing profile seeds (occupation/university anchors)"
+   ],
+   "missing_gate": "Same-name collision in the same town and institution orbit; neither the Care.com location (Potsdam) nor a Software Engineering specialty was filed. Held for JD to confirm which Kwadwo Appiah-Kubi is his contact.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 21,
+    "source": 16,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
