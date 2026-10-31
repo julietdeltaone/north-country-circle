@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 4,
+ "count": 3,
  "suggestions": [
   {
    "id": "pf-4afd82fd14",
@@ -40,38 +40,9 @@
     "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
-  },
-  {
-   "id": "pf-b93e1fce44",
-   "key": "sf:richard-gilchrist",
-   "display": "Richard Gilchrist",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
   }
  ],
  "auto_apply": [
-  {
-   "key": "ceciliesmith2025",
-   "display": "Cecilie Smith",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-5be918b681"
-  },
-  {
-   "key": "mayaatchan",
-   "display": "Maya M. Atchan",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 90,
-   "id": "pf-b1debd6445"
-  },
   {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
