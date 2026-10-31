@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 81,
+ "count": 80,
  "suggestions": [
   {
    "id": "pf-37384ce538",
@@ -963,19 +963,6 @@
     "Facebook lists them as from Ann Arbor, MI (hometown; current residence unconfirmed)."
    ],
    "conf": 52
-  },
-  {
-   "id": "pf-b93e1fce44",
-   "key": "sf:richard-gilchrist",
-   "display": "Richard Gilchrist",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
   },
   {
    "id": "pf-3615be7cac",
