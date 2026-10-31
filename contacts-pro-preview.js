@@ -8042,13 +8042,15 @@ function lrccOpen(){
   document.body.appendChild(ov);
   document.body.classList.add('sheet-open');
   LRCC.el = ov;
-  ov.addEventListener('mouseover', function(e){
-    var sp = e.target.closest ? e.target.closest('#lrcc-spot') : null;
-    if(sp && !LRCC.hover){ LRCC.hover = true; lrccClearSpot(); lrccProgState(); }
-  });
-  ov.addEventListener('mouseout', function(e){
-    var sp = e.target.closest ? e.target.closest('#lrcc-spot') : null;
-    if(sp && LRCC.hover && !(e.relatedTarget && sp.contains(e.relatedTarget))){ LRCC.hover = false; lrccArmSpot(); lrccProgState(); }
+  /* Hover-pause is movement-driven on purpose: the panel opens
+     under the resting cursor (the entry button sits where the
+     spotlight lands), and a synthetic mouseover from that layout
+     change must not freeze the loop before it ever starts. A
+     real pointer move into the panel pauses; moving out resumes. */
+  ov.addEventListener('mousemove', function(e){
+    var inside = !!(e.target.closest && e.target.closest('#lrcc-spot'));
+    if(inside && !LRCC.hover){ LRCC.hover = true; lrccClearSpot(); lrccProgState(); }
+    else if(!inside && LRCC.hover){ LRCC.hover = false; lrccArmSpot(); lrccProgState(); }
   });
   lrccPaintAll();
   LRCC.clockTimer = setInterval(lrccTick, 1000);
