@@ -3546,15 +3546,15 @@
    "run_date": "2026-10-31",
    "run_label": "Seeded web-search pass (continuation)",
    "category": "identity",
-   "claim": "Web sources conflict on which Ashleigh Graveline is JD's contact: a SUNY Potsdam alumni spotlight (Class of 2010) describes an NYC-based alumna serving on the SUNY Potsdam Alumni Association Board of Directors, while Clarkson University appointed an occupational therapist named Ashleigh Graveline as Clinical Assistant Professor in 2018 (Utica College degrees; previously Claxton Hepburn Medical Center and St. Lawrence Psychiatric Center). JD's profile shares occupational-therapy and Utica College anchors.",
+   "claim": "RESOLVED IN PART during the Oct 31 continuation run: JD's Ashleigh Graveline is the Clarkson University occupational-therapy professor — her official Clarkson people page matches JD's profile anchors exactly (Utica College and Chatham degrees; Claxton Hepburn Medical Center; St. Lawrence Psychiatric Center), and her Salmon River Central School District and United Helpers roles, Car-Fit/SBIRT/Physical Agent Modalities credentials, and 2023 Kennedy Elementary Tourette Syndrome presentations were filed from that page. What remains open: a SUNY Potsdam alumni spotlight describes an Ashleigh Graveline '10 who is NYC-based and serves on the SUNY Potsdam Alumni Association Board of Directors; her education record on the Clarkson page shows no SUNY Potsdam degree, so that spotlight is treated as a likely different person and was NOT filed.",
    "file_text": "Web sources conflict on which Ashleigh Graveline is JD's contact: a SUNY Potsdam alumni spotlight (Class of 2010) describes an NYC-based alumna serving on the S",
    "source": "SUNY Potsdam alumni spotlight; Clarkson University appointment release (readMedia, Sep 20, 2018); Clarkson University people page",
    "url": "",
    "anchors": [
     "JD's existing profile seeds (occupation/university anchors)"
    ],
-   "missing_gate": "Identity conflict between two same-name women with overlapping occupational-therapy anchors; the alumni spotlight URL also returned 404 on re-open. Held for JD to identify which Ashleigh Graveline is his contact before any location or board-service filing.",
-   "confidence": 45,
+   "missing_gate": "Only the SUNY Potsdam alumni-spotlight identity remains unresolved; it conflicts with the Clarkson professor's documented education (AAS SUNY Canton, Utica College, Chatham OTD) and was held rather than filed. The Clarkson-professor items are filed and no longer part of this hold.",
+   "confidence": 40,
    "confidence_parts": {
     "identity": 21,
     "source": 16,
@@ -3571,18 +3571,43 @@
    "run_date": "2026-10-31",
    "run_label": "Seeded web-search pass (continuation)",
    "category": "identity",
-   "claim": "Two men named Kwadwo Appiah-Kubi appear in Potsdam records: a Clarkson University physical-therapy professor (PhD in neuromotor science, Temple University; gait and vestibular research; ORCID 0000-0001-6566-9758) and a Care.com Potsdam profile describing a software engineer offering Math and Computer Science tutoring. JD's profile describes a software engineer and CS student, matching the Care.com profile, but the name collision in the same town makes web attribution unsafe.",
+   "claim": "RESOLVED during the Oct 31 continuation run: JD's Kwadwo Appiah-Kubi is the Clarkson University physical-therapy professor — JD's profile anchors match Clarkson's tenure/promotion announcement (Gait Sensory Interaction Test, three NIH Loan Repayment Program awards, adjunct appointment at the University of Health and Allied Sciences in Ghana), and his Neuromuscular Physical Therapy specialty plus editorial-board and APTA/ISPGR/Society for Neuroscience memberships were filed from that announcement. A Care.com Potsdam profile describing a software engineer and Math/CS tutor under the same name does not match his documented record and was NOT filed.",
    "file_text": "Two men named Kwadwo Appiah-Kubi appear in Potsdam records: a Clarkson University physical-therapy professor (PhD in neuromotor science, Temple University; gait",
    "source": "Care.com Potsdam tutor profile; ORCID 0000-0001-6566-9758; Clarkson University news",
    "url": "",
    "anchors": [
     "JD's existing profile seeds (occupation/university anchors)"
    ],
-   "missing_gate": "Same-name collision in the same town and institution orbit; neither the Care.com location (Potsdam) nor a Software Engineering specialty was filed. Held for JD to confirm which Kwadwo Appiah-Kubi is his contact.",
-   "confidence": 45,
+   "missing_gate": "Identity resolved in favor of the Clarkson professor; the only remainder is the unmatched Care.com listing, held as a likely different person. Nothing from Care.com was filed.",
+   "confidence": 35,
    "confidence_parts": {
     "identity": 21,
     "source": 16,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "web-20261031-karen-hoover-jds-karen-hoover-profile-appears-to-conf",
+   "name": "",
+   "display": "Karen Hoover",
+   "run_date": "2026-10-31",
+   "run_label": "Seeded web-search pass (continuation)",
+   "category": "identity",
+   "claim": "JD's Karen Hoover profile appears to conflate two women of the same name in Potsdam: a 2009 Clarkson newsletter names 'Karen and Tim Hoover of Potsdam' as the parents of Kristin Hoover (Clarkson M.S. '07, Ph.D. '13) and of a daughter also named Karen, while a Clarkson-hosted CV for Karen Hoover, OTR, OTD (Seton Hall and Kean occupational-therapy professor, Therapy Garage co-owner; Ithaca 1985, Columbia 1994, Chatham 2012) matches the employer and degree anchors on the profile. The CV's Seton Hall Opportunity Meets Innovation Challenge grants (2022-2023, $15,000 and $14,542.70) and Clarkson OT Department Simulation Committee chair role (2023-present) belong to the professor and were NOT filed, and the CV header's Canton, NY residential address was not filed over the Potsdam location on file.",
+   "file_text": "JD's Karen Hoover profile appears to conflate two women of the same name in Potsdam: a 2009 Clarkson newsletter names 'Karen and Tim Hoover of Potsdam' as the p",
+   "source": "Clarkson University hosted CV (Hoover_CV 2023); Clarkson 2009 newsletter (The Klein Line)",
+   "url": "https://clarkson.us/sites/default/files/2024-02/Karen Hoover.pdf",
+   "anchors": [
+    "JD's existing profile mixes both women's anchors (family framing vs OT employers/degrees)"
+   ],
+   "missing_gate": "Profile conflates a mother and daughter who share the name Karen Hoover; the professor's grants, committee chair, and Canton address were held until JD says which Karen the profile is for.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 24,
+    "source": 18,
     "detail": 8
    },
    "fields": {},
