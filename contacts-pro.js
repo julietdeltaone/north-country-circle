@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.53.0';
+var APP_VERSION = '3.54.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6303,8 +6303,111 @@ function hmiStatsHTML(rows){
 function hmiWhy(inner){ return '<div class="hmi-why">' + inner + '</div>'; }
 function hmiTiles(tiles){
   return '<div class="hmi-stats">' + tiles.map(function(t){
-    return '<div class="hmi-stat"><b>' + t.v + '</b><span>' + esc(t.l) + '</span></div>';
+    return '<div class="hmi-stat"><b>' + t.v + '</b><span>' + esc(t.l) + '</span>' + (t.x ? '<span class="hmi-stat-x">' + esc(t.x) + '</span>' : '') + '</div>';
   }).join('') + '</div>';
+}
+/* --- dashboard layout + hero diagrams (V3.54.0): the popup body
+   becomes a two-column dashboard on wide screens — left column is
+   the sticky summary stack (explainer, stat widgets, hero diagram),
+   right column carries the sections and rows. Every diagram is
+   computed from the directory / deck / change log at open time. --- */
+function hmiDash(leftHTML, rightHTML){
+  return '<div class="hmi-dash"><div class="hmi-dash-l">' + leftHTML + '</div><div class="hmi-dash-r">' + rightHTML + '</div></div>';
+}
+function hmiTopBy(rows, fn, n){
+  var counts = {};
+  rows.forEach(function(r){ var v = fn(D.directory[r.di]); if(v) counts[v] = (counts[v] || 0) + 1; });
+  return Object.keys(counts).map(function(k){ return { label:k, c:counts[k] }; })
+    .sort(function(a, b){ return b.c - a.c || a.label.localeCompare(b.label); }).slice(0, n);
+}
+function hmiBars(items){
+  if(!items || !items.length) return '';
+  var max = 0;
+  items.forEach(function(it){ if(it.c > max) max = it.c; });
+  return '<div class="hmi-cmp">' + items.map(function(it, i){
+    var p = max > 0 && it.c > 0 ? Math.max(2, Math.round(1000 * it.c / max) / 10) : 0;
+    return '<div class="hmi-cmprow' + (i === 0 ? ' me' : '') + '"><span class="hmi-cmpl">' + esc(it.label) + '</span>' +
+      '<span class="hmi-cmptrack"><span class="hmi-cmpfill" style="width:' + p + '%"></span></span>' +
+      '<span class="hmi-cmpv">' + hmFmtN(it.c) + '</span></div>';
+  }).join('') + '</div>';
+}
+function hmiTierSeg(counts, total, title){
+  if(!total) return '';
+  var defs = [['vetted', 'Vetted', (TIERS.vetted || {}).c || 'var(--seg-0)'], ['associate', 'Associate', (TIERS.associate || {}).c || 'var(--seg-1)'], ['open', 'Open', (TIERS.open || {}).c || 'var(--seg-2)'], ['none', 'No tier yet', RING_C[3]]];
+  var live = defs.filter(function(d){ return counts[d[0]] > 0; });
+  if(!live.length) return '';
+  return '<div class="hmi-sec">' + esc(title) + '</div><div class="hmi-segbar">' +
+    live.map(function(d){ return '<i style="width:' + (100 * counts[d[0]] / total) + '%;background:' + d[2] + '"></i>'; }).join('') + '</div>' +
+    '<div class="hmi-segleg">' + live.map(function(d){ return '<span><i style="background:' + d[2] + '"></i>' + d[1] + ' <b>' + hmFmtN(counts[d[0]]) + '</b></span>'; }).join('') + '</div>';
+}
+function hmiTierSegRows(rows, title){
+  var counts = { vetted:0, associate:0, open:0, none:0 };
+  rows.forEach(function(r){ counts[tierOf(D.directory[r.di]) || 'none']++; });
+  return hmiTierSeg(counts, rows.length, title);
+}
+/* Composition hero for member lists: tier mix of the members plus
+   a top-3 sub-breakdown (orgs for town/skill, towns for the rest). */
+function hmiListHero(kind, rows){
+  if(!rows.length) return '';
+  var out = hmiTierSegRows(rows, 'Tier mix of these ' + hmFmtN(rows.length) + (rows.length === 1 ? ' person' : ' people'));
+  var byOrg = kind === 'town' || kind === 'skill';
+  var top = hmiTopBy(rows, function(e){ return byOrg ? hmiFirstOrg(e) : hmiTownOf(e); }, 3);
+  if(top.length) out += '<div class="hmi-sec">' + (byOrg ? 'Top organizations among them' : 'Top towns among them') + '</div>' + hmiBars(top);
+  return out;
+}
+function hmiRing(pct, label, sub){
+  var r = 52, circ = 2 * Math.PI * r, p = Math.max(0, Math.min(100, Math.round(pct)));
+  return '<div class="hmi-ringwrap"><svg viewBox="0 0 120 120" width="168" height="168" aria-hidden="true">' +
+    '<circle class="hmi-ringbg" cx="60" cy="60" r="' + r + '"></circle>' +
+    '<circle class="hmi-ringfg" cx="60" cy="60" r="' + r + '" stroke-dasharray="' + (circ * p / 100).toFixed(1) + ' ' + circ.toFixed(1) + '"></circle></svg>' +
+    '<div class="hmi-ringc"><b>' + p + '%</b><span>' + esc(label) + '</span></div></div>' +
+    (sub ? '<p class="hmi-ring-sub">' + sub + '</p>' : '');
+}
+function hmiHist(dd){
+  var es = dd.yrEntries, max = dd.yrMax || 0;
+  if(!es.length || max <= 0) return '';
+  var maxIdx = -1;
+  es.forEach(function(t, i){ if(maxIdx < 0 && t.c === max) maxIdx = i; });
+  return '<div class="hmi-sec">Known since, by year</div><div class="hmi-hist">' + es.map(function(t, i){
+    var h = t.c > 0 ? Math.max(3, Math.round(100 * t.c / max)) : 0;
+    var lab = i === 0 ? 'pre-\u201910' : (i === es.length - 1 || i === maxIdx) ? '\u2019' + t.label.slice(2) : '';
+    return '<div class="hmi-hb" title="' + esc(t.label) + ' \u00b7 ' + t.c + '"><i class="' + (i === maxIdx ? 'max' : '') + '" style="height:' + h + '%"></i><span>' + lab + '</span></div>';
+  }).join('') + '</div>';
+}
+function hmiActivity(){
+  if(!CH || !CH.entries || !CH.entries.length) return '';
+  var parseable = CH.entries.some(function(x){ return /^\d{4}-\d{2}-\d{2}/.test(String(x.filed || '')); });
+  if(!parseable) return '';
+  var days = [], idx = {}, now = new Date();
+  for(var i = 13; i >= 0; i--){
+    var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    var iso = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+    idx[iso] = days.length; days.push({ c:0, dom:d.getDate() });
+  }
+  CH.entries.forEach(function(x){ var f = String(x.filed || '').slice(0, 10); if(idx[f] != null) days[idx[f]].c++; });
+  var max = 0, maxIdx = -1;
+  days.forEach(function(dy, i){ if(dy.c > max){ max = dy.c; maxIdx = i; } });
+  return '<div class="hmi-sec">Changes filed per day \u00b7 last 14 days</div><div class="hmi-hist">' + days.map(function(dy, i){
+    var h = dy.c > 0 && max > 0 ? Math.max(4, Math.round(100 * dy.c / max)) : 0;
+    return '<div class="hmi-hb" title="' + dy.c + (dy.c === 1 ? ' change' : ' changes') + '"><i class="' + (i === maxIdx && max > 0 ? 'max' : '') + '" style="height:' + h + '%"></i><span>' + dy.dom + '</span></div>';
+  }).join('') + '</div>';
+}
+/* Footprint person hero: where their logged changes came from,
+   by source (top 4 + everything else folded into one bar). */
+function hmiSourceBars(nm){
+  if(!CH || !CH.entries) return '';
+  var counts = {}, total = 0;
+  CH.entries.forEach(function(x){ if(x.name === nm){ var s = x.source || 'Unspecified'; counts[s] = (counts[s] || 0) + 1; total++; } });
+  var items = Object.keys(counts).map(function(k){ return { label:k, c:counts[k] }; })
+    .sort(function(a, b){ return b.c - a.c || a.label.localeCompare(b.label); });
+  if(!items.length) return '';
+  if(items.length > 4){
+    var rest = 0;
+    items.slice(4).forEach(function(it){ rest += it.c; });
+    items = items.slice(0, 4); items.push({ label:'Other sources', c:rest });
+  }
+  return '<div class="hmi-sec">Where the record comes from</div>' + hmiBars(items) +
+    '<p class="hmi-note dim">Logged changes by source \u00b7 ' + total + ' on file.</p>';
 }
 function hmiMixLine(rows){
   var mix = {};
@@ -6408,7 +6511,8 @@ function hmiOpenList(kind, key, label, opener){
     var te = hmFormsTop(dd.towns, 999), rk = rankOf(te);
     why = '<p>Everyone whose location on file is <b>' + esc(L) + '</b>: <b>' + hmFmtN(n) + '</b> ' + ppl + ', <b>' + pct + '%</b> of the network' +
       (rk === 1 ? ' \u2014 the largest town on file.' : rk ? ', ranked <b>#' + rk + ' of ' + te.length + '</b> towns on file.' : '.') + '</p>';
-    tiles.push({ v:hmFmtN(hmiDistinct(rows, function(e){ return hmiFirstOrg(e); })), l:'organizations among them' });
+    var moT = hmiModeOrg(rows);
+    tiles.push({ v:hmFmtN(hmiDistinct(rows, function(e){ return hmiFirstOrg(e); })), l:'organizations among them', x: moT ? 'top: ' + moT.name + ' (' + moT.n + ')' : '' });
     var gs = {};
     rows.forEach(function(r){ personGroups(D.directory[r.di]).forEach(function(g){ gs[g] = 1; }); });
     tiles.push({ v:hmFmtN(Object.keys(gs).length), l:'groups among them' });
@@ -6420,7 +6524,7 @@ function hmiOpenList(kind, key, label, opener){
       (rk2 === 1 ? ' \u2014 the most common skill on file.' : rk2 ? ', ranked <b>#' + rk2 + ' of ' + se.length + '</b> skills on file.' : '.') + '</p>';
     var mo = hmiModeOrg(rows);
     if(mo && mo.n >= 2) why += '<p>The most common organization among them is <b>' + esc(mo.name) + '</b> (' + mo.n + ' people).</p>';
-    tiles.push({ v:hmFmtN(hmiDistinct(rows, function(e){ return hmiFirstOrg(e); })), l:'organizations among them' });
+    tiles.push({ v:hmFmtN(hmiDistinct(rows, function(e){ return hmiFirstOrg(e); })), l:'organizations among them', x: mo ? 'top: ' + mo.name + ' (' + mo.n + ')' : '' });
     townsTile();
     valMode = 'org';
   }
@@ -6492,8 +6596,9 @@ function hmiOpenList(kind, key, label, opener){
     why = '<p>People with <b>no photo on file</b> yet.</p>';
     tiles.push({ v:hmFmtN(hmPd().onFile), l:'with photo' });
   }
-  var body = (why ? hmiWhy(why) : '') + hmiTiles(tiles) + hmiMixLine(rows) + hmiRowsHTML(kind, rows, 150, valMode);
-  if(kind === 'group') body += '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmigroup" data-g="' + esc(key) + '">Open group</button></div>';
+  var right = hmiRowsHTML(kind, rows, 150, valMode);
+  if(kind === 'group') right += '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmigroup" data-g="' + esc(key) + '">Open group</button></div>';
+  var body = hmiDash((why ? hmiWhy(why) : '') + hmiTiles(tiles) + hmiListHero(kind, rows), right);
   hmiShow(HMI_TITLES[kind] || 'People', label || key, body, opener, HMI_KICK_LIST[kind] || '');
 }
 function hmiKrow(label, c, max, attrs){
@@ -6518,6 +6623,11 @@ function hmiValueList(vk, opener){
   else return;
   var max = rows.length ? rows[0].c : 0, CAP = 120;
   var body = hmiWhy(why);
+  if(rows.length){
+    var top1 = rows[0];
+    var hs = vk === 'persona' ? hmFmtN(top1.c) + ' points across everyone rated' : hmFmtN(top1.c) + ' \u00b7 ' + (dd.N ? Math.round(100 * top1.c / dd.N) : 0) + '% of network';
+    body += '<div class="hmi-herostat"><span class="hmi-herostat-k">#1 on file</span><b>' + esc(top1.label) + '</b><span class="hmi-herostat-v">' + hs + '</span></div>';
+  }
   if(vk === 'persona') body += rows.map(function(r){
     return '<button type="button" class="hmi-krow" data-act="hmiopen" data-kind="persona" data-key="' + esc(r.key) + '" data-label="' + esc(r.label) + '"><span class="hmi-klab">' + esc(r.label) + '</span><span class="hmi-knote">' + esc(r.note || '') + '</span><span class="hmi-ptr"><i style="width:' + (max > 0 ? Math.max(2, Math.round(1000 * r.c / max) / 10) : 0) + '%"></i></span><b>' + r.c + '</b></button>';
   }).join('');
@@ -6542,28 +6652,34 @@ function hmiKpi(k, opener){
     var cov = [['Located', dd.locN, 'located'],['Dated', dd.dated, 'dated'],['Photos on file', pd.onFile, 'photos'],['Footprint coverage', dd.fpPeople, 'footprint']].map(function(c){
       return hmiKrow(c[0], c[1], N, 'data-act="hmikpi" data-k="' + c[2] + '"');
     }).join('');
+    var pplHero = hmiTierSeg(dd.tierCounts, N, 'Tier mix of all ' + hmFmtN(N) + ' people') +
+      '<div class="hmi-sec">Top relationships</div>' + hmiBars(hmFormsTop(dd.rels, 3, true));
     hmiShow('People', hmFmtN(N) + ' in the directory',
-      hmiWhy('<p>The directory holds <b>' + hmFmtN(N) + '</b> people, and every count here is live from the records on file. <b>Tier</b> is the ring each person sits in, <b>Relationship</b> is how they are filed as connected, and <b>Coverage</b> shows how complete the records are. Tap any row for the people behind the number.</p>') +
-      '<div class="hmi-sec">Tier</div>' + trows + '<div class="hmi-sec">Relationship</div>' + rrows + '<div class="hmi-sec">Coverage</div>' + cov, opener, 'People');
+      hmiDash(hmiWhy('<p>The directory holds <b>' + hmFmtN(N) + '</b> people, and every count here is live from the records on file. <b>Tier</b> is the ring each person sits in, <b>Relationship</b> is how they are filed as connected, and <b>Coverage</b> shows how complete the records are. Tap any row for the people behind the number.</p>') + pplHero,
+        '<div class="hmi-sec">Tier</div>' + trows + '<div class="hmi-sec">Relationship</div>' + rrows + '<div class="hmi-sec">Coverage</div>' + cov), opener, 'People');
   }
   else if(k === 'footprint'){
     var top = hmPlainTop(dd.fpCounts, 15);
     var max = top.length ? top[0].c : 0;
-    var body = hmiWhy('<p>A <b>footprint fact</b> is one dated, sourced line in a person\u2019s Public Footprint \u2014 a role, an award, a move, a mention. <b>' + hmFmtN(dd.fpTotal) + '</b> facts cover <b>' + hmFmtN(dd.fpPeople) + '</b> of the ' + hmFmtN(N) + ' people in the directory. The list below ranks people by how many facts are on file for them; tap a name to see the facts and why they rank there.</p>') +
+    var fpHero = top.length ? '<div class="hmi-sec">Top 5 leaders</div>' + hmiBars(top.slice(0, 5).map(function(t){ return { label:t.label, c:t.c }; })) : '';
+    var body = hmiDash(
+      hmiWhy('<p>A <b>footprint fact</b> is one dated, sourced line in a person\u2019s Public Footprint \u2014 a role, an award, a move, a mention. <b>' + hmFmtN(dd.fpTotal) + '</b> facts cover <b>' + hmFmtN(dd.fpPeople) + '</b> of the ' + hmFmtN(N) + ' people in the directory. The list below ranks people by how many facts are on file for them; tap a name to see the facts and why they rank there.</p>') +
       '<div class="hmi-stats"><div class="hmi-stat"><b>' + hmFmtN(dd.fpTotal) + '</b><span>facts on file</span></div>' +
       '<div class="hmi-stat"><b>' + dd.fpPeople + '</b><span>people covered</span></div>' +
       '<div class="hmi-stat"><b>' + (N ? Math.round(100 * dd.fpPeople / N) : 0) + '%</b><span>of network</span></div>' +
-      '<div class="hmi-stat"><b>' + (dd.fpPeople ? (dd.fpTotal / dd.fpPeople).toFixed(1) : '0') + '</b><span>avg per person</span></div></div>' +
+      '<div class="hmi-stat"><b>' + (dd.fpPeople ? (dd.fpTotal / dd.fpPeople).toFixed(1) : '0') + '</b><span>avg per person</span></div></div>' + fpHero,
       '<div class="hmi-sec">Most documented</div>' +
-      top.map(function(t){ return hmiKrow(t.label, t.c, max, 'data-act="hmiopen" data-kind="footprint" data-key="' + esc(t.label) + '"'); }).join('');
+      top.map(function(t){ return hmiKrow(t.label, t.c, max, 'data-act="hmiopen" data-kind="footprint" data-key="' + esc(t.label) + '"'); }).join(''));
     hmiShow('Public footprint', hmFmtN(dd.fpTotal) + ' facts \u00b7 ' + dd.fpPeople + ' people', body, opener, 'Footprint');
   }
   else if(k === 'photos'){
-    var body2 = hmiWhy('<p><b>' + pd.onFile + '</b> of the ' + hmFmtN(N) + ' people in the directory have at least one photo on file \u2014 <b>' + pd.totalPhotos + '</b> photos in all. The most photographed people are below.</p>') +
+    var phRing = '<div class="hmi-sec">Photo coverage</div>' + hmiRing(N ? 100 * pd.onFile / N : 0, 'people with a photo', '<b>' + hmFmtN(pd.onFile) + '</b> of ' + hmFmtN(N) + ' people');
+    var body2 = hmiDash(
+      hmiWhy('<p><b>' + pd.onFile + '</b> of the ' + hmFmtN(N) + ' people in the directory have at least one photo on file \u2014 <b>' + pd.totalPhotos + '</b> photos in all. The most photographed people are below.</p>') +
       '<div class="hmi-stats"><div class="hmi-stat"><b>' + pd.onFile + '</b><span>people with photos</span></div>' +
       '<div class="hmi-stat"><b>' + pd.totalPhotos + '</b><span>photos total</span></div>' +
       '<div class="hmi-stat"><b>' + pd.missing + '</b><span>no photo yet</span></div>' +
-      '<div class="hmi-stat"><b>' + pd.multi + '</b><span>with 2+ photos</span></div></div>' +
+      '<div class="hmi-stat"><b>' + pd.multi + '</b><span>with 2+ photos</span></div></div>' + phRing,
       '<div class="hmi-sec">Most photographed</div>' +
       (pd.most.slice(0, 15).map(function(m){
         var di = hmDiOf(m.name); if(di == null) return '';
@@ -6571,19 +6687,21 @@ function hmiKpi(k, opener){
       }).join('') || '<p class="dim">No photos on file yet.</p>') +
       '<div class="hmi-sec">Sources</div>' +
       hmiKrow('From Instagram', pd.igNames.length, pd.onFile || 1, 'data-act="hmiopen" data-kind="igsrc" data-label="From Instagram"') +
-      '<p class="hmi-note dim">Photos on the Home wall and the Photos page open the photo inspector, where each photo can be keyed, reordered, adjusted or removed.</p>';
+      '<p class="hmi-note dim">Photos on the Home wall and the Photos page open the photo inspector, where each photo can be keyed, reordered, adjusted or removed.</p>');
     hmiShow('Photos', pd.onFile + ' people \u00b7 ' + pd.totalPhotos + ' photos', body2, opener, 'Photos');
   }
   else if(k === 'located'){
     var trows2 = hmFormsTop(dd.towns, 999);
     var max2 = trows2.length ? trows2[0].c : 0;
-    var body3 = hmiWhy('<p><b>' + dd.locN + '</b> people have a location on file, spread across <b>' + trows2.length + '</b> towns; <b>' + (N - dd.locN) + '</b> have none yet. Towns rank by how many people are filed there \u2014 tap one to see its people.</p>') +
+    var locHero = trows2.length ? '<div class="hmi-sec">Top 5 towns</div>' + hmiBars(trows2.slice(0, 5).map(function(t){ return { label:t.label, c:t.c }; })) : '';
+    var body3 = hmiDash(
+      hmiWhy('<p><b>' + dd.locN + '</b> people have a location on file, spread across <b>' + trows2.length + '</b> towns; <b>' + (N - dd.locN) + '</b> have none yet. Towns rank by how many people are filed there \u2014 tap one to see its people.</p>') +
       '<div class="hmi-stats"><div class="hmi-stat"><b>' + dd.locN + '</b><span>located</span></div>' +
       '<div class="hmi-stat"><b>' + trows2.length + '</b><span>towns</span></div>' +
-      '<div class="hmi-stat"><b>' + (N - dd.locN) + '</b><span>no location</span></div></div>' +
+      '<div class="hmi-stat"><b>' + (N - dd.locN) + '</b><span>no location</span></div></div>' + locHero,
       '<div class="hmi-sec">Towns</div>' +
       trows2.map(function(t){ return hmiKrow(t.label, t.c, max2, 'data-act="hmiopen" data-kind="town" data-key="' + esc(t.key) + '" data-label="' + esc(t.label) + '"'); }).join('') +
-      '<div class="hmi-actions"><button type="button" class="btn ghost sm" data-act="hmiopen" data-kind="noloc" data-label="No location on file">See who has no location</button></div>';
+      '<div class="hmi-actions"><button type="button" class="btn ghost sm" data-act="hmiopen" data-kind="noloc" data-label="No location on file">See who has no location</button></div>');
     hmiShow('Located', dd.locN + ' people \u00b7 ' + trows2.length + ' towns', body3, opener, 'Rankings \u00b7 Where they are');
   }
   else if(k === 'dated'){
@@ -6594,10 +6712,11 @@ function hmiKpi(k, opener){
     });
     var dmax = Math.max(pre, d10, d20, 1);
     var miss = hmiRows('missingyrs', '');
-    var body4 = hmiWhy('<p>Known Since is the start year on each record \u2014 the year the connection began. <b>' + dd.dated + '</b> people are dated; <b>' + dd.undated + '</b> are still missing a year and sit outside every count on this page until one is filed.</p>') +
+    var body4 = hmiDash(
+      hmiWhy('<p>Known Since is the start year on each record \u2014 the year the connection began. <b>' + dd.dated + '</b> people are dated; <b>' + dd.undated + '</b> are still missing a year and sit outside every count on this page until one is filed.</p>') +
       '<div class="hmi-stats"><div class="hmi-stat"><b>' + dd.dated + '</b><span>dated</span></div>' +
       '<div class="hmi-stat"><b>' + dd.undated + '</b><span>missing a year</span></div>' +
-      '<div class="hmi-stat"><b>' + (N ? Math.round(100 * dd.dated / N) : 0) + '%</b><span>of network dated</span></div></div>' +
+      '<div class="hmi-stat"><b>' + (N ? Math.round(100 * dd.dated / N) : 0) + '%</b><span>of network dated</span></div></div>' + hmiHist(dd),
       '<div class="hmi-sec">By decade</div>' +
       hmiKrow('Before 2010', pre, dmax, 'data-act="hmiopen" data-kind="decade" data-key="pre2010" data-label="Before 2010"') +
       hmiKrow('2010 \u2013 2019', d10, dmax, 'data-act="hmiopen" data-kind="decade" data-key="2010s" data-label="2010 \u2013 2019"') +
@@ -6605,7 +6724,7 @@ function hmiKpi(k, opener){
       '<div class="hmi-sec">Still missing a year</div>' +
       '<p class="hmi-note dim">' + dd.undated + ' people have no start year on file. The Years Known audit works through them one at a time, with presets and batch assign.</p>' +
       '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmiaudit">Open the Years Known audit</button></div>' +
-      hmiRowsHTML('missingyrs', miss, 40);
+      hmiRowsHTML('missingyrs', miss, 40));
     hmiShow('Known since', dd.dated + ' dated \u00b7 ' + dd.undated + ' missing', body4, opener, 'Known since');
   }
 }
@@ -6615,7 +6734,7 @@ function hmiFootprint(name, opener){
   var facts = String(gv(e, 'public_footprint') || '').split('\n').filter(function(b){ return b.trim(); });
   var dd = hmDeck(), cnt = dd.fpCounts[nm] || facts.length;
   var meta = [tierName(e), (ptLocVal(e) || '').split(',')[0] || '', cap(gv(e, 'relationship')) || ''].filter(Boolean).join(' \u00b7 ');
-  var body = '<div class="hmi-pcard">' + hmiAvatar(di) + '<div class="hmi-pmain"><div class="hmi-pname">' + esc(nm) + milBadge(e) + '</div>' +
+  var left = '<div class="hmi-pcard">' + hmiAvatar(di) + '<div class="hmi-pmain"><div class="hmi-pname">' + esc(nm) + milBadge(e) + '</div>' +
     (meta ? '<div class="hmi-meta">' + esc(meta) + '</div>' : '') + '</div>' +
     '<div class="hmi-hero"><b>' + cnt + '</b><span>' + (cnt === 1 ? 'public fact' : 'public facts') + '</span></div></div>';
   if(cnt > 0 && dd.fpPeople > 0){
@@ -6641,7 +6760,8 @@ function hmiFootprint(name, opener){
         paras += '<p>Latest change logged <b>' + esc(hmFmtD(latest)) + '</b>' + (recent ? ' \u00b7 ' + recent + (recent === 1 ? ' change' : ' changes') + ' in the last 90 days' : '') + '.</p>';
       }
     }
-    body += hmiWhy(paras);
+    left += hmiWhy(paras);
+    var srcHero = hmiSourceBars(nm);
     var cmax = Math.max(cnt, below ? below.c : 0, avg);
     function cmpRow(lab, v, cls, disp){
       var p = cmax > 0 ? Math.max(2, Math.round(1000 * v / cmax) / 10) : 0;
@@ -6649,26 +6769,30 @@ function hmiFootprint(name, opener){
         '<span class="hmi-cmptrack"><span class="hmi-cmpfill" style="width:' + p + '%"></span></span>' +
         '<span class="hmi-cmpv">' + disp + '</span></div>';
     }
-    body += '<div class="hmi-sec">How that compares</div><div class="hmi-cmp">' +
+    var cmp = '<div class="hmi-cmp' + (srcHero ? '' : ' big') + '">' +
       cmpRow(nm, cnt, 'me', cnt) +
       (rank === 1 && below ? cmpRow(below.label, below.c, 'next', below.c) : (rank > 1 ? cmpRow(sorted[0].label, sorted[0].c, 'next', sorted[0].c) : '')) +
       cmpRow('Average per covered person', avg, 'avg', avgD) + '</div>';
+    if(srcHero) left += srcHero;
+    left += '<div class="hmi-sec">How that compares</div>' + cmp;
   } else {
-    body += hmiWhy('<p>No public footprint facts are on file for <b>' + esc(nm) + '</b> yet.</p>');
+    left += hmiWhy('<p>No public footprint facts are on file for <b>' + esc(nm) + '</b> yet.</p>');
   }
-  body += '<div class="hmi-sec">Facts on file</div>' +
+  var body = hmiDash(left, '<div class="hmi-sec">Facts on file</div>' +
     (facts.length ? '<ol class="hmi-factlist">' + facts.map(function(f, i){ return '<li><span class="hmi-fn">' + (i + 1) + '</span><p>' + esc(f.replace(/^\u2022\s*/, '')) + '</p></li>'; }).join('') + '</ol>' : '<p class="dim">None yet.</p>') +
-    '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmiperson" data-di="' + di + '">Open full profile</button></div>';
+    '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmiperson" data-di="' + di + '">Open full profile</button></div>');
   hmiShow('Public footprint', nm, body, opener, 'Rankings \u00b7 Footprint leaders');
 }
 function hmiLiveRecords(opener){
   if(!DT || DT.empty || !DT.checked){ hmiShow('Live Records', '', '<p class="dim">No Live Records brief has landed yet.</p>', opener, 'Live Records'); return; }
-  var body = hmiWhy('<p><b>Live Records</b> is the recurring check that verifies profiles against public sources and files what it finds. The latest brief (' + esc(hmFmtD(DT.date)) + ') checked <b>' + DT.checked.length + '</b> people and filed updates for <b>' + (DT.filed ? DT.filed.length : 0) + '</b>' +
+  var lrRing = DT.coverage && DT.coverage.of ? '<div class="hmi-sec">Rotation coverage</div>' + hmiRing(100 * DT.coverage.checked_total / DT.coverage.of, 'rotation checked', '<b>' + hmFmtN(DT.coverage.checked_total) + '</b> of ' + hmFmtN(DT.coverage.of) + ' profiles') : '';
+  var lrLeft = hmiWhy('<p><b>Live Records</b> is the recurring check that verifies profiles against public sources and files what it finds. The latest brief (' + esc(hmFmtD(DT.date)) + ') checked <b>' + DT.checked.length + '</b> people and filed updates for <b>' + (DT.filed ? DT.filed.length : 0) + '</b>' +
     (DT.coverage ? '; <b>' + DT.coverage.checked_total + ' of ' + DT.coverage.of + '</b> profiles have been through the rotation so far' : '') + '.</p>') +
     '<div class="hmi-stats">' +
     '<div class="hmi-stat"><b>' + (DT.coverage ? DT.coverage.checked_total + ' / ' + DT.coverage.of : '&mdash;') + '</b><span>rotation checked</span></div>' +
     '<div class="hmi-stat"><b>' + DT.checked.length + '</b><span>checked in latest brief</span></div>' +
-    '<div class="hmi-stat"><b>' + (DT.filed ? DT.filed.length : 0) + '</b><span>updated in latest brief</span></div></div>';
+    '<div class="hmi-stat"><b>' + (DT.filed ? DT.filed.length : 0) + '</b><span>updated in latest brief</span></div></div>' + lrRing;
+  var body = '';
   if(DT.filed && DT.filed.length){
     body += '<div class="hmi-sec">Filed ' + esc(hmFmtD(DT.date)) + '</div>';
     DT.filed.forEach(function(f){ (f.facts || []).forEach(function(x){ body += hmaFactRow(f, x, 'hmiperson'); }); });
@@ -6683,16 +6807,17 @@ function hmiLiveRecords(opener){
       DT.next_up.map(function(nm){ var di = hmDtDi(nm); if(di == null) return ''; return hmiRow(di, hmiTierTag(D.directory[di])); }).join('') + '</div>';
   }
   body += '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmidaily">Open Live Records</button></div>';
-  hmiShow('Live Records', hmFmtD(DT.date), body, opener, 'Live Records');
+  hmiShow('Live Records', hmFmtD(DT.date), hmiDash(lrLeft, body), opener, 'Live Records');
 }
 function hmiChanges(opener){
   if(!CH || !CH.entries || !CH.entries.length){ hmiShow('Change log', '', '<p class="dim">No changes logged yet.</p>', opener, 'Change log'); return; }
-  var body = hmiWhy('<p>Every change filed to a record is logged here, newest first \u2014 who it was about, what changed, and the source behind it. <b>' + hmFmtN(CH.entries.length) + '</b> changes are on file; the latest landed <b>' + esc(hmFmtD(CH.entries[0].filed)) + '</b>.</p>') +
+  var body = hmiDash(
+    hmiWhy('<p>Every change filed to a record is logged here, newest first \u2014 who it was about, what changed, and the source behind it. <b>' + hmFmtN(CH.entries.length) + '</b> changes are on file; the latest landed <b>' + esc(hmFmtD(CH.entries[0].filed)) + '</b>.</p>') +
     '<div class="hmi-stats"><div class="hmi-stat"><b>' + CH.entries.length + '</b><span>changes logged</span></div>' +
-    '<div class="hmi-stat"><b>' + esc(hmFmtD(CH.entries[0].filed)) + '</b><span>latest filed</span></div></div>' +
+    '<div class="hmi-stat"><b>' + esc(hmFmtD(CH.entries[0].filed)) + '</b><span>latest filed</span></div></div>' + hmiActivity(),
     '<div class="hmi-sec">Most recent</div>' +
     CH.entries.slice(0, 30).map(function(c){ return hmaRow(c, 'hmiperson'); }).join('') +
-    '<div class="hmi-actions"><button type="button" class="btn ghost sm" data-act="hmidaily">Open Live Records</button></div>';
+    '<div class="hmi-actions"><button type="button" class="btn ghost sm" data-act="hmidaily">Open Live Records</button></div>');
   hmiShow('Change log', CH.entries.length + ' entries', body, opener, 'Change log');
 }
 function hmiDispatchOpen(el){
@@ -6704,11 +6829,13 @@ function hmiDispatchOpen(el){
     var pd = hmPd();
     var rows = [];
     pd.igNames.forEach(function(nm){ var di = hmDiOf(nm); if(di != null) rows.push({ di:di, val:null }); });
-    var body = hmiWhy('<p>The photos on file for these <b>' + rows.length + '</b> ' + (rows.length === 1 ? 'person' : 'people') + ' came from <b>Instagram</b>. The count at the right of each row is how many of their photos are on file.</p>') +
-      hmiStatsHTML(rows) + '<div class="hmi-rows">' + rows.map(function(r){
+    var body = hmiDash(
+      hmiWhy('<p>The photos on file for these <b>' + rows.length + '</b> ' + (rows.length === 1 ? 'person' : 'people') + ' came from <b>Instagram</b>. The count at the right of each row is how many of their photos are on file.</p>') +
+      hmiTiles([{ v:hmFmtN(rows.length), l: rows.length === 1 ? 'person' : 'people' }, { v:(D.directory.length ? Math.round(rows.length / D.directory.length * 100) : 0) + '%', l:'of network' }]) + hmiListHero('nophoto', rows),
+      '<div class="hmi-rows">' + rows.map(function(r){
       var m = pd.most.filter(function(x){ return x.name === dispName(D.directory[r.di]); })[0];
       return hmiRow(r.di, '<span class="hmi-chip">' + (m ? m.n : 1) + (m && m.n === 1 ? ' photo' : ' photos') + '</span>');
-    }).join('') + '</div>';
+    }).join('') + '</div>');
     hmiShow('Photos', 'From Instagram', body, el, 'Photos');
     return;
   }
