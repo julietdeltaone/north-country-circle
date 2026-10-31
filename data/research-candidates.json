@@ -2710,43 +2710,264 @@
    "run_date": "2026-10-30",
    "run_label": "Facebook export pass",
    "category": "identity",
-   "claim": "A Molly Waite sent one message in a Dec 19, 2016 group thread with Caden Colbert and Joel Moulton; she is not in the directory under that name.",
+   "claim": "A Molly Waite sent 34 messages in the AARON AND CREW group thread (Nov 15-20, 2015, added by Ethan James) and 2 more in the September 2016 Bonfire thread, in addition to one message in a Dec 19, 2016 group thread with Caden Colbert and Joel Moulton; she is not in the directory under that name.",
    "file_text": "Appears in a Dec 2016 group Messenger thread with Caden Colbert and Joel Moulton",
    "source": "Facebook Messenger export (Mar 2026)",
-   "url": "",
+   "url": "https://docs.google.com/document/d/1wewhdPfUxoPRWqHrFdml-0wms4jKQU0pBUrFZOFh2GA/edit?usp=drivesdk",
    "anchors": [
-    "Single message in Caden/Joel group thread",
+    "34 messages in AARON AND CREW group thread, Nov 2015",
+    "2 messages in Bonfire group thread, Sep 2016",
+    "Single message in Caden/Joel group thread, Dec 2016",
     "Waite surname matches Sandie Waite Colbert already in the directory"
    ],
    "missing_gate": "Single-message appearance; identity and relationship to the Colbert circle unconfirmed. New-person candidate for JD.",
-   "confidence": 45,
+   "confidence": 52,
    "confidence_parts": {
-    "identity": 20,
-    "source": 15,
+    "identity": 25,
+    "source": 17,
     "detail": 10
    }
   },
   {
-   "id": "fb-20261031-sadie-mcconnell-christian-fellowship-academy-classmate",
+   "id": "fb-20261031-ethan-james-legacy-board-and-group-creator",
    "name": "",
-   "display": "Sadie McConnell",
+   "display": "Ethan James",
    "run_date": "2026-10-31",
    "run_label": "Facebook export granular pass",
    "category": "identity",
-   "claim": "Sadie McConnell attended Christian Fellowship Academy in Madrid in the 2012-13 school year, as a classmate of Merrick Sinclair, and performed in the school musical Anything Goes in October 2012; she is not in the directory under that name.",
-   "file_text": "Attended Christian Fellowship Academy in Madrid in the 2012-13 school year and performed in Anything Goes (October 2012)",
+   "claim": "Ethan James was a fellow Legacy Board member helping plan the Christian Fellowship Center Legacy youth conference in 2015, played violin and took part in National String Project string lessons and recitals in May 2015, created the AARON AND CREW group in November 2015 as a philosophy debate group, and created a September 28, 2015 group chat to coordinate meeting in Potsdam; he is not in the directory.",
+   "file_text": "Legacy Board member for the 2015 Legacy youth conference; created the AARON AND CREW group in November 2015",
    "source": "Facebook Messenger export (Mar 2026)",
-   "url": "https://docs.google.com/document/d/1Wd9Hco0mNbeqwgufb8JMvH7mgpMy3jD65l2rpWhYu4g/edit?usp=drivesdk",
+   "url": "https://docs.google.com/document/d/1VAPziZMyeWip1eQ2w_iKdBKSiAIICt991IX85NtUiJU/edit?usp=drivesdk",
    "anchors": [
-    "Messenger thread with Merrick William Sinclair, 2012-05-14 to 2018-03-05",
-    "Named as a classmate in the 2012-13 school-year exchanges"
+    "Sender in A bunch of dudes (Legacy Board), Bros Before Does, AARON AND CREW, Bonfire, and the Potsdam meetup chat, 2015-2016"
    ],
-   "missing_gate": "Not in the directory; identity rests on mentions in a single thread. New-person candidate for JD.",
+   "missing_gate": "Not in the directory; identity rests on group-thread participation across several threads. New-person candidate for JD.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 30,
     "source": 22,
     "detail": 12
+   }
+  },
+  {
+   "id": "fb-20261031-coleman-pringle-1to1-thread-2014",
+   "name": "",
+   "display": "Coleman Pringle",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Coleman Pringle exchanged 39 messages in a 1:1 Messenger thread between August and November 2014; a school-age friend who is not in the directory.",
+   "file_text": "Exchanged 39 Messenger messages in a 1:1 thread, August-November 2014",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/16m3tcYDTSMZYAVZu0jG1JU2QF0eLDBAUdLKMp93k0uk/edit?usp=drivesdk",
+   "anchors": [
+    "1:1 Messenger thread, 2014-08-04 to 2014-11-20"
+   ],
+   "missing_gate": "Not in the directory; the thread gives a name and casual conversation only, with no corroborating identity detail.",
+   "confidence": 53,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 18,
+    "detail": 10
+   }
+  },
+  {
+   "id": "fb-20261031-jsahio-dvdia-cfa-yearbook-help",
+   "name": "",
+   "display": "Jsahio Dvdia",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Jsahio Dvdia helped with Christian Fellowship Academy yearbook photos and slideshows in 2013-2014, took skiing pictures praised in March 2014, and was a sender in several Christian Fellowship Academy-circle group threads in 2014-2016; he is not in the directory under this name.",
+   "file_text": "Helped with Christian Fellowship Academy yearbook photos and slideshows in 2013-2014",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1fUz3LSdTTVjubj9lWcEvng4fHiWcLdKQ_W_ALM6aEf0/edit?usp=drivesdk",
+   "anchors": [
+    "Sender in Angela/Jsahio group threads, A bunch of dudes, and Bros Before Does"
+   ],
+   "missing_gate": "Not in the directory under this name; the export's name rendering may be mangled. New-person candidate for JD.",
+   "confidence": 52,
+   "confidence_parts": {
+    "identity": 24,
+    "source": 18,
+    "detail": 10
+   }
+  },
+  {
+   "id": "fb-20261031-anastasia-brown-church-picnic-coordinator",
+   "name": "",
+   "display": "Anastasia Brown",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Anastasia Brown coordinated volunteer help for a church picnic on July 19, 2016, asking Merrick Sinclair, Aaron Daniels, and Philip Wangerin to move chairs outside for seating between the service and the picnic; she is not in the directory.",
+   "file_text": "Coordinated volunteer help for a church picnic on July 19, 2016",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1Cg_uO2-FGJVuzhff09TSNpnFBDcTYFf-Lrhyyrzkkjw/edit?usp=drivesdk",
+   "anchors": [
+    "Her own message in the Anastasia/Merrick/Aaron/Philip group thread, Jul 19, 2016 (verified in raw export)"
+   ],
+   "missing_gate": "Not in the directory; she appears in a single five-message thread. New-person candidate for JD.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 20,
+    "detail": 10
+   }
+  },
+  {
+   "id": "fb-20261031-david-vigh-group-thread-sender",
+   "name": "",
+   "display": "David Vigh",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "David Vigh sent messages in the David (a group Messenger thread with directory people); not in the directory under that name.",
+   "file_text": "Sent messages in a group Messenger thread (David, Nathan, Taylor group thread, Jun 5-13, 2014)",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1Q_vvdeiTFrUpIZeGbf2960YA28hUsMec5sdjm53Mgkk/edit?usp=drivesdk",
+   "anchors": [
+    "David, Nathan, Taylor group thread, Jun 5-13, 2014"
+   ],
+   "missing_gate": "Not in the directory; named sender in a group thread only, with no life facts stated. New-person candidate for JD.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 14,
+    "detail": 6
+   }
+  },
+  {
+   "id": "fb-20261031-nathan-gingrich-group-thread-sender",
+   "name": "",
+   "display": "Nathan Gingrich",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Nathan Gingrich sent messages in the David (a group Messenger thread with directory people); not in the directory under that name.",
+   "file_text": "Sent messages in a group Messenger thread (David, Nathan, Taylor group thread, Jun 5-13, 2014)",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/168JlW3x5SAXTrhcjilHea-afkpbStmAgWGd1-FBHx7k/edit?usp=drivesdk",
+   "anchors": [
+    "David, Nathan, Taylor group thread, Jun 5-13, 2014"
+   ],
+   "missing_gate": "Not in the directory; named sender in a group thread only, with no life facts stated. New-person candidate for JD.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 14,
+    "detail": 6
+   }
+  },
+  {
+   "id": "fb-20261031-michael-fulton-group-thread-sender",
+   "name": "",
+   "display": "Michael Fulton",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Michael Fulton sent messages in the David (a group Messenger thread with directory people); not in the directory under that name.",
+   "file_text": "Sent messages in a group Messenger thread (David, Nathan, Taylor group thread, Jun 5-13, 2014)",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/168JlW3x5SAXTrhcjilHea-afkpbStmAgWGd1-FBHx7k/edit?usp=drivesdk",
+   "anchors": [
+    "David, Nathan, Taylor group thread, Jun 5-13, 2014"
+   ],
+   "missing_gate": "Not in the directory; named sender in a group thread only, with no life facts stated. New-person candidate for JD.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 14,
+    "detail": 6
+   }
+  },
+  {
+   "id": "fb-20261031-sophie-fulton-group-thread-sender",
+   "name": "",
+   "display": "Sophie Fulton",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Sophie Fulton sent messages in the David (a group Messenger thread with directory people); not in the directory under that name.",
+   "file_text": "Sent messages in a group Messenger thread (David, Nathan, Taylor group thread, Jun 5-13, 2014)",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/168JlW3x5SAXTrhcjilHea-afkpbStmAgWGd1-FBHx7k/edit?usp=drivesdk",
+   "anchors": [
+    "David, Nathan, Taylor group thread, Jun 5-13, 2014"
+   ],
+   "missing_gate": "Not in the directory; named sender in a group thread only, with no life facts stated. New-person candidate for JD.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 14,
+    "detail": 6
+   }
+  },
+  {
+   "id": "fb-20261031-marcos-santos-group-thread-sender",
+   "name": "",
+   "display": "Marcos Santos",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Marcos Santos sent messages in the Bros Before Does group thread (a group Messenger thread with directory people); not in the directory under that name.",
+   "file_text": "Sent messages in a group Messenger thread (Bros Before Does group thread, 2015-2016)",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1P6ZZvyobf61SBt6qMiK_h5bGSSXJ95EetMe7oP3QRhM/edit?usp=drivesdk",
+   "anchors": [
+    "Bros Before Does group thread, 2015-2016"
+   ],
+   "missing_gate": "Not in the directory; named sender in a group thread only, with no life facts stated. New-person candidate for JD.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 14,
+    "detail": 6
+   }
+  },
+  {
+   "id": "fb-20261031-xavier-mcaloon-group-thread-sender",
+   "name": "",
+   "display": "Xavier McAloon",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Xavier McAloon sent messages in the Bros Before Does group thread (a group Messenger thread with directory people); not in the directory under that name.",
+   "file_text": "Sent messages in a group Messenger thread (Bros Before Does group thread, 2015-2016)",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1P6ZZvyobf61SBt6qMiK_h5bGSSXJ95EetMe7oP3QRhM/edit?usp=drivesdk",
+   "anchors": [
+    "Bros Before Does group thread, 2015-2016"
+   ],
+   "missing_gate": "Not in the directory; named sender in a group thread only, with no life facts stated. New-person candidate for JD.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 14,
+    "detail": 6
+   }
+  },
+  {
+   "id": "fb-20261031-ems-santos-cortez-group-thread-sender",
+   "name": "",
+   "display": "Ems Santos Cortez",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Ems Santos Cortez sent messages in the Bros Before Does group thread (a group Messenger thread with directory people); not in the directory under that name.",
+   "file_text": "Sent messages in a group Messenger thread (Bros Before Does group thread, 2015-2016)",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1P6ZZvyobf61SBt6qMiK_h5bGSSXJ95EetMe7oP3QRhM/edit?usp=drivesdk",
+   "anchors": [
+    "Bros Before Does group thread, 2015-2016"
+   ],
+   "missing_gate": "Not in the directory; named sender in a group thread only, with no life facts stated. New-person candidate for JD.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 14,
+    "detail": 6
    }
   }
  ]
