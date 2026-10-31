@@ -309,22 +309,22 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @anastasiasbakery (display name \"Anastasia Cote\"); bio: \"A seasonal bakery truck driving around the North Country with fresh, homemade goodies 🚙\".",
+   "evidence": "Instagram profile @anastasiasbakery (display name \"Anastasia Cote\"); bio: \"A seasonal bakery truck driving around the North Country with fresh, homemade goodies 🚙\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@anastasiasbakery), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Anastasia Cote",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/340342465_1112800083445639_9098980757329435270_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=Fe8PlTDUVNYQ7kNvwHXTwQD&_nc_oc=AdqqzBDeS7po1bnkTKryuoq1y5SbvsrPv-lHCyvtioojSWIm39qH-QUOQzg9pBkvKwp8sw3k5qnHHpKd330s-pMa&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOplXPh-EjHiurxoO2oJJOx1YzjIYtgJBGfvf91vqxKwA&oe=6AE00784",
+   "photo_url": "photos/anastasia-cote.jpg",
    "source_page": "https://www.instagram.com/anastasiasbakery/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @anastasia_g_daniels (display name \"Anastasia Daniels\").",
+   "evidence": "Instagram profile @anastasia_g_daniels (display name \"Anastasia Daniels\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@anastasia_g_daniels), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Anastasia Daniels",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/137318607_1394806510863820_3628458735274420792_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=ls46Jq9Ng4oQ7kNvwH2WX1z&_nc_oc=AdrHsuSozegkL1SJsbSUxieiRJi8ZUbT_JYozo0U85-PBTvoMBIvI2miepPJRqfVBprzHhqjaokI4gqbEFo7lnFb&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMpffPPvyJNXl0DiXMwwDBH8DgLC6uMIdvrGr5MD1mgYw&oe=6AE03BA7",
+   "photo_url": "photos/anastasia-daniels.jpg",
    "source_page": "https://www.instagram.com/anastasia_g_daniels/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @andrea247_ (display name \"Andrea Vetere\").",
@@ -344,13 +344,13 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from their own Instagram profile; handle from the explorer person-index; name matches the profile display name and the bio (\"Andrew's Leather\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from their own Instagram profile; handle from the explorer person-index; name matches the profile display name and the bio (\"Andrew's Leather\") anchors identity. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@drewspov_), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Andrew Matott",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/673190771_18580578091056572_4765580915954847686_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=3TDB4U7lsJsQ7kNvwGxCvTM&_nc_oc=AdoNO7aOzRFrXP73yswmdt4movZPra7-294aLmuw4-6NOJofQ8drKoEpw6gOZfkJADYZ9trm74IVG06eej7m5rUO&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=g3e4iiba3rDfxqnu19hB5A&oh=00_AQPn6xBS51bi1aBMdCZEg0tjGhgYpAGWpLbNN5TBcuahrQ&oe=6AE00996",
+   "photo_url": "photos/andrew-matott.jpg",
    "source_page": "https://www.instagram.com/drewspov_",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -420,22 +420,22 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @annabellerose.07 (display name \"Annabelle Dowling\"); bio: \"Child of God • Musical theater • Dancer • Ice cream lover • Jesus Saves  @theartsprogramofnny Dance teacher\".",
+   "evidence": "Instagram profile @annabellerose.07 (display name \"Annabelle Dowling\"); bio: \"Child of God • Musical theater • Dancer • Ice cream lover • Jesus Saves  @theartsprogramofnny Dance teacher\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@annabellerose.07), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Annabelle Dowling",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/841903528_18376250737240265_3701142148410485143_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43MzAuQzMifQ%3D%3D&_nc_ohc=VQ5t9FhjR5oQ7kNvwHiecfV&_nc_oc=AdpidNN80gNl0JLsXGiBX0YDd737Lghdsr8sVi8WfQG-A4hyuuqjBywQnXmqbOhVdiU0Vi32U-LsgbORc8IOYdbb&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=4jXmmARMDKFp5e96pLjgtQ&oh=00_AQPJJOFVwl7YFfXVygshJRl1E6qSNttUywgk5sWs3VR43w&oe=6AE03039",
+   "photo_url": "photos/annabelle-dowling.jpg",
    "source_page": "https://www.instagram.com/annabellerose.07/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @annecatherina7 (display name \"Anne Katherin Wolf\").",
+   "evidence": "Instagram profile @annecatherina7 (display name \"Anne Katherin Wolf\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@annecatherina7), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Anne Katherin Wolf",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/352176888_938398370707223_8746344919967307715_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy44MjguQzMifQ%3D%3D&_nc_ohc=6eVOeuGijX4Q7kNvwHYSAMQ&_nc_oc=Adqj7fDSVKI3v6mFBRNCKa1bpvtuLkX3yLyT36IDIA1VH5lDeFm6UkTTsQtUkAoXYT4W1bKZ6TiYZKFtvQDzzGtg&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMShJrqsX52P2KJhYAOkrNUXIWLW0Z1cED0v5WXUVu40Q&oe=6AE03662",
+   "photo_url": "photos/anne-katherin-wolf.jpg",
    "source_page": "https://www.instagram.com/annecatherina7/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -792,13 +792,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @briettapaladin (display name \"Brietta Paladin\"); bio: \"christian. wife to the best of the best. homeschool mama to 7 sons and 4 daughters. making home in an 1850s fa\".",
+   "evidence": "Instagram profile @briettapaladin (display name \"Brietta Paladin\"); bio: \"christian. wife to the best of the best. homeschool mama to 7 sons and 4 daughters. making home in an 1850s fa\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@briettapaladin), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Brietta Paladin",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/625138910_18562620658030344_8777053943834204332_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDI0LkMzIn0%3D&_nc_ohc=3ExO-P6OAs4Q7kNvwH6YzwC&_nc_oc=AdqTFgSSdmAucf5X6YZHEJrCmb8S_3YBR2Tyup_YrJ59Yh6oHTLStcN3pDKt3cDOhnetI6LHSVg1KVZBw6kASf8S&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=nLuBNH5XoVY9Y9xqav3RtA&oh=00_AQPIMOLy1wACKx6K9U5jmZyj5ZRP6HGQy48gnivS3qfHhg&oe=6AE01061",
+   "photo_url": "photos/brietta-paladin.jpg",
    "source_page": "https://www.instagram.com/briettapaladin/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Clinical Associate Professor, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 100x125 -> 400x500). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -880,22 +880,22 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "Instagram profile @cadencolbert (display name \"Caden Colbert\").",
+   "evidence": "Instagram profile @cadencolbert (display name \"Caden Colbert\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@cadencolbert), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Caden Colbert",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/278818647_376933007680198_8457146558490416043_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy40ODAuQzMifQ%3D%3D&_nc_ohc=u2GIKbUA44IQ7kNvwGHiVvi&_nc_oc=AdqepFM40apClzH71Xvgf0BQbr-Rrh5Y9I9JCJ5P4JrG8x7KcwCI3exOi4BwvHz5g6ftPSmK603id68ETfWd35-a&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNPxnr0t9afiG7oHIZ6m2lbUPdHN0Ux5hb6SOtR7VpUUw&oe=6AE014A9",
+   "photo_url": "photos/caden-colbert.jpg",
    "source_page": "https://www.instagram.com/cadencolbert/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @caelin.ramsay (display name \"Caelin Ramsay\").",
+   "evidence": "Instagram profile @caelin.ramsay (display name \"Caelin Ramsay\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@caelin.ramsay), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Caelin Ramsay",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.75761-19/506016221_18332581837166778_2367961772146828626_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=aAlZ_DfsxrYQ7kNvwEIS95r&_nc_oc=AdqXGSPgJO3AiQVHKDDrgXPRvUr9dMMX7Uo5Hrnh5QECwSfo8hitqSy5ymkcQr22RFRhx8aiZPMGQxXaJutbRvpG&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=Go6j4hkge08Da3gQyGZs-Q&oh=00_AQMkJRMJl755T4PGAvnEhieCLKuuchn4mJSN69XxY-SjiA&oe=6AE0349E",
+   "photo_url": "photos/caelin-ramsay.jpg",
    "source_page": "https://www.instagram.com/caelin.ramsay/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @cbresett20 (display name \"Caleb Bresett\"); bio: \"ECU 23’ Norwood, NY\".",
@@ -1002,13 +1002,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); bio anchors identity (\"wife to @jeevesgreen\"; Jeeves Green is her husband). No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); bio anchors identity (\"wife to @jeevesgreen\"; Jeeves Green is her husband). No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@_cathaccino_), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Catherine Green",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/440764983_1387980021913675_7203490156071399257_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=nW9T234SoPwQ7kNvwGYfsmQ&_nc_oc=AdoJliV34qc1DPh8zLPpkwYif0h-Wb-KT-1JBBFNtzWl_hgAlsW0k6jIudYEEn3ofxWzBOTaSwLpMdsJecr4k9K5&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPFjoe9rJFM3UDiA97SimCURkRZmpZ0JlRYtufpA1XD0A&oe=6ADFFF75",
+   "photo_url": "photos/catherine-green.jpg",
    "source_page": "https://www.instagram.com/_cathaccino_",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1400,13 +1400,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @dsmithroc (display name \"Daniel Smith\").",
+   "evidence": "Instagram profile @dsmithroc (display name \"Daniel Smith\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@dsmithroc), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Daniel Smith",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/11821080_471346853033940_1670789144_a.jpg?_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xNTAuQzMifQ%3D%3D&_nc_ohc=O7uzAxFqevIQ7kNvwE_esJZ&_nc_oc=AdqpuH7yX_E-UN88PQ0k47REZ18lFdTPU3gC1XX4rDWLq5Pa-gmSqbcPz3alBrT-o3H2E6HEooO_R0jCT5J6L6uB&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOZRh0T1D90JjwGIKsoW8kRF5ezo0zlA1LTGHeRfq8cUA&oe=6AE016B3",
+   "photo_url": "photos/daniel-smith.jpg",
    "source_page": "https://www.instagram.com/dsmithroc/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @danielzufall (display name \"Daniel Zufall\"); bio: \"World Explorer, Adventurer, Farmer, Martial Artist, History Buff, Gun and Motorcycle Enthusiast, Christian. Jo\".",
@@ -1541,13 +1541,12 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @davidzufall (display name \"𝔻𝕒𝕧𝕚𝕕 ℤ𝕦𝕗𝕒𝕝𝕝\"); bio: \"Lisbon, NY 📸  @davidzufallphotography Website currently under reconstruction\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @davidzufall (display name \"𝔻𝕒𝕧𝕚𝕕 ℤ𝕦𝕗𝕒𝕝𝕝\"); bio: \"Lisbon, NY 📸  @davidzufallphotography Website currently under reconstruction\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible. RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@davidzufall), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "David Zufall",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/683632911_18584424055040806_803995140661807441_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=6z03dpRkdjcQ7kNvwEUD5wZ&_nc_oc=Adqc-8FJGCozavfAmNFnomqBodnvvTB0tydEi3UV48Y7om5YDYKamq-2yPFvopXJGkuTh3SzRty6HcciwKphx5PB&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=Yo_aOT9nIlsyDQO1lj7_dg&oh=00_AQO6O1gPvTGYBvXhDvgThmFLTt7XBwU5dKLDb2b_zoelkg&oe=6AE0096B",
+   "photo_url": "photos/david-zufall.jpg",
    "source_page": "https://www.instagram.com/davidzufall/",
    "status": "possible",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026",
    "also": [
     {
      "status": "possible",
@@ -1557,7 +1556,8 @@
      "added_approx": "Oct 2026",
      "url": "https://scontent.cdninstagram.com/v/t51.82787-19/624287746_18343158550210714_7483392019107157034_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=7_PB5fIi1bYQ7kNvwHcO-4z&_nc_oc=AdrrcFiymmVAqW3TcPTQTYD-wVD8PBp_ORpuo7-R62hud1zh06N8jbbjRFSEFIFkOwBM3BfKSUHSdvuyV8H_Dg9b&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=G63hooMZsAFtiMMgKGQ8fQ&oh=00_AQMDPGG7pARxm311l5f6wliZdczZj7jlwle1YRYzUa-XNg&oe=6AE018D9"
     }
-   ]
+   ],
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @dawsonwiegandt (display name \"Dawson Anthony\"). Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
@@ -1586,13 +1586,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @desknaebel (display name \"Debbie Knaebel\").",
+   "evidence": "Instagram profile @desknaebel (display name \"Debbie Knaebel\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@desknaebel), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Debbie Knaebel",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/29716565_2050558271849680_7115945852312485888_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NjAuQzMifQ%3D%3D&_nc_ohc=G7NPhgqb6-MQ7kNvwHHo6UR&_nc_oc=AdqPcqkRxGqBkwytqDrsX-SSSMftuaNcWnec1GsXiEOvmVaEv-mTq1YNPu-iJ2nQpdva6hHxOC9rfZnVLTV5K589&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOpu-Mz-6iVNP9Wz3zYB4jgdgL1ncJtUl0UTdER3KyZuQ&oe=6AE00FE8",
+   "photo_url": "photos/debbie-knaebel.jpg",
    "source_page": "https://www.instagram.com/desknaebel/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "No source links on file.",
@@ -1716,13 +1716,13 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @doriejreiter (display name \"Dorie Colbert Reiter\").",
+   "evidence": "Instagram profile @doriejreiter (display name \"Dorie Colbert Reiter\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@doriejreiter), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Dorie Colbert Reiter",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/561647618_18540103762035661_5530689971680293669_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=5o74ltHuvVYQ7kNvwEYxeGB&_nc_oc=AdoXhQzo4DIrFueVcCB6nFVquvsT6ty3TcXXhyNFHXgt2uXwGojgI1C_Aw_xPcyAqQNVypTByCo3llfxvbRmnhoj&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=KOMpcFa9FNWgkMiQZyMePg&oh=00_AQMJs6X9hdacM-gNjkJ4nozl0Ezl71uTMcAmZE1mn7jTrg&oe=6AE032D0",
+   "photo_url": "photos/dorie-colbert-reiter.jpg",
    "source_page": "https://www.instagram.com/doriejreiter/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "No source links on file.",
@@ -1751,13 +1751,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @_lanie_brown (display name \"Elena Brown\").",
+   "evidence": "Instagram profile @_lanie_brown (display name \"Elena Brown\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@_lanie_brown), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Elena Brown",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/748265325_18476927479101299_5531225333448597455_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=ur9np21NsCoQ7kNvwESE79t&_nc_oc=AdoP4p65gyex72DmgXRC7HSMMs65gwPTTSbjpYESF37pMavaFG2eggEqTRGZY4tZebxoNKVndZcek8JaAdMV-RxW&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=MFNlOCNkvwqLktfiLB1ajA&oh=00_AQNovhItKjvzzOMcpAiPUXpUkPIvao4E0q2nEtwzrlakLw&oe=6AE008F3",
+   "photo_url": "photos/elena-brown.jpg",
    "source_page": "https://www.instagram.com/_lanie_brown/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "St. Lawrence 2024-25 roster labels her entry 'Elena Trempe - View Profile' (Sophomore, Enfield NH, Mascoma Valley Regional) and the matching roster image is her file Elena_Trempe.jpg — roster headshot tied to her by the roster page. Filed at the larger render size of the same file (extracted at width=80). Re-hosted locally 2026-10-31 from the same source URL (600x825, bytes verified) so the primary no longer depends on the remote link.",
@@ -1794,13 +1794,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @elisameyers (display name \"Elisa Meyers\").",
+   "evidence": "Instagram profile @elisameyers (display name \"Elisa Meyers\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@elisameyers), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Elisa Meyers",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/122546750_287908062283998_7205411631455562176_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=SW_QFA6V4bIQ7kNvwGKh3Og&_nc_oc=AdoCz-uksnB9yZtxsKxd5tvfYIs2am732tEL3Jos0dk7m4NgTFVPbve2Ff24Myc1JuGKPG48nlLYTTsLmMSDkagJ&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQN3qq4le-CrQoPFt-43ieHpA_xOt12IvZbpZuBeFJhl2w&oe=6AE02AF9",
+   "photo_url": "photos/elisa-meyers.jpg",
    "source_page": "https://www.instagram.com/elisameyers/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @elisedeuel (display name \"elise\"); bio: \"🐌👋\".",
@@ -1829,13 +1829,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @elizabeth.deschaine (display name \"Elizabeth Deschaine\"); bio: \"✰ potsdam state alum ✰ midwestern university PA-S🩺\".",
+   "evidence": "Instagram profile @elizabeth.deschaine (display name \"Elizabeth Deschaine\"); bio: \"✰ potsdam state alum ✰ midwestern university PA-S🩺\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@elizabeth.deschaine), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Elizabeth Deschaine",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/753396424_18607378840012380_8303630557987869792_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDc4LkMzIn0%3D&_nc_ohc=lA0_2wtyciEQ7kNvwFvLtba&_nc_oc=AdrkWSkc1rpcurIJ1VlVd6L0J9S0pUstOqGO1IWOgQy8tmSTT6Ab-jFdVkVVQ6UJuBLLLvMccBikIKbgaTr0nZZs&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=WQ8mqYDz2U0fiq8rbIyZBA&oh=00_AQMD2cUsHPuwJhuCiIH0BBcLurNZ3Fev7JSfbH6C0a9QzA&oe=6AE006F7",
+   "photo_url": "photos/elizabeth-deschaine.jpg",
    "source_page": "https://www.instagram.com/elizabeth.deschaine/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @liz.zehr (display name \"Elizabeth Kelly Zehr\"); bio: \"Music educator, married to my best friend, and coffee addict.\".",
@@ -2063,13 +2063,13 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @em_anuel_xa (display name \"Emmanuel Atindama\").",
+   "evidence": "Instagram profile @em_anuel_xa (display name \"Emmanuel Atindama\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@em_anuel_xa), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Emmanuel Atindama",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.75761-19/510434681_18110010853507216_5988914250526631945_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy41NDQuQzMifQ%3D%3D&_nc_ohc=dNhLponSbwEQ7kNvwFS88pV&_nc_oc=AdphzeuLbh5TG_BBuZ35TVNt0EsGHln1YtH36Nb8mO1NHmxjudP43A-RwErB12ElgJPvWFqaNZjqeSuEvQxgI5NR&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=RCLhlT_7IrdEV_dsuaHDMw&oh=00_AQNBSZe0JZv94XYJ9zuzcOcqA5chUR6QKXj0fZietRJE-Q&oe=6AE02BE5",
+   "photo_url": "photos/emmanuel-atindama.jpg",
    "source_page": "https://www.instagram.com/em_anuel_xa/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @madstop136 (display name \"\"). Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
@@ -2184,13 +2184,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @frannie_anniee (display name \"Franny\"); bio: \"Spam accounttt Main: @franny_olsen\".",
+   "evidence": "Instagram profile @frannie_anniee (display name \"Franny\"); bio: \"Spam accounttt Main: @franny_olsen\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@frannie_anniee), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Franny Olsen",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/769585104_18120170789499399_8936739582954121669_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=3nRO8odDyWIQ7kNvwFyK1xc&_nc_oc=AdrRz1Tc-6PJ3nkna1LGGS1FZ_Jm3gUUNuKtA-JnQRNauGymBHdCfCdkigt446M4HsKwuOpkm_ajLCxVKPNyJkHJ&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=6CSG42KRob6zVhjBeqvz9w&oh=00_AQNGU4ws8LDjVItunYcVp4imylMXGIw3w5zzcJFlWaJjNA&oe=6AE022FD",
+   "photo_url": "photos/franny-olsen.jpg",
    "source_page": "https://www.instagram.com/frannie_anniee/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED. Anchor 1: Clarkson University Mathematics Alumni page leads with 'Dr. Freddie Amoah-Darko, Machine Learning Engineer at Unearthly Materials' (Rochester NY; worked with Prof. Diana White) — matching the directory profile (Clarkson PhD in Mathematics, Aug 2023; machine learning engineer in the Rochester area). Anchor 2: photo file Freddie-Amoah-Darko-900x900.jpg hosted on clarkson.edu and indexed on that exact alumni page. Curl-verified 200 image/jpeg, 900x900. Note: he had a photos.json entry with status no_source before this run. Re-hosted locally 2026-10-31 from the same source URL (900x900, bytes verified) so the primary no longer depends on the remote link.",
@@ -2253,13 +2253,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @gabeockrin (display name \"Gabriel Ockrin\").",
+   "evidence": "Instagram profile @gabeockrin (display name \"Gabriel Ockrin\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@gabeockrin), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Gabriel Ockrin",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/20225250_105718030113673_6919896306240454656_a.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTUuQzMifQ%3D%3D&_nc_ohc=7t85yLFL9NMQ7kNvwFM8zR_&_nc_oc=Adqjwhk9Cv0OCpuF9Oq_h-lEHRV-SJKNvZ8N_l42lxU1Qqx9nOxFVs_DohBU4uuD80s5X6jDqgAtGt1ElN_wjIwy&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOTFCuIzz6SS8_QbhtEk-3ehyVja2l9QoZwbnCtbG_2pA&oe=6AE01F35",
+   "photo_url": "photos/gabriel-ockrin.jpg",
    "source_page": "https://www.instagram.com/gabeockrin/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @gab20n (display name \"-Gabriela🪽\"); bio: \"🇵🇷\".",
@@ -2385,13 +2385,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @spurgeonfiddle (display name \"Haddon Brown\").",
+   "evidence": "Instagram profile @spurgeonfiddle (display name \"Haddon Brown\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@spurgeonfiddle), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Haddon Brown",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.75761-19/496706168_18045648065602472_2140991815098525017_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=03Jq2CwnAdUQ7kNvwFr_snW&_nc_oc=AdrqNC9LNsuKNZLvXsB9w35v6RYUca62jKtqwh7-Q7I2XmBpMWbBO6u8zVt6Z5rruK0DsiSirvGF85tk_kkd-lJf&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=H6vZ0X8lO1gCTnS8mALfqw&oh=00_AQPfKVQNnX1hzhNZAIecyOp3MQldU6eWfi5wtyUFDDPDSg&oe=6AE023AB",
+   "photo_url": "photos/haddon-brown.jpg",
    "source_page": "https://www.instagram.com/spurgeonfiddle/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @haleydlutz (display name \"Haley Lutz\"); bio: \"RI 📍⚓️\".",
@@ -2544,13 +2544,13 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "Instagram profile @hopiek_09 (display name \"Hope Kilcollins\"); bio: \"evie’s godmother  ✨\".",
+   "evidence": "Instagram profile @hopiek_09 (display name \"Hope Kilcollins\"); bio: \"evie’s godmother  ✨\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@hopiek_09), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Hope Kilcollins",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/527606078_18469945306077152_6265988537863701627_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=UP2jSd6EliYQ7kNvwE5i8Fm&_nc_oc=AdowSULqPW8P9C5p0GTu-YVBGoJf_QSlaw9r_rD8bi9Oc_lj8n4C8Z_A45CQEm4BCFVso8IeE0F7gfSmSYDBRhrO&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=D7hyoHOWwfGNqvOG9SGbbg&oh=00_AQN7BATeDipytoVZqtAkisJlshse5XyXgheZxOMyFnusTQ&oe=6AE017FB",
+   "photo_url": "photos/hope-kilcollins.jpg",
    "source_page": "https://www.instagram.com/hopiek_09/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. North Country Savings Bank's own article profiles Hudson Brown, its Canton floating relationship banker who grew up locally and plays viola at church, with this portrait (viewed; 5828x3911 JPEG). His directory anchor is Christian Fellowship Center, which the article does not name - graded possible.",
@@ -2619,13 +2619,13 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @inawangerin (display name \"Ina Wangerin\").",
+   "evidence": "Instagram profile @inawangerin (display name \"Ina Wangerin\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@inawangerin), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Ina Wangerin",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/13534556_1711555145765127_1440839410_a.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4yMDAuQzMifQ%3D%3D&_nc_ohc=BVhBQ1x6eukQ7kNvwHqs0Sd&_nc_oc=Adqw4PDLhVXNfHVKgAHlOn8eTQIKVp5juRKWQ24fE18imCyGpaBfGs3ujTaHFjHF9bsZxt240blqH6KNAOf-5PAE&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQODZSAXUpRDKlbMats3p9MdtqAUvlQlFxEDWS3oaO-WCw&oe=6AE01A46",
+   "photo_url": "photos/ina-wangerin.jpg",
    "source_page": "https://www.instagram.com/inawangerin/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Merit profile (filed as 'Indaira Quintana', SUNY Potsdam Psychology) is text-only achievement listings — no profile photo, not even the placeholder.",
@@ -2678,13 +2678,13 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@isaiahreiter), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Isaiah Reiter",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/455229930_477813748212377_2532060956786125956_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=WCgMvivtPX4Q7kNvwFvQZ0U&_nc_oc=AdosDSdw3sSwJH9LQXrwA0WZb2SuZb3_TYs_jf8_Ul26RoJWNzBPwyuyznpur1JyqrZGNWKQshBpRI2deqtEzact&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQN4IpEVe1jcecNHEGWSuSOPAG3xLO-JU6NEhn08uV9kAA&oe=6AE0050E",
+   "photo_url": "photos/isaiah-reiter.jpg",
    "source_page": "https://www.instagram.com/isaiahreiter",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED. Anchor 1: SUNY Canton 2012-13 women's ice hockey roster (rooathletics.com) lists Isreal Tyler with alt text 'Isreal Tyler - View Profile'; her roster bio page (#14, Canton NY, Hugh C. Williams HS) matches the directory profile (SUNY Canton women's ice hockey, Canton NY). Anchor 2: headshot file israeltyler.jpg served from the official rooathletics.com CDN on that roster. Curl-verified 200 image/webp via GET (HEAD returns 405 on this host). Caveat: the image is an 80px-wide thumbnail — small but genuine; coordinator decides whether to file as-is. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 80x120 -> 320x480). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -2797,22 +2797,22 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @jamesphilipm (display name \"James Meyers\").",
+   "evidence": "Instagram profile @jamesphilipm (display name \"James Meyers\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@jamesphilipm), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "James Meyers",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/140733317_258332178995589_66291741753442878_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=FJOSqHefAOQQ7kNvwHv3z4M&_nc_oc=Ado2v_wI3_LyZAH_Gj2AS8tkGpR5ejgJ8IMyTtsBTLL03KVBiIGVb2xPHhhnx2mvW3f0V5I7xSOGIkuMjsmNHPxu&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPDFQrGhp2M3AlAMhM6NXasgDyVlmCtdmo-_K0ZbXrauw&oe=6AE00B8D",
+   "photo_url": "photos/james-meyers.jpg",
    "source_page": "https://www.instagram.com/jamesphilipm/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @jamesondunphey (display name \"Jameson Dunphey\"); bio: \"composer of music.\".",
+   "evidence": "Instagram profile @jamesondunphey (display name \"Jameson Dunphey\"); bio: \"composer of music.\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@jamesondunphey), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Jameson Dunphey",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/558293328_17845546575579497_3145205518665929951_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=Ui0HLpZWBLYQ7kNvwGJ3sic&_nc_oc=AdoSKlsTt_pVkREeo6wW6Mw6PXa9z08o1f9rKVh8YazfgJFqFi5NCN3WfjgQssW8Uq21RhOh9Pd2Cq3zFEayLM3a&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=Qc63mN0213bUaqPaGcbwjA&oh=00_AQPOyHTaLMyWy0-u7i_PK63f-rpYULU2UO968LUfPn59Qw&oe=6AE014C8",
+   "photo_url": "photos/jameson-dunphey.jpg",
    "source_page": "https://www.instagram.com/jamesondunphey/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Solo portrait on the Christian Fellowship Center leadership page; image alt text \"Jamie Sinclair\" and staff block \"Jamie Sinclair / Pastor at CFC Canton\". Coordinator viewed the image. Locally hosted copy of the CFC leadership portrait. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 360x360 -> 1440x1440). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -2985,13 +2985,13 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @wholehearted_wife (display name \"Jennifer Trelease\"); bio: \"Abiding in Jesus, crazy in love, soaking up my kiddos, dabbling in cultures, and loving this life that He has \".",
+   "evidence": "Instagram profile @wholehearted_wife (display name \"Jennifer Trelease\"); bio: \"Abiding in Jesus, crazy in love, soaking up my kiddos, dabbling in cultures, and loving this life that He has \". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@wholehearted_wife), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Jennifer Trelease",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/310554997_911167193619877_4508301521927347270_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=EhBD50QGlyIQ7kNvwHKR3iY&_nc_oc=AdoEgySljc3HvmVKiq9J9zVUKCiYUC6NcQ-VFL7y0S7JR9iZT3LEJkd2vXbcngGHlTwaaT8irHkrH1wCRxasjQbP&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOI7-yWJvDqRvvZu0WK84OTUN2j0epTtCKOTRO_bn-Fsg&oe=6AE01AD0",
+   "photo_url": "photos/jennifer-trelease.jpg",
    "source_page": "https://www.instagram.com/wholehearted_wife/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: a couple standing at the entrance of Willow Tree Florist in Potsdam). The photo is the primary image of NCPR's story and its caption names Kevin and Jennifer Blanchard, whose Willow Tree Florist and Landscaping in Potsdam hosted an artisan gallery — matching the directory's combined Jennifer-Kevin Blanchard record (Potsdam, NY). Photo: Todd Moe for NCPR. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 600x528 -> 2400x2112). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -3111,13 +3111,13 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @jocelynrose04 (display name \"Jocelyn Daniels\").",
+   "evidence": "Instagram profile @jocelynrose04 (display name \"Jocelyn Daniels\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@jocelynrose04), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Jocelyn Daniels",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/687426647_18103394189054800_1420044800326922702_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=DMpavhzaR1kQ7kNvwHQiSDC&_nc_oc=AdqfssdJDwGUmsKAe5kLy35gupyYF1tSWtG1n7CYzAWIwsCGXZTVYxaWlhx2C3k8SK_DWYkQGWkJqvJ7Z9XOrLpb&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=54A-z8x-rzdedR6mvb--Xw&oh=00_AQOaCAx6xK60hICsj_vQzorgrz0nLhSJo3HjPefFqjCAug&oe=6AE01342",
+   "photo_url": "photos/jocelyn-daniels.jpg",
    "source_page": "https://www.instagram.com/jocelynrose04/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3410,13 +3410,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @josiahbounce (display name \"Josiah D.\"). Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Instagram profile @josiahbounce (display name \"Josiah D.\"). Name/bio does not fully anchor this profile to the North Country person of this name; graded possible. RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@josiahbounce), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Josiah McGrath",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/469719237_575302345093730_6183894648157929045_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=108&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=-5-qZ31HK6cQ7kNvwF7SUtz&_nc_oc=AdqzyiBQL6PiBSGuosHL_sD10PL1bfXHSVxZSXDcV4JfJWbD-h9b0Xm8gCA2myH-6dlI8S2qBXxEQVRn5bNbnHjS&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMC-ZvqglcWyRJ8mSD4Qp0exYQv12j5He1t5-89KhdIHw&oe=6AE0296C",
+   "photo_url": "photos/josiah-mcgrath.jpg",
    "source_page": "https://www.instagram.com/josiahbounce/",
    "status": "possible",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3454,13 +3454,13 @@
    "added": "2026-10-28"
   },
   {
-   "evidence": "Instagram profile @judder_budder (display name \"Judson Colbert\"); bio: \"Juddy\".",
+   "evidence": "Instagram profile @judder_budder (display name \"Judson Colbert\"); bio: \"Juddy\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@judder_budder), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Judson Colbert",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/422084112_1829956617474682_3560351701874622253_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTguQzMifQ%3D%3D&_nc_ohc=HnsGQtJLvboQ7kNvwHOBpUx&_nc_oc=AdoKmVmQ99LxVBk79QraHZCLb-r_bAe8t28uYolH6fTjYZA1gSZP7kzbLmYQfXOXd9XV5al17qeef-Cuew05jm4_&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOrtrPq_qyTXJdVEmyc0pRzesJd4E9KR81c0OWVKmMD3w&oe=6AE00F4F",
+   "photo_url": "photos/judson-colbert.jpg",
    "source_page": "https://www.instagram.com/judder_budder/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "SUNY Canton “People Like Me” profile photo, labeled with his name: Judson Foote of Hermon, nursing student, 36-year-old father of four, former commercial truck driver, ordained minister and private pilot. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 400x400 -> 1600x1600). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -3654,13 +3654,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @katepersun (display name \"Katelyn Persun\").",
+   "evidence": "Instagram profile @katepersun (display name \"Katelyn Persun\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@katepersun), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Katelyn Persun",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/14134692_183934445362607_1049667307_a.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NjAuQzMifQ%3D%3D&_nc_ohc=sxKDP2vpzGwQ7kNvwHTMMD9&_nc_oc=Ado64-A74SsyHoUZgWvlO4EQXb1TJ7eVSLc8_pJVb_8SU5EsNHX6VkYCwokwx2F8Pl-xvG1CJcr_wO7pSumhA9G1&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMVB53fQBrSqEvVflq4Gc1xDBUyd5ceSmxZ_gJhfhBcCw&oe=6AE02E85",
+   "photo_url": "photos/katelyn-persun.jpg",
    "source_page": "https://www.instagram.com/katepersun/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4151,13 +4151,13 @@
    "added": "2026-10-28"
   },
   {
-   "evidence": "Instagram profile @mrstabolt (display name \"Louissa Sinclair Tabolt\").",
+   "evidence": "Instagram profile @mrstabolt (display name \"Louissa Sinclair Tabolt\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@mrstabolt), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Louissa Sinclair Tabolt",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/210548711_371014697691289_2955317889299300255_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=c1wuY6xB9UwQ7kNvwGucbJz&_nc_oc=Adpgf0SGYRLBNGB7h8VAqIV5nenWEhZfrShi-2qhHqgS48uVlVV52G95kp9KFtjN0j7bywWBRVqrXoFR0XKL-5Bj&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMi3lvOFLcOhgmxUa1dSIiNNwCQTBN1fovqlclJVdvkpA&oe=6AE039BE",
+   "photo_url": "photos/louissa-sinclair-tabolt.jpg",
    "source_page": "https://www.instagram.com/mrstabolt/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @luannbailey (display name \"Luann Bailey\"); bio: \"lady of many trades and affections. •BTV• mom•creative•painter•clay•kids @vividcoffee • @graceandlilikoi •\".",
@@ -4347,13 +4347,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @margaretnordberg (display name \"Margaret Nordberg\").",
+   "evidence": "Instagram profile @margaretnordberg (display name \"Margaret Nordberg\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@margaretnordberg), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Margaret Nordberg",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/11351555_1457480001223489_451739217_a.jpg?_nc_cat=109&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xNTAuQzMifQ%3D%3D&_nc_ohc=Zn0TztDXyKIQ7kNvwGaJpVY&_nc_oc=Adq2Zs8vxwI7z3e0VfY4ruv8fm6OZGuXWCpurmTfKFbwfk6-o85FXp0AXA5fA2pF7A2m0e3qGjXnyZGw2p8opqvw&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQPwPAqitlTY-wtn_xUJSBgMflL95RxMNcvup2BmRpyFtw&oe=6AE02591",
+   "photo_url": "photos/margaret-nordberg.jpg",
    "source_page": "https://www.instagram.com/margaretnordberg/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Her Merit profile (SUNY Potsdam Business Administration '19) is text-only — no profile photo. The MealTrain page on file is a train for Nick Waite and Molly Criscitello; its photo is captioned for them, not for her.",
@@ -4382,13 +4382,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @marissa989 (display name \"Marissa Wood\").",
+   "evidence": "Instagram profile @marissa989 (display name \"Marissa Wood\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@marissa989), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Marissa Wood",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/274648502_1090498855071408_1330516032267386212_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDY4LkMzIn0%3D&_nc_ohc=Zg_w2yX92_wQ7kNvwGnmUaN&_nc_oc=AdoI0Glv0EmWWOLJ96u69qDG5wEFN0qgRx1rTqPqGpWc90G3LG8C2eLdF1559gdmJkajVdf1E2n6qNcXGOW7F8Bb&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMmK2AIWgig2SguQwEJLWQkXHN5zuIHyMvqizsYkaNWzA&oe=6AE0360B",
+   "photo_url": "photos/marissa-wood.jpg",
    "source_page": "https://www.instagram.com/marissa989/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @walczykmark (display name \"Mark C Walczyk\"); bio: \"Senator, Patriot, Buffalo Bills fan, Father, Eagle Scout, Ironman\".",
@@ -4417,13 +4417,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @mark.it5 (display name \"Mark Miller\").",
+   "evidence": "Instagram profile @mark.it5 (display name \"Mark Miller\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@mark.it5), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Mark Miller",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/12716583_1276207232396187_479926534_a.jpg?_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xNTAuQzMifQ%3D%3D&_nc_ohc=IOSOnxU_gWYQ7kNvwGG_AhI&_nc_oc=AdpcRvCgMrCWnZ0F1pF3n8ZaSEesTBlXkvPHwA0zALkJtY48MMIYd-gWFYnOs_qjnxuhw2PCCGxhDEFjva4XDDbD&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMIQC7wTsc7-We2DYmwC0ta6iHV9Z498_21DYh9Pu_muw&oe=6AE00ED7",
+   "photo_url": "photos/mark-miller.jpg",
    "source_page": "https://www.instagram.com/mark.it5/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "The 2024-25 SUNY Canton men's basketball roster lists '[Image 17: Mark Tomford - View Profile]' (Forward, So., Gouverneur NY — matching his individual player page: 6'7', Gouverneur HS, Criminal Justice), filename MarkTomford.jpg. Extracted URL was the width=80 thumbnail (Sidearm); filed at the verified width=600 size of the same headshot, same as the other Sidearm roster fixes. Re-hosted locally 2026-10-31 from the same source URL (600x825, bytes verified) so the primary no longer depends on the remote link.",
@@ -4558,13 +4558,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @meggreg4 (display name \"Meg Lapinski\").",
+   "evidence": "Instagram profile @meggreg4 (display name \"Meg Lapinski\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@meggreg4), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Meg Lapinski",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/10848455_847365768617705_1206720018_a.jpg?_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xNTAuQzMifQ%3D%3D&_nc_ohc=J7i7KjWA6KAQ7kNvwG2a_xJ&_nc_oc=Adr_0Gd-5Qe2EmAyU4R4xFZ0JuIwAPiBi7z2H7poJXSWZtQSDrAQHD1DYj1Ih1W1gJ07AjOXYlg9pF65LNOG5HL6&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQO7egtAAq2Ef32mxDzJEP20U7eXykyOIYQ84ZBwsGxZdQ&oe=6AE02218",
+   "photo_url": "photos/meg-lapinski.jpg",
    "source_page": "https://www.instagram.com/meggreg4/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @meganrconverse (display name \"Megan Converse\").",
@@ -4652,13 +4652,13 @@
    "type": null
   },
   {
-   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); handle and profile display name both match; JD's close friend. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
+   "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); handle and profile display name both match; JD's close friend. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@melody_maurer), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Melody Maurer",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/72333581_608917669876903_3437690140091219968_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=NfhY6WPnYWQQ7kNvwHlu46c&_nc_oc=AdqbrpJ8Tc0YZRA7fRbULCTLqzi9Cn2wSvXMMcvT5DAO7aYyDVRDrphHRSWI2NTecnrCsOcziqq0U2MxVCBcIYhG&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQN_G67hRb7o7101zJp_VESkimJ1ftMyZOUwIuqjT_lt8w&oe=6AE00755",
+   "photo_url": "photos/melody-maurer.jpg",
    "source_page": "https://www.instagram.com/melody_maurer",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @mercy.maurer (display name \"Mer\"); bio: \"🫶🏻💌🎀\".",
@@ -5126,13 +5126,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @oliviasandra04 (display name \"Olivia Smith\"); bio: \"@livsbeautyco\".",
+   "evidence": "Instagram profile @oliviasandra04 (display name \"Olivia Smith\"); bio: \"@livsbeautyco\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@oliviasandra04), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Olivia Smith",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/786828022_18624022078014737_4517873723463840030_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=RCWe-U8lZnwQ7kNvwHk2sc8&_nc_oc=AdoeLYIN87wl4beTbGJ2tqshh7dcfXzGp-_IlpipMukT-HAdW2VPzpvsUYTQ0lgHbLd_YlTpPW5AtJ9SmN-T7rL2&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=JsdiCx1Ko-vtMxTptvlpvw&oh=00_AQPx9FI616iEZ28F3Ztmp-o45FngJVthz_lcTFS1qCRG3A&oe=6AE037C0",
+   "photo_url": "photos/olivia-smith.jpg",
    "source_page": "https://www.instagram.com/oliviasandra04/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED via JD-supplied finding + Luna retrieval, 2026-10-28. Owen Kennedy of Empire Real Estate Firm LLC (Latham, NY area) is the listing agent on the exact Schenectady listings already in his footprint (912 Strong St, 27 Steuben St). His agent headshot is identical on his Homes.com and Zillow profiles; realtor.com carries his profile too but bot-walled Luna's browser, so the portrait was taken from the Zillow copy and is hosted locally (site/photos/owen-kennedy.jpg). Homes.com's own image CDN refuses Luna's network. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 240x240 -> 960x960). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -5222,13 +5222,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @philip__dennis (display name \"Philip\").",
+   "evidence": "Instagram profile @philip__dennis (display name \"Philip\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@philip__dennis), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Philip Dennis",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/601191679_18546063790011628_3373985541994966727_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=aRrHB9SJrcwQ7kNvwH1FZAn&_nc_oc=AdqJMmy4TYwU5nKyRD21AMgw8-WbM1-877IrScCnZkM1-LOOekymCgrvKYE5OsHGinRpGDdLyBSMQ6J-ImRwxT7y&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=DcVyROTJ37ttq6Ha_YQtgw&oh=00_AQP9iN6JvkUDMNKBK7aQtZsUj0TZqTSXmhjFkryfS730Pg&oe=6AE01A52",
+   "photo_url": "photos/philip-dennis.jpg",
    "source_page": "https://www.instagram.com/philip__dennis/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5248,13 +5248,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @philipwangerin (display name \"Philip Wangerin\").",
+   "evidence": "Instagram profile @philipwangerin (display name \"Philip Wangerin\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@philipwangerin), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Philip Wangerin",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/18298507_806762422813549_2139046515459489792_a.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=j_cUMpr38kgQ7kNvwFiFrkj&_nc_oc=AdqcPO1kjnq9JK-AVxs3VbCAmcZta5alkGbFYDKS5Goz1bePOuU2FZWLhkoJ4_kQ_iqUlLtsTGMvZJO6lX1aeqDO&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOCqdtf_5VsFuIWm2x-cr_-G54CAt8ituaWI8oANw4KxA&oe=6AE01092",
+   "photo_url": "photos/philip-wangerin.jpg",
    "source_page": "https://www.instagram.com/philipwangerin/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5282,13 +5282,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @amotwinsmom (display name \"Rachelle\").",
+   "evidence": "Instagram profile @amotwinsmom (display name \"Rachelle\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@amotwinsmom), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Rachelle Amo",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/65774885_469408450293796_9053893855715262464_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45MDQuQzMifQ%3D%3D&_nc_ohc=agpLDZJYROoQ7kNvwH24Vje&_nc_oc=Adol8oQ_VvwrlNdFNpOe33KkxPWPeQqRrVivpgTuOz3EqEut8geX4Df0JENbwiKSKIEBjbtXiwSyaL3fI0ySHc1T&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQP6QpGm3wc1MQx_k1tgPd8JRUsBi3RD7cfHFIHIOLrMeA&oe=6AE00F05",
+   "photo_url": "photos/rachelle-amo.jpg",
    "source_page": "https://www.instagram.com/amotwinsmom/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @ramseyclary (display name \"Ramsey Clary Thomas\").",
@@ -5334,13 +5334,13 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @reneeockrin (display name \"Renee Ockrin\"); bio: \"Loving Jesus, my husband, my 11 children & this community right here in the beautiful, ever changing seasons o\".",
+   "evidence": "Instagram profile @reneeockrin (display name \"Renee Ockrin\"); bio: \"Loving Jesus, my husband, my 11 children & this community right here in the beautiful, ever changing seasons o\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@reneeockrin), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Renee Ockrin",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/75572935_558689128284051_2699723181345734656_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=PwAMl9_AgxcQ7kNvwH3Ck-j&_nc_oc=Adp5mxrebdHqueYZ0kz_jfU2U0MxFbKdaNz5RonYUpnE9Oc9ThRXHYcwuvgbT5PoSr7XjBFFVH_oyyDYnDSVoESz&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQN882AozXR_QKAO3zryTXaiyv9C2h7KiVtBDICoOfp60Q&oe=6AE031B5",
+   "photo_url": "photos/renee-ockrin.jpg",
    "source_page": "https://www.instagram.com/reneeockrin/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "ACPHS Phi Lambda Sigma induction page: group photo placed with the PLS inductee list naming Ria Amo first among ~20 inductees — no caption identifies individuals or positions. A second ACPHS group photo (Fall 2025 awards dinner) also lists her among 21 awardees, not individually identifiable. Possible. Re-hosted locally 2026-10-31 from the same source URL (2400x1600, bytes verified) so the primary no longer depends on the remote link.",
@@ -5453,13 +5453,13 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @rosalie_page_smith (display name \"Rosalie Smith\"); bio: \"You had me at yellow 🍋 🎨\".",
+   "evidence": "Instagram profile @rosalie_page_smith (display name \"Rosalie Smith\"); bio: \"You had me at yellow 🍋 🎨\". RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@rosalie_page_smith), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Rosalie Smith",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/314661066_3286666564995952_5674253162895435412_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=100&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=77hpXtmInnkQ7kNvwEzTv3q&_nc_oc=AdogOlILxz7MXdMcC7AuJBS-r_NlAJs_WyhWAgRINbEMkoQwH-qqeTW3UE9fh7eD1l57dRmlkidzXnywaM2zOU37&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQM_8AXYN3RzvmOD1kqJoEUcMZhLdxjJFSLh4GwQwreXig&oe=6AE01593",
+   "photo_url": "photos/rosalie-smith.jpg",
    "source_page": "https://www.instagram.com/rosalie_page_smith/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). Image search ties this portrait to her personal site rumbidzai.com (her own name domain); the portrait was viewed and byte-checks as a real 800x649 JPEG. The site would not open for text verification, so the Harare Institute of Technology tie is unconfirmed - graded possible. Re-hosted locally 2026-10-31 from the same source URL (800x649, bytes verified) so the primary no longer depends on the remote link.",
@@ -5549,13 +5549,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @samwangerin (display name \"Sam Wangerin\").",
+   "evidence": "Instagram profile @samwangerin (display name \"Sam Wangerin\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@samwangerin), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Sam Wangerin",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/140630363_210528114085602_185112621075840331_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=103&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=YMIamfolGkwQ7kNvwGTOIPk&_nc_oc=AdqD8t3R6wDk-rKMI2YGpsc-elP509VjIbF3rXOzkndRCFbxyW4zVEcVpnZ9kTvjmFLe_0sL1y4B8SKPMuJ4ygPX&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQM9YsFjf9Wap-7yvOTgcXTBidgfGztDrk5LiFxAAQFhjQ&oe=6AE018E3",
+   "photo_url": "photos/sam-wangerin.jpg",
    "source_page": "https://www.instagram.com/samwangerin/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "name": "Samantha Antolik",
@@ -5782,13 +5782,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @si3rragrace (display name \"Sierra Smith\").",
+   "evidence": "Instagram profile @si3rragrace (display name \"Sierra Smith\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@si3rragrace), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Sierra Smith",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/280548187_1399986140479426_5519691383212238321_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=9eGwPfsqYpkQ7kNvwHtywR_&_nc_oc=AdrPtZNIw1RBY_pR0SlHx5md9JeOzZfg6pZcIlA-KQArsW3OEZDAMJwyUqcemxErWrUh0mTTRZQJevFiy_9rP0L6&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQO27_wVVc4U5JAJTNZ1axDRIaFgCV7e2RFM_hWpuB3VJA&oe=6AE034F4",
+   "photo_url": "photos/sierra-smith.jpg",
    "source_page": "https://www.instagram.com/si3rragrace/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 3). ONNY's Young Artist Competition brochure (p.2, 'A Sampling of Past YAC Winners') prints his photo directly beside the caption '2018 Silas Smith, HARP - Malone' and his winner testimonial. Cropped from the PDF and hosted locally; the portrait was viewed (young man in a tuxedo at a harp). Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (hybrid crop/trim + FSRCNN x4; 234x357 -> 696x896). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -6114,13 +6114,13 @@
    "type": null
   },
   {
-   "evidence": "Instagram profile @trentondaniels4 (display name \"Trenton Daniels\").",
+   "evidence": "Instagram profile @trentondaniels4 (display name \"Trenton Daniels\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@trentondaniels4), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
    "name": "Trenton Daniels",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/95774179_590632995138502_6499696793561858048_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=111&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=AcD0-Zdfyt8Q7kNvwGjHzTO&_nc_oc=Adp9SSiOZKx-hehWG0BbKPW7p6kKFcrpLloNnNVpB_BHUm8nKqOttKH-naQioQuH3zZE4JBXYoi_L9Zn1LDLkqA2&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQOwGAARhiDwwY2S4hyXca94hWplgoxVSMjVONeTXYkyKg&oe=6AE03B73",
+   "photo_url": "photos/trenton-daniels.jpg",
    "source_page": "https://www.instagram.com/trentondaniels4/",
    "status": "confirmed",
    "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
