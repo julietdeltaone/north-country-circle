@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.49.0';
+var APP_VERSION = '3.50.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3736,11 +3736,13 @@ function heroHTML(di){
   var meta = mi('Location', loc) + mi('Relationship', cap(gv(e, 'relationship'))) + mi('Context', cap(gv(e, 'context'))) +
     mi('Known since', knownSinceLabel(e)) + (lcLabel(e) ? mi(lcOnline(e) ? 'Last contact online' : 'Last contact', lcLabel(e)) : '');
   var ph = phHeroHTML(e);
+  var hotE = hotForDi(di);
   var sc = scoreFor(di), pres = profileSections(di);
   return '<div class="ih-id">' + (ph ? '' : avatar(e, 'xl')) +
     '<div class="ih-main"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
     (meta ? '<div class="ih-meta">' + meta + '</div>' : '') +
-    ((ds || cs) ? '<div class="hrow">' + ds + cs + '</div>' : '') + '</div></div>' +
+    ((ds || cs) ? '<div class="hrow">' + ds + cs + '</div>' : '') +
+    (hotE ? '<div class="ih-hot"><span class="hot-dot"></span>Hot off the press &middot; published ' + esc(hmFmtD(hotE.published)) + '</div>' : '') + '</div></div>' +
     (ph ? '<div class="ih-photo">' + ph + '</div>' : '') +
     '<div class="ih-score">' + ringScoreSVG(sc ? sc.score : 0) + '<div class="ih-slab"><b>Score</b><span>of 100</span></div></div>' +
     '<div class="ih-secs">' + ringSecsSVG(pres) + '<div class="ih-legend">' + pres.map(function(p){
@@ -6033,8 +6035,49 @@ function hmaFactRow(f, x, act){
   if(di == null) return '<div class="hma-frow">' + inner + '</div>';
   return '<button type="button" class="hma-frow" data-act="' + (act || 'hmgoto') + '" data-di="' + di + '" title="Open ' + esc(f.display || f.name) + '\u2019s profile">' + inner + '</button>';
 }
+/* --- Hot off the press (JD 2026-10-30): a filed fact whose source was
+   published today or yesterday gets a special alert treatment, apart
+   from the 3-week New bucket. The Live Records routine carries hot
+   items forward in DT.hot for 48 hours; until a brief carries them,
+   derive from the latest brief's fresh filings. --- */
+function hotDateOk(p){
+  if(!p) return false;
+  function ds(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  var now = new Date();
+  return p === ds(now) || p === ds(new Date(now.getTime() - 864e5));
+}
+function hotItems(){
+  var out = [], seen = {};
+  function push(name, display, x){
+    var k = String(name || '').toLowerCase() + '|' + (x.text || '');
+    if(seen[k]) return; seen[k] = 1;
+    out.push({ name:name, display:display || name, text:x.text || '', source:x.source || '', url:x.url || '', published:x.published || '' });
+  }
+  if(!DT) return out;
+  (DT.hot || []).forEach(function(h){ if(hotDateOk(h.published)) push(h.name, h.display, h); });
+  (DT.filed || []).forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh && hotDateOk(x.published)) push(f.name, f.display, x); }); });
+  return out;
+}
+function hotForDi(di){
+  var hot = hotItems();
+  for(var i = 0; i < hot.length; i++){ if(hmDiOf(hot[i].name) === di) return hot[i]; }
+  return null;
+}
+function hotAlertHTML(){
+  var hot = hotItems();
+  if(!hot.length) return '';
+  var rows = hot.map(function(h){
+    var di = hmDiOf(h.name);
+    var inner = '<span class="hot-nm">' + esc(h.display || h.name) + '</span>' +
+      '<span class="hot-tx">' + esc(h.text) + '</span>' +
+      '<span class="hot-meta">Published ' + esc(hmFmtD(h.published)) + (h.url ? ' &middot; <a data-act="extlink" href="' + esc(h.url) + '" target="_blank" rel="noopener">' + esc(h.source || 'source') + ' ' + ic('ext', 10) + '</a>' : (h.source ? ' &middot; ' + esc(h.source) : '')) + '</span>';
+    if(di == null) return '<div class="hot-row">' + inner + '</div>';
+    return '<button type="button" class="hot-row" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(h.display || h.name) + '\u2019s profile">' + inner + '</button>';
+  }).join('');
+  return '<section class="card hot-card"><header><span class="hot-dot"></span><h3>Hot off the press</h3><em class="cnt">' + hot.length + '</em></header><div class="cbody">' + rows + '</div></section>';
+}
 function hmActivity(){
-  var out = '<section class="card hm-blk hm-act"><header><h3>What&rsquo;s new</h3>' + (DT && DT.date ? '<em class="cnt">' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</header><div class="cbody">';
+  var out = hotAlertHTML() + '<section class="card hm-blk hm-act"><header><h3>What&rsquo;s new</h3>' + (DT && DT.date ? '<em class="cnt">' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</header><div class="cbody">';
   var freshF = null, freshX = null;
   if(DT && DT.filed) DT.filed.forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh && !freshX){ freshF = f; freshX = x; } }); });
   if(freshF){
@@ -7304,6 +7347,11 @@ if(!window.__calAtlasBound){
   });
 }
 
+/* Live Records ordering (JD 2026-10-30): 'brief' keeps the routine's
+   own order; 'new' puts the newest events first, keyed on each fact's
+   published date (a person rides on their newest fact; facts without a
+   published date ride on the brief date). */
+var LR_SORT = 'brief';
 function viewDaily(v){
   dtLoad(); chLoad(); rcLoad();
   var head = '<div class="page asearch lr"><div class="pagehead"><div><h1 class="display">Live Records</h1></div></div>';
@@ -7332,6 +7380,7 @@ function viewDaily(v){
      are several, so the single hero is gone. --- */
   var freshList = [];
   (DT.filed || []).forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh) freshList.push({ f:f, x:x }); }); });
+  if(LR_SORT === 'new') freshList.sort(function(a, b){ return String(b.x.published || '').localeCompare(String(a.x.published || '')); });
   var freshF = freshList.length ? freshList[0].f : null;
   var newCards = '';
   if(freshList.length){
@@ -7339,10 +7388,10 @@ function viewDaily(v){
     newCards = '<div class="assec-t asanim" style="--d:60ms">NEW RECORDS &mdash; PAST 3 WEEKS <em class="cnt">' + freshList.length + '</em></div>' +
       '<div class="lrnew-grid">' + shown.map(function(it, i){
         var di = diOf(it.f.name), e = di != null ? D.directory[di] : null;
-        return '<section class="card lrnew asanim" style="--d:' + (80 + i * 50) + 'ms"><div class="cbody">' +
+        return '<section class="card lrnew' + (hotDateOk(it.x.published) ? ' lrhot' : '') + ' asanim" style="--d:' + (80 + i * 50) + 'ms"><div class="cbody">' +
           '<div class="lrnew-h">' + (e ? avatar(e, 'md') : '') + '<div class="lrnew-name">' + personLink(it.f.name, it.f.display) +
           (it.x.published ? '<small class="dim">Published ' + esc(fmtD(it.x.published)) + '</small>' : '') + '</div>' +
-          '<span class="dtnew">NEW</span></div>' +
+          (hotDateOk(it.x.published) ? '<span class="dtnew dthot">HOT</span>' : '<span class="dtnew">NEW</span>') + '</div>' +
           '<p class="lrnew-fact">' + factLine(it.x) + '</p></div></section>';
       }).join('') + '</div>' +
       (freshList.length > shown.length ? '<p class="dim lrnew-more">+ ' + (freshList.length - shown.length) + ' more in the updated records below.</p>' : '');
@@ -7385,12 +7434,20 @@ function viewDaily(v){
     '<div class="asstat"><span class="asstat-ic">' + ic('calendar', 16) + '</span><b>' + esc(fmtD(DT.date)) + '</b><span>Latest brief</span></div>' +
     '</div>' + frBar + '</div></section>';
   /* --- Updated packets --- */
-  var cards = (DT.filed || []).length ? (DT.filed || []).map(function(f, i){
+  var filedSorted = (DT.filed || []).slice();
+  if(LR_SORT === 'new') filedSorted.sort(function(a, b){
+    function k(f){ var m = ''; (f.facts || []).forEach(function(x){ if((x.published || '') > m) m = x.published; }); return m || DT.date || ''; }
+    return k(b).localeCompare(k(a));
+  });
+  var cards = filedSorted.length ? filedSorted.map(function(f, i){
     var di = diOf(f.name), e = di != null ? D.directory[di] : null;
-    var facts = (f.facts || []).map(function(x, j){
-      return '<div class="asfact"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? ' <span class="dtnew">NEW</span>' : '') + '</p></div>';
+    var hasHot = (f.facts || []).some(function(x){ return x.fresh && hotDateOk(x.published); });
+    var fFacts = (f.facts || []).slice();
+    if(LR_SORT === 'new') fFacts.sort(function(a, b){ return String(b.published || '').localeCompare(String(a.published || '')); });
+    var facts = fFacts.map(function(x, j){
+      return '<div class="asfact"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? (hotDateOk(x.published) ? ' <span class="dtnew dthot">HOT</span>' : ' <span class="dtnew">NEW</span>') : '') + '</p></div>';
     }).join('');
-    return '<section class="card dtperson asanim" style="--d:' + (140 + i * 70) + 'ms"><div class="cbody">' +
+    return '<section class="card dtperson' + (hasHot ? ' lrhot' : '') + ' asanim" style="--d:' + (140 + i * 70) + 'ms"><div class="cbody">' +
       '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + personLink(f.name, f.display) +
       '<small class="dim">' + (e ? esc(infoLine(e)) : '') + '</small></div>' +
       '<span class="asfiled-cnt">' + (f.facts || []).length + ' filed</span></div>' + facts + '</div></section>';
@@ -7422,6 +7479,9 @@ function viewDaily(v){
       '<div class="aschips">' + allChecked.map(function(c){ return chip(c, filedNames[String(c.name || '').toLowerCase()] ? 'upd' : 'cur'); }).join('') + '</div></details>' : '') +
     '</div></section>';
   var updHead = (DT.filed || []).length ? '<div class="assec-t asanim" style="--d:120ms">UPDATED RECORDS</div>' : '';
+  var sortBar = (DT.filed || []).length ? '<div class="lrsort asanim" style="--d:40ms"><span>Records</span>' +
+    '<button type="button" class="lrchip' + (LR_SORT === 'brief' ? ' on' : '') + '" data-act="lrsort" data-sort="brief">Brief order</button>' +
+    '<button type="button" class="lrchip' + (LR_SORT === 'new' ? ' on' : '') + '" data-act="lrsort" data-sort="new">Newest events first</button></div>' : '';
   /* The old currency strip is gone (JD 2026-10-28): its date lives in
      the workflow strip, and "next in the rotation" named people the
      landing doesn't need — only the not-yet-checked count remains,
@@ -7440,7 +7500,7 @@ function viewDaily(v){
     }).join('');
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
-  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
+  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + sortBar + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
   dtAnimate();
 }
 
@@ -10921,6 +10981,7 @@ function onClick(ev){
     case 'hmiback': hmiBack(); break;
     case 'hmiperson': { var hpdi = curDi(el); hmiClose(true); if(hpdi != null) openPerson(hpdi); break; }
     case 'hmgoto': if(di != null) openPerson(di); break;
+    case 'lrsort': LR_SORT = el.getAttribute('data-sort') || 'brief'; render(); break;
     case 'hmigroup': hmiClose(true); go('groups/groups/' + encodeURIComponent(el.getAttribute('data-g'))); break;
     case 'hmiaudit': hmiClose(true); store('ncc_aud_mode', 'years'); if(S.audit){ S.audit.mode = 'years'; S.audit.shown = null; } go('audit'); break;
     case 'hmidaily': hmiClose(true); go('daily'); break;
