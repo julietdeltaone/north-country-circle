@@ -4695,3 +4695,74 @@ span.ca-crumb{cursor:default}
    cards, not floating columns. */
 #mlsecs .ml-sec{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--glass);padding:14px 16px 10px;margin-top:18px}
 #mlsecs .ml-sec>h3{border-bottom:none;padding-bottom:2px;margin-bottom:6px}
+
+/* ============================================================
+   HOME INSPECTOR, DESIGNED (V3.53.0, JD 2026-10-31)
+   The .hmi popup family gets the full design language: kicker
+   over the title, an explainer panel (.hmi-why) that says in
+   plain words what the popup is and why entries rank there,
+   stat tiles with the ink edge, section labels with the ink
+   segment (same as Home cards), ink krow bars in light mode,
+   and the footprint person's hero stat, comparison bars and
+   numbered fact list. Scoped to .hmi-wrap (popups live on
+   body, outside .page.hm); ink tokens mirror the V3.52.0 Home
+   values per mode. No new transitions.
+   ============================================================ */
+.hmi-wrap{--ink:#171a21;--ink-txt:#f4f5f7}
+html[data-mode="dark"] .hmi-wrap{--ink:#000000;--ink-txt:#f2f2f2}
+/* header hierarchy */
+.hmi-h{padding:14px 16px}
+.hmi-t .hmi-kick{display:block;font:700 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-bottom:3px}
+html[data-mode="dark"] .hmi-t .hmi-kick{color:var(--ink-txt)}
+.hmi-t b{font-size:17px}
+.hmi-body{padding:16px 18px 20px}
+/* explainer panel */
+.hmi-why{margin:0 0 14px;padding:11px 13px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:var(--r-sm)}
+html[data-mode="dark"] .hmi-why{border-left-color:var(--ink-txt)}
+.hmi-why p{margin:0;font-size:13px;line-height:1.55;color:var(--txt2)}
+.hmi-why p+p{margin-top:6px}
+.hmi-why b{color:var(--txt)}
+/* stat tiles */
+.hmi-stats{gap:10px;margin-bottom:4px}
+.hmi-stat{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:var(--r-sm);padding:10px 12px;gap:2px}
+html[data-mode="dark"] .hmi-stat{border-top-color:var(--ink-txt)}
+.hmi-stat b{font-size:20px}
+.hmi-mix{margin:6px 0 2px}
+/* section labels: ink text + ink underline segment, as on Home */
+.hmi-sec{color:var(--ink);position:relative;padding-bottom:6px;margin:18px 0 9px}
+.hmi-sec::after{content:"";position:absolute;left:0;bottom:0;width:26px;height:3px;border-radius:2px;background:var(--ink)}
+html[data-mode="dark"] .hmi-sec{color:var(--ink-txt)}
+html[data-mode="dark"] .hmi-sec::after{background:var(--ink-txt)}
+/* bars + rows */
+html[data-mode="light"] .hmi-wrap .hmi-ptr i{background-image:none;background-color:var(--ink)}
+html[data-mode="light"] .hmi-row:hover,html[data-mode="light"] .hmi-krow:hover{background:var(--fill)}
+.hmi-rows{margin-top:6px}
+/* footprint person: hero stat + comparison bars + numbered facts */
+.hmi-pmain{flex:1;min-width:0}
+.hmi-hero{margin-left:auto;text-align:right;flex:none;padding-left:12px}
+.hmi-hero b{display:block;font:700 30px/1 var(--serif);color:var(--ink)}
+html[data-mode="dark"] .hmi-hero b{color:var(--ink-txt)}
+.hmi-hero span{display:block;margin-top:3px;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+.hmi-cmp{display:flex;flex-direction:column;gap:8px}
+.hmi-cmprow{display:grid;grid-template-columns:minmax(0,38%) 1fr auto;align-items:center;gap:10px}
+.hmi-cmpl{font-size:12.5px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hmi-cmprow.me .hmi-cmpl{color:var(--txt);font-weight:600}
+.hmi-cmptrack{display:block;height:10px;background:var(--track);border-radius:999px;overflow:hidden}
+.hmi-cmpfill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#262b34,#171a21)}
+html[data-mode="dark"] .hmi-cmpfill{background-image:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 55%,rgba(0,0,0,.10)),linear-gradient(90deg,var(--ga),var(--gb))}
+.hmi-cmprow.next .hmi-cmpfill{opacity:.42}
+.hmi-cmprow.avg .hmi-cmpfill{background:var(--fill3)}
+html[data-mode="dark"] .hmi-cmprow.avg .hmi-cmpfill{background:var(--fill3);background-image:none}
+.hmi-cmpv{font:700 13.5px var(--serif);white-space:nowrap}
+.hmi-factlist{list-style:none;margin:0;padding:0}
+.hmi-factlist li{display:flex;gap:11px;padding:8px 0;border-top:1px solid var(--line)}
+.hmi-factlist li:first-child{border-top:0;padding-top:2px}
+.hmi-fn{font:700 12px var(--serif);color:var(--ink);min-width:22px;text-align:right;padding-top:2px;flex:none}
+html[data-mode="dark"] .hmi-fn{color:var(--ink-txt)}
+.hmi-factlist p{margin:0;font-size:13px;line-height:1.5;color:var(--txt)}
+@media (max-width:560px){
+  .hmi-stat{flex:1 1 calc(50% - 5px);min-width:0}
+  .hmi-hero b{font-size:24px}
+  .hmi-body{padding:14px 13px 16px}
+  .hmi-cmprow{grid-template-columns:minmax(0,34%) 1fr auto}
+}
