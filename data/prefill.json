@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 13,
+ "count": 14,
  "suggestions": [
   {
    "id": "pf-23d8fd3bd0",
@@ -168,6 +168,19 @@
    "grade": "Tentative",
    "evidence": [
     "3 of 4 located known associates are in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-b93e1fce44",
+   "key": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   }
