@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 81,
+ "count": 79,
  "suggestions": [
   {
    "id": "pf-37384ce538",
@@ -887,19 +887,6 @@
    "conf": 52
   },
   {
-   "id": "pf-5f8e0acd40",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-3d93f54eda",
    "key": "sf:michelle-shirley",
    "display": "Michelle Shirley",
@@ -963,19 +950,6 @@
     "Facebook lists them as from Ann Arbor, MI (hometown; current residence unconfirmed)."
    ],
    "conf": 52
-  },
-  {
-   "id": "pf-b93e1fce44",
-   "key": "sf:richard-gilchrist",
-   "display": "Richard Gilchrist",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
   },
   {
    "id": "pf-3615be7cac",
@@ -1057,6 +1031,14 @@
   }
  ],
  "auto_apply": [
+  {
+   "key": "labellek14",
+   "display": "Katie LaBelle",
+   "field": "companies",
+   "value": "Clarkson University",
+   "conf": 92,
+   "id": "pf-caa1a7d3fd"
+  },
   {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
