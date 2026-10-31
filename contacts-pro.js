@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.55.0';
+var APP_VERSION = '3.56.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6109,7 +6109,7 @@ function hotAlertHTML(){
     if(di == null) return '<div class="hot-row">' + inner + '</div>';
     return '<button type="button" class="hot-row" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(h.display || h.name) + '\u2019s profile">' + inner + '</button>';
   }).join('');
-  return '<section class="card hot-card"><header><span class="hot-dot"></span><h3>Hot off the press</h3><em class="cnt">' + hot.length + '</em></header><div class="cbody">' + rows + '</div></section>';
+  return '<section class="card hot-card"><header><h3><span class="hot-dot"></span>Hot off the press</h3><em class="cnt">' + hot.length + '</em></header><div class="cbody">' + rows + '</div></section>';
 }
 function hmActivity(){
   var out = hotAlertHTML() + hmPrefillChip() + '<section class="card hm-blk hm-act"><header><h3>What&rsquo;s new</h3>' + (DT && DT.date ? '<em class="cnt">' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</header><div class="cbody">';
