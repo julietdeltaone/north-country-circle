@@ -4858,13 +4858,22 @@ html[data-mode="light"] .hmi-hb i{background:linear-gradient(180deg,#262b34,#171
    A full-screen dark console inside Live Records, dark by
    design in both app themes: near-black blue-slate, hairline
    slate borders, the app red as the only accent, amber kept
-   for hot items. Radar sweep + blip pings + the spotlight
-   progress bar are the only motion, and all of it stops under
-   .rm (prefers-reduced-motion). Scoped to .lrcc throughout.
+   for hot items. Scoped to .lrcc throughout.
+   V3.57.0 elegance pass: one motion system — content enters
+   on --lrcc-ease (a long, soft ramp) and leaves on
+   --lrcc-ease-in; nothing content-bearing moves linearly.
+   The visual is a recency orbit (time bands by event date)
+   breathed through by a single soft pulse every 6.5s. All
+   motion stops under .rm (prefers-reduced-motion).
    ============================================================ */
 .lrcc{position:fixed;inset:0;z-index:130;background:#0a0d12;color:#e9edf3;display:flex;flex-direction:column;
   font:14px/1.45 var(--sans);--lrc-line:#232b38;--lrc-panel:#10141b;--lrc-panel2:#0c1016;
-  --lrc-mut:#8b96a5;--lrc-dim:#5f6b7a;--lrc-red:#e30613;--lrc-red2:#ff2a33;--lrc-amber:#e0a35a}
+  --lrc-mut:#8b96a5;--lrc-dim:#5f6b7a;--lrc-red:#e30613;--lrc-red2:#ff2a33;--lrc-amber:#e0a35a;
+  --lrcc-ease:cubic-bezier(.22,.61,.21,1);--lrcc-ease-in:cubic-bezier(.55,.06,.68,.19);
+  animation:lrcc-open .32s cubic-bezier(.22,.61,.21,1)}
+@keyframes lrcc-open{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:scale(1)}}
+.lrcc.lrcc-closing{animation:lrcc-close-a .18s var(--lrcc-ease-in) forwards}
+@keyframes lrcc-close-a{to{opacity:0}}
 .lrcc *{box-sizing:border-box}
 .lrcc button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .lrcc a{color:#c9d4e2}
@@ -4887,7 +4896,10 @@ html[data-mode="light"] .hmi-hb i{background:linear-gradient(180deg,#262b34,#171
 .lrcc-tab:hover{color:#e9edf3}
 .lrcc-tab.on{color:#fff;background:var(--lrc-panel);border-color:var(--lrc-line)}
 /* main + panels */
-.lrcc-main{flex:1;min-height:0;overflow-y:auto;padding:14px 20px 18px}
+.lrcc-main{flex:1;min-height:0;overflow-y:auto;padding:14px 20px 18px;transition:opacity .18s var(--lrcc-ease-in)}
+.lrcc-main.lrcc-fadeout{opacity:0}
+.lrcc-main.lrcc-enter{animation:lrcc-main-in .28s var(--lrcc-ease)}
+@keyframes lrcc-main-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .lrcc-panel{background:var(--lrc-panel);border:1px solid var(--lrc-line);border-radius:3px}
 .lrcc-ph{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 13px;border-bottom:1px solid var(--lrc-line);
   font:700 10.5px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--lrc-mut)}
@@ -4895,34 +4907,44 @@ html[data-mode="light"] .hmi-hb i{background:linear-gradient(180deg,#262b34,#171
 .lrcc-legend{display:flex;align-items:center;gap:5px;letter-spacing:.04em;text-transform:none;font-weight:500}
 .lrcc-legend .lg{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:9px}
 .lrcc-legend .lg.f{background:var(--lrc-red2)}
+.lrcc-legend .lg.h{background:rgba(224,163,90,.16);border:2px solid var(--lrc-amber);width:9px;height:9px}
 .lrcc-legend .lg.c{background:rgba(200,212,228,.38)}
 .lrcc-legend .lg.n{background:none;border:1px solid rgba(200,212,228,.55)}
 /* overview grid */
 .lrcc-ov{display:grid;grid-template-columns:minmax(300px,440px) minmax(0,1fr);gap:14px;align-items:start}
 .lrcc-right{display:flex;flex-direction:column;gap:14px;min-width:0}
-/* radar */
+/* recency orbit: rings are time bands by event date — WEEK at
+   the center out to QUIET at the rim. One soft pulse expands
+   from the center every 6.5s on an ease-out ramp; each dot
+   carries the shared glow keyframe, phase-offset by its
+   radius (--gd) so it brightens as the pulse reaches it. */
 .lrcc-radar{position:relative;width:min(100%,408px);aspect-ratio:1;margin:14px auto 6px}
 .lrcc-rings{position:absolute;inset:0;width:100%;height:100%}
 .lrcc-rings circle{fill:none;stroke:#26303e;stroke-width:.45}
-.lrcc-rings line{stroke:#1d2632;stroke-width:.4}
-.lrcc-sweep{position:absolute;inset:0;border-radius:50%;pointer-events:none;
-  background:conic-gradient(from 0deg,rgba(227,6,19,.34) 0deg,rgba(227,6,19,.07) 52deg,transparent 72deg);
-  animation:lrcc-rot 7s linear infinite}
-.lrcc-sweep::after{content:'';position:absolute;left:50%;top:0;width:2px;height:50%;
-  background:linear-gradient(180deg,rgba(255,70,80,.95),rgba(255,70,80,.12));transform:translateX(-50%)}
-@keyframes lrcc-rot{to{transform:rotate(360deg)}}
-.lrcc-core{position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;
-  background:#0a0d12;border:2px solid var(--lrc-red2)}
-.lrcc-dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);padding:0;flex:none}
+.lrcc-rings circle.lrcc-bandfill{fill:rgba(233,237,243,.028);stroke:#2b3646}
+.lrcc-rings circle.lrcc-core-c{fill:#46536a;stroke:none}
+.lrcc-band-l{font:600 2.9px var(--sans);letter-spacing:.14em;fill:#66727f}
+.lrcc-pulse-c{fill:none;stroke:rgba(255,42,51,.5);stroke-width:.6;transform-box:fill-box;transform-origin:center;
+  animation:lrcc-pulse 6.5s cubic-bezier(.16,.55,.3,1) infinite}
+@keyframes lrcc-pulse{0%{transform:scale(.02);opacity:.55}70%{opacity:.26}100%{transform:scale(1);opacity:0}}
+.lrcc-dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);padding:0;flex:none;
+  animation:lrcc-glow 6.5s linear infinite;animation-delay:var(--gd,0s)}
+@keyframes lrcc-glow{0%{filter:brightness(1)}6%{filter:brightness(1.8)}15%{filter:brightness(1)}100%{filter:brightness(1)}}
 .lrcc-dot.filed{width:11px;height:11px;background:var(--lrc-red2);box-shadow:0 0 7px rgba(255,42,51,.75);z-index:3}
-.lrcc-dot.filed::after{content:'';position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(255,42,51,.8);
-  animation:lrcc-ping 7s linear infinite;animation-delay:var(--d,0s)}
-@keyframes lrcc-ping{0%{transform:scale(.6);opacity:0}4%{transform:scale(1);opacity:1}22%{transform:scale(2.6);opacity:0}100%{transform:scale(2.6);opacity:0}}
-.lrcc-dot.chk{width:6px;height:6px;background:rgba(200,212,228,.38);z-index:2}
+.lrcc-dot.filed.hotring{border:2px solid var(--lrc-amber)}
+.lrcc-dot.hot{width:11px;height:11px;background:rgba(224,163,90,.16);border:2px solid var(--lrc-amber);box-shadow:0 0 7px rgba(224,163,90,.45);z-index:3}
+.lrcc-dot.chk{width:6px;height:6px;background:rgba(200,212,228,.55);z-index:2}
 .lrcc-dot.nxt{width:7px;height:7px;background:rgba(10,13,18,.35);border:1px solid rgba(200,212,228,.55);z-index:2}
 .lrcc-dot:hover{outline:2px solid rgba(233,237,243,.65);outline-offset:1px}
 .lrcc-dot.on{outline:2px solid #fff;outline-offset:2px;z-index:4}
-.lrcc-radar-cap{padding:2px 13px 11px;text-align:center;font-size:12px;color:var(--lrc-mut)}
+.lrcc-orbit-lab{position:absolute;transform:translate(-50%,-215%);background:rgba(12,16,22,.94);border:1px solid var(--lrc-line);
+  border-radius:999px;padding:2px 9px;font:600 11px var(--sans);color:#fff;white-space:nowrap;z-index:5;pointer-events:none;
+  opacity:0;transition:opacity .3s var(--lrcc-ease)}
+.lrcc-orbit-lab.show{opacity:1}
+.lrcc-orbit-lab.l{transform:translate(-8%,-215%)}
+.lrcc-orbit-lab.r{transform:translate(-92%,-215%)}
+.lrcc-radar-cap{padding:2px 13px 3px;text-align:center;font-size:12px;color:var(--lrc-mut)}
+.lrcc-radar-sub{padding:0 13px 12px;text-align:center;font-size:11.5px;color:var(--lrc-dim)}
 /* spotlight */
 .lrcc-sp-ctl{display:flex;align-items:center;gap:6px}
 .lrcc-sp-idx{font:600 11.5px var(--serif);color:var(--lrc-mut);letter-spacing:.06em;margin-right:2px}
@@ -4931,7 +4953,11 @@ html[data-mode="light"] .hmi-hb i{background:linear-gradient(180deg,#262b34,#171
 .lrcc-cbtn:hover{color:#fff;border-color:#3a4657}
 .lrcc-cbtn.on{color:#fff;background:var(--lrc-red);border-color:var(--lrc-red)}
 .lrcc-cbtn.flip svg{transform:scaleX(-1)}
-.lrcc-sp-body{padding:15px 16px 13px;min-height:172px}
+.lrcc-sp-body{padding:15px 16px 13px;min-height:172px;
+  transition:opacity .46s var(--lrcc-ease),transform .46s var(--lrcc-ease)}
+.lrcc-sp-body.lrcc-out{opacity:0;transform:translateY(4px);
+  transition:opacity .24s var(--lrcc-ease-in),transform .24s var(--lrcc-ease-in)}
+.lrcc-sp-body.lrcc-pre{opacity:0;transform:translateY(6px);transition:none}
 .lrcc-sp-kick{font:700 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--lrc-mut);margin-bottom:7px}
 .lrcc-sp-kick.hot{color:var(--lrc-amber)}
 .lrcc-sp-name{display:block;font:700 21px var(--serif);color:#fff;text-align:left;padding:0;line-height:1.2}
@@ -4948,11 +4974,13 @@ button.lrcc-sp-name:hover{text-decoration:underline;text-underline-offset:3px}
 .lrcc-chip.link{color:#c9d4e2;text-decoration:none}
 .lrcc-chip.link:hover{border-color:#3a4657;color:#fff}
 .lrcc-chip.new{color:#fff;background:var(--lrc-red);border-color:var(--lrc-red);font-weight:700;letter-spacing:.06em}
+.lrcc-chip.ev{color:#e9edf3;border-color:#3a4657;font-weight:600}
 .lrcc-sp-none{color:var(--lrc-mut);font-size:13px;margin:4px 0}
-.lrcc-sp-prog{height:3px;background:#1a222d;border-radius:0 0 3px 3px;overflow:hidden}
-.lrcc-sp-prog i{display:block;height:100%;width:0;background:var(--lrc-red);animation:lrcc-prog 4.5s linear forwards}
-@keyframes lrcc-prog{from{width:0}to{width:100%}}
-.lrcc-spot-p.paused .lrcc-sp-prog i{animation-play-state:paused}
+.lrcc-sp-dots{display:flex;gap:6px;justify-content:center;align-items:center;padding:10px 0 12px}
+.lrcc-sp-dots i{width:6px;height:6px;border-radius:50%;border:1px solid rgba(200,212,228,.4);
+  transition:background .3s var(--lrcc-ease),border-color .3s var(--lrcc-ease),transform .3s var(--lrcc-ease),box-shadow .3s var(--lrcc-ease)}
+.lrcc-sp-dots i.on{background:var(--lrc-red2);border-color:var(--lrc-red2);transform:scale(1.35);box-shadow:0 0 6px rgba(255,42,51,.5)}
+.lrcc-spot-p.paused .lrcc-sp-dots i.on{opacity:.5;box-shadow:none}
 /* timing rail */
 .lrcc-trow{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:8px 13px;border-bottom:1px solid rgba(35,43,56,.6)}
 .lrcc-trow.big{padding-top:11px;padding-bottom:11px}
@@ -5000,14 +5028,19 @@ button.lrcc-ro-name:hover{color:#fff;text-decoration:underline;text-underline-of
 .lrcc-empty h2{font:700 19px var(--serif);margin:14px 0 6px;color:#fff}
 .lrcc-empty p{color:var(--lrc-mut);font-size:13.5px;margin:0}
 .lrcc-empty-radar{position:relative;width:190px;height:190px;margin:0 auto}
-.lrcc-empty-radar .lrcc-sweep{position:absolute}
 .lrcc-empty-cd{margin-top:16px;display:flex;flex-direction:column;gap:2px}
 .lrcc-empty-cd .lrcc-cd-v{font:700 30px var(--serif);color:#fff;font-variant-numeric:tabular-nums}
 .lrcc-empty-cd span:last-child{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--lrc-dim)}
-/* reduced motion: no sweep rotation, no pings, no progress run */
-.lrcc.rm .lrcc-sweep{animation:none;background:conic-gradient(from 0deg,rgba(227,6,19,.16) 0deg,transparent 72deg)}
-.lrcc.rm .lrcc-dot.filed::after{animation:none;opacity:0}
-.lrcc.rm .lrcc-sp-prog i{animation:none;width:0}
+/* reduced motion: no open/close animation, no pulse, no glow
+   wave, no crossfades — swaps and tab changes are instant
+   (the JS side also stops the auto-advance) */
+.lrcc.rm{animation:none}
+.lrcc.rm .lrcc-pulse-c{animation:none;opacity:0}
+.lrcc.rm .lrcc-dot{animation:none}
+.lrcc.rm .lrcc-sp-body{transition:none}
+.lrcc.rm .lrcc-main{transition:none}
+.lrcc.rm .lrcc-main.lrcc-enter{animation:none}
+.lrcc.rm .lrcc-orbit-lab{transition:none}
 /* responsive */
 @media (max-width:1100px){
   .lrcc-strip{grid-template-columns:repeat(3,1fr)}
