@@ -2483,6 +2483,11 @@ html[data-mode="dark"]{
   --seg-0:#f2f2f2; --seg-1:#b5b5b5; --seg-2:#7d7d7d; --seg-3:#4a4a4a;
   --seg-4:#3a3a3a; --seg-5:#2b2b2b; --seg-6:#1f1f1f; --seg-7:#171717; --seg-8:#121212;
 }
+/* --- Home ink tokens (V3.52.0): dark accents scoped to the Home page.
+   (--ink also names a profile-band token; these live on .page.hm so
+   they can never leak into profiles or any other view.) --- */
+.page.hm{--ink:#171a21;--ink-txt:#f4f5f7}
+html[data-mode="dark"] .page.hm{--ink:#000000;--ink-txt:#f2f2f2}
 .hm-seg{box-shadow:inset -1px 0 0 var(--line2)}
 .hm-segbar{box-shadow:inset 0 0 0 1px var(--line)}
 
@@ -3732,10 +3737,48 @@ html[data-mode="light"] .rcb-unsupported{--rcband:#b91c1c}
 .hm-shape-net{border-top:1px solid var(--line);padding:10px 18px 12px}
 @media (max-width:899px){.hm-shapegrid{grid-template-columns:1fr}}
 
-/* --- Home Rankings: five boards, one card --- */
-.hm-rankgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:6px 22px}
-.hm-rankcol{min-width:0}
-.hm-rankcol h4{font:700 10.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:2px 0 6px}
+/* --- Home Rankings (V3.52.0): tabbed board, one board at full card
+   width. Replaces the squeezed 5-column grid (labels truncated, bars
+   were stubs). Rows keep data-act="hmiopen" so inspectors are
+   unchanged. No transitions: tab clicks never move the page. --- */
+.hm-ranktabs{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto;min-width:0}
+.hm-ranktab{border:1px solid var(--line2);background:none;color:var(--txt2);border-radius:999px;padding:5px 12px;font:600 11.5px var(--sans);letter-spacing:.02em;cursor:pointer}
+.hm-ranktab:hover{border-color:var(--txt2)}
+.hm-ranktab.on{background:var(--ink);border-color:var(--ink);color:var(--ink-txt)}
+.hm-rrow{display:grid;grid-template-columns:26px minmax(0,1fr) auto;align-items:center;gap:14px;width:100%;padding:9px 6px;margin:0;background:none;border:0;border-top:1px solid var(--line);color:var(--txt);font:400 13.5px var(--sans);cursor:pointer;text-align:left}
+.hm-rrow:first-child{border-top:0}
+.hm-rrow:hover{background:var(--fill)}
+.hm-rk{font:600 16px var(--serif);color:var(--mut);text-align:center}
+.hm-rmain{display:flex;flex-direction:column;gap:6px;min-width:0}
+.hm-rl{line-height:1.3}
+.hm-rtr{display:block;height:10px;background:var(--track);border-radius:999px;overflow:hidden}
+html[data-mode="dark"] .hm-rtr{background:rgba(255,255,255,.16)}
+.hm-rfill{display:block;height:100%;background:linear-gradient(90deg,#262b34,#171a21)}
+html[data-mode="dark"] .hm-rfill:not(.hot){background-image:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 55%,rgba(0,0,0,.10)),linear-gradient(90deg,var(--ga),var(--gb))}
+.hm-rfill.hot{background:var(--acc)}
+.hm-rv{font:700 14px var(--serif);white-space:nowrap}
+#hm-rankboard .hm-more{margin-top:6px}
+
+/* --- Home dark accents (V3.52.0, JD): ink headers, KPI edge, rail
+   band. Home-scoped only; body copy and the red accent system are
+   untouched. In dark mode the ink flips to ink-txt for text so the
+   treatment stays visible on the dark glass. --- */
+.hm .card>header h3,.hm .hm-shapehalf header h3{color:var(--ink);position:relative;padding-bottom:6px}
+.hm .card>header h3::after,.hm .hm-shapehalf header h3::after{content:"";position:absolute;left:0;bottom:0;width:26px;height:3px;border-radius:2px;background:var(--ink)}
+html[data-mode="dark"] .hm .card>header h3,html[data-mode="dark"] .hm .hm-shapehalf header h3{color:var(--ink-txt)}
+html[data-mode="dark"] .hm .card>header h3::after,html[data-mode="dark"] .hm .hm-shapehalf header h3::after{background:var(--ink-txt)}
+.hm .hmk-kpi{border-top:3px solid var(--ink)}
+html[data-mode="light"] .hm .hm-ybar>span{background-image:none;background-color:var(--ink)}
+html[data-mode="light"] .hm .hm-ycol.max .hm-ybar>span{background-color:var(--acc)}
+.hm .hma-counter{border-top:3px solid var(--ink)}
+.hm .hma-counter b{color:var(--ink)}
+html[data-mode="dark"] .hm .hma-counter b{color:var(--ink-txt)}
+.hm-rail .hma-tag{background:var(--ink);color:var(--ink-txt)}
+.hm-rail .wn-chip.wn-filed{background:var(--ink);border-color:var(--ink);color:var(--ink-txt)}
+.hm-rail .hm-act>header{background:var(--ink);border-radius:var(--r);padding:9px 14px;margin:12px 12px 0}
+.hm-rail .hm-act>header h3{color:var(--ink-txt);padding-bottom:0}
+.hm-rail .hm-act>header h3::after{display:none}
+.hm-rail .hm-act>header .cnt{color:var(--ink-txt);opacity:.72}
 
 /* --- Last Contacts containment fix (JD screenshot: previews were
    bleeding out of the card). The grid columns and the button both
