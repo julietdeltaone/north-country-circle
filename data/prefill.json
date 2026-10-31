@@ -1,32 +1,1046 @@
 {
  "generated": "2026-10-30",
- "count": 2,
+ "count": 80,
  "suggestions": [
   {
-   "id": "pf-4afd82fd14",
-   "key": "sf:emily-kendall",
-   "display": "Emily Kendall",
+   "id": "pf-37384ce538",
+   "key": "abbydaniels03",
+   "display": "Abigail Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "8 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-7fc331df4f",
+   "key": "aidantruth",
+   "display": "Aidan Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "8 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-0071c9ba72",
+   "key": "drewspov_",
+   "display": "Andrew Matott",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "9 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-02b2969e67",
+   "key": "_cathaccino_",
+   "display": "Catherine Green",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
+   ],
+   "conf": 72
+  },
+  {
+   "id": "pf-d5fd12745a",
+   "key": "elizabethadaniels",
+   "display": "Elizabeth Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "9 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-be299a2b1d",
+   "key": "elizabeth.deschaine",
+   "display": "Elizabeth Deschaine",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "5 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 72
+  },
+  {
+   "id": "pf-1831663ba3",
+   "key": "ethan_j_bates",
+   "display": "Ethan Bates",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "21 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-0efec99e8f",
+   "key": "hopiek_09",
+   "display": "Hope Kilcollins",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "14 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-1089251c0d",
+   "key": "jdmeyers_",
+   "display": "JD Meyers",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
+   ],
+   "conf": 72
+  },
+  {
+   "id": "pf-0c47742917",
+   "key": "jtmoulton",
+   "display": "Joel Moulton",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "6 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-883862d49a",
+   "key": "megan.furner",
+   "display": "Megan Furner",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "6 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-1ee6e5c887",
+   "key": "taswyka",
+   "display": "Tim Swyka",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Probable",
+   "evidence": [
+    "7 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
+   ],
+   "conf": 78
+  },
+  {
+   "id": "pf-ccf7ae0d6d",
+   "key": "dpaladin",
+   "display": "Daniel Paladin",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
+   "grade": "Probable",
+   "evidence": [
+    "5 of 9 located known associates are in Potsdam, and family on file is there too: Gabe Paladin."
+   ],
+   "conf": 70
+  },
+  {
+   "id": "pf-75588bf995",
+   "key": "cloutlord_420",
+   "display": "Avery Criscitello",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-944cc5444f",
+   "key": "sf:cj-tomford",
+   "display": "CJ Tomford",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: David Tomford, Mike Tomford."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-df5ecede0b",
+   "key": "ct:colby criscitello",
+   "display": "Colby Criscitello",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-26846e754c",
+   "key": "sf:eleora-trelease",
+   "display": "Eleora Trelease",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Eric Trelease, Jennifer Trelease."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-f76d1a2739",
+   "key": "ct:emily criscitello",
+   "display": "Emily Criscitello",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-37db80fe47",
+   "key": "madstop136",
+   "display": "Eric Criscitello",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-d909021aa1",
+   "key": "ct:jonathan daniels",
+   "display": "Jonathan Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-b2f7a22299",
+   "key": "ct:julia tomford",
+   "display": "Julia Tomford",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "New Testament Church",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend New Testament Church: David Tomford, Isaiah Reiter."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-cd9fe12438",
+   "key": "ct:justin daniels",
+   "display": "Justin Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-25d175259d",
+   "key": "kevindaniels7",
+   "display": "Kevin Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-4bb6b3fe68",
+   "key": "libbycriscitello",
+   "display": "Libby Criscitello",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-a81ff298d7",
+   "key": "sf:lisa-criscitello",
+   "display": "Lisa Criscitello",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-e55ae355bc",
+   "key": "mr.muggy",
+   "display": "Mark Tomford",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: David Tomford, Mike Tomford."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-921b5ada7f",
+   "key": "ct:matthew tomford",
+   "display": "Matthew Tomford",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: David Tomford, Mike Tomford."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-a0ac28b010",
+   "key": "michelledaniels9",
+   "display": "Michelle Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-85064c3f9d",
+   "key": "sf:molly-criscitello",
+   "display": "Molly Criscitello",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-e22a1c5fc6",
+   "key": "tom_nate_ford",
+   "display": "Nathaniel Tomford",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: David Tomford, Mike Tomford."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-c7756e39fb",
+   "key": "ryanpdaniels",
+   "display": "Ryan Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-6ff993ffcb",
+   "key": "trentondaniels4",
+   "display": "Trenton Daniels",
+   "field": "churches",
+   "field_label": "Church",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file attend Christian Fellowship Center: Aaron Daniels, Anastasia Daniels, Megan Daniels."
+   ],
+   "conf": 66
+  },
+  {
+   "id": "pf-6f08876ac9",
+   "key": "briettapaladin",
+   "display": "Brietta Paladin",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Academy",
+   "grade": "Tentative",
+   "evidence": [
+    "4 family members on file are in Christian Fellowship Academy: Bronwyn Paladin, Daniel Paladin, Darlene Sinclair, Gabe Paladin."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-cee27cbf19",
+   "key": "sf:cj-tomford",
+   "display": "CJ Tomford",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: David Tomford, Mike Tomford, Nathaniel Tomford."
    ],
    "conf": 55
   },
   {
-   "id": "pf-5f8e0acd40",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
+   "id": "pf-77ba2b6113",
+   "key": "ct:colby criscitello",
+   "display": "Colby Criscitello",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: Avery Criscitello, Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-5b0f550cad",
+   "key": "madstop136",
+   "display": "Eric Criscitello",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: Avery Criscitello, Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-9429373955",
+   "key": "jocelynrose04",
+   "display": "Jocelyn Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: Abigail Daniels, Aidan Daniels, Ryan Daniels."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-a137d9d559",
+   "key": "ct:jonathan daniels",
+   "display": "Jonathan Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: Aaron Daniels, Megan Daniels, Ryan Daniels."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-a8fc076671",
+   "key": "ct:justin daniels",
+   "display": "Justin Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "SUNY Canton",
+   "grade": "Tentative",
+   "evidence": [
+    "4 family members on file are in SUNY Canton: Aaron Daniels, Jonathan Daniels, Ryan Daniels, Trenton Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-8d6cbe0cab",
+   "key": "ct:justin daniels",
+   "display": "Justin Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: Aaron Daniels, Megan Daniels, Ryan Daniels."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-ed0214f55f",
+   "key": "kevindaniels7",
+   "display": "Kevin Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "4 family members on file are in Christian Fellowship Center: Aaron Daniels, Elizabeth Daniels, Megan Daniels, Ryan Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-a710af670f",
+   "key": "kevindaniels7",
+   "display": "Kevin Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "SUNY Canton",
+   "grade": "Tentative",
+   "evidence": [
+    "4 family members on file are in SUNY Canton: Aaron Daniels, Jonathan Daniels, Ryan Daniels, Trenton Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-f078ed1bfd",
+   "key": "libbycriscitello",
+   "display": "Libby Criscitello",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: Avery Criscitello, Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-2f9b461cd1",
+   "key": "mr.muggy",
+   "display": "Mark Tomford",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: David Tomford, Mike Tomford, Nathaniel Tomford."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-84460b651a",
+   "key": "ct:matthew tomford",
+   "display": "Matthew Tomford",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: David Tomford, Mike Tomford, Nathaniel Tomford."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-ebe511ac8b",
+   "key": "ct:matthew tomford",
+   "display": "Matthew Tomford",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "SUNY Canton",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in SUNY Canton: CJ Tomford, Mark Tomford, Nathaniel Tomford."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-4d6c77a02a",
+   "key": "ct:megan daniels",
+   "display": "Megan Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "SUNY Canton",
+   "grade": "Tentative",
+   "evidence": [
+    "4 family members on file are in SUNY Canton: Aaron Daniels, Jonathan Daniels, Ryan Daniels, Trenton Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-9a73c47b4a",
+   "key": "michelledaniels9",
+   "display": "Michelle Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "SUNY Canton",
+   "grade": "Tentative",
+   "evidence": [
+    "4 family members on file are in SUNY Canton: Aaron Daniels, Jonathan Daniels, Ryan Daniels, Trenton Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-db84686f14",
+   "key": "michelledaniels9",
+   "display": "Michelle Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: Aaron Daniels, Megan Daniels, Ryan Daniels."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-9c6ead9a09",
+   "key": "sf:molly-criscitello",
+   "display": "Molly Criscitello",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "3 family members on file are in Christian Fellowship Center: Avery Criscitello, Riley Criscitello, Timothy Criscitello."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-6d2e9378bf",
+   "key": "trentondaniels4",
+   "display": "Trenton Daniels",
+   "field": "groups",
+   "field_label": "Group",
+   "value": "Christian Fellowship Center",
+   "grade": "Tentative",
+   "evidence": [
+    "4 family members on file are in Christian Fellowship Center: Aaron Daniels, Anastasia Daniels, Megan Daniels, Ryan Daniels."
+   ],
+   "conf": 60
+  },
+  {
+   "id": "pf-f550c05984",
+   "key": "sf:acacia-white",
+   "display": "Acacia White",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Madrid, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Madrid, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-2b66034753",
+   "key": "sf:ann-parow-mackey",
+   "display": "Ann Parow Mackey",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Sauquoit, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Sauquoit, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-99a2f8c31e",
+   "key": "sf:ben-newton",
+   "display": "Ben Newton",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Webster, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Webster, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 46
+  },
+  {
+   "id": "pf-8a4a9cb3b2",
+   "key": "sf:benjamin-emmanuel",
+   "display": "Benjamin Emmanuel",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Oswego, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Oswego, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-9c4f2df87f",
+   "key": "sf:christa-scott",
+   "display": "Christa Scott",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "De Kalb Junction, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from De Kalb Junction, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-362639322b",
+   "key": "sf:christine-johnson",
+   "display": "Christine Johnson",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "Facebook lists them as from Potsdam, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-f7ea743e59",
+   "key": "sf:emily-kendall",
+   "display": "Emily Kendall",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Madrid, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Madrid, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-61e2858fb9",
+   "key": "emily_g_ramer",
+   "display": "Emily Ramer",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Norwood, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Norwood, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-b7641a2868",
+   "key": "sf:grace-martin",
+   "display": "Grace Martin",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Farmingville, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Farmingville, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-f2b943ea88",
+   "key": "sf:jessica-osypiewski",
+   "display": "Jessica Osypiewski",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Madrid, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Madrid, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-69324e21a8",
+   "key": "sf:joe-charlebois",
+   "display": "Joe Charlebois",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Potsdam, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-f0491749cd",
+   "key": "sf:katie-wolstenholme",
+   "display": "Katie Wolstenholme",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Parishville, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Parishville, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-41af328ea3",
+   "key": "sf:kaylee-hartley",
+   "display": "Kaylee Hartley",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Edwards, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Edwards, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-36ecfaef9f",
+   "key": "sf:lexi-kennedy-labombard",
+   "display": "Lexi Kennedy LaBombard",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Ogdensburg, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Ogdensburg, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-7dce41fec1",
+   "key": "ct:lydia bartlett",
+   "display": "Lydia Bartlett",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Smithfield, RI",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Smithfield, RI (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-9818c71673",
+   "key": "sf:marissa-carl",
+   "display": "Marissa Carl",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Houston, TX",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Houston, TX (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-2f8c63763f",
+   "key": "sf:merria-figueiredo",
+   "display": "Merria Figueiredo",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Red Mills, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Red Mills, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-3d93f54eda",
+   "key": "sf:michelle-shirley",
+   "display": "Michelle Shirley",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Massena, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Massena, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-22a42680c0",
+   "key": "lena_musiienko",
+   "display": "Olena Musiienko",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Kyiv, Ukraine",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Kyiv, Ukraine (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-652cfcb5c4",
+   "key": "sf:paige-davis",
+   "display": "Paige Davis",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Massena, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Massena, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-62e9d5aaaf",
+   "key": "sf:patrick-tombs",
+   "display": "Patrick Tombs",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Binghamton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Binghamton, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-0b877eeee2",
+   "key": "sf:rachel-kushner",
+   "display": "Rachel Kushner",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Ann Arbor, MI",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Ann Arbor, MI (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-b93e1fce44",
+   "key": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
+  },
+  {
+   "id": "pf-3615be7cac",
+   "key": "sf:rohallah-hakimvand",
+   "display": "Rohallah Hakimvand",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Shiraz, Iran",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Shiraz, Iran (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-b60cc80d0a",
+   "key": "sf:song-yi-lee",
+   "display": "Song Yi Lee",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Busan, South Korea",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Busan, South Korea (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-6514fc0f28",
+   "key": "sf:stephy-michele",
+   "display": "Stephy Michele",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Russell, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Russell, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-1829a6feb2",
+   "key": "sf:susan-blewett",
+   "display": "Susan Blewett",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Whittier, CA",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Whittier, CA (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-37b4d3139b",
+   "key": "sf:tasha-bernard",
+   "display": "Tasha Bernard",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Massena, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Massena, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
+  },
+  {
+   "id": "pf-62f8fb9a4e",
+   "key": "sf:timothy-moulton",
+   "display": "Timothy Moulton",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Stockholm Center, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Facebook lists them as from Stockholm Center, NY (hometown; current residence unconfirmed)."
+   ],
+   "conf": 52
   }
  ],
  "auto_apply": [
