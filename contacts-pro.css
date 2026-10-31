@@ -4816,7 +4816,7 @@ html[data-mode="light"] .hmi-ringfg{stroke:var(--ink)}
 .hmi-hb{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
 .hmi-hb i{display:block;border-radius:2px 2px 0 0;background-image:linear-gradient(180deg,var(--gb),var(--ga))}
 html[data-mode="light"] .hmi-hb i{background:linear-gradient(180deg,#262b34,#171a21)}
-.hmi-hb i.max{background:var(--acc);background-image:none}
+.hmi-hist .hmi-hb i.max{background:var(--acc);background-image:none}
 .hmi-hb span{display:block;height:13px;font-size:9.5px;line-height:13px;color:var(--dim);text-align:center;white-space:nowrap}
 /* value-list hero strip: the #1 entry as a big stat */
 .hmi-herostat{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;background:var(--ink);color:var(--ink-txt);border:1px solid var(--line2);border-radius:var(--r-sm);padding:13px 15px;margin:0 0 14px}
