@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.50.0';
+var APP_VERSION = '3.50.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7349,8 +7349,9 @@ if(!window.__calAtlasBound){
 
 /* Live Records ordering (JD 2026-10-30): 'brief' keeps the routine's
    own order; 'new' puts the newest events first, keyed on each fact's
-   published date (a person rides on their newest fact; facts without a
-   published date ride on the brief date). */
+   published date (a person rides on their newest dated fact; people
+   with no dated fact sink below the dated ones, in brief order — an
+   undated filing says nothing about when the event happened). */
 var LR_SORT = 'brief';
 function viewDaily(v){
   dtLoad(); chLoad(); rcLoad();
@@ -7436,7 +7437,7 @@ function viewDaily(v){
   /* --- Updated packets --- */
   var filedSorted = (DT.filed || []).slice();
   if(LR_SORT === 'new') filedSorted.sort(function(a, b){
-    function k(f){ var m = ''; (f.facts || []).forEach(function(x){ if((x.published || '') > m) m = x.published; }); return m || DT.date || ''; }
+    function k(f){ var m = ''; (f.facts || []).forEach(function(x){ if((x.published || '') > m) m = x.published; }); return m; }
     return k(b).localeCompare(k(a));
   });
   var cards = filedSorted.length ? filedSorted.map(function(f, i){
