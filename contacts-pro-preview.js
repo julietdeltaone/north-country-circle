@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.56.0';
+var APP_VERSION = '3.57.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7918,16 +7918,23 @@ function viewDaily(v){
    command console reading the SAME twice-daily brief data
    (DT, data/daily-ten.json; sweeps 6:54 AM & 6:54 PM ET, 75
    checks per sweep) and the change log (CH) as the brief view.
-   Radar scope with the sweep's people as blips, a spotlight
-   that loops through everything the latest brief filed and
-   checked, a granular timing rail, a merged Timeline ledger
-   and a Roster. One controller (LRCC) owns every timer and
-   tears them all down on close. Read-only: display and
-   navigation only.
+   A spotlight loops through everything the latest brief filed
+   and checked, beside a granular timing rail, a merged
+   Timeline ledger and a Roster. One controller (LRCC) owns
+   every timer and tears them all down on close. Read-only:
+   display and navigation only.
+   V3.57.0 elegance pass (JD 2026-10-31): all content motion
+   runs on eased crossfades (out on an ease-in ramp, in on
+   --lrcc-ease); the linear progress bar is gone, replaced by
+   position dots; and the radar scope is now a RECENCY ORBIT —
+   concentric time bands by the date the event actually
+   happened (never the filed/found date), recent at the
+   center, quiet at the rim, with one soft pulse breathing
+   out of the center every ~6.5s.
    ============================================================ */
 var LRCC = { el:null, openWanted:false, tab:'overview', items:[], idx:0, hold:false, hover:false,
-  clockTimer:null, spotTimer:null, _key:null, _vis:null, _stamp:'' };
-var LRCC_SP_MS = 4500, LRCC_SWEEP_MS = 7000, LRCC_PER_SWEEP = 75;
+  clockTimer:null, spotTimer:null, swapTimer:null, tabTimer:null, _key:null, _vis:null, _stamp:'', _orbit:{} };
+var LRCC_SP_MS = 4500, LRCC_PER_SWEEP = 75, LRCC_PULSE_MS = 6500;
 
 /* --- ET wall-clock math: the sweep schedule lives in
    America/New_York; convert through Intl so DST is handled,
@@ -7978,26 +7985,91 @@ function lrccHash(s){
   for(var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
   return h;
 }
-function lrccDotPos(kind, key){
-  var h = lrccHash(kind + '|' + key), ang = h % 360, rad = 0.24 + ((h >> 9) % 68) / 100;
-  return { ang:ang,
-    x:(50 + rad * 45 * Math.sin(ang * Math.PI / 180)).toFixed(1),
-    y:(50 - rad * 45 * Math.cos(ang * Math.PI / 180)).toFixed(1),
-    delay:(ang / 360 * (LRCC_SWEEP_MS / 1000) - LRCC_SWEEP_MS / 1000).toFixed(2) };
+function lrccAgeDays(iso){
+  if(!iso) return null;
+  var a = String(iso).slice(0, 10).split('-'), b = lrccTodayEt().split('-');
+  if(a.length < 3 || isNaN(+a[0]) || isNaN(+a[1]) || isNaN(+a[2])) return null;
+  return Math.round((Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 86400000);
+}
+/* --- recency: the date the thing actually HAPPENED, per
+   person — never the date it was filed or found. Latest of
+   (a) the brief's published dates (DT.hot / DT.filed facts),
+   (b) the change log's source_date (the dated event on the
+   entry); only when neither exists, (c) the change-log entry
+   date itself. No dated event anywhere -> null (QUIET rim). --- */
+function lrccRecency(){
+  var map = {};
+  function put(key, date){
+    if(!key || !date) return;
+    var d = String(date).slice(0, 10);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+    if(!map[key] || d > map[key]) map[key] = d;
+  }
+  if(lrccHasBrief()){
+    (DT.hot || []).forEach(function(x){ put(String(x.display || x.name || '').toLowerCase(), x.published); });
+    (DT.filed || []).forEach(function(f){
+      var k = String(f.display || f.name || '').toLowerCase();
+      (f.facts || []).forEach(function(x){ put(k, x.published); });
+    });
+  }
+  if(CH && CH.entries && CH.entries.length){
+    var sd = {}, fd = {}, k, c;
+    for(var i = 0; i < CH.entries.length; i++){
+      c = CH.entries[i];
+      k = String(c.name || '').toLowerCase();
+      if(!k) continue;
+      if(c.source_date && /^\d{4}-\d{2}-\d{2}/.test(String(c.source_date)) && (!sd[k] || String(c.source_date) > sd[k])) sd[k] = String(c.source_date).slice(0, 10);
+      if(c.filed && /^\d{4}-\d{2}-\d{2}/.test(String(c.filed)) && (!fd[k] || String(c.filed) > fd[k])) fd[k] = String(c.filed).slice(0, 10);
+    }
+    for(k in sd) put(k, sd[k]);
+    for(k in fd) if(!map[k]) map[k] = fd[k];
+  }
+  return map;
+}
+/* --- the recency orbit: rings are time bands by event age.
+   Radius interpolates inside the band on a sqrt scale so the
+   recent end of each band breathes; placement is fully
+   deterministic (angle + in-band jitter from the name hash). --- */
+var LRCC_BANDS = [
+  { id:'week',   max:7,       r0:0,   r1:0.30 },
+  { id:'month',  max:30,      r0:0.30, r1:0.52 },
+  { id:'season', max:90,      r0:0.52, r1:0.72 },
+  { id:'year',   max:365,     r0:0.72, r1:0.90 },
+  { id:'quiet',  max:Infinity, r0:0.90, r1:1 }
+];
+function lrccOrbitPos(key, rec){
+  var h = lrccHash('orbit|' + key), ang = h % 360;
+  var date = rec[key] || null, age = date ? lrccAgeDays(date) : null;
+  if(age != null && age < 0) age = 0;
+  var bi = 4;
+  if(age != null){ for(var i = 0; i < 4; i++){ if(age <= LRCC_BANDS[i].max){ bi = i; break; } } }
+  var band = LRCC_BANDS[bi], lo = bi === 0 ? 0 : LRCC_BANDS[bi - 1].max, frac;
+  if(age == null) frac = ((h >> 11) % 100) / 100;
+  else if(bi === 4) frac = Math.min(1, Math.sqrt((age - 365) / 365));
+  else frac = Math.sqrt(Math.max(0, Math.min(1, (age - lo) / (band.max - lo))));
+  var rf = band.r0 + frac * (band.r1 - band.r0);
+  var jit = (((h >> 17) % 100) / 100 - 0.5) * (band.r1 - band.r0) * 0.36;
+  rf = Math.max(band.r0 + 0.012, Math.min(band.r1 - 0.012, rf + jit));
+  if(bi === 0) rf = Math.max(0.05, rf);
+  var rad = ang * Math.PI / 180, dist = rf * 46.5;
+  return { x:+(50 + dist * Math.sin(rad)).toFixed(1), y:+(50 - dist * Math.cos(rad)).toFixed(1),
+    rf:rf, band:band.id, age:age, date:date };
 }
 function lrccHasBrief(){ return !!(DT && !DT.empty && DT.date); }
 
 /* --- the spotlight loop: hot first, then every filed fact,
    then the checked and next-up summary cards --- */
 function lrccBuildItems(){
-  var items = [];
+  var items = [], rec = lrccRecency();
   if(lrccHasBrief()){
     (DT.hot || []).forEach(function(x){
-      items.push({ kind:'hot', key:String(x.display || x.name || '').toLowerCase(), display:x.display || x.name || '', text:x.text || '', source:x.source || '', url:x.url || '', published:x.published || '', di:hmDtDi(x) });
+      var k = String(x.display || x.name || '').toLowerCase();
+      items.push({ kind:'hot', key:k, display:x.display || x.name || '', text:x.text || '', source:x.source || '', url:x.url || '', published:x.published || '', ev:x.published || rec[k] || '', di:hmDtDi(x) });
     });
     (DT.filed || []).forEach(function(f){
+      var k = String(f.display || f.name || '').toLowerCase();
       (f.facts || []).forEach(function(x){
-        items.push({ kind:'fact', key:String(f.display || f.name || '').toLowerCase(), display:f.display || f.name || '', text:x.text || '', source:x.source || '', url:x.url || '', published:x.published || '', fresh:!!x.fresh, di:hmDtDi(f) });
+        items.push({ kind:'fact', key:k, display:f.display || f.name || '', text:x.text || '', source:x.source || '', url:x.url || '', published:x.published || '', ev:x.published || rec[k] || '', fresh:!!x.fresh, di:hmDtDi(f) });
       });
     });
     var chk = DT.checked || [];
@@ -8032,6 +8104,8 @@ function lrccMaybeRefresh(){
 function lrccOpen(){
   if(LRCC.el) return;
   if(!S.route || S.route.name !== 'daily'){ LRCC.openWanted = true; go('daily'); return; }
+  var stray = document.querySelector('.lrcc');
+  if(stray) stray.remove(); /* a close fade still on its way out */
   LRCC.tab = 'overview'; LRCC.idx = 0; LRCC.hold = false; LRCC.hover = false;
   lrccBuildItems();
   LRCC._stamp = lrccStamp();
@@ -8064,19 +8138,40 @@ function lrccOpen(){
 function lrccClose(){
   if(LRCC.clockTimer){ clearInterval(LRCC.clockTimer); LRCC.clockTimer = null; }
   lrccClearSpot();
+  if(LRCC.swapTimer){ clearTimeout(LRCC.swapTimer); LRCC.swapTimer = null; }
+  if(LRCC.tabTimer){ clearTimeout(LRCC.tabTimer); LRCC.tabTimer = null; }
   if(LRCC._key){ document.removeEventListener('keydown', LRCC._key, true); LRCC._key = null; }
   if(LRCC._vis){ document.removeEventListener('visibilitychange', LRCC._vis); LRCC._vis = null; }
-  if(LRCC.el){ LRCC.el.remove(); LRCC.el = null; }
+  var el = LRCC.el;
+  LRCC.el = null;
   LRCC.hold = false; LRCC.hover = false;
-  if(!document.querySelector('.hmi-wrap') && !document.querySelector('.phi-wrap') && !document.querySelector('.ykb-wrap') && !document.querySelector('.phed-wrap'))
-    document.body.classList.remove('sheet-open');
+  function done(){
+    if(el && el.parentNode) el.remove();
+    if(!document.querySelector('.lrcc') && !document.querySelector('.hmi-wrap') && !document.querySelector('.phi-wrap') && !document.querySelector('.ykb-wrap') && !document.querySelector('.phed-wrap'))
+      document.body.classList.remove('sheet-open');
+  }
+  if(!el){ done(); return; }
+  if(REDUCED_MOTION){ done(); return; }
+  /* fade out on the ease-in ramp, then leave the DOM */
+  el.classList.add('lrcc-closing');
+  setTimeout(done, 190);
 }
 function lrccTab(t){
   if(!LRCC.el || !t) return;
   LRCC.tab = t; LRCC.hover = false;
   lrccClearSpot();
-  lrccPaintAll();
-  lrccArmSpot();
+  if(LRCC.tabTimer){ clearTimeout(LRCC.tabTimer); LRCC.tabTimer = null; }
+  var m = $('#lrcc-main', LRCC.el);
+  if(REDUCED_MOTION || !m || !m.firstChild){ lrccPaintAll(); lrccArmSpot(); return; }
+  /* crossfade: the old tab leaves on the ease-in ramp, the new
+     one rises in on --lrcc-ease (see lrccPaintAll) */
+  m.classList.add('lrcc-fadeout');
+  LRCC.tabTimer = setTimeout(function(){
+    LRCC.tabTimer = null;
+    if(!LRCC.el) return;
+    lrccPaintAll();
+    lrccArmSpot();
+  }, 180);
 }
 function lrccJump(i){
   if(i == null || isNaN(i) || i < 0 || i >= LRCC.items.length) return;
@@ -8106,14 +8201,6 @@ function lrccProgState(){
   if(!sp) return;
   var paused = REDUCED_MOTION || LRCC.hold || LRCC.hover || document.hidden;
   sp.classList.toggle('paused', !!paused);
-  if(!paused) lrccProgRestart();
-}
-function lrccProgRestart(){
-  var p = LRCC.el ? $('#lrcc-sp-prog', LRCC.el) : null;
-  if(!p) return;
-  p.style.animation = 'none';
-  void p.offsetWidth;
-  p.style.animation = '';
 }
 
 /* --- the 1-second tick: ET clock + next-sweep countdown --- */
@@ -8148,7 +8235,13 @@ function lrccPaintAll(){
   if(!m) return;
   if(LRCC.tab === 'timeline') m.innerHTML = lrccTimelineHTML();
   else if(LRCC.tab === 'roster') m.innerHTML = lrccRosterHTML();
-  else { m.innerHTML = lrccOverviewHTML(); lrccPaintSpot(); }
+  else { m.innerHTML = lrccOverviewHTML(); lrccSwapSpot(true); }
+  m.classList.remove('lrcc-fadeout');
+  if(!REDUCED_MOTION){
+    m.classList.remove('lrcc-enter');
+    void m.offsetWidth;
+    m.classList.add('lrcc-enter');
+  }
   lrccTick();
 }
 function lrccNameBtn(display, di, cls){
@@ -8157,10 +8250,10 @@ function lrccNameBtn(display, di, cls){
   return '<button type="button" class="' + cls + ' is-name" data-act="lrccperson" data-di="' + di + '">' + lab + '</button>';
 }
 
-/* --- Overview: radar + spotlight + timing rail + strip --- */
+/* --- Overview: recency orbit + spotlight + timing rail + strip --- */
 function lrccOverviewHTML(){
   if(!lrccHasBrief()){
-    return '<div class="lrcc-empty"><div class="lrcc-empty-radar">' + lrccRadarSVG() + '<div class="lrcc-sweep"></div></div>' +
+    return '<div class="lrcc-empty"><div class="lrcc-empty-radar">' + lrccOrbitSVG(false) + '</div>' +
       '<h2>' + (DT ? 'No brief has landed yet' : 'Loading the latest brief') + '</h2>' +
       '<p>The command center reads the same brief as the Live Records page. The next sweep runs <b class="lrcc-cd-l">&mdash;</b>.</p>' +
       '<div class="lrcc-empty-cd"><span class="lrcc-cd-v">--:--:--</span><span>to next sweep</span></div></div>';
@@ -8172,17 +8265,18 @@ function lrccOverviewHTML(){
   var filedFacts = 0;
   (DT.filed || []).forEach(function(f){ filedFacts += (f.facts || []).length; });
   return '<div class="lrcc-ov">' +
-    '<section class="lrcc-panel lrcc-radar-p"><div class="lrcc-ph"><span>Radar &middot; latest sweep</span>' +
-    '<span class="lrcc-legend"><i class="lg f"></i>Filed<i class="lg c"></i>Checked<i class="lg n"></i>Next up</span></div>' +
-    '<div class="lrcc-radar">' + lrccRadarSVG() + '<div class="lrcc-sweep"></div>' + lrccDotsHTML() + '<span class="lrcc-core"></span></div>' +
-    '<div class="lrcc-radar-cap" id="lrcc-radar-cap">' + esc(lrccRadarCap()) + '</div></section>' +
+    '<section class="lrcc-panel lrcc-radar-p"><div class="lrcc-ph"><span>Recency &middot; by event date</span>' +
+    '<span class="lrcc-legend"><i class="lg f"></i>Filed<i class="lg h"></i>Hot<i class="lg c"></i>Checked<i class="lg n"></i>Next up</span></div>' +
+    '<div class="lrcc-radar">' + lrccOrbitSVG(true) + lrccDotsHTML() + '<span class="lrcc-orbit-lab" id="lrcc-orbit-lab"></span></div>' +
+    '<div class="lrcc-radar-cap" id="lrcc-radar-cap">' + esc(lrccRadarCap()) + '</div>' +
+    '<div class="lrcc-radar-sub">Distance from center = time since the most recent event on their record.</div></section>' +
     '<div class="lrcc-right">' +
     '<section class="lrcc-panel lrcc-spot-p" id="lrcc-spot"><div class="lrcc-ph"><span>Spotlight</span>' +
     '<span class="lrcc-sp-ctl"><span class="lrcc-sp-idx" data-lrcc-idx></span>' +
     '<button type="button" class="lrcc-cbtn" data-act="lrccprev" aria-label="Previous">' + ic('chevl', 13) + '</button>' +
     '<button type="button" class="lrcc-cbtn" data-act="lrcchold" data-lrcc-hold>Hold</button>' +
     '<button type="button" class="lrcc-cbtn flip" data-act="lrccnext" aria-label="Next">' + ic('chevl', 13) + '</button></span></div>' +
-    '<div class="lrcc-sp-body" id="lrcc-sp-body"></div><div class="lrcc-sp-prog"><i id="lrcc-sp-prog"></i></div></section>' +
+    '<div class="lrcc-sp-body" id="lrcc-sp-body"></div><div class="lrcc-sp-dots" id="lrcc-sp-dots" aria-hidden="true"></div></section>' +
     '<section class="lrcc-panel lrcc-time-p"><div class="lrcc-ph"><span>Timing</span><span class="lrcc-ph-r">all times ET</span></div>' +
     '<div class="lrcc-trow big"><span class="lrcc-tl">Next sweep</span><span class="lrcc-tv cd"><span class="lrcc-cd-v">--:--:--</span><small class="lrcc-cd-l"></small></span></div>' +
     '<div class="lrcc-trow"><span class="lrcc-tl">Last brief</span><span class="lrcc-tv">' + esc(hmFmtD(DT.date)) + '<small>' + esc(lrccAge(DT.date)) + '</small></span></div>' +
@@ -8201,17 +8295,26 @@ function lrccOverviewHTML(){
     '<div class="lrcc-stat"><b class="lrcc-cd-v">--:--:--</b><span>to next sweep &middot; <span class="lrcc-cd-l"></span></span></div>' +
     '</div>';
 }
-function lrccRadarSVG(){
+/* Orbit geometry, viewBox units (center 50,50; outer rim 47.5):
+   band edges at the LRCC_BANDS radius fractions of 48. Labels
+   ride the upper-left diagonal at each band's mid radius;
+   QUIET caps the top axis so it clears the YEAR label. */
+function lrccOrbitSVG(pulse){
+  var edge = [14.4, 25, 34.6, 43.2, 47.5], mid = [7.2, 19.7, 29.8, 38.9], names = ['WEEK', 'MONTH', 'SEASON', 'YEAR'];
   var s = '<svg class="lrcc-rings" viewBox="0 0 100 100" aria-hidden="true">';
-  [12, 24, 36, 48].forEach(function(r){ s += '<circle cx="50" cy="50" r="' + r + '"></circle>'; });
-  for(var a = 0; a < 360; a += 45){
-    var rad = a * Math.PI / 180;
-    s += '<line x1="50" y1="50" x2="' + (50 + 48 * Math.sin(rad)).toFixed(1) + '" y2="' + (50 - 48 * Math.cos(rad)).toFixed(1) + '"></line>';
+  s += '<circle class="lrcc-bandfill" cx="50" cy="50" r="14.4"></circle>';
+  edge.forEach(function(r){ s += '<circle cx="50" cy="50" r="' + r + '"></circle>'; });
+  if(pulse) s += '<circle class="lrcc-pulse-c" cx="50" cy="50" r="47"></circle>';
+  for(var i = 0; i < 4; i++){
+    var d = mid[i] * 0.7071;
+    s += '<text class="lrcc-band-l" text-anchor="middle" x="' + (50 - d).toFixed(1) + '" y="' + (50 - d + 1).toFixed(1) + '">' + names[i] + '</text>';
   }
+  s += '<text class="lrcc-band-l" x="50" y="5.8" text-anchor="middle">QUIET</text>';
+  s += '<circle class="lrcc-core-c" cx="50" cy="50" r="1.3"></circle>';
   return s + '</svg>';
 }
 function lrccRadarCap(){
-  return 'Latest sweep · ' + hmFmtD(DT.date) + ' — ' + (DT.filed || []).length + ' filed · ' + (DT.checked || []).length + ' checked · ' + (DT.next_up || []).length + ' queued';
+  return 'Brief ' + hmFmtD(DT.date) + ' — ' + (DT.filed || []).length + ' filed · ' + (DT.checked || []).length + ' checked · ' + (DT.next_up || []).length + ' queued';
 }
 function lrccFirstIdx(key){
   for(var i = 0; i < LRCC.items.length; i++){
@@ -8226,44 +8329,106 @@ function lrccSummaryIdx(kind){
 }
 function lrccDotsHTML(){
   if(!lrccHasBrief()) return '';
-  var out = [], filedSeen = {};
+  var rec = lrccRecency();
+  LRCC._orbit = {};
+  var hotKeys = {};
+  (DT.hot || []).forEach(function(x){ hotKeys[String(x.display || x.name || '').toLowerCase()] = 1; });
+  var out = [], placed = {};
+  function dot(cls, key, display, idx, kindWord){
+    var p = lrccOrbitPos(key, rec);
+    LRCC._orbit[key] = p;
+    placed[key] = 1;
+    /* the glow wave travels outward with the pulse: a dot's
+       phase is offset by (1 - radiusFraction) of the cycle so
+       it brightens as the expanding ring reaches its radius */
+    var st = 'left:' + p.x + '%;top:' + p.y + '%;--gd:' + (-((1 - p.rf) * (LRCC_PULSE_MS / 1000))).toFixed(2) + 's';
+    if(cls === 'chk' || cls === 'nxt'){
+      var sz = p.age == null ? 5 : p.age <= 30 ? 7 : p.age <= 90 ? 6 : 5.5;
+      var op = p.age == null ? 0.5 : p.age <= 30 ? 0.9 : p.age <= 90 ? 0.72 : 0.55;
+      st += ';width:' + sz + 'px;height:' + sz + 'px;opacity:' + op;
+    }
+    var when = p.date ? hmFmtD(p.date) + ' · ' + lrccAge(p.date) : 'no dated event';
+    out.push('<button type="button" class="lrcc-dot ' + cls + '" data-act="lrccblip" data-i="' + idx + '" data-pk="' + esc(key) + '" style="' + st + '" title="' + esc(display) + ' — ' + kindWord + ' · ' + esc(when) + '"></button>');
+  }
   (DT.filed || []).forEach(function(f){
     var key = String(f.display || f.name || '').toLowerCase();
-    if(!key || filedSeen[key]) return;
-    filedSeen[key] = 1;
-    var p = lrccDotPos('filed', key);
-    out.push('<button type="button" class="lrcc-dot filed" data-act="lrccblip" data-i="' + lrccFirstIdx(key) + '" data-pk="' + esc(key) + '" style="left:' + p.x + '%;top:' + p.y + '%;--d:' + p.delay + 's" title="' + esc(f.display || f.name) + ' — filed"></button>');
+    if(!key || placed[key]) return;
+    dot('filed' + (hotKeys[key] ? ' hotring' : ''), key, f.display || f.name, lrccFirstIdx(key), 'filed');
+  });
+  (DT.hot || []).forEach(function(x){
+    var key = String(x.display || x.name || '').toLowerCase();
+    if(!key || placed[key]) return;
+    dot('hot', key, x.display || x.name, lrccFirstIdx(key), 'hot off the press');
   });
   var chkIdx = lrccSummaryIdx('checked'), nxIdx = lrccSummaryIdx('next');
   var room = Math.max(0, 120 - out.length);
   (DT.checked || []).slice(0, Math.max(0, room - (DT.next_up || []).length)).forEach(function(c){
     var key = String(c.display || c.name || '').toLowerCase();
-    if(!key) return;
-    var p = lrccDotPos('chk', key);
-    out.push('<button type="button" class="lrcc-dot chk" data-act="lrccblip" data-i="' + chkIdx + '" data-pk="' + esc(key) + '" style="left:' + p.x + '%;top:' + p.y + '%" title="' + esc(c.display || c.name) + ' — checked"></button>');
+    if(!key || placed[key]) return;
+    dot('chk', key, c.display || c.name, chkIdx, 'checked');
   });
   room = Math.max(0, 120 - out.length);
   (DT.next_up || []).slice(0, room).forEach(function(c){
     var key = String(c.display || c.name || '').toLowerCase();
-    if(!key) return;
-    var p = lrccDotPos('next', key);
-    out.push('<button type="button" class="lrcc-dot nxt" data-act="lrccblip" data-i="' + nxIdx + '" data-pk="' + esc(key) + '" style="left:' + p.x + '%;top:' + p.y + '%" title="' + esc(c.display || c.name) + ' — next up"></button>');
+    if(!key || placed[key]) return;
+    dot('nxt', key, c.display || c.name, nxIdx, 'next up');
   });
   return out.join('');
 }
-/* --- spotlight paint: body, counter, radar tracking --- */
-function lrccPaintSpot(){
+/* --- spotlight paint: the chrome (orbit highlight, tracking
+   label, counter, position dots) updates at once; the card
+   content itself crossfades in two eased phases — out on the
+   ease-in ramp (240ms, dropping 4px), then the new card rises
+   6px into rest on --lrcc-ease (460ms). Panel height never
+   changes: the body is a full-height flex child, content
+   top-aligned. Under reduced motion the swap is instant. --- */
+function lrccPaintSpot(){ lrccSwapSpot(false); }
+function lrccSwapSpot(instant){
   if(!LRCC.el) return;
   var body = $('#lrcc-sp-body', LRCC.el);
   if(!body) return;
+  if(LRCC.swapTimer){ clearTimeout(LRCC.swapTimer); LRCC.swapTimer = null; }
+  lrccPaintSpotChrome();
+  lrccProgState();
+  if(instant || REDUCED_MOTION || !body.firstChild){
+    body.classList.remove('lrcc-out', 'lrcc-pre');
+    lrccSpotFill(body);
+    return;
+  }
+  body.classList.add('lrcc-out');
+  LRCC.swapTimer = setTimeout(function(){
+    LRCC.swapTimer = null;
+    if(!LRCC.el || !body.parentNode) return;
+    lrccSpotFill(body);
+  }, 240);
+}
+function lrccSpotFill(body){
   var it = LRCC.items[LRCC.idx];
   body.innerHTML = it ? lrccSpotHTML(it) : '<p class="lrcc-sp-none">Nothing in the latest brief to loop yet.</p>';
-  lrccPaintSpotCtl();
+  body.classList.remove('lrcc-out');
+  if(REDUCED_MOTION) return;
+  body.classList.add('lrcc-pre');
+  void body.offsetWidth;
+  requestAnimationFrame(function(){ body.classList.remove('lrcc-pre'); });
+  setTimeout(function(){ body.classList.remove('lrcc-pre'); }, 60);
+  lrccTick();
+}
+function lrccPaintSpotChrome(){
+  var it = LRCC.items[LRCC.idx];
   $$('.lrcc-dot', LRCC.el).forEach(function(d){ d.classList.toggle('on', !!it && !!it.key && d.getAttribute('data-pk') === it.key); });
+  var lab = $('#lrcc-orbit-lab', LRCC.el);
+  if(lab){
+    var p = it && it.key ? LRCC._orbit[it.key] : null;
+    if(p){
+      lab.textContent = it.display;
+      lab.style.left = p.x + '%';
+      lab.style.top = p.y + '%';
+      lab.className = 'lrcc-orbit-lab show' + (p.x > 74 ? ' r' : p.x < 26 ? ' l' : '');
+    } else lab.className = 'lrcc-orbit-lab';
+  }
   var cap = $('#lrcc-radar-cap', LRCC.el);
   if(cap) cap.textContent = it && it.key ? 'Tracking: ' + it.display : lrccRadarCap();
-  lrccProgRestart();
-  lrccProgState();
+  lrccPaintSpotCtl();
 }
 function lrccPaintSpotCtl(){
   if(!LRCC.el) return;
@@ -8271,16 +8436,27 @@ function lrccPaintSpotCtl(){
   if(idx) idx.textContent = LRCC.items.length ? (LRCC.idx + 1) + ' / ' + LRCC.items.length : '';
   var hb = $('[data-lrcc-hold]', LRCC.el);
   if(hb){ hb.textContent = LRCC.hold ? 'Resume' : 'Hold'; hb.classList.toggle('on', LRCC.hold); }
+  var dots = $('#lrcc-sp-dots', LRCC.el);
+  if(dots){
+    var sig = LRCC.items.length + ':' + LRCC.idx;
+    if(dots.getAttribute('data-sig') !== sig){
+      dots.setAttribute('data-sig', sig);
+      var n = LRCC.items.length, dh = '';
+      if(n > 1 && n <= 24){ for(var i = 0; i < n; i++) dh += '<i' + (i === LRCC.idx ? ' class="on"' : '') + '></i>'; }
+      dots.innerHTML = dh;
+    }
+  }
 }
 function lrccSpotHTML(it){
   var chips = '';
   if(it.kind === 'hot' || it.kind === 'fact'){
+    /* the lead chip is the EVENT date — when the thing
+       happened — with its source; no filed-date language */
+    if(it.ev) chips += '<span class="lrcc-chip ev">' + esc(hmFmtD(it.ev)) + ' &middot; ' + esc(lrccAge(it.ev)) + '</span>';
     if(it.url) chips += '<a class="lrcc-chip link" href="' + esc(it.url) + '" target="_blank" rel="noopener">' + esc(it.source || 'source') + ' ' + ic('ext', 10) + '</a>';
     else if(it.source) chips += '<span class="lrcc-chip">' + esc(it.source) + '</span>';
-    if(it.published) chips += '<span class="lrcc-chip">Published ' + esc(hmFmtD(it.published)) + ' &middot; ' + esc(lrccAge(it.published)) + '</span>';
-    chips += '<span class="lrcc-chip">Filed ' + esc(hmFmtD(DT.date)) + ' &middot; ' + esc(lrccAge(DT.date)) + '</span>';
     if(it.kind === 'fact' && it.fresh) chips += '<span class="lrcc-chip new">New</span>';
-    return '<div class="lrcc-sp-kick ' + (it.kind === 'hot' ? 'hot' : '') + '">' + (it.kind === 'hot' ? 'Hot off the press' : 'Filed &middot; latest brief') + '</div>' +
+    return '<div class="lrcc-sp-kick ' + (it.kind === 'hot' ? 'hot' : '') + '">' + (it.kind === 'hot' ? 'Hot off the press' : 'Latest brief') + '</div>' +
       lrccNameBtn(it.display, it.di, 'lrcc-sp-name') +
       '<p class="lrcc-sp-text">' + esc(it.text) + '</p><div class="lrcc-chips">' + chips + '</div>';
   }
@@ -8288,8 +8464,7 @@ function lrccSpotHTML(it){
     return '<div class="lrcc-sp-kick">Checked this sweep</div>' +
       '<div class="lrcc-sp-big"><b>' + it.count + '</b><span>profiles checked against the public record</span></div>' +
       '<p class="lrcc-sp-text">' + it.filedCount + (it.filedCount === 1 ? ' record' : ' records') + ' had updates filed (looping above); the rest were confirmed current.</p>' +
-      '<div class="lrcc-sp-names">' + it.names.slice(0, 12).map(function(n){ return '<span>' + esc(n) + '</span>'; }).join('') + (it.names.length > 12 ? '<span class="more">+ ' + (it.names.length - 12) + ' more</span>' : '') + '</div>' +
-      '<div class="lrcc-chips"><span class="lrcc-chip">Brief ' + esc(hmFmtD(DT.date)) + ' &middot; ' + esc(lrccAge(DT.date)) + '</span></div>';
+      '<div class="lrcc-sp-names">' + it.names.slice(0, 12).map(function(n){ return '<span>' + esc(n) + '</span>'; }).join('') + (it.names.length > 12 ? '<span class="more">+ ' + (it.names.length - 12) + ' more</span>' : '') + '</div>';
   }
   return '<div class="lrcc-sp-kick">Next up</div>' +
     '<div class="lrcc-sp-big"><b>' + it.count + '</b><span>queued for the next sweep</span></div>' +
@@ -8297,7 +8472,7 @@ function lrccSpotHTML(it){
     '<div class="lrcc-chips"><span class="lrcc-chip">Next sweep &middot; <span class="lrcc-cd-l"></span></span><span class="lrcc-chip"><span class="lrcc-cd-v">--:--:--</span> away</span></div>';
 }
 
-/* --- Timeline: the merged timing ledger --- */
+/* --- Timeline: the merged event ledger --- */
 function lrccTimelineHTML(){
   var rows = [], seen = {};
   if(lrccHasBrief()){
@@ -8321,22 +8496,26 @@ function lrccTimelineHTML(){
       rows.push({ filed:c.filed || '', pub:c.source_date || '', name:c.name || '', di:hmDiOf(c.name), text:c.what || '', source:c.source || '', url:c.url || '', kind:'Change', n:g.n });
     });
   }
+  /* ordered by EVENT date (the dated event on the entry,
+     else the entry date), newest first; the filed date only
+     breaks ties */
+  rows.forEach(function(r){ r.ev = r.pub || r.filed; });
   rows.sort(function(a, b){
+    if(a.ev !== b.ev) return a.ev < b.ev ? 1 : -1;
     if(a.filed !== b.filed) return a.filed < b.filed ? 1 : -1;
-    if(a.pub !== b.pub) return a.pub < b.pub ? 1 : -1;
     return 0;
   });
   var total = rows.length;
-  var html = '<div class="lrcc-tlwrap"><div class="lrcc-ph lrcc-tl-ph"><span>Timing ledger &middot; newest first</span><span class="lrcc-ph-r">' + total + ' entries &middot; brief facts + change log</span></div>';
+  var html = '<div class="lrcc-tlwrap"><div class="lrcc-ph lrcc-tl-ph"><span>Event timeline &middot; newest first</span><span class="lrcc-ph-r">' + total + ' entries &middot; dated by event, not by filing</span></div>';
   if(!total) html += '<p class="lrcc-sp-none">No entries yet.</p>';
   html += rows.slice(0, 120).map(function(r){
-    return '<div class="lrcc-tl-row"><span class="lrcc-tl-d">' + esc(hmFmtD(r.filed)) + '</span>' +
-      '<span class="lrcc-tl-age">' + esc(lrccAge(r.filed)) + '</span>' +
+    return '<div class="lrcc-tl-row"><span class="lrcc-tl-d">' + esc(hmFmtD(r.ev)) + '</span>' +
+      '<span class="lrcc-tl-age">' + esc(lrccAge(r.ev)) + '</span>' +
       '<span class="lrcc-tl-k ' + (r.kind === 'Filed' ? 'f' : 'c') + '">' + r.kind + (r.n > 1 ? ' &times;' + r.n : '') + '</span>' +
       '<span class="lrcc-tl-main">' + lrccNameBtn(r.name, r.di, 'lrcc-tl-name') +
       '<span class="lrcc-tl-text">' + esc(r.text) + '</span></span>' +
       '<span class="lrcc-tl-src">' + (r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(r.source || '')) +
-      (r.pub ? '<small>source ' + esc(hmFmtD(r.pub)) + '</small>' : '') + '</span></div>';
+      (r.pub && r.pub !== r.filed ? '<small>logged ' + esc(hmFmtD(r.filed)) + '</small>' : '') + '</span></div>';
   }).join('');
   if(total > 120) html += '<p class="lrcc-more">+ ' + (total - 120) + ' more entries in the full log</p>';
   return html + '</div>';
