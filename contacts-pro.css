@@ -4766,3 +4766,65 @@ html[data-mode="dark"] .hmi-fn{color:var(--ink-txt)}
   .hmi-body{padding:14px 13px 16px}
   .hmi-cmprow{grid-template-columns:minmax(0,34%) 1fr auto}
 }
+
+/* ============================================================
+   HOME INSPECTOR, DASHBOARD (V3.54.0, JD 2026-10-31)
+   The popup window grows and the body becomes a dashboard:
+   a sticky summary column (explainer, full-size stat widgets,
+   hero diagram) beside the scrolling sections and rows. Hero
+   diagrams are real data drawn at open time — tier-mix segment
+   bars, top-3 breakdown bars, coverage rings (SVG stroke), a
+   Known Since year histogram, a 14-day change activity strip,
+   and the footprint person's source breakdown. Bars render at
+   final width; the only motion stays the open transition.
+   Scoped to .hmi-wrap like the rest of the popup family.
+   ============================================================ */
+.hmi{width:min(1080px,95vw)}
+/* dashboard grid */
+.hmi-dash{display:grid;grid-template-columns:352px minmax(0,1fr);gap:24px;align-items:start}
+.hmi-dash-l{position:sticky;top:0;min-width:0}
+.hmi-dash-r{min-width:0}
+.hmi-dash-r .hmi-sec:first-child{margin-top:2px}
+@media (max-width:899px){
+  .hmi-dash{grid-template-columns:1fr;gap:4px}
+  .hmi-dash-l{position:static}
+}
+/* full-size stat widgets in the summary column */
+.hmi-dash-l .hmi-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hmi-stat b{font-size:26px}
+.hmi-stat .hmi-stat-x{display:block;margin-top:2px;font-size:11px;line-height:1.35;color:var(--mut);text-transform:none;letter-spacing:0}
+/* tier-mix segmented bar */
+.hmi-segbar{display:flex;height:16px;border-radius:999px;overflow:hidden;background:var(--track)}
+.hmi-segbar i{display:block;height:100%}
+.hmi-segleg{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:8px;font-size:12px;color:var(--txt2)}
+.hmi-segleg span{display:inline-flex;align-items:center;gap:6px}
+.hmi-segleg i{width:9px;height:9px;border-radius:2px;flex:none}
+.hmi-segleg b{font:700 12px var(--serif);color:var(--txt)}
+/* coverage ring (SVG) */
+.hmi-ringwrap{position:relative;width:168px;height:168px;margin:4px auto 0}
+.hmi-ringwrap svg{display:block;transform:rotate(-90deg)}
+.hmi-ringbg{fill:none;stroke:var(--track);stroke-width:11}
+.hmi-ringfg{fill:none;stroke:var(--gb);stroke-width:11}
+html[data-mode="light"] .hmi-ringfg{stroke:var(--ink)}
+.hmi-ringc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:0 22px}
+.hmi-ringc b{font:700 31px/1 var(--serif)}
+.hmi-ringc span{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);line-height:1.3}
+.hmi-ring-sub{margin:8px 0 0;text-align:center;font-size:12.5px;color:var(--mut)}
+.hmi-ring-sub b{color:var(--txt)}
+/* year histogram + activity strip */
+.hmi-hist{display:flex;align-items:stretch;gap:2px;height:104px;margin-top:2px}
+.hmi-hb{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.hmi-hb i{display:block;border-radius:2px 2px 0 0;background-image:linear-gradient(180deg,var(--gb),var(--ga))}
+html[data-mode="light"] .hmi-hb i{background:linear-gradient(180deg,#262b34,#171a21)}
+.hmi-hb i.max{background:var(--acc);background-image:none}
+.hmi-hb span{display:block;height:13px;font-size:9.5px;line-height:13px;color:var(--dim);text-align:center;white-space:nowrap}
+/* value-list hero strip: the #1 entry as a big stat */
+.hmi-herostat{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;background:var(--ink);color:var(--ink-txt);border:1px solid var(--line2);border-radius:var(--r-sm);padding:13px 15px;margin:0 0 14px}
+.hmi-herostat-k{font:700 10.5px var(--sans);letter-spacing:.13em;text-transform:uppercase;opacity:.65}
+.hmi-herostat b{font:700 21px var(--serif)}
+.hmi-herostat-v{margin-left:auto;font:600 13px var(--serif);white-space:nowrap}
+/* footprint comparison, promoted to hero when it stands alone */
+.hmi-cmp.big{gap:11px}
+.hmi-cmp.big .hmi-cmptrack{height:14px}
+.hmi-cmp.big .hmi-cmpl{font-size:13.5px}
+.hmi-cmp.big .hmi-cmpv{font-size:15px}
