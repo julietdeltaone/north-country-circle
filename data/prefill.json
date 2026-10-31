@@ -1,37 +1,15 @@
 {
  "generated": "2026-10-30",
- "count": 1,
- "suggestions": [
-  {
-   "id": "pf-b9bc27d8bc",
-   "key": "emijent",
-   "display": "Emily R. Jent",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  }
- ],
+ "count": 0,
+ "suggestions": [],
  "auto_apply": [
   {
    "key": "furious_myles",
    "display": "Myles Laramay",
-   "field": "churches",
+   "field": "groups",
    "value": "Christian Fellowship Center",
-   "conf": 74,
-   "id": "pf-0cc453b41c"
-  },
-  {
-   "key": "mr_writers_block",
-   "display": "Merrick Sinclair",
-   "field": "companies",
-   "value": "Clarkson University",
-   "conf": 74,
-   "id": "pf-b989d1f725"
+   "conf": 100,
+   "id": "pf-5203e16fd6"
   },
   {
    "key": "mr_writers_block",
@@ -40,14 +18,6 @@
    "value": "Teaching",
    "conf": 62,
    "id": "pf-9718506394"
-  },
-  {
-   "key": "mr_writers_block",
-   "display": "Merrick Sinclair",
-   "field": "specialty",
-   "value": "Photography",
-   "conf": 90,
-   "id": "pf-72a4f7847a"
   },
   {
    "key": "sf:jdmeyers_",
