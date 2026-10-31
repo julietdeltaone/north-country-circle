@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 44,
+ "count": 43,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -263,17 +263,17 @@
    "conf": 52
   },
   {
-   "id": "pf-4afd82fd14",
+   "id": "pf-f7ea743e59",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Madrid, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "Facebook lists them as from Madrid, NY (hometown; current residence unconfirmed)."
    ],
-   "conf": 55
+   "conf": 52
   },
   {
    "id": "pf-61e2858fb9",
@@ -484,19 +484,6 @@
    "conf": 52
   },
   {
-   "id": "pf-b93e1fce44",
-   "key": "sf:richard-gilchrist",
-   "display": "Richard Gilchrist",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-3615be7cac",
    "key": "sf:rohallah-hakimvand",
    "display": "Rohallah Hakimvand",
@@ -577,46 +564,6 @@
  ],
  "auto_apply": [
   {
-   "key": "kevindaniels7",
-   "display": "Kevin Daniels",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-ed0214f55f"
-  },
-  {
-   "key": "michelledaniels9",
-   "display": "Michelle Daniels",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-db84686f14"
-  },
-  {
-   "key": "trentondaniels4",
-   "display": "Trenton Daniels",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-6d2e9378bf"
-  },
-  {
-   "key": "ct:julia tomford",
-   "display": "Julia Tomford",
-   "field": "groups",
-   "value": "New Testament Church",
-   "conf": 100,
-   "id": "pf-ad887b51ec"
-  },
-  {
-   "key": "ct:justin daniels",
-   "display": "Justin Daniels",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-8d6cbe0cab"
-  },
-  {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
    "field": "groups",
@@ -647,14 +594,6 @@
    "value": "Christian Fellowship Center",
    "conf": 100,
    "id": "pf-4fc4f704db"
-  },
-  {
-   "key": "sf:eleora-trelease",
-   "display": "Eleora Trelease",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-309c1b06c2"
   }
  ]
 }
