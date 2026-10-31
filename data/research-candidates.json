@@ -2718,7 +2718,8 @@
     "34 messages in AARON AND CREW group thread, Nov 2015",
     "2 messages in Bonfire group thread, Sep 2016",
     "Single message in Caden/Joel group thread, Dec 2016",
-    "Waite surname matches Sandie Waite Colbert already in the directory"
+    "Waite surname matches Sandie Waite Colbert already in the directory",
+    "Named participant in the 'Silas's Epic Announcement' group thread, Jan-May 2018"
    ],
    "missing_gate": "Single-message appearance; identity and relationship to the Colbert circle unconfirmed. New-person candidate for JD.",
    "confidence": 52,
@@ -2735,18 +2736,20 @@
    "run_date": "2026-10-31",
    "run_label": "Facebook export granular pass",
    "category": "identity",
-   "claim": "Ethan James was a fellow Legacy Board member helping plan the Christian Fellowship Center Legacy youth conference in 2015, played violin and took part in National String Project string lessons and recitals in May 2015, created the AARON AND CREW group in November 2015 as a philosophy debate group, and created a September 28, 2015 group chat to coordinate meeting in Potsdam; he is not in the directory.",
+   "claim": "Ethan James was a fellow Legacy Board member helping plan the Christian Fellowship Center Legacy youth conference in 2015, played violin and took part in National String Project string lessons and recitals in May 2015, created the AARON AND CREW group in November 2015 as a philosophy debate group, and created a September 28, 2015 group chat to coordinate meeting in Potsdam; he is not in the directory. He also exchanged 4,655 messages in a 1:1 thread running to June 2024 and attended Friday school (he asked for a ride from Potsdam to Friday School in October 2017).",
    "file_text": "Legacy Board member for the 2015 Legacy youth conference; created the AARON AND CREW group in November 2015",
    "source": "Facebook Messenger export (Mar 2026)",
    "url": "https://docs.google.com/document/d/1VAPziZMyeWip1eQ2w_iKdBKSiAIICt991IX85NtUiJU/edit?usp=drivesdk",
    "anchors": [
-    "Sender in A bunch of dudes (Legacy Board), Bros Before Does, AARON AND CREW, Bonfire, and the Potsdam meetup chat, 2015-2016"
+    "Sender in A bunch of dudes (Legacy Board), Bros Before Does, AARON AND CREW, Bonfire, and the Potsdam meetup chat, 2015-2016",
+    "1:1 Messenger thread of 4,655 messages, Feb 19, 2015 to Jun 13, 2024",
+    "Attended Friday school: on Oct 5, 2017 he asked for a ride from Potsdam to Friday School (verified in the 1:1 thread)"
    ],
    "missing_gate": "Not in the directory; identity rests on group-thread participation across several threads. New-person candidate for JD.",
-   "confidence": 64,
+   "confidence": 68,
    "confidence_parts": {
-    "identity": 30,
-    "source": 22,
+    "identity": 32,
+    "source": 24,
     "detail": 12
    }
   },
@@ -2966,6 +2969,97 @@
    "confidence": 42,
    "confidence_parts": {
     "identity": 22,
+    "source": 14,
+    "detail": 6
+   }
+  },
+  {
+   "id": "fb-20261031-trevor-moulton-1to1-thread-2013-2014",
+   "name": "",
+   "display": "Trevor Moulton",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Trevor Moulton exchanged 498 messages in a 1:1 Messenger thread between July 2013 and April 2014; he has a sister who attended frisbee gatherings in 2013 (unnamed in the thread). His surname matches directory brothers Joel Moulton and Daniel Moulton, but the thread does not state their relationship.",
+   "file_text": "Exchanged 498 Messenger messages in a 1:1 thread, July 2013 to April 2014",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1WZAk-jzJYA5kuIFW8EhQpQLXkHnfzPUXmlq8l62bdTU/edit?usp=drivesdk",
+   "anchors": [
+    "1:1 Messenger thread, 2013-07-18 to 2014-04-29 (verified in raw export)"
+   ],
+   "missing_gate": "Not in the directory; relationship to the directory Moultons unstated in-thread. New-person candidate for JD.",
+   "confidence": 48,
+   "confidence_parts": {
+    "identity": 24,
+    "source": 16,
+    "detail": 8
+   }
+  },
+  {
+   "id": "fb-20261031-zenna-gall-1to1-thread-2017-2018",
+   "name": "",
+   "display": "Zenna Gall",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Zenna Gall exchanged 4,697 messages in a 1:1 Messenger thread between July 2017 and April 2018, and was a participant in the 'Zenna and Fwends' group threads of 2015-2016. In November 2017 JD was doing photos for Friday school and offered to take her photo there, placing her in the Friday school orbit. She is not in the directory.",
+   "file_text": "Exchanged 4,697 messages in a 1:1 Messenger thread, July 2017 to April 2018; in the Friday school orbit in 2017",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1rwoZB7S9CLfFrPS1NJuyma-076Y2XVvJwYtK-MVMpPU/edit?usp=drivesdk",
+   "anchors": [
+    "1:1 Messenger thread, 2017-07-06 to 2018-04-02",
+    "Friday school photo exchange, Nov 14, 2017 (verified in raw export)",
+    "Zenna and Fwends group threads, 2015-2016"
+   ],
+   "missing_gate": "Not in the directory; identity rests on her own long 1:1 thread. New-person candidate for JD.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 19,
+    "detail": 8
+   }
+  },
+  {
+   "id": "fb-20261031-pat-wilbur-legacy-volunteer",
+   "name": "",
+   "display": "Pat Wilbur",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Pat Wilbur was a Legacy youth conference volunteer in September 2015: named in the participants of the Legacy volunteers group thread (rendered 'Pat Vil' there, with a 'Pat Wilbur' media tag) and in Merrick Sinclair's September 15, 2015 team list alongside Jeeves Green, Peter Johnson, and Lael Card. Not in the directory.",
+   "file_text": "Legacy youth conference volunteer, September 2015",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1sxOcXYe1yzfv513OAJZIts_xcj6alcodOqMoEfTZHIE/edit?usp=drivesdk",
+   "anchors": [
+    "Participants line and media tag in the Legacy volunteers thread (verified in raw export)",
+    "Merrick Sinclair's team list, Sep 15, 2015"
+   ],
+   "missing_gate": "Not in the directory; identity rests on one thread's participants list and team roster. New-person candidate for JD.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 20,
+    "detail": 10
+   }
+  },
+  {
+   "id": "fb-20261031-nathan-stearns-legacy-volunteers-thread",
+   "name": "",
+   "display": "Nathan Stearns",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Nathan Stearns was a named participant in the Legacy youth conference volunteers group thread of August-September 2015, alongside Jeeves Green, Peter Johnson, Merrick Sinclair, Ellie Criscitello, and Lael Card. Not in the directory.",
+   "file_text": "Named participant in the Legacy volunteers group thread, 2015",
+   "source": "Facebook Messenger export (Mar 2026)",
+   "url": "https://docs.google.com/document/d/1sxOcXYe1yzfv513OAJZIts_xcj6alcodOqMoEfTZHIE/edit?usp=drivesdk",
+   "anchors": [
+    "Participants line of the Legacy volunteers thread (verified in raw export)"
+   ],
+   "missing_gate": "Not in the directory; named participant only, no life facts stated. New-person candidate for JD.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 20,
     "source": 14,
     "detail": 6
    }
