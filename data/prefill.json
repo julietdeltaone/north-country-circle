@@ -1,111 +1,7 @@
 {
  "generated": "2026-10-30",
- "count": 81,
+ "count": 44,
  "suggestions": [
-  {
-   "id": "pf-37384ce538",
-   "key": "abbydaniels03",
-   "display": "Abigail Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "8 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
-  {
-   "id": "pf-7fc331df4f",
-   "key": "aidantruth",
-   "display": "Aidan Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "8 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
-  {
-   "id": "pf-0071c9ba72",
-   "key": "drewspov_",
-   "display": "Andrew Matott",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "9 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
-  {
-   "id": "pf-02b2969e67",
-   "key": "_cathaccino_",
-   "display": "Catherine Green",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
-   ],
-   "conf": 72
-  },
-  {
-   "id": "pf-d5fd12745a",
-   "key": "elizabethadaniels",
-   "display": "Elizabeth Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "9 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
-  {
-   "id": "pf-be299a2b1d",
-   "key": "elizabeth.deschaine",
-   "display": "Elizabeth Deschaine",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "5 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 72
-  },
-  {
-   "id": "pf-1831663ba3",
-   "key": "ethan_j_bates",
-   "display": "Ethan Bates",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "21 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
-  {
-   "id": "pf-0efec99e8f",
-   "key": "hopiek_09",
-   "display": "Hope Kilcollins",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "14 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
   {
    "id": "pf-1089251c0d",
    "key": "jdmeyers_",
@@ -120,381 +16,56 @@
    "conf": 72
   },
   {
-   "id": "pf-0c47742917",
-   "key": "jtmoulton",
-   "display": "Joel Moulton",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "6 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
-  {
-   "id": "pf-883862d49a",
-   "key": "megan.furner",
-   "display": "Megan Furner",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "6 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
-  {
-   "id": "pf-1ee6e5c887",
-   "key": "taswyka",
-   "display": "Tim Swyka",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Probable",
-   "evidence": [
-    "7 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
-   ],
-   "conf": 78
-  },
-  {
-   "id": "pf-ccf7ae0d6d",
-   "key": "dpaladin",
-   "display": "Daniel Paladin",
+   "id": "pf-cfe5c7f478",
+   "key": "briettapaladin",
+   "display": "Brietta Paladin",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
    "grade": "Probable",
    "evidence": [
-    "5 of 9 located known associates are in Potsdam, and family on file is there too: Gabe Paladin."
+    "5 of 10 located known associates are in Potsdam, and family on file is there too: Gabe Paladin."
    ],
    "conf": 70
   },
   {
-   "id": "pf-75588bf995",
-   "key": "cloutlord_420",
-   "display": "Avery Criscitello",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-944cc5444f",
-   "key": "sf:cj-tomford",
-   "display": "CJ Tomford",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: David Tomford, Mike Tomford."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-df5ecede0b",
-   "key": "ct:colby criscitello",
-   "display": "Colby Criscitello",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-26846e754c",
-   "key": "sf:eleora-trelease",
-   "display": "Eleora Trelease",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Eric Trelease, Jennifer Trelease."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-f76d1a2739",
-   "key": "ct:emily criscitello",
-   "display": "Emily Criscitello",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-37db80fe47",
-   "key": "madstop136",
-   "display": "Eric Criscitello",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-d909021aa1",
-   "key": "ct:jonathan daniels",
-   "display": "Jonathan Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-b2f7a22299",
-   "key": "ct:julia tomford",
-   "display": "Julia Tomford",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "New Testament Church",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend New Testament Church: David Tomford, Isaiah Reiter."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-cd9fe12438",
-   "key": "ct:justin daniels",
-   "display": "Justin Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-25d175259d",
+   "id": "pf-c758e98a76",
    "key": "kevindaniels7",
    "display": "Kevin Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Probable",
    "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
+    "5 of 8 located known associates are in Potsdam, and family on file is there too: Jonathan Daniels."
    ],
-   "conf": 60
+   "conf": 70
   },
   {
-   "id": "pf-4bb6b3fe68",
-   "key": "libbycriscitello",
-   "display": "Libby Criscitello",
+   "id": "pf-da1ce8bed8",
+   "key": "jocelynrose04",
+   "display": "Jocelyn Daniels",
    "field": "churches",
    "field_label": "Church",
    "value": "Christian Fellowship Center",
    "grade": "Tentative",
    "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-a81ff298d7",
-   "key": "sf:lisa-criscitello",
-   "display": "Lisa Criscitello",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-e55ae355bc",
-   "key": "mr.muggy",
-   "display": "Mark Tomford",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: David Tomford, Mike Tomford."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-921b5ada7f",
-   "key": "ct:matthew tomford",
-   "display": "Matthew Tomford",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: David Tomford, Mike Tomford."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-a0ac28b010",
-   "key": "michelledaniels9",
-   "display": "Michelle Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-85064c3f9d",
-   "key": "sf:molly-criscitello",
-   "display": "Molly Criscitello",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-e22a1c5fc6",
-   "key": "tom_nate_ford",
-   "display": "Nathaniel Tomford",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: David Tomford, Mike Tomford."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-c7756e39fb",
-   "key": "ryanpdaniels",
-   "display": "Ryan Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "2 family members on file attend Christian Fellowship Center: Aaron Daniels, Megan Daniels."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-6ff993ffcb",
-   "key": "trentondaniels4",
-   "display": "Trenton Daniels",
-   "field": "churches",
-   "field_label": "Church",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "3 family members on file attend Christian Fellowship Center: Aaron Daniels, Anastasia Daniels, Megan Daniels."
+    "3 family members on file attend Christian Fellowship Center: Abigail Daniels, Aidan Daniels, Ryan Daniels."
    ],
    "conf": 66
   },
   {
-   "id": "pf-6f08876ac9",
-   "key": "briettapaladin",
-   "display": "Brietta Paladin",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Academy",
-   "grade": "Tentative",
-   "evidence": [
-    "4 family members on file are in Christian Fellowship Academy: Bronwyn Paladin, Daniel Paladin, Darlene Sinclair, Gabe Paladin."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-cee27cbf19",
-   "key": "sf:cj-tomford",
-   "display": "CJ Tomford",
-   "field": "groups",
-   "field_label": "Group",
+   "id": "pf-37bb54bef6",
+   "key": "jjcyph",
+   "display": "Jon Cyphers",
+   "field": "churches",
+   "field_label": "Church",
    "value": "Christian Fellowship Center",
    "grade": "Tentative",
    "evidence": [
-    "3 family members on file are in Christian Fellowship Center: David Tomford, Mike Tomford, Nathaniel Tomford."
+    "4 close associates on file attend Christian Fellowship Center, and their groups already include Christian Fellowship Center."
    ],
-   "conf": 55
-  },
-  {
-   "id": "pf-77ba2b6113",
-   "key": "ct:colby criscitello",
-   "display": "Colby Criscitello",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "3 family members on file are in Christian Fellowship Center: Avery Criscitello, Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-5b0f550cad",
-   "key": "madstop136",
-   "display": "Eric Criscitello",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "3 family members on file are in Christian Fellowship Center: Avery Criscitello, Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-9429373955",
-   "key": "jocelynrose04",
-   "display": "Jocelyn Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "3 family members on file are in Christian Fellowship Center: Abigail Daniels, Aidan Daniels, Ryan Daniels."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-a137d9d559",
-   "key": "ct:jonathan daniels",
-   "display": "Jonathan Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "3 family members on file are in Christian Fellowship Center: Aaron Daniels, Megan Daniels, Ryan Daniels."
-   ],
-   "conf": 55
+   "conf": 66
   },
   {
    "id": "pf-a8fc076671",
@@ -506,32 +77,6 @@
    "grade": "Tentative",
    "evidence": [
     "4 family members on file are in SUNY Canton: Aaron Daniels, Jonathan Daniels, Ryan Daniels, Trenton Daniels."
-   ],
-   "conf": 60
-  },
-  {
-   "id": "pf-8d6cbe0cab",
-   "key": "ct:justin daniels",
-   "display": "Justin Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "3 family members on file are in Christian Fellowship Center: Aaron Daniels, Megan Daniels, Ryan Daniels."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-ed0214f55f",
-   "key": "kevindaniels7",
-   "display": "Kevin Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "4 family members on file are in Christian Fellowship Center: Aaron Daniels, Elizabeth Daniels, Megan Daniels, Ryan Daniels."
    ],
    "conf": 60
   },
@@ -557,9 +102,9 @@
    "value": "Christian Fellowship Center",
    "grade": "Tentative",
    "evidence": [
-    "3 family members on file are in Christian Fellowship Center: Avery Criscitello, Riley Criscitello, Timothy Criscitello."
+    "4 family members on file are in Christian Fellowship Center: Avery Criscitello, Colby Criscitello, Riley Criscitello, Timothy Criscitello."
    ],
-   "conf": 55
+   "conf": 60
   },
   {
    "id": "pf-2f9b461cd1",
@@ -627,19 +172,6 @@
    "conf": 60
   },
   {
-   "id": "pf-db84686f14",
-   "key": "michelledaniels9",
-   "display": "Michelle Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "3 family members on file are in Christian Fellowship Center: Aaron Daniels, Megan Daniels, Ryan Daniels."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-9c6ead9a09",
    "key": "sf:molly-criscitello",
    "display": "Molly Criscitello",
@@ -648,20 +180,7 @@
    "value": "Christian Fellowship Center",
    "grade": "Tentative",
    "evidence": [
-    "3 family members on file are in Christian Fellowship Center: Avery Criscitello, Riley Criscitello, Timothy Criscitello."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-6d2e9378bf",
-   "key": "trentondaniels4",
-   "display": "Trenton Daniels",
-   "field": "groups",
-   "field_label": "Group",
-   "value": "Christian Fellowship Center",
-   "grade": "Tentative",
-   "evidence": [
-    "4 family members on file are in Christian Fellowship Center: Aaron Daniels, Anastasia Daniels, Megan Daniels, Ryan Daniels."
+    "4 family members on file are in Christian Fellowship Center: Avery Criscitello, Colby Criscitello, Riley Criscitello, Timothy Criscitello."
    ],
    "conf": 60
   },
@@ -1058,12 +577,60 @@
  ],
  "auto_apply": [
   {
+   "key": "kevindaniels7",
+   "display": "Kevin Daniels",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-ed0214f55f"
+  },
+  {
+   "key": "michelledaniels9",
+   "display": "Michelle Daniels",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-db84686f14"
+  },
+  {
+   "key": "trentondaniels4",
+   "display": "Trenton Daniels",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-6d2e9378bf"
+  },
+  {
+   "key": "ct:julia tomford",
+   "display": "Julia Tomford",
+   "field": "groups",
+   "value": "New Testament Church",
+   "conf": 100,
+   "id": "pf-ad887b51ec"
+  },
+  {
+   "key": "ct:justin daniels",
+   "display": "Justin Daniels",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-8d6cbe0cab"
+  },
+  {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
    "field": "groups",
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-05585543fe"
+  },
+  {
+   "key": "sf:jdmeyers_",
+   "display": "Jdmeyers",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-ec48938199"
   },
   {
    "key": "sf:murray",
@@ -1080,6 +647,14 @@
    "value": "Christian Fellowship Center",
    "conf": 100,
    "id": "pf-4fc4f704db"
+  },
+  {
+   "key": "sf:eleora-trelease",
+   "display": "Eleora Trelease",
+   "field": "groups",
+   "value": "Christian Fellowship Center",
+   "conf": 100,
+   "id": "pf-309c1b06c2"
   }
  ]
 }
