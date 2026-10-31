@@ -1,20 +1,7 @@
 {
  "generated": "2026-10-30",
- "count": 14,
+ "count": 11,
  "suggestions": [
-  {
-   "id": "pf-23d8fd3bd0",
-   "key": "sf:acacia-white",
-   "display": "Acacia White",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Massena, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Massena Hospital is in Massena."
-   ],
-   "conf": 55
-  },
   {
    "id": "pf-5ecd9da7ee",
    "key": "ariannarider",
@@ -45,19 +32,6 @@
    "id": "pf-4afd82fd14",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b9bc27d8bc",
-   "key": "emijent",
-   "display": "Emily R. Jent",
    "field": "location_on_file",
    "field_label": "Location",
    "value": "Potsdam, NY",
@@ -142,19 +116,6 @@
    "grade": "Tentative",
    "evidence": [
     "4 of 5 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-5f8e0acd40",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
    ],
    "conf": 55
   },
