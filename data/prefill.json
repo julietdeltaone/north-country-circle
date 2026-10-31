@@ -744,17 +744,17 @@
    "conf": 52
   },
   {
-   "id": "pf-4afd82fd14",
+   "id": "pf-f7ea743e59",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Madrid, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "Facebook lists them as from Madrid, NY (hometown; current residence unconfirmed)."
    ],
-   "conf": 55
+   "conf": 52
   },
   {
    "id": "pf-61e2858fb9",
@@ -887,19 +887,6 @@
    "conf": 52
   },
   {
-   "id": "pf-5f8e0acd40",
-   "key": "m.not.a.lobster",
-   "display": "Michelle Johnston",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "SUNY Potsdam is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
    "id": "pf-3d93f54eda",
    "key": "sf:michelle-shirley",
    "display": "Michelle Shirley",
@@ -963,6 +950,19 @@
     "Facebook lists them as from Ann Arbor, MI (hometown; current residence unconfirmed)."
    ],
    "conf": 52
+  },
+  {
+   "id": "pf-b93e1fce44",
+   "key": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
   },
   {
    "id": "pf-3615be7cac",
