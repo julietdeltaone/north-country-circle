@@ -1844,6 +1844,32 @@ div.hot-row{cursor:default}
 .hma-nchip:hover{border-color:var(--line2)}
 .hma-link{color:var(--acc2);font-weight:600;font-size:13px;text-decoration:none}
 .hma-link:hover{text-decoration:underline}
+/* What's New (V3.51.0): the feed view + Home prefill chip/teaser.
+   Theme variables only (--card/--line/--txt/--mut/--acc/--red-t),
+   so rows and chips read in both light and dark modes. */
+.wn-pfchip{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;margin-bottom:14px;
+  background:var(--card);border:1px solid var(--line);border-radius:2px;color:var(--txt);
+  font:500 13px var(--sans);text-align:left;cursor:pointer}
+.wn-pfchip:hover{border-color:var(--line2)}
+.wn-pfchip svg{color:var(--acc)}
+.wn-pfchip .wn-pfgo{margin-left:auto;color:var(--mut);font-size:12px;font-weight:600;white-space:nowrap}
+.wn-feed .cbody{padding-top:6px;padding-bottom:6px}
+.wn-date{font:700 11px var(--serif);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:14px 0 2px}
+.wn-date:first-child{margin-top:4px}
+.wn-row{display:flex;align-items:flex-start;gap:10px;width:100%;padding:9px 0;border:0;border-top:1px solid var(--line);
+  background:none;text-align:left;font:inherit;color:inherit}
+button.wn-row{cursor:pointer}
+button.wn-row:hover{background:var(--card2)}
+.wn-chip{flex:none;margin-top:1px;padding:2px 8px;border:1px solid var(--line2);border-radius:999px;
+  background:var(--card2);color:var(--mut);font:700 10.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.wn-chip.wn-photo{color:var(--sky,var(--txt2));border-color:var(--line2)}
+.wn-chip.wn-hot{background:var(--acc);border-color:var(--acc);color:#fff}
+.wn-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.wn-nm{font-weight:600;font-size:13.5px}
+.wn-tx{font-size:12.5px;line-height:1.45;color:var(--txt2,var(--txt))}
+.wn-meta{font-size:11.5px;color:var(--mut)}
+.wn-meta a{color:var(--sky,var(--acc2));text-decoration:none}
+.wn-meta a:hover{text-decoration:underline}
 /* Network preview (kept) */
 .hm-netgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:18px;align-items:start}
 .hm-netlink{display:block;border:1px solid var(--line);border-radius:2px;background:var(--bg)}
