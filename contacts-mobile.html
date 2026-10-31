@@ -118,10 +118,10 @@ img{max-width:100%}
 html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .searchwrap{position:relative;display:flex;align-items:center}
 .searchwrap>svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--dim);pointer-events:none;flex:none}
-#q,#pq{width:100%;height:52px;padding:0 44px 0 40px;border-radius:16px;border:1px solid var(--line2);background:var(--glass-solid);outline:none;font-size:16px;color:var(--txt)}
-#q:focus,#pq:focus{border-color:var(--ga)}
-#q::-webkit-search-cancel-button,#pq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
-#qclear,#pqclear{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:none;align-items:center;justify-content:center;color:var(--mut);border-radius:10px;background:none;border:none}
+#q,#pq,#homeq{width:100%;height:52px;padding:0 44px 0 40px;border-radius:16px;border:1px solid var(--line2);background:var(--glass-solid);outline:none;font-size:16px;color:var(--txt)}
+#q:focus,#pq:focus,#homeq:focus{border-color:var(--ga)}
+#q::-webkit-search-cancel-button,#pq::-webkit-search-cancel-button,#homeq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+#qclear,#pqclear,#homeqclear{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;display:none;align-items:center;justify-content:center;color:var(--mut);border-radius:10px;background:none;border:none}
 .lhead{position:sticky;top:0;z-index:20;transform:translateZ(0);font:700 12px var(--sans);letter-spacing:.14em;color:var(--txt2);padding:7px 10px;margin:10px 0 4px;border-radius:10px;background:linear-gradient(90deg,color-mix(in srgb,var(--ga) 16%,var(--field)),color-mix(in srgb,var(--gb) 12%,var(--field)));border:1px solid var(--line);scroll-margin-top:0}
 .lsec:first-child .lhead{margin-top:2px}
 #plist{padding-bottom:52px}
@@ -157,6 +157,44 @@ html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .hero-btn small{font-size:14.5px;color:var(--mut);font-weight:500}
 .hb-online{background:linear-gradient(150deg,color-mix(in srgb,var(--ga) 34%,var(--glass2)),color-mix(in srgb,var(--gb) 26%,var(--glass)))}
 .hb-loc{background:linear-gradient(150deg,color-mix(in srgb,var(--acc) 20%,var(--glass2)),var(--glass))}
+/* ---------- home landing (JD 2026-10-31): search, two log doors,
+   three activity rows, queue — nothing else ---------- */
+.home-stack{display:flex;flex-direction:column;gap:12px}
+.home-door{display:flex;align-items:center;justify-content:center;min-height:78px;width:100%;padding:18px 16px;border-radius:20px;border:1px solid var(--line2);text-align:center;font:800 18px/1.15 var(--sans);letter-spacing:.13em;box-shadow:var(--sh-chip);-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%)}
+.home-door-loc{background:var(--acc);border-color:var(--acc);color:#fff}
+.home-door-online{background:linear-gradient(150deg,color-mix(in srgb,var(--ga) 30%,var(--glass2)),color-mix(in srgb,var(--gb) 22%,var(--glass)));color:var(--txt)}
+.home-door:active{filter:brightness(.97)}
+.home-activity .ghead{margin-top:2px}
+.activity-row{display:flex;align-items:center;gap:11px;width:100%;padding:10px 8px;min-height:72px;border-radius:14px;position:relative;cursor:pointer}
+.activity-row::after{content:"";position:absolute;left:67px;right:2px;bottom:0;height:1px;background:var(--line)}
+.activity-row:active{background:var(--fill2)}
+.activity-row .pmain{flex:1;min-width:0}
+.activity-row b{display:block;font-weight:700;font-size:15.5px;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.activity-row b.revealed{letter-spacing:0}
+.activity-row small{display:block;color:var(--mut);font-size:12.5px;line-height:1.3;white-space:normal;overflow-wrap:break-word}
+.activity-date{color:var(--mut);font-size:12px;white-space:nowrap;flex:none}
+.activity-open{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;color:var(--dim);flex:none}
+.activity-open:active{background:var(--fill2);color:var(--txt)}
+.queue-add{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:54px;padding:12px 16px;border-radius:15px;border:1.5px dashed var(--line2);color:var(--txt);font-weight:800;font-size:14px;letter-spacing:.12em;background:var(--glass)}
+.queue-add:active{background:var(--fill2)}
+.queue-count{display:flex;align-items:center;gap:10px;width:100%;min-height:54px;padding:9px 10px 9px 16px;border-radius:15px;border:1px solid var(--line);color:var(--txt);background:linear-gradient(180deg,var(--glass2),var(--glass));font-weight:800;font-size:13px;letter-spacing:.12em;text-align:left}
+.queue-count strong{margin-left:auto;min-width:36px;padding:4px 10px;border-radius:999px;background:var(--acc);color:#fff;font-size:16px;letter-spacing:0;text-align:center}
+.queue-count .chev{color:var(--dim);flex:none}
+.queue-count:active{background:var(--fill2)}
+/* ---------- bottom nav: four destinations, always in thumb reach ---------- */
+#tabs{flex:none;display:flex;gap:4px;padding:7px 10px calc(7px + env(safe-area-inset-bottom));background:linear-gradient(180deg,var(--glass-solid),var(--glass2));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border-top:1px solid var(--line2);z-index:45}
+#tabs a,#tabs button{flex:1;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:12px;color:var(--mut);text-decoration:none;font-size:11.5px;font-weight:600}
+#tabs a:active,#tabs button:active{background:var(--fill2)}
+#tabs .on{color:var(--txt);background:var(--fill2);box-shadow:inset 0 2px 0 var(--acc)}
+#tabs svg{width:21px;height:21px;flex:none}
+/* ---------- up-next queue list ---------- */
+.qentry{border-bottom:1px solid var(--line);padding-bottom:10px}
+.qentry .prow::after{display:none}
+.qactions{display:flex;gap:8px;padding:2px 8px 4px 65px}
+.qactions button{flex:1;min-height:44px;padding:0 8px;border:1px solid var(--line2);border-radius:11px;background:var(--glass);color:var(--txt);font-weight:700;font-size:13.5px}
+.qactions button:active{background:var(--fill2)}
+.qactions [data-qremove]{color:var(--bad)}
+@media (max-width:370px){.qactions{padding-left:8px}.home-door{font-size:16.5px;letter-spacing:.1em}}
 .seg2{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--fill);border:1px solid var(--line)}
 .seg2 button{flex:1;min-height:40px;border-radius:9px;color:var(--mut);font-weight:700;font-size:14px}
 .seg2 button.on{background:var(--acc);color:#fff}
@@ -264,6 +302,12 @@ button.chip:active{border-color:var(--acc)}
   <div id="scroll">
     <main id="view" class="view"><div class="skel">Loading contacts…</div></main>
   </div>
+  <nav id="tabs" aria-label="Primary">
+    <a href="#/contacts" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+    <a href="#/all" data-tab="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.8-5 6.5-5s5.5 1.5 6.5 5"/><path d="M16 5.5a3.5 3.5 0 010 6.5M18.5 15.5c1.7.7 2.7 2 3.2 4"/></svg>People</a>
+    <a href="#/queue" data-tab="new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></svg>New</a>
+    <button type="button" id="tabmore" data-tab="more"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>More</button>
+  </nav>
   <nav id="rail" aria-label="Alphabet index"></nav>
   <div id="scrubbub" aria-hidden="true"></div>
   <button type="button" id="totop" aria-label="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>
@@ -275,6 +319,7 @@ button.chip:active{border-color:var(--acc)}
     <a href="#/all" data-menuclose>Everyone<small>The full contact list</small></a>
     <a href="#/groups" data-menuclose>Groups<small>Every group and its members</small></a>
     <a href="#/lists" data-menuclose>Lists<small>Churches, companies, universities, skills</small></a>
+    <a href="contacts-pro.html?full=1#/whatsnew">What's New<small>Latest filings, photos and hot items (full app)</small></a>
     <hr>
     <button type="button" id="thememode">Switch light / dark<small>Same theme setting as the full app</small></button>
     <a href="contacts-pro.html?full=1" id="fulllink">Full site<small>The complete Contacts Pro app</small></a>
@@ -294,10 +339,11 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.6.1';
+var MOBILE_VERSION = '1.7.0';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
+var QUEUE_KEY = 'ncc_contact_queue_v1';
 var WINS_TTL = 7 * 24 * 3600 * 1000;
 var $ = function(s, r){ return (r || document).querySelector(s); };
 var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -397,6 +443,55 @@ function initials(name){
   var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
   if(!parts.length) return '?';
   return (parts[0].charAt(0) + (parts.length > 1 ? parts[parts.length - 1].charAt(0) : '')).toUpperCase();
+}
+/* ---------- up-next contact queue (JD 2026-10-31) ----------
+   Device-local by design: an ordered list of stable person keys
+   (pkey) in localStorage 'ncc_contact_queue_v1'. No server store
+   exists for it; logging a queued person (any flow, incl. the
+   profile form — they all share saveLog) removes them again. */
+var CONTACT_QUEUE = null;
+function queueLoad(){
+  if(CONTACT_QUEUE) return CONTACT_QUEUE;
+  var a = [];
+  try{ a = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); }catch(x){ a = []; }
+  var seen = {}, out = [];
+  (Array.isArray(a) ? a : []).forEach(function(it){
+    var id = typeof it === 'string' ? it : (it && it.id) || '';
+    if(id && !seen[id]){ seen[id] = 1; out.push({ id:id, addedAt:(it && it.addedAt) || '' }); }
+  });
+  CONTACT_QUEUE = out;
+  return CONTACT_QUEUE;
+}
+function queueSave(){ try{ localStorage.setItem(QUEUE_KEY, JSON.stringify(queueLoad())); }catch(x){} }
+function queueEntries(){
+  var raw = queueLoad(), out = [], valid = {};
+  raw.forEach(function(it){
+    var di = PK2I[it.id];
+    if(di == null || !liveEntry(D.directory[di])) return;
+    valid[it.id] = 1;
+    out.push({ id:it.id, di:di });
+  });
+  if(raw.some(function(it){ return !valid[it.id]; })){
+    CONTACT_QUEUE = raw.filter(function(it){ return valid[it.id]; });
+    queueSave();
+  }
+  return out;
+}
+function queueAdd(di){
+  var e = D.directory[di]; if(!e) return false;
+  var id = pkey(e);
+  if(queueLoad().some(function(it){ return it.id === id; })) return false;
+  queueLoad().push({ id:id, addedAt:new Date().toISOString() });
+  queueSave();
+  return true;
+}
+function queueRemove(di){
+  var e = D.directory[di]; if(!e) return false;
+  var id = pkey(e), before = queueLoad().length;
+  CONTACT_QUEUE = queueLoad().filter(function(it){ return it.id !== id; });
+  if(CONTACT_QUEUE.length === before) return false;
+  queueSave();
+  return true;
 }
 /* photos sidecar (data/photos.json), keyed by display name like the main app */
 var PHOTOS = null, PHOTO_BY_NAME = {};
@@ -631,6 +726,7 @@ function saveLog(di, sum, det, on){
   queuePatch(di, { events:JSON.stringify(arr) });
   var curLc = String(gv(e, 'last_contact') || '').trim();
   if(!curLc || flexKey(d) >= flexKey(curLc)){ setField(di, 'last_contact', d); setField(di, 'last_contact_online', on ? 'yes' : ''); }
+  queueRemove(di); /* a logged person leaves the up-next queue, whichever flow logged them */
   return true;
 }
 function openPerson(di){ location.hash = '#/p/' + encodeURIComponent(pkey(D.directory[di])); }
@@ -673,6 +769,8 @@ function parseRoute(){
   var h = location.hash || '#/contacts';
   var parts = h.replace(/^#\//, '').split('/');
   if(parts[0] === 'p' && parts[1]) return { name:'person', id:decodeURIComponent(parts.slice(1).join('/')) };
+  if(parts[0] === 'queue' && parts[1] === 'pick') return { name:'pick', cat:'queue' };
+  if(parts[0] === 'queue') return { name:'queue' };
   if(parts[0] === 'groups' && parts[1]) return { name:'group', id:decodeURIComponent(parts.slice(1).join('/')) };
   if(parts[0] === 'groups') return { name:'groups' };
   if(parts[0] === 'lists' && parts[1] && parts[2]) return { name:'list', kind:decodeURIComponent(parts[1]), id:decodeURIComponent(parts[2]) };
@@ -684,11 +782,23 @@ function parseRoute(){
   if(parts[0] === 'all') return { name:'all' };
   return { name:'home' };
 }
+function paintTabs(r){
+  var active = '';
+  if(r.name === 'home' || r.name === 'fdetails' || (r.name === 'pick' && r.cat !== 'queue')) active = 'home';
+  else if(r.name === 'queue' || (r.name === 'pick' && r.cat === 'queue')) active = 'new';
+  else if(['all', 'person', 'groups', 'group', 'lists', 'list'].indexOf(r.name) >= 0) active = 'people';
+  $$('#tabs [data-tab]').forEach(function(el){
+    var on = el.getAttribute('data-tab') === active;
+    el.classList.toggle('on', on);
+    if(on) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
+  });
+}
 function render(){
   if(!D) return;
   saveScroll(); /* the view being left keeps its place */
   var r = parseRoute();
   S.route = r.name;
+  paintTabs(r);
   CURKEY = location.hash || '#/contacts';
   $('#rail').classList.remove('on'); $('#totop').classList.remove('on');
   if(r.name !== 'all' && r.name !== 'pick'){ var dk0 = $('#deck'); dk0.hidden = true; dk0.innerHTML = ''; }
@@ -702,6 +812,7 @@ function render(){
   else if(r.name === 'lists') viewLists(v);
   else if(r.name === 'list') viewMembers(v, listTitle(r.kind, r.id), r.id, listMembers(r.kind, r.id));
   else if(r.name === 'pick') viewPick(v, r.cat);
+  else if(r.name === 'queue') viewQueue(v);
   else if(r.name === 'fdetails') viewFlowDetails(v, r.cat, r.id);
   else if(r.name === 'all') viewContacts(v);
   else viewHome(v);
@@ -819,25 +930,157 @@ function catMembers(cat){
     return lcOnline(e) === (cat === 'online');
   });
 }
+/* landing-only name code (JD 2026-10-31): first 3 letters of the last
+   name + first initial, all caps. Used NOWHERE else in the app — every
+   other surface renders regular names via dispName(). */
+function landingCode(e){
+  var parts = String(dispName(e) || '').trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return '--- -';
+  var suffix = { jr:1, sr:1, ii:1, iii:1, iv:1, md:1, dds:1, esq:1 };
+  while(parts.length > 1 && suffix[parts[parts.length - 1].replace(/\./g, '').toLowerCase()]) parts.pop();
+  function letters(s){ return String(s || '').match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []; }
+  var f = letters(parts[0])[0] || '?';
+  var l = letters(parts[parts.length - 1]).slice(0, 3).join('');
+  return (l || '---').toUpperCase() + ' ' + f.toUpperCase();
+}
+function fmtShortDate(key){ return fmtDate(key).replace(/, \d{4}$/, ''); }
+/* latest activity for the landing: each person's newest timeline event,
+   or their Last Contact stamp when that is newer — newest first, top 3 */
+function latestActivity(){
+  var acts = [];
+  people().forEach(function(di){
+    var e = D.directory[di], best = null;
+    (e.events || []).forEach(function(ev){
+      if(!ev || !flexKey(ev.date)) return;
+      if(!best || flexKey(ev.date) > flexKey(best.date)) best = ev;
+    });
+    var lc = gv(e, 'last_contact'), lcKey = flexKey(lc), evKey = best ? flexKey(best.date) : '';
+    if(!lcKey && !evKey) return;
+    var useContact = !!lcKey && lcKey >= evKey;
+    acts.push({
+      di:di,
+      date:useContact ? lcKey : evKey,
+      upd:String(gv(e, 'updated_at') || ''),
+      text:useContact
+        ? 'Last contact ' + fmtDate(lc) + (lcOnline(e) ? ' · online' : ' · in person')
+        : String(best.summary || best.title || 'Latest activity')
+    });
+  });
+  acts.sort(function(a, b){
+    if(a.date !== b.date) return a.date < b.date ? 1 : -1;
+    if(a.upd !== b.upd) return a.upd < b.upd ? 1 : -1;
+    return dispName(D.directory[a.di]).localeCompare(dispName(D.directory[b.di]));
+  });
+  return acts.slice(0, 3);
+}
+function activityRow(a){
+  var e = D.directory[a.di], full = dispName(e), code = landingCode(e);
+  return '<div class="activity-row" data-reveal="' + a.di + '" role="button" tabindex="0" aria-pressed="false" aria-label="Reveal name">' +
+    avatarHTML(e, 'av-sm') +
+    '<span class="pmain"><b class="activity-name" data-code="' + esc(code) + '" data-full="' + esc(full) + '">' + esc(code) + '</b><small>' + esc(a.text) + '</small></span>' +
+    '<span class="activity-date">' + esc(fmtShortDate(a.date)) + '</span>' +
+    '<button type="button" class="activity-open" data-open="' + a.di + '" aria-label="Open ' + esc(full) + '">' + CHEV + '</button></div>';
+}
 function viewHome(v){
-  var recents = sortPeople(people().filter(function(di){
-    return !!String(gv(D.directory[di], 'last_contact') || '').trim();
-  })).slice(0, 8);
+  var acts = latestActivity();
+  var qn = queueEntries().length;
   v.innerHTML =
-    '<div class="heroes">' +
-    '<button type="button" class="hero-btn hb-online" id="hb-online"><span class="hb-ic">' + GLOBE_SVG + '</span><b>Online</b><small>Log a message, call, or text</small></button>' +
-    '<button type="button" class="hero-btn hb-loc" id="hb-loc"><span class="hb-ic">' + PIN_SVG + '</span><b>Location</b><small>Log meeting someone in person</small></button>' +
-    '</div>' +
-    '<div class="ghead">Recents</div>' +
-    (recents.length ? recents.map(function(di){ return personRow(di); }).join('') : '<p class="none">No contacts logged yet.</p>') +
-    '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
+    '<div class="home-stack">' +
+    '<div class="searchwrap">' +
+    '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>' +
+    '<input id="homeq" type="search" placeholder="Search ' + people().length + ' people" autocomplete="off" aria-label="Search people">' +
+    '<button type="button" id="homeqclear" aria-label="Clear search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>' +
+    '<button type="button" class="hero-btn home-door home-door-loc" id="hb-loc">KNOWN LOCATION</button>' +
+    '<button type="button" class="hero-btn home-door home-door-online" id="hb-online">ONLINE CONNECTION</button>' +
+    '<section class="home-activity" aria-label="Latest activity"><div class="ghead">Latest activity</div>' +
+    (acts.length ? acts.map(activityRow).join('') : '<p class="none">No activity yet.</p>') + '</section>' +
+    '<button type="button" class="queue-add" id="queue-add"><span aria-hidden="true">+</span> ADD TO QUEUE</button>' +
+    '<button type="button" class="queue-count" id="queue-open"><span>UP NEXT</span><strong>' + qn + '</strong>' + CHEV + '</button>' +
+    '</div>';
+  /* search: typing hands the query to the People list, which owns the
+     full search surface (same input, same clear button, regular names) */
+  var hq = $('#homeq'), hqc = $('#homeqclear');
+  function syncHomeClear(){ hqc.style.display = hq.value ? 'inline-flex' : 'none'; }
+  syncHomeClear();
+  hq.addEventListener('input', function(){
+    syncHomeClear();
+    if(!hq.value.trim()){ S.q = ''; return; }
+    S.q = hq.value;
+    location.hash = '#/all';
+    setTimeout(function(){
+      var nq = $('#q');
+      if(nq){ nq.focus(); try{ nq.setSelectionRange(nq.value.length, nq.value.length); }catch(x){} }
+    }, 90);
+  });
+  hqc.addEventListener('click', function(){ hq.value = ''; S.q = ''; syncHomeClear(); hq.focus(); });
+  $('#hb-loc').addEventListener('click', function(){
+    FLOW = { cat:'location', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
+    location.hash = '#/flow/location';
+  });
   $('#hb-online').addEventListener('click', function(){
     FLOW = { cat:'online', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
     location.hash = '#/flow/online';
   });
-  $('#hb-loc').addEventListener('click', function(){
-    FLOW = { cat:'location', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
-    location.hash = '#/flow/location';
+  /* tap an activity row: code <-> full name, on the row only. The
+     chevron is the way into the profile (regular names there). */
+  $$('#view [data-reveal]').forEach(function(row){
+    function toggle(){
+      var nm = row.querySelector('.activity-name'); if(!nm) return;
+      var revealed = nm.textContent === nm.getAttribute('data-full');
+      nm.textContent = revealed ? nm.getAttribute('data-code') : nm.getAttribute('data-full');
+      nm.classList.toggle('revealed', !revealed);
+      row.setAttribute('aria-pressed', revealed ? 'false' : 'true');
+    }
+    row.addEventListener('click', function(ev){
+      if(ev.target && ev.target.closest && ev.target.closest('[data-open]')) return;
+      toggle();
+    });
+    row.addEventListener('keydown', function(ev){
+      if(ev.target !== row) return;
+      if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); toggle(); }
+    });
+  });
+  $('#queue-add').addEventListener('click', function(){
+    FLOW = { cat:'queue', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
+    location.hash = '#/queue/pick';
+  });
+  $('#queue-open').addEventListener('click', function(){ location.hash = '#/queue'; });
+}
+/* ---------- up-next queue list ---------- */
+function viewQueue(v){
+  var entries = queueEntries();
+  v.innerHTML =
+    '<div class="backrow"><button type="button" class="backbtn" id="qback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Home</button></div>' +
+    '<div class="ghead">Up next · ' + entries.length + '</div>' +
+    (entries.length ? entries.map(function(en){
+      return '<div class="qentry">' + personRow(en.di) +
+        '<div class="qactions"><button type="button" data-qloc="' + en.di + '">Location</button>' +
+        '<button type="button" data-qonline="' + en.di + '">Online</button>' +
+        '<button type="button" data-qremove="' + en.di + '">Remove</button></div></div>';
+    }).join('') : '<div class="empty"><h3>Nobody up next.</h3><p>Add people from the home screen and they will wait here.</p></div>') +
+    '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
+  $('#qback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
+  $$('#view [data-qloc]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var di = +b.getAttribute('data-qloc');
+      FLOW = { cat:'location', title:'', detail:'', di:di, sort:'recent', all:false, q:'' };
+      location.hash = '#/flow/location';
+    });
+  });
+  $$('#view [data-qonline]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var di = +b.getAttribute('data-qonline');
+      FLOW = { cat:'online', title:'', detail:'', di:di, sort:'recent', all:false, q:'' };
+      location.hash = '#/flow/online/log/' + encodeURIComponent(pkey(D.directory[di]));
+    });
+  });
+  $$('#view [data-qremove]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var di = +b.getAttribute('data-qremove');
+      queueRemove(di);
+      toast('Removed ' + dispName(D.directory[di]) + ' from Up next.');
+      render();
+    });
   });
 }
 function pickSort(dis){
@@ -870,8 +1113,8 @@ function viewPick(v, cat){
     '<div class="scopeline"><span id="pk-scope"></span><button type="button" id="pk-all"></button></div>';
   dk.hidden = false;
   v.innerHTML =
-    '<div class="backrow"><button type="button" class="backbtn" id="pkback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'online' ? 'Home' : 'Details') + '</button></div>' +
-    '<div class="ghead">' + (cat === 'online' ? 'Who was it with?' : 'Who was it with? Tap to log it.') + '</div>' +
+    '<div class="backrow"><button type="button" class="backbtn" id="pkback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'location' ? 'Details' : 'Home') + '</button></div>' +
+    '<div class="ghead">' + (cat === 'queue' ? 'Who should go up next? Tap to add.' : cat === 'online' ? 'Who was it with?' : 'Who was it with? Tap to log it.') + '</div>' +
     '<div id="plist"></div>' +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
   $('#pkback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
@@ -896,14 +1139,18 @@ function paintPick(){
   $('#pk-recent').classList.toggle('on', FLOW.sort === 'recent');
   $('#pk-az').classList.toggle('on', FLOW.sort === 'az');
   var searching = !!FLOW.q.trim();
-  var base = (FLOW.all || searching) ? people() : catMembers(FLOW.cat);
+  var base = (FLOW.cat === 'queue' || FLOW.all || searching) ? people() : catMembers(FLOW.cat);
   var dis = searching ? base.filter(function(di){ return matchesQ(di, FLOW.q.trim().toLowerCase()); }) : base;
   dis = pickSort(dis);
   var scope = $('#pk-scope'), allBtn = $('#pk-all');
-  if(scope) scope.textContent = searching ? dis.length + ' matches · everyone'
+  if(scope) scope.textContent = FLOW.cat === 'queue' ? 'Everyone · ' + dis.length
+    : searching ? dis.length + ' matches · everyone'
     : FLOW.all ? 'Everyone · ' + dis.length
     : (FLOW.cat === 'online' ? 'Recent online contacts · ' : 'Recent in-person contacts · ') + dis.length;
-  if(allBtn) allBtn.textContent = FLOW.all ? (FLOW.cat === 'online' ? 'Only online' : 'Only in person') : 'Show everyone';
+  if(allBtn){
+    allBtn.textContent = FLOW.cat === 'queue' ? 'Everyone' : FLOW.all ? (FLOW.cat === 'online' ? 'Only online' : 'Only in person') : 'Show everyone';
+    allBtn.style.display = FLOW.cat === 'queue' ? 'none' : '';
+  }
   if(!dis.length){ list.innerHTML = '<div class="empty"><h3>Nobody here yet.</h3><p>' + (FLOW.all || searching ? 'Try a different search.' : 'Log one first, or show everyone.') + '</p></div>'; return; }
   var groups = [], cur = null;
   dis.forEach(function(di){
@@ -928,6 +1175,12 @@ function paintPick(){
 }
 function doPick(di){
   if(!D || !D.directory[di]) return;
+  if(FLOW.cat === 'queue'){
+    var added = queueAdd(di);
+    toast(added ? 'Added ' + dispName(D.directory[di]) + ' to Up next.' : dispName(D.directory[di]) + ' is already in Up next.');
+    location.hash = '#/contacts';
+    return;
+  }
   if(FLOW.cat === 'online'){
     FLOW.di = di;
     location.hash = '#/flow/online/log/' + encodeURIComponent(pkey(D.directory[di]));
@@ -949,17 +1202,20 @@ function viewFlowDetails(v, cat, id){
     if(di == null){ location.hash = '#/flow/online'; return; }
     FLOW.di = di;
   }
+  if(cat === 'location' && FLOW.di != null && D.directory[FLOW.di]) di = FLOW.di;
   var e = di != null ? D.directory[di] : null;
   var head = cat === 'online'
     ? '<div class="hero">' + avatarHTML(e, 'av-lg') + '<div><h1>' + esc(dispName(e)) + '</h1><p class="hsub">Online contact · today</p></div></div>'
-    : '<div class="hero"><span class="av av-lg">' + PIN_SVG + '</span><div><h1>Location contact</h1><p class="hsub">Details first, then pick who it was with</p></div></div>';
+    : e
+      ? '<div class="hero">' + avatarHTML(e, 'av-lg') + '<div><h1>' + esc(dispName(e)) + '</h1><p class="hsub">Location contact · today</p></div></div>'
+      : '<div class="hero"><span class="av av-lg">' + PIN_SVG + '</span><div><h1>Location contact</h1><p class="hsub">Details first, then pick who it was with</p></div></div>';
   v.innerHTML =
-    '<div class="backrow"><button type="button" class="backbtn" id="flback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'online' ? 'People' : 'Home') + '</button></div>' +
+    '<div class="backrow"><button type="button" class="backbtn" id="flback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'online' ? 'People' : (di != null ? 'Up next' : 'Home')) + '</button></div>' +
     head +
     '<div class="glasscard"><h2>What happened</h2>' +
       '<label class="lab" for="fl-sum">Title</label><input type="text" id="fl-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off" value="' + esc(FLOW.title) + '">' +
       '<label class="lab" for="fl-det">Description (optional)</label><textarea id="fl-det" placeholder="What happened, what was left open…" rows="3">' + esc(FLOW.detail) + '</textarea>' +
-      '<button type="button" class="btn primary big" id="fl-go">' + (cat === 'online' ? 'Log it' : 'Choose who it was with') + '</button>' +
+      '<button type="button" class="btn primary big" id="fl-go">' + (cat === 'online' || di != null ? 'Log it' : 'Choose who it was with') + '</button>' +
       '<p class="savestat" id="fl-stat"></p></div>' +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
   $('#flback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
@@ -972,6 +1228,13 @@ function viewFlowDetails(v, cat, id){
     }
     if(cat === 'online'){
       if(saveLog(FLOW.di, FLOW.title, FLOW.detail, true)){
+        toast('Logged for ' + dispName(D.directory[FLOW.di]) + '.');
+        FLOW.title = ''; FLOW.detail = ''; FLOW.di = null;
+        location.hash = '#/contacts';
+      }
+    } else if(FLOW.di != null){
+      /* person already chosen (from the up-next queue): save directly */
+      if(saveLog(FLOW.di, FLOW.title, FLOW.detail, false)){
         toast('Logged for ' + dispName(D.directory[FLOW.di]) + '.');
         FLOW.title = ''; FLOW.detail = ''; FLOW.di = null;
         location.hash = '#/contacts';
@@ -1398,6 +1661,7 @@ function paintSections(di){
 /* ---------- menu + theme + full site ---------- */
 var menu = $('#menu');
 $('#menubtn').addEventListener('click', function(){ menu.classList.add('on'); });
+$('#tabmore').addEventListener('click', function(){ menu.classList.add('on'); });
 $$('#menu [data-menuclose]').forEach(function(el){ el.addEventListener('click', function(){ menu.classList.remove('on'); }); });
 $('#thememode').addEventListener('click', function(){
   var cur = document.documentElement.getAttribute('data-mode') === 'dark' ? 'dark' : 'light';
@@ -1423,6 +1687,7 @@ function boot(){
       .then(function(d){
         D = d;
         D.directory.forEach(function(r2, i){ BYN[(r2.name || '').toLowerCase()] = i; var dn = String(((r2.profile || {}).display_name || r2.display || '')).toLowerCase(); if(dn && !(dn in BYN)) BYN[dn] = i; normEntry(r2); PK2I[pkey(r2)] = i; });
+        queueEntries(); /* prune up-next entries whose person is gone */
         /* retire wins the bake already shows, then re-apply survivors + outbox */
         Object.keys(WINS).forEach(function(k){
           var di = PK2I[k]; if(di === undefined) return;
