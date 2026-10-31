@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.50.1';
+var APP_VERSION = '3.51.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1920,6 +1920,7 @@ var NAV = [
   { k:'people',  l:'People',  ic:'people' },
   { k:'audit',   l:'Audit',   ic:'target' },
   { k:'daily',   l:'Live Records', ic:'sparkle' },
+  { k:'whatsnew', l:"What's New", ic:'today' },
   { k:'calendar', l:'Calendar', ic:'calendar' },
   { k:'council', l:'Council', ic:'award' },
   { k:'lists',   l:'Master List', ic:'file' },
@@ -2108,7 +2109,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','photos','sandbox','council','lists','calendar'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','whatsnew','photos','sandbox','council','lists','calendar'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -2139,7 +2140,7 @@ function histLabelFor(hash){
   var n = seg[0] || 'home';
   if(n === 'p'){ var di = diFromId(seg[1]); return di != null && D && D.directory[di] ? dispName(D.directory[di]) : 'Profile'; }
   if(n === 'groups') return seg[2] || 'Groups';
-  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings' }[n] || 'Back';
+  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', whatsnew:"What's New", calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings' }[n] || 'Back';
 }
 function navScroll(){ var v = $('#view'); return v ? v.scrollTop : 0; }
 function navTrack(){
@@ -2326,6 +2327,7 @@ function render(){
     else if(n === 'settings') viewSettings(v);
     else if(n === 'audit') viewAudit(v);
     else if(n === 'daily') viewDaily(v);
+    else if(n === 'whatsnew') viewWhatsNew(v);
     else if(n === 'calendar') viewCalendar(v);
     else if(n === 'photos') viewPhotos(v);
     else if(n === 'sandbox') viewSandbox(v);
@@ -6077,7 +6079,7 @@ function hotAlertHTML(){
   return '<section class="card hot-card"><header><span class="hot-dot"></span><h3>Hot off the press</h3><em class="cnt">' + hot.length + '</em></header><div class="cbody">' + rows + '</div></section>';
 }
 function hmActivity(){
-  var out = hotAlertHTML() + '<section class="card hm-blk hm-act"><header><h3>What&rsquo;s new</h3>' + (DT && DT.date ? '<em class="cnt">' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</header><div class="cbody">';
+  var out = hotAlertHTML() + hmPrefillChip() + '<section class="card hm-blk hm-act"><header><h3>What&rsquo;s new</h3>' + (DT && DT.date ? '<em class="cnt">' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</header><div class="cbody">';
   var freshF = null, freshX = null;
   if(DT && DT.filed) DT.filed.forEach(function(f){ (f.facts || []).forEach(function(x){ if(x.fresh && !freshX){ freshF = f; freshX = x; } }); });
   if(freshF){
@@ -6094,6 +6096,7 @@ function hmActivity(){
     '<button type="button" class="hma-counter" data-act="hmiopen" data-kind="liverec"><b>' + (DT && DT.coverage ? DT.coverage.checked_total + '<small> / ' + DT.coverage.of + '</small>' : '&mdash;') + '</b><span>Checked this rotation</span></button>' +
     '<button type="button" class="hma-counter" data-act="hmiopen" data-kind="liverec"><b>' + (DT && DT.checked ? DT.checked.length : '&mdash;') + '</b><span>Checked in latest brief</span></button>' +
     '</div>';
+  out += hmWhatsNewTeaser();
   if(DT && DT.filed && DT.filed.length){
     out += '<div class="hma-sec"><span>Live Records \u2014 filed in the latest brief</span></div>';
     DT.filed.forEach(function(f){ (f.facts || []).forEach(function(x){ out += hmaFactRow(f, x); }); });
@@ -6117,6 +6120,65 @@ function hmActivity(){
     out += '<p class="dim">' + (CH ? 'No changes logged yet.' : 'Loading the change log&hellip;') + '</p>';
   }
   return out + '</div></section>';
+}
+
+/* ============================================================
+   What's New (JD 2026-10-31, V3.51.0): a read-only feed of
+   everything the pipelines filed lately — facts from the change
+   log, primary photos, and hot-off-the-press items — aggregated
+   by scripts/build_whatsnew.py into data/whatsnew.json. No write
+   path: rows only navigate (to a profile, or out to the source).
+   ============================================================ */
+var WN = null, WN_LOADING = false;
+function wnLoad(){
+  if(WN || WN_LOADING) return;
+  WN_LOADING = true;
+  fetch('data/whatsnew.json', { cache:'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){ WN_LOADING = false; WN = d || { empty:true, items:[] }; if(S.route && (S.route.name === 'whatsnew' || S.route.name === 'home')) render(); })
+    .catch(function(){ WN_LOADING = false; WN = { empty:true, items:[] }; if(S.route && (S.route.name === 'whatsnew' || S.route.name === 'home')) render(); });
+}
+var WN_KINDS = { filed:'Filed', photo:'Photo', hot:'Hot off the press' };
+function wnRow(it){
+  var di = hmDiOf(it.display);
+  var inner = '<span class="wn-chip wn-' + esc(it.kind || 'filed') + '">' + esc(WN_KINDS[it.kind] || 'Filed') + '</span>' +
+    '<span class="wn-main"><span class="wn-nm">' + esc(it.display || '') + '</span>' +
+    '<span class="wn-tx">' + esc(it.text || '') + '</span>' +
+    '<span class="wn-meta">' + (it.url ? '<a data-act="extlink" href="' + esc(it.url) + '" target="_blank" rel="noopener">' + esc(it.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(it.source || '')) + '</span></span>';
+  if(di == null) return '<div class="wn-row">' + inner + '</div>';
+  return '<button type="button" class="wn-row" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(it.display || '') + '\u2019s profile">' + inner + '</button>';
+}
+function viewWhatsNew(v){
+  wnLoad();
+  var head = '<div class="page wn"><div class="pagehead"><div><h1 class="display">What&rsquo;s New</h1>' +
+    '<p class="sub">Everything filed lately &mdash; facts, photos and hot-off-the-press items &mdash; newest first. Tap a row to open the profile.</p></div></div>';
+  if(!WN){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">Loading the feed&hellip;</p></div></section></div>'; return; }
+  var items = WN.items || [];
+  if(!items.length){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">Nothing new yet. Filings, photos and hot items land here as the routines run.</p></div></section></div>'; return; }
+  var h = '', cur = '';
+  items.forEach(function(it){
+    if(it.date !== cur){ cur = it.date; h += '<div class="wn-date">' + esc(hmFmtD(cur)) + '</div>'; }
+    h += wnRow(it);
+  });
+  v.innerHTML = head + '<section class="card wn-feed"><div class="cbody">' + h + '</div></section></div>';
+}
+/* Home Prefill chip (V3.51.0): the pending Prefill count, counted
+   exactly like the Sandbox stats — suggestions whose pfStatus is
+   'pending'. Tapping it opens Audit in Prefill mode (the same
+   store + S.audit.mode mechanism as the hmiaudit deep link). */
+function hmPrefillChip(){
+  if(!PF) return '<button type="button" class="wn-pfchip" data-act="pfgo">' + ic('sparkle', 13) + '<span>Prefill: loading suggestions&hellip;</span></button>';
+  var n = 0;
+  (PF.suggestions || []).forEach(function(sg){ if(pfStatus(sg).k === 'pending') n++; });
+  return '<button type="button" class="wn-pfchip" data-act="pfgo">' + ic('sparkle', 13) +
+    '<span>Prefill: <b>' + n + '</b> suggestion' + (n === 1 ? '' : 's') + ' waiting</span><span class="wn-pfgo">Open ' + ic('arrow', 11) + '</span></button>';
+}
+function hmWhatsNewTeaser(){
+  var h = '<div class="hma-sec"><span>Latest filings</span></div>';
+  if(!WN) return h + '<p class="dim">Loading&hellip;</p>';
+  var items = (WN.items || []).slice(0, 3);
+  if(!items.length) return h + '<p class="dim">Nothing new yet.</p>';
+  return h + items.map(wnRow).join('') + '<a class="hma-link" href="#/whatsnew">Open What&rsquo;s New ' + ic('arrow', 12) + '</a>';
 }
 
 /* ============================================================
@@ -6610,7 +6672,7 @@ function hmNetStrip(dd){
     '</div></div></section>';
 }
 function viewHome(v){
-  phLoad(); dtLoad(); chLoad();
+  phLoad(); dtLoad(); chLoad(); wnLoad(); pfLoad();
   var pop = people(), N = pop.length;
   var ph = hmPhotoStats();
   HM_DECK = hmDeckData(pop); HM_PD = hmDeckPhotos(); HMI_INDEX = {};
@@ -10553,7 +10615,7 @@ function pfLoad(){
   PF_LOADING = true;
   fetch('data/prefill.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(d){ PF_LOADING = false; PF = d; if(S.route && S.route.name === 'audit'){ audPaintModeBar(); if(audMode() === 'prefill') pfRender(); } })
+    .then(function(d){ PF_LOADING = false; PF = d; if(S.route && S.route.name === 'audit'){ audPaintModeBar(); if(audMode() === 'prefill') pfRender(); } else if(S.route && S.route.name === 'home'){ render(); } })
     .catch(function(){ PF_LOADING = false; });
 }
 function pfReviewMap(e){
@@ -10985,6 +11047,7 @@ function onClick(ev){
     case 'lrsort': LR_SORT = el.getAttribute('data-sort') || 'brief'; render(); break;
     case 'hmigroup': hmiClose(true); go('groups/groups/' + encodeURIComponent(el.getAttribute('data-g'))); break;
     case 'hmiaudit': hmiClose(true); store('ncc_aud_mode', 'years'); if(S.audit){ S.audit.mode = 'years'; S.audit.shown = null; } go('audit'); break;
+    case 'pfgo': store('ncc_aud_mode', 'prefill'); if(S.audit){ S.audit.mode = 'prefill'; S.audit.shown = null; } go('audit'); break;
     case 'hmidaily': hmiClose(true); go('daily'); break;
     case 'extlink': prevent = false; break;
     case 'kspick': { var ky2 = el.getAttribute('data-y'); var curv = String(gv(D.directory[S.prof.di], 'years_known') || ''); var suf = /^\d{4}(-.*)$/.exec(curv); setField(S.prof.di, 'years_known', ky2 ? ky2 + (suf ? suf[1] : '') : ''); repaintSec('relationship'); break; }
