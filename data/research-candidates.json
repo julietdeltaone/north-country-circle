@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-30",
+ "updated": "2026-10-31",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -242,7 +242,7 @@
     "detail": 15
    },
    "fields": {
-    "degrees": "Business Administration \u2014 SUNY Potsdam (2024)",
+    "degrees": "Business Administration — SUNY Potsdam (2024)",
     "universities": "SUNY Potsdam"
    },
    "published": "",
@@ -413,7 +413,7 @@
    },
    "fields": {
     "highlights": [
-     "Section X Athlete of Distinction \u2014 Girls Soccer (Potsdam)"
+     "Section X Athlete of Distinction — Girls Soccer (Potsdam)"
     ]
    },
    "published": "",
@@ -444,7 +444,7 @@
    },
    "fields": {
     "companies": "Joint Council for Economic Opportunity",
-    "degrees": "B.A. Speech Communications \u2014 SUNY Potsdam",
+    "degrees": "B.A. Speech Communications — SUNY Potsdam",
     "universities": "SUNY Potsdam"
    },
    "published": "",
@@ -457,7 +457,7 @@
    "run_date": "2026-10-20",
    "run_label": "Special 100-check run",
    "category": "conflict",
-   "claim": "Summa cum laude in the SUNY Canton Class of 2026 commencement program \u2014 but the program lists an Abigail Stiles under the Nursing A.A.S.",
+   "claim": "Summa cum laude in the SUNY Canton Class of 2026 commencement program — but the program lists an Abigail Stiles under the Nursing A.A.S.",
    "file_text": "Graduated summa cum laude from SUNY Canton in the Class of 2026",
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/media/pdf/Commencement-Program2026.pdf",
@@ -660,7 +660,7 @@
     "detail": 17
    },
    "fields": {
-    "degrees": "B.S. Emergency Management \u2014 SUNY Canton (2024)",
+    "degrees": "B.S. Emergency Management — SUNY Canton (2024)",
     "universities": "SUNY Canton"
    },
    "published": "2024",
@@ -740,7 +740,7 @@
     "detail": 14
    },
    "fields": {
-    "degrees": "A.A.S. Individual Studies \u2014 SUNY Canton (2021)",
+    "degrees": "A.A.S. Individual Studies — SUNY Canton (2021)",
     "universities": "SUNY Canton"
    },
    "published": "2021",
@@ -1165,7 +1165,7 @@
     "Full name",
     "Canton, New York"
    ],
-   "missing_gate": "The packet has no anchors to confirm identity \u2014 and JD has ruled Maggie Lapinski is not Meg Lapinski.",
+   "missing_gate": "The packet has no anchors to confirm identity — and JD has ruled Maggie Lapinski is not Meg Lapinski.",
    "confidence": 48,
    "confidence_parts": {
     "identity": 14,
@@ -1404,7 +1404,7 @@
    "anchors": [
     "Name match only"
    ],
-   "missing_gate": "Held as ambiguous \u2014 a likely namesake; no anchor ties the Tulum guide to this profile.",
+   "missing_gate": "Held as ambiguous — a likely namesake; no anchor ties the Tulum guide to this profile.",
    "confidence": 36,
    "confidence_parts": {
     "identity": 8,
@@ -1452,7 +1452,7 @@
    "source": "Kansas local coverage",
    "url": "https://www.kfdi.com/2019/03/05/kansas-teacher-wins-annual-shrove-tuesday-pancake-race/",
    "anchors": [
-    "Name only \u2014 zero anchors tie the Kansas person to this profile"
+    "Name only — zero anchors tie the Kansas person to this profile"
    ],
    "missing_gate": "Zero anchors tie the Kansas person to the packet; almost certainly a namesake.",
    "confidence": 26,
@@ -1630,7 +1630,7 @@
    "source": "Publisher / author records",
    "url": "https://en.wikipedia.org/wiki/Rachel_Kushner",
    "anchors": [
-    "Name match only \u2014 every biographical anchor conflicts"
+    "Name match only — every biographical anchor conflicts"
    ],
    "missing_gate": "A different person from the packet's University of Michigan / Trenton High School / Ann Arbor profile; not merged.",
    "confidence": 5,
@@ -1906,8 +1906,8 @@
    "run_date": "2026-10-30",
    "run_label": "Daily rotation (PM)",
    "category": "sensitive",
-   "claim": "Emma Bortnick said she met her fianc\u00e9 while working as a supervisor at the SUNY Canton Fitness Center and was planning a wedding for August 2023.",
-   "file_text": "Planned an August 2023 wedding to a fianc\u00e9 she met while working as a supervisor at the SUNY Canton Fitness Center",
+   "claim": "Emma Bortnick said she met her fiancé while working as a supervisor at the SUNY Canton Fitness Center and was planning a wedding for August 2023.",
+   "file_text": "Planned an August 2023 wedding to a fiancé she met while working as a supervisor at the SUNY Canton Fitness Center",
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/plm/name-90294-en.html",
    "anchors": [
@@ -3063,6 +3063,331 @@
     "source": 14,
     "detail": 6
    }
+  },
+  {
+   "id": "fb-20261031-christian-tomford-youth-circle-friend-of-jds-called-cj-in-1-1-mess",
+   "name": "",
+   "display": "Christian Tomford",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Youth-circle friend of JD's, called CJ, in 1:1 Messenger contact from April 10, 2014 to July 23, 2017 (about 620 messages) and active in group threads through 2019. He stated he was born on September 1 and had repeated kindergarten, expecting to finish high school a year early. He was in the Iolanthe cast in May 2015, and in summer 2018 he co-founded and hosted a Wednesday Bible study at his Potsdam apartment with Silas Smith, ending in mid-August 2018 when the household moved out.",
+   "file_text": "Youth-circle friend of JD's, called CJ, in 1:1 Messenger contact from April 10, 2014 to July 23, 2017 (about 620 messages) and active in group threads through 2",
+   "source": "Facebook export — Christian Tomford (1:1) / Bible Study @ CJ's / IOLANTHE",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory (no profile in profiles.json / dossier directory), so his facts cannot file to a profile; identity as a distinct person is clear in-thread but he has no directory record. Surname matches directory person Nathaniel Tomford but no message states their relationship, so no family link is asserted.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 31,
+    "source": 23,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-pat-wilbur-supplement-to-the-existing-pat-wilbur-candidate",
+   "name": "",
+   "display": "Pat Wilbur",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Supplement to the existing Pat Wilbur candidate (fb-20261031-pat-wilbur-legacy-volunteer), with a different claim: as 'Pat Vil' he was the Christian Fellowship Center Potsdam media coordinator who scheduled JD's volunteer media work from October 2011 through January 2018 (393-message 1:1), set up the CFCP tech mailing list, worked on a weather-balloon/space-capsule project that sent a capsule up in April 2011, had coached a FIRST Lego League team before 2008, and said much of his family was from Watkins Glen.",
+   "file_text": "Supplement to the existing Pat Wilbur candidate (fb-20261031-pat-wilbur-legacy-volunteer), with a different claim: as 'Pat Vil' he was the Christian Fellowship ",
+   "source": "Facebook export — Pat Vil (1:1)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Surname still unresolved: this 1:1 renders him only as 'Pat Vil'; 'Wilbur' rests on a media tag in the Legacy volunteers thread, as in the existing candidate. Held so JD can confirm the surname before a profile filing is made.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 33,
+    "source": 24,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-lea-wangerin-close-friend-in-jds-wangerin-christian-fellowshi",
+   "name": "",
+   "display": "Lea Wangerin",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Close friend in JD's Wangerin / Christian Fellowship Center circle, in 1:1 Messenger contact from September 22, 2015 to May 31, 2017 (about 1,089 messages; her side of the export is almost entirely media/attachments, so the span rests on thread metadata). JD recalled visiting her house in May 2017 while Liz Wangerin was there. In November 2019 Philip Wangerin described a delivery job at 'the bakery Lea works at', indicating she worked at a bakery in 2019.",
+   "file_text": "Close friend in JD's Wangerin / Christian Fellowship Center circle, in 1:1 Messenger contact from September 22, 2015 to May 31, 2017 (about 1,089 messages; her ",
+   "source": "Facebook export — Lea Wangerin (1:1) / unnamed 2019-2020 group thread (Philip Wangerin message, Nov 11, 2019)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory. She is distinct from directory person Liz Wangerin (both appear as separate senders in the Upward Mobile thread), but her exact family relationship to the other Wangerins is never stated, so no profile or family link can be filed.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 19,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-molly-waite-she-modeled-a-park-bros-t-shirt-in-a-photo-sessi",
+   "name": "",
+   "display": "Molly Waite",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "She modeled a Park Bros T-shirt in a photo session at Park Bros Coffee on the morning of January 26, 2017, arranged by JD the day before.",
+   "file_text": "She modeled a Park Bros T-shirt in a photo session at Park Bros Coffee on the morning of January 26, 2017, arranged by JD the day before.",
+   "source": "Facebook export — Molly Waite (1:1)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Molly Waite is not in the directory; she is already held in Research Command (fb-20261030-molly-waite-group-thread-sender). This is a new, distinct claim from that candidate. Her thread also contains personal identifiers (a phone number for a third party and account credentials) which were deliberately not carried into this plan.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 19,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-molly-waite-she-had-a-skating-coach-in-2017-referring-to-the",
+   "name": "",
+   "display": "Molly Waite",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "She had a skating coach in 2017, referring to the coach's posts in a March 4, 2017 group-thread message.",
+   "file_text": "She had a skating coach in 2017, referring to the coach's posts in a March 4, 2017 group-thread message.",
+   "source": "Facebook export — Ok (group thread)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; held with her other Research Command material. Distinct claim from her existing candidate.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 24,
+    "source": 18,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-molly-waite-her-birthday-falls-on-or-near-april-14-the-final",
+   "name": "",
+   "display": "Molly Waite",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Her birthday falls on or near April 14: the final message of her 1:1 thread is JD's 'happy Birthday' greeting sent on April 14, 2018.",
+   "file_text": "Her birthday falls on or near April 14: the final message of her 1:1 thread is JD's 'happy Birthday' greeting sent on April 14, 2018.",
+   "source": "Facebook export — Molly Waite (1:1)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory, and the exact day is an inference from a same-day greeting rather than a stated birth date. Distinct claim from her existing candidate.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 21,
+    "source": 16,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-molly-waite-sensitive-self-description-in-a-february-28-2017",
+   "name": "",
+   "display": "Molly Waite",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "sensitive",
+   "claim": "Sensitive self-description: in a February 28, 2017 group message she described herself as Italian and joked about her large family.",
+   "file_text": "Sensitive self-description: in a February 28, 2017 group message she described herself as Italian and joked about her large family.",
+   "source": "Facebook export — Ok (group thread)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Sensitive self-description item (heritage), held for Research Command under JD's standing rule even though it is her own explicit statement. Not in the directory.",
+   "confidence": 85,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 30,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-katie-venette-a-workplace-contact-of-jds-in-2023-2024-she-work",
+   "name": "",
+   "display": "Katie Venette",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "sensitive",
+   "claim": "A workplace contact of JD's in 2023-2024: she worked a Monday-to-Friday 9-to-5 patient-facing station at the same facility where JD worked, and in August 2023 she said she held four jobs in total, two of them paying and two volunteer.",
+   "file_text": "A workplace contact of JD's in 2023-2024: she worked a Monday-to-Friday 9-to-5 patient-facing station at the same facility where JD worked, and in August 2023 s",
+   "source": "Facebook export — Katie Venette (1:1)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory. The same thread contains a sensitive personal matter (a workplace incident she reported in August 2023) which is held entirely and described nowhere beyond this note, in general terms only.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 21,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-rafa-romo-a-spanish-speaking-correspondent-of-jds-family-i",
+   "name": "",
+   "display": "Rafa Romo",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "A Spanish-speaking correspondent of JD's family in summer 2011 (261 messages, July 14 to August 31, 2011), who was learning piano and greeted JD's sisters Ellie and Catherine ('Cathy') by name.",
+   "file_text": "A Spanish-speaking correspondent of JD's family in summer 2011 (261 messages, July 14 to August 31, 2011), who was learning piano and greeted JD's sisters Ellie",
+   "source": "Facebook export — Rafa Romo (1:1)",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory and the thread gives no surname context, location, or later contact to anchor an identity; contact is a single summer in 2011.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 19,
+    "source": 14,
+    "detail": 7
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-aspen-isabelle-fregoe-a-surprise-party-was-held-for-her-on-may-7-2017",
+   "name": "",
+   "display": "Aspen Isabelle Fregoe",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "A surprise party was held for her on May 7, 2017 at the SUNY Potsdam field house gym, organized by Savannah Newtown with Skyler Fletcher bringing her to the venue.",
+   "file_text": "A surprise party was held for her on May 7, 2017 at the SUNY Potsdam field house gym, organized by Savannah Newtown with Skyler Fletcher bringing her to the ven",
+   "source": "Facebook export — Aspens surprise party",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; she sends no messages in the thread and nothing else in it establishes her identity beyond the party organized for her.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 19,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-ethan-james-update-to-his-existing-candidate-with-a-distinct",
+   "name": "",
+   "display": "Ethan James",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "Update to his existing candidate, with a distinct claim: he was a Legacy conference board member again in 2016, planning that year's conference in a July-September 2016 board thread with Merrick Sinclair, Ellie Criscitello and JD Meyers, and he played violin in a youth covers music project whose final concert was July 9, 2016.",
+   "file_text": "Update to his existing candidate, with a distinct claim: he was a Legacy conference board member again in 2016, planning that year's conference in a July-Septem",
+   "source": "Facebook export — Legacy / Savage covers",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Ethan James is not in the directory and remains held in Research Command (fb-20261031-ethan-james-legacy-board-and-group-creator covers the 2015 board). This entry covers only the distinct 2016 activity.",
+   "confidence": 75,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-ems-santos-cortez-she-and-marcos-santos-were-visiting-members-of-j",
+   "name": "",
+   "display": "Ems Santos Cortez",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "She and Marcos Santos were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth night on May 11, 2015, ahead of their leaving that Wednesday.",
+   "file_text": "She and Marcos Santos were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth nigh",
+   "source": "Facebook export — End of visit celebration: Ems and Marcos",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; she already has a thin group-sender candidate in Research Command. This is a new, distinct claim about the end of her 2015 visit.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 19,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "fb-20261031-marcos-santos-he-and-ems-santos-cortez-were-visiting-members-o",
+   "name": "",
+   "display": "Marcos Santos",
+   "run_date": "2026-10-31",
+   "run_label": "Facebook export granular pass",
+   "category": "identity",
+   "claim": "He and Ems Santos Cortez were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth night on May 11, 2015, ahead of their leaving that Wednesday.",
+   "file_text": "He and Ems Santos Cortez were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth n",
+   "source": "Facebook export — End of visit celebration: Ems and Marcos",
+   "url": "",
+   "anchors": [
+    "Facebook Messenger export thread (Mar 2026 export)"
+   ],
+   "missing_gate": "Not in the directory; he already has a thin group-sender candidate in Research Command. This is a new, distinct claim about the end of his 2015 visit.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 19,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
