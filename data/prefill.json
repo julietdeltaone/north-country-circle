@@ -744,17 +744,17 @@
    "conf": 52
   },
   {
-   "id": "pf-4afd82fd14",
+   "id": "pf-f7ea743e59",
    "key": "sf:emily-kendall",
    "display": "Emily Kendall",
    "field": "location_on_file",
    "field_label": "Location",
-   "value": "Potsdam, NY",
+   "value": "Madrid, NY",
    "grade": "Tentative",
    "evidence": [
-    "SUNY Potsdam is in Potsdam."
+    "Facebook lists them as from Madrid, NY (hometown; current residence unconfirmed)."
    ],
-   "conf": 55
+   "conf": 52
   },
   {
    "id": "pf-61e2858fb9",
