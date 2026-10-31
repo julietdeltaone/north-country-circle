@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-30",
+ "updated": "2026-10-31",
  "total": 680,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
@@ -67,9 +67,9 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED (Dossier Council inaugural hunt, 2026-10-27). Anchor 1: SSUSA (NRA) article 'What's In Your Range Bag, Aeriel Skinner?' carries this photo with alt text naming her ('Aeriel Skinner'). Anchor 2: the article states she attended the University of Arizona and shot on its team all four years, matching the profile (U.S. Army + University of Arizona); a second source (MN2S talent roster page for 'Aeriel Alease Skinner') independently confirms she joined the U.S. Army in Jan 2025 and was assigned to the Army Marksmanship Unit Shotgun Team. URL GET-verified 200 image/jpeg immediately before filing.",
+   "evidence": "CONFIRMED (Dossier Council inaugural hunt, 2026-10-27). Anchor 1: SSUSA (NRA) article 'What's In Your Range Bag, Aeriel Skinner?' carries this photo with alt text naming her ('Aeriel Skinner'). Anchor 2: the article states she attended the University of Arizona and shot on its team all four years, matching the profile (U.S. Army + University of Arizona); a second source (MN2S talent roster page for 'Aeriel Alease Skinner') independently confirms she joined the U.S. Army in Jan 2025 and was assigned to the Army Marksmanship Unit Shotgun Team. URL GET-verified 200 image/jpeg immediately before filing. Re-hosted locally 2026-10-31 from the same source URL (1920x1080, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Aeriel Skinner",
-   "photo_url": "https://www.ssusa.org/media/hkma4sun/2023-skinner-issf3.jpg?quality=60",
+   "photo_url": "photos/aeriel-skinner.jpg",
    "source_page": "https://www.ssusa.org/content/what-s-in-your-range-bag-aeriel-skinner/",
    "status": "confirmed",
    "type": "portrait",
@@ -80,7 +80,7 @@
      "source_page": "https://sitemaps.usashooting.org/2026-shotgun-national-teams/"
     }
    ],
-   "added": "2026-10-27"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @aidantruth (display name \"Aidan Daniels\").",
@@ -167,14 +167,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "SUNY Canton Roos 2021-22 women’s basketball roster headshot: Alexis Sullivan, sophomore guard, hometown Madrid, NY / Madrid-Waddington Central School; nursing major, three-sport athlete at Madrid-Waddington.",
+   "evidence": "SUNY Canton Roos 2021-22 women’s basketball roster headshot: Alexis Sullivan, sophomore guard, hometown Madrid, NY / Madrid-Waddington Central School; nursing major, three-sport athlete at Madrid-Waddington. Re-hosted locally 2026-10-31 from the same source URL (1200x1800, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Alexis Sullivan",
-   "photo_url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/rooathletics.com/images/2021/11/4/AlexisSullivan.jpg",
+   "photo_url": "photos/alexis-sullivan.jpg",
    "source_page": "https://rooathletics.com/roster.aspx?rp_id=4662",
    "status": "confirmed",
    "type": "roster photo",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-26"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Team section lists him by name/role directly under the image ('Alfredo Rodriguez — Chaplain & Bible Instructor'); filename alfredo_rodriguez.webp. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 480x600 -> 1920x2400). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -516,13 +515,13 @@
    "type": null
   },
   {
-   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads; solo equestrian headshot). Alfred University's official 2021-22 Hunt Seat Equestrian roster names Ashlin Elliott, Massena NY / Massena Central, senior. Matches the directory's Alfred + equestrian record.",
+   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads; solo equestrian headshot). Alfred University's official 2021-22 Hunt Seat Equestrian roster names Ashlin Elliott, Massena NY / Massena Central, senior. Matches the directory's Alfred + equestrian record. Re-hosted locally 2026-10-31 from the same source URL (1454x2000, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Ashlin Elliott",
-   "photo_url": "https://gosaxons.com/images/2021/11/23/DSC01189_Ashlin_Elliott.jpg",
+   "photo_url": "photos/ashlin-elliott.jpg",
    "source_page": "https://gosaxons.com/sports/equestrian/roster/ashlin-elliott/9564",
    "status": "confirmed",
    "type": "Team roster portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @autumn.zellweger (display name \"Autumn Zellweger ♡\"); bio: \"my life, shared with you\".",
@@ -635,13 +634,13 @@
    "added": "2026-10-28"
   },
   {
-   "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Clinical Associate Professor, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
+   "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Clinical Associate Professor, Occupational Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Beth Randall",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=brandall",
+   "photo_url": "photos/beth-randall.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=brandall",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "No source links on file.",
@@ -699,13 +698,13 @@
    ]
   },
   {
-   "evidence": "CONFIRMED on the 2026-10-28 photo rerun (JD's catch: the original pass recorded the source links without extracting the photos). The Thumbtack business profile for Window Cleaning Plus carries this as the pro's profile portrait; the same profile's Credentials section names Brayden Amo, and the BBB names him as the business owner. Image URL verified loading (972x972) and visually matched to the profile portrait.",
+   "evidence": "CONFIRMED on the 2026-10-28 photo rerun (JD's catch: the original pass recorded the source links without extracting the photos). The Thumbtack business profile for Window Cleaning Plus carries this as the pro's profile portrait; the same profile's Credentials section names Brayden Amo, and the BBB names him as the business owner. Image URL verified loading (972x972) and visually matched to the profile portrait. Re-hosted locally 2026-10-31 from the same source URL (972x972, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Brayden Amo",
-   "photo_url": "https://production-next-images-cdn.thumbtack.com/i/462764646454820864/width/1024/aspect/1-1.jpeg",
+   "photo_url": "photos/brayden-amo.jpg",
    "source_page": "https://www.thumbtack.com/co/littleton/window-cleaners/window-cleaning-plus-holiday-lighting/service/462764240087769097",
    "status": "confirmed",
    "type": "Business profile portrait (Thumbtack)",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @bree.rogers545 (display name \"Bree Rogers\").",
@@ -942,13 +941,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Clarkson University's people page names Carol Huckle (chuckle@clarkson.edu, Potsdam campus) and the university directory serves her headshot under image_id=chuckle. URL load-verified and the portrait viewed.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Clarkson University's people page names Carol Huckle (chuckle@clarkson.edu, Potsdam campus) and the university directory serves her headshot under image_id=chuckle. URL load-verified and the portrait viewed. Re-hosted locally 2026-10-31 from the same source URL (619x929, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Carol Harris Huckle",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=chuckle",
+   "photo_url": "photos/carol-harris-huckle.jpg",
    "source_page": "https://clarkson.us/people/carol-huckle",
    "status": "confirmed",
    "type": "University directory headshot",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @carolinaxxmedina (display name \"Carolina Medina\").",
@@ -960,13 +959,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Potsdam Bears roster headshot: filename lafountain_hs2223_color.jpg slotted at her roster entry (#23, Guard). Second confirmed photo: Potsdam business plan article captioned 'From left, Wesley Hall 23, Caroline LaFountain 23, and Eben Thrasher 23 pose for a photo' (https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/web01_10.jpg?itok=b_8umzfO). Merit profile text-only. Note photo URL is width=40 thumbnail size as extracted. URL upgraded 2026-10-22 from the width=40 thumbnail extraction to the verified width=600 (600x900) version of the same roster headshot.",
+   "evidence": "Potsdam Bears roster headshot: filename lafountain_hs2223_color.jpg slotted at her roster entry (#23, Guard). Second confirmed photo: Potsdam business plan article captioned 'From left, Wesley Hall 23, Caroline LaFountain 23, and Eben Thrasher 23 pose for a photo' (https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/web01_10.jpg?itok=b_8umzfO). Merit profile text-only. Note photo URL is width=40 thumbnail size as extracted. URL upgraded 2026-10-22 from the width=40 thumbnail extraction to the verified width=600 (600x900) version of the same roster headshot. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Caroline LaFountain",
-   "photo_url": "https://potsdambears.com/images/2022/11/9/lafountain_hs2223_color.jpg?width=600",
+   "photo_url": "photos/caroline-lafountain.jpg",
    "source_page": "https://potsdambears.com/sports/womens-basketball/roster/caroline-lafountain/8121",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Atlantic Insurance Group team page headshot: Caroline Milwicz-Willis — played D1 lacrosse at Liberty University (Marketing and Public Relations), lives in upstate New York with husband Zachary; cross-confirmed by her SUNY Potsdam women’s lacrosse assistant-coach bio. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 450x450 -> 1800x1800). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -994,13 +993,13 @@
    "type": null
   },
   {
-   "evidence": "Explicit caption: 'Cashlynn (Jaggers) Colbert, right, with SUNY Chancellor Nancy Zipher and her unveiled watercolor painting.' Page is her art profile. BFA news page image generic/uncaptioned — excluded.",
+   "evidence": "Explicit caption: 'Cashlynn (Jaggers) Colbert, right, with SUNY Chancellor Nancy Zipher and her unveiled watercolor painting.' Page is her art profile. BFA news page image generic/uncaptioned — excluded. Re-hosted locally 2026-10-31 from the same source URL (1600x1000, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Cashlynn Colbert",
-   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2021-08/Jaggers1.jpg?itok=kSzyANLC",
+   "photo_url": "photos/cashlynn-colbert.jpg",
    "source_page": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert",
    "status": "confirmed",
    "type": "group",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from her own Instagram profile (visible even though the account is private); bio anchors identity (\"wife to @jeevesgreen\"; Jeeves Green is her husband). No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly.",
@@ -1072,13 +1071,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Redeeming Love Church leadership page places the photo (chalrie.jpg) directly above the heading 'Pastor Charlie & Sharon Sweet — Apostolic Elder', in the same image-then-name layout used for every leader on the page; the bio confirms Charlie and his wife Sharon serve as Apostolic Elders there. URL repaired 2026-10-27: the church rebuilt its site and the old /chalrie.jpg path 404s; the same portrait (same filename) is now served from the church’s Brizy CDN, still placed directly above the “Pastor Charlie & Sharon Sweet — Apostolic Elder” heading on the same leadership page. GET-verified 200 image/jpeg.",
+   "evidence": "Redeeming Love Church leadership page places the photo (chalrie.jpg) directly above the heading 'Pastor Charlie & Sharon Sweet — Apostolic Elder', in the same image-then-name layout used for every leader on the page; the bio confirms Charlie and his wife Sharon serve as Apostolic Elders there. URL repaired 2026-10-27: the church rebuilt its site and the old /chalrie.jpg path 404s; the same portrait (same filename) is now served from the church’s Brizy CDN, still placed directly above the “Pastor Charlie & Sharon Sweet — Apostolic Elder” heading on the same leadership page. GET-verified 200 image/jpeg. Re-hosted locally 2026-10-31 from the same source URL (650x650, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Charlie-Sharon Sweet",
-   "photo_url": "https://cloud-1de12d.becdn.net/media/iW=814&iH=814&oX=82&oY=66&cW=650&cH=650/773a08edbb69f5365abd479aa01d70cb/chalrie.jpg",
+   "photo_url": "photos/charlie-sharon-sweet.jpg",
    "source_page": "https://www.redeeminglovechurch.org/leadership",
    "status": "confirmed",
    "type": "leadership photo (couple)",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @charlotte_clark04 (display name \"Charlotte\"); bio: \"NY->NC\".",
@@ -1116,13 +1115,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Clarkson healthcare-major feature built around her ('Meet Chidi: A Global Student Leader at Clarkson') carries three photos each captioned for her; this one is captioned 'Chidi presenting at the Ignite Project Expo 2024.' Two more caption-confirmed photos on the same page (CUEMS mock-casualty drill; International Center). Clarkson blog talent-show post names her but its photos are not tied to her — not filed from there.",
+   "evidence": "Clarkson healthcare-major feature built around her ('Meet Chidi: A Global Student Leader at Clarkson') carries three photos each captioned for her; this one is captioned 'Chidi presenting at the Ignite Project Expo 2024.' Two more caption-confirmed photos on the same page (CUEMS mock-casualty drill; International Center). Clarkson blog talent-show post names her but its photos are not tied to her — not filed from there. Re-hosted locally 2026-10-31 from the same source URL (1024x683, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Chidiogor Ofodum",
-   "photo_url": "https://diy.clarkson.edu/wp-content/uploads/2025/05/Ignite-Project-Expo-2024-58-1024x683.jpg",
+   "photo_url": "photos/chidiogor-ofodum.jpg",
    "source_page": "https://diy.clarkson.edu/apply-to-clarkson/the-healthcare-major-a-program-designed-for-the-future/",
    "status": "confirmed",
    "type": "article photo (presenting)",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1159,13 +1158,13 @@
    "added": "2026-10-30"
   },
   {
-   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Associate Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Associate Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Christopher Towler",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=ctowler",
+   "photo_url": "photos/christopher-towler.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=ctowler",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @cierrahitchman (display name \"Cierra Hitchman\"); bio: \"💑👩👧🧒👧 Hitchmanlife1\".",
@@ -1220,13 +1219,13 @@
    "type": null
   },
   {
-   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Mohawk Valley Community College's President's Cabinet page places this portrait beside Colin Mackey, Executive Director of Budget and Finance/CFO, listing his SUNY Potsdam master's and St. Bonaventure bachelor's, matching the directory. URL load-verified and the portrait viewed.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). Mohawk Valley Community College's President's Cabinet page places this portrait beside Colin Mackey, Executive Director of Budget and Finance/CFO, listing his SUNY Potsdam master's and St. Bonaventure bachelor's, matching the directory. URL load-verified and the portrait viewed. Re-hosted locally 2026-10-31 from the same source URL (1050x1500, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Colin Mackey",
-   "photo_url": "https://www.mvcc.edu/governance/images/cabinet/colinmackey.jpg",
+   "photo_url": "photos/colin-mackey.jpg",
    "source_page": "https://mvcc.edu/governance/presidents-cabinet.php",
    "status": "confirmed",
    "type": "College cabinet portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @colleendcheney (display name \"Colleen!\"); bio: \"canton tech ‘25 NY-> MI\".",
@@ -1247,13 +1246,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "His Clarkson org-chart entry (Campus Safety & Security Officer) embeds a directory image keyed to his username 'ccaldwel' as the image in his profile block.",
+   "evidence": "His Clarkson org-chart entry (Campus Safety & Security Officer) embeds a directory image keyed to his username 'ccaldwel' as the image in his profile block. Re-hosted locally 2026-10-31 from the same source URL (619x929, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Connor Caldwell",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=ccaldwel",
+   "photo_url": "photos/connor-caldwell.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=ccaldwel",
    "status": "confirmed",
    "type": "directory photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1365,13 +1364,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Assistant Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Assistant Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Dale Fournier",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=dfournie",
+   "photo_url": "photos/dale-fournier.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=dfournie",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @daniel__manor (display name \"Daniel\").",
@@ -1437,24 +1436,24 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "CONFIRMED 2026-10-28 via the ChatGPT broad-search relay (its SUNY Potsdam chem-page lead, verified against the page source). SUNY Potsdam's chemistry research page captions this photo 'Danielle McPherson and Allison Rust with Dr. David Gingrich at the 2019 Learning & Research Fair' - Gingrich is at left; the two students (center and right) are not position-mapped in the caption. The image file defeated extraction three times earlier in the day as a CSS background; the direct file URL was recovered from the page source and load-verified (1920x1080 JPEG), and the photo viewed.",
+   "evidence": "CONFIRMED 2026-10-28 via the ChatGPT broad-search relay (its SUNY Potsdam chem-page lead, verified against the page source). SUNY Potsdam's chemistry research page captions this photo 'Danielle McPherson and Allison Rust with Dr. David Gingrich at the 2019 Learning & Research Fair' - Gingrich is at left; the two students (center and right) are not position-mapped in the caption. The image file defeated extraction three times earlier in the day as a CSS background; the direct file URL was recovered from the page source and load-verified (1920x1080 JPEG), and the photo viewed. Re-hosted locally 2026-10-31 from the same source URL (1920x1080, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Danielle McPherson",
-   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2020-01/GingrichMcPhersonRust.jpg?itok=IzXTtUCW",
+   "photo_url": "photos/danielle-mcpherson.jpg",
    "source_page": "https://www.potsdam.edu/academics/AAS/depts/chem/activities-opportunities/research",
    "status": "confirmed",
    "type": "University research-fair group photo",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
-   "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book — its only image is the book cover, rejected. Cover caption list confirms '34 - Danielle Vetere 22, childhood/early childhood education student'; JD confirmed 2026-10-22. SUNY Potsdam Instagram checked 2026-10-22 — no usable post of her found.",
+   "evidence": "Potsdam People 2022 front cover caption list includes '34 - Danielle Vetere 22, childhood/early childhood education student' and the page's cover image is that collage. Merit profile returned no images. WestBow page is her father Vincent Vetere's book — its only image is the book cover, rejected. Cover caption list confirms '34 - Danielle Vetere 22, childhood/early childhood education student'; JD confirmed 2026-10-22. SUNY Potsdam Instagram checked 2026-10-22 — no usable post of her found. Re-hosted locally 2026-10-31 from the same source URL (629x800, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Danielle Vetere",
-   "photo_url": "https://www.potsdam.edu/sites/default/files/inline-images/cover1_0.jpg",
+   "photo_url": "photos/danielle-vetere.jpg",
    "source_page": "https://www.potsdam.edu/PotsdamPeopleCover",
    "status": "confirmed",
    "type": "group / cover collage",
    "focus": "50% 74%",
    "zoom": 1.9,
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -1482,13 +1481,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Assistant Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Clinical Assistant Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "David DiSalvo",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=ddisalvo",
+   "photo_url": "photos/david-disalvo.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=ddisalvo",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "His Merit profile (Legal Studies, SUNY Canton Class of 2022, Rensselaer Falls NY) carries a real uploaded student profile photo in the profile slot — an S3 photo file, not the missing.png placeholder. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 280x280 -> 1120x1120). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -1647,13 +1646,13 @@
    "type": null
   },
   {
-   "evidence": "Winning-team photo caption names everyone left to right, ending '...Destiny Snyder and Nasierra Daniels' — she is identified by name and position (fifth from left); the article lists Destiny Snyder of Potsdam on the winning team.",
+   "evidence": "Winning-team photo caption names everyone left to right, ending '...Destiny Snyder and Nasierra Daniels' — she is identified by name and position (fifth from left); the article lists Destiny Snyder of Potsdam on the winning team. Re-hosted locally 2026-10-31 from the same source URL (1600x1100, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Destiny Snyder",
-   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/WinningTeamcopy_0.jpg?itok=EYKWXsFW",
+   "photo_url": "photos/destiny-snyder.jpg",
    "source_page": "https://www.potsdam.edu/news/businessadministrationstudentscampusentrepreneurialcompetition",
    "status": "confirmed",
    "type": "group",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. NY MEP's services page places this portrait beside Devon Sutton's name and title, Director of Strategic Operations at LC Drives. Small file (5.5 KB) but a real portrait. The page's image alt text misspells 'Devin'; the attribution reads Devon Sutton. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 400x400 -> 1600x1600). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -1761,13 +1760,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "St. Lawrence 2024-25 roster labels her entry 'Elena Trempe - View Profile' (Sophomore, Enfield NH, Mascoma Valley Regional) and the matching roster image is her file Elena_Trempe.jpg — roster headshot tied to her by the roster page. Filed at the larger render size of the same file (extracted at width=80).",
+   "evidence": "St. Lawrence 2024-25 roster labels her entry 'Elena Trempe - View Profile' (Sophomore, Enfield NH, Mascoma Valley Regional) and the matching roster image is her file Elena_Trempe.jpg — roster headshot tied to her by the roster page. Filed at the larger render size of the same file (extracted at width=80). Re-hosted locally 2026-10-31 from the same source URL (600x825, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Elena Trempe",
-   "photo_url": "https://saintsathletics.com/images/2025/1/14/Elena_Trempe.jpg?width=600&quality=90",
+   "photo_url": "photos/elena-trempe.jpg",
    "source_page": "https://saintsathletics.com/sports/womens-track-and-field/roster/2024-25",
    "status": "confirmed",
    "type": "roster headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in a SUNY Canton Basketball hoodie, holding a ball toward the camera in the college gym). SUNY Canton's official athletics roster names Eli Larson (#20, forward, 6-8, Greenville, NY) on the men's basketball team, and the portrait is the college media-library file named for him. NOTE: Eli Larson has no profile in the contacts directory — this entry was created from JD's lead and is held for his ruling. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 430x430 -> 1720x1720). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -2013,13 +2012,13 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in nursing scrubs against a SUNY Canton backdrop). SUNY Canton's media-library portrait of Emma Bortnick; the college's People Like Me series profiles Emma Bortnick of Canton, who attended SUNY Canton to become a nurse — matching the directory record (BS Nursing, SUNY Canton 2022; Registered Nurse at Rochester Regional Health). This institutional portrait replaces her expiring Instagram profile picture as primary; the Instagram photo is kept as an also.",
+   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in nursing scrubs against a SUNY Canton backdrop). SUNY Canton's media-library portrait of Emma Bortnick; the college's People Like Me series profiles Emma Bortnick of Canton, who attended SUNY Canton to become a nurse — matching the directory record (BS Nursing, SUNY Canton 2022; Registered Nurse at Rochester Regional Health). This institutional portrait replaces her expiring Instagram profile picture as primary; the Instagram photo is kept as an also. Re-hosted locally 2026-10-31 from the same source URL (800x800, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Emma Bortnick",
-   "photo_url": "https://www.canton.edu/media/Emma-Bortnick.jpg",
+   "photo_url": "photos/emma-bortnick.jpg",
    "source_page": "https://www.canton.edu/plm/",
    "status": "confirmed",
    "type": "Nursing portrait (SUNY Canton)",
-   "added": "2026-10-28",
+   "added": "2026-10-31",
    "also": [
     {
      "url": "https://scontent.cdninstagram.com/v/t51.82787-19/825323889_18632740273017033_319527363284810669_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTcuQzMifQ%3D%3D&_nc_ohc=ehXFygTR744Q7kNvwEvTsx-&_nc_oc=Ado6-b3ENud9wHul9yL2cH9j1AoR4i-AiauifIyxRwHMb0R8_TixnjB1TWawJTTBKnML6Hjx8J8bbhNW215PcPu7&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=FDZdXsoCbQtTzXcE-2FmEg&oh=00_AQO9QhmBSeV1GZM5RVm6nyM4Qt-b7yjdWgJMX7XvOsS4Ew&oe=6AE03C53",
@@ -2116,13 +2115,13 @@
    "type": null
   },
   {
-   "evidence": "Fall 2022 Law Enforcement Training Institute graduation group photo; caption explicitly names him in position: 'Back row, from left: ... Adrian Bove, Ethan Bates, Massena Police Officer Grant Lebeau...' Article also lists him as Director's Award recipient. Saranac Lake PD page lists him in a text-only staff table; Merit profile text-only.",
+   "evidence": "Fall 2022 Law Enforcement Training Institute graduation group photo; caption explicitly names him in position: 'Back row, from left: ... Adrian Bove, Ethan Bates, Massena Police Officer Grant Lebeau...' Article also lists him as Director's Award recipient. Saranac Lake PD page lists him in a text-only staff table; Merit profile text-only. Re-hosted locally 2026-10-31 from the same source URL (1600x1100, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Ethan Bates",
-   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/TopPRimage_0.jpg?itok=q3cMrwUt",
+   "photo_url": "photos/ethan-bates.jpg",
    "source_page": "https://www.potsdam.edu/news/LawEnforcementTrainingInstituteRecognizesFallGraduates",
    "status": "confirmed",
    "type": "group",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. His own Merit Pages profile photo (meritpages.com/ethanflamand): the profile reads \"Majoring in Engineering And Management, Clarkson University\" — Clarkson plus that exact major matches his directory profile verbatim (Clarkson senior in Engineering and Management, co-launched Nuovo through Clarkson Ignite). Coordinator fetched the profile, verified both anchors on the page, downloaded and viewed the photo. Note: Merit profile pages are not search-indexed; this was found by direct profile-URL probing after the scout's search-based pass came up empty. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 280x280 -> 1120x1120). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -2142,13 +2141,13 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). The photo is the sole image in his employer NextStepU's team-introduction post about webmaster Ethan Hackett; his public employment record matches both directory anchors (Apple Mac Specialist/mentor; Manchester Community College graphic-design degree). Full-size URL load-verified (1200x1709) and the portrait viewed.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 1). The photo is the sole image in his employer NextStepU's team-introduction post about webmaster Ethan Hackett; his public employment record matches both directory anchors (Apple Mac Specialist/mentor; Manchester Community College graphic-design degree). Full-size URL load-verified (1200x1709) and the portrait viewed. Re-hosted locally 2026-10-31 from the same source URL (1200x1709, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Ethan Hackett",
-   "photo_url": "https://nextstepu.files.wordpress.com/2012/06/ethan-laugh.jpeg",
+   "photo_url": "photos/ethan-hackett.jpg",
    "source_page": "http://blog.nextstepu.com/meet-our-new-team-member-ethan/",
    "status": "confirmed",
    "type": "Employer team introduction photo",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Graduates page lists Ethan Ryan (AAS Criminal Justice) but its only image is captioned 'President Zvi Szafran speaks during Commencement 2024' — not him. Merit listings text-only.",
@@ -2194,13 +2193,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED. Anchor 1: Clarkson University Mathematics Alumni page leads with 'Dr. Freddie Amoah-Darko, Machine Learning Engineer at Unearthly Materials' (Rochester NY; worked with Prof. Diana White) — matching the directory profile (Clarkson PhD in Mathematics, Aug 2023; machine learning engineer in the Rochester area). Anchor 2: photo file Freddie-Amoah-Darko-900x900.jpg hosted on clarkson.edu and indexed on that exact alumni page. Curl-verified 200 image/jpeg, 900x900. Note: he had a photos.json entry with status no_source before this run.",
+   "evidence": "CONFIRMED. Anchor 1: Clarkson University Mathematics Alumni page leads with 'Dr. Freddie Amoah-Darko, Machine Learning Engineer at Unearthly Materials' (Rochester NY; worked with Prof. Diana White) — matching the directory profile (Clarkson PhD in Mathematics, Aug 2023; machine learning engineer in the Rochester area). Anchor 2: photo file Freddie-Amoah-Darko-900x900.jpg hosted on clarkson.edu and indexed on that exact alumni page. Curl-verified 200 image/jpeg, 900x900. Note: he had a photos.json entry with status no_source before this run. Re-hosted locally 2026-10-31 from the same source URL (900x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Frederick Laud Amoah-Darko Jr.",
-   "photo_url": "https://www.clarkson.edu/sites/default/files/2024-04/Freddie-Amoah-Darko-900x900.jpg",
+   "photo_url": "photos/frederick-laud-amoah-darko-jr.jpg",
    "source_page": "https://www.clarkson.edu/index.php/academics/schools-colleges/engineering/mathematics-department/mathematics-alumni",
    "status": "confirmed",
    "type": "portrait",
-   "added": "2026-10-27"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Caption-confirmed, URL unextracted: Woodshop News feature carries a captioned photo 'Tim Criscitello aligning the knives on a toolhead for its Weinig Unimat 218 molder/shaper' (credit Michael Gordon) plus two other captioned team photos; product/portfolio shots not filed. Page returned no Images footnote, so no direct URL — graded possible until re-extraction. Note the article's principal is Eric Criscitello (owner); Tim is his son and business partner.",
@@ -2377,13 +2376,13 @@
    "type": null
   },
   {
-   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Ministers Fellowship International's About page names Greg Hurlbut with New Testament Church (Massena lead pastor) and a Northeast regional leadership role; this is his named portrait.",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Ministers Fellowship International's About page names Greg Hurlbut with New Testament Church (Massena lead pastor) and a Northeast regional leadership role; this is his named portrait. Re-hosted locally 2026-10-31 from the same source URL (600x600, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Gregory Hurlbut",
-   "photo_url": "https://mfiglobal.org/wp-content/uploads/2026/03/MFI-Greg-Hurlbut.webp",
+   "photo_url": "photos/gregory-hurlbut.jpg",
    "source_page": "https://mfiglobal.org/about/",
    "status": "confirmed",
    "type": "Professional portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @spurgeonfiddle (display name \"Haddon Brown\").",
@@ -2484,13 +2483,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @demers_st.hilaire (display name \"Haydn Demers-St.Hilaire\"); bio: \"Never Panic, Just Manage 2025 TRC Men’s Invitational “E” Champion\".",
+   "evidence": "Instagram profile @demers_st.hilaire (display name \"Haydn Demers-St.Hilaire\"); bio: \"Never Panic, Just Manage 2025 TRC Men’s Invitational “E” Champion\". REPLACED 2026-10-31: the Instagram CDN primary had expired. New primary from the Massena Police Department Facebook post of June 6, 2025 (photo fbid 1129468125891255): caption identifies Haydn as the officer on the left, in the POLICE vest, holding his Letter of Commendation; the man on the right is Chaplain Lucid. Cropped to Haydn's figure and FSRCNN x4 upscaled (202x635 -> 808x2540); identity checked against the caption and viewed before filing.",
    "name": "Haydn Demers-St.Hilaire",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/398161006_1461409457760800_6305540115106572526_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43MzEuQzMifQ%3D%3D&_nc_ohc=5TvUlA9LyYYQ7kNvwFJ7E_r&_nc_oc=AdohjbsUcHai5PD0Wh4UTqgxZa6rMR7Pi72Cnvc-naP2r6WeLwLdrMSCjOFvLT36NP31BV8LqCxMGxnKu2NjEr8P&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQNFzv7U93BHRgqH4-I-ZgPYnDLTL56mi-Fe1yTGDzzA2Q&oe=6AE00C83",
-   "source_page": "https://www.instagram.com/demers_st.hilaire/",
+   "photo_url": "photos/haydn-demers-st-hilaire.jpg",
+   "source_page": "https://www.facebook.com/MassenaPD",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Photo: Massena Police Department commendation presentation, June 6, 2025",
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @heatherjdowling (display name \"Heather Dowling\"); bio: \"Child of God • Wife to the best • Homeschooling Mom• Homebody • Upstate NY #dowlingabbey\".",
@@ -2519,13 +2518,13 @@
    "type": null
   },
   {
-   "evidence": "Her Clarkson org-chart block carries the directory image labeled 'hshattuc' beside her name and title (Clinical Associate Professor, Physical Therapy) — the directory headshot keyed to her username. Her Clarkson people page is a text-only biography.",
+   "evidence": "Her Clarkson org-chart block carries the directory image labeled 'hshattuc' beside her name and title (Clinical Associate Professor, Physical Therapy) — the directory headshot keyed to her username. Her Clarkson people page is a text-only biography. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Heather Shattuck",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=hshattuc",
+   "photo_url": "photos/heather-shattuck.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=hshattuc",
    "status": "confirmed",
    "type": "directory photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "POSSIBLE in the 2026-10-29 arena photo hunt. Poster frame of \"\"God is Not An American\" with Derek & Heidi Levendusky\" — Heidi is the woman at right in the blue long-sleeve shirt, face large and clear; her full name is in the video title. Weaker org anchor: the channel is her husband Derek's ministry channel, not an organization of hers, and the content is a ministry talk rather than her wrestling-coaching role. Coordinator re-fetched, viewed, and cropped her from the two-shot.",
@@ -2579,23 +2578,22 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Vermont Moms business highlight photo, captioned “Ian of Vivid Coffee Roasters”: Ian Bailey, owner/creator of Vivid Coffee Roasters, founded in Winooski, Vermont in 2015; grew up in Hawaii.",
+   "evidence": "Vermont Moms business highlight photo, captioned “Ian of Vivid Coffee Roasters”: Ian Bailey, owner/creator of Vivid Coffee Roasters, founded in Winooski, Vermont in 2015; grew up in Hawaii. Re-hosted locally 2026-10-31 from the same source URL (600x600, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Ian Bailey",
-   "photo_url": "https://cdn.vermontmoms.com/wp-content/uploads/2017/10/08145652/ianvivid-e1508266251660.jpg",
+   "photo_url": "photos/ian-bailey.jpg",
    "source_page": "https://vermontmoms.com/local-business-highlight-vivid-coffee-roasters/",
    "status": "confirmed",
    "type": "profile photo",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-26"
+   "added": "2026-10-31"
   },
   {
    "name": "Ian Blunt",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459549/1000w_q95.jpg",
+   "photo_url": "photos/ian-blunt.jpg",
    "source_page": "https://www.dvidshub.net/image/8459549/ny-national-guard-fires-mortars-morocco",
    "status": "confirmed",
-   "evidence": "DVIDS caption names SFC Ian Blunt, HHC 27th IBCT, holding an M931 mortar training round at African Lion, Morocco, May 28, 2024; JD confirmed Oct 26",
+   "evidence": "DVIDS caption names SFC Ian Blunt, HHC 27th IBCT, holding an M931 mortar training round at African Lion, Morocco, May 28, 2024; JD confirmed Oct 26 Re-hosted locally 2026-10-31 from the same source URL (1000x667, bytes verified) so the primary no longer depends on the remote link.",
    "type": "DVIDS",
-   "added": "2026-10-26",
+   "added": "2026-10-31",
    "also": [
     {
      "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8444236/1000w_q95.jpg",
@@ -2740,13 +2738,13 @@
    "added": "2026-10-27"
   },
   {
-   "evidence": "Clarkson org-chart page shows the directory image labeled 'jbicknel' directly above her name block (Clinical Associate Professor / Director of Clinical Education, Physical Therapy) — the directory headshot keyed to her username. Her Clarkson people page is a text biography.",
+   "evidence": "Clarkson org-chart page shows the directory image labeled 'jbicknel' directly above her name block (Clinical Associate Professor / Director of Clinical Education, Physical Therapy) — the directory headshot keyed to her username. Her Clarkson people page is a text biography. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Jaime Bicknell",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=jbicknel",
+   "photo_url": "photos/jaime-bicknell.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=jbicknel",
    "status": "confirmed",
    "type": "directory photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @jake_seguin (display name \"Jake\").",
@@ -3072,13 +3070,13 @@
    "type": null
   },
   {
-   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. The Northern New York Community Foundation's Evergreen STEM Scholars article captions its group photo with Jillian Chapman of Massena Central School (biology/pre-med, Class of 2020) position-mapped front row, first from left - consistent with a later Daemen University student (her directory anchor), though the article does not name Daemen. Photo viewed.",
+   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. The Northern New York Community Foundation's Evergreen STEM Scholars article captions its group photo with Jillian Chapman of Massena Central School (biology/pre-med, Class of 2020) position-mapped front row, first from left - consistent with a later Daemen University student (her directory anchor), though the article does not name Daemen. Photo viewed. Re-hosted locally 2026-10-31 from the same source URL (1024x632, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Jillian Chapman",
-   "photo_url": "https://nnycf.org/wp-content/uploads/2019/11/NNYCF_EvergreenSTEM_111419-1024x632.jpg",
+   "photo_url": "photos/jillian-chapman.jpg",
    "source_page": "https://nnycf.org/evergreen-stem-scholars-honored/",
    "status": "possible",
    "type": "Scholarship group photo (position-mapped)",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3195,9 +3193,9 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "Adirondack Explorer profile 'Meet John Meyers, a one-man taxi service in NY's North Country' — lead photo captioned 'John Meyers stands with his Taxi Zero car' (photo provided by Zachariah Morehouse). JD directed this as his primary photo. A second captioned photo of him from the same article is on file, as is the earlier NCPR taxi photo (kept below).",
+   "evidence": "Adirondack Explorer profile 'Meet John Meyers, a one-man taxi service in NY's North Country' — lead photo captioned 'John Meyers stands with his Taxi Zero car' (photo provided by Zachariah Morehouse). JD directed this as his primary photo. A second captioned photo of him from the same article is on file, as is the earlier NCPR taxi photo (kept below). Re-hosted locally 2026-10-31 from the same source URL (2000x1500, bytes verified) so the primary no longer depends on the remote link.",
    "name": "John Meyers",
-   "photo_url": "https://i0.wp.com/www.adirondackexplorer.org/wp-content/uploads/2026/10/IMG_0113-scaled.jpeg?fit=2000%2C1500&ssl=1",
+   "photo_url": "photos/john-meyers.jpg",
    "source_page": "https://www.adirondackexplorer.org/communities/adirondackers-people/meet-john-meyers-a-one-man-taxi-service-in-nys-north-country/",
    "status": "confirmed",
    "type": "profile photo",
@@ -3220,7 +3218,7 @@
      "source_page": "https://nyheritage.contentdm.oclc.org/digital/collection/clarkson/id/13144"
     }
    ],
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED on the 2026-10-28 photo rerun. His public LinkedIn profile (Freelance Artist/Illustrator, Willow Spring NC; Evans & White Ace Hardware freight worker 2014-2015) carries this headshot; filed as a crop excluding LinkedIn's #OPENTOWORK frame band, hosted locally because the signed URL expires. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 500x500 -> 2000x2000). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -3299,13 +3297,13 @@
    "type": null
   },
   {
-   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. Christian Fellowship Center's leadership page names Jonathan Puglia, Pastor at CFC Moira, beside this photo (a family portrait the church uses as his leadership image; viewed). His directory anchor is Shippensburg University, which the page does not mention - graded possible.",
+   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. Christian Fellowship Center's leadership page names Jonathan Puglia, Pastor at CFC Moira, beside this photo (a family portrait the church uses as his leadership image; viewed). His directory anchor is Shippensburg University, which the page does not mention - graded possible. Re-hosted locally 2026-10-31 from the same source URL (360x316, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Jonathan Puglia",
-   "photo_url": "https://www.cfconline.org/wp-content/cfc-leadership/487.webp?v=1779404586",
+   "photo_url": "photos/jonathan-puglia.jpg",
    "source_page": "https://www.cfconline.org/leadership/",
    "status": "possible",
    "type": "Church leadership page photo",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Jordyn Brothers and headline: Chemical Dependency Counselor (LinkedIn headline). Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 400x400 -> 1600x1600). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -3318,12 +3316,12 @@
   },
   {
    "name": "Jordyn Hill",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459605/1000w_q95.jpg",
+   "photo_url": "photos/jordyn-hill.jpg",
    "source_page": "https://www.dvidshub.net/image/8459605/ny-national-guard-soldiers-train-with-new-radio-morocco",
    "status": "confirmed",
-   "evidence": "DVIDS caption names PFC Jordyn Hill, IT specialist, HHC 27th IBCT, training on the AN/PRC-160(V) radio at African Lion, Morocco, May 29, 2024; JD confirmed Oct 26",
+   "evidence": "DVIDS caption names PFC Jordyn Hill, IT specialist, HHC 27th IBCT, training on the AN/PRC-160(V) radio at African Lion, Morocco, May 29, 2024; JD confirmed Oct 26 Re-hosted locally 2026-10-31 from the same source URL (1000x1500, bytes verified) so the primary no longer depends on the remote link.",
    "type": "DVIDS",
-   "added": "2026-10-26",
+   "added": "2026-10-31",
    "also": [
     {
      "url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2406/8459612/1000w_q95.jpg",
@@ -3367,13 +3365,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "His Kickstarter 'About the creator' page (About Josh McGrath, Potsdam NY, first-person bio) carries this single image as his creator profile photo, same avatar shown beside 'Created by Josh McGrath'. No caption/alt names him in the image, so likely not confirmed. Campaign main image is book art — excluded.",
+   "evidence": "His Kickstarter 'About the creator' page (About Josh McGrath, Potsdam NY, first-person bio) carries this single image as his creator profile photo, same avatar shown beside 'Created by Josh McGrath'. No caption/alt names him in the image, so likely not confirmed. Campaign main image is book art — excluded. Re-hosted locally 2026-10-31 from the same source URL (200x200, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Josh McGrath",
-   "photo_url": "https://i.kickstarter.com/assets/039/307/223/b4e0a00804f6ea5c01362861e98e5dec_original.jpg?anim=false&blur=false&fit=cover&height=200&origin=ugc&q=92&v=1669234450&width=200&sig=02SdDWWTZdRCMTjqEvuRZ7%2F%2BLfnDxnEpYFCT2d2Sjf4%3D",
+   "photo_url": "photos/josh-mcgrath.jpg",
    "source_page": "https://www.kickstarter.com/projects/joshmcgrath/nora-hollingsworth-fantasy-book-series/creator",
    "status": "likely",
    "type": "profile avatar",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "NCPR article lead photo caption: 'Josh Parker stands next to his pellet-fired evaporator at his sugar shack near Canton. Photo: Todd Moe.' A second captioned photo of him is on the page (josh3.jpg, hydrometer). Daily Meal Shark Tank piece is the same Joshua Parker of Parker's Maple, but its images are Shutterstock stock — nothing filed from it. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 600x464 -> 2400x1856). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -3438,13 +3436,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Clarkson people-directory profile (CAMP Research Engineer); sole image explicitly alt-texted '[Image 0: Judah Pare Headshot]' on his named profile page.",
+   "evidence": "Clarkson people-directory profile (CAMP Research Engineer); sole image explicitly alt-texted '[Image 0: Judah Pare Headshot]' on his named profile page. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Judah Pare",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=jpare",
+   "photo_url": "photos/judah-pare.jpg",
    "source_page": "https://www.clarkson.edu/people/judah-pare",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep. The St. James School (Gouverneur NY) staff page sets this portrait in the block headed 'Judith Tomford, AIS Teacher.' URL load-verified (200x200 JPEG, 42.5 KB) and the portrait viewed. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 200x200 -> 800x800). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -3499,13 +3497,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (name-only wave). Atwood Magazine's feature on Nashville artist Sinclair captions this photo 'Sinclair (c) Tobias Ortmann' and the article states she left her home in Madrid, New York for Nashville - matching the directory identity JD confirmed (Julia Sinclair, recording artist performing as Sinclair). URL load-verified (1344x896 JPEG) and the portrait viewed.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (name-only wave). Atwood Magazine's feature on Nashville artist Sinclair captions this photo 'Sinclair (c) Tobias Ortmann' and the article states she left her home in Madrid, New York for Nashville - matching the directory identity JD confirmed (Julia Sinclair, recording artist performing as Sinclair). URL load-verified (1344x896 JPEG) and the portrait viewed. Re-hosted locally 2026-10-31 from the same source URL (1344x896, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Julia Sinclair",
-   "photo_url": "https://atwoodmagazine.com/wp-content/uploads/2019/03/Sinclair-music-2019-1.jpg",
+   "photo_url": "photos/julia-sinclair.jpg",
    "source_page": "https://atwoodmagazine.com/scpc-sinclair-pop-champagne-interview/",
    "status": "confirmed",
    "type": "Press photo (artist feature)",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @juliacarmella1 (display name \"Julia Swy\").",
@@ -3517,13 +3515,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep. Her own Julia Kia Photography About page presents this 'founder' portrait of Julia (seated, holding her Canon camera). URL load-verified (1024x1536 JPEG) and the portrait viewed.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep. Her own Julia Kia Photography About page presents this 'founder' portrait of Julia (seated, holding her Canon camera). URL load-verified (1024x1536 JPEG) and the portrait viewed. Re-hosted locally 2026-10-31 from the same source URL (1024x1536, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Julia Tomford",
-   "photo_url": "https://static.showit.co/file/DiehZsLzU21_TRaANMwL-A/shared/juliakiaphotos-founder_1.jpg",
+   "photo_url": "photos/julia-tomford.jpg",
    "source_page": "https://juliakia.com/about",
    "status": "confirmed",
    "type": "Business About page portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @julianna_shatraw (display name \"Juli\"); bio: \"🤎🤎🤎 Ultrasound tech🩻\".",
@@ -3535,13 +3533,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her own About page, first-person: 'Hi, I'm Julie Feliciano, the founder of Aja Performance Media... I'm a car photographer,' directly under the single lead photo (alt: a person in a cap using a camera in a wooden hide). Strong person-specific context but no caption names her in the image — likely.",
+   "evidence": "Her own About page, first-person: 'Hi, I'm Julie Feliciano, the founder of Aja Performance Media... I'm a car photographer,' directly under the single lead photo (alt: a person in a cap using a camera in a wooden hide). Strong person-specific context but no caption names her in the image — likely. Re-hosted locally 2026-10-31 from the same source URL (600x600, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Julie Feliciano",
-   "photo_url": "https://img1.wsimg.com/isteam/ip/44e0e498-a0e8-4e04-885b-489187b149d5/IMG_20250411_220240_476.webp/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:600,h:600,cg:true",
+   "photo_url": "photos/julie-feliciano.jpg",
    "source_page": "https://ajaperformancemedia.com/about-me",
    "status": "likely",
    "type": "portrait / action photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "No source links on file.",
@@ -3560,13 +3558,13 @@
    "type": null
   },
   {
-   "evidence": "CONFIRMED by JD, 2026-10-28 (his follow-up notes record the existing photo as correct). AEDC's March 2024 newsletter photo is captioned Victoria Duley (AEDC), Julie and Justin Cardinal (Esther's Coffee House, Massena), and Jamie Cecilia (AEDC). Group photo; individual positions not separately mapped.",
+   "evidence": "CONFIRMED by JD, 2026-10-28 (his follow-up notes record the existing photo as correct). AEDC's March 2024 newsletter photo is captioned Victoria Duley (AEDC), Julie and Justin Cardinal (Esther's Coffee House, Massena), and Jamie Cecilia (AEDC). Group photo; individual positions not separately mapped. Re-hosted locally 2026-10-31 from the same source URL (1200x830, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Justin Cardinal",
-   "photo_url": "https://files.constantcontact.com/e6c941d2901/8e4f7ff0-d1a5-430e-b196-5dfadb855e2d.jpg",
+   "photo_url": "photos/justin-cardinal.jpg",
    "source_page": "https://myemail.constantcontact.com/AEDC-Newsletter--March-2024.html?aid=z8NBiWE290c&soid=1138922658926",
    "status": "confirmed",
    "type": "Business event group photo",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3611,23 +3609,22 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Her Clarkson people page is biography text only, but her org-chart block carries the directory image labeled 'kferguso' alongside her name and title (Clinical Assistant Professor, Physical Therapy) — the directory headshot keyed to her username.",
+   "evidence": "Her Clarkson people page is biography text only, but her org-chart block carries the directory image labeled 'kferguso' alongside her name and title (Clinical Assistant Professor, Physical Therapy) — the directory headshot keyed to her username. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Kara Ferguson",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=kferguso",
+   "photo_url": "photos/kara-ferguson.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=kferguso",
    "status": "confirmed",
    "type": "directory photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
-   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 2). Clarkson's Lewis School of Health Sciences faculty page lists Karen Hoover, Clinical Associate Professor (khoover@clarkson.edu), beside this directory headshot. URL load-verified (600x900 JPEG) and the portrait viewed.",
+   "evidence": "CONFIRMED on the 2026-10-28 directory-wide photo sweep (wave 2). Clarkson's Lewis School of Health Sciences faculty page lists Karen Hoover, Clinical Associate Professor (khoover@clarkson.edu), beside this directory headshot. URL load-verified (600x900 JPEG) and the portrait viewed. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Karen Hoover",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=khoover",
+   "photo_url": "photos/karen-hoover.jpg",
    "source_page": "https://www.clarkson.edu/academics/schools-colleges/health/faculty-staff?page=1",
    "status": "confirmed",
    "type": "University directory headshot",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Her own Merit Pages profile (Business Administration, SNHU, Class of 2020, Potsdam NY) carries [Image 0] at the top — her student photo file in her own Merit photo directory. Only other image is the Merit logo, excluded. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 280x280 -> 1120x1120). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -3785,13 +3782,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "SUNY Potsdam Bears women's lacrosse roster profile (Katie Lapinski, #15, Attack/Midfield, senior): the headshot slotted at her entry is filename 'lapinski_hs17_color.jpg', tied by filename and roster position. Extracted URL was the width=40 thumbnail (same Sidearm pattern as Caroline LaFountain); filed at the verified width=600 size of the same headshot.",
+   "evidence": "SUNY Potsdam Bears women's lacrosse roster profile (Katie Lapinski, #15, Attack/Midfield, senior): the headshot slotted at her entry is filename 'lapinski_hs17_color.jpg', tied by filename and roster position. Extracted URL was the width=40 thumbnail (same Sidearm pattern as Caroline LaFountain); filed at the verified width=600 size of the same headshot. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Katie Lapinski",
-   "photo_url": "https://potsdambears.com/images/2017/2/8/lapinski_hs17_color.jpg?width=600",
+   "photo_url": "photos/katie-lapinski.jpg",
    "source_page": "https://potsdambears.com/sports/womens-lacrosse/roster/katie-lapinski/2087",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "No source links on file of her own.",
@@ -3955,13 +3952,13 @@
    "type": null
   },
   {
-   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Associate Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Associate Professor, Physical Therapy, Lewis School of Health Sciences. Confirmed directory headshot pattern. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Kwadwo Appiah-Kubi",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=kappiahk",
+   "photo_url": "photos/kwadwo-appiah-kubi.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=kappiahk",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Merit profile is text-only achievement listings — no profile photo, not even a placeholder URL.",
@@ -4033,13 +4030,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Clarkson organizational-chart page shows his photo in his own block; he heads the Lewis School of Health Sciences. Confirmed directory headshot pattern. Supersedes his previous 'possible' Wikipedia-infobox photo whose image URL could never be extracted.",
+   "evidence": "Clarkson organizational-chart page shows his photo in his own block; he heads the Lewis School of Health Sciences. Confirmed directory headshot pattern. Supersedes his previous 'possible' Wikipedia-infobox photo whose image URL could never be extracted. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Lennart Johns",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=ljohns",
+   "photo_url": "photos/lennart-johns.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=ljohns",
    "status": "confirmed",
    "type": "headshot",
-   "added": "2026-10-22"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Her own Merit Pages profile (SUNY Canton, Criminal Investigation, Class of 2022, Watertown NY, first-person bio); [Image 0] at top of profile is her student photo file. Canton honors page yielded only the SUNY Canton logo — excluded. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 280x280 -> 1120x1120). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -4187,13 +4184,13 @@
    "added": "2026-10-22"
   },
   {
-   "evidence": "POSSIBLE. Her own Coroflot profile — bio matches the directory person exactly (SUNY Canton Graphic & Multimedia Design 2014, Chancellor's Award for Student Excellence, Norwood NY origin, now Watertown NY teaching art at SUNY Canton). The profile avatar is served from Coroflot's S3 (curl-verified 200 image/jpg, 75,697 bytes), but as a working illustrator her avatar may be artwork rather than a photograph — one anchor only; a visual check is recommended before treating as confirmed. Also on file: Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE. Her own Coroflot profile — bio matches the directory person exactly (SUNY Canton Graphic & Multimedia Design 2014, Chancellor's Award for Student Excellence, Norwood NY origin, now Watertown NY teaching art at SUNY Canton). The profile avatar is served from Coroflot's S3 (curl-verified 200 image/jpg, 75,697 bytes), but as a working illustrator her avatar may be artwork rather than a photograph — one anchor only; a visual check is recommended before treating as confirmed. Also on file: Only link on file is Facebook (auth). Re-hosted locally 2026-10-31 from the same source URL (440x440, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Lydia Dale",
-   "photo_url": "https://s3images.coroflot.com/user_files/individual_files/avatars/large_avatar_530596_kjsy3lpubqb9se4goyxcxmj4f.jpg",
+   "photo_url": "photos/lydia-dale.jpg",
    "source_page": "https://www.coroflot.com/LydiaDale/profile",
    "status": "possible",
    "type": "portrait",
-   "added": "2026-10-27"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @lydia_rose_martin (display name \"Lydia Martin\"); bio: \"Chosen, not forsaken.\".",
@@ -4376,13 +4373,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Seaway Valley Prevention Council team page places [Image 15] directly above the heading 'Marissa Kelley / Health Educator' and her bio — the same position every other staff member's named headshot occupies. BUT the file is generically named '2023-Headshot-Template.jpg', unlike colleagues' personally named files, so it cannot be verified from text as her actual photo rather than a template image — possible, flagged for visual review.",
+   "evidence": "Seaway Valley Prevention Council team page places [Image 15] directly above the heading 'Marissa Kelley / Health Educator' and her bio — the same position every other staff member's named headshot occupies. BUT the file is generically named '2023-Headshot-Template.jpg', unlike colleagues' personally named files, so it cannot be verified from text as her actual photo rather than a template image — possible, flagged for visual review. Re-hosted locally 2026-10-31 from the same source URL (504x504, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Marissa Kelley",
-   "photo_url": "https://svpc.net/wp-content/uploads/2025/09/2023-Headshot-Template.jpg",
+   "photo_url": "photos/marissa-kelley.jpg",
    "source_page": "https://svpc.net/our-friendly-team/",
    "status": "possible",
    "type": "staff photo (unverified)",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @marissa989 (display name \"Marissa Wood\").",
@@ -4429,13 +4426,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The 2024-25 SUNY Canton men's basketball roster lists '[Image 17: Mark Tomford - View Profile]' (Forward, So., Gouverneur NY — matching his individual player page: 6'7', Gouverneur HS, Criminal Justice), filename MarkTomford.jpg. Extracted URL was the width=80 thumbnail (Sidearm); filed at the verified width=600 size of the same headshot, same as the other Sidearm roster fixes.",
+   "evidence": "The 2024-25 SUNY Canton men's basketball roster lists '[Image 17: Mark Tomford - View Profile]' (Forward, So., Gouverneur NY — matching his individual player page: 6'7', Gouverneur HS, Criminal Justice), filename MarkTomford.jpg. Extracted URL was the width=80 thumbnail (Sidearm); filed at the verified width=600 size of the same headshot, same as the other Sidearm roster fixes. Re-hosted locally 2026-10-31 from the same source URL (600x825, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Mark Tomford",
-   "photo_url": "https://rooathletics.com/images/2024/10/29/MarkTomford.jpg?width=600&quality=90",
+   "photo_url": "photos/mark-tomford.jpg",
    "source_page": "https://rooathletics.com/sports/mens-basketball/roster/2024-25",
    "status": "confirmed",
    "type": "roster headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Clarkson University directory headshot embedded on his official Clarkson people page (\"Mark Wentworth / Campus Safety & Security Lieutenant\", mwentwor@clarkson.edu); his uniform shirt in the photo is embroidered \"Ofc. Wentworth\" with the Clarkson security patch. Coordinator viewed the image (face crop of the directory portrait). Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 500x500 -> 2000x2000). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -4507,13 +4504,13 @@
    "added": "2026-10-28"
   },
   {
-   "evidence": "His Clarkson org-chart block (Campus Safety & Security Sergeant) carries the directory image labeled 'mvolz' — the directory headshot keyed to his username. His Clarkson people page is a contact block only.",
+   "evidence": "His Clarkson org-chart block (Campus Safety & Security Sergeant) carries the directory image labeled 'mvolz' — the directory headshot keyed to his username. His Clarkson people page is a contact block only. Re-hosted locally 2026-10-31 from the same source URL (619x929, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Matthew Volz",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=mvolz",
+   "photo_url": "photos/matthew-volz.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=mvolz",
    "status": "confirmed",
    "type": "directory photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "LinkedIn profile photo harvested via Google Images (2026-10-22): the image result's landing page was verified as their exact on-file LinkedIn profile; indexed caption: 'Patient Experience and Compliance Manager, St. Lawrence Health'. Earlier sources checked had no photo of them. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 200x200 -> 800x800). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -4552,13 +4549,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED. Anchor 1: SUNY Canton athletics (SIDEARM) coach bio page names Megan Howard, Assistant Women's Lacrosse Coach — Canton HS goalie, SUNY Canton psychology — matching the directory profile (SUNY Canton, assistant women's lacrosse coach, Applied Psychology BS 2021, Canton NY). Anchor 2: headshot file MeganHoward.jpg served from the official rooathletics.com SIDEARM CDN and indexed on that exact coach page. Curl-verified 200 image/jpeg. Technique: image-search CLI index (the prior run's page-HTML extraction missed this JS roster image).",
+   "evidence": "CONFIRMED. Anchor 1: SUNY Canton athletics (SIDEARM) coach bio page names Megan Howard, Assistant Women's Lacrosse Coach — Canton HS goalie, SUNY Canton psychology — matching the directory profile (SUNY Canton, assistant women's lacrosse coach, Applied Psychology BS 2021, Canton NY). Anchor 2: headshot file MeganHoward.jpg served from the official rooathletics.com SIDEARM CDN and indexed on that exact coach page. Curl-verified 200 image/jpeg. Technique: image-search CLI index (the prior run's page-HTML extraction missed this JS roster image). Re-hosted locally 2026-10-31 from the same source URL (1454x2000, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Meg Howard",
-   "photo_url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/rooathletics.com/images/2025/2/20/MeganHoward.jpg?width=300",
+   "photo_url": "photos/meg-howard.jpg",
    "source_page": "https://rooathletics.com/sports/womens-lacrosse/roster/coaches/megan-howard/1938",
    "status": "confirmed",
    "type": "portrait",
-   "added": "2026-10-27"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @meggreg4 (display name \"Meg Lapinski\").",
@@ -4774,13 +4771,13 @@
    "type": null
   },
   {
-   "evidence": "Clarkson Love Stories page section headed 'Debbie Knaebel 15 and Michael Knaebel' has a single photo directly under the heading — alt 'A couple smiling into the camera on wedding day', filename Deborah-Knaebel.jpg. Section text confirms Michael works for Clarkson OIT. Tied to the named couple by placement and filename.",
+   "evidence": "Clarkson Love Stories page section headed 'Debbie Knaebel 15 and Michael Knaebel' has a single photo directly under the heading — alt 'A couple smiling into the camera on wedding day', filename Deborah-Knaebel.jpg. Section text confirms Michael works for Clarkson OIT. Tied to the named couple by placement and filename. Re-hosted locally 2026-10-31 from the same source URL (628x873, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Mike Knaebel",
-   "photo_url": "https://diy.clarkson.edu/wp-content/uploads/2021/02/Deborah-Knaebel.jpg",
+   "photo_url": "photos/mike-knaebel.jpg",
    "source_page": "https://diy.clarkson.edu/uncategorized/clarkson-love-stories/",
    "status": "confirmed",
    "type": "couple wedding photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Solo portrait on the Christian Fellowship Center leadership page; image alt text \"Mike Tomford\" and staff block \"Mike Tomford / Pastor at North Country Christian Fellowship (Gouverneur)\". Coordinator viewed the image. Replaces podcast episode artwork as primary. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 360x360 -> 1440x1440). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -4809,13 +4806,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "The MealTrain page is 'Meal Train for Nick Waite and Molly Criscitello' and its lead recipient photo carries the alt label 'Nick Waite and Molly Criscitello', explicitly tying the photo to her. Her Elise-for-Congress letter is text-only with just her byline.",
+   "evidence": "The MealTrain page is 'Meal Train for Nick Waite and Molly Criscitello' and its lead recipient photo carries the alt label 'Nick Waite and Molly Criscitello', explicitly tying the photo to her. Her Elise-for-Congress letter is text-only with just her byline. Re-hosted locally 2026-10-31 from the same source URL (1442x865, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Molly Criscitello",
-   "photo_url": "https://mealtrainv2.blob.core.windows.net/trains/zz278d/de3421e9-9b6a-4120-9d78-26337b8dc9c3.jpg",
+   "photo_url": "photos/molly-criscitello.jpg",
    "source_page": "https://www.mealtrain.com/trains/zz278d",
    "status": "confirmed",
    "type": "group",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @mlapins7 (display name \"Molly Lapinski\").",
@@ -4950,13 +4947,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in a SUNY Canton cap with a backpack, at a covered bridge). SUNY Canton's official People Like Me profile names Nicholas Oddey of Malone, a Criminal Investigation student, and the portrait is the college media-library file named for him; Merit Pages records his SUNY Canton graduation in Criminal Investigation (2024). NOTE: Nicholas Oddey has no profile in the contacts directory — this entry was created from JD's lead and is held for his ruling.",
+   "evidence": "CONFIRMED via JD-supplied lead, verified 2026-10-28 (image downloaded and viewed: solo portrait in a SUNY Canton cap with a backpack, at a covered bridge). SUNY Canton's official People Like Me profile names Nicholas Oddey of Malone, a Criminal Investigation student, and the portrait is the college media-library file named for him; Merit Pages records his SUNY Canton graduation in Criminal Investigation (2024). NOTE: Nicholas Oddey has no profile in the contacts directory — this entry was created from JD's lead and is held for his ruling. Re-hosted locally 2026-10-31 from the same source URL (800x800, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Nicholas Oddey",
-   "photo_url": "https://www.canton.edu/media/Nicholas-Oddey.jpg",
+   "photo_url": "photos/nicholas-oddey.jpg",
    "source_page": "https://www.canton.edu/plm/name-94250-en.html",
    "status": "confirmed",
    "type": "College profile portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "The Brasher Falls CSD board minutes are text-only; she appears only as a name in a staff appointment list. Her other source is Facebook (auth).",
@@ -5024,9 +5021,9 @@
    "type": null
   },
   {
-   "evidence": "The 90 Miler article leads with her ('Norah Pease 24 and Kelly Bloom 25 ease their canoe into the cold water...') and the first photos sit immediately after that paragraph — uncaptioned in extraction, so the pair in the canoe is not text-confirmed as her. The page's captioned photos are of other people. Her Merit profile is text-only. JD flagged the original as a bad photo 2026-10-22; alternate lead photo (Fin1.JPG, finish line) from the same Sufferfest article now primary: it sits in the lead photo position after the paragraph naming Pease and Bloom, before her interview quote. Original kept as alternate.",
+   "evidence": "The 90 Miler article leads with her ('Norah Pease 24 and Kelly Bloom 25 ease their canoe into the cold water...') and the first photos sit immediately after that paragraph — uncaptioned in extraction, so the pair in the canoe is not text-confirmed as her. The page's captioned photos are of other people. Her Merit profile is text-only. JD flagged the original as a bad photo 2026-10-22; alternate lead photo (Fin1.JPG, finish line) from the same Sufferfest article now primary: it sits in the lead photo position after the paragraph naming Pease and Bloom, before her interview quote. Original kept as alternate. Re-hosted locally 2026-10-31 from the same source URL (1600x1000, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Norah Pease",
-   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2025-09/Fin1.JPG?itok=Dc1jsnaD",
+   "photo_url": "photos/norah-pease.jpg",
    "source_page": "https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler",
    "status": "possible",
    "type": "article photo (canoe launch, uncaptioned)",
@@ -5036,7 +5033,7 @@
      "note": "Original launch shot (02_0.JPG), replaced 2026-10-22 at JD note: better photos of her on this site."
     }
    ],
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @lena_musiienko (display name \"ФІТНЕС ТРЕНЕР• ОНЛАЙН\"); bio: \"Proud to be UKRAINIAN 🇺🇦 Тренуюся і показую своє життя 💫 Люблю тіло і особистість, які будую❤️\". Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
@@ -5066,22 +5063,22 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED 2026-10-28 via the ChatGPT broad-search relay, verified against the source. SUNY Potsdam's news article on the Blanding's turtle research captions this photo 'Olivia Brown, left' and identifies her in the text as a Clarkson University biology student, matching her directory anchor exactly. She is the researcher at left in waders (face in profile); the photo was viewed and byte-verified (1600x1100 JPEG).",
+   "evidence": "CONFIRMED 2026-10-28 via the ChatGPT broad-search relay, verified against the source. SUNY Potsdam's news article on the Blanding's turtle research captions this photo 'Olivia Brown, left' and identifies her in the text as a Clarkson University biology student, matching her directory anchor exactly. She is the researcher at left in waders (face in profile); the photo was viewed and byte-verified (1600x1100 JPEG). Re-hosted locally 2026-10-31 from the same source URL (1600x1100, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Olivia Brown",
-   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/web_turtle_main.jpg?itok=CzhAiLsz",
+   "photo_url": "photos/olivia-brown.jpg",
    "source_page": "https://www.potsdam.edu/news/Race-to-Save-Threatened-Turtles-Continues-Despite-Pandemic",
    "status": "confirmed",
    "type": "University news field photo (captioned)",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
-   "evidence": "Caption for the page's only photo: 'Schyler Oakes, David Valeske, Michael Bernard, Jennie Hutton, Ciara Spicer, and Olivia Goodrow are shown with their Isabella Graham Hart School of Practical Nursing pins' (LPN graduation, Dec 15 2023). Caption confirms she is among the six pictured but gives no position/order — possible, not individually identifiable from text.",
+   "evidence": "Caption for the page's only photo: 'Schyler Oakes, David Valeske, Michael Bernard, Jennie Hutton, Ciara Spicer, and Olivia Goodrow are shown with their Isabella Graham Hart School of Practical Nursing pins' (LPN graduation, Dec 15 2023). Caption confirms she is among the six pictured but gives no position/order — possible, not individually identifiable from text. Re-hosted locally 2026-10-31 from the same source URL (1000x563, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Olivia Goodrow",
-   "photo_url": "https://edge.sitecorecloud.io/rochesterred189-rrh4822-prodb67b-4284/media/project/rrh/rrh/health-and-news-hub/thumbnails/igh-nursing-graduation-lg-010824.jpg?h=563&iar=0&w=1000",
+   "photo_url": "photos/olivia-goodrow.jpg",
    "source_page": "https://www.rochesterregional.org/hub/lpns-graduate-from-potsdam-nursing-school",
    "status": "possible",
    "type": "group",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @oliviamariegrant (display name \"Olivia Grant\"); bio: \"Faith  |  Adoption  |  Infertility  my 5ever love @joshgrantlive  mama to Aryana & Maeve 👧🏾👶🏽 \"Have courage an\".",
@@ -5191,13 +5188,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Laterna Studio's official About page identifies Pete Molinero by name and describes his operation of the Potsdam studio; this is the business portrait published with his introduction.",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Laterna Studio's official About page identifies Pete Molinero by name and describes his operation of the Potsdam studio; this is the business portrait published with his introduction. Re-hosted locally 2026-10-31 from the same source URL (1024x1024, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Pete Molinero",
-   "photo_url": "https://laternastudio.com/wp-content/uploads/2017/09/peteBizCas-1024x1024.jpg",
+   "photo_url": "photos/pete-molinero.jpg",
    "source_page": "https://laternastudio.com/about/",
    "status": "confirmed",
    "type": "Business portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "The Ombra news post names him as Potsdam site lead in text, but its sole image is an unlabeled header graphic with no caption tying it to him — excluded. His other source is Facebook (auth).",
@@ -5276,13 +5273,13 @@
    "type": null
   },
   {
-   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads, 1.3 MB JPEG). University of Michigan LSA's official CHGD Summer Fellows page names Rachel Kushner, labels her photograph, psychology program, Class of 2021. Matches the directory's University of Michigan record.",
+   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads, 1.3 MB JPEG). University of Michigan LSA's official CHGD Summer Fellows page names Rachel Kushner, labels her photograph, psychology program, Class of 2021. Matches the directory's University of Michigan record. Re-hosted locally 2026-10-31 from the same source URL (2601x3176, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Rachel Kushner",
-   "photo_url": "https://lsa.umich.edu/content/michigan-lsa/urop/en/current-urop-students/summer-fellows/chgd-summer-fellows/jcr%3Acontent/par/responsivegrid_395737925/image.transform/none/image.jpg",
+   "photo_url": "photos/rachel-kushner.jpg",
    "source_page": "https://lsa.umich.edu/urop/current-urop-students/summer-fellows/chgd-summer-fellows.html",
    "status": "confirmed",
    "type": "University fellow portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @amotwinsmom (display name \"Rachelle\").",
@@ -5346,13 +5343,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "ACPHS Phi Lambda Sigma induction page: group photo placed with the PLS inductee list naming Ria Amo first among ~20 inductees — no caption identifies individuals or positions. A second ACPHS group photo (Fall 2025 awards dinner) also lists her among 21 awardees, not individually identifiable. Possible.",
+   "evidence": "ACPHS Phi Lambda Sigma induction page: group photo placed with the PLS inductee list naming Ria Amo first among ~20 inductees — no caption identifies individuals or positions. A second ACPHS group photo (Fall 2025 awards dinner) also lists her among 21 awardees, not individually identifiable. Possible. Re-hosted locally 2026-10-31 from the same source URL (2400x1600, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Ria Amo",
-   "photo_url": "https://www.acphs.edu/wp-content/uploads/2025/08/PLS-2025_0.jpg",
+   "photo_url": "photos/ria-amo.jpg",
    "source_page": "https://www.acphs.edu/news/rho-chi-and-pls-induction-ceremony/",
    "status": "possible",
    "type": "group",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5363,13 +5360,13 @@
    "type": null
   },
   {
-   "evidence": "His own NCPR reporter page (St. Lawrence Valley Reporter) places [Image 0] at the head of his bio; filename RichardHaller.jpg. Second confirmed photo: SUNY Canton Chancellor's Award article, alt 'Richard Haller sits at desk with a laptop' (canton.edu/media/Richard-Haller-hero.jpg).",
+   "evidence": "His own NCPR reporter page (St. Lawrence Valley Reporter) places [Image 0] at the head of his bio; filename RichardHaller.jpg. Second confirmed photo: SUNY Canton Chancellor's Award article, alt 'Richard Haller sits at desk with a laptop' (canton.edu/media/Richard-Haller-hero.jpg). Re-hosted locally 2026-10-31 from the same source URL (1500x1000, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Richard Haller",
-   "photo_url": "https://www.northcountrypublicradio.org/news/images/RichardHaller.jpg",
+   "photo_url": "photos/richard-haller.jpg",
    "source_page": "https://www.northcountrypublicradio.org/news/reporters/309/richard-haller",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Assistant to the Dean of Health Sciences, Lewis School of Health Sciences. Confirmed directory headshot pattern. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 579x868 -> 2316x3472). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -5431,13 +5428,13 @@
    "type": null
   },
   {
-   "evidence": "Her Clarkson people page is text-only in extraction, but her org-chart block carries the directory image keyed to her username 'rdipasq' above her name and title (Assistant Professor – Anatomist, Physical Therapy).",
+   "evidence": "Her Clarkson people page is text-only in extraction, but her org-chart block carries the directory image keyed to her username 'rdipasq' above her name and title (Assistant Professor – Anatomist, Physical Therapy). Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Robin DiPasquale",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=rdipasq",
+   "photo_url": "photos/robin-dipasquale.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=rdipasq",
    "status": "confirmed",
    "type": "directory photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "No source links on file.",
@@ -5465,23 +5462,22 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). Image search ties this portrait to her personal site rumbidzai.com (her own name domain); the portrait was viewed and byte-checks as a real 800x649 JPEG. The site would not open for text verification, so the Harare Institute of Technology tie is unconfirmed - graded possible.",
+   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). Image search ties this portrait to her personal site rumbidzai.com (her own name domain); the portrait was viewed and byte-checks as a real 800x649 JPEG. The site would not open for text verification, so the Harare Institute of Technology tie is unconfirmed - graded possible. Re-hosted locally 2026-10-31 from the same source URL (800x649, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Rumbidzai Mushamba",
-   "photo_url": "https://files.cdn-files-a.com/uploads/10911418/800_697ac8094c3e9.jpg",
+   "photo_url": "photos/rumbidzai-mushamba.jpg",
    "source_page": "https://rumbidzai.com",
    "status": "possible",
    "type": "Personal website portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
-   "evidence": "DVIDS image 6884312 (Fort Drum, Oct 1, 2021): caption identifies the posed group by position — Sgt. 1st Class Ryan Blount is 4th/rightmost, name tape visible — after earning the Expert Soldier Badge; 427th Brigade Support Battalion; hometown Liverpool, NY per DMNA.",
+   "evidence": "DVIDS image 6884312 (Fort Drum, Oct 1, 2021): caption identifies the posed group by position — Sgt. 1st Class Ryan Blount is 4th/rightmost, name tape visible — after earning the Expert Soldier Badge; 427th Brigade Support Battalion; hometown Liverpool, NY per DMNA. Re-hosted locally 2026-10-31 from the same source URL (1000x635, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Ryan Blount",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2110/6884312/1000w_q95.jpg",
+   "photo_url": "photos/ryan-blount.jpg",
    "source_page": "https://www.dvidshub.net/image/6884312/ny-army-guard-soldiers-earn-expert-soldier-badge",
    "status": "confirmed",
    "type": "news photo",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-26"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @ryanpdaniels (display name \"Ryan Daniels\").",
@@ -5501,13 +5497,13 @@
    "type": null
   },
   {
-   "evidence": "Bank's 'Meet the Personal Bankers' page places [Image 10: Ryleigh Leeder Headshot] directly above her heading (Potsdam Branch, Relationship Banker), in the same named-headshot series as every other banker; repeated on the Potsdam branch page staff list with the same URL.",
+   "evidence": "Bank's 'Meet the Personal Bankers' page places [Image 10: Ryleigh Leeder Headshot] directly above her heading (Potsdam Branch, Relationship Banker), in the same named-headshot series as every other banker; repeated on the Potsdam branch page staff list with the same URL. Re-hosted locally 2026-10-31 from the same source URL (3298x3704, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Ryleigh Leeder",
-   "photo_url": "https://www.northcountrysavings.bank/sites/default/files/2026-07/Ryleigh%20Leeder%20headshot%20website.jpeg",
+   "photo_url": "photos/ryleigh-leeder.jpg",
    "source_page": "https://www.northcountrysavings.bank/banking/bankers",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "CONFIRMED. Anchor 1: Michael Taiwo Scholarships 'Meet the team' page (mtscholarships.org/about) carries this headshot with alt text 'Salako Gbenga' and filename Salako-Gbenga.png in his named team slot; his team-page bio is an exact identity match (Clarkson CARES air-quality researcher — directory: Clarkson University, Saint-Gobain NorPro, Obafemi Awolowo University). Anchor 2: independent PubMed co-authorship record for Salako Gbenga Oladoyin at Clarkson (established in the prior run). Curl-verified 200 image/png. Note: the site displays his name as 'Salako Gbenga' (order swapped vs directory). Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 300x300 -> 1200x1200). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -5544,13 +5540,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "His own SUNY Potsdam Bears coach page carries [Image 1: Sam Mace 2020 head shot] with his title (Volunteer Assistant Women's Lacrosse Coach). URL verbatim as extracted (width=300).",
+   "evidence": "His own SUNY Potsdam Bears coach page carries [Image 1: Sam Mace 2020 head shot] with his title (Volunteer Assistant Women's Lacrosse Coach). URL verbatim as extracted (width=300). Re-hosted locally 2026-10-31 from the same source URL (720x1080, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Sam Mace",
-   "photo_url": "https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/potsdam.sidearmsports.com/images/2020/2/7/mace_hs20_web.jpg?width=300",
+   "photo_url": "photos/sam-mace.jpg",
    "source_page": "https://potsdambears.com/sports/womens-lacrosse/roster/coaches/sam-mace/970",
    "status": "confirmed",
    "type": "headshot",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @samwangerin (display name \"Sam Wangerin\").",
@@ -5563,12 +5559,12 @@
   },
   {
    "name": "Samantha Antolik",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2105/6664060/1000w_q95.jpg",
+   "photo_url": "photos/samantha-antolik.jpg",
    "source_page": "https://www.dvidshub.net/image/6664060/soldiers-compete-cavalry-squadron-best-warrior-competition-with-sights-set-representing-new-york",
    "status": "confirmed",
-   "evidence": "DVIDS caption names SSG Samantha Antolik, health care sergeant, HHT 2nd Squadron 101st Cavalry, at the squadron Best Warrior Competition, Ellicottville NY, May 22, 2021; photo link supplied and confirmed by JD Oct 26",
+   "evidence": "DVIDS caption names SSG Samantha Antolik, health care sergeant, HHT 2nd Squadron 101st Cavalry, at the squadron Best Warrior Competition, Ellicottville NY, May 22, 2021; photo link supplied and confirmed by JD Oct 26 Re-hosted locally 2026-10-31 from the same source URL (1000x1500, bytes verified) so the primary no longer depends on the remote link.",
    "type": "DVIDS",
-   "added": "2026-10-26"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Her Clarkson people page is text-only in extraction, but her org-chart block carries the directory image keyed to her username 'smarocco' above her name and title (Professor & Program Director, Physical Therapy). Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 574x861 -> 2296x3444). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -5646,13 +5642,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Clarkson's official people page names Sarah Darabon as a Campus Safety & Security Sergeant and serves this labeled headshot from the Clarkson directory.",
+   "evidence": "CONFIRMED via ChatGPT professional search, verified 2026-10-28. Clarkson's official people page names Sarah Darabon as a Campus Safety & Security Sergeant and serves this labeled headshot from the Clarkson directory. Re-hosted locally 2026-10-31 from the same source URL (619x929, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Sarah Darabon",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=sdarabon",
+   "photo_url": "photos/sarah-darabon.jpg",
    "source_page": "https://www.clarkson.edu/people/sarah-darabon",
    "status": "confirmed",
    "type": "Staff headshot",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @sarah.ellabb (display name \"sarah\"); bio: \"NY | DePaul\".",
@@ -5706,13 +5702,13 @@
    "added": "2026-10-28"
   },
   {
-   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). A headshot file named 'savannahs-headshot' is hosted on Anderson University's site (her directory anchor is Anderson University) from its SGA pages; the current page no longer lists her, so the caption could not be re-verified - graded possible. Portrait viewed; real 333x500 JPEG.",
+   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). A headshot file named 'savannahs-headshot' is hosted on Anderson University's site (her directory anchor is Anderson University) from its SGA pages; the current page no longer lists her, so the caption could not be re-verified - graded possible. Portrait viewed; real 333x500 JPEG. Re-hosted locally 2026-10-31 from the same source URL (333x500, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Savannah Gabriella",
-   "photo_url": "https://andersonuniversity.edu/wp-content/uploads/2025/10/savannahs-headshot.jpg-optimized.jpg",
+   "photo_url": "photos/savannah-gabriella.jpg",
    "source_page": "https://andersonuniversity.edu/about-sga/",
    "status": "possible",
    "type": "University SGA headshot",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @savannah2416 (display name \"Savannah Newtown\"); bio: \"ASU alumni•          Emerson college ‘27•.    SLP2B          ✝️\".",
@@ -5777,13 +5773,13 @@
    "type": null
   },
   {
-   "evidence": "Potsdam article names her on the semifinal team ('Bradley Sweet, Himani Shaker, McKenna Middlebrook, and Sierra Damon') and quotes her; the page's group photos show the Potsdam business students at the Buffalo finals but no caption identifies her individually — she is one of eight Potsdam students at the event. Merit profile text-only; Bright Beginnings daycare page names her in team text but yielded no photo URL.",
+   "evidence": "Potsdam article names her on the semifinal team ('Bradley Sweet, Himani Shaker, McKenna Middlebrook, and Sierra Damon') and quotes her; the page's group photos show the Potsdam business students at the Buffalo finals but no caption identifies her individually — she is one of eight Potsdam students at the event. Merit profile text-only; Bright Beginnings daycare page names her in team text but yielded no photo URL. Re-hosted locally 2026-10-31 from the same source URL (425x392, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Sierra Damon",
-   "photo_url": "https://www.potsdam.edu/sites/default/files/inline-images/Business-Students%5B1%5Dmid2.jpg",
+   "photo_url": "photos/sierra-damon.jpg",
    "source_page": "https://www.potsdam.edu/news/four-suny-potsdam-students-advance-business-competition-finals-buffalo",
    "status": "possible",
    "type": "group",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @si3rragrace (display name \"Sierra Smith\").",
@@ -5814,13 +5810,13 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). Image search associates this SUNY ResearchConnect portrait asset with 'Song Yi Lee SUNY Potsdam' (her directory anchor is SUNY Potsdam); no ResearchConnect profile page naming her could be located to confirm the tie - graded possible. Portrait viewed; real 260x447 JPEG.",
+   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). Image search associates this SUNY ResearchConnect portrait asset with 'Song Yi Lee SUNY Potsdam' (her directory anchor is SUNY Potsdam); no ResearchConnect profile page naming her could be located to confirm the tie - graded possible. Portrait viewed; real 260x447 JPEG. Re-hosted locally 2026-10-31 from the same source URL (260x447, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Song Yi Lee",
-   "photo_url": "https://researchconnect.suny.edu/files-asset/58428458/38271817.jpg/",
+   "photo_url": "photos/song-yi-lee.jpg",
    "source_page": "https://researchconnect.suny.edu",
    "status": "possible",
    "type": "SUNY ResearchConnect portrait",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Her SUNY Potsdam profile story 'The Right Time for Me' (filed under the Stephanie spelling) carries a photo with alt text 'stephanie at the brooklyn bridge', tied to her in the text about her spring-break NYC trip; article credits 'Portraits by Jason Hunter.' Merit profile is text-only listings. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 391x650 -> 1564x2600). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -5875,13 +5871,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Instagram profile @midwifesunday (display name \"Sunday Wright Smith\").",
+   "evidence": "Instagram profile @midwifesunday (display name \"Sunday Wright Smith\"). REPLACED 2026-10-31: the Instagram CDN primary had expired. New primary extracted losslessly with pdfimages from her Sunday's Story page image (sunday_1_1708314278.jpeg, 1500x1000) at midwifesunday.com, which identifies her as a Certified Nurse Midwife; the photo shows her in scrubs holding a baby in her office. Cropped to her figure (990x990) and viewed before filing.",
    "name": "Sunday Wright Smith",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.75761-19/497887016_18075619915893490_5805431319500058123_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=102&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=HgoapP9xwl4Q7kNvwF3TkEL&_nc_oc=AdrCDIeP3NHEEtyOZ5hSIZniKhcKd-UEL5Z5vlBENXRvXYzgCTMojAT-1yhLSKxUBH2E_DYoWAfE1Y-GUOfOYAPl&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=pslpfWOjEtlqBKc05mBQZg&oh=00_AQP2PkI9IjzFeOUu7tCSG_FYInQrsCJvPAFN6Vyduj4ftw&oe=6AE01D04",
-   "source_page": "https://www.instagram.com/midwifesunday/",
+   "photo_url": "photos/sunday-wright-smith.jpg",
+   "source_page": "https://midwifesunday.com",
    "status": "confirmed",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "type": "Photo: Sunday's Story page, midwifesunday.com",
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5900,14 +5896,13 @@
    "type": null
   },
   {
-   "evidence": "SUNY Canton news photo (Jun 19, 2012): caption names the pictured group in order — Lt. Brian E. Kurish, Chief Lisa E. Colbert, Eli Max, Criminal Investigation Associate Professor Susan Buckley (4th), Instructor Elizabeth A. Erickson. Group shot; her position follows the caption order.",
+   "evidence": "SUNY Canton news photo (Jun 19, 2012): caption names the pictured group in order — Lt. Brian E. Kurish, Chief Lisa E. Colbert, Eli Max, Criminal Investigation Associate Professor Susan Buckley (4th), Instructor Elizabeth A. Erickson. Group shot; her position follows the caption order. Re-hosted locally 2026-10-31 from the same source URL (280x190, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Susan Buckley",
-   "photo_url": "https://s3.amazonaws.com/attachments.readmedia.com/files/41844/medium/SUNY_Canton_Eli_Max_June_19_2012.jpeg?1341001645",
+   "photo_url": "photos/susan-buckley.jpg",
    "source_page": "http://readme.readmedia.com/SUNY-Canton-Criminal-Investigation-Major-Eli-Max-of-Freeport-N-Y-11520-Wins-Wins-Award-From-SUNY-Police/4511157/print",
    "status": "possible",
    "type": "news photo",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-26"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @syd.collins11 (display name \"Sydney Storrin\").",
@@ -5928,13 +5923,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads). Clarkson's official staff page names Tammy Monroe, Administrative Coordinator in Physician Assistant Studies, Lewis School of Health Sciences, and labels her headshot. Matches the directory's Clarkson Lewis School record.",
+   "evidence": "CONFIRMED via ChatGPT professional search batch 2, verified 2026-10-28 (image loads). Clarkson's official staff page names Tammy Monroe, Administrative Coordinator in Physician Assistant Studies, Lewis School of Health Sciences, and labels her headshot. Matches the directory's Clarkson Lewis School record. Re-hosted locally 2026-10-31 from the same source URL (600x900, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Tammy Monroe",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=tmonroe",
+   "photo_url": "photos/tammy-monroe.jpg",
    "source_page": "https://www.clarkson.edu/people/tammy-monroe",
    "status": "confirmed",
    "type": "Staff directory headshot",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -5990,13 +5985,13 @@
    "added": "2026-10-29"
   },
   {
-   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. Clarkson University's directory serves this headshot (150x200, viewed) under the username tquant from Thomas Quant's Clarkson org-chart entry. His directory anchor on file is Alfred State College and the Clarkson people page itself was unreachable during verification, so the employer tie is graded possible.",
+   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. Clarkson University's directory serves this headshot (150x200, viewed) under the username tquant from Thomas Quant's Clarkson org-chart entry. His directory anchor on file is Alfred State College and the Clarkson people page itself was unreachable during verification, so the employer tie is graded possible. Re-hosted locally 2026-10-31 from the same source URL (150x200, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Thomas Quant",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=tquant",
+   "photo_url": "photos/thomas-quant.jpg",
    "source_page": "https://www.clarkson.edu/people/thomas-quant",
    "status": "possible",
    "type": "University directory headshot",
-   "added": "2026-10-28"
+   "added": "2026-10-31"
   },
   {
    "evidence": "No source links on file.",
@@ -6075,13 +6070,13 @@
    "type": null
   },
   {
-   "evidence": "anchor 1: Polongo TV article 'Music: Don't Give Up - Toni Ajayi' (2020) names her and describes the Potsdam tie — 'actively served on the worship team at New Hope Community Church in Potsdam', US-based gospel artist and environmental engineer from Ibadan — consistent with her North Country church profile; the image is the cover art for her single 'Don't Give Up', alt-titled with her name. Marked possible: from text extraction alone it cannot be verified that the cover art depicts her (vs. graphic-only art).",
+   "evidence": "anchor 1: Polongo TV article 'Music: Don't Give Up - Toni Ajayi' (2020) names her and describes the Potsdam tie — 'actively served on the worship team at New Hope Community Church in Potsdam', US-based gospel artist and environmental engineer from Ibadan — consistent with her North Country church profile; the image is the cover art for her single 'Don't Give Up', alt-titled with her name. Marked possible: from text extraction alone it cannot be verified that the cover art depicts her (vs. graphic-only art). Re-hosted locally 2026-10-31 from the same source URL (400x400, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Toni Ajayi",
-   "photo_url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhYkPZaWyHqMTC157-u-ZaRbf4S_8ptpbYp6NTORabA3uwszu8eiCqF_87AQc1ezm6qNhnRJTp9rc8vncmU5VT087HCoIRUbCUZ4E-TBzQL6ulRA_ARLeDNNmqznXdciu5fvdYyB54uHP6z/s400-rw/Song+Art+2.jpg",
+   "photo_url": "photos/toni-ajayi.jpg",
    "source_page": "https://www.polongotv.net/2020/08/music-dont-give-up-toni-ajayi.html",
    "status": "possible",
    "type": "portrait",
-   "added": "2026-10-27"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -6170,13 +6165,13 @@
    "type": null
   },
   {
-   "evidence": "anchor 1: Jefferson Community College nurse pinning article (published June 6, 2023) captions the group photo 'Top row (l-r): Jeremy Thomas Reff of Redwood, Kylie Saleen Vaughan of Hammond, Victoria Lucas of Gouverneur, Kathryn Joyce Carey...' — she is third in the top row; anchor 2: the same page names Victoria Lucas of Gouverneur as recipient of the Samaritan Medical Center HEART Award, matching profile (JCC AAS Nursing Spring 2023, RN at Rochester Regional Health, Gouverneur, NY). Marked possible because it is a large group photo and position ID rests on caption ordering alone. Upgrades her prior photos.json entry, which was 'possible' with no extractable image URL.",
+   "evidence": "anchor 1: Jefferson Community College nurse pinning article (published June 6, 2023) captions the group photo 'Top row (l-r): Jeremy Thomas Reff of Redwood, Kylie Saleen Vaughan of Hammond, Victoria Lucas of Gouverneur, Kathryn Joyce Carey...' — she is third in the top row; anchor 2: the same page names Victoria Lucas of Gouverneur as recipient of the Samaritan Medical Center HEART Award, matching profile (JCC AAS Nursing Spring 2023, RN at Rochester Regional Health, Gouverneur, NY). Marked possible because it is a large group photo and position ID rests on caption ordering alone. Upgrades her prior photos.json entry, which was 'possible' with no extractable image URL. Re-hosted locally 2026-10-31 from the same source URL (800x504, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Victoria Lucas",
-   "photo_url": "https://sunyjefferson.edu/news/documents/Nurse%20Pinning%20May%202023%20web.jpg",
+   "photo_url": "photos/victoria-lucas.jpg",
    "source_page": "https://sunyjefferson.edu/news/nurse_pinning_spring2023.php",
    "status": "possible",
    "type": "group",
-   "added": "2026-10-27"
+   "added": "2026-10-31"
   },
   {
    "evidence": "Instagram profile @hennykv (display name \"Vimbai Kuzanga\"); bio: \"I believe that hard work is only your carriage, faith is what keeps it running and support keeps the journey c\".",
@@ -6231,13 +6226,13 @@
    "type": null
   },
   {
-   "evidence": "His Clarkson org-chart block (Director, Campus Safety & Security) carries the directory image labeled 'whissong' — the directory headshot keyed to his username.",
+   "evidence": "His Clarkson org-chart block (Director, Campus Safety & Security) carries the directory image labeled 'whissong' — the directory headshot keyed to his username. Re-hosted locally 2026-10-31 from the same source URL (619x929, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Wesley Hissong",
-   "photo_url": "https://directories.clarkson.edu/view_image.php?image_id=whissong",
+   "photo_url": "photos/wesley-hissong.jpg",
    "source_page": "https://www.clarkson.edu/organizational-chart?u=whissong",
    "status": "confirmed",
    "type": "directory photo",
-   "added_approx": "Oct 2026"
+   "added": "2026-10-31"
   },
   {
    "evidence": "PRIORITY (200x122 classroom wide). SUNY Potsdam Mentoring Madness Merit story photo Mentors3.jpg captioned 'Sean Sievers '22, left, and Whitney Verbeck '22 speak to a classroom...' Cropped the woman at right (gray cardigan/poncho) from the 200x122 original (kept as whitney-verbeck-wide.jpg) and FSRCNN x4 enhanced. Identity rests on caption position, hence possible. Her Merit profile page carries no photo. Replacement photo filed 2026-10-31 from the live source page (160x400); previous primary was a dead URL.",
@@ -6282,14 +6277,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "DVIDS image 7671110: U.S. Army Master Sgt. Zalika Ajamu, 369th Sustainment Brigade, NY Army National Guard, promoted from sergeant first class at Camp Arifjan, Kuwait, Mar 2, 2023; companion DVIDS story: from Buffalo, NY, brigade Sexual Assault Response Coordinator, 20 years of service.",
+   "evidence": "DVIDS image 7671110: U.S. Army Master Sgt. Zalika Ajamu, 369th Sustainment Brigade, NY Army National Guard, promoted from sergeant first class at Camp Arifjan, Kuwait, Mar 2, 2023; companion DVIDS story: from Buffalo, NY, brigade Sexual Assault Response Coordinator, 20 years of service. Re-hosted locally 2026-10-31 from the same source URL (1000x1294, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Zalika Ajamu",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2302/7671110/1000w_q95.jpg",
+   "photo_url": "photos/zalika-ajamu.jpg",
    "source_page": "https://www.dvidshub.net/image/7671110/master-sgt-zalika-ajamu-promoted",
    "status": "confirmed",
    "type": "DVIDS portrait",
-   "added_approx": "Oct 2026",
-   "added": "2026-10-26"
+   "added": "2026-10-31"
   },
   {
    "evidence": "No source links on file.",
@@ -6320,21 +6314,21 @@
   },
   {
    "name": "Kyle Davis",
-   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/2311/8109436/1000w_q95.jpg",
+   "photo_url": "photos/kyle-davis.jpg",
    "source_page": "https://www.army.mil/article/272148/new_york_national_guard_soldiers_return_from_southern_vanguard_24_in_brazil",
    "status": "confirmed",
    "type": "group",
-   "evidence": "anchor 1: the army.mil article 'New York National Guard Soldiers return from Southern Vanguard 24 in Brazil' captions this photo: 'New York Army National Guard Cpt. Kyle Davis, assigned to the 258th Field Artillery Regiment, and Brazilian Army Sergeant 3rd Class Irwing Carvalho Marques, assigned to the 2nd Jungle Infantry Battalion, examine a starting point during a night time land navigation exercise prior to the start of Exercise Southern Vanguard 24 in Belém, Brazil on Nov. 3, 2023' (U.S. Army photo by Spc. Joseph Liggio). anchor 2: the identical DVIDS record (Photo ID 8109436, VIRIN 231103-Z-EL715-1544, 6720x4480) carries the same caption naming Cpt. Kyle Davis of the 258th Field Artillery Regiment — matches profile (CPT, HHC 27th IBCT; his 258th Field Artillery Southern Vanguard 24 service is already on file). Filed URL is the DVIDS public-domain 1000w version of the same photo.",
-   "added": "2026-10-27"
+   "evidence": "anchor 1: the army.mil article 'New York National Guard Soldiers return from Southern Vanguard 24 in Brazil' captions this photo: 'New York Army National Guard Cpt. Kyle Davis, assigned to the 258th Field Artillery Regiment, and Brazilian Army Sergeant 3rd Class Irwing Carvalho Marques, assigned to the 2nd Jungle Infantry Battalion, examine a starting point during a night time land navigation exercise prior to the start of Exercise Southern Vanguard 24 in Belém, Brazil on Nov. 3, 2023' (U.S. Army photo by Spc. Joseph Liggio). anchor 2: the identical DVIDS record (Photo ID 8109436, VIRIN 231103-Z-EL715-1544, 6720x4480) carries the same caption naming Cpt. Kyle Davis of the 258th Field Artillery Regiment — matches profile (CPT, HHC 27th IBCT; his 258th Field Artillery Southern Vanguard 24 service is already on file). Filed URL is the DVIDS public-domain 1000w version of the same photo. Re-hosted locally 2026-10-31 from the same source URL (1000x667, bytes verified) so the primary no longer depends on the remote link.",
+   "added": "2026-10-31"
   },
   {
-   "evidence": "CONFIRMED 2026-10-28. The AEDC March 2024 newsletter photo is captioned Victoria Duley (AEDC), Julie and Justin Cardinal (Esther's Coffee House, Massena), and Jamie Cecilia (AEDC) - the caption names Julie directly; cofounder with Justin. Group photo; individual positions not separately mapped.",
+   "evidence": "CONFIRMED 2026-10-28. The AEDC March 2024 newsletter photo is captioned Victoria Duley (AEDC), Julie and Justin Cardinal (Esther's Coffee House, Massena), and Jamie Cecilia (AEDC) - the caption names Julie directly; cofounder with Justin. Group photo; individual positions not separately mapped. Re-hosted locally 2026-10-31 from the same source URL (1200x830, bytes verified) so the primary no longer depends on the remote link.",
    "name": "Julie Cardinal",
-   "photo_url": "https://files.constantcontact.com/e6c941d2901/8e4f7ff0-d1a5-430e-b196-5dfadb855e2d.jpg",
+   "photo_url": "photos/julie-cardinal.jpg",
    "source_page": "https://myemail.constantcontact.com/AEDC-Newsletter--March-2024.html?aid=z8NBiWE290c&soid=1138922658926",
    "status": "confirmed",
    "type": "Business event group photo",
-   "added": "2026-10-28",
+   "added": "2026-10-31",
    "also": []
   },
   {
@@ -6358,12 +6352,12 @@
   },
   {
    "name": "Christopher Pagan",
-   "photo_url": "https://cdn.prod.website-files.com/68d82df43f4cafabca6b8877/69123e6b6ba13624a1a26185_Christopher-p-500.jpg",
+   "photo_url": "photos/christopher-pagan.jpg",
    "source_page": "https://prudenteng.com/search-results",
    "status": "possible",
    "type": "Employer website headshot",
-   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). A professional headshot asset named 'Christopher' is hosted on the Webflow CDN serving prudenteng.com, Prudent Engineering - the firm JD's 2026-10-26 research batch confirmed Christopher Pagan joined in Sep 2025. No firm page naming him beside the photo could be opened, so the pairing is graded possible, not confirmed. URL load-verified (500x544 JPEG) and the portrait viewed.",
-   "added": "2026-10-28"
+   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). A professional headshot asset named 'Christopher' is hosted on the Webflow CDN serving prudenteng.com, Prudent Engineering - the firm JD's 2026-10-26 research batch confirmed Christopher Pagan joined in Sep 2025. No firm page naming him beside the photo could be opened, so the pairing is graded possible, not confirmed. URL load-verified (500x544 JPEG) and the portrait viewed. Re-hosted locally 2026-10-31 from the same source URL (500x544, bytes verified) so the primary no longer depends on the remote link.",
+   "added": "2026-10-31"
   },
   {
    "name": "Stephanie Reasoner",
