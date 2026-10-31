@@ -294,7 +294,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.6.0';
+var MOBILE_VERSION = '1.6.1';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -637,6 +637,38 @@ function openPerson(di){ location.hash = '#/p/' + encodeURIComponent(pkey(D.dire
 
 /* ---------- router ---------- */
 var S = { route:'contacts', q:'', sort:'contacted', di:null, group:null, listKey:null };
+/* ---------- scroll memory — the desktop app's NAVS rule (V3.40.0),
+   mirrored for this shell: Back returns to the previous view actually
+   seen, at the scroll it was left at. Mobile has ONE scroll region
+   (#scroll) shared by every view, so positions live in a per-route map.
+   render() used to zero the scroll on every route change, which is why
+   opening a profile and coming back dumped you at the top of the list. */
+var SCROLLMEM = {}, CURKEY = null, restoreToken = 0;
+function saveScroll(){
+  if(CURKEY == null) return;
+  var sc = $('#scroll'); if(sc) SCROLLMEM[CURKEY] = sc.scrollTop;
+}
+function restoreScroll(y){
+  var sc = $('#scroll'); if(!sc) return;
+  if(!y){ sc.scrollTop = 0; return; }
+  var tok = ++restoreToken, lastH = -1, stable = 0, frames = 0;
+  (function step(){
+    if(tok !== restoreToken) return; /* a newer render or a real touch supersedes */
+    sc.scrollTop = y;
+    var h = sc.scrollHeight;
+    var landed = Math.abs(sc.scrollTop - y) <= 1;
+    var clamped = sc.scrollTop + sc.clientHeight >= h - 1; /* content shorter than the remembered spot */
+    if((landed || clamped) && h === lastH){ if(++stable >= 12) return; }
+    else stable = 0;
+    lastH = h;
+    if(++frames >= 240) return;
+    /* list views chunk-render over several frames and a webfont swap can
+       shift row heights after the first landing — keep re-applying until
+       the height has been stable a dozen frames (the rail jump settle,
+       generalised). A user gesture cancels via restoreToken. */
+    requestAnimationFrame(step);
+  })();
+}
 function parseRoute(){
   var h = location.hash || '#/contacts';
   var parts = h.replace(/^#\//, '').split('/');
@@ -654,8 +686,10 @@ function parseRoute(){
 }
 function render(){
   if(!D) return;
+  saveScroll(); /* the view being left keeps its place */
   var r = parseRoute();
   S.route = r.name;
+  CURKEY = location.hash || '#/contacts';
   $('#rail').classList.remove('on'); $('#totop').classList.remove('on');
   if(r.name !== 'all' && r.name !== 'pick'){ var dk0 = $('#deck'); dk0.hidden = true; dk0.innerHTML = ''; }
   var v = $('#view');
@@ -672,7 +706,7 @@ function render(){
   else if(r.name === 'all') viewContacts(v);
   else viewHome(v);
   layoutChrome();
-  $('#scroll').scrollTop = 0;
+  restoreScroll(SCROLLMEM[CURKEY] || 0);
 }
 
 /* ---------- Contacts select screen ---------- */
@@ -959,6 +993,7 @@ function layoutChrome(){
   tt.style.bottom = 'calc(' + (tabsH + 12) + 'px + env(safe-area-inset-bottom))';
 }
 addEventListener('resize', layoutChrome);
+addEventListener('wheel', function(){ restoreToken++; }, { passive:true }); /* a wheel scroll cancels a pending restore too */
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ layoutChrome(); });
 
 /* ---------- A-Z rail: tap to jump, press-and-slide to scrub (iOS Contacts style) ---------- */
@@ -1084,6 +1119,7 @@ document.addEventListener('click', function(ev){
 var TAP = { di:null, act:null, x:0, y:0, seq:0, doneSeq:0 };
 document.addEventListener('pointerdown', function(ev){
   jumpToken++; /* any fresh touch ends leftover scroll settling */
+  restoreToken++; /* ...and cancels a pending scroll restore */
   var t = ev.target && ev.target.closest ? ev.target : null;
   var pb = t && t.closest ? t.closest('[data-pick]') : null;
   var ob = t && t.closest ? t.closest('[data-open]') : null;
