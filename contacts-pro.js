@@ -6326,7 +6326,7 @@ function hmiBars(items){
   items.forEach(function(it){ if(it.c > max) max = it.c; });
   return '<div class="hmi-cmp">' + items.map(function(it, i){
     var p = max > 0 && it.c > 0 ? Math.max(2, Math.round(1000 * it.c / max) / 10) : 0;
-    return '<div class="hmi-cmprow' + (i === 0 ? ' me' : '') + '"><span class="hmi-cmpl">' + esc(it.label) + '</span>' +
+    return '<div class="hmi-cmprow' + (i === 0 ? ' me' : '') + '"><span class="hmi-cmpl" title="' + esc(it.label) + '">' + esc(it.label) + '</span>' +
       '<span class="hmi-cmptrack"><span class="hmi-cmpfill" style="width:' + p + '%"></span></span>' +
       '<span class="hmi-cmpv">' + hmFmtN(it.c) + '</span></div>';
   }).join('') + '</div>';
