@@ -1,24 +1,61 @@
 {
  "generated": "2026-10-30",
- "count": 0,
- "suggestions": [],
+ "count": 4,
+ "suggestions": [
+  {
+   "id": "pf-4afd82fd14",
+   "key": "sf:emily-kendall",
+   "display": "Emily Kendall",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Potsdam is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-b9bc27d8bc",
+   "key": "emijent",
+   "display": "Emily R. Jent",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Potsdam is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-5f8e0acd40",
+   "key": "m.not.a.lobster",
+   "display": "Michelle Johnston",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Potsdam is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-b93e1fce44",
+   "key": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  }
+ ],
  "auto_apply": [
-  {
-   "key": "furious_myles",
-   "display": "Myles Laramay",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-5203e16fd6"
-  },
-  {
-   "key": "mr_writers_block",
-   "display": "Merrick Sinclair",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 62,
-   "id": "pf-9718506394"
-  },
   {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
