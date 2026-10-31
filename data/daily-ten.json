@@ -304,25 +304,51 @@
   ],
   "filed": [
     {
-      "name": "sf:sandie-waite-colbert",
-      "display": "Sandie Waite Colbert",
+      "name": "sf:zvi-szafran",
+      "display": "Zvi Szafran",
       "facts": [
         {
-          "text": "Hosts weekly classes at Roots and Shoots in Canton, New York, as a certified wellness coach",
-          "source": "Roots and Shoots",
-          "url": "https://www.rootsandshootsny.com/about",
+          "text": "Serves as co-chair of the Village of Heuvelton's NY Forward Local Planning Committee, Oct 2026",
+          "source": "Village of Heuvelton",
+          "url": "https://www.heuveltonny.com/uploads/1/2/7/5/12750833/lpc5_and_open_house2_press_release_rev01__002_.pdf",
+          "novelty": "new",
+          "fresh": true,
+          "published": "2026-10-13"
+        }
+      ]
+    },
+    {
+      "name": "sf:alisha-ohl",
+      "display": "Alisha Ohl",
+      "facts": [
+        {
+          "text": "As director of Clarkson's Occupational Therapy program, quoted in the university's launch of a new scholarship initiative for Occupational Therapy and Physical Therapy students",
+          "source": "Clarkson University",
+          "url": "https://www.clarkson.edu/news-events/clarkson-university-launches-new-scholarship-initiative-occupational-therapy-and-physical-therapy-students",
           "novelty": "new"
         }
       ]
     },
     {
-      "name": "labellek14",
-      "display": "Katie LaBelle",
+      "name": "sf:evan-dimakas",
+      "display": "Evan Dimakas",
       "facts": [
         {
-          "text": "Graduated from Clarkson University with a doctorate in occupational therapy, May 2025",
-          "source": "Clarkson University",
-          "url": "https://www.clarkson.edu/academics/schools-colleges/health/occupational-therapy-department/ot-students",
+          "text": "Served as a Captain and commanding officer of B Company, 182nd Infantry Regiment, Massachusetts National Guard, in Poptun, Guatemala, Jul 2019",
+          "source": "U.S. Army",
+          "url": "https://www.army.mil/article/226116/army_offers_more_than_80000_in_re_up_bonuses",
+          "novelty": "new"
+        }
+      ]
+    },
+    {
+      "name": "sf:brenden-vanhorn",
+      "display": "Brenden Vanhorn",
+      "facts": [
+        {
+          "text": "Named to SUNY Canton's President's List for Spring 2025 as a Cybersecurity student",
+          "source": "SUNY Canton",
+          "url": "https://www.canton.edu/news/2025/honors-sp25.php",
           "novelty": "new"
         }
       ]
@@ -333,7 +359,7 @@
     "of": 726,
     "window_days": 30
   },
-  "note": "AM run: checked 75, filed 2 facts across 2 people. Sandie Waite Colbert hosts weekly classes at Roots and Shoots in Canton, New York, as a certified wellness coach (Roots and Shoots about page, read directly: Norwood hometown + Cornerstone Services ownership tie her to the profile). Katie LaBelle graduated from Clarkson University with a doctorate in occupational therapy in May 2025 (Clarkson OT students page, read directly: Massena hometown, SUNY Potsdam bachelor's, and North Country Community College all match her profile; her blank Degrees field was filled). Both bullets read back in the Sheet exactly once. Fresh sweep: none found \u2014 the only in-window directory items were Zvi Szafran's Oct 9 Ogdensburg Promise quotes (institutional, known role, already noted in earlier runs) and an Oct 30 NCPR Canton photo credit in a known role; the Oct 21 Potsdam Chamber awards and the SUNY Canton dean's-list coverage named no directory member with a new personal fact. The hot list carries Michelle Johnston's Oct 30 Shaffer Award inside its 48-hour window. This run added 17 candidates to the Research Command ledger (identity holds for Caleb Lindsey, Sydney Storrin, Lael Card, Shannon Zych, Anna Molinero, Jeremy Taylor, Grace LaPointe, Katie Jenks, Meghan Arquette, Eliza Sullivan, and Tom Allan Green; a sensitive obituary hold for Phyllis Paladin; source holds for CJ Tomford and Colin Mackey; a conflict record for Gavin Matthews; and verification holds for Ethan Flamand's Eagle Scout claim and Vinny Vetere's armwrestling rankings, which the parent could not re-verify directly) and reconciled 42 of JD's console 'file' decisions from Oct 31 into the Change Log. Unharvested photo leads flagged by JD in Research Command, awaiting a photo pass: Max Ferran (Bold.org student profile), Megan Converse (Merit Pages), Emily Criscitello (Precision Scuba Diving, Tulum), Joe Charlebois (Elite Prospects), and Joann Duclos (Army.mil).",
+  "note": "AM run CORRECTED the same day (composed originally from interim subagent summaries; the two original filings failed parent re-verification and have been removed from the profiles and this brief). Removed: Sandie Waite Colbert's Roots and Shoots wellness-coach bullet (the cited site was unreachable and no source could be retrieved) and Katie LaBelle's Clarkson OT doctorate bullet (the cited Clarkson URL loads a Custom404 page and no corroboration exists; her Degrees, Files, and Highlights fills from that claim were reverted). Filed instead, from the research batches' final reports and re-verified on the source pages: Zvi Szafran (FRESH: co-chair of the Village of Heuvelton's NY Forward Local Planning Committee, village release published Oct 13, 2026), Alisha Ohl (quoted as OT program director in Clarkson's launch of a new OT/PT scholarship initiative), Evan Dimakas (Captain and commanding officer, B Company, 182nd Infantry Regiment, in Guatemala, Jul 2019, per U.S. Army), and Brenden Vanhorn (SUNY Canton President's List, Spring 2025). Fresh sweep: Zvi Szafran is the one fresh winner; other in-window directory items were known-role/institutional only. The hot list carries Michelle Johnston's Oct 30 Shaffer Award inside its 48-hour window. The 17 Research Command candidates added by this run and the 42 console 'file' decisions reconciled into the Change Log are unchanged by this correction. Unharvested photo leads flagged by JD in Research Command, awaiting a photo pass: Max Ferran (Bold.org student profile), Megan Converse (Merit Pages), Emily Criscitello (Precision Scuba Diving, Tulum), Joe Charlebois (Elite Prospects), and Joann Duclos (Army.mil).",
   "next_up": [
     {
       "name": "abbystiles_",
@@ -377,7 +403,16 @@
     }
   ],
   "unchecked_remaining": 0,
-  "fresh": [],
+  "fresh": [
+    {
+      "name": "sf:zvi-szafran",
+      "display": "Zvi Szafran",
+      "published": "2026-10-13",
+      "text": "Serves as co-chair of the Village of Heuvelton's NY Forward Local Planning Committee, Oct 2026",
+      "source": "Village of Heuvelton",
+      "url": "https://www.heuveltonny.com/uploads/1/2/7/5/12750833/lpc5_and_open_house2_press_release_rev01__002_.pdf"
+    }
+  ],
   "freshness": {
     "d7": 726,
     "d30": 0,
