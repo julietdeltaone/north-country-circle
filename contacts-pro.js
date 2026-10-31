@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.57.0';
+var APP_VERSION = '3.58.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7913,28 +7913,60 @@ function viewDaily(v){
 }
 
 /* ============================================================
-   Live Records Command Center (V3.55.0, JD 2026-10-31): a
-   second, full-screen interface inside Live Records — a dark
-   command console reading the SAME twice-daily brief data
-   (DT, data/daily-ten.json; sweeps 6:54 AM & 6:54 PM ET, 75
-   checks per sweep) and the change log (CH) as the brief view.
-   A spotlight loops through everything the latest brief filed
-   and checked, beside a granular timing rail, a merged
-   Timeline ledger and a Roster. One controller (LRCC) owns
-   every timer and tears them all down on close. Read-only:
-   display and navigation only.
-   V3.57.0 elegance pass (JD 2026-10-31): all content motion
-   runs on eased crossfades (out on an ease-in ramp, in on
-   --lrcc-ease); the linear progress bar is gone, replaced by
-   position dots; and the radar scope is now a RECENCY ORBIT —
-   concentric time bands by the date the event actually
-   happened (never the filed/found date), recent at the
-   center, quiet at the rim, with one soft pulse breathing
-   out of the center every ~6.5s.
+   Live Records Command Center (V3.58.0, JD 2026-10-31) —
+   torn down and rebuilt from scratch after the V3.55–V3.57
+   console's flashing / jitter problems and its not-glanceable
+   orbit. A full-screen dark console inside Live Records
+   reading the SAME twice-daily brief data (DT,
+   data/daily-ten.json; sweeps 6:54 AM & 6:54 PM ET, 75 checks
+   per sweep) and the change log (CH) as the brief view.
+
+   THE QUESTION IT ANSWERS: "when did things happen?" The
+   Overview hero is a DATE-COLUMN TIMELINE — one column per
+   distinct event date, newest at the right, columns placed
+   on a logarithmic age scale (CloudLines: Krstajic, Bertini
+   & Keim, IEEE TVCG 2011 — logarithmic time distortion gives
+   recent days most of the width while the past stays in
+   context), each column a beeswarm-style stack of event
+   beads with its real DATE printed under it and its event
+   count on top. (A pure per-event bead axis was ruled out by
+   the data itself: ~90% of dated events share six recent
+   days, so coincident events aggregate into day columns —
+   the standard beeswarm answer to coincident points.) Event
+   date = when the thing happened (the source's published
+   date / the entry's logged source_date); the entry date is
+   only the fallback when no dated event exists — never the
+   filed/found date when a real one exists. A date-first
+   glance list of the latest events sits beside the readout,
+   so the top dates read off the Overview with no waiting
+   for the loop.
+
+   FLASH-PROOF ARCHITECTURE (the V3.57 bug class, eliminated
+   by construction, not patched):
+   - The overlay node is created ONCE per open and is never
+     rebuilt. Data refreshes (a sweep lands while the console
+     is open) mutate only the data subtrees — strip columns,
+     list rows, readout text, header chips — inside their
+     persistent containers, with NO opacity animation
+     anywhere on the refresh path.
+   - The root is opaque #0a0d12 from its first frame: no
+     open/close fade on the root, no scale, nothing ever
+     crossfades against the app beneath. The one crossfade
+     (the spotlight readout) runs on an inner wrapper whose
+     parent chain is console-colored panels only.
+   - Every color inside the console is a literal value or an
+     .lrcc-scoped token; zero app-theme variables.
+   - No infinite ambient animations. Motion is transform /
+     opacity only, eased on --lrcc-ease, timer- or
+     user-driven. Under prefers-reduced-motion there is no
+     auto-advance and every swap is instant.
+   One controller (LRCC) owns every timer and tears them all
+   down on close. Read-only: display and navigation only.
    ============================================================ */
 var LRCC = { el:null, openWanted:false, tab:'overview', items:[], idx:0, hold:false, hover:false,
-  clockTimer:null, spotTimer:null, swapTimer:null, tabTimer:null, _key:null, _vis:null, _stamp:'', _orbit:{} };
-var LRCC_SP_MS = 4500, LRCC_PER_SWEEP = 75, LRCC_PULSE_MS = 6500;
+  pin:null, clockTimer:null, spotTimer:null, _fadeT:null, _key:null, _vis:null, _stamp:'',
+  _ev:[], _days:[], _maxAge:365 };
+var LRCC_SP_MS = 5500, LRCC_PER_SWEEP = 75;
 
 /* --- ET wall-clock math: the sweep schedule lives in
    America/New_York; convert through Intl so DST is handled,
@@ -7958,8 +7990,8 @@ function lrccNextSweep(fromMs){
   [ { y:p.y, mo:p.mo, d:p.d, h:6 }, { y:p.y, mo:p.mo, d:p.d, h:18 },
     { y:tom.getUTCFullYear(), mo:tom.getUTCMonth() + 1, d:tom.getUTCDate(), h:6 } ].forEach(function(c){
     var utc = lrccEtToUtc(c.y, c.mo, c.d, c.h, 54);
-    if(utc > fromMs && (best === null || utc < best.utc))
-      best = { utc:utc, today:(c.y === p.y && c.mo === p.mo && c.d === p.d), label:(c.h === 6 ? '6:54 AM' : '6:54 PM') };
+    if(utc > fromMs && (!best || utc < best.utc))
+      best = { utc:utc, label:(c.h === 6 ? '6:54 AM' : '6:54 PM'), today:(c.y === p.y && c.mo === p.mo && c.d === p.d) };
   });
   return best;
 }
@@ -7980,98 +8012,87 @@ function lrccAge(iso){
   if(dd === 1) return 'yesterday';
   return dd + 'd ago';
 }
-function lrccHash(s){
-  var h = 5381;
-  for(var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
-  return h;
-}
 function lrccAgeDays(iso){
   if(!iso) return null;
   var a = String(iso).slice(0, 10).split('-'), b = lrccTodayEt().split('-');
   if(a.length < 3 || isNaN(+a[0]) || isNaN(+a[1]) || isNaN(+a[2])) return null;
   return Math.round((Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 86400000);
 }
-/* --- recency: the date the thing actually HAPPENED, per
-   person — never the date it was filed or found. Latest of
-   (a) the brief's published dates (DT.hot / DT.filed facts),
-   (b) the change log's source_date (the dated event on the
-   entry); only when neither exists, (c) the change-log entry
-   date itself. No dated event anywhere -> null (QUIET rim). --- */
-function lrccRecency(){
-  var map = {};
-  function put(key, date){
-    if(!key || !date) return;
-    var d = String(date).slice(0, 10);
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
-    if(!map[key] || d > map[key]) map[key] = d;
-  }
-  if(lrccHasBrief()){
-    (DT.hot || []).forEach(function(x){ put(String(x.display || x.name || '').toLowerCase(), x.published); });
-    (DT.filed || []).forEach(function(f){
-      var k = String(f.display || f.name || '').toLowerCase();
-      (f.facts || []).forEach(function(x){ put(k, x.published); });
-    });
-  }
-  if(CH && CH.entries && CH.entries.length){
-    var sd = {}, fd = {}, k, c;
-    for(var i = 0; i < CH.entries.length; i++){
-      c = CH.entries[i];
-      k = String(c.name || '').toLowerCase();
-      if(!k) continue;
-      if(c.source_date && /^\d{4}-\d{2}-\d{2}/.test(String(c.source_date)) && (!sd[k] || String(c.source_date) > sd[k])) sd[k] = String(c.source_date).slice(0, 10);
-      if(c.filed && /^\d{4}-\d{2}-\d{2}/.test(String(c.filed)) && (!fd[k] || String(c.filed) > fd[k])) fd[k] = String(c.filed).slice(0, 10);
-    }
-    for(k in sd) put(k, sd[k]);
-    for(k in fd) if(!map[k]) map[k] = fd[k];
-  }
-  return map;
+function lrccWeekday(iso){
+  var a = String(iso || '').slice(0, 10).split('-');
+  if(a.length < 3) return '';
+  return new Date(Date.UTC(+a[0], +a[1] - 1, +a[2])).toLocaleDateString('en-US', { weekday:'long', timeZone:'UTC' });
 }
-/* --- the recency orbit: rings are time bands by event age.
-   Radius interpolates inside the band on a sqrt scale so the
-   recent end of each band breathes; placement is fully
-   deterministic (angle + in-band jitter from the name hash). --- */
-var LRCC_BANDS = [
-  { id:'week',   max:7,       r0:0,   r1:0.30 },
-  { id:'month',  max:30,      r0:0.30, r1:0.52 },
-  { id:'season', max:90,      r0:0.52, r1:0.72 },
-  { id:'year',   max:365,     r0:0.72, r1:0.90 },
-  { id:'quiet',  max:Infinity, r0:0.90, r1:1 }
-];
-function lrccOrbitPos(key, rec){
-  var h = lrccHash('orbit|' + key), ang = h % 360;
-  var date = rec[key] || null, age = date ? lrccAgeDays(date) : null;
-  if(age != null && age < 0) age = 0;
-  var bi = 4;
-  if(age != null){ for(var i = 0; i < 4; i++){ if(age <= LRCC_BANDS[i].max){ bi = i; break; } } }
-  var band = LRCC_BANDS[bi], lo = bi === 0 ? 0 : LRCC_BANDS[bi - 1].max, frac;
-  if(age == null) frac = ((h >> 11) % 100) / 100;
-  else if(bi === 4) frac = Math.min(1, Math.sqrt((age - 365) / 365));
-  else frac = Math.sqrt(Math.max(0, Math.min(1, (age - lo) / (band.max - lo))));
-  var rf = band.r0 + frac * (band.r1 - band.r0);
-  var jit = (((h >> 17) % 100) / 100 - 0.5) * (band.r1 - band.r0) * 0.36;
-  rf = Math.max(band.r0 + 0.012, Math.min(band.r1 - 0.012, rf + jit));
-  if(bi === 0) rf = Math.max(0.05, rf);
-  var rad = ang * Math.PI / 180, dist = rf * 46.5;
-  return { x:+(50 + dist * Math.sin(rad)).toFixed(1), y:+(50 - dist * Math.cos(rad)).toFixed(1),
-    rf:rf, band:band.id, age:age, date:date };
+function lrccShortD(iso){
+  var a = String(iso || '').slice(0, 10).split('-');
+  if(a.length < 3) return String(iso || '');
+  return HM_MON[+a[1] - 1] + ' ' + (+a[2]);
 }
 function lrccHasBrief(){ return !!(DT && !DT.empty && DT.date); }
 
-/* --- the spotlight loop: hot first, then every filed fact,
-   then the checked and next-up summary cards --- */
-function lrccBuildItems(){
-  var items = [], rec = lrccRecency();
+/* --- the unified event list: every dated thing on the
+   record, newest first. Built exactly like the Ledger rows
+   (brief facts dedupe the change log by name + text) so the
+   strip, the glance list and the Ledger always agree. Only
+   full ISO dates place on the axis; partial stamps (a
+   year-only source_date) stay in the Ledger only. --- */
+function lrccBuildEvents(){
+  var evs = [], seen = {};
   if(lrccHasBrief()){
     (DT.hot || []).forEach(function(x){
-      var k = String(x.display || x.name || '').toLowerCase();
-      items.push({ kind:'hot', key:k, display:x.display || x.name || '', text:x.text || '', source:x.source || '', url:x.url || '', published:x.published || '', ev:x.published || rec[k] || '', di:hmDtDi(x) });
+      seen[String(x.display || x.name || '').toLowerCase() + '|' + String(x.text || '')] = 1;
+      evs.push({ kind:'hot', ev:x.published || DT.date, filed:DT.date, name:x.display || x.name || '', di:hmDtDi(x), text:x.text || '', source:x.source || '', url:x.url || '', fresh:false, n:1 });
     });
     (DT.filed || []).forEach(function(f){
-      var k = String(f.display || f.name || '').toLowerCase();
       (f.facts || []).forEach(function(x){
-        items.push({ kind:'fact', key:k, display:f.display || f.name || '', text:x.text || '', source:x.source || '', url:x.url || '', published:x.published || '', ev:x.published || rec[k] || '', fresh:!!x.fresh, di:hmDtDi(f) });
+        seen[String(f.display || f.name || '').toLowerCase() + '|' + String(x.text || '')] = 1;
+        evs.push({ kind:'filed', ev:x.published || DT.date, filed:DT.date, name:f.display || f.name || '', di:hmDtDi(f), text:x.text || '', source:x.source || '', url:x.url || '', fresh:!!x.fresh, n:1 });
       });
     });
+  }
+  if(CH && CH.entries && CH.entries.length){
+    var groups = {}, order = [];
+    CH.entries.forEach(function(c){
+      var k = chgGroupKey(c);
+      if(!groups[k]){ groups[k] = { first:c, n:0 }; order.push(groups[k]); }
+      groups[k].n++;
+    });
+    order.forEach(function(g){
+      var c = g.first;
+      if(seen[String(c.name || '').toLowerCase() + '|' + String(c.what || '')]) return;
+      evs.push({ kind:'change', ev:c.source_date || c.filed || '', filed:c.filed || '', name:c.name || '', di:hmDiOf(c.name), text:c.what || '', source:c.source || '', url:c.url || '', fresh:false, n:g.n });
+    });
+  }
+  evs = evs.filter(function(e){ return /^\d{4}-\d{2}-\d{2}$/.test(e.ev); });
+  evs.sort(function(a, b){
+    if(a.ev !== b.ev) return a.ev < b.ev ? 1 : -1;
+    if(a.filed !== b.filed) return a.filed < b.filed ? 1 : -1;
+    return 0;
+  });
+  LRCC._ev = evs;
+  var days = [], byDate = {};
+  evs.forEach(function(e, i){
+    var d = byDate[e.ev];
+    if(!d){ d = byDate[e.ev] = { date:e.ev, idxs:[], filed:0, hot:false }; days.push(d); }
+    d.idxs.push(i);
+    if(e.kind !== 'change') d.filed++;
+    if(e.kind === 'hot') d.hot = true;
+  });
+  LRCC._days = days;
+  var max = 30;
+  evs.forEach(function(e){ var a = lrccAgeDays(e.ev); if(a != null && a > max) max = a; });
+  LRCC._maxAge = max;
+  return evs;
+}
+
+/* --- the spotlight loop: hot first, then every filed fact,
+   then the checked and next-up summary cards (unchanged
+   membership from V3.55; items now point into _ev) --- */
+function lrccBuildItems(){
+  var items = [];
+  LRCC._ev.forEach(function(e, i){ if(e.kind === 'hot') items.push({ kind:'hot', evIdx:i }); });
+  LRCC._ev.forEach(function(e, i){ if(e.kind === 'filed') items.push({ kind:'fact', evIdx:i }); });
+  if(lrccHasBrief()){
     var chk = DT.checked || [];
     if(chk.length) items.push({ kind:'checked', count:chk.length, filedCount:(DT.filed || []).length, names:chk.map(function(c){ return c.display || c.name; }) });
     var nx = DT.next_up || [];
@@ -8081,32 +8102,55 @@ function lrccBuildItems(){
   if(LRCC.idx >= items.length) LRCC.idx = 0;
   return items;
 }
+function lrccItemIdxForEvent(evIdx){
+  for(var i = 0; i < LRCC.items.length; i++) if(LRCC.items[i].evIdx === evIdx) return i;
+  return -1;
+}
 function lrccStamp(){
   if(!DT) return 'none';
   if(DT.empty) return 'empty';
   var nf = 0;
   (DT.filed || []).forEach(function(f){ nf += (f.facts || []).length; });
-  return [DT.date || '', (DT.checked || []).length, nf, (DT.next_up || []).length, CH && CH.entries ? CH.entries.length : 0].join('|');
+  return [DT.date || '', (DT.checked || []).length, nf, (DT.next_up || []).length, (DT.hot || []).length, CH && CH.entries ? CH.entries.length : 0].join('|');
 }
+/* Data refresh while open (a sweep landed): rebuild the data,
+   then mutate ONLY the data subtrees inside their persistent
+   containers. No opacity animation exists on this path, and
+   the overlay node itself is never touched. */
 function lrccMaybeRefresh(){
   if(!LRCC.el) return;
   var st = lrccStamp();
   if(st === LRCC._stamp) return;
   LRCC._stamp = st;
+  lrccBuildEvents();
   lrccBuildItems();
-  lrccPaintAll();
+  if(LRCC.pin && LRCC.pin.type === 'event' && !LRCC._ev[LRCC.pin.evIdx]) LRCC.pin = null;
+  if(LRCC.tab !== 'overview'){ lrccPaintAll(); lrccArmSpot(); return; }
+  var plot = $('#lrcc-ev-plot', LRCC.el);
+  if(!plot){ lrccPaintAll(); lrccArmSpot(); return; } /* was the empty state */
+  plot.innerHTML = lrccStripHTML();
+  var li = $('#lrcc-li', LRCC.el); if(li) li.innerHTML = lrccListHTML();
+  var ch = $('#lrcc-chips', LRCC.el); if(ch) ch.innerHTML = lrccChipsHTML();
+  var sub = $('#lrcc-brief-d', LRCC.el); if(sub) sub.textContent = lrccHasBrief() ? hmFmtD(DT.date) : '—';
+  var w = $('#lrcc-read', LRCC.el); if(w) w.innerHTML = lrccReadHTML();
+  lrccPaintSpotCtl();
+  lrccPaintSel();
+  lrccTick();
   lrccArmSpot();
 }
 
-/* --- open / close: LRCC owns the clock interval, the spot
-   timeout, the Escape listener and the visibility listener;
-   close clears every one of them --- */
+/* --- open / close: the overlay node is created once per
+   open, appears at full opacity (no root fade, no scale),
+   and is removed instantly on close. LRCC owns the clock
+   interval, the spot timeout, the fade timeout, the Escape
+   listener and the visibility listener; close clears all. --- */
 function lrccOpen(){
   if(LRCC.el) return;
   if(!S.route || S.route.name !== 'daily'){ LRCC.openWanted = true; go('daily'); return; }
   var stray = document.querySelector('.lrcc');
-  if(stray) stray.remove(); /* a close fade still on its way out */
-  LRCC.tab = 'overview'; LRCC.idx = 0; LRCC.hold = false; LRCC.hover = false;
+  if(stray) stray.remove(); /* a previous node that never got cleaned up */
+  LRCC.tab = 'overview'; LRCC.idx = 0; LRCC.hold = false; LRCC.hover = false; LRCC.pin = null;
+  lrccBuildEvents();
   lrccBuildItems();
   LRCC._stamp = lrccStamp();
   var ov = document.createElement('div');
@@ -8118,11 +8162,11 @@ function lrccOpen(){
   LRCC.el = ov;
   /* Hover-pause is movement-driven on purpose: the panel opens
      under the resting cursor (the entry button sits where the
-     spotlight lands), and a synthetic mouseover from that layout
+     readout lands), and a synthetic mouseover from that layout
      change must not freeze the loop before it ever starts. A
      real pointer move into the panel pauses; moving out resumes. */
   ov.addEventListener('mousemove', function(e){
-    var inside = !!(e.target.closest && e.target.closest('#lrcc-spot'));
+    var inside = !!(e.target.closest && e.target.closest('#lrcc-read-p'));
     if(inside && !LRCC.hover){ LRCC.hover = true; lrccClearSpot(); lrccProgState(); }
     else if(!inside && LRCC.hover){ LRCC.hover = false; lrccArmSpot(); lrccProgState(); }
   });
@@ -8138,46 +8182,55 @@ function lrccOpen(){
 function lrccClose(){
   if(LRCC.clockTimer){ clearInterval(LRCC.clockTimer); LRCC.clockTimer = null; }
   lrccClearSpot();
-  if(LRCC.swapTimer){ clearTimeout(LRCC.swapTimer); LRCC.swapTimer = null; }
-  if(LRCC.tabTimer){ clearTimeout(LRCC.tabTimer); LRCC.tabTimer = null; }
+  if(LRCC._fadeT){ clearTimeout(LRCC._fadeT); LRCC._fadeT = null; }
   if(LRCC._key){ document.removeEventListener('keydown', LRCC._key, true); LRCC._key = null; }
   if(LRCC._vis){ document.removeEventListener('visibilitychange', LRCC._vis); LRCC._vis = null; }
   var el = LRCC.el;
   LRCC.el = null;
-  LRCC.hold = false; LRCC.hover = false;
-  function done(){
-    if(el && el.parentNode) el.remove();
-    if(!document.querySelector('.lrcc') && !document.querySelector('.hmi-wrap') && !document.querySelector('.phi-wrap') && !document.querySelector('.ykb-wrap') && !document.querySelector('.phed-wrap'))
-      document.body.classList.remove('sheet-open');
-  }
-  if(!el){ done(); return; }
-  if(REDUCED_MOTION){ done(); return; }
-  /* fade out on the ease-in ramp, then leave the DOM */
-  el.classList.add('lrcc-closing');
-  setTimeout(done, 190);
+  LRCC.hold = false; LRCC.hover = false; LRCC.pin = null;
+  if(el && el.parentNode) el.remove();
+  if(!document.querySelector('.lrcc') && !document.querySelector('.hmi-wrap') && !document.querySelector('.phi-wrap') && !document.querySelector('.ykb-wrap') && !document.querySelector('.phed-wrap'))
+    document.body.classList.remove('sheet-open');
 }
 function lrccTab(t){
-  if(!LRCC.el || !t) return;
+  if(!LRCC.el || !t || t === LRCC.tab){ if(LRCC.el) lrccArmSpot(); return; }
   LRCC.tab = t; LRCC.hover = false;
   lrccClearSpot();
-  if(LRCC.tabTimer){ clearTimeout(LRCC.tabTimer); LRCC.tabTimer = null; }
-  var m = $('#lrcc-main', LRCC.el);
-  if(REDUCED_MOTION || !m || !m.firstChild){ lrccPaintAll(); lrccArmSpot(); return; }
-  /* crossfade: the old tab leaves on the ease-in ramp, the new
-     one rises in on --lrcc-ease (see lrccPaintAll) */
-  m.classList.add('lrcc-fadeout');
-  LRCC.tabTimer = setTimeout(function(){
-    LRCC.tabTimer = null;
-    if(!LRCC.el) return;
-    lrccPaintAll();
-    lrccArmSpot();
-  }, 180);
+  lrccPaintAll();
+  lrccArmSpot();
 }
 function lrccJump(i){
   if(i == null || isNaN(i) || i < 0 || i >= LRCC.items.length) return;
+  LRCC.pin = null;
   LRCC.idx = i;
   if(LRCC.tab !== 'overview'){ LRCC.tab = 'overview'; lrccPaintAll(); }
-  else lrccPaintSpot();
+  else lrccPaintReadout();
+  lrccArmSpot();
+}
+/* Selecting an event that is not in the loop (a glance-list
+   row, a timeline bead with no loop slot) pins the readout
+   to it and pauses the loop until Resume / prev / next. */
+function lrccJumpEvent(evIdx){
+  if(evIdx == null || !LRCC._ev[evIdx]) return;
+  var ii = lrccItemIdxForEvent(evIdx);
+  if(ii >= 0){ lrccJump(ii); return; }
+  LRCC.pin = { type:'event', evIdx:evIdx };
+  if(LRCC.tab !== 'overview'){ LRCC.tab = 'overview'; lrccPaintAll(); }
+  else lrccPaintReadout();
+  lrccClearSpot();
+  lrccProgState();
+}
+function lrccPinDay(date){
+  if(!date) return;
+  LRCC.pin = { type:'day', date:date };
+  if(LRCC.tab !== 'overview'){ LRCC.tab = 'overview'; lrccPaintAll(); }
+  else lrccPaintReadout();
+  lrccClearSpot();
+  lrccProgState();
+}
+function lrccResume(){
+  LRCC.pin = null;
+  lrccPaintReadout();
   lrccArmSpot();
 }
 
@@ -8186,24 +8239,26 @@ function lrccClearSpot(){ if(LRCC.spotTimer){ clearTimeout(LRCC.spotTimer); LRCC
 function lrccArmSpot(){
   lrccClearSpot();
   if(!LRCC.el || LRCC.tab !== 'overview') return;
-  if(REDUCED_MOTION || LRCC.hold || LRCC.hover || document.hidden) return;
+  if(REDUCED_MOTION || LRCC.hold || LRCC.hover || LRCC.pin || document.hidden) return;
   if(LRCC.items.length < 2) return;
   LRCC.spotTimer = setTimeout(function(){ LRCC.spotTimer = null; lrccStep(1); }, LRCC_SP_MS);
 }
 function lrccStep(d){
   if(!LRCC.items.length) return;
+  LRCC.pin = null;
   LRCC.idx = ((LRCC.idx + d) % LRCC.items.length + LRCC.items.length) % LRCC.items.length;
-  lrccPaintSpot();
+  lrccPaintReadout();
   lrccArmSpot();
 }
 function lrccProgState(){
-  var sp = LRCC.el ? $('#lrcc-spot', LRCC.el) : null;
-  if(!sp) return;
-  var paused = REDUCED_MOTION || LRCC.hold || LRCC.hover || document.hidden;
-  sp.classList.toggle('paused', !!paused);
+  var p = LRCC.el ? $('#lrcc-read-p', LRCC.el) : null;
+  if(!p) return;
+  var paused = REDUCED_MOTION || LRCC.hold || LRCC.hover || LRCC.pin || document.hidden;
+  p.classList.toggle('paused', !!paused);
 }
 
-/* --- the 1-second tick: ET clock + next-sweep countdown --- */
+/* --- the 1-second tick: ET clock + next-sweep countdown.
+   Text mutations only; nothing structural ever changes here. --- */
 function lrccTick(){
   if(!LRCC.el) return;
   var now = Date.now();
@@ -8219,14 +8274,33 @@ function lrccTick(){
 function lrccShellHTML(){
   return '<div class="lrcc-h">' +
     '<div class="lrcc-hl"><span class="lrcc-kick">Live Records &middot; Command</span>' +
-    '<span class="lrcc-hsub">Brief <b>' + (lrccHasBrief() ? esc(hmFmtD(DT.date)) : '&mdash;') + '</b> &middot; updated twice daily &middot; sweeps 6:54 AM &amp; 6:54 PM ET</span></div>' +
+    '<span class="lrcc-hsub">Brief <b id="lrcc-brief-d">' + (lrccHasBrief() ? esc(hmFmtD(DT.date)) : '&mdash;') + '</b> &middot; updated twice daily &middot; sweeps 6:54 AM &amp; 6:54 PM ET</span></div>' +
     '<div class="lrcc-hr"><div class="lrcc-clockbox"><span class="lrcc-clock" id="lrcc-clock">--:--:--</span><span class="lrcc-clock-l">ET</span></div>' +
     '<button type="button" class="lrcc-x" data-act="lrccclose" aria-label="Close command center">' + ic('x', 16) + '</button></div></div>' +
     '<div class="lrcc-tabs" role="tablist">' +
-    ['overview', 'timeline', 'roster'].map(function(t){
-      return '<button type="button" role="tab" class="lrcc-tab' + (LRCC.tab === t ? ' on' : '') + '" data-act="lrcctab" data-t="' + t + '">' + t.charAt(0).toUpperCase() + t.slice(1) + '</button>';
-    }).join('') + '</div>' +
+    [['overview', 'Overview'], ['timeline', 'Ledger'], ['roster', 'Roster']].map(function(t){
+      return '<button type="button" role="tab" class="lrcc-tab' + (LRCC.tab === t[0] ? ' on' : '') + '" data-act="lrcctab" data-t="' + t[0] + '">' + t[1] + '</button>';
+    }).join('') +
+    '<div class="lrcc-chipsrow" id="lrcc-chips">' + lrccChipsHTML() + '</div></div>' +
     '<div class="lrcc-main" id="lrcc-main"></div>';
+}
+/* Sweep timing as compact header chips (the V3.55 timing
+   rail and stat strip, folded up here): countdown values are
+   ticked in place by lrccTick via the .lrcc-cd-* classes. */
+function lrccChipsHTML(){
+  var out = '<span class="lrcc-hchip">Next sweep <b class="lrcc-cd-v">--:--:--</b> <span class="lrcc-cd-l"></span></span>';
+  if(!lrccHasBrief()) return out;
+  var cov = DT.coverage || { checked_total:0, of:0 };
+  var pct = cov.of ? Math.round(1000 * cov.checked_total / cov.of) / 10 : 0;
+  var sweeps = cov.of ? Math.ceil(cov.of / LRCC_PER_SWEEP) : 0;
+  var filedFacts = 0;
+  (DT.filed || []).forEach(function(f){ filedFacts += (f.facts || []).length; });
+  out += '<span class="lrcc-hchip">Rotation <b>' + hmFmtN(cov.checked_total) + ' / ' + hmFmtN(cov.of) + ' &middot; ' + pct + '%</b></span>' +
+    '<span class="lrcc-hchip">Full cycle <b>' + sweeps + ' sweeps</b></span>' +
+    '<span class="lrcc-hchip">Checked <b>' + (DT.checked || []).length + '</b></span>' +
+    '<span class="lrcc-hchip">Filed <b>' + filedFacts + '</b></span>' +
+    '<span class="lrcc-hchip">Hot <b>' + (DT.hot || []).length + '</b></span>';
+  return out;
 }
 function lrccPaintAll(){
   if(!LRCC.el) return;
@@ -8235,12 +8309,12 @@ function lrccPaintAll(){
   if(!m) return;
   if(LRCC.tab === 'timeline') m.innerHTML = lrccTimelineHTML();
   else if(LRCC.tab === 'roster') m.innerHTML = lrccRosterHTML();
-  else { m.innerHTML = lrccOverviewHTML(); lrccSwapSpot(true); }
-  m.classList.remove('lrcc-fadeout');
-  if(!REDUCED_MOTION){
-    m.classList.remove('lrcc-enter');
-    void m.offsetWidth;
-    m.classList.add('lrcc-enter');
+  else {
+    m.innerHTML = lrccOverviewHTML();
+    var w = $('#lrcc-read', LRCC.el);
+    if(w) w.innerHTML = lrccReadHTML();
+    lrccPaintSpotCtl();
+    lrccPaintSel();
   }
   lrccTick();
 }
@@ -8250,220 +8324,167 @@ function lrccNameBtn(display, di, cls){
   return '<button type="button" class="' + cls + ' is-name" data-act="lrccperson" data-di="' + di + '">' + lab + '</button>';
 }
 
-/* --- Overview: recency orbit + spotlight + timing rail + strip --- */
+/* --- Overview: date-column timeline + readout + glance list --- */
 function lrccOverviewHTML(){
   if(!lrccHasBrief()){
-    return '<div class="lrcc-empty"><div class="lrcc-empty-radar">' + lrccOrbitSVG(false) + '</div>' +
+    return '<div class="lrcc-empty">' +
       '<h2>' + (DT ? 'No brief has landed yet' : 'Loading the latest brief') + '</h2>' +
       '<p>The command center reads the same brief as the Live Records page. The next sweep runs <b class="lrcc-cd-l">&mdash;</b>.</p>' +
       '<div class="lrcc-empty-cd"><span class="lrcc-cd-v">--:--:--</span><span>to next sweep</span></div></div>';
   }
-  var cov = DT.coverage || { checked_total:0, of:0 };
-  var pct = cov.of ? Math.round(1000 * cov.checked_total / cov.of) / 10 : 0;
-  var sweeps = cov.of ? Math.ceil(cov.of / LRCC_PER_SWEEP) : 0;
-  var days = sweeps ? String(Math.round(sweeps / 2 * 10) / 10).replace(/\.0$/, '') : '0';
-  var filedFacts = 0;
-  (DT.filed || []).forEach(function(f){ filedFacts += (f.facts || []).length; });
   return '<div class="lrcc-ov">' +
-    '<section class="lrcc-panel lrcc-radar-p"><div class="lrcc-ph"><span>Recency &middot; by event date</span>' +
-    '<span class="lrcc-legend"><i class="lg f"></i>Filed<i class="lg h"></i>Hot<i class="lg c"></i>Checked<i class="lg n"></i>Next up</span></div>' +
-    '<div class="lrcc-radar">' + lrccOrbitSVG(true) + lrccDotsHTML() + '<span class="lrcc-orbit-lab" id="lrcc-orbit-lab"></span></div>' +
-    '<div class="lrcc-radar-cap" id="lrcc-radar-cap">' + esc(lrccRadarCap()) + '</div>' +
-    '<div class="lrcc-radar-sub">Distance from center = time since the most recent event on their record.</div></section>' +
-    '<div class="lrcc-right">' +
-    '<section class="lrcc-panel lrcc-spot-p" id="lrcc-spot"><div class="lrcc-ph"><span>Spotlight</span>' +
+    '<section class="lrcc-panel lrcc-ev-p"><div class="lrcc-ph"><span>Timeline &middot; when it happened</span>' +
+    '<span class="lrcc-legend"><i class="lg f"></i>Filed<i class="lg h"></i>Hot<i class="lg c"></i>Logged</span>' +
+    '<span class="lrcc-ph-r">' + LRCC._ev.length + ' events &middot; ' + LRCC._days.length + ' days &middot; newest at right</span></div>' +
+    '<div class="lrcc-ev-plot" id="lrcc-ev-plot">' + lrccStripHTML() + '</div></section>' +
+    '<div class="lrcc-ov-b">' +
+    '<section class="lrcc-panel lrcc-read-p" id="lrcc-read-p"><div class="lrcc-ph"><span>Spotlight</span>' +
     '<span class="lrcc-sp-ctl"><span class="lrcc-sp-idx" data-lrcc-idx></span>' +
     '<button type="button" class="lrcc-cbtn" data-act="lrccprev" aria-label="Previous">' + ic('chevl', 13) + '</button>' +
+    '<button type="button" class="lrcc-cbtn" data-act="lrccresume" data-lrcc-resume style="display:none">Loop</button>' +
     '<button type="button" class="lrcc-cbtn" data-act="lrcchold" data-lrcc-hold>Hold</button>' +
     '<button type="button" class="lrcc-cbtn flip" data-act="lrccnext" aria-label="Next">' + ic('chevl', 13) + '</button></span></div>' +
-    '<div class="lrcc-sp-body" id="lrcc-sp-body"></div><div class="lrcc-sp-dots" id="lrcc-sp-dots" aria-hidden="true"></div></section>' +
-    '<section class="lrcc-panel lrcc-time-p"><div class="lrcc-ph"><span>Timing</span><span class="lrcc-ph-r">all times ET</span></div>' +
-    '<div class="lrcc-trow big"><span class="lrcc-tl">Next sweep</span><span class="lrcc-tv cd"><span class="lrcc-cd-v">--:--:--</span><small class="lrcc-cd-l"></small></span></div>' +
-    '<div class="lrcc-trow"><span class="lrcc-tl">Last brief</span><span class="lrcc-tv">' + esc(hmFmtD(DT.date)) + '<small>' + esc(lrccAge(DT.date)) + '</small></span></div>' +
-    '<div class="lrcc-trow"><span class="lrcc-tl">Cadence</span><span class="lrcc-tv">2&times; daily &middot; 6:54 AM / 6:54 PM<small>75 checks per sweep</small></span></div>' +
-    '<div class="lrcc-trow"><span class="lrcc-tl">Rotation</span><span class="lrcc-tv">' + hmFmtN(cov.checked_total) + ' / ' + hmFmtN(cov.of) + '<small>' + pct + '% checked</small></span></div>' +
-    '<div class="lrcc-rotbar"><i style="width:' + pct + '%"></i></div>' +
-    '<div class="lrcc-trow"><span class="lrcc-tl">Full cycle</span><span class="lrcc-tv">' + sweeps + ' sweeps<small>&asymp; ' + days + ' days at 2 per day</small></span></div>' +
-    '<p class="lrcc-tnote">Same brief data as the Live Records page &middot; refreshed by each sweep.</p></section>' +
-    '</div></div>' +
-    '<div class="lrcc-strip">' +
-    '<div class="lrcc-stat"><b>' + (DT.checked || []).length + '</b><span>checked this sweep</span></div>' +
-    '<div class="lrcc-stat"><b>' + filedFacts + '</b><span>facts filed</span></div>' +
-    '<div class="lrcc-stat"><b>' + (DT.filed || []).length + '</b><span>records updated</span></div>' +
-    '<div class="lrcc-stat"><b>' + (DT.hot || []).length + '</b><span>hot off the press</span></div>' +
-    '<div class="lrcc-stat"><b>' + pct + '%</b><span>rotation &middot; ' + hmFmtN(cov.checked_total) + ' / ' + hmFmtN(cov.of) + '</span></div>' +
-    '<div class="lrcc-stat"><b class="lrcc-cd-v">--:--:--</b><span>to next sweep &middot; <span class="lrcc-cd-l"></span></span></div>' +
-    '</div>';
+    '<div class="lrcc-read" id="lrcc-read"></div><div class="lrcc-sp-dots" id="lrcc-sp-dots" aria-hidden="true"></div></section>' +
+    '<section class="lrcc-panel lrcc-li-p"><div class="lrcc-ph"><span>Latest events</span><span class="lrcc-ph-r">date first &middot; newest at top</span></div>' +
+    '<div class="lrcc-li" id="lrcc-li">' + lrccListHTML() + '</div></section>' +
+    '</div></div>';
 }
-/* Orbit geometry, viewBox units (center 50,50; outer rim 47.5):
-   band edges at the LRCC_BANDS radius fractions of 48. Labels
-   ride the upper-left diagonal at each band's mid radius;
-   QUIET caps the top axis so it clears the YEAR label. */
-function lrccOrbitSVG(pulse){
-  var edge = [14.4, 25, 34.6, 43.2, 47.5], mid = [7.2, 19.7, 29.8, 38.9], names = ['WEEK', 'MONTH', 'SEASON', 'YEAR'];
-  var s = '<svg class="lrcc-rings" viewBox="0 0 100 100" aria-hidden="true">';
-  s += '<circle class="lrcc-bandfill" cx="50" cy="50" r="14.4"></circle>';
-  edge.forEach(function(r){ s += '<circle cx="50" cy="50" r="' + r + '"></circle>'; });
-  if(pulse) s += '<circle class="lrcc-pulse-c" cx="50" cy="50" r="47"></circle>';
-  for(var i = 0; i < 4; i++){
-    var d = mid[i] * 0.7071;
-    s += '<text class="lrcc-band-l" text-anchor="middle" x="' + (50 - d).toFixed(1) + '" y="' + (50 - d + 1).toFixed(1) + '">' + names[i] + '</text>';
-  }
-  s += '<text class="lrcc-band-l" x="50" y="5.8" text-anchor="middle">QUIET</text>';
-  s += '<circle class="lrcc-core-c" cx="50" cy="50" r="1.3"></circle>';
-  return s + '</svg>';
+/* Log-age scale: age 0 (today) at the right edge, the oldest
+   event at the left; equal ratios of age get equal width, so
+   the last week breathes and the past compresses honestly. */
+function lrccX(age){
+  var max = LRCC._maxAge || 365;
+  var f = 1 - Math.log(1 + Math.max(0, age)) / Math.log(1 + max);
+  return Math.max(2, Math.min(98, 3 + f * 94));
 }
-function lrccRadarCap(){
-  return 'Brief ' + hmFmtD(DT.date) + ' — ' + (DT.filed || []).length + ' filed · ' + (DT.checked || []).length + ' checked · ' + (DT.next_up || []).length + ' queued';
-}
-function lrccFirstIdx(key){
-  for(var i = 0; i < LRCC.items.length; i++){
-    var it = LRCC.items[i];
-    if((it.kind === 'fact' || it.kind === 'hot') && it.key === key) return i;
-  }
-  return -1;
-}
-function lrccSummaryIdx(kind){
-  for(var i = 0; i < LRCC.items.length; i++) if(LRCC.items[i].kind === kind) return i;
-  return -1;
-}
-function lrccDotsHTML(){
-  if(!lrccHasBrief()) return '';
-  var rec = lrccRecency();
-  LRCC._orbit = {};
-  var hotKeys = {};
-  (DT.hot || []).forEach(function(x){ hotKeys[String(x.display || x.name || '').toLowerCase()] = 1; });
-  var out = [], placed = {};
-  function dot(cls, key, display, idx, kindWord){
-    var p = lrccOrbitPos(key, rec);
-    LRCC._orbit[key] = p;
-    placed[key] = 1;
-    /* the glow wave travels outward with the pulse: a dot's
-       phase is offset by (1 - radiusFraction) of the cycle so
-       it brightens as the expanding ring reaches its radius */
-    var st = 'left:' + p.x + '%;top:' + p.y + '%;--gd:' + (-((1 - p.rf) * (LRCC_PULSE_MS / 1000))).toFixed(2) + 's';
-    if(cls === 'chk' || cls === 'nxt'){
-      var sz = p.age == null ? 5 : p.age <= 30 ? 7 : p.age <= 90 ? 6 : 5.5;
-      var op = p.age == null ? 0.5 : p.age <= 30 ? 0.9 : p.age <= 90 ? 0.72 : 0.55;
-      st += ';width:' + sz + 'px;height:' + sz + 'px;opacity:' + op;
-    }
-    var when = p.date ? hmFmtD(p.date) + ' · ' + lrccAge(p.date) : 'no dated event';
-    out.push('<button type="button" class="lrcc-dot ' + cls + '" data-act="lrccblip" data-i="' + idx + '" data-pk="' + esc(key) + '" style="' + st + '" title="' + esc(display) + ' — ' + kindWord + ' · ' + esc(when) + '"></button>');
-  }
-  (DT.filed || []).forEach(function(f){
-    var key = String(f.display || f.name || '').toLowerCase();
-    if(!key || placed[key]) return;
-    dot('filed' + (hotKeys[key] ? ' hotring' : ''), key, f.display || f.name, lrccFirstIdx(key), 'filed');
+var LRCC_BANDCAPS = [ [7, 'LAST 7 DAYS'], [30, 'LAST 30 DAYS'], [90, 'LAST 90 DAYS'], [365, 'LAST YEAR'] ];
+function lrccStripHTML(){
+  var days = LRCC._days;
+  if(!days.length) return '<p class="lrcc-sp-none">No dated events yet.</p>';
+  var out = '';
+  var prev = 0;
+  LRCC_BANDCAPS.forEach(function(bc){
+    var l = lrccX(bc[0]), r = lrccX(prev);
+    if(r - l >= 11) out += '<span class="lrcc-ev-cap" style="left:' + ((l + r) / 2).toFixed(1) + '%">' + bc[1] + '</span>';
+    prev = bc[0];
   });
-  (DT.hot || []).forEach(function(x){
-    var key = String(x.display || x.name || '').toLowerCase();
-    if(!key || placed[key]) return;
-    dot('hot', key, x.display || x.name, lrccFirstIdx(key), 'hot off the press');
+  out += '<div class="lrcc-ev-line"></div>';
+  var MAXD = 14;
+  days.forEach(function(d){
+    var age = lrccAgeDays(d.date);
+    var x = lrccX(age == null ? 0 : age);
+    var nSpecial = 0, nChange = 0;
+    d.idxs.forEach(function(ei){ if(LRCC._ev[ei].kind === 'change') nChange++; else nSpecial++; });
+    /* stack order in the DOM is bottom-first (the stack is
+       column-reverse): plain logged beads at the base, the
+       brief's filed / hot beads above them, the overflow
+       count, and the day's total riding on top */
+    var nFill = Math.min(nChange, Math.max(0, MAXD - nSpecial));
+    var stack = '', nShown = 0, i;
+    for(i = 0; i < nFill; i++) stack += '<i class="lrcc-ev-bead c"></i>';
+    nShown = nFill;
+    d.idxs.forEach(function(ei){
+      var e = LRCC._ev[ei];
+      if(e.kind === 'change' || nShown >= MAXD) return;
+      var ii = lrccItemIdxForEvent(ei);
+      stack += '<button type="button" class="lrcc-ev-bead ' + (e.kind === 'hot' ? 'h' : 'f') + '" data-act="lrccblip" data-i="' + ii + '" data-e="' + ei + '" title="' + esc(e.name) + ' &middot; ' + esc(hmFmtD(e.ev)) + '"></button>';
+      nShown++;
+    });
+    if(d.idxs.length > nShown) stack += '<span class="lrcc-ev-more">+' + (d.idxs.length - nShown) + '</span>';
+    stack += '<span class="lrcc-ev-n">' + d.idxs.length + '</span>';
+    out += '<div class="lrcc-ev-col" data-act="lrccday" data-d="' + d.date + '" role="button" title="' + esc(hmFmtD(d.date)) + ' &middot; ' + d.idxs.length + ' events" style="left:' + x.toFixed(1) + '%">' +
+      '<span class="lrcc-ev-stack">' + stack + '</span>' +
+      '<span class="lrcc-ev-d">' + esc(lrccShortD(d.date)) + '</span></div>';
   });
-  var chkIdx = lrccSummaryIdx('checked'), nxIdx = lrccSummaryIdx('next');
-  var room = Math.max(0, 120 - out.length);
-  (DT.checked || []).slice(0, Math.max(0, room - (DT.next_up || []).length)).forEach(function(c){
-    var key = String(c.display || c.name || '').toLowerCase();
-    if(!key || placed[key]) return;
-    dot('chk', key, c.display || c.name, chkIdx, 'checked');
-  });
-  room = Math.max(0, 120 - out.length);
-  (DT.next_up || []).slice(0, room).forEach(function(c){
-    var key = String(c.display || c.name || '').toLowerCase();
-    if(!key || placed[key]) return;
-    dot('nxt', key, c.display || c.name, nxIdx, 'next up');
-  });
-  return out.join('');
+  return out;
 }
-/* --- spotlight paint: the chrome (orbit highlight, tracking
-   label, counter, position dots) updates at once; the card
-   content itself crossfades in two eased phases — out on the
-   ease-in ramp (240ms, dropping 4px), then the new card rises
-   6px into rest on --lrcc-ease (460ms). Panel height never
-   changes: the body is a full-height flex child, content
-   top-aligned. Under reduced motion the swap is instant. --- */
-function lrccPaintSpot(){ lrccSwapSpot(false); }
-function lrccSwapSpot(instant){
+function lrccListHTML(){
+  if(!LRCC._ev.length) return '<p class="lrcc-sp-none">No dated events yet.</p>';
+  return LRCC._ev.slice(0, 10).map(function(e, i){
+    var tag = e.kind === 'hot' ? '<span class="lrcc-li-k h">Hot</span>' : e.kind === 'filed' ? '<span class="lrcc-li-k f">Filed</span>' : '<span class="lrcc-li-k c">Logged</span>';
+    return '<div class="lrcc-li-row" data-act="lrccrow" data-e="' + i + '" role="button" tabindex="0">' +
+      '<span class="lrcc-li-d">' + esc(hmFmtD(e.ev)) + '</span>' +
+      '<span class="lrcc-li-main"><b>' + esc(e.name) + '</b><span>' + esc(e.text) + '</span></span>' + tag + '</div>';
+  }).join('');
+}
+
+/* --- readout (spotlight) paint: the ONLY crossfade in the
+   console. It runs on #lrcc-read, an inner wrapper whose
+   parent chain (.lrcc-read-p panel on the console root) is
+   console-colored at every level, so no frame of it can show
+   anything but the console. The wrapper node itself is never
+   replaced; only its content swaps at the fade's midpoint. --- */
+function lrccPaintReadout(){
   if(!LRCC.el) return;
-  var body = $('#lrcc-sp-body', LRCC.el);
-  if(!body) return;
-  if(LRCC.swapTimer){ clearTimeout(LRCC.swapTimer); LRCC.swapTimer = null; }
-  lrccPaintSpotChrome();
-  lrccProgState();
-  if(instant || REDUCED_MOTION || !body.firstChild){
-    body.classList.remove('lrcc-out', 'lrcc-pre');
-    lrccSpotFill(body);
+  var w = $('#lrcc-read', LRCC.el);
+  if(!w) return;
+  if(LRCC._fadeT){ clearTimeout(LRCC._fadeT); LRCC._fadeT = null; }
+  lrccPaintSpotCtl();
+  lrccPaintSel();
+  if(REDUCED_MOTION || !w.firstChild){
+    w.classList.remove('lrcc-fade');
+    w.innerHTML = lrccReadHTML();
+    lrccTick();
     return;
   }
-  body.classList.add('lrcc-out');
-  LRCC.swapTimer = setTimeout(function(){
-    LRCC.swapTimer = null;
-    if(!LRCC.el || !body.parentNode) return;
-    lrccSpotFill(body);
-  }, 240);
-}
-function lrccSpotFill(body){
-  var it = LRCC.items[LRCC.idx];
-  body.innerHTML = it ? lrccSpotHTML(it) : '<p class="lrcc-sp-none">Nothing in the latest brief to loop yet.</p>';
-  body.classList.remove('lrcc-out');
-  if(REDUCED_MOTION) return;
-  body.classList.add('lrcc-pre');
-  void body.offsetWidth;
-  requestAnimationFrame(function(){ body.classList.remove('lrcc-pre'); });
-  setTimeout(function(){ body.classList.remove('lrcc-pre'); }, 60);
-  lrccTick();
-}
-function lrccPaintSpotChrome(){
-  var it = LRCC.items[LRCC.idx];
-  $$('.lrcc-dot', LRCC.el).forEach(function(d){ d.classList.toggle('on', !!it && !!it.key && d.getAttribute('data-pk') === it.key); });
-  var lab = $('#lrcc-orbit-lab', LRCC.el);
-  if(lab){
-    var p = it && it.key ? LRCC._orbit[it.key] : null;
-    if(p){
-      lab.textContent = it.display;
-      lab.style.left = p.x + '%';
-      lab.style.top = p.y + '%';
-      lab.className = 'lrcc-orbit-lab show' + (p.x > 74 ? ' r' : p.x < 26 ? ' l' : '');
-    } else lab.className = 'lrcc-orbit-lab';
-  }
-  var cap = $('#lrcc-radar-cap', LRCC.el);
-  if(cap) cap.textContent = it && it.key ? 'Tracking: ' + it.display : lrccRadarCap();
-  lrccPaintSpotCtl();
+  w.classList.add('lrcc-fade');
+  LRCC._fadeT = setTimeout(function(){
+    LRCC._fadeT = null;
+    if(!LRCC.el || !w.parentNode) return;
+    w.innerHTML = lrccReadHTML();
+    w.classList.remove('lrcc-fade');
+    lrccTick();
+  }, 170);
 }
 function lrccPaintSpotCtl(){
   if(!LRCC.el) return;
   var idx = $('[data-lrcc-idx]', LRCC.el);
-  if(idx) idx.textContent = LRCC.items.length ? (LRCC.idx + 1) + ' / ' + LRCC.items.length : '';
+  if(idx) idx.textContent = LRCC.pin ? 'Pinned' : (LRCC.items.length ? (LRCC.idx + 1) + ' / ' + LRCC.items.length : '');
   var hb = $('[data-lrcc-hold]', LRCC.el);
   if(hb){ hb.textContent = LRCC.hold ? 'Resume' : 'Hold'; hb.classList.toggle('on', LRCC.hold); }
+  var rb = $('[data-lrcc-resume]', LRCC.el);
+  if(rb) rb.style.display = LRCC.pin ? '' : 'none';
   var dots = $('#lrcc-sp-dots', LRCC.el);
   if(dots){
-    var sig = LRCC.items.length + ':' + LRCC.idx;
+    var sig = LRCC.items.length + ':' + LRCC.idx + ':' + (LRCC.pin ? 'p' : '');
     if(dots.getAttribute('data-sig') !== sig){
       dots.setAttribute('data-sig', sig);
       var n = LRCC.items.length, dh = '';
-      if(n > 1 && n <= 24){ for(var i = 0; i < n; i++) dh += '<i' + (i === LRCC.idx ? ' class="on"' : '') + '></i>'; }
+      if(n > 1 && n <= 24){ for(var i = 0; i < n; i++) dh += '<i' + (i === LRCC.idx && !LRCC.pin ? ' class="on"' : '') + '></i>'; }
       dots.innerHTML = dh;
     }
   }
+  lrccProgState();
 }
-function lrccSpotHTML(it){
-  var chips = '';
-  if(it.kind === 'hot' || it.kind === 'fact'){
-    /* the lead chip is the EVENT date — when the thing
-       happened — with its source; no filed-date language */
-    if(it.ev) chips += '<span class="lrcc-chip ev">' + esc(hmFmtD(it.ev)) + ' &middot; ' + esc(lrccAge(it.ev)) + '</span>';
-    if(it.url) chips += '<a class="lrcc-chip link" href="' + esc(it.url) + '" target="_blank" rel="noopener">' + esc(it.source || 'source') + ' ' + ic('ext', 10) + '</a>';
-    else if(it.source) chips += '<span class="lrcc-chip">' + esc(it.source) + '</span>';
-    if(it.kind === 'fact' && it.fresh) chips += '<span class="lrcc-chip new">New</span>';
-    return '<div class="lrcc-sp-kick ' + (it.kind === 'hot' ? 'hot' : '') + '">' + (it.kind === 'hot' ? 'Hot off the press' : 'Latest brief') + '</div>' +
-      lrccNameBtn(it.display, it.di, 'lrcc-sp-name') +
-      '<p class="lrcc-sp-text">' + esc(it.text) + '</p><div class="lrcc-chips">' + chips + '</div>';
+function lrccPaintSel(){
+  if(!LRCC.el) return;
+  var curEv = -1, curDate = '';
+  if(LRCC.pin){
+    if(LRCC.pin.type === 'event'){ curEv = LRCC.pin.evIdx; if(LRCC._ev[curEv]) curDate = LRCC._ev[curEv].ev; }
+    else curDate = LRCC.pin.date;
+  } else {
+    var it = LRCC.items[LRCC.idx];
+    if(it && it.evIdx != null && LRCC._ev[it.evIdx]){ curEv = it.evIdx; curDate = LRCC._ev[curEv].ev; }
   }
+  $$('.lrcc-ev-col', LRCC.el).forEach(function(c){ c.classList.toggle('on', !!curDate && c.getAttribute('data-d') === curDate); });
+  $$('.lrcc-ev-bead[data-e]', LRCC.el).forEach(function(b){ b.classList.toggle('on', curEv >= 0 && +b.getAttribute('data-e') === curEv); });
+  $$('.lrcc-li-row', LRCC.el).forEach(function(r){ r.classList.toggle('on', curEv >= 0 && +r.getAttribute('data-e') === curEv); });
+}
+function lrccReadHTML(){
+  if(LRCC.pin){
+    if(LRCC.pin.type === 'day') return lrccDayHTML(LRCC.pin.date);
+    var pe = LRCC._ev[LRCC.pin.evIdx];
+    if(pe) return lrccEventHTML(pe, 'From the timeline &middot; loop paused');
+    LRCC.pin = null;
+  }
+  var it = LRCC.items[LRCC.idx];
+  if(!it) return '<p class="lrcc-sp-none">Nothing in the latest brief to loop yet.</p>';
+  if(it.kind === 'hot') return lrccEventHTML(LRCC._ev[it.evIdx], 'Hot off the press');
+  if(it.kind === 'fact') return lrccEventHTML(LRCC._ev[it.evIdx], 'Filed &middot; latest brief');
   if(it.kind === 'checked'){
     return '<div class="lrcc-sp-kick">Checked this sweep</div>' +
       '<div class="lrcc-sp-big"><b>' + it.count + '</b><span>profiles checked against the public record</span></div>' +
-      '<p class="lrcc-sp-text">' + it.filedCount + (it.filedCount === 1 ? ' record' : ' records') + ' had updates filed (looping above); the rest were confirmed current.</p>' +
+      '<p class="lrcc-sp-text">' + it.filedCount + (it.filedCount === 1 ? ' record' : ' records') + ' had updates filed (in the loop); the rest were confirmed current.</p>' +
       '<div class="lrcc-sp-names">' + it.names.slice(0, 12).map(function(n){ return '<span>' + esc(n) + '</span>'; }).join('') + (it.names.length > 12 ? '<span class="more">+ ' + (it.names.length - 12) + ' more</span>' : '') + '</div>';
   }
   return '<div class="lrcc-sp-kick">Next up</div>' +
@@ -8471,8 +8492,44 @@ function lrccSpotHTML(it){
     '<div class="lrcc-sp-names">' + it.names.map(function(n){ return '<span>' + esc(n) + '</span>'; }).join('') + '</div>' +
     '<div class="lrcc-chips"><span class="lrcc-chip">Next sweep &middot; <span class="lrcc-cd-l"></span></span><span class="lrcc-chip"><span class="lrcc-cd-v">--:--:--</span> away</span></div>';
 }
+/* An event readout leads with its DATE as the hero — the
+   day it happened, its age, its weekday — then name, fact,
+   source. The filed date appears only as a quiet "logged"
+   chip when it differs from the event date. */
+function lrccEventHTML(e, kick){
+  var chips = '';
+  if(e.url) chips += '<a class="lrcc-chip link" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || 'source') + ' ' + ic('ext', 10) + '</a>';
+  else if(e.source) chips += '<span class="lrcc-chip">' + esc(e.source) + '</span>';
+  if(e.fresh) chips += '<span class="lrcc-chip new">New</span>';
+  if(e.n > 1) chips += '<span class="lrcc-chip">&times;' + e.n + ' grouped</span>';
+  if(e.filed && e.filed !== e.ev) chips += '<span class="lrcc-chip">logged ' + esc(hmFmtD(e.filed)) + '</span>';
+  return '<div class="lrcc-sp-kick' + (e.kind === 'hot' ? ' hot' : '') + '">' + kick + '</div>' +
+    '<div class="lrcc-rd-date">' + esc(hmFmtD(e.ev)) + '</div>' +
+    '<div class="lrcc-rd-age">' + esc(lrccAge(e.ev)) + ' &middot; ' + esc(lrccWeekday(e.ev)) + '</div>' +
+    lrccNameBtn(e.name, e.di, 'lrcc-sp-name') +
+    '<p class="lrcc-sp-text">' + esc(e.text) + '</p>' +
+    (chips ? '<div class="lrcc-chips">' + chips + '</div>' : '');
+}
+function lrccDayHTML(date){
+  var d = null;
+  for(var i = 0; i < LRCC._days.length; i++) if(LRCC._days[i].date === date){ d = LRCC._days[i]; break; }
+  if(!d) return '<p class="lrcc-sp-none">Nothing on that date.</p>';
+  var people = {};
+  d.idxs.forEach(function(ei){ people[LRCC._ev[ei].name] = 1; });
+  var np = Object.keys(people).length;
+  var lines = d.idxs.slice(0, 4).map(function(ei){
+    var e = LRCC._ev[ei];
+    return '<div class="lrcc-rd-line">' + lrccNameBtn(e.name, e.di, 'lrcc-rd-lname') + '<span>' + esc(e.text) + '</span></div>';
+  }).join('');
+  return '<div class="lrcc-sp-kick">Day on the record &middot; loop paused</div>' +
+    '<div class="lrcc-rd-date">' + esc(hmFmtD(date)) + '</div>' +
+    '<div class="lrcc-rd-age">' + esc(lrccAge(date)) + ' &middot; ' + esc(lrccWeekday(date)) + '</div>' +
+    '<div class="lrcc-sp-big"><b>' + d.idxs.length + '</b><span>events &middot; ' + np + (np === 1 ? ' person' : ' people') + (d.filed ? ' &middot; ' + d.filed + ' from the latest brief' : '') + '</span></div>' +
+    '<div class="lrcc-rd-lines">' + lines + '</div>' +
+    (d.idxs.length > 4 ? '<p class="lrcc-rd-more">+ ' + (d.idxs.length - 4) + ' more &middot; full day in the Ledger tab</p>' : '');
+}
 
-/* --- Timeline: the merged event ledger --- */
+/* --- Ledger: the merged event ledger (full record) --- */
 function lrccTimelineHTML(){
   var rows = [], seen = {};
   if(lrccHasBrief()){
@@ -8506,7 +8563,7 @@ function lrccTimelineHTML(){
     return 0;
   });
   var total = rows.length;
-  var html = '<div class="lrcc-tlwrap"><div class="lrcc-ph lrcc-tl-ph"><span>Event timeline &middot; newest first</span><span class="lrcc-ph-r">' + total + ' entries &middot; dated by event, not by filing</span></div>';
+  var html = '<div class="lrcc-tlwrap"><div class="lrcc-ph lrcc-tl-ph"><span>Event ledger &middot; newest first</span><span class="lrcc-ph-r">' + total + ' entries &middot; dated by event, not by filing</span></div>';
   if(!total) html += '<p class="lrcc-sp-none">No entries yet.</p>';
   html += rows.slice(0, 120).map(function(r){
     return '<div class="lrcc-tl-row"><span class="lrcc-tl-d">' + esc(hmFmtD(r.ev)) + '</span>' +
@@ -8540,6 +8597,7 @@ function lrccRosterHTML(){
     col('Checked this sweep', checked, (DT && DT.checked || []).length) +
     col('Next up', next, (DT && DT.next_up || []).length) + '</div>';
 }
+
 
 /* ============================================================
    Photos on File (JD 2026-10-22): every profile's on-file Source
@@ -12032,6 +12090,9 @@ function onClick(ev){
     case 'lrccnext': lrccStep(1); break;
     case 'lrcchold': LRCC.hold = !LRCC.hold; if(LRCC.hold) lrccClearSpot(); else lrccArmSpot(); lrccPaintSpotCtl(); lrccProgState(); break;
     case 'lrccblip': lrccJump(parseInt(el.getAttribute('data-i'), 10)); break;
+    case 'lrccday': lrccPinDay(el.getAttribute('data-d')); break;
+    case 'lrccrow': lrccJumpEvent(parseInt(el.getAttribute('data-e'), 10)); break;
+    case 'lrccresume': lrccResume(); break;
     case 'lrccperson': { var lcpdi = curDi(el); lrccClose(); if(lcpdi != null) openPerson(lcpdi); break; }
     case 'extlink': prevent = false; break;
     case 'kspick': { var ky2 = el.getAttribute('data-y'); var curv = String(gv(D.directory[S.prof.di], 'years_known') || ''); var suf = /^\d{4}(-.*)$/.exec(curv); setField(S.prof.di, 'years_known', ky2 ? ky2 + (suf ? suf[1] : '') : ''); repaintSec('relationship'); break; }
