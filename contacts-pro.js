@@ -8026,6 +8026,10 @@ function lrccWeekday(iso){
 function lrccShortD(iso){
   var a = String(iso || '').slice(0, 10).split('-');
   if(a.length < 3) return String(iso || '');
+  var age = lrccAgeDays(iso);
+  /* older than a year, the label carries its year — a bare
+     "Feb 11" on a date axis would read as this year */
+  if(age != null && age > 365) return HM_MON[+a[1] - 1] + ' ' + (+a[2]) + ' \u2019' + String(a[0]).slice(2);
   return HM_MON[+a[1] - 1] + ' ' + (+a[2]);
 }
 function lrccHasBrief(){ return !!(DT && !DT.empty && DT.date); }
