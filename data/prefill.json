@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 7,
+ "count": 1,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -14,84 +14,6 @@
     "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
    ],
    "conf": 72
-  },
-  {
-   "id": "pf-8c57336940",
-   "key": "ct:justin daniels",
-   "display": "Justin Daniels",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Potsdam: Jonathan Daniels, Kevin Daniels."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-cc256fb311",
-   "key": "ct:megan daniels",
-   "display": "Megan Daniels",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Potsdam: Jonathan Daniels, Kevin Daniels."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-f1e96f9a08",
-   "key": "michelledaniels9",
-   "display": "Michelle Daniels",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Potsdam: Jonathan Daniels, Kevin Daniels."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b8d168de00",
-   "key": "reneeockrin",
-   "display": "Renee Ockrin",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "3 of 5 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-b93e1fce44",
-   "key": "sf:richard-gilchrist",
-   "display": "Richard Gilchrist",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-984346959a",
-   "key": "trentondaniels4",
-   "display": "Trenton Daniels",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Potsdam: Jonathan Daniels, Kevin Daniels."
-   ],
-   "conf": 55
   }
  ],
  "auto_apply": [
