@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 2,
+ "count": 1,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -14,19 +14,6 @@
     "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
    ],
    "conf": 72
-  },
-  {
-   "id": "pf-b93e1fce44",
-   "key": "sf:richard-gilchrist",
-   "display": "Richard Gilchrist",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Clarkson University is in Potsdam."
-   ],
-   "conf": 55
   }
  ],
  "auto_apply": [
