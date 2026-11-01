@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-10-31",
+ "updated": "2026-11-01",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -4702,6 +4702,388 @@
     "identity": 35,
     "source": 18,
     "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-skyler-trumble-graduated-from-suny-potsdam-may-2023",
+   "name": "sf:skyler-trumble",
+   "display": "Skyler Trumble",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Skyler Trumble appears in SUNY Potsdam's 203rd Commencement program (May 20, 2023) under Candidates for the Bachelor's Degree; the program's multi-column layout does not reliably show which degree field applies to his name.",
+   "file_text": "Graduated from SUNY Potsdam, May 2023",
+   "source": "SUNY Potsdam",
+   "url": "https://view.publitas.com/47848/1625734/pdfs/2c54fcc2-549f-4fa0-af8f-77f23541d530.pdf?response-content-disposition=attachment%3B+filename%2A%3DUTF-8%27%27SUNY%2520Potsdam%2520-%25202023%2520Commencement%2520Program.pdf",
+   "anchors": [
+    "SUNY Potsdam"
+   ],
+   "missing_gate": "Only one profile anchor (SUNY Potsdam) is cleanly tied and the degree field cannot be reliably extracted from the program layout, so the two-anchor gate is not met.",
+   "confidence": 59,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 26,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "2023-05-20",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-kevin-lynch-served-as-chief-operating-officer-of",
+   "name": "sf:kevin-lynch",
+   "display": "Kevin Lynch",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "SLICFiber's May 1, 2025 Westelcom-integration release names Brad Pattelli as SLICFiber Chief Executive and calls Kevin Lynch Chief Operating Officer; Feb-May 2026 sources (STL, Saratoga Business Journal) call Lynch CEO.",
+   "file_text": "Served as Chief Operating Officer of SLICFiber, May 2025",
+   "source": "Westelcom / SLICFiber",
+   "url": "https://westelcom.com/2025/05/slicfiber-expands-network-capacity-tenfold-through-strategic-integration-with-westelcom/",
+   "anchors": [
+    "SLICFiber",
+    "Nicholville, NY"
+   ],
+   "missing_gate": "The COO title conflicts with the profile's CEO title and with 2026 sources; no source states a promotion date, so no dated title-change bullet can be filed.",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 24,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2025-05-01",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-daniel-manor-named-to-suny-canton-s-president-s-l",
+   "name": "daniel__manor",
+   "display": "Daniel Manor",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Daniel Manor appears in the President's List section of SUNY Canton's Spring 2023 honors page as an Electrical Construction and Maintenance student (parent-verified on the page); his footprint holds only Fall 2025 HVAC Trades and Spring 2026 HVAC Engineering Technology honors.",
+   "file_text": "Named to SUNY Canton's President's List for Spring 2023 as an Electrical Construction and Maintenance student",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2023/honorss23.php",
+   "anchors": [
+    "SUNY Canton"
+   ],
+   "missing_gate": "The honors list gives no hometown, so only one profile anchor (SUNY Canton) is tied and the program differs from both HVAC programs already on file.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2023-06-16",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-nikki-sew-physical-therapist-blogging-for-root",
+   "name": "nikki.sew",
+   "display": "Nicole Seward",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Dr. Nicole Seward, PT, DPT, authors a running blog for ROOTS Physical Therapy (posts through Oct 12, 2026); her Feb 2, 2026 post says 'Over these five years at ROOTS\u2026'",
+   "file_text": "Physical therapist blogging for ROOTS Physical Therapy, 2026",
+   "source": "ROOTS Physical Therapy",
+   "url": "https://www.rootspt.com/blog/",
+   "anchors": [
+    "Physical therapist / DPT occupation"
+   ],
+   "missing_gate": "No Clarkson University tie and no Potsdam or North Country location appears in the source, so this is an unproven, likely namesake physical therapist.",
+   "confidence": 47,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 20,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-dawsonwiegandt-holds-the-college-of-saint-rose-scho",
+   "name": "dawsonwiegandt",
+   "display": "Dawson Wiegandt",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "A College of Saint Rose profile of Anthony 'Tony' Dawson, a senior sprinter from Hillsborough, New Jersey who transferred from Garden City Community College in Kansas, credits him with the Saint Rose 400m school record (47.84), USTFCCCA All-Region honors, and a Northeast-10 Athlete of the Week award. JD has ruled that 'Dawson Anthony,' the Saint Rose sprinter, IS Dawson Wiegandt; the Tony Dawson anchors (New Jersey, Kansas) contradict this profile.",
+   "file_text": "Holds The College of Saint Rose school record in the 400 meters (47.84)",
+   "source": "College of Saint Rose Athletics",
+   "url": "https://gogoldenknights.com/news/2020/3/12/mens-track-field-get-to-know-tony-dawson.aspx",
+   "anchors": [
+    "College of Saint Rose track"
+   ],
+   "missing_gate": "The source's hometown (Hillsborough, NJ) and prior school (Garden City CC, Kansas) contradict this profile's Canton, NY anchors, so the record cannot be filed to Wiegandt despite the name similarity and JD's Dawson Anthony ruling.",
+   "confidence": 48,
+   "confidence_parts": {
+    "identity": 8,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2020-03-12",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-judson-foote-wife-courtney-is-a-2007-suny-canton-",
+   "name": "sf:judson-foote",
+   "display": "Judson Foote",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "SUNY Canton's People Like Me profile states Judson Foote is a father of four and that his wife Courtney is a 2007 SUNY Canton graduate (parent-verified on the page).",
+   "file_text": "Wife Courtney is a 2007 SUNY Canton graduate",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/plm/name-87213-en.html",
+   "anchors": [
+    "Hermon, NY",
+    "SUNY Canton",
+    "nursing"
+   ],
+   "missing_gate": "Spouse identity and number of children are family details held for JD's decision rather than auto-filed.",
+   "confidence": 82,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 26,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-desknaebel-married-michael-knaebel-who-works-fo",
+   "name": "desknaebel",
+   "display": "Debbie Knaebel",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Clarkson University's 'Clarkson Love Stories' alumni feature (Debbie Knaebel '15 and Michael Knaebel) says they met through mutual Clarkson friends in 2012, started dating after she graduated, married, and now have two children; Debbie works for LC Drives since 2015 and Michael works for Clarkson OIT.",
+   "file_text": "Married Michael Knaebel, who works for Clarkson OIT, after graduating from Clarkson in 2015",
+   "source": "Clarkson University",
+   "url": "https://diy.clarkson.edu/uncategorized/clarkson-love-stories/",
+   "anchors": [
+    "Clarkson University '15",
+    "LC Drives since 2015"
+   ],
+   "missing_gate": "The new content is marital/family information (spouse identity and children), held for JD's decision under the sensitive-family gate; the children detail is deliberately excluded from the file text.",
+   "confidence": 80,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 22,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-max-ferran06-studying-mechanical-engineering-with",
+   "name": "max_ferran06",
+   "display": "Max Ferran",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "His Bold.org student profile lists a Clarkson University bachelor's program 2025-2029 in Mechanical Engineering with a Business/Managerial Economics minor, a dystopian novel in progress since 2021, and Salvation Army relief-counselor work in Quebec and Iceland.",
+   "file_text": "Studying Mechanical Engineering with a minor in Business/Managerial Economics at Clarkson University (class of 2029)",
+   "source": "Bold.org",
+   "url": "http://bold.org/students/max-ferran/",
+   "anchors": [
+    "Clarkson University"
+   ],
+   "missing_gate": "Bold.org profiles are written by the student, so the source is self-reported and nothing here clears the independent-source gate.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 6,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-jessicahurlbut-guest-speaker-at-the-autism-mother-t",
+   "name": "jessicahurlbut",
+   "display": "Jessica Hurlbut",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "The Autism Mother to Mother Luncheon FAQ page names Jessica Hurlbut as the in-person speaker at the Chambersburg site, simulcast to Harrisburg, Lebanon, and Stroudsburg, with attendees receiving a copy of her book; no luncheon date is stated on the page.",
+   "file_text": "Guest speaker at the Autism Mother to Mother Luncheon in Chambersburg, Pennsylvania, simulcast to three other sites",
+   "source": "Autism Mother to Mother Luncheon",
+   "url": "https://www.momtomomlunch.com/faqs/",
+   "anchors": [
+    "Name only on the page"
+   ],
+   "missing_gate": "The event's own site is a single source, states no event date, and ties only her name, so the two-anchor gate is not met as sourced.",
+   "confidence": 54,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 14,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-emma-turell-works-as-a-cataloging-technician-at-",
+   "name": "sf:emma turell",
+   "display": "Emma Turell",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "ZoomInfo (mirrored by Wiza) lists Emma Turell as a Cataloging Technician at St. Lawrence University, 2012-present; the official St. Lawrence University people page still lists her title as Library Assistant V, the title already on her profile.",
+   "file_text": "Works as a Cataloging Technician at St. Lawrence University",
+   "source": "ZoomInfo",
+   "url": "https://www.zoominfo.com/p/Emma-Turell/5985057145",
+   "anchors": [
+    "St. Lawrence University",
+    "Canton, NY"
+   ],
+   "missing_gate": "The aggregator title conflicts with the authoritative university page, which still shows Library Assistant V, so the new title cannot be filed.",
+   "confidence": 38,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 5,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-ct-colby-criscitello-affiliated-with-team-hilbert-at-kell",
+   "name": "ct:colby criscitello",
+   "display": "Colby Criscitello",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A people-directory listing on TheOrg places a Colby Criscitello with Team Hilbert at Keller Williams Realty, a Rochester, NY team; no role, date, or profile detail is retrievable.",
+   "file_text": "Affiliated with Team Hilbert at Keller Williams Realty",
+   "source": "TheOrg",
+   "url": "https://theorg.com/people-directory/c-157",
+   "anchors": [
+    "Name only"
+   ],
+   "missing_gate": "A single aggregator directory line ties no profile anchor beyond the name, and its location signal (Rochester) does not match this profile's Potsdam base.",
+   "confidence": 32,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 5,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-shania-clayton-offers-remote-computer-setup-and-it-",
+   "name": "sf:shania-clayton",
+   "display": "Shania Clayton",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "A Fiverr seller 'shania_clayton' (United States) offers computer setup and performance-optimization services, describing hands-on IT support experience; the gig names no school, employer, or Army tie.",
+   "file_text": "Offers remote computer setup and IT support services via Fiverr",
+   "source": "Fiverr",
+   "url": "https://www.fiverr.com/shania_clayton/set-up-your-new-computer-and-optimize-its-performance",
+   "anchors": [
+    "Name/username only"
+   ],
+   "missing_gate": "The seller page is self-reported and ties none of her profile anchors (Syracuse iSchool, U.S. Army), so identity and source both fail the gate.",
+   "confidence": 28,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 3,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-alyssalramsay-works-as-a-clinical-research-coordin",
+   "name": "alyssalramsay",
+   "display": "Alyssa L Ramsay",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Wiza lists an Alyssa Ramsay as a Clinical Research Coordinator at Massachusetts General Hospital in the New York City metropolitan area, with an employer record dated May 1, 2024, before this profile's May 2026 SUNY Potsdam graduation.",
+   "file_text": "Works as a Clinical Research Coordinator at Massachusetts General Hospital",
+   "source": "Wiza",
+   "url": "https://wiza.co/d/massachusetts-general-hospital/0bbb/alyssa-ramsay",
+   "anchors": [
+    "Name only"
+   ],
+   "missing_gate": "No SUNY Potsdam or Environmental Science tie appears, the role predates her degree, and the field and region are unrelated, so this is almost certainly a namesake.",
+   "confidence": 8,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 3,
+    "detail": 0
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-askinnerusa-rachel-tozier-won-the-2026-women-s-t",
+   "name": "askinnerusa",
+   "display": "Aeriel Skinner",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "USA Shooting's July 2026 national-championships roundup names Rachel Tozier as the 2026 Women's Trap National Champion; Skinner appears on the national-team list and as a Hangzhou finalist. Her footprint carries a '2026 National Champion in Women's Trap (Instagram)' line that this contradicts.",
+   "file_text": "Rachel Tozier won the 2026 Women's Trap national title at the USA Shooting National Championships, Jul 2026",
+   "source": "USA Shooting",
+   "url": "https://sitemap.usashooting.com/usa-shooting-crowns-national-champions-as-race-to-la28-intensifies/",
+   "anchors": [
+    "USA Shooting women's trap",
+    "2026 National Championships"
+   ],
+   "missing_gate": "This is a conflict with a fact already on her profile rather than a new filing; the on-file champion line needs JD's correction decision before anything changes.",
+   "confidence": 80,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026-07-21",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-samantha-marocco-completed-the-apta-fellowship-in-hig",
+   "name": "sf:samantha-marocco",
+   "display": "Samantha Marocco",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "Her Clarkson bio lists 'APTA Fellowship in Higher Education Leadership \u2013 July 2025\u2013July 2026' while the biography text still says she is 'currently completing' the fellowship, so completion in July 2026 is inferable from the end date but never stated.",
+   "file_text": "Completed the APTA Fellowship in Higher Education Leadership, Jul 2026",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/people/samantha-marocco",
+   "anchors": [
+    "Clarkson University",
+    "APTA"
+   ],
+   "missing_gate": "The only source contradicts itself on whether the fellowship is complete, so completion cannot be filed until a source states it outright.",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 20,
+    "detail": 10
    },
    "fields": {},
    "published": "",
