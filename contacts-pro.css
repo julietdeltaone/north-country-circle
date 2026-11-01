@@ -5083,7 +5083,7 @@ button.lrcc-ro-name:hover{color:#fff;text-decoration:underline;text-underline-of
 #qawrap[hidden]{display:none}
 .qa-scrim{position:absolute;inset:0;background:rgba(3,5,9,.45)}
 .qa-panel{position:absolute;top:60px;right:14px;width:min(448px,calc(100vw - 20px));
-  max-height:calc(100vh - 84px);overflow-y:auto;background:var(--card);color:var(--txt);
+  max-height:calc(100vh - 84px);overflow-y:auto;background:var(--glass-solid);background:rgb(from var(--glass-solid) r g b / 1);color:var(--txt);
   border:1px solid var(--line2);border-radius:var(--r-lg);box-shadow:0 30px 80px rgba(0,0,0,.55);padding:14px 16px 12px}
 .qa-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .qa-hd b{font:600 15px var(--sans);white-space:nowrap}
