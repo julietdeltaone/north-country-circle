@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 8,
+ "count": 6,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -14,32 +14,6 @@
     "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
    ],
    "conf": 72
-  },
-  {
-   "id": "pf-9343b9299c",
-   "key": "annabellerose.07",
-   "display": "Annabelle Dowling",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "3 of 4 located known associates are in Potsdam."
-   ],
-   "conf": 55
-  },
-  {
-   "id": "pf-f7ea743e59",
-   "key": "sf:emily-kendall",
-   "display": "Emily Kendall",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Madrid, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Facebook lists them as from Madrid, NY (hometown; current residence unconfirmed)."
-   ],
-   "conf": 52
   },
   {
    "id": "pf-8c57336940",
