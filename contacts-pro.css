@@ -1139,10 +1139,11 @@ input,select,textarea{transition:border-color var(--d-state) var(--ease-std),box
 .aud-goal-bar i{transition:width var(--d-view) var(--ease-std)}
 /* press feedback: the interface heard you (120ms, transform only) */
 .btn:active:not(:disabled),.ib:active:not(:disabled),.seg button:active,.fc:active,.tchip:active{transform:scale(.97)}
-/* route changes only: a short rise as the new view lands. Repaints,
-   polls and quiet refreshes keep the same route name and stay instant. */
-@keyframes viewIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-#view.vin>.page{animation:viewIn var(--d-view) var(--ease-out)}
+/* V3.60.0 glitch pass (JD): the route-change entrance is REMOVED.
+   viewIn faded the whole view in from opacity 0 on every navigation —
+   a root-level fade on a main view, the pattern the V3.58 console
+   post-mortem banned; over the light theme it read as a flash. Route
+   changes now land instantly (render() still toggles .vin; it is inert). */
 /* sheets rise on the iOS drawer curve; the scrim fades with them */
 @keyframes sheetIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes sheetInM{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
@@ -4222,12 +4223,13 @@ body[data-mdl="1"] #view{max-width:none;width:100%;margin:0;padding:0;flex:1;min
 .page.profile .pmove-h{font-size:13px;color:var(--txt);display:flex;align-items:center;gap:9px}
 .page.profile .pmove-h::before{content:"";width:8px;height:8px;flex:none;background:var(--dim)}
 .page.profile #pm-c .pmove-h::before{background:var(--acc)}
-.page.profile #pm-c .card{border-left:2px solid color-mix(in srgb,var(--acc) 40%,transparent)}
+/* V3.60.0 (JD): the thin red left edge on Connection cards is gone —
+   the red band spines carry the Connection identity on their own. */
 /* search results: solid, never see-through */
 .gsr{background:var(--glass-solid);-webkit-backdrop-filter:blur(18px) saturate(1.35);backdrop-filter:blur(18px) saturate(1.35);box-shadow:var(--sh-pop)}
 /* living background layer */
 #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-#bgfx .bgf{position:absolute;border-radius:50%;will-change:transform}
+#bgfx .bgf{position:absolute;border-radius:50%}
 #bgfx .b1{width:62vmax;height:62vmax;left:-14vmax;top:-18vmax;background:radial-gradient(circle,color-mix(in srgb,var(--ga) 17%,transparent) 0%,transparent 62%)}
 #bgfx .b2{width:54vmax;height:54vmax;right:-16vmax;top:22vh;background:radial-gradient(circle,color-mix(in srgb,var(--gb) 15%,transparent) 0%,transparent 62%)}
 #bgfx::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 76px),repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 76px);opacity:.32;-webkit-mask-image:radial-gradient(120% 90% at 50% 0%,#000 30%,transparent 100%);mask-image:radial-gradient(120% 90% at 50% 0%,#000 30%,transparent 100%)}
@@ -5139,3 +5141,84 @@ body.qa-open{overflow:hidden}
   .qa-hd{flex-wrap:wrap}
   .qa-tabs{margin-left:0}
 }
+
+/* ================================================================
+   V3.60.0 — retouch batch (JD 2026-10-31)
+   ================================================================ */
+
+/* --- (2) Profile band edit button: no reserved row (JD) ---------
+   In view mode the band header's only occupant is the small pencil,
+   yet it reserved a full header row above every section. The header
+   now floats at the section's top-right: text wraps beside it, the
+   content starts right under the band top, and the button becomes
+   an opaque 32px chip that reads as a control over the content.
+   Editing mode keeps its header row (waive toggle + Close live
+   there). Applies to the profile sheets and the Lima Charlie view,
+   which renders the same sections. */
+.page.profile section.card:not(.editing) .band header,
+.lc-cols section.card:not(.editing) .band header{
+  float:right;min-height:0;margin:1px 0 2px 10px;position:relative;z-index:3}
+.page.profile section.card:not(.editing) .band-in::after,
+.lc-cols section.card:not(.editing) .band-in::after{content:"";display:block;clear:both}
+.page.profile section.card:not(.editing) .band header .ib,
+.lc-cols section.card:not(.editing) .band header .ib{
+  width:32px;height:32px;background:var(--card2);border:1px solid var(--line2);
+  border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.16);color:var(--txt)}
+.page.profile section.card:not(.editing) .band header .ib:hover,
+.lc-cols section.card:not(.editing) .band header .ib:hover{background:var(--accbg);border-color:var(--acc)}
+
+/* --- (3) Professional palette (JD): blues / golds / browns /
+   maroon, muted. One accent per stat meaning, reused wherever the
+   stat appears; sidebar icons take the same palette by surface
+   family. Text stays on the standard ink tokens. --- */
+.hmk-kpi[data-k="people"]{--stat:#2e4a68}
+.hmk-kpi[data-k="footprint"]{--stat:#7c5f16}
+.hmk-kpi[data-k="photos"]{--stat:#6b4a2e}
+.hmk-kpi[data-k="located"]{--stat:#476b87}
+.hmk-kpi[data-k="dated"]{--stat:#712434}
+html[data-mode="dark"] .hmk-kpi[data-k="people"]{--stat:#8fb0d6}
+html[data-mode="dark"] .hmk-kpi[data-k="footprint"]{--stat:#d2ab4e}
+html[data-mode="dark"] .hmk-kpi[data-k="photos"]{--stat:#c49a6c}
+html[data-mode="dark"] .hmk-kpi[data-k="located"]{--stat:#a9c2d6}
+html[data-mode="dark"] .hmk-kpi[data-k="dated"]{--stat:#cf8b98}
+.hm .hmk-kpi{border-top-color:var(--stat,var(--ink))}
+.hmk-strip .hmk-kpi[data-k] .hmk-v{color:var(--stat)}
+.hmk-strip .hmk-kpi[data-k] .hmk-l{color:var(--stat)}
+.hm-kpis .hm-kpi:nth-child(1){--stat:#6b4a2e}
+.hm-kpis .hm-kpi:nth-child(2){--stat:#712434}
+.hm-kpis .hm-kpi:nth-child(3){--stat:#2e4a68}
+.hm-kpis .hm-kpi:nth-child(4){--stat:#7c5f16}
+html[data-mode="dark"] .hm-kpis .hm-kpi:nth-child(1){--stat:#c49a6c}
+html[data-mode="dark"] .hm-kpis .hm-kpi:nth-child(2){--stat:#cf8b98}
+html[data-mode="dark"] .hm-kpis .hm-kpi:nth-child(3){--stat:#8fb0d6}
+html[data-mode="dark"] .hm-kpis .hm-kpi:nth-child(4){--stat:#d2ab4e}
+.hm-kpis .hm-kpi{border-top:3px solid var(--stat,var(--line))}
+.hm-kpis .hm-kpi:nth-child(n) .hm-kn{color:var(--stat)}
+.hm-kpis .hm-kpi:nth-child(n) .hm-kl{color:var(--stat)}
+/* sidebar rail: color lives in the icon glyph + the active tick */
+.nv{--nvc:var(--mut)}
+.nv[data-nav="home"]{--nvc:#7c5f16}
+.nv[data-nav="people"],.nv[data-nav="lists"],.nv[data-nav="network"],
+.nv[data-nav="family"],.nv[data-nav="groups"]{--nvc:#2e4a68}
+.nv[data-nav="daily"],.nv[data-nav="whatsnew"],.nv[data-nav="calendar"]{--nvc:#476b87}
+.nv[data-nav="council"],.nv[data-nav="photos"]{--nvc:#6b4a2e}
+.nv[data-nav="audit"],.nv[data-nav="sandbox"]{--nvc:#712434}
+.railfoot .nv{--nvc:#6b4a2e}
+html[data-mode="dark"] .nv[data-nav="home"]{--nvc:#d2ab4e}
+html[data-mode="dark"] .nv[data-nav="people"],html[data-mode="dark"] .nv[data-nav="lists"],
+html[data-mode="dark"] .nv[data-nav="network"],html[data-mode="dark"] .nv[data-nav="family"],
+html[data-mode="dark"] .nv[data-nav="groups"]{--nvc:#8fb0d6}
+html[data-mode="dark"] .nv[data-nav="daily"],html[data-mode="dark"] .nv[data-nav="whatsnew"],
+html[data-mode="dark"] .nv[data-nav="calendar"]{--nvc:#a9c2d6}
+html[data-mode="dark"] .nv[data-nav="council"],html[data-mode="dark"] .nv[data-nav="photos"],
+html[data-mode="dark"] .railfoot .nv{--nvc:#c49a6c}
+html[data-mode="dark"] .nv[data-nav="audit"],html[data-mode="dark"] .nv[data-nav="sandbox"]{--nvc:#cf8b98}
+#rail .nv>svg.icsvg,#tabs .nv>svg.icsvg{color:var(--nvc)}
+#rail .nv.on>svg.icsvg,#tabs .nv.on>svg.icsvg{color:var(--nvc)}
+.nv.on{box-shadow:inset 3px 0 0 var(--nvc)}
+
+/* --- (4) Quick Add: open-profile affordance on person rows --- */
+.qa-row{font:inherit}
+.qa-open{flex:none;width:32px;height:32px;border:1px solid var(--line2);border-radius:999px;
+  background:var(--bg2);color:var(--mut)}
+.qa-open:hover{background:var(--accbg);border-color:var(--acc);color:var(--txt)}
