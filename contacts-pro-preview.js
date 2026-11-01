@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.59.1';
+var APP_VERSION = '3.60.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -12790,11 +12790,20 @@ function qaSuggestions(){
     return (D.directory[b].strength || 0) - (D.directory[a].strength || 0);
   }).slice(0, 8);
 }
+/* V3.60.0 (JD): every person row in Quick Add carries a direct way
+   to the profile — a small person-icon button at the row's right
+   edge. The row itself keeps its select/log behavior (it is a div
+   now so the button can nest legally); qaOnClick resolves the
+   innermost control first, so the jump never falls through to pick. */
+function qaOpenBtn(di){
+  var nm = dispName(D.directory[di]);
+  return '<button type="button" class="ib qa-open" data-qopen="' + di + '" aria-label="Open ' + esc(nm) + '’s profile" title="Open profile">' + ic('user', 15) + '</button>';
+}
 function qaRowHTML(di, i){
   var e = D.directory[di];
   var sub = [infoLine(e), lcLabel(e) ? 'Last ' + lcLabel(e) : '', effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
-  return '<button type="button" class="qa-row' + (i === QA.hi ? ' on' : '') + '" data-qdi="' + di + '">' + avatar(e, 'sm') +
-    '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(sub) + '</small></span></button>';
+  return '<div class="qa-row' + (i === QA.hi ? ' on' : '') + '" data-qdi="' + di + '" role="button">' + avatar(e, 'sm') +
+    '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(sub) + '</small></span>' + qaOpenBtn(di) + '</div>';
 }
 function qaPaintLogList(){
   var list = $('#qa-list'), lh = $('#qa-lh'); if(!list) return;
@@ -12809,6 +12818,7 @@ function qaPaintLogList(){
     if(QA.di != null){
       var e = D.directory[QA.di];
       pk.innerHTML = avatar(e, 'sm') + '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span>' +
+        qaOpenBtn(QA.di) +
         '<button type="button" class="btn ghost sm" data-qact="pickchange">Change</button>';
       pk.hidden = false;
     } else pk.hidden = true;
@@ -12848,6 +12858,7 @@ function qaPaintQueue(){
     var e = D.directory[en.di];
     var sub = [infoLine(e), lcLabel(e) ? 'Last ' + lcLabel(e) : ''].filter(Boolean).join(' · ');
     return '<div class="qa-qrow">' + avatar(e, 'sm') + '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b><small>' + esc(sub) + '</small></span>' +
+      qaOpenBtn(en.di) +
       '<button type="button" class="btn ghost sm" data-qlog="' + en.di + '">Log</button>' +
       '<button type="button" class="ib qa-rm" data-qrm="' + en.di + '" aria-label="Remove from Up Next">' + ic('x', 14) + '</button></div>';
   }).join('') : '<div class="qa-none">Nobody up next. Add people above and they will wait here.</div>';
@@ -12885,7 +12896,8 @@ function qaDoCreate(force){
       warn.innerHTML = '<b>' + esc(full) + '</b> is already in the directory:' + hits.map(function(di){
         var e = D.directory[di];
         return '<span class="qa-warnrow">' + esc([infoLine(e), lcLabel(e) ? 'Last ' + lcLabel(e) : ''].filter(Boolean).join(' · ')) +
-          '</span><button type="button" class="btn ghost sm" data-quse="' + di + '">Log contact with them instead</button>';
+          '</span><button type="button" class="btn ghost sm" data-quse="' + di + '">Log contact with them instead</button>' +
+          '<button type="button" class="btn ghost sm" data-qopen="' + di + '">Open profile</button>';
       }).join('') + '<button type="button" class="btn ghost sm" data-qact="npforce">Create anyway</button>';
       warn.hidden = false;
       qaStatus('Someone with that name is already on file.', 'err');
@@ -12913,13 +12925,13 @@ function qaDoCreate(force){
   var done = $('#qa-np-done');
   if(done){
     done.innerHTML = '<span>' + esc(full) + ' is in. Log the first contact now:</span>' +
-      '<button type="button" class="btn primary sm" data-qfirst="' + di + '">Log first contact</button>';
+      '<button type="button" class="btn primary sm" data-qfirst="' + di + '">Log first contact</button>' + qaOpenBtn(di);
     done.hidden = false;
   }
   qaPaintQueueCount();
 }
 function qaOnClick(ev){
-  var t = ev.target && ev.target.closest ? ev.target.closest('[data-qmode],[data-qact],[data-qdi],[data-qlog],[data-qrm],[data-quse],[data-qfirst],[data-on]') : null;
+  var t = ev.target && ev.target.closest ? ev.target.closest('[data-qmode],[data-qact],[data-qdi],[data-qlog],[data-qrm],[data-quse],[data-qfirst],[data-qopen],[data-on]') : null;
   if(!t) return;
   if(t.hasAttribute('data-qmode')){ qaSetMode(t.getAttribute('data-qmode')); return; }
   if(t.hasAttribute('data-on')){
@@ -12927,6 +12939,7 @@ function qaOnClick(ev){
     $$('#qa-tog button').forEach(function(b){ b.classList.toggle('on', b === t); });
     return;
   }
+  if(t.hasAttribute('data-qopen')){ var odi = +t.getAttribute('data-qopen'); qaClose(); openPerson(odi, null); return; }
   if(t.hasAttribute('data-qdi')){ qaPick(+t.getAttribute('data-qdi')); return; }
   if(t.hasAttribute('data-qlog')){ QA.di = +t.getAttribute('data-qlog'); qaSetMode('log'); qaPaintLogList(); var s = $('#qa-sum'); if(s) s.focus(); return; }
   if(t.hasAttribute('data-qrm')){
