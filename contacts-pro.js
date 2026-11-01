@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.58.0';
+var APP_VERSION = '3.59.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -1956,6 +1956,7 @@ function renderChrome(){
     '<button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: one step — closes the top layer, leaves a runner, or returns to the previous view">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="ib" data-act="topfwd"' + (navNext() ? '' : ' disabled') + ' aria-label="Forward" title="' + (navNext() ? 'Forward to ' + esc(navNext().label) : 'Forward: nothing ahead — go Back first') + '">' + ic('chevr', 20) + '</button>' +
     '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
+    '<button type="button" class="qadd" data-act="qadd" title="Quick add: log a contact, add a new person, or open the Up Next queue (shortcut: Q)">' + ic('plus', 15) + '<span>Quick add</span><kbd>Q</kbd></button>' +
     '<div class="topr">' +
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
@@ -12143,6 +12144,7 @@ function onClick(ev){
     case 'gopen': { var gmem = (GRPV.shown && GRPV.shown.length) ? GRPV.shown : (GRPV.detail ? grpMembersOf(GRPV.detail.kind, GRPV.detail.name) : []); if(gmem.indexOf(di) < 0) gmem = [di]; var gctx = ctxFrom(GRPV.detail ? GRPV.detail.name : 'Groups', gmem, gmem.indexOf(di), 'groups'); if(GRPV.detail) gctx.grp = GRPV.detail.kind + '/' + encodeURIComponent(GRPV.detail.name); openPerson(di, gctx); break; }
     case 'gsall': { S.ppl.q = ($('#gs') || {}).value || ''; go('people'); break; }
     case 'gsclear': { var gi = $('#gs'); if(gi){ gi.value = ''; paintSearch(); gi.focus(); } break; }
+    case 'qadd': { qaOpen('log'); break; }
     case 'logcontact': { S.prof.edit.timeline = true; if($('#sec-timeline')) repaintSec('timeline'); else paintProfile(S.prof.di);
       setTimeout(function(){ var s = $('#lc-sum'); if(s){ s.focus(); try{ s.scrollIntoView({ block:'center' }); }catch(x){} } }, 30); break; }
     case 'gomobile': { try{ localStorage.removeItem('ncc_force_full'); }catch(x){} location.href = 'contacts-mobile.html'; break; }
@@ -12597,9 +12599,373 @@ function onKey(ev){
   if(mod && (ev.key === 'y' || ev.key === 'Y')){ ev.preventDefault(); doRedo(); refreshAfterUndo('redo'); return; }
   if(mod && (ev.key === 'k' || ev.key === 'K')){ ev.preventDefault(); var g = $('#gs'); if(g) g.focus(); return; }
   if(mod || ev.altKey) return;
+  if(ev.key === 'q' || ev.key === 'Q'){ if(!QA.open && !document.body.classList.contains('sheet-open')){ ev.preventDefault(); qaOpen('log'); } return; }
   if(ev.key === '/'){ ev.preventDefault(); var gs = $('#gs'); if(gs) gs.focus(); return; }
 }
 
+
+/* ============================================================
+   Quick Add (V3.59.0, JD): desktop parity with the mobile
+   quick-entry doors. One panel, three modes — Log contact,
+   New person, Up next — reachable from the top-bar button on
+   every view or the Q key. The writes are the mobile writes:
+   Log = the mobile saveLog shape (a Timeline contact event
+   dated today + the Last Contact stamp rule), the queue is
+   the mobile queue itself (same localStorage key, same item
+   shape — one queue when both apps share a browser), and a
+   new person is created through the Save Pool the way the
+   outbox already creates rows for unknown ids (the Sandbox
+   create's sf: key convention and field set).
+   ============================================================ */
+var QA = { open:false, mode:'log', di:null, online:false, hi:0, rows:[], prevFocus:null, watchT:null, npWarn:null };
+var QA_QUEUE_KEY = 'ncc_contact_queue_v1';
+var QA_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function qaDateLabel(iso){
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); if(!m) return String(iso || '');
+  return QA_MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
+}
+/* --- the shared Up Next queue (mobile's exact storage) --- */
+function qaQueueLoad(){
+  var a = [];
+  try{ a = JSON.parse(localStorage.getItem(QA_QUEUE_KEY) || '[]'); }catch(x){ a = []; }
+  return Array.isArray(a) ? a.filter(function(it){ return it && it.id; }) : [];
+}
+function qaQueueSaveArr(a){ try{ localStorage.setItem(QA_QUEUE_KEY, JSON.stringify(a)); }catch(x){} }
+function qaQueueEntries(){
+  var raw = qaQueueLoad(), out = [], valid = {};
+  raw.forEach(function(it){
+    var di = PK2I[it.id]; if(di == null) return;
+    var e = D.directory[di]; if(!e || !liveEntry(e)) return;
+    valid[it.id] = 1; out.push({ id:it.id, di:di });
+  });
+  if(Object.keys(valid).length !== raw.length) qaQueueSaveArr(raw.filter(function(it){ return valid[it.id]; }));
+  return out;
+}
+function qaQueueAdd(di){
+  var id = pkey(D.directory[di]);
+  var a = qaQueueLoad();
+  if(a.some(function(it){ return it.id === id; })) return false;
+  a.push({ id:id, addedAt:new Date().toISOString() });
+  qaQueueSaveArr(a); return true;
+}
+function qaQueueRemove(di){
+  if(di == null || !D.directory[di]) return;
+  var id = pkey(D.directory[di]);
+  qaQueueSaveArr(qaQueueLoad().filter(function(it){ return it.id !== id; }));
+}
+/* --- the one logging write: mobile saveLog, field for field --- */
+function qaSaveLog(di, sum, det, on){
+  var e = D.directory[di]; if(!e) return false;
+  sum = String(sum || '').trim(); if(!sum) return false;
+  det = String(det || '').trim();
+  var d = todayStr();
+  var arr = (e.events || []).slice();
+  var lev = { date:d, summary:sum, kind:'contact' };
+  if(det) lev.detail = det;
+  if(on) lev.online = true;
+  arr.push(lev);
+  txn('Log contact', function(){ queuePatch(di, { events:JSON.stringify(arr) }); });
+  var curLc = String(gv(e, 'last_contact') || '').trim();
+  if(!curLc || flexKey(d) >= flexKey(curLc)){ setField(di, 'last_contact', d); setField(di, 'last_contact_online', on ? 'yes' : ''); }
+  qaQueueRemove(di); /* a logged person leaves Up Next, whichever app logged them */
+  return true;
+}
+/* --- panel lifecycle --- */
+function qaEnsure(){
+  if($('#qawrap')) return;
+  var w = document.createElement('div');
+  w.id = 'qawrap'; w.hidden = true;
+  w.innerHTML =
+  '<div class="qa-scrim" data-qact="close"></div>' +
+  '<section class="qa-panel" role="dialog" aria-modal="true" aria-label="Quick add">' +
+    '<header class="qa-hd"><b>Quick add</b>' +
+      '<span class="qa-tabs" role="tablist">' +
+        '<button type="button" data-qmode="log">Log contact</button>' +
+        '<button type="button" data-qmode="new">New person</button>' +
+        '<button type="button" data-qmode="queue">Up next<span class="qa-qn" id="qa-qn"></span></button>' +
+      '</span>' +
+      '<button type="button" class="ib qa-x" data-qact="close" aria-label="Close">' + ic('x', 16) + '</button>' +
+    '</header>' +
+    '<div class="qa-sec" data-sec="log">' +
+      '<div id="qa-pickwrap">' +
+        '<input id="qa-q" type="search" placeholder="Search people" autocomplete="off" spellcheck="false" aria-label="Search people">' +
+        '<div class="qa-lh" id="qa-lh"></div><div id="qa-list" class="qa-list"></div>' +
+      '</div>' +
+      '<div id="qa-picked" class="qa-picked" hidden></div>' +
+      '<div class="seg qa-tog" id="qa-tog">' +
+        '<button type="button" data-on="0" class="on">' + ic('pin', 13) + 'Location</button>' +
+        '<button type="button" data-on="1">' + ic('network', 13) + 'Online</button>' +
+      '</div>' +
+      '<input id="qa-sum" class="qa-in" placeholder="What happened — one line" autocomplete="off">' +
+      '<input id="qa-det" class="qa-in" placeholder="Details (optional)" autocomplete="off">' +
+      '<div class="qa-endrow"><span class="qa-date" id="qa-date"></span>' +
+      '<button type="button" class="btn primary" data-qact="logsave">Log contact</button></div>' +
+    '</div>' +
+    '<div class="qa-sec" data-sec="new" hidden>' +
+      '<div class="qa-two"><input id="qa-np-first" class="qa-in" placeholder="First name" autocomplete="off"><input id="qa-np-last" class="qa-in" placeholder="Last name" autocomplete="off"></div>' +
+      '<input id="qa-np-city" class="qa-in" placeholder="Town (optional), e.g. Potsdam, NY" autocomplete="off">' +
+      '<input id="qa-np-rel" class="qa-in" placeholder="Relationship (optional)" autocomplete="off" list="qa-rels">' +
+      '<datalist id="qa-rels"><option value="Family"></option><option value="Friend"></option><option value="Colleague"></option><option value="Client"></option><option value="Acquaintance"></option><option value="Mentor"></option></datalist>' +
+      '<input id="qa-np-since" class="qa-in" placeholder="Known since (optional), e.g. 2024" autocomplete="off" inputmode="numeric">' +
+      '<div id="qa-np-warn" class="qa-warn" hidden></div>' +
+      '<div class="qa-endrow"><span class="qa-date">Saves through the Save Pool</span>' +
+      '<button type="button" class="btn primary" data-qact="npcreate">Add person</button></div>' +
+      '<div id="qa-np-done" class="qa-done" hidden></div>' +
+    '</div>' +
+    '<div class="qa-sec" data-sec="queue" hidden>' +
+      '<input id="qa-qq" type="search" placeholder="Add someone to Up Next" autocomplete="off" spellcheck="false" aria-label="Add someone to Up Next">' +
+      '<div id="qa-qlist" class="qa-list"></div>' +
+      '<div class="qa-lh">Up next</div><div id="qa-queue" class="qa-ql"></div>' +
+    '</div>' +
+    '<div class="qa-status" id="qa-status" role="status"></div>' +
+  '</section>';
+  document.body.appendChild(w);
+  w.addEventListener('click', qaOnClick);
+  w.addEventListener('input', qaOnInput);
+  w.addEventListener('keydown', qaOnKey);
+  w.addEventListener('mouseover', function(ev){
+    var row = ev.target && ev.target.closest ? ev.target.closest('.qa-row') : null;
+    if(!row || row.classList.contains('on')) return;
+    var rows = $$('.qa-row', w);
+    QA.hi = rows.indexOf(row);
+    rows.forEach(function(r, j){ r.classList.toggle('on', j === QA.hi); });
+  });
+  if(!window.__qaKeys){
+    window.__qaKeys = true;
+    document.addEventListener('keydown', function(ev){
+      if(!QA.open || ev.key !== 'Escape') return;
+      ev.preventDefault(); ev.stopPropagation(); qaClose();
+    }, true);
+  }
+}
+function qaOpen(mode){
+  qaEnsure();
+  QA.prevFocus = (document.activeElement && document.activeElement !== document.body) ? document.activeElement : null;
+  QA.open = true;
+  $('#qawrap').hidden = false;
+  document.body.classList.add('qa-open');
+  qaSetMode(mode || 'log');
+}
+function qaClose(){
+  QA.open = false;
+  var w = $('#qawrap'); if(w) w.hidden = true;
+  document.body.classList.remove('qa-open');
+  if(QA.watchT){ clearInterval(QA.watchT); QA.watchT = null; }
+  var f = QA.prevFocus; QA.prevFocus = null;
+  if(f && document.contains(f) && f.focus){ try{ f.focus(); }catch(x){} }
+}
+function qaSetMode(m){
+  QA.mode = m;
+  $$('#qawrap [data-qmode]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-qmode') === m); });
+  $$('#qawrap .qa-sec').forEach(function(s){ s.hidden = s.getAttribute('data-sec') !== m; });
+  qaPaintQueueCount();
+  if(m === 'log'){ qaPaintLogList(); var q = $('#qa-q'); if(q && !QA.di) q.focus(); else { var s2 = $('#qa-sum'); if(s2) s2.focus(); } }
+  if(m === 'new'){ var f = $('#qa-np-first'); if(f) f.focus(); }
+  if(m === 'queue'){ qaPaintQueueResults(); qaPaintQueue(); var qq = $('#qa-qq'); if(qq) qq.focus(); }
+}
+function qaStatus(msg, kind){
+  var st = $('#qa-status'); if(!st) return;
+  st.textContent = msg || '';
+  st.className = 'qa-status' + (kind ? ' ' + kind : '');
+}
+/* after a save, follow the person's outbox item until the Sheet acks it */
+function qaWatchWrite(id, baseMsg){
+  if(QA.watchT) clearInterval(QA.watchT);
+  var t0 = Date.now();
+  QA.watchT = setInterval(function(){
+    if(!QA.open){ clearInterval(QA.watchT); QA.watchT = null; return; }
+    var logged = POOL.log.some(function(en){ return en.id === id && en.t > t0 - 2000; });
+    if(logged){ qaStatus(baseMsg + ' Written to the Sheet.', 'ok'); clearInterval(QA.watchT); QA.watchT = null; return; }
+    var it = null;
+    for(var i = 0; i < OUT.items.length; i++) if(OUT.items[i].id === id){ it = OUT.items[i]; break; }
+    if(it && it.stuck){ qaStatus(baseMsg + ' Stuck in the Save Pool: ' + it.stuck, 'err'); clearInterval(QA.watchT); QA.watchT = null; return; }
+    if(Date.now() - t0 > 12000){ qaStatus(baseMsg + ' Still saving — it stays tracked in the Save Pool.', ''); clearInterval(QA.watchT); QA.watchT = null; }
+  }, 600);
+}
+/* --- people picker (shared by Log and Queue-add) --- */
+function qaSuggestions(){
+  return people().slice().sort(function(a, b){
+    var x = flexKey(gv(D.directory[a], 'last_contact')) || '', y = flexKey(gv(D.directory[b], 'last_contact')) || '';
+    if(x !== y) return x < y ? 1 : -1;
+    return (D.directory[b].strength || 0) - (D.directory[a].strength || 0);
+  }).slice(0, 8);
+}
+function qaRowHTML(di, i){
+  var e = D.directory[di];
+  var sub = [infoLine(e), lcLabel(e) ? 'Last ' + lcLabel(e) : '', effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
+  return '<button type="button" class="qa-row' + (i === QA.hi ? ' on' : '') + '" data-qdi="' + di + '">' + avatar(e, 'sm') +
+    '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(sub) + '</small></span></button>';
+}
+function qaPaintLogList(){
+  var list = $('#qa-list'), lh = $('#qa-lh'); if(!list) return;
+  var q = ($('#qa-q') ? $('#qa-q').value : '').trim();
+  QA.rows = q ? searchPeople(q, 8) : qaSuggestions();
+  QA.hi = Math.min(QA.hi, Math.max(0, QA.rows.length - 1));
+  if(lh) lh.textContent = q ? (QA.rows.length ? 'Matches' : '') : 'Recently contacted';
+  list.innerHTML = QA.rows.length ? QA.rows.map(function(di, i){ return qaRowHTML(di, i); }).join('') : '<div class="qa-none">No one matches.</div>';
+  var pw = $('#qa-pickwrap'); if(pw) pw.hidden = QA.di != null;
+  var pk = $('#qa-picked');
+  if(pk){
+    if(QA.di != null){
+      var e = D.directory[QA.di];
+      pk.innerHTML = avatar(e, 'sm') + '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span>' +
+        '<button type="button" class="btn ghost sm" data-qact="pickchange">Change</button>';
+      pk.hidden = false;
+    } else pk.hidden = true;
+  }
+  var dt = $('#qa-date'); if(dt) dt.textContent = 'Today · ' + qaDateLabel(todayStr());
+}
+function qaPaintQueueResults(){
+  var list = $('#qa-qlist'); if(!list) return;
+  var q = ($('#qa-qq') ? $('#qa-qq').value : '').trim();
+  if(!q){ list.innerHTML = ''; QA.rows = []; return; }
+  var queued = {}; qaQueueEntries().forEach(function(en){ queued[en.di] = 1; });
+  QA.rows = searchPeople(q, 8).filter(function(di){ return !queued[di]; });
+  QA.hi = Math.min(QA.hi, Math.max(0, QA.rows.length - 1));
+  list.innerHTML = QA.rows.length ? QA.rows.map(function(di, i){ return qaRowHTML(di, i); }).join('') : '<div class="qa-none">No one new matches.</div>';
+}
+function qaPick(di){
+  if(QA.mode === 'queue'){
+    var e0 = D.directory[di];
+    if(qaQueueAdd(di)){ qaStatus('Added ' + dispName(e0) + ' to Up Next.', 'ok'); }
+    else qaStatus(dispName(e0) + ' is already in Up Next.', '');
+    var qq = $('#qa-qq'); if(qq){ qq.value = ''; qq.focus(); }
+    qaPaintQueueResults(); qaPaintQueue(); qaPaintQueueCount();
+    return;
+  }
+  QA.di = di; qaPaintLogList();
+  var s = $('#qa-sum'); if(s) s.focus();
+}
+/* --- queue tab --- */
+function qaPaintQueueCount(){
+  var n = qaQueueEntries().length, el = $('#qa-qn');
+  if(el) el.textContent = n ? ' · ' + n : '';
+}
+function qaPaintQueue(){
+  var box = $('#qa-queue'); if(!box) return;
+  var entries = qaQueueEntries();
+  box.innerHTML = entries.length ? entries.map(function(en){
+    var e = D.directory[en.di];
+    var sub = [infoLine(e), lcLabel(e) ? 'Last ' + lcLabel(e) : ''].filter(Boolean).join(' · ');
+    return '<div class="qa-qrow">' + avatar(e, 'sm') + '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b><small>' + esc(sub) + '</small></span>' +
+      '<button type="button" class="btn ghost sm" data-qlog="' + en.di + '">Log</button>' +
+      '<button type="button" class="ib qa-rm" data-qrm="' + en.di + '" aria-label="Remove from Up Next">' + ic('x', 14) + '</button></div>';
+  }).join('') : '<div class="qa-none">Nobody up next. Add people above and they will wait here.</div>';
+}
+/* --- actions --- */
+function qaDoLog(){
+  if(QA.di == null){ qaStatus('Pick a person first.', 'err'); var q = $('#qa-q'); if(q) q.focus(); return; }
+  var sum = $('#qa-sum').value, det = $('#qa-det').value;
+  if(!sum.trim()){ qaStatus('Write what happened, one line — that line is the record.', 'err'); $('#qa-sum').focus(); return; }
+  var di = QA.di, e = D.directory[di], on = QA.online;
+  if(!qaSaveLog(di, sum, det, on)){ qaStatus('That did not save. Try again.', 'err'); return; }
+  var base = 'Logged ' + (on ? 'online' : 'location') + ' contact with ' + dispName(e) + ' — ' + qaDateLabel(todayStr()) + '.';
+  qaStatus(base + ' Saving through the Save Pool…', 'ok');
+  qaWatchWrite(pkey(e), base);
+  QA.di = null; QA.hi = 0;
+  $('#qa-sum').value = ''; $('#qa-det').value = ''; var q2 = $('#qa-q'); if(q2){ q2.value = ''; }
+  qaPaintLogList(); qaPaintQueueCount();
+  if(q2) q2.focus();
+}
+function qaNpMatches(full){
+  var lf = full.toLowerCase();
+  return people().filter(function(di){ return dispName(D.directory[di]).toLowerCase() === lf; });
+}
+function qaDoCreate(force){
+  var fn = $('#qa-np-first').value.trim(), ln = $('#qa-np-last').value.trim();
+  var full = (fn + ' ' + ln).trim();
+  if(!full){ qaStatus('Enter a name first.', 'err'); $('#qa-np-first').focus(); return; }
+  var city = $('#qa-np-city').value.trim(), rel = $('#qa-np-rel').value.trim(), since = $('#qa-np-since').value.trim();
+  if(since && !/^\d{4}$/.test(since)){ qaStatus('Known since needs a 4-digit year.', 'err'); $('#qa-np-since').focus(); return; }
+  var warn = $('#qa-np-warn');
+  if(!force){
+    var hits = qaNpMatches(full);
+    if(hits.length){
+      QA.npWarn = true;
+      warn.innerHTML = '<b>' + esc(full) + '</b> is already in the directory:' + hits.map(function(di){
+        var e = D.directory[di];
+        return '<span class="qa-warnrow">' + esc([infoLine(e), lcLabel(e) ? 'Last ' + lcLabel(e) : ''].filter(Boolean).join(' · ')) +
+          '</span><button type="button" class="btn ghost sm" data-quse="' + di + '">Log contact with them instead</button>';
+      }).join('') + '<button type="button" class="btn ghost sm" data-qact="npforce">Create anyway</button>';
+      warn.hidden = false;
+      qaStatus('Someone with that name is already on file.', 'err');
+      return;
+    }
+  }
+  warn.hidden = true; QA.npWarn = null;
+  var slug = full.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''), key = 'sf:' + slug, n = 2;
+  while(PK2I[key] != null){ key = 'sf:' + slug + '-' + n; n++; }
+  var e = { name:key, display:full, src:'subject', profile:{}, events:[], files:[], neighbors:[] };
+  D.directory.push(e);
+  var di = D.directory.length - 1;
+  PK2I[key] = di;
+  var dn = full.toLowerCase(); if(!(dn in BYN)) BYN[dn] = di;
+  normEntry(e);
+  var patch = { first_name:fn, last_name:ln, display_name:full, display:full, tier:'open' };
+  if(city) patch.city = city;
+  if(rel) patch.relationship = rel;
+  if(since) patch.known_since = since;
+  txn('Add person', function(){ queuePatch(di, patch); });
+  var base = 'Added ' + full + ' — the row is created in the Sheet through the Save Pool.';
+  qaStatus(base + ' Saving…', 'ok');
+  qaWatchWrite(key, base);
+  ['qa-np-first', 'qa-np-last', 'qa-np-city', 'qa-np-rel', 'qa-np-since'].forEach(function(id){ var el = document.getElementById(id); if(el) el.value = ''; });
+  var done = $('#qa-np-done');
+  if(done){
+    done.innerHTML = '<span>' + esc(full) + ' is in. Log the first contact now:</span>' +
+      '<button type="button" class="btn primary sm" data-qfirst="' + di + '">Log first contact</button>';
+    done.hidden = false;
+  }
+  qaPaintQueueCount();
+}
+function qaOnClick(ev){
+  var t = ev.target && ev.target.closest ? ev.target.closest('[data-qmode],[data-qact],[data-qdi],[data-qlog],[data-qrm],[data-quse],[data-qfirst],[data-on]') : null;
+  if(!t) return;
+  if(t.hasAttribute('data-qmode')){ qaSetMode(t.getAttribute('data-qmode')); return; }
+  if(t.hasAttribute('data-on')){
+    QA.online = t.getAttribute('data-on') === '1';
+    $$('#qa-tog button').forEach(function(b){ b.classList.toggle('on', b === t); });
+    return;
+  }
+  if(t.hasAttribute('data-qdi')){ qaPick(+t.getAttribute('data-qdi')); return; }
+  if(t.hasAttribute('data-qlog')){ QA.di = +t.getAttribute('data-qlog'); qaSetMode('log'); qaPaintLogList(); var s = $('#qa-sum'); if(s) s.focus(); return; }
+  if(t.hasAttribute('data-qrm')){
+    var di = +t.getAttribute('data-qrm'), nm = dispName(D.directory[di]);
+    qaQueueRemove(di); qaPaintQueue(); qaPaintQueueCount();
+    qaStatus('Removed ' + nm + ' from Up Next.', '');
+    return;
+  }
+  if(t.hasAttribute('data-quse')){ QA.di = +t.getAttribute('data-quse'); qaSetMode('log'); qaPaintLogList(); var s2 = $('#qa-sum'); if(s2) s2.focus(); return; }
+  if(t.hasAttribute('data-qfirst')){ QA.di = +t.getAttribute('data-qfirst'); qaSetMode('log'); qaPaintLogList(); var s3 = $('#qa-sum'); if(s3) s3.focus(); return; }
+  var act = t.getAttribute('data-qact');
+  if(act === 'close') qaClose();
+  else if(act === 'pickchange'){ QA.di = null; qaPaintLogList(); var q = $('#qa-q'); if(q) q.focus(); }
+  else if(act === 'logsave') qaDoLog();
+  else if(act === 'npcreate') qaDoCreate(false);
+  else if(act === 'npforce') qaDoCreate(true);
+}
+function qaOnInput(ev){
+  if(ev.target.id === 'qa-q'){ QA.hi = 0; if(QA.di == null) qaPaintLogList(); }
+  else if(ev.target.id === 'qa-qq'){ QA.hi = 0; qaPaintQueueResults(); }
+}
+function qaOnKey(ev){
+  var id = ev.target && ev.target.id;
+  if((id === 'qa-q' && QA.di == null) || id === 'qa-qq'){
+    var rows = QA.rows || [];
+    if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+      if(!rows.length) return;
+      ev.preventDefault();
+      QA.hi = ev.key === 'ArrowDown' ? Math.min(rows.length - 1, QA.hi + 1) : Math.max(0, QA.hi - 1);
+      $$('#qawrap .qa-row').forEach(function(r, j){ r.classList.toggle('on', j === QA.hi); });
+    }
+    else if(ev.key === 'Enter'){
+      if(rows.length && rows[QA.hi] != null){ ev.preventDefault(); qaPick(rows[QA.hi]); }
+    }
+    return;
+  }
+  if(ev.key === 'Enter' && (id === 'qa-sum' || id === 'qa-det')){ ev.preventDefault(); qaDoLog(); return; }
+  if(ev.key === 'Enter' && /^qa-np-/.test(id || '')){ ev.preventDefault(); qaDoCreate(false); }
+}
 
 /* ============================================================
    Presentation hooks. CALM PASS 2026-10-13: numbers and bars
