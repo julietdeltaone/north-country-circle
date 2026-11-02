@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.69.0';
+var APP_VERSION = '3.70.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7795,7 +7795,7 @@ document.addEventListener('keydown', function(ev){
   if(typeof LRCC !== 'undefined' && LRCC.el) return;
   if(typeof QA !== 'undefined' && QA.open) return;
   if(typeof POOL !== 'undefined' && POOL.open) return;
-  if(document.body.classList.contains('sheet-open') || document.body.classList.contains('qa-open')) return;
+  if(document.body.classList.contains('sheet-open') || document.body.classList.contains('qa-on')) return;
   if(document.querySelector('.hmi-wrap, .phi-wrap, .ykb-wrap, .phed-wrap')) return;
   var tp = document.getElementById('tpop'); if(tp && !tp.hidden) return;
   var sw = document.getElementById('sheetwrap'); if(sw && !sw.hidden) return;
@@ -12634,7 +12634,7 @@ function onKey(ev){
    outbox already creates rows for unknown ids (the Sandbox
    create's sf: key convention and field set).
    ============================================================ */
-var QA = { open:false, mode:'log', di:null, online:false, prox:false, hi:0, rows:[], prevFocus:null, watchT:null, npWarn:null };
+var QA = { open:false, mode:'log', di:null, online:false, prox:false, hi:0, rows:[], prevFocus:null, watchT:null, npWarn:null, pxDi:null, pxHi:0, pxRows:[] };
 var QA_QUEUE_KEY = 'ncc_contact_queue_v1';
 var QA_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function qaDateLabel(iso){
@@ -12691,11 +12691,11 @@ function qaSaveLog(di, sum, det, on){
    it — a Proximity event is co-presence ({date, kind:'proximity', venue,
    summary:venue}). It never writes the Last Contact stamp, and the person
    stays in Up Next: only a real contact clears the queue. --- */
-function qaSaveProx(di, venue){
+function qaSaveProx(di, venue, dateStr){
   var e = D.directory[di]; if(!e) return false;
   venue = String(venue || '').trim(); if(!venue) return false;
   var arr = (e.events || []).slice();
-  arr.push({ date:todayStr(), kind:'proximity', venue:venue, summary:venue });
+  arr.push({ date:(dateStr && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) ? dateStr : todayStr(), kind:'proximity', venue:venue, summary:venue });
   txn('Log proximity', function(){ queuePatch(di, { events:JSON.stringify(arr) }); });
   return true;
 }
@@ -12721,6 +12721,7 @@ function qaEnsure(){
     '<header class="qa-hd"><b>Quick add</b>' +
       '<span class="qa-tabs" role="tablist">' +
         '<button type="button" data-qmode="log" data-kind="connection">' + ic('link', 12) + 'Log contact</button>' +
+        '<button type="button" data-qmode="prox" data-kind="connection">' + ic('people', 12) + 'Proximity</button>' +
         '<button type="button" data-qmode="new" data-kind="about">' + ic('user', 12) + 'New person</button>' +
         '<button type="button" data-qmode="queue" data-kind="neutral">Up next<span class="qa-qn" id="qa-qn"></span></button>' +
       '</span>' +
@@ -12741,6 +12742,17 @@ function qaEnsure(){
       '<input id="qa-det" class="qa-in" placeholder="Details (optional)" autocomplete="off">' +
       '<div class="qa-endrow"><span class="qa-date" id="qa-date"></span>' +
       '<button type="button" class="btn primary" id="qa-savebtn" data-qact="logsave">Log contact</button></div>' +
+    '</div>' +
+    '<div class="qa-sec" data-sec="prox" hidden data-kind="connection">' +
+      '<div id="qa-px-pickwrap">' +
+        '<input id="qa-px-q" type="search" placeholder="Search people" autocomplete="off" spellcheck="false" aria-label="Search people">' +
+        '<div class="qa-lh" id="qa-px-lh"></div><div id="qa-px-list" class="qa-list"></div>' +
+      '</div>' +
+      '<div id="qa-px-picked" class="qa-picked" hidden></div>' +
+      '<div class="qa-two"><input id="qa-px-date" type="date" class="qa-in" aria-label="Date">' +
+      '<input id="qa-px-place" class="qa-in" placeholder="Place — e.g. Lewis School, Clarkson Hall" autocomplete="off"></div>' +
+      '<div class="qa-endrow"><span class="qa-date">Co-presence only · Last Contact never moves</span>' +
+      '<button type="button" class="btn primary" data-qact="pxsave">Log proximity</button></div>' +
     '</div>' +
     '<div class="qa-sec" data-sec="new" hidden data-kind="about">' +
       '<div class="qa-two"><input id="qa-np-first" class="qa-in" placeholder="First name" autocomplete="off"><input id="qa-np-last" class="qa-in" placeholder="Last name" autocomplete="off"></div>' +
@@ -12767,10 +12779,13 @@ function qaEnsure(){
   w.addEventListener('mouseover', function(ev){
     var row = ev.target && ev.target.closest ? ev.target.closest('.qa-row') : null;
     if(!row || row.classList.contains('on')) return;
-    var rows = $$('.qa-row', w);
-    QA.hi = rows.indexOf(row);
-    rows.forEach(function(r, j){ r.classList.toggle('on', j === QA.hi); });
+    var list = row.parentElement; if(!list) return;
+    var rows = $$('.qa-row', list);
+    var idx = rows.indexOf(row); if(idx < 0) return;
+    if(list.id === 'qa-px-list') QA.pxHi = idx; else QA.hi = idx;
+    rows.forEach(function(r, j){ r.classList.toggle('on', j === idx); });
   });
+  window.addEventListener('resize', function(){ if(QA.open) qaPlacePanel(); });
   if(!window.__qaKeys){
     window.__qaKeys = true;
     document.addEventListener('keydown', function(ev){
@@ -12779,18 +12794,33 @@ function qaEnsure(){
     }, true);
   }
 }
+/* Anchor the panel under the Quick Add button (V3.70.0, JD): the panel
+   used to be pinned to the right edge of the screen while the button
+   sits mid-topbar, so opening it threw the eye across the display.
+   The page itself never moves — the panel is fixed-position and the
+   app shell does not reflow (see the qa-on class fix in the CSS). */
+function qaPlacePanel(){
+  var p = $('.qa-panel'); if(!p) return;
+  var b = $('.qadd');
+  if(!b || window.innerWidth <= 560){ p.style.left = ''; p.style.right = ''; p.style.top = ''; return; }
+  var r = b.getBoundingClientRect();
+  var w = Math.min(448, window.innerWidth - 20);
+  var left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
+  p.style.left = left + 'px'; p.style.right = 'auto'; p.style.top = (r.bottom + 8) + 'px';
+}
 function qaOpen(mode){
   qaEnsure();
   QA.prevFocus = (document.activeElement && document.activeElement !== document.body) ? document.activeElement : null;
   QA.open = true;
   $('#qawrap').hidden = false;
-  document.body.classList.add('qa-open');
+  document.body.classList.add('qa-on');
+  qaPlacePanel();
   qaSetMode(mode || 'log');
 }
 function qaClose(){
   QA.open = false;
   var w = $('#qawrap'); if(w) w.hidden = true;
-  document.body.classList.remove('qa-open');
+  document.body.classList.remove('qa-on');
   if(QA.watchT){ clearInterval(QA.watchT); QA.watchT = null; }
   var f = QA.prevFocus; QA.prevFocus = null;
   if(f && document.contains(f) && f.focus){ try{ f.focus(); }catch(x){} }
@@ -12801,6 +12831,7 @@ function qaSetMode(m){
   $$('#qawrap .qa-sec').forEach(function(s){ s.hidden = s.getAttribute('data-sec') !== m; });
   qaPaintQueueCount();
   if(m === 'log'){ qaApplyTog(); qaPaintLogList(); var q = $('#qa-q'); if(q && !QA.di) q.focus(); else { var s2 = $('#qa-sum'); if(s2) s2.focus(); } }
+  if(m === 'prox'){ qaPaintProxList(); var pq = $('#qa-px-q'); if(pq && QA.pxDi == null) pq.focus(); else { var pl = $('#qa-px-place'); if(pl) pl.focus(); } }
   if(m === 'new'){ var f = $('#qa-np-first'); if(f) f.focus(); }
   if(m === 'queue'){ qaPaintQueueResults(); qaPaintQueue(); var qq = $('#qa-qq'); if(qq) qq.focus(); }
 }
@@ -12840,10 +12871,11 @@ function qaOpenBtn(di){
   var nm = dispName(D.directory[di]);
   return '<button type="button" class="ib qa-open" data-qopen="' + di + '" aria-label="Open ' + esc(nm) + '’s profile" title="Open profile">' + ic('user', 15) + '</button>';
 }
-function qaRowHTML(di, i){
+function qaRowHTML(di, i, hi){
   var e = D.directory[di];
+  var hiv = (hi == null ? QA.hi : hi);
   var sub = [infoLine(e), lcLabel(e) ? 'Last ' + lcLabel(e) : '', effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' · ');
-  return '<div class="qa-row' + (i === QA.hi ? ' on' : '') + '" data-qdi="' + di + '" role="button">' + avatar(e, 'sm') +
+  return '<div class="qa-row' + (i === hiv ? ' on' : '') + '" data-qdi="' + di + '" role="button">' + avatar(e, 'sm') +
     '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(sub) + '</small></span>' + qaOpenBtn(di) + '</div>';
 }
 function qaPaintLogList(){
@@ -12866,6 +12898,46 @@ function qaPaintLogList(){
   }
   var dt = $('#qa-date'); if(dt) dt.textContent = 'Today · ' + qaDateLabel(todayStr());
 }
+/* --- Proximity tab (V3.70.0, JD): a first-class door of its own, peer
+   to Log contact — its own picker state so the two tabs never entangle.
+   Files a Proximity event (date + place only) via qaSaveProx; the Last
+   Contact stamp is never in reach of this path. --- */
+function qaPaintProxList(){
+  var list = $('#qa-px-list'), lh = $('#qa-px-lh'); if(!list) return;
+  var q = ($('#qa-px-q') ? $('#qa-px-q').value : '').trim();
+  QA.pxRows = q ? searchPeople(q, 8) : qaSuggestions();
+  QA.pxHi = Math.min(QA.pxHi, Math.max(0, QA.pxRows.length - 1));
+  if(lh) lh.textContent = q ? (QA.pxRows.length ? 'Matches' : '') : 'Recently contacted';
+  list.innerHTML = QA.pxRows.length ? QA.pxRows.map(function(di, i){ return qaRowHTML(di, i, QA.pxHi); }).join('') : '<div class="qa-none">No one matches.</div>';
+  var pw = $('#qa-px-pickwrap'); if(pw) pw.hidden = QA.pxDi != null;
+  var pk = $('#qa-px-picked');
+  if(pk){
+    if(QA.pxDi != null){
+      var e = D.directory[QA.pxDi];
+      pk.innerHTML = avatar(e, 'sm') + '<span class="qa-rmain"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span>' +
+        qaOpenBtn(QA.pxDi) +
+        '<button type="button" class="btn ghost sm" data-qact="pxpickchange">Change</button>';
+      pk.hidden = false;
+    } else pk.hidden = true;
+  }
+  var dt = $('#qa-px-date'); if(dt && !dt.value) dt.value = todayStr();
+}
+function qaDoProx(){
+  if(QA.pxDi == null){ qaStatus('Pick a person first.', 'err'); var q = $('#qa-px-q'); if(q) q.focus(); return; }
+  var venue = $('#qa-px-place').value;
+  if(!venue.trim()){ qaStatus('Name the place or context — that is the whole record.', 'err'); $('#qa-px-place').focus(); return; }
+  var d = ($('#qa-px-date') ? $('#qa-px-date').value : '') || todayStr();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){ qaStatus('Pick a valid date.', 'err'); return; }
+  var di = QA.pxDi, e = D.directory[di];
+  if(!qaSaveProx(di, venue, d)){ qaStatus('That did not save. Try again.', 'err'); return; }
+  var base = 'Logged proximity with ' + dispName(e) + ' — ' + venue.trim() + ' · ' + qaDateLabel(d) + '. Co-presence only: Last Contact untouched.';
+  qaStatus(base + ' Saving through the Save Pool…', 'ok');
+  qaWatchWrite(pkey(e), base);
+  QA.pxDi = null; QA.pxHi = 0;
+  $('#qa-px-place').value = ''; var pq = $('#qa-px-q'); if(pq) pq.value = '';
+  qaPaintProxList(); qaPaintQueueCount();
+  if(pq) pq.focus();
+}
 function qaPaintQueueResults(){
   var list = $('#qa-qlist'); if(!list) return;
   var q = ($('#qa-qq') ? $('#qa-qq').value : '').trim();
@@ -12876,6 +12948,11 @@ function qaPaintQueueResults(){
   list.innerHTML = QA.rows.length ? QA.rows.map(function(di, i){ return qaRowHTML(di, i); }).join('') : '<div class="qa-none">No one new matches.</div>';
 }
 function qaPick(di){
+  if(QA.mode === 'prox'){
+    QA.pxDi = di; qaPaintProxList();
+    var pl = $('#qa-px-place'); if(pl) pl.focus();
+    return;
+  }
   if(QA.mode === 'queue'){
     var e0 = D.directory[di];
     if(qaQueueAdd(di)){ qaStatus('Added ' + dispName(e0) + ' to Up Next.', 'ok'); }
@@ -13015,16 +13092,33 @@ function qaOnClick(ev){
   var act = t.getAttribute('data-qact');
   if(act === 'close') qaClose();
   else if(act === 'pickchange'){ QA.di = null; qaPaintLogList(); var q = $('#qa-q'); if(q) q.focus(); }
+  else if(act === 'pxpickchange'){ QA.pxDi = null; qaPaintProxList(); var pq = $('#qa-px-q'); if(pq) pq.focus(); }
+  else if(act === 'pxsave') qaDoProx();
   else if(act === 'logsave') qaDoLog();
   else if(act === 'npcreate') qaDoCreate(false);
   else if(act === 'npforce') qaDoCreate(true);
 }
 function qaOnInput(ev){
   if(ev.target.id === 'qa-q'){ QA.hi = 0; if(QA.di == null) qaPaintLogList(); }
+  else if(ev.target.id === 'qa-px-q'){ QA.pxHi = 0; if(QA.pxDi == null) qaPaintProxList(); }
   else if(ev.target.id === 'qa-qq'){ QA.hi = 0; qaPaintQueueResults(); }
 }
 function qaOnKey(ev){
   var id = ev.target && ev.target.id;
+  if(id === 'qa-px-q' && QA.pxDi == null){
+    var prows = QA.pxRows || [];
+    if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+      if(!prows.length) return;
+      ev.preventDefault();
+      QA.pxHi = ev.key === 'ArrowDown' ? Math.min(prows.length - 1, QA.pxHi + 1) : Math.max(0, QA.pxHi - 1);
+      $$('#qa-px-list .qa-row').forEach(function(r, j){ r.classList.toggle('on', j === QA.pxHi); });
+    }
+    else if(ev.key === 'Enter'){
+      if(prows.length && prows[QA.pxHi] != null){ ev.preventDefault(); qaPick(prows[QA.pxHi]); }
+    }
+    return;
+  }
+  if(ev.key === 'Enter' && id === 'qa-px-place'){ ev.preventDefault(); qaDoProx(); return; }
   if((id === 'qa-q' && QA.di == null) || id === 'qa-qq'){
     var rows = QA.rows || [];
     if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
@@ -15385,7 +15479,7 @@ document.addEventListener('keydown', function(ev){
   if(typeof LRCC !== 'undefined' && LRCC.el) return;
   if(typeof QA !== 'undefined' && QA.open) return;
   if(typeof POOL !== 'undefined' && POOL.open) return;
-  if(document.body.classList.contains('sheet-open') || document.body.classList.contains('qa-open')) return;
+  if(document.body.classList.contains('sheet-open') || document.body.classList.contains('qa-on')) return;
   if(document.querySelector('.hmi-wrap, .phi-wrap, .ykb-wrap, .phed-wrap')) return;
   var tp = document.getElementById('tpop'); if(tp && !tp.hidden) return;
   var sw = document.getElementById('sheetwrap'); if(sw && !sw.hidden) return;
