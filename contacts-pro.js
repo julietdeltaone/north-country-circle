@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.67.0';
+var APP_VERSION = '3.68.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -292,11 +292,12 @@ function ic(n, s){
 /* ============================================================
    Notation — About / Connection grammar (V3.65.0, JD 2026-11-02;
    design packet 2026-11-02, Scheme A "Two Inks", DECIDED).
-   NOTATION ONLY: this layer tags and dresses content with its
-   kind (About = facts about the person; Connection = exists only
-   between JD and them) and, where a level is defined, its level
-   (Open / Personal / Private). It adds NO behavior: no hiding,
-   no hide control, no restructuring. The two inks are reserved —
+   This layer tags and dresses content with its kind (About =
+   facts about the person; Connection = exists only between JD
+   and them) and, where a level is defined, its level (Open /
+   Personal / Private). Kind stays notation-only; level became a
+   real gate in V3.68.0 — the top-bar role hides every section
+   above its clearance, app-wide. The two inks are reserved —
    steel blue (--ink-about) means About and antique gold
    (--ink-conn) means Connection, and nothing else.
    ============================================================ */
@@ -327,13 +328,88 @@ function fieldKind(f){
 function textKind(t){
   return /contact logged|last contact|correspondence|logged a contact/i.test(String(t || '')) ? 'connection' : 'about';
 }
-/* Level chip (notation only — nothing is hidden by level). Only
-   Personal is assigned in this pass (the Family section); the
-   Private vocabulary exists in CSS/data but is assigned nowhere. */
+/* Level chip. Only Personal is assigned by default (the Family
+   section); the Private vocabulary exists in CSS/data and can be
+   assigned in Manage → Levels. Since V3.68.0 the level also gates
+   display through the role control (see roleClears below). */
 function lvlChip(level){
   if(level !== 'personal' && level !== 'private') return '';
   return '<span class="lvl-chip lvl-' + level + '" data-level="' + level + '">' + level.toUpperCase() + '</span>';
 }
+
+/* ============================================================
+   Display role — iPERMS-style level gate (V3.68.0, JD 2026-11-02).
+   On first load the user picks a role; the role is a clearance:
+   Open shows Open content only, Personal adds Personal, Private
+   shows everything. The choice persists on this device
+   (ncc_role_v1); a slim re-confirm strip returns when the stored
+   choice is older than 7 days. Content above the clearance is
+   ABSENT from the render — never blurred, never teased. Section
+   levels come from the Levels map (secLevel / lvlOf): Family is
+   Personal by standing rule, everything else defaults to Open
+   until JD reassigns it in Manage → Levels.
+   ============================================================ */
+var ROLE_KEY = 'ncc_role_v1', ROLE_SNOOZE_KEY = 'ncc_role_snooze_v1', ROLE_REASK_MS = 7 * 864e5;
+var ROLES = ['open', 'personal', 'private'], ROLE_RANK = { open:0, personal:1, private:2 };
+function roleRec(){ try{ var r = JSON.parse(store(ROLE_KEY) || 'null'); return (r && ROLES.indexOf(r.role) >= 0 && r.ts) ? r : null; }catch(x){ return null; } }
+function roleCur(){ var r = roleRec(); return r ? r.role : 'private'; }
+function roleClears(level){ return ROLE_RANK[roleCur()] >= ROLE_RANK[level || 'open']; }
+function roleSet(role){
+  if(ROLES.indexOf(role) < 0) return;
+  store(ROLE_KEY, JSON.stringify({ role:role, ts:Date.now() }));
+  document.documentElement.setAttribute('data-role', role);
+  var w = $('#rolewall'); if(w) w.remove();
+  var st = $('#rolestrip'); if(st) st.remove();
+  render();
+}
+function roleSegHTML(){
+  return '<div class="seg role-seg" role="group" aria-label="Display role" title="Display role — what this device shows. Open: Open content only. Personal: Open + Personal. Private: everything.">' +
+    ROLES.map(function(r){ return '<button type="button" data-act="role" data-v="' + r + '"' + (roleCur() === r ? ' class="on"' : '') + ' aria-pressed="' + (roleCur() === r) + '">' + r.charAt(0).toUpperCase() + r.slice(1) + '</button>'; }).join('') + '</div>';
+}
+function roleGateBoot(){
+  document.documentElement.setAttribute('data-role', roleCur());
+  var rec = roleRec();
+  if(!rec){ showRoleChooser(); return; }
+  var snooze = +(store(ROLE_SNOOZE_KEY) || 0);
+  if(Date.now() - rec.ts > ROLE_REASK_MS && Date.now() - snooze > 864e5) showRoleStrip(rec);
+}
+function showRoleChooser(){
+  if($('#rolewall')) return;
+  var d = document.createElement('div');
+  d.id = 'rolewall'; d.className = 'rolewall'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', 'Choose your display role');
+  d.innerHTML = '<div class="rolecard"><div class="rolekick">Contacts Pro</div>' +
+    '<h2>Choose your display role</h2>' +
+    '<p>The role decides what this device shows, everywhere in the app — like selecting a role at sign-in. Sections above the role are hidden entirely. Switch any time from the top bar; you will not be asked on every load.</p>' +
+    '<div class="roleopts">' +
+    '<button type="button" data-act="role" data-v="open"><b>Open</b><span>Open content only. Personal and Private sections stay hidden.</span></button>' +
+    '<button type="button" data-act="role" data-v="personal"><b>Personal</b><span>Open + Personal — Family included. Private sections stay hidden.</span></button>' +
+    '<button type="button" data-act="role" data-v="private"><b>Private</b><span>Everything on file, including Private sections.</span></button>' +
+    '</div></div>';
+  document.body.appendChild(d);
+}
+function showRoleStrip(rec){
+  if($('#rolestrip') || !$('#col')) return;
+  var days = Math.max(7, Math.floor((Date.now() - rec.ts) / 864e5));
+  var d = document.createElement('div');
+  d.id = 'rolestrip'; d.className = 'rolestrip';
+  d.innerHTML = '<span>Display role is <b>' + esc(rec.role.charAt(0).toUpperCase() + rec.role.slice(1)) + '</b>, set ' + days + ' days ago. Still right?</span>' +
+    '<button type="button" class="btn sm primary" data-act="rolekeep">Keep ' + esc(rec.role.charAt(0).toUpperCase() + rec.role.slice(1)) + '</button>' +
+    ROLES.filter(function(r){ return r !== rec.role; }).map(function(r){ return '<button type="button" class="btn sm ghost" data-act="role" data-v="' + r + '">Switch to ' + r.charAt(0).toUpperCase() + r.slice(1) + '</button>'; }).join('') +
+    '<button type="button" class="ib sm" data-act="rolestripx" aria-label="Dismiss for now">' + ic('x', 14) + '</button>';
+  $('#col').insertBefore(d, $('#view'));
+}
+
+/* ---------- proximity helpers (V3.68.0) ----------
+   A Proximity event is co-presence, not contact: {date,
+   kind:'proximity', venue, summary:venue}. It never touches
+   Last Contact / First Contact (every contact derivation in
+   this file filters kind === 'contact'), and reach-back-out
+   reads the Last Contact stamp only. */
+function proxEvents(e){
+  return (e.events || []).filter(function(ev){ return ev && ev.kind === 'proximity' && ev.date; })
+    .sort(function(a, b){ return (flexKey(b.date) || 0) - (flexKey(a.date) || 0); });
+}
+function lastProx(e){ var p = proxEvents(e); return p.length ? p[0] : null; }
 
 /* ============================================================
    2. data access
@@ -2019,6 +2095,7 @@ function renderChrome(){
     '<button type="button" class="syncp" id="sync" data-act="pool"></button>' +
     '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a>' +
     '<button type="button" class="ib" id="focusb" data-act="focus" aria-label="Focus mode" aria-pressed="false" title="Focus mode: hide the sidebar and bars so the view fills the window (Esc exits)">' + ic('expand', 18) + '</button>' +
+    roleSegHTML() +
     themeSecHTML() +
     '<span class="ver" title="App version">V' + APP_VERSION + '</span></div>';
   paintSync(); paintUndo(); paintTheme(); applyFocus(focusOn());
@@ -2104,9 +2181,17 @@ function paintUndo(){
 
 /* ---------- search ---------- */
 function matchText(e){
-  if(e._mt) return e._mt;
-  e._mt = [dispName(e), effHandle(e), gv(e, 'specialty'), gv(e, 'companies'), gv(e, 'churches'), gv(e, 'universities'), gv(e, 'groups'), e.city || '', e.hometown || '',
-    personIsAka(e) ? gv(e, 'also_known_as') : '', degreesOf(e).map(function(d){ return d.school + ' ' + d.major; }).join(' ')].join(' ').toLowerCase();
+  /* Role-aware: fields living in a section above the current display
+     role are not searchable, so hidden content cannot leak through
+     search. The cache key carries the role. */
+  var rk = roleCur();
+  if(e._mtR === rk && e._mt) return e._mt;
+  var bg = roleClears(secLevel('background')), rl = roleClears(secLevel('relationship')), idn = roleClears(secLevel('identity'));
+  e._mt = [dispName(e), effHandle(e),
+    bg ? gv(e, 'specialty') : '', bg ? gv(e, 'companies') : '', bg ? gv(e, 'churches') : '', bg ? gv(e, 'universities') : '',
+    rl ? gv(e, 'groups') : '', idn ? (e.city || '') : '', idn ? (e.hometown || '') : '',
+    personIsAka(e) ? gv(e, 'also_known_as') : '', bg ? degreesOf(e).map(function(d){ return d.school + ' ' + d.major; }).join(' ') : ''].join(' ').toLowerCase();
+  e._mtR = rk;
   return e._mt;
 }
 function searchPeople(q, limit, pool){
@@ -2131,11 +2216,12 @@ function searchReason(e, q){
   var nm = dispName(e).toLowerCase();
   var miss = toks.filter(function(t){ return nm.indexOf(t) < 0; });
   if(!miss.length) return '';
-  var fields = [
+  var fields = [];
+  if(roleClears(secLevel('background'))) fields.push(
     ['Skill', gv(e, 'specialty')], ['Employer', gv(e, 'companies')],
-    ['School', gv(e, 'universities')], ['Group', personGroups(e).join(', ')],
-    ['Church', gv(e, 'churches')], ['Location', [ptLocVal(e), e.city || '', e.hometown || ''].filter(Boolean).join(', ')]
-  ];
+    ['School', gv(e, 'universities')], ['Church', gv(e, 'churches')]);
+  if(roleClears(secLevel('relationship'))) fields.push(['Group', personGroups(e).join(', ')]);
+  if(roleClears(secLevel('identity'))) fields.push(['Location', [ptLocVal(e), e.city || '', e.hometown || ''].filter(Boolean).join(', ')]);
   for(var f = 0; f < fields.length; f++){
     var items = String(fields[f][1] || '').split(/[,;]/).map(function(s){ return s.trim(); }).filter(Boolean);
     for(var i = 0; i < items.length; i++){
@@ -2612,6 +2698,7 @@ function tlRel(k){
 function tlMeta(it){
   var ev = it.ev || {}, parts = [];
   if(ev.kind === 'contact') parts.push((ev.online ? 'Online contact' : 'Contact'));
+  else if(ev.kind === 'proximity'){ parts.push('Proximity'); if(ev.venue && ev.venue !== ev.summary) parts.push(ev.venue); }
   else if(ev.kind) parts.push(cap(ev.kind));
   var src = TL_SRC[ev.src || '']; if(src) parts.push(src);
   if(it.prec === 'm') parts.push('day not recorded');
@@ -2626,9 +2713,10 @@ function tlItemHTML(it, compact, link){
     (sum ? '<span class="tl-evsum">' + esc(sum) + '</span>' : '') +
     '<span class="tl-evmeta">' + esc(tlMeta(it)) + '</span></span>' +
     '<span class="tl-evdot" style="background:' + tierCol(e) + '"></span>';
-  var tlk = ev.kind === 'contact' ? 'connection' : 'about';
-  if(link === false) return '<div class="tl-ev' + (compact ? ' compact' : '') + ' static" data-kind="' + tlk + '">' + inner + '</div>';
-  return '<button type="button" class="tl-ev' + (compact ? ' compact' : '') + '" data-kind="' + tlk + '" data-act="popen" data-di="' + it.di + '">' + inner + '</button>';
+  var tlk = (ev.kind === 'contact' || ev.kind === 'proximity') ? 'connection' : 'about';
+  var pxc = ev.kind === 'proximity' ? ' prox' : '';
+  if(link === false) return '<div class="tl-ev' + (compact ? ' compact' : '') + pxc + ' static" data-kind="' + tlk + '">' + inner + '</div>';
+  return '<button type="button" class="tl-ev' + (compact ? ' compact' : '') + pxc + '" data-kind="' + tlk + '" data-act="popen" data-di="' + it.di + '">' + inner + '</button>';
 }
 function tlDensity(items, per){
   var buckets = [], n, i;
@@ -2952,7 +3040,10 @@ function ptCols(){
   return out;
 }
 function ptColDef(k){ for(var i = 0; i < PT_ALL.length; i++) if(PT_ALL[i].k === k) return PT_ALL[i]; return null; }
-function ptVisibleCols(){ return ptCols().filter(function(c){ return c.on; }).map(function(c){ return ptColDef(c.k); }); }
+function ptVisibleCols(){
+  var stampsOn = roleClears(lvlOf('stamps'));
+  return ptCols().filter(function(c){ return c.on && (stampsOn || (c.k !== 'lastc' && c.k !== 'firstc')); }).map(function(c){ return ptColDef(c.k); });
+}
 /* fixed-layout column shares (People pass 2026-10-28): the table is
    table-layout:fixed at 100% width, so these are proportions, not pixels —
    any visible set is rescaled to fill the row and nothing can push the
@@ -3595,7 +3686,7 @@ function paintProfile(di){
   var ll1 = $('#p-lastline'); if(ll1) ll1.innerHTML = lastLineHTML(di);
   var weights = { a:0, c:0 };
   ['a', 'c'].forEach(function(mv){
-    var list = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id); })
+    var list = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id) && roleClears(secLevel(s.id)); })
       .sort(function(x, y){ return x.ord - y.ord; });
     list.forEach(function(s){ weights[mv] += secSize(e, s.id); });
     /* Adaptive packing (JD 2026-10-29; Phase 4: BOTH sheets pack the
@@ -3627,14 +3718,14 @@ function paintProfile(di){
   SECS.forEach(function(s){ var el = $('#sec-' + s.id); if(el) el.style.order = s.ord; });
   /* Sheet header counts (Split Partitions, V3.37.0): the About sheet
      counts Synopsis and Web Record as separate sections when present. */
-  var cntA = (gv(e, 'synopsis') ? 1 : 0) + (footprintOf(e).blocks.length ? 1 : 0) +
-    ['identity', 'background', 'persona', 'files', 'business'].filter(function(id){ return secShown(e, id); }).length;
-  var cntC = ['relationship', 'connections', 'timeline', 'lima'].filter(function(id){ return secShown(e, id); }).length;
+  var cntA = (roleClears(secLevel('about')) ? (gv(e, 'synopsis') ? 1 : 0) + (footprintOf(e).blocks.length ? 1 : 0) : 0) +
+    ['identity', 'background', 'persona', 'files', 'business'].filter(function(id){ return secShown(e, id) && roleClears(secLevel(id)); }).length;
+  var cntC = ['relationship', 'connections', 'timeline', 'lima'].filter(function(id){ return secShown(e, id) && roleClears(secLevel(id)); }).length;
   var na = $('#pmn-a'), nc2 = $('#pmn-c');
   if(na) na.textContent = cntA + (cntA === 1 ? ' SECTION' : ' SECTIONS');
   if(nc2) nc2.textContent = cntC + (cntC === 1 ? ' SECTION' : ' SECTIONS');
   if(_sy != null) window.scrollTo(0, _sy);
-  var hidden = SECS.filter(function(s){ return s.id !== 'business' && !secShown(e, s.id); });
+  var hidden = SECS.filter(function(s){ return s.id !== 'business' && !secShown(e, s.id) && roleClears(secLevel(s.id)); });
   var legacy = ['relationship_type', 'sources', 'mentions'].filter(function(k){ return String(gv(e, k)).trim(); });
   $('#p-add').innerHTML = (hidden.length ? '<div class="addrow"><span>Add to this profile</span>' + hidden.map(function(s){
       return '<button type="button" class="btn ghost sm" data-act="secedit" data-sec="' + s.id + '">' + ic('plus', 13) + esc(s.t) + '</button>'; }).join('') + '</div>' : '') +
@@ -3644,6 +3735,7 @@ function paintProfile(di){
 function repaintSec(id){
   var di = S.prof.di, e = D.directory[di]; if(di == null) return;
   if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
+  if(!roleClears(secLevel(id))){ paintProfile(di); return; }
   var el = $('#sec-' + id);
   if(!el){ paintProfile(di); return; }
   var wrap = document.createElement('div'); wrap.innerHTML = secHTML(di, id);
@@ -3665,6 +3757,7 @@ function repaintTop(){
    The Log contact door at its end opens the existing Timeline editor. */
 function lastLineHTML(di){
   var e = D.directory[di]; if(!e) return '';
+  if(!roleClears(lvlOf('stamps'))) return '';
   var cs = (e.events || []).filter(function(ev){ return ev && ev.kind === 'contact' && ev.date; })
     .sort(function(a, b){ return (flexKey(b.date) || 0) - (flexKey(a.date) || 0); });
   if(!cs.length) return '';
@@ -3805,8 +3898,11 @@ function heroHTML(di){
   }).join('');
   var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert" data-kind="about">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
   function mi(lab, val, kind){ return val ? '<div class="ih-mi" data-kind="' + (kind || 'about') + '"><small>' + lab + '</small><b>' + esc(val) + '</b></div>' : ''; }
+  var stampsOn = roleClears(lvlOf('stamps')), lp0 = stampsOn ? lastProx(e) : null;
   var meta = mi('Location', loc, 'about') + mi('Relationship', cap(gv(e, 'relationship')), 'connection') + mi('Context', cap(gv(e, 'context')), 'connection') +
-    mi('Known since', knownSinceLabel(e), 'connection') + (lcLabel(e) ? mi(lcOnline(e) ? 'Last Online' : 'Last contact', lcLabel(e), 'connection') : '');
+    mi('Known since', knownSinceLabel(e), 'connection') +
+    (stampsOn && lcLabel(e) ? mi(lcOnline(e) ? 'Last Online' : 'Last contact', lcLabel(e), 'connection') : '') +
+    (lp0 ? mi('Last proximity', ykLabelOf(lp0.date) + (lp0.venue ? ' · ' + lp0.venue : ''), 'connection') : '');
   var ph = phHeroHTML(e);
   var hotE = hotForDi(di);
   var sc = scoreFor(di), pres = profileSections(di);
@@ -3953,14 +4049,14 @@ function secHTML(di, id){
       var inner = '';
       if(synH) inner += band('b-syn', 'Synopsis', head + '<div class="cbody">' + synH + '</div>');
       if(webH) inner += band('b-web', 'Public Record', (synH ? '' : head) + '<div class="cbody">' + webH + '</div>');
-      return '<section class="card multi" id="sec-about" data-sec="about" data-kind="about">' + inner + '</section>';
+      return '<section class="card multi' + (secLevel('about') !== 'open' ? ' lvsec-' + secLevel('about') : '') + '" id="sec-about" data-sec="about" data-kind="about" data-level="' + secLevel('about') + '">' + inner + '</section>';
     }
   }
   var body;
   if(waived && !editing){
     body = '<p class="dim waivedmsg">Waived: insufficient data. <button type="button" class="lnk" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '" data-off="1">Restore</button></p>';
   } else body = editing ? secEdit(di, id) : secView(di, id);
-  return '<section class="card bandwrap b-' + id + (editing ? ' editing' : '') + (waived ? ' waived' : '') + (d.wide ? ' wide' : '') + '" id="sec-' + id + '" data-sec="' + id + '" data-kind="' + (d.mv === 'c' ? 'connection' : 'about') + '">' +
+  return '<section class="card bandwrap b-' + id + (editing ? ' editing' : '') + (waived ? ' waived' : '') + (d.wide ? ' wide' : '') + (secLevel(id) !== 'open' ? ' lvsec-' + secLevel(id) : '') + '" id="sec-' + id + '" data-sec="' + id + '" data-kind="' + (d.mv === 'c' ? 'connection' : 'about') + '" data-level="' + secLevel(id) + '">' +
     band('b-' + id, SPINE[id] || d.t, head + '<div class="cbody">' + body + '</div>') + '</section>';
 }
 function secSummary(e, id){
@@ -4123,7 +4219,7 @@ function secView(di, id){
     var ka = knownAssociates(e), links = famLinks(e), out3 = '';
     var tree = familyMiniTree(di);
     var famBody = tree || (links.length ? famListHTML(di, false) : '');
-    if(famBody) out3 += '<div class="fam-lvl" data-kind="about" data-level="personal"><div class="sub-h first">Family ' + lvlChip('personal') + '</div>' + famBody + '</div>';
+    if(famBody && roleClears(lvlOf('family'))) out3 += '<div class="fam-lvl lvsec-' + lvlOf('family') + '" data-kind="about" data-level="' + lvlOf('family') + '"><div class="sub-h first">Family ' + lvlChip(lvlOf('family')) + '</div>' + famBody + '</div>';
     /* Default = the strongest 10 only (knownAssociates preserves the baked strength order); Show more / Show less toggles the full list (JD 2026-10-15). */
     if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Associates <small>' + ka.length + '</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
       (ka.length > 10 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show more \u00b7 +' + (ka.length - 10) + '</button>' : '') +
@@ -4132,7 +4228,14 @@ function secView(di, id){
     return (ka.length || links.length) ? out3 : emptyPrompt(di, id, 'Add family or associates');
   }
   if(id === 'timeline'){
-    var evs = sortedEvents(e), ps = connPhases(e).slice().sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); }), out4 = '<div class="tl-logrow"><button type="button" class="btn ghost sm" data-act="logcontact">' + ic('edit', 13) + 'Log contact</button></div>';
+    var evs = sortedEvents(e), ps = connPhases(e).slice().sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); }), out4 = '<div class="tl-logrow"><button type="button" class="btn ghost sm" data-act="logcontact">' + ic('edit', 13) + 'Log contact</button>' +
+      '<button type="button" class="btn ghost sm" data-act="proxlog">' + ic('pin', 13) + 'Log proximity</button></div>' +
+      (S.prof.proxOpen ? '<div class="form proxform"><h5>Log proximity</h5>' +
+        '<p class="dim">Co-presence, not contact: it never moves Last Contact. Date + place only.</p>' +
+        '<div class="frow"><label>Date<input type="date" id="prox-date" value="' + todayStr() + '"></label>' +
+        '<label class="grow">Place / context<input type="text" id="prox-venue" placeholder="Lewis School, Clarkson Hall"></label></div>' +
+        '<div class="frow"><button type="button" class="btn primary sm" data-act="proxsave">Save proximity</button>' +
+        '<button type="button" class="btn ghost sm" data-act="proxlog">Cancel</button></div></div>' : '');
     if(ps.length) out4 += '<div class="sub-h first">Phases</div><div class="phases">' + ps.map(function(p){
       return '<div class="ph"><b>' + esc(p.l || 'Untitled phase') + '</b><small>' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</small>' + (p.n ? '<p>' + pillify(p.n, di) + '</p>' : '') + '</div>';
     }).join('') + '</div>';
@@ -4152,6 +4255,9 @@ function secView(di, id){
       } else {
         out4 += '<div class="tl">' + evs.slice(0, S.prof.open.ev ? 999 : 6).map(function(o){
           var ev = o.ev;
+          if(ev.kind === 'proximity'){
+            return '<div class="ev prox" data-kind="connection"><i></i><time>' + esc(evDate(ev.date)) + '</time><span class="pxtag">Proximity</span>' + kindGlyph('connection') + '<b>' + pillify(ev.venue || ev.summary || '', di) + '</b></div>';
+          }
           var evk = ev.kind === 'contact' ? 'connection' : 'about';
           return '<div class="ev" data-kind="' + evk + '"><i></i><time>' + esc(ev.kind === 'contact' ? lcDateLabel(ev.date) : evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + lcTag(ev) + '</time>' + kindGlyph(evk) + '<b>' + pillify(ev.summary || '', di) + '</b>' + (ev.detail ? '<p>' + pillify(ev.detail, di) + '</p>' : '') + '</div>';
         }).join('') + '</div>' + (evs.length > 6 && !S.prof.open.ev ? '<button type="button" class="btn ghost sm" data-act="opentog" data-k="ev">Show all ' + evs.length + ' events</button>' : '');
@@ -4307,7 +4413,7 @@ function secEdit(di, id){
   if(id === 'timeline'){
     var cur = S.prof.evEdit != null ? (e.events || [])[S.prof.evEdit] : null;
     var rows = sortedEvents(e).map(function(o){
-      return '<div class="evrow' + (S.prof.evEdit === o.i ? ' editing' : '') + '"><div><time>' + esc(o.ev.kind === 'contact' ? lcDateLabel(o.ev.date) : evDate(o.ev.date)) + '</time>' + lcTag(o.ev) + '<b>' + esc(o.ev.summary || '') + '</b></div>' +
+      return '<div class="evrow' + (S.prof.evEdit === o.i ? ' editing' : '') + '"><div><time>' + esc(o.ev.kind === 'contact' ? lcDateLabel(o.ev.date) : evDate(o.ev.date)) + '</time>' + lcTag(o.ev) + (o.ev.kind === 'proximity' ? '<span class="pxtag">Proximity</span>' : '') + '<b>' + esc(o.ev.kind === 'proximity' ? (o.ev.venue || o.ev.summary || '') : (o.ev.summary || '')) + '</b></div>' +
         '<div class="ea"><button type="button" class="btn ghost sm" data-act="evedit" data-i="' + o.i + '">Edit</button><button type="button" class="btn ghost sm danger" data-act="evdel" data-i="' + o.i + '">Remove</button></div></div>';
     }).join('');
     cur = cur || {};
@@ -5423,6 +5529,10 @@ function famIndexHTML(ft){
     '<div class="side-sec"><h4>Trees</h4>' + treeRows + '</div></aside>';
 }
 function viewFamily(v){
+  if(!roleClears(lvlOf('family'))){
+    v.innerHTML = '<div class="page">' + emptyState('Family is a ' + cap(lvlOf('family')) + ' section.', 'The display role is ' + cap(roleCur()) + '. Raise it from the top bar — Open / Personal / Private — to see family trees.') + '</div>';
+    return;
+  }
   var disp = famDisplay(), ftRes = famTrees(disp), ft = ftRes.trees || [];
   FAMV.lay = null; FAMV.pos = {}; FAMV.hover = null; FAMV.el = null;
   if(!ft.length){ v.innerHTML = '<div class="page">' + emptyState('No family trees yet.', 'Add a parent, spouse, child or sibling from a profile and the tree appears here.') + '</div>'; return; }
@@ -12031,6 +12141,40 @@ function onClick(ev){
       }, function(err){ el.disabled = false; toast(err + ' Not created.'); });
       break;
     }
+    case 'role': roleSet(el.getAttribute('data-v')); break;
+    case 'rolekeep': roleSet(roleCur()); break;
+    case 'rolestripx': { store(ROLE_SNOOZE_KEY, String(Date.now())); var rs = $('#rolestrip'); if(rs) rs.remove(); break; }
+    case 'proxlog': { S.prof.proxOpen = !S.prof.proxOpen; repaintSec('timeline'); if(S.prof.proxOpen) landOn('#sec-timeline'); break; }
+    case 'proxsave': {
+      var pd = ($('#prox-date') || {}).value || todayStr(), pv = (($('#prox-venue') || {}).value || '').trim();
+      if(!pv){ toast('Name the place or context first.'); break; }
+      var pev = { date:pd, kind:'proximity', venue:pv, summary:pv };
+      var parr = (D.directory[S.prof.di].events || []).slice(); parr.push(pev);
+      S.prof.proxOpen = false;
+      saveEvents(parr, 'Log proximity');
+      repaintTop();
+      break;
+    }
+    case 'proxall': { MGPROX.off = {}; render(); break; }
+    case 'proxnone': { var gg = allGroups()[MGPROX.group] || []; MGPROX.off = {}; gg.forEach(function(di2){ MGPROX.off[di2] = 1; }); render(); break; }
+    case 'proxbulk': {
+      var members = allGroups()[MGPROX.group] || [];
+      var pdate = ($('#px-date') || {}).value || todayStr(), pvenue = (($('#px-venue') || {}).value || '').trim();
+      if(!pvenue){ toast('Name the venue or context first.'); break; }
+      var filed = 0, skipped = 0;
+      members.forEach(function(di2){
+        if(MGPROX.off[di2]) return;
+        var arr3 = (D.directory[di2].events || []).slice();
+        var dup = arr3.some(function(ev){ return ev && ev.kind === 'proximity' && ev.date === pdate && (ev.venue || ev.summary) === pvenue; });
+        if(dup){ skipped++; return; }
+        arr3.push({ date:pdate, kind:'proximity', venue:pvenue, summary:pvenue });
+        queuePatch(di2, { events:JSON.stringify(arr3) });
+        filed++;
+      });
+      toast('Proximity logged for ' + filed + ' ' + (filed === 1 ? 'person' : 'people') + (skipped ? ' · ' + skipped + ' already logged' : '') + ' — ' + pvenue + ', ' + pdate + '.');
+      render();
+      break;
+    }
     case 'opentog': { var kk = el.getAttribute('data-k'); S.prof.open[kk] = !S.prof.open[kk]; var osec = kk === 'ev' ? 'timeline' : 'connections'; repaintSec(osec); if(S.prof.open[kk]) landOn('#sec-' + osec); break; }
     case 'secedit': { var sid = el.getAttribute('data-sec'); S.prof.edit[sid] = true; if($('#sec-' + sid)) repaintSec(sid); else paintProfile(S.prof.di); landOn('#sec-' + sid, { focus:true }); break; }
     case 'secdone': { var sd = el.getAttribute('data-sec'); delete S.prof.edit[sd]; S.prof.evEdit = null; S.prof.degEdit = null; paintProfile(S.prof.di); break; }
@@ -12054,6 +12198,7 @@ function onClick(ev){
       var ev = { date:dt || todayStr(), summary:sum }, det = $('#ev-det').value.trim(); if(det) ev.detail = det;
       var oldEv = S.prof.evEdit != null ? (D.directory[S.prof.di].events || [])[S.prof.evEdit] : null;
       if(oldEv && oldEv.kind) ev.kind = oldEv.kind;
+      if(oldEv && oldEv.kind === 'proximity'){ ev.venue = sum; }
       if(oldEv && oldEv.online) ev.online = true;
       var ib = $('#ev-init .on'); if(ib && ib.getAttribute('data-v')) ev.init = ib.getAttribute('data-v');
       var arr2 = (D.directory[S.prof.di].events || []).slice(); if(S.prof.evEdit != null && arr2[S.prof.evEdit]) arr2[S.prof.evEdit] = ev; else arr2.push(ev);
@@ -12191,6 +12336,8 @@ function onInput(ev){
 function onChange(ev){
   var t = ev.target, act = t.getAttribute && t.getAttribute('data-act');
   if(t.hasAttribute && t.hasAttribute('data-lvlsec')){ lvlSet(t.getAttribute('data-lvlsec'), t.value); return; }
+  if(t.hasAttribute && t.hasAttribute('data-pxgroup')){ MGPROX.group = t.value; MGPROX.off = {}; MGPROX.venue = t.value === 'Lewis School' ? 'Lewis School, Clarkson Hall' : ''; render(); return; }
+  if(t.hasAttribute && t.hasAttribute('data-pxmem')){ var pdi = +t.getAttribute('data-pxmem'); if(t.checked) delete MGPROX.off[pdi]; else MGPROX.off[pdi] = 1; var cnt = $('#px-count'); if(cnt) cnt.textContent = pxCheckedCount(); return; }
   if(t.id === 'mg-sort'){ MGMT.sort = t.value; mgPaintList(); return; }
   if(t.hasAttribute && t.hasAttribute('data-cdeonl')){ if(CDE) CDE.online = t.checked; return; }
   if(t.id === 'rccat'){ RC_VIEW.cat = t.value; rcSaveView(); rcPaint(); return; }
@@ -13114,10 +13261,11 @@ function mgPaintList(){
       '<span class="mg-cell">' + cdeWidget(di, 'first_contact', 'manage') + '</span></div>';
   }).join('') + (dis.length > CAPN ? '<p class="sub">Showing the first ' + CAPN + ' — search to narrow the table.</p>' : '');
 }
-/* Levels manager — NOTATION ONLY. Assignments persist the way the
-   app already persists local settings: a localStorage overlay
-   (ncc_levels_v1), the same pattern as the org registry overlay.
-   Nothing is ever hidden by a level. */
+/* Levels manager. Assignments persist the way the app already
+   persists local settings: a localStorage overlay (ncc_levels_v1),
+   the same pattern as the org registry overlay. Since V3.68.0 the
+   level also gates display through the top-bar role: a section is
+   hidden entirely when the current role does not clear its level. */
 var LVL_KEY = 'ncc_levels_v1';
 function lvlRowsDef(){
   var rows = SECS.map(function(s){ return { id:'sec:' + s.id, name:s.t, kind: s.mv === 'c' ? 'connection' : 'about', def:'open', note: s.id === 'persona' ? 'Traits segment bars' : '' }; });
@@ -13135,7 +13283,7 @@ function lvlOf(id){
 function secLevel(secId){ return lvlOf('sec:' + secId); }
 function lvlSet(id, val){
   var o = lvlOverlay(); o[id] = val; store(LVL_KEY, JSON.stringify(o));
-  toast('Level notation updated — display only, nothing is hidden.');
+  toast('Level updated — sections above the current role are hidden app-wide.');
   render();
 }
 function mgLevelsHTML(){
@@ -13148,15 +13296,42 @@ function mgLevelsHTML(){
         ['open', 'personal', 'private'].map(function(l){ return '<option value="' + l + '"' + (cur === l ? ' selected' : '') + '>' + l.charAt(0).toUpperCase() + l.slice(1) + '</option>'; }).join('') +
       '</select></div>';
   }).join('');
-  return '<div class="card mg-card"><h3>Levels — notation only</h3>' +
-    '<p class="sub">A level says how a section is treated when it is talked about — it never hides anything in the app. Assignments live on this device in the app\u2019s local settings (localStorage overlay <b>' + LVL_KEY + '</b>), the same pattern as the organization registry. Personal and Private chips appear on the profile section headers.</p>' +
+  return '<div class="card mg-card"><h3>Levels</h3>' +
+    '<p class="sub">A level gates what the display role (top bar) shows: Open role sees Open sections only, Personal adds Personal, Private shows everything. Sections above the role are hidden entirely — removed from the page, not blurred. Assignments live on this device in the app\u2019s local settings (localStorage overlay <b>' + LVL_KEY + '</b>), the same pattern as the organization registry. Personal sections carry a deep amber/bronze ground, Private a maroon ground, and both show a level chip on the band header.</p>' +
     '<div class="mg-lvhead"><span>Section / field</span><span>Kind</span><span>Level</span><span>Reassign</span></div>' + rows + '</div>';
 }
+/* Bulk proximity log (V3.68.0): pick a group, one date, one venue —
+   everyone is checked by default; uncheck absences; one save files a
+   Proximity event per checked person through the normal outbox.
+   A Proximity event carries date + venue only and never touches
+   Last Contact. */
+var MGPROX = { group:'', off:{}, venue:'' };
+function pxCheckedCount(){
+  var members = allGroups()[MGPROX.group] || [];
+  return members.filter(function(di){ return !MGPROX.off[di]; }).length;
+}
 function mgProxHTML(){
-  return '<div class="card mg-card mg-prox"><div class="mg-prox-h"><h3>Proximity</h3>' + kindChip('connection', true) + '<span class="mg-soon">Coming</span></div>' +
-    '<p>Proximity tracks <b>co-presence</b>, not contact: the Lewis School PT/OT coworkers crossed paths with on workdays, and events — like Clarkson hockey games — where known people were present without a conversation. It answers \u201Cwho was I around?\u201D separately from \u201Cwho did I talk to?\u201D, so Last Contact stays honest.</p>' +
-    '<p class="sub">Design settled 2026-11-02. Nothing is tracked yet — this placeholder holds the surface so the rail entry, tab, and notation are ready when the data lands.</p>' +
-    '<button type="button" class="btn ghost" disabled>Not yet available</button></div>';
+  var groups = Object.keys(allGroups()).sort();
+  if(!MGPROX.group || !allGroups()[MGPROX.group]) MGPROX.group = allGroups()['Lewis School'] ? 'Lewis School' : (groups[0] || '');
+  if(!MGPROX.venue) MGPROX.venue = MGPROX.group === 'Lewis School' ? 'Lewis School, Clarkson Hall' : '';
+  var members = allGroups()[MGPROX.group] || [];
+  var rows = members.map(function(di){
+    var e = D.directory[di], lp = lastProx(e);
+    return '<label class="px-row"><input type="checkbox" data-pxmem="' + di + '"' + (MGPROX.off[di] ? '' : ' checked') + '>' + avatar(e, 'sm') +
+      '<span class="px-name"><b>' + esc(dispName(e)) + '</b>' + (lp ? '<small>Last proximity ' + esc(ykLabelOf(lp.date)) + '</small>' : '<small>No proximity yet</small>') + '</span></label>';
+  }).join('');
+  return '<div class="card mg-card mg-prox"><div class="mg-prox-h"><h3>Proximity — bulk log</h3>' + kindChip('connection', true) + '</div>' +
+    '<p>Proximity tracks <b>co-presence</b>, not contact: coworkers crossed paths with on workdays, and events where known people were present without a conversation. It answers \u201Cwho was I around?\u201D separately from \u201Cwho did I talk to?\u201D, so Last Contact stays honest. An event carries a date and a place only, and files through the normal save path — Last Contact and First Contact never move.</p>' +
+    '<div class="frow px-controls"><label>Group<select class="inp" data-pxgroup>' +
+      groups.map(function(g){ return '<option value="' + esc(g) + '"' + (g === MGPROX.group ? ' selected' : '') + '>' + esc(g) + ' (' + (allGroups()[g] || []).length + ')</option>'; }).join('') +
+      '</select></label>' +
+      '<label>Date<input class="inp" type="date" id="px-date" value="' + todayStr() + '"></label>' +
+      '<label class="grow">Place / context<input class="inp" type="text" id="px-venue" value="' + esc(MGPROX.venue) + '" placeholder="Lewis School, Clarkson Hall"></label></div>' +
+    '<div class="row px-bar"><button type="button" class="btn ghost sm" data-act="proxall">Check all</button>' +
+      '<button type="button" class="btn ghost sm" data-act="proxnone">Uncheck all</button>' +
+      '<span class="sub"><b id="px-count">' + pxCheckedCount() + '</b> of ' + members.length + ' will be logged</span><span class="sp"></span>' +
+      '<button type="button" class="btn primary" data-act="proxbulk">Log proximity for checked</button></div>' +
+    '<div class="px-list">' + (rows || '<p class="sub">No groups yet.</p>') + '</div></div>';
 }
 
 /* ---------- WS-F: Sandbox Stats Explorer ----------
@@ -17497,6 +17672,7 @@ function boot(){
         computeNewGain();
         history.replaceState({ d:0 }, '', location.hash || '#/home');
         render();
+        roleGateBoot();
         outKick(); fetchChanges();
       })
       .catch(function(err){
