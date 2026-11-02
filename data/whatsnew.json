@@ -413,6 +413,14 @@
   {
    "date": "2026-11-02",
    "kind": "photo",
+   "display": "Bob Blewett",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://www.stlawu.edu/news/st-lawrence-honors-retirees-anniversaries"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
    "display": "Eric Criscitello",
    "text": "Primary photo filed",
    "source": "Photos on File",
@@ -2393,14 +2401,6 @@
    "text": "Runs Luann Bailey Photography part-time and painted a mural at Park Bros Coffee in Potsdam, New York; also volunteers as a creative arts pastor at her church in Vermont, Feb 2019",
    "source": "Vermont Moms",
    "url": "https://vermontmoms.com/meet-bvtmb-team/"
-  },
-  {
-   "date": "2026-10-30",
-   "kind": "filed",
-   "display": "Michelle Johnston",
-   "text": "Won the C. Edward Shaffer Award for Best Research Presentation with Charles Robinson for 'Online Predation: Legal and Scholarly Gaps in Classifying Cyber Sexual Offenders' at the 2026 Society for Police and Criminal Psychology Annual Conference in Atlanta, Sep 2026",
-   "source": "SUNY Canton",
-   "url": "https://www.canton.edu/news/2026/robinson-johnston.php"
   }
  ]
 }
