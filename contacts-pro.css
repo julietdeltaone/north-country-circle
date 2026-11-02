@@ -5624,3 +5624,71 @@ html[data-mode="dark"] .hm-charts{
   .hm-charts .hmr-donwrap{flex-direction:column}
   .hm-charts .hmr-hrow{grid-template-columns:84px 1fr 54px 1fr 54px}
 }
+
+/* ================================================================
+   PHASE 0 — SPACING INTEGRITY (V3.73.0, JD 2026-11-02)
+   JD's zero-tolerance spacing rule: no element too close to or
+   overlapping another. The V3.72.0 Home charts board shipped with
+   a fixed 330px donut column + fixed 188px donut + a flexible
+   legend — a system that guaranteed the legend squeeze at every
+   width — plus heat cells too narrow for their label+value pairs
+   and 24px legend rows sitting on top of each other. These rules
+   fix the system, not the pixels: the donut column breathes, the
+   legend gets a real minimum, cells stack label over value, and
+   section headers get the full legal spacing step above them.
+   ================================================================ */
+/* --- charts board: the mid grid breathes --- */
+.hm-charts .hmr-mid{grid-template-columns:minmax(352px,2fr) 3fr;gap:8px 24px;margin-top:16px;padding-top:16px}
+@media (max-width:1399px){ .hm-charts .hmr-mid{grid-template-columns:1fr} .hm-charts .hmr-donwrap{justify-content:flex-start} }
+/* --- donut sized against its column, center label uncramped --- */
+.hm-charts .hmr-don{width:168px;height:168px}
+.hm-charts .hmr-dons{font-size:8px;letter-spacing:.03em}
+.hm-charts .hmr-donwrap{gap:16px}
+/* --- legend: rows get air, labels never wrap under their values --- */
+.hm-charts .hmr-legs{gap:4px;min-width:172px}
+.hm-charts .hmr-leg{padding:6px 2px;flex-wrap:nowrap}
+.hm-charts .hmr-leg>span:nth-child(2){white-space:nowrap}
+.hm-charts .hmr-leg b,.hm-charts .hmr-leg .p{flex:none}
+.hm-charts .hmr-legs.wrap{margin-top:8px;row-gap:6px}
+/* --- heat cells: label stacks over value, nothing crowds --- */
+.hm-charts .hmr-hcell{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:8px 10px}
+.hm-charts .hmr-hcell>span{font-size:11px;line-height:1.3}
+.hm-charts .hmr-hcell b{font-size:14px;line-height:1.2}
+.hm-charts .hmr-strip{gap:4px}
+/* --- section headers: a full legal step above, always --- */
+.hm-charts .hmr-h4{margin-bottom:8px}
+.hm-charts .hmr-h4.hmr-mt{margin-top:24px}
+.hm-charts .hmr-h4.hmr-mt2{margin-top:24px}
+.hm-charts .hmr-body{padding:0 20px 24px}
+/* --- small clips found by the geometry gate's first pass --- */
+.cnc-hval{line-height:1.3}
+.aud-ctx{overflow:visible !important}
+#audsub{overflow:visible !important;text-overflow:clip}
+.phcard .phnm{flex-wrap:wrap}
+.phcard .phnm b{white-space:normal;overflow-wrap:break-word;min-width:0}
+
+/* ================================================================
+   STRUCTURAL SUPPORT for the V3.73.0 JS (Editorial Grid prep):
+   hero figure, What's New day lines, Manage chapter button,
+   Sandbox title line + ruled stat strip, change-log fold.
+   ================================================================ */
+.ih-fig{border-left:1px solid var(--line);margin-left:18px;padding-left:18px;min-width:150px}
+.ih-fig-n{font-family:'Space Grotesk',sans-serif;line-height:1.05}
+.ih-fig-n b{font-size:34px;font-weight:700}
+.ih-fig-n span{font-size:15px;color:var(--mut);font-weight:600}
+.ih-fig-s{margin-top:6px;font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--mut)}
+.ih-fig-m{margin-top:4px;font-size:11.5px;color:var(--dim)}
+.wn-date .cnt{margin-left:10px}
+.wn-fold{margin-left:12px;font-size:11px;font-weight:600;color:var(--acc2);background:none;border:0;cursor:pointer;padding:2px 4px}
+.wn-dayline{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:12px 2px;border:0;border-top:1px solid var(--line);background:none;cursor:pointer;font:inherit;font-size:13.5px;font-weight:600;color:var(--txt);text-align:left}
+.wn-dayline:hover{color:var(--acc2)}
+.wn-dayline svg{color:var(--dim);flex:none}
+.mg-more{display:block;width:100%;margin-top:8px;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--txt);font:inherit;font-size:13px;font-weight:600;cursor:pointer;text-align:center}
+.mg-more:hover{border-color:var(--acc)}
+.sbs-titleline{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.sbs-titleline h2{font:500 26px/1.15 var(--serif);margin:0}
+.sbs-titleline span{color:var(--mut);font-size:13.5px}
+.sst-top .sp{flex:1}
+.lr-earlier{margin-top:4px}
+.lr-earlier>summary{cursor:pointer;padding:10px 2px;font-size:12.5px;font-weight:600;color:var(--mut);border-top:1px solid var(--line)}
+.lr-earlier>summary:hover{color:var(--txt)}
