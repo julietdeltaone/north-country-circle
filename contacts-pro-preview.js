@@ -6241,6 +6241,7 @@ function hmCharts(){
   }
   return '<section class="card hm-blk hm-charts" data-kind="about"><header><h3>Directory charts</h3>' +
     '<p class="sub">The directory counted live \u2014 rings and a donut carry the headline numbers, heat does the diagnostics: deep slate where the record is full, warm brown where it is empty. Everything opens its people list.</p></header>' +
+    '<div class="hmr-body">' +
     rings +
     '<div class="hmr-mid">' +
       '<div><h4 class="hmr-h4">Relationship mix</h4><div class="hmr-donwrap">' + (mix ? hmrDonutSVG(mix.rows, total) : '') + '<div class="hmr-legs">' + dleg + '</div></div></div>' +
@@ -6251,7 +6252,7 @@ function hmCharts(){
     '<div class="hmr-hrow head"><span class="hmr-hh">Field</span><span class="hmr-hh">Filled</span><span class="hmr-hh">% filled</span><span class="hmr-hh">Blank</span><span class="hmr-hh">% blank</span></div>' +
     hrows + heatNote +
     '<h4 class="hmr-h4 hmr-mt2">Completeness bands \u2014 heat strip, shade = people</h4><div class="hmr-strip">' + bstrip + '</div>' + bandNote +
-    '</section>';
+    '</div></section>';
 }
 /* --- Home Shape card (JD 2026-10-28, V3.26.0 consolidation): tier
    mix, relationship mix and the network line in ONE card instead of
