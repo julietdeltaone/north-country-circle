@@ -31,14 +31,6 @@
  ],
  "auto_apply": [
   {
-   "key": "sf:jeremy-taylor",
-   "display": "Jeremy Taylor",
-   "field": "groups",
-   "value": "U.S. Navy",
-   "conf": 100,
-   "id": "pf-efd1a3eac3"
-  },
-  {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
    "field": "groups",
