@@ -4602,6 +4602,7 @@ span.ca-crumb{cursor:default}
 .ca-dc.strong{background:var(--acc);opacity:.85}
 .ca-dc.venue{background:#c9a227;opacity:.30}
 .ca-dc.today{outline:2px solid var(--acc);outline-offset:1px;opacity:1}
+.ca-dnum{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;line-height:1;color:var(--ink);pointer-events:none}
 .ca-dot{position:absolute;right:2px;bottom:2px;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
 .ca-tick{position:absolute;left:2px;top:2px;width:4px;height:4px;border-radius:1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
 /* month */
