@@ -557,6 +557,22 @@
   {
    "date": "2026-11-02",
    "kind": "photo",
+   "display": "Brian Hanlin",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://www.canton.edu/news/2023/academy.php"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Emily Criscitello",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://precisionscubadiving.com/about-us/"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
    "display": "Eric Criscitello",
    "text": "Primary photo filed",
    "source": "Photos on File",
@@ -2385,22 +2401,6 @@
    "text": "Primary photo filed",
    "source": "Photos on File",
    "url": "https://www.instagram.com/trentondaniels4/"
-  },
-  {
-   "date": "2026-10-31",
-   "kind": "photo",
-   "display": "Victoria Lucas",
-   "text": "Primary photo filed (grade: possible)",
-   "source": "Photos on File",
-   "url": "https://sunyjefferson.edu/news/nurse_pinning_spring2023.php"
-  },
-  {
-   "date": "2026-10-31",
-   "kind": "photo",
-   "display": "Wesley Hissong",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.clarkson.edu/organizational-chart?u=whissong"
   }
  ]
 }
