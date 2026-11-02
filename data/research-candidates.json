@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -5385,6 +5385,999 @@
    "fields": {},
    "published": "2025-11-21",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-hello3milyy-started-as-general-manager-at-united",
+   "name": "hello3milyy",
+   "display": "Emily Bouchard",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "Bold.pro profile for Emily Bouchard lists General Manager, United Ground Express, Harrisburg, PA, Jul 2024 to present, preceded by Cross Utilized Supervisor at Unifi (Harrisburg, Jan-Jul 2024) and Ramp Supervisor at Piedmont Airlines (Harrisburg, Sep 2022-Jun 2023); the same profile carries her verified Ogdensburg SkyWest/Unifi chain.",
+   "file_text": "Started as General Manager at United Ground Express in Harrisburg, Jul 2024",
+   "source": "Bold.pro",
+   "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
+   "anchors": [
+    "Emily Bouchard",
+    "Harrisburg / Dauphin, PA",
+    "SkyWest Airlines Ogdensburg chain",
+    "Unifi Aviation"
+   ],
+   "missing_gate": "The sole source is a self-reported resume profile with no independent corroboration.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 15,
+    "detail": 18
+   },
+   "fields": {
+    "companies": "United Ground Express"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-hello3milyy-worked-as-cross-utilized-supervisor-",
+   "name": "hello3milyy",
+   "display": "Emily Bouchard",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "The same Bold.pro profile lists Cross Utilized Supervisor, Unifi, Harrisburg, PA, Jan-Jul 2024.",
+   "file_text": "Worked as Cross Utilized Supervisor at Unifi Aviation in Harrisburg, Jan 2024\u2013Jul 2024",
+   "source": "Bold.pro",
+   "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
+   "anchors": [
+    "Emily Bouchard",
+    "Harrisburg, PA",
+    "Unifi Aviation"
+   ],
+   "missing_gate": "Self-reported resume as sole source.",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 15,
+    "detail": 16
+   },
+   "fields": {
+    "companies": "Unifi Aviation"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-hello3milyy-worked-as-ramp-supervisor-at-piedmon",
+   "name": "hello3milyy",
+   "display": "Emily Bouchard",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "The same Bold.pro profile lists Ramp Supervisor, Piedmont Airlines, Harrisburg, PA, Sep 2022-Jun 2023.",
+   "file_text": "Worked as Ramp Supervisor at Piedmont Airlines in Harrisburg, Sep 2022\u2013Jun 2023",
+   "source": "Bold.pro",
+   "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
+   "anchors": [
+    "Emily Bouchard",
+    "Harrisburg, PA",
+    "Aviation career sequence"
+   ],
+   "missing_gate": "Self-reported resume as sole source; the Piedmont role is not otherwise corroborated.",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 15,
+    "detail": 14
+   },
+   "fields": {
+    "companies": "Piedmont Airlines"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-martinlovell-8-mg-tree-llc-was-filed-at-121-russell",
+   "name": "martinlovell.8",
+   "display": "Martin Lovell",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "OpenGovNY's NYSDOS-derived listing for MG Tree LLC gives the address 121 Russell Turnpike Rd, Potsdam, NY 13676, registered agent Garrett Guyette, and an initial DOS filing date of May 4, 2026.",
+   "file_text": "MG Tree LLC was filed at 121 Russell Turnpike Road, Potsdam, with Garrett Guyette as registered agent, May 2026",
+   "source": "OpenGovNY",
+   "url": "https://opengovny.com/corporation?zip=13676",
+   "anchors": [
+    "MG Tree LLC",
+    "Potsdam, NY"
+   ],
+   "missing_gate": "The record does not name Martin Lovell; his link to the LLC rests only on the profile's Facebook-sourced co-owner claim.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2026-05-04",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-kaylawatkins8-engaged-to-luke-with-a-wedding-plann",
+   "name": "kaylawatkins8",
+   "display": "Kayla Hettel",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "Her Puget Sound Birth Center staff bio (updated Jan 20, 2026) states in first person: 'I am engaged to the love of my life, Luke, and we are getting married in February 2026.'",
+   "file_text": "Engaged to Luke, with a wedding planned for February 2026",
+   "source": "Puget Sound Birth Center",
+   "url": "https://www.birthcenter.com/midwives-and-staff/kaylawatkins-lm-cpm",
+   "anchors": [
+    "Puget Sound Birth Center (employer)",
+    "National College of Midwifery",
+    "Newlife International School of Midwifery"
+   ],
+   "missing_gate": "The engagement rests solely on her own first-person employer bio with no independent source, and the February 2026 date is now past with the marriage unconfirmed.",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 18,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-kaylawatkins8-volunteered-for-18-months-at-a-mater",
+   "name": "kaylawatkins8",
+   "display": "Kayla Hettel",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "Her Puget Sound Birth Center bio says that at 18 she moved to Tabuk, Philippines and volunteered 18 months at a maternity center, attending Newlife International School of Midwifery while completing her degree through the National College of Midwifery.",
+   "file_text": "Volunteered for 18 months at a maternity center in Tabuk, Philippines from age 18, while studying at Newlife International School of Midwifery and the National College of Midwifery",
+   "source": "Puget Sound Birth Center",
+   "url": "https://www.birthcenter.com/midwives-and-staff/kaylawatkins-lm-cpm",
+   "anchors": [
+    "Newlife International School of Midwifery",
+    "National College of Midwifery",
+    "Philippines volunteering"
+   ],
+   "missing_gate": "Sole source is her own bio page; the page does not name Abundant Grace, so that center cannot be attached to the Tabuk stint from this page.",
+   "confidence": 77,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 18,
+    "detail": 19
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-kaylawatkins8-born-and-raised-in-upstate-new-york-",
+   "name": "kaylawatkins8",
+   "display": "Kayla Hettel",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Her Puget Sound Birth Center bio says she was born and raised in Upstate New York as the oldest of seven children and has lived and worked in Washington since fall 2020.",
+   "file_text": "Born and raised in Upstate New York, the oldest of seven children; moved to Washington in fall 2020",
+   "source": "Puget Sound Birth Center",
+   "url": "https://www.birthcenter.com/midwives-and-staff/kaylawatkins-lm-cpm",
+   "anchors": [
+    "Puget Sound Birth Center (employer)",
+    "Washington (location on file)"
+   ],
+   "missing_gate": "Self-reported bio as sole source, and the sibling detail is personal family information.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 15,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-alicia-taillon-the-blue-house-launched-b-2-a-japane",
+   "name": "sf:alicia-taillon",
+   "display": "Alicia Taillon",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "The Blue House's Week 47 menu announces 'Welcome to B#2, our Blue House alter ego!' - a Japanese-influenced concept alongside the wood-fired pizza; no year is printed on the menu.",
+   "file_text": "The Blue House launched B#2, a Japanese-influenced alter-ego menu concept",
+   "source": "The Blue House",
+   "url": "https://thebluehouseny.com/wp-content/uploads/Week-47.pdf",
+   "anchors": [
+    "The Blue House (business on file)"
+   ],
+   "missing_gate": "The business's own menu; Alicia is not named on it and the concept's year cannot be fixed.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 15,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-alicia-taillon-co-owner-of-the-blue-house-in-madrid",
+   "name": "sf:alicia-taillon",
+   "display": "Alicia Taillon",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "The Blue House's Our Story page says demolition started in Nov 2019 and the restaurant opened in January 2021 (takeout only for six months, dine-in from July 2021), which differs from the footprint's 2020 opening.",
+   "file_text": "Co-owner of The Blue House in Madrid with her husband Josh Taillon; the restaurant opened in January 2021 after demolition began in November 2019",
+   "source": "The Blue House",
+   "url": "https://thebluehouseny.com/story/",
+   "anchors": [
+    "Josh Taillon",
+    "Madrid, NY",
+    "The Blue House"
+   ],
+   "missing_gate": "The corrected date rests solely on the business's own site and Alicia is not named on the page, so it does not displace the existing opening date on its own.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 15,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-hjlevendusky-appeared-with-her-husband-derek-and-",
+   "name": "hjlevendusky",
+   "display": "Heidi Jo Levendusky",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "An American Women's Wrestling article by Derek Levendusky says Heidi appeared with Derek, Esther, Joye, and Grace Levendusky on two Family Feud shows in November 2021, and that the family has since moved to Tennessee.",
+   "file_text": "Appeared with her husband Derek and daughters Esther, Joye, and Grace Levendusky on two episodes of Family Feud in November 2021",
+   "source": "American Women's Wrestling",
+   "url": "https://www.americanwomenswrestling.com/news/wrestling-on-family-feud",
+   "anchors": [
+    "Heidi Jo Levendusky",
+    "Derek Levendusky (husband)",
+    "Esther, Joye, and Grace Levendusky (daughters)"
+   ],
+   "missing_gate": "The sole source is an article authored by her husband on his own site - a family self-report with no independent corroboration.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 12,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "2021-11-01",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-hjlevendusky-performed-as-a-christian-rock-musici",
+   "name": "hjlevendusky",
+   "display": "Heidi Jo Levendusky",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "In a NashvilleVoyager interview, her daughter Grace Serene says her parents 'Derek and Heidi Levendusky were Christian rock musicians' and she grew up on the road with them.",
+   "file_text": "Performed as a Christian rock musician with her husband Derek Levendusky, touring while their children were growing up",
+   "source": "NashvilleVoyager Magazine",
+   "url": "https://nashvillevoyager.com/interview/check-out-grace-serenes-story/",
+   "anchors": [
+    "Derek and Heidi Levendusky (named by daughter Grace Serene)",
+    "Music (specialty on file)"
+   ],
+   "missing_gate": "Single source, and it is a family member's self-report in a promotional interview with no independent corroboration.",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 15,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-malyssar-7-scored-85-on-the-city-of-albany-poli",
+   "name": "malyssar_7",
+   "display": "Malyssa Shenko",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "City of Albany Civil Service minutes (Feb 12, 2025) list 'Malyssa Shenko (85)' under Police Officer exam #89059-010 in the 'No show for Physical Agility Test' group.",
+   "file_text": "Scored 85 on the City of Albany Police Officer civil service exam (#89059-010) and was listed as a no-show for the physical agility test in February 2025",
+   "source": "City of Albany",
+   "url": "https://albanyny.gov/AgendaCenter/ViewFile/Minutes/_02122025-1883",
+   "anchors": [
+    "Malyssa Shenko (exact distinctive name)"
+   ],
+   "missing_gate": "Only the exact name appears on the page - no Canton, SUNY Canton, or hometown anchor - so it fails the two-anchor gate.",
+   "confidence": 82,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 28,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2025-02-12",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-malyssar-7-also-listed-in-suny-canton-s-2022-co",
+   "name": "malyssar_7",
+   "display": "Malyssa Shenko",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "The extracted layout of SUNY Canton's 2022 Commencement Program places 'MALYSSA SHENKO' on the same row as an 'EMERGENCY MANAGEMENT B.S.' heading, suggesting a possible second degree alongside her Criminal Investigation degree.",
+   "file_text": "Also listed in SUNY Canton's 2022 commencement program in connection with an Emergency Management B.S.",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/media/pdf/Commencement_Program2022.pdf",
+   "anchors": [
+    "Malyssa Shenko",
+    "SUNY Canton",
+    "2022 graduation year"
+   ],
+   "missing_gate": "The multi-column program layout makes the attribution unreliable and it conflicts with the official Class of 2022 list crediting only Criminal Investigation.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 25,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2022-05-14",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-aidantruth-named-a-clarkson-university-presiden",
+   "name": "aidantruth",
+   "display": "Aidan Daniels",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "Clarkson announced Spring 2026 Presidential Scholars on Jun 4, 2026 via Merit Pages, but the student roster did not render on the opened page, so Aidan Daniels's inclusion could not be read directly.",
+   "file_text": "Named a Clarkson University Presidential Scholar for Spring 2026",
+   "source": "Clarkson University \u00b7 Merit Pages",
+   "url": "https://clarkson.meritpages.com/achievements/Students-Named-Clarkson-University-Presidential-Scholars/203152",
+   "anchors": [
+    "Clarkson University",
+    "Four consecutive Presidential Scholar semesters already on file"
+   ],
+   "missing_gate": "His inclusion in the Spring 2026 roster could not be verified on the opened page; a search snippet alone fails the gate.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 26,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-06-04",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-jlevens18-was-named-among-the-announced-compet",
+   "name": "jlevens18",
+   "display": "Joye Levendusky",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A FloWrestling Sep 14, 2026 recap lists Joye Levendusky among the CLAW Star Classic announced competitors, drafted to 'Team Pyles' in a draft segment.",
+   "file_text": "Was named among the announced competitors for the 2026 CLAW Star Classic, drafted to Team Pyles in FloWrestling's September 2026 draft preview",
+   "source": "FloWrestling",
+   "url": "https://www.flowrestling.org/articles/16183911-2026-claw-draft-results-ncaa-super-team-draft-on-flowrestling-radio-live",
+   "anchors": [
+    "Joye Levendusky",
+    "Senior-level wrestling / Titan Mercury Wrestling Club context"
+   ],
+   "missing_gate": "The listing comes from a podcast fantasy-style draft of announced competitors, not an official roster or result, and no official CLAW roster was opened to corroborate it.",
+   "confidence": 80,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026-09-14",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-jlevens18-remains-an-assistant-coach-for-king-",
+   "name": "jlevens18",
+   "display": "Joye Levendusky",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "A FloWrestling Sep 13, 2026 King University season preview lists the 2026-27 women's wrestling assistants as Mason Gray and Joye Levendusky on head coach Bret Fry's staff - her second season at King.",
+   "file_text": "Remains an assistant coach for King University women's wrestling for the 2026-27 season, her second season on head coach Bret Fry's staff",
+   "source": "FloWrestling",
+   "url": "https://www.flowrestling.org/articles/16180329-will-king-return-to-national-prominence-after-grace-year",
+   "anchors": [
+    "King University",
+    "Bret Fry (head coach)",
+    "Southern Oregon / McKendree history in the same article"
+   ],
+   "missing_gate": "Verified by the research batch but not re-opened by the parent this run, and the run's ten filing slots went to higher-priority findings.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 18,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026-09-13",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-adepegba-listed-as-a-confirmed-entrant-from-n",
+   "name": "sf:adepegba",
+   "display": "Ray Adepegba",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Zippy-Reg's confirmed-entrants list for The Delmar Duathlon lists Ray ADEPEGBA, bib 9303, of Niskayuna, NY, in the Individual Duathlon, consecutively with Diahann Adepegba, bib 9302, also of Niskayuna.",
+   "file_text": "Listed as a confirmed entrant from Niskayuna, New York, in the Individual Duathlon at The Delmar Duathlon, bib 9303",
+   "source": "Zippy-Reg",
+   "url": "https://www.zippy-reg.com/online_reg/confirmed_entrants.php?event=1698",
+   "anchors": [
+    "Ray Adepegba (exact name)"
+   ],
+   "missing_gate": "The page carries only the exact name and a new location; no Army or 27th IBCT anchor ties it to this profile.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 20,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-adepegba-diahann-adepegba-served-as-a-staff-s",
+   "name": "sf:adepegba",
+   "display": "Ray Adepegba",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A U.S. Army article on Ardent Sentry 17 (Apr 25, 2017) photographs Staff Sgt. Diahann Adepegba, a NY National Guard division intelligence NCO, mapping a simulated blast radius in Troy/Latham, NY.",
+   "file_text": "Diahann Adepegba served as a Staff Sergeant and division intelligence NCO with the New York National Guard during Ardent Sentry 17 in April 2017",
+   "source": "U.S. Army",
+   "url": "https://www.army.mil/article/186876/new_york_national_guard_exercises_its_emergency_response_command_skills_as_part_of_ardent_sentry_17",
+   "anchors": [
+    "Adepegba surname",
+    "New York National Guard"
+   ],
+   "missing_gate": "The claim is about Diahann Adepegba, not Ray; the page does not name Ray and their relationship is inferred only.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2017-04-25",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-janelc8-listed-as-a-norwood-norfolk-central-",
+   "name": "janelc8",
+   "display": "Janel Colbert",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A GovSalaries search result listed Janel Colbert M for 2024 at Norwood-Norfolk Central Schools with job title N/A, but the opened page rendered the 2025 list and she did not appear in the portion read.",
+   "file_text": "Listed as a Norwood-Norfolk Central Schools employee in 2024 public salary records",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/salaries/NY/norwood-norfolk-central-schools?sort=year-desc",
+   "anchors": [
+    "Janel Colbert (exact name)",
+    "Norwood-Norfolk Central Schools (employer on file)"
+   ],
+   "missing_gate": "The 2024 line could not be verified on the opened page, and it would in any case duplicate her already-filed Instructional Aide role with no new title.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 15,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-janelc8-miya-colbert-was-listed-as-a-general",
+   "name": "janelc8",
+   "display": "Janel Colbert",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "GovSalaries lists Miya Colbert as a 2025 General Employee at Norwood-Norfolk Central Schools on the page opened this run.",
+   "file_text": "Miya Colbert was listed as a General Employee at Norwood-Norfolk Central Schools in 2025",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/salaries/NY/norwood-norfolk-central-schools?sort=year-desc",
+   "anchors": [
+    "Colbert surname",
+    "Norwood-Norfolk Central Schools (Janel's employer)"
+   ],
+   "missing_gate": "The claim is about Miya Colbert, not Janel; her relationship to Janel is not established in the packet or on the page.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-john-molinero-served-as-student-discipleship-coord",
+   "name": "sf:john-molinero",
+   "display": "John Molinero",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Hood Canal Community Church's Aug 2020 church profile lists John Molinero as its Student Discipleship Coordinator, 16 hours per week, one of five paid positions, in Hoodsport, WA.",
+   "file_text": "Served as Student Discipleship Coordinator, 16 hours per week, at Hood Canal Community Church in Hoodsport, Washington, as of August 2020",
+   "source": "Hood Canal Community Church",
+   "url": "https://static1.squarespace.com/static/6058c7ac1b63e5784e0b08b8/t/606e391f70288b402d2766f6/1617836319284/HCCC%2BProfile.pdf",
+   "anchors": [
+    "John Molinero (exact name)",
+    "Hoodsport / Hood Canal, WA (near Union, WA on file)"
+   ],
+   "missing_gate": "Only the name and general Washington location match; with a second John Molinero (illustrator) already conflated in the footprint, the role has no second profile anchor and is not safe to file directly.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 25,
+    "detail": 18
+   },
+   "fields": {
+    "churches": "Hood Canal Community Church",
+    "companies": "Hood Canal Community Church"
+   },
+   "published": "2020-08-01",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-caleb-dollinger-listed-in-public-records-aggregator-",
+   "name": "sf:caleb-dollinger",
+   "display": "Caleb Dollinger",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "A ClustrMaps people-search listing identifies a Caleb B. Dollinger, born Oct 15, 1996, with a current address in Potsdam, NY (address and birth date deliberately omitted from the would-file text).",
+   "file_text": "Listed in public-records aggregator as Caleb B. Dollinger of Potsdam, New York",
+   "source": "ClustrMaps",
+   "url": "https://clustrmaps.com/person/Dollinger-7n099q",
+   "anchors": [
+    "Caleb Dollinger (exact name)",
+    "Potsdam, NY (adjacent to Canton/Colton on file)"
+   ],
+   "missing_gate": "A people-search aggregator is not an independent authoritative source, the detail was not verified on an opened page, and it is personal address/birth-date data rather than public professional information.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 10,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-fdb-baxter-brown-listed-as-a-2019-midwest-young-artis",
+   "name": "fdb:baxter_brown",
+   "display": "Baxter Brown",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "The Midwest Young Artists Conservatory 2018/19 Donor Impact Report lists 'R. Baxter Brown - Anticipated Major: Viola Performance - Wheaton College' among its 2019 graduates / college destinations.",
+   "file_text": "Listed as a 2019 Midwest Young Artists Conservatory graduate entering Wheaton College for viola performance",
+   "source": "Midwest Young Artists Conservatory",
+   "url": "https://static1.squarespace.com/static/5d7bf60d26457d64303fcadf/t/5dc0b1c8dae1b62cf8a57990/1572909545429/2019+Annual+Report_dig.pdf",
+   "anchors": [
+    "R. Baxter Brown",
+    "Wheaton College",
+    "Viola performance"
+   ],
+   "missing_gate": "It merely confirms the already-filed Wheaton viola-performance path, with no new ensemble, award, or in-motion fact; an earlier snippet suggesting a Walgreens Concerto Competition win was disproven on the opened page.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 20,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-ct-justin-cardinal-opened-esther-s-coffee-house-in-mass",
+   "name": "ct:justin cardinal",
+   "display": "Justin Cardinal",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "A Saratoga Business Journal article (Apr 17, 2024) reports the Adirondack Economic Development Corp 'assisted with the opening of Esther's Coffee House in Massena,' but never names Justin or Julie Cardinal.",
+   "file_text": "Opened Esther's Coffee House in Massena, 2024",
+   "source": "Saratoga Business Journal",
+   "url": "https://www.saratoga.com/saratogabusinessjournal/2024/04/entrepreneurship-programs-in-area-provide-valuable-information-for-small-businesses/",
+   "anchors": [
+    "Esther's Coffee House (business on file)",
+    "Massena, NY"
+   ],
+   "missing_gate": "The article ties the business's opening to AEDC assistance only; the person-to-opening link rests entirely on the profile's existing footing, so it does not independently tie Justin Cardinal to two anchors.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 20,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2024-04-17",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-bob-blewett-chairman-board-of-assessment-review-",
+   "name": "sf:bob-blewett",
+   "display": "Bob Blewett",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "A Prabook (Marquis Who's Who-derived) page for Robert Allen Blewett says he has chaired the Board of Assessment Review, Canton, NY, since 1991 and was a Conservative Party committee member in St. Lawrence County in 2009, alongside his on-file St. Lawrence University professorship and Fulbright lectureship.",
+   "file_text": "Chairman, Board of Assessment Review, Canton, NY, since 1991",
+   "source": "Prabook",
+   "url": "https://prabook.com/web/robert_allen.blewett/586536",
+   "anchors": [
+    "Robert Allen Blewett",
+    "Canton, NY",
+    "St. Lawrence University professor",
+    "Fulbright, University of Maiduguri"
+   ],
+   "missing_gate": "The only source is a Who's Who aggregator scrape with no independent corroboration for the Canton board role; the rest of the page duplicates the profile.",
+   "confidence": 57,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 10,
+    "detail": 7
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-livparker5-as-a-suny-potsdam-graduate-literacy-",
+   "name": "livparker5",
+   "display": "Olivia Parker",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A SUNY Potsdam item (Nov 2013, via ReadMedia) names an Olivia Parker among graduate literacy-education students who designed and handed out 200 Family Literacy Kits at Jefferson Elementary School, Massena; she appears only in the photo caption list.",
+   "file_text": "As a SUNY Potsdam graduate literacy student, designed Family Literacy Kits for Jefferson Elementary School, Massena, Nov 2013",
+   "source": "SUNY Potsdam",
+   "url": "http://readme.readmedia.com/SUNY-Potsdam-Graduate-Students-Design-Family-Literacy-Kits-for-North-Country-Elementary-Students-Parents/7466314",
+   "anchors": [
+    "Olivia Parker (name)",
+    "SUNY Potsdam"
+   ],
+   "missing_gate": "Identity is uncertain: a single common-name, caption-only mention with no Campbell/Campbell-Savona or Potsdam-residence tie, and a 2013 graduate student does not obviously square with this profile's sparse record.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2013-11-01",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-lisa-criscitello-became-a-grandmother-2021",
+   "name": "sf:lisa-criscitello",
+   "display": "Lisa Criscitello",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Her bio in the Village of Potsdam Police Reform and Reinvention Collaborative plan (Mar 26, 2021) describes her as a 'happily married mother of 10 and recently became a grandmother' who 'currently still has 7 learning at home.'",
+   "file_text": "Became a grandmother, 2021",
+   "source": "Village of Potsdam",
+   "url": "https://policereform.ny.gov/potsdam-village-police-department-plan",
+   "anchors": [
+    "Lisa Criscitello",
+    "Potsdam, NY",
+    "From the Heart Cabinetry family business",
+    "SUNY Oswego / SUNY Potsdam education"
+   ],
+   "missing_gate": "Family-status detail; family is never auto-filed, and the rest of the bio duplicates the footprint.",
+   "confidence": 80,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 25,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2021-03-26",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-charlie-sharon-sweet-married-to-sharon-for-49-years-with-",
+   "name": "sf:charlie-sharon-sweet",
+   "display": "Charlie-Sharon Sweet",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "The Redeeming Love Church leadership page states Charlie and Sharon Sweet have been married 49 years and have four married children and thirteen grandchildren.",
+   "file_text": "Married to Sharon for 49 years, with four married children and thirteen grandchildren",
+   "source": "Redeeming Love Church",
+   "url": "https://www.redeeminglovechurch.org/leadership",
+   "anchors": [
+    "Charlie & Sharon Sweet",
+    "Tequesta, FL",
+    "Sweet Life Consulting, Inc."
+   ],
+   "missing_gate": "Family detail; the family field is never auto-filed under the routine.",
+   "confidence": 82,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 22,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-ilene-lashomb-choreographer-for-meet-me-in-st-loui",
+   "name": "sf:ilene-lashomb",
+   "display": "Ilene Lashomb",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "StageAgent's Meet Me in St. Louis portrayals page credits 'Ilene Lashomb - Choreographer (2019).'",
+   "file_text": "Choreographer for Meet Me in St. Louis, 2019",
+   "source": "StageAgent",
+   "url": "https://stageagent.com/shows/musical/293/meet-me-in-st-louis/portrayals",
+   "anchors": [
+    "Ilene Lashomb (exact uncommon name)",
+    "Choreography (work on file with The Arts Program of NNY)"
+   ],
+   "missing_gate": "StageAgent portrayals are member-submitted self-reported credits (the page says a portrayal is a credit added by a member), with no independent corroboration, and the production is not in her extensive on-file credit list.",
+   "confidence": 61,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-ct-maggie-thibodeau-physician-assistant-practice-based-i",
+   "name": "ct:maggie thibodeau",
+   "display": "Maggie Thibodeau",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The NPI/NPPES record for Margaret T. Thibodeau (NPI 1114370046, PA-C, Physician Assistant taxonomy, NY license) gives a business practice location of 214 King Street, Ogdensburg, NY 13669, enumerated Jul 15, 2016 and last updated Mar 25, 2021; the record also lists a former/other last name, 'Ecker.'",
+   "file_text": "Physician Assistant practice based in Ogdensburg, New York, Mar 2021",
+   "source": "NPI Registry (via DataLabs Health)",
+   "url": "https://www.datalabs.health/medical_billing/coding/national_provider_identifier/codes/npi_1114370046.pdf",
+   "anchors": [
+    "Margaret T. Thibodeau (name)",
+    "Physician Assistant (claim already on file)"
+   ],
+   "missing_gate": "The only ties are the name and the PA occupation already filed at low confidence; Ogdensburg is not an anchor on her profile and nothing connects this record to the Christian Fellowship Center Maggie Thibodeau.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 22,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2021-03-25",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-sf-ann-parow-mackey-started-as-a-teacher-assistant-at-sa",
+   "name": "sf:ann-parow-mackey",
+   "display": "Ann Parow Mackey",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Sauquoit Valley Central School District's Sep 12, 2023 board agenda, item 7.3, recommends a motion 'to appoint Ann Mackey to the position of teacher assistant for a probationary period of four years to commence September 1, 2023 and to expire September 1, 2027.'",
+   "file_text": "Started as a teacher assistant at Sauquoit Valley Central School, Sep 2023",
+   "source": "Sauquoit Valley Central School District",
+   "url": "https://resources.finalsite.net/images/v1703062296/svcsdorg/mhhlfjw7bjjtbmwmt6vz/public_agenda_for_september_12_2023.pdf",
+   "anchors": [
+    "Ann Mackey (name)",
+    "Sauquoit, NY (location and school district on file)",
+    "Teaching (specialty on file)"
+   ],
+   "missing_gate": "'Ann Mackey' is a common name; the agenda gives no middle name or 'Parow,' no prior-employer link, and it is an agenda of recommended motions rather than minutes confirming the appointment was carried.",
+   "confidence": 71,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 26,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "2023-09-12",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-rileyymulligan-presented-her-photography-i-honors-f",
+   "name": "rileyymulligan",
+   "display": "Riley Mulligan",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "SUNY Potsdam's Art News 2020-2021 reports Riley Mulligan presented her Photography I Honors final project, inspired by Ansel Adams, at the Learning and Research Fair (2020-2021, mentored by Iggy Beerbower), and that her work was included in the Spring 2021 Art Attack exhibition.",
+   "file_text": "Presented her Photography I Honors final project, inspired by Ansel Adams, at SUNY Potsdam's Learning and Research Fair, 2020-2021, and her work was included in SUNY Potsdam's Spring 2021 Art Attack exhibition",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/sites/default/files/inline-files/ArtNews%202020-21.pdf",
+   "anchors": [
+    "Riley Mulligan",
+    "SUNY Potsdam",
+    "Photography I Honors / Art Studio"
+   ],
+   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "confidence": 92,
+   "confidence_parts": {
+    "identity": 47,
+    "source": 28,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-sf-charlie-sharon-sweet-was-an-executive-vice-president-of-h",
+   "name": "sf:charlie-sharon-sweet",
+   "display": "Charlie-Sharon Sweet",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "The Redeeming Love Church leadership page says Charlie Sweet was an executive vice president of human resources for a large insurance company in New York State before transitioning into ministry.",
+   "file_text": "Was an executive vice president of human resources for a large insurance company in New York State before transitioning into ministry",
+   "source": "Redeeming Love Church",
+   "url": "https://www.redeeminglovechurch.org/leadership",
+   "anchors": [
+    "Charlie & Sharon Sweet",
+    "Tequesta, FL",
+    "Sweet Life Consulting, Inc.",
+    "Redeeming Love Church"
+   ],
+   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 27,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-sf-charlie-sharon-sweet-joined-the-staff-of-mt-zion-ministri",
+   "name": "sf:charlie-sharon-sweet",
+   "display": "Charlie-Sharon Sweet",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "The same leadership page says the Sweets joined the staff of Mt. Zion Ministries Church in Utica, NY in 1991, serving as church administrator, executive pastor, and elder.",
+   "file_text": "Joined the staff of Mt. Zion Ministries Church in Utica, NY in 1991, serving as church administrator, executive pastor, and elder",
+   "source": "Redeeming Love Church",
+   "url": "https://www.redeeminglovechurch.org/leadership",
+   "anchors": [
+    "Charlie & Sharon Sweet",
+    "Tequesta, FL",
+    "Sweet Life Consulting, Inc.",
+    "Redeeming Love Church"
+   ],
+   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 27,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261102-sf-caleb-dollinger-as-a-colton-pierrepont-junior-in-apr",
+   "name": "sf:caleb-dollinger",
+   "display": "Caleb Dollinger",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "The NY State School Boards Association's On Board Online (Apr 6, 2015) quotes Colton-Pierrepont junior Caleb Dollinger calling the school's Wi-Fi-equipped bus ride a 'moving study hall,' saying he frequently did homework on daily rides lasting as long as 45 minutes.",
+   "file_text": "As a Colton-Pierrepont junior in April 2015, Caleb Dollinger was quoted calling the school's Wi-Fi-equipped bus ride a 'moving study hall,' saying he frequently did homework on daily rides lasting as long as 45 minutes",
+   "source": "New York State School Boards Association",
+   "url": "https://www.nyssba.org/index.php?src=news&submenu=AdvocacyUpdates&srctype=news_lister_2019&pos=1680%2C8%2C4296",
+   "anchors": [
+    "Caleb Dollinger (exact name)",
+    "Colton-Pierrepont Central School",
+    "St. Lawrence County"
+   ],
+   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 27,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2015-04-06",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-m-not-a-lobster-holds-professional-affiliations-with",
+   "name": "m.not.a.lobster",
+   "display": "Michelle Johnston",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "SUNY Canton's Center for Criminal Justice, Intelligence, and Cybersecurity faculty page lists Michelle Johnston's professional affiliations: ACJS (five sections), American Society of Criminology (two divisions), American Psychology-Law Society, Society for Police and Criminal Psychology, Society for the Study of Social Problems, and the Criminal Justice Educators Association of NY.",
+   "file_text": "Holds professional affiliations with the Academy of Criminal Justice Sciences, the American Society of Criminology, the American Psychology-Law Society, the Society for Police and Criminal Psychology, the Society for the Study of Social Problems, and the Criminal Justice Educators Association of NY",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/cjic/faculty.html",
+   "anchors": [
+    "Michelle Johnston",
+    "SUNY Canton Associate Professor",
+    "PhD Nova Southeastern / MS Florida State / BA SUNY Potsdam"
+   ],
+   "missing_gate": "Passed the verification gate but it is a long static affiliation list and the run's ten filing slots went to in-motion and higher-significance findings.",
+   "confidence": 87,
+   "confidence_parts": {
+    "identity": 47,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261102-kaylemmccormick-ran-the-girls-400m-for-ogdensburg-fr",
+   "name": "kaylemmccormick",
+   "display": "Kayle McCormick",
+   "run_date": "2026-11-02",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "NY MileSplit's results for the 90th Annual Van Dusen Memorial (May 16, 2015, Ogdensburg HS) list Kayle McCormick 17th in the girls 400m (1:11.04) for Ogdensburg Free Academy; her twin Karle McCormick is listed separately in the same race (11th).",
+   "file_text": "Ran the girls 400m for Ogdensburg Free Academy at the Van Dusen Memorial in Ogdensburg, May 2015",
+   "source": "MileSplit",
+   "url": "https://ny.milesplit.com/meets/210769-90th-annual-van-dusen-memorial-2015/teams/11549",
+   "anchors": [
+    "Kayle McCormick",
+    "Ogdensburg Free Academy",
+    "Ogdensburg, NY"
+   ],
+   "missing_gate": "Passed the verification gate but it is a static 2015 school-sports result and the run's ten filing slots went to in-motion and higher-significance findings.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 26,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2015-05-16",
+   "novelty": "expands"
   }
  ]
 }
