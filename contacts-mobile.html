@@ -1089,6 +1089,7 @@ function viewQueue(v){
       return '<div class="qentry">' + personRow(en.di) +
         '<div class="qactions"><button type="button" data-qloc="' + en.di + '">Location</button>' +
         '<button type="button" data-qonline="' + en.di + '">Online</button>' +
+        '<button type="button" data-qprox="' + en.di + '">Proximity</button>' +
         '<button type="button" data-qremove="' + en.di + '">Remove</button></div></div>';
     }).join('') : '<div class="empty"><h3>Nobody up next.</h3><p>Add people from the home screen and they will wait here.</p></div>') +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
@@ -1105,6 +1106,13 @@ function viewQueue(v){
       var di = +b.getAttribute('data-qonline');
       FLOW = { cat:'online', title:'', detail:'', di:di, sort:'recent', all:false, q:'' };
       location.hash = '#/flow/online/log/' + encodeURIComponent(pkey(D.directory[di]));
+    });
+  });
+  $$('#view [data-qprox]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var di = +b.getAttribute('data-qprox');
+      FLOW = { cat:'proximity', title:'', detail:'', di:di, sort:'recent', all:false, q:'' };
+      location.hash = '#/flow/proximity/log/' + encodeURIComponent(pkey(D.directory[di]));
     });
   });
   $$('#view [data-qremove]').forEach(function(b){
