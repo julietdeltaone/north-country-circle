@@ -1262,7 +1262,8 @@
    "director": "content",
    "title": "Jeremy Taylor — U.S. Army company, no Army group",
    "date": "2026-11-01",
-   "state": "open",
+   "state": "closed",
+   "ruling": "NOT applied per JD's ruling (Nov 1, 2026): JD saw Jeremy Taylor at MEPS in January 2025, shipping out the same day JD shipped, and believes he went to the Navy. Web check found no source confirming either branch for this Jeremy Taylor, and the DVIDS link on file resolves to an unrelated blood-donation photo. The U.S. Army group value that had landed on his row earlier tonight with the Research Command filing of the Army claim was removed, so no group is filed; a January 2025 MEPS contact event from JD's account (src jd-note) was added to his Events instead. Companies 'U.S. Army' and the DVIDS footprint bullet were left as filed.",
    "theory": {
     "grade": "Probable",
     "text": "Same approved inference class as the McConnell/Seguin/Hammond flags JD executed in October: a documented U.S. Army affiliation with no groups at all. His footprint (DVIDS) records his 2024 enlistment as a 92F petroleum supply specialist, so the affiliation is confirmed-source, not inferred from a name.",
