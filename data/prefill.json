@@ -44,22 +44,6 @@
  ],
  "auto_apply": [
   {
-   "key": "ct:maggie thibodeau",
-   "display": "Maggie Thibodeau",
-   "field": "location_on_file",
-   "value": "Ogdensburg, NY",
-   "conf": 95,
-   "id": "pf-ced39d2a2c"
-  },
-  {
-   "key": "sf:charlie-sharon-sweet",
-   "display": "Charlie-Sharon Sweet",
-   "field": "specialty",
-   "value": "Preaching",
-   "conf": 62,
-   "id": "pf-dd99e7c918"
-  },
-  {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
    "field": "groups",
