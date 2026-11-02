@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.65.0';
+var APP_VERSION = '3.66.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -300,11 +300,11 @@ function ic(n, s){
    steel blue (--ink-about) means About and antique gold
    (--ink-conn) means Connection, and nothing else.
    ============================================================ */
-var KIND_WORD = { about:'ABOUT', connection:'WITH YOU' };
+var KIND_WORD = { about:'ABOUT', connection:'CONNECTION' };
 function kindChip(kind, withWord){
   if(kind !== 'about' && kind !== 'connection') return '';
   return '<span class="kind-chip kc-' + kind + '" data-kind="' + kind + '" title="' +
-    (kind === 'about' ? 'About — a fact about the person' : 'With you — exists only between you and them') + '">' +
+    (kind === 'about' ? 'About — a fact about the person' : 'Connection — exists only between you and them') + '">' +
     ic(kind === 'about' ? 'user' : 'link', 11) +
     (withWord ? '<span class="kind-w">' + KIND_WORD[kind] + '</span>' : '') + '</span>';
 }
@@ -785,7 +785,7 @@ function poolLoad(){
 }
 function poolSave(){ try{ localStorage.setItem(POOL_KEY, JSON.stringify(POOL.log.slice(0, 60))); }catch(x){} }
 function poolName(id){ var di = (typeof diFromId === 'function') ? diFromId(id) : null; var e = (di != null && typeof D !== 'undefined' && D) ? D.directory[di] : null; return e ? dispName(e) : id; }
-var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Tier', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Lima Charlie notes', merged_into:'Merged into', review_flag:'Review flag', last_contact:'Last known contact', last_contact_online:'Contact online', events:'Timeline', research_review:'Research candidate decision' };
+var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Level', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Contact Log notes', merged_into:'Merged into', review_flag:'Review flag', last_contact:'Last known contact', last_contact_online:'Contact online', events:'Timeline', research_review:'Research candidate decision' };
 function poolFieldLabel(k){ return POOL_LABELS[k] || String(k).replace(/_/g, ' '); }
 function poolValSummary(k, v){
   v = String(v == null ? '' : v);
@@ -1674,7 +1674,7 @@ function buildDossierDoc(e){
   });
   var extras = [];
   if(gv(e, 'specialty')) extras.push({ l:'Skills', v:gv(e, 'specialty') });
-  if(tierName(e)) extras.push({ l:'Tier', v:tierName(e) });
+  if(tierName(e)) extras.push({ l:'Level', v:tierName(e) });
   if(momVal(e)) extras.push({ l:'Momentum', v:MOM_LABELS[momVal(e)] });
   degreesOf(e).forEach(function(d){ extras.push({ l:'Degree', v:[d.school, d.degree, d.major, d.year].filter(Boolean).join(' · ') }); });
   /* Known associates: strict First Last only — two tokens, each a capitalized name word. */
@@ -1983,7 +1983,8 @@ var NAV = [
   { k:'network', l:'Network', ic:'network', kind:'connection' },
   { k:'family',  l:'Family',  ic:'tree',    kind:'about' },
   { k:'groups',  l:'Groups',  ic:'groups',  kind:'about' },
-  { k:'sandbox', l:'Sandbox', ic:'shield',  kind:'neutral' }
+  { k:'sandbox', l:'Sandbox', ic:'shield',  kind:'neutral' },
+  { k:'manage',  l:'Manage',  ic:'settings', kind:'neutral' }
 ];
 function activeNav(){
   var n = S.route.name;
@@ -2165,7 +2166,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','whatsnew','photos','sandbox','council','lists','calendar'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','whatsnew','photos','sandbox','council','lists','calendar','manage'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -2196,7 +2197,7 @@ function histLabelFor(hash){
   var n = seg[0] || 'home';
   if(n === 'p'){ var di = diFromId(seg[1]); return di != null && D && D.directory[di] ? dispName(D.directory[di]) : 'Profile'; }
   if(n === 'groups') return seg[2] || 'Groups';
-  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', whatsnew:"What's New", calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings' }[n] || 'Back';
+  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', whatsnew:"What's New", calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings', manage:'Manage' }[n] || 'Back';
 }
 function navScroll(){ var v = $('#view'); return v ? v.scrollTop : 0; }
 function navTrack(){
@@ -2274,6 +2275,7 @@ function topBack(){
     if(S.audit.lcOpen != null){ S.audit.lcOpen = null; viewAudit($('#view')); return; }
     if(audMode() !== 'cards'){ audSetMode('cards'); return; }
   }
+  if(S.route.name === 'manage' && S.route.seg && S.route.seg[0]){ go('manage', { replace:true }); return; }
   if(S.route.name === 'sandbox' && typeof SB !== 'undefined' && SB.tool && SB.tool !== 'home'){
     if(SB.tool === 'insights' && SB.ins && SB.ins.view){ go('sandbox/insights', { replace:true }); return; }
     go('sandbox', { replace:true }); return;
@@ -2390,6 +2392,7 @@ function render(){
     else if(n === 'sandbox') viewSandbox(v);
     else if(n === 'council') viewCouncil(v);
     else if(n === 'lists') viewLists(v);
+    else if(n === 'manage') viewManage(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -2530,7 +2533,7 @@ function prowMeta(e){
   ORG_CATS.forEach(function(c){ tagList(gv(e, c.k)).forEach(function(o){ if(orgs.indexOf(o) < 0) orgs.push(o); }); });
   orgs.slice(0, 2).forEach(function(o){ parts.push('<span>' + esc(o) + '</span>'); });
   var ka = knownAssociates(e).length;
-  if(ka) parts.push('<span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + '</span>');
+  if(ka) parts.push('<span>' + ka + ' associate' + (ka === 1 ? '' : 's') + '</span>');
   var snip = prowSnip(e);
   if(snip) parts.push('<span class="psnip">' + esc(snip) + '</span>');
   return parts.length ? '<small class="pmeta">' + parts.join('<span class="psep">·</span>') + '</small>' : '';
@@ -2566,7 +2569,7 @@ var TL_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'A
 var TL_MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 var TL_DOW = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 var TL_DOW3 = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-var TL_SRC = { 'gmail-seed':'Email', 'ig-seed':'Instagram', 'messenger-seed':'Messenger', 'imessage-seed':'iMessage', 'lc':'Lima Charlie', 'field':'On file' };
+var TL_SRC = { 'gmail-seed':'Email', 'ig-seed':'Instagram', 'messenger-seed':'Messenger', 'imessage-seed':'iMessage', 'lc':'Contact Log', 'field':'On file' };
 function tlState(scope){
   if(scope === 'ppl'){ if(!S.tlPpl) S.tlPpl = { mode:'month', off:0, exp:{} }; return S.tlPpl; }
   if(scope === 'hm'){ if(!S.tlHm) S.tlHm = { mode:'month', off:0, exp:{} }; return S.tlHm; }
@@ -2772,7 +2775,7 @@ function viewPeople(v){
   v.innerHTML = '<div class="page people" data-kind="about"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
     '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="timeline"' + (f.view === 'timeline' ? ' class="on"' : '') + '>Timeline</button></div></div>' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
-    chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
+    chips('tier', [['all', 'Any level'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'No level']], f.tier) +
     '<div class="tool-r">' +
     '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
     '<button type="button" class="btn ghost sm" data-act="ptcols">' + ic('settings', 14) + 'Columns</button>' +
@@ -2865,7 +2868,7 @@ function openMoreFilters(){
    persist in localStorage (ncc_pt_cols). */
 var PT_ALL = [
   { k:'name',     label:'Name', kind:'about' },
-  { k:'tier',     label:'Tier', kind:'connection' },
+  { k:'tier',     label:'Level', kind:'connection' },
   { k:'loc',      label:'Location on file', kind:'about' },
   { k:'orgs',     label:'Organizations', kind:'about' },
   { k:'assoc',    label:'Associates', num:true, kind:'connection' },
@@ -3226,8 +3229,8 @@ function ptEdHTML(di, k){
   if(k === 'name') return '<div class="pted-h">Name</div>' + ptTextEd(dispName(e), 'Full name');
   if(k === 'tier'){
     var cur = tierOf(e);
-    var opts = TIER_ORDER.map(function(t){ return [t, TIERS[t].n, TIERS[t].c]; }).concat([['', 'No tier yet', RING_C[3]]]);
-    return '<div class="pted-h">Tier</div><div class="pted-opts">' + opts.map(function(o){
+    var opts = TIER_ORDER.map(function(t){ return [t, TIERS[t].n, TIERS[t].c]; }).concat([['', 'No level yet', RING_C[3]]]);
+    return '<div class="pted-h">Level</div><div class="pted-opts">' + opts.map(function(o){
       return '<button type="button" class="pted-opt' + (cur === o[0] ? ' on' : '') + '" data-v="' + o[0] + '"><i style="background:' + o[2] + '"></i>' + o[1] + '</button>';
     }).join('') + '</div>';
   }
@@ -3314,7 +3317,7 @@ function ptEdWire(pop, di, k){
     $$('.pted-opt', pop).forEach(function(b){
       b.addEventListener('click', function(){
         var v = b.getAttribute('data-v'), e = D.directory[di];
-        if(k === 'tier') txn('Set tier', function(){ queuePatch(di, { tier:v }); });
+        if(k === 'tier') txn('Set level', function(){ queuePatch(di, { tier:v }); });
         else if(k === 'close'){
           var curC = gv(e, 'closeness'), nextC = (v && v === curC) ? '' : v;
           txn('Set closeness', function(){ queuePatch(di, { closeness:nextC }); });
@@ -3485,13 +3488,13 @@ var SECS = [
   { id:'about',       t:'About',          mv:'a', ord:1, wide:1, w:['onfile'] },
   { id:'identity',    t:'Contact',        mv:'a', ord:2, w:['identity'] },
   { id:'background',  t:'Background',     mv:'a', ord:3, w:['background', 'education'] },
-  { id:'persona',     t:'Persona',        mv:'a', ord:4, w:['ratings'] },
+  { id:'persona',     t:'Traits',        mv:'a', ord:4, w:['ratings'] },
   { id:'files',       t:'Files',          mv:'a', ord:5, w:['files'] },
   { id:'business',    t:'Business Owner', mv:'a', ord:6, w:['business'] },
   { id:'relationship',t:'Relationship',   mv:'c', ord:1, w:['relationship'] },
-  { id:'connections', t:'Connections',    mv:'c', ord:2, w:['connections'] },
+  { id:'connections', t:'Associates',    mv:'c', ord:2, w:['connections'] },
   { id:'timeline',    t:'Timeline',       mv:'c', ord:3, wide:1, w:['timeline'] },
-  { id:'lima',        t:'Lima Charlie note', mv:'c', ord:4, w:['lima'] }
+  { id:'lima',        t:'Contact Log note', mv:'c', ord:4, w:['lima'] }
 ];
 function secDef(id){ return SECS.filter(function(s){ return s.id === id; })[0]; }
 /* Rough content weight per section (V3.38.0): drives the adaptive sheet
@@ -3596,19 +3599,20 @@ function paintProfile(di){
     var list = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id); })
       .sort(function(x, y){ return x.ord - y.ord; });
     list.forEach(function(s){ weights[mv] += secSize(e, s.id); });
-    var secs;
-    if(mv === 'a'){
-      /* Adaptive packing (JD 2026-10-29): two short sections share a row
-         instead of each taking a full-width band over dead space. */
-      var items = list.map(function(s){ return { id:s.id, ord:s.ord, size:secSize(e, s.id), html:secHTML(di, s.id) }; });
-      var out = [];
-      for(var j = 0; j < items.length; j++){
-        var nx = items[j + 1];
-        if(nx && shortSec(items[j]) && shortSec(nx)){ out.push('<div class="bandrow" style="order:' + items[j].ord + '">' + items[j].html + nx.html + '</div>'); j++; }
-        else out.push(items[j].html);
-      }
-      secs = out.join('');
-    } else secs = list.map(function(s){ return secHTML(di, s.id); }).join('');
+    /* Adaptive packing (JD 2026-10-29; Phase 4: BOTH sheets pack the
+       same way and scroll as one surface — two short sections share a
+       row instead of each taking a full-width band over dead space.
+       Timeline and the Contact Log note never pair (they are reading
+       surfaces, not field grids). */
+    var items = list.map(function(s){ return { id:s.id, ord:s.ord, size:secSize(e, s.id), html:secHTML(di, s.id) }; });
+    function pairOk(it){ return shortSec(it) && it.id !== 'timeline' && it.id !== 'lima'; }
+    var out = [];
+    for(var j = 0; j < items.length; j++){
+      var nx = items[j + 1];
+      if(nx && pairOk(items[j]) && pairOk(nx)){ out.push('<div class="bandrow" style="order:' + items[j].ord + '">' + items[j].html + nx.html + '</div>'); j++; }
+      else out.push(items[j].html);
+    }
+    var secs = out.join('');
     var grid = $('#pmg-' + mv), wrap = $('#pm-' + mv);
     if(grid) grid.innerHTML = secs;
     if(wrap) wrap.style.display = secs ? '' : 'none';
@@ -3783,10 +3787,10 @@ function profileSections(di){
   var hasContact = !!(effHandle(e) || e.fb_url || (e.snap_handles || []).length || gv(e, 'phone') || gv(e, 'email') || gv(e, 'location_on_file') || e.city || e.hometown || gv(e, 'also_known_as') || (e.languages || []).length);
   return [
     ['Synopsis', '#4a6f96', !!gv(e, 'synopsis')],
-    ['Web Record', '#4a6f96', footprintOf(e).blocks.length > 0],
+    ['Public Record', '#4a6f96', footprintOf(e).blocks.length > 0],
     ['Contact', '#4a6f96', hasContact],
     ['Background', '#4a6f96', secHasContent(e, 'background')],
-    ['Persona', '#4a6f96', secHasContent(e, 'persona')],
+    ['Traits', '#4a6f96', secHasContent(e, 'persona')],
     ['Files', '#4a6f96', secHasContent(e, 'files')],
     ['Connection', '#a97f24', true]
   ];
@@ -3803,7 +3807,7 @@ function heroHTML(di){
   var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert" data-kind="about">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
   function mi(lab, val, kind){ return val ? '<div class="ih-mi" data-kind="' + (kind || 'about') + '"><small>' + lab + '</small><b>' + esc(val) + '</b></div>' : ''; }
   var meta = mi('Location', loc, 'about') + mi('Relationship', cap(gv(e, 'relationship')), 'connection') + mi('Context', cap(gv(e, 'context')), 'connection') +
-    mi('Known since', knownSinceLabel(e), 'connection') + (lcLabel(e) ? mi(lcOnline(e) ? 'Last contact online' : 'Last contact', lcLabel(e), 'connection') : '');
+    mi('Known since', knownSinceLabel(e), 'connection') + (lcLabel(e) ? mi(lcOnline(e) ? 'Last Online' : 'Last contact', lcLabel(e), 'connection') : '');
   var ph = phHeroHTML(e);
   var hotE = hotForDi(di);
   var sc = scoreFor(di), pres = profileSections(di);
@@ -3811,9 +3815,9 @@ function heroHTML(di){
     '<div class="ih-main"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
     (meta ? '<div class="ih-meta">' + meta + '</div>' : '') +
     ((ds || cs) ? '<div class="hrow">' + ds + cs + '</div>' : '') +
-    (hotE ? '<div class="ih-hot"><span class="hot-dot"></span>Hot off the press &middot; published ' + esc(hmFmtD(hotE.published)) + '</div>' : '') + '</div></div>' +
+    (hotE ? '<div class="ih-hot"><span class="hot-dot"></span>Fresh &middot; published ' + esc(hmFmtD(hotE.published)) + '</div>' : '') + '</div></div>' +
     (ph ? '<div class="ih-photo">' + ph + '</div>' : '') +
-    '<div class="ih-score">' + ringScoreSVG(sc ? sc.score : 0) + '<div class="ih-slab"><b>Score</b><span>of 100</span></div></div>' +
+    '<div class="ih-score">' + ringScoreSVG(sc ? sc.score : 0) + '<div class="ih-slab"><b>Completeness</b><span>of 100</span></div></div>' +
     '<div class="ih-secs">' + ringSecsSVG(pres) + '<div class="ih-legend">' + pres.map(function(p){
       return '<span class="lg' + (p[2] ? '' : ' off') + '"><i style="--lgc:' + p[1] + '"></i>' + p[0] + '</span>';
     }).join('') + '</div></div>';
@@ -3937,8 +3941,8 @@ function secHTML(di, id){
       (id !== 'persona' ? '<label class="wv" title="Insufficient data: this section stops counting against the profile"><input type="checkbox" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '"' + (waived ? ' checked' : '') + '><span>Insufficient data</span></label>' : '') +
       '<button type="button" class="btn sm primary" data-act="secdone" data-sec="' + id + '">Close</button>';
   } else acts = '<button type="button" class="ib sm" data-act="secedit" data-sec="' + id + '" aria-label="Edit ' + d.t + '" title="Edit">' + ic('edit', 15) + '</button>';
-  var head = '<header><h3>' + d.t + '</h3>' + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header>';
-  var SPINE = { about:'About', identity:'Contact', background:'Background', persona:'Persona', files:'Files', business:'Business', relationship:'Relationship', connections:'Associates', timeline:'Timeline', lima:'Lima Charlie' };
+  var head = '<header><h3>' + d.t + '</h3>' + lvlChip(secLevel(id)) + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header>';
+  var SPINE = { about:'About', identity:'Contact', background:'Background', persona:'Traits', files:'Files', business:'Business', relationship:'Relationship', connections:'Associates', timeline:'Timeline', lima:'Contact Log' };
   function band(cls, spine, inner){
     return '<div class="band ' + cls + '" data-kind="' + (d.mv === 'c' ? 'connection' : 'about') + '"><div class="spine"><span>' + spine + '</span></div><div class="band-in">' + inner + '</div></div>';
   }
@@ -3949,7 +3953,7 @@ function secHTML(di, id){
     if(synH || webH){
       var inner = '';
       if(synH) inner += band('b-syn', 'Synopsis', head + '<div class="cbody">' + synH + '</div>');
-      if(webH) inner += band('b-web', 'Web Record', (synH ? '' : head) + '<div class="cbody">' + webH + '</div>');
+      if(webH) inner += band('b-web', 'Public Record', (synH ? '' : head) + '<div class="cbody">' + webH + '</div>');
       return '<section class="card multi" id="sec-about" data-sec="about" data-kind="about">' + inner + '</section>';
     }
   }
@@ -4059,7 +4063,7 @@ function secView(di, id){
     }).join('') + '<p class="note">Business data from Business Pulse; it refreshes with that roster.</p>';
   }
   if(id === 'relationship'){
-    var tiles = [['Tier', tierOf(e) ? TIERS[tierOf(e)].n : ''], ['Relationship', cap(gv(e, 'relationship'))], ['Context', cap(gv(e, 'context'))], ['Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1]],
+    var tiles = [['Level', tierOf(e) ? TIERS[tierOf(e)].n : ''], ['Relationship', cap(gv(e, 'relationship'))], ['Context', cap(gv(e, 'context'))], ['Category', (CAT_OPTS.filter(function(c){ return c[0] === gv(e, 'category'); })[0] || ['', gv(e, 'category')])[1]],
       ['Known since', knownSinceLabel(e) ? knownSinceLabel(e) + ' (' + Math.max(0, new Date().getFullYear() - knownSinceYear(e)) + ' yrs)' : ''], ['Momentum', momVal(e) ? MOM_LABELS[momVal(e)] : '']];
     var gs = personGroups(e);
     /* Rank picker (JD 2026-10-26): shown when the person is in a
@@ -4122,7 +4126,7 @@ function secView(di, id){
     var famBody = tree || (links.length ? famListHTML(di, false) : '');
     if(famBody) out3 += '<div class="fam-lvl" data-kind="about" data-level="personal"><div class="sub-h first">Family ' + lvlChip('personal') + '</div>' + famBody + '</div>';
     /* Default = the strongest 10 only (knownAssociates preserves the baked strength order); Show more / Show less toggles the full list (JD 2026-10-15). */
-    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + '</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
+    if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Associates <small>' + ka.length + '</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
       (ka.length > 10 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show more \u00b7 +' + (ka.length - 10) + '</button>' : '') +
       (ka.length > 10 && S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show less</button>' : '') + '</div>';
     out3 += '<div class="row"><a class="btn ghost sm" href="#/family" data-act="openfam" data-di="' + di + '">' + ic('tree', 14) + 'Open in Family</a><a class="btn ghost sm" href="#/network" data-act="shownet" data-di="' + di + '">' + ic('network', 14) + 'Show on Network</a></div>';
@@ -4178,7 +4182,7 @@ function secView(di, id){
   }
   if(id === 'lima'){
     return '<p class="lc-note-txt">' + esc(lcNote(e)) + '</p>' +
-      '<p class="dim">Waiting for Luna\'s next Lima Charlie run. She applies it, then clears it.</p>';
+      '<p class="dim">Waiting for Luna\'s next Contact Log run. She applies it, then clears it.</p>';
   }
   return '';
 }
@@ -4267,15 +4271,15 @@ function secEdit(di, id){
       '<select class="kssel" data-act="kssel" data-part="d" data-di="' + di + '" aria-label="Known since: day"' + (ksP0.mo ? '' : ' disabled') + '><option value="">Day</option>' + ksDas + '</select>' +
       '<span class="kslab">' + esc(ksPrev) + '</span></div>';
     var gs = Object.keys(allGroups()).sort(), mine = personGroups(e);
-    return lab('Tier') + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '" data-sec="relationship"') +
+    return lab('Level') + seg('tier', TIER_ORDER.map(function(t){ return [t, TIERS[t].n]; }), tierOf(e), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Momentum') + seg('momentum', [['-', MOM_ICONS['-'] + ' Cooling'], ['0', 'Steady'], ['+', '+ Warming']], momVal(e), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Relationship') + seg('relationship', REL_OPTS, gv(e, 'relationship'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Closeness') + seg('closeness', CLOSE_OPTS, gv(e, 'closeness'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Context') + seg('context', CTX_OPTS, gv(e, 'context'), ' data-di="' + di + '" data-sec="relationship"') +
       lab('Category') + seg('category', CAT_OPTS, gv(e, 'category'), ' data-di="' + di + '" data-sec="relationship"') +
-      lab('Score pin', 'Optional: a fixed score from 0 to 100 that overrides the computed closeness score') + '<input data-pk="score_pin" type="number" min="0" max="100" step="1" value="' + esc(gv(e, 'score_pin')) + '" placeholder="Not pinned" autocomplete="off">' +
+      lab('Completeness pin', 'Optional: a fixed completeness value from 0 to 100 that overrides the computed completeness') + '<input data-pk="score_pin" type="number" min="0" max="100" step="1" value="' + esc(gv(e, 'score_pin')) + '" placeholder="Not pinned" autocomplete="off">' +
       lab('Known since', 'Pick the year, then the month and day if you know them') + ksRow +
-      lab('Last known contact', 'Year, year-month, or a full date. Tick Online if it was not in person.') + '<div class="ksrow"><input data-pk="last_contact" value="' + esc(gv(e, 'last_contact')) + '" placeholder="e.g. 2026, 2026-10 or 2026-10-28" autocomplete="off" spellcheck="false"><label class="lc-onl"><input type="checkbox" data-act="lconline" data-di="' + di + '"' + (lcOnline(e) ? ' checked' : '') + '> Online</label><span class="kslab">' + esc(lcLabel(e) || 'Not set') + '</span></div>' +
+      lab('Last contact', 'Year, year-month, or a full date. The date editor saves only on Save or Enter \u2014 never while typing.') + '<div class="ksrow">' + cdeWidget(di, 'last_contact', 'profile') + '</div>' +
       lab('Groups') + '<div class="tags">' + gs.map(function(g){ return '<button type="button" class="tchip tog' + (mine.indexOf(g) >= 0 ? ' on' : '') + '" data-act="grptog" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('') +
       '<span class="pted-add"><input class="tadd" data-grpnew placeholder="New group" autocomplete="off"><div class="pted-ac" hidden></div></span></div>';
   }
@@ -4283,7 +4287,7 @@ function secEdit(di, id){
     return lab('Synopsis', 'One topic per line, starting with a label and a colon. Keep it general: facts, never intimate detail.') +
       '<textarea data-pk="synopsis" rows="6">' + esc(gv(e, 'synopsis')) + '</textarea>' +
       '<div class="row"><button type="button" class="btn ghost sm" data-act="tidy" data-di="' + di + '">' + ic('sparkle', 14) + 'Tidy with AI</button><span class="aimsg" id="aimsg"></span></div>' +
-      lab('Web record', 'Bullet points, one fact each, with the source name in parentheses. The source links themselves live under Files.') +
+      lab('Public Record', 'Bullet points, one fact each, with the source name in parentheses. The source links themselves live under Files.') +
       '<textarea data-pk="public_footprint" rows="6">' + esc(gv(e, 'public_footprint')) + '</textarea>';
   }
   if(id === 'background'){
@@ -4294,7 +4298,7 @@ function secEdit(di, id){
       lab('Honors') + tagEditor(di, 'achievements', ' | ', 'Award and year, e.g. Dean’s List 2020');
   }
   if(id === 'connections'){
-    return lab('Known associates', 'Adding or removing writes both profiles') +
+    return lab('Associates', 'Adding or removing writes both profiles') +
       '<div class="chips">' + (knownAssociates(e).map(function(nb){ return nbrChip(nb, true); }).join('') || '<span class="dim">None mapped yet.</span>') + '</div>' +
       '<div class="finder"><input id="assocq" placeholder="Add a known associate: type a name" autocomplete="off"><div id="assocr" class="hits"></div></div>' +
       lab('Family', 'Traditional model: one spouse, bloodline trees') + famListHTML(di, true) +
@@ -4404,7 +4408,7 @@ var SCORE_CFG = {
   relationship: { family:1.0, friend:0.85, coworker:0.6, client:0.55, professional:0.5, acquaintance:0.35, 'by association':0.2, online:0.15 },
   yearsCap: 20
 };
-var SCORE_LABELS = { closeness:'Closeness', tier:'Tier', relationship:'Relationship', years:'Years', fabric:'Fabric' };
+var SCORE_LABELS = { closeness:'Closeness', tier:'Level', relationship:'Relationship', years:'Years', fabric:'Fabric' };
 var SCORE_RADII = [160, 315, 485, 700, 920], SCORE_SPREAD = [14, 26, 40, 55, 70];
 var SCORE_GUIDES = ['TOP 5', '6\u201315', '16\u201350', '51\u2013150', '150+'];
 var SCORE = { ver:-1, byDi:null };
@@ -4495,7 +4499,7 @@ function scoreBadgeHTML(di){
      a small "pinned" marker when a Score Pin is in force. No layer
      label and no arithmetic anywhere it appears. */
   var s = scoreFor(di); if(!s) return '';
-  return '<span class="sc-badge" title="Closeness score"><b>' + s.score + '</b>' + (s.pinned ? '<i>pinned</i>' : '') + '</span>';
+  return '<span class="sc-badge" title="Completeness"><b>' + s.score + '</b>' + (s.pinned ? '<i>pinned</i>' : '') + '</span>';
 }
 /* Node coordinates: one set per node — the Score layout (sx/sy).
    Display coordinates (dx/dy) hold the same values; there is no
@@ -4706,7 +4710,7 @@ function netColor(nd){
   return RING_C[nd.ring];
 }
 function viewNetwork(v){
-  var legend = TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No tier yet']]);
+  var legend = TIER_ORDER.map(function(t){ return [TIERS[t].c, TIERS[t].n]; }).concat([[RING_C[3], 'No level yet']]);
   S.net.view = '2d'; NET.view = '2d';
   /* Design cleanup (JD 2026-10-28): one clean bar — title, find,
      view, reset, full screen. The old grouped/kicker stack was a
@@ -4843,7 +4847,7 @@ function netHovPaint(ev, nd){
     var sy = knownSinceYear(e), yrs = sy ? new Date().getFullYear() - sy : null;
     var ka = knownAssociates(e).length, rel = cap(gv(e, 'relationship') || '');
     el.innerHTML = '<b>' + esc(dispName(e)) + '</b>' + milBadge(e) +
-      '<span class="nh-l2">' + esc(tierName(e) || 'No tier yet') + (s ? ' · Score ' + s.score : '') + (ka ? ' · ' + ka + ' associate' + (ka === 1 ? '' : 's') : '') + '</span>' +
+      '<span class="nh-l2">' + esc(tierName(e) || 'No level yet') + (s ? ' · Completeness ' + s.score : '') + (ka ? ' · ' + ka + ' associate' + (ka === 1 ? '' : 's') : '') + '</span>' +
       ((rel || yrs != null) ? '<span>' + esc([rel, yrs != null ? 'Known ' + yrs + ' yr' + (yrs === 1 ? '' : 's') : ''].filter(Boolean).join(' · ')) + '</span>' : '') +
       (nd.orgs.length ? '<span class="nh-orgs">' + esc(nd.orgs.join(', ')) + '</span>' : '') +
       (f ? '<span class="nh-l3">' + esc(f) + '</span>' : '');
@@ -5179,7 +5183,7 @@ function netStatsHTML(){
   NET.nodes.forEach(function(n){ var t = tierOf(D.directory[n.di]) || 'none'; tc[t] = (tc[t] || 0) + 1; if(n.nw) nw++; });
   var rows = [['On the map', String(NET.nodes.length)]];
   TIER_ORDER.forEach(function(t){ if(tc[t]) rows.push([TIERS[t].n, String(tc[t]), TIERS[t].c]); });
-  if(tc.none) rows.push(['No tier yet', String(tc.none), RING_C[3]]);
+  if(tc.none) rows.push(['No level yet', String(tc.none), RING_C[3]]);
   var lc = [0, 0, 0, 0, 0];
   NET.nodes.forEach(function(n){ lc[n.sring || 0]++; });
   ['Layer 1 · top 5', 'Layer 2 · 6\u201315', 'Layer 3 · 16\u201350', 'Layer 4 · 51\u2013150', 'Layer 5 · 150+'].forEach(function(l, i){ if(lc[i]) rows.push([l, String(lc[i])]); });
@@ -5213,7 +5217,7 @@ function netCard(){
   } else {
     var e = D.directory[di], ka = knownAssociates(e).length, inFam = !!famDisplay()[di];
     var nd = NET.byDi[di], sc = scoreFor(di), sy = knownSinceYear(e), yrs = sy ? new Date().getFullYear() - sy : null;
-    var drows = [['Tier', tierName(e) || 'No tier yet']];
+    var drows = [['Level', tierName(e) || 'No level yet']];
     if(gv(e, 'relationship')) drows.push(['Relationship', cap(gv(e, 'relationship'))]);
     if(yrs != null) drows.push(['Years known', yrs + ' (since ' + sy + ')']);
     if(sc) drows.push(['Closeness score', String(sc.score)]);
@@ -5224,7 +5228,7 @@ function netCard(){
     cardBox.hidden = false;
     cardBox.innerHTML = '<div class="nc-h">' + avatar(e, 'md') + '<div><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(infoLine(e) || (effHandle(e) ? '@' + effHandle(e) : '')) + '</small></div>' +
       '<button type="button" class="ib" data-act="netclose" aria-label="Close">' + ic('x', 16) + '</button></div>' +
-      '<div class="nc-f"><span>' + ka + ' known associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
+      '<div class="nc-f"><span>' + ka + ' associate' + (ka === 1 ? '' : 's') + (RELN[e.relation] ? ' · ' + RELN[e.relation] : '') + '</span><span class="sp"></span>' +
       (inFam ? '<button type="button" class="btn ghost sm" data-act="openfam" data-di="' + di + '">Family</button>' : '') +
       '<button type="button" class="btn primary sm" data-act="popen1" data-di="' + di + '">Open profile</button></div>' +
       detail +
@@ -5284,7 +5288,7 @@ function netPaintFind(){
   box.innerHTML = hits.length ? hits.map(function(di, i){
     var e = D.directory[di], nd = NET.byDi[di];
     return '<button type="button" class="netf-row' + (i === 0 ? ' on' : '') + '" data-act="netfindpick" data-di="' + di + '">' + avatar(e, 'sm') +
-      '<span class="netf-tx"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(nd.primary || tierName(e) || 'No tier yet') + '</small></span></button>';
+      '<span class="netf-tx"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>' + esc(nd.primary || tierName(e) || 'No level yet') + '</small></span></button>';
   }).join('') : '<div class="netfnone">No match</div>';
   box.hidden = false;
 }
@@ -5679,7 +5683,7 @@ function grpMemberRow(kind, name, di){
   var e = D.directory[di];
   return '<div class="prow static"><a class="prow-in" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="gopen" data-di="' + di + '">' + grpFace(e, 'lg') +
     '<span class="pn"><b>' + esc(dispName(e)) + '</b> ' + milBadge(e) + '<small>' + esc(infoLine(e)) + '</small></span>' +
-    '<i class="gtdot" style="background:' + tierCol(e) + '" title="' + esc(tierName(e) || 'No tier') + '"></i></a>' +
+    '<i class="gtdot" style="background:' + tierCol(e) + '" title="' + esc(tierName(e) || 'No level') + '"></i></a>' +
     (kind === 'groups' ? '<button type="button" class="ib" data-act="gmemrm" data-g="' + esc(name) + '" data-di="' + di + '" aria-label="Remove from group">' + ic('x', 16) + '</button>' : '') + '</div>';
 }
 function grpPaintMembers(){
@@ -5707,7 +5711,7 @@ function grpDetailSide(kind, name, mem){
   var idx = phIndex();
   mem.forEach(function(di){
     var e = D.directory[di];
-    var t = tierName(e) || 'No tier'; tiers[t] = (tiers[t] || 0) + 1;
+    var t = tierName(e) || 'No level'; tiers[t] = (tiers[t] || 0) + 1;
     var tw = e.city || ''; if(tw) towns[tw] = (towns[tw] || 0) + 1;
     if(idx){ var p = idx[dispName(e)]; if(p && p.photo_url) withPh++; }
     var seen = {};
@@ -5734,7 +5738,7 @@ function grpDetailSide(kind, name, mem){
     '</div></section>';
   if(mem.length > 1){
     h += '<section class="card gside"><header><h3>Composition</h3></header><div class="cbody">' +
-      '<div class="gside-lab">Tier mix</div>' +
+      '<div class="gside-lab">Closeness</div>' +
       topList(tiers, 4).map(function(t){
         return '<div class="gside-bar"><span>' + esc(t) + '</span><div class="gside-track"><div class="gside-fill" style="width:' + Math.round(100 * tiers[t] / maxT) + '%"></div></div><b>' + tiers[t] + '</b></div>';
       }).join('');
@@ -6009,10 +6013,10 @@ function hmShapeCard(dd, tierSegs, relSegs, N){
     { l:'Vetted', c:dd.tierCounts.vetted, col:(TIERS.vetted || {}).c || 'var(--seg-0)' },
     { l:'Associate', c:dd.tierCounts.associate, col:(TIERS.associate || {}).c || 'var(--seg-1)' },
     { l:'Open', c:dd.tierCounts.open, col:(TIERS.open || {}).c || 'var(--seg-2)' },
-    { l:'No tier yet', c:dd.tierCounts.none, col:RING_C[3] }
+    { l:'No level yet', c:dd.tierCounts.none, col:RING_C[3] }
   ];
   return '<section class="card hm-blk" data-kind="connection"><div class="hm-shapegrid">' +
-    '<div class="hm-shapehalf">' + hmMixInner('Tier mix', tierSegs, N) + '</div>' +
+    '<div class="hm-shapehalf">' + hmMixInner('Closeness', tierSegs, N) + '</div>' +
     '<div class="hm-shapehalf">' + hmMixInner('Relationship mix', relSegs, N) + '</div></div>' +
     '<div class="hm-ns-row hm-shape-net">' +
     '<span class="hm-ns-t">Network</span>' +
@@ -6086,7 +6090,7 @@ function hmCoverageCard(dd, pd){
   rows += hmCovRow('Location on file', dd.locN, N, 'data-kind="about" data-act="hmikpi" data-k="located"');
   rows += hmCovRow('Known since dated', dd.dated, N, 'data-kind="connection" data-act="hmikpi" data-k="dated"');
   rows += hmCovRow('Phone numbers filed', dd.phoneN, N, 'data-kind="about" data-act="hmiopen" data-kind="withphone" data-label="Phone on file"');
-  rows += hmCovRow('Persona rated', dd.pRated, N, 'data-kind="about" data-act="hmivlist" data-vk="persona"');
+  rows += hmCovRow('Traits rated', dd.pRated, N, 'data-kind="about" data-act="hmivlist" data-vk="persona"');
   if(DT && DT.coverage && DT.coverage.of - DT.coverage.checked_total > 0)
     gaps += hmGapRow('Not yet checked by Live Records', DT.coverage.of - DT.coverage.checked_total, 'data-kind="about" data-act="hmiopen" data-kind="liverec"');
   gaps += hmGapRow('No location on file', N - dd.locN, 'data-kind="about" data-act="hmiopen" data-kind="noloc" data-label="No location on file"');
@@ -6175,7 +6179,7 @@ function hotAlertHTML(){
     if(di == null) return '<div class="hot-row" data-kind="about">' + inner + '</div>';
     return '<button type="button" class="hot-row" data-kind="about" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(h.display || h.name) + '\u2019s profile">' + inner + '</button>';
   }).join('');
-  return '<section class="card hot-card" data-kind="about"><header><h3><span class="hot-dot"></span>Hot off the press</h3>' + kindChip('about', true) + '<em class="cnt">' + hot.length + '</em></header><div class="cbody">' + rows + '</div></section>';
+  return '<section class="card hot-card" data-kind="about"><header><h3><span class="hot-dot"></span>Fresh</h3>' + kindChip('about', true) + '<em class="cnt">' + hot.length + '</em></header><div class="cbody">' + rows + '</div></section>';
 }
 function hmActivity(){
   var out = hotAlertHTML() + hmPrefillChip() + '<section class="card hm-blk hm-act"><header><h3>What&rsquo;s new</h3>' + (DT && DT.date ? '<em class="cnt">' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</header><div class="cbody">';
@@ -6237,7 +6241,7 @@ function wnLoad(){
     .then(function(d){ WN_LOADING = false; WN = d || { empty:true, items:[] }; if(S.route && (S.route.name === 'whatsnew' || S.route.name === 'home')) render(); })
     .catch(function(){ WN_LOADING = false; WN = { empty:true, items:[] }; if(S.route && (S.route.name === 'whatsnew' || S.route.name === 'home')) render(); });
 }
-var WN_KINDS = { filed:'Filed', photo:'Photo', hot:'Hot off the press' };
+var WN_KINDS = { filed:'Filed', photo:'Photo', hot:'Fresh' };
 function wnRow(it){
   var di = hmDiOf(it.display);
   var wnK = textKind(it.text);
@@ -6295,7 +6299,7 @@ var HMI_INDEX = {};  /* member lists computed once per Home mount (audit F16 pat
 /* Kicker (V3.53.0): the small-caps context line over every popup
    title — which board / family the user is looking at. Callers pass
    it explicitly; this map covers the titles of any that do not. */
-var HMI_KICKS = { 'Public footprint':'Footprint', 'People':'People', 'Photos':'Photos', 'Live Records':'Live Records', 'Change log':'Change log', 'Known since':'Known since', 'Located':'Rankings \u00b7 Where they are', 'Where they are':'Rankings \u00b7 Where they are', 'Skills':'Rankings \u00b7 Skills', 'Organizations':'Rankings \u00b7 Organizations', 'Groups':'Rankings \u00b7 Groups', 'Persona makeup':'People \u00b7 Persona' };
+var HMI_KICKS = { 'Public footprint':'Footprint', 'People':'People', 'Photos':'Photos', 'Live Records':'Live Records', 'Change log':'Change log', 'Known since':'Known since', 'Located':'Rankings \u00b7 Where they are', 'Where they are':'Rankings \u00b7 Where they are', 'Skills':'Rankings \u00b7 Skills', 'Organizations':'Rankings \u00b7 Organizations', 'Groups':'Rankings \u00b7 Groups', 'Traits makeup':'People \u00b7 Traits' };
 function hmiDefKick(title){ return HMI_KICKS[title] || ''; }
 function hmiOpen(title, sub, html, opener, kick){
   if(HMI) hmiClose(true);
@@ -6412,7 +6416,7 @@ function hmiBars(items){
 }
 function hmiTierSeg(counts, total, title){
   if(!total) return '';
-  var defs = [['vetted', 'Vetted', (TIERS.vetted || {}).c || 'var(--seg-0)'], ['associate', 'Associate', (TIERS.associate || {}).c || 'var(--seg-1)'], ['open', 'Open', (TIERS.open || {}).c || 'var(--seg-2)'], ['none', 'No tier yet', RING_C[3]]];
+  var defs = [['vetted', 'Vetted', (TIERS.vetted || {}).c || 'var(--seg-0)'], ['associate', 'Associate', (TIERS.associate || {}).c || 'var(--seg-1)'], ['open', 'Open', (TIERS.open || {}).c || 'var(--seg-2)'], ['none', 'No level yet', RING_C[3]]];
   var live = defs.filter(function(d){ return counts[d[0]] > 0; });
   if(!live.length) return '';
   return '<div class="hmi-sec">' + esc(title) + '</div><div class="hmi-segbar">' +
@@ -6428,7 +6432,7 @@ function hmiTierSegRows(rows, title){
    a top-3 sub-breakdown (orgs for town/skill, towns for the rest). */
 function hmiListHero(kind, rows){
   if(!rows.length) return '';
-  var out = hmiTierSegRows(rows, 'Tier mix of these ' + hmFmtN(rows.length) + (rows.length === 1 ? ' person' : ' people'));
+  var out = hmiTierSegRows(rows, 'Closeness mix of these ' + hmFmtN(rows.length) + (rows.length === 1 ? ' person' : ' people'));
   var byOrg = kind === 'town' || kind === 'skill';
   var top = hmiTopBy(rows, function(e){ return byOrg ? hmiFirstOrg(e) : hmiTownOf(e); }, 3);
   if(top.length) out += '<div class="hmi-sec">' + (byOrg ? 'Top organizations among them' : 'Top towns among them') + '</div>' + hmiBars(top);
@@ -6575,7 +6579,7 @@ function hmiRows(kind, key){
   HMI_INDEX[ck] = rows;
   return rows;
 }
-var HMI_TITLES = { tier:'Tier', persona:'Persona makeup', years:'Known since', decade:'Known since', town:'Where they are', rel:'Relationship', org:'Organization', orgpair:'Organizations', skill:'Skill', group:'Group', missingyrs:'Known since', noloc:'Location', nophone:'Phone', withphone:'Phone', nophoto:'Photos' };
+var HMI_TITLES = { tier:'Closeness', persona:'Traits makeup', years:'Known since', decade:'Known since', town:'Where they are', rel:'Relationship', org:'Organization', orgpair:'Organizations', skill:'Skill', group:'Group', missingyrs:'Known since', noloc:'Location', nophone:'Phone', withphone:'Phone', nophoto:'Photos' };
 var HMI_KICK_LIST = { town:'Rankings \u00b7 Where they are', skill:'Rankings \u00b7 Skills', org:'Rankings \u00b7 Organizations', orgpair:'Rankings \u00b7 Organizations', group:'Rankings \u00b7 Groups', tier:'People \u00b7 Tier', rel:'People \u00b7 Relationship', persona:'People \u00b7 Persona', years:'Known since', decade:'Known since', missingyrs:'Known since', noloc:'Coverage \u00b7 Gaps', nophone:'Coverage \u00b7 Gaps', withphone:'Coverage \u00b7 Phones', nophoto:'Photos' };
 function hmiOpenList(kind, key, label, opener){
   var rows = hmiRows(kind, key);
@@ -6695,7 +6699,7 @@ function hmiValueList(vk, opener){
     why = '<p>All <b>' + rows.length + '</b> organizations on file, biggest first \u2014 counted from the church, company and university fields on each record. Tap one to see who is connected to it.</p>'; }
   else if(vk === 'group'){ title = 'Groups'; sub = 'All groups'; kick = 'Rankings \u00b7 Groups'; rows = hmPlainTop(dd.groupCounts, 999).map(function(t){ return { label:t.label, key:t.key, c:t.c, kind:'group' }; });
     why = '<p>All <b>' + rows.length + '</b> groups on file, biggest first. Tap a group to see its members.</p>'; }
-  else if(vk === 'persona'){ title = 'Persona makeup'; sub = 'Rated traits'; kick = 'People \u00b7 Persona';
+  else if(vk === 'persona'){ title = 'Traits makeup'; sub = 'Rated traits'; kick = 'People \u00b7 Traits';
     rows = HM_TRAITS.map(function(t){ return { label:t[1], key:t[1], c:(dd.tPts[t[1]] || 0), kind:'persona', note: dd.tN[t[0]] ? 'avg ' + (dd.tSumF[t[0]] / dd.tN[t[0]]).toFixed(1) + ' \u00b7 ' + dd.tN[t[0]] + ' rated' : 'not rated' }; })
       .sort(function(a, b){ return b.c - a.c; });
     why = '<p>Points across everyone rated on each trait \u2014 the number is the sum of 1-to-5 ratings, not a headcount. Tap a trait to see the rated people, highest first.</p>'; }
@@ -6721,7 +6725,7 @@ function hmiValueList(vk, opener){
 function hmiKpi(k, opener){
   var dd = hmDeck(), pd = hmPd(), N = dd.N;
   if(k === 'people'){
-    var trows = [['vetted','Vetted',dd.tierCounts.vetted],['associate','Associate',dd.tierCounts.associate],['open','Open',dd.tierCounts.open],['none','No tier yet',dd.tierCounts.none]].map(function(t){
+    var trows = [['vetted','Vetted',dd.tierCounts.vetted],['associate','Associate',dd.tierCounts.associate],['open','Open',dd.tierCounts.open],['none','No level yet',dd.tierCounts.none]].map(function(t){
       return hmiKrow(t[1], t[2], N, 'data-act="hmiopen" data-kind="tier" data-key="' + t[0] + '" data-label="' + t[1] + '"');
     }).join('');
     var rrows = hmFormsTop(dd.rels, 12, true).map(function(t){
@@ -6731,7 +6735,7 @@ function hmiKpi(k, opener){
     var cov = [['Located', dd.locN, 'located'],['Dated', dd.dated, 'dated'],['Photos on file', pd.onFile, 'photos'],['Footprint coverage', dd.fpPeople, 'footprint']].map(function(c){
       return hmiKrow(c[0], c[1], N, 'data-act="hmikpi" data-k="' + c[2] + '"');
     }).join('');
-    var pplHero = hmiTierSeg(dd.tierCounts, N, 'Tier mix of all ' + hmFmtN(N) + ' people') +
+    var pplHero = hmiTierSeg(dd.tierCounts, N, 'Closeness mix of all ' + hmFmtN(N) + ' people') +
       '<div class="hmi-sec">Top relationships</div>' + hmiBars(hmFormsTop(dd.rels, 3, true));
     hmiShow('People', hmFmtN(N) + ' in the directory',
       hmiDash(hmiWhy('<p>The directory holds <b>' + hmFmtN(N) + '</b> people, and every count here is live from the records on file. <b>Tier</b> is the ring each person sits in, <b>Relationship</b> is how they are filed as connected, and <b>Coverage</b> shows how complete the records are. Tap any row for the people behind the number.</p>') + pplHero,
@@ -7081,7 +7085,7 @@ function hmNetStrip(dd){
     { l:'Vetted', c:dd.tierCounts.vetted, col:(TIERS.vetted || {}).c || 'var(--seg-0)' },
     { l:'Associate', c:dd.tierCounts.associate, col:(TIERS.associate || {}).c || 'var(--seg-1)' },
     { l:'Open', c:dd.tierCounts.open, col:(TIERS.open || {}).c || 'var(--seg-2)' },
-    { l:'No tier yet', c:dd.tierCounts.none, col:RING_C[3] }
+    { l:'No level yet', c:dd.tierCounts.none, col:RING_C[3] }
   ];
   return '<section class="card hm-blk hm-netstrip" data-kind="connection"><div class="cbody"><div class="hm-ns-row">' +
     '<span class="hm-ns-t">Network</span>' +
@@ -7101,7 +7105,7 @@ function viewHome(v){
     { label:'Vetted', key:'vetted', kind:'tier', c:dd.tierCounts.vetted, col:'var(--seg-0)' },
     { label:'Associate', key:'associate', kind:'tier', c:dd.tierCounts.associate, col:'var(--seg-1)' },
     { label:'Open', key:'open', kind:'tier', c:dd.tierCounts.open, col:'var(--seg-2)' },
-    { label:'No tier yet', key:'none', kind:'tier', c:dd.tierCounts.none, col:'var(--seg-4)' }
+    { label:'No level yet', key:'none', kind:'tier', c:dd.tierCounts.none, col:'var(--seg-4)' }
   ];
   var relSegs = hmFormsTop(dd.rels, 12, true).map(function(t, i){
     return { label:t.label, key:t.label, kind:'rel', c:t.c, col:'var(--seg-' + (i % 9) + ')' };
@@ -7161,7 +7165,7 @@ function repaintForData(kind){
        the Correspondence column in place. */
     if($('#p-hero') && !Object.keys(S.prof.edit || {}).some(function(k){ return S.prof.edit[k]; })) render();
     else if(r === 'people' && $('#plist')) paintPeople();
-    else if(r === 'sandbox' && typeof SB !== 'undefined' && SB.tool === 'danger') render();
+    else if(r === 'sandbox' && typeof SB !== 'undefined' && (SB.tool === 'danger' || SB.tool === 'stats')) render();
     return;
   }
   if(kind === 'cal'){ if(r === 'calendar') render(); return; }
@@ -8084,7 +8088,7 @@ function viewDaily(v){
         return '<section class="card lrnew' + (hotDateOk(it.x.published) ? ' lrhot' : '') + ' asanim" data-kind="about" style="--d:' + (80 + i * 50) + 'ms"><div class="cbody">' +
           '<div class="lrnew-h">' + (e ? avatar(e, 'md') : '') + '<div class="lrnew-name">' + personLink(it.f.name, it.f.display) +
           (it.x.published ? '<small class="dim">Published ' + esc(fmtD(it.x.published)) + '</small>' : '') + '</div>' +
-          (hotDateOk(it.x.published) ? '<span class="dtnew dthot">HOT</span>' : '<span class="dtnew">NEW</span>') + '</div>' +
+          (hotDateOk(it.x.published) ? '<span class="dtnew dthot">FRESH</span>' : '<span class="dtnew">NEW</span>') + '</div>' +
           '<p class="lrnew-fact">' + factLine(it.x) + '</p></div></section>';
       }).join('') + '</div>' +
       (freshList.length > shown.length ? '<p class="dim lrnew-more">+ ' + (freshList.length - shown.length) + ' more in the updated records below.</p>' : '');
@@ -8138,7 +8142,7 @@ function viewDaily(v){
     var fFacts = (f.facts || []).slice();
     if(LR_SORT === 'new') fFacts.sort(function(a, b){ return String(b.published || '').localeCompare(String(a.published || '')); });
     var facts = fFacts.map(function(x, j){
-      return '<div class="asfact" data-kind="about"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? (hotDateOk(x.published) ? ' <span class="dtnew dthot">HOT</span>' : ' <span class="dtnew">NEW</span>') : '') + '</p></div>';
+      return '<div class="asfact" data-kind="about"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? (hotDateOk(x.published) ? ' <span class="dtnew dthot">FRESH</span>' : ' <span class="dtnew">NEW</span>') : '') + '</p></div>';
     }).join('');
     return '<section class="card dtperson' + (hasHot ? ' lrhot' : '') + ' asanim" data-kind="about" style="--d:' + (140 + i * 70) + 'ms"><div class="cbody">' +
       '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + personLink(f.name, f.display) +
@@ -8383,7 +8387,7 @@ function lrccDashHTML(){
   var out = lrccStatsHTML();
   var hot = DT.hot || [];
   if(hot.length){
-    out += '<section class="lrcc-sec" data-kind="about"><div class="lrcc-ph"><span>Hot off the press</span><span class="lrcc-ph-r">' + hot.length + '</span></div>' +
+    out += '<section class="lrcc-sec" data-kind="about"><div class="lrcc-ph"><span>Fresh</span><span class="lrcc-ph-r">' + hot.length + '</span></div>' +
       hot.map(function(x){ return lrccFactRow(x.published || DT.date, x.display || x.name || '', hmDtDi(x), x.text, x.source, x.url); }).join('') + '</section>';
   }
   var facts = [];
@@ -9103,7 +9107,7 @@ function phSections(list){
     var label = '';
     if(PH_SORT === 'org') label = phOrgOf(p) || 'No organization';
     else if(PH_SORT === 'years'){ var y = phStartYearOf(p); label = y ? (Math.floor(y / 10) * 10) + 's' : 'Unknown'; }
-    else if(PH_SORT === 'tier'){ var e = phEntryOf(p), t = e ? tierOf(e) : ''; label = t ? TIERS[t].n : 'No tier'; }
+    else if(PH_SORT === 'tier'){ var e = phEntryOf(p), t = e ? tierOf(e) : ''; label = t ? TIERS[t].n : 'No level'; }
     else if(PH_SORT === 'grade') label = phGradeLabel(p);
     else if(PH_SORT === 'newest') label = p.added ? fmtIsoD(p.added) : (p.added_approx ? 'Added ' + p.added_approx : 'No date recorded');
     if(PH_SORT === 'name'){ if(!secs.length) sec(''); secs[0].items.push(p); }
@@ -9389,7 +9393,7 @@ function viewPhotos(v){
      ONE bar above the grid — search, Show, Tier, Organizations as
      labeled chip groups — and the grid takes the full width. The
      inspector remains the single side surface, inside its modal. */
-  var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['newest', 'Newest'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Tier']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" id="phsdirbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
+  var sortHtml = '<span class="phcols-ctl phsort-ctl"><span>Sort</span>' + [['grade', 'Grade'], ['newest', 'Newest'], ['name', 'Name'], ['org', 'Organization'], ['years', 'Years known'], ['tier', 'Level']].map(function(s){ return '<button type="button" class="phcolbtn' + (PH_SORT === s[0] ? ' on' : '') + '" data-act="phsort" data-s="' + s[0] + '">' + s[1] + '</button>'; }).join('') + '<button type="button" class="phcolbtn" id="phsdirbtn" data-act="phsdir" title="Reverse the sort direction">' + (PH_SDIR < 0 ? '&darr;' : '&uarr;') + '</button></span>';
   var colsHtml = '<span class="phcols-ctl"><span>Per row</span>' + [5, 8, 10, 12].map(function(n){ return '<button type="button" class="phcolbtn' + (PH_COLS === n ? ' on' : '') + '" data-act="phcols" data-n="' + n + '">' + n + '</button>'; }).join('') + '</span>';
   var rail = '<div class="phtoolbar">' +
     '<div class="phtb-row"><input id="phq" type="search" placeholder="Search names" autocomplete="off" value="' + esc(PH_QUERY) + '">' +
@@ -9400,7 +9404,7 @@ function viewPhotos(v){
     '<span class="sp"></span><span class="ph-count" id="phcount"></span>' + sortHtml + colsHtml +
     '</div>' +
     '<div class="phtb-row" id="phtb-more" hidden><span class="phtb-group"><span class="phtb-lab">Tier</span>' +
-    fbtn('tier:vetted', 'Vetted', tierN.vetted) + fbtn('tier:associate', 'Associate', tierN.associate) + fbtn('tier:open', 'Open', tierN.open) + fbtn('tier:', 'No tier', tierN['']) +
+    fbtn('tier:vetted', 'Vetted', tierN.vetted) + fbtn('tier:associate', 'Associate', tierN.associate) + fbtn('tier:open', 'Open', tierN.open) + fbtn('tier:', 'No level', tierN['']) +
     '</span><span class="phtb-group"><span class="phtb-lab">Organizations</span>' +
     phTopOrgs(all).map(function(o){ return fbtn('org:' + o.name, o.name, o.n); }).join('') +
     '</span></div></div>';
@@ -9559,7 +9563,7 @@ function aiTidy(){
    ============================================================ */
 var AUD_WALL = 12;
 var AUD_GAPS = {
-  tier:  { tag:'Tier',          short:'Tier',     prompt:'Tier not set' },
+  tier:  { tag:'Level',          short:'Level',     prompt:'Level not set' },
   loc:   { tag:'Location',      short:'Location', prompt:'No location on file' },
   rel:   { tag:'Relationship',  short:'Relation', prompt:'Relationship not set' },
   years: { tag:'Years known',   short:'Years',    prompt:'How long have you known them?' },
@@ -10121,7 +10125,7 @@ function audWireCard(card){
      never closes mid-composition, and keystrokes cancel any pending
      commit. Any edit while the countdown runs cancels it and re-enters
      this flow, so only the final value ever submits.
-     YEARS ARE ENTER-ONLY (JD 2026-10-16): typing in the years combo
+     YEARS + LAST CONTACT ARE ENTER-ONLY (JD 2026-10-16; last contact added Phase 4 / V3.66.0 — it was missing from the exclusion lists in audWireCard, so the Audit last-contact field pause/blur-committed typed dates before Enter: the premature-submit bug WS-G root-caused): typing in the years combo
      never arms or commits, however complete the value looks — the
      pause commit and the blur commit both skip years outright, because
      a finished-looking year is just four keystrokes, not consent. A
@@ -10134,7 +10138,7 @@ function audWireCard(card){
      audCommitGesture; nothing else can submit these two fields. */
   inp.addEventListener('input', function(){
     audDisarm(card);
-    if(gap === 'years' || gap === 'orgs' || gap === 'skills') return;
+    if(gap === 'years' || gap === 'orgs' || gap === 'skills' || gap === 'lastc') return;
     clearTimeout(card._audDeb);
     card._audDeb = setTimeout(function(){
       card._audDeb = null;
@@ -10152,7 +10156,7 @@ function audWireCard(card){
       if(!card.isConnected) return;
       var a = document.activeElement;
       if(a && card.contains(a)) return;   /* the pick refocused the field, or focus moved within this card: not a real blur */
-      if(gap === 'years' || gap === 'orgs' || gap === 'skills') return;   /* Enter/pick-only: never blur-committed */
+      if(gap === 'years' || gap === 'orgs' || gap === 'skills' || gap === 'lastc') return;   /* Enter/pick-only: never blur-committed */
       if(audAcOpen(card)) return;   /* suggestion list still open: the highlight owns the next commit, not the blur (JD 2026-11-01) */
       audTryArm(card);
     }, 250);
@@ -10203,7 +10207,7 @@ function audFocusEditor(card){ var f = card && audEditorEl(card); if(f) f.focus(
    - everything else: the mode's normal arm path, unchanged. */
 function audEnterKey(card){
   var gap = card.getAttribute('data-gap');
-  if(gap === 'years'){
+  if(gap === 'years' || gap === 'lastc'){
     if(audComplete(card)){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); }
     else audNudge(card);
     return;
@@ -10477,7 +10481,7 @@ function audWriteValue(di, card, gap){
   if(gap === 'tier' || gap === 'rel'){
     var pick = card.getAttribute('data-pick');
     if(!pick) return null;
-    var en = gap === 'tier' ? txn('Set tier', function(){ queuePatch(di, { tier:pick }); }) : txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); });
+    var en = gap === 'tier' ? txn('Set level', function(){ queuePatch(di, { tier:pick }); }) : txn('Set relationship', function(){ queuePatch(di, { relationship:pick }); });
     return { entry:en, val:gap === 'tier' ? (TIERS[pick] ? TIERS[pick].n : pick) : cap(pick) };
   }
   if(gap === 'loc'){
@@ -10671,8 +10675,8 @@ var AUD_MODES = [
   { k:'cards',  l:'Cards' },
   { k:'prefill', l:'Prefill' },
   { k:'years',  l:'Years Known' },
-  { k:'cat',    l:'Category Run' },
-  { k:'lima',   l:'Lima Charlie' },
+  { k:'cat',    l:'Category Audit' },
+  { k:'lima',   l:'Contact Log' },
   { k:'photos', l:'Photo Audit' }
 ];
 function audMode(){ var m = S.audit && S.audit.mode; return m === 'lima' || m === 'photos' || m === 'years' || m === 'prefill' || m === 'cat' ? m : 'cards'; }
@@ -10781,7 +10785,7 @@ function audModeBarHTML(){
   var A = S.audit, m = audMode();
   if(m === 'lima'){
     var np = lcPendingCount();
-    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Lima Charlie run</span></div>';
+    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Contact Log run</span></div>';
   }
   if(m === 'prefill'){
     pfLoad();
@@ -11954,6 +11958,17 @@ function onClick(ev){
       if(S.route.name === 'profile') back('people'); else refreshAfterStatus();
       break;
     }
+    case 'cdeedit': cdeOpen(el); break;
+    case 'cdeopt': cdeOpt(el.getAttribute('data-part'), el.getAttribute('data-v')); break;
+    case 'cdesave': cdeSave(); break;
+    case 'cdecancel': cdeCancel(); break;
+    case 'cdeclear': cdeClear(); break;
+    case 'mgdir': MGMT.dir = -MGMT.dir; render(); break;
+    case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
+    case 'sedist': seOpenDist(el.getAttribute('data-g'), el.getAttribute('data-i')); break;
+    case 'seback': seBack(); break;
+    case 'seperson': { var sdi = +el.getAttribute('data-di'); var shown = SB.se.shown || []; openPerson(sdi, ctxFrom('Stats Explorer', shown, shown.indexOf(sdi), 'sandbox')); break; }
+    case 'sesort': SB.se.sort = el.getAttribute('data-s'); sePaintList(); break;
     case 'openp': { ev.preventDefault(); openPerson(di, null, { keepCtx:S.route.name === 'profile' }); prevent = false; break; }
     case 'popen': { var cur = S.ppl.cur || []; openPerson(di, ctxFrom('People', cur, +el.getAttribute('data-i'), 'people')); break; }
     case 'popen1': { var nw = (typeof NET !== 'undefined' && NET.nodes && NET.nodes.length) ? NET.nodes.map(function(n){ return n.di; }) : []; if(nw.indexOf(di) < 0) nw = people(); openPerson(di, nw.length ? ctxFrom('Network', nw, nw.indexOf(di), 'network') : null); break; }
@@ -12143,6 +12158,9 @@ function onInput(ev){
   var t = ev.target;
   if(t.id === 'gs'){ debPaint('gs', paintSearch); return; }
   if(t.id === 'rcq'){ RC_VIEW.q = t.value; rcSaveView(); debPaint('rcq', rcPaint); return; }
+  if(t.id === 'mg-q'){ MGMT.q = t.value; debPaint('mgq', mgPaintList); return; }
+  if(t.id === 'se-q'){ SB.se.q = t.value; debPaint('seq', sePaintList); return; }
+  if(t.classList && t.classList.contains('cde-in')){ t.classList.remove('bad'); return; }
   if(t.id === 'pfq'){ PF_VIEW.q = t.value; pfPaintRows(); return; }
   if(t.id === 'netq'){ netPaintFind(); return; }
   if(t.id === 'pq'){ S.ppl.q = t.value; debPaint('pq', paintPeople); return; }
@@ -12160,6 +12178,9 @@ function onInput(ev){
 }
 function onChange(ev){
   var t = ev.target, act = t.getAttribute && t.getAttribute('data-act');
+  if(t.hasAttribute && t.hasAttribute('data-lvlsec')){ lvlSet(t.getAttribute('data-lvlsec'), t.value); return; }
+  if(t.id === 'mg-sort'){ MGMT.sort = t.value; mgPaintList(); return; }
+  if(t.hasAttribute && t.hasAttribute('data-cdeonl')){ if(CDE) CDE.online = t.checked; return; }
   if(t.id === 'rccat'){ RC_VIEW.cat = t.value; rcSaveView(); rcPaint(); return; }
   if(t.hasAttribute && t.hasAttribute('data-gmsel')){
     var gmkey = t.getAttribute('data-gmsel');
@@ -12375,6 +12396,8 @@ function onNavKey(ev){
 }
 function onKey(ev){
   var t = ev.target, tag = t.tagName, isField = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+  if(ev.key === 'Enter' && t.classList && t.classList.contains('cde-in')){ ev.preventDefault(); ev.stopPropagation(); cdeSaveFrom(t); return; }
+  if(ev.key === 'Escape' && t.classList && t.classList.contains('cde-in')){ ev.preventDefault(); cdeCancel(); return; }
   if(ev.key === 'Enter' && t.hasAttribute && t.hasAttribute('data-grpnew')){ ev.preventDefault(); grpNewCommit(t); return; }
   if(ev.key === 'Enter' && t.classList && t.classList.contains('tadd')){ ev.preventDefault(); addTag(t); return; }
   if((ev.key === 'Enter' || ev.key === ' ') && t.classList && t.classList.contains('dm') && t.classList.contains('pick')){ ev.preventDefault(); t.click(); return; }
@@ -12829,6 +12852,445 @@ function skeletonHTML(note){
 }
 
 
+
+/* ============================================================
+   PHASE 4 (V3.66.0) — WS-G compact contact-date editor, WS-D
+   Manage area, WS-F Sandbox Stats Explorer.
+   ============================================================ */
+
+/* ---------- WS-G: compact contact-date editor ----------
+   One editor for every contact stamp (Last Contact, Last Online,
+   First Contact). Two ways in: stepwise list picking (year ->
+   month -> day, stoppable at any level) and typed text (2024,
+   2024-06, 2024-06-15, 2024/6/15, 20240615, Jun 2024,
+   June 15 2024). Granularity is preserved exactly as entered.
+
+   COMMIT RULE (the bug fix): text commits ONLY on Enter or the
+   explicit Save button — never on input, never on blur, never on
+   a timer. Clicking away leaves the editor open and the stored
+   value untouched; Cancel or Escape discards the draft whole.
+
+   Root cause of the old premature submit — two paths filed date
+   text without Enter:
+   (1) The Audit card's lastc editor was missing from
+       audWireCard's enter-only exclusion lists (years/orgs/skills
+       were on them, lastc was not), so a 900ms typing pause or a
+       250ms blur committed the value. Fixed in audWireCard +
+       audEnterKey (lastc now shares the years path).
+   (2) Profile data-pk text inputs commit through the global
+       change handler, and the DOM change event fires on blur —
+       so the relationship editor's last_contact input filed on
+       click-away. Fixed for dates by this component replacing
+       that input; the change-handler validation stays as a
+       backstop for any other data-pk date.
+   Saves ride queuePatch inside txn (undoable, Save Pool). */
+var CDE = null; /* {di, field, ctx, y, m, d, online, root} */
+var CDE_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var CDE_MON_FULL = { january:1, february:2, march:3, april:4, may:5, june:6, july:7, august:8, september:9, october:10, november:11, december:12, jan:1, feb:2, mar:3, apr:4, jun:6, jul:7, aug:8, sep:9, sept:9, oct:10, nov:11, dec:12 };
+function cdePad(n){ return (n < 10 ? '0' : '') + n; }
+function cdeParts(v){
+  var m = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(String(v || '').trim());
+  if(!m) return { y:0, m:0, d:0 };
+  return { y:+m[1], m:m[2] ? +m[2] : 0, d:m[3] ? +m[3] : 0 };
+}
+function cdeVal(p){
+  if(!p.y) return '';
+  var s = String(p.y);
+  if(p.m) s += '-' + cdePad(p.m);
+  if(p.m && p.d) s += '-' + cdePad(p.d);
+  return s;
+}
+function cdeDim(y, m){ return [31, ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][(m || 1) - 1]; }
+function cdeParseTyped(raw){
+  var s = String(raw || '').trim();
+  if(!s) return '';
+  var mm;
+  if((mm = /^([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})$/.exec(s)) && CDE_MON_FULL[mm[1].toLowerCase()])
+    return ykDateVal(mm[3] + '-' + cdePad(CDE_MON_FULL[mm[1].toLowerCase()]) + '-' + cdePad(+mm[2]));
+  if((mm = /^([A-Za-z]+)\.?\s+(\d{4})$/.exec(s)) && CDE_MON_FULL[mm[1].toLowerCase()])
+    return ykDateVal(mm[2] + '-' + cdePad(CDE_MON_FULL[mm[1].toLowerCase()]));
+  if((mm = /^(\d{1,2})\s+([A-Za-z]+)\.?\s+(\d{4})$/.exec(s)) && CDE_MON_FULL[mm[2].toLowerCase()])
+    return ykDateVal(mm[3] + '-' + cdePad(CDE_MON_FULL[mm[2].toLowerCase()]) + '-' + cdePad(+mm[1]));
+  s = s.replace(/[\/.]/g, '-').replace(/\s+/g, '');
+  if(/^\d{8}$/.test(s)) return ykDateVal(s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6, 8));
+  if(/^\d{6}$/.test(s)) return ykDateVal(s.slice(0, 4) + '-' + s.slice(4, 6));
+  if(/^\d{4}$/.test(s)) return ykDateVal(s);
+  var p = s.split('-');
+  if(p.length === 3 && p[2].length === 4 && p[0].length <= 2) return ykDateVal(p[2] + '-' + cdePad(+p[0]) + '-' + cdePad(+p[1])); /* M-D-YYYY */
+  if(p.length === 3) return ykDateVal(p[0] + '-' + cdePad(+p[1]) + '-' + cdePad(+p[2]));
+  if(p.length === 2 && p[0].length === 4) return ykDateVal(p[0] + '-' + cdePad(+p[1]));
+  if(p.length === 2 && p[1].length === 4) return ykDateVal(p[1] + '-' + cdePad(+p[0]));
+  return null;
+}
+function cdeFieldLabel(field, ctx){
+  if(ctx === 'mgonline') return 'Last Online';
+  return { last_contact:'Last Contact', first_contact:'First Contact' }[field] || field;
+}
+function cdeCurVal(di, field){
+  var e = D.directory[di]; if(!e) return '';
+  return String(gv(e, field) || '').trim();
+}
+function cdeWidget(di, field, ctx){
+  ctx = ctx || '';
+  var e = D.directory[di]; if(!e) return '';
+  var v = cdeCurVal(di, field), lab, has = !!v;
+  if(ctx === 'mgonline'){ has = lcOnline(e) && !!v; lab = has ? lcDateLabel(v) : 'Not online'; }
+  else if(field === 'first_contact' && !v){ var fc = firstContactOf(e); lab = fc ? lcDateLabel(fc) + ' · from events' : 'Not set'; }
+  else lab = v ? lcDateLabel(v) : 'Not set';
+  return '<span class="cde" data-cde="' + field + '">' +
+    '<span class="cde-val' + (has ? '' : ' dim') + '">' + esc(lab) + '</span>' +
+    '<button type="button" class="btn ghost sm" data-act="cdeedit" data-di="' + di + '" data-field="' + field + '" data-ctx="' + ctx + '">' + ic('edit', 12) + (has ? 'Edit' : 'Set') + '</button></span>';
+}
+function cdeCloseHost(o){
+  if(!o || !o.root || !o.root.isConnected) return;
+  var tmp = document.createElement('div');
+  tmp.innerHTML = cdeWidget(o.di, o.field, o.ctx);
+  if(tmp.firstChild) o.root.replaceWith(tmp.firstChild);
+}
+function cdeOpen(btn){
+  var di = +btn.getAttribute('data-di'), field = btn.getAttribute('data-field'), ctx = btn.getAttribute('data-ctx') || '';
+  var host = btn.closest('.cde'); if(!host || !D.directory[di]) return;
+  if(CDE && CDE.root !== host) cdeCloseHost(CDE);
+  var p = cdeParts(cdeCurVal(di, field));
+  CDE = { di:di, field:field, ctx:ctx, y:p.y, m:p.m, d:p.d,
+          online: ctx === 'mgonline' ? true : (field === 'last_contact' ? lcOnline(D.directory[di]) : false),
+          root:host };
+  cdePaint();
+  var inp = $('.cde-in', host); if(inp){ inp.focus(); inp.select(); }
+}
+function cdePaint(){
+  if(!CDE) return;
+  var host = CDE.root; if(!host || !host.isConnected){ CDE = null; return; }
+  var nowY = new Date().getFullYear(), y;
+  var yBtns = '';
+  for(y = Math.max(nowY, CDE.y || 0); y >= 1920; y--) yBtns += '<button type="button" class="cde-opt' + (CDE.y === y ? ' on' : '') + '" data-act="cdeopt" data-part="y" data-v="' + y + '">' + y + '</button>';
+  var mBtns = '<button type="button" class="cde-opt wide' + (!CDE.m ? ' on' : '') + '" data-act="cdeopt" data-part="m" data-v="0">Year only</button>', m;
+  for(m = 1; m <= 12; m++) mBtns += '<button type="button" class="cde-opt' + (CDE.m === m ? ' on' : '') + '" data-act="cdeopt" data-part="m" data-v="' + m + '">' + CDE_MON[m - 1] + '</button>';
+  var dim = CDE.m ? cdeDim(CDE.y || nowY, CDE.m) : 31, d;
+  var dBtns = '<button type="button" class="cde-opt wide' + (!CDE.d ? ' on' : '') + '" data-act="cdeopt" data-part="d" data-v="0">No day</button>';
+  for(d = 1; d <= dim; d++) dBtns += '<button type="button" class="cde-opt' + (CDE.d === d ? ' on' : '') + '" data-act="cdeopt" data-part="d" data-v="' + d + '">' + d + '</button>';
+  var val = cdeVal(CDE);
+  host.innerHTML =
+    '<span class="cde-pop" role="group" aria-label="' + esc(cdeFieldLabel(CDE.field, CDE.ctx)) + ' editor">' +
+    '<span class="cde-cols">' +
+      '<span class="cde-col"><span class="cde-cl">Year</span>' + yBtns + '</span>' +
+      '<span class="cde-col"><span class="cde-cl">Month</span>' + mBtns + '</span>' +
+      '<span class="cde-col"><span class="cde-cl">Day</span>' + dBtns + '</span>' +
+    '</span>' +
+    '<span class="cde-typerow"><input class="cde-in inp" value="' + esc(val) + '" placeholder="2024 · 2024-06 · 2024-06-15" autocomplete="off" spellcheck="false" aria-label="Type a date">' +
+    '<span class="cde-hint">' + (val ? esc(ykLabelOf(val)) : 'Stop at any level — year, year + month, or a full date.') + '</span></span>' +
+    (CDE.field === 'last_contact' && CDE.ctx !== 'mgonline' ? '<label class="cde-onl"><input type="checkbox" data-cdeonl' + (CDE.online ? ' checked' : '') + '> Online contact (not in person)</label>' : '') +
+    '<span class="cde-acts"><button type="button" class="btn ghost sm" data-act="cdeclear">Clear</button><span class="sp"></span>' +
+    '<button type="button" class="btn ghost sm" data-act="cdecancel">Cancel</button>' +
+    '<button type="button" class="btn sm" data-act="cdesave">Save</button></span>' +
+    '<span class="cde-note">Saves only on Save or Enter — typing and clicking away never file anything.</span></span>';
+}
+function cdeOpt(part, v){
+  if(!CDE) return;
+  v = +v;
+  if(part !== 'y' && !CDE.y) CDE.y = new Date().getFullYear();
+  if(part === 'y'){ CDE.y = v; if(!v){ CDE.m = 0; CDE.d = 0; } }
+  if(part === 'm'){ CDE.m = v; if(!v) CDE.d = 0; }
+  if(part === 'd'){ CDE.d = v; }
+  if(CDE.d && CDE.m){ var dim = cdeDim(CDE.y || new Date().getFullYear(), CDE.m); if(CDE.d > dim) CDE.d = dim; }
+  cdePaint();
+  var b = $('[data-part="' + part + '"][data-v="' + v + '"]', CDE.root); if(b) b.focus();
+}
+function cdeSaveFrom(inp){
+  if(!CDE) return;
+  var v = cdeParseTyped(inp.value);
+  if(v === null){ inp.classList.add('bad'); inp.focus(); return; }
+  var p = cdeParts(v); CDE.y = p.y; CDE.m = p.m; CDE.d = p.d;
+  cdeSave(true);
+}
+function cdeSave(fromTyped){
+  if(!CDE) return;
+  var inp = $('.cde-in', CDE.root);
+  if(!fromTyped && inp && inp.value.trim() !== cdeVal(CDE)){
+    var v = cdeParseTyped(inp.value);
+    if(v === null){ inp.classList.add('bad'); inp.focus(); return; }
+    var p = cdeParts(v); CDE.y = p.y; CDE.m = p.m; CDE.d = p.d;
+  }
+  var di = CDE.di, field = CDE.field, ctx = CDE.ctx, val = cdeVal(CDE);
+  var patch = {}; patch[field] = val;
+  if(field === 'last_contact') patch.last_contact_online = (ctx === 'mgonline') ? (val ? 'yes' : '') : (CDE.online ? 'yes' : '');
+  CDE = null;
+  txn(field === 'first_contact' ? 'Set first contact' : 'Set last contact', function(){ queuePatch(di, patch); });
+  toast(cdeFieldLabel(field, ctx) + (val ? ' set to ' + ykLabelOf(val) : ' cleared') + ' — ' + dispName(D.directory[di]) + '.');
+  if(ctx === 'profile'){ repaintSec('relationship'); repaintTop(); }
+  else if(ctx === 'manage' || ctx === 'mgonline'){ mgPaintList(); }
+  else render();
+}
+function cdeCancel(){ if(!CDE) return; var o = CDE; CDE = null; cdeCloseHost(o); }
+function cdeClear(){ if(!CDE) return; CDE.y = 0; CDE.m = 0; CDE.d = 0; cdeSave(true); }
+/* Keyboard support inside the open editor: arrows walk a column,
+   Escape cancels. Runs in capture so it composes with the app's
+   own key handlers; Enter on the typed input is handled by onKey. */
+document.addEventListener('keydown', function(ev){
+  if(!CDE || !CDE.root || !CDE.root.isConnected) return;
+  var t = ev.target;
+  if(!t.closest || !t.closest('.cde')) return;
+  if(ev.key === 'Escape'){ ev.preventDefault(); cdeCancel(); return; }
+  if((ev.key === 'ArrowDown' || ev.key === 'ArrowUp') && t.classList && t.classList.contains('cde-opt')){
+    ev.preventDefault();
+    var col = t.closest('.cde-col'); if(!col) return;
+    var opts = $$('.cde-opt', col), i = opts.indexOf(t);
+    var n = ev.key === 'ArrowDown' ? Math.min(opts.length - 1, i + 1) : Math.max(0, i - 1);
+    if(opts[n]) opts[n].focus();
+  }
+}, true);
+
+/* ---------- WS-D: Manage area ----------
+   Placement: a first-class rail destination (neutral tool
+   treatment, per the Phase 3 rail mapping) with three tabs —
+   #/manage (Last Contact), #/manage/levels, #/manage/proximity.
+   Lives inside the normal app frame like every other view. */
+var MGMT = { sort:'lastc', dir:1, q:'' };
+function mgTab(){ var s = (S.route.seg && S.route.seg[0]) || 'stamps'; return ['levels', 'proximity'].indexOf(s) >= 0 ? s : 'stamps'; }
+function viewManage(v){
+  phLoad(); msgLoad();
+  var tab = mgTab();
+  var tabs = [['stamps', 'Last Contact', '#/manage'], ['levels', 'Levels', '#/manage/levels'], ['proximity', 'Proximity', '#/manage/proximity']];
+  v.innerHTML = '<div class="page manage" data-kind="neutral">' +
+    '<div class="pagehead"><div><h1 class="display">Manage</h1>' +
+    '<p class="sub">The upkeep bench: contact stamps for everyone in one table, the level notation map, and the Proximity surface when it lands. Stamp edits ride the Save Pool and can be undone.</p></div></div>' +
+    '<div class="mg-tabs" role="tablist">' + tabs.map(function(t){ return '<a class="mg-tab' + (tab === t[0] ? ' on' : '') + '" href="' + t[2] + '" role="tab">' + t[1] + '</a>'; }).join('') + '</div>' +
+    (tab === 'stamps' ? mgStampsHTML() : tab === 'levels' ? mgLevelsHTML() : mgProxHTML()) +
+    '</div>';
+  if(tab === 'stamps') mgPaintList();
+}
+function mgStampVal(e, k){
+  if(k === 'firstc') return firstContactOf(e);
+  if(k === 'online') return lcOnline(e) ? String(gv(e, 'last_contact') || '') : '';
+  return String(gv(e, 'last_contact') || '');
+}
+function mgRows(){
+  var q = MGMT.q.trim().toLowerCase();
+  var dis = people().filter(function(di){ var e = D.directory[di]; return e && (!q || dispName(e).toLowerCase().indexOf(q) >= 0); });
+  var k = MGMT.sort, d = MGMT.dir;
+  dis.sort(function(a, b){
+    var ka = flexKey(mgStampVal(D.directory[a], k)), kb = flexKey(mgStampVal(D.directory[b], k));
+    if(ka == null && kb == null) return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+    if(ka == null) return d > 0 ? -1 : 1;   /* blanks are the lowest value (Danger Zone rule): ascending = blanks first */
+    if(kb == null) return d > 0 ? 1 : -1;
+    if(ka !== kb) return (ka - kb) * d;
+    return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+  });
+  return dis;
+}
+function mgStampsHTML(){
+  return '<div class="mg-tools">' +
+    '<input id="mg-q" class="inp" placeholder="Search people" value="' + esc(MGMT.q) + '" autocomplete="off">' +
+    '<label class="mg-sortlab">Sort by <select id="mg-sort" class="inp">' +
+      [['lastc', 'Last Contact'], ['online', 'Last Online'], ['firstc', 'First Contact']].map(function(o){ return '<option value="' + o[0] + '"' + (MGMT.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+    '</select></label>' +
+    '<button type="button" class="btn ghost sm" data-act="mgdir">' + (MGMT.dir > 0 ? 'Blank / oldest first' : 'Newest first') + '</button>' +
+    '<span class="mg-count" id="mg-count"></span></div>' +
+    '<div class="mg-head"><span>Person</span><span>Last Contact</span><span>Last Online</span><span>First Contact</span></div>' +
+    '<div id="mglist"></div>';
+}
+function mgPaintList(){
+  var box = $('#mglist'); if(!box) return;
+  var dis = mgRows();
+  var cnt = $('#mg-count'); if(cnt) cnt.textContent = dis.length + ' people';
+  var CAPN = 400;
+  box.innerHTML = dis.slice(0, CAPN).map(function(di){
+    var e = D.directory[di];
+    return '<div class="mg-row"><a class="mg-name" href="#/p/' + personId(e) + '" data-act="openp" data-di="' + di + '">' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(gv(e, 'relationship') || '') + '</small></span></a>' +
+      '<span class="mg-cell">' + cdeWidget(di, 'last_contact', 'manage') + '</span>' +
+      '<span class="mg-cell">' + cdeWidget(di, 'last_contact', 'mgonline') + '</span>' +
+      '<span class="mg-cell">' + cdeWidget(di, 'first_contact', 'manage') + '</span></div>';
+  }).join('') + (dis.length > CAPN ? '<p class="sub">Showing the first ' + CAPN + ' — search to narrow the table.</p>' : '');
+}
+/* Levels manager — NOTATION ONLY. Assignments persist the way the
+   app already persists local settings: a localStorage overlay
+   (ncc_levels_v1), the same pattern as the org registry overlay.
+   Nothing is ever hidden by a level. */
+var LVL_KEY = 'ncc_levels_v1';
+function lvlRowsDef(){
+  var rows = SECS.map(function(s){ return { id:'sec:' + s.id, name:s.t, kind: s.mv === 'c' ? 'connection' : 'about', def:'open', note: s.id === 'persona' ? 'Traits segment bars' : '' }; });
+  rows.push({ id:'family', name:'Family links', kind:'about', def:'personal', note:'Standing rule: Family = Personal.' });
+  rows.push({ id:'stamps', name:'Contact stamps — Last Contact, Last Online, First Contact', kind:'connection', def:'open', note:'Edited in the Last Contact tab and on profiles.' });
+  return rows;
+}
+function lvlOverlay(){ try{ return JSON.parse(store(LVL_KEY) || '{}') || {}; }catch(x){ return {}; } }
+function lvlOf(id){
+  var o = lvlOverlay(); if(o[id]) return o[id];
+  var rows = lvlRowsDef();
+  for(var i = 0; i < rows.length; i++) if(rows[i].id === id) return rows[i].def;
+  return 'open';
+}
+function secLevel(secId){ return lvlOf('sec:' + secId); }
+function lvlSet(id, val){
+  var o = lvlOverlay(); o[id] = val; store(LVL_KEY, JSON.stringify(o));
+  toast('Level notation updated — display only, nothing is hidden.');
+  render();
+}
+function mgLevelsHTML(){
+  var rows = lvlRowsDef().map(function(r){
+    var cur = lvlOf(r.id);
+    return '<div class="mg-lvrow"><span class="mg-lvname"><b>' + esc(r.name) + '</b>' + (r.note ? '<small>' + esc(r.note) + '</small>' : '') + '</span>' +
+      '<span>' + kindChip(r.kind, true) + '</span>' +
+      '<span>' + (cur === 'open' ? '<span class="lvl-open">OPEN</span>' : lvlChip(cur)) + '</span>' +
+      '<select class="inp mg-lvsel" data-lvlsec="' + r.id + '" aria-label="Level for ' + esc(r.name) + '">' +
+        ['open', 'personal', 'private'].map(function(l){ return '<option value="' + l + '"' + (cur === l ? ' selected' : '') + '>' + l.charAt(0).toUpperCase() + l.slice(1) + '</option>'; }).join('') +
+      '</select></div>';
+  }).join('');
+  return '<div class="card mg-card"><h3>Levels — notation only</h3>' +
+    '<p class="sub">A level says how a section is treated when it is talked about — it never hides anything in the app. Assignments live on this device in the app\u2019s local settings (localStorage overlay <b>' + LVL_KEY + '</b>), the same pattern as the organization registry. Personal and Private chips appear on the profile section headers.</p>' +
+    '<div class="mg-lvhead"><span>Section / field</span><span>Kind</span><span>Level</span><span>Reassign</span></div>' + rows + '</div>';
+}
+function mgProxHTML(){
+  return '<div class="card mg-card mg-prox"><div class="mg-prox-h"><h3>Proximity</h3>' + kindChip('connection', true) + '<span class="mg-soon">Coming</span></div>' +
+    '<p>Proximity tracks <b>co-presence</b>, not contact: the Lewis School PT/OT coworkers crossed paths with on workdays, and events — like Clarkson hockey games — where known people were present without a conversation. It answers \u201Cwho was I around?\u201D separately from \u201Cwho did I talk to?\u201D, so Last Contact stays honest.</p>' +
+    '<p class="sub">Design settled 2026-11-02. Nothing is tracked yet — this placeholder holds the surface so the rail entry, tab, and notation are ready when the data lands.</p>' +
+    '<button type="button" class="btn ghost" disabled>Not yet available</button></div>';
+}
+
+/* ---------- WS-F: Sandbox Stats Explorer ----------
+   Read-only; computed client-side from the baked data the app
+   already loads. Field definitions reuse the same helpers as
+   Home / Audit / People (footprintOf, phIndex + phHasPhoto,
+   ptLocVal, personGroups, famLinks, msgFor, knownSinceYear,
+   firstContactOf, lcOnline, scoreFor), so the counts match. */
+function sePhotoHas(e){
+  var idx = phIndex(); if(!idx) return false;
+  var p = idx[dispName(e)]; return !!(p && phHasPhoto(p));
+}
+var SE_FIELDS = [
+  { k:'synopsis', l:'Synopsis', has:function(e){ return !!String(gv(e, 'synopsis') || '').trim(); } },
+  { k:'footprint', l:'Public Footprint', has:function(e){ return footprintOf(e).blocks > 0; } },
+  { k:'photo', l:'Photo', has:function(e){ return sePhotoHas(e); } },
+  { k:'location', l:'Location', has:function(e){ return !!ptLocVal(e); } },
+  { k:'church', l:'Church', has:function(e){ return tagList(gv(e, 'churches')).length > 0; } },
+  { k:'companies', l:'Companies', has:function(e){ return tagList(gv(e, 'companies')).length > 0; } },
+  { k:'universities', l:'Universities', has:function(e){ return tagList(gv(e, 'universities')).length > 0; } },
+  { k:'skills', l:'Skills', has:function(e){ return tagList(gv(e, 'specialty')).length > 0; } },
+  { k:'groups', l:'Groups', has:function(e){ return personGroups(e).length > 0; } },
+  { k:'family', l:'Family', has:function(e){ return famLinks(e).length > 0; } },
+  { k:'contact', l:'Phone / contact details', has:function(e){ return !!(String(gv(e, 'phone') || '').trim() || String(gv(e, 'email') || '').trim()); } },
+  { k:'events', l:'Events', has:function(e){ return (e.events || []).length > 0; } },
+  { k:'corr', l:'Correspondence', has:function(e){ return !!msgFor(e); } },
+  { k:'years', l:'Years Known', has:function(e){ return !!knownSinceYear(e); } },
+  { k:'firstc', l:'First Contact', has:function(e){ return !!firstContactOf(e); } },
+  { k:'lastc', l:'Last Contact', has:function(e){ return !!String(gv(e, 'last_contact') || '').trim(); } },
+  { k:'online', l:'Last Online', has:function(e){ return lcOnline(e); } },
+  { k:'rel', l:'Relationship', has:function(e){ return !!String(gv(e, 'relationship') || '').trim(); } }
+];
+function seFieldDef(k){ for(var i = 0; i < SE_FIELDS.length; i++) if(SE_FIELDS[i].k === k) return SE_FIELDS[i]; return null; }
+function seFilledCount(di){ var e = D.directory[di], n = 0; SE_FIELDS.forEach(function(f){ if(f.has(e)) n++; }); return n; }
+function seDistGroups(){
+  var P = people(), groups = [];
+  var bands = [[0, 24], [25, 49], [50, 74], [75, 89], [90, 100]].map(function(b){
+    return { label:'Completeness ' + b[0] + '\u2013' + b[1], dis:P.filter(function(di){ var s = scoreFor(di).score; return s >= b[0] && s <= b[1]; }) };
+  });
+  groups.push({ title:'Completeness bands', rows:bands });
+  var rel = {};
+  P.forEach(function(di){ var r = cap(gv(D.directory[di], 'relationship')) || 'Untyped'; (rel[r] = rel[r] || []).push(di); });
+  groups.push({ title:'Relationship mix', rows:Object.keys(rel).sort(function(a, b){ return rel[b].length - rel[a].length; }).map(function(r){ return { label:r, dis:rel[r] }; }) });
+  var towns = {};
+  P.forEach(function(di){ var t = ptLocVal(D.directory[di]); if(!t) return; var town = t.split(',')[0].trim(); if(town) (towns[town] = towns[town] || []).push(di); });
+  groups.push({ title:'Top locations / towns', rows:Object.keys(towns).sort(function(a, b){ return towns[b].length - towns[a].length; }).slice(0, 15).map(function(t){ return { label:t, dis:towns[t] }; }) });
+  var ag = allGroups();
+  groups.push({ title:'Group sizes', rows:Object.keys(ag).filter(function(g){ return ag[g].length; }).sort(function(a, b){ return ag[b].length - ag[a].length; }).slice(0, 15).map(function(g){ return { label:g, dis:ag[g].slice() }; }) });
+  var dec = {};
+  P.forEach(function(di){ var y = knownSinceYear(D.directory[di]); if(!y) return; var dl = Math.floor(y / 10) * 10 + 's'; (dec[dl] = dec[dl] || []).push(di); });
+  groups.push({ title:'Years known by decade', rows:Object.keys(dec).sort().map(function(dl){ return { label:'Known since the ' + dl, dis:dec[dl] }; }) });
+  var t0 = new Date(); t0.setHours(0, 0, 0, 0);
+  var rec = { a:[], b:[], c:[], d:[], n:[] };
+  P.forEach(function(di){
+    var f = flexKey(gv(D.directory[di], 'last_contact'));
+    if(f == null){ rec.n.push(di); return; }
+    var days = Math.floor((t0.getTime() - f) / 864e5);
+    if(days <= 7) rec.a.push(di); else if(days <= 30) rec.b.push(di); else if(days <= 90) rec.c.push(di); else rec.d.push(di);
+  });
+  groups.push({ title:'Last-contact recency', rows:[{ label:'Within 7 days', dis:rec.a }, { label:'8\u201330 days', dis:rec.b }, { label:'31\u201390 days', dis:rec.c }, { label:'Over 90 days', dis:rec.d }, { label:'Never / not recorded', dis:rec.n }] });
+  return groups;
+}
+function sbStats(){
+  phLoad(); msgLoad();
+  if(SB.se.view === 'list' && SB.se.list) return seListHTML();
+  var P = people(), total = P.length || 1;
+  var frows = SE_FIELDS.map(function(f){
+    var n = P.filter(function(di){ return f.has(D.directory[di]); }).length, pct = Math.round(n / total * 100);
+    return '<div class="se-frow"><span class="se-fl">' + f.l + '</span>' +
+      '<span class="se-bar"><button type="button" class="se-seg has" data-act="sefield" data-f="' + f.k + '" data-seg="has" style="flex:' + n + '" title="Filled — the ' + n + ' people who have it">' + (n ? n : '') + '</button>' +
+      '<button type="button" class="se-seg miss" data-act="sefield" data-f="' + f.k + '" data-seg="miss" style="flex:' + (total - n) + '" title="Blank — the ' + (total - n) + ' people missing it">' + ((total - n) ? (total - n) : '') + '</button></span>' +
+      '<span class="se-fn">' + pct + '%</span></div>';
+  }).join('');
+  var dhtml = seDistGroups().map(function(g, gi){
+    var max = Math.max.apply(null, g.rows.map(function(r){ return r.dis.length; }).concat([1]));
+    return '<div class="card se-card"><h3>' + g.title + '</h3>' + g.rows.map(function(r, ri){
+      return '<button type="button" class="se-drow" data-act="sedist" data-g="' + gi + '" data-i="' + ri + '"><span class="se-dl">' + esc(r.label) + '</span><span class="se-dbar"><span style="width:' + Math.round(r.dis.length / max * 100) + '%"></span></span><span class="se-dn">' + r.dis.length + '</span></button>';
+    }).join('') + '</div>';
+  }).join('');
+  var board = P.slice().sort(function(a, b){ return seFilledCount(b) - seFilledCount(a) || dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); }).slice(0, 25);
+  SB.se.shown = board;
+  var bhtml = board.map(function(di, i){
+    var e = D.directory[di], n = seFilledCount(di);
+    return '<button type="button" class="se-brow" data-act="seperson" data-di="' + di + '"><span class="se-rank">' + (i + 1) + '</span>' + avatar(e, 'sm') + '<span class="se-bname">' + esc(dispName(e)) + '</span><span class="se-dbar"><span style="width:' + Math.round(n / SE_FIELDS.length * 100) + '%"></span></span><span class="se-dn">' + n + ' / ' + SE_FIELDS.length + '</span></button>';
+  }).join('');
+  return sbShell('<div class="se-head"><h2 class="sb-h">Stats Explorer</h2><p class="sub">Read-only, computed from the same baked data as Home and Audit — the field definitions match theirs. Every segment, bar, and row opens its people list; Back walks back out the way you came in.</p></div>' +
+    '<div class="se-grid"><div class="card se-card"><h3>Field completeness</h3>' + frows + '</div>' +
+    '<div class="se-col"><div class="card se-card"><h3>Most fields filled — leaderboard</h3>' + bhtml + '</div>' + dhtml + '</div></div>');
+}
+function seListHTML(){
+  var L = SB.se.list;
+  return sbShell('<div class="card se-card"><div class="se-lhead"><button type="button" class="btn ghost sm" data-act="seback">\u2190 All stats</button>' +
+    '<h3>' + esc(L.title) + '</h3><span class="chip">' + L.dis.length + ' people</span></div>' +
+    '<div class="se-ltools"><input id="se-q" class="inp" placeholder="Search this list" value="' + esc(SB.se.q) + '" autocomplete="off">' +
+    '<span class="se-sorts">Sort ' + [['name', 'Name'], ['fields', 'Fields filled'], ['score', 'Completeness'], ['lastc', 'Last contact']].map(function(o){ return '<button type="button" class="btn ghost sm' + (SB.se.sort === o[0] ? ' on' : '') + '" data-act="sesort" data-s="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</span></div>' +
+    '<div id="selist"></div></div>');
+}
+function seListDis(){
+  var L = SB.se.list; if(!L) return [];
+  var q = SB.se.q.trim().toLowerCase();
+  var dis = L.dis.filter(function(di){ return D.directory[di] && (!q || dispName(D.directory[di]).toLowerCase().indexOf(q) >= 0); });
+  var s = SB.se.sort;
+  dis.sort(function(a, b){
+    if(s === 'fields') return seFilledCount(b) - seFilledCount(a) || dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+    if(s === 'score') return scoreFor(b).score - scoreFor(a).score || dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+    if(s === 'lastc'){
+      var ka = flexKey(gv(D.directory[a], 'last_contact')), kb = flexKey(gv(D.directory[b], 'last_contact'));
+      if(ka == null && kb == null) return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+      if(ka == null) return 1;
+      if(kb == null) return -1;
+      return kb - ka;
+    }
+    return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+  });
+  return dis;
+}
+function sePaintList(){
+  var box = $('#selist'); if(!box) return;
+  var dis = seListDis(); SB.se.shown = dis;
+  box.innerHTML = dis.length ? dis.map(function(di){
+    var e = D.directory[di];
+    return '<button type="button" class="se-prow" data-act="seperson" data-di="' + di + '">' + avatar(e, 'sm') +
+      '<span class="se-pname"><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span>' +
+      '<span class="se-pmeta">' + seFilledCount(di) + ' / ' + SE_FIELDS.length + ' fields · Completeness ' + scoreFor(di).score + (gv(e, 'last_contact') ? ' · Last contact ' + esc(lcDateLabel(gv(e, 'last_contact'))) : '') + '</span></button>';
+  }).join('') : '<p class="sub">No one in this list matches the search.</p>';
+}
+function seOpenList(title, dis){
+  SB.se.statsScroll = navScroll();
+  SB.se.view = 'list'; SB.se.list = { title:title, dis:dis.slice() }; SB.se.q = '';
+  viewSandbox($('#view'));
+  var vv = $('#view'); if(vv) vv.scrollTop = 0;
+}
+function seOpenField(k, seg){
+  var f = seFieldDef(k); if(!f) return;
+  var dis = people().filter(function(di){ var h = f.has(D.directory[di]); return seg === 'has' ? h : !h; });
+  seOpenList(f.l + (seg === 'has' ? ' — has it' : ' — missing'), dis);
+}
+function seOpenDist(gi, ri){
+  var g = seDistGroups()[+gi]; if(!g || !g.rows[+ri]) return;
+  seOpenList(g.title + ' — ' + g.rows[+ri].label, g.rows[+ri].dis);
+}
+function seBack(){
+  SB.se.view = 'stats'; SB.se.list = null; SB.se.q = '';
+  viewSandbox($('#view'));
+}
+
 /* ============================================================
    9b. SANDBOX (V3.4.0) — the admin workbench. Read-only tools
    compute from the baked data already in the app plus the raw
@@ -12859,7 +13321,8 @@ var SB = {
   mg:{ a:null, b:null, surv:'a', picks:{}, plan:null },
   dg:{ tab:'delete', one:null, bulkField:'tier', bulkVal:'', bulkCat:'companies', bulkName:'', dry:null },
   dz:{ q:'', curKey:null, sel:{}, rows:[] },
-  lg:{ filter:'all' }
+  lg:{ filter:'all' },
+  se:{ view:'stats', list:null, q:'', sort:'name', statsScroll:0 }
 };
 /* V3.10.0 IA: the Sandbox has exactly three jobs — LOOK at the data,
    PLAY with it in labs, FIX it with admin tools. The home screen is a
@@ -12871,13 +13334,14 @@ var SB_TOOLS = [
   { k:'insights', z:'Sandbox', t:'Insights',     d:'Seven named checks, each on its own page: coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
   { k:'merge',    z:'Sandbox', t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',   z:'Sandbox', t:'Danger Zone',  d:'Weed the directory: a keyboard-driven table. Shift+Backspace removes with no confirmation; Ctrl+Z or u restores.', ic:'trash' },
-  { k:'log',      z:'Sandbox', t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
+  { k:'log',      z:'Sandbox', t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' },
+  { k:'stats',    z:'Sandbox', t:'Stats Explorer', d:'Field completeness for 18 fields plus distributions — completeness bands, leaderboard, relationship mix, towns, group sizes, years-known decades, last-contact recency. Every bar opens its people list.', ic:'target' }
 ];
 var SB_LABS = [
   { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through known associates and family, mutual connections, and the bridge people who hold the circle together.' },
   { k:'pool',    t:'Suspect Pool', d:'The disciplined thought experiment: an exact pool, one yes/no behavioral question, observable behavior only, a pre-registered prediction. On-device only.' },
 ];
-function sbZoneOf(tool){ return ({ insights:'Sandbox', merge:'Sandbox', danger:'Sandbox', log:'Sandbox' })[tool] || ''; }
+function sbZoneOf(tool){ return ({ insights:'Sandbox', merge:'Sandbox', danger:'Sandbox', log:'Sandbox', stats:'Sandbox' })[tool] || ''; }
 function sbLabTab(){
   if(SB.labtab == null) SB.labtab = sbStore('ncc_sbx_labtab') || 'paths';
   if(!SB_LABS.some(function(l){ return l.k === SB.labtab; })) SB.labtab = 'paths';
@@ -12997,8 +13461,8 @@ function viewSandbox(v){
      returns in V3.64.0 as the Danger Zone weeding tool (sbDangerZone);
      the old multi-tab danger functions below stay in the file for
      their shared helpers (sbDoDelete archives, sbRestoreArchived). */
-  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, danger:sbDangerZone, log:sbLogView }[SB.tool] || sbHome;
-  if(!({ home:1, insights:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
+  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, danger:sbDangerZone, log:sbLogView, stats:sbStats }[SB.tool] || sbHome;
+  if(!({ home:1, insights:1, merge:1, danger:1, log:1, stats:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -13120,7 +13584,7 @@ function sbHome(){
     '</div>';
   /* Field coverage */
   var fieldRows = [
-    ['Tier', ppl - gaps.tier], ['Location', ppl - gaps.loc], ['Relationship', ppl - gaps.rel],
+    ['Level', ppl - gaps.tier], ['Location', ppl - gaps.loc], ['Relationship', ppl - gaps.rel],
     ['Years known', ppl - gaps.years], ['Last contact', ppl - gaps.lastc], ['Phone', ppl - gaps.phone],
     ['Organizations', ppl - gaps.orgs], ['Skills', ppl - gaps.skills]
   ];
@@ -13189,6 +13653,10 @@ function sbAfterRender(){
   var t = SB.tool;
   if(t === 'lab' && sbLabTab() === 'paths' && SB.lab.bridges === 'pending') sbComputeBridges();
   if(t === 'insights' && SB.integ.deadBusy && !SB.integ._deadRun){ SB.integ._deadRun = true; sbRunDead(); }
+  if(t === 'stats'){
+    if(SB.se.view === 'list') sePaintList();
+    else if(SB.se.statsScroll){ var vv = $('#view'); if(vv) vv.scrollTop = SB.se.statsScroll; SB.se.statsScroll = 0; }
+  }
 }
 
 
@@ -13434,7 +13902,7 @@ function mdlAfterRender(){
 var SB_COLS = [
   { k:'name', l:'Name', kind:'about', v:function(e){ return dispName(e); } },
   { k:'key', l:'Key', kind:'neutral', v:function(e){ return pkey(e); } },
-  { k:'tier', l:'Tier', kind:'connection', v:function(e){ return tierName(e); } },
+  { k:'tier', l:'Level', kind:'connection', v:function(e){ return tierName(e); } },
   { k:'rel', l:'Relationship', kind:'connection', v:function(e){ return gv(e, 'relationship') || ''; } },
   { k:'years', l:'Known since', kind:'connection', v:function(e){ return gv(e, 'years_known') || ''; }, n:function(e){ return sbYear(gv(e, 'years_known')) || 9999; } },
   { k:'lastc', l:'Last contact', kind:'connection', v:function(e){ return gv(e, 'last_contact') || ''; }, n:function(e){ return sbYear(gv(e, 'last_contact')) || 9999; } },
@@ -13449,7 +13917,7 @@ var SB_COLS = [
   { k:'town', l:'Town', kind:'about', v:function(e){ return e.city || gv(e, 'location_on_file') || ''; } },
   { k:'photo', l:'Photo', kind:'about', v:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return p ? (p.status || '') + (sbPhotoCount(p) > 1 ? ' ×' + sbPhotoCount(p) : '') : '—'; } },
   { k:'foot', l:'Footprint facts', kind:'about', v:function(e){ return String(sbFootCount(e)); }, n:function(e){ return sbFootCount(e); } },
-  { k:'conn', l:'Connections', kind:'connection', v:function(e){ return String((e.neighbors || []).length); }, n:function(e){ return (e.neighbors || []).length; } },
+  { k:'conn', l:'Associates', kind:'connection', v:function(e){ return String((e.neighbors || []).length); }, n:function(e){ return (e.neighbors || []).length; } },
   { k:'close', l:'Closeness', kind:'connection', v:function(e, ph, sc){ var s = sc[e._di]; return s ? String(s.total) : ''; }, n:function(e, ph, sc){ var s = sc[e._di]; return s ? s.total : -1; } }
 ];
 var SB_VIEWS = {
@@ -14427,7 +14895,7 @@ var DZ_COLS = [
   { k:'years',  l:'Years Known', kind:'connection',         v:function(e){ var y = knownSinceYear(e); return y ? String(y) : String(gv(e, 'years_known') || ''); }, n:function(e){ return knownSinceYear(e) || 0; }, date:true },
   { k:'firstc', l:'First Contact', kind:'connection',       v:function(e){ return lcDateLabel(firstContactOf(e)); }, n:function(e){ return flexKey(firstContactOf(e)) || 0; }, date:true },
   { k:'lastc',  l:'Last Contact', kind:'connection',        v:function(e){ return lcLabel(e); }, n:function(e){ return flexKey(gv(e, 'last_contact')) || 0; }, date:true },
-  { k:'lastco', l:'Last Contact Online', kind:'connection', v:function(e){ return lcOnline(e) ? 'Yes' : 'No'; }, n:function(e){ return lcOnline(e) ? 1 : 0; } },
+  { k:'lastco', l:'Last Online', kind:'connection', v:function(e){ return lcOnline(e) ? 'Yes' : 'No'; }, n:function(e){ return lcOnline(e) ? 1 : 0; } },
   { k:'events', l:'Events', kind:'connection',              v:function(e){ return String((e.events || []).length); }, n:function(e){ return (e.events || []).length; } },
   { k:'msgs',   l:'Correspondence', kind:'connection',      v:function(e){ var mf = msgFor(e); return mf ? String(mf.n) : ''; }, n:function(e){ var mf = msgFor(e); return mf ? mf.n : 0; } },
   { k:'groups', l:'Groups', kind:'about', v:function(e){ return String(personGroups(e).length); }, n:function(e){ return personGroups(e).length; } },
@@ -14800,7 +15268,7 @@ function sbDgBulk(){
   if(!dis.length) return h + '<p class="sb-note">No selection. Tick people in the Data grid first — bulk edit applies one change to everyone ticked.</p></div>';
   var B = SB.dg;
   h += '<p class="sb-note">' + dis.length + ' people selected.</p><div class="sb-formrow">' +
-    '<select data-sbi="bulkfield">' + [['tier', 'Set tier'], ['addgroup', 'Add group'], ['delgroup', 'Remove group'], ['addorg', 'Add organization'], ['delorg', 'Remove organization']].map(function(o){ return '<option value="' + o[0] + '"' + (B.bulkField === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
+    '<select data-sbi="bulkfield">' + [['tier', 'Set level'], ['addgroup', 'Add group'], ['delgroup', 'Remove group'], ['addorg', 'Add organization'], ['delorg', 'Remove organization']].map(function(o){ return '<option value="' + o[0] + '"' + (B.bulkField === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
   if(B.bulkField === 'tier') h += '<select data-sbi="bulkval">' + ['vetted', 'associate', 'open', ''].map(function(t){ return '<option value="' + t + '"' + (B.bulkVal === t ? ' selected' : '') + '>' + (t || '(blank)') + '</option>'; }).join('') + '</select>';
   else if(B.bulkField === 'addorg' || B.bulkField === 'delorg') h += '<select data-sbi="bulkcat">' + ORG_CATS.map(function(c){ return '<option value="' + c.k + '"' + (B.bulkCat === c.k ? ' selected' : '') + '>' + esc(c.label || c.k) + '</option>'; }).join('') + '</select><input type="text" data-sbi="bulkname" placeholder="Organization name" value="' + esc(B.bulkName) + '">';
   else h += '<input type="text" data-sbi="bulkname" placeholder="Group name" value="' + esc(B.bulkName) + '">';
