@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.60.0';
+var APP_VERSION = '3.61.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7203,8 +7203,8 @@ function dtAnimate(){
    ============================================================ */
 var RC = null, RC_LOADING = false;
 var RC_CATS = { close:'Close call', identity:'Identity not proven', source:'Source too weak', sensitive:'Sensitive / family', conflict:'Conflicting record', verification:'Failed verification' };
-var RC_VIEW = { status:'pending', cat:'all', q:'', photo:false };
-try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '', photo:!!_rcv.photo }; }catch(x){}
+var RC_VIEW = { status:'pending', cat:'all', q:'', photo:false, cur:'' };
+try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '', photo:!!_rcv.photo, cur:typeof _rcv.cur === 'string' ? _rcv.cur : '' }; }catch(x){}
 function rcSaveView(){ try{ store('ncc_rc_view', JSON.stringify(RC_VIEW)); }catch(x){} }
 function rcLoad(){
   if(RC || RC_LOADING) return;
@@ -7310,6 +7310,18 @@ function rcDecide(id, decision){
   if(di == null){ toast('That profile is no longer in the directory — the candidate cannot be filed.'); return; }
   var e = D.directory[di];
   if(rcStatus(c).k !== 'pending'){ toast('That candidate was already decided.'); rcPaint(); return; }
+  /* Keyboard flow (V3.61.0): whichever pending row follows this one in
+     the current view (or precedes it, when it is last) becomes the
+     current row once this decision lands, so JD can decide, decide,
+     decide without touching the mouse. */
+  var nextCur = '';
+  (function(){
+    var m0 = rcModel(), idx = -1;
+    m0.shown.forEach(function(r, j){ if(r.c.id === id) idx = j; });
+    if(idx < 0) return;
+    for(var j = idx + 1; j < m0.shown.length; j++) if(m0.shown[j].st.k === 'pending' && m0.shown[j].c.id !== id){ nextCur = m0.shown[j].c.id; return; }
+    for(var j2 = idx - 1; j2 >= 0; j2--) if(m0.shown[j2].st.k === 'pending' && m0.shown[j2].c.id !== id){ nextCur = m0.shown[j2].c.id; return; }
+  })();
   txn(decision === 'file' ? 'File research candidate' : 'Dismiss research candidate', function(){
     var patch = {}, map = rcReviewMap(e), prev = map[c.id] || {};
     var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
@@ -7332,18 +7344,21 @@ function rcDecide(id, decision){
   toast(decision === 'file'
     ? 'Filed for ' + (c.display || '') + '. It saves through the Save Pool.'
     : 'Dismissed for ' + (c.display || '') + '. Luna\u2019s call stands.', { undo:true });
+  if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
   rcPaint();
+  if(nextCur) rcScrollCur();
 }
-function rcConsoleHTML(){
-  if(!RC) return '<section class="rcconsole" id="rcconsole"><div class="rc-loading">Loading the research ledger\u2026</div></section>';
-  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function fmtD(iso){ if(!iso) return ''; var p = String(iso).split('-'); if(p.length < 3) return String(iso); return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]; }
+/* The ledger model, shared by the console render and the keyboard
+   flow (V3.61.0): every candidate with its live status, the header
+   counts, and the rows the current view actually shows, in display
+   order. */
+function rcModel(){
   var all = (RC.candidates || []).slice().sort(function(a, b){
     return (+b.confidence - +a.confidence) || String(b.run_date || '').localeCompare(String(a.run_date || '')) || String(a.display || '').localeCompare(String(b.display || ''));
   });
   var rows = all.map(function(c){
     var di = rcDi(c);
-    return { c:c, st:rcStatus(c), photo:di != null && rcPhotoFlag(D.directory[di], c) };
+    return { c:c, di:di, st:rcStatus(c), photo:di != null && rcPhotoFlag(D.directory[di], c) };
   });
   var counts = { pending:0, filed:0, dismissed:0, close:0, photo:0 };
   rows.forEach(function(r){
@@ -7366,6 +7381,107 @@ function rcConsoleHTML(){
     }
     return true;
   });
+  return { rows:rows, counts:counts, shown:shown };
+}
+/* Exactly one row is current. The stored id survives repaints and
+   leaving/returning; when it falls out of the shown list (decided,
+   filtered away), the first pending shown row takes over, else the
+   first shown row. */
+function rcEnsureCur(m){
+  if(!m.shown.length){ if(RC_VIEW.cur){ RC_VIEW.cur = ''; rcSaveView(); } return; }
+  for(var i = 0; i < m.shown.length; i++) if(m.shown[i].c.id === RC_VIEW.cur) return;
+  var pick = null;
+  for(var j = 0; j < m.shown.length; j++) if(m.shown[j].st.k === 'pending'){ pick = m.shown[j]; break; }
+  RC_VIEW.cur = (pick || m.shown[0]).c.id;
+  rcSaveView();
+}
+function rcPosText(m){
+  var pend = m.rows.filter(function(r){ return r.st.k === 'pending'; });
+  if(!pend.length) return 'No pending candidates';
+  for(var i = 0; i < pend.length; i++) if(pend[i].c.id === RC_VIEW.cur) return 'Pending ' + (i + 1) + ' of ' + pend.length;
+  return pend.length + ' pending';
+}
+function rcRowEl(id){
+  var sec = document.getElementById('rcconsole');
+  if(!sec || !id) return null;
+  var rows = sec.querySelectorAll('.rc-row[data-rcid]');
+  for(var i = 0; i < rows.length; i++) if(rows[i].getAttribute('data-rcid') === id) return rows[i];
+  return null;
+}
+function rcScrollCur(){
+  var row = rcRowEl(RC_VIEW.cur);
+  if(row) row.scrollIntoView({ block:'nearest' });
+}
+/* Move the current marker in the live DOM (no repaint): the class
+   moves, the key-bar readout updates, and the row scrolls into view
+   when asked. A full rcPaint renders the same marker from RC_VIEW. */
+function rcSetCur(id, scroll){
+  if(!id) return;
+  if(id !== RC_VIEW.cur){ RC_VIEW.cur = id; rcSaveView(); }
+  var sec = document.getElementById('rcconsole');
+  if(sec){
+    var marked = sec.querySelectorAll('.rc-row.rc-cur');
+    for(var i = 0; i < marked.length; i++) marked[i].classList.remove('rc-cur');
+    var row = rcRowEl(id);
+    if(row) row.classList.add('rc-cur');
+    var pos = document.getElementById('rcpos');
+    if(pos && RC && RC.candidates) pos.textContent = rcPosText(rcModel());
+  }
+  if(scroll) rcScrollCur();
+}
+/* "On file now": the directory entry's own anchors for this person,
+   so the identity match can be judged against the candidate's
+   anchors without opening the source. */
+function rcOnFileLine(r){
+  if(r.di == null) return '';
+  var e = D.directory[r.di], bits = [], seen = {};
+  function push(x){ x = String(x || '').trim(); if(x && !seen[x.toLowerCase()]){ seen[x.toLowerCase()] = 1; bits.push(x); } }
+  push(gv(e, 'location_on_file'));
+  ['companies', 'universities', 'churches'].forEach(function(k){
+    splitTags(gv(e, k), ',').forEach(push);
+  });
+  if(!bits.length) return '';
+  return '<p class="rc-onfile"><span>On file:</span> ' + esc(bits.join(' \u00b7 ')) + '</p>';
+}
+function rcFieldVal(v){
+  if(v == null) return '';
+  if(Array.isArray(v)) return v.map(rcFieldVal).filter(Boolean).join(', ');
+  if(typeof v === 'object'){
+    var parts = [v.degree || v.name || v.title || '', v.institution || v.school || v.university || '', v.year || v.date || ''].filter(Boolean);
+    return parts.join(', ');
+  }
+  return String(v);
+}
+/* "Filing adds": the blank-fill / union fields a File decision
+   would write, in plain readable form. */
+function rcFieldsLine(c){
+  var F = c.fields || {}, bits = [];
+  function add(label, v, plus){
+    var s = rcFieldVal(v);
+    if(!s) return;
+    if(plus) s = s.split(', ').map(function(x){ return '+' + x; }).join(', ');
+    bits.push(label + ': ' + s);
+  }
+  var loc = F.location_on_file != null ? F.location_on_file : F.location;
+  if(loc != null && rcFieldVal(loc)) bits.push('Location: ' + rcFieldVal(loc));
+  add('Company', F.companies);
+  add('University', F.universities);
+  add('Church', F.churches);
+  add('Group', F.groups);
+  add('Degree', F.degrees);
+  add('Highlights', F.highlights, true);
+  add('Achievements', F.achievements, true);
+  add('Also known as', F.also_known_as);
+  if(!bits.length) return '';
+  return '<p class="rc-adds"><span>Filing adds:</span> ' + esc(bits.join(' \u00b7 ')) + '</p>';
+}
+function rcConsoleHTML(){
+  if(!RC) return '<section class="rcconsole" id="rcconsole"><div class="rc-loading">Loading the research ledger\u2026</div></section>';
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtD(iso){ if(!iso) return ''; var p = String(iso).split('-'); if(p.length < 3) return String(iso); return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]; }
+  var m = rcModel();
+  rcEnsureCur(m);
+  var rows = m.rows, counts = m.counts, shown = m.shown;
   function personLink(c){
     var di = rcDi(c), label = esc(c.display || c.name || '');
     if(di == null) return '<b>' + label + '</b>';
@@ -7389,13 +7505,15 @@ function rcConsoleHTML(){
         '<span class="rc-actnote">File = the information is correct.<br>Dismiss = Luna was right.</span></div>'
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
-    return '<div class="rc-row rcb-' + band.k + '">' +
+    return '<div class="rc-row rcb-' + band.k + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-rcid="' + esc(c.id) + '">' +
       '<div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
       '<span class="rc-parts">Identity ' + (+parts.identity || 0) + '/50<br>Source ' + (+parts.source || 0) + '/30<br>Detail ' + (+parts.detail || 0) + '/20</span></div>' +
       '<div class="rc-main"><div class="rc-person">' + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + '<span class="rc-cat">' + esc(RC_CATS[c.category] || c.category || '') + '</span>' +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
+      rcOnFileLine(r) +
       '<p class="rc-claim">' + esc(c.claim || '') + '</p>' +
-      '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p></div>' +
+      '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p>' +
+      rcFieldsLine(c) + '</div>' +
       '<div class="rc-ev"><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
       '<div class="rc-gate"><span>Why it was held</span><p>' + esc(c.missing_gate || '') + '</p></div>' +
       actions + '</div>';
@@ -7410,6 +7528,8 @@ function rcConsoleHTML(){
     '<button type="button" class="rc-photobtn' + (RC_VIEW.photo ? ' on' : '') + '" data-act="rcphotoonly">' + ic('camera', 14) + 'Photo leads <b>' + counts.photo + '</b></button>' +
     '<select id="rccat" aria-label="Candidate category">' + catOpts + '</select>' +
     '<input id="rcq" type="search" placeholder="Search person, claim, source\u2026" value="' + esc(RC_VIEW.q || '') + '"></div>' +
+    '<div class="rc-keybar"><span class="rc-keys">\u2191 \u2193 move \u00b7 Enter open source \u00b7 F file it \u00b7 X dismiss \u00b7 P photo lead</span>' +
+    '<span class="rc-pos" id="rcpos">' + esc(rcPosText(m)) + '</span></div>' +
     '<div class="rc-table"><div class="rc-row rc-thead"><span>Confidence</span><span>Person / candidate</span><span>Evidence</span><span>Why held</span><span>Your call</span></div>' + body + '</div>' +
     '<p class="rc-foot">Confidence = identity match (50) + source strength (30) + claim detail (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
     '</section>';
@@ -7424,6 +7544,74 @@ function rcPaint(){
     if(nq){ nq.focus(); try{ nq.setSelectionRange(pos, pos); }catch(x){} }
   }
 }
+/* --- Keyboard flow (V3.61.0): the whole section is decidable from
+   the keyboard. One current row; j/k or the arrow keys move it,
+   Enter/o opens its source in a new tab, f files, x/d dismisses,
+   p toggles the photo lead. The handler is document-level, so the
+   keys are live the moment JD returns from a source tab. It stays
+   inert while typing, while any overlay or panel is open, on other
+   routes, and whenever a modifier key is held. --- */
+function rcCurCandidate(){
+  if(!RC || !RC.candidates) return null;
+  for(var i = 0; i < RC.candidates.length; i++) if(RC.candidates[i].id === RC_VIEW.cur) return RC.candidates[i];
+  return null;
+}
+function rcMove(d){
+  var m = rcModel();
+  rcEnsureCur(m);
+  if(!m.shown.length) return;
+  var i = -1;
+  m.shown.forEach(function(r, j){ if(r.c.id === RC_VIEW.cur) i = j; });
+  if(i < 0) i = d > 0 ? -1 : 0;
+  var n = Math.max(0, Math.min(m.shown.length - 1, i + d));
+  rcSetCur(m.shown[n].c.id, true);
+}
+function rcOpenSource(){
+  var c = rcCurCandidate();
+  if(!c || !c.url) return;
+  var row = rcRowEl(c.id), a = row ? row.querySelector('.rc-src-link') : null;
+  if(a){ a.click(); return; }
+  window.open(c.url, '_blank', 'noopener');
+}
+document.addEventListener('keydown', function(ev){
+  if(!RC || !RC.candidates || !RC.candidates.length) return;
+  if(!S.route || S.route.name !== 'daily') return;
+  if(!document.getElementById('rcconsole')) return;
+  if(ev.ctrlKey || ev.metaKey || ev.altKey) return;
+  var t = ev.target;
+  if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+  if(typeof LRCC !== 'undefined' && LRCC.el) return;
+  if(typeof QA !== 'undefined' && QA.open) return;
+  if(document.body.classList.contains('sheet-open') || document.body.classList.contains('qa-open')) return;
+  if(document.querySelector('.hmi-wrap, .phi-wrap, .ykb-wrap, .phed-wrap')) return;
+  var tp = document.getElementById('tpop'); if(tp && !tp.hidden) return;
+  var sw = document.getElementById('sheetwrap'); if(sw && !sw.hidden) return;
+  var k = ev.key;
+  if(k === 'j' || k === 'ArrowDown'){ if(k === 'ArrowDown' && ev.shiftKey) return; ev.preventDefault(); rcMove(1); return; }
+  if(k === 'k' || k === 'ArrowUp'){ if(k === 'ArrowUp' && ev.shiftKey) return; ev.preventDefault(); rcMove(-1); return; }
+  if(k === 'Enter'){
+    if(t && (t.tagName === 'BUTTON' || t.tagName === 'A')) return;
+    ev.preventDefault(); rcOpenSource(); return;
+  }
+  var lk = (k && k.length === 1) ? k.toLowerCase() : '';
+  if(lk === 'o'){ ev.preventDefault(); rcOpenSource(); return; }
+  if(lk === 'f' || lk === 'x' || lk === 'd' || lk === 'p'){
+    var c = rcCurCandidate();
+    if(!c) return;
+    ev.preventDefault();
+    if(lk === 'p'){ rcTogglePhoto(c.id); return; }
+    if(rcStatus(c).k !== 'pending') return;
+    rcDecide(c.id, lk === 'f' ? 'file' : 'dismiss');
+  }
+});
+/* Clicking any row makes it the current row (its action buttons
+   keep their own behavior; this only moves the marker). */
+document.addEventListener('click', function(ev){
+  var row = ev.target && ev.target.closest ? ev.target.closest('.rc-row[data-rcid]') : null;
+  if(!row) return;
+  var id = row.getAttribute('data-rcid');
+  if(id && id !== RC_VIEW.cur) rcSetCur(id, false);
+});
 
 /* ============================================================
    Calendar (JD 2026-10-30): THE ATLAS — a zoomable year-map
