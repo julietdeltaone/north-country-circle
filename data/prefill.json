@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 2,
+ "count": 3,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -14,6 +14,19 @@
     "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
    ],
    "conf": 72
+  },
+  {
+   "id": "pf-ea4456086e",
+   "key": "haashaus",
+   "display": "Jen Haas",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "3 of 3 located known associates are in Potsdam."
+   ],
+   "conf": 55
   },
   {
    "id": "pf-d4ad11a2e5",
@@ -53,14 +66,6 @@
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
-  },
-  {
-   "key": "sf:jai-dane",
-   "display": "Janice Dane",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-4fc4f704db"
   }
  ]
 }
