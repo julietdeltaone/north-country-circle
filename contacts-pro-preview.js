@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.70.0';
+var APP_VERSION = '3.71.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6118,10 +6118,53 @@ function hmMixInner(title, segs, total){
 function hmMixCard(title, segs, total){
   return '<section class="card hm-blk">' + hmMixInner(title, segs, total) + '</section>';
 }
+/* --- Home Directory charts (JD 2026-11-02, V3.71.0): the Stats
+   Explorer graphs from the Sandbox, moved front and center on Home
+   at JD's direction, Last-contact recency leading (it sat last in
+   the explorer). The explorer page is retired — the Sandbox's stats
+   surface is the Record Studio now. Same compute the explorer used
+   (SE_FIELDS / seFilledCount / seDistGroups), display-only here:
+   the bars are for looking; the working surfaces are People and
+   the Record Studio. --- */
+function hmCharts(){
+  msgLoad();
+  var P = people(), total = P.length || 1;
+  var groups = seDistGroups(), rec = null, rest = [];
+  groups.forEach(function(g){ if(g.title === 'Last-contact recency') rec = g; else rest.push(g); });
+  function dcard(g, lead){
+    var max = Math.max.apply(null, g.rows.map(function(r){ return r.dis.length; }).concat([1]));
+    return '<div class="hm-chart' + (lead ? ' lead' : '') + '"><h4>' + esc(g.title) + '</h4>' + g.rows.map(function(r){
+      return '<div class="se-drow hmc-row"><span class="se-dl">' + esc(r.label) + '</span><span class="se-dbar"><span style="width:' + Math.round(r.dis.length / max * 100) + '%"></span></span><span class="se-dn">' + r.dis.length + '</span></div>';
+    }).join('') + '</div>';
+  }
+  var frows = SE_FIELDS.map(function(f){
+    var n = P.filter(function(di){ return f.has(D.directory[di]); }).length, pct = Math.round(n / total * 100);
+    return '<div class="se-frow"><span class="se-fl">' + f.l + '</span>' +
+      '<span class="se-bar"><span class="se-seg has" style="flex:' + n + '">' + (n ? n : '') + '</span>' +
+      '<span class="se-seg miss" style="flex:' + (total - n) + '">' + ((total - n) ? (total - n) : '') + '</span></span>' +
+      '<span class="se-fn">' + pct + '%</span></div>';
+  }).join('');
+  var board = P.slice().sort(function(a, b){ return seFilledCount(b) - seFilledCount(a) || dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); }).slice(0, 10);
+  var bhtml = board.map(function(di, i){
+    var e = D.directory[di], n = seFilledCount(di);
+    return '<div class="se-brow hmc-row"><span class="se-rank">' + (i + 1) + '</span>' + avatar(e, 'sm') + '<span class="se-bname">' + esc(dispName(e)) + '</span><span class="se-dbar"><span style="width:' + Math.round(n / SE_FIELDS.length * 100) + '%"></span></span><span class="se-dn">' + n + ' / ' + SE_FIELDS.length + '</span></div>';
+  }).join('');
+  return '<section class="card hm-blk hm-charts" data-kind="about"><header><h3>Directory charts</h3>' +
+    '<p class="sub">The directory counted live, recency first. These charts moved here from the Sandbox — the Sandbox keeps the working table, the Record Studio.</p></header>' +
+    '<div class="hm-charts-grid">' +
+    (rec ? dcard(rec, true) : '') +
+    '<div class="hm-chart"><h4>Field completeness</h4>' + frows + '</div>' +
+    rest.map(function(g){ return dcard(g); }).join('') +
+    '<div class="hm-chart"><h4>Most fields filled — leaderboard</h4>' + bhtml + '</div>' +
+    '</div></section>';
+}
 /* --- Home Shape card (JD 2026-10-28, V3.26.0 consolidation): tier
    mix, relationship mix and the network line in ONE card instead of
-   three stacked surfaces. --- */
-function hmShapeCard(dd, tierSegs, relSegs, N){
+   three stacked surfaces. V3.71.0 (JD 2026-11-02): the Closeness
+   donut and the Relationship mix bar are REMOVED — the Directory
+   charts above replace them (relationship mix included); the
+   network line stays. --- */
+function hmShapeCard(dd, N){
   netBuild();
   var seg = [
     { l:'Vetted', c:dd.tierCounts.vetted, col:(TIERS.vetted || {}).c || 'var(--seg-0)' },
@@ -6129,9 +6172,7 @@ function hmShapeCard(dd, tierSegs, relSegs, N){
     { l:'Open', c:dd.tierCounts.open, col:(TIERS.open || {}).c || 'var(--seg-2)' },
     { l:'No level yet', c:dd.tierCounts.none, col:RING_C[3] }
   ];
-  return '<section class="card hm-blk" data-kind="connection"><div class="hm-shapegrid">' +
-    '<div class="hm-shapehalf">' + hmMixInner('Closeness', tierSegs, N) + '</div>' +
-    '<div class="hm-shapehalf">' + hmMixInner('Relationship mix', relSegs, N) + '</div></div>' +
+  return '<section class="card hm-blk" data-kind="connection">' +
     '<div class="hm-ns-row hm-shape-net">' +
     '<span class="hm-ns-t">Network</span>' +
     seg.map(function(s){ return '<span class="hm-ns-seg"><i style="background:' + s.col + '"></i>' + s.l + ' <b>' + s.c + '</b></span>'; }).join('') +
@@ -7215,16 +7256,6 @@ function viewHome(v){
   HM_DECK = hmDeckData(pop); HM_PD = hmDeckPhotos(); HMI_INDEX = {};
   if(HMI) hmiClose(true);
   var dd = HM_DECK, pd = HM_PD;
-  var tierSegs = [
-    { label:'Vetted', key:'vetted', kind:'tier', c:dd.tierCounts.vetted, col:'var(--seg-0)' },
-    { label:'Associate', key:'associate', kind:'tier', c:dd.tierCounts.associate, col:'var(--seg-1)' },
-    { label:'Open', key:'open', kind:'tier', c:dd.tierCounts.open, col:'var(--seg-2)' },
-    { label:'No level yet', key:'none', kind:'tier', c:dd.tierCounts.none, col:'var(--seg-4)' }
-  ];
-  var relSegs = hmFormsTop(dd.rels, 12, true).map(function(t, i){
-    return { label:t.label, key:t.label, kind:'rel', c:t.c, col:'var(--seg-' + (i % 9) + ')' };
-  });
-  if(dd.relBlank) relSegs.push({ label:'Untyped', key:'Unspecified', kind:'rel', c:dd.relBlank, col:'var(--seg-8)' });
   var townsTop = hmFormsTop(dd.towns, 8), townMax = townsTop.length ? townsTop[0].c : 0;
   var skillsTop = hmFormsTop(dd.skills, 8, true), skillMax = skillsTop.length ? skillsTop[0].c : 0;
   var groupsTop = hmPlainTop(dd.groupCounts, 8), groupMax = groupsTop.length ? groupsTop[0].c : 0;
@@ -7243,7 +7274,8 @@ function viewHome(v){
     hmKpi('located', dd.locN, 'Located', Object.keys(dd.towns).length + ' towns on file') +
     hmKpi('dated', dd.dated, 'Known since', dd.undated + ' still missing a year') +
     '</div></div>' +
-    hmShapeCard(dd, tierSegs, relSegs, N) +
+    hmCharts() +
+    hmShapeCard(dd, N) +
     hmContactsCard() +
     hmRanksCard([
       { tab:'towns', title:'Where they are', rows: townsTop.map(function(t, ix){ return hmRankRow('town', t.key, t.label, t.c, townMax, ix === 0, ix + 1, N); }).join(''),
@@ -12377,7 +12409,7 @@ function onChange(ev){
   if(t.id === 'sst-bf'){ SB.st.bulkF = t.value; SB.st.bulkV = t.value === 'tier' ? 'vetted' : t.value === 'rel' ? 'friend' : ''; SB.st.bulkGrp = ''; SB.st.confirm = false; sstPaintBulk(); return; }
   if(t.id === 'sst-bcat'){ SB.st.bulkCat = t.value; SB.st.confirm = false; sstPaintBulk(); return; }
   if(t.id === 'sst-bv-sel'){ SB.st.bulkV = t.value; SB.st.confirm = false; return; }
-  if(t.hasAttribute && t.hasAttribute('data-sstck')){ var sdi2 = +t.getAttribute('data-sstck'), se2 = D.directory[sdi2]; if(se2){ if(t.checked) SB.st.sel[pkey(se2)] = sdi2; else delete SB.st.sel[pkey(se2)]; SB.st.confirm = false; var srow = t.closest ? t.closest('tr') : null; if(srow) srow.classList.toggle('sel', !!t.checked); sstPaintSelState(); } return; }
+  if(t.hasAttribute && t.hasAttribute('data-sstck')){ var sdi2 = +t.getAttribute('data-sstck'); if(D.directory[sdi2]){ if(t.checked) SB.st.sel[sdi2] = true; else delete SB.st.sel[sdi2]; SB.st.confirm = false; var srow = t.closest ? t.closest('tr') : null; if(srow) srow.classList.toggle('sel', !!t.checked); sstPaintSelState(); } return; }
   if(t.hasAttribute && t.hasAttribute('data-sstckall')){ sstSelectView(!!t.checked); return; }
   if(t.hasAttribute && t.hasAttribute('data-cdeonl')){ if(CDE) CDE.online = t.checked; return; }
   if(t.id === 'rccat'){ RC_VIEW.cat = t.value; rcSaveView(); rcPaint(); return; }
@@ -13739,7 +13771,9 @@ function sstFiltered(){
   return dis;
 }
 function sstSelDis(){
-  return Object.keys(SB.st.sel).map(function(k){ return SB.st.sel[k]; }).filter(function(di){ return D.directory[di] && liveEntry(D.directory[di]); });
+  /* keyed by directory index, not pkey: two live rows can share a
+     pkey (the sf:jdmeyers_ shell pair) and each is its own record here */
+  return Object.keys(SB.st.sel).map(function(k){ return +k; }).filter(function(di){ return D.directory[di] && liveEntry(D.directory[di]); });
 }
 function sstTierChips(){
   var st = SB.st;
@@ -13772,7 +13806,7 @@ function sstProxCell(e){
   return '<span class="clip" title="' + esc(s) + '">' + esc(s) + '</span>';
 }
 function sstRowHTML(di, i, cols){
-  var e = D.directory[di], sel = !!SB.st.sel[pkey(e)];
+  var e = D.directory[di], sel = !!SB.st.sel[di];
   var tds = cols.map(function(c){
     if(c.k === 'prox') return '<td class="c-prox" data-kind="connection">' + sstProxCell(e) + '</td>';
     if(c.k === 'lastc') return '<td class="c-lastc num" data-kind="connection"><span class="sst-lcc">' + PTCELL.lastc(e) + '</span><button type="button" class="sst-lcbtn" data-act="sstedlc" data-di="' + di + '" title="Edit last contact" aria-label="Edit last contact for ' + esc(dispName(e)) + '">' + ic('edit', 11) + '</button></td>';
@@ -13802,7 +13836,7 @@ function sstPaint(){
   sstPaintSelState();
 }
 function sstPaintSelState(){
-  var dis = sstFiltered(), sel = sstSelDis(), inView = dis.filter(function(di){ return SB.st.sel[pkey(D.directory[di])]; }).length;
+  var dis = sstFiltered(), sel = sstSelDis(), inView = dis.filter(function(di){ return SB.st.sel[di]; }).length;
   var ck = document.querySelector('[data-sstckall]');
   if(ck){ ck.checked = dis.length > 0 && inView === dis.length; ck.indeterminate = inView > 0 && inView < dis.length; }
   var cnt = $('#sst-count');
@@ -13926,7 +13960,7 @@ function sstBulkApply(){
 }
 function sstSelectView(on){
   var dis = sstFiltered();
-  dis.forEach(function(di){ var pk = pkey(D.directory[di]); if(on) SB.st.sel[pk] = di; else delete SB.st.sel[pk]; });
+  dis.forEach(function(di){ if(on) SB.st.sel[di] = true; else delete SB.st.sel[di]; });
   SB.st.confirm = false;
   sstPaint();
 }
@@ -14050,7 +14084,6 @@ var SB_TOOLS = [
   { k:'merge',    z:'Sandbox', t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
   { k:'danger',   z:'Sandbox', t:'Danger Zone',  d:'Weed the directory: a keyboard-driven table. Shift+Backspace removes with no confirmation; Ctrl+Z or u restores.', ic:'trash' },
   { k:'log',      z:'Sandbox', t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' },
-  { k:'stats',    z:'Sandbox', t:'Stats Explorer', d:'Field completeness for 18 fields plus distributions — completeness bands, leaderboard, relationship mix, towns, group sizes, years-known decades, last-contact recency. Every bar opens its people list.', ic:'target' }
 ];
 var SB_LABS = [
   { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through associates and family, mutual connections, and the bridge people who hold the circle together.' },
@@ -14176,8 +14209,8 @@ function viewSandbox(v){
      returns in V3.64.0 as the Danger Zone weeding tool (sbDangerZone);
      the old multi-tab danger functions below stay in the file for
      their shared helpers (sbDoDelete archives, sbRestoreArchived). */
-  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, danger:sbDangerZone, log:sbLogView, stats:sbStats }[SB.tool] || sbHome;
-  if(!({ home:1, insights:1, merge:1, danger:1, log:1, stats:1 })[SB.tool]) SB.tool = 'home';
+  if(!({ home:1, insights:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';   /* 'stats' retired V3.71.0: its graphs live on Home now; old links land on the Record Studio */
+  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, danger:sbDangerZone, log:sbLogView }[SB.tool] || sbHome;
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
