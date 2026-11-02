@@ -5150,7 +5150,10 @@ html[data-mode="dark"] .railfoot .nv{--nvc:#c49a6c}
 html[data-mode="dark"] .nv[data-nav="audit"],html[data-mode="dark"] .nv[data-nav="sandbox"]{--nvc:#cf8b98}
 #rail .nv>svg.icsvg,#tabs .nv>svg.icsvg{color:var(--nvc)}
 #rail .nv.on>svg.icsvg,#tabs .nv.on>svg.icsvg{color:var(--nvc)}
-.nv.on{box-shadow:inset 3px 0 0 var(--nvc)}
+/* the active marker is the standard app accent, never a kind ink
+   (V3.66.1: flush kind lines are banned — the rail kind rides the
+   dot + icon color alone) */
+.nv.on{box-shadow:inset 3px 0 0 var(--acc)}
 
 /* --- (4) Quick Add: open-profile affordance on person rows --- */
 .qa-row{font:inherit}
@@ -5163,8 +5166,10 @@ html[data-mode="dark"] .nv[data-nav="audit"],html[data-mode="dark"] .nv[data-nav
    design packet 2026-11-02 Scheme A "Two Inks", DECIDED).
    Steel blue (--ink-about) = About; antique gold (--ink-conn) =
    Connection ("With you"). The inks are RESERVED to these two
-   meanings. NOTATION ONLY: this block colors edges, dots, chips
-   and header text — it hides nothing and moves nothing.
+   meanings. NOTATION ONLY: this block colors chips, dots, avatar
+   rings, inset segments and header text — it hides nothing and
+   moves nothing. Flush full-height edge lines are banned (JD
+   2026-11-02, V3.66.1 — see the kind-edges block below).
    Levels ride the same vocabulary: --lvl-personal (deep amber /
    bronze) and --lvl-private (maroon) exist here, but only
    Personal is assigned anywhere in this pass (Family).
@@ -5231,26 +5236,48 @@ th[data-kind="about"]{color:var(--ink-about)}
 th[data-kind="connection"]{color:var(--ink-conn)}
 th[data-kind="neutral"]{color:var(--ink-neutral)}
 
-/* card edges: bordered cards take a 3px inked left border */
-section.card[data-kind="about"],.card[data-kind="about"]{border-left:3px solid var(--ink-about-bright)}
-section.card[data-kind="connection"],.card[data-kind="connection"]{border-left:3px solid var(--ink-conn-bright)}
-.pf-row[data-kind="about"],.pfq-card[data-kind="about"],.lrcc-sec[data-kind="about"]{border-left:3px solid var(--ink-about-bright)}
-.pf-row[data-kind="connection"],.pfq-card[data-kind="connection"],.lrcc-sec[data-kind="connection"]{border-left:3px solid var(--ink-conn-bright)}
-.tile[data-kind="connection"]{border-left:3px solid var(--ink-conn-bright)}
-.tile[data-kind="about"]{border-left:3px solid var(--ink-about-bright)}
-.ca-wev[data-kind="connection"]{border-left:3px solid var(--ink-conn-bright)}
+/* kind edges (V3.66.1, JD 2026-11-02): flush full-height lines are
+   BANNED app-wide — no kind line touches a corner radius or runs a
+   card's full height flush with its border. Three carriers instead:
+   1. a kind chip in the surface's header carries the kind alone
+      (profile sheets, Home cards, the Prefill queue card) — no edge;
+   2. on list rows with an initial avatar, the ink rides the avatar
+      as a 2px ring (Home Last Contacts) — no line on the row;
+   3. surfaces with no chip and no avatar that still need an edge
+      signal get an INSET SEGMENT: a 3px bar with its own radius,
+      floated at least 12px clear of the top and bottom edges and
+      offset inside the host's padding.
+   Rows that lead with a kind glyph (What's New, Research Command,
+   Prefill rows), rows inside a chipped card (Fresh rows), rows
+   whose own dot/fill carries the color (Home mix + ranking rows),
+   and the inspector mini items (their label takes the ink) get NO
+   edge at all. */
 
-/* row edges: borderless rows take an inset ink line */
-.wn-row[data-kind="about"],.chg[data-kind="about"],.hma-frow[data-kind="about"],.hot-row[data-kind="about"],.rc-row[data-kind="about"],.asfact[data-kind="about"],.lrcc-frow[data-kind="about"],.hm-rrow.k-about,.hm-bar.k-about,.hm-legrow[data-nkind="about"]{box-shadow:inset 3px 0 0 var(--ink-about-bright)}
-.wn-row[data-kind="connection"],.chg[data-kind="connection"],.hma-frow[data-kind="connection"],.hot-row[data-kind="connection"],.rc-row[data-kind="connection"],.asfact[data-kind="connection"],.lrcc-frow[data-kind="connection"],.hm-lcrow[data-kind="connection"],.ca-evrow[data-kind="connection"],.ca-mini[data-kind="connection"],.hm-rrow.k-connection,.hm-bar.k-connection,.hm-legrow[data-nkind="connection"]{box-shadow:inset 3px 0 0 var(--ink-conn-bright)}
-.hm-lcrow[data-kind="about"],.ca-evrow[data-kind="about"],.ca-mini[data-kind="about"]{box-shadow:inset 3px 0 0 var(--ink-about-bright)}
+/* 2 — avatar rings (Home Last Contacts) */
+.hm-lcrow[data-kind="about"] .av{box-shadow:0 0 0 2px var(--ink-about-bright)}
+.hm-lcrow[data-kind="connection"] .av{box-shadow:0 0 0 2px var(--ink-conn-bright)}
 
-/* profile sheets + hero stamps */
-.psheets .pmove[data-kind="about"]{border-top:3px solid var(--ink-about-bright)}
-.psheets .pmove[data-kind="connection"]{border-top:3px solid var(--ink-conn-bright)}
+/* 3 — inset segments */
+.card[data-kind]:not(:has(.kind-chip)),.lrcc-sec,.lrcc-frow,.chg,.asfact,.ca-wev,.ca-evrow,.tile[data-kind]{position:relative}
+.card[data-kind="about"]:not(:has(.kind-chip))::before,.lrcc-sec[data-kind="about"]::before,.lrcc-frow[data-kind="about"]::before,.chg[data-kind="about"]::before,.asfact[data-kind="about"]::before,.tile[data-kind="about"]::before{content:"";position:absolute;left:7px;top:12px;bottom:12px;width:3px;border-radius:99px;background:var(--ink-about-bright);pointer-events:none}
+.card[data-kind="connection"]:not(:has(.kind-chip))::before,.chg[data-kind="connection"]::before,.ca-wev[data-kind="connection"]::before,.ca-evrow[data-kind="connection"]::before,.tile[data-kind="connection"]::before{content:"";position:absolute;left:7px;top:12px;bottom:12px;width:3px;border-radius:99px;background:var(--ink-conn-bright);pointer-events:none}
+/* per-host offsets: the bar floats inside each host's own padding */
+.chg[data-kind]::before{left:6px}
+.lrcc-sec[data-kind]::before{left:6px}
+.lrcc-frow[data-kind]::before{left:5px}
+.tile[data-kind]::before{left:4px}
+.asfact[data-kind]{padding-left:12px}
+.asfact[data-kind]::before{left:2px}
+.ca-evrow[data-kind]{padding-left:11px}
+.ca-evrow[data-kind]::before{left:2px}
+.ca-wev[data-kind]::before{left:3px}
+/* profile section cards sit inside a chipped sheet and carry a
+   labeled band spine — the sheet chip carries their kind */
+.page.profile .card[data-kind]::before{display:none}
+
+/* profile sheets + hero stamps (the sheet header chip carries the
+   kind since V3.66.1 — no top edge) */
 .pmove-h .kind-chip{margin-left:2px}
-.ih-mi[data-kind="about"]{box-shadow:inset 3px 0 0 var(--ink-about-bright);padding-left:9px}
-.ih-mi[data-kind="connection"]{box-shadow:inset 3px 0 0 var(--ink-conn-bright);padding-left:9px}
 .ih-mi[data-kind="about"] small{color:var(--ink-about)}
 .ih-mi[data-kind="connection"] small{color:var(--ink-conn)}
 .dbadge[data-kind="about"]{color:var(--ink-about)}
@@ -5308,9 +5335,8 @@ section.card[data-kind="connection"],.card[data-kind="connection"]{border-left:3
 .kind-chip{border-radius:8px;padding:2px 7px 2px 6px;font-weight:700;letter-spacing:.09em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 .lvl-chip{border-radius:8px;padding:2px 7px;font-weight:700;letter-spacing:.09em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 .lvl-open{font-size:10px;font-weight:700;letter-spacing:.09em;color:var(--sub)}
-/* thinner sheet edges (3px -> 2px) */
-.psheets .pmove[data-kind="about"]{border-top-width:2px}
-.psheets .pmove[data-kind="connection"]{border-top-width:2px}
+/* sheet top edges retired in V3.66.1 (the header chip carries the
+   kind — see the kind-edges block above) */
 
 /* WS-C: both sheets in one scroll surface (sheet-c sticky removed
    at the base rule); tighter packing so small fields hug content. */
