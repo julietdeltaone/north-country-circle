@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.66.1';
+var APP_VERSION = '3.67.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2772,7 +2772,7 @@ function viewPeople(v){
   /* Design cleanup (JD 2026-10-28): the toolbar lives INSIDE the hero
      banner now — search, tier chips and the More/Columns buttons sit
      in the banner's second row, so the table starts right under it. */
-  v.innerHTML = '<div class="page people" data-kind="about"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
+  v.innerHTML = '<div class="page people" data-kind="about"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><div class="ppl-subrow"><p class="sub" id="pcount"></p>' + '<span class="kind-legend">' + kindChip('about', true) + '<span>facts about the person</span>' + kindChip('connection', true) + '<span>exists only between you</span></span></div></div>' +
     '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="timeline"' + (f.view === 'timeline' ? ' class="on"' : '') + '>Timeline</button></div></div>' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any level'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'No level']], f.tier) +
@@ -2780,7 +2780,6 @@ function viewPeople(v){
     '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
     '<button type="button" class="btn ghost sm" data-act="ptcols">' + ic('settings', 14) + 'Columns</button>' +
     '</div></div></div>' +
-    '<div class="kind-legend">' + kindChip('about', true) + '<span>facts about the person</span>' + kindChip('connection', true) + '<span>exists only between you</span></div>' +
     '<div class="ppl-cols"><div class="ppl-main">' +
     '<div class="plist" id="plist"></div></div>' +
     '</div></div>';
@@ -8049,9 +8048,20 @@ if(!window.__calAtlasBound){
    with no dated fact sink below the dated ones, in brief order — an
    undated filing says nothing about when the event happened). */
 var LR_SORT = 'brief';
+var LR_ANIM_SEEN = false; /* edges pass (JD 2026-11-02): Live Records entrance motion plays on the first full render only */
 function viewDaily(v){
   dtLoad(); chLoad(); rcLoad();
-  var head = '<div class="page asearch lr" data-kind="about"><div class="pagehead"><div><h1 class="display">Live Records</h1></div><div class="lrcc-headbtn"><button type="button" class="btn primary" data-act="lrccopen">' + ic('expand', 14) + ' Command Center</button></div></div>';
+  /* Edges pass (JD 2026-11-02): the Records sort controls live in the
+     page header now, not in their own row; and the entrance animation
+     plays on the first full render only — data repaints (dt/ch/rc
+     landing) and sort toggles render still, with scroll preserved,
+     so the page no longer glitches through repeated rebuilds. */
+  var lrRepaint = LR_ANIM_SEEN;
+  var lrKeepY = lrRepaint ? window.scrollY : 0;
+  function lrHead(sortHTML){
+    return '<div class="page asearch lr' + (lrRepaint ? ' noanim' : '') + '" data-kind="about"><div class="pagehead"><div><h1 class="display">Live Records</h1></div><div class="lr-head-r">' + (sortHTML || '') + '<div class="lrcc-headbtn"><button type="button" class="btn primary" data-act="lrccopen">' + ic('expand', 14) + ' Command Center</button></div></div></div>';
+  }
+  var head = lrHead('');
   if(!DT){
     v.innerHTML = head + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
     return;
@@ -8085,7 +8095,7 @@ function viewDaily(v){
     newCards = '<div class="assec-t asanim" style="--d:60ms">NEW RECORDS &mdash; PAST 3 WEEKS <em class="cnt">' + freshList.length + '</em></div>' +
       '<div class="lrnew-grid">' + shown.map(function(it, i){
         var di = diOf(it.f.name), e = di != null ? D.directory[di] : null;
-        return '<section class="card lrnew' + (hotDateOk(it.x.published) ? ' lrhot' : '') + ' asanim" data-kind="about" style="--d:' + (80 + i * 50) + 'ms"><div class="cbody">' +
+        return '<section class="card lrnew' + (hotDateOk(it.x.published) ? ' lrhot' : '') + ' asanim" data-kind="about" style="--d:' + (70 + Math.min(i * 35, 210)) + 'ms"><div class="cbody">' +
           '<div class="lrnew-h">' + (e ? avatar(e, 'md') : '') + '<div class="lrnew-name">' + personLink(it.f.name, it.f.display) +
           (it.x.published ? '<small class="dim">Published ' + esc(fmtD(it.x.published)) + '</small>' : '') + '</div>' +
           (hotDateOk(it.x.published) ? '<span class="dtnew dthot">FRESH</span>' : '<span class="dtnew">NEW</span>') + '</div>' +
@@ -8144,7 +8154,7 @@ function viewDaily(v){
     var facts = fFacts.map(function(x, j){
       return '<div class="asfact" data-kind="about"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? (hotDateOk(x.published) ? ' <span class="dtnew dthot">FRESH</span>' : ' <span class="dtnew">NEW</span>') : '') + '</p></div>';
     }).join('');
-    return '<section class="card dtperson' + (hasHot ? ' lrhot' : '') + ' asanim" data-kind="about" style="--d:' + (140 + i * 70) + 'ms"><div class="cbody">' +
+    return '<section class="card dtperson' + (hasHot ? ' lrhot' : '') + ' asanim" data-kind="about" style="--d:' + (120 + Math.min(i * 35, 300)) + 'ms"><div class="cbody">' +
       '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + personLink(f.name, f.display) +
       '<small class="dim">' + (e ? esc(infoLine(e)) : '') + '</small></div>' +
       '<span class="asfiled-cnt">' + (f.facts || []).length + ' filed</span></div>' + facts + '</div></section>';
@@ -8169,14 +8179,14 @@ function viewDaily(v){
     if(au !== bu) return au - bu;
     return String(a.display || a.name).localeCompare(String(b.display || b.name));
   });
-  var checkedCard = '<section class="card asanim" data-kind="about" style="--d:' + (140 + (DT.filed || []).length * 70 + 60) + 'ms"><header><h3>Checked today</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody">' +
+  var checkedCard = '<section class="card asanim" data-kind="about" style="--d:' + (140 + Math.min((DT.filed || []).length * 35, 300) + 40) + 'ms"><header><h3>Checked today</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody">' +
     '<div class="lrchk-line"><b>' + updList.length + '</b> updated <span class="dim">&middot;</span> <b>' + curNames.length + '</b> checked, nothing new' +
     (typeof DT.unchecked_remaining === 'number' ? ' <span class="dim">&middot;</span> ' + DT.unchecked_remaining + ' not yet checked this cycle' : '') + '</div>' +
     ((DT.checked || []).length ? '<details class="lrdrop"><summary>Who was checked <span class="dim">(' + (DT.checked || []).length + ')</span></summary>' +
       '<div class="aschips">' + allChecked.map(function(c){ return chip(c, filedNames[String(c.name || '').toLowerCase()] ? 'upd' : 'cur'); }).join('') + '</div></details>' : '') +
     '</div></section>';
   var updHead = (DT.filed || []).length ? '<div class="assec-t asanim" style="--d:120ms">UPDATED RECORDS</div>' : '';
-  var sortBar = (DT.filed || []).length ? '<div class="lrsort asanim" style="--d:40ms"><span>Records</span>' +
+  var sortCtl = (DT.filed || []).length ? '<div class="lrsort inhead"><span>Records</span>' +
     '<button type="button" class="lrchip' + (LR_SORT === 'brief' ? ' on' : '') + '" data-act="lrsort" data-sort="brief">Brief order</button>' +
     '<button type="button" class="lrchip' + (LR_SORT === 'new' ? ' on' : '') + '" data-act="lrsort" data-sort="new">Newest events first</button></div>' : '';
   /* The old currency strip is gone (JD 2026-10-28): its date lives in
@@ -8197,7 +8207,9 @@ function viewDaily(v){
     }).join('');
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
-  v.innerHTML = head + '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + sortBar + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
+  v.innerHTML = lrHead(sortCtl) + '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
+  LR_ANIM_SEEN = true;
+  if(lrRepaint && lrKeepY) requestAnimationFrame(function(){ window.scrollTo(0, lrKeepY); });
   dtAnimate();
 }
 
