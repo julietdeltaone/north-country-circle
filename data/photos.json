@@ -666,12 +666,13 @@
    "added": "2026-10-22"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "St. Lawrence University news article 'St. Lawrence Honors Retirees, Anniversaries' (April 2022): the article names 'Robert Blewett, Economics, retired after 27 years'; the retiree group photo caption lists the back row 'Paul Haggett, Bob Blewett, Robert Clemmer, Mary Crowe...', and the tall man in the tan blazer (back row, second from left) wears a name tag that reads 'Bob Blewett' — legible in the filed crop. Coordinator fetched the full-size original (2000x1334) and visually verified. Filed 2026-11-02 via the live-browser pass. Upgrades his prior entry (auth_only, no image).",
    "name": "Bob Blewett",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/bob-blewett.jpg",
+   "source_page": "https://www.stlawu.edu/news/st-lawrence-honors-retirees-anniversaries",
+   "status": "confirmed",
+   "type": "Captioned group photo (crop)",
+   "added": "2026-11-02"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
