@@ -15500,9 +15500,18 @@ function viewCouncil(v){
     var es = ((cn.findings || {})[key] || []);
     var latest = es[0];
     var fr = cnFieldReport(key, cn);
+    /* Freshness pill (V3.63.0): computed from last_run alone — a desk
+       is CURRENT only if it ran within the last 8 days, STALE if its
+       last run is older, and a desk with no parseable run date says
+       so. The free-text status can no longer read "Active" next to a
+       weeks-old date with nothing calling it out. */
+    var rd = cnParseDate(r.last_run);
+    var pill = !rd ? '<span class="cnc-pill is-none">No run date</span>'
+      : cnFresh(rd) ? '<span class="cnc-pill is-cur">Current</span>'
+      : '<span class="cnc-pill is-stale">Stale</span>';
     h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
-      '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' +
-      '<span class="cnc-dstatus">' + esc(r.status || '') + '</span></div>' +
+      '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' + pill + '</div>' +
+      (r.status ? '<div class="cnc-dstatus2">' + esc(r.status) + '</div>' : '') +
       (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest · ' + esc(latest.date || '') + '</div>' +
         '<b>' + esc(latest.title || '') + '</b><p>' + esc(latest.summary || '') + '</p></div>' : '<p class="sb-note">No findings yet.</p>') +
       '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
