@@ -4406,21 +4406,24 @@ html[data-mode="dark"] .page.profile{--ringtrk:rgba(255,255,255,.18)}
 .psheets .card.multi{display:flex;flex-direction:column;gap:14px}
 
 /* --- bands --- */
-.b-syn{--band:71,85,105;--ink:#33404f}
-.b-web{--band:217,119,6;--ink:#8a4b05}
-.b-about{--band:71,85,105;--ink:#33404f}
-.b-identity{--band:37,99,235;--ink:#1d4fbf}
-.b-background,.b-business{--band:124,58,237;--ink:#5b2bb8}
-.b-persona{--band:77,124,15;--ink:#3f6212}
-.b-files{--band:13,148,136;--ink:#0b6e66}
-.b-relationship,.b-connections,.b-timeline,.b-lima{--band:227,6,19;--ink:#b3000d}
-html[data-mode="dark"] .b-syn,html[data-mode="dark"] .b-about{--ink:#a8bdd4}
-html[data-mode="dark"] .b-web{--ink:#f5b96e}
-html[data-mode="dark"] .b-identity{--ink:#8db4ff}
-html[data-mode="dark"] .b-background,html[data-mode="dark"] .b-business{--ink:#c9a8ff}
-html[data-mode="dark"] .b-persona{--ink:#a9cf6e}
-html[data-mode="dark"] .b-files{--ink:#5fd4c4}
-html[data-mode="dark"] .b-relationship,html[data-mode="dark"] .b-connections,html[data-mode="dark"] .b-timeline,html[data-mode="dark"] .b-lima{--ink:#ff8a8f}
+/* Notation harmonization (V3.65.0): within the profile partitions the
+   band scheme is the two inks only — About sections steel blue,
+   Connection sections antique gold (Scheme A, design packet 2026-11-02). */
+.b-syn{--band:46,74,104;--ink:#2e4a68}
+.b-web{--band:46,74,104;--ink:#2e4a68}
+.b-about{--band:46,74,104;--ink:#2e4a68}
+.b-identity{--band:46,74,104;--ink:#2e4a68}
+.b-background,.b-business{--band:46,74,104;--ink:#2e4a68}
+.b-persona{--band:46,74,104;--ink:#2e4a68}
+.b-files{--band:46,74,104;--ink:#2e4a68}
+.b-relationship,.b-connections,.b-timeline,.b-lima{--band:122,90,30;--ink:#6e5312}
+html[data-mode="dark"] .b-syn,html[data-mode="dark"] .b-about{--ink:#8fb8dd}
+html[data-mode="dark"] .b-web{--ink:#8fb8dd}
+html[data-mode="dark"] .b-identity{--ink:#8fb8dd}
+html[data-mode="dark"] .b-background,html[data-mode="dark"] .b-business{--ink:#8fb8dd}
+html[data-mode="dark"] .b-persona{--ink:#8fb8dd}
+html[data-mode="dark"] .b-files{--ink:#8fb8dd}
+html[data-mode="dark"] .b-relationship,html[data-mode="dark"] .b-connections,html[data-mode="dark"] .b-timeline,html[data-mode="dark"] .b-lima{--ink:#e3b959}
 .band{display:grid;grid-template-columns:26px minmax(0,1fr);border-radius:14px;overflow:hidden;background:rgba(var(--band),.055)}
 html[data-mode="dark"] .band{background:rgba(var(--band),.09)}
 .band .spine{background:rgba(var(--band),.88);color:#fff;position:relative}
@@ -5154,3 +5157,123 @@ html[data-mode="dark"] .nv[data-nav="audit"],html[data-mode="dark"] .nv[data-nav
 .qa-open{flex:none;width:32px;height:32px;border:1px solid var(--line2);border-radius:999px;
   background:var(--bg2);color:var(--mut)}
 .qa-open:hover{background:var(--accbg);border-color:var(--acc);color:var(--txt)}
+
+/* ============================================================
+   Notation — About / Connection grammar (V3.65.0, JD 2026-11-02;
+   design packet 2026-11-02 Scheme A "Two Inks", DECIDED).
+   Steel blue (--ink-about) = About; antique gold (--ink-conn) =
+   Connection ("With you"). The inks are RESERVED to these two
+   meanings. NOTATION ONLY: this block colors edges, dots, chips
+   and header text — it hides nothing and moves nothing.
+   Levels ride the same vocabulary: --lvl-personal (deep amber /
+   bronze) and --lvl-private (maroon) exist here, but only
+   Personal is assigned anywhere in this pass (Family).
+   ============================================================ */
+:root{
+  --ink-about:#2e4a68; --ink-about-bright:#3f6ea3;
+  --ink-about-bg:rgba(46,74,104,.13);
+  --ink-conn:#6e5312; --ink-conn-bright:#a97f24;
+  --ink-conn-bg:rgba(169,127,36,.17);
+  --ink-neutral:#64748b;
+  --lvl-personal-bg:rgba(138,106,52,.16);
+  --lvl-private-bg:rgba(163,22,33,.12);
+}
+html[data-mode="dark"]{
+  --ink-about:#8fb8dd; --ink-about-bright:#8fb8dd;
+  --ink-about-bg:rgba(143,184,221,.17);
+  --ink-conn:#e3b959; --ink-conn-bright:#e3b959;
+  --ink-conn-bg:rgba(227,185,89,.17);
+  --ink-neutral:#94a3b8;
+  --lvl-personal-bg:rgba(138,106,52,.32);
+  --lvl-private-bg:rgba(163,22,33,.26);
+}
+
+/* kind chips + glyphs (large elements carry the word; small
+   elements carry the ink only) */
+.kind-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 6px;border-radius:999px;font-size:9.5px;font-weight:800;letter-spacing:.12em;line-height:1.5;vertical-align:middle;white-space:nowrap}
+.kind-chip svg{flex:none}
+.kc-about{color:var(--ink-about);background:var(--ink-about-bg);box-shadow:inset 0 0 0 1px var(--ink-about-bright)}
+.kc-connection{color:var(--ink-conn);background:var(--ink-conn-bg);box-shadow:inset 0 0 0 1px var(--ink-conn-bright)}
+.kind-glyph{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;vertical-align:-5px;margin-right:6px;flex:none}
+.kg-about{color:var(--ink-about);background:var(--ink-about-bg)}
+.kg-connection{color:var(--ink-conn);background:var(--ink-conn-bg)}
+
+/* level chips + the Personal ground (Family) */
+.lvl-chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:800;letter-spacing:.12em;line-height:1.5;vertical-align:middle;white-space:nowrap}
+.lvl-personal{color:#ffeec4;background:#6e5312}
+html[data-mode="dark"] .lvl-personal{color:#2a1d05;background:#c9a24a}
+.lvl-private{color:#ffd7da;background:#7a1620}
+html[data-mode="dark"] .lvl-private{color:#ffe3e6;background:#8f1d29}
+.fam-lvl{background:var(--lvl-personal-bg);border-radius:10px;padding:8px 10px;margin:2px 0 6px}
+.fam-lvl .sub-h{margin-top:0}
+
+/* left rail: kind dot + kind-colored active state */
+#rail .nv,#tabs .nv{position:relative}
+#rail .nv .nv-kdot,#tabs .nv .nv-kdot{position:absolute;left:1px;top:50%;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;background:transparent;pointer-events:none}
+#rail .nv[data-kind="about"] .nv-kdot,#tabs .nv[data-kind="about"] .nv-kdot{background:var(--ink-about-bright)}
+#rail .nv[data-kind="connection"] .nv-kdot,#tabs .nv[data-kind="connection"] .nv-kdot{background:var(--ink-conn-bright)}
+#rail .nv[data-kind="neutral"] .nv-kdot,#tabs .nv[data-kind="neutral"] .nv-kdot{background:var(--ink-neutral)}
+#rail .nv[data-kind="about"],#tabs .nv[data-kind="about"]{--nvc:var(--ink-about)}
+#rail .nv[data-kind="connection"],#tabs .nv[data-kind="connection"]{--nvc:var(--ink-conn-bright)}
+#rail .nv[data-kind="neutral"],#tabs .nv[data-kind="neutral"]{--nvc:var(--ink-neutral)}
+html[data-mode="dark"] #rail .nv[data-kind="about"],html[data-mode="dark"] #tabs .nv[data-kind="about"]{--nvc:var(--ink-about)}
+html[data-mode="dark"] #rail .nv[data-kind="connection"],html[data-mode="dark"] #tabs .nv[data-kind="connection"]{--nvc:var(--ink-conn)}
+html[data-mode="dark"] #rail .nv[data-kind="neutral"],html[data-mode="dark"] #tabs .nv[data-kind="neutral"]{--nvc:var(--ink-neutral)}
+
+/* table headers carry their column's ink (People, Danger Zone,
+   Sandbox grid) */
+th[data-kind="about"]{color:var(--ink-about)}
+th[data-kind="connection"]{color:var(--ink-conn)}
+th[data-kind="neutral"]{color:var(--ink-neutral)}
+
+/* card edges: bordered cards take a 3px inked left border */
+section.card[data-kind="about"],.card[data-kind="about"]{border-left:3px solid var(--ink-about-bright)}
+section.card[data-kind="connection"],.card[data-kind="connection"]{border-left:3px solid var(--ink-conn-bright)}
+.pf-row[data-kind="about"],.pfq-card[data-kind="about"],.lrcc-sec[data-kind="about"]{border-left:3px solid var(--ink-about-bright)}
+.pf-row[data-kind="connection"],.pfq-card[data-kind="connection"],.lrcc-sec[data-kind="connection"]{border-left:3px solid var(--ink-conn-bright)}
+.tile[data-kind="connection"]{border-left:3px solid var(--ink-conn-bright)}
+.tile[data-kind="about"]{border-left:3px solid var(--ink-about-bright)}
+.ca-wev[data-kind="connection"]{border-left:3px solid var(--ink-conn-bright)}
+
+/* row edges: borderless rows take an inset ink line */
+.wn-row[data-kind="about"],.chg[data-kind="about"],.hma-frow[data-kind="about"],.hot-row[data-kind="about"],.rc-row[data-kind="about"],.asfact[data-kind="about"],.lrcc-frow[data-kind="about"],.hm-rrow.k-about,.hm-bar.k-about,.hm-legrow[data-nkind="about"]{box-shadow:inset 3px 0 0 var(--ink-about-bright)}
+.wn-row[data-kind="connection"],.chg[data-kind="connection"],.hma-frow[data-kind="connection"],.hot-row[data-kind="connection"],.rc-row[data-kind="connection"],.asfact[data-kind="connection"],.lrcc-frow[data-kind="connection"],.hm-lcrow[data-kind="connection"],.ca-evrow[data-kind="connection"],.ca-mini[data-kind="connection"],.hm-rrow.k-connection,.hm-bar.k-connection,.hm-legrow[data-nkind="connection"]{box-shadow:inset 3px 0 0 var(--ink-conn-bright)}
+.hm-lcrow[data-kind="about"],.ca-evrow[data-kind="about"],.ca-mini[data-kind="about"]{box-shadow:inset 3px 0 0 var(--ink-about-bright)}
+
+/* profile sheets + hero stamps */
+.psheets .pmove[data-kind="about"]{border-top:3px solid var(--ink-about-bright)}
+.psheets .pmove[data-kind="connection"]{border-top:3px solid var(--ink-conn-bright)}
+.pmove-h .kind-chip{margin-left:2px}
+.ih-mi[data-kind="about"]{box-shadow:inset 3px 0 0 var(--ink-about-bright);padding-left:9px}
+.ih-mi[data-kind="connection"]{box-shadow:inset 3px 0 0 var(--ink-conn-bright);padding-left:9px}
+.ih-mi[data-kind="about"] small{color:var(--ink-about)}
+.ih-mi[data-kind="connection"] small{color:var(--ink-conn)}
+.dbadge[data-kind="about"]{color:var(--ink-about)}
+.pll-when[data-kind="connection"]{color:var(--ink-conn)}
+.pll-when .kind-glyph{margin-right:4px;width:18px;height:18px;vertical-align:-4px}
+
+/* timeline event dots take their kind's ink */
+.ev[data-kind="connection"] i{background:var(--ink-conn-bright)}
+.ev[data-kind="about"] i{background:var(--ink-about-bright)}
+.ev .kind-glyph{vertical-align:-6px}
+
+/* reach-out group rows on People (By last contact) */
+.ptgroup[data-kind="connection"] td{color:var(--ink-conn)}
+
+/* prefill: the field label carries the suggestion's kind glyph */
+.pf-field .kind-glyph{width:16px;height:16px;margin-right:4px;vertical-align:-4px}
+.pfq-flabel .kind-chip{margin-right:6px}
+
+/* Quick Add mode tabs */
+.qa-tabs button[data-kind] svg{vertical-align:-2px;margin-right:5px}
+.qa-tabs button[data-kind="about"]:not(.on){color:var(--ink-about)}
+.qa-tabs button[data-kind="connection"]:not(.on){color:var(--ink-conn)}
+.qa-tabs button[data-kind="neutral"]:not(.on){color:var(--ink-neutral)}
+
+/* assorted placements */
+.kind-legend{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:11px;color:var(--mut);flex-wrap:wrap}
+.hmi-t .kind-chip{margin-left:6px}
+.hm-blk header .kind-chip{margin-left:2px}
+.rc-head .kind-chip{margin-top:6px}
+.rc-person .kind-glyph{vertical-align:-6px}
+.wn-row .kind-glyph{margin-top:1px}
