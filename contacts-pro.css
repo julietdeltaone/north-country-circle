@@ -2757,6 +2757,18 @@ html[data-mode="light"] .plx-num{color:color-mix(in srgb,var(--ga) 5.5%,transpar
 .sb-ck{width:30px;text-align:center}
 .sb-selbar{display:flex;gap:10px;align-items:center;background:var(--accbg);border:1px solid var(--line);border-radius:var(--r);padding:8px 12px;margin:0 0 10px}
 .sb-count{color:var(--mut);font-size:13px}
+/* Danger Zone weeding table (V3.64.0): current row carries a strong
+   left tick + fill, selected rows a quieter fill, so the two states
+   never read as the same thing in either theme. */
+.dz-table th[data-sb=dzsort]{cursor:pointer}
+.dz-table th[data-sb=dzsort]:hover{color:var(--txt)}
+.dz-table tbody tr{cursor:pointer}
+.dz-table tbody tr.dz-sel td{background:var(--fill)}
+.dz-table tbody tr.dz-cur td{background:var(--fill2)}
+.dz-table tbody tr.dz-cur td:first-child{box-shadow:inset 3px 0 0 var(--ga)}
+.dz-table td{white-space:nowrap}
+.dz-undochip{display:flex;align-items:center;gap:10px;background:rgba(227,6,19,.08);border:1px solid rgba(227,6,19,.3);border-radius:var(--r);padding:8px 12px;margin:0 0 10px;font-size:13.5px}
+.dz-keys{margin-top:10px}
 .sb-bar{height:8px;border-radius:99px;background:var(--track,var(--fill2));overflow:hidden;margin:8px 0}
 .sb-bar>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ga),var(--gb))}
 .sb-distrow{display:flex;align-items:center;gap:10px;padding:3px 0;font-size:13px}
