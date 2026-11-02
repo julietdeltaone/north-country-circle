@@ -740,12 +740,13 @@
    "type": null
   },
   {
-   "evidence": "State Police release names Deputy Brian Hanlin as a responding deputy but carries no photo at all — no portrait or scene photo to file.",
+   "added": "2026-11-02",
+   "evidence": "Cropped from a SUNY Canton photo of David Sullivan-St. Lawrence County Law Enforcement Academy cadets in a defensive tactics class in the Dana Hall gym; the article caption names the cadets pictured left to right as Lochlan B. Bower and Brian S. Hanlin of Calcium, and Hanlin is the cadet on the right.",
    "name": "Brian Hanlin",
-   "photo_url": null,
-   "source_page": "https://troopers.ny.gov/news/state-police-investigating-officer-involved-shooting-jefferson-county",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/brian-hanlin.jpg",
+   "source_page": "https://www.canton.edu/news/2023/academy.php",
+   "status": "confirmed",
+   "type": "Academy class photo (crop)"
   },
   {
    "added_approx": "Oct 2026",
@@ -1935,12 +1936,13 @@
    "type": "profile photo (LinkedIn)"
   },
   {
-   "evidence": "No source links on file.",
+   "added": "2026-11-02",
+   "evidence": "Cropped from the founders photo on the Precision Scuba Diving About page, which presents the company's two owners, Cory Courson and Emily Criscitello; the man beside her matches the photo in Cory Courson's named section on the same page, and her own named section follows.",
    "name": "Emily Criscitello",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
+   "photo_url": "photos/emily-criscitello.jpg",
+   "source_page": "https://precisionscubadiving.com/about-us/",
+   "status": "confirmed",
+   "type": "Business About page founders photo (crop)"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
