@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.64.0';
+var APP_VERSION = '3.64.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -14354,9 +14354,9 @@ var DZ_COLS = [
   { k:'name',   l:'Name',                v:function(e){ return dispName(e); }, s:function(e){ return dispName(e).toLowerCase(); } },
   { k:'rel',    l:'Relationship',        v:function(e){ return cap(gv(e, 'relationship')); }, s:function(e){ return String(gv(e, 'relationship') || '').toLowerCase(); } },
   { k:'loc',    l:'Location',            v:function(e){ return ptLocVal(e); }, s:function(e){ return ptLocVal(e).toLowerCase(); } },
-  { k:'years',  l:'Years Known',         v:function(e){ var y = knownSinceYear(e); return y ? String(y) : String(gv(e, 'years_known') || ''); }, n:function(e){ return knownSinceYear(e) || 0; }, blank0:true },
-  { k:'firstc', l:'First Contact',       v:function(e){ return lcDateLabel(firstContactOf(e)); }, n:function(e){ return flexKey(firstContactOf(e)) || 0; }, blank0:true },
-  { k:'lastc',  l:'Last Contact',        v:function(e){ return lcLabel(e); }, n:function(e){ return flexKey(gv(e, 'last_contact')) || 0; }, blank0:true },
+  { k:'years',  l:'Years Known',         v:function(e){ var y = knownSinceYear(e); return y ? String(y) : String(gv(e, 'years_known') || ''); }, n:function(e){ return knownSinceYear(e) || 0; }, date:true },
+  { k:'firstc', l:'First Contact',       v:function(e){ return lcDateLabel(firstContactOf(e)); }, n:function(e){ return flexKey(firstContactOf(e)) || 0; }, date:true },
+  { k:'lastc',  l:'Last Contact',        v:function(e){ return lcLabel(e); }, n:function(e){ return flexKey(gv(e, 'last_contact')) || 0; }, date:true },
   { k:'lastco', l:'Last Contact Online', v:function(e){ return lcOnline(e) ? 'Yes' : 'No'; }, n:function(e){ return lcOnline(e) ? 1 : 0; } },
   { k:'events', l:'Events',              v:function(e){ return String((e.events || []).length); }, n:function(e){ return (e.events || []).length; } },
   { k:'msgs',   l:'Correspondence',      v:function(e){ var mf = msgFor(e); return mf ? String(mf.n) : ''; }, n:function(e){ var mf = msgFor(e); return mf ? mf.n : 0; } },
@@ -14382,10 +14382,18 @@ function dzRows(){
     rows.push(di);
   });
   function val(di){ var e = D.directory[di]; return col.n ? col.n(e, ph) : String(col.s ? col.s(e) : col.v(e, ph)).toLowerCase(); }
-  function blank(di){ var v = val(di); return col.n ? (col.blank0 ? !v : false) : v === ''; }
+  /* Blank-aware sorting (JD amendment 2026-11-02): a person with NO
+     value for the sort column is a proper group, never scatter.
+     Blanks count as the LOWEST value — ascending brings the whole
+     blank group to the TOP (the never-contacted surface first when
+     sorting by Last Contact), descending puts it at the bottom.
+     Counts (Events, Groups, Correspondence 0) are genuine minima
+     and cluster the same way. */
+  function blank(di){ var e = D.directory[di]; return col.date ? !col.n(e, ph) : String(col.v(e, ph)) === ''; }
   rows.sort(function(a, b){
     var ba = blank(a), bb = blank(b);
-    if(ba && !bb) return 1; if(!ba && bb) return -1;   /* blanks last in BOTH directions (People pattern) */
+    if(ba && !bb) return st.dir > 0 ? -1 : 1;
+    if(!ba && bb) return st.dir > 0 ? 1 : -1;
     if(!ba && !bb){
       var va = val(a), vb = val(b), r = (typeof va === 'number') ? va - vb : String(va).localeCompare(String(vb));
       if(r) return r * st.dir;
@@ -14416,7 +14424,9 @@ function sbDangerZone(){
     var ln = last.items[last.items.length - 1];
     h += '<div class="dz-undochip"><span>Removed <b>' + esc(ln.name) + '</b>' + (last.items.length > 1 ? ' and ' + (last.items.length - 1) + ' more' : '') + '</span><button type="button" class="btn ghost sm" data-sb="dzundo">Undo</button></div>';
   }
-  h += '<div class="sb-tablewrap dz-tablewrap"><table class="sb-table dz-table"><thead><tr><th class="sb-ck"></th>' +
+  var DZ_W = [3, 13, 11, 10, 6, 10, 10, 8, 6, 11, 6, 5];   /* % widths, checkbox + DZ_COLS; sums to 99 — the fixed layout distributes the slack, and per-column rounding can never push the table past the canvas. Shares are sized so header words and Yes/No fit whole at laptop widths. */
+  h += '<div class="sb-tablewrap dz-tablewrap"><table class="sb-table dz-table"><colgroup><col style="width:' + DZ_W[0] + '%">' +
+    DZ_COLS.map(function(c, ci){ return '<col style="width:' + DZ_W[ci + 1] + '%">'; }).join('') + '</colgroup><thead><tr><th class="sb-ck"></th>' +
     DZ_COLS.map(function(c){ return '<th data-sb="dzsort" data-k="' + c.k + '">' + esc(c.l) + (st.k === c.k ? (st.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }).join('') + '</tr></thead><tbody>';
   rows.forEach(function(di){
     var e = D.directory[di], pk = pkey(e);
@@ -14425,7 +14435,7 @@ function sbDangerZone(){
   });
   h += '</tbody></table></div>';
   if(!rows.length) h += '<p class="sb-note">No one matches that filter.</p>';
-  h += '<p class="sb-note dz-keys">Keys: j / k / arrows move · Space / x select · Enter open profile · / filter · Shift+Backspace remove · Esc clear selection · Ctrl+Z / u undo. Removals set the deleted flag; the sync sweeps them into Trash. Undo works after a sweep too — the archived profile is re-created in Profiles and the Trash removal is queued for the ops script.</p></div>';
+  h += '<p class="sb-note dz-keys">Keys: j / k / arrows move · Space / x select · Enter open profile · / filter · Shift+Backspace remove · Esc clear selection · Ctrl+Z / u undo. After a removal the next row is selected automatically, so Shift+Backspace can be pressed again to keep weeding. Blanks count as the lowest value: sorting a column ascending brings its empty group to the top. Removals set the deleted flag; the sync sweeps them into Trash. Undo works after a sweep too — the archived profile is re-created in Profiles and the Trash removal is queued for the ops script.</p></div>';
   return h;
 }
 function dzRowEl(key){
@@ -14498,8 +14508,29 @@ function dzDelete(){
     detail: archives.map(function(a){ return a.name + ' (' + a.key + ')'; }).join(', '), archives:archives,
     undo:{ kind:'undelete', keys:archives.map(function(a){ return a.key; }) } });
   SB.dz.sel = {};
-  var remain = oldKeys.filter(function(k){ return archives.every(function(a){ return a.key !== k; }); });
-  SB.dz.curKey = remain.length ? remain[Math.min(Math.max(lastIdx, 0), remain.length - 1)] : null;
+  /* Landing row: the first surviving row AFTER the last deleted row
+     in the pre-delete order (previous surviving row when the deleted
+     one was last) — computed by scanning forward past every deleted
+     key, so scattered selections land correctly too. */
+  var delSet = {};
+  archives.forEach(function(a){ delSet[a.key] = 1; });
+  var landing = null;
+  for(var ix = Math.max(lastIdx, -1) + 1; ix < oldKeys.length; ix++){ if(!delSet[oldKeys[ix]]){ landing = oldKeys[ix]; break; } }
+  if(!landing){
+    var rem2 = oldKeys.filter(function(k){ return !delSet[k]; });
+    landing = rem2.length ? rem2[rem2.length - 1] : null;
+  }
+  SB.dz.curKey = landing;
+  /* Auto-advance (JD amendment 2026-11-02): the landing row — the one
+     that followed the last deleted row, or the previous row when the
+     deleted one was last — becomes SELECTED as well as current, so
+     Shift+Backspace can be pressed again and again to weed
+     continuously without clicking anything. Applies the same after
+     a single-row delete and after a batch (selection) delete. */
+  if(SB.dz.curKey){
+    var ndi = PK2I[SB.dz.curKey.toLowerCase()];
+    if(ndi != null) SB.dz.sel[SB.dz.curKey] = ndi;
+  }
   toast(dis.length + ' removed — Ctrl+Z or u to undo');
   render();
 }
