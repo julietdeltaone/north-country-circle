@@ -1,6 +1,6 @@
 {
  "updated": "2026-11-01",
- "total": 689,
+ "total": 691,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
   {
@@ -3060,6 +3060,14 @@
      "url": "https://scontent.cdninstagram.com/v/t51.82787-19/558163022_18359729653081129_5375109249994809044_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=_4Vjh3aDefcQ7kNvwF84ikl&_nc_oc=AdppmrafkYqZxbddGEZppC1QVcqE0nLZSLjoWT2dOLZTYd_YSnQxJxFXrmZ0vE5UIzXB7qviAmxaGDoXklhUdbng&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=RWNQjuJFUJ1kaBSoRiCjYQ&oh=00_AQNfu-dzkNhnblB_oc0vxC7prk05ciGpK4AFgbOo543l6A&oe=6AE022C7",
      "note": "Prior primary: Instagram profile picture (signature expired Oct 2026).",
      "source_page": "https://www.instagram.com/jessicahurlbut/"
+    },
+    {
+     "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/Hurlbut1.jpg?itok=yGWVJ2FD",
+     "source_page": "https://www.potsdam.edu/",
+     "status": "possible",
+     "type": "Family photo",
+     "evidence": "SUNY Potsdam family photo published with the Hurlbut family story; the caption places Jessica Hurlbut third from left (the adult woman), and her profile town is Massena. Held at possible: low resolution and a family frame rather than a solo portrait; a DialogueDirect staff headshot of her also exists (employer page says she is from Massena, NY) but its image host was unreachable during the run - it is the queued upgrade route. Coordinator fetched and visually verified these bytes. Overnight hunt 2026-11-01.",
+     "added": "2026-11-01"
     }
    ],
    "added": "2026-10-29"
@@ -3319,7 +3327,17 @@
    "source_page": "https://www.cfconline.org/leadership/",
    "status": "possible",
    "type": "Church leadership page photo",
-   "added": "2026-10-31"
+   "added": "2026-10-31",
+   "also": [
+    {
+     "photo_url": "https://www.cfconline.org/wp-content/cfc-leadership/487.webp?v=1779404586",
+     "source_page": "https://www.cfconline.org/",
+     "status": "possible",
+     "type": "Family portrait",
+     "evidence": "Black-and-white family portrait in the 'Lead Pastor - Jonathan Puglia' block of Christian Fellowship Center's leadership page (the image's alt text carries his name); he is the adult man holding the baby. Held at possible: it is a family portrait rather than a solo headshot, and the coordinator verified the page pairing and the image bytes but the profile's own anchors are thin. Overnight hunt 2026-11-01.",
+     "added": "2026-11-01"
+    }
+   ]
   },
   {
    "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Jordyn Brothers and headline: Chemical Dependency Counselor (LinkedIn headline). Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 400x400 -> 1600x1600). Identity re-verified against the previous primary before the swap; now hosted locally.",
@@ -6476,6 +6494,24 @@
    "source_page": "https://clarksonathletics.com/sports/womens-ice-hockey/roster/kaitlyn-mallette/9474",
    "status": "confirmed",
    "type": "Roster headshot",
+   "added": "2026-11-01"
+  },
+  {
+   "name": "Debbie Flack",
+   "photo_url": "https://www.canton.edu/media/Debbie-Flack.jpg",
+   "source_page": "https://www.canton.edu/plm/name-127829-en.html",
+   "status": "confirmed",
+   "type": "Profile portrait",
+   "evidence": "SUNY Canton's own 'People Like Me: Debbie Flack' profile page carries this portrait of her: the page text names Debbie Flack of Ogdensburg, a Technological Communications student who also works in the SUNY Canton Ready Center (the portrait shows her at a Ready Center-style desk with a headset), and SUNY Canton honors lists name her in Technological Communications, President's List 2022-2026. Coordinator fetched the image (200, 436,742 bytes) and visually verified it. Overnight hunt 2026-11-01.",
+   "added": "2026-11-01"
+  },
+  {
+   "name": "Heather Foster-Barrigar",
+   "photo_url": "photos/heather-foster-barrigar.jpg",
+   "source_page": "https://nysapcso.org/",
+   "status": "confirmed",
+   "type": "Spotlight portrait (crop)",
+   "evidence": "NYSAPCSO (Association of Personnel and Civil Service Officers of New York State) 'Feature Friday' spotlight graphic names her in the image itself - 'Heather Foster-Barrigar, Personnel Officer, St. Lawrence County' - beside her portrait. Filed as a 1:1 crop of the portrait from that graphic, coordinator-fetched and visually verified; St. Lawrence County personnel-officer role is the anchor. Overnight hunt 2026-11-01.",
    "added": "2026-11-01"
   }
  ]
