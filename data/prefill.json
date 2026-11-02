@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 1,
+ "count": 2,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -14,48 +14,29 @@
     "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
    ],
    "conf": 72
+  },
+  {
+   "id": "pf-d4ad11a2e5",
+   "key": "kaitance.jenks19",
+   "display": "Katie Jenks",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Canton, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "SUNY Canton is in Canton."
+   ],
+   "conf": 55
   }
  ],
  "auto_apply": [
   {
-   "key": "brianna.hammond",
-   "display": "Brianna Hammond",
-   "field": "universities",
-   "value": "SUNY Potsdam",
-   "conf": 92,
-   "id": "pf-ea519d9e76"
-  },
-  {
-   "key": "kaitance.jenks19",
-   "display": "Katie Jenks",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-02d0e3e606"
-  },
-  {
-   "key": "sf:ashleigh-graveline",
-   "display": "Ashleigh Graveline",
-   "field": "universities",
-   "value": "SUNY Potsdam",
-   "conf": 92,
-   "id": "pf-0a6bad7aad"
-  },
-  {
    "key": "sf:jeremy-taylor",
    "display": "Jeremy Taylor",
-   "field": "companies",
+   "field": "groups",
    "value": "U.S. Army",
-   "conf": 74,
-   "id": "pf-0d27081bc6"
-  },
-  {
-   "key": "sf:lisa-arquette",
-   "display": "Lisa Arquette",
-   "field": "universities",
-   "value": "SUNY Potsdam",
-   "conf": 74,
-   "id": "pf-c0db97f045"
+   "conf": 100,
+   "id": "pf-69fcfacec6"
   },
   {
    "key": "sf:jdmeyers_",
@@ -84,10 +65,10 @@
   {
    "key": "sf:jennifer-meyer",
    "display": "Jennifer Meyer",
-   "field": "companies",
+   "field": "groups",
    "value": "Army National Guard",
-   "conf": 74,
-   "id": "pf-b15eaa7f70"
+   "conf": 100,
+   "id": "pf-e41730cd0f"
   },
   {
    "key": "sf:jai-dane",
