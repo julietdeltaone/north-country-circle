@@ -1,7 +1,22 @@
 {
  "generated": "2026-11-02",
- "count": 0,
- "suggestions": [],
+ "count": 1,
+ "suggestions": [
+  {
+   "id": "pf-a44d074ab1",
+   "key": "elizabethadaniels",
+   "display": "Elizabeth Daniels",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Probable",
+   "evidence": [
+    "Signal 1 \u2014 associate pattern: 5 of 16 located known associates are in Potsdam.",
+    "Signal 2 \u2014 family on file is there too: Kevin Daniels."
+   ],
+   "conf": 70
+  }
+ ],
  "auto_apply": [
   {
    "key": "sf:jdmeyers_",
@@ -31,9 +46,19 @@
  "shelved": [],
  "suppressed": {
   "counts": {
-   "tentative_floor": 6
+   "tentative_floor": 7
   },
   "items": [
+   {
+    "id": "pf-a44d074ab1",
+    "key": "elizabethadaniels",
+    "display": "Elizabeth Daniels",
+    "field": "location_on_file",
+    "value": "Potsdam, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
    {
     "id": "pf-d4ad11a2e5",
     "key": "kaitance.jenks19",
