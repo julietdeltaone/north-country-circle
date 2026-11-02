@@ -19,22 +19,6 @@
  ],
  "auto_apply": [
   {
-   "key": "sf:jdmeyers_",
-   "display": "Jdmeyers",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-05585543fe"
-  },
-  {
-   "key": "sf:jdmeyers_",
-   "display": "Jdmeyers",
-   "field": "groups",
-   "value": "Christian Fellowship Center",
-   "conf": 100,
-   "id": "pf-ec48938199"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
@@ -46,7 +30,7 @@
  "shelved": [],
  "suppressed": {
   "counts": {
-   "tentative_floor": 7
+   "tentative_floor": 2
   },
   "items": [
    {
@@ -65,56 +49,6 @@
     "display": "Katie Jenks",
     "field": "location_on_file",
     "value": "Canton, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-cda38e0777",
-    "key": "sf:isagoettl",
-    "display": "Isagoettl",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-a560392631",
-    "key": "sf:janelleevans_8",
-    "display": "Janelleevans 8",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-d6c638ed2b",
-    "key": "sf:jenna_smellie",
-    "display": "Jenna Smellie",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-90a407aaf9",
-    "key": "sf:raedyn.spademan",
-    "display": "Raedyn.Spademan",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-1620f79efe",
-    "key": "sf:kaitlyn.mallette03",
-    "display": "Kaitlyn.Mallette03",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
     "rules": [
      "tentative_floor"
     ]
