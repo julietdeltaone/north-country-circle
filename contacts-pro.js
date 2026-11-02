@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.63.0';
+var APP_VERSION = '3.64.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7092,6 +7092,7 @@ function repaintForData(kind){
        the Correspondence column in place. */
     if($('#p-hero') && !Object.keys(S.prof.edit || {}).some(function(k){ return S.prof.edit[k]; })) render();
     else if(r === 'people' && $('#plist')) paintPeople();
+    else if(r === 'sandbox' && typeof SB !== 'undefined' && SB.tool === 'danger') render();
     return;
   }
   if(kind === 'cal'){ if(r === 'calendar') render(); return; }
@@ -12787,6 +12788,7 @@ var SB = {
   play:{},
   mg:{ a:null, b:null, surv:'a', picks:{}, plan:null },
   dg:{ tab:'delete', one:null, bulkField:'tier', bulkVal:'', bulkCat:'companies', bulkName:'', dry:null },
+  dz:{ q:'', curKey:null, sel:{}, rows:[] },
   lg:{ filter:'all' }
 };
 /* V3.10.0 IA: the Sandbox has exactly three jobs — LOOK at the data,
@@ -12798,13 +12800,14 @@ var SB = {
 var SB_TOOLS = [
   { k:'insights', z:'Sandbox', t:'Insights',     d:'Seven named checks, each on its own page: coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.', ic:'spark' },
   { k:'merge',    z:'Sandbox', t:'Merge studio', d:'Combine two profiles field by field. Combine, never overwrite.', ic:'merge' },
+  { k:'danger',   z:'Sandbox', t:'Danger Zone',  d:'Weed the directory: a keyboard-driven table. Shift+Backspace removes with no confirmation; Ctrl+Z or u restores.', ic:'trash' },
   { k:'log',      z:'Sandbox', t:'Action log',   d:'Every Sandbox write, before → after, with undo and the ops export.', ic:'check' }
 ];
 var SB_LABS = [
   { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through known associates and family, mutual connections, and the bridge people who hold the circle together.' },
   { k:'pool',    t:'Suspect Pool', d:'The disciplined thought experiment: an exact pool, one yes/no behavioral question, observable behavior only, a pre-registered prediction. On-device only.' },
 ];
-function sbZoneOf(tool){ return ({ insights:'Sandbox', merge:'Sandbox', log:'Sandbox' })[tool] || ''; }
+function sbZoneOf(tool){ return ({ insights:'Sandbox', merge:'Sandbox', danger:'Sandbox', log:'Sandbox' })[tool] || ''; }
 function sbLabTab(){
   if(SB.labtab == null) SB.labtab = sbStore('ncc_sbx_labtab') || 'paths';
   if(!SB_LABS.some(function(l){ return l.k === SB.labtab; })) SB.labtab = 'paths';
@@ -12919,12 +12922,13 @@ function viewSandbox(v){
     sbEnsure();
     return;
   }
-  /* Models and the Danger area were retired (JD 2026-10-30): their
-     routes — and any other retired tool name — land on the stats
-     board. The Danger tools' data (Trash) is untouched in the Sheet;
-     only the surface is gone. */
-  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, log:sbLogView }[SB.tool] || sbHome;
-  if(!({ home:1, insights:1, merge:1, log:1 })[SB.tool]) SB.tool = 'home';
+  /* Models was retired (JD 2026-10-30): its route — and any other
+     retired tool name — lands on the stats board. The Danger area
+     returns in V3.64.0 as the Danger Zone weeding tool (sbDangerZone);
+     the old multi-tab danger functions below stay in the file for
+     their shared helpers (sbDoDelete archives, sbRestoreArchived). */
+  var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, danger:sbDangerZone, log:sbLogView }[SB.tool] || sbHome;
+  if(!({ home:1, insights:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
 }
@@ -13104,6 +13108,7 @@ function sbHome(){
   h += '<h3 class="mdl-ph sbs-toolsh">Tools</h3><div class="sbs-tools">' +
     tool('#/sandbox/insights', 'Insights', findN, 'open findings', 'Coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.') +
     tool('#/sandbox/merge', 'Merge studio', dupN, 'candidate pairs', 'Combine two profiles field by field. Combine, never overwrite. The bar is high now: same surname alone no longer pairs anyone.') +
+    tool('#/sandbox/danger', 'Danger Zone', ppl, 'people in the directory', 'Weed the directory from the keyboard. Shift+Backspace removes with no confirmation; Ctrl+Z or u restores.') +
     tool('#/sandbox/log', 'Action log', logN, 'entries today', 'Every Sandbox write, before → after, with undo and the ops export.') +
     '</div>' +
     '<p class="sb-compact">' + trashN + ' keys in Trash (archive and blocklist, in the Sheet) · ' + opsN + ' ops queued</p>' +
@@ -14323,6 +14328,263 @@ function sbMgExecute(plan){
   return entry;
 }
 
+
+/* ---------------- 6b. DANGER ZONE — the weeding tool (V3.64.0, JD 2026-11-02) ----------------
+   A regular sortable table of the whole directory, fully keyboard
+   driven. Shift+Backspace removes INSTANTLY — no confirmation of any
+   kind — riding queuePatch (deleted:'1'), the same flag the sync's
+   trash sweep archives into the Trash tab. Undo is a removal stack
+   persisted in localStorage (ncc_sbx_dz_removed): each entry carries
+   the full archived profile (same shape sbDoDelete archives), so an
+   undo whose row has already been swept to Trash re-creates the
+   Profiles row through sbPostBatch (the batch endpoint the outbox
+   flush uses) and queues the Trash-row removal for sandbox_ops.py —
+   the exact post-sweep path sbRestoreArchived already used.
+   Guardrails are exclusions only: JD's own rows and Kathleen DeLage
+   never render, so they can never be selected or deleted; the delete
+   path re-checks the exclusion before writing. */
+var DZ_EXCLUDED_KEYS = { 'ig:jdmeyers_':1, 'sf:jdmeyers_':1, 'sf:kathleen-delage':1 };
+function dzExcluded(e){
+  if(!e) return true;
+  if(DZ_EXCLUDED_KEYS[pkey(e)]) return true;
+  if(String(dispName(e) || '').trim().toLowerCase() === 'kathleen delage') return true;
+  return false;
+}
+var DZ_COLS = [
+  { k:'name',   l:'Name',                v:function(e){ return dispName(e); }, s:function(e){ return dispName(e).toLowerCase(); } },
+  { k:'rel',    l:'Relationship',        v:function(e){ return cap(gv(e, 'relationship')); }, s:function(e){ return String(gv(e, 'relationship') || '').toLowerCase(); } },
+  { k:'loc',    l:'Location',            v:function(e){ return ptLocVal(e); }, s:function(e){ return ptLocVal(e).toLowerCase(); } },
+  { k:'years',  l:'Years Known',         v:function(e){ var y = knownSinceYear(e); return y ? String(y) : String(gv(e, 'years_known') || ''); }, n:function(e){ return knownSinceYear(e) || 0; }, blank0:true },
+  { k:'firstc', l:'First Contact',       v:function(e){ return lcDateLabel(firstContactOf(e)); }, n:function(e){ return flexKey(firstContactOf(e)) || 0; }, blank0:true },
+  { k:'lastc',  l:'Last Contact',        v:function(e){ return lcLabel(e); }, n:function(e){ return flexKey(gv(e, 'last_contact')) || 0; }, blank0:true },
+  { k:'lastco', l:'Last Contact Online', v:function(e){ return lcOnline(e) ? 'Yes' : 'No'; }, n:function(e){ return lcOnline(e) ? 1 : 0; } },
+  { k:'events', l:'Events',              v:function(e){ return String((e.events || []).length); }, n:function(e){ return (e.events || []).length; } },
+  { k:'msgs',   l:'Correspondence',      v:function(e){ var mf = msgFor(e); return mf ? String(mf.n) : ''; }, n:function(e){ var mf = msgFor(e); return mf ? mf.n : 0; } },
+  { k:'groups', l:'Groups',              v:function(e){ return String(personGroups(e).length); }, n:function(e){ return personGroups(e).length; } },
+  { k:'photo',  l:'Photo',               v:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return (p && p.photo_url) ? 'Yes' : 'No'; }, n:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return (p && p.photo_url) ? 1 : 0; } }
+];
+function dzSortState(){
+  if(SB.dz.sort) return SB.dz.sort;
+  var sv = sbStore('ncc_sbx_dz_sort');
+  SB.dz.sort = (sv && DZ_COLS.some(function(c){ return c.k === sv.k; })) ? { k:sv.k, dir:sv.dir < 0 ? -1 : 1 } : { k:'name', dir:1 };
+  return SB.dz.sort;
+}
+function dzStackGet(){ return sbStore('ncc_sbx_dz_removed') || []; }
+function dzStackSet(a){ sbStore('ncc_sbx_dz_removed', a.slice(0, 50)); }
+function dzRows(){
+  var ph = sbPhotoByName(), st = dzSortState(), q = String(SB.dz.q || '').trim().toLowerCase();
+  var col = DZ_COLS.filter(function(c){ return c.k === st.k; })[0] || DZ_COLS[0];
+  var rows = [];
+  people().forEach(function(di){
+    var e = D.directory[di];
+    if(!e || dzExcluded(e)) return;
+    if(q && dispName(e).toLowerCase().indexOf(q) < 0) return;
+    rows.push(di);
+  });
+  function val(di){ var e = D.directory[di]; return col.n ? col.n(e, ph) : String(col.s ? col.s(e) : col.v(e, ph)).toLowerCase(); }
+  function blank(di){ var v = val(di); return col.n ? (col.blank0 ? !v : false) : v === ''; }
+  rows.sort(function(a, b){
+    var ba = blank(a), bb = blank(b);
+    if(ba && !bb) return 1; if(!ba && bb) return -1;   /* blanks last in BOTH directions (People pattern) */
+    if(!ba && !bb){
+      var va = val(a), vb = val(b), r = (typeof va === 'number') ? va - vb : String(va).localeCompare(String(vb));
+      if(r) return r * st.dir;
+    }
+    return dispName(D.directory[a]).toLowerCase().localeCompare(dispName(D.directory[b]).toLowerCase());
+  });
+  return { rows:rows, ph:ph };
+}
+function dzEnsureCur(rows){
+  if(!rows.length){ SB.dz.curKey = null; return; }
+  for(var i = 0; i < rows.length; i++) if(pkey(D.directory[rows[i]]) === SB.dz.curKey) return;
+  SB.dz.curKey = pkey(D.directory[rows[0]]);
+}
+function sbDangerZone(){
+  msgLoad();
+  var got = dzRows(), rows = got.rows, ph = got.ph, st = dzSortState();
+  dzEnsureCur(rows);
+  SB.dz.rows = rows.map(function(di){ return pkey(D.directory[di]); });
+  var selN = Object.keys(SB.dz.sel).length;
+  var stack = dzStackGet(), last = stack[stack.length - 1];
+  var h = sbHead('Danger Zone', 'Weed the directory. j / k or the arrow keys move, Space or x selects, Enter opens the profile, / jumps to the filter. Shift+Backspace removes the current row — or everyone selected — instantly, with no confirmation. Ctrl+Z or u undoes the last removal.');
+  h += '<div id="dzwrap"><div class="sb-toolbar"><input type="text" id="dzq" data-sbi="dzq" placeholder="Filter by name…" value="' + esc(SB.dz.q) + '" autocomplete="off">' +
+    '<span class="sb-count">' + rows.length + ' people</span>' +
+    '<span class="sb-count" id="dzselct">' + (selN ? selN + ' selected' : '') + '</span>' +
+    (selN ? '<button type="button" class="btn ghost sm" data-sb="dzselclear">Clear selection</button>' : '') +
+    '</div>';
+  if(last && last.items && last.items.length){
+    var ln = last.items[last.items.length - 1];
+    h += '<div class="dz-undochip"><span>Removed <b>' + esc(ln.name) + '</b>' + (last.items.length > 1 ? ' and ' + (last.items.length - 1) + ' more' : '') + '</span><button type="button" class="btn ghost sm" data-sb="dzundo">Undo</button></div>';
+  }
+  h += '<div class="sb-tablewrap dz-tablewrap"><table class="sb-table dz-table"><thead><tr><th class="sb-ck"></th>' +
+    DZ_COLS.map(function(c){ return '<th data-sb="dzsort" data-k="' + c.k + '">' + esc(c.l) + (st.k === c.k ? (st.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }).join('') + '</tr></thead><tbody>';
+  rows.forEach(function(di){
+    var e = D.directory[di], pk = pkey(e);
+    h += '<tr data-sb="dzrow" data-di="' + di + '" data-dzkey="' + esc(pk) + '" class="' + (pk === SB.dz.curKey ? 'dz-cur' : '') + (SB.dz.sel[pk] ? ' dz-sel' : '') + '"><td class="sb-ck"><input type="checkbox" data-sbi="dzsel" data-di="' + di + '"' + (SB.dz.sel[pk] ? ' checked' : '') + ' tabindex="-1"></td>' +
+      DZ_COLS.map(function(c, ci){ return '<td' + (ci === 0 ? ' class="sb-namecell"' : '') + '>' + esc(c.v(e, ph)) + '</td>'; }).join('') + '</tr>';
+  });
+  h += '</tbody></table></div>';
+  if(!rows.length) h += '<p class="sb-note">No one matches that filter.</p>';
+  h += '<p class="sb-note dz-keys">Keys: j / k / arrows move · Space / x select · Enter open profile · / filter · Shift+Backspace remove · Esc clear selection · Ctrl+Z / u undo. Removals set the deleted flag; the sync sweeps them into Trash. Undo works after a sweep too — the archived profile is re-created in Profiles and the Trash removal is queued for the ops script.</p></div>';
+  return h;
+}
+function dzRowEl(key){
+  var w = document.getElementById('dzwrap'); if(!w || !key) return null;
+  var trs = w.querySelectorAll('tr[data-dzkey]');
+  for(var i = 0; i < trs.length; i++) if(trs[i].getAttribute('data-dzkey') === key) return trs[i];
+  return null;
+}
+/* Move the current marker in the live DOM (no repaint) — the RC pattern. */
+function dzSetCur(key, scroll){
+  if(!key) return;
+  SB.dz.curKey = key;
+  var w = document.getElementById('dzwrap'); if(!w) return;
+  var marked = w.querySelectorAll('tr.dz-cur');
+  for(var i = 0; i < marked.length; i++) marked[i].classList.remove('dz-cur');
+  var row = dzRowEl(key);
+  if(row){ row.classList.add('dz-cur'); if(scroll) row.scrollIntoView({ block:'nearest' }); }
+}
+function dzMove(d){
+  var keys = SB.dz.rows || []; if(!keys.length) return;
+  var i = keys.indexOf(SB.dz.curKey);
+  if(i < 0) i = d > 0 ? -1 : 0;
+  var n = Math.max(0, Math.min(keys.length - 1, i + d));
+  dzSetCur(keys[n], true);
+}
+function dzPaintSel(){
+  var n = Object.keys(SB.dz.sel).length;
+  var ct = document.getElementById('dzselct'); if(ct) ct.textContent = n ? n + ' selected' : '';
+  var w = document.getElementById('dzwrap'); if(!w) return;
+  var trs = w.querySelectorAll('tr[data-dzkey]');
+  for(var i = 0; i < trs.length; i++){
+    var on = !!SB.dz.sel[trs[i].getAttribute('data-dzkey')];
+    trs[i].classList.toggle('dz-sel', on);
+    var cb = trs[i].querySelector('input[data-sbi="dzsel"]'); if(cb) cb.checked = on;
+  }
+}
+function dzToggleSel(key){
+  if(!key) return;
+  var di = PK2I[key.toLowerCase()]; if(di == null) return;
+  if(dzExcluded(D.directory[di])) return;
+  if(SB.dz.sel[key]) delete SB.dz.sel[key]; else SB.dz.sel[key] = di;
+  dzPaintSel();
+}
+function dzDelete(){
+  var keys = Object.keys(SB.dz.sel);
+  if(!keys.length && SB.dz.curKey) keys = [SB.dz.curKey];
+  var dis = [];
+  keys.forEach(function(k){
+    var di = PK2I[k.toLowerCase()];
+    if(di == null) return;
+    var e = D.directory[di];
+    if(e && liveEntry(e) && !dzExcluded(e) && dis.indexOf(di) < 0) dis.push(di);
+  });
+  if(!dis.length){ toast('Nothing to remove'); return; }
+  var oldKeys = (SB.dz.rows || []).slice();
+  var lastIdx = -1;
+  dis.forEach(function(di){ var ix = oldKeys.indexOf(pkey(D.directory[di])); if(ix > lastIdx) lastIdx = ix; });
+  var archives = dis.map(function(di){
+    var e = D.directory[di];
+    return { key:pkey(e), name:dispName(e), entry_name:e.name, profile:Object.assign({}, e.profile || {}) };
+  });
+  var stack = dzStackGet();
+  stack.push({ ts:new Date().toISOString(), items:archives });
+  dzStackSet(stack);
+  /* Plain queuePatch calls, deliberately NOT wrapped in txn(): the
+     global undo stack must never hold a second copy of a removal —
+     Ctrl+Z in this view belongs to the removal stack alone. */
+  dis.forEach(function(di){ queuePatch(di, { deleted:'1' }); });
+  sbLogAdd({ type:'delete', title:'Danger Zone: removed ' + dis.length + ' profile' + (dis.length === 1 ? '' : 's'),
+    detail: archives.map(function(a){ return a.name + ' (' + a.key + ')'; }).join(', '), archives:archives,
+    undo:{ kind:'undelete', keys:archives.map(function(a){ return a.key; }) } });
+  SB.dz.sel = {};
+  var remain = oldKeys.filter(function(k){ return archives.every(function(a){ return a.key !== k; }); });
+  SB.dz.curKey = remain.length ? remain[Math.min(Math.max(lastIdx, 0), remain.length - 1)] : null;
+  toast(dis.length + ' removed — Ctrl+Z or u to undo');
+  render();
+}
+function dzUndo(){
+  var stack = dzStackGet();
+  if(!stack.length){ toast('Nothing to undo in the Danger Zone'); return; }
+  var entry = stack.pop(); dzStackSet(stack);
+  var back = 0, recreated = 0, names = [];
+  (entry.items || []).forEach(function(a){
+    names.push(a.name);
+    var di = PK2I[String(a.key || '').toLowerCase()];
+    if(di != null && D.directory[di]){
+      if(String(raw(D.directory[di], 'deleted') || '') === '1' || !liveEntry(D.directory[di])) queuePatch(di, { deleted:'' });
+      back++;
+      return;
+    }
+    /* Post-sweep restore: the row is gone from Profiles (it sits in
+       Trash). Re-create it through the same batch endpoint the outbox
+       flush uses, from the archived profile, and queue the Trash-row
+       removal for sandbox_ops.py — sbRestoreArchived's exact path.
+       Limit: the person returns on the next bake, not instantly, and
+       the Trash row clears only when the ops file is run. */
+    var prof = {};
+    Object.keys(a.profile || {}).forEach(function(k){
+      if(['key', 'merged_into', 'deleted', 'updated_at'].indexOf(k) < 0) prof[k] = a.profile[k];
+    });
+    prof.merged_into = ''; prof.deleted = '';
+    var ops = sbTrashKeys()[a.key] ? [{ op:'trashremove', key:a.key }] : [];
+    sbPostBatch([{ id:a.key, patch:prof }]).then(function(ok){
+      toast(ok ? 'Restore sent — ' + a.name + ' returns on the next bake' : 'Restore POST failed for ' + a.name);
+    });
+    if(ops.length) sbLogAdd({ type:'restore', title:'Danger Zone: queued Trash removal for ' + a.name, detail:a.key, queuedOps:ops });
+    recreated++;
+  });
+  sbLogAdd({ type:'restore', title:'Danger Zone: undid removal of ' + names.join(', '),
+    detail: back + ' restored in Profiles' + (recreated ? '; ' + recreated + ' re-created from the archive (post-sweep)' : '') });
+  toast(recreated && !back ? 'Restore sent for ' + names.join(', ') : 'Restored ' + names.join(', '));
+  if(document.getElementById('dzwrap')) render();
+}
+/* Keyboard: mirrors the Research Command handler's guards exactly —
+   inert while typing, while any overlay/panel is open, on other
+   routes, and under modifiers (except this view's own Ctrl+Z). This
+   listener is registered before boot()'s onKey, so its
+   stopImmediatePropagation keeps the global handlers (Ctrl+Z app
+   undo, "/" global search) out of this view only. */
+document.addEventListener('keydown', function(ev){
+  if(!S.route || S.route.name !== 'sandbox' || typeof SB === 'undefined' || SB.tool !== 'danger') return;
+  if(!document.getElementById('dzwrap')) return;
+  if(typeof LRCC !== 'undefined' && LRCC.el) return;
+  if(typeof QA !== 'undefined' && QA.open) return;
+  if(typeof POOL !== 'undefined' && POOL.open) return;
+  if(document.body.classList.contains('sheet-open') || document.body.classList.contains('qa-open')) return;
+  if(document.querySelector('.hmi-wrap, .phi-wrap, .ykb-wrap, .phed-wrap')) return;
+  var tp = document.getElementById('tpop'); if(tp && !tp.hidden) return;
+  var sw = document.getElementById('sheetwrap'); if(sw && !sw.hidden) return;
+  var t = ev.target;
+  var typing = !!(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable));
+  if((ev.ctrlKey || ev.metaKey) && !ev.altKey && (ev.key === 'z' || ev.key === 'Z')){
+    if(typing) return;
+    ev.preventDefault(); ev.stopImmediatePropagation(); dzUndo(); return;
+  }
+  if(typing) return;
+  if(ev.ctrlKey || ev.metaKey || ev.altKey) return;
+  var k = ev.key;
+  if(k === 'Backspace' && ev.shiftKey){ ev.preventDefault(); ev.stopImmediatePropagation(); dzDelete(); return; }
+  if(k === 'j' || k === 'ArrowDown'){ if(k === 'ArrowDown' && ev.shiftKey) return; ev.preventDefault(); dzMove(1); return; }
+  if(k === 'k' || k === 'ArrowUp'){ if(k === 'ArrowUp' && ev.shiftKey) return; ev.preventDefault(); dzMove(-1); return; }
+  if(k === ' ' || k === 'x'){ ev.preventDefault(); dzToggleSel(SB.dz.curKey); return; }
+  if(k === 'Enter'){
+    if(t && (t.tagName === 'BUTTON' || t.tagName === 'A')) return;
+    var di = SB.dz.curKey ? PK2I[SB.dz.curKey.toLowerCase()] : null;
+    if(di != null){ ev.preventDefault(); sbOpenProfile(di); }
+    return;
+  }
+  if(k === '/'){ ev.preventDefault(); ev.stopImmediatePropagation(); var q = document.getElementById('dzq'); if(q) q.focus(); return; }
+  if(k === 'Escape'){ SB.dz.sel = {}; dzPaintSel(); return; }
+  var lk = (k && k.length === 1) ? k.toLowerCase() : '';
+  if(lk === 'u'){ ev.preventDefault(); dzUndo(); return; }
+});
+document.addEventListener('click', function(ev){
+  var row = ev.target && ev.target.closest ? ev.target.closest('tr[data-sb="dzrow"]') : null;
+  if(!row) return;
+  var key = row.getAttribute('data-dzkey');
+  if(key && key !== SB.dz.curKey) dzSetCur(key, false);
+});
 
 /* ---------------- 7. danger area ---------------- */
 SB.pick = {};
@@ -16176,6 +16438,14 @@ document.addEventListener('click', function(ev){
     sbGridRefresh();
   }
   else if(act === 'seltodanger'){ SB.dg.tab = 'delete'; go('sandbox/danger'); }
+  else if(act === 'dzsort'){
+    var dk = t.getAttribute('data-k'), dst = dzSortState();
+    if(dst.k === dk) dst.dir *= -1; else { dst.k = dk; dst.dir = 1; }
+    sbStore('ncc_sbx_dz_sort', { k:dst.k, dir:dst.dir });
+    R();
+  }
+  else if(act === 'dzundo'){ dzUndo(); }
+  else if(act === 'dzselclear'){ SB.dz.sel = {}; dzPaintSel(); }
   else if(act === 'selclear'){ SB.sel = {}; R(); }
   else if(act === 'rawtab'){ SB.raw.which = t.getAttribute('data-k'); R(); }
   else if(act === 'reptab'){ SB.rep.tab = t.getAttribute('data-k'); R(); }
@@ -16452,6 +16722,13 @@ document.addEventListener('change', function(ev){
     if(t.checked) SB.sel[pk] = di; else delete SB.sel[pk];
     sbGridRefresh();
   }
+  else if(k === 'dzsel'){
+    var ddi = +t.getAttribute('data-di'), dpk = pkey(D.directory[ddi]);
+    if(dzExcluded(D.directory[ddi])){ t.checked = false; return; }
+    if(t.checked) SB.dz.sel[dpk] = ddi; else delete SB.dz.sel[dpk];
+    dzSetCur(dpk, false);
+    dzPaintSel();
+  }
   else if(k === 'gridview'){
     if(t.value.indexOf('saved:') === 0){
       var def = sbSavedViews()[t.value.slice(6)];
@@ -16478,6 +16755,7 @@ document.addEventListener('input', function(ev){
   if(!t) return;
   var k = t.getAttribute('data-sbi');
   if(k === 'gridq'){ SB.grid.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbGridRefresh, 250); }
+  else if(k === 'dzq'){ SB.dz.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox' && SB.tool === 'danger') sbRenderKeepFocus('dzq'); }, 250); }
   else if(k === 'discq'){ SB.dsc.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbDiscPaintList, 200); }
   else if(k === 'rawq'){ SB.raw.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') sbRenderKeepFocus('rawq'); }, 400); }
   else if(k === 'trashq'){ SB.dg.trashQ = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') sbRenderKeepFocus('trashq'); }, 400); }
