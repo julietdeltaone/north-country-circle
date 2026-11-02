@@ -1,6 +1,6 @@
 {
  "updated": "2026-11-02",
- "total": 693,
+ "total": 694,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
   {
@@ -2073,13 +2073,23 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Instagram profile @madstop136 (display name \"\"). Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+   "evidence": "Woodshop News feature on From the Heart Cabinetry of Potsdam: the article identifies Eric Criscitello as the business's owner/operator and its embedded caption reads verbatim 'Eric Criscitello (right) and finisher Chris Weems consult on stain color matching.' Filed as a 1:1 crop of Eric (right) from that photo; coordinator-fetched and visually verified. Upgrades the Oct 2026 Instagram possible. Filed 2026-11-02.",
    "name": "Eric Criscitello",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/656137028_18571688854062017_2790936096509897653_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=tO_L33urjT8Q7kNvwFWUUDU&_nc_oc=Adr2kASo3rZ_Px5Smkfj-I2cpp82PAR6ZXzCk8zbvZXbk02qBd_gEfe_94cGewjN3s0HqcNKgVJ-ygCpMzW2lywi&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=am4v-J_iqvIGguy-SIPX-A&oh=00_AQPZf95MuYOGgDmYd5Ze4U5jICphKnz5n0tUafZLePRzIg&oe=6AE02388",
-   "source_page": "https://www.instagram.com/madstop136/",
-   "status": "possible",
-   "type": "Instagram profile picture",
-   "added_approx": "Oct 2026"
+   "photo_url": "photos/eric-criscitello.jpg",
+   "source_page": "https://www.woodshopnews.com/features/positioned-in-potsdam",
+   "status": "confirmed",
+   "type": "Captioned workplace photo (crop)",
+   "added": "2026-11-02",
+   "also": [
+    {
+     "photo_url": "https://scontent.cdninstagram.com/v/t51.82787-19/656137028_18571688854062017_2790936096509897653_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=101&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=tO_L33urjT8Q7kNvwFWUUDU&_nc_oc=Adr2kASo3rZ_Px5Smkfj-I2cpp82PAR6ZXzCk8zbvZXbk02qBd_gEfe_94cGewjN3s0HqcNKgVJ-ygCpMzW2lywi&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=am4v-J_iqvIGguy-SIPX-A&oh=00_AQPZf95MuYOGgDmYd5Ze4U5jICphKnz5n0tUafZLePRzIg&oe=6AE02388",
+     "status": "possible",
+     "type": "Instagram profile picture",
+     "source_page": "https://www.instagram.com/madstop136/",
+     "evidence": "Instagram profile @madstop136 (display name \"\"). Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
+     "added_approx": "Oct 2026"
+    }
+   ]
   },
   {
    "evidence": "Instagram profile @catchandtrelease (display name \"Eric Trelease\"); bio: \"Fountain of mirth.\".",
@@ -3944,12 +3954,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "North Country Public Radio story photo (file Kim_Sisk_photo.jpg) whose caption, alt and title all read 'Canton parent Kim Sisk writes a letter to lobby for increased school funding. Photo: Julie Grant' - the image shows her writing at a table, matching the caption and her Canton, NY town anchor. Coordinator-fetched and visually verified. Filed 2026-11-02.",
    "name": "Kim Sisk",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://www.northcountrypublicradio.org/news/images/Kim_Sisk_photo.jpg",
+   "source_page": "https://www.northcountrypublicradio.org/news/story/21135/20121224/schools-fight-for-fiscal-survival",
+   "status": "confirmed",
+   "type": "News photo",
+   "added": "2026-11-02"
   },
   {
    "evidence": "Instagram profile @kimberlymitchelldamon (display name \"Kimberly Mitchell Damon\"). Name/bio does not fully anchor this profile to the North Country person of this name; graded possible.",
@@ -4407,13 +4418,23 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Seaway Valley Prevention Council team page places [Image 15] directly above the heading 'Marissa Kelley / Health Educator' and her bio — the same position every other staff member's named headshot occupies. BUT the file is generically named '2023-Headshot-Template.jpg', unlike colleagues' personally named files, so it cannot be verified from text as her actual photo rather than a template image — possible, flagged for visual review. Re-hosted locally 2026-10-31 from the same source URL (504x504, bytes verified) so the primary no longer depends on the remote link.",
+   "evidence": "Seaway Valley Prevention Council's own team page places this headshot directly under the heading 'Marissa Kelley / Health Educator'; her page bio (Health Educator at SVPC, Master's in Special Education from SUNY Potsdam) matches her profile's employer and school anchors. The generic template filename was flagged before filing; the coordinator fetched and visually verified it is her individual studio portrait. Upgrades the Oct 31 possible. Filed 2026-11-02.",
    "name": "Marissa Kelley",
-   "photo_url": "photos/marissa-kelley.jpg",
+   "photo_url": "https://svpc.net/wp-content/uploads/2025/09/2023-Headshot-Template.jpg",
    "source_page": "https://svpc.net/our-friendly-team/",
-   "status": "possible",
-   "type": "staff photo (unverified)",
-   "added": "2026-10-31"
+   "status": "confirmed",
+   "type": "Staff headshot",
+   "added": "2026-11-02",
+   "also": [
+    {
+     "photo_url": "photos/marissa-kelley.jpg",
+     "status": "possible",
+     "type": "staff photo (unverified)",
+     "source_page": "https://svpc.net/our-friendly-team/",
+     "evidence": "Seaway Valley Prevention Council team page places [Image 15] directly above the heading 'Marissa Kelley / Health Educator' and her bio — the same position every other staff member's named headshot occupies. BUT the file is generically named '2023-Headshot-Template.jpg', unlike colleagues' personally named files, so it cannot be verified from text as her actual photo rather than a template image — possible, flagged for visual review. Re-hosted locally 2026-10-31 from the same source URL (504x504, bytes verified) so the primary no longer depends on the remote link.",
+     "added": "2026-10-31"
+    }
+   ]
   },
   {
    "evidence": "Instagram profile @marissa989 (display name \"Marissa Wood\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@marissa989), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
@@ -5065,6 +5086,14 @@
     {
      "url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2025-09/02_0.JPG?itok=RNs-nYWJ",
      "note": "Original launch shot (02_0.JPG), replaced 2026-10-22 at JD note: better photos of her on this site."
+    },
+    {
+     "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/2025-09/Fin1.JPG?itok=Dc1jsnaD",
+     "source_page": "https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler",
+     "status": "possible",
+     "type": "Race photo",
+     "evidence": "SUNY Potsdam's 'Sufferfest' 90-Miler article about Norah Pease '24 (history degree, wilderness education minor) and Kelly Bloom '25 opens with the two of them canoeing; this frame shows the pair racing canoe 106. Held at possible: the article pairing is the single anchor and which paddler is Norah is not captioned. Coordinator-fetched and visually verified. Filed 2026-11-02.",
+     "added": "2026-11-02"
     }
    ],
    "added": "2026-10-31"
@@ -6396,15 +6425,6 @@
    "added": "2026-10-28"
   },
   {
-   "name": "Christopher Pagan",
-   "photo_url": "photos/christopher-pagan.jpg",
-   "source_page": "https://prudenteng.com/search-results",
-   "status": "possible",
-   "type": "Employer website headshot",
-   "evidence": "POSSIBLE from the 2026-10-28 directory-wide photo sweep (wave 3). A professional headshot asset named 'Christopher' is hosted on the Webflow CDN serving prudenteng.com, Prudent Engineering - the firm JD's 2026-10-26 research batch confirmed Christopher Pagan joined in Sep 2025. No firm page naming him beside the photo could be opened, so the pairing is graded possible, not confirmed. URL load-verified (500x544 JPEG) and the portrait viewed. Re-hosted locally 2026-10-31 from the same source URL (500x544, bytes verified) so the primary no longer depends on the remote link.",
-   "added": "2026-10-31"
-  },
-  {
    "name": "Stephanie Reasoner",
    "photo_url": "photos/stephanie-reasoner.jpg",
    "status": "possible",
@@ -6530,6 +6550,24 @@
    "status": "confirmed",
    "type": "Official military photo",
    "evidence": "DVIDS photo 5602010 (VIRIN 190725-M-ZQ619-1175, July 2019): a U.S. Army captain briefs Indonesian airborne soldiers in the jungle; the coordinator enlarged the frame and read his name tape - 'DIMAKAS' (the leading D sits at a uniform fold) - with captain's rank on his chest. Matches his Live Records anchor: Captain commanding B Company, 182nd Infantry Regiment, July 2019 (the battalion was in Indonesia for Garuda Shield 2019). Note: a 'Wikimedia Commons' copy of this photo series circulated during the hunt does not exist - this filing uses the DVIDS original, coordinator-fetched and visually verified. Filed 2026-11-02 on the batch-4 hunter's corrected sourcing.",
+   "added": "2026-11-02"
+  },
+  {
+   "name": "Jackie Card",
+   "photo_url": "photos/jackie-card.jpg",
+   "source_page": "https://gardenshare.org/meet-the-staff/",
+   "status": "confirmed",
+   "type": "Staff photo",
+   "evidence": "GardenShare's Meet the Staff page attaches this photo to the staff card titled 'Jackie Card, Community Engagement,' and GardenShare's February 2025 eNews introduces Jackie Card as its new Community Engagement Coordinator who came to St. Lawrence County to attend SUNY Potsdam - both profile anchors. The source file's EXIF orientation stored it upside-down; filed rotated upright, coordinator-fetched and visually verified. Filed 2026-11-02.",
+   "added": "2026-11-02"
+  },
+  {
+   "name": "Heather Ramsdell",
+   "photo_url": "photos/heather-ramsdell.jpg",
+   "source_page": "https://www.ntcmassena.com/series/three-questions/",
+   "status": "possible",
+   "type": "Series artwork photo (crop)",
+   "evidence": "New Testament Church Massena's 'Three Questions' sermon-series artwork is built on a real couple photograph: the man is Tony Ramsdell (named in the graphic) and the woman beside him is presumed to be his wife Heather - the church's own preacher archive independently confirms 'Pastor Heather Ramsdell' across three sermon series. Held at possible on that single anchor chain; filed as a crop of the woman from the artwork, coordinator-fetched and visually verified. Filed 2026-11-02.",
    "added": "2026-11-02"
   }
  ]
