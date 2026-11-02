@@ -163,6 +163,7 @@ html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .home-door{display:flex;align-items:center;justify-content:center;min-height:78px;width:100%;padding:18px 16px;border-radius:20px;border:1px solid var(--line2);text-align:center;font:800 18px/1.15 var(--sans);letter-spacing:.13em;box-shadow:var(--sh-chip);-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%)}
 .home-door-loc{background:var(--acc);border-color:var(--acc);color:#fff}
 .home-door-online{background:linear-gradient(150deg,color-mix(in srgb,var(--ga) 30%,var(--glass2)),color-mix(in srgb,var(--gb) 22%,var(--glass)));color:var(--txt)}
+.home-door-prox{background:color-mix(in srgb,var(--glass2) 68%,transparent);border:1.5px dashed var(--line2);color:var(--txt)}
 .home-door:active{filter:brightness(.97)}
 .home-activity .ghead{margin-top:2px}
 .activity-row{display:flex;align-items:center;gap:11px;width:100%;padding:10px 8px;min-height:72px;border-radius:14px;position:relative;cursor:pointer}
@@ -339,7 +340,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.7.0';
+var MOBILE_VERSION = '1.8.0';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -729,6 +730,26 @@ function saveLog(di, sum, det, on){
   queueRemove(di); /* a logged person leaves the up-next queue, whichever flow logged them */
   return true;
 }
+/* proximity save (V1.8.0): the third peer of saveLog — co-presence, not
+   contact. Files a Proximity event {date, kind:'proximity', venue,
+   summary:venue} dated today. NEVER writes the Last Contact stamp and
+   NEVER clears the up-next queue: only a real contact does those. */
+function lastProxOf(e){
+  var best = null;
+  (e.events || []).forEach(function(ev){
+    if(!ev || ev.kind !== 'proximity' || !flexKey(ev.date)) return;
+    if(!best || flexKey(ev.date) > flexKey(best.date)) best = ev;
+  });
+  return best;
+}
+function saveProx(di, venue){
+  var e = D.directory[di]; if(!e) return false;
+  venue = String(venue || '').trim(); if(!venue) return false;
+  var arr = (e.events || []).slice();
+  arr.push({ date:todayStr(), kind:'proximity', venue:venue, summary:venue });
+  queuePatch(di, { events:JSON.stringify(arr) });
+  return true;
+}
 function openPerson(di){ location.hash = '#/p/' + encodeURIComponent(pkey(D.directory[di])); }
 
 /* ---------- router ---------- */
@@ -777,6 +798,8 @@ function parseRoute(){
   if(parts[0] === 'lists') return { name:'lists' };
   if(parts[0] === 'flow' && parts[1] === 'online' && parts[2] === 'log' && parts[3]) return { name:'fdetails', cat:'online', id:decodeURIComponent(parts.slice(3).join('/')) };
   if(parts[0] === 'flow' && parts[1] === 'online') return { name:'pick', cat:'online' };
+  if(parts[0] === 'flow' && parts[1] === 'proximity' && parts[2] === 'log' && parts[3]) return { name:'fdetails', cat:'proximity', id:decodeURIComponent(parts.slice(3).join('/')) };
+  if(parts[0] === 'flow' && parts[1] === 'proximity') return { name:'pick', cat:'proximity' };
   if(parts[0] === 'flow' && parts[1] === 'location' && parts[2] === 'pick') return { name:'pick', cat:'location' };
   if(parts[0] === 'flow' && parts[1] === 'location') return { name:'fdetails', cat:'location' };
   if(parts[0] === 'all') return { name:'all' };
@@ -914,16 +937,21 @@ function paintList(){
   chunk();
 }
 /* ---------- Home + logging flows (JD 2026-10-30) ----------
-   Landing is two stacked hero doors. ONLINE: pick the person first (list
-   scoped to people whose last contact was online), then enter the details.
-   LOCATION: enter the details first, then assign the person (list scoped
-   to people whose last contact was in person) — assigning IS the save.
-   Both pickers offer Most recent / A–Z, and searching (or "Show everyone")
+   Landing is three stacked hero doors (PROXIMITY added V1.8.0, JD
+   2026-11-02: a peer of the other two, everywhere they appear). ONLINE:
+   pick the person first (list scoped to people whose last contact was
+   online), then enter the details. LOCATION: enter the details first,
+   then assign the person (list scoped to people whose last contact was
+   in person) — assigning IS the save. PROXIMITY: pick the person first
+   (list scoped to people with proximity on file), then enter the place —
+   it files a Proximity event only and never moves Last Contact.
+   All pickers offer Most recent / A–Z, and searching (or "Show everyone")
    widens past the category so nobody is unreachable. */
 var FLOW = { cat:'online', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
 var GLOBE_SVG = '<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.9 5.7 3.9 9S14.5 18.4 12 21c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg>';
 var PIN_SVG = '<svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>';
 function catMembers(cat){
+  if(cat === 'proximity') return people().filter(function(di){ return !!lastProxOf(D.directory[di]); });
   return people().filter(function(di){
     var e = D.directory[di];
     if(!String(gv(e, 'last_contact') || '').trim()) return false;
@@ -992,6 +1020,7 @@ function viewHome(v){
     '<button type="button" id="homeqclear" aria-label="Clear search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>' +
     '<button type="button" class="hero-btn home-door home-door-loc" id="hb-loc">KNOWN LOCATION</button>' +
     '<button type="button" class="hero-btn home-door home-door-online" id="hb-online">ONLINE CONNECTION</button>' +
+    '<button type="button" class="hero-btn home-door home-door-prox" id="hb-prox">PROXIMITY</button>' +
     '<section class="home-activity" aria-label="Latest activity"><div class="ghead">Latest activity</div>' +
     (acts.length ? acts.map(activityRow).join('') : '<p class="none">No activity yet.</p>') + '</section>' +
     '<button type="button" class="queue-add" id="queue-add"><span aria-hidden="true">+</span> ADD TO QUEUE</button>' +
@@ -1020,6 +1049,10 @@ function viewHome(v){
   $('#hb-online').addEventListener('click', function(){
     FLOW = { cat:'online', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
     location.hash = '#/flow/online';
+  });
+  $('#hb-prox').addEventListener('click', function(){
+    FLOW = { cat:'proximity', title:'', detail:'', di:null, sort:'recent', all:false, q:'' };
+    location.hash = '#/flow/proximity';
   });
   /* tap an activity row: code <-> full name, on the row only. The
      chevron is the way into the profile (regular names there). */
@@ -1087,7 +1120,10 @@ function pickSort(dis){
   var out = dis.slice();
   if(FLOW.sort === 'az') out.sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
   else out.sort(function(a, b){
-    var x = flexKey(gv(D.directory[a], 'last_contact')), y = flexKey(gv(D.directory[b], 'last_contact'));
+    /* the proximity picker orders by last proximity, not last contact */
+    var ka = FLOW.cat === 'proximity' ? (lastProxOf(D.directory[a]) || {}).date : gv(D.directory[a], 'last_contact');
+    var kb = FLOW.cat === 'proximity' ? (lastProxOf(D.directory[b]) || {}).date : gv(D.directory[b], 'last_contact');
+    var x = flexKey(ka), y = flexKey(kb);
     if(x !== y) return x < y ? 1 : -1;
     return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
   });
@@ -1097,6 +1133,10 @@ function pickGroupKey(di){
   if(FLOW.sort === 'az'){
     var ch = dispName(D.directory[di]).trim().charAt(0).toUpperCase();
     return /[A-Z]/.test(ch) ? ch : '#';
+  }
+  if(FLOW.cat === 'proximity'){
+    var lp = lastProxOf(D.directory[di]), pk = lp ? flexKey(lp.date) : '';
+    return pk ? fmtDate(pk.slice(0, 7)) : 'No proximity logged';
   }
   var k = flexKey(gv(D.directory[di], 'last_contact'));
   return k ? fmtDate(k.slice(0, 7)) : 'No contact logged';
@@ -1114,7 +1154,7 @@ function viewPick(v, cat){
   dk.hidden = false;
   v.innerHTML =
     '<div class="backrow"><button type="button" class="backbtn" id="pkback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'location' ? 'Details' : 'Home') + '</button></div>' +
-    '<div class="ghead">' + (cat === 'queue' ? 'Who should go up next? Tap to add.' : cat === 'online' ? 'Who was it with?' : 'Who was it with? Tap to log it.') + '</div>' +
+    '<div class="ghead">' + (cat === 'queue' ? 'Who should go up next? Tap to add.' : cat === 'proximity' ? 'Who were you around? Tap to log it.' : cat === 'online' ? 'Who was it with?' : 'Who was it with? Tap to log it.') + '</div>' +
     '<div id="plist"></div>' +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
   $('#pkback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
@@ -1146,9 +1186,9 @@ function paintPick(){
   if(scope) scope.textContent = FLOW.cat === 'queue' ? 'Everyone · ' + dis.length
     : searching ? dis.length + ' matches · everyone'
     : FLOW.all ? 'Everyone · ' + dis.length
-    : (FLOW.cat === 'online' ? 'Recent online contacts · ' : 'Recent in-person contacts · ') + dis.length;
+    : (FLOW.cat === 'online' ? 'Recent online contacts · ' : FLOW.cat === 'proximity' ? 'Recent proximity · ' : 'Recent in-person contacts · ') + dis.length;
   if(allBtn){
-    allBtn.textContent = FLOW.cat === 'queue' ? 'Everyone' : FLOW.all ? (FLOW.cat === 'online' ? 'Only online' : 'Only in person') : 'Show everyone';
+    allBtn.textContent = FLOW.cat === 'queue' ? 'Everyone' : FLOW.all ? (FLOW.cat === 'online' ? 'Only online' : FLOW.cat === 'proximity' ? 'Only proximity' : 'Only in person') : 'Show everyone';
     allBtn.style.display = FLOW.cat === 'queue' ? 'none' : '';
   }
   if(!dis.length){ list.innerHTML = '<div class="empty"><h3>Nobody here yet.</h3><p>' + (FLOW.all || searching ? 'Try a different search.' : 'Log one first, or show everyone.') + '</p></div>'; return; }
@@ -1186,6 +1226,11 @@ function doPick(di){
     location.hash = '#/flow/online/log/' + encodeURIComponent(pkey(D.directory[di]));
     return;
   }
+  if(FLOW.cat === 'proximity'){
+    FLOW.di = di;
+    location.hash = '#/flow/proximity/log/' + encodeURIComponent(pkey(D.directory[di]));
+    return;
+  }
   /* location flow: assigning the person IS the save */
   if(!FLOW.title){ location.hash = '#/flow/location'; return; }
   if(saveLog(di, FLOW.title, FLOW.detail, false)){
@@ -1202,29 +1247,51 @@ function viewFlowDetails(v, cat, id){
     if(di == null){ location.hash = '#/flow/online'; return; }
     FLOW.di = di;
   }
+  if(cat === 'proximity'){
+    di = diFromId(id || '');
+    if(di == null && FLOW.di != null && D.directory[FLOW.di]) di = FLOW.di;
+    if(di == null){ location.hash = '#/flow/proximity'; return; }
+    FLOW.di = di;
+  }
   if(cat === 'location' && FLOW.di != null && D.directory[FLOW.di]) di = FLOW.di;
   var e = di != null ? D.directory[di] : null;
   var head = cat === 'online'
     ? '<div class="hero">' + avatarHTML(e, 'av-lg') + '<div><h1>' + esc(dispName(e)) + '</h1><p class="hsub">Online contact · today</p></div></div>'
+    : cat === 'proximity'
+      ? '<div class="hero">' + avatarHTML(e, 'av-lg') + '<div><h1>' + esc(dispName(e)) + '</h1><p class="hsub">Proximity · today</p></div></div>'
     : e
       ? '<div class="hero">' + avatarHTML(e, 'av-lg') + '<div><h1>' + esc(dispName(e)) + '</h1><p class="hsub">Location contact · today</p></div></div>'
       : '<div class="hero"><span class="av av-lg">' + PIN_SVG + '</span><div><h1>Location contact</h1><p class="hsub">Details first, then pick who it was with</p></div></div>';
   v.innerHTML =
-    '<div class="backrow"><button type="button" class="backbtn" id="flback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'online' ? 'People' : (di != null ? 'Up next' : 'Home')) + '</button></div>' +
+    '<div class="backrow"><button type="button" class="backbtn" id="flback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>' + (cat === 'online' || cat === 'proximity' ? 'People' : (di != null ? 'Up next' : 'Home')) + '</button></div>' +
     head +
-    '<div class="glasscard"><h2>What happened</h2>' +
-      '<label class="lab" for="fl-sum">Title</label><input type="text" id="fl-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off" value="' + esc(FLOW.title) + '">' +
-      '<label class="lab" for="fl-det">Description (optional)</label><textarea id="fl-det" placeholder="What happened, what was left open…" rows="3">' + esc(FLOW.detail) + '</textarea>' +
-      '<button type="button" class="btn primary big" id="fl-go">' + (cat === 'online' || di != null ? 'Log it' : 'Choose who it was with') + '</button>' +
-      '<p class="savestat" id="fl-stat"></p></div>' +
+    (cat === 'proximity'
+      ? '<div class="glasscard"><h2>Proximity</h2>' +
+        '<label class="lab" for="fl-sum">Where / context</label><input type="text" id="fl-sum" placeholder="e.g. Lewis School, Clarkson Hall" autocomplete="off" value="' + esc(FLOW.title) + '">' +
+        '<button type="button" class="btn primary big" id="fl-go">Log proximity</button>' +
+        '<p class="savestat" id="fl-stat">Co-presence, not contact — Last Contact won’t move.</p></div>'
+      : '<div class="glasscard"><h2>What happened</h2>' +
+        '<label class="lab" for="fl-sum">Title</label><input type="text" id="fl-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off" value="' + esc(FLOW.title) + '">' +
+        '<label class="lab" for="fl-det">Description (optional)</label><textarea id="fl-det" placeholder="What happened, what was left open…" rows="3">' + esc(FLOW.detail) + '</textarea>' +
+        '<button type="button" class="btn primary big" id="fl-go">' + (cat === 'online' || di != null ? 'Log it' : 'Choose who it was with') + '</button>' +
+        '<p class="savestat" id="fl-stat"></p></div>') +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
   $('#flback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
   $('#fl-sum').addEventListener('input', function(){ FLOW.title = this.value; });
-  $('#fl-det').addEventListener('input', function(){ FLOW.detail = this.value; });
+  var flDet = $('#fl-det');
+  if(flDet) flDet.addEventListener('input', function(){ FLOW.detail = this.value; });
   $('#fl-go').addEventListener('click', function(){
-    FLOW.title = $('#fl-sum').value; FLOW.detail = $('#fl-det').value;
+    FLOW.title = $('#fl-sum').value; var flDet2 = $('#fl-det'); FLOW.detail = flDet2 ? flDet2.value : '';
     if(!FLOW.title.trim()){
-      var st = $('#fl-stat'); st.textContent = 'Write the title first.'; st.className = 'savestat err'; $('#fl-sum').focus(); return;
+      var st = $('#fl-stat'); st.textContent = cat === 'proximity' ? 'Name the place or context first.' : 'Write the title first.'; st.className = 'savestat err'; $('#fl-sum').focus(); return;
+    }
+    if(cat === 'proximity'){
+      if(saveProx(FLOW.di, FLOW.title)){
+        toast('Proximity logged for ' + dispName(D.directory[FLOW.di]) + '.');
+        FLOW.title = ''; FLOW.detail = ''; FLOW.di = null;
+        location.hash = '#/contacts';
+      }
+      return;
     }
     if(cat === 'online'){
       if(saveLog(FLOW.di, FLOW.title, FLOW.detail, true)){
