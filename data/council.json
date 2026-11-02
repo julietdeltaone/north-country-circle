@@ -16,7 +16,7 @@
    {
     "date": "2026-11-02",
     "title": "Scans clean; 2 new flags staged",
-    "summary": "734 unmerged profiles: zero shared phones/emails, zero exact-name duplicates, zero registry aliases in use, no new Guard\u2192Army inference gaps. New flags: Jai Dane vs Janice Dane (the Jai profile's own name fields read Janice Dane; a separate realtor profile exists) and Azlyn Richardson's 'Michels Power, Inc.' comma-shatter. Durant ROTC flag remains open from Nov 1; the McCormick twins were not re-flagged (JD-ruled)."
+    "summary": "734 unmerged profiles: zero shared phones/emails, zero exact-name duplicates, zero registry aliases in use, no new Guard\u2192Army inference gaps. New flags: Jai Dane vs Janice Dane (both profiles are the same CFA design/yearbook 'Mrs. Dane' \u2014 a likely duplicate; corrected same-day after a summary in this run misdescribed her as a realtor) and Azlyn Richardson's 'Michels Power, Inc.' comma-shatter. Durant ROTC flag remains open from Nov 1; the McCormick twins were not re-flagged (JD-ruled)."
    },
    {
     "date": "2026-11-01",
@@ -60,12 +60,13 @@
    {
     "date": "2026-11-02",
     "title": "Cycle 1 rotation complete: final 4 hunted, 0 filed; QC 20/20",
-    "summary": "The overnight full-roster run left only 4 unattempted pool profiles (Azlyn Richardson, Jai Dane, Liana Sinclair, 1LT Murray) \u2014 all hunted with new routes, nothing fileable: a Vermont namesake rejected, the Jai/Janice pair inseparable on web evidence (staged for JD), the Liana SUNY Potsdam lead an unrelated article, and Murray formally unhuntable (surname + rank only) until a first name exists. QC re-verified all 20 photos filed since the last cycle (12 local decode, 8 remote GET 200 + image) \u2014 20/20 pass, 0 hidden. Cycle 2 opens next run, new routes only."
+    "summary": "The overnight full-roster run left only 4 unattempted pool profiles (Azlyn Richardson, Jai Dane, Liana Sinclair, 1LT Murray) \u2014 all hunted with new routes, nothing fileable: Azlyn's only hit is a one-anchor Zola wedding-party lead whose image is unverified; the Jai/Janice pair proved to be two profiles of the same CFA 'Mrs. Dane' (staged for JD); the Liana SUNY Potsdam lead was an unrelated article; and Murray is formally unhuntable (surname + rank only) until a first name exists. QC re-verified all 20 photos filed since the last cycle (12 local decode, 8 remote GET 200 + image) \u2014 20/20 pass, 0 hidden. Cycle 2 opens next run, new routes only."
    },
    {
     "title": "Overnight full-roster run: 11 confirmed-grade photos + 4 possible-grade filed at the coordinator gate; ~30 hunter candidates unverifiable (1 fake wrapper URL)",
     "date": "2026-11-02",
-    "note": "293 targets worked. Confirmed primaries: Debbie Flack, Heather Foster-Barrigar, Christopher Pagan, Evan Dimakas, Eric Criscitello, Jackie Card, Marissa Kelley, Kim Sisk; promotion: Olena Musiienko. Possible-grade: Heather Ramsdell (new), Jonathan Puglia + Jessica Hurlbut + Norah Pease (alternates). Standing rule added to the playbook: only coordinator-verified GETs file. One live-browser pass unlocks most of the ~30 remaining leads. Correction: an earlier snapshot/log note attributing names to batch 12 was superseded in the log."
+    "note": "293 targets worked. Confirmed primaries: Debbie Flack, Heather Foster-Barrigar, Christopher Pagan, Evan Dimakas, Eric Criscitello, Jackie Card, Marissa Kelley, Kim Sisk; promotion: Olena Musiienko. Possible-grade: Heather Ramsdell (new), Jonathan Puglia + Jessica Hurlbut + Norah Pease (alternates). Standing rule added to the playbook: only coordinator-verified GETs file. One live-browser pass unlocks most of the ~30 remaining leads. Correction: an earlier snapshot/log note attributing names to batch 12 was superseded in the log.",
+    "summary": "The overnight full-roster run left only 4 unattempted pool profiles (Azlyn Richardson, Jai Dane, Liana Sinclair, 1LT Murray) \u2014 all hunted with new routes, nothing fileable: Azlyn's only hit is a one-anchor Zola wedding-party lead whose image is unverified; the Jai/Janice pair proved to be two profiles of the same CFA 'Mrs. Dane' (staged for JD); the Liana SUNY Potsdam lead was an unrelated article; and Murray is formally unhuntable (surname + rank only) until a first name exists. QC re-verified all 20 photos filed since the last cycle (12 local decode, 8 remote GET 200 + image) \u2014 20/20 pass, 0 hidden. Cycle 2 opens next run, new routes only."
    }
   ],
   "progress": [
@@ -1359,14 +1360,15 @@
    "date": "2026-11-02",
    "state": "open",
    "theory": {
-    "grade": "Tentative",
-    "text": "Two readings: (a) 'Jai' is the realtor Janice Dane under a nickname, and the design-help footprint (Christian Fellowship Academy orbit, 2017) is hers \u2014 her brokerage is design-branded and the Jai profile's email is jdanedesign@gmail.com \u2014 making one of the two profiles a duplicate; or (b) two different people, and the Jai profile's First/Last fields were filled from the wrong person. No public source uses the name 'Jai Dane' at all, which is why this needs JD's knowledge of the person.",
-    "falsifier": "JD knows Jai Dane as a distinct person from the Potsdam realtor Janice Dane (or confirms Jai is her nickname)."
+    "grade": "Probable",
+    "text": "Same person, duplicated. Both profiles are Janice Dane of the Christian Fellowship Academy orbit: the 'Jai Dane' profile's own First/Last fields read Janice Dane, both profiles carry Christian Fellowship Center, both are known since 2013, and both footprints describe the same 2017 activity \u2014 design/yearbook help at CFA ('Mrs. Dane' of the yearbook staff on one; design and iMovie help on the other, under the email jdanedesign@gmail.com). 'Jai' is most likely her nickname or the handle the second profile was filed from. There is no realtor: an earlier summary in this run misdescribed her, and the correction is logged.",
+    "falsifier": "JD knows a second Dane \u2014 a 'Jai' distinct from Janice, e.g. another Dane family member who did the design work."
    },
    "evidence": [
-    "The live sf:jai-dane profile's own First Name / Last Name fields read 'Janice' / 'Dane'; its footprint is design and iMovie help in the Christian Fellowship Academy orbit (Email, 2017); churches: Christian Fellowship Center; known since 2013.",
-    "A separate live profile, sf:janice-dane \u2014 Janice Dane, Potsdam realtor \u2014 exists in the same directory.",
-    "Photos hunt (Nov 2, 2026): every anchorable web result under either name (bank realtor bio, Zillow / Realtor.com / Redfin, a design-branded brokerage site) belongs to the realtor; no source separates two people.",
+    "sf:jai-dane (Display 'Jai Dane'): First Name 'Janice', Last Name 'Dane'; churches Christian Fellowship Center; email jdanedesign@gmail.com; footprint 'Provided design and iMovie help in the Christian Fellowship Academy orbit in 2017 (Email, 2017)'; Years Known 2013.",
+    "sf:janice-dane (Display 'Janice Dane'): synopsis 'part of Christian Fellowship Center and helped with design and the yearbook at Christian Fellowship Academy around 2017'; footprint 'The Mrs. Dane of the Christian Fellowship Academy yearbook staff, corresponding 2017\u20132019 (Email, 2019)'; email danefam5@gmail.com; Years Known 2013.",
+    "A third Dane profile (sf:nelson-dane, CFA youth circle, Dane family email threads 2017\u20132018) places Janice as the Dane family's CFA parent \u2014 consistent with 'Mrs. Dane'.",
+    "Photos hunt (Nov 2, 2026, full report): no source uses 'Jai Dane'; no Potsdam realtor named Janice Dane exists in the bake or was found on the web \u2014 the 'realtor' description in this run's first summary was an error and is corrected in the logs.",
     "The Nov 1 overnight photo hunt independently flagged the pair as a merge question for JD (do not merge unilaterally)."
    ],
    "actions": [
@@ -1378,7 +1380,7 @@
       "survivor": "sf:janice-dane",
       "loser": "sf:jai-dane"
      },
-     "note": "Only if JD confirms they are the same person. Opens in the Merge studio preloaded with this pair."
+     "note": "Theory's pick if JD confirms: the design/yearbook footprint and family links carry onto the survivor. Opens in the Merge studio preloaded with this pair."
     },
     {
      "id": "keep-jai-janice",
