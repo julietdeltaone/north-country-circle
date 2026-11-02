@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.74.0';
+var APP_VERSION = '3.75.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -204,7 +204,8 @@ function hexA(hex, a){
   var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
-function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){} return null; }
+var STORE_QUOTA = false;   /* V3.75.0 (bug hunt 35): a failed localStorage write (quota) used to vanish silently; the flag lets the sync chip say so */
+function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ if(v !== undefined) STORE_QUOTA = true; } return null; }
 function typing(){
   var a = document.activeElement;
   return !!a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.tagName === 'SELECT' || a.isContentEditable);
@@ -805,7 +806,10 @@ function knownAssociates(e){
   var seen = {}, out = [], hide = hiddenAssoc(e);
   (e.neighbors || []).forEach(function(nb){
     var k = (nb.u || '').toLowerCase();
-    if(k && !seen[k] && !hide[k]){ seen[k] = 1; out.push({ u:nb.u, d:nb.d, 'new':nb['new'] }); }
+    /* V3.75.0 (bug hunt 24): references that resolve to no directory
+       entry (raw handles for people not in the directory) are not
+       shown as associates. */
+    if(k && !seen[k] && !hide[k] && BYN[k] != null){ seen[k] = 1; out.push({ u:nb.u, d:nb.d, 'new':nb['new'] }); }
   });
   return out;
 }
@@ -829,7 +833,7 @@ function rebuildNeighbors(e){
 /* ============================================================
    3. outbox + undo
    ============================================================ */
-var OUT = { items:[], busy:false, timer:null, retry:0, err:'', auth:false, kickedAt:0 };
+var OUT = { items:[], busy:false, timer:null, retry:0, err:'', auth:false, kickedAt:0, quota:false };
 /* Save Pool (V3.14.0): every queued change is a visible pool entry with a
    state (queued -> sending -> written to the Sheet, or stuck after repeated
    failures). POOL.log is the on-device journal of Sheet-confirmed writes:
@@ -853,7 +857,14 @@ function outLoad(){
     if(it.sending){ it.patch = Object.assign({}, it.sending, it.patch); it.sending = null; }
   });
 }
-function outSave(){ try{ localStorage.setItem(OUT_KEY, JSON.stringify(OUT.items)); }catch(x){} }
+function outSave(){
+  /* V3.75.0 (bug hunt 35): cap the persisted pending queue at the newest
+     200 entries and surface quota failures on the sync chip instead of
+     swallowing them. */
+  if(OUT.items.length > 200) OUT.items = OUT.items.slice(-200);
+  try{ localStorage.setItem(OUT_KEY, JSON.stringify(OUT.items)); OUT.quota = false; }
+  catch(x){ OUT.quota = true; }
+}
 function poolLoad(){
   try{ POOL.log = JSON.parse(localStorage.getItem(POOL_KEY) || '[]'); if(!Array.isArray(POOL.log)) POOL.log = []; }catch(x){ POOL.log = []; }
   POOL.open = store('ncc_pool_open') === '1';
@@ -1959,7 +1970,11 @@ function doExport(di, mode){
   }catch(x){ toast(mode === 'view' ? 'Could not open the document.' : 'Could not build the document.'); }
 }
 
-function personIsAka(e){ return pkey(e) === AKA_KEY; }
+/* V3.75.0 (bug hunt 7): the AKA gate used to be a single hardcoded key,
+   so also_known_as was invisible and unsearchable for everyone else.
+   Any profile carrying the field gets the header line, the editor field
+   and search inclusion. */
+function personIsAka(e){ return !!String(gv(e, 'also_known_as') || '').trim(); }
 
 /* ============================================================
    8. views
@@ -2108,6 +2123,7 @@ function paintSync(){
   else if(OUT.err){ txt = n + ' not saved \u00b7 retrying'; cls = 'err'; }
   else if(OUT.busy){ txt = 'Saving \u00b7 ' + n; cls = 'busy'; }
   else { txt = n + ' queued'; cls = 'busy'; }
+  if(STORE_QUOTA || OUT.quota){ txt += ' \u00b7 storage full'; cls = 'err'; }
   if(p){
     p.className = 'syncp ' + cls; p.innerHTML = '<i></i>' + esc(txt);
     p.title = stuck ? 'Some changes could not be written after repeated tries. Tap to open the Save Pool.' : (OUT.err ? 'Last error: ' + OUT.err + '. Tap to open the Save Pool.' : 'Save Pool: every change, tracked until the Sheet confirms it. Tap to open.');
@@ -2920,7 +2936,7 @@ function paintPeople(){
     byB.forEach(function(mems, bi){
       if(!mems.length) return;
       mems.sort(function(a, b){
-        var ka = flexKey(gv(D.directory[a], 'last_contact')) || 0, kb = flexKey(gv(D.directory[b], 'last_contact')) || 0;
+        var ka = hmLastKey(D.directory[a]) || 0, kb = hmLastKey(D.directory[b]) || 0;
         if(kb !== ka) return kb - ka;
         return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
       });
@@ -3011,7 +3027,7 @@ var PTCELL = {
   years: function(e){ var y = knownSinceYear(e); return y ? String(y) : ''; },
   phone: function(e){ var p = gv(e, 'phone'); return p ? esc(fmtPhone(p)) : ''; },
   email: function(e){ return esc(gv(e, 'email')); },
-  lastc: function(e){ var v = String(gv(e, 'last_contact') || '').trim(); if(!v) return ''; return lcOnline(e) ? '<span class="ptlc onl">Online · ' + esc(lcLabel(e)) + '</span>' : '<span class="ptlc">' + esc(lcLabel(e)) + '</span>'; },
+  lastc: function(e){ var v = String(gv(e, 'last_contact') || '').trim(); if(!v) return ''; var lab = lcLabel(e); return lcOnline(e) ? '<span class="ptlc onl" title="' + esc(lab) + '">Online · ' + esc(lab) + '</span>' : '<span class="ptlc" title="' + esc(lab) + '">' + esc(lab) + '</span>'; },
   firstc: function(e){ var v = firstContactOf(e); return v ? esc(lcDateLabel(v)) : ''; }
 };
 /* column state: [{k, on}] in display order */
@@ -3052,7 +3068,7 @@ function ptVisibleCols(){
    table-layout:fixed at 100% width, so these are proportions, not pixels —
    any visible set is rescaled to fill the row and nothing can push the
    table wider than its region. */
-var PT_W = { name:21, tier:10, loc:11, orgs:19, assoc:8, msgs:9, skills:11, rel:10, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:10, firstc:12 };
+var PT_W = { name:20, tier:10, loc:10, orgs:16, assoc:8, msgs:9, skills:10, rel:11, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:13, firstc:12 };   /* V3.75.0 (bug hunt 32): shares rebalanced — Organizations/Skills clip by design (ellipsis + title), Last Contact does not, and its column was the one squeezed off the right edge at 1366/1440 */
 function ptColgroupHTML(){ return '<colgroup>' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
 function ptSaveCols(){ store('ncc_pt_cols', JSON.stringify(ptCols())); }
 function ptColsSheet(){
@@ -4834,7 +4850,6 @@ function viewNetwork(v){
   v.innerHTML = '<div class="page netpage" data-kind="connection"><div class="netbar"><div><h1 class="display">Network</h1></div>' +
     '<div class="netctl">' +
     '<div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div>' +
-    '<button type="button" class="btn ghost sm' + (S.net.view === '2d' ? ' on' : '') + '" data-act="netview" data-v="2d" aria-pressed="' + (S.net.view === '2d' ? 'true' : 'false') + '">2D</button>' +
     '<button type="button" class="btn ghost sm" data-act="netreset">Reset view</button>' +
     '<button type="button" class="btn ghost sm" data-act="netfs" aria-pressed="false">Full screen</button>' +
     '</div></div>' +
@@ -5475,7 +5490,7 @@ function famGensOf(disp, tree){
   tree.members.forEach(function(di){ (byGen[gen[di]] = byGen[gen[di]] || []).push(di); });
   return Object.keys(byGen).sort(function(a, b){ return a - b; }).map(function(g){ return { g:+g, members:byGen[g] }; });
 }
-function famRelCaption(disp, tree, di){
+function famRelCaption(disp, tree, di, omitSpouse){
   var inT = {}; tree.members.forEach(function(x){ inT[x] = 1; });
   function rel(rk){ return ((disp[di] && disp[di][rk]) || []).filter(function(x){ return inT[x.di]; }); }
   var ps = rel('parents').map(function(x){ return dispName(D.directory[x.di]); });
@@ -5483,7 +5498,11 @@ function famRelCaption(disp, tree, di){
   var ch = rel('children').length;
   var bits = [];
   if(ps.length) bits.push('child of ' + ps.join(' & '));
-  if(sp.length) bits.push('married to ' + sp.join(', '));
+  /* V3.75.0 (bug hunt 20): in a couple row the caption is computed for
+     the FIRST partner but renders after both chips, so "married to X"
+     read as the second partner's caption naming themselves. Couple
+     rows omit the spouse bit — the row itself shows the marriage. */
+  if(sp.length && !omitSpouse) bits.push('married to ' + sp.join(', '));
   if(ch) bits.push(ch + (ch === 1 ? ' child' : ' children') + ' in this tree');
   if(!bits.length) bits.push(tree.blood[di] ? 'root of this line' : 'married in');
   return bits.join(' · ');
@@ -5517,7 +5536,7 @@ function famGenHTML(disp, tree, G){
       if(sp != null){
         used[di] = 1; used[sp] = 1;
         h += '<div class="fp-row"><span class="fcouple">' + famChipHTML(di) + '<span class="fmrg"><i></i>married<i></i></span>' + famChipHTML(sp) + '</span>' +
-          '<span class="fp-rel">' + esc(famRelCaption(disp, tree, di)) + '</span></div>';
+          '<span class="fp-rel">' + esc(famRelCaption(disp, tree, di, true)) + '</span></div>';
       } else {
         used[di] = 1;
         h += '<div class="fp-row">' + famChipHTML(di) + '<span class="fp-rel">' + esc(famRelCaption(disp, tree, di)) + '</span></div>';
@@ -5527,9 +5546,12 @@ function famGenHTML(disp, tree, G){
   return h;
 }
 function famIndexHTML(ft){
-  var total = 0;
-  ft.forEach(function(t){ total += t.members.length; });
-  var rows = [['Trees', String(ft.length)], ['People in trees', String(total)]];
+  var total = 0, seenP = {};
+  ft.forEach(function(t){ total += t.members.length; t.members.forEach(function(di){ seenP[di] = 1; }); });
+  /* V3.75.0 (bug hunt 14): people are DISTINCT people; the appearances
+     sum is labeled family links, never "people". */
+  var rows = [['Trees', String(ft.length)], ['People in trees', String(Object.keys(seenP).length)]];
+  if(total !== Object.keys(seenP).length) rows.push(['Family links', String(total)]);
   if(ft.length) rows.push(['Largest family', ft[0].title + ' · ' + ft[0].members.length]);
   var treeRows = ft.map(function(t){
     var rep = t.roots && t.roots.length ? t.roots[0] : t.members[0];
@@ -5547,18 +5569,19 @@ function viewFamily(v){
   var disp = famDisplay(), ftRes = famTrees(disp), ft = ftRes.trees || [];
   FAMV.lay = null; FAMV.pos = {}; FAMV.hover = null; FAMV.el = null;
   if(!ft.length){ v.innerHTML = '<div class="page">' + emptyState('No family trees yet.', 'Add a parent, spouse, child or sibling from a profile and the tree appears here.') + '</div>'; return; }
-  var total = 0; ft.forEach(function(t){ total += t.members.length; });
+  var total = 0, seenP = {}; ft.forEach(function(t){ total += t.members.length; t.members.forEach(function(di){ seenP[di] = 1; }); });
+  var distinctP = Object.keys(seenP).length;   /* V3.75.0 (bug hunt 14) */
   var sections = ft.map(function(t){
     var gens = famGensOf(disp, t);
     var body = gens.map(function(G, gi){
       return '<div class="fgen"><div class="fgen-lab">Generation ' + (gi + 1) + '<span>' + esc(FAM_GENLAB[gi] || '') + '</span></div>' +
         '<div class="fgen-people">' + famGenHTML(disp, t, G) + '</div></div>';
     }).join('');
-    return '<section class="ftree" id="' + esc(t.id) + '"><header class="ftree-h"><h2>' + esc(t.title) + '</h2><span class="ftree-n">' + t.members.length + ' people</span>' +
+    return '<section class="ftree" id="' + esc(t.id) + '"><header class="ftree-h"><h2>' + esc(t.title) + '</h2><span class="ftree-n">' + t.members.length + (t.members.length === 1 ? ' person' : ' people') + '</span>' +
       ((t.spousesFrom && t.spousesFrom.length) ? '<span class="ftree-note">Married-in spouses also appear in ' + t.spousesFrom.map(function(x){ return esc(x.title); }).join(', ') + '</span>' : '') +
       '</header>' + body + '</section>';
   }).join('');
-  v.innerHTML = '<div class="page fampage" data-kind="about" data-level="personal"><div class="netbar"><div><h1 class="display">Family</h1> ' + lvlChip('personal') + '<p class="sub">' + ft.length + ' bloodline' + (ft.length === 1 ? '' : 's') + ' · ' + total + ' people. Generations read top to bottom; every relationship is written next to the name.</p></div>' +
+  v.innerHTML = '<div class="page fampage" data-kind="about" data-level="personal"><div class="netbar"><div><h1 class="display">Family</h1> ' + lvlChip('personal') + '<p class="sub">' + ft.length + ' bloodline' + (ft.length === 1 ? '' : 's') + ' · ' + distinctP + ' people' + (total !== distinctP ? ' · ' + total + ' family links' : '') + '. Generations read top to bottom; every relationship is written next to the name.</p></div>' +
     '<div class="netctl"><button type="button" class="btn ghost sm" data-act="famside" aria-expanded="' + (sideOpen(S.fam.side) ? 'true' : 'false') + '">Summary</button></div></div>' +
     '<div class="netcard famfocus" id="famcard" hidden></div>' +
     '<div class="famcols2"><div class="famlist">' + sections + '</div>' +
@@ -5884,7 +5907,7 @@ function viewGroups(v){
   /* Design cleanup (JD 2026-10-28): tabs and search live INSIDE the
      banner — the old stack of head + tab row + tool row ate the top
      of the page before any group appeared. */
-  var headTop = '<div class="pagehead"><div class="grp-headrow"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>';
+  var headTop = '<div class="pagehead"><div class="grp-headrow"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap. Each tab counts the one profile field it names; the Master List counts a name across every affiliation field, so its numbers run higher.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>';
   var head = headTop + tabs + '</div>';
   if(name){
     GRPV.detail = { kind:kind, name:name };
@@ -6075,7 +6098,7 @@ function hmDeckPhotos(){
   var most = [], totalPhotos = 0, multi = 0, igNames = [];
   if(PH && PH.people){
     PH.people.forEach(function(p){
-      if(!phHasPhoto(p)) return;
+      if(!phHasPhoto(p) || phDiOf(p.name) == null) return;   /* V3.75.0 (bug hunt 23): directory people only */
       var n = phAllPhotos(p).length;
       totalPhotos += n;
       if(n > 1) multi++;
@@ -6258,6 +6281,7 @@ function hmCharts(){
     '<div class="hmr-hrow head"><span class="hmr-hh">Field</span><span class="hmr-hh">Filled</span><span class="hmr-hh">% filled</span><span class="hmr-hh">Blank</span><span class="hmr-hh">% blank</span></div>' +
     hrows + heatNote +
     '<h4 class="hmr-h4 hmr-mt2">Completeness bands \u2014 heat strip, shade = people</h4><div class="hmr-strip">' + bstrip + '</div>' + bandNote +
+    '<p class="hmr-note">Completeness is a blend of closeness, level, relationship, years known, and shared connections.</p>' +   /* V3.75.0 (bug hunt 17): say what the score is made of, keeping JD's word for it */
     '</div></section>';
 }
 /* --- Home Shape card (JD 2026-10-28, V3.26.0 consolidation): tier
@@ -6278,7 +6302,7 @@ function hmShapeCard(dd, N){
     '<div class="hm-ns-row hm-shape-net">' +
     '<span class="hm-ns-t">Network</span>' +
     seg.map(function(s){ return '<span class="hm-ns-seg"><i style="background:' + s.col + '"></i>' + s.l + ' <b>' + s.c + '</b></span>'; }).join('') +
-    '<span class="hm-ns-seg dim">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</span>' +
+    '<span class="hm-ns-seg dim">' + NET.nodes.length + ' in the network &middot; ' + NET.hubs.length + ' hubs</span>' +
     '<span class="sp"></span><a class="hma-link" href="#/network">Open Network ' + ic('arrow', 12) + '</a>' +
     '</div></section>';
 }
@@ -6499,12 +6523,28 @@ function wnLoad(){
     .catch(function(){ WN_LOADING = false; WN = { empty:true, items:[] }; if(S.route && (S.route.name === 'whatsnew' || S.route.name === 'home')) render(); });
 }
 var WN_KINDS = { filed:'Filed', photo:'Photo', hot:'Fresh' };
+/* V3.75.0 (bug hunt 32): the change feed's `what` strings are cut at
+   ~160 chars by the filing pipeline, mid-phrase. The full text lives
+   on the profile as a footprint bullet — when the stored text is a
+   prefix of one, show the whole bullet so the detail is reachable
+   right here. */
+function wnFullText(it, di){
+  var t = String(it.text || '');
+  if(!t || di == null || typeof D === 'undefined' || !D || !D.directory[di]) return t;
+  function stripB(s){ return String(s || '').replace(/^[•·\-*]\s*/, ''); }
+  var ts = stripB(t), blocks = footprintOf(D.directory[di]).blocks || [];
+  for(var i = 0; i < blocks.length; i++){
+    var lt = stripB(blocks[i].text);
+    if(lt.length > ts.length && lt.indexOf(ts.slice(0, 60)) === 0) return lt;
+  }
+  return t;
+}
 function wnRow(it){
   var di = hmDiOf(it.display);
   var wnK = textKind(it.text);
   var inner = kindGlyph(wnK) + '<span class="wn-chip wn-' + esc(it.kind || 'filed') + '">' + esc(WN_KINDS[it.kind] || 'Filed') + '</span>' +
     '<span class="wn-main"><span class="wn-nm">' + esc(it.display || '') + '</span>' +
-    '<span class="wn-tx">' + esc(it.text || '') + '</span>' +
+    '<span class="wn-tx">' + esc(wnFullText(it, di)) + '</span>' +
     '<span class="wn-meta">' + (it.url ? '<a data-act="extlink" href="' + esc(it.url) + '" target="_blank" rel="noopener">' + esc(it.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(it.source || '')) + '</span></span>';
   if(di == null) return '<div class="wn-row" data-kind="' + wnK + '">' + inner + '</div>';
   return '<button type="button" class="wn-row" data-kind="' + wnK + '" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(it.display || '') + '\u2019s profile">' + inner + '</button>';
@@ -6631,7 +6671,7 @@ function hmiKeysInit(){
 /* --- inspector pieces --- */
 function hmiAvatar(di){
   var e = D.directory[di], idx = phIndex(), p = idx ? idx[dispName(e)] : null;
-  if(p && p.photo_url && phAllPhotos(p).length) return '<span class="hmi-av"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"></span>';
+  if(p && p.photo_url && phAllPhotos(p).length) return '<span class="hmi-av"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(dispName(e)) + '" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '" onerror="phImgErr(this)"></span>';
   return avatar(e, 'sm');
 }
 function hmiTierTag(e){
@@ -6846,10 +6886,10 @@ function hmiRows(kind, key){
   } else if(kind === 'hmfield'){ /* Home heat-matrix cells (V3.72.0): key = '<field>|<has|miss>'; the field's own has(), the same check SE_FIELDS/Audit use */
     var hfp = key.split('|'), hfDef = seFieldDef(hfp[0]);
     if(hfDef) pop.forEach(function(di){ var h = hfDef.has(D.directory[di]); if(hfp[1] === 'has' ? h : !h) push(di); });
-  } else if(kind === 'hmrec'){ /* Home recency strip (V3.72.0): key a/b/c/d/n — mirrors seDistGroups()' bucket math exactly (midnight today, flexKey ms, floor days) */
+  } else if(kind === 'hmrec'){ /* Home recency strip (V3.72.0): key a/b/c/d/n — mirrors seDistGroups()' bucket math exactly (midnight today, flexKey ms, floor days). V3.75.0: both read hmLastKey, the shared recency definition (bug hunt 5). */
     var t0 = new Date(); t0.setHours(0, 0, 0, 0);
     pop.forEach(function(di){
-      var f = flexKey(gv(D.directory[di], 'last_contact'));
+      var f = hmLastKey(D.directory[di]);
       if(f == null){ if(key === 'n') push(di); return; }
       var days = Math.floor((t0.getTime() - f) / 864e5);
       if(key === 'a'){ if(days <= 7) push(di); }
@@ -7259,7 +7299,7 @@ function hmNetCard(){
   var orgRows = NET.hubs.slice(0, 8).map(function(h){
     return '<button type="button" class="hm-org" data-act="hmorg" data-v="' + esc(h.name) + '"><span>' + esc(h.name) + '</span><b data-hmn="' + h.nds.length + '">' + h.nds.length + '</b></button>';
   }).join('');
-  return '<section class="card hm-blk" data-kind="connection"><header><h3>Network</h3><em class="cnt">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</em></header><div class="cbody">' +
+  return '<section class="card hm-blk" data-kind="connection"><header><h3>Network</h3><em class="cnt">' + NET.nodes.length + ' in the network &middot; ' + NET.hubs.length + ' hubs</em></header><div class="cbody">' +
     '<div class="hm-netgrid"><a class="hm-netlink" href="#/network" aria-label="Open the full Network">' + svg + '</a>' +
     '<div><h4>Organizations &mdash; tap to focus</h4><div class="hm-orgs">' + orgRows + '</div>' +
     '<p class="dim hm-note">Everyone in the directory on closeness rings; each tie routes through the person&rsquo;s largest organization. Tap the map for the full Network.</p></div></div>' +
@@ -7288,16 +7328,31 @@ function hmNetDrift(){
    recently filed photos — the change log's order — then by
    grade, the same ordering the Photos page opens with. --- */
 /* Audit F19: one canonical source for the counts every view shows.
-   Photo counts use the Photos page's own definition (phHasPhoto over
-   all tracked entries) so Home and Photos can never disagree. */
+   V3.75.0 (bug hunt 11): the ONE basis is directory people — a person
+   counts as having a photo when their photos.json entry passes
+   phHasPhoto (post-expiry definition). Record counts survive only as
+   `records`, labeled as such wherever they are shown. Home, Photos
+   and the Sandbox all read this counter. */
+function phPeopleCounts(){
+  var out = { people:0, onFile:0, missing:0, ig:0, records:(PH && PH.people) ? PH.people.length : 0 };
+  if(!PH || !PH.people) return out;
+  var idx = phIndex();
+  people().forEach(function(di){
+    var e = D.directory[di], p = idx ? idx[dispName(e)] : null;
+    out.people++;
+    if(p && phHasPhoto(p)){ out.onFile++; if(String(p.type || '').indexOf('Instagram') >= 0) out.ig++; }
+    else out.missing++;
+  });
+  return out;
+}
 function statsOf(){
   var st = { people: people().length, photosOnFile: 0, photosMissing: 0, photoEntries: 0, igPhotos: 0 };
   if(PH && PH.people){
-    var all = phAllEntries(), withPh = all.filter(phHasPhoto);
-    st.photoEntries = all.length;
-    st.photosOnFile = withPh.length;
-    st.photosMissing = all.length - withPh.length;
-    withPh.forEach(function(p){ if(String(p.type || '').indexOf('Instagram') >= 0) st.igPhotos++; });
+    var pc = phPeopleCounts();
+    st.photosOnFile = pc.onFile;
+    st.photosMissing = pc.missing;
+    st.photoEntries = pc.records;
+    st.igPhotos = pc.ig;
   }
   return st;
 }
@@ -7307,7 +7362,7 @@ function hmPhotoStats(){
   function revOf(p){ return REV[String(p.name || '').toLowerCase()] || ''; }
   var counts = { no_photo:0, no_source:0, auth_only:0 };
   PH.people.forEach(function(p){ if(counts[p.status] != null) counts[p.status]++; });
-  var found = PH.people.filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely' || p.status === 'possible') && revOf(p) !== 'rejected'; });
+  var found = PH.people.filter(function(p){ return p.photo_url && (p.status === 'confirmed' || p.status === 'likely' || p.status === 'possible') && revOf(p) !== 'rejected' && phDiOf(p.name) != null && phHasPhoto(p); });   /* V3.75.0: directory people with a working photo only (bug hunt 8/11/23) */
   var chRank = {};
   if(CH && CH.entries) CH.entries.forEach(function(c, i){ var k = String(c.name || '').toLowerCase(); if(chRank[k] == null) chRank[k] = i; });
   var gradeR = { confirmed:0, likely:1, possible:2 };
@@ -7324,7 +7379,7 @@ function hmPhotosCard(ph){
   var kpis = '<div class="hm-kpis">' +
     '<button type="button" class="hm-kpi" data-kind="about" data-act="hmikpi" data-k="photos"><div class="hm-kn">' + ph.onFile + '</div><div class="hm-kl">Photos on file</div></button>' +
     '<button type="button" class="hm-kpi" data-nkind="about" data-act="hmiopen" data-kind="nophoto" data-label="No photo yet"><div class="hm-kn">' + ph.noPhoto + '</div><div class="hm-kl">No photo yet</div></button>' +
-    '<button type="button" class="hm-kpi" data-kind="about" data-act="hmikpi" data-k="photos"><div class="hm-kn">' + ph.checked + '<small> / ' + ph.total + '</small></div><div class="hm-kl">Profiles checked</div></button>' +
+    '<button type="button" class="hm-kpi" data-kind="about" data-act="hmikpi" data-k="photos"><div class="hm-kn">' + ph.total + '</div><div class="hm-kl">Photo records</div></button>' +   /* V3.75.0 (bug hunt 11): a record count, labeled as records; the people counts above are the directory basis */
     '<button type="button" class="hm-kpi" data-nkind="about" data-act="hmiopen" data-kind="igsrc" data-label="From Instagram"><div class="hm-kn">' + ph.ig + '</div><div class="hm-kl">From Instagram</div></button></div>';
   var tiles = ph.wall.map(function(p){
     /* V3.13.0: the photo IS the tile — it fills the frame and the
@@ -7332,7 +7387,7 @@ function hmPhotosCard(ph){
        on the photo as a caption scrim, part of the same surface.
        (Was: square photo block stacked on a separate name bar, so
        the glass radius rounded the bar and left the photo square.) */
-    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '" data-act="phinsp" data-pname="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="hm-tcap"><span class="hm-tn">' + esc(p.name) + '</span>' + milBadgeName(p.name) + (phAddedLabel(p) ? '<small class="hm-td">' + phAddedLabel(p) + '</small>' : '') + '</span></a>';
+    return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '" data-act="phinsp" data-pname="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '" onerror="phImgErr(this)"><span class="hm-tcap"><span class="hm-tn">' + esc(p.name) + '</span>' + milBadgeName(p.name) + (phAddedLabel(p) ? '<small class="hm-td">' + phAddedLabel(p) + '</small>' : '') + '</span></a>';
   }).join('');
   tiles += '<button type="button" class="hm-tile miss" data-act="hmiopen" data-kind="nophoto" data-label="No photo yet"><b>' + ph.noPhoto + '</b><span>still missing a photo</span></button>';
   return '<section class="card hm-blk' + (HM_DATES ? ' hm-showdates' : '') + '" data-kind="about"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em><span class="sp"></span><button type="button" class="btn ghost sm" data-act="hmdates">' + (HM_DATES ? 'Hide added dates' : 'Show added dates') + '</button></header><div class="cbody">' + kpis +
@@ -7344,6 +7399,11 @@ function hmPhotosCard(ph){
    who he last talked to, what was left open, and who has gone quiet
    longest — with the actual thread previews, not just dates. Built
    from the briefOf derivations. --- */
+/* THE recency definition (V3.75.0, bug hunt 5): the last_contact stamp
+   folded with dated kind:'contact' timeline events — the newest of the
+   two wins. Home's strip, the Stats Explorer, the By-last-contact view
+   and the Home inspector all read this one function, so "recently
+   contacted" can never mean two things on two surfaces again. */
 function hmLastKey(e){
   var k = flexKey(gv(e, 'last_contact'));
   (e.events || []).forEach(function(ev){
@@ -7389,7 +7449,7 @@ function hmNetStrip(dd){
   return '<section class="card hm-blk hm-netstrip" data-kind="connection"><div class="cbody"><div class="hm-ns-row">' +
     '<span class="hm-ns-t">Network</span>' +
     seg.map(function(s){ return '<span class="hm-ns-seg"><i style="background:' + s.col + '"></i>' + s.l + ' <b>' + s.c + '</b></span>'; }).join('') +
-    '<span class="hm-ns-seg dim">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</span>' +
+    '<span class="hm-ns-seg dim">' + NET.nodes.length + ' in the network &middot; ' + NET.hubs.length + ' hubs</span>' +
     '<span class="sp"></span><a class="hma-link" href="#/network">Open Network ' + ic('arrow', 12) + '</a>' +
     '</div></div></section>';
 }
@@ -7878,7 +7938,13 @@ function rcConsoleHTML(){
   var catOpts = ['<option value="all"' + (RC_VIEW.cat === 'all' ? ' selected' : '') + '>All categories</option>']
     .concat(Object.keys(RC_CATS).map(function(k){ return '<option value="' + k + '"' + (RC_VIEW.cat === k ? ' selected' : '') + '>' + RC_CATS[k] + '</option>'; })).join('');
   var body = shown.length ? shown.map(function(r){
-    var c = r.c, band = rcBand(c.confidence), parts = c.confidence_parts || {};
+    var c = r.c, parts = c.confidence_parts || {};
+    /* V3.75.0 (bug hunt 26): when the parts exist, the displayed total
+       is their computed sum — a stored total that drifted (two did)
+       can never silently disagree with its own parts again. */
+    var confShown = (parts.identity != null || parts.source != null || parts.detail != null)
+      ? ((+parts.identity || 0) + (+parts.source || 0) + (+parts.detail || 0)) : (+c.confidence || 0);
+    var band = rcBand(confShown);
     /* The held category as a color-coded pill (JD 2026-11-01): one
        professional color family per category (rccat-* in the CSS),
        shown beside the name and again at the Why-held column it
@@ -7895,7 +7961,7 @@ function rcConsoleHTML(){
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
     return '<div class="rc-row rcb-' + band.k + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c.id) + '">' +
-      '<div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
+      '<div class="rc-conf"><b>' + confShown + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, confShown)) + '%"></i></span>' +
       rcPartsHTML(parts) + '</div>' +
       '<div class="rc-main"><div class="rc-person">' + kindGlyph('about') + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPill +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
@@ -8359,7 +8425,7 @@ function viewDaily(v){
   }
   if(DT.empty || !DT.date){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function fmtD(iso){ if(!iso) return ''; var p = String(iso).split('-'); return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]; }
+  function fmtD(iso){ if(!iso) return ''; var p = String(iso).split('-'); if(p.length < 3) return String(iso); return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]; }   /* V3.75.0 (bug hunt 34): partial-date guard, same as the Research console's fmtD — a '2026-10' value no longer renders "Oct NaN, 2026" */
   function daysBetween(a, b){ return Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 86400000); }
   var filedNames = {};
   (DT.filed || []).forEach(function(f){ filedNames[String(f.name || '').toLowerCase()] = 1; });
@@ -8978,8 +9044,11 @@ function phAddedTs(p){
   return 0;
 }
 function phIsNew(p){
-  if(!p || !p.added || !p.photo_url) return false;
-  var t = Date.parse(p.added); if(isNaN(t)) return false;
+  /* V3.75.0 (bug hunt 27 code half): fall back to added_approx at month
+     precision (phAddedTs already implements it) instead of structurally
+     excluding entries that lack an exact added date. */
+  if(!p || !p.photo_url) return false;
+  var t = phAddedTs(p); if(!t) return false;
   return (Date.now() - t) <= PH_NEW_DAYS * 864e5 && t <= Date.now() + 864e5;
 }
 function phNewCount(all){ return all.filter(phIsNew).length; }
@@ -9005,7 +9074,7 @@ function phHeroHTML(e){
       '<button type="button" class="btn sm primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Validate</button>' +
       '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div>';
   }
-  return '<div class="hphoto" data-pname="' + esc(p.name) + '"><span class="hphoto-box" data-act="phinsp" data-pname="' + esc(p.name) + '" role="button" tabindex="0" title="Open the photo inspector"><img src="' + esc(photos[cur].url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, photos[cur].url) + '"></span>' +
+  return '<div class="hphoto" data-pname="' + esc(p.name) + '"><span class="hphoto-box" data-act="phinsp" data-pname="' + esc(p.name) + '" role="button" tabindex="0" title="Open the photo inspector"><img src="' + esc(photos[cur].url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, photos[cur].url) + '" onerror="phImgErr(this)"></span>' +
     '<button type="button" class="hphoto-adj" data-act="phadjust" data-pname="' + esc(p.name) + '" title="Adjust this photo&rsquo;s framing — no inspector needed">Adjust</button>' +
     nav + '</div>' + verdict;
 }
@@ -9263,11 +9332,33 @@ function phSuspects(){
   if(!PH || !PH.people) return [];
   return PH.people.filter(function(p){
     if(!p.photo_url || (p.status !== 'possible' && p.status !== 'likely')) return false;
+    if(phDiOf(p.name) == null) return false;   /* V3.75.0 (bug hunt 23): people lists hold directory people only */
     var r = phRevOf(p);
     return r !== 'confirmed' && r !== 'rejected';
   });
 }
-function phHasPhoto(p){ return !!p.photo_url && phRevOf(p) !== 'rejected' && phAllPhotos(p).length > 0; }
+/* V3.75.0 (bug hunt 8): Instagram CDN URLs carry a hex oe= expiry; once
+   it passes, the URL is dead and the person has NO photo for counting
+   and display purposes (the file itself is localized separately). */
+function phUrlExpired(u){
+  if(!u) return false;
+  var m = String(u).match(/[?&]oe=([0-9a-fA-F]+)/);
+  if(!m) return false;
+  var t = parseInt(m[1], 16) * 1000;
+  return !isNaN(t) && t <= Date.now();
+}
+function phHasPhoto(p){ return !!p.photo_url && !phUrlExpired(p.photo_url) && phRevOf(p) !== 'rejected' && phAllPhotos(p).length > 0; }
+/* V3.75.0 (bug hunt 8): a photo that fails to load swaps to the person's
+   initials instead of leaving a broken-image frame. */
+function phImgErr(img){
+  if(!img || img._phErr) return; img._phErr = 1;
+  var s = document.createElement('span');
+  s.className = 'ph-ini';
+  s.textContent = famInitials(img.getAttribute('alt') || '');
+  if(img.parentNode) img.parentNode.replaceChild(s, img);
+  else img.style.display = 'none';
+}
+window.phImgErr = phImgErr;   /* the app runs inside an IIFE — inline onerror attributes resolve globally, so the handler must be exported */
 function phStartYearOf(p){ var e = phEntryOf(p); return e ? knownSinceYear(e) : 0; }
 function phYearsCountOf(p){ var y = phStartYearOf(p); return y ? new Date().getFullYear() - y : -1; }
 function phOrgOf(p){ var e = phEntryOf(p); if(!e) return ''; var o = orgsOf(e); return o.length ? regApply(o[0]) : ''; }
@@ -9356,9 +9447,12 @@ function phKeysInit(){
 function phAllEntries(){
   /* the checked set from photos.json, plus anyone in the directory the
      batches have not reached yet (status 'unchecked') so the page
-     covers the whole directory, not just the checked slice */
+     covers the whole directory, not just the checked slice.
+     V3.75.0 (bug hunt 23): entries matching no directory person (org
+     cards, pre-merge names) stay in photos.json but are not people and
+     never enter this list. */
   var out = [], seen = {};
-  (PH.people || []).forEach(function(p){ out.push(p); seen[String(p.name || '').toLowerCase()] = 1; });
+  (PH.people || []).forEach(function(p){ if(phDiOf(p.name) == null) return; out.push(p); seen[String(p.name || '').toLowerCase()] = 1; });
   people().forEach(function(di){
     var nm = dispName(D.directory[di]);
     if(nm && !seen[nm.toLowerCase()]) out.push({ name:nm, status:'unchecked', photo_url:null, evidence:'', source_page:null, type:null, also:[] });
@@ -9432,7 +9526,7 @@ function phCard(p){
      fills the card, the rounded corners clip the image, and the name
      is a caption scrim on the photo, not a separate bar under it. */
   if(phHasPhoto(p)){
-    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds"></span></span>' +
+    return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '" onerror="phImgErr(this)"><span class="phthirds"></span></span>' +
       '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + '</div></section>';
   }
   return '<section class="card phcard noph' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg phnoimg">' + ic('camera', 22) + '<em>NO PHOTO</em></span>' +
@@ -9519,7 +9613,7 @@ function phiRender(){
   var keyU = phKeyUrl(p), isKey = !!(cur && !viewingHid && keyU && cur.url === keyU);
   var stage;
   if(PHI.adj) stage = '<div class="phi-stage phi-adjstage" id="phiadj"></div>';
-  else if(cur) stage = '<div class="phi-stage"><img src="' + esc(cur.url) + '" alt="' + esc(PHI.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, cur.url) + '">' + (viewingHid ? '<span class="phbadge hid phi-hidbadge">HIDDEN</span>' : '') + '</div>';
+  else if(cur) stage = '<div class="phi-stage"><img src="' + esc(cur.url) + '" alt="' + esc(PHI.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, cur.url) + '" onerror="phImgErr(this)">' + (viewingHid ? '<span class="phbadge hid phi-hidbadge">HIDDEN</span>' : '') + '</div>';
   else stage = '<div class="phi-stage phi-noph">' + ic('camera', 34) + '<em>NO PHOTO ON FILE</em></div>';
   var rows = '';
   if(PHI.vis.length) rows += '<div class="phi-srow"><span>Position</span><b>' + (viewingHid ? 'Hidden' : (PHI.idx + 1) + ' of ' + PHI.vis.length) + '</b></div>';
@@ -9680,16 +9774,17 @@ function viewPhotos(v){
   }
   if(PH.empty || !PH.people){ v.innerHTML = '<div class="page asearch">' + head + '<section class="card"><div class="cbody"><p class="dim">No photo checks yet. The first batch lands today.</p></div></section></div>'; return; }
   var all = phAllEntries();
-  var withPh = all.filter(phHasPhoto).length;
+  var pc = phPeopleCounts();   /* V3.75.0 (bug hunt 11): header counts are directory people, same basis as Home and the Sandbox */
+  var withPh = pc.onFile;
   var unchecked = all.filter(function(p){ return p.status === 'unchecked'; }).length;
   /* Design cleanup (JD 2026-10-28): the stats ride in the banner as
      one compact line, and every control fits in ONE toolbar row —
      Tier/Organizations tuck behind Filters. The photos are the hero;
      the grid gets the reclaimed height. */
   var headFull = '<div class="pagehead phhead"><div><h1 class="display">Photos</h1></div><div class="ph-headstats">' +
-    '<span class="phst">' + ic('camera', 13) + '<b>' + (PH.total || PH.people.length) + '</b> checked</span>' +
+    '<span class="phst">' + ic('camera', 13) + '<b>' + (PH.total || PH.people.length) + '</b> records checked</span>' +
     '<span class="phst">' + ic('check', 13) + '<b>' + withPh + '</b> on file</span>' +
-    '<span class="phst">' + ic('search', 13) + '<b>' + (all.length - withPh) + '</b> no photo yet</span>' +
+    '<span class="phst">' + ic('search', 13) + '<b>' + pc.missing + '</b> no photo yet</span>' +
     (PH.updated ? '<span class="phst">' + ic('calendar', 13) + 'Updated <b>' + esc(fmtIsoD(PH.updated)) + '</b></span>' : '') +
     (unchecked ? '<span class="phst">' + ic('search', 13) + '<b>' + unchecked + '</b> not yet checked</span>' : '') +
     (phNewCount(all) ? '<span class="phst">' + ic('sparkle', 13) + '<b>' + phNewCount(all) + '</b> new in the last 3 weeks</span>' : '') +
@@ -9709,7 +9804,7 @@ function viewPhotos(v){
   var rail = '<div class="phtoolbar">' +
     '<div class="phtb-row"><input id="phq" type="search" placeholder="Search names" autocomplete="off" value="' + esc(PH_QUERY) + '">' +
     '<span class="phtb-group"><span class="phtb-lab">Show</span>' +
-    fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('multi', 'Multiple photos', all.filter(function(p){ return phAllPhotos(p).length > 1; }).length) + fbtn('nophoto', 'No photo yet', all.length - withPh) +
+    fbtn('all', 'All', all.length) + fbtn('photo', 'With photo', withPh) + fbtn('new', 'New photos', phNewCount(all)) + fbtn('multi', 'Multiple photos', all.filter(function(p){ return phAllPhotos(p).length > 1; }).length) + fbtn('nophoto', 'No photo yet', pc.missing) +
     '</span>' +
     '<button type="button" class="phcolbtn" data-act="phmore" aria-expanded="false">Filters</button>' +
     '<span class="sp"></span><span class="ph-count" id="phcount"></span>' + sortHtml + colsHtml +
@@ -9723,7 +9818,7 @@ function viewPhotos(v){
   var sus = phSuspects();
   var possHtml = sus.length ? '<section class="ph-poss"><div class="ph-poss-h"><h3>Possible photos</h3><span>Unconfirmed photos, waiting on your call. <b>' + sus.length + '</b> to review</span></div>' +
     sus.map(function(p){
-      return '<div class="ph-poss-row"><button type="button" class="ph-poss-th" data-act="phinsp" data-pname="' + esc(p.name) + '" title="Open the photo inspector"><img src="' + esc(p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer"></button>' +
+      return '<div class="ph-poss-row"><button type="button" class="ph-poss-th" data-act="phinsp" data-pname="' + esc(p.name) + '" title="Open the photo inspector"><img src="' + esc(p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="phImgErr(this)"></button>' +
         '<div class="ph-poss-mid"><b>' + esc(p.name) + '</b><span class="phbadge ' + (p.status === 'likely' ? 'lik' : 'poss') + '">' + p.status.toUpperCase() + '</span>' +
         (p.evidence ? '<small>' + esc(briefClip(p.evidence, 150)) + '</small>' : '') + '</div>' +
         '<div class="ph-poss-act"><button type="button" class="btn sm primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Validate</button>' +
@@ -9766,7 +9861,7 @@ function viewSettings(v){
     '<div class="row"><span class="syncline"><b id="syncs"></b></span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="retry">Send pending edits now</button></div></div></section>' +
     '<section class="card"><header><h3>AI assist</h3></header><div class="cbody">' +
     '<label class="lab">Tidy prompt<small>Sent to Gemini with your draft when you press Tidy with AI.</small></label><textarea id="setprompt" rows="7" placeholder="Loading"></textarea>' +
-    '<label class="lab">Gemini API key<small>Stored in the sheet, server side only.</small></label><input type="password" id="setkey" placeholder="AIza" autocomplete="off">' +
+    '<label class="lab">Gemini API key<small>Stored in the sheet, server side only.</small></label><input type="password" id="setkey" placeholder="API key" autocomplete="off">' +   /* V3.75.0 (bug hunt 36): the placeholder was a literal key-prefix string — the fragment the walkthrough saw. No code path writes any part of the stored key into the DOM; the field only ever shows placeholder text. */
     '<div class="row"><button type="button" class="btn primary sm" data-act="setsave">Save</button><button type="button" class="btn ghost sm" data-act="settest">Test</button><button type="button" class="btn ghost sm danger" data-act="setclear">Clear key</button><span id="setmsg" class="dim"></span></div></div></section>' +
     '<section class="card"><header><h3>Merged profiles</h3><em class="cnt">' + merged.length + '</em></header><div class="cbody">' +
     (merged.length ? '<p class="dim">Combined profiles stay in the sheet with a pointer to the survivor. Restoring one brings it back as its own profile.</p>' + merged.map(function(di){
@@ -9777,7 +9872,7 @@ function viewSettings(v){
   paintSync();
   settingsCall('getsettings', { x:1 }, function(res){
     var p = $('#setprompt'), k = $('#setkey'), m = $('#setmsg'); if(!p) return;
-    if(res && res.ok){ p.value = res.prompt || ''; k.placeholder = res.hasKey ? 'Key saved. Enter a new one to replace it.' : 'AIza'; }
+    if(res && res.ok){ p.value = res.prompt || ''; k.placeholder = res.hasKey ? 'Key saved. Enter a new one to replace it.' : 'API key'; }
     else if(m) m.textContent = 'Could not load: ' + ((res && res.error) || 'unknown');
   });
 }
@@ -10979,7 +11074,7 @@ function audPaintCounts(){
   audLaterPaint(); audPaintGoal(); audPaintModeBar();
   var s = $('#audsub'); if(!s) return;
   var left = audRemaining(), done = S.audit ? S.audit.done : 0;
-  s.innerHTML = left ? '<span class="ahn">' + left.toLocaleString('en-US') + '</span> quick win' + (left === 1 ? '' : 's') + ' left' + (done ? ' &middot; <span class="ahn-s">' + done + '</span> filled in this visit' : '') : 'Nothing left to fill in';
+  s.innerHTML = left ? '<span class="ahn">' + left.toLocaleString('en-US') + '</span> quick win' + (left === 1 ? '' : 's') + ' left across all lanes' + (done ? ' &middot; <span class="ahn-s">' + done + '</span> filled in this visit' : '') : 'Nothing left to fill in';   /* V3.75.0 (bug hunt 19): name the basis — this is every lane's gaps, not today's queue */
 }
 function audPaintEmpty(){
   var box = $('#audempty'), grid = $('#audgrid');
@@ -11095,6 +11190,29 @@ function audSetMode(m){
 /* ---- Blitz: a 2-minute Rapid Fire round with an end-of-round
    summary (peak-end rule: the recap is what the round is remembered
    by). Fills during the round are counted on the blitz state. ---- */
+/* V3.75.0 (bug hunt 10): the Blitz end screen's buttons (audblitz /
+   audblitzx) had no handlers and nothing could start a round — the
+   starter was gone. audStartBlitz restores it: two minutes on the
+   Cards wall, fills counted on the blitz state, audEndBlitz paints
+   the summary when the clock runs out. */
+function audStartBlitz(){
+  var A = S.audit; if(!A) return;
+  audEndBlitz(true);
+  A.blitzDone = null;
+  if(audMode() !== 'cards'){ A.mode = 'cards'; store('ncc_aud_mode', 'cards'); }
+  A.shown = null;
+  A.blitz = { fills:0, best:A.best || 0, left:120 };
+  viewAudit($('#view'));
+  A._blitzIv = setInterval(function(){
+    if(!S.audit || !S.audit.blitz){ if(A._blitzIv){ clearInterval(A._blitzIv); A._blitzIv = null; } return; }
+    S.audit.blitz.left--;
+    var bt = $('#audblitz-t');
+    if(bt) bt.textContent = 'Blitz ' + Math.floor(Math.max(0, S.audit.blitz.left) / 60) + ':' + ('0' + (Math.max(0, S.audit.blitz.left) % 60)).slice(-2);
+    if(S.audit.blitz.left <= 0) audEndBlitz(false);
+  }, 1000);
+  var bt0 = $('#audblitz-t'); if(bt0) bt0.textContent = 'Blitz 2:00';
+  toast('Blitz started — two minutes, every fill counts');
+}
 function audEndBlitz(silent){
   var A = S.audit, b = A && A.blitz; if(!b) return;
   A.blitz = null;
@@ -11123,7 +11241,7 @@ function audModeBarHTML(){
   if(m === 'prefill'){
     pfLoad();
     var pn = PF ? pfRows().counts.pending : 0;
-    return '<div class="aud-modebar"><span><b>' + pn + '</b> inferred value' + (pn === 1 ? '' : 's') + ' waiting</span><span class="sp"></span><span class="dim">Approve files through the Save Pool &middot; Deny is remembered</span></div>';
+    return '<div class="aud-modebar"><span><b>' + pn + '</b> inferred value' + (pn === 1 ? '' : 's') + ' waiting</span><span class="sp"></span><span class="dim">Approve files through the Save Pool &middot; Deny is remembered &middot; This queue is today\'s working set</span></div>';
   }
   if(m === 'photos'){
     phLoad();
@@ -11153,7 +11271,7 @@ function audModeBarHTML(){
       : '<p class="aud-catprog">Pick a category &mdash; the wall deals only that one, person after person.</p>';
     return row + prog;
   }
-  return '<div class="aud-modebar"><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button><span class="dim">Close out the phone gap for everyone you have no number for.</span></div>';
+  return '<div class="aud-modebar"><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button><span class="dim">Close out the phone gap for everyone you have no number for.</span><span class="sp"></span><span class="aud-blitz-t" id="audblitz-t"></span><button type="button" class="btn ghost sm" id="audblitzbtn" data-act="audblitz">Blitz — 2 minutes</button></div>';
 }
 function audPaintModeBar(){
   var A = S.audit; if(!A) return;
@@ -11597,7 +11715,13 @@ function ykLabelOf(v){ return knownSinceLabel({ profile:{ years_known: v } }); }
    online tick. Contact history itself lives in the events stream as
    kind:'contact' entries; the field is the headline the hero shows. */
 function lcLabel(e){ var v = String(gv(e, 'last_contact') || '').trim(); return v ? ykLabelOf(v) : ''; }
-function lcOnline(e){ return String(gv(e, 'last_contact_online') || '').trim().toLowerCase() === 'yes'; }
+/* V3.75.0 (bug hunt 6): the field is three-shaped on file — 'yes', 'no',
+   and ISO dates. A parseable date means the last contact WAS online. */
+function lcOnline(e){
+  var v = String(gv(e, 'last_contact_online') || '').trim();
+  if(v.toLowerCase() === 'yes') return true;
+  return flexKey(v) != null;
+}
 function lcDateLabel(d){ return d ? ykLabelOf(String(d)) : ''; }
 function lcGlobe(sz){ return '<svg class="lc-globe" width="' + (sz || 12) + '" height="' + (sz || 12) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" role="img" aria-label="Online"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg>'; }
 function lcTag(ev){ return ev.kind === 'contact' ? ' <span class="lc-tag">' + (ev.online ? lcGlobe(11) : '') + 'Contact</span>' : ''; }
@@ -11630,7 +11754,7 @@ function firstContactOf(e){
    today (week <= 7d, month <= 31d, quarter <= 92d, year <= 366d). */
 var LC_BUCKETS = ['This week', 'This month', 'This quarter', 'This year', 'Over a year', 'No contact logged'];
 function lcBucket(e){
-  var k = flexKey(gv(e, 'last_contact'));
+  var k = hmLastKey(e);   /* V3.75.0 (bug hunt 5): the one shared recency definition — stamp folded with dated contact events */
   if(k == null) return 5;
   var now = new Date(), start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   var days = Math.floor((start - k) / 86400000);
@@ -11960,7 +12084,7 @@ function pfPaintRows(){
 function pfPaintQueue(box){
   var rows = pfFiltered();
   if(!rows.length){
-    box.innerHTML = '<div class="pf-caught">' + ic('check', 26) + '<h3>Queue clear</h3><p>Nothing pending in this view. ' + PFQ.decided + ' decided this visit.</p></div>';
+    box.innerHTML = '<div class="pf-caught">' + ic('check', 26) + '<h3>Prefill queue clear</h3><p>Nothing pending in today\'s working set. ' + PFQ.decided + ' decided this visit.</p></div>';   /* V3.75.0 (bug hunt 19): this queue is the prefill working set, not the all-lanes quick-win total in the header */
     return;
   }
   if(PFQ.i >= rows.length) PFQ.i = rows.length - 1;
@@ -12214,6 +12338,8 @@ function onClick(ev){
     case 'audreopen': { var audC6 = el.closest('.aud-card'); if(audC6) audReopen(audC6, el.getAttribute('data-gap')); break; }
     case 'audundo': audUndoLast(); break;
     case 'audmode': if(S.audit) audSetMode(el.getAttribute('data-m')); break;
+    case 'audblitz': if(S.audit){ if(S.audit.blitz) audEndBlitz(false); else audStartBlitz(); } break;
+    case 'audblitzx': if(S.audit){ audEndBlitz(true); S.audit.blitzDone = null; viewAudit($('#view')); } break;
     case 'pfok': pfDecide(el.getAttribute('data-d'), 'file'); break;
     case 'pfskip': { var _pn = pfFiltered().length; if(PFQ.i < _pn - 1){ PFQ.i++; pfPaintRows(); } break; }
     case 'pfback': if(PFQ.i > 0){ PFQ.i--; pfPaintRows(); } break;
@@ -13745,7 +13871,7 @@ var SE_FIELDS = [
   { k:'skills', l:'Skills', has:function(e){ return tagList(gv(e, 'specialty')).length > 0; } },
   { k:'groups', l:'Groups', has:function(e){ return personGroups(e).length > 0; } },
   { k:'family', l:'Family', has:function(e){ return famLinks(e).length > 0; } },
-  { k:'contact', l:'Phone / contact details', has:function(e){ return !!(String(gv(e, 'phone') || '').trim() || String(gv(e, 'email') || '').trim()); } },
+  { k:'contact', l:'Phone', has:function(e){ return !!(String(gv(e, 'phone') || '').trim() || String(gv(e, 'email') || '').trim()); } },   /* V3.75.0 (bug hunt 4 UI half): emails are deliberately scrubbed from the published data (standing privacy decision, 2026-10-06), so this counts phone only — the label now says so */
   { k:'events', l:'Events', has:function(e){ return (e.events || []).length > 0; } },
   { k:'corr', l:'Correspondence', has:function(e){ return !!msgFor(e); } },
   { k:'years', l:'Years Known', has:function(e){ return !!knownSinceYear(e); } },
@@ -13776,7 +13902,7 @@ function seDistGroups(){
   var t0 = new Date(); t0.setHours(0, 0, 0, 0);
   var rec = { a:[], b:[], c:[], d:[], n:[] };
   P.forEach(function(di){
-    var f = flexKey(gv(D.directory[di], 'last_contact'));
+    var f = hmLastKey(D.directory[di]);   /* V3.75.0 (bug hunt 5): shared recency — "Never" only when no stamp AND no dated contact events */
     if(f == null){ rec.n.push(di); return; }
     var days = Math.floor((t0.getTime() - f) / 864e5);
     if(days <= 7) rec.a.push(di); else if(days <= 30) rec.b.push(di); else if(days <= 90) rec.c.push(di); else rec.d.push(di);
@@ -14489,7 +14615,7 @@ function sbHome(){
   var phC = 0, phL = 0, phP = 0;
   people().forEach(function(di){
     var p = phn[dispName(D.directory[di]).toLowerCase()];
-    if(!p || !p.photo_url) return;
+    if(!p || !phHasPhoto(p)) return;   /* V3.75.0 (bug hunt 11): the Sandbox reads the same phHasPhoto basis as Home and Photos — expired URLs and rejected photos no longer count */
     if(p.status === 'confirmed') phC++;
     else if(p.status === 'likely') phL++;
     else if(p.status === 'possible') phP++;
@@ -15852,7 +15978,7 @@ function dzSortState(){
   return SB.dz.sort;
 }
 function dzStackGet(){ return sbStore('ncc_sbx_dz_removed') || []; }
-function dzStackSet(a){ sbStore('ncc_sbx_dz_removed', a.slice(0, 50)); }
+function dzStackSet(a){ sbStore('ncc_sbx_dz_removed', a.slice(-50)); }   /* V3.75.0 (bug hunt 9): removals push onto the END and undo pops from the end — keep the newest 50, not the oldest */
 function dzRows(){
   var ph = sbPhotoByName(), st = dzSortState(), q = String(SB.dz.q || '').trim().toLowerCase();
   var col = DZ_COLS.filter(function(c){ return c.k === st.k; })[0] || DZ_COLS[0];
@@ -16389,15 +16515,39 @@ var CN_LOADING = false, CN_PROF_LOADING = false;
    thread for one tap, measured. Callbacks now queue and fire once,
    from the async completion only, matching phLoad/dtLoad/chLoad. */
 var CN_PROF_CBS = [];
+/* V3.75.0 (bug hunt 1): a failed profiles.json load used to be
+   indistinguishable from an empty one — cnQueue() returned [] either
+   way, so one Stage click would overwrite the Sheet's staged queue
+   with just the new entry. Failure is now a distinct state: the board
+   shows the queue as unavailable and every queue mutation is refused
+   (cnQueueReady / the cnSaveQueue guard) until a successful load. */
+var CN_PROF_FAILED = false;
 function cnProfLoad(cb){
-  if(CN_PROF) return;
+  if(CN_PROF || CN_PROF_FAILED) return;
   if(cb) CN_PROF_CBS.push(cb);
   if(CN_PROF_LOADING) return;
   CN_PROF_LOADING = true;
   fetch('data/profiles.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(rows){ CN_PROF_LOADING = false; CN_PROF = rows; cnProfFlush(); })
-    .catch(function(){ CN_PROF_LOADING = false; cnProfFlush(); });
+    .then(function(rows){
+      CN_PROF_LOADING = false;
+      if(rows && Array.isArray(rows) && rows.length){ CN_PROF = rows; cnProfFlush(); }
+      else { CN_PROF_FAILED = true; CN_PROF_CBS.splice(0); if(S.route && S.route.name === 'council') render(); }
+    })
+    .catch(function(){ CN_PROF_LOADING = false; CN_PROF_FAILED = true; CN_PROF_CBS.splice(0); if(S.route && S.route.name === 'council') render(); });
+}
+function cnQueueReady(){
+  if(CN_Q) return true;
+  if(CN_PROF_FAILED || !CN_PROF || !CN_PROF.length) return false;
+  var ci = CN_PROF[0].indexOf('Council Staged');
+  if(ci < 0) return false;
+  for(var i = 1; i < CN_PROF.length; i++) if(CN_PROF[i][0] === 'ig:jdmeyers_') return true;
+  return false;
+}
+function cnQueueBlocked(){
+  toast('Staged queue unavailable — the profiles data did not load, so nothing was written. Reload the page and try again.');
+  cnRepaint();
+  return false;
 }
 function cnProfFlush(){
   var cbs = CN_PROF_CBS.splice(0);
@@ -16453,6 +16603,7 @@ function cnQueue(){
    superseded this one (queues are cumulative snapshots). */
 var CN_SAVE_SEQ = 0;
 function cnSaveQueue(q, prevQ, failMsg){
+  if(!cnQueueReady()) return Promise.resolve(cnQueueBlocked());   /* V3.75.0 (bug hunt 1): never build a save on an unread queue */
   CN_Q = q;
   var seq = ++CN_SAVE_SEQ;
   return sbPostBatch([{ id:'ig:jdmeyers_', patch:{ council_staged: JSON.stringify(q) } }])
@@ -16633,6 +16784,7 @@ function cnMarkDone(q, entry, outcome){
 }
 function cnDoNow(flagId, actionId){
   var act = cnAction(flagId, actionId); if(!act) return;
+  if(!cnQueueReady()){ cnQueueBlocked(); return; }   /* V3.75.0 (bug hunt 1): execution records into the queue — refuse before anything runs */
   if(act.kind === 'merge'){ cnStage(flagId, actionId); cnOpenMerge(act); return; }
   if(act.kind === 'task'){ cnStage(flagId, actionId); return; }
   var entry = { flag:flagId, action:actionId, label:act.label, kind:act.kind, patches:act.patches || [] };
@@ -16656,6 +16808,7 @@ function cnDoNow(flagId, actionId){
   });
 }
 function cnExecAll(){
+  if(!cnQueueReady()){ cnQueueBlocked(); return; }   /* V3.75.0 (bug hunt 1) */
   var q = cnQueue();
   var exec = q.filter(function(e){ return e.state === 'staged' && (e.kind === 'fix' || e.kind === 'decision'); });
   if(!exec.length){ toast('Nothing executable is staged — tasks and merges stay queued for Luna / the Merge studio'); return; }
@@ -16780,7 +16933,7 @@ function cnDeptGraphic(key, cn, q){
     return '<div class="cnc-kindchips">' + (ks.length ? ks.map(function(k){
       return '<span class="cnc-kchip"><b>' + counts[k] + '</b> ' + esc(cnKindLabel(k)) + '</span>';
     }).join('') : '<span class="cnc-kchip"><b>0</b> open</span>') + '</div>' +
-    '<div class="cnc-gcap">Open flags by kind</div>';
+    '<div class="cnc-gcap">Open flags by kind · Directory: ' + ((typeof D !== 'undefined' && D && D.directory) ? people().length : '—') + ' people (live)</div>';   /* V3.75.0 (bug hunt 12): a live figure beside the dated snapshot prose */
   }
   if(key === 'ops'){
     return '<div class="cnc-kindchips">' + (cn.roster || []).map(function(r){
@@ -16857,6 +17010,7 @@ function taxEntities(){
     return ents[k];
   }
   D.directory.forEach(function(e, di){
+    if(!liveEntry(e)) return;   /* V3.75.0 (bug hunt 13): the Master List counted deleted/merged shells the Groups pages exclude — one population basis (live directory people) on both */
     TAX_KINDS.forEach(function(kind){
       tagList(gv(e, kind)).forEach(function(val){
         var ent = ensure(regApply(val)); if(!ent) return;
@@ -17082,8 +17236,8 @@ function mlSuspects(ents){
 function mlRow(ent, depth){
   var open = MLV.open === ent.key;
   var typeLabel = ent.cat ? 'Category' : (TAX_TYPES.filter(function(t){ return t[0] === ent.type; })[0] || ['', ent.type])[1];
-  var ct = ent.direct.length + ' people';
-  if(ent.cat) ct = ent.total + ' people in total';
+  var ct = ent.direct.length + (ent.direct.length === 1 ? ' person' : ' people');   /* V3.75.0 (bug hunt 21): singular */
+  if(ent.cat) ct = ent.total + (ent.total === 1 ? ' person' : ' people') + ' in total';
   else if(ent.total !== ent.direct.length) ct += ' · ' + ent.total + ' counting everything inside';
   if(!ent.direct.length && !ent.kids.length) ct = 'empty for now';
   var h = '<div class="ml-row' + (open ? ' open' : '') + '" style="margin-left:' + (depth * 22) + 'px">' +
@@ -17160,7 +17314,7 @@ function viewLists(v){
   });
   var nEnt = Object.keys(ents).filter(function(k){ return !ents[k].cat; }).length;
   var h = '<div class="page ml" data-kind="about"><header class="ml-hd"><h2>Master List</h2>' +
-    '<p class="ml-sub">Every organization, group, and skill in one place. ' + nEnt + ' names. Tap a name to see its people and add or remove them. Renames, merges, and nesting go through Luna so they land clean.</p>' +
+    '<p class="ml-sub">Every organization, group, and skill in one place. ' + nEnt + ' names. Tap a name to see its people and add or remove them. Renames, merges, and nesting go through Luna so they land clean. Counts cover every affiliation field on a profile; the Groups pages count one field at a time, so the two can differ.</p>' +
     '<div class="ml-bar"><input type="text" id="mlq" placeholder="Search names" value="' + esc(MLV.q) + '"></div></header>' +
     '<datalist id="ml-names">' + Object.keys(ents).filter(function(k){ return !ents[k].cat; }).map(function(k){ return '<option value="' + esc(ents[k].name) + '">'; }).join('') + '</datalist>' +
     '<div id="mlsecs">';
@@ -17188,7 +17342,7 @@ function viewLists(v){
     if(q && !members.some(function(e){ return e.name.toLowerCase().indexOf(q) >= 0; }) && c.toLowerCase().indexOf(q) < 0) return;
     var tot = {};
     members.forEach(function(e){ e.direct.forEach(function(di){ tot[di] = true; }); });
-    sk += '<div class="ml-skillcat"><div class="ml-skillcat-h">' + esc(c) + '<span>' + Object.keys(tot).length + ' people</span></div>' +
+    sk += '<div class="ml-skillcat"><div class="ml-skillcat-h">' + esc(c) + '<span>' + Object.keys(tot).length + (Object.keys(tot).length === 1 ? ' person' : ' people') + '</span></div>' +
       members.sort(function(a, b){ return (b.direct.length - a.direct.length) || a.name.localeCompare(b.name); }).map(function(e){ return mlRow(e, 0); }).join('') + '</div>';
   });
   h += secBlock('skills', 'Skills', sk);
@@ -17220,6 +17374,7 @@ function viewCouncil(v){
     return;
   }
   var cn = CN, q = cnQueue();
+  var qDown = !cnQueueReady() && !CN_PROF_LOADING;   /* V3.75.0 (bug hunt 1): visible unavailable state instead of a fake empty queue */
   var flags = (cn.flags || []).slice().sort(function(a, b){ return (a.priority || 3) - (b.priority || 3); });
   var open = flags.filter(function(f){ return cnFlagState(f, q) === 'open'; });
   var stagedOnly = flags.filter(function(f){ return cnFlagState(f, q) === 'staged'; });
@@ -17256,6 +17411,10 @@ function viewCouncil(v){
     '<div class="cnc-hcard acc-amb"><span class="cnc-hlab">Directors current</span><b class="cnc-hval">' + curDesks + ' of ' + (cn.roster || []).length + '</b><span class="cnc-hsub">Ran within the last 8 days</span></div>' +
     '<div class="cnc-hcard acc-grn"><span class="cnc-hlab">Executed today</span><b class="cnc-hval">' + doneToday + '</b><span class="cnc-hsub">Staged actions completed</span></div>' +
     '</div>';
+  if(qDown){
+    h += '<div class="cnc-queuebar cnc-qalert"><span class="cnc-qlab">' + ic('x', 13) + ' Staged queue unavailable</span>' +
+      '<span class="cnc-qitems">The profiles data failed to load, so the staged queue cannot be read and staging is paused — nothing can be staged or executed until it loads. Reload the page to retry.</span></div>';
+  }
   if(stagedEntries.length){
     h += '<div class="cnc-queuebar"><span class="cnc-qlab">' + ic('check', 13) + ' Staged queue</span>' +
       '<span class="cnc-qitems">' + stagedEntries.map(function(e){ return esc(e.label); }).join(' · ') + '</span>' +
@@ -17287,7 +17446,7 @@ function viewCouncil(v){
     h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
       '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' + pill + '</div>' +
       (r.status ? '<div class="cnc-dstatus2">' + esc(r.status) + '</div>' : '') +
-      (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest · ' + esc(latest.date || '') + '</div>' +
+      (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest finding · ' + esc(latest.date || '') + ' (snapshot — live counts are on the board)</div>' +
         '<b>' + esc(latest.title || '') + '</b><p>' + esc(latest.summary || '') + '</p></div>' : '<p class="sb-note">No findings yet.</p>') +
       '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
       '<div class="cnc-druns">Last: ' + esc(r.last_run || '—') + ' · Next: ' + esc(r.next_run || '—') + '</div>' +
