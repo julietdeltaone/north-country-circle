@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.75.0';
+var APP_VERSION = '3.75.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8234,7 +8234,10 @@ function caYearHTML(){
     for(var i = 0; i < lead; i++) h += '<div></div>';
     for(var d = 1; d <= dim; d++){
       var ds = caIso(2026, m, d), info = caDayInfo(ds);
-      var cls = 'ca-dc', inner = '';
+      /* V3.75.1 (bug hunt 32 remainder): the day number renders visibly
+         in every year-grid cell — the date used to live only in the
+         title tooltip, so sighted users saw bare colored squares. */
+      var cls = 'ca-dc', inner = '<span class="ca-dnum">' + d + '</span>';
       if(CALV.mode === 'people'){
         if(info.tier === 'confirmed' || info.tier === 'corroborated') cls += ' sight';
         else if(info.tier === 'strong') cls += ' strong';
@@ -17367,6 +17370,28 @@ function mlRenderKeepSearch(){
 }
 
 
+/* V3.75.1 (ND-2): department status lines in council.json are prose
+   written by the last weekly cycle; they go stale the moment JD rules
+   on a flag or the gauge moves, and the board then contradicts itself
+   (header "Staged for JD 0" vs Content's "2 new flags staged for JD";
+   gauge 38% vs Resource's "35% used"). Quantities the board computes
+   live are substituted AT RENDER from the live values, whatever the
+   stored prose says: the staged-for-JD clause takes the live staged
+   count, the resource clause takes budget.used_pct / expected_pct.
+   council.json is deliberately NOT edited — the weekly cycle rewrites
+   it, so a stored-text fix would rot again within a week; render-time
+   truth cannot. */
+function cnLiveStatus(status, stagedN, bud){
+  var s = String(status || '');
+  s = s.replace(/\d+\s+(?:new\s+)?flags?\s+staged\s+for\s+JD(?:\s*\([^)]*\))?/i,
+    stagedN + (stagedN === 1 ? ' flag' : ' flags') + ' staged for JD');
+  if(bud && bud.used_pct != null){
+    s = s.replace(/\d+(?:\.\d+)?%\s+used\s+vs\s+~?\d+(?:\.\d+)?%\s+(?:even\s+)?pace(?:\s+at cycle start)?/i,
+      bud.used_pct + '% used vs ~' + (bud.expected_pct != null ? bud.expected_pct : '—') + '% pace');
+  }
+  return s;
+}
+
 function viewCouncil(v){
   cnLoad();
   if(!CN){
@@ -17445,7 +17470,7 @@ function viewCouncil(v){
       : '<span class="cnc-pill is-stale">Stale</span>';
     h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
       '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' + pill + '</div>' +
-      (r.status ? '<div class="cnc-dstatus2">' + esc(r.status) + '</div>' : '') +
+      (r.status ? '<div class="cnc-dstatus2">' + esc(cnLiveStatus(r.status, stagedEntries.length, bud)) + '</div>' : '') +
       (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest finding · ' + esc(latest.date || '') + ' (snapshot — live counts are on the board)</div>' +
         '<b>' + esc(latest.title || '') + '</b><p>' + esc(latest.summary || '') + '</p></div>' : '<p class="sb-note">No findings yet.</p>') +
       '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
@@ -18557,7 +18582,16 @@ function boot(){
           if(miss.length) console.warn('[bake] dossier.json profiles are missing fields:', miss.join(', '));
         } catch(_e){} })();
         regLoad();
-        D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; var dn = String(((r.profile || {}).display_name || r.display || '')).toLowerCase(); if(dn && !(dn in BYN)) BYN[dn] = i; normEntry(r); PK2I[pkey(r)] = i; });
+        /* V3.75.1 (ND-1): BYN registers EVERY name form a record can be
+           referenced by — handle, display_name, display, and the
+           first+last name dispName() computes — each first-wins. The old
+           build registered only display_name-or-display, so a person
+           whose display_name diverges from first+last (Ilene Lashomb /
+           "I. R. Lashomb", John Meyers / "John Meyers Sr.", Lydia Dale /
+           "Lydia D-m") was unresolvable by their photos.json name and
+           the Photos grid dropped their record while the counters —
+           keyed by dispName — counted it. One index, every form. */
+        D.directory.forEach(function(r, i){ BYN[(r.name || '').toLowerCase()] = i; var dn = String(((r.profile || {}).display_name || '')).toLowerCase(); if(dn && !(dn in BYN)) BYN[dn] = i; var dn2 = String(r.display || '').toLowerCase(); if(dn2 && !(dn2 in BYN)) BYN[dn2] = i; var dn3 = String(dispName(r) || '').toLowerCase(); if(dn3 && !(dn3 in BYN)) BYN[dn3] = i; normEntry(r); PK2I[pkey(r)] = i; });
         outLoad(); winsLoad(); poolLoad();
         /* Local-wins overlay vs the fresh bake (2026-10-16): retire
            what the bake already shows, then the outbox and the
