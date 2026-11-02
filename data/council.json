@@ -2,17 +2,22 @@
  "adopted": "2026-10-27",
  "budget": {
   "daily_tranche_pct": 14.3,
-  "expected_pct": 29,
+  "expected_pct": 37,
   "measure": "Usage is reported as a percentage of the weekly allowance, not a token count — the allowance's token size is not published, so the council budgets in percent.",
   "plan": "Power",
-  "read_at": "Nov 1, 2026, 7:58 AM ET",
-  "used_pct": 26,
-  "verdict": "Under pace — 26% used against ~29% even pace, with the week resetting Fri Nov 6, 2026, 7:38 AM EST.",
+  "read_at": "Nov 1, 2026, 10:24 PM ET",
+  "used_pct": 30,
+  "verdict": "Under pace — 30% used against ~37% even pace, with the week resetting Fri Nov 6, 2026, 7:38 AM EST.",
   "week_resets": "Fri Nov 6, 2026, 7:38 AM EST"
  },
  "charter_note": "Charter adopted Oct 27, 2026 (JD). Six directors; JD interacts only with the Operations roll-up. Everything reports change-only; \"no findings\" is a valid report.",
  "findings": {
   "content": [
+   {
+    "date": "2026-11-01",
+    "title": "21 prior flags closed as executed; 2 new staged",
+    "summary": "Every Oct 27 flag has a done entry in the staged queue and was re-verified in the current bake (fragments zero, phones cleared, groups added, merges marked) — all closed, none re-asked. Fresh duplicate/org scans clean. New flags: Jeremy Taylor (Army group) and Delany Durant (ROTC → U.S. Air Force ROTC group)."
+   },
    {
     "date": "2026-10-27",
     "title": "Inaugural pass: 13 flags staged",
@@ -26,6 +31,11 @@
   ],
   "ops": [
    {
+    "date": "2026-11-01",
+    "title": "Weekly cycle complete (JD-requested early run)",
+    "summary": "Photos 40 hunted / 2 confirmed outcomes / QC 208 pass. UX clean both themes. Content closed 21 executed flags and staged 2 new ones. Budget under pace. Roll-up written for The Week in Full."
+   },
+   {
     "date": "2026-10-27",
     "title": "Inaugural test drive complete",
     "summary": "Full cycle run manually in charter order a week ahead of schedule: 1 photo filed, 8 QC verdicts, 13 content flags staged for JD, budget confirmed under pace. Roll-up written for The Week in Full."
@@ -37,6 +47,11 @@
    }
   ],
   "photos": [
+   {
+    "date": "2026-11-01",
+    "title": "Slice 2: 1 filed, 1 upgraded, QC 208/208",
+    "summary": "40 hunted: Cora Capozzi filed confirmed (Rotary caption + certificate name in frame; 1:1 crop), Brianna Hammond upgraded possible→confirmed (MWCS planning doc = 2nd anchor). QC re-verified all 208 photos filed since Oct 27 — all display, none hidden. A Saint Rose headshot anchored to a different sprinter was rejected at the gate for Dawson Wiegandt."
+   },
    {
     "date": "2026-10-27",
     "title": "QC pass: 8 of 8 Oct 27 photos verified",
@@ -55,6 +70,11 @@
   ],
   "progress": [
    {
+    "date": "2026-11-01",
+    "title": "No tripwires; one approach switch, one catch",
+    "summary": "UX switched routes after 2 live-transport failures (local harness + curl live-byte verification) instead of repeating. The Dawson photo catch counts as new evidence, not spinning. All directorates produced state change."
+   },
+   {
     "date": "2026-10-27",
     "title": "Test drive traction: no tripwires fired",
     "summary": "Every directorate returned new evidence; the verify gate caught one bad filing before it landed. One external signal: the resource cron's first fire reported a contradictory pace reading — its math is flagged unreliable in the progress log; this run's numbers are from direct reads."
@@ -66,6 +86,11 @@
    }
   ],
   "resource": [
+   {
+    "date": "2026-11-01",
+    "title": "Weekly cycle check: 30% used, under pace",
+    "summary": "Read Nov 1, 10:24 PM ET: 30% used vs ~37% even pace; week resets Fri Nov 6, 7:38 AM EST. Full Photos slice and full UX crawl cleared; no flag."
+   },
    {
     "date": "2026-11-01",
     "title": "Daily gauge check: 26% used",
@@ -90,14 +115,14 @@
     "date": "2026-10-28",
     "title": "Daily gauge check: 47% used",
     "summary": "Under pace — 47% used vs ~72% even pace (week resets Fri Oct 30, 2026, 7:38 AM EDT)."
-   },
-   {
-    "date": "2026-10-27",
-    "title": "Inaugural test drive reading: 38% used",
-    "summary": "Re-read for the test drive: 38% used vs ~62% even pace (week resets Thu Oct 30, 7:38 AM EDT). Full council run cleared on headroom; daily-tranche position comfortable."
    }
   ],
   "ux": [
+   {
+    "date": "2026-11-01",
+    "title": "Both-themes crawl clean; 1 flag staged",
+    "summary": "10 views + profile in light and dark: no defects, no overflow, controls respond, contrast flags were selected-button pairings proven correct by computed styles. Staged for JD: the cycle body's dossier.html URL 404s since the rename — live app is contacts-pro.html. Local V3.63.0 (concurrent ship) was unpushed at crawl time; live served V3.62.0."
+   },
    {
     "date": "2026-10-27",
     "title": "Input-tool audit: 3 fragment defects found and fixed",
@@ -118,9 +143,9 @@
  "field_reports": {
   "photos": {
    "strategy": "Coverage by rotation: hunt profiles in slices of about 40 through the photo playbook's routes — staff pages, rosters, news, DVIDS — with three workarounds attempted before any source is abandoned. Every candidate is GET-verified (200 + real image bytes) before filing; two identity anchors = confirmed, one anchor = possible (Confirm/Reject).",
-   "working": "The GET-verify gate caught a placeholder 'loading' GIF that looked like a real photo URL (Alicia Taillon) — nothing unverified has landed on a profile. QC passed all 8 of Oct 27's filings, and roster / staff pages are the most productive routes (Kyle Davis via DVIDS, Aeriel Skinner from hunt slice 1).",
+   "working": "Slice 2 (40 profiles) filed Cora Capozzi from a captioned Rotary group photo (certificate in frame names her) and upgraded Brianna Hammond to confirmed on a second anchor (Madrid-Waddington planning doc). QC re-verified all 208 photos filed since Oct 27 — every one displays.",
    "barriers": "Fetcher walls: several staff and roster pages sit behind bot checks or return 403 to the text fetcher (Calvary Baptist's WordPress, Stewardship UK, Alfred's SIDEARM roster), and JS-only galleries (Pixieset, Wix) hide their image URLs from text extraction entirely. Those sources need a live-browser pass — queued, not blocked.",
-   "stuck": "Six leads are parked waiting on a live-browser session: Annika Greco, Ashlin Elliott, Asher Cragg, Bob Blewett, Brad Ingram, Acacia White. Two calls sit with JD: Isreal Tyler's only photo is an 80x120 thumbnail (keep or remove), and David Perry's confirmed photo is hotlink-protected (403) and needs a download / rehost decision."
+   "stuck": "Private/thin-footprint profiles dominate the remaining pool (~38 of 40 this slice). Next routes are live-browser/connector pulls (Cecilie Smith's public IG) and surname resolution (Chelsea MG), not more search repeats. David Zufall's 'possible' stays unconfirmed — the NCPR feature is photos BY him only."
   },
   "ux": {
    "strategy": "Crawl every view in both themes after each ship and weekly. Check computed text/background pairs on every feedback element — buttons, chips, toasts, focus rings, badges, selection markers — not just screenshots, because a pairing can look fine in one theme and vanish in the other.",
@@ -130,7 +155,7 @@
   },
   "content": {
    "strategy": "Runs last in every cycle. Sweeps for duplicates, near-duplicates, fragment values and inference candidates, and stages everything as flags carrying a graded theory, numbered evidence and a falsifier. Executes nothing meaning-changing — JD rules from the card, then the fix files.",
-   "working": "The inaugural pass staged 13 flags and every one carried enough evidence for JD to rule from the card alone. JD's fragment theory — his own typing that failed to autocomplete — explained the whole fragment class at once and pointed at the editor fix, not just the cleanup.",
+   "working": "All 21 October flags are executed and verified in the bake — the board is down to 2 genuinely new questions (Jeremy Taylor's Army group, Delany Durant's ROTC value). Duplicate and near-duplicate org scans are clean.",
    "barriers": "Identity calls can't be settled from data alone: same-name pairs and shared-contact cases (the Maggie Jones / Maggie Marceau phone) need JD's knowledge of the people. The V3.11.0 autocomplete fixes should shrink the fragment class going forward, but the historical values still need rulings.",
    "stuck": "The open flags on this board are the stuck list: phone ownership, the Lydia Martin / Lydia Wangerin pair, Guard-to-Army group adds, the fragment replacements, and the sub-unit keep-or-flatten class call. Nothing here moves until JD rules."
   },
@@ -161,8 +186,8 @@
    "director": "content",
    "title": "Maggie Jones vs Maggie Marceau — same phone 518-317-8734",
    "date": "2026-10-27",
-   "state": "open",
-   "ruling": "JD ruled Oct 27: Maggie Jones and Maggie Marceau are two different people. The shared phone is an entry error — never merge.",
+   "state": "closed",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "theory": {
     "grade": "Probable",
     "text": "The number belongs to Maggie Marceau; the copy on Maggie Jones is the entry error. Marceau’s phone arrived inside her own Facebook-sourced record in Facebook-export format, and 518 is her Malone area code — while Jones sits in the CFC Potsdam (315) orbit and her phone carries no source attribution at all.",
@@ -218,7 +243,7 @@
    "director": "content",
    "title": "Lydia Martin vs Lydia Wangerin — same email",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "Same person. The sf:lydia-wangerin shell is Lydia Martin before her marriage: her own footprint states she is née Wangerin and married Johnny Martin in May 2024, and the shell’s only facts (CFA cast 2018, Wangerin sibling set, from a Dec 2019 email) all describe that earlier identity. Merge the shell into Lydia Martin.",
@@ -254,7 +279,8 @@
      "kind": "task",
      "note": "Luna re-checks the Dec 2019 email thread on the next pass before any merge."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "phone-3152686666",
@@ -263,7 +289,7 @@
    "director": "content",
    "title": "One phone number on three profiles — Connor Caldwell, Hunter Woodrow, Matthew Volz",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "315-268-6666 is not any of theirs personally — it is Clarkson University’s Campus Safety & Security department line, published on clarkson.edu. All three men are Clarkson Campus Safety officers; the number was filed on each as a work number during a team contact pass.",
@@ -327,7 +353,8 @@
      ],
      "note": "Keeps the department line on the sergeant’s profile only."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "mcconnell-guard",
@@ -336,7 +363,7 @@
    "director": "content",
    "title": "Hannah McConnell — Army National Guard, no Army group",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Probable",
     "text": "Same gap class as Seguin, one wrinkle: she serves in the Idaho Army National Guard (Boise), outside the NY orbit the U.S. Army group was built around. The affiliation is documented; whether the group means \"Army-affiliated\" or \"JD’s Army orbit\" is the decision. Peer check: only 3 profiles carry the \"Army National Guard\" company value at all — the third (Ethan Bates) IS in the group, so Guard profiles are normally grouped.",
@@ -367,7 +394,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling that the group stays NY-orbit."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "seguin-guard",
@@ -376,7 +404,7 @@
    "director": "content",
    "title": "Jake Seguin — Army National Guard, no Army group",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "A plain oversight. Seguin is a Staff Sergeant recruiter with the New York Army National Guard based at SUNY Potsdam — the exact profile of the 47 people already in the group. The comparable Guard profile (Ethan Bates) is grouped; Seguin and McConnell are the only two who are not.",
@@ -407,7 +435,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave Seguin ungrouped."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "hammond-army",
@@ -416,7 +445,7 @@
    "director": "content",
    "title": "Alex Hammond — in 27th IBCT but not U.S. Army group",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "Oversight. Hammond is a serving Major (promoted Aug 2026) in the 27th IBCT, and the U.S. Army group is the parent set for the brigade — of the 36 IBCT profiles, only he and Natalie Southworth lack it. His HHC exclusion is JD’s standing ruling and is not part of this flag.",
@@ -447,7 +476,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave Hammond ungrouped."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "southworth-army",
@@ -456,7 +486,7 @@
    "director": "content",
    "title": "Natalie Southworth — in 27th IBCT but not U.S. Army group",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Probable",
     "text": "Same gap as Hammond, found in the same census: a serving SPC in the 27th IBCT who lacks the parent U.S. Army group membership that 34 of the 36 brigade profiles carry. Flagged by the Content Director as the same class rather than left for the next sweep.",
@@ -485,7 +515,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave Southworth ungrouped."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-roch",
@@ -494,7 +525,7 @@
    "director": "content",
    "title": "Fragment 'roch' / 'roc' — truncated Rochester Regional Health",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Probable",
     "text": "JD’s own typing, truncated where autocomplete did not complete it: \"roch\" (and Allison Cole’s \"roc\") are prefixes of Rochester Regional Health — the only \"Roc…\" organization in the directory and the flattened home of all health entries. The Marissa Chelan copy sits on a merged-away row whose values union onto Marissa Carl at bake, so both rows are patched or the fragment returns.",
@@ -568,7 +599,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave the fragments."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-clarkson",
@@ -577,7 +609,7 @@
    "director": "content",
    "title": "Bare 'clarkson' org value on 2 profiles",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Probable",
     "text": "The exact accident JD predicted: \"clarkson\" typed and committed before autocomplete could complete it to Clarkson University, the canonical carried by 85 profiles.",
@@ -615,7 +647,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave them."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-suny-can",
@@ -624,7 +657,7 @@
    "director": "content",
    "title": "Fragment 'SUNY can' on Colleen Cheney",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "A truncation of SUNY Canton caught mid-type: her universities field already carries the full \"SUNY Canton\", so the companies chip is the same value, unfinished.",
@@ -655,7 +688,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave it."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-new-york-stat",
@@ -664,7 +698,7 @@
    "director": "content",
    "title": "Fragment 'new york stat' on Kayle Hitchman",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Probable",
     "text": "A letter-prefix truncation of New York State Police — JD identifies Hitchman as NYSP, and no other \"New York Stat…\" organization exists in the directory. The same autocomplete failure class as the other fragments.",
@@ -695,7 +729,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave it."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-park",
@@ -704,7 +739,7 @@
    "director": "content",
    "title": "Fragments 'Park' / 'park' — truncated Park Bros.",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Probable",
     "text": "Truncations of Park Bros. — the directory’s only Park organization (org on 29 profiles, group of 23) and a registry canonical. JD asked whether more than one \"Park Bros\" exists: it does not — \"Park Bros.\" (with the period) is the single spelling in orgs and groups; the registry maps \"Park Bros\" and \"Park Bros Coffee\" onto it.",
@@ -742,7 +777,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave them."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-svpc",
@@ -751,7 +787,7 @@
    "director": "content",
    "title": "Abbreviation 'SVPC' on Morgan Arquette",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "The abbreviation was filed instead of the full name: her own synopsis says she works at the Seaway Valley Prevention Council, the canonical carried by 3 profiles (Delany Durant among them).",
@@ -782,7 +818,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave it."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-air",
@@ -791,7 +828,7 @@
    "director": "content",
    "title": "Fragment 'air' on Mark Dehoff",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Probable",
     "text": "A mangled Air Force entry from the Oct 27 profile-creation pass: the registry alias map resolves \"Air Force\" to U.S. Air Force, and Dehoff’s only other affiliation value is the U.S. Air Force ROTC group. Full context is on the \"Just Air\" flag.",
@@ -822,7 +859,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave it."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "just-air",
@@ -831,7 +869,7 @@
    "director": "content",
    "title": "\"Just Air\" group — the Mark Dehoff Air Force tangle",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Tentative",
     "text": "No group named \"Just Air\" exists in any record the council can see — not in the Sheet, the bake, any sidecar, or Trash. What exists is Mark Dehoff’s half-finished Air Force data from the Oct 27 creation pass: the org fragment \"air\" (separate flag) and a one-man \"U.S. Air Force ROTC\" group where an Air Force group was likely intended. If \"Just Air\" was created in the app, it never reached the Sheet and lives only in JD’s browser state.",
@@ -877,7 +915,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling that the ROTC group and the fragment stay untouched."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "cph-alias",
@@ -886,7 +925,7 @@
    "director": "content",
    "title": "'Canton-Potsdam Hospital' still live on Jaime Bicknell",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "A registry alias that was never flattened in the Sheet cell: the registry maps \"Canton-Potsdam Hospital\" to Rochester Regional Health under JD’s health-flattening rule, and Bicknell is the only profile still carrying the alias.",
@@ -917,7 +956,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to keep the facility name."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-u",
@@ -926,7 +966,7 @@
    "director": "content",
    "title": "Fragment 'U' on Grace LaPointe — unresolvable",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Tentative",
     "text": "A truncation of some \"U…\" institution, but her record is nearly empty (Facebook \"not listed\", Salem, Massachusetts) and no surviving context points to a specific school or employer. This one cannot be mapped honestly — it needs JD’s memory or removal.",
@@ -955,7 +995,8 @@
      "kind": "decision",
      "note": "Records that the value stays until JD identifies the institution."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "frag-ntc",
@@ -964,7 +1005,7 @@
    "director": "content",
    "title": "Lowercase 'ntc' church value on Micah McCulley",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "A case variant of the canonical church value NTC, carried by 24 profiles in proper case; his is the only lowercase copy.",
@@ -994,7 +1035,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling to leave it."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "comma-shatter",
@@ -1003,7 +1045,7 @@
    "director": "content",
    "title": "Comma-shatter cells — values with \", City, ST\" inside them (11 profiles)",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Strong",
     "text": "A different failure from the typing fragments: these are Facebook-style values whose names contain commas (\"St. James School, Gouverneur, NY\"). The app splits org fields on commas, so each one shatters into junk chips — \"New York\", \"Gouverneur\", \"NY\", \"CT\" — that masquerade as organizations. Rewriting the cells without internal commas ends the shatter.",
@@ -1097,7 +1139,8 @@
      "kind": "decision",
      "note": "Records JD’s ruling that the shattered chips are acceptable."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "subunit-class",
@@ -1106,7 +1149,7 @@
    "director": "content",
    "title": "Same-profile org + sub-unit pairs — one class ruling (~19 instances)",
    "date": "2026-10-27",
-   "state": "open",
+   "state": "closed",
    "theory": {
     "grade": "Probable",
     "text": "A mixed class, which is why it is one ruling and not 19 errors: true sub-units look like deliberate detail (Cornell + Cornell ILR School; Florida State + Jim Moran College; UVM Health + its named hospitals), while same-school name variants filed twice look like import duplication (Shippensburg University / …of Pennsylvania; Wheaton College Conservatory / …of Music).",
@@ -1136,7 +1179,8 @@
      "kind": "task",
      "note": "Luna removes only the duplicated name variants on the next pass; true sub-units (ILR, Jim Moran, named hospitals) stay."
     }
-   ]
+   ],
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling."
   },
   {
    "id": "hitchman-name",
@@ -1145,8 +1189,8 @@
    "director": "content",
    "title": "Display name reversed: 'Elak Namhctih' (Kayle Hitchman)",
    "date": "2026-10-27",
-   "state": "open",
-   "ruling": "JD ruled Oct 27: his first name is Kayle; he is New York State Police; the reversed display is deliberate law-enforcement self-masking, not a data error.",
+   "state": "closed",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "theory": {
     "grade": "Strong",
     "text": "The reversal is a presentation choice by a law-enforcement officer masking his social identity — JD has ruled it is not an error. The open question is only whether the dossier should mirror the mask or carry his real name with the mask preserved as an alias. Spelling, surfaced rather than resolved: JD says \"Kayle\"; the Instagram handle spells \"kale_hitchman\"; the reversed display decodes to \"Kale Hitchman\".",
@@ -1210,6 +1254,90 @@
    "evidence": [
     "Same surname, first names one letter apart (ct:karle mccormick / ig:kaylemmccormick). (Separate known item: Kayle’s mccormickkayle self-reference.)"
    ]
+  },
+  {
+   "id": "taylor-army",
+   "kind": "inference",
+   "priority": 4,
+   "director": "content",
+   "title": "Jeremy Taylor — U.S. Army company, no Army group",
+   "date": "2026-11-01",
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "Same approved inference class as the McConnell/Seguin/Hammond flags JD executed in October: a documented U.S. Army affiliation with no groups at all. His footprint (DVIDS) records his 2024 enlistment as a 92F petroleum supply specialist, so the affiliation is confirmed-source, not inferred from a name.",
+    "falsifier": "JD rules recent enlistees stay ungrouped until they are in his Army orbit."
+   },
+   "evidence": [
+    "Companies: \"U.S. Army\"; Groups: none.",
+    "Public footprint: 'Enlisted in the U.S. Army as a petroleum supply specialist (92F), 2024 (DVIDS)'.",
+    "Directory norm: every other profile carrying a U.S. Army affiliation from the October pass now carries the U.S. Army group (53 members)."
+   ],
+   "actions": [
+    {
+     "id": "add-army-taylor",
+     "label": "Add U.S. Army group",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "sf:jeremy-taylor",
+       "field": "groups",
+       "op": "add",
+       "value": "U.S. Army"
+      }
+     ]
+    },
+    {
+     "id": "leave-taylor",
+     "label": "Leave as is",
+     "kind": "decision"
+    }
+   ]
+  },
+  {
+   "id": "durant-rotc",
+   "kind": "inference",
+   "priority": 5,
+   "director": "content",
+   "title": "Delany Durant — bare 'ROTC' company value; AFROTC Det 536 on file",
+   "date": "2026-11-01",
+   "state": "open",
+   "theory": {
+    "grade": "Probable",
+    "text": "Her footprint documents AFROTC Detachment 536 participation (St. Lawrence University Merit), but the value sits as a bare company 'ROTC'. The registry's canonical form is the group 'U.S. Air Force ROTC' (a groups-only canonical), so the staged fix moves it to the right bucket in canonical form.",
+    "falsifier": "JD prefers ROTC kept as a company value, or wants a generic ROTC canonical separate from Air Force ROTC."
+   },
+   "evidence": [
+    "Companies: \"Clarkson University, ROTC, Seaway Valley Prevention Council\"; Groups: Clarkson University, St. Lawrence University.",
+    "Synopsis/footprint: 'participated in AFROTC Detachment 536' (St. Lawrence University, Merit Pages); SLU Class of 2025.",
+    "org-registry.json: 'U.S. Air Force ROTC' is canonical for kind 'groups' only; bare 'ROTC' is not a canonical in any kind."
+   ],
+   "actions": [
+    {
+     "id": "fix-rotc-durant",
+     "label": "Move to U.S. Air Force ROTC group",
+     "kind": "fix",
+     "patches": [
+      {
+       "key": "ig:delany._.durant",
+       "field": "companies",
+       "op": "remove",
+       "value": "ROTC"
+      },
+      {
+       "key": "ig:delany._.durant",
+       "field": "groups",
+       "op": "add",
+       "value": "U.S. Air Force ROTC"
+      }
+     ]
+    },
+    {
+     "id": "leave-durant",
+     "label": "Leave as is",
+     "kind": "decision"
+    }
+   ]
   }
  ],
  "roster": [
@@ -1217,11 +1345,11 @@
    "authority": "May file photos on its own under the identity standard: 2 anchors = confirmed, 1 anchor = possible (Confirm/Reject).",
    "icon": "camera",
    "key": "photos",
-   "last_run": "Oct 27, 2026 (test drive)",
+   "last_run": "Nov 1, 2026 (weekly cycle)",
    "mission": "Own photo coverage — recruit hunter experts, keep finding new search routes, never accept that everything has been tried.",
    "name": "Photos Director",
-   "next_run": "Mon Nov 2, 2026 — weekly cycle",
-   "status": "Active — QC 8/8 pass; slice 1 hunted (1 filed); rotation at cycle 1.",
+   "next_run": "Mondays 05:30 ET — weekly cycle",
+   "status": "Active — slice 2 hunted (1 filed, 1 upgraded); QC 208/208 pass; rotation at cycle 1, 80 attempted.",
    "subs": [
     {
      "authority": "May hide a bad photo. May never delete one.",
@@ -1234,54 +1362,59 @@
    "authority": "May fix pure presentation bugs directly (contrast, overlap, dead control). Layout and behavior changes go to JD first.",
    "icon": "eye",
    "key": "ux",
-   "last_run": "Oct 27, 2026 (test drive)",
+   "last_run": "Nov 1, 2026 (weekly cycle)",
    "mission": "Walk the app as JD in both themes: every button works, all text readable, navigation simple, no overlaps or layout flaws.",
    "name": "UX Director",
-   "next_run": "Mon Nov 2, 2026 — weekly cycle",
-   "status": "Active — inaugural crawl clean in both themes."
+   "next_run": "Mondays 05:30 ET — weekly cycle",
+   "status": "Active — both-themes crawl clean; 1 flag staged (stale dossier.html URL in the cycle body)."
   },
   {
    "authority": "Flags and stages only. Merges and meaning changes are never executed without JD's ruling.",
    "icon": "file",
    "key": "content",
-   "last_run": "Oct 27, 2026 (test drive)",
+   "last_run": "Nov 1, 2026 (weekly cycle)",
    "mission": "Runs last. Audit the universe for sense: duplicates, possible matches, missed connections, re-sort ideas, near-duplicate orgs and groups.",
    "name": "Content Director",
-   "next_run": "Mon Nov 2, 2026 — weekly cycle",
-   "status": "Active — 21 open flags with theories and actions staged for JD in the Command Center."
+   "next_run": "Mondays 05:30 ET — weekly cycle",
+   "status": "Active — 21 prior flags closed as executed; 2 new flags staged for JD."
   },
   {
    "authority": "No director starts a large run without Resource clearance. Extensions come only from actual headroom.",
    "icon": "sparkle",
    "key": "resource",
-   "last_run": "Nov 1, 2026",
+   "last_run": "Nov 1, 2026 (weekly cycle)",
    "mission": "Own the token budget: read the gauge against pace, authorize extra work from real headroom, call a halt when the day's tranche is spent.",
    "name": "Resource Manager",
    "next_run": "Daily, 8:00 AM ET",
-   "status": "Active — test drive reading 38%, under pace."
+   "status": "Active — 30% used vs ~37% pace at cycle start; under pace."
   },
   {
    "authority": "Can stop a spinning worker and re-task it. Tripwires: 3 attempts on one route with no new evidence; a run with no state change in its window.",
    "icon": "target",
    "key": "progress",
-   "last_run": "Oct 27, 2026 (test drive)",
+   "last_run": "Nov 1, 2026 (weekly cycle)",
    "mission": "Own traction: catch spinning tires — repeated routes, stalls, work with no new evidence — and force a different approach.",
    "name": "Progress Auditor",
-   "next_run": "Mon Nov 2, 2026 — weekly cycle",
-   "status": "Active — no tripwires fired on the test drive."
+   "next_run": "Mondays 05:30 ET — weekly cycle",
+   "status": "Active — no tripwires fired; one approach switch (UX transport), one bad-filing catch (Photos)."
   },
   {
    "authority": "Final authority below JD. Directors never report to JD separately.",
    "icon": "shield",
    "key": "ops",
-   "last_run": "Oct 27, 2026 (inaugural test drive)",
+   "last_run": "Nov 1, 2026 (weekly cycle)",
    "mission": "Everyone reports here. Schedule runs, deconflict file access, enforce budget and tripwires, deliver one consolidated roll-up.",
    "name": "Director of Operations",
    "next_run": "Roll-up in Monday's The Week in Full",
-   "status": "Active — Command Center live (V3.11.0): Council is its own sidebar section; open flags are the hero queue."
+   "status": "Active — weekly cycle complete; roll-up delivered to The Week in Full."
   }
  ],
  "runs": [
+  {
+   "date": "2026-11-01",
+   "title": "Weekly cycle",
+   "outcome": "Resource 30% vs ~37% pace (under). Photos: slice 2, 40 hunted, Cora Capozzi filed + Brianna Hammond upgraded to confirmed, QC 208/208. UX: both themes clean, no fixes. Content: 21 prior flags verified executed and closed, 2 new flags staged (Taylor Army group, Durant ROTC). Progress: no tripwires."
+  },
   {
    "date": "2026-10-27",
    "title": "Inaugural test drive",
