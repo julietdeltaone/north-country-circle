@@ -3615,6 +3615,19 @@ html[data-mode="light"] .rcb-unsupported{--rcband:#b91c1c}
 .rc-photobtn b{font-weight:700}
 @media (max-width:1100px){.rc-row{grid-template-columns:88px minmax(230px,1.2fr) minmax(200px,1fr)}.rc-row.rc-thead{display:none}.rc-gate{grid-column:2}.rc-actions{grid-column:3;grid-row:1/span 2}}
 @media (max-width:760px){.rc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.rc-stats>div{border-bottom:1px solid var(--line)}.rc-row{grid-template-columns:78px 1fr}.rc-ev,.rc-gate{grid-column:2}.rc-actions{grid-column:2;grid-row:auto;flex-direction:row;flex-wrap:wrap}.rc-actions .btn{width:auto;flex:1}}
+/* Research Command keyboard flow (V3.61.0): a sticky key bar with a
+   live position readout, the current-row marker, and the on-file /
+   filing-adds decision lines. The key bar is forced opaque (the
+   glass-solid pattern) because rows scroll underneath it. */
+.rc-keybar{position:sticky;top:0;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:8px 20px;border-bottom:1px solid var(--line2);background:var(--glass-solid);background:rgb(from var(--glass-solid) r g b / 1)}
+.rc-keys{font-size:12.5px;font-weight:600;letter-spacing:.02em;color:var(--mut)}
+.rc-pos{font:700 12.5px var(--serif);color:var(--txt);white-space:nowrap}
+.rc-row.rc-cur{outline:2px solid var(--acc);outline-offset:-2px;background:color-mix(in srgb,var(--acc) 7%,transparent);box-shadow:inset 4px 0 0 var(--acc)}
+.rc-claim,.rc-filetext{-webkit-line-clamp:none;line-clamp:none;max-height:none;overflow:visible}
+.rc-onfile{margin-top:5px;font-size:12.5px;line-height:1.5;color:var(--mut)}
+.rc-onfile span{font-weight:700;color:var(--txt)}
+.rc-adds{margin-top:6px;font-size:12.5px;line-height:1.5;color:var(--mut)}
+.rc-adds span{font-weight:700;color:var(--txt)}
 /* Calendar (V3.44.0, draft): vertical center-spine timeline.
    Entries alternate around a center line; series ribbons span it;
    month markers sit on the spine. */
@@ -4856,220 +4869,82 @@ html[data-mode="light"] .hmi-hb i{background:linear-gradient(180deg,#262b34,#171
 }
 
 /* ============================================================
-   LIVE RECORDS COMMAND CENTER (V3.58.0, JD 2026-10-31)
-   Rebuilt from scratch: a date-column timeline console.
-   Dark by design in both app themes — and by construction:
-   every color below is a literal hex/rgba or an .lrcc-scoped
-   token (zero app-theme variables), the root is opaque
-   #0a0d12 from its first frame with NO open/close animation,
-   and there are no infinite ambient animations. The only
-   fade in the console is the readout crossfade, which runs
-   on an inner wrapper over console-colored panels.
+   LIVE RECORDS COMMAND CENTER (V3.61.0, JD 2026-11-01)
+   One plain dashboard page: header, stat row, stacked
+   sections. Dark by design in both app themes, and by
+   construction: every color below is a literal hex/rgba or an
+   .lrcc-scoped token (zero app-theme variables), the root is
+   opaque #0a0d12 from its first frame with NO open/close
+   animation, and there are no animations at all inside the
+   console (nothing auto-advances; the only timer updates the
+   next-sweep text once a minute).
    ============================================================ */
 .lrcc{position:fixed;inset:0;z-index:130;background:#0a0d12;color:#e9edf3;display:flex;flex-direction:column;
   font:14px/1.45 var(--sans);--lrc-line:#232b38;--lrc-panel:#10141b;--lrc-panel2:#0c1016;
-  --lrc-mut:#8b96a5;--lrc-dim:#5f6b7a;--lrc-red:#e30613;--lrc-red2:#ff2a33;--lrc-amber:#e0a35a;
-  --lrcc-ease:cubic-bezier(.22,.61,.21,1);--lrcc-ease-in:cubic-bezier(.55,.06,.68,.19)}
+  --lrc-mut:#8b96a5;--lrc-dim:#5f6b7a;--lrc-red:#e30613;--lrc-red2:#ff2a33;--lrc-amber:#e0a35a}
 .lrcc *{box-sizing:border-box}
 .lrcc button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .lrcc a{color:#c9d4e2}
 /* header */
-.lrcc-h{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 20px 11px;border-bottom:1px solid var(--lrc-line);background:var(--lrc-panel2);flex:none}
+.lrcc-h{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:13px 20px 11px;border-bottom:1px solid var(--lrc-line);background:var(--lrc-panel2);flex:none}
 .lrcc-hl{display:flex;flex-direction:column;gap:2px;min-width:0}
-.lrcc-kick{font:700 15px var(--serif);letter-spacing:.16em;text-transform:uppercase}
-.lrcc-kick::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lrc-red);margin-right:9px;vertical-align:2px}
+.lrcc-title{font:700 17px var(--serif);letter-spacing:.02em}
+.lrcc-title::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lrc-red);margin-right:9px;vertical-align:2px}
 .lrcc-hsub{font-size:12px;color:var(--lrc-mut)}
 .lrcc-hsub b{color:#e9edf3;font-weight:600}
-.lrcc-hr{display:flex;align-items:center;gap:14px;flex:none}
-.lrcc-clockbox{display:flex;align-items:baseline;gap:7px}
-.lrcc-clock{font:700 22px var(--serif);letter-spacing:.04em;font-variant-numeric:tabular-nums}
-.lrcc-clock-l{font:700 10.5px var(--sans);letter-spacing:.14em;color:var(--lrc-dim)}
-.lrcc-x{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--lrc-line);border-radius:2px;color:var(--lrc-mut)}
+.lrcc-x{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid var(--lrc-line);border-radius:2px;color:var(--lrc-mut);flex:none}
 .lrcc-x:hover{color:#fff;border-color:#3a4657}
-/* tabs + header chips (sweep timing, folded up here) */
-.lrcc-tabs{display:flex;gap:4px;padding:9px 20px 0;flex:none;flex-wrap:wrap;align-items:flex-start}
-.lrcc-tab{padding:7px 16px;font:600 12px var(--sans);letter-spacing:.11em;text-transform:uppercase;color:var(--lrc-mut);border:1px solid transparent;border-bottom:0;border-radius:3px 3px 0 0}
-.lrcc-tab:hover{color:#e9edf3}
-.lrcc-tab.on{color:#fff;background:var(--lrc-panel);border-color:var(--lrc-line)}
-.lrcc-chipsrow{display:flex;gap:6px;align-items:center;margin-left:auto;padding:1px 0 8px 12px;flex-wrap:wrap;justify-content:flex-end}
-.lrcc-hchip{border:1px solid var(--lrc-line);background:var(--lrc-panel);border-radius:999px;padding:3px 10px;font-size:11.5px;color:var(--lrc-mut);white-space:nowrap;font-variant-numeric:tabular-nums}
-.lrcc-hchip b{color:#e9edf3;font-weight:600}
-.lrcc-hchip .lrcc-cd-l{color:var(--lrc-dim)}
-/* main + panels */
+/* main + sections */
 .lrcc-main{flex:1;min-height:0;overflow-y:auto;padding:14px 20px 18px}
-.lrcc-panel{background:var(--lrc-panel);border:1px solid var(--lrc-line);border-radius:3px}
+.lrcc-sec{background:var(--lrc-panel);border:1px solid var(--lrc-line);border-radius:3px;margin-top:14px}
 .lrcc-ph{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 13px;border-bottom:1px solid var(--lrc-line);
   font:700 10.5px var(--sans);letter-spacing:.13em;text-transform:uppercase;color:var(--lrc-mut)}
 .lrcc-ph-r{letter-spacing:.04em;text-transform:none;font-weight:500;color:var(--lrc-dim)}
-.lrcc-legend{display:flex;align-items:center;gap:5px;letter-spacing:.04em;text-transform:none;font-weight:500}
-.lrcc-legend .lg{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:9px}
-.lrcc-legend .lg.f{background:var(--lrc-red2)}
-.lrcc-legend .lg.h{background:rgba(224,163,90,.16);border:2px solid var(--lrc-amber);width:9px;height:9px}
-.lrcc-legend .lg.c{background:rgba(200,212,228,.38)}
-/* overview layout */
-.lrcc-ov{display:flex;flex-direction:column;gap:14px}
-.lrcc-ov-b{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;align-items:stretch}
-.lrcc-ev-p{display:flex;flex-direction:column}
-.lrcc-read-p{display:flex;flex-direction:column;min-height:0}
-.lrcc-li-p{display:flex;flex-direction:column;min-height:0}
-/* the date-column timeline: one column per distinct event
-   date on a log-age scale (today at the right). Each column
-   is a bottom-anchored stack (column-reverse DOM order):
-   logged beads at the base, filed / hot beads above, an
-   overflow count, the day total on top, and the DATE under
-   the axis line. */
-.lrcc-ev-plot{position:relative;height:252px;flex:none}
-.lrcc-ev-line{position:absolute;left:6px;right:6px;bottom:19px;border-top:1px solid #2b3646}
-.lrcc-ev-cap{position:absolute;top:7px;transform:translateX(-50%);font:700 9.5px var(--sans);letter-spacing:.15em;color:#48566a;white-space:nowrap;pointer-events:none}
-.lrcc-ev-col{position:absolute;top:0;bottom:0;width:38px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;cursor:pointer;border-radius:2px}
-.lrcc-ev-col:hover{background:rgba(233,237,243,.03)}
-.lrcc-ev-col.on{background:linear-gradient(0deg,rgba(255,42,51,.10),rgba(255,42,51,0) 62%)}
-.lrcc-ev-stack{flex:1;width:100%;display:flex;flex-direction:column-reverse;align-items:center;justify-content:flex-start;gap:3px;padding-top:28px;min-height:0}
-.lrcc-ev-stack>*{flex:none}
-.lrcc-ev-bead{width:8px;height:8px;border-radius:50%;background:rgba(200,212,228,.38);display:block;border:0;padding:0}
-button.lrcc-ev-bead.f{width:11px;height:11px;background:var(--lrc-red2);box-shadow:0 0 6px rgba(255,42,51,.55);cursor:pointer}
-button.lrcc-ev-bead.h{width:11px;height:11px;background:rgba(224,163,90,.18);border:2px solid var(--lrc-amber);box-shadow:0 0 6px rgba(224,163,90,.4);cursor:pointer}
-button.lrcc-ev-bead:hover{outline:2px solid rgba(233,237,243,.65);outline-offset:1px}
-.lrcc-ev-bead.on{outline:2px solid #fff;outline-offset:2px}
-.lrcc-ev-more{font:600 9.5px var(--sans);color:var(--lrc-dim);line-height:1}
-.lrcc-ev-n{font:700 12px var(--serif);color:#d5dbe4;line-height:1.1}
-.lrcc-ev-col.on .lrcc-ev-n{color:#fff}
-.lrcc-ev-d{height:19px;line-height:19px;flex:none;font:600 10.5px var(--sans);letter-spacing:.04em;color:var(--lrc-dim);white-space:nowrap}
-.lrcc-ev-col.on .lrcc-ev-d{color:#fff}
-/* readout (spotlight): the console's only crossfade lives on
-   #lrcc-read — an inner wrapper inside the .lrcc-read-p
-   panel, whose background chain is console colors only */
-.lrcc-read{padding:14px 16px 12px;flex:1;min-height:0;overflow-y:auto;
-  transition:opacity .38s var(--lrcc-ease),transform .38s var(--lrcc-ease)}
-.lrcc-read.lrcc-fade{opacity:0;transform:translateY(3px);
-  transition:opacity .17s var(--lrcc-ease-in),transform .17s var(--lrcc-ease-in)}
-.lrcc-sp-ctl{display:flex;align-items:center;gap:6px}
-.lrcc-sp-idx{font:600 11.5px var(--serif);color:var(--lrc-mut);letter-spacing:.06em;margin-right:2px}
-.lrcc-cbtn{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:24px;padding:0 7px;
-  border:1px solid var(--lrc-line);border-radius:2px;color:var(--lrc-mut);font:600 11px var(--sans);letter-spacing:.05em}
-.lrcc-cbtn:hover{color:#fff;border-color:#3a4657}
-.lrcc-cbtn.on{color:#fff;background:var(--lrc-red);border-color:var(--lrc-red)}
-.lrcc-cbtn.flip svg{transform:scaleX(-1)}
-.lrcc-sp-kick{font:700 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--lrc-mut);margin-bottom:7px}
-.lrcc-sp-kick.hot{color:var(--lrc-amber)}
-.lrcc-rd-date{font:700 31px/1.08 var(--serif);color:#fff;letter-spacing:.01em}
-.lrcc-rd-age{font-size:12.5px;color:var(--lrc-mut);margin:3px 0 10px}
-.lrcc-sp-name{display:block;font:700 21px var(--serif);color:#fff;text-align:left;padding:0;line-height:1.2}
-button.lrcc-sp-name:hover{text-decoration:underline;text-underline-offset:3px}
-.lrcc-sp-text{margin:8px 0 0;font-size:14.5px;line-height:1.55;color:#d5dbe4;max-width:68ch}
-.lrcc-sp-big{display:flex;align-items:baseline;gap:11px}
-.lrcc-sp-big b{font:700 34px/1 var(--serif);color:#fff}
-.lrcc-sp-big span{font-size:13px;color:var(--lrc-mut)}
-.lrcc-sp-names{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
-.lrcc-sp-names span{border:1px solid var(--lrc-line);border-radius:999px;padding:2px 9px;font-size:12px;color:#c9d4e2}
-.lrcc-sp-names span.more{color:var(--lrc-mut);border-style:dashed}
-.lrcc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.lrcc-chip{border:1px solid var(--lrc-line);border-radius:2px;padding:3px 8px;font-size:11.5px;color:var(--lrc-mut);font-variant-numeric:tabular-nums}
-.lrcc-chip.link{color:#c9d4e2;text-decoration:none}
-.lrcc-chip.link:hover{border-color:#3a4657;color:#fff}
-.lrcc-chip.new{color:#fff;background:var(--lrc-red);border-color:var(--lrc-red);font-weight:700;letter-spacing:.06em}
-.lrcc-sp-none{color:var(--lrc-mut);font-size:13px;margin:4px 0}
-.lrcc-sp-dots{display:flex;gap:6px;justify-content:center;align-items:center;padding:10px 0 12px;flex:none}
-.lrcc-sp-dots i{width:6px;height:6px;border-radius:50%;border:1px solid rgba(200,212,228,.4);
-  transition:background .3s var(--lrcc-ease),border-color .3s var(--lrcc-ease),transform .3s var(--lrcc-ease),box-shadow .3s var(--lrcc-ease)}
-.lrcc-sp-dots i.on{background:var(--lrc-red2);border-color:var(--lrc-red2);transform:scale(1.35);box-shadow:0 0 6px rgba(255,42,51,.5)}
-.lrcc-read-p.paused .lrcc-sp-dots i.on{opacity:.5;box-shadow:none}
-/* day readout lines */
-.lrcc-rd-lines{margin-top:12px;display:flex;flex-direction:column;gap:7px}
-.lrcc-rd-line{display:flex;gap:9px;align-items:baseline;font-size:12.5px;color:#aeb9c8;line-height:1.4;min-width:0}
-.lrcc-rd-lname{font:600 12.5px var(--sans);color:#fff;padding:0;text-align:left;flex:none}
-button.lrcc-rd-lname:hover{text-decoration:underline;text-underline-offset:3px}
-.lrcc-rd-line>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.lrcc-rd-more{margin:9px 0 0;font-size:12px;color:var(--lrc-dim)}
-/* glance list: date first, newest at top */
-.lrcc-li{padding:6px 8px;overflow-y:auto;min-height:0}
-.lrcc-li-row{display:grid;grid-template-columns:100px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:7px 6px;border-bottom:1px solid rgba(35,43,56,.55);border-radius:2px;cursor:pointer}
-.lrcc-li-row:last-child{border-bottom:0}
-.lrcc-li-row:hover{background:#141a23}
-.lrcc-li-row.on{background:#171e29}
-.lrcc-li-d{font:600 11.5px var(--serif);color:#d5dbe4;white-space:nowrap}
-.lrcc-li-main{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;color:#aeb9c8;min-width:0}
-.lrcc-li-main b{color:#fff;font-weight:600;margin-right:7px}
-.lrcc-li-k{font:700 9.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:2px;text-align:center;white-space:nowrap}
-.lrcc-li-k.f{background:var(--lrc-red);color:#fff}
-.lrcc-li-k.h{background:var(--lrc-amber);color:#171106}
-.lrcc-li-k.c{background:#232c39;color:#aeb9c8}
-/* ledger */
-.lrcc-tlwrap{background:var(--lrc-panel);border:1px solid var(--lrc-line);border-radius:3px;padding-bottom:8px}
-.lrcc-tl-ph{border-bottom:1px solid var(--lrc-line);margin-bottom:4px}
-.lrcc-tl-row{display:grid;grid-template-columns:104px 64px 74px minmax(0,1fr) minmax(110px,180px);gap:12px;align-items:baseline;padding:7px 13px;border-bottom:1px solid rgba(35,43,56,.55)}
-.lrcc-tl-row:last-child{border-bottom:0}
-.lrcc-tl-d{font:600 12px var(--serif);color:#d5dbe4;white-space:nowrap}
-.lrcc-tl-age{font-size:11.5px;color:var(--lrc-dim);white-space:nowrap}
-.lrcc-tl-k{font:700 9.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:2px;text-align:center;white-space:nowrap}
-.lrcc-tl-k.f{background:var(--lrc-red);color:#fff}
-.lrcc-tl-k.c{background:#232c39;color:#aeb9c8}
-.lrcc-tl-main{min-width:0}
-.lrcc-tl-name{font:600 13px var(--sans);color:#fff;padding:0;text-align:left}
-button.lrcc-tl-name:hover{text-decoration:underline;text-underline-offset:3px}
-.lrcc-tl-text{display:block;font-size:12.5px;color:#aeb9c8;line-height:1.45;margin-top:1px}
-.lrcc-tl-src{font-size:11.5px;color:var(--lrc-mut);text-align:right;min-width:0}
-.lrcc-tl-src a{color:#c9d4e2;text-decoration:none}
-.lrcc-tl-src a:hover{text-decoration:underline}
-.lrcc-tl-src small{display:block;color:var(--lrc-dim);margin-top:1px}
-.lrcc-more{padding:9px 13px 2px;font-size:12px;color:var(--lrc-dim);margin:0}
-/* roster */
-.lrcc-ro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
-.lrcc-ro-list{padding:6px 8px;max-height:calc(100vh - 230px);overflow-y:auto}
-.lrcc-ro-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:4px 6px;border-bottom:1px solid rgba(35,43,56,.55)}
-.lrcc-ro-row:last-child{border-bottom:0}
-.lrcc-ro-name{font-size:13px;color:#d5dbe4;padding:0;text-align:left}
-button.lrcc-ro-name:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}
-.lrcc-ro-n{font:600 11px var(--serif);color:var(--lrc-mut);white-space:nowrap}
+.lrcc-none{padding:12px 13px;color:var(--lrc-mut);font-size:13px}
+/* stat row */
+.lrcc-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.lrcc-stat{background:var(--lrc-panel);border:1px solid var(--lrc-line);border-radius:3px;padding:11px 13px;display:flex;flex-direction:column;gap:2px;text-align:left}
+.lrcc-stat b{font:600 21px var(--serif);color:#fff;font-variant-numeric:tabular-nums}
+.lrcc-stat span{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--lrc-mut)}
+button.lrcc-stat-btn{cursor:pointer}
+button.lrcc-stat-btn:hover{border-color:#3a4657}
+button.lrcc-stat-btn:hover b{color:var(--lrc-amber)}
+/* fact rows (Hot off the press / Filed in the latest brief) */
+.lrcc-frow{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:12px;align-items:baseline;padding:8px 13px;border-bottom:1px solid rgba(35,43,56,.55)}
+.lrcc-frow:last-child{border-bottom:0}
+.lrcc-fd{font-size:12px;color:var(--lrc-mut);white-space:nowrap;font-variant-numeric:tabular-nums}
+.lrcc-fm{min-width:0}
+.lrcc-fname{font:600 13px var(--sans);color:#fff;padding:0;text-align:left}
+button.lrcc-fname:hover{text-decoration:underline;text-underline-offset:3px}
+.lrcc-ft{display:block;font-size:12.5px;color:#aeb9c8;line-height:1.45;margin-top:1px}
+.lrcc-fs{font-size:11.5px;color:var(--lrc-mut);text-align:right;white-space:nowrap}
+.lrcc-fs a{color:#c9d4e2;text-decoration:none}
+.lrcc-fs a:hover{text-decoration:underline}
+/* checked names: a compact multi-column list of name buttons */
+.lrcc-names{display:flex;flex-wrap:wrap;gap:5px;padding:10px 13px}
+.lrcc-nm{border:1px solid var(--lrc-line);border-radius:999px;padding:3px 10px;font-size:12px;color:#c9d4e2;text-align:left}
+button.lrcc-nm:hover{color:#fff;border-color:#3a4657}
+/* data freshness: five labeled rows, one plain bar each */
+.lrcc-fr{display:grid;grid-template-columns:110px minmax(0,1fr) 44px;gap:12px;align-items:center;padding:7px 13px;border-bottom:1px solid rgba(35,43,56,.55)}
+.lrcc-fr:last-child{border-bottom:0}
+.lrcc-fr-l{font-size:12.5px;color:#c9d4e2}
+.lrcc-fr-track{display:block;height:9px;border-radius:2px;background:#232c39;overflow:hidden}
+.lrcc-fr-track i{display:block;height:100%;background:var(--lrc-red2)}
+.lrcc-fr b{font:600 13px var(--serif);color:#fff;text-align:right;font-variant-numeric:tabular-nums}
 /* empty state */
-.lrcc-empty{max-width:560px;margin:6vh auto 0;text-align:center;background:var(--lrc-panel);border:1px solid var(--lrc-line);border-radius:3px;padding:28px 30px}
-.lrcc-empty h2{font:700 19px var(--serif);margin:14px 0 6px;color:#fff}
-.lrcc-empty p{color:var(--lrc-mut);font-size:13.5px;margin:0}
-.lrcc-empty-cd{margin-top:16px;display:flex;flex-direction:column;gap:2px}
-.lrcc-empty-cd .lrcc-cd-v{font:700 30px var(--serif);color:#fff;font-variant-numeric:tabular-nums}
-.lrcc-empty-cd span:last-child{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--lrc-dim)}
-/* reduced motion: no crossfade, no dot transitions (the JS
-   side also stops the auto-advance and swaps instantly) */
-.lrcc.rm .lrcc-read{transition:none}
-.lrcc.rm .lrcc-sp-dots i{transition:none}
+.lrcc-empty{max-width:560px;margin:8vh auto 0;text-align:center;padding:0 16px}
+.lrcc-empty h2{font:600 20px var(--serif);color:#fff;margin:0 0 8px}
+.lrcc-empty p{color:var(--lrc-mut);font-size:13.5px;line-height:1.55;margin:0}
 /* responsive */
-@media (max-width:1100px){
-  .lrcc-tl-row{grid-template-columns:96px 58px 66px minmax(0,1fr)}
-  .lrcc-tl-src{display:none}
-}
 @media (max-width:900px){
-  .lrcc-ov-b{grid-template-columns:1fr}
-  .lrcc-ro{grid-template-columns:1fr}
-  .lrcc-ro-list{max-height:none}
-  .lrcc-ev-plot{height:236px}
   .lrcc-main{padding:12px 12px 16px}
   .lrcc-h{padding:11px 12px 9px}
-  .lrcc-tabs{padding:8px 12px 0}
-  .lrcc-clock{font-size:18px}
-  .lrcc-hsub{display:none}
-  .lrcc-chipsrow{margin-left:0;padding-left:0}
+  .lrcc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:560px){
-  .lrcc-ev-plot{height:208px}
-  .lrcc-ev-cap{display:none}
-  .lrcc-li-row{grid-template-columns:86px minmax(0,1fr)}
-  .lrcc-li-k{display:none}
-  .lrcc-rd-date{font-size:25px}
-  .lrcc-tl-row{grid-template-columns:88px 60px minmax(0,1fr)}
-  .lrcc-tl-k{display:none}
-}
-/* Desktop fill: at wide AND tall viewports the Overview
-   fills the overlay height — the timeline panel and the
-   readout/list row share the space, no dead void. Scoped via
-   :has(> .lrcc-ov) so Ledger and Roster keep their natural
-   scrolling flow. Marker: lrcc-fill */
-@media (min-width:900px) and (min-height:700px){
-  .lrcc-main:has(> .lrcc-ov){display:flex;flex-direction:column}
-  .lrcc-ov{flex:1 1 auto;min-height:0}
-  .lrcc-ev-p{flex:1.15 1 0;min-height:270px}
-  .lrcc-ev-plot{flex:1 1 auto;height:auto;min-height:0}
-  .lrcc-ov-b{flex:1 1 0;min-height:220px}
-  .lrcc-li{flex:1 1 auto}
+  .lrcc-frow{grid-template-columns:88px minmax(0,1fr)}
+  .lrcc-fs{display:none}
+  .lrcc-fr{grid-template-columns:92px minmax(0,1fr) 38px}
 }
 
 /* ============================================================
