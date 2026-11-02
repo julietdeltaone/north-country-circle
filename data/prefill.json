@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 8,
+ "count": 7,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -14,19 +14,6 @@
     "4 family members on file attend Christian Fellowship Center: Elisa Meyers, Ellie Criscitello, James Meyers, John Meyers."
    ],
    "conf": 72
-  },
-  {
-   "id": "pf-8aa5f2ee31",
-   "key": "adhope2006",
-   "display": "Adriana Levendusky",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Norwood, NY",
-   "grade": "Tentative",
-   "evidence": [
-    "Family on file in Norwood: Elena Brown."
-   ],
-   "conf": 55
   },
   {
    "id": "pf-cda38e0777",
