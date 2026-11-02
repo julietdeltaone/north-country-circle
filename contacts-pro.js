@@ -3038,11 +3038,12 @@ function ptAcWire(inp, list, onPick, opts){
   var wrap = inp.parentNode, box = wrap ? $('.pted-ac', wrap) : null;
   if(!box) return;
   var hits = [], act = -1;
-  /* deliberate: true only after JD navigates the highlight himself
-     (ArrowUp/ArrowDown/Home/End). The pre-highlight show() paints on
-     the first match is PASSIVE — it is not a choice he made. */
-  var deliberate = false;
-  function hide(){ box.hidden = true; box.innerHTML = ''; hits = []; act = -1; deliberate = false; }
+  /* The highlight IS the choice (JD 2026-11-01): show() pre-highlights
+     the first match, arrows/Home/End and hover move it, and Enter
+     commits whatever is highlighted — see the Enter branch below.
+     hide() clears the highlight state entirely, so a later Enter can
+     never resurrect a stale pick. */
+  function hide(){ box.hidden = true; box.innerHTML = ''; hits = []; act = -1; }
   function mark(){
     $$('.pted-aci', box).forEach(function(b, i){
       b.classList.toggle('on', i === act);
@@ -3062,8 +3063,7 @@ function ptAcWire(inp, list, onPick, opts){
     if(!hits.length){ hide(); return; }
     box.innerHTML = hits.map(function(h){ var lb = (opts && opts.label) ? opts.label(h) : h; return '<button type="button" class="pted-aci" data-v="' + esc(h) + '" title="' + esc(lb) + '">' + esc(lb) + '</button>'; }).join('');
     box.hidden = false;
-    act = 0;   /* first match pre-highlighted — PASSIVE until he arrows to a choice */
-    deliberate = false;
+    act = 0;   /* first match pre-highlighted — and highlighted means Enter takes it (JD 2026-11-01) */
     $$('.pted-aci', box).forEach(function(b, i){
       var fired = false;
       function go(ev){ if(fired) return; fired = true; ev.preventDefault(); pick(b.getAttribute('data-v')); }
@@ -3100,23 +3100,27 @@ function ptAcWire(inp, list, onPick, opts){
     if(ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
       ev.preventDefault(); ev.stopPropagation();
       if(!open){ show(); return; }
-      act = (act + (ev.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; deliberate = true; mark();
+      act = (act + (ev.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; mark();
     }
     else if(ev.key === 'Home' || ev.key === 'End'){
-      if(open){ ev.preventDefault(); ev.stopPropagation(); act = ev.key === 'Home' ? 0 : hits.length - 1; deliberate = true; mark(); }
+      if(open){ ev.preventDefault(); ev.stopPropagation(); act = ev.key === 'Home' ? 0 : hits.length - 1; mark(); }
     }
     else if(ev.key === 'Enter'){
-      /* opts.enterPick may veto the Enter-pick (return false): the event
-         then falls through to the field's own Enter handler instead of
-         picking the highlighted match. Every Audit text editor uses it —
-         a typed value commits only when IT is complete, never because
-         Enter happened to pick the highlighted suggestion. The veto
-         lifts for a DELIBERATE highlight: once JD has arrowed to the
-         suggestion he wants, Enter is his pick, exactly like a click
-         (JD 2026-10-16: "I arrow down to it, I hit Enter, and that
-         enters it"). A passive pre-highlight is NOT a pick — typing
-         "Po" and pressing Enter still commits nothing. */
-      if(open && act >= 0 && (deliberate || !(opts && opts.enterPick && !opts.enterPick(hits[act])))){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
+      /* Enter commits the HIGHLIGHTED suggestion whenever the list is
+         open — pre-highlighted, arrowed to, or hovered, it makes no
+         difference: what JD sees highlighted is what Enter means
+         (JD 2026-11-01, superseding the 2026-10-15 enterPick veto and
+         its deliberate-highlight exception: he typed BAR, watched
+         "Barista" sit highlighted, pressed Enter, and the veto let the
+         raw fragment "BAR" file instead — the exact failure the
+         2026-10-27 orgs split had already fixed for organizations).
+         With the list CLOSED (no matches, or dismissed with Escape)
+         Enter is not intercepted: it falls through to the field's own
+         Enter handler, which commits the typed text as a genuinely
+         new value. Typing always re-runs show(), and hide() clears
+         the highlight, so no stale highlight can leak into a commit
+         of something new. */
+      if(open && act >= 0){ ev.preventDefault(); ev.stopPropagation(); pick(hits[act]); }
     }
     else if(ev.key === 'Escape'){
       if(open){ ev.preventDefault(); ev.stopPropagation(); hide(); }
@@ -7498,6 +7502,11 @@ function rcConsoleHTML(){
     .concat(Object.keys(RC_CATS).map(function(k){ return '<option value="' + k + '"' + (RC_VIEW.cat === k ? ' selected' : '') + '>' + RC_CATS[k] + '</option>'; })).join('');
   var body = shown.length ? shown.map(function(r){
     var c = r.c, band = rcBand(c.confidence), parts = c.confidence_parts || {};
+    /* The held category as a color-coded pill (JD 2026-11-01): one
+       professional color family per category (rccat-* in the CSS),
+       shown beside the name and again at the Why-held column it
+       classifies. */
+    var catPill = '<span class="rc-cat' + (RC_CATS[c.category] ? ' rccat-' + c.category : '') + '">' + esc(RC_CATS[c.category] || c.category || '') + '</span>';
     var anchors = (c.anchors || []).length ? '<ul class="rc-anchors">' + c.anchors.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
     var src = c.url ? '<a class="rc-src-link" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span class="rc-src-open">Open source</span><span class="rc-src-name">' + esc(c.source || 'source') + '</span>' + ic('ext', 12) + '</a>' : esc(c.source || '') + ' <span class="rc-nosrc">no source page found</span>';
     var photoBtn = r.st.k === 'orphan' ? '' :
@@ -7510,8 +7519,8 @@ function rcConsoleHTML(){
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
     return '<div class="rc-row rcb-' + band.k + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-rcid="' + esc(c.id) + '">' +
       '<div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
-      '<span class="rc-parts">Identity ' + (+parts.identity || 0) + '/50<br>Source ' + (+parts.source || 0) + '/30<br>Detail ' + (+parts.detail || 0) + '/20</span></div>' +
-      '<div class="rc-main"><div class="rc-person">' + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + '<span class="rc-cat">' + esc(RC_CATS[c.category] || c.category || '') + '</span>' +
+      rcPartsHTML(parts) + '</div>' +
+      '<div class="rc-main"><div class="rc-person">' + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPill +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
       rcOnFileLine(r) +
       '<p class="rc-claim">' + esc(c.claim || '') + '</p>' +
@@ -9994,32 +10003,31 @@ function audCommitGesture(card){
   if(gap === 'orgs' || gap === 'skills'){ audDisarm(card); audSave(+card.getAttribute('data-di'), card); return; }
   audTryArm(card);
 }
+/* Is this card's suggestion dropdown open right now? While it is, a
+   suggestion is highlighted and the timed commit paths (typing pause,
+   blur) must stand down — Enter or a pick owns the commit (JD
+   2026-11-01). */
+function audAcOpen(card){
+  var box = $('.pted-ac', card);
+  return !!(box && !box.hidden && box.children.length);
+}
 function audWireCard(card){
   var gap = card.getAttribute('data-gap'), inp = $('.aud-in', card);
   if(!inp) return;
   var list = gap === 'loc' ? ptSugList('town') : gap === 'skills' ? ptSugList('skill') : gap === 'orgs' ? audOrgPool() : gap === 'years' ? audYearList() : null;
   if(list) ptAcWire(inp, list, function(v){ inp.value = v; inp.focus(); audCommitGesture(card); },
-    gap === 'orgs' ? { label:regSugLabel, resolve:regApply }
-    /* ORGS split from the veto (JD 2026-10-27): an org value comes from
-       a known pool, so Enter accepts the highlighted completion — that
-       IS the intent when typing a fragment of a known org ("roch" ->
-       Rochester Regional Health). With the veto, Enter fell through to
-       audEnterKey and filed the raw fragment, which is exactly how the
-       directory filled with truncated orgs. When the list is closed
-       (no suggestions), Enter still reaches audEnterKey and commits the
-       typed value as a genuinely new org. The veto below stays for
-       years / loc / skills: there the TYPED text is the data, and
-       Enter must reach the field's own handler (audEnterKey), which
-       applies the completeness gates to what was actually typed —
-       UNLESS JD has deliberately arrowed to a suggestion, in which
-       case ptAcWire treats Enter as the pick it is (see ptAcWire's
-       "deliberate" flag). Without this veto, typing the fragment "Po"
-       and pressing Enter committed the dropdown's passively
-       pre-highlighted "Pomona, CA": a value JD never typed and never
-       chose. A dropdown pick by mouse/touch commits as a deliberate
-       choice too; only the passive pre-highlight is gated. */
-    : (gap === 'years' || gap === 'loc' || gap === 'skills') ? { enterPick:function(){ return false; } }
-    : null);
+    gap === 'orgs' ? { label:regSugLabel, resolve:regApply } : null);
+    /* NO enterPick veto anywhere anymore (JD 2026-11-01): the veto let
+       Enter fall through to audEnterKey, which filed the raw typed
+       fragment while a completion sat highlighted in the dropdown —
+       "BAR" instead of the highlighted "Barista" in the skills editor,
+       the same failure the 2026-10-27 orgs split fixed for orgs
+       ("roch" -> Rochester Regional Health). ptAcWire's rule is now
+       uniform for every suggestion editor here (orgs, skills, loc,
+       years): list open + Enter = the highlighted suggestion; list
+       closed + Enter = audEnterKey commits the typed value (a
+       genuinely new entry), with years keeping its completeness gate
+       on that typed value inside audEnterKey. */
   /* commit triggers (JD 2026-10-15): a suggestion pick or Enter submits
      what is typed, and a REAL blur (focus leaving the card) submits after
      a 250ms grace period, so a tap on a suggestion registers its pick
@@ -10046,6 +10054,7 @@ function audWireCard(card){
     clearTimeout(card._audDeb);
     card._audDeb = setTimeout(function(){
       card._audDeb = null;
+      if(audAcOpen(card)) return;   /* dropdown open with a highlight up: a timed arm must never file the typed text over it (JD 2026-11-01) */
       if(audComplete(card)) audTryArm(card);   /* incomplete: keep composing, undisturbed */
     }, 900);
   });
@@ -10060,6 +10069,7 @@ function audWireCard(card){
       var a = document.activeElement;
       if(a && card.contains(a)) return;   /* the pick refocused the field, or focus moved within this card: not a real blur */
       if(gap === 'years' || gap === 'orgs' || gap === 'skills') return;   /* Enter/pick-only: never blur-committed */
+      if(audAcOpen(card)) return;   /* suggestion list still open: the highlight owns the next commit, not the blur (JD 2026-11-01) */
       audTryArm(card);
     }, 250);
   });
@@ -10089,9 +10099,14 @@ function audEditorEl(card){
 }
 function audFocusEditor(card){ var f = card && audEditorEl(card); if(f) f.focus({ preventScroll:true }); return f; }
 
-/* Enter inside an Audit text editor. Enter is the explicit
-   confirmation, so it commits ONLY a complete value — the audComplete
-   gates decide, and a fragment never commits (it just nudges).
+/* Enter inside an Audit text editor. NOTE (JD 2026-11-01): Enter only
+   reaches this handler when the suggestion list is CLOSED — with the
+   list open, ptAcWire has already committed the highlighted
+   suggestion as a pick. So what arrives here is the typed text of a
+   genuinely new value (or an incomplete one, for the gated fields):
+   Enter is the explicit confirmation, so it commits ONLY a complete
+   value — the audComplete gates decide, and a fragment never commits
+   (it just nudges).
    - years: commits the typed year directly, in EVERY mode, with no
      countdown (Enter replaces the countdown as the confirmation).
    - orgs / skills: a value commits AND closes the gap out, exactly
@@ -10572,10 +10587,11 @@ var AUD_MODES = [
   { k:'cards',  l:'Cards' },
   { k:'prefill', l:'Prefill' },
   { k:'years',  l:'Years Known' },
+  { k:'cat',    l:'Category Run' },
   { k:'lima',   l:'Lima Charlie' },
   { k:'photos', l:'Photo Audit' }
 ];
-function audMode(){ var m = S.audit && S.audit.mode; return m === 'lima' || m === 'photos' || m === 'years' || m === 'prefill' ? m : 'cards'; }
+function audMode(){ var m = S.audit && S.audit.mode; return m === 'lima' || m === 'photos' || m === 'years' || m === 'prefill' || m === 'cat' ? m : 'cards'; }
 /* Daily goal (Duolingo pattern, minus the nagging): fills today vs a
    goal JD sets himself, persisted per calendar day. */
 function audDay(){
@@ -10694,29 +10710,36 @@ function audModeBarHTML(){
     return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> to review</span><span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
       '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; W wrong person &middot; B bad photo &middot; N no person &middot; U undo &middot; A adjust &middot; 1&ndash;7 reason</span></div>';
   }
-  /* Category Run (restored V3.48.0, JD 2026-10-30): the picker with
-     per-category open counts — "how many of each thing is needed" —
-     lives on the Cards mode bar; while a run is active the bar shows
-     the run's cleared/left tally instead. */
-  var catCounts = audGapCounts(), catBar;
-  if(A && A.cat){
-    var cleared = (A.catDone && A.catDone[A.cat]) || 0;
-    catBar = '<span class="aud-catrun"><b>Category Run · ' + esc(AUD_GAPS[A.cat].tag) + '</b>' +
-      '<span><b>' + cleared + '</b> cleared this run · <b>' + (catCounts[A.cat] || 0) + '</b> left in this lane</span>' +
-      '<button type="button" class="btn ghost sm" data-act="audcatall">Exit run</button></span>';
-  } else {
-    catBar = '<span class="aud-cats"><span class="aud-cats-l">Category Run</span>' + Object.keys(AUD_GAPS).map(function(g){
-      return '<button type="button" class="aud-catchip" data-act="audcat" data-g="' + g + '">' + esc(AUD_GAPS[g].tag) + ' <b>' + (catCounts[g] || 0) + '</b></button>';
-    }).join('') + '</span>';
+  /* Category Run (restored to the mode switcher in V3.62.0, JD
+     2026-11-01 — "the category one ... on the same nav bar as cards,
+     prefill, years known"): a mode of its own again, as it was
+     through V2.52, after the V3.48.0 detour that parked the picker on
+     the Cards mode bar. The mode bar is the original picker: one
+     button per category with its open count — "how many of each
+     thing is needed" — the active lane marked, and a progress line
+     under it; Exit run leaves to Cards (audcatall). The Cards bar
+     below no longer carries the picker. */
+  if(m === 'cat'){
+    var counts = audGapCounts();
+    var row = '<div class="aud-catrow" role="group" aria-label="Pick a category">' + Object.keys(AUD_GAPS).map(function(g){
+      return '<button type="button" class="aud-catbtn' + (A && A.cat === g ? ' on' : '') + '" data-act="audcat" data-g="' + g + '" aria-pressed="' + (A && A.cat === g ? 'true' : 'false') + '">' + esc(AUD_GAPS[g].tag) + ' <span class="aud-catn">' + (counts[g] || 0) + '</span></button>';
+    }).join('') +
+    (A && A.cat ? '<button type="button" class="aud-catbtn" data-act="audcatall">Exit run</button>' : '') +
+    (A && A.cat === 'phone' ? '<button type="button" class="aud-catbtn aud-bulkphone" data-act="audbulkphone">Mark all phone gaps done</button>' : '') +
+    '</div>';
+    var prog = A && A.cat
+      ? '<p class="aud-catprog"><b>Category Run &middot; ' + esc(AUD_GAPS[A.cat].tag) + '</b> &mdash; <b>' + ((A.catDone && A.catDone[A.cat]) || 0) + '</b> cleared this run &middot; <b>' + (counts[A.cat] || 0) + '</b> left in this lane</p>'
+      : '<p class="aud-catprog">Pick a category &mdash; the wall deals only that one, person after person.</p>';
+    return row + prog;
   }
-  return '<div class="aud-modebar">' + catBar + '<span class="sp"></span><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button></div>';
+  return '<div class="aud-modebar"><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button><span class="dim">Close out the phone gap for everyone you have no number for.</span></div>';
 }
 function audPaintModeBar(){
   var A = S.audit; if(!A) return;
   var m = audMode();
   if(m === 'lima'){ var lp = $('#lcpend'); if(lp) lp.textContent = lcPendingCount(); }
   if(m === 'prefill'){ var mb = $('#audmodebar'); if(mb) mb.innerHTML = audModeBarHTML(); }
-  if(m === 'cards'){ var cb = $('#audmodebar'); if(cb) cb.innerHTML = audModeBarHTML(); }
+  if(m === 'cards' || m === 'cat'){ var cb = $('#audmodebar'); if(cb) cb.innerHTML = audModeBarHTML(); }
 }
 
 /* ============================================================
@@ -11579,7 +11602,7 @@ function viewAudit(v){
   /* The Save Pool strip is painted synchronously by keepAnchor/render
      paths — left empty it fills a beat later when the outbox ticks,
      and everything under it jumps (the verdict-click jump, JD Oct 29). */
-  if(['cards', 'lima', 'photos', 'years', 'prefill'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
+  if(['cards', 'lima', 'photos', 'years', 'prefill', 'cat'].indexOf(S.audit.mode) < 0) S.audit.mode = 'cards';
   if(S.audit._paceIv){ clearInterval(S.audit._paceIv); S.audit._paceIv = null; }
   if(!S.audit.shown) audDealMode();
   var m = audMode();
@@ -11778,7 +11801,7 @@ function onClick(ev){
     case 'pfstatus': PF_VIEW.status = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
     case 'pfgrade': PF_VIEW.grade = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
     case 'pfsort': PF_VIEW.sort = el.getAttribute('data-d'); PFQ.i = 0; pfRender(); break;
-    case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.catDone = {}; S.audit.shown = null; viewAudit($('#view')); } break;
+    case 'audcat': if(S.audit){ S.audit.cat = el.getAttribute('data-g'); S.audit.catDone = {}; S.audit.mode = 'cat'; store('ncc_aud_mode', 'cat'); S.audit.shown = null; viewAudit($('#view')); } break;
     case 'audcatall': if(S.audit) audSetMode('cards'); break;
     case 'audbulkphone': audBulkPhone(); break;
     case 'audgoal': { var gd = audDay(); gd.goal = Math.max(5, Math.min(500, gd.goal + (+el.getAttribute('data-d')))); if(gd.n < gd.goal) gd.met = false; audDaySave(gd); audPaintGoal(); break; }
