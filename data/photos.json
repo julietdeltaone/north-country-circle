@@ -2554,11 +2554,11 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. North Country Savings Bank's own article profiles Hudson Brown, its Canton floating relationship banker who grew up locally and plays viola at church, with this portrait (viewed; 5828x3911 JPEG). His directory anchor is Christian Fellowship Center, which the article does not name - graded possible.",
+   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. North Country Savings Bank's own article profiles Hudson Brown, its Canton floating relationship banker who grew up locally and plays viola at church, with this portrait (viewed; 5828x3911 JPEG). His directory anchor is Christian Fellowship Center, which the article does not name - graded possible. UPGRADED to confirmed 2026-11-01 (round-2 hunt): independent re-verification of the same NCSB article — it names him in its headline and text as NCSB's Floating Relationship Banker at the Canton branch, with Potsdam family ties; North Country Savings Bank is his employer on file, so page name + employer/town match = 2 anchors. The earlier possible grade rested only on his church anchor, which the article does not name.",
    "name": "Hudson Brown",
    "photo_url": "photos/hudson-brown-aligned.jpg",
    "source_page": "https://www.northcountrysavings.bank/blog-article/hudson-brown-ncsb-floating-relationship-banker",
-   "status": "possible",
+   "status": "confirmed",
    "type": "Employer profile portrait",
    "added": "2026-10-28",
    "also": [
@@ -2671,12 +2671,13 @@
    "added_approx": "Oct 2026"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE from the 2026-11-01 round-2 photo hunt. Lead portrait in the 'A bit about me' section of Hearthkeeper Birth Services, Isabelle Westerman's own business site ('I'm Isabelle, a wife, new mother, and traditional birth attendant currently based on the edge of New Hampshire's White Mountain Range' — matches her Pike, NH location on file). The WOMB Initiative (Littleton NH) facilitator page names 'Isabelle Westerman, a traditional birth attendant... with her husband and young son' and links directly to the Hearthkeeper site. One anchor only: her profile's River 'Rangements / SUNY Potsdam / Corinth anchors are not corroborated by these sources, and the portrait (her holding her infant son, viewed by the coordinator) is uncaptioned. Held at possible for JD's queue.",
    "name": "Isabelle Westerman",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://images.squarespace-cdn.com/content/v1/685570d0e8ea3e4157406d87/63944bf1-31cd-4071-8c9d-2126f597d7b6/I%26J+Portrait.png",
+   "source_page": "https://www.hearthkeeperbirthservices.com/",
+   "status": "possible",
+   "type": "Business bio portrait (with her son)",
+   "added": "2026-11-01"
   },
   {
    "evidence": "IG-pilot 2026-10-22 (strategy 1). Public profile picture from his own Instagram profile; handle and profile display name both match. No login beyond Luna's own connected Instagram account; the profile picture is what the person chose to display publicly. RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@isaiahreiter), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
@@ -2790,12 +2791,13 @@
    "type": null
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE from the 2026-11-01 round-2 photo hunt. His AirGigs page for JH Services ('JH Services is run by James Harmer in Gouverneur, NY... multi-track recording, mixing, production, studio musician work') links directly to his SoundCloud profile, whose avatar (viewed) is a stage photo of a man singing and playing electric guitar, consistent with his studio-musician work. Corroborating identity context: the Indian River CSD Technology site lists James Harmer among its Microcomputer Repair Technicians, matching his employer on file. One anchor: no caption names the man in the avatar. A YouTube channel avatar (uncaptioned selfie of a man and a woman) and ReverbNation images (microphone shots) were checked and rejected as unattributable/not a person.",
    "name": "James Harmer",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://i1.sndcdn.com/avatars-000024141835-t6dev5-t500x500.jpg",
+   "source_page": "https://www.airgigs.com/user/SoundhillStudio",
+   "status": "possible",
+   "type": "Profile avatar (stage performance photo)",
+   "added": "2026-11-01"
   },
   {
    "evidence": "Instagram profile @jamesphilipm (display name \"James Meyers\"). RE-HARVESTED 2026-10-31: the Instagram CDN primary had expired; the current profile picture was pulled fresh from the same account (@jamesphilipm), downloaded and hosted locally (150x150, FSRCNN x4 to 600x600) so it cannot expire again.",
@@ -3071,13 +3073,25 @@
    "type": null
   },
   {
-   "evidence": "POSSIBLE from the 2026-10-28 ChatGPT broad-search relay, verified against the source. The Northern New York Community Foundation's Evergreen STEM Scholars article captions its group photo with Jillian Chapman of Massena Central School (biology/pre-med, Class of 2020) position-mapped front row, first from left - consistent with a later Daemen University student (her directory anchor), though the article does not name Daemen. Photo viewed. Re-hosted locally 2026-10-31 from the same source URL (1024x632, bytes verified) so the primary no longer depends on the remote link.",
+   "evidence": "CONFIRMED in the 2026-11-01 round-2 photo hunt. Solo graduation portrait on the IBEW Local 2032 scholarship page, whose text names her: 'The winner of the 2020 IBEW LU 2032 Scholarship is Jillian Chapman... Jillian was accepted into the Physician Assistant Studies BS/MS Program at Daemen College for the Fall of 2020.' Anchors: page names her as the photo's subject + Daemen matches her university on file; the NNYCF Evergreen STEM group photo already on file (now an alternate) captions the same young woman as Jillian Chapman of Massena Central School, cross-confirming identity. Portrait viewed by the coordinator (1300x1733) and re-hosted locally.",
    "name": "Jillian Chapman",
-   "photo_url": "photos/jillian-chapman.jpg",
-   "source_page": "https://nnycf.org/evergreen-stem-scholars-honored/",
-   "status": "possible",
-   "type": "Scholarship group photo (position-mapped)",
-   "added": "2026-10-31"
+   "photo_url": "photos/jillian-chapman-ibew.jpg",
+   "source_page": "https://ibewlocal2032.org/updates/ibew-2032-scholarship-winner",
+   "status": "confirmed",
+   "type": "Scholarship winner portrait",
+   "added": "2026-11-01",
+   "also": [
+    {
+     "url": "https://ibewlocal2032.org/sites/default/files/styles/news_page/public/updates/2032_scholarship_winner_0.jpg?itok=CGotFfHO",
+     "note": "Remote original of the primary portrait (IBEW Local 2032 scholarship page).",
+     "source_page": "https://ibewlocal2032.org/updates/ibew-2032-scholarship-winner"
+    },
+    {
+     "url": "photos/jillian-chapman.jpg",
+     "note": "Previous primary (filed 2026-10-31 at possible): NNYCF Evergreen STEM Scholars group photo, captioned front row first from left, Jillian Chapman, Massena Central School, biology/pre-med.",
+     "source_page": "https://nnycf.org/evergreen-stem-scholars-honored/"
+    }
+   ]
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3121,12 +3135,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "POSSIBLE from the 2026-11-01 round-2 photo hunt. Hero photo of the HC Bolzano (HCB Foxes) signing article headlined 'Joe Charlebois rinforza la difesa del HCB', which names him as the article's subject, an American defenseman from New York State; Elite Prospects records Joe Charlebois as born Feb 18, 1986 in Potsdam, NY (UNH NCAA, drafted by Chicago 2005, AHL/ECHL career) — name + Potsdam birth match his profile's town. Held at possible: no source yet connects the retired hockey player to the Rochester Regional Health phlebotomy role on his profile; that link is the missing anchor.",
    "name": "Joe Charlebois",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "https://www.hcb.net/a9243ee7cdcd4f3a/9476/c/fit-in/0x0/filters:no_upscale()/filters:strip_exif()/65672688a4f4c8a57ea38e20056bdce1_XL.jpg",
+   "source_page": "https://www.hcb.net/it/joe-charlebois-rinforza-la-difesa-del-hcb/",
+   "status": "possible",
+   "type": "Club article subject photo (HC Bolzano)",
+   "added": "2026-11-01"
   },
   {
    "evidence": "SUNY Canton news photo, captioned with his name: SUNY Canton Criminal Investigation senior of Canton, NY, taking notes in the Law Enforcement Academy; hired by the Canton Police Department. Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 580x340 -> 2320x1360). Identity re-verified against the previous primary before the swap; now hosted locally.",
