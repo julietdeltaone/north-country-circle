@@ -5527,12 +5527,99 @@ tr.sst-row:hover .sst-lcbtn, .sst-lcbtn:focus-visible{ opacity:1; }
 .ssted .cde{ max-height:none; }
 @media (max-width:760px){ .sst-bulkctl{ margin-left:0; } .sst-tools-r{ margin-left:0; } }
 
-/* ---------- Home Directory charts (V3.71.0) ---------- */
-.hm-charts-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px 28px; margin-top:12px; }
-.hm-chart{ min-width:0; }
-.hm-chart.lead{ grid-column:1 / -1; }
-.hm-chart h4{ margin:0 0 8px; font-size:13px; font-weight:700; letter-spacing:.02em; }
-.hm-chart .se-drow, .hm-chart .se-brow{ cursor:default; }
-.hm-chart .se-drow:hover, .hm-chart .se-brow:hover{ background:transparent; }
-.hm-chart .se-seg{ cursor:default; }
-@media (max-width:900px){ .hm-charts-grid{ grid-template-columns:1fr; } }
+/* --- V3.72.0 Home Directory charts — JD's approved fused design:
+   KPI rings + relationship donut + closeness bar + recency heat
+   strip + field completeness heat matrix + bands heat strip.
+   Every component color is a variable declared on .hm-charts (with
+   a dark-mode override), because a theme flip does NOT re-render
+   the view — inline colors would strand the light palette in dark.
+   The heat ramps interpolate with color-mix between two endpoints
+   driven by the per-cell --p custom property. No animations or
+   transitions anywhere on these elements (glitch-proof rules). --- */
+.hm-charts{
+  --hmr-slate:#2e4a68; --hmr-gold:#a8862f; --hmr-brown:#7a5c3e; --hmr-steel:#5b7a99; --hmr-maroon:#7c2d3a;
+  --hmr-track:#e9edf1; --hmr-txp:#1d2733; --hmr-txd:#fff;
+  --hmr-hs0:#d9e4ee; --hmr-hs1:#2e4a68; --hmr-hb0:#f2ecdf; --hmr-hb1:#7a5c3e;
+  --hmr-d0:#2e4a68; --hmr-d1:#5b7a99; --hmr-d2:#8fa9c0; --hmr-d3:#a8862f; --hmr-d4:#7a5c3e;
+  --hmr-d5:#7c2d3a; --hmr-d6:#41648a; --hmr-d7:#c9ab5e; --hmr-d8:#b9c9d8; --hmr-d9:#c7d0d9;
+}
+html[data-mode="dark"] .hm-charts{
+  --hmr-slate:#7ba7d4; --hmr-gold:#d3ab54; --hmr-brown:#b08a5f; --hmr-steel:#93b4d2; --hmr-maroon:#c06a76;
+  --hmr-track:#26313d; --hmr-txp:#e9eff5; --hmr-txd:#0e141b;
+  --hmr-hs0:#263646; --hmr-hs1:#86aed6; --hmr-hb0:#38302a; --hmr-hb1:#c49a63;
+  --hmr-d0:#7ba7d4; --hmr-d1:#9db9d4; --hmr-d2:#a9c2d8; --hmr-d3:#d3ab54; --hmr-d4:#b08a5f;
+  --hmr-d5:#c06a76; --hmr-d6:#8fb0d2; --hmr-d7:#dec07c; --hmr-d8:#cfe0ee; --hmr-d9:#93a3b1;
+}
+/* rings */
+.hm-charts .hmr-rings{display:grid;grid-template-columns:repeat(5,1fr);gap:10px 6px;margin-top:12px}
+.hm-charts .hmr-ring{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;border-radius:10px;padding:8px 4px 6px;cursor:pointer;font:inherit;color:var(--txt)}
+.hm-charts .hmr-ring:hover{background:var(--fill2)}
+.hm-charts .hmr-rtrack{fill:none;stroke:var(--hmr-track);stroke-width:9}
+.hm-charts .hmr-rfg{fill:none;stroke-width:9;stroke-linecap:round}
+.hm-charts .hmr-rfg.k-slate{stroke:var(--hmr-slate)} .hm-charts .hmr-rfg.k-gold{stroke:var(--hmr-gold)}
+.hm-charts .hmr-rfg.k-brown{stroke:var(--hmr-brown)} .hm-charts .hmr-rfg.k-steel{stroke:var(--hmr-steel)}
+.hm-charts .hmr-rfg.k-maroon{stroke:var(--hmr-maroon)}
+.hm-charts .hmr-rv{fill:var(--txt);font:700 20px var(--serif)}
+.hm-charts .hmr-rv.sm{font-size:15px}
+.hm-charts .hmr-rl{font:700 13px/1.2 var(--serif);text-align:center}
+.hm-charts .hmr-rs{color:var(--mut);font-size:11px;text-align:center;max-width:170px}
+/* mid row: donut + closeness + recency */
+.hm-charts .hmr-mid{display:grid;grid-template-columns:330px 1fr;gap:8px 26px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.hm-charts .hmr-mid>*{min-width:0}
+.hm-charts .hmr-hcell{min-width:0}
+.hm-charts .hmr-hcell>span{min-width:0}
+.hm-charts .hmr-h4{margin:0 0 6px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.hm-charts .hmr-h4.hmr-mt{margin-top:14px} .hm-charts .hmr-h4.hmr-mt2{margin-top:16px}
+.hm-charts .hmr-donwrap{display:flex;gap:12px;align-items:flex-start}
+.hm-charts .hmr-don{flex:none}
+.hm-charts .hmr-dseg{cursor:pointer}
+.hm-charts .hmr-d0{fill:var(--hmr-d0)} .hm-charts .hmr-d1{fill:var(--hmr-d1)} .hm-charts .hmr-d2{fill:var(--hmr-d2)}
+.hm-charts .hmr-d3{fill:var(--hmr-d3)} .hm-charts .hmr-d4{fill:var(--hmr-d4)} .hm-charts .hmr-d5{fill:var(--hmr-d5)}
+.hm-charts .hmr-d6{fill:var(--hmr-d6)} .hm-charts .hmr-d7{fill:var(--hmr-d7)} .hm-charts .hmr-d8{fill:var(--hmr-d8)}
+.hm-charts .hmr-d9{fill:var(--hmr-d9)}
+.hm-charts .hmr-dbg0{background:var(--hmr-d0)} .hm-charts .hmr-dbg1{background:var(--hmr-d1)} .hm-charts .hmr-dbg2{background:var(--hmr-d2)}
+.hm-charts .hmr-dbg3{background:var(--hmr-d3)} .hm-charts .hmr-dbg4{background:var(--hmr-d4)} .hm-charts .hmr-dbg5{background:var(--hmr-d5)}
+.hm-charts .hmr-dbg6{background:var(--hmr-d6)} .hm-charts .hmr-dbg7{background:var(--hmr-d7)} .hm-charts .hmr-dbg8{background:var(--hmr-d8)}
+.hm-charts .hmr-dbg9{background:var(--hmr-d9)}
+.hm-charts .hmr-donc{fill:var(--txt);font:700 40px var(--serif)}
+.hm-charts .hmr-dons{fill:var(--mut);font:600 10.5px var(--sans);letter-spacing:.14em}
+.hm-charts .hmr-legs{display:flex;flex-direction:column;flex:1;min-width:118px}
+.hm-charts .hmr-legs.wrap{flex-direction:row;flex-wrap:wrap;gap:2px 14px}
+.hm-charts .hmr-leg{display:flex;align-items:center;gap:6px;background:none;border:0;padding:3px 2px;cursor:pointer;font:inherit;font-size:12px;color:var(--txt);border-radius:6px;text-align:left}
+.hm-charts .hmr-leg:hover{background:var(--fill2)}
+.hm-charts .hmr-leg b{margin-left:auto;font-variant-numeric:tabular-nums}
+.hm-charts .hmr-legs.wrap .hmr-leg b{margin-left:0}
+.hm-charts .hmr-leg .p{color:var(--mut);margin-left:2px}
+.hm-charts .hmr-sw{width:10px;height:10px;border-radius:2px;flex:none}
+.hm-charts .hmr-cbar{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--hmr-track)}
+.hm-charts .hmr-cseg{border:0;padding:0;cursor:pointer;min-width:3px}
+/* heat strips + matrix */
+.hm-charts .hmr-strip{display:flex;gap:3px;margin-top:2px}
+.hm-charts .hmr-hcell{flex:1;display:flex;justify-content:space-between;align-items:center;gap:8px;border:0;border-radius:5px;padding:7px 10px;font:inherit;font-size:12px;cursor:pointer;color:var(--hmr-txp);background:color-mix(in srgb,var(--hmr-hs1) var(--p),var(--hmr-hs0));text-align:left}
+.hm-charts .hmr-hcell.deep{color:var(--hmr-txd)}
+.hm-charts .hmr-hcell b{font-size:13px;font-variant-numeric:tabular-nums}
+.hm-charts .hmr-note{color:var(--mut);font-size:12px;margin:8px 2px 0;line-height:1.5}
+.hm-charts .hmr-note b{color:var(--txt)}
+.hm-charts .hmr-hrow{display:grid;grid-template-columns:150px 1fr 92px 1fr 92px;gap:3px;margin-top:3px;align-items:stretch}
+.hm-charts .hmr-hrow.head{margin-top:0}
+.hm-charts .hmr-hh{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);padding:2px 2px 0}
+.hm-charts .hmr-hfl{font-size:13px;padding:7px 6px 7px 2px;align-self:center}
+.hm-charts .hmr-hc{border:0;border-radius:5px;padding:7px 10px;font:inherit;font-size:12.5px;cursor:pointer;color:var(--hmr-txp);text-align:left;font-variant-numeric:tabular-nums}
+.hm-charts .hmr-hc.fill{background:color-mix(in srgb,var(--hmr-hs1) var(--p),var(--hmr-hs0))}
+.hm-charts .hmr-hc.blank{background:color-mix(in srgb,var(--hmr-hb1) var(--p),var(--hmr-hb0))}
+.hm-charts .hmr-hc.deep{color:var(--hmr-txd)}
+@media (max-width:1180px){
+  .hm-charts .hmr-mid{grid-template-columns:1fr}
+  .hm-charts .hmr-donwrap{justify-content:flex-start}
+}
+@media (max-width:900px){
+  .hm-charts .hmr-rings{grid-template-columns:repeat(3,1fr)}
+  .hm-charts .hmr-strip{flex-wrap:wrap}
+  .hm-charts .hmr-strip .hmr-hcell{flex:1 1 30%}
+  .hm-charts .hmr-hrow{grid-template-columns:104px 1fr 64px 1fr 64px}
+}
+@media (max-width:560px){
+  .hm-charts .hmr-rings{grid-template-columns:repeat(2,1fr)}
+  .hm-charts .hmr-donwrap{flex-direction:column}
+  .hm-charts .hmr-hrow{grid-template-columns:84px 1fr 54px 1fr 54px}
+}
