@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31",
+ "updated": "2026-11-01",
  "total": 680,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
@@ -774,12 +774,12 @@
    "type": null
   },
   {
-   "evidence": "SUNY Canton CLDIOI staff page names 'Brianna Hammond, Instructional Designer' beside this official headshot; bio (B.A. Early/Childhood Ed SUNY Potsdam, taught early-ed classrooms, M.S.Ed. Ed Tech while teaching) is consistent with the profile's Madrid-Waddington second-grade teacher who started at SUNY Broome, but the degree path/role differ enough from the on-file anchors to grade possible rather than confirmed. FSRCNN x4 enhanced from the 200x200 original (kept as brianna-hammond-orig.png). Viewed: young woman, long dark hair, studio headshot in SUNY Canton frame. Replacement photo filed 2026-10-31 from the live source page (800x800); previous primary was a dead URL.",
+   "evidence": "CONFIRMED 2026-11-01 in the Council weekly hunt (upgraded from the 2026-10-31 'possible'). This is the SUNY Canton CLDIOI staff headshot: the staff page names 'Brianna Hammond, Instructional Designer' beside it and its bio gives her B.A. in Early/Childhood Education and M.S.Ed. in Educational Technology Specialist, both from SUNY Potsdam — matching the profile's SUNY Potsdam. Second anchor tying her to the profile's school: the Waddington NY Forward Strategic Investment Plan (Dec 2023) lists 'Brianna Hammond | Madrid-Waddington Central School' on its Local Planning Committee — matching the profile's Madrid-Waddington second-grade teacher. Coordinator visually verified the staff-page image is the same portrait as the filed 800x800 local copy. SUNY Broome on the profile was not verified on the staff page and is not part of this confirmation.",
    "name": "Brianna Hammond",
    "photo_url": "photos/brianna-hammond.jpg",
    "source_page": "https://www.canton.edu/ol/cldioi-staff.html",
-   "status": "possible",
-   "type": "Instagram profile picture",
+   "status": "confirmed",
+   "type": "Staff headshot (SUNY Canton CLDIOI)",
    "added": "2026-10-31"
   },
   {
@@ -1255,12 +1255,13 @@
    "added": "2026-10-31"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "evidence": "CONFIRMED in the 2026-11-01 Council weekly hunt. Potsdam Rotary story names her in its caption in left-to-right order: 'Left to right: Potsdam Rotary President Duane Pelkey, Cisco, Capozzi and Rotary Vocational Service Chair Paul McGrath' — she is 3rd from left, holding a certificate that itself reads 'Cora Capozzi / Health Careers'. Story text: 'Cora Capozzi of St. Lawrence Central School, a student in the Health Careers program at BOCES Seaway Tech, is the Rotary Club of Potsdam BOCES Student of the Month for October' — matching the profile (St. Lawrence Central, BOCES Seaway Tech Health Careers, Hopkinton NY). Anchors: caption position + certificate name in-frame, and school/program match. Filed as a 1:1 crop of her from the group photo (original https://clubrunner.blob.core.windows.net/00000000521/Images/capozzi.jpg, GET-verified 200 image/jpeg 1980x1485 before cropping).",
    "name": "Cora Capozzi",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/cora-capozzi.jpg",
+   "source_page": "https://potsdamrotary.org/Stories/potsdam-rotary-boces-october-student-of-the-month-6",
+   "status": "confirmed",
+   "type": "Award presentation photo (cropped from captioned group photo)",
+   "added": "2026-11-01"
   },
   {
    "evidence": "CONFIRMED in the 2026-10-29 arena photo hunt. Clarkson University directory headshot embedded on his official Clarkson people page (\"Corbin Ladison / Campus Safety & Security Officer\", cladison@clarkson.edu); \"Ofc. Ladison\" is visible on his uniform shirt with the Clarkson security patch. Coordinator viewed the image (face crop of the directory portrait). Enhanced 2026-10-31: primary replaced with the verified enhanced version from the Oct 30-31 enhancement run (FSRCNN x4 upscale; 500x500 -> 2000x2000). Identity re-verified against the previous primary before the swap; now hosted locally.",
