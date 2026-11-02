@@ -4421,7 +4421,11 @@ function secEdit(di, id){
     var lcForm = '<div class="form lcform"><h5>Log contact</h5>' +
       '<input id="lc-date" placeholder="Date: 2026, 2026-10 or 2026-10-28" autocomplete="off" spellcheck="false">' +
       '<input id="lc-sum" placeholder="One line: what happened" autocomplete="off">' +
-      '<label class="lc-onl"><input type="checkbox" id="lc-online"> Online</label>' +
+      '<div class="seg" id="lc-mode" role="group" aria-label="Contact kind">' +
+        '<button type="button" data-act="lcmode" data-v="person" class="on">In person</button>' +
+        '<button type="button" data-act="lcmode" data-v="online">Online</button>' +
+        '<button type="button" data-act="lcmode" data-v="proximity">Proximity</button></div>' +
+      '<p class="dim" id="lc-prox-note" hidden>Proximity is co-presence, not contact: the line above is the place, and Last Contact never moves.</p>' +
       '<div class="row"><button type="button" class="btn primary sm" data-act="lcadd">Add to log</button></div></div>';
     return lcForm + (rows || '<p class="dim">No events yet.</p>') +
       '<div class="form"><h5>' + (S.prof.evEdit != null ? 'Edit event' : 'Add event') + '</h5>' +
@@ -12190,6 +12194,11 @@ function onClick(ev){
     case 'famadd': { var msg = addFamily(S.prof.di, famRelDefault(), di); toast(msg || 'Added.', { undo:true }); repaintSec('connections'); repaintTop(); break; }
     case 'famrm': removeFamily(S.prof.di, +el.getAttribute('data-i')); repaintSec('connections'); repaintTop(); break;
     case 'evinit': $$('#ev-init button').forEach(function(b){ b.classList.toggle('on', b === el); }); break;
+    case 'lcmode': { $$('#lc-mode button').forEach(function(b){ b.classList.toggle('on', b === el); });
+      var lcIsP = el.getAttribute('data-v') === 'proximity';
+      var lcNote = $('#lc-prox-note'); if(lcNote) lcNote.hidden = !lcIsP;
+      var lcSumI = $('#lc-sum'); if(lcSumI) lcSumI.placeholder = lcIsP ? 'Place / context, e.g. Lewis School, Clarkson Hall' : 'One line: what happened';
+      break; }
     case 'evedit': S.prof.evEdit = +el.getAttribute('data-i'); repaintSec('timeline'); break;
     case 'evcancel': S.prof.evEdit = null; repaintSec('timeline'); break;
     case 'evdel': { var evs = (D.directory[S.prof.di].events || []).slice(), i1 = +el.getAttribute('data-i'); if(!evs[i1] || !confirm('Remove this event?\n\n' + (evs[i1].summary || ''))) break; evs.splice(i1, 1); saveEvents(evs, 'Remove event'); break; }
@@ -12205,10 +12214,19 @@ function onClick(ev){
       saveEvents(arr2, S.prof.evEdit != null ? 'Edit event' : 'Add event'); break;
     }
     case 'lcadd': {
-      var ld = $('#lc-date').value.trim(), lsum = $('#lc-sum').value.trim(), lon = $('#lc-online').checked;
-      if(!lsum){ toast('Write the one line first.'); break; }
+      var ld = $('#lc-date').value.trim(), lsum = $('#lc-sum').value.trim();
+      var lmb = $('#lc-mode .on'), lmode = lmb ? lmb.getAttribute('data-v') : 'person', lon = lmode === 'online';
+      if(!lsum){ toast(lmode === 'proximity' ? 'Name the place or context first.' : 'Write the one line first.'); break; }
       if(ld && !audYearOk(ld)){ toast('Date needs a year, a year-month, or a full date.'); break; }
       var ldate = ld || todayStr();
+      if(lmode === 'proximity'){
+        /* co-presence: files a Proximity event only — the Last Contact
+           stamp block below is deliberately never reached */
+        var lparr = (D.directory[S.prof.di].events || []).slice();
+        lparr.push({ date:ldate, kind:'proximity', venue:lsum, summary:lsum });
+        txn('Log proximity', function(){ queuePatch(S.prof.di, { events:JSON.stringify(lparr) }); });
+        repaintSec('timeline'); repaintTop(); break;
+      }
       var lev = { date:ldate, summary:lsum, kind:'contact' }; if(lon) lev.online = true;
       var larr = (D.directory[S.prof.di].events || []).slice(); larr.push(lev);
       txn('Log contact', function(){ queuePatch(S.prof.di, { events:JSON.stringify(larr) }); });
@@ -12616,7 +12634,7 @@ function onKey(ev){
    outbox already creates rows for unknown ids (the Sandbox
    create's sf: key convention and field set).
    ============================================================ */
-var QA = { open:false, mode:'log', di:null, online:false, hi:0, rows:[], prevFocus:null, watchT:null, npWarn:null };
+var QA = { open:false, mode:'log', di:null, online:false, prox:false, hi:0, rows:[], prevFocus:null, watchT:null, npWarn:null };
 var QA_QUEUE_KEY = 'ncc_contact_queue_v1';
 var QA_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function qaDateLabel(iso){
@@ -12669,6 +12687,29 @@ function qaSaveLog(di, sum, det, on){
   qaQueueRemove(di); /* a logged person leaves Up Next, whichever app logged them */
   return true;
 }
+/* --- proximity save (V3.69.0): a peer of the log save, NOT a variant of
+   it — a Proximity event is co-presence ({date, kind:'proximity', venue,
+   summary:venue}). It never writes the Last Contact stamp, and the person
+   stays in Up Next: only a real contact clears the queue. --- */
+function qaSaveProx(di, venue){
+  var e = D.directory[di]; if(!e) return false;
+  venue = String(venue || '').trim(); if(!venue) return false;
+  var arr = (e.events || []).slice();
+  arr.push({ date:todayStr(), kind:'proximity', venue:venue, summary:venue });
+  txn('Log proximity', function(){ queuePatch(di, { events:JSON.stringify(arr) }); });
+  return true;
+}
+/* sync the Location / Online / Proximity seg + the log form's shape */
+function qaApplyTog(){
+  $$('#qa-tog button').forEach(function(b){
+    var on = b.hasAttribute('data-prox') ? QA.prox : (!QA.prox && (b.getAttribute('data-on') === '1') === QA.online);
+    b.classList.toggle('on', on);
+  });
+  var sum = $('#qa-sum'), det = $('#qa-det'), btn = $('#qa-savebtn');
+  if(sum) sum.placeholder = QA.prox ? 'Where / context — e.g. Lewis School, Clarkson Hall' : 'What happened — one line';
+  if(det) det.hidden = QA.prox;
+  if(btn) btn.textContent = QA.prox ? 'Log proximity' : 'Log contact';
+}
 /* --- panel lifecycle --- */
 function qaEnsure(){
   if($('#qawrap')) return;
@@ -12694,11 +12735,12 @@ function qaEnsure(){
       '<div class="seg qa-tog" id="qa-tog">' +
         '<button type="button" data-on="0" class="on">' + ic('pin', 13) + 'Location</button>' +
         '<button type="button" data-on="1">' + ic('network', 13) + 'Online</button>' +
+        '<button type="button" data-prox="1">' + ic('people', 13) + 'Proximity</button>' +
       '</div>' +
       '<input id="qa-sum" class="qa-in" placeholder="What happened — one line" autocomplete="off">' +
       '<input id="qa-det" class="qa-in" placeholder="Details (optional)" autocomplete="off">' +
       '<div class="qa-endrow"><span class="qa-date" id="qa-date"></span>' +
-      '<button type="button" class="btn primary" data-qact="logsave">Log contact</button></div>' +
+      '<button type="button" class="btn primary" id="qa-savebtn" data-qact="logsave">Log contact</button></div>' +
     '</div>' +
     '<div class="qa-sec" data-sec="new" hidden data-kind="about">' +
       '<div class="qa-two"><input id="qa-np-first" class="qa-in" placeholder="First name" autocomplete="off"><input id="qa-np-last" class="qa-in" placeholder="Last name" autocomplete="off"></div>' +
@@ -12758,7 +12800,7 @@ function qaSetMode(m){
   $$('#qawrap [data-qmode]').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-qmode') === m); });
   $$('#qawrap .qa-sec').forEach(function(s){ s.hidden = s.getAttribute('data-sec') !== m; });
   qaPaintQueueCount();
-  if(m === 'log'){ qaPaintLogList(); var q = $('#qa-q'); if(q && !QA.di) q.focus(); else { var s2 = $('#qa-sum'); if(s2) s2.focus(); } }
+  if(m === 'log'){ qaApplyTog(); qaPaintLogList(); var q = $('#qa-q'); if(q && !QA.di) q.focus(); else { var s2 = $('#qa-sum'); if(s2) s2.focus(); } }
   if(m === 'new'){ var f = $('#qa-np-first'); if(f) f.focus(); }
   if(m === 'queue'){ qaPaintQueueResults(); qaPaintQueue(); var qq = $('#qa-qq'); if(qq) qq.focus(); }
 }
@@ -12865,6 +12907,20 @@ function qaPaintQueue(){
 /* --- actions --- */
 function qaDoLog(){
   if(QA.di == null){ qaStatus('Pick a person first.', 'err'); var q = $('#qa-q'); if(q) q.focus(); return; }
+  if(QA.prox){
+    var venue = $('#qa-sum').value;
+    if(!venue.trim()){ qaStatus('Name the place or context — that is the whole record.', 'err'); $('#qa-sum').focus(); return; }
+    var pdi = QA.di, pe = D.directory[pdi];
+    if(!qaSaveProx(pdi, venue)){ qaStatus('That did not save. Try again.', 'err'); return; }
+    var pbase = 'Logged proximity with ' + dispName(pe) + ' — ' + venue.trim() + ' · ' + qaDateLabel(todayStr()) + '. Co-presence only: Last Contact untouched.';
+    qaStatus(pbase + ' Saving through the Save Pool…', 'ok');
+    qaWatchWrite(pkey(pe), pbase);
+    QA.di = null; QA.hi = 0;
+    $('#qa-sum').value = ''; var pq = $('#qa-q'); if(pq){ pq.value = ''; }
+    qaPaintLogList(); qaPaintQueueCount();
+    if(pq) pq.focus();
+    return;
+  }
   var sum = $('#qa-sum').value, det = $('#qa-det').value;
   if(!sum.trim()){ qaStatus('Write what happened, one line — that line is the record.', 'err'); $('#qa-sum').focus(); return; }
   var di = QA.di, e = D.directory[di], on = QA.online;
@@ -12930,12 +12986,19 @@ function qaDoCreate(force){
   qaPaintQueueCount();
 }
 function qaOnClick(ev){
-  var t = ev.target && ev.target.closest ? ev.target.closest('[data-qmode],[data-qact],[data-qdi],[data-qlog],[data-qrm],[data-quse],[data-qfirst],[data-qopen],[data-on]') : null;
+  var t = ev.target && ev.target.closest ? ev.target.closest('[data-qmode],[data-qact],[data-qdi],[data-qlog],[data-qrm],[data-quse],[data-qfirst],[data-qopen],[data-on],[data-prox]') : null;
   if(!t) return;
   if(t.hasAttribute('data-qmode')){ qaSetMode(t.getAttribute('data-qmode')); return; }
+  if(t.hasAttribute('data-prox')){
+    QA.prox = true;
+    qaApplyTog();
+    var ps = $('#qa-sum'); if(ps) ps.focus();
+    return;
+  }
   if(t.hasAttribute('data-on')){
     QA.online = t.getAttribute('data-on') === '1';
-    $$('#qa-tog button').forEach(function(b){ b.classList.toggle('on', b === t); });
+    QA.prox = false;
+    qaApplyTog();
     return;
   }
   if(t.hasAttribute('data-qopen')){ var odi = +t.getAttribute('data-qopen'); qaClose(); openPerson(odi, null); return; }
