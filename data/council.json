@@ -10,7 +10,7 @@
   "verdict": "Under pace — 38% used against ~43% even pace, with the week resetting Fri Nov 6, 2026, 7:38 AM EST.",
   "week_resets": "Fri Nov 6, 2026, 7:38 AM EST"
  },
- "charter_note": "Charter adopted Oct 27, 2026 (JD). Six directors; JD interacts only with the Operations roll-up. Everything reports change-only; \"no findings\" is a valid report.",
+ "charter_note": "Charter adopted Oct 27, 2026 (JD). Seven directors; JD interacts only with the Operations roll-up. Everything reports change-only; \"no findings\" is a valid report.",
  "findings": {
   "content": [
    {
@@ -149,6 +149,13 @@
     "summary": "Charter adopted. Standing rule added: every ship's QA now includes a both-themes UX crawl. First full pass in the Nov 2 weekly cycle.",
     "title": "Director stood up"
    }
+  ],
+  "layout": [
+   {
+    "date": "2026-11-02",
+    "title": "Director stood up — blocking geometry gate (JD, Nov 2)",
+    "summary": "Seventh Council seat chartered after repeated spacing/overlap defects shipped past eyeball QA (latest: V3.72.0 Home — section headers on card borders, a donut crowding its card). Method is automated geometry measurement (scripts/overlap_audit.py: collisions, text overflow, header/card intersections, full-height edge lines, sub-4px proximities) at 1440x900 and 1366x768 in both themes. Authority is BLOCKING: a build that fails the gate does not ship."
+   }
   ]
  },
  "field_reports": {
@@ -187,6 +194,12 @@
    "working": "The staging contract works: actions staged here land in the Sheet addressed by key, the next pass picks them up, and Do-now writes await their ack and surface failure instead of pretending. The inaugural test drive ran end-to-end with zero meaning-changing executions.",
    "barriers": "JD's ruling queue is the bottleneck by design — flags wait for his calls, so the board's job is to make each ruling a one-tap decision with the theory and evidence attached. Two of JD's directory rows share one app key, which is why the queue is addressed by Sheet key and never through the directory.",
    "stuck": "Nothing blocked. Next full cycle: Mon Nov 9, 2026 (weekly cycle, 5:30 AM ET); the roll-up folds into The Week in Full the same morning."
+  },
+  "layout": {
+   "strategy": "Measure, never eyeball. After every ship, crawl every audited surface at 1440x900 and 1366x768 in both themes with scripts/overlap_audit.py and count geometry defects: sibling collisions, clipped or spilling text, headers intersecting cards, full-height edge lines, sub-4px proximities, chart labels crowding their rings. A nonzero count in a blocking class holds the ship; the dated report in hidden_files/council/ is the evidence, and a fix only counts when a re-crawl reads zero — never on a screenshot that merely looks better.",
+   "working": "Standing up today (Nov 2, 2026): charter written, seat added to the Council board, instrument built. The calibration defects are already measurable in the current build: the Home charts card carries a 3px steel ::before bar 1,245px tall — 98% of the card's height, 7px inside its left border — with the card's section headers starting 11px from it, and the relationship donut's center numeral clears the ring's inner edge by ~0.2px at the top. Both are exactly the class JD flagged from his screenshot.",
+   "barriers": "Headless Chromium on this VM cannot reach the live GitHub Pages origin (tunnel fails), so the crawl runs against a locally served copy of the site tree — byte-identical to the shipped build at audit time (APP_VERSION read from the served page). The gate holds future ships; it cannot un-ship a build already live, so first-pass findings on V3.72.0 route to the queued layout build as its work list.",
+   "stuck": "Nothing yet — seat stood up today. First full pass against V3.72.0 in progress; findings file in layout-log.md and the dated report beside it."
   }
  },
  "flags": [
@@ -1506,6 +1519,16 @@
    "name": "Director of Operations",
    "next_run": "Roll-up in Monday's The Week in Full",
    "status": "Active — weekly cycle complete; roll-up delivered to The Week in Full."
+  },
+  {
+   "authority": "BLOCKING gate: a build that fails the layout crawl does not ship. Failures stage as flags on the Council board like every other director's; only JD can override a held ship.",
+   "icon": "expand",
+   "key": "layout",
+   "last_run": null,
+   "mission": "Own geometry — no element too close, nothing overlapping, on any surface, at any audited viewport, in either theme — proven by automated measurement (scripts/overlap_audit.py), never by eyeballs alone.",
+   "name": "Director of Layout Integrity",
+   "next_run": "After every ship (blocking) + Mondays 05:30 ET — weekly cycle",
+   "status": "Stood up Nov 2, 2026 (JD) — charter written, instrument built; first pass against V3.72.0 in progress."
   }
  ],
  "runs": [
