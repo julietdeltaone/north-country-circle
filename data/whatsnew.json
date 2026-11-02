@@ -3,6 +3,62 @@
  "count": 300,
  "items": [
   {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Eric Criscitello",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://www.woodshopnews.com/features/positioned-in-potsdam"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Kim Sisk",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://www.northcountrypublicradio.org/news/story/21135/20121224/schools-fight-for-fiscal-survival"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Marissa Kelley",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://svpc.net/our-friendly-team/"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Christopher Pagan",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://www.dvidshub.net/video/901808/chicago-bears-shoutout-salute-service-2023"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Evan Dimakas",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": ""
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Jackie Card",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://gardenshare.org/meet-the-staff/"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Heather Ramsdell",
+   "text": "Primary photo filed (grade: possible)",
+   "source": "Photos on File",
+   "url": "https://www.ntcmassena.com/series/three-questions/"
+  },
+  {
    "date": "2026-11-01",
    "kind": "filed",
    "display": "Acacia White",
@@ -1429,14 +1485,6 @@
   {
    "date": "2026-10-31",
    "kind": "photo",
-   "display": "Marissa Kelley",
-   "text": "Primary photo filed (grade: possible)",
-   "source": "Photos on File",
-   "url": "https://svpc.net/our-friendly-team/"
-  },
-  {
-   "date": "2026-10-31",
-   "kind": "photo",
    "display": "Marissa Wood",
    "text": "Primary photo filed",
    "source": "Photos on File",
@@ -1833,14 +1881,6 @@
    "text": "Primary photo filed",
    "source": "Photos on File",
    "url": "https://myemail.constantcontact.com/AEDC-Newsletter--March-2024.html?aid=z8NBiWE290c&soid=1138922658926"
-  },
-  {
-   "date": "2026-10-31",
-   "kind": "photo",
-   "display": "Christopher Pagan",
-   "text": "Primary photo filed (grade: possible)",
-   "source": "Photos on File",
-   "url": "https://prudenteng.com/search-results"
   },
   {
    "date": "2026-10-30",
@@ -2361,46 +2401,6 @@
    "text": "Also holds a Bachelor's Degree in Secondary Education with a focus in English",
    "source": "Seaway Valley Prevention Council",
    "url": "https://svpc.net/our-friendly-team/"
-  },
-  {
-   "date": "2026-10-30",
-   "kind": "photo",
-   "display": "Christine Sutter",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://images.squarespace-cdn.com/content/v1/61c24f78776e61007bf55c7f/5c4fade6-29e2-4713-88de-35dbcc3f1968/Christine.jpg?format=1000w"
-  },
-  {
-   "date": "2026-10-30",
-   "kind": "photo",
-   "display": "Ellie Criscitello",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.potsdam.edu/academics/AAS/depts/engl/EllieCriscitello"
-  },
-  {
-   "date": "2026-10-30",
-   "kind": "photo",
-   "display": "Timothy Criscitello",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.woodshopnews.com/uploads/MTY5OTQ5OTk4ODY2MjQ0OTg1/inside-4.jpg?format=auto&optimize=high&width=1440"
-  },
-  {
-   "date": "2026-10-30",
-   "kind": "photo",
-   "display": "Joann Duclos",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.alamy.com/stock-photo-sgt-first-class-joann-duclose-front-a-senior-human-resources-sergeant-170134620.html"
-  },
-  {
-   "date": "2026-10-29",
-   "kind": "filed",
-   "display": "Adria Tebo",
-   "text": "Named team captain of the University of New England women's ice hockey team for her senior season, 2026-27",
-   "source": "University of New England Athletics",
-   "url": "https://athletics.une.edu/sports/womens-ice-hockey/roster/adria-tebo/8118"
   }
  ]
 }
