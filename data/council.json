@@ -48,34 +48,9 @@
   ],
   "photos": [
    {
-    "date": "2026-11-01",
-    "title": "Overnight full-roster run: 5 confirmed + 2 alternates filed at the coordinator gate; ~30 hunter candidates unverifiable (1 fake wrapper URL)",
-    "summary": "JD-authorized overnight run over all 293 no-photo profiles with 19 dictated seeds; Chelsea MG merged into Chelsea McGrath (Sheet-verified). Filings (all coordinator GET-verified + eyeballed, live): Debbie Flack and Heather Foster-Barrigar CONFIRMED; Christopher Pagan CONFIRMED (DVIDS video still, his name tape readable in frame); Evan Dimakas CONFIRMED (real DVIDS original - the 'Wikimedia Commons' URL first reported for him was fabricated and never filed, but the underlying DVIDS photo verifies, tape reads DIMAKAS); Olena Musiienko own-site hero promoted to primary; possible-grade alternates for Jonathan Puglia and Jessica Hurlbut. Collectors reported ~35 'verified' candidates; most failed coordinator re-verification (CDN egress refusals; several hunter URLs were mis-derived and five were later corrected by verbatim re-extraction). The rest are logged as leads in photos-log.md for a browser-session pass. Rule adopted: filings require the coordinator's own GET + eyeball; hunter verification is a lead, not evidence."
-   },
-   {
-    "date": "2026-11-01",
-    "title": "Round 2 (fresh angles): 2 upgraded to confirmed, 3 possible filed",
-    "summary": "40 hunted after sf:elizabeth-marquez (rotation now at sf:kaylee-gilbert). Hudson Brown upgraded possible->confirmed (NCSB's own article names him as its Canton floating relationship banker = employer anchor) and Jillian Chapman upgraded with a better primary (IBEW Local 2032 scholarship portrait, Daemen PA anchor; NNYCF group photo kept as alternate). Possible filed for JD's queue: Isabelle Westerman (own business bio portrait, name+NH location chain), James Harmer (SoundCloud avatar via his JH Services AirGigs link chain), Joe Charlebois (HC Bolzano signing-article photo; Potsdam-born per Elite Prospects, RRH link still missing). Held, not filed: G.C. Jaggs photos surfacing are Cashlynn (Jaggers) Colbert, who has her own profile - likely a garbled/duplicate profile for JD to rule on. Katelynne Kulp: captioned yearbook group-row lead in a CONTENTdm PDF, no direct image yet."
-   },
-   {
-    "date": "2026-11-01",
-    "title": "Slice 2: 1 filed, 1 upgraded, QC 208/208",
-    "summary": "40 hunted: Cora Capozzi filed confirmed (Rotary caption + certificate name in frame; 1:1 crop), Brianna Hammond upgraded possible→confirmed (MWCS planning doc = 2nd anchor). QC re-verified all 208 photos filed since Oct 27 — all display, none hidden. A Saint Rose headshot anchored to a different sprinter was rejected at the gate for Dawson Wiegandt."
-   },
-   {
-    "date": "2026-10-27",
-    "title": "QC pass: 8 of 8 Oct 27 photos verified",
-    "summary": "Every photo filed Oct 27 re-checked live: all serve 200 as real images and match their filing evidence. One note: Isreal Tyler's is an 80×120 thumbnail (her roster photo) — keep-or-remove is JD's standing call."
-   },
-   {
-    "date": "2026-10-27",
-    "title": "Inaugural hunt: 40 attempted, 1 confirmed filed",
-    "summary": "Aeriel Skinner filed (SSUSA portrait, 2 anchors; her unconfirmed group graphic moved to alternates). One candidate rejected at the verify gate (a 'loading' placeholder GIF, not the photo). Six strong leads need a live-browser pass (Annika Greco, Ashlin Elliott, Asher Cragg, Bob Blewett, Brad Ingram, Acacia White)."
-   },
-   {
-    "date": "2026-10-27",
-    "summary": "Charter adopted. First rotating hunt (slice of ~40 profiles without usable photos) runs in the Nov 2 weekly cycle.",
-    "title": "Director stood up"
+    "title": "Overnight full-roster run: 11 confirmed-grade photos + 4 possible-grade filed at the coordinator gate; ~30 hunter candidates unverifiable (1 fake wrapper URL)",
+    "date": "2026-11-02",
+    "note": "293 targets worked. Confirmed primaries: Debbie Flack, Heather Foster-Barrigar, Christopher Pagan, Evan Dimakas, Eric Criscitello, Jackie Card, Marissa Kelley, Kim Sisk; promotion: Olena Musiienko. Possible-grade: Heather Ramsdell (new), Jonathan Puglia + Jessica Hurlbut + Norah Pease (alternates). Standing rule added to the playbook: only coordinator-verified GETs file. One live-browser pass unlocks most of the ~30 remaining leads. Correction: an earlier snapshot/log note attributing names to batch 12 was superseded in the log."
    }
   ],
   "progress": [
