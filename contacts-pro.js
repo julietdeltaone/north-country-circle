@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.62.0';
+var APP_VERSION = '3.63.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -14707,6 +14707,57 @@ function cnFlagState(f, q){
 function cnToday(iso){
   return iso && new Date(iso).toDateString() === new Date().toDateString();
 }
+/* V3.63.0 hero widgets + freshness pills: council.json dates arrive
+   in mixed shapes (ISO "2026-10-27" in runs, human strings like
+   "Oct 27, 2026 (test drive)" and "Fri Nov 6, 2026, 7:38 AM EST" in
+   the roster and budget). Parse tolerantly; an unparseable date
+   counts as NOT current, never as fresh. */
+var CN_MON = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+var CN_MON_S = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function cnParseDate(s){
+  if(!s) return null;
+  s = String(s);
+  var m = s.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  m = s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2}),?\s+(\d{4})/);
+  if(m) return new Date(+m[3], CN_MON[m[1]], +m[2]);
+  var d = new Date(s);
+  return isNaN(d.getTime()) ? null : d;
+}
+function cnFmtDate(d){
+  return d ? CN_MON_S[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() : '';
+}
+function cnAgeDays(d){
+  if(!d) return null;
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  return Math.round((t - new Date(d.getFullYear(), d.getMonth(), d.getDate())) / 864e5);
+}
+/* CURRENT = ran within the last 8 days (today counts). */
+function cnFresh(d){
+  var a = cnAgeDays(d);
+  return a != null && a <= 8;
+}
+function cnLatestRun(cn){
+  var best = null, bestD = null;
+  (cn.runs || []).forEach(function(r){
+    var d = cnParseDate(r.date);
+    if(d && (!bestD || d > bestD)){ best = r; bestD = d; }
+  });
+  if(best) return { run:best, date:bestD };
+  return (cn.runs || [])[0] ? { run:(cn.runs || [])[0], date:null } : null;
+}
+function cnPaceWord(b){
+  var v = String((b && b.verdict) || '');
+  if(/under pace/i.test(v)) return 'Under pace';
+  if(/over pace/i.test(v)) return 'Over pace';
+  if(/on pace/i.test(v)) return 'On pace';
+  if(b && b.used_pct != null && b.expected_pct != null){
+    if(+b.used_pct < +b.expected_pct) return 'Under pace';
+    if(+b.used_pct > +b.expected_pct) return 'Over pace';
+    return 'On pace';
+  }
+  return '';
+}
 /* ---- staging ---- */
 function cnStage(flagId, actionId){
   var act = cnAction(flagId, actionId); if(!act) return;
@@ -15406,18 +15457,30 @@ function viewCouncil(v){
     '<div class="cnc-eyebrow">Contacts Pro Council · Command Center</div>' +
     '<h2>Open flags</h2>' +
     '<p class="cnc-sub">Every flag carries Luna’s theory, the evidence, and the fix. Stage an action and it lands on the next council pass — or do it now. Snapshot ' + esc(cn.updated || '') + '.</p></div>' +
-    '<div class="cnc-strip">' +
-    '<div class="cnc-stat amb"><b>' + open.length + '</b><span>Needs JD</span></div>' +
-    '<div class="cnc-stat blu"><b>' + stagedEntries.length + '</b><span>Staged</span></div>' +
-    '<div class="cnc-stat grn"><b>' + doneToday + '</b><span>Executed today</span></div>' +
-    '</div></div>';
-  /* Activity pulse (JD 2026-10-28): the board must show what Luna
-     is actually doing, not just static text — the latest pass,
-     up top where the queue lives. */
-  var lastRun = (cn.runs || [])[0];
-  if(lastRun){
-    h += '<div class="cnc-pulse"><span class="cnc-pdot"></span><span>Latest pass &middot; <b>' + esc(lastRun.title || '') + '</b>' + (lastRun.outcome ? ' &mdash; ' + esc(lastRun.outcome) : '') + ' &middot; ' + esc(lastRun.date || '') + '</span></div>';
-  }
+    '</div>';
+  /* Hero widgets (V3.63.0, JD 2026-11-01): the board opens with the
+     status of everything, one value + one plain label per card. This
+     row replaces the old stat strip and formalizes the 2026-10-28
+     "Latest pass" pulse line into the first card. Every value is
+     computed from council.json + the live staged queue at render
+     time — nothing is hardcoded. */
+  var bud = cn.budget || {};
+  var lr = cnLatestRun(cn);
+  var openFlagCount = flags.filter(function(f){ return f.state === 'open'; }).length;
+  var curDesks = 0;
+  (cn.roster || []).forEach(function(r){ if(cnFresh(cnParseDate(r.last_run))) curDesks++; });
+  var paceWord = cnPaceWord(bud);
+  var resetD = cnParseDate(bud.week_resets);
+  h += '<div class="cnc-heroes">' +
+    '<div class="cnc-hcard acc-blu"><span class="cnc-hlab">Latest pass</span>' +
+      (lr ? '<b class="cnc-hval txt">' + esc(lr.run.title || '') + '</b><span class="cnc-hsub">' + esc(lr.date ? cnFmtDate(lr.date) : (lr.run.date || '')) + '</span>'
+          : '<b class="cnc-hval txt">No passes yet</b><span class="cnc-hsub">Runs appear here after a council cycle</span>') + '</div>' +
+    '<div class="cnc-hcard acc-amb"><span class="cnc-hlab">Open flags</span><b class="cnc-hval">' + openFlagCount + '</b><span class="cnc-hsub">Waiting on a ruling or a fix</span></div>' +
+    '<div class="cnc-hcard acc-blu"><span class="cnc-hlab">Staged for JD</span><b class="cnc-hval">' + stagedEntries.length + '</b><span class="cnc-hsub">Actions queued, awaiting his go</span></div>' +
+    '<div class="cnc-hcard acc-grn"><span class="cnc-hlab">Resource</span><b class="cnc-hval">' + (bud.used_pct != null ? esc(String(bud.used_pct)) + '%' : '—') + '</b><span class="cnc-hsub">' + esc((paceWord ? paceWord : 'Budget') + (resetD ? ' · week resets ' + cnFmtDate(resetD) : '')) + '</span></div>' +
+    '<div class="cnc-hcard acc-amb"><span class="cnc-hlab">Directors current</span><b class="cnc-hval">' + curDesks + ' of ' + (cn.roster || []).length + '</b><span class="cnc-hsub">Ran within the last 8 days</span></div>' +
+    '<div class="cnc-hcard acc-grn"><span class="cnc-hlab">Executed today</span><b class="cnc-hval">' + doneToday + '</b><span class="cnc-hsub">Staged actions completed</span></div>' +
+    '</div>';
   if(stagedEntries.length){
     h += '<div class="cnc-queuebar"><span class="cnc-qlab">' + ic('check', 13) + ' Staged queue</span>' +
       '<span class="cnc-qitems">' + stagedEntries.map(function(e){ return esc(e.label); }).join(' · ') + '</span>' +
@@ -15437,9 +15500,18 @@ function viewCouncil(v){
     var es = ((cn.findings || {})[key] || []);
     var latest = es[0];
     var fr = cnFieldReport(key, cn);
+    /* Freshness pill (V3.63.0): computed from last_run alone — a desk
+       is CURRENT only if it ran within the last 8 days, STALE if its
+       last run is older, and a desk with no parseable run date says
+       so. The free-text status can no longer read "Active" next to a
+       weeks-old date with nothing calling it out. */
+    var rd = cnParseDate(r.last_run);
+    var pill = !rd ? '<span class="cnc-pill is-none">No run date</span>'
+      : cnFresh(rd) ? '<span class="cnc-pill is-cur">Current</span>'
+      : '<span class="cnc-pill is-stale">Stale</span>';
     h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
-      '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' +
-      '<span class="cnc-dstatus">' + esc(r.status || '') + '</span></div>' +
+      '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' + pill + '</div>' +
+      (r.status ? '<div class="cnc-dstatus2">' + esc(r.status) + '</div>' : '') +
       (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest · ' + esc(latest.date || '') + '</div>' +
         '<b>' + esc(latest.title || '') + '</b><p>' + esc(latest.summary || '') + '</p></div>' : '<p class="sb-note">No findings yet.</p>') +
       '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
