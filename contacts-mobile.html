@@ -1578,6 +1578,7 @@ function viewPerson(v, di){
   var loc = gv(e, 'location_on_file') || gv(e, 'city');
   var sub = [cap(gv(e, 'relationship')), cap(gv(e, 'context'))].filter(Boolean).join(' · ');
   var lc = gv(e, 'last_contact');
+  var lp = lastProxOf(e);
   var photos = photoURLs(e);
   var heroPhoto = photos.length ? '<span class="av av-lg"><img src="' + esc(photos[0]) + '" alt=""></span>' : avatarHTML(e, 'av-lg');
   v.innerHTML =
@@ -1586,14 +1587,21 @@ function viewPerson(v, di){
     (loc ? '<p class="hloc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>' + esc(loc) + '</p>' : '') +
     '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
     (lc ? '<p class="hlc">Last contact <b>' + esc(fmtDate(lc)) + '</b>' + (lcOnline(e) ? ' · online' : '') + '</p>' : '<p class="hlc">No contact logged yet</p>') +
+    (lp ? '<p class="hlc" id="hlp">Last proximity <b>' + esc(fmtDate(lp.date)) + '</b>' + (lp.venue ? ' · ' + esc(lp.venue) : '') + '</p>' : '') +
     '</div></div>' +
-    /* logging contact — the point of this page. One form, always open:
-       title + description + an Online tick. Saving files a Timeline contact
-       entry dated today and stamps Last Contact (with the online flag). */
-    '<div class="glasscard"><h2>Log contact</h2>' +
-      '<label class="lab" for="lg-sum">Title</label><input type="text" id="lg-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off">' +
-      '<label class="lab" for="lg-det">Description (optional)</label><textarea id="lg-det" placeholder="What happened, what was left open…" rows="3"></textarea>' +
-      '<label class="tog"><input type="checkbox" id="lg-online"> Online</label>' +
+    /* logging — the point of this page. One form, always open, with a
+       Location / Online / Proximity kind seg (proximity added V1.8.0 as a
+       peer of the other two). Location/Online file a Timeline contact
+       entry dated today and stamp Last Contact; Proximity files a
+       Proximity event (date + place only) and never touches the stamp. */
+    '<div class="glasscard"><h2>Log</h2>' +
+      '<div class="seg2" id="lg-mode">' +
+        '<button type="button" data-v="person" class="on">Location</button>' +
+        '<button type="button" data-v="online">Online</button>' +
+        '<button type="button" data-v="proximity">Proximity</button></div>' +
+      '<label class="lab" for="lg-sum" id="lg-slab">Title</label><input type="text" id="lg-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off">' +
+      '<label class="lab" for="lg-det" id="lg-dlab">Description (optional)</label><textarea id="lg-det" placeholder="What happened, what was left open…" rows="3"></textarea>' +
+      '<p class="hsub" id="lg-pnote" style="display:none">Proximity is co-presence, not contact — Last Contact won’t move.</p>' +
       '<button type="button" class="btn primary big" id="lg-save">Log it</button>' +
       '<p class="savestat" id="lg-stat"></p></div>' +
     '<div class="glasscard"><div class="qa-grid">' +
@@ -1638,11 +1646,48 @@ function viewPerson(v, di){
     arm('#lc-stat', pid, ['lima_charlie_notes']);
     toast(val.trim() ? 'Lima Charlie note saved.' : 'Lima Charlie note cleared.');
   });
+  /* log kind seg wiring — Proximity hides the description (date + place
+     only) and relabels the form; Location/Online keep the contact shape */
+  $$('#lg-mode button').forEach(function(b){
+    b.addEventListener('click', function(){
+      $$('#lg-mode button').forEach(function(x){ x.classList.toggle('on', x === b); });
+      var prox = b.getAttribute('data-v') === 'proximity';
+      /* display, not the hidden attribute: .lab carries display:block,
+         which would override [hidden] and strand the label on screen */
+      $('#lg-det').style.display = prox ? 'none' : '';
+      $('#lg-dlab').style.display = prox ? 'none' : '';
+      $('#lg-pnote').style.display = prox ? '' : 'none';
+      $('#lg-slab').textContent = prox ? 'Where / context' : 'Title';
+      $('#lg-sum').placeholder = prox ? 'e.g. Lewis School, Clarkson Hall' : 'e.g. Coffee at Park Bros';
+      $('#lg-save').textContent = prox ? 'Log proximity' : 'Log it';
+    });
+  });
   $('#lg-save').addEventListener('click', function(){
     var sum = $('#lg-sum').value.trim();
-    if(!sum){ var st = $('#lg-stat'); st.textContent = 'Write the title first.'; st.className = 'savestat err'; $('#lg-sum').focus(); return; }
-    if(!saveLog(di, sum, $('#lg-det').value, $('#lg-online').checked)) return;
-    $('#lg-sum').value = ''; $('#lg-det').value = ''; $('#lg-online').checked = false;
+    var mb = $('#lg-mode .on'), mode = mb ? mb.getAttribute('data-v') : 'person';
+    if(!sum){ var st = $('#lg-stat'); st.textContent = mode === 'proximity' ? 'Name the place or context first.' : 'Write the title first.'; st.className = 'savestat err'; $('#lg-sum').focus(); return; }
+    if(mode === 'proximity'){
+      if(!saveProx(di, sum)) return;
+      $('#lg-sum').value = '';
+      arm('#lg-stat', pid, ['events']);
+      toast('Proximity logged for ' + name + '.');
+      /* refresh the hero's Last proximity line in place (the hero itself
+         only repaints on navigation; the desktop equivalent repaints top) */
+      var lpNow = lastProxOf(D.directory[di]);
+      if(lpNow){
+        var hlpHTML = 'Last proximity <b>' + esc(fmtDate(lpNow.date)) + '</b>' + (lpNow.venue ? ' · ' + esc(lpNow.venue) : '');
+        var hlp = $('#hlp');
+        if(hlp) hlp.innerHTML = hlpHTML;
+        else {
+          var hAnchor = document.querySelector('.hero .hlc');
+          if(hAnchor){ var hp = document.createElement('p'); hp.className = 'hlc'; hp.id = 'hlp'; hp.innerHTML = hlpHTML; hAnchor.after(hp); }
+        }
+      }
+      paintSections(di);
+      return;
+    }
+    if(!saveLog(di, sum, $('#lg-det').value, mode === 'online')) return;
+    $('#lg-sum').value = ''; $('#lg-det').value = '';
     arm('#lg-stat', pid, ['events']);
     toast('Logged for ' + name + '.');
     paintSections(di);
