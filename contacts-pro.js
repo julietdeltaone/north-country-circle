@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.72.0';
+var APP_VERSION = '3.73.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2971,7 +2971,11 @@ var PT_ALL = [
   { k:'lastc',    label:'Last contact', num:true, kind:'connection' },
   { k:'firstc',   label:'First contact', num:true, kind:'connection' }
 ];
-var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, msgs:1, skills:1, rel:1, lastc:1 };
+/* Editorial Grid (V3.73.0): the Desk default set is the contender's
+   eight Tier 0/1 columns — Correspondence is Tier 2 (on-demand via
+   the Columns menu), so the default table fits its band without
+   squeezing the priority columns. Saved column choices still win. */
+var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1, rel:1, lastc:1 };
 var PT_NUMDIR = { assoc:1, msgs:1, years:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
 var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', close:'close', groups:'groups', years:'years', phone:'phone', email:'email' };
 var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
@@ -3048,7 +3052,7 @@ function ptVisibleCols(){
    table-layout:fixed at 100% width, so these are proportions, not pixels —
    any visible set is rescaled to fill the row and nothing can push the
    table wider than its region. */
-var PT_W = { name:19, tier:10, loc:12, orgs:14, assoc:8, msgs:9, skills:12, rel:11, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:13, firstc:12 };
+var PT_W = { name:21, tier:10, loc:11, orgs:19, assoc:8, msgs:9, skills:11, rel:10, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:10, firstc:12 };
 function ptColgroupHTML(){ return '<colgroup>' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
 function ptSaveCols(){ store('ncc_pt_cols', JSON.stringify(ptCols())); }
 function ptColsSheet(){
@@ -3913,10 +3917,12 @@ function heroHTML(di){
     ((ds || cs) ? '<div class="hrow">' + ds + cs + '</div>' : '') +
     (hotE ? '<div class="ih-hot"><span class="hot-dot"></span>Fresh &middot; published ' + esc(hmFmtD(hotE.published)) + '</div>' : '') + '</div></div>' +
     (ph ? '<div class="ih-photo">' + ph + '</div>' : '') +
-    '<div class="ih-score">' + ringScoreSVG(sc ? sc.score : 0) + '<div class="ih-slab"><b>Completeness</b><span>of 100</span></div></div>' +
-    '<div class="ih-secs">' + ringSecsSVG(pres) + '<div class="ih-legend">' + pres.map(function(p){
-      return '<span class="lg' + (p[2] ? '' : ' off') + '"><i style="--lgc:' + p[1] + '"></i>' + p[0] + '</span>';
-    }).join('') + '</div></div>';
+    /* Editorial Grid (V3.73.0): the twin ring + section donut collapse
+       into type — one figure and one rule. The sections the donut
+       named survive as a plain "Missing:" line when any are absent. */
+    '<div class="ih-fig"><div class="ih-fig-n"><b>' + (sc ? sc.score : 0) + '</b><span> / 100</span></div>' +
+    '<div class="ih-fig-s">Completeness &middot; ' + pres.filter(function(p){ return p[2]; }).length + ' of ' + pres.length + ' sections</div>' +
+    (pres.some(function(p){ return !p[2]; }) ? '<div class="ih-fig-m">Missing: ' + pres.filter(function(p){ return !p[2]; }).map(function(p){ return p[0]; }).join(', ') + '</div>' : '') + '</div>';
 }
 /* ---------- Brief derivations (JD 2026-10-28; profile card retired
    V3.31.0, JD 2026-10-29) ----------
@@ -6483,7 +6489,7 @@ function hmActivity(){
    by scripts/build_whatsnew.py into data/whatsnew.json. No write
    path: rows only navigate (to a profile, or out to the source).
    ============================================================ */
-var WN = null, WN_LOADING = false;
+var WN = null, WN_LOADING = false, WN_OPEN = {};
 function wnLoad(){
   if(WN || WN_LOADING) return;
   WN_LOADING = true;
@@ -6510,10 +6516,26 @@ function viewWhatsNew(v){
   if(!WN){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">Loading the feed&hellip;</p></div></section></div>'; return; }
   var items = WN.items || [];
   if(!items.length){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">Nothing new yet. Filings, photos and hot items land here as the routines run.</p></div></section></div>'; return; }
-  var h = '', cur = '';
+  /* Editorial Grid (V3.73.0): day chapters with a cap — the two newest
+     days render in full; each earlier day is one ruled line ("Nov 1 —
+     34 filings") that expands in place, so the page is never an
+     unbounded scroll of every filing ever made. */
+  var days = [], byDay = {};
   items.forEach(function(it){
-    if(it.date !== cur){ cur = it.date; h += '<div class="wn-date">' + esc(hmFmtD(cur)) + '</div>'; }
-    h += wnRow(it);
+    if(!byDay[it.date]){ byDay[it.date] = []; days.push(it.date); }
+    byDay[it.date].push(it);
+  });
+  var h = '';
+  days.forEach(function(d, di){
+    var rows = byDay[d];
+    if(di < 2 || WN_OPEN[d]){
+      h += '<div class="wn-date">' + esc(hmFmtD(d)) + '<em class="cnt">' + rows.length + '</em>' +
+        (di >= 2 ? '<button type="button" class="wn-fold" data-act="wnday" data-d="' + esc(d) + '">Fold</button>' : '') + '</div>' +
+        rows.map(wnRow).join('');
+    } else {
+      h += '<button type="button" class="wn-dayline" data-act="wnday" data-d="' + esc(d) + '">' +
+        '<span>' + esc(hmFmtD(d)) + ' &mdash; ' + rows.length + ' filing' + (rows.length === 1 ? '' : 's') + '</span>' + ic('chev', 14) + '</button>';
+    }
   });
   v.innerHTML = head + '<section class="card wn-feed"><div class="cbody">' + h + '</div></section></div>';
 }
@@ -8471,9 +8493,17 @@ function viewDaily(v){
   }
   var rail = '';
   if(CH && CH.entries && CH.entries.length){
-    var citems = chgRows(CH.entries).map(function(g){
-      return g.items.length > 1 ? chgGroupRow(g, personLink, fmtSrc) : chgEntryRow(g.first, personLink, fmtSrc);
-    }).join('');
+    /* Editorial Grid (V3.73.0): the change log is a chaptered page
+       section, not a bottomless rail — the latest 6 groups render,
+       the rest fold into "Earlier this cycle" in place. */
+    var cgroups = chgRows(CH.entries);
+    function chtml(g){ return g.items.length > 1 ? chgGroupRow(g, personLink, fmtSrc) : chgEntryRow(g.first, personLink, fmtSrc); }
+    var citems = cgroups.slice(0, 6).map(chtml).join('');
+    if(cgroups.length > 6){
+      var crest = cgroups.slice(6).reduce(function(s, g){ return s + g.items.length; }, 0);
+      citems += '<details class="lr-earlier"><summary>Earlier this cycle &mdash; ' + crest + ' more change' + (crest === 1 ? '' : 's') + '</summary>' +
+        cgroups.slice(6).map(chtml).join('') + '</details>';
+    }
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
   v.innerHTML = lrHead(sortCtl) + '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
@@ -12244,7 +12274,10 @@ function onClick(ev){
     case 'cdesave': cdeSave(); break;
     case 'cdecancel': cdeCancel(); break;
     case 'cdeclear': cdeClear(); break;
-    case 'mgdir': MGMT.dir = -MGMT.dir; render(); break;
+    case 'mgdir': MGMT.dir = -MGMT.dir; MGMT.shown = 50; render(); break;
+    case 'mgmore': MGMT.shown = (MGMT.shown || 50) + 50; mgPaintList(); break;
+    case 'wnday': { var wd = el.getAttribute('data-d'); if(wd){ if(WN_OPEN[wd]) delete WN_OPEN[wd]; else WN_OPEN[wd] = 1; } render(); break; }
+    case 'sstview': SB.st.view = el.getAttribute('data-v') || 'all'; $$('.sst-viewseg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === SB.st.view); }); sstPaint(); break;
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
     case 'sedist': seOpenDist(el.getAttribute('data-g'), el.getAttribute('data-i')); break;
     case 'seback': seBack(); break;
@@ -12500,7 +12533,7 @@ function onInput(ev){
   var t = ev.target;
   if(t.id === 'gs'){ debPaint('gs', paintSearch); return; }
   if(t.id === 'rcq'){ RC_VIEW.q = t.value; rcSaveView(); debPaint('rcq', rcPaint); return; }
-  if(t.id === 'mg-q'){ MGMT.q = t.value; debPaint('mgq', mgPaintList); return; }
+  if(t.id === 'mg-q'){ MGMT.q = t.value; MGMT.shown = 50; debPaint('mgq', mgPaintList); return; }
   if(t.id === 'se-q'){ SB.se.q = t.value; debPaint('seq', sePaintList); return; }
   if(t.id === 'sst-q'){ SB.st.q = t.value; SB.st.confirm = false; debPaint('sstq', sstPaint); return; }
   if(t.id === 'sst-bv-text'){ SB.st.bulkV = t.value; return; }
@@ -12526,7 +12559,7 @@ function onChange(ev){
   if(t.hasAttribute && t.hasAttribute('data-lvlsec')){ lvlSet(t.getAttribute('data-lvlsec'), t.value); return; }
   if(t.hasAttribute && t.hasAttribute('data-pxgroup')){ MGPROX.group = t.value; MGPROX.off = {}; MGPROX.venue = t.value === 'Lewis School' ? 'Lewis School, Clarkson Hall' : ''; render(); return; }
   if(t.hasAttribute && t.hasAttribute('data-pxmem')){ var pdi = +t.getAttribute('data-pxmem'); if(t.checked) delete MGPROX.off[pdi]; else MGPROX.off[pdi] = 1; var cnt = $('#px-count'); if(cnt) cnt.textContent = pxCheckedCount(); return; }
-  if(t.id === 'mg-sort'){ MGMT.sort = t.value; mgPaintList(); return; }
+  if(t.id === 'mg-sort'){ MGMT.sort = t.value; MGMT.shown = 50; mgPaintList(); return; }
   if(t.id === 'sst-group'){ SB.st.group = t.value; SB.st.confirm = false; sstPaint(); return; }
   if(t.id === 'sst-bf'){ SB.st.bulkF = t.value; SB.st.bulkV = t.value === 'tier' ? 'vetted' : t.value === 'rel' ? 'friend' : ''; SB.st.bulkGrp = ''; SB.st.confirm = false; sstPaintBulk(); return; }
   if(t.id === 'sst-bcat'){ SB.st.bulkCat = t.value; SB.st.confirm = false; sstPaintBulk(); return; }
@@ -13537,7 +13570,7 @@ document.addEventListener('keydown', function(ev){
    treatment, per the Phase 3 rail mapping) with three tabs —
    #/manage (Last Contact), #/manage/levels, #/manage/proximity.
    Lives inside the normal app frame like every other view. */
-var MGMT = { sort:'lastc', dir:1, q:'' };
+var MGMT = { sort:'lastc', dir:1, q:'', shown:50 };
 function mgTab(){ var s = (S.route.seg && S.route.seg[0]) || 'stamps'; return ['levels', 'proximity'].indexOf(s) >= 0 ? s : 'stamps'; }
 function viewManage(v){
   phLoad(); msgLoad();
@@ -13585,14 +13618,16 @@ function mgPaintList(){
   var box = $('#mglist'); if(!box) return;
   var dis = mgRows();
   var cnt = $('#mg-count'); if(cnt) cnt.textContent = dis.length + ' people';
-  var CAPN = 400;
+  /* Editorial Grid (V3.73.0): the ledger renders in chapters of 50
+     with a "show next 50" rule line — never 400+ rows in open flow. */
+  var CAPN = Math.max(50, MGMT.shown || 50);
   box.innerHTML = dis.slice(0, CAPN).map(function(di){
     var e = D.directory[di];
     return '<div class="mg-row"><a class="mg-name" href="#/p/' + personId(e) + '" data-act="openp" data-di="' + di + '">' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(gv(e, 'relationship') || '') + '</small></span></a>' +
       '<span class="mg-cell">' + cdeWidget(di, 'last_contact', 'manage') + '</span>' +
       '<span class="mg-cell">' + cdeWidget(di, 'last_contact', 'mgonline') + '</span>' +
       '<span class="mg-cell">' + cdeWidget(di, 'first_contact', 'manage') + '</span></div>';
-  }).join('') + (dis.length > CAPN ? '<p class="sub">Showing the first ' + CAPN + ' — search to narrow the table.</p>' : '');
+  }).join('') + (dis.length > CAPN ? '<button type="button" class="mg-more" data-act="mgmore">Show next 50 &mdash; showing ' + CAPN + ' of ' + dis.length + '</button>' : '');
 }
 /* Levels manager. Assignments persist the way the app already
    persists local settings: a localStorage overlay (ncc_levels_v1),
@@ -13847,6 +13882,16 @@ function sstCols(){
     var ix = -1; cols.forEach(function(c, i){ if(c.k === 'lastc') ix = i; });
     if(ix >= 0) cols.splice(ix + 1, 0, prox); else cols.push(prox);
   }
+  /* Editorial Grid (V3.73.0): two switched views, each exactly
+     band-width — Identity (name, level, location, organizations,
+     completeness; the name cell carries the photo) and Fields
+     (every remaining structured field). All = the shared set. */
+  var vw = (typeof SB !== 'undefined' && SB.st && SB.st.view) || 'all';
+  if(vw === 'identity' || vw === 'fields'){
+    var IDK = { name:1, tier:1, loc:1, orgs:1, close:1 };
+    var sub = cols.filter(function(c){ return vw === 'identity' ? !!IDK[c.k] : !IDK[c.k]; });
+    if(sub.length) cols = sub;
+  }
   return cols;
 }
 function sstSortVal(di, k){
@@ -13908,7 +13953,9 @@ function sstShell(){
   phLoad(); msgLoad();
   var st = SB.st, groups = Object.keys(allGroups()).sort();
   return '<section class="sst" id="sst" aria-label="Record studio">' +
-    '<div class="sst-top"><h3 class="mdl-ph">Record studio</h3><span class="sst-count" id="sst-count"></span></div>' +
+    '<div class="sst-top"><h3 class="mdl-ph">Record studio</h3><span class="sst-count" id="sst-count"></span><span class="sp"></span>' +
+    '<span class="seg sst-viewseg" role="group" aria-label="Studio view">' +
+    [['all', 'All columns'], ['identity', 'Identity'], ['fields', 'Fields']].map(function(o){ return '<button type="button" data-act="sstview" data-v="' + o[0] + '"' + ((st.view || 'all') === o[0] ? ' class="on"' : '') + '>' + o[1] + '</button>'; }).join('') + '</span></div>' +
     '<p class="sst-sub">Every profile, one table. Sort any column, filter the view, shift-click a cell (or focus it and press Enter) to fix a field in place, tick rows and quick-change them together. Saves ride the same outbox as everywhere else; Ctrl+Z undoes.</p>' +
     '<div class="sst-tools">' +
       '<label class="field sst-qf"><span>' + ic('search', 15) + '</span><input id="sst-q" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(st.q) + '" autocomplete="off"></label>' +
@@ -14442,10 +14489,11 @@ function sbHome(){
     return '<div class="sbs-frow"><span class="sbs-fl">' + esc(label) + '</span>' + bar(have, tot) +
       '<span class="sbs-fn"><b>' + have.toLocaleString('en-US') + '</b> of ' + tot.toLocaleString('en-US') + ' · ' + (tot - have).toLocaleString('en-US') + ' missing</span></div>';
   }
+  /* Editorial Grid (V3.73.0): the showcase hero is deleted outright —
+     one title line, then the numbers. The stat strip below is the
+     surface now, ruled as a field table by the EG layer. */
   var h = '<div class="sbs">' +
-    '<div class="mdl-kick">Sandbox · Master stats</div>' +
-    '<h2 class="sbs-title">Every number that does not fit on Home.</h2>' +
-    '<p class="mdl-sub">The directory, the photos, the review queues and the routines, counted live. Home stays the front door; this is the ledger behind it — and the Record studio below is where the directory itself gets worked.</p>' +
+    '<div class="sbs-titleline"><h2>Stats</h2><span>The directory, the photos, the review queues and the routines, counted live.</span></div>' +
     '<div class="mdl-stats">' +
       stat(ppl.toLocaleString('en-US'), 'people in the directory') +
       stat(pct + '%', 'have a usable photo (' + usable.toLocaleString('en-US') + ' confirmed or likely)') +
