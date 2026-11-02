@@ -21,7 +21,7 @@
    "type": "Business owner portrait"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-11-02",
    "evidence": "Instagram profile @abbystiles_ (display name \"abby stiles\"); bio: \"ED RN 🩺\".",
    "name": "Abby Stiles",
    "photo_url": "photos/abby-stiles.jpg",
@@ -30,7 +30,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-11-02",
    "evidence": "Instagram profile @abbydaniels03 (display name \"Abigail Daniels\").",
    "name": "Abigail Daniels",
    "photo_url": "photos/abigail-daniels.jpg",
@@ -47,7 +47,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "UNE Athletics roster headshot: 'Adria Tebo — 2026-2027 Women's Ice Hockey Roster' (Senior, Forward, Canton NY, Northwood School); the page's sole player image file is WIH_Tebo_09159.jpg.",
    "name": "Adria Tebo",
    "photo_url": "photos/adria-tebo.jpg",
@@ -56,7 +56,7 @@
    "type": "headshot"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-11-02",
    "evidence": "Instagram profile @adhope2006 (display name \"Adriana\").",
    "name": "Adriana Levendusky",
    "photo_url": "photos/adriana-levendusky.jpg",
@@ -81,7 +81,7 @@
    "type": "portrait"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-11-02",
    "evidence": "Instagram profile @aidantruth (display name \"Aidan Daniels\").",
    "name": "Aidan Daniels",
    "photo_url": "photos/aidan-daniels.jpg",
@@ -174,7 +174,7 @@
    "type": "roster photo"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Team section lists him by name/role directly under the image ('Alfredo Rodriguez — Chaplain & Bible Instructor'); filename alfredo_rodriguez.webp.",
    "name": "Alfredo Rodriguez",
    "photo_url": "photos/alfredo-rodriguez.jpg",
@@ -204,7 +204,7 @@
    "type": "News photo (cropped from captioned group photo)"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-28",
    "also": [
     {
      "note": "Original full frame (QC alignment crop applied 2026-10-28)",
@@ -359,7 +359,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Profile photo from his on-file LinkedIn profile; indexed caption: 'St. Lawrence County Buildings & Grounds Supervisor'.",
    "name": "Andy Dennis",
    "photo_url": "photos/andy-dennis.jpg",
@@ -377,7 +377,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Dental team page photo under the heading 'Dr. Angeles Felix, DMD, CAGS' (image labeled 'dr felix'), followed by her bio.",
    "name": "Angeles Felix",
    "photo_url": "photos/angeles-felix.jpg",
@@ -488,7 +488,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Clarkson Merit appointment story carries a single media attachment named ashleigh-graveline.jpg captioned 'Ashleigh Graveline' — the story announces her appointment as clinical assistant professor of OT at Clarkson, so the labeled attachment is her photo. Her Clarkson people profile is text-only.",
    "name": "Ashleigh Graveline",
    "photo_url": "photos/ashleigh-graveline.jpg",
@@ -581,7 +581,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "NCPR article's sole editorial photo (filename benjosh.jpg) sits directly above the caption 'Joshua McGrath, Potsdam, and Ben Hull, Madrid, leave for Uganda this weekend' — the caption names both men pictured, the two filmmakers the article is about (documentary on Uganda water relief, July 2011).",
    "name": "Ben Hull",
    "photo_url": "photos/ben-hull.jpg",
@@ -590,7 +590,7 @@
    "type": "article photo (pair)"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Christian Fellowship Center leadership page photo, listed directly above the heading 'Ben Levendusky — Pastor at CFC Madrid'; the same image appears on the /madrid/ page as Lead Pastor. A second photo on americanwomenswrestling.com/who-we-are is captioned 'Ben Levendusky - Photo by Richard Sinclair'.",
    "name": "Ben Levendusky",
    "photo_url": "photos/ben-levendusky.jpg",
@@ -801,7 +801,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Clarkson organizational-chart page shows her photo in her own block; listed as Clinical Associate Professor, Occupational Therapy, Lewis School of Health Sciences.",
    "name": "Brittany DiSalvo",
    "photo_url": "photos/brittany-disalvo.jpg",
@@ -835,7 +835,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Caption directly under photo: 'Dr. Randy Sheeks presents Bronwyn Paladin with the Presser Undergraduate Scholar Award.' Article: senior music performance major from Potsdam NY, Lee University's 2026 Presser Undergraduate Scholar.",
    "name": "Bronwyn Paladin",
    "photo_url": "photos/bronwyn-paladin.jpg",
@@ -1098,14 +1098,6 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
-   "name": "Chelsea MG",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
-  },
-  {
    "added_approx": "Oct 2026",
    "evidence": "Instagram profile @chiara.frasc (display name \"chiara🧃\"); bio: \"meow @fracsat\".",
    "name": "Chiara",
@@ -1307,7 +1299,7 @@
    "type": "Yearbook senior portrait"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-28",
    "also": [
     {
      "note": "Original full frame (QC alignment crop applied 2026-10-28)",
@@ -1331,7 +1323,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from her on-file LinkedIn profile (headline: Barista at Loud'n Roasted Coffee Roasters, Ashburn VA).",
    "name": "Courtney Delosh",
    "photo_url": "photos/courtney-delosh.jpg",
@@ -1491,7 +1483,7 @@
    "type": "headshot"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "His Merit profile (Legal Studies, SUNY Canton Class of 2022, Rensselaer Falls NY) carries a real uploaded student profile photo in the profile slot — an S3 photo file, not the missing.png placeholder.",
    "name": "David Hartman",
    "photo_url": "photos/david-hartman.jpg",
@@ -1516,7 +1508,7 @@
    "type": "Business portrait"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "also": [
     {
      "note": "Babylist registry photo of the couple ('Julia and David Tomford's Baby Registry,' Potsdam NY).",
@@ -1594,14 +1586,6 @@
    "source_page": "https://www.instagram.com/desknaebel/",
    "status": "confirmed",
    "type": "Instagram profile picture"
-  },
-  {
-   "evidence": "No source links on file.",
-   "name": "Debbie Swyka",
-   "photo_url": null,
-   "source_page": null,
-   "status": "no_source",
-   "type": null
   },
   {
    "added_approx": "Oct 2026",
@@ -1739,15 +1723,6 @@
    "name": "Eileen Mackenzie",
    "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/275063079_1851770621879129_6486175056530066688_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=110&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy43MzEuQzMifQ%3D%3D&_nc_ohc=bKErPNCWiuYQ7kNvwGUiUy7&_nc_oc=Adomvhx1MzkpygyCIfxFJ7yDwMD4E6t2uwebwi_9D9YTJEv4P9Mpczy-t6x5cNJf6bo2o296YAhJeW_eMWW5Oxtk&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMLwMaceyxpdBU9Ys6MzILGL8vo2cWappHW10DOankDpw&oe=6AE02D8D",
    "source_page": "https://www.instagram.com/eileen_mackenzie/",
-   "status": "confirmed",
-   "type": "Instagram profile picture"
-  },
-  {
-   "added_approx": "Oct 2026",
-   "evidence": "Instagram profile @kale_hitchman (display name \"Elak Namhctih\").",
-   "name": "Kale Hitchman",
-   "photo_url": "https://scontent.cdninstagram.com/v/t51.2885-19/459315647_8048341375288639_1590782002324890280_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=105&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy45NTguQzMifQ%3D%3D&_nc_ohc=0dgAwQtZrrsQ7kNvwF7dXZ4&_nc_oc=AdrMcF4bPTOmy1ERBGhrxS-HmLIh15Dy3_0oy5pl9gK-S11i1EsRdqYZ-Pv7mD40XDWPbLY3opllEWzrW-Y_I5Ct&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQP10725W6HZq6fn9hwlI_sF8AXv5JtJfLdS9LXtEZpzWg&oe=6AE012FC",
-   "source_page": "https://www.instagram.com/kale_hitchman/",
    "status": "confirmed",
    "type": "Instagram profile picture"
   },
@@ -1927,7 +1902,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from her on-file LinkedIn profile.",
    "name": "Emily Bouchard",
    "photo_url": "photos/emily-bouchard.jpg",
@@ -2102,7 +2077,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "The Clarkson org-chart profile block for Erica Arnold (Director of Health, Safety, and Emergency Management) carries the directory image keyed to her username 'earnold' in her own block — the established Clarkson directory photo pattern.",
    "name": "Erica Arnold",
    "photo_url": "photos/erica-arnold.jpg",
@@ -2313,7 +2288,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "St. Lawrence University Scholar profile portrait, alt text 'Grace Cicchinelli smiling at the camera in front of a bright blue sky', in the site's /portrait/ directory. An SLU news story names her in text (Veoci hire, Class of 2023) but carries no photo of her.",
    "name": "Grace Cicchinelli",
    "photo_url": "photos/grace-cicchinelli.jpg",
@@ -2442,7 +2417,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Swarthmore cohort page places '[Image 4: holt]' directly above heading 'Hannah Holt 22' and her fellow bio; filename profile_holt1.jpg in the same profile-photo series as every other named fellow.",
    "name": "Hannah Holt",
    "photo_url": "photos/hannah-holt.jpg",
@@ -2581,7 +2556,7 @@
    "type": "Employer profile portrait"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "His Clarkson org-chart block carries the directory image labeled 'hwoodrow' above his name and title (Campus Safety & Security Officer) — the directory headshot keyed to his username.",
    "name": "Hunter Woodrow",
    "photo_url": "photos/hunter-woodrow.jpg",
@@ -2733,7 +2708,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "His own Merit Pages profile (Lee University, Biblical & Theological Studies and Classics, Class of 2027, Potsdam NY) carries [Image 0] as the profile image above his name — file 'Banquet.jpg' in his own Merit photo directory.",
    "name": "Jackson Paladin",
    "photo_url": "photos/jackson-paladin.jpg",
@@ -2846,7 +2821,7 @@
    "type": "Church leadership page portrait"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Norwood-Norfolk CSD staff directory entry: '[Image 51: JanelColbert's Profile Photo] — Janel Colbert — Instructional Aide.' A real uploaded photo file, not the site's empty_profile placeholder used for staff without photos.",
    "name": "Janel Colbert",
    "photo_url": "photos/janel-colbert.jpg",
@@ -2946,7 +2921,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Lead photo caption: 'SUNY Potsdam alumnus Joe Kelly 16, left, talks with alumnus Jeff McGrath 84, the vice president of the Nicholville Telephone Company, during the Economic Fusion event last year.'",
    "name": "Jeff McGrath",
    "photo_url": "photos/jeff-mcgrath.jpg",
@@ -3034,7 +3009,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Columbia Climate School article's lead photo caption: 'The Interlock-It team. From right to left: Vanessa Ho (CC '22), Jesse Braun (CC '21), Jason Wong (advisor)…' — the caption identifies him by name and position.",
    "name": "Jesse Braun",
    "photo_url": "photos/jesse-braun.jpg",
@@ -3265,7 +3240,7 @@
    "type": "LinkedIn profile headshot (cropped)"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-28",
    "also": [
     {
      "note": "Original full frame (QC alignment crop applied 2026-10-28)",
@@ -3351,7 +3326,7 @@
    "type": "Church leadership page photo"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Jordyn Brothers and headline: Chemical Dependency Counselor (LinkedIn headline).",
    "name": "Jordyn Brothers",
    "photo_url": "photos/jordyn-brothers.jpg",
@@ -3419,7 +3394,7 @@
    "type": "profile avatar"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "NCPR article lead photo, captioned 'Josh Parker stands next to his pellet-fired evaporator at his sugar shack near Canton. Photo: Todd Moe.' A second captioned photo of him is on the page (josh3.jpg, hydrometer).",
    "name": "Josh Parker",
    "photo_url": "photos/josh-parker.jpg",
@@ -3446,7 +3421,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "NFIB member spotlight photo caption: 'NFIB member Josiah Martin of New York with President Trump at the White House'; the article identifies him as owner-operator of Martin's Handmade Pretzels, Moira, 2026 SBA Small Business Manufacturer of the Year.",
    "name": "Josiah Martin",
    "photo_url": "photos/josiah-martin.jpg",
@@ -3672,7 +3647,7 @@
    "type": "University directory headshot"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Her own Merit Pages profile (Business Administration, SNHU, Class of 2020, Potsdam NY) carries [Image 0] at the top — her student photo file in her own Merit photo directory.",
    "name": "Kari Moulton",
    "photo_url": "photos/kari-moulton.jpg",
@@ -3938,7 +3913,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "The Colgate appointment story's sole image carries the alt/caption 'Kevin Lynch' (filename Kevin-Lynch1.jpg) directly above the announcement naming him Colgate's new CIO — a labeled headshot tied to him by the page.",
    "name": "Kevin Lynch",
    "photo_url": "photos/kevin-lynch.jpg",
@@ -4049,7 +4024,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Her own Houghton University women's lacrosse roster page (2021, Sophomore, Norwood NY) carries [Image 2] in the player slot — filename 'Lael_1.jpg' — the roster headshot tied to her by placement and filename.",
    "name": "Lael Card",
    "photo_url": "photos/lael-card.jpg",
@@ -4085,7 +4060,7 @@
    "type": "headshot"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Her own Merit Pages profile (SUNY Canton, Criminal Investigation, Class of 2022, Watertown NY, first-person bio); [Image 0] at top of profile is her student photo file.",
    "name": "Leslie Perri",
    "photo_url": "photos/leslie-perri.jpg",
@@ -4179,7 +4154,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Caption: 'Academy Cadets Lochlan Bower and Brian Hanlin during a defensive tactics class in the Dana Hall gym'; body caption names them left to right — Lochlan B. Bower of Hogansburg (joining St. Regis Tribal Police) and Brian S. Hanlin.",
    "name": "Lochlan Bower",
    "photo_url": "photos/lochlan-bower.jpg",
@@ -4569,7 +4544,7 @@
    "type": "directory photo"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from her on-file LinkedIn profile; indexed caption: 'Patient Experience and Compliance Manager, St. Lawrence Health'.",
    "name": "Maura Mayer",
    "photo_url": "photos/maura-mayer.jpg",
@@ -4682,7 +4657,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from her on-file LinkedIn profile; indexed caption: 'Deputy Director for Planning, Adirondack Park Agency'.",
    "name": "Megan Phillips",
    "photo_url": "photos/megan-phillips.jpg",
@@ -4734,7 +4709,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-29",
    "also": [
     {
      "note": "Original LinkedIn framed headshot (with #OPENTOWORK band); band-cropped version is the primary (2026-10-29 repair bench).",
@@ -4793,7 +4768,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "SUNY Canton CJIC faculty page places [Image 3: Michelle Johnston] directly above her name and Associate Professor entry (Ph.D. Criminal Justice, Nova Southeastern). Corroborated under her former name: the 2021 Canton dean article and its Merit version carry her photo captioned for Dr. Michelle Currier's dean selection.",
    "name": "Michelle Johnston",
    "photo_url": "photos/michelle-johnston.jpg",
@@ -4802,7 +4777,7 @@
    "type": "faculty headshot"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Women In Academia Report article photo (file Larson-300x300.jpg), immediately before the lede naming her: Michelle B. Larson, nineteenth president of Clarkson University, first woman president in its 128-year history; astrophysicist, 12 years president/CEO of Adler Planetarium, formerly Utah State vice provost, PhD Montana State.",
    "name": "Michelle Larson",
    "photo_url": "photos/michelle-larson.jpg",
@@ -4890,7 +4865,7 @@
    "type": "staff headshot"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Her own Merit profile (SUNY Potsdam, Childhood/Early Childhood Education, Class of 2020, Gouverneur NY) carries [Image 0] at the top — a student photo file (IMG_2917.JPG) in her own Merit photo directory. Remaining images are the Merit logo and award badges.",
    "name": "Morgan Morse",
    "photo_url": "photos/morgan-morse.jpg",
@@ -4916,7 +4891,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from his on-file LinkedIn profile; indexed caption: 'Crew Scheduler - Inflight, United Airlines'.",
    "name": "Nabil El-labban",
    "photo_url": "photos/nabil-el-labban.jpg",
@@ -4951,7 +4926,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from her on-file LinkedIn profile; indexed caption: 'Student at Clarkson University, double majoring in Biochemistry and Biology on a Pre-Med track'.",
    "name": "Natalie Waterman",
    "photo_url": "photos/natalie-waterman.jpg",
@@ -4985,7 +4960,7 @@
    "type": "Bank spotlight article photo"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Nathaniel Tomford and headline: Contracts Coordinator at Atlantic Testing Laboratories (LinkedIn headline).",
    "name": "Nathaniel Tomford",
    "photo_url": "photos/nathaniel-tomford.jpg",
@@ -5129,7 +5104,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "CCE staff profile places '[Image 0: Olivia Briggs]' directly above her name and title (21st Century Afterschool Site Director @ Edwards-Knox) — filename Olivia_Briggs_Photo.jpg in Cornell's people-photo store.",
    "name": "Olivia Briggs",
    "photo_url": "photos/olivia-briggs.jpg",
@@ -5314,7 +5289,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Photo from the readMedia Model Senate article, which is solely about Philip Paige 15; its Related Media file is named 'Philip_Paige_5830_0.jpg'.",
    "name": "Philip Lloyd Paige",
    "photo_url": "photos/philip-lloyd-paige.jpg",
@@ -5444,7 +5419,7 @@
    "type": "headshot"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Clarkson organizational-chart page shows his photo in his own block; listed as Assistant to the Dean of Health Sciences, Lewis School of Health Sciences.",
    "name": "Richard Tacchino",
    "photo_url": "photos/richard-tacchino.jpg",
@@ -5453,7 +5428,7 @@
    "type": "headshot"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "CFC Potsdam page Lead Pastor section photo, directly above his heading and pastor bio. A second photo, from a Religion News Service article, is captioned 'Rick Sinclair, senior pastor for the Christian Fellowship Center'.",
    "name": "Rick Sinclair",
    "photo_url": "photos/rick-sinclair.jpg",
@@ -5642,7 +5617,7 @@
    "type": "DVIDS"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Her Clarkson people page is text-only, but her org-chart block carries the directory image keyed to her username 'smarocco' above her name and title (Professor & Program Director, Physical Therapy).",
    "name": "Samantha Marocco",
    "photo_url": "photos/samantha-marocco.jpg",
@@ -5684,7 +5659,7 @@
    "type": "Instagram profile picture"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-28",
    "also": [
     {
      "note": "Original full frame (QC alignment crop applied 2026-10-28)",
@@ -5708,7 +5683,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from her on-file LinkedIn profile; indexed caption: 'Quality Support Engineer'.",
    "name": "Sarah Dahar",
    "photo_url": "photos/sarah-dahar.jpg",
@@ -5894,7 +5869,7 @@
    "type": "SUNY ResearchConnect portrait"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "Her SUNY Potsdam profile story 'The Right Time for Me' (under the Stephanie spelling) carries a photo with alt text 'stephanie at the brooklyn bridge', tied to her in the text about her spring-break NYC trip; article credits 'Portraits by Jason Hunter'.",
    "name": "Stefaniia Bulakh",
    "photo_url": "photos/stefaniia-bulakh.jpg",
@@ -5920,7 +5895,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from her on-file LinkedIn profile; indexed caption: 'Stephanie Regan - Medical Scribe at Orthopedics & Sports Medicine | LinkedIn'.",
    "name": "Stephanie Regan",
    "photo_url": "photos/stephanie-regan.jpg",
@@ -6077,7 +6052,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile headshot on the profile on file for this person; page shows the name Timothy Lashomb and headline: Student at SUNY Canton (LinkedIn headline, profile name Timothy Lashomb).",
    "name": "Tim Lashomb",
    "photo_url": "photos/tim-lashomb.jpg",
@@ -6112,7 +6087,7 @@
    "type": "Workplace photo"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LETI graduation photo caption identifies everyone clockwise from top left, ending '...Connor Palmer, Timothy Jenkins and Sabrina Feit' — he is named and position-identified; the article lists Timothy Jenkins of North Rose among the eight graduating cadets.",
    "name": "Timothy Jenkins",
    "photo_url": "photos/timothy-jenkins.jpg",
@@ -6206,7 +6181,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from her on-file LinkedIn profile; indexed caption: 'Valeria Zhukova - Cosmetica Laboratories Inc | LinkedIn'.",
    "name": "Valeria Zhukova",
    "photo_url": "photos/valeria-zhukova.jpg",
@@ -6223,7 +6198,7 @@
    "type": null
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-31",
    "evidence": "LinkedIn profile photo from his on-file LinkedIn profile; indexed caption: 'Victor Njoku, MS - PhD candidate at Clarkson University Potsdam, NY | LinkedIn'.",
    "name": "Victor Njoku",
    "photo_url": "photos/victor-njoku.jpg",
@@ -6319,7 +6294,7 @@
    "type": "article photo"
   },
   {
-   "added_approx": "Oct 2026",
+   "added": "2026-10-28",
    "also": [
     {
      "note": "Original full frame (QC alignment crop applied 2026-10-28)",
@@ -6572,6 +6547,6 @@
    "type": "Series artwork photo (crop)"
   }
  ],
- "total": 694,
+ "total": 691,
  "updated": "2026-11-02"
 }
