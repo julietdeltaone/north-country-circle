@@ -5216,6 +5216,42 @@ html[data-mode="dark"] .lvl-personal{color:#2a1d05;background:#c9a24a}
 html[data-mode="dark"] .lvl-private{color:#ffe3e6;background:#8f1d29}
 .fam-lvl{background:var(--lvl-personal-bg);border-radius:10px;padding:8px 10px;margin:2px 0 6px}
 .fam-lvl .sub-h{margin-top:0}
+.fam-lvl.lvsec-private{background:var(--lvl-private-bg)}
+
+/* level grounds on profile sections (V3.68.0): Personal = deep
+   amber/bronze, Private = maroon. The ground rides the band, the
+   same surface the kind ink rides. */
+.bandwrap.lvsec-personal .band,.card.multi.lvsec-personal .band{background:var(--lvl-personal-bg)}
+.bandwrap.lvsec-private .band,.card.multi.lvsec-private .band{background:var(--lvl-private-bg)}
+
+/* display role: first-load chooser + 7-day re-confirm strip */
+.rolewall{position:fixed;inset:0;z-index:300;background:rgba(4,6,10,.66);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}
+.rolecard{background:var(--card);border:1px solid var(--line2);border-radius:16px;max-width:520px;width:100%;padding:26px 26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.rolekick{font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.rolecard h2{margin:6px 0 8px;font-size:22px}
+.rolecard p{color:var(--mut);font-size:13.5px;line-height:1.55;margin:0 0 16px}
+.roleopts{display:flex;flex-direction:column;gap:8px}
+.roleopts button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--card2);color:var(--txt);cursor:pointer}
+.roleopts button:hover{border-color:var(--acc)}
+.roleopts b{font-size:15px}
+.roleopts span{color:var(--mut);font-size:12.5px;line-height:1.45}
+.rolestrip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px;margin:0 0 10px;border:1px solid var(--line2);border-radius:10px;background:var(--card2);font-size:13px}
+.rolestrip b{font-weight:700}
+
+/* proximity: muted + dashed, inside the Connection ink */
+.pxtag{display:inline-flex;align-items:center;padding:1px 7px;margin-left:8px;border:1px dashed var(--ink-conn);border-radius:999px;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-conn);vertical-align:2px}
+.tl .ev.prox{opacity:.78}
+.tl .ev.prox i{background:transparent;border:2px dashed var(--ink-conn);width:9px;height:9px;left:-5px;top:5px}
+.tl .ev.prox b{color:var(--mut);font-weight:500}
+.tl-ev.prox{opacity:.74;border:1px dashed var(--line2)}
+.proxform{margin:0 0 12px}
+.px-list{display:flex;flex-direction:column;gap:2px;margin-top:10px}
+.px-row{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:8px;cursor:pointer}
+.px-row:hover{background:var(--card2)}
+.px-row input{width:16px;height:16px;flex:none}
+.px-name{display:flex;flex-direction:column;line-height:1.3}
+.px-name small{color:var(--dim);font-size:11.5px}
+.px-bar{align-items:center;margin-top:10px}
 
 /* left rail: kind dot + kind-colored active state */
 #rail .nv,#tabs .nv{position:relative}
