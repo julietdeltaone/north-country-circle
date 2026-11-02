@@ -5192,8 +5192,13 @@ html[data-mode="dark"]{
    elements carry the ink only) */
 .kind-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 6px;border-radius:999px;font-size:9.5px;font-weight:800;letter-spacing:.12em;line-height:1.5;vertical-align:middle;white-space:nowrap}
 .kind-chip svg{flex:none}
-.kc-about{color:var(--ink-about);background:var(--ink-about-bg);box-shadow:inset 0 0 0 1px var(--ink-about-bright)}
-.kc-connection{color:var(--ink-conn);background:var(--ink-conn-bg);box-shadow:inset 0 0 0 1px var(--ink-conn-bright)}
+/* Text-bearing chips are solid stamps: an opaque ground keeps the
+   word legible over the glass backdrops in both themes (translucent
+   tints measured under 4.5 for the gold word in light theme). */
+.kc-about{color:#eaf3fc;background:#2e4a68}
+.kc-connection{color:#ffedbe;background:#6e5312}
+html[data-mode="dark"] .kc-about{color:#0e2237;background:#8fb8dd}
+html[data-mode="dark"] .kc-connection{color:#2a1d05;background:#d9a441}
 .kind-glyph{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;vertical-align:-5px;margin-right:6px;flex:none}
 .kg-about{color:var(--ink-about);background:var(--ink-about-bg)}
 .kg-connection{color:var(--ink-conn);background:var(--ink-conn-bg)}
