@@ -3294,6 +3294,7 @@ function ptEditClose(){
   var dirty = PTED.dirty, kb = PTED.kb, cdi = PTED.di, ck = PTED.k, cell = PTED.cell;
   PTED = null;
   if(dirty) paintPeople();
+  if(dirty && typeof sstPaint === 'function') sstPaint();   /* Sandbox Record Studio repaints after a cell edit */
   if(kb){   /* opened from the keyboard: hand focus back to the cell */
     var t = (cell && cell.isConnected) ? cell : null;
     if(!t){ var ed = PT_ED[ck]; if(ed) t = $('#plist td[data-di="' + cdi + '"][data-ed="' + ed + '"]'); }
@@ -12117,6 +12118,18 @@ function onClick(ev){
     case 'pf': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); viewPeople($('#view')); break;
     case 'pf2': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); openMoreFilters(); viewPeople($('#view')); break;
     case 'tsort': { var tk = el.getAttribute('data-k'); if(S.ppl.ts && S.ppl.ts.k === tk) S.ppl.ts.d = -S.ppl.ts.d; else S.ppl.ts = { k:tk, d:(PT_NUMDIR[tk] ? -1 : 1) }; paintPeople(); break; }
+    case 'sstsort': { var sk2 = el.getAttribute('data-k'); if(SB.st.sortK === sk2) SB.st.sortD = -SB.st.sortD; else { SB.st.sortK = sk2; SB.st.sortD = SST_NUM[sk2] ? -1 : 1; } SB.st.result = ''; sstPaint(); break; }
+    case 'ssttier': SB.st.tier = el.getAttribute('data-v'); SB.st.confirm = false; SB.st.result = ''; sstPaintTiers(); sstPaint(); break;
+    case 'sstclear': SB.st.q = ''; SB.st.tier = 'all'; SB.st.group = ''; SB.st.confirm = false; SB.st.result = ''; { var sq2 = $('#sst-q'); if(sq2) sq2.value = ''; var sg2 = $('#sst-group'); if(sg2) sg2.value = ''; } sstPaintTiers(); sstPaint(); break;
+    case 'sstcols': ptColsSheet(); break;
+    case 'sstckcell': break;   /* clicks on the checkbox cell never open the profile */
+    case 'sstselall': sstSelectView(true); break;
+    case 'sstselnone': SB.st.sel = {}; SB.st.confirm = false; sstPaint(); break;
+    case 'sstbulk': { var bpl = sstBulkPlan(); if(bpl.changes.length){ SB.st.confirm = true; sstPaintBulk(); } else toast(bpl.summary || 'Nothing to change — every selected record already matches.'); break; }
+    case 'sstbulkno': SB.st.confirm = false; sstPaintBulk(); break;
+    case 'sstbulkgo': sstBulkApply(); break;
+    case 'sstopen': sstOpenPerson(+el.getAttribute('data-di')); break;
+    case 'sstedlc': sstLastcOpen(+el.getAttribute('data-di'), el); break;
     case 'ptcols': ptColsSheet(); break;
     case 'ptvis': { var pvk = el.getAttribute('data-k'), pvc = null; ptCols().forEach(function(c){ if(c.k === pvk) pvc = c; }); if(pvc){ if(pvc.on && ptCols().filter(function(c){ return c.on; }).length === 1) break; pvc.on = !pvc.on; ptSaveCols(); paintPeople(); ptColsSheet(); var pvb = $('#sheetwrap [data-act="ptvis"][data-k="' + pvk + '"]'); if(pvb && !pvb.disabled) pvb.focus(); } break; }
     case 'ptmv': { var pmk = el.getAttribute('data-k'), pmd = +el.getAttribute('data-d'), parr = ptCols(), pmi = -1; parr.forEach(function(c, i){ if(c.k === pmk) pmi = i; }); var pmj = pmi + pmd; if(pmi >= 0 && pmj >= 0 && pmj < parr.length){ var ptmp = parr[pmi]; parr[pmi] = parr[pmj]; parr[pmj] = ptmp; ptSaveCols(); paintPeople(); ptColsSheet(); var pmb = $('#sheetwrap [data-act="ptmv"][data-k="' + pmk + '"][data-d="' + pmd + '"]'); if(!pmb || pmb.disabled) pmb = $('#sheetwrap [data-act="ptvis"][data-k="' + pmk + '"]'); if(pmb && !pmb.disabled) pmb.focus(); } break; }
@@ -12335,6 +12348,9 @@ function onInput(ev){
   if(t.id === 'rcq'){ RC_VIEW.q = t.value; rcSaveView(); debPaint('rcq', rcPaint); return; }
   if(t.id === 'mg-q'){ MGMT.q = t.value; debPaint('mgq', mgPaintList); return; }
   if(t.id === 'se-q'){ SB.se.q = t.value; debPaint('seq', sePaintList); return; }
+  if(t.id === 'sst-q'){ SB.st.q = t.value; SB.st.confirm = false; debPaint('sstq', sstPaint); return; }
+  if(t.id === 'sst-bv-text'){ SB.st.bulkV = t.value; return; }
+  if(t.id === 'sst-bv-newgrp'){ SB.st.bulkGrp = t.value; return; }
   if(t.classList && t.classList.contains('cde-in')){ t.classList.remove('bad'); return; }
   if(t.id === 'pfq'){ PF_VIEW.q = t.value; pfPaintRows(); return; }
   if(t.id === 'netq'){ netPaintFind(); return; }
@@ -12357,6 +12373,12 @@ function onChange(ev){
   if(t.hasAttribute && t.hasAttribute('data-pxgroup')){ MGPROX.group = t.value; MGPROX.off = {}; MGPROX.venue = t.value === 'Lewis School' ? 'Lewis School, Clarkson Hall' : ''; render(); return; }
   if(t.hasAttribute && t.hasAttribute('data-pxmem')){ var pdi = +t.getAttribute('data-pxmem'); if(t.checked) delete MGPROX.off[pdi]; else MGPROX.off[pdi] = 1; var cnt = $('#px-count'); if(cnt) cnt.textContent = pxCheckedCount(); return; }
   if(t.id === 'mg-sort'){ MGMT.sort = t.value; mgPaintList(); return; }
+  if(t.id === 'sst-group'){ SB.st.group = t.value; SB.st.confirm = false; sstPaint(); return; }
+  if(t.id === 'sst-bf'){ SB.st.bulkF = t.value; SB.st.bulkV = t.value === 'tier' ? 'vetted' : t.value === 'rel' ? 'friend' : ''; SB.st.bulkGrp = ''; SB.st.confirm = false; sstPaintBulk(); return; }
+  if(t.id === 'sst-bcat'){ SB.st.bulkCat = t.value; SB.st.confirm = false; sstPaintBulk(); return; }
+  if(t.id === 'sst-bv-sel'){ SB.st.bulkV = t.value; SB.st.confirm = false; return; }
+  if(t.hasAttribute && t.hasAttribute('data-sstck')){ var sdi2 = +t.getAttribute('data-sstck'), se2 = D.directory[sdi2]; if(se2){ if(t.checked) SB.st.sel[pkey(se2)] = sdi2; else delete SB.st.sel[pkey(se2)]; SB.st.confirm = false; var srow = t.closest ? t.closest('tr') : null; if(srow) srow.classList.toggle('sel', !!t.checked); sstPaintSelState(); } return; }
+  if(t.hasAttribute && t.hasAttribute('data-sstckall')){ sstSelectView(!!t.checked); return; }
   if(t.hasAttribute && t.hasAttribute('data-cdeonl')){ if(CDE) CDE.online = t.checked; return; }
   if(t.id === 'rccat'){ RC_VIEW.cat = t.value; rcSaveView(); rcPaint(); return; }
   if(t.hasAttribute && t.hasAttribute('data-gmsel')){
@@ -13648,6 +13670,341 @@ function seBack(){
   viewSandbox($('#view'));
 }
 
+/* ---------- Sandbox Record Studio (V3.71.0, JD 2026-11-02) ----------
+   The Sandbox home's hero feature: the stats board's working table.
+   Every directory profile as a row — view, sort, filter, quick-edit
+   cells in place, multi-select, and bulk quick-change — all through
+   the app's existing machinery: the People table's column set and
+   cell renderers (PT_ALL / PTCELL / ptCols), its popover editor
+   (ptEditOpen, so validation and autocomplete match People exactly),
+   the CDE date editor for Last Contact, and queuePatch inside txn
+   for every write (one batched outbox save, one undo step, the
+   local-wins overlay reflects it immediately). No new save path.
+   Bulk delete is deliberately absent — the Danger Zone owns it. */
+var SST_NUM = { assoc:1, msgs:1, years:1, lastc:1, firstc:1, prox:1 };   /* first click sorts high-to-low */
+var SST_BULK_FIELDS = [
+  { k:'tier', l:'Set level' }, { k:'rel', l:'Set relationship' }, { k:'loc', l:'Set location' },
+  { k:'orgs', l:'Add organization' }, { k:'skills', l:'Add skill' }, { k:'groups', l:'Add to group' }
+];
+function sstCols(){
+  var cols = ptVisibleCols().slice();
+  if(roleClears(lvlOf('stamps'))){
+    var prox = { k:'prox', label:'Last proximity', kind:'connection', num:true };
+    var ix = -1; cols.forEach(function(c, i){ if(c.k === 'lastc') ix = i; });
+    if(ix >= 0) cols.splice(ix + 1, 0, prox); else cols.push(prox);
+  }
+  return cols;
+}
+function sstSortVal(di, k){
+  var e = D.directory[di];
+  switch(k){
+    case 'name': return dispName(e).toLowerCase();
+    case 'tier': var t = tierOf(e); return t ? TIER_ORDER.indexOf(t) : 99;
+    case 'loc': return ptLocVal(e) ? ptLocVal(e).toLowerCase() : null;
+    case 'orgs': var o = orgsOf(e); return o.length ? o.join(', ').toLowerCase() : null;
+    case 'assoc': return knownAssociates(e).length;
+    case 'msgs': var mf = msgFor(e); return mf ? mf.n : -1;
+    case 'skills': var s = tagList(gv(e, 'specialty')); return s.length ? s.join(', ').toLowerCase() : null;
+    case 'rel': var r = [cap(gv(e, 'relationship')), effHandle(e) ? '@' + effHandle(e) : ''].filter(Boolean).join(' '); return r ? r.toLowerCase() : null;
+    case 'close': return gv(e, 'closeness') || null;
+    case 'handle': return effHandle(e) ? effHandle(e).toLowerCase() : null;
+    case 'groups': var g = personGroups(e); return g.length ? g.join(', ').toLowerCase() : null;
+    case 'years': return knownSinceYear(e) || null;
+    case 'phone': return gv(e, 'phone') || null;
+    case 'email': return gv(e, 'email') || null;
+    case 'lastc': return flexKey(gv(e, 'last_contact'));
+    case 'firstc': return flexKey(firstContactOf(e));
+    case 'prox': var lp = lastProx(e); return lp ? flexKey(lp.date) : null;
+  }
+  return null;
+}
+function sstFiltered(){
+  var st = SB.st, pool = people();
+  var dis = st.q.trim() ? searchPeople(st.q, 9999, pool) : pool.slice();
+  dis = dis.filter(function(di){
+    var e = D.directory[di];
+    if(st.tier !== 'all'){ var t = tierOf(e); if(st.tier === 'none' ? !!t : t !== st.tier) return false; }
+    if(st.group && personGroups(e).indexOf(st.group) < 0) return false;
+    return true;
+  });
+  var k = st.sortK, d = st.sortD;
+  dis.sort(function(a, b){
+    var va = sstSortVal(a, k), vb = sstSortVal(b, k);
+    if(va == null && vb == null) return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+    if(va == null) return 1;   /* blanks last in both directions */
+    if(vb == null) return -1;
+    var c = (typeof va === 'number' && typeof vb === 'number') ? va - vb : String(va).localeCompare(String(vb));
+    return c ? c * d : dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
+  });
+  return dis;
+}
+function sstSelDis(){
+  return Object.keys(SB.st.sel).map(function(k){ return SB.st.sel[k]; }).filter(function(di){ return D.directory[di] && liveEntry(D.directory[di]); });
+}
+function sstTierChips(){
+  var st = SB.st;
+  return [['all', 'Any level'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'No level']].map(function(o){
+    return '<button type="button" class="fc' + (st.tier === o[0] ? ' on' : '') + '" data-act="ssttier" data-v="' + o[0] + '">' + o[1] + '</button>';
+  }).join('');
+}
+function sstPaintTiers(){ var t = $('#sst-tiers'); if(t) t.innerHTML = sstTierChips(); }
+function sstShell(){
+  phLoad(); msgLoad();
+  var st = SB.st, groups = Object.keys(allGroups()).sort();
+  return '<section class="sst" id="sst" aria-label="Record studio">' +
+    '<div class="sst-top"><h3 class="mdl-ph">Record studio</h3><span class="sst-count" id="sst-count"></span></div>' +
+    '<p class="sst-sub">Every profile, one table. Sort any column, filter the view, shift-click a cell (or focus it and press Enter) to fix a field in place, tick rows and quick-change them together. Saves ride the same outbox as everywhere else; Ctrl+Z undoes.</p>' +
+    '<div class="sst-tools">' +
+      '<label class="field sst-qf"><span>' + ic('search', 15) + '</span><input id="sst-q" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(st.q) + '" autocomplete="off"></label>' +
+      '<span class="chips" id="sst-tiers">' + sstTierChips() + '</span>' +
+      '<select id="sst-group" class="inp sst-gsel" aria-label="Filter by group"><option value="">All groups</option>' +
+        groups.map(function(g){ return '<option value="' + esc(g) + '"' + (st.group === g ? ' selected' : '') + '>' + esc(g) + '</option>'; }).join('') + '</select>' +
+      '<span class="sst-tools-r"><button type="button" class="btn ghost sm" data-act="sstcols">' + ic('settings', 13) + 'Columns</button>' +
+      '<button type="button" class="btn ghost sm" data-act="sstclear">Clear</button></span>' +
+    '</div>' +
+    '<div id="sst-bulk"></div>' +
+    '<div id="sst-main"></div>' +
+  '</section>';
+}
+function sstProxCell(e){
+  var lp = lastProx(e); if(!lp) return '';
+  var s = lcDateLabel(lp.date) + (lp.venue ? ' · ' + lp.venue : '');
+  return '<span class="clip" title="' + esc(s) + '">' + esc(s) + '</span>';
+}
+function sstRowHTML(di, i, cols){
+  var e = D.directory[di], sel = !!SB.st.sel[pkey(e)];
+  var tds = cols.map(function(c){
+    if(c.k === 'prox') return '<td class="c-prox" data-kind="connection">' + sstProxCell(e) + '</td>';
+    if(c.k === 'lastc') return '<td class="c-lastc num" data-kind="connection"><span class="sst-lcc">' + PTCELL.lastc(e) + '</span><button type="button" class="sst-lcbtn" data-act="sstedlc" data-di="' + di + '" title="Edit last contact" aria-label="Edit last contact for ' + esc(dispName(e)) + '">' + ic('edit', 11) + '</button></td>';
+    var ed = PT_ED[c.k];
+    return '<td class="c-' + c.k + (c.num ? ' num' : '') + '" data-kind="' + (c.kind || 'about') + '"' + (ed ? ' data-ed="' + ed + '" data-di="' + di + '" tabindex="0" title="Shift-click to edit"' : '') + '>' + PTCELL[c.k](e, di) + '</td>';
+  }).join('');
+  return '<tr class="ptrow sst-row' + (sel ? ' sel' : '') + '" data-act="sstopen" data-di="' + di + '" data-i="' + i + '"><td class="sst-ck" data-act="sstckcell"><input type="checkbox" data-sstck="' + di + '"' + (sel ? ' checked' : '') + ' aria-label="Select ' + esc(dispName(e)) + '"></td>' + tds + '</tr>';
+}
+function sstPaint(){
+  var main = $('#sst-main'); if(!main) return;
+  sstPaintBulk();
+  var st = SB.st, cols = sstCols(), dis = sstFiltered();
+  SB.se.shown = dis;
+  var cnt = $('#sst-count');
+  if(cnt) cnt.textContent = (dis.length === people().length ? dis.length + ' people' : dis.length + ' of ' + people().length + ' people') + (sstSelDis().length ? ' · ' + sstSelDis().length + ' selected' : '');
+  if(!dis.length){
+    main.innerHTML = '<div class="empty"><h3>No one matches.</h3><p>Loosen a filter or clear the search.</p></div>';
+    return;
+  }
+  var head = '<thead><tr><th class="sst-ckh"><input type="checkbox" data-sstckall aria-label="Select all rows in the current view"></th>' + cols.map(function(c){
+    var on = st.sortK === c.k;
+    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-kind="' + (c.kind || 'about') + '" data-act="sstsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (st.sortD < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + esc(c.label.toLowerCase()) + '">' + esc(c.label) + '<span class="sarr" aria-hidden="true">' + (on ? (st.sortD < 0 ? '▾' : '▴') : '') + '</span></th>';
+  }).join('') + '</tr></thead>';
+  var cg = '<colgroup><col style="width:34px">' + cols.map(function(c){ return '<col style="width:' + (c.k === 'prox' ? 12 : (PT_W[c.k] || 10)) + '%">'; }).join('') + '</colgroup>';
+  main.innerHTML = '<div class="ptwrap sst-wrap"><table class="ptable sst-table">' + cg + head + '<tbody>' +
+    dis.map(function(di, i){ return sstRowHTML(di, i, cols); }).join('') + '</tbody></table></div>';
+  sstPaintSelState();
+}
+function sstPaintSelState(){
+  var dis = sstFiltered(), sel = sstSelDis(), inView = dis.filter(function(di){ return SB.st.sel[pkey(D.directory[di])]; }).length;
+  var ck = document.querySelector('[data-sstckall]');
+  if(ck){ ck.checked = dis.length > 0 && inView === dis.length; ck.indeterminate = inView > 0 && inView < dis.length; }
+  var cnt = $('#sst-count');
+  if(cnt) cnt.textContent = (dis.length === people().length ? dis.length + ' people' : dis.length + ' of ' + people().length + ' people') + (sel.length ? ' · ' + sel.length + ' selected' : '');
+  var bn = $('#sst-bulk-n'); if(bn) bn.textContent = sel.length + ' selected';
+  sstPaintBulkMode();
+}
+/* The bulk bar appears/disappears with the selection; while it is up,
+   only its count line is touched from row toggles, so a half-typed
+   quick-change value is never wiped by a repaint. */
+function sstPaintBulkMode(){
+  var bar = $('#sst-bulk'), n = sstSelDis().length;
+  if(!bar) return;
+  var has = !!bar.firstChild;
+  if((n > 0) !== has || SB.st.result) sstPaintBulk();
+}
+function sstBulkValHTML(){
+  var st = SB.st, f = st.bulkF;
+  if(f === 'tier') return '<select id="sst-bv-sel" class="inp" aria-label="Level to set">' + TIER_ORDER.map(function(t){ return '<option value="' + t + '"' + (st.bulkV === t ? ' selected' : '') + '>' + TIERS[t].n + '</option>'; }).join('') + '<option value=""' + (st.bulkV === '' ? ' selected' : '') + '>No level yet</option></select>';
+  if(f === 'rel') return '<select id="sst-bv-sel" class="inp" aria-label="Relationship to set"><option value=""' + (st.bulkV === '' ? ' selected' : '') + '>Not set</option>' + REL_OPTS.map(function(r){ return '<option value="' + esc(r) + '"' + (st.bulkV === r ? ' selected' : '') + '>' + esc(cap(r)) + '</option>'; }).join('') + '</select>';
+  if(f === 'loc') return '<input id="sst-bv-text" class="inp" placeholder="Town, ST" value="' + esc(st.bulkV) + '" autocomplete="off">';
+  if(f === 'orgs') return '<select id="sst-bcat" class="inp" aria-label="Organization category">' + ORG_CATS.map(function(c){ return '<option value="' + c.k + '"' + (st.bulkCat === c.k ? ' selected' : '') + '>' + c.label + '</option>'; }).join('') + '</select><input id="sst-bv-text" class="inp" placeholder="Organization to add" value="' + esc(st.bulkV) + '" autocomplete="off">';
+  if(f === 'skills') return '<input id="sst-bv-text" class="inp" placeholder="Skill to add" value="' + esc(st.bulkV) + '" autocomplete="off">';
+  if(f === 'groups'){
+    var all = Object.keys(allGroups()).sort();
+    return '<select id="sst-bv-sel" class="inp" aria-label="Group to add">' + all.map(function(g){ return '<option value="' + esc(g) + '"' + (st.bulkV === g ? ' selected' : '') + '>' + esc(g) + '</option>'; }).join('') + '</select><input id="sst-bv-newgrp" class="inp" placeholder="or a new group name" value="' + esc(st.bulkGrp) + '" autocomplete="off">';
+  }
+  return '';
+}
+function sstPaintBulk(){
+  var bar = $('#sst-bulk'); if(!bar) return;
+  var st = SB.st, n = sstSelDis().length;
+  if(!n && !st.result){ bar.innerHTML = ''; return; }
+  var h = '<div class="sst-bulkbar">';
+  if(st.result) h += '<div class="sst-result">' + esc(st.result) + '</div>';
+  if(n){
+    if(st.confirm){
+      var plan = sstBulkPlan();
+      h += '<div class="sst-confirm"><span class="sst-cq">' + esc(plan.summary) + '</span><span class="sst-cbtns">' +
+        '<button type="button" class="btn primary sm" data-act="sstbulkgo">Apply to ' + plan.changes.length + '</button>' +
+        '<button type="button" class="btn ghost sm" data-act="sstbulkno">Cancel</button></span></div>';
+    } else {
+      h += '<div class="sst-bulkrow"><b id="sst-bulk-n">' + n + ' selected</b>' +
+        '<button type="button" class="btn ghost sm" data-act="sstselall">Select all in view</button>' +
+        '<button type="button" class="btn ghost sm" data-act="sstselnone">Select none</button>' +
+        '<span class="sst-bulkctl"><label for="sst-bf">Quick change</label>' +
+        '<select id="sst-bf" class="inp">' + SST_BULK_FIELDS.map(function(bf){ return '<option value="' + bf.k + '"' + (st.bulkF === bf.k ? ' selected' : '') + '>' + bf.l + '</option>'; }).join('') + '</select>' +
+        sstBulkValHTML() +
+        '<button type="button" class="btn sm" data-act="sstbulk">Review…</button></span></div>';
+    }
+  }
+  bar.innerHTML = h + '</div>';
+}
+function sstBulkPlan(){
+  var st = SB.st, sel = sstSelDis(), f = st.bulkF, changes = [];
+  function selVal(){ var el = $('#sst-bv-sel'); return el ? el.value : st.bulkV; }
+  function textVal(){ var el = $('#sst-bv-text'); return el ? el.value.trim() : String(st.bulkV || '').trim(); }
+  function plan(summary, doneLabel, extra){ return Object.assign({ changes:changes, summary:summary, doneLabel:doneLabel, f:f }, extra || {}); }
+  if(f === 'tier'){
+    var v = selVal(), lbl = v ? TIERS[v].n : 'No level yet';
+    sel.forEach(function(di){ if(tierOf(D.directory[di]) !== v){ var p = {}; p.tier = v; changes.push({ di:di, patch:p }); } });
+    return plan('Set level to ' + lbl + ' — ' + changes.length + ' of ' + sel.length + ' selected records will change.', 'level set to ' + lbl);
+  }
+  if(f === 'rel'){
+    var rv = selVal(), rlbl = rv ? cap(rv) : 'Not set';
+    sel.forEach(function(di){ if(String(gv(D.directory[di], 'relationship') || '') !== rv){ var p = {}; p.relationship = rv; changes.push({ di:di, patch:p }); } });
+    return plan('Set relationship to ' + rlbl + ' — ' + changes.length + ' of ' + sel.length + ' selected records will change.', 'relationship set to ' + rlbl);
+  }
+  if(f === 'loc'){
+    var lv = ptNormLoc(textVal());
+    if(!lv) return plan('Type a location first — nothing to apply.', '');
+    sel.forEach(function(di){ if(String(gv(D.directory[di], 'location_on_file') || '') !== lv){ var p = {}; p.location_on_file = lv; changes.push({ di:di, patch:p }); } });
+    return plan('Set location to ' + lv + ' — ' + changes.length + ' of ' + sel.length + ' selected records will change.', 'location set to ' + lv);
+  }
+  if(f === 'orgs'){
+    var raw = textVal();
+    if(!raw) return plan('Type an organization first — nothing to apply.', '');
+    var cat = st.bulkCat, val = orgPrefixComplete(regApply(raw), cat);
+    var catLbl = (ORG_CATS.filter(function(c){ return c.k === cat; })[0] || {}).label || cat;
+    sel.forEach(function(di){
+      var tags = splitTags(gv(D.directory[di], cat), ', ');
+      if(tags.map(function(x){ return x.toLowerCase(); }).indexOf(val.toLowerCase()) < 0){ var p = {}; p[cat] = tags.concat([val]).join(', '); changes.push({ di:di, patch:p }); }
+    });
+    return plan('Add ' + val + ' (' + catLbl + ') — ' + changes.length + ' of ' + sel.length + ' selected records will change.', 'added ' + val + ' (' + catLbl + ')', { regVal:val });
+  }
+  if(f === 'skills'){
+    var sv = textVal();
+    if(!sv) return plan('Type a skill first — nothing to apply.', '');
+    sel.forEach(function(di){
+      var tags = splitTags(gv(D.directory[di], 'specialty'), ', ');
+      if(tags.map(function(x){ return x.toLowerCase(); }).indexOf(sv.toLowerCase()) < 0){ var p = {}; p.specialty = tags.concat([sv]).join(', '); changes.push({ di:di, patch:p }); }
+    });
+    return plan('Add skill ' + sv + ' — ' + changes.length + ' of ' + sel.length + ' selected records will change.', 'added skill ' + sv);
+  }
+  if(f === 'groups'){
+    var ng = $('#sst-bv-newgrp') ? $('#sst-bv-newgrp').value.trim() : String(st.bulkGrp || '').trim();
+    var g = ng ? regApply(ng) : selVal();
+    if(!g) return plan('Pick or name a group first — nothing to apply.', '');
+    sel.forEach(function(di){
+      var gl = personGroups(D.directory[di]);
+      if(gl.indexOf(g) < 0){ var p = {}; p.groups = gl.concat([g]).join(', '); changes.push({ di:di, patch:p }); }
+    });
+    return plan('Add to group ' + g + ' — ' + changes.length + ' of ' + sel.length + ' selected records will change.', 'added to group ' + g, { newGroup:ng ? g : '' });
+  }
+  return plan('', '');
+}
+function sstBulkApply(){
+  var plan = sstBulkPlan();
+  if(!plan.changes.length){ SB.st.confirm = false; sstPaintBulk(); return; }
+  if(plan.f === 'orgs' && plan.regVal && !ORGREG.canon[regKey(plan.regVal)]) regRegisterCanon(plan.regVal, SB.st.bulkCat);
+  if(plan.f === 'groups' && plan.newGroup){
+    if(!allGroups()[plan.newGroup]){ GRP_EXTRA.push(plan.newGroup); store('ncc_groups_extra', JSON.stringify(GRP_EXTRA)); }
+    if(!ORGREG.canon[regKey(plan.newGroup)]) regRegisterCanon(plan.newGroup, 'groups');
+  }
+  txn('Studio bulk change', function(){ plan.changes.forEach(function(c){ queuePatch(c.di, c.patch); }); });
+  SB.st.result = 'Patched ' + plan.changes.length + ' record' + (plan.changes.length === 1 ? '' : 's') + ' — ' + plan.doneLabel + '.';
+  sbLogAdd({ type:'edit', title:'Record studio bulk: ' + plan.doneLabel, detail:plan.changes.length + ' records' });
+  SB.st.confirm = false; SB.st.sel = {};
+  sstPaint();
+  toast(SB.st.result);
+}
+function sstSelectView(on){
+  var dis = sstFiltered();
+  dis.forEach(function(di){ var pk = pkey(D.directory[di]); if(on) SB.st.sel[pk] = di; else delete SB.st.sel[pk]; });
+  SB.st.confirm = false;
+  sstPaint();
+}
+function sstOpenPerson(di){
+  var dis = sstFiltered(); SB.se.shown = dis;
+  openPerson(di, ctxFrom('Record studio', dis, dis.indexOf(di), 'sandbox'));
+}
+/* Last Contact quick-edit: the studio popover hosts the app's own
+   CDE widget (ctx 'studio' — its save repaints the whole view, this
+   popover included, through render()). */
+function sstLastcClose(){ var p = $('#ssted'); if(p) p.remove(); document.removeEventListener('mousedown', sstLastcOutside, true); }
+function sstLastcOutside(ev){ if(!(ev.target.closest && ev.target.closest('#ssted'))) sstLastcClose(); }
+function sstLastcOpen(di, btn){
+  sstLastcClose();
+  var e = D.directory[di]; if(!e || !btn) return;
+  var pop = document.createElement('div');
+  pop.id = 'ssted'; pop.className = 'pted ssted'; pop.setAttribute('role', 'dialog');
+  pop.innerHTML = '<div class="pted-h">Last contact — ' + esc(dispName(e)) + '</div>' + cdeWidget(di, 'last_contact', 'studio') +
+    '<div class="pted-f"><button type="button" class="btn ghost sm" data-sstlcx>Close</button></div>';
+  pop.style.visibility = 'hidden';
+  document.body.appendChild(pop);
+  pop.addEventListener('click', function(ev){
+    if(ev.target.closest && ev.target.closest('[data-act="cdesave"],[data-act="cdecancel"],[data-act="cdeclear"]')){
+      setTimeout(function(){ if(!CDE) sstLastcClose(); }, 60);   /* a failed save keeps CDE (and the popover) alive */
+    }
+  });
+  var cx = pop.querySelector('[data-sstlcx]'); if(cx) cx.addEventListener('click', sstLastcClose);
+  document.addEventListener('mousedown', sstLastcOutside, true);
+  var r = btn.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
+  pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+  var y = r.bottom + 6; if(y + h > window.innerHeight - 8) y = Math.max(8, r.top - h - 6);
+  pop.style.top = y + 'px'; pop.style.visibility = '';
+  var eb = pop.querySelector('[data-act="cdeedit"]'); if(eb) eb.click();
+}
+/* Studio gestures: shift-click / Enter on an editable cell opens the
+   same popover editor People uses; plain row clicks fall through to
+   the row's data-act (open profile). Wired once per studio element. */
+function sstWire(){
+  var root = $('#sst'); if(!root || root._stw) return; root._stw = 1;
+  var main = $('#sst-main'); if(!main) return;
+  main.addEventListener('click', function(ev){
+    if(PTED && PTED.swallow){ PTED.swallow = false; ev.stopPropagation(); ev.preventDefault(); return; }
+    if(!ev.shiftKey) return;
+    var td = ev.target.closest ? ev.target.closest('td[data-ed]') : null;
+    if(!td || !td.closest('tr.sst-row')) return;
+    ev.stopPropagation(); ev.preventDefault();
+    ptEditOpen(+td.getAttribute('data-di'), td.getAttribute('data-ed'), td);
+  }, true);
+  main.addEventListener('keydown', function(ev){
+    var td = ev.target.closest ? ev.target.closest('td[data-ed]') : null;
+    if(!td || ev.target !== td) return;
+    var k = ev.key;
+    if(k === 'Enter' || k === ' '){
+      ev.preventDefault(); ev.stopPropagation();
+      ptEditOpen(+td.getAttribute('data-di'), td.getAttribute('data-ed'), td, true);
+      return;
+    }
+    if(k === 'ArrowRight' || k === 'ArrowLeft' || k === 'ArrowDown' || k === 'ArrowUp'){
+      ev.preventDefault();
+      var cells = $$('td[data-ed]', main), i = cells.indexOf(td); if(i < 0) return;
+      var per = $$('td[data-ed]', td.parentNode).length || 1;
+      var step = k === 'ArrowRight' ? 1 : k === 'ArrowLeft' ? -1 : k === 'ArrowDown' ? per : -per;
+      var n = cells[i + step]; if(n) n.focus();
+    }
+  });
+}
+/* Column changes made in the shared Columns sheet repaint the studio
+   too; Escape clears the studio selection. */
+document.addEventListener('click', function(ev){
+  var t = ev.target && ev.target.closest ? ev.target.closest('[data-act="ptvis"],[data-act="ptmv"]') : null;
+  if(t) debPaint('sstcols', function(){ sstPaint(); });
+});
+document.addEventListener('keydown', function(ev){
+  if(ev.key !== 'Escape' || (typeof PTED !== 'undefined' && PTED) || (typeof CDE !== 'undefined' && CDE)) return;
+  if(!$('#sst-main')) return;
+  if(Object.keys(SB.st.sel).length){ SB.st.sel = {}; SB.st.confirm = false; SB.st.result = ''; sstPaint(); }
+});
+
 /* ============================================================
    9b. SANDBOX (V3.4.0) — the admin workbench. Read-only tools
    compute from the baked data already in the app plus the raw
@@ -13679,7 +14036,8 @@ var SB = {
   dg:{ tab:'delete', one:null, bulkField:'tier', bulkVal:'', bulkCat:'companies', bulkName:'', dry:null },
   dz:{ q:'', curKey:null, sel:{}, rows:[] },
   lg:{ filter:'all' },
-  se:{ view:'stats', list:null, q:'', sort:'name', statsScroll:0 }
+  se:{ view:'stats', list:null, q:'', sort:'name', statsScroll:0 },
+  st:{ q:'', tier:'all', group:'', sortK:'name', sortD:1, sel:{}, bulkF:'tier', bulkV:'vetted', bulkCat:'companies', bulkGrp:'', confirm:false, result:'' }
 };
 /* V3.10.0 IA: the Sandbox has exactly three jobs — LOOK at the data,
    PLAY with it in labs, FIX it with admin tools. The home screen is a
@@ -13932,13 +14290,14 @@ function sbHome(){
   var h = '<div class="sbs">' +
     '<div class="mdl-kick">Sandbox · Master stats</div>' +
     '<h2 class="sbs-title">Every number that does not fit on Home.</h2>' +
-    '<p class="mdl-sub">The directory, the photos, the review queues and the routines, counted live. Home stays the front door; this is the ledger behind it.</p>' +
+    '<p class="mdl-sub">The directory, the photos, the review queues and the routines, counted live. Home stays the front door; this is the ledger behind it — and the Record studio below is where the directory itself gets worked.</p>' +
     '<div class="mdl-stats">' +
       stat(ppl.toLocaleString('en-US'), 'people in the directory') +
       stat(pct + '%', 'have a usable photo (' + usable.toLocaleString('en-US') + ' confirmed or likely)') +
       stat(quickWins.toLocaleString('en-US'), 'audit quick wins left across ' + Object.keys(AUD_GAPS).length + ' fields') +
       stat(decisions.toLocaleString('en-US'), 'decisions waiting: ' + pfPending + ' prefill · ' + rcPending + ' research') +
     '</div>';
+  h += sstShell();
   /* Field coverage */
   var fieldRows = [
     ['Level', ppl - gaps.tier], ['Location', ppl - gaps.loc], ['Relationship', ppl - gaps.rel],
@@ -14008,6 +14367,7 @@ function sbHome(){
 }
 function sbAfterRender(){
   var t = SB.tool;
+  if(t === 'home'){ sstWire(); sstPaint(); }
   if(t === 'lab' && sbLabTab() === 'paths' && SB.lab.bridges === 'pending') sbComputeBridges();
   if(t === 'insights' && SB.integ.deadBusy && !SB.integ._deadRun){ SB.integ._deadRun = true; sbRunDead(); }
   if(t === 'stats'){
