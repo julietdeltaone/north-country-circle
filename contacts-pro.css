@@ -5303,7 +5303,7 @@ th[data-kind="neutral"]{color:var(--ink-neutral)}
 .qa-tabs button[data-kind="neutral"]:not(.on){color:var(--ink-neutral)}
 
 /* assorted placements */
-.kind-legend{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:11px;color:var(--mut);flex-wrap:wrap}
+.kind-legend{display:inline-flex;align-items:center;gap:7px;margin:0;font-size:11px;color:var(--mut);flex-wrap:wrap}
 .hmi-t .kind-chip{margin-left:6px}
 .hm-blk header .kind-chip{margin-left:2px}
 .rc-head .kind-chip{margin-top:6px}
@@ -5425,3 +5425,27 @@ th[data-kind="neutral"]{color:var(--ink-neutral)}
 .se-pname small{display:block;color:var(--sub);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .se-pmeta{font-size:11.5px;color:var(--sub);font-weight:600;text-align:right}
 @media (max-width:1080px){.se-grid{grid-template-columns:1fr}.se-fl{flex-basis:130px}.se-dl{flex-basis:130px}}
+
+/* ============================================================
+   EDGES PASS (JD 2026-11-02) — decorative lines must never
+   crowd numbers, text or avatars. Audit:
+   qa/edges-audit-2026-11-02.md
+   ============================================================ */
+/* People: the About/Connection legend rides the count line
+   inside the pagehead — no row of its own */
+.ppl-subrow{display:flex;align-items:center;gap:6px 16px;flex-wrap:wrap;margin-top:4px}
+.ppl-subrow .sub{margin-top:0}
+/* Live Records: header right cluster holds the relocated
+   Records sort controls beside Command Center */
+.lr-head-r{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lrsort.inhead{margin:0}
+/* Live Records: data repaints render still — the entrance
+   animation plays on the first full render only */
+.page.lr.noanim .asanim{animation:none}
+.page.lr.noanim .asring-fg{transition:none}
+/* Live Records fact rows and person/new cards carry no floated
+   kind bar: the red fact numbers and the avatars own the left
+   edge on this surface, and the card border is the edge */
+.page.lr .asfact[data-kind]::before{display:none}
+.page.lr .asfact[data-kind]{padding-left:0}
+.page.lr .card.dtperson[data-kind]::before,.page.lr .card.lrnew[data-kind]::before{display:none}
