@@ -1563,14 +1563,14 @@ function assocSidePatch(ownerIdx, otherName, add){
 }
 function addAssociate(di, tdi){
   var e = D.directory[di], t = D.directory[tdi]; if(!e || !t) return;
-  txn('Add known associate', function(){
+  txn('Add associate', function(){
     assocSidePatch(di, t.name || '', true);
     if(tdi !== di) assocSidePatch(tdi, e.name || '', true);
   });
 }
 function removeAssociate(di, u){
   var e = D.directory[di]; if(!e || !u) return;
-  txn('Remove known associate', function(){
+  txn('Remove associate', function(){
     assocSidePatch(di, u, false);
     var tdi = BYN[String(u).toLowerCase()];
     if(tdi !== undefined && tdi !== di) assocSidePatch(tdi, e.name || '', false);
@@ -3965,7 +3965,7 @@ function secHTML(di, id){
     band('b-' + id, SPINE[id] || d.t, head + '<div class="cbody">' + body + '</div>') + '</section>';
 }
 function secSummary(e, id){
-  if(id === 'lima') return lcNote(e).trim() ? '<span class="lc-mark" title="A Lima Charlie note is waiting on this profile">LC</span>' : '';
+  if(id === 'lima') return lcNote(e).trim() ? '<span class="lc-mark" title="A Contact Log note is waiting on this profile">LC</span>' : '';
   var n = 0;
   if(id === 'connections') n = knownAssociates(e).length + famLinks(e).length;
   else if(id === 'timeline') n = (e.events || []).length;
@@ -4130,7 +4130,7 @@ function secView(di, id){
       (ka.length > 10 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show more \u00b7 +' + (ka.length - 10) + '</button>' : '') +
       (ka.length > 10 && S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show less</button>' : '') + '</div>';
     out3 += '<div class="row"><a class="btn ghost sm" href="#/family" data-act="openfam" data-di="' + di + '">' + ic('tree', 14) + 'Open in Family</a><a class="btn ghost sm" href="#/network" data-act="shownet" data-di="' + di + '">' + ic('network', 14) + 'Show on Network</a></div>';
-    return (ka.length || links.length) ? out3 : emptyPrompt(di, id, 'Add family or known associates');
+    return (ka.length || links.length) ? out3 : emptyPrompt(di, id, 'Add family or associates');
   }
   if(id === 'timeline'){
     var evs = sortedEvents(e), ps = connPhases(e).slice().sort(function(a, b){ return String(a.f || '').localeCompare(String(b.f || '')); }), out4 = '<div class="tl-logrow"><button type="button" class="btn ghost sm" data-act="logcontact">' + ic('edit', 13) + 'Log contact</button></div>';
@@ -4300,7 +4300,7 @@ function secEdit(di, id){
   if(id === 'connections'){
     return lab('Associates', 'Adding or removing writes both profiles') +
       '<div class="chips">' + (knownAssociates(e).map(function(nb){ return nbrChip(nb, true); }).join('') || '<span class="dim">None mapped yet.</span>') + '</div>' +
-      '<div class="finder"><input id="assocq" placeholder="Add a known associate: type a name" autocomplete="off"><div id="assocr" class="hits"></div></div>' +
+      '<div class="finder"><input id="assocq" placeholder="Add an associate: type a name" autocomplete="off"><div id="assocr" class="hits"></div></div>' +
       lab('Family', 'Traditional model: one spouse, bloodline trees') + famListHTML(di, true) +
       '<div class="famadd"><div class="seg" id="famrels">' + FAM_RELS.map(function(r){ return '<button type="button" class="' + (famRelDefault() === r ? 'on' : '') + '" data-act="famrel" data-v="' + r + '">' + cap(r) + '</button>'; }).join('') + '</div>' +
       '<div class="finder"><input id="famq" placeholder="Add family member: type a name" autocomplete="off"><div id="famr" class="hits"></div></div></div>';
@@ -10873,7 +10873,7 @@ function lcDeckCardHTML(di){
   var line2 = [infoLine(e), ptLocVal(e)].filter(Boolean).join(' · ');
   var orgs = orgsOf(e).slice(0, 2).join(' · ');
   return '<span class="lc-wrap"><button type="button" class="lc-card" data-act="lcopen" data-di="' + di + '">' +
-    '<span class="lc-card-top">' + avatar(e, 'md') + (note ? '<span class="lc-mark" title="A Lima Charlie note is waiting on this profile">LC</span>' : '') + '</span>' +
+    '<span class="lc-card-top">' + avatar(e, 'md') + (note ? '<span class="lc-mark" title="A Contact Log note is waiting on this profile">LC</span>' : '') + '</span>' +
     '<span class="lc-card-name">' + esc(dispName(e)) + milBadge(e) + '</span>' +
     (line2 ? '<span class="lc-card-line">' + esc(line2) + '</span>' : '') +
     (orgs ? '<span class="lc-card-line dim">' + esc(orgs) + '</span>' : '') +
@@ -11967,7 +11967,7 @@ function onClick(ev){
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
     case 'sedist': seOpenDist(el.getAttribute('data-g'), el.getAttribute('data-i')); break;
     case 'seback': seBack(); break;
-    case 'seperson': { var sdi = +el.getAttribute('data-di'); var shown = SB.se.shown || []; openPerson(sdi, ctxFrom('Stats Explorer', shown, shown.indexOf(sdi), 'sandbox')); break; }
+    case 'seperson': sePersonOpen(+el.getAttribute('data-di')); break;
     case 'sesort': SB.se.sort = el.getAttribute('data-s'); sePaintList(); break;
     case 'openp': { ev.preventDefault(); openPerson(di, null, { keepCtx:S.route.name === 'profile' }); prevent = false; break; }
     case 'popen': { var cur = S.ppl.cur || []; openPerson(di, ctxFrom('People', cur, +el.getAttribute('data-i'), 'people')); break; }
@@ -13271,11 +13271,24 @@ function sePaintList(){
       '<span class="se-pmeta">' + seFilledCount(di) + ' / ' + SE_FIELDS.length + ' fields · Completeness ' + scoreFor(di).score + (gv(e, 'last_contact') ? ' · Last contact ' + esc(lcDateLabel(gv(e, 'last_contact'))) : '') + '</span></button>';
   }).join('') : '<p class="sub">No one in this list matches the search.</p>';
 }
+function seScroller(){ return $('.sb-canvas'); }
 function seOpenList(title, dis){
-  SB.se.statsScroll = navScroll();
+  /* The Sandbox scrolls .sb-canvas, not #view (body[data-view=
+     "sandbox"] #view is overflow:hidden), so the app view stack's
+     #view scroll save cannot see these positions — the Explorer
+     keeps its own, here and in sePersonOpen / sbAfterRender. */
+  var sc = seScroller();
+  SB.se.statsScroll = sc ? sc.scrollTop : navScroll();
+  SB.se.listScroll = 0;
   SB.se.view = 'list'; SB.se.list = { title:title, dis:dis.slice() }; SB.se.q = '';
   viewSandbox($('#view'));
-  var vv = $('#view'); if(vv) vv.scrollTop = 0;
+  var cv = seScroller(); if(cv) cv.scrollTop = 0;
+}
+function sePersonOpen(di){
+  var sc = seScroller();
+  if(sc && SB.se.view === 'list') SB.se.listScroll = sc.scrollTop;
+  var shown = SB.se.shown || [];
+  openPerson(di, ctxFrom('Stats Explorer', shown, shown.indexOf(di), 'sandbox'));
 }
 function seOpenField(k, seg){
   var f = seFieldDef(k); if(!f) return;
@@ -13338,7 +13351,7 @@ var SB_TOOLS = [
   { k:'stats',    z:'Sandbox', t:'Stats Explorer', d:'Field completeness for 18 fields plus distributions — completeness bands, leaderboard, relationship mix, towns, group sizes, years-known decades, last-contact recency. Every bar opens its people list.', ic:'target' }
 ];
 var SB_LABS = [
-  { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through known associates and family, mutual connections, and the bridge people who hold the circle together.' },
+  { k:'paths',   t:'Paths & bridges', d:'Find how two people connect — shortest path through associates and family, mutual connections, and the bridge people who hold the circle together.' },
   { k:'pool',    t:'Suspect Pool', d:'The disciplined thought experiment: an exact pool, one yes/no behavioral question, observable behavior only, a pre-registered prediction. On-device only.' },
 ];
 function sbZoneOf(tool){ return ({ insights:'Sandbox', merge:'Sandbox', danger:'Sandbox', log:'Sandbox', stats:'Sandbox' })[tool] || ''; }
@@ -13654,9 +13667,11 @@ function sbAfterRender(){
   if(t === 'lab' && sbLabTab() === 'paths' && SB.lab.bridges === 'pending') sbComputeBridges();
   if(t === 'insights' && SB.integ.deadBusy && !SB.integ._deadRun){ SB.integ._deadRun = true; sbRunDead(); }
   if(t === 'stats'){
-    if(SB.se.view === 'list') sePaintList();
-    else if(SB.se.statsScroll){ var vv = $('#view'); if(vv) vv.scrollTop = SB.se.statsScroll; SB.se.statsScroll = 0; }
+    var cv = $('.sb-canvas');
+    if(SB.se.view === 'list'){ sePaintList(); if(cv && SB.se.listScroll) cv.scrollTop = SB.se.listScroll; }
+    else if(cv && SB.se.statsScroll) cv.scrollTop = SB.se.statsScroll;
   }
+  if(t !== 'stats'){ SB.se.statsScroll = 0; SB.se.listScroll = 0; }
 }
 
 
