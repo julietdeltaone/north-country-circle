@@ -13212,7 +13212,7 @@ function viewManage(v){
   var tabs = [['stamps', 'Last Contact', '#/manage'], ['levels', 'Levels', '#/manage/levels'], ['proximity', 'Proximity', '#/manage/proximity']];
   v.innerHTML = '<div class="page manage" data-kind="neutral">' +
     '<div class="pagehead"><div><h1 class="display">Manage</h1>' +
-    '<p class="sub">The upkeep bench: contact stamps for everyone in one table, the level notation map, and the Proximity surface when it lands. Stamp edits ride the Save Pool and can be undone.</p></div></div>' +
+    '<p class="sub">The upkeep bench: contact stamps for everyone in one table, the level map that gates the display role, and the Proximity bulk log. Stamp edits ride the Save Pool and can be undone.</p></div></div>' +
     '<div class="mg-tabs" role="tablist">' + tabs.map(function(t){ return '<a class="mg-tab' + (tab === t[0] ? ' on' : '') + '" href="' + t[2] + '" role="tab">' + t[1] + '</a>'; }).join('') + '</div>' +
     (tab === 'stamps' ? mgStampsHTML() : tab === 'levels' ? mgLevelsHTML() : mgProxHTML()) +
     '</div>';
