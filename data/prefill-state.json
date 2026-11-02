@@ -1,0 +1,59 @@
+{
+ "suggestions": {
+  "pf-d4ad11a2e5": {
+   "skips": 1,
+   "key": "kaitance.jenks19",
+   "field": "location_on_file",
+   "value": "Canton, NY",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "last_counted": "2026-11-02"
+  },
+  "pf-cda38e0777": {
+   "skips": 1,
+   "key": "sf:isagoettl",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "last_counted": "2026-11-02"
+  },
+  "pf-a560392631": {
+   "skips": 1,
+   "key": "sf:janelleevans_8",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "last_counted": "2026-11-02"
+  },
+  "pf-d6c638ed2b": {
+   "skips": 1,
+   "key": "sf:jenna_smellie",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "last_counted": "2026-11-02"
+  },
+  "pf-90a407aaf9": {
+   "skips": 1,
+   "key": "sf:raedyn.spademan",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "last_counted": "2026-11-02"
+  },
+  "pf-1620f79efe": {
+   "skips": 1,
+   "key": "sf:kaitlyn.mallette03",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "first_seen": "2026-11-02",
+   "last_seen": "2026-11-02",
+   "last_counted": "2026-11-02"
+  }
+ },
+ "updated": "2026-11-02"
+}
