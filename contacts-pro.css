@@ -3579,11 +3579,31 @@ html[data-mode="light"] .rcb-unsupported{--rcband:#b91c1c}
 .rc-conf>span:first-of-type{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--rcband)}
 .rc-meter{display:block;height:7px;border-radius:2px;background:var(--line);overflow:hidden;margin:3px 0}
 .rc-meter i{display:block;height:100%;background:var(--rcband)}
-.rc-parts{font-size:11.5px;line-height:1.5;color:var(--mut)}
+.rc-parts{display:flex;flex-direction:column;gap:4px;margin-top:3px}
+.rc-part{display:flex;flex-direction:column;gap:2px}
+.rc-part-t{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.rc-part-l{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.rc-part-v{font-size:11px;font-weight:600;color:var(--txt);font-variant-numeric:tabular-nums}
+.rc-part-bar{display:block;height:5px;border-radius:2px;background:var(--line);overflow:hidden}
+.rc-part-bar i{display:block;height:100%;background:var(--rcband)}
 .rc-person{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .rc-person a{color:inherit;text-decoration:none}
 .rc-person a:hover{text-decoration:underline}
-.rc-cat{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--line2);border-radius:2px;color:var(--mut)}
+/* Held-category pills (V3.62.0, JD 2026-11-01): one professional
+   color family per category from the app palette (golds / maroons /
+   browns / blues / the hot crimson), dark-theme values in the base
+   rule, light-theme values under data-mode="light" — the same
+   convention as the confidence bands above. Text is the category
+   color on a light tint of itself, like the photo-lead pill. */
+.rc-cat{--rccat:var(--mut);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border:1px solid color-mix(in srgb,var(--rccat) 48%,transparent);border-radius:999px;color:var(--rccat);background:color-mix(in srgb,var(--rccat) 13%,transparent);white-space:nowrap}
+.rccat-close{--rccat:#d2ab4e}.rccat-identity{--rccat:#cf8b98}.rccat-source{--rccat:#c49a6c}.rccat-sensitive{--rccat:#8fb0d6}.rccat-conflict{--rccat:var(--hot)}.rccat-verification{--rccat:#a9c2d6}
+html[data-mode="light"] .rccat-close{--rccat:#6b5210}
+html[data-mode="light"] .rccat-identity{--rccat:#712434}
+html[data-mode="light"] .rccat-source{--rccat:#6b4a2e}
+html[data-mode="light"] .rccat-sensitive{--rccat:#2e4a68}
+html[data-mode="light"] .rccat-verification{--rccat:#3c5a73}
+.rc-gate{display:flex;flex-direction:column;align-items:flex-start}
+.rc-gate .rc-cat{margin-top:6px}
 .rc-phototag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:2px;background:color-mix(in srgb,var(--sky) 15%,transparent);border:1px solid color-mix(in srgb,var(--sky) 48%,transparent);color:var(--sky)}
 .rc-run{font-size:12px;color:var(--dim)}
 .rc-claim{margin-top:6px;font-weight:600;line-height:1.5}
