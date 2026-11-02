@@ -5550,6 +5550,7 @@ html[data-mode="dark"] .hm-charts{
   --hmr-d0:#7ba7d4; --hmr-d1:#9db9d4; --hmr-d2:#a9c2d8; --hmr-d3:#d3ab54; --hmr-d4:#b08a5f;
   --hmr-d5:#c06a76; --hmr-d6:#8fb0d2; --hmr-d7:#dec07c; --hmr-d8:#cfe0ee; --hmr-d9:#93a3b1;
 }
+.hm-charts .hmr-body{padding:0 20px 16px}
 /* rings */
 .hm-charts .hmr-rings{display:grid;grid-template-columns:repeat(5,1fr);gap:10px 6px;margin-top:12px}
 .hm-charts .hmr-ring{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;border-radius:10px;padding:8px 4px 6px;cursor:pointer;font:inherit;color:var(--txt)}
@@ -5582,7 +5583,7 @@ html[data-mode="dark"] .hm-charts{
 .hm-charts .hmr-dbg6{background:var(--hmr-d6)} .hm-charts .hmr-dbg7{background:var(--hmr-d7)} .hm-charts .hmr-dbg8{background:var(--hmr-d8)}
 .hm-charts .hmr-dbg9{background:var(--hmr-d9)}
 .hm-charts .hmr-donc{fill:var(--txt);font:700 40px var(--serif)}
-.hm-charts .hmr-dons{fill:var(--mut);font:600 10.5px var(--sans);letter-spacing:.14em}
+.hm-charts .hmr-dons{fill:var(--mut);font:600 9px var(--sans);letter-spacing:.05em}
 .hm-charts .hmr-legs{display:flex;flex-direction:column;flex:1;min-width:118px}
 .hm-charts .hmr-legs.wrap{flex-direction:row;flex-wrap:wrap;gap:2px 14px}
 .hm-charts .hmr-leg{display:flex;align-items:center;gap:6px;background:none;border:0;padding:3px 2px;cursor:pointer;font:inherit;font-size:12px;color:var(--txt);border-radius:6px;text-align:left}
