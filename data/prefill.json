@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-30",
- "count": 3,
+ "count": 8,
  "suggestions": [
   {
    "id": "pf-1089251c0d",
@@ -29,6 +29,58 @@
    "conf": 55
   },
   {
+   "id": "pf-cda38e0777",
+   "key": "sf:isagoettl",
+   "display": "Isagoettl",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-a560392631",
+   "key": "sf:janelleevans_8",
+   "display": "Janelleevans 8",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-d6c638ed2b",
+   "key": "sf:jenna_smellie",
+   "display": "Jenna Smellie",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-1620f79efe",
+   "key": "sf:kaitlyn.mallette03",
+   "display": "Kaitlyn.Mallette03",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
+   ],
+   "conf": 55
+  },
+  {
    "id": "pf-d4ad11a2e5",
    "key": "kaitance.jenks19",
    "display": "Katie Jenks",
@@ -38,6 +90,19 @@
    "grade": "Tentative",
    "evidence": [
     "SUNY Canton is in Canton."
+   ],
+   "conf": 55
+  },
+  {
+   "id": "pf-90a407aaf9",
+   "key": "sf:raedyn.spademan",
+   "display": "Raedyn.Spademan",
+   "field": "location_on_file",
+   "field_label": "Location",
+   "value": "Potsdam, NY",
+   "grade": "Tentative",
+   "evidence": [
+    "Clarkson University is in Potsdam."
    ],
    "conf": 55
   }
