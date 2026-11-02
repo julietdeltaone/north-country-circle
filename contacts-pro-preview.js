@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.60.0';
+var APP_VERSION = '3.61.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7203,8 +7203,8 @@ function dtAnimate(){
    ============================================================ */
 var RC = null, RC_LOADING = false;
 var RC_CATS = { close:'Close call', identity:'Identity not proven', source:'Source too weak', sensitive:'Sensitive / family', conflict:'Conflicting record', verification:'Failed verification' };
-var RC_VIEW = { status:'pending', cat:'all', q:'', photo:false };
-try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '', photo:!!_rcv.photo }; }catch(x){}
+var RC_VIEW = { status:'pending', cat:'all', q:'', photo:false, cur:'' };
+try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '', photo:!!_rcv.photo, cur:typeof _rcv.cur === 'string' ? _rcv.cur : '' }; }catch(x){}
 function rcSaveView(){ try{ store('ncc_rc_view', JSON.stringify(RC_VIEW)); }catch(x){} }
 function rcLoad(){
   if(RC || RC_LOADING) return;
@@ -7310,6 +7310,18 @@ function rcDecide(id, decision){
   if(di == null){ toast('That profile is no longer in the directory — the candidate cannot be filed.'); return; }
   var e = D.directory[di];
   if(rcStatus(c).k !== 'pending'){ toast('That candidate was already decided.'); rcPaint(); return; }
+  /* Keyboard flow (V3.61.0): whichever pending row follows this one in
+     the current view (or precedes it, when it is last) becomes the
+     current row once this decision lands, so JD can decide, decide,
+     decide without touching the mouse. */
+  var nextCur = '';
+  (function(){
+    var m0 = rcModel(), idx = -1;
+    m0.shown.forEach(function(r, j){ if(r.c.id === id) idx = j; });
+    if(idx < 0) return;
+    for(var j = idx + 1; j < m0.shown.length; j++) if(m0.shown[j].st.k === 'pending' && m0.shown[j].c.id !== id){ nextCur = m0.shown[j].c.id; return; }
+    for(var j2 = idx - 1; j2 >= 0; j2--) if(m0.shown[j2].st.k === 'pending' && m0.shown[j2].c.id !== id){ nextCur = m0.shown[j2].c.id; return; }
+  })();
   txn(decision === 'file' ? 'File research candidate' : 'Dismiss research candidate', function(){
     var patch = {}, map = rcReviewMap(e), prev = map[c.id] || {};
     var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
@@ -7332,7 +7344,9 @@ function rcDecide(id, decision){
   toast(decision === 'file'
     ? 'Filed for ' + (c.display || '') + '. It saves through the Save Pool.'
     : 'Dismissed for ' + (c.display || '') + '. Luna\u2019s call stands.', { undo:true });
+  if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
   rcPaint();
+  if(nextCur) rcScrollCur();
 }
 function rcConsoleHTML(){
   if(!RC) return '<section class="rcconsole" id="rcconsole"><div class="rc-loading">Loading the research ledger\u2026</div></section>';
