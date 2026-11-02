@@ -61,22 +61,6 @@
    "value": "Christian Fellowship Center",
    "conf": 100,
    "id": "pf-4fc4f704db"
-  },
-  {
-   "key": "ct:azlyn richardson",
-   "display": "Azlyn Richardson",
-   "field": "location_on_file",
-   "value": "Potsdam, NY",
-   "conf": 91,
-   "id": "pf-82fec7e1e5"
-  },
-  {
-   "key": "kaitlyn.mallette03",
-   "display": "Kaitlyn Mallette",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 62,
-   "id": "pf-ac9736f7ba"
   }
  ]
 }
