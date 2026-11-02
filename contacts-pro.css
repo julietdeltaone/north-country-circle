@@ -5493,3 +5493,36 @@ th[data-kind="neutral"]{color:var(--ink-neutral)}
 .page.lr .asfact[data-kind]::before{display:none}
 .page.lr .asfact[data-kind]{padding-left:0}
 .page.lr .card.dtperson[data-kind]::before,.page.lr .card.lrnew[data-kind]::before{display:none}
+
+/* ---------- Sandbox Record Studio (V3.71.0) ---------- */
+.sst{ margin-top:18px; border:1px solid var(--line); border-radius:14px; background:var(--card,#fff); padding:14px 14px 10px; min-width:0; }
+.sst-top{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+.sst-top .mdl-ph{ margin:0; }
+.sst-count{ font-size:12.5px; color:var(--sub); font-weight:600; }
+.sst-sub{ margin:6px 0 10px; font-size:12.5px; line-height:1.45; color:var(--sub); max-width:78ch; }
+.sst-tools{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+.sst-qf{ flex:1 1 240px; max-width:380px; }
+.sst-gsel{ width:auto; max-width:210px; }
+.sst-tools-r{ margin-left:auto; display:inline-flex; gap:8px; }
+.sst-wrap{ max-height:72vh; }
+.sst-table td.c-prox .clip{ max-width:none; }
+.sst-table th.sst-ckh, .sst-table td.sst-ck{ width:34px; padding-left:10px; padding-right:2px; cursor:default; }
+.sst-table td.sst-ck input, .sst-table th.sst-ckh input{ width:16px; height:16px; accent-color:var(--gold,#b98a2f); cursor:pointer; vertical-align:middle; }
+.sst-table tr.sel td{ background:color-mix(in srgb, var(--gold,#b98a2f) 10%, transparent); }
+.sst-lcc{ vertical-align:middle; }
+.sst-lcbtn{ display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; margin-left:6px; padding:0; border:1px solid var(--line); border-radius:6px; background:transparent; color:var(--sub); cursor:pointer; opacity:.35; vertical-align:middle; }
+tr.sst-row:hover .sst-lcbtn, .sst-lcbtn:focus-visible{ opacity:1; }
+.sst-lcbtn:hover{ color:var(--ink); border-color:var(--sub); }
+.sst-bulkbar{ border:1px solid var(--line); border-radius:10px; padding:8px 12px; margin-bottom:10px; background:color-mix(in srgb, var(--gold,#b98a2f) 6%, transparent); display:grid; gap:8px; }
+.sst-result{ font-size:12.5px; font-weight:650; color:var(--ink); }
+.sst-bulkrow{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.sst-bulkrow b{ font-size:13px; }
+.sst-bulkctl{ display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; margin-left:auto; }
+.sst-bulkctl label{ font-size:12px; font-weight:650; color:var(--sub); }
+.sst-bulkctl .inp{ width:auto; max-width:220px; }
+.sst-confirm{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.sst-cq{ font-size:13px; font-weight:600; }
+.sst-cbtns{ display:inline-flex; gap:8px; margin-left:auto; }
+.ssted{ width:min(380px, calc(100vw - 16px)); }
+.ssted .cde{ max-height:none; }
+@media (max-width:760px){ .sst-bulkctl{ margin-left:0; } .sst-tools-r{ margin-left:0; } }
