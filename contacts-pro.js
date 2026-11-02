@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.61.0';
+var APP_VERSION = '3.62.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7226,6 +7226,19 @@ function rcBand(conf){
   if(conf >= 40) return { k:'weak', label:'Weak' };
   return { k:'unsupported', label:'Not supported' };
 }
+/* Confidence parts as three labeled meters (JD 2026-11-01): label and
+   value on one line, a thin bar under it filled to the part's fraction
+   of its own max. One uniform fill — the row's band color — so the
+   parts read as a breakdown of the total beside them. */
+function rcPartsHTML(parts){
+  parts = parts || {};
+  function part(label, v, max){
+    v = Math.max(0, Math.min(max, +v || 0));
+    return '<span class="rc-part"><span class="rc-part-t"><span class="rc-part-l">' + label + '</span><span class="rc-part-v">' + v + '/' + max + '</span></span>' +
+      '<span class="rc-part-bar"><i style="width:' + Math.round(100 * v / max) + '%"></i></span></span>';
+  }
+  return '<span class="rc-parts">' + part('Identity', parts.identity, 50) + part('Source', parts.source, 30) + part('Detail', parts.detail, 20) + '</span>';
+}
 function rcDi(c){
   var di = BYN[String(c.name || '').toLowerCase()];
   if(di == null && c.display) di = BYN[String(c.display).toLowerCase()];
@@ -7527,7 +7540,7 @@ function rcConsoleHTML(){
       '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p>' +
       rcFieldsLine(c) + '</div>' +
       '<div class="rc-ev"><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
-      '<div class="rc-gate"><span>Why it was held</span><p>' + esc(c.missing_gate || '') + '</p></div>' +
+      '<div class="rc-gate"><span>Why it was held</span>' + catPill + '<p>' + esc(c.missing_gate || '') + '</p></div>' +
       actions + '</div>';
   }).join('') : '<div class="rc-none">No candidates match this view.</div>';
   return '<section class="rcconsole" id="rcconsole">' +
