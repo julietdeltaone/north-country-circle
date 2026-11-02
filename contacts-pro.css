@@ -2766,7 +2766,18 @@ html[data-mode="light"] .plx-num{color:color-mix(in srgb,var(--ga) 5.5%,transpar
 .dz-table tbody tr.dz-sel td{background:var(--fill)}
 .dz-table tbody tr.dz-cur td{background:var(--fill2)}
 .dz-table tbody tr.dz-cur td:first-child{box-shadow:inset 3px 0 0 var(--ga)}
-.dz-table td{white-space:nowrap}
+/* Full-width, no truncation (JD amendment 2026-11-02): fixed layout
+   with percentage columns sized to the Sandbox canvas, compact
+   padding and type, and wrapping cell text — every column stays
+   inside the viewport at laptop sizes, no horizontal scrolling.
+   The Danger canvas also gives up its side padding to the table. */
+.sb-shell.t-danger .sb-wrap{padding:16px 14px 60px}
+.dz-table{table-layout:fixed;width:100%;font-size:12px}
+.dz-table th,.dz-table td{padding:6px 5px}
+.dz-table th{white-space:normal;line-height:1.25;font-size:11px;overflow-wrap:anywhere}
+@media (max-width:1400px){ .dz-table{font-size:11.5px} .dz-table th{font-size:10px} }
+.dz-table td{white-space:normal;overflow-wrap:break-word;vertical-align:middle}
+.dz-table .sb-namecell{white-space:normal}
 .dz-undochip{display:flex;align-items:center;gap:10px;background:rgba(227,6,19,.08);border:1px solid rgba(227,6,19,.3);border-radius:var(--r);padding:8px 12px;margin:0 0 10px;font-size:13.5px}
 .dz-keys{margin-top:10px}
 .sb-bar{height:8px;border-radius:99px;background:var(--track,var(--fill2));overflow:hidden;margin:8px 0}
