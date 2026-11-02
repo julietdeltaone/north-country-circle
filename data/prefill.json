@@ -31,6 +31,30 @@
  ],
  "auto_apply": [
   {
+   "key": "sf:jeremy-taylor",
+   "display": "Jeremy Taylor",
+   "field": "companies",
+   "value": "U.S. Navy",
+   "conf": 74,
+   "id": "pf-a44092a3a1"
+  },
+  {
+   "key": "sf:jeremy-taylor",
+   "display": "Jeremy Taylor",
+   "field": "groups",
+   "value": "U.S. Army",
+   "conf": 100,
+   "id": "pf-69fcfacec6"
+  },
+  {
+   "key": "sf:jeremy-taylor",
+   "display": "Jeremy Taylor",
+   "field": "first_contact",
+   "value": "2025-01",
+   "conf": 93,
+   "id": "pf-50b26baeec"
+  },
+  {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
    "field": "groups",
