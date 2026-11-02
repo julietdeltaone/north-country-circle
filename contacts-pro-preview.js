@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.71.0';
+var APP_VERSION = '3.72.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6118,45 +6118,140 @@ function hmMixInner(title, segs, total){
 function hmMixCard(title, segs, total){
   return '<section class="card hm-blk">' + hmMixInner(title, segs, total) + '</section>';
 }
-/* --- Home Directory charts (JD 2026-11-02, V3.71.0): the Stats
-   Explorer graphs from the Sandbox, moved front and center on Home
-   at JD's direction, Last-contact recency leading (it sat last in
-   the explorer). The explorer page is retired — the Sandbox's stats
-   surface is the Record Studio now. Same compute the explorer used
-   (SE_FIELDS / seFilledCount / seDistGroups), display-only here:
-   the bars are for looking; the working surfaces are People and
-   the Record Studio. --- */
+/* --- Home Directory charts (V3.72.0, JD 2026-11-02): the fused
+   rings + donut + heat design JD approved from the preview packet
+   (home-display-rings-heatmap-2026-11-02.html) replaces the V3.71.0
+   bar board. Rings and a donut carry the headline numbers; heat
+   does the diagnostics — deep slate where a field is full, warm
+   brown where it is empty. Everything computes live from the same
+   definitions Home/Audit already use (hmDeck / hmPd for the rings,
+   seDistGroups for the mix, recency and bands, SE_FIELDS for the
+   heat matrix), and every visual opens its people list through the
+   Home inspector: rings ride hmikpi, donut + closeness ride
+   hmiopen rel/tier, heat cells and strips ride hmiopen
+   hmfield/hmrec/hmband. All colors live in CSS variables on
+   .hm-charts, so a theme flip (which does not re-render) keeps
+   both modes legible. The V3.71.0 towns / group-sizes / decades
+   cards and the most-fields-filled leaderboard leave Home with
+   this board — towns and groups stay one card down in Rankings,
+   decades in Known Since. --- */
+var HMR_FIELDS = ['synopsis', 'groups', 'location', 'photo', 'skills', 'universities', 'events', 'companies', 'contact', 'church', 'family'];
+function hmrRing(k, frac, colorCls, value, label, sub){
+  var C = 213.63, f = Math.max(0, Math.min(1, frac || 0));
+  return '<button type="button" class="hmr-ring" data-act="hmikpi" data-k="' + k + '" aria-label="' + esc(label) + ': ' + esc(value) + '">' +
+    '<svg class="hmr-ringsvg" viewBox="0 0 84 84" width="104" height="104" aria-hidden="true">' +
+    '<circle class="hmr-rtrack" cx="42" cy="42" r="34"></circle>' +
+    '<circle class="hmr-rfg ' + colorCls + '" cx="42" cy="42" r="34" stroke-dasharray="' + (f * C).toFixed(1) + ' ' + C + '" transform="rotate(-90 42 42)"></circle>' +
+    '<text class="hmr-rv' + (String(value).length > 4 ? ' sm' : '') + '" x="42" y="49" text-anchor="middle">' + esc(value) + '</text></svg>' +
+    '<span class="hmr-rl">' + esc(label) + '</span><span class="hmr-rs">' + esc(sub) + '</span></button>';
+}
+function hmrDonutSVG(rows, total){
+  var a = -Math.PI / 2, cx = 100, cy = 100, r = 76, ir = 45, parts = [];
+  function pol(rr, ang){ return (cx + rr * Math.cos(ang)).toFixed(1) + ' ' + (cy + rr * Math.sin(ang)).toFixed(1); }
+  rows.forEach(function(row, i){
+    if(!row.dis.length || !total) return;
+    var a2 = a + (row.dis.length / total) * Math.PI * 2;
+    if(a2 - a >= Math.PI * 2 - 0.001) a2 = a + Math.PI * 2 - 0.001;
+    var laf = (a2 - a) > Math.PI ? 1 : 0, key = row.label === 'Untyped' ? 'Unspecified' : row.label;
+    parts.push('<path class="hmr-dseg hmr-d' + (i % 10) + '" data-act="hmiopen" data-nkind="connection" data-kind="rel" data-key="' + esc(key) + '" data-label="' + esc(row.label) + '" d="M' + pol(r, a) + ' A' + r + ' ' + r + ' 0 ' + laf + ' 1 ' + pol(r, a2) + ' L' + pol(ir, a2) + ' A' + ir + ' ' + ir + ' 0 ' + laf + ' 0 ' + pol(ir, a) + ' Z"><title>' + esc(row.label) + ' \u00b7 ' + row.dis.length + '</title></path>');
+    a = a2;
+  });
+  parts.push('<text class="hmr-donc" x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle">' + total + '</text>');
+  parts.push('<text class="hmr-dons" x="' + cx + '" y="' + (cy + 15) + '" text-anchor="middle">RELATIONSHIPS</text>');
+  return '<svg class="hmr-don" viewBox="0 0 200 200" width="188" height="188" role="img" aria-label="Relationship mix donut">' + parts.join('') + '</svg>';
+}
 function hmCharts(){
-  msgLoad();
+  phLoad(); msgLoad();
   var P = people(), total = P.length || 1;
-  var groups = seDistGroups(), rec = null, rest = [];
-  groups.forEach(function(g){ if(g.title === 'Last-contact recency') rec = g; else rest.push(g); });
-  function dcard(g, lead){
-    var max = Math.max.apply(null, g.rows.map(function(r){ return r.dis.length; }).concat([1]));
-    return '<div class="hm-chart' + (lead ? ' lead' : '') + '"><h4>' + esc(g.title) + '</h4>' + g.rows.map(function(r){
-      return '<div class="se-drow hmc-row"><span class="se-dl">' + esc(r.label) + '</span><span class="se-dbar"><span style="width:' + Math.round(r.dis.length / max * 100) + '%"></span></span><span class="se-dn">' + r.dis.length + '</span></div>';
-    }).join('') + '</div>';
+  var dd = hmDeck(), pd = hmPd();
+  var groups = seDistGroups(), mix = null, recG = null, bandG = null;
+  groups.forEach(function(g){
+    if(g.title === 'Relationship mix') mix = g;
+    else if(g.title === 'Last-contact recency') recG = g;
+    else if(g.title === 'Completeness bands') bandG = g;
+  });
+  function pct(n){ return Math.round(n / total * 100); }
+  /* --- rings: the five headline numbers, fill = coverage --- */
+  var rings = '<div class="hmr-rings">' +
+    hmrRing('people', 1, 'k-slate', hmFmtN(total), 'People', 'in the directory') +
+    hmrRing('footprint', dd.fpPeople / total, 'k-gold', hmFmtN(dd.fpTotal), 'Footprint facts', pct(dd.fpPeople) + '% of people have facts') +
+    hmrRing('photos', pd.onFile / total, 'k-brown', hmFmtN(pd.onFile), 'Photos on file', pct(pd.onFile) + '% of the directory \u00b7 ' + hmFmtN(pd.totalPhotos) + ' total') +
+    hmrRing('located', dd.locN / total, 'k-steel', hmFmtN(dd.locN), 'Located', pct(dd.locN) + '% \u00b7 ' + Object.keys(dd.towns).length + ' towns') +
+    hmrRing('dated', dd.dated / total, 'k-maroon', hmFmtN(dd.dated), 'Known since', pct(dd.dated) + '%' + (dd.undated ? ' \u00b7 ' + dd.undated + ' still missing a year' : ' \u00b7 everyone dated')) +
+    '</div>';
+  /* --- donut: relationship mix (seDistGroups buckets each person
+     exactly once, so the segments foot to the directory count) --- */
+  var dleg = mix ? mix.rows.map(function(r, i){
+    return '<button type="button" class="hmr-leg" data-act="hmiopen" data-nkind="connection" data-kind="rel" data-key="' + esc(r.label === 'Untyped' ? 'Unspecified' : r.label) + '" data-label="' + esc(r.label) + '"><span class="hmr-sw hmr-dbg' + (i % 10) + '"></span><span>' + esc(r.label) + '</span><b>' + r.dis.length + '</b><span class="p">' + pct(r.dis.length) + '%</span></button>';
+  }).join('') : '';
+  /* --- closeness stacked bar (tier colors, as the Shape card) --- */
+  var closeSegs = [
+    { key:'vetted', label:'Vetted', c:dd.tierCounts.vetted, col:(TIERS.vetted || {}).c || 'var(--seg-0)' },
+    { key:'associate', label:'Associate', c:dd.tierCounts.associate, col:(TIERS.associate || {}).c || 'var(--seg-1)' },
+    { key:'open', label:'Open', c:dd.tierCounts.open, col:(TIERS.open || {}).c || 'var(--seg-2)' },
+    { key:'none', label:'No level yet', c:dd.tierCounts.none, col:RING_C[3] }
+  ];
+  var cbar = closeSegs.filter(function(s){ return s.c > 0; }).map(function(s){
+    return '<button type="button" class="hmr-cseg" data-act="hmiopen" data-nkind="connection" data-kind="tier" data-key="' + s.key + '" data-label="' + s.label + '" style="width:' + (100 * s.c / total) + '%;background:' + s.col + '" title="' + s.label + ' \u00b7 ' + s.c + '" aria-label="' + s.label + ', ' + s.c + ' people"></button>';
+  }).join('');
+  var cleg = closeSegs.map(function(s){
+    return '<button type="button" class="hmr-leg" data-act="hmiopen" data-nkind="connection" data-kind="tier" data-key="' + s.key + '" data-label="' + s.label + '"><span class="hmr-sw" style="background:' + s.col + '"></span><span>' + s.label + '</span><b>' + s.c + '</b><span class="p">' + pct(s.c) + '%</span></button>';
+  }).join('');
+  /* --- recency heat strip: shade = people in the bucket --- */
+  var recRows = recG ? recG.rows : [], recKeys = ['a', 'b', 'c', 'd', 'n'];
+  var recMax = Math.max.apply(null, recRows.map(function(r){ return r.dis.length; }).concat([1]));
+  var strip = recRows.map(function(r, i){
+    var dep = Math.round(r.dis.length / recMax * 100);
+    return '<button type="button" class="hmr-hcell' + (dep >= 55 ? ' deep' : '') + '" style="--p:' + dep + '%" data-act="hmiopen" data-kind="hmrec" data-key="' + recKeys[i] + '" data-label="' + esc(r.label) + '"><span>' + esc(r.label) + '</span><b>' + r.dis.length + '</b></button>';
+  }).join('');
+  var recNote = '';
+  if(recRows.length === 5){
+    var within = recRows[0].dis.length + recRows[1].dis.length + recRows[2].dis.length;
+    var tail = recRows[3].dis.length + recRows[4].dis.length;
+    recNote = '<p class="hmr-note">The recent end runs pale \u2014 <b>' + within + ' people</b> contacted in 90 days \u2014 against a deep-slate tail: <b>' + tail + '</b> are over 90 days or never recorded.</p>';
   }
-  var frows = SE_FIELDS.map(function(f){
-    var n = P.filter(function(di){ return f.has(D.directory[di]); }).length, pct = Math.round(n / total * 100);
-    return '<div class="se-frow"><span class="se-fl">' + f.l + '</span>' +
-      '<span class="se-bar"><span class="se-seg has" style="flex:' + n + '">' + (n ? n : '') + '</span>' +
-      '<span class="se-seg miss" style="flex:' + (total - n) + '">' + ((total - n) ? (total - n) : '') + '</span></span>' +
-      '<span class="se-fn">' + pct + '%</span></div>';
+  /* --- field completeness heat matrix (the preview's 11 fields,
+     fullest first) --- */
+  var hf = HMR_FIELDS.map(function(k){ return seFieldDef(k); }).filter(Boolean).map(function(f){
+    var n = P.filter(function(di){ return f.has(D.directory[di]); }).length;
+    return { f:f, n:n, p:pct(n) };
+  }).sort(function(x, y){ return y.p - x.p; });
+  function hcell(f, seg, txt, p){
+    return '<button type="button" class="hmr-hc ' + (seg === 'has' ? 'fill' : 'blank') + (p >= (seg === 'has' ? 55 : 68) ? ' deep' : '') + '" style="--p:' + p + '%" data-act="hmiopen" data-kind="hmfield" data-key="' + f.k + '|' + seg + '" data-label="' + esc(f.l) + (seg === 'has' ? ' \u2014 filled' : ' \u2014 blank') + '">' + txt + '</button>';
+  }
+  var hrows = hf.map(function(x){
+    var b = total - x.n, bp = pct(b);
+    return '<div class="hmr-hrow"><span class="hmr-hfl">' + esc(x.f.l) + '</span>' +
+      hcell(x.f, 'has', '<b>' + x.n + '</b>', x.p) + hcell(x.f, 'has', x.p + '%', x.p) +
+      hcell(x.f, 'miss', '' + b, bp) + hcell(x.f, 'miss', bp + '%', bp) + '</div>';
   }).join('');
-  var board = P.slice().sort(function(a, b){ return seFilledCount(b) - seFilledCount(a) || dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); }).slice(0, 10);
-  var bhtml = board.map(function(di, i){
-    var e = D.directory[di], n = seFilledCount(di);
-    return '<div class="se-brow hmc-row"><span class="se-rank">' + (i + 1) + '</span>' + avatar(e, 'sm') + '<span class="se-bname">' + esc(dispName(e)) + '</span><span class="se-dbar"><span style="width:' + Math.round(n / SE_FIELDS.length * 100) + '%"></span></span><span class="se-dn">' + n + ' / ' + SE_FIELDS.length + '</span></div>';
+  var byBlank = hf.slice().sort(function(x, y){ return (100 - y.p) - (100 - x.p); });
+  var glow = byBlank.slice(0, 2).map(function(x){ return '<b>' + esc(x.f.l) + '</b>'; }).join(' and ');
+  var heatNote = '<p class="hmr-note">Read it as weather: the slate side cools as a field empties, the brown side warms as the gap grows. ' + glow + ' glow \u2014 the two fields where the directory is mostly blank.</p>';
+  /* --- completeness bands heat strip --- */
+  var bandRows = bandG ? bandG.rows : [];
+  var bandMax = Math.max.apply(null, bandRows.map(function(r){ return r.dis.length; }).concat([1]));
+  var bstrip = bandRows.map(function(r, i){
+    var dep = Math.round(r.dis.length / bandMax * 100);
+    return '<button type="button" class="hmr-hcell' + (dep >= 55 ? ' deep' : '') + '" style="--p:' + dep + '%;flex:' + Math.max(r.dis.length, 55) + '" data-act="hmiopen" data-kind="hmband" data-key="' + i + '" data-label="' + esc(r.label) + '"><span>' + esc(r.label.replace('Completeness ', '')) + '</span><b>' + r.dis.length + '</b></button>';
   }).join('');
+  var bandNote = '';
+  if(bandRows.length === 5){
+    bandNote = '<p class="hmr-note">Most profiles sit in the lower middle \u2014 <b>' + (bandRows[0].dis.length + bandRows[1].dis.length) + ' of ' + total + '</b> score under 50; only <b>' + (bandRows[3].dis.length + bandRows[4].dis.length) + '</b> reach 75 or better.</p>';
+  }
   return '<section class="card hm-blk hm-charts" data-kind="about"><header><h3>Directory charts</h3>' +
-    '<p class="sub">The directory counted live, recency first. These charts moved here from the Sandbox — the Sandbox keeps the working table, the Record Studio.</p></header>' +
-    '<div class="hm-charts-grid">' +
-    (rec ? dcard(rec, true) : '') +
-    '<div class="hm-chart"><h4>Field completeness</h4>' + frows + '</div>' +
-    rest.map(function(g){ return dcard(g); }).join('') +
-    '<div class="hm-chart"><h4>Most fields filled — leaderboard</h4>' + bhtml + '</div>' +
-    '</div></section>';
+    '<p class="sub">The directory counted live \u2014 rings and a donut carry the headline numbers, heat does the diagnostics: deep slate where the record is full, warm brown where it is empty. Everything opens its people list.</p></header>' +
+    rings +
+    '<div class="hmr-mid">' +
+      '<div><h4 class="hmr-h4">Relationship mix</h4><div class="hmr-donwrap">' + (mix ? hmrDonutSVG(mix.rows, total) : '') + '<div class="hmr-legs">' + dleg + '</div></div></div>' +
+      '<div><h4 class="hmr-h4">Closeness</h4><div class="hmr-cbar">' + cbar + '</div><div class="hmr-legs wrap">' + cleg + '</div>' +
+      '<h4 class="hmr-h4 hmr-mt">Last contact \u2014 heat strip, shade = people</h4><div class="hmr-strip">' + strip + '</div>' + recNote + '</div>' +
+    '</div>' +
+    '<h4 class="hmr-h4 hmr-mt2">Field completeness \u2014 heat matrix, of ' + total + '</h4>' +
+    '<div class="hmr-hrow head"><span class="hmr-hh">Field</span><span class="hmr-hh">Filled</span><span class="hmr-hh">% filled</span><span class="hmr-hh">Blank</span><span class="hmr-hh">% blank</span></div>' +
+    hrows + heatNote +
+    '<h4 class="hmr-h4 hmr-mt2">Completeness bands \u2014 heat strip, shade = people</h4><div class="hmr-strip">' + bstrip + '</div>' + bandNote +
+    '</section>';
 }
 /* --- Home Shape card (JD 2026-10-28, V3.26.0 consolidation): tier
    mix, relationship mix and the network line in ONE card instead of
@@ -6725,6 +6820,23 @@ function hmiRows(kind, key){
   } else if(kind === 'nophoto'){
     var idx = phIndex();
     pop.forEach(function(di){ var e = D.directory[di]; var p = idx ? idx[dispName(e)] : null; if(!p || !phHasPhoto(p)) push(di); });
+  } else if(kind === 'hmfield'){ /* Home heat-matrix cells (V3.72.0): key = '<field>|<has|miss>'; the field's own has(), the same check SE_FIELDS/Audit use */
+    var hfp = key.split('|'), hfDef = seFieldDef(hfp[0]);
+    if(hfDef) pop.forEach(function(di){ var h = hfDef.has(D.directory[di]); if(hfp[1] === 'has' ? h : !h) push(di); });
+  } else if(kind === 'hmrec'){ /* Home recency strip (V3.72.0): key a/b/c/d/n — mirrors seDistGroups()' bucket math exactly (midnight today, flexKey ms, floor days) */
+    var t0 = new Date(); t0.setHours(0, 0, 0, 0);
+    pop.forEach(function(di){
+      var f = flexKey(gv(D.directory[di], 'last_contact'));
+      if(f == null){ if(key === 'n') push(di); return; }
+      var days = Math.floor((t0.getTime() - f) / 864e5);
+      if(key === 'a'){ if(days <= 7) push(di); }
+      else if(key === 'b'){ if(days > 7 && days <= 30) push(di); }
+      else if(key === 'c'){ if(days > 30 && days <= 90) push(di); }
+      else if(key === 'd'){ if(days > 90) push(di); }
+    });
+  } else if(kind === 'hmband'){ /* Home completeness-bands strip (V3.72.0): key = band index; same scoreFor() buckets as seDistGroups() */
+    var hbR = [[0, 24], [25, 49], [50, 74], [75, 89], [90, 100]][+key];
+    if(hbR) pop.forEach(function(di){ var sc = scoreFor(di); if(sc && sc.score >= hbR[0] && sc.score <= hbR[1]) push(di); });
   }
   rows.sort(function(a, b){
     var an = dispName(D.directory[a.di]), bn = dispName(D.directory[b.di]);
@@ -6734,8 +6846,8 @@ function hmiRows(kind, key){
   HMI_INDEX[ck] = rows;
   return rows;
 }
-var HMI_TITLES = { tier:'Closeness', persona:'Traits makeup', years:'Known since', decade:'Known since', town:'Where they are', rel:'Relationship', org:'Organization', orgpair:'Organizations', skill:'Skill', group:'Group', missingyrs:'Known since', noloc:'Location', nophone:'Phone', withphone:'Phone', nophoto:'Photos' };
-var HMI_KICK_LIST = { town:'Rankings \u00b7 Where they are', skill:'Rankings \u00b7 Skills', org:'Rankings \u00b7 Organizations', orgpair:'Rankings \u00b7 Organizations', group:'Rankings \u00b7 Groups', tier:'People \u00b7 Tier', rel:'People \u00b7 Relationship', persona:'People \u00b7 Persona', years:'Known since', decade:'Known since', missingyrs:'Known since', noloc:'Coverage \u00b7 Gaps', nophone:'Coverage \u00b7 Gaps', withphone:'Coverage \u00b7 Phones', nophoto:'Photos' };
+var HMI_TITLES = { tier:'Closeness', persona:'Traits makeup', years:'Known since', decade:'Known since', town:'Where they are', rel:'Relationship', org:'Organization', orgpair:'Organizations', skill:'Skill', group:'Group', missingyrs:'Known since', noloc:'Location', nophone:'Phone', withphone:'Phone', nophoto:'Photos', hmfield:'Field completeness', hmrec:'Last contact', hmband:'Completeness' };
+var HMI_KICK_LIST = { town:'Rankings \u00b7 Where they are', skill:'Rankings \u00b7 Skills', org:'Rankings \u00b7 Organizations', orgpair:'Rankings \u00b7 Organizations', group:'Rankings \u00b7 Groups', tier:'People \u00b7 Tier', rel:'People \u00b7 Relationship', persona:'People \u00b7 Persona', years:'Known since', decade:'Known since', missingyrs:'Known since', noloc:'Coverage \u00b7 Gaps', nophone:'Coverage \u00b7 Gaps', withphone:'Coverage \u00b7 Phones', nophoto:'Photos', hmfield:'Directory charts \u00b7 Fields', hmrec:'Directory charts \u00b7 Recency', hmband:'Directory charts \u00b7 Completeness' };
 function hmiOpenList(kind, key, label, opener){
   var rows = hmiRows(kind, key);
   var dd = hmDeck(), N = dd.N, n = rows.length;
@@ -6833,6 +6945,15 @@ function hmiOpenList(kind, key, label, opener){
   else if(kind === 'nophoto'){
     why = '<p>People with <b>no photo on file</b> yet.</p>';
     tiles.push({ v:hmFmtN(hmPd().onFile), l:'with photo' });
+  }
+  else if(kind === 'hmfield'){
+    why = '<p><b>' + esc(L) + '</b> across the directory \u2014 <b>' + hmFmtN(n) + '</b> of <b>' + hmFmtN(N) + '</b> people, matching the heat matrix cell on Home.</p>';
+  }
+  else if(kind === 'hmrec'){
+    why = '<p>People whose last recorded contact falls in <b>' + esc(L) + '</b> \u2014 the same bucket the Home recency strip shades.</p>';
+  }
+  else if(kind === 'hmband'){
+    why = '<p>People whose completeness score falls in <b>' + esc(L.replace('Completeness ', '')) + '</b> \u2014 the same bands as the Home strip and the Audit completeness view.</p>';
   }
   var right = hmiRowsHTML(kind, rows, 150, valMode);
   if(kind === 'group') right += '<div class="hmi-actions"><button type="button" class="btn primary sm" data-act="hmigroup" data-g="' + esc(key) + '">Open group</button></div>';
