@@ -153,6 +153,11 @@
   "layout": [
    {
     "date": "2026-11-02",
+    "title": "First pass: gate FAILS the current build — both of JD's screenshot defects caught by measurement",
+    "summary": "Full crawl of the current build (10 surfaces x 1440x900 + 1366x768 x light/dark = 40 combos; role Private; zero clicks). Calibration confirmed in every combo: the Home charts card's 3px steel ::before bar spans 98% of the card's height, 7px inside its border, with 6 section headers running along it and the nearest header text 11px from the line (edge-line — the banned full-height line); and the relationship donut's center label '730' overlaps its ring by 9.6px in a 76px hole, with 'RELATIONSHIPS' filling 75% of the hole's width (donut-crowding). Both were also measured directly on the untouched V3.72.0 tree — they persist into V3.73.0. Tuned per-combo blocking counts: People 60 (truncated table cells), Sandbox 63-64, Live Records 9-10, Profile 9, Home 8, Audit 1-4; What's New, Calendar, Manage and Photos 0 — Photos is genuinely clean (6,307 elements, zero findings in every combo). Full grouped detail: hidden_files/council/layout-audit-2026-11-02-run1.md. The tuned re-crawl's report write was destroyed by the Nov 2 environment write-denial incident; its per-combo counts are quoted in layout-log.md and a clean re-run is the seat's first follow-up. Fixes route to the queued layout build — this seat measures and blocks; it does not edit app files."
+   },
+   {
+    "date": "2026-11-02",
     "title": "Director stood up — blocking geometry gate (JD, Nov 2)",
     "summary": "Seventh Council seat chartered after repeated spacing/overlap defects shipped past eyeball QA (latest: V3.72.0 Home — section headers on card borders, a donut crowding its card). Method is automated geometry measurement (scripts/overlap_audit.py: collisions, text overflow, header/card intersections, full-height edge lines, sub-4px proximities) at 1440x900 and 1366x768 in both themes. Authority is BLOCKING: a build that fails the gate does not ship."
    }
@@ -197,9 +202,9 @@
   },
   "layout": {
    "strategy": "Measure, never eyeball. After every ship, crawl every audited surface at 1440x900 and 1366x768 in both themes with scripts/overlap_audit.py and count geometry defects: sibling collisions, clipped or spilling text, headers intersecting cards, full-height edge lines, sub-4px proximities, chart labels crowding their rings. A nonzero count in a blocking class holds the ship; the dated report in hidden_files/council/ is the evidence, and a fix only counts when a re-crawl reads zero — never on a screenshot that merely looks better.",
-   "working": "Standing up today (Nov 2, 2026): charter written, seat added to the Council board, instrument built. The calibration defects are already measurable in the current build: the Home charts card carries a 3px steel ::before bar 1,245px tall — 98% of the card's height, 7px inside its left border — with the card's section headers starting 11px from it, and the relationship donut's center numeral clears the ring's inner edge by ~0.2px at the top. Both are exactly the class JD flagged from his screenshot.",
+   "working": "First pass complete (Nov 2, 2026): the instrument crawls all 10 surfaces at both viewports in both themes and the gate FAILS the current build. Both calibration defects are caught in every combo with measurements — the Home charts card's ::before edge line (3px wide, 98% of the card's height, section headers 11px from it) and the relationship donut's center label overlapping its ring by 9.6px. Photos is a proven-clean surface (6,307 elements, zero findings); People's truncated table cells are the largest blocking class (60 per combo).",
    "barriers": "Headless Chromium on this VM cannot reach the live GitHub Pages origin (tunnel fails), so the crawl runs against a locally served copy of the site tree — byte-identical to the shipped build at audit time (APP_VERSION read from the served page). The gate holds future ships; it cannot un-ship a build already live, so first-pass findings on V3.72.0 route to the queued layout build as its work list.",
-   "stuck": "Nothing yet — seat stood up today. First full pass against V3.72.0 in progress; findings file in layout-log.md and the dated report beside it."
+   "stuck": "The tuned re-crawl's grouped detail was lost when the Nov 2 environment write-denial incident killed its report write (its per-combo counts are preserved in layout-log.md; the first crawl's full grouped report survives as layout-audit-2026-11-02-run1.md, with a superseded naive viewport-escape count and an empty profile surface). First follow-up once exec writes are verified healthy: one clean full re-run of scripts/overlap_audit.py to produce the single definitive dated report pair."
   }
  },
  "flags": [
@@ -1524,11 +1529,11 @@
    "authority": "BLOCKING gate: a build that fails the layout crawl does not ship. Failures stage as flags on the Council board like every other director's; only JD can override a held ship.",
    "icon": "expand",
    "key": "layout",
-   "last_run": null,
+   "last_run": "Nov 2, 2026 (first pass)",
    "mission": "Own geometry — no element too close, nothing overlapping, on any surface, at any audited viewport, in either theme — proven by automated measurement (scripts/overlap_audit.py), never by eyeballs alone.",
    "name": "Director of Layout Integrity",
    "next_run": "After every ship (blocking) + Mondays 05:30 ET — weekly cycle",
-   "status": "Stood up Nov 2, 2026 (JD) — charter written, instrument built; first pass against V3.72.0 in progress."
+   "status": "Active — first pass complete: gate FAILS the current build. JD's two calibration defects caught in every combo (Home edge line at 98% of card height, donut label overlapping its ring by 9.6px); Photos clean; People carries 60 blocking truncations per combo. Clean definitive re-run queued behind the environment write fix."
   }
  ],
  "runs": [
