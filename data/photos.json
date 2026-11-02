@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-01",
- "total": 691,
+ "updated": "2026-11-02",
+ "total": 693,
  "batches": "All batches complete — all 670 profiles checked 2026-10-22, plus JD-confirmed photos for William Dunphey and Shannon Boyle; LinkedIn photos via Google Images for 18 profiles; Oct 26 photo hunt (98 attempted): 14 filed",
  "people": [
   {
@@ -6513,6 +6513,24 @@
    "type": "Spotlight portrait (crop)",
    "evidence": "NYSAPCSO (Association of Personnel and Civil Service Officers of New York State) 'Feature Friday' spotlight graphic names her in the image itself - 'Heather Foster-Barrigar, Personnel Officer, St. Lawrence County' - beside her portrait. Filed as a 1:1 crop of the portrait from that graphic, coordinator-fetched and visually verified; St. Lawrence County personnel-officer role is the anchor. Overnight hunt 2026-11-01.",
    "added": "2026-11-01"
+  },
+  {
+   "name": "Christopher Pagan",
+   "photo_url": "photos/christopher-pagan.jpg",
+   "source_page": "https://www.dvidshub.net/video/901808/chicago-bears-shoutout-salute-service-2023",
+   "status": "confirmed",
+   "type": "Video still (crop)",
+   "evidence": "Frame from DVIDS video 901808, 'Chicago Bears Shoutout - Salute to Service 2023': the official caption names Spc. Christopher Pagan, of Aurora, Illinois, 34th Division Sustainment Brigade, Illinois Army National Guard, and the coordinator read his 'PAGAN' and 'U.S. ARMY' name tapes in the frame itself. Aurora is Chicago metro, matching JD's seed (Chicago, IL) and his Army/National Guard profile. Filed as a 1:1 crop of the frame, coordinator-fetched and visually verified. Filed 2026-11-02 on the batch-1 hunter's og:image extraction.",
+   "added": "2026-11-02"
+  },
+  {
+   "name": "Evan Dimakas",
+   "photo_url": "https://d1ldvf68ux039x.cloudfront.net/thumbs/photos/1907/5602010/1000w_q95.jpg",
+   "source_page": "",
+   "status": "confirmed",
+   "type": "Official military photo",
+   "evidence": "DVIDS photo 5602010 (VIRIN 190725-M-ZQ619-1175, July 2019): a U.S. Army captain briefs Indonesian airborne soldiers in the jungle; the coordinator enlarged the frame and read his name tape - 'DIMAKAS' (the leading D sits at a uniform fold) - with captain's rank on his chest. Matches his Live Records anchor: Captain commanding B Company, 182nd Infantry Regiment, July 2019 (the battalion was in Indonesia for Garuda Shield 2019). Note: a 'Wikimedia Commons' copy of this photo series circulated during the hunt does not exist - this filing uses the DVIDS original, coordinator-fetched and visually verified. Filed 2026-11-02 on the batch-4 hunter's corrected sourcing.",
+   "added": "2026-11-02"
   }
  ]
 }
