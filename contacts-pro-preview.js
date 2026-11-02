@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.73.0';
+var APP_VERSION = '3.73.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9910,11 +9910,33 @@ function audPair(di, gap){ var e = D.directory[di]; return e ? pkey(e) + '|' + g
 function audDismissedServer(di){
   return String(gv(D.directory[di], 'audit_dismissed') || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
 }
+/* Session tombstones for INTENTIONAL un-dismissals (the Audit Undo):
+   pairs removed on purpose in this session, recorded by
+   audUndismissPairs() before it syncs. The union below honors them;
+   they die with the session because a landed undo bakes into the
+   server value itself. */
+var AUD_UNDONE = {};
+function audUndismissPairs(pairs){
+  (pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; AUD_UNDONE[p] = 1; });
+}
 function audDismissSyncPerson(di){
   var e = D.directory[di]; if(!e) return;
-  var pk = pkey(e), list = [];
-  Object.keys(AUD_DISMISS).forEach(function(p){ var ix = p.lastIndexOf('|'); if(p.slice(0, ix) === pk) list.push(p.slice(ix + 1)); });
-  list.sort();
+  var pk = pkey(e), set = {};
+  /* UNION, NEVER REPLACE (JD 2026-11-02, refill diagnosis fix 1):
+     the written value is the server list UNION this browser's local
+     list, minus this session's intentional un-dismissals. A sync can
+     only ever ADD dismissals — a stale or partial local store can no
+     longer destroy richer server dismissals (the old wholesale
+     rebuild resurrected 54 cleared gaps in one day, 2026-11-02).
+     Server gaps also fold back into the local store, so this
+     browser's cache converges to the same union. */
+  audDismissedServer(di).forEach(function(g){
+    if(AUD_UNDONE[pk + '|' + g]) return;
+    set[g] = 1; AUD_DISMISS[pk + '|' + g] = 1;
+  });
+  Object.keys(AUD_DISMISS).forEach(function(p){ var ix = p.lastIndexOf('|'); if(p.slice(0, ix) === pk) set[p.slice(ix + 1)] = 1; });
+  var list = Object.keys(set).sort();
+  store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
   var want = list.join(',');
   if(String(gv(e, 'audit_dismissed') || '') !== want) queuePatch(di, { audit_dismissed: want });
 }
@@ -10224,7 +10246,7 @@ function audUndoLast(){
     if(x){ if(!x.vals) x.vals = {}; if(act.priorVal) x.vals[act.gap] = act.priorVal; else delete x.vals[act.gap]; if(card) audPaintChips(card); }
   }
   else if(act.kind === 'pass'){
-    (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
+    audUndismissPairs(act.pairs);
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
     audDismissSyncPairs(act.pairs);
     if(x && card){
@@ -10236,13 +10258,13 @@ function audUndoLast(){
   else if(act.kind === 'bulkpass'){
     /* restore every pair the bulk close-out wrote, then redeal so the
        phone gaps are back on the wall exactly as before */
-    (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
+    audUndismissPairs(act.pairs);
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
     audDismissSyncPairs(act.pairs);
     if(S.audit){ S.audit.shown = null; viewAudit($('#view')); }
   }
   else if(act.kind === 'done'){
-    (act.pairs || []).forEach(function(p){ delete AUD_DISMISS[p]; });
+    audUndismissPairs(act.pairs);
     store('ncc_aud_skip', JSON.stringify(AUD_DISMISS));
     audDismissSyncPairs(act.pairs);
     if(act.submit){ audReverseEntry(act.submit.entry); if(S.audit) S.audit.done = Math.max(0, S.audit.done - 1); audNoteUnfill(act.submit); }
