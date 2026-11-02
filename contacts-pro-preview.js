@@ -7388,7 +7388,10 @@ function rcModel(){
    filtered away), the first pending shown row takes over, else the
    first shown row. */
 function rcEnsureCur(m){
-  if(!m.shown.length){ if(RC_VIEW.cur){ RC_VIEW.cur = ''; rcSaveView(); } return; }
+  /* An empty shown list (a search that matches nothing) keeps the
+     stored current id: the marker simply has no row to sit on until
+     the filter clears, and JD keeps his place. */
+  if(!m.shown.length) return;
   for(var i = 0; i < m.shown.length; i++) if(m.shown[i].c.id === RC_VIEW.cur) return;
   var pick = null;
   for(var j = 0; j < m.shown.length; j++) if(m.shown[j].st.k === 'pending'){ pick = m.shown[j]; break; }
