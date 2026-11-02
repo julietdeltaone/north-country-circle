@@ -242,7 +242,7 @@
     "detail": 15
    },
    "fields": {
-    "degrees": "Business Administration \u2014 SUNY Potsdam (2024)",
+    "degrees": "Business Administration — SUNY Potsdam (2024)",
     "universities": "SUNY Potsdam"
    },
    "published": "",
@@ -413,7 +413,7 @@
    },
    "fields": {
     "highlights": [
-     "Section X Athlete of Distinction \u2014 Girls Soccer (Potsdam)"
+     "Section X Athlete of Distinction — Girls Soccer (Potsdam)"
     ]
    },
    "published": "",
@@ -444,7 +444,7 @@
    },
    "fields": {
     "companies": "Joint Council for Economic Opportunity",
-    "degrees": "B.A. Speech Communications \u2014 SUNY Potsdam",
+    "degrees": "B.A. Speech Communications — SUNY Potsdam",
     "universities": "SUNY Potsdam"
    },
    "published": "",
@@ -457,7 +457,7 @@
    "run_date": "2026-10-20",
    "run_label": "Special 100-check run",
    "category": "conflict",
-   "claim": "Summa cum laude in the SUNY Canton Class of 2026 commencement program \u2014 but the program lists an Abigail Stiles under the Nursing A.A.S.",
+   "claim": "Summa cum laude in the SUNY Canton Class of 2026 commencement program — but the program lists an Abigail Stiles under the Nursing A.A.S.",
    "file_text": "Graduated summa cum laude from SUNY Canton in the Class of 2026",
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/media/pdf/Commencement-Program2026.pdf",
@@ -660,7 +660,7 @@
     "detail": 17
    },
    "fields": {
-    "degrees": "B.S. Emergency Management \u2014 SUNY Canton (2024)",
+    "degrees": "B.S. Emergency Management — SUNY Canton (2024)",
     "universities": "SUNY Canton"
    },
    "published": "2024",
@@ -740,7 +740,7 @@
     "detail": 14
    },
    "fields": {
-    "degrees": "A.A.S. Individual Studies \u2014 SUNY Canton (2021)",
+    "degrees": "A.A.S. Individual Studies — SUNY Canton (2021)",
     "universities": "SUNY Canton"
    },
    "published": "2021",
@@ -1165,7 +1165,7 @@
     "Full name",
     "Canton, New York"
    ],
-   "missing_gate": "The packet has no anchors to confirm identity \u2014 and JD has ruled Maggie Lapinski is not Meg Lapinski.",
+   "missing_gate": "The packet has no anchors to confirm identity — and JD has ruled Maggie Lapinski is not Meg Lapinski.",
    "confidence": 48,
    "confidence_parts": {
     "identity": 14,
@@ -1404,7 +1404,7 @@
    "anchors": [
     "Name match only"
    ],
-   "missing_gate": "Held as ambiguous \u2014 a likely namesake; no anchor ties the Tulum guide to this profile.",
+   "missing_gate": "Held as ambiguous — a likely namesake; no anchor ties the Tulum guide to this profile.",
    "confidence": 36,
    "confidence_parts": {
     "identity": 8,
@@ -1452,7 +1452,7 @@
    "source": "Kansas local coverage",
    "url": "https://socialstudiesforkids.com/articles/currentevents/pancakerace2019.htm",
    "anchors": [
-    "Name only \u2014 zero anchors tie the Kansas person to this profile"
+    "Name only — zero anchors tie the Kansas person to this profile"
    ],
    "missing_gate": "Zero anchors tie the Kansas person to the packet; almost certainly a namesake.",
    "confidence": 26,
@@ -1630,7 +1630,7 @@
    "source": "Publisher / author records",
    "url": "https://en.wikipedia.org/wiki/Rachel_Kushner",
    "anchors": [
-    "Name match only \u2014 every biographical anchor conflicts"
+    "Name match only — every biographical anchor conflicts"
    ],
    "missing_gate": "A different person from the packet's University of Michigan / Trenton High School / Ann Arbor profile; not merged.",
    "confidence": 5,
@@ -1906,8 +1906,8 @@
    "run_date": "2026-10-30",
    "run_label": "Daily rotation (PM)",
    "category": "sensitive",
-   "claim": "Emma Bortnick said she met her fianc\u00e9 while working as a supervisor at the SUNY Canton Fitness Center and was planning a wedding for August 2023.",
-   "file_text": "Planned an August 2023 wedding to a fianc\u00e9 she met while working as a supervisor at the SUNY Canton Fitness Center",
+   "claim": "Emma Bortnick said she met her fiancé while working as a supervisor at the SUNY Canton Fitness Center and was planning a wedding for August 2023.",
+   "file_text": "Planned an August 2023 wedding to a fiancé she met while working as a supervisor at the SUNY Canton Fitness Center",
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/plm/name-90294-en.html",
    "anchors": [
@@ -3073,7 +3073,7 @@
    "category": "identity",
    "claim": "Youth-circle friend of JD's, called CJ, in 1:1 Messenger contact from April 10, 2014 to July 23, 2017 (about 620 messages) and active in group threads through 2019. He stated he was born on September 1 and had repeated kindergarten, expecting to finish high school a year early. He was in the Iolanthe cast in May 2015, and in summer 2018 he co-founded and hosted a Wednesday Bible study at his Potsdam apartment with Silas Smith, ending in mid-August 2018 when the household moved out.",
    "file_text": "Youth-circle friend of JD's, called CJ, in 1:1 Messenger contact from April 10, 2014 to July 23, 2017 (about 620 messages) and active in group threads through 2",
-   "source": "Facebook export \u2014 Christian Tomford (1:1) / Bible Study @ CJ's / IOLANTHE",
+   "source": "Facebook export — Christian Tomford (1:1) / Bible Study @ CJ's / IOLANTHE",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3098,7 +3098,7 @@
    "category": "identity",
    "claim": "Supplement to the existing Pat Wilbur candidate (fb-20261031-pat-wilbur-legacy-volunteer), with a different claim: as 'Pat Vil' he was the Christian Fellowship Center Potsdam media coordinator who scheduled JD's volunteer media work from October 2011 through January 2018 (393-message 1:1), set up the CFCP tech mailing list, worked on a weather-balloon/space-capsule project that sent a capsule up in April 2011, had coached a FIRST Lego League team before 2008, and said much of his family was from Watkins Glen.",
    "file_text": "Supplement to the existing Pat Wilbur candidate (fb-20261031-pat-wilbur-legacy-volunteer), with a different claim: as 'Pat Vil' he was the Christian Fellowship ",
-   "source": "Facebook export \u2014 Pat Vil (1:1)",
+   "source": "Facebook export — Pat Vil (1:1)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3123,7 +3123,7 @@
    "category": "identity",
    "claim": "Close friend in JD's Wangerin / Christian Fellowship Center circle, in 1:1 Messenger contact from September 22, 2015 to May 31, 2017 (about 1,089 messages; her side of the export is almost entirely media/attachments, so the span rests on thread metadata). JD recalled visiting her house in May 2017 while Liz Wangerin was there. In November 2019 Philip Wangerin described a delivery job at 'the bakery Lea works at', indicating she worked at a bakery in 2019.",
    "file_text": "Close friend in JD's Wangerin / Christian Fellowship Center circle, in 1:1 Messenger contact from September 22, 2015 to May 31, 2017 (about 1,089 messages; her ",
-   "source": "Facebook export \u2014 Lea Wangerin (1:1) / unnamed 2019-2020 group thread (Philip Wangerin message, Nov 11, 2019)",
+   "source": "Facebook export — Lea Wangerin (1:1) / unnamed 2019-2020 group thread (Philip Wangerin message, Nov 11, 2019)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3148,7 +3148,7 @@
    "category": "identity",
    "claim": "She modeled a Park Bros T-shirt in a photo session at Park Bros Coffee on the morning of January 26, 2017, arranged by JD the day before.",
    "file_text": "She modeled a Park Bros T-shirt in a photo session at Park Bros Coffee on the morning of January 26, 2017, arranged by JD the day before.",
-   "source": "Facebook export \u2014 Molly Waite (1:1)",
+   "source": "Facebook export — Molly Waite (1:1)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3173,7 +3173,7 @@
    "category": "identity",
    "claim": "She had a skating coach in 2017, referring to the coach's posts in a March 4, 2017 group-thread message.",
    "file_text": "She had a skating coach in 2017, referring to the coach's posts in a March 4, 2017 group-thread message.",
-   "source": "Facebook export \u2014 Ok (group thread)",
+   "source": "Facebook export — Ok (group thread)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3198,7 +3198,7 @@
    "category": "identity",
    "claim": "Her birthday falls on or near April 14: the final message of her 1:1 thread is JD's 'happy Birthday' greeting sent on April 14, 2018.",
    "file_text": "Her birthday falls on or near April 14: the final message of her 1:1 thread is JD's 'happy Birthday' greeting sent on April 14, 2018.",
-   "source": "Facebook export \u2014 Molly Waite (1:1)",
+   "source": "Facebook export — Molly Waite (1:1)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3223,7 +3223,7 @@
    "category": "sensitive",
    "claim": "Sensitive self-description: in a February 28, 2017 group message she described herself as Italian and joked about her large family.",
    "file_text": "Sensitive self-description: in a February 28, 2017 group message she described herself as Italian and joked about her large family.",
-   "source": "Facebook export \u2014 Ok (group thread)",
+   "source": "Facebook export — Ok (group thread)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3248,7 +3248,7 @@
    "category": "sensitive",
    "claim": "A workplace contact of JD's in 2023-2024: she worked a Monday-to-Friday 9-to-5 patient-facing station at the same facility where JD worked, and in August 2023 she said she held four jobs in total, two of them paying and two volunteer.",
    "file_text": "A workplace contact of JD's in 2023-2024: she worked a Monday-to-Friday 9-to-5 patient-facing station at the same facility where JD worked, and in August 2023 s",
-   "source": "Facebook export \u2014 Katie Venette (1:1)",
+   "source": "Facebook export — Katie Venette (1:1)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3273,7 +3273,7 @@
    "category": "identity",
    "claim": "A Spanish-speaking correspondent of JD's family in summer 2011 (261 messages, July 14 to August 31, 2011), who was learning piano and greeted JD's sisters Ellie and Catherine ('Cathy') by name.",
    "file_text": "A Spanish-speaking correspondent of JD's family in summer 2011 (261 messages, July 14 to August 31, 2011), who was learning piano and greeted JD's sisters Ellie",
-   "source": "Facebook export \u2014 Rafa Romo (1:1)",
+   "source": "Facebook export — Rafa Romo (1:1)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3298,7 +3298,7 @@
    "category": "identity",
    "claim": "A surprise party was held for her on May 7, 2017 at the SUNY Potsdam field house gym, organized by Savannah Newtown with Skyler Fletcher bringing her to the venue.",
    "file_text": "A surprise party was held for her on May 7, 2017 at the SUNY Potsdam field house gym, organized by Savannah Newtown with Skyler Fletcher bringing her to the ven",
-   "source": "Facebook export \u2014 Aspens surprise party",
+   "source": "Facebook export — Aspens surprise party",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3323,7 +3323,7 @@
    "category": "identity",
    "claim": "Update to his existing candidate, with a distinct claim: he was a Legacy conference board member again in 2016, planning that year's conference in a July-September 2016 board thread with Merrick Sinclair, Ellie Criscitello and JD Meyers, and he played violin in a youth covers music project whose final concert was July 9, 2016.",
    "file_text": "Update to his existing candidate, with a distinct claim: he was a Legacy conference board member again in 2016, planning that year's conference in a July-Septem",
-   "source": "Facebook export \u2014 Legacy / Savage covers",
+   "source": "Facebook export — Legacy / Savage covers",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3348,7 +3348,7 @@
    "category": "identity",
    "claim": "She and Marcos Santos were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth night on May 11, 2015, ahead of their leaving that Wednesday.",
    "file_text": "She and Marcos Santos were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth nigh",
-   "source": "Facebook export \u2014 End of visit celebration: Ems and Marcos",
+   "source": "Facebook export — End of visit celebration: Ems and Marcos",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3373,7 +3373,7 @@
    "category": "identity",
    "claim": "He and Ems Santos Cortez were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth night on May 11, 2015, ahead of their leaving that Wednesday.",
    "file_text": "He and Ems Santos Cortez were visiting members of JD's youth circle whose visit ended in mid-May 2015; the group held a farewell celebration for them at youth n",
-   "source": "Facebook export \u2014 End of visit celebration: Ems and Marcos",
+   "source": "Facebook export — End of visit celebration: Ems and Marcos",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3398,7 +3398,7 @@
    "category": "identity",
    "claim": "Supplement to his existing candidates from his 1:1 Messenger thread (75 messages, March 26 to April 30, 2015): the exchange is mostly Spanish-language banter and voice/video calls, including a 404-minute call on March 26, 2015; Marcos also referred to JD's brother as someone he had spoken with. A birthday exchange in the thread is garbled teasing and cannot be attributed to either party, so no birthday is asserted.",
    "file_text": "Supplement to his existing candidates from his 1:1 Messenger thread (75 messages, March 26 to April 30, 2015): the exchange is mostly Spanish-language banter an",
-   "source": "Facebook export \u2014 Marcos Santos (1:1)",
+   "source": "Facebook export — Marcos Santos (1:1)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3423,7 +3423,7 @@
    "category": "identity",
    "claim": "Supplement to his existing candidate: in the Bros_3 group thread on May 16, 2015, Ethan James stated he had just finished umpiring a baseball game ('Just finished umping a bb game'), indicating he worked as a youth baseball umpire in that period.",
    "file_text": "Supplement to his existing candidate: in the Bros_3 group thread on May 16, 2015, Ethan James stated he had just finished umpiring a baseball game ('Just finish",
-   "source": "Facebook export \u2014 Bros_3",
+   "source": "Facebook export — Bros_3",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3448,7 +3448,7 @@
    "category": "identity",
    "claim": "Airsoft enthusiast in a 68-message 1:1 Messenger thread with JD (April 23, 2013 to August 27, 2014) who advised JD on airsoft gun purchases, recommending specific rifles, magazines, and gear (including Airsoft GI product links) in April-May 2013 and April 2014.",
    "file_text": "Airsoft enthusiast in a 68-message 1:1 Messenger thread with JD (April 23, 2013 to August 27, 2014) who advised JD on airsoft gun purchases, recommending specif",
-   "source": "Facebook export \u2014 Joshua Loughren (1:1)",
+   "source": "Facebook export — Joshua Loughren (1:1)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3473,7 +3473,7 @@
    "category": "identity",
    "claim": "Supplement to his existing candidate: in his 1:1 Messenger thread (56 messages, May 29, 2013 to November 30, 2014), JD addressed him by the first name 'Josiah' ('Hey Josiah, do you know merricks pinger number'), and the November 30, 2014 exchange places him at a Christian Fellowship Center Potsdam service that day, discussing the service order with JD, Merrick Sinclair, and Liz Wangerin (some messages in the thread were typed by Merrick or Liz on shared devices).",
    "file_text": "Supplement to his existing candidate: in his 1:1 Messenger thread (56 messages, May 29, 2013 to November 30, 2014), JD addressed him by the first name 'Josiah' ",
-   "source": "Facebook export \u2014 Jsahio Dvdia (1:1)",
+   "source": "Facebook export — Jsahio Dvdia (1:1)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3498,7 +3498,7 @@
    "category": "identity",
    "claim": "Luke Boyle's full name appears as 'Luke Edward Boyle' in an August 4, 2014 group-thread title set by JD in the 'Luke' thread (a variant title 'Luke Edward Boyles' also appears), indicating his middle name is Edward.",
    "file_text": "Luke Boyle's full name appears as 'Luke Edward Boyle' in an August 4, 2014 group-thread title set by JD in the 'Luke' thread (a variant title 'Luke Edward Boyle",
-   "source": "Facebook export \u2014 Luke (group thread)",
+   "source": "Facebook export — Luke (group thread)",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3523,7 +3523,7 @@
    "category": "identity",
    "claim": "A surprise party was held for Laura Wurst in May 2015 by JD's youth circle; afterward (May 21-23, 2015) Morgan Morse organized a signed matted frame with a group cast photo for her, and JD and Josiah (Jsahio Dvdia) had filmed her walking in.",
    "file_text": "A surprise party was held for Laura Wurst in May 2015 by JD's youth circle; afterward (May 21-23, 2015) Morgan Morse organized a signed matted frame with a grou",
-   "source": "Facebook export \u2014 Laura's surprise party",
+   "source": "Facebook export — Laura's surprise party",
    "url": "",
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
@@ -3546,7 +3546,7 @@
    "run_date": "2026-10-31",
    "run_label": "Seeded web-search pass (continuation)",
    "category": "identity",
-   "claim": "RESOLVED IN PART during the Oct 31 continuation run: JD's Ashleigh Graveline is the Clarkson University occupational-therapy professor \u2014 her official Clarkson people page matches JD's profile anchors exactly (Utica College and Chatham degrees; Claxton Hepburn Medical Center; St. Lawrence Psychiatric Center), and her Salmon River Central School District and United Helpers roles, Car-Fit/SBIRT/Physical Agent Modalities credentials, and 2023 Kennedy Elementary Tourette Syndrome presentations were filed from that page. What remains open: a SUNY Potsdam alumni spotlight describes an Ashleigh Graveline '10 who is NYC-based and serves on the SUNY Potsdam Alumni Association Board of Directors; her education record on the Clarkson page shows no SUNY Potsdam degree, so that spotlight is treated as a likely different person and was NOT filed.",
+   "claim": "RESOLVED IN PART during the Oct 31 continuation run: JD's Ashleigh Graveline is the Clarkson University occupational-therapy professor — her official Clarkson people page matches JD's profile anchors exactly (Utica College and Chatham degrees; Claxton Hepburn Medical Center; St. Lawrence Psychiatric Center), and her Salmon River Central School District and United Helpers roles, Car-Fit/SBIRT/Physical Agent Modalities credentials, and 2023 Kennedy Elementary Tourette Syndrome presentations were filed from that page. What remains open: a SUNY Potsdam alumni spotlight describes an Ashleigh Graveline '10 who is NYC-based and serves on the SUNY Potsdam Alumni Association Board of Directors; her education record on the Clarkson page shows no SUNY Potsdam degree, so that spotlight is treated as a likely different person and was NOT filed.",
    "file_text": "Web sources conflict on which Ashleigh Graveline is JD's contact: a SUNY Potsdam alumni spotlight (Class of 2010) describes an NYC-based alumna serving on the S",
    "source": "SUNY Potsdam alumni spotlight; Clarkson University appointment release (readMedia, Sep 20, 2018); Clarkson University people page",
    "url": "",
@@ -3554,7 +3554,7 @@
     "JD's existing profile seeds (occupation/university anchors)"
    ],
    "missing_gate": "Only the SUNY Potsdam alumni-spotlight identity remains unresolved; it conflicts with the Clarkson professor's documented education (AAS SUNY Canton, Utica College, Chatham OTD) and was held rather than filed. The Clarkson-professor items are filed and no longer part of this hold.",
-   "confidence": 40,
+   "confidence": 45,
    "confidence_parts": {
     "identity": 21,
     "source": 16,
@@ -3571,7 +3571,7 @@
    "run_date": "2026-10-31",
    "run_label": "Seeded web-search pass (continuation)",
    "category": "identity",
-   "claim": "RESOLVED during the Oct 31 continuation run: JD's Kwadwo Appiah-Kubi is the Clarkson University physical-therapy professor \u2014 JD's profile anchors match Clarkson's tenure/promotion announcement (Gait Sensory Interaction Test, three NIH Loan Repayment Program awards, adjunct appointment at the University of Health and Allied Sciences in Ghana), and his Neuromuscular Physical Therapy specialty plus editorial-board and APTA/ISPGR/Society for Neuroscience memberships were filed from that announcement. A Care.com Potsdam profile describing a software engineer and Math/CS tutor under the same name does not match his documented record and was NOT filed.",
+   "claim": "RESOLVED during the Oct 31 continuation run: JD's Kwadwo Appiah-Kubi is the Clarkson University physical-therapy professor — JD's profile anchors match Clarkson's tenure/promotion announcement (Gait Sensory Interaction Test, three NIH Loan Repayment Program awards, adjunct appointment at the University of Health and Allied Sciences in Ghana), and his Neuromuscular Physical Therapy specialty plus editorial-board and APTA/ISPGR/Society for Neuroscience memberships were filed from that announcement. A Care.com Potsdam profile describing a software engineer and Math/CS tutor under the same name does not match his documented record and was NOT filed.",
    "file_text": "Two men named Kwadwo Appiah-Kubi appear in Potsdam records: a Clarkson University physical-therapy professor (PhD in neuromotor science, Temple University; gait",
    "source": "Care.com Potsdam tutor profile; ORCID 0000-0001-6566-9758; Clarkson University news",
    "url": "",
@@ -3579,7 +3579,7 @@
     "JD's existing profile seeds (occupation/university anchors)"
    ],
    "missing_gate": "Identity resolved in favor of the Clarkson professor; the only remainder is the unmatched Care.com listing, held as a likely different person. Nothing from Care.com was filed.",
-   "confidence": 35,
+   "confidence": 45,
    "confidence_parts": {
     "identity": 21,
     "source": 16,
@@ -3753,7 +3753,7 @@
    "anchors": [
     "U.S. Army"
    ],
-   "missing_gate": "The license record ties the name to no profile anchor \u2014 it names no employer, unit, or location \u2014 so it cannot be tied to her Army / 27th IBCT profile by two anchors.",
+   "missing_gate": "The license record ties the name to no profile anchor — it names no employer, unit, or location — so it cannot be tied to her Army / 27th IBCT profile by two anchors.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 20,
@@ -4018,7 +4018,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation",
    "category": "conflict",
-   "claim": "SUNY Potsdam's men's lacrosse roster lists a Gavin Matthews, a midfielder from Mexico, New York (Mexico Academy) who previously attended SUNY Oswego \u2014 a different person from this profile's Canton-based Bjorn Fitness coach, whose school on file is SUNY Canton.",
+   "claim": "SUNY Potsdam's men's lacrosse roster lists a Gavin Matthews, a midfielder from Mexico, New York (Mexico Academy) who previously attended SUNY Oswego — a different person from this profile's Canton-based Bjorn Fitness coach, whose school on file is SUNY Canton.",
    "file_text": "Played men's lacrosse at SUNY Potsdam as a midfielder from Mexico, New York",
    "source": "SUNY Potsdam Athletics",
    "url": "https://potsdambears.com/sports/mens-lacrosse/roster/gavin-matthews/6252",
@@ -4242,7 +4242,7 @@
     "detail": 15
    },
    "fields": {
-    "Degrees": "Master of Science in Nursing, Family Nurse Practitioner \u2014 Utica University (2024)"
+    "Degrees": "Master of Science in Nursing, Family Nurse Practitioner — Utica University (2024)"
    },
    "published": "",
    "novelty": "new"
@@ -4332,7 +4332,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation (PM)",
    "category": "source",
-   "claim": "His Thumbtack listing for Window Cleaning Plus \u2013 Holiday Lighting in Littleton, CO shows Top Pro status for 2025, 2024 and 2023, 'Hired 553 times,' 3 employees, 4 years in business, and a 4.94/5 rating from 284 reviews.",
+   "claim": "His Thumbtack listing for Window Cleaning Plus – Holiday Lighting in Littleton, CO shows Top Pro status for 2025, 2024 and 2023, 'Hired 553 times,' 3 employees, 4 years in business, and a 4.94/5 rating from 284 reviews.",
    "file_text": "Window Cleaning Plus earned Thumbtack Top Pro status in 2023, 2024 and 2025",
    "source": "Thumbtack",
    "url": "https://www.thumbtack.com/co/littleton/window-cleaners/window-cleaning-plus-holiday-lighting/service/462764240087769097",
@@ -4358,7 +4358,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation (PM)",
    "category": "close",
-   "claim": "A St. Lawrence County Youth Bureau Youth Committee meeting agenda for May 19, 2021 lists 'Hannah Hughes \u2014 Youth, Potsdam High' among invited Youth Committee members.",
+   "claim": "A St. Lawrence County Youth Bureau Youth Committee meeting agenda for May 19, 2021 lists 'Hannah Hughes — Youth, Potsdam High' among invited Youth Committee members.",
    "file_text": "Listed as a Potsdam High youth representative on the St. Lawrence County Youth Bureau's Youth Committee in May 2021",
    "source": "St. Lawrence County",
    "url": "https://www.stlawco.gov/sites/default/files/YouthBureau/5.19.2021%20Youth%20Committee%20Agenda.doc.pdf",
@@ -4409,7 +4409,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation (PM)",
    "category": "identity",
-   "claim": "A VoyageKC Magazine interview with 'Ren\u00e9e Kc' of the Kansas City metro area says she founded LUVA, a creative brand (merchandise/fashion, photography, videography, creative direction, events).",
+   "claim": "A VoyageKC Magazine interview with 'Renée Kc' of the Kansas City metro area says she founded LUVA, a creative brand (merchandise/fashion, photography, videography, creative direction, events).",
    "file_text": "Founded LUVA, a creative brand in the Kansas City metro area",
    "source": "VoyageKC Magazine",
    "url": "https://voyagekc.com/interview/life-values-legacy-our-chat-with-renee-kc-of-kansas-city-metro-area-highlight/",
@@ -4663,7 +4663,7 @@
    "run_date": "2026-10-31",
    "run_label": "Daily rotation (PM)",
    "category": "conflict",
-   "claim": "A personalized Southern New Hampshire University 'Year In Review' page for a 'Kari' celebrates a President's List \u2014 Winter 2024, 53 completed assignments, and membership in a 'BA.HSE program' with a first SNHU course around Jan 2024; the page gives no surname and no location.",
+   "claim": "A personalized Southern New Hampshire University 'Year In Review' page for a 'Kari' celebrates a President's List — Winter 2024, 53 completed assignments, and membership in a 'BA.HSE program' with a first SNHU course around Jan 2024; the page gives no surname and no location.",
    "file_text": "Named to Southern New Hampshire University's President's List for Winter 2024",
    "source": "Southern New Hampshire University",
    "url": "https://cloud.dream.snhu.edu/SNHU-Year-In-Review?sfid=0033l0000359UZQAA2",
@@ -4790,7 +4790,7 @@
    "run_date": "2026-11-01",
    "run_label": "Daily rotation",
    "category": "identity",
-   "claim": "A Dr. Nicole Seward, PT, DPT, authors a running blog for ROOTS Physical Therapy (posts through Oct 12, 2026); her Feb 2, 2026 post says 'Over these five years at ROOTS\u2026'",
+   "claim": "A Dr. Nicole Seward, PT, DPT, authors a running blog for ROOTS Physical Therapy (posts through Oct 12, 2026); her Feb 2, 2026 post says 'Over these five years at ROOTS…'",
    "file_text": "Physical therapist blogging for ROOTS Physical Therapy, 2026",
    "source": "ROOTS Physical Therapy",
    "url": "https://www.rootspt.com/blog/",
@@ -5070,7 +5070,7 @@
    "run_date": "2026-11-01",
    "run_label": "Daily rotation",
    "category": "verification",
-   "claim": "Her Clarkson bio lists 'APTA Fellowship in Higher Education Leadership \u2013 July 2025\u2013July 2026' while the biography text still says she is 'currently completing' the fellowship, so completion in July 2026 is inferable from the end date but never stated.",
+   "claim": "Her Clarkson bio lists 'APTA Fellowship in Higher Education Leadership – July 2025–July 2026' while the biography text still says she is 'currently completing' the fellowship, so completion in July 2026 is inferable from the end date but never stated.",
    "file_text": "Completed the APTA Fellowship in Higher Education Leadership, Jul 2026",
    "source": "Clarkson University",
    "url": "https://www.clarkson.edu/people/samantha-marocco",
@@ -5424,7 +5424,7 @@
    "run_label": "Daily rotation",
    "category": "source",
    "claim": "The same Bold.pro profile lists Cross Utilized Supervisor, Unifi, Harrisburg, PA, Jan-Jul 2024.",
-   "file_text": "Worked as Cross Utilized Supervisor at Unifi Aviation in Harrisburg, Jan 2024\u2013Jul 2024",
+   "file_text": "Worked as Cross Utilized Supervisor at Unifi Aviation in Harrisburg, Jan 2024–Jul 2024",
    "source": "Bold.pro",
    "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
    "anchors": [
@@ -5453,7 +5453,7 @@
    "run_label": "Daily rotation",
    "category": "source",
    "claim": "The same Bold.pro profile lists Ramp Supervisor, Piedmont Airlines, Harrisburg, PA, Sep 2022-Jun 2023.",
-   "file_text": "Worked as Ramp Supervisor at Piedmont Airlines in Harrisburg, Sep 2022\u2013Jun 2023",
+   "file_text": "Worked as Ramp Supervisor at Piedmont Airlines in Harrisburg, Sep 2022–Jun 2023",
    "source": "Bold.pro",
    "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
    "anchors": [
@@ -5746,7 +5746,7 @@
    "category": "verification",
    "claim": "Clarkson announced Spring 2026 Presidential Scholars on Jun 4, 2026 via Merit Pages, but the student roster did not render on the opened page, so Aidan Daniels's inclusion could not be read directly.",
    "file_text": "Named a Clarkson University Presidential Scholar for Spring 2026",
-   "source": "Clarkson University \u00b7 Merit Pages",
+   "source": "Clarkson University · Merit Pages",
    "url": "https://clarkson.meritpages.com/achievements/Students-Named-Clarkson-University-Presidential-Scholars/203152",
    "anchors": [
     "Clarkson University",
