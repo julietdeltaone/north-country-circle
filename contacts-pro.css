@@ -5824,3 +5824,20 @@ body[data-view="sandbox"] #view{overflow-y:auto !important;display:block}
 /* ---------- photos: band caps (user control rules Desk up) ---------- */
 @media (min-width:700px) and (max-width:1023px){ .phgrid{grid-template-columns:repeat(4,1fr) !important} }
 @media (max-width:699px){ .phgrid{grid-template-columns:repeat(3,1fr) !important} }
+
+/* ================================================================
+   V3.75.0 (bug hunt 8/32/1): photo error fallback, Record Studio
+   header wrap, Council queue-unavailable state.
+   .ph-ini is the initials span phImgErr() swaps in for a photo that
+   fails to load — it fills whatever frame the img filled.
+   ================================================================ */
+.ph-ini{display:flex;align-items:center;justify-content:center;background:var(--card2);color:var(--mut);font-weight:700;letter-spacing:.03em;width:100%;height:100%}
+.hm-tile .ph-ini{position:absolute;inset:0;font-size:30px}
+.phcard .phimg .ph-ini{position:absolute;inset:0;font-size:30px}
+.hmi-av .ph-ini{border-radius:50%;font-size:11px}
+.phi-stage .ph-ini{position:absolute;inset:0;font-size:44px}
+.hphoto-box{position:relative}
+.hphoto-box .ph-ini{position:absolute;inset:0;font-size:32px}
+.ph-poss-th .ph-ini{font-size:15px}
+.sst-table th{white-space:normal;overflow-wrap:break-word;line-height:1.3}
+.cnc-qalert{border-color:var(--bad,#b3402e);background:color-mix(in srgb,var(--bad,#b3402e) 10%,transparent)}
