@@ -31,14 +31,6 @@
  ],
  "auto_apply": [
   {
-   "key": "sf:jeremy-taylor",
-   "display": "Jeremy Taylor",
-   "field": "groups",
-   "value": "U.S. Army",
-   "conf": 100,
-   "id": "pf-69fcfacec6"
-  },
-  {
    "key": "sf:jdmeyers_",
    "display": "Jdmeyers",
    "field": "groups",
@@ -61,14 +53,6 @@
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
-  },
-  {
-   "key": "sf:jennifer-meyer",
-   "display": "Jennifer Meyer",
-   "field": "groups",
-   "value": "Army National Guard",
-   "conf": 100,
-   "id": "pf-e41730cd0f"
   },
   {
    "key": "sf:jai-dane",
