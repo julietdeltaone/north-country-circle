@@ -2983,6 +2983,20 @@ body[data-view="council"] #view{max-width:none;padding:0;margin:0}
 .cnc-stat b{display:block;font:600 24px/1.1 var(--serif)}
 .cnc-stat span{font:700 10.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
 .cnc-stat.amb b{color:var(--cn-amb)} .cnc-stat.blu b{color:var(--cn-blu)} .cnc-stat.grn b{color:var(--cn-grn)}
+/* V3.63.0 hero widgets: one value + one plain label per card, status of everything at a glance */
+.cnc-heroes{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:10px;margin-top:18px}
+.cnc-hcard{position:relative;border:1px solid var(--line2);border-radius:var(--r-lg);background:var(--card);padding:13px 16px 12px 19px;overflow:hidden;min-width:0}
+.cnc-hcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dim)}
+.cnc-hcard.acc-amb::before{background:var(--cn-amb)} .cnc-hcard.acc-blu::before{background:var(--cn-blu)} .cnc-hcard.acc-grn::before{background:var(--cn-grn)}
+.cnc-hlab{display:block;font:700 10.5px var(--sans);letter-spacing:.11em;text-transform:uppercase;color:var(--mut)}
+.cnc-hval{display:block;font:600 27px/1.15 var(--serif);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cnc-hval.txt{font-size:16.5px;line-height:1.3;white-space:normal}
+.cnc-hsub{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+/* V3.63.0 director freshness pills + status line under the card head */
+.cnc-pill{flex:none;font:700 10.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:var(--pill);border:1px solid var(--line2);color:var(--mut)}
+.cnc-pill.is-cur{color:var(--cn-grn);border-color:var(--cn-grn);background:color-mix(in srgb,var(--cn-grn) 13%,transparent)}
+.cnc-pill.is-stale{color:var(--cn-amb);border-color:var(--cn-amb);background:color-mix(in srgb,var(--cn-amb) 13%,transparent)}
+.cnc-dstatus2{font-size:12px;color:var(--mut);line-height:1.45;margin-top:8px}
 .cnc-queuebar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:18px;padding:11px 14px;border:1px solid var(--cn-blu);border-radius:var(--r-lg);background:color-mix(in srgb,var(--cn-blu) 9%,transparent)}
 .cnc-qlab{font:700 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--cn-blu);display:flex;align-items:center;gap:6px;flex:none}
 .cnc-qitems{color:var(--mut);font-size:12.5px;flex:1;min-width:200px}
