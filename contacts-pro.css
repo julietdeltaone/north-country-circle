@@ -5033,9 +5033,9 @@ button.lrcc-nm:hover{color:#fff;border-color:#3a4657}
 .qa-in{width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-sm);
   color:var(--txt);font:400 14px var(--sans);padding:9px 11px;outline:none}
 .qa-in:focus{border-color:var(--acc)}
-#qa-q,#qa-qq{width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-sm);
+#qa-q,#qa-qq,#qa-px-q{width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-sm);
   color:var(--txt);font:400 14px var(--sans);padding:9px 11px;outline:none}
-#qa-q:focus,#qa-qq:focus{border-color:var(--acc)}
+#qa-q:focus,#qa-qq:focus,#qa-px-q:focus{border-color:var(--acc)}
 .qa-lh{font:600 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-top:2px}
 .qa-lh:empty{display:none}
 .qa-list{display:flex;flex-direction:column;gap:2px}
@@ -5070,7 +5070,7 @@ button.lrcc-nm:hover{color:#fff;border-color:#3a4657}
 .qa-status:empty{display:none}
 .qa-status.ok{color:var(--txt)}
 .qa-status.err{color:var(--hot)}
-body.qa-open{overflow:hidden}
+body.qa-on{overflow:hidden}
 @media (max-width:560px){
   .qa-panel{left:8px;right:8px;width:auto;top:52px;max-height:calc(100vh - 64px)}
   .qa-hd{flex-wrap:wrap}
@@ -5157,9 +5157,13 @@ html[data-mode="dark"] .nv[data-nav="audit"],html[data-mode="dark"] .nv[data-nav
 
 /* --- (4) Quick Add: open-profile affordance on person rows --- */
 .qa-row{font:inherit}
-.qa-open{flex:none;width:32px;height:32px;border:1px solid var(--line2);border-radius:999px;
+/* scoped to the button element (V3.70.0): the unscoped .qa-open rule
+   also matched <body> when the panel's old state class was qa-open,
+   collapsing the whole app to a 32px box the moment Quick Add opened.
+   The body state class is qa-on now; this scoping is the second lock. */
+button.qa-open{flex:none;width:32px;height:32px;border:1px solid var(--line2);border-radius:999px;
   background:var(--bg2);color:var(--mut)}
-.qa-open:hover{background:var(--accbg);border-color:var(--acc);color:var(--txt)}
+button.qa-open:hover{background:var(--accbg);border-color:var(--acc);color:var(--txt)}
 
 /* ============================================================
    Notation — About / Connection grammar (V3.65.0, JD 2026-11-02;
