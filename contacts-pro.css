@@ -5526,3 +5526,13 @@ tr.sst-row:hover .sst-lcbtn, .sst-lcbtn:focus-visible{ opacity:1; }
 .ssted{ width:min(380px, calc(100vw - 16px)); }
 .ssted .cde{ max-height:none; }
 @media (max-width:760px){ .sst-bulkctl{ margin-left:0; } .sst-tools-r{ margin-left:0; } }
+
+/* ---------- Home Directory charts (V3.71.0) ---------- */
+.hm-charts-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px 28px; margin-top:12px; }
+.hm-chart{ min-width:0; }
+.hm-chart.lead{ grid-column:1 / -1; }
+.hm-chart h4{ margin:0 0 8px; font-size:13px; font-weight:700; letter-spacing:.02em; }
+.hm-chart .se-drow, .hm-chart .se-brow{ cursor:default; }
+.hm-chart .se-drow:hover, .hm-chart .se-brow:hover{ background:transparent; }
+.hm-chart .se-seg{ cursor:default; }
+@media (max-width:900px){ .hm-charts-grid{ grid-template-columns:1fr; } }
