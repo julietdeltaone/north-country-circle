@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.64.1';
+var APP_VERSION = '3.65.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -287,6 +287,52 @@ var IC = {
 function ic(n, s){
   s = s || 16;
   return '<svg class="icsvg" width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IC[n] || '') + '</svg>';
+}
+
+/* ============================================================
+   Notation — About / Connection grammar (V3.65.0, JD 2026-11-02;
+   design packet 2026-11-02, Scheme A "Two Inks", DECIDED).
+   NOTATION ONLY: this layer tags and dresses content with its
+   kind (About = facts about the person; Connection = exists only
+   between JD and them) and, where a level is defined, its level
+   (Open / Personal / Private). It adds NO behavior: no hiding,
+   no hide control, no restructuring. The two inks are reserved —
+   steel blue (--ink-about) means About and antique gold
+   (--ink-conn) means Connection, and nothing else.
+   ============================================================ */
+var KIND_WORD = { about:'ABOUT', connection:'WITH YOU' };
+function kindChip(kind, withWord){
+  if(kind !== 'about' && kind !== 'connection') return '';
+  return '<span class="kind-chip kc-' + kind + '" data-kind="' + kind + '" title="' +
+    (kind === 'about' ? 'About — a fact about the person' : 'With you — exists only between you and them') + '">' +
+    ic(kind === 'about' ? 'user' : 'link', 11) +
+    (withWord ? '<span class="kind-w">' + KIND_WORD[kind] + '</span>' : '') + '</span>';
+}
+function kindGlyph(kind){
+  if(kind !== 'about' && kind !== 'connection') return '';
+  return '<span class="kind-glyph kg-' + kind + '" data-kind="' + kind + '" aria-hidden="true">' +
+    ic(kind === 'about' ? 'user' : 'link', 12) + '</span>';
+}
+/* The kind of a profile field: contact stamps, the timeline, years
+   known and the relationship fields are Connection; everything
+   else (location, employers, schools, skills, photos, degrees,
+   contact details) is About. Prefill suggestions inherit this. */
+function fieldKind(f){
+  f = String(f || '');
+  if(/^(last_contact|last_contact_online|events|years_known|known_since|correspondence|msgs|first_contact|relationship|closeness|category|context|tier|conn_phases|lima_charlie_notes)$/.test(f)) return 'connection';
+  return 'about';
+}
+/* Feed / change-log text: a logged contact is a With-you entry;
+   everything the pipelines file about a person is About. */
+function textKind(t){
+  return /contact logged|last contact|correspondence|logged a contact/i.test(String(t || '')) ? 'connection' : 'about';
+}
+/* Level chip (notation only — nothing is hidden by level). Only
+   Personal is assigned in this pass (the Family section); the
+   Private vocabulary exists in CSS/data but is assigned nowhere. */
+function lvlChip(level){
+  if(level !== 'personal' && level !== 'private') return '';
+  return '<span class="lvl-chip lvl-' + level + '" data-level="' + level + '">' + level.toUpperCase() + '</span>';
 }
 
 /* ============================================================
@@ -1915,20 +1961,29 @@ function askEditKey(){ try{ poolClose(); }catch(x){}
 }
 
 /* ---------- global chrome ---------- */
+/* Rail notation (V3.65.0): every rail item carries its kind.
+   About: People (the directory), Live Records, Master List,
+   Photos, Family, Groups (membership facts about people).
+   Connection: Calendar/Atlas (co-presence + contact), Network.
+   Neutral (slate): Home and What's New (mixed — their contents
+   are notated per element), Audit / Council / Sandbox / Settings
+   (pure tools). Research Command lives inside Live Records and
+   Reach-out lives inside People (By last contact); both inherit
+   their host's notation plus their own per-element notation. */
 var NAV = [
-  { k:'home',    l:'Home',    ic:'home' },
-  { k:'people',  l:'People',  ic:'people' },
-  { k:'audit',   l:'Audit',   ic:'target' },
-  { k:'daily',   l:'Live Records', ic:'sparkle' },
-  { k:'whatsnew', l:"What's New", ic:'today' },
-  { k:'calendar', l:'Calendar', ic:'calendar' },
-  { k:'council', l:'Council', ic:'award' },
-  { k:'lists',   l:'Master List', ic:'file' },
-  { k:'photos',  l:'Photos', ic:'camera' },
-  { k:'network', l:'Network', ic:'network' },
-  { k:'family',  l:'Family',  ic:'tree' },
-  { k:'groups',  l:'Groups',  ic:'groups' },
-  { k:'sandbox', l:'Sandbox', ic:'shield' }
+  { k:'home',    l:'Home',    ic:'home',    kind:'neutral' },
+  { k:'people',  l:'People',  ic:'people',  kind:'about' },
+  { k:'audit',   l:'Audit',   ic:'target',  kind:'neutral' },
+  { k:'daily',   l:'Live Records', ic:'sparkle', kind:'about' },
+  { k:'whatsnew', l:"What's New", ic:'today', kind:'neutral' },
+  { k:'calendar', l:'Calendar', ic:'calendar', kind:'connection' },
+  { k:'council', l:'Council', ic:'award',   kind:'neutral' },
+  { k:'lists',   l:'Master List', ic:'file', kind:'about' },
+  { k:'photos',  l:'Photos', ic:'camera',   kind:'about' },
+  { k:'network', l:'Network', ic:'network', kind:'connection' },
+  { k:'family',  l:'Family',  ic:'tree',    kind:'about' },
+  { k:'groups',  l:'Groups',  ic:'groups',  kind:'about' },
+  { k:'sandbox', l:'Sandbox', ic:'shield',  kind:'neutral' }
 ];
 function activeNav(){
   var n = S.route.name;
@@ -1938,13 +1993,13 @@ function activeNav(){
 function renderChrome(){
   var act = activeNav();
   var items = NAV.map(function(n){
-    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '">' + ic(n.ic, 20) + '<span>' + n.l + '</span></a>';
+    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '" data-kind="' + (n.kind || 'neutral') + '">' + ic(n.ic, 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>' + n.l + '</span></a>';
   }).join('');
   var ffExit = ''; try{ if(localStorage.getItem('ncc_force_full') && window.innerWidth <= 899) ffExit = '<a href="#" class="nv" data-act="gomobile">' + ic('phone', 20) + '<span>Mobile version</span></a>'; }catch(x){}
   $('#rail').innerHTML = '<a class="brand" href="#/home" aria-label="Contacts Pro"><i></i><b>Contacts Pro</b></a>' +
     '<div class="navlist">' + items + '</div>' +
     '<div class="railfoot">' + ffExit +
-    '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '">' + ic('settings', 20) + '<span>Settings</span></a>' +
+    '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '" data-kind="neutral">' + ic('settings', 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>Settings</span></a>' +
     '<small id="fresh">' + (D ? 'Data ' + esc(D.updated || '') : '') + '</small></div>';
   /* NAV includes Home since V2.28.0, so the tabs are just the NAV items;
      a prepended Home button here rendered as a duplicate Home tab. The
@@ -2568,8 +2623,9 @@ function tlItemHTML(it, compact, link){
     (sum ? '<span class="tl-evsum">' + esc(sum) + '</span>' : '') +
     '<span class="tl-evmeta">' + esc(tlMeta(it)) + '</span></span>' +
     '<span class="tl-evdot" style="background:' + tierCol(e) + '"></span>';
-  if(link === false) return '<div class="tl-ev' + (compact ? ' compact' : '') + ' static">' + inner + '</div>';
-  return '<button type="button" class="tl-ev' + (compact ? ' compact' : '') + '" data-act="popen" data-di="' + it.di + '">' + inner + '</button>';
+  var tlk = ev.kind === 'contact' ? 'connection' : 'about';
+  if(link === false) return '<div class="tl-ev' + (compact ? ' compact' : '') + ' static" data-kind="' + tlk + '">' + inner + '</div>';
+  return '<button type="button" class="tl-ev' + (compact ? ' compact' : '') + '" data-kind="' + tlk + '" data-act="popen" data-di="' + it.di + '">' + inner + '</button>';
 }
 function tlDensity(items, per){
   var buckets = [], n, i;
@@ -2713,7 +2769,7 @@ function viewPeople(v){
   /* Design cleanup (JD 2026-10-28): the toolbar lives INSIDE the hero
      banner now — search, tier chips and the More/Columns buttons sit
      in the banner's second row, so the table starts right under it. */
-  v.innerHTML = '<div class="page people"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
+  v.innerHTML = '<div class="page people" data-kind="about"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><p class="sub" id="pcount"></p></div>' +
     '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="timeline"' + (f.view === 'timeline' ? ' class="on"' : '') + '>Timeline</button></div></div>' +
     '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
     chips('tier', [['all', 'Any tier'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'Untiered']], f.tier) +
@@ -2721,6 +2777,7 @@ function viewPeople(v){
     '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
     '<button type="button" class="btn ghost sm" data-act="ptcols">' + ic('settings', 14) + 'Columns</button>' +
     '</div></div></div>' +
+    '<div class="kind-legend">' + kindChip('about', true) + '<span>facts about the person</span>' + kindChip('connection', true) + '<span>exists only between you</span></div>' +
     '<div class="ppl-cols"><div class="ppl-main">' +
     '<div class="plist" id="plist"></div></div>' +
     '</div></div>';
@@ -2734,7 +2791,7 @@ function ptheadHTML(){
   var ts = S.ppl.ts || { k:'name', d:1 };
   return '<thead><tr>' + ptVisibleCols().map(function(c){
     var on = ts.k === c.k;
-    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-act="tsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (ts.d < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + c.label.toLowerCase() + '">' + c.label + '<span class="sarr" aria-hidden="true">' + (on ? (ts.d < 0 ? '▾' : '▴') : '') + '</span></th>';
+    return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-kind="' + (c.kind || 'about') + '" data-act="tsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (ts.d < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + c.label.toLowerCase() + '">' + c.label + '<span class="sarr" aria-hidden="true">' + (on ? (ts.d < 0 ? '▾' : '▴') : '') + '</span></th>';
   }).join('') + '</tr></thead>';
 }
 function ptierCell(e){
@@ -2746,7 +2803,7 @@ function ptrowHTML(di, i){
   var e = D.directory[di];
   var tds = ptVisibleCols().map(function(c){
     var ed = PT_ED[c.k];
-    return '<td class="c-' + c.k + (c.num ? ' num' : '') + '"' + (ed ? ' data-ed="' + ed + '" data-di="' + di + '" tabindex="0"' : '') + '>' + PTCELL[c.k](e, di) + '</td>';
+    return '<td class="c-' + c.k + (c.num ? ' num' : '') + '" data-kind="' + (c.kind || 'about') + '"' + (ed ? ' data-ed="' + ed + '" data-di="' + di + '" tabindex="0"' : '') + '>' + PTCELL[c.k](e, di) + '</td>';
   }).join('');
   return '<tr class="ptrow" data-act="popen" data-di="' + di + '" data-i="' + i + '" tabindex="0">' + tds + '</tr>';
 }
@@ -2777,7 +2834,7 @@ function paintPeople(){
         if(kb !== ka) return kb - ka;
         return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
       });
-      rows += '<tr class="ptgroup"><td colspan="' + ptVisibleCols().length + '">' + LC_BUCKETS[bi] + ' <span>' + mems.length + '</span></td></tr>';
+      rows += '<tr class="ptgroup" data-kind="connection"><td colspan="' + ptVisibleCols().length + '">' + LC_BUCKETS[bi] + ' <span>' + mems.length + '</span></td></tr>';
       mems.forEach(function(di){ rows += ptrowHTML(di, ordered.length); ordered.push(di); });
     });
     S.ppl.cur = ordered;
@@ -2807,22 +2864,22 @@ function openMoreFilters(){
    identity / server-stamped and stay read-only too. Column order + visibility
    persist in localStorage (ncc_pt_cols). */
 var PT_ALL = [
-  { k:'name',     label:'Name' },
-  { k:'tier',     label:'Tier' },
-  { k:'loc',      label:'Location on file' },
-  { k:'orgs',     label:'Organizations' },
-  { k:'assoc',    label:'Associates', num:true },
-  { k:'msgs',     label:'Correspondence', num:true },
-  { k:'skills',   label:'Skills' },
-  { k:'rel',      label:'Relationship' },
-  { k:'close',    label:'Closeness' },
-  { k:'handle',   label:'Handle' },
-  { k:'groups',   label:'Groups' },
-  { k:'years',    label:'Years known', num:true },
-  { k:'phone',    label:'Phone' },
-  { k:'email',    label:'Email' },
-  { k:'lastc',    label:'Last contact', num:true },
-  { k:'firstc',   label:'First contact', num:true }
+  { k:'name',     label:'Name', kind:'about' },
+  { k:'tier',     label:'Tier', kind:'connection' },
+  { k:'loc',      label:'Location on file', kind:'about' },
+  { k:'orgs',     label:'Organizations', kind:'about' },
+  { k:'assoc',    label:'Associates', num:true, kind:'connection' },
+  { k:'msgs',     label:'Correspondence', num:true, kind:'connection' },
+  { k:'skills',   label:'Skills', kind:'about' },
+  { k:'rel',      label:'Relationship', kind:'connection' },
+  { k:'close',    label:'Closeness', kind:'connection' },
+  { k:'handle',   label:'Handle', kind:'about' },
+  { k:'groups',   label:'Groups', kind:'about' },
+  { k:'years',    label:'Years known', num:true, kind:'connection' },
+  { k:'phone',    label:'Phone', kind:'about' },
+  { k:'email',    label:'Email', kind:'about' },
+  { k:'lastc',    label:'Last contact', num:true, kind:'connection' },
+  { k:'firstc',   label:'First contact', num:true, kind:'connection' }
 ];
 var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, msgs:1, skills:1, rel:1, lastc:1 };
 var PT_NUMDIR = { assoc:1, msgs:1, years:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
@@ -3520,8 +3577,8 @@ function viewProfile(v){
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
     '<section id="p-hero" class="hero"></section><div id="p-lastline"></div>' +
     '<div class="psheets">' +
-    '<div class="pmove sheet-a" id="pm-a"><div class="pmove-h"><span class="pmh-t">About ' + esc(dispName(e).split(' ')[0]) + '</span><span class="pmh-ln"></span><span class="pmh-n" id="pmn-a"></span></div><div class="pgrid" id="pmg-a"></div></div>' +
-    '<div class="pmove sheet-c" id="pm-c"><div class="pmove-h"><span class="pmh-t">Connection</span><span class="pmh-ln"></span><span class="pmh-n" id="pmn-c"></span></div><div class="pgrid" id="pmg-c"></div></div>' +
+    '<div class="pmove sheet-a" id="pm-a" data-kind="about"><div class="pmove-h"><span class="pmh-t">About ' + esc(dispName(e).split(' ')[0]) + '</span>' + kindChip('about', true) + '<span class="pmh-ln"></span><span class="pmh-n" id="pmn-a"></span></div><div class="pgrid" id="pmg-a"></div></div>' +
+    '<div class="pmove sheet-c" id="pm-c" data-kind="connection"><div class="pmove-h"><span class="pmh-t">Connection</span>' + kindChip('connection', true) + '<span class="pmh-ln"></span><span class="pmh-n" id="pmn-c"></span></div><div class="pgrid" id="pmg-c"></div></div>' +
     '</div><div id="p-add"></div></div>';
   paintProfile(di);
 }
@@ -3609,7 +3666,7 @@ function lastLineHTML(di){
     .sort(function(a, b){ return (flexKey(b.date) || 0) - (flexKey(a.date) || 0); });
   if(!cs.length) return '';
   var ev = cs[0];
-  return '<span class="pll-when">' + esc(lcDateLabel(ev.date)) + '</span>' +
+  return '<span class="pll-when" data-kind="connection">' + kindGlyph('connection') + esc(lcDateLabel(ev.date)) + '</span>' +
     (ev.summary ? '<span class="pll-sum">' + esc(briefClip(ev.summary, 170)) + '</span>' : '') +
     '<button type="button" class="pll-log" data-act="logcontact">Log contact</button>';
 }
@@ -3725,13 +3782,13 @@ function profileSections(di){
   var e = D.directory[di];
   var hasContact = !!(effHandle(e) || e.fb_url || (e.snap_handles || []).length || gv(e, 'phone') || gv(e, 'email') || gv(e, 'location_on_file') || e.city || e.hometown || gv(e, 'also_known_as') || (e.languages || []).length);
   return [
-    ['Synopsis', '#475569', !!gv(e, 'synopsis')],
-    ['Web Record', '#d97706', footprintOf(e).blocks.length > 0],
-    ['Contact', '#2563eb', hasContact],
-    ['Background', '#7c3aed', secHasContent(e, 'background')],
-    ['Persona', '#4d7c0f', secHasContent(e, 'persona')],
-    ['Files', '#0d9488', secHasContent(e, 'files')],
-    ['Connection', '#e30613', true]
+    ['Synopsis', '#4a6f96', !!gv(e, 'synopsis')],
+    ['Web Record', '#4a6f96', footprintOf(e).blocks.length > 0],
+    ['Contact', '#4a6f96', hasContact],
+    ['Background', '#4a6f96', secHasContent(e, 'background')],
+    ['Persona', '#4a6f96', secHasContent(e, 'persona')],
+    ['Files', '#4a6f96', secHasContent(e, 'files')],
+    ['Connection', '#a97f24', true]
   ];
 }
 function heroHTML(di){
@@ -3741,12 +3798,12 @@ function heroHTML(di){
   var loc = ptNormLoc(ptLocVal(e));
   var ds = sortDegrees(degreesOf(e)).slice(0, 3).map(function(d){
     var bits = [d.degree, d.year ? yy(d.year) : ''].filter(Boolean).join(' ');
-    return '<span class="dbadge">' + ic('cap', 12) + '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits ? '<i>' + esc(bits) + '</i>' : '') + '</span>';
+    return '<span class="dbadge" data-kind="about">' + ic('cap', 12) + '<b>' + esc(schoolShort(d.school)) + '</b>' + (bits ? '<i>' + esc(bits) + '</i>' : '') + '</span>';
   }).join('');
-  var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
-  function mi(lab, val){ return val ? '<div class="ih-mi"><small>' + lab + '</small><b>' + esc(val) + '</b></div>' : ''; }
-  var meta = mi('Location', loc) + mi('Relationship', cap(gv(e, 'relationship'))) + mi('Context', cap(gv(e, 'context'))) +
-    mi('Known since', knownSinceLabel(e)) + (lcLabel(e) ? mi(lcOnline(e) ? 'Last contact online' : 'Last contact', lcLabel(e)) : '');
+  var cs = certsOf(e).slice(0, 2).map(function(c){ return '<span class="dbadge cert" data-kind="about">' + ic('shield', 12) + '<i>' + esc(c) + '</i></span>'; }).join('');
+  function mi(lab, val, kind){ return val ? '<div class="ih-mi" data-kind="' + (kind || 'about') + '"><small>' + lab + '</small><b>' + esc(val) + '</b></div>' : ''; }
+  var meta = mi('Location', loc, 'about') + mi('Relationship', cap(gv(e, 'relationship')), 'connection') + mi('Context', cap(gv(e, 'context')), 'connection') +
+    mi('Known since', knownSinceLabel(e), 'connection') + (lcLabel(e) ? mi(lcOnline(e) ? 'Last contact online' : 'Last contact', lcLabel(e), 'connection') : '');
   var ph = phHeroHTML(e);
   var hotE = hotForDi(di);
   var sc = scoreFor(di), pres = profileSections(di);
@@ -3883,7 +3940,7 @@ function secHTML(di, id){
   var head = '<header><h3>' + d.t + '</h3>' + secSummary(e, id) + '<span class="sp"></span>' + acts + '</header>';
   var SPINE = { about:'About', identity:'Contact', background:'Background', persona:'Persona', files:'Files', business:'Business', relationship:'Relationship', connections:'Associates', timeline:'Timeline', lima:'Lima Charlie' };
   function band(cls, spine, inner){
-    return '<div class="band ' + cls + '"><div class="spine"><span>' + spine + '</span></div><div class="band-in">' + inner + '</div></div>';
+    return '<div class="band ' + cls + '" data-kind="' + (d.mv === 'c' ? 'connection' : 'about') + '"><div class="spine"><span>' + spine + '</span></div><div class="band-in">' + inner + '</div></div>';
   }
   /* About renders as two bands (Synopsis / Web Record) in view mode
      (Split Partitions, V3.37.0); editing and waived states stay one band. */
@@ -3893,14 +3950,14 @@ function secHTML(di, id){
       var inner = '';
       if(synH) inner += band('b-syn', 'Synopsis', head + '<div class="cbody">' + synH + '</div>');
       if(webH) inner += band('b-web', 'Web Record', (synH ? '' : head) + '<div class="cbody">' + webH + '</div>');
-      return '<section class="card multi" id="sec-about" data-sec="about">' + inner + '</section>';
+      return '<section class="card multi" id="sec-about" data-sec="about" data-kind="about">' + inner + '</section>';
     }
   }
   var body;
   if(waived && !editing){
     body = '<p class="dim waivedmsg">Waived: insufficient data. <button type="button" class="lnk" data-act="waive" data-di="' + di + '" data-sid="' + d.w.join(',') + '" data-off="1">Restore</button></p>';
   } else body = editing ? secEdit(di, id) : secView(di, id);
-  return '<section class="card bandwrap b-' + id + (editing ? ' editing' : '') + (waived ? ' waived' : '') + (d.wide ? ' wide' : '') + '" id="sec-' + id + '" data-sec="' + id + '">' +
+  return '<section class="card bandwrap b-' + id + (editing ? ' editing' : '') + (waived ? ' waived' : '') + (d.wide ? ' wide' : '') + '" id="sec-' + id + '" data-sec="' + id + '" data-kind="' + (d.mv === 'c' ? 'connection' : 'about') + '">' +
     band('b-' + id, SPINE[id] || d.t, head + '<div class="cbody">' + body + '</div>') + '</section>';
 }
 function secSummary(e, id){
@@ -4022,7 +4079,7 @@ function secView(di, id){
        no value on file does not render at all; the Known-since tile
        survives on its Snapchat badge alone since the badge is content. */
     var shownTiles = tiles.filter(function(t){ return t[1] || (t[0] === 'Known since' && e.snap_since); });
-    var relBody = (shownTiles.length ? '<div class="tiles">' + shownTiles.map(function(t){ var ocs = (t[0] === 'Known since' && e.snap_since) ? '<span class="ocs-badge">' + ic('snap', 11) + 'Online connection since ' + e.snap_since + '</span>' : ''; return '<div class="tile"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + (t[0] === 'Context' && t[1] ? pillify(t[1], di) : esc(t[1] || 'Not set')) + '</b>' + ocs + '</div>'; }).join('') + '</div>' : '') +
+    var relBody = (shownTiles.length ? '<div class="tiles">' + shownTiles.map(function(t){ var ocs = (t[0] === 'Known since' && e.snap_since) ? '<span class="ocs-badge">' + ic('snap', 11) + 'Online connection since ' + e.snap_since + '</span>' : ''; return '<div class="tile" data-kind="connection"><small>' + t[0] + '</small><b' + (t[1] ? '' : ' class="dim"') + '>' + (t[0] === 'Context' && t[1] ? pillify(t[1], di) : esc(t[1] || 'Not set')) + '</b>' + ocs + '</div>'; }).join('') + '</div>' : '') +
       (gs.length ? '<div class="sub-h">Groups</div><div class="chips ro">' + gs.map(function(g){ return '<a class="vchip link" href="#/groups/groups/' + encodeURIComponent(g) + '">' + esc(g) + '</a>'; }).join('') + '</div>' : '') + rankCtl;
     return relBody || emptyPrompt(di, id, 'Add relationship details');
   }
@@ -4062,8 +4119,8 @@ function secView(di, id){
   if(id === 'connections'){
     var ka = knownAssociates(e), links = famLinks(e), out3 = '';
     var tree = familyMiniTree(di);
-    if(tree) out3 += '<div class="sub-h first">Family</div>' + tree;
-    else if(links.length) out3 += '<div class="sub-h first">Family</div>' + famListHTML(di, false);
+    var famBody = tree || (links.length ? famListHTML(di, false) : '');
+    if(famBody) out3 += '<div class="fam-lvl" data-kind="about" data-level="personal"><div class="sub-h first">Family ' + lvlChip('personal') + '</div>' + famBody + '</div>';
     /* Default = the strongest 10 only (knownAssociates preserves the baked strength order); Show more / Show less toggles the full list (JD 2026-10-15). */
     if(ka.length) out3 += '<div class="sub-h' + (out3 ? '' : ' first') + '">Known associates <small>' + ka.length + '</small></div><div class="chips ro">' + ka.slice(0, S.prof.open.assoc ? 999 : 10).map(function(nb){ return nbrChip(nb, false); }).join('') +
       (ka.length > 10 && !S.prof.open.assoc ? '<button type="button" class="vchip more" data-act="opentog" data-k="assoc">Show more \u00b7 +' + (ka.length - 10) + '</button>' : '') +
@@ -4092,7 +4149,8 @@ function secView(di, id){
       } else {
         out4 += '<div class="tl">' + evs.slice(0, S.prof.open.ev ? 999 : 6).map(function(o){
           var ev = o.ev;
-          return '<div class="ev"><i></i><time>' + esc(ev.kind === 'contact' ? lcDateLabel(ev.date) : evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + lcTag(ev) + '</time><b>' + pillify(ev.summary || '', di) + '</b>' + (ev.detail ? '<p>' + pillify(ev.detail, di) + '</p>' : '') + '</div>';
+          var evk = ev.kind === 'contact' ? 'connection' : 'about';
+          return '<div class="ev" data-kind="' + evk + '"><i></i><time>' + esc(ev.kind === 'contact' ? lcDateLabel(ev.date) : evDate(ev.date)) + (ev.init ? ' <em>' + (ev.init === 'me' ? 'I reached out' : 'They reached out') + '</em>' : '') + lcTag(ev) + '</time>' + kindGlyph(evk) + '<b>' + pillify(ev.summary || '', di) + '</b>' + (ev.detail ? '<p>' + pillify(ev.detail, di) + '</p>' : '') + '</div>';
         }).join('') + '</div>' + (evs.length > 6 && !S.prof.open.ev ? '<button type="button" class="btn ghost sm" data-act="opentog" data-k="ev">Show all ' + evs.length + ' events</button>' : '');
       }
     }
@@ -4653,7 +4711,7 @@ function viewNetwork(v){
   /* Design cleanup (JD 2026-10-28): one clean bar — title, find,
      view, reset, full screen. The old grouped/kicker stack was a
      mess of nested rows (and unclosed tags). */
-  v.innerHTML = '<div class="page netpage"><div class="netbar"><div><h1 class="display">Network</h1></div>' +
+  v.innerHTML = '<div class="page netpage" data-kind="connection"><div class="netbar"><div><h1 class="display">Network</h1></div>' +
     '<div class="netctl">' +
     '<div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div>' +
     '<button type="button" class="btn ghost sm' + (S.net.view === '2d' ? ' on' : '') + '" data-act="netview" data-v="2d" aria-pressed="' + (S.net.view === '2d' ? 'true' : 'false') + '">2D</button>' +
@@ -5376,7 +5434,7 @@ function viewFamily(v){
       ((t.spousesFrom && t.spousesFrom.length) ? '<span class="ftree-note">Married-in spouses also appear in ' + t.spousesFrom.map(function(x){ return esc(x.title); }).join(', ') + '</span>' : '') +
       '</header>' + body + '</section>';
   }).join('');
-  v.innerHTML = '<div class="page fampage"><div class="netbar"><div><h1 class="display">Family</h1><p class="sub">' + ft.length + ' bloodline' + (ft.length === 1 ? '' : 's') + ' · ' + total + ' people. Generations read top to bottom; every relationship is written next to the name.</p></div>' +
+  v.innerHTML = '<div class="page fampage" data-kind="about" data-level="personal"><div class="netbar"><div><h1 class="display">Family</h1> ' + lvlChip('personal') + '<p class="sub">' + ft.length + ' bloodline' + (ft.length === 1 ? '' : 's') + ' · ' + total + ' people. Generations read top to bottom; every relationship is written next to the name.</p></div>' +
     '<div class="netctl"><button type="button" class="btn ghost sm" data-act="famside" aria-expanded="' + (sideOpen(S.fam.side) ? 'true' : 'false') + '">Summary</button></div></div>' +
     '<div class="netcard famfocus" id="famcard" hidden></div>' +
     '<div class="famcols2"><div class="famlist">' + sections + '</div>' +
@@ -5708,7 +5766,7 @@ function viewGroups(v){
     GRPV.detail = { kind:kind, name:name };
     var mem = grpMembersOf(kind, name);
     var hasRanks = mem.some(function(di){ return !!milRank(D.directory[di]); });
-    v.innerHTML = '<div class="page groups">' + head + '<div class="gdet">' +
+    v.innerHTML = '<div class="page groups" data-kind="about">' + head + '<div class="gdet">' +
       '<div class="gdh"><a class="ib backm" href="#/groups/' + kind + '" aria-label="Back to groups">' + ic('chevl', 18) + '</a>' +
       '<div><h2>' + esc(name) + '</h2><small><span id="gmcount">' + mem.length + '</span> ' + (mem.length === 1 ? 'person' : 'people') + ' &middot; ' + esc(grpSignal(kind, name)) + '</small></div><span class="sp"></span>' +
       (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
@@ -5736,7 +5794,7 @@ function viewGroups(v){
   var listHead = headTop + '<div class="grp-toolsrow">' + tabs +
     '<label class="gsearchbox">' + ic('search', 15) + '<input id="gq" placeholder="Search groups" autocomplete="off" value="' + esc(GRPV.q) + '"></label>' +
     '<span class="dim gcount">' + names.length + ' ' + (kind === 'groups' ? 'groups' : 'names') + ' &middot; sorted by size</span></div></div>';
-  v.innerHTML = '<div class="page groups">' + listHead + mgr + add +
+  v.innerHTML = '<div class="page groups" data-kind="about">' + listHead + mgr + add +
     '<div id="gcards">' + grpCardsHTML(kind) + '</div></div>';
   if(GRPV.scrollY != null){ var y = GRPV.scrollY; GRPV.scrollY = null; requestAnimationFrame(function(){ var vw = $('#view'); if(vw) vw.scrollTop = y; }); }
 }
@@ -5909,28 +5967,30 @@ function hmPd(){ if(!HM_PD) HM_PD = hmDeckPhotos(); return HM_PD; }
 /* --- deck renderers --- */
 var HM_GRAY = ['#f2f2f2','#b5b5b5','#7d7d7d','#4a4a4a','#3a3a3a','#2b2b2b','#1f1f1f','#171717','#121212'];
 function hmKpi(k, value, label, sub){
-  return '<button type="button" class="hmk-kpi" data-act="hmikpi" data-k="' + k + '">' +
+  var hmkKind = { people:'about', footprint:'about', photos:'about', located:'about', dated:'connection' }[k] || 'about';
+  return '<button type="button" class="hmk-kpi" data-kind="' + hmkKind + '" data-act="hmikpi" data-k="' + k + '">' +
     '<span class="hmk-v">' + value + '</span><span class="hmk-l">' + label + '</span>' +
     (sub ? '<span class="hmk-s">' + sub + '</span>' : '') + '</button>';
 }
 function hmBarRow(kind, key, label, c, max, hot){
   var pct = c > 0 && max > 0 ? Math.max(2, Math.round(1000 * c / max) / 10) : 0;
-  return '<button type="button" class="hm-bar" data-act="hmiopen" data-kind="' + kind + '" data-key="' + esc(key) + '" data-label="' + esc(label) + '">' +
+  var hmbKind = (kind === 'tier' || kind === 'rel' || kind === 'years') ? 'connection' : 'about';
+  return '<button type="button" class="hm-bar k-' + hmbKind + '" data-nkind="' + hmbKind + '" data-act="hmiopen" data-kind="' + kind + '" data-key="' + esc(key) + '" data-label="' + esc(label) + '">' +
     '<span class="hm-bl">' + esc(label) + '</span><span class="hm-tr"><span class="hm-fill' + (hot ? ' hot' : '') + '" style="width:' + pct + '%"></span></span>' +
     '<span class="hm-bv">' + c + '</span></button>';
 }
 function hmRankCard(title, inner, cnt){
-  return '<section class="card hm-blk"><header><h3>' + esc(title) + '</h3>' + (cnt ? '<em class="cnt">' + esc(cnt) + '</em>' : '') + '</header><div class="cbody">' + inner + '</div></section>';
+  return '<section class="card hm-blk" data-kind="about"><header><h3>' + esc(title) + '</h3>' + (cnt ? '<em class="cnt">' + esc(cnt) + '</em>' : '') + '</header><div class="cbody">' + inner + '</div></section>';
 }
 function hmMoreBtn(attrs, label){
   return '<button type="button" class="hm-more" ' + attrs + '>' + label + '</button>';
 }
 function hmMixInner(title, segs, total){
   var bar = segs.filter(function(s){ return s.c > 0; }).map(function(s){
-    return '<button type="button" class="hm-seg" data-act="hmiopen" data-kind="' + s.kind + '" data-key="' + esc(s.key) + '" data-label="' + esc(s.label) + '" style="width:' + (100 * s.c / total) + '%;background:' + s.col + '" title="' + esc(s.label) + ' \u00b7 ' + s.c + '" aria-label="' + esc(s.label) + ', ' + s.c + ' people"></button>';
+    return '<button type="button" class="hm-seg" data-nkind="connection" data-act="hmiopen" data-kind="' + s.kind + '" data-key="' + esc(s.key) + '" data-label="' + esc(s.label) + '" style="width:' + (100 * s.c / total) + '%;background:' + s.col + '" title="' + esc(s.label) + ' \u00b7 ' + s.c + '" aria-label="' + esc(s.label) + ', ' + s.c + ' people"></button>';
   }).join('');
   var leg = segs.map(function(s){
-    return '<button type="button" class="hm-legrow" data-act="hmiopen" data-kind="' + s.kind + '" data-key="' + esc(s.key) + '" data-label="' + esc(s.label) + '">' +
+    return '<button type="button" class="hm-legrow" data-nkind="connection" data-act="hmiopen" data-kind="' + s.kind + '" data-key="' + esc(s.key) + '" data-label="' + esc(s.label) + '">' +
       '<span class="hm-dldot" style="background:' + s.col + '"></span><span class="hm-dll">' + esc(s.label) + '</span><b>' + s.c + '</b>' +
       '<span class="hm-dlp">' + (total ? Math.round(100 * s.c / total) : 0) + '%</span></button>';
   }).join('');
@@ -5951,7 +6011,7 @@ function hmShapeCard(dd, tierSegs, relSegs, N){
     { l:'Open', c:dd.tierCounts.open, col:(TIERS.open || {}).c || 'var(--seg-2)' },
     { l:'No tier yet', c:dd.tierCounts.none, col:RING_C[3] }
   ];
-  return '<section class="card hm-blk"><div class="hm-shapegrid">' +
+  return '<section class="card hm-blk" data-kind="connection"><div class="hm-shapegrid">' +
     '<div class="hm-shapehalf">' + hmMixInner('Tier mix', tierSegs, N) + '</div>' +
     '<div class="hm-shapehalf">' + hmMixInner('Relationship mix', relSegs, N) + '</div></div>' +
     '<div class="hm-ns-row hm-shape-net">' +
@@ -5971,7 +6031,7 @@ var HM_RANKTAB = 'towns', HM_BOARDS = null;
 function hmRankRow(kind, key, label, c, max, hot, rank, N){
   var pct = c > 0 && max > 0 ? Math.max(2, Math.round(1000 * c / max) / 10) : 0;
   var val = N ? c + ' \u00b7 ' + Math.round(100 * c / N) + '%' : (kind === 'footprint' ? c + ' facts' : '' + c);
-  return '<button type="button" class="hm-rrow" data-act="hmiopen" data-kind="' + kind + '" data-key="' + esc(key) + '" data-label="' + esc(label) + '">' +
+  return '<button type="button" class="hm-rrow k-about" data-nkind="about" data-act="hmiopen" data-kind="' + kind + '" data-key="' + esc(key) + '" data-label="' + esc(label) + '">' +
     '<span class="hm-rk">' + rank + '</span>' +
     '<span class="hm-rmain"><span class="hm-rl">' + esc(label) + '</span>' +
     '<span class="hm-rtr"><span class="hm-rfill' + (hot ? ' hot' : '') + '" style="width:' + pct + '%"></span></span></span>' +
@@ -5985,7 +6045,7 @@ function hmRanksCard(boards){
     return '<button type="button" class="hm-ranktab' + (b.tab === HM_RANKTAB ? ' on' : '') + '" data-act="hmranktab" data-tab="' + b.tab + '">' + esc(b.title) + '</button>';
   }).join('');
   var active = HM_BOARDS[HM_RANKTAB] || {};
-  return '<section class="card hm-blk"><header><h3>Rankings</h3><div class="hm-ranktabs">' + tabs + '</div></header>' +
+  return '<section class="card hm-blk" data-kind="about"><header><h3>Rankings</h3>' + kindChip('about', true) + '<div class="hm-ranktabs">' + tabs + '</div></header>' +
     '<div class="cbody"><div id="hm-rankboard">' + (active.rows || '') + (active.more || '') + '</div></div></section>';
 }
 function hmRankPaint(){
@@ -6000,11 +6060,11 @@ function hmRankPaint(){
 function hmYearsCard(dd){
   var cols = dd.yrEntries.map(function(t){
     var h = dd.yrMax > 0 && t.c > 0 ? Math.max(4, Math.round(1000 * t.c / dd.yrMax) / 10) : 0;
-    return '<button type="button" class="hm-ycol' + (t.c > 0 && t.c === dd.yrMax ? ' max' : '') + '" data-act="hmiopen" data-kind="years" data-key="' + esc(t.label) + '" data-label="' + esc(t.label) + '" title="' + esc(t.label) + ' \u00b7 ' + t.c + '">' +
+    return '<button type="button" class="hm-ycol' + (t.c > 0 && t.c === dd.yrMax ? ' max' : '') + '" data-nkind="connection" data-act="hmiopen" data-kind="years" data-key="' + esc(t.label) + '" data-label="' + esc(t.label) + '" title="' + esc(t.label) + ' \u00b7 ' + t.c + '">' +
       '<span class="hm-ycv">' + (t.c || '') + '</span><span class="hm-ybar"><span style="height:' + h + '%"></span></span>' +
       '<span class="hm-ycl">' + (t.label === 'Before 2010' ? 'pre-\u201910' : '\u2019' + t.label.slice(2)) + '</span></button>';
   }).join('');
-  return '<section class="card hm-blk"><header><h3>Known since</h3><em class="cnt">' + dd.dated + ' of ' + dd.N + ' dated</em></header><div class="cbody">' +
+  return '<section class="card hm-blk" data-kind="connection"><header><h3>Known since</h3>' + kindChip('connection', true) + '<em class="cnt">' + dd.dated + ' of ' + dd.N + ' dated</em></header><div class="cbody">' +
     '<div class="hm-ycols">' + cols + '</div>' +
     (dd.undated ? hmMoreBtn('data-act="hmikpi" data-k="dated"', dd.undated + ' with no start year on file \u2014 see the summary') : '') +
     '</div></section>';
@@ -6020,20 +6080,20 @@ function hmGapRow(label, n, attrs){
 }
 function hmCoverageCard(dd, pd){
   var N = dd.N, rows = '', gaps = '';
-  rows += hmCovRow('Public footprint', dd.fpPeople, N, 'data-act="hmikpi" data-k="footprint"');
-  rows += hmCovRow('Photos on file', pd.onFile, N, 'data-act="hmikpi" data-k="photos"');
-  if(DT && DT.coverage) rows += hmCovRow('Live Records rotation', DT.coverage.checked_total, DT.coverage.of, 'data-act="hmiopen" data-kind="liverec"');
-  rows += hmCovRow('Location on file', dd.locN, N, 'data-act="hmikpi" data-k="located"');
-  rows += hmCovRow('Known since dated', dd.dated, N, 'data-act="hmikpi" data-k="dated"');
-  rows += hmCovRow('Phone numbers filed', dd.phoneN, N, 'data-act="hmiopen" data-kind="withphone" data-label="Phone on file"');
-  rows += hmCovRow('Persona rated', dd.pRated, N, 'data-act="hmivlist" data-vk="persona"');
+  rows += hmCovRow('Public footprint', dd.fpPeople, N, 'data-kind="about" data-act="hmikpi" data-k="footprint"');
+  rows += hmCovRow('Photos on file', pd.onFile, N, 'data-kind="about" data-act="hmikpi" data-k="photos"');
+  if(DT && DT.coverage) rows += hmCovRow('Live Records rotation', DT.coverage.checked_total, DT.coverage.of, 'data-kind="about" data-act="hmiopen" data-kind="liverec"');
+  rows += hmCovRow('Location on file', dd.locN, N, 'data-kind="about" data-act="hmikpi" data-k="located"');
+  rows += hmCovRow('Known since dated', dd.dated, N, 'data-kind="connection" data-act="hmikpi" data-k="dated"');
+  rows += hmCovRow('Phone numbers filed', dd.phoneN, N, 'data-kind="about" data-act="hmiopen" data-kind="withphone" data-label="Phone on file"');
+  rows += hmCovRow('Persona rated', dd.pRated, N, 'data-kind="about" data-act="hmivlist" data-vk="persona"');
   if(DT && DT.coverage && DT.coverage.of - DT.coverage.checked_total > 0)
-    gaps += hmGapRow('Not yet checked by Live Records', DT.coverage.of - DT.coverage.checked_total, 'data-act="hmiopen" data-kind="liverec"');
-  gaps += hmGapRow('No location on file', N - dd.locN, 'data-act="hmiopen" data-kind="noloc" data-label="No location on file"');
-  gaps += hmGapRow('No photo yet', pd.missing, 'data-act="hmiopen" data-kind="nophoto" data-label="No photo yet"');
-  gaps += hmGapRow('No phone number', N - dd.phoneN, 'data-act="hmiopen" data-kind="nophone" data-label="No phone number"');
-  gaps += hmGapRow('No start year', dd.undated, 'data-act="hmiopen" data-kind="missingyrs" data-label="No start year"');
-  gaps += hmGapRow('Relationship untyped', dd.relBlank, 'data-act="hmiopen" data-kind="rel" data-key="Unspecified" data-label="Unspecified"');
+    gaps += hmGapRow('Not yet checked by Live Records', DT.coverage.of - DT.coverage.checked_total, 'data-kind="about" data-act="hmiopen" data-kind="liverec"');
+  gaps += hmGapRow('No location on file', N - dd.locN, 'data-kind="about" data-act="hmiopen" data-kind="noloc" data-label="No location on file"');
+  gaps += hmGapRow('No photo yet', pd.missing, 'data-kind="about" data-act="hmiopen" data-kind="nophoto" data-label="No photo yet"');
+  gaps += hmGapRow('No phone number', N - dd.phoneN, 'data-kind="about" data-act="hmiopen" data-kind="nophone" data-label="No phone number"');
+  gaps += hmGapRow('No start year', dd.undated, 'data-kind="connection" data-act="hmiopen" data-kind="missingyrs" data-label="No start year"');
+  gaps += hmGapRow('Relationship untyped', dd.relBlank, 'data-kind="connection" data-act="hmiopen" data-kind="rel" data-key="Unspecified" data-label="Unspecified"');
   return '<section class="card hm-blk"><header><h3>Coverage &amp; gaps</h3></header><div class="cbody"><div class="hm-cov">' +
     '<div>' + rows + '</div><div><h4>Biggest gaps</h4>' + gaps + '</div>' +
     '</div></div></section>';
@@ -6050,14 +6110,15 @@ function hmaRow(c, act){
     '<div class="chg-src">' + (c.url ? '<a data-act="extlink" href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
     (c.source_date ? ' \u00b7 source ' + esc(hmFmtD(c.source_date)) : '') +
     (c.filed ? '<span class="chg-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' : '') + '</div>' + novBar(c.novelty);
-  if(di == null) return '<div class="chg">' + inner + '</div>';
-  return '<div class="chg hma-click" data-act="' + (act || 'hmgoto') + '" data-di="' + di + '" role="button" tabindex="0" title="Open ' + esc(c.name) + '\u2019s profile">' + inner + '</div>';
+  var hmaK = textKind(c.what);
+  if(di == null) return '<div class="chg" data-kind="' + hmaK + '">' + inner + '</div>';
+  return '<div class="chg hma-click" data-kind="' + hmaK + '" data-act="' + (act || 'hmgoto') + '" data-di="' + di + '" role="button" tabindex="0" title="Open ' + esc(c.name) + '\u2019s profile">' + inner + '</div>';
 }
 function hmaGroupRow(g, act){
   var c = g.first, sd = c.source_date, uniform = true;
   g.items.forEach(function(x){ if(x.source_date !== sd) uniform = false; });
   var members = g.items.map(function(x){ return hmaRow(x, act); }).join('');
-  return '<div class="chg-grp">' +
+  return '<div class="chg-grp" data-kind="' + textKind(c.what) + '">' +
     '<button type="button" class="chg-grp-h" data-act="chggrp" aria-expanded="false">' +
     '<span class="chg-cnt">' + g.items.length + '</span>' +
     '<span class="chg-grp-main"><span class="chg-grp-what">' + esc(c.what || '') + '</span>' +
@@ -6072,8 +6133,8 @@ function hmaFactRow(f, x, act){
     '<span class="hma-fact">' + esc(x.text) + '</span>' +
     '<span class="hma-fsrc">' + (x.url ? '<a data-act="extlink" href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(x.source || '')) +
     (x.published ? ' \u00b7 published ' + esc(hmFmtD(x.published)) : '') + '</span>' + novBar(x.novelty);
-  if(di == null) return '<div class="hma-frow">' + inner + '</div>';
-  return '<button type="button" class="hma-frow" data-act="' + (act || 'hmgoto') + '" data-di="' + di + '" title="Open ' + esc(f.display || f.name) + '\u2019s profile">' + inner + '</button>';
+  if(di == null) return '<div class="hma-frow" data-kind="about">' + inner + '</div>';
+  return '<button type="button" class="hma-frow" data-kind="about" data-act="' + (act || 'hmgoto') + '" data-di="' + di + '" title="Open ' + esc(f.display || f.name) + '\u2019s profile">' + inner + '</button>';
 }
 /* --- Hot off the press (JD 2026-10-30): a filed fact whose source was
    published today or yesterday gets a special alert treatment, apart
@@ -6111,10 +6172,10 @@ function hotAlertHTML(){
     var inner = '<span class="hot-nm">' + esc(h.display || h.name) + '</span>' +
       '<span class="hot-tx">' + esc(h.text) + '</span>' +
       '<span class="hot-meta">Published ' + esc(hmFmtD(h.published)) + (h.url ? ' &middot; <a data-act="extlink" href="' + esc(h.url) + '" target="_blank" rel="noopener">' + esc(h.source || 'source') + ' ' + ic('ext', 10) + '</a>' : (h.source ? ' &middot; ' + esc(h.source) : '')) + '</span>';
-    if(di == null) return '<div class="hot-row">' + inner + '</div>';
-    return '<button type="button" class="hot-row" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(h.display || h.name) + '\u2019s profile">' + inner + '</button>';
+    if(di == null) return '<div class="hot-row" data-kind="about">' + inner + '</div>';
+    return '<button type="button" class="hot-row" data-kind="about" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(h.display || h.name) + '\u2019s profile">' + inner + '</button>';
   }).join('');
-  return '<section class="card hot-card"><header><h3><span class="hot-dot"></span>Hot off the press</h3><em class="cnt">' + hot.length + '</em></header><div class="cbody">' + rows + '</div></section>';
+  return '<section class="card hot-card" data-kind="about"><header><h3><span class="hot-dot"></span>Hot off the press</h3>' + kindChip('about', true) + '<em class="cnt">' + hot.length + '</em></header><div class="cbody">' + rows + '</div></section>';
 }
 function hmActivity(){
   var out = hotAlertHTML() + hmPrefillChip() + '<section class="card hm-blk hm-act"><header><h3>What&rsquo;s new</h3>' + (DT && DT.date ? '<em class="cnt">' + esc(hmFmtD(DT.date)) + '</em>' : '') + '</header><div class="cbody">';
@@ -6130,9 +6191,9 @@ function hmActivity(){
       : '<div class="hma-hero hma-click" data-act="hmgoto" data-di="' + fdi + '" role="button" tabindex="0" title="Open ' + esc(freshF.display || freshF.name) + '\u2019s profile">' + hero + '</div>';
   }
   out += '<div class="hma-counters">' +
-    '<button type="button" class="hma-counter" data-act="hmiopen" data-kind="changes"><b>' + (CH && CH.entries ? CH.entries.length : '&mdash;') + '</b><span>Changes logged</span></button>' +
-    '<button type="button" class="hma-counter" data-act="hmiopen" data-kind="liverec"><b>' + (DT && DT.coverage ? DT.coverage.checked_total + '<small> / ' + DT.coverage.of + '</small>' : '&mdash;') + '</b><span>Checked this rotation</span></button>' +
-    '<button type="button" class="hma-counter" data-act="hmiopen" data-kind="liverec"><b>' + (DT && DT.checked ? DT.checked.length : '&mdash;') + '</b><span>Checked in latest brief</span></button>' +
+    '<button type="button" class="hma-counter" data-nkind="about" data-act="hmiopen" data-kind="changes"><b>' + (CH && CH.entries ? CH.entries.length : '&mdash;') + '</b><span>Changes logged</span></button>' +
+    '<button type="button" class="hma-counter" data-nkind="about" data-act="hmiopen" data-kind="liverec"><b>' + (DT && DT.coverage ? DT.coverage.checked_total + '<small> / ' + DT.coverage.of + '</small>' : '&mdash;') + '</b><span>Checked this rotation</span></button>' +
+    '<button type="button" class="hma-counter" data-nkind="about" data-act="hmiopen" data-kind="liverec"><b>' + (DT && DT.checked ? DT.checked.length : '&mdash;') + '</b><span>Checked in latest brief</span></button>' +
     '</div>';
   out += hmWhatsNewTeaser();
   if(DT && DT.filed && DT.filed.length){
@@ -6144,8 +6205,8 @@ function hmActivity(){
       DT.next_up.map(function(nm){
         var label = nm && nm.display ? nm.display : nm;
         var di = hmDtDi(nm);
-        return di == null ? '<span class="hma-nchip">' + esc(label) + '</span>'
-          : '<button type="button" class="hma-nchip" data-act="hmgoto" data-di="' + di + '">' + esc(label) + '</button>';
+        return di == null ? '<span class="hma-nchip" data-kind="about">' + esc(label) + '</span>'
+          : '<button type="button" class="hma-nchip" data-kind="about" data-act="hmgoto" data-di="' + di + '">' + esc(label) + '</button>';
       }).join('') + '</div>';
   }
   out += '<div class="hma-sec"><span>Change log</span>' + (CH && CH.entries ? '<em>' + CH.entries.length + '</em>' : '') + '</div>';
@@ -6179,12 +6240,13 @@ function wnLoad(){
 var WN_KINDS = { filed:'Filed', photo:'Photo', hot:'Hot off the press' };
 function wnRow(it){
   var di = hmDiOf(it.display);
-  var inner = '<span class="wn-chip wn-' + esc(it.kind || 'filed') + '">' + esc(WN_KINDS[it.kind] || 'Filed') + '</span>' +
+  var wnK = textKind(it.text);
+  var inner = kindGlyph(wnK) + '<span class="wn-chip wn-' + esc(it.kind || 'filed') + '">' + esc(WN_KINDS[it.kind] || 'Filed') + '</span>' +
     '<span class="wn-main"><span class="wn-nm">' + esc(it.display || '') + '</span>' +
     '<span class="wn-tx">' + esc(it.text || '') + '</span>' +
     '<span class="wn-meta">' + (it.url ? '<a data-act="extlink" href="' + esc(it.url) + '" target="_blank" rel="noopener">' + esc(it.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(it.source || '')) + '</span></span>';
-  if(di == null) return '<div class="wn-row">' + inner + '</div>';
-  return '<button type="button" class="wn-row" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(it.display || '') + '\u2019s profile">' + inner + '</button>';
+  if(di == null) return '<div class="wn-row" data-kind="' + wnK + '">' + inner + '</div>';
+  return '<button type="button" class="wn-row" data-kind="' + wnK + '" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(it.display || '') + '\u2019s profile">' + inner + '</button>';
 }
 function viewWhatsNew(v){
   wnLoad();
@@ -6250,16 +6312,23 @@ function hmiBack(){
   if(!HMI || HMI.stack.length < 2) return;
   HMI.stack.pop(); hmiRender();
 }
+function hmiKindFor(title){
+  var t = String(title || '');
+  if(/last contact|known since|relationship|tier|connection/i.test(t)) return 'connection';
+  if(/footprint|photo|located|where they are|skills|organizations|groups|persona|live records|change log|people/i.test(t)) return 'about';
+  return '';
+}
 function hmiRender(){
   var old = document.querySelector('.hmi-wrap'); if(old) old.remove();
   if(!HMI){ if(!document.querySelector('.phi-wrap') && !document.querySelector('.ykb-wrap') && !document.querySelector('.phed-wrap')) document.body.classList.remove('sheet-open'); return; }
   var s = HMI.stack[HMI.stack.length - 1];
   var ov = document.createElement('div');
   ov.className = 'hmi-wrap'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', s.title);
+  var hmiK = hmiKindFor(s.title); if(hmiK) ov.setAttribute('data-kind', hmiK);
   ov.innerHTML = '<div class="hmi-scrim" data-act="hmix"></div>' +
     '<div class="hmi"><div class="hmi-h">' +
     (HMI.stack.length > 1 ? '<button type="button" class="ib" data-act="hmiback" aria-label="Back">' + ic('chevl', 16) + '</button>' : '') +
-    '<div class="hmi-t">' + (s.kick ? '<span class="hmi-kick">' + esc(s.kick) + '</span>' : '') + '<b>' + esc(s.title) + '</b>' + (s.sub ? '<span>' + esc(s.sub) + '</span>' : '') + '</div>' +
+    '<div class="hmi-t">' + (s.kick ? '<span class="hmi-kick">' + esc(s.kick) + '</span>' : '') + '<b>' + esc(s.title) + '</b>' + (hmiK ? kindChip(hmiK, true) : '') + (s.sub ? '<span>' + esc(s.sub) + '</span>' : '') + '</div>' +
     '<span class="sp"></span><button type="button" class="ib" data-act="hmix" aria-label="Close">' + ic('x', 16) + '</button></div>' +
     '<div class="hmi-body">' + s.html + '</div></div>';
   document.body.appendChild(ov);
@@ -6887,7 +6956,7 @@ function hmNetCard(){
   var orgRows = NET.hubs.slice(0, 8).map(function(h){
     return '<button type="button" class="hm-org" data-act="hmorg" data-v="' + esc(h.name) + '"><span>' + esc(h.name) + '</span><b data-hmn="' + h.nds.length + '">' + h.nds.length + '</b></button>';
   }).join('');
-  return '<section class="card hm-blk"><header><h3>Network</h3><em class="cnt">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</em></header><div class="cbody">' +
+  return '<section class="card hm-blk" data-kind="connection"><header><h3>Network</h3><em class="cnt">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</em></header><div class="cbody">' +
     '<div class="hm-netgrid"><a class="hm-netlink" href="#/network" aria-label="Open the full Network">' + svg + '</a>' +
     '<div><h4>Organizations &mdash; tap to focus</h4><div class="hm-orgs">' + orgRows + '</div>' +
     '<p class="dim hm-note">Everyone in the directory on closeness rings; each tie routes through the person&rsquo;s largest organization. Tap the map for the full Network.</p></div></div>' +
@@ -6948,12 +7017,12 @@ function hmPhotoStats(){
   return { ok:true, onFile:_st.photosOnFile, noPhoto:_st.photosMissing, checked:PH.people.length, total:PH.total || PH.people.length, ig:_st.igPhotos, wall:wall, updated:PH.updated || '', unchecked:phAllEntries().filter(function(p){ return p.status === 'unchecked'; }).length };
 }
 function hmPhotosCard(ph){
-  if(!ph.ok) return '<section class="card hm-blk"><header><h3>Photos</h3></header><div class="cbody"><p class="dim">' + (PH ? 'No photo data yet.' : 'Loading photo data&hellip;') + '</p></div></section>';
+  if(!ph.ok) return '<section class="card hm-blk" data-kind="about"><header><h3>Photos</h3></header><div class="cbody"><p class="dim">' + (PH ? 'No photo data yet.' : 'Loading photo data&hellip;') + '</p></div></section>';
   var kpis = '<div class="hm-kpis">' +
-    '<button type="button" class="hm-kpi" data-act="hmikpi" data-k="photos"><div class="hm-kn">' + ph.onFile + '</div><div class="hm-kl">Photos on file</div></button>' +
-    '<button type="button" class="hm-kpi" data-act="hmiopen" data-kind="nophoto" data-label="No photo yet"><div class="hm-kn">' + ph.noPhoto + '</div><div class="hm-kl">No photo yet</div></button>' +
-    '<button type="button" class="hm-kpi" data-act="hmikpi" data-k="photos"><div class="hm-kn">' + ph.checked + '<small> / ' + ph.total + '</small></div><div class="hm-kl">Profiles checked</div></button>' +
-    '<button type="button" class="hm-kpi" data-act="hmiopen" data-kind="igsrc" data-label="From Instagram"><div class="hm-kn">' + ph.ig + '</div><div class="hm-kl">From Instagram</div></button></div>';
+    '<button type="button" class="hm-kpi" data-kind="about" data-act="hmikpi" data-k="photos"><div class="hm-kn">' + ph.onFile + '</div><div class="hm-kl">Photos on file</div></button>' +
+    '<button type="button" class="hm-kpi" data-nkind="about" data-act="hmiopen" data-kind="nophoto" data-label="No photo yet"><div class="hm-kn">' + ph.noPhoto + '</div><div class="hm-kl">No photo yet</div></button>' +
+    '<button type="button" class="hm-kpi" data-kind="about" data-act="hmikpi" data-k="photos"><div class="hm-kn">' + ph.checked + '<small> / ' + ph.total + '</small></div><div class="hm-kl">Profiles checked</div></button>' +
+    '<button type="button" class="hm-kpi" data-nkind="about" data-act="hmiopen" data-kind="igsrc" data-label="From Instagram"><div class="hm-kn">' + ph.ig + '</div><div class="hm-kl">From Instagram</div></button></div>';
   var tiles = ph.wall.map(function(p){
     /* V3.13.0: the photo IS the tile — it fills the frame and the
        frame's rounded corners clip the image itself; the name rides
@@ -6963,7 +7032,7 @@ function hmPhotosCard(ph){
     return '<a class="hm-tile" href="#/photos" title="' + esc(p.name) + '" data-act="phinsp" data-pname="' + esc(p.name) + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="hm-tcap"><span class="hm-tn">' + esc(p.name) + '</span>' + milBadgeName(p.name) + (phAddedLabel(p) ? '<small class="hm-td">' + phAddedLabel(p) + '</small>' : '') + '</span></a>';
   }).join('');
   tiles += '<button type="button" class="hm-tile miss" data-act="hmiopen" data-kind="nophoto" data-label="No photo yet"><b>' + ph.noPhoto + '</b><span>still missing a photo</span></button>';
-  return '<section class="card hm-blk' + (HM_DATES ? ' hm-showdates' : '') + '"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em><span class="sp"></span><button type="button" class="btn ghost sm" data-act="hmdates">' + (HM_DATES ? 'Hide added dates' : 'Show added dates') + '</button></header><div class="cbody">' + kpis +
+  return '<section class="card hm-blk' + (HM_DATES ? ' hm-showdates' : '') + '" data-kind="about"><header><h3>Photos</h3><em class="cnt">' + (ph.updated ? 'Updated ' + esc(fmtIsoD(ph.updated)) : 'recently filed first') + (ph.unchecked ? ' · ' + ph.unchecked + ' not yet checked' : '') + '</em><span class="sp"></span><button type="button" class="btn ghost sm" data-act="hmdates">' + (HM_DATES ? 'Hide added dates' : 'Show added dates') + '</button></header><div class="cbody">' + kpis +
     '<div class="hm-tiles">' + tiles + '</div></div></section>';
 }
 
@@ -6990,13 +7059,13 @@ function hmContactsCard(){
     var prev = '';
     if(mode === 'recent') prev = b.last ? briefClip(b.last.replace(/^[^\u2014]*\u2014\s*/, ''), 110) : '';
     if(!prev && b.ask) prev = 'Ask about: ' + b.ask.text;
-    return '<button type="button" class="hm-lcrow" data-act="hmgoto" data-di="' + r.di + '">' +
+    return '<button type="button" class="hm-lcrow" data-kind="connection" data-act="hmgoto" data-di="' + r.di + '">' +
       avatar(r.e, 'sm') + '<span class="hm-lcmain"><span class="hm-lcname">' + esc(dispName(r.e)) + '</span>' +
       (prev ? '<span class="hm-lcprev">' + esc(prev) + '</span>' : '') + '</span>' +
       '<span class="hm-lcwhen">' + esc(when) + '</span></button>';
   }
   var tlOn = S.hmTlView === 'timeline';
-  return '<section class="card hm-blk"><header><h3>Last contacts</h3><em class="cnt">' + rows.length + ' with contact on file</em><span class="sp"></span>' +
+  return '<section class="card hm-blk" data-kind="connection"><header><h3>Last contacts</h3>' + kindChip('connection', true) + '<em class="cnt">' + rows.length + ' with contact on file</em><span class="sp"></span>' +
     '<div class="seg hm-tlseg" role="group" aria-label="Last contacts view"><button type="button" data-act="hmtlview" data-v="list"' + (!tlOn ? ' class="on"' : '') + '>List</button><button type="button" data-act="hmtlview" data-v="timeline"' + (tlOn ? ' class="on"' : '') + '>Timeline</button></div>' +
     '</header><div class="cbody">' +
     (tlOn ? tlShell('hm', tlContactItems(people()))
@@ -7014,7 +7083,7 @@ function hmNetStrip(dd){
     { l:'Open', c:dd.tierCounts.open, col:(TIERS.open || {}).c || 'var(--seg-2)' },
     { l:'No tier yet', c:dd.tierCounts.none, col:RING_C[3] }
   ];
-  return '<section class="card hm-blk hm-netstrip"><div class="cbody"><div class="hm-ns-row">' +
+  return '<section class="card hm-blk hm-netstrip" data-kind="connection"><div class="cbody"><div class="hm-ns-row">' +
     '<span class="hm-ns-t">Network</span>' +
     seg.map(function(s){ return '<span class="hm-ns-seg"><i style="background:' + s.col + '"></i>' + s.l + ' <b>' + s.c + '</b></span>'; }).join('') +
     '<span class="hm-ns-seg dim">' + NET.nodes.length + ' on the map &middot; ' + NET.hubs.length + ' hubs</span>' +
@@ -7157,7 +7226,7 @@ function novBar(n){
   return '';
 }
 function chgEntryRow(c, linkFn, fmtFn, cls, style){
-  return '<div class="chg' + (cls ? ' ' + cls : '') + '"' + (style || '') + '><div class="chg-name">' + linkFn(c.name) + '</div>' +
+  return '<div class="chg' + (cls ? ' ' + cls : '') + '" data-kind="' + textKind(c.what) + '"' + (style || '') + '><div class="chg-name">' + linkFn(c.name) + '</div>' +
     '<p class="chg-what">' + esc(c.what || '') + '</p>' +
     '<div class="chg-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
     (c.source_date ? ' &middot; source ' + esc(fmtFn(c.source_date)) : '') +
@@ -7167,7 +7236,7 @@ function chgGroupRow(g, linkFn, fmtFn, cls, style){
   var c = g.first, sd = c.source_date, uniform = true;
   g.items.forEach(function(x){ if(x.source_date !== sd) uniform = false; });
   var members = g.items.map(function(x){ return chgEntryRow(x, linkFn, fmtFn); }).join('');
-  return '<div class="chg-grp' + (cls ? ' ' + cls : '') + '"' + (style || '') + '>' +
+  return '<div class="chg-grp' + (cls ? ' ' + cls : '') + '" data-kind="' + textKind(c.what) + '"' + (style || '') + '>' +
     '<button type="button" class="chg-grp-h" data-act="chggrp" aria-expanded="false">' +
     '<span class="chg-cnt">' + g.items.length + '</span>' +
     '<span class="chg-grp-main"><span class="chg-grp-what">' + esc(c.what || '') + '</span>' +
@@ -7531,10 +7600,10 @@ function rcConsoleHTML(){
         '<span class="rc-actnote">File = the information is correct.<br>Dismiss = Luna was right.</span></div>'
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
-    return '<div class="rc-row rcb-' + band.k + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-rcid="' + esc(c.id) + '">' +
+    return '<div class="rc-row rcb-' + band.k + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c.id) + '">' +
       '<div class="rc-conf"><b>' + (+c.confidence || 0) + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, +c.confidence || 0)) + '%"></i></span>' +
       rcPartsHTML(parts) + '</div>' +
-      '<div class="rc-main"><div class="rc-person">' + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPill +
+      '<div class="rc-main"><div class="rc-person">' + kindGlyph('about') + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPill +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
       rcOnFileLine(r) +
       '<p class="rc-claim">' + esc(c.claim || '') + '</p>' +
@@ -7544,8 +7613,8 @@ function rcConsoleHTML(){
       '<div class="rc-gate"><span>Why it was held</span>' + catPill + '<p>' + esc(c.missing_gate || '') + '</p></div>' +
       actions + '</div>';
   }).join('') : '<div class="rc-none">No candidates match this view.</div>';
-  return '<section class="rcconsole" id="rcconsole">' +
-    '<div class="rc-head"><div><div class="rc-kicker">RESEARCH COMMAND // UNFILED CANDIDATES</div>' +
+  return '<section class="rcconsole" id="rcconsole" data-kind="about">' +
+    '<div class="rc-head"><div><div class="rc-kicker">RESEARCH COMMAND // UNFILED CANDIDATES</div>' + kindChip('about', true) +
     '<h2>What the research found but did not file</h2>' +
     '<p>Every concrete lead that stopped at the filing gate, closest calls first. <b>File it</b> means the information is correct: the exact claim is written to the profile through the Save Pool. <b>Dismiss</b> means Luna was right to hold it. Decisions are stored on the profile, so a decided candidate never comes back as pending. If the linked page has a usable photo of them, mark <b>Photo at source</b> and it is tracked as a photo lead for the next photo pass.</p></div>' +
     '<div class="rc-legend">' + legend + '</div></div>' +
@@ -7556,7 +7625,7 @@ function rcConsoleHTML(){
     '<input id="rcq" type="search" placeholder="Search person, claim, source\u2026" value="' + esc(RC_VIEW.q || '') + '"></div>' +
     '<div class="rc-keybar"><span class="rc-keys">\u2191 \u2193 move \u00b7 Enter open source \u00b7 F file it \u00b7 X dismiss \u00b7 P photo lead</span>' +
     '<span class="rc-pos" id="rcpos">' + esc(rcPosText(m)) + '</span></div>' +
-    '<div class="rc-table"><div class="rc-row rc-thead"><span>Confidence</span><span>Person / candidate</span><span>Evidence</span><span>Why held</span><span>Your call</span></div>' + body + '</div>' +
+    '<div class="rc-table"><div class="rc-row rc-thead" data-kind="about"><span>Confidence</span><span>Person / candidate</span><span>Evidence</span><span>Why held</span><span>Your call</span></div>' + body + '</div>' +
     '<p class="rc-foot">Confidence = identity match (50) + source strength (30) + claim detail (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
     '</section>';
 }
@@ -7693,7 +7762,7 @@ function viewCalendar(v){
      Calendar data never touches Last Contact stamps (JD: hold);
      inferred sightings are labeled, never filed as contacts. */
   calLoad();
-  var head = '<div class="page calpage ca">';
+  var head = '<div class="page calpage ca" data-kind="connection">';
   if(!CAL){
     v.innerHTML = head + '<div class="pagehead"><div><h1 class="display">Calendar</h1>' +
       '<p class="sub">Loading your 2026…</p></div></div></div>';
@@ -7858,7 +7927,7 @@ function caMonthHTML(m){
 function caMiniRow(e){
   var who = (e.people && e.people.length) ? ' <b>' + esc(caPersonName(e.people[0])) + '</b>' : '';
   var weak = e.tier === 'weak' && e.kind !== 'contact' ? ' weak' : '';
-  return '<div class="ca-mini' + weak + '"><span class="ca-tm">' + (e.time || '·') + '</span> ' + esc(e.title) + who + '</div>';
+  return '<div class="ca-mini' + weak + '" data-kind="connection"><span class="ca-tm">' + (e.time || '·') + '</span> ' + esc(e.title) + who + '</div>';
 }
 
 function caWeekHTML(ws){
@@ -7879,7 +7948,7 @@ function caWeekHTML(ws){
 }
 function caWeekEv(e){
   var who = (e.people && e.people.length) ? '<span>' + e.people.map(caPersonName).filter(Boolean).map(esc).join(', ') + '</span>' : '';
-  return '<div class="ca-wev"><span class="ca-tm">' + (e.time || 'all day') + '</span><b>' + esc(e.title) + '</b>' + who + '</div>';
+  return '<div class="ca-wev" data-kind="connection"><span class="ca-tm">' + (e.time || 'all day') + '</span><b>' + esc(e.title) + '</b>' + who + '</div>';
 }
 
 function caDayHTML(ds){
@@ -7889,14 +7958,14 @@ function caDayHTML(ds){
     '<p class="ca-dsub">' + es.length + ' entries' + (series.length ? ' · ' + series.length + ' series running' : '') + ' · inferred sightings are labeled, never filed as contacts</p>';
   if(!es.length && !series.length) h += '<div class="empty"><p>Nothing on this day.</p></div>';
   h += es.map(function(e){
-    return '<div class="ca-evrow"><span class="ca-tm">' + (e.time || 'all day') + '</span><span class="ca-tt"><b>' + esc(e.title) + '</b>' +
+    return '<div class="ca-evrow" data-kind="connection"><span class="ca-tm">' + (e.time || 'all day') + '</span><span class="ca-tt"><b>' + esc(e.title) + '</b>' +
       caTierChip(e.tier) +
       (e.people || []).map(calPersonChip).join('') +
       (e.kind === 'contact' ? '<span class="ca-calname">Contact log · ' + (e.online ? 'online' : 'in person') + '</span>' : '<span class="ca-calname">' + calChip(e.cal) + '</span>') +
       '</span></div>';
   }).join('');
   h += series.map(function(s){
-    return '<div class="ca-evrow"><span class="ca-tm">series</span><span class="ca-tt"><b>' + esc(s.title) + '</b>' +
+    return '<div class="ca-evrow" data-kind="connection"><span class="ca-tm">series</span><span class="ca-tt"><b>' + esc(s.title) + '</b>' +
       caTierChip(s.tier) + '<span class="ca-calname">' + calChip(s.cal) + ' · one of ×' + s.count + ' · runs ' + caFmtD(s.first) + ' → ' + caFmtD(s.last) + '</span></span></div>';
   }).join('');
   return h + '</div>';
@@ -7978,7 +8047,7 @@ if(!window.__calAtlasBound){
 var LR_SORT = 'brief';
 function viewDaily(v){
   dtLoad(); chLoad(); rcLoad();
-  var head = '<div class="page asearch lr"><div class="pagehead"><div><h1 class="display">Live Records</h1></div><div class="lrcc-headbtn"><button type="button" class="btn primary" data-act="lrccopen">' + ic('expand', 14) + ' Command Center</button></div></div>';
+  var head = '<div class="page asearch lr" data-kind="about"><div class="pagehead"><div><h1 class="display">Live Records</h1></div><div class="lrcc-headbtn"><button type="button" class="btn primary" data-act="lrccopen">' + ic('expand', 14) + ' Command Center</button></div></div>';
   if(!DT){
     v.innerHTML = head + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
     return;
@@ -8012,7 +8081,7 @@ function viewDaily(v){
     newCards = '<div class="assec-t asanim" style="--d:60ms">NEW RECORDS &mdash; PAST 3 WEEKS <em class="cnt">' + freshList.length + '</em></div>' +
       '<div class="lrnew-grid">' + shown.map(function(it, i){
         var di = diOf(it.f.name), e = di != null ? D.directory[di] : null;
-        return '<section class="card lrnew' + (hotDateOk(it.x.published) ? ' lrhot' : '') + ' asanim" style="--d:' + (80 + i * 50) + 'ms"><div class="cbody">' +
+        return '<section class="card lrnew' + (hotDateOk(it.x.published) ? ' lrhot' : '') + ' asanim" data-kind="about" style="--d:' + (80 + i * 50) + 'ms"><div class="cbody">' +
           '<div class="lrnew-h">' + (e ? avatar(e, 'md') : '') + '<div class="lrnew-name">' + personLink(it.f.name, it.f.display) +
           (it.x.published ? '<small class="dim">Published ' + esc(fmtD(it.x.published)) + '</small>' : '') + '</div>' +
           (hotDateOk(it.x.published) ? '<span class="dtnew dthot">HOT</span>' : '<span class="dtnew">NEW</span>') + '</div>' +
@@ -8050,7 +8119,7 @@ function viewDaily(v){
         return '<span><i style="background:' + g.c + '"></i>' + g.l + ' <b>' + (FR[g.k] || 0) + '</b></span>';
       }).join('') + '</div></div>';
   }
-  var stats = '<section class="card lrflow asanim" style="--d:0ms"><div class="cbody"><div class="asstats">' +
+  var stats = '<section class="card lrflow asanim" data-kind="about" style="--d:0ms"><div class="cbody"><div class="asstats">' +
     '<div class="asstat"><span class="asstat-ic">' + ic('search', 16) + '</span><b class="asnum">' + (DT.checked || []).length + '</b><span>Checked today</span></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum">' + (DT.filed || []).length + '</b><span>Updated records</span></div>' +
     '<div class="asstat"><span class="asstat-ic">' + ic('sparkle', 16) + '</span><b class="asnum">' + freshList.length + '</b><span>New records</span></div>' +
@@ -8069,9 +8138,9 @@ function viewDaily(v){
     var fFacts = (f.facts || []).slice();
     if(LR_SORT === 'new') fFacts.sort(function(a, b){ return String(b.published || '').localeCompare(String(a.published || '')); });
     var facts = fFacts.map(function(x, j){
-      return '<div class="asfact"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? (hotDateOk(x.published) ? ' <span class="dtnew dthot">HOT</span>' : ' <span class="dtnew">NEW</span>') : '') + '</p></div>';
+      return '<div class="asfact" data-kind="about"><span class="asfact-n">' + ('0' + (j + 1)).slice(-2) + '</span><p>' + factLine(x) + (x.fresh ? (hotDateOk(x.published) ? ' <span class="dtnew dthot">HOT</span>' : ' <span class="dtnew">NEW</span>') : '') + '</p></div>';
     }).join('');
-    return '<section class="card dtperson' + (hasHot ? ' lrhot' : '') + ' asanim" style="--d:' + (140 + i * 70) + 'ms"><div class="cbody">' +
+    return '<section class="card dtperson' + (hasHot ? ' lrhot' : '') + ' asanim" data-kind="about" style="--d:' + (140 + i * 70) + 'ms"><div class="cbody">' +
       '<div class="dtp-head">' + (e ? avatar(e, 'md') : '') + '<div class="dtp-name">' + personLink(f.name, f.display) +
       '<small class="dim">' + (e ? esc(infoLine(e)) : '') + '</small></div>' +
       '<span class="asfiled-cnt">' + (f.facts || []).length + ' filed</span></div>' + facts + '</div></section>';
@@ -8085,8 +8154,8 @@ function viewDaily(v){
   function chip(c, kind){
     var di = diOf(c.name);
     var inner = (di != null ? avatar(D.directory[di], 'sm') : '') + '<span>' + esc(c.display || c.name) + '</span>' + (di != null ? milBadge(D.directory[di]) : '') + (kind === 'upd' ? ic('sparkle', 12) : ic('check', 12));
-    if(di == null) return '<span class="aschip ' + kind + '">' + inner + '</span>';
-    return '<a class="aschip ' + kind + '" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>';
+    if(di == null) return '<span class="aschip ' + kind + '" data-kind="about">' + inner + '</span>';
+    return '<a class="aschip ' + kind + '" data-kind="about" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>';
   }
   /* Checked today, consolidated (JD 2026-10-28): the count is the
      headline; the names live in one dropdown. No "confirmed current"
@@ -8096,7 +8165,7 @@ function viewDaily(v){
     if(au !== bu) return au - bu;
     return String(a.display || a.name).localeCompare(String(b.display || b.name));
   });
-  var checkedCard = '<section class="card asanim" style="--d:' + (140 + (DT.filed || []).length * 70 + 60) + 'ms"><header><h3>Checked today</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody">' +
+  var checkedCard = '<section class="card asanim" data-kind="about" style="--d:' + (140 + (DT.filed || []).length * 70 + 60) + 'ms"><header><h3>Checked today</h3><em class="cnt">' + (DT.checked || []).length + '</em></header><div class="cbody">' +
     '<div class="lrchk-line"><b>' + updList.length + '</b> updated <span class="dim">&middot;</span> <b>' + curNames.length + '</b> checked, nothing new' +
     (typeof DT.unchecked_remaining === 'number' ? ' <span class="dim">&middot;</span> ' + DT.unchecked_remaining + ' not yet checked this cycle' : '') + '</div>' +
     ((DT.checked || []).length ? '<details class="lrdrop"><summary>Who was checked <span class="dim">(' + (DT.checked || []).length + ')</span></summary>' +
@@ -8219,6 +8288,7 @@ function lrccOpen(){
   var ov = document.createElement('div');
   ov.className = 'lrcc';
   ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Live Records Command Center');
+  ov.setAttribute('data-kind', 'about');
   ov.innerHTML = lrccShellHTML();
   document.body.appendChild(ov);
   document.body.classList.add('sheet-open');
@@ -8290,7 +8360,7 @@ function lrccStatsHTML(){
   var pct = cov.of ? Math.round(1000 * cov.checked_total / cov.of) / 10 : 0;
   var pend = lrccPendingCount();
   function stat(v, l){ return '<div class="lrcc-stat"><b>' + v + '</b><span>' + l + '</span></div>'; }
-  return '<div class="lrcc-stats">' +
+  return '<div class="lrcc-stats" data-kind="about">' +
     stat(lrccHasBrief() ? (DT.checked || []).length : 0, 'Checked in latest brief') +
     stat(filedFacts, 'Facts filed') +
     stat(lrccHasBrief() ? (DT.hot || []).length : 0, 'Hot right now') +
@@ -8299,7 +8369,7 @@ function lrccStatsHTML(){
     '</div>';
 }
 function lrccFactRow(dateIso, display, di, text, source, url){
-  return '<div class="lrcc-frow"><span class="lrcc-fd">' + esc(dateIso ? hmFmtD(dateIso) : '') + '</span>' +
+  return '<div class="lrcc-frow" data-kind="about"><span class="lrcc-fd">' + esc(dateIso ? hmFmtD(dateIso) : '') + '</span>' +
     '<span class="lrcc-fm">' + lrccNameBtn(display, di, 'lrcc-fname') +
     '<span class="lrcc-ft">' + esc(text || '') + '</span></span>' +
     '<span class="lrcc-fs">' + (url ? '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(source || 'source') + '</a>' : esc(source || '')) + '</span></div>';
@@ -8313,7 +8383,7 @@ function lrccDashHTML(){
   var out = lrccStatsHTML();
   var hot = DT.hot || [];
   if(hot.length){
-    out += '<section class="lrcc-sec"><div class="lrcc-ph"><span>Hot off the press</span><span class="lrcc-ph-r">' + hot.length + '</span></div>' +
+    out += '<section class="lrcc-sec" data-kind="about"><div class="lrcc-ph"><span>Hot off the press</span><span class="lrcc-ph-r">' + hot.length + '</span></div>' +
       hot.map(function(x){ return lrccFactRow(x.published || DT.date, x.display || x.name || '', hmDtDi(x), x.text, x.source, x.url); }).join('') + '</section>';
   }
   var facts = [];
@@ -8321,18 +8391,18 @@ function lrccDashHTML(){
     (f.facts || []).forEach(function(x){ facts.push({ f:f, x:x, d:x.published || DT.date }); });
   });
   facts.sort(function(a, b){ return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; });
-  out += '<section class="lrcc-sec"><div class="lrcc-ph"><span>Filed in the latest brief</span><span class="lrcc-ph-r">' + facts.length + '</span></div>' +
+  out += '<section class="lrcc-sec" data-kind="about"><div class="lrcc-ph"><span>Filed in the latest brief</span><span class="lrcc-ph-r">' + facts.length + '</span></div>' +
     (facts.length
       ? facts.map(function(it){ return lrccFactRow(it.d, it.f.display || it.f.name || '', hmDtDi(it.f), it.x.text, it.x.source, it.x.url); }).join('')
       : '<p class="lrcc-none">Nothing was filed in this brief.</p>') + '</section>';
   var chk = DT.checked || [];
-  out += '<section class="lrcc-sec"><div class="lrcc-ph"><span>Checked in the latest brief</span><span class="lrcc-ph-r">' + chk.length + '</span></div>' +
+  out += '<section class="lrcc-sec" data-kind="about"><div class="lrcc-ph"><span>Checked in the latest brief</span><span class="lrcc-ph-r">' + chk.length + '</span></div>' +
     '<div class="lrcc-names">' + chk.map(function(c){ return lrccNameBtn(c.display || c.name, hmDtDi(c), 'lrcc-nm'); }).join('') + '</div></section>';
   var FR = DT.freshness;
   if(FR){
     var rowsF = [ ['d7', 'Last 7 days'], ['d30', '8 to 30 days'], ['d90', '31 to 90 days'], ['older', 'Over 90 days'], ['never', 'Never checked'] ];
     var tot = rowsF.reduce(function(s, r){ return s + (FR[r[0]] || 0); }, 0) || 1;
-    out += '<section class="lrcc-sec"><div class="lrcc-ph"><span>Data freshness</span>' +
+    out += '<section class="lrcc-sec" data-kind="about"><div class="lrcc-ph"><span>Data freshness</span>' +
       (FR.oldest ? '<span class="lrcc-ph-r">Oldest check: ' + esc(hmFmtD(FR.oldest)) + '</span>' : '') + '</div>' +
       rowsF.map(function(r){
         var n = FR[r[0]] || 0;
@@ -8429,7 +8499,7 @@ function openCorrespondence(di){
     (mf.group ? '<br><span class="msg-warn">This thread may include group messages, so the narrative is worded to hold either way.</span>' : '') + '</p>';
   var body = narr.length
     ? '<div class="tl msg-tl">' + narr.map(function(ev){
-        return '<div class="ev"><i></i><time>' + esc(evDate(ev.date)) + '</time><b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
+        return '<div class="ev" data-kind="connection"><i></i><time>' + esc(evDate(ev.date)) + '</time>' + kindGlyph('connection') + '<b>' + esc(ev.summary || '') + '</b>' + (ev.detail ? '<p>' + esc(ev.detail) + '</p>' : '') + '</div>';
       }).join('') + '</div>'
     : '<p class="dim">No narrative has been filed for this thread yet. The raw thread (' + mf.n + ' messages) is held in storage.</p>';
   openSheet('Correspondence — ' + name, head + body, { wide:true, focus:false });
@@ -9345,7 +9415,7 @@ function viewPhotos(v){
         '<button type="button" class="btn sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust</button>' +
         '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div></div>';
     }).join('') + '</section>' : '';
-  v.innerHTML = '<div class="page asearch pg-photos">' + headFull + possHtml + '<div class="ph-layout2">' + rail + main + '</div></div>';
+  v.innerHTML = '<div class="page asearch pg-photos" data-kind="about">' + headFull + possHtml + '<div class="ph-layout2">' + rail + main + '</div></div>';
   phPaintList();
   if(PHI) phiRender();
   phFocusChromeArm();
@@ -11538,8 +11608,8 @@ function pfPaintRows(){
     var sg = r.sg, di = pfDi(sg);
     var name = di == null ? '<b>' + esc(sg.display || '') + '</b>'
       : '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '"><b>' + esc(sg.display || '') + '</b></a>' + milBadge(D.directory[di]);
-    return '<div class="pf-row"><div class="pf-top">' + name +
-      '<span class="pf-field">' + esc(sg.field_label) + '</span>' +
+    return '<div class="pf-row" data-kind="' + fieldKind(sg.field) + '"><div class="pf-top">' + name +
+      '<span class="pf-field">' + kindGlyph(fieldKind(sg.field)) + esc(sg.field_label) + '</span>' +
       '<b class="pf-val">' + esc(sg.value) + '</b>' +
       '<span class="pf-grade g-' + String(sg.grade || '').toLowerCase() + '">' + esc(sg.grade) + '</span>' +
       (sg.conf ? '<span class="pf-done">conf ' + sg.conf + '</span>' : '') +
@@ -11567,13 +11637,13 @@ function pfPaintQueue(box){
     ? 'Approve adds <b>' + esc(sg.field_label) + ': \u201C' + esc(sg.value) + '\u201D</b> to ' + esc(sg.display || 'this profile') + '\u2019s profile' + (cur ? ' (current: ' + esc(cur) + ')' : ' (the field is blank)') + '.'
     : 'Approve sets <b>' + esc(sg.field_label) + ' to \u201C' + esc(sg.value) + '\u201D</b> on ' + esc(sg.display || 'this profile') + '\u2019s profile (the field is blank).';
   var nxt = rows[PFQ.i + 1];
-  box.innerHTML = '<div class="pfq-card">' +
+  box.innerHTML = '<div class="pfq-card" data-kind="' + fieldKind(sg.field) + '">' +
     '<div class="pfq-prog"><span>Item <b>' + (PFQ.i + 1) + '</b> of <b>' + rows.length + '</b> in this view · <b>' + total + '</b> pending overall · <b>' + PFQ.decided + '</b> decided this visit</span>' +
     '<span class="pfq-bar"><i style="width:' + (rows.length ? Math.round(100 * PFQ.i / rows.length) : 0) + '%"></i></span></div>' +
     '<div class="pfq-who">' + (e ? avatar(e, 'lg') : '') + '<div><a class="pfq-name" href="#/p/' + (e ? encodeURIComponent(personId(e)) : '') + '" data-act="openp" data-di="' + di + '">' + esc(sg.display || '') + '</a>' + (e ? milBadge(e) : '') +
     '<div class="pfq-sub">' + (e ? esc(infoLine(e) || '') : '') + ' \u00B7 Confidence ' + (sg.conf || 50) + '</div></div>' +
     '<span class="pf-grade g-' + String(sg.grade || '').toLowerCase() + '">' + esc(sg.grade) + '</span></div>' +
-    '<div class="pfq-fill"><span class="pfq-flabel">Fill ' + esc(sg.field_label) + ' with</span><b class="pfq-val">' + esc(sg.value) + '</b></div>' +
+    '<div class="pfq-fill"><span class="pfq-flabel">' + kindChip(fieldKind(sg.field), true) + ' Fill ' + esc(sg.field_label) + ' with</span><b class="pfq-val">' + esc(sg.value) + '</b></div>' +
     '<div class="pfq-ev"><span class="pfq-elabel">Why Luna thinks so</span>' + (sg.evidence || []).map(function(x){ return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' +
     '<div class="pfq-write"><p>' + writeLine + '</p>' +
     '<p>It saves through the Save Pool in one undoable step, and your decision is recorded in Prefill Review. <b>Deny</b> writes nothing to the profile — it records \u201Cno\u201D in Prefill Review and this suggestion never comes back. <b>Skip</b> decides nothing and moves on.</p></div>' +
@@ -11624,7 +11694,7 @@ function viewAudit(v){
   if(m === 'lima' && S.audit.lcOpen != null && D.directory[S.audit.lcOpen]){ lcRenderOpen(v); return; }
   /* Design cleanup (JD 2026-10-28): modes, goal and the mode bar move
      INTO the hero banner; the deck starts right under it. */
-  v.innerHTML = '<div class="page audit"><div class="pagehead"><div class="aud-headrow"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
+  v.innerHTML = '<div class="page audit" data-kind="neutral"><div class="pagehead"><div class="aud-headrow"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
     '<span class="aud-head-btns"><button type="button" class="btn ghost" data-act="audlater" id="audlaterbtn" hidden>' + ic('today', 15) + '<span>Saved for later (<span id="audlaterN">0</span>)</span></button>' +
     '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></span></div>' +
     '<div class="aud-tools">' + audModesHTML() +
@@ -12427,13 +12497,13 @@ function qaEnsure(){
   '<section class="qa-panel" role="dialog" aria-modal="true" aria-label="Quick add">' +
     '<header class="qa-hd"><b>Quick add</b>' +
       '<span class="qa-tabs" role="tablist">' +
-        '<button type="button" data-qmode="log">Log contact</button>' +
-        '<button type="button" data-qmode="new">New person</button>' +
-        '<button type="button" data-qmode="queue">Up next<span class="qa-qn" id="qa-qn"></span></button>' +
+        '<button type="button" data-qmode="log" data-kind="connection">' + ic('link', 12) + 'Log contact</button>' +
+        '<button type="button" data-qmode="new" data-kind="about">' + ic('user', 12) + 'New person</button>' +
+        '<button type="button" data-qmode="queue" data-kind="neutral">Up next<span class="qa-qn" id="qa-qn"></span></button>' +
       '</span>' +
       '<button type="button" class="ib qa-x" data-qact="close" aria-label="Close">' + ic('x', 16) + '</button>' +
     '</header>' +
-    '<div class="qa-sec" data-sec="log">' +
+    '<div class="qa-sec" data-sec="log" data-kind="connection">' +
       '<div id="qa-pickwrap">' +
         '<input id="qa-q" type="search" placeholder="Search people" autocomplete="off" spellcheck="false" aria-label="Search people">' +
         '<div class="qa-lh" id="qa-lh"></div><div id="qa-list" class="qa-list"></div>' +
@@ -12448,7 +12518,7 @@ function qaEnsure(){
       '<div class="qa-endrow"><span class="qa-date" id="qa-date"></span>' +
       '<button type="button" class="btn primary" data-qact="logsave">Log contact</button></div>' +
     '</div>' +
-    '<div class="qa-sec" data-sec="new" hidden>' +
+    '<div class="qa-sec" data-sec="new" hidden data-kind="about">' +
       '<div class="qa-two"><input id="qa-np-first" class="qa-in" placeholder="First name" autocomplete="off"><input id="qa-np-last" class="qa-in" placeholder="Last name" autocomplete="off"></div>' +
       '<input id="qa-np-city" class="qa-in" placeholder="Town (optional), e.g. Potsdam, NY" autocomplete="off">' +
       '<input id="qa-np-rel" class="qa-in" placeholder="Relationship (optional)" autocomplete="off" list="qa-rels">' +
@@ -12459,7 +12529,7 @@ function qaEnsure(){
       '<button type="button" class="btn primary" data-qact="npcreate">Add person</button></div>' +
       '<div id="qa-np-done" class="qa-done" hidden></div>' +
     '</div>' +
-    '<div class="qa-sec" data-sec="queue" hidden>' +
+    '<div class="qa-sec" data-sec="queue" hidden data-kind="neutral">' +
       '<input id="qa-qq" type="search" placeholder="Add someone to Up Next" autocomplete="off" spellcheck="false" aria-label="Add someone to Up Next">' +
       '<div id="qa-qlist" class="qa-list"></div>' +
       '<div class="qa-lh">Up next</div><div id="qa-queue" class="qa-ql"></div>' +
@@ -12944,7 +13014,7 @@ function sbShell(inner){
      lives in the app's own frame (rail + top bar stay put), and the
      tool nav is the in-page column. The old full-screen shell with
      its own top bar made the Sandbox feel like a different app. */
-  return '<div class="sb-shell t-' + esc(SB.tool) + '"><div class="sb-body">' + sbNav() + '<div class="sb-canvas">' + inner + '</div></div></div>';
+  return '<div class="sb-shell t-' + esc(SB.tool) + '" data-kind="neutral"><div class="sb-body">' + sbNav() + '<div class="sb-canvas">' + inner + '</div></div></div>';
 }
 /* V3.13.0 — the Sandbox gets a real left column (JD: "still all
    concentrated to the center... I'm clicking on things like the Lab
@@ -13362,25 +13432,25 @@ function mdlAfterRender(){
 
 /* ---------------- 1. data grid ---------------- */
 var SB_COLS = [
-  { k:'name', l:'Name', v:function(e){ return dispName(e); } },
-  { k:'key', l:'Key', v:function(e){ return pkey(e); } },
-  { k:'tier', l:'Tier', v:function(e){ return tierName(e); } },
-  { k:'rel', l:'Relationship', v:function(e){ return gv(e, 'relationship') || ''; } },
-  { k:'years', l:'Known since', v:function(e){ return gv(e, 'years_known') || ''; }, n:function(e){ return sbYear(gv(e, 'years_known')) || 9999; } },
-  { k:'lastc', l:'Last contact', v:function(e){ return gv(e, 'last_contact') || ''; }, n:function(e){ return sbYear(gv(e, 'last_contact')) || 9999; } },
-  { k:'snap', l:'Snapchat', v:function(e){ return (e.snap_handles || []).map(function(x){ return '@' + x; }).join(' '); } },
-  { k:'online', l:'Online since', v:function(e){ return e.snap_since ? String(e.snap_since) : ''; }, n:function(e){ return e.snap_since || 9999; } },
-  { k:'ig', l:'Instagram', v:function(e){ return effHandle(e) ? '@' + effHandle(e) : ''; } },
-  { k:'fb', l:'Facebook', v:function(e){ return e.fb_handle || ''; } },
-  { k:'email', l:'Email', v:function(e){ return gv(e, 'email') || ''; } },
-  { k:'phone', l:'Phone', v:function(e){ return gv(e, 'phone') || ''; } },
-  { k:'orgs', l:'Organizations', v:function(e){ return orgsOf(e).join(', '); } },
-  { k:'groups', l:'Groups', v:function(e){ return personGroups(e).join(', '); } },
-  { k:'town', l:'Town', v:function(e){ return e.city || gv(e, 'location_on_file') || ''; } },
-  { k:'photo', l:'Photo', v:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return p ? (p.status || '') + (sbPhotoCount(p) > 1 ? ' ×' + sbPhotoCount(p) : '') : '—'; } },
-  { k:'foot', l:'Footprint facts', v:function(e){ return String(sbFootCount(e)); }, n:function(e){ return sbFootCount(e); } },
-  { k:'conn', l:'Connections', v:function(e){ return String((e.neighbors || []).length); }, n:function(e){ return (e.neighbors || []).length; } },
-  { k:'close', l:'Closeness', v:function(e, ph, sc){ var s = sc[e._di]; return s ? String(s.total) : ''; }, n:function(e, ph, sc){ var s = sc[e._di]; return s ? s.total : -1; } }
+  { k:'name', l:'Name', kind:'about', v:function(e){ return dispName(e); } },
+  { k:'key', l:'Key', kind:'neutral', v:function(e){ return pkey(e); } },
+  { k:'tier', l:'Tier', kind:'connection', v:function(e){ return tierName(e); } },
+  { k:'rel', l:'Relationship', kind:'connection', v:function(e){ return gv(e, 'relationship') || ''; } },
+  { k:'years', l:'Known since', kind:'connection', v:function(e){ return gv(e, 'years_known') || ''; }, n:function(e){ return sbYear(gv(e, 'years_known')) || 9999; } },
+  { k:'lastc', l:'Last contact', kind:'connection', v:function(e){ return gv(e, 'last_contact') || ''; }, n:function(e){ return sbYear(gv(e, 'last_contact')) || 9999; } },
+  { k:'snap', l:'Snapchat', kind:'about', v:function(e){ return (e.snap_handles || []).map(function(x){ return '@' + x; }).join(' '); } },
+  { k:'online', l:'Online since', kind:'connection', v:function(e){ return e.snap_since ? String(e.snap_since) : ''; }, n:function(e){ return e.snap_since || 9999; } },
+  { k:'ig', l:'Instagram', kind:'about', v:function(e){ return effHandle(e) ? '@' + effHandle(e) : ''; } },
+  { k:'fb', l:'Facebook', kind:'about', v:function(e){ return e.fb_handle || ''; } },
+  { k:'email', l:'Email', kind:'about', v:function(e){ return gv(e, 'email') || ''; } },
+  { k:'phone', l:'Phone', kind:'about', v:function(e){ return gv(e, 'phone') || ''; } },
+  { k:'orgs', l:'Organizations', kind:'about', v:function(e){ return orgsOf(e).join(', '); } },
+  { k:'groups', l:'Groups', kind:'about', v:function(e){ return personGroups(e).join(', '); } },
+  { k:'town', l:'Town', kind:'about', v:function(e){ return e.city || gv(e, 'location_on_file') || ''; } },
+  { k:'photo', l:'Photo', kind:'about', v:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return p ? (p.status || '') + (sbPhotoCount(p) > 1 ? ' ×' + sbPhotoCount(p) : '') : '—'; } },
+  { k:'foot', l:'Footprint facts', kind:'about', v:function(e){ return String(sbFootCount(e)); }, n:function(e){ return sbFootCount(e); } },
+  { k:'conn', l:'Connections', kind:'connection', v:function(e){ return String((e.neighbors || []).length); }, n:function(e){ return (e.neighbors || []).length; } },
+  { k:'close', l:'Closeness', kind:'connection', v:function(e, ph, sc){ var s = sc[e._di]; return s ? String(s.total) : ''; }, n:function(e, ph, sc){ var s = sc[e._di]; return s ? s.total : -1; } }
 ];
 var SB_VIEWS = {
   all:{ l:'Everyone', f:function(){ return true; } },
@@ -13439,7 +13509,7 @@ function sbGrid(){
     '<span class="sb-count">' + rows.length + ' rows</span></div>';
   if(selN) h += '<div class="sb-selbar"><b>' + selN + ' selected</b><button type="button" class="btn danger2 sm" data-sb="seltodanger">Send to Danger area</button><button type="button" class="btn ghost sm" data-sb="selclear">Clear selection</button></div>';
   h += '<div class="sb-tablewrap"><table class="sb-table"><thead><tr><th class="sb-ck"></th>' +
-    vis.map(function(c){ return '<th data-sb="gridsort" data-k="' + c.k + '">' + esc(c.l) + (SB.grid.sort === c.k ? (SB.grid.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }).join('') + '</tr></thead><tbody>';
+    vis.map(function(c){ return '<th data-kind="' + (c.kind || 'neutral') + '" data-sb="gridsort" data-k="' + c.k + '">' + esc(c.l) + (SB.grid.sort === c.k ? (SB.grid.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }).join('') + '</tr></thead><tbody>';
   rows.slice(0, 800).forEach(function(e){
     var di = e._di, pk = pkey(e);
     h += '<tr><td class="sb-ck"><input type="checkbox" data-sbi="gridsel" data-di="' + di + '"' + (SB.sel[pk] ? ' checked' : '') + '></td>';
@@ -14351,17 +14421,17 @@ function dzExcluded(e){
   return false;
 }
 var DZ_COLS = [
-  { k:'name',   l:'Name',                v:function(e){ return dispName(e); }, s:function(e){ return dispName(e).toLowerCase(); } },
-  { k:'rel',    l:'Relationship',        v:function(e){ return cap(gv(e, 'relationship')); }, s:function(e){ return String(gv(e, 'relationship') || '').toLowerCase(); } },
-  { k:'loc',    l:'Location',            v:function(e){ return ptLocVal(e); }, s:function(e){ return ptLocVal(e).toLowerCase(); } },
-  { k:'years',  l:'Years Known',         v:function(e){ var y = knownSinceYear(e); return y ? String(y) : String(gv(e, 'years_known') || ''); }, n:function(e){ return knownSinceYear(e) || 0; }, date:true },
-  { k:'firstc', l:'First Contact',       v:function(e){ return lcDateLabel(firstContactOf(e)); }, n:function(e){ return flexKey(firstContactOf(e)) || 0; }, date:true },
-  { k:'lastc',  l:'Last Contact',        v:function(e){ return lcLabel(e); }, n:function(e){ return flexKey(gv(e, 'last_contact')) || 0; }, date:true },
-  { k:'lastco', l:'Last Contact Online', v:function(e){ return lcOnline(e) ? 'Yes' : 'No'; }, n:function(e){ return lcOnline(e) ? 1 : 0; } },
-  { k:'events', l:'Events',              v:function(e){ return String((e.events || []).length); }, n:function(e){ return (e.events || []).length; } },
-  { k:'msgs',   l:'Correspondence',      v:function(e){ var mf = msgFor(e); return mf ? String(mf.n) : ''; }, n:function(e){ var mf = msgFor(e); return mf ? mf.n : 0; } },
-  { k:'groups', l:'Groups',              v:function(e){ return String(personGroups(e).length); }, n:function(e){ return personGroups(e).length; } },
-  { k:'photo',  l:'Photo',               v:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return (p && p.photo_url) ? 'Yes' : 'No'; }, n:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return (p && p.photo_url) ? 1 : 0; } }
+  { k:'name',   l:'Name', kind:'about',                v:function(e){ return dispName(e); }, s:function(e){ return dispName(e).toLowerCase(); } },
+  { k:'rel',    l:'Relationship', kind:'connection',        v:function(e){ return cap(gv(e, 'relationship')); }, s:function(e){ return String(gv(e, 'relationship') || '').toLowerCase(); } },
+  { k:'loc',    l:'Location', kind:'about',            v:function(e){ return ptLocVal(e); }, s:function(e){ return ptLocVal(e).toLowerCase(); } },
+  { k:'years',  l:'Years Known', kind:'connection',         v:function(e){ var y = knownSinceYear(e); return y ? String(y) : String(gv(e, 'years_known') || ''); }, n:function(e){ return knownSinceYear(e) || 0; }, date:true },
+  { k:'firstc', l:'First Contact', kind:'connection',       v:function(e){ return lcDateLabel(firstContactOf(e)); }, n:function(e){ return flexKey(firstContactOf(e)) || 0; }, date:true },
+  { k:'lastc',  l:'Last Contact', kind:'connection',        v:function(e){ return lcLabel(e); }, n:function(e){ return flexKey(gv(e, 'last_contact')) || 0; }, date:true },
+  { k:'lastco', l:'Last Contact Online', kind:'connection', v:function(e){ return lcOnline(e) ? 'Yes' : 'No'; }, n:function(e){ return lcOnline(e) ? 1 : 0; } },
+  { k:'events', l:'Events', kind:'connection',              v:function(e){ return String((e.events || []).length); }, n:function(e){ return (e.events || []).length; } },
+  { k:'msgs',   l:'Correspondence', kind:'connection',      v:function(e){ var mf = msgFor(e); return mf ? String(mf.n) : ''; }, n:function(e){ var mf = msgFor(e); return mf ? mf.n : 0; } },
+  { k:'groups', l:'Groups', kind:'about', v:function(e){ return String(personGroups(e).length); }, n:function(e){ return personGroups(e).length; } },
+  { k:'photo',  l:'Photo', kind:'about',               v:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return (p && p.photo_url) ? 'Yes' : 'No'; }, n:function(e, ph){ var p = ph[dispName(e).toLowerCase()]; return (p && p.photo_url) ? 1 : 0; } }
 ];
 function dzSortState(){
   if(SB.dz.sort) return SB.dz.sort;
@@ -14427,7 +14497,7 @@ function sbDangerZone(){
   var DZ_W = [3, 13, 11, 10, 6, 10, 10, 8, 6, 11, 6, 5];   /* % widths, checkbox + DZ_COLS; sums to 99 — the fixed layout distributes the slack, and per-column rounding can never push the table past the canvas. Shares are sized so header words and Yes/No fit whole at laptop widths. */
   h += '<div class="sb-tablewrap dz-tablewrap"><table class="sb-table dz-table"><colgroup><col style="width:' + DZ_W[0] + '%">' +
     DZ_COLS.map(function(c, ci){ return '<col style="width:' + DZ_W[ci + 1] + '%">'; }).join('') + '</colgroup><thead><tr><th class="sb-ck"></th>' +
-    DZ_COLS.map(function(c){ return '<th data-sb="dzsort" data-k="' + c.k + '">' + esc(c.l) + (st.k === c.k ? (st.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }).join('') + '</tr></thead><tbody>';
+    DZ_COLS.map(function(c){ return '<th data-kind="' + (c.kind || 'about') + '" data-sb="dzsort" data-k="' + c.k + '">' + esc(c.l) + (st.k === c.k ? (st.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }).join('') + '</tr></thead><tbody>';
   rows.forEach(function(di){
     var e = D.directory[di], pk = pkey(e);
     h += '<tr data-sb="dzrow" data-di="' + di + '" data-dzkey="' + esc(pk) + '" class="' + (pk === SB.dz.curKey ? 'dz-cur' : '') + (SB.dz.sel[pk] ? ' dz-sel' : '') + '"><td class="sb-ck"><input type="checkbox" data-sbi="dzsel" data-di="' + di + '"' + (SB.dz.sel[pk] ? ' checked' : '') + ' tabindex="-1"></td>' +
@@ -15677,7 +15747,7 @@ function viewLists(v){
     (skillCats[c] = skillCats[c] || []).push(ent);
   });
   var nEnt = Object.keys(ents).filter(function(k){ return !ents[k].cat; }).length;
-  var h = '<div class="page ml"><header class="ml-hd"><h2>Master List</h2>' +
+  var h = '<div class="page ml" data-kind="about"><header class="ml-hd"><h2>Master List</h2>' +
     '<p class="ml-sub">Every organization, group, and skill in one place. ' + nEnt + ' names. Tap a name to see its people and add or remove them. Renames, merges, and nesting go through Luna so they land clean.</p>' +
     '<div class="ml-bar"><input type="text" id="mlq" placeholder="Search names" value="' + esc(MLV.q) + '"></div></header>' +
     '<datalist id="ml-names">' + Object.keys(ents).filter(function(k){ return !ents[k].cat; }).map(function(k){ return '<option value="' + esc(ents[k].name) + '">'; }).join('') + '</datalist>' +
@@ -15734,7 +15804,7 @@ function mlRenderKeepSearch(){
 function viewCouncil(v){
   cnLoad();
   if(!CN){
-    v.innerHTML = '<div class="cnc"><div class="empty"><h3>Council</h3><p>Loading the council board…</p></div></div>';
+    v.innerHTML = '<div class="cnc" data-kind="neutral"><div class="empty"><h3>Council</h3><p>Loading the council board…</p></div></div>';
     return;
   }
   var cn = CN, q = cnQueue();
@@ -15744,7 +15814,7 @@ function viewCouncil(v){
   var closed = flags.filter(function(f){ return cnFlagState(f, q) === 'closed'; });
   var stagedEntries = q.filter(function(e){ return e.state === 'staged'; });
   var doneToday = q.filter(function(e){ return e.state === 'done' && cnToday(e.ts); }).length;
-  var h = '<div class="cnc">';
+  var h = '<div class="cnc" data-kind="neutral">';
   /* ---- hero: open flags action queue ---- */
   h += '<header class="cnc-hero"><div class="cnc-herotop"><div>' +
     '<div class="cnc-eyebrow">Contacts Pro Council · Command Center</div>' +
