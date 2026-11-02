@@ -5088,6 +5088,303 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-zvi-szafran-spoke-as-suny-canton-president-at-th",
+   "name": "sf:zvi-szafran",
+   "display": "Zvi Szafran",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "close",
+   "claim": "At a SUNY Canton celebration of the continued growth of its ASAP|ACE student-success program, President Zvi Szafran said the college has participated in ASAP|ACE since it debuted in the 2023-2024 academic year; the article notes about 320 students welcomed and about $400,000 in direct student aid expected this year.",
+   "file_text": "Spoke as SUNY Canton president at the college's ASAP|ACE program celebration, 2026",
+   "source": "SUNY Canton",
+   "url": "https://canton.edu/news/2026/asap-ace.php",
+   "anchors": [
+    "SUNY Canton",
+    "President of SUNY Canton",
+    "Canton, NY"
+   ],
+   "missing_gate": "No published date appears on the opened page and the fact is an institutional quote, not a personal change or in-motion signal, so it did not compete for a filing slot.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 50,
+    "source": 28,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-ellie-jent-chief-development-officer-at-the-joi",
+   "name": "ellie.jent",
+   "display": "Ellie Jent",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "close",
+   "claim": "Ellie Jent is now titled Chief Development Officer at the Joint Council for Economic Opportunity (JCEO), quoted in that role in Sun Community News coverage of the Regional Food Bank's ReStock Our Pantries program in Malone (published Mar 9, 2026); her profile still lists her as Development Director.",
+   "file_text": "Chief Development Officer at the Joint Council for Economic Opportunity (JCEO) as of Mar 2026, previously Development Director",
+   "source": "Sun Community News",
+   "url": "https://suncommunitynews.com/news/124182/regional-food-bank-continues-restock-our-pantries-effort-locally/",
+   "anchors": [
+    "Joint Council for Economic Opportunity (JCEO)"
+   ],
+   "missing_gate": "The opened source ties her only to the JCEO employer anchor, with no second profile anchor, and no dated promotion announcement pins the change date.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 47,
+    "source": 26,
+    "detail": 17
+   },
+   "fields": {
+    "highlights": "Chief Development Officer, Joint Council for Economic Opportunity (JCEO)"
+   },
+   "published": "2026-03-09",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-joshuamcgrath-announced-forthcoming-book-grow-up-b",
+   "name": "joshuamcgrath",
+   "display": "Josh McGrath",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "In Ep. 72 of The Ardent Pursuit (July 15, after a four-month hiatus), Josh McGrath introduces his forthcoming book 'Grow Up. Be a Man.,' described as a 30-day field guide to biblical masculinity, and reads a preview; the listing confirms the show is hosted by Josh McGrath and Andrew Haas.",
+   "file_text": "Announced forthcoming book 'Grow Up. Be a Man.,' a 30-day field guide to biblical masculinity, on The Ardent Pursuit Ep. 72, Jul 2026",
+   "source": "The Podcast App",
+   "url": "https://podcast.app/the-ardent-pursuit-p6987033",
+   "anchors": [
+    "Josh McGrath",
+    "The Ardent Pursuit podcast"
+   ],
+   "missing_gate": "The only source is his own podcast's episode description syndicated by an aggregator, with no publisher, retailer, or other independent corroboration of the book.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 12,
+    "detail": 15
+   },
+   "fields": {
+    "highlights": "Forthcoming book 'Grow Up. Be a Man.'"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-ct-maggie-lapinski-won-the-international-pancake-day-ra",
+   "name": "ct:maggie lapinski",
+   "display": "Maggie Lapinski",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "close",
+   "claim": "Maggie Lapinski won the International Pancake Day Race in Liberal, Kansas on Mar 5, 2019, running the 415-yard leg in 62.98 seconds, almost 7 seconds faster than the Olney, England winner; she coaches cross country and also won the Liberal leg in 2017 (Associated Press via KFDI).",
+   "file_text": "Won the International Pancake Day Race in Liberal, Kansas, Mar 2019, in 62.98 seconds, as a Kansas teacher and cross country coach; also won the Liberal leg in 2017",
+   "source": "KFDI",
+   "url": "https://www.kfdi.com/2019/03/05/kansas-teacher-wins-annual-shrove-tuesday-pancake-race/",
+   "anchors": [
+    "Teacher in Kansas",
+    "Track / cross-country background"
+   ],
+   "missing_gate": "Her footprint already carries a generic 'teacher in Kansas and a pancake-race winner' bullet, so this is detail expansion of an already-filed fact, held as a close call on redundancy.",
+   "confidence": 80,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 22,
+    "detail": 18
+   },
+   "fields": {
+    "highlights": "International Pancake Day Race winner, 2019"
+   },
+   "published": "2019-03-05",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-katherine-whitson-married-braden-a-fellow-army-second-",
+   "name": "sf:katherine-whitson",
+   "display": "Katherine Whitson",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "Syracuse University's Hometown Hero profile states that in February 2025, 2LT Whitson married her husband Braden, a fellow Army 2LT whom she met while attending Georgia Military College.",
+   "file_text": "Married Braden, a fellow Army Second Lieutenant she met at Georgia Military College, Feb 2025",
+   "source": "Syracuse University",
+   "url": "https://veterans.syracuse.edu/news/hth-kat-whitson/",
+   "anchors": [
+    "Georgia Military College",
+    "February 2025 marriage already on file"
+   ],
+   "missing_gate": "Spouse identity is family detail; the prior filing from this same source deliberately carried only 'Married in February 2025,' so the name is held under the sensitive-family gate.",
+   "confidence": 94,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 27,
+    "detail": 19
+   },
+   "fields": {},
+   "published": "2026-03-20",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-gregory-hurlbut-presented-church-multiplication-in-s",
+   "name": "sf:gregory-hurlbut",
+   "display": "Gregory Hurlbut",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "The Listen Notes listing for the MFI Leaders Podcast shows an episode 'Church Multiplication in Small Towns - Greg & Jessica Hurlbut' (59:51) on planting and multiplying churches in rural communities; the parent opened the listing and confirmed the title, presenters, and duration, but no episode date appears on the page.",
+   "file_text": "Presented 'Church Multiplication in Small Towns' with Jessica Hurlbut on the MFI Leaders Podcast, Nov 2025",
+   "source": "Listen Notes",
+   "url": "https://www.listennotes.com/pl/podcasts/mfi-leaders-podcast-ministers-fellowship-Xkah4seIGrz/",
+   "anchors": [
+    "Ministers Fellowship International",
+    "Jessica Hurlbut (co-presenter)"
+   ],
+   "missing_gate": "The listing is an aggregator syndication of his own network's podcast and the opened page shows no episode date, so the Nov 2025 date in the file text is unverified.",
+   "confidence": 64,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 10,
+    "detail": 12
+   },
+   "fields": {
+    "highlights": "MFI Leaders Podcast session, Church Multiplication in Small Towns"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-martha-martin-martin-s-country-store-purchased-the",
+   "name": "sf:martha-martin",
+   "display": "Martha Martin",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "Martin's Country Store's own 'Meet the Martins' page states Justus Martin started the store in Nov 2002 with his wife Martha, and that in 2025 they were given the opportunity to purchase the North Country Store building in Philadelphia, New York, where he once worked.",
+   "file_text": "Martin's Country Store purchased the North Country Store building in Philadelphia, New York, in 2025",
+   "source": "Martin's Country Store",
+   "url": "https://martinscountrystore.com/pages/meet-the-martins",
+   "anchors": [
+    "Martin's Country Store",
+    "Moira, NY",
+    "Martha Martin (named as wife and co-founder)"
+   ],
+   "missing_gate": "The only source is the family business's own first-party site, so the fact is not independently corroborated; a co-founder fact on this same basis was held in the Oct 26 run.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 8,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-mdknaebel-married-debbie-knaebel-clarkson-15-t",
+   "name": "mdknaebel",
+   "display": "Mike Knaebel",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "A Clarkson alumni 'Love Stories' entry for Debbie Knaebel '15 and Michael Knaebel says they met through mutual Clarkson friends in 2012, married after her graduation, now have two children, and both still work at Clarkson, she at LC Drives since 2015 and he in Clarkson OIT.",
+   "file_text": "Married Debbie Knaebel (Clarkson '15); they have two children, and both work at Clarkson, she at LC Drives, he in Clarkson OIT",
+   "source": "Clarkson University",
+   "url": "https://diy.clarkson.edu/uncategorized/clarkson-love-stories/",
+   "anchors": [
+    "Clarkson University",
+    "Clarkson OIT (employer on profile)"
+   ],
+   "missing_gate": "The only source is a self-submitted alumni story and the content is marriage and children family detail, held for JD rather than auto-filed.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 18,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-dale-fournier-received-the-2019-robert-c-buck-mast",
+   "name": "sf:dale-fournier",
+   "display": "Dale Fournier",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "His Clarkson University faculty profile lists a '2019 Robert C. Buck Master's of Science Award' among his awards, alongside the already-filed 2022 Bernier Award and 2019-22 Arthritis Society award.",
+   "file_text": "Received the 2019 Robert C. Buck Master's of Science Award",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/people/dale-fournier",
+   "anchors": [
+    "Clarkson University",
+    "University of Western Ontario graduate study"
+   ],
+   "missing_gate": "The award appears only on his own institutional bio page, with no independent corroboration or named granting body.",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 16,
+    "detail": 12
+   },
+   "fields": {
+    "highlights": "2019 Robert C. Buck Master's of Science Award"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-sf-jennifer-meyer-works-as-medical-readiness-sergeant-",
+   "name": "sf:jennifer-meyer",
+   "display": "Jennifer Meyer",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Jennifer Meyer profiles herself on Bold.pro as a Medical Readiness Sergeant with the NY Army National Guard in Rochester, NY, overseeing the immunization program for 375+ Soldiers, previously a substitute teacher at Greece Central School District, with physical-education degrees from SUNY Brockport and a political-science degree from the University at Albany.",
+   "file_text": "Works as Medical Readiness Sergeant with the NY Army National Guard in Rochester, New York",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/jennifer-meyer-240928204414",
+   "anchors": [
+    "U.S. Army / NY Army National Guard"
+   ],
+   "missing_gate": "Only one profile anchor (Army / NY Guard) is tied, with no 27th IBCT or HHC link for a very common name, and Bold.pro is a self-reported resume aggregator.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 10,
+    "detail": 15
+   },
+   "fields": {
+    "universities": "SUNY Brockport, University at Albany",
+    "degrees": "Master of Science in Physical Education; Bachelor of Science in Physical Education; Bachelor of Arts in Political Science",
+    "companies": "Greece Central School District"
+   },
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261101-ct-paige-alves-presented-detecting-and-simulating-a",
+   "name": "ct:paige alves",
+   "display": "Paige Alves",
+   "run_date": "2026-11-01",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Paige Alves presented 'Detecting and Simulating Aircraft Go-Arounds Using R' at a student mini-conference (DMD Talks, Fresno State site, scheduled Fri Nov 21, 2025).",
+   "file_text": "Presented 'Detecting and Simulating Aircraft Go-Arounds Using R' at a student mini-conference, Nov 2025",
+   "source": "Fresno State DMD",
+   "url": "https://sites.google.com/mail.fresnostate.edu/dmd/talks",
+   "anchors": [],
+   "missing_gate": "The directory profile is completely blank, so no profile anchor ties this Fresno-area presenter to JD's Paige Alves.",
+   "confidence": 25,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 12,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2025-11-21",
+   "novelty": "new"
   }
  ]
 }
