@@ -309,6 +309,14 @@
   {
    "date": "2026-11-01",
    "kind": "photo",
+   "display": "Olena Musiienko",
+   "text": "Primary photo filed (grade: possible)",
+   "source": "Photos on File",
+   "url": "https://musiienkofit.com/"
+  },
+  {
+   "date": "2026-11-01",
+   "kind": "photo",
    "display": "Janelle Evans",
    "text": "Primary photo filed",
    "source": "Photos on File",
@@ -2393,14 +2401,6 @@
    "text": "Promoted from Clinical Assistant Professor to Clinical Associate Professor of Occupational Therapy in the Lewis School of Health Sciences at Clarkson University, 2022",
    "source": "Women In Academia Report",
    "url": "https://wiareport.com/2022/06/six-women-faculty-members-who-are-taking-on-new-assignments-at-universities/"
-  },
-  {
-   "date": "2026-10-29",
-   "kind": "filed",
-   "display": "Patrick Tombs",
-   "text": "Served as understudy for the title role in Chicago Shakespeare Theater's Richard III, February-March 2024",
-   "source": "Chicago Shakespeare Theater",
-   "url": "https://www.chicagoshakes.com/app/uploads/2024/03/b2243_RICH_Program_Final.pdf"
   }
  ]
 }
