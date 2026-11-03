@@ -13140,8 +13140,8 @@
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "photos": {
-   "todo": 3,
-   "new": 0,
+   "todo": 5,
+   "new": 2,
    "cleared_at": null
   }
  },
@@ -16127,7 +16127,19 @@
    "added": "2026-11-02",
    "class": "standing",
    "source": "On file at ledger start"
+  },
+  "erin dunham": {
+   "first_seen": "2026-11-03T19:41:00Z",
+   "added": "2026-11-03",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "jennifer meyer": {
+   "first_seen": "2026-11-03T19:41:00Z",
+   "added": "2026-11-03",
+   "class": "new",
+   "source": "Photo filed"
   }
  },
- "updated": "2026-11-03T19:24:00Z"
+ "updated": "2026-11-03T19:41:00Z"
 }
