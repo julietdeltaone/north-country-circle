@@ -1845,9 +1845,9 @@ div.hot-row{cursor:default}
 html[data-mode="light"] .lrhot{background:color-mix(in srgb, var(--hot) 10%, var(--card))}
 .dthot{background:var(--hot);color:#fff;padding:2px 8px;border-radius:999px}
 .lrsort{display:flex;align-items:center;gap:8px;margin:4px 0 2px;font-size:12px;color:var(--mut)}
-.lrchip{border:1px solid var(--line2);background:none;color:inherit;font:inherit;font-size:12px;
+.lrchip{border:1px solid var(--line2);background:none;color:inherit;font:inherit;font-size:12px;font-weight:600;white-space:nowrap;
   padding:5px 12px;border-radius:999px;cursor:pointer}
-.lrchip.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+.lrchip.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .hma-hk{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);font-weight:700}
 .hma-hname{font:600 16.5px var(--serif);margin-top:4px}
 .hma-hfact{font-size:12.5px;line-height:1.5;color:var(--txt2);margin-top:4px}
@@ -5996,9 +5996,22 @@ body[data-view="sandbox"] #view{overflow-y:auto !important;display:block}
 .fi-tab{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 14px;border-radius:2px;color:var(--mut);font-weight:600;font-size:13.5px;text-decoration:none}
 .fi-tab:hover{color:var(--txt);text-decoration:none}
 .fi-tab.on{background:var(--acc);color:#fff}
-.fi-bdg{display:inline-block;min-width:20px;text-align:center;font-size:11px;font-weight:700;line-height:18px;padding:0 5px;border-radius:99px;background:var(--warn);color:#161c24}
+.fi-bdg{display:inline-flex;align-items:center;justify-content:center;width:28px;height:18px;flex:none;font-style:normal;text-align:center;font-size:11px;font-weight:700;line-height:18px;padding:0;border-radius:99px;background:var(--warn);color:#161c24}
 .fi-tab.on .fi-bdg{background:#fff;color:var(--acc)}
-.fi-bdg[hidden]{display:none}
+.fi-bdg.zero{visibility:hidden}
+/* V3.79.1 — Live Records chrome: ONE header for Records + Fact Inbox.
+   Identical boxes in every state and on both tabs; the sub slot is a
+   fixed-height single line so its text can never reflow the header,
+   and the right cluster (tabs + Command Center) never wraps inside
+   itself — the bar reads as one calm, compact strip. */
+.page.lr .pagehead.lr-chrome{background:none;border:0;border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:2px 2px 0;margin-bottom:6px}
+.lr-chrome-l{flex:1 1 auto;min-width:0}
+.page.lr .pagehead.lr-chrome h1{font-size:27px}
+.lr-chrome-sub{height:21px;line-height:21px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr-chrome .lr-head-r{flex:none;flex-wrap:nowrap}
+.lr-secbar{display:flex;align-items:center;justify-content:space-between;gap:8px 14px;flex-wrap:wrap;margin:20px 0 10px}
+.lr-secbar .assec-t{margin:0}
+.lr-secbar .lrsort{margin:0}
 .fi-alert{border:1px solid var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent);color:var(--txt);border-radius:2px;padding:10px 14px;font-size:13.5px;margin-bottom:14px}
 .fi-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
 .fi-sortwrap{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--dim);font-weight:600}
