@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.79.3';
+var APP_VERSION = '3.79.4';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -362,6 +362,12 @@ function roleSet(role){
   document.documentElement.setAttribute('data-role', role);
   var w = $('#rolewall'); if(w) w.remove();
   var st = $('#rolestrip'); if(st) st.remove();
+  /* Live update (JD 2026-11-03): the switch re-renders the CURRENT
+     view in place under the new role — every surface paints its
+     role-gated content from roleClears() at render time, so this
+     render() is the whole mechanism; render()'s same-route place-
+     keeping (V3.79.4) preserves the scroll position and the open
+     profile/tab, so the switch never reads as a reload. */
   render();
 }
 function roleSegHTML(){
@@ -2497,6 +2503,50 @@ function bgInit(){
   var vw2 = document.getElementById('view');
   if(vw2) vw2.addEventListener('scroll', onScr, { passive:true });
 }
+/* ---------- Scroll place-keeping for same-route repaints (V3.79.4) ----------
+   A same-route render() rebuilds the view's innerHTML, which resets
+   EVERY scroller to the top — so an in-place repaint (a display-role
+   switch from the top bar, a Levels change, data landing) threw the
+   reader back to the top of the page and the role change read as a
+   reload instead of a live update. render() now snapshots the scroll
+   place before a same-route rebuild and restores it after: the #view
+   scroller, the window, and the app's known inner scroll containers
+   (People's table wrap, the Sandbox canvas/table, side panels and
+   rails), keyed by id or class + ordinal so the rebuilt DOM — same
+   structure, new role — lines up. Route changes keep their existing
+   behavior (top of page; the Live Records tab swap keeps its own
+   per-tab memory), and an explicit back/forward restore wins. */
+var SCROLLY = '#view .ptwrap, #view .ppl-side, #view .sb-canvas, #view .sb-tablewrap, #view .sb-nav, #view .sb-dlist, #view .mdl-scroll, #view .netpanel, #view .fampanel, #view .hm-rail, #view .dtrail, #view .plist.flat, #view .yk-list, #view .ykb-list, #view .chg-members-in, #view .pha-qgrid';
+function scrollKeyOf(el, seen){
+  var key = el.id ? '#' + el.id : '.' + String(el.className || '').trim().split(/\s+/).join('.');
+  var ix = seen[key] || 0; seen[key] = ix + 1;
+  return key + '|' + ix;
+}
+function scrollSnap(){
+  var v = $('#view');
+  var out = { w: window.scrollY || 0, vt: v ? v.scrollTop : 0, vl: v ? v.scrollLeft : 0, inner: [] };
+  if(!v) return out;
+  var els = v.querySelectorAll(SCROLLY), seen = {};
+  for(var i = 0; i < els.length; i++){
+    var el = els[i], key = scrollKeyOf(el, seen);
+    if(el.scrollTop || el.scrollLeft) out.inner.push({ key: key, t: el.scrollTop, l: el.scrollLeft });
+  }
+  return out;
+}
+function scrollRestore(s){
+  if(!s) return;
+  var v = $('#view');
+  if(v){ v.scrollTop = s.vt; v.scrollLeft = s.vl; }
+  if(s.w) window.scrollTo(0, s.w);
+  if(!v || !s.inner.length) return;
+  var byKey = {};
+  s.inner.forEach(function(r){ byKey[r.key] = r; });
+  var els = v.querySelectorAll(SCROLLY), seen = {};
+  for(var i = 0; i < els.length; i++){
+    var rec = byKey[scrollKeyOf(els[i], seen)];
+    if(rec){ els[i].scrollTop = rec.t; els[i].scrollLeft = rec.l; }
+  }
+}
 function render(){
   if(!D) return;
   bgInit();
@@ -2509,6 +2559,9 @@ function render(){
      weird navigation"). Same-route repaints (data loads, quiet
      refresh) keep the scroll exactly where it is. */
   var rk = n + '/' + (S.route.seg || []).join('/');
+  /* V3.79.4: a same-route repaint keeps the reader's place — snapshot
+     before the route-change branch can touch anything. */
+  var keepScr = (render._rk === rk) ? scrollSnap() : null;
   if(render._rk !== rk){
     /* V3.79.1: Records <-> Inbox is one surface (Live Records) with two
        tabs — a tab switch is not a page change, so it never resets the
@@ -2564,12 +2617,20 @@ function render(){
   }
   paintPool();
   try{ paintPool(); }catch(x){}
-  if(render._restore){ var vv = $('#view'); if(vv) vv.scrollTop = render._restore; render._restore = 0; }
+  var scrDone = false;
+  if(render._restore){ var vv = $('#view'); if(vv) vv.scrollTop = render._restore; render._restore = 0; scrDone = true; }
   if(render._drestore){
     var dsv = (render._dscroll || {})[render._drestore];
     window.scrollTo(0, dsv ? dsv.w : 0);
     var dvv = $('#view'); if(dvv) dvv.scrollTop = dsv ? dsv.v : 0;
     render._drestore = null;
+    scrDone = true;
+  }
+  /* V3.79.4: same-route repaint — put the scroll place back (twice:
+     once now, once after the frame settles, the lrKeepY pattern). */
+  if(keepScr && !scrDone){
+    scrollRestore(keepScr);
+    requestAnimationFrame(function(){ scrollRestore(keepScr); });
   }
 }
 function afterWrite(di){
