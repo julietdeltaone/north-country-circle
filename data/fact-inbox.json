@@ -1,1 +1,144 @@
-{"entries":[{"anchor":"University of Toledo · Data Science & Statistics","batch":"Nov 3, 2026 research batch","display":"Emmanuel Atindama","fact":"Emmanuel Atindama is now an Assistant Professor of Data Science and Statistics at the University of Toledo, a role he began in August 2024. The Sokol GxP Services role still on file is out of date.","id":"fi-20261103-atindama","key":"ig:em_anuel_xa","learned":"2026-11-03","name":"ig:em_anuel_xa","pattern":"employer_change","source":"emmanuelatindama.github.io","url":"https://emmanuelatindama.github.io/assets/pdf/CV_E_Atindama.pdf"},{"anchor":"St. Lawrence University ’18 · Hermon-DeKalb Central Schools","batch":"Nov 3, 2026 research batch","display":"Casey Ostler","fact":"Casey Ostler played field hockey at St. Lawrence University from 2014 to 2016 and graduated Phi Beta Kappa with the Class of 2018. She then worked at Hermon-DeKalb Central Schools from 2021 to 2024. Her record previously listed men’s cross country — that was wrong.","id":"fi-20261103-ostler","key":"","learned":"2026-11-03","name":"","pattern":"correction","source":"saintsathletics.com","url":"https://saintsathletics.com/news/2016/11/3/field-hockey-fall-student-athletes-earn-liberty-league-academic-honors.aspx"},{"anchor":"Clarkson women’s hockey · Andover, Minnesota","batch":"Nov 3, 2026 research batch","display":"Isa Goettl","fact":"Isa Goettl played a season at the University of Minnesota (2023–24) before Bemidji State and Clarkson, earning WCHA All-Academic and CSC Academic All-District honors.","id":"fi-20261103-goettl","key":"sf:isa-goettl","learned":"2026-11-03","name":"sf:isa-goettl","pattern":"milestone","source":"hockeydb.com","url":"https://www.hockeydb.com/ihdb/stats/pdisplay.php?pid=278788"},{"anchor":"Potsdam, NY · NNY Community Foundation scholar","batch":"Nov 3, 2026 research batch","display":"Eleora Trelease","fact":"Eleora Trelease was homeschooled in Potsdam and received a Northern New York Community Foundation scholarship in 2025 supporting her post-secondary education.","id":"fi-20261103-trelease","key":"sf:eleora-trelease","learned":"2026-11-03","name":"sf:eleora-trelease","pattern":"new_credential","source":"nbcwatertown.com","url":"http://www.nbcwatertown.com/2025/09/08/545635/community-foundation-partners-to-award-1-157-scholarships-supporting-post-secondary-education"},{"anchor":"Waddington, NY · American Marriage Ministries","batch":"Nov 3, 2026 research batch","display":"Danielle Guimond","fact":"Danielle Guimond was ordained as a minister by American Marriage Ministries on January 13, 2026, which authorizes her to officiate weddings in New York.","id":"fi-20261103-guimond","key":"ct:danielle guimond","learned":"2026-11-03","name":"ct:danielle guimond","pattern":"new_credential","source":"theamm.org","url":"https://theamm.org/ministers/1613132/profile"},{"anchor":"Precise Biometrics · Potsdam, NY","batch":"Nov 3, 2026 research batch","display":"Mark Cornett","fact":"As of March 2025, Mark Cornett is Precise Biometrics’ Head of U.S. Sales and Operations, up from Senior Sales Director.","id":"fi-20261103-cornett","key":"sf:mark-cornett","learned":"2026-11-03","name":"sf:mark-cornett","pattern":"title_change","source":"Precise Biometrics","url":"https://precisebiometrics.prod.waas.site/files/mfn/63764bc7-774c-45ae-80f6-5f271a928bc1/precise-to-showcase-its-biometric-security-solutions-at-isc-west-in-las-vegas.pdf"},{"anchor":"UNC Charlotte · Department of Computer Science","batch":"Nov 3, 2026 research batch","display":"Conor Miller-Lynch","fact":"Conor Miller-Lynch’s biometrics research moved with his advisor’s group from Clarkson to UNC Charlotte’s Department of Computer Science, where he works on CITeR projects.","id":"fi-20261103-millerlynch","key":"sf:conor-miller-lynch","learned":"2026-11-03","name":"sf:conor-miller-lynch","pattern":"employer_change","source":"citer.org","url":"https://www.citer.org"},{"anchor":"Thousand Islands Emergency Rescue Service · LaFargeville, NY","batch":"Nov 3, 2026 research batch","display":"Natalie Waterman","fact":"Natalie Waterman joined Thousand Islands Emergency Rescue Service at age fifteen and enrolled in EMT school at seventeen, while still in high school.","id":"fi-20261103-waterman","key":"ig:nat.waterman","learned":"2026-11-03","name":"ig:nat.waterman","pattern":"milestone","source":"tirescue.org","url":"https://www.tirescue.org/latest-news/prior-years"},{"anchor":"Singer-songwriter · Nashville, TN","batch":"Nov 3, 2026 research batch","display":"Jon Cyphers","fact":"Jon Cyphers released a three-song EP, Heavy Things, in June 2026, and a new version of “The Silence” featuring Ben Fuller in January 2026. His debut full-length album is in progress.","id":"fi-20261103-cyphers","key":"ig:jjcyph","learned":"2026-11-03","name":"ig:jjcyph","pattern":"discography","source":"cyphersmusic.com","url":"http://cyphersmusic.com/"},{"anchor":"Clarkson University · Lewis School of Health Sciences","batch":"Nov 3, 2026 research batch","display":"Samantha Marocco","fact":"Samantha Marocco earned her Doctor of Education from Logan University in 2024, alongside her DPT from 2008 and a Clarkson master’s from 2002.","id":"fi-20261103-marocco","key":"sf:samantha-marocco","learned":"2026-11-03","name":"sf:samantha-marocco","pattern":"new_credential","source":"clarkson.edu","url":"https://www.clarkson.edu/people/samantha-marocco"}],"patterns":{"correction":"Correction","discography":"Discography","employer_change":"Employer change","milestone":"Milestone","new_credential":"New credential","title_change":"Title change"},"updated":"2026-11-03","version":1}
+{
+ "entries": [
+  {
+   "anchor": "University of Toledo \u00b7 Data Science & Statistics",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Emmanuel Atindama",
+   "fact": "Emmanuel Atindama is now an Assistant Professor of Data Science and Statistics at the University of Toledo, a role he began in August 2024. The Sokol GxP Services role still on file is out of date.",
+   "id": "fi-20261103-atindama",
+   "key": "ig:em_anuel_xa",
+   "learned": "2026-11-03",
+   "name": "ig:em_anuel_xa",
+   "pattern": "employer_change",
+   "source": "emmanuelatindama.github.io",
+   "url": "https://emmanuelatindama.github.io/assets/pdf/CV_E_Atindama.pdf"
+  },
+  {
+   "anchor": "St. Lawrence University \u201918 \u00b7 Hermon-DeKalb Central Schools",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Casey Ostler",
+   "fact": "Casey Ostler played field hockey at St. Lawrence University from 2014 to 2016 and graduated Phi Beta Kappa with the Class of 2018. She then worked at Hermon-DeKalb Central Schools from 2021 to 2024. Her record previously listed men\u2019s cross country \u2014 that was wrong.",
+   "id": "fi-20261103-ostler",
+   "key": "",
+   "learned": "2026-11-03",
+   "name": "",
+   "pattern": "correction",
+   "source": "saintsathletics.com",
+   "url": "https://saintsathletics.com/news/2016/11/3/field-hockey-fall-student-athletes-earn-liberty-league-academic-honors.aspx"
+  },
+  {
+   "anchor": "Clarkson women\u2019s hockey \u00b7 Andover, Minnesota",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Isa Goettl",
+   "fact": "Isa Goettl played a season at the University of Minnesota (2023\u201324) before Bemidji State and Clarkson, earning WCHA All-Academic and CSC Academic All-District honors.",
+   "id": "fi-20261103-goettl",
+   "key": "sf:isa-goettl",
+   "learned": "2026-11-03",
+   "name": "sf:isa-goettl",
+   "pattern": "milestone",
+   "source": "hockeydb.com",
+   "url": "https://www.hockeydb.com/ihdb/stats/pdisplay.php?pid=278788"
+  },
+  {
+   "anchor": "Potsdam, NY \u00b7 NNY Community Foundation scholar",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Eleora Trelease",
+   "fact": "Eleora Trelease was homeschooled in Potsdam and received a Northern New York Community Foundation scholarship in 2025 supporting her post-secondary education.",
+   "id": "fi-20261103-trelease",
+   "key": "sf:eleora-trelease",
+   "learned": "2026-11-03",
+   "name": "sf:eleora-trelease",
+   "pattern": "new_credential",
+   "source": "nbcwatertown.com",
+   "url": "http://www.nbcwatertown.com/2025/09/08/545635/community-foundation-partners-to-award-1-157-scholarships-supporting-post-secondary-education"
+  },
+  {
+   "anchor": "Waddington, NY \u00b7 American Marriage Ministries",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Danielle Guimond",
+   "fact": "Danielle Guimond was ordained as a minister by American Marriage Ministries on January 13, 2026, which authorizes her to officiate weddings in New York.",
+   "id": "fi-20261103-guimond",
+   "key": "ct:danielle guimond",
+   "learned": "2026-11-03",
+   "name": "ct:danielle guimond",
+   "pattern": "new_credential",
+   "source": "theamm.org",
+   "url": "https://theamm.org/ministers/1613132/profile"
+  },
+  {
+   "anchor": "Precise Biometrics \u00b7 Potsdam, NY",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Mark Cornett",
+   "fact": "As of March 2025, Mark Cornett is Precise Biometrics\u2019 Head of U.S. Sales and Operations, up from Senior Sales Director.",
+   "id": "fi-20261103-cornett",
+   "key": "sf:mark-cornett",
+   "learned": "2026-11-03",
+   "name": "sf:mark-cornett",
+   "pattern": "title_change",
+   "source": "Precise Biometrics",
+   "url": "https://precisebiometrics.prod.waas.site/files/mfn/63764bc7-774c-45ae-80f6-5f271a928bc1/precise-to-showcase-its-biometric-security-solutions-at-isc-west-in-las-vegas.pdf"
+  },
+  {
+   "anchor": "UNC Charlotte \u00b7 Department of Computer Science",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Conor Miller-Lynch",
+   "fact": "Conor Miller-Lynch\u2019s biometrics research moved with his advisor\u2019s group from Clarkson to UNC Charlotte\u2019s Department of Computer Science, where he works on CITeR projects.",
+   "id": "fi-20261103-millerlynch",
+   "key": "sf:conor-miller-lynch",
+   "learned": "2026-11-03",
+   "name": "sf:conor-miller-lynch",
+   "pattern": "employer_change",
+   "source": "citer.org",
+   "url": "https://www.citer.org"
+  },
+  {
+   "anchor": "Thousand Islands Emergency Rescue Service \u00b7 LaFargeville, NY",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Natalie Waterman",
+   "fact": "Natalie Waterman joined Thousand Islands Emergency Rescue Service at age fifteen and enrolled in EMT school at seventeen, while still in high school.",
+   "id": "fi-20261103-waterman",
+   "key": "ig:nat.waterman",
+   "learned": "2026-11-03",
+   "name": "ig:nat.waterman",
+   "pattern": "milestone",
+   "source": "tirescue.org",
+   "url": "https://www.tirescue.org/latest-news/prior-years"
+  },
+  {
+   "anchor": "Singer-songwriter \u00b7 Nashville, TN",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Jon Cyphers",
+   "fact": "Jon Cyphers released a three-song EP, Heavy Things, in June 2026, and a new version of \u201cThe Silence\u201d featuring Ben Fuller in January 2026. His debut full-length album is in progress.",
+   "id": "fi-20261103-cyphers",
+   "key": "ig:jjcyph",
+   "learned": "2026-11-03",
+   "name": "ig:jjcyph",
+   "pattern": "discography",
+   "source": "cyphersmusic.com",
+   "url": "http://cyphersmusic.com/"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 Lewis School of Health Sciences",
+   "batch": "Nov 3, 2026 research batch",
+   "display": "Samantha Marocco",
+   "fact": "Samantha Marocco earned her Doctor of Education from Logan University in 2024, alongside her DPT from 2008 and a Clarkson master\u2019s from 2002.",
+   "id": "fi-20261103-marocco",
+   "key": "sf:samantha-marocco",
+   "learned": "2026-11-03",
+   "name": "sf:samantha-marocco",
+   "pattern": "new_credential",
+   "source": "clarkson.edu",
+   "url": "https://www.clarkson.edu/people/samantha-marocco"
+  }
+ ],
+ "patterns": {
+  "correction": "Correction",
+  "discography": "Discography",
+  "employer_change": "Employer change",
+  "milestone": "Milestone",
+  "new_credential": "New credential",
+  "title_change": "Title change"
+ },
+ "updated": "2026-11-03",
+ "version": 1
+}
