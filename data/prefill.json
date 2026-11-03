@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "ria.amo",
-   "display": "Ria Amo",
-   "field": "groups",
-   "value": "Rochester Regional Health",
-   "conf": 100,
-   "id": "pf-b0f2bd10a3"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
