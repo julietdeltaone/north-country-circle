@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.78.0';
+var APP_VERSION = '3.79.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -271,6 +271,7 @@ var IC = {
   fb:'<path d="M15.5 3.5h-2.6a4 4 0 0 0-4 4v2.6H6.5v3h2.4v7.4h3v-7.4h2.5l.5-3h-3V7.7a1.2 1.2 0 0 1 1.2-1.2h2.4z"/>',
   snap:'<path d="M12 3c-3 0-5 2.2-5 5.2V16l-1.7 2.4c-.3.4-.1.9.4 1l1.8.4c.3.1.5.3.5.6V21h1.9v-1.8l2.1 1.3 2.1-1.3V21H16v-.6c0-.3.2-.5.5-.6l1.8-.4c.5-.1.7-.6.4-1L17 16V8.2C17 5.2 15 3 12 3z"/><circle cx="9.7" cy="10" r=".4"/><circle cx="14.3" cy="10" r=".4"/>',
   sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+  flag:'<path d="M5 21V4"/><path d="M5 4h12.5l-2.6 4L17.5 12H5"/>',
   cap:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/><path d="M22 10v6"/>',
   pin:'<path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/>',
   briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
@@ -872,7 +873,7 @@ function poolLoad(){
 }
 function poolSave(){ try{ localStorage.setItem(POOL_KEY, JSON.stringify(POOL.log.slice(0, 60))); }catch(x){} }
 function poolName(id){ var di = (typeof diFromId === 'function') ? diFromId(id) : null; var e = (di != null && typeof D !== 'undefined' && D) ? D.directory[di] : null; return e ? dispName(e) : id; }
-var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Level', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Contact Log notes', merged_into:'Merged into', review_flag:'Review flag', last_contact:'Last known contact', last_contact_online:'Contact online', events:'Timeline', research_review:'Research candidate decision' };
+var POOL_LABELS = { companies:'Organizations', universities:'Universities', churches:'Churches', phone:'Phone', email:'Email', city:'Location', tier:'Level', relationship:'Relationship', known_since:'Years Known', audit_dismissed:'Audit verdict', skills:'Skills', specialty:'Skills', groups:'Groups', council_staged:'Council decision', primary_photo:'Key photo', photo_order:'Photo order', photo_hidden:'Hidden photos', photo_review:'Photo review', photo_bad_reason:'Photo flag reason', display:'Name', display_name:'Name', first_name:'First name', last_name:'Last name', also_known_as:'Also known as', rank:'Rank', degrees:'Degrees', public_footprint:'Footprint', files:'Files', synopsis:'Synopsis', lima_charlie_notes:'Contact Log notes', merged_into:'Merged into', review_flag:'Review flag', last_contact:'Last known contact', last_contact_online:'Contact online', events:'Timeline', research_review:'Research candidate decision', inbox_state:'Fact Inbox state' };
 function poolFieldLabel(k){ return POOL_LABELS[k] || String(k).replace(/_/g, ' '); }
 function poolValSummary(k, v){
   v = String(v == null ? '' : v);
@@ -2085,8 +2086,11 @@ function activeNav(){
 function renderChrome(){
   var act = activeNav();
   var items = NAV.map(function(n){
-    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '" data-kind="' + (n.kind || 'neutral') + '">' + ic(n.ic, 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>' + n.l + '</span></a>';
+    var bdg = '';
+    if(n.k === 'daily'){ var un = (typeof FI !== 'undefined' && FI) ? fiUnreadCount() : 0; bdg = '<em class="fi-bdg" id="finavbadge"' + (un ? '' : ' hidden') + '>' + un + '</em>'; }
+    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '" data-kind="' + (n.kind || 'neutral') + '">' + ic(n.ic, 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>' + n.l + '</span>' + bdg + '</a>';
   }).join('');
+  if(typeof fiLoad === 'function') fiLoad();
   var ffExit = ''; try{ if(localStorage.getItem('ncc_force_full') && window.innerWidth <= 899) ffExit = '<a href="#" class="nv" data-act="gomobile">' + ic('phone', 20) + '<span>Mobile version</span></a>'; }catch(x){}
   $('#rail').innerHTML = '<a class="brand" href="#/home" aria-label="Contacts Pro"><i></i><b>Contacts Pro</b></a>' +
     '<div class="navlist">' + items + '</div>' +
@@ -7518,6 +7522,7 @@ function repaintForData(kind){
     else if(r === 'sandbox' && typeof SB !== 'undefined' && (SB.tool === 'danger' || SB.tool === 'stats')) render();
     return;
   }
+  if(kind === 'fi'){ fiPaintNavBadge(); if(r === 'daily') render(); return; }
   if(kind === 'cal'){ if(r === 'calendar') render(); return; }
   if(kind === 'ph'){
     if(r === 'photos' || r === 'audit' || r === 'home') render();
@@ -8634,8 +8639,271 @@ if(!window.__calAtlasBound){
    undated filing says nothing about when the event happened). */
 var LR_SORT = 'brief';
 var LR_ANIM_SEEN = false; /* edges pass (JD 2026-11-02): Live Records entrance motion plays on the first full render only */
+/* ============================================================
+   FACT INBOX (V3.79.0, JD 2026-11-03): a first-class view inside
+   Live Records (#/daily/inbox) presenting enriched facts about
+   people as hero cards — one fact per card. Read = JD already
+   knows it; that pattern must not be resurfaced for that person.
+   Flag for review = Luna looks at it later.
+   Data: data/fact-inbox.json, appended to by the research
+   routines the way research-candidates.json is.
+   Persistence (the load-bearing part): per-entry state lives on
+   JD's own Profiles row in the 'Inbox State' column (BN) as one
+   JSON map {entryId: {status:'read'|'flagged', at:ISO}}, written
+   through sbPostBatch — the same Save Pool batch path, and the
+   same by-header-name endpoint resolution, as Council Staged.
+   Reads come from data/profiles.json (the baked raw Sheet values,
+   exactly like the Council queue); sync_subjects.py folds the
+   Sheet map back into fact-inbox.json entries as `state`, so the
+   file renders correctly on any device and the routines read
+   state from the bake. Writes are REFUSED until the profiles
+   load succeeds (the Council no-clobber rule): a save built on
+   an unread map would overwrite decisions made on other devices. */
+var FI = null, FI_LOADING = false, FI_PROF = null, FI_PROF_FAILED = false, FI_STATE = null, FI_SAVE_SEQ = 0;
+var FI_FILTER = 'all', FI_SORT = 'new';
+var FI_PATTERNS = {
+  employer_change:{ label:'EMPLOYER CHANGE', cls:'t-about' },
+  title_change:{ label:'TITLE CHANGE', cls:'t-conn' },
+  correction:{ label:'CORRECTION', cls:'t-warn' },
+  new_credential:{ label:'NEW CREDENTIAL', cls:'t-about' },
+  milestone:{ label:'MILESTONE', cls:'t-conn' },
+  discography:{ label:'DISCOGRAPHY', cls:'t-bad' }
+};
+var FI_PAT_ORDER = ['employer_change', 'title_change', 'correction', 'new_credential', 'milestone', 'discography'];
+function fiLoad(){
+  if(FI || FI_LOADING) return;
+  FI_LOADING = true;
+  fetch('data/fact-inbox.json', { cache:'no-cache' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ FI = d; FI_LOADING = false; repaintForData('fi'); })
+    .catch(function(){ FI = { empty:true, entries:[] }; FI_LOADING = false; repaintForData('fi'); });
+}
+function fiProfLoad(){
+  if(FI_PROF || FI_PROF_FAILED) return;
+  fetch('data/profiles.json', { cache:'no-cache' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(rows){
+      if(!rows || !rows.length){ FI_PROF_FAILED = true; repaintForData('fi'); return; }
+      var hdr = rows[0].map(function(c){ return String(c || '').trim().toLowerCase(); });
+      var ci = hdr.indexOf('inbox state'), ki = hdr.indexOf('key'), found = false, map = {};
+      if(ci >= 0 && ki >= 0){
+        for(var i = 1; i < rows.length; i++){
+          if(String(rows[i][ki] || '').trim() === 'ig:jdmeyers_'){
+            found = true;
+            var cell = rows[i][ci];
+            if(cell){ try { var p = JSON.parse(cell); if(p && typeof p === 'object' && !Array.isArray(p)) map = p; } catch(e){} }
+            break;
+          }
+        }
+      }
+      if(!found){ FI_PROF_FAILED = true; repaintForData('fi'); return; }
+      FI_PROF = { map: map };
+      repaintForData('fi');
+    })
+    .catch(function(){ FI_PROF_FAILED = true; repaintForData('fi'); });
+}
+function fiStateBlocked(){
+  if(FI_PROF) return null;
+  return FI_PROF_FAILED ? 'Inbox state unavailable — the profiles data did not load, so Read and Flag are paused. Nothing was written; reload to retry.'
+    : 'Inbox state is still loading — one moment.';
+}
+function fiStateMap(){
+  if(FI_STATE) return FI_STATE;
+  if(FI_PROF) return FI_PROF.map || {};
+  var m = {};
+  ((FI && FI.entries) || []).forEach(function(e){ if(e.state && e.state.status) m[e.id] = { status:e.state.status, at:e.state.at || '' }; });
+  return m;
+}
+function fiStatus(e){ var s = fiStateMap()[e.id]; return s ? s.status : null; }
+function fiCounts(){
+  var es = (FI && FI.entries) || [], c = { total: es.length, unread: 0, read: 0, flagged: 0, people: 0 };
+  var seen = {};
+  es.forEach(function(e){
+    var s = fiStatus(e);
+    if(s === 'read') c.read++; else if(s === 'flagged') c.flagged++; else c.unread++;
+    if(s !== 'read' && !seen[e.display]){ seen[e.display] = 1; c.people++; }
+  });
+  return c;
+}
+function fiUnreadCount(){ return fiCounts().unread; }
+function fiSaveState(next){
+  var prev = FI_STATE, seq = ++FI_SAVE_SEQ;
+  FI_STATE = next;
+  sbPostBatch([{ id:'ig:jdmeyers_', patch:{ inbox_state: JSON.stringify(next) } }]).then(function(ok){
+    if(seq !== FI_SAVE_SEQ) return;
+    if(ok){ if(FI_PROF) FI_PROF.map = next; }
+    else { FI_STATE = prev; toast('Inbox state could not be saved — restored.'); fiPaint(); }
+    fiPaintNavBadge();
+  });
+}
+function fiSetStatus(id, status){
+  var blocked = fiStateBlocked(); if(blocked){ toast(blocked); return false; }
+  var next = {};
+  var cur = fiStateMap();
+  Object.keys(cur).forEach(function(k){ next[k] = cur[k]; });
+  if(status) next[id] = { status: status, at: new Date().toISOString() }; else delete next[id];
+  fiSaveState(next);
+  return true;
+}
+function fiEntryDi(e){
+  if(e.key && typeof PK2I !== 'undefined' && PK2I[e.key] != null) return PK2I[e.key];
+  if(typeof BYN !== 'undefined'){
+    if(e.name && BYN[String(e.name).toLowerCase()] != null) return BYN[String(e.name).toLowerCase()];
+    if(e.display && BYN[String(e.display).toLowerCase()] != null) return BYN[String(e.display).toLowerCase()];
+  }
+  return null;
+}
+var FI_PAL = ['#7ea6c9', '#c9a86a', '#8fb08a', '#b08ac9', '#c98a7e', '#7ec0b8', '#a8b8c9'];
+function fiInitials(e){
+  var nm = String(e.display || '?').split(/\s+/).filter(Boolean);
+  var ini = ((nm[0] || '?').charAt(0) + (nm.length > 1 ? nm[nm.length - 1].charAt(0) : '')).toUpperCase();
+  var h = 0; for(var i = 0; i < String(e.display || '').length; i++) h = (h * 31 + String(e.display).charCodeAt(i)) >>> 0;
+  return '<span class="av av-xl" style="--tc:' + FI_PAL[h % FI_PAL.length] + '" aria-hidden="true">' + esc(ini) + '</span>';
+}
+function fiFmtDate(iso){
+  if(!iso) return '';
+  var d = new Date(String(iso).slice(0, 10) + 'T12:00:00');
+  if(isNaN(d)) return String(iso);
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+function fiPat(e){ return FI_PATTERNS[e.pattern] || { label: String(e.pattern || 'FACT').replace(/_/g, ' ').toUpperCase(), cls:'t-about' }; }
+function fiVisible(){
+  var list = ((FI && FI.entries) || []).filter(function(e){ return fiStatus(e) !== 'read'; });
+  if(FI_FILTER !== 'all') list = list.filter(function(e){ return e.pattern === FI_FILTER; });
+  var byL = function(a, b){ return String(b.learned || '').localeCompare(String(a.learned || '')); };
+  if(FI_SORT === 'new') list.sort(byL);
+  else if(FI_SORT === 'old') list.sort(function(a, b){ return -byL(a, b); });
+  else if(FI_SORT === 'pattern') list.sort(function(a, b){ return fiPat(a).label.localeCompare(fiPat(b).label) || byL(a, b); });
+  else if(FI_SORT === 'person') list.sort(function(a, b){ return String(a.display || '').localeCompare(String(b.display || '')) || byL(a, b); });
+  else if(FI_SORT === 'corr') list.sort(function(a, b){ return (a.pattern === 'correction' ? 0 : 1) - (b.pattern === 'correction' ? 0 : 1) || byL(a, b); });
+  return list;
+}
+function fiCardHTML(e, first){
+  var st = fiStatus(e), p = fiPat(e), di = fiEntryDi(e);
+  var av = di != null ? avatar(D.directory[di], 'xl') : fiInitials(e);
+  var nm = di != null ? '<a class="fi-nm" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + esc(e.display) + '</a>' : '<span class="fi-nm">' + esc(e.display) + '</span>';
+  var host = ''; try { host = new URL(e.url).hostname.replace(/^www\./, ''); } catch(x){ host = e.source || ''; }
+  return '<article class="fi-card' + (st === 'flagged' ? ' flagged' : '') + '" data-id="' + esc(e.id) + '">' +
+    '<div class="fi-top">' + av + '<div class="fi-id">' + nm + '<div class="fi-anchor">' + esc(e.anchor || '') + '</div></div>' +
+    '<span class="fi-tag ' + p.cls + '">' + esc(p.label) + '</span>' + (st === 'flagged' ? '<span class="fi-flagchip">FLAGGED</span>' : '') + '</div>' +
+    '<p class="fi-fact">' + esc(e.fact) + '</p>' +
+    '<div class="fi-src"><span class="fi-src-k">Source</span><a href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || host) + '</a><span class="fi-dot">&middot;</span><span>learned ' + esc(fiFmtDate(e.learned)) + '</span></div>' +
+    '<div class="fi-actions"><button type="button" class="btn acc" data-act="fi-read" data-id="' + esc(e.id) + '">Read</button>' +
+    '<button type="button" class="btn ghost sm fi-flagbtn" data-act="fi-flag" data-id="' + esc(e.id) + '">' + ic('flag', 13) + (st === 'flagged' ? 'Flagged — tap to clear' : 'Flag for review') + '</button>' +
+    (first ? '<span class="fi-kbd">R read &middot; F flag</span>' : '') + '</div></article>';
+}
+function fiSideHTML(){
+  var es = (FI && FI.entries) || [], c = fiCounts();
+  var h = '<div class="fi-side-h">Feed status</div>';
+  h += '<div class="fi-stats">' +
+    '<div class="fi-stat"><b data-fic="total">' + c.total + '</b><span>In feed</span></div>' +
+    '<div class="fi-stat un"><b data-fic="unread">' + c.unread + '</b><span>Unread</span></div>' +
+    '<div class="fi-stat"><b data-fic="read">' + c.read + '</b><span>Read</span></div>' +
+    '<div class="fi-stat"><b data-fic="flagged">' + c.flagged + '</b><span>Flagged</span></div></div>';
+  h += '<div class="fi-side-h">By pattern</div>';
+  FI_PAT_ORDER.forEach(function(k){
+    var tot = 0, rd = 0;
+    es.forEach(function(e){ if(e.pattern === k){ tot++; if(fiStatus(e) === 'read') rd++; } });
+    if(!tot) return;
+    var p = FI_PATTERNS[k];
+    h += '<div class="fi-patrow"><span class="fi-tag ' + p.cls + '">' + p.label + '</span><span class="fi-pat-n">' + (tot - rd) + ' unread &middot; ' + rd + ' read</span></div>';
+  });
+  var batches = {};
+  es.forEach(function(e){ var b = e.batch || 'Research'; batches[b] = batches[b] || { u: 0, r: 0 }; if(fiStatus(e) === 'read') batches[b].r++; else batches[b].u++; });
+  Object.keys(batches).forEach(function(b){ h += '<p class="fi-batch">' + esc(b) + ' &middot; ' + batches[b].u + ' unread &middot; ' + batches[b].r + ' read</p>'; });
+  var hosts = {};
+  es.forEach(function(e){ var hh = ''; try { hh = new URL(e.url).hostname.replace(/^www\./, ''); } catch(x){ hh = e.source || ''; } if(hh) hosts[hh] = (hosts[hh] || 0) + 1; });
+  var hk = Object.keys(hosts).sort(function(a, b){ return hosts[b] - hosts[a]; });
+  if(hk.length){ h += '<div class="fi-side-h">Sources in feed</div>' + hk.map(function(x){ return '<div class="fi-srcrow"><span>' + esc(x) + '</span><b>' + hosts[x] + '</b></div>'; }).join(''); }
+  var read = es.filter(function(e){ return fiStatus(e) === 'read'; }).sort(function(a, b){ return String(b.learned || '').localeCompare(String(a.learned || '')); });
+  h += '<div class="fi-side-h">Read <span class="fi-side-n">' + read.length + '</span></div>';
+  h += read.length ? read.map(function(e){ return '<div class="fi-mini"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span><button type="button" class="fi-undo" data-act="fi-undo" data-id="' + esc(e.id) + '">Undo</button></div>'; }).join('') : '<p class="fi-none">Nothing marked read yet.</p>';
+  var flagged = es.filter(function(e){ return fiStatus(e) === 'flagged'; });
+  h += '<div class="fi-side-h">Flagged for review <span class="fi-side-n">' + flagged.length + '</span></div>';
+  h += flagged.length ? flagged.map(function(e){ return '<div class="fi-mini"><button type="button" class="fi-goto" data-act="fi-goto" data-id="' + esc(e.id) + '"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span></button><button type="button" class="fi-undo" data-act="fi-unflag" data-id="' + esc(e.id) + '">Unflag</button></div>'; }).join('') : '<p class="fi-none">Nothing flagged. Flag a fact and Luna will look at it.</p>';
+  return h;
+}
+function fiTabsHTML(on){
+  var n = FI ? fiUnreadCount() : 0;
+  return '<div class="fi-tabs" role="tablist" aria-label="Live Records views">' +
+    '<a href="#/daily" class="fi-tab' + (on === 'records' ? ' on' : '') + '">Records</a>' +
+    '<a href="#/daily/inbox" class="fi-tab' + (on === 'inbox' ? ' on' : '') + '">Inbox <span class="fi-bdg"' + (n ? '' : ' hidden') + '>' + n + '</span></a></div>';
+}
+function fiPageHTML(){
+  var c = FI ? fiCounts() : { total: 0, unread: 0, read: 0, flagged: 0, people: 0 };
+  var h = '<div class="pagehead"><div><div class="fi-crumb">Live Records</div><h1>Fact Inbox</h1>' +
+    '<p class="sub" id="fi-sub">' + (FI ? (c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero') : 'Loading&hellip;') + '</p></div>' +
+    '<div class="lr-head-r">' + fiTabsHTML('inbox') + '<button type="button" class="btn ghost sm" data-act="lrccopen">' + ic('sparkle', 14) + 'Command Center</button></div></div>';
+  if(FI_PROF_FAILED) h += '<div class="fi-alert">Inbox state unavailable — the profiles data did not load, so Read and Flag are paused. Nothing will be written until it loads; reload to retry.</div>';
+  h += '<div class="fi-controls"><div class="seg fi-seg" role="group" aria-label="Filter facts">' +
+    '<button type="button" data-act="fi-filter" data-f="all"' + (FI_FILTER === 'all' ? ' class="on"' : '') + '>All facts</button>' +
+    '<button type="button" data-act="fi-filter" data-f="correction"' + (FI_FILTER === 'correction' ? ' class="on"' : '') + '>Corrections</button>' +
+    '<button type="button" data-act="fi-filter" data-f="milestone"' + (FI_FILTER === 'milestone' ? ' class="on"' : '') + '>Milestones</button></div>' +
+    '<label class="fi-sortwrap"><span>Sort</span><select class="sel" data-sbi="fisort" aria-label="Sort facts">' +
+    [['new', 'Newest first'], ['old', 'Oldest first'], ['pattern', 'Pattern A–Z'], ['person', 'Person A–Z'], ['corr', 'Corrections first']].map(function(o){ return '<option value="' + o[0] + '"' + (FI_SORT === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+    '</select></label><span class="fi-showing" id="fi-showing"></span></div>';
+  h += '<div class="fi-layout"><div class="fi-feed" id="fi-feed">' + fiFeedHTML() + '</div><aside class="fi-side card" id="fi-side">' + (FI ? fiSideHTML() : '') + '</aside></div>';
+  return h;
+}
+function fiFeedHTML(enterId){
+  if(!FI) return '<div class="asskel" style="min-height:220px"></div>';
+  var vis = fiVisible(), total = fiCounts().total;
+  if(!total) return '<div class="fi-zero"><b>No facts yet</b><p>New facts from Live Records research land here.</p></div>';
+  if(!vis.length){
+    if(fiCounts().unread === 0) return '<div class="fi-zero"><b>Inbox zero</b><p>Every fact in this batch is one you already know.</p></div>';
+    return '<div class="fi-zero"><b>Nothing under this filter</b><p>Switch the filter to see the rest of the feed.</p></div>';
+  }
+  return vis.map(function(e, i){ var html = fiCardHTML(e, i === 0); if(enterId && e.id === enterId) html = html.replace('fi-card', 'fi-card entering'); return html; }).join('');
+}
+function fiPaint(enterId){
+  if(S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'inbox')) return;
+  var feed = document.getElementById('fi-feed'), side = document.getElementById('fi-side'), sub = document.getElementById('fi-sub'), sh = document.getElementById('fi-showing');
+  if(feed) feed.innerHTML = fiFeedHTML(enterId);
+  if(side && FI) side.innerHTML = fiSideHTML();
+  if(sub && FI){ var c = fiCounts(); sub.innerHTML = c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero'; }
+  if(sh && FI) sh.textContent = 'Showing ' + fiVisible().length + ' of ' + fiCounts().total;
+  fiPaintNavBadge();
+}
+function fiPaintNavBadge(){
+  var n = FI ? fiUnreadCount() : 0;
+  document.querySelectorAll('.fi-bdg').forEach(function(b){ b.textContent = n; b.hidden = !n; });
+}
+function fiMarkRead(id){
+  var card = document.querySelector('.fi-card[data-id="' + id + '"]');
+  var commit = function(){ if(fiSetStatus(id, 'read')) fiPaint(); };
+  if(!card){ commit(); return; }
+  if(fiStateBlocked()){ toast(fiStateBlocked()); return; }
+  card.classList.add('leaving');
+  card.style.height = card.offsetHeight + 'px';
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    card.style.height = '0px'; card.style.marginBottom = '0px'; card.style.paddingTop = '0px'; card.style.paddingBottom = '0px'; card.style.borderWidth = '0px';
+  }); });
+  setTimeout(commit, 315);
+}
+function fiToggleFlag(id){
+  var e = ((FI && FI.entries) || []).filter(function(x){ return x.id === id; })[0];
+  if(!e) return;
+  if(fiSetStatus(id, fiStatus(e) === 'flagged' ? null : 'flagged')) fiPaint();
+}
+function fiUndo(id){ if(fiSetStatus(id, null)) fiPaint(id); }
+function fiGoto(id){
+  var e = ((FI && FI.entries) || []).filter(function(x){ return x.id === id; })[0];
+  if(!e) return;
+  if(FI_FILTER !== 'all' && e.pattern !== FI_FILTER){ FI_FILTER = 'all'; }
+  fiPaint();
+  setTimeout(function(){
+    var card = document.querySelector('.fi-card[data-id="' + id + '"]');
+    if(card){ card.scrollIntoView({ block: 'center', behavior: 'smooth' }); card.classList.add('flash'); setTimeout(function(){ card.classList.remove('flash'); }, 1650); }
+  }, 60);
+}
 function viewDaily(v){
   dtLoad(); chLoad(); rcLoad();
+  if(S.route.seg && S.route.seg[0] === 'inbox'){
+    fiLoad(); fiProfLoad();
+    v.innerHTML = '<div class="page lr fi-page" data-kind="about">' + fiPageHTML() + '</div>';
+    fiPaint();
+    return;
+  }
   /* Edges pass (JD 2026-11-02): the Records sort controls live in the
      page header now, not in their own row; and the entrance animation
      plays on the first full render only — data repaints (dt/ch/rc
@@ -8800,7 +9068,7 @@ function viewDaily(v){
     }
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
-  v.innerHTML = lrHead(sortCtl) + '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
+  v.innerHTML = lrHead(sortCtl) + '<div class="fi-tabsrow">' + fiTabsHTML('records') + '</div>' + '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
   LR_ANIM_SEEN = true;
   if(lrRepaint && lrKeepY) requestAnimationFrame(function(){ window.scrollTo(0, lrKeepY); });
   dtAnimate();
@@ -12713,6 +12981,12 @@ function onClick(ev){
     case 'hmiperson': { var hpdi = curDi(el); hmiClose(true); if(hpdi != null) openPerson(hpdi); break; }
     case 'hmgoto': if(di != null) openPerson(di); break;
     case 'lrsort': LR_SORT = el.getAttribute('data-sort') || 'brief'; render(); break;
+    case 'fi-read': fiMarkRead(el.getAttribute('data-id')); break;
+    case 'fi-flag': fiToggleFlag(el.getAttribute('data-id')); break;
+    case 'fi-undo': fiUndo(el.getAttribute('data-id')); break;
+    case 'fi-unflag': fiUndo(el.getAttribute('data-id')); break;
+    case 'fi-goto': fiGoto(el.getAttribute('data-id')); break;
+    case 'fi-filter': FI_FILTER = el.getAttribute('data-f') || 'all'; document.querySelectorAll('.fi-seg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-f') === FI_FILTER); }); fiPaint(); break;
     case 'hmigroup': hmiClose(true); go('groups/groups/' + encodeURIComponent(el.getAttribute('data-g'))); break;
     case 'hmiaudit': hmiClose(true); store('ncc_aud_mode', 'years'); if(S.audit){ S.audit.mode = 'years'; S.audit.shown = null; } go('audit'); break;
     case 'pfgo': store('ncc_aud_mode', 'prefill'); if(S.audit){ S.audit.mode = 'prefill'; S.audit.shown = null; } go('audit'); break;
@@ -13362,6 +13636,11 @@ function onKey(ev){
   if(mod || ev.altKey) return;
   if(ev.key === 'q' || ev.key === 'Q'){ if(!QA.open && !document.body.classList.contains('sheet-open')){ ev.preventDefault(); qaOpen('log'); } return; }
   if(ev.key === '/'){ ev.preventDefault(); var gs = $('#gs'); if(gs) gs.focus(); return; }
+  if(S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'inbox' && !document.body.classList.contains('sheet-open')){
+    var fiFirst = document.querySelector('.fi-feed .fi-card');
+    if(fiFirst && (ev.key === 'r' || ev.key === 'R')){ ev.preventDefault(); fiMarkRead(fiFirst.getAttribute('data-id')); return; }
+    if(fiFirst && (ev.key === 'f' || ev.key === 'F')){ ev.preventDefault(); fiToggleFlag(fiFirst.getAttribute('data-id')); return; }
+  }
 }
 
 
@@ -18829,6 +19108,7 @@ document.addEventListener('change', function(ev){
   else if(k === 'spobdate'){ SB.pool.obDate = t.value; }
   else if(k === 'sppredperson'){ SB.pool.prPerson = t.value; }
   else if(k === 'sppreddate'){ SB.pool.prDate = t.value; }
+  else if(k === 'fisort'){ FI_SORT = t.value; fiPaint(); }
 });
 var SB_DEB = null;
 document.addEventListener('input', function(ev){
