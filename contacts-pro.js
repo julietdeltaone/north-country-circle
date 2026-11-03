@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.76.0';
+var APP_VERSION = '3.77.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -6175,7 +6175,7 @@ function hmrRing(k, frac, colorCls, value, label, sub){
     '<span class="hmr-rl">' + esc(label) + '</span><span class="hmr-rs">' + esc(sub) + '</span></button>';
 }
 function hmrDonutSVG(rows, total){
-  var a = -Math.PI / 2, cx = 100, cy = 100, r = 76, ir = 45, parts = [];
+  var a = -Math.PI / 2, cx = 100, cy = 100, r = 76, ir = 52, parts = [];
   function pol(rr, ang){ return (cx + rr * Math.cos(ang)).toFixed(1) + ' ' + (cy + rr * Math.sin(ang)).toFixed(1); }
   rows.forEach(function(row, i){
     if(!row.dis.length || !total) return;
