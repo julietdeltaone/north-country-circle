@@ -1,22 +1,7 @@
 {
- "generated": "2026-11-02",
- "count": 1,
- "suggestions": [
-  {
-   "id": "pf-a44d074ab1",
-   "key": "elizabethadaniels",
-   "display": "Elizabeth Daniels",
-   "field": "location_on_file",
-   "field_label": "Location",
-   "value": "Potsdam, NY",
-   "grade": "Probable",
-   "evidence": [
-    "Signal 1 \u2014 associate pattern: 5 of 16 located known associates are in Potsdam.",
-    "Signal 2 \u2014 family on file is there too: Kevin Daniels."
-   ],
-   "conf": 70
-  }
- ],
+ "generated": "2026-11-03",
+ "count": 0,
+ "suggestions": [],
  "auto_apply": [
   {
    "key": "sf:murray",
@@ -27,10 +12,32 @@
    "id": "pf-76ead40583"
   }
  ],
- "shelved": [],
+ "shelved": [
+  {
+   "id": "pf-a44d074ab1",
+   "key": "elizabethadaniels",
+   "display": "Elizabeth Daniels",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "rules": [
+    "shelved"
+   ]
+  },
+  {
+   "id": "pf-a44d074ab1",
+   "key": "elizabethadaniels",
+   "display": "Elizabeth Daniels",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "rules": [
+    "shelved"
+   ]
+  }
+ ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 2
+   "shelved": 2,
+   "tentative_floor": 1
   },
   "items": [
    {
@@ -40,7 +47,17 @@
     "field": "location_on_file",
     "value": "Potsdam, NY",
     "rules": [
-     "tentative_floor"
+     "shelved"
+    ]
+   },
+   {
+    "id": "pf-a44d074ab1",
+    "key": "elizabethadaniels",
+    "display": "Elizabeth Daniels",
+    "field": "location_on_file",
+    "value": "Potsdam, NY",
+    "rules": [
+     "shelved"
     ]
    },
    {
