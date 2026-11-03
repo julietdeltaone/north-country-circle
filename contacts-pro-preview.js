@@ -2030,11 +2030,24 @@ var PHI = 0; /* pending-render guard */
 function toast(msg, opt){
   opt = opt || {};
   var wrap = $('#toasts'); if(!wrap) return;
+  /* V3.79.3: identical toasts coalesce — a repeated failure (e.g. the
+     inbox-state save failing again during an endpoint outage) resets
+     the existing pill's timer instead of stacking another copy. */
+  for(var i = 0; i < wrap.children.length; i++){
+    var k = wrap.children[i];
+    if(k._tmsg === msg && !!k._tundo === !!opt.undo){
+      clearTimeout(k._tm);
+      k.classList.add('show');
+      k._tm = setTimeout(function(){ k.classList.remove('show'); setTimeout(function(){ k.remove(); }, 250); }, opt.undo ? 6500 : 3200);
+      return;
+    }
+  }
   var t = document.createElement('div'); t.className = 'toast';
+  t._tmsg = msg; t._tundo = !!opt.undo;
   t.innerHTML = '<span>' + esc(msg) + '</span>' + (opt.undo ? '<button type="button" data-act="undo">Undo</button>' : '');
   wrap.appendChild(t);
   requestAnimationFrame(function(){ t.classList.add('show'); });
-  setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 250); }, opt.undo ? 6500 : 3200);
+  t._tm = setTimeout(function(){ t.classList.remove('show'); setTimeout(function(){ t.remove(); }, 250); }, opt.undo ? 6500 : 3200);
   while(wrap.children.length > 3) wrap.firstChild.remove();
 }
 function avatar(e, size){
@@ -9155,7 +9168,13 @@ function lrRecordsBodyHTML(){
   var sortCtl = (DT.filed || []).length ? '<div class="lrsort"><span>Records</span>' +
     '<button type="button" class="lrchip' + (LR_SORT === 'brief' ? ' on' : '') + '" data-act="lrsort" data-sort="brief">Brief order</button>' +
     '<button type="button" class="lrchip' + (LR_SORT === 'new' ? ' on' : '') + '" data-act="lrsort" data-sort="new">Newest events first</button></div>' : '';
-  var updHead = (DT.filed || []).length ? '<div class="lr-secbar asanim" style="--d:120ms"><div class="assec-t">UPDATED RECORDS</div>' + sortCtl + '</div>' : '';
+  /* V3.79.3: the section bar carries the sort controls, so it does
+     NOT take the asRise entrance animation — asRise starts 14px low,
+     which left the chips' box unsettled for the first ~700ms and
+     read as the nav "jumping" the V3.79.1 fix had already killed in
+     the header (UX sweep F2). The bar is pinned from first paint;
+     the cards around it keep their animation. */
+  var updHead = (DT.filed || []).length ? '<div class="lr-secbar"><div class="assec-t">UPDATED RECORDS</div>' + sortCtl + '</div>' : '';
   /* The old currency strip is gone (JD 2026-10-28): its date lives in
      the workflow strip, and "next in the rotation" named people the
      landing doesn't need — only the not-yet-checked count remains,
