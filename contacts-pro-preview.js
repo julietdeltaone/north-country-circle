@@ -2087,7 +2087,7 @@ function renderChrome(){
   var act = activeNav();
   var items = NAV.map(function(n){
     var bdg = '';
-    if(n.k === 'daily'){ var un = (typeof FI !== 'undefined' && FI) ? fiUnreadCount() : 0; bdg = '<em class="fi-bdg" id="finavbadge"' + (un ? '' : ' hidden') + '>' + un + '</em>'; }
+    if(n.k === 'daily'){ var un = (typeof FI !== 'undefined' && FI) ? fiUnreadCount() : 0; bdg = '<em class="fi-bdg' + (un ? '' : ' zero') + '" id="finavbadge">' + un + '</em>'; }
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '" data-kind="' + (n.kind || 'neutral') + '">' + ic(n.ic, 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>' + n.l + '</span>' + bdg + '</a>';
   }).join('');
   if(typeof fiLoad === 'function') fiLoad();
@@ -2466,11 +2466,22 @@ function render(){
      refresh) keep the scroll exactly where it is. */
   var rk = n + '/' + (S.route.seg || []).join('/');
   if(render._rk !== rk){
+    /* V3.79.1: Records <-> Inbox is one surface (Live Records) with two
+       tabs — a tab switch is not a page change, so it never resets the
+       scroll: each tab's own scroll is saved and restored instead. */
+    var lrTabSwap = (render._rk === 'daily/' || render._rk === 'daily/inbox') && (rk === 'daily/' || rk === 'daily/inbox');
+    if(lrTabSwap){
+      render._dscroll = render._dscroll || {};
+      render._dscroll[render._rk] = { w: window.scrollY || 0, v: v ? v.scrollTop : 0 };
+      render._drestore = rk;
+    } else {
+      render._drestore = null;
+      if(v) v.scrollTop = 0;
+      window.scrollTo(0, 0);
+    }
     render._rk = rk;
     render._restore = 0;
     navTrack();
-    if(v) v.scrollTop = 0;
-    window.scrollTo(0, 0);
   }
   closeSheet();
   if(render._pv && render._pv !== n) phInspClose(true);
@@ -2510,6 +2521,12 @@ function render(){
   paintPool();
   try{ paintPool(); }catch(x){}
   if(render._restore){ var vv = $('#view'); if(vv) vv.scrollTop = render._restore; render._restore = 0; }
+  if(render._drestore){
+    var dsv = (render._dscroll || {})[render._drestore];
+    window.scrollTo(0, dsv ? dsv.w : 0);
+    var dvv = $('#view'); if(dvv) dvv.scrollTop = dsv ? dsv.v : 0;
+    render._drestore = null;
+  }
 }
 function afterWrite(di){
   /* undo buttons after any write; never re-render a view the user is typing in */
