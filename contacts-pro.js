@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.80.0';
+var APP_VERSION = '3.80.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7878,6 +7878,7 @@ function rcDecide(id, decision){
   if(di == null){ toast('That profile is no longer in the directory — the candidate cannot be filed.'); return; }
   var e = D.directory[di];
   if(rcStatus(c).k !== 'pending'){ toast('That candidate was already decided.'); rcPaint(); return; }
+  var rowEl = rcRowEl(id);
   /* Keyboard flow (V3.61.0): whichever pending row follows this one in
      the current view (or precedes it, when it is last) becomes the
      current row once this decision lands, so JD can decide, decide,
@@ -7913,70 +7914,40 @@ function rcDecide(id, decision){
     ? 'Filed for ' + (c.display || '') + '. It saves through the Save Pool.'
     : 'Dismissed for ' + (c.display || '') + '. Luna\u2019s call stands.', { undo:true });
   if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
-  rcPaint();
-  if(nextCur) rcScrollCur();
-}
-/* Batch decisions (V3.80.0): File all / Dismiss all / the ticked
-   items of one person's bundle. Presentation only — every item still
-   writes its own decision entry to the profile's research_review map
-   by candidate id, exactly as rcDecide does one at a time. One Save
-   Pool transaction per profile. */
-function rcDecideBatch(gk, decision, tickedOnly){
-  if(!RC || !RC.candidates) return;
-  var m = rcModel();
-  var rows = m.shown.filter(function(r){
-    return rcGroupKey(r) === gk && r.st.k === 'pending' && (!tickedOnly || RC_TICK[r.c.id]);
-  });
-  if(!rows.length){ toast(tickedOnly ? 'No items are ticked in that bundle.' : 'Nothing pending in that bundle.'); return; }
-  var byDi = {}, skipped = 0, total = 0;
-  rows.forEach(function(r){
-    if(r.di == null){ skipped++; return; }
-    (byDi[r.di] = byDi[r.di] || []).push(r.c); total++;
-  });
-  var names = [];
-  Object.keys(byDi).forEach(function(di){
-    var e = D.directory[di], list = byDi[di];
-    names.push(list[0].display || '');
-    txn((decision === 'file' ? 'File ' : 'Dismiss ') + list.length + ' for ' + (list[0].display || ''), function(){
-      var patch = {}, map = rcReviewMap(e);
-      var fp = String(gv(e, 'public_footprint') || '').trim(), fp0 = fp;
-      var files = (e.files || []).slice(), files0 = files.length;
-      list.forEach(function(c){
-        var prev = map[c.id] || {};
-        var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
-        if(prev.photo){ entry.photo = true; if(prev.photo_at) entry.photo_at = prev.photo_at; if(prev.photo_url) entry.photo_url = prev.photo_url; }
-        map[c.id] = entry;
-        if(decision === 'file'){
-          var bullet = '\u2022 ' + String(c.file_text || c.claim || '').trim() + (c.source ? ' (' + c.source + ')' : '');
-          if(!rcAlreadyFiled(e, c) && fp.indexOf(bullet) < 0) fp = fp ? fp + '\n' + bullet : bullet;
-          if(c.url && !files.some(function(f){ return f && f.url === c.url; }))
-            files.push({ name:'Source: ' + hostOf(c.url), kind:'source', url:c.url });
-          var before = {};
-          ['companies', 'universities', 'churches', 'groups', 'highlights', 'achievements'].forEach(function(k){ before[k] = patch[k]; });
-          rcApplyFields(e, c, patch);
-          /* rcApplyFields unions against the profile, not the patch:
-             union its result with whatever an earlier item in this
-             batch already put there, so batch fills accumulate. */
-          ['companies', 'universities', 'churches', 'groups'].forEach(function(k){
-            if(before[k] != null) patch[k] = patch[k] != null ? rcUnion(before[k], patch[k], ', ') : before[k];
-          });
-          ['highlights', 'achievements'].forEach(function(k){
-            if(before[k] != null) patch[k] = patch[k] != null ? rcUnion(before[k], patch[k], ' | ') : before[k];
-          });
-        }
-        delete RC_TICK[c.id];
-      });
-      patch.research_review = JSON.stringify(map);
-      if(decision === 'file'){
-        if(fp !== fp0) patch.public_footprint = fp;
-        if(files.length !== files0) patch.files = JSON.stringify(files);
-      }
-      queuePatch(+di, patch);
+  /* No-move settle (V3.80.1, JD 2026-11-03: "Actions never move the
+     page — a state change is not a navigation"). The old tail ran a
+     full repaint and then scrollIntoView'd the next row; because a
+     decision shrinks its bundle and the pending view re-sorts
+     bundles by size, that next row could be re-rendered at the very
+     bottom and the page jumped to it. Now the decided row shows its
+     outcome on the card, collapses in place the way a Fact Inbox
+     Read does, the marker advances in the live DOM, and the repaint
+     that lands afterwards runs under rcPaint's scroll restore —
+     window and every scroller stay pixel-identical throughout. */
+  if(rowEl && RC_VIEW.status === 'pending'){
+    var acts = rowEl.querySelector('.rc-actions');
+    if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : 'Dismissed') + '</span>';
+    var bundle = rowEl.closest ? rowEl.closest('.rc-bundle') : null;
+    var mates = bundle ? bundle.querySelectorAll('.rc-row[data-rcid]').length : 0;
+    var bhead = (bundle && mates <= 1) ? bundle.querySelector('.rc-bhead') : null;
+    [rowEl, bhead].forEach(function(el2){
+      if(!el2) return;
+      el2.classList.add('leaving');
+      el2.style.height = el2.offsetHeight + 'px';
     });
-  });
-  if(total) toast((decision === 'file' ? 'Filed ' : 'Dismissed ') + total + ' item' + (total === 1 ? '' : 's') + ' for ' + (names[0] || 'that person') + '. They save through the Save Pool.', { undo:true });
-  if(skipped) toast(skipped + ' item' + (skipped === 1 ? '' : 's') + ' skipped: the profile is no longer in the directory.');
-  rcPaint();
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      [rowEl, bhead].forEach(function(el2){
+        if(!el2) return;
+        el2.style.height = '0px'; el2.style.marginTop = '0px'; el2.style.marginBottom = '0px';
+        el2.style.paddingTop = '0px'; el2.style.paddingBottom = '0px'; el2.style.borderWidth = '0px';
+      });
+    }); });
+    if(nextCur) rcSetCur(nextCur);
+    setTimeout(function(){ rcPaint(); }, 315);
+  } else {
+    rcPaint();
+    if(nextCur) rcSetCur(nextCur);
+  }
 }
 /* Bundle header visual: the person's photo when the photo store has
    one for them, else the standard initial avatar. */
@@ -8053,7 +8024,6 @@ function rcModel(){
 function rcGroupKey(r){
   return r.di != null ? 'd' + r.di : 'n' + String(r.c.name || r.c.display || '').toLowerCase();
 }
-var RC_TICK = {};
 /* Exactly one row is current. The stored id survives repaints and
    leaving/returning; when it falls out of the shown list (decided,
    filtered away), the first pending shown row takes over, else the
@@ -8082,14 +8052,12 @@ function rcRowEl(id){
   for(var i = 0; i < rows.length; i++) if(rows[i].getAttribute('data-rcid') === id) return rows[i];
   return null;
 }
-function rcScrollCur(){
-  var row = rcRowEl(RC_VIEW.cur);
-  if(row) row.scrollIntoView({ block:'nearest' });
-}
 /* Move the current marker in the live DOM (no repaint): the class
-   moves, the key-bar readout updates, and the row scrolls into view
-   when asked. A full rcPaint renders the same marker from RC_VIEW. */
-function rcSetCur(id, scroll){
+   moves and the key-bar readout updates. It NEVER scrolls — moving
+   the selection is a state change, not a navigation (V3.80.1 rule:
+   actions never move the page). A full rcPaint renders the same
+   marker from RC_VIEW. */
+function rcSetCur(id){
   if(!id) return;
   if(id !== RC_VIEW.cur){ RC_VIEW.cur = id; rcSaveView(); }
   var sec = document.getElementById('rcconsole');
@@ -8101,7 +8069,6 @@ function rcSetCur(id, scroll){
     var pos = document.getElementById('rcpos');
     if(pos && RC && RC.candidates) pos.textContent = rcPosText(rcModel());
   }
-  if(scroll) rcScrollCur();
 }
 /* "On file now": the directory entry's own anchors for this person,
    so the identity match can be judged against the candidate's
@@ -8186,7 +8153,6 @@ function rcConsoleHTML(){
       '<button type="button" class="btn ghost sm rc-photo' + (r.photo ? ' on' : '') + '" data-act="rcphoto" data-id="' + esc(c.id) + '">' + ic('camera', 14) + (r.photo ? 'Photo lead set' : 'Photo at source?') + '</button>';
     var actions = r.st.k === 'pending'
       ? '<div class="rc-actions">' +
-        (RC_VIEW.status === 'pending' ? '<label class="rc-tick"><input type="checkbox" data-rctick="' + esc(c.id) + '"' + (RC_TICK[c.id] ? ' checked' : '') + '> Pick</label>' : '') +
         '<button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c.id) + '">File it</button>' +
         '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' + photoBtn +
         '<span class="rc-actnote">File it = add this to the record.<br>Dismiss = leave the record as is.</span></div>'
@@ -8205,8 +8171,10 @@ function rcConsoleHTML(){
       '<div class="rc-ev"><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
       actions + '</div>';
   });
-  /* Pending view: wrap each person's rows in a bundle with one-tap
-     batch actions (V3.80.0). Decided views keep the flat list. */
+  /* Pending view: wrap each person's rows in a bundle — grouping is
+     organization only (V3.80.1, JD 2026-11-03: decisions are one card
+     at a time; the V3.80.0 Pick ticks and per-bundle File all /
+     Dismiss all are gone). Decided views keep the flat list. */
   var body, rcPeople = 0;
   if(!shown.length) body = '<div class="rc-none">No candidates match this view.</div>';
   else if(RC_VIEW.status === 'pending'){
@@ -8217,17 +8185,11 @@ function rcConsoleHTML(){
       if(k !== lastK){
         if(lastK !== null) bparts.push('</div>');
         var grows = shown.filter(function(x){ return rcGroupKey(x) === k; });
-        var ticked = grows.filter(function(x){ return RC_TICK[x.c.id]; }).length;
         bparts.push('<div class="rc-bundle"><div class="rc-bhead">' + rcBundleVisual(grows[0]) +
           '<span class="rc-bname">' + personLink(grows[0].c) + '</span>' +
           '<span class="rc-bcount">' + grows.length + ' item' + (grows.length === 1 ? '' : 's') + ' left</span>' +
           (grows.some(function(x){ return x.c.category === 'conflict'; }) ? '<span class="rc-bflag">Includes a correction</span>' : '') +
-          '<span class="rc-bacts">' +
-          '<button type="button" class="btn primary sm" data-act="rcball" data-gk="' + esc(k) + '" data-v="file">File all</button>' +
-          '<button type="button" class="btn ghost sm danger" data-act="rcball" data-gk="' + esc(k) + '" data-v="dismiss">Dismiss all</button>' +
-          '<button type="button" class="btn ghost sm" data-act="rcbticked" data-gk="' + esc(k) + '" data-v="file"' + (ticked ? '' : ' disabled') + '>File picked (' + ticked + ')</button>' +
-          '<button type="button" class="btn ghost sm" data-act="rcbticked" data-gk="' + esc(k) + '" data-v="dismiss"' + (ticked ? '' : ' disabled') + '>Dismiss picked (' + ticked + ')</button>' +
-          '</span></div>');
+          '</div>');
         lastK = k;
       }
       bparts.push(rowHtmls[i]);
@@ -8245,22 +8207,30 @@ function rcConsoleHTML(){
     '<button type="button" class="rc-photobtn' + (RC_VIEW.photo ? ' on' : '') + '" data-act="rcphotoonly">' + ic('camera', 14) + 'Photo leads <b>' + counts.photo + '</b></button>' +
     '<select id="rccat" aria-label="Candidate category">' + catOpts + '</select>' +
     '<input id="rcq" type="search" placeholder="Search person, claim, source\u2026" value="' + esc(RC_VIEW.q || '') + '"></div>' +
-    '<div class="rc-keybar"><span class="rc-keys">\u2191 \u2193 move \u00b7 Enter open source \u00b7 F file it \u00b7 X dismiss \u00b7 P photo lead</span>' +
+    '<div class="rc-keybar"><span class="rc-keys">One card at a time. Keys: \u2191 \u2193 move \u00b7 F = File it \u00b7 D = Dismiss \u00b7 Enter = open source \u00b7 P = photo lead</span>' +
     '<span class="rc-pos" id="rcpos">' + esc(rcPosText(m)) + '</span></div>' +
     (RC_VIEW.status === 'pending' && shown.length ? '<div class="rc-progress">' + rcPeople + ' people \u00b7 ' + shown.length + ' items left</div>' : '') +
     '<div class="rc-table"><div class="rc-row rc-thead" data-kind="about"><span>How sure I am</span><span>Person / what I found</span><span>Evidence</span><span>Your call</span></div>' + body + '</div>' +
     '<p class="rc-foot">How sure I am = it\u2019s really them (50) + the source is solid (30) + the details check out (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
     '</section>';
 }
+/* rcPaint swaps the whole console node (the app's only outerHTML
+   repaint), so it runs under the same scrollSnap/scrollRestore
+   discipline as render() (V3.80.1): a repaint is a state change,
+   never a navigation, and the window plus every inner scroller come
+   back pixel-identical. Search focus returns with preventScroll. */
 function rcPaint(){
   var el = document.getElementById('rcconsole'); if(!el) return;
+  var snap = scrollSnap();
   var wasQ = document.activeElement && document.activeElement.id === 'rcq';
   var pos = wasQ ? document.activeElement.selectionStart : null;
   el.outerHTML = rcConsoleHTML();
+  scrollRestore(snap);
   if(wasQ){
     var nq = document.getElementById('rcq');
-    if(nq){ nq.focus(); try{ nq.setSelectionRange(pos, pos); }catch(x){} }
+    if(nq){ try{ nq.focus({ preventScroll:true }); }catch(x){ nq.focus(); } try{ nq.setSelectionRange(pos, pos); }catch(x){} }
   }
+  requestAnimationFrame(function(){ scrollRestore(snap); });
 }
 /* --- Keyboard flow (V3.61.0): the whole section is decidable from
    the keyboard. One current row; j/k or the arrow keys move it,
@@ -8282,7 +8252,7 @@ function rcMove(d){
   m.shown.forEach(function(r, j){ if(r.c.id === RC_VIEW.cur) i = j; });
   if(i < 0) i = d > 0 ? -1 : 0;
   var n = Math.max(0, Math.min(m.shown.length - 1, i + d));
-  rcSetCur(m.shown[n].c.id, true);
+  rcSetCur(m.shown[n].c.id);
 }
 function rcOpenSource(){
   var c = rcCurCandidate();
@@ -8291,16 +8261,6 @@ function rcOpenSource(){
   if(a){ a.click(); return; }
   window.open(c.url, '_blank', 'noopener');
 }
-/* Bundle ticks (V3.80.0): picking items inside a person's bundle.
-   Repaints so the bundle's picked-count buttons stay true. */
-document.addEventListener('change', function(ev){
-  var t = ev.target;
-  if(!t || !t.getAttribute) return;
-  var id = t.getAttribute('data-rctick');
-  if(!id) return;
-  if(t.checked) RC_TICK[id] = 1; else delete RC_TICK[id];
-  rcPaint();
-});
 document.addEventListener('keydown', function(ev){
   if(!RC || !RC.candidates || !RC.candidates.length) return;
   if(!S.route || S.route.name !== 'daily') return;
@@ -8339,7 +8299,7 @@ document.addEventListener('click', function(ev){
   var row = ev.target && ev.target.closest ? ev.target.closest('.rc-row[data-rcid]') : null;
   if(!row) return;
   var id = row.getAttribute('data-rcid');
-  if(id && id !== RC_VIEW.cur) rcSetCur(id, false);
+  if(id && id !== RC_VIEW.cur) rcSetCur(id);
 });
 
 /* ============================================================
@@ -13265,8 +13225,6 @@ function onClick(ev){
     case 'chggrp': chgToggle(el); break;
     case 'rcfile': rcDecide(el.getAttribute('data-id'), 'file'); break;
     case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
-    case 'rcball': rcDecideBatch(el.getAttribute('data-gk'), el.getAttribute('data-v'), false); break;
-    case 'rcbticked': rcDecideBatch(el.getAttribute('data-gk'), el.getAttribute('data-v'), true); break;
     case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; rcSaveView(); rcPaint(); break;
     case 'rcphoto': rcTogglePhoto(el.getAttribute('data-id')); break;
     case 'rcphotoonly': RC_VIEW.photo = !RC_VIEW.photo; rcSaveView(); rcPaint(); break;
@@ -13428,7 +13386,9 @@ function onClick(ev){
     case 'gsclear': { var gi = $('#gs'); if(gi){ gi.value = ''; paintSearch(); gi.focus(); } break; }
     case 'qadd': { qaOpen('log'); break; }
     case 'logcontact': { S.prof.edit.timeline = true; if($('#sec-timeline')) repaintSec('timeline'); else paintProfile(S.prof.di);
-      setTimeout(function(){ var s = $('#lc-sum'); if(s){ s.focus(); try{ s.scrollIntoView({ block:'center' }); }catch(x){} } }, 30); break; }
+      /* V3.80.1 no-move rule: the editor opens in place in the
+         timeline section; focus lands without scrolling the page. */
+      setTimeout(function(){ var s = $('#lc-sum'); if(s){ try{ s.focus({ preventScroll:true }); }catch(x){} } }, 30); break; }
     case 'gomobile': { try{ localStorage.removeItem('ncc_force_full'); }catch(x){} location.href = 'contacts-mobile.html'; break; }
     case 'openedit': openPerson(di, (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
     case 'openfam': S.fam.focus = di; go('family'); break;
@@ -13526,7 +13486,7 @@ function onClick(ev){
     }
     case 'ctkind': { if(CTLED){ CTLED.kind = el.getAttribute('data-v'); ctlApplyKindUI(); } break; }
     case 'ctedsave': { ctlSaveEditor(); break; }
-    case 'proxlog': { S.prof.proxOpen = !S.prof.proxOpen; repaintSec('timeline'); if(S.prof.proxOpen) landOn('#sec-timeline'); break; }
+    case 'proxlog': { S.prof.proxOpen = !S.prof.proxOpen; repaintSec('timeline'); break; }
     case 'proxsave': {
       var pd = ($('#prox-date') || {}).value || todayStr(), pv = (($('#prox-venue') || {}).value || '').trim();
       if(!pv){ toast('Name the place or context first.'); break; }
@@ -13557,8 +13517,15 @@ function onClick(ev){
       render();
       break;
     }
-    case 'opentog': { var kk = el.getAttribute('data-k'); S.prof.open[kk] = !S.prof.open[kk]; var osec = kk === 'ev' ? 'timeline' : 'connections'; repaintSec(osec); if(S.prof.open[kk]) landOn('#sec-' + osec); break; }
-    case 'secedit': { var sid = el.getAttribute('data-sec'); S.prof.edit[sid] = true; if($('#sec-' + sid)) repaintSec(sid); else paintProfile(S.prof.di); landOn('#sec-' + sid, { focus:true }); break; }
+    case 'opentog': { var kk = el.getAttribute('data-k'); S.prof.open[kk] = !S.prof.open[kk]; var osec = kk === 'ev' ? 'timeline' : 'connections'; repaintSec(osec); break; }
+    /* V3.80.1 no-move rule: the section edit buttons sit in the
+       section they edit, so opening the editor is in-place — flash
+       the section and focus its first field without scrolling. */
+    case 'secedit': { var sid = el.getAttribute('data-sec'); S.prof.edit[sid] = true; if($('#sec-' + sid)) repaintSec(sid); else paintProfile(S.prof.di);
+      var se2 = $('#sec-' + sid);
+      if(se2){ se2.classList.remove('landed'); void se2.offsetWidth; se2.classList.add('landed'); setTimeout(function(){ se2.classList.remove('landed'); }, 1400);
+        var sf2 = se2.querySelector('input:not([type=hidden]), textarea, select'); if(sf2) setTimeout(function(){ try{ sf2.focus({ preventScroll:true }); }catch(x){} }, 30); }
+      break; }
     case 'secdone': { var sd = el.getAttribute('data-sec'); delete S.prof.edit[sd]; S.prof.evEdit = null; S.prof.degEdit = null; paintProfile(S.prof.di); break; }
     case 'tagrm': saveTags(el, function(a){ var v = el.getAttribute('data-v'); return a.filter(function(x){ return x !== v; }); }); break;
     case 'tagtog': saveTags(el, function(a){ var v = el.getAttribute('data-v'), i = a.indexOf(v); if(i >= 0) a.splice(i, 1); else a.push(v); return a; }); break;
@@ -17653,7 +17620,10 @@ function cnSaveQueue(q, prevQ, failMsg){
 }
 function cnRepaint(){
   var v = $('#view'); if(!v || !S.route || S.route.name !== 'council') return;
-  var y = window.scrollY; viewCouncil(v); window.scrollTo(0, y);
+  /* V3.80.1: full scrollSnap/scrollRestore (the old hand-rolled
+     version kept only window.scrollY and lost #view). */
+  var snap = scrollSnap(); viewCouncil(v); scrollRestore(snap);
+  requestAnimationFrame(function(){ scrollRestore(snap); });
 }
 function cnFlag(id){
   return ((CN && CN.flags) || []).filter(function(f){ return f.id === id; })[0] || null;
