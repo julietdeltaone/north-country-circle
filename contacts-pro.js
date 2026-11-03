@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.79.1';
+var APP_VERSION = '3.79.2';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8677,6 +8677,25 @@ var LR_ANIM_SEEN = false; /* edges pass (JD 2026-11-02): Live Records entrance m
    load succeeds (the Council no-clobber rule): a save built on
    an unread map would overwrite decisions made on other devices. */
 var FI = null, FI_LOADING = false, FI_PROF = null, FI_PROF_FAILED = false, FI_STATE = null, FI_SAVE_SEQ = 0;
+var FI_BRIDGE; /* undefined until first read; localStorage snapshot of the last state map THIS device saved (V3.79.2) */
+function fiBridgeRead(){
+  if(FI_BRIDGE !== undefined) return FI_BRIDGE;
+  FI_BRIDGE = null;
+  try {
+    var raw = localStorage.getItem('ncc_fi_bridge_v1');
+    if(raw){ var b = JSON.parse(raw); if(b && typeof b === 'object' && b.map && typeof b.map === 'object' && !Array.isArray(b.map) && b.savedAt) FI_BRIDGE = b; }
+  } catch(e){}
+  return FI_BRIDGE;
+}
+function fiBridgeStore(map){
+  var b = { savedAt: Date.now(), map: map };
+  FI_BRIDGE = b;
+  try { localStorage.setItem('ncc_fi_bridge_v1', JSON.stringify(b)); } catch(e){}
+}
+function fiBridgeRestore(raw){
+  FI_BRIDGE = undefined;
+  try { if(raw) localStorage.setItem('ncc_fi_bridge_v1', raw); else localStorage.removeItem('ncc_fi_bridge_v1'); } catch(e){}
+}
 var FI_FILTER = 'all', FI_SORT = 'new';
 var FI_PATTERNS = {
   employer_change:{ label:'EMPLOYER CHANGE', cls:'t-about' },
@@ -8726,9 +8745,36 @@ function fiStateBlocked(){
 }
 function fiStateMap(){
   if(FI_STATE) return FI_STATE;
-  if(FI_PROF) return FI_PROF.map || {};
+  /* V3.79.2 (JD 2026-11-03: reads "not saving" after a reload): the old
+     precedence let whichever source loaded first win outright — a
+     profiles.json bake from BEFORE the last save (cell still empty)
+     shadowed everything, so marks looked unsaved until the next sync
+     baked them. Now: union every source, per entry the latest `at`
+     wins; and the localStorage bridge (the last map THIS device saved
+     through the endpoint) acts as a snapshot when it is newer than
+     everything baked — entries it omits were deliberately un-marked
+     inside the bake window, so an Undo survives the window too. */
   var m = {};
-  ((FI && FI.entries) || []).forEach(function(e){ if(e.state && e.state.status) m[e.id] = { status:e.state.status, at:e.state.at || '' }; });
+  function put(id, s){
+    if(!s || !s.status) return;
+    var cur = m[id];
+    if(!cur || String(s.at || '') >= String(cur.at || '')) m[id] = { status: s.status, at: s.at || '' };
+  }
+  ((FI && FI.entries) || []).forEach(function(e){ if(e.state) put(e.id, e.state); });
+  if(FI_PROF && FI_PROF.map) Object.keys(FI_PROF.map).forEach(function(k){ put(k, FI_PROF.map[k]); });
+  var b = fiBridgeRead();
+  if(b){
+    var newest = 0;
+    Object.keys(m).forEach(function(k){ var t = Date.parse(m[k].at || '') || 0; if(t > newest) newest = t; });
+    if(b.savedAt >= newest){
+      var bm = {};
+      Object.keys(b.map).forEach(function(k){ var s = b.map[k]; if(s && s.status) bm[k] = { status: s.status, at: s.at || '' }; });
+      Object.keys(m).forEach(function(k){ if((Date.parse(m[k].at || '') || 0) > b.savedAt) bm[k] = m[k]; });
+      m = bm;
+    } else {
+      Object.keys(b.map).forEach(function(k){ put(k, b.map[k]); });
+    }
+  }
   return m;
 }
 function fiStatus(e){ var s = fiStateMap()[e.id]; return s ? s.status : null; }
@@ -8745,11 +8791,14 @@ function fiCounts(){
 function fiUnreadCount(){ return fiCounts().unread; }
 function fiSaveState(next){
   var prev = FI_STATE, seq = ++FI_SAVE_SEQ;
+  var prevBridgeRaw = null;
+  try { prevBridgeRaw = localStorage.getItem('ncc_fi_bridge_v1'); } catch(e){}
   FI_STATE = next;
+  fiBridgeStore(next); /* bridge the bake window: a reload before the next sync bake must still show this save */
   sbPostBatch([{ id:'ig:jdmeyers_', patch:{ inbox_state: JSON.stringify(next) } }]).then(function(ok){
     if(seq !== FI_SAVE_SEQ) return;
     if(ok){ if(FI_PROF) FI_PROF.map = next; }
-    else { FI_STATE = prev; toast('Inbox state could not be saved — restored.'); fiPaint(); }
+    else { FI_STATE = prev; fiBridgeRestore(prevBridgeRaw); toast('Inbox state could not be saved — restored.'); fiPaint(); }
     fiPaintNavBadge();
   });
 }
