@@ -1,16 +1,22 @@
 {
  "generated": "2026-11-03",
- "count": 0,
- "suggestions": [],
- "auto_apply": [
+ "count": 1,
+ "suggestions": [
   {
-   "key": "ct:justin estep",
-   "display": "Justin Estep",
-   "field": "groups",
-   "value": "U.S. Army",
-   "conf": 100,
-   "id": "pf-83ecbcffc1"
-  },
+   "id": "pf-1a161ce24c",
+   "key": "sf:breanne-sapp",
+   "display": "Breanne Sapp",
+   "field": "years_known",
+   "field_label": "Years known (since)",
+   "value": "2022",
+   "grade": "Probable",
+   "evidence": [
+    "Their earliest contact entry is 2022-04-09; known-since year follows from it."
+   ],
+   "conf": 78
+  }
+ ],
+ "auto_apply": [
   {
    "key": "sf:murray",
    "display": "Murray",
@@ -18,6 +24,14 @@
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
+  },
+  {
+   "key": "sf:breanne-sapp",
+   "display": "Breanne Sapp",
+   "field": "first_contact",
+   "value": "2022-04-09",
+   "conf": 93,
+   "id": "pf-ce95f5e3f4"
   }
  ],
  "shelved": [
