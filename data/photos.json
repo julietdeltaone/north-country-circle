@@ -2086,12 +2086,13 @@
    "type": "directory photo"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-03",
+   "evidence": "Erin Dunham, second from left, with the Medina High School homecoming court in Medina, New York, in 2018.",
    "name": "Erin Dunham",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/erin-dunham.jpg",
+   "source_page": "https://orleanshub.com/medina-has-parade-pep-rally-to-celebrate-homecoming",
+   "status": "possible",
+   "type": "Group photo"
   },
   {
    "evidence": "No source links on file.",
@@ -2972,6 +2973,15 @@
    "source_page": null,
    "status": "auth_only",
    "type": null
+  },
+  {
+   "added": "2026-11-03",
+   "evidence": "Jennifer Meyer, second from left, with members of Headquarters and Support Company, 642nd Support Battalion, at Sodus Point, New York, on April 29, 2019.",
+   "name": "Jennifer Meyer",
+   "photo_url": "photos/jennifer-meyer.jpg",
+   "source_page": "https://dmna.ny.gov/units/?unit=1227543460&page=featured",
+   "status": "likely",
+   "type": "Group photo"
   },
   {
    "added": "2026-10-31",
@@ -3930,10 +3940,10 @@
    "type": null
   },
   {
-   "added": "2026-11-02",
-   "evidence": "North Country Public Radio story photo (file Kim_Sisk_photo.jpg) whose caption, alt and title all read 'Canton parent Kim Sisk writes a letter to lobby for increased school funding. Photo: Julie Grant' — the image shows her writing at a table, in Canton, NY.",
+   "added": "2026-11-03",
+   "evidence": "Kim Sisk writing a letter at a table in Canton, New York. Photograph by Julie Grant for North Country Public Radio.",
    "name": "Kim Sisk",
-   "photo_url": "https://www.northcountrypublicradio.org/news/images/Kim_Sisk_photo.jpg",
+   "photo_url": "photos/kim-sisk.jpg",
    "source_page": "https://www.northcountrypublicradio.org/news/story/21135/20121224/schools-fight-for-fiscal-survival",
    "status": "confirmed",
    "type": "News photo"
@@ -6493,10 +6503,10 @@
    "type": "Roster headshot"
   },
   {
-   "added": "2026-11-01",
-   "evidence": "SUNY Canton 'People Like Me: Debbie Flack' profile portrait: the page names Debbie Flack of Ogdensburg, a Technological Communications student who also works in the SUNY Canton Ready Center (the portrait shows her at a Ready Center-style desk with a headset); SUNY Canton honors lists name her in Technological Communications, President's List 2022-2026.",
+   "added": "2026-11-03",
+   "evidence": "Debbie Flack at a desk with a headset, pictured on SUNY Canton's 'People Like Me' profile page.",
    "name": "Debbie Flack",
-   "photo_url": "https://www.canton.edu/media/Debbie-Flack.jpg",
+   "photo_url": "photos/debbie-flack.jpg",
    "source_page": "https://www.canton.edu/plm/name-127829-en.html",
    "status": "confirmed",
    "type": "Profile portrait"
@@ -6547,6 +6557,6 @@
    "type": "Series artwork photo (crop)"
   }
  ],
- "total": 691,
- "updated": "2026-11-02"
+ "total": 692,
+ "updated": "2026-11-03"
 }
