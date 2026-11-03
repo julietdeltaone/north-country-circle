@@ -4,28 +4,12 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "t.fetterley",
-   "display": "Tasia Fetterley",
-   "field": "location_on_file",
-   "value": "Potsdam, NY",
-   "conf": 91,
-   "id": "pf-a50e53fb25"
-  },
-  {
    "key": "ct:justin estep",
    "display": "Justin Estep",
-   "field": "companies",
+   "field": "groups",
    "value": "U.S. Army",
-   "conf": 74,
-   "id": "pf-562a0fddc6"
-  },
-  {
-   "key": "ct:justin estep",
-   "display": "Justin Estep",
-   "field": "companies",
-   "value": "Army National Guard",
-   "conf": 74,
-   "id": "pf-ea15830da5"
+   "conf": 100,
+   "id": "pf-83ecbcffc1"
   },
   {
    "key": "sf:murray",
@@ -34,30 +18,6 @@
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
-  },
-  {
-   "key": "sf:nelson-dane",
-   "display": "Nelson Dane",
-   "field": "specialty",
-   "value": "Software Development",
-   "conf": 90,
-   "id": "pf-249e96ce7e"
-  },
-  {
-   "key": "sf:debbie-flack",
-   "display": "Debbie Flack",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-4cc4bdc029"
-  },
-  {
-   "key": "sf:peyton-mussaw",
-   "display": "Peyton Mussaw",
-   "field": "companies",
-   "value": "Rochester Regional Health",
-   "conf": 74,
-   "id": "pf-35aa44c12e"
   }
  ],
  "shelved": [
