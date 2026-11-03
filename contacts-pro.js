@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.77.0';
+var APP_VERSION = '3.78.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8111,36 +8111,261 @@ function calChip(cal){
   var col = CAL_COLORS[first] || '#64748b';
   return '<span class="cal-chip" style="--cc:' + col + '">' + esc(cal) + '</span>';
 }
+/* ============================================================
+   Contact Timeline (V3.78.0, JD 2026-11-03): the Calendar page's
+   PRIMARY surface — the people JD has been in contact with, in
+   person (on location), online, or in proximity, read straight
+   from the directory's own event streams, with complete editing
+   tools on the surface itself. The entries are the profile
+   timeline events: kind 'contact' (online:true reads as Online)
+   and kind 'proximity' ({date, kind:'proximity', venue,
+   summary:venue}). Every write rides the ONE save path — txn +
+   queuePatch of the person's events JSON, the exact calls the
+   profile Timeline editor, the Contact Log form and Quick Add
+   make — so the Save Pool, the Sheet and the undo stack behave
+   identically. Adding a contact mirrors qaSaveLog's Last Contact
+   stamp rule; edits and deletes mirror evsave / evdel (events
+   only — the render-time derivations fold dated events into
+   Last Contact / Last Online / Last proximity, so the derived
+   stamps follow on the next render). Proximity never touches a
+   contact stamp. The Atlas further down the page stays what it
+   was: display-only calendar fixtures, never filed as contacts.
+   ============================================================ */
+var CTL = { ym:null, day:null, fk:{ contact:true, online:true, proximity:true }, qdi:null };
+var CTLED = null;   /* editor sheet state: {di, i (null = new), kind} */
+var CTL_IDX = null;
+function ctlKindOf(ev){
+  if(!ev) return null;
+  if(ev.kind === 'proximity') return 'proximity';
+  if(ev.kind === 'contact') return ev.online ? 'online' : 'contact';
+  return null;
+}
+function ctlIdx(){
+  if(CTL_IDX && CTL_IDX.ver === VER) return CTL_IDX;
+  var byDate = {}, partial = 0;
+  people().forEach(function(di){
+    var e = D.directory[di];
+    (e.events || []).forEach(function(ev, i){
+      var ck = ctlKindOf(ev); if(!ck || !ev.date) return;
+      if(/^\d{4}-\d{2}-\d{2}$/.test(ev.date)) (byDate[ev.date] = byDate[ev.date] || []).push({ di:di, i:i, ck:ck });
+      else if(/^\d{4}-\d{2}/.test(ev.date)) partial++;
+    });
+  });
+  CTL_IDX = { ver:VER, byDate:byDate, partial:partial };
+  return CTL_IDX;
+}
+function ctlInit(){
+  if(!CTL.ym){ var t = todayStr(); CTL.ym = t.slice(0, 7); CTL.day = t; }
+}
+function ctlEntries(ds){
+  return (ctlIdx().byDate[ds] || []).filter(function(x){ return CTL.fk[x.ck]; });
+}
+function ctlKindChip(ck){
+  if(ck === 'contact') return '<span class="ct-kchip k-contact">' + ic('pin', 11) + '<span>CONTACT</span></span>';
+  if(ck === 'online') return '<span class="ct-kchip k-online">' + lcGlobe(11) + '<span>ONLINE</span></span>';
+  return '<span class="ct-kchip k-proximity"><span class="ct-dashsq"></span><span>PROXIMITY</span></span>';
+}
+function ctlBarHTML(){
+  var fk = CTL.fk;
+  function fb(ck, inner){
+    return '<button type="button" class="ct-fb k-' + ck + (fk[ck] ? ' on' : '') + '" data-act="ctfk" data-k="' + ck + '" aria-pressed="' + !!fk[ck] + '">' + inner + '</button>';
+  }
+  var h = '<div class="ct-bar"><div class="ct-fbs" role="group" aria-label="Entry kinds — also the legend">' +
+    fb('contact', ic('pin', 12) + '<span>Contact</span>') +
+    fb('online', lcGlobe(12) + '<span>Online</span>') +
+    fb('proximity', '<span class="ct-dashsq"></span><span>Proximity</span>') + '</div>';
+  if(CTL.qdi != null && D.directory[CTL.qdi]){
+    var e = D.directory[CTL.qdi];
+    h += '<span class="ct-hlchip">' + avatar(e, 'xs') + '<span>Highlighting ' + esc(dispName(e)) + '</span>' +
+      '<button type="button" class="ib sm" data-act="cthlx" aria-label="Clear highlight">' + ic('x', 13) + '</button></span>';
+  } else {
+    h += '<div class="ct-search"><input type="text" id="ctq" placeholder="Highlight a person…" autocomplete="off"><div class="ct-hits" id="ctqr"></div></div>';
+  }
+  return h + '<span class="sp"></span><button type="button" class="btn primary sm" data-act="ctadd">' + ic('plus', 13) + 'Add entry</button></div>';
+}
+function paintCtlQ(){
+  var inp = $('#ctq'), box = $('#ctqr'); if(!inp || !box) return;
+  var q = inp.value.trim();
+  if(q.length < 2){ box.innerHTML = ''; return; }
+  var hits = searchPeople(q, 6);
+  box.innerHTML = hits.length ? hits.map(function(d){
+    return '<button type="button" class="hit" data-act="cthl" data-di="' + d + '">' + avatar(D.directory[d], 'sm') + '<span>' + esc(dispName(D.directory[d])) + '<small>' + esc(infoLine(D.directory[d])) + '</small></span></button>';
+  }).join('') : '<div class="hit none">No matches</div>';
+}
+function ctlMonthHTML(){
+  var p = CTL.ym.split('-').map(Number), y = p[0], m = p[1] - 1;
+  var dim = new Date(y, m + 1, 0).getDate(), lead = new Date(y, m, 1).getDay(), today = todayStr();
+  var idx = ctlIdx(), mp = {}, me = 0;
+  Object.keys(idx.byDate).forEach(function(ds){
+    if(ds.indexOf(CTL.ym) === 0) idx.byDate[ds].forEach(function(x){ if(CTL.fk[x.ck]){ mp[x.di] = 1; me++; } });
+  });
+  var np = Object.keys(mp).length;
+  var h = '<div class="ct-mhead"><button type="button" class="ca-step" data-act="ctnav" data-d="-1" aria-label="Previous month">‹</button>' +
+    '<h2>' + CA_MN[m] + ' ' + y + '</h2>' +
+    '<button type="button" class="ca-step" data-act="ctnav" data-d="1" aria-label="Next month">›</button>' +
+    '<button type="button" class="btn ghost sm" data-act="ctnav" data-d="0">Today</button>' +
+    '<span class="ct-msum">' + me + (me === 1 ? ' entry · ' : ' entries · ') + np + (np === 1 ? ' person' : ' people') + '</span></div>' +
+    '<div class="ct-grid">' + CA_DW.map(function(d){ return '<div class="ca-dow">' + d + '</div>'; }).join('');
+  for(var i = 0; i < lead; i++) h += '<div class="ct-cell dim"></div>';
+  for(var d = 1; d <= dim; d++){
+    var ds = caIso(y, m, d), es = ctlEntries(ds);
+    var seen = {}, plist = [], kc = { contact:0, online:0, proximity:0 }, kseen = { contact:{}, online:{}, proximity:{} };
+    es.forEach(function(x){
+      if(!seen[x.di]){ seen[x.di] = 1; plist.push(x); }
+      if(!kseen[x.ck][x.di]){ kseen[x.ck][x.di] = 1; kc[x.ck]++; }
+    });
+    var cls = 'ct-cell' + (ds === today ? ' today' : '') + (ds === CTL.day ? ' sel' : '') + (CTL.qdi != null && seen[CTL.qdi] ? ' hl' : '');
+    h += '<div class="' + cls + '" data-act="ctday" data-d="' + ds + '" title="' + esc(caFmtD(ds)) + '">' +
+      '<div class="ct-dn">' + d + '</div>' +
+      (plist.length ? '<div class="ct-stack">' + plist.slice(0, 4).map(function(x){
+        return '<span class="ct-avw k-' + x.ck + '">' + avatar(D.directory[x.di], 'xs') + '</span>';
+      }).join('') + '</div>' : '') +
+      ((kc.contact || kc.online || kc.proximity) ? '<div class="ct-kcs">' +
+        (kc.contact ? '<span class="ct-kc k-contact">' + ic('pin', 10) + kc.contact + '</span>' : '') +
+        (kc.online ? '<span class="ct-kc k-online">' + lcGlobe(10) + kc.online + '</span>' : '') +
+        (kc.proximity ? '<span class="ct-kc k-proximity"><span class="ct-dashsq sm"></span>' + kc.proximity + '</span>' : '') + '</div>' : '') +
+      '</div>';
+  }
+  h += '</div>';
+  if(idx.partial) h += '<p class="ct-note">' + idx.partial + (idx.partial === 1 ? ' entry on file carries' : ' entries on file carry') + ' a month-only date and ' + (idx.partial === 1 ? 'is' : 'are') + ' not placed on a day.</p>';
+  return h;
+}
+function ctlDayHTML(){
+  var ds = CTL.day, all = (ctlIdx().byDate[ds] || []).length;
+  var es = ctlEntries(ds).slice().sort(function(a, b){
+    var an = dispName(D.directory[a.di]).toLowerCase(), bn = dispName(D.directory[b.di]).toLowerCase();
+    return an < bn ? -1 : an > bn ? 1 : a.i - b.i;
+  });
+  var h = '<div class="ct-dhead"><h3>' + esc(caFmtD(ds)) + ', ' + ds.slice(0, 4) + '</h3>' +
+    '<span class="ct-dsub">' + es.length + (es.length === 1 ? ' entry' : ' entries') + (all !== es.length ? ' · ' + (all - es.length) + ' hidden by filters' : '') + '</span></div>';
+  if(!es.length)
+    return h + '<div class="ct-none">' + (all ? 'Everything this day is hidden by the kind filters.' : 'Nothing logged this day.') + '</div>';
+  ['contact', 'online', 'proximity'].forEach(function(ck){
+    var rows = es.filter(function(x){ return x.ck === ck; });
+    if(!rows.length) return;
+    h += '<div class="ct-grp"><div class="ct-grp-h">' + ctlKindChip(ck) + '<em>' + rows.length + '</em></div>' +
+      rows.map(function(x){
+        var e = D.directory[x.di], ev = (e.events || [])[x.i] || {};
+        var what = ck === 'proximity' ? (ev.venue || ev.summary || '') : (ev.summary || '');
+        var sub = ck !== 'proximity' && ev.venue ? ev.venue : '';
+        return '<div class="ct-row">' +
+          '<span class="ct-avw k-' + ck + '">' + avatar(e, 'sm') + '</span>' +
+          '<span class="ct-rmain"><a class="ct-who" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + x.di + '">' + esc(dispName(e)) + '</a>' +
+          (what ? '<span class="ct-what">' + esc(what) + '</span>' : '') +
+          (sub ? '<span class="ct-what sub">' + esc(sub) + '</span>' : '') + '</span>' +
+          '<button type="button" class="ib sm" data-act="ctedit" data-di="' + x.di + '" data-i="' + x.i + '" aria-label="Edit entry">' + ic('edit', 14) + '</button>' +
+          '<button type="button" class="ib sm" data-act="ctdel" data-di="' + x.di + '" data-i="' + x.i + '" aria-label="Remove entry">' + ic('trash', 14) + '</button></div>';
+      }).join('') + '</div>';
+  });
+  return h;
+}
+function ctlApplyKindUI(){
+  var sum = $('#cted-sum'), hint = $('#cted-hint');
+  if(!sum || !CTLED) return;
+  var prox = CTLED.kind === 'proximity';
+  sum.disabled = prox;
+  if(hint) hint.textContent = prox
+    ? 'Proximity records the place only — it files as date + place and never touches Last Contact.'
+    : (CTLED.kind === 'online' ? 'An online contact. The one line is the record; the place is optional.' : 'An in-person contact. The one line is the record; the place is optional.');
+  $$('#cted-kind button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === CTLED.kind); });
+}
+function ctlOpenEditor(di, i){
+  var isNew = i == null, e = di != null ? D.directory[di] : null;
+  var ev = (!isNew && e) ? (e.events || [])[i] : null;
+  CTLED = { di:di, i:isNew ? null : i, kind:ev ? (ctlKindOf(ev) || 'contact') : 'contact' };
+  var date = ev && /^\d{4}-\d{2}-\d{2}$/.test(ev.date || '') ? ev.date : CTL.day;
+  var person = isNew
+    ? '<label class="ct-fl">Person<input type="text" id="ctpq" placeholder="Search the directory…" autocomplete="off"></label><div class="ct-hits in-form" id="ctpr"></div><div class="ct-psel" id="ctpsel"></div>'
+    : '<div class="ct-pfixed">' + avatar(e, 'sm') + '<span><b>' + esc(dispName(e)) + '</b><small>' + esc(infoLine(e)) + '</small></span></div>';
+  var body = '<div class="ct-form">' + person +
+    '<div class="ct-frow"><label class="ct-fl grow">Date<input type="date" id="cted-date" value="' + esc(date) + '"></label>' +
+    '<div class="ct-fl"><span class="ct-flab">Kind</span><div class="seg" id="cted-kind" role="group" aria-label="Entry kind">' +
+    '<button type="button" data-act="ctkind" data-v="contact">In person</button><button type="button" data-act="ctkind" data-v="online">Online</button><button type="button" data-act="ctkind" data-v="proximity">Proximity</button></div></div></div>' +
+    '<label class="ct-fl">Place<input type="text" id="cted-venue" placeholder="Lewis School, Clarkson Hall" value="' + esc(ev ? (ev.venue || '') : '') + '" autocomplete="off"></label>' +
+    '<label class="ct-fl">What happened<input type="text" id="cted-sum" placeholder="One line: what happened" value="' + esc(ev && ev.kind !== 'proximity' ? (ev.summary || '') : '') + '" autocomplete="off"></label>' +
+    '<p class="ct-hint" id="cted-hint"></p>' +
+    '<div class="ct-frow end"><button type="button" class="btn ghost sm" data-act="sheetx">Cancel</button>' +
+    '<button type="button" class="btn primary sm" data-act="ctedsave">' + (isNew ? 'Add entry' : 'Save changes') + '</button></div></div>';
+  openSheet(isNew ? 'Add entry' : 'Edit entry', body);
+  ctlApplyKindUI();
+  if(isNew){ var q = $('#ctpq'); if(q) q.focus(); }
+}
+function ctlSaveEditor(){
+  var di = CTLED ? CTLED.di : null;
+  if(di == null || !D.directory[di]){ toast('Pick a person first.'); return; }
+  var date = ($('#cted-date') || {}).value || '';
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ toast('Pick a date.'); return; }
+  var venue = (($('#cted-venue') || {}).value || '').trim();
+  var sum = (($('#cted-sum') || {}).value || '').trim();
+  var kind = CTLED.kind, e = D.directory[di], arr = (e.events || []).slice();
+  if(kind === 'proximity'){ if(!venue){ toast('Name the place — that is the whole record.'); return; } }
+  else if(!sum){ toast('Write the one line first.'); return; }
+  if(CTLED.i == null){
+    var nev;
+    if(kind === 'proximity') nev = { date:date, kind:'proximity', venue:venue, summary:venue };
+    else {
+      nev = { date:date, summary:sum, kind:'contact' };
+      if(kind === 'online') nev.online = true;
+      if(venue) nev.venue = venue;
+    }
+    arr.push(nev);
+    txn(kind === 'proximity' ? 'Log proximity' : 'Log contact', function(){ queuePatch(di, { events:JSON.stringify(arr) }); });
+    if(kind !== 'proximity'){
+      /* qaSaveLog's stamp rule, verbatim: a newer logged contact
+         becomes the headline Last Contact (and its online flag). */
+      var curLc = String(gv(e, 'last_contact') || '').trim();
+      if(!curLc || flexKey(date) >= flexKey(curLc)){ setField(di, 'last_contact', date); setField(di, 'last_contact_online', kind === 'online' ? 'yes' : ''); }
+    }
+    toast((kind === 'proximity' ? 'Proximity' : 'Contact') + ' logged for ' + dispName(e) + ' — ' + caFmtD(date) + '.');
+  } else {
+    var old = arr[CTLED.i]; if(!old){ toast('That entry is gone.'); return; }
+    var nev2 = {}; Object.keys(old).forEach(function(k){ nev2[k] = old[k]; });
+    nev2.date = date;
+    if(kind === 'proximity'){ nev2.kind = 'proximity'; delete nev2.online; delete nev2.detail; nev2.venue = venue; nev2.summary = venue; }
+    else {
+      nev2.kind = 'contact'; nev2.summary = sum;
+      if(kind === 'online') nev2.online = true; else delete nev2.online;
+      if(venue) nev2.venue = venue; else delete nev2.venue;
+    }
+    arr[CTLED.i] = nev2;
+    txn('Edit entry', function(){ queuePatch(di, { events:JSON.stringify(arr) }); });
+    toast('Entry updated for ' + dispName(e) + '.');
+  }
+  CTL.day = date; CTL.ym = date.slice(0, 7);
+  closeSheet(); render();
+}
 function viewCalendar(v){
-  /* V3.46.0 (JD 2026-10-30): THE ATLAS — the calendar design JD
-     picked from the council's five. A zoomable year-map: the whole
-     year as a density heat-grid that opens in place month -> week
-     -> day. The second color language is the sighting score baked
-     into calendar.json (tier per entry): gold = confirmed or
-     corroborated in-person, solid mark = strong, halo = venue day.
-     The People toggle re-shades the map from density to sightings.
-     Calendar data never touches Last Contact stamps (JD: hold);
-     inferred sightings are labeled, never filed as contacts. */
+  /* V3.78.0 (JD 2026-11-03): the Calendar is now primarily the
+     CONTACT TIMELINE (above the fold: people-first month grid +
+     day panel with full add / edit / delete). The Atlas — the
+     V3.46.0 zoomable year-map of Google Calendar fixtures and
+     sighting tiers — stays below as a display-only section: its
+     data never touches Last Contact stamps (JD: hold), and its
+     zoom state (CALV) and handlers are unchanged. */
   calLoad();
-  var head = '<div class="page calpage ca" data-kind="connection">';
-  if(!CAL){
-    v.innerHTML = head + '<div class="pagehead"><div><h1 class="display">Calendar</h1>' +
-      '<p class="sub">Loading your 2026…</p></div></div></div>';
-    return;
+  ctlInit();
+  var head = '<div class="page calpage ctpage" data-kind="connection">';
+  var atlas;
+  if(!CAL) atlas = '<p class="dim">Loading your 2026…</p>';
+  else if(CAL.empty) atlas = '<p class="dim">No calendar bake yet.</p>';
+  else {
+    calAtlasInit();
+    var stage = CALV.level === 'year' ? caYearHTML()
+      : CALV.level === 'month' ? caMonthHTML(CALV.month)
+      : CALV.level === 'week' ? caWeekHTML(CALV.weekStart)
+      : caDayHTML(CALV.date);
+    atlas = caCrumbsHTML() + '<div class="ca-layout"><div class="ca-main">' + stage + '</div>' +
+      '<aside class="ca-rail">' + caRailHTML() + '</aside></div>';
   }
-  if(CAL.empty){
-    v.innerHTML = head + '<div class="pagehead"><div><h1 class="display">Calendar</h1></div></div>' +
-      '<section class="card"><div class="cbody"><p class="dim">No calendar bake yet.</p></div></section></div>';
-    return;
-  }
-  calAtlasInit();
-  var stage = CALV.level === 'year' ? caYearHTML()
-    : CALV.level === 'month' ? caMonthHTML(CALV.month)
-    : CALV.level === 'week' ? caWeekHTML(CALV.weekStart)
-    : caDayHTML(CALV.date);
-  v.innerHTML = head + caCrumbsHTML() +
-    '<div class="ca-layout"><div class="ca-main">' + stage + '</div>' +
-    '<aside class="ca-rail">' + caRailHTML() + '</aside></div></div>';
+  v.innerHTML = head +
+    '<div class="pagehead"><div><h1 class="display">Calendar</h1>' +
+    '<p class="sub">Who you have been in contact with — in person, online, or in proximity — with the tools to adjust it right here.</p></div></div>' +
+    ctlBarHTML() +
+    '<div class="ct-layout"><div class="ct-main">' + ctlMonthHTML() + '</div>' +
+    '<aside class="ct-rail">' + ctlDayHTML() + '</aside></div>' +
+    '<section class="card ct-atlas"><header><h3>Atlas — 2026 fixtures &amp; sightings</h3>' +
+    '<span class="ct-anote">Display only: calendar fixtures are never filed as contacts and never move Last Contact.</span></header>' +
+    '<div class="cbody">' + atlas + '</div></section></div>';
 }
 
 var CA_MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -12614,6 +12839,48 @@ function onClick(ev){
     case 'role': roleSet(el.getAttribute('data-v')); break;
     case 'rolekeep': roleSet(roleCur()); break;
     case 'rolestripx': { store(ROLE_SNOOZE_KEY, String(Date.now())); var rs = $('#rolestrip'); if(rs) rs.remove(); break; }
+    /* Contact Timeline (Calendar, V3.78.0): filters, day selection,
+       month nav, person highlight, and the editor sheet. Saves ride
+       txn + queuePatch of the events JSON — the same path as the
+       profile Timeline editor and Quick Add. */
+    case 'ctfk': { var cfk = el.getAttribute('data-k'); CTL.fk[cfk] = !CTL.fk[cfk]; render(); break; }
+    case 'ctday': { CTL.day = el.getAttribute('data-d'); render(); break; }
+    case 'ctnav': {
+      var cnd = el.getAttribute('data-d');
+      if(cnd === '0'){ var ct0 = todayStr(); CTL.ym = ct0.slice(0, 7); CTL.day = ct0; }
+      else {
+        var cnp = CTL.ym.split('-').map(Number), cnm = new Date(cnp[0], cnp[1] - 1 + (+cnd), 1);
+        CTL.ym = cnm.getFullYear() + '-' + caPad(cnm.getMonth() + 1);
+        CTL.day = CTL.ym === todayStr().slice(0, 7) ? todayStr() : CTL.ym + '-01';
+      }
+      render(); break;
+    }
+    case 'cthl': { CTL.qdi = di; render(); break; }
+    case 'cthlx': { CTL.qdi = null; render(); break; }
+    case 'ctadd': { ctlOpenEditor(null, null); break; }
+    case 'ctedit': { ctlOpenEditor(di, +el.getAttribute('data-i')); break; }
+    case 'ctdel': {
+      var ddi = di, dii = +el.getAttribute('data-i'), de = D.directory[ddi];
+      var darr = ((de && de.events) || []).slice(), dev = darr[dii];
+      if(!dev) break;
+      var dwhat = dev.kind === 'proximity' ? (dev.venue || dev.summary || '') : (dev.summary || '');
+      if(!confirm('Remove this entry?\n\n' + dwhat + ' — ' + evDate(dev.date))) break;
+      darr.splice(dii, 1);
+      txn('Remove entry', function(){ queuePatch(ddi, { events:JSON.stringify(darr) }); });
+      toast('Entry removed for ' + dispName(de) + '.', { undo:true });
+      render(); break;
+    }
+    case 'ctpick': {
+      if(!CTLED) break;
+      CTLED.di = di;
+      var psel = $('#ctpsel'), pq = $('#ctpq'), pr = $('#ctpr');
+      if(psel) psel.innerHTML = '<span class="ct-avw k-' + CTLED.kind + '">' + avatar(D.directory[di], 'sm') + '</span><span><b>' + esc(dispName(D.directory[di])) + '</b><small>' + esc(infoLine(D.directory[di])) + '</small></span>';
+      if(pq) pq.value = dispName(D.directory[di]);
+      if(pr) pr.innerHTML = '';
+      break;
+    }
+    case 'ctkind': { if(CTLED){ CTLED.kind = el.getAttribute('data-v'); ctlApplyKindUI(); } break; }
+    case 'ctedsave': { ctlSaveEditor(); break; }
     case 'proxlog': { S.prof.proxOpen = !S.prof.proxOpen; repaintSec('timeline'); if(S.prof.proxOpen) landOn('#sec-timeline'); break; }
     case 'proxsave': {
       var pd = ($('#prox-date') || {}).value || todayStr(), pv = (($('#prox-venue') || {}).value || '').trim();
@@ -12798,6 +13065,8 @@ function debPaint(k, fn){ clearTimeout(DEB_T[k]); DEB_T[k] = setTimeout(fn, 120)
 function onInput(ev){
   var t = ev.target;
   if(t.id === 'gs'){ debPaint('gs', paintSearch); return; }
+  if(t.id === 'ctq'){ debPaint('ctq', paintCtlQ); return; }
+  if(t.id === 'ctpq'){ pickerHits(t, '#ctpr', 'ctpick', []); return; }
   if(t.id === 'rcq'){ RC_VIEW.q = t.value; rcSaveView(); debPaint('rcq', rcPaint); return; }
   if(t.id === 'mg-q'){ MGMT.q = t.value; MGMT.shown = 50; debPaint('mgq', mgPaintList); return; }
   if(t.id === 'se-q'){ SB.se.q = t.value; debPaint('seq', sePaintList); return; }
