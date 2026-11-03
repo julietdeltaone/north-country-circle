@@ -6087,3 +6087,38 @@ a.fi-nm:hover{color:var(--acc2)}
   .fi-fact{font-size:15.5px}
   .fi-card{padding:16px}
 }
+
+/* ---------- V3.79.3 phone fixes (UX sweep 2026-11-03: F1 + F4) ----------
+   F1 · People on a phone was crushed into a 139px strip under a
+   380px pagehead, its nine desktop columns squeezed into ~30px
+   slivers so each row wrapped ~326px tall — the list read as "not
+   scrolling." The head compacts (view switch becomes one horizontal
+   row, filter chips stop wrapping, tighter sub row) and the table
+   keeps readable column widths inside a wrap that scrolls both
+   ways, so rows return to their normal height.
+   F4 · the bottom tab bar holds 14 destinations; at 390px they
+   overflowed the fixed bar and the last items were cut off. The
+   bar now scrolls sideways with every label on one line. */
+@media (max-width:899px){
+  #tabs{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  #tabs::-webkit-scrollbar{display:none}
+  #tabs .nv{flex:0 0 auto;min-width:57px;white-space:nowrap}
+  #tabs .nv span{white-space:nowrap}
+}
+@media (max-width:699px){
+  .page.people .pagehead{padding:10px 12px 8px;gap:8px}
+  .page.people .ppl-headrow{flex-direction:column;align-items:stretch;gap:8px}
+  .page.people .ppl-viewseg{flex-direction:row;align-self:stretch}
+  .page.people .ppl-viewseg button{flex:1 1 0}
+  .page.people .ppl-subrow{gap:6px;margin-top:6px}
+  .page.people .toolbar{gap:8px}
+  .page.people .toolbar .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  .page.people .toolbar .chips::-webkit-scrollbar{display:none}
+  .page.people .toolbar .chips .fc{flex:0 0 auto}
+  .page.people .ptwrap{overflow-x:auto}
+  .page.people .ptable{min-width:900px}
+  /* the late global .clip rule unwraps cell text (fine at desktop
+     widths); in phone-width columns it stacks 3-4 lines per cell and
+     rows balloon — restore the one-line ellipsis here */
+  .page.people .ptable .clip{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+}
