@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-02",
+ "updated": "2026-11-03",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -6847,6 +6847,680 @@
    },
    "fields": {},
    "published": "2025-01-08",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-bryan-noble-graduated-from-the-new-york-state-de",
+   "name": "ct:bryan noble",
+   "display": "Bryan Noble",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The NYS DEC press release on the 24th Basic School for Environmental Conservation Police Officers (graduated Dec 2024 in Syracuse after a six-month academy in Pulaski) lists 'Bryan Noble \u2013 Canton, St. Lawrence County' among the 26 graduates; later DEC patrol bulletins show an ECO Noble on patrol in 2025.",
+   "file_text": "Graduated from the New York State DEC's 24th Basic School for Environmental Conservation Police Officers, Dec 2024",
+   "source": "New York State Department of Environmental Conservation",
+   "url": "https://dec.ny.gov/news/press-releases/2024/12/dec-announces-graduation-of-26-new-york-state-environmental-conservation-police-officers",
+   "anchors": [
+    "Canton, NY (hometown)",
+    "St. Lawrence County"
+   ],
+   "missing_gate": "The release ties only the Canton / St. Lawrence County geographic cluster \u2014 no second distinct anchor (no Canton Fire Department, EMT, Sheriff's Office, or school tie) \u2014 and a conflicting aggregator record lists a Bryan Noble as a county laborer in 2025.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 24,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "2024-12",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-jessicaeevans-grew-up-in-waddington-new-york",
+   "name": "jessicaeevans",
+   "display": "Jess Evans",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "Her SUNY Potsdam graduation profile article states she grew up in Waddington, New York; the fact is not in her footprint (location on file is Potsdam, NY).",
+   "file_text": "Grew up in Waddington, New York",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/SOEPS/BusinessAdmin/JessicaEvans",
+   "anchors": [
+    "SUNY Potsdam",
+    "Business Administration degree 2024",
+    "Sandstone Realty sponsorship",
+    "Photography LLC"
+   ],
+   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "confidence": 87,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 27,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-jessicaeevans-worked-as-a-server-at-jake-s-on-the-",
+   "name": "jessicaeevans",
+   "display": "Jess Evans",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "The same SUNY Potsdam profile quotes her: 'I'm a server at Jake's on the Water, in Hannawa Falls, N.Y.' while at SUNY Potsdam.",
+   "file_text": "Worked as a server at Jake's on the Water in Hannawa Falls while at SUNY Potsdam",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/SOEPS/BusinessAdmin/JessicaEvans",
+   "anchors": [
+    "SUNY Potsdam",
+    "Business Administration degree 2024",
+    "Sandstone Realty sponsorship",
+    "Photography LLC"
+   ],
+   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "confidence": 86,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 27,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-jessicaeevans-moved-to-florida-to-continue-her-pho",
+   "name": "jessicaeevans",
+   "display": "Jess Evans",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "Her SUNY Potsdam profile says she 'plans to join her [sister] later this year' (2024) in Florida to continue her freelance photography business and work as a real estate agent.",
+   "file_text": "Moved to Florida to continue her photography business and real estate work, 2024",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/SOEPS/BusinessAdmin/JessicaEvans",
+   "anchors": [
+    "SUNY Potsdam",
+    "Photography business",
+    "Real estate"
+   ],
+   "missing_gate": "The source states a plan, not a completed move, and no independent source confirms she actually relocated.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 15,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-adria-t18-recorded-an-assist-in-university-of-",
+   "name": "adria.t18",
+   "display": "Adria Tebo",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "UNE Athletics' Oct 31, 2026 game recap credits Adria Tebo with an assist (a no-look centering feed to Jamie Ryan) on UNE's only goal in the 2026-27 game vs Plymouth State.",
+   "file_text": "Recorded an assist in University of New England's 2026-27 game against Plymouth State, Oct 31, 2026",
+   "source": "University of New England Athletics",
+   "url": "https://athletics.une.edu/news/2026/10/31/w-ice-hockey-panthers-clip-nor-easters-2-1.aspx",
+   "anchors": [
+    "University of New England",
+    "Women's ice hockey forward"
+   ],
+   "missing_gate": "Identity and source pass, but a single-game assist is an ephemeral performance, not a change, honor, or standing fact of the kind her profile files.",
+   "confidence": 85,
+   "confidence_parts": {
+    "identity": 47,
+    "source": 28,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-10-31",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ejb1203-named-to-suny-adirondack-s-president",
+   "name": "ejb1203",
+   "display": "Elsie Breen",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "An Elsie Breen of Queensbury appears on SUNY Adirondack's Spring 2023 President's List, and an Elsie Breen completed Warren County's Criminal Justice Student Intern Pathway Program in Spring 2022.",
+   "file_text": "Named to SUNY Adirondack's President's List for Spring 2023",
+   "source": "SUNY Adirondack",
+   "url": "https://dev.sunyacc.edu/news-stories/suny-adirondack-announces-deans-and-presidents-lists",
+   "anchors": [
+    "Queensbury / Warren County geography near her Saratoga Springs location"
+   ],
+   "missing_gate": "Both sources were search results only and were not opened this run, and neither ties to her New York State Police or phlebotomy anchors; a plausible regional namesake.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 12,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2023",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-judder-budder-cashlynn-and-judson-colbert-had-a-ba",
+   "name": "judder_budder",
+   "display": "Judson Colbert",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A Babylist registry for 'Cashlynn & Judson Colbert' of Madrid, NY lists a baby due May 22, 2024 ('Baby C joining us this May').",
+   "file_text": "Cashlynn and Judson Colbert had a baby registry for a baby due May 22, 2024, listing Madrid, NY",
+   "source": "Babylist",
+   "url": "https://my.babylist.com/cashlynn-colbert",
+   "anchors": [
+    "Cashlynn Colbert (spouse, marriage on file)",
+    "Madrid, NY"
+   ],
+   "missing_gate": "Family detail whose only source is the couple's own registry; family material is held for JD.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 10,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2024-05-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-tom-nate-ford-works-as-contracts-coordinator-at-at",
+   "name": "tom_nate_ford",
+   "display": "Nathaniel Tomford",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "ZoomInfo lists Nathan Tomford as Contracts Coordinator at Atlantic Testing Laboratories, Canton, NY \u2014 the same role his profile carries from his own LinkedIn.",
+   "file_text": "Works as Contracts Coordinator at Atlantic Testing Laboratories in Canton, New York",
+   "source": "ZoomInfo",
+   "url": "https://www.zoominfo.com/p/Nathan-Tomford/6012724849",
+   "anchors": [
+    "Canton, NY",
+    "Atlantic Testing Laboratories (role already on file from LinkedIn)"
+   ],
+   "missing_gate": "Aggregator-only corroboration of an already-on-file self-reported claim; no independent source.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 10,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261103-kalbelleau-earned-a-bachelor-of-science-in-nurs",
+   "name": "kalbelleau",
+   "display": "Kallie Belleau",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "A SUNY Canton readMedia release dated May 16, 2026, 'Kallie Belleau of Massena Earns Bachelor's in Nursing at SUNY Canton,' naming Rochester Regional Health \u2013 St. Lawrence Region, was reported opened by one researcher; a second researcher's exhaustive exact-name searches found no trace of her, and the parent's re-open of the URL failed with a network error.",
+   "file_text": "Earned a Bachelor of Science in Nursing at SUNY Canton, May 16, 2026",
+   "source": "SUNY Canton",
+   "url": "https://readme.readmedia.com/Kallie-Belleau-of-Massena-Earns-Bachelors-in-Nursing-at-SUNY-Canton/print",
+   "anchors": [
+    "Massena, NY",
+    "SUNY Canton nursing",
+    "Rochester Regional Health \u2013 St. Lawrence Region"
+   ],
+   "missing_gate": "Conflicting researcher reports and a failed parent re-open: the release must be re-opened and verified directly before filing.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 18,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2026-05-16",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-emily-elliott-works-as-a-speech-language-pathologi",
+   "name": "sf:emily-elliott",
+   "display": "Emily Elliott",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "An NPI record for Emily Murphy, Speech-Language Pathologist (NPI 1184460875, enumerated Jul 2, 2024), was opened by two researchers at the same DataLabs Health mirror, but they read contradictory practice locations from it \u2014 Madrid-Waddington / Syracuse, NY in one read, Las Vegas, NV in the other.",
+   "file_text": "Works as a Speech-Language Pathologist at Madrid-Waddington Central School District in Madrid, New York",
+   "source": "DataLabs Health",
+   "url": "https://www.datalabs.health/medical_billing/coding/national_provider_identifier/codes/npi_1184460875.pdf",
+   "anchors": [
+    "Madrid-Waddington (profile context)",
+    "Speech-language pathology"
+   ],
+   "missing_gate": "Two reads of the same aggregator-mirror record contradict each other on location; the claim must be checked against the official NPPES registry before any use.",
+   "confidence": 44,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 12,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2024-07-02",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-emily-elliott-offers-family-photography-sessions-a",
+   "name": "sf:emily-elliott",
+   "display": "Emily Elliott",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "Her own Em Murphy Photography Pixieset site lists pricing: family sessions $215-$315, newborn $495, headshots $165, birth photography $1,500, events from $215/hr.",
+   "file_text": "Offers family photography sessions at $215-$315 and newborn sessions at $495 through Em Murphy Photography",
+   "source": "Em Murphy Photography (Pixieset)",
+   "url": "https://emmurphyphotography.mypixieset.com/investment/",
+   "anchors": [
+    "Em Murphy Photography (business name)"
+   ],
+   "missing_gate": "Self-reported only (her own business site) and the page carries no second profile anchor.",
+   "confidence": 59,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 8,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261103-sf-erin-dunham-played-trumpet-in-the-medina-mustang",
+   "name": "sf:erin-dunham",
+   "display": "Erin Dunham",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Orleans Hub (Jun 11, 2018) names Erin Dunham in the Medina Mustang Band: 'Most Improved' (brass) 2017-2018 and Trumpet section leader for 2018-2019.",
+   "file_text": "Played trumpet in the Medina Mustang Band, named Most Improved (brass) in 2017-2018 and Trumpet section leader for 2018-2019",
+   "source": "Orleans Hub",
+   "url": "https://orleanshub.com/medina-marching-band-presents-annual-awards-names-leaders-for-next-year/",
+   "anchors": [
+    "Medina, NY"
+   ],
+   "missing_gate": "The page ties only the Medina anchor \u2014 one of the two the gate requires.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 24,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2018-06-11",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-megphill-presented-the-proposed-final-adirond",
+   "name": "megphill_",
+   "display": "Megan Phillips",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A Jun 6, 2025 Adirondack Park Agency cover memo from Megan Phillips to Ken Lynch presents the Proposed Final Adirondack Park State Land Master Plan Amendments \u2014 the same package as the filed Sep 2025 adoption item.",
+   "file_text": "Presented the proposed final Adirondack Park State Land Master Plan amendments to the Adirondack Park Agency board, Jun 2025",
+   "source": "Adirondack Park Agency",
+   "url": "https://apa.ny.gov/meeting/2025/06/files/state-lands/01ProposedFinal%20APSLMPAmendmentsCoverMemo.pdf",
+   "anchors": [
+    "Adirondack Park Agency",
+    "Deputy Director for Planning"
+   ],
+   "missing_gate": "The memo PDF surfaced in search but was not opened this run, and it covers the same package as the Sep 2025 item filed this run.",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 20,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2025-06-06",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261103-sf-amber-erwin-planned-to-attend-the-university-at-",
+   "name": "sf:amber-erwin",
+   "display": "Amber Erwin",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "Colton-Pierrepont's June 2022 newsletter said Amber Erwin planned to attend the University at Buffalo and double-major in Nursing and Biology, minoring in Psychology, hoping for a pediatric-surgery path.",
+   "file_text": "Planned to attend the University at Buffalo to double major in Nursing and Biology, 2022",
+   "source": "Colton-Pierrepont Central School District",
+   "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/2912/Cpcs/2edafa88-5eae-4579-83e7a18d8d85/News___Notes_June_2022.pdf?disposition=inline",
+   "anchors": [
+    "Colton-Pierrepont Junior-Senior High School",
+    "Nursing intent"
+   ],
+   "missing_gate": "A 2022 stated plan superseded by her actual SUNY Canton path (and the newsletter PDF was a search result, not opened); filing it would mislead.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2022-06",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-jessica-braman-practicing-as-a-certified-nurse-midw",
+   "name": "ct:jessica braman",
+   "display": "Jessica Braman",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Jessica Braman, MSN, RN, CNM, is a Certified Nurse Midwife at McLaren Flint, Michigan, per Mid-Michigan Moms / McLaren Flint material.",
+   "file_text": "Practicing as a Certified Nurse Midwife at McLaren Flint",
+   "source": "Mid-Michigan Moms",
+   "url": "https://midmichiganmoms.com/editorial-series/pregnancy-care-options-midwives-and-ob-gyns/",
+   "anchors": [
+    "Name and nursing only"
+   ],
+   "missing_gate": "A well-sourced namesake: the Michigan location and CNM credential contradict this profile's New York RN record (Chase Mills / Massena Memorial / SUNY Canton).",
+   "confidence": 28,
+   "confidence_parts": {
+    "identity": 6,
+    "source": 14,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-ticia-cudjoe-served-as-a-team-member-on-the-carne",
+   "name": "sf:ticia-cudjoe",
+   "display": "Ticia Cudjoe",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Institute for Citizens & Scholars lists Ticia Cudjoe as a team member on the 2025 Carnegie Young Leaders project 'Know Your Rights, Know Your Power: Bronx Immigrant Civic Circles' (Bronx, NY; team lead Fatoumata Barry).",
+   "file_text": "Served as a team member on the Carnegie Young Leaders project 'Know Your Rights, Know Your Power: Bronx Immigrant Civic Circles,' 2025",
+   "source": "Institute for Citizens & Scholars",
+   "url": "https://cands.org/500-gen-zers-named-2025-carnegie-young-leaders/",
+   "anchors": [
+    "Carnegie Young Leaders cohort (already on her profile)",
+    "Distinctive full name"
+   ],
+   "missing_gate": "Only one profile anchor beyond the name: the Bronx project page carries no Army, 27th IBCT, or Syracuse tie.",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 36,
+    "source": 24,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2025",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-morgan-arquette-attended-the-reality-check-youth-sum",
+   "name": "sf:morgan-arquette",
+   "display": "Morgan Arquette",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "Her employer's Smore newsletter says that, as Reality Check Coordinator, she attended the annual Reality Check Youth Summit at SUNY Oswego with four St. Lawrence County (Canton Central) youth, and, as a Program Coordinator, attended the 'Welcome Back Watertown' school event; the page shows no publication date.",
+   "file_text": "Attended the Reality Check Youth Summit at SUNY Oswego with St. Lawrence County youth, 2026",
+   "source": "Seaway Valley Prevention Council",
+   "url": "https://app.smore.com/n/n0dy3-advancing-tobacco-free-communities",
+   "anchors": [
+    "Seaway Valley Prevention Council (employer)",
+    "Reality Check Coordinator title"
+   ],
+   "missing_gate": "The only source is her own employer's newsletter, it carries no verifiable published date, and the item is routine job-event attendance, not a change.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 12,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-christine-sutter-volunteered-at-victoria-park-during-",
+   "name": "ct:christine sutter",
+   "display": "Christine Sutter",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A UConn Today photo caption (Aug 9, 2012) identifies Christine Sutter among the UConn students who volunteered at Victoria Park during the London Olympic Games as part of the UConn in London study-abroad program.",
+   "file_text": "Volunteered at Victoria Park during the London Olympic Games as a UConn study-abroad student, summer 2012",
+   "source": "UConn Today",
+   "url": "https://today.uconn.edu/2012/08/study-abroad-in-london-creates-lasting-impact-through-basketball/",
+   "anchors": [
+    "University of Connecticut (profile university)"
+   ],
+   "missing_gate": "Single anchor: she is identified only by name in a photo caption, with no Denver, social-work, or St. Lawrence County tie in the article.",
+   "confidence": 67,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 25,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2012-08-09",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-joe-charlebois-named-hockey-east-s-best-defensive-d",
+   "name": "sf:joe-charlebois",
+   "display": "Joe Charlebois",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Toledo Walleye release (Sep 15, 2010) says the Potsdam-native defenseman Joe Charlebois was named Hockey East's Best Defensive Defenseman in 2007-08 with a team-best +26 rating at the University of New Hampshire, and signed with Toledo for 2010-11 after 67 games (5g, 20a) the prior season.",
+   "file_text": "Named Hockey East's Best Defensive Defenseman in 2007-08 with a team-best +26 rating at the University of New Hampshire",
+   "source": "OurSports Central",
+   "url": "https://www.oursportscentral.com/services/releases/joe-charlebois-signs-with-toledo-for-2010-11-season/n-4091560",
+   "anchors": [
+    "Potsdam, NY (hockey player's hometown)",
+    "University of New Hampshire"
+   ],
+   "missing_gate": "The award is true of the hockey player, but whether the hockey player is the same person as this profile's Rochester Regional Health phlebotomist is the identity question a prior candidate scored 18/100 on; the page says nothing connecting him to RRH or phlebotomy.",
+   "confidence": 20,
+   "confidence_parts": {
+    "identity": 8,
+    "source": 7,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "2010-09-15",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-kale-hitchman-brother-of-tyler-hitchman-who-was-ra",
+   "name": "kale_hitchman",
+   "display": "Kale Hitchman",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Tyler Daniel Hitchman's 2021 Memorial Sloan Kettering dissertation biographical sketch states he 'was raised in northern New York with his two brothers Kale Hitchman and Joshua Loughren' and that Tyler attended Potsdam High School.",
+   "file_text": "Brother of Tyler Hitchman, who was raised with him in northern New York and attended Potsdam High School",
+   "source": "Memorial Sloan Kettering Cancer Center",
+   "url": "https://www.sloankettering.edu/sites/default/files/node/125497/document/hitchman-tyler-dissertationdeposit.pdf",
+   "anchors": [
+    "Potsdam High School (profile highlight)",
+    "Northern New York upbringing"
+   ],
+   "missing_gate": "A family-relationship fact sourced from a sibling's self-written sketch; family material is held for JD.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 18,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2021-03",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-kale-hitchman-employed-by-the-new-york-state-divis",
+   "name": "kale_hitchman",
+   "display": "Kale Hitchman",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "GovSalaries' Sean Griffin page lists 'Kale Hitchman C (2018), Division Of State Police' among co-workers, i.e. a Kale Hitchman was employed by the Division of State Police in 2018.",
+   "file_text": "Employed by the New York State Division of State Police in 2018",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/griffin-sean-m-34461013",
+   "anchors": [
+    "New York State Police"
+   ],
+   "missing_gate": "Aggregator-only listing found on a third person's page, tying a single anchor, and the fact adds little beyond the State Police affiliation already on file.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 12,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2018",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261103-ct-jason-sweet-served-as-audio-lighting-tech-for-th",
+   "name": "ct:jason sweet",
+   "display": "Jason Sweet",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Massena Central School District's Board of Education Update (Oct 29, 2021) recapping the 'Rocktober' concert at New Testament Church lists 'Techs: Jason Sweet \u2014 Audio/Lighting.'",
+   "file_text": "Served as audio/lighting tech for the Rocktober concert at New Testament Church, Oct 2021",
+   "source": "Massena Central School District",
+   "url": "https://4.files.edl.io/0715/11/02/21/174733-3d2de7dc-0345-490c-9fd1-550eda328ef2.pdf",
+   "anchors": [
+    "New Testament Church"
+   ],
+   "missing_gate": "Single anchor only: the document does not mention St. Lawrence University or Canton employment, and Jason Sweet is a common name.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 14,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2021-10-29",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-midwifesunday-listed-as-a-nurse-practitioner-at-51",
+   "name": "midwifesunday",
+   "display": "Sunday Wright Smith",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "Provider directories list Sunday Wright Smith, Nurse Practitioner, at 515 S Canton Rd, Potsdam, NY 13676 \u2014 a different practice address from the 34 Lawrence Ave / 121 Market St addresses on file (WebMD listing seen as a search result).",
+   "file_text": "Listed as a nurse practitioner at 515 S Canton Rd, Potsdam",
+   "source": "WebMD",
+   "url": "https://doctor.webmd.com/providers/specialty/nurse-practitioner/new-york/potsdam?pagenumber=2",
+   "anchors": [
+    "Potsdam, NY",
+    "Nurse-midwife / nurse practitioner profession"
+   ],
+   "missing_gate": "Aggregator-only listing seen as a search result, and its address conflicts with the practice addresses already on file.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 7,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-katelyn-tomford-served-as-a-bridesmaid-for-cheyenne-",
+   "name": "ct:katelyn tomford",
+   "display": "Katelyn Tomford",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "The Zola wedding site for Cheyenne Parks and Riley Andrews (Sep 24, 2022, Piffard, NY) lists Katelyn Tomford as a bridesmaid; the bride calls her 'my best friend from senior year in high school.'",
+   "file_text": "Served as a bridesmaid for Cheyenne Parks at her wedding in Piffard, Sep 2022",
+   "source": "Zola",
+   "url": "https://www.zola.com/wedding/cheyenne-riley/wedding_party",
+   "anchors": [
+    "Exact name",
+    "Senior-year high-school friendship, consistent with York Central School"
+   ],
+   "missing_gate": "The only source is the couple's self-created wedding site, with no independent corroboration.",
+   "confidence": 54,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 10,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2022-09-24",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-danielle-guimond-ordained-as-a-minister-jan-2026",
+   "name": "ct:danielle guimond",
+   "display": "Danielle Guimond",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A certificate page in the name 'Danielle Guimond,' dated January 13, 2026, on The AMM (American Marriage Ministries) ministers site renders only the name and date \u2014 no credential text, location, or other detail.",
+   "file_text": "Ordained as a minister, Jan 2026",
+   "source": "The AMM",
+   "url": "https://theamm.org/ministers/1613132/certificate.pdf",
+   "anchors": [
+    "Exact name only"
+   ],
+   "missing_gate": "Name-only document with no Ogdensburg/Waddington, nursing, or university anchor, and Danielle Guimond is not a unique name.",
+   "confidence": 20,
+   "confidence_parts": {
+    "identity": 8,
+    "source": 8,
+    "detail": 4
+   },
+   "fields": {},
+   "published": "2026-01-13",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-julianna-shatraw-finished-13th-in-the-maple-run-5k-in",
+   "name": "julianna_shatraw",
+   "display": "Julianna Shatraw",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "The Maple Run (Canton, NY) results list 'Julianna Shatraw, 13th, 5K, female age 17, Potsdam, NY, 00:23:11.4,' running alongside Isabella, Jocelyn, and Angie Shatraw of Potsdam.",
+   "file_text": "Finished 13th in The Maple Run 5K in Canton in 23:11.4",
+   "source": "The Maple Run",
+   "url": "https://uploads.documents.cimpress.io/v1/uploads/ddf43897-bafd-4761-beb4-3a18e3f309ab~110/original?tenant=vbu-digital",
+   "anchors": [
+    "Potsdam, NY (profile location)",
+    "Shatraw family cluster in the same results"
+   ],
+   "missing_gate": "The results document carries no date anywhere, so the run cannot be placed in time or phrased as a dated change.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
    "novelty": "new"
   }
  ]
