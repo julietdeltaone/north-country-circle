@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.79.4';
+var APP_VERSION = '3.80.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7757,7 +7757,7 @@ function dtAnimate(){
    routine (seeded 2026-10-30 from the recorded near-miss logs).
    ============================================================ */
 var RC = null, RC_LOADING = false;
-var RC_CATS = { close:'Close call', identity:'Identity not proven', source:'Source too weak', sensitive:'Sensitive / family', conflict:'Conflicting record', verification:'Failed verification' };
+var RC_CATS = { close:'Close call', identity:'Not sure it\u2019s them', source:'One source only', sensitive:'Personal \u2014 your call', conflict:'Contradicts the record', verification:'Needs a second look', claim:'Research note' };
 var RC_VIEW = { status:'pending', cat:'all', q:'', photo:false, cur:'' };
 try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '', photo:!!_rcv.photo, cur:typeof _rcv.cur === 'string' ? _rcv.cur : '' }; }catch(x){}
 function rcSaveView(){ try{ store('ncc_rc_view', JSON.stringify(RC_VIEW)); }catch(x){} }
@@ -7788,7 +7788,7 @@ function rcPartsHTML(parts){
     return '<span class="rc-part"><span class="rc-part-t"><span class="rc-part-l">' + label + '</span><span class="rc-part-v">' + v + '/' + max + '</span></span>' +
       '<span class="rc-part-bar"><i style="width:' + Math.round(100 * v / max) + '%"></i></span></span>';
   }
-  return '<span class="rc-parts">' + part('Identity', parts.identity, 50) + part('Source', parts.source, 30) + part('Detail', parts.detail, 20) + '</span>';
+  return '<span class="rc-parts">' + part('It\u2019s really them', parts.identity, 50) + part('The source is solid', parts.source, 30) + part('The details check out', parts.detail, 20) + '</span>';
 }
 function rcDi(c){
   var di = BYN[String(c.name || '').toLowerCase()];
@@ -7916,6 +7916,81 @@ function rcDecide(id, decision){
   rcPaint();
   if(nextCur) rcScrollCur();
 }
+/* Batch decisions (V3.80.0): File all / Dismiss all / the ticked
+   items of one person's bundle. Presentation only — every item still
+   writes its own decision entry to the profile's research_review map
+   by candidate id, exactly as rcDecide does one at a time. One Save
+   Pool transaction per profile. */
+function rcDecideBatch(gk, decision, tickedOnly){
+  if(!RC || !RC.candidates) return;
+  var m = rcModel();
+  var rows = m.shown.filter(function(r){
+    return rcGroupKey(r) === gk && r.st.k === 'pending' && (!tickedOnly || RC_TICK[r.c.id]);
+  });
+  if(!rows.length){ toast(tickedOnly ? 'No items are ticked in that bundle.' : 'Nothing pending in that bundle.'); return; }
+  var byDi = {}, skipped = 0, total = 0;
+  rows.forEach(function(r){
+    if(r.di == null){ skipped++; return; }
+    (byDi[r.di] = byDi[r.di] || []).push(r.c); total++;
+  });
+  var names = [];
+  Object.keys(byDi).forEach(function(di){
+    var e = D.directory[di], list = byDi[di];
+    names.push(list[0].display || '');
+    txn((decision === 'file' ? 'File ' : 'Dismiss ') + list.length + ' for ' + (list[0].display || ''), function(){
+      var patch = {}, map = rcReviewMap(e);
+      var fp = String(gv(e, 'public_footprint') || '').trim(), fp0 = fp;
+      var files = (e.files || []).slice(), files0 = files.length;
+      list.forEach(function(c){
+        var prev = map[c.id] || {};
+        var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
+        if(prev.photo){ entry.photo = true; if(prev.photo_at) entry.photo_at = prev.photo_at; if(prev.photo_url) entry.photo_url = prev.photo_url; }
+        map[c.id] = entry;
+        if(decision === 'file'){
+          var bullet = '\u2022 ' + String(c.file_text || c.claim || '').trim() + (c.source ? ' (' + c.source + ')' : '');
+          if(!rcAlreadyFiled(e, c) && fp.indexOf(bullet) < 0) fp = fp ? fp + '\n' + bullet : bullet;
+          if(c.url && !files.some(function(f){ return f && f.url === c.url; }))
+            files.push({ name:'Source: ' + hostOf(c.url), kind:'source', url:c.url });
+          var before = {};
+          ['companies', 'universities', 'churches', 'groups', 'highlights', 'achievements'].forEach(function(k){ before[k] = patch[k]; });
+          rcApplyFields(e, c, patch);
+          /* rcApplyFields unions against the profile, not the patch:
+             union its result with whatever an earlier item in this
+             batch already put there, so batch fills accumulate. */
+          ['companies', 'universities', 'churches', 'groups'].forEach(function(k){
+            if(before[k] != null) patch[k] = patch[k] != null ? rcUnion(before[k], patch[k], ', ') : before[k];
+          });
+          ['highlights', 'achievements'].forEach(function(k){
+            if(before[k] != null) patch[k] = patch[k] != null ? rcUnion(before[k], patch[k], ' | ') : before[k];
+          });
+        }
+        delete RC_TICK[c.id];
+      });
+      patch.research_review = JSON.stringify(map);
+      if(decision === 'file'){
+        if(fp !== fp0) patch.public_footprint = fp;
+        if(files.length !== files0) patch.files = JSON.stringify(files);
+      }
+      queuePatch(+di, patch);
+    });
+  });
+  if(total) toast((decision === 'file' ? 'Filed ' : 'Dismissed ') + total + ' item' + (total === 1 ? '' : 's') + ' for ' + (names[0] || 'that person') + '. They save through the Save Pool.', { undo:true });
+  if(skipped) toast(skipped + ' item' + (skipped === 1 ? '' : 's') + ' skipped: the profile is no longer in the directory.');
+  rcPaint();
+}
+/* Bundle header visual: the person's photo when the photo store has
+   one for them, else the standard initial avatar. */
+function rcBundleVisual(r){
+  if(r.di == null) return avatar({ name:r.c.name, display:r.c.display, profile:{} }, 'md');
+  var e = D.directory[r.di];
+  try{
+    var idx = phIndex();
+    var p = idx && (idx[dispName(e)] || idx[String(r.c.display || '')]);
+    if(p){ var f = phFrameFor(p.name, p); if(f && f.url)
+      return '<span class="rc-bav"><img src="' + esc(f.url) + '" alt="' + esc(dispName(e)) + '" loading="lazy" referrerpolicy="no-referrer" onerror="phImgErr(this)"></span>'; }
+  }catch(x){}
+  return avatar(e, 'md');
+}
 /* The ledger model, shared by the console render and the keyboard
    flow (V3.61.0): every candidate with its live status, the header
    counts, and the rows the current view actually shows, in display
@@ -7949,8 +8024,36 @@ function rcModel(){
     }
     return true;
   });
+  /* Per-person batching (V3.80.0): in the pending view, one person's
+     items sit together as one bundle — bundles carrying a correction
+     (conflict) first, then the biggest bundles, items inside a bundle
+     by confidence. The keyboard flow and the next-current logic read
+     this same order, so the marker walks bundle by bundle. */
+  if(RC_VIEW.status === 'pending' && shown.length){
+    var ginfo = {};
+    shown.forEach(function(r){
+      var k = rcGroupKey(r), g = ginfo[k] || (ginfo[k] = { n:0, conf:false });
+      g.n++; if(r.c.category === 'conflict') g.conf = true;
+    });
+    shown.sort(function(a, b){
+      var ka = rcGroupKey(a), kb = rcGroupKey(b);
+      if(ka !== kb){
+        var ga = ginfo[ka], gb = ginfo[kb];
+        if(ga.conf !== gb.conf) return ga.conf ? -1 : 1;
+        if(ga.n !== gb.n) return gb.n - ga.n;
+        return ka < kb ? -1 : 1;
+      }
+      return (+b.c.confidence - +a.c.confidence) || String(a.c.id).localeCompare(String(b.c.id));
+    });
+  }
   return { rows:rows, counts:counts, shown:shown };
 }
+/* One bundle per person: directory index when the profile resolves,
+   else the candidate's own name key (orphans batch together too). */
+function rcGroupKey(r){
+  return r.di != null ? 'd' + r.di : 'n' + String(r.c.name || r.c.display || '').toLowerCase();
+}
+var RC_TICK = {};
 /* Exactly one row is current. The stored id survives repaints and
    leaving/returning; when it falls out of the shown list (decided,
    filtered away), the first pending shown row takes over, else the
@@ -7967,7 +8070,7 @@ function rcEnsureCur(m){
   rcSaveView();
 }
 function rcPosText(m){
-  var pend = m.rows.filter(function(r){ return r.st.k === 'pending'; });
+  var pend = (RC_VIEW.status === 'pending' ? m.shown : m.rows).filter(function(r){ return r.st.k === 'pending'; });
   if(!pend.length) return 'No pending candidates';
   for(var i = 0; i < pend.length; i++) if(pend[i].c.id === RC_VIEW.cur) return 'Pending ' + (i + 1) + ' of ' + pend.length;
   return pend.length + ' pending';
@@ -8012,7 +8115,7 @@ function rcOnFileLine(r){
     splitTags(gv(e, k), ',').forEach(push);
   });
   if(!bits.length) return '';
-  return '<p class="rc-onfile"><span>On file:</span> ' + esc(bits.join(' \u00b7 ')) + '</p>';
+  return '<p class="rc-onfile">' + esc(bits.join(' \u00b7 ')) + '</p>';
 }
 function rcFieldVal(v){
   if(v == null) return '';
@@ -8044,7 +8147,7 @@ function rcFieldsLine(c){
   add('Achievements', F.achievements, true);
   add('Also known as', F.also_known_as);
   if(!bits.length) return '';
-  return '<p class="rc-adds"><span>Filing adds:</span> ' + esc(bits.join(' \u00b7 ')) + '</p>';
+  return '<p class="rc-adds"><span>Also added:</span> ' + esc(bits.join(' \u00b7 ')) + '</p>';
 }
 function rcConsoleHTML(){
   if(!RC) return '<section class="rcconsole" id="rcconsole"><div class="rc-loading">Loading the research ledger\u2026</div></section>';
@@ -8064,7 +8167,7 @@ function rcConsoleHTML(){
     .map(function(b){ return '<button type="button" class="' + (RC_VIEW.status === b[0] ? 'on' : '') + '" data-act="rcfilter" data-v="' + b[0] + '">' + b[1] + ' <b>' + b[2] + '</b></button>'; }).join('');
   var catOpts = ['<option value="all"' + (RC_VIEW.cat === 'all' ? ' selected' : '') + '>All categories</option>']
     .concat(Object.keys(RC_CATS).map(function(k){ return '<option value="' + k + '"' + (RC_VIEW.cat === k ? ' selected' : '') + '>' + RC_CATS[k] + '</option>'; })).join('');
-  var body = shown.length ? shown.map(function(r){
+  var rowHtmls = shown.map(function(r){
     var c = r.c, parts = c.confidence_parts || {};
     /* V3.75.0 (bug hunt 26): when the parts exist, the displayed total
        is their computed sum — a stored total that drifted (two did)
@@ -8082,9 +8185,11 @@ function rcConsoleHTML(){
     var photoBtn = r.st.k === 'orphan' ? '' :
       '<button type="button" class="btn ghost sm rc-photo' + (r.photo ? ' on' : '') + '" data-act="rcphoto" data-id="' + esc(c.id) + '">' + ic('camera', 14) + (r.photo ? 'Photo lead set' : 'Photo at source?') + '</button>';
     var actions = r.st.k === 'pending'
-      ? '<div class="rc-actions"><button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c.id) + '">File it</button>' +
+      ? '<div class="rc-actions">' +
+        (RC_VIEW.status === 'pending' ? '<label class="rc-tick"><input type="checkbox" data-rctick="' + esc(c.id) + '"' + (RC_TICK[c.id] ? ' checked' : '') + '> Pick</label>' : '') +
+        '<button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c.id) + '">File it</button>' +
         '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c.id) + '">Dismiss</button>' + photoBtn +
-        '<span class="rc-actnote">File = the information is correct.<br>Dismiss = Luna was right.</span></div>'
+        '<span class="rc-actnote">File it = add this to the record.<br>Dismiss = leave the record as is.</span></div>'
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
     return '<div class="rc-row rcb-' + band.k + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c.id) + '">' +
@@ -8092,18 +8197,48 @@ function rcConsoleHTML(){
       rcPartsHTML(parts) + '</div>' +
       '<div class="rc-main"><div class="rc-person">' + kindGlyph('about') + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPill +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
-      rcOnFileLine(r) +
-      '<p class="rc-claim">' + esc(c.claim || '') + '</p>' +
-      '<p class="rc-filetext"><span>Files as:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p>' +
-      rcFieldsLine(c) + '</div>' +
+      '<div class="rc-block"><span class="rc-bh">What I found</span><p class="rc-claim">' + esc(c.claim || '') + '</p></div>' +
+      (rcOnFileLine(r) ? '<div class="rc-block"><span class="rc-bh">What\u2019s on file now</span>' + rcOnFileLine(r) + '</div>' : '') +
+      '<div class="rc-block"><span class="rc-bh">Why I\u2019m asking you</span><p class="rc-why">' + esc(c.missing_gate || '') + '</p></div>' +
+      '<div class="rc-block"><span class="rc-bh">If you file it</span><p class="rc-filetext"><span>What gets added:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p>' +
+      rcFieldsLine(c) + '</div></div>' +
       '<div class="rc-ev"><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
-      '<div class="rc-gate"><span>Why it was held</span>' + catPill + '<p>' + esc(c.missing_gate || '') + '</p></div>' +
       actions + '</div>';
-  }).join('') : '<div class="rc-none">No candidates match this view.</div>';
+  });
+  /* Pending view: wrap each person's rows in a bundle with one-tap
+     batch actions (V3.80.0). Decided views keep the flat list. */
+  var body, rcPeople = 0;
+  if(!shown.length) body = '<div class="rc-none">No candidates match this view.</div>';
+  else if(RC_VIEW.status === 'pending'){
+    var bparts = [], lastK = null, seenG = {};
+    shown.forEach(function(r, i){
+      var k = rcGroupKey(r);
+      if(!seenG[k]){ seenG[k] = 1; rcPeople++; }
+      if(k !== lastK){
+        if(lastK !== null) bparts.push('</div>');
+        var grows = shown.filter(function(x){ return rcGroupKey(x) === k; });
+        var ticked = grows.filter(function(x){ return RC_TICK[x.c.id]; }).length;
+        bparts.push('<div class="rc-bundle"><div class="rc-bhead">' + rcBundleVisual(grows[0]) +
+          '<span class="rc-bname">' + personLink(grows[0].c) + '</span>' +
+          '<span class="rc-bcount">' + grows.length + ' item' + (grows.length === 1 ? '' : 's') + ' left</span>' +
+          (grows.some(function(x){ return x.c.category === 'conflict'; }) ? '<span class="rc-bflag">Includes a correction</span>' : '') +
+          '<span class="rc-bacts">' +
+          '<button type="button" class="btn primary sm" data-act="rcball" data-gk="' + esc(k) + '" data-v="file">File all</button>' +
+          '<button type="button" class="btn ghost sm danger" data-act="rcball" data-gk="' + esc(k) + '" data-v="dismiss">Dismiss all</button>' +
+          '<button type="button" class="btn ghost sm" data-act="rcbticked" data-gk="' + esc(k) + '" data-v="file"' + (ticked ? '' : ' disabled') + '>File picked (' + ticked + ')</button>' +
+          '<button type="button" class="btn ghost sm" data-act="rcbticked" data-gk="' + esc(k) + '" data-v="dismiss"' + (ticked ? '' : ' disabled') + '>Dismiss picked (' + ticked + ')</button>' +
+          '</span></div>');
+        lastK = k;
+      }
+      bparts.push(rowHtmls[i]);
+    });
+    if(lastK !== null) bparts.push('</div>');
+    body = bparts.join('');
+  } else body = rowHtmls.join('');
   return '<section class="rcconsole" id="rcconsole" data-kind="about">' +
     '<div class="rc-head"><div><div class="rc-kicker">RESEARCH COMMAND // UNFILED CANDIDATES</div>' + kindChip('about', true) +
     '<h2>What the research found but did not file</h2>' +
-    '<p>Every concrete lead that stopped at the filing gate, closest calls first. <b>File it</b> means the information is correct: the exact claim is written to the profile through the Save Pool. <b>Dismiss</b> means Luna was right to hold it. Decisions are stored on the profile, so a decided candidate never comes back as pending. If the linked page has a usable photo of them, mark <b>Photo at source</b> and it is tracked as a photo lead for the next photo pass.</p></div>' +
+    '<p>Everything the research found but did not add to a record, grouped by person so you can finish one person at a time. <b>File it</b> adds the words under \u201cIf you file it\u201d to the record, exactly as written. <b>Dismiss</b> leaves the record as it is. Your decision is saved on the profile, so a decided item never comes back. If the linked page has a usable photo of them, mark <b>Photo at source</b> and it is tracked for the next photo pass.</p></div>' +
     '<div class="rc-legend">' + legend + '</div></div>' +
     '<div class="rc-stats"><div><b>' + counts.pending + '</b><span>Awaiting your call</span></div><div><b>' + counts.close + '</b><span>Close calls (70+)</span></div><div><b>' + counts.filed + '</b><span>Filed / on file</span></div><div><b>' + counts.dismissed + '</b><span>Dismissed</span></div></div>' +
     '<div class="rc-controls"><div class="rc-seg" role="group">' + statBtns + '</div>' +
@@ -8112,8 +8247,9 @@ function rcConsoleHTML(){
     '<input id="rcq" type="search" placeholder="Search person, claim, source\u2026" value="' + esc(RC_VIEW.q || '') + '"></div>' +
     '<div class="rc-keybar"><span class="rc-keys">\u2191 \u2193 move \u00b7 Enter open source \u00b7 F file it \u00b7 X dismiss \u00b7 P photo lead</span>' +
     '<span class="rc-pos" id="rcpos">' + esc(rcPosText(m)) + '</span></div>' +
-    '<div class="rc-table"><div class="rc-row rc-thead" data-kind="about"><span>Confidence</span><span>Person / candidate</span><span>Evidence</span><span>Why held</span><span>Your call</span></div>' + body + '</div>' +
-    '<p class="rc-foot">Confidence = identity match (50) + source strength (30) + claim detail (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
+    (RC_VIEW.status === 'pending' && shown.length ? '<div class="rc-progress">' + rcPeople + ' people \u00b7 ' + shown.length + ' items left</div>' : '') +
+    '<div class="rc-table"><div class="rc-row rc-thead" data-kind="about"><span>How sure I am</span><span>Person / what I found</span><span>Evidence</span><span>Your call</span></div>' + body + '</div>' +
+    '<p class="rc-foot">How sure I am = it\u2019s really them (50) + the source is solid (30) + the details check out (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
     '</section>';
 }
 function rcPaint(){
@@ -8155,6 +8291,16 @@ function rcOpenSource(){
   if(a){ a.click(); return; }
   window.open(c.url, '_blank', 'noopener');
 }
+/* Bundle ticks (V3.80.0): picking items inside a person's bundle.
+   Repaints so the bundle's picked-count buttons stay true. */
+document.addEventListener('change', function(ev){
+  var t = ev.target;
+  if(!t || !t.getAttribute) return;
+  var id = t.getAttribute('data-rctick');
+  if(!id) return;
+  if(t.checked) RC_TICK[id] = 1; else delete RC_TICK[id];
+  rcPaint();
+});
 document.addEventListener('keydown', function(ev){
   if(!RC || !RC.candidates || !RC.candidates.length) return;
   if(!S.route || S.route.name !== 'daily') return;
@@ -13119,6 +13265,8 @@ function onClick(ev){
     case 'chggrp': chgToggle(el); break;
     case 'rcfile': rcDecide(el.getAttribute('data-id'), 'file'); break;
     case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
+    case 'rcball': rcDecideBatch(el.getAttribute('data-gk'), el.getAttribute('data-v'), false); break;
+    case 'rcbticked': rcDecideBatch(el.getAttribute('data-gk'), el.getAttribute('data-v'), true); break;
     case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; rcSaveView(); rcPaint(); break;
     case 'rcphoto': rcTogglePhoto(el.getAttribute('data-id')); break;
     case 'rcphotoonly': RC_VIEW.photo = !RC_VIEW.photo; rcSaveView(); rcPaint(); break;
