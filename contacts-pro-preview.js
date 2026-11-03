@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.79.2';
+var APP_VERSION = '3.79.3';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -656,6 +656,35 @@ function knownSinceLabel(e){
   if(p) return (p.mo ? KS_MONTHS[p.mo - 1] + (p.d ? ' ' + p.d + ', ' : ' ') : '') + p.y;
   var y = knownSinceYear(e); return y ? String(y) : '';
 }
+/* Flexible-date normalization (V3.79.3): the Sheet auto-converts
+   endpoint-written 'YYYY-MM' / 'YYYY-MM-DD' values into real DATE
+   cells, and the endpoint's changes feed then serves those cells as
+   JS Date strings ('Sat Mar 22 2025 20:00:00 GMT-0400 (Eastern
+   Daylight Time)') — a form none of the app's date grammar parses,
+   so Known since / Last contact read as "not set", their editors
+   opened empty, and the Audit counted the gaps open again on every
+   recently-touched profile (JD 2026-11-03: "contacts not saving",
+   cleared audit items resurfacing). The true date is the UTC
+   calendar date of the parsed instant (the feed's strings encode
+   UTC midnight of the cell's date). Grammar-valid values pass
+   through untouched; anything unparseable passes through as-is. */
+var FLEX_DATE_FIELDS = { years_known:1, last_contact:1, first_contact:1, last_contact_online:1 };
+function flexNorm(v){
+  if(v == null) return v;
+  var s = String(v).trim();
+  if(!s) return v;
+  if(/^\d{4}(-\d{2})?(-\d{2})?$/.test(s)) return v;
+  var t = Date.parse(s);
+  if(isNaN(t)) return v;
+  var d = new Date(t);
+  var mo = d.getUTCMonth() + 1, dy = d.getUTCDate();
+  return d.getUTCFullYear() + '-' + (mo < 10 ? '0' : '') + mo + '-' + (dy < 10 ? '0' : '') + dy;
+}
+function flexNormProfile(p){
+  if(!p) return p;
+  Object.keys(FLEX_DATE_FIELDS).forEach(function(k){ if(k in p) p[k] = flexNorm(p[k]); });
+  return p;
+}
 (function(){
   if(window.__kbdShift) return; window.__kbdShift = true;
   var set = function(on){ if(document.body) document.body.classList.toggle('kbd-shift', on); };
@@ -684,6 +713,7 @@ function hasHandle(e){ return e.src !== 'contacts' && e.src !== 'subject' && !/^
 function effHandle(e){ return hasHandle(e) ? String(e.name || '') : String(e.ig || ''); }
 function normEntry(r){
   var p = r.profile || {};
+  flexNormProfile(p);   /* V3.79.3: bake intake — see flexNorm */
   var pe = parseArr(p.events), pf = parseArr(p.files);
   r.events = pe.length ? pe : (Array.isArray(r.events) ? r.events : []);
   r.files = pf.length ? pf : (Array.isArray(r.files) ? r.files : []);
@@ -968,6 +998,7 @@ function normPatch(p){
 }
 function applyProfileEdit(e, ch){
   e.profile = e.profile || {}; e._set = e._set || {};
+  flexNormProfile(ch);   /* V3.79.3: every write path (outbox, changes feed, wins overlay) funnels through here — see flexNorm */
   Object.keys(ch).forEach(function(k){
     var v = ch[k];
     e.profile[k] = v; e._set[k] = 1;
