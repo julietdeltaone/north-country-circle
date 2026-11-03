@@ -117,6 +117,22 @@
   {
    "date": "2026-11-03",
    "kind": "photo",
+   "display": "Breanne Sapp",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://nyheritage.contentdm.oclc.org/digital/api/singleitem/image/sllboces/151129/download"
+  },
+  {
+   "date": "2026-11-03",
+   "kind": "photo",
+   "display": "Debbie Flack",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://www.canton.edu/plm/name-127829-en.html"
+  },
+  {
+   "date": "2026-11-03",
+   "kind": "photo",
    "display": "Erin Dunham",
    "text": "Primary photo filed (grade: possible)",
    "source": "Photos on File",
@@ -137,14 +153,6 @@
    "text": "Primary photo filed",
    "source": "Photos on File",
    "url": "https://www.northcountrypublicradio.org/news/story/21135/20121224/schools-fight-for-fiscal-survival"
-  },
-  {
-   "date": "2026-11-03",
-   "kind": "photo",
-   "display": "Debbie Flack",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.canton.edu/plm/name-127829-en.html"
   },
   {
    "date": "2026-11-02",
@@ -1429,6 +1437,14 @@
   {
    "date": "2026-11-02",
    "kind": "photo",
+   "display": "Christopher Pagan",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://www.dvidshub.net/video/901808/chicago-bears-shoutout-salute-service-2023"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
    "display": "Cierra Hitchman",
    "text": "Primary photo filed",
    "source": "Photos on File",
@@ -1653,6 +1669,14 @@
   {
    "date": "2026-11-02",
    "kind": "photo",
+   "display": "Evan Dimakas",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": ""
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
    "display": "Ezra Hamilton",
    "text": "Primary photo filed",
    "source": "Photos on File",
@@ -1757,10 +1781,26 @@
   {
    "date": "2026-11-02",
    "kind": "photo",
+   "display": "Heather Ramsdell",
+   "text": "Primary photo filed (grade: possible)",
+   "source": "Photos on File",
+   "url": "https://www.ntcmassena.com/series/three-questions/"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
    "display": "Isabella Phoebe",
    "text": "Primary photo filed",
    "source": "Photos on File",
    "url": "https://www.instagram.com/instabellaphoebe/"
+  },
+  {
+   "date": "2026-11-02",
+   "kind": "photo",
+   "display": "Jackie Card",
+   "text": "Primary photo filed",
+   "source": "Photos on File",
+   "url": "https://gardenshare.org/meet-the-staff/"
   },
   {
    "date": "2026-11-02",
@@ -2361,46 +2401,6 @@
    "text": "Primary photo filed",
    "source": "Photos on File",
    "url": "https://www.instagram.com/sandytallo/"
-  },
-  {
-   "date": "2026-11-02",
-   "kind": "photo",
-   "display": "Sarah El-Labban",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.instagram.com/sarah.ellabb/"
-  },
-  {
-   "date": "2026-11-02",
-   "kind": "photo",
-   "display": "Sarah Haller",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.instagram.com/sarahchristinehaller/"
-  },
-  {
-   "date": "2026-11-02",
-   "kind": "photo",
-   "display": "Savannah Newtown",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.instagram.com/savannah2416/"
-  },
-  {
-   "date": "2026-11-02",
-   "kind": "photo",
-   "display": "Shannon Brown",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.instagram.com/dragon.n.hobbes/"
-  },
-  {
-   "date": "2026-11-02",
-   "kind": "photo",
-   "display": "Summer Dorr",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://www.instagram.com/summerdorrphoto/"
   }
  ]
 }
