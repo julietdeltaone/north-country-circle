@@ -32,10 +32,13 @@
   },
   "ig:abbystiles_": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -118,10 +121,13 @@
   },
   "ig:aidantruth": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -218,10 +224,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -308,10 +317,13 @@
   },
   "ig:andy.dennis777": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -340,10 +352,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -416,10 +431,13 @@
   },
   "ig:ariannarider": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -456,10 +474,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -574,10 +595,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -590,10 +614,13 @@
   },
   "ig:boylemarky": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -634,10 +661,13 @@
   },
   "ig:brianna.hammond": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -874,10 +904,13 @@
   },
   "ig:caroline.lafountain": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -908,10 +941,13 @@
   },
   "ig:charlotte_clark04": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -932,10 +968,13 @@
   },
   "ig:chelsea__mcgrath": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1000,10 +1039,13 @@
   },
   "ig:cierrahitchman": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -1048,10 +1090,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1116,10 +1161,13 @@
   },
   "ig:countess_lepevi": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1238,10 +1286,13 @@
   },
   "ig:daniel__manor": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1262,10 +1313,13 @@
   },
   "ig:daniel_ursus_arctos": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1298,10 +1352,13 @@
   },
   "ig:delany._.durant": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1330,10 +1387,13 @@
   },
   "ig:dgruneisen": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1346,10 +1406,13 @@
   },
   "ig:dillynngrant16": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1438,10 +1501,13 @@
   },
   "ig:dsmithroc": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1462,10 +1528,13 @@
   },
   "ig:e._.flam": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1584,10 +1653,13 @@
   },
   "ig:elizabethadaniels": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -1608,10 +1680,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1642,10 +1717,13 @@
   },
   "ig:emily_g_ramer": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1676,10 +1754,13 @@
   },
   "ig:emma_bortnick5": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1748,10 +1829,13 @@
   },
   "ig:furious_myles": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -1790,10 +1874,13 @@
   },
   "ig:gabematthis": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -1916,10 +2003,13 @@
   },
   "ig:grace.serene": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2040,10 +2130,13 @@
   },
   "ig:hannahllbanana": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2094,10 +2187,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2126,10 +2222,13 @@
   },
   "ig:heatherjdowling": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -2234,10 +2333,13 @@
   },
   "ig:hnnbraun": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2266,10 +2368,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2290,10 +2395,13 @@
   },
   "ig:hulton2moulton": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2314,10 +2422,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2374,10 +2485,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2486,10 +2600,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "ig:jazmynkyara": {
@@ -2520,10 +2637,13 @@
   },
   "ig:jemma.cooper4": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "orgs": {
     "state": "satisfied",
@@ -2562,10 +2682,13 @@
   },
   "ig:jessicaeevans": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2586,10 +2709,13 @@
   },
   "ig:jessicahurlbut": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2636,10 +2762,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2706,10 +2835,13 @@
   },
   "ig:jonah_black01": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2772,10 +2904,13 @@
   },
   "ig:joshcparker_": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2798,10 +2933,13 @@
   },
   "ig:judder_budder": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2814,10 +2952,13 @@
   },
   "ig:juliacarmella1": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2838,10 +2979,13 @@
   },
   "ig:julianna_shatraw": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2916,10 +3060,13 @@
   },
   "ig:karajdaniels": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -2974,10 +3121,13 @@
   },
   "ig:katepersun": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -3078,10 +3228,13 @@
   },
   "ig:kaylawatkins8": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3138,10 +3291,13 @@
   },
   "ig:kimberlymitchelldamon": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3162,10 +3318,13 @@
   },
   "ig:kourtneyypeets": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3178,10 +3337,13 @@
   },
   "ig:krlap315": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -3206,10 +3368,13 @@
   },
   "ig:kylepmoulton": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -3296,10 +3461,13 @@
   },
   "ig:libbycriscitello": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3328,10 +3496,13 @@
   },
   "ig:lise.cevallos": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3360,10 +3531,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3394,10 +3568,13 @@
   },
   "ig:luannbailey": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3430,10 +3607,13 @@
   },
   "ig:m.not.a.lobster": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3534,10 +3714,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3604,10 +3787,13 @@
   },
   "ig:marissa.k19": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3702,10 +3888,13 @@
   },
   "ig:mayaatchan": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3754,10 +3943,13 @@
   },
   "ig:mdknaebel": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3884,10 +4076,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -3918,10 +4113,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4002,10 +4200,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4046,10 +4247,13 @@
   },
   "ig:nahhhhhhh.hhh": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4132,10 +4336,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4208,10 +4415,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4258,10 +4468,13 @@
   },
   "ig:oliviamiller9334": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4336,10 +4549,13 @@
   },
   "ig:peyt0nsheehan": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4408,10 +4624,13 @@
   },
   "ig:ria.amo": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4424,10 +4643,13 @@
   },
   "ig:richard.haller": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4492,10 +4714,13 @@
   },
   "ig:sammace11": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4524,10 +4749,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4556,10 +4784,13 @@
   },
   "ig:sarah.ellabb": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4668,10 +4899,13 @@
   },
   "ig:sphip_06": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4684,10 +4918,13 @@
   },
   "ig:spurgeonfiddle": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4736,10 +4973,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4760,10 +5000,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4836,10 +5079,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -4928,10 +5174,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -5006,10 +5255,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -5132,10 +5384,13 @@
   },
   "ct:emma gravlin": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "ct:michaela hosmer": {
@@ -5168,10 +5423,13 @@
   },
   "ct:julia sinclair": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -5228,10 +5486,13 @@
   },
   "ct:jillian ferrante": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -5334,10 +5595,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "orgs": {
     "state": "satisfied",
@@ -5480,10 +5744,13 @@
   },
   "ct:elena trempe": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -5616,10 +5883,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -5660,10 +5930,13 @@
   },
   "ct:jessica braman": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "ct:zenna dale": {
@@ -5816,18 +6089,24 @@
   },
   "ct:kathy eggleson": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "ct:megan daniels": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -5850,10 +6129,13 @@
   },
   "ct:dr kring": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "ct:susan buckley": {
@@ -5866,10 +6148,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "ct:grace ockrin": {
@@ -5928,10 +6213,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -5944,10 +6232,13 @@
   },
   "ct:william dunphey": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -5968,10 +6259,13 @@
   },
   "ct:katelyn tomford": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -6008,10 +6302,13 @@
   },
   "sf:acacia-white": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6032,10 +6329,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6094,10 +6394,13 @@
   },
   "sf:alisha-ohl": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -6128,10 +6431,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6144,10 +6450,13 @@
   },
   "fdb:amber_ingram": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6184,10 +6493,13 @@
   },
   "sf:anna-molinero": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6228,10 +6540,13 @@
   },
   "sf:asher-cragg": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6244,18 +6559,24 @@
   },
   "sf:ashleigh-graveline": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "sf:ashley-lafay": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6268,10 +6589,13 @@
   },
   "sf:ashley-stdenis": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6320,10 +6644,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6380,10 +6707,13 @@
   },
   "sf:benjamin-emmanuel": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6532,10 +6862,13 @@
   },
   "sf:brittany-disalvo": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "sf:brittany-fountain-sharlow": {
@@ -6548,10 +6881,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6644,10 +6980,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6668,10 +7007,13 @@
   },
   "sf:carson-hayes-ryan": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6726,10 +7068,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6750,10 +7095,13 @@
   },
   "sf:charlie-sharon-sweet": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6774,10 +7122,13 @@
   },
   "sf:christa-scott": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6798,10 +7149,13 @@
   },
   "sf:christine-sinicropi-anderson": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6866,10 +7220,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6908,10 +7265,13 @@
   },
   "sf:colin-mackey": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -6968,10 +7328,13 @@
   },
   "sf:courtney-cabaniss": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7010,10 +7373,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7044,10 +7410,13 @@
   },
   "sf:david-irving": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7092,10 +7461,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7132,10 +7504,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7192,10 +7567,13 @@
   },
   "sf:ellen-m-miller": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7240,10 +7618,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7272,10 +7653,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7304,10 +7688,13 @@
   },
   "sf:emily-elliott": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7328,10 +7715,13 @@
   },
   "sf:emily-kendall": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7352,10 +7742,13 @@
   },
   "sf:emily-ward": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7368,10 +7761,13 @@
   },
   "sf:emily-zimmer": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7392,10 +7788,13 @@
   },
   "sf:emma-kormanyos": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7442,10 +7841,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "sf:erin-dunham": {
@@ -7458,10 +7860,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7540,10 +7945,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7572,10 +7980,13 @@
   },
   "sf:frederick-laud-amoah-darko-jr": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7606,10 +8017,13 @@
   },
   "sf:gavin-matthews": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7622,10 +8036,13 @@
   },
   "sf:grace cicchinelli": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7638,10 +8055,13 @@
   },
   "sf:grace-lapointe": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7740,10 +8160,13 @@
   },
   "sf:gregory-hurlbut": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7842,10 +8265,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -7896,10 +8322,13 @@
   },
   "sf:ilene-rose": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7930,10 +8359,13 @@
   },
   "sf:isabelle-westerman": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7954,10 +8386,13 @@
   },
   "sf:isreal-tyler": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7978,10 +8413,13 @@
   },
   "sf:jacinta-gomes": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -7994,10 +8432,13 @@
   },
   "sf:jackie-shampine": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8020,10 +8461,13 @@
   },
   "sf:jaime-bicknell": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "sf:jamal-moses": {
@@ -8044,10 +8488,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8102,10 +8549,13 @@
   },
   "sf:james-harmer": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8218,10 +8668,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8242,10 +8695,13 @@
   },
   "sf:jesse-braun": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8266,10 +8722,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8308,10 +8767,13 @@
   },
   "sf:jillian-chapman": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8332,10 +8794,13 @@
   },
   "sf:jim-holt": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8358,10 +8823,13 @@
   },
   "sf:joe-n-lydia-moore": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8390,10 +8858,13 @@
   },
   "sf:joelle-kowalka": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8430,10 +8901,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8454,10 +8928,13 @@
   },
   "sf:joseph-baxter": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8478,10 +8955,13 @@
   },
   "sf:joshua-dsouza": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8530,10 +9010,13 @@
   },
   "sf:julie-rose-lashomb": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8546,10 +9029,13 @@
   },
   "sf:kailee paige": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8572,10 +9058,13 @@
   },
   "sf:karen-hoover": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "sf:katelynne-kulp": {
@@ -8612,10 +9101,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8656,10 +9148,13 @@
   },
   "sf:kaylee-hartley": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8696,10 +9191,13 @@
   },
   "sf:kelsey-wilbur": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8720,10 +9218,13 @@
   },
   "sf:kenna-leigh": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8762,10 +9263,13 @@
   },
   "sf:kim-sisk": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8868,18 +9372,24 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "sf:lexi-kennedy-labombard": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8892,10 +9402,13 @@
   },
   "sf:lindsey-elaine": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8934,10 +9447,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -8994,10 +9510,13 @@
   },
   "sf:lydia-d-m": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9028,10 +9547,13 @@
   },
   "sf:maddie-morgan": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9068,10 +9590,13 @@
   },
   "fdb:maggie_marceau": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -9150,10 +9675,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9242,10 +9770,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9294,10 +9825,13 @@
   },
   "sf:megan-eurto": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9328,10 +9862,13 @@
   },
   "sf:mel-zeallor": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9424,10 +9961,13 @@
   },
   "sf:morgan-arquette": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9456,10 +9996,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9472,10 +10015,13 @@
   },
   "sf:nanette-yervasi-holt": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9506,10 +10052,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9558,10 +10107,13 @@
   },
   "sf:paige-davis": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9574,10 +10126,13 @@
   },
   "sf:patrick-tombs": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9590,10 +10145,13 @@
   },
   "sf:pete-molinero": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9616,10 +10174,13 @@
   },
   "sf:peter-michael": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9732,10 +10293,13 @@
   },
   "sf:rachel-kushner": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9816,10 +10380,13 @@
   },
   "sf:renee-lia-de-voe": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9848,10 +10415,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9880,10 +10450,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9896,10 +10469,13 @@
   },
   "sf:rob-larrabee": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -9990,10 +10566,13 @@
   },
   "sf:salako-gbenga-oladoyin": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10006,10 +10585,13 @@
   },
   "sf:sandie-waite-colbert": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10098,10 +10680,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10114,10 +10699,13 @@
   },
   "sf:savannah-gabriella": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10252,10 +10840,13 @@
   },
   "sf:stephanie-elisa": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10420,10 +11011,13 @@
   },
   "sf:timothy-moulton": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10506,10 +11100,13 @@
   },
   "sf:tracy-lynn-stowe": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10538,10 +11135,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10572,10 +11172,13 @@
   },
   "sf:victor-njoku": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10596,10 +11199,13 @@
   },
   "sf:victoria-fitch": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -10650,10 +11256,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10684,18 +11293,24 @@
   },
   "sf:ticia-cudjoe": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    }
   },
   "sf:kathleen-delage": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10718,10 +11333,13 @@
   },
   "sf:kayla-ervin": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -10756,10 +11374,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10850,10 +11471,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10882,10 +11506,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10914,10 +11541,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10946,10 +11576,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -10970,10 +11603,13 @@
   },
   "sf:bartlomiej-brodzki": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -11008,10 +11644,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -11100,10 +11739,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -11184,10 +11826,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -11286,10 +11931,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -11318,10 +11966,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -11384,10 +12035,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -11750,10 +12404,13 @@
   },
   "sf:julie-cardinal": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -11802,10 +12459,13 @@
   },
   "sf:danica-dunphey": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -11912,10 +12572,13 @@
   },
   "sf:stephen-blackwood-smith": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -11996,10 +12659,13 @@
   },
   "sf:nicholas-matott": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -12030,10 +12696,13 @@
   },
   "sf:peyton-mussaw": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -12054,10 +12723,13 @@
   },
   "sf:stephanie-reasoner": {
    "loc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "dismissed"
+    }
    },
    "lastc": {
     "state": "satisfied",
@@ -12084,10 +12756,13 @@
   },
   "sf:rosie-hoover": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -12144,10 +12819,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -12178,10 +12856,13 @@
   },
   "sf:nicholas-oddey": {
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -12222,10 +12903,13 @@
     }
    },
    "lastc": {
-    "state": "open",
-    "class": "standing",
+    "state": "satisfied",
     "first_seen": "2026-11-03T00:17:00Z",
-    "source": "On file at ledger start"
+    "last_class": "standing",
+    "satisfied": {
+     "at": "2026-11-03T15:18:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "satisfied",
@@ -12303,10 +12987,10 @@
    "cleared_at": null
   },
   "loc": {
-   "open": 14,
+   "open": 0,
    "new": 0,
    "regressed": 0,
-   "cleared_at": null
+   "cleared_at": "2026-11-03T15:18:00Z"
   },
   "rel": {
    "open": 0,
@@ -12321,7 +13005,7 @@
    "cleared_at": "2026-11-03T00:17:00Z"
   },
   "lastc": {
-   "open": 215,
+   "open": 1,
    "new": 0,
    "regressed": 0,
    "cleared_at": null
@@ -15334,5 +16018,5 @@
    "source": "On file at ledger start"
   }
  },
- "updated": "2026-11-03T14:49:00Z"
+ "updated": "2026-11-03T15:18:00Z"
 }
