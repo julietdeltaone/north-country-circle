@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.75.1';
+var APP_VERSION = '3.76.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9237,7 +9237,7 @@ function phaRender(){
   if(!p && st.cur && q.length){ var ap = phaAll().filter(function(x){ return x.name === st.cur; })[0]; if(ap) p = ap; }
   if(!p && q.length){ st.cur = q[0].name; p = q[0]; idx = 0; }
   var chips = filters.map(function(f){ return '<button type="button" class="pha-chip' + (st.filter === f[0] ? ' on' : '') + '" data-act="phafilter" data-f="' + f[0] + '">' + f[1] + ' <b>' + f[2] + '</b></button>'; }).join('');
-  var list = q.map(function(x){ var r = phaRev(x); var tag = r === 'bad' ? 'BAD' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : r === 'confirmed' ? 'OK' : r === 'rejected' ? 'REJ' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P'; return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span><em>' + tag + '</em></button>'; }).join('');
+  var list = q.map(function(x){ var r = phaRev(x); var tag = r === 'bad' ? 'BAD' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : r === 'confirmed' ? 'OK' : r === 'rejected' ? 'REJ' + (phBadReason(x.name) ? ' · ' + phBadReason(x.name).toUpperCase() : '') : x.status === 'confirmed' ? 'C' : x.status === 'likely' ? 'L' : 'P'; var lrec = (AUDL && AUDL.photos) ? AUDL.photos[String(x.name || '').toLowerCase()] : null; var nchip = (lrec && lrec.class === 'new' && !r) ? '<i class="pha-new" title="Filed ' + esc(lrec.added || audlFmt(lrec.first_seen)) + ' — arrived after the ledger baseline">NEW</i>' : ''; return '<button type="button" class="pha-item' + (p && x.name === p.name ? ' on' : '') + '" data-act="phacur" data-pname="' + esc(x.name) + '"><span>' + esc(x.name) + '</span>' + nchip + '<em>' + tag + '</em></button>'; }).join('');
   var view, main;
   if(p){
     var di = BYN[String(p.name).toLowerCase()]; if(di == null) di = null;
@@ -9249,7 +9249,7 @@ function phaRender(){
     var thumbs = (p.also && p.also.length) ? '<div class="pha-alts">' + [p.photo_url].concat(p.also.map(function(a){ return a.url; })).map(function(u){ return '<button type="button" class="pha-alt' + (u === curUrl ? ' on' : '') + '" data-act="phaalt" data-pname="' + esc(p.name) + '" data-u="' + esc(u) + '"><img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer"></button>'; }).join('') + '</div>' : '';
     view = '<div class="pha-view"><span class="phimg pha-img"><img src="' + esc(curUrl) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '"><span class="phthirds on"></span></span>' + thumbs +
       '<div class="pha-name">' + (e ? '<a href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '"><b>' + esc(p.name) + '</b></a>' : '<b>' + esc(p.name) + '</b>') + (e ? milBadge(e) : '') + badge + (e ? audXHTML(di) : '') + '</div>' +
-      '<div class="pha-pos">' + (idx >= 0 ? '<span class="ahn-s">' + (idx + 1) + ' of ' + q.length + '</span> in this queue' : 'Outside this queue') + ' &middot; ' + esc(p.type || 'photo') + '</div>' +
+      '<div class="pha-pos">' + (idx >= 0 ? '<span class="ahn-s">' + (idx + 1) + ' of ' + q.length + '</span> in this queue' : 'Outside this queue') + ' &middot; ' + esc(p.type || 'photo') + (function(){ var lrec = (AUDL && AUDL.photos) ? AUDL.photos[String(p.name || '').toLowerCase()] : null; return (lrec && lrec.class === 'new' && !rev) ? ' &middot; <span class="aud-cls new">NEW · filed ' + esc(lrec.added || audlFmt(lrec.first_seen)) + '</span>' : ''; })() + '</div>' +
       '<p class="ph-ev">' + esc(p.evidence || '') + '</p>' +
       (p.source_page ? '<p><a class="assrc" href="' + esc(p.source_page) + '" target="_blank" rel="noopener">Source page ' + ic('ext', 11) + '</a></p>' : '') +
       '</div>';
@@ -10046,6 +10046,95 @@ function audOpenGaps(di){
   var srv = audDismissedServer(di);
   return audGaps(D.directory[di]).filter(function(g){ return !AUD_DISMISS[audPair(di, g)] && srv.indexOf(g) < 0; });
 }
+/* ============================================================
+   Audit ledger (fix program step 2, 2026-11-02 — the Audit gets a
+   memory). sync_subjects.py maintains data/audit-ledger.json on
+   every bake (scripts/build_audit_ledger.py): per person+gap, the
+   record of when the gap arrived and how — class standing / new /
+   regressed, a source ("New profile", "Field blanked", "Dismissal
+   lost", "Identity event"), and each lane's last-cleared stamp.
+   Identity in the ledger follows the PERSON through the Sheet's
+   Merged Into chains, so a re-key never recycles a gap as new.
+   Rendering rule (JD): a cleared lane stays cleared — anything
+   that appears later is chipped NEW or REGRESSED with its source
+   and arrival, never a silent refill. Standing gaps carry no chip.
+   Ledger absent (not yet loaded / older bake): everything renders
+   exactly as it did before the ledger existed.
+   ============================================================ */
+var AUDL = null, AUDL_LOADING = false;
+function audlLoad(){
+  if(AUDL || AUDL_LOADING) return;
+  AUDL_LOADING = true;
+  fetch('data/audit-ledger.json', { cache:'no-cache' })
+    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
+    .then(function(d){ AUDL = d; AUDL_LOADING = false; audlPaint(); })
+    .catch(function(){ AUDL = { empty:true }; AUDL_LOADING = false; });
+}
+function audlRec(di, gap){
+  if(!AUDL || AUDL.empty || !AUDL.gaps || !D) return null;
+  var e = D.directory[di]; if(!e) return null;
+  var per = AUDL.gaps[pkey(e)], rec = per && per[gap];
+  return (rec && rec.state === 'open') ? rec : null;
+}
+function audlLane(gap){ return (AUDL && !AUDL.empty && AUDL.lanes && AUDL.lanes[gap]) || null; }
+function audlFmt(iso){
+  if(!iso) return '';
+  var d = new Date(iso);
+  if(isNaN(d)) return '';
+  return d.toLocaleDateString('en-US', { weekday:'short' }) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+}
+/* Full class line for a card's current gap: "NEW · New profile, Tue 06:54". */
+function audlClassChip(di, gap){
+  var rec = audlRec(di, gap);
+  if(!rec || rec.class === 'standing') return '';
+  var txt = (rec.class === 'regressed' ? 'REGRESSED' : 'NEW') + ' · ' + rec.source + (rec.first_seen ? ', ' + audlFmt(rec.first_seen) : '');
+  return '<span class="aud-cls ' + rec.class + '">' + esc(txt) + '</span>';
+}
+/* Short tag for chips and lane buttons: "NEW" / "REGRESSED". */
+function audlTag(rec){
+  if(!rec || rec.class === 'standing') return '';
+  return ' <em class="aud-clstag ' + rec.class + '">' + (rec.class === 'regressed' ? 'REGRESSED' : 'NEW') + '</em>';
+}
+/* Class tallies over the gaps the app itself counts open right now,
+   so the ledger can never argue with the wall it annotates. */
+function audClassCounts(){
+  var by = {}, tot = { new:0, regressed:0 }, ppl = 0;
+  Object.keys(AUD_GAPS).forEach(function(g){ by[g] = { new:0, regressed:0 }; });
+  people().forEach(function(di){
+    var gs = audOpenGaps(di); if(gs.length) ppl++;
+    gs.forEach(function(g){
+      var rec = audlRec(di, g);
+      if(rec && by[g] && rec.class !== 'standing'){ by[g][rec.class]++; tot[rec.class]++; }
+    });
+  });
+  return { by:by, total:tot, people:ppl };
+}
+/* Open gaps in a lane whose arrival postdates the lane's last clear. */
+function audlNewSince(gap){
+  var lane = audlLane(gap); if(!lane || !lane.cleared_at) return 0;
+  var n = 0;
+  people().forEach(function(di){
+    audOpenGaps(di).forEach(function(g){
+      if(g !== gap) return;
+      var rec = audlRec(di, g);
+      if(rec && rec.first_seen && rec.first_seen > lane.cleared_at) n++;
+    });
+  });
+  return n;
+}
+/* The ledger lands async: repaint only the annotation surfaces
+   (header counts, mode bar, card chips + prompt lines, photo desk) —
+   never a card's editor, so a fill in progress is undisturbed. */
+function audlPaint(){
+  if(!S || S.route.name !== 'audit' || !S.audit) return;
+  audPaintCounts(); audPaintModeBar();
+  $$('.aud-card').forEach(function(c){
+    audPaintChips(c);
+    var di = +c.getAttribute('data-di'), gap = c.getAttribute('data-gap'), pr = $('.aud-prompt', c);
+    if(pr && AUD_GAPS[gap]) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>' + audlClassChip(di, gap);
+  });
+  if(audMode() === 'photos') phaRender();
+}
 /* One-time migration: seed the local dismissal store from the baked
    server values, then push every locally-held dismissal and photo
    verdict up through the outbox so this browser's audit history
@@ -10194,7 +10283,9 @@ function audChipsHTML(x){
     return '<button type="button" class="aud-gchip done' + (g === x.cur ? ' editing' : '') + '" data-act="audreopen" data-gap="' + g + '" title="' + esc(AUD_GAPS[g].tag + val + ' filled in — click to edit') + '">✓ ' + AUD_GAPS[g].short + '</button>';
   }).join('');
   var open = x.gaps.map(function(g){
-    return '<button type="button" class="aud-gchip' + (g === x.cur ? ' on' : '') + '" data-act="audgap" data-gap="' + g + '" aria-pressed="' + (g === x.cur ? 'true' : 'false') + '">' + AUD_GAPS[g].short + '</button>';
+    var rec = audlRec(x.di, g);
+    var title = rec && rec.class !== 'standing' ? ' title="' + esc((rec.class === 'regressed' ? 'Regressed' : 'New') + ' · ' + rec.source + (rec.first_seen ? ', ' + audlFmt(rec.first_seen) : '')) + '"' : '';
+    return '<button type="button" class="aud-gchip' + (g === x.cur ? ' on' : '') + '" data-act="audgap" data-gap="' + g + '" aria-pressed="' + (g === x.cur ? 'true' : 'false') + '"' + title + '>' + AUD_GAPS[g].short + audlTag(rec) + '</button>';
   }).join('');
   return done + open;
 }
@@ -10206,7 +10297,7 @@ function audCardHTML(x, i){
     '<span class="pn"><span class="pn-row"><button type="button" class="aud-name" data-act="audopen" data-di="' + di + '" title="Open profile">' + esc(dispName(e)) + '</button>' + milBadge(e) + '</span>' +
     (ctx ? '<small class="aud-ctx">' + esc(ctx) + '</small>' : '') + '</span>' + audXHTML(di) + '</div>' +
     '<div class="aud-gaps" role="group" aria-label="Missing items for this person">' + audChipsHTML(x) + '</div>' +
-    '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span></p>' +
+    '<p class="aud-prompt"><span class="aud-tag">' + meta.tag + '</span><span class="aud-prompt-t">' + meta.prompt + '</span>' + audlClassChip(di, gap) + '</p>' +
     '<div class="aud-ed">' + audEdHTML(di, gap) + '</div>' +
     '<div class="aud-foot"><span class="aud-cd"><span class="aud-cdt">Saving in 3</span><span class="aud-bar"><i></i></span></span><span class="sp"></span>' +
     '<button type="button" class="aud-later" data-act="audpark" data-di="' + di + '" title="Park this person and come back to them later — nothing is saved or closed out">Save for later</button>' +
@@ -10243,7 +10334,7 @@ function audSetGap(card, gap){
   card.removeAttribute('data-pick');
   var box = $('.aud-gaps', card); if(box) box.innerHTML = audChipsHTML(x);
   var pr = $('.aud-prompt', card);
-  if(pr) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>';
+  if(pr) pr.innerHTML = '<span class="aud-tag">' + AUD_GAPS[gap].tag + '</span><span class="aud-prompt-t">' + AUD_GAPS[gap].prompt + '</span>' + audlClassChip(di, gap);
   var ed = $('.aud-ed', card); if(ed) ed.innerHTML = audEdHTML(di, gap);
   audWireCard(card);
   audHoldH(card, pinH);
@@ -11077,14 +11168,25 @@ function audPaintCounts(){
   audLaterPaint(); audPaintGoal(); audPaintModeBar();
   var s = $('#audsub'); if(!s) return;
   var left = audRemaining(), done = S.audit ? S.audit.done : 0;
-  s.innerHTML = left ? '<span class="ahn">' + left.toLocaleString('en-US') + '</span> quick win' + (left === 1 ? '' : 's') + ' left across all lanes' + (done ? ' &middot; <span class="ahn-s">' + done + '</span> filled in this visit' : '') : 'Nothing left to fill in';   /* V3.75.0 (bug hunt 19): name the basis — this is every lane's gaps, not today's queue */
+  if(!left){ s.innerHTML = 'Nothing left to fill in' + (done ? ' &middot; <span class="ahn-s">' + done + '</span> filled in this visit' : ''); return; }
+  /* Units + classes (fix step 2): the headline counts GAP INSTANCES;
+     say so, say across how many people, and split out how many of
+     them arrived NEW or REGRESSED since their lane last cleared —
+     the refill diagnosis' core complaint was that none of this was
+     labeled. */
+  var cc = audClassCounts();
+  s.innerHTML = '<span class="ahn">' + left.toLocaleString('en-US') + '</span> quick win' + (left === 1 ? '' : 's') + ' left across all lanes' +
+    ' &middot; counted in gaps: ' + left.toLocaleString('en-US') + ' across ' + cc.people.toLocaleString('en-US') + ' people' +
+    (cc.total.new ? ' &middot; <span class="aud-cls new">' + cc.total.new + ' new</span>' : '') +
+    (cc.total.regressed ? ' &middot; <span class="aud-cls regressed">' + cc.total.regressed + ' regressed</span>' : '') +
+    (done ? ' &middot; <span class="ahn-s">' + done + '</span> filled in this visit' : '');
 }
 function audPaintEmpty(){
   var box = $('#audempty'), grid = $('#audgrid');
   if(!box || !grid) return;
   if(grid.querySelector('.aud-card')){ box.innerHTML = ''; return; }
   if(S.audit && S.audit.blitzDone){ box.innerHTML = ''; return; }   /* the Blitz summary owns the stage */
-  if(S.audit && S.audit.cat){ box.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Lane clear</h3><p>Every ' + esc(AUD_GAPS[S.audit.cat].tag) + ' gap is filled or closed out. Pick another category above, or exit the run.</p></div>'; return; }
+  if(S.audit && S.audit.cat){ var ln = audlLane(S.audit.cat); box.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Lane clear</h3><p>Every ' + esc(AUD_GAPS[S.audit.cat].tag) + ' gap is filled or closed out.' + (ln && ln.cleared_at ? ' Cleared ' + audlFmt(ln.cleared_at) + ' — anything that appears here later arrives labeled NEW with its source.' : '') + ' Pick another category above, or exit the run.</p></div>'; return; }
   if(audRemaining() === 0) box.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>All caught up</h3><p>Every profile has the basics filled in. Nice work.</p></div>';
   else box.innerHTML = '<div class="aud-caught">' + ic('target', 26) + '<h3>That is the whole deck</h3><p>Everything else is filled in or dismissed. Shuffle deals a fresh mix from what is left; dismissed items stay out for good.</p></div>';
 }
@@ -11239,7 +11341,7 @@ function audModeBarHTML(){
   var A = S.audit, m = audMode();
   if(m === 'lima'){
     var np = lcPendingCount();
-    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Contact Log run</span></div>';
+    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Contact Log run</span><span class="sp"></span><span class="dim">A logging desk, not a lane — the deck deals anyone, and the count is people with a waiting note. Nothing here needs clearing.</span></div>';
   }
   if(m === 'prefill'){
     pfLoad();
@@ -11248,8 +11350,8 @@ function audModeBarHTML(){
   }
   if(m === 'photos'){
     phLoad();
-    var pc = phaCounts();
-    return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> to review</span><span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
+    var pc = phaCounts(), pln = audlLane('photos');
+    return '<div class="aud-modebar"><span><b>' + pc.todo + '</b> photos to review</span>' + (pln && pln.new ? '<span class="aud-cls new">' + pln.new + ' new</span>' : '') + '<span><b>' + pc.confirmed + '</b> confirmed</span><span><b>' + pc.bad + '</b> flagged bad</span><span><b>' + pc.rejected + '</b> rejected</span>' +
       '<span class="sp"></span><span class="dim">Keys: &larr; &rarr; move &middot; C confirm &middot; W wrong person &middot; B bad photo &middot; N no person &middot; U undo &middot; A adjust &middot; 1&ndash;7 reason</span></div>';
   }
   /* Category Run (restored to the mode switcher in V3.62.0, JD
@@ -11262,16 +11364,28 @@ function audModeBarHTML(){
      under it; Exit run leaves to Cards (audcatall). The Cards bar
      below no longer carries the picker. */
   if(m === 'cat'){
-    var counts = audGapCounts();
+    var counts = audGapCounts(), cc = audClassCounts();
     var row = '<div class="aud-catrow" role="group" aria-label="Pick a category">' + Object.keys(AUD_GAPS).map(function(g){
-      return '<button type="button" class="aud-catbtn' + (A && A.cat === g ? ' on' : '') + '" data-act="audcat" data-g="' + g + '" aria-pressed="' + (A && A.cat === g ? 'true' : 'false') + '">' + esc(AUD_GAPS[g].tag) + ' <span class="aud-catn">' + (counts[g] || 0) + '</span></button>';
+      var ln = audlLane(g), by = cc.by[g] || { new:0, regressed:0 };
+      var title = ln && ln.cleared_at ? ' title="Lane last cleared ' + esc(audlFmt(ln.cleared_at)) + '"' : '';
+      var tags = (by.new ? ' <span class="aud-clstag new">' + by.new + ' NEW</span>' : '') + (by.regressed ? ' <span class="aud-clstag regressed">' + by.regressed + ' REGRESSED</span>' : '');
+      return '<button type="button" class="aud-catbtn' + (A && A.cat === g ? ' on' : '') + '" data-act="audcat" data-g="' + g + '" aria-pressed="' + (A && A.cat === g ? 'true' : 'false') + '"' + title + '>' + esc(AUD_GAPS[g].tag) + ' <span class="aud-catn">' + (counts[g] || 0) + '</span>' + tags + '</button>';
     }).join('') +
     (A && A.cat ? '<button type="button" class="aud-catbtn" data-act="audcatall">Exit run</button>' : '') +
     (A && A.cat === 'phone' ? '<button type="button" class="aud-catbtn aud-bulkphone" data-act="audbulkphone">Mark all phone gaps done</button>' : '') +
     '</div>';
-    var prog = A && A.cat
-      ? '<p class="aud-catprog"><b>Category Run &middot; ' + esc(AUD_GAPS[A.cat].tag) + '</b> &mdash; <b>' + ((A.catDone && A.catDone[A.cat]) || 0) + '</b> cleared this run &middot; <b>' + (counts[A.cat] || 0) + '</b> left in this lane</p>'
-      : '<p class="aud-catprog">Pick a category &mdash; the wall deals only that one, person after person.</p>';
+    var prog;
+    if(A && A.cat){
+      /* Lane memory (fix step 2): the header remembers when this lane
+         last read zero and how much of what is here arrived after —
+         split into new vs regressed, never a bare changed number. */
+      var ln2 = audlLane(A.cat), by2 = cc.by[A.cat] || { new:0, regressed:0 }, ns = audlNewSince(A.cat);
+      var split = (by2.new || by2.regressed) ? ' &middot; ' + [by2.new ? by2.new + ' new' : '', by2.regressed ? by2.regressed + ' regressed' : ''].filter(Boolean).join(', ') : '';
+      var mem = ln2 && ln2.cleared_at ? ' &middot; Cleared ' + audlFmt(ln2.cleared_at) + (ns ? ' &middot; ' + ns + ' new since' : '') : '';
+      prog = '<p class="aud-catprog"><b>Category Run &middot; ' + esc(AUD_GAPS[A.cat].tag) + '</b> &mdash; <b>' + ((A.catDone && A.catDone[A.cat]) || 0) + '</b> cleared this run &middot; <b>' + (counts[A.cat] || 0) + '</b> left in this lane' + split + mem + '</p>';
+    } else {
+      prog = '<p class="aud-catprog">Pick a category &mdash; the wall deals only that one, person after person. Counts are people per category.</p>';
+    }
     return row + prog;
   }
   return '<div class="aud-modebar"><button type="button" class="btn ghost sm" data-act="audbulkphone">Mark all phone gaps done</button><span class="dim">Close out the phone gap for everyone you have no number for.</span><span class="sp"></span><span class="aud-blitz-t" id="audblitz-t"></span><button type="button" class="btn ghost sm" id="audblitzbtn" data-act="audblitz">Blitz — 2 minutes</button></div>';
@@ -11621,7 +11735,7 @@ function ykRender(){
   w.innerHTML = '<div class="yk">' +
     '<div class="yk-head">' + avatar(e, 'lg') + '<div class="yk-who"><button type="button" class="aud-name yk-name" data-act="audopen" data-di="' + di + '">' + esc(dispName(e)) + '</button>' +
     '<p class="dim yk-cur">On file: ' + (knownSinceLabel(e) || 'not set') + ' &middot; Will save: <b>' + (nv ? esc(knownSinceLabel({ profile: { years_known: nv } })) : 'not set') + '</b></p>' +
-    '<p class="dim yk-prog">Person <span class="ahn-s">' + (st.i + 1) + '</span> of ' + st.q.length + ' &middot; <span class="ahn-s">' + missing + '</span> still missing a year &middot; <span class="ahn-s">' + st.saved + '</span> saved this run</p>' + ykToolsHTML() + '</div></div>' +
+    '<p class="dim yk-prog">Person <span class="ahn-s">' + (st.i + 1) + '</span> of ' + st.q.length + ' &middot; ' + (missing ? '<span class="ahn-s">' + missing + '</span> still missing a year' : '<span class="ahn-s">0</span> missing a year &mdash; running the full list') + ' &middot; <span class="ahn-s">' + st.saved + '</span> saved this run</p>' + ykToolsHTML() + '</div></div>' +
     '<div class="yk-cols">' + colsHTML + '</div>' +
     '<div class="yk-foot"><button type="button" class="btn ghost" data-act="ykskip">Skip (S)</button><button type="button" class="btn primary" data-act="yksave">Save &amp; next (Enter)</button>' +
     '<span class="dim yk-keys">Up/Down move &middot; Left/Right column &middot; type digits to jump &middot; Backspace clears &middot; Esc exits</span></div></div>';
@@ -12147,6 +12261,7 @@ function pfKeysInit(){
 
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
+  audlLoad();
   /* The Save Pool strip is painted synchronously by keepAnchor/render
      paths — left empty it fills a beat later when the outbox ticks,
      and everything under it jumps (the verdict-click jump, JD Oct 29). */
