@@ -13091,10 +13091,13 @@
   },
   "sf:breanne-sapp": {
    "years": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-03T20:01:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-03T20:13:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "open",
@@ -13124,8 +13127,8 @@
    "cleared_at": "2026-11-03T00:17:00Z"
   },
   "years": {
-   "open": 1,
-   "new": 1,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T00:17:00Z"
   },
@@ -16179,5 +16182,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-03T20:12:00Z"
+ "updated": "2026-11-03T20:13:00Z"
 }
