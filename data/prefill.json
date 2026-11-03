@@ -1,22 +1,64 @@
 {
  "generated": "2026-11-03",
- "count": 1,
- "suggestions": [
-  {
-   "id": "pf-1a161ce24c",
-   "key": "sf:breanne-sapp",
-   "display": "Breanne Sapp",
-   "field": "years_known",
-   "field_label": "Years known (since)",
-   "value": "2022",
-   "grade": "Probable",
-   "evidence": [
-    "Their earliest contact entry is 2022-04-09; known-since year follows from it."
-   ],
-   "conf": 78
-  }
- ],
+ "count": 0,
+ "suggestions": [],
  "auto_apply": [
+  {
+   "key": "maliahwright",
+   "display": "Maliah Wright",
+   "field": "companies",
+   "value": "Park Bros.",
+   "conf": 74,
+   "id": "pf-d8788adce0"
+  },
+  {
+   "key": "nancyhull9",
+   "display": "Nancy Hull",
+   "field": "specialty",
+   "value": "Teaching",
+   "conf": 90,
+   "id": "pf-b6b9d25aaa"
+  },
+  {
+   "key": "ria.amo",
+   "display": "Ria Amo",
+   "field": "companies",
+   "value": "Rochester Regional Health",
+   "conf": 74,
+   "id": "pf-67609f7176"
+  },
+  {
+   "key": "sphip_06",
+   "display": "Sydnie Phippen",
+   "field": "universities",
+   "value": "SUNY Canton",
+   "conf": 92,
+   "id": "pf-cf4ed72ac8"
+  },
+  {
+   "key": "ct:olivia brown",
+   "display": "Olivia Brown",
+   "field": "universities",
+   "value": "SUNY Potsdam",
+   "conf": 92,
+   "id": "pf-b84f16b09e"
+  },
+  {
+   "key": "ct:olivia brown",
+   "display": "Olivia Brown",
+   "field": "specialty",
+   "value": "Teaching",
+   "conf": 90,
+   "id": "pf-7e0b91d708"
+  },
+  {
+   "key": "sf:toni-squires",
+   "display": "Toni Squires",
+   "field": "universities",
+   "value": "SUNY Canton",
+   "conf": 92,
+   "id": "pf-f08a984203"
+  },
   {
    "key": "sf:murray",
    "display": "Murray",
@@ -28,10 +70,10 @@
   {
    "key": "sf:breanne-sapp",
    "display": "Breanne Sapp",
-   "field": "first_contact",
-   "value": "2022-04-09",
-   "conf": 93,
-   "id": "pf-ce95f5e3f4"
+   "field": "years_known",
+   "value": "2022",
+   "conf": 95,
+   "id": "pf-1a161ce24c"
   }
  ],
  "shelved": [
@@ -58,10 +100,20 @@
  ],
  "suppressed": {
   "counts": {
-   "shelved": 2,
-   "tentative_floor": 1
+   "tentative_floor": 3,
+   "shelved": 2
   },
   "items": [
+   {
+    "id": "pf-5e102198ad",
+    "key": "chiara.frasc",
+    "display": "Chiara",
+    "field": "location_on_file",
+    "value": "Potsdam, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
    {
     "id": "pf-a44d074ab1",
     "key": "elizabethadaniels",
@@ -80,6 +132,16 @@
     "value": "Potsdam, NY",
     "rules": [
      "shelved"
+    ]
+   },
+   {
+    "id": "pf-1ccc28896d",
+    "key": "hamiltonezra",
+    "display": "Ezra Hamilton",
+    "field": "location_on_file",
+    "value": "Carthage, NY",
+    "rules": [
+     "tentative_floor"
     ]
    },
    {
