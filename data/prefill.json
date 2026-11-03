@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "ct:ana miller",
-   "display": "Ana Miller",
-   "field": "specialty",
-   "value": "Teaching",
-   "conf": 62,
-   "id": "pf-76b9ab5121"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
