@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "sf:erica-arnold",
-   "display": "Erica Arnold",
-   "field": "first_contact",
-   "value": "2026-11-02",
-   "conf": 93,
-   "id": "pf-e6f853a581"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
