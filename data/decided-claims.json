@@ -3832,6 +3832,28 @@
    ]
   },
   {
+   "at": "2026-11-03T22:15:10.577Z",
+   "decision": "filed",
+   "display": "Max Ferran",
+   "domain": "meritpages.com",
+   "id": "lr-20261103-ig-max-ferran06-clarkson-university-s-verified-merit",
+   "person": "ig:max_ferran06",
+   "tier": 1,
+   "tokens": [
+    "civil",
+    "clarkson",
+    "engineering",
+    "ferran",
+    "list",
+    "major",
+    "max",
+    "merit",
+    "official",
+    "pages",
+    "university"
+   ]
+  },
+  {
    "at": "2026-10-31T07:29:18.108Z",
    "decision": "filed",
    "display": "Maya M. Atchan",
@@ -7960,6 +7982,30 @@
     "program",
     "reliably",
     "show",
+    "skyler",
+    "suny",
+    "trumble"
+   ]
+  },
+  {
+   "at": "2026-11-03T22:15:29.011Z",
+   "decision": "filed",
+   "display": "Skyler Trumble",
+   "domain": "potsdam.meritpages.com",
+   "id": "lr-20261103-sf-skyler-trumble-graduated-from-suny-potsdam-at-commencement-on",
+   "person": "sf:skyler-trumble",
+   "tier": 1,
+   "tokens": [
+    "2022",
+    "21",
+    "according",
+    "commencement",
+    "graduate",
+    "graduated",
+    "merit",
+    "potsdam",
+    "record",
+    "set",
     "skyler",
     "suny",
     "trumble"
