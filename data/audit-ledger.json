@@ -12303,7 +12303,7 @@
    "cleared_at": null
   },
   "loc": {
-   "open": 15,
+   "open": 14,
    "new": 0,
    "regressed": 0,
    "cleared_at": null
@@ -12327,7 +12327,7 @@
    "cleared_at": null
   },
   "phone": {
-   "open": 21,
+   "open": 20,
    "new": 0,
    "regressed": 0,
    "cleared_at": null
@@ -12339,13 +12339,13 @@
    "cleared_at": null
   },
   "skills": {
-   "open": 14,
+   "open": 13,
    "new": 0,
    "regressed": 0,
    "cleared_at": null
   },
   "photos": {
-   "todo": 5,
+   "todo": 3,
    "new": 0,
    "cleared_at": null
   }
@@ -15334,5 +15334,5 @@
    "source": "On file at ledger start"
   }
  },
- "updated": "2026-11-03T13:07:00Z"
+ "updated": "2026-11-03T13:22:00Z"
 }
