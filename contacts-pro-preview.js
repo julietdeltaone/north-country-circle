@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.79.0';
+var APP_VERSION = '3.79.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8844,13 +8844,48 @@ function fiTabsHTML(on){
   var n = FI ? fiUnreadCount() : 0;
   return '<div class="fi-tabs" role="tablist" aria-label="Live Records views">' +
     '<a href="#/daily" class="fi-tab' + (on === 'records' ? ' on' : '') + '">Records</a>' +
-    '<a href="#/daily/inbox" class="fi-tab' + (on === 'inbox' ? ' on' : '') + '">Inbox <span class="fi-bdg"' + (n ? '' : ' hidden') + '>' + n + '</span></a></div>';
+    '<a href="#/daily/inbox" class="fi-tab' + (on === 'inbox' ? ' on' : '') + '">Inbox <span class="fi-bdg' + (n ? '' : ' zero') + '">' + n + '</span></a></div>';
+}
+/* ============================================================
+   V3.79.1 — Live Records chrome (JD 2026-11-03: "the top section
+   nav buttons jump all around when I click"). ONE header for both
+   tabs, rendered with identical markup and slots in every state
+   (loading / empty / loaded, Records / Inbox): crumb, title, a
+   fixed-height single-line sub slot, the Records | Inbox tabs and
+   one Command Center button. A tab switch changes only the title
+   text, the sub text and which tab is .on — never a box. The badge
+   keeps a fixed-size box at every count (0 included), so counts
+   can't resize the tab. The Records sort chips left the header:
+   they ride the Updated Records section bar, and a sort click
+   repaints only #lr-body — the chrome is never rebuilt.
+   ============================================================ */
+function lrChromeHTML(on, title, subHTML, subId){
+  return '<div class="pagehead lr-chrome"><div class="lr-chrome-l"><div class="fi-crumb">Live Records</div>' +
+    '<h1 class="display">' + title + '</h1>' +
+    '<p class="sub lr-chrome-sub"' + (subId ? ' id="' + subId + '"' : '') + '>' + subHTML + '</p></div>' +
+    '<div class="lr-head-r">' + fiTabsHTML(on) +
+    '<button type="button" class="btn ghost sm" data-act="lrccopen">' + ic('sparkle', 14) + 'Command Center</button></div></div>';
+}
+function lrBriefSubHTML(){
+  if(!DT || !DT.date) return 'No brief yet';
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var p = String(DT.date).split('-');
+  var d = p.length === 3 ? MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0] : String(DT.date);
+  return 'Brief &middot; ' + esc(d) + ' &middot; ' + (DT.checked || []).length + ' checked &middot; ' + (DT.filed || []).length + ' updated';
+}
+function lrBodyPaint(){
+  if(S.route.name !== 'daily' || (S.route.seg && S.route.seg[0] === 'inbox')) return false;
+  var b = document.getElementById('lr-body');
+  if(!b || !DT || DT.empty || !DT.date) return false;
+  var y = window.scrollY, vv = $('#view'), vt = vv ? vv.scrollTop : 0;
+  b.innerHTML = lrRecordsBodyHTML();
+  dtAnimate();
+  window.scrollTo(0, y); if(vv) vv.scrollTop = vt;
+  return true;
 }
 function fiPageHTML(){
   var c = FI ? fiCounts() : { total: 0, unread: 0, read: 0, flagged: 0, people: 0 };
-  var h = '<div class="pagehead"><div><div class="fi-crumb">Live Records</div><h1>Fact Inbox</h1>' +
-    '<p class="sub" id="fi-sub">' + (FI ? (c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero') : 'Loading&hellip;') + '</p></div>' +
-    '<div class="lr-head-r">' + fiTabsHTML('inbox') + '<button type="button" class="btn ghost sm" data-act="lrccopen">' + ic('sparkle', 14) + 'Command Center</button></div></div>';
+  var h = lrChromeHTML('inbox', 'Fact Inbox', FI ? (c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero') : 'Loading&hellip;', 'fi-sub');
   if(FI_PROF_FAILED) h += '<div class="fi-alert">Inbox state unavailable — the profiles data did not load, so Read and Flag are paused. Nothing will be written until it loads; reload to retry.</div>';
   h += '<div class="fi-controls"><div class="seg fi-seg" role="group" aria-label="Filter facts">' +
     '<button type="button" data-act="fi-filter" data-f="all"' + (FI_FILTER === 'all' ? ' class="on"' : '') + '>All facts</button>' +
@@ -8883,7 +8918,9 @@ function fiPaint(enterId){
 }
 function fiPaintNavBadge(){
   var n = FI ? fiUnreadCount() : 0;
-  document.querySelectorAll('.fi-bdg').forEach(function(b){ b.textContent = n; b.hidden = !n; });
+  /* V3.79.1: the badge box is fixed-size at every count — only the
+     number and its visibility change, never the geometry. */
+  document.querySelectorAll('.fi-bdg').forEach(function(b){ b.textContent = n; b.classList.toggle('zero', !n); b.hidden = false; });
 }
 function fiMarkRead(id){
   var card = document.querySelector('.fi-card[data-id="' + id + '"]');
@@ -8913,30 +8950,10 @@ function fiGoto(id){
     if(card){ card.scrollIntoView({ block: 'center', behavior: 'smooth' }); card.classList.add('flash'); setTimeout(function(){ card.classList.remove('flash'); }, 1650); }
   }, 60);
 }
-function viewDaily(v){
-  dtLoad(); chLoad(); rcLoad();
-  if(S.route.seg && S.route.seg[0] === 'inbox'){
-    fiLoad(); fiProfLoad();
-    v.innerHTML = '<div class="page lr fi-page" data-kind="about">' + fiPageHTML() + '</div>';
-    fiPaint();
-    return;
-  }
-  /* Edges pass (JD 2026-11-02): the Records sort controls live in the
-     page header now, not in their own row; and the entrance animation
-     plays on the first full render only — data repaints (dt/ch/rc
-     landing) and sort toggles render still, with scroll preserved,
-     so the page no longer glitches through repeated rebuilds. */
-  var lrRepaint = LR_ANIM_SEEN;
-  var lrKeepY = lrRepaint ? window.scrollY : 0;
-  function lrHead(sortHTML){
-    return '<div class="page asearch lr' + (lrRepaint ? ' noanim' : '') + '" data-kind="about"><div class="pagehead"><div><h1 class="display">Live Records</h1></div><div class="lr-head-r">' + (sortHTML || '') + '<div class="lrcc-headbtn"><button type="button" class="btn primary" data-act="lrccopen">' + ic('expand', 14) + ' Command Center</button></div></div></div>';
-  }
-  var head = lrHead('');
-  if(!DT){
-    v.innerHTML = head + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
-    return;
-  }
-  if(DT.empty || !DT.date){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
+/* V3.79.1: the Records body (everything under the chrome) is its
+   own builder so a sort click can repaint ONLY this region
+   (lrBodyPaint) — the header DOM is never rebuilt. */
+function lrRecordsBodyHTML(){
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtD(iso){ if(!iso) return ''; var p = String(iso).split('-'); if(p.length < 3) return String(iso); return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]; }   /* V3.75.0 (bug hunt 34): partial-date guard, same as the Research console's fmtD — a '2026-10' value no longer renders "Oct NaN, 2026" */
   function daysBetween(a, b){ return Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 86400000); }
@@ -9055,10 +9072,10 @@ function viewDaily(v){
     ((DT.checked || []).length ? '<details class="lrdrop"><summary>Who was checked <span class="dim">(' + (DT.checked || []).length + ')</span></summary>' +
       '<div class="aschips">' + allChecked.map(function(c){ return chip(c, filedNames[String(c.name || '').toLowerCase()] ? 'upd' : 'cur'); }).join('') + '</div></details>' : '') +
     '</div></section>';
-  var updHead = (DT.filed || []).length ? '<div class="assec-t asanim" style="--d:120ms">UPDATED RECORDS</div>' : '';
-  var sortCtl = (DT.filed || []).length ? '<div class="lrsort inhead"><span>Records</span>' +
+  var sortCtl = (DT.filed || []).length ? '<div class="lrsort"><span>Records</span>' +
     '<button type="button" class="lrchip' + (LR_SORT === 'brief' ? ' on' : '') + '" data-act="lrsort" data-sort="brief">Brief order</button>' +
     '<button type="button" class="lrchip' + (LR_SORT === 'new' ? ' on' : '') + '" data-act="lrsort" data-sort="new">Newest events first</button></div>' : '';
+  var updHead = (DT.filed || []).length ? '<div class="lr-secbar asanim" style="--d:120ms"><div class="assec-t">UPDATED RECORDS</div>' + sortCtl + '</div>' : '';
   /* The old currency strip is gone (JD 2026-10-28): its date lives in
      the workflow strip, and "next in the rotation" named people the
      landing doesn't need — only the not-yet-checked count remains,
@@ -9085,9 +9102,38 @@ function viewDaily(v){
     }
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
-  v.innerHTML = lrHead(sortCtl) + '<div class="fi-tabsrow">' + fiTabsHTML('records') + '</div>' + '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
+  return '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>';
+}
+
+function viewDaily(v){
+  dtLoad(); chLoad(); rcLoad();
+  if(S.route.seg && S.route.seg[0] === 'inbox'){
+    fiLoad(); fiProfLoad();
+    v.innerHTML = '<div class="page lr fi-page" data-kind="about">' + fiPageHTML() + '</div>';
+    fiPaint();
+    return;
+  }
+  /* V3.79.1: the header is the shared Live Records chrome in EVERY
+     state (loading / empty / loaded), so data landing never moves
+     it; the entrance animation plays on the first full render only —
+     data repaints and sort toggles render still, scroll preserved. */
+  var lrRepaint = LR_ANIM_SEEN;
+  /* On a Records <-> Inbox tab swap, render() restores THIS tab's
+     saved scroll at the end of the render; the scrollTop readable
+     here is still the OTHER tab's, so the repaint capture stands
+     down or its rAF restore would clobber the tab restore. */
+  var lrSwapRestore = !!render._drestore;
+  var lrKeepY = (lrRepaint && !lrSwapRestore) ? window.scrollY : 0;
+  var lrKeepV = (lrRepaint && !lrSwapRestore) ? v.scrollTop : 0;
+  var pageOpen = '<div class="page asearch lr' + (lrRepaint ? ' noanim' : '') + '" data-kind="about">';
+  if(!DT){
+    v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'Loading&hellip;') + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
+    return;
+  }
+  if(DT.empty || !DT.date){ v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'No brief yet') + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
+  v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', lrBriefSubHTML()) + '<div id="lr-body">' + lrRecordsBodyHTML() + '</div>' + rcConsoleHTML() + '</div>';
   LR_ANIM_SEEN = true;
-  if(lrRepaint && lrKeepY) requestAnimationFrame(function(){ window.scrollTo(0, lrKeepY); });
+  if(lrRepaint && (lrKeepY || lrKeepV)) requestAnimationFrame(function(){ window.scrollTo(0, lrKeepY); v.scrollTop = lrKeepV; });
   dtAnimate();
 }
 
@@ -12997,7 +13043,7 @@ function onClick(ev){
     case 'hmiback': hmiBack(); break;
     case 'hmiperson': { var hpdi = curDi(el); hmiClose(true); if(hpdi != null) openPerson(hpdi); break; }
     case 'hmgoto': if(di != null) openPerson(di); break;
-    case 'lrsort': LR_SORT = el.getAttribute('data-sort') || 'brief'; render(); break;
+    case 'lrsort': LR_SORT = el.getAttribute('data-sort') || 'brief'; if(!lrBodyPaint()) render(); break;
     case 'fi-read': fiMarkRead(el.getAttribute('data-id')); break;
     case 'fi-flag': fiToggleFlag(el.getAttribute('data-id')); break;
     case 'fi-undo': fiUndo(el.getAttribute('data-id')); break;
