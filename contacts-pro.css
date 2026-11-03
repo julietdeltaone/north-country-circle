@@ -3620,7 +3620,10 @@ html[data-mode="light"] .rcb-unsupported{--rcband:#b91c1c}
 /* Research Command rows, compact table (restored V3.44.1, JD: the
    hero-format rows were too tall). Why-held text is the one upgrade
    kept from that pass: reading size, full contrast. */
-.rc-row{display:grid;grid-template-columns:98px minmax(300px,1.5fr) minmax(210px,.9fr) 148px;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line);align-items:start}
+.rc-row{display:grid;grid-template-columns:98px minmax(300px,1.5fr) minmax(210px,.9fr) 148px;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line);align-items:start;transition:opacity .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),padding .3s var(--ease),border-width .3s var(--ease)}
+/* Decided rows settle in place (V3.80.1): fade + collapse like a
+   Fact Inbox Read — nothing else on the page moves. */
+.rc-row.leaving,.rc-bhead.leaving{opacity:0;overflow:hidden}
 .rc-row:last-child{border-bottom:0}
 .rc-row.rc-thead{padding:8px 20px;background:var(--bg2);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
 .rc-conf{display:flex;flex-direction:column;gap:3px}
@@ -3699,14 +3702,15 @@ html[data-mode="light"] .rccat-verification{--rccat:#3c5a73}
 .rc-adds span{font-weight:700;color:var(--txt)}
 /* Plain-speak card blocks + per-person bundles (V3.80.0): every card
    reads in the same four blocks; the pending view groups one person's
-   items under one header with batch actions. */
+   items under one header. Decisions are one card at a time (the
+   V3.80.0 batch controls were removed in V3.80.1). */
 .rc-block{margin-top:10px}
 .rc-bh{display:block;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
 .rc-block .rc-claim,.rc-block .rc-filetext,.rc-block .rc-onfile,.rc-block .rc-adds{margin-top:1px}
 .rc-why{font-size:13.5px;line-height:1.55;color:var(--txt)}
 .rc-progress{padding:10px 20px;font:700 13.5px var(--serif);color:var(--txt);border-bottom:1px solid var(--line);background:var(--bg2)}
 .rc-bundle{border-bottom:1px solid var(--line)}
-.rc-bhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 20px 10px;background:var(--bg2);border-bottom:1px solid var(--line)}
+.rc-bhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 20px 10px;background:var(--bg2);border-bottom:1px solid var(--line);transition:opacity .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),padding .3s var(--ease),border-width .3s var(--ease)}
 .rc-bav{display:inline-flex;flex:none}
 .rc-bav img{width:34px;height:34px;border-radius:50%;object-fit:cover;display:block}
 .rc-bhead .av{flex:none}
@@ -3715,9 +3719,6 @@ html[data-mode="light"] .rccat-verification{--rccat:#3c5a73}
 .rc-bname a:hover{text-decoration:underline}
 .rc-bcount{font-size:12px;color:var(--mut);white-space:nowrap}
 .rc-bflag{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border-radius:999px;color:var(--hot);border:1px solid color-mix(in srgb,var(--hot) 48%,transparent);background:color-mix(in srgb,var(--hot) 13%,transparent);white-space:nowrap}
-.rc-bacts{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
-.rc-tick{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--mut);cursor:pointer;padding:2px 0}
-.rc-tick input{width:16px;height:16px;flex:none;margin:0}
 /* Calendar (V3.44.0, draft): vertical center-spine timeline.
    Entries alternate around a center line; series ribbons span it;
    month markers sit on the spine. */
