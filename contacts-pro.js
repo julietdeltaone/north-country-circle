@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.79.0';
+var APP_VERSION = '3.79.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8950,27 +8950,10 @@ function fiGoto(id){
     if(card){ card.scrollIntoView({ block: 'center', behavior: 'smooth' }); card.classList.add('flash'); setTimeout(function(){ card.classList.remove('flash'); }, 1650); }
   }, 60);
 }
-function viewDaily(v){
-  dtLoad(); chLoad(); rcLoad();
-  if(S.route.seg && S.route.seg[0] === 'inbox'){
-    fiLoad(); fiProfLoad();
-    v.innerHTML = '<div class="page lr fi-page" data-kind="about">' + fiPageHTML() + '</div>';
-    fiPaint();
-    return;
-  }
-  /* V3.79.1: the header is the shared Live Records chrome in EVERY
-     state (loading / empty / loaded), so data landing never moves
-     it; the entrance animation plays on the first full render only —
-     data repaints and sort toggles render still, scroll preserved. */
-  var lrRepaint = LR_ANIM_SEEN;
-  var lrKeepY = lrRepaint ? window.scrollY : 0;
-  var lrKeepV = lrRepaint ? v.scrollTop : 0;
-  var pageOpen = '<div class="page asearch lr' + (lrRepaint ? ' noanim' : '') + '" data-kind="about">';
-  if(!DT){
-    v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'Loading&hellip;') + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
-    return;
-  }
-  if(DT.empty || !DT.date){ v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'No brief yet') + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
+/* V3.79.1: the Records body (everything under the chrome) is its
+   own builder so a sort click can repaint ONLY this region
+   (lrBodyPaint) — the header DOM is never rebuilt. */
+function lrRecordsBodyHTML(){
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtD(iso){ if(!iso) return ''; var p = String(iso).split('-'); if(p.length < 3) return String(iso); return MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]; }   /* V3.75.0 (bug hunt 34): partial-date guard, same as the Research console's fmtD — a '2026-10' value no longer renders "Oct NaN, 2026" */
   function daysBetween(a, b){ return Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 86400000); }
@@ -9089,10 +9072,10 @@ function viewDaily(v){
     ((DT.checked || []).length ? '<details class="lrdrop"><summary>Who was checked <span class="dim">(' + (DT.checked || []).length + ')</span></summary>' +
       '<div class="aschips">' + allChecked.map(function(c){ return chip(c, filedNames[String(c.name || '').toLowerCase()] ? 'upd' : 'cur'); }).join('') + '</div></details>' : '') +
     '</div></section>';
-  var updHead = (DT.filed || []).length ? '<div class="assec-t asanim" style="--d:120ms">UPDATED RECORDS</div>' : '';
-  var sortCtl = (DT.filed || []).length ? '<div class="lrsort inhead"><span>Records</span>' +
+  var sortCtl = (DT.filed || []).length ? '<div class="lrsort"><span>Records</span>' +
     '<button type="button" class="lrchip' + (LR_SORT === 'brief' ? ' on' : '') + '" data-act="lrsort" data-sort="brief">Brief order</button>' +
     '<button type="button" class="lrchip' + (LR_SORT === 'new' ? ' on' : '') + '" data-act="lrsort" data-sort="new">Newest events first</button></div>' : '';
+  var updHead = (DT.filed || []).length ? '<div class="lr-secbar asanim" style="--d:120ms"><div class="assec-t">UPDATED RECORDS</div>' + sortCtl + '</div>' : '';
   /* The old currency strip is gone (JD 2026-10-28): its date lives in
      the workflow strip, and "next in the rotation" named people the
      landing doesn't need — only the not-yet-checked count remains,
@@ -9119,9 +9102,38 @@ function viewDaily(v){
     }
     rail = '<aside class="dtrail"><div class="dtrail-h"><span>CHANGE LOG' + (CH.updated ? '<span class="dtrail-upd">Updated ' + esc(fmtD(CH.updated)) + '</span>' : '') + '</span><em class="cnt">' + CH.entries.length + '</em></div><div class="dtrail-list">' + citems + '</div></aside>';
   }
-  v.innerHTML = lrHead(sortCtl) + '<div class="fi-tabsrow">' + fiTabsHTML('records') + '</div>' + '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>' + rcConsoleHTML() + '</div>';
+  return '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>';
+}
+
+function viewDaily(v){
+  dtLoad(); chLoad(); rcLoad();
+  if(S.route.seg && S.route.seg[0] === 'inbox'){
+    fiLoad(); fiProfLoad();
+    v.innerHTML = '<div class="page lr fi-page" data-kind="about">' + fiPageHTML() + '</div>';
+    fiPaint();
+    return;
+  }
+  /* V3.79.1: the header is the shared Live Records chrome in EVERY
+     state (loading / empty / loaded), so data landing never moves
+     it; the entrance animation plays on the first full render only —
+     data repaints and sort toggles render still, scroll preserved. */
+  var lrRepaint = LR_ANIM_SEEN;
+  /* On a Records <-> Inbox tab swap, render() restores THIS tab's
+     saved scroll at the end of the render; the scrollTop readable
+     here is still the OTHER tab's, so the repaint capture stands
+     down or its rAF restore would clobber the tab restore. */
+  var lrSwapRestore = !!render._drestore;
+  var lrKeepY = (lrRepaint && !lrSwapRestore) ? window.scrollY : 0;
+  var lrKeepV = (lrRepaint && !lrSwapRestore) ? v.scrollTop : 0;
+  var pageOpen = '<div class="page asearch lr' + (lrRepaint ? ' noanim' : '') + '" data-kind="about">';
+  if(!DT){
+    v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'Loading&hellip;') + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
+    return;
+  }
+  if(DT.empty || !DT.date){ v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'No brief yet') + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
+  v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', lrBriefSubHTML()) + '<div id="lr-body">' + lrRecordsBodyHTML() + '</div>' + rcConsoleHTML() + '</div>';
   LR_ANIM_SEEN = true;
-  if(lrRepaint && lrKeepY) requestAnimationFrame(function(){ window.scrollTo(0, lrKeepY); });
+  if(lrRepaint && (lrKeepY || lrKeepV)) requestAnimationFrame(function(){ window.scrollTo(0, lrKeepY); v.scrollTop = lrKeepV; });
   dtAnimate();
 }
 
@@ -13031,7 +13043,7 @@ function onClick(ev){
     case 'hmiback': hmiBack(); break;
     case 'hmiperson': { var hpdi = curDi(el); hmiClose(true); if(hpdi != null) openPerson(hpdi); break; }
     case 'hmgoto': if(di != null) openPerson(di); break;
-    case 'lrsort': LR_SORT = el.getAttribute('data-sort') || 'brief'; render(); break;
+    case 'lrsort': LR_SORT = el.getAttribute('data-sort') || 'brief'; if(!lrBodyPaint()) render(); break;
     case 'fi-read': fiMarkRead(el.getAttribute('data-id')); break;
     case 'fi-flag': fiToggleFlag(el.getAttribute('data-id')); break;
     case 'fi-undo': fiUndo(el.getAttribute('data-id')); break;
