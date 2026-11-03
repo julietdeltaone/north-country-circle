@@ -4443,7 +4443,7 @@ html[data-mode="dark"] .band{background:rgba(var(--band),.09)}
 .band header{display:flex;align-items:center;gap:8px;min-height:24px;margin-bottom:5px}
 .band header .cnt{display:none}
 .psheets .tile .ocs-badge{margin-top:5px;font-size:10.5px;padding:2px 8px;white-space:normal;line-height:1.35}
-.band header h3{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.band header h3{position:absolute;width:1px;height:1px;overflow:visible;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:normal}
 .band-note{margin-bottom:8px}
 .psheets .sub-h{color:var(--ink)}
 
@@ -5594,7 +5594,7 @@ html[data-mode="dark"] .hm-charts{
 .hm-charts .hmr-dbg3{background:var(--hmr-d3)} .hm-charts .hmr-dbg4{background:var(--hmr-d4)} .hm-charts .hmr-dbg5{background:var(--hmr-d5)}
 .hm-charts .hmr-dbg6{background:var(--hmr-d6)} .hm-charts .hmr-dbg7{background:var(--hmr-d7)} .hm-charts .hmr-dbg8{background:var(--hmr-d8)}
 .hm-charts .hmr-dbg9{background:var(--hmr-d9)}
-.hm-charts .hmr-donc{fill:var(--txt);font:700 40px var(--serif)}
+.hm-charts .hmr-donc{fill:var(--txt);font:700 30px var(--serif)}
 .hm-charts .hmr-dons{fill:var(--mut);font:600 9px var(--sans);letter-spacing:.05em}
 .hm-charts .hmr-legs{display:flex;flex-direction:column;flex:1;min-width:118px}
 .hm-charts .hmr-legs.wrap{flex-direction:row;flex-wrap:wrap;gap:2px 14px}
@@ -5853,3 +5853,39 @@ body[data-view="sandbox"] #view{overflow-y:auto !important;display:block}
 .ph-poss-th .ph-ini{font-size:15px}
 .sst-table th{white-space:normal;overflow-wrap:break-word;line-height:1.3}
 .cnc-qalert{border-color:var(--bad,#b3402e);background:color-mix(in srgb,var(--bad,#b3402e) 10%,transparent)}
+
+/* ================================================================
+   V3.77.0 — LAYOUT INTEGRITY (fix program step 3, 2026-11-02)
+   The gate's zero-tolerance rules applied to the standing backlog:
+   card-scale kind segments are short header ticks, never full-
+   height lines; closed Live Records details stay hidden; table
+   text wraps instead of clipping; the Audit context line outranks
+   the generic .pn small rule that forced it to one line.
+   ================================================================ */
+/* 1 — EDGE RULE: on card-scale hosts the inset segment is a 30px
+   header tick (top 12px, clear of the corner radius); row-scale
+   hosts keep the floated segment. */
+.card[data-kind]:not(:has(.kind-chip))::before,.chg[data-kind]::before{bottom:auto;height:30px}
+/* 2 — Live Records: a closed "Who was checked" details must hide
+   its chip list (the flex display below overrode the UA rule that
+   hides closed-details content, spilling 600px of chips over the
+   Research Command header). */
+.lrdrop:not([open]) .aschips{display:none}
+/* 3 — data tables: values wrap inside their column instead of
+   clipping behind an ellipsis; long single words break only when
+   they cannot fit a line of their own (overflow-wrap:break-word). */
+.ptable .clip{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:break-word;max-width:none}
+.page.people .ptable .pn b{white-space:normal;overflow:visible;text-overflow:clip}
+.ptable .ptlc{white-space:normal;overflow:visible;text-overflow:clip}
+.page.people .ptable .ptlc{white-space:normal;overflow:visible;text-overflow:clip}
+.ptable td.c-loc{overflow-wrap:break-word}
+.sst-table td.c-lastc,.sst-table td.c-firstc{white-space:normal}
+/* 4 — Audit: the context line under a name wraps (its own rule
+   outranks .pn small's nowrap). */
+.pn small.aud-ctx{white-space:normal;overflow:visible}
+/* 5 — Home Last Contacts: the preview line wraps inside its
+   column instead of clipping (it carries no tooltip). */
+.hm-lcprev{white-space:normal;overflow:visible;text-overflow:clip}
+/* 6 — Profile Files: source hostnames are single unbreakable
+   words; they break when they cannot fit the name column. */
+.file b{overflow-wrap:break-word}
