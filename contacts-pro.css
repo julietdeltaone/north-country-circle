@@ -5818,8 +5818,19 @@ html[data-mode="dark"] .hm-charts{
 #view{scrollbar-gutter:stable}
 
 /* ---------- one scroller per surface: the page ---------- */
-.ptwrap{overflow:visible !important}
-.page.people .ptwrap{flex:none !important}
+/* V3.79.3 correction (JD 2026-11-03: "the people section isn't
+   scrolling"): the one-scroller conversion below assumed the People
+   page itself scrolls, but .page.people is locked to the shell
+   height (flex:1 1 0% + min-height:0 inside #view's column), so the
+   page has nothing to scroll — killing the table wrap's own scroll
+   left NO scroller and ~51,000px of table clipped under an
+   overflow:hidden card. People keeps its 2026-10-28 design instead:
+   the table wrap (.ptwrap, geometry at the People pass) is the
+   scroller for the List / By-last-contact layouts, and #plist
+   scrolls the Timeline layout. The other surfaces' conversions
+   (dtrail, sb-canvas, hm-rail, sst-wrap) stand: their pages are not
+   height-locked, so the page genuinely scrolls there. */
+.page.people .plist{overflow-y:auto}
 .page.people .ptable{min-width:0}
 .dtrail{position:static !important;max-height:none !important;overflow:visible !important}
 .dtrail-list{max-height:none !important;overflow:visible !important}
