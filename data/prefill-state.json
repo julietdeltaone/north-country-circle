@@ -6,7 +6,7 @@
    "field": "location_on_file",
    "value": "Canton, NY",
    "first_seen": "2026-11-02",
-   "last_seen": "2026-11-02",
+   "last_seen": "2026-11-03",
    "last_counted": "2026-11-02"
   },
   "pf-cda38e0777": {
@@ -55,14 +55,15 @@
    "last_counted": "2026-11-02"
   },
   "pf-a44d074ab1": {
-   "skips": 1,
+   "skips": 2,
    "key": "elizabethadaniels",
    "field": "location_on_file",
    "value": "Potsdam, NY",
    "first_seen": "2026-11-02",
-   "last_seen": "2026-11-02",
-   "last_counted": "2026-11-02"
+   "last_seen": "2026-11-03",
+   "last_counted": "2026-11-03",
+   "shelved": true
   }
  },
- "updated": "2026-11-02"
+ "updated": "2026-11-03"
 }
