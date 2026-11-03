@@ -13157,8 +13157,8 @@
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "photos": {
-   "todo": 6,
-   "new": 3,
+   "todo": 3,
+   "new": 0,
    "cleared_at": null
   }
  },
@@ -16182,5 +16182,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-03T21:26:00Z"
+ "updated": "2026-11-03T21:37:00Z"
 }
