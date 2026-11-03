@@ -8501,6 +8501,2276 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-ana-miller-ana-miller-of-massena-ny-was-set-to",
+   "name": "ct:ana miller",
+   "display": "Ana Miller",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Ana Miller of Massena, NY was set to graduate from SUNY Potsdam in May 2023 with a Master of Science in Teaching degree in Childhood Education",
+   "file_text": "Ana Miller of Massena, NY was set to graduate from SUNY Potsdam in May 2023 with a Master of Science in Teaching degree in Childhood Education",
+   "source": "Merit Pages",
+   "url": "https://potsdam.meritpages.com/stories/Ana-Miller-Set-to-Graduate-from-SUNY-Potsdam/108809692",
+   "anchors": [
+    "Special Educator at Nightingale Elementary, Massena CSD",
+    "2024 Puzzle Piece Foundation NNY Grant for ASD classroom"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: Massena educator -> hop1 SUNY Potsdam Merit Pages (Massena hometown anchor)",
+   "confidence": 75,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 22,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-liana-sinclair-liana-sinclair-married-benjamin-hull-their",
+   "name": "sf:liana-sinclair",
+   "display": "Liana Sinclair",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Liana Sinclair married Benjamin Hull; their wedding registry (MyRegistry) is dated January 9, 2016, Madrid, NY",
+   "file_text": "Liana Sinclair married Benjamin Hull; their wedding registry (MyRegistry) is dated January 9, 2016, Madrid, NY",
+   "source": "MyRegistry",
+   "url": "https://www.myregistry.com/wedding-registry/liana-sinclair-and-benjamin-hull-madrid-ny/930131/giftlist",
+   "anchors": [
+    "National Coffee Corp Potsdam 2017",
+    "Location Madrid NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Madrid NY + Hull name -> hop1 wedding registry",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-dawsonwiegandt-dawson-wiegandt-has-served-as-a-deputy",
+   "name": "ig:dawsonwiegandt",
+   "display": "Dawson Wiegandt",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Dawson Wiegandt has served as a Deputy Sheriff with the St. Lawrence County Sheriff's Office in Canton, NY since December 2022; previously a Parts/Sales Associate at Cazenovia Equipment in Canton (Aug 2020-Jun 2021)",
+   "file_text": "Dawson Wiegandt has served as a Deputy Sheriff with the St. Lawrence County Sheriff's Office in Canton, NY since December 2022; previously a Parts/Sales Associate at Cazenovia Equipment in Canton (Aug 2020-Jun 2021)",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/dawson-wiegandt",
+   "anchors": [
+    "St. Lawrence County Sheriff's Office, Canton NY",
+    "College of Saint Rose track"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: SLC Sheriff Canton -> hop1 self-authored Bold.pro resume",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-gracyn-elizabeth-gracyn-denny-works-as-a-registered-nurse-in",
+   "name": "ig:gracyn_elizabeth",
+   "display": "Gracyn Denny",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Gracyn Denny works as a Registered Nurse in the Emergency Department at Canton-Potsdam Hospital in Potsdam, NY",
+   "file_text": "Gracyn Denny works as a Registered Nurse in the Emergency Department at Canton-Potsdam Hospital in Potsdam, NY",
+   "source": "CIENCE",
+   "url": "https://www.cience.com/profile/marra-t/941121283",
+   "anchors": [
+    "Registered Nurse",
+    "MSN Capella University"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Registered Nurse North Country -> hop1 hospital org-chart aggregator listing",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-ian-wilson-ian-wilson-of-west-monroe-reenlisted-with",
+   "name": "sf:ian-wilson",
+   "display": "Ian Wilson",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Ian Wilson of West Monroe reenlisted with HHC, 2nd Battalion, 108th Infantry while holding the rank of Sergeant (DMNA reenlistment announcement)",
+   "file_text": "Ian Wilson of West Monroe reenlisted with HHC, 2nd Battalion, 108th Infantry while holding the rank of Sergeant (DMNA reenlistment announcement)",
+   "source": "Oswego County Today",
+   "url": "https://oswegocountytoday.com/community/new-york-army-national-guard-soldier-reenlistments-2/",
+   "anchors": [
+    "NY Army National Guard",
+    "HHC 2nd Battalion 108th Infantry"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: HHC 2-108th -> hop1 DMNA reenlistment release",
+   "confidence": 82,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 24,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-courtney-letiecq-courtney-letiecq-was-named-to-the-citi",
+   "name": "sf:courtney letiecq",
+   "display": "Courtney Letiecq",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Courtney Letiecq was named to the CiTi BOCES honor roll for the first marking period of the 2022-23 school year while a student at APW",
+   "file_text": "Courtney Letiecq was named to the CiTi BOCES honor roll for the first marking period of the 2022-23 school year while a student at APW",
+   "source": "Oswego County Today",
+   "url": "https://oswegocountytoday.com/community/citi-boces-recognizes-first-marking-period-honor-roll-students/",
+   "anchors": [
+    "APW High School Class of 2024",
+    "honors graduate"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: APW student -> hop1 Oswego County Today BOCES honor roll list",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-jonathan-puglia-jonathan-puglia-works-in-the-coffee-trade",
+   "name": "ct:jonathan puglia",
+   "display": "Jonathan Puglia",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Jonathan Puglia works in the coffee trade as a Store Manager and Coffee Roaster (LinkedIn-derived directory listing), consistent with his on-file National Coffee Corp role in Ogdensburg",
+   "file_text": "Jonathan Puglia works in the coffee trade as a Store Manager and Coffee Roaster (LinkedIn-derived directory listing), consistent with his on-file National Coffee Corp role in Ogdensburg",
+   "source": "AroundDeal",
+   "url": "https://www.arounddeal.com/p/jonathan-jones/v2wvhwjyvs",
+   "anchors": [
+    "National Coffee Corp, Ogdensburg NY",
+    "Shippensburg University"
+   ],
+   "missing_gate": "Held: possible grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: National Coffee Corp -> hop1 LinkedIn-data aggregator role listing",
+   "confidence": 44,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 7,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-meggreg4-married-to-greg-lapinski-together-they",
+   "name": "ig:meggreg4",
+   "display": "Meg Lapinski",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Married to Greg Lapinski; together they hosted a Christian Fellowship Center 'Canton Food & Fellowship Gathering' dinner for Canton locals at their home on September 23, 2012",
+   "file_text": "Married to Greg Lapinski; together they hosted a Christian Fellowship Center 'Canton Food & Fellowship Gathering' dinner for Canton locals at their home on September 23, 2012",
+   "source": "Christian Fellowship Center",
+   "url": "https://myemail.constantcontact.com/News-from-Christian-Fellowship-Center.html?soid=1102557608599&aid=4XDtQ_GmDnA",
+   "anchors": [
+    "Christian Fellowship Center",
+    "Canton, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: Christian Fellowship Center + Canton, NY -> CFC's official newsletter naming Meg & Greg Lapinski as Canton gathering hosts",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-drewspov-public-records-aggregators-list-an-andrew",
+   "name": "ig:drewspov_",
+   "display": "Andrew Matott",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Public-records aggregators list an Andrew Matott born April 1992 with past Potsdam, NY addresses and a Pawtucket, RI address, consistent with the on-file relocation to Rhode Island",
+   "file_text": "Public-records aggregators list an Andrew Matott born April 1992 with past Potsdam, NY addresses and a Pawtucket, RI address, consistent with the on-file relocation to Rhode Island",
+   "source": "FamilyTreeNow",
+   "url": "https://www.familytreenow.com/records/people/address/6852-state-high-way-11_potsdam-ny-13676",
+   "anchors": [
+    "Awakening Church",
+    "relocated to Rhode Island"
+   ],
+   "missing_gate": "Held: possible grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Rhode Island relocation + Potsdam origin -> people-search aggregator address history",
+   "confidence": 44,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 7,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-hpuglia12-earned-a-bachelor-of-science-at-houghton",
+   "name": "ig:hpuglia12",
+   "display": "Hannah Puglia",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Earned a Bachelor of Science at Houghton College (now Houghton University), attending roughly 2005-2010",
+   "file_text": "Earned a Bachelor of Science at Houghton College (now Houghton University), attending roughly 2005-2010",
+   "source": "ContactOut",
+   "url": "https://contactout.com/hannah-puglia-74972",
+   "anchors": [
+    "Clinical Applications Support Specialist, Canton-Potsdam Hospital (Rochester Regional Heal"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Canton-Potsdam Hospital employment -> LinkedIn-derived profile with exact employer match listing Houghton College B.S.",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-annecatherina7-her-maiden-name-is-anne-wangerin-she-became",
+   "name": "ig:annecatherina7",
+   "display": "Anne Katherin Wolf",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "Her maiden name is Anne Wangerin (she became Anne Wolf on marrying Nathaniel Wolf)",
+   "file_text": "Her maiden name is Anne Wangerin (she became Anne Wolf on marrying Nathaniel Wolf)",
+   "source": "Honeyfund",
+   "url": "https://www.honeyfund.com/site/wolf-family-2024",
+   "anchors": [
+    "Christian Fellowship Center",
+    "married Nathaniel Wolf June 22, 2024, Canton ceremony / Potsdam reception (on-file)"
+   ],
+   "missing_gate": "Held: likely grade \u2014 identity not independently anchored to this person. Lineage: seed: on-file marriage to Nathaniel Wolf -> couple's own wedding page titled 'Nathaniel Wolf & Anne Wangerin'",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 16,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-annecatherina7-the-wedding-ceremony-was-held-at-25-court",
+   "name": "ig:annecatherina7",
+   "display": "Anne Katherin Wolf",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "The wedding ceremony was held at 25 Court Street, Canton, NY (the Christian Fellowship Center Canton address)",
+   "file_text": "The wedding ceremony was held at 25 Court Street, Canton, NY (the Christian Fellowship Center Canton address)",
+   "source": "Honeyfund",
+   "url": "https://www.honeyfund.com/site/wolf-family-2024",
+   "anchors": [
+    "Christian Fellowship Center",
+    "married Nathaniel Wolf June 22, 2024, Canton ceremony / Potsdam reception (on-file)"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: CFC affiliation + Canton ceremony -> Honeyfund page's listed ceremony address",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-johnaeastmond-graduated-magna-cum-laude-from-northwestern",
+   "name": "ig:johnaeastmond",
+   "display": "John Eastmond",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Graduated magna cum laude from Northwestern State University with a B.S. in Psychology and a concentration in Substance Abuse Counseling, and is a member of the Phi Kappa Phi honor society",
+   "file_text": "Graduated magna cum laude from Northwestern State University with a B.S. in Psychology and a concentration in Substance Abuse Counseling, and is a member of the Phi Kappa Phi honor society",
+   "source": "BelieversBio",
+   "url": "https://believersbio.org/andrew-eastmond-biography-age-net-worth-family-career-and-achievements/",
+   "anchors": [
+    "Christian Fellowship Center appearances with Andrew Eastmond",
+    "guitar (on-file touring footprint)"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Eastmond ministry identity -> secondary biography page's 'Ministry with John Eastmond' section",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-sphip-06-employed-in-2024-as-a-safety-security",
+   "name": "ig:sphip_06",
+   "display": "Sydnie Phippen",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Employed in 2024 as a Safety & Security Officer Trainee with the New York State Office for People With Developmental Disabilities",
+   "file_text": "Employed in 2024 as a Safety & Security Officer Trainee with the New York State Office for People With Developmental Disabilities",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/salaries/NY/office-for-people-with-developmental-disabilities/j/safety-scrty-offr-tr",
+   "anchors": [
+    "North Country Community College",
+    "law enforcement specialty"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: law enforcement specialty -> hop 1: GovSalaries public-payroll listing (secondary aggregator of state payroll data)",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kayla-ervin-also-served-as-a-human-resource-sergeant-at",
+   "name": "sf:kayla-ervin",
+   "display": "Kayla Ervin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Also served as a Human Resource Sergeant at Fort Jackson (Columbia, SC), managing HR operations for 400+ personnel, supervising a three-person HR team, and delivering onboarding briefings to 8,000+ new soldiers across 12 training cycles",
+   "file_text": "Also served as a Human Resource Sergeant at Fort Jackson (Columbia, SC), managing HR operations for 400+ personnel, supervising a three-person HR team, and delivering onboarding briefings to 8,000+ new soldiers across 12 training cycles",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/kayla-ervin",
+   "anchors": [
+    "U.S. Army / Army National Guard",
+    "HHC 27th IBCT S1"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Army HR career (Fort Drum/Bethesda) -> hop 1: Bold.pro work history",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kayla-ervin-also-served-as-an-executive-administrative",
+   "name": "sf:kayla-ervin",
+   "display": "Kayla Ervin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Also served as an Executive Administrative Assistant in Kaiserslautern, Germany, and earlier as a Medical Imaging File Clerk at Rome Memorial Hospital in Rome, NY; she is a Rome Free Academy graduate",
+   "file_text": "Also served as an Executive Administrative Assistant in Kaiserslautern, Germany, and earlier as a Medical Imaging File Clerk at Rome Memorial Hospital in Rome, NY; she is a Rome Free Academy graduate",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/kayla-ervin",
+   "anchors": [
+    "U.S. Army / Army National Guard",
+    "HHC 27th IBCT S1"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Army HR career -> hop 1: Bold.pro work history and education sections",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kayla-ervin-holds-an-associate-of-arts-in-general",
+   "name": "sf:kayla-ervin",
+   "display": "Kayla Ervin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Holds an Associate of Arts in General Studies from Columbia Southern University, completed 42A Human Resources training with the 369th Adjutant General Battalion at Fort Jackson and BLC at Eastover, SC, holds an active Secret security clearance, and lists certifications as ATLS Course Coordinator (2025), Unit Deterrence Leader (2024), and Equal Opportunity Leader (2023)",
+   "file_text": "Holds an Associate of Arts in General Studies from Columbia Southern University, completed 42A Human Resources training with the 369th Adjutant General Battalion at Fort Jackson and BLC at Eastover, SC, holds an active Secret security clearance, and lists certifications as ATLS Course Coordinator (2025), Unit Deterrence Leader (2024), and Equal Opportunity Leader (2023)",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/kayla-ervin",
+   "anchors": [
+    "U.S. Army / Army National Guard",
+    "HHC 27th IBCT S1"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Columbia Southern University + 42A/S1 role -> hop 1: Bold.pro education, summary, and certification sections",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-janice-dane-a-janice-dane-of-madrid-new-york-appears-on",
+   "name": "sf:janice-dane",
+   "display": "Janice Dane",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "A Janice Dane of Madrid, New York appears on the participant roster of Edmund Chia's Peregrine Program (an art program)",
+   "file_text": "A Janice Dane of Madrid, New York appears on the participant roster of Edmund Chia's Peregrine Program (an art program)",
+   "source": "Edmund Chia Peregrine Program",
+   "url": "https://edmundchia.com/peregrineprogram",
+   "anchors": [
+    "Christian Fellowship Center",
+    "art specialty"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: art specialty + Christian Fellowship Center (Madrid, NY) -> hop 1: program roster listing name + Madrid, NY",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-sara-hargrave-she-also-appears-as-a-carthage-central",
+   "name": "sf:sara-hargrave",
+   "display": "Sara Hargrave",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "She also appears as a Carthage Central Schools laborer in 2021 public-payroll records",
+   "file_text": "She also appears as a Carthage Central Schools laborer in 2021 public-payroll records",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/daly-lauri-124684317",
+   "anchors": [
+    "Carthage Central School District (laborer, 2023 per GovSalaries on file)",
+    "Carthage, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Carthage Central School District laborer -> hop 1: GovSalaries co-worker listing dated 2021",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-juliefelicianosec-julie-feliciano-is-the-founder-of-aja",
+   "name": "ig:juliefelicianosec",
+   "display": "Julie Feliciano",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Julie Feliciano is the founder of Aja Performance Media (on file only as working there) and is pursuing two Bachelor of Science majors at Saint Michael's College: Digital Media & Communications and Digital Marketing",
+   "file_text": "Julie Feliciano is the founder of Aja Performance Media (on file only as working there) and is pursuing two Bachelor of Science majors at Saint Michael's College: Digital Media & Communications and Digital Marketing",
+   "source": "Aja Performance Media",
+   "url": "https://ajaperformancemedia.com/about-me",
+   "anchors": [
+    "Saint Michael's College",
+    "Digital Media and Communications"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Aja Performance Media + Saint Michael's College -> hop 1: her own business About page",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-juliefelicianosec-her-aja-performance-media-site-lists-an",
+   "name": "ig:juliefelicianosec",
+   "display": "Julie Feliciano",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Her Aja Performance Media site lists an Arizona/Mexico study abroad for 2025-2026",
+   "file_text": "Her Aja Performance Media site lists an Arizona/Mexico study abroad for 2025-2026",
+   "source": "Aja Performance Media",
+   "url": "https://ajaperformancemedia.com/about-me",
+   "anchors": [
+    "Saint Michael's College",
+    "Digital Media and Communications"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Saint Michael's College student -> hop 1: section heading on her own About page",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-kimberlymitchelldamon-kimberly-damon-operates-a-licensed-home",
+   "name": "ig:kimberlymitchelldamon",
+   "display": "Kimberly Damon",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Kimberly Damon operates a licensed home-based child care program in Potsdam, NY, listed with a capacity of 16 children",
+   "file_text": "Kimberly Damon operates a licensed home-based child care program in Potsdam, NY, listed with a capacity of 16 children",
+   "source": "Daycare.com",
+   "url": "https://www.daycare.com/search/new-york/norwood",
+   "anchors": [
+    "Bright Beginnings Daycare owner/operator",
+    "Potsdam, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Bright Beginnings Daycare, Potsdam -> hop 1: daycare.com licensed-provider listing under her name in Potsdam",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-isabelle-westerman-she-runs-hearthkeeper-birth-services",
+   "name": "sf:isabelle-westerman",
+   "display": "Isabelle Westerman",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "She runs Hearthkeeper Birth Services, supporting faith-filled families through autonomous home-birth pregnancies and postpartum seasons",
+   "file_text": "She runs Hearthkeeper Birth Services, supporting faith-filled families through autonomous home-birth pregnancies and postpartum seasons",
+   "source": "Hearthkeeper Birth Services",
+   "url": "https://www.hearthkeeperbirthservices.com/",
+   "anchors": [
+    "Lives Pike, NH",
+    "hometown Corinth, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Pike, NH -> hop1 WOMB page links to Hearthkeeper -> hop2 her own service site (self-authored)",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-jennifer-gallagher-moore-jennifer-gallagher-moore-is-the-daughter-of",
+   "name": "sf:jennifer-gallagher-moore",
+   "display": "Jennifer Gallagher Moore",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Jennifer Gallagher Moore is the daughter of Potsdam Fire Department Past Chief Joe Gallagher, per her signed entry in the Potsdam Fire Department guestbook (Potsdam, NY)",
+   "file_text": "Jennifer Gallagher Moore is the daughter of Potsdam Fire Department Past Chief Joe Gallagher, per her signed entry in the Potsdam Fire Department guestbook (Potsdam, NY)",
+   "source": "Potsdam Fire Department",
+   "url": "https://www.potsdamfire.org/apps/public/guest/index.cfm?PageNum=6",
+   "anchors": [
+    "Director of Critical Care at Canton-Potsdam Hospital",
+    "Potsdam, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Potsdam, NY + Gallagher maiden name -> hop1 Potsdam Fire Dept guestbook signed with her full married name",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-justin-daniels-justin-daniels-was-employed-as-a-trooper",
+   "name": "ct:justin daniels",
+   "display": "Justin Daniels",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Justin Daniels was employed as a Trooper with the New York State Police in 2022 (reported rate of pay $59,612), completing the trooper appointment he was awaiting as of 2020",
+   "file_text": "Employed as a Trooper with the New York State Police in 2022",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/daniels-justin-r-163792317",
+   "anchors": [
+    "Potsdam, NY",
+    "North Country Community College"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: pursuing NY State Trooper appointment from Potsdam -> hop1 GovSalaries NY State Police payroll record",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kaylee-hartley-kaylee-hartley-is-a-stepdaughter-of-john",
+   "name": "sf:kaylee-hartley",
+   "display": "Kaylee Hartley",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Kaylee Hartley is a stepdaughter of John Calvin Clarke Jr. of Canton, NY (died January 19, 2026), whose obituary lists her among his stepchildren alongside Angela Grant, Stephanie Davison, and Brock Davison",
+   "file_text": "Kaylee Hartley is a stepdaughter of John Calvin Clarke Jr. of Canton, NY (died January 19, 2026), whose obituary lists her among his stepchildren alongside Angela Grant, Stephanie Davison, and Brock Davison",
+   "source": "O'Leary Funeral Service",
+   "url": "https://www.olearyfuneralservice.com/obituaries/john-clarke-jr",
+   "anchors": [
+    "Edwards, NY",
+    "RN, Emergency Department / SWAT RN at Upstate Medical University"
+   ],
+   "missing_gate": "Held: likely grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Edwards, NY hometown -> hop1 O'Leary Funeral Service obituary for a Canton man listing stepdaughter Kaylee Hartley; Edwards/Canton family cluster matches public-record links to Darlene Clarke of Edwards",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kaylee-hartley-kaylee-hartley-appears-in-suny-upstate-hsc",
+   "name": "sf:kaylee-hartley",
+   "display": "Kaylee Hartley",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Kaylee Hartley appears in SUNY Upstate (HSC@Syracuse) hospital payroll records in 2018 as a Teaching & Research Center Nurse",
+   "file_text": "Kaylee Hartley appears in SUNY Upstate (HSC@Syracuse) hospital payroll records in 2018 as a Teaching & Research Center Nurse",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/broome-erin-n-34780926",
+   "anchors": [
+    "Edwards, NY",
+    "RN, Emergency Department / SWAT RN at Upstate Medical University"
+   ],
+   "missing_gate": "Held: possible grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: RN at Upstate Medical University -> hop1 GovSalaries co-worker listing on an Upstate HSC payroll page",
+   "confidence": 44,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 7,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-kevindaniels7-kevin-daniels-agency-email-is-kevin",
+   "name": "ig:kevindaniels7",
+   "display": "Kevin Daniels",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Kevin Daniels' agency email is kevin@kevindanielsagency.com, per Hagerty's official agent locator listing for the Kevin Daniels Agency at 70 Main St, Potsdam",
+   "file_text": "Kevin Daniels' agency email is kevin@kevindanielsagency.com, per Hagerty's official agent locator listing for the Kevin Daniels Agency at 70 Main St, Potsdam",
+   "source": "Hagerty Agent Locator",
+   "url": "https://www.hagerty.com/apps/Resources/AgentLocator/Agency/493736/Kevin_M_Daniels",
+   "anchors": [
+    "Owner/Principal Agent, Kevin Daniels Agency (Nationwide), Potsdam, NY",
+    "Christian Fellowship Center"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Kevin Daniels Agency, Potsdam -> hop1 Hagerty agent locator",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-philip-hubbe-philip-hubbe-is-a-clarkson-university-class",
+   "name": "ct:philip hubbe",
+   "display": "Philip Hubbe",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Philip Hubbe is a Clarkson University Class of 2022 graduate with a Bachelor's degree in Electrical Engineering, from Hopkinton, MA; before/during college he worked as an Associate at Broggi Real Estate and Property Management (Worcester, MA, 2016-2020)",
+   "file_text": "Philip Hubbe is a Clarkson University Class of 2022 graduate with a Bachelor's degree in Electrical Engineering, from Hopkinton, MA; before/during college he worked as an Associate at Broggi Real Estate and Property Management (Worcester, MA, 2016-2020)",
+   "source": "WayUp",
+   "url": "https://www.wayup.com/profile/Philip-Hubbe-765556ba07/",
+   "anchors": [
+    "Clarkson University",
+    "engineering"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Clarkson + Hopkinton, MA -> hop1 WayUp identity-verified student profile",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-philip-hubbe-philip-hubbe-attended-ietf-115-in-london-in",
+   "name": "ct:philip hubbe",
+   "display": "Philip Hubbe",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Philip Hubbe attended IETF 115 in London in November 2022, listed with Clarkson University affiliation in the official session attendee sheets",
+   "file_text": "Philip Hubbe attended IETF 115 in London in November 2022, listed with Clarkson University affiliation in the official session attendee sheets",
+   "source": "IETF Datatracker",
+   "url": "https://datatracker.ietf.org/doc/bluesheets-115-roll-202211081500/",
+   "anchors": [
+    "Clarkson University",
+    "engineering"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: Clarkson University engineering -> hop1 IETF datatracker bluesheets",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-tasha-bernard-tasha-bernard-holds-the-title-assistant",
+   "name": "sf:tasha-bernard",
+   "display": "Tasha Bernard",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Tasha Bernard holds the title Assistant Vice President at North Country Savings Bank",
+   "file_text": "Tasha Bernard holds the title Assistant Vice President at North Country Savings Bank",
+   "source": "Datanyze",
+   "url": "https://www.datanyze.com/people/Phyllis-Howard/40613152",
+   "anchors": [
+    "Massena, NY",
+    "Branch Manager, North Country Savings Bank"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: North Country Savings Bank branch manager -> hop1 Datanyze NCSB employee listings naming her as Assistant Vice President",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-adepegba-a-ray-adepegba-was-employed-by-the-u-s",
+   "name": "sf:adepegba",
+   "display": "Ray Adepegba",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "A Ray Adepegba was employed by the U.S. Postal Service as a Casual employee in Albany, NY from 2017 to 2019 at $15/hour",
+   "file_text": "A Ray Adepegba was employed by the U.S. Postal Service as a Casual employee in Albany, NY from 2017 to 2019 at $15/hour",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/adepegba-ray-65926790",
+   "anchors": [
+    "1SG, HHC 27th IBCT, NY Army National Guard",
+    "confirmed Delmar Duathlon entrant from Niskayuna, NY"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: Niskayuna, NY (Capital Region) -> hop1 GovSalaries USPS payroll record under the same uncommon name in Albany, NY; single weak anchor, identity not independently confirmed",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-anna-molinero-anna-molinero-also-appears-in-public",
+   "name": "sf:anna-molinero",
+   "display": "Anna Molinero",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "Anna Molinero also appears in public records as Anna Tulloch, with residences in Seattle, WA and Canton, NY and a relative named David Molinero",
+   "file_text": "Anna Molinero also appears in public records as Anna Tulloch, with residences in Seattle, WA and Canton, NY and a relative named David Molinero",
+   "source": "PeopleFinders",
+   "url": "https://www.peoplefinders.com/name/anna-tulloch",
+   "anchors": [
+    "Canton, NY hometown",
+    "Seattle, WA"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: Canton, NY + Seattle, WA -> hop1 PeopleFinders record matching both places under the Molinero/Tulloch names; aggregator source, single weak anchor",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-kathy-eggleson-kathy-eggleson-is-a-daughter-of-charles-w",
+   "name": "ct:kathy eggleson",
+   "display": "Kathy Eggleson",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Kathy Eggleson is a daughter of Charles W. Hartson of Winthrop, NY (died December 16, 2015), whose obituary lists his two daughters as Dawn Hewlett of Potsdam and Kathy Eggleson of Potsdam",
+   "file_text": "Kathy Eggleson is a daughter of Charles W. Hartson of Winthrop, NY (died December 16, 2015), whose obituary lists his two daughters as Dawn Hewlett of Potsdam and Kathy Eggleson of Potsdam",
+   "source": "Hammill Funeral Home",
+   "url": "https://www.hammillfh.com/obituaries/charles-hartson",
+   "anchors": [
+    "Norwood, NY",
+    "Unit Clerk, Rochester Regional Health St. Lawrence Region"
+   ],
+   "missing_gate": "Held: possible grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Norwood/Potsdam area + rare surname -> hop1 Hammill Funeral Home obituary; single indirect anchor, filed as possible",
+   "confidence": 56,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 16,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-lydia-d-m-lydia-dale-has-worked-as-an-art-adjunct",
+   "name": "sf:lydia-d-m",
+   "display": "Lydia Dale",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Lydia Dale has worked as an Art Adjunct Instructor at SUNY Canton since August 2018, teaching Introductory Drawing at the college level, and lives in Watertown, NY, where she also runs public painting classes",
+   "file_text": "Lydia Dale has worked as an Art Adjunct Instructor at SUNY Canton since August 2018, teaching Introductory Drawing at the college level, and lives in Watertown, NY, where she also runs public painting classes",
+   "source": "Coroflot",
+   "url": "https://www.coroflot.com/LydiaDale/profile",
+   "anchors": [
+    "Norwood, NY",
+    "SUNY Canton Graphic & Multimedia Design"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: SUNY Canton graphic design -> hop1 her self-authored Coroflot professional profile",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-lydia-d-m-after-graduating-from-suny-canton-in-2014",
+   "name": "sf:lydia-d-m",
+   "display": "Lydia Dale",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "After graduating from SUNY Canton in 2014 with a Bachelor of Technology in Graphic Multimedia Design and a minor in Writing and Communications, Lydia Dale worked in Orlando, FL as the Guinness World Records Attractions Intellectual Property Creative Coordinator for Ripley Entertainment (July 2014 - May 2018)",
+   "file_text": "After graduating from SUNY Canton in 2014 with a Bachelor of Technology in Graphic Multimedia Design and a minor in Writing and Communications, Lydia Dale worked in Orlando, FL as the Guinness World Records Attractions Intellectual Property Creative Coordinator for Ripley Entertainment (July 2014 - May 2018)",
+   "source": "Coroflot",
+   "url": "https://www.coroflot.com/LydiaDale/profile",
+   "anchors": [
+    "Norwood, NY",
+    "SUNY Canton Graphic & Multimedia Design"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: SUNY Canton 2014 graduate -> hop1 her self-authored Coroflot professional profile",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-max-ferran06-recipient-of-the-nysacac-writer-s-fund",
+   "name": "ig:max_ferran06",
+   "display": "Max Ferran",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Recipient of the NYSACAC Writer's Fund scholarship and an emerging author (per his Choice of Games forum author profile, which also notes the Presidential Ignite Fellowship)",
+   "file_text": "Recipient of the NYSACAC Writer's Fund scholarship and an emerging author (per his Choice of Games forum author profile, which also notes the Presidential Ignite Fellowship)",
+   "source": "Choice of Games Forum",
+   "url": "https://forum.choiceofgames.com/u/max_ferran",
+   "anchors": [
+    "Clarkson University, Ignite Presidential Fellowship, class of 2029"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Clarkson Ignite Fellowship -> hop 1: self-authored forum profile anchored by exact fellowship match",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-katelyn-tomford-systems-engineer-at-safran-federal-systems",
+   "name": "ct:katelyn tomford",
+   "display": "Katelyn Tomford",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Systems Engineer at Safran Federal Systems since April 2023",
+   "file_text": "Systems Engineer at Safran Federal Systems since April 2023",
+   "source": "The Org",
+   "url": "https://theorg.com/org/safran-federal-systems/person/katelyn-tomford",
+   "anchors": [
+    "Clarkson University",
+    "LinkedIn association with Safran Federal Systems"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Safran Federal Systems association (on file via LinkedIn directory) -> hop 1: The Org company profile",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-katelyn-tomford-previously-a-product-design-engineer-i-then",
+   "name": "ct:katelyn tomford",
+   "display": "Katelyn Tomford",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Previously a Product Design Engineer (I, then II) at LSI Solutions from March 2018 to March 2023, working on knot-fastening medical devices",
+   "file_text": "Previously a Product Design Engineer (I, then II) at LSI Solutions from March 2018 to March 2023, working on knot-fastening medical devices",
+   "source": "The Org",
+   "url": "https://theorg.com/org/safran-federal-systems/person/katelyn-tomford",
+   "anchors": [
+    "Clarkson University",
+    "LinkedIn association with Safran Federal Systems"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Safran Federal Systems -> hop 1: The Org profile employment history",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-maddie-morgan-a-daisy-award-honoree-page-for-nurse-maddie",
+   "name": "sf:maddie-morgan",
+   "display": "Maddie Morgan",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "A DAISY Award honoree page for nurse Maddie Morgan records a family's testimonial praising her support through an emergency cesarean delivery and the birth of their first grandchild",
+   "file_text": "A DAISY Award honoree page for nurse Maddie Morgan records a family's testimonial praising her support through an emergency cesarean delivery and the birth of their first grandchild",
+   "source": "DAISY Foundation",
+   "url": "https://daisyfoundation.org:443/daisy-award/honorees/maddie-morgan",
+   "anchors": [
+    "RN, Canton-Potsdam Hospital / UVM Health, Moriah NY, Chamberlain University"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: hospital RN (Canton-Potsdam/UVM Health) -> hop 1: DAISY Foundation honoree page (hospital not named on page - weak anchor)",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-renee-lia-de-voe-was-the-dancer-in-grace-church-s-easter",
+   "name": "sf:renee-lia-de-voe",
+   "display": "Renee Lia De Voe",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Was the dancer in Grace Church's Easter intro film, discussed on the GC Collaborative podcast episode of April 1, 2023, including her comments on the power of dance in worship",
+   "file_text": "Was the dancer in Grace Church's Easter intro film, discussed on the GC Collaborative podcast episode of April 1, 2023, including her comments on the power of dance in worship",
+   "source": "GC Collaborative Podcast",
+   "url": "https://www.buzzsprout.com/845158/episodes/12542880-behind-the-scenes-of-our-easter-intro-film-renee-de-voe-chris-anderson",
+   "anchors": [
+    "The Culture House / Evanston Vineyard",
+    "Kansas City MO"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Kansas City church/creative work (Evanston Vineyard, Culture House) -> hop 1: Grace Church creative podcast naming Renee De Voe",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-ally-dubbioso-appears-named-in-the-caption-in-a-class-of",
+   "name": "ig:ally.dubbioso",
+   "display": "Ally Dubbioso",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Appears, named in the caption, in a Class of 2019 group photo in the Mahopac News July 4, 2019 graduation supplement (with Carolanne Matheson, Claire Fon, Emily McGrath, Caitlyn Tiedemann and Sam Cerrato)",
+   "file_text": "Appears, named in the caption, in a Class of 2019 group photo in the Mahopac News July 4, 2019 graduation supplement (with Carolanne Matheson, Claire Fon, Emily McGrath, Caitlyn Tiedemann and Sam Cerrato)",
+   "source": "Mahopac News",
+   "url": "https://anyflip.com/puzs/dgjy/basic",
+   "anchors": [
+    "SUNY Potsdam BA childhood/early childhood education 2023",
+    "Mahopac NY"
+   ],
+   "missing_gate": "Held: possible grade \u2014 needs independent verification before filing. Lineage: seed: Lakeland High School / Mahopac NY -> hop 1: Mahopac News graduation supplement caption",
+   "confidence": 57,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 16,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-jackie-shampine-also-appears-in-public-records-aggregators",
+   "name": "sf:jackie-shampine",
+   "display": "Jackie Shampine",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "Also appears in public-records aggregators as Jacqueline (Jackie) Butterfield of Massena/Norfolk, NY",
+   "file_text": "Also appears in public-records aggregators as Jacqueline (Jackie) Butterfield of Massena/Norfolk, NY",
+   "source": "VeriPages",
+   "url": "https://veripages.com/name/Jacqueline/Butterfield/",
+   "anchors": [
+    "Rochester Regional Health Patient Access, Massena NY"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: Massena NY -> people-search alias listing with Massena addresses",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kelsey-wilbur-now-teaches-piano-and-violin-in-wake-forest",
+   "name": "sf:kelsey-wilbur",
+   "display": "Kelsey Wilbur",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Now teaches piano and violin in Wake Forest, NC (27587), offering in-home and online lessons through Musika Lessons",
+   "file_text": "Now teaches piano and violin in Wake Forest, NC (27587), offering in-home and online lessons through Musika Lessons",
+   "source": "Musika Lessons",
+   "url": "https://www.musikalessons.com/teachers/kelsey-3e89bba71de1106a7d13e0c630e994ff",
+   "anchors": [
+    "Thomas Edison State University, private violin/piano teacher, Binghamton NY, homeschooled"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Thomas Edison State University + violin/piano teaching -> Musika teacher profile",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kelsey-wilbur-began-music-lessons-at-age-nine-has-taught",
+   "name": "sf:kelsey-wilbur",
+   "display": "Kelsey Wilbur",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Began music lessons at age nine, has taught private lessons for about ten years, and worked as a strings instructor for a homeschool children's music group; violin method combines Suzuki and String Builders",
+   "file_text": "Began music lessons at age nine, has taught private lessons for about ten years, and worked as a strings instructor for a homeschool children's music group; violin method combines Suzuki and String Builders",
+   "source": "Musika Lessons",
+   "url": "https://www.musikalessons.com/teachers/kelsey-3e89bba71de1106a7d13e0c630e994ff",
+   "anchors": [
+    "Thomas Edison State University, private violin/piano teacher, Binghamton NY, homeschooled"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Thomas Edison + homeschooled background -> self-authored profile bio",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-maggie-thibodeau-practices-at-claxton-hepburn-medical-center",
+   "name": "ct:maggie thibodeau",
+   "display": "Maggie Thibodeau",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Practices at Claxton-Hepburn Medical Center, 214 King St, Ogdensburg, NY, and offers telehealth appointments",
+   "file_text": "Practices at Claxton-Hepburn Medical Center, 214 King St, Ogdensburg, NY, and offers telehealth appointments",
+   "source": "Sharecare",
+   "url": "https://providers.sharecare.com/doctor/margaret-thibodeau-xymvtbk",
+   "anchors": [
+    "Physician Assistant, Ogdensburg NY, NPI registry"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: PA Ogdensburg on file -> Sharecare provider profile at Claxton-Hepburn",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-maggie-thibodeau-formerly-practiced-under-the-name-margaret",
+   "name": "ct:maggie thibodeau",
+   "display": "Maggie Thibodeau",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Formerly practiced under the name Margaret T. Ecker, PA-C, per her NPI registry record (enumerated July 2016)",
+   "file_text": "Formerly practiced under the name Margaret T. Ecker, PA-C, per her NPI registry record (enumerated July 2016)",
+   "source": "NPI Profile",
+   "url": "https://npiprofile.com/npi/1114370046",
+   "anchors": [
+    "Physician Assistant, Ogdensburg NY, NPI registry"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: NPI registry on file -> NPI profile former-name field",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-susan-buckley-is-a-retired-new-york-state-police",
+   "name": "ct:susan buckley",
+   "display": "Susan Buckley",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Is a retired New York State Police detective, per SUNY Canton's community report",
+   "file_text": "Is a retired New York State Police detective, per SUNY Canton's community report",
+   "source": "Yumpu",
+   "url": "https://www.yumpu.com/en/document/view/47729659/commnity-report-u-suny-canton/7",
+   "anchors": [
+    "SUNY Canton Associate Professor of Practice, Criminal Justice"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: SUNY Canton CJ faculty -> college community report media roundup",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-briana-mcgrath-worked-at-wellness-family-practice-in-cary",
+   "name": "sf:briana-mcgrath",
+   "display": "Briana McGrath",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Worked at Wellness Family Practice in Cary, NC from March 2010 to August 2021, assisting about 60 patients per day in person plus about 40 phone calls per day",
+   "file_text": "Worked at Wellness Family Practice in Cary, NC from March 2010 to August 2021, assisting about 60 patients per day in person plus about 40 phone calls per day",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/brianajoy-mcgrath-240506161307",
+   "anchors": [
+    "SAS Health Care Center Cary NC, Wellness Family Practice, Potsdam NY hometown"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Wellness Family Practice on file -> self-authored Bold.pro work history",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-briana-mcgrath-earlier-roles-medical-records-specialist-at",
+   "name": "sf:briana-mcgrath",
+   "display": "Briana McGrath",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Earlier roles: Medical Records Specialist at Gibbons Family Medicine, Cary (Sep 2007-Jun 2010) and Administrative Personal Assistant to Dr. Nerissa Price in Raleigh, NC (Feb 2010-May 2014)",
+   "file_text": "Earlier roles: Medical Records Specialist at Gibbons Family Medicine, Cary (Sep 2007-Jun 2010) and Administrative Personal Assistant to Dr. Nerissa Price in Raleigh, NC (Feb 2010-May 2014)",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/brianajoy-mcgrath-240506161307",
+   "anchors": [
+    "SAS Health Care Center Cary NC, Wellness Family Practice, Potsdam NY hometown"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Cary NC medical admin -> Bold.pro work history",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-briana-mcgrath-at-sas-health-care-center-she-serves-as-the",
+   "name": "sf:briana-mcgrath",
+   "display": "Briana McGrath",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "At SAS Health Care Center she serves as the medical office administrator team liaison between seven company departments, interviews candidates, and developed and restructured department protocols",
+   "file_text": "At SAS Health Care Center she serves as the medical office administrator team liaison between seven company departments, interviews candidates, and developed and restructured department protocols",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/brianajoy-mcgrath-240506161307",
+   "anchors": [
+    "SAS Health Care Center Cary NC, Wellness Family Practice, Potsdam NY hometown"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: SAS Health Care Center on file -> Bold.pro role details",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-james-harmer-runs-jh-services-in-gouverneur-ny-offering",
+   "name": "sf:james-harmer",
+   "display": "James Harmer",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Runs JH Services in Gouverneur, NY, offering multi-track recording, mixing and production plus studio musician work on electric guitar, acoustic guitar, bass guitar and drums (AirGigs)",
+   "file_text": "Runs JH Services in Gouverneur, NY, offering multi-track recording, mixing and production plus studio musician work on electric guitar, acoustic guitar, bass guitar and drums (AirGigs)",
+   "source": "AirGigs",
+   "url": "https://www.airgigs.com/user/SoundhillStudio",
+   "anchors": [
+    "J H Services recording studio, Gouverneur NY, Indian River CSD systems operator"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: J H Services on file -> AirGigs JH Services profile",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-james-harmer-was-disabled-from-2012-to-2018-and",
+   "name": "sf:james-harmer",
+   "display": "James Harmer",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Was disabled from 2012 to 2018 and afterwards returned to recording and mixing work",
+   "file_text": "Was disabled from 2012 to 2018 and afterwards returned to recording and mixing work",
+   "source": "AirGigs",
+   "url": "https://www.airgigs.com/user/SoundhillStudio",
+   "anchors": [
+    "J H Services recording studio, Gouverneur NY, Indian River CSD systems operator"
+   ],
+   "missing_gate": "Held: likely grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: J H Services on file -> self-authored AirGigs bio",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-lydia-bartlett-has-worked-as-a-translator-for-right-to",
+   "name": "ct:lydia bartlett",
+   "display": "Lydia Bartlett",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Has worked as a translator for Right to Life in Providence, RI from March 2020, translating for Spanish-speaking clientele",
+   "file_text": "Has worked as a translator for Right to Life in Providence, RI from March 2020, translating for Spanish-speaking clientele",
+   "source": "WayUp",
+   "url": "https://www.wayup.com/profile/Lydia-Bartlett-7e0b5bab47/",
+   "anchors": [
+    "Smithfield RI",
+    "Providence College"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Los Andes/Providence College -> hop 1: WayUp profile anchored by exact Los Andes seed match",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-lydia-bartlett-served-as-an-americorps-education-fellow-in",
+   "name": "ct:lydia bartlett",
+   "display": "Lydia Bartlett",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Served as an AmeriCorps Education Fellow in Central Falls, RI (September 2017\u2013June 2018) and as a youth counselor at the Smithfield YMCA (2014\u20132015)",
+   "file_text": "Served as an AmeriCorps Education Fellow in Central Falls, RI (September 2017\u2013June 2018) and as a youth counselor at the Smithfield YMCA (2014\u20132015)",
+   "source": "WayUp",
+   "url": "https://www.wayup.com/profile/Lydia-Bartlett-7e0b5bab47/",
+   "anchors": [
+    "Smithfield RI",
+    "Providence College"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Smithfield RI -> hop 1: WayUp profile anchored by exact seed matches",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-lafaverspainting-had-officially-been-part-of-lafaver-s",
+   "name": "ig:lafaverspainting",
+   "display": "Nathan LaFaver",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Had officially been part of LaFaver's Painting for 13 years as of the May 2021 NCSB profile, having grown up painting summers with his father, and took over ownership about five years before the profile (c. 2016)",
+   "file_text": "Had officially been part of LaFaver's Painting for 13 years as of the May 2021 NCSB profile, having grown up painting summers with his father, and took over ownership about five years before the profile (c. 2016)",
+   "source": "North Country Savings Bank",
+   "url": "https://www.northcountrysavings.bank/blog-article/local-business-owner-and-ncsb-customer-happy-call-north-country-home?page=0",
+   "anchors": [
+    "Madrid NY",
+    "LaFaver's Painting LLC"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: LaFaver's Painting -> hop 1: NCSB profile anchored by exact seed match",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-lafaverspainting-off-work-he-golfs-around-canton-and-potsdam",
+   "name": "ig:lafaverspainting",
+   "display": "Nathan LaFaver",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Off work, he golfs around Canton and Potsdam in warmer months and snowmobiles around Cranberry Lake and Tug Hill in winter",
+   "file_text": "Off work, he golfs around Canton and Potsdam in warmer months and snowmobiles around Cranberry Lake and Tug Hill in winter",
+   "source": "North Country Savings Bank",
+   "url": "https://www.northcountrysavings.bank/blog-article/local-business-owner-and-ncsb-customer-happy-call-north-country-home?page=0",
+   "anchors": [
+    "Madrid NY",
+    "LaFaver's Painting LLC"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: LaFaver's Painting -> hop 1: NCSB profile anchored by exact seed match",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-asher-cragg-works-as-a-voice-actor-based-in-norwood-ny",
+   "name": "sf:asher-cragg",
+   "display": "Asher Cragg",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Works as a voice actor based in Norwood, NY, with stage musicals/plays, improv and live Dungeons & Dragons show experience (self-authored Voices.com profile)",
+   "file_text": "Works as a voice actor based in Norwood, NY, with stage musicals/plays, improv and live Dungeons & Dragons show experience (self-authored Voices.com profile)",
+   "source": "Voices.com",
+   "url": "https://www.voices.com/profile/ocarinaman",
+   "anchors": [
+    "Norwood NY",
+    "Perry's Market"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Norwood NY + theatre -> hop 1: Voices.com talent profile anchored by name + Norwood",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-asher-cragg-worked-as-a-stock-clerk-at-perry-s-market",
+   "name": "sf:asher-cragg",
+   "display": "Asher Cragg",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Worked as a stock clerk at Perry's Market in Norwood from January 2017 to March 2019 (self-authored resume profile)",
+   "file_text": "Worked as a stock clerk at Perry's Market in Norwood from January 2017 to March 2019 (self-authored resume profile)",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/asher-cragg",
+   "anchors": [
+    "Norwood NY",
+    "Perry's Market"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Perry's Market -> hop 1: Bold.pro resume anchored by exact employer + Norwood match",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-emily-elliott-an-emily-murphy-is-registered-npi-since",
+   "name": "sf:emily-elliott",
+   "display": "Emily Elliott",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "An Emily Murphy is registered (NPI, since September 2022) as a speech-language pathologist practicing at Gouverneur Central School, 111 Gleason St, Gouverneur, NY \u2014 possibly the same person as Emily Elliott (Emily Murphy Photography), but identity is not independently anchored",
+   "file_text": "An Emily Murphy is registered (NPI, since September 2022) as a speech-language pathologist practicing at Gouverneur Central School, 111 Gleason St, Gouverneur, NY \u2014 possibly the same person as Emily Elliott (Emily Murphy Photography), but identity is not independently anchored",
+   "source": "NPI Number Lookup",
+   "url": "https://www.npinumberlookup.org/emily-murphy-rensselaer-falls-ny-1528789484",
+   "anchors": [
+    "Madrid NY",
+    "Emily Murphy Photography"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: Emily Murphy Photography (Murphy name) + on-file SLP claim -> hop 1: NPI registry aggregator; single weak anchor only",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-caleb-dollinger-colton-pierrepont-central-school-class-of",
+   "name": "sf:caleb-dollinger",
+   "display": "Caleb Dollinger",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Colton-Pierrepont Central School Class of 2016; attended the HOBY (Hugh O'Brian Youth Leadership) program in Oswego County on May 30, 2014 (self-authored about.me profile)",
+   "file_text": "Colton-Pierrepont Central School Class of 2016; attended the HOBY (Hugh O'Brian Youth Leadership) program in Oswego County on May 30, 2014 (self-authored about.me profile)",
+   "source": "About.me",
+   "url": "https://about.me/caleb.dollinger",
+   "anchors": [
+    "Colton NY",
+    "Colton-Pierrepont Central School"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Colton-Pierrepont -> hop 1: self-authored profile anchored by exact school + town match",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-john-zufall-zufall-farm-20-campbell-road-lisbon-ny",
+   "name": "ig:john_zufall",
+   "display": "John Zufall",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Zufall Farm (20 Campbell Road, Lisbon, NY) hosted a Cornell Cooperative Extension North Country Regional Ag Team pasture walk and grazing program on June 14, 2022",
+   "file_text": "Zufall Farm (20 Campbell Road, Lisbon, NY) hosted a Cornell Cooperative Extension North Country Regional Ag Team pasture walk and grazing program on June 14, 2022",
+   "source": "Cornell Cooperative Extension",
+   "url": "https://nnyrap.cce.cornell.edu/event.php?id=1853",
+   "anchors": [
+    "Lisbon NY",
+    "Zufall Family Farm"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: Zufall Family Farm Lisbon -> hop 2: Cornell Cooperative Extension event listing for the farm",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-jessicahurlbut-she-and-her-husband-greg-hurlbut-serve",
+   "name": "ig:jessicahurlbut",
+   "display": "Jessica Hurlbut",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "She and her husband Greg Hurlbut serve together as lead pastors of New Testament Church in Massena, NY, oversee a network of churches in the North Country, and have been married 21 years",
+   "file_text": "She and her husband Greg Hurlbut serve together as lead pastors of New Testament Church in Massena, NY, oversee a network of churches in the North Country, and have been married 21 years",
+   "source": "AbeBooks",
+   "url": "https://www.abebooks.com/9780764242380/Unlimited-Motherhood-Overcome-Limits-Overwhelm-0764242385/plp",
+   "anchors": [
+    "New Testament Church Massena pastor",
+    "SUNY Potsdam"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: New Testament Church Massena -> hop 1: publisher author bio",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-cameramancory-in-that-episode-he-recounts-that-the-fbi",
+   "name": "ig:cameramancory",
+   "display": "Cory Williams",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "In that episode he recounts that the FBI and U.S. Marshals raided his neighbor's house; the neighbor was later revealed to be on Oklahoma's 10 Most Wanted list and had faked his own death, evading capture for almost 13 years",
+   "file_text": "In that episode he recounts that the FBI and U.S. Marshals raided his neighbor's house; the neighbor was later revealed to be on Oklahoma's 10 Most Wanted list and had faked his own death, evading capture for almost 13 years",
+   "source": "Into the Fire Podcast",
+   "url": "https://podcast.app/when-the-fbi-knocked-next-door-guest-cory-williams-on-ironman-grit-real-life-episode-9-e431429819",
+   "anchors": [
+    "Railroad Productions owner, Canton NY",
+    "videography"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Into the Fire episode -> hop 1: episode description",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-lisa-criscitello-appears-in-village-of-clayton-board-of",
+   "name": "sf:lisa-criscitello",
+   "display": "Lisa Criscitello",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Appears in Village of Clayton Board of Trustees minutes (September 12, 2022) as a campaign volunteer for Duffy (NYS Assembly 116th) who requested and received approval to use the Clayton Municipal Building on October 6, 2022",
+   "file_text": "Appears in Village of Clayton Board of Trustees minutes (September 12, 2022) as a campaign volunteer for Duffy (NYS Assembly 116th) who requested and received approval to use the Clayton Municipal Building on October 6, 2022",
+   "source": "Village of Clayton",
+   "url": "https://www.villageofclayton.com/wp-content/uploads/2024/09/Minutes-2022-0912.pdf",
+   "anchors": [
+    "Potsdam NY",
+    "NYS Assembly legislative director in Assemblyman Walczyk's office"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: Assembly/politics work -> hop 2: municipal minutes naming her in a campaign role",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-lisa-criscitello-a-public-payroll-listing-shows-a-lisa",
+   "name": "sf:lisa-criscitello",
+   "display": "Lisa Criscitello",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "A public payroll listing shows a Lisa Criscitello M as a general employee of Potsdam Central Schools in 2025",
+   "file_text": "A public payroll listing shows a Lisa Criscitello M as a general employee of Potsdam Central Schools in 2025",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/salaries/NY/potsdam-central-schools/j/general-employee",
+   "anchors": [
+    "Potsdam NY",
+    "NYS Assembly legislative director in Assemblyman Walczyk's office"
+   ],
+   "missing_gate": "Held: possible grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Potsdam NY -> hop 1: payroll aggregator (single weak anchor)",
+   "confidence": 44,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 7,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-blake-amo-blake-amo-is-a-son-of-todd-amo-united",
+   "name": "ct:blake amo",
+   "display": "Blake Amo",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Blake Amo is a son of Todd Amo (United Helpers CEO) and Rachelle Amo of Ogdensburg, and twin brother of Brayden Amo",
+   "file_text": "Blake Amo is a son of Todd Amo (United Helpers CEO) and Rachelle Amo of Ogdensburg, and twin brother of Brayden Amo",
+   "source": "United Helpers Insider",
+   "url": "http://uhinsider.blogspot.com/2021/05/amo-to-succeed-knight-as-united-helpers.html",
+   "anchors": [
+    "Ogdensburg, NY",
+    "Finance"
+   ],
+   "missing_gate": "Held: likely grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Ogdensburg, NY -> hop1 United Helpers CEO announcement naming family",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-shelleymae-bartlett-shelleymae-bartlett-also-listed-as-shelly",
+   "name": "sf:shelleymae-bartlett",
+   "display": "Shelleymae Bartlett",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "Shelleymae Bartlett (also listed as Shelly Bartlett / Shelley Mae Bartlett) lives in Potsdam, NY",
+   "file_text": "Shelleymae Bartlett (also listed as Shelly Bartlett / Shelley Mae Bartlett) lives in Potsdam, NY",
+   "source": "People-Search.org",
+   "url": "https://www.people-search.org/name/shelly-bartlett/new-york/",
+   "anchors": [
+    "Facebook bio (footprint only, no confirmed seed)"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: distinctive full name -> hop1 people-search aggregator Potsdam listing",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-colby-criscitello-colby-criscitello-s-full-name-is-colby",
+   "name": "ct:colby criscitello",
+   "display": "Colby Criscitello",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "Colby Criscitello's full name is Colby Taylor Criscitello; he now lives in the Rochester, NY area after previously living in Norwood, NY",
+   "file_text": "Colby Criscitello's full name is Colby Taylor Criscitello; he now lives in the Rochester, NY area after previously living in Norwood, NY",
+   "source": "AdvancedBackgroundChecks",
+   "url": "https://www.advancedbackgroundchecks.com/address/793-chili-ave_rochester-ny-14611",
+   "anchors": [
+    "Potsdam, NY",
+    "Groups: FAMILY, Christian Fellowship Center"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: Potsdam, NY + Criscitello family -> hop1 aggregator record with Norwood NY history and Criscitello relatives",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-jessica-atindama-jessica-atindama-has-a-daughter-named-grace",
+   "name": "sf:jessica-atindama",
+   "display": "Jessica Atindama",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Jessica Atindama has a daughter named Grace (a MyRegistry gift list was created in her name for Grace's 1st birthday)",
+   "file_text": "Jessica Atindama has a daughter named Grace (a MyRegistry gift list was created in her name for Grace's 1st birthday)",
+   "source": "MyRegistry",
+   "url": "https://www.myregistry.com/visitors/default.aspx?registryId=4655653&lang=en&cloc=us",
+   "anchors": [
+    "Home - Wife & Momma",
+    "homeschooled (footprint)"
+   ],
+   "missing_gate": "Held: possible grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Wife & Momma (footprint) -> hop1 exact-name registry listing",
+   "confidence": 56,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 16,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-timothy-moulton-timothy-moulton-of-winthrop-ny-town-of",
+   "name": "sf:timothy-moulton",
+   "display": "Timothy Moulton",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Timothy Moulton of Winthrop, NY (Town of Stockholm) has worked as a carpenter in construction for Heritage Homes (Massena, NY), Thew Associates (Canton, NY) and John Danko Construction (Massena, NY)",
+   "file_text": "Timothy Moulton of Winthrop, NY (Town of Stockholm) has worked as a carpenter in construction for Heritage Homes (Massena, NY), Thew Associates (Canton, NY) and John Danko Construction (Massena, NY)",
+   "source": "Trustoria",
+   "url": "https://trustoria.com/home-contractor/Carpenter/Winthrop-NY",
+   "anchors": [
+    "Construction",
+    "Stockholm Center, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Construction + Stockholm Center, NY -> hop1 professional directory listing for Winthrop (same town)",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-phyllis-paladin-phyllis-paladin-homeschooled-her-children",
+   "name": "sf:phyllis-paladin",
+   "display": "Phyllis Paladin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Phyllis Paladin homeschooled her children and completed the Presidential Sports Award for endurance walking together with her daughters Abigail (14) and Elizabeth (9), described in an article she authored for the PA Homeschoolers newsletter (Winter 1997-98)",
+   "file_text": "Phyllis Paladin homeschooled her children and completed the Presidential Sports Award for endurance walking together with her daughters Abigail (14) and Elizabeth (9), described in an article she authored for the PA Homeschoolers newsletter (Winter 1997-98)",
+   "source": "PA Homeschoolers",
+   "url": "https://phaa.org/static/media/newsletter/issue61c.pdf",
+   "anchors": [
+    "Pittsburgh, PA",
+    "surviving sister in Huber obituaries, White Oak, PA (footprint)"
+   ],
+   "missing_gate": "Held: likely grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Phyllis Paladin, PA -> hop1 self-authored PHAA newsletter article",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-alycia-miller-lynch-alycia-miller-lynch-served-on-the-potsdam",
+   "name": "sf:alycia-miller-lynch",
+   "display": "Alycia Miller-Lynch",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Alycia Miller-Lynch served on the Potsdam Food Co-op board as Secretary (2005) and later as Board Vice-President (quoted in the Jan-Feb 2007 co-op newsletter on the store renovation)",
+   "file_text": "Alycia Miller-Lynch served on the Potsdam Food Co-op board as Secretary (2005) and later as Board Vice-President (quoted in the Jan-Feb 2007 co-op newsletter on the store renovation)",
+   "source": "Yumpu",
+   "url": "https://www.yumpu.com/en/document/view/35336558/reset-renovation-approved-by-membership-potsdam-food-co-op",
+   "anchors": [
+    "Running",
+    "Madison, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: exact name -> hop1 Potsdam Food Co-op newsletters naming her board roles",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-grace-serene-grace-serene-grew-up-in-avon-ny-moved-to",
+   "name": "ig:grace.serene",
+   "display": "Grace Serene",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Grace Serene grew up in Avon, NY, moved to Rochester in 2018, formed Grace Serene and the Super Clean in 2021 with Zack Mikida and Arjun Baxter (first song 'Slow Down'), performed at the Rochester International Jazz Festival, and moved to East Nashville in summer 2021",
+   "file_text": "Grace Serene grew up in Avon, NY, moved to Rochester in 2018, formed Grace Serene and the Super Clean in 2021 with Zack Mikida and Arjun Baxter (first song 'Slow Down'), performed at the Rochester International Jazz Festival, and moved to East Nashville in summer 2021",
+   "source": "Nashville Voyager",
+   "url": "https://nashvillevoyager.com/interview/check-out-grace-serenes-story/",
+   "anchors": [
+    "Music Production",
+    "Nashville, TN"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: band + Nashville on file -> hop1 self-authored Nashville Voyager interview",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-grace-serene-grace-serene-and-the-super-clean-s-lineup",
+   "name": "ig:grace.serene",
+   "display": "Grace Serene",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Grace Serene and the Super Clean's lineup is Grace Serene (vocals), Zack Makida/Mikida (guitar), Arjun Baxter (bass), Joe Stehle (keys) and Brendon Caroselli (drums), and the band held its Super Clean Vol. 1 album-release show at Essex in Rochester on February 17, 2024",
+   "file_text": "Grace Serene and the Super Clean's lineup is Grace Serene (vocals), Zack Makida/Mikida (guitar), Arjun Baxter (bass), Joe Stehle (keys) and Brendon Caroselli (drums), and the band held its Super Clean Vol. 1 album-release show at Essex in Rochester on February 17, 2024",
+   "source": "Humanitix",
+   "url": "https://events.humanitix.com/grace-serene-and-the-super-clean-album-release-w-arron-rizzo-band-the-sideways",
+   "anchors": [
+    "Music Production",
+    "Nashville, TN"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: band on file -> hop1 Humanitix event listing with lineup and release-show details",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-abbydaniels03-public-records-list-abigail-daniels-of",
+   "name": "ig:abbydaniels03",
+   "display": "Abigail Daniels",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "Public records list Abigail Daniels of Norwood, NY as also known as Abigail Paladin, with relatives including Aaron Daniels and members of the Paladin family",
+   "file_text": "Public records list Abigail Daniels of Norwood, NY as also known as Abigail Paladin, with relatives including Aaron Daniels and members of the Paladin family",
+   "source": "PeopleFinders",
+   "url": "https://www.peoplefinders.com/name/abigail-daniels/pa",
+   "anchors": [
+    "Church/Employer: Christian Fellowship Center",
+    "Norwood, NY"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: Norwood, NY + Christian Fellowship Center -> people-search aggregators (hop 1, weak anchor)",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-annabellerose-07-annabelle-dowling-teaches-beginner-tap-and",
+   "name": "ig:annabellerose.07",
+   "display": "Annabelle Dowling",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "verification",
+   "claim": "Annabelle Dowling teaches Beginner Tap and Tap 1 classes at The Arts Program of NNY's Madrid Dance Studio in Madrid, NY",
+   "file_text": "Annabelle Dowling teaches Beginner Tap and Tap 1 classes at The Arts Program of NNY's Madrid Dance Studio in Madrid, NY",
+   "source": "The Arts Program of NNY",
+   "url": "https://www.theartsprogram.org/madrid",
+   "anchors": [
+    "Christian Fellowship Center"
+   ],
+   "missing_gate": "Held: likely grade \u2014 needs independent verification before filing. Lineage: seed: Christian Fellowship Center -> Madrid, NY local arts org page (hop 1, name + North Country anchor)",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-levi-white90-levi-white-of-the-winthrop-ny-area-is",
+   "name": "ig:levi_white90",
+   "display": "Levi White",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Levi White of the Winthrop, NY area is married to Gabrielle White; the couple appear as grandchildren (with their child River White) in the Hammill Funeral Home obituaries of Erma F. Ramsdell (2022) and Joan M. Groebler (2022) of Winthrop",
+   "file_text": "Levi White of the Winthrop, NY area is married to Gabrielle White; the couple appear as grandchildren (with their child River White) in the Hammill Funeral Home obituaries of Erma F. Ramsdell (2022) and Joan M. Groebler (2022) of Winthrop",
+   "source": "Hammill Funeral Home",
+   "url": "https://www.hammillfh.com/obituaries/erma-ramsdell",
+   "anchors": [
+    "Border Patrol",
+    "Winthrop, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Winthrop, NY -> two Winthrop funeral-home obituaries naming the couple (hop 1)",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-oliviamiller9334-an-olivia-miller-was-employed-by-massena",
+   "name": "ig:oliviamiller9334",
+   "display": "Olivia Miller",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "identity",
+   "claim": "An Olivia Miller was employed by Massena Central Schools as a general employee in 2025 (public payroll records)",
+   "file_text": "An Olivia Miller was employed by Massena Central Schools as a general employee in 2025 (public payroll records)",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/search?year=2025&employee=Olivia%20Miller",
+   "anchors": [
+    "New Testament Church",
+    "Massena, NY"
+   ],
+   "missing_gate": "Held: possible grade \u2014 identity not independently anchored to this person. Lineage: seed: Massena, NY -> public payroll aggregator (hop 1, single weak anchor)",
+   "confidence": 37,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 7,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-reneeockrin-renee-ockrin-of-potsdam-ny-is-the",
+   "name": "ig:reneeockrin",
+   "display": "Renee Ockrin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "source",
+   "claim": "Renee Ockrin of Potsdam, NY is the registered agent/address for RO Capital, LLC, a New York LLC registered October 29, 2020 (address of record: 664 Pleasant Valley Road, Potsdam, NY)",
+   "file_text": "Renee Ockrin of Potsdam, NY is the registered agent/address for RO Capital, LLC, a New York LLC registered October 29, 2020 (address of record: 664 Pleasant Valley Road, Potsdam, NY)",
+   "source": "City-Data",
+   "url": "https://www.city-data.com/business-entities/NY/RO-CAPITAL-LLC-5867873-NY.html",
+   "anchors": [
+    "Christian Fellowship Center",
+    "Potsdam, NY"
+   ],
+   "missing_gate": "Held: likely grade \u2014 source quality \u2014 self-authored, aggregator, or single secondary source only. Lineage: seed: Potsdam, NY -> NY business entity record naming her (hop 1)",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-fdb-maggie-marceau-has-a-brother-alexander-sasha-marceau-of",
+   "name": "fdb:maggie_marceau",
+   "display": "Maggie Marceau",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Has a brother, Alexander 'Sasha' Marceau of Kittery, ME, and a sister, Laura (Mark) Plourde of Woodbridge, VA",
+   "file_text": "Has a brother, Alexander 'Sasha' Marceau of Kittery, ME, and a sister, Laura (Mark) Plourde of Woodbridge, VA",
+   "source": "Bruso Funeral Service",
+   "url": "https://brusofuneralservice.com/tribute/details/619",
+   "anchors": [
+    "Malone NY",
+    "North Country Community College"
+   ],
+   "missing_gate": "Held: confirmed grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Marceau family of Malone -> hop 1: mother's funeral-home obituary survivors list",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 24,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-brittney-carnicelli-daughter-of-kimberly-carnicelli-and-sister",
+   "name": "sf:brittney-carnicelli",
+   "display": "Brittney Carnicelli",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Daughter of Kimberly Carnicelli and sister of Bryant Carnicelli; her maternal grandmother is Shirley (Thompson) Stott",
+   "file_text": "Daughter of Kimberly Carnicelli and sister of Bryant Carnicelli; her maternal grandmother is Shirley (Thompson) Stott",
+   "source": "Pettigrass Funeral Home",
+   "url": "https://www.pettigrassfuneralhome.com/obituary/Robert-Stott",
+   "anchors": [
+    "Auburn NY, LPN Auburn Community Hospital, grandfather Robert Stott obituary"
+   ],
+   "missing_gate": "Held: confirmed grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Robert Stott obituary on file -> Pettigrass Funeral Home obituary naming daughters/grandchildren",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 24,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-phyllis-paladin-phyllis-paladin-is-married-to-lawrence-g",
+   "name": "sf:phyllis-paladin",
+   "display": "Phyllis Paladin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Phyllis Paladin is married to Lawrence G. Paladin Jr. of White Oak, PA",
+   "file_text": "Phyllis Paladin is married to Lawrence G. Paladin Jr. of White Oak, PA",
+   "source": "Lindley-Robertson-Holt Funeral Home",
+   "url": "https://www.lindleyrobertsonholt.com/obituary/marion-huber?lud=97842CB6B6F0206909CCB83F4B470932",
+   "anchors": [
+    "Pittsburgh, PA",
+    "surviving sister in Huber obituaries, White Oak, PA (footprint)"
+   ],
+   "missing_gate": "Held: confirmed grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: White Oak, PA (Huber obituaries) -> hop1 mother Marion Huber's funeral-home obituary naming Phyllis and husband Lawrence Jr",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 24,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-phyllis-paladin-phyllis-paladin-is-a-daughter-of-edward",
+   "name": "sf:phyllis-paladin",
+   "display": "Phyllis Paladin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Phyllis Paladin is a daughter of Edward Girard Huber and Marion Frances (Irwin) Huber, originally of the Trafford/Pittsburgh, PA area",
+   "file_text": "Phyllis Paladin is a daughter of Edward Girard Huber and Marion Frances (Irwin) Huber, originally of the Trafford/Pittsburgh, PA area",
+   "source": "Lindley-Robertson-Holt Funeral Home",
+   "url": "https://www.lindleyrobertsonholt.com/obituary/edward-huber?lud=388410CAC1B8FDD67F988AC39897C1E8",
+   "anchors": [
+    "Pittsburgh, PA",
+    "surviving sister in Huber obituaries, White Oak, PA (footprint)"
+   ],
+   "missing_gate": "Held: confirmed grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Huber sibling obituaries on file -> hop1 father Edward Huber's funeral-home obituary listing Phyllis among his children",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 24,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-reneeockrin-renee-ockrin-is-married-to-gabe-ockrin-and",
+   "name": "ig:reneeockrin",
+   "display": "Renee Ockrin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "sensitive",
+   "claim": "Renee Ockrin is married to Gabe Ockrin, and they have eight children",
+   "file_text": "Renee Ockrin is married to Gabe Ockrin, and they have eight children",
+   "source": "Lakeside Regional Church",
+   "url": "https://www.lakesideregionalchurch.org/wp/wp-content/uploads/February-16-2020.pdf",
+   "anchors": [
+    "Christian Fellowship Center",
+    "Potsdam, NY"
+   ],
+   "missing_gate": "Held: confirmed grade \u2014 family/personal detail \u2014 held under the sensitive rule. Lineage: seed: Christian Fellowship Center + Potsdam, NY -> Lakeside Regional Church bulletin bio of the couple (hop 1)",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 24,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-ana-miller-massena-csd-s-current-nightengale",
+   "name": "ct:ana miller",
+   "display": "Ana Miller",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "conflict",
+   "claim": "Massena CSD's current Nightengale Elementary staff directory lists Ana Miller as a PreKindergarten Teacher, not Special Education Teacher",
+   "file_text": "PreKindergarten Teacher at Nightengale Elementary, Massena Central School District",
+   "source": "Massena Central School District",
+   "url": "https://ne.mcs.k12.ny.us/apps/staff/",
+   "anchors": [
+    "Special Educator at Nightingale Elementary, Massena CSD",
+    "2024 Puzzle Piece Foundation NNY Grant for ASD classroom"
+   ],
+   "missing_gate": "Held: confirmed grade \u2014 correction conflicts with the on-file record. Conflict: on-file record lists her as a Special Education Teacher at Nightengale Elementary; the district's current staff directory lists PreKindergarten Teacher. Corrections never auto-overwrite \u2014 held for JD. Lineage: seed: Nightingale Elementary Massena -> hop1 district staff directory",
+   "confidence": 89,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 28,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-max-ferran06-clarkson-university-s-verified-merit",
+   "name": "ig:max_ferran06",
+   "display": "Max Ferran",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "conflict",
+   "claim": "Clarkson University's verified Merit releases list Max Ferran's major as civil engineering, contradicting the on-file Mechanical Engineering major taken from his self-authored Bold.org profile",
+   "file_text": "Civil Engineering major at Clarkson University",
+   "source": "Clarkson University \u00b7 Merit Pages",
+   "url": "https://meritpages.com/Max-Rocco-Ferran/9515616",
+   "anchors": [
+    "Clarkson University, Ignite Presidential Fellowship, class of 2029"
+   ],
+   "missing_gate": "Held: confirmed grade \u2014 correction conflicts with the on-file record. Conflict: on-file Mechanical Engineering came from his self-authored Bold.org profile; Clarkson-verified Merit releases say civil engineering. Corrections never auto-overwrite \u2014 held for JD. Lineage: seed: Clarkson University -> hop 1: Clarkson-verified Merit Pages vs on-file Bold.org claim",
+   "confidence": 86,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-amber-erwin-suny-canton-s-official-spring-2026-honors",
+   "name": "sf:amber-erwin",
+   "display": "Amber Erwin",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 250",
+   "category": "conflict",
+   "claim": "SUNY Canton's official Spring 2026 honors announcement lists Amber Erwin (Nursing - BS) among its President's List honorees, not the Dean's List as the on-file footprint states",
+   "file_text": "Named to SUNY Canton's President's List for Spring 2026 as a Nursing - BS student",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2026/honors-s26.php",
+   "anchors": [
+    "SUNY Canton nursing",
+    "Potsdam NY"
+   ],
+   "missing_gate": "Held: confirmed grade \u2014 correction conflicts with the on-file record. Conflict: on-file footprint says Dean's List for Spring 2026; SUNY Canton's official honors announcement lists her on the President's List. Corrections never auto-overwrite \u2014 held for JD. Lineage: seed: SUNY Canton nursing -> hop 1: SUNY Canton official honors page",
+   "confidence": 86,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 27,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
