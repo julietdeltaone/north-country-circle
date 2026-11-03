@@ -57,6 +57,16 @@
   },
   {
    "added": "2026-11-02",
+   "also": [
+    {
+     "added": "2026-11-03",
+     "evidence": "Adriana Levendusky holding her first-place certificate at the Potsdam Rotary Four-Way Test contest.",
+     "photo_url": "photos/adriana-levendusky-rotary.jpg",
+     "source_page": "https://clubrunner.blob.core.windows.net/00000000521/Images/rotary-four-way-test-winners.jpg",
+     "status": "likely",
+     "type": "Group photo"
+    }
+   ],
    "evidence": "Instagram profile @adhope2006 (display name \"Adriana\").",
    "name": "Adriana Levendusky",
    "photo_url": "photos/adriana-levendusky.jpg",
@@ -2378,21 +2388,28 @@
    "type": null
   },
   {
-   "added": "2026-10-29",
-   "added_approx": "Oct 2026",
+   "added": "2026-11-03",
    "also": [
     {
      "note": "Prior primary (expired or remote URL).",
      "source_page": "https://www.instagram.com/grace.serene/",
      "url": "https://scontent.cdninstagram.com/v/t51.2885-19/352308543_928909591666670_8529587084970660711_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=107&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=lfEMH9_vGGAQ7kNvwHDnar_&_nc_oc=AdpNrBZzoKVQr85B0UrBnyZb0kpU8UyFKXcn3uxIMFg6Oryp0-NluBBk7ovnWID-AoTa4_oh9tm-HltvTciMskFo&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_AQMyQOve9Hq8ttX0U3QVKJujw8E0pcDaBvkoblbhjGa4gQ&oe=6AE03BD1"
+    },
+    {
+     "added": "2026-10-29",
+     "evidence": "Grace Serene, the singer at center front holding a microphone, in the poster frame of the band's 'Slow Down' Tiny Desk submission video.",
+     "photo_url": "photos/grace-serene-tinydesk.jpg",
+     "source_page": "https://www.youtube.com/watch?v=1EMxF5PqJ8o",
+     "status": "possible",
+     "type": "YouTube video frame"
     }
    ],
-   "evidence": "Crop of the center-front figure from the poster frame of 'Grace Serene and the Super Clean // Slow Down (NPR Tiny Desk Submission)' on the band's own channel: the only singer, holding a microphone with arm raised, in a rust-brown outfit. Her name is the band's name; no personal credit names her individually.",
+   "evidence": "Grace Serene at the microphone, center stage, performing with Grace Serene and the Super Clean at their album-release party at Essex, Rochester; photo by Fred McCoy for Roc City Magazine.",
    "name": "Grace Serene",
    "photo_url": "photos/grace-serene.jpg",
-   "source_page": "https://www.youtube.com/watch?v=1EMxF5PqJ8o",
-   "status": "possible",
-   "type": "YouTube video frame (band channel)"
+   "source_page": "https://www.roccitymag.com/music/album-review-super-clean-vol-1-17323878/",
+   "status": "likely",
+   "type": "Stage photo"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -2741,16 +2758,26 @@
    "type": "Instagram profile picture"
   },
   {
-   "added": "2026-11-01",
-   "evidence": "Lead portrait in the 'A bit about me' section of Hearthkeeper Birth Services, Isabelle Westerman's own business site ('I'm Isabelle, a wife, new mother, and traditional birth attendant currently based on the edge of New Hampshire's White Mountain Range'); she is holding her infant son. The WOMB Initiative (Littleton NH) facilitator page names 'Isabelle Westerman, a traditional birth attendant... with her husband and young son' and links to the Hearthkeeper site.",
+   "added": "2026-11-03",
+   "evidence": "Isabelle Westerman holding her infant son; portrait from the Hearthkeeper Birth Services website.",
    "name": "Isabelle Westerman",
-   "photo_url": "https://images.squarespace-cdn.com/content/v1/685570d0e8ea3e4157406d87/63944bf1-31cd-4071-8c9d-2126f597d7b6/I%26J+Portrait.png",
+   "photo_url": "photos/isabelle-westerman.webp",
    "source_page": "https://www.hearthkeeperbirthservices.com/",
-   "status": "possible",
-   "type": "Business bio portrait (with her son)"
+   "status": "likely",
+   "type": "Business bio portrait"
   },
   {
    "added": "2026-10-31",
+   "also": [
+    {
+     "added": "2026-11-03",
+     "evidence": "Isaiah Reiter at a design workstation; team photo on the Structural Wood Corporation website.",
+     "photo_url": "photos/isaiah-reiter.webp",
+     "source_page": "https://www.structuralwoodcorp.com/our-team/",
+     "status": "confirmed",
+     "type": "Staff photo"
+    }
+   ],
    "evidence": "Instagram profile picture of @isaiahreiter (display name 'Isaiah Reiter').",
    "name": "Isaiah Reiter",
    "photo_url": "photos/isaiah-reiter.jpg",
@@ -3154,8 +3181,7 @@
    "type": null
   },
   {
-   "added": "2026-10-29",
-   "added_approx": "Oct 2026",
+   "added": "2026-11-03",
    "also": [
     {
      "note": "Prior primary: Instagram profile picture (signature expired Oct 2026).",
@@ -3169,14 +3195,22 @@
      "source_page": "https://www.potsdam.edu/",
      "status": "possible",
      "type": "Family photo"
+    },
+    {
+     "added": "2026-10-29",
+     "evidence": "Jessica Hurlbut in a couple photo on the New Testament Church of Massena Who We Are page, beside the text naming Greg and Jessica Hurlbut as lead pastors.",
+     "photo_url": "photos/jessica-hurlbut-ntc.jpg",
+     "source_page": "https://www.ntcmassena.com/who-we-are/",
+     "status": "possible",
+     "type": "Church staff page photo (couple, cropped)"
     }
    ],
-   "evidence": "Crop of Jessica Hurlbut from the couple photo on the New Testament Church of Massena Who We Are page, beside the text 'NTC is led by our Lead Pastors Greg and Jessica Hurlbut'; the woman in the photo is Jessica Hurlbut.",
+   "evidence": "Jessica Hurlbut; photo from the About page of her author website, jessicahurlbut.com.",
    "name": "Jessica Hurlbut",
    "photo_url": "photos/jessica-hurlbut.jpg",
-   "source_page": "https://www.ntcmassena.com/who-we-are/",
-   "status": "possible",
-   "type": "Church staff page photo (couple, cropped)"
+   "source_page": "https://www.jessicahurlbut.com/about-me",
+   "status": "likely",
+   "type": "Profile photo"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -3258,13 +3292,20 @@
    "type": "Instagram profile picture"
   },
   {
-   "added": "2026-11-01",
-   "evidence": "Hero photo of the HC Bolzano (HCB Foxes) signing article headlined 'Joe Charlebois rinforza la difesa del HCB', which names him as the article's subject, an American defenseman from New York State; Elite Prospects records Joe Charlebois as born Feb 18, 1986 in Potsdam, NY (UNH NCAA, drafted by Chicago 2005, AHL/ECHL career).",
+   "added": "2026-11-03",
+   "also": [
+    {
+     "note": "Prior primary.",
+     "source_page": "https://www.hcb.net/it/joe-charlebois-rinforza-la-difesa-del-hcb/",
+     "url": "https://www.hcb.net/a9243ee7cdcd4f3a/9476/c/fit-in/0x0/filters:no_upscale()/filters:strip_exif()/65672688a4f4c8a57ea38e20056bdce1_XL.jpg"
+    }
+   ],
+   "evidence": "Joe Charlebois wearing a University of New Hampshire jersey; profile photo on his Elite Prospects player page.",
    "name": "Joe Charlebois",
-   "photo_url": "https://www.hcb.net/a9243ee7cdcd4f3a/9476/c/fit-in/0x0/filters:no_upscale()/filters:strip_exif()/65672688a4f4c8a57ea38e20056bdce1_XL.jpg",
-   "source_page": "https://www.hcb.net/it/joe-charlebois-rinforza-la-difesa-del-hcb/",
-   "status": "possible",
-   "type": "Club article subject photo (HC Bolzano)"
+   "photo_url": "photos/joe-charlebois.webp",
+   "source_page": "https://www.eliteprospects.com/player/14873/joe-charlebois/print",
+   "status": "confirmed",
+   "type": "Profile photo"
   },
   {
    "added": "2026-10-26",
@@ -3692,8 +3733,8 @@
    "type": "Business event group photo"
   },
   {
-   "added": "2026-10-31",
-   "evidence": "Her own About page, first-person: 'Hi, I'm Julie Feliciano, the founder of Aja Performance Media... I'm a car photographer,' directly under the single lead photo (alt: a person in a cap using a camera in a wooden hide). No caption names her in the image.",
+   "added": "2026-11-03",
+   "evidence": "Julie Feliciano photographing with a telephoto lens from a wooden hide; lead photo on the Aja Performance Media About page.",
    "name": "Julie Feliciano",
    "photo_url": "photos/julie-feliciano.jpg",
    "source_page": "https://ajaperformancemedia.com/about-me",
@@ -4046,12 +4087,13 @@
    "type": "Instagram profile picture"
   },
   {
-   "evidence": "Only link on file is Facebook (auth).",
+   "added": "2026-11-03",
+   "evidence": "Kelsey Wilbur; teacher profile photo on Musika Lessons.",
    "name": "Kelsey Wilbur",
-   "photo_url": null,
-   "source_page": null,
-   "status": "auth_only",
-   "type": null
+   "photo_url": "photos/kelsey-wilbur.jpg",
+   "source_page": "https://www.musikalessons.com/teachers/kelsey-3e89bba71de1106a7d13e0c630e994ff",
+   "status": "likely",
+   "type": "Profile photo"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
@@ -4372,12 +4414,12 @@
    "type": "LinkedIn profile headshot"
   },
   {
-   "added": "2026-10-31",
-   "evidence": "Profile avatar on her own Coroflot profile; her bio there gives SUNY Canton Graphic & Multimedia Design 2014, Chancellor's Award for Student Excellence, Norwood NY origin, now in Watertown NY teaching art at SUNY Canton. As a working illustrator, her avatar may be artwork rather than a photograph.",
+   "added": "2026-11-03",
+   "evidence": "Lydia Dale; profile photo on her Coroflot portfolio page.",
    "name": "Lydia Dale",
    "photo_url": "photos/lydia-dale.jpg",
    "source_page": "https://www.coroflot.com/LydiaDale/profile",
-   "status": "possible",
+   "status": "likely",
    "type": "portrait"
   },
   {
@@ -5163,8 +5205,8 @@
    "type": "Profile photo (Merit Pages)"
   },
   {
-   "added": "2026-10-31",
-   "evidence": "SUNY Canton People Like Me profile portrait: the profile names Nicholas Oddey of Malone, a Criminal Investigation student; the portrait is the college media-library file named for him \u2014 a solo portrait in a SUNY Canton cap with a backpack, at a covered bridge. Merit Pages records his SUNY Canton graduation in Criminal Investigation (2024).",
+   "added": "2026-11-03",
+   "evidence": "Nicholas Oddey wearing a SUNY Canton cap; portrait from SUNY Canton's 'People Like Me' profile.",
    "name": "Nicholas Oddey",
    "photo_url": "photos/nicholas-oddey.jpg",
    "source_page": "https://www.canton.edu/plm/name-94250-en.html",
@@ -5237,7 +5279,7 @@
    "type": null
   },
   {
-   "added": "2026-10-31",
+   "added": "2026-11-03",
    "also": [
     {
      "note": "Original launch shot (02_0.JPG), replaced 2026-10-22 at JD note: better photos of her on this site.",
@@ -5252,7 +5294,7 @@
      "type": "Race photo"
     }
    ],
-   "evidence": "Photo from SUNY Potsdam's 90 Miler article, which leads with 'Norah Pease 24 and Kelly Bloom 25 ease their canoe into the cold water...' \u2014 the photo (Fin1.JPG, finish line) sits in the lead photo position after the paragraph naming Pease and Bloom, before her interview quote; the pair pictured is not named in a caption. Her Merit profile is text-only.",
+   "evidence": "Norah Pease '24 with Kelly Bloom '25 in their canoe, SUNY Potsdam 90-Miler.",
    "name": "Norah Pease",
    "photo_url": "photos/norah-pease.jpg",
    "source_page": "https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler",
@@ -5298,8 +5340,8 @@
    "type": "staff photo"
   },
   {
-   "added": "2026-10-31",
-   "evidence": "SUNY Potsdam news photo from the Blanding's turtle research article, captioned 'Olivia Brown, left'; the text identifies her as a Clarkson University biology student. She is the researcher at left in waders (face in profile).",
+   "added": "2026-11-03",
+   "evidence": "Olivia Brown, left, locating a radio-tagged Blanding's turtle in a swamp in Lisbon, N.Y.; SUNY Potsdam news photo.",
    "name": "Olivia Brown",
    "photo_url": "photos/olivia-brown.jpg",
    "source_page": "https://www.potsdam.edu/news/Race-to-Save-Threatened-Turtles-Continues-Despite-Pandemic",
@@ -5307,12 +5349,12 @@
    "type": "University news field photo (captioned)"
   },
   {
-   "added": "2026-10-31",
-   "evidence": "Group photo on the Rochester Regional hub page, captioned 'Schyler Oakes, David Valeske, Michael Bernard, Jennie Hutton, Ciara Spicer, and Olivia Goodrow are shown with their Isabella Graham Hart School of Practical Nursing pins' (LPN graduation, Dec 15 2023); the caption gives no position or order.",
+   "added": "2026-11-03",
+   "evidence": "Olivia Goodrow, far right, with the Isabella Graham Hart School of Practical Nursing graduating class, December 15, 2023.",
    "name": "Olivia Goodrow",
    "photo_url": "photos/olivia-goodrow.jpg",
    "source_page": "https://www.rochesterregional.org/hub/lpns-graduate-from-potsdam-nursing-school",
-   "status": "possible",
+   "status": "likely",
    "type": "group"
   },
   {
@@ -5706,6 +5748,15 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-03",
+   "evidence": "Rosie Hoover, one of the three students pictured with the trophy inside the 'Symphony of the Senses' parklet, Belmont University, Nashville Parking Day.",
+   "name": "Rosie Hoover",
+   "photo_url": "photos/rosie-hoover.jpg",
+   "source_page": "https://www.belmont.edu/stories/articles/2025/nashville-parking-day.html",
+   "status": "possible",
+   "type": "Group photo"
+  },
+  {
    "added": "2026-10-31",
    "evidence": "Portrait on her personal website rumbidzai.com (her own name domain).",
    "name": "Rumbidzai Mushamba",
@@ -6072,12 +6123,12 @@
    "type": "article photo"
   },
   {
-   "added": "2026-10-31",
-   "evidence": "Crop of the featured center dancer (blonde, high kick) from the SUNY Potsdam Faculty Dance Concert 2022 Merit release photo (DancePR03.jpg), captioned 'Stephanie Adams '23 of Endwell, N.Y., rehearses ... Angels 'Round the Zenith'; the frame holds several dancers and her face is turned away.",
+   "added": "2026-11-03",
+   "evidence": "Stephanie Adams '23 of Endwell, N.Y., rehearsing 'Angels Round the Zenith' with fellow dancers, SUNY Potsdam Faculty Dance Concert, February 2022.",
    "name": "Stephanie Adams",
    "photo_url": "photos/stephanie-adams.jpg",
    "source_page": "http://potsdam.meritpages.com/news/suny-potsdam-hosts-faculty-dance-concert--with-works-by-4-choreographers/24828/print",
-   "status": "possible",
+   "status": "likely",
    "type": "article photo"
   },
   {
@@ -6149,8 +6200,8 @@
    "type": null
   },
   {
-   "added": "2026-10-31",
-   "evidence": "SUNY Canton news photo (Jun 19, 2012): caption names the pictured group in order \u2014 Lt. Brian E. Kurish, Chief Lisa E. Colbert, Eli Max, Criminal Investigation Associate Professor Susan Buckley (4th), Instructor Elizabeth A. Erickson. Group shot; her position follows the caption order.",
+   "added": "2026-11-03",
+   "evidence": "Susan Buckley, fourth in the pictured group, at a SUNY Canton University Police awards presentation, June 19, 2012.",
    "name": "Susan Buckley",
    "photo_url": "photos/susan-buckley.jpg",
    "source_page": "http://readme.readmedia.com/SUNY-Canton-Criminal-Investigation-Major-Eli-Max-of-Freeport-N-Y-11520-Wins-Wins-Award-From-SUNY-Police/4511157/print",
@@ -6418,12 +6469,12 @@
    "type": null
   },
   {
-   "added": "2026-10-31",
-   "evidence": "Crop of Victoria Lucas (third in the top row) from the Jefferson Community College nurse pinning group photo (article published June 6, 2023), captioned 'Top row (l-r): Jeremy Thomas Reff of Redwood, Kylie Saleen Vaughan of Hammond, Victoria Lucas of Gouverneur, Kathryn Joyce Carey...'; the same page names Victoria Lucas of Gouverneur as recipient of the Samaritan Medical Center HEART Award (her profile: JCC AAS Nursing Spring 2023, RN at Rochester Regional Health, Gouverneur, NY).",
+   "added": "2026-11-03",
+   "evidence": "Victoria Lucas, third from left in the top row, at the Jefferson Community College nursing pinning, spring 2023.",
    "name": "Victoria Lucas",
    "photo_url": "photos/victoria-lucas.jpg",
-   "source_page": "https://sunyjefferson.edu/news/nurse_pinning_spring2023.php",
-   "status": "possible",
+   "source_page": "https://linkinglewiscounty.com/202306/JCC-Spring-2023-Nursing-Graduates-Pinned.html",
+   "status": "likely",
    "type": "group"
   },
   {
@@ -6530,6 +6581,15 @@
    "type": "Instagram profile picture"
   },
   {
+   "added": "2026-11-03",
+   "evidence": "1st Lt. Zachary Dean, Task Force Orion, 27th Infantry Brigade Combat Team, during M4 qualification at Fort Drum, June 19, 2022.",
+   "name": "Zachary Dean",
+   "photo_url": "photos/zachary-dean.jpg",
+   "source_page": "https://www.dvidshub.net/image/7697439/task-force-orion-conducts-m4-qualification",
+   "status": "likely",
+   "type": "Official Army photo"
+  },
+  {
    "added": "2026-10-31",
    "evidence": "DVIDS image 7671110: U.S. Army Master Sgt. Zalika Ajamu, 369th Sustainment Brigade, NY Army National Guard, promoted from sergeant first class at Camp Arifjan, Kuwait, Mar 2, 2023; companion DVIDS story: from Buffalo, NY, brigade Sexual Assault Response Coordinator, 20 years of service.",
    "name": "Zalika Ajamu",
@@ -6566,6 +6626,6 @@
    "type": "staff headshot"
   }
  ],
- "total": 693,
+ "total": 695,
  "updated": "2026-11-03"
 }
