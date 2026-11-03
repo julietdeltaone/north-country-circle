@@ -7522,6 +7522,985 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kathy-whiteford-partner-of-jay-e-fifield-of-canton",
+   "name": "sf:kathy-whiteford",
+   "display": "Kathy Whiteford",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "sensitive",
+   "claim": "Kathy Whiteford of Canton was the partner of Jay E. Fifield of Canton; his obituary (died June 23, 2025, Allen-Denesha Funeral Home) lists her among his survivors as his partner.",
+   "file_text": "Partner of Jay E. Fifield of Canton",
+   "source": "Allen-Denesha Funeral Home",
+   "url": "https://allendeneshafuneralhome.com/jay-e-fifield-06-23-2025/",
+   "anchors": [
+    "Exact name and Canton, NY",
+    "Calvary Baptist Church (Canton) affiliation on file"
+   ],
+   "missing_gate": "Held for JD: partner/family detail sourced from an obituary, graded likely. Lineage: seed: Calvary Baptist, Canton -> name + Canton, NY search -> funeral-home obituary naming Kathy Whiteford of Canton",
+   "confidence": 77,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 22,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kathy-whiteford-listed-as-a-contact-for-timeless-taste-catering",
+   "name": "sf:kathy-whiteford",
+   "display": "Kathy Whiteford",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "identity",
+   "claim": "A Kathy Whiteford was listed as a contact for Timeless Taste Catering of Canton, NY in the 2010-11 'Meet the Town' Canton guide.",
+   "file_text": "Listed as a contact for Timeless Taste Catering of Canton in the 2010-11 'Meet the Town' guide",
+   "source": "Meet the Town (Canton guide)",
+   "url": "https://doczz.net/doc/3011253/meet-the-town",
+   "anchors": [
+    "Exact name and Canton, NY",
+    "Calvary Baptist Church (Canton) affiliation on file"
+   ],
+   "missing_gate": "Held: possible grade - an old town-guide listing is the only anchor beyond name and town. Lineage: seed: Calvary Baptist, Canton -> name + Canton search -> Canton town guide advertiser listing",
+   "confidence": 47,
+   "confidence_parts": {
+    "identity": 26,
+    "source": 10,
+    "detail": 11
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-jazmynkyara-great-granddaughter-of-edward-nelson-murcray-sr",
+   "name": "ig:jazmynkyara",
+   "display": "Jazmyn Villnave",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "sensitive",
+   "claim": "Jazmyn Villnave is a great-granddaughter of Edward Nelson Murcray Sr. of Norwood, NY, per his 2009 obituary (Buck Funeral Home, Norwood), which lists her among his four great-grandchildren.",
+   "file_text": "Great-granddaughter of Edward Nelson Murcray Sr. of Norwood, NY",
+   "source": "Buck Funeral Home",
+   "url": "https://buckfuneralhome.com/tribute/details/1310/Edward-Murcray/obituary.html",
+   "anchors": [
+    "Rare surname (Villnave)",
+    "Norwood, NY obituary - St. Lawrence County"
+   ],
+   "missing_gate": "Held for JD: family detail sourced from an obituary, graded likely. Lineage: seed: U.S. Army affiliation -> exact-name search -> Norwood, NY funeral-home obituary naming Jazmyn Villnave",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 22,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-andrew-haas-listed-as-a-100-499-donor-in-the-potsdam-humane",
+   "name": "ct:andrew haas",
+   "display": "Andrew Haas",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "identity",
+   "claim": "An Andrew Haas of Potsdam was listed as a $100-$499 donor in the Potsdam Humane Society's 2020 annual report.",
+   "file_text": "Listed as a $100-$499 donor in the Potsdam Humane Society's 2020 annual report",
+   "source": "Potsdam Humane Society",
+   "url": "https://potsdamhumanesociety.org/wp-content/uploads/2021/06/Potsdam-Humane-Society-Inc-Annual-Report-2020-.pdf",
+   "anchors": [
+    "Potsdam location only"
+   ],
+   "missing_gate": "Held: possible grade - Potsdam location is the only anchor and the name is common. Lineage: seed: Christian Fellowship Center (Potsdam) -> name + Potsdam, NY search -> Potsdam Humane Society annual report donor list",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-megan-daniels-suny-canton-president-s-list-spring-2009-air",
+   "name": "ct:megan daniels",
+   "display": "Megan Daniels",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "identity",
+   "claim": "A Megan Daniels of Potsdam made the SUNY Canton President's List for the Spring 2009 semester, majoring in Air Conditioning Engineering Technology.",
+   "file_text": "SUNY Canton President's List, Spring 2009 (Air Conditioning Engineering Technology)",
+   "source": "SUNY Canton Merit Pages",
+   "url": "https://canton.meritpages.com/stories/Megan-Daniels-of-Potsdam-made-President-s-List-at-SUNY-Canton/1679062",
+   "anchors": [
+    "Exact name",
+    "Potsdam hometown in the announcement"
+   ],
+   "missing_gate": "Held: the name is common and nothing in the source ties her to Christian Fellowship Center directly. Lineage: seed: Christian Fellowship Center (Potsdam) -> name + Potsdam, NY search -> SUNY Canton Merit Pages announcement naming Megan Daniels of Potsdam",
+   "confidence": 71,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 25,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-taylynn-britton-received-a-2022-clark-county-credit-union-smart",
+   "name": "sf:taylynn-britton",
+   "display": "Taylynn Britton",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "identity",
+   "claim": "A Taylynn Britton received a 2022 Clark County Credit Union Smart Start Scholarship to attend Georgia Military College, majoring in Emergency Management.",
+   "file_text": "Received a 2022 Clark County Credit Union Smart Start Scholarship to attend Georgia Military College (Emergency Management)",
+   "source": "Clark County Credit Union",
+   "url": "https://marketing.ccculv.com/newsletter/K9oKeWU0f0iATMXL3RUcOA?m=sample",
+   "anchors": [
+    "Distinctive name",
+    "Georgia Military College - a military college, fits a service pathway but does not itself name the 27th IBCT"
+   ],
+   "missing_gate": "Held: possible grade - same-name-only chain; no source ties her directly to the 27th IBCT. Lineage: seed: U.S. Army HHC 27th IBCT -> distinctive-name search -> CCCU scholarship listing",
+   "confidence": 53,
+   "confidence_parts": {
+    "identity": 24,
+    "source": 16,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-taylynn-britton-competed-for-georgia-military-college-women-s",
+   "name": "sf:taylynn-britton",
+   "display": "Taylynn Britton",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "identity",
+   "claim": "A Taylynn Britton competed as a freshman (FR-1) for Georgia Military College women's cross country, placing 17th in the women's 5000m at the FVSU Wildcat XC Opener (40:04.0).",
+   "file_text": "Competed for Georgia Military College women's cross country as a freshman (17th, women's 5000m, FVSU Wildcat XC Opener)",
+   "source": "TFRRS",
+   "url": "https://xc.tfrrs.org/results/xc/21978/FVSU_Wildcat_XC_Opener",
+   "anchors": [
+    "Distinctive name",
+    "Georgia Military College, chained from the scholarship find (not independently anchored to the 27th IBCT)"
+   ],
+   "missing_gate": "Held: possible grade - identity chained to the scholarship find, not independently anchored. Lineage: seed: U.S. Army -> hop 2 via Georgia Military College (from the scholarship find) -> TFRRS official meet results naming Taylynn Britton, GMC",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 20,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-bartlomiej-brodzki-listed-as-an-additional-owner-of-720-mill-st",
+   "name": "sf:bartlomiej-brodzki",
+   "display": "Bartlomiej Brodzki",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "NY property records list Bartlomiej Brodzki as an additional owner of 720 Mill St, Watertown, NY, with a mailing address at Fort Drum, NY (9212D York St, Fort Drum, NY 13603) - consistent with Army service in the Fort Drum/Watertown area.",
+   "file_text": "Listed as an additional owner of 720 Mill St, Watertown, NY, with a Fort Drum mailing address",
+   "source": "OpenGovNY",
+   "url": "https://opengovny.com/property/221800-3-07-313",
+   "anchors": [
+    "Distinctive name",
+    "Fort Drum mailing address in the record"
+   ],
+   "missing_gate": "Held: possible grade - a property record is a location anchor only; no unit is named. Lineage: seed: U.S. Army 27th IBCT -> distinctive-name search -> NY assessment-roll data via OpenGovNY naming Bartlomiej Brodzki with a Fort Drum mailing address",
+   "confidence": 56,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 14,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-natalie-southworth-health-occupations-honor-roll-high-honors",
+   "name": "ct:natalie southworth",
+   "display": "Natalie Southworth",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "Natalie Southworth of Malone, NY, was a Health Occupations student at Franklin-Essex-Hamilton BOCES' North Franklin Educational Center and made the honor roll (high honors, asterisked) in Q3 of 2020-21.",
+   "file_text": "Health Occupations honor roll (high honors), Franklin-Essex-Hamilton BOCES, Q3 2020-21",
+   "source": "Franklin-Essex-Hamilton BOCES",
+   "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/863/Franklin_Essex_Hamilton_Boces/cc4dc3fe-7ac1-4d50-86b3-5f1a951d707d/Q3_NFEC_honor_roll.pdf?disposition=inline",
+   "anchors": [
+    "Malone, NY hometown",
+    "Health Occupations track - the pre-service training track for a medic"
+   ],
+   "missing_gate": "Held: graded likely - location and health-training anchors, one grade down from the seed; pre-service record. Lineage: seed: Army 68W medic, 27th IBCT (NY) -> name + medic search -> official BOCES honor-roll PDF naming Natalie Southworth of Malone in Health Occupations-1",
+   "confidence": 73,
+   "confidence_parts": {
+    "identity": 34,
+    "source": 24,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-nina-criscitello-took-the-2026-sloper-plunge-with-isa",
+   "name": "sf:nina-criscitello",
+   "display": "Nina Criscitello",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "In February 2026 Nina Criscitello and Isa Criscitello of ServiceMaster Apple Valley took the Sloper Plunge and raised $1,000 for YMCA Camp Sloper scholarships; the Apple Valley team also sponsored the event's hot chocolate bar.",
+   "file_text": "Took the 2026 Sloper Plunge with Isa Criscitello, raising $1,000 (ServiceMaster Apple Valley)",
+   "source": "ServiceMaster franchise news",
+   "url": "https://www.cleaners10.com/US/Waynesboro/1328032803950955/ServiceMaster-of-Shenandoah-Valley",
+   "anchors": [
+    "ServiceMaster Apple Valley employer on file",
+    "Named alongside Isa Criscitello of the same team"
+   ],
+   "missing_gate": "Held: graded likely - the source is a secondary franchise-news aggregation, one grade down. Lineage: seed: ServiceMaster Apple Valley CT -> hop 2 via ServiceMaster franchise network post (Feb 24, 2026) naming Nina and Isa Criscitello of the Apple Valley team",
+   "confidence": 67,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2026-02-24",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-nelson-dane-works-as-a-professional-software-engineer",
+   "name": "sf:nelson-dane",
+   "display": "Nelson Dane",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Now works as a professional software engineer (per his GitHub profile); his Clarkson senior design project used Vivado/Vitis FPGAs to generate Minecraft worlds, and he maintains open-source projects in Python, Docker/Kubernetes and NixOS.",
+   "file_text": "Works as a professional software engineer",
+   "source": "GitHub",
+   "url": "https://github.com/NelsonDane",
+   "anchors": [
+    "Her own GitHub profile (NelsonDane)",
+    "Clarkson Computer Engineering degree on file"
+   ],
+   "missing_gate": "Held: current employment is self-reported on his own GitHub profile, with no employer named. Lineage: seed: Clarkson Computer Engineering -> his own GitHub profile (NelsonDane)",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 13,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-paige-davis-daughter-of-wayne-davis-of-massena-d-november",
+   "name": "sf:paige-davis",
+   "display": "Paige Davis",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "sensitive",
+   "claim": "A November 2025 obituary for Wayne Davis of Massena, NY lists Paige Davis of Canton, NY among his five children (Wayne Davis died November 18, 2025).",
+   "file_text": "Daughter of Wayne Davis of Massena (d. November 18, 2025)",
+   "source": "Legacy.com (Phillips Memorial Home)",
+   "url": "https://www.legacy.com/us/obituaries/name/wayne-davis-obituary?id=60105222",
+   "anchors": [
+    "Massena hometown on file"
+   ],
+   "missing_gate": "Held for JD: family detail sourced from an obituary; the name is common and the obituary is the single anchor. Lineage: seed: hometown Massena NY -> Phillips Memorial Home (Massena) obituary naming Paige Davis of Canton",
+   "confidence": 61,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 20,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-jennifer-meyer-worked-as-a-long-term-substitute-teacher-for",
+   "name": "sf:jennifer-meyer",
+   "display": "Jennifer Meyer",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "She worked as a long-term substitute teacher for Greece Central School District in Greece, NY, including a seven-month long-term assignment.",
+   "file_text": "Worked as a long-term substitute teacher for Greece Central School District",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/jennifer-meyer-240928204414",
+   "anchors": [
+    "Greece Central School District on file"
+   ],
+   "missing_gate": "Held: self-authored resume profile (Bold.pro), not independently verified. Lineage: seed: Greece Central School District (on file) -> her Bold.pro work history",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-jennifer-meyer-oversaw-the-immunization-program-for-over-375",
+   "name": "sf:jennifer-meyer",
+   "display": "Jennifer Meyer",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "As Medical Readiness Sergeant in Rochester she oversaw the immunization program for over 375 Soldiers, and her profile lists completed overseas military assignments to Haiti, Eastern Europe, Asia, and the Middle East.",
+   "file_text": "Oversaw the immunization program for over 375 Soldiers as Medical Readiness Sergeant in Rochester; overseas assignments to Haiti, Eastern Europe, Asia, and the Middle East",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/jennifer-meyer-240928204414",
+   "anchors": [
+    "Medical Readiness Sergeant, Rochester on file"
+   ],
+   "missing_gate": "Held: self-authored resume profile (Bold.pro), not independently verified. Lineage: seed: Medical Readiness Sergeant, Rochester (on file) -> her Bold.pro role detail and accomplishments",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-kim-sisk-photographed-by-ncpr-in-december-2012-writing",
+   "name": "sf:kim-sisk",
+   "display": "Kim Sisk",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "In December 2012, Canton parent Kim Sisk was photographed by NCPR writing letters lobbying for increased state school aid for the Canton Central School District amid state-aid cuts.",
+   "file_text": "Photographed by NCPR in December 2012 writing letters lobbying for increased state school aid for the Canton Central School District",
+   "source": "North Country Public Radio",
+   "url": "https://www.northcountrypublicradio.org/news/story/21135/20121224/schools-fight-for-fiscal-survival",
+   "anchors": [
+    "Canton residence on file",
+    "Named in the NCPR photo caption"
+   ],
+   "missing_gate": "Held: graded likely - a single dated news anchor from 2012. Lineage: seed: lives in Canton NY (on file) -> NCPR news photo caption naming Canton parent Kim Sisk",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 24,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2012-12-24",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-eliza-sullivan-wedding-to-tyler-weller-set-for-november-8-2025",
+   "name": "sf:eliza-sullivan",
+   "display": "Eliza Sullivan",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Her wedding to Tyler Weller was set for November 8, 2025 (the couple's Zola wedding site and registry, Winthrop, NY), following the engagement already on file.",
+   "file_text": "Wedding to Tyler Weller set for November 8, 2025 (Winthrop, NY)",
+   "source": "Zola",
+   "url": "https://www.zola.com/wedding/tylerloveseliza",
+   "anchors": [
+    "Engagement to Tyler Weller on file",
+    "The couple's own wedding site"
+   ],
+   "missing_gate": "Held: sourced from the couple's own wedding site; the site states the planned date. Lineage: seed: engagement to Tyler Weller (on file) -> the couple's own Zola wedding site",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 15,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-eliza-sullivan-works-at-martin-s-pretzel-bakery-in-moira-ny",
+   "name": "sf:eliza-sullivan",
+   "display": "Eliza Sullivan",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "She works at Martin's Pretzel Bakery in Moira, NY - the couple's Zola 'Things To Do' page directs wedding guests to 'take a drive out to Eliza's work' there.",
+   "file_text": "Works at Martin's Pretzel Bakery in Moira, NY",
+   "source": "Zola",
+   "url": "https://www.zola.com/wedding/tylerloveseliza/poi",
+   "anchors": [
+    "The couple's own wedding site (Things To Do page)"
+   ],
+   "missing_gate": "Held: the employment detail comes indirectly from the couple's own wedding site. Lineage: seed: Eliza Sullivan / Tyler Weller engagement -> their Zola wedding site POI page",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 13,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-eliza-sullivan-met-tyler-weller-through-emmanuel-baptist",
+   "name": "sf:eliza-sullivan",
+   "display": "Eliza Sullivan",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "She and Tyler met through Emmanuel Baptist Church in Potsdam, joining the same church family in April 2024; their first date was May 3, 2025 (her account on their wedding site).",
+   "file_text": "Met Tyler Weller through Emmanuel Baptist Church in Potsdam (joined April 2024); first date May 3, 2025",
+   "source": "Zola",
+   "url": "https://www.zola.com/wedding/tylerloveseliza",
+   "anchors": [
+    "Engagement to Tyler Weller on file",
+    "Her first-person account on the couple's wedding site"
+   ],
+   "missing_gate": "Held: self-published account on the couple's own wedding site, graded likely. Lineage: seed: Tyler Weller engagement -> her first-person story on the couple's Zola site",
+   "confidence": 75,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 15,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-stephen-blackwood-smith-reverend-living-in-malone-ny-married-to-theresa",
+   "name": "sf:stephen-blackwood-smith",
+   "display": "Stephen Blackwood Smith",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "sensitive",
+   "claim": "Stephen Blackwood Smith is a Reverend living in Malone, New York, married to Theresa (as listed among the survivors in his father Harold Watson Smith's 2019 obituary).",
+   "file_text": "Reverend living in Malone, NY, married to Theresa",
+   "source": "Legacy.com (Saratogian)",
+   "url": "https://www.legacy.com/us/obituaries/saratogian/name/harold-smith-obituary?id=8327528",
+   "anchors": [
+    "Distinctive full name",
+    "Named among the survivors in his father's published obituary"
+   ],
+   "missing_gate": "Held for JD: personal detail (title, residence, marriage) sourced from his father's obituary. Lineage: seed: Christian Fellowship Center correspondence -> name search -> father's published obituary naming 'the Reverend Stephen Blackwood Smith (Theresa) of Malone, NY'",
+   "confidence": 75,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-aspecthammy-bouncer-at-saint-larry-s-bar-grill-in-potsdam",
+   "name": "ig:aspecthammy_",
+   "display": "Hamza Hmyene",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Hamza Hmyene has worked as a bouncer at Saint Larry's Bar & Grill in Potsdam, New York since March 2023.",
+   "file_text": "Bouncer at Saint Larry's Bar & Grill in Potsdam since March 2023",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/hamza-hmyene",
+   "anchors": [
+    "Unique name",
+    "Potsdam work history"
+   ],
+   "missing_gate": "Held: self-authored resume profile (Bold.pro), not independently verified. Lineage: seed: Potsdam-area Rochester Regional Health affiliation + Buffalo ties -> his public Bold.pro resume",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-aspecthammy-computer-technician-for-getinsured-com-in",
+   "name": "ig:aspecthammy_",
+   "display": "Hamza Hmyene",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Hamza Hmyene worked as a Computer Technician for GetInsured.com in Potsdam, New York from April 2023 to October 2024, after earlier roles as a Walmart customer service representative in Potsdam and a FedEx package handler in Buffalo (Feb-Jun 2022).",
+   "file_text": "Computer Technician for GetInsured.com in Potsdam, April 2023 - October 2024; earlier Walmart customer service (Potsdam) and FedEx package handler (Buffalo)",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/hamza-hmyene",
+   "anchors": [
+    "Unique name",
+    "Buffalo State University and Potsdam anchors on file"
+   ],
+   "missing_gate": "Held: self-authored resume profile (Bold.pro), not independently verified. Lineage: seed: Buffalo State University + Potsdam -> his Bold.pro resume; the Buffalo FedEx role corroborates the Buffalo anchor",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-grace-lapointe-advanced-emergency-medical-technician-aemt-with",
+   "name": "sf:grace-lapointe",
+   "display": "Grace LaPointe",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Grace LaPointe has worked as an Advanced Emergency Medical Technician (AEMT) with Fairfax Rescue in Vermont since October 2023, after EMT/AEMT roles with Lamoille Ambulance Service, Cambridge Rescue, and Amcare Ambulance Service (2020-2023).",
+   "file_text": "Advanced Emergency Medical Technician (AEMT) with Fairfax Rescue, VT since October 2023",
+   "source": "Bold.pro",
+   "url": "https://ma.bold.pro/my/grace-lapointe",
+   "anchors": [
+    "The resume lists the identical Nashoba Regional High School diploma (July 2020) that is on file",
+    "U.S. Air Force affiliation on file"
+   ],
+   "missing_gate": "Held: self-authored resume profile (Bold.pro); identity anchored by the identical Nashoba diploma, roles unverified by the employers. Lineage: seed: Nashoba Regional High School diploma -> her Bold.pro resume lists the identical Nashoba diploma (July 2020), anchoring identity",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-grace-lapointe-airman-and-non-destructive-inspector-vermont",
+   "name": "sf:grace-lapointe",
+   "display": "Grace LaPointe",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Grace LaPointe serves as an Airman and non-destructive inspector with the Vermont Air National Guard (VTANG) since December 2022, inspecting aircraft and aircraft parts; this specifies the on-file U.S. Air Force affiliation.",
+   "file_text": "Airman and non-destructive inspector, Vermont Air National Guard, since December 2022",
+   "source": "Bold.pro",
+   "url": "https://ma.bold.pro/my/grace-lapointe",
+   "anchors": [
+    "The resume lists the identical Nashoba Regional High School diploma (July 2020) that is on file",
+    "U.S. Air Force affiliation on file"
+   ],
+   "missing_gate": "Held: self-authored resume profile (Bold.pro); identity anchored by the identical Nashoba diploma. Lineage: seed: U.S. Air Force affiliation (on file) -> Bold.pro resume VTANG Airman role, anchored by the same Nashoba diploma match",
+   "confidence": 67,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-grace-lapointe-pursuing-an-associate-of-business-degree-at-the",
+   "name": "sf:grace-lapointe",
+   "display": "Grace LaPointe",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Grace LaPointe is pursuing an Associate of Business degree at the Community College of Vermont (Winooski, VT), expected June 2027.",
+   "file_text": "Pursuing an Associate of Business degree at the Community College of Vermont (expected June 2027)",
+   "source": "Bold.pro",
+   "url": "https://ma.bold.pro/my/grace-lapointe",
+   "anchors": [
+    "The resume lists the identical Nashoba Regional High School diploma (July 2020) that is on file"
+   ],
+   "missing_gate": "Held: self-authored resume profile (Bold.pro); identity anchored by the identical Nashoba diploma. Lineage: seed: Nashoba Regional High School -> Bold.pro resume education section, same anchored profile",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-josiah-tabolt-manager-of-operations-at-corning-incorporated",
+   "name": "sf:josiah-tabolt",
+   "display": "Josiah Tabolt",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "conflict",
+   "claim": "On file, Josiah Tabolt is listed as a business owner in Lyons Falls, NY; ZoomInfo instead lists Josiah D. Tabolt as Manager of Operations at Corning Incorporated, with prior roles as a civil/mechanical engineer at Jade Stone Engineering and BCA Architects & Engineers, and a bachelor's degree from SUNY Institute of Technology (2008) matching the on-file SUNY IT seed.",
+   "file_text": "Manager of Operations at Corning Incorporated; previously a civil/mechanical engineer at Jade Stone Engineering and BCA Architects & Engineers",
+   "source": "ZoomInfo",
+   "url": "https://www.zoominfo.com/p/Josiah-Tabolt/1286965702",
+   "anchors": [
+    "SUNY Institute of Technology bachelor's (2008) matches the on-file seed exactly",
+    "A 2007 SUNY Poly student page names Josiah Tabolt in Civil Engineering Technology"
+   ],
+   "missing_gate": "CONFLICT held for JD - never auto-overwrite: the Corning operations-manager listing conflicts with (or supersedes) the on-file 'business owner, Lyons Falls' description, and the source is an aggregator. Lineage: seed: SUNY IT education (on file) -> ZoomInfo profile whose education matches the seed exactly; engineering history also matches a 2007 SUNY Poly CTC 312 student page",
+   "confidence": 67,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 11,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-tracy-lynn-stowe-senior-at-colton-pierrepont-central-school-in",
+   "name": "sf:tracy-lynn-stowe",
+   "display": "Tracy Lynn Stowe",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "identity",
+   "claim": "A Tracy Stowe appears in the senior-class Last Will & Testament section of the 1991 Coltonian, the Colton-Pierrepont Central School yearbook, indicating she was a senior there in 1991.",
+   "file_text": "Senior at Colton-Pierrepont Central School in 1991 (Coltonian yearbook)",
+   "source": "NY Heritage",
+   "url": "http://nyheritage.contentdm.oclc.org/digital/collection/sllboces/id/16892/",
+   "anchors": [
+    "South Colton hometown on file"
+   ],
+   "missing_gate": "Held: possible grade - hometown is the only anchor. Lineage: seed: hometown South Colton, NY -> NY Heritage digital yearbook for Colton-Pierrepont naming Tracy Stowe among 1991 seniors",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 18,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-jason-sweet-president-s-list-at-suny-canton-fall-2023-and",
+   "name": "ct:jason sweet",
+   "display": "Jason Sweet",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "Jason Sweet earned President's List honors at SUNY Canton for the Spring 2024 semester (and Fall 2023) as an Information Technology student.",
+   "file_text": "President's List at SUNY Canton, Fall 2023 and Spring 2024 (Information Technology)",
+   "source": "SUNY Canton Merit Pages",
+   "url": "https://canton.meritpages.com/stories/Jason-Sweet-Earns-President-s-List-Honors-at-SUNY-Canton/135390287",
+   "anchors": [
+    "Canton, NY - the same town as his SLU job",
+    "Information Technology field matches his SLU IT role"
+   ],
+   "missing_gate": "Held: graded likely - field and town match his SLU IT job, but the honors releases do not name his employer. Lineage: seed: SLU IT role in Canton, NY -> SUNY Canton honors releases and his Merit page naming Jason Sweet, Information Technology",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-erin-dunham-member-of-the-medina-high-school-homecoming",
+   "name": "sf:erin-dunham",
+   "display": "Erin Dunham",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "Erin Dunham was a member of the Medina High School homecoming court in fall 2018.",
+   "file_text": "Member of the Medina High School homecoming court, fall 2018",
+   "source": "Orleans Hub",
+   "url": "https://orleanshub.com/medina-has-parade-pep-rally-to-celebrate-homecoming",
+   "anchors": [
+    "Medina High School on file",
+    "Named in the homecoming-court caption order"
+   ],
+   "missing_gate": "Held: graded likely - identified by the caption's name order in group coverage. Lineage: seed: Medina High School / Mustang Band (on file) -> Orleans Hub homecoming coverage naming her in the court",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 36,
+    "source": 18,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-erin-dunham-performed-with-the-crane-symphonic-band-at-suny",
+   "name": "sf:erin-dunham",
+   "display": "Erin Dunham",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "Erin Dunham performed with the Crane Symphonic Band at SUNY Potsdam (listed in the band's personnel for the October 6, 2021 concert program), continuing the trumpet/band thread from her Medina Mustang Band years.",
+   "file_text": "Performed with the Crane Symphonic Band at SUNY Potsdam (October 6, 2021 concert)",
+   "source": "SUNY Potsdam (Crane School of Music)",
+   "url": "https://www.potsdam.edu/sites/default/files/inline-files/Concert and Symphonic Band 10.6.pdf",
+   "anchors": [
+    "On-file trumpet / Medina Mustang Band history",
+    "SUNY Potsdam enrollment"
+   ],
+   "missing_gate": "Held: graded likely - one concert program is the anchor. Lineage: seed: SUNY Potsdam + on-file trumpet/Mustang Band -> Crane School of Music concert program (potsdam.edu)",
+   "confidence": 73,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 22,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-jamal-moses-contestant-in-wayne-school-of-engineering-s",
+   "name": "sf:jamal-moses",
+   "display": "Jamal Moses",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "As a senior at Wayne School of Engineering in Goldsboro, NC, Jamal Moses was a contestant in the school's second annual Mister and Miss WSE Scholarship Pageant in April 2013; the Goldsboro News-Argus named him as the son of Evelene and Paul Perry.",
+   "file_text": "Contestant in Wayne School of Engineering's Mister and Miss WSE Scholarship Pageant, April 2013; son of Evelene and Paul Perry",
+   "source": "Goldsboro News-Argus",
+   "url": "http://savannah.newsargus.com/news/archives/2013/04/25/twelve_to_be_in_mister_and_miss_wse_scholarship_pageant/",
+   "anchors": [
+    "Wayne School of Engineering on file"
+   ],
+   "missing_gate": "Held: graded likely - a single 2013 news anchor on the on-file school. Lineage: seed: Wayne School of Engineering (on file) -> Goldsboro News-Argus pageant coverage naming him as a WSE senior",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 36,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2013-04-25",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-danica-dunphey-authors-the-personal-blog-hi-i-m-danica-at",
+   "name": "sf:danica-dunphey",
+   "display": "Danica Dunphey",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "Danica Dunphey authors the long-running personal blog 'Hi, I'm Danica' at dunphey.com, writing on faith, family and homemaking from the Madrid/Potsdam, NY area (still posting as of its 2022 entries and linked from other homemaking blogs).",
+   "file_text": "Authors the personal blog 'Hi, I'm Danica' at dunphey.com",
+   "source": "dunphey.com",
+   "url": "https://dunphey.com/category/scripture/",
+   "anchors": [
+    "Dunphey family / Christian Fellowship Center circle on file",
+    "Blog content is Madrid/Potsdam, NY"
+   ],
+   "missing_gate": "Held: graded likely - her own blog, identified by name and Madrid/Potsdam keywords. Lineage: seed: Dunphey family / Christian Fellowship Center circle -> her personal blog, identified by name and Madrid/Potsdam keywords",
+   "confidence": 64,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 14,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-danica-dunphey-delivered-meals-through-meal-train-for-madrid",
+   "name": "sf:danica-dunphey",
+   "display": "Danica Dunphey",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "Danica Dunphey delivered meals through Meal Train for local families in the Madrid, NY area in 2025, including the Bennett Family train (Madrid, NY) and the Tomea Cruz train.",
+   "file_text": "Delivered meals through Meal Train for Madrid, NY area families in 2025",
+   "source": "Meal Train",
+   "url": "https://www.mealtrain.com/trains/v2g7dz",
+   "anchors": [
+    "Madrid, NY area on file",
+    "Named as a meal deliverer on the trains"
+   ],
+   "missing_gate": "Held: graded likely - participant lists on Meal Train name her as a deliverer. Lineage: seed: Madrid-area church/family circle -> Meal Train participant lists naming danica dunphey as a meal deliverer",
+   "confidence": 64,
+   "confidence_parts": {
+    "identity": 36,
+    "source": 16,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-megan-eurto-village-of-canton-minutes-name-megan-mousaw-as",
+   "name": "sf:megan-eurto",
+   "display": "Megan Eurto",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "conflict",
+   "claim": "Possible correction: the file lists Megan Eurto as deputy village clerk for the Village of Canton, but Village of Canton board minutes list a Megan Mousaw as Deputy Clerk (Feb 19, 2025) and as Village Clerk (Sep 17, 2025). Whether Megan Eurto and Megan Mousaw are the same person (e.g., a name change) is unverified - the on-file deputy-clerk role and the minutes' clerk-office Megan may or may not be one person.",
+   "file_text": "Village of Canton minutes name Megan Mousaw as Deputy Clerk (Feb 19, 2025) and Village Clerk (Sep 17, 2025)",
+   "source": "Village of Canton",
+   "url": "https://cms3.revize.com/revize/canton/2025 9 17  Village Board Meeting Minutes.pdf?t=202510211005280&t=202510211005280",
+   "anchors": [
+    "Same clerk-office role the file gives Megan Eurto",
+    "No source names a Megan Eurto in the clerk's office"
+   ],
+   "missing_gate": "CONFLICT held for JD - never auto-overwrite and do NOT merge Eurto/Mousaw: whether they are the same person (e.g., a name change) is unverified and needs a second anchor. Lineage: seed: Village of Canton clerk's office -> Village board minutes naming the clerk-office staff",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 16,
+    "source": 22,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2025-09-17",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-peyton-mussaw-competed-in-track-and-field-for-gouverneur-high",
+   "name": "sf:peyton-mussaw",
+   "display": "Peyton Mussaw",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "Peyton Mussaw competed in track and field for Gouverneur High School (MileSplit maintains a season-progression athlete profile for her under Gouverneur).",
+   "file_text": "Competed in track and field for Gouverneur High School",
+   "source": "MileSplit NY",
+   "url": "https://ny.milesplit.com/athletes/8568954-peyton-mussaw/progression",
+   "anchors": [
+    "Gouverneur, NY on file",
+    "Named MileSplit athlete profile for Gouverneur"
+   ],
+   "missing_gate": "Held: graded likely - a single athlete-profile source. Lineage: seed: Gouverneur NY -> MileSplit NY athlete profile for Peyton Mussaw of Gouverneur",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 18,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-thomas-quant-business-development-manager-systems-engineer",
+   "name": "sf:thomas-quant",
+   "display": "Thomas Quant",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Thomas Quant is a Business Development Manager / Systems Engineer at Chimera Integrations in Potsdam, NY (in the role since August 2021), a security-systems professional with about 13 years of experience in integrated security systems, access control and CCTV, holding an Associate's degree in Electro-Mechanical Technology from Alfred State College.",
+   "file_text": "Business Development Manager / Systems Engineer at Chimera Integrations, Potsdam, since August 2021; Associate's in Electro-Mechanical Technology from Alfred State College",
+   "source": "Topline",
+   "url": "https://topline.com/people/thomas-quant-200551738",
+   "anchors": [
+    "Alfred State College degree on file",
+    "Potsdam/Norwood area"
+   ],
+   "missing_gate": "Held: aggregator sourcing, and a second Norwood-area Thomas Quant (SUNY Canton 2014, IBEW electrician) exists - the Alfred State seed anchors this profile to the directory person; the electrician was NOT merged. Lineage: seed: Alfred State College + Norwood/Potsdam area -> professional-profile aggregator entry matching both anchors (Alfred State degree, Potsdam employer)",
+   "confidence": 59,
+   "confidence_parts": {
+    "identity": 34,
+    "source": 9,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-skyler-trumble-graduated-from-suny-potsdam-at-commencement-on",
+   "name": "sf:skyler-trumble",
+   "display": "Skyler Trumble",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "conflict",
+   "claim": "Correction: the file says Skyler Trumble graduated from SUNY Potsdam in May 2023, but SUNY Potsdam's Merit record (story dated May 20, 2022) has her set to graduate at Commencement on May 21, 2022. One version is off by a year; the Merit profile page also shows a May 18, 2023 verification stamp on the same story, so the year should be settled against the commencement program before overwriting.",
+   "file_text": "Graduated from SUNY Potsdam at Commencement on May 21, 2022",
+   "source": "SUNY Potsdam Merit Pages",
+   "url": "https://potsdam.meritpages.com/stories/Skyler-Trumble-Set-to-Graduate-from-SUNY-Potsdam/82323113",
+   "anchors": [
+    "SUNY Potsdam's own Merit record about her",
+    "SUNY Potsdam affiliation on file"
+   ],
+   "missing_gate": "CONFLICT held for JD - never auto-overwrite: SUNY Potsdam's own Merit record dates her commencement to May 21, 2022, conflicting with the on-file May 2023 (which was itself filed from an earlier Research Command candidate JD approved); the same Merit page carries a May 18, 2023 verification stamp, so the year should be settled against the commencement program. Lineage: seed: SUNY Potsdam graduation (on file, May 2023) -> SUNY Potsdam Merit graduation story dated 2022",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 24,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2022-05-20",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-skyler-trumble-played-women-s-basketball-at-jefferson",
+   "name": "sf:skyler-trumble",
+   "display": "Skyler Trumble",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "verification",
+   "claim": "Skyler Trumble played women's basketball at Jefferson Community College in the 2019-20 season (jersey #10, appearing in official JCC/NJCAA box scores), and pitched softball for Massena Central High School.",
+   "file_text": "Played women's basketball at Jefferson Community College in the 2019-20 season (jersey #10); pitched softball for Massena Central High School",
+   "source": "PrestoSports (Jefferson CC)",
+   "url": "https://jeffersoncc.prestosports.com/sports/wbkb/2019-20/boxscores/20200118_t39p.xml?view=boxscore",
+   "anchors": [
+    "Jefferson Community College on file",
+    "Official PrestoSports box scores"
+   ],
+   "missing_gate": "Held: graded likely - box-score appearances are the anchor. Lineage: seed: Jefferson Community College (on file) -> official PrestoSports box scores naming Skyler Trumble on the JCC roster",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 22,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-joetherockboyle-chair-of-the-department-of-modern-languages-and",
+   "name": "ig:joetherockboyle",
+   "display": "Joseph Boyle",
+   "run_date": "2026-11-03",
+   "run_label": "Sweep 100",
+   "category": "source",
+   "claim": "Aggregator org-chart data for Massena Central School District additionally lists Joseph Boyle as Chair of the Department of Modern Languages and as International Baccalaureate faculty.",
+   "file_text": "Chair of the Department of Modern Languages and International Baccalaureate faculty at Massena Central",
+   "source": "CIENCE",
+   "url": "https://www.cience.com/profile/shailindar-singh/547684337",
+   "anchors": [
+    "Massena Central employment independently confirmed by the district's official staff directory"
+   ],
+   "missing_gate": "Held: possible grade - aggregator org-chart data only. Lineage: seed: Massena Central Schools -> CIENCE/RocketReach org data naming Joseph Boyle with the department-chair and IB-faculty titles",
+   "confidence": 53,
+   "confidence_parts": {
+    "identity": 34,
+    "source": 7,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
