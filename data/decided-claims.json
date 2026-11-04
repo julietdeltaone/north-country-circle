@@ -5167,6 +5167,42 @@
    ]
   },
   {
+   "at": "2026-11-04T00:05:48.602Z",
+   "decision": "filed",
+   "display": "Briana McGrath",
+   "domain": "us.bold.pro",
+   "id": "lr-20261103-sf-briana-mcgrath-at-sas-health-care-center-she-serves-as-the",
+   "person": "sf:briana-mcgrath",
+   "tier": 1,
+   "tokens": [
+    "according",
+    "administrator",
+    "bold",
+    "briana",
+    "candidates",
+    "care",
+    "center",
+    "company",
+    "department",
+    "departments",
+    "developed",
+    "health",
+    "interviews",
+    "liaison",
+    "mcgrath",
+    "medical",
+    "office",
+    "pro",
+    "profile",
+    "protocols",
+    "restructured",
+    "sas",
+    "serves",
+    "seven",
+    "team"
+   ]
+  },
+  {
    "at": "2026-10-30T15:23:29.256Z",
    "decision": "filed",
    "display": "Brittney Carnicelli",
@@ -7475,6 +7511,34 @@
     "september",
     "state",
     "untimely"
+   ]
+  },
+  {
+   "at": "2026-11-04T00:05:41.073Z",
+   "decision": "filed",
+   "display": "Megan Eurto",
+   "domain": "cms3.revize.com",
+   "id": "lr-20261103-sf-megan-eurto-village-of-canton-minutes-name-megan-mousaw-as",
+   "person": "sf:megan-eurto",
+   "tier": 1,
+   "tokens": [
+    "17",
+    "19",
+    "2025",
+    "according",
+    "board",
+    "canton",
+    "clerk",
+    "deputy",
+    "feb",
+    "february",
+    "megan",
+    "minutes",
+    "mousaw",
+    "name",
+    "sep",
+    "september",
+    "village"
    ]
   },
   {
