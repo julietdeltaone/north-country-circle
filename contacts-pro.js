@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.81.0';
+var APP_VERSION = '3.82.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2107,9 +2107,10 @@ function askEditKey(){ try{ poolClose(); }catch(x){}
    About: People (the directory), Live Records, Master List,
    Photos, Family, Groups (membership facts about people).
    Connection: Calendar/Atlas (co-presence + contact), Network.
-   Neutral (slate): Home and What's New (mixed — their contents
-   are notated per element), Audit / Council / Sandbox / Settings
-   (pure tools). Research Command lives inside Live Records and
+   Neutral (slate): Home (mixed — its contents are notated per
+   element), Audit / Council / Sandbox / Settings (pure tools).
+   (What's New retired as a rail item in V4 Phase 2 — its feed is
+   the Filings tab inside Live Records.) Research Command lives inside Live Records and
    Reach-out lives inside People (By last contact); both inherit
    their host's notation plus their own per-element notation. */
 var NAV = [
@@ -2117,7 +2118,6 @@ var NAV = [
   { k:'people',  l:'People',  ic:'people',  kind:'about' },
   { k:'audit',   l:'Audit',   ic:'target',  kind:'neutral' },
   { k:'daily',   l:'Live Records', ic:'sparkle', kind:'about' },
-  { k:'whatsnew', l:"What's New", ic:'today', kind:'neutral' },
   { k:'calendar', l:'Calendar', ic:'calendar', kind:'connection' },
   { k:'council', l:'Council', ic:'award',   kind:'neutral' },
   { k:'lists',   l:'Master List', ic:'file', kind:'about' },
@@ -2552,6 +2552,11 @@ function render(){
   bgInit();
   cancelAnimationFrame(renderTimer);
   S.route = parseRoute();
+  /* V4 Phase 2: #/whatsnew is retired — the feed lives on inside
+     Live Records as its Filings tab. Old links (bookmarks, the
+     mobile shell's menu) land there, replaced in history so Back
+     never returns to a dead route. */
+  if(S.route.name === 'whatsnew'){ go('daily/filings', { replace:true }); return; }
   var v = $('#view'), n = S.route.name;
   /* V3.13.0: a route CHANGE starts at the top. #view is a persistent
      scroller, so without this a forward navigation inherited the last
@@ -2563,10 +2568,11 @@ function render(){
      before the route-change branch can touch anything. */
   var keepScr = (render._rk === rk) ? scrollSnap() : null;
   if(render._rk !== rk){
-    /* V3.79.1: Records <-> Inbox is one surface (Live Records) with two
-       tabs — a tab switch is not a page change, so it never resets the
-       scroll: each tab's own scroll is saved and restored instead. */
-    var lrTabSwap = (render._rk === 'daily/' || render._rk === 'daily/inbox') && (rk === 'daily/' || rk === 'daily/inbox');
+    /* V3.79.1: the Live Records tabs are one surface — a tab switch
+       is not a page change, so it never resets the scroll: each
+       tab's own scroll is saved and restored instead. V4 Phase 2:
+       the set is all three tabs (Records / Inbox / Filings). */
+    var lrTabSwap = !!(({ 'daily/':1, 'daily/inbox':1, 'daily/filings':1 })[render._rk] && ({ 'daily/':1, 'daily/inbox':1, 'daily/filings':1 })[rk]);
     if(lrTabSwap){
       render._dscroll = render._dscroll || {};
       render._dscroll[render._rk] = { w: window.scrollY || 0, v: v ? v.scrollTop : 0 };
@@ -2600,7 +2606,6 @@ function render(){
     else if(n === 'settings') viewSettings(v);
     else if(n === 'audit') viewAudit(v);
     else if(n === 'daily') viewDaily(v);
-    else if(n === 'whatsnew') viewWhatsNew(v);
     else if(n === 'calendar') viewCalendar(v);
     else if(n === 'photos') viewPhotos(v);
     else if(n === 'sandbox') viewSandbox(v);
@@ -6638,6 +6643,10 @@ function hmActivity(){
    log, primary photos, and hot-off-the-press items — aggregated
    by scripts/build_whatsnew.py into data/whatsnew.json. No write
    path: rows only navigate (to a profile, or out to the source).
+   V4 Phase 2 (2026-11-03): the standalone page is retired — this
+   feed is the Filings tab inside Live Records (#/daily/filings),
+   and #/whatsnew redirects there. The data file and its builder
+   are untouched; only the view moved.
    ============================================================ */
 var WN = null, WN_LOADING = false, WN_OPEN = {};
 function wnLoad(){
@@ -6645,8 +6654,8 @@ function wnLoad(){
   WN_LOADING = true;
   fetch('data/whatsnew.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(d){ WN_LOADING = false; WN = d || { empty:true, items:[] }; if(S.route && (S.route.name === 'whatsnew' || S.route.name === 'home')) render(); })
-    .catch(function(){ WN_LOADING = false; WN = { empty:true, items:[] }; if(S.route && (S.route.name === 'whatsnew' || S.route.name === 'home')) render(); });
+    .then(function(d){ WN_LOADING = false; WN = d || { empty:true, items:[] }; if(S.route && (S.route.name === 'daily' || S.route.name === 'home')) render(); })
+    .catch(function(){ WN_LOADING = false; WN = { empty:true, items:[] }; if(S.route && (S.route.name === 'daily' || S.route.name === 'home')) render(); });
 }
 var WN_KINDS = { filed:'Filed', photo:'Photo', hot:'Fresh' };
 /* V3.75.0 (bug hunt 32): the change feed's `what` strings are cut at
@@ -6675,13 +6684,10 @@ function wnRow(it){
   if(di == null) return '<div class="wn-row" data-kind="' + wnK + '">' + inner + '</div>';
   return '<button type="button" class="wn-row" data-kind="' + wnK + '" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(it.display || '') + '\u2019s profile">' + inner + '</button>';
 }
-function viewWhatsNew(v){
-  wnLoad();
-  var head = '<div class="page wn"><div class="pagehead"><div><h1 class="display">What&rsquo;s New</h1>' +
-    '<p class="sub">Everything filed lately &mdash; facts, photos and hot-off-the-press items &mdash; newest first. Tap a row to open the profile.</p></div></div>';
-  if(!WN){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">Loading the feed&hellip;</p></div></section></div>'; return; }
+function wnFeedHTML(){
+  if(!WN) return '<section class="card"><div class="cbody"><p class="dim">Loading the feed&hellip;</p></div></section>';
   var items = WN.items || [];
-  if(!items.length){ v.innerHTML = head + '<section class="card"><div class="cbody"><p class="dim">Nothing new yet. Filings, photos and hot items land here as the routines run.</p></div></section></div>'; return; }
+  if(!items.length) return '<section class="card"><div class="cbody"><p class="dim">Nothing new yet. Filings, photos and hot items land here as the routines run.</p></div></section>';
   /* Editorial Grid (V3.73.0): day chapters with a cap — the two newest
      days render in full; each earlier day is one ruled line ("Nov 1 —
      34 filings") that expands in place, so the page is never an
@@ -6703,7 +6709,7 @@ function viewWhatsNew(v){
         '<span>' + esc(hmFmtD(d)) + ' &mdash; ' + rows.length + ' filing' + (rows.length === 1 ? '' : 's') + '</span>' + ic('chev', 14) + '</button>';
     }
   });
-  v.innerHTML = head + '<section class="card wn-feed"><div class="cbody">' + h + '</div></section></div>';
+  return '<section class="card wn-feed"><div class="cbody">' + h + '</div></section>';
 }
 /* Home Prefill chip (V3.51.0): the pending Prefill count, counted
    exactly like the Sandbox stats — suggestions whose pfStatus is
@@ -6721,7 +6727,7 @@ function hmWhatsNewTeaser(){
   if(!WN) return h + '<p class="dim">Loading&hellip;</p>';
   var items = (WN.items || []).slice(0, 3);
   if(!items.length) return h + '<p class="dim">Nothing new yet.</p>';
-  return h + items.map(wnRow).join('') + '<a class="hma-link" href="#/whatsnew">Open What&rsquo;s New ' + ic('arrow', 12) + '</a>';
+  return h + items.map(wnRow).join('') + '<a class="hma-link" href="#/daily/filings">Open Filings ' + ic('arrow', 12) + '</a>';
 }
 
 /* ============================================================
@@ -9357,7 +9363,8 @@ function fiTabsHTML(on){
   var n = FI ? fiUnreadCount() : 0;
   return '<div class="fi-tabs" role="tablist" aria-label="Live Records views">' +
     '<a href="#/daily" class="fi-tab' + (on === 'records' ? ' on' : '') + '">Records</a>' +
-    '<a href="#/daily/inbox" class="fi-tab' + (on === 'inbox' ? ' on' : '') + '">Inbox <span class="fi-bdg' + (n ? '' : ' zero') + '">' + n + '</span></a></div>';
+    '<a href="#/daily/inbox" class="fi-tab' + (on === 'inbox' ? ' on' : '') + '">Inbox <span class="fi-bdg' + (n ? '' : ' zero') + '">' + n + '</span></a>' +
+    '<a href="#/daily/filings" class="fi-tab' + (on === 'filings' ? ' on' : '') + '">Filings</a></div>';
 }
 /* ============================================================
    V3.79.1 — Live Records chrome (JD 2026-11-03: "the top section
@@ -9366,7 +9373,8 @@ function fiTabsHTML(on){
    (loading / empty / loaded, Records / Inbox): crumb, title, a
    fixed-height single-line sub slot, the Records | Inbox tabs and
    one Command Center button. A tab switch changes only the title
-   text, the sub text and which tab is .on — never a box. The badge
+   text, the sub text and which tab is .on — never a box. (V4
+   Phase 2: a third tab, Filings, joins the same chrome.) The badge
    keeps a fixed-size box at every count (0 included), so counts
    can't resize the tab. The Records sort chips left the header:
    they ride the Updated Records section bar, and a sort click
@@ -9387,7 +9395,7 @@ function lrBriefSubHTML(){
   return 'Brief &middot; ' + esc(d) + ' &middot; ' + (DT.checked || []).length + ' checked &middot; ' + (DT.filed || []).length + ' updated';
 }
 function lrBodyPaint(){
-  if(S.route.name !== 'daily' || (S.route.seg && S.route.seg[0] === 'inbox')) return false;
+  if(S.route.name !== 'daily' || (S.route.seg && (S.route.seg[0] === 'inbox' || S.route.seg[0] === 'filings'))) return false;
   var b = document.getElementById('lr-body');
   if(!b || !DT || DT.empty || !DT.date) return false;
   var y = window.scrollY, vv = $('#view'), vt = vv ? vv.scrollTop : 0;
@@ -9630,6 +9638,15 @@ function viewDaily(v){
     fiLoad(); fiProfLoad();
     v.innerHTML = '<div class="page lr fi-page" data-kind="about">' + fiPageHTML() + '</div>';
     fiPaint();
+    return;
+  }
+  if(S.route.seg && S.route.seg[0] === 'filings'){
+    /* V4 Phase 2: the retired What's New page, living on as Live
+       Records' third tab under the same fixed chrome. */
+    wnLoad();
+    v.innerHTML = '<div class="page wn lr" data-kind="about">' +
+      lrChromeHTML('filings', 'Filings', 'Facts, photos and hot-off-the-press items &mdash; newest first.') +
+      wnFeedHTML() + '</div>';
     return;
   }
   /* V3.79.1: the header is the shared Live Records chrome in EVERY
