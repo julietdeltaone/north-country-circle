@@ -1,340 +1,394 @@
 {
- "date": "2026-11-03",
+ "date": "2026-11-04",
  "checked": [
   {
-   "name": "sf:breanne-sapp",
-   "display": "Breanne Sapp"
+   "name": "sf:alex-koberda",
+   "display": "Alex Koberda"
   },
   {
-   "name": "michaeljent1",
-   "display": "Michael Jent"
+   "name": "sf:tracy-lynn-stowe",
+   "display": "Tracy Lynn Stowe"
   },
   {
-   "name": "sphip_06",
-   "display": "Sydnie Phippen"
+   "name": "jackson.paladin",
+   "display": "Jackson Paladin"
   },
   {
-   "name": "fdb:esther_brown",
-   "display": "Esther Brown"
+   "name": "dsmithroc",
+   "display": "Daniel Smith"
   },
   {
-   "name": "sf:kim-sisk",
-   "display": "Kim Sisk"
+   "name": "sf:lydia-d-m",
+   "display": "Lydia Dale"
   },
   {
-   "name": "cathie_deschaine",
-   "display": "Cathie Deschaine"
+   "name": "sf:kara-ferguson",
+   "display": "Kara Ferguson"
   },
   {
-   "name": "john_zufall",
-   "display": "John Zufall"
+   "name": "emily_g_ramer",
+   "display": "Emily Ramer"
   },
   {
-   "name": "ct:zenna dale",
-   "display": "Zenna Dale"
+   "name": "sf:matthew-hazen",
+   "display": "Matthew Hazen"
   },
   {
-   "name": "johnmeyers_sr",
-   "display": "John Meyers"
+   "name": "ct:philip hubbe",
+   "display": "Philip Hubbe"
   },
   {
-   "name": "ct:andrew haas",
-   "display": "Andrew Haas"
+   "name": "ct:emma gravlin",
+   "display": "Emma Gravlin"
   },
   {
-   "name": "fulton.julia",
-   "display": "Julia Fulton"
+   "name": "sf:isreal-tyler",
+   "display": "Isreal Tyler"
   },
   {
-   "name": "ct:libby thomas",
-   "display": "Libby Thomas"
+   "name": "luannbailey",
+   "display": "Luann Bailey"
   },
   {
-   "name": "sf:eli-larson",
-   "display": "Eli Larson"
+   "name": "sf:judith-tomford",
+   "display": "Judith Tomford"
   },
   {
-   "name": "hopiek_09",
-   "display": "Hope Kilcollins"
+   "name": "emma_bortnick5",
+   "display": "Emma Bortnick"
   },
   {
-   "name": "annecatherina7",
-   "display": "Anne Katherin Wolf"
+   "name": "lynzeelou",
+   "display": "Lindsey Sorrento"
   },
   {
-   "name": "kevindaniels7",
-   "display": "Kevin Daniels"
+   "name": "sf:caroline-willis",
+   "display": "Caroline Willis"
   },
   {
-   "name": "gabematthis",
-   "display": "Gabe Matthis"
+   "name": "danielzufall",
+   "display": "Daniel Zufall"
   },
   {
-   "name": "kimberlymitchelldamon",
-   "display": "Kimberly Damon"
+   "name": "noah_adams24",
+   "display": "Noah Adams"
   },
   {
-   "name": "mark.it5",
-   "display": "Mark Miller"
+   "name": "sf:katie-wolstenholme",
+   "display": "Katie Wolstenholme"
   },
   {
-   "name": "sf:jordyn-hill",
-   "display": "Jordyn Hill"
+   "name": "sf:michelle-chartier",
+   "display": "Michelle Chartier"
   },
   {
-   "name": "autumn.zellweger",
-   "display": "Autumn Zellweger"
+   "name": "sf:heather-shattuck",
+   "display": "Heather Shattuck"
   },
   {
-   "name": "andrea247_",
-   "display": "Andrea Vetere"
+   "name": "sf:zachary-dean",
+   "display": "Zachary Dean"
   },
   {
-   "name": "sf:joseph-baxter",
-   "display": "Joseph Baxter"
+   "name": "sf:ethan-thompson",
+   "display": "Ethan Thompson"
   },
   {
-   "name": "sf:jackie-shampine",
-   "display": "Jackie Shampine"
+   "name": "carina_gilchrist",
+   "display": "Carina Gilchrist"
   },
   {
-   "name": "sf:carson-hayes-ryan",
-   "display": "Carson Hayes Ryan"
+   "name": "darlenesinclair3643",
+   "display": "Darlene Sinclair"
   },
   {
-   "name": "criscitello_riley",
-   "display": "Riley Criscitello"
+   "name": "sf:matthew-volz",
+   "display": "Matthew Volz"
   },
   {
-   "name": "ct:sarah darabon",
-   "display": "Sarah Darabon"
+   "name": "sf:peter-johnson",
+   "display": "Peter Johnson"
   },
   {
-   "name": "ct:richard tacchino",
-   "display": "Richard Tacchino"
+   "name": "d_grant234",
+   "display": "Derek Grant"
   },
   {
-   "name": "rosalie_page_smith",
-   "display": "Rosalie Smith"
+   "name": "sf:cathy-boyle",
+   "display": "Cathy Boyle"
   },
   {
-   "name": "kylepmoulton",
-   "display": "Kyle Moulton"
+   "name": "havenfern",
+   "display": "Haven Fern"
   },
   {
-   "name": "furious_myles",
-   "display": "Myles Laramay"
+   "name": "sf:christopher-pagan",
+   "display": "Christopher Pagan"
   },
   {
-   "name": "sf:scott-hanlin",
-   "display": "Scott Hanlin"
+   "name": "c.w.bailey64",
+   "display": "Cliff Bailey"
   },
   {
-   "name": "ct:savannah adams",
-   "display": "Savannah Adams"
+   "name": "cloutlord_420",
+   "display": "Avery Criscitello"
   },
   {
-   "name": "sf:alycia-miller-lynch",
-   "display": "Alycia Miller-Lynch"
+   "name": "sf:timothy-moulton",
+   "display": "Timothy Moulton"
   },
   {
-   "name": "sf:kyle-prescott",
-   "display": "Kyle Prescott"
+   "name": "sf:matthew-merria",
+   "display": "Matthew Merria"
   },
   {
-   "name": "karajdaniels",
-   "display": "Kara Daniels"
+   "name": "emiliealbertt",
+   "display": "Emilie Albert"
   },
   {
-   "name": "sf:patrick-tombs",
-   "display": "Patrick Tombs"
+   "name": "sf:toni-ajayi",
+   "display": "Toni Ajayi"
   },
   {
-   "name": "trentondaniels4",
-   "display": "Trenton Daniels"
+   "name": "ct:danny witkop",
+   "display": "Danny Witkop"
   },
   {
-   "name": "elizabethadaniels",
-   "display": "Elizabeth Daniels"
+   "name": "charlie_garrelts",
+   "display": "Charlie Garrelts"
   },
   {
-   "name": "daniel_ursus_arctos",
-   "display": "Daniel Moulton"
+   "name": "oliviasandra04",
+   "display": "Olivia Smith"
   },
   {
-   "name": "ct:kyle deschaine",
-   "display": "Kyle Deschaine"
+   "name": "haleydlutz",
+   "display": "Haley Lutz"
   },
   {
-   "name": "sf:james-harmer",
-   "display": "James Harmer"
+   "name": "michelledaniels9",
+   "display": "Michelle Daniels"
   },
   {
-   "name": "goodrowolivia",
-   "display": "Olivia Goodrow"
+   "name": "joshua_white3",
+   "display": "Joshua White"
   },
   {
-   "name": "ct:destiny snyder",
-   "display": "Destiny Snyder"
+   "name": "caelin.ramsay",
+   "display": "Caelin Ramsay"
   },
   {
-   "name": "caroline.lafountain",
-   "display": "Caroline LaFountain"
+   "name": "sf:kayla-ervin",
+   "display": "Kayla Ervin"
   },
   {
-   "name": "daniellecaskinett",
-   "display": "Danielle Caskinett"
+   "name": "sf:bob-dale",
+   "display": "Bob Dale"
   },
   {
-   "name": "sf:noah-michael",
-   "display": "Noah Michael"
+   "name": "sf:christopher-towler",
+   "display": "Christopher Towler"
   },
   {
-   "name": "sf:david-irving",
-   "display": "David Perry"
+   "name": "ct:brian hanlin",
+   "display": "Brian Hanlin"
   },
   {
-   "name": "emilywangerin",
-   "display": "Emily Wangerin"
+   "name": "sf:christine-sinicropi-anderson",
+   "display": "Christine Sinicropi Anderson"
   },
   {
-   "name": "sf:tim-lashomb",
-   "display": "Tim Lashomb"
+   "name": "kdusky",
+   "display": "Keila Levendusky"
   },
   {
-   "name": "dgruneisen",
-   "display": "Don Gruneisen"
+   "name": "sf:jillian-chapman",
+   "display": "Jillian Chapman"
   },
   {
-   "name": "delany._.durant",
-   "display": "Delany Durant"
+   "name": "katrina.cutler",
+   "display": "Katrina Lee Cutler"
   },
   {
-   "name": "certified.sauce",
-   "display": "Alfredo Rodriguez"
+   "name": "sf:ryan-blount",
+   "display": "Ryan Blount"
   },
   {
-   "name": "doriejreiter",
-   "display": "Dorie Colbert Reiter"
+   "name": "sf:alexander-hacker",
+   "display": "Alexander Hacker"
   },
   {
-   "name": "sf:grace-zehr-cassulis",
-   "display": "Grace Zehr Cassulis"
+   "name": "sf:pete-molinero",
+   "display": "Pete Molinero"
   },
   {
-   "name": "nevaeh_phillips",
-   "display": "Nevaeh Phillips"
+   "name": "sf:victor-njoku",
+   "display": "Victor Njoku"
   },
   {
-   "name": "courtney_delosh",
-   "display": "Courtney Delosh"
+   "name": "sf:haley-quinlan-keough",
+   "display": "Haley Quinlan Keough"
   },
   {
-   "name": "sf:beka-martin",
-   "display": "Beka Martin"
+   "name": "taylorchudyk",
+   "display": "Taylor Chudyk"
   },
   {
-   "name": "sf:ellen-m-miller",
-   "display": "Ellen M Miller"
+   "name": "katerina_islost",
+   "display": "Katerina Cavellos"
   },
   {
-   "name": "sf:wisdom",
-   "display": "Rojanni Wisdom"
+   "name": "tcriscitello",
+   "display": "Timothy Criscitello"
   },
   {
-   "name": "sf:rachel-kushner",
-   "display": "Rachel Kushner"
+   "name": "ct:justin estep",
+   "display": "Justin Estep"
   },
   {
-   "name": "dr.angelesfelix",
-   "display": "Angeles Felix"
+   "name": "mayaatchan",
+   "display": "Maya M. Atchan"
   },
   {
-   "name": "madstop136",
-   "display": "Eric Criscitello"
+   "name": "the_harpist",
+   "display": "Shannon Boyle"
   },
   {
-   "name": "sarahdarah34",
-   "display": "Sarah Dahar"
+   "name": "joshcparker_",
+   "display": "Josh Parker"
   },
   {
-   "name": "sf:emily-ward",
-   "display": "Emily Ward"
+   "name": "inawangerin",
+   "display": "Ina Wangerin"
   },
   {
-   "name": "zoeytaylor018",
-   "display": "Zoey Taylor"
+   "name": "ct:sarah garber",
+   "display": "Sarah Garber"
   },
   {
-   "name": "ct:william dunphey",
-   "display": "William Dunphey"
+   "name": "sf:nanette-yervasi-holt",
+   "display": "Nanette Yervasi Holt"
   },
   {
-   "name": "dillynngrant16",
-   "display": "Dillynn Grant"
+   "name": "sf:annika-greco",
+   "display": "Annika Greco"
   },
   {
-   "name": "ally.dubbioso",
-   "display": "Ally Dubbioso"
+   "name": "ms_dior.gor",
+   "display": "Chidiogor Ofodum"
   },
   {
-   "name": "hnnbraun",
-   "display": "Hannah Braun"
+   "name": "ct:samarah martin",
+   "display": "Samarah Martin"
   },
   {
-   "name": "jake_seguin",
-   "display": "Jake Seguin"
+   "name": "ally.sabre",
+   "display": "Allyssa Sabre"
   },
   {
-   "name": "sf:sara-badeau",
-   "display": "Sara Badeau"
+   "name": "ct:kathy eggleson",
+   "display": "Kathy Eggleson"
   },
   {
-   "name": "the.ndrx",
-   "display": "Noah Diederich"
+   "name": "sf:heather-marie",
+   "display": "Heather Marie"
   },
   {
-   "name": "magzta89",
-   "display": "Maggie Ecker"
+   "name": "sf:emily-zimmer",
+   "display": "Emily Zimmer"
   },
   {
-   "name": "ceciliesmith2025",
-   "display": "Cecilie Smith"
+   "name": "sf:vanessa-bevilacqua",
+   "display": "Vanessa Bevilacqua"
   }
  ],
  "filed": [
   {
-   "name": "sf:breanne-sapp",
-   "display": "Breanne Sapp",
+   "name": "havenfern",
+   "display": "Haven Fern",
    "facts": [
     {
-     "text": "Played as a freshman guard for the SUNY Potsdam women's basketball team, 2015-16",
-     "source": "SUNY Potsdam Athletics",
-     "url": "https://potsdambears.com/story.aspx?filename=WBB_0220160455&file_date=2/20/2016",
-     "novelty": "expands"
+     "text": "As Haven Gotham, graduated from SUNY Potsdam's Crane School of Music in 2021 with a Bachelor of Music in music education (voice concentration) and received the 2021 Chancellor's Award for Student Excellence",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/news/studentshonoredchancellorsawards",
+     "novelty": "new"
+    },
+    {
+     "text": "As Haven Gotham, received the first Dr. Rebecca Reames Memorial Scholarship at SUNY Potsdam's Crane School of Music, 2021",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/giving/donorimpact/soft-sweet-and-beautiful-legacy",
+     "novelty": "new"
     }
    ]
   },
   {
-   "name": "dillynngrant16",
-   "display": "Dillynn Grant",
+   "name": "sf:heather-shattuck",
+   "display": "Heather Shattuck",
    "facts": [
     {
-     "text": "Passed U.S. Figure Skating's Senior Moves in the Field gold test as a Potsdam Figure Skating Club skater, 2022",
-     "source": "U.S. Figure Skating",
-     "url": "https://members.usfsaonline.org/sites/default/files/media-files/2022%20Gold%20Tests.pdf",
-     "novelty": "expands"
-    }
-   ]
-  },
-  {
-   "name": "ct:william dunphey",
-   "display": "William Dunphey",
-   "facts": [
-    {
-     "text": "Recognized for New Product Idea at Clarkson University's Ignite Expo as a Clarkson School student",
+     "text": "Practices clinically at North Coast Physical Therapy, with specialty certification in pediatric physical therapy",
      "source": "Clarkson University",
-     "url": "https://www.clarkson.edu/news-events/clarkson-school-students-recognized-ignite-expo",
+     "url": "https://www.clarkson.edu/people/heather-shattuck",
+     "novelty": "new"
+    }
+   ]
+  },
+  {
+   "name": "sf:victor-njoku",
+   "display": "Victor Njoku",
+   "facts": [
+    {
+     "text": "Co-authored \"Roles of Post-Translational Modifications of Transcription Factors Involved in Breast Cancer Hypoxia\" in Molecules, Feb 2025",
+     "source": "Molecules",
+     "url": "https://www.mdpi.com/1420-3049/30/3/645",
+     "novelty": "new"
+    },
+    {
+     "text": "Co-authored the chapter \"Mass Spectrometry-Based Identification of Post-Translational Modifications (PTMs) of Proteins\" in Advancements of Mass Spectrometry in Biomedical Research, 2026",
+     "source": "Springer",
+     "url": "https://link.springer.com/chapter/10.1007/978-3-032-29437-1_26",
+     "novelty": "expands"
+    },
+    {
+     "text": "Co-authored the chapter \"Mass Spectrometry- and Structural Biology-Based Investigation of Proteins\" in Advancements of Mass Spectrometry in Biomedical Research, 2026",
+     "source": "Springer",
+     "url": "https://link.springer.com/chapter/10.1007/978-3-032-29437-1_27",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "tcriscitello",
+   "display": "Timothy Criscitello",
+   "facts": [
+    {
+     "text": "Named by his father Eric as a business partner in From the Heart Cabinetry, Feb 2020",
+     "source": "Woodshop News",
+     "url": "https://www.woodshopnews.com/features/positioned-in-potsdam",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "sf:annika-greco",
+   "display": "Annika Greco",
+   "facts": [
+    {
+     "text": "Works as Growth and Relationships Manager at Stewardship in Liverpool, England, under her married name Annika Greco Thompson",
+     "source": "Diocese of Chester",
+     "url": "https://www.chesterdiocese.org/_files/ugd/f8dcd6_75215026bf85476bb2b118a858480461.pdf",
+     "novelty": "expands"
+    }
+   ]
+  },
+  {
+   "name": "the_harpist",
+   "display": "Shannon Boyle",
+   "facts": [
+    {
+     "text": "Received the Hultberg Scholarship, Pamela Michne Fox '59 Music Scholarship, Barrington Merit Scholarship, Curtis B. Bailey & Irma B. Bailey Memorial Scholarship, Ken Cottrell Outstanding Human Service Award, SUNY Potsdam Travel Award, Crane Youth Music Schaberg Scholarship, SUNY Potsdam Freshman Scholars Award, and Edwin and Eleanor Strand Music Loan Fund at SUNY Potsdam",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle",
      "novelty": "expands"
     }
    ]
@@ -344,100 +398,12 @@
    "display": "Janelle Evans",
    "facts": [
     {
-     "text": "Scored a goal in Clarkson's 4-3 ECAC-opening win at Harvard, Oct 30, 2026",
-     "source": "Harvard University Athletics",
-     "url": "https://gocrimson.com/news/2026/10/30/womens-ice-hockey-harvard-clarkson-recap.aspx",
+     "text": "Scored a goal in Clarkson's 6-1 win over Providence, Oct 24, 2026",
+     "source": "ECAC Hockey",
+     "url": "https://ecachockey.com/news/2026/10/24/womens-ice-hockey-womens-weekend-wraparound-10-23-24.aspx",
      "novelty": "new",
      "fresh": true,
-     "published": "2026-10-30"
-    },
-    {
-     "text": "Recorded a power-play assist in Clarkson's 4-1 win at Dartmouth, Oct 31, 2026",
-     "source": "Clarkson University Athletics",
-     "url": "https://clarksonathletics.com/news/2026/10/31/womens-hockey-two-goals-from-pellerin-and-hurry-lead-knights-past-dartmouth-4-1.aspx",
-     "novelty": "new",
-     "fresh": true,
-     "published": "2026-10-31"
-    }
-   ]
-  },
-  {
-   "name": "sf:isa-goettl",
-   "display": "Isa Goettl",
-   "facts": [
-    {
-     "text": "Assisted on two Clarkson goals, including the eventual game-winner, in the 4-3 win at Harvard, Oct 30, 2026",
-     "source": "Harvard University Athletics",
-     "url": "https://gocrimson.com/news/2026/10/30/womens-ice-hockey-harvard-clarkson-recap.aspx",
-     "novelty": "new",
-     "fresh": true,
-     "published": "2026-10-30"
-    }
-   ]
-  },
-  {
-   "name": "sf:alisha-ohl",
-   "display": "Alisha Ohl",
-   "facts": [
-    {
-     "text": "Co-authored a 2022 British Journal of Occupational Therapy study that found no minimal clinically important difference for the Beery-Buktenica Developmental Test of Visual-Motor Integration in children with autism spectrum disorder",
-     "source": "British Journal of Occupational Therapy",
-     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12033894/",
-     "novelty": "new"
-    }
-   ]
-  },
-  {
-   "name": "sf:samantha-marocco",
-   "display": "Samantha Marocco",
-   "facts": [
-    {
-     "text": "Became a manuscript reviewer for the Journal of Clinical Education in Physical Therapy, 2025",
-     "source": "Clarkson University",
-     "url": "https://www.clarkson.edu/people/samantha-marocco",
-     "novelty": "new"
-    },
-    {
-     "text": "Became a manuscript reviewer for the Journal of Allied Health, 2026",
-     "source": "Clarkson University",
-     "url": "https://www.clarkson.edu/people/samantha-marocco",
-     "novelty": "new"
-    },
-    {
-     "text": "Joined the board of the Saranac Lake Young Arts Association as treasurer, 2024",
-     "source": "Clarkson University",
-     "url": "https://www.clarkson.edu/people/samantha-marocco",
-     "novelty": "new"
-    },
-    {
-     "text": "Co-authored a cross-cultural study of dietary supplement attitudes and practices, presented at the American Society for Nutrition's Nutrition 2025 conference, May 2025",
-     "source": "Clarkson University",
-     "url": "https://www.clarkson.edu/people/samantha-marocco",
-     "novelty": "new"
-    }
-   ]
-  },
-  {
-   "name": "sf:ian-bailey",
-   "display": "Ian Bailey",
-   "facts": [
-    {
-     "text": "Entered the New York City market as Anew Caf\u00e9 & Goods became the first New York City caf\u00e9 to carry Vivid Coffee's beans, Oct 2026",
-     "source": "Anew Caf\u00e9 & Goods",
-     "url": "https://anewhq.substack.com/p/a-conversation-with-vivid-coffee",
-     "novelty": "new"
-    }
-   ]
-  },
-  {
-   "name": "madstop136",
-   "display": "Eric Criscitello",
-   "facts": [
-    {
-     "text": "From the Heart Cabinetry was awarded $95,000 in Northern New York Power Proceeds fund benefits toward purchasing its Potsdam facility, Nov 2018",
-     "source": "New York Power Authority",
-     "url": "https://edge.sitecorecloud.io/newyorkpowe1810-nypa32f6-prodnewd354-e629/media/NYPA/Documents/Document-Library/Meeting-Minutes/NNYPPAB111418.pdf",
-     "novelty": "expands"
+     "published": "2026-10-24"
     }
    ]
   }
@@ -447,52 +413,52 @@
   "of": 723,
   "window_days": 30
  },
- "note": "PM run (second of the day, twice-daily cadence). Checked 75, filed 13 facts across 9 people, each parent-verified on its source page and read back in the Sheet exactly once. Fresh sweep found two winners, both from Clarkson's ECAC-opening weekend: Janelle Evans scored in the 4-3 win at Harvard (Harvard University Athletics, published Oct 30, 2026) and added a power-play assist at Dartmouth the next day (Clarkson University Athletics, published Oct 31, 2026); Isa Goettl assisted on two goals at Harvard, including the eventual game-winner (published Oct 30, 2026). Rotation filings: Breanne Sapp played as a freshman guard for SUNY Potsdam's women's basketball team in 2015-16 (her record already covered her Potsdam Central career and her later police and sheriff work); Dillynn Grant passed U.S. Figure Skating's Senior Moves in the Field gold test as a Potsdam Figure Skating Club skater in 2022; William Dunphey was recognized for New Product Idea at Clarkson University's Ignite Expo, a separate recognition from his team project's Third Place prize already on file. Compounding lane (first run): 5 people compounded (Richard Haller, Alisha Ohl, Samantha Marocco, Ian Bailey, Eric Criscitello); 7 facts filed across 4 of them \u2014 Alisha Ohl's 2022 British Journal of Occupational Therapy study; four Samantha Marocco items from her Clarkson page (reviewer for the Journal of Clinical Education in Physical Therapy from 2025 and the Journal of Allied Health from 2026, Saranac Lake Young Arts Association board treasurer from 2024, and a Nutrition 2025 conference paper); Ian Bailey's Vivid Coffee entering New York City through Anew Caf\u00e9 & Goods in Oct 2026; and the $95,000 New York Power Authority award toward From the Heart Cabinetry's facility purchase in Nov 2018. The lane also flagged one correction for JD: Ian Bailey's record says he founded Vivid Coffee in Burlington, but Seven Days shows he started it in Winooski in 2015 and opened in Burlington in Nov 2020 \u2014 it sits in Research Command as a conflict card, not overwritten. Lane metrics: 8 candidates, 1 correction, 5 loop closures, 26 discards. Most of this rotation's batch claims (among them Michael Jent, Eli Larson, Julia Fulton, Danielle Caskinett, Destiny Snyder, Olivia Goodrow, Eric Criscitello's takeover facts, Jake Seguin, Cecilie Smith, and Hannah Braun) were already on file in the live Sheet even though the baked profiles looked empty, and were discarded rather than re-filed. The hot list is empty: no filed fact was published Nov 2 or Nov 3. This run added 16 candidates to the Research Command ledger. 51 JD console filings were reconciled into changes.json. Unharvested photo leads flagged by JD in Research Command, awaiting a photo pass: Christine Sutter (UConn Today); Emily Criscitello (Tulum dive operator); Joann Duclos (Army.mil); Joe Charlebois (Hockey records); Katelyn Tomford (Zola); Kayla Hettel (Puget Sound Birth Center); Max Ferran (Bold.org); Megan Converse (Merit Pages).",
+ "note": "AM run. Checked 75, filed 10 facts across 7 people, each parent-verified on its source page and read back in the Sheet exactly once. Fresh sweep found one winner: Janelle Evans scored in Clarkson's 6-1 win over Providence on Oct 24, 2026 (ECAC Hockey, published Oct 24, 2026) \u2014 the rest of the window's directory news was already on file from earlier runs. Rotation filings: Haven Fern's SUNY Potsdam record under her name on file as Haven Gotham \u2014 she graduated from the Crane School of Music in 2021 with a Bachelor of Music in music education and the 2021 Chancellor's Award for Student Excellence, and received the first Dr. Rebecca Reames Memorial Scholarship; her blank Universities and Degrees fields were filled. Victor Njoku co-authored a February 2025 Molecules review on breast-cancer hypoxia and two further 2026 Springer book chapters in Advancements of Mass Spectrometry in Biomedical Research, beyond the two chapters already on file. Annika Greco works as Growth and Relationships Manager at Stewardship in Liverpool under her married name, Annika Greco Thompson (Diocese of Chester, 2026). Heather Shattuck practices clinically at North Coast Physical Therapy (her blank Companies field was filled). Timothy Criscitello was named by his father Eric as a business partner in From the Heart Cabinetry (Woodshop News, Feb 2020). Shannon Boyle's SUNY Potsdam scholarship list \u2014 nine scholarships and awards, including the Hultberg Scholarship and the Ken Cottrell Outstanding Human Service Award \u2014 was added from her Crane School profile. Most other solid hits in this rotation were already on file in the live Sheet and were discarded rather than re-filed. The hot list is empty: no filed fact was published Nov 3 or Nov 4. This run added 12 candidates to the Research Command ledger. 0 JD console filings were reconciled into changes.json. Unharvested photo leads flagged by JD in Research Command, awaiting a photo pass: Christine Sutter (UConn Today); Emily Criscitello (Tulum dive operator); Joann Duclos (Army.mil); Joe Charlebois (Hockey records); Katelyn Tomford (Zola); Kayla Hettel (Puget Sound Birth Center); Max Ferran (Bold.org); Megan Converse (Merit Pages).",
  "next_up": [
-  {
-   "name": "sf:alex-koberda",
-   "display": "Alex Koberda"
-  },
-  {
-   "name": "sf:alexander-hacker",
-   "display": "Alexander Hacker"
-  },
-  {
-   "name": "ally.sabre",
-   "display": "Allyssa Sabre"
-  },
   {
    "name": "anastasia_g_daniels",
    "display": "Anastasia Daniels"
-  },
-  {
-   "name": "sf:annika-greco",
-   "display": "Annika Greco"
   },
   {
    "name": "ariannamason91",
    "display": "Arianna Mason"
   },
   {
-   "name": "cloutlord_420",
-   "display": "Avery Criscitello"
-  },
-  {
    "name": "ct:blake burr",
    "display": "Blake Burr"
   },
   {
-   "name": "sf:bob-dale",
-   "display": "Bob Dale"
+   "name": "sf:catherine-m-thomas",
+   "display": "Catherine M Thomas"
   },
   {
-   "name": "ct:brian hanlin",
-   "display": "Brian Hanlin"
+   "name": "chiara.frasc",
+   "display": "Chiara"
+  },
+  {
+   "name": "sf:cody-benham",
+   "display": "Cody Benham"
+  },
+  {
+   "name": "ct:danielle mcpherson",
+   "display": "Danielle McPherson"
+  },
+  {
+   "name": "sf:david-disalvo",
+   "display": "David DiSalvo"
+  },
+  {
+   "name": "davidzufall",
+   "display": "David Zufall"
+  },
+  {
+   "name": "_lanie_brown",
+   "display": "Elena Brown"
   }
  ],
  "unchecked_remaining": 0,
  "fresh": {
-  "headline": "Janelle Evans (goal at Harvard, Oct 30; power-play assist at Dartmouth, Oct 31) and Isa Goettl (two assists at Harvard, Oct 30) \u2014 Clarkson women's hockey"
+  "headline": "Janelle Evans (goal in Clarkson's 6-1 win over Providence, Oct 24) \u2014 Clarkson women's hockey"
  },
  "freshness": {
   "d7": 723,
