@@ -13352,6 +13352,50 @@
     "first_seen": "2026-11-04T05:27:00Z",
     "source": "New profile"
    }
+  },
+  "ct:v4p8b test": {
+   "loc": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-04T13:06:00Z",
+    "source": "New profile"
+   },
+   "rel": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-04T13:06:00Z",
+    "source": "New profile"
+   },
+   "years": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-04T13:06:00Z",
+    "source": "New profile"
+   },
+   "lastc": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-04T13:06:00Z",
+    "source": "New profile"
+   },
+   "phone": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-04T13:06:00Z",
+    "source": "New profile"
+   },
+   "orgs": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-04T13:06:00Z",
+    "source": "New profile"
+   },
+   "skills": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-04T13:06:00Z",
+    "source": "New profile"
+   }
   }
  },
  "lanes": {
@@ -16429,5 +16473,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-04T13:02:00Z"
+ "updated": "2026-11-04T13:10:00Z"
 }
