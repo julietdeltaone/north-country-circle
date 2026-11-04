@@ -6563,3 +6563,69 @@ html[data-mode="light"] body::before{background:radial-gradient(1200px 600px at 
 .rc-noanch{font-size:12.5px;line-height:1.5;color:var(--pv-mut)}
 .rc-touch{font-size:12.5px;line-height:1.5;color:var(--pv-text)}
 .rc-ev .rc-pubdate{margin-bottom:7px}
+
+/* ============================================================
+   V4.2 — FLUID SHELL + LIGHT-THEME REBALANCE + BRAND MARK
+   (JD 2026-11-04, on the 4.1.0 preview build. Presentation
+   only: no machinery, no content changes.)
+   1) FLUID SHELL: #view no longer caps at 1320px — the shell
+      and page grids use the full width at wide viewports.
+      Grids gain room (Photos/Groups/Council auto-fill gains
+      columns; Home's four question panels go 4-across at
+      2000px+; profile grid gains a 4th column) instead of
+      stretching prose: measure-capped text keeps its caps.
+      At 1440px and below nothing changes.
+   2) LIGHT THEME, research-grounded (M3 surface-container
+      ladder; dashboard guidance: off-white canvas, white
+      cards, depth from a restrained soft shadow, borders
+      with real definition, muted text that still meets
+      WCAG AA): deeper cool-gray canvas, white panels, a
+      distinct inset tone, line alpha .10 -> .15 / .20 -> .28,
+      --pv-dim #8b94a1 (3.1:1 on white — the wash) -> #626f84
+      (5.1:1), --pv-mut -> #4b5769 (7.3:1), amber deepened
+      for chip legibility, bar tracks/minibars given a
+      visible 10% ink, and a soft elevation shadow on the
+      panel family. Dark tokens untouched; the Two Inks
+      (steel blue / antique gold) untouched.
+   3) BRAND MARK: .rl-mark now carries a drawn people icon
+      (two figures, front full / back half tone) instead of
+      the "CP" initials; tile, size and slot unchanged.
+   ============================================================ */
+
+/* ---- 1) fluid shell ---- */
+#view{max-width:none}
+#view:has(.pg-photos){max-width:none}
+.sb-wrap{max-width:none}
+@media(min-width:1700px){
+  #view{padding-left:32px;padding-right:32px}
+}
+@media(min-width:2000px){
+  body[data-view="home"] .pv-panels{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .pgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .pv-cal-layout{grid-template-columns:minmax(0,1fr) 360px}
+}
+
+/* ---- 2) light theme rebalance ---- */
+html[data-mode="light"]{
+  --pv-bg:#e7ebf1; --pv-panel:#ffffff; --pv-panel2:#edf0f5;
+  --pv-line:rgba(13,20,32,.15); --pv-line2:rgba(13,20,32,.28);
+  --pv-mut:#4b5769; --pv-dim:#626f84; --pv-nav:#37414f;
+  --pv-hover:rgba(13,20,32,.06); --pv-on:rgba(13,20,32,.09);
+  --pv-amber:#96650f; --pv-chip-warn-bg:rgba(150,101,15,.14);
+  --pv-railbg:rgba(255,255,255,.72);
+  --line:rgba(24,36,52,.16); --line2:rgba(24,36,52,.30);
+}
+html[data-mode="light"] body::before{background:radial-gradient(1200px 600px at 70% -10%,rgba(110,168,216,.13),transparent 70%),linear-gradient(var(--pv-bg),var(--pv-bg)) !important}
+html[data-mode="light"] .pv-hero,html[data-mode="light"] .pv-kpi{background:color-mix(in srgb,var(--pv-panel2) 82%,transparent)}
+html[data-mode="light"] .pv-panel,html[data-mode="light"] .pv-card,html[data-mode="light"] .pv-hero,html[data-mode="light"] .pv-kpi,
+html[data-mode="light"] .pv-tblwrap,html[data-mode="light"] .pv-bundle,html[data-mode="light"] .pv-cal,html[data-mode="light"] .pv-desk,
+html[data-mode="light"] .pv-strip,html[data-mode="light"] .v4p .card,html[data-mode="light"] .v4p .ptwrap,html[data-mode="light"] .v4p .netbar,
+html[data-mode="light"] .v4p .cnc-hero,html[data-mode="light"] .v4p .ph-poss{
+  box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 8px -2px rgba(16,24,40,.07);
+}
+html[data-mode="light"] .pv-bar,html[data-mode="light"] .pv-minibar{background:rgba(13,20,32,.10)}
+html[data-mode="light"] .pv-bar.dim i{background:#8291a6}
+html[data-mode="light"] .rc-ev{border-color:rgba(13,20,32,.18)}
+
+/* ---- 3) brand mark ---- */
+.rl-mark svg{display:block}
