@@ -10771,6 +10771,419 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-kimberlymitchelldamon-runs-a-home-based-daycare-in-potsdam",
+   "name": "kimberlymitchelldamon",
+   "display": "Kimberly Damon",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "A daycare directory lists a home-based daycare under the name Kimberly Damon in Potsdam, with a capacity of 16. Her record already shows she owns Bright Beginnings Daycare in Potsdam.",
+   "file_text": "Runs a home-based daycare in Potsdam, NY, listed with a capacity of 16",
+   "source": "Daycare.com",
+   "url": "https://www.daycare.com/search/toddler-daycares/new-york/chipman",
+   "anchors": [
+    "Potsdam, NY",
+    "Bright Beginnings Daycare (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 52,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 10,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261103-sf-jackie-shampine-also-known-as-jacqueline-butterfield",
+   "name": "sf:jackie-shampine",
+   "display": "Jackie Shampine",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A people-search page says a Jacqueline Butterfield in Norfolk, NY also goes by Jackie Shampine and Jacqueline Shampine, and lists a Cory Shampine among her relatives.",
+   "file_text": "Also known as Jacqueline Butterfield",
+   "source": "Information.com",
+   "url": "https://information.com/people/jacqueline-butterfield/",
+   "anchors": [
+    "Massena / Norfolk area",
+    "Name Jackie Shampine"
+   ],
+   "missing_gate": "The page names a Jackie Shampine in the Massena area, but nothing on it ties her to the Rochester Regional Health work already on file.",
+   "confidence": 38,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 8,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-carson-hayes-ryan-named-to-the-franklin-essex-hamilton",
+   "name": "sf:carson-hayes-ryan",
+   "display": "Carson Hayes Ryan",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Carson Ryan from Saranac Lake was a Building Trades student at the Franklin-Essex-Hamilton BOCES Adirondack Educational Center, on the honor roll in fall 2021 and a senior builder on the student-built tiny house in 2021-22. The pages use the name Carson Ryan only.",
+   "file_text": "Named to the Franklin-Essex-Hamilton BOCES Adirondack Educational Center Honor Roll for Quarter 1 of 2021-22 as a Building Trades student from Saranac Lake",
+   "source": "Franklin-Essex-Hamilton BOCES",
+   "url": "https://5il.co/12ivk",
+   "anchors": [
+    "Saranac Lake, NY",
+    "Partial name (Carson Ryan)"
+   ],
+   "missing_gate": "The pages name a Carson Ryan in Saranac Lake, but nothing on them ties him to the middle name Hayes or to the Syracuse University study already on file.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 22,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2021",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ct-savannah-adams-appointed-co-advisor-of-the-drama-cl",
+   "name": "ct:savannah adams",
+   "display": "Savannah Adams",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Brasher Falls Central School District's July 6, 2023 board minutes appoint Hannah Laneuville and Savannah Adams as co-advisors of the Drama Club at St. Lawrence Central for the 2023-2024 school year.",
+   "file_text": "Appointed Co-Advisor of the Drama Club at St. Lawrence Central School, Brasher Falls, for the 2023-2024 school year, Jul 2023",
+   "source": "Brasher Falls Central School District",
+   "url": "https://5il.co/25ewx",
+   "anchors": [
+    "Name only \u2014 her record is blank"
+   ],
+   "missing_gate": "The minutes name a Savannah Adams in Brasher Falls, but her record has nothing on file to tie her to, so I cannot be sure it is her.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 27,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "2023-07-06",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-patrick-tombs-cast-in-the-ensemble-of-the-world-pr",
+   "name": "sf:patrick-tombs",
+   "display": "Patrick Tombs",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Playbill's July 16, 2026 casting announcement for the world-premiere musical 'The Snow Goose' at Goodspeed Musicals (Aug 28 to Oct 18, 2026) lists a Patrick Tombs in the ensemble, with no hometown or bio.",
+   "file_text": "Cast in the ensemble of the world premiere of 'The Snow Goose' at Goodspeed Musicals, Aug 2026",
+   "source": "Playbill",
+   "url": "http://playbill.com/article/goodspeed-musicals-full-casting-for-world-premiere-musical-the-snow-goose",
+   "anchors": [
+    "Name only in the article",
+    "Working stage actor (already on file)"
+   ],
+   "missing_gate": "The article names a Patrick Tombs, but nothing on it ties him to the Binghamton and SUNY Potsdam facts already on file.",
+   "confidence": 69,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 28,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2026-07-16",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-rachel-kushner-served-on-the-university-of-michigan",
+   "name": "sf:rachel-kushner",
+   "display": "Rachel Kushner",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A March 2021 University of Michigan Education Policy Initiative brief on Boston Public Schools universal pre-K names Rachel Kushner on the University of Michigan research team. Her record shows University of Michigan study and a 2020 UROP fellowship, and an Ann Arbor hometown.",
+   "file_text": "Served on the University of Michigan research team for the Boston Public Schools Universal Prekindergarten study, 2021",
+   "source": "University of Michigan Ford School",
+   "url": "https://epistage.fordschool.umich.edu/sites/epi/files/2021-07/BPS_ECE_COVID_Policy_Brief.pdf",
+   "anchors": [
+    "University of Michigan",
+    "Ann Arbor, MI"
+   ],
+   "missing_gate": "The brief names a Rachel Kushner at the University of Michigan, but other women with the same name are publicly visible and nothing on it ties her to the psychology study already on file.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 25,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2021-03",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-emily-ward-named-with-randy-ward-among-the-gran",
+   "name": "sf:emily-ward",
+   "display": "Emily Ward",
+   "run_date": "2026-11-03",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "The February 2024 obituary of Daniel S. Pitts Sr. of Massena names Randy and Emily Ward of Massena among his grandchildren. It does not make clear whether Emily is the grandchild or the grandchild's spouse.",
+   "file_text": "Named, with Randy Ward, among the grandchildren of Daniel S. Pitts Sr. of Massena in his February 2024 obituary",
+   "source": "Tribute Archive",
+   "url": "https://www.tributearchive.com/obituaries/30640667/daniel-s.-pitts,-sr.",
+   "anchors": [
+    "Massena, NY",
+    "Name Emily Ward"
+   ],
+   "missing_gate": "This is about Emily's family, so I always check with you first.",
+   "confidence": 53,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 20,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2024-02",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-richard-haller-grew-up-on-a-small-dairy-farm-in-de-",
+   "name": "ig:richard.haller",
+   "display": "Richard Haller",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "North Country Public Radio's reporter page for Richard Haller says he grew up on a small dairy farm in De Kalb Junction.",
+   "file_text": "Grew up on a small dairy farm in De Kalb Junction",
+   "source": "North Country Public Radio",
+   "url": "https://www.northcountrypublicradio.org/news/reporters/309/richard-haller",
+   "anchors": [
+    "De Kalb Junction hometown (already on file)",
+    "NCPR reporter (already on file)"
+   ],
+   "missing_gate": "This follows from something already on Richard's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 82,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 22,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-ig-richard-haller-received-the-robert-mckenty-and-fami",
+   "name": "ig:richard.haller",
+   "display": "Richard Haller",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "SUNY Canton's fall 2023 scholarship list names Richard Haller as a recipient of the Robert McKenty and Family Annual Scholarship.",
+   "file_text": "Received the Robert McKenty and Family Annual Scholarship at SUNY Canton, fall 2023",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2023/scholarships.php",
+   "anchors": [
+    "SUNY Canton student (already on file)",
+    "Digital Communications & Storytelling major (already on file)"
+   ],
+   "missing_gate": "This follows from something already on Richard's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 85,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 25,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2023",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-alisha-ohl-contributing-author-on-a-poster-at-t",
+   "name": "sf:alisha-ohl",
+   "display": "Alisha Ohl",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "The American Occupational Therapy Association's 2023 Education Summit program lists Alisha Ohl as a contributing author on a poster.",
+   "file_text": "Contributing author on a poster at the AOTA Education Summit, 2023",
+   "source": "American Occupational Therapy Association",
+   "url": "https://www.aota.org/events/calendar/-/media/corporate/files/conferencedocs/2023/education-summit/2023-ed-summit.pdf",
+   "anchors": [
+    "Clarkson University OT program director (already on file)"
+   ],
+   "missing_gate": "This follows from something already on Alisha's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 24,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2023",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-alisha-ohl-co-authored-a-feasibility-study-comp",
+   "name": "sf:alisha-ohl",
+   "display": "Alisha Ohl",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "Alisha Ohl's Clarkson University CV lists a study comparing life review writing with active control groups as in press at the Australian Occupational Therapy Journal. The journal article itself was not found.",
+   "file_text": "Co-authored a feasibility study comparing life review writing with active control groups",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/sites/default/files/2023-06/Alisha-Ohl-CV.pdf",
+   "anchors": [
+    "Clarkson University OT faculty (already on file)",
+    "Publication record (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 18,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-samantha-marocco-founding-member-of-the-lewis-school-",
+   "name": "sf:samantha-marocco",
+   "display": "Samantha Marocco",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "Samantha Marocco's Clarkson University page lists her as a founding member of the Lewis School of Health Sciences Media Club Committee, from August 2025.",
+   "file_text": "Founding member of the Lewis School of Health Sciences Media Club Committee, Aug 2025",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/people/samantha-marocco",
+   "anchors": [
+    "Clarkson University PT chair (already on file)"
+   ],
+   "missing_gate": "This follows from something already on Samantha's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 26,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2025-08",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-ian-bailey-nephew-of-mark-harrington-one-of-tre",
+   "name": "sf:ian-bailey",
+   "display": "Ian Bailey",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "sensitive",
+   "claim": "Treatment Action Group's Vivid Coffee partnership page says Ian Bailey is the nephew of Mark Harrington, one of Treatment Action Group's original founders.",
+   "file_text": "Nephew of Mark Harrington, one of Treatment Action Group's original founders",
+   "source": "Treatment Action Group",
+   "url": "https://www.treatmentactiongroup.org/support-us/vivid-coffee-partnership/",
+   "anchors": [
+    "Vivid Coffee founder (already on file)",
+    "T.A.G. Blend partnership (already on file)"
+   ],
+   "missing_gate": "This is about Ian's family, so I always check with you first.",
+   "confidence": 92,
+   "confidence_parts": {
+    "identity": 47,
+    "source": 27,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-madstop136-from-the-heart-cabinetry-was-founded",
+   "name": "madstop136",
+   "display": "Eric Criscitello",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "Woodshop News's feature on From the Heart Cabinetry says Eric Criscitello's father Richard founded the company in 1988.",
+   "file_text": "From the Heart Cabinetry was founded by his father Richard in 1988",
+   "source": "Woodshop News",
+   "url": "https://www.woodshopnews.com/features/positioned-in-potsdam",
+   "anchors": [
+    "From the Heart Cabinetry (already on file)",
+    "Joined his father's business in 1992 (already on file)"
+   ],
+   "missing_gate": "This follows from something already on Eric's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 84,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 26,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "2020-02",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261103-madstop136-runs-from-the-heart-cabinetry-in-par",
+   "name": "madstop136",
+   "display": "Eric Criscitello",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "In the same Woodshop News feature, Eric Criscitello says his son Tim and his wife are his business partners in From the Heart Cabinetry.",
+   "file_text": "Runs From the Heart Cabinetry in partnership with his son Tim and his wife",
+   "source": "Woodshop News",
+   "url": "https://www.woodshopnews.com/features/positioned-in-potsdam",
+   "anchors": [
+    "From the Heart Cabinetry owner (already on file)",
+    "Tim Criscitello (family, already on file)"
+   ],
+   "missing_gate": "This follows from something already on Eric's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 89,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 26,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "2020-02",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261103-sf-ian-bailey-founded-vivid-coffee-roasters-in-win",
+   "name": "sf:ian-bailey",
+   "display": "Ian Bailey",
+   "run_date": "2026-11-03",
+   "run_label": "Compounding lane",
+   "category": "conflict",
+   "claim": "Seven Days says Ian Bailey started Vivid Coffee Roasters in Winooski, Vermont, in 2015, roasting at Scout & Co. there, and opened the Burlington caf\u00e9 and roastery in November 2020.",
+   "file_text": "Founded Vivid Coffee Roasters in Winooski, Vermont, in 2015; opened the Burlington caf\u00e9 and roastery in Nov 2020",
+   "source": "Seven Days",
+   "url": "https://www.sevendaysvt.com/food-drink/vivid-coffee-to-open-cafe-and-roastery-in-new-moon-space-in-burlington-31485364/",
+   "anchors": [
+    "Vivid Coffee founder (already on file)",
+    "Burlington caf\u00e9 (already on file)"
+   ],
+   "missing_gate": "Ian's record says he founded Vivid Coffee Roasters in Burlington, Vermont. The two don't match, and I don't change a record on my own when new information disagrees with it.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 26,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2020-10-22",
+   "novelty": "new"
   }
  ]
 }
