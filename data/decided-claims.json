@@ -719,24 +719,6 @@
    ]
   },
   {
-   "at": "2026-11-04T05:39:30.067Z",
-   "decision": "filed",
-   "display": "",
-   "domain": "",
-   "id": "v4p8-test-cand",
-   "person": "ct:v4p8 test",
-   "tier": 0,
-   "tokens": [
-    "labs",
-    "roundtrip",
-    "test",
-    "tester",
-    "testville",
-    "v4p8",
-    "works"
-   ]
-  },
-  {
    "at": "2026-10-30T16:11:33.056Z",
    "decision": "dismissed",
    "display": "B. Ryan Dunphey",
