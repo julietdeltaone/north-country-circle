@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.84.0';
+var APP_VERSION = '3.85.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2319,7 +2319,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','whatsnew','photos','sandbox','council','lists','calendar','manage'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','whatsnew','photos','sandbox','council','lists','calendar','manage','merge','danger'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -2566,6 +2566,11 @@ function render(){
      never returns to a dead route. */
   if(S.route.name === 'lists'){ go('groups/lists', { replace:true }); return; }
   if(S.route.name === 'family'){ go('groups/family', { replace:true }); return; }
+  /* V4 Phase 6: Merge Studio and Danger Zone are standalone tools
+     now — the Sandbox addresses for them land on the tools directly,
+     replaced in history. */
+  if(S.route.name === 'sandbox' && S.route.seg[0] === 'merge'){ go('merge', { replace:true }); return; }
+  if(S.route.name === 'sandbox' && S.route.seg[0] === 'danger'){ go('danger', { replace:true }); return; }
   var v = $('#view'), n = S.route.name;
   /* V3.13.0: a route CHANGE starts at the top. #view is a persistent
      scroller, so without this a forward navigation inherited the last
@@ -2618,6 +2623,8 @@ function render(){
     else if(n === 'photos') viewPhotos(v);
     else if(n === 'sandbox') viewSandbox(v);
     else if(n === 'council') viewCouncil(v);
+    else if(n === 'merge') viewMergeTool(v);
+    else if(n === 'danger') viewDangerTool(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -15814,6 +15821,32 @@ function sbPostBatch(items){
     .catch(function(){ return false; });
 }
 
+/* V4 Phase 6: Merge Studio and Danger Zone as standalone tools —
+   the same renderers (sbMerge / sbDangerZone), the same module
+   state (SB.mg / SB.dz) and the same localStorage keys (the Danger
+   Zone undo stack ncc_sbx_dz_removed included), on the normal app
+   frame and the normal loader. Neither waits on the Sandbox bundle:
+   the merge engine runs on the directory + profiles; the Danger
+   Zone additionally wants photos.json for its counts, fetched by
+   its own one-file loader below (reusing the Sandbox's copy if it
+   landed first). */
+var DZLOAD = { loading:null };
+function dzEnsure(){
+  if(SB.photos) return Promise.resolve();
+  if(DZLOAD.loading) return DZLOAD.loading;
+  DZLOAD.loading = sbFetch('photos.json', 'photos').then(function(){
+    DZLOAD.loading = null;
+    if(S.route.name === 'danger') render();
+  });
+  return DZLOAD.loading;
+}
+function viewMergeTool(v){
+  v.innerHTML = '<div class="page sbtool" data-kind="neutral"><div class="sb-wrap">' + sbMerge() + '</div></div>';
+}
+function viewDangerTool(v){
+  dzEnsure();
+  v.innerHTML = '<div class="page sbtool" data-kind="neutral"><div class="sb-wrap">' + sbDangerZone() + '</div></div>';
+}
 function viewSandbox(v){
   var seg = (S.route.seg && S.route.seg[0]) || 'home';
   /* V3.10.0 routes: the old thirteen destinations consolidate to eight.
@@ -15834,7 +15867,7 @@ function viewSandbox(v){
      returns in V3.64.0 as the Danger Zone weeding tool (sbDangerZone);
      the old multi-tab danger functions below stay in the file for
      their shared helpers (sbDoDelete archives, sbRestoreArchived). */
-  if(!({ home:1, insights:1, merge:1, danger:1, log:1 })[SB.tool]) SB.tool = 'home';   /* 'stats' retired V3.71.0: its graphs live on Home now; old links land on the Record Studio */
+  if(!({ home:1, insights:1, log:1 })[SB.tool]) SB.tool = 'home';   /* 'stats' retired V3.71.0: its graphs live on Home now; old links land on the Record Studio. 'merge'/'danger' left in V4 Phase 6 (standalone tools; their Sandbox addresses redirect in render()) */
   var fn = { home:sbHome, insights:sbInsights, merge:sbMerge, danger:sbDangerZone, log:sbLogView }[SB.tool] || sbHome;
   v.innerHTML = sbShell('<div class="sb-wrap">' + fn() + '</div>');
   sbAfterRender();
@@ -15869,7 +15902,7 @@ function sbNav(){
   h += '<a class="sb-navhome' + (SB.tool === 'home' ? ' on' : '') + '" href="#/sandbox"><span class="sb-nav-t">Stats</span><span class="sb-nav-d">The master stats board — every number that does not fit on Home.</span></a>';
   SB_TOOLS.forEach(function(t){
     var on = SB.tool === t.k;
-    h += '<a class="sb-navitem' + (on ? ' on' : '') + '" href="#/sandbox/' + t.k + '"><span class="sb-nav-t">' + esc(t.t) + '</span><span class="sb-nav-d">' + esc(t.d) + '</span></a>';
+    h += '<a class="sb-navitem' + (on ? ' on' : '') + '" href="#/' + ((t.k === 'merge' || t.k === 'danger') ? t.k : 'sandbox/' + t.k) + '"><span class="sb-nav-t">' + esc(t.t) + '</span><span class="sb-nav-d">' + esc(t.d) + '</span></a>';   /* V4 Phase 6: Merge studio + Danger Zone link to their standalone routes */
     if(on && t.k === 'insights'){
       h += '<div class="sb-navkids">' + SB_INSIGHTS.map(function(x){
         return '<a class="sb-navkid' + (SB.ins.view === x.k ? ' on' : '') + '" href="#/sandbox/insights/' + x.k + '">' + esc(x.t) + '</a>';
@@ -16016,8 +16049,8 @@ function sbHome(){
   }
   h += '<h3 class="mdl-ph sbs-toolsh">Tools</h3><div class="sbs-tools">' +
     tool('#/sandbox/insights', 'Insights', findN, 'open findings', 'Coverage, sources, freshness, reconciliation, duplicates, orphans, photo links.') +
-    tool('#/sandbox/merge', 'Merge studio', dupN, 'candidate pairs', 'Combine two profiles field by field. Combine, never overwrite. The bar is high now: same surname alone no longer pairs anyone.') +
-    tool('#/sandbox/danger', 'Danger Zone', ppl, 'people in the directory', 'Weed the directory from the keyboard. Shift+Backspace removes with no confirmation; Ctrl+Z or u restores.') +
+    tool('#/merge', 'Merge studio', dupN, 'candidate pairs', 'Combine two profiles field by field. Combine, never overwrite. The bar is high now: same surname alone no longer pairs anyone.') +
+    tool('#/danger', 'Danger Zone', ppl, 'people in the directory', 'Weed the directory from the keyboard. Shift+Backspace removes with no confirmation; Ctrl+Z or u restores.') +
     tool('#/sandbox/log', 'Action log', logN, 'entries today', 'Every Sandbox write, before → after, with undo and the ops export.') +
     '</div>' +
     '<p class="sb-compact">' + trashN + ' keys in Trash (archive and blocklist, in the Sheet) · ' + opsN + ' ops queued</p>' +
@@ -17493,7 +17526,7 @@ function dzUndo(){
    stopImmediatePropagation keeps the global handlers (Ctrl+Z app
    undo, "/" global search) out of this view only. */
 document.addEventListener('keydown', function(ev){
-  if(!S.route || S.route.name !== 'sandbox' || typeof SB === 'undefined' || SB.tool !== 'danger') return;
+  if(!S.route || S.route.name !== 'danger' || typeof SB === 'undefined') return;
   if(!document.getElementById('dzwrap')) return;
   if(typeof LRCC !== 'undefined' && LRCC.el) return;
   if(typeof QA !== 'undefined' && QA.open) return;
@@ -18152,9 +18185,8 @@ function cnOpenMerge(act){
   var m = act.merge || {};
   var sDi = cnDi(m.survivor), lDi = cnDi(m.loser);
   if(sDi < 0 || lDi < 0){ toast('Merge pair not found in the directory'); return; }
-  SB.tool = 'merge';
   SB.mg = { a:sDi, b:lDi, surv:'a', aName:dispName(D.directory[sDi]), bName:dispName(D.directory[lDi]), picks:{} };
-  location.hash = '#/sandbox/merge';
+  location.hash = '#/merge';
 }
 /* ---- rendering ---- */
 function cnKindLabel(k){
@@ -19468,7 +19500,7 @@ document.addEventListener('click', function(ev){
     if(SB.grid.sort === k) SB.grid.dir *= -1; else { SB.grid.sort = k; SB.grid.dir = 1; }
     sbGridRefresh();
   }
-  else if(act === 'seltodanger'){ SB.dg.tab = 'delete'; go('sandbox/danger'); }
+  else if(act === 'seltodanger'){ SB.dg.tab = 'delete'; go('danger'); }
   else if(act === 'dzsort'){
     var dk = t.getAttribute('data-k'), dst = dzSortState();
     if(dst.k === dk) dst.dir *= -1; else { dst.k = dk; dst.dir = 1; }
@@ -19570,7 +19602,7 @@ document.addEventListener('click', function(ev){
     SB.mg = { a:+t.getAttribute('data-a'), b:+t.getAttribute('data-b'), surv:'a', picks:{}, plan:null,
       aName:dispName(D.directory[+t.getAttribute('data-a')]), bName:dispName(D.directory[+t.getAttribute('data-b')]) };
     SB.pick.mgA = { di:SB.mg.a, name:SB.mg.aName }; SB.pick.mgB = { di:SB.mg.b, name:SB.mg.bName };
-    if(S.route.name === 'sandbox' && SB.tool === 'merge') R(); else go('sandbox/merge');
+    if(S.route.name === 'merge') R(); else go('merge');
   }
   else if(act === 'pairnotdup'){
     var ok = sbStore('ncc_sbx_dupok') || {};
@@ -19787,7 +19819,7 @@ document.addEventListener('input', function(ev){
   if(!t) return;
   var k = t.getAttribute('data-sbi');
   if(k === 'gridq'){ SB.grid.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbGridRefresh, 250); }
-  else if(k === 'dzq'){ SB.dz.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox' && SB.tool === 'danger') sbRenderKeepFocus('dzq'); }, 250); }
+  else if(k === 'dzq'){ SB.dz.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'danger') sbRenderKeepFocus('dzq'); }, 250); }
   else if(k === 'discq'){ SB.dsc.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(sbDiscPaintList, 200); }
   else if(k === 'rawq'){ SB.raw.q = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') sbRenderKeepFocus('rawq'); }, 400); }
   else if(k === 'trashq'){ SB.dg.trashQ = t.value; clearTimeout(SB_DEB); SB_DEB = setTimeout(function(){ if(S.route.name === 'sandbox') sbRenderKeepFocus('trashq'); }, 400); }
