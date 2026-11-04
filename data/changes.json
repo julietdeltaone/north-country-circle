@@ -1,6 +1,86 @@
 {
  "entries": [
   {
+   "filed": "2026-11-04",
+   "name": "Haven Fern",
+   "what": "As Haven Gotham, graduated from SUNY Potsdam's Crane School of Music in 2021 with a Bachelor of Music in music education (voice concentration) and received the 2021 Chancellor's Award for Student Excellence",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/news/studentshonoredchancellorsawards",
+   "novelty": "new"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Haven Fern",
+   "what": "As Haven Gotham, received the first Dr. Rebecca Reames Memorial Scholarship at SUNY Potsdam's Crane School of Music, 2021",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/giving/donorimpact/soft-sweet-and-beautiful-legacy",
+   "novelty": "new"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Heather Shattuck",
+   "what": "Practices clinically at North Coast Physical Therapy, with specialty certification in pediatric physical therapy",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/people/heather-shattuck",
+   "novelty": "new"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Victor Njoku",
+   "what": "Co-authored \"Roles of Post-Translational Modifications of Transcription Factors Involved in Breast Cancer Hypoxia\" in Molecules, Feb 2025",
+   "source": "Molecules",
+   "url": "https://www.mdpi.com/1420-3049/30/3/645",
+   "novelty": "new"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Victor Njoku",
+   "what": "Co-authored the chapter \"Mass Spectrometry-Based Identification of Post-Translational Modifications (PTMs) of Proteins\" in Advancements of Mass Spectrometry in Biomedical Research, 2026",
+   "source": "Springer",
+   "url": "https://link.springer.com/chapter/10.1007/978-3-032-29437-1_26",
+   "novelty": "expands"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Victor Njoku",
+   "what": "Co-authored the chapter \"Mass Spectrometry- and Structural Biology-Based Investigation of Proteins\" in Advancements of Mass Spectrometry in Biomedical Research, 2026",
+   "source": "Springer",
+   "url": "https://link.springer.com/chapter/10.1007/978-3-032-29437-1_27",
+   "novelty": "expands"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Timothy Criscitello",
+   "what": "Named by his father Eric as a business partner in From the Heart Cabinetry, Feb 2020",
+   "source": "Woodshop News",
+   "url": "https://www.woodshopnews.com/features/positioned-in-potsdam",
+   "novelty": "expands"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Annika Greco",
+   "what": "Works as Growth and Relationships Manager at Stewardship in Liverpool, England, under her married name Annika Greco Thompson",
+   "source": "Diocese of Chester",
+   "url": "https://www.chesterdiocese.org/_files/ugd/f8dcd6_75215026bf85476bb2b118a858480461.pdf",
+   "novelty": "expands"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Shannon Boyle",
+   "what": "Received the Hultberg Scholarship, Pamela Michne Fox '59 Music Scholarship, Barrington Merit Scholarship, Curtis B. Bailey & Irma B. Bailey Memorial Scholarship, Ken Cottrell Outstanding Human Service Award, SUNY Potsdam Travel Award, Crane Youth Music Schaberg Scholarship, SUNY Potsdam Freshman Scholars Award, and Edwin and Eleanor Strand Music Loan Fund at SUNY Potsdam",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle",
+   "novelty": "expands"
+  },
+  {
+   "filed": "2026-11-04",
+   "name": "Janelle Evans",
+   "what": "Scored a goal in Clarkson's 6-1 win over Providence, Oct 24, 2026",
+   "source": "ECAC Hockey",
+   "url": "https://ecachockey.com/news/2026/10/24/womens-ice-hockey-womens-weekend-wraparound-10-23-24.aspx",
+   "novelty": "new"
+  },
+  {
    "filed": "2026-11-03",
    "name": "Adria Tebo",
    "what": "Recorded an assist in University of New England's 2026-27 game against Plymouth State, Oct 31, 2026",
@@ -6621,5 +6701,5 @@
    "url": ""
   }
  ],
- "updated": "2026-11-03"
+ "updated": "2026-11-04"
 }
