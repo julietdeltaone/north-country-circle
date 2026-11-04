@@ -3647,19 +3647,50 @@ html[data-mode="light"] .rcb-unsupported{--rcband:#b91c1c}
 .rc-person{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .rc-person a{color:inherit;text-decoration:none}
 .rc-person a:hover{text-decoration:underline}
-/* Held-category pills (V3.62.0, JD 2026-11-01): one professional
-   color family per category from the app palette (golds / maroons /
-   browns / blues / the hot crimson), dark-theme values in the base
-   rule, light-theme values under data-mode="light" — the same
-   convention as the confidence bands above. Text is the category
-   color on a light tint of itself, like the photo-lead pill. */
+/* Held-category colors (V3.62.0, JD 2026-11-01; rebalanced V4,
+   JD 2026-11-04): one muted professional family per category —
+   maroons / browns / khaki / teal / slate / the hot crimson —
+   dark-theme values in the base rule, light-theme values under
+   data-mode="light". V4 rebalance: the two reserved inks are
+   never spent here (steel blue = About, antique gold =
+   Connection) — sensitive moved off the pale blue that matched
+   the About ink, close moved off the gold that matched the
+   Connection ink, verification desaturated to slate, and claim
+   (Research note) got a color (warm taupe) for the first time.
+   The colors stay a separate, muted system from the inks: they
+   tint pills, card edges and washes, never glyphs or kind
+   chips. */
 .rc-cat{--rccat:var(--mut);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 9px;border:1px solid color-mix(in srgb,var(--rccat) 48%,transparent);border-radius:999px;color:var(--rccat);background:color-mix(in srgb,var(--rccat) 13%,transparent);white-space:nowrap}
-.rccat-close{--rccat:#d2ab4e}.rccat-identity{--rccat:#cf8b98}.rccat-source{--rccat:#c49a6c}.rccat-sensitive{--rccat:#8fb0d6}.rccat-conflict{--rccat:var(--hot)}.rccat-verification{--rccat:#a9c2d6}
-html[data-mode="light"] .rccat-close{--rccat:#6b5210}
+.rccat-close{--rccat:#a8a061}.rccat-identity{--rccat:#cf8b98}.rccat-source{--rccat:#c49a6c}.rccat-sensitive{--rccat:#82aca4}.rccat-conflict{--rccat:var(--hot)}.rccat-verification{--rccat:#93a7bb}.rccat-claim{--rccat:#a89f92}
+html[data-mode="light"] .rccat-close{--rccat:#66602f}
 html[data-mode="light"] .rccat-identity{--rccat:#712434}
 html[data-mode="light"] .rccat-source{--rccat:#6b4a2e}
-html[data-mode="light"] .rccat-sensitive{--rccat:#2e4a68}
-html[data-mode="light"] .rccat-verification{--rccat:#3c5a73}
+html[data-mode="light"] .rccat-sensitive{--rccat:#2f5f57}
+html[data-mode="light"] .rccat-verification{--rccat:#54687c}
+html[data-mode="light"] .rccat-claim{--rccat:#6f675c}
+/* Whole-card category treatment (V4, JD 2026-11-04): a row that
+   carries a category gets a short inset segment in its color
+   (the edge rule's pattern — inset, rounded, clear of the
+   corners, never a full-height line) and a light wash over its
+   main cell, so a wall of cards reads by category at a glance.
+   Combined cards mix categories; their points carry the color
+   on the list marker instead. */
+.rc-row[class*="rccat-"]{position:relative}
+.rc-row[class*="rccat-"]::before{content:'';position:absolute;left:0;top:14px;width:3px;height:46px;border-radius:2px;background:var(--rccat)}
+.rc-row[class*="rccat-"]>.rc-main{background:color-mix(in srgb,var(--rccat) 7%,transparent);border-radius:8px;padding:7px 10px}
+.rc-points li[class*="rccat-"]::marker{color:var(--rccat)}
+/* The identity ask band (V4, JD 2026-11-04): identity is the one
+   verification that is truly JD's; its cards carry the ask as a
+   filled band in the identity color. */
+.rc-idask{background:color-mix(in srgb,var(--rccat) 17%,transparent);border:1px solid color-mix(in srgb,var(--rccat) 45%,transparent);border-radius:8px;padding:8px 11px;font-size:14px;font-weight:700;line-height:1.35;margin-bottom:9px}
+/* Source-date hero chip (V4, JD 2026-11-04): the source's
+   publication date, big enough to read at a glance; cards whose
+   source has no known date render no chip at all. */
+.rc-pubdate{display:flex;flex-direction:column;gap:1px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-bottom:9px;background:var(--bg2)}
+.rc-pubdate span{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mut)}
+.rc-pubdate b{font:700 19px/1.15 var(--serif);white-space:nowrap}
+/* Seen in person card heading (V4 Phase 4) */
+.ct-seen-h{margin:14px 0 4px;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
 .rc-gate{display:flex;flex-direction:column;align-items:flex-start}
 .rc-gate .rc-cat{margin-top:6px}
 .rc-phototag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:2px;background:color-mix(in srgb,var(--sky) 15%,transparent);border:1px solid color-mix(in srgb,var(--sky) 48%,transparent);color:var(--sky)}
