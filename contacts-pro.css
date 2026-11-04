@@ -3669,6 +3669,14 @@ html[data-mode="light"] .rccat-verification{--rccat:#3c5a73}
 .rc-src-link svg{flex:none}
 .rc-nosrc{display:inline-block;padding:1px 7px;border:1px dashed var(--line2);border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--dim);vertical-align:1px}
 .rc-anchors{margin:7px 0 0;padding-left:16px;color:var(--mut);font-size:12.5px;line-height:1.5}
+/* Combined same-source card (V3.81.0): plain point lists inside the
+   four blocks, the "points · one source" tag, the points count under
+   the confidence parts. */
+.rc-points{margin:4px 0 0;padding-left:16px;line-height:1.5}
+.rc-points li{margin:3px 0}
+.rc-block .rc-points{font-size:13.5px}
+.rc-combo-tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:2px;background:color-mix(in srgb,var(--gold,#b98a2f) 14%,transparent);border:1px solid color-mix(in srgb,var(--gold,#b98a2f) 45%,transparent);color:var(--gold,#b98a2f);white-space:nowrap}
+.rc-combo-n{display:block;margin-top:7px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
 .rc-gate>span{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mut)}
 .rc-gate p{margin-top:4px;font-size:13.5px;line-height:1.6;color:var(--txt)}
 .rc-actions{display:flex;flex-direction:column;gap:7px;align-items:stretch}
