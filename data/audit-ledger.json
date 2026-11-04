@@ -13306,50 +13306,50 @@
  },
  "lanes": {
   "tier": {
-   "open": 4,
-   "new": 3,
+   "open": 1,
+   "new": 0,
    "regressed": 0,
    "cleared_at": null
   },
   "loc": {
-   "open": 2,
-   "new": 2,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T15:18:00Z"
   },
   "rel": {
-   "open": 3,
-   "new": 3,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T00:17:00Z"
   },
   "years": {
-   "open": 2,
-   "new": 2,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T00:17:00Z"
   },
   "lastc": {
-   "open": 4,
-   "new": 3,
+   "open": 1,
+   "new": 0,
    "regressed": 0,
    "cleared_at": null
   },
   "phone": {
-   "open": 4,
-   "new": 4,
+   "open": 1,
+   "new": 1,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "orgs": {
-   "open": 4,
-   "new": 3,
+   "open": 1,
+   "new": 0,
    "regressed": 0,
    "cleared_at": null
   },
   "skills": {
-   "open": 3,
-   "new": 3,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -16379,5 +16379,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-04T04:23:00Z"
+ "updated": "2026-11-04T04:35:00Z"
 }
