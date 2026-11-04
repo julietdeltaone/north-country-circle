@@ -6629,3 +6629,54 @@ html[data-mode="light"] .rc-ev{border-color:rgba(13,20,32,.18)}
 
 /* ---- 3) brand mark ---- */
 .rl-mark svg{display:block}
+
+/* ---- V4.2 (4) phone geometry: the Layout Integrity audit at
+   390px found 158 blocking instances on the 4.1.0 build, all
+   phone-width (desktop widths were clean): text clipped
+   invisibly inside fixed tracks, nowrap rows wider than the
+   screen, and one inline grid beating the responsive
+   collapse. Fixes are phone-only (max-width:760px); nothing
+   at desktop widths changes. ---- */
+@media(max-width:760px){
+  /* Live Records: sub-line sizes to its text (was fixed-height,
+     clipped the third line); the History panels' inline
+     340px+1fr grid stacks like every other .pv-panels. */
+  .page.lr .pv-hsub{height:auto;min-height:18px}
+  .page.lr .pv-panels{grid-template-columns:1fr !important}
+  /* Research Command bundles: long source lines and labels
+     wrap inside the card instead of painting past the edge. */
+  .rc-bundle,.rc-row,.rc-main,.rc-ev,.rc-actions,.rc-conf{min-width:0}
+  .rc-ev a,.rc-src a,.rc-points a,.rc-points li,.rc-claim,.rc-filetext{overflow-wrap:anywhere}
+  /* People: employer/school cells wrap instead of truncating
+     invisibly inside the 118px phone columns. */
+  .page.people .ptable td .clip{white-space:normal;overflow:visible;text-overflow:clip;max-width:none}
+  /* Groups: header row and tab row wrap. */
+  .grp-headrow{flex-wrap:wrap}
+  .tabrow{flex-wrap:wrap}
+  /* Family tree: couple chips wrap within their row. */
+  .fcouple{flex-wrap:wrap;max-width:100%}
+  .fgen-people,.fp-row{min-width:0}
+  /* Audit: header buttons drop under the title; the mode
+     segment scrolls within its own pill instead of pushing
+     the page wide. */
+  .aud-headrow{flex-wrap:wrap;min-width:0}
+  .page.audit .aud-tools{max-width:100%}
+  .aud-tools .seg{max-width:100%;overflow-x:auto}
+  .aud-tools .aud-goal{max-width:100%;flex-wrap:wrap;min-width:0}
+  /* Merge/Danger log rows: the status chip moves under the
+     text instead of forcing a third track past the screen. */
+  .pv-logrow{grid-template-columns:72px minmax(0,1fr)}
+  .pv-logrow .pv-chip{grid-column:2;justify-self:start;white-space:normal}
+  /* Photos: toolbar controls wrap; grid thumbnails render
+     inside their cells (framing zoom stays in the viewer). */
+  .phtb-row .phcols-ctl,.phtb-row .phsort-ctl,.phbar .phcols-ctl,.phbar .phsort-ctl{margin-left:0;flex-wrap:wrap;max-width:100%;min-width:0}
+  .phsort-ctl select{max-width:100%}
+  .phgrid .phcard .phimg img{transform:none !important}
+  /* Profile bands: identity values and file names wrap fully
+     instead of crushing to a few px in the narrow band. */
+  .b-identity .irow{grid-template-columns:92px minmax(0,1fr)}
+  .b-identity .iv{flex-wrap:wrap;min-width:0}
+  .b-identity .iv a,.b-identity .derived{white-space:normal;overflow:visible;overflow-wrap:anywhere}
+  .b-files .file{min-width:0}
+  .b-files .file b{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+}
