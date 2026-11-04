@@ -6696,3 +6696,18 @@ html[data-mode="light"] .rc-ev{border-color:rgba(13,20,32,.18)}
   .grp-headrow>div{min-width:0}
   .grp-toolsrow .tabrow{width:auto;flex:1 1 auto;min-width:0}
 }
+
+/* ---- V4.2.1 rail badge fix (JD 2026-11-04, from his
+   screenshot): the Live Records rail label reuses .fi-bdg,
+   the Fact Inbox count badge whose base rule fixes it at
+   28x18px for a bare number — the rail's "NNN waiting" text
+   sat in a 28px pill and spilled over the pill's border and
+   the selected row's edge (the geometry audit censuses #view
+   only, so the chrome was outside its sight). The rail pill
+   now sizes to its text; every rail right-side label is
+   flex:none so it can never be squeezed again, and the row
+   label carries an ellipsis valve as the last resort. Same
+   class swept: topbar, brand pill, phone tab bar — clean. */
+#rail .nv em.fi-bdg{width:auto;height:auto;min-height:18px;padding:1px 6px}
+#rail .nv .nv-ct,#rail .nv em{flex:none}
+#rail .nv>span:not(.nv-gl):not(.nv-ct){min-width:0;overflow:hidden;text-overflow:ellipsis}
