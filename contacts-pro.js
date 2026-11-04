@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.88.0';
+var APP_VERSION = '3.89.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2108,7 +2108,8 @@ function askEditKey(){ try{ poolClose(); }catch(x){}
    Photos, Family, Groups (membership facts about people).
    Connection: Calendar/Atlas (co-presence + contact), Network.
    Neutral (slate): Home (mixed — its contents are notated per
-   element), Audit / Council / Sandbox / Settings (pure tools).
+   element), Audit / Council / Settings (pure tools). (The Sandbox
+   shell was disabled in V4 Phase 6 steps 4–5 — see render().)
    (What's New retired as a rail item in V4 Phase 2 — its feed is
    the Filings tab inside Live Records.) Research Command lives inside Live Records and
    Reach-out lives inside People (By last contact); both inherit
@@ -2122,8 +2123,7 @@ var NAV = [
   { k:'council', l:'Council', ic:'award',   kind:'neutral' },
   { k:'photos',  l:'Photos', ic:'camera',   kind:'about' },
   { k:'network', l:'Network', ic:'network', kind:'connection' },
-  { k:'groups',  l:'Groups',  ic:'groups',  kind:'about' },
-  { k:'sandbox', l:'Sandbox', ic:'shield',  kind:'neutral' }
+  { k:'groups',  l:'Groups',  ic:'groups',  kind:'about' }
 ];
 function activeNav(){
   var n = S.route.name;
@@ -2575,6 +2575,15 @@ function render(){
      replaced in history. */
   if(S.route.name === 'sandbox' && S.route.seg[0] === 'merge'){ go('merge', { replace:true }); return; }
   if(S.route.name === 'sandbox' && S.route.seg[0] === 'danger'){ go('danger', { replace:true }); return; }
+  /* V4 Phase 6 steps 4–5 (JD, Nov 4): the Sandbox shell is DISABLED,
+     not deleted. JD's call: switch the code off so it is effectively
+     hidden, with the shell, Insights, labs, grid and raw viewers left
+     in this file, recoverable. The rail item is gone (NAV above) and
+     every remaining Sandbox address lands on Home, replaced in
+     history. Merge Studio and Danger Zone keep the standalone routes
+     above; the Danger Zone's undo stack (ncc_sbx_dz_removed) and its
+     restore-from-Trash path are untouched by this disable. */
+  if(S.route.name === 'sandbox'){ go('home', { replace:true }); return; }
   var v = $('#view'), n = S.route.name;
   /* V3.13.0: a route CHANGE starts at the top. #view is a persistent
      scroller, so without this a forward navigation inherited the last
