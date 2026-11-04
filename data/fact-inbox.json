@@ -1988,6 +1988,10 @@
    "name": "ig:havenfern",
    "pattern": "new_credential",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-04T22:15:34.062Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/news/studentshonoredchancellorsawards"
   },
   {
@@ -2001,6 +2005,10 @@
    "name": "ig:havenfern",
    "pattern": "new_credential",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-04T22:15:37.632Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/giving/donorimpact/soft-sweet-and-beautiful-legacy"
   },
   {
@@ -2014,6 +2022,10 @@
    "name": "sf:heather-shattuck",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-04T22:15:41.548Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/heather-shattuck"
   },
   {
@@ -2027,6 +2039,10 @@
    "name": "sf:victor-njoku",
    "pattern": "milestone",
    "source": "Molecules",
+   "state": {
+    "at": "2026-11-04T22:15:51.841Z",
+    "status": "read"
+   },
    "url": "https://www.mdpi.com/1420-3049/30/3/645"
   },
   {
