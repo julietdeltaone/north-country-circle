@@ -422,7 +422,7 @@ a.gcard:hover{background:var(--card2);border-color:var(--line2);text-decoration:
 .gc-n b{display:block;font:700 21px var(--serif)}
 .gc-n small{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
 .gfaces{display:flex;align-items:center;min-height:30px}
-.gface{position:relative;width:30px;height:30px;border-radius:50%;overflow:hidden;flex:none;margin-left:-8px;border:2px solid var(--card);background:color-mix(in srgb,var(--tc,var(--fill3)) 16%,var(--bg));display:inline-flex;align-items:center;justify-content:center}
+.gface{position:relative;width:30px;height:30px;border-radius:50%;overflow:hidden;flex:none;margin-left:3px;border:2px solid var(--card);background:color-mix(in srgb,var(--tc,var(--fill3)) 16%,var(--bg));display:inline-flex;align-items:center;justify-content:center}   /* V4 Phase 5: faces sit side by side (3px gap) — the old -8px overlap stack is a blocking collision under the Layout Integrity gate now that Groups is an audited surface */
 .gface:first-child{margin-left:0}
 .gface .gini{font-size:11px;font-weight:600;color:var(--tc)}
 .gface img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
