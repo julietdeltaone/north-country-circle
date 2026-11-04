@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.86.0';
+var APP_VERSION = '3.87.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2134,7 +2134,7 @@ function renderChrome(){
   var act = activeNav();
   var items = NAV.map(function(n){
     var bdg = '';
-    if(n.k === 'daily'){ var un = (typeof FI !== 'undefined' && FI) ? fiUnreadCount() : 0; bdg = '<em class="fi-bdg' + (un ? '' : ' zero') + '" id="finavbadge">' + un + '</em>'; }
+    if(n.k === 'daily'){ var un = lrWaitingCount(); bdg = '<em class="fi-bdg' + (un ? '' : ' zero') + '" id="finavbadge">' + un + '</em>'; }
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '" data-kind="' + (n.kind || 'neutral') + '">' + ic(n.ic, 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>' + n.l + '</span>' + bdg + '</a>';
   }).join('');
   if(typeof fiLoad === 'function') fiLoad();
@@ -2553,6 +2553,10 @@ function render(){
      mobile shell's menu) land there, replaced in history so Back
      never returns to a dead route. */
   if(S.route.name === 'whatsnew'){ go('daily/filings', { replace:true }); return; }
+  /* V4 Phase 8a: the Fact Inbox tab is retired — it lives on as the
+     New facts group inside the one decision surface. Old links land
+     there, replaced in history. */
+  if(S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'inbox'){ go('daily/decide', { replace:true }); return; }
   /* V4 Phase 3: #/manage is dissolved — its stamps table and
      Proximity logger live on the Calendar, its Levels map lives in
      Settings. Old links land on the matching new home, replaced in
@@ -2586,7 +2590,7 @@ function render(){
        is not a page change, so it never resets the scroll: each
        tab's own scroll is saved and restored instead. V4 Phase 2:
        the set is all three tabs (Records / Inbox / Filings). */
-    var lrTabSwap = !!(({ 'daily/':1, 'daily/inbox':1, 'daily/filings':1 })[render._rk] && ({ 'daily/':1, 'daily/inbox':1, 'daily/filings':1 })[rk]);
+    var lrTabSwap = !!(({ 'daily/':1, 'daily/decide':1, 'daily/filings':1 })[render._rk] && ({ 'daily/':1, 'daily/decide':1, 'daily/filings':1 })[rk]);
     if(lrTabSwap){
       render._dscroll = render._dscroll || {};
       render._dscroll[render._rk] = { w: window.scrollY || 0, v: v ? v.scrollTop : 0 };
@@ -9409,11 +9413,33 @@ function fiSideHTML(){
   h += flagged.length ? flagged.map(function(e){ return '<div class="fi-mini"><button type="button" class="fi-goto" data-act="fi-goto" data-id="' + esc(e.id) + '"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span></button><button type="button" class="fi-undo" data-act="fi-unflag" data-id="' + esc(e.id) + '">Unflag</button></div>'; }).join('') : '<p class="fi-none">Nothing flagged. Flag a fact and Luna will look at it.</p>';
   return h;
 }
+/* The shared waiting-count terms (V4 Phase 8a): each queue's own
+   canonical pending count, reused by the tab badge so every surface
+   that states the number derives it the same way. */
+function rcPendingCount(){ return (RC && RC.candidates) ? rcModel().counts.pending : 0; }
+function pfPendingCount(){ return PF ? pfRows().counts.pending : 0; }
+/* THE waiting count (V4 Phase 8a): unread facts + pending research
+   + pending prefill. The rail badge, the tab badge and the badge
+   repaint all read this one function — the number can never
+   disagree between surfaces. Terms degrade to 0 until their data
+   loads, as the old Inbox badge did. */
+function lrWaitingCount(){
+  return (typeof FI !== 'undefined' && FI ? fiUnreadCount() : 0) +
+         (typeof RC !== 'undefined' && RC ? rcPendingCount() : 0) +
+         (typeof PF !== 'undefined' && PF ? pfPendingCount() : 0);
+}
 function fiTabsHTML(on){
-  var n = FI ? fiUnreadCount() : 0;
+  /* V4 Phase 8a: one decision surface. The old Inbox tab is now
+     "Needs a decision" (#/daily/decide) holding all three labelled
+     kinds — New facts (Fact Inbox), Needs your call (Research
+     Command), Prefill — and its badge is the single waiting count:
+     unread facts + pending candidates + pending prefill, each term
+     degrading to 0 until its data loads (the same rule the old
+     Inbox badge used). One count rule, shared with the rail. */
+  var n = lrWaitingCount();
   return '<div class="fi-tabs" role="tablist" aria-label="Live Records views">' +
     '<a href="#/daily" class="fi-tab' + (on === 'records' ? ' on' : '') + '">Records</a>' +
-    '<a href="#/daily/inbox" class="fi-tab' + (on === 'inbox' ? ' on' : '') + '">Inbox <span class="fi-bdg' + (n ? '' : ' zero') + '">' + n + '</span></a>' +
+    '<a href="#/daily/decide" class="fi-tab' + (on === 'decide' ? ' on' : '') + '">Needs a decision <span class="fi-bdg' + (n ? '' : ' zero') + '">' + n + '</span></a>' +
     '<a href="#/daily/filings" class="fi-tab' + (on === 'filings' ? ' on' : '') + '">Filings</a></div>';
 }
 /* ============================================================
@@ -9445,7 +9471,7 @@ function lrBriefSubHTML(){
   return 'Brief &middot; ' + esc(d) + ' &middot; ' + (DT.checked || []).length + ' checked &middot; ' + (DT.filed || []).length + ' updated';
 }
 function lrBodyPaint(){
-  if(S.route.name !== 'daily' || (S.route.seg && (S.route.seg[0] === 'inbox' || S.route.seg[0] === 'filings'))) return false;
+  if(S.route.name !== 'daily' || (S.route.seg && (S.route.seg[0] === 'decide' || S.route.seg[0] === 'filings'))) return false;
   var b = document.getElementById('lr-body');
   if(!b || !DT || DT.empty || !DT.date) return false;
   var y = window.scrollY, vv = $('#view'), vt = vv ? vv.scrollTop : 0;
@@ -9457,6 +9483,14 @@ function lrBodyPaint(){
 function fiPageHTML(){
   var c = FI ? fiCounts() : { total: 0, unread: 0, read: 0, flagged: 0, people: 0 };
   var h = lrChromeHTML('inbox', 'Fact Inbox', FI ? (c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero') : 'Loading&hellip;', 'fi-sub');
+  return h + fiBodyHTML();
+}
+/* The Fact Inbox body without the page chrome (V4 Phase 8a): the
+   Decide view renders it as the New facts group under the shared
+   Live Records chrome. fiPaint() repaints #fi-feed / #fi-side /
+   #fi-showing inside it exactly as it did on the old tab. */
+function fiBodyHTML(){
+  var h = '';
   if(FI_PROF_FAILED) h += '<div class="fi-alert">Inbox state unavailable — the profiles data did not load, so Read and Flag are paused. Nothing will be written until it loads; reload to retry.</div>';
   h += '<div class="fi-controls"><div class="seg fi-seg" role="group" aria-label="Filter facts">' +
     '<button type="button" data-act="fi-filter" data-f="all"' + (FI_FILTER === 'all' ? ' class="on"' : '') + '>All facts</button>' +
@@ -9479,7 +9513,8 @@ function fiFeedHTML(enterId){
   return vis.map(function(e, i){ var html = fiCardHTML(e, i === 0); if(enterId && e.id === enterId) html = html.replace('fi-card', 'fi-card entering'); return html; }).join('');
 }
 function fiPaint(enterId){
-  if(S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'inbox')) return;
+  /* V4 Phase 8a: the Fact Inbox paints inside the Decide view. */
+  if(S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'decide')) return;
   var feed = document.getElementById('fi-feed'), side = document.getElementById('fi-side'), sub = document.getElementById('fi-sub'), sh = document.getElementById('fi-showing');
   if(feed) feed.innerHTML = fiFeedHTML(enterId);
   if(side && FI) side.innerHTML = fiSideHTML();
@@ -9488,7 +9523,7 @@ function fiPaint(enterId){
   fiPaintNavBadge();
 }
 function fiPaintNavBadge(){
-  var n = FI ? fiUnreadCount() : 0;
+  var n = lrWaitingCount();
   /* V3.79.1: the badge box is fixed-size at every count — only the
      number and its visibility change, never the geometry. */
   document.querySelectorAll('.fi-bdg').forEach(function(b){ b.textContent = n; b.classList.toggle('zero', !n); b.hidden = false; });
@@ -9684,10 +9719,27 @@ function lrRecordsBodyHTML(){
 
 function viewDaily(v){
   dtLoad(); chLoad(); rcLoad();
-  if(S.route.seg && S.route.seg[0] === 'inbox'){
-    fiLoad(); fiProfLoad();
-    v.innerHTML = '<div class="page lr fi-page" data-kind="about">' + fiPageHTML() + '</div>';
+  if(S.route.seg && S.route.seg[0] === 'decide'){
+    /* V4 Phase 8a: the one decision surface — three labelled kinds
+       under the shared Live Records chrome. Each kind keeps its own
+       renderer, state, keyboard path and write path (BN for facts,
+       BL for research, BM for prefill); only the roof is shared. */
+    fiLoad(); fiProfLoad(); pfLoad();
+    var dcN = (FI ? fiUnreadCount() : 0) + (RC ? rcPendingCount() : 0) + (PF ? pfPendingCount() : 0);
+    var dcWhen = '';
+    if(DT && DT.date){
+      var dp = String(DT.date).split('-');
+      dcWhen = dp.length === 3 ? ' &middot; last checked ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(dp[1], 10) - 1] + ' ' + parseInt(dp[2], 10) + ', ' + dp[0] : '';
+    }
+    var dcSub = dcN ? dcN + ' waiting for a decision' + dcWhen : 'Nothing waiting' + dcWhen;
+    v.innerHTML = '<div class="page lr dc-page" data-kind="about">' +
+      lrChromeHTML('decide', 'Needs a decision', dcSub) +
+      '<section class="dc-group"><div class="dc-ghead"><h2>New facts</h2><span>The Fact Inbox — facts Luna found. Read the ones you already know; flag the ones to check.</span></div>' + fiBodyHTML() + '</section>' +
+      '<section class="dc-group"><div class="dc-ghead"><h2>Needs your call</h2><span>Research Command — findings held for your ruling.</span></div>' + rcConsoleHTML() + '</section>' +
+      '<section class="dc-group"><div class="dc-ghead"><h2>Prefill</h2><span>Luna\u2019s inferred values for blank fields — approve or deny each one.</span></div><div id="pfwrap"></div></section>' +
+      '</div>';
     fiPaint();
+    pfRender();
     return;
   }
   if(S.route.seg && S.route.seg[0] === 'filings'){
@@ -9717,7 +9769,9 @@ function viewDaily(v){
     return;
   }
   if(DT.empty || !DT.date){ v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'No brief yet') + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
-  v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', lrBriefSubHTML()) + '<div id="lr-body">' + lrRecordsBodyHTML() + '</div>' + rcConsoleHTML() + '</div>';
+  /* V4 Phase 8a: Research Command's one home is the Needs a decision
+     view now; the Records page no longer carries the console. */
+  v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', lrBriefSubHTML()) + '<div id="lr-body">' + lrRecordsBodyHTML() + '</div></div>';
   LR_ANIM_SEEN = true;
   if(lrRepaint && (lrKeepY || lrKeepV)) requestAnimationFrame(function(){ window.scrollTo(0, lrKeepY); v.scrollTop = lrKeepV; });
   dtAnimate();
@@ -9834,11 +9888,18 @@ function lrccClose(){
     document.body.classList.remove('sheet-open');
 }
 /* The Research-pending stat: close the console and jump to the
-   Research Command section on the page behind it. */
+   Research Command section — since V4 Phase 8a it lives in the
+   Needs a decision view, so navigate there first when needed,
+   then scroll once the section exists. */
 function lrccGoRC(){
   lrccClose();
-  var el = document.getElementById('rcconsole');
-  if(el) el.scrollIntoView({ block:'start' });
+  if(!(S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'decide')) go('daily/decide');
+  var tries = 0;
+  (function att(){
+    var el = document.getElementById('rcconsole');
+    if(el){ el.scrollIntoView({ block:'start' }); return; }
+    if(++tries < 20) setTimeout(att, 150);
+  })();
 }
 /* Data refresh while open (a sweep landed, or the research
    ledger arrived): repaint only the #lrcc-main subtree inside
@@ -13197,7 +13258,7 @@ function pfLoad(){
   PF_LOADING = true;
   fetch('data/prefill.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(d){ PF_LOADING = false; PF = d; if(S.route && S.route.name === 'audit'){ audPaintModeBar(); if(audMode() === 'prefill') pfRender(); } else if(S.route && S.route.name === 'home'){ render(); } })
+    .then(function(d){ PF_LOADING = false; PF = d; if(S.route && S.route.name === 'audit'){ audPaintModeBar(); if(audMode() === 'prefill') pfRender(); } else if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'decide'){ pfRender(); } else if(S.route && S.route.name === 'home'){ render(); } })
     .catch(function(){ PF_LOADING = false; });
 }
 function pfReviewMap(e){
@@ -14297,7 +14358,7 @@ function onKey(ev){
   if(mod || ev.altKey) return;
   if(ev.key === 'q' || ev.key === 'Q'){ if(!QA.open && !document.body.classList.contains('sheet-open')){ ev.preventDefault(); qaOpen('log'); } return; }
   if(ev.key === '/'){ ev.preventDefault(); var gs = $('#gs'); if(gs) gs.focus(); return; }
-  if(S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'inbox' && !document.body.classList.contains('sheet-open')){
+  if(S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'decide' && !document.body.classList.contains('sheet-open')){
     var fiFirst = document.querySelector('.fi-feed .fi-card');
     if(fiFirst && (ev.key === 'r' || ev.key === 'R')){ ev.preventDefault(); fiMarkRead(fiFirst.getAttribute('data-id')); return; }
     if(fiFirst && (ev.key === 'f' || ev.key === 'F')){ ev.preventDefault(); fiToggleFlag(fiFirst.getAttribute('data-id')); return; }
