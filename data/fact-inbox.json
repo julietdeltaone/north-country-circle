@@ -1976,6 +1976,123 @@
    "pattern": "milestone",
    "source": "Woodshop News",
    "url": "https://www.woodshopnews.com/features/positioned-in-potsdam"
+  },
+  {
+   "id": "fi-20261104-ig-havenfern-as-haven-gotham-graduated-fr",
+   "key": "ig:havenfern",
+   "name": "ig:havenfern",
+   "display": "Haven Fern",
+   "anchor": "SUNY Potsdam \u00b7 Edwards, NY",
+   "fact": "As Haven Gotham, graduated from SUNY Potsdam's Crane School of Music in 2021 with a Bachelor of Music in music education (voice concentration) and received the 2021 Chancellor's Award for Student Excellence",
+   "pattern": "new_credential",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/news/studentshonoredchancellorsawards",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
+  },
+  {
+   "id": "fi-20261104-ig-havenfern-as-haven-gotham-received-the",
+   "key": "ig:havenfern",
+   "name": "ig:havenfern",
+   "display": "Haven Fern",
+   "anchor": "SUNY Potsdam \u00b7 Edwards, NY",
+   "fact": "As Haven Gotham, received the first Dr. Rebecca Reames Memorial Scholarship at SUNY Potsdam's Crane School of Music, 2021",
+   "pattern": "new_credential",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/giving/donorimpact/soft-sweet-and-beautiful-legacy",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
+  },
+  {
+   "id": "fi-20261104-sf-heather-shattuck-practices-clinically-at-nort",
+   "key": "sf:heather-shattuck",
+   "name": "sf:heather-shattuck",
+   "display": "Heather Shattuck",
+   "anchor": "Clarkson University \u00b7 Potsdam, NY",
+   "fact": "Practices clinically at North Coast Physical Therapy, with specialty certification in pediatric physical therapy",
+   "pattern": "milestone",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/people/heather-shattuck",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
+  },
+  {
+   "id": "fi-20261104-sf-victor-njoku-co-authored-roles-of-post-tr",
+   "key": "sf:victor-njoku",
+   "name": "sf:victor-njoku",
+   "display": "Victor Njoku",
+   "anchor": "Clarkson University \u00b7 Potsdam, NY",
+   "fact": "Co-authored \"Roles of Post-Translational Modifications of Transcription Factors Involved in Breast Cancer Hypoxia\" in Molecules, Feb 2025",
+   "pattern": "milestone",
+   "source": "Molecules",
+   "url": "https://www.mdpi.com/1420-3049/30/3/645",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
+  },
+  {
+   "id": "fi-20261104-sf-victor-njoku-co-authored-the-chapter-mass",
+   "key": "sf:victor-njoku",
+   "name": "sf:victor-njoku",
+   "display": "Victor Njoku",
+   "anchor": "Clarkson University \u00b7 Potsdam, NY",
+   "fact": "Co-authored the chapter \"Mass Spectrometry-Based Identification of Post-Translational Modifications (PTMs) of Proteins\" in Advancements of Mass Spectrometry in Biomedical Research, 2026",
+   "pattern": "milestone",
+   "source": "Springer",
+   "url": "https://link.springer.com/chapter/10.1007/978-3-032-29437-1_26",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
+  },
+  {
+   "id": "fi-20261104-ig-tcriscitello-named-by-his-father-eric-as-",
+   "key": "ig:tcriscitello",
+   "name": "ig:tcriscitello",
+   "display": "Timothy Criscitello",
+   "anchor": "From the Heart Cabinetry \u00b7 Potsdam, NY",
+   "fact": "Named by his father Eric as a business partner in From the Heart Cabinetry, Feb 2020",
+   "pattern": "milestone",
+   "source": "Woodshop News",
+   "url": "https://www.woodshopnews.com/features/positioned-in-potsdam",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
+  },
+  {
+   "id": "fi-20261104-sf-annika-greco-works-as-growth-and-relation",
+   "key": "sf:annika-greco",
+   "name": "sf:annika-greco",
+   "display": "Annika Greco",
+   "anchor": "Stewardship \u00b7 Liverpool, England",
+   "fact": "Works as Growth and Relationships Manager at Stewardship in Liverpool, England, under her married name Annika Greco Thompson",
+   "pattern": "title_change",
+   "source": "Diocese of Chester",
+   "url": "https://www.chesterdiocese.org/_files/ugd/f8dcd6_75215026bf85476bb2b118a858480461.pdf",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
+  },
+  {
+   "id": "fi-20261104-ig-the-harpist-received-the-hultberg-schola",
+   "key": "ig:the_harpist",
+   "name": "ig:the_harpist",
+   "display": "Shannon Boyle",
+   "anchor": "SUNY Potsdam \u00b7 Potsdam, NY",
+   "fact": "Received the Hultberg Scholarship, Pamela Michne Fox '59 Music Scholarship, Barrington Merit Scholarship, Curtis B. Bailey & Irma B. Bailey Memorial Scholarship, Ken Cottrell Outstanding Human Service Award, SUNY Potsdam Travel Award, Crane Youth Music Schaberg Scholarship, SUNY Potsdam Freshman Scholars Award, and Edwin and Eleanor Strand Music Loan Fund at SUNY Potsdam",
+   "pattern": "new_credential",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
+  },
+  {
+   "id": "fi-20261104-sf-janelle-evans-scored-a-goal-in-clarkson-s-",
+   "key": "sf:janelle-evans",
+   "name": "sf:janelle-evans",
+   "display": "Janelle Evans",
+   "anchor": "Clarkson University women's hockey \u00b7 Potsdam, NY",
+   "fact": "Scored a goal in Clarkson's 6-1 win over Providence, Oct 24, 2026",
+   "pattern": "milestone",
+   "source": "ECAC Hockey",
+   "url": "https://ecachockey.com/news/2026/10/24/womens-ice-hockey-womens-weekend-wraparound-10-23-24.aspx",
+   "learned": "2026-11-04",
+   "batch": "AM run \u2014 Nov 4, 2026"
   }
  ],
  "patterns": {
@@ -1986,6 +2103,6 @@
   "new_credential": "New credential",
   "title_change": "Title change"
  },
- "updated": "2026-11-03",
+ "updated": "2026-11-04",
  "version": 1
 }
