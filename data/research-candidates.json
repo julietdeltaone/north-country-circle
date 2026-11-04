@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-03",
+ "updated": "2026-11-04",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -11183,6 +11183,315 @@
    },
    "fields": {},
    "published": "2020-10-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-alex-koberda-took-part-in-the-potsdam-campus-mini",
+   "name": "sf:alex-koberda",
+   "display": "Alex Koberda",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "North Country Catholic's October 27, 2021 report on the Potsdam Campus Ministry Punkin Chunkin trebuchet team at Clayton lists Alex Koberda as a local young adult on the team.",
+   "file_text": "Took part in the Potsdam Campus Ministry Punkin Chunkin trebuchet team at Clayton, Oct 2021",
+   "source": "North Country Catholic",
+   "url": "https://northcountrycatholic.org/Articles/2021/10_27punkinchunkin.html",
+   "anchors": [
+    "Potsdam, NY (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 20,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2021-10-27",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-alex-koberda-raced-in-white-stag-ski-races-at-mt-",
+   "name": "sf:alex-koberda",
+   "display": "Alex Koberda",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Race results list an Alex Koberda in the men's 19-29 class at White Stag ski races at Mt. Pisgah in Saranac Lake on February 5, 2023 and February 4, 2024.",
+   "file_text": "Raced in White Stag ski races at Mt. Pisgah, Saranac Lake, in 2023 and 2024",
+   "source": "Live-Timing.com",
+   "url": "https://www.live-timing.com/reportprint.php?r=259006&rp=1010937&page=3",
+   "anchors": [
+    "Name match",
+    "North Country region"
+   ],
+   "missing_gate": "The results name an Alex Koberda in Saranac Lake, but nothing on them ties him to Potsdam or to the Florida State studies already on file.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 12,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-ethan-thompson-works-as-a-roofer-at-rws-constructio",
+   "name": "sf:ethan-thompson",
+   "display": "Ethan Thompson",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A resume page for an Ethan Thompson says he has worked as a roofer at RWS Construction in Willsboro, New York since March 2024, after working as a solar technician at New Leaf Solar in Ticonderoga, and studied business at SUNY Adirondack.",
+   "file_text": "Works as a roofer at RWS Construction in Willsboro, NY, since Mar 2024",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/ethan-thompson-240803113232",
+   "anchors": [
+    "Name match only"
+   ],
+   "missing_gate": "The page names an Ethan Thompson in Willsboro, but nothing on it ties him to the Canton address already on file.",
+   "confidence": 10,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 3,
+    "detail": 2
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-charlie-garrelts-reported-breeze-airways-early-ogdens",
+   "name": "charlie_garrelts",
+   "display": "Charlie Garrelts",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "A January 2025 report says Charlie Garrelts told the Ogdensburg Bridge and Port Authority board that Breeze Airways flights at Ogdensburg International Airport had a 97% completion rate and a 19% load factor in December 2024, against a 21% target needed to reach 10,000 yearly enplanements.",
+   "file_text": "Reported Breeze Airways' early Ogdensburg performance (97% completion rate, 19% December load factor) to the Bridge and Port Authority board, Jan 2025",
+   "source": "Aviation Pros",
+   "url": "https://www.AviationPros.com/airport-business/airport-infrastructure-operations/news/55262749/obpa-officials-happy-with-breeze-flight-performance-so-far",
+   "anchors": [
+    "Ogdensburg International Airport (already on file)",
+    "Ogdensburg Bridge and Port Authority (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 15,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2025-01-22",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-charlie-garrelts-reported-record-july-2026-passenger-",
+   "name": "charlie_garrelts",
+   "display": "Charlie Garrelts",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A North Country Now item from August 31, 2026 says passenger traffic at Ogdensburg International Airport reached record levels in July 2026, with Charlie Garrelts reporting it to the Bridge and Port Authority board; a September 4, 2026 item puts 35 employees at the airport.",
+   "file_text": "Reported record July 2026 passenger traffic at Ogdensburg International Airport to the Bridge and Port Authority board",
+   "source": "North Country Now",
+   "url": "https://muckrack.com/jimmy-lawton/articles",
+   "anchors": [
+    "Ogdensburg International Airport (already on file)",
+    "Ogdensburg Bridge and Port Authority (already on file)"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 10,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2026-08-31",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-haleydlutz-married-jacob-smith",
+   "name": "haleydlutz",
+   "display": "Haley Lutz",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A wedding sermon transcript names a Haley Lutz who married a Jacob Smith.",
+   "file_text": "Married Jacob Smith",
+   "source": "Logos Sermons",
+   "url": "https://sermons.logos.com/sermons/1602044-wedding-jacob-smith-and-haley-lutz",
+   "anchors": [
+    "Name match only"
+   ],
+   "missing_gate": "The page names a Haley Lutz, but nothing on it ties her to the Liberty University and teaching facts already on file.",
+   "confidence": 25,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 8,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-christopher-towler-serves-on-the-guideline-development-",
+   "name": "sf:christopher-towler",
+   "display": "Christopher Towler",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "The APTA Academy of Cardiovascular and Pulmonary Physical Therapy lists Christopher Towler as a member of the group writing its clinical practice guideline for obstructive lung diseases, a project started October 5, 2025 with completion targeted for fall 2026.",
+   "file_text": "Serves on the guideline development group for the APTA Academy of Cardiovascular and Pulmonary Physical Therapy's clinical practice guideline for obstructive lung pathologies, from Oct 2025",
+   "source": "APTA Academy of Cardiovascular and Pulmonary Physical Therapy",
+   "url": "https://cardiopt.memberclicks.net/clinical-practice-guidelines",
+   "anchors": [
+    "Name match",
+    "Cardiopulmonary physical therapy \u2014 his Clarkson teaching area (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 22,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-haley-quinlan-keough-published-a-children-s-book-review-i",
+   "name": "sf:haley-quinlan-keough",
+   "display": "Haley Keough",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A 2023 issue of Purdue University's children's-literature journal First Opinions, Second Reactions carries a review of 'Secrets of the Sea: The Story of Jeanne Power' by a Haley Keough.",
+   "file_text": "Published a children's-book review in Purdue University's First Opinions, Second Reactions journal, 2023",
+   "source": "Purdue University Libraries",
+   "url": "https://docs.lib.purdue.edu/fosr/vol16/iss1/7/",
+   "anchors": [
+    "Name match (Haley Keough)",
+    "Purdue University (already on file)"
+   ],
+   "missing_gate": "The page names a Haley Keough, but nothing on it ties her to the Miami Elementary School job already on file.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2023",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-nanette-yervasi-holt-father-rocco-yervasi-died-in-stone-m",
+   "name": "sf:nanette-yervasi-holt",
+   "display": "Nanette Yervasi Holt",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "An obituary for Rocco Yervasi, who died April 19, 2024 in Stone Mountain, Georgia at 95, names Nanette Yervasi Holt (Paul) as one of his five children and Hannah Holt as a granddaughter.",
+   "file_text": "Father Rocco Yervasi died in Stone Mountain, Georgia, Apr 2024",
+   "source": "Tribute Archive",
+   "url": "https://www.tributearchive.com/obituaries/31280607/rocco-yervasi",
+   "anchors": [
+    "Full name Nanette Yervasi Holt (already on file)",
+    "Husband Paul (already on file)"
+   ],
+   "missing_gate": "This is about Nanette's family, so I always check with you first.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 17,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2024-04-19",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-annika-greco-worked-as-relationship-manager-phila",
+   "name": "sf:annika-greco",
+   "display": "Annika Greco",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "A September 2024 Faith Charities Forum page lists Annika Greco Thompson as a relationship manager for philanthropy services at Stewardship \u2014 an earlier title than the Growth and Relationships Manager title in her 2026 magazine bio, which this run filed.",
+   "file_text": "Worked as Relationship Manager (Philanthropy Services) at Stewardship, Sep 2024",
+   "source": "Civil Society",
+   "url": "https://www.civilsociety.co.uk/events/faith-charities-forum-2024.html",
+   "anchors": [
+    "Stewardship (already on file)",
+    "Married name Thompson"
+   ],
+   "missing_gate": "This one is your call: she held this earlier title in September 2024, and the newer 2026 title is the one I put on her record.",
+   "confidence": 80,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 22,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2024-09-18",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-ms-dior-gor-wrote-a-clarkson-university-blog-pos",
+   "name": "ms_dior.gor",
+   "display": "Chidiogor Ofodum",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A Clarkson University blog listing shows a post by Chidiogor Ofodum, 'The Joys and Struggles of Crossing Continents: From Nigeria (Naija) to America', dated October 2, 2024, about being an international student.",
+   "file_text": "Wrote a Clarkson University blog post about moving from Nigeria to America as an international student, Oct 2024",
+   "source": "Clarkson University",
+   "url": "https://diy.clarkson.edu/topics/category-campus-and-student-life/people-international-students-or-parents-families/",
+   "anchors": [
+    "Clarkson University (already on file)",
+    "Nigeria / international student (already on file)"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 13,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2024-10-02",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-janelle-evans-recorded-an-assist-in-clarkson-s-5-1",
+   "name": "sf:janelle-evans",
+   "display": "Janelle Evans",
+   "run_date": "2026-11-04",
+   "run_label": "Fresh sweep",
+   "category": "verification",
+   "claim": "A Providence box score line credits Janelle Evans with an assist in Clarkson's 5-1 win over Providence on October 23, 2026; Clarkson Athletics' own recap of that game does not mention her.",
+   "file_text": "Recorded an assist in Clarkson's 5-1 win over Providence, Oct 23, 2026",
+   "source": "Providence College Athletics",
+   "url": "",
+   "anchors": [
+    "Clarkson University women's hockey (already on file)"
+   ],
+   "missing_gate": "I could not double-check this \u2014 the assist shows only in a box-score search result, and there is no source page to link \u2014 so I want you to decide.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 8,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2026-10-23",
    "novelty": "new"
   }
  ]
