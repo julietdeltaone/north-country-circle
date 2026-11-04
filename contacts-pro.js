@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.89.0';
+var APP_VERSION = '4.0.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7818,6 +7818,31 @@ function dtAnimate(){
    ============================================================ */
 var RC = null, RC_LOADING = false;
 var RC_CATS = { close:'Close call', identity:'Not sure it\u2019s them', source:'One source only', sensitive:'Personal \u2014 your call', conflict:'Contradicts the record', verification:'Needs a second look', claim:'Research note' };
+/* Source-date hero chip (V4, JD 2026-11-04): every candidate
+   card shows its source's publication date big, when the date
+   is known — the candidate's `published` field, which arrives
+   as a year ('2022'), a month ('2025-02') or a full date. No
+   date on file, no chip. */
+function rcFmtPub(p){
+  p = String(p || '').trim(); if(!p) return '';
+  var m = p.match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?/);
+  if(!m) return p;
+  var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if(m[2] && m[3]) return MN[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
+  if(m[2]) return MN[+m[2] - 1] + ' ' + m[1];
+  return m[1];
+}
+function rcPubChip(c){
+  var f = rcFmtPub(c && c.published);
+  if(!f) return '';
+  return '<div class="rc-pubdate"><span>Published</span><b>' + esc(f) + '</b></div>';
+}
+/* The identity ask (V4, JD 2026-11-04): identity is the ONE
+   category that is truly JD's to verify — pieces of information
+   Luna cannot with high confidence determine belong to the
+   person. Its cards carry this framing band, worded the way JD
+   put it, so the ask reads at a glance. */
+var RC_IDASK = '<div class="rc-idask rccat-identity">Not sure it\u2019s the same person \u2014 can you double-check?</div>';
 var RC_VIEW = { status:'pending', cat:'all', q:'', photo:false, cur:'' };
 try{ var _rcv = JSON.parse(store('ncc_rc_view') || 'null'); if(_rcv && typeof _rcv === 'object') RC_VIEW = { status:_rcv.status || 'pending', cat:_rcv.cat || 'all', q:_rcv.q || '', photo:!!_rcv.photo, cur:typeof _rcv.cur === 'string' ? _rcv.cur : '' }; }catch(x){}
 function rcSaveView(){ try{ store('ncc_rc_view', JSON.stringify(RC_VIEW)); }catch(x){} }
@@ -8391,7 +8416,7 @@ function rcConsoleHTML(){
     var cats = [];
     rs.forEach(function(r){ if(cats.indexOf(r.c.category) < 0) cats.push(r.c.category); });
     var catPills = cats.map(function(cat){ return '<span class="rc-cat' + (RC_CATS[cat] ? ' rccat-' + cat : '') + '">' + esc(RC_CATS[cat] || cat || '') + '</span>'; }).join('');
-    var found = '<ul class="rc-points">' + rs.map(function(r){ return '<li>' + esc(r.c.claim || '') + '</li>'; }).join('') + '</ul>';
+    var found = '<ul class="rc-points">' + rs.map(function(r){ return '<li' + (RC_CATS[r.c.category] ? ' class="rccat-' + r.c.category + '"' : '') + '>' + esc(r.c.claim || '') + '</li>'; }).join('') + '</ul>';
     var gates = [];
     rs.forEach(function(r){ var g = String(r.c.missing_gate || ''); if(g && gates.indexOf(g) < 0) gates.push(g); });
     var why = gates.length > 1
@@ -8410,19 +8435,22 @@ function rcConsoleHTML(){
       ? urls.map(function(c){ return '<a class="rc-src-link" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span class="rc-src-open">Open source</span><span class="rc-src-name">' + esc(c.source || 'source') + '</span>' + ic('ext', 12) + '</a>'; }).join('')
       : esc(c0.source || '') + ' <span class="rc-nosrc">no source page found</span>';
     var anchHtml = anch.length ? '<ul class="rc-anchors">' + anch.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
+    var pubC = null;
+    rs.forEach(function(r){ if(!pubC && r.c.published) pubC = r.c; });
+    var idAsk = rs.some(function(r){ return r.c.category === 'identity'; }) ? RC_IDASK : '';
     var photoBtn = '<button type="button" class="btn ghost sm rc-photo' + (allPhoto ? ' on' : '') + '" data-act="rcphotogroup" data-ids="' + esc(ids.join(',')) + '">' + ic('camera', 14) + (allPhoto ? 'Photo lead set' : 'Photo at source?') + '</button>';
     var isCur = rs.some(function(r){ return r.c.id === RC_VIEW.cur; });
     return '<div class="rc-row rc-combo rcb-' + band.k + (isCur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c0.id) + '" data-rcids="' + esc(ids.join(',')) + '">' +
       '<div class="rc-conf"><b>' + lconf + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, lconf)) + '%"></i></span>' +
       rcPartsHTML(lp) + '<span class="rc-combo-n">' + rs.length + ' points</span></div>' +
-      '<div class="rc-main"><div class="rc-person">' + kindGlyph('about') + personLink(c0) + (anyPhoto ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPills +
+      '<div class="rc-main">' + idAsk + '<div class="rc-person">' + kindGlyph('about') + personLink(c0) + (anyPhoto ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPills +
       '<span class="rc-combo-tag">' + rs.length + ' points \u00b7 one source</span>' +
       '<span class="rc-run">' + esc(fmtD(c0.run_date)) + (c0.run_label ? ' \u00b7 ' + esc(c0.run_label) : '') + '</span></div>' +
       '<div class="rc-block"><span class="rc-bh">What I found</span>' + found + '</div>' +
       (rcOnFileLine(lead) ? '<div class="rc-block"><span class="rc-bh">What\u2019s on file now</span>' + rcOnFileLine(lead) + '</div>' : '') +
       '<div class="rc-block"><span class="rc-bh">Why I\u2019m asking you</span>' + why + '</div>' +
       '<div class="rc-block"><span class="rc-bh">If you file it</span><p class="rc-filetext"><span>What gets added:</span></p>' + adds + fieldsHtml + '</div></div>' +
-      '<div class="rc-ev"><div class="rc-src">' + srcs + '</div>' + anchHtml + '</div>' +
+      '<div class="rc-ev">' + rcPubChip(pubC || {}) + '<div class="rc-src">' + srcs + '</div>' + anchHtml + '</div>' +
       '<div class="rc-actions">' +
       '<button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c0.id) + '">File it</button>' +
       '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c0.id) + '">Dismiss</button>' + photoBtn +
@@ -8439,7 +8467,10 @@ function rcConsoleHTML(){
     /* The held category as a color-coded pill (JD 2026-11-01): one
        professional color family per category (rccat-* in the CSS),
        shown beside the name and again at the Why-held column it
-       classifies. */
+       classifies. V4 (JD 2026-11-04): the row itself now carries
+       the rccat-* class, so the same family tints the whole card
+       (edge segment + main-cell wash in the CSS) and the mix of
+       categories reads at a glance. */
     var catPill = '<span class="rc-cat' + (RC_CATS[c.category] ? ' rccat-' + c.category : '') + '">' + esc(RC_CATS[c.category] || c.category || '') + '</span>';
     var anchors = (c.anchors || []).length ? '<ul class="rc-anchors">' + c.anchors.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
     var src = c.url ? '<a class="rc-src-link" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span class="rc-src-open">Open source</span><span class="rc-src-name">' + esc(c.source || 'source') + '</span>' + ic('ext', 12) + '</a>' : esc(c.source || '') + ' <span class="rc-nosrc">no source page found</span>';
@@ -8452,17 +8483,17 @@ function rcConsoleHTML(){
         '<span class="rc-actnote">File it = add this to the record.<br>Dismiss = leave the record as is.</span></div>'
       : '<div class="rc-actions"><span class="rc-status st-' + r.st.k + '">' + esc(r.st.label) + '</span>' +
         (r.st.at ? '<span class="rc-actnote">' + esc(fmtD(String(r.st.at).slice(0, 10))) + '</span>' : '') + photoBtn + '</div>';
-    return '<div class="rc-row rcb-' + band.k + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c.id) + '">' +
+    return '<div class="rc-row rcb-' + band.k + (RC_CATS[c.category] ? ' rccat-' + c.category : '') + (c.id === RC_VIEW.cur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c.id) + '">' +
       '<div class="rc-conf"><b>' + confShown + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, confShown)) + '%"></i></span>' +
       rcPartsHTML(parts) + '</div>' +
-      '<div class="rc-main"><div class="rc-person">' + kindGlyph('about') + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPill +
+      '<div class="rc-main">' + (c.category === 'identity' ? RC_IDASK : '') + '<div class="rc-person">' + kindGlyph('about') + personLink(c) + (r.photo ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPill +
       '<span class="rc-run">' + esc(fmtD(c.run_date)) + (c.run_label ? ' \u00b7 ' + esc(c.run_label) : '') + '</span></div>' +
       '<div class="rc-block"><span class="rc-bh">What I found</span><p class="rc-claim">' + esc(c.claim || '') + '</p></div>' +
       (rcOnFileLine(r) ? '<div class="rc-block"><span class="rc-bh">What\u2019s on file now</span>' + rcOnFileLine(r) + '</div>' : '') +
       '<div class="rc-block"><span class="rc-bh">Why I\u2019m asking you</span><p class="rc-why">' + esc(c.missing_gate || '') + '</p></div>' +
       '<div class="rc-block"><span class="rc-bh">If you file it</span><p class="rc-filetext"><span>What gets added:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p>' +
       rcFieldsLine(c) + '</div></div>' +
-      '<div class="rc-ev"><div class="rc-src">' + src + (c.published ? '<span class="dim"> \u00b7 ' + esc(c.published) + '</span>' : '') + '</div>' + anchors + '</div>' +
+      '<div class="rc-ev">' + rcPubChip(c) + '<div class="rc-src">' + src + '</div>' + anchors + '</div>' +
       actions + '</div>';
   });
   /* Pending view: wrap each person's rows in a bundle — grouping is
@@ -8633,47 +8664,19 @@ document.addEventListener('click', function(ev){
 });
 
 /* ============================================================
-   Calendar (JD 2026-10-30): THE ATLAS — a zoomable year-map
-   (year -> month -> week -> day) of JD's 2026, picked from the
-   council's five concepts. Google Calendar events from all seven
-   calendars, routine series collapsed but carrying their
-   occurrence dates, merged with the contact log (filed contact
-   events + Last Contact stamps). Every entry carries a sighting
-   tier from the bake (confirmed / strong / corroborated / venue /
-   weak). People are linked by attendee match and full names in
-   titles. Bake: data/calendar.json (titles, dates, calendar names,
-   person keys only — never locations, descriptions, or guest
-   emails). Last Contact stamps are NOT touched by calendar data
-   (JD: hold).
+   Calendar data note (V4 Phase 4, 2026-11-04): the ATLAS — the
+   zoomable year-map of Google Calendar fixtures that lived below
+   the Contact Timeline (JD 2026-10-30) — is REMOVED, together
+   with its loader: data/calendar.json is no longer fetched by
+   this page (the bake file itself is untouched in the repo; the
+   disabled Sandbox shell's loader still names it, inertly).
+   The Calendar page is the Contact Timeline, the Seen in person
+   card, the Proximity logger and the contact stamps table. The
+   shared date helpers further down (caPad / caIso / caParse /
+   caFmtD) stay: the Timeline and the Seen in person card use
+   them.
    ============================================================ */
-var CAL = null, CAL_LOADING = false, CAL_DI = null;
-var CALV = { level:'year', month:null, weekStart:null, date:null, mode:'density', idx:null };
-function calLoad(){
-  if(CAL || CAL_LOADING) return;
-  CAL_LOADING = true;
-  fetch('data/calendar.json', { cache:'no-cache' })
-    .then(function(r){ if(!r.ok) throw new Error('none'); return r.json(); })
-    .then(function(d){ CAL = d; CAL_LOADING = false; repaintForData('cal'); })
-    .catch(function(){ CAL = { empty:true, entries:[] }; CAL_LOADING = false; repaintForData('cal'); });
-}
-function calDi(key){
-  if(!CAL_DI){ CAL_DI = {}; D.directory.forEach(function(e, i){ CAL_DI[pkey(e)] = i; }); }
-  var di = CAL_DI[key];
-  return di == null ? null : di;
-}
-function calPersonChip(key){
-  var di = calDi(key);
-  if(di == null) return '';
-  var e = D.directory[di];
-  return '<a class="cal-person" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">' + esc(dispName(e)) + '</a>';
-}
-var CAL_COLORS = { 'Shared Calendar':'#2f7fd0', 'Business':'#7c3aed', 'Military':'#6b8f3d', 'Personal':'#d97706', 'School':'#2563eb', 'Appointment':'#0f766e', 'Work':'#64748b' };
-function calChip(cal){
-  if(!cal) return '';
-  var first = String(cal).split(' + ')[0];
-  var col = CAL_COLORS[first] || '#64748b';
-  return '<span class="cal-chip" style="--cc:' + col + '">' + esc(cal) + '</span>';
-}
+
 /* ============================================================
    Contact Timeline (V3.78.0, JD 2026-11-03): the Calendar page's
    PRIMARY surface — the people JD has been in contact with, in
@@ -8691,8 +8694,9 @@ function calChip(cal){
    only — the render-time derivations fold dated events into
    Last Contact / Last Online / Last proximity, so the derived
    stamps follow on the next render). Proximity never touches a
-   contact stamp. The Atlas further down the page stays what it
-   was: display-only calendar fixtures, never filed as contacts.
+   contact stamp. (The Atlas that once sat below the Timeline —
+   display-only calendar fixtures — was removed in V4 Phase 4;
+   the Seen in person card stands where it stood.)
    ============================================================ */
 var CTL = { ym:null, day:null, fk:{ contact:true, online:true, proximity:true }, qdi:null };
 var CTLED = null;   /* editor sheet state: {di, i (null = new), kind} */
@@ -8898,41 +8902,28 @@ function ctlSaveEditor(){
   closeSheet(); render();
 }
 function viewCalendar(v){
-  /* V3.78.0 (JD 2026-11-03): the Calendar is now primarily the
+  /* V3.78.0 (JD 2026-11-03): the Calendar is primarily the
      CONTACT TIMELINE (above the fold: people-first month grid +
-     day panel with full add / edit / delete). The Atlas — the
-     V3.46.0 zoomable year-map of Google Calendar fixtures and
-     sighting tiers — stays below as a display-only section: its
-     data never touches Last Contact stamps (JD: hold), and its
-     zoom state (CALV) and handlers are unchanged.
+     day panel with full add / edit / delete).
      V4 Phase 3: the Calendar also hosts the two upkeep tools that
      lived in Manage — the Proximity bulk logger and the contact
-     stamps bulk table — below the Atlas, unchanged in behaviour. */
-  calLoad();
+     stamps bulk table — unchanged in behaviour.
+     V4 Phase 4 (2026-11-04): the Atlas — the V3.46.0 zoomable
+     year-map of Google Calendar fixtures and sighting tiers that
+     sat below the Timeline — is REMOVED, together with its
+     calendar.json fetch. The Seen in person card (ctSeenHTML)
+     stands where it stood: the two Atlas numbers JD wanted kept,
+     counted from the directory itself. */
   phLoad();
   ctlInit();
   var head = '<div class="page calpage ctpage" data-kind="connection">';
-  var atlas;
-  if(!CAL) atlas = '<p class="dim">Loading your 2026…</p>';
-  else if(CAL.empty) atlas = '<p class="dim">No calendar bake yet.</p>';
-  else {
-    calAtlasInit();
-    var stage = CALV.level === 'year' ? caYearHTML()
-      : CALV.level === 'month' ? caMonthHTML(CALV.month)
-      : CALV.level === 'week' ? caWeekHTML(CALV.weekStart)
-      : caDayHTML(CALV.date);
-    atlas = caCrumbsHTML() + '<div class="ca-layout"><div class="ca-main">' + stage + '</div>' +
-      '<aside class="ca-rail">' + caRailHTML() + '</aside></div>';
-  }
   v.innerHTML = head +
     '<div class="pagehead"><div><h1 class="display">Calendar</h1>' +
     '<p class="sub">Who you have been in contact with — in person, online, or in proximity — with the tools to adjust it right here.</p></div></div>' +
     ctlBarHTML() +
     '<div class="ct-layout"><div class="ct-main">' + ctlMonthHTML() + '</div>' +
     '<aside class="ct-rail">' + ctlDayHTML() + '</aside></div>' +
-    '<section class="card ct-atlas"><header><h3>Atlas — 2026 fixtures &amp; sightings</h3>' +
-    '<span class="ct-anote">Display only: calendar fixtures are never filed as contacts and never move Last Contact.</span></header>' +
-    '<div class="cbody">' + atlas + '</div></section>' +
+    ctSeenHTML() +
     mgProxHTML() +
     '<section class="card ct-stamps"><header><h3>Contact stamps — everyone, one table</h3>' +
     '<span class="ct-anote">Bulk edit of Last Contact, Last Online and First Contact. Stamp edits ride the Save Pool and can be undone.</span></header>' +
@@ -8940,263 +8931,60 @@ function viewCalendar(v){
   mgPaintList();
 }
 
+/* Calendar date helpers — kept from the Atlas renderer block
+   (removed in V4 Phase 4): the Contact Timeline and the Seen in
+   person card format and compare dates with these. */
 var CA_MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 var CA_MS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var CA_DW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-var CA_TIERL = { confirmed:'Confirmed', strong:'Strong', corroborated:'Corroborated', venue:'Venue', weak:'Weak' };
-var CA_SIGHT = { confirmed:1, strong:1, corroborated:1 };
-var CA_RANK = { corroborated:4, confirmed:3, strong:2, venue:1 };
-
 function caPad(n){ return String(n).padStart(2, '0'); }
 function caIso(y, m, d){ var t = new Date(y, m, d); return t.getFullYear() + '-' + caPad(t.getMonth() + 1) + '-' + caPad(t.getDate()); }
 function caParse(ds){ var p = String(ds).split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); }
-function caAdd(ds, n){ var t = caParse(ds); t.setDate(t.getDate() + n); return caIso(t.getFullYear(), t.getMonth(), t.getDate()); }
-function caWeekStart(ds){ var t = caParse(ds); return caAdd(ds, -t.getDay()); }
 function caFmtD(ds){ var t = caParse(ds); return CA_DW[t.getDay()] + ' ' + CA_MS[t.getMonth()] + ' ' + t.getDate(); }
-function caToday(){ var t = new Date(); return caIso(t.getFullYear(), t.getMonth(), t.getDate()); }
 
-function calAtlasInit(){
-  if(CALV.month == null){
-    var t = caParse(caToday());
-    CALV.month = t.getFullYear() === 2026 ? t.getMonth() : 9;
-    CALV.date = t.getFullYear() === 2026 ? caToday() : '2026-10-30';
-    CALV.weekStart = caWeekStart(CALV.date);
-  }
-  if(!CALV.idx || CALV.idx.src !== CAL){
-    var byDate = {}, serByDate = {}, dayTier = {}, venueDay = {};
-    (CAL.entries || []).forEach(function(e){
-      if(e.kind === 'series'){
-        (e.dates || []).forEach(function(ds){ (serByDate[ds] = serByDate[ds] || []).push(e); });
-        return;
-      }
-      (byDate[e.date] = byDate[e.date] || []).push(e);
-      if((CA_RANK[e.tier] || 0) > (CA_RANK[dayTier[e.date]] || 0)) dayTier[e.date] = e.tier;
+/* Seen in person (V4 Phase 4, 2026-11-04): the pair of numbers
+   JD asked to keep from the Atlas — how many days this year
+   carry at least one in-person contact, and who has gone
+   longest without one. Counted from the directory itself: a
+   person's in-person dates are their filed contact events that
+   are not online (full dates only), plus their Last Contact
+   stamp when it is a full date and the stamp is not an online
+   one (the stamp reads online when Last Contact Online says
+   yes or itself holds a date). Online contact never counts,
+   and proximity never counts — being in the same room is not
+   contact. Dates after today never count. */
+function ctSeenHTML(){
+  var FULL = /^\d{4}-\d{2}-\d{2}$/, FLEX = /^\d{4}(-\d{2})?(-\d{2})?$/;
+  var today = todayStr(), yr = today.slice(0, 4), days = {}, last = {};
+  people().forEach(function(di){
+    var e = D.directory[di], p = e.profile || {}, cand = {};
+    (e.events || []).forEach(function(ev){
+      if(ev.kind === 'contact' && !ev.online && FULL.test(ev.date || '')) cand[ev.date] = 1;
     });
-    Object.keys(serByDate).forEach(function(ds){
-      if(serByDate[ds].some(function(s){ return s.tier === 'venue'; })) venueDay[ds] = 1;
+    var lc = String(p.last_contact || '').trim();
+    var lco = String(p.last_contact_online || '').trim();
+    if(FULL.test(lc) && !(lco.toLowerCase() === 'yes' || FLEX.test(lco))) cand[lc] = 1;
+    Object.keys(cand).forEach(function(ds){
+      if(ds > today) return;
+      if(ds.indexOf(yr + '-') === 0) days[ds] = 1;
+      var nm = e.display || dispName(e);
+      if(!last[nm] || ds > last[nm].ds) last[nm] = { ds: ds, di: di };
     });
-    CALV.idx = { src: CAL, byDate: byDate, serByDate: serByDate, dayTier: dayTier, venueDay: venueDay };
-  }
-}
-function caDayInfo(ds){
-  var idx = CALV.idx, es = idx.byDate[ds] || [];
-  var people = {}, contact = false;
-  es.forEach(function(e){
-    (e.people || []).forEach(function(k){ people[k] = 1; });
-    if(e.kind === 'contact') contact = true;
   });
-  return { n: es.length, tier: idx.dayTier[ds] || null, people: Object.keys(people),
-           contact: contact, venue: !!idx.venueDay[ds], series: idx.serByDate[ds] || [] };
-}
-function caSightDays(scopeFn){
-  var idx = CALV.idx, days = {};
-  Object.keys(idx.byDate).forEach(function(ds){
-    if(!scopeFn(ds)) return;
-    if(idx.byDate[ds].some(function(e){ return CA_SIGHT[e.tier]; })) days[ds] = 1;
-  });
-  return Object.keys(days).length;
-}
-function caTierChip(tier){
-  return tier ? '<span class="ca-tchip t-' + tier + '">' + CA_TIERL[tier] + '</span>' : '';
-}
-function caPersonName(key){
-  var di = calDi(key);
-  return di == null ? '' : dispName(D.directory[di]);
-}
-
-function caCrumbsHTML(){
-  var h = '<div class="ca-crumbs">';
-  h += '<button type="button" class="ca-crumb' + (CALV.level === 'year' ? ' here' : '') + '" data-cal="year">2026</button>';
-  if(CALV.level !== 'year')
-    h += '<span class="ca-sep">/</span><button type="button" class="ca-crumb' + (CALV.level === 'month' ? ' here' : '') + '" data-cal="month" data-d="' + CALV.month + '">' + CA_MN[CALV.month] + '</button>';
-  if(CALV.level === 'week' || CALV.level === 'day')
-    h += '<span class="ca-sep">/</span><button type="button" class="ca-crumb' + (CALV.level === 'week' ? ' here' : '') + '" data-cal="week" data-d="' + CALV.weekStart + '">Week of ' + caFmtD(CALV.weekStart) + '</button>';
-  if(CALV.level === 'day')
-    h += '<span class="ca-sep">/</span><span class="ca-crumb here">' + caFmtD(CALV.date) + '</span>';
-  h += '<span class="ca-nav2"><button type="button" class="ca-step" data-cal="prev" aria-label="Previous">‹</button>' +
-       '<button type="button" class="ca-step" data-cal="next" aria-label="Next">›</button></span>';
-  h += '<span class="ca-toggle"><button type="button" class="' + (CALV.mode === 'density' ? 'on' : '') + '" data-cal="mode" data-d="density">Density</button>' +
-       '<button type="button" class="' + (CALV.mode === 'people' ? 'on' : '') + '" data-cal="mode" data-d="people">People</button></span>';
-  return h + '</div>';
-}
-
-function caYearHTML(){
-  var idx = CALV.idx, today = caToday();
-  var h = '<div class="ca-yeargrid">';
-  for(var m = 0; m < 12; m++){
-    var dim = new Date(2026, m + 1, 0).getDate(), lead = new Date(2026, m, 1).getDay();
-    var cnt = 0;
-    Object.keys(idx.byDate).forEach(function(ds){ if(ds.indexOf('2026-' + caPad(m + 1)) === 0) cnt += idx.byDate[ds].length; });
-    h += '<div class="ca-mblock" data-cal="month" data-d="' + m + '" role="button" tabindex="0"><h3>' + CA_MN[m] + '<span>' + cnt + ' entries</span></h3><div class="ca-dgrid">';
-    for(var i = 0; i < lead; i++) h += '<div></div>';
-    for(var d = 1; d <= dim; d++){
-      var ds = caIso(2026, m, d), info = caDayInfo(ds);
-      /* V3.75.1 (bug hunt 32 remainder): the day number renders visibly
-         in every year-grid cell — the date used to live only in the
-         title tooltip, so sighted users saw bare colored squares. */
-      var cls = 'ca-dc', inner = '<span class="ca-dnum">' + d + '</span>';
-      if(CALV.mode === 'people'){
-        if(info.tier === 'confirmed' || info.tier === 'corroborated') cls += ' sight';
-        else if(info.tier === 'strong') cls += ' strong';
-        else if(info.venue) cls += ' venue';
-      } else {
-        if(info.n) cls += ' w' + Math.min(4, info.n > 6 ? 4 : info.n > 3 ? 3 : info.n > 1 ? 2 : 1);
-        if(info.tier === 'confirmed' || info.tier === 'corroborated') cls += ' gold';
-        if(info.people.length) inner += '<span class="ca-dot"></span>';
-        if(info.contact) inner += '<span class="ca-tick"></span>';
-      }
-      if(ds === today) cls += ' today';
-      h += '<div class="' + cls + '" title="' + esc(caFmtD(ds) + ' · ' + info.n + ' entries') + '">' + inner + '</div>';
-    }
-    h += '</div></div>';
-  }
-  return h + '</div>';
-}
-
-function caMonthHTML(m){
-  var idx = CALV.idx, today = caToday();
-  var dim = new Date(2026, m + 1, 0).getDate(), lead = new Date(2026, m, 1).getDay();
-  var h = '<div class="ca-monthgrid">' + CA_DW.map(function(d){ return '<div class="ca-dow">' + d + '</div>'; }).join('');
-  for(var i = 0; i < lead; i++) h += '<div class="ca-cell dim"></div>';
-  for(var d = 1; d <= dim; d++){
-    var ds = caIso(2026, m, d), es = idx.byDate[ds] || [], info = caDayInfo(ds);
-    h += '<div class="ca-cell' + (ds === today ? ' today' : '') + '" data-cal="day" data-d="' + ds + '">' +
-      '<div class="ca-dn">' + d + (info.tier ? '<span class="' + (info.tier === 'strong' ? 'ca-rdot' : 'ca-gdot') + '"></span>' : '') +
-      '<button type="button" class="ca-weeklink" data-cal="week" data-d="' + caWeekStart(ds) + '">week →</button></div>' +
-      es.slice(0, 3).map(function(e){ return caMiniRow(e); }).join('') +
-      info.series.slice(0, Math.max(0, 3 - Math.min(3, es.length))).map(function(s){
-        return '<div class="ca-mini ser' + (s.tier === 'venue' ? ' venue' : '') + '">' + esc(s.title) + '</div>';
-      }).join('') +
-      (es.length + info.series.length > 3 ? '<div class="ca-mini more">+ ' + (es.length + info.series.length - 3) + ' more</div>' : '') +
-      '</div>';
-  }
-  h += '</div>';
-  var first = caIso(2026, m, 1), last = caIso(2026, m, dim), run = [];
-  (CAL.entries || []).forEach(function(e){
-    if(e.kind !== 'series') return;
-    var n = (e.dates || []).filter(function(ds){ return ds >= first && ds <= last; }).length;
-    if(n) run.push({ e: e, n: n });
-  });
-  if(run.length){
-    h += '<div class="ca-bands"><div class="ca-bands-h">Running this month</div>' + run.map(function(r){
-      return '<div class="ca-band' + (r.e.tier === 'venue' ? ' venue' : '') + '"><b>' + esc(r.e.title) + '</b><span>' + r.n + '× this month · ' + r.e.count + ' total · ' + caFmtD(r.e.first) + ' → ' + caFmtD(r.e.last) + '</span>' + caTierChip(r.e.tier) + '</div>';
-    }).join('') + '</div>';
-  }
-  return h;
-}
-function caMiniRow(e){
-  var who = (e.people && e.people.length) ? ' <b>' + esc(caPersonName(e.people[0])) + '</b>' : '';
-  var weak = e.tier === 'weak' && e.kind !== 'contact' ? ' weak' : '';
-  return '<div class="ca-mini' + weak + '" data-kind="connection"><span class="ca-tm">' + (e.time || '·') + '</span> ' + esc(e.title) + who + '</div>';
-}
-
-function caWeekHTML(ws){
-  var idx = CALV.idx, today = caToday();
-  var h = '<div class="ca-weekgrid">';
-  for(var i = 0; i < 7; i++){
-    var ds = caAdd(ws, i), t = caParse(ds), es = idx.byDate[ds] || [], info = caDayInfo(ds);
-    var allday = es.filter(function(e){ return !e.time; });
-    var timed = es.filter(function(e){ return e.time; }).sort(function(a, b){ return a.time < b.time ? -1 : 1; });
-    h += '<div class="ca-wcol' + (ds === today ? ' today' : '') + '" data-cal="day" data-d="' + ds + '">' +
-      '<h5>' + CA_DW[t.getDay()] + '</h5><div class="ca-wd">' + t.getDate() + '</div>' +
-      info.series.map(function(s){ return '<div class="ca-wev ser' + (s.tier === 'venue' ? ' venue' : '') + '"><b>' + esc(s.title) + '</b><span>series</span></div>'; }).join('') +
-      (allday.length ? '<div class="ca-shelf">' + allday.map(caWeekEv).join('') + '</div>' : '') +
-      timed.map(caWeekEv).join('') +
-      (!es.length && !info.series.length ? '<div class="ca-wev none">Nothing filed</div>' : '') + '</div>';
-  }
-  return h + '</div>';
-}
-function caWeekEv(e){
-  var who = (e.people && e.people.length) ? '<span>' + e.people.map(caPersonName).filter(Boolean).map(esc).join(', ') + '</span>' : '';
-  return '<div class="ca-wev" data-kind="connection"><span class="ca-tm">' + (e.time || 'all day') + '</span><b>' + esc(e.title) + '</b>' + who + '</div>';
-}
-
-function caDayHTML(ds){
-  var idx = CALV.idx, es = (idx.byDate[ds] || []).slice().sort(function(a, b){ return (a.time || '99') < (b.time || '99') ? -1 : 1; });
-  var t = caParse(ds), series = idx.serByDate[ds] || [];
-  var h = '<div class="ca-sheet"><h2>' + CA_DW[t.getDay()] + ', ' + CA_MN[t.getMonth()] + ' ' + t.getDate() + '</h2>' +
-    '<p class="ca-dsub">' + es.length + ' entries' + (series.length ? ' · ' + series.length + ' series running' : '') + ' · inferred sightings are labeled, never filed as contacts</p>';
-  if(!es.length && !series.length) h += '<div class="empty"><p>Nothing on this day.</p></div>';
-  h += es.map(function(e){
-    return '<div class="ca-evrow" data-kind="connection"><span class="ca-tm">' + (e.time || 'all day') + '</span><span class="ca-tt"><b>' + esc(e.title) + '</b>' +
-      caTierChip(e.tier) +
-      (e.people || []).map(calPersonChip).join('') +
-      (e.kind === 'contact' ? '<span class="ca-calname">Contact log · ' + (e.online ? 'online' : 'in person') + '</span>' : '<span class="ca-calname">' + calChip(e.cal) + '</span>') +
-      '</span></div>';
+  var longest = Object.keys(last).map(function(nm){
+    return { nm: nm, di: last[nm].di, ds: last[nm].ds,
+             days: Math.round((caParse(today) - caParse(last[nm].ds)) / 86400000) };
+  }).sort(function(a, b){ return b.days - a.days; }).slice(0, 6);
+  var rows = longest.map(function(r){
+    return '<li><a href="#/p/' + encodeURIComponent(personId(D.directory[r.di])) + '" data-act="openp" data-di="' + r.di + '"><span>' + esc(r.nm) + '</span><b>' + r.days + 'd</b></a></li>';
   }).join('');
-  h += series.map(function(s){
-    return '<div class="ca-evrow" data-kind="connection"><span class="ca-tm">series</span><span class="ca-tt"><b>' + esc(s.title) + '</b>' +
-      caTierChip(s.tier) + '<span class="ca-calname">' + calChip(s.cal) + ' · one of ×' + s.count + ' · runs ' + caFmtD(s.first) + ' → ' + caFmtD(s.last) + '</span></span></div>';
-  }).join('');
-  return h + '</div>';
-}
-
-function caRailHTML(){
-  var idx = CALV.idx, scopeFn, scopeName, scopeDays;
-  if(CALV.level === 'year'){ scopeName = '2026'; scopeDays = 365; scopeFn = function(){ return true; }; }
-  else if(CALV.level === 'month'){ scopeName = CA_MN[CALV.month]; scopeDays = new Date(2026, CALV.month + 1, 0).getDate(); var pre = '2026-' + caPad(CALV.month + 1); scopeFn = function(ds){ return ds.indexOf(pre) === 0; }; }
-  else { scopeName = 'this week'; scopeDays = 7; var a = CALV.weekStart, b = caAdd(CALV.weekStart, 6); scopeFn = function(ds){ return ds >= a && ds <= b; }; }
-  var sight = caSightDays(scopeFn);
-  var today = caToday(), lastSeen = {};
-  (CAL.entries || []).forEach(function(e){
-    if(e.kind === 'series' || !CA_SIGHT[e.tier] || e.date > today) return;
-    (e.people || []).forEach(function(k){ if(!lastSeen[k] || e.date > lastSeen[k]) lastSeen[k] = e.date; });
-  });
-  var longest = Object.keys(lastSeen).map(function(k){
-    return { k: k, last: lastSeen[k], days: Math.round((caParse(today) - caParse(lastSeen[k])) / 86400000) };
-  }).sort(function(x, y){ return y.days - x.days; }).slice(0, 6);
-  var h = '<h4>Seen in person</h4><div class="ca-big">' + sight + '</div>' +
-    '<div class="ca-rsub">sighting days in ' + esc(scopeName) + ' of ' + scopeDays + ' — confirmed, strong, and corroborated only. Birthdays never count.</div>' +
-    '<h4>Legend</h4><div class="ca-legend">' +
-    '<span><i class="ca-sw conf"></i>Confirmed — contact log, in person</span>' +
-    '<span><i class="ca-sw corr"></i>Corroborated — event + contact, same day</span>' +
-    '<span><i class="ca-sw strg"></i>Strong — event names the person</span>' +
-    '<span><i class="ca-sw ven"></i>Venue — Frisbee, Soccer, church, Drill</span>' +
-    '<span><i class="ca-sw weak"></i>Weak — birthday / online / solo</span></div>' +
-    '<h4>Longest since seen in person</h4><ul class="ca-longest">' +
-    (longest.length ? longest.map(function(p){
-      var di = calDi(p.k);
-      var name = di == null ? '' : dispName(D.directory[di]);
-      var inner = '<span>' + esc(name) + '</span><b>' + p.days + 'd</b>';
-      return '<li>' + (di == null ? inner : '<a href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + inner + '</a>') + '</li>';
-    }).join('') : '<li><span>No in-person sightings on file yet.</span></li>') +
-    '</ul><div class="ca-rfoot">Venue days wash the map in People mode — a room full of people, the crowd unnamed. Inferred sightings are labeled and never filed as contacts.</div>';
-  return h;
-}
-
-function caGoDay(ds){
-  CALV.date = ds;
-  CALV.month = caParse(ds).getMonth();
-  CALV.weekStart = caWeekStart(ds);
-  CALV.level = 'day';
-}
-function caStep(dir){
-  if(CALV.level === 'month'){ CALV.month = Math.max(0, Math.min(11, CALV.month + dir)); }
-  else if(CALV.level === 'week'){ CALV.weekStart = caAdd(CALV.weekStart, 7 * dir); CALV.month = caParse(CALV.weekStart).getMonth(); }
-  else if(CALV.level === 'day'){ caGoDay(caAdd(CALV.date, dir)); CALV.level = 'day'; }
-}
-if(!window.__calAtlasBound){
-  window.__calAtlasBound = true;
-  document.addEventListener('click', function(e){
-    var t = e.target && e.target.closest ? e.target.closest('[data-cal]') : null;
-    if(!t) return;
-    var a = t.getAttribute('data-cal'), d = t.getAttribute('data-d');
-    if(a === 'month'){ CALV.month = +d; CALV.level = 'month'; }
-    else if(a === 'day'){ caGoDay(d); }
-    else if(a === 'week'){ CALV.weekStart = d; CALV.month = caParse(d).getMonth(); CALV.level = 'week'; }
-    else if(a === 'year'){ CALV.level = 'year'; }
-    else if(a === 'mode'){ CALV.mode = d; }
-    else if(a === 'prev'){ caStep(-1); }
-    else if(a === 'next'){ caStep(1); }
-    else return;
-    if(S.route && S.route.name === 'calendar') render();
-  });
-  document.addEventListener('keydown', function(e){
-    if(e.key !== 'Escape' || !S.route || S.route.name !== 'calendar') return;
-    if(CALV.level === 'day'){ CALV.level = 'week'; render(); }
-    else if(CALV.level === 'week'){ CALV.level = 'month'; render(); }
-    else if(CALV.level === 'month'){ CALV.level = 'year'; render(); }
-  });
+  return '<section class="card ct-seen"><header><h3>Seen in person</h3>' +
+    '<span class="ct-anote">Counted from your contact entries and Last Contact stamps \u2014 in person only. Online contact and proximity never count.</span></header>' +
+    '<div class="cbody"><div class="ca-big">' + Object.keys(days).length + '</div>' +
+    '<div class="ca-rsub">days in ' + yr + ' with at least one in-person contact on file.</div>' +
+    '<h4 class="ct-seen-h">Longest since seen in person</h4>' +
+    (rows ? '<ul class="ca-longest">' + rows + '</ul>' : '<p class="dim">No in-person contacts on file yet.</p>') +
+    '</div></section>';
 }
 
 /* Live Records ordering (JD 2026-10-30): 'brief' keeps the routine's
