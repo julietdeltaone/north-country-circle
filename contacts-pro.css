@@ -6680,3 +6680,19 @@ html[data-mode="light"] .rc-ev{border-color:rgba(13,20,32,.18)}
   .b-files .file{min-width:0}
   .b-files .file b{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
 }
+
+/* ---- V4.2 (4b) phone geometry, second pass: the identity
+   band's value anchors live under an ID selector (#sec-identity,
+   specificity beats the class-scoped pass above), and the
+   Groups header rows are flex items whose automatic minimum
+   size inflated to their widest child (the max-content tab
+   row) — min-width:0 lets them take the screen's width. ---- */
+@media(max-width:760px){
+  #sec-identity .irow{grid-template-columns:92px minmax(0,1fr)}
+  #sec-identity .iv{flex-wrap:wrap;min-width:0}
+  #sec-identity .iv a{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
+  #sec-identity .derived{white-space:normal;overflow-wrap:anywhere}
+  .grp-headrow,.grp-toolsrow{min-width:0;max-width:100%}
+  .grp-headrow>div{min-width:0}
+  .grp-toolsrow .tabrow{width:auto;flex:1 1 auto;min-width:0}
+}
