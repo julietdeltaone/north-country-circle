@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.0.0';
+var APP_VERSION = '4.1.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2017,6 +2017,7 @@ function personIsAka(e){ return !!String(gv(e, 'also_known_as') || '').trim(); }
 /* ============================================================
    8. views
    ============================================================ */
+var PTPICK = {};
 var S = {
   depth:0, route:{ name:'people', seg:[] }, ctx:null,
   ppl:{ q:'', status:'all', tier:'all', rel:'', group:'', ts:{ k:'name', d:1 }, side:null, view:'recent' },
@@ -2132,36 +2133,71 @@ function activeNav(){
 }
 function renderChrome(){
   var act = activeNav();
-  var items = NAV.map(function(n){
-    var bdg = '';
-    if(n.k === 'daily'){ var un = lrWaitingCount(); bdg = '<em class="fi-bdg' + (un ? '' : ' zero') + '" id="finavbadge">' + un + '</em>'; }
-    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '" data-kind="' + (n.kind || 'neutral') + '">' + ic(n.ic, 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>' + n.l + '</span>' + bdg + '</a>';
+  var GL = { home:'\u2302', people:'\u25c9', daily:'\u25ce', calendar:'\u25e6', photos:'\u25e3', groups:'\u2b22', network:'\u2b61', audit:'\u2713', council:'\u265c', merge:'\u29c9', danger:'\u26a0', settings:'\u2699' };
+  function rItem(n, right){
+    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '"><span class="nv-gl" aria-hidden="true">' + (GL[n.k] || '') + '</span><span>' + n.l + '</span>' + (right || '') + '</a>';
+  }
+  var navBy = {}; NAV.forEach(function(n){ navBy[n.k] = n; });
+  var pplCt = ''; try{ pplCt = String(people().length); }catch(x){}
+  var lrN = lrWaitingCount();
+  var lrBdg = '<em class="fi-bdg' + (lrN ? '' : ' zero') + '" id="finavbadge">' + lrN + ' waiting</em>';
+  var MN3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var calCt = '<span class="nv-ct">' + MN3[new Date().getMonth()] + '</span>';
+  var phCt = '';
+  try{ if(typeof PH !== 'undefined' && PH && typeof phSuspects === 'function'){ var ps = phSuspects().length; if(ps) phCt = '<span class="nv-ct">' + ps + ' to check</span>'; } }catch(x){}
+  var cnCt = '', cnSub = '';
+  try{
+    if(typeof CN !== 'undefined' && CN){
+      var openF = (CN.flags || []).filter(function(f){ return f.state === 'open'; }).length;
+      cnCt = openF ? '<span class="nv-ct">' + openF + ' flags open</span>' : '<span class="nv-ct ok">Gate clear</span>';
+      var lr = cnLatestRun(CN);
+      if(lr) cnSub = '<div class="rl-sub">Latest pass ' + esc(cnFmtDate(lr.date)) + ' \u2014 ' + esc(lr.run.title || 'Council') + '</div>';
+    }
+  }catch(x){}
+  var everyDay = [navBy.home, navBy.people, navBy.daily, navBy.calendar, navBy.photos].map(function(n){
+    var right = n.k === 'people' ? '<span class="nv-ct">' + pplCt + '</span>' : n.k === 'daily' ? lrBdg : n.k === 'calendar' ? calCt : n.k === 'photos' ? phCt : '';
+    return rItem(n, right);
   }).join('');
+  var library = [navBy.groups, navBy.network, navBy.audit, navBy.council].map(function(n){
+    var right = n.k === 'audit' ? '<span class="nv-ct">lanes open</span>' : n.k === 'council' ? cnCt : '';
+    return rItem(n, right);
+  }).join('');
+  var system = [{ k:'merge', l:'Merge Studio' }, { k:'danger', l:'Danger Zone' }].map(function(n){ return rItem(n, ''); }).join('');
   if(typeof fiLoad === 'function') fiLoad();
   var ffExit = ''; try{ if(localStorage.getItem('ncc_force_full') && window.innerWidth <= 899) ffExit = '<a href="#" class="nv" data-act="gomobile">' + ic('phone', 20) + '<span>Mobile version</span></a>'; }catch(x){}
-  $('#rail').innerHTML = '<a class="brand" href="#/home" aria-label="Contacts Pro"><i></i><b>Contacts Pro</b></a>' +
-    '<div class="navlist">' + items + '</div>' +
+  $('#rail').innerHTML =
+    '<a class="rl-brand" href="#/home" aria-label="Contacts Pro"><span class="rl-mark">CP</span><span class="rl-bt"><b>Contacts Pro</b><span>JD Meyers</span></span><span class="rl-ver">V' + APP_VERSION + '</span></a>' +
+    '<nav class="rl-group"><div class="rl-label">Every day</div><div class="navlist">' + everyDay + '</div></nav>' +
+    '<nav class="rl-group"><div class="rl-label">Library</div><div class="navlist">' + library + '</div>' + cnSub + '</nav>' +
+    '<nav class="rl-group"><div class="rl-label">System</div><div class="navlist">' + system + '</div><div class="rl-sub">Tools, not sections. Opened from People and profiles too.</div></nav>' +
     '<div class="railfoot">' + ffExit +
-    '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '" data-kind="neutral">' + ic('settings', 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>Settings</span></a>' +
+    '<a href="#/settings" class="nv' + (act === 'settings' ? ' on' : '') + '" data-nav="settings"><span class="nv-gl" aria-hidden="true">' + GL.settings + '</span><span>Settings</span><span class="nv-ct">utility page</span></a>' +
+    '<div class="rl-sub">Edit key, AI Tidy, the Levels map, merged-profile Restore.</div>' +
     '<small id="fresh">' + (D ? 'Data ' + esc(D.updated || '') : '') + '</small></div>';
-  /* NAV includes Home since V2.28.0, so the tabs are just the NAV items;
-     a prepended Home button here rendered as a duplicate Home tab. The
-     reset-and-go-home action stays on the top-bar house button. */
-  $('#tabs').innerHTML = items;
+  /* Mobile tabs keep the flat nine-item icon list (unchanged). */
+  var tabItems = NAV.map(function(n){
+    var bdg = '';
+    if(n.k === 'daily'){ var un = lrWaitingCount(); bdg = '<em class="fi-bdg' + (un ? '' : ' zero') + '">' + un + '</em>'; }
+    return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '" data-kind="' + (n.kind || 'neutral') + '">' + ic(n.ic, 20) + '<i class="nv-kdot" aria-hidden="true"></i><span>' + n.l + '</span>' + bdg + '</a>';
+  }).join('');
+  $('#tabs').innerHTML = tabItems;
   var top = $('#top');
+  var syncLine = (typeof DT !== 'undefined' && DT && DT.date ? 'Last check ' + esc(DT.date) + ' \u00b7 ' : '') + 'Next sweep 6:54 PM ET';
   top.innerHTML =
     '<button type="button" class="ib homebtn" data-act="home" aria-label="Home" title="Home: the overview, with search and filters cleared">' + ic('home', 20) + '</button>' +
     '<button type="button" class="ib" data-act="topback" aria-label="Back" title="Back: one step — closes the top layer, leaves a runner, or returns to the previous view">' + ic('chevl', 20) + '</button>' +
     '<button type="button" class="ib" data-act="topfwd"' + (navNext() ? '' : ' disabled') + ' aria-label="Forward" title="' + (navNext() ? 'Forward to ' + esc(navNext().label) : 'Forward: nothing ahead — go Back first') + '">' + ic('chevr', 20) + '</button>' +
-    '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search people" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
+    '<div class="gsearch"><span class="gsi">' + ic('search', 16) + '</span><input id="gs" type="search" placeholder="Search ' + (pplCt || '') + ' people \u2014 name, place, group, skill\u2026" autocomplete="off" aria-label="Search people" spellcheck="false"><kbd>/</kbd><div id="gsr" class="gsr" hidden></div></div>' +
     '<button type="button" class="qadd" data-act="qadd" title="Quick add: log a contact, add a new person, or open the Up Next queue (shortcut: Q)">' + ic('plus', 15) + '<span>Quick add</span><kbd>Q</kbd></button>' +
     '<div class="topr">' +
     '<button type="button" class="ib" id="undob" data-act="undo" aria-label="Undo" title="Undo (Ctrl+Z)">' + ic('undo', 18) + '</button>' +
     '<button type="button" class="ib hide-s" id="redob" data-act="redo" aria-label="Redo" title="Redo (Ctrl+Shift+Z)">' + ic('redo', 18) + '</button>' +
     '<button type="button" class="syncp" id="sync" data-act="pool"></button>' +
-    '<a href="#/settings" class="ib show-s" aria-label="Settings">' + ic('settings', 18) + '</a>' +
-    '<button type="button" class="ib" id="focusb" data-act="focus" aria-label="Focus mode" aria-pressed="false" title="Focus mode: hide the sidebar and bars so the view fills the window (Esc exits)">' + ic('expand', 18) + '</button>' +
+    '<span class="role-label">Show:</span>' +
     roleSegHTML() +
+    '<span class="sync-line">' + syncLine + '</span>' +
+    '<a href="#/settings" class="gearbtn" aria-label="Settings">\u2699 Settings</a>' +
+    '<button type="button" class="ib" id="focusb" data-act="focus" aria-label="Focus mode" aria-pressed="false" title="Focus mode: hide the sidebar and bars so the view fills the window (Esc exits)">' + ic('expand', 18) + '</button>' +
     themeSecHTML() +
     '<span class="ver" title="App version">V' + APP_VERSION + '</span></div>';
   paintSync(); paintUndo(); paintTheme(); applyFocus(focusOn());
@@ -2727,6 +2763,9 @@ function pplSort(dis){
       tier: tr == null ? 3 : tr,
       loc: ptLocVal(e).toLowerCase(),
       orgs: orgsOf(e).join(' · ').toLowerCase(),
+      work: ptFirstOrg(e, 'work').join(' · ').toLowerCase(),
+      school: ptFirstOrg(e, 'school').join(' · ').toLowerCase(),
+      record: { full:0, solid:1, light:2, name:3 }[((V4M_CACHE && V4M_CACHE.ver === VER && V4M_CACHE.byDi[di]) ? V4M_CACHE.byDi[di] : v4PersonStats(e)).tier],
       assoc: knownAssociates(e).length,
       skills: tagList(gv(e, 'specialty')).join(', ').toLowerCase(),
       rel: cap(gv(e, 'relationship')).toLowerCase(),
@@ -2744,6 +2783,7 @@ function pplSort(dis){
   dis.sort(function(a, b){
     var ka = K[a], kb = K[b], r = 0;
     if(ts.k === 'tier') r = (ka.tier - kb.tier) * d;
+    else if(ts.k === 'record') r = (ka.record - kb.record) * d;
     else if(ts.k === 'assoc') r = (ka.assoc - kb.assoc) * d;
     else if(ts.k === 'msgs') r = (ka.msgs - kb.msgs) * d;
     else if(ts.k === 'years' || ts.k === 'close' || ts.k === 'lastc' || ts.k === 'firstc'){
@@ -3022,6 +3062,30 @@ function tlRepaint(scope){
 
 /* People right column: filter shortcuts + counts by tier and group.
    Tucked until opened; S.ppl.side remembers an explicit open/close. */
+function pvPickedDis(){ return Object.keys(PTPICK).filter(function(k){ return PTPICK[k]; }).map(Number); }
+function pvPaintBulk(){
+  var bar = $('#pv-bulkbar'); if(!bar) return;
+  var n = pvPickedDis().length;
+  bar.innerHTML = '<b>' + n + ' selected</b><span>— tick rows, then apply once:</span>' +
+    '<button type="button" class="pv-btn sm" data-act="pvsetplace"' + (n ? '' : ' disabled') + '>Set place…</button>' +
+    '<button type="button" class="pv-btn sm" data-act="pvaddgroup"' + (n ? '' : ' disabled') + '>Add group…</button>' +
+    '<button type="button" class="pv-btn sm" data-act="pvlogprox"' + (n ? '' : ' disabled') + '>Log proximity…</button>' +
+    '<button type="button" class="pv-btn sm" data-act="pvmerge"' + (n >= 2 ? '' : ' disabled') + '>Merge…</button>' +
+    '<span class="sp"></span>' +
+    '<button type="button" class="pv-btn sm ghost" data-act="pvclearpick"' + (n ? '' : ' disabled') + '>Clear</button>';
+}
+function pvQuickKeep(e){
+  var q = S.ppl.quick || 'all';
+  if(q === 'all') return true;
+  if(q === 'family'){
+    var fam = false; try{ fam = JSON.parse(gv(e, 'family') || '[]').length > 0; }catch(x){}
+    return fam || String(gv(e, 'relationship') || '').toLowerCase() === 'family';
+  }
+  if(q === 'coworkers') return tagList(gv(e, 'companies')).some(function(c){ return /clarkson/i.test(c); }) || personGroups(e).indexOf('The Lewis School') >= 0;
+  if(q === 'military') return personGroups(e).some(function(g){ return /army|national guard|military|air force|marine|navy/i.test(g); }) || /military/i.test(String(gv(e, 'relationship') || ''));
+  if(q === 'missingphone') return !gv(e, 'phone');
+  return true;
+}
 function viewPeople(v){
   ptEditClose(); msgLoad();
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
@@ -3030,20 +3094,25 @@ function viewPeople(v){
       return '<button type="button" class="fc' + (cur === o[0] ? ' on' : '') + '" data-act="pf" data-k="' + key + '" data-v="' + o[0] + '">' + o[1] + '</button>';
     }).join('') + '</div>';
   }
-  /* Design cleanup (JD 2026-10-28): the toolbar lives INSIDE the hero
-     banner now — search, tier chips and the More/Columns buttons sit
-     in the banner's second row, so the table starts right under it. */
-  v.innerHTML = '<div class="page people" data-kind="about"><div class="pagehead"><div class="ppl-headrow"><div><h1 class="display">People</h1><div class="ppl-subrow"><p class="sub" id="pcount"></p>' + '<span class="kind-legend">' + kindChip('about', true) + '<span>facts about the person</span>' + kindChip('connection', true) + '<span>exists only between you</span></span></div></div>' +
-    '<div class="seg ppl-viewseg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="timeline"' + (f.view === 'timeline' ? ' class="on"' : '') + '>Timeline</button></div></div>' +
-    '<div class="toolbar"><label class="field"><span>' + ic('search', 16) + '</span><input id="pq" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
-    chips('tier', [['all', 'Any level'], ['vetted', 'Vetted'], ['associate', 'Associate'], ['open', 'Open'], ['none', 'No level']], f.tier) +
-    '<div class="tool-r">' +
-    '<button type="button" class="btn ghost sm" data-act="morefilters">' + ic('filter', 14) + 'More' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
-    '<button type="button" class="btn ghost sm" data-act="ptcols">' + ic('settings', 14) + 'Columns</button>' +
-    '</div></div></div>' +
-    '<div class="ppl-cols"><div class="ppl-main">' +
-    '<div class="plist" id="plist"></div></div>' +
-    '</div></div>';
+  if(f.quick == null) f.quick = 'all';
+  var M = v4Metrics();
+  function qbtn(val, lab){ return '<button type="button" data-act="pvquick" data-v="' + val + '"' + (f.quick === val ? ' class="on"' : '') + '>' + lab + '</button>'; }
+  v.innerHTML = '<div class="v4p pv-view page people" data-kind="about">' +
+    '<div class="pv-vhead"><div><h1>People</h1><p class="pv-hsub">One row per person. Click a cell to fix it in place. The Record column is the same tier Home and Audit use.</p></div>' +
+    '<div class="side">' + M.N + ' people · ' + M.withPhone + ' with a phone · ' + M.withPlace + ' with a place<br><a class="lnk" href="#/merge">Merge Studio</a> · <a class="lnk" href="#/danger">Danger Zone</a></div></div>' +
+    '<div class="pv-toolbar">' +
+    '<label class="pv-search"><span aria-hidden="true">⌕</span><input id="pq" type="search" placeholder="Name, place, workplace, school or skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
+    '<div class="pv-seg" role="group" aria-label="Quick filters">' + qbtn('all', 'All') + qbtn('family', 'Family') + qbtn('coworkers', 'Coworkers') + qbtn('military', 'Military') + qbtn('missingphone', 'Missing phone') + '</div>' +
+    '<div class="pv-seg" role="group" aria-label="People view"><button type="button" data-act="pplview" data-v="list"' + (f.view === 'list' ? ' class="on"' : '') + '>List</button><button type="button" data-act="pplview" data-v="recent"' + (f.view === 'recent' ? ' class="on"' : '') + '>By last contact</button><button type="button" data-act="pplview" data-v="timeline"' + (f.view === 'timeline' ? ' class="on"' : '') + '>Timeline</button></div>' +
+    '<span class="sp"></span>' +
+    '<span class="pv-count-line" id="pcount"></span>' +
+    '<button type="button" class="pv-btn sm" data-act="morefilters">' + ic('filter', 14) + ' More filters' + ((f.rel || f.group) ? ' <em>' + ((f.rel ? 1 : 0) + (f.group ? 1 : 0)) + '</em>' : '') + '</button>' +
+    '<button type="button" class="pv-btn sm" data-act="ptcols">' + ic('settings', 14) + ' Columns</button>' +
+    '<button type="button" class="pv-btn primary sm" data-act="qadd">+ Person</button>' +
+    '</div>' +
+    '<div class="pv-strip row" id="pv-bulkbar" style="margin-bottom:12px"></div>' +
+    '<div class="plist" id="plist"></div>' +
+    '</div>';
   paintPeople();
   ptAttach();
 }
@@ -3052,7 +3121,8 @@ function viewPeople(v){
    Cells show only what the profile has; blanks stay blank. */
 function ptheadHTML(){
   var ts = S.ppl.ts || { k:'name', d:1 };
-  return '<thead><tr>' + ptVisibleCols().map(function(c){
+  var nPick = Object.keys(PTPICK).filter(function(k){ return PTPICK[k]; }).length;
+  return '<thead><tr><th class="ptpickcell"><input type="checkbox" data-act="ptpickall"' + (nPick ? ' checked' : '') + ' aria-label="Select all shown"></th>' + ptVisibleCols().map(function(c){
     var on = ts.k === c.k;
     return '<th class="' + (c.num ? 'num' : '') + (on ? ' on' : '') + '" data-kind="' + (c.kind || 'about') + '" data-act="tsort" data-k="' + c.k + '" tabindex="0" aria-sort="' + (on ? (ts.d < 0 ? 'descending' : 'ascending') : 'none') + '" title="Sort by ' + c.label.toLowerCase() + '">' + c.label + '<span class="sarr" aria-hidden="true">' + (on ? (ts.d < 0 ? '▾' : '▴') : '') + '</span></th>';
   }).join('') + '</tr></thead>';
@@ -3064,15 +3134,16 @@ function ptierCell(e){
 }
 function ptrowHTML(di, i){
   var e = D.directory[di];
-  var tds = ptVisibleCols().map(function(c){
+  var tds = '<td class="ptpickcell"><input type="checkbox" data-act="ptpick" data-di="' + di + '"' + (PTPICK[di] ? ' checked' : '') + ' aria-label="Select ' + esc(dispName(e)) + '"></td>' + ptVisibleCols().map(function(c){
     var ed = PT_ED[c.k];
     return '<td class="c-' + c.k + (c.num ? ' num' : '') + '" data-kind="' + (c.kind || 'about') + '"' + (ed ? ' data-ed="' + ed + '" data-di="' + di + '" tabindex="0"' : '') + '>' + PTCELL[c.k](e, di) + '</td>';
   }).join('');
-  return '<tr class="ptrow" data-act="popen" data-di="' + di + '" data-i="' + i + '" tabindex="0">' + tds + '</tr>';
+  return '<tr class="ptrow' + (PTPICK[di] ? ' picked' : '') + '" data-act="popen" data-di="' + di + '" data-i="' + i + '" tabindex="0">' + tds + '</tr>';
 }
 function paintPeople(){
   var box = $('#plist'); if(!box) return;
-  var dis = peopleFiltered();
+  var dis = peopleFiltered().filter(function(di){ return pvQuickKeep(D.directory[di]); });
+  pvPaintBulk();
   var body = '';
   if(dis.length && S.ppl.view === 'timeline'){
     /* Timeline view (JD 2026-10-29): the contact stream for the
@@ -3128,8 +3199,15 @@ function openMoreFilters(){
    persist in localStorage (ncc_pt_cols). */
 var PT_ALL = [
   { k:'name',     label:'Name', kind:'about' },
+  { k:'loc',      label:'Place', kind:'about' },
+  { k:'work',     label:'Workplace', kind:'about' },
+  { k:'school',   label:'School', kind:'about' },
+  { k:'phone',    label:'Phone', kind:'about' },
+  { k:'lastc',    label:'Last contact', num:true, kind:'connection' },
+  { k:'years',    label:'Known since', num:true, kind:'connection' },
+  { k:'close',    label:'Closeness', kind:'connection' },
+  { k:'record',   label:'Record', kind:'about' },
   { k:'tier',     label:'Level', kind:'connection' },
-  { k:'loc',      label:'Location on file', kind:'about' },
   { k:'orgs',     label:'Organizations', kind:'about' },
   { k:'assoc',    label:'Associates', num:true, kind:'connection' },
   { k:'msgs',     label:'Correspondence', num:true, kind:'connection' },
@@ -3148,9 +3226,9 @@ var PT_ALL = [
    eight Tier 0/1 columns — Correspondence is Tier 2 (on-demand via
    the Columns menu), so the default table fits its band without
    squeezing the priority columns. Saved column choices still win. */
-var PT_DEF_ON = { name:1, tier:1, loc:1, orgs:1, assoc:1, skills:1, rel:1, lastc:1 };
+var PT_DEF_ON = { name:1, loc:1, work:1, school:1, phone:1, lastc:1, years:1, close:1, record:1 };
 var PT_NUMDIR = { assoc:1, msgs:1, years:1, close:1, lastc:1, firstc:1 };   /* first click on these sorts high-to-low */
-var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', skills:'skills', rel:'rel', close:'close', groups:'groups', years:'years', phone:'phone', email:'email' };
+var PT_ED = { name:'name', tier:'tier', loc:'loc', orgs:'orgs', work:'orgs', school:'orgs', skills:'skills', rel:'rel', close:'close', groups:'groups', years:'years', phone:'phone', email:'email' };
 var PT_SEED_TOWNS = ['Potsdam, NY','Canton, NY','Massena, NY','Norwood, NY','Norfolk, NY','Madrid, NY','Waddington, NY','Ogdensburg, NY','Gouverneur, NY','Lisbon, NY','Colton, NY','South Colton, NY','Parishville, NY','Hopkinton, NY','Brasher Falls, NY','Winthrop, NY','Hammond, NY','Heuvelton, NY','Hermon, NY','DeKalb Junction, NY','Rensselaer Falls, NY','Pierrepont, NY','Hannawa Falls, NY','West Potsdam, NY','West Stockholm, NY','Louisville, NY','Morristown, NY','Star Lake, NY','Cranberry Lake, NY','Edwards, NY','Russell, NY','Chase Mills, NY','North Lawrence, NY','Nicholville, NY','Lawrence, NY','Helena, NY','Raymondville, NY','Richville, NY','Fine, NY','Newton Falls, NY','Fort Jackson, NY','Malone, NY','Tupper Lake, NY','Saranac Lake, NY','Chateaugay, NY','Brushton, NY','St. Regis Falls, NY','Moira, NY','Bombay, NY','Fort Covington, NY','Hogansburg, NY','Paul Smiths, NY','Watertown, NY','Clayton, NY','Alexandria Bay, NY','Cape Vincent, NY','Theresa, NY','Philadelphia, NY','Evans Mills, NY','Adams, NY','Sackets Harbor, NY','Carthage, NY','Dexter, NY','Chaumont, NY','Lowville, NY','Croghan, NY','Turin, NY','Port Leyden, NY','Lyons Falls, NY','Copenhagen, NY','Plattsburgh, NY','Peru, NY','Chazy, NY','Rouses Point, NY','Dannemora, NY','Champlain, NY','Keeseville, NY','Inlet, NY','Old Forge, NY','Raquette Lake, NY','Eagle Bay, NY','Hauppauge, NY','Queens, NY','Farmingville, NY','Smithtown, NY','West Sayville, NY','Huntington, NY','Massapequa, NY'];
 var PT_SEED_ORGS = {
   universities: ['SUNY Potsdam','Clarkson University','St. Lawrence University','SUNY Canton','Potsdam Central School','Hugh C. Williams Senior High School','Massena Central High School','Norwood-Norfolk Central School','Madrid-Waddington Central School','Ogdensburg Free Academy','Gouverneur Central School','Lisbon Central School','Colton-Pierrepont Central School','Parishville-Hopkinton Central School','St. Lawrence Central School','Edwards-Knox Central School','Hermon-DeKalb Central School','Clifton-Fine Central School','Hammond Central School','Heuvelton Central School','Morristown Central School'],
@@ -3158,6 +3236,11 @@ var PT_SEED_ORGS = {
   churches: []
 };
 function ptHandle(e){ return effHandle(e); }
+function ptFirstOrg(e, kind){
+  var cats = kind === 'work' ? ['companies'] : ['universities'], out = [];
+  cats.forEach(function(k){ tagList(gv(e, k)).forEach(function(o){ if(out.indexOf(o) < 0) out.push(o); }); });
+  return out;
+}
 /* Location on file (Sheet column, JD 2026-10-15) is the person's single
    location: when set it wins over the derived city/hometown everywhere. */
 function ptLocVal(e){ return gv(e, 'location_on_file') || gv(e, 'city') || gv(e, 'hometown') || ''; }
@@ -3165,9 +3248,16 @@ var PTCELL = {
   name: function(e){
     /* JD 2026-10-28: names only — the relationship/handle sub-line
        moved to its own Relationship column, so rows are one line
-       and thin. */
-    return '<div class="cname-in">' + avatar(e, 'sm') + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '</span></div>';
+       and thin. V4.1: the avatar ring carries the Two Inks — gold
+       (Connection) for vetted/associate closeness, blue (About)
+       otherwise, per the preview. */
+    var av = avatar(e, 'sm'), t = tierOf(e);
+    if(t === 'vetted' || t === 'partner' || t === 'associate') av = av.replace('class="av ', 'class="av ring-conn ');
+    return '<div class="cname-in">' + av + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '</span></div>';
   },
+  work: function(e){ var o = ptFirstOrg(e, 'work'); return o.length ? '<span class="clip" title="' + esc(o.join(', ')) + '">' + esc(o[0]) + (o.length > 1 ? ' <span class="pdim">+' + (o.length - 1) + '</span>' : '') + '</span>' : '<span class="pdim">—</span>'; },
+  school: function(e){ var o = ptFirstOrg(e, 'school'); return o.length ? '<span class="clip" title="' + esc(o.join(', ')) + '">' + esc(o[0]) + (o.length > 1 ? ' <span class="pdim">+' + (o.length - 1) + '</span>' : '') + '</span>' : '<span class="pdim">—</span>'; },
+  record: function(e, di){ var s = (V4M_CACHE && V4M_CACHE.ver === VER && V4M_CACHE.byDi[di]) ? V4M_CACHE.byDi[di] : v4PersonStats(e); return '<span class="pv-tierdot pv-td-' + s.tier + '"></span>' + V4_TIER_LABEL[s.tier]; },
   tier: function(e){ return ptierCell(e); },
   loc: function(e){ return esc(ptLocVal(e)); },
   orgs: function(e){ var o = orgsOf(e); return '<span class="clip" title="' + esc(o.join(', ')) + '">' + esc(o.slice(0, 2).join(', ')) + '</span>'; },
@@ -3182,7 +3272,7 @@ var PTCELL = {
   handle: function(e){ var h = ptHandle(e); return h ? '@' + esc(h) : ''; },
   groups: function(e){ var g = personGroups(e); return '<span class="clip" title="' + esc(g.join(', ')) + '">' + esc(g.slice(0, 2).join(', ')) + '</span>'; },
   years: function(e){ var y = knownSinceYear(e); return y ? String(y) : ''; },
-  phone: function(e){ var p = gv(e, 'phone'); return p ? esc(fmtPhone(p)) : ''; },
+  phone: function(e){ var p = gv(e, 'phone'); if(!p) return ''; var parts = String(p).split(/,\s*/).filter(Boolean); if(parts.length > 1) return '<span class="clip" title="' + esc(p) + '">' + esc(fmtPhone(parts[0])) + ' <span class="pdim">+' + (parts.length - 1) + '</span></span>'; return esc(fmtPhone(p)); },
   email: function(e){ return esc(gv(e, 'email')); },
   lastc: function(e){ var v = String(gv(e, 'last_contact') || '').trim(); if(!v) return ''; var lab = lcLabel(e); return lcOnline(e) ? '<span class="ptlc onl" title="' + esc(lab) + '">Online · ' + esc(lab) + '</span>' : '<span class="ptlc" title="' + esc(lab) + '">' + esc(lab) + '</span>'; },
   firstc: function(e){ var v = firstContactOf(e); return v ? esc(lcDateLabel(v)) : ''; }
@@ -3213,6 +3303,15 @@ function ptCols(){
     store('ncc_pt_msgs_v1', '1');
     store('ncc_pt_cols', JSON.stringify(out));
   }
+  /* V4.1: one-time move to the preview's column set and order —
+     same one-shot-flag pattern; later user changes persist. */
+  if(!store('ncc_pt_v41')){
+    var v41order = ['name','loc','work','school','phone','lastc','years','close','record','tier','orgs','assoc','msgs','skills','rel','handle','groups','email','firstc'];
+    var v41on = { name:1, loc:1, work:1, school:1, phone:1, lastc:1, years:1, close:1, record:1 };
+    out = v41order.map(function(k){ return { k:k, on:!!v41on[k] }; });
+    store('ncc_pt_v41', '1');
+    store('ncc_pt_cols', JSON.stringify(out));
+  }
   PTC = out;
   return out;
 }
@@ -3225,8 +3324,8 @@ function ptVisibleCols(){
    table-layout:fixed at 100% width, so these are proportions, not pixels —
    any visible set is rescaled to fill the row and nothing can push the
    table wider than its region. */
-var PT_W = { name:20, tier:10, loc:10, orgs:16, assoc:8, msgs:9, skills:10, rel:11, close:8, handle:10, groups:13, years:7, phone:10, email:13, updated:9, lastc:13, firstc:12 };   /* V3.75.0 (bug hunt 32): shares rebalanced — Organizations/Skills clip by design (ellipsis + title), Last Contact does not, and its column was the one squeezed off the right edge at 1366/1440 */
-function ptColgroupHTML(){ return '<colgroup>' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
+var PT_W = { name:16, loc:9, work:11, school:11, phone:11, lastc:10, years:6, close:7, record:9, tier:9, orgs:14, assoc:7, msgs:8, skills:9, rel:10, handle:9, groups:11, email:11, updated:8, firstc:10 };   /* V3.75.0 (bug hunt 32): shares rebalanced — Organizations/Skills clip by design (ellipsis + title), Last Contact does not, and its column was the one squeezed off the right edge at 1366/1440 */
+function ptColgroupHTML(){ return '<colgroup><col style="width:3%">' + ptVisibleCols().map(function(c){ return '<col style="width:' + (PT_W[c.k] || 10) + '%">'; }).join('') + '</colgroup>'; }
 function ptSaveCols(){ store('ncc_pt_cols', JSON.stringify(ptCols())); }
 function ptColsSheet(){
   var cols = ptCols(), onCount = cols.filter(function(c){ return c.on; }).length;
@@ -5004,7 +5103,7 @@ function viewNetwork(v){
   /* Design cleanup (JD 2026-10-28): one clean bar — title, find,
      view, reset, full screen. The old grouped/kicker stack was a
      mess of nested rows (and unclosed tags). */
-  v.innerHTML = '<div class="page netpage" data-kind="connection"><div class="netbar"><div><h1 class="display">Network</h1></div>' +
+  v.innerHTML = '<div class="page netpage v4p" data-kind="connection"><div class="pv-vhead"><div><h1>Network</h1><p class="pv-hsub">Who connects to whom. Gold links are mutual — you both list each other.</p></div></div><div class="netbar"><div><h1 class="display">Network</h1></div>' +
     '<div class="netctl">' +
     '<div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div>' +
     '<button type="button" class="btn ghost sm" data-act="netreset">Reset view</button>' +
@@ -6086,10 +6185,10 @@ function viewGroups(v){
     GRPV.detail = null;
     var headS = '<div class="pagehead"><div class="grp-headrow"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div></div>' + tabs + '</div>';
     if(special === 'lists'){
-      v.innerHTML = '<div class="page groups" data-kind="about">' + headS + '<div id="grplists"></div></div>';
+      v.innerHTML = '<div class="page groups v4p" data-kind="about">' + headS + '<div id="grplists"></div></div>';
       viewLists($('#grplists'));
     } else {
-      v.innerHTML = '<div class="page groups" data-kind="about">' + headS + '<div id="grpfam"></div></div>';
+      v.innerHTML = '<div class="page groups v4p" data-kind="about">' + headS + '<div id="grpfam"></div></div>';
       paintFamily($('#grpfam'));   /* paints the gate state, no trees, when the role does not clear */
     }
     return;
@@ -6098,7 +6197,7 @@ function viewGroups(v){
     GRPV.detail = { kind:kind, name:name };
     var mem = grpMembersOf(kind, name);
     var hasRanks = mem.some(function(di){ return !!milRank(D.directory[di]); });
-    v.innerHTML = '<div class="page groups" data-kind="about">' + head + '<div class="gdet">' +
+    v.innerHTML = '<div class="page groups v4p" data-kind="about">' + head + '<div class="gdet">' +
       '<div class="gdh"><a class="ib backm" href="#/groups/' + kind + '" aria-label="Back to groups">' + ic('chevl', 18) + '</a>' +
       '<div><h2>' + esc(name) + '</h2><small><span id="gmcount">' + mem.length + '</span> ' + (mem.length === 1 ? 'person' : 'people') + ' &middot; ' + esc(grpSignal(kind, name)) + '</small></div><span class="sp"></span>' +
       (kind === 'groups' ? '<button type="button" class="btn ghost sm" data-act="grename" data-g="' + esc(name) + '">Rename</button><button type="button" class="btn ghost sm danger" data-act="gdelete" data-g="' + esc(name) + '">Delete</button>' : '') + '</div>' +
@@ -6126,7 +6225,12 @@ function viewGroups(v){
   var listHead = headTop + '<div class="grp-toolsrow">' + tabs +
     '<label class="gsearchbox">' + ic('search', 15) + '<input id="gq" placeholder="Search groups" autocomplete="off" value="' + esc(GRPV.q) + '"></label>' +
     '<span class="dim gcount">' + names.length + ' ' + (kind === 'groups' ? 'groups' : 'names') + ' &middot; sorted by size</span></div></div>';
-  v.innerHTML = '<div class="page groups" data-kind="about">' + listHead + mgr + add +
+  var kindLab = (GKINDS.filter(function(k){ return k[0] === kind; })[0] || ['','Groups'])[1];
+  var topNames = names.slice().sort(function(a, b){ return b.c - a.c; });
+  var topMax = topNames.length ? topNames[0].c : 0;
+  var topPanel = topNames.length ? '<div class="pv-panel" style="margin-bottom:14px"><h2>' + esc(kindLab) + ' — biggest first<span class="r">Top ' + Math.min(8, topNames.length) + ' of ' + topNames.length + ' · full cards below</span></h2>' +
+    topNames.slice(0, 8).map(function(x){ return '<a class="pv-mrow" href="#/groups/' + kind + '/' + encodeURIComponent(x.n) + '" style="text-decoration:none;color:inherit"><span class="ml">' + esc(x.n) + '</span><span class="pv-bar gold"><i style="width:' + (topMax ? Math.round(x.c / topMax * 100) : 0) + '%"></i></span><span class="mv">' + x.c + '</span></a>'; }).join('') + '</div>' : '';
+  v.innerHTML = '<div class="page groups v4p" data-kind="about">' + listHead + mgr + add + topPanel +
     '<div id="gcards">' + grpCardsHTML(kind) + '</div></div>';
   if(GRPV.scrollY != null){ var y = GRPV.scrollY; GRPV.scrollY = null; requestAnimationFrame(function(){ var vw = $('#view'); if(vw) vw.scrollTop = y; }); }
 }
@@ -7639,48 +7743,203 @@ function hmNetStrip(dd){
     '<span class="sp"></span><a class="hma-link" href="#/network">Open Network ' + ic('arrow', 12) + '</a>' +
     '</div></div></section>';
 }
+
+/* ============================================================
+   V4.1 metrics — the blueprint's measured definitions, computed
+   live (files/v4-blueprint-2026-11-03.md §d). Completeness tiers
+   from summary / public-record bullets / the 7 core facts /
+   source links; currency = what we have (0-55) + how recent
+   (0-45). NOT the profile "tier" field (that is closeness) and
+   NOT scoreFor (the profile blend) — no second arithmetic is
+   introduced anywhere else: Home, People\u2019s Record column and
+   Audit all read these same numbers.
+   ============================================================ */
+function v4ParseLinks(e){
+  var f = gv(e, 'files'), n = 0;
+  if(f){ try{ var a = JSON.parse(f); if(Array.isArray(a)) n = a.length; }catch(x){} if(!n) n = (f.match(/https?:\/\//g) || []).length; }
+  if(!n){ var s = gv(e, 'sources'); if(s) n = (s.match(/https?:\/\//g) || []).length; }
+  return n;
+}
+function v4PersonStats(e){
+  var fp = gv(e, 'public_footprint');
+  var bullets = fp ? fp.split('\n').filter(function(l){ return l.replace(/^\s+/, '').indexOf('\u2022') === 0; }).length : 0;
+  if(!bullets && fp) bullets = fp.split('\n').filter(function(l){ return l.trim(); }).length;
+  var core = 0;
+  if(ptLocVal(e)) core++;
+  if(tagList(gv(e, 'specialty')).length) core++;
+  if(tagList(gv(e, 'companies')).length) core++;
+  if(tagList(gv(e, 'universities')).length) core++;
+  if(personGroups(e).length) core++;
+  if(gv(e, 'phone')) core++;
+  if(String(gv(e, 'highlights') || '').trim()) core++;
+  var links = v4ParseLinks(e);
+  var sumLen = String(gv(e, 'synopsis') || '').trim().length;
+  var tier = 'name';
+  if(sumLen >= 80 && bullets >= 3 && core >= 5 && links >= 1) tier = 'full';
+  else if(bullets >= 2 && core >= 3) tier = 'solid';
+  else if(bullets >= 1 || core >= 2) tier = 'light';
+  /* newest dated item: last/first contact + dated events, at the
+     precision on file — a month-only date counts from the 1st of
+     that month and a year-only stamp from Jan 1 (the blueprint's
+     309-undated count only foots with month precision included).
+     Proximity excluded — co-presence is not information currency. */
+  var newest = '';
+  function v4PadDate(s){ var m = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(String(s || '').trim()); return m ? m[1] + '-' + m[2] + '-' + (m[3] || '01') : ''; }
+  [gv(e, 'last_contact'), gv(e, 'first_contact')].forEach(function(d){ var p = v4PadDate(d); if(p && p > newest) newest = p; });
+  (e.events || []).forEach(function(ev){ var k = ev.kind || ev.type || ''; if(k === 'proximity') return; var p = v4PadDate(ev.date); if(p && p > newest) newest = p; });
+  var have = Math.min(20, bullets / 6 * 20) + core / 7 * 20 + (links >= 2 ? 15 : links === 1 ? 8 : 0);
+  var recent = 0;
+  if(newest){
+    var age = (Date.now() - caParse(newest).getTime()) / 864e5;
+    recent = age <= 183 ? 45 : age <= 365 ? 36 : age <= 730 ? 24 : age <= 1460 ? 12 : 4;
+  }
+  var score = Math.round(have + recent);
+  var band = score >= 80 ? 'current' : score >= 60 ? 'fairly' : score >= 40 ? 'thin' : 'outdated';
+  return { tier:tier, core:core, bullets:bullets, links:links, newest:newest, have:have, recent:recent, score:score, band:band };
+}
+var V4M_CACHE = null;
+function v4Metrics(){
+  if(V4M_CACHE && V4M_CACHE.ver === VER) return V4M_CACHE;
+  var pop = people(), N = pop.length, today = todayStr(), cy = +today.slice(0, 4);
+  var tiers = { full:0, solid:0, light:0, name:0 }, bands = { current:0, fairly:0, thin:0, outdated:0 };
+  var undated = 0, undatedFull = 0, byDi = {};
+  var lc = { y0:0, y1:0, y2324:0, y2122:0, yOld:0, none:0 }, lcExact = 0;
+  var ks = { p20:0, y1019:0, y59:0, y24:0, u1:0 }, ksYears = [], ksMin = null;
+  var withPhone = 0, withPlace = 0;
+  pop.forEach(function(di){
+    var e = D.directory[di], s = v4PersonStats(e); byDi[di] = s;
+    tiers[s.tier]++; bands[s.band]++;
+    if(!s.newest){ undated++; if(s.tier === 'full') undatedFull++; }
+    var lcRaw = String(gv(e, 'last_contact') || '').trim();
+    if(/^\d{4}-\d{2}-\d{2}$/.test(lcRaw)) lcExact++;
+    var ym = /^(\d{4})/.exec(lcRaw), y = ym ? +ym[1] : 0;
+    if(!y) lc.none++;
+    else if(y === cy) lc.y0++;
+    else if(y === cy - 1) lc.y1++;
+    else if(y >= cy - 3) lc.y2324++;
+    else if(y >= cy - 5) lc.y2122++;
+    else lc.yOld++;
+    var ky = knownSinceYear(e);
+    if(ky){ ksYears.push(ky); if(ksMin == null || ky < ksMin) ksMin = ky;
+      var span = cy - ky;
+      if(span >= 20) ks.p20++; else if(span >= 10) ks.y1019++; else if(span >= 5) ks.y59++; else if(span >= 2) ks.y24++; else ks.u1++;
+    } else ks.u1++;
+    if(gv(e, 'phone')) withPhone++;
+    if(ptLocVal(e)) withPlace++;
+  });
+  ksYears.sort(function(a, b){ return a - b; });
+  var median = ksYears.length ? ksYears[Math.floor(ksYears.length / 2)] : null;
+  V4M_CACHE = { ver:VER, N:N, tiers:tiers, bands:bands, undated:undated, undatedFull:undatedFull, byDi:byDi,
+    lc:lc, lcExact:lcExact, ks:ks, ksMedian:median, ksMin:ksMin, withPhone:withPhone, withPlace:withPlace, cy:cy };
+  return V4M_CACHE;
+}
+var V4_TIER_LABEL = { full:'Full picture', solid:'Solid', light:'Light', name:'Name only' };
+var V4_BAND_LABEL = { current:'Current', fairly:'Fairly current', thin:'Getting thin or old', outdated:'Outdated' };
+function v4AvHTML(e, kind){
+  var nm = dispName(e), parts = nm.replace(/^@/, '').trim().split(/\s+/);
+  var ini = ((parts[0] || '').charAt(0) + (parts.length > 1 ? parts[parts.length - 1].charAt(0) : '')).toUpperCase() || '\u00b7';
+  var hue = 0; for(var i = 0; i < nm.length; i++) hue = (hue * 31 + nm.charCodeAt(i)) % 360;
+  return '<span class="pv-av ' + (kind || 'about') + '" style="background:hsl(' + hue + ' 42% 68%)">' + esc(ini) + '</span>';
+}
+function v4ChipAbout(){ return '<span class="pv-chip about">\u25cf ABOUT</span>'; }
+function v4ChipConn(){ return '<span class="pv-chip conn">\u25cf CONNECTION</span>'; }
+function v4MRow(label, small, barCls, pct, val){
+  return '<div class="pv-mrow"><span class="ml">' + label + (small ? '<small>' + small + '</small>' : '') + '</span><span class="pv-bar ' + barCls + '"><i style="width:' + Math.max(0, Math.min(100, pct)) + '%"></i></span><span class="mv">' + val + '</span></div>';
+}
+
 function viewHome(v){
-  phLoad(); dtLoad(); chLoad(); wnLoad(); pfLoad();
-  var pop = people(), N = pop.length;
-  var ph = hmPhotoStats();
-  HM_DECK = hmDeckData(pop); HM_PD = hmDeckPhotos(); HMI_INDEX = {};
+  phLoad(); dtLoad(); chLoad(); wnLoad(); pfLoad(); rcLoad(); cnLoad();
   if(HMI) hmiClose(true);
-  var dd = HM_DECK, pd = HM_PD;
-  var townsTop = hmFormsTop(dd.towns, 8), townMax = townsTop.length ? townsTop[0].c : 0;
-  var skillsTop = hmFormsTop(dd.skills, 8, true), skillMax = skillsTop.length ? skillsTop[0].c : 0;
-  var groupsTop = hmPlainTop(dd.groupCounts, 8), groupMax = groupsTop.length ? groupsTop[0].c : 0;
-  var orgsTop = hmPlainTop(dd.orgCounts, 8), orgMax = orgsTop.length ? orgsTop[0].c : 0;
-  var fpTop = hmPlainTop(dd.fpCounts, 8), fpMax = fpTop.length ? fpTop[0].c : 0;
-  /* V3.26.0 consolidation (JD): the KPI strip rides inside the
-     banner, the two mixes + network line are one Shape card, and
-     the five leader boards are one Rankings card — three surfaces
-     where there were nine, so the content starts at the top. */
-  v.innerHTML = '<div class="page hm"><div class="hm-layout"><div class="hm-main"><div class="pagehead"><div><h1 class="display">Home</h1>' +
-    '<p class="sub">The whole circle at a glance: who you last talked to, its shape, and what changed lately. Everything opens a closer look.</p></div>' +
-    '<div class="hmk-strip">' +
-    hmKpi('people', hmFmtN(N), 'People', 'in the directory') +
-    hmKpi('footprint', hmFmtN(dd.fpTotal), 'Footprint facts', 'across ' + dd.fpPeople + ' people') +
-    hmKpi('photos', pd.onFile, 'Photos on file', hmFmtN(pd.totalPhotos) + ' photos total') +
-    hmKpi('located', dd.locN, 'Located', Object.keys(dd.towns).length + ' towns on file') +
-    hmKpi('dated', dd.dated, 'Known since', dd.undated + ' still missing a year') +
+  var M = v4Metrics(), N = M.N, T = M.tiers, B = M.bands, cy = M.cy;
+  var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var WD = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var now = new Date();
+  var dateLine = WD[now.getDay()] + ', ' + ['January','February','March','April','May','June','July','August','September','October','November','December'][now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+  var rcN = (typeof RC !== 'undefined' && RC) ? rcPendingCount() : 0;
+  var rcPeople = 0; try{ rcPeople = rcModel().groups.length; }catch(x){}
+  var fiN = (typeof FI !== 'undefined' && FI) ? fiUnreadCount() : 0;
+  var pfN = (typeof PF !== 'undefined' && PF) ? pfPendingCount() : 0;
+  var phN = 0; try{ phN = phSuspects().length; }catch(x){}
+  /* added today, from the change log */
+  var today = todayStr(), addedNames = [];
+  if(CH && CH.entries) CH.entries.forEach(function(c){ if(c.filed === today && /add/i.test(c.what || '') && addedNames.indexOf(c.name) < 0) addedNames.push(c.name); });
+  var inTouch = M.lc.y0 + M.lc.y1, older = M.lc.y2324 + M.lc.y2122 + M.lc.yOld;
+  var curFair = B.current + B.fairly;
+  var lastCheck = (DT && DT.date) ? ('Last check run ' + (DT.date === today ? 'today' : MN[+DT.date.slice(5, 7) - 1] + ' ' + (+DT.date.slice(8, 10)) + ', ' + DT.date.slice(0, 4)) + ' \u00b7 next 6:54 PM ET') : 'Next sweep 6:54 PM ET';
+  /* council strip */
+  var cnHTML = '<span class="ok">\u2713 Gate clear.</span> No council pass on file yet.';
+  try{
+    if(typeof CN !== 'undefined' && CN){
+      var lr = cnLatestRun(CN), bud = CN.budget || {};
+      var gateOpen = (CN.flags || []).filter(function(f){ return f.state === 'open'; }).length;
+      cnHTML = (gateOpen ? '<b>' + gateOpen + ' flag' + (gateOpen === 1 ? '' : 's') + ' open.</b>' : '<span class="ok">\u2713 Gate clear.</span>') +
+        (lr ? ' <b>' + esc(lr.run.title || 'Council') + '</b> ran last \u2014 ' + esc(cnFmtDate(lr.date)) + '.' : '') +
+        (bud.used_pct != null ? '<br><b>Resource:</b> ' + esc(String(bud.used_pct)) + '% of the week used' + (bud.week_resets ? ', resets ' + esc(cnFmtDate(cnParseDate(bud.week_resets))) : '') + '.' : '');
+    }
+  }catch(x){}
+  /* proximity this week, for the last-contact panel footnote */
+  var proxWeek = {}, proxVenue = '';
+  var weekAgo = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
+  people().forEach(function(di){ (D.directory[di].events || []).forEach(function(ev){ if((ev.kind === 'proximity') && ev.date >= weekAgo && ev.date <= today){ proxWeek[di] = 1; if(ev.venue) proxVenue = ev.venue; } }); });
+  var proxN = Object.keys(proxWeek).length;
+  function pct(n){ return N ? Math.round(n / N * 100) : 0; }
+  v.innerHTML = '<div class="v4p pv-view">' +
+    '<div class="pv-hero"><div><h1>Home</h1><p class="hsub">' + dateLine + ' \u00b7 Where things stand \u2014 your five questions, one screen, nothing else.</p></div>' +
+    '<div class="pulse"><b>Needs you:</b> <a class="lnk" href="#/daily/decide">' + rcN + ' to decide</a> \u00b7 <a class="lnk" href="#/photos">' + phN + ' photos to check</a> \u00b7 ' + (pfN ? pfN + ' prefill waiting' : 'Prefill clear') + '<br>' + lastCheck + ' &nbsp;<a class="lnk" href="#/daily">Open Live Records \u2192</a></div></div>' +
+    '<section class="pv-kpis">' +
+    '<div class="pv-kpi"><div class="lab">People in directory</div><div class="num">' + N + '</div><div class="sub">' + (addedNames.length ? '<b>+' + addedNames.length + '</b> today (' + esc(addedNames[0]) + ') \u00b7 ' : '') + 'every count below foots to ' + N + '</div></div>' +
+    '<div class="pv-kpi"><div class="lab">' + v4ChipConn() + ' In touch lately</div><div class="num">' + inTouch + ' <small>/ ' + N + '</small></div><div class="sub">Talked to in <b>' + (cy - 1) + ' or ' + cy + '</b> \u00b7 <b>' + older + '</b> last in touch ' + (cy - 2) + ' or earlier</div></div>' +
+    '<div class="pv-kpi"><div class="lab">' + v4ChipAbout() + ' Full picture</div><div class="num">' + T.full + ' <small>/ ' + N + '</small></div><div class="sub"><b>' + T.solid + '</b> solid \u00b7 <b>' + T.light + '</b> light \u00b7 <b>' + T.name + '</b> name only</div></div>' +
+    '<div class="pv-kpi"><div class="lab">' + v4ChipAbout() + ' Information current</div><div class="num">' + curFair + ' <small>/ ' + N + '</small></div><div class="sub"><b>' + B.current + '</b> current + <b>' + B.fairly + '</b> fairly current \u00b7 <b>' + B.outdated + '</b> outdated</div></div>' +
+    '</section>' +
+    '<section class="pv-panels">' +
+    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' How filled-out are the records?<span class="r">Same tiers in Audit, opened up</span></h2>' +
+    '<div class="scale">Core facts = place, role or skill, workplace, school, groups, phone, highlights (7). Email not counted \u2014 most people don\u2019t have one on file.</div>' +
+    v4MRow('Full picture', 'Long summary, 3+ public-record facts, 5+ core facts, a source link', 'blue', pct(T.full), T.full) +
+    v4MRow('Solid', '2+ public-record facts and 3+ core facts', 'blue', pct(T.solid), T.solid) +
+    v4MRow('Light', '1 public-record fact, or 2 core facts', 'amber', pct(T.light), T.light) +
+    v4MRow('Name only', 'No public-record facts, fewer than 2 core facts', 'dim', pct(T.name), T.name) +
+    '<div class="pv-foot">The ' + T.name + ' name-only records are the Danger Zone\u2019s home turf. <a class="lnk" href="#/audit">See who is missing what in Audit \u2192</a></div></div>' +
+    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' How current is the information?<span class="r">Quality \u00d7 recency, parts shown</span></h2>' +
+    '<div class="scale">One score out of 100, built from two parts you can see \u2014 never one opaque number:</div>' +
+    '<div class="pv-formula"><i class="fh" style="width:55%"></i><i class="fr" style="width:45%"></i></div>' +
+    '<div class="pv-formula-leg"><span><b style="color:var(--pv-blue)">What we have</b> \u2014 up to 55 points</span><span><b style="color:var(--pv-gold)">How recent</b> \u2014 up to 45 points</span></div>' +
+    '<div style="font-size:11px;color:var(--pv-dim);margin-bottom:6px">\u201cWhat we have\u201d counts facts on file, core facts, and source links. \u201cHow recent\u201d scores the newest dated item on the record.</div>' +
+    v4MRow('Current', 'Score 80\u2013100', 'green', pct(B.current), B.current) +
+    v4MRow('Fairly current', 'Score 60\u201379', 'blue', pct(B.fairly), B.fairly) +
+    v4MRow('Getting thin or old', 'Score 40\u201359', 'amber', pct(B.thin), B.thin) +
+    v4MRow('Outdated', 'Score under 40', 'red', pct(B.outdated), B.outdated) +
+    '<div class="pv-foot"><b>Honest caveat:</b> ' + M.undated + ' people have nothing dated on file, so we can\u2019t tell how current they are \u2014 their \u201chow recent\u201d part scores 0 for lack of evidence, not because the information is proven stale. ' + M.undatedFull + ' of the ' + T.full + ' full-picture people are in that group.</div></div>' +
+    '<div class="pv-panel"><h2>' + v4ChipConn() + ' Last contact \u2014 how stale are the relationships?<span class="r">By year, on purpose</span></h2>' +
+    '<div class="scale">Only ' + M.lcExact + ' of ' + N + ' last-contact entries are exact dates; the rest are a year or a year and month. Buckets are by year so nothing pretends to be more exact than it is. Proximity never counts as contact.</div>' +
+    v4MRow(String(cy), '', 'gold', pct(M.lc.y0), M.lc.y0) +
+    v4MRow(String(cy - 1), '', 'gold', pct(M.lc.y1), M.lc.y1) +
+    v4MRow((cy - 3) + ' \u2013 ' + (cy - 2), '', 'dim', pct(M.lc.y2324), M.lc.y2324) +
+    v4MRow((cy - 5) + ' \u2013 ' + (cy - 4), '', 'dim', pct(M.lc.y2122), M.lc.y2122) +
+    v4MRow((cy - 6) + ' or earlier', '', 'dim', pct(M.lc.yOld), M.lc.yOld) +
+    v4MRow('No date on file', '', 'dim', pct(M.lc.none), M.lc.none) +
+    '<div class="pv-foot">' + (proxN ? 'Crossed paths this week without contact counting: ' + proxN + ' people' + (proxVenue ? ', most recently at ' + esc(proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar \u2192</a></div></div>' +
+    '<div class="pv-panel"><h2>' + v4ChipConn() + ' Known since<span class="r">Median year met: ' + (M.ksMedian || '\u2014') + '</span></h2>' +
+    '<div class="scale">Spread of the year you met each person, 2000 to today.</div>' +
+    v4MRow('20+ years', '', 'gold', pct(M.ks.p20), M.ks.p20) +
+    v4MRow('10 \u2013 19 years', '', 'gold', pct(M.ks.y1019), M.ks.y1019) +
+    v4MRow('5 \u2013 9 years', '', 'gold', pct(M.ks.y59), M.ks.y59) +
+    v4MRow('2 \u2013 4 years', '', 'gold', pct(M.ks.y24), M.ks.y24) +
+    v4MRow('Under a year', '', 'gold', pct(M.ks.u1), M.ks.u1) +
+    '<div class="pv-foot">Longest known: since <b>' + (M.ksMin || '\u2014') + '</b> \u2014 your family.' + (addedNames.length ? ' Newest: <b>' + esc(addedNames[0]) + '</b> was added today.' : '') + '</div></div>' +
+    '</section>' +
+    '<section class="pv-bottom">' +
+    '<div class="pv-strip"><h3>Needs you today \u2014 counts are doors, not copies</h3><div class="pv-known">' +
+    '<div><b>' + rcN + '</b><span><a class="lnk" href="#/daily/decide">Items to decide</a>' + (rcPeople ? ' \u00b7 ' + rcPeople + ' people' : '') + '</span></div>' +
+    '<div><b>' + fiN + '</b><span><a class="lnk" href="#/daily/decide">New facts to read</a> \u00b7 Fact Inbox</span></div>' +
+    '<div><b>' + phN + '</b><span><a class="lnk" href="#/photos">Photos to check</a> \u00b7 possible or likely</span></div>' +
+    '<div><b>' + pfN + '</b><span>' + (pfN ? 'Prefill waiting' : 'Prefill waiting \u00b7 queue clear') + '</span></div>' +
     '</div></div>' +
-    hmCharts() +
-    hmShapeCard(dd, N) +
-    hmContactsCard() +
-    hmRanksCard([
-      { tab:'towns', title:'Where they are', rows: townsTop.map(function(t, ix){ return hmRankRow('town', t.key, t.label, t.c, townMax, ix === 0, ix + 1, N); }).join(''),
-        more: Object.keys(dd.towns).length > 8 ? hmMoreBtn('data-act="hmikpi" data-k="located"', '+' + (Object.keys(dd.towns).length - 8) + ' more towns') : '' },
-      { tab:'skills', title:'Skills', rows: skillsTop.map(function(t, ix){ return hmRankRow('skill', t.key, t.label, t.c, skillMax, false, ix + 1, N); }).join(''),
-        more: Object.keys(dd.skills).length > 8 ? hmMoreBtn('data-act="hmivlist" data-vk="skill"', '+' + (Object.keys(dd.skills).length - 8) + ' more skills') : '' },
-      { tab:'groups', title:'Groups', rows: groupsTop.map(function(t, ix){ return hmRankRow('group', t.key, t.label, t.c, groupMax, false, ix + 1, N); }).join(''),
-        more: Object.keys(dd.groupCounts).length > 8 ? hmMoreBtn('data-act="hmivlist" data-vk="group"', '+' + (Object.keys(dd.groupCounts).length - 8) + ' more groups') : '' },
-      { tab:'orgs', title:'Organizations', rows: orgsTop.map(function(t, ix){ return hmRankRow('org', t.key, t.label, t.c, orgMax, false, ix + 1, N); }).join(''),
-        more: Object.keys(dd.orgCounts).length > 8 ? hmMoreBtn('data-act="hmivlist" data-vk="org"', '+' + (Object.keys(dd.orgCounts).length - 8) + ' more organizations') : '' },
-      { tab:'foot', title:'Footprint leaders', rows: fpTop.map(function(t, ix){ return hmRankRow('footprint', t.key, t.label, t.c, fpMax, false, ix + 1, 0); }).join(''),
-        more: hmMoreBtn('data-act="hmikpi" data-k="footprint"', 'All footprint coverage') }
-    ]) +
-    '<div class="hm-years-slim">' + hmYearsCard(dd) + '</div>' +
-    '</div><aside class="hm-rail">' + hmActivity() + '</aside></div></div>';
+    '<div class="pv-strip"><h3>Council \u2014 latest pass</h3><div class="pv-council-line">' + cnHTML + '</div></div>' +
+    '<div class="pv-actions"><a class="pv-btn primary" href="#/calendar">\uff0b Log proximity for today</a><a class="pv-btn" href="#/daily/decide">Decide in Live Records \u2192</a></div>' +
+    '</section>' +
+    '<p class="pv-note">What left Home in V4: photo totals (now on Photos), group rankings (now a teaser inside Groups), and every other section\u2019s private stats. Home answers five questions and points at the rest.</p>' +
+    '</div>';
 }
 
 /* ============================================================
@@ -8381,6 +8640,46 @@ function rcFieldsLine(c){
   if(!bits.length) return '';
   return '<p class="rc-adds"><span>Also added:</span> ' + esc(bits.join(' \u00b7 ')) + '</p>';
 }
+/* Evidence block (JD 2026-11-04): the evidence is first-class on
+   the card — its own labelled panel, a step above body text in the
+   hierarchy: what lines up (the candidate's anchors, one item
+   each), the source (name + working link + the published-date
+   chip), and — where the filing would write into a field that
+   already holds a value — what it touches on file. One builder for
+   single and combined cards; the four plain blocks stay in the
+   main column untouched. */
+function rcTouchesLine(rows, leadRow){
+  if(!leadRow || leadRow.di == null || typeof D === 'undefined' || !D) return '';
+  var e = D.directory[leadRow.di]; if(!e) return '';
+  var MAP = [['companies', 'Workplace'], ['universities', 'School'], ['churches', 'Church'], ['groups', 'Group']];
+  var seen = {}, out = [];
+  function locCur(){ return gv(e, 'location_on_file'); }
+  rows.forEach(function(r){
+    var F = (r.c && r.c.fields) || {};
+    var locV = F.location_on_file != null ? F.location_on_file : F.location;
+    if(locV != null && rcFieldVal(locV) && locCur() && !seen.Place){ seen.Place = 1; out.push('Place: ' + locCur()); }
+    MAP.forEach(function(pr){
+      if(F[pr[0]] != null && rcFieldVal(F[pr[0]])){
+        var cur = gv(e, pr[0]);
+        if(cur && !seen[pr[1]]){ seen[pr[1]] = 1; out.push(pr[1] + ': ' + cur); }
+      }
+    });
+  });
+  if(!out.length) return '';
+  return '<div class="rc-ev-sec"><span class="rc-ev-lab">Touches what\u2019s on file</span><p class="rc-touch">' +
+    esc(out.slice(0, 3).join(' \u00b7 ')) + (out.length > 3 ? ' \u00b7 +' + (out.length - 3) + ' more' : '') + '</p></div>';
+}
+function rcEvidenceHTML(rows, leadRow, pubC, srcsHtml){
+  var anch = [], aseen = {};
+  rows.forEach(function(r){ ((r.c && r.c.anchors) || []).forEach(function(a){ var k = String(a).toLowerCase(); if(!aseen[k]){ aseen[k] = 1; anch.push(a); } }); });
+  var anchHtml = anch.length
+    ? '<ul class="rc-anchors">' + anch.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>'
+    : '<p class="rc-noanch">No matching facts listed \u2014 this one rests on the source alone.</p>';
+  return '<span class="rc-bh rc-ev-h">Evidence</span>' +
+    '<div class="rc-ev-sec"><span class="rc-ev-lab">What lines up</span>' + anchHtml + '</div>' +
+    '<div class="rc-ev-sec"><span class="rc-ev-lab">Source</span>' + rcPubChip(pubC || {}) + '<div class="rc-src">' + srcsHtml + '</div></div>' +
+    rcTouchesLine(rows, leadRow);
+}
 function rcConsoleHTML(){
   if(!RC) return '<section class="rcconsole" id="rcconsole"><div class="rc-loading">Loading the research ledger\u2026</div></section>';
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -8434,7 +8733,6 @@ function rcConsoleHTML(){
     var srcs = urls.length
       ? urls.map(function(c){ return '<a class="rc-src-link" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span class="rc-src-open">Open source</span><span class="rc-src-name">' + esc(c.source || 'source') + '</span>' + ic('ext', 12) + '</a>'; }).join('')
       : esc(c0.source || '') + ' <span class="rc-nosrc">no source page found</span>';
-    var anchHtml = anch.length ? '<ul class="rc-anchors">' + anch.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
     var pubC = null;
     rs.forEach(function(r){ if(!pubC && r.c.published) pubC = r.c; });
     var idAsk = rs.some(function(r){ return r.c.category === 'identity'; }) ? RC_IDASK : '';
@@ -8450,7 +8748,7 @@ function rcConsoleHTML(){
       (rcOnFileLine(lead) ? '<div class="rc-block"><span class="rc-bh">What\u2019s on file now</span>' + rcOnFileLine(lead) + '</div>' : '') +
       '<div class="rc-block"><span class="rc-bh">Why I\u2019m asking you</span>' + why + '</div>' +
       '<div class="rc-block"><span class="rc-bh">If you file it</span><p class="rc-filetext"><span>What gets added:</span></p>' + adds + fieldsHtml + '</div></div>' +
-      '<div class="rc-ev">' + rcPubChip(pubC || {}) + '<div class="rc-src">' + srcs + '</div>' + anchHtml + '</div>' +
+      '<div class="rc-ev">' + rcEvidenceHTML(rs, lead, pubC, srcs) + '</div>' +
       '<div class="rc-actions">' +
       '<button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c0.id) + '">File it</button>' +
       '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c0.id) + '">Dismiss</button>' + photoBtn +
@@ -8472,7 +8770,6 @@ function rcConsoleHTML(){
        (edge segment + main-cell wash in the CSS) and the mix of
        categories reads at a glance. */
     var catPill = '<span class="rc-cat' + (RC_CATS[c.category] ? ' rccat-' + c.category : '') + '">' + esc(RC_CATS[c.category] || c.category || '') + '</span>';
-    var anchors = (c.anchors || []).length ? '<ul class="rc-anchors">' + c.anchors.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
     var src = c.url ? '<a class="rc-src-link" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span class="rc-src-open">Open source</span><span class="rc-src-name">' + esc(c.source || 'source') + '</span>' + ic('ext', 12) + '</a>' : esc(c.source || '') + ' <span class="rc-nosrc">no source page found</span>';
     var photoBtn = r.st.k === 'orphan' ? '' :
       '<button type="button" class="btn ghost sm rc-photo' + (r.photo ? ' on' : '') + '" data-act="rcphoto" data-id="' + esc(c.id) + '">' + ic('camera', 14) + (r.photo ? 'Photo lead set' : 'Photo at source?') + '</button>';
@@ -8493,7 +8790,7 @@ function rcConsoleHTML(){
       '<div class="rc-block"><span class="rc-bh">Why I\u2019m asking you</span><p class="rc-why">' + esc(c.missing_gate || '') + '</p></div>' +
       '<div class="rc-block"><span class="rc-bh">If you file it</span><p class="rc-filetext"><span>What gets added:</span> ' + esc(c.file_text || c.claim || '') + (c.source ? ' <span class="dim">(' + esc(c.source) + ')</span>' : '') + '</p>' +
       rcFieldsLine(c) + '</div></div>' +
-      '<div class="rc-ev">' + rcPubChip(c) + '<div class="rc-src">' + src + '</div>' + anchors + '</div>' +
+      '<div class="rc-ev">' + rcEvidenceHTML([r], r, c, src) + '</div>' +
       actions + '</div>';
   });
   /* Pending view: wrap each person's rows in a bundle — grouping is
@@ -8782,6 +9079,8 @@ function ctlMonthHTML(){
       if(!kseen[x.ck][x.di]){ kseen[x.ck][x.di] = 1; kc[x.ck]++; }
     });
     var cls = 'ct-cell' + (ds === today ? ' today' : '') + (ds === CTL.day ? ' sel' : '') + (CTL.qdi != null && seen[CTL.qdi] ? ' hl' : '');
+    var dlab = '';
+    if(es.length){ var ev0 = ((D.directory[es[0].di] || {}).events || [])[es[0].i] || {}; dlab = es[0].ck === 'proximity' ? ('Proximity — ' + (ev0.venue || ev0.summary || '')) : (ev0.summary || ''); if(dlab.length > 44) dlab = dlab.slice(0, 44) + '…'; }
     h += '<div class="' + cls + '" data-act="ctday" data-d="' + ds + '" title="' + esc(caFmtD(ds)) + '">' +
       '<div class="ct-dn">' + d + '</div>' +
       (plist.length ? '<div class="ct-stack">' + plist.slice(0, 4).map(function(x){
@@ -8791,6 +9090,7 @@ function ctlMonthHTML(){
         (kc.contact ? '<span class="ct-kc k-contact">' + ic('pin', 10) + kc.contact + '</span>' : '') +
         (kc.online ? '<span class="ct-kc k-online">' + lcGlobe(10) + kc.online + '</span>' : '') +
         (kc.proximity ? '<span class="ct-kc k-proximity"><span class="ct-dashsq sm"></span>' + kc.proximity + '</span>' : '') + '</div>' : '') +
+      (dlab ? '<div class="ct-dlab">' + esc(dlab) + '</div>' : '') +
       '</div>';
   }
   h += '</div>';
@@ -8916,15 +9216,15 @@ function viewCalendar(v){
      counted from the directory itself. */
   phLoad();
   ctlInit();
-  var head = '<div class="page calpage ctpage" data-kind="connection">';
+  var head = '<div class="page calpage ctpage v4p" data-kind="connection">';
   v.innerHTML = head +
-    '<div class="pagehead"><div><h1 class="display">Calendar</h1>' +
-    '<p class="sub">Who you have been in contact with — in person, online, or in proximity — with the tools to adjust it right here.</p></div></div>' +
+    '<div class="pv-vhead"><div><h1>Calendar</h1>' +
+    '<p class="pv-hsub">Contact, online and proximity on one month. Click a day to read it, add to it, or fix it.</p></div>' +
+    '<div class="side"><a class="lnk" data-act="pvproxjump" style="cursor:pointer">Log proximity ↓</a> · <a class="lnk" href="#/people">Open People →</a></div></div>' +
     ctlBarHTML() +
-    '<div class="ct-layout"><div class="ct-main">' + ctlMonthHTML() + '</div>' +
-    '<aside class="ct-rail">' + ctlDayHTML() + '</aside></div>' +
-    ctSeenHTML() +
-    mgProxHTML() +
+    '<div class="pv-cal-layout"><div class="pv-cal">' + ctlMonthHTML() +
+    '<div class="pv-legend"><span class="li"><span class="pv-sw" style="background:var(--pv-gold)"></span>Contact, in person</span><span class="li"><span class="pv-sw" style="background:var(--pv-blue)"></span>Contact, online</span><span class="li"><span class="pv-sw prox"></span>Proximity — crossed paths; it never counts as contact</span></div></div>' +
+    '<div class="pv-cal-side"><aside class="ct-rail">' + ctlDayHTML() + '</aside>' + mgProxHTML() + ctSeenHTML() + '</div></div>' +
     '<section class="card ct-stamps"><header><h3>Contact stamps — everyone, one table</h3>' +
     '<span class="ct-anote">Bulk edit of Last Contact, Last Online and First Contact. Stamp edits ride the Save Pool and can be undone.</span></header>' +
     '<div class="cbody">' + mgStampsHTML() + '</div></section></div>';
@@ -9271,11 +9571,65 @@ function fiTabsHTML(on){
    repaints only #lr-body — the chrome is never rebuilt.
    ============================================================ */
 function lrChromeHTML(on, title, subHTML, subId){
-  return '<div class="pagehead lr-chrome"><div class="lr-chrome-l"><div class="fi-crumb">Live Records</div>' +
-    '<h1 class="display">' + title + '</h1>' +
-    '<p class="sub lr-chrome-sub"' + (subId ? ' id="' + subId + '"' : '') + '>' + subHTML + '</p></div>' +
-    '<div class="lr-head-r">' + fiTabsHTML(on) +
-    '<button type="button" class="btn ghost sm" data-act="lrccopen">' + ic('sparkle', 14) + 'Command Center</button></div></div>';
+  /* V4.1: the preview's Live Records chrome — one header ("Live
+     Records" + a plain sub-line) and the three tabs Today / Needs a
+     decision / History, identical in every state so navigation
+     never moves the chrome (V3.79.1 rule kept). The Decide header
+     count stays IN PARTS in the sub-line (V3.88.0): the tab paren
+     carries the Research Command count only; the combined waiting
+     total lives on the rail badge via lrWaitingCount(). The
+     Command Center button rides along (working tool, not chrome). */
+  var rcN = (typeof RC !== 'undefined' && RC) ? rcPendingCount() : 0;
+  return '<div class="pv-vhead"><div><h1>Live Records</h1><p class="pv-hsub"' + (subId ? ' id="' + subId + '"' : '') + '>' + subHTML + '</p></div>' +
+    '<div class="side"><button type="button" class="pv-btn sm ghost" data-act="lrccopen">' + ic('sparkle', 14) + ' Command Center</button></div></div>' +
+    '<nav class="pv-lrtabs" aria-label="Live Records">' +
+    '<a href="#/daily"' + (on === 'records' ? ' class="on"' : '') + '>Today</a>' +
+    '<a href="#/daily/decide"' + (on === 'decide' ? ' class="on"' : '') + '>Needs a decision <span class="n' + (rcN ? '' : ' zero') + '">(' + rcN + ')</span></a>' +
+    '<a href="#/daily/filings"' + (on === 'filings' ? ' class="on"' : '') + '>History</a></nav>';
+}
+/* V4.1 Today: the fresh rule up front, then the latest brief's
+   filed facts as cards — fact, the dates we know, the source, and
+   the person's record tier + currency band. */
+function lrTodayHTML(){
+  var today = todayStr();
+  var freshKeys = {};
+  (DT.hot || []).forEach(function(h){ freshKeys[(h.name || '') + '|' + (h.text || '')] = 1; });
+  var cards = '', nFacts = 0;
+  (DT.filed || []).forEach(function(f){
+    var di = null;
+    for(var i = 0; i < D.directory.length; i++){ if(dispName(D.directory[i]) === (f.display || f.name)){ di = i; break; } }
+    var st = di != null ? v4PersonStats(D.directory[di]) : null;
+    (f.facts || []).forEach(function(fc){
+      nFacts++;
+      var isFresh = !!(fc.fresh || freshKeys[(f.name || '') + '|' + (fc.text || '')]);
+      var dates = '';
+      if(fc.date || fc.event_date) dates += '<span><span class="dl">Happened</span><b>' + esc(fc.date || fc.event_date) + '</b></span>';
+      if(fc.published) dates += '<span><span class="dl">Published</span><b>' + esc(fc.published) + '</b></span>';
+      dates += '<span><span class="dl">Found</span><b>' + esc(DT.date || today) + '</b></span>';
+      cards += '<div class="pv-card"><div class="chead"><span class="who">' + (di != null ? '<a class="lnk" href="#/p/' + di + '">' + esc(f.display || f.name) + '</a>' : esc(f.display || f.name)) + '</span>' + v4ChipAbout() +
+        (isFresh ? '<span class="pv-chip ok">FRESH</span>' : '') +
+        (st ? '<span class="pv-chip mut">' + V4_TIER_LABEL[st.tier] + ' \u00b7 ' + st.score + '/100 \u00b7 ' + V4_BAND_LABEL[st.band] + '</span>' : '') + '</div>' +
+        '<p class="pv-fact">' + esc(fc.text || '') + '</p>' +
+        '<div class="pv-dates">' + dates + '</div>' +
+        '<div class="pv-conf"><span class="reasons">' + (fc.url ? 'Source: <a class="lnk" href="' + esc(fc.url) + '" target="_blank" rel="noopener">' + esc(fc.source || 'link') + '</a>' : (fc.source ? 'Source: ' + esc(fc.source) : '')) + '</span></div></div>';
+    });
+  });
+  var checkedN = (DT.checked || []).length;
+  return '<div class="pv-strip row" style="margin-bottom:14px"><b>Fresh means the event happened in the last 21 days</b><span>\u2014 the day we found it never makes anything fresh. Fresh items carry the FRESH marker.</span>' +
+    '<span class="sp"></span><span>Latest brief: ' + checkedN + ' checked \u00b7 ' + nFacts + ' fact' + (nFacts === 1 ? '' : 's') + ' filed \u00b7 ' + esc(DT.date || '') + '</span></div>' +
+    (cards || '<div class="pv-card"><p class="pv-fact">Nothing filed in the latest brief.</p></div>');
+}
+/* V4.1 History: last-checked coverage + the change log (the old
+   Filings feed, unchanged underneath). */
+function lrHistoryHTML(){
+  var fr = DT && DT.freshness ? DT.freshness : null;
+  var within30 = fr ? (fr.d7 || 0) + (fr.d30 || 0) : 0;
+  var left = '<div class="pv-panel"><h2>Last checked<span class="r">The rotation</span></h2>' +
+    '<p style="font-size:12.5px;color:var(--pv-mut);line-height:1.55">Everyone in the rotation checked within 30 days \u2014 <b style="color:var(--pv-text)">' + within30 + '</b>' + (fr && fr.oldest ? '. The longest-unchecked record was last checked ' + esc(fr.oldest) + '.' : '.') + '</p>' +
+    (fr ? v4MRow('Within 7 days', '', 'blue', 0, fr.d7 || 0) + v4MRow('Within 30 days', '', 'blue', 0, fr.d30 || 0) + v4MRow('Within 90 days', '', 'dim', 0, fr.d90 || 0) + v4MRow('Older', '', 'dim', 0, fr.older || 0) + v4MRow('Never checked', '', 'dim', 0, fr.never || 0) : '') +
+    '<div class="pv-foot">Sweeps run at 6:54 AM and 6:54 PM ET, 75 checks each.</div></div>';
+  return '<section class="pv-panels" style="grid-template-columns:340px 1fr">' + left +
+    '<div class="pv-panel"><h2>Change log<span class="r">What Luna filed, newest first</span></h2>' + wnFeedHTML() + '</div></section>';
 }
 function lrBriefSubHTML(){
   if(!DT || !DT.date) return 'No brief yet';
@@ -9289,7 +9643,7 @@ function lrBodyPaint(){
   var b = document.getElementById('lr-body');
   if(!b || !DT || DT.empty || !DT.date) return false;
   var y = window.scrollY, vv = $('#view'), vt = vv ? vv.scrollTop : 0;
-  b.innerHTML = lrRecordsBodyHTML();
+  b.innerHTML = lrTodayHTML();
   dtAnimate();
   window.scrollTo(0, y); if(vv) vv.scrollTop = vt;
   return true;
@@ -9555,7 +9909,7 @@ function viewDaily(v){
     if(dcFI) dcParts.push(dcFI + ' new fact' + (dcFI === 1 ? '' : 's') + ' to read');
     if(dcPF) dcParts.push(dcPF + ' prefill suggestion' + (dcPF === 1 ? '' : 's') + ' to approve');
     var dcSub = dcParts.length ? dcParts.join(' &middot; ') + dcWhen : 'Nothing waiting' + dcWhen;
-    v.innerHTML = '<div class="page lr dc-page" data-kind="about">' +
+    v.innerHTML = '<div class="page lr dc-page v4p" data-kind="about">' +
       lrChromeHTML('decide', 'Needs a decision', dcSub) +
       '<section class="dc-group"><div class="dc-ghead"><h2>Needs your call</h2><span>Research Command — findings held for your ruling.</span></div>' + rcConsoleHTML() + '</section>' +
       '<section class="dc-group"><div class="dc-ghead"><h2>New facts</h2><span>The Fact Inbox — facts Luna found. Read the ones you already know; flag the ones to check.</span></div>' + fiBodyHTML() + '</section>' +
@@ -9569,9 +9923,9 @@ function viewDaily(v){
     /* V4 Phase 2: the retired What's New page, living on as Live
        Records' third tab under the same fixed chrome. */
     wnLoad();
-    v.innerHTML = '<div class="page wn lr" data-kind="about">' +
+    v.innerHTML = '<div class="page wn lr v4p" data-kind="about">' +
       lrChromeHTML('filings', 'Filings', 'Facts, photos and hot-off-the-press items &mdash; newest first.') +
-      wnFeedHTML() + '</div>';
+      lrHistoryHTML() + '</div>';
     return;
   }
   /* V3.79.1: the header is the shared Live Records chrome in EVERY
@@ -9586,7 +9940,7 @@ function viewDaily(v){
   var lrSwapRestore = !!render._drestore;
   var lrKeepY = (lrRepaint && !lrSwapRestore) ? window.scrollY : 0;
   var lrKeepV = (lrRepaint && !lrSwapRestore) ? v.scrollTop : 0;
-  var pageOpen = '<div class="page asearch lr' + (lrRepaint ? ' noanim' : '') + '" data-kind="about">';
+  var pageOpen = '<div class="page asearch lr v4p' + (lrRepaint ? ' noanim' : '') + '" data-kind="about">';
   if(!DT){
     v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'Loading&hellip;') + '<div class="asskel"><div class="skl-top"><div class="skl hero"></div><div class="skl"></div></div><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div><div class="skl"></div></div></div>';
     return;
@@ -9594,7 +9948,7 @@ function viewDaily(v){
   if(DT.empty || !DT.date){ v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', 'No brief yet') + '<section class="card"><div class="cbody"><p class="dim">No brief yet. The first one lands tomorrow morning.</p></div></section></div>'; return; }
   /* V4 Phase 8a: Research Command's one home is the Needs a decision
      view now; the Records page no longer carries the console. */
-  v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', lrBriefSubHTML()) + '<div id="lr-body">' + lrRecordsBodyHTML() + '</div></div>';
+  v.innerHTML = pageOpen + lrChromeHTML('records', 'Live Records', lrBriefSubHTML()) + '<div id="lr-body">' + lrTodayHTML() + '</div></div>';
   LR_ANIM_SEEN = true;
   if(lrRepaint && (lrKeepY || lrKeepV)) requestAnimationFrame(function(){ window.scrollTo(0, lrKeepY); v.scrollTop = lrKeepV; });
   dtAnimate();
@@ -10796,12 +11150,12 @@ function phInspClose(instant){
 
 function viewPhotos(v){
   phLoad();
-  var head = '<div class="pagehead phhead"><div><h1 class="display">Photos</h1></div></div>';
+  var head = '<div class="pv-vhead"><div><h1>Photos</h1></div></div>';
   if(!PH){
-    v.innerHTML = '<div class="page asearch">' + head + '<div class="asskel"><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div></div></div>';
+    v.innerHTML = '<div class="page asearch v4p">' + head + '<div class="asskel"><div class="skl-grid"><div class="skl"></div><div class="skl"></div><div class="skl"></div><div class="skl"></div></div></div></div>';
     return;
   }
-  if(PH.empty || !PH.people){ v.innerHTML = '<div class="page asearch">' + head + '<section class="card"><div class="cbody"><p class="dim">No photo checks yet. The first batch lands today.</p></div></section></div>'; return; }
+  if(PH.empty || !PH.people){ v.innerHTML = '<div class="page asearch v4p">' + head + '<section class="card"><div class="cbody"><p class="dim">No photo checks yet. The first batch lands today.</p></div></section></div>'; return; }
   var all = phAllEntries();
   var pc = phPeopleCounts();   /* V3.75.0 (bug hunt 11): header counts are directory people, same basis as Home and the Sandbox */
   var withPh = pc.onFile;
@@ -10810,7 +11164,7 @@ function viewPhotos(v){
      one compact line, and every control fits in ONE toolbar row —
      Tier/Organizations tuck behind Filters. The photos are the hero;
      the grid gets the reclaimed height. */
-  var headFull = '<div class="pagehead phhead"><div><h1 class="display">Photos</h1></div><div class="ph-headstats">' +
+  var headFull = '<div class="pv-vhead"><div><h1>Photos</h1><p class="pv-hsub">Every photo on file, the ones waiting on your call, and who still has none.</p></div><div class="side ph-headstats">' +
     '<span class="phst">' + ic('camera', 13) + '<b>' + (PH.total || PH.people.length) + '</b> records checked</span>' +
     '<span class="phst">' + ic('check', 13) + '<b>' + withPh + '</b> on file</span>' +
     '<span class="phst">' + ic('search', 13) + '<b>' + pc.missing + '</b> no photo yet</span>' +
@@ -10854,7 +11208,16 @@ function viewPhotos(v){
         '<button type="button" class="btn sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust</button>' +
         '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div></div>';
     }).join('') + '</section>' : '';
-  v.innerHTML = '<div class="page asearch pg-photos" data-kind="about">' + headFull + possHtml + '<div class="ph-layout2">' + rail + main + '</div></div>';
+  var phConf = all.filter(function(p){ return p.status === 'confirmed'; }).length;
+  var susLik = sus.filter(function(p){ return p.status === 'likely'; }).length, susPos = sus.length - susLik;
+  var phIdx2 = phIndex(), phEntryPeople = 0;
+  people().forEach(function(di){ if(phIdx2 && phIdx2[dispName(D.directory[di])]) phEntryPeople++; });
+  var phNoEntry = pc.people - phEntryPeople;
+  var kpiHTML = '<section class="pv-kpis" style="grid-template-columns:repeat(3,1fr)">' +
+    '<div class="pv-kpi"><div class="lab">Confirmed photos</div><div class="num">' + phConf + '</div><div class="sub">Verified by eye — a photo files only on a verified fetch and an actual look.</div></div>' +
+    '<div class="pv-kpi"><div class="lab">Waiting on your call</div><div class="num">' + sus.length + '</div><div class="sub"><b>' + susLik + '</b> likely · <b>' + susPos + '</b> possible — Validate, Adjust or Reject below.</div></div>' +
+    '<div class="pv-kpi"><div class="lab">No photo entry</div><div class="num">' + phNoEntry + '</div><div class="sub">People the photo checks have never reached.</div></div></section>';
+  v.innerHTML = '<div class="page asearch pg-photos v4p" data-kind="about">' + headFull + kpiHTML + possHtml + '<div class="ph-layout2">' + rail + main + '</div></div>';
   phPaintList();
   if(PHI) phiRender();
   phFocusChromeArm();
@@ -10880,25 +11243,39 @@ function phFocusChromeArm(){
   pg.addEventListener('pointerdown', phFocusChromeKick);
   phFocusChromeKick();
 }
-function viewSettings(v){
+function mergedList(){
   var merged = [];
   D.directory.forEach(function(e, di){ var m = (e.profile || {}).merged_into; if(m && String(m).trim() && (e.profile || {}).deleted !== '1') merged.push(di); });
-  v.innerHTML = '<div class="page settings"><div class="pagehead"><div><h1 class="display">Settings</h1><p class="sub">App &amp; data — the edit key, AI assist, the Levels map, and merged profiles. Data from ' + esc(D.updated || 'unknown') + '</p></div></div>' +
-    '<section class="card"><header><h3>Connection</h3></header><div class="cbody">' +
+  return merged;
+}
+function mergedRestoreRowsHTML(){
+  var merged = mergedList();
+  if(!merged.length) return '<p class="dim">Nothing has been merged.</p>';
+  return merged.map(function(di){
+    var e = D.directory[di], tgt = BYN[String(e.profile.merged_into).toLowerCase()];
+    return '<div class="pv-logrow"><span class="ld">' + esc(dispName(e)) + '</span><span class="lx">merged into <b>' + esc(tgt != null ? dispName(D.directory[tgt]) : e.profile.merged_into) + '</b></span><span><button type="button" class="pv-btn sm" data-act="unmerge" data-di="' + di + '">Restore</button></span></div>';
+  }).join('');
+}
+function viewSettings(v){
+  var merged = mergedList();
+  v.innerHTML = '<div class="page settings v4p"><div class="pv-vhead"><div><h1>Settings</h1><p class="pv-hsub">The utility page \u2014 keys, the AI helper, the Levels map. Almost never visited.</p></div><div class="side">Data from ' + esc(D.updated || 'unknown') + '</div></div>' +
+    '<div class="pv-setgrid">' +
+    '<section class="card"><header><h3>Saving &amp; the Sheet</h3></header><div class="cbody">' +
+    '<div class="pv-kv"><span class="k">How edits save</span><span class="v">Every change queues in the <b>Save Pool</b> (top bar) and writes to the Sheet; the app reads it back before calling it saved.</span></div>' +
     '<label class="lab">Edit key<small>Only needed if the Apps Script project has an EDIT_TOKEN. Kept in this browser.</small></label>' +
     '<input type="password" id="setedit" placeholder="Edit key" autocomplete="off" value="' + esc(getPw()) + '">' +
     '<div class="row"><span class="syncline"><b id="syncs"></b></span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="retry">Send pending edits now</button></div></div></section>' +
-    '<section class="card"><header><h3>AI assist</h3></header><div class="cbody">' +
+    '<section class="card"><header><h3>AI Tidy</h3></header><div class="cbody">' +
     '<label class="lab">Tidy prompt<small>Sent to Gemini with your draft when you press Tidy with AI.</small></label><textarea id="setprompt" rows="7" placeholder="Loading"></textarea>' +
-    '<label class="lab">Gemini API key<small>Stored in the sheet, server side only.</small></label><input type="password" id="setkey" placeholder="API key" autocomplete="off">' +   /* V3.75.0 (bug hunt 36): the placeholder was a literal key-prefix string — the fragment the walkthrough saw. No code path writes any part of the stored key into the DOM; the field only ever shows placeholder text. */
+    '<label class="lab">Gemini API key<small>Stored in the sheet, server side only.</small></label><input type="password" id="setkey" placeholder="API key" autocomplete="off">' +
     '<div class="row"><button type="button" class="btn primary sm" data-act="setsave">Save</button><button type="button" class="btn ghost sm" data-act="settest">Test</button><button type="button" class="btn ghost sm danger" data-act="setclear">Clear key</button><span id="setmsg" class="dim"></span></div></div></section>' +
-    mgLevelsHTML() +
-    '<section class="card"><header><h3>Merged profiles</h3><em class="cnt">' + merged.length + '</em></header><div class="cbody">' +
-    (merged.length ? '<p class="dim">Combined profiles stay in the sheet with a pointer to the survivor. Restoring one brings it back as its own profile.</p>' + merged.map(function(di){
-      var e = D.directory[di], tgt = BYN[String(e.profile.merged_into).toLowerCase()];
-      return '<div class="evrow"><div><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '<small>into ' + esc(tgt != null ? dispName(D.directory[tgt]) : e.profile.merged_into) + '</small></div><div class="ea"><button type="button" class="btn ghost sm" data-act="unmerge" data-di="' + di + '">Restore</button></div></div>';
-    }).join('') : '<p class="dim">Nothing has been merged.</p>') + '</div></section>' +
-    '<section class="card"><header><h3>Keyboard</h3></header><div class="cbody"><div class="keys"><kbd>/</kbd><span>Search</span><kbd>Esc</kbd><span>Close or go back</span><kbd>Ctrl Z</kbd><span>Undo</span></div></div></section></div>';
+    '<div>' + mgLevelsHTML() + '</div>' +
+    '<section class="card"><header><h3>Role &amp; display defaults</h3></header><div class="cbody">' +
+    '<div class="pv-kv"><span class="k">Show (top bar)</span><span class="v">Open, Personal or Private \u2014 the role decides what renders, everywhere, and your pick is remembered for a week.</span></div>' +
+    '<div class="pv-kv"><span class="k">Merged profiles \u2014 Restore</span><span class="v">Lives in <a class="lnk" href="#/merge">Merge Studio</a> \u2014 ' + merged.length + ' merge' + (merged.length === 1 ? '' : 's') + ' on record, all restorable.</span></div>' +
+    '</div></section>' +
+    '<section class="card"><header><h3>Keyboard</h3></header><div class="cbody"><div class="keys"><kbd>/</kbd><span>Search</span><kbd>Esc</kbd><span>Close or go back</span><kbd>Ctrl Z</kbd><span>Undo</span></div></div></section>' +
+    '</div></div>';
   paintSync();
   settingsCall('getsettings', { x:1 }, function(res){
     var p = $('#setprompt'), k = $('#setkey'), m = $('#setmsg'); if(!p) return;
@@ -13286,6 +13663,29 @@ function pfKeysInit(){
   });
 }
 
+function audV4PanelsHTML(){
+  var M = v4Metrics(), T = M.tiers, N = M.N;
+  function pct(n){ return N ? Math.round(n / N * 100) : 0; }
+  var gaps = { phone:0, work:0, school:0, nolog:0, skill:0, place:0 };
+  people().forEach(function(di){
+    var e = D.directory[di];
+    if(!gv(e, 'phone')) gaps.phone++;
+    if(!tagList(gv(e, 'companies')).length) gaps.work++;
+    if(!tagList(gv(e, 'universities')).length) gaps.school++;
+    if(!(e.events || []).length) gaps.nolog++;
+    if(!tagList(gv(e, 'specialty')).length) gaps.skill++;
+    if(!ptLocVal(e)) gaps.place++;
+  });
+  function grow(lab, n, note){ return v4MRow(lab, note || '', 'amber', pct(n), n + ' missing'); }
+  return '<section class="pv-panels">' +
+    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' Completeness — the honest version<span class="r">Same numbers as Home</span></h2>' +
+    '<div class="scale">Full picture needs a long summary, 3+ public-record facts, 5 of the 7 core facts, and a source link.</div>' +
+    v4MRow('Full picture', '', 'green', pct(T.full), T.full) + v4MRow('Solid', '', 'blue', pct(T.solid), T.solid) + v4MRow('Light', '', 'amber', pct(T.light), T.light) + v4MRow('Name only', '', 'red', pct(T.name), T.name) +
+    '<div class="pv-foot">The desks below work these gaps down, one card at a time.</div></div>' +
+    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' What is missing, counted plainly<span class="r">Of ' + N + ' people</span></h2>' +
+    grow('Phone', gaps.phone) + grow('Workplace', gaps.work) + grow('School', gaps.school) + grow('No contact log', gaps.nolog, 'no events at all') + grow('Role or skill', gaps.skill) + grow('Place', gaps.place) +
+    '<div class="pv-foot">Email and family are not counted — they only apply where they apply.</div></div></section>';
+}
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
   audlLoad();
@@ -13300,13 +13700,14 @@ function viewAudit(v){
   if(m === 'lima' && S.audit.lcOpen != null && D.directory[S.audit.lcOpen]){ lcRenderOpen(v); return; }
   /* Design cleanup (JD 2026-10-28): modes, goal and the mode bar move
      INTO the hero banner; the deck starts right under it. */
-  v.innerHTML = '<div class="page audit" data-kind="neutral"><div class="pagehead"><div class="aud-headrow"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
+  v.innerHTML = '<div class="page audit v4p" data-kind="neutral"><div class="pagehead"><div class="aud-headrow"><div><h1 class="display">Audit</h1><p class="sub" id="audsub"></p></div>' +
     '<span class="aud-head-btns"><button type="button" class="btn ghost" data-act="audlater" id="audlaterbtn" hidden>' + ic('today', 15) + '<span>Saved for later (<span id="audlaterN">0</span>)</span></button>' +
     '<button type="button" class="btn ghost" data-act="audshuffle">' + ic('reset', 15) + '<span>Shuffle</span></button></span></div>' +
     '<div class="aud-tools">' + audModesHTML() +
     '<span class="aud-goal"><span class="aud-goal-l">Today\'s goal</span><span class="aud-goal-bar"><i id="audgoalfill"></i></span><span id="audgoalt"></span>' +
     '<button type="button" class="aud-goal-b" data-act="audgoal" data-d="-5" aria-label="Lower the goal by 5">−</button><button type="button" class="aud-goal-b" data-act="audgoal" data-d="5" aria-label="Raise the goal by 5">+</button></span></div>' +
     '<div id="audmodebar">' + audModeBarHTML() + '</div></div>' +
+    audV4PanelsHTML() +
     '<div id="audpool" class="audpool"></div>' +
     (m === 'years' ? '' : '<button type="button" class="aud-ykstrip" data-act="audmode" data-m="years">' + ic('calendar', 15) + '<span class="aud-ykstrip-t"><b>Years Known</b><small>One person at a time \u2014 big year, month and day lists, keyboard friendly</small></span><span class="sp"></span><span class="aud-ykstrip-n">' + ykMissN + ' missing a year</span><span class="aud-ykstrip-go">Open &rarr;</span></button>') +
     (m === 'rapid'
@@ -13607,6 +14008,16 @@ function onClick(ev){
     /* people */
     case 'pf': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); viewPeople($('#view')); break;
     case 'pf2': S.ppl[el.getAttribute('data-k')] = el.getAttribute('data-v'); openMoreFilters(); viewPeople($('#view')); break;
+    case 'pvquick': { S.ppl.quick = el.getAttribute('data-v'); $$('.pv-seg [data-act="pvquick"]').forEach(function(b){ b.classList.toggle('on', b === el); }); paintPeople(); break; }
+    case 'pvclearpick': { PTPICK = {}; paintPeople(); break; }
+    case 'pvsetplace': { var np1 = pvPickedDis().length; openSheet('Set place for ' + np1 + ' ' + (np1 === 1 ? 'person' : 'people'), '<label class="fld"><span>Place — replaces the location on file for each selected person</span><input id="pv-place" type="text" placeholder="Town, ST" autocomplete="off"></label><div class="srow"><button type="button" class="btn primary" data-act="pvsetplacego">Set place</button><button type="button" class="btn ghost" data-act="sheetclose">Cancel</button></div>'); setTimeout(function(){ var i1 = $('#pv-place'); if(i1) i1.focus(); }, 30); break; }
+    case 'pvsetplacego': { var pv1 = (($('#pv-place') || {}).value || '').trim(); if(!pv1){ toast('Type the place first.'); break; } var sel1 = pvPickedDis(); txn('Set place', function(){ sel1.forEach(function(di3){ setField(di3, 'location_on_file', ptNormLoc(pv1)); }); }); closeSheet(); toast('Place set for ' + sel1.length + ' — ' + pv1 + '.'); paintPeople(); break; }
+    case 'pvaddgroup': { var np2 = pvPickedDis().length; var gl2 = Object.keys(allGroups()).sort(); openSheet('Add group to ' + np2 + ' ' + (np2 === 1 ? 'person' : 'people'), '<label class="fld"><span>Group name</span><input id="pv-group" type="text" list="pv-grouplist" placeholder="Start typing…" autocomplete="off"><datalist id="pv-grouplist">' + gl2.map(function(g){ return '<option value="' + esc(g) + '">'; }).join('') + '</datalist></label><div class="srow"><button type="button" class="btn primary" data-act="pvaddgroupgo">Add to group</button><button type="button" class="btn ghost" data-act="sheetclose">Cancel</button></div>'); setTimeout(function(){ var i2 = $('#pv-group'); if(i2) i2.focus(); }, 30); break; }
+    case 'pvaddgroupgo': { var gv2 = (($('#pv-group') || {}).value || '').trim(); if(!gv2){ toast('Name the group first.'); break; } var sel2 = pvPickedDis(); txn('Add to group', function(){ sel2.forEach(function(di4){ var gl3 = personGroups(D.directory[di4]).slice(); if(gl3.indexOf(gv2) < 0){ gl3.push(gv2); setPersonGroups(di4, gl3); } }); }); closeSheet(); toast(sel2.length + ' added to ' + gv2 + '.'); paintPeople(); break; }
+    case 'pvlogprox': { var np3 = pvPickedDis().length; openSheet('Log proximity for ' + np3 + ' ' + (np3 === 1 ? 'person' : 'people'), '<label class="fld"><span>Date</span><input id="pv-proxdate" type="date" value="' + todayStr() + '"></label><label class="fld"><span>Place / context</span><input id="pv-proxvenue" type="text" placeholder="e.g. Lewis School, Clarkson Hall" autocomplete="off"></label><p class="dim">Proximity is co-presence only — it never counts as contact.</p><div class="srow"><button type="button" class="btn primary" data-act="pvlogproxgo">Log proximity</button><button type="button" class="btn ghost" data-act="sheetclose">Cancel</button></div>'); setTimeout(function(){ var i3 = $('#pv-proxvenue'); if(i3) i3.focus(); }, 30); break; }
+    case 'pvlogproxgo': { var pd2 = (($('#pv-proxdate') || {}).value || todayStr()), pvn = (($('#pv-proxvenue') || {}).value || '').trim(); if(!pvn){ toast('Name the place first.'); break; } var sel3 = pvPickedDis(), filed3 = 0, skip3 = 0; sel3.forEach(function(di5){ var arr4 = (D.directory[di5].events || []).slice(); var dup4 = arr4.some(function(ev2){ return ev2 && ev2.kind === 'proximity' && ev2.date === pd2 && (ev2.venue || ev2.summary) === pvn; }); if(dup4){ skip3++; return; } arr4.push({ date:pd2, kind:'proximity', venue:pvn, summary:pvn }); queuePatch(di5, { events:JSON.stringify(arr4) }); filed3++; }); closeSheet(); toast('Proximity logged for ' + filed3 + (skip3 ? ' · ' + skip3 + ' already logged' : '') + ' — ' + pvn + '.'); render(); break; }
+    case 'pvmerge': { var sel4 = pvPickedDis(); if(sel4.length < 2){ toast('Tick at least two rows to merge.'); break; } openMergeSheet(sel4[0]); break; }
+    case 'pvproxjump': { var px = $('#pv-proxlogger'); if(px) px.scrollIntoView({ block:'start' }); break; }
     case 'tsort': { var tk = el.getAttribute('data-k'); if(S.ppl.ts && S.ppl.ts.k === tk) S.ppl.ts.d = -S.ppl.ts.d; else S.ppl.ts = { k:tk, d:(PT_NUMDIR[tk] ? -1 : 1) }; paintPeople(); break; }
     case 'sstsort': { var sk2 = el.getAttribute('data-k'); if(SB.st.sortK === sk2) SB.st.sortD = -SB.st.sortD; else { SB.st.sortK = sk2; SB.st.sortD = SST_NUM[sk2] ? -1 : 1; } SB.st.result = ''; sstPaint(); break; }
     case 'ssttier': SB.st.tier = el.getAttribute('data-v'); SB.st.confirm = false; SB.st.result = ''; sstPaintTiers(); sstPaint(); break;
@@ -13913,6 +14324,9 @@ function onChange(ev){
   if(t.hasAttribute && t.hasAttribute('data-lvlsec')){ lvlSet(t.getAttribute('data-lvlsec'), t.value); return; }
   if(t.hasAttribute && t.hasAttribute('data-pxgroup')){ MGPROX.group = t.value; MGPROX.off = {}; MGPROX.venue = t.value === 'Lewis School' ? 'Lewis School, Clarkson Hall' : ''; render(); return; }
   if(t.hasAttribute && t.hasAttribute('data-pxmem')){ var pdi = +t.getAttribute('data-pxmem'); if(t.checked) delete MGPROX.off[pdi]; else MGPROX.off[pdi] = 1; var cnt = $('#px-count'); if(cnt) cnt.textContent = pxCheckedCount(); return; }
+  /* V4.1 People pick boxes: checkboxes report on change, not click. */
+  if(act === 'ptpick'){ var ppdi = +t.getAttribute('data-di'); if(t.checked) PTPICK[ppdi] = 1; else delete PTPICK[ppdi]; var prow3 = t.closest ? t.closest('tr') : null; if(prow3) prow3.classList.toggle('picked', !!t.checked); pvPaintBulk(); return; }
+  if(act === 'ptpickall'){ var shown2 = peopleFiltered().filter(function(di6){ return pvQuickKeep(D.directory[di6]); }); var allOn2 = shown2.length && shown2.every(function(di6){ return PTPICK[di6]; }); shown2.forEach(function(di6){ if(allOn2) delete PTPICK[di6]; else PTPICK[di6] = 1; }); paintPeople(); return; }
   if(t.id === 'mg-sort'){ MGMT.sort = t.value; MGMT.shown = 50; mgPaintList(); return; }
   if(t.id === 'sst-group'){ SB.st.group = t.value; SB.st.confirm = false; sstPaint(); return; }
   if(t.id === 'sst-bf'){ SB.st.bulkF = t.value; SB.st.bulkV = t.value === 'tier' ? 'vetted' : t.value === 'rel' ? 'friend' : ''; SB.st.bulkGrp = ''; SB.st.confirm = false; sstPaintBulk(); return; }
@@ -15030,6 +15444,7 @@ function pxCheckedCount(){
   return members.filter(function(di){ return !MGPROX.off[di]; }).length;
 }
 function mgProxHTML(){
+  /* V4.1: anchor target for the Calendar header's Log proximity link */
   var groups = Object.keys(allGroups()).sort();
   if(!MGPROX.group || !allGroups()[MGPROX.group]) MGPROX.group = allGroups()['Lewis School'] ? 'Lewis School' : (groups[0] || '');
   if(!MGPROX.venue) MGPROX.venue = MGPROX.group === 'Lewis School' ? 'Lewis School, Clarkson Hall' : '';
@@ -15039,7 +15454,7 @@ function mgProxHTML(){
     return '<label class="px-row"><input type="checkbox" data-pxmem="' + di + '"' + (MGPROX.off[di] ? '' : ' checked') + '>' + avatar(e, 'sm') +
       '<span class="px-name"><b>' + esc(dispName(e)) + '</b>' + (lp ? '<small>Last proximity ' + esc(ykLabelOf(lp.date)) + '</small>' : '<small>No proximity yet</small>') + '</span></label>';
   }).join('');
-  return '<div class="card mg-card mg-prox"><div class="mg-prox-h"><h3>Proximity — bulk log</h3>' + kindChip('connection', true) + '</div>' +
+  return '<div class="card mg-card mg-prox" id="pv-proxlogger"><div class="mg-prox-h"><h3>Proximity — bulk log</h3>' + kindChip('connection', true) + '</div>' +
     '<p>Proximity tracks <b>co-presence</b>, not contact: coworkers crossed paths with on workdays, and events where known people were present without a conversation. It answers \u201Cwho was I around?\u201D separately from \u201Cwho did I talk to?\u201D, so Last Contact stays honest. An event carries a date and a place only, and files through the normal save path — Last Contact and First Contact never move.</p>' +
     '<div class="frow px-controls"><label>Group<select class="inp" data-pxgroup>' +
       groups.map(function(g){ return '<option value="' + esc(g) + '"' + (g === MGPROX.group ? ' selected' : '') + '>' + esc(g) + ' (' + (allGroups()[g] || []).length + ')</option>'; }).join('') +
@@ -15729,11 +16144,21 @@ function dzEnsure(){
   return DZLOAD.loading;
 }
 function viewMergeTool(v){
-  v.innerHTML = '<div class="page sbtool" data-kind="neutral"><div class="sb-wrap">' + sbMerge() + '</div></div>';
+  v.innerHTML = '<div class="page sbtool v4p" data-kind="neutral">' +
+    '<div class="pv-vhead"><div><h1>Merge Studio</h1><p class="pv-hsub">A system tool, not a section. Two profiles that are really one person become one — the fuller record survives, the other is kept on file and can be restored.</p></div>' +
+    '<div class="side"><a class="lnk" href="#/people">Back to People →</a></div></div>' +
+    '<div class="pv-panel" style="margin-bottom:14px"><h2>Pairs already checked<span class="r">Pinned — do not merge</span></h2>' +
+    '<div class="pv-logrow"><span class="ld">McCormick</span><span class="lx"><b>Kayle McCormick</b> (NCPR) and <b>Karle McCormick</b> (Ogdensburg Free Academy) — twin sisters, two different people.</span><span class="pv-chip ok">CHECKED — NOT THE SAME PERSON</span></div></div>' +
+    '<div class="sb-wrap">' + sbMerge() + '</div>' +
+    '<div class="pv-panel" style="margin-top:14px"><h2>Merged profiles — Restore<span class="r">' + mergedList().length + ' merges on record · all restorable</span></h2>' + mergedRestoreRowsHTML() + '</div>' +
+    '</div>';
 }
 function viewDangerTool(v){
   dzEnsure();
-  v.innerHTML = '<div class="page sbtool" data-kind="neutral"><div class="sb-wrap">' + sbDangerZone() + '</div></div>';
+  v.innerHTML = '<div class="page sbtool v4p" data-kind="neutral">' +
+    '<div class="pv-vhead"><div><h1>Danger Zone</h1><p class="pv-hsub">A system tool, not a section. The thinnest records in the directory — name-only and near-empty profiles — kept or removed one at a time. Removal is a soft delete: the row moves to the Sheet’s Trash tab and can be brought back.</p></div>' +
+    '<div class="side">' + people().length + ' people listed<br>You and Kathleen DeLage never appear here.</div></div>' +
+    '<div class="sb-wrap">' + sbDangerZone() + '</div></div>';
 }
 function viewSandbox(v){
   var seg = (S.route.seg && S.route.seg[0]) || 'home';
@@ -18665,7 +19090,9 @@ function viewCouncil(v){
   var closed = flags.filter(function(f){ return cnFlagState(f, q) === 'closed'; });
   var stagedEntries = q.filter(function(e){ return e.state === 'staged'; });
   var doneToday = q.filter(function(e){ return e.state === 'done' && cnToday(e.ts); }).length;
-  var h = '<div class="cnc" data-kind="neutral">';
+  var h = '<div class="cnc v4p" data-kind="neutral">' +
+    '<div class="pv-vhead"><div><h1>Council</h1><p class="pv-hsub">Seven standing desks that keep this app honest. Each one runs on its own cadence and files flags here.</p></div></div>' +
+    '<div class="pv-strip row" style="margin-bottom:14px"><span><b>Latest pass:</b> ' + (cnLatestRun(cn) ? esc(cnLatestRun(cn).run.title || 'Council') + ' · ' + esc(cnFmtDate(cnLatestRun(cn).date)) : 'none on file') + '</span><span class="sp"></span><span>' + ((cn.flags || []).some(function(f){ return f.state === 'open'; }) ? '<b>Flags open</b>' : '<span class="ok">✓ Gate clear</span>') + (cn.budget && cn.budget.used_pct != null ? ' · Resource ' + esc(String(cn.budget.used_pct)) + '% of the week used' : '') + '</span></div>';
   /* ---- hero: open flags action queue ---- */
   h += '<header class="cnc-hero"><div class="cnc-herotop"><div>' +
     '<div class="cnc-eyebrow">Contacts Pro Council · Command Center</div>' +
