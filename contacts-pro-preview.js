@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.80.1';
+var APP_VERSION = '3.81.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7824,9 +7824,19 @@ function rcTogglePhoto(id){
 function rcNorm(s){
   return String(s || '').toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
+/* A candidate's filing lines: normally one. A merged candidate
+   (producer rule, JD 2026-11-03) carries several points from one
+   source in a single file_text, the lines joined by " ;; " — each
+   line files as its own footprint bullet. */
+function rcFileParts(c){
+  return String((c && (c.file_text || c.claim)) || '').split(/\s*;;\s*/)
+    .map(function(s){ return s.trim(); }).filter(Boolean);
+}
 function rcAlreadyFiled(e, c){
-  var n = rcNorm(c.file_text || c.claim);
-  return !!n && rcNorm(gv(e, 'public_footprint')).indexOf(n) >= 0;
+  var parts = rcFileParts(c);
+  if(!parts.length) return false;
+  var fp = rcNorm(gv(e, 'public_footprint'));
+  return parts.every(function(pt){ var n = rcNorm(pt); return !!n && fp.indexOf(n) >= 0; });
 }
 function rcStatus(c){
   var di = rcDi(c);
@@ -7878,6 +7888,11 @@ function rcDecide(id, decision){
   if(di == null){ toast('That profile is no longer in the directory — the candidate cannot be filed.'); return; }
   var e = D.directory[di];
   if(rcStatus(c).k !== 'pending'){ toast('That candidate was already decided.'); rcPaint(); return; }
+  /* Same-source combining (JD 2026-11-03): this candidate renders as
+     one combined card with its same-source mates, so one decision
+     covers every point on the card. */
+  var cluster = rcClusterOf(id);
+  if(cluster && cluster.length > 1){ rcDecideGroup(cluster, decision); return; }
   var rowEl = rcRowEl(id);
   /* Keyboard flow (V3.61.0): whichever pending row follows this one in
      the current view (or precedes it, when it is last) becomes the
@@ -7899,8 +7914,12 @@ function rcDecide(id, decision){
     patch.research_review = JSON.stringify(map);
     if(decision === 'file' && !rcAlreadyFiled(e, c)){
       var fp = String(gv(e, 'public_footprint') || '').trim();
-      var bullet = '\u2022 ' + String(c.file_text || c.claim || '').trim() + (c.source ? ' (' + c.source + ')' : '');
-      patch.public_footprint = fp ? fp + '\n' + bullet : bullet;
+      var fpn = rcNorm(fp), newLines = [];
+      rcFileParts(c).forEach(function(pt){
+        if(rcNorm(pt) && fpn.indexOf(rcNorm(pt)) < 0)
+          newLines.push('\u2022 ' + pt + (c.source ? ' (' + c.source + ')' : ''));
+      });
+      if(newLines.length) patch.public_footprint = fp ? fp + '\n' + newLines.join('\n') : newLines.join('\n');
       if(c.url){
         var files = (e.files || []).slice(), has = false;
         files.forEach(function(f){ if(f && f.url === c.url) has = true; });
@@ -7948,6 +7967,120 @@ function rcDecide(id, decision){
     rcPaint();
     if(nextCur) rcSetCur(nextCur);
   }
+}
+/* Decide a whole combined card (JD 2026-11-03): one tap writes EACH
+   point's own decision to the profile's research_review map by its
+   own candidate id — the decided-claims registry stays exact per
+   point — and filing adds every point's bullet and source link.
+   The card settles in place exactly like a single decision
+   (V3.80.1: a state change is not a navigation). */
+function rcDecideGroup(cs, decision){
+  var lead = cs[0];
+  var di = rcDi(lead);
+  if(di == null){ toast('That profile is no longer in the directory — the candidate cannot be filed.'); return; }
+  var e = D.directory[di];
+  var pend = cs.filter(function(c){ return rcStatus(c).k === 'pending'; });
+  if(!pend.length){ toast('That candidate was already decided.'); rcPaint(); return; }
+  var idset = {};
+  cs.forEach(function(c){ idset[c.id] = 1; });
+  var nextCur = '';
+  (function(){
+    var m0 = rcModel(), first = -1, last = -1;
+    m0.shown.forEach(function(r, j){ if(idset[r.c.id]){ if(first < 0) first = j; last = j; } });
+    if(first < 0) return;
+    for(var j = last + 1; j < m0.shown.length; j++) if(m0.shown[j].st.k === 'pending' && !idset[m0.shown[j].c.id]){ nextCur = m0.shown[j].c.id; return; }
+    for(var j2 = first - 1; j2 >= 0; j2--) if(m0.shown[j2].st.k === 'pending' && !idset[m0.shown[j2].c.id]){ nextCur = m0.shown[j2].c.id; return; }
+  })();
+  var rowEl = rcRowEl(lead.id);
+  txn(decision === 'file' ? 'File research candidates' : 'Dismiss research candidates', function(){
+    var patch = {}, map = rcReviewMap(e);
+    var we = {}; Object.keys(e).forEach(function(k){ we[k] = e[k]; });
+    var fp = String(gv(e, 'public_footprint') || '').trim();
+    var fpStart = fp;
+    var files = (e.files || []).slice(), filesChanged = false;
+    pend.forEach(function(c){
+      var prev = map[c.id] || {};
+      var entry = { decision:decision, at:new Date().toISOString(), confidence:+c.confidence || 0, claim:String(c.claim || '') };
+      if(prev.photo){ entry.photo = true; if(prev.photo_at) entry.photo_at = prev.photo_at; if(prev.photo_url) entry.photo_url = prev.photo_url; }
+      map[c.id] = entry;
+      if(decision === 'file'){
+        var fpn = rcNorm(fp), newLines = [];
+        rcFileParts(c).forEach(function(pt){
+          if(rcNorm(pt) && fpn.indexOf(rcNorm(pt)) < 0)
+            newLines.push('\u2022 ' + pt + (c.source ? ' (' + c.source + ')' : ''));
+        });
+        if(newLines.length) fp = fp ? fp + '\n' + newLines.join('\n') : newLines.join('\n');
+        if(c.url){
+          var has = false;
+          files.forEach(function(f){ if(f && f.url === c.url) has = true; });
+          if(!has){ files.push({ name:'Source: ' + hostOf(c.url), kind:'source', url:c.url }); filesChanged = true; }
+        }
+        var wp = {};
+        rcApplyFields(we, c, wp);
+        Object.keys(wp).forEach(function(k){ we[k] = wp[k]; patch[k] = wp[k]; });
+      }
+    });
+    patch.research_review = JSON.stringify(map);
+    if(decision === 'file'){
+      if(fp !== fpStart) patch.public_footprint = fp;
+      if(filesChanged) patch.files = JSON.stringify(files);
+    }
+    queuePatch(di, patch);
+  });
+  toast(decision === 'file'
+    ? 'Filed ' + pend.length + ' points for ' + (lead.display || '') + '. It saves through the Save Pool.'
+    : 'Dismissed ' + pend.length + ' points for ' + (lead.display || '') + '. Luna\u2019s call stands.', { undo:true });
+  if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
+  if(rowEl && RC_VIEW.status === 'pending'){
+    var acts = rowEl.querySelector('.rc-actions');
+    if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : 'Dismissed') + '</span>';
+    var bundle = rowEl.closest ? rowEl.closest('.rc-bundle') : null;
+    var mates = bundle ? bundle.querySelectorAll('.rc-row[data-rcid]').length : 0;
+    var bhead = (bundle && mates <= 1) ? bundle.querySelector('.rc-bhead') : null;
+    [rowEl, bhead].forEach(function(el2){
+      if(!el2) return;
+      el2.classList.add('leaving');
+      el2.style.height = el2.offsetHeight + 'px';
+    });
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      [rowEl, bhead].forEach(function(el2){
+        if(!el2) return;
+        el2.style.height = '0px'; el2.style.marginTop = '0px'; el2.style.marginBottom = '0px';
+        el2.style.paddingTop = '0px'; el2.style.paddingBottom = '0px'; el2.style.borderWidth = '0px';
+      });
+    }); });
+    if(nextCur) rcSetCur(nextCur);
+    setTimeout(function(){ rcPaint(); }, 315);
+  } else {
+    rcPaint();
+    if(nextCur) rcSetCur(nextCur);
+  }
+}
+/* Photo lead for a combined card: the flag belongs to the source the
+   points share, so it sets or clears on every point in the group —
+   each point keeps its own research_review entry. */
+function rcTogglePhotoGroup(ids){
+  if(!RC || !RC.candidates) return;
+  var cs = [];
+  RC.candidates.forEach(function(x){ if(ids.indexOf(x.id) >= 0) cs.push(x); });
+  if(!cs.length) return;
+  var di = rcDi(cs[0]);
+  if(di == null){ toast('That profile is no longer in the directory — the photo lead cannot be tracked.'); return; }
+  var e = D.directory[di];
+  var on = !cs.every(function(c){ return rcPhotoFlag(e, c); });
+  txn(on ? 'Mark photo lead' : 'Clear photo lead', function(){
+    var patch = {}, map = rcReviewMap(e);
+    cs.forEach(function(c){
+      var entry = map[c.id] || {};
+      if(on){ entry.photo = true; entry.photo_at = new Date().toISOString(); if(c.url) entry.photo_url = c.url; }
+      else { delete entry.photo; delete entry.photo_at; delete entry.photo_url; }
+      if(Object.keys(entry).length) map[c.id] = entry; else delete map[c.id];
+    });
+    patch.research_review = JSON.stringify(map);
+    queuePatch(di, patch);
+  });
+  toast(on ? 'Photo lead marked for ' + (cs[0].display || '') + '. Luna will pull the photo from the source page.' : 'Photo lead cleared for ' + (cs[0].display || '') + '.', { undo:true });
+  rcPaint();
 }
 /* Bundle header visual: the person's photo when the photo store has
    one for them, else the standard initial avatar. */
@@ -8024,6 +8157,48 @@ function rcModel(){
 function rcGroupKey(r){
   return r.di != null ? 'd' + r.di : 'n' + String(r.c.name || r.c.display || '').toLowerCase();
 }
+/* Same-source key (JD 2026-11-03): pending items combine only when
+   they come from the SAME source — the same site when they carry a
+   link, else the same source name. Different sources never combine. */
+function rcSrcKey(c){
+  if(c && c.url){ var h = hostOf(c.url); if(h) return 'h:' + h.toLowerCase(); }
+  return 's:' + String((c && c.source) || '').trim().toLowerCase();
+}
+/* One person's bundle rows -> display units: rows sharing a source
+   key (2 or more) form one combined unit at their first row's
+   position; every other row is its own unit. */
+function rcUnits(grows){
+  var byKey = {}, placed = {}, units = [];
+  grows.forEach(function(r){
+    var k = rcSrcKey(r.c);
+    (byKey[k] || (byKey[k] = [])).push(r);
+  });
+  grows.forEach(function(r){
+    var k = rcSrcKey(r.c);
+    if(placed[k]) return;
+    placed[k] = 1;
+    units.push({ rows: byKey[k], combined: byKey[k].length > 1 });
+  });
+  return units;
+}
+/* The same-source cluster a pending candidate belongs to in the
+   current view, as candidate objects — or null when it stands
+   alone. Computed from the live model so the render, the buttons,
+   and the keys all agree on the grouping. */
+function rcClusterOf(id){
+  if(!RC || !RC.candidates || RC_VIEW.status !== 'pending') return null;
+  var m = rcModel(), row = null;
+  m.shown.forEach(function(r){ if(r.c.id === id) row = r; });
+  if(!row || row.st.k !== 'pending') return null;
+  var gk = rcGroupKey(row);
+  var grows = m.shown.filter(function(r){ return rcGroupKey(r) === gk && r.st.k === 'pending'; });
+  var units = rcUnits(grows);
+  for(var i = 0; i < units.length; i++){
+    if(units[i].combined && units[i].rows.some(function(r){ return r.c.id === id; }))
+      return units[i].rows.map(function(r){ return r.c; });
+  }
+  return null;
+}
 /* Exactly one row is current. The stored id survives repaints and
    leaving/returning; when it falls out of the shown list (decided,
    filtered away), the first pending shown row takes over, else the
@@ -8050,6 +8225,11 @@ function rcRowEl(id){
   if(!sec || !id) return null;
   var rows = sec.querySelectorAll('.rc-row[data-rcid]');
   for(var i = 0; i < rows.length; i++) if(rows[i].getAttribute('data-rcid') === id) return rows[i];
+  /* A combined card's element carries its lead id in data-rcid and
+     every point's id in data-rcids — any point id finds the card. */
+  var grows = sec.querySelectorAll('.rc-row[data-rcids]');
+  for(var j = 0; j < grows.length; j++)
+    if((',' + grows[j].getAttribute('data-rcids') + ',').indexOf(',' + id + ',') >= 0) return grows[j];
   return null;
 }
 /* Move the current marker in the live DOM (no repaint): the class
@@ -8134,6 +8314,60 @@ function rcConsoleHTML(){
     .map(function(b){ return '<button type="button" class="' + (RC_VIEW.status === b[0] ? 'on' : '') + '" data-act="rcfilter" data-v="' + b[0] + '">' + b[1] + ' <b>' + b[2] + '</b></button>'; }).join('');
   var catOpts = ['<option value="all"' + (RC_VIEW.cat === 'all' ? ' selected' : '') + '>All categories</option>']
     .concat(Object.keys(RC_CATS).map(function(k){ return '<option value="' + k + '"' + (RC_VIEW.cat === k ? ' selected' : '') + '>' + RC_CATS[k] + '</option>'; })).join('');
+  /* Combined card (JD 2026-11-03): several pending points about one
+     person from ONE source render as a single card — each point
+     listed plainly under "What I found" and "If you file it", one
+     File it / Dismiss pair deciding all of them at once (each
+     point's decision still lands on the profile under its own id). */
+  function rcComboHTML(rs){
+    var lead = rs[0], c0 = lead.c;
+    var lp = c0.confidence_parts || {};
+    var lconf = (lp.identity != null || lp.source != null || lp.detail != null)
+      ? ((+lp.identity || 0) + (+lp.source || 0) + (+lp.detail || 0)) : (+c0.confidence || 0);
+    var band = rcBand(lconf);
+    var ids = rs.map(function(r){ return r.c.id; });
+    var anyPhoto = rs.some(function(r){ return r.photo; });
+    var allPhoto = rs.every(function(r){ return r.photo; });
+    var cats = [];
+    rs.forEach(function(r){ if(cats.indexOf(r.c.category) < 0) cats.push(r.c.category); });
+    var catPills = cats.map(function(cat){ return '<span class="rc-cat' + (RC_CATS[cat] ? ' rccat-' + cat : '') + '">' + esc(RC_CATS[cat] || cat || '') + '</span>'; }).join('');
+    var found = '<ul class="rc-points">' + rs.map(function(r){ return '<li>' + esc(r.c.claim || '') + '</li>'; }).join('') + '</ul>';
+    var gates = [];
+    rs.forEach(function(r){ var g = String(r.c.missing_gate || ''); if(g && gates.indexOf(g) < 0) gates.push(g); });
+    var why = gates.length > 1
+      ? '<ul class="rc-points">' + gates.map(function(g){ return '<li>' + esc(g) + '</li>'; }).join('') + '</ul>'
+      : '<p class="rc-why">' + esc(gates[0] || '') + '</p>';
+    var adds = '<ul class="rc-points">' + rs.map(function(r){
+      return rcFileParts(r.c).map(function(pt){ return '<li>' + esc(pt) + (r.c.source ? ' <span class="dim">(' + esc(r.c.source) + ')</span>' : '') + '</li>'; }).join('');
+    }).join('') + '</ul>';
+    var fieldsHtml = rs.map(function(r){ return rcFieldsLine(r.c); }).join('');
+    var urls = [], anch = [], aseen = {};
+    rs.forEach(function(r){
+      if(r.c.url && !urls.some(function(u){ return u.url === r.c.url; })) urls.push(r.c);
+      (r.c.anchors || []).forEach(function(a){ var k2 = String(a).toLowerCase(); if(!aseen[k2]){ aseen[k2] = 1; anch.push(a); } });
+    });
+    var srcs = urls.length
+      ? urls.map(function(c){ return '<a class="rc-src-link" href="' + esc(c.url) + '" target="_blank" rel="noopener"><span class="rc-src-open">Open source</span><span class="rc-src-name">' + esc(c.source || 'source') + '</span>' + ic('ext', 12) + '</a>'; }).join('')
+      : esc(c0.source || '') + ' <span class="rc-nosrc">no source page found</span>';
+    var anchHtml = anch.length ? '<ul class="rc-anchors">' + anch.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '';
+    var photoBtn = '<button type="button" class="btn ghost sm rc-photo' + (allPhoto ? ' on' : '') + '" data-act="rcphotogroup" data-ids="' + esc(ids.join(',')) + '">' + ic('camera', 14) + (allPhoto ? 'Photo lead set' : 'Photo at source?') + '</button>';
+    var isCur = rs.some(function(r){ return r.c.id === RC_VIEW.cur; });
+    return '<div class="rc-row rc-combo rcb-' + band.k + (isCur ? ' rc-cur' : '') + '" data-kind="about" data-rcid="' + esc(c0.id) + '" data-rcids="' + esc(ids.join(',')) + '">' +
+      '<div class="rc-conf"><b>' + lconf + '</b><span>' + band.label + '</span><span class="rc-meter"><i style="width:' + Math.max(0, Math.min(100, lconf)) + '%"></i></span>' +
+      rcPartsHTML(lp) + '<span class="rc-combo-n">' + rs.length + ' points</span></div>' +
+      '<div class="rc-main"><div class="rc-person">' + kindGlyph('about') + personLink(c0) + (anyPhoto ? '<span class="rc-phototag">' + ic('camera', 12) + 'Photo lead</span>' : '') + catPills +
+      '<span class="rc-combo-tag">' + rs.length + ' points \u00b7 one source</span>' +
+      '<span class="rc-run">' + esc(fmtD(c0.run_date)) + (c0.run_label ? ' \u00b7 ' + esc(c0.run_label) : '') + '</span></div>' +
+      '<div class="rc-block"><span class="rc-bh">What I found</span>' + found + '</div>' +
+      (rcOnFileLine(lead) ? '<div class="rc-block"><span class="rc-bh">What\u2019s on file now</span>' + rcOnFileLine(lead) + '</div>' : '') +
+      '<div class="rc-block"><span class="rc-bh">Why I\u2019m asking you</span>' + why + '</div>' +
+      '<div class="rc-block"><span class="rc-bh">If you file it</span><p class="rc-filetext"><span>What gets added:</span></p>' + adds + fieldsHtml + '</div></div>' +
+      '<div class="rc-ev"><div class="rc-src">' + srcs + '</div>' + anchHtml + '</div>' +
+      '<div class="rc-actions">' +
+      '<button type="button" class="btn primary sm" data-act="rcfile" data-id="' + esc(c0.id) + '">File it</button>' +
+      '<button type="button" class="btn ghost sm danger" data-act="rcdismiss" data-id="' + esc(c0.id) + '">Dismiss</button>' + photoBtn +
+      '<span class="rc-actnote">One decision covers all ' + rs.length + ' points.<br>File it = add them to the record.<br>Dismiss = leave the record as is.</span></div></div>';
+  }
   var rowHtmls = shown.map(function(r){
     var c = r.c, parts = c.confidence_parts || {};
     /* V3.75.0 (bug hunt 26): when the parts exist, the displayed total
@@ -8190,9 +8424,13 @@ function rcConsoleHTML(){
           '<span class="rc-bcount">' + grows.length + ' item' + (grows.length === 1 ? '' : 's') + ' left</span>' +
           (grows.some(function(x){ return x.c.category === 'conflict'; }) ? '<span class="rc-bflag">Includes a correction</span>' : '') +
           '</div>');
+        /* Same-source combining (JD 2026-11-03): inside the bundle,
+           points from one source render as one combined card. */
+        rcUnits(grows).forEach(function(u){
+          bparts.push(u.combined ? rcComboHTML(u.rows) : rowHtmls[shown.indexOf(u.rows[0])]);
+        });
         lastK = k;
       }
-      bparts.push(rowHtmls[i]);
     });
     if(lastK !== null) bparts.push('</div>');
     body = bparts.join('');
@@ -8200,7 +8438,7 @@ function rcConsoleHTML(){
   return '<section class="rcconsole" id="rcconsole" data-kind="about">' +
     '<div class="rc-head"><div><div class="rc-kicker">RESEARCH COMMAND // UNFILED CANDIDATES</div>' + kindChip('about', true) +
     '<h2>What the research found but did not file</h2>' +
-    '<p>Everything the research found but did not add to a record, grouped by person so you can finish one person at a time. <b>File it</b> adds the words under \u201cIf you file it\u201d to the record, exactly as written. <b>Dismiss</b> leaves the record as it is. Your decision is saved on the profile, so a decided item never comes back. If the linked page has a usable photo of them, mark <b>Photo at source</b> and it is tracked for the next photo pass.</p></div>' +
+    '<p>Everything the research found but did not add to a record, grouped by person so you can finish one person at a time. Points that came from one source sit together on one card, with one decision for all of them. <b>File it</b> adds the words under \u201cIf you file it\u201d to the record, exactly as written. <b>Dismiss</b> leaves the record as it is. Your decision is saved on the profile, so a decided item never comes back. If the linked page has a usable photo of them, mark <b>Photo at source</b> and it is tracked for the next photo pass.</p></div>' +
     '<div class="rc-legend">' + legend + '</div></div>' +
     '<div class="rc-stats"><div><b>' + counts.pending + '</b><span>Awaiting your call</span></div><div><b>' + counts.close + '</b><span>Close calls (70+)</span></div><div><b>' + counts.filed + '</b><span>Filed / on file</span></div><div><b>' + counts.dismissed + '</b><span>Dismissed</span></div></div>' +
     '<div class="rc-controls"><div class="rc-seg" role="group">' + statBtns + '</div>' +
@@ -8252,6 +8490,16 @@ function rcMove(d){
   m.shown.forEach(function(r, j){ if(r.c.id === RC_VIEW.cur) i = j; });
   if(i < 0) i = d > 0 ? -1 : 0;
   var n = Math.max(0, Math.min(m.shown.length - 1, i + d));
+  /* Combined cards (JD 2026-11-03): the marker walks card by card,
+     so stepping off a combined card skips its remaining points —
+     they share the one card the marker is leaving. */
+  if(RC_VIEW.status === 'pending' && n !== i && i >= 0){
+    var curRow = m.shown[i], tgt0 = m.shown[n];
+    if(curRow && tgt0 && rcGroupKey(curRow) === rcGroupKey(tgt0) && rcSrcKey(curRow.c) === rcSrcKey(tgt0.c)){
+      var gk = rcGroupKey(curRow), sk = rcSrcKey(curRow.c);
+      while(n > 0 && n < m.shown.length - 1 && rcGroupKey(m.shown[n]) === gk && rcSrcKey(m.shown[n].c) === sk) n += d;
+    }
+  }
   rcSetCur(m.shown[n].c.id);
 }
 function rcOpenSource(){
@@ -8288,7 +8536,12 @@ document.addEventListener('keydown', function(ev){
     var c = rcCurCandidate();
     if(!c) return;
     ev.preventDefault();
-    if(lk === 'p'){ rcTogglePhoto(c.id); return; }
+    if(lk === 'p'){
+      var clp = rcClusterOf(c.id);
+      if(clp && clp.length > 1) rcTogglePhotoGroup(clp.map(function(x){ return x.id; }));
+      else rcTogglePhoto(c.id);
+      return;
+    }
     if(rcStatus(c).k !== 'pending') return;
     rcDecide(c.id, lk === 'f' ? 'file' : 'dismiss');
   }
@@ -13227,6 +13480,7 @@ function onClick(ev){
     case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
     case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; rcSaveView(); rcPaint(); break;
     case 'rcphoto': rcTogglePhoto(el.getAttribute('data-id')); break;
+    case 'rcphotogroup': rcTogglePhotoGroup((el.getAttribute('data-ids') || '').split(',').filter(Boolean)); break;
     case 'rcphotoonly': RC_VIEW.photo = !RC_VIEW.photo; rcSaveView(); rcPaint(); break;
     case 'phconfirm': { var _pc = el.getAttribute('data-pname'); phSetReview(_pc, 'confirmed'); if(S.route.name === 'profile') keepAnchor(function(){ repaintTop(); }, '#pm-a'); break; }
     case 'phadjust': phEditor(el.getAttribute('data-pname')); break;
