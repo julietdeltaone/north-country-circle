@@ -3995,6 +3995,11 @@ body[data-view="sandbox"] #app:has(> #pool) #pool{grid-column:3}
 @media (max-width:1250px){.cnc-dgrid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:820px){.cnc-dgrid{grid-template-columns:1fr}}
 .cnc-frd{border-top:1px solid var(--line);padding-top:8px}
+/* A closed field-report details must hide its report block: the
+   .cnc-fr display:flex author rule otherwise overrides the UA's
+   closed-details hiding and the block overflows into the next card
+   (Layout Integrity finding, Council first audit, V4 Phase 7). */
+.cnc-frd:not([open])>.cnc-fr{display:none}
 .cnc-frd summary{cursor:pointer;font:600 12px var(--sans);color:var(--mut)}
 .cnc-frd .cnc-fr-h{display:none}
 .cnc-frd .cnc-fr{margin-top:8px}
