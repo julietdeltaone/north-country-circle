@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.83.0';
+var APP_VERSION = '3.84.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2120,10 +2120,8 @@ var NAV = [
   { k:'daily',   l:'Live Records', ic:'sparkle', kind:'about' },
   { k:'calendar', l:'Calendar', ic:'calendar', kind:'connection' },
   { k:'council', l:'Council', ic:'award',   kind:'neutral' },
-  { k:'lists',   l:'Master List', ic:'file', kind:'about' },
   { k:'photos',  l:'Photos', ic:'camera',   kind:'about' },
   { k:'network', l:'Network', ic:'network', kind:'connection' },
-  { k:'family',  l:'Family',  ic:'tree',    kind:'about' },
   { k:'groups',  l:'Groups',  ic:'groups',  kind:'about' },
   { k:'sandbox', l:'Sandbox', ic:'shield',  kind:'neutral' }
 ];
@@ -2563,6 +2561,11 @@ function render(){
     var mseg = (S.route.seg && S.route.seg[0]) || '';
     go(mseg === 'levels' ? 'settings' : 'calendar', { replace:true }); return;
   }
+  /* V4 Phase 5: Master List and Family are tabs inside Groups now.
+     Old links land on the matching tab, replaced in history so Back
+     never returns to a dead route. */
+  if(S.route.name === 'lists'){ go('groups/lists', { replace:true }); return; }
+  if(S.route.name === 'family'){ go('groups/family', { replace:true }); return; }
   var v = $('#view'), n = S.route.name;
   /* V3.13.0: a route CHANGE starts at the top. #view is a persistent
      scroller, so without this a forward navigation inherited the last
@@ -2607,7 +2610,6 @@ function render(){
     else if(n === 'people') viewPeople(v);
     else if(n === 'profile') viewProfile(v);
     else if(n === 'network') viewNetwork(v);
-    else if(n === 'family') viewFamily(v);
     else if(n === 'groups') viewGroups(v);
     else if(n === 'settings') viewSettings(v);
     else if(n === 'audit') viewAudit(v);
@@ -2616,7 +2618,6 @@ function render(){
     else if(n === 'photos') viewPhotos(v);
     else if(n === 'sandbox') viewSandbox(v);
     else if(n === 'council') viewCouncil(v);
-    else if(n === 'lists') viewLists(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -5697,14 +5698,19 @@ function famIndexHTML(ft){
     '<div class="statrows">' + rows.map(function(r){ return '<div class="srow2"><span>' + esc(r[0]) + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('') + '</div>' +
     '<div class="side-sec"><h4>Trees</h4>' + treeRows + '</div></aside>';
 }
-function viewFamily(v){
+function paintFamily(v){
+  /* V4 Phase 5: paints the Family body into the Groups Family tab's
+     container (#grpfam); the Groups view owns the page chrome. The
+     Personal gate is applied here, before any tree renders — and the
+     Groups tab row only shows the Family tab when the role clears,
+     so below Personal the tab is not there at all (blueprint §6). */
   if(!roleClears(lvlOf('family'))){
-    v.innerHTML = '<div class="page">' + emptyState('Family is a ' + cap(lvlOf('family')) + ' section.', 'The display role is ' + cap(roleCur()) + '. Raise it from the top bar — Open / Personal / Private — to see family trees.') + '</div>';
+    v.innerHTML = emptyState('Family is a ' + cap(lvlOf('family')) + ' section.', 'The display role is ' + cap(roleCur()) + '. Raise it from the top bar — Open / Personal / Private — to see family trees.');
     return;
   }
   var disp = famDisplay(), ftRes = famTrees(disp), ft = ftRes.trees || [];
   FAMV.lay = null; FAMV.pos = {}; FAMV.hover = null; FAMV.el = null;
-  if(!ft.length){ v.innerHTML = '<div class="page">' + emptyState('No family trees yet.', 'Add a parent, spouse, child or sibling from a profile and the tree appears here.') + '</div>'; return; }
+  if(!ft.length){ v.innerHTML = emptyState('No family trees yet.', 'Add a parent, spouse, child or sibling from a profile and the tree appears here.'); return; }
   var total = 0, seenP = {}; ft.forEach(function(t){ total += t.members.length; t.members.forEach(function(di){ seenP[di] = 1; }); });
   var distinctP = Object.keys(seenP).length;   /* V3.75.0 (bug hunt 14) */
   var sections = ft.map(function(t){
@@ -5717,7 +5723,7 @@ function viewFamily(v){
       ((t.spousesFrom && t.spousesFrom.length) ? '<span class="ftree-note">Married-in spouses also appear in ' + t.spousesFrom.map(function(x){ return esc(x.title); }).join(', ') + '</span>' : '') +
       '</header>' + body + '</section>';
   }).join('');
-  v.innerHTML = '<div class="page fampage" data-kind="about" data-level="personal"><div class="netbar"><div><h1 class="display">Family</h1> ' + lvlChip('personal') + '<p class="sub">' + ft.length + ' bloodline' + (ft.length === 1 ? '' : 's') + ' · ' + distinctP + ' people' + (total !== distinctP ? ' · ' + total + ' family links' : '') + '. Generations read top to bottom; every relationship is written next to the name.</p></div>' +
+  v.innerHTML = '<div class="fampage" data-kind="about" data-level="personal"><div class="netbar"><div><h1 class="display">Family</h1> ' + lvlChip('personal') + '<p class="sub">' + ft.length + ' bloodline' + (ft.length === 1 ? '' : 's') + ' · ' + distinctP + ' people' + (total !== distinctP ? ' · ' + total + ' family links' : '') + '. Generations read top to bottom; every relationship is written next to the name.</p></div>' +
     '<div class="netctl"><button type="button" class="btn ghost sm" data-act="famside" aria-expanded="' + (sideOpen(S.fam.side) ? 'true' : 'false') + '">Summary</button></div></div>' +
     '<div class="netcard famfocus" id="famcard" hidden></div>' +
     '<div class="famcols2"><div class="famlist">' + sections + '</div>' +
@@ -5729,6 +5735,11 @@ function viewFamily(v){
     if(n) n.scrollIntoView({ block:'center' });
   }
 }
+/* In-place repaint for the Family tab's own controls (Summary toggle,
+   tree pick): paint into the tab container when it is on screen,
+   never a route change. */
+function famRepaint(){ var c = $('#grpfam'); if(c) paintFamily(c); else render(); }
+function famActive(){ return S.route.name === 'groups' && S.route.seg[0] === 'family'; }
 function famPinchDist(){ var k = Object.keys(FAMV.ptr).map(function(i){ return FAMV.ptr[i]; }); return k.length < 2 ? 0 : Math.hypot(k[0].x - k[1].x, k[0].y - k[1].y); }
 function famApply(){
   var w = $('#fworld'), el = FAMV.el; if(!w || !el) return;
@@ -5745,7 +5756,7 @@ function famFit(){
 function famCoast(){
   cancelAnimationFrame(FAMV.raf);
   (function step(){
-    if(document.body.getAttribute('data-view') !== 'family') return;
+    if(!famActive()) return;
     FAMV.vel.x *= 0.92; FAMV.vel.y *= 0.92;
     if(Math.abs(FAMV.vel.x) + Math.abs(FAMV.vel.y) < 0.15) return;
     FAMV.cam.x -= FAMV.vel.x; FAMV.cam.y -= FAMV.vel.y; famApply(); FAMV.raf = requestAnimationFrame(step);
@@ -5810,7 +5821,7 @@ function famDriftStart(){
   cancelAnimationFrame(FAMV.draf);
   var last = performance.now();
   (function tick(now){
-    if(document.body.getAttribute('data-view') !== 'family' || !FAMV.el || !document.body.contains(FAMV.el)) return;
+    if(!famActive() || !FAMV.el || !document.body.contains(FAMV.el)) return;
     now = now || performance.now();
     var dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now;
     var idle = !REDUCED_MOTION && FAMV.hover == null && !Object.keys(FAMV.ptr).length && (now - (FAMV.lastAct || 0) > 4000);
@@ -6035,16 +6046,34 @@ function grpDetailSide(kind, name, mem){
 }
 function viewGroups(v){
   var kind = S.route.seg[0] || 'groups', name = S.route.seg[1] || '';
-  if(!GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
+  /* V4 Phase 5: two extra tabs live here — Lists (the Master List,
+     severed from the Sandbox loader) and Family (the trees, gated
+     per tab: below Personal the tab is not rendered at all). */
+  var special = (kind === 'lists' || kind === 'family') ? kind : null;
+  if(!special && !GKINDS.some(function(k){ return k[0] === kind; })) kind = 'groups';
   if(kind !== GRPV.lastKind || name !== GRPV.lastName){ GRPV.mq = ''; }
   GRPV.lastKind = kind; GRPV.lastName = name;
   try{ phLoad(); }catch(x){}
-  var tabs = '<nav class="tabrow" aria-label="Group kinds">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') + '</nav>';
+  var tabs = '<nav class="tabrow" aria-label="Group kinds">' + GKINDS.map(function(k){ return '<a href="#/groups/' + k[0] + '" class="tab' + (k[0] === kind ? ' on' : '') + '">' + k[1] + '</a>'; }).join('') +
+    '<a href="#/groups/lists" class="tab' + (special === 'lists' ? ' on' : '') + '">Lists</a>' +
+    (roleClears(lvlOf('family')) ? '<a href="#/groups/family" class="tab' + (special === 'family' ? ' on' : '') + '">Family</a>' : '') + '</nav>';
   /* Design cleanup (JD 2026-10-28): tabs and search live INSIDE the
      banner — the old stack of head + tab row + tool row ate the top
      of the page before any group appeared. */
-  var headTop = '<div class="pagehead"><div class="grp-headrow"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap. Each tab counts the one profile field it names; the Master List counts a name across every affiliation field, so its numbers run higher.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Manage') + '</button></div>';
+  var headTop = '<div class="pagehead"><div class="grp-headrow"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap. Each kind tab counts the one profile field it names; the Lists tab counts a name across every affiliation field, so its numbers run higher — its toggle leads with direct counts when you want the two to line up.</p></div><span class="sp"></span><button type="button" class="btn ghost sm" data-act="gmgr">' + (GMGR.on ? 'Done' : 'Combine names') + '</button></div>';
   var head = headTop + tabs + '</div>';
+  if(special){
+    GRPV.detail = null;
+    var headS = '<div class="pagehead"><div class="grp-headrow"><div><h1 class="display">Groups</h1><p class="sub">Where people overlap.</p></div></div>' + tabs + '</div>';
+    if(special === 'lists'){
+      v.innerHTML = '<div class="page groups" data-kind="about">' + headS + '<div id="grplists"></div></div>';
+      viewLists($('#grplists'));
+    } else {
+      v.innerHTML = '<div class="page groups" data-kind="about">' + headS + '<div id="grpfam"></div></div>';
+      paintFamily($('#grpfam'));   /* paints the gate state, no trees, when the role does not clear */
+    }
+    return;
+  }
   if(name){
     GRPV.detail = { kind:kind, name:name };
     var mem = grpMembersOf(kind, name);
@@ -6068,7 +6097,7 @@ function viewGroups(v){
   var selCount = names.filter(function(x){ return GMGR.sel[kind + '|' + x.n]; }).length;
   var mgr = '';
   if(GMGR.on){
-    mgr = '<div class="gmgr"><p class="gmgr-h">Tick the cards to merge, type or pick the surviving name, then combine. Ticked names stay on file as aliases of the survivor, so old spellings keep resolving to it.</p>' +
+    mgr = '<div class="gmgr"><p class="gmgr-h">Tick the cards to combine, type or pick the surviving name, then combine. Ticked names stay on file as aliases of the survivor, so old spellings keep resolving to it.</p>' +
       '<div class="finder inline"><input id="gmgrt" list="gmgrdl" placeholder="Surviving name" autocomplete="off"><datalist id="gmgrdl">' + names.map(function(x){ return '<option value="' + esc(x.n) + '">'; }).join('') + '</datalist></div>' +
       '<div class="gmgr-row2"><button type="button" class="btn sm primary" data-act="gmgrgo" data-k="' + kind + '"' + (selCount ? '' : ' disabled') + '>Combine ' + selCount + ' selected</button>' +
       (selCount ? '<button type="button" class="btn ghost sm" data-act="gmgrclear">Clear</button>' : '') + '</div></div>';
@@ -13498,7 +13527,8 @@ function onClick(ev){
     case 'poolretry1': { var prid = el.getAttribute('data-id'); OUT.items.forEach(function(x){ if(x.id === prid){ x.tries = 0; x.stuck = ''; x.err = ''; } }); OUT.retry = 0; OUT.err = ''; outKick(); paintSync(); break; }
     case 'pooldrop': { var pdid = el.getAttribute('data-id'); if(el.getAttribute('data-armed')){ OUT.items = OUT.items.filter(function(x){ return x.id !== pdid; }); outSave(); paintSync(); toast('Change discarded. It never reached the Sheet.'); } else { el.setAttribute('data-armed', '1'); el.textContent = 'Tap again to discard'; } break; }
     case 'mlx': { var mk = el.getAttribute('data-key'); MLV.open = (MLV.open === mk) ? null : mk; mlRender(); break; }
-    case 'mlopen': { var mdis = MLV.shown.length ? MLV.shown : [di]; if(mdis.indexOf(di) < 0) mdis = [di]; openPerson(di, ctxFrom('Master List', mdis, mdis.indexOf(di), 'lists')); break; }
+    case 'mlcount': store('ncc_ml_countall', mlCountAll() ? '0' : '1'); mlRender(); break;
+    case 'mlopen': { var mdis = MLV.shown.length ? MLV.shown : [di]; if(mdis.indexOf(di) < 0) mdis = [di]; openPerson(di, ctxFrom('Master List', mdis, mdis.indexOf(di), 'groups')); break; }
     case 'mlrm': { var rke = taxEntities().ents[el.getAttribute('data-key')]; if(rke) mlRemoveMember(rke, +(el.getAttribute('data-di'))); break; }
     case 'mlfind': { var fke = taxEntities().ents[el.getAttribute('data-key')]; var fdet = el.closest('.ml-det'); var fin = fdet ? fdet.querySelector('.ml-add-in') : null; var fres = fdet ? fdet.querySelector('.ml-res') : null;
       if(fke && fin && fres){ var fq = fin.value.trim().toLowerCase(); var hits = [];
@@ -13677,7 +13707,7 @@ function onClick(ev){
       setTimeout(function(){ var s = $('#lc-sum'); if(s){ try{ s.focus({ preventScroll:true }); }catch(x){} } }, 30); break; }
     case 'gomobile': { try{ localStorage.removeItem('ncc_force_full'); }catch(x){} location.href = 'contacts-mobile.html'; break; }
     case 'openedit': openPerson(di, (S.route.name === 'profile' ? S.ctx : null), { edit:el.getAttribute('data-sec'), keepCtx:true }); landOn('#sec-' + el.getAttribute('data-sec'), { focus:true }); break;
-    case 'openfam': S.fam.focus = di; go('family'); break;
+    case 'openfam': S.fam.focus = di; go('groups/family'); break;
     case 'shownet': S.net.sel = di; go('network'); break;
     case 'ctxstep': {
       var d = +el.getAttribute('data-d'), j = S.ctx.keys.indexOf(pkey(D.directory[S.prof.di])) + d, ni = PK2I[S.ctx.keys[j]];
@@ -13889,8 +13919,8 @@ function onClick(ev){
       saveDegrees(da2, 'Edit degree'); break;
     }
     /* network + family */
-    case 'famside': S.fam.side = !sideOpen(S.fam.side); viewFamily($('#view')); break;
-    case 'famtree': S.fam.focus = di; FAM_SCROLL = true; viewFamily($('#view')); break;
+    case 'famside': S.fam.side = !sideOpen(S.fam.side); famRepaint(); break;
+    case 'famtree': S.fam.focus = di; FAM_SCROLL = true; famRepaint(); break;
     case 'netorg': { var ov = el.getAttribute('data-v'); S.net.org = ov && ov !== S.net.org ? ov : null; netCard(); NET.dirty = true; break; }
     case 'netpanel': { var pn = $('#netpanel'); if(pn) netSetPanel(pn.classList.contains('closed'), true); NET.dirty = true; break; }
     case 'netfindpick': netPickFind(di); break;
@@ -18256,6 +18286,27 @@ function cnFieldReport(key, cn){
    ============================================================ */
 var TAX = { cache: null, cacheVer: -1 };
 var MLV = { q: '', open: null, more: {}, shown: [] };
+/* V4 Phase 5: the Master List has its OWN loader now — it needs only
+   taxonomy.json (taxStruct reads SB.tax) plus the directory and the
+   org registry, both already loaded by the main loader. It no longer
+   waits on the Sandbox bundle (sbEnsure); if the Sandbox happened to
+   fetch taxonomy first, that copy is reused. */
+var MLLOAD = { ready:false, loading:null };
+function mlEnsure(){
+  if(SB.tax){ MLLOAD.ready = true; return Promise.resolve(); }
+  if(MLLOAD.loading) return MLLOAD.loading;
+  MLLOAD.loading = sbFetch('taxonomy.json', 'tax').then(function(){
+    MLLOAD.ready = true; MLLOAD.loading = null;
+    if(S.route.name === 'groups') render();
+  });
+  return MLLOAD.loading;
+}
+/* The Lists count toggle (blueprint §6): ON leads every row with the
+   full count — the name plus everything nested inside it, wherever
+   it appears; OFF leads with direct memberships only, the basis the
+   other Groups tabs count on. The other number always rides along
+   as the secondary figure, so nothing is hidden either way. */
+function mlCountAll(){ return store('ncc_ml_countall') !== '0'; }
 var TAX_KINDS = ['churches', 'companies', 'universities', 'groups', 'specialty'];
 var TAX_PRIMARY = { church: 'churches', university: 'universities', business: 'companies', military: 'companies', program: 'companies', list: 'groups', skill: 'specialty', other: 'companies' };
 var TAX_TYPES = [['church', 'Church'], ['university', 'University'], ['business', 'Business / employer'], ['military', 'Military'], ['program', 'Program'], ['list', 'My list'], ['skill', 'Skill'], ['other', 'Other organization']];
@@ -18519,6 +18570,7 @@ function mlRow(ent, depth){
   var typeLabel = ent.cat ? 'Category' : (TAX_TYPES.filter(function(t){ return t[0] === ent.type; })[0] || ['', ent.type])[1];
   var ct = ent.direct.length + (ent.direct.length === 1 ? ' person' : ' people');   /* V3.75.0 (bug hunt 21): singular */
   if(ent.cat) ct = ent.total + (ent.total === 1 ? ' person' : ' people') + ' in total';
+  else if(mlCountAll() && ent.total !== ent.direct.length) ct = ent.total + (ent.total === 1 ? ' person' : ' people') + ' · ' + ent.direct.length + ' directly';   /* V4 Phase 5: toggle ON leads with the everywhere count */
   else if(ent.total !== ent.direct.length) ct += ' · ' + ent.total + ' counting everything inside';
   if(!ent.direct.length && !ent.kids.length) ct = 'empty for now';
   var h = '<div class="ml-row' + (open ? ' open' : '') + '" style="margin-left:' + (depth * 22) + 'px">' +
@@ -18560,9 +18612,12 @@ function mlTree(ents, rootKeys, q){
   return out.join('');
 }
 function viewLists(v){
-  if(!SB.ready){
-    v.innerHTML = '<div class="page"><div class="empty"><h3>Master List</h3><p>Loading…</p></div></div>';
-    sbEnsure().then(function(){ if(S.route.name === 'lists') render(); });
+  /* V4 Phase 5: paints the Master List body into the Groups Lists
+     tab's container (the Groups view owns the page chrome). Waits on
+     its own loader (mlEnsure), never on the Sandbox bundle. */
+  if(!SB.tax && !MLLOAD.ready){
+    v.innerHTML = '<div class="empty"><h3>Master List</h3><p>Loading…</p></div>';
+    mlEnsure();
     return;
   }
   var T = taxEntities(), ents = T.ents;
@@ -18594,9 +18649,10 @@ function viewLists(v){
     (skillCats[c] = skillCats[c] || []).push(ent);
   });
   var nEnt = Object.keys(ents).filter(function(k){ return !ents[k].cat; }).length;
-  var h = '<div class="page ml" data-kind="about"><header class="ml-hd"><h2>Master List</h2>' +
-    '<p class="ml-sub">Every organization, group, and skill in one place. ' + nEnt + ' names. Tap a name to see its people and add or remove them. Renames, merges, and nesting go through Luna so they land clean. Counts cover every affiliation field on a profile; the Groups pages count one field at a time, so the two can differ.</p>' +
-    '<div class="ml-bar"><input type="text" id="mlq" placeholder="Search names" value="' + esc(MLV.q) + '"></div></header>' +
+  var h = '<div class="ml" data-kind="about"><header class="ml-hd">' +
+    '<p class="ml-sub">Every organization, group, and skill in one place. ' + nEnt + ' names. Tap a name to see its people and add or remove them. Renames, merges, and nesting go through Luna so they land clean. ' + (mlCountAll() ? 'Counts lead with everyone the name covers, including names nested inside it; the direct memberships ride along as the smaller figure.' : 'Counts lead with direct memberships, the way the other Groups tabs count; the full count, including names nested inside, rides along as the second figure.') + '</p>' +
+    '<div class="ml-bar"><input type="text" id="mlq" placeholder="Search names" value="' + esc(MLV.q) + '">' +
+    '<button type="button" class="btn ' + (mlCountAll() ? 'primary' : 'ghost') + ' sm" data-act="mlcount" aria-pressed="' + mlCountAll() + '">Count names wherever they appear</button></div></header>' +
     '<datalist id="ml-names">' + Object.keys(ents).filter(function(k){ return !ents[k].cat; }).map(function(k){ return '<option value="' + esc(ents[k].name) + '">'; }).join('') + '</datalist>' +
     '<div id="mlsecs">';
   function secBlock(id, title, inner){
