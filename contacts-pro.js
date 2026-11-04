@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.87.0';
+var APP_VERSION = '3.88.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8560,10 +8560,27 @@ function rcOpenSource(){
   if(a){ a.click(); return; }
   window.open(c.url, '_blank', 'noopener');
 }
+/* Decide view letter-key ownership (V3.88.0, JD 2026-11-04): on
+   #/daily/decide two letter-key flows share the page — Research
+   Command (F = File it, D = Dismiss, P = photo lead) and the Fact
+   Inbox (R = read, F = flag). "F" cannot mean both. Whichever group
+   JD last clicked in owns the letter keys (clicking a row already
+   feels like "I'm working here"); the review owns them by default,
+   since the view now leads with it. Arrows / j / k / Enter stay
+   the review's alone — the Fact Inbox never binds them. */
+var LR_KEY_OWNER = 'rc';
+document.addEventListener('pointerdown', function(ev){
+  if(!S.route || S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'decide')) return;
+  var t = ev.target;
+  if(!t || !t.closest) return;
+  if(t.closest('#rcconsole')) LR_KEY_OWNER = 'rc';
+  else if(t.closest('.fi-layout, .fi-controls')) LR_KEY_OWNER = 'fi';
+}, true);
 document.addEventListener('keydown', function(ev){
   if(!RC || !RC.candidates || !RC.candidates.length) return;
   if(!S.route || S.route.name !== 'daily') return;
   if(!document.getElementById('rcconsole')) return;
+  if(LR_KEY_OWNER === 'fi') return;
   if(ev.ctrlKey || ev.metaKey || ev.altKey) return;
   var t = ev.target;
   if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
@@ -9725,17 +9742,26 @@ function viewDaily(v){
        renderer, state, keyboard path and write path (BN for facts,
        BL for research, BM for prefill); only the roof is shared. */
     fiLoad(); fiProfLoad(); pfLoad();
-    var dcN = (FI ? fiUnreadCount() : 0) + (RC ? rcPendingCount() : 0) + (PF ? pfPendingCount() : 0);
+    /* V3.88.0 (JD 2026-11-04): the sub states the waiting count IN
+       PARTS, in plain words — decisions are decisions, unread facts
+       are reading. The old single "N waiting for a decision" mixed
+       the two and the tab named for decisions opened on the read
+       feed, so the review below read as gone. */
+    var dcFI = FI ? fiUnreadCount() : 0, dcRC = RC ? rcPendingCount() : 0, dcPF = PF ? pfPendingCount() : 0;
     var dcWhen = '';
     if(DT && DT.date){
       var dp = String(DT.date).split('-');
       dcWhen = dp.length === 3 ? ' &middot; last checked ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(dp[1], 10) - 1] + ' ' + parseInt(dp[2], 10) + ', ' + dp[0] : '';
     }
-    var dcSub = dcN ? dcN + ' waiting for a decision' + dcWhen : 'Nothing waiting' + dcWhen;
+    var dcParts = [];
+    if(dcRC) dcParts.push(dcRC + ' need your call');
+    if(dcFI) dcParts.push(dcFI + ' new fact' + (dcFI === 1 ? '' : 's') + ' to read');
+    if(dcPF) dcParts.push(dcPF + ' prefill suggestion' + (dcPF === 1 ? '' : 's') + ' to approve');
+    var dcSub = dcParts.length ? dcParts.join(' &middot; ') + dcWhen : 'Nothing waiting' + dcWhen;
     v.innerHTML = '<div class="page lr dc-page" data-kind="about">' +
       lrChromeHTML('decide', 'Needs a decision', dcSub) +
-      '<section class="dc-group"><div class="dc-ghead"><h2>New facts</h2><span>The Fact Inbox — facts Luna found. Read the ones you already know; flag the ones to check.</span></div>' + fiBodyHTML() + '</section>' +
       '<section class="dc-group"><div class="dc-ghead"><h2>Needs your call</h2><span>Research Command — findings held for your ruling.</span></div>' + rcConsoleHTML() + '</section>' +
+      '<section class="dc-group"><div class="dc-ghead"><h2>New facts</h2><span>The Fact Inbox — facts Luna found. Read the ones you already know; flag the ones to check.</span></div>' + fiBodyHTML() + '</section>' +
       '<section class="dc-group"><div class="dc-ghead"><h2>Prefill</h2><span>Luna\u2019s inferred values for blank fields — approve or deny each one.</span></div><div id="pfwrap"></div></section>' +
       '</div>';
     fiPaint();
@@ -14358,7 +14384,11 @@ function onKey(ev){
   if(mod || ev.altKey) return;
   if(ev.key === 'q' || ev.key === 'Q'){ if(!QA.open && !document.body.classList.contains('sheet-open')){ ev.preventDefault(); qaOpen('log'); } return; }
   if(ev.key === '/'){ ev.preventDefault(); var gs = $('#gs'); if(gs) gs.focus(); return; }
-  if(S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'decide' && !document.body.classList.contains('sheet-open')){
+  if(S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'decide' && !document.body.classList.contains('sheet-open') && LR_KEY_OWNER === 'fi'){
+    /* V3.88.0: the Fact Inbox R/F keys fire only while the Inbox
+       group owns the letter keys (see LR_KEY_OWNER) — with the
+       review first on the page, an F here must never flag a fact
+       when JD meant File it. */
     var fiFirst = document.querySelector('.fi-feed .fi-card');
     if(fiFirst && (ev.key === 'r' || ev.key === 'R')){ ev.preventDefault(); fiMarkRead(fiFirst.getAttribute('data-id')); return; }
     if(fiFirst && (ev.key === 'f' || ev.key === 'F')){ ev.preventDefault(); fiToggleFlag(fiFirst.getAttribute('data-id')); return; }
