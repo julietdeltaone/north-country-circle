@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.85.0';
+var APP_VERSION = '3.86.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -18202,7 +18202,12 @@ function cnFlagCard(f, q){
     '<h3>' + esc(f.title || '') + '</h3></div>' +
     '<div class="cnc-fmeta"><span class="cnc-kind">' + esc(cnKindLabel(f.kind)) + '</span>' +
     '<span class="cnc-fdir">' + esc(CN_DEPT_NAMES[f.director] || f.director || '') + ' Director</span>' +
-    '<span class="cnc-fdate">' + esc(f.date || '') + '</span></div>';
+    '<span class="cnc-fdate">' + esc(f.date || '') + '</span>' +
+    /* V4 Phase 7: an undecided flag older than the 8-day freshness
+       window says so, with the date it was raised — same rule and
+       label family as the desk cards. Computed at render. */
+    ((st === 'open' || st === 'staged') && cnParseDate(f.date) && !cnFresh(cnParseDate(f.date))
+      ? '<span class="cnc-pill is-stale">Stale — raised ' + esc(cnFmtDate(cnParseDate(f.date))) + '</span>' : '') + '</div>';
   if(f.ruling) h += '<div class="cnc-ruling"><b>JD’s ruling</b>' + esc(f.ruling) + '</div>';
   if(f.theory){
     h += '<div class="cnc-theory"><div class="cnc-thead"><span class="pf-grade g-' +
@@ -18833,7 +18838,7 @@ function viewCouncil(v){
     var rd = cnParseDate(r.last_run);
     var pill = !rd ? '<span class="cnc-pill is-none">No run date</span>'
       : cnFresh(rd) ? '<span class="cnc-pill is-cur">Current</span>'
-      : '<span class="cnc-pill is-stale">Stale</span>';
+      : '<span class="cnc-pill is-stale">Stale — last ran ' + esc(cnFmtDate(rd)) + '</span>';
     h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
       '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' + pill + '</div>' +
       (r.status ? '<div class="cnc-dstatus2">' + esc(cnLiveStatus(r.status, stagedEntries.length, bud)) + '</div>' : '') +
@@ -18844,15 +18849,11 @@ function viewCouncil(v){
       (fr ? '<details class="cnc-frd"><summary>Field report</summary>' + fr + '</details>' : '') + '</article>';
   });
   h += '</div></section>';
-  /* ---- runs ---- */
-  var runs = cn.runs || [];
-  if(runs.length){
-    h += '<section class="cnc-runs"><h2 class="cnc-h2">Run history</h2><div class="cnc-runlist">' +
-      runs.slice(0, 8).map(function(r2){
-        return '<div class="cn-frow"><span class="cn-fdate">' + esc(r2.date || '') + '</span>' +
-          '<span class="cn-fmain"><b>' + esc(r2.title || '') + '</b>' + (r2.outcome ? ' — ' + esc(r2.outcome) : '') + '</span></div>';
-      }).join('') + '</div></section>';
-  }
+  /* V4 Phase 7: the standalone Run history section is gone — the page
+     is hero + flags + desk cards (decided flags ride below as the
+     flags' own settled tail). The latest run still leads the hero;
+     each desk card carries its own Last run line; cn.runs itself is
+     untouched in council.json. */
   /* ---- decided ---- */
   h += '<details class="cnc-decided"><summary>Decided (' + closed.length + ') — settled law</summary><div class="cnc-dlist">';
   h += closed.length ? closed.map(function(f){
