@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.1.0';
+var APP_VERSION = '4.2.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2166,7 +2166,7 @@ function renderChrome(){
   if(typeof fiLoad === 'function') fiLoad();
   var ffExit = ''; try{ if(localStorage.getItem('ncc_force_full') && window.innerWidth <= 899) ffExit = '<a href="#" class="nv" data-act="gomobile">' + ic('phone', 20) + '<span>Mobile version</span></a>'; }catch(x){}
   $('#rail').innerHTML =
-    '<a class="rl-brand" href="#/home" aria-label="Contacts Pro"><span class="rl-mark">CP</span><span class="rl-bt"><b>Contacts Pro</b><span>JD Meyers</span></span><span class="rl-ver">V' + APP_VERSION + '</span></a>' +
+    '<a class="rl-brand" href="#/home" aria-label="Contacts Pro"><span class="rl-mark"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="16.9" cy="8.4" r="2.55" fill="#e8ecf1" opacity=".5"/><path d="M13.4 19.6c.4-3.4 1.9-5.3 3.8-5.3s3.4 1.9 3.8 5.3z" fill="#e8ecf1" opacity=".5"/><circle cx="9" cy="9.2" r="3.3" fill="#e8ecf1"/><path d="M3.4 19.6c.5-3.3 2.6-5 5.6-5s5.1 1.7 5.6 5z" fill="#e8ecf1"/></svg></span><span class="rl-bt"><b>Contacts Pro</b><span>JD Meyers</span></span><span class="rl-ver">V' + APP_VERSION + '</span></a>' +
     '<nav class="rl-group"><div class="rl-label">Every day</div><div class="navlist">' + everyDay + '</div></nav>' +
     '<nav class="rl-group"><div class="rl-label">Library</div><div class="navlist">' + library + '</div>' + cnSub + '</nav>' +
     '<nav class="rl-group"><div class="rl-label">System</div><div class="navlist">' + system + '</div><div class="rl-sub">Tools, not sections. Opened from People and profiles too.</div></nav>' +
