@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '3.82.0';
+var APP_VERSION = '3.83.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2125,8 +2125,7 @@ var NAV = [
   { k:'network', l:'Network', ic:'network', kind:'connection' },
   { k:'family',  l:'Family',  ic:'tree',    kind:'about' },
   { k:'groups',  l:'Groups',  ic:'groups',  kind:'about' },
-  { k:'sandbox', l:'Sandbox', ic:'shield',  kind:'neutral' },
-  { k:'manage',  l:'Manage',  ic:'settings', kind:'neutral' }
+  { k:'sandbox', l:'Sandbox', ic:'shield',  kind:'neutral' }
 ];
 function activeNav(){
   var n = S.route.name;
@@ -2431,7 +2430,6 @@ function topBack(){
     if(S.audit.lcOpen != null){ S.audit.lcOpen = null; viewAudit($('#view')); return; }
     if(audMode() !== 'cards'){ audSetMode('cards'); return; }
   }
-  if(S.route.name === 'manage' && S.route.seg && S.route.seg[0]){ go('manage', { replace:true }); return; }
   if(S.route.name === 'sandbox' && typeof SB !== 'undefined' && SB.tool && SB.tool !== 'home'){
     if(SB.tool === 'insights' && SB.ins && SB.ins.view){ go('sandbox/insights', { replace:true }); return; }
     go('sandbox', { replace:true }); return;
@@ -2557,6 +2555,14 @@ function render(){
      mobile shell's menu) land there, replaced in history so Back
      never returns to a dead route. */
   if(S.route.name === 'whatsnew'){ go('daily/filings', { replace:true }); return; }
+  /* V4 Phase 3: #/manage is dissolved — its stamps table and
+     Proximity logger live on the Calendar, its Levels map lives in
+     Settings. Old links land on the matching new home, replaced in
+     history so Back never returns to a dead route. */
+  if(S.route.name === 'manage'){
+    var mseg = (S.route.seg && S.route.seg[0]) || '';
+    go(mseg === 'levels' ? 'settings' : 'calendar', { replace:true }); return;
+  }
   var v = $('#view'), n = S.route.name;
   /* V3.13.0: a route CHANGE starts at the top. #view is a persistent
      scroller, so without this a forward navigation inherited the last
@@ -2611,7 +2617,6 @@ function render(){
     else if(n === 'sandbox') viewSandbox(v);
     else if(n === 'council') viewCouncil(v);
     else if(n === 'lists') viewLists(v);
-    else if(n === 'manage') viewManage(v);
   }catch(err){
     v.innerHTML = '<div class="empty"><h3>Something broke on this screen</h3><p>' + esc(String(err && err.message || err)) + '</p><p><a href="#/people" class="btn">Go to People</a></p></div>';
     if(window.console) console.error(err);
@@ -8833,8 +8838,12 @@ function viewCalendar(v){
      V3.46.0 zoomable year-map of Google Calendar fixtures and
      sighting tiers — stays below as a display-only section: its
      data never touches Last Contact stamps (JD: hold), and its
-     zoom state (CALV) and handlers are unchanged. */
+     zoom state (CALV) and handlers are unchanged.
+     V4 Phase 3: the Calendar also hosts the two upkeep tools that
+     lived in Manage — the Proximity bulk logger and the contact
+     stamps bulk table — below the Atlas, unchanged in behaviour. */
   calLoad();
+  phLoad();
   ctlInit();
   var head = '<div class="page calpage ctpage" data-kind="connection">';
   var atlas;
@@ -8857,7 +8866,12 @@ function viewCalendar(v){
     '<aside class="ct-rail">' + ctlDayHTML() + '</aside></div>' +
     '<section class="card ct-atlas"><header><h3>Atlas — 2026 fixtures &amp; sightings</h3>' +
     '<span class="ct-anote">Display only: calendar fixtures are never filed as contacts and never move Last Contact.</span></header>' +
-    '<div class="cbody">' + atlas + '</div></section></div>';
+    '<div class="cbody">' + atlas + '</div></section>' +
+    mgProxHTML() +
+    '<section class="card ct-stamps"><header><h3>Contact stamps — everyone, one table</h3>' +
+    '<span class="ct-anote">Bulk edit of Last Contact, Last Online and First Contact. Stamp edits ride the Save Pool and can be undone.</span></header>' +
+    '<div class="cbody">' + mgStampsHTML() + '</div></section></div>';
+  mgPaintList();
 }
 
 var CA_MN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -10949,7 +10963,7 @@ function phFocusChromeArm(){
 function viewSettings(v){
   var merged = [];
   D.directory.forEach(function(e, di){ var m = (e.profile || {}).merged_into; if(m && String(m).trim() && (e.profile || {}).deleted !== '1') merged.push(di); });
-  v.innerHTML = '<div class="page settings"><div class="pagehead"><div><h1 class="display">Settings</h1><p class="sub">Data from ' + esc(D.updated || 'unknown') + '</p></div></div>' +
+  v.innerHTML = '<div class="page settings"><div class="pagehead"><div><h1 class="display">Settings</h1><p class="sub">App &amp; data — the edit key, AI assist, the Levels map, and merged profiles. Data from ' + esc(D.updated || 'unknown') + '</p></div></div>' +
     '<section class="card"><header><h3>Connection</h3></header><div class="cbody">' +
     '<label class="lab">Edit key<small>Only needed if the Apps Script project has an EDIT_TOKEN. Kept in this browser.</small></label>' +
     '<input type="password" id="setedit" placeholder="Edit key" autocomplete="off" value="' + esc(getPw()) + '">' +
@@ -10958,6 +10972,7 @@ function viewSettings(v){
     '<label class="lab">Tidy prompt<small>Sent to Gemini with your draft when you press Tidy with AI.</small></label><textarea id="setprompt" rows="7" placeholder="Loading"></textarea>' +
     '<label class="lab">Gemini API key<small>Stored in the sheet, server side only.</small></label><input type="password" id="setkey" placeholder="API key" autocomplete="off">' +   /* V3.75.0 (bug hunt 36): the placeholder was a literal key-prefix string — the fragment the walkthrough saw. No code path writes any part of the stored key into the DOM; the field only ever shows placeholder text. */
     '<div class="row"><button type="button" class="btn primary sm" data-act="setsave">Save</button><button type="button" class="btn ghost sm" data-act="settest">Test</button><button type="button" class="btn ghost sm danger" data-act="setclear">Clear key</button><span id="setmsg" class="dim"></span></div></div></section>' +
+    mgLevelsHTML() +
     '<section class="card"><header><h3>Merged profiles</h3><em class="cnt">' + merged.length + '</em></header><div class="cbody">' +
     (merged.length ? '<p class="dim">Combined profiles stay in the sheet with a pointer to the survivor. Restoring one brings it back as its own profile.</p>' + merged.map(function(di){
       var e = D.directory[di], tgt = BYN[String(e.profile.merged_into).toLowerCase()];
@@ -14988,25 +15003,13 @@ document.addEventListener('keydown', function(ev){
   }
 }, true);
 
-/* ---------- WS-D: Manage area ----------
-   Placement: a first-class rail destination (neutral tool
-   treatment, per the Phase 3 rail mapping) with three tabs —
-   #/manage (Last Contact), #/manage/levels, #/manage/proximity.
-   Lives inside the normal app frame like every other view. */
+/* ---------- WS-D: upkeep tools (formerly the Manage area) ----------
+   V4 Phase 3: the Manage container is dissolved. Its three tools
+   keep their code and behaviour, re-homed: the contact stamps
+   table and the Proximity bulk logger render on the Calendar
+   (viewCalendar), and the Levels map renders in Settings
+   (viewSettings). #/manage routes redirect in render(). */
 var MGMT = { sort:'lastc', dir:1, q:'', shown:50 };
-function mgTab(){ var s = (S.route.seg && S.route.seg[0]) || 'stamps'; return ['levels', 'proximity'].indexOf(s) >= 0 ? s : 'stamps'; }
-function viewManage(v){
-  phLoad(); msgLoad();
-  var tab = mgTab();
-  var tabs = [['stamps', 'Last Contact', '#/manage'], ['levels', 'Levels', '#/manage/levels'], ['proximity', 'Proximity', '#/manage/proximity']];
-  v.innerHTML = '<div class="page manage" data-kind="neutral">' +
-    '<div class="pagehead"><div><h1 class="display">Manage</h1>' +
-    '<p class="sub">The upkeep bench: contact stamps for everyone in one table, the level map that gates the display role, and the Proximity bulk log. Stamp edits ride the Save Pool and can be undone.</p></div></div>' +
-    '<div class="mg-tabs" role="tablist">' + tabs.map(function(t){ return '<a class="mg-tab' + (tab === t[0] ? ' on' : '') + '" href="' + t[2] + '" role="tab">' + t[1] + '</a>'; }).join('') + '</div>' +
-    (tab === 'stamps' ? mgStampsHTML() : tab === 'levels' ? mgLevelsHTML() : mgProxHTML()) +
-    '</div>';
-  if(tab === 'stamps') mgPaintList();
-}
 function mgStampVal(e, k){
   if(k === 'firstc') return firstContactOf(e);
   if(k === 'online') return lcOnline(e) ? String(gv(e, 'last_contact') || '') : '';
@@ -15061,7 +15064,7 @@ var LVL_KEY = 'ncc_levels_v1';
 function lvlRowsDef(){
   var rows = SECS.map(function(s){ return { id:'sec:' + s.id, name:s.t, kind: s.mv === 'c' ? 'connection' : 'about', def:'open', note: s.id === 'persona' ? 'Traits segment bars' : '' }; });
   rows.push({ id:'family', name:'Family links', kind:'about', def:'personal', note:'Standing rule: Family = Personal.' });
-  rows.push({ id:'stamps', name:'Contact stamps — Last Contact, Last Online, First Contact', kind:'connection', def:'open', note:'Edited in the Last Contact tab and on profiles.' });
+  rows.push({ id:'stamps', name:'Contact stamps — Last Contact, Last Online, First Contact', kind:'connection', def:'open', note:'Edited in the Calendar stamps table and on profiles.' });
   return rows;
 }
 function lvlOverlay(){ try{ return JSON.parse(store(LVL_KEY) || '{}') || {}; }catch(x){ return {}; } }
