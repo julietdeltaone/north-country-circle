@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.4.1';
+var APP_VERSION = '4.4.2';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8259,6 +8259,57 @@ function rcCountsInPlace(rowEl){
     }
   }
 }
+/* The conveyor (V4.4.2, JD 2026-11-04): the decided card snaps
+   up and out, smoothly but promptly; then the next card shoots
+   up to the top of the list and becomes the current one. One
+   decision, one exit, one scroll \u2014 the same motion every
+   time, so the queue works like a conveyor: decide, next card
+   is at the top, decide, next. */
+function rcExitThenNext(rowEl, nextCur){
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bundle = rowEl.closest ? rowEl.closest('.rc-bundle') : null;
+  var mates = bundle ? bundle.querySelectorAll('.rc-row[data-rcid]').length : 0;
+  var bhead = (bundle && mates <= 1) ? bundle.querySelector('.rc-bhead') : null;
+  var els = [rowEl, bhead].filter(Boolean);
+  els.forEach(function(el2){ el2.classList.add('leaving'); el2.style.height = el2.offsetHeight + 'px'; });
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    els.forEach(function(el2){
+      el2.style.height = '0px'; el2.style.marginTop = '0px'; el2.style.marginBottom = '0px';
+      el2.style.paddingTop = '0px'; el2.style.paddingBottom = '0px'; el2.style.borderWidth = '0px';
+      el2.style.opacity = '0'; el2.style.transform = 'translateY(-10px)';
+    });
+  }); });
+  setTimeout(function(){
+    rcPaint();
+    if(nextCur) rcSetCur(nextCur);
+    /* rcPaint restores the pre-paint scroll on the next frame;
+       the conveyor scroll has to land after that restore or it
+       gets snapped back. Two frames puts it safely past. */
+    requestAnimationFrame(function(){ requestAnimationFrame(rcScrollCurToTop); });
+  }, reduced ? 0 : 300);
+}
+/* After a decision, smooth-scroll the list (the #view scroller)
+   until the current card sits at the top of the list. If there
+   is no next card, nothing scrolls. */
+function rcScrollCurToTop(){
+  var view = document.getElementById('view'); if(!view) return;
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function target(){
+    var row = rcRowEl(RC_VIEW.cur); if(!row) return null;
+    return Math.max(0, view.scrollTop + row.getBoundingClientRect().top - view.getBoundingClientRect().top - 10);
+  }
+  var y = target(); if(y == null) return;
+  view.scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
+  if(reduced) return;
+  /* Correction pass: avatar images still loading above the
+     target can push the card down while the scroll is moving.
+     Once the motion settles, re-measure and land it exactly. */
+  setTimeout(function(){
+    var row = rcRowEl(RC_VIEW.cur); if(!row) return;
+    var rel = row.getBoundingClientRect().top - view.getBoundingClientRect().top;
+    if(Math.abs(rel - 10) > 4){ var y2 = target(); if(y2 != null) view.scrollTo({ top: y2, behavior: 'smooth' }); }
+  }, 520);
+}
 function rcDecide(id, decision){
   if(!RC || !RC.candidates) return;
   var c = null;
@@ -8313,21 +8364,19 @@ function rcDecide(id, decision){
     ? 'Filed for ' + (c.display || '') + ': \u201C' + String(c.file_text || c.claim || '').slice(0, 70) + '\u201D'
     : 'Dismissed for ' + (c.display || '') + ': \u201C' + String(c.file_text || c.claim || '').slice(0, 70) + '\u201D', { undo:true });
   if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
-    /* Settle in place (V4.4.1, JD 2026-11-04: \"File the one that I
-     want to file, and then just move on to the next one. Don't make
-     the page jump and do all sorts of weird stuff.\") The decided
-     card STAYS where it is, stamped Filed or Dismissed; the marker
-     steps to the next card; the counts refresh in place. Nothing
-     collapses, nothing repaints, no other card disappears \u2014 one
-     decision touches exactly one card. The decided card leaves the
-     pending list on the next full render (a filter change or a
-     navigation), never mid-flow. */
+    /* The conveyor (V4.4.2, JD 2026-11-04): \"When you file or
+     dismiss one, it should smoothly but promptly snap and
+     transition up and out. I do want an auto-scroll so that it
+     neatly shoots the next selection up to the top.\" The
+     decided card exits up and out (rcExitThenNext), the repaint
+     lands, and the next current card scrolls to the top of the
+     list. Still exactly one card per decision \u2014 the motion
+     never decides anything by itself. */
   if(rowEl && RC_VIEW.status === 'pending'){
     var acts = rowEl.querySelector('.rc-actions');
     if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : 'Dismissed') + '</span>';
-    rowEl.classList.add('rc-decided');
     rcCountsInPlace(rowEl);
-    if(nextCur) rcSetCur(nextCur);
+    rcExitThenNext(rowEl, nextCur);
   } else {
     rcPaint();
     if(nextCur) rcSetCur(nextCur);
@@ -8399,9 +8448,8 @@ function rcDecideGroup(cs, decision){
   if(rowEl && RC_VIEW.status === 'pending'){
     var acts = rowEl.querySelector('.rc-actions');
     if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : 'Dismissed') + '</span>';
-    rowEl.classList.add('rc-decided');
     rcCountsInPlace(rowEl);
-    if(nextCur) rcSetCur(nextCur);
+    rcExitThenNext(rowEl, nextCur);
   } else {
     rcPaint();
     if(nextCur) rcSetCur(nextCur);
