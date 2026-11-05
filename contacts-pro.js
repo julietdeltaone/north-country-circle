@@ -9467,6 +9467,38 @@ function fiBridgeRestore(raw){
   try { if(raw) localStorage.setItem('ncc_fi_bridge_v1', raw); else localStorage.removeItem('ncc_fi_bridge_v1'); } catch(e){}
 }
 var FI_FILTER = 'all', FI_SORT = 'new', FI_SEL = null, FI_SEL_NEXT = null;
+/* V4.4.8 (JD 2026-11-05): the New facts feed runs as TWO columns,
+   each with its own category, so two categories can be worked at
+   the same time. FI_COLS = [leftCat, rightCat], persisted. The old
+   single FI_FILTER survives only as the seed for the left column. */
+var FI_COLS = (function(){ try { var v = JSON.parse(localStorage.getItem('ncc_fi_cols_v1') || 'null'); if(v && v.length === 2 && typeof v[0] === 'string' && typeof v[1] === 'string') return v; } catch(e){} return null; })();
+function fiSaveCols(){ try { localStorage.setItem('ncc_fi_cols_v1', JSON.stringify(FI_COLS)); } catch(e){} }
+function fiColsInit(){
+  if(FI_COLS) return;
+  var counts = {};
+  ((FI && FI.entries) || []).forEach(function(e){ if(fiStatus(e) !== 'read') counts[e.pattern] = (counts[e.pattern] || 0) + 1; });
+  var best = 'all', bn = 0;
+  Object.keys(counts).forEach(function(k){ if(counts[k] > bn){ bn = counts[k]; best = k; } });
+  FI_COLS = [FI_FILTER || 'all', best];
+  fiSaveCols();
+}
+function fiCatOptions(sel){
+  var es = (FI && FI.entries) || [];
+  var opts = [['all', 'All facts']];
+  FI_PAT_ORDER.forEach(function(k){ if(es.some(function(e){ return e.pattern === k; })) opts.push([k, fiPat({ pattern:k }).label.charAt(0) + fiPat({ pattern:k }).label.slice(1).toLowerCase()]); });
+  return opts.map(function(o){ return '<option value="' + o[0] + '"' + (sel === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+}
+function fiAllGroups(){
+  fiColsInit();
+  return [fiGroups(FI_COLS[0]), FI_COLS[1] === FI_COLS[0] ? [] : fiGroups(FI_COLS[1])];
+}
+function fiLocate(id){
+  var cg = fiAllGroups();
+  for(var ci = 0; ci < cg.length; ci++)
+    for(var gi = 0; gi < cg[ci].length; gi++)
+      if(cg[ci][gi].entries.some(function(e){ return e.id === id; })) return { ci: ci, gi: gi, g: cg[ci][gi] };
+  return null;
+}
 var FI_PATTERNS = {
   employer_change:{ label:'EMPLOYER CHANGE', cls:'t-about' },
   title_change:{ label:'TITLE CHANGE', cls:'t-conn' },
@@ -9603,9 +9635,9 @@ function fiFmtDate(iso){
   return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
 }
 function fiPat(e){ return FI_PATTERNS[e.pattern] || { label: String(e.pattern || 'FACT').replace(/_/g, ' ').toUpperCase(), cls:'t-about' }; }
-function fiVisible(){
+function fiVisible(cat){
   var list = ((FI && FI.entries) || []).filter(function(e){ return fiStatus(e) !== 'read'; });
-  if(FI_FILTER !== 'all') list = list.filter(function(e){ return e.pattern === FI_FILTER; });
+  if(cat && cat !== 'all') list = list.filter(function(e){ return e.pattern === cat; });
   var byL = function(a, b){ return String(b.learned || '').localeCompare(String(a.learned || '')); };
   if(FI_SORT === 'new') list.sort(byL);
   else if(FI_SORT === 'old') list.sort(function(a, b){ return -byL(a, b); });
@@ -9615,10 +9647,11 @@ function fiVisible(){
   else if(FI_SORT === 'corr') list.sort(function(a, b){ return (a.pattern === 'correction' ? 0 : 1) - (b.pattern === 'correction' ? 0 : 1) || byL(a, b); });
   return list;
 }
-function fiGroups(){
+function fiGroups(cat){
   /* V4.4.6 (JD 2026-11-04): the feed groups by person — one card
-     per person, several facts become light bullets on that card. */
-  var vis = fiVisible(), order = [], byKey = {};
+     per person, several facts become light bullets on that card.
+     V4.4.8: grouped within one column's category (cat). */
+  var vis = fiVisible(cat), order = [], byKey = {};
   vis.forEach(function(e){
     var k = e.key || e.id;
     if(!byKey[k]){ byKey[k] = { key: k, entries: [] }; order.push(byKey[k]); }
@@ -9627,16 +9660,14 @@ function fiGroups(){
   return order;
 }
 function fiGroupOf(id){
-  var gs = fiGroups();
-  for(var i = 0; i < gs.length; i++)
-    if(gs[i].entries.some(function(e){ return e.id === id; })) return gs[i];
-  return null;
+  var loc = fiLocate(id);
+  return loc ? loc.g : null;
 }
 function fiSrcBtn(e){
   if(!e.url) return '';
   return '<a class="fi-srcbtn" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + ic('link', 11) + 'Source</a>';
 }
-function fiCardHTML(g, first){
+function fiCardHTML(g, first, col){
   /* V4.4.6: g is a per-person group from fiGroups(). Single-fact
      people keep the compact V4.4.0 packet plus an explicit small
      Source button; multi-fact people get light bullets, one per
@@ -9672,7 +9703,7 @@ function fiCardHTML(g, first){
       '<span class="fi-acts"><button type="button" class="btn acc sm" data-act="fi-read" data-id="' + esc(e0.id) + '">Read all</button>' +
       '<button type="button" class="btn ghost sm fi-flagbtn" data-act="fi-flag" data-id="' + esc(e0.id) + '">' + ic('flag', 12) + (allFlag ? 'Flagged' : 'Flag') + '</button></span></div>';
   }
-  return '<article class="fi-card' + (anyFlag ? ' flagged' : '') + (sel ? ' sel' : '') + '" data-id="' + esc(e0.id) + '" data-gkey="' + esc(g.key) + '">' + head + body + '</article>';
+  return '<article class="fi-card' + (anyFlag ? ' flagged' : '') + (sel ? ' sel' : '') + '" data-id="' + esc(e0.id) + '" data-gkey="' + esc(g.key) + '" data-col="' + (col || 0) + '">' + head + body + '</article>';
 }
 function fiSideHTML(){
   /* V4.4.0: the old 300px sidebar is a one-line status strip now —
@@ -9860,11 +9891,10 @@ function fiBodyHTML(){
      F flags, Enter opens the profile. */
   var h = '';
   if(FI_PROF_FAILED) h += '<div class="fi-alert">Inbox state unavailable — the profiles data did not load, so Read and Flag are paused. Nothing will be written until it loads; reload to retry.</div>';
-  var es = (FI && FI.entries) || [];
-  var patBtns = [['all', 'All facts']];
-  FI_PAT_ORDER.forEach(function(k){ if(es.some(function(e){ return e.pattern === k; })) patBtns.push([k, fiPat({ pattern:k }).label.charAt(0) + fiPat({ pattern:k }).label.slice(1).toLowerCase()]); });
-  h += '<div class="fi-controls"><div class="seg fi-seg" role="group" aria-label="Filter facts">' +
-    patBtns.map(function(b){ return '<button type="button" data-act="fi-filter" data-f="' + b[0] + '"' + (FI_FILTER === b[0] ? ' class="on"' : '') + '>' + b[1] + '</button>'; }).join('') + '</div>' +
+  /* V4.4.8: the category chips are gone from the top bar — each
+     column carries its own category select (fiColHTML), so two
+     categories run side by side. Sort stays global. */
+  h += '<div class="fi-controls">' +
     '<label class="fi-sortwrap"><span>Sort</span><select class="sel" data-sbi="fisort" aria-label="Sort facts">' +
     [['new', 'Newest first'], ['old', 'Oldest first'], ['cat', 'Category'], ['person', 'Person A–Z'], ['corr', 'Corrections first']].map(function(o){ return '<option value="' + o[0] + '"' + (FI_SORT === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
     '</select></label><span class="fi-showing" id="fi-showing"></span><span class="fi-kbd">Arrows / J K move &middot; R read &middot; F flag &middot; Enter profile</span></div>';
@@ -9875,61 +9905,88 @@ function fiBodyHTML(){
 }
 function fiFeedHTML(enterId){
   if(!FI) return '<div class="asskel" style="min-height:220px"></div>';
-  var vis = fiVisible(), total = fiCounts().total;
-  if(!total) return '<div class="fi-zero"><b>No facts yet</b><p>New facts from Live Records research land here.</p></div>';
-  if(!vis.length){
-    if(fiCounts().unread === 0) return '<div class="fi-zero"><b>Inbox zero</b><p>Every fact in this batch is one you already know.</p></div>';
-    return '<div class="fi-zero"><b>Nothing under this filter</b><p>Switch the filter to see the rest of the feed.</p></div>';
+  if(!fiCounts().total) return '<div class="fi-zero"><b>No facts yet</b><p>New facts from Live Records research land here.</p></div>';
+  if(fiCounts().unread === 0) return '<div class="fi-zero"><b>Inbox zero</b><p>Every fact in this batch is one you already know.</p></div>';
+  fiColsInit();
+  return fiColHTML(FI_COLS[0], 0, enterId) + fiColHTML(FI_COLS[1], 1, enterId);
+}
+function fiColHTML(cat, ci, enterId){
+  /* V4.4.8: one column of the feed — its own category select, its
+     own stack of per-person cards. When both columns sit on the
+     same category the right one says so instead of duplicating
+     every card. */
+  var vis = fiVisible(cat), gs = fiGroups(cat);
+  var head = '<div class="fi-colh"><label class="fi-sortwrap"><span>Category</span>' +
+    '<select class="sel" data-sbi="ficol" data-col="' + ci + '" aria-label="Category for column ' + (ci + 1) + '">' + fiCatOptions(cat) + '</select></label>' +
+    '<span class="fi-coln">' + vis.length + ' fact' + (vis.length === 1 ? '' : 's') + ' &middot; ' + gs.length + ' ' + (gs.length === 1 ? 'person' : 'people') + '</span></div>';
+  if(ci === 1 && FI_COLS[0] === FI_COLS[1]){
+    return '<div class="fi-col">' + head + '<div class="fi-zero"><b>Same category as the other column</b><p>Pick a different category above to run two at once.</p></div></div>';
   }
-  var gs = fiGroups();
   function cardFor(g){
-    var html = fiCardHTML(g);
+    var html = fiCardHTML(g, false, ci);
     if(enterId && g.entries.some(function(e){ return e.id === enterId; })) html = html.replace('fi-card', 'fi-card entering');
     return html;
   }
-  if(FI_SORT === 'cat'){
-    /* Grouped by subcategory: the header follows each card's first
-       fact; the count is facts, not cards. */
+  var body = '';
+  if(!gs.length){
+    body = '<div class="fi-zero"><b>Nothing under this category</b><p>Switch the category to see more of the feed.</p></div>';
+  } else if(FI_SORT === 'cat' && cat === 'all'){
     var patN = {};
     vis.forEach(function(e){ patN[e.pattern] = (patN[e.pattern] || 0) + 1; });
-    var out = '', lastPat = null;
+    var lastPat = null;
     gs.forEach(function(g){
       var pat = g.entries[0].pattern;
       if(pat !== lastPat){
         lastPat = pat;
-        out += '<div class="fi-grouph"><span class="fi-tag ' + fiPat(g.entries[0]).cls + '">' + esc(fiPat(g.entries[0]).label) + '</span><span class="fi-groupn">' + patN[pat] + '</span></div>';
+        body += '<div class="fi-grouph"><span class="fi-tag ' + fiPat(g.entries[0]).cls + '">' + esc(fiPat(g.entries[0]).label) + '</span><span class="fi-groupn">' + patN[pat] + '</span></div>';
       }
-      out += cardFor(g);
+      body += cardFor(g);
     });
-    return out;
+  } else {
+    body = gs.map(cardFor).join('');
   }
-  return gs.map(cardFor).join('');
+  return '<div class="fi-col" data-colwrap="' + ci + '">' + head + body + '</div>';
 }
 function fiEnsureSel(){
-  var vis = fiVisible();
-  if(!vis.length){ FI_SEL = null; return; }
-  if(!vis.some(function(e){ return e.id === FI_SEL; })){
-    if(FI_SEL_NEXT && vis.some(function(e){ return e.id === FI_SEL_NEXT; })) FI_SEL = FI_SEL_NEXT;
-    else FI_SEL = vis[0].id;
+  /* V4.4.8: the selection lives across both columns. */
+  var cg = fiAllGroups();
+  var flat = [];
+  cg.forEach(function(gs){ gs.forEach(function(g){ g.entries.forEach(function(e){ flat.push(e); }); }); });
+  if(!flat.length){ FI_SEL = null; return; }
+  if(!flat.some(function(e){ return e.id === FI_SEL; })){
+    if(FI_SEL_NEXT && flat.some(function(e){ return e.id === FI_SEL_NEXT; })) FI_SEL = FI_SEL_NEXT;
+    else FI_SEL = flat[0].id;
   }
   FI_SEL_NEXT = null;
 }
-function fiSelMove(delta){
-  /* V4.4.6: the cursor steps card to card (person to person). */
-  var gs = fiGroups(); if(!gs.length) return;
-  fiEnsureSel();
-  var gi = -1;
-  gs.forEach(function(g, ix){ if(g.entries.some(function(e){ return e.id === FI_SEL; })) gi = ix; });
-  var n = Math.max(0, Math.min(gs.length - 1, gi + delta));
-  FI_SEL = gs[n].entries[0].id;
-  document.querySelectorAll('#fi-feed .fi-card').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-gkey') === gs[n].key); });
-  var el = document.querySelector('#fi-feed .fi-card[data-gkey="' + gs[n].key + '"]');
-  if(el) el.scrollIntoView({ block: 'nearest' });
+function fiPaintSel(){
+  var loc = FI_SEL ? fiLocate(FI_SEL) : null;
+  document.querySelectorAll('#fi-feed .fi-card').forEach(function(c){
+    c.classList.toggle('sel', !!loc && c.getAttribute('data-gkey') === loc.g.key && c.getAttribute('data-col') === String(loc.ci));
+  });
+  return loc;
 }
-function fiCols(){
-  var feed = document.getElementById('fi-feed'); if(!feed) return 1;
-  var cols = String(getComputedStyle(feed).gridTemplateColumns || '').split(' ').filter(Boolean).length;
-  return Math.max(1, cols);
+function fiMove(dRow, dCol){
+  /* V4.4.8: up/down step within the column; left/right hop to the
+     other column at the nearest row. Keyboard only — clicks never
+     move the selection ring or the scroll (JD 2026-11-05). */
+  fiEnsureSel();
+  var loc = fiLocate(FI_SEL); if(!loc) return;
+  var cg = fiAllGroups();
+  var ci = loc.ci, gi = loc.gi;
+  if(dCol){
+    var other = ci === 0 ? 1 : 0;
+    if(!cg[other].length) return;
+    ci = other; gi = Math.min(gi, cg[other].length - 1);
+  } else {
+    gi = Math.max(0, Math.min(cg[ci].length - 1, gi + dRow));
+  }
+  FI_SEL = cg[ci][gi].entries[0].id;
+  var now = fiPaintSel();
+  if(now){
+    var el = document.querySelector('#fi-feed .fi-card[data-gkey="' + now.g.key + '"][data-col="' + now.ci + '"]');
+    if(el) el.scrollIntoView({ block: 'nearest' });
+  }
 }
 function fiPaint(enterId){
   /* V4.4.0: the Fact Inbox lives on its own New facts tab now
@@ -9943,7 +10000,21 @@ function fiPaint(enterId){
   if(side && FI) side.innerHTML = fiSideHTML();
   if(below && FI) below.innerHTML = fiBelowHTML();
   if(sub && FI){ var c = fiCounts(); sub.innerHTML = c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero'; }
-  if(sh && FI) sh.textContent = 'Showing ' + fiVisible().length + ' of ' + fiCounts().total;
+  if(sh && FI){ fiColsInit(); var shown = fiVisible(FI_COLS[0]).length + (FI_COLS[1] === FI_COLS[0] ? 0 : fiVisible(FI_COLS[1]).length); sh.textContent = 'Showing ' + shown + ' of ' + fiCounts().total; }
+  fiPaintNavBadge();
+}
+function fiPaintChrome(){
+  /* V4.4.8: repaint everything around the feed (status strip,
+     below panels, sub-line, showing count, badge) without touching
+     the feed itself — Flag uses this so the click never rebuilds
+     the card grid under the cursor. */
+  if(S.route.name !== 'daily' || !(S.route.seg && (S.route.seg[0] === 'facts' || S.route.seg[0] === 'inbox' || S.route.seg[0] === 'decide'))) return;
+  var side = document.getElementById('fi-side'), below = document.getElementById('fi-below'), sub = document.getElementById('fi-sub'), sh = document.getElementById('fi-showing');
+  if(!FI) return;
+  if(side) side.innerHTML = fiSideHTML();
+  if(below) below.innerHTML = fiBelowHTML();
+  if(sub){ var c = fiCounts(); sub.innerHTML = c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero'; }
+  if(sh){ fiColsInit(); var shown = fiVisible(FI_COLS[0]).length + (FI_COLS[1] === FI_COLS[0] ? 0 : fiVisible(FI_COLS[1]).length); sh.textContent = 'Showing ' + shown + ' of ' + fiCounts().total; }
   fiPaintNavBadge();
 }
 function fiPaintNavBadge(){
@@ -9953,59 +10024,69 @@ function fiPaintNavBadge(){
   document.querySelectorAll('.fi-bdg').forEach(function(b){ b.textContent = n; b.classList.toggle('zero', !n); b.hidden = false; });
 }
 function fiMarkRead(id){
-  /* Snappy + grouped (V4.4.5/V4.4.6, JD 2026-11-04): Read acts on
-     the person's whole card. The decision lands the moment the key
-     is pressed — one batch save for every fact on the card, the
-     selection moved to the next card in the same instant, ring
-     repainted in place. The read card then collapses out over
-     160ms and the feed resyncs behind it; nothing waits on the
-     animation, so R can be pressed again immediately. */
+  /* Smooth + grouped (V4.4.8, JD 2026-11-05 — replaces the
+     V4.4.5/6 behavior JD rejected: "I click Read and it quickly
+     selects the catty-corner one and then jumps to the next one").
+     Read acts on the person's whole card in whichever column it
+     sits. The save lands on the press. The selection advances
+     SILENTLY to the next card in the same column (no ring painted,
+     no scroll) — the page does not move. The read card fades and
+     collapses over 260ms; only when it is fully flat does the feed
+     resync, so the repaint changes no geometry and nothing jumps.
+     Rapid-fire safe: state is saved synchronously, and a second
+     press targets its own card the same way. */
   if(fiStateBlocked()){ toast(fiStateBlocked()); return; }
-  var gs = fiGroups(), gi = -1;
-  gs.forEach(function(x, ix){ if(x.entries.some(function(e){ return e.id === id; })) gi = ix; });
-  if(gi < 0) return;
-  var g = gs[gi];
-  var nxt = gs[gi + 1] || gs[gi - 1];
+  var loc = fiLocate(id);
+  if(!loc) return;
+  var g = loc.g;
+  var cg = fiAllGroups();
+  var colGs = cg[loc.ci];
+  var nxt = colGs[loc.gi + 1] || colGs[loc.gi - 1] || (cg[loc.ci === 0 ? 1 : 0][0] || null);
   var cur = fiStateMap(), next = {};
   Object.keys(cur).forEach(function(k){ next[k] = cur[k]; });
   var at = new Date().toISOString();
   g.entries.forEach(function(e){ next[e.id] = { status: 'read', at: at }; });
   fiSaveState(next);
-  if(nxt){
-    FI_SEL = nxt.entries[0].id; FI_SEL_NEXT = '';
-    document.querySelectorAll('#fi-feed .fi-card').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-gkey') === nxt.key); });
-    var sel = document.querySelector('#fi-feed .fi-card[data-gkey="' + nxt.key + '"]');
-    if(sel) sel.scrollIntoView({ block: 'nearest' });
-  }
-  var card = document.querySelector('#fi-feed .fi-card[data-gkey="' + g.key + '"]');
+  FI_SEL = nxt ? nxt.entries[0].id : null; FI_SEL_NEXT = '';
+  fiPaintChrome();
+  var card = document.querySelector('#fi-feed .fi-card[data-gkey="' + g.key + '"][data-col="' + loc.ci + '"]');
   if(!card){ fiPaint(); return; }
   card.classList.add('leaving');
   card.style.height = card.offsetHeight + 'px';
   requestAnimationFrame(function(){ requestAnimationFrame(function(){
-    card.style.height = '0px'; card.style.marginBottom = '0px'; card.style.paddingTop = '0px'; card.style.paddingBottom = '0px'; card.style.borderWidth = '0px';
+    card.style.height = '0px'; card.style.marginBottom = '0px'; card.style.paddingTop = '0px'; card.style.paddingBottom = '0px'; card.style.borderWidth = '0px'; card.style.opacity = '0';
   }); });
-  setTimeout(function(){ fiPaint(); }, 175);
+  setTimeout(function(){ fiPaint(); }, 300);
 }
 function fiToggleFlag(id){
   /* Grouped (V4.4.6): Flag acts on the person's whole card — if
      every fact is flagged it unflags all, otherwise it flags all.
-     One batch save, instant repaint (no exit animation). */
+     V4.4.8: the card is swapped in place and only the chrome
+     repaints — the grid is never rebuilt under the cursor. */
   if(fiStateBlocked()){ toast(fiStateBlocked()); return; }
-  var g = fiGroupOf(id);
-  if(!g) return;
+  var loc = fiLocate(id);
+  if(!loc) return;
+  var g = loc.g;
   var allFlag = g.entries.every(function(e){ return fiStatus(e) === 'flagged'; });
   var cur = fiStateMap(), next = {};
   Object.keys(cur).forEach(function(k){ next[k] = cur[k]; });
   var at = new Date().toISOString();
   g.entries.forEach(function(e){ if(allFlag) delete next[e.id]; else next[e.id] = { status: 'flagged', at: at }; });
   fiSaveState(next);
-  fiPaint();
+  var card = document.querySelector('#fi-feed .fi-card[data-gkey="' + g.key + '"][data-col="' + loc.ci + '"]');
+  if(card){
+    var tmp = document.createElement('div');
+    tmp.innerHTML = fiCardHTML(g, false, loc.ci);
+    if(tmp.firstChild) card.replaceWith(tmp.firstChild);
+  }
+  fiPaintChrome();
 }
 function fiUndo(id){ if(fiSetStatus(id, null)) fiPaint(id); }
 function fiGoto(id){
   var e = ((FI && FI.entries) || []).filter(function(x){ return x.id === id; })[0];
   if(!e) return;
-  if(FI_FILTER !== 'all' && e.pattern !== FI_FILTER){ FI_FILTER = 'all'; }
+  fiColsInit();
+  if(FI_COLS[0] !== 'all' && FI_COLS[1] !== 'all' && e.pattern !== FI_COLS[0] && e.pattern !== FI_COLS[1]){ FI_COLS[1] = e.pattern; fiSaveCols(); }
   fiPaint();
   setTimeout(function(){
     var card = document.querySelector('.fi-card[data-gkey="' + (e.key || e.id) + '"]') || document.querySelector('.fi-card[data-id="' + id + '"]');
@@ -10039,12 +10120,12 @@ document.addEventListener('keydown', function(ev){
   var sw = document.getElementById('sheetwrap'); if(sw && !sw.hidden) return;
   fiEnsureSel();
   var k = ev.key;
-  if(k === 'ArrowDown'){ ev.preventDefault(); fiSelMove(fiCols()); return; }
-  if(k === 'ArrowUp'){ ev.preventDefault(); fiSelMove(-fiCols()); return; }
-  if(k === 'ArrowRight'){ ev.preventDefault(); fiSelMove(1); return; }
-  if(k === 'ArrowLeft'){ ev.preventDefault(); fiSelMove(-1); return; }
-  if(k === 'Home'){ ev.preventDefault(); FI_SEL = null; fiEnsureSel(); fiSelMove(0); return; }
-  if(k === 'End'){ ev.preventDefault(); var vis = fiVisible(); if(vis.length){ FI_SEL = vis[vis.length - 1].id; fiSelMove(0); } return; }
+  if(k === 'ArrowDown'){ ev.preventDefault(); fiMove(1, 0); return; }
+  if(k === 'ArrowUp'){ ev.preventDefault(); fiMove(-1, 0); return; }
+  if(k === 'ArrowRight'){ ev.preventDefault(); fiMove(0, 1); return; }
+  if(k === 'ArrowLeft'){ ev.preventDefault(); fiMove(0, -1); return; }
+  if(k === 'Home'){ ev.preventDefault(); FI_SEL = null; fiEnsureSel(); var hl = fiPaintSel(); if(hl){ var hel = document.querySelector('#fi-feed .fi-card[data-gkey="' + hl.g.key + '"][data-col="' + hl.ci + '"]'); if(hel) hel.scrollIntoView({ block: 'nearest' }); } return; }
+  if(k === 'End'){ ev.preventDefault(); var cg2 = fiAllGroups(), lastG = null, lastCi = 0; cg2.forEach(function(gs, ci2){ if(gs.length){ lastG = gs[gs.length - 1]; lastCi = ci2; } }); if(lastG){ FI_SEL = lastG.entries[0].id; var el2 = fiPaintSel(); if(el2){ var eel = document.querySelector('#fi-feed .fi-card[data-gkey="' + lastG.key + '"][data-col="' + lastCi + '"]'); if(eel) eel.scrollIntoView({ block: 'nearest' }); } } return; }
   if(k === 'Enter'){
     if(t && (t.tagName === 'BUTTON' || t.tagName === 'A')) return;
     var e = ((FI && FI.entries) || []).filter(function(x){ return x.id === FI_SEL; })[0];
@@ -10054,8 +10135,8 @@ document.addEventListener('keydown', function(ev){
     return;
   }
   var lk = (k && k.length === 1) ? k.toLowerCase() : '';
-  if(lk === 'j'){ ev.preventDefault(); fiSelMove(1); return; }
-  if(lk === 'k'){ ev.preventDefault(); fiSelMove(-1); return; }
+  if(lk === 'j'){ ev.preventDefault(); fiMove(1, 0); return; }
+  if(lk === 'k'){ ev.preventDefault(); fiMove(-1, 0); return; }
   if(lk === 'r'){ if(FI_SEL){ ev.preventDefault(); fiMarkRead(FI_SEL); } return; }
   if(lk === 'f'){ if(FI_SEL){ ev.preventDefault(); fiToggleFlag(FI_SEL); } return; }
 });
@@ -20574,6 +20655,7 @@ document.addEventListener('change', function(ev){
   else if(k === 'sppredperson'){ SB.pool.prPerson = t.value; }
   else if(k === 'sppreddate'){ SB.pool.prDate = t.value; }
   else if(k === 'fisort'){ FI_SORT = t.value; fiPaint(); }
+  else if(k === 'ficol'){ fiColsInit(); FI_COLS[parseInt(t.getAttribute('data-col'), 10) || 0] = t.value; fiSaveCols(); fiPaint(); }
 });
 var SB_DEB = null;
 document.addEventListener('input', function(ev){
