@@ -2208,22 +2208,27 @@ html[data-mode="dark"]{
    between the light :root defaults and the dark block above. */
 html[data-mode="medium"]{
   color-scheme:dark;
-  --bg:rgba(52,59,68,.46); --bg2:rgba(58,65,75,.54);
-  --card:rgba(43,49,58,.50); --card2:rgba(50,57,66,.62);
-  --glass:rgba(43,49,58,.50); --glass2:rgba(50,57,66,.62);
-  --glass-solid:rgba(43,48,56,.94); --card-grad:rgba(50,57,66,.62);
-  --line:rgba(255,255,255,.14); --line2:rgba(255,255,255,.28);
-  --txt:#eef1f4; --txt2:#c9cfd6; --mut:#aeb6bf; --dim:#939ca6;
-  --fill:rgba(255,255,255,.06); --fill2:rgba(255,255,255,.10); --fill3:rgba(255,255,255,.16);
+  /* V4.4.3 (JD 2026-11-04): medium retuned — the ground goes a step
+     LIGHTER and the cards a step DARKER and far more opaque, so a
+     card reads as a card again; borders and accents strengthened.
+     Before, --card was a 50% wash of near-ground slate over a
+     near-identical ground: sections dissolved into the page. */
+  --bg:rgba(82,92,104,.46); --bg2:rgba(84,94,106,.54);
+  --card:rgba(34,39,47,.80); --card2:rgba(41,47,56,.88);
+  --glass:rgba(34,39,47,.80); --glass2:rgba(41,47,56,.88);
+  --glass-solid:rgba(35,40,48,.96); --card-grad:rgba(41,47,56,.88);
+  --line:rgba(255,255,255,.20); --line2:rgba(255,255,255,.36);
+  --txt:#eef1f4; --txt2:#ccd3da; --mut:#bcc4cd; --dim:#a3adb8;
+  --fill:rgba(255,255,255,.07); --fill2:rgba(255,255,255,.12); --fill3:rgba(255,255,255,.18);
   --track:rgba(255,255,255,.14);
   --on-ink:#22262c; --on-warn:#241a08;
   --acc:#e30613; --hot:#e5484d; --acc2:#ffffff; --accbg:rgba(227,6,19,.16);
-  --ok:#f2f2f2; --warn:#e8b06a; --bad:#e88a83;
-  --amber:#f5b942; --sky:#8fbde9; --violet:#b3a3dc; --green:#4fc773;
-  --red-t:#ff8d84; --chip-amber:#221c0d;
+  --ok:#f2f2f2; --warn:#f0bc72; --bad:#f0938b;
+  --amber:#ffc44d; --sky:#a5d1f7; --violet:#c0b1e6; --green:#63d984;
+  --red-t:#f0938b; --chip-amber:#221c0d;
   --edge:rgba(255,255,255,.14); --edge-hi:rgba(255,255,255,.20);
   --scrim:rgba(20,24,30,.50);
-  --field:#3d454f;
+  --field:#525c68;
   --ga-t:color-mix(in srgb,var(--ga) 78%,#fff);
   --gb-t:color-mix(in srgb,var(--gb) 78%,#fff);
   --sh:0 24px 44px -18px rgba(10,14,20,.50),0 10px 20px -10px rgba(10,14,20,.36),0 2px 5px -1px rgba(10,14,20,.30),inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 22px rgba(255,255,255,.04);
@@ -4433,11 +4438,7 @@ body[data-mdl="1"] #view{max-width:none;width:100%;margin:0;padding:0;flex:1;min
 
 /* UI arena build (V3.35.0): hero last-contact line, timeline log row,
    search match reasons, online stamp label */
-#p-lastline{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-top:2px}
-#p-lastline:empty{display:none}
-.pll-when{font-weight:600;color:var(--txt);white-space:nowrap}
-.pll-sum{color:var(--mut)}
-.pll-log{margin-left:auto;background:none;border:0;cursor:pointer;font:inherit;color:var(--acc2);font-weight:600;white-space:nowrap;padding:0}
+/* (V4.4.3: #p-lastline / .pll-* styles removed with the strip.) */
 .tl-logrow{display:flex;justify-content:flex-end;margin-bottom:8px}
 .gsr-rsn{color:var(--acc2);font-weight:600}
 .ptlc.onl{color:var(--mut)}
@@ -5537,8 +5538,6 @@ th[data-kind="neutral"]{color:var(--ink-neutral)}
 .ih-mi[data-kind="about"] small{color:var(--ink-about)}
 .ih-mi[data-kind="connection"] small{color:var(--ink-conn)}
 .dbadge[data-kind="about"]{color:var(--ink-about)}
-.pll-when[data-kind="connection"]{color:var(--ink-conn)}
-.pll-when .kind-glyph{margin-right:4px;width:18px;height:18px;vertical-align:-4px}
 
 /* timeline event dots take their kind's ink */
 .ev[data-kind="connection"] i{background:var(--ink-conn-bright)}
@@ -6279,16 +6278,19 @@ html[data-mode="dark"] body::before{background:none}
 /* MEDIUM (V4.3.0): the pv tokens and the dark-keyed mirrors, set
    halfway — mid-slate panels, light text, dark mode's accents. */
 html[data-mode="medium"]{
-  --pv-bg:#454e59; --pv-panel:#39404a; --pv-panel2:#414956; --pv-line:rgba(255,255,255,.13); --pv-line2:rgba(255,255,255,.24);
-  --pv-text:#eef1f4; --pv-mut:#c3c9d1; --pv-dim:#9aa3ae;
-  --pv-blue:#8fc0e8; --pv-blue-bg:rgba(143,192,232,.14); --pv-gold:#d3b578; --pv-gold-bg:rgba(211,181,120,.14);
-  --pv-green:#6fc98a; --pv-amber:#e0af57; --pv-red:#e88a83; --pv-maroon:#7a3049;
-  --pv-railbg:rgba(35,40,48,.66); --pv-nav:#d3d9e0; --pv-hover:rgba(255,255,255,.06); --pv-on:rgba(255,255,255,.10);
-  --pv-chip-ok-bg:rgba(111,201,138,.14); --pv-chip-warn-bg:rgba(224,175,87,.15);
+  /* V4.4.3: ground lighter (#525c68), panels darker (#333a44 /
+     #3b434e), lines stronger, accents brighter — the separation
+     JD asked for. --pv-text on --pv-panel measures ~9.9:1. */
+  --pv-bg:#525c68; --pv-panel:#333a44; --pv-panel2:#3b434e; --pv-line:rgba(255,255,255,.18); --pv-line2:rgba(255,255,255,.32);
+  --pv-text:#eef1f4; --pv-mut:#c9d0d8; --pv-dim:#a7b0ba;
+  --pv-blue:#93c5f0; --pv-blue-bg:rgba(147,197,240,.16); --pv-gold:#dec084; --pv-gold-bg:rgba(222,192,132,.16);
+  --pv-green:#7ad294; --pv-amber:#eab95e; --pv-red:#f0938b; --pv-maroon:#7a3049;
+  --pv-railbg:rgba(35,40,48,.66); --pv-nav:#dbe1e8; --pv-hover:rgba(255,255,255,.07); --pv-on:rgba(255,255,255,.12);
+  --pv-chip-ok-bg:rgba(122,210,148,.15); --pv-chip-warn-bg:rgba(234,185,94,.16);
   --seg-0:#f2f2f2; --seg-1:#b5b5b5; --seg-2:#7d7d7d; --seg-3:#4a4a4a;
   --seg-4:#3a3a3a; --seg-5:#2b2b2b; --seg-6:#1f1f1f; --seg-7:#171717; --seg-8:#121212;
 }
-html[data-mode="medium"] body{background:radial-gradient(1200px 600px at 20% -10%,#525e6d 0,transparent 60%),radial-gradient(900px 500px at 100% 0,#5c5340 0,transparent 55%),#454e59}
+html[data-mode="medium"] body{background:radial-gradient(1200px 600px at 20% -10%,#5f6b79 0,transparent 60%),radial-gradient(900px 500px at 100% 0,#675c44 0,transparent 55%),#525c68}
 html[data-mode="medium"] body::before{background:none}
 html[data-mode="medium"] .page.hm{--ink:#23272f;--ink-txt:#f2f2f2}
 html[data-mode="medium"] .b-syn,html[data-mode="medium"] .b-about,
@@ -6297,8 +6299,7 @@ html[data-mode="medium"] .b-background,html[data-mode="medium"] .b-business,
 html[data-mode="medium"] .b-persona,html[data-mode="medium"] .b-files{--ink:#8fb8dd}
 html[data-mode="medium"] .b-relationship,html[data-mode="medium"] .b-connections,
 html[data-mode="medium"] .b-timeline,html[data-mode="medium"] .b-lima{--ink:#e3b959}
-html[data-mode="medium"] .gsearch input{background:rgba(24,28,35,.92)}
-html[data-mode="medium"] .gsearch input:focus{background:rgba(24,28,35,.97)}
+html[data-mode="medium"] .page.people .ptable thead th{background:#262c35}
 html[data-mode="medium"] .page.people .ptable thead th{background:#262c35}
 body{font-family:var(--pv-font)}
 #view{padding:16px 24px 32px;max-width:1320px}
@@ -6840,3 +6841,43 @@ html[data-mode="light"] .rc-ev{border-color:rgba(13,20,32,.18)}
 #rail .nv em.fi-bdg{width:auto;height:auto;min-height:18px;padding:1px 6px}
 #rail .nv .nv-ct,#rail .nv em{flex:none}
 #rail .nv>span:not(.nv-gl):not(.nv-ct){min-width:0;overflow:hidden;text-overflow:ellipsis}
+
+/* ============================================================
+   V4.4.3 header (JD 2026-11-04): the top bar reads as ONE clean
+   row. The bar itself is a single plane; the search is a single
+   field — its wrapper carries the only border and background,
+   and the input inside is bare in every mode (no fill, no
+   border, no inset shadow, no radius of its own), so it can
+   never look like a second search bar stacked inside the first.
+   Every control shares one height (36px) and one baseline. */
+#top{background:color-mix(in srgb,var(--pv-panel) 90%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.25);backdrop-filter:blur(14px) saturate(1.25)}
+#top .gsearch{height:36px;background:var(--pv-panel2);border:1px solid var(--pv-line2);border-radius:10px;padding:0 12px}
+#top .gsearch:focus-within{border-color:var(--pv-blue);box-shadow:0 0 0 3px var(--pv-blue-bg)}
+#top .gsearch input{background:transparent;border:0;box-shadow:none;border-radius:0;height:34px}
+#top .gsearch input:focus{background:transparent;border:0;box-shadow:none}
+#top .ib{width:36px;height:36px}
+#top .syncp{height:36px}
+#top .seg{height:36px;align-items:center}
+#top .seg button{height:30px;display:inline-flex;align-items:center}
+#top .gsr{top:42px}
+
+/* V4.4.3 (JD 2026-11-04): the profile's back/pager row was a
+   full-height row of mostly air — 36-44px buttons and loose
+   padding around three small controls. Same functions (back,
+   context pager, menu), one compact ~30px line. */
+.page.profile .ptop{gap:8px;padding:1px 0}
+.page.profile .ptop .ib{width:30px;height:30px}
+.page.profile .ptop .ib svg{width:16px;height:16px}
+.page.profile .crumb{padding:4px 6px;font-size:11px}
+.page.profile .pager{font-size:12px;gap:4px}
+.page.profile .menu-pop{top:34px}
+
+/* V4.4.3 medium (JD 2026-11-04): the profile's band sections
+   tint at 5.5% over the ground and dissolved into it; medium
+   raises the tint and adds a hairline so each section reads
+   as its own card. (Dark keeps its 9% rule; light untouched.) */
+html[data-mode="medium"] .band{background:rgba(var(--band),.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09)}
+html[data-mode="medium"] .psheets .narr{background:rgba(var(--band),.17)}
+html[data-mode="medium"] .psheets .fpb{background:rgba(var(--band),.17)}
+html[data-mode="medium"] .psheets .irow{background:rgba(var(--band),.16)}
+html[data-mode="medium"] .psheets .tile{background:rgba(var(--band),.16)}
