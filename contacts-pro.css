@@ -2251,13 +2251,7 @@ html[data-mode="dark"] body::before{background:
   radial-gradient(700px 500px at -10% 108%,color-mix(in srgb,var(--ga) 20%,transparent),transparent 60%),
   radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(0,0,0,.42) 100%),
   linear-gradient(155deg,color-mix(in srgb,var(--ga) 14%,var(--field)),color-mix(in srgb,var(--gb) 12%,var(--field)))}
-html[data-mode="medium"] body::before{background:
-  radial-gradient(1100px 700px at -6% -10%,color-mix(in srgb,var(--ga) 50%,transparent),transparent 64%),
-  radial-gradient(1200px 820px at 106% 112%,color-mix(in srgb,var(--gb) 44%,transparent),transparent 64%),
-  radial-gradient(760px 520px at 88% -12%,color-mix(in srgb,var(--gb) 22%,transparent),transparent 60%),
-  radial-gradient(700px 500px at -10% 108%,color-mix(in srgb,var(--ga) 18%,transparent),transparent 60%),
-  radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(16,20,27,.30) 100%),
-  linear-gradient(155deg,color-mix(in srgb,var(--ga) 13%,var(--field)),color-mix(in srgb,var(--gb) 11%,var(--field)))}
+/* (medium's scene lives with the pv tokens below, mirroring dark) */
 /* frost every surface that carries a glass fill */
 #rail,
 .nv:hover,
@@ -5252,9 +5246,9 @@ button.lrcc-nm:hover{color:#fff;border-color:#3a4657}
 #qa-q,#qa-qq,#qa-px-q{width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-sm);
   color:var(--txt);font:400 14px var(--sans);padding:9px 11px;outline:none}
 #qa-q:focus,#qa-qq:focus,#qa-px-q:focus{border-color:var(--acc)}
-.qa-lh{font:600 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-top:2px}
+.qa-lh{font:600 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:10px 0 5px}
 .qa-lh:empty{display:none}
-.qa-list{display:flex;flex-direction:column;gap:2px}
+.qa-list{display:flex;flex-direction:column;gap:4px}
 .qa-list:empty{display:none}
 .qa-row{display:flex;align-items:center;gap:10px;width:100%;padding:7px 8px;border:0;border-radius:var(--r-sm);
   background:none;color:var(--txt);text-align:left;cursor:pointer}
@@ -6261,6 +6255,30 @@ html[data-mode="dark"]{
 }
 html[data-mode="dark"] body{background:radial-gradient(1200px 600px at 20% -10%,#16202e 0,transparent 60%),radial-gradient(900px 500px at 100% 0,#1a1710 0,transparent 55%),#0b0e13}
 html[data-mode="dark"] body::before{background:none}
+/* MEDIUM (V4.3.0): the pv tokens and the dark-keyed mirrors, set
+   halfway — mid-slate panels, light text, dark mode's accents. */
+html[data-mode="medium"]{
+  --pv-bg:#454e59; --pv-panel:#39404a; --pv-panel2:#414956; --pv-line:rgba(255,255,255,.13); --pv-line2:rgba(255,255,255,.24);
+  --pv-text:#eef1f4; --pv-mut:#c3c9d1; --pv-dim:#9aa3ae;
+  --pv-blue:#8fc0e8; --pv-blue-bg:rgba(143,192,232,.14); --pv-gold:#d3b578; --pv-gold-bg:rgba(211,181,120,.14);
+  --pv-green:#6fc98a; --pv-amber:#e0af57; --pv-red:#e88a83; --pv-maroon:#7a3049;
+  --pv-railbg:rgba(35,40,48,.66); --pv-nav:#d3d9e0; --pv-hover:rgba(255,255,255,.06); --pv-on:rgba(255,255,255,.10);
+  --pv-chip-ok-bg:rgba(111,201,138,.14); --pv-chip-warn-bg:rgba(224,175,87,.15);
+  --seg-0:#f2f2f2; --seg-1:#b5b5b5; --seg-2:#7d7d7d; --seg-3:#4a4a4a;
+  --seg-4:#3a3a3a; --seg-5:#2b2b2b; --seg-6:#1f1f1f; --seg-7:#171717; --seg-8:#121212;
+}
+html[data-mode="medium"] body{background:radial-gradient(1200px 600px at 20% -10%,#525e6d 0,transparent 60%),radial-gradient(900px 500px at 100% 0,#5c5340 0,transparent 55%),#454e59}
+html[data-mode="medium"] body::before{background:none}
+html[data-mode="medium"] .page.hm{--ink:#23272f;--ink-txt:#f2f2f2}
+html[data-mode="medium"] .b-syn,html[data-mode="medium"] .b-about,
+html[data-mode="medium"] .b-web,html[data-mode="medium"] .b-identity,
+html[data-mode="medium"] .b-background,html[data-mode="medium"] .b-business,
+html[data-mode="medium"] .b-persona,html[data-mode="medium"] .b-files{--ink:#8fb8dd}
+html[data-mode="medium"] .b-relationship,html[data-mode="medium"] .b-connections,
+html[data-mode="medium"] .b-timeline,html[data-mode="medium"] .b-lima{--ink:#e3b959}
+html[data-mode="medium"] .gsearch input{background:rgba(24,28,35,.92)}
+html[data-mode="medium"] .gsearch input:focus{background:rgba(24,28,35,.97)}
+html[data-mode="medium"] .page.people .ptable thead th{background:#262c35}
 body{font-family:var(--pv-font)}
 #view{padding:16px 24px 32px;max-width:1320px}
 /* ---------- shell: rail ---------- */
@@ -6453,6 +6471,37 @@ html[data-mode="light"] .pv-btn.primary{color:#fff}
 .pv-cal-side{display:flex;flex-direction:column;gap:12px;min-width:0}
 .pv-cal-side .card{margin:0}
 .yk-modebar{margin-bottom:12px}
+.ph-strip{margin-bottom:12px;gap:18px}
+.ph-lastcheck{display:inline-flex;align-items:center;gap:6px}
+/* V4.3.0: Council recommendation packets + one-line desks */
+.cnc-rec{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:16px 18px;margin-bottom:12px}
+.cnc-rec h3{font-size:16px;font-weight:680;margin:0 0 3px}
+.cnc-rec-meta{font-size:12px;color:var(--mut);margin-bottom:9px}
+.cnc-rec-line{font-size:13.5px;line-height:1.55;margin:0 0 7px}
+.cnc-rec-line ul{margin:3px 0 0;padding-left:18px}
+.cnc-rec-line li{margin:2px 0}
+.cnc-dlist2{display:flex;flex-direction:column}
+.cnc-drow2{display:flex;align-items:center;gap:12px;padding:9px 4px;border-bottom:1px solid var(--line);font-size:13.5px;flex-wrap:wrap}
+.cnc-drow2-last{color:var(--mut);font-size:12.5px}
+.cnc-drow2-find{margin-left:auto;color:var(--txt2);font-size:13px;text-align:right}
+/* V4.3.0: Live Records — brief hero, two-column fact cards,
+   calendar publish-date badge */
+.lr-hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:16px 20px;margin-bottom:14px;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--sh-card)}
+.lr-hero-l{display:flex;flex-direction:column;gap:1px}
+.lr-hero-k{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.lr-hero-l b{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700}
+.lr-hero-stats{display:flex;gap:20px}
+.lr-hero-stats span{font-size:13px;color:var(--mut)}
+.lr-hero-stats b{font-family:'Space Grotesk',sans-serif;font-size:19px;color:var(--txt);margin-right:4px}
+.lr-hero-note{margin-left:auto;font-size:12px;color:var(--dim)}
+.lr-cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+@media(max-width:900px){.lr-cards2{grid-template-columns:1fr}}
+.lr-fc{display:flex;gap:14px}
+.lr-fc-main{flex:1;min-width:0}
+.lr-cal{flex:0 0 auto;width:58px;text-align:center;border:1px solid var(--line2);border-radius:11px;overflow:hidden;background:var(--card2);align-self:flex-start}
+.lr-cal-m{display:block;background:var(--acc);color:#fff;font-size:10px;font-weight:800;letter-spacing:.12em;padding:3px 0 2px}
+.lr-cal-d{display:block;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;line-height:1.12;padding-top:2px}
+.lr-cal-k{display:block;font-size:8.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);padding-bottom:4px}
 /* V4.3.0: Audit panel rows open their people list */
 .aud-mrow{cursor:pointer;border-radius:8px}
 .aud-mrow:hover{background:var(--fill)}
