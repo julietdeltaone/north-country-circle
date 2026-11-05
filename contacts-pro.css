@@ -2203,6 +2203,38 @@ html[data-mode="dark"]{
   --sh-card:0 24px 44px -18px rgba(0,0,0,.60),0 10px 20px -10px rgba(0,0,0,.45),0 2px 5px -1px rgba(0,0,0,.40),inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 22px rgba(255,255,255,.03);
   --sh-lift:0 34px 58px -20px rgba(0,0,0,.68),0 14px 26px -12px rgba(0,0,0,.50),0 3px 7px -2px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 26px rgba(255,255,255,.04);
 }
+/* MEDIUM mode (V4.3.0, JD 2026-11-04): the in-between — a mid
+   slate scene and glass, light text, dark mode's accents. Sits
+   between the light :root defaults and the dark block above. */
+html[data-mode="medium"]{
+  color-scheme:dark;
+  --bg:rgba(52,59,68,.46); --bg2:rgba(58,65,75,.54);
+  --card:rgba(43,49,58,.50); --card2:rgba(50,57,66,.62);
+  --glass:rgba(43,49,58,.50); --glass2:rgba(50,57,66,.62);
+  --glass-solid:rgba(43,48,56,.94); --card-grad:rgba(50,57,66,.62);
+  --line:rgba(255,255,255,.14); --line2:rgba(255,255,255,.28);
+  --txt:#eef1f4; --txt2:#c9cfd6; --mut:#aeb6bf; --dim:#939ca6;
+  --fill:rgba(255,255,255,.06); --fill2:rgba(255,255,255,.10); --fill3:rgba(255,255,255,.16);
+  --track:rgba(255,255,255,.14);
+  --on-ink:#22262c; --on-warn:#241a08;
+  --acc:#e30613; --hot:#e5484d; --acc2:#ffffff; --accbg:rgba(227,6,19,.16);
+  --ok:#f2f2f2; --warn:#e8b06a; --bad:#e88a83;
+  --amber:#f5b942; --sky:#8fbde9; --violet:#b3a3dc; --green:#4fc773;
+  --red-t:#ff8d84; --chip-amber:#221c0d;
+  --edge:rgba(255,255,255,.14); --edge-hi:rgba(255,255,255,.20);
+  --scrim:rgba(20,24,30,.50);
+  --field:#3d454f;
+  --ga-t:color-mix(in srgb,var(--ga) 78%,#fff);
+  --gb-t:color-mix(in srgb,var(--gb) 78%,#fff);
+  --sh:0 24px 44px -18px rgba(10,14,20,.50),0 10px 20px -10px rgba(10,14,20,.36),0 2px 5px -1px rgba(10,14,20,.30),inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 22px rgba(255,255,255,.04);
+  --sh-up:0 34px 58px -20px rgba(10,14,20,.58),0 14px 26px -12px rgba(10,14,20,.42),0 3px 7px -2px rgba(10,14,20,.36),inset 0 1px 0 rgba(255,255,255,.20),inset 0 0 26px rgba(255,255,255,.05);
+  --sh-pop:0 48px 84px -28px rgba(10,14,20,.65),0 20px 36px -14px rgba(10,14,20,.48),0 4px 10px -3px rgba(10,14,20,.42),inset 0 1px 0 rgba(255,255,255,.24),inset 0 0 30px rgba(255,255,255,.06);
+  --sh-chip:0 3px 8px -3px rgba(10,14,20,.45);
+  --rail-sh:inset -18px 0 32px -24px rgba(10,14,20,.45);
+  --inset-sh:rgba(10,14,20,.28);
+  --sh-card:0 24px 44px -18px rgba(10,14,20,.50),0 10px 20px -10px rgba(10,14,20,.36),0 2px 5px -1px rgba(10,14,20,.30),inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 22px rgba(255,255,255,.04);
+  --sh-lift:0 34px 58px -20px rgba(10,14,20,.58),0 14px 26px -12px rgba(10,14,20,.42),0 3px 7px -2px rgba(10,14,20,.36),inset 0 1px 0 rgba(255,255,255,.20),inset 0 0 26px rgba(255,255,255,.05);
+}
 /* the two-tone gradient scene: present, layered, vignetted */
 html,body{background:transparent}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
@@ -2219,6 +2251,13 @@ html[data-mode="dark"] body::before{background:
   radial-gradient(700px 500px at -10% 108%,color-mix(in srgb,var(--ga) 20%,transparent),transparent 60%),
   radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(0,0,0,.42) 100%),
   linear-gradient(155deg,color-mix(in srgb,var(--ga) 14%,var(--field)),color-mix(in srgb,var(--gb) 12%,var(--field)))}
+html[data-mode="medium"] body::before{background:
+  radial-gradient(1100px 700px at -6% -10%,color-mix(in srgb,var(--ga) 50%,transparent),transparent 64%),
+  radial-gradient(1200px 820px at 106% 112%,color-mix(in srgb,var(--gb) 44%,transparent),transparent 64%),
+  radial-gradient(760px 520px at 88% -12%,color-mix(in srgb,var(--gb) 22%,transparent),transparent 60%),
+  radial-gradient(700px 500px at -10% 108%,color-mix(in srgb,var(--ga) 18%,transparent),transparent 60%),
+  radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(16,20,27,.30) 100%),
+  linear-gradient(155deg,color-mix(in srgb,var(--ga) 13%,var(--field)),color-mix(in srgb,var(--gb) 11%,var(--field)))}
 /* frost every surface that carries a glass fill */
 #rail,
 .nv:hover,
@@ -4450,7 +4489,7 @@ html[data-mode="dark"] .page.profile{--ringtrk:rgba(255,255,255,.18)}
 .ih-mi b{font-size:13.5px;font-weight:650}
 .ih-photo,.ih-secs{border-left:1px solid var(--line);margin-left:18px;padding-left:18px;display:flex;align-items:center;gap:12px}
 .ih-photo{flex-direction:column;align-items:flex-start;gap:8px}
-.ih-photo .hphoto-box img{width:96px;height:116px;object-fit:cover;border-radius:10px}
+.ih-photo .hphoto-box img{width:100%;height:100%;object-fit:cover;display:block}
 .ih-score{margin-left:18px;display:flex;align-items:center;gap:11px;background:rgba(227,6,19,.05);border:1px solid rgba(227,6,19,.13);border-radius:12px;padding:8px 15px 8px 10px}
 .ih-slab b{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
 .ih-slab span{font-size:11px;color:var(--mut)}
@@ -5977,7 +6016,7 @@ body[data-view="sandbox"] #view{overflow-y:auto !important;display:block}
 
 /* ---------- profile: hero strip; glass sheets untouched ---------- */
 .page.profile .hero{padding:16px 24px !important}
-.ih-photo .hphoto-box img{width:76px;height:84px}
+.ih-photo .hphoto-box img{width:100%;height:100%}
 .psheets{gap:24px}
 .sheet-a{flex:7 1 0 !important}.sheet-c{flex:5 1 0 !important}
 @media (min-width:1024px) and (max-width:1279px){ .sheet-a{flex:5 1 0 !important}.sheet-c{flex:3 1 0 !important} }
@@ -6413,6 +6452,25 @@ html[data-mode="light"] .pv-btn.primary{color:#fff}
 .pv-cal{background:var(--pv-panel);border:1px solid var(--pv-line);border-radius:12px;padding:12px}
 .pv-cal-side{display:flex;flex-direction:column;gap:12px;min-width:0}
 .pv-cal-side .card{margin:0}
+.yk-modebar{margin-bottom:12px}
+/* V4.3.0: Audit panel rows open their people list */
+.aud-mrow{cursor:pointer;border-radius:8px}
+.aud-mrow:hover{background:var(--fill)}
+.aud-mrow.on{background:var(--fill2)}
+.aud-listbox{margin-top:14px;padding:0;overflow:hidden}
+.aud-listbox header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.aud-listbox header h3{font-size:14px;font-weight:650;margin:0}
+.aud-listgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:2px;padding:10px}
+.aud-lrow{display:flex;align-items:center;gap:9px;padding:6px 9px;background:none;border:0;border-radius:9px;cursor:pointer;color:var(--txt);font-size:13.5px;text-align:left}
+.aud-lrow:hover{background:var(--fill)}
+/* V4.3.0: Calendar below-the-grid sections are collapsibles */
+.calfold{margin-top:14px;padding:0;overflow:hidden}
+.calfold-h{display:flex;align-items:center;gap:10px;width:100%;padding:13px 18px;background:none;border:0;cursor:pointer;text-align:left;color:var(--txt)}
+.calfold-h h3{font-size:15px;font-weight:650;margin:0}
+.calfold-ch{margin-left:auto;color:var(--mut);font-size:13px}
+.calfold-b{padding:0 18px 16px}
+.calfold-b>.card,.calfold-b>section.card{border:0;background:none;box-shadow:none;padding:0;margin:0}
+.calfold-b .mg-prox{padding:0}
 .v4p .ct-grid{gap:4px}
 .v4p .ct-cell{min-height:74px;border:1px solid color-mix(in srgb,var(--pv-text) 5%,transparent);border-radius:8px;padding:5px 6px;background:color-mix(in srgb,var(--pv-text) 1.5%,transparent)}
 .v4p .ct-cell.dim{opacity:.32;background:transparent}
