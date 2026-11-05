@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.4.2';
+var APP_VERSION = '4.4.3';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3947,7 +3947,7 @@ function viewProfile(v){
     '<button type="button" data-act="newdoc" data-di="' + di + '">' + ic('file', 16) + 'New Drive doc</button>' +
     '<button type="button" data-act="mergeopen" data-di="' + di + '">' + ic('merge', 16) + 'Merge with another profile…</button>' +
     '<hr><button type="button" class="danger" data-act="delperson" data-di="' + di + '">' + ic('trash', 16) + 'Remove from the circle</button></div></div></div>' +
-    '<section id="p-hero" class="hero"></section><div id="p-lastline"></div>' +
+    '<section id="p-hero" class="hero"></section>' +
     '<div class="psheets">' +
     '<div class="pmove sheet-a" id="pm-a" data-kind="about"><div class="pmove-h"><span class="pmh-t">About ' + esc(dispName(e).split(' ')[0]) + '</span>' + kindChip('about', true) + '<span class="pmh-ln"></span><span class="pmh-n" id="pmn-a"></span></div><div class="pgrid" id="pmg-a"></div></div>' +
     '<div class="pmove sheet-c" id="pm-c" data-kind="connection"><div class="pmove-h"><span class="pmh-t">Connection</span>' + kindChip('connection', true) + '<span class="pmh-ln"></span><span class="pmh-n" id="pmn-c"></span></div><div class="pgrid" id="pmg-c"></div></div>' +
@@ -3962,7 +3962,6 @@ function paintProfile(di){
      reader's place across it — scroll position survives a re-render. */
   var _sy = $('#p-hero') ? window.scrollY : null;
   $('#p-hero').innerHTML = heroHTML(di);
-  var ll1 = $('#p-lastline'); if(ll1) ll1.innerHTML = lastLineHTML(di);
   var weights = { a:0, c:0 };
   ['a', 'c'].forEach(function(mv){
     var list = SECS.filter(function(s){ return s.mv === mv && secShown(e, s.id) && roleClears(secLevel(s.id)); })
@@ -4027,24 +4026,12 @@ function repaintTop(){
   if(lcActive() && S.audit.lcOpen === di){ lcRepaint(); return; }
   if(!$('#p-hero')) return;
   $('#p-hero').innerHTML = heroHTML(di);
-  var ll2 = $('#p-lastline'); if(ll2) ll2.innerHTML = lastLineHTML(di);
 }
 
-/* The latest filed contact event as one plain line under the hero
-   (UI arena 2026-10-29: Teams B + C merged item). Exactly as filed —
-   date label + the preserved thread sentence, no derivation, no card.
-   The Log contact door at its end opens the existing Timeline editor. */
-function lastLineHTML(di){
-  var e = D.directory[di]; if(!e) return '';
-  if(!roleClears(lvlOf('stamps'))) return '';
-  var cs = (e.events || []).filter(function(ev){ return ev && ev.kind === 'contact' && ev.date; })
-    .sort(function(a, b){ return (flexKey(b.date) || 0) - (flexKey(a.date) || 0); });
-  if(!cs.length) return '';
-  var ev = cs[0];
-  return '<span class="pll-when" data-kind="connection">' + kindGlyph('connection') + esc(lcDateLabel(ev.date)) + '</span>' +
-    (ev.summary ? '<span class="pll-sum">' + esc(briefClip(ev.summary, 170)) + '</span>' : '') +
-    '<button type="button" class="pll-log" data-act="logcontact">Log contact</button>';
-}
+/* (V4.4.3, JD 2026-11-04: the floating latest-contact line under
+   the hero is gone — it read as a stray strip and its Log contact
+   door silently opened the form at the page bottom. The hero
+   carries LAST ONLINE; logging lives in the Contact Log section.) */
 /* ---------- Entity pills (Split Partitions, V3.37.0) ----------
    Known places and organizations inside narrative text render as small
    color-coded pills. The dictionary is built ONLY from entities the
@@ -4521,9 +4508,8 @@ function secView(di, id){
       return '<div class="ph"><b>' + esc(p.l || 'Untitled phase') + '</b><small>' + esc(ymLabel(p.f) + (p.t ? ' to ' + ymLabel(p.t) : ' to now')) + '</small>' + (p.n ? '<p>' + pillify(p.n, di) + '</p>' : '') + '</div>';
     }).join('') + '</div>';
     if(evs.length){
-      var tlVis = !!S.prof.tlVisual;
-      out4 += '<div class="sub-h' + (out4 ? '' : ' first') + '">Events</div>' +
-        '<div class="tl-secbar"><div class="seg" role="group" aria-label="Events view"><button type="button" data-act="tltog" data-v="list"' + (!tlVis ? ' class="on"' : '') + '>List</button><button type="button" data-act="tltog" data-v="visual"' + (tlVis ? ' class="on"' : '') + '>Timeline</button></div></div>';
+      var tlVis = false; /* V4.4.3 (JD 2026-11-04): Events is a list, only — the Timeline option is removed. */
+      out4 += '<div class="sub-h' + (out4 ? '' : ' first') + '">Events</div>';
       if(tlVis){
         var pitems = [];
         (e.events || []).forEach(function(ev){
@@ -14307,7 +14293,6 @@ function onClick(ev){
     case 'pplview': { var pvv = el.getAttribute('data-v'); S.ppl.view = (pvv === 'recent' || pvv === 'timeline') ? pvv : 'list'; viewPeople($('#view')); break; }
     case 'tlmode': { var tls1 = tlState(el.getAttribute('data-scope')); tls1.mode = el.getAttribute('data-m'); tls1.off = 0; tls1.exp = {}; tlRepaint(el.getAttribute('data-scope')); break; }
     case 'hmtlview': S.hmTlView = el.getAttribute('data-v') === 'timeline' ? 'timeline' : 'list'; viewHome($('#view')); break;
-    case 'tltog': S.prof.tlVisual = el.getAttribute('data-v') === 'visual'; repaintSec('timeline'); break;
     case 'tlnav': { var tls2 = tlState(el.getAttribute('data-scope')), tld = +el.getAttribute('data-d'); tls2.off = tld === 0 ? 0 : tls2.off + tld; tlRepaint(el.getAttribute('data-scope')); break; }
     case 'tljump': { var tls3 = tlState(el.getAttribute('data-scope')); tls3.off = +el.getAttribute('data-off'); tlRepaint(el.getAttribute('data-scope')); break; }
     case 'tlmore': { var tls4 = tlState(el.getAttribute('data-scope')), tlk = el.getAttribute('data-k'); tls4.exp[tlk] = !tls4.exp[tlk]; tlRepaint(el.getAttribute('data-scope')); break; }
