@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.4.5';
+var APP_VERSION = '4.4.6';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9592,22 +9592,64 @@ function fiVisible(){
   else if(FI_SORT === 'corr') list.sort(function(a, b){ return (a.pattern === 'correction' ? 0 : 1) - (b.pattern === 'correction' ? 0 : 1) || byL(a, b); });
   return list;
 }
-function fiCardHTML(e, first){
-  /* V4.4.0 (JD 2026-11-04): the fact card is a compact packet — one
-     enriched sentence, small avatar, and the source line and the
-     actions folded into a single meta row. About half the old
-     card's height. The .sel class is the keyboard cursor. */
-  var st = fiStatus(e), p = fiPat(e), di = fiEntryDi(e);
-  var av = di != null ? avatar(D.directory[di], 'md') : fiInitials(e);
-  var nm = di != null ? '<a class="fi-nm" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + esc(e.display) + '</a>' : '<span class="fi-nm">' + esc(e.display) + '</span>';
-  var host = ''; try { host = new URL(e.url).hostname.replace(/^www\./, ''); } catch(x){ host = e.source || ''; }
-  return '<article class="fi-card' + (st === 'flagged' ? ' flagged' : '') + (FI_SEL === e.id ? ' sel' : '') + '" data-id="' + esc(e.id) + '">' +
-    '<div class="fi-top">' + av + '<div class="fi-id">' + nm + '<div class="fi-anchor">' + esc(e.anchor || '') + '</div></div>' +
-    '<span class="fi-tag ' + p.cls + '">' + esc(p.label) + '</span>' + (st === 'flagged' ? '<span class="fi-flagchip">FLAGGED</span>' : '') + '</div>' +
-    '<p class="fi-fact">' + esc(e.fact) + '</p>' +
-    '<div class="fi-meta"><span class="fi-srcp">' + (e.url ? '<a href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || host) + '</a>' : esc(e.source || '')) + ' &middot; ' + esc(fiFmtDate(e.learned)) + '</span>' +
-    '<span class="fi-acts"><button type="button" class="btn acc sm" data-act="fi-read" data-id="' + esc(e.id) + '">Read</button>' +
-    '<button type="button" class="btn ghost sm fi-flagbtn" data-act="fi-flag" data-id="' + esc(e.id) + '">' + ic('flag', 12) + (st === 'flagged' ? 'Flagged' : 'Flag') + '</button></span></div></article>';
+function fiGroups(){
+  /* V4.4.6 (JD 2026-11-04): the feed groups by person — one card
+     per person, several facts become light bullets on that card. */
+  var vis = fiVisible(), order = [], byKey = {};
+  vis.forEach(function(e){
+    var k = e.key || e.id;
+    if(!byKey[k]){ byKey[k] = { key: k, entries: [] }; order.push(byKey[k]); }
+    byKey[k].entries.push(e);
+  });
+  return order;
+}
+function fiGroupOf(id){
+  var gs = fiGroups();
+  for(var i = 0; i < gs.length; i++)
+    if(gs[i].entries.some(function(e){ return e.id === id; })) return gs[i];
+  return null;
+}
+function fiSrcBtn(e){
+  if(!e.url) return '';
+  return '<a class="fi-srcbtn" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + ic('link', 11) + 'Source</a>';
+}
+function fiCardHTML(g, first){
+  /* V4.4.6: g is a per-person group from fiGroups(). Single-fact
+     people keep the compact V4.4.0 packet plus an explicit small
+     Source button; multi-fact people get light bullets, one per
+     fact, each with its own Source button. Read/Flag act on the
+     whole card. The .sel class is the keyboard cursor. */
+  var e0 = g.entries[0];
+  var di = fiEntryDi(e0);
+  var av = di != null ? avatar(D.directory[di], 'md') : fiInitials(e0);
+  var nm = di != null ? '<a class="fi-nm" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + esc(e0.display) + '</a>' : '<span class="fi-nm">' + esc(e0.display) + '</span>';
+  var anyFlag = g.entries.some(function(e){ return fiStatus(e) === 'flagged'; });
+  var allFlag = g.entries.every(function(e){ return fiStatus(e) === 'flagged'; });
+  var sel = g.entries.some(function(e){ return e.id === FI_SEL; });
+  var pats = [], seenP = {};
+  g.entries.forEach(function(e){ var p = fiPat(e); if(!seenP[p.label]){ seenP[p.label] = 1; pats.push(p); } });
+  var tags = pats.map(function(p){ return '<span class="fi-tag ' + p.cls + '">' + esc(p.label) + '</span>'; }).join('');
+  var head = '<div class="fi-top">' + av + '<div class="fi-id">' + nm + '<div class="fi-anchor">' + esc(e0.anchor || '') + '</div></div>' +
+    (g.entries.length > 1 ? '<span class="fi-count">' + g.entries.length + ' facts</span>' : '') + tags + (anyFlag ? '<span class="fi-flagchip">FLAGGED</span>' : '') + '</div>';
+  var body = '';
+  if(g.entries.length === 1){
+    var e = e0, host = '';
+    try { host = new URL(e.url).hostname.replace(/^www\./, ''); } catch(x){ host = e.source || ''; }
+    body = '<p class="fi-fact">' + esc(e.fact) + '</p>' +
+      '<div class="fi-meta"><span class="fi-srcp">' + esc(e.source || host) + ' &middot; ' + esc(fiFmtDate(e.learned)) + '</span>' + fiSrcBtn(e) +
+      '<span class="fi-acts"><button type="button" class="btn acc sm" data-act="fi-read" data-id="' + esc(e.id) + '">Read</button>' +
+      '<button type="button" class="btn ghost sm fi-flagbtn" data-act="fi-flag" data-id="' + esc(e.id) + '">' + ic('flag', 12) + (allFlag ? 'Flagged' : 'Flag') + '</button></span></div>';
+  } else {
+    body = '<ul class="fi-bullets">' + g.entries.map(function(e){
+      var p = fiPat(e);
+      return '<li class="fi-bfact"><p class="fi-btext">' + esc(e.fact) + '</p>' +
+        '<div class="fi-bmeta"><span class="fi-tag ' + p.cls + '">' + esc(p.label) + '</span><span class="fi-bdate">' + esc(fiFmtDate(e.learned)) + '</span>' + fiSrcBtn(e) + '</div></li>';
+    }).join('') + '</ul>' +
+      '<div class="fi-meta"><span class="fi-srcp">' + g.entries.length + ' facts &middot; newest ' + esc(fiFmtDate(g.entries[0].learned)) + '</span>' +
+      '<span class="fi-acts"><button type="button" class="btn acc sm" data-act="fi-read" data-id="' + esc(e0.id) + '">Read all</button>' +
+      '<button type="button" class="btn ghost sm fi-flagbtn" data-act="fi-flag" data-id="' + esc(e0.id) + '">' + ic('flag', 12) + (allFlag ? 'Flagged' : 'Flag') + '</button></span></div>';
+  }
+  return '<article class="fi-card' + (anyFlag ? ' flagged' : '') + (sel ? ' sel' : '') + '" data-id="' + esc(e0.id) + '" data-gkey="' + esc(g.key) + '">' + head + body + '</article>';
 }
 function fiSideHTML(){
   /* V4.4.0: the old 300px sidebar is a one-line status strip now —
@@ -9816,22 +9858,29 @@ function fiFeedHTML(enterId){
     if(fiCounts().unread === 0) return '<div class="fi-zero"><b>Inbox zero</b><p>Every fact in this batch is one you already know.</p></div>';
     return '<div class="fi-zero"><b>Nothing under this filter</b><p>Switch the filter to see the rest of the feed.</p></div>';
   }
+  var gs = fiGroups();
+  function cardFor(g){
+    var html = fiCardHTML(g);
+    if(enterId && g.entries.some(function(e){ return e.id === enterId; })) html = html.replace('fi-card', 'fi-card entering');
+    return html;
+  }
   if(FI_SORT === 'cat'){
-    /* Grouped by subcategory: a header row spans both columns,
-       cards flow two to a row inside each group. */
+    /* Grouped by subcategory: the header follows each card's first
+       fact; the count is facts, not cards. */
+    var patN = {};
+    vis.forEach(function(e){ patN[e.pattern] = (patN[e.pattern] || 0) + 1; });
     var out = '', lastPat = null;
-    vis.forEach(function(e, i){
-      if(e.pattern !== lastPat){
-        lastPat = e.pattern;
-        var n = vis.filter(function(x){ return x.pattern === lastPat; }).length;
-        out += '<div class="fi-grouph"><span class="fi-tag ' + fiPat(e).cls + '">' + esc(fiPat(e).label) + '</span><span class="fi-groupn">' + n + '</span></div>';
+    gs.forEach(function(g){
+      var pat = g.entries[0].pattern;
+      if(pat !== lastPat){
+        lastPat = pat;
+        out += '<div class="fi-grouph"><span class="fi-tag ' + fiPat(g.entries[0]).cls + '">' + esc(fiPat(g.entries[0]).label) + '</span><span class="fi-groupn">' + patN[pat] + '</span></div>';
       }
-      var html = fiCardHTML(e, i === 0); if(enterId && e.id === enterId) html = html.replace('fi-card', 'fi-card entering');
-      out += html;
+      out += cardFor(g);
     });
     return out;
   }
-  return vis.map(function(e, i){ var html = fiCardHTML(e, i === 0); if(enterId && e.id === enterId) html = html.replace('fi-card', 'fi-card entering'); return html; }).join('');
+  return gs.map(cardFor).join('');
 }
 function fiEnsureSel(){
   var vis = fiVisible();
@@ -9843,15 +9892,16 @@ function fiEnsureSel(){
   FI_SEL_NEXT = null;
 }
 function fiSelMove(delta){
-  var vis = fiVisible(); if(!vis.length) return;
+  /* V4.4.6: the cursor steps card to card (person to person). */
+  var gs = fiGroups(); if(!gs.length) return;
   fiEnsureSel();
-  var i = vis.findIndex(function(e){ return e.id === FI_SEL; });
-  var n = Math.max(0, Math.min(vis.length - 1, i + delta));
-  FI_SEL = vis[n].id;
-  var cards = document.querySelectorAll('#fi-feed .fi-card');
-  cards.forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-id') === FI_SEL); });
-  var el = document.querySelector('#fi-feed .fi-card[data-id="' + FI_SEL + '"]');
-  if(el) el.scrollIntoView({ block:'nearest' });
+  var gi = -1;
+  gs.forEach(function(g, ix){ if(g.entries.some(function(e){ return e.id === FI_SEL; })) gi = ix; });
+  var n = Math.max(0, Math.min(gs.length - 1, gi + delta));
+  FI_SEL = gs[n].entries[0].id;
+  document.querySelectorAll('#fi-feed .fi-card').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-gkey') === gs[n].key); });
+  var el = document.querySelector('#fi-feed .fi-card[data-gkey="' + gs[n].key + '"]');
+  if(el) el.scrollIntoView({ block: 'nearest' });
 }
 function fiCols(){
   var feed = document.getElementById('fi-feed'); if(!feed) return 1;
@@ -9880,23 +9930,31 @@ function fiPaintNavBadge(){
   document.querySelectorAll('.fi-bdg').forEach(function(b){ b.textContent = n; b.classList.toggle('zero', !n); b.hidden = false; });
 }
 function fiMarkRead(id){
-  /* Snappy (V4.4.5, JD 2026-11-04): the decision lands the moment
-     the key is pressed \u2014 status set and the selection moved to
-     the next fact in the same instant, ring repainted in place.
-     The read card then collapses out over 160ms and the feed
-     resyncs behind it; nothing waits on the animation, so R can
-     be pressed again immediately and rapid-fire reads just work. */
+  /* Snappy + grouped (V4.4.5/V4.4.6, JD 2026-11-04): Read acts on
+     the person's whole card. The decision lands the moment the key
+     is pressed — one batch save for every fact on the card, the
+     selection moved to the next card in the same instant, ring
+     repainted in place. The read card then collapses out over
+     160ms and the feed resyncs behind it; nothing waits on the
+     animation, so R can be pressed again immediately. */
   if(fiStateBlocked()){ toast(fiStateBlocked()); return; }
-  var vis = fiVisible(), vi = vis.findIndex(function(e){ return e.id === id; });
-  var nxt = vi >= 0 ? (vis[vi + 1] || vis[vi - 1]) : null;
-  if(!fiSetStatus(id, 'read')) return;
+  var gs = fiGroups(), gi = -1;
+  gs.forEach(function(x, ix){ if(x.entries.some(function(e){ return e.id === id; })) gi = ix; });
+  if(gi < 0) return;
+  var g = gs[gi];
+  var nxt = gs[gi + 1] || gs[gi - 1];
+  var cur = fiStateMap(), next = {};
+  Object.keys(cur).forEach(function(k){ next[k] = cur[k]; });
+  var at = new Date().toISOString();
+  g.entries.forEach(function(e){ next[e.id] = { status: 'read', at: at }; });
+  fiSaveState(next);
   if(nxt){
-    FI_SEL = nxt.id; FI_SEL_NEXT = '';
-    document.querySelectorAll('#fi-feed .fi-card').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-id') === FI_SEL); });
-    var sel = document.querySelector('#fi-feed .fi-card[data-id="' + FI_SEL + '"]');
+    FI_SEL = nxt.entries[0].id; FI_SEL_NEXT = '';
+    document.querySelectorAll('#fi-feed .fi-card').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-gkey') === nxt.key); });
+    var sel = document.querySelector('#fi-feed .fi-card[data-gkey="' + nxt.key + '"]');
     if(sel) sel.scrollIntoView({ block: 'nearest' });
   }
-  var card = document.querySelector('.fi-card[data-id="' + id + '"]');
+  var card = document.querySelector('#fi-feed .fi-card[data-gkey="' + g.key + '"]');
   if(!card){ fiPaint(); return; }
   card.classList.add('leaving');
   card.style.height = card.offsetHeight + 'px';
@@ -9906,9 +9964,19 @@ function fiMarkRead(id){
   setTimeout(function(){ fiPaint(); }, 175);
 }
 function fiToggleFlag(id){
-  var e = ((FI && FI.entries) || []).filter(function(x){ return x.id === id; })[0];
-  if(!e) return;
-  if(fiSetStatus(id, fiStatus(e) === 'flagged' ? null : 'flagged')) fiPaint();
+  /* Grouped (V4.4.6): Flag acts on the person's whole card — if
+     every fact is flagged it unflags all, otherwise it flags all.
+     One batch save, instant repaint (no exit animation). */
+  if(fiStateBlocked()){ toast(fiStateBlocked()); return; }
+  var g = fiGroupOf(id);
+  if(!g) return;
+  var allFlag = g.entries.every(function(e){ return fiStatus(e) === 'flagged'; });
+  var cur = fiStateMap(), next = {};
+  Object.keys(cur).forEach(function(k){ next[k] = cur[k]; });
+  var at = new Date().toISOString();
+  g.entries.forEach(function(e){ if(allFlag) delete next[e.id]; else next[e.id] = { status: 'flagged', at: at }; });
+  fiSaveState(next);
+  fiPaint();
 }
 function fiUndo(id){ if(fiSetStatus(id, null)) fiPaint(id); }
 function fiGoto(id){
@@ -9917,7 +9985,7 @@ function fiGoto(id){
   if(FI_FILTER !== 'all' && e.pattern !== FI_FILTER){ FI_FILTER = 'all'; }
   fiPaint();
   setTimeout(function(){
-    var card = document.querySelector('.fi-card[data-id="' + id + '"]');
+    var card = document.querySelector('.fi-card[data-gkey="' + (e.key || e.id) + '"]') || document.querySelector('.fi-card[data-id="' + id + '"]');
     if(card){ card.scrollIntoView({ block: 'center', behavior: 'smooth' }); card.classList.add('flash'); setTimeout(function(){ card.classList.remove('flash'); }, 1650); }
   }, 60);
 }
