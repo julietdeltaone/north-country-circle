@@ -13504,8 +13504,8 @@
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "photos": {
-   "todo": 3,
-   "new": 0,
+   "todo": 8,
+   "new": 5,
    "cleared_at": null
   }
  },
@@ -16527,7 +16527,37 @@
    "added": "2026-11-03",
    "class": "new",
    "source": "Photo filed"
+  },
+  "emilee mcadoo": {
+   "first_seen": "2026-11-05T05:02:00Z",
+   "added": "2026-11-04",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "jacinta gomes": {
+   "first_seen": "2026-11-05T05:02:00Z",
+   "added": "2026-11-04",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "katelynne kulp": {
+   "first_seen": "2026-11-05T05:02:00Z",
+   "added": "2026-11-04",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "kaylee gilbert": {
+   "first_seen": "2026-11-05T05:02:00Z",
+   "added": "2026-11-04",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "tasha bernard": {
+   "first_seen": "2026-11-05T05:02:00Z",
+   "added": "2026-11-04",
+   "class": "new",
+   "source": "Photo filed"
   }
  },
- "updated": "2026-11-05T04:52:00Z"
+ "updated": "2026-11-05T05:02:00Z"
 }
