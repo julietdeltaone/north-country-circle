@@ -181,6 +181,10 @@
    "name": "ig:t.fetterley",
    "pattern": "milestone",
    "source": "SUNY Potsdam Merit Pages",
+   "state": {
+    "at": "2026-11-05T04:43:30.964Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Tasia-Fetterley-Earns-Spot-on-SUNY-Potsdam-Dean-s-List/124266091"
   },
   {
@@ -2243,6 +2247,10 @@
    "name": "ig:nat.waterman",
    "pattern": "milestone",
    "source": "TIERS Network",
+   "state": {
+    "at": "2026-11-05T04:42:31.448Z",
+    "status": "read"
+   },
    "url": "https://tiersnetwork.org/people/natalie-waterman"
   },
   {
@@ -2256,6 +2264,10 @@
    "name": "ig:nat.waterman",
    "pattern": "milestone",
    "source": "ACS Catalysis",
+   "state": {
+    "at": "2026-11-05T04:42:34.062Z",
+    "status": "read"
+   },
    "url": "https://pubs.acs.org/doi/10.1021/acscatal.6c01297"
   },
   {
@@ -2269,6 +2281,10 @@
    "name": "catchandtrelease",
    "pattern": "milestone",
    "source": "Mendeley Data",
+   "state": {
+    "at": "2026-11-05T04:42:45.424Z",
+    "status": "read"
+   },
    "url": "https://data.mendeley.com/datasets/26w3353jrg"
   },
   {
@@ -2282,6 +2298,10 @@
    "name": "catchandtrelease",
    "pattern": "milestone",
    "source": "pv magazine USA",
+   "state": {
+    "at": "2026-11-05T04:42:48.574Z",
+    "status": "read"
+   },
    "url": ""
   },
   {
@@ -2295,6 +2315,10 @@
    "name": "sf:samantha-marocco",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-05T04:42:53.642Z",
+    "status": "read"
+   },
    "url": ""
   },
   {
