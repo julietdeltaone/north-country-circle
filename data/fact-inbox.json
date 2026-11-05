@@ -266,6 +266,10 @@
    "name": "ig:nikki.sew",
    "pattern": "new_credential",
    "source": "Clarkson University Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:17.438Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Nicole-Seward-of-Hopewell-Junction-NY-graduates-from-Clarkson-University-/31069049"
   },
   {
@@ -279,6 +283,10 @@
    "name": "ig:nikki.sew",
    "pattern": "milestone",
    "source": "Clarkson University Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:17.438Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Nicole-Seward-of-Hopewell-Jct-N-Y-Named-Presidential-Scholar-at-Clarkson-University/5064052"
   },
   {
@@ -292,6 +300,10 @@
    "name": "ig:nikki.sew",
    "pattern": "milestone",
    "source": "ROOTS Physical Therapy",
+   "state": {
+    "at": "2026-11-05T14:54:17.438Z",
+    "status": "read"
+   },
    "url": "https://www.rootspt.com/blog/"
   },
   {
@@ -305,6 +317,10 @@
    "name": "sf:nelson-dane",
    "pattern": "new_credential",
    "source": "Clarkson University Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:18.422Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Nelson-Dane-of-Madrid-NY-graduates-from-Clarkson-University/153490034"
   },
   {
@@ -318,6 +334,10 @@
    "name": "sf:nelson-dane",
    "pattern": "milestone",
    "source": "Clarkson University Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:18.422Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Nelson-Dane-of-Madrid-NY-has-been-named-a-Presidential-Scholar-at-Clarkson-University/152152128"
   },
   {
@@ -331,6 +351,10 @@
    "name": "sf:debbie-flack",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:54:19.304Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/plm/name-127829-en.html"
   },
   {
@@ -344,6 +368,10 @@
    "name": "sf:debbie-flack",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:19.304Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Debbie.Flack"
   },
   {
@@ -357,6 +385,10 @@
    "name": "sf:jennifer-meyer",
    "pattern": "milestone",
    "source": "National Guard",
+   "state": {
+    "at": "2026-11-05T14:54:20.781Z",
+    "status": "read"
+   },
    "url": "https://www.nationalguard.mil/News/Article-View/Article/2023989/ny-nj-national-guard-troops-train-for-disaster-response/"
   },
   {
@@ -370,6 +402,10 @@
    "name": "sf:jennifer-meyer",
    "pattern": "milestone",
    "source": "New York National Guard",
+   "state": {
+    "at": "2026-11-05T14:54:20.781Z",
+    "status": "read"
+   },
    "url": "https://dmna.ny.gov/units/?unit=1227543460&page=featured"
   },
   {
@@ -383,6 +419,10 @@
    "name": "ct:justin estep",
    "pattern": "title_change",
    "source": "New York National Guard",
+   "state": {
+    "at": "2026-11-05T14:54:01.814Z",
+    "status": "read"
+   },
    "url": "https://dmna-ny.meritpages.com/stories/Canton-National-Guard-Soldier-Receives-New-Rank-New-Responsibilities/152892686"
   },
   {
@@ -396,6 +436,10 @@
    "name": "sf:greg-lapinski",
    "pattern": "milestone",
    "source": "St. Lawrence University Athletics",
+   "state": {
+    "at": "2026-11-05T14:54:21.614Z",
+    "status": "read"
+   },
    "url": "https://saintsathletics.com/services/download_file.ashx?file_location=https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/stlawu.sidearmsports.com/documents/2026/10/20/3LIUupdate.pdf"
   },
   {
@@ -409,6 +453,10 @@
    "name": "ct:jason sweet",
    "pattern": "title_change",
    "source": "St. Lawrence University",
+   "state": {
+    "at": "2026-11-05T14:54:03.006Z",
+    "status": "read"
+   },
    "url": "https://www.stlawu.edu/offices/information-technology/staff"
   },
   {
@@ -422,6 +470,10 @@
    "name": "sf:erin-dunham",
    "pattern": "new_credential",
    "source": "SUNY Potsdam Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:22.630Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Erin-Dunham/5361822"
   },
   {
@@ -435,6 +487,10 @@
    "name": "sf:erin-dunham",
    "pattern": "milestone",
    "source": "SUNY Potsdam Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:22.630Z",
+    "status": "read"
+   },
    "url": "http://potsdam.meritpages.com/stories/Erin-Dunham-Named-to-SUNY-Potsdam-President-s-List/99542437"
   },
   {
@@ -448,6 +504,10 @@
    "name": "sf:emily-ward",
    "pattern": "new_credential",
    "source": "Rochester Regional Health",
+   "state": {
+    "at": "2026-11-05T14:54:24.223Z",
+    "status": "read"
+   },
    "url": "https://www.rochesterregional.org/hub/specialized-rns-assist-new-moms"
   },
   {
@@ -461,6 +521,10 @@
    "name": "sf:kundai-mugugu",
    "pattern": "employer_change",
    "source": "Lendy Park School",
+   "state": {
+    "at": "2026-11-05T14:53:53.653Z",
+    "status": "read"
+   },
    "url": "https://lendypark.com/wp-content/uploads/2024/11/News-letter-Term-2-2024-No-1.pdf"
   },
   {
@@ -474,6 +538,10 @@
    "name": "sf:peyton-mussaw",
    "pattern": "new_credential",
    "source": "Clarkson University Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:25.111Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Peyton-Mussaw-of-Gouverneur-NY-graduates-from-Clarkson-University/159777801"
   },
   {
@@ -487,6 +555,10 @@
    "name": "sf:peyton-mussaw",
    "pattern": "milestone",
    "source": "Rochester Regional Health",
+   "state": {
+    "at": "2026-11-05T14:54:25.111Z",
+    "status": "read"
+   },
    "url": "https://www.rochesterregional.org/hub/gh-auxiliary-awards-seven-scholarships"
   },
   {
@@ -500,6 +572,10 @@
    "name": "sf:skyler-trumble",
    "pattern": "new_credential",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:54:26.453Z",
+    "status": "read"
+   },
    "url": "https://sunypotsdamlandrf.org/wp-content/uploads/2021/04/LRF-2021-Presentation-Grasse-River.pdf"
   },
   {
@@ -513,6 +589,10 @@
    "name": "sf:skyler-trumble",
    "pattern": "milestone",
    "source": "SUNY Potsdam Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:26.453Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Skyler-Trumble-Earns-Spot-on-SUNY-Potsdam-Dean-s-List/58665213"
   },
   {
@@ -526,6 +606,10 @@
    "name": "sf:skyler-trumble",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:54:26.453Z",
+    "status": "read"
+   },
    "url": "https://sunypotsdamlandrf.org/wp-content/uploads/2021/04/LRF-2021-Presentation-Grasse-River.pdf"
   },
   {
@@ -539,6 +623,10 @@
    "name": "sf:skyler-trumble",
    "pattern": "milestone",
    "source": "SUNY Potsdam Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:26.453Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Skyler-Trumble-Completes-Coursework-through-SUNY-Potsdam-s-College-in-High-School-Program-/11404015"
   },
   {
@@ -552,6 +640,10 @@
    "name": "sf:josiah-tabolt",
    "pattern": "correction",
    "source": "ZoomInfo",
+   "state": {
+    "at": "2026-11-05T14:54:28.604Z",
+    "status": "read"
+   },
    "url": "https://www.zoominfo.com/p/Josiah-Tabolt/1286965702"
   },
   {
@@ -565,6 +657,10 @@
    "name": "sf:skyler-trumble",
    "pattern": "correction",
    "source": "SUNY Potsdam Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:26.453Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Skyler-Trumble-Set-to-Graduate-from-SUNY-Potsdam/82323113"
   },
   {
@@ -578,6 +674,10 @@
    "name": "sf:megan-eurto",
    "pattern": "correction",
    "source": "Village of Canton",
+   "state": {
+    "at": "2026-11-05T14:54:30.214Z",
+    "status": "read"
+   },
    "url": "https://cms3.revize.com/revize/canton/2025 9 17  Village Board Meeting Minutes.pdf?t=202510211005280&t=202510211005280"
   },
   {
@@ -591,6 +691,10 @@
    "name": "sf:stephanie-reasoner",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:32.190Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Stephanie-Reasoner-of-Potsdam-Made-President-s-List-at-SUNY-Canton/5546685"
   },
   {
@@ -604,6 +708,10 @@
    "name": "ct:kyle deschaine",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:34.565Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Kyle-B-Deschaine/2786218"
   },
   {
@@ -617,6 +725,10 @@
    "name": "ct:kyle deschaine",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:54:34.565Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Kyle-B-Deschaine/2786218"
   },
   {
@@ -630,6 +742,10 @@
    "name": "ig:hamiltonezra",
    "pattern": "milestone",
    "source": "Jefferson Community College",
+   "state": {
+    "at": "2026-11-05T14:54:35.605Z",
+    "status": "read"
+   },
    "url": "https://sunyjefferson.edu/news/pres_deans_spring22.php"
   },
   {
@@ -643,6 +759,10 @@
    "name": "ig:hamiltonezra",
    "pattern": "milestone",
    "source": "Jefferson Community College",
+   "state": {
+    "at": "2026-11-05T14:54:35.605Z",
+    "status": "read"
+   },
    "url": "https://sunyjefferson.edu/news/pres_deans_spring22.php"
   },
   {
@@ -656,6 +776,10 @@
    "name": "ig:hamiltonezra",
    "pattern": "milestone",
    "source": "Jefferson Community College",
+   "state": {
+    "at": "2026-11-05T14:54:35.605Z",
+    "status": "read"
+   },
    "url": "https://sunyjefferson.edu/news/ptk_induction19.php"
   },
   {
@@ -669,6 +793,10 @@
    "name": "ig:mark.it5",
    "pattern": "milestone",
    "source": "New Testament Church Massena",
+   "state": {
+    "at": "2026-11-05T14:55:08.431Z",
+    "status": "read"
+   },
    "url": "https://www.ntcmassena.com/preacher/mark-miller/"
   },
   {
@@ -682,6 +810,10 @@
    "name": "ig:adhope2006",
    "pattern": "milestone",
    "source": "Potsdam Rotary",
+   "state": {
+    "at": "2026-11-05T14:55:09.256Z",
+    "status": "read"
+   },
    "url": "https://www.potsdamrotary.org/Stories/students-win-2-000-in-rotary-essay-contest"
   },
   {
@@ -695,6 +827,10 @@
    "name": "ct:brian hanlin",
    "pattern": "milestone",
    "source": "New York State Police",
+   "state": {
+    "at": "2026-11-05T14:55:16.223Z",
+    "status": "read"
+   },
    "url": "https://troopers.ny.gov/news/state-police-investigating-officer-involved-shooting-jefferson-county"
   },
   {
@@ -708,6 +844,10 @@
    "name": "ig:ejb1203",
    "pattern": "milestone",
    "source": "Warren County Board of Supervisors",
+   "state": {
+    "at": "2026-11-05T14:55:18.329Z",
+    "status": "read"
+   },
    "url": "https://public.warrencountyny.gov/home/dynamicfolders/BOS/2022/Board%20Meetings-Resolutions/06.15.22%20Board%20Meeting%20Minutes.pdf"
   },
   {
@@ -721,6 +861,10 @@
    "name": "ig:ejb1203",
    "pattern": "milestone",
    "source": "SUNY Adirondack",
+   "state": {
+    "at": "2026-11-05T14:55:18.329Z",
+    "status": "read"
+   },
    "url": "https://dev.sunyacc.edu/news-stories/suny-adirondack-announces-deans-and-presidents-lists"
   },
   {
@@ -734,6 +878,10 @@
    "name": "sf:nicholas-oddey",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:19.544Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Nicholas-Oddey-Earns-President-s-List-Honors-at-SUNY-Canton/135389919"
   },
   {
@@ -747,6 +895,10 @@
    "name": "sf:nicholas-oddey",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:55:19.544Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/plm/name-94250-en.html"
   },
   {
@@ -760,6 +912,10 @@
    "name": "ig:johnaeastmond",
    "pattern": "milestone",
    "source": "New Heart Ministries",
+   "state": {
+    "at": "2026-11-05T14:55:21.487Z",
+    "status": "read"
+   },
    "url": "https://www.andreweastmond.com/"
   },
   {
@@ -773,6 +929,10 @@
    "name": "ig:johnaeastmond",
    "pattern": "milestone",
    "source": "New Heart Ministries",
+   "state": {
+    "at": "2026-11-05T14:55:21.487Z",
+    "status": "read"
+   },
    "url": "https://www.andreweastmond.com/"
   },
   {
@@ -786,6 +946,10 @@
    "name": "ig:sphip_06",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:55:24.296Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2024/graduates.php"
   },
   {
@@ -799,6 +963,10 @@
    "name": "ig:sphip_06",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:24.296Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Sydnie-Phippen-Earns-Dean-s-List-Honors-at-SUNY-Canton/110713094"
   },
   {
@@ -812,6 +980,10 @@
    "name": "ig:sphip_06",
    "pattern": "milestone",
    "source": "Village of Norwood",
+   "state": {
+    "at": "2026-11-05T14:55:24.296Z",
+    "status": "read"
+   },
    "url": "https://norwoodny.org/wp-content/uploads/2024/03/December-2023-Minutes.pdf"
   },
   {
@@ -825,6 +997,10 @@
    "name": "sf:rosie-hoover",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:25.479Z",
+    "status": "read"
+   },
    "url": "https://belmont.meritpages.com/stories/Rose-Hoover-Potsdam-Makes-Fall-2025-Dean-s-List-at-Belmont-University/175137610"
   },
   {
@@ -838,6 +1014,10 @@
    "name": "sf:rosie-hoover",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:25.479Z",
+    "status": "read"
+   },
    "url": "https://belmont.meritpages.com/stories/Rose-Hoover-Potsdam-Among-Belmont-University-s-Fall-2024-Dean-s-List-Scholars/150752634"
   },
   {
@@ -851,6 +1031,10 @@
    "name": "sf:rosie-hoover",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:25.479Z",
+    "status": "read"
+   },
    "url": "https://belmont.meritpages.com/stories/Rose-Hoover-Potsdam-Achieves-Spring-2024-Dean-s-List-at-Belmont-University/132628954"
   },
   {
@@ -864,6 +1048,10 @@
    "name": "ct:emilee mcadoo",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:27.334Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Emilee-McAdoo-is-one-of-SUNY-Canton-s-Newest-Roos-/6145019"
   },
   {
@@ -877,6 +1065,10 @@
    "name": "sf:makiah-barber",
    "pattern": "title_change",
    "source": "4.files.edl.io",
+   "state": {
+    "at": "2026-11-05T14:54:05.678Z",
+    "status": "read"
+   },
    "url": "https://4.files.edl.io/456e/03/18/26/151436-04325cae-baed-4b7f-8a66-863da46a88de.pdf"
   },
   {
@@ -890,6 +1082,10 @@
    "name": "sf:isabelle-westerman",
    "pattern": "milestone",
    "source": "WOMB Initiative",
+   "state": {
+    "at": "2026-11-05T14:55:29.823Z",
+    "status": "read"
+   },
    "url": "https://www.wombinitiative.org/event-details/sustainable-child-rearing-4"
   },
   {
@@ -903,6 +1099,10 @@
    "name": "sf:joe-charlebois",
    "pattern": "milestone",
    "source": "Elite Prospects",
+   "state": {
+    "at": "2026-11-05T14:55:31.457Z",
+    "status": "read"
+   },
    "url": "https://www.eliteprospects.com/transfer/2010/11/30/joe-charlebois-in-a-confirmed-transaction-to-kalamazoo-wings/622891"
   },
   {
@@ -916,6 +1116,10 @@
    "name": "sf:joe-charlebois",
    "pattern": "milestone",
    "source": "OurSports Central",
+   "state": {
+    "at": "2026-11-05T14:55:31.457Z",
+    "status": "read"
+   },
    "url": "https://www.oursportscentral.com/services/releases/charlebois-signs-on-with-rockford/n-3779247"
   },
   {
@@ -929,6 +1133,10 @@
    "name": "sf:joe-charlebois",
    "pattern": "milestone",
    "source": "Elite Prospects",
+   "state": {
+    "at": "2026-11-05T14:55:31.457Z",
+    "status": "read"
+   },
    "url": "https://www.eliteprospects.com/player/14873/joe-charlebois/print"
   },
   {
@@ -942,6 +1150,10 @@
    "name": "ct:ryleigh combs",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:34.335Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/SUNY-Potsdam-Student-Ryleigh-Combs-Earns-a-Spot-on-Dean-s-List/4856362"
   },
   {
@@ -955,6 +1167,10 @@
    "name": "ig:stephanieadamss",
    "pattern": "new_credential",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:36.423Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Stephanie-Adams-Set-to-Graduate-from-SUNY-Potsdam/108808996"
   },
   {
@@ -968,6 +1184,10 @@
    "name": "ig:stephanieadamss",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:36.423Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Stephanie-Adams-Named-to-SUNY-Potsdam-President-s-List/110719469"
   },
   {
@@ -981,6 +1201,10 @@
    "name": "ig:daniel__manor",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:55:37.991Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2023/honorsf22.php"
   },
   {
@@ -994,6 +1218,10 @@
    "name": "sf:martha-martin",
    "pattern": "milestone",
    "source": "Martin's Country Store",
+   "state": {
+    "at": "2026-11-05T14:55:39.961Z",
+    "status": "read"
+   },
    "url": "https://martinscountrystore.com/pages/meet-the-martins"
   },
   {
@@ -1007,6 +1235,10 @@
    "name": "ig:max_ferran06",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:43.432Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Max-Rocco-Ferran/9515616"
   },
   {
@@ -1020,6 +1252,10 @@
    "name": "ig:max_ferran06",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:43.432Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Max-Rocco-Ferran/9515616"
   },
   {
@@ -1033,6 +1269,10 @@
    "name": "ig:ria.amo",
    "pattern": "milestone",
    "source": "Albany College of Pharmacy and Health Sciences",
+   "state": {
+    "at": "2026-11-05T14:55:45.510Z",
+    "status": "read"
+   },
    "url": "https://www.acphs.edu/news/acphs-announces-fall-2025-deans-list-recipients/"
   },
   {
@@ -1046,6 +1286,10 @@
    "name": "ig:ria.amo",
    "pattern": "milestone",
    "source": "Albany College of Pharmacy and Health Sciences",
+   "state": {
+    "at": "2026-11-05T14:55:45.510Z",
+    "status": "read"
+   },
    "url": "https://www.acphs.edu/students/deans-list"
   },
   {
@@ -1059,6 +1303,10 @@
    "name": "sf:toni-squires",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:55:47.375Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/college_council/"
   },
   {
@@ -1072,6 +1320,10 @@
    "name": "sf:zachary-dean",
    "pattern": "milestone",
    "source": "DVIDS",
+   "state": {
+    "at": "2026-11-05T14:55:54.625Z",
+    "status": "read"
+   },
    "url": "https://www.dvidshub.net/news/432186/new-york-national-guard-soldiers-exercise-right-vote-while-deployed"
   },
   {
@@ -1085,6 +1337,10 @@
    "name": "sf:katelynne-kulp",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:55.537Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Katelynne-Kulp-of-Gouverneur-Named-to-SUNY-Canton-Dean-s-List/1682227"
   },
   {
@@ -1098,6 +1354,10 @@
    "name": "sf:jacinta-gomes",
    "pattern": "milestone",
    "source": "SUNY Plattsburgh",
+   "state": {
+    "at": "2026-11-05T14:55:58.267Z",
+    "status": "read"
+   },
    "url": "https://www.plattsburgh.edu/news/news-archive/suny-plattsburgh-announces-fall-2019-deans-list.html"
   },
   {
@@ -1111,6 +1371,10 @@
    "name": "sf:jacinta-gomes",
    "pattern": "milestone",
    "source": "SUNY Plattsburgh",
+   "state": {
+    "at": "2026-11-05T14:55:58.267Z",
+    "status": "read"
+   },
    "url": "https://www.plattsburgh.edu/news/news-archive/college-announces-spring-2020-deans-list%20.html"
   },
   {
@@ -1124,6 +1388,10 @@
    "name": "sf:jacinta-gomes",
    "pattern": "milestone",
    "source": "SUNY Plattsburgh",
+   "state": {
+    "at": "2026-11-05T14:55:58.267Z",
+    "status": "read"
+   },
    "url": "https://www.plattsburgh.edu/news/news-archive/college-announces-fall-2020-deans-list.html"
   },
   {
@@ -1137,6 +1405,10 @@
    "name": "ig:peyt0nsheehan",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:02.264Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Peyton-Sheehan-Recognized-at-SUNY-Canton-Honors-Convocation/158744057"
   },
   {
@@ -1150,6 +1422,10 @@
    "name": "ct:susan buckley",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:56:04.033Z",
+    "status": "read"
+   },
    "url": "https://canton.edu/news/2020/recognition.php"
   },
   {
@@ -1163,6 +1439,10 @@
    "name": "sf:ticia-cudjoe",
    "pattern": "milestone",
    "source": "cands.org",
+   "state": {
+    "at": "2026-11-05T14:56:06.344Z",
+    "status": "read"
+   },
    "url": "https://cands.org/500-gen-zers-named-2025-carnegie-young-leaders/"
   },
   {
@@ -1176,6 +1456,10 @@
    "name": "ig:debbiegordon7",
    "pattern": "milestone",
    "source": "NYSED Commissioner Decision",
+   "state": {
+    "at": "2026-11-05T14:56:07.192Z",
+    "status": "read"
+   },
    "url": "https://www.counsel.nysed.gov/Decisions/volume53/d16582"
   },
   {
@@ -1189,6 +1473,10 @@
    "name": "ig:debbiegordon7",
    "pattern": "milestone",
    "source": "NYSED Commissioner Decision",
+   "state": {
+    "at": "2026-11-05T14:56:07.192Z",
+    "status": "read"
+   },
    "url": "https://www.counsel.nysed.gov/Decisions/volume53/d16582"
   },
   {
@@ -1202,6 +1490,10 @@
    "name": "ig:kylgot",
    "pattern": "new_credential",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:09.137Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Congratulations-Kyle-Gotham-For-Graduating-From-SUNY-Canton-/11316558"
   },
   {
@@ -1215,6 +1507,10 @@
    "name": "sf:maria-tallo",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:12.191Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/SUNY-Potsdam-Awards-Scholarship-Support-to-Maria-Tallo-for-2017-18-Academic-Year-/9991901"
   },
   {
@@ -1228,6 +1524,10 @@
    "name": "sf:heather-ramsdell",
    "pattern": "milestone",
    "source": "New Testament Church Massena",
+   "state": {
+    "at": "2026-11-05T14:56:13.536Z",
+    "status": "read"
+   },
    "url": "https://www.ntcmassena.com/preacher/heather-ramsdell/"
   },
   {
@@ -1241,6 +1541,10 @@
    "name": "ig:hjlevendusky",
    "pattern": "milestone",
    "source": "Avon Central School District",
+   "state": {
+    "at": "2026-11-05T14:56:14.736Z",
+    "status": "read"
+   },
    "url": "https://core-docs.s3.amazonaws.com/documents/asset/uploaded_file/1088177/boe_minutes_1-13-20.pdf"
   },
   {
@@ -1254,6 +1558,10 @@
    "name": "sf:kailee paige",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:56:16.040Z",
+    "status": "read"
+   },
    "url": "https://view.publitas.com/47848/3074007/pdfs/8f32b3d1-3c77-4bc4-becc-dabbccd3866a.pdf?response-content-disposition=attachment%3B"
   },
   {
@@ -1267,6 +1575,10 @@
    "name": "ig:sierra_damon",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:17.528Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Sierra-Damon/3227976"
   },
   {
@@ -1280,6 +1592,10 @@
    "name": "sf:ashley-lafay",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:18.912Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Ashley-LaFay-Earns-Part-Time-Honors-at-SUNY-Canton-/14641984"
   },
   {
@@ -1293,6 +1609,10 @@
    "name": "ig:micahmcculley_",
    "pattern": "milestone",
    "source": "TFRRS",
+   "state": {
+    "at": "2026-11-05T14:56:19.631Z",
+    "status": "read"
+   },
    "url": "https://upload.tfrrs.org/athletes/7917099/Geneseo_St/Micah_McCulley.html"
   },
   {
@@ -1306,6 +1626,10 @@
    "name": "ig:micahmcculley_",
    "pattern": "milestone",
    "source": "Empire 8",
+   "state": {
+    "at": "2026-11-05T14:56:19.631Z",
+    "status": "read"
+   },
    "url": "http://empire8.com/news/2024/12/3/suny-geneseo-sweeps-2024-empire-8-mens-cross-country-awards.aspx"
   },
   {
@@ -1319,6 +1643,10 @@
    "name": "ig:lafaverspainting",
    "pattern": "milestone",
    "source": "First Presbyterian Church Potsdam",
+   "state": {
+    "at": "2026-11-05T14:56:22.456Z",
+    "status": "read"
+   },
    "url": "http://www.potsdampresbyterian.org/news-for-the-church-1-26-24/"
   },
   {
@@ -1332,6 +1660,10 @@
    "name": "sf:matthew-merria",
    "pattern": "milestone",
    "source": "U.S. District Court, N.D.N.Y.",
+   "state": {
+    "at": "2026-11-05T14:56:24.136Z",
+    "status": "read"
+   },
    "url": "https://govinfo.gov/content/pkg/USCOURTS-nynd-8_22-cv-00164/pdf/USCOURTS-nynd-8_22-cv-00164-3.pdf"
   },
   {
@@ -1345,6 +1677,10 @@
    "name": "ct:ethan ryan",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:56:27.895Z",
+    "status": "read"
+   },
    "url": "http://honorsofdistinctionmag.com/suny-canton-recognizes-part-time-students/"
   },
   {
@@ -1358,6 +1694,10 @@
    "name": "ig:nancyhull9",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:56:29.383Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/news/crane-school-music-celebrates-music-hermann-zilcher-upcoming-recital"
   },
   {
@@ -1371,6 +1711,10 @@
    "name": "ig:norahpease",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:56:31.081Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/SOEPS/department-public-health-and-human-performance/90Miler"
   },
   {
@@ -1384,6 +1728,10 @@
    "name": "ig:norahpease",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:31.081Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Norah-Pease-Inducted-into-Phi-Alpha-Theta-History-Honor-Society-at-SUNY-Potsdam/131661305"
   },
   {
@@ -1397,6 +1745,10 @@
    "name": "ig:jessicahurlbut",
    "pattern": "new_credential",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:56:32.303Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/news/speakers-share-identifying-moments-virtual-tedxsunypotsdam-event"
   },
   {
@@ -1410,6 +1762,10 @@
    "name": "ig:jessicahurlbut",
    "pattern": "milestone",
    "source": "Jessica Hurlbut",
+   "state": {
+    "at": "2026-11-05T14:56:32.303Z",
+    "status": "read"
+   },
    "url": "https://www.jessicahurlbut.com/about-me"
   },
   {
@@ -1423,6 +1779,10 @@
    "name": "ig:jessicahurlbut",
    "pattern": "milestone",
    "source": "Jessica Hurlbut",
+   "state": {
+    "at": "2026-11-05T14:56:32.303Z",
+    "status": "read"
+   },
    "url": "https://www.jessicahurlbut.com/about-me"
   },
   {
@@ -1436,6 +1796,10 @@
    "name": "ig:jessicahurlbut",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:56:32.303Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/news/speakers-share-identifying-moments-virtual-tedxsunypotsdam-event"
   },
   {
@@ -1449,6 +1813,10 @@
    "name": "sf:rob-larrabee",
    "pattern": "milestone",
    "source": "St. Lawrence University",
+   "state": {
+    "at": "2026-11-05T14:56:33.608Z",
+    "status": "read"
+   },
    "url": "https://www.stlawu.edu/events/inside-scoop-new-york-state-police"
   },
   {
@@ -1462,6 +1830,10 @@
    "name": "sf:rob-larrabee",
    "pattern": "milestone",
    "source": "St. Lawrence University",
+   "state": {
+    "at": "2026-11-05T14:56:33.608Z",
+    "status": "read"
+   },
    "url": "https://www.stlawu.edu/events/inside-scoop-new-york-state-police"
   },
   {
@@ -1475,6 +1847,10 @@
    "name": "ig:maliahwright",
    "pattern": "milestone",
    "source": "OpenGovNY",
+   "state": {
+    "at": "2026-11-05T14:56:38.824Z",
+    "status": "read"
+   },
    "url": "https://opengovny.com/food-service-inspection/913477"
   },
   {
@@ -1488,6 +1864,10 @@
    "name": "sf:alycia-miller-lynch",
    "pattern": "milestone",
    "source": "Leone Timing",
+   "state": {
+    "at": "2026-11-05T14:56:41.225Z",
+    "status": "read"
+   },
    "url": "https://www.Leonetiming.com/results/index.php?id=5519&page=2"
   },
   {
@@ -1501,6 +1881,10 @@
    "name": "ig:grace.serene",
    "pattern": "milestone",
    "source": "Roc City Magazine",
+   "state": {
+    "at": "2026-11-05T14:56:42.151Z",
+    "status": "read"
+   },
    "url": "https://www.roccitymag.com/music/grace-serene-and-the-super-clean-is-off-to-a-quick-sonic-start-13305314/"
   },
   {
@@ -1514,6 +1898,10 @@
    "name": "ct:olivia brown",
    "pattern": "new_credential",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:49.026Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Olivia-Brown-of-Heuvelton-NY-graduates-from-Clarkson-University/84702641"
   },
   {
@@ -1527,6 +1915,10 @@
    "name": "ct:olivia brown",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:49.026Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Olivia-Brown-of-Heuvelton-NY-has-been-named-an-Adirondack-Scholar-at-Clarkson-University-/19329745"
   },
   {
@@ -1540,6 +1932,10 @@
    "name": "ct:olivia brown",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:49.026Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Olivia-Brown-of-Heuvelton-NY-has-been-named-a-Presidential-Scholar-at-Clarkson-University-/31328913"
   },
   {
@@ -1553,6 +1949,10 @@
    "name": "ct:olivia brown",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:49.026Z",
+    "status": "read"
+   },
    "url": "https://clarkson.meritpages.com/stories/Olivia-Brown-of-Heuvelton-NY-has-been-named-a-Presidential-Scholar-at-Clarkson-University/57022514"
   },
   {
@@ -1566,6 +1966,10 @@
    "name": "ct:olivia brown",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:56:49.026Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/news/Race-to-Save-Threatened-Turtles-Continues-Despite-Pandemic"
   },
   {
@@ -1579,6 +1983,10 @@
    "name": "ig:heatherjdowling",
    "pattern": "milestone",
    "source": "Christian Fellowship Academy",
+   "state": {
+    "at": "2026-11-05T14:56:49.912Z",
+    "status": "read"
+   },
    "url": "https://mailchi.mp/659daaf3362b/friday-program-details-schedule-of-events-and-more-9303333"
   },
   {
@@ -1592,6 +2000,10 @@
    "name": "ig:isaiahreiter",
    "pattern": "employer_change",
    "source": "Structural Wood Corporation",
+   "state": {
+    "at": "2026-11-05T14:53:55.974Z",
+    "status": "read"
+   },
    "url": "https://www.structuralwoodcorp.com/our-team/"
   },
   {
@@ -1605,6 +2017,10 @@
    "name": "ig:mallory_greene",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:50.704Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Mallory-Greene-Named-to-SUNY-Potsdam-President-s-List/99542666"
   },
   {
@@ -1618,6 +2034,10 @@
    "name": "ig:mallory_greene",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:50.704Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Mallory-Greene-Named-to-SUNY-Potsdam-President-s-List/124267295"
   },
   {
@@ -1631,6 +2051,10 @@
    "name": "ig:mallory_greene",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:50.704Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Mallory-Greene-Named-to-SUNY-Potsdam-President-s-List/152897996"
   },
   {
@@ -1644,6 +2068,10 @@
    "name": "ig:mallory_greene",
    "pattern": "milestone",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:50.704Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Mallory-Greene-Named-to-SUNY-Potsdam-President-s-List/160525747"
   },
   {
@@ -1657,6 +2085,10 @@
    "name": "ig:mallory_greene",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:56:50.704Z",
+    "status": "read"
+   },
    "url": "https://view.publitas.com/47848/1912232/pdfs/30de926b-b20c-4416-b64e-1f25071344dd.pdf?response-content-disposition=attachment%3B"
   },
   {
@@ -1670,6 +2102,10 @@
    "name": "ig:mallory_greene",
    "pattern": "new_credential",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:56:50.704Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Mallory-Greene-Set-to-Graduate-from-SUNY-Potsdam/187857563"
   },
   {
@@ -1683,6 +2119,10 @@
    "name": "ig:reneeockrin",
    "pattern": "milestone",
    "source": "Lakeside Regional Church",
+   "state": {
+    "at": "2026-11-05T14:56:52.248Z",
+    "status": "read"
+   },
    "url": "https://www.lakesideregionalchurch.org/wp/wp-content/uploads/February-16-2020.pdf"
   },
   {
@@ -1696,6 +2136,10 @@
    "name": "ct:ana miller",
    "pattern": "correction",
    "source": "Massena Central School District",
+   "state": {
+    "at": "2026-11-05T14:56:53.167Z",
+    "status": "read"
+   },
    "url": "https://ne.mcs.k12.ny.us/apps/staff/"
   },
   {
@@ -1709,6 +2153,10 @@
    "name": "ig:max_ferran06",
    "pattern": "correction",
    "source": "Clarkson University \u00b7 Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:55:43.432Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Max-Rocco-Ferran/9515616"
   },
   {
@@ -1722,6 +2170,10 @@
    "name": "sf:amber-erwin",
    "pattern": "correction",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:56:55.329Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2026/honors-s26.php"
   },
   {
@@ -1735,6 +2187,10 @@
    "name": "sf:breanne-sapp",
    "pattern": "milestone",
    "source": "SUNY Potsdam Athletics",
+   "state": {
+    "at": "2026-11-05T14:56:58.882Z",
+    "status": "read"
+   },
    "url": "https://potsdambears.com/story.aspx?filename=WBB_0220160455&file_date=2/20/2016"
   },
   {
@@ -1748,6 +2204,10 @@
    "name": "ig:dillynngrant16",
    "pattern": "new_credential",
    "source": "U.S. Figure Skating",
+   "state": {
+    "at": "2026-11-05T14:57:01.361Z",
+    "status": "read"
+   },
    "url": "https://members.usfsaonline.org/sites/default/files/media-files/2022%20Gold%20Tests.pdf"
   },
   {
@@ -1761,6 +2221,10 @@
    "name": "ct:william dunphey",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-05T14:57:04.113Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/news-events/clarkson-school-students-recognized-ignite-expo"
   },
   {
@@ -1825,6 +2289,10 @@
    "name": "sf:samantha-marocco",
    "pattern": "title_change",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-05T14:54:07.485Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/samantha-marocco"
   },
   {
@@ -1838,6 +2306,10 @@
    "name": "sf:samantha-marocco",
    "pattern": "title_change",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-05T14:54:07.485Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/samantha-marocco"
   },
   {
@@ -2002,6 +2474,10 @@
    "name": "sf:samantha-marocco",
    "pattern": "title_change",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-05T14:54:07.485Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/samantha-marocco"
   },
   {
@@ -2555,6 +3031,10 @@
    "name": "sf:kwadwo-appiah-kubi",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-05T14:54:16.166Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/news-events/clarkson-university-announces-spring-2026-science-cafe-series-potsdam"
   }
  ],
