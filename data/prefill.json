@@ -4,6 +4,38 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "ct:lydia bartlett",
+   "display": "Lydia Bartlett",
+   "field": "specialty",
+   "value": "Counseling",
+   "conf": 90,
+   "id": "pf-8ab5c4967b"
+  },
+  {
+   "key": "sf:grace-lapointe",
+   "display": "Grace LaPointe",
+   "field": "companies",
+   "value": "Air National Guard",
+   "conf": 74,
+   "id": "pf-f08306065a"
+  },
+  {
+   "key": "sf:grace-lapointe",
+   "display": "Grace LaPointe",
+   "field": "specialty",
+   "value": "Emergency Medical Technician",
+   "conf": 62,
+   "id": "pf-be3f2efd4e"
+  },
+  {
+   "key": "sf:josiah-tabolt",
+   "display": "Josiah Tabolt",
+   "field": "specialty",
+   "value": "Engineering",
+   "conf": 62,
+   "id": "pf-594a0d6cca"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
