@@ -10,22 +10,6 @@
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
-  },
-  {
-   "key": "sf:steve-evans",
-   "display": "Steve Evans",
-   "field": "groups",
-   "value": "Rochester Regional Health",
-   "conf": 100,
-   "id": "pf-11d70c6aee"
-  },
-  {
-   "key": "sf:steve-evans",
-   "display": "Steve Evans",
-   "field": "first_contact",
-   "value": "2026-11-05",
-   "conf": 93,
-   "id": "pf-52f7a7252b"
   }
  ],
  "shelved": [
