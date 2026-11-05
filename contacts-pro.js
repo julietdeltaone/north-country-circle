@@ -32,7 +32,8 @@ var THEME_NAMES = { bluegreen:'Blue / Green', slate:'Slate' };
 function themeState(){
   var m = 'light', s = 'bluegreen';
   try {
-    m = localStorage.getItem('ncc_theme_mode') === 'dark' ? 'dark' : 'light';
+    var _tm = localStorage.getItem('ncc_theme_mode');
+    m = _tm === 'dark' ? 'dark' : (_tm === 'medium' ? 'medium' : 'light');
     s = localStorage.getItem('ncc_theme_scheme');
     if (THEME_SCHEMES.indexOf(s) < 0) s = 'bluegreen';
   } catch (e) {}
@@ -47,7 +48,7 @@ function applyTheme(mode, scheme, save){
     try { localStorage.setItem('ncc_theme_mode', mode); localStorage.setItem('ncc_theme_scheme', scheme); } catch (e) {}
   }
   var meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', mode === 'dark' ? '#0a0e13' : '#e9eff4');
+  if (meta) meta.setAttribute('content', mode === 'dark' ? '#0a0e13' : (mode === 'medium' ? '#3d454f' : '#e9eff4'));
   paintTheme();
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ r.classList.remove('ncc-tfreeze'); }); });
 }
@@ -66,6 +67,7 @@ function themePopHTML(){
     '<div class="tpop-sub">Mode and gradient apply instantly and are remembered on this device.</div>' +
     '<div class="tpop-lab">Mode</div><div class="tpop-modes">' +
     '<button type="button" class="tpm" data-tpmode="light" aria-pressed="' + (t.mode === 'light') + '">Light</button>' +
+    '<button type="button" class="tpm" data-tpmode="medium" aria-pressed="' + (t.mode === 'medium') + '">Medium</button>' +
     '<button type="button" class="tpm" data-tpmode="dark" aria-pressed="' + (t.mode === 'dark') + '">Dark</button></div>' +
     '<div class="tpop-lab">Gradient</div><div class="tpop-sws">' + sws + '</div></div>';
 }
@@ -5386,7 +5388,7 @@ function netHubHit(sx, sy){
   });
   return best;
 }
-function netInk(){ return document.documentElement.getAttribute('data-mode') === 'dark' ? '255,255,255' : '23,38,56'; }
+function netInk(){ return document.documentElement.getAttribute('data-mode') === 'light' ? '23,38,56' : '255,255,255'; }
 function netDraw(){
   var ctx = NET.ctx, z = NET.cam.z, is3 = NET.view === '3d';
   ctx.setTransform(NET.dpr, 0, 0, NET.dpr, 0, 0); ctx.clearRect(0, 0, NET.W, NET.H);
@@ -9217,18 +9219,29 @@ function viewCalendar(v){
   phLoad();
   ctlInit();
   var head = '<div class="page calpage ctpage v4p" data-kind="connection">';
+  /* V4.3.0 (JD 2026-11-04): the month grid stands alone at full
+     width; everything below it is a collapsible section. The old
+     two-column layout's sticky side rail scrolled over the
+     proximity card — that layout is gone. */
   v.innerHTML = head +
     '<div class="pv-vhead"><div><h1>Calendar</h1>' +
-    '<p class="pv-hsub">Contact, online and proximity on one month. Click a day to read it, add to it, or fix it.</p></div>' +
+    '<p class="pv-hsub">Contact, online, and proximity entries.</p></div>' +
     '<div class="side"><a class="lnk" data-act="pvproxjump" style="cursor:pointer">Log proximity ↓</a> · <a class="lnk" href="#/people">Open People →</a></div></div>' +
     ctlBarHTML() +
-    '<div class="pv-cal-layout"><div class="pv-cal">' + ctlMonthHTML() +
+    '<div class="pv-cal">' + ctlMonthHTML() +
     '<div class="pv-legend"><span class="li"><span class="pv-sw" style="background:var(--pv-gold)"></span>Contact, in person</span><span class="li"><span class="pv-sw" style="background:var(--pv-blue)"></span>Contact, online</span><span class="li"><span class="pv-sw prox"></span>Proximity — crossed paths; it never counts as contact</span></div></div>' +
-    '<div class="pv-cal-side"><aside class="ct-rail">' + ctlDayHTML() + '</aside>' + mgProxHTML() + ctSeenHTML() + '</div></div>' +
-    '<section class="card ct-stamps"><header><h3>Contact stamps — everyone, one table</h3>' +
-    '<span class="ct-anote">Bulk edit of Last Contact, Last Online and First Contact. Stamp edits ride the Save Pool and can be undone.</span></header>' +
-    '<div class="cbody">' + mgStampsHTML() + '</div></section></div>';
+    calFoldHTML('day', caFmtD(CTL.day) + ' ' + String(CTL.day).slice(0, 4), ctlDayHTML()) +
+    calFoldHTML('prox', 'Proximity — bulk log', mgProxHTML()) +
+    calFoldHTML('seen', 'Seen in person', ctSeenHTML()) +
+    calFoldHTML('stamps', 'Contact stamps', mgStampsHTML()) +
+    '</div>';
   mgPaintList();
+}
+var CALFOLD = { day:true, prox:false, seen:false, stamps:false };
+function calFoldHTML(id, title, bodyHTML){
+  var open = !!CALFOLD[id];
+  return '<section class="card calfold' + (open ? ' open' : '') + '"><button type="button" class="calfold-h" data-act="calfold" data-f="' + id + '" aria-expanded="' + (open ? 'true' : 'false') + '"><h3>' + esc(title) + '</h3><span class="calfold-ch" aria-hidden="true">' + (open ? '▾' : '▸') + '</span></button>' +
+    (open ? '<div class="calfold-b">' + bodyHTML + '</div>' : '') + '</section>';
 }
 
 /* Calendar date helpers — kept from the Atlas renderer block
@@ -10457,8 +10470,10 @@ function phHeroHTML(e){
       '<button type="button" class="btn sm primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Validate</button>' +
       '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div>';
   }
+  /* V4.3.0 (JD 2026-11-04): no separate Adjust button — clicking
+     the photo opens the inspector, and the framing editor lives
+     inside it. */
   return '<div class="hphoto" data-pname="' + esc(p.name) + '"><span class="hphoto-box" data-act="phinsp" data-pname="' + esc(p.name) + '" role="button" tabindex="0" title="Open the photo inspector"><img src="' + esc(photos[cur].url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, photos[cur].url) + '" onerror="phImgErr(this)"></span>' +
-    '<button type="button" class="hphoto-adj" data-act="phadjust" data-pname="' + esc(p.name) + '" title="Adjust this photo&rsquo;s framing — no inspector needed">Adjust</button>' +
     nav + '</div>' + verdict;
 }
 /* Framing editor core. Two mounts: the standalone overlay (Photo
@@ -11205,7 +11220,6 @@ function viewPhotos(v){
         '<div class="ph-poss-mid"><b>' + esc(p.name) + '</b><span class="phbadge ' + (p.status === 'likely' ? 'lik' : 'poss') + '">' + p.status.toUpperCase() + '</span>' +
         (p.evidence ? '<small>' + esc(briefClip(p.evidence, 150)) + '</small>' : '') + '</div>' +
         '<div class="ph-poss-act"><button type="button" class="btn sm primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Validate</button>' +
-        '<button type="button" class="btn sm" data-act="phadjust" data-pname="' + esc(p.name) + '">Adjust</button>' +
         '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div></div>';
     }).join('') + '</section>' : '';
   var phConf = all.filter(function(p){ return p.status === 'confirmed'; }).length;
@@ -12745,12 +12759,12 @@ function audModeBarHTML(){
   var A = S.audit, m = audMode();
   if(m === 'lima'){
     var np = lcPendingCount();
-    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Contact Log run</span><span class="sp"></span><span class="dim">A logging desk, not a lane — the deck deals anyone, and the count is people with a waiting note. Nothing here needs clearing.</span></div>';
+    return '<div class="aud-modebar"><span><b id="lcpend">' + np + '</b> note' + (np === 1 ? '' : 's') + ' waiting for the next Contact Log run</span></div>';
   }
   if(m === 'prefill'){
     pfLoad();
     var pn = PF ? pfRows().counts.pending : 0;
-    return '<div class="aud-modebar"><span><b>' + pn + '</b> inferred value' + (pn === 1 ? '' : 's') + ' waiting</span><span class="sp"></span><span class="dim">Approve files through the Save Pool &middot; Deny is remembered &middot; This queue is today\'s working set</span></div>';
+    return '<div class="aud-modebar"><span><b>' + pn + '</b> inferred value' + (pn === 1 ? '' : 's') + ' waiting</span><span class="sp"></span><span class="dim">Deny is remembered</span></div>';
   }
   if(m === 'photos'){
     phLoad();
@@ -13083,14 +13097,33 @@ function audWatchCols(){
    clears a segment, Esc leaves. Saves ride setField, the same path
    as every other editor. The queue runs missing-years first. */
 var YK = null;
+/* V4.3.0 (JD 2026-11-04): the same runner fills Last Contact —
+   a toggle at the top of the runner switches which field the
+   queue, the columns, and Save write. */
+var YK_MODE = store('ncc_yk_mode') === 'lastc' ? 'lastc' : 'years';
+function ykField(){ return YK_MODE === 'lastc' ? 'last_contact' : 'years_known'; }
+function ykPartsOf(e){
+  if(YK_MODE !== 'lastc') return ksParts(e);
+  var v = String(gv(e, 'last_contact') || '').trim();
+  var m = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(v);
+  if(!m) return null;
+  var y = +m[1]; if(y < 1900 || y > 2100) return null;
+  return { y:y, mo:m[2] ? +m[2] : 0, d:m[3] ? +m[3] : 0 };
+}
+function ykOnFileLabel(e){
+  if(YK_MODE !== 'lastc') return knownSinceLabel(e);
+  var p = ykPartsOf(e);
+  if(p) return (p.mo ? KS_MONTHS[p.mo - 1] + (p.d ? ' ' + p.d + ', ' : ' ') : '') + p.y;
+  return String(gv(e, 'last_contact') || '').trim();
+}
 function ykQueue(){
   var miss = [], have = [];
   /* A years gap JD already dismissed ("Done with them") stays closed here
      too — the runner used to ignore audit_dismissed entirely, so a
      dismissed person kept resurfacing in this queue (JD 2026-10-27). */
   people().forEach(function(di){
-    if(audDismissedServer(di).indexOf('years') >= 0 || AUD_DISMISS[audPair(di, 'years')]) return;
-    (knownSinceYear(D.directory[di]) ? have : miss).push(di);
+    if(YK_MODE === 'years' && (audDismissedServer(di).indexOf('years') >= 0 || AUD_DISMISS[audPair(di, 'years')])) return;
+    ((YK_MODE === 'lastc' ? !!ykPartsOf(D.directory[di]) : !!knownSinceYear(D.directory[di])) ? have : miss).push(di);
   });
   var byName = function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); };
   miss.sort(byName); have.sort(byName);
@@ -13102,7 +13135,7 @@ function ykState(){
 }
 function ykLoad(){
   var st = ykState(), e = D.directory[st.q[st.i]];
-  var p = e ? ksParts(e) : null;
+  var p = e ? ykPartsOf(e) : null;
   st.y = p ? p.y : 0; st.m = p ? p.mo : 0; st.d = p ? p.d : 0; st.buf = '';
 }
 function ykCols(){
@@ -13119,27 +13152,33 @@ function ykVal(){
   var d = st.d; if(st.m && d > dim[st.m - 1]) d = dim[st.m - 1];
   return String(st.y) + (st.m ? '-' + String(st.m).padStart(2, '0') + (d ? '-' + String(d).padStart(2, '0') : '') : '');
 }
+function ykModeHTML(){
+  return '<div class="yk-modebar"><span class="seg" role="tablist" aria-label="Field to fill">' +
+    '<button type="button" role="tab" aria-selected="' + (YK_MODE === 'years' ? 'true' : 'false') + '" class="' + (YK_MODE === 'years' ? 'on' : '') + '" data-act="ykmode" data-m="years">Years Known</button>' +
+    '<button type="button" role="tab" aria-selected="' + (YK_MODE === 'lastc' ? 'true' : 'false') + '" class="' + (YK_MODE === 'lastc' ? 'on' : '') + '" data-act="ykmode" data-m="lastc">Last Contact</button></span></div>';
+}
 function ykRender(){
   var w = $('#ykwrap'); if(!w) return;
   var st = ykState();
   if(!st.q.length){ w.innerHTML = '<div class="aud-caught"><h3>Nobody in the directory</h3></div>'; return; }
   if(st.i >= st.q.length){
-    w.innerHTML = '<div class="aud-caught">' + ic('check', 26) + '<h3>Run complete</h3><p><span class="ahn-s">' + st.saved + '</span> saved this run. Everyone has had a pass.</p><p><button type="button" class="btn primary" data-act="ykrestart">Start over</button></p></div>' + ykToolsHTML();
+    w.innerHTML = ykModeHTML() + '<div class="aud-caught">' + ic('check', 26) + '<h3>Run complete</h3><p><span class="ahn-s">' + st.saved + '</span> saved this run. Everyone has had a pass.</p><p><button type="button" class="btn primary" data-act="ykrestart">Start over</button></p></div>' + ykToolsHTML();
     ykWirePresetEdit(w);
     return;
   }
   var di = st.q[st.i], e = D.directory[di];
-  var missing = st.q.filter(function(x){ return !knownSinceYear(D.directory[x]); }).length;
+  var missing = st.q.filter(function(x){ return YK_MODE === 'lastc' ? !ykPartsOf(D.directory[x]) : !knownSinceYear(D.directory[x]); }).length;
+  var missWord = YK_MODE === 'lastc' ? 'a last contact' : 'a year';
   var cols = ykCols(), sel = [st.y, st.m, st.d], heads = ['Year', 'Month', 'Day'];
   var colsHTML = cols.map(function(items, ci){
     return '<div class="yk-col' + (st.col === ci ? ' focus' : '') + '"><h4>' + heads[ci] + '</h4><div class="yk-list" data-col="' + ci + '">' +
       items.map(function(it){ return '<button type="button" class="yk-it' + (sel[ci] === it.v ? ' on' : '') + '" data-act="ykpick" data-c="' + ci + '" data-v="' + it.v + '">' + esc(it.l) + '</button>'; }).join('') + '</div></div>';
   }).join('');
   var nv = ykVal();
-  w.innerHTML = '<div class="yk">' +
+  w.innerHTML = '<div class="yk">' + ykModeHTML() +
     '<div class="yk-head">' + avatar(e, 'lg') + '<div class="yk-who"><button type="button" class="aud-name yk-name" data-act="audopen" data-di="' + di + '">' + esc(dispName(e)) + '</button>' +
-    '<p class="dim yk-cur">On file: ' + (knownSinceLabel(e) || 'not set') + ' &middot; Will save: <b>' + (nv ? esc(knownSinceLabel({ profile: { years_known: nv } })) : 'not set') + '</b></p>' +
-    '<p class="dim yk-prog">Person <span class="ahn-s">' + (st.i + 1) + '</span> of ' + st.q.length + ' &middot; ' + (missing ? '<span class="ahn-s">' + missing + '</span> still missing a year' : '<span class="ahn-s">0</span> missing a year &mdash; running the full list') + ' &middot; <span class="ahn-s">' + st.saved + '</span> saved this run</p>' + ykToolsHTML() + '</div></div>' +
+    '<p class="dim yk-cur">On file: ' + (ykOnFileLabel(e) || 'not set') + ' &middot; Will save: <b>' + (nv ? esc(knownSinceLabel({ profile: { years_known: nv } })) : 'not set') + '</b></p>' +
+    '<p class="dim yk-prog">Person <span class="ahn-s">' + (st.i + 1) + '</span> of ' + st.q.length + ' &middot; ' + (missing ? '<span class="ahn-s">' + missing + '</span> still missing ' + missWord : '<span class="ahn-s">0</span> missing ' + missWord + ' &mdash; running the full list') + ' &middot; <span class="ahn-s">' + st.saved + '</span> saved this run</p>' + ykToolsHTML() + '</div></div>' +
     '<div class="yk-cols">' + colsHTML + '</div>' +
     '<div class="yk-foot"><button type="button" class="btn ghost" data-act="ykskip">Skip (S)</button><button type="button" class="btn primary" data-act="yksave">Save &amp; next (Enter)</button>' +
     '<span class="dim yk-keys">Up/Down move &middot; Left/Right column &middot; type digits to jump &middot; Backspace clears &middot; Esc exits</span></div></div>';
@@ -13161,8 +13200,8 @@ function ykWirePresetEdit(w){
 function ykAdvance(){ var st = ykState(); st.i++; st.col = 0; if(st.i < st.q.length) ykLoad(); ykRender(); }
 function ykSave(){
   var st = ykState(); if(st.i >= st.q.length) return;
-  var di = st.q[st.i], e = D.directory[di], v = ykVal();
-  if(String(gv(e, 'years_known') || '') !== v){ setField(di, 'years_known', v); st.saved++; }
+  var di = st.q[st.i], e = D.directory[di], v = ykVal(), f = ykField();
+  if(String(gv(e, f) || '') !== v){ setField(di, f, v); st.saved++; }
   ykAdvance();
 }
 function ykKeysInit(){
@@ -13338,9 +13377,9 @@ function ykBatchOpen(opener){
   YKB = { date:'', q:'', sel:{}, prevFocus: opener || document.activeElement, done:null };
   var groups = ykBatchGroups();
   var ov = document.createElement('div');
-  ov.className = 'ykb-wrap'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Batch assign Known Since');
+  ov.className = 'ykb-wrap'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Batch assign');
   ov.innerHTML = '<div class="ykb-scrim" data-act="ykbx"></div>' +
-    '<div class="ykb"><div class="ykb-h"><b>Batch assign &mdash; Known Since</b><span class="sp"></span><button type="button" class="ib" data-act="ykbx" aria-label="Close">' + ic('x', 16) + '</button></div>' +
+    '<div class="ykb"><div class="ykb-h"><b>Batch assign &mdash; ' + (YK_MODE === 'lastc' ? 'Last Contact' : 'Known Since') + '</b><span class="sp"></span><button type="button" class="ib" data-act="ykbx" aria-label="Close">' + ic('x', 16) + '</button></div>' +
     '<div class="ykb-row"><label class="ykb-lab">Date <input id="ykbdate" type="text" placeholder="YYYY, YYYY-MM, or YYYY-MM-DD" autocomplete="off"></label><span id="ykbdateok" class="dim"></span></div>' +
     '<div class="ykb-row"><input id="ykbq" type="search" placeholder="Search names" autocomplete="off">' +
     '<select id="ykbgrp" aria-label="Select all in group"><option value="">Select all in group&hellip;</option>' + groups.map(function(g){ return '<option value="' + esc(g.name) + '">' + esc(g.name) + ' (' + g.dis.length + ')</option>'; }).join('') + '</select></div>' +
@@ -13376,7 +13415,7 @@ function ykBatchPaintList(){
   var res = ykBatchResults(), CAP = 300;
   var html = res.slice(0, CAP).map(function(di){
     var e = D.directory[di], gs = personGroups(e);
-    return '<label class="ykb-it"><input type="checkbox" data-di="' + di + '"' + (YKB.sel[di] ? ' checked' : '') + '><span class="ykb-nm">' + esc(dispName(e)) + '</span><span class="ykb-ks">' + (knownSinceLabel(e) || 'not set') + '</span>' + (gs.length ? '<span class="ykb-grp">' + esc(gs.join(', ')) + '</span>' : '') + '</label>';
+    return '<label class="ykb-it"><input type="checkbox" data-di="' + di + '"' + (YKB.sel[di] ? ' checked' : '') + '><span class="ykb-nm">' + esc(dispName(e)) + '</span><span class="ykb-ks">' + (ykOnFileLabel(e) || 'not set') + '</span>' + (gs.length ? '<span class="ykb-grp">' + esc(gs.join(', ')) + '</span>' : '') + '</label>';
   }).join('');
   if(!res.length) html = '<p class="dim ykb-none">No names match.</p>';
   else if(res.length > CAP) html += '<p class="dim ykb-none">Showing ' + CAP + ' of ' + res.length + ' &mdash; refine the search to see the rest. Select all results still covers all ' + res.length + '.</p>';
@@ -13387,7 +13426,7 @@ function ykBatchPaintMeta(){
   if(!YKB) return;
   var dis = Object.keys(YKB.sel).filter(function(k){ return YKB.sel[k]; });
   var blank = 0, over = 0;
-  dis.forEach(function(k){ var e = D.directory[k]; if(e && String(gv(e, 'years_known') || '').trim()) over++; else blank++; });
+  dis.forEach(function(k){ var e = D.directory[k]; if(e && String(gv(e, ykField()) || '').trim()) over++; else blank++; });
   var cnt = document.getElementById('ykbcount'); if(cnt) cnt.textContent = dis.length + ' selected';
   var v = ykDateVal(YKB.date);
   var ok = document.getElementById('ykbdateok');
@@ -13411,7 +13450,7 @@ function ykBatchRun(){
   dis.forEach(function(k){
     var di = +k, e = D.directory[di];
     if(!e){ fails.push({ name:'Person #' + k, why:'not in the directory' }); return; }
-    try{ setField(di, 'years_known', v); saved++; }
+    try{ setField(di, ykField(), v); saved++; }
     catch(err){ fails.push({ name: dispName(e), why: String((err && err.message) || err) }); }
   });
   YKB.done = { saved: saved, fails: fails, v: v };
@@ -13677,14 +13716,48 @@ function audV4PanelsHTML(){
     if(!ptLocVal(e)) gaps.place++;
   });
   function grow(lab, n, note){ return v4MRow(lab, note || '', 'amber', pct(n), n + ' missing'); }
+  /* V4.3.0 (JD 2026-11-04): plain titles, no narrative lines, and
+     every row is a door — click a row to see the people in it,
+     click a person to open their profile and edit. */
+  function arow(k, rowHtml){
+    return rowHtml.replace('<div class="pv-mrow">', '<div class="pv-mrow aud-mrow' + (AUDLIST === k ? ' on' : '') + '" role="button" tabindex="0" data-act="audlist" data-k="' + k + '" title="Show the list">');
+  }
   return '<section class="pv-panels">' +
-    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' Completeness — the honest version<span class="r">Same numbers as Home</span></h2>' +
-    '<div class="scale">Full picture needs a long summary, 3+ public-record facts, 5 of the 7 core facts, and a source link.</div>' +
-    v4MRow('Full picture', '', 'green', pct(T.full), T.full) + v4MRow('Solid', '', 'blue', pct(T.solid), T.solid) + v4MRow('Light', '', 'amber', pct(T.light), T.light) + v4MRow('Name only', '', 'red', pct(T.name), T.name) +
-    '<div class="pv-foot">The desks below work these gaps down, one card at a time.</div></div>' +
-    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' What is missing, counted plainly<span class="r">Of ' + N + ' people</span></h2>' +
-    grow('Phone', gaps.phone) + grow('Workplace', gaps.work) + grow('School', gaps.school) + grow('No contact log', gaps.nolog, 'no events at all') + grow('Role or skill', gaps.skill) + grow('Place', gaps.place) +
-    '<div class="pv-foot">Email and family are not counted — they only apply where they apply.</div></div></section>';
+    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' Completeness</h2>' +
+    arow('tier:full', v4MRow('Full picture', '', 'green', pct(T.full), T.full)) + arow('tier:solid', v4MRow('Solid', '', 'blue', pct(T.solid), T.solid)) + arow('tier:light', v4MRow('Light', '', 'amber', pct(T.light), T.light)) + arow('tier:name', v4MRow('Name only', '', 'red', pct(T.name), T.name)) +
+    '</div>' +
+    '<div class="pv-panel"><h2>' + v4ChipAbout() + ' Missing fields<span class="r">Of ' + N + ' people</span></h2>' +
+    arow('gap:phone', grow('Phone', gaps.phone)) + arow('gap:work', grow('Workplace', gaps.work)) + arow('gap:school', grow('School', gaps.school)) + arow('gap:nolog', grow('No contact log', gaps.nolog, 'no events at all')) + arow('gap:skill', grow('Role or skill', gaps.skill)) + arow('gap:place', grow('Place', gaps.place)) +
+    '</div></section>' + audListHTML(gaps);
+}
+var AUDLIST = '';
+var AUDLIST_LABELS = { 'tier:full':'Full picture', 'tier:solid':'Solid', 'tier:light':'Light', 'tier:name':'Name only', 'gap:phone':'Missing phone', 'gap:work':'Missing workplace', 'gap:school':'Missing school', 'gap:nolog':'No contact log', 'gap:skill':'Missing role or skill', 'gap:place':'Missing place' };
+function audListDis(k){
+  var M = v4Metrics();
+  var test = {
+    'tier:full': function(di){ return M.byDi[di] && M.byDi[di].tier === 'full'; },
+    'tier:solid': function(di){ return M.byDi[di] && M.byDi[di].tier === 'solid'; },
+    'tier:light': function(di){ return M.byDi[di] && M.byDi[di].tier === 'light'; },
+    'tier:name': function(di){ return M.byDi[di] && M.byDi[di].tier === 'name'; },
+    'gap:phone': function(di){ return !gv(D.directory[di], 'phone'); },
+    'gap:work': function(di){ return !tagList(gv(D.directory[di], 'companies')).length; },
+    'gap:school': function(di){ return !tagList(gv(D.directory[di], 'universities')).length; },
+    'gap:nolog': function(di){ return !(D.directory[di].events || []).length; },
+    'gap:skill': function(di){ return !tagList(gv(D.directory[di], 'specialty')).length; },
+    'gap:place': function(di){ return !ptLocVal(D.directory[di]); }
+  }[k];
+  if(!test) return [];
+  return people().filter(test).sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); });
+}
+function audListHTML(){
+  if(!AUDLIST) return '';
+  var dis = audListDis(AUDLIST), CAP = 60;
+  return '<section class="card aud-listbox"><header><h3>' + esc(AUDLIST_LABELS[AUDLIST] || AUDLIST) + ' — ' + dis.length + ' people</h3><span class="sp"></span><button type="button" class="btn ghost sm" data-act="audlist" data-k="">Close</button></header>' +
+    '<div class="aud-listgrid">' + dis.slice(0, CAP).map(function(di){
+      var e = D.directory[di];
+      return '<button type="button" class="aud-lrow" data-act="openp" data-di="' + di + '">' + avatar(e, 'sm') + '<span>' + esc(dispName(e)) + '</span></button>';
+    }).join('') + '</div>' +
+    (dis.length > CAP ? '<p class="sub" style="padding:0 16px 12px">First ' + CAP + ' shown, A–Z.</p>' : '') + '</section>';
 }
 function viewAudit(v){
   if(!S.audit) S.audit = { done:0, shown:null, deck:null, mode:(store('ncc_aud_mode') || 'cards'), cat:null, streak:0, best:0, fills:[], finished:0, catDone:{}, blitz:null, blitzDone:null, lcDeck:null, lcOpen:null };
@@ -13709,7 +13782,7 @@ function viewAudit(v){
     '<div id="audmodebar">' + audModeBarHTML() + '</div></div>' +
     audV4PanelsHTML() +
     '<div id="audpool" class="audpool"></div>' +
-    (m === 'years' ? '' : '<button type="button" class="aud-ykstrip" data-act="audmode" data-m="years">' + ic('calendar', 15) + '<span class="aud-ykstrip-t"><b>Years Known</b><small>One person at a time \u2014 big year, month and day lists, keyboard friendly</small></span><span class="sp"></span><span class="aud-ykstrip-n">' + ykMissN + ' missing a year</span><span class="aud-ykstrip-go">Open &rarr;</span></button>') +
+    (m === 'years' ? '' : '<button type="button" class="aud-ykstrip" data-act="audmode" data-m="years">' + ic('calendar', 15) + '<span class="aud-ykstrip-t"><b>Years Known</b></span><span class="sp"></span><span class="aud-ykstrip-n">' + ykMissN + ' missing a year</span><span class="aud-ykstrip-go">Open &rarr;</span></button>') +
     (m === 'rapid'
       ? '<div class="aud-stage-wrap"><div class="aud-stack" id="audstack"><div class="aud-peek p2"></div><div class="aud-peek p1"></div><div class="aud-grid aud-stage" id="audgrid"></div></div></div>'
       : m === 'lima' ? '<div id="lcwrap"></div>' : m === 'photos' ? '<div id="phawrap"></div>' : m === 'years' ? '<div id="ykwrap"></div>' : m === 'prefill' ? '<div id="pfwrap"></div>' : '<div class="aud-grid" id="audgrid"></div>') +
@@ -13886,6 +13959,7 @@ function onClick(ev){
     case 'audreopen': { var audC6 = el.closest('.aud-card'); if(audC6) audReopen(audC6, el.getAttribute('data-gap')); break; }
     case 'audundo': audUndoLast(); break;
     case 'audmode': if(S.audit) audSetMode(el.getAttribute('data-m')); break;
+    case 'audlist': { var ak = el.getAttribute('data-k') || ''; AUDLIST = (AUDLIST === ak || !ak) ? '' : ak; render(); break; }
     case 'audblitz': if(S.audit){ if(S.audit.blitz) audEndBlitz(false); else audStartBlitz(); } break;
     case 'audblitzx': if(S.audit){ audEndBlitz(true); S.audit.blitzDone = null; viewAudit($('#view')); } break;
     case 'pfok': pfDecide(el.getAttribute('data-d'), 'file'); break;
@@ -14017,7 +14091,8 @@ function onClick(ev){
     case 'pvlogprox': { var np3 = pvPickedDis().length; openSheet('Log proximity for ' + np3 + ' ' + (np3 === 1 ? 'person' : 'people'), '<label class="fld"><span>Date</span><input id="pv-proxdate" type="date" value="' + todayStr() + '"></label><label class="fld"><span>Place / context</span><input id="pv-proxvenue" type="text" placeholder="e.g. Lewis School, Clarkson Hall" autocomplete="off"></label><p class="dim">Proximity is co-presence only — it never counts as contact.</p><div class="srow"><button type="button" class="btn primary" data-act="pvlogproxgo">Log proximity</button><button type="button" class="btn ghost" data-act="sheetclose">Cancel</button></div>'); setTimeout(function(){ var i3 = $('#pv-proxvenue'); if(i3) i3.focus(); }, 30); break; }
     case 'pvlogproxgo': { var pd2 = (($('#pv-proxdate') || {}).value || todayStr()), pvn = (($('#pv-proxvenue') || {}).value || '').trim(); if(!pvn){ toast('Name the place first.'); break; } var sel3 = pvPickedDis(), filed3 = 0, skip3 = 0; sel3.forEach(function(di5){ var arr4 = (D.directory[di5].events || []).slice(); var dup4 = arr4.some(function(ev2){ return ev2 && ev2.kind === 'proximity' && ev2.date === pd2 && (ev2.venue || ev2.summary) === pvn; }); if(dup4){ skip3++; return; } arr4.push({ date:pd2, kind:'proximity', venue:pvn, summary:pvn }); queuePatch(di5, { events:JSON.stringify(arr4) }); filed3++; }); closeSheet(); toast('Proximity logged for ' + filed3 + (skip3 ? ' · ' + skip3 + ' already logged' : '') + ' — ' + pvn + '.'); render(); break; }
     case 'pvmerge': { var sel4 = pvPickedDis(); if(sel4.length < 2){ toast('Tick at least two rows to merge.'); break; } openMergeSheet(sel4[0]); break; }
-    case 'pvproxjump': { var px = $('#pv-proxlogger'); if(px) px.scrollIntoView({ block:'start' }); break; }
+    case 'pvproxjump': { CALFOLD.prox = true; render(); var px = $('#pv-proxlogger'); if(px) px.scrollIntoView({ block:'start' }); break; }
+    case 'calfold': { var cf = t.getAttribute('data-f'); if(cf && CALFOLD[cf] != null){ CALFOLD[cf] = !CALFOLD[cf]; render(); } break; }
     case 'tsort': { var tk = el.getAttribute('data-k'); if(S.ppl.ts && S.ppl.ts.k === tk) S.ppl.ts.d = -S.ppl.ts.d; else S.ppl.ts = { k:tk, d:(PT_NUMDIR[tk] ? -1 : 1) }; paintPeople(); break; }
     case 'sstsort': { var sk2 = el.getAttribute('data-k'); if(SB.st.sortK === sk2) SB.st.sortD = -SB.st.sortD; else { SB.st.sortK = sk2; SB.st.sortD = SST_NUM[sk2] ? -1 : 1; } SB.st.result = ''; sstPaint(); break; }
     case 'ssttier': SB.st.tier = el.getAttribute('data-v'); SB.st.confirm = false; SB.st.result = ''; sstPaintTiers(); sstPaint(); break;
@@ -14115,8 +14190,8 @@ function onClick(ev){
       repaintTop();
       break;
     }
-    case 'proxall': { MGPROX.off = {}; render(); break; }
-    case 'proxnone': { var gg = allGroups()[MGPROX.group] || []; MGPROX.off = {}; gg.forEach(function(di2){ MGPROX.off[di2] = 1; }); render(); break; }
+    case 'proxall': { MGPROX.off = {}; MGPROX.dirtyFor = MGPROX.date || todayStr(); render(); break; }
+    case 'proxnone': { var gg = allGroups()[MGPROX.group] || []; MGPROX.off = {}; gg.forEach(function(di2){ MGPROX.off[di2] = 1; }); MGPROX.dirtyFor = MGPROX.date || todayStr(); render(); break; }
     case 'proxbulk': {
       var members = allGroups()[MGPROX.group] || [];
       var pdate = ($('#px-date') || {}).value || todayStr(), pvenue = (($('#px-venue') || {}).value || '').trim();
@@ -14246,6 +14321,7 @@ function onClick(ev){
     case 'yksave': ykSave(); break;
     case 'ykskip': ykAdvance(); break;
     case 'ykrestart': YK = null; ykLoad(); ykRender(); break;
+    case 'ykmode': { var ym = el.getAttribute('data-m'); if(ym && ym !== YK_MODE){ YK_MODE = ym; store('ncc_yk_mode', ym); YK = null; ykLoad(); } ykRender(); break; }
     case 'netfs': netToggleFS(); break;
     case 'netlegend': { var lg = $('#netlegend'); if(lg){ var lgo = lg.classList.toggle('open'); el.setAttribute('aria-expanded', lgo ? 'true' : 'false'); } break; }
     case 'netzoom': { var zf = +el.getAttribute('data-d') > 0 ? 1.3 : 1 / 1.3; netGlide(200, { c2z:Math.max(0.3, Math.min(4, NET.cam.z * zf)) }); break; }
@@ -14322,8 +14398,9 @@ function onInput(ev){
 function onChange(ev){
   var t = ev.target, act = t.getAttribute && t.getAttribute('data-act');
   if(t.hasAttribute && t.hasAttribute('data-lvlsec')){ lvlSet(t.getAttribute('data-lvlsec'), t.value); return; }
-  if(t.hasAttribute && t.hasAttribute('data-pxgroup')){ MGPROX.group = t.value; MGPROX.off = {}; MGPROX.venue = t.value === 'Lewis School' ? 'Lewis School, Clarkson Hall' : ''; render(); return; }
-  if(t.hasAttribute && t.hasAttribute('data-pxmem')){ var pdi = +t.getAttribute('data-pxmem'); if(t.checked) delete MGPROX.off[pdi]; else MGPROX.off[pdi] = 1; var cnt = $('#px-count'); if(cnt) cnt.textContent = pxCheckedCount(); return; }
+  if(t.hasAttribute && t.hasAttribute('data-pxgroup')){ MGPROX.group = t.value; MGPROX.off = {}; MGPROX.venue = t.value === 'Lewis School' ? 'Lewis School, Clarkson Hall' : ''; MGPROX.dirtyFor = MGPROX.date || todayStr(); render(); return; }
+  if(t.hasAttribute && t.hasAttribute('data-pxdate')){ MGPROX.date = t.value || todayStr(); render(); return; }
+  if(t.hasAttribute && t.hasAttribute('data-pxmem')){ var pdi = +t.getAttribute('data-pxmem'); if(t.checked) delete MGPROX.off[pdi]; else MGPROX.off[pdi] = 1; MGPROX.dirtyFor = MGPROX.date || todayStr(); var cnt = $('#px-count'); if(cnt) cnt.textContent = pxCheckedCount(); return; }
   /* V4.1 People pick boxes: checkboxes report on change, not click. */
   if(act === 'ptpick'){ var ppdi = +t.getAttribute('data-di'); if(t.checked) PTPICK[ppdi] = 1; else delete PTPICK[ppdi]; var prow3 = t.closest ? t.closest('tr') : null; if(prow3) prow3.classList.toggle('picked', !!t.checked); pvPaintBulk(); return; }
   if(act === 'ptpickall'){ var shown2 = peopleFiltered().filter(function(di6){ return pvQuickKeep(D.directory[di6]); }); var allOn2 = shown2.length && shown2.every(function(di6){ return PTPICK[di6]; }); shown2.forEach(function(di6){ if(allOn2) delete PTPICK[di6]; else PTPICK[di6] = 1; }); paintPeople(); return; }
@@ -15401,7 +15478,16 @@ function mgPaintList(){
    hidden entirely when the current role does not clear its level. */
 var LVL_KEY = 'ncc_levels_v1';
 function lvlRowsDef(){
-  var rows = SECS.map(function(s){ return { id:'sec:' + s.id, name:s.t, kind: s.mv === 'c' ? 'connection' : 'about', def:'open', note: s.id === 'persona' ? 'Traits segment bars' : '' }; });
+  /* V4.3.0 (JD 2026-11-04): the Show tabs read as broken because
+     nearly every section defaulted to Open — switching changed
+     almost nothing. Defaults now carry the standing intent: Family
+     and the Contact Log note are Personal, Traits are Private,
+     the rest Open. JD can still reassign any of them here. */
+  var rows = SECS.map(function(s){
+    var def = s.id === 'persona' ? 'private' : (s.id === 'lima' ? 'personal' : 'open');
+    var note = s.id === 'persona' ? 'Traits segment bars — Private by default' : (s.id === 'lima' ? 'Contact Log note — Personal by default' : '');
+    return { id:'sec:' + s.id, name:s.t, kind: s.mv === 'c' ? 'connection' : 'about', def:def, note:note };
+  });
   rows.push({ id:'family', name:'Family links', kind:'about', def:'personal', note:'Standing rule: Family = Personal.' });
   rows.push({ id:'stamps', name:'Contact stamps — Last Contact, Last Online, First Contact', kind:'connection', def:'open', note:'Edited in the Calendar stamps table and on profiles.' });
   return rows;
@@ -15438,13 +15524,79 @@ function mgLevelsHTML(){
    Proximity event per checked person through the normal outbox.
    A Proximity event carries date + venue only and never touches
    Last Contact. */
-var MGPROX = { group:'', off:{}, venue:'' };
+var MGPROX = { group:'', off:{}, venue:'', date:'', appliedFor:'', dirtyFor:'' };
+/* V4.3.0 (JD 2026-11-04): the logger preloads the people JD will
+   actually cross paths with on the chosen date. Lewis School days
+   follow his PT/OT split — Monday both programs (the full set),
+   Tuesday and Friday OT, Wednesday and Thursday PT; the anatomy
+   instructor and the two office staff are there every workday,
+   the Dean on Mondays. Drill days load the S1 pool instead.
+   Preload only sets the starting state for a date; once JD
+   touches the checkboxes or the group for that date, his state
+   wins (dirtyFor). */
+var PX_PT = ['Samantha Marocco', 'Heather Shattuck', 'Christopher Towler', 'David DiSalvo', 'Jaime Bicknell', 'Kwadwo Appiah-Kubi', 'Kara Ferguson', 'Dale Fournier'];
+var PX_OT = ['Alisha Ohl', 'Ashleigh Graveline', 'Karen Hoover', 'Beth Randall', 'Brittany DiSalvo'];
+var PX_BOTH = ['Robin DiPasquale', 'Richard Tacchino', 'Tammy Monroe'];
+var PX_MON = ['Lennart Johns'];
+var PXCAL = null, PXCAL_TRIED = false;
+function pxCalEnsure(){
+  if(PXCAL_TRIED) return; PXCAL_TRIED = true;
+  fetch('data/calendar.json?v=' + APP_VERSION).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+    PXCAL = j;
+    var ds = MGPROX.date || todayStr();
+    if(MGPROX.appliedFor === ds && pxIsDrill(ds)){ MGPROX.appliedFor = ''; MGPROX.dirtyFor = ''; if($('#pv-proxlogger')) render(); }
+  }).catch(function(){ PXCAL = null; });
+}
+function pxDrillSet(){
+  var set = {};
+  if(!PXCAL || !PXCAL.entries) return set;
+  PXCAL.entries.forEach(function(en){
+    var t = String(en.title || '');
+    if(!(/UTA|Drill/i.test(t) || en.cal === 'Military')) return;
+    var ds = en.dates && en.dates.length ? en.dates : (en.date ? [en.date] : []);
+    ds.forEach(function(d){ set[d] = 1; });
+  });
+  /* a drill block runs through its weekend: Thu/Fri starts cover
+     Fri–Sun, a Saturday start covers Sunday */
+  Object.keys(set).forEach(function(d){
+    var p = d.split('-'), dt = new Date(+p[0], +p[1] - 1, +p[2]), wd = dt.getDay(), add = wd === 4 ? 3 : (wd === 5 ? 2 : (wd === 6 ? 1 : 0));
+    for(var i = 1; i < add; i++){ var n = new Date(dt.getTime() + i * 864e5); set[n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0')] = 1; }
+  });
+  return set;
+}
+function pxIsDrill(ds){ return !!pxDrillSet()[ds]; }
+function pxPreload(ds){
+  if(MGPROX.appliedFor === ds || MGPROX.dirtyFor === ds) return;
+  MGPROX.appliedFor = ds;
+  var groups = allGroups();
+  if(pxIsDrill(ds) && groups['S1']){
+    MGPROX.group = 'S1'; MGPROX.off = {}; MGPROX.venue = 'UTA Drill'; return;
+  }
+  var p = ds.split('-'), wd = new Date(+p[0], +p[1] - 1, +p[2]).getDay();
+  if(!groups['Lewis School'] || wd === 0 || wd === 6) return;
+  var members = groups['Lewis School'];
+  var want = null;
+  if(wd === 1) want = null;                                        /* Monday: everyone */
+  else if(wd === 2 || wd === 5) want = PX_OT.concat(PX_BOTH);      /* OT days */
+  else want = PX_PT.concat(PX_BOTH);                               /* PT days */
+  MGPROX.group = 'Lewis School';
+  if(!MGPROX.venue) MGPROX.venue = 'Lewis School, Clarkson Hall';
+  MGPROX.off = {};
+  if(want){
+    var keep = {};
+    members.forEach(function(di){ if(want.indexOf(dispName(D.directory[di])) >= 0) keep[di] = 1; });
+    members.forEach(function(di){ if(!keep[di]) MGPROX.off[di] = 1; });
+  }
+}
 function pxCheckedCount(){
   var members = allGroups()[MGPROX.group] || [];
   return members.filter(function(di){ return !MGPROX.off[di]; }).length;
 }
 function mgProxHTML(){
   /* V4.1: anchor target for the Calendar header's Log proximity link */
+  if(!MGPROX.date) MGPROX.date = todayStr();
+  pxCalEnsure();
+  pxPreload(MGPROX.date);
   var groups = Object.keys(allGroups()).sort();
   if(!MGPROX.group || !allGroups()[MGPROX.group]) MGPROX.group = allGroups()['Lewis School'] ? 'Lewis School' : (groups[0] || '');
   if(!MGPROX.venue) MGPROX.venue = MGPROX.group === 'Lewis School' ? 'Lewis School, Clarkson Hall' : '';
@@ -15455,11 +15607,11 @@ function mgProxHTML(){
       '<span class="px-name"><b>' + esc(dispName(e)) + '</b>' + (lp ? '<small>Last proximity ' + esc(ykLabelOf(lp.date)) + '</small>' : '<small>No proximity yet</small>') + '</span></label>';
   }).join('');
   return '<div class="card mg-card mg-prox" id="pv-proxlogger"><div class="mg-prox-h"><h3>Proximity — bulk log</h3>' + kindChip('connection', true) + '</div>' +
-    '<p>Proximity tracks <b>co-presence</b>, not contact: coworkers crossed paths with on workdays, and events where known people were present without a conversation. It answers \u201Cwho was I around?\u201D separately from \u201Cwho did I talk to?\u201D, so Last Contact stays honest. An event carries a date and a place only, and files through the normal save path — Last Contact and First Contact never move.</p>' +
+    '<p class="sub">Co-presence only — a date and a place. Last Contact never moves.</p>' +
     '<div class="frow px-controls"><label>Group<select class="inp" data-pxgroup>' +
       groups.map(function(g){ return '<option value="' + esc(g) + '"' + (g === MGPROX.group ? ' selected' : '') + '>' + esc(g) + ' (' + (allGroups()[g] || []).length + ')</option>'; }).join('') +
       '</select></label>' +
-      '<label>Date<input class="inp" type="date" id="px-date" value="' + todayStr() + '"></label>' +
+      '<label>Date<input class="inp" type="date" id="px-date" data-pxdate value="' + esc(MGPROX.date || todayStr()) + '"></label>' +
       '<label class="grow">Place / context<input class="inp" type="text" id="px-venue" value="' + esc(MGPROX.venue) + '" placeholder="Lewis School, Clarkson Hall"></label></div>' +
     '<div class="row px-bar"><button type="button" class="btn ghost sm" data-act="proxall">Check all</button>' +
       '<button type="button" class="btn ghost sm" data-act="proxnone">Uncheck all</button>' +
