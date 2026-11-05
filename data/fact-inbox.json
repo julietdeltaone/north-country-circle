@@ -198,6 +198,10 @@
    "name": "sf:nina-criscitello",
    "pattern": "milestone",
    "source": "Givebutter",
+   "state": {
+    "at": "2026-11-05T14:30:43.031Z",
+    "status": "read"
+   },
    "url": "https://givebutter.com/2025plunge/servicemaster-apple-valley/isacriscitello"
   },
   {
@@ -211,6 +215,10 @@
    "name": "ct:julia andryuk",
    "pattern": "new_credential",
    "source": "SUNY Potsdam Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:30:53.280Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Julia-Andryuk-Graduates-from-SUNY-Potsdam/5498600"
   },
   {
@@ -224,6 +232,10 @@
    "name": "ct:julia andryuk",
    "pattern": "new_credential",
    "source": "Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:30:53.280Z",
+    "status": "read"
+   },
    "url": "https://meritpages.com/Julia-Andryuk/1838219"
   },
   {
@@ -237,6 +249,10 @@
    "name": "ct:julia andryuk",
    "pattern": "milestone",
    "source": "SUNY Potsdam Merit Pages",
+   "state": {
+    "at": "2026-11-05T14:30:53.280Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/SUNY-Potsdam-Student-Julia-Andryuk-Completes-Spring-2014-Internship/3710126"
   },
   {
@@ -1758,6 +1774,10 @@
    "name": "sf:janelle-evans",
    "pattern": "milestone",
    "source": "Harvard University Athletics",
+   "state": {
+    "at": "2026-11-05T14:30:40.409Z",
+    "status": "read"
+   },
    "url": "https://gocrimson.com/news/2026/10/30/womens-ice-hockey-harvard-clarkson-recap.aspx"
   },
   {
@@ -1771,6 +1791,10 @@
    "name": "sf:janelle-evans",
    "pattern": "milestone",
    "source": "Clarkson University Athletics",
+   "state": {
+    "at": "2026-11-05T14:30:40.409Z",
+    "status": "read"
+   },
    "url": "https://clarksonathletics.com/news/2026/10/31/womens-hockey-two-goals-from-pellerin-and-hurry-lead-knights-past-dartmouth-4-1.aspx"
   },
   {
@@ -2344,6 +2368,10 @@
    "name": "sf:janelle-evans",
    "pattern": "milestone",
    "source": "Franklin Pierce University",
+   "state": {
+    "at": "2026-11-05T14:30:40.409Z",
+    "status": "read"
+   },
    "url": "https://fpuravens.com/news/2026/10/16/womens-ice-hockey-ravens-fall-to-clarkson-despite-lawns-53-saves.aspx"
   },
   {
@@ -2425,6 +2453,10 @@
    "name": "sf:brenden-vanhorn",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:30:34.081Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2026/honors-s26.php"
   },
   {
@@ -2489,6 +2521,10 @@
    "name": "jocelynrose04",
    "pattern": "employer_change",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:30:36.290Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/media/pdf/Student-Bio-Jocelyn-Daniels.pdf"
   },
   {
@@ -2502,6 +2538,10 @@
    "name": "jocelynrose04",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:30:36.290Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/media/pdf/Student-Bio-Jocelyn-Daniels.pdf"
   },
   {
