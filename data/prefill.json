@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "ct:katelyn tomford",
-   "display": "Katelyn Tomford",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 62,
-   "id": "pf-51204159a7"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
