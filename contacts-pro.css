@@ -3659,7 +3659,7 @@ html[data-mode="light"] .rcb-unsupported{--rcband:#b91c1c}
 /* Research Command rows, compact table (restored V3.44.1, JD: the
    hero-format rows were too tall). Why-held text is the one upgrade
    kept from that pass: reading size, full contrast. */
-.rc-row{display:grid;grid-template-columns:98px minmax(300px,1.5fr) minmax(210px,.9fr) 148px;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line);align-items:start;transition:opacity .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),padding .3s var(--ease),border-width .3s var(--ease)}
+.rc-row{display:grid;grid-template-columns:98px minmax(300px,1.5fr) minmax(210px,.9fr) 148px;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line);align-items:start;transition:opacity .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),padding .3s var(--ease),border-width .3s var(--ease),transform .26s var(--ease)}
 /* Decided rows settle in place (V3.80.1): fade + collapse like a
    Fact Inbox Read — nothing else on the page moves. */
 .rc-row.leaving,.rc-bhead.leaving{opacity:0;overflow:hidden}
