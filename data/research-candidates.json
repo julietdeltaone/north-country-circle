@@ -12546,6 +12546,62 @@
    "fields": {},
    "published": "2026-05-08",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261105-jocelynrose04-oldest-of-eight-children-with-the-yo",
+   "name": "jocelynrose04",
+   "display": "Jocelyn Daniels",
+   "run_date": "2026-11-05",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Jocelyn Daniels's SUNY Canton student bio says she is the oldest of eight children, with the youngest just two years old.",
+   "file_text": "Oldest of eight children, with the youngest aged two at the time of her SUNY Canton student bio",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/media/pdf/Student-Bio-Jocelyn-Daniels.pdf",
+   "anchors": [
+    "Norwood, NY",
+    "SUNY Canton",
+    "Pre-Physical Therapy Assistant program"
+   ],
+   "quote": "I am the oldest of eight children, with the youngest being just two years old",
+   "missing_gate": "This is about Jocelyn's family, so I always check with you first.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 26,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261105-ct-dr-kring-completed-his-residency-at-pitt-coun",
+   "name": "ct:dr kring",
+   "display": "Lawrence Kring",
+   "run_date": "2026-11-05",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "WebMD's page for Dr. Lawrence Kring of Canton says he completed his residency at Pitt County Memorial Hospital in 2002 and a fellowship at East Carolina University's Brody School of Medicine in 2006.",
+   "file_text": "Completed his residency at Pitt County Memorial Hospital (Vidant Medical Center) in 2002 and a fellowship at East Carolina University Brody School of Medicine in 2006",
+   "source": "WebMD",
+   "url": "https://doctor.webmd.com/doctor/lawrence-kring-iii-35d87985-1650-4243-aaaa-5092106bfc1d-overview",
+   "anchors": [
+    "Canton, NY",
+    "Rochester Regional Health Family Medicine in Canton",
+    "SUNY Upstate Medical Center"
+   ],
+   "quote": "Dr. Kring earned his medical degree from SUNY Upstate Medical Center in Syracuse, completed his residency at Pitt County Memorial Hospital (Vidant Medical Center) in 2002, and went on to complete a fellowship at East Carolina University Brody School of Medicine in 2006.",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 10,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
