@@ -2107,6 +2107,10 @@
    "name": "ig:the_harpist",
    "pattern": "new_credential",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T03:54:38.708Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/crane-school-music/departments-programs/music-performance/ShannonBoyle"
   },
   {
@@ -2120,6 +2124,10 @@
    "name": "sf:janelle-evans",
    "pattern": "milestone",
    "source": "ECAC Hockey",
+   "state": {
+    "at": "2026-11-05T03:54:41.351Z",
+    "status": "read"
+   },
    "url": "https://ecachockey.com/news/2026/10/24/womens-ice-hockey-womens-weekend-wraparound-10-23-24.aspx"
   },
   {
@@ -2133,6 +2141,10 @@
    "name": "ig:walczykmark",
    "pattern": "milestone",
    "source": "North Country Public Radio",
+   "state": {
+    "at": "2026-11-05T03:54:43.334Z",
+    "status": "read"
+   },
    "url": "https://www.northcountrypublicradio.org/news/story/54185/20261104/mark-walczyk-wins-reelection-in-the-49th-state-senate"
   },
   {
@@ -2146,6 +2158,10 @@
    "name": "sf:kaitlyn-mallette",
    "pattern": "milestone",
    "source": "ECAC Hockey",
+   "state": {
+    "at": "2026-11-05T03:54:45.823Z",
+    "status": "read"
+   },
    "url": "https://ecachockey.com/news/2026/10/24/womens-ice-hockey-womens-weekend-wraparound-10-23-24.aspx"
   },
   {
@@ -2159,6 +2175,10 @@
    "name": "sf:ashleigh-graveline",
    "pattern": "correction",
    "source": "Arizona Occupational Therapy Association",
+   "state": {
+    "at": "2026-11-05T03:54:47.218Z",
+    "status": "read"
+   },
    "url": "https://azotassociation.org/wp-content/uploads/2025/09/AZOT_2025_Conference_Program_ONLINE.pdf"
   },
   {
@@ -2172,6 +2192,10 @@
    "name": "sf:zvi-szafran",
    "pattern": "milestone",
    "source": "Village of Canton",
+   "state": {
+    "at": "2026-11-05T03:54:50.940Z",
+    "status": "read"
+   },
    "url": "https://villageofcantonny.gov/news-media/"
   },
   {
@@ -2185,6 +2209,10 @@
    "name": "m.not.a.lobster",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T03:54:52.558Z",
+    "status": "read"
+   },
    "url": ""
   },
   {
@@ -2198,6 +2226,10 @@
    "name": "sf:ashleigh-graveline",
    "pattern": "milestone",
    "source": "American Occupational Therapy Association",
+   "state": {
+    "at": "2026-11-05T03:54:54.450Z",
+    "status": "read"
+   },
    "url": ""
   },
   {
