@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.2.1';
+var APP_VERSION = '4.3.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3100,7 +3100,7 @@ function viewPeople(v){
   var M = v4Metrics();
   function qbtn(val, lab){ return '<button type="button" data-act="pvquick" data-v="' + val + '"' + (f.quick === val ? ' class="on"' : '') + '>' + lab + '</button>'; }
   v.innerHTML = '<div class="v4p pv-view page people" data-kind="about">' +
-    '<div class="pv-vhead"><div><h1>People</h1><p class="pv-hsub">One row per person. Click a cell to fix it in place. The Record column is the same tier Home and Audit use.</p></div>' +
+    '<div class="pv-vhead"><div><h1>People</h1></div>' +
     '<div class="side">' + M.N + ' people · ' + M.withPhone + ' with a phone · ' + M.withPlace + ' with a place<br><a class="lnk" href="#/merge">Merge Studio</a> · <a class="lnk" href="#/danger">Danger Zone</a></div></div>' +
     '<div class="pv-toolbar">' +
     '<label class="pv-search"><span aria-hidden="true">⌕</span><input id="pq" type="search" placeholder="Name, place, workplace, school or skill" value="' + esc(f.q) + '" autocomplete="off"></label>' +
@@ -5105,7 +5105,7 @@ function viewNetwork(v){
   /* Design cleanup (JD 2026-10-28): one clean bar — title, find,
      view, reset, full screen. The old grouped/kicker stack was a
      mess of nested rows (and unclosed tags). */
-  v.innerHTML = '<div class="page netpage v4p" data-kind="connection"><div class="pv-vhead"><div><h1>Network</h1><p class="pv-hsub">Who connects to whom. Gold links are mutual — you both list each other.</p></div></div><div class="netbar"><div><h1 class="display">Network</h1></div>' +
+  v.innerHTML = '<div class="page netpage v4p" data-kind="connection"><div class="pv-vhead"><div><h1>Network</h1><p class="pv-hsub">Who connects to whom.</p></div></div><div class="netbar"><div><h1 class="display">Network</h1></div>' +
     '<div class="netctl">' +
     '<div class="netfind"><input id="netq" type="search" placeholder="Find person" autocomplete="off" aria-label="Find a person on the map" spellcheck="false"><div id="netfr" class="netfr" hidden></div></div>' +
     '<button type="button" class="btn ghost sm" data-act="netreset">Reset view</button>' +
@@ -8826,20 +8826,18 @@ function rcConsoleHTML(){
     body = bparts.join('');
   } else body = rowHtmls.join('');
   return '<section class="rcconsole" id="rcconsole" data-kind="about">' +
-    '<div class="rc-head"><div><div class="rc-kicker">RESEARCH COMMAND // UNFILED CANDIDATES</div>' + kindChip('about', true) +
-    '<h2>What the research found but did not file</h2>' +
-    '<p>Everything the research found but did not add to a record, grouped by person so you can finish one person at a time. Points that came from one source sit together on one card, with one decision for all of them. <b>File it</b> adds the words under \u201cIf you file it\u201d to the record, exactly as written. <b>Dismiss</b> leaves the record as it is. Your decision is saved on the profile, so a decided item never comes back. If the linked page has a usable photo of them, mark <b>Photo at source</b> and it is tracked for the next photo pass.</p></div>' +
+    '<div class="rc-head"><div>' + kindChip('about', true) +
+    '<h2>Research — unfiled candidates</h2></div>' +
     '<div class="rc-legend">' + legend + '</div></div>' +
     '<div class="rc-stats"><div><b>' + counts.pending + '</b><span>Awaiting your call</span></div><div><b>' + counts.close + '</b><span>Close calls (70+)</span></div><div><b>' + counts.filed + '</b><span>Filed / on file</span></div><div><b>' + counts.dismissed + '</b><span>Dismissed</span></div></div>' +
     '<div class="rc-controls"><div class="rc-seg" role="group">' + statBtns + '</div>' +
     '<button type="button" class="rc-photobtn' + (RC_VIEW.photo ? ' on' : '') + '" data-act="rcphotoonly">' + ic('camera', 14) + 'Photo leads <b>' + counts.photo + '</b></button>' +
     '<select id="rccat" aria-label="Candidate category">' + catOpts + '</select>' +
     '<input id="rcq" type="search" placeholder="Search person, claim, source\u2026" value="' + esc(RC_VIEW.q || '') + '"></div>' +
-    '<div class="rc-keybar"><span class="rc-keys">One card at a time. Keys: \u2191 \u2193 move \u00b7 F = File it \u00b7 D = Dismiss \u00b7 Enter = open source \u00b7 P = photo lead</span>' +
-    '<span class="rc-pos" id="rcpos">' + esc(rcPosText(m)) + '</span></div>' +
+    '<div class="rc-keybar"><span class="rc-pos" id="rcpos">' + esc(rcPosText(m)) + '</span></div>' +
     (RC_VIEW.status === 'pending' && shown.length ? '<div class="rc-progress">' + rcPeople + ' people \u00b7 ' + shown.length + ' items left</div>' : '') +
     '<div class="rc-table"><div class="rc-row rc-thead" data-kind="about"><span>How sure I am</span><span>Person / what I found</span><span>Evidence</span><span>Your call</span></div>' + body + '</div>' +
-    '<p class="rc-foot">How sure I am = it\u2019s really them (50) + the source is solid (30) + the details check out (20). A decision counts as written only when the Save Pool shows it as written to the Sheet.</p>' +
+    '<p class="rc-foot">Score: identity 50 + source 30 + detail 20.</p>' +
     '</section>';
 }
 /* rcPaint swaps the whole console node (the app's only outerHTML
@@ -9230,7 +9228,7 @@ function viewCalendar(v){
     ctlBarHTML() +
     '<div class="pv-cal">' + ctlMonthHTML() +
     '<div class="pv-legend"><span class="li"><span class="pv-sw" style="background:var(--pv-gold)"></span>Contact, in person</span><span class="li"><span class="pv-sw" style="background:var(--pv-blue)"></span>Contact, online</span><span class="li"><span class="pv-sw prox"></span>Proximity — crossed paths; it never counts as contact</span></div></div>' +
-    calFoldHTML('day', caFmtD(CTL.day) + ' ' + String(CTL.day).slice(0, 4), ctlDayHTML()) +
+    calFoldHTML('day', 'Day entries', ctlDayHTML()) +
     calFoldHTML('prox', 'Proximity — bulk log', mgProxHTML()) +
     calFoldHTML('seen', 'Seen in person', ctSeenHTML()) +
     calFoldHTML('stamps', 'Contact stamps', mgStampsHTML()) +
@@ -9592,22 +9590,46 @@ function lrChromeHTML(on, title, subHTML, subId){
      carries the Research Command count only; the combined waiting
      total lives on the rail badge via lrWaitingCount(). The
      Command Center button rides along (working tool, not chrome). */
+  /* V4.3.0 (JD 2026-11-04): New facts is its own tab, and the two
+     tab counts add up to the rail badge — New facts (unread) +
+     Needs a decision (research + prefill) = the rail's waiting
+     total. No surface invents its own number. */
   var rcN = (typeof RC !== 'undefined' && RC) ? rcPendingCount() : 0;
+  var pfN = (typeof PF !== 'undefined' && PF) ? pfPendingCount() : 0;
+  var fiN = (typeof FI !== 'undefined' && FI) ? fiUnreadCount() : 0;
+  var decN = rcN + pfN;
   return '<div class="pv-vhead"><div><h1>Live Records</h1><p class="pv-hsub"' + (subId ? ' id="' + subId + '"' : '') + '>' + subHTML + '</p></div>' +
     '<div class="side"><button type="button" class="pv-btn sm ghost" data-act="lrccopen">' + ic('sparkle', 14) + ' Command Center</button></div></div>' +
     '<nav class="pv-lrtabs" aria-label="Live Records">' +
     '<a href="#/daily"' + (on === 'records' ? ' class="on"' : '') + '>Today</a>' +
-    '<a href="#/daily/decide"' + (on === 'decide' ? ' class="on"' : '') + '>Needs a decision <span class="n' + (rcN ? '' : ' zero') + '">(' + rcN + ')</span></a>' +
+    '<a href="#/daily/facts"' + (on === 'facts' ? ' class="on"' : '') + '>New facts <span class="n' + (fiN ? '' : ' zero') + '">(' + fiN + ')</span></a>' +
+    '<a href="#/daily/decide"' + (on === 'decide' ? ' class="on"' : '') + '>Needs a decision <span class="n' + (decN ? '' : ' zero') + '">(' + decN + ')</span></a>' +
     '<a href="#/daily/filings"' + (on === 'filings' ? ' class="on"' : '') + '>History</a></nav>';
 }
 /* V4.1 Today: the fresh rule up front, then the latest brief's
    filed facts as cards — fact, the dates we know, the source, and
    the person's record tier + currency band. */
+function lrDateBadge(iso, kindLabel){
+  /* V4.3.0: the publish date is the hero — a calendar-page badge,
+     month over a big day number. Falls back to the found date,
+     labelled as found, when there is no publish date. */
+  var MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  var FULL = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+  var p = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  var mo = 0, dy = 0;
+  if(p){ mo = +p[2]; dy = +p[3]; }
+  else {
+    var m2 = /([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/.exec(String(iso || ''));
+    if(m2){ var mi = FULL.indexOf(m2[1].toLowerCase()); if(mi < 0) mi = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m2[1].slice(0, 3).toLowerCase()); if(mi >= 0){ mo = mi + 1; dy = +m2[2]; } }
+  }
+  if(!mo || !dy) return '';
+  return '<div class="lr-cal" title="' + esc(kindLabel + ' ' + iso) + '"><span class="lr-cal-m">' + MON[mo - 1] + '</span><span class="lr-cal-d">' + dy + '</span><span class="lr-cal-k">' + esc(kindLabel) + '</span></div>';
+}
 function lrTodayHTML(){
   var today = todayStr();
   var freshKeys = {};
   (DT.hot || []).forEach(function(h){ freshKeys[(h.name || '') + '|' + (h.text || '')] = 1; });
-  var cards = '', nFacts = 0;
+  var cards = '', nFacts = 0, nFresh = 0;
   (DT.filed || []).forEach(function(f){
     var di = null;
     for(var i = 0; i < D.directory.length; i++){ if(dispName(D.directory[i]) === (f.display || f.name)){ di = i; break; } }
@@ -9615,22 +9637,26 @@ function lrTodayHTML(){
     (f.facts || []).forEach(function(fc){
       nFacts++;
       var isFresh = !!(fc.fresh || freshKeys[(f.name || '') + '|' + (fc.text || '')]);
+      if(isFresh) nFresh++;
+      var badge = fc.published ? lrDateBadge(fc.published, 'Published') : lrDateBadge(DT.date || today, 'Found');
       var dates = '';
       if(fc.date || fc.event_date) dates += '<span><span class="dl">Happened</span><b>' + esc(fc.date || fc.event_date) + '</b></span>';
-      if(fc.published) dates += '<span><span class="dl">Published</span><b>' + esc(fc.published) + '</b></span>';
-      dates += '<span><span class="dl">Found</span><b>' + esc(DT.date || today) + '</b></span>';
-      cards += '<div class="pv-card"><div class="chead"><span class="who">' + (di != null ? '<a class="lnk" href="#/p/' + di + '">' + esc(f.display || f.name) + '</a>' : esc(f.display || f.name)) + '</span>' + v4ChipAbout() +
+      if(fc.published && badge) dates += '<span><span class="dl">Found</span><b>' + esc(fmtIsoD(DT.date || today)) + '</b></span>';
+      cards += '<div class="pv-card lr-fc">' + badge + '<div class="lr-fc-main"><div class="chead"><span class="who">' + (di != null ? '<a class="lnk" href="#/p/' + di + '">' + esc(f.display || f.name) + '</a>' : esc(f.display || f.name)) + '</span>' + v4ChipAbout() +
         (isFresh ? '<span class="pv-chip ok">FRESH</span>' : '') +
         (st ? '<span class="pv-chip mut">' + V4_TIER_LABEL[st.tier] + ' \u00b7 ' + st.score + '/100 \u00b7 ' + V4_BAND_LABEL[st.band] + '</span>' : '') + '</div>' +
         '<p class="pv-fact">' + esc(fc.text || '') + '</p>' +
-        '<div class="pv-dates">' + dates + '</div>' +
-        '<div class="pv-conf"><span class="reasons">' + (fc.url ? 'Source: <a class="lnk" href="' + esc(fc.url) + '" target="_blank" rel="noopener">' + esc(fc.source || 'link') + '</a>' : (fc.source ? 'Source: ' + esc(fc.source) : '')) + '</span></div></div>';
+        (dates ? '<div class="pv-dates">' + dates + '</div>' : '') +
+        '<div class="pv-conf"><span class="reasons">' + (fc.url ? 'Source: <a class="lnk" href="' + esc(fc.url) + '" target="_blank" rel="noopener">' + esc(fc.source || 'link') + '</a>' : (fc.source ? 'Source: ' + esc(fc.source) : '')) + '</span></div></div></div>';
     });
   });
   var checkedN = (DT.checked || []).length;
-  return '<div class="pv-strip row" style="margin-bottom:14px"><b>Fresh means the event happened in the last 21 days</b><span>\u2014 the day we found it never makes anything fresh. Fresh items carry the FRESH marker.</span>' +
-    '<span class="sp"></span><span>Latest brief: ' + checkedN + ' checked \u00b7 ' + nFacts + ' fact' + (nFacts === 1 ? '' : 's') + ' filed \u00b7 ' + esc(DT.date || '') + '</span></div>' +
-    (cards || '<div class="pv-card"><p class="pv-fact">Nothing filed in the latest brief.</p></div>');
+  /* V4.3.0 (JD): the latest brief reads as a hero panel, and the
+     fact cards run two to a row. */
+  var hero = '<div class="lr-hero"><div class="lr-hero-l"><span class="lr-hero-k">Latest brief</span><b>' + esc(fmtIsoD(DT.date || today)) + '</b></div>' +
+    '<div class="lr-hero-stats"><span><b>' + checkedN + '</b> checked</span><span><b>' + nFacts + '</b> fact' + (nFacts === 1 ? '' : 's') + ' filed</span><span><b>' + nFresh + '</b> fresh</span></div>' +
+    '<span class="lr-hero-note">Fresh = happened in the last 21 days</span></div>';
+  return hero + '<div class="lr-cards2">' + (cards || '<div class="pv-card"><p class="pv-fact">Nothing filed in the latest brief.</p></div>') + '</div>';
 }
 /* V4.1 History: last-checked coverage + the change log (the old
    Filings feed, unchanged underneath). */
@@ -9652,7 +9678,7 @@ function lrBriefSubHTML(){
   return 'Brief &middot; ' + esc(d) + ' &middot; ' + (DT.checked || []).length + ' checked &middot; ' + (DT.filed || []).length + ' updated';
 }
 function lrBodyPaint(){
-  if(S.route.name !== 'daily' || (S.route.seg && (S.route.seg[0] === 'decide' || S.route.seg[0] === 'filings'))) return false;
+  if(S.route.name !== 'daily' || (S.route.seg && (S.route.seg[0] === 'decide' || S.route.seg[0] === 'filings' || S.route.seg[0] === 'facts'))) return false;
   var b = document.getElementById('lr-body');
   if(!b || !DT || DT.empty || !DT.date) return false;
   var y = window.scrollY, vv = $('#view'), vt = vv ? vv.scrollTop : 0;
@@ -9663,7 +9689,7 @@ function lrBodyPaint(){
 }
 function fiPageHTML(){
   var c = FI ? fiCounts() : { total: 0, unread: 0, read: 0, flagged: 0, people: 0 };
-  var h = lrChromeHTML('inbox', 'Fact Inbox', FI ? (c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero') : 'Loading&hellip;', 'fi-sub');
+  var h = lrChromeHTML('facts', 'New facts', FI ? (c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero') : 'Loading&hellip;', 'fi-sub');
   return h + fiBodyHTML();
 }
 /* The Fact Inbox body without the page chrome (V4 Phase 8a): the
@@ -9900,18 +9926,23 @@ function lrRecordsBodyHTML(){
 
 function viewDaily(v){
   dtLoad(); chLoad(); rcLoad();
-  if(S.route.seg && S.route.seg[0] === 'decide'){
-    /* V4 Phase 8a: the one decision surface — three labelled kinds
-       under the shared Live Records chrome. Each kind keeps its own
-       renderer, state, keyboard path and write path (BN for facts,
-       BL for research, BM for prefill); only the roof is shared. */
+  if(S.route.seg && (S.route.seg[0] === 'facts' || S.route.seg[0] === 'inbox')){
+    /* V4.3.0 (JD 2026-11-04): New facts is its own section of Live
+       Records, not a group buried under the decision surface. */
     fiLoad(); fiProfLoad(); pfLoad();
+    v.innerHTML = '<div class="page lr fi-page v4p" data-kind="about">' + fiPageHTML() + '</div>';
+    fiPaint();
+    return;
+  }
+  if(S.route.seg && S.route.seg[0] === 'decide'){
+    /* V4.3.0: the decision surface holds only decisions — Research
+       Command and Prefill. New facts moved to their own tab. Each
+       kind keeps its own renderer, state, keyboard path and write
+       path (BL for research, BM for prefill). */
+    pfLoad();
     /* V3.88.0 (JD 2026-11-04): the sub states the waiting count IN
-       PARTS, in plain words — decisions are decisions, unread facts
-       are reading. The old single "N waiting for a decision" mixed
-       the two and the tab named for decisions opened on the read
-       feed, so the review below read as gone. */
-    var dcFI = FI ? fiUnreadCount() : 0, dcRC = RC ? rcPendingCount() : 0, dcPF = PF ? pfPendingCount() : 0;
+       PARTS, in plain words. */
+    var dcRC = RC ? rcPendingCount() : 0, dcPF = PF ? pfPendingCount() : 0;
     var dcWhen = '';
     if(DT && DT.date){
       var dp = String(DT.date).split('-');
@@ -9919,16 +9950,13 @@ function viewDaily(v){
     }
     var dcParts = [];
     if(dcRC) dcParts.push(dcRC + ' need your call');
-    if(dcFI) dcParts.push(dcFI + ' new fact' + (dcFI === 1 ? '' : 's') + ' to read');
     if(dcPF) dcParts.push(dcPF + ' prefill suggestion' + (dcPF === 1 ? '' : 's') + ' to approve');
     var dcSub = dcParts.length ? dcParts.join(' &middot; ') + dcWhen : 'Nothing waiting' + dcWhen;
     v.innerHTML = '<div class="page lr dc-page v4p" data-kind="about">' +
       lrChromeHTML('decide', 'Needs a decision', dcSub) +
-      '<section class="dc-group"><div class="dc-ghead"><h2>Needs your call</h2><span>Research Command — findings held for your ruling.</span></div>' + rcConsoleHTML() + '</section>' +
-      '<section class="dc-group"><div class="dc-ghead"><h2>New facts</h2><span>The Fact Inbox — facts Luna found. Read the ones you already know; flag the ones to check.</span></div>' + fiBodyHTML() + '</section>' +
+      '<section class="dc-group"><div class="dc-ghead"><h2>Needs your call</h2></div>' + rcConsoleHTML() + '</section>' +
       '<section class="dc-group"><div class="dc-ghead"><h2>Prefill</h2><span>Luna\u2019s inferred values for blank fields — approve or deny each one.</span></div><div id="pfwrap"></div></section>' +
       '</div>';
-    fiPaint();
     pfRender();
     return;
   }
@@ -11179,14 +11207,15 @@ function viewPhotos(v){
      one compact line, and every control fits in ONE toolbar row —
      Tier/Organizations tuck behind Filters. The photos are the hero;
      the grid gets the reclaimed height. */
-  var headFull = '<div class="pv-vhead"><div><h1>Photos</h1><p class="pv-hsub">Every photo on file, the ones waiting on your call, and who still has none.</p></div><div class="side ph-headstats">' +
-    '<span class="phst">' + ic('camera', 13) + '<b>' + (PH.total || PH.people.length) + '</b> records checked</span>' +
-    '<span class="phst">' + ic('check', 13) + '<b>' + withPh + '</b> on file</span>' +
-    '<span class="phst">' + ic('search', 13) + '<b>' + pc.missing + '</b> no photo yet</span>' +
-    (PH.updated ? '<span class="phst">' + ic('calendar', 13) + 'Updated <b>' + esc(fmtIsoD(PH.updated)) + '</b></span>' : '') +
-    (unchecked ? '<span class="phst">' + ic('search', 13) + '<b>' + unchecked + '</b> not yet checked</span>' : '') +
-    (phNewCount(all) ? '<span class="phst">' + ic('sparkle', 13) + '<b>' + phNewCount(all) + '</b> new in the last 3 weeks</span>' : '') +
-    '</div></div>';
+  /* V4.3.0 (JD 2026-11-04): one compact stat strip, last check
+     first — the grid starts high. The three hero cards and the
+     right-side stat stack are gone. */
+  var headFull = '<div class="pv-vhead"><div><h1>Photos</h1></div></div>' +
+    '<div class="pv-strip row ph-strip"><span class="ph-lastcheck">' + ic('calendar', 13) + 'Last photo check: <b>' + (PH.updated ? esc(fmtIsoD(PH.updated)) : '—') + '</b></span>' +
+    '<span><b>' + withPh + '</b> on file</span>' +
+    '<span><b>' + pc.missing + '</b> no photo yet</span>' +
+    (unchecked ? '<span><b>' + unchecked + '</b> not yet checked</span>' : '') +
+    '<span class="sp"></span><span><b>' + (PH.total || PH.people.length) + '</b> records checked</span></div>';
   var tierN = { vetted:0, associate:0, open:0, '':0 };
   all.forEach(function(p){ var e = phEntryOf(p); var t = e ? tierOf(e) : ''; if(tierN[t] == null) tierN[t] = 0; tierN[t]++; });
   function fbtn(f, label, n){ return '<button type="button" class="ph-fbtn' + (PH_FILT === f ? ' on' : '') + '" data-act="phfilt" data-f="' + esc(f) + '"><span>' + esc(label) + '</span><b>' + n + '</b></button>'; }
@@ -11222,16 +11251,7 @@ function viewPhotos(v){
         '<div class="ph-poss-act"><button type="button" class="btn sm primary" data-act="phconfirm" data-pname="' + esc(p.name) + '">Validate</button>' +
         '<button type="button" class="btn sm ghost" data-act="phrejectq" data-pname="' + esc(p.name) + '">Reject</button></div></div>';
     }).join('') + '</section>' : '';
-  var phConf = all.filter(function(p){ return p.status === 'confirmed'; }).length;
-  var susLik = sus.filter(function(p){ return p.status === 'likely'; }).length, susPos = sus.length - susLik;
-  var phIdx2 = phIndex(), phEntryPeople = 0;
-  people().forEach(function(di){ if(phIdx2 && phIdx2[dispName(D.directory[di])]) phEntryPeople++; });
-  var phNoEntry = pc.people - phEntryPeople;
-  var kpiHTML = '<section class="pv-kpis" style="grid-template-columns:repeat(3,1fr)">' +
-    '<div class="pv-kpi"><div class="lab">Confirmed photos</div><div class="num">' + phConf + '</div><div class="sub">Verified by eye — a photo files only on a verified fetch and an actual look.</div></div>' +
-    '<div class="pv-kpi"><div class="lab">Waiting on your call</div><div class="num">' + sus.length + '</div><div class="sub"><b>' + susLik + '</b> likely · <b>' + susPos + '</b> possible — Validate, Adjust or Reject below.</div></div>' +
-    '<div class="pv-kpi"><div class="lab">No photo entry</div><div class="num">' + phNoEntry + '</div><div class="sub">People the photo checks have never reached.</div></div></section>';
-  v.innerHTML = '<div class="page asearch pg-photos v4p" data-kind="about">' + headFull + kpiHTML + possHtml + '<div class="ph-layout2">' + rail + main + '</div></div>';
+  v.innerHTML = '<div class="page asearch pg-photos v4p" data-kind="about">' + headFull + possHtml + '<div class="ph-layout2">' + rail + main + '</div></div>';
   phPaintList();
   if(PHI) phiRender();
   phFocusChromeArm();
@@ -11272,7 +11292,7 @@ function mergedRestoreRowsHTML(){
 }
 function viewSettings(v){
   var merged = mergedList();
-  v.innerHTML = '<div class="page settings v4p"><div class="pv-vhead"><div><h1>Settings</h1><p class="pv-hsub">The utility page \u2014 keys, the AI helper, the Levels map. Almost never visited.</p></div><div class="side">Data from ' + esc(D.updated || 'unknown') + '</div></div>' +
+  v.innerHTML = '<div class="page settings v4p"><div class="pv-vhead"><div><h1>Settings</h1><p class="pv-hsub">Keys, the AI helper, the Levels map.</p></div><div class="side">Data from ' + esc(D.updated || 'unknown') + '</div></div>' +
     '<div class="pv-setgrid">' +
     '<section class="card"><header><h3>Saving &amp; the Sheet</h3></header><div class="cbody">' +
     '<div class="pv-kv"><span class="k">How edits save</span><span class="v">Every change queues in the <b>Save Pool</b> (top bar) and writes to the Sheet; the app reads it back before calling it saved.</span></div>' +
@@ -13905,7 +13925,7 @@ function onClick(ev){
     case 'chggrp': chgToggle(el); break;
     case 'rcfile': rcDecide(el.getAttribute('data-id'), 'file'); break;
     case 'rcdismiss': rcDecide(el.getAttribute('data-id'), 'dismiss'); break;
-    case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; rcSaveView(); rcPaint(); break;
+    case 'rcfilter': RC_VIEW.status = el.getAttribute('data-v') || 'pending'; RC_VIEW.q = ''; RC_VIEW.cat = 'all'; RC_VIEW.photo = false; rcSaveView(); rcPaint(); break;
     case 'rcphoto': rcTogglePhoto(el.getAttribute('data-id')); break;
     case 'rcphotogroup': rcTogglePhotoGroup((el.getAttribute('data-ids') || '').split(',').filter(Boolean)); break;
     case 'rcphotoonly': RC_VIEW.photo = !RC_VIEW.photo; rcSaveView(); rcPaint(); break;
@@ -15874,7 +15894,7 @@ function sstShell(){
     '<div class="sst-top"><h3 class="mdl-ph">Record studio</h3><span class="sst-count" id="sst-count"></span><span class="sp"></span>' +
     '<span class="seg sst-viewseg" role="group" aria-label="Studio view">' +
     [['all', 'All columns'], ['identity', 'Identity'], ['fields', 'Fields']].map(function(o){ return '<button type="button" data-act="sstview" data-v="' + o[0] + '"' + ((st.view || 'all') === o[0] ? ' class="on"' : '') + '>' + o[1] + '</button>'; }).join('') + '</span></div>' +
-    '<p class="sst-sub">Every profile, one table. Sort any column, filter the view, shift-click a cell (or focus it and press Enter) to fix a field in place, tick rows and quick-change them together. Saves ride the same outbox as everywhere else; Ctrl+Z undoes.</p>' +
+    '<p class="sst-sub">Every profile, one table.</p>' +
     '<div class="sst-tools">' +
       '<label class="field sst-qf"><span>' + ic('search', 15) + '</span><input id="sst-q" type="search" placeholder="Filter by name, school, employer, skill" value="' + esc(st.q) + '" autocomplete="off"></label>' +
       '<span class="chips" id="sst-tiers">' + sstTierChips() + '</span>' +
@@ -16297,7 +16317,7 @@ function dzEnsure(){
 }
 function viewMergeTool(v){
   v.innerHTML = '<div class="page sbtool v4p" data-kind="neutral">' +
-    '<div class="pv-vhead"><div><h1>Merge Studio</h1><p class="pv-hsub">A system tool, not a section. Two profiles that are really one person become one — the fuller record survives, the other is kept on file and can be restored.</p></div>' +
+    '<div class="pv-vhead"><div><h1>Merge Studio</h1><p class="pv-hsub">Two profiles that are really one person become one. The other is kept on file and can be restored.</p></div>' +
     '<div class="side"><a class="lnk" href="#/people">Back to People →</a></div></div>' +
     '<div class="pv-panel" style="margin-bottom:14px"><h2>Pairs already checked<span class="r">Pinned — do not merge</span></h2>' +
     '<div class="pv-logrow"><span class="ld">McCormick</span><span class="lx"><b>Kayle McCormick</b> (NCPR) and <b>Karle McCormick</b> (Ogdensburg Free Academy) — twin sisters, two different people.</span><span class="pv-chip ok">CHECKED — NOT THE SAME PERSON</span></div></div>' +
@@ -16308,7 +16328,7 @@ function viewMergeTool(v){
 function viewDangerTool(v){
   dzEnsure();
   v.innerHTML = '<div class="page sbtool v4p" data-kind="neutral">' +
-    '<div class="pv-vhead"><div><h1>Danger Zone</h1><p class="pv-hsub">A system tool, not a section. The thinnest records in the directory — name-only and near-empty profiles — kept or removed one at a time. Removal is a soft delete: the row moves to the Sheet’s Trash tab and can be brought back.</p></div>' +
+    '<div class="pv-vhead"><div><h1>Danger Zone</h1><p class="pv-hsub">Name-only and near-empty profiles. Removal is a soft delete — the row moves to the Sheet’s Trash tab.</p></div>' +
     '<div class="side">' + people().length + ' people listed<br>You and Kathleen DeLage never appear here.</div></div>' +
     '<div class="sb-wrap">' + sbDangerZone() + '</div></div>';
 }
@@ -19228,6 +19248,35 @@ function cnLiveStatus(status, stagedN, bud){
   return s;
 }
 
+/* V4.3.0 (JD 2026-11-04): Council is a reading page now. JD's
+   workflow: read the recommendations here as plain text, then
+   dictate the calls to Luna in chat. The staging buttons, stat
+   cards, and desk graphics are gone; the data and the council
+   cycle underneath are unchanged. */
+function cnPacketHTML(f, q){
+  var st = cnFlagState(f, q);
+  var meta = [esc(CN_DEPT_NAMES[f.director] || f.director || ''), esc(f.date || ''), esc(cnKindLabel(f.kind))].filter(Boolean).join(' · ');
+  var h = '<article class="cnc-rec" id="cnf-' + esc(f.id) + '"><h3>' + esc(f.title || '') + '</h3>' +
+    '<div class="cnc-rec-meta">' + meta + (st === 'staged' ? ' · <b>Staged</b>' : '') + '</div>';
+  if(f.ruling) h += '<p class="cnc-rec-line"><b>Your call:</b> ' + esc(f.ruling) + '</p>';
+  if(f.theory && f.theory.text) h += '<p class="cnc-rec-line"><b>What:</b> ' + esc(f.theory.text) + '</p>';
+  else if(f.detail){
+    /* Newer flags carry one detail string: the finding, then
+       "Ruling needed: ..." with the options. Split it into the
+       same What / Recommendation shape. */
+    var dp = String(f.detail).split(/\s*Ruling needed:\s*/i);
+    h += '<p class="cnc-rec-line"><b>What:</b> ' + esc(dp[0]) + '</p>';
+    if(dp[1]) h += '<p class="cnc-rec-line"><b>Recommendation:</b> ' + esc(dp[1]) + '</p>';
+  }
+  if(f.evidence && f.evidence.length){
+    h += '<div class="cnc-rec-line"><b>Evidence:</b><ul>' + f.evidence.slice(0, 2).map(function(e){ return '<li>' + esc(e) + '</li>'; }).join('') + '</ul>' +
+      (f.evidence.length > 2 ? '<span class="dim">(' + (f.evidence.length - 2) + ' more on file)</span>' : '') + '</div>';
+  }
+  if(f.actions && f.actions.length){
+    h += '<div class="cnc-rec-line"><b>Recommendation:</b><ul>' + f.actions.map(function(a){ return '<li>' + esc(a.label || '') + (a.note ? ' — ' + esc(a.note) : '') + '</li>'; }).join('') + '</ul></div>';
+  }
+  return h + '</article>';
+}
 function viewCouncil(v){
   cnLoad();
   if(!CN){
@@ -19241,88 +19290,38 @@ function viewCouncil(v){
   var stagedOnly = flags.filter(function(f){ return cnFlagState(f, q) === 'staged'; });
   var closed = flags.filter(function(f){ return cnFlagState(f, q) === 'closed'; });
   var stagedEntries = q.filter(function(e){ return e.state === 'staged'; });
-  var doneToday = q.filter(function(e){ return e.state === 'done' && cnToday(e.ts); }).length;
   var h = '<div class="cnc v4p" data-kind="neutral">' +
-    '<div class="pv-vhead"><div><h1>Council</h1><p class="pv-hsub">Seven standing desks that keep this app honest. Each one runs on its own cadence and files flags here.</p></div></div>' +
+    '<div class="pv-vhead"><div><h1>Council</h1><p class="pv-hsub">Flags and recommendations from the weekly checks.</p></div></div>' +
     '<div class="pv-strip row" style="margin-bottom:14px"><span><b>Latest pass:</b> ' + (cnLatestRun(cn) ? esc(cnLatestRun(cn).run.title || 'Council') + ' · ' + esc(cnFmtDate(cnLatestRun(cn).date)) : 'none on file') + '</span><span class="sp"></span><span>' + ((cn.flags || []).some(function(f){ return f.state === 'open'; }) ? '<b>Flags open</b>' : '<span class="ok">✓ Gate clear</span>') + (cn.budget && cn.budget.used_pct != null ? ' · Resource ' + esc(String(cn.budget.used_pct)) + '% of the week used' : '') + '</span></div>';
-  /* ---- hero: open flags action queue ---- */
-  h += '<header class="cnc-hero"><div class="cnc-herotop"><div>' +
-    '<div class="cnc-eyebrow">Contacts Pro Council · Command Center</div>' +
-    '<h2>Open flags</h2>' +
-    '<p class="cnc-sub">Every flag carries Luna’s theory, the evidence, and the fix. Stage an action and it lands on the next council pass — or do it now. Snapshot ' + esc(cn.updated || '') + '.</p></div>' +
-    '</div>';
-  /* Hero widgets (V3.63.0, JD 2026-11-01): the board opens with the
-     status of everything, one value + one plain label per card. This
-     row replaces the old stat strip and formalizes the 2026-10-28
-     "Latest pass" pulse line into the first card. Every value is
-     computed from council.json + the live staged queue at render
-     time — nothing is hardcoded. */
-  var bud = cn.budget || {};
-  var lr = cnLatestRun(cn);
-  var openFlagCount = flags.filter(function(f){ return f.state === 'open'; }).length;
-  var curDesks = 0;
-  (cn.roster || []).forEach(function(r){ if(cnFresh(cnParseDate(r.last_run))) curDesks++; });
-  var paceWord = cnPaceWord(bud);
-  var resetD = cnParseDate(bud.week_resets);
-  h += '<div class="cnc-heroes">' +
-    '<div class="cnc-hcard acc-blu"><span class="cnc-hlab">Latest pass</span>' +
-      (lr ? '<b class="cnc-hval txt">' + esc(lr.run.title || '') + '</b><span class="cnc-hsub">' + esc(lr.date ? cnFmtDate(lr.date) : (lr.run.date || '')) + '</span>'
-          : '<b class="cnc-hval txt">No passes yet</b><span class="cnc-hsub">Runs appear here after a council cycle</span>') + '</div>' +
-    '<div class="cnc-hcard acc-amb"><span class="cnc-hlab">Open flags</span><b class="cnc-hval">' + openFlagCount + '</b><span class="cnc-hsub">Waiting on a ruling or a fix</span></div>' +
-    '<div class="cnc-hcard acc-blu"><span class="cnc-hlab">Staged for JD</span><b class="cnc-hval">' + stagedEntries.length + '</b><span class="cnc-hsub">Actions queued, awaiting his go</span></div>' +
-    '<div class="cnc-hcard acc-grn"><span class="cnc-hlab">Resource</span><b class="cnc-hval">' + (bud.used_pct != null ? esc(String(bud.used_pct)) + '%' : '—') + '</b><span class="cnc-hsub">' + esc((paceWord ? paceWord : 'Budget') + (resetD ? ' · week resets ' + cnFmtDate(resetD) : '')) + '</span></div>' +
-    '<div class="cnc-hcard acc-amb"><span class="cnc-hlab">Directors current</span><b class="cnc-hval">' + curDesks + ' of ' + (cn.roster || []).length + '</b><span class="cnc-hsub">Ran within the last 8 days</span></div>' +
-    '<div class="cnc-hcard acc-grn"><span class="cnc-hlab">Executed today</span><b class="cnc-hval">' + doneToday + '</b><span class="cnc-hsub">Staged actions completed</span></div>' +
-    '</div>';
   if(qDown){
     h += '<div class="cnc-queuebar cnc-qalert"><span class="cnc-qlab">' + ic('x', 13) + ' Staged queue unavailable</span>' +
-      '<span class="cnc-qitems">The profiles data failed to load, so the staged queue cannot be read and staging is paused — nothing can be staged or executed until it loads. Reload the page to retry.</span></div>';
+      '<span class="cnc-qitems">The profiles data failed to load, so the staged queue cannot be read. Reload the page to retry.</span></div>';
   }
   if(stagedEntries.length){
-    h += '<div class="cnc-queuebar"><span class="cnc-qlab">' + ic('check', 13) + ' Staged queue</span>' +
-      '<span class="cnc-qitems">' + stagedEntries.map(function(e){ return esc(e.label); }).join(' · ') + '</span>' +
-      '<span class="cnc-qbtns"><button type="button" class="btn primary sm" data-act="cn-exec-all">Execute all now</button>' +
-      '<button type="button" class="btn ghost sm" data-act="cn-clear">Clear</button></span></div>';
+    h += '<div class="pv-strip row" style="margin-bottom:14px"><span><b>Staged:</b> ' + stagedEntries.map(function(e){ return esc(e.label); }).join(' · ') + '</span></div>';
   }
-  h += '</header>';
-  h += '<section class="cnc-flags">';
+  h += '<section class="cnc-recs"><h2 class="cnc-h2">Recommendations</h2>';
   var hero = open.concat(stagedOnly);
-  h += hero.length ? hero.map(function(f){ return cnFlagCard(f, q); }).join('')
-    : '<div class="empty"><h3>Nothing waiting on JD</h3><p>Every flag is decided or staged. New flags appear here when a director stages something only JD can rule on.</p></div>';
+  h += hero.length ? hero.map(function(f){ return cnPacketHTML(f, q); }).join('')
+    : '<div class="empty"><h3>Nothing waiting</h3><p>No open flags.</p></div>';
   h += '</section>';
-  /* ---- departments ---- */
-  h += '<section class="cnc-depts"><h2 class="cnc-h2">Departments</h2><div class="cnc-dgrid">';
+  /* ---- departments: one line per desk ---- */
+  h += '<section class="cnc-depts"><h2 class="cnc-h2">Departments</h2><div class="cnc-dlist2">';
   CN_ORDER.forEach(function(key){
     var r = (cn.roster || []).filter(function(x){ return x.key === key; })[0] || {};
     var es = ((cn.findings || {})[key] || []);
     var latest = es[0];
-    var fr = cnFieldReport(key, cn);
-    /* Freshness pill (V3.63.0): computed from last_run alone — a desk
-       is CURRENT only if it ran within the last 8 days, STALE if its
-       last run is older, and a desk with no parseable run date says
-       so. The free-text status can no longer read "Active" next to a
-       weeks-old date with nothing calling it out. */
     var rd = cnParseDate(r.last_run);
     var pill = !rd ? '<span class="cnc-pill is-none">No run date</span>'
       : cnFresh(rd) ? '<span class="cnc-pill is-cur">Current</span>'
       : '<span class="cnc-pill is-stale">Stale — last ran ' + esc(cnFmtDate(rd)) + '</span>';
-    h += '<article class="cnc-dept d-' + key + '"><div class="cnc-dhead"><span class="sb-card-ic">' + ic(r.icon || 'shield', 18) + '</span>' +
-      '<h3>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</h3>' + pill + '</div>' +
-      (r.status ? '<div class="cnc-dstatus2">' + esc(cnLiveStatus(r.status, stagedEntries.length, bud)) + '</div>' : '') +
-      (latest ? '<div class="cnc-dlatest"><div class="cnc-dllab">Latest finding · ' + esc(latest.date || '') + ' (snapshot — live counts are on the board)</div>' +
-        '<b>' + esc(latest.title || '') + '</b><p>' + esc(latest.summary || '') + '</p></div>' : '<p class="sb-note">No findings yet.</p>') +
-      '<div class="cnc-dgraph">' + cnDeptGraphic(key, cn, q) + '</div>' +
-      '<div class="cnc-druns">Last: ' + esc(r.last_run || '—') + ' · Next: ' + esc(r.next_run || '—') + '</div>' +
-      (fr ? '<details class="cnc-frd"><summary>Field report</summary>' + fr + '</details>' : '') + '</article>';
+    h += '<div class="cnc-drow2"><b>' + esc(CN_DEPT_NAMES[key] || r.name || key) + '</b>' + pill +
+      '<span class="cnc-drow2-last">Last: ' + esc(r.last_run || '—') + '</span>' +
+      (latest ? '<span class="cnc-drow2-find">' + esc(latest.title || '') + '</span>' : '<span class="cnc-drow2-find dim">No findings yet</span>') + '</div>';
   });
   h += '</div></section>';
-  /* V4 Phase 7: the standalone Run history section is gone — the page
-     is hero + flags + desk cards (decided flags ride below as the
-     flags' own settled tail). The latest run still leads the hero;
-     each desk card carries its own Last run line; cn.runs itself is
-     untouched in council.json. */
   /* ---- decided ---- */
-  h += '<details class="cnc-decided"><summary>Decided (' + closed.length + ') — settled law</summary><div class="cnc-dlist">';
+  h += '<details class="cnc-decided"><summary>Decided (' + closed.length + ')</summary><div class="cnc-dlist">';
   h += closed.length ? closed.map(function(f){
     var res = q.filter(function(e){ return e.flag === f.id && e.state === 'done'; })[0];
     return '<div class="cnc-drow"><b>' + esc(f.title || '') + '</b>' +
