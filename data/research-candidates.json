@@ -11493,6 +11493,1041 @@
    "fields": {},
    "published": "2026-10-23",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-jeevesgreen-worked-as-a-santa-s-helper-at-the-ba",
+   "name": "jeevesgreen",
+   "display": "Jeeves Green",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Bangor Daily News photo from December 24, 2018 shows a Jeeves Green of Hampden, Maine, dressed as Santa's helper at the Bangor Mall, steadying a young girl for a photo with Santa.",
+   "file_text": "Worked as a Santa's helper at the Bangor Mall in Hampden, Maine, Dec 2018",
+   "source": "Bangor Daily News",
+   "url": "",
+   "anchors": [
+    "Name match"
+   ],
+   "missing_gate": "The photo names a Jeeves Green in Hampden, Maine, but nothing on it ties him to the Madrid and Catherine facts already on file.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 18,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2018-12-24",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-ian-bailey-featured-on-btv-s-what-s-brewing-ser",
+   "name": "sf:ian-bailey",
+   "display": "Ian Bailey",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A Burlington community television series episode of What's Brewing was reported to feature Ian Bailey talking about Vivid Coffee's roasting, sourcing, and community work in October 2025.",
+   "file_text": "Featured on BTV's What's Brewing series talking about Vivid Coffee, Oct 2025",
+   "source": "BTV",
+   "url": "",
+   "anchors": [
+    "Vivid Coffee (already on file)",
+    "Burlington, Vermont (already on file)"
+   ],
+   "missing_gate": "I could not double-check this \u2014 I could not find or open the episode page \u2014 so I want you to decide.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 10,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-davidzufall-formed-zufall-media-llc-in-new-york-",
+   "name": "davidzufall",
+   "display": "David Zufall",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "A Bizapedia company record says Zufall Media LLC was formed in New York on July 18, 2026, with David Zufall of Potsdam as the contact, at the same Potsdam address as Zufall Photography.",
+   "file_text": "Formed Zufall Media LLC in New York, Jul 2026",
+   "source": "Bizapedia",
+   "url": "",
+   "anchors": [
+    "Potsdam, NY (already on file)",
+    "Zufall Photography address (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 8,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2026-07-18",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-davidzufall-bylined-and-photographed-wwny-s-firs",
+   "name": "davidzufall",
+   "display": "David Zufall",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A WWNY weather piece titled First Snowfall carries a byline and photo credit for David Zufall of Zufall Photography.",
+   "file_text": "Bylined and photographed WWNY's First Snowfall weather piece",
+   "source": "WWNY",
+   "url": "",
+   "anchors": [
+    "Zufall Photography (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-anastasia-g-daniels-serves-as-executive-director-of-the-",
+   "name": "anastasia_g_daniels",
+   "display": "Anastasia Daniels",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "Anastasia Daniels's LinkedIn lists her as Executive Director of the Children's Learning Center (CLC) in Cortland, New York, and a Give2Asia fund page for the center names her as its Executive Director. The center's own team page I checked turned out to belong to a different organization with a similar name, so her own site listing is unconfirmed.",
+   "file_text": "Serves as Executive Director of the Children's Learning Center in Cortland, NY",
+   "source": "Give2Asia",
+   "url": "",
+   "anchors": [
+    "Cortland, NY",
+    "Early-childhood education work (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 14,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-hpuglia12-named-to-roberts-wesleyan-university",
+   "name": "hpuglia12",
+   "display": "Hannah Puglia",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A Merit Pages letter was reported to show Hannah Puglia of Potsdam on Roberts Wesleyan University's Dean's List for Fall 2023, when she was a freshman nursing student.",
+   "file_text": "Named to Roberts Wesleyan University's Dean's List, Fall 2023",
+   "source": "Merit Pages",
+   "url": "https://s3.amazonaws.com/rm3.attachments.neighborhoodsci/11592281/Dean_s_List_letter_.pdf",
+   "anchors": [
+    "Roberts Wesleyan University (already on file)",
+    "Potsdam, NY (already on file)"
+   ],
+   "missing_gate": "I could not double-check this \u2014 the letter would not open for me \u2014 so I want you to decide.",
+   "confidence": 64,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 10,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-slaminsam22-named-to-clarkson-university-s-dean-",
+   "name": "slaminsam22",
+   "display": "Sam Mace",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "Sam Mace's profile on TheOrg's Clarkson University chart says he was named to Clarkson University's Dean's List for Fall 2023, when he was a sophomore.",
+   "file_text": "Named to Clarkson University's Dean's List, Fall 2023",
+   "source": "TheOrg",
+   "url": "https://theorg.com/org/clarkson-university/org-chart/sam-mace",
+   "anchors": [
+    "Clarkson University (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 8,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-sf-makiah-barber-named-to-suny-potsdam-s-president-s-",
+   "name": "sf:makiah-barber",
+   "display": "Makiah Barber",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "SUNY Potsdam's Fall 2025 honors announcement covers Makiah Barber's reported President's List placement; the full student list sits on the college's Merit Pages, which I could not open to check her name on it.",
+   "file_text": "Named to SUNY Potsdam's President's List, Fall 2025",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/news/presidentsdeanslistsfall2025",
+   "anchors": [
+    "SUNY Potsdam (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-vivian-de-voe-named-to-suny-potsdam-s-president-s-",
+   "name": "vivian_de_voe",
+   "display": "Vivian De Voe",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "SUNY Potsdam's Fall 2024 honors announcement covers Vivian De Voe's reported President's List placement; the full student list sits on the college's Merit Pages, which I could not open to check her name on it.",
+   "file_text": "Named to SUNY Potsdam's President's List, Fall 2024",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/news/PresidentsDeansListsFall2024",
+   "anchors": [
+    "SUNY Potsdam (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 63,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 12,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-karen-hoover-prepared-woodcut-prints-and-monotype",
+   "name": "sf:karen-hoover",
+   "display": "Karen Hoover",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A September 3, 2019 Courier-Observer piece, Potsdam Artist Works to Be Included in Library Show, was reported to describe Potsdam artist Karen Hoover preparing woodcut prints and monotypes for a Potsdam Public Library show, nearly 50 years after she first took up printmaking at SUNY Potsdam.",
+   "file_text": "Prepared woodcut prints and monotypes for a Potsdam Public Library art show, Sep 2019",
+   "source": "Courier-Observer",
+   "url": "",
+   "anchors": [
+    "Potsdam, NY (already on file)",
+    "SUNY Potsdam (already on file)"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 10,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2019-09-03",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-stephanie-elisa-volunteered-at-a-vero-beach-high-sch",
+   "name": "sf:stephanie-elisa",
+   "display": "Stephanie Elisa",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Vero Beach High School game recap from October 24, 2026 thanks a Stephanie Peters for assisting at the snack bar, and a comment on Stephanie Elisa's Facebook page ties her to volunteering at snack bars in Florida.",
+   "file_text": "Volunteered at a Vero Beach High School snack bar, Oct 2026",
+   "source": "Vero Beach High School",
+   "url": "",
+   "anchors": [
+    "Name match (as Stephanie Peters)"
+   ],
+   "missing_gate": "The recap names a Stephanie Peters in Vero Beach, Florida, but nothing solid ties her to the youth-group facts already on file.",
+   "confidence": 46,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 14,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-10-24",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-david-disalvo-serves-on-clarkson-university-s-huma",
+   "name": "sf:david-disalvo",
+   "display": "David DiSalvo",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "Clarkson's IRBNet board page for protocol 26-36 was reported to list David DiSalvo as a member of Clarkson's Human Research Ethics Board for that protocol, separate from his role on the study's research team, which is already on file.",
+   "file_text": "Serves on Clarkson University's Human Research Ethics Board for protocol IRB 26-36",
+   "source": "IRBNet",
+   "url": "https://www.irbnet.org/release/boards/members.jsp?40A44A0A40454F3CB27FAF01CBD1F4B1.irbnet04",
+   "anchors": [
+    "Clarkson University (already on file)",
+    "IRB 26-36 study (already on file)"
+   ],
+   "missing_gate": "I could not double-check this \u2014 the board page opens as a general IRBNet page for me \u2014 so I want you to decide.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 8,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-ct-katie-mcgrath-married-ryan-barber-at-auger-falls-s",
+   "name": "ct:katie mcgrath",
+   "display": "Katie McGrath",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "A wedding registry on The Knot for Katie McGrath and Ryan Barber gives a wedding date of October 31, 2026 at Auger Falls in Saranac Lake, with a rehearsal dinner the night before.",
+   "file_text": "Married Ryan Barber at Auger Falls, Saranac Lake, Oct 2026",
+   "source": "The Knot",
+   "url": "https://www.theknot.com/us/katie-mcgrath-and-ryan-barber-oct-2026",
+   "anchors": [
+    "Name match",
+    "Saranac Lake area"
+   ],
+   "missing_gate": "This is about Katie's family, so I always check with you first.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 20,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2026-10-31",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-ct-katie-mcgrath-honored-in-suny-potsdam-s-women-s-hi",
+   "name": "ct:katie mcgrath",
+   "display": "Katie McGrath",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A SUNY Potsdam Women's History Month video page was reported to honor a Katie McGrath for Women's History Month, with no date or class year shown.",
+   "file_text": "Honored in SUNY Potsdam's Women's History Month recognition",
+   "source": "SUNY Potsdam",
+   "url": "",
+   "anchors": [
+    "Name match"
+   ],
+   "missing_gate": "The page names a Katie McGrath, but nothing on it ties her to the Christian Fellowship Academy facts already on file.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 18,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-cody-benham-named-a-finalist-for-sigma-phi-epsil",
+   "name": "sf:cody-benham",
+   "display": "Cody Benham",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A Sigma Phi Epsilon chapter Facebook post was reported to name Cody Benham of SUNY Potsdam as a Balanced Man Scholarship finalist, with a quote about his values and his wish to be a pro golfer; the college's own pages do not mention it.",
+   "file_text": "Named a finalist for Sigma Phi Epsilon's Balanced Man Scholarship at SUNY Potsdam",
+   "source": "Sigma Phi Epsilon (Facebook)",
+   "url": "",
+   "anchors": [
+    "SUNY Potsdam",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 10,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-jamiesinclair-led-christian-fellowship-center-s-ca",
+   "name": "jamiesinclair",
+   "display": "Jamie Sinclair",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "Watertown Daily Times coverage of Christian Fellowship Center's Canton campus describes a zoning fight with the Village of Canton \u2014 a July 2025 decision against the church, a state Supreme Court ruling for the village, an appeal by the church, and an October 2025 court date \u2014 and names Jamie Sinclair as the fellowship's Canton campus pastor.",
+   "file_text": "Led Christian Fellowship Center's Canton campus through its 2025 zoning fight with the Village of Canton",
+   "source": "Watertown Daily Times",
+   "url": "",
+   "anchors": [
+    "Christian Fellowship Center Canton (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 63,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 15,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2025",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-ct-susan-buckley-works-as-associate-professor-and-dep",
+   "name": "ct:susan buckley",
+   "display": "Susan Buckley",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "Binghamton University's catalog faculty page was reported to list Susan E. Buckley as an associate professor and department chair in Human Development, with a UMass Lowell doctorate and earlier work in Canton and Potsdam, New York; the page would not open for me (access denied). Her faculty role at the Church of Christ Bible Institute in Mt. Zion, Illinois is already on her record.",
+   "file_text": "Works as associate professor and department chair in Human Development at Binghamton University",
+   "source": "Binghamton University",
+   "url": "https://catalog.binghamton.edu/college-of-community-and-public-affairs/humandevelopment/faculty.php",
+   "anchors": [
+    "Canton and Potsdam, NY (already on file)",
+    "UMass Lowell (already on file)"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 10,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-ig-liammillerlynch-serves-as-music-director-at-mt-zion-",
+   "name": "ig:liammillerlynch",
+   "display": "Liam Miller-Lynch",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "Mt. Zion United Methodist Church in Highland, Maryland lists a Liam Lynch as its music director; no page I could open gives his full hyphenated name or a Clarkson tie.",
+   "file_text": "Serves as music director at Mt. Zion United Methodist Church in Highland, Maryland",
+   "source": "Mt. Zion United Methodist Church",
+   "url": "",
+   "anchors": [
+    "Name match (as Liam Lynch)"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 52,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 12,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-sf-emily-jent-named-to-clarkson-university-s-presi",
+   "name": "sf:emily-jent",
+   "display": "Emily R. Jent",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "Clarkson University's psychology honors page was reported to list Emily R. Jent on the President's List for Spring 2025; the page address I was given no longer opens.",
+   "file_text": "Named to Clarkson University's President's List, Spring 2025",
+   "source": "Clarkson University",
+   "url": "",
+   "anchors": [
+    "Clarkson University (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 67,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 10,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2025",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-katiie-huestis-holds-an-ascp-medical-laboratory-sci",
+   "name": "katiie.huestis",
+   "display": "Katie Huestis",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "The American Society for Clinical Pathology's credential check was reported to show a Katie Huestis of Canton, New York holding a Medical Laboratory Scientist certification running January 2026 to January 2029; her record has her finishing her medical laboratory science degree in May 2026, so the dates do not line up cleanly.",
+   "file_text": "Holds an ASCP Medical Laboratory Scientist certification, from Jan 2026",
+   "source": "American Society for Clinical Pathology",
+   "url": "",
+   "anchors": [
+    "Canton, NY (already on file)",
+    "Medical laboratory science (already on file)"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 16,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-01",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-josiah-tabolt-quoted-criticizing-united-methodist-",
+   "name": "sf:josiah-tabolt",
+   "display": "Josiah Tabolt",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "An October 2, 2025 Courier-Observer report on a split at Central United Methodist Church in Massena quotes Josiah Tabolt criticizing United Methodist Church leadership; the report names his father as the church's pastor and says Josiah left the church over the dispute.",
+   "file_text": "Quoted criticizing United Methodist Church leadership in the Central United Methodist Church split in Massena, Oct 2025",
+   "source": "Courier-Observer",
+   "url": "",
+   "anchors": [
+    "Massena, NY (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "This is about Josiah's family, so I always check with you first.",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2025-10-02",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-ig-ethan-j-bates-named-a-finalist-for-the-adirondack-",
+   "name": "ig:ethan_j_bates",
+   "display": "Ethan Bates",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "The Adirondack Council's 2026 Beacon Awards page was reported to list Ethan Bates, the Saranac Lake village police officer and village trustee, as a 2026 finalist; when I opened the page it named no finalists at all, so the listing is not there.",
+   "file_text": "Named a finalist for the Adirondack Council's 2026 Beacon Awards",
+   "source": "Adirondack Council",
+   "url": "https://www.adirondackcouncil.org/page/2026-beacon-awards-465.html",
+   "anchors": [
+    "Saranac Lake (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this \u2014 the awards page does not name him \u2014 so I want you to decide.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 5,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-ig-ethan-j-bates-issued-a-challenge-coin-to-a-citizen",
+   "name": "ig:ethan_j_bates",
+   "display": "Ethan Bates",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A May 2025 NNY360 report was said to describe Saranac Lake police officer Ethan Bates issuing a challenge coin to a citizen who helped police; the article address on file from an earlier check no longer opens.",
+   "file_text": "Issued a challenge coin to a citizen who aided Saranac Lake police, May 2025",
+   "source": "NNY360",
+   "url": "",
+   "anchors": [
+    "Saranac Lake Police Department (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 38,
+    "source": 8,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2025-05",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-kyle-gotham-works-as-an-area-manager-in-potsdam-",
+   "name": "sf:kyle-gotham",
+   "display": "Kyle Gotham",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "A ZipRecruiter listing describes a Kyle Gotham as an Area Manager in Potsdam, New York with 13 years of experience; it is the only source, and it is a job-site summary, not an employer page.",
+   "file_text": "Works as an Area Manager in Potsdam, NY",
+   "source": "ZipRecruiter",
+   "url": "",
+   "anchors": [
+    "Potsdam, NY (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 47,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 10,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-katepersun-married-griffin-krotje-in-little-fal",
+   "name": "katepersun",
+   "display": "Katelyn Persun",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "A wedding registry on The Knot for Katelyn Persun and Griffin Krotje gives a wedding date of September 19, 2026 in Little Falls, New York.",
+   "file_text": "Married Griffin Krotje in Little Falls, NY, Sep 2026",
+   "source": "The Knot",
+   "url": "",
+   "anchors": [
+    "Name match",
+    "Potsdam Central School teaching (already on file)"
+   ],
+   "missing_gate": "This is about Katelyn's family, so I always check with you first.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 18,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026-09-19",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-caleb-lindsey-earned-the-rank-of-eagle-scout-with-",
+   "name": "sf:caleb-lindsey",
+   "display": "Caleb Lindsey",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "An Eagle Scout directory was reported to list Caleb Lindsey of Norwood, New York, Troop 8, as an Eagle Scout; the council document would not open (server error).",
+   "file_text": "Earned the rank of Eagle Scout with Troop 8 in Norwood, NY",
+   "source": "Leatherstocking Council",
+   "url": "",
+   "anchors": [
+    "Norwood, NY (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 56,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 8,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-mauramayer-serves-in-volunteer-transportation-c",
+   "name": "mauramayer",
+   "display": "Maura Mayer",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A ZoomInfo profile was reported to list Maura Mayer with Volunteer Transportation Center committee and chair roles in Watertown, New York; no source outside ZoomInfo confirms them.",
+   "file_text": "Serves in Volunteer Transportation Center committee and chair roles in Watertown, NY",
+   "source": "ZoomInfo",
+   "url": "",
+   "anchors": [
+    "Watertown, NY area",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 5,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-sarah-pederson-holds-a-new-york-nursing-home-admini",
+   "name": "sf:sarah-pederson",
+   "display": "Sarah Pederson",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "A real-estate and records site profile of Sarah Pederson in Potsdam, New York lists a New York nursing home administrator license, active, first issued in 2019; the state's own license record was not checked.",
+   "file_text": "Holds a New York nursing home administrator license, first issued 2019",
+   "source": "Blockshopper",
+   "url": "",
+   "anchors": [
+    "Potsdam, NY (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 56,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 10,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2019",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-dragon-n-hobbes-sister-of-elena-brown-of-potsdam-ny",
+   "name": "dragon.n.hobbes",
+   "display": "Shannon Brown",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "A Potsdam Central yearbook and an obituary together suggest Shannon Brown of Potsdam may be a sister of Elena Brown, whose family is already on file; the link rests on the obituary naming a Shannon (Chris) Brown of Potsdam among the children.",
+   "file_text": "Sister of Elena Brown of Potsdam, NY",
+   "source": "Potsdam Central yearbook / family obituary",
+   "url": "",
+   "anchors": [
+    "Potsdam, NY (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "This is about Shannon's family, so I always check with you first.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-jennifer-gallagher-moore-named-to-suny-potsdam-s-president-s-",
+   "name": "sf:jennifer-gallagher-moore",
+   "display": "Jennifer Gallagher Moore",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "SUNY Potsdam's Spring 2025 honors announcement covers Jennifer Gallagher Moore's reported President's List placement, and her Merit Pages record was also reported to show a nomination for the 2024-25 Chancellor's Award for Student Excellence; I could not open her Merit Pages record to check either point.",
+   "file_text": "Named to SUNY Potsdam's President's List, Spring 2025 ;; Nominated for SUNY Potsdam's 2024-25 Chancellor's Award for Student Excellence",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/news/sunypotsdampresidentsdeanslistsspring2025",
+   "anchors": [
+    "SUNY Potsdam (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 67,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 12,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-ariannamason91-named-to-special-olympics-new-york-s",
+   "name": "ariannamason91",
+   "display": "Arianna Mason",
+   "run_date": "2026-11-04",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "Special Olympics New York was reported to have named Arianna Mason of Massena Central High School to its Unified Champion Schools National Youth Leadership Council for the 2026-27 school year; the announcement page address I was given no longer opens.",
+   "file_text": "Named to Special Olympics New York's Unified Champion Schools National Youth Leadership Council, 2026-27",
+   "source": "Special Olympics New York",
+   "url": "",
+   "anchors": [
+    "Special Olympics New York (already on file)",
+    "Massena Central High School (already on file)"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 65,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 8,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-janelle-evans-scored-a-goal-in-clarkson-s-3-1-win-",
+   "name": "sf:janelle-evans",
+   "display": "Janelle Evans",
+   "run_date": "2026-11-04",
+   "run_label": "Fresh sweep",
+   "category": "verification",
+   "claim": "A fresh-sweep report claimed Janelle Evans scored in Clarkson's 3-1 win at Brown on November 1, 2026, with a Clarkson Athletics recap as the source; the recap address does not open, and Clarkson's schedule shows Harvard and Dartmouth that weekend, not Brown, so the claim does not check out.",
+   "file_text": "Scored a goal in Clarkson's 3-1 win at Brown, Nov 1, 2026",
+   "source": "Clarkson University Athletics",
+   "url": "",
+   "anchors": [
+    "Clarkson University women's hockey (already on file)"
+   ],
+   "missing_gate": "I could not double-check this \u2014 no such game or recap could be found \u2014 so I want you to decide.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 5,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-11-01",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-zvi-szafran-suny-canton-designated-lead-applican",
+   "name": "sf:zvi-szafran",
+   "display": "Zvi Szafran",
+   "run_date": "2026-11-04",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "A Village of Canton news release from April 2, 2026 says the Canton Local Development Corporation designated SUNY Canton, under President Zvi Szafran, as the lead applicant for a Restore New York grant, and that Empire State Development allowed the college to be named as the applicant in place of the village.",
+   "file_text": "SUNY Canton designated lead applicant for a Restore New York grant under President Zvi Szafran, Apr 2026",
+   "source": "Village of Canton",
+   "url": "https://villageofcantonny.gov/news-media/",
+   "anchors": [
+    "SUNY Canton president (already on file)",
+    "Canton, NY (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 75,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 14,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2026-04-02",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-m-not-a-lobster-serves-on-the-suny-canton-college-fo",
+   "name": "m.not.a.lobster",
+   "display": "Michelle Johnston",
+   "run_date": "2026-11-04",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "SUNY Canton's College Foundation annual report for 2025-26 lists Dr. Michelle Johnston on the Foundation's board of directors; no second source confirms the board seat.",
+   "file_text": "Serves on the SUNY Canton College Foundation board of directors, 2025-26",
+   "source": "SUNY Canton",
+   "url": "",
+   "anchors": [
+    "SUNY Canton (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 75,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 16,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-sf-ashleigh-graveline-co-presented-an-aota-inspire-2026-po",
+   "name": "sf:ashleigh-graveline",
+   "display": "Ashleigh Graveline",
+   "run_date": "2026-11-04",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "The American Occupational Therapy Association's Inspire 2026 program lists a poster by Ashleigh Graveline and Samantha Marocco of Clarkson University on reverse mentoring for senior occupational therapy practitioners; a SUNY Canton graduation document that also names her appears to list her by mistake, so the program listing stands alone.",
+   "file_text": "Co-presented an AOTA Inspire 2026 poster on reverse mentoring for senior occupational therapy practitioners",
+   "source": "American Occupational Therapy Association",
+   "url": "",
+   "anchors": [
+    "Clarkson University (already on file)",
+    "Samantha Marocco (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 14,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-ig-nat-waterman-listed-as-a-member-of-the-tiers-rese",
+   "name": "ig:nat.waterman",
+   "display": "Natalie Waterman",
+   "run_date": "2026-11-04",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "A researcher network site lists a profile for Natalie Waterman as a member, tied to her Clarkson University proteomics work; her Clarkson people page and her publication records do not mention the network.",
+   "file_text": "Listed as a member of the TIERS researcher network",
+   "source": "TIERS Network",
+   "url": "https://tiersnetwork.org/people/natalie-waterman",
+   "anchors": [
+    "Clarkson University (already on file)",
+    "Proteomics research (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 69,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 14,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261104-ig-nat-waterman-co-authored-an-acs-catalysis-paper-o",
+   "name": "ig:nat.waterman",
+   "display": "Natalie Waterman",
+   "run_date": "2026-11-04",
+   "run_label": "Compounding lane",
+   "category": "verification",
+   "claim": "An ACS Catalysis article from October 2026 lists a Natalie Waterman among its authors, with a Clarkson University affiliation in the search record; the article page itself would not open for me (access denied).",
+   "file_text": "Co-authored an ACS Catalysis paper on single-atom alloy catalysts, Oct 2026",
+   "source": "ACS Catalysis",
+   "url": "https://pubs.acs.org/doi/10.1021/acscatal.6c01297",
+   "anchors": [
+    "Clarkson University (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 67,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 8,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2026-10",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-catchandtrelease-contributed-to-a-mendeley-data-datas",
+   "name": "catchandtrelease",
+   "display": "Eric Trelease",
+   "run_date": "2026-11-04",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "A Mendeley Data record from February 2026, in its second version, lists Eric Trelease as a contributor to a dataset of modeled battery capacity data for 817 U.S. power plants, tied to his Holistic Utility Solutions work; the dataset record is the only source.",
+   "file_text": "Contributed to a Mendeley Data dataset of modeled battery capacity for 817 U.S. power plants, Feb 2026",
+   "source": "Mendeley Data",
+   "url": "https://data.mendeley.com/datasets/26w3353jrg",
+   "anchors": [
+    "Holistic Utility Solutions (already on file)",
+    "Energy-storage data models (already on file)"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 71,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026-02",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-catchandtrelease-co-authored-a-pv-magazine-usa-piece-",
+   "name": "catchandtrelease",
+   "display": "Eric Trelease",
+   "run_date": "2026-11-04",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "A July 27, 2023 piece in pv magazine USA on solar canopies over parking lots carries Eric Trelease as a co-author with Luke Featherston; his record covers his energy work generally but not this piece.",
+   "file_text": "Co-authored a pv magazine USA piece on solar canopies over parking lots, Jul 2023",
+   "source": "pv magazine USA",
+   "url": "",
+   "anchors": [
+    "Energy-storage and solar work (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 16,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2023-07-27",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261104-sf-samantha-marocco-presented-total-parenteral-nutrition",
+   "name": "sf:samantha-marocco",
+   "display": "Samantha Marocco",
+   "run_date": "2026-11-04",
+   "run_label": "Compounding lane",
+   "category": "verification",
+   "claim": "Clarkson's Doctor of Physical Therapy year-in-review document was reported to say Samantha Marocco and two colleagues presented total parenteral nutrition training to the NICU and PICU at Golisano Children's Hospital on May 8, 2026; the document would not open for me on either reading route.",
+   "file_text": "Presented total parenteral nutrition training at Golisano Children's Hospital, May 2026",
+   "source": "Clarkson University",
+   "url": "",
+   "anchors": [
+    "Clarkson University (already on file)",
+    "Name match"
+   ],
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 69,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 8,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2026-05-08",
+   "novelty": "new"
   }
  ]
 }
