@@ -75,7 +75,7 @@
     "Syracuse University OVMA Hometown Hero profile",
     "Early Commissioning Program / HHC 27th IBCT anchors already on her profile"
    ],
-   "missing_gate": "Held under the sensitive-material rule: marriage is family/relationship detail, never auto-filed.",
+   "missing_gate": "This is about Katherine's marriage, so I always check with you first.",
    "confidence": 90,
    "confidence_parts": {
     "identity": 48,
@@ -102,7 +102,7 @@
     "Potsdam cabinetry business",
     "Family business recorded elsewhere in the directory under Tim Criscitello"
    ],
-   "missing_gate": "At sweep time his profile was blank (FAMILY only), so there were no packet anchors to confirm the match; the article's family details were not used.",
+   "missing_gate": "His record had nothing on it to match against this article, so I can't be sure it's the same person.",
    "confidence": 88,
    "confidence_parts": {
     "identity": 45,
@@ -130,7 +130,7 @@
     "Full name in his mother's obituary",
     "Potsdam residence in the obituary matches his profile"
    ],
-   "missing_gate": "Held under the sensitive-material rule: family/death material is never auto-filed.",
+   "missing_gate": "This is from an obituary naming Benjamin as a surviving son, so I always check with you first.",
    "confidence": 86,
    "confidence_parts": {
     "identity": 46,
@@ -156,7 +156,7 @@
     "Inner Lakes Therapy role already on her profile",
     "Name and practice anchors match"
    ],
-   "missing_gate": "Not filed: her Inner Lakes Therapy role is already on the profile and insurance-panel detail was judged ephemeral trivia.",
+   "missing_gate": "This one is your call: her Inner Lakes role is already on file, and the insurance-panel detail is minor.",
    "confidence": 86,
    "confidence_parts": {
     "identity": 48,
@@ -182,7 +182,7 @@
     "Full name in the obituary",
     "Malone family names"
    ],
-   "missing_gate": "Family data is never auto-filed by the routine; left for JD to rule on.",
+   "missing_gate": "This names Maggie's parents, so I always check with you first.",
    "confidence": 82,
    "confidence_parts": {
     "identity": 42,
@@ -208,7 +208,7 @@
     "Her own SUNY Potsdam profile page",
     "Family anchors already on her profile"
    ],
-   "missing_gate": "Personal/family item; never auto-filed, left for JD.",
+   "missing_gate": "This is about the birth of Ellie's daughter Giovanna, so I always check with you first.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 48,
@@ -234,7 +234,7 @@
     "Full name matches the profile username jessicaeevans",
     "SUNY Potsdam / North Country setting of the university's own feature"
    ],
-   "missing_gate": "The profile was blank, so it carried no anchors of its own; the routine's two-anchor gate could not be met from the profile side.",
+   "missing_gate": "The record was blank, with nothing to match this against, so I can't be sure it's the same person.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 34,
@@ -263,7 +263,7 @@
     "Full name matches the profile username jessicaeevans",
     "SUNY Potsdam / North Country setting of the university's own feature"
    ],
-   "missing_gate": "The profile was blank, so it carried no anchors of its own; the routine's two-anchor gate could not be met from the profile side.",
+   "missing_gate": "The record was blank, with nothing to match this against, so I can't be sure it's the same person.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 34,
@@ -291,7 +291,7 @@
     "Full name on a Clarkson page",
     "Potsdam area"
    ],
-   "missing_gate": "Her packet carries only a Christian Fellowship Center anchor, so no second packet anchor confirms the match.",
+   "missing_gate": "The only thing tying this to Debbie is Christian Fellowship Center, so I can't be sure it's the same person.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 32,
@@ -320,7 +320,7 @@
     "Full name in the obituary",
     "Granddaughter relationship stated in the obituary"
    ],
-   "missing_gate": "Held under the sensitive-material rule: family/death material only, with no professional information.",
+   "missing_gate": "This names Brittney in her grandfather's obituary, so I always check with you first.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 40,
@@ -346,7 +346,7 @@
     "Full name matches the profile username jessicaeevans",
     "SUNY Potsdam / North Country setting of the university's own feature"
    ],
-   "missing_gate": "The profile was blank, so it carried no anchors of its own; the routine's two-anchor gate could not be met from the profile side.",
+   "missing_gate": "The record was blank, with nothing to match this against, so I can't be sure it's the same person.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 34,
@@ -404,7 +404,7 @@
     "Full name",
     "Potsdam High School / Potsdam"
    ],
-   "missing_gate": "The profile was blank, so it carried no anchors of its own; the same fact pattern was rejected on 2026-10-24 for that reason.",
+   "missing_gate": "The record was blank, with nothing to match this against, so I can't be sure it's the same person.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 30,
@@ -435,7 +435,7 @@
     "SUNY Potsdam degree in the profile piece",
     "North Country employer"
    ],
-   "missing_gate": "The source never mentions Park Bros, her only packet anchor, so the two-anchor gate was not met.",
+   "missing_gate": "This source never mentions Park Bros, the one place tied to Ellie, so I can't be sure it's the same person.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 30,
@@ -465,7 +465,7 @@
     "Full name in the official commencement program",
     "SUNY Canton anchor"
    ],
-   "missing_gate": "Conflicts with her BSN track on file (the program entry is under Nursing A.A.S.); identity tie not strong enough.",
+   "missing_gate": "Abby's record says she's on a BSN track, but the program lists her under Nursing A.A.S., so it's your call.",
    "confidence": 69,
    "confidence_parts": {
     "identity": 22,
@@ -491,7 +491,7 @@
     "Name as rendered 'Sarah El Labban'",
     "Potsdam High School"
    ],
-   "missing_gate": "The profile was blank, so it carried no anchors of its own; the routine's two-anchor gate could not be met from the profile side.",
+   "missing_gate": "The record was blank, with nothing to match this against, so I can't be sure it's the same person.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 30,
@@ -548,7 +548,7 @@
     "Full name in the company's own cast announcement",
     "Theatre anchors on his profile"
    ],
-   "missing_gate": "The company's own later article contradicts the cast announcement, so the role was not filed.",
+   "missing_gate": "The company's own later article contradicts its cast announcement, so it's your call.",
    "confidence": 66,
    "confidence_parts": {
     "identity": 40,
@@ -574,7 +574,7 @@
     "Trafford / Pittsburgh-area anchors fit her packet",
     "Surname and family context"
    ],
-   "missing_gate": "Held under the sensitive-material rule, and the identity match itself is not confirmed.",
+   "missing_gate": "This comes from an obituary, and I can't be sure this Phyllis Paladin is the same person, so I always check with you first.",
    "confidence": 66,
    "confidence_parts": {
     "identity": 30,
@@ -600,7 +600,7 @@
     "Wellness Family Practice anchor",
     "Cary, North Carolina anchor"
    ],
-   "missing_gate": "Self-written resume only; no independent or official corroboration.",
+   "missing_gate": "This is from a self-reported resume site (Bold.pro), so I want you to decide.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 40,
@@ -627,7 +627,7 @@
    "anchors": [
     "Name-only match in the official commencement program"
    ],
-   "missing_gate": "JD corrected this on Oct 30, 2026: his Katelyn Matthews earned the B.S. in Nursing from SUNY Canton (already on file). The Homeland Security B.Tech. listing in the 2026 commencement program belongs to a different Katelyn Matthews; the program was misread. Luna was right to hold it. Do not file.",
+   "missing_gate": "You already settled this: this listing is a different Katelyn Matthews, and yours earned her B.S. in Nursing at SUNY Canton.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 18,
@@ -652,7 +652,7 @@
    "anchors": [
     "Full name in official honors and graduation records"
    ],
-   "missing_gate": "The packet has no anchors at all; identity cannot be confirmed against it.",
+   "missing_gate": "There is nothing on file to match this against, so I can't be sure it's the same person.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 16,
@@ -681,7 +681,7 @@
     "Full name",
     "SUNY Canton anchors on his profile"
    ],
-   "missing_gate": "The awards page's program label conflicts with the university's own article and the packet, so the alternate label was not filed.",
+   "missing_gate": "The awards page names a different program than the university's own article does, so it's your call.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 42,
@@ -732,7 +732,7 @@
    "anchors": [
     "Full name in the official graduates list"
    ],
-   "missing_gate": "Her packet has no anchors at all to confirm the match.",
+   "missing_gate": "There is nothing on file to match this against, so I can't be sure it's the same person.",
    "confidence": 59,
    "confidence_parts": {
     "identity": 18,
@@ -760,7 +760,7 @@
    "anchors": [
     "Full name in the trade report"
    ],
-   "missing_gate": "The packet's only anchor is Park Bros, with no tie between the two; not filed.",
+   "missing_gate": "Nothing ties this job item to Jason beyond his name, so I can't be sure it's the same person.",
    "confidence": 59,
    "confidence_parts": {
     "identity": 18,
@@ -788,7 +788,7 @@
     "Full name on the patent",
     "Airline specialty on her profile"
    ],
-   "missing_gate": "Name + airline specialty only; the patent names no employer or location, so the two-anchor gate was not met.",
+   "missing_gate": "The patent gives no employer or location, so I can't be sure it's the same Andrea.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 20,
@@ -843,7 +843,7 @@
    "anchors": [
     "Full name on the bank's own banker page"
    ],
-   "missing_gate": "Single anchor only; the two-anchor gate was not met.",
+   "missing_gate": "Only his name matches this bank page, so I can't be sure it's the same Hudson.",
    "confidence": 56,
    "confidence_parts": {
     "identity": 22,
@@ -870,7 +870,7 @@
    "anchors": [
     "Full name on the university site"
    ],
-   "missing_gate": "The packet carries no anchors at all; the match cannot be confirmed to the two-anchor standard.",
+   "missing_gate": "There is nothing on file to match this against, so I can't be sure it's the same person.",
    "confidence": 54,
    "confidence_parts": {
     "identity": 14,
@@ -898,7 +898,7 @@
     "Full name",
     "Rensselaer Falls / North Country setting"
    ],
-   "missing_gate": "Her packet has no anchors at all, so the plausible North Country matches are unconfirmable.",
+   "missing_gate": "There is nothing on file to match this against, so I can't be sure it's the same person.",
    "confidence": 53,
    "confidence_parts": {
     "identity": 16,
@@ -926,7 +926,7 @@
     "Full name",
     "Potsdam Central team records"
    ],
-   "missing_gate": "The packet's only anchor is the company Jernobi, so identity is unconfirmed.",
+   "missing_gate": "Her record only ties her to Jernobi, not to Potsdam track, so I can't be sure it's the same person.",
    "confidence": 53,
    "confidence_parts": {
     "identity": 18,
@@ -952,7 +952,7 @@
     "Name variant 'Ryan Dunphey'",
     "Potsdam, New York area"
    ],
-   "missing_gate": "Sourced only to Datanyze/aggregators; the researcher flagged the identity as probable, not certain.",
+   "missing_gate": "This is from an aggregator site (Datanyze) only, so I want you to decide.",
    "confidence": 52,
    "confidence_parts": {
     "identity": 28,
@@ -980,7 +980,7 @@
     "Name",
     "Clarkson University context"
    ],
-   "missing_gate": "Aggregator listing only; no independent source corroborates it.",
+   "missing_gate": "This is from an aggregator listing only, so I want you to decide.",
    "confidence": 52,
    "confidence_parts": {
     "identity": 30,
@@ -1010,7 +1010,7 @@
     "Name",
     "Writing interest on his profile"
    ],
-   "missing_gate": "Single anchor only (name + writing interest); fails the two-anchor gate.",
+   "missing_gate": "Only his name and writing interest match this, so I can't be sure it's the same person.",
    "confidence": 52,
    "confidence_parts": {
     "identity": 20,
@@ -1061,7 +1061,7 @@
     "Full name on the committee item",
     "St. Lawrence County anchor"
    ],
-   "missing_gate": "Only a county anchor tied the item to her personally; the two-anchor gate was not met.",
+   "missing_gate": "Only a county match ties this item to Maura, so I can't be sure it's the same person.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 22,
@@ -1165,7 +1165,7 @@
     "Full name",
     "Canton, New York"
    ],
-   "missing_gate": "The packet has no anchors to confirm identity \u2014 and JD has ruled Maggie Lapinski is not Meg Lapinski.",
+   "missing_gate": "Nothing ties this runner to her record, and you have already ruled Maggie Lapinski is not Meg Lapinski.",
    "confidence": 48,
    "confidence_parts": {
     "identity": 14,
@@ -1190,7 +1190,7 @@
    "anchors": [
     "Full name on the student profile"
    ],
-   "missing_gate": "Self-written and not corroborated by an official Clarkson source; the profile also carried sensitive family/health material, which was not used.",
+   "missing_gate": "This is from a self-written Bold.org profile that Clarkson doesn't confirm, so I want you to decide.",
    "confidence": 46,
    "confidence_parts": {
     "identity": 24,
@@ -1244,7 +1244,7 @@
     "Full name",
     "Canton, New York"
    ],
-   "missing_gate": "Sourced only to the Clodura.AI directory aggregator; identity is name + town only.",
+   "missing_gate": "This is from a directory aggregator (Clodura.AI) only, and the match is name and town only, so I want you to decide.",
    "confidence": 44,
    "confidence_parts": {
     "identity": 22,
@@ -1272,7 +1272,7 @@
     "Name variant Margaret T. Thibodeau",
     "New York license"
    ],
-   "missing_gate": "The packet has no anchors to tie the NPI record to this profile.",
+   "missing_gate": "Nothing on file ties this NPI record to Maggie, so I can't be sure it's the same person.",
    "confidence": 44,
    "confidence_parts": {
     "identity": 12,
@@ -1298,7 +1298,7 @@
     "Full name in the aggregator listing",
     "Potsdam area"
    ],
-   "missing_gate": "Single aggregator listing, uncorroborated; the same lead was held again on Oct 29.",
+   "missing_gate": "This is from one aggregator listing (SignalHire) only, so I want you to decide.",
    "confidence": 44,
    "confidence_parts": {
     "identity": 24,
@@ -1326,7 +1326,7 @@
     "Full name in the university directory",
     "Canton, New York"
    ],
-   "missing_gate": "The packet carries no anchors and the listing shows no role, so the two-anchor rule cannot be met.",
+   "missing_gate": "His record has nothing to match against, and the listing shows no role, so I can't be sure it's the same person.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 12,
@@ -1354,7 +1354,7 @@
     "Near-identical name (caption spells it 'Duclose')",
     "Human-resources sergeant role fits a 42A profile"
    ],
-   "missing_gate": "Spelling and unit differ from the packet's HHC 27th IBCT anchors; not filed.",
+   "missing_gate": "The caption spells her name 'Duclose' and names a different unit, so I can't be sure it's the same person.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 18,
@@ -1379,7 +1379,7 @@
    "anchors": [
     "Full name in race results"
    ],
-   "missing_gate": "The packet's only anchor is a church abbreviation, which does not tie the runner to this profile.",
+   "missing_gate": "His record's only tie is a church abbreviation, which doesn't connect him to this runner, so I can't be sure it's the same person.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 10,
@@ -1404,7 +1404,7 @@
    "anchors": [
     "Name match only"
    ],
-   "missing_gate": "Held as ambiguous \u2014 a likely namesake; no anchor ties the Tulum guide to this profile.",
+   "missing_gate": "Nothing ties the Tulum dive guide to Emily, and she is likely a namesake, so I can't be sure it's the same person.",
    "confidence": 36,
    "confidence_parts": {
     "identity": 8,
@@ -1454,7 +1454,7 @@
    "anchors": [
     "Name only \u2014 zero anchors tie the Kansas person to this profile"
    ],
-   "missing_gate": "Zero anchors tie the Kansas person to the packet; almost certainly a namesake.",
+   "missing_gate": "Nothing ties the Kansas teacher to Maggie, and she is almost certainly a namesake.",
    "confidence": 26,
    "confidence_parts": {
     "identity": 4,
@@ -1504,7 +1504,7 @@
    "anchors": [
     "Name match in the original claim"
    ],
-   "missing_gate": "Failed direct verification; she was filed the same day from a verified NYSAPCSO spotlight instead.",
+   "missing_gate": "I could not double-check this appointment claim, so I want you to decide.",
    "confidence": 18,
    "confidence_parts": {
     "identity": 8,
@@ -1632,7 +1632,7 @@
    "anchors": [
     "Name match only \u2014 every biographical anchor conflicts"
    ],
-   "missing_gate": "A different person from the packet's University of Michigan / Trenton High School / Ann Arbor profile; not merged.",
+   "missing_gate": "This is a different Rachel Kushner \u2014 the one on file went to the University of Michigan and Trenton High School.",
    "confidence": 5,
    "confidence_parts": {
     "identity": 2,
@@ -1658,7 +1658,7 @@
     "St. Lawrence County Sheriff's Office",
     "Canton, NY"
    ],
-   "missing_gate": "Held as a sensitive legal matter involving disputed allegations against a law-enforcement officer, not filed as a routine footprint fact.",
+   "missing_gate": "This is a legal case naming Matthew as a defendant, so I always check with you first.",
    "confidence": 95,
    "confidence_parts": {
     "identity": 48,
@@ -1684,7 +1684,7 @@
     "Laterna Studio",
     "Potsdam, NY"
    ],
-   "missing_gate": "Single aggregator source conflicts with the profile's Potsdam, NY location and is not corroborated by any independent source.",
+   "missing_gate": "Pete's record says Potsdam, NY, but RocketReach lists the studio in Lacey, Washington, so it's your call.",
    "confidence": 62,
    "confidence_parts": {
     "identity": 40,
@@ -1709,7 +1709,7 @@
    "anchors": [
     "Watertown, NY"
    ],
-   "missing_gate": "The leaderboard ties the name to only one profile anchor (Watertown, NY); no second anchor such as his Honolulu hometown confirms it is this Cody Benham.",
+   "missing_gate": "The only match is Watertown, NY, with nothing else tying this disc golfer to Cody, so I can't be sure it's the same person.",
    "confidence": 77,
    "confidence_parts": {
     "identity": 35,
@@ -1735,7 +1735,7 @@
     "Christian Fellowship Center",
     "spouse Rick Sinclair"
    ],
-   "missing_gate": "Only source is the church's own 2012 newsletter, with no independent corroboration, so it fails the independent-source gate.",
+   "missing_gate": "This is from the church's own 2012 newsletter only, so I want you to decide.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 45,
@@ -1760,7 +1760,7 @@
    "anchors": [
     "softball"
    ],
-   "missing_gate": "The profile has no location, school, or family anchors and this player's Katy, TX hometown ties to none of them, so identity cannot be established.",
+   "missing_gate": "Nothing on file matches this player, whose hometown is Katy, TX, so I can't be sure it's the same person.",
    "confidence": 45,
    "confidence_parts": {
     "identity": 10,
@@ -1786,7 +1786,7 @@
     "Parker's Real Maple",
     "Canton, NY"
    ],
-   "missing_gate": "Family detail sourced only to an aggregator summarizing his self-reported blog, and it is a sensitive family fact held from filing.",
+   "missing_gate": "This says Josh got married and had a son, and it comes only from a site summarizing his own blog, so I always check with you first.",
    "confidence": 57,
    "confidence_parts": {
     "identity": 35,
@@ -1837,7 +1837,7 @@
    "anchors": [
     "Canton, NY"
    ],
-   "missing_gate": "The claim rests on a single people-search aggregator and ties to only one profile anchor (Canton residence), with no independent source confirming the date of birth or the Michigan State / Grosse Pointe anchors.",
+   "missing_gate": "This is from one people-search site (Nuwber) only, and nothing else confirms the birth date, so I want you to decide.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 30,
@@ -1863,7 +1863,7 @@
     "U.S. Army",
     "Army National Guard"
    ],
-   "missing_gate": "The only source is a self-reported Bold.pro resume profile, and it describes Active Duty and Army Reserve service, which conflicts with the profile's New York Army National Guard service in HHC, 27th IBCT, so identity is not independently confirmed.",
+   "missing_gate": "This Bold.pro resume lists Active Duty and Army Reserve service, but her record says NY Army National Guard, so I can't be sure it's her.",
    "confidence": 53,
    "confidence_parts": {
     "identity": 28,
@@ -1888,7 +1888,7 @@
    "anchors": [
     "SUNY Canton"
    ],
-   "missing_gate": "The claim appears only as a co-worker listing on an aggregator page for another SUNY employee, with no direct record tying her to SUNY Canton or Potsdam.",
+   "missing_gate": "This appears only on an aggregator page for another SUNY employee, with no record tying her to SUNY Canton, so I want you to decide.",
    "confidence": 38,
    "confidence_parts": {
     "identity": 20,
@@ -1915,7 +1915,7 @@
     "Canton-Potsdam Hospital",
     "SUNY Canton Fitness Center supervisor"
    ],
-   "missing_gate": "The source states only a planned August 2023 wedding; no source confirms the marriage actually took place.",
+   "missing_gate": "This is about Emma's wedding plans, and no source confirms the marriage happened, so I always check with you first.",
    "confidence": 85,
    "confidence_parts": {
     "identity": 45,
@@ -1940,7 +1940,7 @@
    "anchors": [
     "27th Infantry Brigade Combat Team"
    ],
-   "missing_gate": "The 2011 soldier is identified as a specialist from Medina, which conflicts with this profile's Liverpool residence, and no source links the two records as the same person.",
+   "missing_gate": "The 2011 soldier is from Medina, but Ryan's record says Liverpool, so I can't be sure it's the same person.",
    "confidence": 61,
    "confidence_parts": {
     "identity": 25,
@@ -1963,7 +1963,7 @@
    "source": "Massena Central School District",
    "url": "https://4.files.edl.io/456e/03/18/26/151436-04325cae-baed-4b7f-8a66-863da46a88de.pdf",
    "anchors": [],
-   "missing_gate": "The board document ties the name only to Massena Central and gives no link to SUNY Potsdam or any other profile anchor, so identity is not tied to two profile anchors.",
+   "missing_gate": "The board document ties this name only to Massena Central, with no link to SUNY Potsdam, so I can't be sure it's the same person.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 26,
@@ -1988,7 +1988,7 @@
    "anchors": [
     "New Testament Church"
    ],
-   "missing_gate": "The board documents tie the distinctive name only to Massena Central; they give no link to New Testament Church or any second profile anchor, so the two-anchor gate is not met.",
+   "missing_gate": "The board documents tie her name only to Massena Central, with no link to New Testament Church, so I can't be sure it's the same person.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 32,
@@ -2013,7 +2013,7 @@
    "anchors": [
     "Messenger thread with JD, 2014-06-07 to 2020-06-15"
    ],
-   "missing_gate": "Her only statement is the two-word reply 'school at pdam' to a what's-new question on 2017-09-11; no school or level is named, and at her age it would predate the SUNY Potsdam degree on file, so it cannot be filed as a university or any specific school",
+   "missing_gate": "All she said was 'school at pdam' \u2014 no school is named, so I can't tell which school this means.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 45,
@@ -2035,7 +2035,7 @@
    "anchors": [
     "Messenger thread with JD, 2014-06-07 to 2020-06-15"
    ],
-   "missing_gate": "One-word status answers ('Working', 'Babysitting' with a money emoji) on 2016-12-21 and 2017-01-07; no employer, family, or regularity given, and her later nanny work is already on file separately",
+   "missing_gate": "She only answered 'Working' and 'Babysitting' with no employer or details, so there isn't enough to file.",
    "confidence": 69,
    "confidence_parts": {
     "identity": 45,
@@ -2057,7 +2057,7 @@
    "anchors": [
     "Messenger thread with JD, 2014-06-07 to 2020-06-15"
    ],
-   "missing_gate": "The year appears only in the email address already on file, never stated in the thread; the teen context in 2014-2017 is consistent with it but does not prove it",
+   "missing_gate": "The 2001 birth year only appears in her email address and is never stated outright, so I can't be sure it's right.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 40,
@@ -2079,7 +2079,7 @@
    "anchors": [
     "Messenger thread with JD, 2014-06-07 to 2020-06-15"
    ],
-   "missing_gate": "Single passing mention of 'our bio class' on 2016-12-19 with no school, level, or roster; cannot be filed as a specific enrollment",
+   "missing_gate": "She mentioned 'our bio class' once, with no school named, so I can't tell where she took it.",
    "confidence": 61,
    "confidence_parts": {
     "identity": 42,
@@ -2101,7 +2101,7 @@
    "anchors": [
     "Messenger thread with JD, 2013-06-24 to 2017-10-15"
    ],
-   "missing_gate": "He gave the number from memory on 2014-06-11 when asked for his number, but on 2014-06-15 he said that number would not work, and in August 2014 he said he would have a phone soon; it also differs from the number on file.",
+   "missing_gate": "Joel later said this number would not work, and it's not the number on file for him, so it's your call.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 35,
@@ -2123,7 +2123,7 @@
    "anchors": [
     "Messenger thread with JD, 2013-06-24 to 2017-10-15"
    ],
-   "missing_gate": "On 2014-07-29 he said his birthday is at Camp Overlook and it was placed on the camp's last day, and on 2014-08-13 he pointed to a golf club as his birthday present, but no exact date or camp dates are ever stated and the exchanges are brief and playful.",
+   "missing_gate": "Joel never gave an exact date \u2014 he only tied his birthday to the last day of Camp Overlook, so I can't pin it down.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 40,
@@ -2145,7 +2145,7 @@
    "anchors": [
     "Messenger thread with JD, 2013-06-24 to 2017-10-15"
    ],
-   "missing_gate": "The September 2014 exchange shows him asking what youth group involves and making attendance conditional on a ride, which reads as a first or uncertain attendance; whether he actually attended, or kept attending, is never confirmed in-thread.",
+   "missing_gate": "Joel only asked about the youth group and made going depend on a ride \u2014 he never confirmed he actually attended.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 35,
@@ -2167,7 +2167,7 @@
    "anchors": [
     "Messenger thread with JD, 2011-06-23 to 2015-03-26"
    ],
-   "missing_gate": "Stated twice in brief messages on 2014-12-19/20 with no detail, role, or follow-up; she deferred any explanation and the thread never returned to it, so a joking or evasive remark cannot be ruled out",
+   "missing_gate": "She said this twice with no detail and never explained, so it could have been a joke.",
    "confidence": 57,
    "confidence_parts": {
     "identity": 40,
@@ -2189,7 +2189,7 @@
    "anchors": [
     "Messenger thread with JD, 2011-06-23 to 2015-03-26"
    ],
-   "missing_gate": "She wrote that she took a 'collage class' now; the spelling leaves open a literal art/collage class versus a college class, and no institution, subject, or level was named",
+   "missing_gate": "She wrote 'collage class,' so this could be an art class rather than a college class, and no school was named.",
    "confidence": 63,
    "confidence_parts": {
     "identity": 40,
@@ -2211,7 +2211,7 @@
    "anchors": [
     "Messenger thread with JD, 2012-05-24 to 2020-09-28"
    ],
-   "missing_gate": "He asked for the CFC Potsdam wifi password in September 2016 and planned to be there that Saturday, but never states membership or regular attendance",
+   "missing_gate": "He only asked for the CFC Potsdam wifi password and planned to be there once \u2014 he never said he attends or belongs there.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 40,
@@ -2233,7 +2233,7 @@
    "anchors": [
     "Messenger thread with JD, 2014-01-17 to 2018-01-04"
    ],
-   "missing_gate": "He mentions a banquet setup after Friday school in April 2014 but does not state he was a student there; the profile already lists Christian Fellowship Academy among his groups",
+   "missing_gate": "He mentioned Friday school at a banquet setup but never said he was a student there, so it's your call.",
    "confidence": 61,
    "confidence_parts": {
     "identity": 35,
@@ -2255,7 +2255,7 @@
    "anchors": [
     "Messenger thread with JD, 2014-03-12 to 2023-08-14"
    ],
-   "missing_gate": "The July 8, 2021 text reads like a pasted SkyWest job/benefits description rather than a clearly personal statement, and his SkyWest employment is already on file; the personal trip list is not unambiguously his own account",
+   "missing_gate": "This text reads like a pasted SkyWest job description, so I can't tell which trips were actually his.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 50,
@@ -2277,7 +2277,7 @@
    "anchors": [
     "Messenger thread with JD, 2014-03-12 to 2023-08-14"
    ],
-   "missing_gate": "Brief remark in a dental exchange; personal health detail stated only in general, fragmentary terms and not needed as a filed fact",
+   "missing_gate": "He only mentioned this in passing in a dental chat, so there isn't a clear fact to file.",
    "confidence": 73,
    "confidence_parts": {
     "identity": 45,
@@ -2299,7 +2299,7 @@
    "anchors": [
     "Messenger thread with JD, 2016-11-17 to 2021-09-08"
    ],
-   "missing_gate": "This appears only in the profile snapshot from a public payroll record; the thread never mentions this employment, so the thread adds no corroboration",
+   "missing_gate": "This only appears in a payroll snapshot \u2014 her messages never mention working for Massena Central Schools.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 40,
@@ -2321,7 +2321,7 @@
    "anchors": [
     "Messenger thread with JD, 2015-02-10 to 2019-07-21"
    ],
-   "missing_gate": "The exchange congratulates her on an unspecified performance and assumes she did not faint from stage fright; what the performance was is never stated",
+   "missing_gate": "The chat congratulates her on a performance but never says what the performance was.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 40,
@@ -2343,7 +2343,7 @@
    "anchors": [
     "Messenger thread with JD, 2015-02-10 to 2019-07-21"
    ],
-   "missing_gate": "She mentioned having Upward in the morning while staying with a friend; whether she played, attended, or helped is not stated",
+   "missing_gate": "She mentioned having Upward that morning but never said whether she played, attended, or helped.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 40,
@@ -2365,7 +2365,7 @@
    "anchors": [
     "Messenger thread with JD, 2011-06-29 to 2019-09-23"
    ],
-   "missing_gate": "Birthday greetings were sent to him on July 3, 2019 (no lateness noted) and on July 8, 2014 (explicitly described as late), which triangulates to early July, but he never states his birth date in the thread.",
+   "missing_gate": "He never states his birth date \u2014 the July timing is only a guess from birthday greetings.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 45,
@@ -2387,7 +2387,7 @@
    "anchors": [
     "Messenger thread with JD, 2011-08-03 to 2023-08-11"
    ],
-   "missing_gate": "She stated she had just finished feeding Archer at 5 a.m., which suggests her own baby, but she never states the relationship; elsewhere in the thread (Oct 26, 2018) she was watching another person's child, so caregiving alone does not establish parentage.",
+   "missing_gate": "This is about whether Archer is Catherine's son, so I always check with you first.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 45,
@@ -2409,7 +2409,7 @@
    "anchors": [
     "Messenger thread with JD, 2018-06-09 to 2024-03-31"
    ],
-   "missing_gate": "She arranged a joint senior photo shoot for Emily and Bradley and said she was requiring both to participate, but the thread never states Bradley's relationship to her; Emily is already on file as her child, Bradley is not listed in the profile's family field.",
+   "missing_gate": "She never states how Bradley is related to her, so I can't file him as her child.",
    "confidence": 67,
    "confidence_parts": {
     "identity": 35,
@@ -2431,7 +2431,7 @@
    "anchors": [
     "Messenger thread with JD, 2013-05-28 to 2017-03-26"
    ],
-   "missing_gate": "His February 6, 2014 messages about not coming to 'lit' for six weeks are garbled and plural ('we'), so it is unclear whether this was his own class attendance, a family schedule, or a group activity.",
+   "missing_gate": "His messages are garbled and say 'we,' so I can't tell if this was his own class attendance.",
    "confidence": 63,
    "confidence_parts": {
     "identity": 40,
@@ -2453,7 +2453,7 @@
    "anchors": [
     "Messenger thread with JD, 2021-01-11 to 2024-06-18"
    ],
-   "missing_gate": "Only inferred from a request to cover a July 24, 2021 shift and his need to check birthday plans for that day; no date is stated",
+   "missing_gate": "This date is only guessed from a shift-cover request \u2014 he never stated his wife's birthday.",
    "confidence": 73,
    "confidence_parts": {
     "identity": 45,
@@ -2475,7 +2475,7 @@
    "anchors": [
     "Messenger thread with JD, 2021-01-11 to 2024-06-18"
    ],
-   "missing_gate": "He mentioned Mapco may be starting back up when discussing shift coverage, without stating any role or employment",
+   "missing_gate": "He mentioned Mapco starting back up but never stated any role or job there.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 40,
@@ -2497,7 +2497,7 @@
    "anchors": [
     "Messenger thread with JD, 2018-01-11 to 2019-01-12"
    ],
-   "missing_gate": "She directed gym setup, referee-training follow-up, and game-night cleanup in her messages, but a formal role or title is never stated",
+   "missing_gate": "She ran the setup and cleanup in her messages, but a formal role or title is never stated.",
    "confidence": 77,
    "confidence_parts": {
     "identity": 45,
@@ -2519,7 +2519,7 @@
    "anchors": [
     "Messenger thread with JD, 2017-12-21 to 2019-04-01"
    ],
-   "missing_gate": "She asked for shift coverage for morning and 5-to-close shifts and sent a photo for a bagelry Instagram account, but the employer is never named in-thread",
+   "missing_gate": "The employer is never named in the thread, so I can't file where she worked.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 42,
@@ -2541,7 +2541,7 @@
    "anchors": [
     "Messenger thread with JD, 2022-04-08 to 2023-05-13"
    ],
-   "missing_gate": "She stated a May 13, 2023 graduation date when asked, but never named the school or program, and her on-file schooling is from a decade earlier, so what she graduated from cannot be filed",
+   "missing_gate": "She gave a date but never named a school or program, so I can't tell what she graduated from.",
    "confidence": 77,
    "confidence_parts": {
     "identity": 45,
@@ -2563,7 +2563,7 @@
    "anchors": [
     "Messenger thread with JD, 2015-08-19 to 2017-06-16"
    ],
-   "missing_gate": "In Dec 2016 he stated that the Bella being discussed is his sister, but Bella's full identity is not named in-thread and the surnames on file differ, so the relationship cannot be filed as stated",
+   "missing_gate": "Bella's full identity is never named, and the last names on file differ, so I can't confirm Bella is his sister.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 35,
@@ -2585,7 +2585,7 @@
    "anchors": [
     "Messenger thread with JD, 2017-09-10 to 2022-08-29"
    ],
-   "missing_gate": "Thread shows enrollment/pricing discussion but does not explicitly state she was the instructor",
+   "missing_gate": "The thread talks about enrollment and pricing but never says outright that she was the instructor.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 35,
@@ -2607,7 +2607,7 @@
    "anchors": [
     "Messenger thread with JD, 2012-04-01 to 2025-10-13"
    ],
-   "missing_gate": "Thread states the wedding date but does not state Miya's relationship to Janel, so the family link cannot be filed",
+   "missing_gate": "The thread gives the wedding date but never says how Miya is related to Janel.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 40,
@@ -2629,7 +2629,7 @@
    "anchors": [
     "Messenger thread with JD, 2018-03-12 to 2023-05-14"
    ],
-   "missing_gate": "Unnamed, link-only spam-style message; cannot verify who died or that the sender was him",
+   "missing_gate": "This is an unnamed link-only message, so I can't verify who died or that he sent it.",
    "confidence": 17,
    "confidence_parts": {
     "identity": 10,
@@ -2651,7 +2651,7 @@
    "anchors": [
     "Messenger thread with JD, 2017-07-01 to 2018-05-30"
    ],
-   "missing_gate": "She was making a photo collage for Philip's graduation but Philip's relationship to her is not stated in the thread",
+   "missing_gate": "She never states how Philip is related to her, so I can't file the family link.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 30,
@@ -2673,7 +2673,7 @@
    "anchors": [
     "Messenger thread with JD, 2020-05-17 to 2020-05-17"
    ],
-   "missing_gate": "She thanked for 'our wedding video' in May 2020 but no wedding date or spouse name is given in the thread",
+   "missing_gate": "She mentioned 'our wedding video' but gave no wedding date or spouse's name.",
    "confidence": 63,
    "confidence_parts": {
     "identity": 35,
@@ -2695,7 +2695,7 @@
    "anchors": [
     "Self-description in her own Messenger thread with JD"
    ],
-   "missing_gate": "Sensitive attribute; self-described but held for JD to decide whether it belongs on the profile.",
+   "missing_gate": "This is a sensitive personal detail she described about herself, so I always check with you first.",
    "confidence": 92,
    "confidence_parts": {
     "identity": 48,
@@ -2721,7 +2721,7 @@
     "Sandie Waite Colbert, who is already in the directory, shares the Waite last name",
     "Molly was named in the 'Silas's Epic Announcement' group thread from January to May 2018"
    ],
-   "missing_gate": "Molly is not in the directory under that name, and I do not know how Molly connects to the Colbert circle. I am not sure who Molly is, so I need you to decide.",
+   "missing_gate": "Molly isn't in the directory, and I don't know how she connects to the Colbert circle, so I need you to decide.",
    "confidence": 52,
    "confidence_parts": {
     "identity": 25,
@@ -2745,7 +2745,7 @@
     "He has a one-to-one Messenger chat with 4,655 messages from February 19, 2015 to June 13, 2024",
     "He attended Friday School and asked for a ride from Potsdam on October 5, 2017"
    ],
-   "missing_gate": "Ethan is not in the directory. I only know him from these group chats, so I need you to decide whether to add him as a new person.",
+   "missing_gate": "Ethan isn't in the directory and I only know him from these group chats, so I need you to decide whether to add him.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 32,
@@ -2767,7 +2767,7 @@
    "anchors": [
     "One-to-one Messenger thread from August 4, 2014 to November 20, 2014"
    ],
-   "missing_gate": "Coleman is not in the directory yet, and I am not sure who Coleman is beyond this thread. The messages give a name and casual conversation only, with no other details to confirm his identity.",
+   "missing_gate": "Coleman isn't in the directory, and the messages give only his name and casual chat, so I can't be sure who he is.",
    "confidence": 53,
    "confidence_parts": {
     "identity": 25,
@@ -2789,7 +2789,7 @@
    "anchors": [
     "He sent messages in group chats with Angela, and in A bunch of dudes and Bros Before Does"
    ],
-   "missing_gate": "Jsahio is not in the directory under this name, and the name in the messages may be spelled wrong. I need you to decide whether to add this person.",
+   "missing_gate": "Jsahio isn't in the directory, and the name in the messages may be spelled wrong, so I need you to decide whether to add this person.",
    "confidence": 52,
    "confidence_parts": {
     "identity": 24,
@@ -2811,7 +2811,7 @@
    "anchors": [
     "Her own message in the group chat with Merrick Sinclair, Aaron Daniels, and Philip Wangerin on July 19, 2016"
    ],
-   "missing_gate": "Anastasia is not in the directory, and she only shows up in one short group chat with five messages. I need you to decide whether to add her as a new person.",
+   "missing_gate": "Anastasia isn't in the directory and only appears in one short group chat, so I need you to decide whether to add her.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 28,
@@ -2833,7 +2833,7 @@
    "anchors": [
     "He was in a group thread with David, Nathan, and Taylor from June 5 to 13, 2014"
    ],
-   "missing_gate": "David is not in your contacts list yet. All I have is his name in that group thread, with nothing about his life, so I cannot be sure who he is.",
+   "missing_gate": "David isn't in your contacts yet, and all I have is his name in a group thread, so I can't be sure who he is.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 22,
@@ -2855,7 +2855,7 @@
    "anchors": [
     "He appears in the David, Nathan, Taylor group thread from June 5 to 13, 2014"
    ],
-   "missing_gate": "Nathan is not in the directory yet. He only appears as a sender in that group thread, with no facts about his life, so I want you to decide whether to add him.",
+   "missing_gate": "Nathan isn't in the directory and only appears as a sender in a group thread, so I want you to decide whether to add him.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 22,
@@ -2877,7 +2877,7 @@
    "anchors": [
     "The David, Nathan, Taylor group thread, from June 5 to 13, 2014"
    ],
-   "missing_gate": "Michael is not in the directory, and I am not sure who Michael is. The only thing I found is Michael sending messages in a group thread, with no facts about Michael's life.",
+   "missing_gate": "Michael isn't in the directory, and all I have is him sending messages in a group thread, so I can't be sure who he is.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 22,
@@ -2899,7 +2899,7 @@
    "anchors": [
     "Sophie sent messages in the David, Nathan, and Taylor group thread from June 5 to 13, 2014"
    ],
-   "missing_gate": "Sophie is not in the directory under that name, and the thread gives no facts about her life. I need you to decide if Sophie should be added.",
+   "missing_gate": "Sophie isn't in the directory, and the thread gives no facts about her life, so I need you to decide whether to add her.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 22,
@@ -2921,7 +2921,7 @@
    "anchors": [
     "He was in the Bros Before Does group chat in 2015 and 2016"
    ],
-   "missing_gate": "Marcos is not in the directory, and he only shows up as a sender in one group chat with no other facts about his life. I need you to decide whether to add him.",
+   "missing_gate": "Marcos isn't in the directory and only shows up as a sender in one group chat, so I need you to decide whether to add him.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 22,
@@ -2943,7 +2943,7 @@
    "anchors": [
     "The Bros Before Does group thread, from 2015 to 2016"
    ],
-   "missing_gate": "Xavier is not in the directory, and I am not sure who Xavier is. The only thing I found is Xavier sending messages in a group thread, with no facts about Xavier's life.",
+   "missing_gate": "Xavier isn't in the directory, and all I have is him sending messages in a group thread, so I can't be sure who he is.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 22,
@@ -2965,7 +2965,7 @@
    "anchors": [
     "The Bros Before Does group thread, from 2015 to 2016"
    ],
-   "missing_gate": "Ems is not in the directory, and I am not sure who Ems is. The only thing I found is Ems sending messages in a group thread, with no facts about Ems's life.",
+   "missing_gate": "Ems isn't in the directory, and all I have is her sending messages in a group thread, so I can't be sure who she is.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 22,
@@ -2987,7 +2987,7 @@
    "anchors": [
     "He appears in a one-to-one Messenger thread from July 18, 2013 to April 29, 2014"
    ],
-   "missing_gate": "Trevor is not in the directory yet. The thread does not say how he is related to Joel Moulton and Daniel Moulton, so I want you to decide whether to add him.",
+   "missing_gate": "Trevor isn't in the directory, and nothing says how he relates to Joel and Daniel Moulton, so I need you to decide whether to add him.",
    "confidence": 48,
    "confidence_parts": {
     "identity": 24,
@@ -3011,7 +3011,7 @@
     "JD offered to take Zenna's photo at Friday school on November 14, 2017",
     "Zenna was in the 'Zenna and Fwends' group threads in 2015 and 2016"
    ],
-   "missing_gate": "Zenna is not in the directory yet, so there is no record to add this to. I know Zenna from her own long direct message thread with JD.",
+   "missing_gate": "Zenna isn't in the directory yet, so there is no record to add this to.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 28,
@@ -3034,7 +3034,7 @@
     "Pat's name appears in the Legacy volunteers chat list and on a photo tag",
     "Merrick Sinclair's team list from September 15, 2015"
    ],
-   "missing_gate": "Pat is not in the directory, and this only comes from one chat list and one team list. I need you to decide whether to add Pat as a new person.",
+   "missing_gate": "Pat isn't in the directory, and this only comes from one chat list and one team list, so I need you to decide whether to add him.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 28,
@@ -3056,7 +3056,7 @@
    "anchors": [
     "Nathan's name is on the list of people in the Legacy volunteers thread"
    ],
-   "missing_gate": "Nathan is not in the directory, and I am not sure who Nathan is. The only thing I found is Nathan's name in that group thread, with no facts about Nathan's life.",
+   "missing_gate": "Nathan isn't in the directory, and all I have is his name in a group thread, so I can't be sure who he is.",
    "confidence": 40,
    "confidence_parts": {
     "identity": 20,
@@ -3078,7 +3078,7 @@
    "anchors": [
     "This comes from JD's Facebook Messenger messages in the March 2026 export"
    ],
-   "missing_gate": "Christian is not in the directory yet, so there is no record to add this to. I also do not know if Christian is related to Nathaniel Tomford, even though they share a last name.",
+   "missing_gate": "Christian isn't in the directory yet, and I don't know if he's related to Nathaniel Tomford, so I need you to decide whether to add him.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 31,
@@ -3103,7 +3103,7 @@
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
    ],
-   "missing_gate": "I am not sure Pat's last name is Wilbur. The thread shows him only as 'Pat Vil,' and 'Wilbur' comes from a media tag in the Legacy volunteers thread, so I want you to confirm the last name first.",
+   "missing_gate": "I'm not sure Pat's last name is Wilbur \u2014 the thread only calls him 'Pat Vil,' so I want you to confirm the last name first.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 33,
@@ -3128,7 +3128,7 @@
    "anchors": [
     "This comes from a Facebook Messenger export from March 2026"
    ],
-   "missing_gate": "Lea is not in the directory, and I am not sure how Lea is related to the other Wangerins. Lea is a different person from Liz Wangerin in the directory, but no message says what Lea's exact family relationship is.",
+   "missing_gate": "Lea isn't in the directory, and no message says how she's related to the other Wangerins, so I need you to decide.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 26,
@@ -3153,7 +3153,7 @@
    "anchors": [
     "Her Facebook Messenger chat from the March 2026 export"
    ],
-   "missing_gate": "Molly is not in the directory, and there is already a separate note about her in Research Command. This is a different fact, so I need you to decide what to do with it.",
+   "missing_gate": "Molly isn't in the directory, so I need you to decide what to do with this fact about her.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 26,
@@ -3178,7 +3178,7 @@
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
    ],
-   "missing_gate": "Molly is not in the directory yet, so I am checking with you before adding anything about her. This is a separate fact from the other note already held about Molly.",
+   "missing_gate": "Molly isn't in the directory yet, so I'm checking with you before adding anything about her.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 24,
@@ -3203,7 +3203,7 @@
    "anchors": [
     "This comes from your Facebook Messenger export from March 2026"
    ],
-   "missing_gate": "Molly is not in your contacts list yet. The exact day is a guess from a birthday greeting sent that same day, not a stated birth date.",
+   "missing_gate": "Molly isn't in your contacts yet, and the April 14 date is only a guess from a birthday greeting, not a stated birth date.",
    "confidence": 45,
    "confidence_parts": {
     "identity": 21,
@@ -3228,7 +3228,7 @@
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
    ],
-   "missing_gate": "This is a personal detail Molly shared about herself and her family, so I always check with you first. Molly said this herself in the message.",
+   "missing_gate": "This is a personal detail Molly shared about herself and her family, so I always check with you first.",
    "confidence": 85,
    "confidence_parts": {
     "identity": 40,
@@ -3253,7 +3253,7 @@
    "anchors": [
     "This came from a Facebook Messenger export from March 2026"
    ],
-   "missing_gate": "Katie is not in the directory yet. The same messages also contain a sensitive personal matter, a workplace incident she reported in August 2023, so I always check with you first.",
+   "missing_gate": "Katie isn't in the directory yet, and these messages include a sensitive workplace incident she reported, so I always check with you first.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 28,
@@ -3278,7 +3278,7 @@
    "anchors": [
     "This comes from your Facebook Messenger export from March 2026"
    ],
-   "missing_gate": "Rafa is not in your contacts list yet. The thread gives no last-name details, place, or later contact, and you only talked during one summer in 2011, so I cannot be sure who this is beyond that thread.",
+   "missing_gate": "Rafa isn't in your contacts yet, and you only talked during one summer in 2011, so I can't be sure who he is beyond that thread.",
    "confidence": 40,
    "confidence_parts": {
     "identity": 19,
@@ -3303,7 +3303,7 @@
    "anchors": [
     "This comes from a Facebook Messenger export from March 2026"
    ],
-   "missing_gate": "I am not sure who Aspen is beyond this party. Aspen is not in the directory, Aspen sent no messages in the thread, and nothing else in it says more about Aspen.",
+   "missing_gate": "Aspen isn't in the directory and sent no messages in the thread, so I can't be sure who she is beyond this party.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 26,
@@ -3328,7 +3328,7 @@
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
    ],
-   "missing_gate": "Ethan is not in the directory yet, so I am checking with you before adding anything about him. There is already a separate note about his 2015 Legacy board work, and this one covers only 2016.",
+   "missing_gate": "Ethan isn't in the directory yet, so I'm checking with you before adding anything about him.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 35,
@@ -3353,7 +3353,7 @@
    "anchors": [
     "This comes from JD's Facebook Messenger messages in the March 2026 export"
    ],
-   "missing_gate": "Ems is not in the directory yet, so there is no record to add this to. Ems already has a separate note waiting about her as a group message sender, and this is a different fact about the end of her 2015 visit.",
+   "missing_gate": "Ems isn't in the directory yet, so there is no record to add this to.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 26,
@@ -3378,7 +3378,7 @@
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
    ],
-   "missing_gate": "Marcos is not in the directory yet, so I am checking with you before adding anything about him. There is already a separate note about Marcos, and this one is a new fact about the end of his 2015 visit.",
+   "missing_gate": "Marcos isn't in the directory yet, so I'm checking with you before adding anything about him.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 26,
@@ -3403,7 +3403,7 @@
    "anchors": [
     "This comes from your Facebook Messenger export from March 2026"
    ],
-   "missing_gate": "Marcos is not in your contacts list yet. This goes with what you are already deciding about him, and the messages confirm when you talked but give no school, place, or family details to be sure who he is.",
+   "missing_gate": "Marcos isn't in your contacts yet, and the messages give no school, place, or family details, so I can't be sure who he is.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 26,
@@ -3428,7 +3428,7 @@
    "anchors": [
     "This comes from your Facebook Messenger export from March 2026"
    ],
-   "missing_gate": "Ethan is not in your contacts list yet. This goes with what you are already deciding about him, so I am keeping it together for your call.",
+   "missing_gate": "Ethan isn't in your contacts yet, and this goes with the other facts you're already deciding about him.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 28,
@@ -3453,7 +3453,7 @@
    "anchors": [
     "This comes from JD's Facebook Messenger messages in the March 2026 export"
    ],
-   "missing_gate": "Joshua is not in the directory yet, so there is no record to add this to. The messages give no school, place, or family details for Joshua, only the airsoft hobby.",
+   "missing_gate": "Joshua isn't in the directory yet, and the messages give no school, place, or family details for him.",
    "confidence": 42,
    "confidence_parts": {
     "identity": 20,
@@ -3478,7 +3478,7 @@
    "anchors": [
     "This comes from a Facebook Messenger thread in the March 2026 export"
    ],
-   "missing_gate": "I am not sure of this person's full name. JD used the first name Josiah in the thread, but no last name is given anywhere, and 'Dvdia' looks like a scrambled display name.",
+   "missing_gate": "I'm not sure of this person's full name \u2014 JD called him Josiah, but no last name is given and 'Dvdia' looks scrambled.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 26,
@@ -3503,7 +3503,7 @@
    "anchors": [
     "Facebook Messenger export thread (Mar 2026 export)"
    ],
-   "missing_gate": "Single-source (a group title typed by JD in 2014) with a spelling variant present; held rather than filed so JD can confirm before it is added to Luke Boyle's profile.",
+   "missing_gate": "This full name comes only from a group title typed in 2014, and a spelling variant appears too, so I want you to confirm it first.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 27,
@@ -3528,7 +3528,7 @@
    "anchors": [
     "This came from a Facebook Messenger export from March 2026"
    ],
-   "missing_gate": "Laura is not in the directory yet. The messages give her full name and this party, but no school, location, or family details, so I want you to decide whether to add her.",
+   "missing_gate": "Laura isn't in the directory yet, and the messages give no school, location, or family details, so I want you to decide whether to add her.",
    "confidence": 40,
    "confidence_parts": {
     "identity": 19,
@@ -3553,7 +3553,7 @@
    "anchors": [
     "JD's existing profile seeds (occupation/university anchors)"
    ],
-   "missing_gate": "Only the SUNY Potsdam alumni-spotlight identity remains unresolved; it conflicts with the Clarkson professor's documented education (AAS SUNY Canton, Utica College, Chatham OTD) and was held rather than filed. The Clarkson-professor items are filed and no longer part of this hold.",
+   "missing_gate": "I still can't confirm the SUNY Potsdam alumni spotlight is her \u2014 its details conflict with the Clarkson professor's education on file.",
    "confidence": 45,
    "confidence_parts": {
     "identity": 21,
@@ -3578,7 +3578,7 @@
    "anchors": [
     "JD's existing profile seeds (occupation/university anchors)"
    ],
-   "missing_gate": "Identity resolved in favor of the Clarkson professor; the only remainder is the unmatched Care.com listing, held as a likely different person. Nothing from Care.com was filed.",
+   "missing_gate": "Only the Care.com listing is left: nothing ties it to him, and it's likely a different person.",
    "confidence": 45,
    "confidence_parts": {
     "identity": 21,
@@ -3603,7 +3603,7 @@
    "anchors": [
     "JD's existing profile mixes both women's anchors (family framing vs OT employers/degrees)"
    ],
-   "missing_gate": "Profile conflates a mother and daughter who share the name Karen Hoover; the professor's grants, committee chair, and Canton address were held until JD says which Karen the profile is for.",
+   "missing_gate": "This record mixes up two women named Karen Hoover, a mother and daughter, so I need you to say which one it's for.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 24,
@@ -3629,7 +3629,7 @@
     "Potsdam, NY",
     "Clarkson University"
    ],
-   "missing_gate": "The parent could not re-verify the claim directly: the Scouting America awards page is generic and the council document was not retrieved, so the claim is held as an unverified subagent report.",
+   "missing_gate": "I could not double-check this \u2014 the council document was not retrieved, so I want you to decide.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 40,
@@ -3655,7 +3655,7 @@
     "Floral Park, NY",
     "armwrestling ('Magic Vinnie the Armwrestler')"
    ],
-   "missing_gate": "The parent could not re-verify the rankings directly (the archives page returned 403 to the text fetch and the live-browser read did not return), so the reported rankings are held until the page can be read.",
+   "missing_gate": "I could not double-check this \u2014 the rankings page would not load for me, so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 38,
@@ -3678,7 +3678,7 @@
    "source": "SUNY Potsdam Athletics",
    "url": "https://potsdambears.com/sports/mens-soccer/roster/caleb-lindsey/8633",
    "anchors": [],
-   "missing_gate": "His profile carries only an Awakening Church affiliation and no location, school, or employer anchors, so the roster record cannot be tied to two profile anchors.",
+   "missing_gate": "His record only shows an Awakening Church tie, with no location, school, or job to match the roster against.",
    "confidence": 54,
    "confidence_parts": {
     "identity": 13,
@@ -3703,7 +3703,7 @@
    "anchors": [
     "Brasher Falls, NY"
    ],
-   "missing_gate": "The Clarkson item ties the name to only one profile anchor (Brasher Falls hometown); it does not mention St. Lawrence Central or her nursing role, so the two-anchor gate is not met.",
+   "missing_gate": "Only her Brasher Falls hometown matches \u2014 the item doesn't mention St. Lawrence Central or her nursing work, so I can't be sure it's her.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 32,
@@ -3728,7 +3728,7 @@
    "anchors": [
     "Norwood, NY"
    ],
-   "missing_gate": "The SUNY Potsdam item ties the name to only one profile anchor (Norwood hometown); her profile's Houghton University lacrosse record is not mentioned, so the two-anchor gate is not met.",
+   "missing_gate": "Only her Norwood hometown matches \u2014 the item doesn't mention her Houghton lacrosse record, so I can't be sure it's the same person.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 30,
@@ -3753,7 +3753,7 @@
    "anchors": [
     "U.S. Army"
    ],
-   "missing_gate": "The license record ties the name to no profile anchor \u2014 it names no employer, unit, or location \u2014 so it cannot be tied to her Army / 27th IBCT profile by two anchors.",
+   "missing_gate": "The license record names no employer, unit, or location, so I can't tie it to her Army record.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 20,
@@ -3778,7 +3778,7 @@
    "anchors": [
     "Canton, NY"
    ],
-   "missing_gate": "The law records tie the name to only one profile anchor (Canton hometown); nothing in them mentions her Seattle residence or nursing background, so the two-anchor gate is not met.",
+   "missing_gate": "Only her Canton hometown matches \u2014 the law records don't mention her Seattle home or nursing background, so I can't be sure it's her.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 28,
@@ -3803,7 +3803,7 @@
    "anchors": [
     "Madrid, NY"
    ],
-   "missing_gate": "The DVIDS item ties the common name to only one profile anchor (Madrid hometown / Madrid-Waddington school); no second anchor confirms it is this Jeremy Taylor.",
+   "missing_gate": "Only his Madrid hometown and school match this common name, so I can't be sure it's the same Jeremy Taylor.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 26,
@@ -3829,7 +3829,7 @@
     "Trafford, PA",
     "Pittsburgh, PA area"
    ],
-   "missing_gate": "Held as a sensitive family / obituary fact, consistent with how her sister's 2020 obituary mention was handled; not filed as a routine footprint fact.",
+   "missing_gate": "This comes from an obituary naming Phyllis as a surviving sister, so I always check with you first.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 30,
@@ -3855,7 +3855,7 @@
     "IDI Billing Solutions",
     "SUNY Canton"
    ],
-   "missing_gate": "The TEKsystems detail appears only on TheOrg, a self-reported company-directory profile, with no independent corroboration.",
+   "missing_gate": "This TEKsystems detail is from TheOrg, a self-reported company directory, only, so I want you to decide.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 36,
@@ -3878,7 +3878,7 @@
    "source": "St. Lawrence University Athletics",
    "url": "https://saintsathletics.com/sports/womens-ice-hockey/roster/grace-lapointe/12572",
    "anchors": [],
-   "missing_gate": "Her profile's only anchor is U.S. Air Force service, which the roster does not mention, and the roster ties the name to no profile anchor, so identity cannot be established.",
+   "missing_gate": "Her record only shows U.S. Air Force service, which the hockey roster never mentions, so I can't be sure it's the same person.",
    "confidence": 61,
    "confidence_parts": {
     "identity": 20,
@@ -3901,7 +3901,7 @@
    "source": "SUNY Canton",
    "url": "https://www.canton.edu/news/2023/deans-list-spring.php",
    "anchors": [],
-   "missing_gate": "Her profile's only anchor is Christian Fellowship Center in Madrid, which the SUNY Canton records do not mention, so the claim cannot be tied to two profile anchors.",
+   "missing_gate": "Her record only ties her to Christian Fellowship Center in Madrid, which the SUNY Canton records never mention, so I can't be sure it's her.",
    "confidence": 54,
    "confidence_parts": {
     "identity": 16,
@@ -3926,7 +3926,7 @@
    "anchors": [
     "Massena, NY"
    ],
-   "missing_gate": "The 4-H records tie the name to only one profile anchor (Massena hometown); they do not mention Potsdam or the Akwesasne Mohawk Casino, so the two-anchor gate is not met.",
+   "missing_gate": "Only her Massena hometown matches \u2014 the 4-H records don't mention Potsdam or the Akwesasne Mohawk Casino, so I can't be sure it's her.",
    "confidence": 62,
    "confidence_parts": {
     "identity": 26,
@@ -3949,7 +3949,7 @@
    "source": "SUNY Potsdam",
    "url": "https://www.potsdam.edu/academics/crane-school-music/crane-youth-music",
    "anchors": [],
-   "missing_gate": "The Crane Youth Music listing is a bare name on a roster with no hometown, school, or family anchor tying it to her SUNY Canton profile.",
+   "missing_gate": "This is a bare name on a roster, with no hometown, school, or family detail tying it to her, so I can't be sure it's the same person.",
    "confidence": 48,
    "confidence_parts": {
     "identity": 18,
@@ -3974,7 +3974,7 @@
    "anchors": [
     "Vermont"
    ],
-   "missing_gate": "The WCAX item ties the common name only loosely to Vermont; his profile places him in Portland, Oregon with a Burlington, Vermont hometown, and no source confirms the Barton man is this Tom Green.",
+   "missing_gate": "This common name is only loosely tied to Vermont, and his record places him in Portland, Oregon, so I can't be sure it's the same Tom Green.",
    "confidence": 56,
    "confidence_parts": {
     "identity": 18,
@@ -4000,7 +4000,7 @@
     "esports",
     "SUNY Canton"
    ],
-   "missing_gate": "The SUNY Canton link rests on a RocketReach aggregator profile; the official Alfred State source alone does not tie the player to SUNY Canton or Potsdam.",
+   "missing_gate": "The SUNY Canton link comes only from a RocketReach aggregator profile, so I want you to decide.",
    "confidence": 51,
    "confidence_parts": {
     "identity": 24,
@@ -4025,7 +4025,7 @@
    "anchors": [
     "SUNY Canton (profile anchor the roster contradicts)"
    ],
-   "missing_gate": "The roster player is a well-sourced namesake from Mexico, NY with a SUNY Oswego history; he is not this profile, whose anchors are Canton, Bjorn Fitness, and SUNY Canton.",
+   "missing_gate": "The roster player is from Mexico, NY and went to SUNY Oswego, but Gavin's record says Canton and SUNY Canton, so it's your call.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 8,
@@ -4051,7 +4051,7 @@
     "Polk County Sheriff's Office (FL)",
     "SUNY Potsdam criminal justice"
    ],
-   "missing_gate": "The newsletter item gives no class year or hometown for her, and Lisa Arquette is a common North Country name, so the deputy cannot be tied to this profile by two anchors.",
+   "missing_gate": "The item gives no class year or hometown, and Lisa Arquette is a common name here, so I can't be sure it's the same person.",
    "confidence": 62,
    "confidence_parts": {
     "identity": 28,
@@ -4077,7 +4077,7 @@
     "SUNY Canton",
     "Canton, NY area"
    ],
-   "missing_gate": "The cited donor-report URL no longer resolves (404 on the parent's read), so the listing could not be verified directly; no source page could be retrieved, so the URL is blank.",
+   "missing_gate": "I could not double-check this \u2014 the donor report link no longer opens, so I want you to decide.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 40,
@@ -4103,7 +4103,7 @@
     "Norwood, NY",
     "cancer experience (profile records a cancer-free follow-up in 2021)"
    ],
-   "missing_gate": "The book is self-published and self-reported, with no independent source confirming the 2023 misdiagnosis, so it fails the independent-source gate.",
+   "missing_gate": "This book is self-published, and no other source confirms the 2023 misdiagnosis, so I want you to decide.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 45,
@@ -4129,7 +4129,7 @@
     "Canton, NY",
     "communications/writing work"
    ],
-   "missing_gate": "The job change is reported only in his own newsletter, a self-reported claim with no independent corroboration.",
+   "missing_gate": "This job change is only reported in his own newsletter, so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 44,
@@ -4155,7 +4155,7 @@
     "SUNY Canton",
     "healthcare work (Massena Hospital, Rochester Regional Health)"
    ],
-   "missing_gate": "The parent read the cited honors page in full (President's List, Dean's List, and Part-Time Honors) and her name does not appear on it, so the claim failed direct verification.",
+   "missing_gate": "I read the full honors page and her name is not on it, so I want you to decide.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 30,
@@ -4182,7 +4182,7 @@
     "Bachelor of Science in Nursing program",
     "Potsdam Senior High School"
    ],
-   "missing_gate": "The parent read the cited honors page in full (President's List, Dean's List, and Part-Time Honors) and her name does not appear on it, so the claim failed direct verification.",
+   "missing_gate": "I read the full honors page and her name is not on it, so I want you to decide.",
    "confidence": 66,
    "confidence_parts": {
     "identity": 30,
@@ -4207,7 +4207,7 @@
    "anchors": [
     "SUNY Canton"
    ],
-   "missing_gate": "The parent read the cited honors page in full and her name does not appear on it; the reported Legal Studies program also conflicts with her Individual Studies / Physical Therapist Assistant programs on file, so the claim failed direct verification.",
+   "missing_gate": "Her name is not on the honors page, and the Legal Studies program listed conflicts with the programs on her record, so it's your call.",
    "confidence": 66,
    "confidence_parts": {
     "identity": 30,
@@ -4234,7 +4234,7 @@
     "Gouverneur High School",
     "SUNY Canton"
    ],
-   "missing_gate": "The provider page redirects to the system's homepage in both the text fetch and the live browser, so the reported education details could not be verified directly.",
+   "missing_gate": "I could not double-check this \u2014 the provider page redirects to the homepage, so I want you to decide.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 44,
@@ -4262,7 +4262,7 @@
     "Nashville, TN",
     "New Hampshire (Lebanon High School)"
    ],
-   "missing_gate": "The EP claim appears only in a self-reported interview with no independent corroboration and no year printed for the release.",
+   "missing_gate": "This is from a self-reported interview (Bold Journey Magazine) only, so I want you to decide.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 40,
@@ -4288,7 +4288,7 @@
     "Nashville, TN",
     "New Hampshire origin"
    ],
-   "missing_gate": "The single and Kickstarter claims appear only in a self-reported interview with no independent corroboration.",
+   "missing_gate": "This is from a self-reported interview (CanvasRebel Magazine) only, so I want you to decide.",
    "confidence": 66,
    "confidence_parts": {
     "identity": 40,
@@ -4314,7 +4314,7 @@
     "SUNY Potsdam",
     "U.S. Army"
    ],
-   "missing_gate": "Bold.pro is a self-reported resume aggregator, not an independent source, and the dispatcher timeline overlaps his Saranac Lake PD service on file, so the claim is held.",
+   "missing_gate": "This is from a self-reported resume site (Bold.pro), so I want you to decide.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 35,
@@ -4340,7 +4340,7 @@
     "Window Cleaning Plus",
     "Littleton, CO"
    ],
-   "missing_gate": "The listing is owner-created and self-reported; only the Top Pro badge is platform-awarded, so the claim is held for an independent source.",
+   "missing_gate": "This listing is owner-created and self-reported (Thumbtack), so I want you to decide.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 40,
@@ -4366,7 +4366,7 @@
     "Potsdam High School",
     "St. Lawrence County Youth Bureau Youth Committee"
    ],
-   "missing_gate": "The listing is a continuation of her already-filed 2020 Youth Committee representation, not a change or a new fact, so it is held as a close call rather than filed as a duplicate.",
+   "missing_gate": "This one is your call: this 2021 listing continues her 2020 Youth Committee role already on file, so it may just be a duplicate.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 40,
@@ -4391,7 +4391,7 @@
    "anchors": [
     "Busan, South Korea"
    ],
-   "missing_gate": "The record ties the name to only one profile anchor (Busan) and an established chemistry career inconsistent with this profile, so it is a probable namesake.",
+   "missing_gate": "Only Busan matches, and the chemistry career doesn't fit her record, so this is probably a namesake.",
    "confidence": 30,
    "confidence_parts": {
     "identity": 5,
@@ -4416,7 +4416,7 @@
    "anchors": [
     "Kansas City, MO metro area"
    ],
-   "missing_gate": "The interview is self-reported, the surname in the source is 'Kc' rather than De Voe, and no second profile anchor (Culture House, Evanston Vineyard, UC Irvine) appears, so identity is not established.",
+   "missing_gate": "The surname in the source is 'Kc,' not De Voe, and nothing else in it matches her record, so I can't be sure it's the same person.",
    "confidence": 30,
    "confidence_parts": {
     "identity": 8,
@@ -4441,7 +4441,7 @@
    "anchors": [
     "North Country geography (name only)"
    ],
-   "missing_gate": "The student's school, program, and hometown all conflict with this profile (SUNY Canton Business Administration A.S. 2025, Norwood), so she is a likely namesake.",
+   "missing_gate": "The student's school, program, and hometown all differ from her record, so she is likely a namesake.",
    "confidence": 52,
    "confidence_parts": {
     "identity": 12,
@@ -4468,7 +4468,7 @@
     "Nashville, TN",
     "Derek Levendusky (father, on file)"
    ],
-   "missing_gate": "The claim is entirely self-reported in an interview, so it fails the independent-source gate despite the strong identity tie.",
+   "missing_gate": "This is from a first-person interview (NashvilleVoyager) only, so I want you to decide.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 48,
@@ -4493,7 +4493,7 @@
    "anchors": [
     "Nashville, TN"
    ],
-   "missing_gate": "A single aggregator listing (commonly artist-submitted) with no venue corroboration, for a performance that has not yet occurred, so it is held as a close call.",
+   "missing_gate": "This one is your call: it's a single Bandsintown listing for a show that hasn't happened yet.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 35,
@@ -4518,7 +4518,7 @@
    "anchors": [
     "name only"
    ],
-   "missing_gate": "The program ties the name to no profile anchor (no Waddington, Madrid-Waddington, or SUNY Broome reference), so identity is unproven.",
+   "missing_gate": "Nothing in the program ties this name to her record, so I can't be sure it's the same person.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 20,
@@ -4543,7 +4543,7 @@
    "anchors": [
     "St. Lawrence County / Ogdensburg (Red Mills, NY area)"
    ],
-   "missing_gate": "All three Loni Recker records tie to St. Lawrence County geography matching her Red Mills location, but none mentions her tutoring work or New Windsor tie, so identity is held on one anchor despite the uncommon exact name.",
+   "missing_gate": "All three records match her area, but none mentions her tutoring work or New Windsor tie, so I can't be sure it's the same person.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 38,
@@ -4568,7 +4568,7 @@
    "anchors": [
     "St. Lawrence County (Red Mills, NY area)"
    ],
-   "missing_gate": "The post ties the name to county geography only, with no tutoring or New Windsor anchor, so identity is held.",
+   "missing_gate": "This post only ties her name to the county, with nothing about her tutoring or New Windsor, so I can't be sure it's the same person.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 38,
@@ -4593,7 +4593,7 @@
    "anchors": [
     "Ogdensburg, NY (Red Mills, NY area)"
    ],
-   "missing_gate": "The minutes tie the name to area geography only, with no second profile anchor, so identity is held.",
+   "missing_gate": "The minutes only tie her name to the area, with nothing else matching her record, so I can't be sure it's the same person.",
    "confidence": 82,
    "confidence_parts": {
     "identity": 38,
@@ -4618,7 +4618,7 @@
    "anchors": [
     "Canton, NY"
    ],
-   "missing_gate": "Held as sensitive family/obituary material, and it ties to only one profile anchor (Canton) in any case.",
+   "missing_gate": "This comes from an obituary naming Margaret as Ruth Williamson's daughter, so I always check with you first.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 40,
@@ -4645,7 +4645,7 @@
     "SUNY Canton",
     "Pre-Physical Therapist Assistant program"
    ],
-   "missing_gate": "The bio is self-reported (written by Daniels herself), and no independent source corroborates the LifeGroup role, so it fails the independent-source gate.",
+   "missing_gate": "This is from her own self-written student bio (SUNY Canton) only, so I want you to decide.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 48,
@@ -4670,7 +4670,7 @@
    "anchors": [
     "Southern New Hampshire University (name fragment only)"
    ],
-   "missing_gate": "The page never confirms this Kari is Kari Moulton of Potsdam, and a BA.HSE enrollment starting around 2024 conflicts with her completed 2020 Business Administration degree on file.",
+   "missing_gate": "This page never confirms the 'Kari' is Kari Moulton, and its degree path conflicts with her 2020 degree on file, so it's your call.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 20,
@@ -4696,7 +4696,7 @@
     "Gouverneur High School",
     "Rochester Regional Health (Gouverneur Hospital's parent system)"
    ],
-   "missing_gate": "The obituary never states Kulp's employer, role, or workplace directly; the Gouverneur Hospital link is inferred from Marasco's own work history, so the claim is held on a single indirect source.",
+   "missing_gate": "This comes from one obituary that never states her employer or role, so I want you to decide.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 35,
@@ -4721,7 +4721,7 @@
    "anchors": [
     "SUNY Potsdam"
    ],
-   "missing_gate": "Only one profile anchor (SUNY Potsdam) is cleanly tied and the degree field cannot be reliably extracted from the program layout, so the two-anchor gate is not met.",
+   "missing_gate": "Only SUNY Potsdam ties this to Skyler, and the degree field can't be read reliably from the program, so I can't be sure it's him.",
    "confidence": 59,
    "confidence_parts": {
     "identity": 28,
@@ -4747,7 +4747,7 @@
     "SLICFiber",
     "Nicholville, NY"
    ],
-   "missing_gate": "The COO title conflicts with the profile's CEO title and with 2026 sources; no source states a promotion date, so no dated title-change bullet can be filed.",
+   "missing_gate": "Kevin's record says CEO, but this names him COO and no source gives a promotion date, so it's your call.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 45,
@@ -4772,7 +4772,7 @@
    "anchors": [
     "SUNY Canton"
    ],
-   "missing_gate": "The honors list gives no hometown, so only one profile anchor (SUNY Canton) is tied and the program differs from both HVAC programs already on file.",
+   "missing_gate": "The list gives no hometown, and the program differs from both HVAC programs on his record, so I can't be sure it's the same person.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 28,
@@ -4797,7 +4797,7 @@
    "anchors": [
     "Physical therapist / DPT occupation"
    ],
-   "missing_gate": "No Clarkson University tie and no Potsdam or North Country location appears in the source, so this is an unproven, likely namesake physical therapist.",
+   "missing_gate": "The source shows no Clarkson or Potsdam tie, so this physical therapist is likely a namesake.",
    "confidence": 47,
    "confidence_parts": {
     "identity": 15,
@@ -4822,7 +4822,7 @@
    "anchors": [
     "College of Saint Rose track"
    ],
-   "missing_gate": "The source's hometown (Hillsborough, NJ) and prior school (Garden City CC, Kansas) contradict this profile's Canton, NY anchors, so the record cannot be filed to Wiegandt despite the name similarity and JD's Dawson Anthony ruling.",
+   "missing_gate": "This sprinter is from Hillsborough, NJ and Garden City CC, but Dawson's record says Canton, NY, so it's your call.",
    "confidence": 48,
    "confidence_parts": {
     "identity": 8,
@@ -4849,7 +4849,7 @@
     "SUNY Canton",
     "nursing"
    ],
-   "missing_gate": "Spouse identity and number of children are family details held for JD's decision rather than auto-filed.",
+   "missing_gate": "This names Judson's wife and says he has four children, so I always check with you first.",
    "confidence": 82,
    "confidence_parts": {
     "identity": 46,
@@ -4875,7 +4875,7 @@
     "Clarkson University '15",
     "LC Drives since 2015"
    ],
-   "missing_gate": "The new content is marital/family information (spouse identity and children), held for JD's decision under the sensitive-family gate; the children detail is deliberately excluded from the file text.",
+   "missing_gate": "This is about Debbie's marriage and children, so I always check with you first.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 46,
@@ -4900,7 +4900,7 @@
    "anchors": [
     "Clarkson University"
    ],
-   "missing_gate": "Bold.org profiles are written by the student, so the source is self-reported and nothing here clears the independent-source gate.",
+   "missing_gate": "This is from a self-reported student profile (Bold.org) only, so I want you to decide.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 40,
@@ -4925,7 +4925,7 @@
    "anchors": [
     "Name only on the page"
    ],
-   "missing_gate": "The event's own site is a single source, states no event date, and ties only her name, so the two-anchor gate is not met as sourced.",
+   "missing_gate": "This is from the event's own site only, with no date given, so I want you to decide.",
    "confidence": 54,
    "confidence_parts": {
     "identity": 30,
@@ -4951,7 +4951,7 @@
     "St. Lawrence University",
     "Canton, NY"
    ],
-   "missing_gate": "The aggregator title conflicts with the authoritative university page, which still shows Library Assistant V, so the new title cannot be filed.",
+   "missing_gate": "Emma's record matches the university page (Library Assistant V), but ZoomInfo lists a different title, so it's your call.",
    "confidence": 38,
    "confidence_parts": {
     "identity": 25,
@@ -4976,7 +4976,7 @@
    "anchors": [
     "Name only"
    ],
-   "missing_gate": "A single aggregator directory line ties no profile anchor beyond the name, and its location signal (Rochester) does not match this profile's Potsdam base.",
+   "missing_gate": "This is one directory line with nothing beyond his name, and Rochester doesn't match his Potsdam base, so I can't be sure it's him.",
    "confidence": 32,
    "confidence_parts": {
     "identity": 22,
@@ -5001,7 +5001,7 @@
    "anchors": [
     "Name/username only"
    ],
-   "missing_gate": "The seller page is self-reported and ties none of her profile anchors (Syracuse iSchool, U.S. Army), so identity and source both fail the gate.",
+   "missing_gate": "This seller page is self-reported (Fiverr) and matches nothing on her record, so I want you to decide.",
    "confidence": 28,
    "confidence_parts": {
     "identity": 20,
@@ -5026,7 +5026,7 @@
    "anchors": [
     "Name only"
    ],
-   "missing_gate": "No SUNY Potsdam or Environmental Science tie appears, the role predates her degree, and the field and region are unrelated, so this is almost certainly a namesake.",
+   "missing_gate": "Nothing ties this to SUNY Potsdam, and the job predates her degree, so this is almost certainly a namesake.",
    "confidence": 8,
    "confidence_parts": {
     "identity": 5,
@@ -5052,7 +5052,7 @@
     "USA Shooting women's trap",
     "2026 National Championships"
    ],
-   "missing_gate": "This is a conflict with a fact already on her profile rather than a new filing; the on-file champion line needs JD's correction decision before anything changes.",
+   "missing_gate": "Her record says she's the 2026 Women's Trap National Champion, but USA Shooting names Rachel Tozier, so it's your call.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 40,
@@ -5078,7 +5078,7 @@
     "Clarkson University",
     "APTA"
    ],
-   "missing_gate": "The only source contradicts itself on whether the fellowship is complete, so completion cannot be filed until a source states it outright.",
+   "missing_gate": "Her Clarkson bio contradicts itself on whether the fellowship is finished, so I could not double-check this.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 46,
@@ -5105,7 +5105,7 @@
     "President of SUNY Canton",
     "Canton, NY"
    ],
-   "missing_gate": "No published date appears on the opened page and the fact is an institutional quote, not a personal change or in-motion signal, so it did not compete for a filing slot.",
+   "missing_gate": "This one is your call: there's no date on the page, and the quote is about the college, not a personal change.",
    "confidence": 90,
    "confidence_parts": {
     "identity": 50,
@@ -5130,7 +5130,7 @@
    "anchors": [
     "Joint Council for Economic Opportunity (JCEO)"
    ],
-   "missing_gate": "The opened source ties her only to the JCEO employer anchor, with no second profile anchor, and no dated promotion announcement pins the change date.",
+   "missing_gate": "This one is your call: only her JCEO job ties this to her, and no dated announcement pins down when the title changed.",
    "confidence": 90,
    "confidence_parts": {
     "identity": 47,
@@ -5158,7 +5158,7 @@
     "Josh McGrath",
     "The Ardent Pursuit podcast"
    ],
-   "missing_gate": "The only source is his own podcast's episode description syndicated by an aggregator, with no publisher, retailer, or other independent corroboration of the book.",
+   "missing_gate": "This book is only mentioned in his own podcast's description, passed along by an aggregator, so I want you to decide.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 45,
@@ -5186,7 +5186,7 @@
     "Teacher in Kansas",
     "Track / cross-country background"
    ],
-   "missing_gate": "Her footprint already carries a generic 'teacher in Kansas and a pancake-race winner' bullet, so this is detail expansion of an already-filed fact, held as a close call on redundancy.",
+   "missing_gate": "This one is your call: her record already says she was a Kansas teacher and pancake-race winner, so this only adds detail.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 40,
@@ -5214,7 +5214,7 @@
     "Georgia Military College",
     "February 2025 marriage already on file"
    ],
-   "missing_gate": "Spouse identity is family detail; the prior filing from this same source deliberately carried only 'Married in February 2025,' so the name is held under the sensitive-family gate.",
+   "missing_gate": "This names Katherine's husband Braden, so I always check with you first.",
    "confidence": 94,
    "confidence_parts": {
     "identity": 48,
@@ -5240,7 +5240,7 @@
     "Ministers Fellowship International",
     "Jessica Hurlbut (co-presenter)"
    ],
-   "missing_gate": "The listing is an aggregator syndication of his own network's podcast and the opened page shows no episode date, so the Nov 2025 date in the file text is unverified.",
+   "missing_gate": "This is an aggregator listing of his own network's podcast, and it shows no episode date, so I want you to decide.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 42,
@@ -5269,7 +5269,7 @@
     "Moira, NY",
     "Martha Martin (named as wife and co-founder)"
    ],
-   "missing_gate": "The only source is the family business's own first-party site, so the fact is not independently corroborated; a co-founder fact on this same basis was held in the Oct 26 run.",
+   "missing_gate": "This is from the family business's own site only, so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 45,
@@ -5295,7 +5295,7 @@
     "Clarkson University",
     "Clarkson OIT (employer on profile)"
    ],
-   "missing_gate": "The only source is a self-submitted alumni story and the content is marriage and children family detail, held for JD rather than auto-filed.",
+   "missing_gate": "This is about Mike's marriage and children, from a story the couple submitted themselves, so I always check with you first.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 40,
@@ -5321,7 +5321,7 @@
     "Clarkson University",
     "University of Western Ontario graduate study"
    ],
-   "missing_gate": "The award appears only on his own institutional bio page, with no independent corroboration or named granting body.",
+   "missing_gate": "This award appears only on his own Clarkson bio page, so I want you to decide.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 48,
@@ -5348,7 +5348,7 @@
    "anchors": [
     "U.S. Army / NY Army National Guard"
    ],
-   "missing_gate": "Only one profile anchor (Army / NY Guard) is tied, with no 27th IBCT or HHC link for a very common name, and Bold.pro is a self-reported resume aggregator.",
+   "missing_gate": "Only her Army/NY Guard service matches, the name is very common, and the source is a self-reported resume site, so I can't be sure it's her.",
    "confidence": 45,
    "confidence_parts": {
     "identity": 20,
@@ -5375,7 +5375,7 @@
    "source": "Fresno State DMD",
    "url": "https://sites.google.com/mail.fresnostate.edu/dmd/talks",
    "anchors": [],
-   "missing_gate": "The directory profile is completely blank, so no profile anchor ties this Fresno-area presenter to JD's Paige Alves.",
+   "missing_gate": "Her record is completely blank, so nothing ties this Fresno presenter to Paige.",
    "confidence": 25,
    "confidence_parts": {
     "identity": 5,
@@ -5403,7 +5403,7 @@
     "SkyWest Airlines Ogdensburg chain",
     "Unifi Aviation"
    ],
-   "missing_gate": "The sole source is a self-reported resume profile with no independent corroboration.",
+   "missing_gate": "This is from a self-reported resume site (Bold.pro) only, so I want you to decide.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 45,
@@ -5432,7 +5432,7 @@
     "Harrisburg, PA",
     "Unifi Aviation"
    ],
-   "missing_gate": "Self-reported resume as sole source.",
+   "missing_gate": "This is from a self-reported resume site (Bold.pro) only, so I want you to decide.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 45,
@@ -5461,7 +5461,7 @@
     "Harrisburg, PA",
     "Aviation career sequence"
    ],
-   "missing_gate": "Self-reported resume as sole source; the Piedmont role is not otherwise corroborated.",
+   "missing_gate": "This is from a self-reported resume site (Bold.pro) only, so I want you to decide.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 45,
@@ -5489,7 +5489,7 @@
     "MG Tree LLC",
     "Potsdam, NY"
    ],
-   "missing_gate": "The record does not name Martin Lovell; his link to the LLC rests only on the profile's Facebook-sourced co-owner claim.",
+   "missing_gate": "This record never names Martin \u2014 his link to the LLC rests only on a Facebook-sourced note on his record, so I can't be sure.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 25,
@@ -5516,7 +5516,7 @@
     "National College of Midwifery",
     "Newlife International School of Midwifery"
    ],
-   "missing_gate": "The engagement rests solely on her own first-person employer bio with no independent source, and the February 2026 date is now past with the marriage unconfirmed.",
+   "missing_gate": "This engagement comes only from her own staff bio, and the February 2026 wedding is unconfirmed, so I want you to decide.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 40,
@@ -5543,7 +5543,7 @@
     "National College of Midwifery",
     "Philippines volunteering"
    ],
-   "missing_gate": "Sole source is her own bio page; the page does not name Abundant Grace, so that center cannot be attached to the Tabuk stint from this page.",
+   "missing_gate": "This is from her own bio page only, and it never names Abundant Grace, so I want you to decide.",
    "confidence": 77,
    "confidence_parts": {
     "identity": 40,
@@ -5569,7 +5569,7 @@
     "Puget Sound Birth Center (employer)",
     "Washington (location on file)"
    ],
-   "missing_gate": "Self-reported bio as sole source, and the sibling detail is personal family information.",
+   "missing_gate": "This is about Kayla's family \u2014 she's the oldest of seven children \u2014 from her own bio, so I always check with you first.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 40,
@@ -5594,7 +5594,7 @@
    "anchors": [
     "The Blue House (business on file)"
    ],
-   "missing_gate": "The business's own menu; Alicia is not named on it and the concept's year cannot be fixed.",
+   "missing_gate": "This is from the business's own menu, which doesn't name Alicia and prints no year, so I want you to decide.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 20,
@@ -5621,7 +5621,7 @@
     "Madrid, NY",
     "The Blue House"
    ],
-   "missing_gate": "The corrected date rests solely on the business's own site and Alicia is not named on the page, so it does not displace the existing opening date on its own.",
+   "missing_gate": "The new opening date comes only from the business's own site, which never names Alicia, so it's your call.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 25,
@@ -5648,7 +5648,7 @@
     "Derek Levendusky (husband)",
     "Esther, Joye, and Grace Levendusky (daughters)"
    ],
-   "missing_gate": "The sole source is an article authored by her husband on his own site - a family self-report with no independent corroboration.",
+   "missing_gate": "This is from an article her husband wrote on his own site only, so I want you to decide.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 48,
@@ -5674,7 +5674,7 @@
     "Derek and Heidi Levendusky (named by daughter Grace Serene)",
     "Music (specialty on file)"
    ],
-   "missing_gate": "Single source, and it is a family member's self-report in a promotional interview with no independent corroboration.",
+   "missing_gate": "This is from one promotional interview with her daughter Grace only, so I want you to decide.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 45,
@@ -5699,7 +5699,7 @@
    "anchors": [
     "Malyssa Shenko (exact distinctive name)"
    ],
-   "missing_gate": "Only the exact name appears on the page - no Canton, SUNY Canton, or hometown anchor - so it fails the two-anchor gate.",
+   "missing_gate": "Only her exact name appears \u2014 no Canton or SUNY Canton detail \u2014 so I can't be sure it's the same person.",
    "confidence": 82,
    "confidence_parts": {
     "identity": 38,
@@ -5726,7 +5726,7 @@
     "SUNY Canton",
     "2022 graduation year"
    ],
-   "missing_gate": "The multi-column program layout makes the attribution unreliable and it conflicts with the official Class of 2022 list crediting only Criminal Investigation.",
+   "missing_gate": "The program layout makes this unreliable, and the official Class of 2022 list credits only Criminal Investigation, so it's your call.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 45,
@@ -5752,7 +5752,7 @@
     "Clarkson University",
     "Four consecutive Presidential Scholar semesters already on file"
    ],
-   "missing_gate": "His inclusion in the Spring 2026 roster could not be verified on the opened page; a search snippet alone fails the gate.",
+   "missing_gate": "I could not double-check this \u2014 the roster didn't load on the page, so I want you to decide.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 22,
@@ -5778,7 +5778,7 @@
     "Joye Levendusky",
     "Senior-level wrestling / Titan Mercury Wrestling Club context"
    ],
-   "missing_gate": "The listing comes from a podcast fantasy-style draft of announced competitors, not an official roster or result, and no official CLAW roster was opened to corroborate it.",
+   "missing_gate": "This listing is from a podcast fantasy-style draft, not an official roster, so I want you to decide.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 46,
@@ -5805,7 +5805,7 @@
     "Bret Fry (head coach)",
     "Southern Oregon / McKendree history in the same article"
    ],
-   "missing_gate": "Verified by the research batch but not re-opened by the parent this run, and the run's ten filing slots went to higher-priority findings.",
+   "missing_gate": "This one is your call: a season preview lists her as an assistant coach for 2026-27.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 40,
@@ -5830,7 +5830,7 @@
    "anchors": [
     "Ray Adepegba (exact name)"
    ],
-   "missing_gate": "The page carries only the exact name and a new location; no Army or 27th IBCT anchor ties it to this profile.",
+   "missing_gate": "The page gives only his name and a Niskayuna location, with nothing about the Army, so I can't be sure it's the same person.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 30,
@@ -5856,7 +5856,7 @@
     "Adepegba surname",
     "New York National Guard"
    ],
-   "missing_gate": "The claim is about Diahann Adepegba, not Ray; the page does not name Ray and their relationship is inferred only.",
+   "missing_gate": "This is about Diahann Adepegba, not Ray \u2014 the page never names him, and their relationship is only guessed, so I always check with you first.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 20,
@@ -5882,7 +5882,7 @@
     "Janel Colbert (exact name)",
     "Norwood-Norfolk Central Schools (employer on file)"
    ],
-   "missing_gate": "The 2024 line could not be verified on the opened page, and it would in any case duplicate her already-filed Instructional Aide role with no new title.",
+   "missing_gate": "I could not double-check this \u2014 she doesn't appear on the page I opened, so I want you to decide.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 35,
@@ -5908,7 +5908,7 @@
     "Colbert surname",
     "Norwood-Norfolk Central Schools (Janel's employer)"
    ],
-   "missing_gate": "The claim is about Miya Colbert, not Janel; her relationship to Janel is not established in the packet or on the page.",
+   "missing_gate": "This is about Miya Colbert, not Janel, and their relationship isn't stated anywhere, so I always check with you first.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 25,
@@ -5934,7 +5934,7 @@
     "John Molinero (exact name)",
     "Hoodsport / Hood Canal, WA (near Union, WA on file)"
    ],
-   "missing_gate": "Only the name and general Washington location match; with a second John Molinero (illustrator) already conflated in the footprint, the role has no second profile anchor and is not safe to file directly.",
+   "missing_gate": "Only his name and Washington location match, and another John Molinero is already mixed into his record, so I can't be sure it's him.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 35,
@@ -5963,7 +5963,7 @@
     "Caleb Dollinger (exact name)",
     "Potsdam, NY (adjacent to Canton/Colton on file)"
    ],
-   "missing_gate": "A people-search aggregator is not an independent authoritative source, the detail was not verified on an opened page, and it is personal address/birth-date data rather than public professional information.",
+   "missing_gate": "This is from a people-search site (ClustrMaps), and it's home address and birth date data, so I want you to decide.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 30,
@@ -5990,7 +5990,7 @@
     "Wheaton College",
     "Viola performance"
    ],
-   "missing_gate": "It merely confirms the already-filed Wheaton viola-performance path, with no new ensemble, award, or in-motion fact; an earlier snippet suggesting a Walgreens Concerto Competition win was disproven on the opened page.",
+   "missing_gate": "This one is your call: this only confirms his Wheaton viola path already on file, with nothing new.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 40,
@@ -6016,7 +6016,7 @@
     "Esther's Coffee House (business on file)",
     "Massena, NY"
    ],
-   "missing_gate": "The article ties the business's opening to AEDC assistance only; the person-to-opening link rests entirely on the profile's existing footing, so it does not independently tie Justin Cardinal to two anchors.",
+   "missing_gate": "This article never names Justin \u2014 it only ties the coffee house opening to AEDC help, so I want you to decide.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 25,
@@ -6044,7 +6044,7 @@
     "St. Lawrence University professor",
     "Fulbright, University of Maiduguri"
    ],
-   "missing_gate": "The only source is a Who's Who aggregator scrape with no independent corroboration for the Canton board role; the rest of the page duplicates the profile.",
+   "missing_gate": "This is from a Who's Who aggregator page (Prabook) only, so I want you to decide.",
    "confidence": 57,
    "confidence_parts": {
     "identity": 40,
@@ -6070,7 +6070,7 @@
     "Olivia Parker (name)",
     "SUNY Potsdam"
    ],
-   "missing_gate": "Identity is uncertain: a single common-name, caption-only mention with no Campbell/Campbell-Savona or Potsdam-residence tie, and a 2013 graduate student does not obviously square with this profile's sparse record.",
+   "missing_gate": "This is a single caption-only mention of a common name with nothing tying it to her record, so I can't be sure it's the same person.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 20,
@@ -6098,7 +6098,7 @@
     "From the Heart Cabinetry family business",
     "SUNY Oswego / SUNY Potsdam education"
    ],
-   "missing_gate": "Family-status detail; family is never auto-filed, and the rest of the bio duplicates the footprint.",
+   "missing_gate": "This says Lisa is a mother of 10 and a new grandmother, so I always check with you first.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 45,
@@ -6125,7 +6125,7 @@
     "Tequesta, FL",
     "Sweet Life Consulting, Inc."
    ],
-   "missing_gate": "Family detail; the family field is never auto-filed under the routine.",
+   "missing_gate": "This is about Charlie and Sharon's family \u2014 49 years married, four children, thirteen grandchildren \u2014 so I always check with you first.",
    "confidence": 82,
    "confidence_parts": {
     "identity": 45,
@@ -6151,7 +6151,7 @@
     "Ilene Lashomb (exact uncommon name)",
     "Choreography (work on file with The Arts Program of NNY)"
    ],
-   "missing_gate": "StageAgent portrayals are member-submitted self-reported credits (the page says a portrayal is a credit added by a member), with no independent corroboration, and the production is not in her extensive on-file credit list.",
+   "missing_gate": "This credit is member-submitted on StageAgent with nothing else confirming it, so I want you to decide.",
    "confidence": 61,
    "confidence_parts": {
     "identity": 35,
@@ -6177,7 +6177,7 @@
     "Margaret T. Thibodeau (name)",
     "Physician Assistant (claim already on file)"
    ],
-   "missing_gate": "The only ties are the name and the PA occupation already filed at low confidence; Ogdensburg is not an anchor on her profile and nothing connects this record to the Christian Fellowship Center Maggie Thibodeau.",
+   "missing_gate": "Only her name and PA job match \u2014 Ogdensburg isn't on her record and nothing ties this to the Christian Fellowship Center Maggie.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 20,
@@ -6204,7 +6204,7 @@
     "Sauquoit, NY (location and school district on file)",
     "Teaching (specialty on file)"
    ],
-   "missing_gate": "'Ann Mackey' is a common name; the agenda gives no middle name or 'Parow,' no prior-employer link, and it is an agenda of recommended motions rather than minutes confirming the appointment was carried.",
+   "missing_gate": "The agenda names only 'Ann Mackey,' a common name, and it's a list of motions rather than confirmed minutes, so I can't be sure it's her.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 28,
@@ -6231,7 +6231,7 @@
     "SUNY Potsdam",
     "Photography I Honors / Art Studio"
    ],
-   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it's a class project presentation from 2020-2021, nothing that changes her record.",
    "confidence": 92,
    "confidence_parts": {
     "identity": 47,
@@ -6259,7 +6259,7 @@
     "Sweet Life Consulting, Inc.",
     "Redeeming Love Church"
    ],
-   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it's a past job from the church's own leadership page.",
    "confidence": 90,
    "confidence_parts": {
     "identity": 46,
@@ -6287,7 +6287,7 @@
     "Sweet Life Consulting, Inc.",
     "Redeeming Love Church"
    ],
-   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it's church staff history from 1991, from the church's own page.",
    "confidence": 90,
    "confidence_parts": {
     "identity": 46,
@@ -6314,7 +6314,7 @@
     "Colton-Pierrepont Central School",
     "St. Lawrence County"
    ],
-   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it's a single quote from a 2015 school news item.",
    "confidence": 88,
    "confidence_parts": {
     "identity": 46,
@@ -6341,7 +6341,7 @@
     "SUNY Canton Associate Professor",
     "PhD Nova Southeastern / MS Florida State / BA SUNY Potsdam"
    ],
-   "missing_gate": "Passed the verification gate but it is a long static affiliation list and the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it's a long, unchanging list of professional affiliations.",
    "confidence": 87,
    "confidence_parts": {
     "identity": 47,
@@ -6368,7 +6368,7 @@
     "Ogdensburg Free Academy",
     "Ogdensburg, NY"
    ],
-   "missing_gate": "Passed the verification gate but it is a static 2015 school-sports result and the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it's a single 2015 high school race result.",
    "confidence": 88,
    "confidence_parts": {
     "identity": 46,
@@ -6395,7 +6395,7 @@
     "Clarkson biometrics co-author group (Abbas, Hussain, Dey, Schuckers)",
     "Synthetic fingerprint research topic"
    ],
-   "missing_gate": "The move rests on cross-paper inference: no single opened source states he left Clarkson for UNC Charlotte, and the affiliation line itself was read in a full-text mirror rather than on the publisher's page.",
+   "missing_gate": "This one is your call: no single source states he moved from Clarkson to UNC Charlotte \u2014 it's pieced together across papers.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 38,
@@ -6446,7 +6446,7 @@
    "anchors": [
     "Azlyn Richardson (name only)"
    ],
-   "missing_gate": "Name-only match with no Clarkson, Potsdam, Michels Power, or family anchor on the page.",
+   "missing_gate": "This is a name-only match \u2014 nothing on the page mentions Clarkson, Potsdam, or Michels Power, so I can't be sure it's her.",
    "confidence": 30,
    "confidence_parts": {
     "identity": 12,
@@ -6473,7 +6473,7 @@
     "The Arts Program (profile footprint)",
     "Madrid / Christian Fellowship Center context"
    ],
-   "missing_gate": "The item concerns her minor children and its only source is her own self-published blog; family material is held for JD.",
+   "missing_gate": "This is about Danica's young daughter, from her own family blog, so I always check with you first.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 45,
@@ -6500,7 +6500,7 @@
     "North Country Savings Bank (employer)",
     "Potsdam, NY"
    ],
-   "missing_gate": "Family names not already on the profile; family detail is held for JD, not auto-filed.",
+   "missing_gate": "This names Hudson's grandparents, Walt and Sherry Theobald, so I always check with you first.",
    "confidence": 88,
    "confidence_parts": {
     "identity": 45,
@@ -6525,7 +6525,7 @@
    "anchors": [
     "Olivia Huntly (name only)"
    ],
-   "missing_gate": "A well-sourced namesake: no SUNY Potsdam or Potsdam, NY anchor, and the career timeline conflicts with this profile's May 2025 SUNY Potsdam graduation.",
+   "missing_gate": "This is a namesake in York, UK \u2014 her career timeline conflicts with this Olivia's May 2025 SUNY Potsdam graduation.",
    "confidence": 25,
    "confidence_parts": {
     "identity": 5,
@@ -6550,7 +6550,7 @@
    "anchors": [
     "Kayla Watkins (name only)"
    ],
-   "missing_gate": "A well-sourced namesake with a complete, different biography and no Christian Fellowship Academy or North Country anchor.",
+   "missing_gate": "This coach has a complete, different biography with no North Country ties, so she is a namesake.",
    "confidence": 20,
    "confidence_parts": {
     "identity": 4,
@@ -6575,7 +6575,7 @@
    "anchors": [
     "Carol Huckle (partial name only)"
    ],
-   "missing_gate": "Partial name only with no Clarkson, SUNY Canton, or Potsdam anchor, and the opened aggregator page did not cleanly verify the biography.",
+   "missing_gate": "This gives only part of her name, and the aggregator page didn't cleanly confirm the biography, so I can't be sure it's her.",
    "confidence": 26,
    "confidence_parts": {
     "identity": 6,
@@ -6601,7 +6601,7 @@
     "Winthrop, NY (profile location)",
     "St. Lawrence County Personnel Officer role"
    ],
-   "missing_gate": "Spouse/family detail; family facts are held for JD, not auto-filed.",
+   "missing_gate": "This names Heather's husband Aaron, so I always check with you first.",
    "confidence": 85,
    "confidence_parts": {
     "identity": 45,
@@ -6627,7 +6627,7 @@
     "Winthrop, NY (profile location)",
     "St. Lawrence County Personnel Officer role"
    ],
-   "missing_gate": "Verified and anchored, but a low-significance static interest list from the single association source already mined for her profile.",
+   "missing_gate": "This one is your call: it's a short list of her hobbies from the same association page already on file.",
    "confidence": 85,
    "confidence_parts": {
     "identity": 45,
@@ -6652,7 +6652,7 @@
    "anchors": [
     "SUNY Geneseo"
    ],
-   "missing_gate": "The championship page ties only the SUNY Geneseo anchor (no Saranac Lake hometown line), so it was held under the strict two-anchor gate despite the strong identity continuity.",
+   "missing_gate": "This one is your call: the page only ties him to SUNY Geneseo, with no Saranac Lake mention.",
    "confidence": 92,
    "confidence_parts": {
     "identity": 45,
@@ -6678,7 +6678,7 @@
     "SUNY Geneseo",
     "Cross country"
    ],
-   "missing_gate": "Both USTFCCCA pages tie SUNY Geneseo and cross country but carry no Saranac Lake anchor, so the pair was held under the strict gate.",
+   "missing_gate": "This one is your call: both pages tie him to SUNY Geneseo and cross country, but neither mentions Saranac Lake.",
    "confidence": 91,
    "confidence_parts": {
     "identity": 45,
@@ -6703,7 +6703,7 @@
    "anchors": [
     "Geneseo setting only"
    ],
-   "missing_gate": "The page carries no Saranac Lake or cross-country tie, and the event postdates his senior season, so the drummer could be the same man as an alumnus or a namesake.",
+   "missing_gate": "The page gives no Saranac Lake or cross-country tie, so this drummer could be him or a namesake.",
    "confidence": 63,
    "confidence_parts": {
     "identity": 25,
@@ -6729,7 +6729,7 @@
     "Potsdam, NY (profile location)",
     "Distinctive full name"
    ],
-   "missing_gate": "The article ties only the Potsdam anchor \u2014 no family names, Christian Fellowship Center, Clarkson, or destination school \u2014 so it fails the strict two-anchor gate.",
+   "missing_gate": "This one is your call: the article ties her only to Potsdam, with no family, church, or school detail.",
    "confidence": 80,
    "confidence_parts": {
     "identity": 42,
@@ -6755,7 +6755,7 @@
     "New Testament Church",
     "Massena, NY"
    ],
-   "missing_gate": "Both anchors tie, but the only source is the church's own bulletin \u2014 not an independent source.",
+   "missing_gate": "This is from the church's own bulletin only, so I want you to decide.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 40,
@@ -6784,7 +6784,7 @@
     "Graphic Design",
     "Potsdam, NY"
    ],
-   "missing_gate": "The cleaner job rests on a single self-reported aggregator profile whose degree dates conflict with SUNY Canton's own records.",
+   "missing_gate": "This job is from a self-reported WayUp profile, and its degree dates conflict with SUNY Canton's own records, so it's your call.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 38,
@@ -6812,7 +6812,7 @@
     "NOCO Homestead LLC (profile employer)",
     "Potsdam, NY (profile location)"
    ],
-   "missing_gate": "Search-result lead only \u2014 the listing page was not opened this run, so its date and status are unverified, and his NOCO Homestead role is already on the profile.",
+   "missing_gate": "I could not double-check this \u2014 it's a search result only and the listing page wasn't opened, so I want you to decide.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 42,
@@ -6838,7 +6838,7 @@
     "SUNY Canton",
     "Graphic and Multimedia Design program"
    ],
-   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it's her Fall 2024 and Spring 2025 honors listings from SUNY Canton.",
    "confidence": 92,
    "confidence_parts": {
     "identity": 47,
@@ -6864,7 +6864,7 @@
     "Canton, NY (hometown)",
     "St. Lawrence County"
    ],
-   "missing_gate": "The release ties only the Canton / St. Lawrence County geographic cluster \u2014 no second distinct anchor (no Canton Fire Department, EMT, Sheriff's Office, or school tie) \u2014 and a conflicting aggregator record lists a Bryan Noble as a county laborer in 2025.",
+   "missing_gate": "Only the Canton area matches, and another record lists a Bryan Noble as a county laborer in 2025, so I can't be sure it's the same person.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 30,
@@ -6892,7 +6892,7 @@
     "Sandstone Realty sponsorship",
     "Photography LLC"
    ],
-   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it says she grew up in Waddington, and her record currently says Potsdam, NY.",
    "confidence": 87,
    "confidence_parts": {
     "identity": 46,
@@ -6920,7 +6920,7 @@
     "Sandstone Realty sponsorship",
     "Photography LLC"
    ],
-   "missing_gate": "Passed the verification gate but the run's ten filing slots went to in-motion and higher-significance findings.",
+   "missing_gate": "This one is your call: it's a quote saying she worked as a server at Jake's on the Water while at SUNY Potsdam.",
    "confidence": 86,
    "confidence_parts": {
     "identity": 46,
@@ -6973,7 +6973,7 @@
     "University of New England",
     "Women's ice hockey forward"
    ],
-   "missing_gate": "Identity and source pass, but a single-game assist is an ephemeral performance, not a change, honor, or standing fact of the kind her profile files.",
+   "missing_gate": "This one is your call: it's a single-game assist, not a change or honor.",
    "confidence": 85,
    "confidence_parts": {
     "identity": 47,
@@ -6998,7 +6998,7 @@
    "anchors": [
     "Queensbury / Warren County geography near her Saratoga Springs location"
    ],
-   "missing_gate": "Both sources were search results only and were not opened this run, and neither ties to her New York State Police or phlebotomy anchors; a plausible regional namesake.",
+   "missing_gate": "Both items were search results only, and neither ties to her State Police or phlebotomy work, so I can't be sure it's her.",
    "confidence": 35,
    "confidence_parts": {
     "identity": 15,
@@ -7024,7 +7024,7 @@
     "Cashlynn Colbert (spouse, marriage on file)",
     "Madrid, NY"
    ],
-   "missing_gate": "Family detail whose only source is the couple's own registry; family material is held for JD.",
+   "missing_gate": "This is about Judson and Cashlynn's baby on the way, from their own registry, so I always check with you first.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 45,
@@ -7050,7 +7050,7 @@
     "Canton, NY",
     "Atlantic Testing Laboratories (role already on file from LinkedIn)"
    ],
-   "missing_gate": "Aggregator-only corroboration of an already-on-file self-reported claim; no independent source.",
+   "missing_gate": "This is an aggregator page (ZoomInfo) repeating a claim already on file from his own LinkedIn, so I want you to decide.",
    "confidence": 62,
    "confidence_parts": {
     "identity": 38,
@@ -7077,7 +7077,7 @@
     "SUNY Canton nursing",
     "Rochester Regional Health \u2013 St. Lawrence Region"
    ],
-   "missing_gate": "Conflicting researcher reports and a failed parent re-open: the release must be re-opened and verified directly before filing.",
+   "missing_gate": "Two reports about this release disagree and it couldn't be re-opened to check, so it's your call.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 35,
@@ -7103,7 +7103,7 @@
     "Madrid-Waddington (profile context)",
     "Speech-language pathology"
    ],
-   "missing_gate": "Two reads of the same aggregator-mirror record contradict each other on location; the claim must be checked against the official NPPES registry before any use.",
+   "missing_gate": "Two reads of the same record disagree on location, and it hasn't been checked against the official NPPES registry, so it's your call.",
    "confidence": 44,
    "confidence_parts": {
     "identity": 22,
@@ -7128,7 +7128,7 @@
    "anchors": [
     "Em Murphy Photography (business name)"
    ],
-   "missing_gate": "Self-reported only (her own business site) and the page carries no second profile anchor.",
+   "missing_gate": "This pricing is from her own business site only, so I want you to decide.",
    "confidence": 59,
    "confidence_parts": {
     "identity": 35,
@@ -7153,7 +7153,7 @@
    "anchors": [
     "Medina, NY"
    ],
-   "missing_gate": "The page ties only the Medina anchor \u2014 one of the two the gate requires.",
+   "missing_gate": "Only Medina ties this to Erin, and nothing else on the page matches her record, so I can't be sure it's the same person.",
    "confidence": 62,
    "confidence_parts": {
     "identity": 30,
@@ -7179,7 +7179,7 @@
     "Adirondack Park Agency",
     "Deputy Director for Planning"
    ],
-   "missing_gate": "The memo PDF surfaced in search but was not opened this run, and it covers the same package as the Sep 2025 item filed this run.",
+   "missing_gate": "I could not double-check this \u2014 the memo surfaced in search but wasn't opened, so I want you to decide.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 44,
@@ -7205,7 +7205,7 @@
     "Colton-Pierrepont Junior-Senior High School",
     "Nursing intent"
    ],
-   "missing_gate": "A 2022 stated plan superseded by her actual SUNY Canton path (and the newsletter PDF was a search result, not opened); filing it would mislead.",
+   "missing_gate": "Amber's record shows her SUNY Canton path, but this 2022 newsletter says she planned Buffalo for Nursing and Biology, so it's your call.",
    "confidence": 65,
    "confidence_parts": {
     "identity": 40,
@@ -7230,7 +7230,7 @@
    "anchors": [
     "Name and nursing only"
    ],
-   "missing_gate": "A well-sourced namesake: the Michigan location and CNM credential contradict this profile's New York RN record (Chase Mills / Massena Memorial / SUNY Canton).",
+   "missing_gate": "This midwife is in Flint, Michigan, but Jessica's record is a New York RN, so she is a namesake.",
    "confidence": 28,
    "confidence_parts": {
     "identity": 6,
@@ -7256,7 +7256,7 @@
     "Carnegie Young Leaders cohort (already on her profile)",
     "Distinctive full name"
    ],
-   "missing_gate": "Only one profile anchor beyond the name: the Bronx project page carries no Army, 27th IBCT, or Syracuse tie.",
+   "missing_gate": "Only her name matches beyond the Bronx project \u2014 the page gives no Army or Syracuse tie, so I can't be sure it's the same person.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 36,
@@ -7282,7 +7282,7 @@
     "Seaway Valley Prevention Council (employer)",
     "Reality Check Coordinator title"
    ],
-   "missing_gate": "The only source is her own employer's newsletter, it carries no verifiable published date, and the item is routine job-event attendance, not a change.",
+   "missing_gate": "This is from her own employer's newsletter only, with no date shown, so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 44,
@@ -7307,7 +7307,7 @@
    "anchors": [
     "University of Connecticut (profile university)"
    ],
-   "missing_gate": "Single anchor: she is identified only by name in a photo caption, with no Denver, social-work, or St. Lawrence County tie in the article.",
+   "missing_gate": "She's identified only by name in a photo caption, with nothing tying her to Denver or social work, so I can't be sure it's her.",
    "confidence": 67,
    "confidence_parts": {
     "identity": 30,
@@ -7333,7 +7333,7 @@
     "Potsdam, NY (hockey player's hometown)",
     "University of New Hampshire"
    ],
-   "missing_gate": "The award is true of the hockey player, but whether the hockey player is the same person as this profile's Rochester Regional Health phlebotomist is the identity question a prior candidate scored 18/100 on; the page says nothing connecting him to RRH or phlebotomy.",
+   "missing_gate": "Nothing connects the hockey player to the phlebotomy job on Joe's record, so I can't be sure they're the same person.",
    "confidence": 20,
    "confidence_parts": {
     "identity": 8,
@@ -7359,7 +7359,7 @@
     "Potsdam High School (profile highlight)",
     "Northern New York upbringing"
    ],
-   "missing_gate": "A family-relationship fact sourced from a sibling's self-written sketch; family material is held for JD.",
+   "missing_gate": "This names Kale's brothers, from a sketch his brother wrote, so I always check with you first.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 42,
@@ -7384,7 +7384,7 @@
    "anchors": [
     "New York State Police"
    ],
-   "missing_gate": "Aggregator-only listing found on a third person's page, tying a single anchor, and the fact adds little beyond the State Police affiliation already on file.",
+   "missing_gate": "This is an aggregator listing on someone else's page, and his State Police tie is already on file, so I want you to decide.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 30,
@@ -7409,7 +7409,7 @@
    "anchors": [
     "New Testament Church"
    ],
-   "missing_gate": "Single anchor only: the document does not mention St. Lawrence University or Canton employment, and Jason Sweet is a common name.",
+   "missing_gate": "Only his name matches \u2014 the document doesn't mention St. Lawrence University or Canton, and Jason Sweet is a common name.",
    "confidence": 40,
    "confidence_parts": {
     "identity": 18,
@@ -7435,7 +7435,7 @@
     "Potsdam, NY",
     "Nurse-midwife / nurse practitioner profession"
    ],
-   "missing_gate": "Aggregator-only listing seen as a search result, and its address conflicts with the practice addresses already on file.",
+   "missing_gate": "Her record lists other practice addresses, but this directory lists 515 S Canton Rd, so it's your call.",
    "confidence": 40,
    "confidence_parts": {
     "identity": 25,
@@ -7461,7 +7461,7 @@
     "Exact name",
     "Senior-year high-school friendship, consistent with York Central School"
    ],
-   "missing_gate": "The only source is the couple's self-created wedding site, with no independent corroboration.",
+   "missing_gate": "This is from the couple's own wedding site (Zola) only, so I want you to decide.",
    "confidence": 54,
    "confidence_parts": {
     "identity": 30,
@@ -7486,7 +7486,7 @@
    "anchors": [
     "Exact name only"
    ],
-   "missing_gate": "Name-only document with no Ogdensburg/Waddington, nursing, or university anchor, and Danielle Guimond is not a unique name.",
+   "missing_gate": "This page shows only her name and a date \u2014 no Ogdensburg, nursing, or school detail \u2014 so I can't be sure it's the same person.",
    "confidence": 20,
    "confidence_parts": {
     "identity": 8,
@@ -7538,7 +7538,7 @@
     "The name and town match exactly: Kathy Whiteford of Canton, NY",
     "Her record already lists Calvary Baptist Church in Canton"
    ],
-   "missing_gate": "This is about Kathy's family, so I always check with you first. It comes from an obituary.",
+   "missing_gate": "This is about Kathy's partner Jay Fifield, from his obituary, so I always check with you first.",
    "confidence": 77,
    "confidence_parts": {
     "identity": 40,
@@ -7564,7 +7564,7 @@
     "The name and town match exactly: Kathy Whiteford of Canton, NY",
     "Her record already lists Calvary Baptist Church in Canton"
    ],
-   "missing_gate": "I am not sure this is the same Kathy. The name and Canton match, but that old town guide listing is the only thing tying it to her.",
+   "missing_gate": "The name and Canton match, but that old town guide listing is the only thing tying this to Kathy, so I can't be sure it's her.",
    "confidence": 47,
    "confidence_parts": {
     "identity": 26,
@@ -7590,7 +7590,7 @@
     "Villnave is a rare last name",
     "The obituary is from Norwood, NY in St. Lawrence County"
    ],
-   "missing_gate": "This is about Jazmyn's family, so I always check with you first. It comes from an obituary.",
+   "missing_gate": "This is about Jazmyn's family, from her great-grandfather's obituary, so I always check with you first.",
    "confidence": 74,
    "confidence_parts": {
     "identity": 38,
@@ -7615,7 +7615,7 @@
    "anchors": [
     "He is listed as being in Potsdam"
    ],
-   "missing_gate": "I am not sure this is the same Andrew Haas. The name matches, but the only thing tying this to him is that he lives in Potsdam, and the name is common.",
+   "missing_gate": "The name matches and he lives in Potsdam, but the name is common and that's the only tie, so I can't be sure it's him.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 20,
@@ -7641,7 +7641,7 @@
     "The name matches exactly",
     "The announcement lists Potsdam as her hometown"
    ],
-   "missing_gate": "I am not sure this is the same Megan. The name matches and she is from Potsdam, but nothing in the announcement ties her to Christian Fellowship Center, and the name is common.",
+   "missing_gate": "She's from Potsdam, but nothing ties her to Christian Fellowship Center and the name is common, so I can't be sure it's the same Megan.",
    "confidence": 71,
    "confidence_parts": {
     "identity": 30,
@@ -7667,7 +7667,7 @@
     "Taylynn Britton is an uncommon name",
     "Georgia Military College is a military college, but the listing does not name the 27th IBCT"
    ],
-   "missing_gate": "I am not sure this is the same Taylynn. The name matches, but nothing in the scholarship listing ties her directly to the 27th IBCT.",
+   "missing_gate": "The name matches, but nothing in the scholarship listing ties her to the 27th IBCT, so I can't be sure it's the same Taylynn.",
    "confidence": 53,
    "confidence_parts": {
     "identity": 24,
@@ -7693,7 +7693,7 @@
     "Taylynn is a distinctive name",
     "The Georgia Military College link comes from a scholarship find, with no separate link to the 27th IBCT"
    ],
-   "missing_gate": "I am not sure this is the same Taylynn Britton. The name is distinctive, but this result is tied to Taylynn only through a scholarship find about Georgia Military College, not through a separate link to the 27th IBCT.",
+   "missing_gate": "This result reaches Taylynn only through the Georgia Military College scholarship find, with no separate tie to the 27th IBCT.",
    "confidence": 55,
    "confidence_parts": {
     "identity": 22,
@@ -7745,7 +7745,7 @@
     "Natalie's record already lists Malone, NY as her hometown",
     "The Health Occupations track is the training track for a medic before service"
    ],
-   "missing_gate": "I could not double-check this against a second source. The list matches Natalie's hometown of Malone and her health training, but it is from before her Army service.",
+   "missing_gate": "I could not double-check this against a second source \u2014 it matches her Malone hometown and health training from before her Army service.",
    "confidence": 73,
    "confidence_parts": {
     "identity": 34,
@@ -7771,7 +7771,7 @@
     "Nina's record already lists ServiceMaster Apple Valley",
     "Nina is named alongside Isa Criscitello of the same team"
    ],
-   "missing_gate": "I could not double-check this against a second source. I found it on one news page that collects ServiceMaster franchise stories.",
+   "missing_gate": "I could not double-check this against a second source \u2014 it comes from one franchise news page only.",
    "confidence": 67,
    "confidence_parts": {
     "identity": 40,
@@ -7822,7 +7822,7 @@
    "anchors": [
     "Her hometown on file is Massena"
    ],
-   "missing_gate": "This is about Paige's family, so I always check with you first. It comes from an obituary, and Paige's name is common, so that obituary is the only thing tying this to her.",
+   "missing_gate": "This comes from an obituary listing Paige among Wayne Davis's children, and her name is common, so I always check with you first.",
    "confidence": 61,
    "confidence_parts": {
     "identity": 28,
@@ -7898,7 +7898,7 @@
     "Canton residence on file",
     "Named in the NCPR photo caption"
    ],
-   "missing_gate": "Held: graded likely - a single dated news anchor from 2012. Lineage: seed: lives in Canton NY (on file) -> NCPR news photo caption naming Canton parent Kim Sisk",
+   "missing_gate": "I could not double-check this \u2014 it rests on one 2012 news photo caption naming Canton parent Kim Sisk.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 38,
@@ -8001,7 +8001,7 @@
     "Stephen has a distinctive full name",
     "His father's published obituary names him among the survivors"
    ],
-   "missing_gate": "This is about Stephen's family, so I always check with you first. It comes from his father's obituary.",
+   "missing_gate": "This is about Stephen's family, from his father's obituary, so I always check with you first.",
    "confidence": 75,
    "confidence_parts": {
     "identity": 42,
@@ -8027,7 +8027,7 @@
     "Unique name",
     "Potsdam work history"
    ],
-   "missing_gate": "Held: self-authored resume profile (Bold.pro), not independently verified. Lineage: seed: Potsdam-area Rochester Regional Health affiliation + Buffalo ties -> his public Bold.pro resume",
+   "missing_gate": "This is from a self-reported resume site (Bold.pro), so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 42,
@@ -8105,7 +8105,7 @@
     "Her resume lists the same Nashoba Regional High School diploma from July 2020 that is already on her record",
     "Her record already lists the U.S. Air Force"
    ],
-   "missing_gate": "I found this on one website only, and it is Grace's own resume, so I want you to decide. Her resume lists the same high school diploma that is already on her record.",
+   "missing_gate": "This is from one website only, Grace's own resume, so I want you to decide.",
    "confidence": 67,
    "confidence_parts": {
     "identity": 40,
@@ -8156,7 +8156,7 @@
     "His record already lists a bachelor's degree from SUNY Institute of Technology in 2008",
     "A 2007 SUNY Poly student page names Josiah Tabolt in Civil Engineering Technology"
    ],
-   "missing_gate": "Josiah's record says he is a business owner in Lyons Falls, NY. The two don't match, and I don't change a record on my own when new information disagrees with it.",
+   "missing_gate": "Josiah's record says he's a business owner in Lyons Falls, NY, but ZoomInfo lists him as a Corning manager, so it's your call.",
    "confidence": 67,
    "confidence_parts": {
     "identity": 40,
@@ -8181,7 +8181,7 @@
    "anchors": [
     "Her hometown on file is South Colton"
    ],
-   "missing_gate": "I am not sure this is the same Tracy. Her hometown, South Colton, is the only thing tying this yearbook entry to her.",
+   "missing_gate": "Her hometown, South Colton, is the only thing tying this yearbook entry to Tracy, so I can't be sure it's her.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 22,
@@ -8207,7 +8207,7 @@
     "Jason's record already lists Canton, NY, the same town as his St. Lawrence University job",
     "Jason's Information Technology field matches his St. Lawrence University IT role"
    ],
-   "missing_gate": "I could not double-check this against a second source. The honors lists match Jason's town and Information Technology field, but they do not name his employer.",
+   "missing_gate": "I could not double-check this against a second source \u2014 the honors lists match his town and IT field but don't name his employer.",
    "confidence": 72,
    "confidence_parts": {
     "identity": 32,
@@ -8233,7 +8233,7 @@
     "Erin's record already lists Medina High School",
     "Erin is named in the homecoming court caption in order"
    ],
-   "missing_gate": "I matched Erin to this photo by the order of names in the caption, and I could not double-check it against a second source, so I want you to decide.",
+   "missing_gate": "I matched Erin to this photo only by the caption's name order, and I could not double-check it, so I want you to decide.",
    "confidence": 66,
    "confidence_parts": {
     "identity": 36,
@@ -8259,7 +8259,7 @@
     "Her record lists trumpet and Medina Mustang Band",
     "Her record lists enrollment at SUNY Potsdam"
    ],
-   "missing_gate": "I could not double-check this against a second source. It comes from one concert program only.",
+   "missing_gate": "I could not double-check this against a second source \u2014 it comes from one concert program only.",
    "confidence": 73,
    "confidence_parts": {
     "identity": 38,
@@ -8284,7 +8284,7 @@
    "anchors": [
     "Jamal's record already lists Wayne School of Engineering"
    ],
-   "missing_gate": "I could not double-check this against a second source. I found only one news story from 2013, and it matches the school already on Jamal's record.",
+   "missing_gate": "I could not double-check this against a second source \u2014 there's only one 2013 news story, though it matches the school on his record.",
    "confidence": 70,
    "confidence_parts": {
     "identity": 36,
@@ -8310,7 +8310,7 @@
     "Danica's record already lists the Dunphey family and Christian Fellowship Center circle",
     "The blog content is about Madrid and Potsdam, NY"
    ],
-   "missing_gate": "I could not double-check this against a second source. The blog uses her name and mentions the Madrid and Potsdam area, but it is her own blog.",
+   "missing_gate": "I could not double-check this against a second source \u2014 the blog uses her name and area, but it is her own blog.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 38,
@@ -8336,7 +8336,7 @@
     "Danica's record already lists the Madrid, NY area",
     "Danica is named as a meal deliverer on the Meal Train lists"
    ],
-   "missing_gate": "I could not double-check this against a second source. Danica's name is on the Meal Train lists as a meal deliverer, and that is the only place I found it.",
+   "missing_gate": "I could not double-check this against a second source \u2014 her name appears only on the Meal Train lists.",
    "confidence": 64,
    "confidence_parts": {
     "identity": 36,
@@ -8362,7 +8362,7 @@
     "Her record lists the same clerk's office job",
     "No source names a Megan Eurto in the clerk's office"
    ],
-   "missing_gate": "Megan's record says she is deputy village clerk for the Village of Canton. The two don't match, and I don't change a record on my own when new information disagrees with it.",
+   "missing_gate": "Megan's record says deputy village clerk, but the September 2025 minutes name her Village Clerk, so it's your call.",
    "confidence": 50,
    "confidence_parts": {
     "identity": 16,
@@ -8388,7 +8388,7 @@
     "Gouverneur, NY on file",
     "Named MileSplit athlete profile for Gouverneur"
    ],
-   "missing_gate": "Held: graded likely - a single athlete-profile source. Lineage: seed: Gouverneur NY -> MileSplit NY athlete profile for Peyton Mussaw of Gouverneur",
+   "missing_gate": "I could not double-check this \u2014 it comes from one athlete-profile source (MileSplit) only, so I want you to decide.",
    "confidence": 68,
    "confidence_parts": {
     "identity": 40,
@@ -8414,7 +8414,7 @@
     "Thomas's record already lists a degree from Alfred State College",
     "Thomas's record already lists the Potsdam and Norwood area"
    ],
-   "missing_gate": "I found this on one website that collects information from other places, so I want you to decide. There is also another Thomas Quant in the Norwood area, a SUNY Canton graduate from 2014 who works as an IBEW electrician, and I did not mix them together.",
+   "missing_gate": "I found this on one website that collects information from other places, and there's another Thomas Quant nearby, so I want you to decide.",
    "confidence": 59,
    "confidence_parts": {
     "identity": 34,
@@ -8440,7 +8440,7 @@
     "SUNY Potsdam wrote this record about Skyler",
     "Her record already lists SUNY Potsdam"
    ],
-   "missing_gate": "Skyler's record says Skyler graduated from SUNY Potsdam in May 2023. The two don't match, and I don't change a record on my own when new information disagrees with it.",
+   "missing_gate": "Skyler's record says she graduated from SUNY Potsdam in May 2023, but Merit says May 2022, so it's your call.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 46,
@@ -8466,7 +8466,7 @@
     "Her record lists Jefferson Community College",
     "The official PrestoSports game records list her"
    ],
-   "missing_gate": "I could not double-check this against a second source. It comes from game records only.",
+   "missing_gate": "I could not double-check this against a second source \u2014 it comes from game records only.",
    "confidence": 78,
    "confidence_parts": {
     "identity": 42,
@@ -8491,7 +8491,7 @@
    "anchors": [
     "His job at Massena Central is already shown in the school district's official staff list"
    ],
-   "missing_gate": "I found these titles on one collecting website only, so I want you to decide. His job at Massena Central is already shown in the district's own staff list, but these extra titles are not.",
+   "missing_gate": "I found these titles on one collecting website (CIENCE) only, so I want you to decide.",
    "confidence": 53,
    "confidence_parts": {
     "identity": 34,
@@ -8776,7 +8776,7 @@
     "Her record already lists Christian Fellowship Center",
     "Her record already lists her marriage to Nathaniel Wolf on June 22, 2024, with a ceremony in Canton and a reception in Potsdam"
    ],
-   "missing_gate": "I am not sure this is the same Anne. The name and the marriage to Nathaniel Wolf match, but I have no other proof tying this page to her.",
+   "missing_gate": "The name and her marriage to Nathaniel Wolf match, but I have no other proof tying this page to Anne.",
    "confidence": 58,
    "confidence_parts": {
     "identity": 30,
@@ -8958,7 +8958,7 @@
     "Janice's record already lists Christian Fellowship Center",
     "Janice's record already lists art"
    ],
-   "missing_gate": "I am not sure this Janice Dane is the same person as the Janice Dane in the directory. The name matches and Janice's record lists art, but the only tie is the name and Madrid, New York.",
+   "missing_gate": "The name matches and her record lists art, but the only tie is the name and Madrid, New York, so I can't be sure it's her.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -9114,7 +9114,7 @@
     "Jennifer's record already lists her as Director of Critical Care at Canton-Potsdam Hospital",
     "Jennifer's record already lists Potsdam, NY"
    ],
-   "missing_gate": "This is about Jennifer's family, so I always check with you first. It comes from her signed entry in the Potsdam Fire Department guestbook.",
+   "missing_gate": "This is about Jennifer's family, from her own signed guestbook entry, so I always check with you first.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 42,
@@ -9166,7 +9166,7 @@
     "Kaylee's record already lists Edwards, NY",
     "Kaylee's record already lists RN work in the Emergency Department and as a SWAT RN at Upstate Medical University"
    ],
-   "missing_gate": "This is about Kaylee's family, so I always check with you first. It comes from an obituary.",
+   "missing_gate": "This is about Kaylee's family \u2014 she's a stepdaughter of John Calvin Clarke Jr. \u2014 from his obituary, so I always check with you first.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 42,
@@ -9322,7 +9322,7 @@
     "His record already lists him as 1SG in HHC, 27th IBCT, NY Army National Guard",
     "He is a confirmed Delmar Duathlon entrant from Niskayuna, NY"
    ],
-   "missing_gate": "I am not sure this is the same Ray. The name is the same and the record is in Albany, NY, but I have no solid proof tying this job record to him.",
+   "missing_gate": "The name matches and it's in Albany, NY, but I have no solid proof tying this job record to Ray.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -9348,7 +9348,7 @@
     "Her hometown on file is Canton, NY",
     "She is linked to Seattle, WA"
    ],
-   "missing_gate": "I am not sure this is the same Anna. The record matches her name and both Seattle and Canton, but it comes from one people-search website and nothing else ties it to her.",
+   "missing_gate": "This matches her name and both Seattle and Canton, but it comes from one people-search website with nothing else tying it to her.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -9374,7 +9374,7 @@
     "Kathy is linked to Norwood, NY",
     "Kathy's record lists Unit Clerk at Rochester Regional Health St. Lawrence Region"
    ],
-   "missing_gate": "This is about Kathy's family, so I always check with you first. It comes from an obituary.",
+   "missing_gate": "This is about Kathy's family, from her father's obituary, so I always check with you first.",
    "confidence": 56,
    "confidence_parts": {
     "identity": 28,
@@ -9528,7 +9528,7 @@
    "anchors": [
     "Maddie's record already lists her as a registered nurse at Canton-Potsdam Hospital and UVM Health, in Moriah, NY, and at Chamberlain University"
    ],
-   "missing_gate": "I am not sure this is the same Maddie Morgan. The name and nursing job match, but the DAISY page does not name her hospital, so nothing on the page ties it directly to her.",
+   "missing_gate": "The name and nursing job match, but the page doesn't name her hospital, so nothing ties it directly to Maddie.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -9605,7 +9605,7 @@
    "anchors": [
     "Her record already lists Rochester Regional Health Patient Access in Massena, NY"
    ],
-   "missing_gate": "I am not sure this Jacqueline Butterfield is the same person as Jackie. The Massena address matches, but I have no solid proof tying this listing to her.",
+   "missing_gate": "The Massena address matches, but I have no solid proof tying this Jacqueline Butterfield listing to Jackie.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -9855,7 +9855,7 @@
    "anchors": [
     "His record already lists J H Services recording studio in Gouverneur, NY, and work as a systems operator for Indian River Central School District"
    ],
-   "missing_gate": "This is a personal detail about James, so I always check with you first. It comes from his own AirGigs page.",
+   "missing_gate": "This is a personal detail about James, from his own AirGigs page, so I always check with you first.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 42,
@@ -10037,7 +10037,7 @@
     "Her record already lists Madrid, NY",
     "Her record already lists Emily Murphy Photography"
    ],
-   "missing_gate": "I am not sure this Emily Murphy is the same person as Emily Elliott. The Murphy name matches, but I have no solid proof tying this listing to her.",
+   "missing_gate": "The Murphy name matches, but I have no solid proof tying this listing to Emily.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -10244,7 +10244,7 @@
    "anchors": [
     "A Facebook bio is the only other mention I found"
    ],
-   "missing_gate": "I am not sure this is the same Shelleymae Bartlett. The full name is unusual and the listing says Potsdam, NY, but I found nothing else to tie this listing to Shelleymae.",
+   "missing_gate": "The full name is unusual and the listing says Potsdam, NY, but I found nothing else tying it to Shelleymae.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -10270,7 +10270,7 @@
     "His record lists Potsdam, New York",
     "His record lists the Family group and Christian Fellowship Center"
    ],
-   "missing_gate": "I am not sure this is the same Colby. The only links are that he is from Potsdam and part of the Criscitello family, and this came from a background-check website that collects records.",
+   "missing_gate": "The only links are Potsdam and the Criscitello family, and this came from a background-check website, so I can't be sure it's him.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -10348,7 +10348,7 @@
     "Her record already lists Pittsburgh, PA",
     "She is listed as a surviving sister in Huber obituaries in White Oak, PA"
    ],
-   "missing_gate": "This is about Phyllis's family, so I always check with you first. It comes from an article she wrote herself for the PA Homeschoolers newsletter.",
+   "missing_gate": "This is about Phyllis's family, from an article she wrote herself, so I always check with you first.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 42,
@@ -10452,7 +10452,7 @@
     "Abigail's record already lists Christian Fellowship Center",
     "Abigail's record already lists Norwood, NY"
    ],
-   "missing_gate": "I am not sure this is the same Abigail Daniels. The name and Norwood, NY match, but I found this only on a people-search website and nothing else ties it to her.",
+   "missing_gate": "The name and Norwood, NY match, but this is only from a people-search website with nothing else tying it to her.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -10503,7 +10503,7 @@
     "Levi's record already lists Border Patrol",
     "Levi's record already lists Winthrop, NY"
    ],
-   "missing_gate": "This is about Levi's family, so I always check with you first. It comes from two obituaries.",
+   "missing_gate": "This is about Levi's family, from two obituaries, so I always check with you first.",
    "confidence": 76,
    "confidence_parts": {
     "identity": 42,
@@ -10529,7 +10529,7 @@
     "Olivia's record already lists New Testament Church",
     "Olivia's record already lists Massena, NY"
    ],
-   "missing_gate": "I am not sure this is the same Olivia Miller. The name matches and Olivia lives in Massena, NY, but I found this only in public payroll records and nothing else ties this job to her.",
+   "missing_gate": "The name matches and she lives in Massena, but nothing else ties this payroll job to Olivia.",
    "confidence": 37,
    "confidence_parts": {
     "identity": 20,
@@ -10581,7 +10581,7 @@
     "Her record lists Malone, New York",
     "Her record lists North Country Community College"
    ],
-   "missing_gate": "This is about Maggie's family, so I always check with you first. It comes from an obituary.",
+   "missing_gate": "This is about Maggie's family \u2014 her brother and sister \u2014 from her mother's obituary, so I always check with you first.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 44,
@@ -10606,7 +10606,7 @@
    "anchors": [
     "She lives in Auburn, NY, works as an LPN at Auburn Community Hospital, and this comes from her grandfather Robert Stott's obituary"
    ],
-   "missing_gate": "This is about Brittney's family, so I always check with you first. It comes from an obituary.",
+   "missing_gate": "This is about Brittney's family, from an obituary, so I always check with you first.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 44,
@@ -10632,7 +10632,7 @@
     "Phyllis's record already lists Pittsburgh, PA",
     "Phyllis was named as a surviving sister in the Huber obituaries from White Oak, PA"
    ],
-   "missing_gate": "This is about Phyllis's family, so I always check with you first. It comes from an obituary.",
+   "missing_gate": "This is about Phyllis's family \u2014 her marriage \u2014 from an obituary, so I always check with you first.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 44,
@@ -10658,7 +10658,7 @@
     "Phyllis's record already lists Pittsburgh, PA",
     "Phyllis is listed as a surviving sister in the Huber obituaries, in White Oak, PA"
    ],
-   "missing_gate": "This is about Phyllis's family, so I always check with you first. It comes from an obituary.",
+   "missing_gate": "This is about Phyllis's family \u2014 her parents \u2014 from her father's obituary, so I always check with you first.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 44,
@@ -10710,7 +10710,7 @@
     "Her record lists her as a Special Educator at Nightingale Elementary, Massena Central School District",
     "She got a 2024 Puzzle Piece Foundation grant for an ASD classroom"
    ],
-   "missing_gate": "Ana's record says she is a Special Education Teacher at Nightengale Elementary. The two don't match, and I don't change a record on my own when new information disagrees with it.",
+   "missing_gate": "Ana's record says Special Education Teacher at Nightengale Elementary, but the staff list says PreKindergarten Teacher, so it's your call.",
    "confidence": 89,
    "confidence_parts": {
     "identity": 46,
@@ -10735,7 +10735,7 @@
    "anchors": [
     "He is at Clarkson University, has an Ignite Presidential Fellowship, and is in the class of 2029"
    ],
-   "missing_gate": "Max's record says he is a Mechanical Engineering major. The two don't match, and I don't change a record on my own when new information disagrees with it.",
+   "missing_gate": "Max's record says Mechanical Engineering, but Clarkson's Merit pages say civil engineering, so it's your call.",
    "confidence": 86,
    "confidence_parts": {
     "identity": 46,
@@ -10761,7 +10761,7 @@
     "Amber's record already lists nursing at SUNY Canton",
     "Amber's record already lists Potsdam, NY"
    ],
-   "missing_gate": "Amber's record says Dean's List for Spring 2026. The two don't match, and I don't change a record on my own when new information disagrees with it.",
+   "missing_gate": "Amber's record says Dean's List for Spring 2026, but SUNY Canton's honors list says President's List, so it's your call.",
    "confidence": 86,
    "confidence_parts": {
     "identity": 44,
@@ -10839,7 +10839,7 @@
     "Saranac Lake, NY",
     "Partial name (Carson Ryan)"
    ],
-   "missing_gate": "The pages name a Carson Ryan in Saranac Lake, but nothing on them ties him to the middle name Hayes or to the Syracuse University study already on file.",
+   "missing_gate": "The pages name a Carson Ryan in Saranac Lake, but nothing ties him to the middle name Hayes or the Syracuse study on file.",
    "confidence": 62,
    "confidence_parts": {
     "identity": 25,
@@ -10916,7 +10916,7 @@
     "University of Michigan",
     "Ann Arbor, MI"
    ],
-   "missing_gate": "The brief names a Rachel Kushner at the University of Michigan, but other women with the same name are publicly visible and nothing on it ties her to the psychology study already on file.",
+   "missing_gate": "The brief names a Rachel Kushner at Michigan, but nothing ties her to the psychology study on file, and other women share the name.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 25,
@@ -10968,7 +10968,7 @@
     "De Kalb Junction hometown (already on file)",
     "NCPR reporter (already on file)"
    ],
-   "missing_gate": "This follows from something already on Richard's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "missing_gate": "This one is your call: it follows from what's already on his record but hasn't been confirmed on its own.",
    "confidence": 82,
    "confidence_parts": {
     "identity": 45,
@@ -10994,7 +10994,7 @@
     "SUNY Canton student (already on file)",
     "Digital Communications & Storytelling major (already on file)"
    ],
-   "missing_gate": "This follows from something already on Richard's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "missing_gate": "This one is your call: it follows from what's already on his record but hasn't been confirmed on its own.",
    "confidence": 85,
    "confidence_parts": {
     "identity": 44,
@@ -11019,7 +11019,7 @@
    "anchors": [
     "Clarkson University OT program director (already on file)"
    ],
-   "missing_gate": "This follows from something already on Alisha's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "missing_gate": "This one is your call: it follows from what's already on her record but hasn't been confirmed on its own.",
    "confidence": 83,
    "confidence_parts": {
     "identity": 45,
@@ -11070,7 +11070,7 @@
    "anchors": [
     "Clarkson University PT chair (already on file)"
    ],
-   "missing_gate": "This follows from something already on Samantha's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "missing_gate": "This one is your call: it follows from what's already on her record but hasn't been confirmed on its own.",
    "confidence": 90,
    "confidence_parts": {
     "identity": 48,
@@ -11122,7 +11122,7 @@
     "From the Heart Cabinetry (already on file)",
     "Joined his father's business in 1992 (already on file)"
    ],
-   "missing_gate": "This follows from something already on Eric's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "missing_gate": "This one is your call: it follows from what's already on his record but hasn't been confirmed on its own.",
    "confidence": 84,
    "confidence_parts": {
     "identity": 40,
@@ -11148,7 +11148,7 @@
     "From the Heart Cabinetry owner (already on file)",
     "Tim Criscitello (family, already on file)"
    ],
-   "missing_gate": "This follows from something already on Eric's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "missing_gate": "This one is your call: it follows from what's already on his record but hasn't been confirmed on its own.",
    "confidence": 89,
    "confidence_parts": {
     "identity": 46,
@@ -11174,7 +11174,7 @@
     "Vivid Coffee founder (already on file)",
     "Burlington caf\u00e9 (already on file)"
    ],
-   "missing_gate": "Ian's record says he founded Vivid Coffee Roasters in Burlington, Vermont. The two don't match, and I don't change a record on my own when new information disagrees with it.",
+   "missing_gate": "Ian's record says he founded Vivid Coffee in Burlington, but Seven Days says he started it in Winooski in 2015, so it's your call.",
    "confidence": 88,
    "confidence_parts": {
     "identity": 46,
@@ -11483,7 +11483,7 @@
    "anchors": [
     "Clarkson University women's hockey (already on file)"
    ],
-   "missing_gate": "I could not double-check this \u2014 the assist shows only in a box-score search result, and there is no source page to link \u2014 so I want you to decide.",
+   "missing_gate": "I could not double-check this \u2014 the assist shows only in a box-score search result with no source page \u2014 so I want you to decide.",
    "confidence": 60,
    "confidence_parts": {
     "identity": 40,
