@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.4.3';
+var APP_VERSION = '4.4.4';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8266,11 +8266,18 @@ function rcExitThenNext(rowEl, nextCur){
     });
   }); });
   setTimeout(function(){
-    rcPaint();
+    /* No repaint (V4.4.4): a repaint re-sorts the bundles and the
+       page reshuffles under JD \u2014 the decided rows simply leave
+       the DOM, the counts are already updated in place, and the
+       next card down (already on the page, one card away) takes
+       the marker and the short scroll to the top. A repaint only
+       happens if the next card is somehow not on the page, or
+       the queue just emptied and owes its caught-up state. */
+    els.forEach(function(el2){ if(el2.parentNode) el2.parentNode.removeChild(el2); });
+    var row = nextCur ? rcRowEl(nextCur) : null;
+    if(nextCur && !row){ rcPaint(); rcSetCur(nextCur); return; }
+    if(!nextCur && !document.querySelector('#rcconsole .rc-row[data-rcid]')){ rcPaint(); return; }
     if(nextCur) rcSetCur(nextCur);
-    /* rcPaint restores the pre-paint scroll on the next frame;
-       the conveyor scroll has to land after that restore or it
-       gets snapped back. Two frames puts it safely past. */
     requestAnimationFrame(function(){ requestAnimationFrame(rcScrollCurToTop); });
   }, reduced ? 0 : 300);
 }
@@ -8296,6 +8303,34 @@ function rcScrollCurToTop(){
     if(Math.abs(rel - 10) > 4){ var y2 = target(); if(y2 != null) view.scrollTo({ top: y2, behavior: 'smooth' }); }
   }, 520);
 }
+/* The visual queue (V4.4.4, JD 2026-11-04): the next current card
+   is the next pending card DOWN THE PAGE as JD sees it, read off
+   the rendered rows \u2014 never off the re-sorted model. The model
+   reshuffles bundles after a decision (a bundle sinks when its
+   top card is filed), so the model\u2019s \u201cnext\u201d could sit
+   halfway down the page and the conveyor scroll became a violent
+   fling. The page order is the queue; it does not reshuffle
+   mid-session. */
+function rcDomOrder(){
+  var out = [], seen = {};
+  document.querySelectorAll('#rcconsole .rc-row[data-rcid]').forEach(function(r){
+    var id = r.getAttribute('data-rcid');
+    if(!id || seen[id]) return;
+    var c = null;
+    (RC.candidates || []).forEach(function(x){ if(x.id === id) c = x; });
+    if(c && rcStatus(c).k === 'pending'){ seen[id] = 1; out.push(id); }
+  });
+  return out;
+}
+function rcDomNext(skip){
+  var full = rcDomOrder(), sawSkip = false, before = '';
+  for(var i = 0; i < full.length; i++){
+    if(skip[full[i]]){ sawSkip = true; continue; }
+    if(sawSkip) return full[i];
+    before = full[i];
+  }
+  return sawSkip ? before : '';
+}
 function rcDecide(id, decision){
   if(!RC || !RC.candidates) return;
   var c = null;
@@ -8315,8 +8350,8 @@ function rcDecide(id, decision){
      the current view (or precedes it, when it is last) becomes the
      current row once this decision lands, so JD can decide, decide,
      decide without touching the mouse. */
-  var nextCur = '';
-  (function(){
+  var nextCur = rcDomNext((function(){ var s = {}; s[id] = 1; return s; })());
+  if(!nextCur) (function(){
     var m0 = rcModel(), idx = -1;
     m0.shown.forEach(function(r, j){ if(r.c.id === id) idx = j; });
     if(idx < 0) return;
@@ -8383,8 +8418,9 @@ function rcDecideGroup(cs, decision){
   if(!pend.length){ toast('That candidate was already decided.'); rcPaint(); return; }
   var idset = {};
   cs.forEach(function(c){ idset[c.id] = 1; });
-  var nextCur = '';
-  (function(){
+  var anchorIds = cs.map(function(c){ return c.id; });
+  var nextCur = rcDomNext(idset);
+  if(!nextCur) (function(){
     var m0 = rcModel(), first = -1, last = -1;
     m0.shown.forEach(function(r, j){ if(idset[r.c.id]){ if(first < 0) first = j; last = j; } });
     if(first < 0) return;
