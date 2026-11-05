@@ -4,20 +4,12 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "ct:megan daniels",
-   "display": "Megan Daniels",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-7862cf396e"
-  },
-  {
-   "key": "sf:shelleymae-bartlett",
-   "display": "Shelleymae Bartlett",
-   "field": "location_on_file",
-   "value": "Potsdam, NY",
-   "conf": 95,
-   "id": "pf-1f641c88ed"
+   "key": "ct:katelyn tomford",
+   "display": "Katelyn Tomford",
+   "field": "specialty",
+   "value": "Engineering",
+   "conf": 62,
+   "id": "pf-51204159a7"
   },
   {
    "key": "sf:murray",
