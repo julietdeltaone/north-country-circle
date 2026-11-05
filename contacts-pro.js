@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.4.6';
+var APP_VERSION = '4.4.7';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8282,14 +8282,37 @@ function rcExitThenNext(rowEl, nextCur){
   }, reduced ? 0 : 300);
 }
 /* After a decision, smooth-scroll the list (the #view scroller)
-   until the current card sits at the top of the list. If there
+   until the current person sits at the top of the list. If there
    is no next card, nothing scrolls. */
+/* The landing spot (V4.4.7, JD 2026-11-05): the person's HEADER
+   is what sits at the top, not the card. The card lives below
+   its bundle's name header, and the sticky "Pending n of N" bar
+   covers the top of the scroller — aiming the card itself at
+   the top slid the header under that bar and off the screen, so
+   the card landed with its top cut off. The scroll now aims the
+   bundle's header and lands it just under the sticky bar. */
 function rcScrollCurToTop(){
   var view = document.getElementById('view'); if(!view) return;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function target(){
+  function anchor(){
     var row = rcRowEl(RC_VIEW.cur); if(!row) return null;
-    return Math.max(0, view.scrollTop + row.getBoundingClientRect().top - view.getBoundingClientRect().top - 10);
+    var bundle = row.closest ? row.closest('.rc-bundle') : null;
+    var head = bundle ? bundle.querySelector('.rc-bhead') : null;
+    return head || row;
+  }
+  function rest(){
+    /* The sticky bar's resting bottom: it sticks at the scroller's
+       padding edge, so its bottom sits one padding-top plus its
+       own height below the scroller's top. Measured live on the
+       first landing: bar bottom 50px, not the 34px its height
+       alone suggests. */
+    var kb = document.querySelector('#rcconsole .rc-keybar');
+    var padTop = parseFloat(getComputedStyle(view).paddingTop) || 0;
+    return padTop + (kb ? kb.offsetHeight : 0) + 10;
+  }
+  function target(){
+    var el = anchor(); if(!el) return null;
+    return Math.max(0, view.scrollTop + el.getBoundingClientRect().top - view.getBoundingClientRect().top - rest());
   }
   var y = target(); if(y == null) return;
   view.scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
@@ -8298,9 +8321,9 @@ function rcScrollCurToTop(){
      target can push the card down while the scroll is moving.
      Once the motion settles, re-measure and land it exactly. */
   setTimeout(function(){
-    var row = rcRowEl(RC_VIEW.cur); if(!row) return;
-    var rel = row.getBoundingClientRect().top - view.getBoundingClientRect().top;
-    if(Math.abs(rel - 10) > 4){ var y2 = target(); if(y2 != null) view.scrollTo({ top: y2, behavior: 'smooth' }); }
+    var el = anchor(); if(!el) return;
+    var rel = el.getBoundingClientRect().top - view.getBoundingClientRect().top;
+    if(Math.abs(rel - rest()) > 4){ var y2 = target(); if(y2 != null) view.scrollTo({ top: y2, behavior: 'smooth' }); }
   }, 520);
 }
 /* The visual queue (V4.4.4, JD 2026-11-04): the next current card
