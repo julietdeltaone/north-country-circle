@@ -3664,7 +3664,7 @@ html[data-mode="light"] .rcb-unsupported{--rcband:#b91c1c}
 /* Research Command rows, compact table (restored V3.44.1, JD: the
    hero-format rows were too tall). Why-held text is the one upgrade
    kept from that pass: reading size, full contrast. */
-.rc-row{display:grid;grid-template-columns:98px minmax(300px,1.5fr) minmax(210px,.9fr) 148px;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line);align-items:start;transition:opacity .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),padding .3s var(--ease),border-width .3s var(--ease),transform .26s var(--ease)}
+.rc-row{display:grid;grid-template-columns:98px minmax(300px,1.5fr) minmax(210px,.9fr) 148px;gap:14px;padding:13px 20px;border-bottom:1px solid var(--line);align-items:start;transition:opacity .16s var(--ease),height .16s var(--ease),margin .16s var(--ease),padding .16s var(--ease),border-width .16s var(--ease),transform .26s var(--ease)}
 /* Decided rows settle in place (V3.80.1): fade + collapse like a
    Fact Inbox Read — nothing else on the page moves. */
 .rc-row.leaving,.rc-bhead.leaving{opacity:0;overflow:hidden}
@@ -3795,7 +3795,7 @@ html[data-mode="light"] .rccat-claim{--rccat:#6f675c}
 .rc-why{font-size:13.5px;line-height:1.55;color:var(--txt)}
 .rc-progress{padding:10px 20px;font:700 13.5px var(--serif);color:var(--txt);border-bottom:1px solid var(--line);background:var(--bg2)}
 .rc-bundle{border-bottom:1px solid var(--line)}
-.rc-bhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 20px 10px;background:var(--bg2);border-bottom:1px solid var(--line);transition:opacity .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),padding .3s var(--ease),border-width .3s var(--ease)}
+.rc-bhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 20px 10px;background:var(--bg2);border-bottom:1px solid var(--line);transition:opacity .16s var(--ease),height .16s var(--ease),margin .16s var(--ease),padding .16s var(--ease),border-width .16s var(--ease)}
 .rc-bav{display:inline-flex;flex:none}
 .rc-bav img{width:34px;height:34px;border-radius:50%;object-fit:cover;display:block}
 .rc-bhead .av{flex:none}
@@ -6135,12 +6135,12 @@ body[data-view="sandbox"] #view{overflow-y:auto !important;display:block}
 .fi-showing{font-size:12.5px;color:var(--dim)}
 .fi-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
 .fi-feed{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0;align-items:start}
-.fi-card{background:var(--glass);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid var(--line);border-radius:2px;padding:13px 15px;overflow:hidden;transition:opacity .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),padding .3s var(--ease),border-width .3s var(--ease)}
+.fi-card{background:var(--glass);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid var(--line);border-radius:2px;padding:13px 15px;overflow:hidden;transition:opacity .16s var(--ease),height .16s var(--ease),margin .16s var(--ease),padding .16s var(--ease),border-width .16s var(--ease)}
 .fi-card.flagged{border-color:var(--warn);box-shadow:0 0 0 1px var(--warn)}
 .fi-card.leaving{opacity:0}
-.fi-card.entering{animation:fi-in .28s var(--ease)}
+.fi-card.entering{animation:fi-in .14s var(--ease)}
 .fi-card.flash{border-color:var(--warn);box-shadow:0 0 0 2px var(--warn)}
-@keyframes fi-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fi-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .fi-top{display:flex;align-items:center;gap:14px}
 .fi-top .av-xl{width:56px;height:56px;font-size:21px;flex:none}
 .fi-id{min-width:0}
