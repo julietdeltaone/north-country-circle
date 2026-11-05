@@ -1784,6 +1784,10 @@
    "name": "sf:alisha-ohl",
    "pattern": "milestone",
    "source": "British Journal of Occupational Therapy",
+   "state": {
+    "at": "2026-11-05T14:21:43.267Z",
+    "status": "read"
+   },
    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12033894/"
   },
   {
@@ -1901,6 +1905,10 @@
    "name": "sf:alisha-ohl",
    "pattern": "milestone",
    "source": "American Occupational Therapy Association",
+   "state": {
+    "at": "2026-11-05T14:21:43.267Z",
+    "status": "read"
+   },
    "url": "https://www.aota.org/events/calendar/-/media/corporate/files/conferencedocs/2023/education-summit/2023-ed-summit.pdf"
   },
   {
@@ -1914,6 +1922,10 @@
    "name": "sf:alisha-ohl",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-05T14:21:43.267Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/sites/default/files/2023-06/Alisha-Ohl-CV.pdf"
   },
   {
@@ -2345,6 +2357,10 @@
    "name": "alexfornyassembly_",
    "pattern": "employer_change",
    "source": "U.S. Army",
+   "state": {
+    "at": "2026-11-05T14:21:38.665Z",
+    "status": "read"
+   },
    "url": "https://www.army.mil/article/294883/ny_army_guard_officer_promoted_at_site_of_historic_french_and_indian_war_battle"
   },
   {
@@ -2358,6 +2374,10 @@
    "name": "aleeparker_",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:21:41.764Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2021/honorss21.php"
   },
   {
@@ -2371,6 +2391,10 @@
    "name": "aleeparker_",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-05T14:21:41.764Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2022/honors-s22.php"
   },
   {
@@ -2384,6 +2408,10 @@
    "name": "sf:alisha-ohl",
    "pattern": "milestone",
    "source": "Inside Higher Ed",
+   "state": {
+    "at": "2026-11-05T14:21:43.267Z",
+    "status": "read"
+   },
    "url": "https://www.insidehighered.com/news/2022/03/02/colleges-award-tenure"
   },
   {
@@ -2410,6 +2438,10 @@
    "name": "cashhyyy",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:21:48.587Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert"
   },
   {
@@ -2423,6 +2455,10 @@
    "name": "cashhyyy",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-05T14:21:48.587Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert"
   },
   {
@@ -2436,6 +2472,10 @@
    "name": "e._.flam",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-05T14:21:52.060Z",
+    "status": "read"
+   },
    "url": "https://diy.clarkson.edu/apply-to-clarkson/clarkson-honors-students-find-new-perspectives-abroad/"
   },
   {
