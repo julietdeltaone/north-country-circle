@@ -3755,6 +3755,8 @@ html[data-mode="light"] .rccat-claim{--rccat:#6f675c}
 .rc-photo.on{background:color-mix(in srgb,var(--sky) 16%,transparent);border-color:var(--sky);color:var(--sky)}
 .rc-actnote{font-size:11.5px;line-height:1.45;color:var(--dim)}
 .rc-status{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 12px;border-radius:2px;font-size:12.5px;font-weight:700;border:1px solid var(--line2);color:var(--mut)}
+.rc-row.rc-decided{opacity:.55}
+.rc-row.rc-decided .rc-score{filter:grayscale(.5)}
 .rc-status.st-filed{color:var(--rcband);border-color:var(--rcband)}
 .rc-status.st-already{color:var(--txt)}
 .rc-none{padding:26px 20px;color:var(--mut)}
