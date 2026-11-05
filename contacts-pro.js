@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.3.0';
+var APP_VERSION = '4.4.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8276,8 +8276,8 @@ function rcDecide(id, decision){
     queuePatch(di, patch);
   });
   toast(decision === 'file'
-    ? 'Filed for ' + (c.display || '') + '. It saves through the Save Pool.'
-    : 'Dismissed for ' + (c.display || '') + '. Luna\u2019s call stands.', { undo:true });
+    ? 'Filed for ' + (c.display || '') + ': \u201C' + String(c.file_text || c.claim || '').slice(0, 70) + '\u201D'
+    : 'Dismissed for ' + (c.display || '') + ': \u201C' + String(c.file_text || c.claim || '').slice(0, 70) + '\u201D', { undo:true });
   if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
   /* No-move settle (V3.80.1, JD 2026-11-03: "Actions never move the
      page — a state change is not a navigation"). The old tail ran a
@@ -8677,7 +8677,15 @@ function rcEvidenceHTML(rows, leadRow, pubC, srcsHtml){
   var anchHtml = anch.length
     ? '<ul class="rc-anchors">' + anch.map(function(a){ return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>'
     : '<p class="rc-noanch">No matching facts listed \u2014 this one rests on the source alone.</p>';
-  return '<span class="rc-bh rc-ev-h">Evidence</span>' +
+  /* V4.4.0 (JD 2026-11-04): the source's own words lead the
+     Evidence panel — a verbatim quote, not Luna's summary. Older
+     candidates carry no quote field; the section simply omits. */
+  var quotes = [], qseen = {};
+  rows.forEach(function(r){ var q = String((r.c && r.c.quote) || '').trim(); if(q && !qseen[q.toLowerCase()]){ qseen[q.toLowerCase()] = 1; quotes.push(q); } });
+  var quoteHtml = quotes.length
+    ? '<div class="rc-ev-sec"><span class="rc-ev-lab">From the source</span>' + quotes.map(function(q){ return '<blockquote class="rc-quote">\u201C' + esc(q) + '\u201D</blockquote>'; }).join('') + '</div>'
+    : '';
+  return '<span class="rc-bh rc-ev-h">Evidence</span>' + quoteHtml +
     '<div class="rc-ev-sec"><span class="rc-ev-lab">What lines up</span>' + anchHtml + '</div>' +
     '<div class="rc-ev-sec"><span class="rc-ev-lab">Source</span>' + rcPubChip(pubC || {}) + '<div class="rc-src">' + srcsHtml + '</div></div>' +
     rcTouchesLine(rows, leadRow);
@@ -8906,6 +8914,13 @@ function rcOpenSource(){
    since the view now leads with it. Arrows / j / k / Enter stay
    the review's alone — the Fact Inbox never binds them. */
 var LR_KEY_OWNER = 'rc';
+/* V4.4.0: set by a keyboard decision in Research Command; the
+   next decision keydown is ignored until keyup (see the handler). */
+var RC_NEED_KEYUP = false;
+document.addEventListener('keyup', function(ev){
+  var lk = ev.key && ev.key.length === 1 ? ev.key.toLowerCase() : '';
+  if(lk === 'f' || lk === 'x' || lk === 'd' || lk === 'p') RC_NEED_KEYUP = false;
+}, true);
 document.addEventListener('pointerdown', function(ev){
   if(!S.route || S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'decide')) return;
   var t = ev.target;
@@ -8938,9 +8953,20 @@ document.addEventListener('keydown', function(ev){
   var lk = (k && k.length === 1) ? k.toLowerCase() : '';
   if(lk === 'o'){ ev.preventDefault(); rcOpenSource(); return; }
   if(lk === 'f' || lk === 'x' || lk === 'd' || lk === 'p'){
+    /* One physical press, one decision (V4.4.0 bug fix, JD
+       2026-11-04): deciding advances the current marker to the
+       next pending row immediately, so a held or bouncing key's
+       auto-repeat keydowns landed on the NEXT candidate and
+       decided it too — JD pressed F once on Ethan Bates and two
+       cards filed. Auto-repeat is ignored for decision keys, and
+       after a keyboard decision the next decision keydown is
+       ignored until the key comes back up. Deliberate
+       press-release-press deciding is unaffected. */
+    if(ev.repeat || RC_NEED_KEYUP){ ev.preventDefault(); return; }
     var c = rcCurCandidate();
     if(!c) return;
     ev.preventDefault();
+    RC_NEED_KEYUP = true;
     if(lk === 'p'){
       var clp = rcClusterOf(c.id);
       if(clp && clp.length > 1) rcTogglePhotoGroup(clp.map(function(x){ return x.id; }));
@@ -9345,7 +9371,7 @@ function fiBridgeRestore(raw){
   FI_BRIDGE = undefined;
   try { if(raw) localStorage.setItem('ncc_fi_bridge_v1', raw); else localStorage.removeItem('ncc_fi_bridge_v1'); } catch(e){}
 }
-var FI_FILTER = 'all', FI_SORT = 'new';
+var FI_FILTER = 'all', FI_SORT = 'new', FI_SEL = null, FI_SEL_NEXT = null;
 var FI_PATTERNS = {
   employer_change:{ label:'EMPLOYER CHANGE', cls:'t-about' },
   title_change:{ label:'TITLE CHANGE', cls:'t-conn' },
@@ -9473,7 +9499,7 @@ function fiInitials(e){
   var nm = String(e.display || '?').split(/\s+/).filter(Boolean);
   var ini = ((nm[0] || '?').charAt(0) + (nm.length > 1 ? nm[nm.length - 1].charAt(0) : '')).toUpperCase();
   var h = 0; for(var i = 0; i < String(e.display || '').length; i++) h = (h * 31 + String(e.display).charCodeAt(i)) >>> 0;
-  return '<span class="av av-xl" style="--tc:' + FI_PAL[h % FI_PAL.length] + '" aria-hidden="true">' + esc(ini) + '</span>';
+  return '<span class="av av-md" style="--tc:' + FI_PAL[h % FI_PAL.length] + '" aria-hidden="true">' + esc(ini) + '</span>';
 }
 function fiFmtDate(iso){
   if(!iso) return '';
@@ -9488,55 +9514,48 @@ function fiVisible(){
   var byL = function(a, b){ return String(b.learned || '').localeCompare(String(a.learned || '')); };
   if(FI_SORT === 'new') list.sort(byL);
   else if(FI_SORT === 'old') list.sort(function(a, b){ return -byL(a, b); });
+  else if(FI_SORT === 'cat') list.sort(function(a, b){ var ia = FI_PAT_ORDER.indexOf(a.pattern), ib = FI_PAT_ORDER.indexOf(b.pattern); if(ia < 0) ia = 99; if(ib < 0) ib = 99; return ia - ib || byL(a, b); });
   else if(FI_SORT === 'pattern') list.sort(function(a, b){ return fiPat(a).label.localeCompare(fiPat(b).label) || byL(a, b); });
   else if(FI_SORT === 'person') list.sort(function(a, b){ return String(a.display || '').localeCompare(String(b.display || '')) || byL(a, b); });
   else if(FI_SORT === 'corr') list.sort(function(a, b){ return (a.pattern === 'correction' ? 0 : 1) - (b.pattern === 'correction' ? 0 : 1) || byL(a, b); });
   return list;
 }
 function fiCardHTML(e, first){
+  /* V4.4.0 (JD 2026-11-04): the fact card is a compact packet — one
+     enriched sentence, small avatar, and the source line and the
+     actions folded into a single meta row. About half the old
+     card's height. The .sel class is the keyboard cursor. */
   var st = fiStatus(e), p = fiPat(e), di = fiEntryDi(e);
-  var av = di != null ? avatar(D.directory[di], 'xl') : fiInitials(e);
+  var av = di != null ? avatar(D.directory[di], 'md') : fiInitials(e);
   var nm = di != null ? '<a class="fi-nm" href="#/p/' + encodeURIComponent(personId(D.directory[di])) + '" data-act="openp" data-di="' + di + '">' + esc(e.display) + '</a>' : '<span class="fi-nm">' + esc(e.display) + '</span>';
   var host = ''; try { host = new URL(e.url).hostname.replace(/^www\./, ''); } catch(x){ host = e.source || ''; }
-  return '<article class="fi-card' + (st === 'flagged' ? ' flagged' : '') + '" data-id="' + esc(e.id) + '">' +
+  return '<article class="fi-card' + (st === 'flagged' ? ' flagged' : '') + (FI_SEL === e.id ? ' sel' : '') + '" data-id="' + esc(e.id) + '">' +
     '<div class="fi-top">' + av + '<div class="fi-id">' + nm + '<div class="fi-anchor">' + esc(e.anchor || '') + '</div></div>' +
     '<span class="fi-tag ' + p.cls + '">' + esc(p.label) + '</span>' + (st === 'flagged' ? '<span class="fi-flagchip">FLAGGED</span>' : '') + '</div>' +
     '<p class="fi-fact">' + esc(e.fact) + '</p>' +
-    '<div class="fi-src"><span class="fi-src-k">Source</span><a href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || host) + '</a><span class="fi-dot">&middot;</span><span>learned ' + esc(fiFmtDate(e.learned)) + '</span></div>' +
-    '<div class="fi-actions"><button type="button" class="btn acc" data-act="fi-read" data-id="' + esc(e.id) + '">Read</button>' +
-    '<button type="button" class="btn ghost sm fi-flagbtn" data-act="fi-flag" data-id="' + esc(e.id) + '">' + ic('flag', 13) + (st === 'flagged' ? 'Flagged — tap to clear' : 'Flag for review') + '</button>' +
-    (first ? '<span class="fi-kbd">R read &middot; F flag</span>' : '') + '</div></article>';
+    '<div class="fi-meta"><span class="fi-srcp">' + (e.url ? '<a href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || host) + '</a>' : esc(e.source || '')) + ' &middot; ' + esc(fiFmtDate(e.learned)) + '</span>' +
+    '<span class="fi-acts"><button type="button" class="btn acc sm" data-act="fi-read" data-id="' + esc(e.id) + '">Read</button>' +
+    '<button type="button" class="btn ghost sm fi-flagbtn" data-act="fi-flag" data-id="' + esc(e.id) + '">' + ic('flag', 12) + (st === 'flagged' ? 'Flagged' : 'Flag') + '</button></span></div></article>';
 }
 function fiSideHTML(){
-  var es = (FI && FI.entries) || [], c = fiCounts();
-  var h = '<div class="fi-side-h">Feed status</div>';
-  h += '<div class="fi-stats">' +
-    '<div class="fi-stat"><b data-fic="total">' + c.total + '</b><span>In feed</span></div>' +
-    '<div class="fi-stat un"><b data-fic="unread">' + c.unread + '</b><span>Unread</span></div>' +
-    '<div class="fi-stat"><b data-fic="read">' + c.read + '</b><span>Read</span></div>' +
-    '<div class="fi-stat"><b data-fic="flagged">' + c.flagged + '</b><span>Flagged</span></div></div>';
-  h += '<div class="fi-side-h">By pattern</div>';
-  FI_PAT_ORDER.forEach(function(k){
-    var tot = 0, rd = 0;
-    es.forEach(function(e){ if(e.pattern === k){ tot++; if(fiStatus(e) === 'read') rd++; } });
-    if(!tot) return;
-    var p = FI_PATTERNS[k];
-    h += '<div class="fi-patrow"><span class="fi-tag ' + p.cls + '">' + p.label + '</span><span class="fi-pat-n">' + (tot - rd) + ' unread &middot; ' + rd + ' read</span></div>';
-  });
-  var batches = {};
-  es.forEach(function(e){ var b = e.batch || 'Research'; batches[b] = batches[b] || { u: 0, r: 0 }; if(fiStatus(e) === 'read') batches[b].r++; else batches[b].u++; });
-  Object.keys(batches).forEach(function(b){ h += '<p class="fi-batch">' + esc(b) + ' &middot; ' + batches[b].u + ' unread &middot; ' + batches[b].r + ' read</p>'; });
-  var hosts = {};
-  es.forEach(function(e){ var hh = ''; try { hh = new URL(e.url).hostname.replace(/^www\./, ''); } catch(x){ hh = e.source || ''; } if(hh) hosts[hh] = (hosts[hh] || 0) + 1; });
-  var hk = Object.keys(hosts).sort(function(a, b){ return hosts[b] - hosts[a]; });
-  if(hk.length){ h += '<div class="fi-side-h">Sources in feed</div>' + hk.map(function(x){ return '<div class="fi-srcrow"><span>' + esc(x) + '</span><b>' + hosts[x] + '</b></div>'; }).join(''); }
+  /* V4.4.0: the old 300px sidebar is a one-line status strip now —
+     the facts get the full width in two columns. The Read and
+     Flagged lists moved below the feed (fiBelowHTML). */
+  var c = fiCounts();
+  return '<span><b data-fic="total">' + c.total + '</b> in feed</span>' +
+    '<span><b data-fic="unread">' + c.unread + '</b> unread</span>' +
+    '<span><b data-fic="read">' + c.read + '</b> read</span>' +
+    '<span><b data-fic="flagged">' + c.flagged + '</b> flagged</span>';
+}
+function fiBelowHTML(){
+  var es = (FI && FI.entries) || [];
   var read = es.filter(function(e){ return fiStatus(e) === 'read'; }).sort(function(a, b){ return String(b.learned || '').localeCompare(String(a.learned || '')); });
-  h += '<div class="fi-side-h">Read <span class="fi-side-n">' + read.length + '</span></div>';
-  h += read.length ? read.map(function(e){ return '<div class="fi-mini"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span><button type="button" class="fi-undo" data-act="fi-undo" data-id="' + esc(e.id) + '">Undo</button></div>'; }).join('') : '<p class="fi-none">Nothing marked read yet.</p>';
   var flagged = es.filter(function(e){ return fiStatus(e) === 'flagged'; });
-  h += '<div class="fi-side-h">Flagged for review <span class="fi-side-n">' + flagged.length + '</span></div>';
+  var h = '<div class="fi-below-panel"><div class="fi-side-h">Read <span class="fi-side-n">' + read.length + '</span></div>';
+  h += read.length ? read.map(function(e){ return '<div class="fi-mini"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span><button type="button" class="fi-undo" data-act="fi-undo" data-id="' + esc(e.id) + '">Undo</button></div>'; }).join('') : '<p class="fi-none">Nothing marked read yet.</p>';
+  h += '</div><div class="fi-below-panel"><div class="fi-side-h">Flagged for review <span class="fi-side-n">' + flagged.length + '</span></div>';
   h += flagged.length ? flagged.map(function(e){ return '<div class="fi-mini"><button type="button" class="fi-goto" data-act="fi-goto" data-id="' + esc(e.id) + '"><span class="fi-mini-nm">' + esc(e.display) + '</span><span class="fi-mini-pat">' + fiPat(e).label + '</span></button><button type="button" class="fi-undo" data-act="fi-unflag" data-id="' + esc(e.id) + '">Unflag</button></div>'; }).join('') : '<p class="fi-none">Nothing flagged. Flag a fact and Luna will look at it.</p>';
-  return h;
+  return h + '</div>';
 }
 /* The shared waiting-count terms (V4 Phase 8a): each queue's own
    canonical pending count, reused by the tab badge so every surface
@@ -9697,16 +9716,24 @@ function fiPageHTML(){
    Live Records chrome. fiPaint() repaints #fi-feed / #fi-side /
    #fi-showing inside it exactly as it did on the old tab. */
 function fiBodyHTML(){
+  /* V4.4.0 (JD 2026-11-04): two columns of compact packets, a
+     status strip instead of the sidebar, a filter chip per
+     subcategory, and a Category sort that groups the feed under
+     subcategory headers. Keyboard: arrows / j / k move, R reads,
+     F flags, Enter opens the profile. */
   var h = '';
   if(FI_PROF_FAILED) h += '<div class="fi-alert">Inbox state unavailable — the profiles data did not load, so Read and Flag are paused. Nothing will be written until it loads; reload to retry.</div>';
+  var es = (FI && FI.entries) || [];
+  var patBtns = [['all', 'All facts']];
+  FI_PAT_ORDER.forEach(function(k){ if(es.some(function(e){ return e.pattern === k; })) patBtns.push([k, fiPat({ pattern:k }).label.charAt(0) + fiPat({ pattern:k }).label.slice(1).toLowerCase()]); });
   h += '<div class="fi-controls"><div class="seg fi-seg" role="group" aria-label="Filter facts">' +
-    '<button type="button" data-act="fi-filter" data-f="all"' + (FI_FILTER === 'all' ? ' class="on"' : '') + '>All facts</button>' +
-    '<button type="button" data-act="fi-filter" data-f="correction"' + (FI_FILTER === 'correction' ? ' class="on"' : '') + '>Corrections</button>' +
-    '<button type="button" data-act="fi-filter" data-f="milestone"' + (FI_FILTER === 'milestone' ? ' class="on"' : '') + '>Milestones</button></div>' +
+    patBtns.map(function(b){ return '<button type="button" data-act="fi-filter" data-f="' + b[0] + '"' + (FI_FILTER === b[0] ? ' class="on"' : '') + '>' + b[1] + '</button>'; }).join('') + '</div>' +
     '<label class="fi-sortwrap"><span>Sort</span><select class="sel" data-sbi="fisort" aria-label="Sort facts">' +
-    [['new', 'Newest first'], ['old', 'Oldest first'], ['pattern', 'Pattern A–Z'], ['person', 'Person A–Z'], ['corr', 'Corrections first']].map(function(o){ return '<option value="' + o[0] + '"' + (FI_SORT === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
-    '</select></label><span class="fi-showing" id="fi-showing"></span></div>';
-  h += '<div class="fi-layout"><div class="fi-feed" id="fi-feed">' + fiFeedHTML() + '</div><aside class="fi-side card" id="fi-side">' + (FI ? fiSideHTML() : '') + '</aside></div>';
+    [['new', 'Newest first'], ['old', 'Oldest first'], ['cat', 'Category'], ['person', 'Person A–Z'], ['corr', 'Corrections first']].map(function(o){ return '<option value="' + o[0] + '"' + (FI_SORT === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+    '</select></label><span class="fi-showing" id="fi-showing"></span><span class="fi-kbd">Arrows / J K move &middot; R read &middot; F flag &middot; Enter profile</span></div>';
+  h += '<div class="fi-strip" id="fi-side">' + (FI ? fiSideHTML() : '') + '</div>';
+  h += '<div class="fi-feed" id="fi-feed">' + fiFeedHTML() + '</div>';
+  h += '<div class="fi-below" id="fi-below">' + (FI ? fiBelowHTML() : '') + '</div>';
   return h;
 }
 function fiFeedHTML(enterId){
@@ -9717,14 +9744,59 @@ function fiFeedHTML(enterId){
     if(fiCounts().unread === 0) return '<div class="fi-zero"><b>Inbox zero</b><p>Every fact in this batch is one you already know.</p></div>';
     return '<div class="fi-zero"><b>Nothing under this filter</b><p>Switch the filter to see the rest of the feed.</p></div>';
   }
+  if(FI_SORT === 'cat'){
+    /* Grouped by subcategory: a header row spans both columns,
+       cards flow two to a row inside each group. */
+    var out = '', lastPat = null;
+    vis.forEach(function(e, i){
+      if(e.pattern !== lastPat){
+        lastPat = e.pattern;
+        var n = vis.filter(function(x){ return x.pattern === lastPat; }).length;
+        out += '<div class="fi-grouph"><span class="fi-tag ' + fiPat(e).cls + '">' + esc(fiPat(e).label) + '</span><span class="fi-groupn">' + n + '</span></div>';
+      }
+      var html = fiCardHTML(e, i === 0); if(enterId && e.id === enterId) html = html.replace('fi-card', 'fi-card entering');
+      out += html;
+    });
+    return out;
+  }
   return vis.map(function(e, i){ var html = fiCardHTML(e, i === 0); if(enterId && e.id === enterId) html = html.replace('fi-card', 'fi-card entering'); return html; }).join('');
 }
+function fiEnsureSel(){
+  var vis = fiVisible();
+  if(!vis.length){ FI_SEL = null; return; }
+  if(!vis.some(function(e){ return e.id === FI_SEL; })){
+    if(FI_SEL_NEXT && vis.some(function(e){ return e.id === FI_SEL_NEXT; })) FI_SEL = FI_SEL_NEXT;
+    else FI_SEL = vis[0].id;
+  }
+  FI_SEL_NEXT = null;
+}
+function fiSelMove(delta){
+  var vis = fiVisible(); if(!vis.length) return;
+  fiEnsureSel();
+  var i = vis.findIndex(function(e){ return e.id === FI_SEL; });
+  var n = Math.max(0, Math.min(vis.length - 1, i + delta));
+  FI_SEL = vis[n].id;
+  var cards = document.querySelectorAll('#fi-feed .fi-card');
+  cards.forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-id') === FI_SEL); });
+  var el = document.querySelector('#fi-feed .fi-card[data-id="' + FI_SEL + '"]');
+  if(el) el.scrollIntoView({ block:'nearest' });
+}
+function fiCols(){
+  var feed = document.getElementById('fi-feed'); if(!feed) return 1;
+  var cols = String(getComputedStyle(feed).gridTemplateColumns || '').split(' ').filter(Boolean).length;
+  return Math.max(1, cols);
+}
 function fiPaint(enterId){
-  /* V4 Phase 8a: the Fact Inbox paints inside the Decide view. */
-  if(S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'decide')) return;
-  var feed = document.getElementById('fi-feed'), side = document.getElementById('fi-side'), sub = document.getElementById('fi-sub'), sh = document.getElementById('fi-showing');
+  /* V4.4.0: the Fact Inbox lives on its own New facts tab now
+     (the V4 Phase 8a Decide embedding is gone) — paint there.
+     The old 'decide' gate left Read/Flag/filter clicks on the
+     facts page repainting nothing until a reload. */
+  if(S.route.name !== 'daily' || !(S.route.seg && (S.route.seg[0] === 'facts' || S.route.seg[0] === 'inbox' || S.route.seg[0] === 'decide'))) return;
+  var feed = document.getElementById('fi-feed'), side = document.getElementById('fi-side'), below = document.getElementById('fi-below'), sub = document.getElementById('fi-sub'), sh = document.getElementById('fi-showing');
+  if(FI) fiEnsureSel();
   if(feed) feed.innerHTML = fiFeedHTML(enterId);
   if(side && FI) side.innerHTML = fiSideHTML();
+  if(below && FI) below.innerHTML = fiBelowHTML();
   if(sub && FI){ var c = fiCounts(); sub.innerHTML = c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero'; }
   if(sh && FI) sh.textContent = 'Showing ' + fiVisible().length + ' of ' + fiCounts().total;
   fiPaintNavBadge();
@@ -9736,6 +9808,10 @@ function fiPaintNavBadge(){
   document.querySelectorAll('.fi-bdg').forEach(function(b){ b.textContent = n; b.classList.toggle('zero', !n); b.hidden = false; });
 }
 function fiMarkRead(id){
+  /* V4.4.0: the keyboard cursor lands on the fact that followed
+     this one, so JD can keep blasting through the feed. */
+  var vis = fiVisible(), vi = vis.findIndex(function(e){ return e.id === id; });
+  if(vi >= 0){ var nxt = vis[vi + 1] || vis[vi - 1]; if(nxt) FI_SEL_NEXT = nxt.id; }
   var card = document.querySelector('.fi-card[data-id="' + id + '"]');
   var commit = function(){ if(fiSetStatus(id, 'read')) fiPaint(); };
   if(!card){ commit(); return; }
@@ -9763,6 +9839,53 @@ function fiGoto(id){
     if(card){ card.scrollIntoView({ block: 'center', behavior: 'smooth' }); card.classList.add('flash'); setTimeout(function(){ card.classList.remove('flash'); }, 1650); }
   }, 60);
 }
+/* V4.4.0 (JD 2026-11-04): keyboard quick controls on the New
+   facts tab — arrows move by the grid (left/right one card, up/
+   down one row), j/k step one card, R marks the selected fact
+   read, F flags it, Enter opens the person's profile. Clicking
+   a card selects it. Scoped to the facts route so the Decide
+   view's own letter keys (V3.88.0 ownership) are untouched. */
+document.addEventListener('pointerdown', function(ev){
+  if(!S.route || S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'facts')) return;
+  var card = ev.target && ev.target.closest ? ev.target.closest('#fi-feed .fi-card') : null;
+  if(!card) return;
+  FI_SEL = card.getAttribute('data-id');
+  document.querySelectorAll('#fi-feed .fi-card').forEach(function(c){ c.classList.toggle('sel', c === card); });
+}, true);
+document.addEventListener('keydown', function(ev){
+  if(!S.route || S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'facts')) return;
+  if(!FI || !document.getElementById('fi-feed')) return;
+  if(ev.ctrlKey || ev.metaKey || ev.altKey) return;
+  var t = ev.target;
+  if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+  if(typeof QA !== 'undefined' && QA.open) return;
+  if(typeof POOL !== 'undefined' && POOL.open) return;
+  if(document.body.classList.contains('sheet-open') || document.body.classList.contains('qa-on')) return;
+  if(document.querySelector('.hmi-wrap, .phi-wrap, .ykb-wrap, .phed-wrap')) return;
+  var tp = document.getElementById('tpop'); if(tp && !tp.hidden) return;
+  var sw = document.getElementById('sheetwrap'); if(sw && !sw.hidden) return;
+  fiEnsureSel();
+  var k = ev.key;
+  if(k === 'ArrowDown'){ ev.preventDefault(); fiSelMove(fiCols()); return; }
+  if(k === 'ArrowUp'){ ev.preventDefault(); fiSelMove(-fiCols()); return; }
+  if(k === 'ArrowRight'){ ev.preventDefault(); fiSelMove(1); return; }
+  if(k === 'ArrowLeft'){ ev.preventDefault(); fiSelMove(-1); return; }
+  if(k === 'Home'){ ev.preventDefault(); FI_SEL = null; fiEnsureSel(); fiSelMove(0); return; }
+  if(k === 'End'){ ev.preventDefault(); var vis = fiVisible(); if(vis.length){ FI_SEL = vis[vis.length - 1].id; fiSelMove(0); } return; }
+  if(k === 'Enter'){
+    if(t && (t.tagName === 'BUTTON' || t.tagName === 'A')) return;
+    var e = ((FI && FI.entries) || []).filter(function(x){ return x.id === FI_SEL; })[0];
+    if(!e) return;
+    var di = fiEntryDi(e);
+    if(di != null){ ev.preventDefault(); location.hash = '#/p/' + encodeURIComponent(personId(D.directory[di])); }
+    return;
+  }
+  var lk = (k && k.length === 1) ? k.toLowerCase() : '';
+  if(lk === 'j'){ ev.preventDefault(); fiSelMove(1); return; }
+  if(lk === 'k'){ ev.preventDefault(); fiSelMove(-1); return; }
+  if(lk === 'r'){ if(FI_SEL){ ev.preventDefault(); fiMarkRead(FI_SEL); } return; }
+  if(lk === 'f'){ if(FI_SEL){ ev.preventDefault(); fiToggleFlag(FI_SEL); } return; }
+});
 /* V3.79.1: the Records body (everything under the chrome) is its
    own builder so a sort click can repaint ONLY this region
    (lrBodyPaint) — the header DOM is never rebuilt. */
