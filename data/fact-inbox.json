@@ -4,7 +4,7 @@
    "anchor": "University of Toledo \u00b7 Data Science & Statistics",
    "batch": "Nov 3, 2026 research batch",
    "display": "Emmanuel Atindama",
-   "fact": "Emmanuel Atindama is now an Assistant Professor of Data Science and Statistics at the University of Toledo, a role he began in August 2024. The Sokol GxP Services role still on file is out of date.",
+   "fact": "Emmanuel Atindama is now an Assistant Professor of Data Science and Statistics at the University of Toledo, a role he began in August 2024; the Sokol GxP Services role previously listed for him is out of date.",
    "id": "fi-20261103-atindama",
    "key": "ig:em_anuel_xa",
    "learned": "2026-11-03",
@@ -21,7 +21,7 @@
    "anchor": "St. Lawrence University \u201918 \u00b7 Hermon-DeKalb Central Schools",
    "batch": "Nov 3, 2026 research batch",
    "display": "Casey Ostler",
-   "fact": "Casey Ostler played field hockey at St. Lawrence University from 2014 to 2016 and graduated Phi Beta Kappa with the Class of 2018. She then worked at Hermon-DeKalb Central Schools from 2021 to 2024. Her record previously listed men\u2019s cross country \u2014 that was wrong.",
+   "fact": "Casey Ostler played field hockey at St. Lawrence University from 2014 to 2016, graduated Phi Beta Kappa with the Class of 2018, and worked at Hermon-DeKalb Central Schools from 2021 to 2024.",
    "id": "fi-20261103-ostler",
    "key": "",
    "learned": "2026-11-03",
@@ -140,7 +140,7 @@
    "anchor": "Singer-songwriter \u00b7 Nashville, TN",
    "batch": "Nov 3, 2026 research batch",
    "display": "Jon Cyphers",
-   "fact": "Jon Cyphers released a three-song EP, Heavy Things, in June 2026, and a new version of \u201cThe Silence\u201d featuring Ben Fuller in January 2026. His debut full-length album is in progress.",
+   "fact": "Jon Cyphers released a three-song EP, Heavy Things, in June 2026 and a new version of \u201cThe Silence\u201d featuring Ben Fuller in January 2026, with his debut full-length album in progress.",
    "id": "fi-20261103-cyphers",
    "key": "ig:jjcyph",
    "learned": "2026-11-03",
@@ -265,7 +265,7 @@
    "anchor": "ROOTS Physical Therapy",
    "batch": "Sweep 100",
    "display": "Nicole Seward",
-   "fact": "Nicole Seward has worked at ROOTS Physical Therapy since about 2021 and authors its blog as Dr. Nicole Seward, PT, DPT.",
+   "fact": "Nicole Seward has worked at ROOTS Physical Therapy since about 2021 and authors its blog as Dr. Nicole Seward.",
    "id": "fi-20261103-seward-has-worked-at-roots-physical",
    "key": "ig:nikki.sew",
    "learned": "2026-11-03",
@@ -577,7 +577,7 @@
    "anchor": "Clarkson University \u00b7 Potsdam, NY",
    "batch": "Sweep 250",
    "display": "Kyle Deschaine",
-   "fact": "Kyle Benjamin Deschaine of Potsdam was named to Clarkson University's Dean's List for fall 2018, fall 2015, and spring 2017, and was named a Presidential Scholar for fall 2014, spring 2015, and fall 2016",
+   "fact": "Kyle Benjamin Deschaine of Potsdam was named to Clarkson University's Dean's List three times and a Presidential Scholar three times between fall 2014 and fall 2018",
    "id": "fi-20261103-ct-kyle-deschaine-kyle-benjamin",
    "key": "ct:kyle deschaine",
    "learned": "2026-11-03",
@@ -2056,6 +2056,10 @@
    "name": "sf:victor-njoku",
    "pattern": "milestone",
    "source": "Springer",
+   "state": {
+    "at": "2026-11-05T03:26:42.411Z",
+    "status": "read"
+   },
    "url": "https://link.springer.com/chapter/10.1007/978-3-032-29437-1_26"
   },
   {
@@ -2069,6 +2073,10 @@
    "name": "ig:tcriscitello",
    "pattern": "milestone",
    "source": "Woodshop News",
+   "state": {
+    "at": "2026-11-05T03:26:44.627Z",
+    "status": "read"
+   },
    "url": "https://www.woodshopnews.com/features/positioned-in-potsdam"
   },
   {
@@ -2082,13 +2090,17 @@
    "name": "sf:annika-greco",
    "pattern": "title_change",
    "source": "Diocese of Chester",
+   "state": {
+    "at": "2026-11-05T03:26:45.586Z",
+    "status": "read"
+   },
    "url": "https://www.chesterdiocese.org/_files/ugd/f8dcd6_75215026bf85476bb2b118a858480461.pdf"
   },
   {
    "anchor": "SUNY Potsdam \u00b7 Potsdam, NY",
    "batch": "AM run \u2014 Nov 4, 2026",
    "display": "Shannon Boyle",
-   "fact": "Received the Hultberg Scholarship, Pamela Michne Fox '59 Music Scholarship, Barrington Merit Scholarship, Curtis B. Bailey & Irma B. Bailey Memorial Scholarship, Ken Cottrell Outstanding Human Service Award, SUNY Potsdam Travel Award, Crane Youth Music Schaberg Scholarship, SUNY Potsdam Freshman Scholars Award, and Edwin and Eleanor Strand Music Loan Fund at SUNY Potsdam",
+   "fact": "Received nine SUNY Potsdam scholarships and awards, including the Hultberg Scholarship, the Pamela Michne Fox '59 Music Scholarship, and the Ken Cottrell Outstanding Human Service Award",
    "id": "fi-20261104-ig-the-harpist-received-the-hultberg-schola",
    "key": "ig:the_harpist",
    "learned": "2026-11-04",
@@ -2140,7 +2152,7 @@
    "anchor": "Clarkson University \u00b7 Potsdam, NY",
    "batch": "PM run + compounding lane \u2014 Nov 4, 2026",
    "display": "Ashleigh Graveline",
-   "fact": "Listed in the Arizona Occupational Therapy Association's 2025 conference program as Ashleigh Graveline, OTD, PhD, Assistant Professor and Academic Fieldwork Coordinator at Clarkson University",
+   "fact": "Ashleigh Graveline is an assistant professor and Academic Fieldwork Coordinator for occupational therapy at Clarkson, listed in the Arizona Occupational Therapy Association's 2025 conference program.",
    "id": "fi-20261104-sf-ashleigh-graveline-listed-in-the-arizona-occupa",
    "key": "sf:ashleigh-graveline",
    "learned": "2026-11-04",
