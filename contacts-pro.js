@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.4.0';
+var APP_VERSION = '4.4.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8225,6 +8225,40 @@ function rcApplyFields(e, c, patch){
   var loc = F.location_on_file || F.location;
   if(loc && !String(gv(e, 'location_on_file') || '').trim()) patch.location_on_file = String(loc);
 }
+/* After an in-place decision, refresh the numbers JD watches \u2014
+   the bundle's \"items left\", the progress line, the stat tiles \u2014
+   from the live model. No re-render: nothing on the page moves. */
+function rcCountsInPlace(rowEl){
+  var sec = document.getElementById('rcconsole'); if(!sec) return;
+  var m = rcModel(), counts = m.counts;
+  var tiles = sec.querySelectorAll('.rc-stats > div > b');
+  if(tiles.length >= 4){
+    tiles[0].textContent = counts.pending;
+    tiles[1].textContent = counts.close;
+    tiles[2].textContent = counts.filed;
+    tiles[3].textContent = counts.dismissed;
+  }
+  var prog = sec.querySelector('.rc-progress');
+  if(prog){
+    var seen = {}, people = 0;
+    m.shown.forEach(function(r){ var k = rcGroupKey(r); if(!seen[k]){ seen[k] = 1; people++; } });
+    prog.textContent = people + ' people \u00b7 ' + m.shown.length + ' items left';
+  }
+  var bundle = rowEl && rowEl.closest ? rowEl.closest('.rc-bundle') : null;
+  if(bundle){
+    var bc = bundle.querySelector('.rc-bcount');
+    var anyRow = bundle.querySelector('.rc-row[data-rcid]');
+    if(bc && anyRow){
+      var cid = anyRow.getAttribute('data-rcid'), cand = null;
+      (RC.candidates || []).forEach(function(x){ if(x.id === cid) cand = x; });
+      if(cand){
+        var gk = rcGroupKey({ c: cand, di: rcDi(cand) }), left = 0;
+        m.rows.forEach(function(r){ if(rcGroupKey(r) === gk && r.st.k === 'pending') left++; });
+        bc.textContent = left + ' item' + (left === 1 ? '' : 's') + ' left';
+      }
+    }
+  }
+}
 function rcDecide(id, decision){
   if(!RC || !RC.candidates) return;
   var c = null;
@@ -8279,36 +8313,21 @@ function rcDecide(id, decision){
     ? 'Filed for ' + (c.display || '') + ': \u201C' + String(c.file_text || c.claim || '').slice(0, 70) + '\u201D'
     : 'Dismissed for ' + (c.display || '') + ': \u201C' + String(c.file_text || c.claim || '').slice(0, 70) + '\u201D', { undo:true });
   if(nextCur){ RC_VIEW.cur = nextCur; rcSaveView(); }
-  /* No-move settle (V3.80.1, JD 2026-11-03: "Actions never move the
-     page — a state change is not a navigation"). The old tail ran a
-     full repaint and then scrollIntoView'd the next row; because a
-     decision shrinks its bundle and the pending view re-sorts
-     bundles by size, that next row could be re-rendered at the very
-     bottom and the page jumped to it. Now the decided row shows its
-     outcome on the card, collapses in place the way a Fact Inbox
-     Read does, the marker advances in the live DOM, and the repaint
-     that lands afterwards runs under rcPaint's scroll restore —
-     window and every scroller stay pixel-identical throughout. */
+    /* Settle in place (V4.4.1, JD 2026-11-04: \"File the one that I
+     want to file, and then just move on to the next one. Don't make
+     the page jump and do all sorts of weird stuff.\") The decided
+     card STAYS where it is, stamped Filed or Dismissed; the marker
+     steps to the next card; the counts refresh in place. Nothing
+     collapses, nothing repaints, no other card disappears \u2014 one
+     decision touches exactly one card. The decided card leaves the
+     pending list on the next full render (a filter change or a
+     navigation), never mid-flow. */
   if(rowEl && RC_VIEW.status === 'pending'){
     var acts = rowEl.querySelector('.rc-actions');
     if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : 'Dismissed') + '</span>';
-    var bundle = rowEl.closest ? rowEl.closest('.rc-bundle') : null;
-    var mates = bundle ? bundle.querySelectorAll('.rc-row[data-rcid]').length : 0;
-    var bhead = (bundle && mates <= 1) ? bundle.querySelector('.rc-bhead') : null;
-    [rowEl, bhead].forEach(function(el2){
-      if(!el2) return;
-      el2.classList.add('leaving');
-      el2.style.height = el2.offsetHeight + 'px';
-    });
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){
-      [rowEl, bhead].forEach(function(el2){
-        if(!el2) return;
-        el2.style.height = '0px'; el2.style.marginTop = '0px'; el2.style.marginBottom = '0px';
-        el2.style.paddingTop = '0px'; el2.style.paddingBottom = '0px'; el2.style.borderWidth = '0px';
-      });
-    }); });
+    rowEl.classList.add('rc-decided');
+    rcCountsInPlace(rowEl);
     if(nextCur) rcSetCur(nextCur);
-    setTimeout(function(){ rcPaint(); }, 315);
   } else {
     rcPaint();
     if(nextCur) rcSetCur(nextCur);
@@ -8380,23 +8399,9 @@ function rcDecideGroup(cs, decision){
   if(rowEl && RC_VIEW.status === 'pending'){
     var acts = rowEl.querySelector('.rc-actions');
     if(acts) acts.innerHTML = '<span class="rc-status st-' + (decision === 'file' ? 'filed' : 'dismissed') + '">' + (decision === 'file' ? 'Filed' : 'Dismissed') + '</span>';
-    var bundle = rowEl.closest ? rowEl.closest('.rc-bundle') : null;
-    var mates = bundle ? bundle.querySelectorAll('.rc-row[data-rcid]').length : 0;
-    var bhead = (bundle && mates <= 1) ? bundle.querySelector('.rc-bhead') : null;
-    [rowEl, bhead].forEach(function(el2){
-      if(!el2) return;
-      el2.classList.add('leaving');
-      el2.style.height = el2.offsetHeight + 'px';
-    });
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){
-      [rowEl, bhead].forEach(function(el2){
-        if(!el2) return;
-        el2.style.height = '0px'; el2.style.marginTop = '0px'; el2.style.marginBottom = '0px';
-        el2.style.paddingTop = '0px'; el2.style.paddingBottom = '0px'; el2.style.borderWidth = '0px';
-      });
-    }); });
+    rowEl.classList.add('rc-decided');
+    rcCountsInPlace(rowEl);
     if(nextCur) rcSetCur(nextCur);
-    setTimeout(function(){ rcPaint(); }, 315);
   } else {
     rcPaint();
     if(nextCur) rcSetCur(nextCur);
@@ -8914,13 +8919,12 @@ function rcOpenSource(){
    since the view now leads with it. Arrows / j / k / Enter stay
    the review's alone — the Fact Inbox never binds them. */
 var LR_KEY_OWNER = 'rc';
-/* V4.4.0: set by a keyboard decision in Research Command; the
-   next decision keydown is ignored until keyup (see the handler). */
-var RC_NEED_KEYUP = false;
-document.addEventListener('keyup', function(ev){
-  var lk = ev.key && ev.key.length === 1 ? ev.key.toLowerCase() : '';
-  if(lk === 'f' || lk === 'x' || lk === 'd' || lk === 'p') RC_NEED_KEYUP = false;
-}, true);
+/* V4.4.1: decision keys are debounced, never latched \u2014 a fresh
+   decision keydown within 250ms of the last one counts as the
+   same press (key bounce), and auto-repeat keydowns are ignored
+   outright. No state waits on a keyup, so a missed keyup can
+   never silently eat a later, deliberate press. */
+var RC_KEY_T = 0;
 document.addEventListener('pointerdown', function(ev){
   if(!S.route || S.route.name !== 'daily' || !(S.route.seg && S.route.seg[0] === 'decide')) return;
   var t = ev.target;
@@ -8953,20 +8957,18 @@ document.addEventListener('keydown', function(ev){
   var lk = (k && k.length === 1) ? k.toLowerCase() : '';
   if(lk === 'o'){ ev.preventDefault(); rcOpenSource(); return; }
   if(lk === 'f' || lk === 'x' || lk === 'd' || lk === 'p'){
-    /* One physical press, one decision (V4.4.0 bug fix, JD
-       2026-11-04): deciding advances the current marker to the
-       next pending row immediately, so a held or bouncing key's
-       auto-repeat keydowns landed on the NEXT candidate and
-       decided it too — JD pressed F once on Ethan Bates and two
-       cards filed. Auto-repeat is ignored for decision keys, and
-       after a keyboard decision the next decision keydown is
-       ignored until the key comes back up. Deliberate
-       press-release-press deciding is unaffected. */
-    if(ev.repeat || RC_NEED_KEYUP){ ev.preventDefault(); return; }
+    /* One press, one card (V4.4.1, JD 2026-11-04). Auto-repeat
+       keydowns are ignored, and a second keydown inside 250ms is
+       the same physical press (a bouncing key), never a second
+       decision. The decision itself lands on the current card
+       only, and that card settles in place \u2014 see rcDecide. */
+    if(ev.repeat){ ev.preventDefault(); return; }
+    var nowT = Date.now();
+    if(nowT - RC_KEY_T < 250){ ev.preventDefault(); return; }
     var c = rcCurCandidate();
     if(!c) return;
     ev.preventDefault();
-    RC_NEED_KEYUP = true;
+    RC_KEY_T = nowT;
     if(lk === 'p'){
       var clp = rcClusterOf(c.id);
       if(clp && clp.length > 1) rcTogglePhotoGroup(clp.map(function(x){ return x.id; }));
