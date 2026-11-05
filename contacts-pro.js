@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.4.4';
+var APP_VERSION = '4.4.5';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9880,20 +9880,30 @@ function fiPaintNavBadge(){
   document.querySelectorAll('.fi-bdg').forEach(function(b){ b.textContent = n; b.classList.toggle('zero', !n); b.hidden = false; });
 }
 function fiMarkRead(id){
-  /* V4.4.0: the keyboard cursor lands on the fact that followed
-     this one, so JD can keep blasting through the feed. */
-  var vis = fiVisible(), vi = vis.findIndex(function(e){ return e.id === id; });
-  if(vi >= 0){ var nxt = vis[vi + 1] || vis[vi - 1]; if(nxt) FI_SEL_NEXT = nxt.id; }
-  var card = document.querySelector('.fi-card[data-id="' + id + '"]');
-  var commit = function(){ if(fiSetStatus(id, 'read')) fiPaint(); };
-  if(!card){ commit(); return; }
+  /* Snappy (V4.4.5, JD 2026-11-04): the decision lands the moment
+     the key is pressed \u2014 status set and the selection moved to
+     the next fact in the same instant, ring repainted in place.
+     The read card then collapses out over 160ms and the feed
+     resyncs behind it; nothing waits on the animation, so R can
+     be pressed again immediately and rapid-fire reads just work. */
   if(fiStateBlocked()){ toast(fiStateBlocked()); return; }
+  var vis = fiVisible(), vi = vis.findIndex(function(e){ return e.id === id; });
+  var nxt = vi >= 0 ? (vis[vi + 1] || vis[vi - 1]) : null;
+  if(!fiSetStatus(id, 'read')) return;
+  if(nxt){
+    FI_SEL = nxt.id; FI_SEL_NEXT = '';
+    document.querySelectorAll('#fi-feed .fi-card').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-id') === FI_SEL); });
+    var sel = document.querySelector('#fi-feed .fi-card[data-id="' + FI_SEL + '"]');
+    if(sel) sel.scrollIntoView({ block: 'nearest' });
+  }
+  var card = document.querySelector('.fi-card[data-id="' + id + '"]');
+  if(!card){ fiPaint(); return; }
   card.classList.add('leaving');
   card.style.height = card.offsetHeight + 'px';
   requestAnimationFrame(function(){ requestAnimationFrame(function(){
     card.style.height = '0px'; card.style.marginBottom = '0px'; card.style.paddingTop = '0px'; card.style.paddingBottom = '0px'; card.style.borderWidth = '0px';
   }); });
-  setTimeout(commit, 315);
+  setTimeout(function(){ fiPaint(); }, 175);
 }
 function fiToggleFlag(id){
   var e = ((FI && FI.entries) || []).filter(function(x){ return x.id === id; })[0];
