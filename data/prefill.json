@@ -4,68 +4,12 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "ct:jason sweet",
-   "display": "Jason Sweet",
-   "field": "universities",
-   "value": "SUNY Canton",
-   "conf": 92,
-   "id": "pf-86048b473b"
-  },
-  {
-   "key": "ct:ana miller",
-   "display": "Ana Miller",
-   "field": "universities",
-   "value": "SUNY Potsdam",
-   "conf": 74,
-   "id": "pf-b943809da7"
-  },
-  {
-   "key": "sf:makiah-barber",
-   "display": "Makiah Barber",
-   "field": "location_on_file",
-   "value": "Potsdam, NY",
-   "conf": 91,
-   "id": "pf-fca4d6fb9e"
-  },
-  {
-   "key": "sf:thomas-quant",
-   "display": "Thomas Quant",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 62,
-   "id": "pf-dcb68dfc66"
-  },
-  {
-   "key": "sf:timothy-moulton",
-   "display": "Timothy Moulton",
-   "field": "specialty",
-   "value": "Carpentry",
-   "conf": 90,
-   "id": "pf-7009a5b743"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
-  },
-  {
-   "key": "sf:nelson-dane",
-   "display": "Nelson Dane",
-   "field": "specialty",
-   "value": "Engineering",
-   "conf": 90,
-   "id": "pf-cc52ba0b3e"
-  },
-  {
-   "key": "sf:stephen-blackwood-smith",
-   "display": "Stephen Blackwood Smith",
-   "field": "location_on_file",
-   "value": "Malone, NY",
-   "conf": 95,
-   "id": "pf-77ffbcbda9"
   }
  ],
  "shelved": [
