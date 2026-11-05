@@ -1,16 +1,8 @@
 {
- "generated": "2026-11-04",
+ "generated": "2026-11-05",
  "count": 0,
  "suggestions": [],
  "auto_apply": [
-  {
-   "key": "sf:grace-lapointe",
-   "display": "Grace LaPointe",
-   "field": "groups",
-   "value": "Air National Guard",
-   "conf": 100,
-   "id": "pf-3bc47e34ce"
-  },
   {
    "key": "sf:murray",
    "display": "Murray",
