@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "gracyn_elizabeth",
-   "display": "Gracyn Denny",
-   "field": "groups",
-   "value": "Rochester Regional Health",
-   "conf": 100,
-   "id": "pf-89799c1fbd"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
@@ -44,7 +36,7 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 7,
+   "tentative_floor": 8,
    "shelved": 2
   },
   "items": [
@@ -76,6 +68,16 @@
     "value": "Potsdam, NY",
     "rules": [
      "shelved"
+    ]
+   },
+   {
+    "id": "pf-62f67b7993",
+    "key": "gracyn_elizabeth",
+    "display": "Gracyn Denny",
+    "field": "location_on_file",
+    "value": "Massena, NY",
+    "rules": [
+     "tentative_floor"
     ]
    },
    {
