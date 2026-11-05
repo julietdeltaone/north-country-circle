@@ -36,7 +36,7 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 3,
+   "tentative_floor": 7,
    "shelved": 2
   },
   "items": [
@@ -84,6 +84,46 @@
     "id": "pf-d4ad11a2e5",
     "key": "kaitance.jenks19",
     "display": "Katie Jenks",
+    "field": "location_on_file",
+    "value": "Canton, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-18cbfe8a26",
+    "key": "philipwangerin",
+    "display": "Philip Wangerin",
+    "field": "location_on_file",
+    "value": "Canton, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-49f9b57e5c",
+    "key": "sf:jeremy-taylor",
+    "display": "Jeremy Taylor",
+    "field": "location_on_file",
+    "value": "Canton, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-bde04ebd30",
+    "key": "sf:kathy-whiteford",
+    "display": "Kathy Whiteford",
+    "field": "location_on_file",
+    "value": "Canton, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-9172848b2d",
+    "key": "sf:hannah-whiteford",
+    "display": "Hannah Whiteford",
     "field": "location_on_file",
     "value": "Canton, NY",
     "rules": [
