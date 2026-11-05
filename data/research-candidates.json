@@ -12191,10 +12191,11 @@
    "run_date": "2026-11-04",
    "run_label": "Daily rotation (PM)",
    "category": "verification",
-   "claim": "A ZoomInfo profile was reported to list Maura Mayer with Volunteer Transportation Center committee and chair roles in Watertown, New York; no source outside ZoomInfo confirms them.",
-   "file_text": "Serves in Volunteer Transportation Center committee and chair roles in Watertown, NY",
-   "source": "ZoomInfo",
-   "url": "",
+   "claim": "Maura Mayer is a member of the Volunteer Transportation Center's St. Lawrence County Advisory Committee, named in an NBC Watertown report on the center's August 2025 golf tournament fundraiser.",
+   "file_text": "Serves on the Volunteer Transportation Center's St. Lawrence County Advisory Committee",
+   "source": "NBC Watertown",
+   "url": "https://www.nbcwatertown.com/2025/08/04/541766/vtc-s-st-lawrence-county-golf-tournament-raises-16-000-to-aid-transportation-services",
+   "quote": "Mr. Papineau thanked the hard work of the VTC's St. Lawrence County Advisory Committee, which consists of Ray Babowicz, Casandra Dodd, Alexa Goolden, Sommer Giordano, Rachel LaPoint, Maura Mayer, Kay Sullivan, Laurie LaPoint, Sonja Jensen, Doreen Salcido, Lisa Waite, Charisse McPherson, Greg Mastro, and Peggy Durant.",
    "anchors": [
     "Watertown, NY area",
     "Name match"
@@ -12207,7 +12208,7 @@
     "detail": 10
    },
    "fields": {},
-   "published": "",
+   "published": "2025-08-04",
    "novelty": "new"
   },
   {
