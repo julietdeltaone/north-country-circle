@@ -12603,6 +12603,167 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261105-sf-judson-foote-father-of-four",
+   "name": "sf:judson-foote",
+   "display": "Judson Foote",
+   "run_date": "2026-11-05",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "SUNY Canton's People Like Me profile describes Judson Foote of Hermon as a father of four.",
+   "file_text": "Father of four",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/plm/name-87213-en.html",
+   "anchors": [
+    "Hermon, NY",
+    "SUNY Canton nursing student",
+    "wife Courtney, a 2007 SUNY Canton graduate"
+   ],
+   "quote": "Judson Foote of Hermon decided to become a nurse because people told him he couldn\u2019t. The 36-year-old father of four has been a commercial truck driver, is an ordained minister and a private pilot.",
+   "missing_gate": "This is about Judson's family, so I always check with you first.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 27,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261105-sf-dianalyn-martin-stopped-to-help-a-black-bear-cub-hit",
+   "name": "sf:dianalyn-martin",
+   "display": "Dianalyn Martin",
+   "run_date": "2026-11-05",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Cornell Chronicle's September 2019 story says a Dianalyn Finn Martin stopped to help a black bear cub hit by a car on Route 3 in Franklin County on July 27, 2019, and stayed about five hours until the DEC recovered it.",
+   "file_text": "Stopped to help a black bear cub hit by a car on Route 3 in Franklin County, NY, on July 27, 2019, staying about five hours until the DEC recovered it",
+   "source": "Cornell Chronicle",
+   "url": "https://news.cornell.edu/stories/2019/09/cornell-veterinarians-save-black-bear-cub-hit-car",
+   "anchors": [
+    "the name Dianalyn Finn Martin"
+   ],
+   "quote": "The accident happened July 27 on Route 3 in Franklin County, New York. \u201cWe didn\u2019t know if she was alive,\u201d said Dianalyn Finn Martin, a passerby who saw the accident and stopped to help.",
+   "missing_gate": "The page names a Dianalyn Finn Martin in Franklin County, but nothing on it ties her to Farmingville or Suffolk County Community College.",
+   "confidence": 69,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 28,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2019-09-17",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261105-meg-peddle-worked-as-a-salesperson-at-wally-s-a",
+   "name": "meg.peddle",
+   "display": "Megan Peddle",
+   "run_date": "2026-11-05",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "Megan Peddle's Bold.pro resume profile says she has worked as a salesperson at Wally's Auto Group since July 2023, after working as a Special Needs Teaching Assistant at BOCES from April 2022 to June 2023, a server and bartender at the Lobster House from June 2022 to June 2023, and a barista and sandwich artist at Park Bro's from June 2016 to April 2022.",
+   "file_text": "Worked as a salesperson at Wally's Auto Group from July 2023; earlier worked as a Special Needs Teaching Assistant at BOCES (Apr 2022 - Jun 2023), a server and bartender at the Lobster House (Jun 2022 - Jun 2023), and a barista and sandwich artist at Park Bro's (Jun 2016 - Apr 2022)",
+   "source": "Bold.pro",
+   "url": "https://us.bold.pro/my/megan-peddle",
+   "anchors": [
+    "the name Megan Peddle"
+   ],
+   "quote": "Salesperson / Wally's Auto Group / 07.2023 - Current",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 8,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261105-sarah-ellabb-ran-on-potsdam-high-school-s-girls-4",
+   "name": "sarah.ellabb",
+   "display": "Sarah El-Labban",
+   "run_date": "2026-11-05",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The adidas Indoor Track Nationals results list an El Labban on Potsdam High School's girls 4x200 relay team, which ran 1:48.46 in the National Elite prelims on March 22, 2025.",
+   "file_text": "Ran on Potsdam High School's girls 4x200 relay team at the adidas Indoor Track Nationals, Mar 2025",
+   "source": "GoingUpLive",
+   "url": "https://www.goinguplive.com/brt/adidas-indoor-track-nationals/meet-329/event-80/prelims/event-results.html",
+   "anchors": [
+    "Potsdam High School",
+    "the last name El Labban"
+   ],
+   "quote": "| 3 |  | Potsdam HS   El Labban, Sullivan, Baker, Baker | 1:48.46 |",
+   "missing_gate": "The results list only the last name El Labban for Potsdam High School, with no first name, so I am not sure it is Sarah.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 20,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2025-03-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261105-marissa989-named-to-suny-canton-s-president-s-l",
+   "name": "marissa989",
+   "display": "Marissa Wood",
+   "run_date": "2026-11-05",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A research pass reported Marissa Wood on SUNY Canton's President's List for Spring 2020 in Liberal Arts-General Studies.",
+   "file_text": "Named to SUNY Canton's President's List for Spring 2020 as a Liberal Arts-General Studies student",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2020/honors2020.php",
+   "anchors": [
+    "SUNY Canton",
+    "Liberal Arts-General Studies"
+   ],
+   "quote": "- Marissa Wood, Liberal Arts-General Studies",
+   "missing_gate": "Her name is in the Dean's List part of that page, not the President's List part, so this claim does not hold.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 10,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "2020-06-08",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261105-sf-victor-njoku-won-the-overall-best-presenter-award",
+   "name": "sf:victor-njoku",
+   "display": "Victor Njoku",
+   "run_date": "2026-11-05",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "A LinkedIn post by his sister says Victor Njoku won the Overall Best Presenter Award in the Graduate Category at the 2026 NOBCChE conference for his presentation on quantitative serum proteomics in breast cancer.",
+   "file_text": "Won the Overall Best Presenter Award in the Graduate Category at the 2026 NOBCChE conference for his breast-cancer serum proteomics presentation",
+   "source": "LinkedIn",
+   "url": "https://www.linkedin.com/posts/ognjoku_a-proud-moment-for-us-my-brother-victor-activity-7515759087146438656-AReS",
+   "anchors": [
+    "his breast-cancer proteomics research",
+    "the poster is his sister"
+   ],
+   "quote": "My brother presented his research, \u201cQuantitative Serum Proteomics in Breast Cancer Identifies Blood Coagulation Factors as Dysregulated,\u201d and won the Overall Best Presenter Award in the Graduate Category",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 63,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2026-10-13",
+   "novelty": "new"
   }
  ]
 }
