@@ -4,6 +4,14 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "askinnerusa",
+   "display": "Aeriel Skinner",
+   "field": "specialty",
+   "value": "Teaching",
+   "conf": 90,
+   "id": "pf-8044e6b0bd"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
