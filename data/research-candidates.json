@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-04",
+ "updated": "2026-11-06",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -12763,6 +12763,247 @@
    },
    "fields": {},
    "published": "2026-10-13",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-desknaebel-debbie-and-michael-knaebel-have-two-",
+   "name": "desknaebel",
+   "display": "Debbie Knaebel",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Clarkson University's alumni love-stories page says Debbie Knaebel and her husband Michael have two children.",
+   "file_text": "Debbie and Michael Knaebel have two children",
+   "source": "Clarkson University",
+   "url": "https://diy.clarkson.edu/uncategorized/clarkson-love-stories/",
+   "anchors": [
+    "Clarkson University class of 2015",
+    "LC Drives",
+    "her husband Michael works for Clarkson OIT"
+   ],
+   "quote": "After I graduated, we started dating and married as now have two kiddos.",
+   "missing_gate": "This is about Debbie's family, so I always check with you first.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 26,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-stefaniiabulakh-her-father-is-a-minister-near-kyiv-a",
+   "name": "stefaniiabulakh",
+   "display": "Stefaniia Bulakh",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "SUNY Potsdam's profile of Stefaniia Bulakh says her father is a minister, and in 2022 the family sheltered for weeks in the basement of his church near Kyiv with 60 to 70 other people.",
+   "file_text": "Her father is a minister near Kyiv, and in 2022 the family sheltered for weeks in the basement of his church with 60 to 70 other people",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/SOEPS/BusinessAdmin/StephanieBulakh",
+   "anchors": [
+    "SUNY Potsdam",
+    "Kyiv National Economic University dual-degree program"
+   ],
+   "quote": "The family quickly arranged to shelter in the basement of their church, where Stephanie's father is a minister, along with 60 to 70 other people.",
+   "missing_gate": "This is about Stefaniia's family, so I always check with you first.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 27,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-si3rragrace-listed-as-ceo-of-viable-options-inc-",
+   "name": "si3rragrace",
+   "display": "Sierra Smith",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "A charity directory page for Viable Options Inc of Canton, NY lists Sierra Smith as the group's CEO with $33,731 in compensation; her record lists her title as Executive Director.",
+   "file_text": "Listed as CEO of Viable Options Inc with $33,731 in compensation",
+   "source": "Give Freely",
+   "url": "https://givefreely.com/charity-directory/nonprofit/ein-274281672/",
+   "anchors": [
+    "Viable Options Inc",
+    "Canton, NY"
+   ],
+   "quote": "Sierra Smith is the CEO of Viable Options Inc The CEO's salary of Viable Options Inc is $33,731 and their total compensation is $33,731.",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 54,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 10,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-sf-maria-tallo-a-meal-train-in-scottsville-ny-suppo",
+   "name": "sf:maria-tallo",
+   "display": "Maria Criscitello",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Meal Train page organized by Caroline Phillips supports a Tallo family of two adults and one child in Scottsville, NY; it names no first names.",
+   "file_text": "A Meal Train in Scottsville, NY supported the Tallo family (two adults, one child)",
+   "source": "Meal Train",
+   "url": "https://www.mealtrain.com/trains/og0nol",
+   "anchors": [
+    "the Tallo surname",
+    "Scottsville is near her hometown of Rush, NY"
+   ],
+   "quote": "Meal Train\u00ae for Tallo Family!",
+   "missing_gate": "The page names a Tallo family in Scottsville, but nothing on it ties her to Maria or Colby.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-ct-julia-sinclair-released-the-album-god-forbid-led-by",
+   "name": "ct:julia sinclair",
+   "display": "Julia Sinclair",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Bluebird Cafe's page for the Nashville artist Sinclair says she released the album God Forbid, led by the single 'Rebel in the Wreckage,' in October 2024; her record still marks the Nashville Sinclair match as possible, not confirmed.",
+   "file_text": "Released the album God Forbid, led by the single 'Rebel in the Wreckage,' Oct 2024",
+   "source": "Bluebird Cafe",
+   "url": "https://bluebirdcafe.com/tm-attraction/sinclair/",
+   "anchors": [
+    "one of nine siblings",
+    "a pastor's kid who led worship",
+    "tours with Kacey Musgraves and Daughtry"
+   ],
+   "quote": "A pastor's kid and one of nine siblings, she cut her teeth leading worship before losing her family after coming out at 20.",
+   "missing_gate": "Her record is not confirmed as the Nashville singer Sinclair, so I cannot be sure this album is hers.",
+   "confidence": 61,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 20,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-ct-julia-sinclair-released-wind-takes-flight-hildegard",
+   "name": "ct:julia sinclair",
+   "display": "Julia Sinclair",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A research pass checked whether a 2025 album by a Julia Sinclair belonged to her; it is by an English soprano who studied engineering at Cambridge, a different person.",
+   "file_text": "Released Wind Takes Flight: Hildegard x Electronics, Jul 2025",
+   "source": "Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Wind_Takes_Flight",
+   "anchors": [],
+   "quote": "Wind Takes Flight: Hildegard x Electronics is a 2025 album by English soprano soloist Julia Sinclair and Dutch electronic musician and composer Marijn Cinjee, released on Nimbus Records.",
+   "missing_gate": "This claim does not hold: the singer on that album is a different person, so there is nothing to file.",
+   "confidence": 17,
+   "confidence_parts": {
+    "identity": 2,
+    "source": 10,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "2025-07-04",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-ellie-jent-received-the-nyscaa-community-action",
+   "name": "ellie.jent",
+   "display": "Ellie Jent",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "JCEO's 2024 annual report says Ellie Jent received the NYSCAA Community Action Rising Star Award.",
+   "file_text": "Received the NYSCAA Community Action Rising Star Award, 2024",
+   "source": "Joint Council for Economic Opportunity",
+   "url": "https://static1.squarespace.com/static/5bcf4a428dfc8cfa17f24ff3/t/67f7ed534576037486de8373/1744301403529/2024+Annual+Report.pdf",
+   "anchors": [
+    "Joint Council for Economic Opportunity, her employer"
+   ],
+   "quote": "Ellie Jent received the NYSCAA Community Action Rising Star Award",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-hholt-777-authored-the-2022-swarthmore-college",
+   "name": "hholt_777",
+   "display": "Hannah Holt",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "Swarthmore College's thesis index lists Hannah Holt's 2022 senior thesis on assessment and teaching practices for English-learner students in secondary STEM classes.",
+   "file_text": "Authored the 2022 Swarthmore College senior thesis 'What characterizes equitable and effective assessment and instructional practices for EL students in the secondary STEM classroom?'",
+   "source": "Swarthmore College",
+   "url": "https://works.swarthmore.edu/theses/index.3.html",
+   "anchors": [
+    "Swarthmore College",
+    "class of 2022"
+   ],
+   "quote": "What characterizes equitable and effective assessment and instructional practices for EL students in the secondary STEM classroom?, Hannah Holt , '22",
+   "missing_gate": "This one is your call: it checks out, but this run's ten filing spots went to stronger updates.",
+   "confidence": 86,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-stefaniiabulakh-works-at-vintage-doors-in-hammond",
+   "name": "stefaniiabulakh",
+   "display": "Stefaniia Bulakh",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A research pass looked for a page tying Stefaniia Bulakh to Vintage Doors in Hammond; no page naming her there could be found, only her own LinkedIn listing.",
+   "file_text": "Works at Vintage Doors in Hammond",
+   "source": "LinkedIn",
+   "url": "",
+   "anchors": [
+    "SUNY Potsdam",
+    "Clarkson University"
+   ],
+   "quote": "",
+   "missing_gate": "No page naming her at Vintage Doors could be found to double-check this.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 5,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
    "novelty": "new"
   }
  ]
