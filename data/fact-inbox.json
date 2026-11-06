@@ -3382,6 +3382,149 @@
     "status": "read"
    },
    "url": "https://www.linkedin.com/posts/ognjoku_a-proud-moment-for-us-my-brother-victor-activity-7515759087146438656-AReS"
+  },
+  {
+   "anchor": "Morgan Stanley \u00b7 Potsdam, NY",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Luke Boyle",
+   "fact": "Left Morgan Stanley in Potsdam and started as an Inbound Investment Advisor at Edelman Financial Engines, Apr 2026",
+   "id": "fi-20261106-sf-luke-boyle-left-morgan-stanley-in-p",
+   "key": "sf:luke-boyle",
+   "learned": "2026-11-06",
+   "name": "sf:luke-boyle",
+   "pattern": "employer_change",
+   "source": "SEC / FINRA IAPD",
+   "url": "https://reports.adviserinfo.sec.gov/reports/individual/individual_7646490.pdf"
+  },
+  {
+   "anchor": "Park Bros.",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Ellie Jent",
+   "fact": "Listed as a participating speaker for the grand opening of Clinton County's fourth municipal food waste collection program in Plattsburgh on Nov 7, 2026",
+   "id": "fi-20261106-ellie-jent-listed-as-a-participatin",
+   "key": "ellie.jent",
+   "learned": "2026-11-06",
+   "name": "ellie.jent",
+   "pattern": "milestone",
+   "source": "Clinton County Health Department",
+   "url": "https://www.clintoncountyny.gov/sites/default/files/health/administration/pdf/bulletinpress/current/PR-10-30-2026.pdf"
+  },
+  {
+   "anchor": "",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "John Eastmond",
+   "fact": "Scheduled to minister with his father Andrew Eastmond as a father-and-son duo at One Community Church in El Dorado, Arkansas, on Nov 8, 2026",
+   "id": "fi-20261106-johnaeastmond-scheduled-to-minister-wi",
+   "key": "johnaeastmond",
+   "learned": "2026-11-06",
+   "name": "johnaeastmond",
+   "pattern": "milestone",
+   "source": "One Community Church El Dorado",
+   "url": "https://occeldorado.com/events/"
+  },
+  {
+   "anchor": "U.S. Air Force",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Kevin Lynch",
+   "fact": "Announced SLICFiber's $17,525 donation to the Gouverneur Breast and Ovarian Cancer Fund through its #FiberOfHope initiative, Sep 2026",
+   "id": "fi-20261106-sf-kevin-lynch-announced-slicfiber-s-17",
+   "key": "sf:kevin-lynch",
+   "learned": "2026-11-06",
+   "name": "sf:kevin-lynch",
+   "pattern": "milestone",
+   "source": "Gouverneur Tribune Press",
+   "url": "https://bloximages.chicago2.vip.townnews.com/dailygazette.com/content/tncms/assets/v3/eedition/1/99/19987eea-2583-59d1-9073-78293d93195f/6a974409362c8.pdf.pdf"
+  },
+  {
+   "anchor": "Rochester Regional Health \u00b7 Potsdam, NY",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Jaime Bicknell",
+   "fact": "Named as a researcher on Clarkson University's prospective study of symptoms in people with and without joint hypermobility (IRB 26-36)",
+   "id": "fi-20261106-sf-jaime-bicknell-named-as-a-researcher-on",
+   "key": "sf:jaime-bicknell",
+   "learned": "2026-11-06",
+   "name": "sf:jaime-bicknell",
+   "pattern": "milestone",
+   "source": "ClinicalTrials.gov",
+   "url": "https://cdn.clinicaltrials.gov/large-docs/07/NCT07657507/ICF_000.pdf"
+  },
+  {
+   "anchor": "Clarkson University",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Tammy Monroe",
+   "fact": "Serves as program coordinator for Clarkson University's Occupational Therapy and Physical Therapy programs, in addition to Physician Assistant Studies",
+   "id": "fi-20261106-sf-tammy-monroe-serves-as-program-coordi",
+   "key": "sf:tammy-monroe",
+   "learned": "2026-11-06",
+   "name": "sf:tammy-monroe",
+   "pattern": "title_change",
+   "source": "Clarkson University",
+   "url": "https://bookstack.clarkson.edu/attachments/140?open=true"
+  },
+  {
+   "anchor": "Potsdam, NY",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Tim Swyka",
+   "fact": "Co-authored 'Fingerprint Presentation Attack Detection utilizing Time-Series, Color Fingerprint Captures,' introducing a dataset of over 36,000 image sequences, Apr 2021",
+   "id": "fi-20261106-taswyka-co-authored-fingerprint-",
+   "key": "taswyka",
+   "learned": "2026-11-06",
+   "name": "taswyka",
+   "pattern": "milestone",
+   "source": "arXiv",
+   "url": "https://arxiv.org/abs/2104.03933"
+  },
+  {
+   "anchor": "Potsdam, NY",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Dale Fournier",
+   "fact": "Received the Robert C. Buck Master's of Science Award in 2019",
+   "id": "fi-20261106-sf-dale-fournier-received-the-robert-c-bu",
+   "key": "sf:dale-fournier",
+   "learned": "2026-11-06",
+   "name": "sf:dale-fournier",
+   "pattern": "new_credential",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/people/dale-fournier"
+  },
+  {
+   "anchor": "New York, NY",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Jenna Moulton",
+   "fact": "Ran the New York City Marathon, in addition to her collegiate cross-country and track career",
+   "id": "fi-20261106-hulton2moulton-ran-the-new-york-city-ma",
+   "key": "hulton2moulton",
+   "learned": "2026-11-06",
+   "name": "hulton2moulton",
+   "pattern": "milestone",
+   "source": "Hospital for Special Surgery",
+   "url": "https://www.hss.edu/profiles/clinical/jenna-moulton"
+  },
+  {
+   "anchor": "New York, NY",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Jenna Moulton",
+   "fact": "Holds state licensure as a nurse practitioner in New York, New Jersey, and Connecticut",
+   "id": "fi-20261106-hulton2moulton-holds-state-licensure-as",
+   "key": "hulton2moulton",
+   "learned": "2026-11-06",
+   "name": "hulton2moulton",
+   "pattern": "new_credential",
+   "source": "Hospital for Special Surgery",
+   "url": "https://www.hss.edu/profiles/clinical/jenna-moulton"
+  },
+  {
+   "anchor": "SUNY Potsdam",
+   "batch": "AM run \u2014 Nov 6, 2026",
+   "display": "Maria Criscitello",
+   "fact": "Served as a bridesmaid in the wedding of Haley Quinlan and Brandon Keough in Ithaca, NY, on July 9, 2022",
+   "id": "fi-20261106-sf-maria-tallo-served-as-a-bridesmaid-i",
+   "key": "sf:maria-tallo",
+   "learned": "2026-11-06",
+   "name": "sf:maria-tallo",
+   "pattern": "milestone",
+   "source": "Zola",
+   "url": "https://www.zola.com/wedding/pvt/quinlankeoughwedding/wedding_party"
   }
  ],
  "patterns": {
@@ -3392,6 +3535,6 @@
   "new_credential": "New credential",
   "title_change": "Title change"
  },
- "updated": "2026-11-04",
+ "updated": "2026-11-06",
  "version": 1
 }
