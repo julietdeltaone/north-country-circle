@@ -4,6 +4,14 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "sf:kathleen-delage",
+   "display": "Kathleen DeLage",
+   "field": "first_contact",
+   "value": "2026-11-06",
+   "conf": 93,
+   "id": "pf-cfcf2873e7"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
