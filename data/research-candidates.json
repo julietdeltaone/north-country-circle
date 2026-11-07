@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-06",
+ "updated": "2026-11-07",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -13214,6 +13214,385 @@
     "identity": 46,
     "source": 25,
     "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-philiplloydpaige-listed-5898-new-york-56-potsdam-for-",
+   "name": "philiplloydpaige",
+   "display": "Philip Lloyd Paige",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "A Homes.com page for St. Lawrence County lists the home at 5898 New York 56 in Potsdam for sale at $299,000, with Philip Paige of NOCO Homestead LLC named under the listing.",
+   "file_text": "Listed 5898 New York 56, Potsdam, for sale as listing agent with NOCO Homestead LLC",
+   "source": "Homes.com",
+   "url": "https://www.homes.com/st-lawrence-county-ny/p11/",
+   "anchors": [
+    "NOCO Homestead LLC, his company",
+    "Potsdam, New York"
+   ],
+   "quote": "Philip Paige NOCO Homestead LLC",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 69,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 15,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261107-sf-nelson-dane-released-the-auto-rsa-bot-python-pac",
+   "name": "sf:nelson-dane",
+   "display": "Nelson Dane",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A PyPI user page under the name Nelson Dane lists a Python package called auto_rsa_bot, last released May 22, 2026, and a package called fennel_invest_api, last released Jan 24, 2026. The page itself would not open, so this comes from search result text only.",
+   "file_text": "Released the auto_rsa_bot Python package on PyPI, May 2026",
+   "source": "PyPI",
+   "url": "",
+   "anchors": [
+    "The name Nelson Dane, matching his software work on file"
+   ],
+   "quote": "",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 38,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 8,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261107-sf-raegan-grant-served-as-an-adult-volunteer-and-cha",
+   "name": "sf:raegan-grant",
+   "display": "Raegan Grant",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Girl Scouts of NYPENN Pathways council's August 2024 story about its Galapagos Islands trip lists Raegan Grant of Brasher Falls, New York, among the adult volunteers and chaperones; the 43 travelers spent eight days in Ecuador in July 2024.",
+   "file_text": "Served as an adult volunteer and chaperone on a Girl Scouts trip to the Galapagos Islands, Jul 2024",
+   "source": "Girl Scouts of NYPENN Pathways",
+   "url": "https://www.gsnypenn.org/en/news/galapagos-2024.html",
+   "anchors": [
+    "Brasher Falls, New York, her hometown on file"
+   ],
+   "quote": "Raegan Grant, Brasher Falls, N.Y. (St. Lawrence County)",
+   "missing_gate": "The page names a Raegan Grant in Brasher Falls, but nothing on it ties her to Rochester Regional Health.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 26,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2024-08-29",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-sf-raegan-grant-named-to-keuka-college-s-dean-s-list",
+   "name": "sf:raegan-grant",
+   "display": "Raegan Grant",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Keuka College's official Fall 2025 Dean's List, for students with a GPA of 3.5 or higher, includes the name Raegan Grant.",
+   "file_text": "Named to Keuka College's Dean's List for Fall 2025",
+   "source": "Keuka College",
+   "url": "https://www.keuka.edu/blog/keuka-college-announces-its-fall-2025-deans-list",
+   "anchors": [
+    "The name Raegan Grant only"
+   ],
+   "quote": "- Raegan Grant",
+   "missing_gate": "The list names a Raegan Grant only, with no hometown or other tie to the Raegan Grant on file.",
+   "confidence": 48,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 24,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-coreyd123103-corey-delisa-swam-for-amsterdam-as-a",
+   "name": "coreyd123103",
+   "display": "Corey Delisa",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "Adirondack Swimming's official results for the February 2019 Section II Division 2 boys' championships list a Corey DeLisa, a freshman at Amsterdam, on the school's 200-yard medley relay team and in the 100-yard butterfly preliminaries.",
+   "file_text": "Corey DeLisa swam for Amsterdam as a freshman at the February 2019 Section II Division 2 championships, on the 200-yard medley relay team and in the 100-yard butterfly preliminaries",
+   "source": "Adirondack Swimming",
+   "url": "http://adirondackswimming.org/Meets%202018-2019/results20190214adob%20boys%20section%202%20division%202%20champs.pdf",
+   "anchors": [
+    "The name Corey DeLisa",
+    "Amsterdam, New York"
+   ],
+   "quote": "1) Lucas Sarabia SO  2) Alex Slovack SO  3) Corey DeLisa FR  4) Nathaniel Andersen 8",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 54,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 20,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-coreyd123103-corey-delisa-was-on-the-principal-s-",
+   "name": "coreyd123103",
+   "display": "Corey Delisa",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "An HonorStudentsArchive page listing Wilbur H. Lynch Literacy Academy in Amsterdam, New York, includes Corey Delisa on the Grade 6 Principal's List for the first marking period of 2015-16.",
+   "file_text": "Corey Delisa was on the Principal's List in Grade 6 at Wilbur H. Lynch Literacy Academy in Amsterdam, NY, for the first marking period of 2015-2016",
+   "source": "HonorStudentsArchive.com",
+   "url": "https://honorstudentsarchive.com/webbbs_config.pl/noframes/read/3214",
+   "anchors": [
+    "The name Corey Delisa",
+    "Amsterdam, New York"
+   ],
+   "quote": "Grade 6 --Nicholas Auspelmyer, Nathan Bohm, Christian Bottisti, Nyelle Campbell, Corey Delisa, Julia Fiet, Luz Fox, Brianna Francisco, Sydney Hoefs, Jessica Holloway",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 10,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2015-12-04",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-dpaladin-daniel-paladin-and-his-wife-brietta-",
+   "name": "dpaladin",
+   "display": "Daniel Paladin",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A Christian Fellowship Center Potsdam document says Daniel Paladin and his wife Brietta have eight children, named Gabriel, Bronwyn, Jackson, Aubrey, Claire, Elliot, Oliver and Lewis.",
+   "file_text": "Daniel Paladin and his wife Brietta have eight children: Gabriel, Bronwyn, Jackson, Aubrey, Claire, Elliot, Oliver and Lewis",
+   "source": "Christian Fellowship Center",
+   "url": "https://cdn-cms.f-static.net/uploads/4421615/normal_60188b7d3be98.pdf",
+   "anchors": [
+    "Senior pastor of Christian Fellowship Center in Potsdam",
+    "Director of Christian Community Academy",
+    "His wife Brietta"
+   ],
+   "quote": "Daniel Paladin is the senior pastor of CFC Potsdam and also serves as director of the Christian Community Academy. Daniel and his wife Brietta, along with their eight children (Gabriel, Bronwyn, Jackson, Aubrey, Claire, Elliot, Oliver and Lewis) live in Potsdem.",
+   "missing_gate": "This is about Daniel's family, so I always check with you first.",
+   "confidence": 84,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 22,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261107-dpaladin-daniel-and-brietta-paladin-have-eigh",
+   "name": "dpaladin",
+   "display": "Daniel Paladin",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "The Good Enough podcast page says Daniel and Brietta Paladin have eight children, ages 1 to 16, and that two of their children have had extensive medical issues.",
+   "file_text": "Daniel and Brietta Paladin have eight children, ages 1 to 16, and two of their children have had extensive medical issues",
+   "source": "Good Enough podcast",
+   "url": "https://ivy.fm/podcast/good-enough-245549",
+   "anchors": [
+    "His wife Brietta",
+    "Pastor of Christian Fellowship Center in Potsdam"
+   ],
+   "quote": "Brietta Paladin is married to Daniel, pastor of Christian Fellowship Center in Potsdam, NY, and they have eight kids, ages 1 to 16.",
+   "missing_gate": "This is about Daniel's family, so I always check with you first.",
+   "confidence": 76,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 18,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-sf-jenna-smellie-remained-on-clarkson-s-2026-27-roste",
+   "name": "sf:jenna-smellie",
+   "display": "Jenna Smellie",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "Elite Prospects' Clarkson University team statistics page lists Jenna Smellie on the 2026-27 roster with dashes for games, goals, assists and points, as if she has not played in the team's first 13 games.",
+   "file_text": "Remained on Clarkson's 2026-27 roster as its #20 forward from Whitby, Ontario, with no games, goals, assists, or points recorded in Elite Prospects' Clarkson statistics through the team's first 13 games",
+   "source": "Elite Prospects",
+   "url": "https://www.eliteprospects.com/team/19405/clarkson-univ?tab=stats",
+   "anchors": [
+    "Clarkson University women's hockey",
+    "No. 20 forward",
+    "Whitby, Ontario"
+   ],
+   "quote": "Jenna Smellie (F) | - | - | - | **-** | - | -",
+   "missing_gate": "Jenna's sources disagree about whether she has played this season, so I want you to decide.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 14,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-sf-jenna-smellie-listed-as-20-for-clarkson-in-the-oct",
+   "name": "sf:jenna-smellie",
+   "display": "Jenna Smellie",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "Official box scores list Jenna Smellie as Clarkson's No. 20 in the October 9, 2026 game against St. Lawrence and the October 17, 2026 game against Franklin Pierce, both in Potsdam, with no goals, assists or shots in either game.",
+   "file_text": "Listed as #20 for Clarkson in the October 9, 2026 game vs St. Lawrence in Potsdam and the October 17, 2026 game vs Franklin Pierce in Potsdam, with 0 goals, 0 assists, and 0 shots in each",
+   "source": "St. Lawrence University Athletics",
+   "url": "http://saintsathletics.com/services/download_file.ashx?file_location=https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/stlawu.sidearmsports.com/stats/whockey/2026/pdf/20261009071024-45632.pdf",
+   "anchors": [
+    "Clarkson University women's hockey",
+    "No. 20",
+    "Potsdam, New York"
+   ],
+   "quote": "| 20  Smellie, Jenna | 0 | 0 | 0 | 0 | 0 | 0 | 0 | - | - | 0 |",
+   "missing_gate": "Jenna's sources disagree about whether she has played this season, so I want you to decide.",
+   "confidence": 80,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 24,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-10-09",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-sf-shari-smith-shari-smith-is-listed-among-the-cont",
+   "name": "sf:shari-smith",
+   "display": "Shari Smith",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "The University of Maryland Global Campus page for its Fort Drum location lists Shari Smith as one of four names under Contact Us for the Fort Drum site, which runs a National Test Center.",
+   "file_text": "Shari Smith is listed among the contacts for the University of Maryland Global Campus location at Fort Drum, which operates a National Test Center",
+   "source": "University of Maryland Global Campus",
+   "url": "https://www.umgc.edu/locations/fort-drum",
+   "anchors": [
+    "Fort Drum, New York"
+   ],
+   "quote": "David Bova, Alicia Phelps, Summer Evancho, Shari Smith, Fort Drum NTC",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 36,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 18,
+    "detail": 6
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-ct-justin-cardinal-justin-cardinal-and-julie-cardinal-w",
+   "name": "ct:justin cardinal",
+   "display": "Justin Cardinal",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "A New York State health inspection record on OpenDataNY says Julie and Justin Cardinal were the permitted operators of Esther's Coffee House at 20 Andrews Street in Massena when it was inspected on May 7, 2025, under a permit expiring October 31, 2026.",
+   "file_text": "Justin Cardinal and Julie Cardinal were the permitted operators of Esther's Coffee House, 20 Andrews Street, Massena, when the New York State Department of Health inspected it on May 7, 2025, under a permit expiring October 31, 2026",
+   "source": "OpenDataNY",
+   "url": "https://opendatany.com/food-inspection.php?id=1168500",
+   "anchors": [
+    "Esther's Coffee House",
+    "His wife Julie Cardinal",
+    "Massena, New York",
+    "First We Have Coffee, LLC"
+   ],
+   "quote": "Permitted Operator Name | Julie & Justin Cardinal",
+   "missing_gate": "This one is your call: his coffee-shop role is already on file, and only the inspection and permit dates are new.",
+   "confidence": 79,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 22,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2025-05-07",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261107-hello3milyy-worked-as-assistant-manager-at-the-d",
+   "name": "hello3milyy",
+   "display": "Emily Bouchard",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "Emily Bouchard's Bold.pro resume page says she worked as an assistant manager at The Dirty Gringo Mexican Restaurant in Ogdensburg from June 2016 to March 2019. The same page says she worked in food service at Claxton Hepburn Medical Center in Ogdensburg from April 2014 to June 2016. It also says she was general manager for Unifi in Duluth, Minnesota, from March to September 2022.",
+   "file_text": "Worked as Assistant Manager at The Dirty Gringo Mexican Restaurant in Ogdensburg, NY, Jun 2016\u2013Mar 2019 ;; Worked in Food Service at Claxton Hepburn Medical Center in Ogdensburg, NY, Apr 2014\u2013Jun 2016 ;; Was General Manager for Unifi in Duluth, MN, Mar 2022\u2013Sep 2022",
+   "source": "Bold.pro",
+   "url": "https://pa.bold.pro/my/emily-bouchard-251212101950",
+   "anchors": [
+    "Ogdensburg, New York, her hometown",
+    "Unifi in Duluth, where her record already places her in 2022"
+   ],
+   "quote": "Assistant Manager / The Dirty Gringo Mexican Restaurant / Ogdensburg, NY / 06.2016 - 03.2019 ;; Food Service / Claxton Hepburn Medical Center / Ogdensburg, NY / 04.2014 - 06.2016 ;; General Manager / Unifi / Duluth, MN / 03.2022 - 09.2022",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 64,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 8,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-sf-danica-dunphey-son-jameson-finished-high-school-dau",
+   "name": "sf:danica-dunphey",
+   "display": "Danica Dunphey",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Danica Dunphey's own blog says her son Jameson finished high school. The same blog gives her daughter's birth as Winifred Lee, born May 28, 2023.",
+   "file_text": "Son Jameson finished high school ;; Daughter Winifred Lee was born May 28, 2023",
+   "source": "Danica Dunphey's blog",
+   "url": "https://dunphey.com/",
+   "anchors": [
+    "Her own blog, which is on file",
+    "Her children, who appear in her family record"
+   ],
+   "quote": "And Jameson finished high school. What a special moment to applaud the young man he has become as he has walked with a humble heart before us and before God. ;; Winifred Lee, May 28, 2023, 12:57am, 9lb 15oz, 22\u2033",
+   "missing_gate": "This is about Danica's family, so I always check with you first.",
+   "confidence": 75,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 14,
+    "detail": 16
    },
    "fields": {},
    "published": "",
