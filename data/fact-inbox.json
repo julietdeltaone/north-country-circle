@@ -3863,6 +3863,110 @@
    "pattern": "milestone",
    "source": "SUNY Potsdam",
    "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert"
+  },
+  {
+   "anchor": "Team USA wrestling \u00b7 Titan Mercury Wrestling Club",
+   "batch": "AM run \u2014 Nov 7, 2026",
+   "display": "Joye Levendusky",
+   "fact": "Entered the 2026 Bill Farrell Memorial International at 76 kg in New York, Nov 2026, seeded No. 3 and the highest-seeded U.S. athlete in the division",
+   "id": "fi-20261107-jlevens18-entered-the-2026-bill-fa",
+   "key": "jlevens18",
+   "learned": "2026-11-07",
+   "name": "jlevens18",
+   "pattern": "milestone",
+   "source": "USA Wrestling",
+   "url": "https://www.themat.com/news/2026/november/05/pre-seeds-set-for-women-s-freestyle-at-bill-farrell-memorial-international"
+  },
+  {
+   "anchor": "Team USA wrestling \u00b7 Titan Mercury Wrestling Club",
+   "batch": "AM run \u2014 Nov 7, 2026",
+   "display": "Joye Levendusky",
+   "fact": "Competed at the 2026 Senior World Team Trials Challenge Tournament at 72 kg in May 2026, beating Taylor Graveman 8-4 before losing to Amit Elor",
+   "id": "fi-20261107-jlevens18-competed-at-the-2026-sen",
+   "key": "jlevens18",
+   "learned": "2026-11-07",
+   "name": "jlevens18",
+   "pattern": "milestone",
+   "source": "FloWrestling",
+   "url": "https://www.flowrestling.org/articles/15906347-2026-wrestling-world-team-trials-challenge-tournament-results"
+  },
+  {
+   "anchor": "Massena Central School District \u00b7 Massena, NY",
+   "batch": "AM run \u2014 Nov 7, 2026",
+   "display": "Ana Miller",
+   "fact": "Listed as a special education teacher at Madison Elementary in Massena for 2025-26, after previously being at Nightengale Elementary",
+   "id": "fi-20261107-ct-ana-miller-listed-as-a-special-educ",
+   "key": "ct:ana miller",
+   "learned": "2026-11-07",
+   "name": "ct:ana miller",
+   "pattern": "employer_change",
+   "source": "Massena Central School District",
+   "url": "https://4.files.edl.io/5ac5/10/01/25/124639-a8996dc4-d603-47a7-8fe7-eaf16b762da5.pdf"
+  },
+  {
+   "anchor": "Elementary teacher \u00b7 Vermont",
+   "batch": "AM run \u2014 Nov 7, 2026",
+   "display": "Ryleigh Combs",
+   "fact": "Resigned from the Champlain Islands Unified Union School District in Grand Isle County, Vermont, with her resignation acknowledged by the school board on Mar 10, 2020",
+   "id": "fi-20261107-ct-ryleigh-combs-resigned-from-the-champl",
+   "key": "ct:ryleigh combs",
+   "learned": "2026-11-07",
+   "name": "ct:ryleigh combs",
+   "pattern": "employer_change",
+   "source": "Grand Isle Supervisory Union",
+   "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/3270/Gisu/15e3e1ab-2362-4648-b5c4-d74107e3bbdd/03102020minutesciuusd.pdf?disposition=inline"
+  },
+  {
+   "anchor": "Elementary teacher \u00b7 Vermont",
+   "batch": "AM run \u2014 Nov 7, 2026",
+   "display": "Ryleigh Combs",
+   "fact": "Approved as a 1.0 FTE elementary teacher at Orchard School in South Burlington, Vermont, May 19, 2021",
+   "id": "fi-20261107-ct-ryleigh-combs-approved-as-a-1-0-fte-el",
+   "key": "ct:ryleigh combs",
+   "learned": "2026-11-07",
+   "name": "ct:ryleigh combs",
+   "pattern": "employer_change",
+   "source": "South Burlington School District",
+   "url": "https://5il.co/213ef"
+  },
+  {
+   "anchor": "New York Army National Guard \u00b7 258th Field Artillery",
+   "batch": "AM run \u2014 Nov 7, 2026",
+   "display": "Kyle Davis",
+   "fact": "Served as media contact for the 1st Battalion, 258th Field Artillery change of command at Camp Smith, Oct 2023",
+   "id": "fi-20261107-sf-kyle-davis-served-as-media-contact-",
+   "key": "sf:kyle-davis",
+   "learned": "2026-11-07",
+   "name": "sf:kyle-davis",
+   "pattern": "milestone",
+   "source": "New York State Division of Military and Naval Affairs",
+   "url": "https://dmna.ny.gov/pressroom/?id=1698675113"
+  },
+  {
+   "anchor": "U.S. Army \u00b7 642nd Aviation Support Battalion",
+   "batch": "AM run \u2014 Nov 7, 2026",
+   "display": "Joann Duclos",
+   "fact": "Flagged in a UH-60 Black Hawk during night sling-load training at Camp Buehring, Kuwait, Jun 5, 2014",
+   "id": "fi-20261107-sf-joann-duclos-flagged-in-a-uh-60-black",
+   "key": "sf:joann-duclos",
+   "learned": "2026-11-07",
+   "name": "sf:joann-duclos",
+   "pattern": "milestone",
+   "source": "U.S. Army",
+   "url": "https://www.army.mil/article/263393/ny_army_guard_aviation_soldiers_mobilize_for_mideast_mission"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Physical Therapist Assistant program",
+   "batch": "AM run \u2014 Nov 7, 2026",
+   "display": "Peyton Sheehan",
+   "fact": "Listed as a Physical Therapist Assistant A.A.S. candidate in SUNY Canton's May 2026 commencement program, marked summa cum laude",
+   "id": "fi-20261107-peyt0nsheehan-listed-as-a-physical-the",
+   "key": "peyt0nsheehan",
+   "learned": "2026-11-07",
+   "name": "peyt0nsheehan",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "http://www.canton.edu/media/pdf/2026SSHCJ.pdf"
   }
  ],
  "patterns": {
@@ -3873,6 +3977,6 @@
   "new_credential": "New credential",
   "title_change": "Title change"
  },
- "updated": "2026-11-06",
+ "updated": "2026-11-07",
  "version": 1
 }
