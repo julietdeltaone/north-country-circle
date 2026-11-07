@@ -13005,6 +13005,219 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-sf-sarah-diederich-works-as-a-music-teacher-at-lisbon-c",
+   "name": "sf:sarah-diederich",
+   "display": "Sarah Diederich",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Lisbon Central School District's staff directory lists a Sarah Diederich as its Music Teacher.",
+   "file_text": "Works as a Music Teacher at Lisbon Central School District, Lisbon, NY",
+   "source": "Lisbon Central School District",
+   "url": "https://www.lisboncsd.org/staff?page_no=2",
+   "anchors": [
+    "Music, her specialty on file",
+    "Lisbon, NY in the North Country"
+   ],
+   "quote": "Sarah Diederich, Music Teacher, <diederichs@lisbon.k12.ny.us>",
+   "missing_gate": "The page names a Sarah Diederich in Lisbon, but nothing on it ties her to Christian Fellowship Center or the Academy.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 22,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-sf-sarah-diederich-performed-in-the-ensemble-of-cindere",
+   "name": "sf:sarah-diederich",
+   "display": "Sarah Diederich",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "SUNY Potsdam's page for the Community Performance Series musical 'Cinderella: Enchanted Edition' (July 2026) lists a Sarah Diederich, class of 2002 and 2025, in the ensemble.",
+   "file_text": "Performed in the ensemble of 'Cinderella: Enchanted Edition' at SUNY Potsdam, Jul 2026",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/news/Cinderella",
+   "anchors": [
+    "Music and theater, her work on file at the Academy and church"
+   ],
+   "quote": "In addition, the show's ensemble features Allison Andre, Lydianna Soleil Burnett, Abby DeCastro, Sarah Diederich \u201902 & \u201925, Julia Ellison '28",
+   "missing_gate": "The page names a Sarah Diederich from the class of 2002, but nothing on it ties her to Christian Fellowship Center.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 24,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-instabellaphoebe-now-lives-in-quincy-massachusetts",
+   "name": "instabellaphoebe",
+   "display": "Isabella Phoebe",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Zola wedding-party page for Emily Smith and James Toolen says Isabella Lucia, who attended school in Potsdam, now lives in Quincy, Massachusetts.",
+   "file_text": "Now lives in Quincy, Massachusetts",
+   "source": "Zola",
+   "url": "https://www.zola.com/wedding/toolen2025/wedding_party",
+   "anchors": [
+    "Isabella Lucia is the name on her SUNY Potsdam record",
+    "she attended school in Potsdam, NY"
+   ],
+   "quote": "Isabella now lives in Quincy, MA.",
+   "missing_gate": "The page names an Isabella Lucia from Potsdam, but it does not name SUNY Potsdam or her degree, so I am not fully sure it is her.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 35,
+    "source": 14,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-sf-sam-rusaw-served-as-a-groomsman-for-kyle-bagge",
+   "name": "sf:sam-rusaw",
+   "display": "Sam Rusaw",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Zola wedding-party page for Madison and Kyle Baggett lists a Sam Rusaw as a groomsman, a friend of the groom since 2002 in Arizona.",
+   "file_text": "Served as a groomsman for Kyle Baggett",
+   "source": "Zola",
+   "url": "https://www.zola.com/wedding/mandkbaggett/wedding_party",
+   "anchors": [
+    "the Rusaw name only"
+   ],
+   "quote": "Sam, one of Kyle's closet and longest friendships. These two have been getting themselves into and sometimes out of trouble since 2002.",
+   "missing_gate": "The page names a Sam Rusaw in Arizona, but nothing on it ties him to New Testament Church or the North Country.",
+   "confidence": 42,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 14,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-jamesondunphey-finished-high-school-and-was-accepte",
+   "name": "jamesondunphey",
+   "display": "Jameson Dunphey",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "Jameson Dunphey's mother's blog says he finished high school, and that in March 2024 the family had his college acceptance letter, won through a successful audition, on the fridge.",
+   "file_text": "Finished high school and was accepted to college on a successful audition, 2024",
+   "source": "Dunphey family blog",
+   "url": "https://dunphey.com/",
+   "anchors": [
+    "his mother Danica's own blog",
+    "the Christian Fellowship Academy family on file"
+   ],
+   "quote": "And Jameson finished high school.",
+   "missing_gate": "This is about Jameson's family, so I always check with you first.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 12,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-eileen-mackenzie-graduated-from-suny-potsdam-in-arts-",
+   "name": "eileen_mackenzie",
+   "display": "Eileen Mackenzie",
+   "run_date": "2026-11-06",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "SUNY Potsdam's 2021 commencement program lists an 'Eileen Mackenzie Clerkin' among its bachelor's degree candidates, but the program's columns could not be read clearly enough to confirm her major.",
+   "file_text": "Graduated from SUNY Potsdam in Arts Management in 2021, listed as Eileen Mackenzie Clerkin",
+   "source": "SUNY Potsdam",
+   "url": "https://view.publitas.com/47848/1290495/pdfs/4bcb8453-473e-47aa-a066-22cbecbe6396.pdf?response-content-disposition=attachment%3B",
+   "anchors": [
+    "SUNY Potsdam, class of 2021"
+   ],
+   "quote": "Eileen Mackenzie Clerkin",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 20,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2021-05-22",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261106-alexfornyassembly-his-partner-is-new-jersey-army-natio",
+   "name": "alexfornyassembly_",
+   "display": "Alex Hammond",
+   "run_date": "2026-11-06",
+   "run_label": "Compounding lane",
+   "category": "sensitive",
+   "claim": "New York State DMNA's release for Alex Hammond's August 2026 promotion names his partner as New Jersey Army National Guard Capt. Rachel Carey.",
+   "file_text": "His partner is New Jersey Army National Guard Capt. Rachel Carey",
+   "source": "New York State DMNA",
+   "url": "http://dmna.ny.gov/pressroom/?id=1789500731",
+   "anchors": [
+    "his August 25, 2026 promotion at Fort William Henry",
+    "New York Army National Guard"
+   ],
+   "quote": "members of the Hammond family and the family of his partner, New Jersey Army National Guard Capt. Rachel Carey.",
+   "missing_gate": "This is about Alex's family, so I always check with you first.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 47,
+    "source": 27,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026-08-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261106-cashhyyy-both-of-her-parents-are-teachers-fro",
+   "name": "cashhyyy",
+   "display": "Cashlynn Colbert",
+   "run_date": "2026-11-06",
+   "run_label": "Compounding lane",
+   "category": "sensitive",
+   "claim": "SUNY Potsdam's profile of Cashlynn Colbert says both of her parents are teachers from the Potsdam and Massena area.",
+   "file_text": "Both of her parents are teachers from the Potsdam and Massena area",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert",
+   "anchors": [
+    "SUNY Potsdam, her school",
+    "Massena, her hometown"
+   ],
+   "quote": "My parents are both teachers, and they are from this area.",
+   "missing_gate": "This is about Cashlynn's family, so I always check with you first.",
+   "confidence": 83,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 25,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
