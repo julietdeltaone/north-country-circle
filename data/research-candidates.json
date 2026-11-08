@@ -13597,6 +13597,138 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-wayne-brown-ii-founded-gather-markets-a-platform-ma",
+   "name": "wayne_brown_ii",
+   "display": "Wayne Brown",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Wayne Brown built Gather Markets, a platform matching CRA-eligible mortgage loans to bank buyers, after more than 25 years in mortgage banking including time at Freddie Mac. The Chrisman Commentary podcast page tells his story.",
+   "file_text": "Founded Gather Markets, a platform matching CRA-eligible mortgage loans to bank buyers",
+   "source": "Chrisman Commentary",
+   "url": "https://chrismancommentary.com/podcast/10-8-26/",
+   "anchors": [
+    "Mortgage banking and finance, his line of work on file"
+   ],
+   "quote": "Gather was conceived and built by Wayne, a career mortgage banking professional with deep roots and community lending, correspondent finance and CRA program design.",
+   "missing_gate": "The page names a Wayne Brown in mortgage banking, but nothing on it ties him to Wayne, Pennsylvania or his sister Olivia.",
+   "confidence": 56,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 22,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2026-10-08",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-hnnbraun-began-phd-research-in-the-barfield-l",
+   "name": "hnnbraun",
+   "display": "Hannah Braun",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "A Hannah Braun is a PhD candidate in the Barfield Lab at Colorado State University, studying bovine embryo development. The International Embryo Technology Society statement is in her own words.",
+   "file_text": "Began PhD research in the Barfield Lab at Colorado State University on bovine embryo development",
+   "source": "International Embryo Technology Society",
+   "url": "https://www.iets.org/Portals/0/Documents/Public/CareerDevelopment/Morulas/IETS_Morulas_2026-2028_President_Candidates_BOG_Personal_Statements_DRAFT_TF.pdf",
+   "anchors": [
+    "Dairy and bovine research, matching her Cornell animal science path on file"
+   ],
+   "quote": "I am a PhD candidate in the Barfield Lab at Colorado State University, where my research focuses on bovine embryo development, time-lapse embryo morphokinetics, and noninvasive biopsy approaches.",
+   "missing_gate": "The page names a Hannah Braun at Colorado State, but nothing on it ties her to Cornell, Lisbon, or Woodcrest Dairy.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 24,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-benlevendusky-responded-to-religion-news-service-i",
+   "name": "benlevendusky",
+   "display": "Ben Levendusky",
+   "run_date": "2026-11-07",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "Religion News Service reported in August 2022 that a woman met with Ben Levendusky at Christian Fellowship Center's Madrid location in spring 2015 about leaving her husband, at his request. He told the reporter by email that he never tries to keep someone in a situation against their will and tries to support people who feel unsafe and need to leave.",
+   "file_text": "Responded to Religion News Service in Aug 2022 about a spring 2015 meeting at Christian Fellowship Center in Madrid, saying he never tries to keep someone in a situation against their will and tries to support people who feel unsafe",
+   "source": "Religion News Service",
+   "url": "https://religionnews.com/2022/08/25/an-insular-quiverfull-church-in-new-yorks-north-country-faces-a-reckoning/",
+   "anchors": [
+    "Lead pastor of Christian Fellowship Center",
+    "Madrid, New York"
+   ],
+   "quote": "I never try to keep someone in a situation against their will; if they feel they are in an unsafe situation and need to leave, I try to support them as much as possible.",
+   "missing_gate": "This is about Ben's church and a family situation, so I always check with you first.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "2022-08-25",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261107-adria-t18-finished-the-2025-26-season-with-5-g",
+   "name": "adria.t18",
+   "display": "Adria Tebo",
+   "run_date": "2026-11-07",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "Elite Prospects lists Adria Tebo's full 2025-26 season at the University of New England as 5 goals and 10 assists for 15 points in 26 games.",
+   "file_text": "Finished the 2025-26 season with 5 goals and 10 assists for 15 points in 26 games for the University of New England",
+   "source": "Elite Prospects",
+   "url": "https://www.eliteprospects.com/team/20858/univ.-of-new-england/stats/all-time-season?sort=A",
+   "anchors": [
+    "University of New England women's ice hockey",
+    "Forward"
+   ],
+   "quote": "| 25. | Adria Tebo (F) | 2025-2026 | 20 | NCAA III (W) | 26 | 5 | 10 | 15 | 0.58 | 33 | 6 |",
+   "missing_gate": "This follows from Adria's record at the University of New England, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 12,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261107-alanahoover-coached-k-2nd-grade-in-the-thousand-",
+   "name": "alanahoover",
+   "display": "Alana Hoover",
+   "run_date": "2026-11-07",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "A Thousand Islands district PTO signup form for the Little Dribblers basketball program lists Alana Hoover as one of the coaches for the K-2nd grade group in the 2024 season.",
+   "file_text": "Coached K-2nd grade in the Thousand Islands Little Dribblers basketball program, 2024 season",
+   "source": "Little Dribblers Basketball",
+   "url": "https://docs.google.com/forms/d/e/1FAIpQLSecxh70KgASaxEy2piYxIqnIi6Rwa3gWfitdxyL-AuJ7sveuQ/viewform?usp=embed_facebook",
+   "anchors": [
+    "Thousand Islands Central School District, where she teaches"
+   ],
+   "quote": "We have Miah W. Coaching 3rd-4th and 5th-6th again this year. Linnea Steinhauser, Alana Hoover and Brock Kaupp will be coaching K-2nd.",
+   "missing_gate": "This follows from Alana's teaching job in the same district, but the form itself does not name her school, so I want you to decide.",
+   "confidence": 57,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 14,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
