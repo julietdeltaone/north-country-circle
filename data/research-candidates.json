@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-07",
+ "updated": "2026-11-08",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -13729,6 +13729,113 @@
    "fields": {},
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261108-furious-myles-grandson-of-linda-s-hurlbut-of-louis",
+   "name": "furious_myles",
+   "display": "Myles Laramay",
+   "run_date": "2026-11-08",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Linda S. Hurlbut's obituary lists Myles Laramay among her seven grandchildren. Linda lived in Louisville, New York, worked for Christian Fellowship Center and New Testament Church for over thirty years, and died on July 14, 2019; her daughter is Michele Laramay.",
+   "file_text": "Grandson of Linda S. Hurlbut of Louisville, New York, who died on July 14, 2019, and was listed among her seven grandchildren in her obituary",
+   "source": "Tribute Archive",
+   "url": "https://www.tributearchive.com/obituaries/5282074/Linda-Hurlbut",
+   "anchors": [
+    "His mother Michele Laramay is named in the obituary as Linda's daughter",
+    "Louisville, New York, his hometown on file",
+    "Christian Fellowship Center, his church connection on file"
+   ],
+   "quote": "She was also blessed with seven grandchildren, Gabriel (wife Kristan), Zachary (wife Fiona), Ethan (fianc\u00e9e Yvonne Grant), Marcus (wife Ashleigh) and Myles Laramay, and Nolan and Natalie Hurlbut.",
+   "missing_gate": "This is about Myles's family, so I always check with you first.",
+   "confidence": 85,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 25,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261108-sf-david-irving-holds-a-cpb-credential-as-founder-of",
+   "name": "sf:david-irving",
+   "display": "David Perry",
+   "run_date": "2026-11-08",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A Relay accountant directory page lists a David Perry in Plattsburgh, New York as a CPB and the founder of Latitude Bookkeeping, a firm focused on church leaders. The listing is self-submitted and no second source confirms the CPB credential.",
+   "file_text": "Holds a CPB credential as founder of Latitude Bookkeeping in Plattsburgh",
+   "source": "Relay",
+   "url": "https://directory.relayfi.com/accountants/state/ny",
+   "anchors": [
+    "Latitude Bookkeeping, the firm he founded on file",
+    "Plattsburgh, New York, on file"
+   ],
+   "quote": "Plattsburgh, NY David Perry CPB David is the founder of Latitude Bookkeeping, a firm focused on developing financial confidence in church leaders and motivating missional giving.",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 8,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261108-dgruneisen-wrote-a-letter-to-the-editor-thankin",
+   "name": "dgruneisen",
+   "display": "Don Gruneisen",
+   "run_date": "2026-11-08",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A letter to the editor published on August 15, 2025 and signed Donald Gruneisen of Potsdam thanks Congresswoman Elise Stefanik for her proposal to raise pay for corrections officers at the federal prison in Ray Brook. The letter is self-written and the page names no second tie to his record.",
+   "file_text": "Wrote a letter to the editor thanking Congresswoman Elise Stefanik for her proposal to raise pay for corrections officers at the federal prison in Ray Brook, Aug 2025",
+   "source": "CNHI",
+   "url": "https://www.cnhi.com/rss_feed/letter-to-the-editor-aug-15-2025/",
+   "anchors": [
+    "Potsdam, his town on file"
+   ],
+   "quote": "This is why I want to thank Congresswoman Elise Stefanik for her proactive proposal to raise the pay for corrections officers at the federal prison in Ray Brook.",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 52,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 15,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2025-08-15",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261108-nevaeh-phillips-played-the-2026-season-with-impact-g",
+   "name": "nevaeh_phillips",
+   "display": "Nevaeh Phillips",
+   "run_date": "2026-11-08",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "Her Alliance Fastpitch player page lists 2026 season stats for Nevaeh Phillips with Impact Gold Jazz 16U: a .250 average in 27 games. The page's only tie to her record is the team; it lists a Katy, Texas hometown that is not on her record.",
+   "file_text": "Played the 2026 season with Impact Gold Jazz 16U, batting .250 in 27 games",
+   "source": "Alliance Fastpitch",
+   "url": "https://thealliancefastpitch.com/player-profile?allianceID=DO00025562&season=2025",
+   "anchors": [
+    "Impact Gold Jazz 16U, her team on file"
+   ],
+   "quote": "Meet Nevaeh Phillips, a dynamic third baseman for Impact Gold Jazz 16U, competing in the Super division of the Texas Fastpitch League.",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 18,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
   }
  ]
 }
