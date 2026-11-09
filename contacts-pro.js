@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.5.4';
+var APP_VERSION = '4.6.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2637,7 +2637,7 @@ function render(){
        is not a page change, so it never resets the scroll: each
        tab's own scroll is saved and restored instead. V4 Phase 2:
        the set is all three tabs (Records / Inbox / Filings). */
-    var lrTabSwap = !!(({ 'daily/':1, 'daily/decide':1, 'daily/filings':1 })[render._rk] && ({ 'daily/':1, 'daily/decide':1, 'daily/filings':1 })[rk]);
+    var lrTabSwap = !!(({ 'daily/':1, 'daily/decide':1, 'daily/filings':1, 'daily/activity':1 })[render._rk] && ({ 'daily/':1, 'daily/decide':1, 'daily/filings':1, 'daily/activity':1 })[rk]);
     if(lrTabSwap){
       render._dscroll = render._dscroll || {};
       render._dscroll[render._rk] = { w: window.scrollY || 0, v: v ? v.scrollTop : 0 };
@@ -9915,7 +9915,8 @@ function lrChromeHTML(on, title, subHTML, subId){
     '<a href="#/daily"' + (on === 'records' ? ' class="on"' : '') + '>Today</a>' +
     '<a href="#/daily/facts"' + (on === 'facts' ? ' class="on"' : '') + '>New facts <span class="n' + (fiN ? '' : ' zero') + '">(' + fiN + ')</span></a>' +
     '<a href="#/daily/decide"' + (on === 'decide' ? ' class="on"' : '') + '>Needs a decision <span class="n' + (decN ? '' : ' zero') + '">(' + decN + ')</span></a>' +
-    '<a href="#/daily/filings"' + (on === 'filings' ? ' class="on"' : '') + '>History</a></nav>';
+    '<a href="#/daily/filings"' + (on === 'filings' ? ' class="on"' : '') + '>History</a>' +
+    '<a href="#/daily/activity"' + (on === 'activity' ? ' class="on"' : '') + '>Activity Feed</a></nav>';
 }
 /* V4.5.0 Today (JD, 2026-11-09): this tab is reserved for FRESH
    facts only — items the fresh sweep verified as published within
@@ -10493,6 +10494,204 @@ function lrRecordsBodyHTML(){
   return '<div class="dtwrap"><div class="dtmain">' + hotAlertHTML() + stats + newCards + updHead + '<div class="asgrid">' + cards + '</div>' + checkedCard + '</div>' + rail + '</div>';
 }
 
+/* ============================================================
+   V4.6.0 — Activity Feed: a fifth tab inside Live Records
+   (#/daily/activity). Read-only navigation, like Filings — no
+   write path. The stream merges the two published feeds the
+   pipelines already maintain: data/changes.json (the deep
+   change log: filed facts, 1,250 entries back to Oct 21) and
+   data/whatsnew.json (which carries the photo filings the
+   change log lacks). Dedupe key: person + text + date. Sort:
+   newest day first, source order inside the day. Stats, the
+   14-day chart and the filters all compute client-side from
+   the merged list; a filter click repaints only the stream
+   container, never the chrome or the stats (V3.79.1 rule, and
+   actions never move the page: JD 2026-11-03).
+   ============================================================ */
+var AF = null, AF_LOADING = false, AF_FILTER = 'all', AF_SHOWN = 60;
+var AF_PAGE = 60;
+function afLoad(){
+  chLoad(); wnLoad(); phLoad();
+  if(AF || AF_LOADING) return;
+  AF_LOADING = true;
+  function build(){
+    if(!CH || !WN){ setTimeout(build, 250); return; }
+    if(CH.empty && CH.entries == null){ setTimeout(build, 250); return; }
+    AF_LOADING = false;
+    var seen = {}, out = [];
+    (CH.entries || []).forEach(function(c){
+      var txt = String(c.what || '');
+      var k = String(c.name || '').toLowerCase() + '|' + txt.toLowerCase() + '|' + (c.filed || '');
+      if(seen[k]) return; seen[k] = 1;
+      out.push({ date:c.filed || '', name:c.name || '', text:txt, source:c.source || '', url:c.url || '',
+        kind:(/profile picture filed/i.test(txt) ? 'photo' : 'filed'), novelty:c.novelty || '', sourceDate:c.source_date || '' });
+    });
+    (WN.items || []).forEach(function(w){
+      var k = String(w.display || '').toLowerCase() + '|' + String(w.text || '').toLowerCase() + '|' + (w.date || '');
+      if(seen[k]) return; seen[k] = 1;
+      out.push({ date:w.date || '', name:w.display || '', text:String(w.text || ''), source:w.source || '', url:w.url || '',
+        kind:(w.kind === 'photo' ? 'photo' : 'filed'), novelty:'', sourceDate:'' });
+    });
+    var ord = {};
+    out.forEach(function(e, i){ ord[i] = i; e._o = i; });
+    out.sort(function(a, b){ if(a.date !== b.date) return a.date < b.date ? 1 : -1; return a._o - b._o; });
+    AF = { items: out };
+    if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'activity') render();
+  }
+  build();
+}
+var AF_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var AF_DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function afYmd(d){
+  function p(n){ return (n < 10 ? '0' : '') + n; }
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+function afParse(iso){
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : null;
+}
+function afDayDiff(a, b){
+  var x = afParse(a), y = afParse(b);
+  return (x == null || y == null) ? null : Math.round((y - x) / 86400000);
+}
+function afIsFresh(e){
+  if(!e.sourceDate || !e.date) return false;
+  var d = afDayDiff(e.sourceDate, e.date);
+  return d != null && d >= 0 && d <= 21;
+}
+function afMatch(e){
+  if(AF_FILTER === 'facts') return e.kind === 'filed';
+  if(AF_FILTER === 'photos') return e.kind === 'photo';
+  if(AF_FILTER === 'fresh') return afIsFresh(e);
+  return true;
+}
+function afDayLabel(iso, today, yday){
+  if(iso === today) return 'Today';
+  if(iso === yday) return 'Yesterday';
+  var p = String(iso || '').split('-');
+  if(p.length < 3) return String(iso || '');
+  var d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
+  var lbl = AF_DOW[d.getUTCDay()] + ' ' + AF_MON[+p[1] - 1] + ' ' + (+p[2]);
+  if(String(new Date().getFullYear()) !== p[0]) lbl += ', ' + p[0];
+  return lbl;
+}
+function afFiledWord(iso, today, yday){
+  if(iso === today) return 'today';
+  if(iso === yday) return 'yesterday';
+  return hmFmtD(iso);
+}
+function afStatsHTML(items){
+  var today = afYmd(new Date());
+  var t7 = afYmd(new Date(Date.now() - 6 * 86400000));
+  var nToday = 0, nWeek = 0, nPhoto = 0, nFresh = 0, people = {}, srcs = {};
+  items.forEach(function(e){
+    if(e.date === today) nToday++;
+    if(e.date >= t7 && e.date <= today){
+      nWeek++;
+      if(e.name) people[e.name.toLowerCase()] = 1;
+      if(e.kind === 'photo') nPhoto++;
+      if(afIsFresh(e)) nFresh++;
+    }
+    if(e.source) srcs[e.source.toLowerCase()] = 1;
+  });
+  function tile(icon, val, lbl, sub){
+    return '<div class="af-tile"><span class="af-tile-ic">' + ic(icon, 16) + '</span>' +
+      '<span class="af-tile-v">' + val + '</span><span class="af-tile-l">' + lbl + '</span>' +
+      '<span class="af-tile-s">' + sub + '</span></div>';
+  }
+  var counts = [], max = 0, bars = '';
+  for(var i = 13; i >= 0; i--){
+    var dstr = afYmd(new Date(Date.now() - i * 86400000));
+    var n = 0;
+    items.forEach(function(e){ if(e.date === dstr) n++; });
+    counts.push({ d: dstr, n: n });
+    if(n > max) max = n;
+  }
+  counts.forEach(function(c){
+    var pct = max ? Math.max(4, Math.round(c.n / max * 100)) : 4;
+    bars += '<span class="af-bar" style="height:' + pct + '%" title="' + hmFmtD(c.d) + ': ' + c.n + ' filed"></span>';
+  });
+  return '<section class="af-stats" aria-label="Activity totals">' +
+    tile('edit', nToday, 'Filed today', hmFmtD(today)) +
+    tile('calendar', nWeek, 'Filed this week', 'Last 7 days') +
+    tile('people', Object.keys(people).length, 'People touched', 'Last 7 days') +
+    tile('camera', nPhoto, 'Photos filed', 'Last 7 days') +
+    tile('sparkle', nFresh, 'Fresh', 'Published within 21 days of filing') +
+    tile('link', Object.keys(srcs).length, 'Sources', 'Across the whole feed') +
+    '<div class="af-tile af-chart"><span class="af-tile-l">Filings per day</span>' +
+    '<div class="af-bars">' + bars + '</div><span class="af-tile-s">Last 14 days</span></div>' +
+    '</section>';
+}
+function afAvatarHTML(e, di){
+  var e2 = di != null ? D.directory[di] : null;
+  if(e2){
+    var idx = (typeof phIndex === 'function') ? phIndex() : null;
+    var p = idx ? idx[dispName(e2)] : null;
+    if(p && p.photo_url) return '<span class="af-av"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '" onerror="phImgErr(this)"></span>';
+    return avatar(e2, 'md');
+  }
+  return '<span class="av av-md" style="--tc:var(--pv-blue)">' + esc((String(e.name || '').replace(/^@/, '').trim().charAt(0) || '\u00b7').toUpperCase()) + '</span>';
+}
+function afRow(e, today, yday){
+  var di = hmDiOf(e.name);
+  var fresh = afIsFresh(e);
+  var kindChip = e.kind === 'photo'
+    ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>'
+    : '<span class="af-kind af-k-fact">' + ic('file', 11) + ' Filed fact</span>';
+  var nameHTML = di != null
+    ? '<button type="button" class="af-name" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(e.name || '') + '\u2019s profile">' + esc(e.name || '') + '</button>'
+    : '<span class="af-name plain">' + esc(e.name || '') + '</span>';
+  var nov = '';
+  if(e.novelty === 'new') nov = '<span class="af-nov af-nov-new">New</span>';
+  else if(e.novelty === 'expands') nov = '<span class="af-nov af-nov-exp">Expands</span>';
+  var meta = '<span class="af-meta-item">' + ic('check', 11) + ' Filed ' + esc(afFiledWord(e.date, today, yday)) + '</span>';
+  if(e.sourceDate) meta += '<span class="af-meta-item">' + ic('calendar', 11) + ' Published ' + esc(hmFmtD(e.sourceDate)) + '</span>';
+  if(e.url) meta += '<a class="af-src" data-act="extlink" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || 'Source') + ' ' + ic('ext', 10) + '</a>';
+  else if(e.source) meta += '<span class="af-meta-item">' + esc(e.source) + '</span>';
+  return '<article class="af-row" data-kind="' + textKind(e.text) + '" data-date="' + esc(e.date) + '">' +
+    afAvatarHTML(e, di) +
+    '<div class="af-main"><div class="af-top">' + nameHTML + kindChip +
+    (fresh ? '<span class="af-kind af-k-fresh">' + ic('sparkle', 11) + ' Fresh</span>' : '') + nov + '</div>' +
+    '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
+    '<div class="af-meta">' + meta + '</div></div></article>';
+}
+function afStreamHTML(){
+  if(!AF) return '<div class="af-empty"><p class="dim">Loading the feed&hellip;</p></div>';
+  var items = AF.items.filter(afMatch);
+  if(!items.length) return '<div class="af-empty"><p class="dim">Nothing in this view yet. Filings land here as the routines run.</p></div>';
+  var today = afYmd(new Date());
+  var yday = afYmd(new Date(Date.now() - 86400000));
+  var shown = items.slice(0, AF_SHOWN);
+  var h = '', curDay = null;
+  shown.forEach(function(e){
+    if(e.date !== curDay){
+      curDay = e.date;
+      var cnt = 0;
+      items.forEach(function(x){ if(x.date === curDay) cnt++; });
+      h += '<div class="af-day"><span class="af-day-l">' + esc(afDayLabel(curDay, today, yday)) + '</span><em class="cnt">' + cnt + '</em></div>';
+    }
+    h += afRow(e, today, yday);
+  });
+  h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + items.length + '</span>' +
+    (shown.length < items.length ? '<button type="button" class="pv-btn sm" data-act="afmore">Show more</button>' : '') + '</div>';
+  return h;
+}
+function afPaint(){
+  var w = document.getElementById('af-stream');
+  if(w) w.innerHTML = afStreamHTML();
+}
+function lrActivityHTML(){
+  var sub = AF ? (AF.items.length + ' events from the change log and photo filings, newest first.') : 'Loading the feed&hellip;';
+  var chips = [['all', 'All'], ['facts', 'Facts'], ['photos', 'Photos'], ['fresh', 'Fresh']].map(function(c){
+    return '<button type="button" class="af-chip' + (AF_FILTER === c[0] ? ' on' : '') + '" data-act="affilter" data-f="' + c[0] + '">' + c[1] + '</button>';
+  }).join('');
+  return '<div class="page lr af-page v4p" data-kind="about">' +
+    lrChromeHTML('activity', 'Activity Feed', sub) +
+    (AF ? afStatsHTML(AF.items) : '') +
+    '<div class="af-filters" role="group" aria-label="Filter the feed">' + chips + '</div>' +
+    '<div id="af-stream">' + afStreamHTML() + '</div></div>';
+}
+
 function viewDaily(v){
   dtLoad(); chLoad(); rcLoad();
   if(S.route.seg && (S.route.seg[0] === 'facts' || S.route.seg[0] === 'inbox')){
@@ -10527,6 +10726,15 @@ function viewDaily(v){
       '<section class="dc-group"><div class="dc-ghead"><h2>Prefill</h2><span>Luna\u2019s inferred values for blank fields — approve or deny each one.</span></div><div id="pfwrap"></div></section>' +
       '</div>';
     pfRender();
+    return;
+  }
+  if(S.route.seg && S.route.seg[0] === 'activity'){
+    /* V4.6.0: Activity Feed — the merged, newest-first stream of
+       everything the pipelines published (changes.json + the
+       photo filings from whatsnew.json), with stats and filters.
+       Read-only, like Filings. */
+    afLoad();
+    v.innerHTML = lrActivityHTML();
     return;
   }
   if(S.route.seg && S.route.seg[0] === 'filings'){
@@ -14643,6 +14851,10 @@ function onClick(ev){
     case 'cdeclear': cdeClear(); break;
     case 'mgdir': MGMT.dir = -MGMT.dir; MGMT.shown = 50; render(); break;
     case 'mgmore': MGMT.shown = (MGMT.shown || 50) + 50; mgPaintList(); break;
+    case 'affilter': { AF_FILTER = el.getAttribute('data-f') || 'all'; AF_SHOWN = AF_PAGE;
+        document.querySelectorAll('.af-chip').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-f') === AF_FILTER); });
+        afPaint(); break; }
+    case 'afmore': AF_SHOWN += AF_PAGE; afPaint(); break;
     case 'wnday': { var wd = el.getAttribute('data-d'); if(wd){ if(WN_OPEN[wd]) delete WN_OPEN[wd]; else WN_OPEN[wd] = 1; } render(); break; }
     case 'sstview': SB.st.view = el.getAttribute('data-v') || 'all'; $$('.sst-viewseg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === SB.st.view); }); sstPaint(); break;
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
