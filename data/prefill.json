@@ -4,6 +4,46 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "ct:susan buckley",
+   "display": "Susan Buckley",
+   "field": "universities",
+   "value": "SUNY Potsdam",
+   "conf": 92,
+   "id": "pf-83e4b31552"
+  },
+  {
+   "key": "sf:ryan-blount",
+   "display": "Ryan Blount",
+   "field": "companies",
+   "value": "U.S. Air Force",
+   "conf": 74,
+   "id": "pf-8b91f726f3"
+  },
+  {
+   "key": "sf:ryan-blount",
+   "display": "Ryan Blount",
+   "field": "companies",
+   "value": "Air National Guard",
+   "conf": 74,
+   "id": "pf-5576a13609"
+  },
+  {
+   "key": "sf:antolik",
+   "display": "Samantha Antolik",
+   "field": "companies",
+   "value": "U.S. Air Force",
+   "conf": 74,
+   "id": "pf-0843e67aeb"
+  },
+  {
+   "key": "sf:antolik",
+   "display": "Samantha Antolik",
+   "field": "companies",
+   "value": "Air National Guard",
+   "conf": 74,
+   "id": "pf-0d62dc9cb5"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
