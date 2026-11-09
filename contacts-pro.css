@@ -6917,3 +6917,52 @@ html[data-mode="medium"] .psheets .narr{background:rgba(var(--band),.17)}
 html[data-mode="medium"] .psheets .fpb{background:rgba(var(--band),.17)}
 html[data-mode="medium"] .psheets .irow{background:rgba(var(--band),.16)}
 html[data-mode="medium"] .psheets .tile{background:rgba(var(--band),.16)}
+
+/* ============================================================
+   V4.6.0 — Activity Feed (#/daily/activity). Frosted glass
+   tiles in the .pv-* idiom; the About ink (steel blue) rides
+   the icon chips and the chart bars — never a flush
+   full-height edge line (edge rule). Theme tokens only, so
+   light and dark both resolve through the --pv-* variables.
+   ============================================================ */
+.af-page .af-stats{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:14px}
+.af-tile{background:var(--pv-panel2);background:color-mix(in srgb,var(--pv-panel2) 55%,transparent);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid var(--pv-line);border-radius:12px;padding:11px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.af-tile-ic{color:var(--pv-blue);display:inline-flex;margin-bottom:2px}
+.af-tile-v{font-size:21px;font-weight:800;letter-spacing:-.02em;color:var(--pv-text);font-variant-numeric:tabular-nums;line-height:1.1}
+.af-tile-l{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--pv-text)}
+.af-tile-s{font-size:11px;color:var(--pv-mut);line-height:1.35}
+.af-chart{justify-content:flex-end}
+.af-bars{display:flex;align-items:flex-end;gap:3px;height:34px;margin:4px 0 2px}
+.af-bar{flex:1;background:var(--pv-blue);opacity:.75;border-radius:2px 2px 0 0;min-height:2px}
+.af-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.af-chip{border:1px solid var(--pv-line2);background:var(--pv-panel);color:var(--pv-mut);font:600 12.5px var(--sans);padding:6px 13px;border-radius:999px;cursor:pointer}
+.af-chip:hover{color:var(--pv-text)}
+.af-chip.on{background:var(--pv-blue);border-color:var(--pv-blue);color:#fff}
+.af-day{display:flex;align-items:center;gap:8px;font:700 11px var(--serif);letter-spacing:.14em;text-transform:uppercase;color:var(--pv-mut);margin:18px 0 4px}
+.af-day:first-child{margin-top:6px}
+.af-day .cnt{font:700 10.5px var(--sans);background:var(--pv-blue-bg);color:var(--pv-blue);border-radius:999px;padding:1px 7px;letter-spacing:.03em}
+.af-row{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--pv-line)}
+.af-row:first-of-type{border-top:0}
+.af-av{flex:none;width:38px;height:38px;border-radius:50%;overflow:hidden;display:inline-block}
+.af-av img{width:100%;height:100%;object-fit:cover;display:block}
+.af-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.af-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.af-name{font:600 13.5px var(--sans);color:var(--pv-text);background:none;border:0;padding:0;text-align:left}
+button.af-name{cursor:pointer}
+button.af-name:hover{color:var(--pv-blue);text-decoration:underline}
+.af-kind{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:1px solid var(--pv-line2);border-radius:999px;font:700 10.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;color:var(--pv-mut)}
+.af-k-fact{color:var(--pv-blue);border-color:color-mix(in srgb,var(--pv-blue) 40%,transparent);background:var(--pv-blue-bg)}
+.af-k-fresh{color:var(--pv-blue);border-color:color-mix(in srgb,var(--pv-blue) 40%,transparent)}
+.af-nov{padding:2px 7px;border-radius:999px;font:700 10.5px var(--sans);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.af-nov-new{background:var(--pv-blue);color:#fff}
+.af-nov-exp{border:1px solid var(--pv-line2);color:var(--pv-mut)}
+.af-text{font-size:13px;line-height:1.5;color:var(--pv-text);margin:0;overflow-wrap:break-word}
+.af-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--pv-mut);margin-top:1px}
+.af-meta-item{display:inline-flex;align-items:center;gap:4px}
+.af-src{color:var(--pv-blue);text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.af-src:hover{text-decoration:underline}
+.af-foot{display:flex;align-items:center;gap:14px;padding:14px 0 4px}
+.af-count{font-size:12px;color:var(--pv-mut)}
+.af-empty{padding:18px 0}
+@media(max-width:1100px){.af-page .af-stats{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:640px){.af-page .af-stats{grid-template-columns:repeat(2,1fr)}}
