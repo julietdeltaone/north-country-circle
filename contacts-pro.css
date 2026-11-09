@@ -6190,6 +6190,9 @@ a.fi-nm:hover{color:var(--acc2)}
 .fi-actions{display:flex;align-items:center;gap:10px;margin-top:18px}
 .fi-flagbtn{display:inline-flex;align-items:center;gap:7px}
 .fi-kbd{margin-left:auto;font-size:12px;color:var(--dim)}
+/* V4.5.4 (perf): off-screen fact cards skip layout and paint. */
+.fi-card{content-visibility:auto;contain-intrinsic-size:auto 190px}
+.ptmore td{padding:0;height:2px;border:0}
 /* V4.5.2: custom dropdowns for the New facts controls — the face
    carries the current value and its count, the menu carries
    every value with its count, in all three themes. */
