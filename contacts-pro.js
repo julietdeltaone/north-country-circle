@@ -9801,6 +9801,22 @@ function lrChromeHTML(on, title, subHTML, subId){
    date. The brief's own date is never a card date — an old fact
    discovered today is not today's news. Everything else the
    brief filed lives in New Facts. */
+function lrDateBadge(iso, kindLabel){
+  /* The publish date as a calendar-page badge, month over a big
+     day number. Callers pass a real publication date — there is
+     no found-date fallback anymore (V4.5.0). */
+  var MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  var FULL = ['january','february','march','april','may','jun','july','august','september','october','november','december'];
+  var p = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  var mo = 0, dy = 0;
+  if(p){ mo = +p[2]; dy = +p[3]; }
+  else {
+    var m2 = /([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/.exec(String(iso || ''));
+    if(m2){ var mi = FULL.indexOf(m2[1].toLowerCase()); if(mi < 0) mi = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m2[1].slice(0, 3).toLowerCase()); if(mi >= 0){ mo = mi + 1; dy = +m2[2]; } }
+  }
+  if(!mo || !dy) return '';
+  return '<div class="lr-cal" title="' + esc(kindLabel + ' ' + iso) + '"><span class="lr-cal-m">' + MON[mo - 1] + '</span><span class="lr-cal-d">' + dy + '</span><span class="lr-cal-k">' + esc(kindLabel) + '</span></div>';
+}
 function lrPubInWindow(iso){
   var p = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
   if(!p) return false;
