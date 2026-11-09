@@ -6,34 +6,18 @@
   {
    "key": "sf:ryan-blount",
    "display": "Ryan Blount",
-   "field": "companies",
-   "value": "U.S. Air Force",
-   "conf": 74,
-   "id": "pf-8b91f726f3"
-  },
-  {
-   "key": "sf:ryan-blount",
-   "display": "Ryan Blount",
    "field": "groups",
-   "value": "Air National Guard",
-   "conf": 100,
-   "id": "pf-c2b97fc713"
-  },
-  {
-   "key": "sf:antolik",
-   "display": "Samantha Antolik",
-   "field": "companies",
    "value": "U.S. Air Force",
-   "conf": 74,
-   "id": "pf-0843e67aeb"
+   "conf": 100,
+   "id": "pf-66de773b70"
   },
   {
    "key": "sf:antolik",
    "display": "Samantha Antolik",
    "field": "groups",
-   "value": "Air National Guard",
+   "value": "U.S. Air Force",
    "conf": 100,
-   "id": "pf-0b5ed8d67b"
+   "id": "pf-54e54b10a8"
   },
   {
    "key": "sf:murray",
