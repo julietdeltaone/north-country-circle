@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.5.3';
+var APP_VERSION = '4.5.4';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -3142,6 +3142,33 @@ function ptrowHTML(di, i){
   }).join('');
   return '<tr class="ptrow' + (PTPICK[di] ? ' picked' : '') + '" data-act="popen" data-di="' + di + '" data-i="' + i + '" tabindex="0">' + tds + '</tr>';
 }
+/* V4.5.4: windowed table rows (see patch note). */
+var PT_WIN_N = 150, PTW_OBS = null;
+function ptWinObserve(){
+  if(PTW_OBS){ PTW_OBS.disconnect(); PTW_OBS = null; }
+  var s = document.querySelector('#plist .ptmore');
+  if(!s) return;
+  if(!('IntersectionObserver' in window)){ ptWinMore(true); return; }
+  PTW_OBS = new IntersectionObserver(function(es){
+    if(es.some(function(e){ return e.isIntersecting; })) ptWinMore(false);
+  }, { rootMargin: '900px 0px' });
+  PTW_OBS.observe(s);
+}
+function ptWinMore(all){
+  var PTW = S.ppl._ptw; if(!PTW) return;
+  var tbody = document.querySelector('#plist .ptable tbody'); if(!tbody) return;
+  var sentinel = tbody.querySelector('.ptmore');
+  var n = all ? PTW.rows.length : Math.min(PTW.rows.length, PTW.shown + PT_WIN_N);
+  if(n <= PTW.shown){ if(sentinel) sentinel.remove(); return; }
+  var html = PTW.rows.slice(PTW.shown, n).join('');
+  PTW.shown = n;
+  if(sentinel) sentinel.insertAdjacentHTML('beforebegin', html);
+  else tbody.insertAdjacentHTML('beforeend', html);
+  if(PTW.shown >= PTW.rows.length){
+    var s2 = tbody.querySelector('.ptmore'); if(s2) s2.remove();
+    if(PTW_OBS){ PTW_OBS.disconnect(); PTW_OBS = null; }
+  }
+}
 function paintPeople(){
   var box = $('#plist'); if(!box) return;
   var dis = peopleFiltered().filter(function(di){ return pvQuickKeep(D.directory[di]); });
@@ -3157,12 +3184,13 @@ function paintPeople(){
     var tc = $('#pcount'); if(tc) tc.textContent = items.length + ' contact events on file';
     return;
   }
+  var rowStrs = null;
   if(dis.length && S.ppl.view === 'recent'){
     /* By-last-contact view: bucket the filtered roster, most recent first
        inside each bucket; the pager context follows the displayed order. */
     var byB = LC_BUCKETS.map(function(){ return []; });
     dis.forEach(function(di){ byB[lcBucket(D.directory[di])].push(di); });
-    var ordered = [], rows = '';
+    var ordered = []; rowStrs = [];
     byB.forEach(function(mems, bi){
       if(!mems.length) return;
       mems.sort(function(a, b){
@@ -3170,17 +3198,22 @@ function paintPeople(){
         if(kb !== ka) return kb - ka;
         return dispName(D.directory[a]).localeCompare(dispName(D.directory[b]));
       });
-      rows += '<tr class="ptgroup" data-kind="connection"><td colspan="' + ptVisibleCols().length + '">' + LC_BUCKETS[bi] + ' <span>' + mems.length + '</span></td></tr>';
-      mems.forEach(function(di){ rows += ptrowHTML(di, ordered.length); ordered.push(di); });
+      rowStrs.push('<tr class="ptgroup" data-kind="connection"><td colspan="' + ptVisibleCols().length + '">' + LC_BUCKETS[bi] + ' <span>' + mems.length + '</span></td></tr>');
+      mems.forEach(function(di){ rowStrs.push(ptrowHTML(di, ordered.length)); ordered.push(di); });
     });
     S.ppl.cur = ordered;
-    body = '<div class="ptwrap"><table class="ptable">' + ptColgroupHTML() + ptheadHTML() + '<tbody>' + rows + '</tbody></table></div>';
-  } else {
+  } else if(dis.length) {
     S.ppl.cur = dis;
-    body = dis.length ? '<div class="ptwrap"><table class="ptable">' + ptColgroupHTML() + ptheadHTML() + '<tbody>' + dis.map(function(di, i){ return ptrowHTML(di, i); }).join('') + '</tbody></table></div>' : '';
+    rowStrs = dis.map(function(di, i){ return ptrowHTML(di, i); });
+  }
+  if(rowStrs){
+    var PTW = { rows: rowStrs, shown: Math.min(PT_WIN_N, rowStrs.length) };
+    S.ppl._ptw = PTW;
+    body = '<div class="ptwrap"><table class="ptable">' + ptColgroupHTML() + ptheadHTML() + '<tbody>' + rowStrs.slice(0, PTW.shown).join('') + (PTW.shown < rowStrs.length ? '<tr class="ptmore" aria-hidden="true"><td colspan="' + (ptVisibleCols().length + 1) + '"></td></tr>' : '') + '</tbody></table></div>';
   }
   box.innerHTML = body + (!dis.length ? '<div class="empty"><h3>No one matches.</h3><p>Loosen a filter or clear the search.</p><div class="row"><button type="button" class="btn sm" data-act="pclear">Clear search and filters</button></div></div>' : '');
   var c = $('#pcount'); if(c) c.textContent = dis.length === people().length ? dis.length + ' people' : dis.length + ' of ' + people().length + ' people';
+  if(rowStrs) ptWinObserve();
 }
 function openMoreFilters(){
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
