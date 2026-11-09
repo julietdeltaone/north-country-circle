@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.5.0';
+var APP_VERSION = '4.5.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9484,8 +9484,15 @@ function fiColsInit(){
 }
 function fiCatOptions(sel){
   var es = (FI && FI.entries) || [];
-  var opts = [['all', 'All facts']];
-  FI_PAT_ORDER.forEach(function(k){ if(es.some(function(e){ return e.pattern === k; })) opts.push([k, fiPat({ pattern:k }).label.charAt(0) + fiPat({ pattern:k }).label.slice(1).toLowerCase()]); });
+  /* V4.5.1 (JD 2026-11-09): every category option carries its
+     count — the not-yet-read facts in that category, the same
+     population the column itself shows — so the numbers are
+     always on the controls in both columns, not only in a
+     column header after the category is picked. */
+  var counts = {}, all = 0;
+  es.forEach(function(e){ if(fiStatus(e) !== 'read'){ counts[e.pattern] = (counts[e.pattern] || 0) + 1; all++; } });
+  var opts = [['all', 'All facts (' + all + ')']];
+  FI_PAT_ORDER.forEach(function(k){ if(es.some(function(e){ return e.pattern === k; })) opts.push([k, fiPat({ pattern:k }).label.charAt(0) + fiPat({ pattern:k }).label.slice(1).toLowerCase() + ' (' + (counts[k] || 0) + ')']); });
   return opts.map(function(o){ return '<option value="' + o[0] + '"' + (sel === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
 }
 function fiAllGroups(){
