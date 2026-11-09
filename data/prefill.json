@@ -4,14 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "ct:susan buckley",
-   "display": "Susan Buckley",
-   "field": "universities",
-   "value": "SUNY Potsdam",
-   "conf": 92,
-   "id": "pf-83e4b31552"
-  },
-  {
    "key": "sf:ryan-blount",
    "display": "Ryan Blount",
    "field": "companies",
@@ -22,10 +14,10 @@
   {
    "key": "sf:ryan-blount",
    "display": "Ryan Blount",
-   "field": "companies",
+   "field": "groups",
    "value": "Air National Guard",
-   "conf": 74,
-   "id": "pf-5576a13609"
+   "conf": 100,
+   "id": "pf-c2b97fc713"
   },
   {
    "key": "sf:antolik",
@@ -38,10 +30,10 @@
   {
    "key": "sf:antolik",
    "display": "Samantha Antolik",
-   "field": "companies",
+   "field": "groups",
    "value": "Air National Guard",
-   "conf": 74,
-   "id": "pf-0d62dc9cb5"
+   "conf": 100,
+   "id": "pf-0b5ed8d67b"
   },
   {
    "key": "sf:murray",
@@ -76,10 +68,20 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 9,
+   "tentative_floor": 10,
    "shelved": 2
   },
   "items": [
+   {
+    "id": "pf-a4c989c515",
+    "key": "cashhyyy",
+    "display": "Cashlynn Colbert",
+    "field": "location_on_file",
+    "value": "Fort Covington, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
    {
     "id": "pf-5e102198ad",
     "key": "chiara.frasc",
