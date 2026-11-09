@@ -2,79 +2,84 @@
  "adopted": "2026-10-27",
  "budget": {
   "daily_tranche_pct": 14.3,
-  "expected_pct": 29,
-  "measure": "Usage is reported as a percentage of the weekly allowance, not a token count \u2014 the allowance's token size is not published, so the council budgets in percent.",
+  "expected_pct": 42,
+  "measure": "Usage is reported as a percentage of the weekly allowance, not a token count — the allowance's token size is not published, so the council budgets in percent.",
   "plan": "Power",
-  "read_at": "Nov 8, 2026, 7:58 AM ET",
-  "used_pct": 13,
-  "verdict": "Under pace \u2014 13% used against ~29% even pace, with the week resetting Fri Nov 13, 2026, 7:38 AM EST.",
+  "read_at": "Nov 9, 2026, 5:30 AM ET",
+  "used_pct": 17,
+  "verdict": "Under pace — 17% used against ~42% even pace, with the week resetting Fri Nov 13, 2026, 7:38 AM EST.",
   "week_resets": "Fri Nov 13, 2026, 7:38 AM EST"
  },
  "charter_note": "Charter adopted Oct 27, 2026 (JD). Seven directors; JD interacts only with the Operations roll-up. Everything reports change-only; \"no findings\" is a valid report.",
  "field_reports": {
   "content": {
    "barriers": "Identity calls can't be settled from data alone: same-name pairs and shared-contact cases (the Maggie Jones / Maggie Marceau phone) need JD's knowledge of the people. The V3.11.0 autocomplete fixes should shrink the fragment class going forward, but the historical values still need rulings.",
-   "strategy": "Runs last in every cycle. Sweeps for duplicates, near-duplicates, fragment values and inference candidates, and stages everything as flags carrying a graded theory, numbered evidence and a falsifier. Executes nothing meaning-changing \u2014 JD rules from the card, then the fix files.",
-   "stuck": "The two new flags are the stuck list \u2014 each needs JD's ruling before anything moves.",
-   "working": "Fresh scans are clean and every prior flag is verified executed in the bake \u2014 all 26 board flags closed. Two new flags are open for JD: Lydia Bartlett's bare 'Community College' value and the Calvary Baptist naming pair."
+   "strategy": "Runs last in every cycle. Sweeps for duplicates, near-duplicates, fragment values and inference candidates, and stages everything as flags carrying a graded theory, numbered evidence and a falsifier. Executes nothing meaning-changing — JD rules from the card, then the fix files.",
+   "stuck": "The one new flag is the stuck list — it needs JD's ruling before anything moves.",
+   "working": "Fresh scans are clean and both Nov 4 flags are verified executed in the live Sheet — 28 board flags closed. One new flag is open for JD: the 'Canton-Potsdam Hospital' alias back in use on Steve Evans."
   },
   "layout": {
-   "barriers": "Headless Chromium on this VM cannot reach the live GitHub Pages origin (tunnel fails), so the crawl runs against a locally served copy of the site tree \u2014 byte-identical to the shipped build at audit time (APP_VERSION read from the served page). The gate holds future ships; it cannot un-ship a build already live, so first-pass findings on V3.72.0 route to the queued layout build as its work list.",
-   "strategy": "Measure, never eyeball. After every ship, crawl every audited surface at 1440x900 and 1366x768 in both themes with scripts/overlap_audit.py and count geometry defects: sibling collisions, clipped or spilling text, headers intersecting cards, full-height edge lines, sub-4px proximities, chart labels crowding their rings. A nonzero count in a blocking class holds the ship; the dated report in hidden_files/council/ is the evidence, and a fix only counts when a re-crawl reads zero \u2014 never on a screenshot that merely looks better.",
-   "stuck": "Nothing blocking. 2,320 proximity warnings (sub-4px gaps) remain as the advisory class \u2014 unchanged in kind from prior passes and not part of the gate.",
-   "working": "The Nov 4 crawl of the shipped V3.87.0 tree reads Gate PASS \u2014 0 blocking instances in every class, across 17 surfaces at both viewports in both themes (dated report layout-audit-2026-11-04.md/.json)."
+   "barriers": "Headless Chromium on this VM cannot reach the live GitHub Pages origin (tunnel fails), so the crawl runs against a locally served copy of the site tree — byte-identical to the shipped build at audit time (APP_VERSION read from the served page). The gate holds future ships; it cannot un-ship a build already live, so first-pass findings on V3.72.0 route to the queued layout build as its work list.",
+   "strategy": "Measure, never eyeball. After every ship, crawl every audited surface at 1440x900 and 1366x768 in both themes with scripts/overlap_audit.py and count geometry defects: sibling collisions, clipped or spilling text, headers intersecting cards, full-height edge lines, sub-4px proximities, chart labels crowding their rings. A nonzero count in a blocking class holds the ship; the dated report in hidden_files/council/ is the evidence, and a fix only counts when a re-crawl reads zero — never on a screenshot that merely looks better.",
+   "stuck": "Nothing blocking. 1,377 proximity warnings (167 distinct) remain as the advisory class.",
+   "working": "The Nov 9 crawl of shipped V4.4.8 FAILED (78 blocking, all Photos evidence clipping); the one-line wrap fix shipped as V4.4.9 and the re-crawl reads Gate PASS — 0 blocking across 16 surfaces × 4 combos (dated report layout-audit-2026-11-09.md/.json)."
   },
   "ops": {
-   "barriers": "JD's ruling queue is the bottleneck by design \u2014 flags wait for his calls, so the board's job is to make each ruling a one-tap decision with the theory and evidence attached. Two of JD's directory rows share one app key, which is why the queue is addressed by Sheet key and never through the directory.",
+   "barriers": "JD's ruling queue is the bottleneck by design — flags wait for his calls, so the board's job is to make each ruling a one-tap decision with the theory and evidence attached. Two of JD's directory rows share one app key, which is why the queue is addressed by Sheet key and never through the directory.",
    "strategy": "One consolidated roll-up, never six reports. Council passes run in charter order (Photos, UX, Content, Resource, Progress, Operations), read the staged queue on this board first, execute what JD staged, and fold the outcomes back into council.json for the next cycle.",
-   "stuck": "Nothing blocked. Next full cycle: Mon Nov 9, 2026 (weekly cycle, 5:30 AM ET); the roll-up folds into The Week in Full the same morning.",
-   "working": "The JD-requested early cycle ran end-to-end in charter order and closes the V4 Phase 7 gate item. All 26 prior flags stand closed; 2 new flags are staged as one-tap rulings."
+   "stuck": "Nothing blocked. Next full cycle: Mon Nov 16, 2026 (weekly cycle, 5:30 AM ET); the roll-up folds into The Week in Full the same morning.",
+   "working": "The weekly cycle ran end-to-end in charter order: 1 possible photo filed, 1 bad filing hidden, 1 gate-failing defect fixed and shipped as V4.4.9, 2 flags closed on verification, 1 new flag staged."
   },
   "photos": {
-   "barriers": "Fetcher walls: several staff and roster pages sit behind bot checks or return 403 to the text fetcher (Calvary Baptist's WordPress, Stewardship UK, Alfred's SIDEARM roster), and JS-only galleries (Pixieset, Wix) hide their image URLs from text extraction entirely. Those sources need a live-browser pass \u2014 queued, not blocked.",
-   "strategy": "Coverage by rotation: hunt profiles in slices of about 40 through the photo playbook's routes \u2014 staff pages, rosters, news, DVIDS \u2014 with three workarounds attempted before any source is abandoned. Every candidate is GET-verified (200 + real image bytes) before filing; two identity anchors = confirmed, one anchor = possible (Confirm/Reject).",
-   "stuck": "Live-browser looks are the named next route for three leads: Azlyn Richardson's Zola wedding-party page, Anne Shaver's Brasher Falls staff directory (text fetch truncates at A\u2013C), and Ally Dubbioso's captioned Mahopac Class-of-2019 group photo. Baxter Brown's Kishwaukee page still reads 'photo coming soon' \u2014 requeued. 1LT Murray and anchorless names (Theresa Smith, Julianna Smith) stay unhuntable until an anchor exists.",
-   "working": "Cycle 2 is open: slice 1 (40 profiles) hunted on new routes only \u2014 0 filed. The coordinator gate rejected an artwork avatar and an anchorless Zola lead; one AI-content lead was killed with evidence. QC re-verified all 21 Nov 3 filings \u2014 21/21 display."
+   "barriers": "Fetcher walls: several staff and roster pages sit behind bot checks or return 403 to the text fetcher (Calvary Baptist's WordPress, Stewardship UK, Alfred's SIDEARM roster), and JS-only galleries (Pixieset, Wix) hide their image URLs from text extraction entirely. Those sources need a live-browser pass — queued, not blocked.",
+   "strategy": "Coverage by rotation: hunt profiles in slices of about 40 through the photo playbook's routes — staff pages, rosters, news, DVIDS — with three workarounds attempted before any source is abandoned. Every candidate is GET-verified (200 + real image bytes) before filing; two identity anchors = confirmed, one anchor = possible (Confirm/Reject).",
+   "stuck": "Live-browser looks remain the named next route for JS-only sources (Eliza Sullivan's Zola wedding page, Jeeves Green's Campus Champions directory). Anchorless names (James Fortunato, Irvin Otero, G.C. Jaggs, Esther Brown, Gabe Matthis, Grace Zehr Cassulis) stay unhuntable until a seed exists.",
+   "working": "Cycle 2 slice 2 hunted 40 on new routes — 1 possible filed (Ethan Ryan). QC over the 101 Nov 5 filings: 100 pass, 1 hidden (a poster graphic filed as a photo)."
   },
   "progress": {
    "barriers": "Search-tool routes saturate quietly: a route can look alive while returning the same dead ends, and the auditor can only see attempts that get logged. Discipline in the department logs is what makes the stall detection real.",
    "strategy": "Watch for stalls, not activity: three failed attempts on one route forces a switch, and a pass that produces nothing gets flagged instead of quietly repeated. Exhausted routes are named, with the next route stated.",
-   "stuck": "Alex Koberda's Wayback route is down to its last variant: enumerate other cfactcampus.org /news/page/N snapshots (page 30 was fetched and read \u2014 no Koberda item). One more empty pass and the route closes.",
+   "stuck": "Alex Koberda's Wayback route is down to its last variant: enumerate other cfactcampus.org /news/page/N snapshots (page 30 was fetched and read — no Koberda item). One more empty pass and the route closes.",
    "working": "No tripwires this cycle. The GET+eyeball gate and the anchor check both caught bad candidates before filing; QC settled two suspicious photos against their on-file profiles rather than hiding on memory."
   },
   "resource": {
-   "barriers": "The allowance only exists as a percentage; there is no published token budget to plan against. The check cron's first fire garbled its own numbers into a self-contradictory pace reading \u2014 its instructions were tightened to quote the tool verbatim.",
-   "strategy": "Track usage as a percentage of the weekly allowance \u2014 Muse publishes no token count, so all planning is in pace points. The daily tranche is about 14.3% (a seventh of the week) and underspend rolls forward. Readings are quoted verbatim from the status tool, never converted to tokens or minutes.",
-   "stuck": "Nothing open. The week resets Fri Nov 6, 2026, 7:38 AM EST.",
-   "working": "At the Nov 4 cycle read the week stood at 77% used against ~71% elapsed \u2014 ahead by ~6 points, inside both flag rules, full run cleared."
+   "barriers": "The allowance only exists as a percentage; there is no published token budget to plan against. The check cron's first fire garbled its own numbers into a self-contradictory pace reading — its instructions were tightened to quote the tool verbatim.",
+   "strategy": "Track usage as a percentage of the weekly allowance — Muse publishes no token count, so all planning is in pace points. The daily tranche is about 14.3% (a seventh of the week) and underspend rolls forward. Readings are quoted verbatim from the status tool, never converted to tokens or minutes.",
+   "stuck": "Nothing open. The week resets Fri Nov 13, 2026, 7:38 AM EST.",
+   "working": "At the Nov 9 cycle read the week stood at 17% used against ~42% elapsed — under pace by ~25 points, full run cleared, no flag."
   },
   "ux": {
-   "barriers": "Headless checks can't feel lag or judge whether a layout makes sense \u2014 that call stays JD's. Some flows deal one card per session (the Audit deck), so a couple of post-fix legs couldn't be re-run end-to-end in Audit even though they share the fixed code path.",
-   "strategy": "Crawl every view in both themes after each ship and weekly. Check computed text/background pairs on every feedback element \u2014 buttons, chips, toasts, focus rings, badges, selection markers \u2014 not just screenshots, because a pairing can look fine in one theme and vanish in the other.",
-   "stuck": "Nothing open in the app. Tooling debt only: the crawl harness's nav/profile selectors predate the V4 markup and its first-load wait timed out once this cycle \u2014 nav and profile were verified by direct probe; a harness refresh is re-tasked before the next cycle.",
-   "working": "V3.87.0 crawled clean in both themes (10 views + profile probe): no defects, no overflow, badge correct, contrast flags all proven correct pairings. The same-day layout gate reads PASS with 0 blocking findings."
+   "barriers": "Headless checks can't feel lag or judge whether a layout makes sense — that call stays JD's. Some flows deal one card per session (the Audit deck), so a couple of post-fix legs couldn't be re-run end-to-end in Audit even though they share the fixed code path.",
+   "strategy": "Crawl every view in both themes after each ship and weekly. Check computed text/background pairs on every feedback element — buttons, chips, toasts, focus rings, badges, selection markers — not just screenshots, because a pairing can look fine in one theme and vanish in the other.",
+   "stuck": "Nothing open in the app. Tooling debt only: the crawl harness's nav/profile selectors predate the V4 markup and its first-load wait timed out once this cycle — nav and profile were verified by direct probe; a harness refresh is re-tasked before the next cycle.",
+   "working": "V4.4.8 crawled clean in both themes (9 views + profile probe); the Photos evidence-clipping defect the layout gate caught was fixed and shipped as V4.4.9 the same cycle."
   }
  },
  "findings": {
   "content": [
    {
+    "date": "2026-11-09",
+    "title": "Scans clean; both Nov 4 flags verified executed and closed; 1 new flag staged",
+    "summary": "730 live profiles: zero shared phones/emails, zero exact-name duplicates, zero fragments, zero inference gaps. Lydia Bartlett's school is named in the live Sheet ('Community College of Rhode Island') and all 10 church values now read 'Calvary Baptist Church' — both Nov 4 flags verified executed at the source and closed (28 closed). One new flag: the registry alias 'Canton-Potsdam Hospital' is back in use on Steve Evans."
+   },
+   {
     "date": "2026-11-04",
-    "summary": "725 live profiles: zero shared phones/emails, zero exact-name duplicates, zero registry aliases in use, zero prefix fragments, zero comma-shatter chips, zero Guard/IBCT inference gaps. The three Nov 2 flags are verified executed in the current bake (Azlyn's 'Michels Power' fix, Durant's ROTC \u2192 U.S. Air Force ROTC group, Jai Dane merged into Janice Dane) \u2014 all 26 board flags now closed. Two new flags staged: Lydia Bartlett's bare 'Community College' university value, and 'Calvary Baptist' (9 profiles) beside 'Calvary Baptist Church' (JD's own profile).",
+    "summary": "725 live profiles: zero shared phones/emails, zero exact-name duplicates, zero registry aliases in use, zero prefix fragments, zero comma-shatter chips, zero Guard/IBCT inference gaps. The three Nov 2 flags are verified executed in the current bake (Azlyn's 'Michels Power' fix, Durant's ROTC → U.S. Air Force ROTC group, Jai Dane merged into Janice Dane) — all 26 board flags now closed. Two new flags staged: Lydia Bartlett's bare 'Community College' university value, and 'Calvary Baptist' (9 profiles) beside 'Calvary Baptist Church' (JD's own profile).",
     "title": "Scans clean; all prior flags verified executed; 2 new flags staged"
    },
    {
     "date": "2026-11-02",
-    "summary": "734 unmerged profiles: zero shared phones/emails, zero exact-name duplicates, zero registry aliases in use, no new Guard\u2192Army inference gaps. New flags: Jai Dane vs Janice Dane (both profiles are the same CFA design/yearbook 'Mrs. Dane' \u2014 a likely duplicate; corrected same-day after a summary in this run misdescribed her as a realtor) and Azlyn Richardson's 'Michels Power, Inc.' comma-shatter. Durant ROTC flag remains open from Nov 1; the McCormick twins were not re-flagged (JD-ruled).",
+    "summary": "734 unmerged profiles: zero shared phones/emails, zero exact-name duplicates, zero registry aliases in use, no new Guard→Army inference gaps. New flags: Jai Dane vs Janice Dane (both profiles are the same CFA design/yearbook 'Mrs. Dane' — a likely duplicate; corrected same-day after a summary in this run misdescribed her as a realtor) and Azlyn Richardson's 'Michels Power, Inc.' comma-shatter. Durant ROTC flag remains open from Nov 1; the McCormick twins were not re-flagged (JD-ruled).",
     "title": "Scans clean; 2 new flags staged"
    },
    {
     "date": "2026-11-01",
-    "summary": "Every Oct 27 flag has a done entry in the staged queue and was re-verified in the current bake (fragments zero, phones cleared, groups added, merges marked) \u2014 all closed, none re-asked. Fresh duplicate/org scans clean. New flags: Jeremy Taylor (Army group) and Delany Durant (ROTC \u2192 U.S. Air Force ROTC group).",
+    "summary": "Every Oct 27 flag has a done entry in the staged queue and was re-verified in the current bake (fragments zero, phones cleared, groups added, merges marked) — all closed, none re-asked. Fresh duplicate/org scans clean. New flags: Jeremy Taylor (Army group) and Delany Durant (ROTC → U.S. Air Force ROTC group).",
     "title": "21 prior flags closed as executed; 2 new staged"
    },
    {
     "date": "2026-10-27",
-    "summary": "3 possible matches (shared phone/email, one-letter names), Guard\u2192Army inferences for Hannah McConnell, Jake Seguin and Alex Hammond, JD's predicted bare-'clarkson' org on 2 profiles, 'roch' truncation fragments on 5, a registry alias still live, and one reversed display name. Full list under Open flags.",
+    "summary": "3 possible matches (shared phone/email, one-letter names), Guard→Army inferences for Hannah McConnell, Jake Seguin and Alex Hammond, JD's predicted bare-'clarkson' org on 2 profiles, 'roch' truncation fragments on 5, a registry alias still live, and one reversed display name. Full list under Open flags.",
     "title": "Inaugural pass: 13 flags staged"
    },
    {
@@ -85,35 +90,45 @@
   ],
   "layout": [
    {
+    "date": "2026-11-09",
+    "title": "V4.4.8 crawl: gate FAILS on Photos (78 blocking) — fixed same cycle; V4.4.9 re-crawl PASSES",
+    "summary": "Dated reports: the FAIL run's per-combo counts in the crawl log (~/workspace/overlap-2026-11-09.log) and layout-audit-2026-11-09.md/.json (post-fix record). All 78 blocking instances were one class — Photos 'Possible photos' evidence lines clipped horizontally (nowrap + overflow hidden) at 1366 in both themes, fed by the Nov 5 batch's long evidence strings. Fix: the line wraps (one CSS rule). Re-crawl of the V4.4.9 tree: Gate PASS — 0 blocking across 16 surfaces × 4 combos; 1,377 proximity warnings remain advisory."
+   },
+   {
     "date": "2026-11-04",
-    "summary": "Dated report layout-audit-2026-11-04.md (local site tree, viewports 1440x900 + 1366x768, light and dark, role Private): Gate PASS \u2014 0 blocking finding instances across all surfaces and combos; 2,320 proximity warnings (219 distinct) remain advisory-only. The gate that failed V3.74.0 at 614 blocking now reads zero on the shipped V3.87.0 tree, including the new Phase 7 Council surface and Phase 8a 'Needs a decision' surface.",
-    "title": "V3.87.0 crawl: gate PASSES \u2014 0 blocking findings"
+    "summary": "Dated report layout-audit-2026-11-04.md (local site tree, viewports 1440x900 + 1366x768, light and dark, role Private): Gate PASS — 0 blocking finding instances across all surfaces and combos; 2,320 proximity warnings (219 distinct) remain advisory-only. The gate that failed V3.74.0 at 614 blocking now reads zero on the shipped V3.87.0 tree, including the new Phase 7 Council surface and Phase 8a 'Needs a decision' surface.",
+    "title": "V3.87.0 crawl: gate PASSES — 0 blocking findings"
    },
    {
     "date": "2026-11-02",
-    "summary": "Fix-program step 3 (layout backlog cleared in the current skin). Full crawl of the shipped V3.77.0 tree (baseline crawl of V3.76.0 read 612 blocking the same day (JS sha256-16 a51d4e6614cb3c3d); the V3.77.0 crawl record carries JS sha256-16 2ad587c5f689707c, and the live JS/CSS were byte-matched to the audited tree after push; 10 surfaces x 1440x900 + 1366x768 x light/dark = 40 of 40 combos, zero crawl errors): Gate PASS \u2014 0 blocking instances in every class. Calibration defects closed by measurement: the Home charts card's banned full-height edge line (3x1287px, 98% of the card) is now a 30px header tick; the donut center label \"724\" clears the ring by +7.8px (was -9.6px; inner radius 45->52, numeral 40px->30px) and the RELATIONSHIPS tight-fill warning is gone. Also cleared: Live Records closed-details chip spill (32 header-intersects), People + Record Studio table clips (561 text-overflows), the Studio 1366 viewport escapes, the Audit context-line spill, and the profile heading/source clips. Warnings remaining: 1,628 proximity advisories (sub-4px gaps, unchanged \u2014 advisory class, not blocking). Evidence: layout-audit-2026-11-02-v377.md/.json + Home screenshots beside the seat log; step record in program-step3-layout-log-2026-11-02.md.",
-    "title": "V3.77.0 crawl: gate PASSES \u2014 zero blocking findings, both calibration defects fixed"
+    "summary": "Fix-program step 3 (layout backlog cleared in the current skin). Full crawl of the shipped V3.77.0 tree (baseline crawl of V3.76.0 read 612 blocking the same day (JS sha256-16 a51d4e6614cb3c3d); the V3.77.0 crawl record carries JS sha256-16 2ad587c5f689707c, and the live JS/CSS were byte-matched to the audited tree after push; 10 surfaces x 1440x900 + 1366x768 x light/dark = 40 of 40 combos, zero crawl errors): Gate PASS — 0 blocking instances in every class. Calibration defects closed by measurement: the Home charts card's banned full-height edge line (3x1287px, 98% of the card) is now a 30px header tick; the donut center label \"724\" clears the ring by +7.8px (was -9.6px; inner radius 45->52, numeral 40px->30px) and the RELATIONSHIPS tight-fill warning is gone. Also cleared: Live Records closed-details chip spill (32 header-intersects), People + Record Studio table clips (561 text-overflows), the Studio 1366 viewport escapes, the Audit context-line spill, and the profile heading/source clips. Warnings remaining: 1,628 proximity advisories (sub-4px gaps, unchanged — advisory class, not blocking). Evidence: layout-audit-2026-11-02-v377.md/.json + Home screenshots beside the seat log; step record in program-step3-layout-log-2026-11-02.md.",
+    "title": "V3.77.0 crawl: gate PASSES — zero blocking findings, both calibration defects fixed"
    },
    {
     "date": "2026-11-02",
-    "summary": "Clean full re-run owed since the first pass (frozen snapshot of the V3.74.0 tree, contacts-pro.js sha 6f3347c43b; 40 of 40 combos completed, zero crawl errors; exit 1). Gate FAILS: 614 blocking finding instances (129 distinct) \u2014 text-overflow 560, header-intersect 32, edge-line 10, viewport-escape 8, donut-crowding 4. Per-combo blocking: Home 8, People 60, Profile 15 at 1440x900 / 9 at 1366x768, Live Records 9-10, Audit 1-3, Sandbox 62; What's New, Calendar, Manage and Photos 0 in every combo (Photos 6,303 elements, genuinely clean). Deltas vs the first pass: NOTHING headline is gone \u2014 the Home edge-line persists byte-identical (3x1261px pseudo-bar, 98% of the card's 1289px height, 7px inside its edge, nearest header 11px away, all 4 combos) and the donut center label '730' still overlaps its ring by 9.6px in a 76px hole (all 4 combos); the 6 Home Last Contacts clips deepened to 76-96px (was 35-55px); People unchanged at 60; Profile worse at 1440 (15, was 9 flat); Sandbox marginally better at 62 (was 63-64); no surface changed clean/dirty status. Definitive pair: hidden_files/council/layout-audit-2026-11-02-v374.md + .json (the -v374 suffix preserves the run-1 report and the compiled first-pass JSON untouched). This seat measures and blocks; it does not edit app files.",
-    "title": "V3.74.0 definitive crawl: gate FAILS \u2014 614 blocking instances, neither calibration defect fixed"
+    "summary": "Clean full re-run owed since the first pass (frozen snapshot of the V3.74.0 tree, contacts-pro.js sha 6f3347c43b; 40 of 40 combos completed, zero crawl errors; exit 1). Gate FAILS: 614 blocking finding instances (129 distinct) — text-overflow 560, header-intersect 32, edge-line 10, viewport-escape 8, donut-crowding 4. Per-combo blocking: Home 8, People 60, Profile 15 at 1440x900 / 9 at 1366x768, Live Records 9-10, Audit 1-3, Sandbox 62; What's New, Calendar, Manage and Photos 0 in every combo (Photos 6,303 elements, genuinely clean). Deltas vs the first pass: NOTHING headline is gone — the Home edge-line persists byte-identical (3x1261px pseudo-bar, 98% of the card's 1289px height, 7px inside its edge, nearest header 11px away, all 4 combos) and the donut center label '730' still overlaps its ring by 9.6px in a 76px hole (all 4 combos); the 6 Home Last Contacts clips deepened to 76-96px (was 35-55px); People unchanged at 60; Profile worse at 1440 (15, was 9 flat); Sandbox marginally better at 62 (was 63-64); no surface changed clean/dirty status. Definitive pair: hidden_files/council/layout-audit-2026-11-02-v374.md + .json (the -v374 suffix preserves the run-1 report and the compiled first-pass JSON untouched). This seat measures and blocks; it does not edit app files.",
+    "title": "V3.74.0 definitive crawl: gate FAILS — 614 blocking instances, neither calibration defect fixed"
    },
    {
     "date": "2026-11-02",
-    "summary": "Full crawl of the current build (10 surfaces x 1440x900 + 1366x768 x light/dark = 40 combos; role Private; zero clicks). Calibration confirmed in every combo: the Home charts card's 3px steel ::before bar spans 98% of the card's height, 7px inside its border, with 6 section headers running along it and the nearest header text 11px from the line (edge-line \u2014 the banned full-height line); and the relationship donut's center label '730' overlaps its ring by 9.6px in a 76px hole, with 'RELATIONSHIPS' filling 75% of the hole's width (donut-crowding). Both were also measured directly on the untouched V3.72.0 tree \u2014 they persist into V3.73.0. Tuned per-combo blocking counts: People 60 (truncated table cells), Sandbox 63-64, Live Records 9-10, Profile 9, Home 8, Audit 1-4; What's New, Calendar, Manage and Photos 0 \u2014 Photos is genuinely clean (6,307 elements, zero findings in every combo). Full grouped detail: hidden_files/council/layout-audit-2026-11-02-run1.md. The tuned re-crawl's report write was destroyed by the Nov 2 environment write-denial incident; its per-combo counts are quoted in layout-log.md and a clean re-run is the seat's first follow-up. Fixes route to the queued layout build \u2014 this seat measures and blocks; it does not edit app files.",
-    "title": "First pass: gate FAILS the current build \u2014 both of JD's screenshot defects caught by measurement"
+    "summary": "Full crawl of the current build (10 surfaces x 1440x900 + 1366x768 x light/dark = 40 combos; role Private; zero clicks). Calibration confirmed in every combo: the Home charts card's 3px steel ::before bar spans 98% of the card's height, 7px inside its border, with 6 section headers running along it and the nearest header text 11px from the line (edge-line — the banned full-height line); and the relationship donut's center label '730' overlaps its ring by 9.6px in a 76px hole, with 'RELATIONSHIPS' filling 75% of the hole's width (donut-crowding). Both were also measured directly on the untouched V3.72.0 tree — they persist into V3.73.0. Tuned per-combo blocking counts: People 60 (truncated table cells), Sandbox 63-64, Live Records 9-10, Profile 9, Home 8, Audit 1-4; What's New, Calendar, Manage and Photos 0 — Photos is genuinely clean (6,307 elements, zero findings in every combo). Full grouped detail: hidden_files/council/layout-audit-2026-11-02-run1.md. The tuned re-crawl's report write was destroyed by the Nov 2 environment write-denial incident; its per-combo counts are quoted in layout-log.md and a clean re-run is the seat's first follow-up. Fixes route to the queued layout build — this seat measures and blocks; it does not edit app files.",
+    "title": "First pass: gate FAILS the current build — both of JD's screenshot defects caught by measurement"
    },
    {
     "date": "2026-11-02",
-    "summary": "Seventh Council seat chartered after repeated spacing/overlap defects shipped past eyeball QA (latest: V3.72.0 Home \u2014 section headers on card borders, a donut crowding its card). Method is automated geometry measurement (scripts/overlap_audit.py: collisions, text overflow, header/card intersections, full-height edge lines, sub-4px proximities) at 1440x900 and 1366x768 in both themes. Authority is BLOCKING: a build that fails the gate does not ship.",
-    "title": "Director stood up \u2014 blocking geometry gate (JD, Nov 2)"
+    "summary": "Seventh Council seat chartered after repeated spacing/overlap defects shipped past eyeball QA (latest: V3.72.0 Home — section headers on card borders, a donut crowding its card). Method is automated geometry measurement (scripts/overlap_audit.py: collisions, text overflow, header/card intersections, full-height edge lines, sub-4px proximities) at 1440x900 and 1366x768 in both themes. Authority is BLOCKING: a build that fails the gate does not ship.",
+    "title": "Director stood up — blocking geometry gate (JD, Nov 2)"
    }
   ],
   "ops": [
    {
+    "date": "2026-11-09",
+    "title": "Weekly cycle complete",
+    "summary": "Resource 17% vs ~42% pace (under, no flag). Photos: Cycle 2 slice 2 — 40 hunted, 1 possible filed, QC 101 checked / 1 hidden. UX: both themes clean; layout gate FAIL on 4.4.8 fixed and shipped as 4.4.9, re-crawl PASS. Content: scans clean, 2 flags verified closed, 1 new flag staged. Open flags for JD: 1."
+   },
+   {
     "date": "2026-11-04",
-    "summary": "Resource 77% vs ~71% pace (ahead, no flag). Photos: Cycle 2 slice 1 \u2014 40 hunted, 0 filed, QC 21/21. UX: both themes clean on V3.87.0, no fixes; layout gate PASS. Content: scans clean, all 26 prior flags verified closed, 2 new flags staged. Roll-up written for The Week in Full.",
+    "summary": "Resource 77% vs ~71% pace (ahead, no flag). Photos: Cycle 2 slice 1 — 40 hunted, 0 filed, QC 21/21. UX: both themes clean on V3.87.0, no fixes; layout gate PASS. Content: scans clean, all 26 prior flags verified closed, 2 new flags staged. Roll-up written for The Week in Full.",
     "title": "Weekly cycle complete (JD-requested early run; closes the V4 Phase 7 gate)"
    },
    {
@@ -139,31 +154,41 @@
   ],
   "photos": [
    {
+    "date": "2026-11-09",
+    "title": "Cycle 2 slice 2: 40 hunted on new routes, 1 possible filed; QC hid 1 of the Nov 5 filings",
+    "summary": "Slice 2 (Benjamin Emmanuel → Jillian Ferrante) filed 0 confirmed / 1 possible: Ethan Ryan's SUNY Potsdam police-academy graduation group photo (his name is in the page's Norwood PD graduate list and the caption covers all graduates; his position is unidentified, so it files possible). The other 39 closed as dead ends on fresh routes — traps shut for Dianalyn Martin (photos BY her, not OF her), the basketball Ethan Thompson namesake, and Heidi Levendusky (all photos are of her daughters). QC over the 101 photos filed Nov 5: 101/101 display, 100 pass — Kailee Paige's filing is a full 'Meet the Tutor!' poster graphic, hidden via the Sheet's Photo Hidden field (verified read-back), never deleted."
+   },
+   {
     "date": "2026-11-04",
-    "summary": "First Cycle 2 slice (Danica Dunphey \u2192 Ben Newton, directory order after Liana Sinclair): nothing fileable \u2014 the slice is the thin-footprint head of the pool. The coordinator gate rejected the one fetched candidate (Asher Cragg's Casting Call Club avatar is a furry-art drawing, not a photo) and an Arizona Zola lead for Sam Rusaw failed the anchor check. The Stephen Blackwood Smith album lead was killed as sole-source AI content. Leads kept open with named next routes: Azlyn Richardson's Zola page and Anne Shaver's Brasher Falls staff directory (both need a live-browser look), Ally Dubbioso's captioned Mahopac Class-of-2019 group photo, Baxter Brown's Kishwaukee page (checked back \u2014 still 'photo coming soon'). QC re-verified all 21 Nov 3 filings \u2014 21/21 display, 0 hidden; five ambiguous ones were settled against their on-file profiles.",
+    "summary": "First Cycle 2 slice (Danica Dunphey → Ben Newton, directory order after Liana Sinclair): nothing fileable — the slice is the thin-footprint head of the pool. The coordinator gate rejected the one fetched candidate (Asher Cragg's Casting Call Club avatar is a furry-art drawing, not a photo) and an Arizona Zola lead for Sam Rusaw failed the anchor check. The Stephen Blackwood Smith album lead was killed as sole-source AI content. Leads kept open with named next routes: Azlyn Richardson's Zola page and Anne Shaver's Brasher Falls staff directory (both need a live-browser look), Ally Dubbioso's captioned Mahopac Class-of-2019 group photo, Baxter Brown's Kishwaukee page (checked back — still 'photo coming soon'). QC re-verified all 21 Nov 3 filings — 21/21 display, 0 hidden; five ambiguous ones were settled against their on-file profiles.",
     "title": "Cycle 2 opens: 40 hunted on new routes, 0 filed; QC 21/21"
    },
    {
     "date": "2026-11-02",
-    "summary": "The overnight full-roster run left only 4 unattempted pool profiles (Azlyn Richardson, Jai Dane, Liana Sinclair, 1LT Murray) \u2014 all hunted with new routes, nothing fileable: Azlyn's only hit is a one-anchor Zola wedding-party lead whose image is unverified; the Jai/Janice pair proved to be two profiles of the same CFA 'Mrs. Dane' (staged for JD); the Liana SUNY Potsdam lead was an unrelated article; and Murray is formally unhuntable (surname + rank only) until a first name exists. QC re-verified all 20 photos filed since the last cycle (12 local decode, 8 remote GET 200 + image) \u2014 20/20 pass, 0 hidden. Cycle 2 opens next run, new routes only.",
+    "summary": "The overnight full-roster run left only 4 unattempted pool profiles (Azlyn Richardson, Jai Dane, Liana Sinclair, 1LT Murray) — all hunted with new routes, nothing fileable: Azlyn's only hit is a one-anchor Zola wedding-party lead whose image is unverified; the Jai/Janice pair proved to be two profiles of the same CFA 'Mrs. Dane' (staged for JD); the Liana SUNY Potsdam lead was an unrelated article; and Murray is formally unhuntable (surname + rank only) until a first name exists. QC re-verified all 20 photos filed since the last cycle (12 local decode, 8 remote GET 200 + image) — 20/20 pass, 0 hidden. Cycle 2 opens next run, new routes only.",
     "title": "Cycle 1 rotation complete: final 4 hunted, 0 filed; QC 20/20"
    },
    {
     "date": "2026-11-02",
     "note": "293 targets worked. Confirmed primaries: Debbie Flack, Heather Foster-Barrigar, Christopher Pagan, Evan Dimakas, Eric Criscitello, Jackie Card, Marissa Kelley, Kim Sisk; promotion: Olena Musiienko. Possible-grade: Heather Ramsdell (new), Jonathan Puglia + Jessica Hurlbut + Norah Pease (alternates). Standing rule added to the playbook: only coordinator-verified GETs file. One live-browser pass unlocks most of the ~30 remaining leads. Correction: an earlier snapshot/log note attributing names to batch 12 was superseded in the log.",
-    "summary": "The overnight full-roster run left only 4 unattempted pool profiles (Azlyn Richardson, Jai Dane, Liana Sinclair, 1LT Murray) \u2014 all hunted with new routes, nothing fileable: Azlyn's only hit is a one-anchor Zola wedding-party lead whose image is unverified; the Jai/Janice pair proved to be two profiles of the same CFA 'Mrs. Dane' (staged for JD); the Liana SUNY Potsdam lead was an unrelated article; and Murray is formally unhuntable (surname + rank only) until a first name exists. QC re-verified all 20 photos filed since the last cycle (12 local decode, 8 remote GET 200 + image) \u2014 20/20 pass, 0 hidden. Cycle 2 opens next run, new routes only.",
+    "summary": "The overnight full-roster run left only 4 unattempted pool profiles (Azlyn Richardson, Jai Dane, Liana Sinclair, 1LT Murray) — all hunted with new routes, nothing fileable: Azlyn's only hit is a one-anchor Zola wedding-party lead whose image is unverified; the Jai/Janice pair proved to be two profiles of the same CFA 'Mrs. Dane' (staged for JD); the Liana SUNY Potsdam lead was an unrelated article; and Murray is formally unhuntable (surname + rank only) until a first name exists. QC re-verified all 20 photos filed since the last cycle (12 local decode, 8 remote GET 200 + image) — 20/20 pass, 0 hidden. Cycle 2 opens next run, new routes only.",
     "title": "Overnight full-roster run: 11 confirmed-grade photos + 4 possible-grade filed at the coordinator gate; ~30 hunter candidates unverifiable (1 fake wrapper URL)"
    }
   ],
   "progress": [
    {
+    "date": "2026-11-09",
+    "title": "No tripwires; Koberda route closed by another road; one batch-boundary miss caught",
+    "summary": "Every directorate produced state change. The Koberda Wayback watch closes: the Nov 5 pass filed his confirmed photo from a different route, so the last Wayback variant is moot. Two names fell between the hunter batch ranges (Wiegandt, Ingram) — caught by the coordinator's count check against the slice file and hunted on fresh routes; future batches go out by name and number. The layout gate's FAIL → one-line fix → PASS re-crawl is the cycle's evidence chain."
+   },
+   {
     "date": "2026-11-04",
-    "summary": "The coordinator GET+eyeball gate rejected a hunter candidate that proved to be a drawing, and an anchor check killed a Zola lead without spending a visual pass. Koberda's Wayback route produced new evidence on its third pass (a reachable snapshot, read \u2014 no Koberda item), so no tripwire fires, but only one variant remains (enumerate other news-page snapshots) before it closes. UX did not repeat its failing harness legs a third time \u2014 views came from the completed pass and nav/profile from a direct probe; the harness selector refresh is re-tasked. QC settled two initially suspicious photos against their on-file profiles instead of hiding on cross-thread memory.",
+    "summary": "The coordinator GET+eyeball gate rejected a hunter candidate that proved to be a drawing, and an anchor check killed a Zola lead without spending a visual pass. Koberda's Wayback route produced new evidence on its third pass (a reachable snapshot, read — no Koberda item), so no tripwire fires, but only one variant remains (enumerate other news-page snapshots) before it closes. UX did not repeat its failing harness legs a third time — views came from the completed pass and nav/profile from a direct probe; the harness selector refresh is re-tasked. QC settled two initially suspicious photos against their on-file profiles instead of hiding on cross-thread memory.",
     "title": "No tripwires; gate catches an artwork 'photo'; one route down to its last variant"
    },
    {
     "date": "2026-11-02",
-    "summary": "UX's live-Chromium route failed on transport for the second straight cycle and was retired as primary (local harness + curl is the standing route) instead of being repeated. Photos QC: an interim tally drawn from an unreadable output was discarded and the pass re-run file-backed \u2014 verified result 20/20. Every directorate produced state change.",
+    "summary": "UX's live-Chromium route failed on transport for the second straight cycle and was retired as primary (local harness + curl is the standing route) instead of being repeated. Photos QC: an interim tally drawn from an unreadable output was discarded and the pass re-run file-backed — verified result 20/20. Every directorate produced state change.",
     "title": "No tripwires; one route re-tasked, one self-catch"
    },
    {
@@ -173,7 +198,7 @@
    },
    {
     "date": "2026-10-27",
-    "summary": "Every directorate returned new evidence; the verify gate caught one bad filing before it landed. One external signal: the resource cron's first fire reported a contradictory pace reading \u2014 its math is flagged unreliable in the progress log; this run's numbers are from direct reads.",
+    "summary": "Every directorate returned new evidence; the verify gate caught one bad filing before it landed. One external signal: the resource cron's first fire reported a contradictory pace reading — its math is flagged unreliable in the progress log; this run's numbers are from direct reads.",
     "title": "Test drive traction: no tripwires fired"
    },
    {
@@ -184,66 +209,66 @@
   ],
   "resource": [
    {
+    "date": "2026-11-09",
+    "title": "Weekly cycle check: 17% used, under pace",
+    "summary": "Read Nov 9, 2026, 5:30 AM ET: 17% used vs ~42% even pace; week resets Fri Nov 13, 2026, 7:38 AM EST. Under by ~25 points — neither flag rule met, full Photos slice and full UX crawl ran uncut; no flag."
+   },
+   {
     "date": "2026-11-08",
-    "summary": "Under pace \u2014 13% used vs ~29% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
+    "summary": "Under pace — 13% used vs ~29% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 13% used"
    },
    {
     "date": "2026-11-07",
-    "summary": "Under pace \u2014 7% used vs ~14% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
+    "summary": "Under pace — 7% used vs ~14% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 7% used"
    },
    {
     "date": "2026-11-06",
-    "summary": "On pace \u2014 0% used vs ~0% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
+    "summary": "On pace — 0% used vs ~0% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 0% used"
    },
    {
     "date": "2026-11-05",
-    "summary": "Ahead of pace \u2014 91% used vs ~86% even pace (week resets Fri Nov 6, 2026, 7:38 AM EST).",
+    "summary": "Ahead of pace — 91% used vs ~86% even pace (week resets Fri Nov 6, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 91% used"
    },
    {
     "date": "2026-11-04",
-    "summary": "Ahead of pace \u2014 78% used vs ~72% even pace (week resets Fri Nov 6, 2026, 7:38 AM EST).",
+    "summary": "Ahead of pace — 78% used vs ~72% even pace (week resets Fri Nov 6, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 78% used"
-   },
-   {
-    "date": "2026-11-04",
-    "summary": "Read Nov 4, 2026, 7:40 AM ET: 77% used vs ~71% even pace; week resets Fri Nov 6, 2026, 7:38 AM EST. Ahead by ~6 points \u2014 under the 10-point flag rule and under 90%, so the full Photos slice and full UX crawl ran uncut; no flag.",
-    "title": "Weekly cycle check: 77% used, ahead of pace"
    }
   ],
   "ux": [
    {
+    "date": "2026-11-09",
+    "title": "Both-themes crawl clean on V4.4.8; 1 presentation fix shipped as V4.4.9",
+    "summary": "9 views + a profile probe in light and dark: no broken views, no horizontal overflow, badge V4.4.8, nav lands correctly (Photos verified by probe — the harness's real-click leg is stale against the V4 rail). Every contrast flag was the established filled-primary-button pairing. The same-day layout gate failed the shipped build on Photos evidence clipping (see Layout) — fixed in CSS and shipped as V4.4.9, gate re-verified PASS."
+   },
+   {
     "date": "2026-11-04",
-    "summary": "10 views in light and dark via the local harness (all render, no horizontal overflow, correct titles \u2014 the Phase 7 Council page titles 'Open flags') plus a direct probe: profile opens from a People row click in both themes, rail nav lands correctly, badge V3.87.0 in both themes, live bytes curl-verified (contacts-pro.html 200, live JS 3.87.0). Every contrast flag was the established selected/filled/primary pairing class; the V3.5.1 washout does not recur. Console errors were only remote-photo tunnel failures. Same-day layout gate: PASS, 0 blocking. Harness nav/profile selectors are stale against the V4 markup \u2014 nav and profile were verified by probe instead (tooling note, not an app defect).",
+    "summary": "10 views in light and dark via the local harness (all render, no horizontal overflow, correct titles — the Phase 7 Council page titles 'Open flags') plus a direct probe: profile opens from a People row click in both themes, rail nav lands correctly, badge V3.87.0 in both themes, live bytes curl-verified (contacts-pro.html 200, live JS 3.87.0). Every contrast flag was the established selected/filled/primary pairing class; the V3.5.1 washout does not recur. Console errors were only remote-photo tunnel failures. Same-day layout gate: PASS, 0 blocking. Harness nav/profile selectors are stale against the V4 markup — nav and profile were verified by probe instead (tooling note, not an app defect).",
     "title": "Both-themes crawl clean on V3.87.0; no fixes"
    },
    {
     "date": "2026-11-02",
-    "summary": "10 views + profile in light and dark via the local harness (live Chromium tunnel failed again \u2014 not repeated; live bytes curl-verified: contacts-pro.html 200, APP_VERSION 3.63.0, badge V3.63.0 both themes). No defects, no overflow, nav and profile controls respond; every contrast flag was a selected/primary pairing proven correct, including Home's 'What's new' heading on its dark band. No fixes shipped. The Nov 1 dossier.html task-body flag is resolved \u2014 this run's body uses contacts-pro.html.",
+    "summary": "10 views + profile in light and dark via the local harness (live Chromium tunnel failed again — not repeated; live bytes curl-verified: contacts-pro.html 200, APP_VERSION 3.63.0, badge V3.63.0 both themes). No defects, no overflow, nav and profile controls respond; every contrast flag was a selected/primary pairing proven correct, including Home's 'What's new' heading on its dark band. No fixes shipped. The Nov 1 dossier.html task-body flag is resolved — this run's body uses contacts-pro.html.",
     "title": "Both-themes crawl clean; transport route re-tasked"
    },
    {
     "date": "2026-11-01",
-    "summary": "10 views + profile in light and dark: no defects, no overflow, controls respond, contrast flags were selected-button pairings proven correct by computed styles. Staged for JD: the cycle body's dossier.html URL 404s since the rename \u2014 live app is contacts-pro.html. Local V3.63.0 (concurrent ship) was unpushed at crawl time; live served V3.62.0.",
+    "summary": "10 views + profile in light and dark: no defects, no overflow, controls respond, contrast flags were selected-button pairings proven correct by computed styles. Staged for JD: the cycle body's dossier.html URL 404s since the rename — live app is contacts-pro.html. Local V3.63.0 (concurrent ship) was unpushed at crawl time; live served V3.62.0.",
     "title": "Both-themes crawl clean; 1 flag staged"
    },
    {
     "date": "2026-10-27",
-    "summary": "Keyboard-flow exercise of the Audit, profile and table editors found how truncated orgs got filed: (1) the Audit orgs Enter veto filed raw fragments ('roch' proven in the outbox), (2) the profile tag editors had no autocomplete at all \u2014 blur committed raw text, (3) the profile New group box wrote to a field literally named 'null'. All fixed in V3.11.0 with prefix completion at every write path; Sheet verified untouched by the tests. Detail: council/ux-log.md.",
+    "summary": "Keyboard-flow exercise of the Audit, profile and table editors found how truncated orgs got filed: (1) the Audit orgs Enter veto filed raw fragments ('roch' proven in the outbox), (2) the profile tag editors had no autocomplete at all — blur committed raw text, (3) the profile New group box wrote to a field literally named 'null'. All fixed in V3.11.0 with prefix completion at every write path; Sheet verified untouched by the tests. Detail: council/ux-log.md.",
     "title": "Input-tool audit: 3 fragment defects found and fixed"
    },
    {
     "date": "2026-10-27",
     "summary": "Home, People, a profile, Live Records, Audit, Photos, Network, Sandbox and Council all load clean in light and dark: no error screens, no horizontal overflow, contrast spot checks pass, nav responds everywhere. No fixes needed.",
-    "title": "Inaugural crawl: 9 views \u00d7 2 themes, no defects"
-   },
-   {
-    "date": "2026-10-27",
-    "summary": "Charter adopted. Standing rule added: every ship's QA now includes a both-themes UX crawl. First full pass in the Nov 2 weekly cycle.",
-    "title": "Director stood up"
+    "title": "Inaugural crawl: 9 views × 2 themes, no defects"
    }
   ]
  },
@@ -254,7 +279,7 @@
      "id": "clear-jones",
      "kind": "fix",
      "label": "Clear phone from Maggie Jones",
-     "note": "Theory\u2019s pick: Jones\u2019s copy is the error.",
+     "note": "Theory’s pick: Jones’s copy is the error.",
      "patches": [
       {
        "field": "phone",
@@ -268,7 +293,7 @@
      "id": "clear-marceau",
      "kind": "fix",
      "label": "Clear phone from Maggie Marceau",
-     "note": "Pick this instead if JD knows the number is Jones\u2019s.",
+     "note": "Pick this instead if JD knows the number is Jones’s.",
      "patches": [
       {
        "field": "phone",
@@ -282,28 +307,28 @@
      "id": "verify-owner",
      "kind": "task",
      "label": "Stage: verify owner first",
-     "note": "Luna checks JD\u2019s contacts and the two message threads on the next pass before either profile is touched."
+     "note": "Luna checks JD’s contacts and the two message threads on the next pass before either profile is touched."
     }
    ],
    "date": "2026-10-27",
    "director": "content",
    "evidence": [
-    "Both profiles carry phone 5183178734: ig:maggienjones_ as \"518-317-8734\", fdb:maggie_marceau as \"(518) 317-8734\" in Facebook-export format with the export\u2019s unicode marks.",
-    "Marceau\u2019s entire profile is Facebook data (Bokie\u2019s Drive In, North Country Community College, Malone NY) \u2014 the phone on a person\u2019s own Facebook profile is self-reported.",
-    "518 is the Albany/Plattsburgh/Malone area code; Marceau lives in Malone. Jones\u2019s context is CFC Potsdam.",
-    "Jones\u2019s other contact datum (gogirl2003@icloud.com) is distinctly hers \u2014 the phone is the one field with no attribution on her profile."
+    "Both profiles carry phone 5183178734: ig:maggienjones_ as \"518-317-8734\", fdb:maggie_marceau as \"(518) 317-8734\" in Facebook-export format with the export’s unicode marks.",
+    "Marceau’s entire profile is Facebook data (Bokie’s Drive In, North Country Community College, Malone NY) — the phone on a person’s own Facebook profile is self-reported.",
+    "518 is the Albany/Plattsburgh/Malone area code; Marceau lives in Malone. Jones’s context is CFC Potsdam.",
+    "Jones’s other contact datum (gogirl2003@icloud.com) is distinctly hers — the phone is the one field with no attribution on her profile."
    ],
    "id": "maggie-phone",
    "kind": "possible-match",
    "priority": 1,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
-    "falsifier": "JD\u2019s phone contacts showing 518-317-8734 saved under Maggie Jones\u2019s name.",
+    "falsifier": "JD’s phone contacts showing 518-317-8734 saved under Maggie Jones’s name.",
     "grade": "Probable",
-    "text": "The number belongs to Maggie Marceau; the copy on Maggie Jones is the entry error. Marceau\u2019s phone arrived inside her own Facebook-sourced record in Facebook-export format, and 518 is her Malone area code \u2014 while Jones sits in the CFC Potsdam (315) orbit and her phone carries no source attribution at all."
+    "text": "The number belongs to Maggie Marceau; the copy on Maggie Jones is the entry error. Marceau’s phone arrived inside her own Facebook-sourced record in Facebook-export format, and 518 is her Malone area code — while Jones sits in the CFC Potsdam (315) orbit and her phone carries no source attribution at all."
    },
-   "title": "Maggie Jones vs Maggie Marceau \u2014 same phone 518-317-8734"
+   "title": "Maggie Jones vs Maggie Marceau — same phone 518-317-8734"
   },
   {
    "actions": [
@@ -320,8 +345,8 @@
     {
      "id": "keep-both",
      "kind": "decision",
-     "label": "Keep both \u2014 two people",
-     "note": "Records JD\u2019s ruling that these are two people and closes the flag."
+     "label": "Keep both — two people",
+     "note": "Records JD’s ruling that these are two people and closes the flag."
     },
     {
      "id": "verify-lydia",
@@ -334,22 +359,22 @@
    "director": "content",
    "evidence": [
     "Identical personal email lydiawangerin1@gmail.com on both profiles (ig:lydia_rose_martin and sf:lydia-wangerin).",
-    "Lydia Martin\u2019s footprint: \"N\u00e9e Wangerin (Lydia R. Wangerin); married Johnny Martin (SUNY Canton)\" \u2014 married May 25, 2024; JD filmed the wedding.",
-    "The shell\u2019s footprint: \"Christian Fellowship Academy cast member in 2018; one of a Wangerin sibling set with Ina Wangerin and Gabe Wangerin (Email, Dec 2019)\" \u2014 all pre-marriage facts.",
-    "The shell carries nothing that conflicts: no phone, location, employer, or synopsis of its own; its one family link (sibling of Ina Wangerin) matches the Wangerin sibling set in Lydia Martin\u2019s orbit.",
+    "Lydia Martin’s footprint: \"Née Wangerin (Lydia R. Wangerin); married Johnny Martin (SUNY Canton)\" — married May 25, 2024; JD filmed the wedding.",
+    "The shell’s footprint: \"Christian Fellowship Academy cast member in 2018; one of a Wangerin sibling set with Ina Wangerin and Gabe Wangerin (Email, Dec 2019)\" — all pre-marriage facts.",
+    "The shell carries nothing that conflicts: no phone, location, employer, or synopsis of its own; its one family link (sibling of Ina Wangerin) matches the Wangerin sibling set in Lydia Martin’s orbit.",
     "The shell was created Oct 27, 2026 in the email-mine filing, from an email that used her maiden name."
    ],
    "id": "lydia-email",
    "kind": "possible-match",
    "priority": 2,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD knows a second Lydia in the Wangerin family who uses lydiawangerin1@gmail.com.",
     "grade": "Strong",
-    "text": "Same person. The sf:lydia-wangerin shell is Lydia Martin before her marriage: her own footprint states she is n\u00e9e Wangerin and married Johnny Martin in May 2024, and the shell\u2019s only facts (CFA cast 2018, Wangerin sibling set, from a Dec 2019 email) all describe that earlier identity. Merge the shell into Lydia Martin."
+    "text": "Same person. The sf:lydia-wangerin shell is Lydia Martin before her marriage: her own footprint states she is née Wangerin and married Johnny Martin in May 2024, and the shell’s only facts (CFA cast 2018, Wangerin sibling set, from a Dec 2019 email) all describe that earlier identity. Merge the shell into Lydia Martin."
    },
-   "title": "Lydia Martin vs Lydia Wangerin \u2014 same email"
+   "title": "Lydia Martin vs Lydia Wangerin — same email"
   },
   {
    "actions": [
@@ -357,7 +382,7 @@
      "id": "clear-6666-all",
      "kind": "fix",
      "label": "Clear the phone from all three",
-     "note": "The number is the department\u2019s, not a personal contact for any of them.",
+     "note": "The number is the department’s, not a personal contact for any of them.",
      "patches": [
       {
        "field": "phone",
@@ -383,13 +408,13 @@
      "id": "keep-6666-shared",
      "kind": "decision",
      "label": "Keep on all three as the shared work number",
-     "note": "Records JD\u2019s ruling that the shared department line stays on each officer\u2019s profile."
+     "note": "Records JD’s ruling that the shared department line stays on each officer’s profile."
     },
     {
      "id": "keep-6666-volz",
      "kind": "fix",
-     "label": "Clear from Caldwell and Woodrow \u2014 keep on Volz",
-     "note": "Keeps the department line on the sergeant\u2019s profile only.",
+     "label": "Clear from Caldwell and Woodrow — keep on Volz",
+     "note": "Keeps the department line on the sergeant’s profile only.",
      "patches": [
       {
        "field": "phone",
@@ -410,20 +435,20 @@
    "director": "content",
    "evidence": [
     "clarkson.edu publishes \"Campus Safety & Security: 315-268-6666\" (Parent Resources department contacts); the Reporting page and the CUEMS emergency page both direct callers to Campus Safety at 315-268-6666.",
-    "All three carriers are Clarkson Campus Safety & Security officers: Caldwell (officer), Woodrow (officer, ERC), Volz (sergeant, ERC) \u2014 and all three are in the Clarkson Security group.",
+    "All three carriers are Clarkson Campus Safety & Security officers: Caldwell (officer), Woodrow (officer, ERC), Volz (sergeant, ERC) — and all three are in the Clarkson Security group.",
     "No other profile in the directory carries the number."
    ],
    "id": "phone-3152686666",
    "kind": "duplicate-info",
    "priority": 3,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "One of the three confirming 315-268-6666 is his personal cell.",
     "grade": "Strong",
-    "text": "315-268-6666 is not any of theirs personally \u2014 it is Clarkson University\u2019s Campus Safety & Security department line, published on clarkson.edu. All three men are Clarkson Campus Safety officers; the number was filed on each as a work number during a team contact pass."
+    "text": "315-268-6666 is not any of theirs personally — it is Clarkson University’s Campus Safety & Security department line, published on clarkson.edu. All three men are Clarkson Campus Safety officers; the number was filed on each as a work number during a team contact pass."
    },
-   "title": "One phone number on three profiles \u2014 Connor Caldwell, Hunter Woodrow, Matthew Volz"
+   "title": "One phone number on three profiles — Connor Caldwell, Hunter Woodrow, Matthew Volz"
   },
   {
    "actions": [
@@ -443,8 +468,8 @@
     {
      "id": "leave-mcconnell",
      "kind": "decision",
-     "label": "Leave \u2014 out-of-area Guard service",
-     "note": "Records JD\u2019s ruling that the group stays NY-orbit."
+     "label": "Leave — out-of-area Guard service",
+     "note": "Records JD’s ruling that the group stays NY-orbit."
     }
    ],
    "date": "2026-10-27",
@@ -457,14 +482,14 @@
    "id": "mcconnell-guard",
    "kind": "inference",
    "priority": 4,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD confirms the U.S. Army group is NY-orbit only and out-of-area Guard service stays out.",
     "grade": "Probable",
-    "text": "Same gap class as Seguin, one wrinkle: she serves in the Idaho Army National Guard (Boise), outside the NY orbit the U.S. Army group was built around. The affiliation is documented; whether the group means \"Army-affiliated\" or \"JD\u2019s Army orbit\" is the decision. Peer check: only 3 profiles carry the \"Army National Guard\" company value at all \u2014 the third (Ethan Bates) IS in the group, so Guard profiles are normally grouped."
+    "text": "Same gap class as Seguin, one wrinkle: she serves in the Idaho Army National Guard (Boise), outside the NY orbit the U.S. Army group was built around. The affiliation is documented; whether the group means \"Army-affiliated\" or \"JD’s Army orbit\" is the decision. Peer check: only 3 profiles carry the \"Army National Guard\" company value at all — the third (Ethan Bates) IS in the group, so Guard profiles are normally grouped."
    },
-   "title": "Hannah McConnell \u2014 Army National Guard, no Army group"
+   "title": "Hannah McConnell — Army National Guard, no Army group"
   },
   {
    "actions": [
@@ -485,27 +510,27 @@
      "id": "leave-seguin",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave Seguin ungrouped."
+     "note": "Records JD’s ruling to leave Seguin ungrouped."
     }
    ],
    "date": "2026-10-27",
    "director": "content",
    "evidence": [
-    "His footprint: \"Staff Sergeant recruiter with the New York Army National Guard, based at the Guard\u2019s recruiting office in Morey Hall at SUNY Potsdam\" (SUNY Potsdam). Groups: none.",
-    "Peer check: only 3 profiles carry company \"Army National Guard\" \u2014 Bates (in U.S. Army group), Seguin, McConnell.",
-    "46 of the 47 U.S. Army group members carry company \"U.S. Army\"; the group is the directory\u2019s home for exactly this affiliation."
+    "His footprint: \"Staff Sergeant recruiter with the New York Army National Guard, based at the Guard’s recruiting office in Morey Hall at SUNY Potsdam\" (SUNY Potsdam). Groups: none.",
+    "Peer check: only 3 profiles carry company \"Army National Guard\" — Bates (in U.S. Army group), Seguin, McConnell.",
+    "46 of the 47 U.S. Army group members carry company \"U.S. Army\"; the group is the directory’s home for exactly this affiliation."
    ],
    "id": "seguin-guard",
    "kind": "inference",
    "priority": 5,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD knows a reason Seguin was deliberately left out of the group.",
     "grade": "Strong",
-    "text": "A plain oversight. Seguin is a Staff Sergeant recruiter with the New York Army National Guard based at SUNY Potsdam \u2014 the exact profile of the 47 people already in the group. The comparable Guard profile (Ethan Bates) is grouped; Seguin and McConnell are the only two who are not."
+    "text": "A plain oversight. Seguin is a Staff Sergeant recruiter with the New York Army National Guard based at SUNY Potsdam — the exact profile of the 47 people already in the group. The comparable Guard profile (Ethan Bates) is grouped; Seguin and McConnell are the only two who are not."
    },
-   "title": "Jake Seguin \u2014 Army National Guard, no Army group"
+   "title": "Jake Seguin — Army National Guard, no Army group"
   },
   {
    "actions": [
@@ -513,7 +538,7 @@
      "id": "add-army-hammond",
      "kind": "fix",
      "label": "Add U.S. Army group",
-     "note": "U.S. Army group only \u2014 no HHC change (standing ruling).",
+     "note": "U.S. Army group only — no HHC change (standing ruling).",
      "patches": [
       {
        "field": "groups",
@@ -527,7 +552,7 @@
      "id": "leave-hammond",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave Hammond ungrouped."
+     "note": "Records JD’s ruling to leave Hammond ungrouped."
     }
    ],
    "date": "2026-10-27",
@@ -539,14 +564,14 @@
    "id": "hammond-army",
    "kind": "inference",
    "priority": 6,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD confirms Hammond was deliberately kept out of the U.S. Army group.",
     "grade": "Strong",
-    "text": "Oversight. Hammond is a serving Major (promoted Aug 2026) in the 27th IBCT, and the U.S. Army group is the parent set for the brigade \u2014 of the 36 IBCT profiles, only he and Natalie Southworth lack it. His HHC exclusion is JD\u2019s standing ruling and is not part of this flag."
+    "text": "Oversight. Hammond is a serving Major (promoted Aug 2026) in the 27th IBCT, and the U.S. Army group is the parent set for the brigade — of the 36 IBCT profiles, only he and Natalie Southworth lack it. His HHC exclusion is JD’s standing ruling and is not part of this flag."
    },
-   "title": "Alex Hammond \u2014 in 27th IBCT but not U.S. Army group"
+   "title": "Alex Hammond — in 27th IBCT but not U.S. Army group"
   },
   {
    "actions": [
@@ -567,7 +592,7 @@
      "id": "leave-southworth",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave Southworth ungrouped."
+     "note": "Records JD’s ruling to leave Southworth ungrouped."
     }
    ],
    "date": "2026-10-27",
@@ -578,14 +603,14 @@
    "id": "southworth-army",
    "kind": "inference",
    "priority": 7,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD confirms Southworth was deliberately kept out of the U.S. Army group.",
     "grade": "Probable",
     "text": "Same gap as Hammond, found in the same census: a serving SPC in the 27th IBCT who lacks the parent U.S. Army group membership that 34 of the 36 brigade profiles carry. Flagged by the Content Director as the same class rather than left for the next sweep."
    },
-   "title": "Natalie Southworth \u2014 in 27th IBCT but not U.S. Army group"
+   "title": "Natalie Southworth — in 27th IBCT but not U.S. Army group"
   },
   {
    "actions": [
@@ -649,27 +674,27 @@
      "id": "leave-roch",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave the fragments."
+     "note": "Records JD’s ruling to leave the fragments."
     }
    ],
    "date": "2026-10-27",
    "director": "content",
    "evidence": [
-    "\"roch\" is the whole companies value on Hannah Hughes, Heather Marie, Marissa Carl, Megan Eddy, Megan Peddle \u2014 and on ig:marissachelan, the row merged into Marissa Carl.",
+    "\"roch\" is the whole companies value on Hannah Hughes, Heather Marie, Marissa Carl, Megan Eddy, Megan Peddle — and on ig:marissachelan, the row merged into Marissa Carl.",
     "\"roc\" is the whole companies value on Allison Cole, a nurse (United Helpers home care).",
-    "Rochester Regional Health is a 71-member group and the registry canonical for every health alias (Canton-Potsdam Hospital, St. Lawrence Health, RRH\u2026)."
+    "Rochester Regional Health is a 71-member group and the registry canonical for every health alias (Canton-Potsdam Hospital, St. Lawrence Health, RRH…)."
    ],
    "id": "frag-roch",
    "kind": "near-duplicate-org",
    "priority": 8,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD recognizes \"roch\" on any of these profiles as a different, real organization.",
     "grade": "Probable",
-    "text": "JD\u2019s own typing, truncated where autocomplete did not complete it: \"roch\" (and Allison Cole\u2019s \"roc\") are prefixes of Rochester Regional Health \u2014 the only \"Roc\u2026\" organization in the directory and the flattened home of all health entries. The Marissa Chelan copy sits on a merged-away row whose values union onto Marissa Carl at bake, so both rows are patched or the fragment returns."
+    "text": "JD’s own typing, truncated where autocomplete did not complete it: \"roch\" (and Allison Cole’s \"roc\") are prefixes of Rochester Regional Health — the only \"Roc…\" organization in the directory and the flattened home of all health entries. The Marissa Chelan copy sits on a merged-away row whose values union onto Marissa Carl at bake, so both rows are patched or the fragment returns."
    },
-   "title": "Fragment 'roch' / 'roc' \u2014 truncated Rochester Regional Health"
+   "title": "Fragment 'roch' / 'roc' — truncated Rochester Regional Health"
   },
   {
    "actions": [
@@ -698,7 +723,7 @@
      "id": "leave-clarkson",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave them."
+     "note": "Records JD’s ruling to leave them."
     }
    ],
    "date": "2026-10-27",
@@ -710,7 +735,7 @@
    "id": "frag-clarkson",
    "kind": "near-duplicate-org",
    "priority": 9,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD knows either profile means a different Clarkson (e.g. the town or a namesake business).",
@@ -739,7 +764,7 @@
      "id": "leave-suny-can",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave it."
+     "note": "Records JD’s ruling to leave it."
     }
    ],
    "date": "2026-10-27",
@@ -751,10 +776,10 @@
    "id": "frag-suny-can",
    "kind": "near-duplicate-org",
    "priority": 10,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
-    "falsifier": "JD knows Cheney works for a different \"SUNY can\u2026\" institution.",
+    "falsifier": "JD knows Cheney works for a different \"SUNY can…\" institution.",
     "grade": "Strong",
     "text": "A truncation of SUNY Canton caught mid-type: her universities field already carries the full \"SUNY Canton\", so the companies chip is the same value, unfinished."
    },
@@ -780,7 +805,7 @@
      "id": "leave-new-york-stat",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave it."
+     "note": "Records JD’s ruling to leave it."
     }
    ],
    "date": "2026-10-27",
@@ -792,12 +817,12 @@
    "id": "frag-new-york-stat",
    "kind": "near-duplicate-org",
    "priority": 11,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
-    "falsifier": "JD knows Hitchman\u2019s employer is a different New York state agency.",
+    "falsifier": "JD knows Hitchman’s employer is a different New York state agency.",
     "grade": "Probable",
-    "text": "A letter-prefix truncation of New York State Police \u2014 JD identifies Hitchman as NYSP, and no other \"New York Stat\u2026\" organization exists in the directory. The same autocomplete failure class as the other fragments."
+    "text": "A letter-prefix truncation of New York State Police — JD identifies Hitchman as NYSP, and no other \"New York Stat…\" organization exists in the directory. The same autocomplete failure class as the other fragments."
    },
    "title": "Fragment 'new york stat' on Kayle Hitchman"
   },
@@ -828,7 +853,7 @@
      "id": "leave-park",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave them."
+     "note": "Records JD’s ruling to leave them."
     }
    ],
    "date": "2026-10-27",
@@ -840,14 +865,14 @@
    "id": "frag-park",
    "kind": "near-duplicate-org",
    "priority": 12,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD knows Dunphey or Olsen worked at a different Park business.",
     "grade": "Probable",
-    "text": "Truncations of Park Bros. \u2014 the directory\u2019s only Park organization (org on 29 profiles, group of 23) and a registry canonical. JD asked whether more than one \"Park Bros\" exists: it does not \u2014 \"Park Bros.\" (with the period) is the single spelling in orgs and groups; the registry maps \"Park Bros\" and \"Park Bros Coffee\" onto it."
+    "text": "Truncations of Park Bros. — the directory’s only Park organization (org on 29 profiles, group of 23) and a registry canonical. JD asked whether more than one \"Park Bros\" exists: it does not — \"Park Bros.\" (with the period) is the single spelling in orgs and groups; the registry maps \"Park Bros\" and \"Park Bros Coffee\" onto it."
    },
-   "title": "Fragments 'Park' / 'park' \u2014 truncated Park Bros."
+   "title": "Fragments 'Park' / 'park' — truncated Park Bros."
   },
   {
    "actions": [
@@ -869,7 +894,7 @@
      "id": "leave-svpc",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave it."
+     "note": "Records JD’s ruling to leave it."
     }
    ],
    "date": "2026-10-27",
@@ -881,10 +906,10 @@
    "id": "frag-svpc",
    "kind": "near-duplicate-org",
    "priority": 13,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
-    "falsifier": "JD knows Arquette\u2019s SVPC is a different organization than Durant\u2019s council.",
+    "falsifier": "JD knows Arquette’s SVPC is a different organization than Durant’s council.",
     "grade": "Strong",
     "text": "The abbreviation was filed instead of the full name: her own synopsis says she works at the Seaway Valley Prevention Council, the canonical carried by 3 profiles (Delany Durant among them)."
    },
@@ -910,7 +935,7 @@
      "id": "leave-air",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave it."
+     "note": "Records JD’s ruling to leave it."
     }
    ],
    "date": "2026-10-27",
@@ -922,12 +947,12 @@
    "id": "frag-air",
    "kind": "near-duplicate-org",
    "priority": 14,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
-    "falsifier": "JD knows Dehoff\u2019s \"air\" refers to something else (e.g. an HVAC or aviation business).",
+    "falsifier": "JD knows Dehoff’s \"air\" refers to something else (e.g. an HVAC or aviation business).",
     "grade": "Probable",
-    "text": "A mangled Air Force entry from the Oct 27 profile-creation pass: the registry alias map resolves \"Air Force\" to U.S. Air Force, and Dehoff\u2019s only other affiliation value is the U.S. Air Force ROTC group. Full context is on the \"Just Air\" flag."
+    "text": "A mangled Air Force entry from the Oct 27 profile-creation pass: the registry alias map resolves \"Air Force\" to U.S. Air Force, and Dehoff’s only other affiliation value is the U.S. Air Force ROTC group. Full context is on the \"Just Air\" flag."
    },
    "title": "Fragment 'air' on Mark Dehoff"
   },
@@ -936,7 +961,7 @@
     {
      "id": "usaf-group-dehoff",
      "kind": "fix",
-     "label": "Create U.S. Air Force group \u2014 add Mark Dehoff",
+     "label": "Create U.S. Air Force group — add Mark Dehoff",
      "note": "Group membership creates the group; Dehoff becomes its first member.",
      "patches": [
       {
@@ -965,7 +990,7 @@
      "id": "leave-just-air",
      "kind": "decision",
      "label": "Leave both as they are",
-     "note": "Records JD\u2019s ruling that the ROTC group and the fragment stay untouched."
+     "note": "Records JD’s ruling that the ROTC group and the fragment stay untouched."
     }
    ],
    "date": "2026-10-27",
@@ -978,14 +1003,14 @@
    "id": "just-air",
    "kind": "data-quality",
    "priority": 15,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "The string \"Just Air\" surfacing in any Sheet tab or sidecar on a later pass.",
     "grade": "Tentative",
-    "text": "No group named \"Just Air\" exists in any record the council can see \u2014 not in the Sheet, the bake, any sidecar, or Trash. What exists is Mark Dehoff\u2019s half-finished Air Force data from the Oct 27 creation pass: the org fragment \"air\" (separate flag) and a one-man \"U.S. Air Force ROTC\" group where an Air Force group was likely intended. If \"Just Air\" was created in the app, it never reached the Sheet and lives only in JD\u2019s browser state."
+    "text": "No group named \"Just Air\" exists in any record the council can see — not in the Sheet, the bake, any sidecar, or Trash. What exists is Mark Dehoff’s half-finished Air Force data from the Oct 27 creation pass: the org fragment \"air\" (separate flag) and a one-man \"U.S. Air Force ROTC\" group where an Air Force group was likely intended. If \"Just Air\" was created in the app, it never reached the Sheet and lives only in JD’s browser state."
    },
-   "title": "\"Just Air\" group \u2014 the Mark Dehoff Air Force tangle"
+   "title": "\"Just Air\" group — the Mark Dehoff Air Force tangle"
   },
   {
    "actions": [
@@ -1007,24 +1032,24 @@
      "id": "leave-cph",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to keep the facility name."
+     "note": "Records JD’s ruling to keep the facility name."
     }
    ],
    "date": "2026-10-27",
    "director": "content",
    "evidence": [
     "Jaime Bicknell: companies = \"Canton-Potsdam Hospital\" (her only company value).",
-    "Org registry alias: \"Canton-Potsdam Hospital\" \u2192 \"Rochester Regional Health\". She is the last of the 737 profiles carrying it."
+    "Org registry alias: \"Canton-Potsdam Hospital\" → \"Rochester Regional Health\". She is the last of the 737 profiles carrying it."
    ],
    "id": "cph-alias",
    "kind": "near-duplicate-org",
    "priority": 16,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD rules the alias should stay on her profile as the specific facility name.",
     "grade": "Strong",
-    "text": "A registry alias that was never flattened in the Sheet cell: the registry maps \"Canton-Potsdam Hospital\" to Rochester Regional Health under JD\u2019s health-flattening rule, and Bicknell is the only profile still carrying the alias."
+    "text": "A registry alias that was never flattened in the Sheet cell: the registry maps \"Canton-Potsdam Hospital\" to Rochester Regional Health under JD’s health-flattening rule, and Bicknell is the only profile still carrying the alias."
    },
    "title": "'Canton-Potsdam Hospital' still live on Jaime Bicknell"
   },
@@ -1046,7 +1071,7 @@
     {
      "id": "leave-u",
      "kind": "decision",
-     "label": "Leave \u2014 JD will identify it",
+     "label": "Leave — JD will identify it",
      "note": "Records that the value stays until JD identifies the institution."
     }
    ],
@@ -1058,14 +1083,14 @@
    "id": "frag-u",
    "kind": "near-duplicate-org",
    "priority": 17,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
-    "falsifier": "Any source naming LaPointe\u2019s school or employer.",
+    "falsifier": "Any source naming LaPointe’s school or employer.",
     "grade": "Tentative",
-    "text": "A truncation of some \"U\u2026\" institution, but her record is nearly empty (Facebook \"not listed\", Salem, Massachusetts) and no surviving context points to a specific school or employer. This one cannot be mapped honestly \u2014 it needs JD\u2019s memory or removal."
+    "text": "A truncation of some \"U…\" institution, but her record is nearly empty (Facebook \"not listed\", Salem, Massachusetts) and no surviving context points to a specific school or employer. This one cannot be mapped honestly — it needs JD’s memory or removal."
    },
-   "title": "Fragment 'U' on Grace LaPointe \u2014 unresolvable"
+   "title": "Fragment 'U' on Grace LaPointe — unresolvable"
   },
   {
    "actions": [
@@ -1087,21 +1112,21 @@
      "id": "leave-ntc",
      "kind": "decision",
      "label": "Leave as is",
-     "note": "Records JD\u2019s ruling to leave it."
+     "note": "Records JD’s ruling to leave it."
     }
    ],
    "date": "2026-10-27",
    "director": "content",
    "evidence": [
-    "Micah McCulley: churches = \"ntc\" \u2014 the only lowercase church value in the directory; \"NTC\" is carried by 24 profiles."
+    "Micah McCulley: churches = \"ntc\" — the only lowercase church value in the directory; \"NTC\" is carried by 24 profiles."
    ],
    "id": "frag-ntc",
    "kind": "near-duplicate-org",
    "priority": 18,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
-    "falsifier": "JD knows McCulley\u2019s \"ntc\" is a different church than NTC.",
+    "falsifier": "JD knows McCulley’s \"ntc\" is a different church than NTC.",
     "grade": "Strong",
     "text": "A case variant of the canonical church value NTC, carried by 24 profiles in proper case; his is the only lowercase copy."
    },
@@ -1186,30 +1211,30 @@
     {
      "id": "leave-shatter",
      "kind": "decision",
-     "label": "Leave \u2014 cosmetic chip artifact only",
-     "note": "Records JD\u2019s ruling that the shattered chips are acceptable."
+     "label": "Leave — cosmetic chip artifact only",
+     "note": "Records JD’s ruling that the shattered chips are acceptable."
     }
    ],
    "date": "2026-10-27",
    "director": "content",
    "evidence": [
-    "Megan Eurto companies: \"Canton, New York, Village of Canton\" \u2192 chips Canton / New York / Village of Canton. She is deputy village clerk for the Village of Canton.",
-    "Renee Dale companies: \"St. James School, Gouverneur, NY\" \u2192 St. James School / Gouverneur / NY. She teaches art at St. James School in Gouverneur.",
-    "Colin Mackey companies include \"Herkimer County, New York\" (a county employer) \u2192 a stray \"New York\" chip.",
-    "Acacia White companies include \"Chase Mills, NY\" \u2014 a hamlet, not an organization at all.",
-    "Universities column: Bob Dale \"University at Albany, SUNY\"; Brittney Carnicelli \"St. Joseph\u2019s College of Nursing - Syracuse, NY\"; Ellen M Miller \"Mater Dei College, Ogdensburg, NY\" plus a duplicated \"North Country Community College-Malone, NY\"; Elliot Martin \"Jefferson Community College, Watertown, NY\"; Ethan Hackett \"Manchester Community College, Manchester, CT\"; Courtney Delosh \"St. Lawrence University (B.S., 2023\" (an unclosed parenthesis fragment)."
+    "Megan Eurto companies: \"Canton, New York, Village of Canton\" → chips Canton / New York / Village of Canton. She is deputy village clerk for the Village of Canton.",
+    "Renee Dale companies: \"St. James School, Gouverneur, NY\" → St. James School / Gouverneur / NY. She teaches art at St. James School in Gouverneur.",
+    "Colin Mackey companies include \"Herkimer County, New York\" (a county employer) → a stray \"New York\" chip.",
+    "Acacia White companies include \"Chase Mills, NY\" — a hamlet, not an organization at all.",
+    "Universities column: Bob Dale \"University at Albany, SUNY\"; Brittney Carnicelli \"St. Joseph’s College of Nursing - Syracuse, NY\"; Ellen M Miller \"Mater Dei College, Ogdensburg, NY\" plus a duplicated \"North Country Community College-Malone, NY\"; Elliot Martin \"Jefferson Community College, Watertown, NY\"; Ethan Hackett \"Manchester Community College, Manchester, CT\"; Courtney Delosh \"St. Lawrence University (B.S., 2023\" (an unclosed parenthesis fragment)."
    ],
    "id": "comma-shatter",
    "kind": "data-quality",
    "priority": 19,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "Any listed cell turning out to be two genuinely separate organizations.",
     "grade": "Strong",
-    "text": "A different failure from the typing fragments: these are Facebook-style values whose names contain commas (\"St. James School, Gouverneur, NY\"). The app splits org fields on commas, so each one shatters into junk chips \u2014 \"New York\", \"Gouverneur\", \"NY\", \"CT\" \u2014 that masquerade as organizations. Rewriting the cells without internal commas ends the shatter."
+    "text": "A different failure from the typing fragments: these are Facebook-style values whose names contain commas (\"St. James School, Gouverneur, NY\"). The app splits org fields on commas, so each one shatters into junk chips — \"New York\", \"Gouverneur\", \"NY\", \"CT\" — that masquerade as organizations. Rewriting the cells without internal commas ends the shatter."
    },
-   "title": "Comma-shatter cells \u2014 values with \", City, ST\" inside them (11 profiles)"
+   "title": "Comma-shatter cells — values with \", City, ST\" inside them (11 profiles)"
   },
   {
    "actions": [
@@ -1242,22 +1267,22 @@
    "id": "subunit-class",
    "kind": "near-duplicate-org",
    "priority": 20,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "JD confirms every pair was filed deliberately, variants included.",
     "grade": "Probable",
-    "text": "A mixed class, which is why it is one ruling and not 19 errors: true sub-units look like deliberate detail (Cornell + Cornell ILR School; Florida State + Jim Moran College; UVM Health + its named hospitals), while same-school name variants filed twice look like import duplication (Shippensburg University / \u2026of Pennsylvania; Wheaton College Conservatory / \u2026of Music)."
+    "text": "A mixed class, which is why it is one ruling and not 19 errors: true sub-units look like deliberate detail (Cornell + Cornell ILR School; Florida State + Jim Moran College; UVM Health + its named hospitals), while same-school name variants filed twice look like import duplication (Shippensburg University / …of Pennsylvania; Wheaton College Conservatory / …of Music)."
    },
-   "title": "Same-profile org + sub-unit pairs \u2014 one class ruling (~19 instances)"
+   "title": "Same-profile org + sub-unit pairs — one class ruling (~19 instances)"
   },
   {
    "actions": [
     {
      "id": "rename-hitchman",
      "kind": "fix",
-     "label": "Rename display to Kayle Hitchman \u2014 keep \"Elak Namhctih\" as AKA",
-     "note": "Uses JD\u2019s spelling \"Kayle\". The key/handle ig:kale_hitchman is identity and does not change.",
+     "label": "Rename display to Kayle Hitchman — keep \"Elak Namhctih\" as AKA",
+     "note": "Uses JD’s spelling \"Kayle\". The key/handle ig:kale_hitchman is identity and does not change.",
      "patches": [
       {
        "field": "first_name",
@@ -1288,26 +1313,26 @@
     {
      "id": "leave-hitchman",
      "kind": "decision",
-     "label": "Leave exactly as is \u2014 masking respected",
-     "note": "Records JD\u2019s ruling that the reversed display stays untouched."
+     "label": "Leave exactly as is — masking respected",
+     "note": "Records JD’s ruling that the reversed display stays untouched."
     }
    ],
    "date": "2026-10-27",
    "director": "content",
    "evidence": [
-    "Profile ig:kale_hitchman: First Name \"Elak\", Last Name \"Namhctih\" \u2014 the reversal is baked into the name columns, so every surface shows it.",
-    "His companies value is the fragment \"new york stat\" (separate flag) \u2014 JD identifies him as New York State Police.",
+    "Profile ig:kale_hitchman: First Name \"Elak\", Last Name \"Namhctih\" — the reversal is baked into the name columns, so every surface shows it.",
+    "His companies value is the fragment \"new york stat\" (separate flag) — JD identifies him as New York State Police.",
     "Footprint: educated at Potsdam Senior High School; lives in Colton, NY; hometown Star Lake, NY."
    ],
    "id": "hitchman-name",
    "kind": "data-quality",
    "priority": 21,
-   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle \u2014 closed by Operations, no longer needs a ruling.",
+   "ruling": "Executed via the Council board (done entry in the Council Staged queue) and re-verified against the current bake in the Nov 1, 2026 weekly cycle — closed by Operations, no longer needs a ruling.",
    "state": "closed",
    "theory": {
     "falsifier": "Hitchman himself publishing his name in standard form on the account.",
     "grade": "Strong",
-    "text": "The reversal is a presentation choice by a law-enforcement officer masking his social identity \u2014 JD has ruled it is not an error. The open question is only whether the dossier should mirror the mask or carry his real name with the mask preserved as an alias. Spelling, surfaced rather than resolved: JD says \"Kayle\"; the Instagram handle spells \"kale_hitchman\"; the reversed display decodes to \"Kale Hitchman\"."
+    "text": "The reversal is a presentation choice by a law-enforcement officer masking his social identity — JD has ruled it is not an error. The open question is only whether the dossier should mirror the mask or carry his real name with the mask preserved as an alias. Spelling, surfaced rather than resolved: JD says \"Kayle\"; the Instagram handle spells \"kale_hitchman\"; the reversed display decodes to \"Kale Hitchman\"."
    },
    "title": "Display name reversed: 'Elak Namhctih' (Kayle Hitchman)"
   },
@@ -1315,12 +1340,12 @@
    "date": "2026-10-27",
    "director": "content",
    "evidence": [
-    "Same surname, first names one letter apart (ct:karle mccormick / ig:kaylemmccormick). (Separate known item: Kayle\u2019s mccormickkayle self-reference.)"
+    "Same surname, first names one letter apart (ct:karle mccormick / ig:kaylemmccormick). (Separate known item: Kayle’s mccormickkayle self-reference.)"
    ],
    "id": "mccormick-twins",
    "kind": "possible-match",
    "priority": 99,
-   "resolution": "Karle McCormick and Kayle McCormick are twin sisters \u2014 two different people. Never merge. Ruled by JD; flag closed Oct 27, 2026.",
+   "resolution": "Karle McCormick and Kayle McCormick are twin sisters — two different people. Never merge. Ruled by JD; flag closed Oct 27, 2026.",
    "state": "closed",
    "title": "Karle McCormick vs Kayle McCormick"
   },
@@ -1362,7 +1387,7 @@
     "grade": "Probable",
     "text": "Same approved inference class as the McConnell/Seguin/Hammond flags JD executed in October: a documented U.S. Army affiliation with no groups at all. His footprint (DVIDS) records his 2024 enlistment as a 92F petroleum supply specialist, so the affiliation is confirmed-source, not inferred from a name."
    },
-   "title": "Jeremy Taylor \u2014 U.S. Army company, no Army group"
+   "title": "Jeremy Taylor — U.S. Army company, no Army group"
   },
   {
    "actions": [
@@ -1408,7 +1433,7 @@
     "grade": "Probable",
     "text": "Her footprint documents AFROTC Detachment 536 participation (St. Lawrence University Merit), but the value sits as a bare company 'ROTC'. The registry's canonical form is the group 'U.S. Air Force ROTC' (a groups-only canonical), so the staged fix moves it to the right bucket in canonical form."
    },
-   "title": "Delany Durant \u2014 bare 'ROTC' company value; AFROTC Det 536 on file"
+   "title": "Delany Durant — bare 'ROTC' company value; AFROTC Det 536 on file"
   },
   {
    "actions": [
@@ -1425,7 +1450,7 @@
     {
      "id": "keep-jai-janice",
      "kind": "decision",
-     "label": "Keep both \u2014 two people",
+     "label": "Keep both — two people",
      "note": "Records JD's ruling that they are two people; the Jai profile's First/Last fields then need correcting to Jai's real name."
     },
     {
@@ -1439,22 +1464,22 @@
    "director": "content",
    "evidence": [
     "sf:jai-dane (Display 'Jai Dane'): First Name 'Janice', Last Name 'Dane'; churches Christian Fellowship Center; email jdanedesign@gmail.com; footprint 'Provided design and iMovie help in the Christian Fellowship Academy orbit in 2017 (Email, 2017)'; Years Known 2013.",
-    "sf:janice-dane (Display 'Janice Dane'): synopsis 'part of Christian Fellowship Center and helped with design and the yearbook at Christian Fellowship Academy around 2017'; footprint 'The Mrs. Dane of the Christian Fellowship Academy yearbook staff, corresponding 2017\u20132019 (Email, 2019)'; email danefam5@gmail.com; Years Known 2013.",
-    "A third Dane profile (sf:nelson-dane, CFA youth circle, Dane family email threads 2017\u20132018) places Janice as the Dane family's CFA parent \u2014 consistent with 'Mrs. Dane'.",
-    "Photos hunt (Nov 2, 2026, full report): no source uses 'Jai Dane'; no Potsdam realtor named Janice Dane exists in the bake or was found on the web \u2014 the 'realtor' description in this run's first summary was an error and is corrected in the logs.",
+    "sf:janice-dane (Display 'Janice Dane'): synopsis 'part of Christian Fellowship Center and helped with design and the yearbook at Christian Fellowship Academy around 2017'; footprint 'The Mrs. Dane of the Christian Fellowship Academy yearbook staff, corresponding 2017–2019 (Email, 2019)'; email danefam5@gmail.com; Years Known 2013.",
+    "A third Dane profile (sf:nelson-dane, CFA youth circle, Dane family email threads 2017–2018) places Janice as the Dane family's CFA parent — consistent with 'Mrs. Dane'.",
+    "Photos hunt (Nov 2, 2026, full report): no source uses 'Jai Dane'; no Potsdam realtor named Janice Dane exists in the bake or was found on the web — the 'realtor' description in this run's first summary was an error and is corrected in the logs.",
     "The Nov 1 overnight photo hunt independently flagged the pair as a merge question for JD (do not merge unilaterally)."
    ],
    "id": "jai-janice-dane",
    "kind": "possible-match",
    "priority": 6,
-   "ruling": "JD ruled Nov 2, 2026: merge. Executed the same day \u2014 sf:jai-dane folded into survivor sf:janice-dane (specialty 'Art', design/iMovie footprint bullet, 2018 email event, also_known_as 'Jai Dane', and both emails: danefam5@gmail.com + jdanedesign@gmail.com at JD's direction to keep the design email on the survivor); loser retired via deleted='1' + merged_into='sf:janice-dane', read-back verified in the Sheet.",
+   "ruling": "JD ruled Nov 2, 2026: merge. Executed the same day — sf:jai-dane folded into survivor sf:janice-dane (specialty 'Art', design/iMovie footprint bullet, 2018 email event, also_known_as 'Jai Dane', and both emails: danefam5@gmail.com + jdanedesign@gmail.com at JD's direction to keep the design email on the survivor); loser retired via deleted='1' + merged_into='sf:janice-dane', read-back verified in the Sheet.",
    "state": "closed",
    "theory": {
-    "falsifier": "JD knows a second Dane \u2014 a 'Jai' distinct from Janice, e.g. another Dane family member who did the design work.",
+    "falsifier": "JD knows a second Dane — a 'Jai' distinct from Janice, e.g. another Dane family member who did the design work.",
     "grade": "Probable",
-    "text": "Same person, duplicated. Both profiles are Janice Dane of the Christian Fellowship Academy orbit: the 'Jai Dane' profile's own First/Last fields read Janice Dane, both profiles carry Christian Fellowship Center, both are known since 2013, and both footprints describe the same 2017 activity \u2014 design/yearbook help at CFA ('Mrs. Dane' of the yearbook staff on one; design and iMovie help on the other, under the email jdanedesign@gmail.com). 'Jai' is most likely her nickname or the handle the second profile was filed from. There is no realtor: an earlier summary in this run misdescribed her, and the correction is logged."
+    "text": "Same person, duplicated. Both profiles are Janice Dane of the Christian Fellowship Academy orbit: the 'Jai Dane' profile's own First/Last fields read Janice Dane, both profiles carry Christian Fellowship Center, both are known since 2013, and both footprints describe the same 2017 activity — design/yearbook help at CFA ('Mrs. Dane' of the yearbook staff on one; design and iMovie help on the other, under the email jdanedesign@gmail.com). 'Jai' is most likely her nickname or the handle the second profile was filed from. There is no realtor: an earlier summary in this run misdescribed her, and the correction is logged."
    },
-   "title": "Jai Dane vs Janice Dane \u2014 one person or two?"
+   "title": "Jai Dane vs Janice Dane — one person or two?"
   },
   {
    "actions": [
@@ -1481,7 +1506,7 @@
    "date": "2026-11-02",
    "director": "content",
    "evidence": [
-    "Azlyn Richardson (ct:azlyn richardson): companies = 'Clarkson University, Michels Power, Inc.' \u2014 this run's value-level scan splits it into Clarkson University / Michels Power / Inc.",
+    "Azlyn Richardson (ct:azlyn richardson): companies = 'Clarkson University, Michels Power, Inc.' — this run's value-level scan splits it into Clarkson University / Michels Power / Inc.",
     "The closed Oct 27 comma-shatter flag established the mechanism and the fix pattern: rewrite the cell without the internal comma."
    ],
    "id": "azlyn-michels-comma",
@@ -1492,18 +1517,19 @@
    "theory": {
     "falsifier": "The app renders 'Michels Power, Inc.' as a single chip on her profile.",
     "grade": "Probable",
-    "text": "The companies cell 'Clarkson University, Michels Power, Inc.' contains an internal comma, and the app splits org fields on commas \u2014 so her profile shows a stray 'Inc.' chip beside 'Michels Power'. This is the comma-shatter class JD had rewritten across 11 profiles on Oct 27, 2026; hers is a new instance that arrived with her internship data."
+    "text": "The companies cell 'Clarkson University, Michels Power, Inc.' contains an internal comma, and the app splits org fields on commas — so her profile shows a stray 'Inc.' chip beside 'Michels Power'. This is the comma-shatter class JD had rewritten across 11 profiles on Oct 27, 2026; hers is a new instance that arrived with her internship data."
    },
    "title": "Comma-shatter: 'Michels Power, Inc.' on Azlyn Richardson"
   },
   {
    "date": "2026-11-04",
-   "detail": "Her universities read 'Community College, Providence College' \u2014 no school named, the only bare generic value of its kind in the directory. Ruling needed: name the community college, or drop the value.",
+   "detail": "Her universities read 'Community College, Providence College' — no school named, the only bare generic value of its kind in the directory. Ruling needed: name the community college, or drop the value.",
    "director": "content",
    "id": "lydia-bartlett-community-college",
    "kind": "near-duplicate-org",
-   "state": "open",
-   "title": "Lydia Bartlett \u2014 bare 'Community College' university value"
+   "state": "closed",
+   "title": "Lydia Bartlett — bare 'Community College' university value",
+   "ruling": "Verified executed in the live Sheet Nov 9, 2026 (read directly): universities now read 'Community College of Rhode Island, Providence College' — the school was named. Closed by Operations, no longer needs a ruling."
   },
   {
    "date": "2026-11-04",
@@ -1511,8 +1537,51 @@
    "director": "content",
    "id": "calvary-baptist-name",
    "kind": "near-duplicate-org",
+   "state": "closed",
+   "title": "'Calvary Baptist' (9 profiles) beside 'Calvary Baptist Church' (1)",
+   "ruling": "Verified executed in the live Sheet Nov 9, 2026 (read directly): the churches field now carries only 'Calvary Baptist Church' (10 profiles) — the 9 short forms were standardized to the full name. Closed by Operations, no longer needs a ruling."
+  },
+  {
+   "date": "2026-11-09",
+   "director": "content",
+   "id": "cph-alias-evans",
+   "kind": "near-duplicate-org",
    "state": "open",
-   "title": "'Calvary Baptist' (9 profiles) beside 'Calvary Baptist Church' (1)"
+   "priority": 29,
+   "title": "'Canton-Potsdam Hospital' is back in use — Steve Evans",
+   "detail": "Steve Evans carries the registry alias 'Canton-Potsdam Hospital' as his companies value, while his groups already carry the canonical Rochester Regional Health. The registry maps the alias to Rochester Regional Health. Ruling needed: replace the companies value with Rochester Regional Health, or leave it.",
+   "theory": {
+    "grade": "Strong",
+    "text": "The exact alias class JD closed in October (then on Jaime Bicknell): 'Canton-Potsdam Hospital' is a registered alias of Rochester Regional Health, and Evans's own groups already carry the canonical name — the companies value is the leftover.",
+    "falsifier": "JD knows Evans's connection is specifically to the hospital under its old name in a way the canonical value would misstate."
+   },
+   "evidence": [
+    "Registry (site/data/org-registry.json): 'Canton-Potsdam Hospital' → Rochester Regional Health.",
+    "Bake: sf:steve-evans companies = 'Canton-Potsdam Hospital'; groups = 'Rochester Regional Health'.",
+    "52 registry aliases checked over 730 live profiles — this is the only alias in use."
+   ],
+   "actions": [
+    {
+     "id": "fix-cph-evans",
+     "kind": "fix",
+     "label": "Replace with Rochester Regional Health",
+     "patches": [
+      {
+       "field": "companies",
+       "from": "Canton-Potsdam Hospital",
+       "key": "sf:steve-evans",
+       "op": "replace",
+       "to": "Rochester Regional Health"
+      }
+     ]
+    },
+    {
+     "id": "leave-cph-evans",
+     "kind": "decision",
+     "label": "Leave as is",
+     "note": "Records JD's ruling to leave the alias value on Evans."
+    }
+   ]
   }
  ],
  "roster": [
@@ -1520,11 +1589,11 @@
    "authority": "May file photos on its own under the identity standard: 2 anchors = confirmed, 1 anchor = possible (Confirm/Reject).",
    "icon": "camera",
    "key": "photos",
-   "last_run": "Nov 4, 2026 (weekly cycle)",
-   "mission": "Own photo coverage \u2014 recruit hunter experts, keep finding new search routes, never accept that everything has been tried.",
+   "last_run": "Nov 9, 2026 (weekly cycle)",
+   "mission": "Own photo coverage — recruit hunter experts, keep finding new search routes, never accept that everything has been tried.",
    "name": "Photos Director",
-   "next_run": "Mondays 05:30 ET \u2014 weekly cycle",
-   "status": "Active \u2014 Cycle 2 opened: slice 1 hunted 40 on new routes, 0 filed; 1 candidate rejected at the gate (artwork avatar); QC 21/21 pass on the Nov 3 filings.",
+   "next_run": "Mondays 05:30 ET — weekly cycle",
+   "status": "Active — Cycle 2 slice 2: 40 hunted on new routes, 1 possible filed (Ethan Ryan academy group photo); QC over the 101 Nov 5 filings hid 1 poster graphic (Kailee Paige), 100 pass.",
    "subs": [
     {
      "authority": "May hide a bad photo. May never delete one.",
@@ -1537,67 +1606,72 @@
    "authority": "May fix pure presentation bugs directly (contrast, overlap, dead control). Layout and behavior changes go to JD first.",
    "icon": "eye",
    "key": "ux",
-   "last_run": "Nov 4, 2026 (weekly cycle)",
+   "last_run": "Nov 9, 2026 (weekly cycle)",
    "mission": "Walk the app as JD in both themes: every button works, all text readable, navigation simple, no overlaps or layout flaws.",
    "name": "UX Director",
-   "next_run": "Mondays 05:30 ET \u2014 weekly cycle",
-   "status": "Active \u2014 both-themes crawl clean on V3.87.0, no fixes; badge verified V3.87.0 in both themes; harness selectors stale vs V4 markup (probe route used)."
+   "next_run": "Mondays 05:30 ET — weekly cycle",
+   "status": "Active — both-themes crawl clean on V4.4.8; 1 presentation fix shipped as V4.4.9 after the layout gate failed the Photos evidence clipping; re-crawl PASS."
   },
   {
    "authority": "Flags and stages only. Merges and meaning changes are never executed without JD's ruling.",
    "icon": "file",
    "key": "content",
-   "last_run": "Nov 4, 2026 (weekly cycle)",
+   "last_run": "Nov 9, 2026 (weekly cycle)",
    "mission": "Runs last. Audit the universe for sense: duplicates, possible matches, missed connections, re-sort ideas, near-duplicate orgs and groups.",
    "name": "Content Director",
-   "next_run": "Mondays 05:30 ET \u2014 weekly cycle",
-   "status": "Active \u2014 duplicate/org/inference scans clean; all 26 prior flags verified closed; 2 new flags staged for JD."
+   "next_run": "Mondays 05:30 ET — weekly cycle",
+   "status": "Active — scans clean over 730 profiles; both Nov 4 flags verified executed and closed; 1 new flag staged (Canton-Potsdam Hospital alias on Steve Evans)."
   },
   {
    "authority": "No director starts a large run without Resource clearance. Extensions come only from actual headroom.",
    "icon": "sparkle",
    "key": "resource",
-   "last_run": "Nov 8, 2026",
+   "last_run": "Nov 9, 2026 (weekly cycle)",
    "mission": "Own the token budget: read the gauge against pace, authorize extra work from real headroom, call a halt when the day's tranche is spent.",
    "name": "Resource Manager",
    "next_run": "Daily, 8:00 AM ET",
-   "status": "Active \u2014 77% used vs ~71% pace at the cycle read; ahead ~6 points, no flag; week resets Fri Nov 6, 2026, 7:38 AM EST."
+   "status": "Active — 17% used vs ~42% pace at the cycle read; under by ~25 points, no flag; week resets Fri Nov 13, 2026, 7:38 AM EST."
   },
   {
    "authority": "Can stop a spinning worker and re-task it. Tripwires: 3 attempts on one route with no new evidence; a run with no state change in its window.",
    "icon": "target",
    "key": "progress",
-   "last_run": "Nov 4, 2026 (weekly cycle)",
-   "mission": "Own traction: catch spinning tires \u2014 repeated routes, stalls, work with no new evidence \u2014 and force a different approach.",
+   "last_run": "Nov 9, 2026 (weekly cycle)",
+   "mission": "Own traction: catch spinning tires — repeated routes, stalls, work with no new evidence — and force a different approach.",
    "name": "Progress Auditor",
-   "next_run": "Mondays 05:30 ET \u2014 weekly cycle",
-   "status": "Active \u2014 no tripwires fired; Koberda Wayback route down to its last named variant; UX harness selector refresh re-tasked."
+   "next_run": "Mondays 05:30 ET — weekly cycle",
+   "status": "Active — no tripwires; Koberda Wayback watch closed (photo filed by another route Nov 5); hunter batch-boundary miss caught and re-tasked to the coordinator."
   },
   {
    "authority": "Final authority below JD. Directors never report to JD separately.",
    "icon": "shield",
    "key": "ops",
-   "last_run": "Nov 4, 2026 (weekly cycle)",
+   "last_run": "Nov 9, 2026 (weekly cycle)",
    "mission": "Everyone reports here. Schedule runs, deconflict file access, enforce budget and tripwires, deliver one consolidated roll-up.",
    "name": "Director of Operations",
    "next_run": "Roll-up in Monday's The Week in Full",
-   "status": "Active \u2014 weekly cycle complete (JD-requested early run closing the V4 Phase 7 gate); roll-up delivered to The Week in Full. Next standing cycle: Mon Nov 9, 2026."
+   "status": "Active — weekly cycle complete; 1 fix shipped (V4.4.9), 2 flags closed on verification, 1 new flag open for JD."
   },
   {
    "authority": "BLOCKING gate: a build that fails the layout crawl does not ship. Failures stage as flags on the Council board like every other director's; only JD can override a held ship.",
    "icon": "expand",
    "key": "layout",
-   "last_run": "Nov 4, 2026 (V3.87.0 audit)",
-   "mission": "Own geometry \u2014 no element too close, nothing overlapping, on any surface, at any audited viewport, in either theme \u2014 proven by automated measurement (scripts/overlap_audit.py), never by eyeballs alone.",
+   "last_run": "Nov 9, 2026 (weekly cycle)",
+   "mission": "Own geometry — no element too close, nothing overlapping, on any surface, at any audited viewport, in either theme — proven by automated measurement (scripts/overlap_audit.py), never by eyeballs alone.",
    "name": "Director of Layout Integrity",
-   "next_run": "After every ship (blocking) + Mondays 05:30 ET \u2014 weekly cycle",
-   "status": "Active \u2014 gate PASSES on V3.87.0: 0 blocking findings across all surfaces and combos (dated report layout-audit-2026-11-04.md); proximity warnings remain advisory-only."
+   "next_run": "After every ship (blocking) + Mondays 05:30 ET — weekly cycle",
+   "status": "Active — V4.4.8 crawl FAILED (78 blocking, Photos text-overflow); fixed same cycle and the V4.4.9 re-crawl PASSES with 0 blocking."
   }
  ],
  "runs": [
   {
+   "date": "2026-11-09",
+   "title": "Weekly cycle",
+   "outcome": "Resource 17% vs ~42% pace (under, no flag). Photos: Cycle 2 slice 2 — 40 hunted, 1 possible filed, QC 101 checked / 1 hidden. UX: both themes clean; layout gate FAIL on V4.4.8 (Photos clipping) fixed and shipped as V4.4.9, re-crawl PASS. Content: scans clean, 2 flags verified closed, 1 new flag staged (CPH alias on Steve Evans). Progress: no tripwires."
+  },
+  {
    "date": "2026-11-04",
-   "outcome": "Resource 77% vs ~71% pace (ahead, no flag). Photos: Cycle 2 slice 1 \u2014 40 hunted on new routes, 0 filed, 1 gate rejection, QC 21/21. UX: both themes clean on V3.87.0, no fixes; layout gate PASS. Content: scans clean, all 26 prior flags verified closed, 2 new flags staged (Community College value, Calvary Baptist naming). Progress: no tripwires.",
+   "outcome": "Resource 77% vs ~71% pace (ahead, no flag). Photos: Cycle 2 slice 1 — 40 hunted on new routes, 0 filed, 1 gate rejection, QC 21/21. UX: both themes clean on V3.87.0, no fixes; layout gate PASS. Content: scans clean, all 26 prior flags verified closed, 2 new flags staged (Community College value, Calvary Baptist naming). Progress: no tripwires.",
    "title": "Weekly cycle"
   },
   {
@@ -1612,7 +1686,7 @@
   },
   {
    "date": "2026-10-27",
-   "outcome": "Resource 38% vs ~62% pace (headroom). Photos: QC 8/8 pass; 40-profile hunt, 1 confirmed filed (Aeriel Skinner), 1 rejected at the verify gate, 6 live-browser leads queued. UX: 9 views \u00d7 2 themes, no defects. Content: 13 flags staged for JD. Progress: no tripwires.",
+   "outcome": "Resource 38% vs ~62% pace (headroom). Photos: QC 8/8 pass; 40-profile hunt, 1 confirmed filed (Aeriel Skinner), 1 rejected at the verify gate, 6 live-browser leads queued. UX: 9 views × 2 themes, no defects. Content: 13 flags staged for JD. Progress: no tripwires.",
    "title": "Inaugural test drive"
   },
   {
@@ -1622,10 +1696,10 @@
   }
  ],
  "staging": {
-  "actions_schema": "kind fix = field patches [{key, field, op: set|add|remove|replace, value|from/to}]; kind decision = a JD ruling that closes the flag when chosen; kind task = work staged for Luna\u2019s next council pass (no direct patches); kind merge = opens the Merge studio preloaded with {survivor, loser}.",
+  "actions_schema": "kind fix = field patches [{key, field, op: set|add|remove|replace, value|from/to}]; kind decision = a JD ruling that closes the flag when chosen; kind task = work staged for Luna’s next council pass (no direct patches); kind merge = opens the Merge studio preloaded with {survivor, loser}.",
   "entry_shape": "{flag, action, label, kind, patches?, merge?, state: staged|done, ts, by, outcome?}",
-  "execution": "Do-now runs the action\u2019s patches through queuePatch / sbPostBatch (batch endpoint, by profile key), then the result is verified against the Sheet. Executed entries are marked done in the queue cell and folded into council.json by Luna\u2019s next pass.",
-  "mechanism": "Staged council actions are stored as a JSON queue in the Profiles column \"Council Staged\" (BH) on JD's row ig:jdmeyers_ (Sheet row 314). The app writes it through the Apps Script batch endpoint ADDRESSED BY KEY \u2014 never through the directory: JD has two directory entries (ig:jdmeyers_ and an sf:jdmeyers_ shell at row 673) and pkey() resolves both to 'sf:jdmeyers_', so a directory patch would land on the wrong row. The endpoint resolves patch fields against the Profiles header row by name (Location-on-file precedent, no endpoint code change). The board reads the queue from the baked profiles.json (sync pull range widened to BH; council_staged added to PROFILE_FIELDS); Luna's passes read the same cell via the Sheets API."
+  "execution": "Do-now runs the action’s patches through queuePatch / sbPostBatch (batch endpoint, by profile key), then the result is verified against the Sheet. Executed entries are marked done in the queue cell and folded into council.json by Luna’s next pass.",
+  "mechanism": "Staged council actions are stored as a JSON queue in the Profiles column \"Council Staged\" (BH) on JD's row ig:jdmeyers_ (Sheet row 314). The app writes it through the Apps Script batch endpoint ADDRESSED BY KEY — never through the directory: JD has two directory entries (ig:jdmeyers_ and an sf:jdmeyers_ shell at row 673) and pkey() resolves both to 'sf:jdmeyers_', so a directory patch would land on the wrong row. The endpoint resolves patch fields against the Profiles header row by name (Location-on-file precedent, no endpoint code change). The board reads the queue from the baked profiles.json (sync pull range widened to BH; council_staged added to PROFILE_FIELDS); Luna's passes read the same cell via the Sheets API."
  },
- "updated": "2026-11-08"
+ "updated": "2026-11-09"
 }
