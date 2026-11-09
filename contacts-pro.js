@@ -10504,15 +10504,18 @@ function lrRecordsBodyHTML(){
    derives an effective date for every merged filing — the same
    changes.json + whatsnew.json merge the V4.6.0 feed did —
    reading the fact text first, never the filed date; precision
-   is never invented). Layout, top to bottom: a slim stats line;
-   a hero for the newest effective day (every non-photo event on
-   that day in one card); a "This season" band of medium cards
-   (spans and since facts covering the current school year); an
-   "Earlier" band of compact rows grouped by effective period,
-   60 at a time; a quiet "No date in the source" section; and at
-   the very bottom the current-state facts (ongoing + since) as
-   a small strip with no hero treatment (JD: do not waste big
-   hero titles on it). Read-only, like Filings.
+   is never invented). Filings the derivation cannot date are
+   excluded from the feed entirely (JD 2026-11-09: do not force
+   a date, and do not show an undated section; if it does not
+   carry a real effective date, it does not make the list).
+   Layout, top to bottom: a slim stats line; a hero for the
+   newest effective day (every non-photo event on that day in
+   one card); a "This season" band of medium cards (spans and
+   since facts covering the current school year); an "Earlier"
+   band of compact rows grouped by effective period, 60 at a
+   time; and at the very bottom the current-state facts (ongoing
+   + since) as a small strip with no hero treatment (JD: do not
+   waste big hero titles on it). Read-only, like Filings.
    ============================================================ */
 var AF = null, AF_LOADING = false, AF_SHOWN = 60;
 var AF_PAGE = 60;
@@ -10619,17 +10622,6 @@ function afRowEff(e){
     (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
     '</div></div></article>';
 }
-function afRowPlain(e){
-  var di = hmDiOf(e.name);
-  return '<article class="af-row" data-kind="' + textKind(e.text) + '">' +
-    afAvatarHTML(e, di, 'md') +
-    '<div class="af-main"><div class="af-top">' + afNameHTML(e, di) +
-    (e.photo ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>' : '') + '</div>' +
-    '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
-    '<div class="af-meta">' + afSrcHTML(e) +
-    (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
-    '</div></div></article>';
-}
 function afEarlierList(items, hero, season){
   return items.filter(function(e){
     if(hero.events.indexOf(e) >= 0 || season.indexOf(e) >= 0) return false;
@@ -10680,11 +10672,9 @@ function lrActivityHTML(){
   var stats = '<div class="af-statsline">' +
     '<span><b>' + dated.length + '</b> events with a date</span><span class="dot">&middot;</span>' +
     '<span><b>' + Object.keys(people).length + '</b> people</span><span class="dot">&middot;</span>' +
-    '<span><b>' + (ys.length ? ys[0] + ' to ' + ys[ys.length - 1] : '') + '</b></span><span class="dot">&middot;</span>' +
-    '<span><b>' + (c.undated || 0) + '</b> with no date in the source</span></div>';
+    '<span><b>' + (ys.length ? ys[0] + ' to ' + ys[ys.length - 1] : '') + '</b></span></div>';
   var hero = afDayEvents(items);
   var season = items.filter(afInSeason);
-  var undated = items.filter(function(e){ return e.kind === 'undated'; });
   var current = items.filter(function(e){ return e.kind === 'ongoing' || e.kind === 'since'; });
   var h = '<div class="page lr af-page v4p" data-kind="about">' +
     lrChromeHTML('activity', 'Activity Feed', 'Sorted by when it happened, not when it was found.') + stats;
@@ -10697,11 +10687,6 @@ function lrActivityHTML(){
   h += '<section class="af-bandsec"><div class="af-band"><h2>Earlier</h2>' +
     '<p>Everything older, still sorted by when it happened.</p></div>' +
     '<div id="af-stream">' + afStreamHTML() + '</div></section>';
-  if(undated.length){
-    h += '<section class="af-undated"><h3>No date in the source</h3>' +
-      '<p class="af-undated-sub">These filings carry no date for when the thing happened, so they stay out of the dated stream.</p>' +
-      undated.map(afRowPlain).join('') + '</section>';
-  }
   if(current.length){
     h += '<footer class="af-now"><div class="af-now-l">Current state</div>' +
       current.map(function(e){
@@ -10752,8 +10737,9 @@ function viewDaily(v){
   }
   if(S.route.seg && S.route.seg[0] === 'activity'){
     /* V4.7.0: Activity Feed — the effective-date stream (hero
-       day, This season, Earlier, undated, current-state strip).
-       Read-only, like Filings. */
+       day, This season, Earlier, current-state strip; undated
+       filings are excluded by the producer). Read-only, like
+       Filings. */
     afLoad();
     v.innerHTML = lrActivityHTML();
     return;
