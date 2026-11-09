@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.5.1';
+var APP_VERSION = '4.5.3';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9482,18 +9482,102 @@ function fiColsInit(){
   FI_COLS = [FI_FILTER || 'all', best];
   fiSaveCols();
 }
-function fiCatOptions(sel){
+var FI_SORT_LIST = [
+  { v:'new', label:'Newest first' }, { v:'old', label:'Oldest first' },
+  { v:'cat', label:'Category' }, { v:'person', label:'Person A\u2013Z' },
+  { v:'corr', label:'Corrections first' }
+];
+function fiCatList(){
   var es = (FI && FI.entries) || [];
-  /* V4.5.1 (JD 2026-11-09): every category option carries its
-     count — the not-yet-read facts in that category, the same
-     population the column itself shows — so the numbers are
-     always on the controls in both columns, not only in a
-     column header after the category is picked. */
+  /* V4.5.1 (JD 2026-11-09): every category carries its count —
+     the not-yet-read facts in that category, the same population
+     the column itself shows. */
   var counts = {}, all = 0;
   es.forEach(function(e){ if(fiStatus(e) !== 'read'){ counts[e.pattern] = (counts[e.pattern] || 0) + 1; all++; } });
-  var opts = [['all', 'All facts (' + all + ')']];
-  FI_PAT_ORDER.forEach(function(k){ if(es.some(function(e){ return e.pattern === k; })) opts.push([k, fiPat({ pattern:k }).label.charAt(0) + fiPat({ pattern:k }).label.slice(1).toLowerCase() + ' (' + (counts[k] || 0) + ')']); });
-  return opts.map(function(o){ return '<option value="' + o[0] + '"' + (sel === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
+  var list = [{ v:'all', label:'All facts', n: all }];
+  FI_PAT_ORDER.forEach(function(k){ if(es.some(function(e){ return e.pattern === k; })) list.push({ v:k, label: fiPat({ pattern:k }).label.charAt(0) + fiPat({ pattern:k }).label.slice(1).toLowerCase(), n: counts[k] || 0 }); });
+  return list;
+}
+/* V4.5.2 (JD 2026-11-09): the New facts controls are custom
+   dropdowns, not native selects — the OS-drawn list hid the
+   counts and styled inconsistently across themes. The face
+   shows the current value with its count; the menu shows every
+   value with its count. Menu-button pattern: opening moves
+   focus to the selected row, arrows / Home / End move, a typed
+   letter jumps, Enter / Space picks (native button click),
+   Escape closes and returns focus to the face, a click anywhere
+   else closes. Picking repaints exactly like the old selects
+   did and returns focus to the same control, so keyboard flow
+   never loses its place. */
+var FI_DD_OPEN = null;
+function fiDdHTML(kind, col, value, list){
+  var cur = list.filter(function(o){ return o.v === value; })[0] || list[0] || { label:'', n:null };
+  var opts = list.map(function(o){
+    return '<button type="button" class="fi-dd-opt' + (o.v === value ? ' on' : '') + '" role="option" aria-selected="' + (o.v === value ? 'true' : 'false') + '" data-act="fidd-opt" data-v="' + esc(o.v) + '"><span class="fi-dd-ol">' + esc(o.label) + '</span>' + (o.n != null ? '<span class="fi-dd-n">' + o.n + '</span>' : '') + '</button>';
+  }).join('');
+  return '<div class="fi-dd" data-dd="' + kind + '"' + (col != null ? ' data-col="' + col + '"' : '') + '>' +
+    '<button type="button" class="fi-dd-btn" data-act="fidd" aria-haspopup="listbox" aria-expanded="false"><span class="fi-dd-ol">' + esc(cur.label) + '</span>' + (cur.n != null ? '<span class="fi-dd-n">' + cur.n + '</span>' : '') + '<svg class="fi-dd-ch" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>' +
+    '<div class="fi-dd-menu" role="listbox" aria-label="' + (kind === 'sort' ? 'Sort facts' : 'Category') + '" hidden>' + opts + '</div></div>';
+}
+function fiDdClose(refocus){
+  var dd = FI_DD_OPEN; if(!dd) return;
+  FI_DD_OPEN = null;
+  var menu = dd.querySelector('.fi-dd-menu'), btn = dd.querySelector('.fi-dd-btn');
+  if(menu) menu.hidden = true;
+  dd.classList.remove('open');
+  if(btn){ btn.setAttribute('aria-expanded', 'false'); if(refocus) btn.focus(); }
+}
+function fiDdOpen(dd){
+  if(FI_DD_OPEN && FI_DD_OPEN !== dd) fiDdClose(false);
+  var menu = dd.querySelector('.fi-dd-menu'), btn = dd.querySelector('.fi-dd-btn');
+  if(!menu || !btn) return;
+  menu.hidden = false;
+  dd.classList.add('open');
+  btn.setAttribute('aria-expanded', 'true');
+  FI_DD_OPEN = dd;
+  var sel = menu.querySelector('.fi-dd-opt.on') || menu.querySelector('.fi-dd-opt');
+  if(sel) sel.focus();
+}
+function fiDdToggle(dd){ if(FI_DD_OPEN === dd) fiDdClose(false); else fiDdOpen(dd); }
+function fiDdList(dd){ return dd.getAttribute('data-dd') === 'sort' ? FI_SORT_LIST : fiCatList(); }
+function fiDdValue(dd){
+  if(dd.getAttribute('data-dd') === 'sort') return FI_SORT;
+  fiColsInit();
+  return FI_COLS[parseInt(dd.getAttribute('data-col'), 10) || 0];
+}
+function fiDdFace(dd){
+  /* Re-face one dropdown in place — label, count, selected row —
+     without rebuilding anything around it. */
+  var list = fiDdList(dd), val = fiDdValue(dd);
+  var cur = list.filter(function(o){ return o.v === val; })[0]; if(!cur) return;
+  var btn = dd.querySelector('.fi-dd-btn'); if(!btn) return;
+  var lab = btn.querySelector('.fi-dd-ol'); if(lab) lab.textContent = cur.label;
+  var n = btn.querySelector('.fi-dd-n');
+  if(cur.n != null){ if(!n){ n = document.createElement('span'); n.className = 'fi-dd-n'; btn.insertBefore(n, btn.querySelector('.fi-dd-ch')); } n.textContent = cur.n; }
+  else if(n) n.remove();
+  dd.querySelectorAll('.fi-dd-opt').forEach(function(op){
+    var o = list.filter(function(x){ return x.v === op.getAttribute('data-v'); })[0];
+    op.classList.toggle('on', !!o && o.v === val);
+    op.setAttribute('aria-selected', (!!o && o.v === val) ? 'true' : 'false');
+    var ns = op.querySelector('.fi-dd-n'); if(ns && o && o.n != null) ns.textContent = o.n;
+  });
+}
+function fiDdSync(){ document.querySelectorAll('.fi-dd').forEach(fiDdFace); }
+function fiDdPick(dd, v){
+  var kind = dd.getAttribute('data-dd');
+  fiDdClose(false);
+  if(kind === 'sort'){
+    FI_SORT = v;
+    fiDdFace(dd);
+    fiPaint();
+    var b = dd.querySelector('.fi-dd-btn'); if(b) b.focus();
+  } else {
+    var ci = parseInt(dd.getAttribute('data-col'), 10) || 0;
+    fiColsInit(); FI_COLS[ci] = v; fiSaveCols();
+    fiPaint();
+    var nt = document.querySelector('.fi-dd[data-dd="col"][data-col="' + ci + '"] .fi-dd-btn');
+    if(nt) nt.focus();
+  }
 }
 function fiAllGroups(){
   fiColsInit();
@@ -9935,9 +10019,8 @@ function fiBodyHTML(){
      column carries its own category select (fiColHTML), so two
      categories run side by side. Sort stays global. */
   h += '<div class="fi-controls">' +
-    '<label class="fi-sortwrap"><span>Sort</span><select class="sel" data-sbi="fisort" aria-label="Sort facts">' +
-    [['new', 'Newest first'], ['old', 'Oldest first'], ['cat', 'Category'], ['person', 'Person A–Z'], ['corr', 'Corrections first']].map(function(o){ return '<option value="' + o[0] + '"' + (FI_SORT === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
-    '</select></label><span class="fi-showing" id="fi-showing"></span><span class="fi-kbd">Arrows / J K move &middot; R read &middot; F flag &middot; Enter profile</span></div>';
+    '<div class="fi-sortwrap"><span>Sort</span>' + fiDdHTML('sort', null, FI_SORT, FI_SORT_LIST) + '</div>' +
+    '<span class="fi-showing" id="fi-showing"></span><span class="fi-kbd">Arrows / J K move &middot; R read &middot; F flag &middot; Enter profile</span></div>';
   h += '<div class="fi-strip" id="fi-side">' + (FI ? fiSideHTML() : '') + '</div>';
   h += '<div class="fi-feed" id="fi-feed">' + fiFeedHTML() + '</div>';
   h += '<div class="fi-below" id="fi-below">' + (FI ? fiBelowHTML() : '') + '</div>';
@@ -9956,8 +10039,8 @@ function fiColHTML(cat, ci, enterId){
      same category the right one says so instead of duplicating
      every card. */
   var vis = fiVisible(cat), gs = fiGroups(cat);
-  var head = '<div class="fi-colh"><label class="fi-sortwrap"><span>Category</span>' +
-    '<select class="sel" data-sbi="ficol" data-col="' + ci + '" aria-label="Category for column ' + (ci + 1) + '">' + fiCatOptions(cat) + '</select></label>' +
+  var head = '<div class="fi-colh"><div class="fi-sortwrap"><span>Category</span>' +
+    fiDdHTML('col', ci, cat, fiCatList()) + '</div>' +
     '<span class="fi-coln">' + vis.length + ' fact' + (vis.length === 1 ? '' : 's') + ' &middot; ' + gs.length + ' ' + (gs.length === 1 ? 'person' : 'people') + '</span></div>';
   if(ci === 1 && FI_COLS[0] === FI_COLS[1]){
     return '<div class="fi-col">' + head + '<div class="fi-zero"><b>Same category as the other column</b><p>Pick a different category above to run two at once.</p></div></div>';
@@ -10056,6 +10139,7 @@ function fiPaintChrome(){
   if(sub){ var c = fiCounts(); sub.innerHTML = c.unread ? c.unread + ' unread fact' + (c.unread === 1 ? '' : 's') + ' &middot; ' + c.people + ' ' + (c.people === 1 ? 'person' : 'people') : 'Inbox zero'; }
   if(sh){ fiColsInit(); var shown = fiVisible(FI_COLS[0]).length + (FI_COLS[1] === FI_COLS[0] ? 0 : fiVisible(FI_COLS[1]).length); sh.textContent = 'Showing ' + shown + ' of ' + fiCounts().total; }
   fiPaintNavBadge();
+  fiDdSync();
 }
 function fiPaintNavBadge(){
   var n = lrWaitingCount();
@@ -10152,6 +10236,7 @@ document.addEventListener('keydown', function(ev){
   if(ev.ctrlKey || ev.metaKey || ev.altKey) return;
   var t = ev.target;
   if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+  if(t && t.closest && t.closest('.fi-dd')) return; /* V4.5.2: the dropdowns run their own keys */
   if(typeof QA !== 'undefined' && QA.open) return;
   if(typeof POOL !== 'undefined' && POOL.open) return;
   if(document.body.classList.contains('sheet-open') || document.body.classList.contains('qa-on')) return;
@@ -10179,6 +10264,40 @@ document.addEventListener('keydown', function(ev){
   if(lk === 'k'){ ev.preventDefault(); fiMove(-1, 0); return; }
   if(lk === 'r'){ if(FI_SEL){ ev.preventDefault(); fiMarkRead(FI_SEL); } return; }
   if(lk === 'f'){ if(FI_SEL){ ev.preventDefault(); fiToggleFlag(FI_SEL); } return; }
+});
+/* V4.5.2: dropdown outside-click close + keyboard control. */
+document.addEventListener('pointerdown', function(ev){
+  if(FI_DD_OPEN && !(ev.target && ev.target.closest && ev.target.closest('.fi-dd'))) fiDdClose(false);
+}, true);
+document.addEventListener('keydown', function(ev){
+  var t = ev.target;
+  var dd = t && t.closest ? t.closest('.fi-dd') : null;
+  if(!dd){ if(ev.key === 'Escape' && FI_DD_OPEN) fiDdClose(true); return; }
+  if(ev.ctrlKey || ev.metaKey || ev.altKey) return;
+  var menu = dd.querySelector('.fi-dd-menu');
+  var open = FI_DD_OPEN === dd && menu && !menu.hidden;
+  var k = ev.key;
+  if(k === 'Escape'){ if(open){ ev.preventDefault(); fiDdClose(true); } return; }
+  if(!open){
+    if(k === 'ArrowDown' || k === 'ArrowUp'){ ev.preventDefault(); fiDdOpen(dd); }
+    return; /* Enter / Space reach the face button's native click */
+  }
+  var opts = Array.prototype.slice.call(dd.querySelectorAll('.fi-dd-opt'));
+  if(!opts.length) return;
+  var ix = opts.indexOf(t);
+  if(ix < 0) ix = opts.findIndex(function(o){ return o.classList.contains('on'); });
+  if(k === 'ArrowDown'){ ev.preventDefault(); opts[(ix + 1) % opts.length].focus(); }
+  else if(k === 'ArrowUp'){ ev.preventDefault(); opts[(ix - 1 + opts.length) % opts.length].focus(); }
+  else if(k === 'Home'){ ev.preventDefault(); opts[0].focus(); }
+  else if(k === 'End'){ ev.preventDefault(); opts[opts.length - 1].focus(); }
+  else if(k === 'Tab'){ fiDdClose(false); }
+  else if(k.length === 1 && k !== ' '){
+    var ch = k.toLowerCase();
+    for(var i = 1; i <= opts.length; i++){
+      var j = (ix + i) % opts.length, lab = opts[j].querySelector('.fi-dd-ol');
+      if(lab && lab.textContent.toLowerCase().indexOf(ch) === 0){ ev.preventDefault(); opts[j].focus(); break; }
+    }
+  }
 });
 /* V3.79.1: the Records body (everything under the chrome) is its
    own builder so a sort click can repaint ONLY this region
@@ -14434,6 +14553,8 @@ function onClick(ev){
     case 'fi-undo': fiUndo(el.getAttribute('data-id')); break;
     case 'fi-unflag': fiUndo(el.getAttribute('data-id')); break;
     case 'fi-goto': fiGoto(el.getAttribute('data-id')); break;
+    case 'fidd': { var ddT = el.closest('.fi-dd'); if(ddT) fiDdToggle(ddT); break; }
+    case 'fidd-opt': { var ddP = el.closest('.fi-dd'); if(ddP) fiDdPick(ddP, el.getAttribute('data-v')); break; }
     case 'fi-filter': FI_FILTER = el.getAttribute('data-f') || 'all'; document.querySelectorAll('.fi-seg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-f') === FI_FILTER); }); fiPaint(); break;
     case 'hmigroup': hmiClose(true); go('groups/groups/' + encodeURIComponent(el.getAttribute('data-g'))); break;
     case 'hmiaudit': hmiClose(true); store('ncc_aud_mode', 'years'); if(S.audit){ S.audit.mode = 'years'; S.audit.shown = null; } go('audit'); break;
