@@ -5912,12 +5912,13 @@
    "type": null
   },
   {
-   "evidence": "The SUNY Canton Law Enforcement Day article names Trooper Robert Larrabee as a presenter, but the page carries no photos at all — text-only mention.",
+   "added": "2026-11-09",
+   "evidence": "News photo (NCPR, photo by Griffin Kelly, Adirondack Daily Enterprise) captioned 'State troopers Anthony Bissonette, left, and Robert Larrabee use a drone to map out the crime on Silver Lake Road in AuSable Forks' (Mar 14, 2019) - by standard caption order Larrabee is the trooper on the right, cropped here as a single-person image. Corroborated by SUNY Canton's 2023 Law Enforcement Day page, which names NYSP Trooper Robert Larrabee, stationed in Canton, as a member of the Unmanned Aerial Systems (Drone) Unit - the activity in the photo. Graded likely because two troopers share the frame and the left/right assignment rests on caption order.",
    "name": "Rob Larrabee",
-   "photo_url": null,
-   "source_page": "https://canton.edu/news/2023/led.php",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "photos/rob-larrabee.jpg",
+   "source_page": "https://www.northcountrypublicradio.org/news/story/38251/20190314/tri-lakes-takes-a-deadly-shooting-in-ausable-forks",
+   "status": "likely",
+   "type": "News photo"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
