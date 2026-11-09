@@ -37734,10 +37734,13 @@
     "source": "New profile"
    },
    "skills": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-09T16:39:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-09T16:48:00Z",
+     "how": "filled"
+    }
    }
   }
  },
@@ -37785,8 +37788,8 @@
    "cleared_at": "2026-11-05T02:52:00Z"
   },
   "skills": {
-   "open": 2,
-   "new": 2,
+   "open": 1,
+   "new": 1,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -41416,5 +41419,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-09T16:39:00Z"
+ "updated": "2026-11-09T16:48:00Z"
 }
