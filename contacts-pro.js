@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.6.0';
+var APP_VERSION = '4.7.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10495,201 +10495,223 @@ function lrRecordsBodyHTML(){
 }
 
 /* ============================================================
-   V4.6.0 — Activity Feed: a fifth tab inside Live Records
-   (#/daily/activity). Read-only navigation, like Filings — no
-   write path. The stream merges the two published feeds the
-   pipelines already maintain: data/changes.json (the deep
-   change log: filed facts, 1,250 entries back to Oct 21) and
-   data/whatsnew.json (which carries the photo filings the
-   change log lacks). Dedupe key: person + text + date. Sort:
-   newest day first, source order inside the day. Stats, the
-   14-day chart and the filters all compute client-side from
-   the merged list; a filter click repaints only the stream
-   container, never the chrome or the stats (V3.79.1 rule, and
-   actions never move the page: JD 2026-11-03).
+   V4.7.0 — Activity Feed rebuilt on EFFECTIVE dates (JD
+   2026-11-09, preview 4 "hero spotlight" approved): the date a
+   fact was found has very little value and is useless for
+   sorting; what matters is the effective date, when the thing
+   itself happened or started being relevant. Data comes from
+   data/effective-feed.json (scripts/build_effective_feed.py
+   derives an effective date for every merged filing — the same
+   changes.json + whatsnew.json merge the V4.6.0 feed did —
+   reading the fact text first, never the filed date; precision
+   is never invented). Layout, top to bottom: a slim stats line;
+   a hero for the newest effective day (every non-photo event on
+   that day in one card); a "This season" band of medium cards
+   (spans and since facts covering the current school year); an
+   "Earlier" band of compact rows grouped by effective period,
+   60 at a time; a quiet "No date in the source" section; and at
+   the very bottom the current-state facts (ongoing + since) as
+   a small strip with no hero treatment (JD: do not waste big
+   hero titles on it). Read-only, like Filings.
    ============================================================ */
-var AF = null, AF_LOADING = false, AF_FILTER = 'all', AF_SHOWN = 60;
+var AF = null, AF_LOADING = false, AF_SHOWN = 60;
 var AF_PAGE = 60;
+var AF_SEASON = { start:'2026-09-01', end:'2027-06-30', label:'2026-27' };
 function afLoad(){
-  chLoad(); wnLoad(); phLoad();
+  phLoad();
   if(AF || AF_LOADING) return;
   AF_LOADING = true;
-  function build(){
-    if(!CH || !WN){ setTimeout(build, 250); return; }
-    if(CH.empty && CH.entries == null){ setTimeout(build, 250); return; }
-    AF_LOADING = false;
-    var seen = {}, out = [];
-    (CH.entries || []).forEach(function(c){
-      var txt = String(c.what || '');
-      var k = String(c.name || '').toLowerCase() + '|' + txt.toLowerCase() + '|' + (c.filed || '');
-      if(seen[k]) return; seen[k] = 1;
-      out.push({ date:c.filed || '', name:c.name || '', text:txt, source:c.source || '', url:c.url || '',
-        kind:(/profile picture filed/i.test(txt) ? 'photo' : 'filed'), novelty:c.novelty || '', sourceDate:c.source_date || '' });
-    });
-    (WN.items || []).forEach(function(w){
-      var k = String(w.display || '').toLowerCase() + '|' + String(w.text || '').toLowerCase() + '|' + (w.date || '');
-      if(seen[k]) return; seen[k] = 1;
-      out.push({ date:w.date || '', name:w.display || '', text:String(w.text || ''), source:w.source || '', url:w.url || '',
-        kind:(w.kind === 'photo' ? 'photo' : 'filed'), novelty:'', sourceDate:'' });
-    });
-    var ord = {};
-    out.forEach(function(e, i){ ord[i] = i; e._o = i; });
-    out.sort(function(a, b){ if(a.date !== b.date) return a.date < b.date ? 1 : -1; return a._o - b._o; });
-    AF = { items: out };
-    if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'activity') render();
-  }
-  build();
+  fetch('data/effective-feed.json', { cache:'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){ AF_LOADING = false; AF = d || { items:[], counts:{} };
+      if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'activity') render(); })
+    .catch(function(){ AF_LOADING = false; AF = { items:[], counts:{} };
+      if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'activity') render(); });
 }
 var AF_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var AF_DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function afYmd(d){
   function p(n){ return (n < 10 ? '0' : '') + n; }
   return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
 }
-function afParse(iso){
-  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
-  return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : null;
-}
-function afDayDiff(a, b){
-  var x = afParse(a), y = afParse(b);
-  return (x == null || y == null) ? null : Math.round((y - x) / 86400000);
-}
-function afIsFresh(e){
-  if(!e.sourceDate || !e.date) return false;
-  var d = afDayDiff(e.sourceDate, e.date);
-  return d != null && d >= 0 && d <= 21;
-}
-function afMatch(e){
-  if(AF_FILTER === 'facts') return e.kind === 'filed';
-  if(AF_FILTER === 'photos') return e.kind === 'photo';
-  if(AF_FILTER === 'fresh') return afIsFresh(e);
-  return true;
-}
-function afDayLabel(iso, today, yday){
-  if(iso === today) return 'Today';
-  if(iso === yday) return 'Yesterday';
-  var p = String(iso || '').split('-');
-  if(p.length < 3) return String(iso || '');
-  var d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
-  var lbl = AF_DOW[d.getUTCDay()] + ' ' + AF_MON[+p[1] - 1] + ' ' + (+p[2]);
-  if(String(new Date().getFullYear()) !== p[0]) lbl += ', ' + p[0];
-  return lbl;
-}
-function afFiledWord(iso, today, yday){
+function afFoundWord(iso){
+  var today = afYmd(new Date());
+  var yday = afYmd(new Date(Date.now() - 86400000));
   if(iso === today) return 'today';
   if(iso === yday) return 'yesterday';
   return hmFmtD(iso);
 }
-function afStatsHTML(items){
-  var today = afYmd(new Date());
-  var t7 = afYmd(new Date(Date.now() - 6 * 86400000));
-  var nToday = 0, nWeek = 0, nPhoto = 0, nFresh = 0, people = {}, srcs = {};
-  items.forEach(function(e){
-    if(e.date === today) nToday++;
-    if(e.date >= t7 && e.date <= today){
-      nWeek++;
-      if(e.name) people[e.name.toLowerCase()] = 1;
-      if(e.kind === 'photo') nPhoto++;
-      if(afIsFresh(e)) nFresh++;
-    }
-    if(e.source) srcs[e.source.toLowerCase()] = 1;
-  });
-  function tile(icon, val, lbl, sub){
-    return '<div class="af-tile"><span class="af-tile-ic">' + ic(icon, 16) + '</span>' +
-      '<span class="af-tile-v">' + val + '</span><span class="af-tile-l">' + lbl + '</span>' +
-      '<span class="af-tile-s">' + sub + '</span></div>';
-  }
-  var counts = [], max = 0, bars = '';
-  for(var i = 13; i >= 0; i--){
-    var dstr = afYmd(new Date(Date.now() - i * 86400000));
-    var n = 0;
-    items.forEach(function(e){ if(e.date === dstr) n++; });
-    counts.push({ d: dstr, n: n });
-    if(n > max) max = n;
-  }
-  counts.forEach(function(c){
-    var pct = max ? Math.max(4, Math.round(c.n / max * 100)) : 4;
-    bars += '<span class="af-bar" style="height:' + pct + '%" title="' + hmFmtD(c.d) + ': ' + c.n + ' filed"></span>';
-  });
-  return '<section class="af-stats" aria-label="Activity totals">' +
-    tile('edit', nToday, 'Filed today', hmFmtD(today)) +
-    tile('calendar', nWeek, 'Filed this week', 'Last 7 days') +
-    tile('people', Object.keys(people).length, 'People touched', 'Last 7 days') +
-    tile('camera', nPhoto, 'Photos filed', 'Last 7 days') +
-    tile('sparkle', nFresh, 'Fresh', 'Published within 21 days of filing') +
-    tile('link', Object.keys(srcs).length, 'Sources', 'Across the whole feed') +
-    '<div class="af-tile af-chart"><span class="af-tile-l">Filings per day</span>' +
-    '<div class="af-bars">' + bars + '</div><span class="af-tile-s">Last 14 days</span></div>' +
-    '</section>';
-}
-function afAvatarHTML(e, di){
+function afAvatarHTML(e, di, size){
   var e2 = di != null ? D.directory[di] : null;
   if(e2){
     var idx = (typeof phIndex === 'function') ? phIndex() : null;
     var p = idx ? idx[dispName(e2)] : null;
-    if(p && p.photo_url) return '<span class="af-av"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '" onerror="phImgErr(this)"></span>';
-    return avatar(e2, 'md');
+    if(p && p.photo_url) return '<span class="af-av' + (size === 'lg' ? ' lg' : '') + (size === 'xs' ? ' xs' : '') + '"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="" loading="lazy" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '" onerror="phImgErr(this)"></span>';
+    return avatar(e2, size === 'lg' ? 'lg' : (size === 'xs' ? 'sm' : 'md'));
   }
-  return '<span class="av av-md" style="--tc:var(--pv-blue)">' + esc((String(e.name || '').replace(/^@/, '').trim().charAt(0) || '\u00b7').toUpperCase()) + '</span>';
+  return '<span class="av av-' + (size === 'lg' ? 'lg' : (size === 'xs' ? 'sm' : 'md')) + '" style="--tc:var(--pv-blue)">' + esc((String(e.name || '').replace(/^@/, '').trim().charAt(0) || '\u00b7').toUpperCase()) + '</span>';
 }
-function afRow(e, today, yday){
-  var di = hmDiOf(e.name);
-  var fresh = afIsFresh(e);
-  var kindChip = e.kind === 'photo'
-    ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>'
-    : '<span class="af-kind af-k-fact">' + ic('file', 11) + ' Filed fact</span>';
-  var nameHTML = di != null
+function afNameHTML(e, di){
+  return di != null
     ? '<button type="button" class="af-name" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(e.name || '') + '\u2019s profile">' + esc(e.name || '') + '</button>'
     : '<span class="af-name plain">' + esc(e.name || '') + '</span>';
-  var nov = '';
-  if(e.novelty === 'new') nov = '<span class="af-nov af-nov-new">New</span>';
-  else if(e.novelty === 'expands') nov = '<span class="af-nov af-nov-exp">Expands</span>';
-  var meta = '<span class="af-meta-item">' + ic('check', 11) + ' Filed ' + esc(afFiledWord(e.date, today, yday)) + '</span>';
-  if(e.sourceDate) meta += '<span class="af-meta-item">' + ic('calendar', 11) + ' Published ' + esc(hmFmtD(e.sourceDate)) + '</span>';
-  if(e.url) meta += '<a class="af-src" data-act="extlink" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || 'Source') + ' ' + ic('ext', 10) + '</a>';
-  else if(e.source) meta += '<span class="af-meta-item">' + esc(e.source) + '</span>';
-  return '<article class="af-row" data-kind="' + textKind(e.text) + '" data-date="' + esc(e.date) + '">' +
-    afAvatarHTML(e, di) +
-    '<div class="af-main"><div class="af-top">' + nameHTML + kindChip +
-    (fresh ? '<span class="af-kind af-k-fresh">' + ic('sparkle', 11) + ' Fresh</span>' : '') + nov + '</div>' +
+}
+function afSrcHTML(e){
+  if(e.url) return '<a class="af-src" data-act="extlink" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || 'Source') + ' ' + ic('ext', 10) + '</a>';
+  return e.source ? '<span class="af-meta-item">' + esc(e.source) + '</span>' : '';
+}
+function afDayEvents(items){
+  var best = null;
+  items.forEach(function(e){
+    if(e.kind === 'event' && e.prec === 'day' && !e.photo && (!best || e.eff_end > best)) best = e.eff_end;
+  });
+  if(!best) return { day:null, events:[] };
+  return { day:best, events:items.filter(function(e){
+    return e.kind === 'event' && e.prec === 'day' && !e.photo && e.eff_end === best; }) };
+}
+function afInSeason(e){
+  if(e.kind !== 'span' && e.kind !== 'since') return false;
+  var end = e.eff_end || '9999-12-31';
+  return e.eff_start <= AF_SEASON.end && end >= AF_SEASON.start;
+}
+function afHeroHTML(items){
+  var g = afDayEvents(items);
+  if(!g.day) return '';
+  var p = g.day.split('-');
+  var big = AF_MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0];
+  var cells = g.events.map(function(e){
+    var di = hmDiOf(e.name);
+    return '<div class="af-hero-cell">' + afAvatarHTML(e, di, 'lg') +
+      '<div class="af-hero-main">' + afNameHTML(e, di) +
+      '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
+      '<div class="af-meta">' + afSrcHTML(e) +
+      (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
+      '</div></div></div>';
+  }).join('');
+  return '<section class="af-hero"><div class="af-hero-kick">Newest effective date in the feed</div>' +
+    '<h2 class="af-hero-date">' + esc(big) + '</h2>' +
+    '<div class="af-hero-grid n' + Math.min(g.events.length, 3) + '">' + cells + '</div></section>';
+}
+function afCardHTML(e){
+  var di = hmDiOf(e.name);
+  return '<article class="af-card">' +
+    '<div class="af-card-top">' + afAvatarHTML(e, di, 'md') +
+    '<span class="af-card-main">' + afNameHTML(e, di) +
+    '<span class="af-eff">' + esc(e.eff_label) + '</span></span></div>' +
     '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
-    '<div class="af-meta">' + meta + '</div></div></article>';
+    '<div class="af-meta">' + afSrcHTML(e) +
+    (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
+    '</div></article>';
+}
+function afPeriodOf(e){
+  if(e.prec === 'season' || e.prec === 'year') return e.eff_label;
+  var p = String(e.eff_end || '').split('-');
+  return p.length >= 2 ? (AF_MON[+p[1] - 1] + ' ' + p[0]) : e.eff_label;
+}
+function afRowEff(e){
+  var di = hmDiOf(e.name);
+  return '<article class="af-row" data-kind="' + textKind(e.text) + '" data-eff="' + esc(e.eff_end) + '">' +
+    afAvatarHTML(e, di, 'md') +
+    '<div class="af-main"><div class="af-top">' + afNameHTML(e, di) +
+    '<span class="af-effchip">' + esc(e.eff_label) + '</span>' +
+    (e.photo ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>' : '') + '</div>' +
+    '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
+    '<div class="af-meta">' + afSrcHTML(e) +
+    (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
+    '</div></div></article>';
+}
+function afRowPlain(e){
+  var di = hmDiOf(e.name);
+  return '<article class="af-row" data-kind="' + textKind(e.text) + '">' +
+    afAvatarHTML(e, di, 'md') +
+    '<div class="af-main"><div class="af-top">' + afNameHTML(e, di) +
+    (e.photo ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>' : '') + '</div>' +
+    '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
+    '<div class="af-meta">' + afSrcHTML(e) +
+    (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
+    '</div></div></article>';
+}
+function afEarlierList(items, hero, season){
+  return items.filter(function(e){
+    if(hero.events.indexOf(e) >= 0 || season.indexOf(e) >= 0) return false;
+    return e.kind === 'event' || e.kind === 'span';
+  });
 }
 function afStreamHTML(){
-  if(!AF) return '<div class="af-empty"><p class="dim">Loading the feed&hellip;</p></div>';
-  var items = AF.items.filter(afMatch);
-  if(!items.length) return '<div class="af-empty"><p class="dim">Nothing in this view yet. Filings land here as the routines run.</p></div>';
-  var today = afYmd(new Date());
-  var yday = afYmd(new Date(Date.now() - 86400000));
-  var shown = items.slice(0, AF_SHOWN);
-  var h = '', curDay = null;
+  if(!AF) return '';
+  var items = AF.items || [];
+  var hero = afDayEvents(items);
+  var season = items.filter(afInSeason);
+  var earlier = afEarlierList(items, hero, season);
+  var shown = earlier.slice(0, AF_SHOWN);
+  var h = '', curPer = null;
   shown.forEach(function(e){
-    if(e.date !== curDay){
-      curDay = e.date;
+    var per = afPeriodOf(e);
+    if(per !== curPer){
+      curPer = per;
       var cnt = 0;
-      items.forEach(function(x){ if(x.date === curDay) cnt++; });
-      h += '<div class="af-day"><span class="af-day-l">' + esc(afDayLabel(curDay, today, yday)) + '</span><em class="cnt">' + cnt + '</em></div>';
+      earlier.forEach(function(x){ if(afPeriodOf(x) === curPer) cnt++; });
+      h += '<div class="af-day"><span class="af-day-l">' + esc(curPer) + '</span><em class="cnt">' + cnt + '</em></div>';
     }
-    h += afRow(e, today, yday);
+    h += afRowEff(e);
   });
-  h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + items.length + '</span>' +
-    (shown.length < items.length ? '<button type="button" class="pv-btn sm" data-act="afmore">Show more</button>' : '') + '</div>';
+  if(shown.length < earlier.length)
+    h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + earlier.length + '</span>' +
+      '<button type="button" class="pv-btn sm" data-act="afmore">Show more</button></div>';
   return h;
 }
-function afPaint(){
+function afPaintStream(){
   var w = document.getElementById('af-stream');
   if(w) w.innerHTML = afStreamHTML();
 }
 function lrActivityHTML(){
-  var sub = AF ? (AF.items.length + ' events from the change log and photo filings, newest first.') : 'Loading the feed&hellip;';
-  var chips = [['all', 'All'], ['facts', 'Facts'], ['photos', 'Photos'], ['fresh', 'Fresh']].map(function(c){
-    return '<button type="button" class="af-chip' + (AF_FILTER === c[0] ? ' on' : '') + '" data-act="affilter" data-f="' + c[0] + '">' + c[1] + '</button>';
-  }).join('');
-  return '<div class="page lr af-page v4p" data-kind="about">' +
-    lrChromeHTML('activity', 'Activity Feed', sub) +
-    (AF ? afStatsHTML(AF.items) : '') +
-    '<div class="af-filters" role="group" aria-label="Filter the feed">' + chips + '</div>' +
-    '<div id="af-stream">' + afStreamHTML() + '</div></div>';
+  if(!AF) return '<div class="page lr af-page v4p" data-kind="about">' +
+    lrChromeHTML('activity', 'Activity Feed', 'Loading the feed&hellip;') +
+    '<div class="af-empty"><p class="dim">Loading the feed&hellip;</p></div></div>';
+  var items = AF.items || [];
+  var c = AF.counts || {};
+  var dated = items.filter(function(e){ return e.kind === 'event' || e.kind === 'span'; });
+  var people = {}, years = {};
+  dated.forEach(function(e){
+    if(e.name) people[e.name.toLowerCase()] = 1;
+    if(e.eff_start) years[e.eff_start.slice(0, 4)] = 1;
+    if(e.eff_end) years[e.eff_end.slice(0, 4)] = 1;
+  });
+  var ys = Object.keys(years).sort();
+  var stats = '<div class="af-statsline">' +
+    '<span><b>' + dated.length + '</b> events with a date</span><span class="dot">&middot;</span>' +
+    '<span><b>' + Object.keys(people).length + '</b> people</span><span class="dot">&middot;</span>' +
+    '<span><b>' + (ys.length ? ys[0] + ' to ' + ys[ys.length - 1] : '') + '</b></span><span class="dot">&middot;</span>' +
+    '<span><b>' + (c.undated || 0) + '</b> with no date in the source</span></div>';
+  var hero = afDayEvents(items);
+  var season = items.filter(afInSeason);
+  var undated = items.filter(function(e){ return e.kind === 'undated'; });
+  var current = items.filter(function(e){ return e.kind === 'ongoing' || e.kind === 'since'; });
+  var h = '<div class="page lr af-page v4p" data-kind="about">' +
+    lrChromeHTML('activity', 'Activity Feed', 'Sorted by when it happened, not when it was found.') + stats;
+  h += afHeroHTML(items);
+  if(season.length){
+    h += '<section class="af-bandsec"><div class="af-band"><h2>This season</h2>' +
+      '<p>The ' + AF_SEASON.label + ' school year and season, plus roles that began earlier and still run.</p></div>' +
+      '<div class="af-grid">' + season.map(afCardHTML).join('') + '</div></section>';
+  }
+  h += '<section class="af-bandsec"><div class="af-band"><h2>Earlier</h2>' +
+    '<p>Everything older, still sorted by when it happened.</p></div>' +
+    '<div id="af-stream">' + afStreamHTML() + '</div></section>';
+  if(undated.length){
+    h += '<section class="af-undated"><h3>No date in the source</h3>' +
+      '<p class="af-undated-sub">These filings carry no date for when the thing happened, so they stay out of the dated stream.</p>' +
+      undated.map(afRowPlain).join('') + '</section>';
+  }
+  if(current.length){
+    h += '<footer class="af-now"><div class="af-now-l">Current state</div>' +
+      current.map(function(e){
+        var di = hmDiOf(e.name);
+        return '<div class="af-now-row">' + afAvatarHTML(e, di, 'xs') +
+          '<span class="af-now-main">' + afNameHTML(e, di) +
+          '<span class="af-now-tx">' + esc(wnFullText({ text: e.text }, di)) + '</span></span></div>';
+      }).join('') + '</footer>';
+  }
+  return h + '</div>';
 }
 
 function viewDaily(v){
@@ -10729,9 +10751,8 @@ function viewDaily(v){
     return;
   }
   if(S.route.seg && S.route.seg[0] === 'activity'){
-    /* V4.6.0: Activity Feed — the merged, newest-first stream of
-       everything the pipelines published (changes.json + the
-       photo filings from whatsnew.json), with stats and filters.
+    /* V4.7.0: Activity Feed — the effective-date stream (hero
+       day, This season, Earlier, undated, current-state strip).
        Read-only, like Filings. */
     afLoad();
     v.innerHTML = lrActivityHTML();
@@ -14851,10 +14872,7 @@ function onClick(ev){
     case 'cdeclear': cdeClear(); break;
     case 'mgdir': MGMT.dir = -MGMT.dir; MGMT.shown = 50; render(); break;
     case 'mgmore': MGMT.shown = (MGMT.shown || 50) + 50; mgPaintList(); break;
-    case 'affilter': { AF_FILTER = el.getAttribute('data-f') || 'all'; AF_SHOWN = AF_PAGE;
-        document.querySelectorAll('.af-chip').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-f') === AF_FILTER); });
-        afPaint(); break; }
-    case 'afmore': AF_SHOWN += AF_PAGE; afPaint(); break;
+    case 'afmore': AF_SHOWN += AF_PAGE; afPaintStream(); break;
     case 'wnday': { var wd = el.getAttribute('data-d'); if(wd){ if(WN_OPEN[wd]) delete WN_OPEN[wd]; else WN_OPEN[wd] = 1; } render(); break; }
     case 'sstview': SB.st.view = el.getAttribute('data-v') || 'all'; $$('.sst-viewseg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === SB.st.view); }); sstPaint(); break;
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
