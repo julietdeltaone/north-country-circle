@@ -4383,6 +4383,110 @@
    "pattern": "employer_change",
    "source": "arXiv",
    "url": "https://arxiv.org/pdf/2506.00661"
+  },
+  {
+   "anchor": "Massena Central School District \u00b7 Teaching Assistant",
+   "batch": "AM run \u2014 Nov 9, 2026",
+   "display": "Makiah Barber",
+   "fact": "Received final tenure as a Massena Central School District Teaching Assistant (junior high assignment), effective Nov 30, 2025",
+   "id": "fi-20261109-sf-makiah-barber-received-final-tenure-as",
+   "key": "sf:makiah-barber",
+   "learned": "2026-11-09",
+   "name": "sf:makiah-barber",
+   "pattern": "milestone",
+   "source": "Massena Central School District",
+   "url": "https://4.files.edl.io/44f5/09/17/25/142706-0df492fe-fe95-43f0-90ea-5b1b29bed09f.pdf"
+  },
+  {
+   "anchor": "Greene Central School \u00b7 Field hockey",
+   "batch": "AM run \u2014 Nov 9, 2026",
+   "display": "Jazzy Dunn",
+   "fact": "Named as a member of the Greene Girls Field Hockey Team that captured the New York State Class C Championship, defeating Southampton 7-0 to finish with a 19-0 record, in the New York State Senate's 2013 resolution",
+   "id": "fi-20261109-jazmine-albin-named-as-a-member-of-the",
+   "key": "jazmine_albin",
+   "learned": "2026-11-09",
+   "name": "jazmine_albin",
+   "pattern": "milestone",
+   "source": "New York State Senate",
+   "url": "https://www.nysenate.gov/legislation/resolutions/2013/j32"
+  },
+  {
+   "anchor": "St. Lawrence University \u00b7 Class of 2025",
+   "batch": "AM run \u2014 Nov 9, 2026",
+   "display": "Grace Ockrin",
+   "fact": "Named to St. Lawrence University's Dean's List for Spring 2025 as a senior",
+   "id": "fi-20261109-ct-grace-ockrin-named-to-st-lawrence-uni",
+   "key": "ct:grace ockrin",
+   "learned": "2026-11-09",
+   "name": "ct:grace ockrin",
+   "pattern": "new_credential",
+   "source": "St. Lawrence University",
+   "url": "https://www.stlawu.edu/offices/academic-affairs/deans-list-spring-2025"
+  },
+  {
+   "anchor": "PDGA \u00b7 Watertown, NY",
+   "batch": "AM run \u2014 Nov 9, 2026",
+   "display": "Cody Benham",
+   "fact": "Tied for 7th in MA2 at the 2025 New York State Disc Golf Championships in Endicott, New York, Sep 6-7, 2025, shooting +12",
+   "id": "fi-20261109-sf-cody-benham-tied-for-7th-in-ma2-at-t",
+   "key": "sf:cody-benham",
+   "learned": "2026-11-09",
+   "name": "sf:cody-benham",
+   "pattern": "milestone",
+   "source": "PDGA",
+   "url": "https://www.pdga.com/tour/event/91266"
+  },
+  {
+   "anchor": "PDGA \u00b7 Watertown, NY",
+   "batch": "AM run \u2014 Nov 9, 2026",
+   "display": "Cody Benham",
+   "fact": "Finished 11th in MA1 at the 4th Annual Tug Hill Fall Classic in Turin, New York, Sep 27, 2025, shooting +1",
+   "id": "fi-20261109-sf-cody-benham-finished-11th-in-ma1-at-",
+   "key": "sf:cody-benham",
+   "learned": "2026-11-09",
+   "name": "sf:cody-benham",
+   "pattern": "milestone",
+   "source": "PDGA",
+   "url": "https://www.pdga.com/tour/event/93440"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Nursing",
+   "batch": "AM run \u2014 Nov 9, 2026",
+   "display": "Katelyn Matthews",
+   "fact": "Graduated with an Associate of Applied Science in Nursing from SUNY Canton, May 2025",
+   "id": "fi-20261109-katelynmatthews10-graduated-with-an-associ",
+   "key": "katelynmatthews10",
+   "learned": "2026-11-09",
+   "name": "katelynmatthews10",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://canton.meritpages.com/stories/Katelyn-Matthews-Graduates-from-SUNY-Canton/161607275"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 Lewis School of Health Sciences",
+   "batch": "AM run \u2014 Nov 9, 2026",
+   "display": "Lennart Johns",
+   "fact": "Listed as a director of the New York State Association for Rural Health in its Rural Health Reimagined report, Jul 2025",
+   "id": "fi-20261109-sf-lennart-johns-listed-as-a-director-of-",
+   "key": "sf:lennart-johns",
+   "learned": "2026-11-09",
+   "name": "sf:lennart-johns",
+   "pattern": "milestone",
+   "source": "New York State Association for Rural Health",
+   "url": "https://nysarh.org/wp-content/uploads/2025/08/NYSARH_Rural-Health-Report_V3.pdf"
+  },
+  {
+   "anchor": "St. Lawrence University \u00b7 Football",
+   "batch": "AM run \u2014 Nov 9, 2026",
+   "display": "Liam Miller-Lynch",
+   "fact": "Listed as a sophomore fullback on St. Lawrence University's 2026 football roster, from Potsdam, New York",
+   "id": "fi-20261109-liammillerlynch-listed-as-a-sophomore-fu",
+   "key": "liammillerlynch",
+   "learned": "2026-11-09",
+   "name": "liammillerlynch",
+   "pattern": "milestone",
+   "source": "St. Lawrence University Athletics",
+   "url": "https://saintsathletics.com/sports/football/roster"
   }
  ],
  "patterns": {
@@ -4393,6 +4497,6 @@
   "new_credential": "New credential",
   "title_change": "Title change"
  },
- "updated": "2026-11-08",
+ "updated": "2026-11-09",
  "version": 1
 }
