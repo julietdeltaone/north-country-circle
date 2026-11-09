@@ -14577,6 +14577,139 @@
    "fields": {},
    "published": "2025-05-29",
    "novelty": "expands"
+  },
+  {
+   "id": "lr-20261109-elisedeuel-is-a-captain-of-the-champlain-colleg",
+   "name": "elisedeuel",
+   "display": "Elise Deuel",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Elise Deuel is listed as a captain of the Champlain College Dance Team on the college's own website.",
+   "file_text": "Is a captain of the Champlain College Dance Team",
+   "source": "Champlain College",
+   "url": "https://www.champlain.edu/clubs-activities-affinity-groups/champlain-college-dance-team/",
+   "anchors": [
+    "Potsdam, New York, her town on file"
+   ],
+   "quote": "Officers | Adra Gonzalez, Captain       Avery Marr, Captain       Maia Tebbets, Captain       Elise Deuel, Captain",
+   "missing_gate": "Her record holds only her Potsdam location, and the page names no hometown, so I cannot tell if this is the same person.",
+   "confidence": 53,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 26,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-murray-joseph-murray-of-chittenango-was-pro",
+   "name": "sf:murray",
+   "display": "Murray",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Joseph Murray from Chittenango, New York was promoted to first lieutenant in the New York Army National Guard on April 1, 2022, while assigned to Company B, 427th Brigade Support Battalion.",
+   "file_text": "Joseph Murray of Chittenango was promoted to first lieutenant in the New York Army National Guard on April 1, 2022, while assigned to Company B, 427th Brigade Support Battalion",
+   "source": "New York State Division of Military and Naval Affairs",
+   "url": "https://dmna-ny.meritpages.com/stories/Chittenango-National-Guard-Soldier-Receives-New-Rank-New-Responsibilities/82042195",
+   "anchors": [
+    "First lieutenant rank, on file",
+    "New York Army National Guard, on file"
+   ],
+   "quote": "Joseph Murray from Chittenango, N.Y., and assigned to the Company B, 427th Brigade Support Battalion, received a promotion to the rank of 1st lieutenant on April 1, 2022.",
+   "missing_gate": "His record gives no first name, and this page's unit is the 427th Brigade Support Battalion, not the HHC, 27th IBCT shop on his record.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 27,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "2022-05-17",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-laelcard-was-approved-as-a-houghton-college-s",
+   "name": "laelcard",
+   "display": "Lael Card",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Scio Central School District board minutes from 2022 name a Lael Card from Houghton College as an approved student teacher for 2022-23 and, that December, as a non-certified PK-12 substitute.",
+   "file_text": "Was approved as a Houghton College student teacher at Scio Central School for the 2022-23 school year ;; Was added to Scio Central School's 2022-23 substitute list as Non-Certified PK-12 in Dec 2022",
+   "source": "Scio Central School District",
+   "url": "https://files.smartsites.parentsquare.com/8205/minutes_of_081022.pdf",
+   "anchors": [
+    "Houghton University, her school on file"
+   ],
+   "quote": "teachers for the 2022-23 school year. C/SO Gwen Swanson, Houghton College Lael Card, Houghton College Leah O'Connell, Houghton College ;; Lael Card - Non-Certified PK-12",
+   "missing_gate": "The minutes name a Lael Card from Houghton College, but nothing on them ties her to Norwood or her lacrosse record.",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 24,
+    "source": 27,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2022-08-10",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-alisha-ohl-served-on-the-dissertation-committee",
+   "name": "sf:alisha-ohl",
+   "display": "Alisha Ohl",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Seton Hall University page lists a Dr. Alisha Ohl on the committee for a doctoral dissertation about the OT-SECC assessment, the occupational therapy self-efficacy tool she co-authored, with an oral defense on October 28, 2026.",
+   "file_text": "Served on the dissertation committee at Seton Hall University for a doctoral study of the OT-SECC assessment, with the oral defense on Oct 28, 2026",
+   "source": "Seton Hall University",
+   "url": "https://blogs.shu.edu/elmp/?method=ical&id=1065",
+   "anchors": [
+    "The OT-SECC assessment, the tool she co-authored in her 2025 journal paper",
+    "Her paper's co-authors include Seton Hall occupational therapy faculty"
+   ],
+   "quote": "Committee: Dr. Jason Burns (Mentor) / Dr. Rong Chen / Dr. Alisha Ohl | Oral Defense: October 28, 2026 @ 6PM",
+   "missing_gate": "The page names a Dr. Alisha Ohl, but it does not say she is the Clarkson University professor on her record.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 20,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-walczykmark-represents-the-49th-senate-district-",
+   "name": "walczykmark",
+   "display": "Mark C Walczyk",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "His 49th Senate District covers Fulton, Hamilton, Jefferson, and Lewis Counties, along with parts of Herkimer, Oswego, and St. Lawrence Counties, per North Country Public Radio's November 4, 2026 re-election report.",
+   "file_text": "Represents the 49th Senate District, covering Fulton, Hamilton, Jefferson, and Lewis Counties, along with parts of Herkimer, Oswego, and St. Lawrence Counties",
+   "source": "North Country Public Radio",
+   "url": "https://www.northcountrypublicradio.org/news/story/54185/20261104/mark-walczyk-wins-reelection-in-the-49th-state-senate",
+   "anchors": [
+    "New York State Senate, 49th District, on file",
+    "Senator since 2023, on file"
+   ],
+   "quote": "The 49th is the largest legislative district in the state, covering Fulton, Hamilton, Jefferson, and Lewis Counties, along with parts of Herkimer, Oswego, and St. Lawrence counties.",
+   "missing_gate": "This one is your call: his re-election was already filed from this same report, and this run's filing spots went to other people.",
+   "confidence": 85,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 27,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2026-11-04",
+   "novelty": "expands"
   }
  ]
 }
