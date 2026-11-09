@@ -3,6 +3,14 @@
  "count": 300,
  "items": [
   {
+   "date": "2026-11-09",
+   "kind": "photo",
+   "display": "Ethan Ryan",
+   "text": "Primary photo filed (grade: possible)",
+   "source": "Photos on File",
+   "url": "https://www.potsdam.edu/news/lawenforcementgraduates"
+  },
+  {
    "date": "2026-11-08",
    "kind": "hot",
    "display": "Adria Tebo",
@@ -2393,14 +2401,6 @@
    "text": "Primary photo filed (grade: likely)",
    "source": "Photos on File",
    "url": "https://facebook.com/gdenny35"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Greg Lapinski",
-   "text": "Primary photo filed (grade: likely)",
-   "source": "Photos on File",
-   "url": "https://facebook.com/greg.lapinski.9"
   }
  ]
 }
