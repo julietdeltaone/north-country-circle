@@ -3411,6 +3411,10 @@
    "name": "ellie.jent",
    "pattern": "milestone",
    "source": "Clinton County Health Department",
+   "state": {
+    "at": "2026-11-09T19:39:06.022Z",
+    "status": "read"
+   },
    "url": "https://www.clintoncountyny.gov/sites/default/files/health/administration/pdf/bulletinpress/current/PR-10-30-2026.pdf"
   },
   {
@@ -3424,6 +3428,10 @@
    "name": "johnaeastmond",
    "pattern": "milestone",
    "source": "One Community Church El Dorado",
+   "state": {
+    "at": "2026-11-09T19:39:06.663Z",
+    "status": "read"
+   },
    "url": "https://occeldorado.com/events/"
   },
   {
@@ -3437,6 +3445,10 @@
    "name": "sf:kevin-lynch",
    "pattern": "milestone",
    "source": "Gouverneur Tribune Press",
+   "state": {
+    "at": "2026-11-09T19:39:00.872Z",
+    "status": "read"
+   },
    "url": "https://bloximages.chicago2.vip.townnews.com/dailygazette.com/content/tncms/assets/v3/eedition/1/99/19987eea-2583-59d1-9073-78293d93195f/6a974409362c8.pdf.pdf"
   },
   {
@@ -3450,6 +3462,10 @@
    "name": "sf:jaime-bicknell",
    "pattern": "milestone",
    "source": "ClinicalTrials.gov",
+   "state": {
+    "at": "2026-11-09T19:39:11.490Z",
+    "status": "read"
+   },
    "url": "https://cdn.clinicaltrials.gov/large-docs/07/NCT07657507/ICF_000.pdf"
   },
   {
@@ -3463,6 +3479,10 @@
    "name": "sf:tammy-monroe",
    "pattern": "title_change",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-09T19:39:12.267Z",
+    "status": "read"
+   },
    "url": "https://bookstack.clarkson.edu/attachments/140?open=true"
   },
   {
@@ -3476,6 +3496,10 @@
    "name": "taswyka",
    "pattern": "milestone",
    "source": "arXiv",
+   "state": {
+    "at": "2026-11-09T19:40:56.628Z",
+    "status": "read"
+   },
    "url": "https://arxiv.org/abs/2104.03933"
   },
   {
@@ -3489,6 +3513,10 @@
    "name": "sf:dale-fournier",
    "pattern": "new_credential",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-09T19:40:57.798Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/dale-fournier"
   },
   {
@@ -3502,6 +3530,10 @@
    "name": "hulton2moulton",
    "pattern": "milestone",
    "source": "Hospital for Special Surgery",
+   "state": {
+    "at": "2026-11-09T19:41:08.542Z",
+    "status": "read"
+   },
    "url": "https://www.hss.edu/profiles/clinical/jenna-moulton"
   },
   {
@@ -3515,6 +3547,10 @@
    "name": "hulton2moulton",
    "pattern": "new_credential",
    "source": "Hospital for Special Surgery",
+   "state": {
+    "at": "2026-11-09T19:41:08.542Z",
+    "status": "read"
+   },
    "url": "https://www.hss.edu/profiles/clinical/jenna-moulton"
   },
   {
@@ -3528,6 +3564,10 @@
    "name": "sf:maria-tallo",
    "pattern": "milestone",
    "source": "Zola",
+   "state": {
+    "at": "2026-11-09T19:41:26.136Z",
+    "status": "read"
+   },
    "url": "https://www.zola.com/wedding/pvt/quinlankeoughwedding/wedding_party"
   },
   {
@@ -3541,6 +3581,10 @@
    "name": "hamiltonezra",
    "pattern": "new_credential",
    "source": "Jefferson Community College",
+   "state": {
+    "at": "2026-11-09T19:41:27.017Z",
+    "status": "read"
+   },
    "url": "https://sunyjefferson.edu/news/pres_deans_fall18.php"
   },
   {
@@ -3554,6 +3598,10 @@
    "name": "hamiltonezra",
    "pattern": "new_credential",
    "source": "Jefferson Community College",
+   "state": {
+    "at": "2026-11-09T19:41:27.017Z",
+    "status": "read"
+   },
    "url": "https://sunyjefferson.edu/news/spring23_pres_deans.php"
   },
   {
@@ -3567,6 +3615,10 @@
    "name": "cyrusking.47",
    "pattern": "milestone",
    "source": "The Bucknellian",
+   "state": {
+    "at": "2026-11-09T19:41:28.032Z",
+    "status": "read"
+   },
    "url": "https://bucknellian.net/98816/features/e-week-celebrating-engineering/"
   },
   {
@@ -3580,6 +3632,10 @@
    "name": "sf:alexis-sullivan",
    "pattern": "milestone",
    "source": "SUNY Canton Athletics",
+   "state": {
+    "at": "2026-11-09T19:41:28.920Z",
+    "status": "read"
+   },
    "url": "https://rooathletics.com/news/2023/12/12/general-five-roos-named-college-sports-communicators-academic-all-district.aspx"
   },
   {
@@ -3593,6 +3649,10 @@
    "name": "sf:alexis-sullivan",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:41:28.920Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2025/honors-sp25.php"
   },
   {
@@ -3606,6 +3666,10 @@
    "name": "sf:alexis-sullivan",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:41:28.920Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2025/graduates.php"
   },
   {
@@ -3619,6 +3683,10 @@
    "name": "sf:grace cicchinelli",
    "pattern": "milestone",
    "source": "St. Lawrence University",
+   "state": {
+    "at": "2026-11-09T19:41:30.238Z",
+    "status": "read"
+   },
    "url": "https://myslu.stlawu.edu/~ltorrey/"
   },
   {
@@ -3632,6 +3700,10 @@
    "name": "sf:grace cicchinelli",
    "pattern": "new_credential",
    "source": "St. Lawrence University",
+   "state": {
+    "at": "2026-11-09T19:41:30.238Z",
+    "status": "read"
+   },
    "url": "https://www.stlawu.edu/news/st-lawrence-recognizes-2023-moving-day-award-winners"
   },
   {
@@ -3645,6 +3717,10 @@
    "name": "sf:ashley-lafay",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:41:31.327Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2018/honorsf17.php"
   },
   {
@@ -3658,6 +3734,10 @@
    "name": "sf:samantha-marocco",
    "pattern": "title_change",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-09T19:41:33.596Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/samantha-marocco"
   },
   {
@@ -3671,6 +3751,10 @@
    "name": "sf:samantha-marocco",
    "pattern": "title_change",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-09T19:41:33.596Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/samantha-marocco"
   },
   {
@@ -3684,6 +3768,10 @@
    "name": "sf:samantha-marocco",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-09T19:41:33.596Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/samantha-marocco"
   },
   {
@@ -3697,6 +3785,10 @@
    "name": "ct:noah marshall",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:41:35.955Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2022/honorsf21.php"
   },
   {
@@ -3710,6 +3802,10 @@
    "name": "jessicahurlbut",
    "pattern": "milestone",
    "source": "MFI Leaders Podcast",
+   "state": {
+    "at": "2026-11-09T19:41:36.362Z",
+    "status": "read"
+   },
    "url": "https://castro.fm/share/podcast/59694cee-0bcf-4bbe-9c70-db11baf97aed"
   },
   {
@@ -3723,6 +3819,10 @@
    "name": "jessicahurlbut",
    "pattern": "milestone",
    "source": "Christian Parenting",
+   "state": {
+    "at": "2026-11-09T19:41:36.362Z",
+    "status": "read"
+   },
    "url": "https://www.christianparenting.org/podcast/full-spectrum-parent/life-with-autism-the-good-the-bad-and-the-ugly/"
   },
   {
@@ -3736,6 +3836,10 @@
    "name": "micahmcculley_",
    "pattern": "milestone",
    "source": "Empire 8",
+   "state": {
+    "at": "2026-11-09T19:41:37.244Z",
+    "status": "read"
+   },
    "url": "http://empire8.com/news/2025/6/3/mens-outdoor-track-and-field-empire-8-announces-2025-mens-outdoor-track-field-award-winners-and-all-conference-selections.aspx"
   },
   {
@@ -3749,6 +3853,10 @@
    "name": "isacriscitello",
    "pattern": "milestone",
    "source": "ServiceMaster Restore",
+   "state": {
+    "at": "2026-11-09T19:41:37.884Z",
+    "status": "read"
+   },
    "url": "https://servicemasterrestore.com/servicemaster-apple-valley/why-us/about-us"
   },
   {
@@ -3762,6 +3870,10 @@
    "name": "askinnerusa",
    "pattern": "milestone",
    "source": "USA Shooting",
+   "state": {
+    "at": "2026-11-09T19:41:38.723Z",
+    "status": "read"
+   },
    "url": "https://usashooting.org/four-medals-seven-finals-usa-shooting-continues-strong-international-run-in-hangzhou/"
   },
   {
@@ -3792,6 +3904,10 @@
    "name": "alexfornyassembly_",
    "pattern": "milestone",
    "source": "New York State DMNA",
+   "state": {
+    "at": "2026-11-09T19:41:39.468Z",
+    "status": "read"
+   },
    "url": "http://dmna.ny.gov/pressroom/?id=1789500731"
   },
   {
@@ -3805,6 +3921,10 @@
    "name": "alexfornyassembly_",
    "pattern": "milestone",
    "source": "New York State DMNA",
+   "state": {
+    "at": "2026-11-09T19:41:39.468Z",
+    "status": "read"
+   },
    "url": "http://dmna.ny.gov/pressroom/?id=1789500731"
   },
   {
@@ -3818,6 +3938,10 @@
    "name": "cashhyyy",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-09T19:41:40.059Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert"
   },
   {
@@ -3831,6 +3955,10 @@
    "name": "cashhyyy",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-09T19:41:40.059Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert"
   },
   {
@@ -3844,6 +3972,10 @@
    "name": "cashhyyy",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-09T19:41:40.059Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert"
   },
   {
@@ -3857,6 +3989,10 @@
    "name": "alexfornyassembly_",
    "pattern": "milestone",
    "source": "New York State DMNA",
+   "state": {
+    "at": "2026-11-09T19:41:39.468Z",
+    "status": "read"
+   },
    "url": "http://dmna.ny.gov/pressroom/?id=1789500731"
   },
   {
@@ -3870,6 +4006,10 @@
    "name": "cashhyyy",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-09T19:41:40.059Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/academics/AAS/depts/art/CashlynnColbert"
   },
   {
@@ -3883,6 +4023,10 @@
    "name": "jlevens18",
    "pattern": "milestone",
    "source": "USA Wrestling",
+   "state": {
+    "at": "2026-11-09T19:38:43.602Z",
+    "status": "read"
+   },
    "url": "https://www.themat.com/news/2026/november/05/pre-seeds-set-for-women-s-freestyle-at-bill-farrell-memorial-international"
   },
   {
@@ -3896,6 +4040,10 @@
    "name": "jlevens18",
    "pattern": "milestone",
    "source": "FloWrestling",
+   "state": {
+    "at": "2026-11-09T19:38:43.602Z",
+    "status": "read"
+   },
    "url": "https://www.flowrestling.org/articles/15906347-2026-wrestling-world-team-trials-challenge-tournament-results"
   },
   {
@@ -3960,6 +4108,10 @@
    "name": "sf:kyle-davis",
    "pattern": "milestone",
    "source": "New York State Division of Military and Naval Affairs",
+   "state": {
+    "at": "2026-11-09T19:38:52.508Z",
+    "status": "read"
+   },
    "url": "https://dmna.ny.gov/pressroom/?id=1698675113"
   },
   {
@@ -3973,6 +4125,10 @@
    "name": "sf:joann-duclos",
    "pattern": "milestone",
    "source": "U.S. Army",
+   "state": {
+    "at": "2026-11-09T19:38:56.297Z",
+    "status": "read"
+   },
    "url": "https://www.army.mil/article/263393/ny_army_guard_aviation_soldiers_mobilize_for_mideast_mission"
   },
   {
@@ -3986,6 +4142,10 @@
    "name": "peyt0nsheehan",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:38:57.393Z",
+    "status": "read"
+   },
    "url": "http://www.canton.edu/media/pdf/2026SSHCJ.pdf"
   },
   {
@@ -3999,6 +4159,10 @@
    "name": "sf:victoria-fitch",
    "pattern": "title_change",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-09T19:38:58.009Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/giving/potsdam-college-foundation/fundraising-staff-directory"
   },
   {
@@ -4012,6 +4176,10 @@
    "name": "sf:debbie-flack",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:38:58.601Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2026/honors-f25.php"
   },
   {
@@ -4025,6 +4193,10 @@
    "name": "sf:debbie-flack",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:38:58.601Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/media/pdf/Commencement-Program2026.pdf"
   },
   {
@@ -4038,6 +4210,10 @@
    "name": "sf:debbie-flack",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:38:58.601Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/president/awards.html"
   },
   {
@@ -4051,6 +4227,10 @@
    "name": "cameramancory",
    "pattern": "milestone",
    "source": "Orchestra of Northern New York",
+   "state": {
+    "at": "2026-11-09T19:38:59.627Z",
+    "status": "read"
+   },
    "url": "https://onny.org/sites/default/files/baroque_beyond_2021_final.pdf"
   },
   {
@@ -4064,6 +4244,10 @@
    "name": "sf:kevin-lynch",
    "pattern": "milestone",
    "source": "Government Technology",
+   "state": {
+    "at": "2026-11-09T19:39:00.872Z",
+    "status": "read"
+   },
    "url": "https://www.govtech.com/network/high-speed-fiber-internet-headed-to-northern-n-y-state"
   },
   {
@@ -4077,6 +4261,10 @@
    "name": "sf:kevin-lynch",
    "pattern": "milestone",
    "source": "Glens Falls Business Journal",
+   "state": {
+    "at": "2026-11-09T19:39:00.872Z",
+    "status": "read"
+   },
    "url": "https://www.glensfalls.com/glensfallsbusinessjournal/2026/02/slicfiber-accelerates-expansion-from-north-country-to-capital-region/"
   },
   {
@@ -4107,6 +4295,10 @@
    "name": "adria.t18",
    "pattern": "milestone",
    "source": "University of New England Athletics",
+   "state": {
+    "at": "2026-11-09T19:38:21.707Z",
+    "status": "read"
+   },
    "url": "https://athletics.une.edu/news/2026/2/13/w-ice-hockey-nor-easters-roll-to-key-5-0-shutout-of-suffolk.aspx"
   },
   {
@@ -4120,6 +4312,10 @@
    "name": "adria.t18",
    "pattern": "milestone",
    "source": "University of Southern Maine Athletics",
+   "state": {
+    "at": "2026-11-09T19:38:21.707Z",
+    "status": "read"
+   },
    "url": "https://southernmainehuskies.com/news/2026/1/3/womens-ice-hockey-huskies-come-up-short-in-3-2-loss-to-nor-easters.aspx"
   },
   {
@@ -4133,6 +4329,10 @@
    "name": "cameramancory",
    "pattern": "milestone",
    "source": "St. Lawrence Valley Paddlers",
+   "state": {
+    "at": "2026-11-09T19:38:59.627Z",
+    "status": "read"
+   },
    "url": "https://www.slvpaddlers.org/waterway-exploration-reports"
   },
   {
@@ -4146,6 +4346,10 @@
    "name": "adria.t18",
    "pattern": "milestone",
    "source": "Elite Prospects",
+   "state": {
+    "at": "2026-11-09T19:38:21.707Z",
+    "status": "read"
+   },
    "url": "https://www.eliteprospects.com/team/20858/univ.-of-new-england/stats/all-time-season?sort=A"
   },
   {
@@ -4159,6 +4363,10 @@
    "name": "alanahoover",
    "pattern": "milestone",
    "source": "Little Dribblers Basketball",
+   "state": {
+    "at": "2026-11-09T19:38:18.554Z",
+    "status": "read"
+   },
    "url": "https://docs.google.com/forms/d/e/1FAIpQLSecxh70KgASaxEy2piYxIqnIi6Rwa3gWfitdxyL-AuJ7sveuQ/viewform?usp=embed_facebook"
   },
   {
@@ -4325,6 +4533,10 @@
    "name": "alanahoover",
    "pattern": "milestone",
    "source": "Thousand Islands Central School District",
+   "state": {
+    "at": "2026-11-09T19:38:18.554Z",
+    "status": "read"
+   },
    "url": "https://campussuite-storage.s3.amazonaws.com/prod/1559108/d1b2e332-90dc-11ec-88c0-0ad3f63f6779/2993354/605952fa-7947-11f0-b812-0a58a9feac02/file/Coaching Staff 25-26.docx.pdf"
   },
   {
@@ -4338,6 +4550,10 @@
    "name": "dillynngrant16",
    "pattern": "milestone",
    "source": "U.S. Figure Skating",
+   "state": {
+    "at": "2026-11-09T19:38:20.620Z",
+    "status": "read"
+   },
    "url": "https://static1.squarespace.com/static/5a2b3461f09ca46ae540f77e/t/5af1a7066d2a738b7ff73816/1767811554668/FigureSkating_USFS_2017.pdf"
   },
   {
@@ -4351,6 +4567,10 @@
    "name": "adria.t18",
    "pattern": "milestone",
    "source": "Endicott Athletics",
+   "state": {
+    "at": "2026-11-09T19:38:21.707Z",
+    "status": "read"
+   },
    "url": "https://www.ecgulls.com/sports/wice/2026-27/releases/20261107i2lyed"
   },
   {
@@ -4364,6 +4584,10 @@
    "name": "sf:sara-badeau",
    "pattern": "milestone",
    "source": "Alfred University",
+   "state": {
+    "at": "2026-11-09T19:38:40.963Z",
+    "status": "read"
+   },
    "url": "https://www.alfred.edu/alfred_today/20231107.html"
   },
   {
@@ -4377,6 +4601,10 @@
    "name": "sf:kayleigh-clary",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:38:41.539Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2025/honors-sp25.php"
   },
   {
@@ -4390,6 +4618,10 @@
    "name": "megphill_",
    "pattern": "milestone",
    "source": "Adirondack Park Agency",
+   "state": {
+    "at": "2026-11-09T19:38:42.337Z",
+    "status": "read"
+   },
    "url": "https://apa.ny.gov/meeting/2026/05/0526min.pdf"
   },
   {
@@ -4403,6 +4635,10 @@
    "name": "megphill_",
    "pattern": "milestone",
    "source": "Adirondack Park Agency",
+   "state": {
+    "at": "2026-11-09T19:38:42.337Z",
+    "status": "read"
+   },
    "url": "https://pl.apa.ny.gov/meeting/2026/01/files/park-policy/MA202501_Order.pdf"
   },
   {
@@ -4416,6 +4652,10 @@
    "name": "sf:annika-greco",
    "pattern": "milestone",
    "source": "Stewardship",
+   "state": {
+    "at": "2026-11-09T19:38:42.985Z",
+    "status": "read"
+   },
    "url": "https://www.stewardship.org.uk/blogs/great-wealth-transfer-guidance"
   },
   {
@@ -4429,6 +4669,10 @@
    "name": "sf:annika-greco",
    "pattern": "milestone",
    "source": "Evangelical Alliance",
+   "state": {
+    "at": "2026-11-09T19:38:42.985Z",
+    "status": "read"
+   },
    "url": "https://www.eauk.org/index.php?p=actions/download-tracker/download&dlt=a0e09bdad6f62cb81aaa633b4bb0636d31323832333139323461663735613631303962633636643863663930613736316539663436666162306531323436383732646363343138363563393661313531756909263ae2be8b962b91a79bc53620a26dd873fcd21bd66e55fe9cb2067dbed2a843da81cde4350760dfb8ae802b25"
   },
   {
@@ -4595,6 +4839,10 @@
    "name": "ct:emily criscitello",
    "pattern": "milestone",
    "source": "InDEPTH",
+   "state": {
+    "at": "2026-11-09T19:34:43.982Z",
+    "status": "read"
+   },
    "url": "https://indepthmag.com/state-of-cave-exploration-2026/"
   },
   {
@@ -4608,6 +4856,10 @@
    "name": "sf:ryan-blount",
    "pattern": "milestone",
    "source": "DVIDS",
+   "state": {
+    "at": "2026-11-09T19:38:09.201Z",
+    "status": "read"
+   },
    "url": "https://www.dvidshub.net/image/10008844/new-york-national-guard-members-conduct-2026-royal-danish-air-force-ruck-march-hancock-field-air-national-guard-base"
   },
   {
@@ -4621,6 +4873,10 @@
    "name": "sf:antolik",
    "pattern": "milestone",
    "source": "DVIDS",
+   "state": {
+    "at": "2026-11-09T19:38:10.143Z",
+    "status": "read"
+   },
    "url": "https://www.dvidshub.net/image/10008856/new-york-national-guard-members-conduct-2026-royal-danish-air-force-ruck-march-hancock-field-air-national-guard-base"
   },
   {
@@ -4634,6 +4890,10 @@
    "name": "sarahchristinehaller",
    "pattern": "new_credential",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-09T19:38:12.815Z",
+    "status": "read"
+   },
    "url": "https://potsdam.meritpages.com/stories/Sarah-Haller-Set-to-Graduate-from-SUNY-Potsdam/108809454"
   },
   {
@@ -4647,6 +4907,10 @@
    "name": "sarahchristinehaller",
    "pattern": "milestone",
    "source": "SUNY Potsdam Athletics",
+   "state": {
+    "at": "2026-11-09T19:38:12.815Z",
+    "status": "read"
+   },
    "url": "https://potsdambears.com/sports/womens-cross-country/roster/sarah-haller/2360"
   },
   {
@@ -4660,6 +4924,10 @@
    "name": "ct:susan buckley",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T19:38:16.147Z",
+    "status": "read"
+   },
    "url": "https://www.yumpu.com/en/document/view/47729659/commnity-report-u-suny-canton/13"
   },
   {
@@ -4673,6 +4941,10 @@
    "name": "ria.amo",
    "pattern": "title_change",
    "source": "American College of Clinical Pharmacy",
+   "state": {
+    "at": "2026-11-09T19:38:17.058Z",
+    "status": "read"
+   },
    "url": "https://www.accp.com/stunet/chapters/findChapter.aspx"
   }
  ],
