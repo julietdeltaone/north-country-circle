@@ -37771,8 +37771,8 @@
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "photos": {
-   "todo": 3,
-   "new": 0,
+   "todo": 7,
+   "new": 4,
    "cleared_at": null
   }
  },
@@ -41370,7 +41370,31 @@
    "added": "2026-11-09",
    "class": "new",
    "source": "Photo filed"
+  },
+  "jack kessler": {
+   "first_seen": "2026-11-09T16:00:00Z",
+   "added": "2026-11-09",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "megan eddy": {
+   "first_seen": "2026-11-09T16:00:00Z",
+   "added": "2026-11-09",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "rob larrabee": {
+   "first_seen": "2026-11-09T16:00:00Z",
+   "added": "2026-11-09",
+   "class": "new",
+   "source": "Photo filed"
+  },
+  "victoria fitch": {
+   "first_seen": "2026-11-09T16:00:00Z",
+   "added": "2026-11-09",
+   "class": "new",
+   "source": "Photo filed"
   }
  },
- "updated": "2026-11-09T15:42:00Z"
+ "updated": "2026-11-09T16:00:00Z"
 }
