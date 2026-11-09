@@ -6190,6 +6190,27 @@ a.fi-nm:hover{color:var(--acc2)}
 .fi-actions{display:flex;align-items:center;gap:10px;margin-top:18px}
 .fi-flagbtn{display:inline-flex;align-items:center;gap:7px}
 .fi-kbd{margin-left:auto;font-size:12px;color:var(--dim)}
+/* V4.5.2: custom dropdowns for the New facts controls — the face
+   carries the current value and its count, the menu carries
+   every value with its count, in all three themes. */
+.fi-dd{position:relative;display:inline-block}
+.fi-dd-btn{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 10px 0 12px;background:var(--glass);border:1px solid var(--line);border-radius:2px;color:var(--txt);font:600 13px var(--sans);cursor:pointer;white-space:nowrap;transition:border-color .12s var(--ease)}
+.fi-dd-btn:hover{border-color:var(--acc)}
+.fi-dd-btn:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.fi-dd.open .fi-dd-btn{border-color:var(--acc)}
+.fi-dd-ch{flex:none;color:var(--dim);transition:transform .16s var(--ease)}
+.fi-dd.open .fi-dd-ch{transform:rotate(180deg)}
+.fi-dd-ol{overflow:hidden;text-overflow:ellipsis}
+.fi-dd-n{font:600 11px var(--sans);font-variant-numeric:tabular-nums;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:1px 7px;flex:none}
+.fi-dd-menu{position:absolute;left:0;top:calc(100% + 6px);min-width:100%;width:max-content;max-width:280px;background:var(--pv-panel);border:1px solid var(--line);border-radius:3px;box-shadow:0 16px 40px rgba(0,0,0,.38);padding:5px;z-index:60;animation:fi-dd-in .12s var(--ease)}
+@keyframes fi-dd-in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.fi-dd-opt{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;background:none;border:0;border-radius:2px;color:var(--txt);font:500 13px var(--sans);cursor:pointer;text-align:left;white-space:nowrap}
+.fi-dd-opt .fi-dd-ol{flex:1}
+.fi-dd-opt:hover{background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.fi-dd-opt:focus-visible{outline:2px solid var(--acc);outline-offset:-2px;background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.fi-dd-opt.on{font-weight:700}
+.fi-dd-opt.on .fi-dd-n{color:var(--txt);border-color:var(--acc)}
+@media (prefers-reduced-motion: reduce){.fi-dd-menu{animation:none}.fi-dd-ch{transition:none}}
 .fi-zero{background:var(--glass);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px dashed var(--line);border-radius:2px;padding:34px 22px;text-align:center}
 .fi-zero b{font-family:var(--serif);font-size:17px}
 .fi-zero p{color:var(--mut);font-size:13.5px;margin:6px 0 0}
