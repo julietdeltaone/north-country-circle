@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-08",
+ "updated": "2026-11-09",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -13972,6 +13972,611 @@
    "fields": {},
    "published": "2025-06-02",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-ct-philip-hubbe-competed-as-a-home-school-student-in",
+   "name": "ct:philip hubbe",
+   "display": "Philip Hubbe",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A newspaper archive item says a Philip Hubbe of Hopkinton was one half of The Dreaming Robot, a two-person home-school robotics team that qualified at a QCC competition.",
+   "file_text": "Competed as a home-school student in The Dreaming Robot, a two-person robotics team with Tao Lin of Worcester, in a student competition at QCC",
+   "source": "The Free Dictionary (Telegram & Gazette archive)",
+   "url": "https://acronyms.thefreedictionary.com/Marlboro+Middle+School",
+   "anchors": [
+    "Hopkinton, his town on file"
+   ],
+   "quote": "Local middle school teams that qualified were Worcester East Middle School, Marlboro Middle School and The Dreaming Robot, the duo of home school students Tao Lin of Worcester and Philip Hubbe of Hopkinton",
+   "missing_gate": "The page names a Philip Hubbe in Hopkinton, but nothing on it ties him to Clarkson University.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 22,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-katepersun-lived-at-69-elm-st-in-potsdam-new-yo",
+   "name": "katepersun",
+   "display": "Katelyn Persun",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A people-search site lists a Katelyn E. Persun at 69 Elm Street in Potsdam, New York, in a household with Jarrod D. Persun and members of the Daniels family.",
+   "file_text": "Lived at 69 Elm St in Potsdam, New York, in a household listing that also names Jarrod D. Persun and Kevin, Elizabeth, and Trenton Daniels",
+   "source": "Neighbor.Report",
+   "url": "https://neighbor.report/d/NY/Potsdam/Elm-Street",
+   "anchors": [],
+   "quote": "69 Elm St Persons living here: Trenton Kenneth Daneils, Elizabeth A Daniels, Kevin M Daniels, William Gibbons, Kimberly M Hunt, Jarrod D Persun, Katelyn E Persun",
+   "missing_gate": "Her record has nothing on file to check this against, so I cannot tell if this is the same person.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 12,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-katepersun-katelyn-daniels-persun-is-the-author",
+   "name": "katepersun",
+   "display": "Katelyn Persun",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A bookshop page says Katelyn Daniels Persun is the author of the novel Ava.",
+   "file_text": "Katelyn Daniels Persun is the author of the novel Ava",
+   "source": "Blackwell's",
+   "url": "https://blackwells.co.uk/bookshop/product/Ava-by-Katelyn-Daniels-Persun/9798699576432",
+   "anchors": [],
+   "quote": "Ava : Katelyn Daniels Persun : 9798699576432",
+   "missing_gate": "Her record has nothing on file to check this against, so I cannot tell if this author is the same person.",
+   "confidence": 35,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 13,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-jazmine-albin-worked-as-a-paraprofessional-aide-at",
+   "name": "jazmine_albin",
+   "display": "Jazzy Dunn",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "GovSalaries lists a Jazmine Albin as a paraprofessional/aide at Oxford Academy Central Schools in 2024 and 2025. Her record already shows Oxford Academy High School.",
+   "file_text": "Worked as a paraprofessional/aide at Oxford Academy Central Schools in 2024 and 2025",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/salaries/NY/oxford-academy-central-schools/j/paraprofessional-aide",
+   "anchors": [
+    "Oxford Academy, her school on file"
+   ],
+   "quote": "2025 Paraprofessional/Aide Oxford Academy Central Schools | Jazmine Albin J | 2025 | Paraprofessional/Aide | Oxford Academy Central Schools",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 34,
+    "source": 18,
+    "detail": 20
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-kdusky-was-listed-with-her-husband-ben-as-a",
+   "name": "kdusky",
+   "display": "Keila Levendusky",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A republished church newsletter lists Ben and Keila Levendusky as speakers at Blueprint, a parenting conference at Christian Fellowship Center Canton on August 15. The page gives no year.",
+   "file_text": "Was listed with her husband Ben as a speaker at the Blueprint parenting conference at Christian Fellowship Center Canton on August 15",
+   "source": "Homeless To Independence (republished church newsletter)",
+   "url": "https://www.homelesstoindependence.org/new-york/",
+   "anchors": [
+    "Her husband Ben Levendusky, on file",
+    "Christian Fellowship Center Canton, her church on file"
+   ],
+   "quote": "Speakers include Rick and Darlene Sinclair, Ben and Keila Levendusky, and more!",
+   "missing_gate": "This is about Keila's family, so I always check with you first.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 16,
+    "detail": 20
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-ct-grace-ockrin-served-as-an-intern-for-senator-kirs",
+   "name": "ct:grace ockrin",
+   "display": "Grace Ockrin",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "LegiStorm's salary listing for Senator Kirsten Gillibrand's office shows a Grace Ockrin paid $500 as an intern from February 3 to February 7, 2025.",
+   "file_text": "Served as an intern for Senator Kirsten Gillibrand from February 3 to February 7, 2025, paid $500",
+   "source": "LegiStorm",
+   "url": "https://www.legistorm.com/member/839/Sen_Kirsten_Gillibrand/1293/salary_title_id/asc.html",
+   "anchors": [
+    "Her name only"
+   ],
+   "quote": "Payee Name Grace Ockrin | Start date 02/03/25 | End date 02/07/25 | Position Intern | Amount $500.00",
+   "missing_gate": "The page names a Grace Ockrin, but nothing on it ties her to St. Lawrence University or Canton.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2025-02-03",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-ct-grace-ockrin-traveled-to-italy-for-a-month-to-stu",
+   "name": "ct:grace ockrin",
+   "display": "Grace Ockrin",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A World Race blog by Josh Ockrin says Grace Ockrin was flying out to Italy on May 30 to study for a month. The post gives no year.",
+   "file_text": "Traveled to Italy for a month to study, flying out on May 30",
+   "source": "Josh Ockrin - The World Race",
+   "url": "https://joshockrin.theworldrace.org/post/ministry-in-georgia/",
+   "anchors": [
+    "Her name",
+    "Rochester, named in the same passage as the return point; her high school on file is in the Rochester area"
+   ],
+   "quote": "Grace is flying out to Italy on May 30th to study so if you could be praying for safe travels and for an ability to retain new information that would be a blessings for her!",
+   "missing_gate": "The blog names a Grace Ockrin, but nothing on it ties her to St. Lawrence University.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 15,
+    "detail": 20
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-joshcparker-is-an-entrepreneur-and-ceo-of-parker",
+   "name": "joshcparker_",
+   "display": "Josh Parker",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "A Wikitia page about his father Christian Parker says Josh Parker is now an entrepreneur and CEO of Parker Communications, based in Austin, Texas. No other source found confirms the company or a move to Austin.",
+   "file_text": "Is an entrepreneur and CEO of Parker Communications, based in Austin, Texas",
+   "source": "Wikitia",
+   "url": "https://Wikitia.com/index.php?title=Christian_Parker&curid=109145&oldid=225602",
+   "anchors": [
+    "His father Christian Parker, on file",
+    "His 2016 Shark Tank appearance with Parker's Real Maple, on file"
+   ],
+   "quote": "Parker's son, Joshua Parker (born January 8, 1998), is an entrepreneur and CEO of Parker Communications, based in Austin, Texas.",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 12,
+    "detail": 20
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-judith-tomford-has-two-granddaughters",
+   "name": "sf:judith-tomford",
+   "display": "Judith Tomford",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Judith Tomford's staff page at St. James School in Gouverneur says she has two granddaughters.",
+   "file_text": "Has two granddaughters",
+   "source": "St. James School",
+   "url": "https://stjamesk-6.org/staff",
+   "anchors": [
+    "St. James School, her school on file",
+    "Gouverneur, New York, her town on file"
+   ],
+   "quote": "Mrs. Tomford began as our Academic Intervention Service teacher in 2020, providing extra support in math and ELA for students from kindergarten through sixth grade. She lives in Gouverneur, NY",
+   "missing_gate": "This is about Judith's family, so I always check with you first.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 28,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-d-grant234-played-forward-for-paul-smith-s-coll",
+   "name": "d_grant234",
+   "display": "Derek Grant",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Elite Prospects shows a Derek Grant born in 2003 in Potsdam, New York, who played forward for Potsdam Central High School from 2018 to 2021 and for Paul Smith's College in 2023-2024.",
+   "file_text": "Played forward for Paul Smith's College hockey in 2023-2024, after playing at Potsdam Central High from 2018 to 2021",
+   "source": "Elite Prospects",
+   "url": "https://www.eliteprospects.com/team/34659/paul-smith-s-college/2023-2024",
+   "anchors": [],
+   "quote": "Derek Grant (F) | 23 | 2003 | Potsdam, NY, USA",
+   "missing_gate": "The page names a Derek Grant from Potsdam, but his record only says Albany, and nothing ties the two together.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-megan-eddy-graduated-in-nursing-from-suny-canto",
+   "name": "sf:megan-eddy",
+   "display": "Megan Eddy",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "SUNY Canton pages show a Megan Eddy in the Nursing program who received scholarships in fall 2023, made the President's List, and graduated in May 2025.",
+   "file_text": "Graduated in Nursing from SUNY Canton, May 2025",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2025/graduates.php",
+   "anchors": [
+    "Nursing, which matches her Rochester Regional Health work on file"
+   ],
+   "quote": "Megan Eddy, Nursing",
+   "missing_gate": "The page names a Megan Eddy in Nursing, but nothing on it ties her to Massena or Rochester Regional Health.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 22,
+    "source": 25,
+    "detail": 8
+   },
+   "fields": {},
+   "published": "2025-05-01",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-darlenesinclair3643-a-paper-presented-at-the-world-congr",
+   "name": "darlenesinclair3643",
+   "display": "Darlene Sinclair",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A paper presented at the World Congress of Families in Madrid, Spain in May 2012 thanked Rick and Darlene Sinclair as homeschooling parents of nine children who were pastors at an evangelical church in Madrid, New York.",
+   "file_text": "A paper presented at the World Congress of Families in Madrid, Spain in May 2012 thanked Rick and Darlene Sinclair as homeschooling parents with nine children who were pastors at an evangelical church in Madrid, New York",
+   "source": "World Congress of Families paper (WikiLeaks ICWatch mirror)",
+   "url": "https://icwatch.wikileaks.org/intolerancenetwork/get/2759",
+   "anchors": [
+    "Her husband Rick Sinclair, on file",
+    "Madrid, New York, her town on file"
+   ],
+   "quote": "I would like to take this opportunity to thank Rick and Darlene Sinclair, who are here with us today, homeschooling parents with nine children",
+   "missing_gate": "This is about Darlene's family, so I always check with you first.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 12,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "2012-05-25",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-jillian-chapman-jillian-chapman-a-massena-central-sc",
+   "name": "sf:jillian-chapman",
+   "display": "Jillian Chapman",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "The Northern New York Community Foundation says Jillian Chapman of Massena Central School was one of ten St. Lawrence County Class of 2020 recipients of its Evergreen STEM Scholarship in 2019, a one-year $3,000 scholarship, with an intended major of biology or pre-med.",
+   "file_text": "Jillian Chapman, a Massena Central School student in the Class of 2020, received a one-year $3,000 Northern New York Community Foundation Evergreen STEM Scholarship in 2019, with an intended major of biology or pre-med and a career interest in medicine",
+   "source": "Northern New York Community Foundation",
+   "url": "https://nnycf.org/evergreen-stem-scholars-honored/",
+   "anchors": [
+    "Massena Central School, her school on file"
+   ],
+   "quote": "Jillian Chapman, Massena Central School; intended major: biology or pre-med; career interest: medical",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 36,
+    "source": 27,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2019-01-01",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-jamiesinclair-jamie-sinclair-led-the-canton-christ",
+   "name": "jamiesinclair",
+   "display": "Jamie Sinclair",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "conflict",
+   "claim": "A Justice Department court filing says the Canton congregation Jamie Sinclair leads rented space from another local church until its lease expired in August 2018, then met at a local university and rented space every Sunday at the Best Western hotel, with 34 members and an average of 82 at Sunday services.",
+   "file_text": "Jamie Sinclair led the Canton Christian Fellowship Center congregation that rented space from another local church until August 2018, then met at a local university and rented space every Sunday at the Best Western Hotel, with 34 members and an average of 82 at Sunday services",
+   "source": "U.S. Department of Justice (court filing)",
+   "url": "https://www.justice.gov/crt/media/1389751/dl?inline",
+   "anchors": [
+    "Canton, his town on file",
+    "Christian Fellowship Center, his church on file"
+   ],
+   "quote": "In May 2016, the Church launched a congregation in the Village and appointed Pastor Jamie Sinclair to lead it. It rented space from another local church until August 2018, when its lease expired.",
+   "missing_gate": "Jamie's record already covers the Canton zoning fight; these details add to it rather than replace anything.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 22,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261109-jamiesinclair-jamie-sinclair-got-his-pastoral-star",
+   "name": "jamiesinclair",
+   "display": "Jamie Sinclair",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A low-quality copied compilation of a North Country This Week article says Jamie Sinclair got his start leading an outreach effort and Bible study in a local college community while getting his computer science degree. The original article page could not be found.",
+   "file_text": "Jamie Sinclair got his pastoral start leading an outreach effort and Bible study in a local college community while getting his computer science degree",
+   "source": "North Country This Week article (copied compilation)",
+   "url": "https://cdn-cms.f-static.net/uploads/4421615/normal_60188b7d3be98.pdf",
+   "anchors": [
+    "His father Rick Sinclair, named in the same item",
+    "The Canton Christian Fellowship Center congregation he leads, on file"
+   ],
+   "quote": "The Cantonese congregation, led by Rick Sinclair's son, Jamie Sinclair, is one of the newest additions to the CFC.",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 38,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 8,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-luannbailey-luann-bailey-and-her-family-regularl",
+   "name": "luannbailey",
+   "display": "Luann Bailey",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "A February 2019 Vermont Moms article says Luann Bailey and her family regularly made dinner for families at the Ronald McDonald House, gave time at Anew Place, and donated photography services to help Vermont foster children with senior photos. Other facts from the same article are already on her record.",
+   "file_text": "Luann Bailey and her family regularly made dinner for families at the Ronald McDonald House, donated time at Anew Place, and donated photography services to help Vermont foster children with senior photos, according to Vermont Moms in February 2019",
+   "source": "Vermont Moms",
+   "url": "https://vermontmoms.com/meet-bvtmb-team/",
+   "anchors": [
+    "Luann Bailey Photography, her business on file",
+    "The Park Bros mural named in the same article, on file"
+   ],
+   "quote": "Luann and her family regularly make dinner for families at the Ronald McDonald House, donate time at Anew Place, donate photography services to help Vermont foster children with senior photos",
+   "missing_gate": "This one is your call: the same article already supplied other facts on her record, so this may already have been passed over.",
+   "confidence": 58,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 15,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2019-02-21",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-vivian-de-voe-starred-in-the-indie-film-hell-s-par",
+   "name": "vivian_de_voe",
+   "display": "Vivian De Voe",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A Seed&Spark page lists a Vivian De Voe as starring in the independent film Hell's Paradise.",
+   "file_text": "Starred in the indie film Hell's Paradise",
+   "source": "Seed&Spark",
+   "url": "http://seedandspark.com/fund/hells-paradise",
+   "anchors": [
+    "Acting, her specialty on file"
+   ],
+   "quote": "STARRING: AJ DeAugustine, Vivian De Voe, Ryleigh Walker, Brian Sterling Chan",
+   "missing_gate": "The page names a Vivian De Voe, but nothing on it ties her to any place or school on her record.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 18,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-pete-molinero-created-the-website-and-logo-for-the",
+   "name": "sf:pete-molinero",
+   "display": "Pete Molinero",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Jules of Life Foundation's community page thanks Pete Molinero and Laterna Studio for creating its website and logo and for donating to the foundation.",
+   "file_text": "Created the website and logo for the Jules of Life Foundation through Laterna Studio",
+   "source": "Jules of Life Foundation",
+   "url": "https://www.julesoflife.org/get-involved/community",
+   "anchors": [
+    "Laterna Studio, his company on file"
+   ],
+   "quote": "Thank you Pete and Laterna Studio for all the hours you spent creating our beautiful website and logo, and for your donations.",
+   "missing_gate": "The page names Pete with Laterna Studio, but nothing on it ties him to Potsdam or Huntington University.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 23,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-caelin-ramsay-submitted-ebird-checklists-as-an-obs",
+   "name": "caelin.ramsay",
+   "display": "Caelin Ramsay",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A search result showed Caelin Ramsay as the observer on eBird checklists at SUNY Potsdam, but the eBird page itself had changed by the time it was opened and no longer showed her name, so there is no source page to check.",
+   "file_text": "Submitted eBird checklists as an observer at SUNY Potsdam in Potsdam, New York",
+   "source": "eBird",
+   "url": "",
+   "anchors": [
+    "SUNY Potsdam, her school on file",
+    "Potsdam, New York, her town on file"
+   ],
+   "quote": "",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 10,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-charlie-garrelts-reported-ogdensburg-international-ai",
+   "name": "charlie_garrelts",
+   "display": "Charlie Garrelts",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "A North Country Now item from September 4, 2026, carried on a Muck Rack page, says growth at Ogdensburg International Airport had brought it to 35 employees, quoting the airport manager. The full article could not be opened and the summary does not name Charlie Garrelts in that item.",
+   "file_text": "Reported Ogdensburg International Airport had grown to 35 employees amid passenger-traffic growth, Sep 2026",
+   "source": "North Country Now",
+   "url": "https://muckrack.com/jimmy-lawton/articles",
+   "anchors": [
+    "Ogdensburg International Airport, his workplace on file",
+    "Ogdensburg Bridge and Port Authority, his employer on file"
+   ],
+   "quote": "Posted 9/4/26 OGDENSBURG \u2013 The growth in passenger traffic at Ogdensburg International Airport is contributing to the local economy, with 35 employees now working at the airport, according to Airport Manager",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 34,
+    "source": 20,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "2026-09-04",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-lisa-arquette-is-listed-as-the-care-of-contact-for",
+   "name": "sf:lisa-arquette",
+   "display": "Lisa Arquette",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "source",
+   "claim": "TaxExemptWorld, which republishes tax records, lists a Lisa Arquette as the care-of contact for Family Life Skills of Massena and Akwesasne, a charitable youth organization at 185 Oak Crossing Blvd in Auburndale, Florida. Her record shows her hometown as Massena and her work with the Polk County Sheriff's Office in Florida.",
+   "file_text": "Is listed as the care-of contact for Family Life Skills of Massena and Akwesasne, a charitable youth-centers organization based in Auburndale, Florida",
+   "source": "TaxExemptWorld",
+   "url": "https://www.taxexemptworld.com/organizations/polk-county-fl-florida.asp?spg=4",
+   "anchors": [
+    "Massena, her hometown on file",
+    "Polk County, Florida, where she works on file"
+   ],
+   "quote": "FAMILY LIFE SKILLS OF MASSENA AND AKWESASNE (c/o LISA ARQUETTE) | 185 OAK CROSSING BLVD AUBURNDALE, FL 33823-9341 | Charitable Organization (Youth Centers, Clubs, Multipurpose)",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 12,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-matthew-merria-in-lalonde-v-city-of-ogdensburg-the-",
+   "name": "sf:matthew-merria",
+   "display": "Matthew Merria",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "In Lalonde v. City of Ogdensburg, the federal court granted Deputy Matthew Merria's summary judgment motion in full on March 31, 2026. The excessive force claim against him stayed in the case because he had not asked the court to rule on it. The lawsuit itself is already on his record as a held item.",
+   "file_text": "In Lalonde v. City of Ogdensburg, the federal court granted Deputy Matthew Merria's summary judgment motion in full on March 31, 2026; the excessive force claim against him survived because he had not moved on it",
+   "source": "U.S. District Court, Northern District of New York (GovInfo)",
+   "url": "https://govinfo.gov/content/pkg/USCOURTS-nynd-8_22-cv-00164/pdf/USCOURTS-nynd-8_22-cv-00164-3.pdf",
+   "anchors": [
+    "The St. Lawrence County Sheriff's Office, his employer on file",
+    "The Lalonde case, already on his record"
+   ],
+   "quote": "Defendant Merria's Motion has been granted in full. However, as he did not move on the excessive force claim, the excessive force claim against Defendant Merria survives.",
+   "missing_gate": "This is about a court case Matthew is part of, so I always check with you first.",
+   "confidence": 92,
+   "confidence_parts": {
+    "identity": 47,
+    "source": 29,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2026-03-31",
+   "novelty": "expands"
+  },
+  {
+   "id": "lr-20261109-sf-cody-benham-tied-for-1st-in-the-advanced-divisio",
+   "name": "sf:cody-benham",
+   "display": "Cody Benham",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation",
+   "category": "close",
+   "claim": "UDisc league pages show Cody Benham tied for 1st in the Advanced division at the PBC Disc Golf Mini in Watertown on May 8, 2025, shooting even par, and won the Advanced division at the same league on May 29, 2025, shooting -2. His two PDGA championship results from 2025 were filed this run instead.",
+   "file_text": "Tied for 1st in the Advanced division at the PBC Disc Golf Mini in Watertown, New York on May 8, 2025, shooting even par ;; Won the Advanced division at the PBC Disc Golf Mini in Watertown, New York on May 29, 2025, shooting -2",
+   "source": "UDisc",
+   "url": "https://udisc.com/events/pbc-disc-golf-league-pbc-weekly-disc-golf-league-41Wu6s/leaderboard?round=1",
+   "anchors": [
+    "Watertown, New York, his town on file",
+    "Disc golf, his sport on file"
+   ],
+   "quote": "T1 | Cody Benham | E | 54 ;; 1 | Cody Benham | -2 | 52",
+   "missing_gate": "This one is your call: his two bigger 2025 championship results were filed this run, and these are smaller weekly league results.",
+   "confidence": 85,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 25,
+    "detail": 20
+   },
+   "fields": {},
+   "published": "2025-05-29",
+   "novelty": "expands"
   }
  ]
 }
