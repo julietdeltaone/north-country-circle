@@ -10,6 +10,14 @@
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
+  },
+  {
+   "key": "sf:cassandra-fernandez",
+   "display": "Cassandra Fernandez",
+   "field": "first_contact",
+   "value": "2026-11-08",
+   "conf": 93,
+   "id": "pf-eeb1400349"
   }
  ],
  "shelved": [
@@ -36,20 +44,10 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 11,
+   "tentative_floor": 10,
    "shelved": 2
   },
   "items": [
-   {
-    "id": "pf-a4c989c515",
-    "key": "cashhyyy",
-    "display": "Cashlynn Colbert",
-    "field": "location_on_file",
-    "value": "Fort Covington, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
    {
     "id": "pf-5e102198ad",
     "key": "chiara.frasc",
