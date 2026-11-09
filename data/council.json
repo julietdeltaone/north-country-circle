@@ -2,12 +2,12 @@
  "adopted": "2026-10-27",
  "budget": {
   "daily_tranche_pct": 14.3,
-  "expected_pct": 42,
+  "expected_pct": 43,
   "measure": "Usage is reported as a percentage of the weekly allowance, not a token count — the allowance's token size is not published, so the council budgets in percent.",
   "plan": "Power",
-  "read_at": "Nov 9, 2026, 5:30 AM ET",
-  "used_pct": 17,
-  "verdict": "Under pace — 17% used against ~42% even pace, with the week resetting Fri Nov 13, 2026, 7:38 AM EST.",
+  "read_at": "Nov 9, 2026, 7:58 AM ET",
+  "used_pct": 19,
+  "verdict": "Under pace — 19% used against ~43% even pace, with the week resetting Fri Nov 13, 2026, 7:38 AM EST.",
   "week_resets": "Fri Nov 13, 2026, 7:38 AM EST"
  },
  "charter_note": "Charter adopted Oct 27, 2026 (JD). Seven directors; JD interacts only with the Operations roll-up. Everything reports change-only; \"no findings\" is a valid report.",
@@ -210,6 +210,11 @@
   "resource": [
    {
     "date": "2026-11-09",
+    "title": "Daily gauge check: 19% used",
+    "summary": "Under pace — 19% used vs ~43% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST)."
+   },
+   {
+    "date": "2026-11-09",
     "title": "Weekly cycle check: 17% used, under pace",
     "summary": "Read Nov 9, 2026, 5:30 AM ET: 17% used vs ~42% even pace; week resets Fri Nov 13, 2026, 7:38 AM EST. Under by ~25 points — neither flag rule met, full Photos slice and full UX crawl ran uncut; no flag."
    },
@@ -232,11 +237,6 @@
     "date": "2026-11-05",
     "summary": "Ahead of pace — 91% used vs ~86% even pace (week resets Fri Nov 6, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 91% used"
-   },
-   {
-    "date": "2026-11-04",
-    "summary": "Ahead of pace — 78% used vs ~72% even pace (week resets Fri Nov 6, 2026, 7:38 AM EST).",
-    "title": "Daily gauge check: 78% used"
    }
   ],
   "ux": [
@@ -1626,7 +1626,7 @@
    "authority": "No director starts a large run without Resource clearance. Extensions come only from actual headroom.",
    "icon": "sparkle",
    "key": "resource",
-   "last_run": "Nov 9, 2026 (weekly cycle)",
+   "last_run": "Nov 9, 2026",
    "mission": "Own the token budget: read the gauge against pace, authorize extra work from real headroom, call a halt when the day's tranche is spent.",
    "name": "Resource Manager",
    "next_run": "Daily, 8:00 AM ET",
