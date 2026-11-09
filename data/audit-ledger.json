@@ -1757,12 +1757,11 @@
     }
    },
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -6386,12 +6385,11 @@
     }
    },
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -7829,12 +7827,11 @@
     }
    },
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -8704,19 +8701,21 @@
   },
   "sf:jdmeyers_": {
    "tier": {
-    "state": "satisfied",
-    "first_seen": "2026-11-03T00:17:00Z",
-    "last_class": "standing",
-    "satisfied": {
+    "state": "open",
+    "class": "regressed",
+    "first_seen": "2026-11-09T14:34:00Z",
+    "source": "Dismissal lost",
+    "prev_satisfied": {
      "at": "2026-11-09T14:24:00Z",
      "how": "dismissed"
     }
    },
    "lastc": {
-    "state": "satisfied",
-    "first_seen": "2026-11-03T00:17:00Z",
-    "last_class": "standing",
-    "satisfied": {
+    "state": "open",
+    "class": "regressed",
+    "first_seen": "2026-11-09T14:34:00Z",
+    "source": "Dismissal lost",
+    "prev_satisfied": {
      "at": "2026-11-09T14:24:00Z",
      "how": "dismissed"
     }
@@ -8921,12 +8920,11 @@
     }
    },
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -9501,12 +9499,11 @@
     }
    },
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -11056,12 +11053,11 @@
     }
    },
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -16489,12 +16485,11 @@
   },
   "ig:cashhyyy": {
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -17639,12 +17634,11 @@
   },
   "ig:debbiegordon7": {
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -34211,12 +34205,11 @@
   },
   "ct:philip hubbe": {
    "loc": {
-    "state": "open",
-    "class": "regressed",
+    "state": "satisfied",
     "first_seen": "2026-11-09T14:24:00Z",
-    "source": "Field blanked",
-    "prev_satisfied": {
-     "at": "2026-11-09T14:02:00Z",
+    "last_class": "regressed",
+    "satisfied": {
+     "at": "2026-11-09T14:34:00Z",
      "how": "filled"
     }
    }
@@ -37730,50 +37723,50 @@
  },
  "lanes": {
   "tier": {
-   "open": 494,
-   "new": 494,
-   "regressed": 0,
+   "open": 2,
+   "new": 1,
+   "regressed": 1,
    "cleared_at": null
   },
   "loc": {
-   "open": 503,
-   "new": 494,
-   "regressed": 9,
+   "open": 1,
+   "new": 1,
+   "regressed": 0,
    "cleared_at": "2026-11-03T15:18:00Z"
   },
   "rel": {
-   "open": 493,
-   "new": 493,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T00:17:00Z"
   },
   "years": {
-   "open": 488,
-   "new": 488,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T00:17:00Z"
   },
   "lastc": {
-   "open": 493,
-   "new": 493,
-   "regressed": 0,
+   "open": 1,
+   "new": 0,
+   "regressed": 1,
    "cleared_at": null
   },
   "phone": {
-   "open": 407,
-   "new": 407,
+   "open": 1,
+   "new": 1,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
   "orgs": {
-   "open": 493,
-   "new": 493,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-05T02:52:00Z"
   },
   "skills": {
-   "open": 494,
-   "new": 494,
+   "open": 1,
+   "new": 1,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -41379,5 +41372,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-09T14:24:00Z"
+ "updated": "2026-11-09T14:34:00Z"
 }
