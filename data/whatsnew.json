@@ -4,6 +4,70 @@
  "items": [
   {
    "date": "2026-11-09",
+   "kind": "filed",
+   "display": "Makiah Barber",
+   "text": "Received final tenure as a Massena Central School District Teaching Assistant (junior high assignment), effective Nov 30, 2025",
+   "source": "Massena Central School District",
+   "url": "https://4.files.edl.io/44f5/09/17/25/142706-0df492fe-fe95-43f0-90ea-5b1b29bed09f.pdf"
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "filed",
+   "display": "Jazzy Dunn",
+   "text": "Named as a member of the Greene Girls Field Hockey Team that captured the New York State Class C Championship, defeating Southampton 7-0 to finish with a 19-0 record, in the New York State Senate's 2013 resolution",
+   "source": "New York State Senate",
+   "url": "https://www.nysenate.gov/legislation/resolutions/2013/j32"
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "filed",
+   "display": "Grace Ockrin",
+   "text": "Named to St. Lawrence University's Dean's List for Spring 2025 as a senior",
+   "source": "St. Lawrence University",
+   "url": "https://www.stlawu.edu/offices/academic-affairs/deans-list-spring-2025"
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "filed",
+   "display": "Cody Benham",
+   "text": "Tied for 7th in MA2 at the 2025 New York State Disc Golf Championships in Endicott, New York, Sep 6-7, 2025, shooting +12",
+   "source": "PDGA",
+   "url": "https://www.pdga.com/tour/event/91266"
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "filed",
+   "display": "Cody Benham",
+   "text": "Finished 11th in MA1 at the 4th Annual Tug Hill Fall Classic in Turin, New York, Sep 27, 2025, shooting +1",
+   "source": "PDGA",
+   "url": "https://www.pdga.com/tour/event/93440"
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "filed",
+   "display": "Katelyn Matthews",
+   "text": "Graduated with an Associate of Applied Science in Nursing from SUNY Canton, May 2025",
+   "source": "SUNY Canton",
+   "url": "https://canton.meritpages.com/stories/Katelyn-Matthews-Graduates-from-SUNY-Canton/161607275"
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "filed",
+   "display": "Lennart Johns",
+   "text": "Listed as a director of the New York State Association for Rural Health in its Rural Health Reimagined report, Jul 2025",
+   "source": "New York State Association for Rural Health",
+   "url": "https://nysarh.org/wp-content/uploads/2025/08/NYSARH_Rural-Health-Report_V3.pdf"
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "filed",
+   "display": "Liam Miller-Lynch",
+   "text": "Listed as a sophomore fullback on St. Lawrence University's 2026 football roster, from Potsdam, New York",
+   "source": "St. Lawrence University Athletics",
+   "url": "https://saintsathletics.com/sports/football/roster"
+  },
+  {
+   "date": "2026-11-09",
    "kind": "photo",
    "display": "Ethan Ryan",
    "text": "Primary photo filed (grade: possible)",
@@ -12,7 +76,7 @@
   },
   {
    "date": "2026-11-08",
-   "kind": "hot",
+   "kind": "filed",
    "display": "Adria Tebo",
    "text": "Recorded an assist for the University of New England in its 3-1 loss to No. 15 Endicott, Nov 7, 2026",
    "source": "Endicott Athletics",
@@ -2337,70 +2401,6 @@
    "text": "Primary photo filed (grade: likely)",
    "source": "Photos on File",
    "url": "https://facebook.com/ae.baxter.1"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Emily Elliott",
-   "text": "Primary photo filed (grade: likely)",
-   "source": "Photos on File",
-   "url": "https://facebook.com/emily.murphy.1806"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Emily Kendall",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://facebook.com/emily.hargrave.564"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Emily Ward",
-   "text": "Primary photo filed (grade: likely)",
-   "source": "Photos on File",
-   "url": "https://facebook.com/emily.ward.818205"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Erin Dunham",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://facebook.com/erin.dunham"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Grace LaPointe",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://facebook.com/grace.lapointe.359"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Grace Martin",
-   "text": "Primary photo filed",
-   "source": "Photos on File",
-   "url": "https://facebook.com/headytheyeti"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Grace Zehr Cassulis",
-   "text": "Primary photo filed (grade: possible)",
-   "source": "Photos on File",
-   "url": "https://facebook.com/grace.zehr.cassulis"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "photo",
-   "display": "Gracyn Denny",
-   "text": "Primary photo filed (grade: likely)",
-   "source": "Photos on File",
-   "url": "https://facebook.com/gdenny35"
   }
  ]
 }
