@@ -3394,6 +3394,10 @@
    "name": "sf:luke-boyle",
    "pattern": "employer_change",
    "source": "SEC / FINRA IAPD",
+   "state": {
+    "at": "2026-11-09T14:58:00.690Z",
+    "status": "read"
+   },
    "url": "https://reports.adviserinfo.sec.gov/reports/individual/individual_7646490.pdf"
   },
   {
@@ -3771,6 +3775,10 @@
    "name": "askinnerusa",
    "pattern": "correction",
    "source": "USA Shooting",
+   "state": {
+    "at": "2026-11-09T14:57:48.176Z",
+    "status": "read"
+   },
    "url": "https://sitemap.usashooting.com/usa-shooting-crowns-national-champions-as-race-to-la28-intensifies/"
   },
   {
@@ -3901,6 +3909,10 @@
    "name": "ct:ana miller",
    "pattern": "employer_change",
    "source": "Massena Central School District",
+   "state": {
+    "at": "2026-11-09T14:57:53.193Z",
+    "status": "read"
+   },
    "url": "https://4.files.edl.io/5ac5/10/01/25/124639-a8996dc4-d603-47a7-8fe7-eaf16b762da5.pdf"
   },
   {
@@ -3914,6 +3926,10 @@
    "name": "ct:ryleigh combs",
    "pattern": "employer_change",
    "source": "Grand Isle Supervisory Union",
+   "state": {
+    "at": "2026-11-09T14:57:57.002Z",
+    "status": "read"
+   },
    "url": "https://files-backend.assets.thrillshare.com/documents/asset/uploaded_file/3270/Gisu/15e3e1ab-2362-4648-b5c4-d74107e3bbdd/03102020minutesciuusd.pdf?disposition=inline"
   },
   {
@@ -3927,6 +3943,10 @@
    "name": "ct:ryleigh combs",
    "pattern": "employer_change",
    "source": "South Burlington School District",
+   "state": {
+    "at": "2026-11-09T14:57:57.002Z",
+    "status": "read"
+   },
    "url": "https://5il.co/213ef"
   },
   {
@@ -4070,6 +4090,10 @@
    "name": "sf:kevin-lynch",
    "pattern": "correction",
    "source": "Glens Falls Business Journal",
+   "state": {
+    "at": "2026-11-09T14:57:46.224Z",
+    "status": "read"
+   },
    "url": "https://www.glensfalls.com/glensfallsbusinessjournal/2026/02/slicfiber-accelerates-expansion-from-north-country-to-capital-region/"
   },
   {
@@ -4148,6 +4172,10 @@
    "name": "dr.angelesfelix",
    "pattern": "milestone",
    "source": "Distribute Hope",
+   "state": {
+    "at": "2026-11-09T14:58:17.395Z",
+    "status": "read"
+   },
    "url": "https://www.distributehope.org/compassion-coalition-supports-go-be-internationals-mission-in-the-dominican-republic/"
   },
   {
@@ -4161,6 +4189,10 @@
    "name": "criscitello_riley",
    "pattern": "milestone",
    "source": "UDisc",
+   "state": {
+    "at": "2026-11-09T14:58:19.210Z",
+    "status": "read"
+   },
    "url": "https://udisc.com/events/slc-disc-golf-tag-round-C1j8/leaderboard?round=1"
   },
   {
@@ -4174,6 +4206,10 @@
    "name": "ejb1203",
    "pattern": "new_credential",
    "source": "SUNY Adirondack",
+   "state": {
+    "at": "2026-11-09T14:58:20.834Z",
+    "status": "read"
+   },
    "url": "https://catalog.sunyacc.edu/news-stories/suny-adirondack-announces-deans-presidents-lists"
   },
   {
@@ -4187,6 +4223,10 @@
    "name": "ejb1203",
    "pattern": "correction",
    "source": "SUNY Adirondack",
+   "state": {
+    "at": "2026-11-09T14:57:43.415Z",
+    "status": "read"
+   },
    "url": "https://dev.sunyacc.edu/news-stories/suny-adirondack-announces-deans-and-presidents-lists"
   },
   {
@@ -4200,6 +4240,10 @@
    "name": "jake_seguin",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-09T14:58:27.961Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/news/NAddisonNationalGuard"
   },
   {
@@ -4213,6 +4257,10 @@
    "name": "sf:eli-larson",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T14:58:30.411Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/plm/name-134897-en.html"
   },
   {
@@ -4226,6 +4274,10 @@
    "name": "sf:eli-larson",
    "pattern": "new_credential",
    "source": "SUNY Canton Athletics",
+   "state": {
+    "at": "2026-11-09T14:58:30.411Z",
+    "status": "read"
+   },
    "url": "https://rooathletics.com/sports/mens-basketball/roster/eli-larson/7127"
   },
   {
@@ -4239,6 +4291,10 @@
    "name": "sf:eli-larson",
    "pattern": "new_credential",
    "source": "SUNY Canton Athletics",
+   "state": {
+    "at": "2026-11-09T14:58:30.411Z",
+    "status": "read"
+   },
    "url": "https://rooathletics.com/sports/mens-basketball/roster/eli-larson/7127"
   },
   {
@@ -4252,6 +4308,10 @@
    "name": "sf:eli-larson",
    "pattern": "milestone",
    "source": "SUNY Canton Athletics",
+   "state": {
+    "at": "2026-11-09T14:58:30.411Z",
+    "status": "read"
+   },
    "url": "https://rooathletics.com/news/2025/2/7/mens-basketball-larson-records-monster-double-double-vs-bengals.aspx"
   },
   {
@@ -4382,6 +4442,10 @@
    "name": "em_anuel_xa",
    "pattern": "employer_change",
    "source": "arXiv",
+   "state": {
+    "at": "2026-11-09T14:57:51.346Z",
+    "status": "read"
+   },
    "url": "https://arxiv.org/pdf/2506.00661"
   },
   {
@@ -4395,6 +4459,10 @@
    "name": "sf:makiah-barber",
    "pattern": "milestone",
    "source": "Massena Central School District",
+   "state": {
+    "at": "2026-11-09T14:52:18.862Z",
+    "status": "read"
+   },
    "url": "https://4.files.edl.io/44f5/09/17/25/142706-0df492fe-fe95-43f0-90ea-5b1b29bed09f.pdf"
   },
   {
@@ -4408,6 +4476,10 @@
    "name": "jazmine_albin",
    "pattern": "milestone",
    "source": "New York State Senate",
+   "state": {
+    "at": "2026-11-09T14:58:03.763Z",
+    "status": "read"
+   },
    "url": "https://www.nysenate.gov/legislation/resolutions/2013/j32"
   },
   {
@@ -4421,6 +4493,10 @@
    "name": "ct:grace ockrin",
    "pattern": "new_credential",
    "source": "St. Lawrence University",
+   "state": {
+    "at": "2026-11-09T14:58:05.801Z",
+    "status": "read"
+   },
    "url": "https://www.stlawu.edu/offices/academic-affairs/deans-list-spring-2025"
   },
   {
@@ -4434,6 +4510,10 @@
    "name": "sf:cody-benham",
    "pattern": "milestone",
    "source": "PDGA",
+   "state": {
+    "at": "2026-11-09T14:58:07.141Z",
+    "status": "read"
+   },
    "url": "https://www.pdga.com/tour/event/91266"
   },
   {
@@ -4447,6 +4527,10 @@
    "name": "sf:cody-benham",
    "pattern": "milestone",
    "source": "PDGA",
+   "state": {
+    "at": "2026-11-09T14:58:07.141Z",
+    "status": "read"
+   },
    "url": "https://www.pdga.com/tour/event/93440"
   },
   {
@@ -4460,6 +4544,10 @@
    "name": "katelynmatthews10",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-09T14:58:10.387Z",
+    "status": "read"
+   },
    "url": "https://canton.meritpages.com/stories/Katelyn-Matthews-Graduates-from-SUNY-Canton/161607275"
   },
   {
@@ -4473,6 +4561,10 @@
    "name": "sf:lennart-johns",
    "pattern": "milestone",
    "source": "New York State Association for Rural Health",
+   "state": {
+    "at": "2026-11-09T14:58:12.388Z",
+    "status": "read"
+   },
    "url": "https://nysarh.org/wp-content/uploads/2025/08/NYSARH_Rural-Health-Report_V3.pdf"
   },
   {
@@ -4486,6 +4578,10 @@
    "name": "liammillerlynch",
    "pattern": "milestone",
    "source": "St. Lawrence University Athletics",
+   "state": {
+    "at": "2026-11-09T14:58:14.178Z",
+    "status": "read"
+   },
    "url": "https://saintsathletics.com/sports/football/roster"
   }
  ],
