@@ -37722,10 +37722,13 @@
   },
   "sf:cassandra-fernandez": {
    "lastc": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-09T16:39:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-09T18:45:00Z",
+     "how": "filled"
+    }
    },
    "phone": {
     "state": "open",
@@ -37770,8 +37773,8 @@
    "cleared_at": "2026-11-03T00:17:00Z"
   },
   "lastc": {
-   "open": 2,
-   "new": 1,
+   "open": 1,
+   "new": 0,
    "regressed": 1,
    "cleared_at": null
   },
@@ -41419,5 +41422,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-09T18:35:00Z"
+ "updated": "2026-11-09T18:45:00Z"
 }
