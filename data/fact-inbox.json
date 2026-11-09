@@ -4583,6 +4583,97 @@
     "status": "read"
    },
    "url": "https://saintsathletics.com/sports/football/roster"
+  },
+  {
+   "anchor": "Precision Scuba Diving \u00b7 Tulum, Mexico",
+   "batch": "Extra round \u2014 Nov 9, 2026",
+   "display": "Emily Criscitello",
+   "fact": "Is a member of the MAC-HA Exploration Project team in the Tulum region of Quintana Roo, Mexico, which since Jul 2026 has expanded from three initial water openings to 11 known cenotes and approximately 1,370 m (4,500 ft) of explored flooded passage",
+   "id": "fi-20261109-ct-emily-criscitello-is-a-member-of-the-mac-h",
+   "key": "ct:emily criscitello",
+   "learned": "2026-11-09",
+   "name": "ct:emily criscitello",
+   "pattern": "milestone",
+   "source": "InDEPTH",
+   "url": "https://indepthmag.com/state-of-cave-exploration-2026/"
+  },
+  {
+   "anchor": "27th Infantry Brigade Combat Team \u00b7 Human resources",
+   "batch": "Extra round \u2014 Nov 9, 2026",
+   "display": "Ryan Blount",
+   "fact": "Participated in the 20km Royal Danish Air Force Ruck March at Hancock Field Air National Guard Base in Syracuse, New York, on Aug 29, 2026, as a human resources technician assigned to the 27th Infantry Brigade Combat Team",
+   "id": "fi-20261109-sf-ryan-blount-participated-in-the-20km",
+   "key": "sf:ryan-blount",
+   "learned": "2026-11-09",
+   "name": "sf:ryan-blount",
+   "pattern": "milestone",
+   "source": "DVIDS",
+   "url": "https://www.dvidshub.net/image/10008844/new-york-national-guard-members-conduct-2026-royal-danish-air-force-ruck-march-hancock-field-air-national-guard-base"
+  },
+  {
+   "anchor": "27th Infantry Brigade Combat Team \u00b7 Human resources",
+   "batch": "Extra round \u2014 Nov 9, 2026",
+   "display": "Samantha Antolik",
+   "fact": "Participated in the 20km Royal Danish Air Force Ruck March at Hancock Field Air National Guard Base in Syracuse, New York, on Aug 29, 2026, as the 27th Infantry Brigade Combat Team's human resources noncommissioned officer in charge",
+   "id": "fi-20261109-sf-antolik-participated-in-the-20km",
+   "key": "sf:antolik",
+   "learned": "2026-11-09",
+   "name": "sf:antolik",
+   "pattern": "milestone",
+   "source": "DVIDS",
+   "url": "https://www.dvidshub.net/image/10008856/new-york-national-guard-members-conduct-2026-royal-danish-air-force-ruck-march-hancock-field-air-national-guard-base"
+  },
+  {
+   "anchor": "SUNY Potsdam \u00b7 Environmental Studies",
+   "batch": "Extra round \u2014 Nov 9, 2026",
+   "display": "Sarah Haller",
+   "fact": "Earned a Bachelor of Arts degree in Environmental Studies from SUNY Potsdam, May 2023",
+   "id": "fi-20261109-sarahchristinehaller-earned-a-bachelor-of-art",
+   "key": "sarahchristinehaller",
+   "learned": "2026-11-09",
+   "name": "sarahchristinehaller",
+   "pattern": "new_credential",
+   "source": "SUNY Potsdam",
+   "url": "https://potsdam.meritpages.com/stories/Sarah-Haller-Set-to-Graduate-from-SUNY-Potsdam/108809454"
+  },
+  {
+   "anchor": "SUNY Potsdam \u00b7 Environmental Studies",
+   "batch": "Extra round \u2014 Nov 9, 2026",
+   "display": "Sarah Haller",
+   "fact": "Majored in Environmental Studies and minored in Therapeutic Recreation at SUNY Potsdam, where she was president of the environmental club",
+   "id": "fi-20261109-sarahchristinehaller-majored-in-environmental",
+   "key": "sarahchristinehaller",
+   "learned": "2026-11-09",
+   "name": "sarahchristinehaller",
+   "pattern": "milestone",
+   "source": "SUNY Potsdam Athletics",
+   "url": "https://potsdambears.com/sports/womens-cross-country/roster/sarah-haller/2360"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Criminal Investigation",
+   "batch": "Extra round \u2014 Nov 9, 2026",
+   "display": "Susan Buckley",
+   "fact": "Holds an M.Ed. from SUNY Potsdam; her hometown is Dannemora, New York",
+   "id": "fi-20261109-ct-susan-buckley-holds-an-m-ed-from-suny-",
+   "key": "ct:susan buckley",
+   "learned": "2026-11-09",
+   "name": "ct:susan buckley",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://www.yumpu.com/en/document/view/47729659/commnity-report-u-suny-canton/13"
+  },
+  {
+   "anchor": "Albany College of Pharmacy and Health Sciences \u00b7 PharmD student",
+   "batch": "Extra round \u2014 Nov 9, 2026",
+   "display": "Ria Amo",
+   "fact": "Serves as Student Liaison for the American College of Clinical Pharmacy student chapter at Albany College of Pharmacy and Health Sciences",
+   "id": "fi-20261109-ria-amo-serves-as-student-liaiso",
+   "key": "ria.amo",
+   "learned": "2026-11-09",
+   "name": "ria.amo",
+   "pattern": "title_change",
+   "source": "American College of Clinical Pharmacy",
+   "url": "https://www.accp.com/stunet/chapters/findChapter.aspx"
   }
  ],
  "patterns": {
