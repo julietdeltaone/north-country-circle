@@ -37719,6 +37719,26 @@
     "first_seen": "2026-11-09T14:24:00Z",
     "source": "New profile"
    }
+  },
+  "sf:cassandra-fernandez": {
+   "lastc": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-09T16:39:00Z",
+    "source": "New profile"
+   },
+   "phone": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-09T16:39:00Z",
+    "source": "New profile"
+   },
+   "skills": {
+    "state": "open",
+    "class": "new",
+    "first_seen": "2026-11-09T16:39:00Z",
+    "source": "New profile"
+   }
   }
  },
  "lanes": {
@@ -37747,14 +37767,14 @@
    "cleared_at": "2026-11-03T00:17:00Z"
   },
   "lastc": {
-   "open": 1,
-   "new": 0,
+   "open": 2,
+   "new": 1,
    "regressed": 1,
    "cleared_at": null
   },
   "phone": {
-   "open": 1,
-   "new": 1,
+   "open": 2,
+   "new": 2,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -37765,8 +37785,8 @@
    "cleared_at": "2026-11-05T02:52:00Z"
   },
   "skills": {
-   "open": 1,
-   "new": 1,
+   "open": 2,
+   "new": 2,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -41396,5 +41416,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-09T16:28:00Z"
+ "updated": "2026-11-09T16:39:00Z"
 }
