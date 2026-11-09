@@ -4,20 +4,28 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "ct:jen tice",
-   "display": "Jen Tice",
-   "field": "universities",
-   "value": "SUNY Potsdam",
-   "conf": 74,
-   "id": "pf-90ed02404e"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
    "value": "Army National Guard",
    "conf": 100,
    "id": "pf-76ead40583"
+  },
+  {
+   "key": "sf:sarah-diederich",
+   "display": "Sarah Diederich",
+   "field": "universities",
+   "value": "SUNY Potsdam",
+   "conf": 92,
+   "id": "pf-ff7476fb0c"
+  },
+  {
+   "key": "sf:sarah-diederich",
+   "display": "Sarah Diederich",
+   "field": "specialty",
+   "value": "Teaching",
+   "conf": 90,
+   "id": "pf-a2be5ddfbb"
   }
  ],
  "shelved": [
@@ -44,26 +52,16 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 23,
+   "tentative_floor": 10,
    "shelved": 2
   },
   "items": [
    {
-    "id": "pf-b7548611b7",
-    "key": "bella.criscitello",
-    "display": "Bella Criscitello",
+    "id": "pf-a4c989c515",
+    "key": "cashhyyy",
+    "display": "Cashlynn Colbert",
     "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-565602b904",
-    "key": "ceciliemaesmith",
-    "display": "Ceciliemaesmith",
-    "field": "location_on_file",
-    "value": "Massena, NY",
+    "value": "Fort Covington, NY",
     "rules": [
      "tentative_floor"
     ]
@@ -72,26 +70,6 @@
     "id": "pf-5e102198ad",
     "key": "chiara.frasc",
     "display": "Chiara",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-173d54d0df",
-    "key": "constance_pircsuk",
-    "display": "Constance Pircsuk",
-    "field": "location_on_file",
-    "value": "Massena, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-030c811659",
-    "key": "daniels_j",
-    "display": "Josh Daniels",
     "field": "location_on_file",
     "value": "Potsdam, NY",
     "rules": [
@@ -139,36 +117,6 @@
     ]
    },
    {
-    "id": "pf-b76aacb3de",
-    "key": "i_vaccaro1",
-    "display": "Isabelle Vaccaro",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-daa096ed53",
-    "key": "jackkessler__",
-    "display": "Jack",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-447830b238",
-    "key": "jocelyn_shatraw",
-    "display": "Jocy May",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
     "id": "pf-d4ad11a2e5",
     "key": "kaitance.jenks19",
     "display": "Katie Jenks",
@@ -179,81 +127,11 @@
     ]
    },
    {
-    "id": "pf-50f2e63c87",
-    "key": "leah.walker10",
-    "display": "Leah Walker",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-be79e199b6",
-    "key": "livsbeautyco",
-    "display": "O L I V I A",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-6400f48f56",
-    "key": "olaolugbenle",
-    "display": "",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-3a2f723aec",
-    "key": "patrick_tombs",
-    "display": "",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
     "id": "pf-18cbfe8a26",
     "key": "philipwangerin",
     "display": "Philip Wangerin",
     "field": "location_on_file",
     "value": "Canton, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-dd3967b94c",
-    "key": "richardcriscit",
-    "display": "Richard Criscitello",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-1a1f4b96a9",
-    "key": "tarron34",
-    "display": "Tarron Colbert",
-    "field": "location_on_file",
-    "value": "Norwood, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-a79a6b0360",
-    "key": "trista_ashley10",
-    "display": "Trista",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
     "rules": [
      "tentative_floor"
     ]
