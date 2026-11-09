@@ -13836,6 +13836,142 @@
    "fields": {},
    "published": "",
    "novelty": "expands"
+  },
+  {
+   "id": "lr-20261108-sammace11-serves-as-assistant-director-of-budg",
+   "name": "sammace11",
+   "display": "Sam Mace",
+   "run_date": "2026-11-08",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "St. Lawrence University's Safety Committee page lists a Sam Mace as Assistant Director of Budget & Planning for 2026-2027. The university is in Canton, New York.",
+   "file_text": "Serves as Assistant Director of Budget and Planning at St. Lawrence University in Canton, New York, for 2026-2027",
+   "source": "St. Lawrence University",
+   "url": "https://www.stlawu.edu/offices/environmental-health-and-safety/safety-committee",
+   "anchors": [
+    "Canton, New York, his area on file"
+   ],
+   "quote": "Sam Mace Assistant Director of Budget & Planning, x5543",
+   "missing_gate": "The page names a Sam Mace in Canton, but nothing on it ties him to SUNY Potsdam, lacrosse, or mathematics.",
+   "confidence": 60,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 26,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261108-ct-savannah-adams-worked-as-a-teacher-aide-at-st-lawre",
+   "name": "ct:savannah adams",
+   "display": "Savannah Adams",
+   "run_date": "2026-11-08",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "Brasher Falls Central School District board minutes from August 22, 2022 say a Savannah Adams's teacher aide position at St. Lawrence Central School increased from 0.42 to 1.0 FTE. Her record already shows a Drama Club co-advisor role at the same school in July 2023.",
+   "file_text": "Worked as a teacher aide at St. Lawrence Central School in Brasher Falls, with her position increased from 0.42 to 1.0 FTE in August 2022",
+   "source": "Brasher Falls Central School District",
+   "url": "https://5il.co/1i7pe",
+   "anchors": [
+    "St. Lawrence Central School, where her Drama Club co-advisor role is already on file"
+   ],
+   "quote": "Savannah Adams \u2013 Teacher Aide position increases from .42 to 1.0 FTE",
+   "missing_gate": "The minutes name a Savannah Adams at her school, but nothing else on the page ties her to New Testament Church.",
+   "confidence": 73,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 27,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "2022-08-22",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261108-benlevendusky-ben-levendusky-lives-in-lisbon-with-",
+   "name": "benlevendusky",
+   "display": "Ben Levendusky",
+   "run_date": "2026-11-08",
+   "run_label": "Compounding lane",
+   "category": "sensitive",
+   "claim": "The official Christian Fellowship Center Madrid page names Ben and Keila Levendusky's seven children as Elena, Adriana, Ben Jr., Giselle, Leo, Victoria, and Sebastian. His record says only that he has seven children, with no names.",
+   "file_text": "Ben Levendusky lives in Lisbon with his wife Keila and their seven children, Elena, Adriana, Ben Jr., Giselle, Leo, Victoria, and Sebastian",
+   "source": "Christian Fellowship Center",
+   "url": "https://www.cfconline.org/madrid/",
+   "anchors": [
+    "Christian Fellowship Center Madrid, his church on file",
+    "Lisbon, New York, his town on file",
+    "His wife Keila, on file"
+   ],
+   "quote": "He lives in Lisbon with his wife, Keila, and seven children (Elena, Adriana, Ben Jr., Giselle, Leo, Victoria, and Sebastian).",
+   "missing_gate": "This is about Ben's family, so I always check with you first.",
+   "confidence": 92,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 26,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261108-ethan-j-bates-ethan-bates-s-father-christopher-jam",
+   "name": "ethan_j_bates",
+   "display": "Ethan Bates",
+   "run_date": "2026-11-08",
+   "run_label": "Compounding lane",
+   "category": "sensitive",
+   "claim": "Ethan Bates's father, Christopher James Bates of North Bangor, died on July 19, 2024 in a motorcycle accident. His obituary names his wife Teri Bates and his son Ethan Bates of Saranac Lake, and says he was a deacon at Christian Fellowship Center in Moira.",
+   "file_text": "Ethan Bates's father, Christopher James Bates of North Bangor, died in a motorcycle accident on July 19, 2024",
+   "source": "Tribute Archive",
+   "url": "https://www.tributearchive.com/obituaries/32411141/christopher-j-bates",
+   "anchors": [
+    "His mother Teri Bates, on file",
+    "North Bangor, his hometown on file",
+    "Saranac Lake, where he lives on file",
+    "Christian Fellowship Center"
+   ],
+   "quote": "Christopher is survived by his loving wife, Teri of North Bangor; his son, Ethan Bates of Saranac Lake",
+   "missing_gate": "This is about Ethan's family, so I always check with you first.",
+   "confidence": 89,
+   "confidence_parts": {
+    "identity": 47,
+    "source": 24,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "2024-07-19",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261108-em-anuel-xa-co-authored-the-2025-arxiv-paper-ely",
+   "name": "em_anuel_xa",
+   "display": "Emmanuel Atindama",
+   "run_date": "2026-11-08",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "Emmanuel Atindama is a co-author of the June 2025 arXiv paper 'Elytra: A Flexible Framework for Securing Large Vision Systems' with Clarkson authors Richard E. Neddo, Zander W. Blasingame, and Chen Liu, and the paper lists his affiliation as the University of Toledo rather than Clarkson University.",
+   "file_text": "Co-authored the 2025 arXiv paper 'Elytra' on securing large vision systems with Clarkson researchers and was listed with a University of Toledo affiliation",
+   "source": "arXiv",
+   "url": "https://arxiv.org/pdf/2506.00661",
+   "anchors": [
+    "Clarkson University co-authors Neddo, Blasingame, and Liu",
+    "His mathematics and machine learning research area on file"
+   ],
+   "quote": "Richard E. Neddo\u00b9, Emmanuel Atindama\u00b2, Zander W. Blasingame\u00b9,\u00b3*, and Chen Liu\u00b9,* \u2014 \u00b9Clarkson University, \u00b2University of Toledo",
+   "missing_gate": "This follows from Emmanuel's Clarkson research circle, but one preprint line has not confirmed a move or job on its own yet.",
+   "confidence": 73,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 14,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2025-06-02",
+   "novelty": "new"
   }
  ]
 }
