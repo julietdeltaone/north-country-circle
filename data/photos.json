@@ -2269,12 +2269,13 @@
    "type": "Employer team introduction photo"
   },
   {
-   "evidence": "Graduates page lists Ethan Ryan (AAS Criminal Justice) but its only image is captioned 'President Zvi Szafran speaks during Commencement 2024' — not him. Merit listings text-only.",
+   "evidence": "SUNY Potsdam Law Enforcement Training Institute graduation group photo (Knowles Hall, July 18): the source page's caption describes all the graduating officers in the frame and its graduate list names Ethan Ryan under Norwood Police Department, matching his profile (SUNY Canton AAS Criminal Justice 2024, Norwood PD). His individual position in the group is not identified, so this files as possible, not confirmed. Coordinator GET-verified 2026-11-09 (HTTP 200, image/jpeg) and eyeballed the frame against the institute banner.",
    "name": "Ethan Ryan",
-   "photo_url": null,
-   "source_page": "http://www.canton.edu/news/2024/graduates.php",
-   "status": "no_photo",
-   "type": null
+   "photo_url": "https://www.potsdam.edu/sites/default/files/styles/optimized/public/images/news/Police%20academy%20graduates.jpg?itok=8nsX0ApA",
+   "source_page": "https://www.potsdam.edu/news/lawenforcementgraduates",
+   "status": "possible",
+   "type": "Police academy graduation group photo (SUNY Potsdam LETI)",
+   "added": "2026-11-09"
   },
   {
    "evidence": "Only link on file is Facebook (auth).",
