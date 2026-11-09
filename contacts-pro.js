@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.4.9';
+var APP_VERSION = '4.5.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9793,59 +9793,76 @@ function lrChromeHTML(on, title, subHTML, subId){
     '<a href="#/daily/decide"' + (on === 'decide' ? ' class="on"' : '') + '>Needs a decision <span class="n' + (decN ? '' : ' zero') + '">(' + decN + ')</span></a>' +
     '<a href="#/daily/filings"' + (on === 'filings' ? ' class="on"' : '') + '>History</a></nav>';
 }
-/* V4.1 Today: the fresh rule up front, then the latest brief's
-   filed facts as cards — fact, the dates we know, the source, and
-   the person's record tier + currency band. */
-function lrDateBadge(iso, kindLabel){
-  /* V4.3.0: the publish date is the hero — a calendar-page badge,
-     month over a big day number. Falls back to the found date,
-     labelled as found, when there is no publish date. */
-  var MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  var FULL = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+/* V4.5.0 Today (JD, 2026-11-09): this tab is reserved for FRESH
+   facts only — items the fresh sweep verified as published within
+   the last 21 days. A fact earns a card when it is flagged fresh
+   (or carried on the brief's hot list) AND its published date is
+   inside the window; the card's hero badge is that published
+   date. The brief's own date is never a card date — an old fact
+   discovered today is not today's news. Everything else the
+   brief filed lives in New Facts. */
+function lrPubInWindow(iso){
   var p = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
-  var mo = 0, dy = 0;
-  if(p){ mo = +p[2]; dy = +p[3]; }
-  else {
-    var m2 = /([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})/.exec(String(iso || ''));
-    if(m2){ var mi = FULL.indexOf(m2[1].toLowerCase()); if(mi < 0) mi = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m2[1].slice(0, 3).toLowerCase()); if(mi >= 0){ mo = mi + 1; dy = +m2[2]; } }
-  }
-  if(!mo || !dy) return '';
-  return '<div class="lr-cal" title="' + esc(kindLabel + ' ' + iso) + '"><span class="lr-cal-m">' + MON[mo - 1] + '</span><span class="lr-cal-d">' + dy + '</span><span class="lr-cal-k">' + esc(kindLabel) + '</span></div>';
+  if(!p) return false;
+  var pub = Date.UTC(+p[1], +p[2] - 1, +p[3]);
+  var t = new Date();
+  var now = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate());
+  var days = Math.round((now - pub) / 86400000);
+  return days >= 0 && days <= 21;
 }
 function lrTodayHTML(){
-  var today = todayStr();
-  var freshKeys = {};
-  (DT.hot || []).forEach(function(h){ freshKeys[(h.name || '') + '|' + (h.text || '')] = 1; });
-  var cards = '', nFacts = 0, nFresh = 0;
+  var hotKeys = {};
+  (DT.hot || []).forEach(function(h){ hotKeys[(h.name || '') + '|' + (h.text || '')] = 1; });
+  var cards = '', nFiled = 0, nFreshFiled = 0, nHotExtra = 0;
+  var rendered = {};
+  function diOf(display, name){
+    for(var i = 0; i < D.directory.length; i++){ if(dispName(D.directory[i]) === (display || name)) return i; }
+    return null;
+  }
+  function cardFor(display, name, fc, di, st){
+    var dates = '';
+    if(fc.date || fc.event_date) dates += '<span><span class="dl">Happened</span><b>' + esc(fc.date || fc.event_date) + '</b></span>';
+    return '<div class="pv-card lr-fc">' + lrDateBadge(fc.published, 'Published') + '<div class="lr-fc-main"><div class="chead"><span class="who">' + (di != null ? '<a class="lnk" href="#/p/' + di + '">' + esc(display || name) + '</a>' : esc(display || name)) + '</span>' + v4ChipAbout() +
+      (st ? '<span class="pv-chip mut">' + V4_TIER_LABEL[st.tier] + ' \u00b7 ' + st.score + '/100 \u00b7 ' + V4_BAND_LABEL[st.band] + '</span>' : '') + '</div>' +
+      '<p class="pv-fact">' + esc(fc.text || '') + '</p>' +
+      (dates ? '<div class="pv-dates">' + dates + '</div>' : '') +
+      '<div class="pv-conf"><span class="reasons">' + (fc.url ? 'Source: <a class="lnk" href="' + esc(fc.url) + '" target="_blank" rel="noopener">' + esc(fc.source || 'link') + '</a>' : (fc.source ? 'Source: ' + esc(fc.source) : '')) + '</span></div></div></div>';
+  }
   (DT.filed || []).forEach(function(f){
-    var di = null;
-    for(var i = 0; i < D.directory.length; i++){ if(dispName(D.directory[i]) === (f.display || f.name)){ di = i; break; } }
+    var di = diOf(f.display, f.name);
     var st = di != null ? v4PersonStats(D.directory[di]) : null;
     (f.facts || []).forEach(function(fc){
-      nFacts++;
-      var isFresh = !!(fc.fresh || freshKeys[(f.name || '') + '|' + (fc.text || '')]);
-      if(isFresh) nFresh++;
-      var badge = fc.published ? lrDateBadge(fc.published, 'Published') : lrDateBadge(DT.date || today, 'Found');
-      var dates = '';
-      if(fc.date || fc.event_date) dates += '<span><span class="dl">Happened</span><b>' + esc(fc.date || fc.event_date) + '</b></span>';
-      if(fc.published && badge) dates += '<span><span class="dl">Found</span><b>' + esc(fmtIsoD(DT.date || today)) + '</b></span>';
-      cards += '<div class="pv-card lr-fc">' + badge + '<div class="lr-fc-main"><div class="chead"><span class="who">' + (di != null ? '<a class="lnk" href="#/p/' + di + '">' + esc(f.display || f.name) + '</a>' : esc(f.display || f.name)) + '</span>' + v4ChipAbout() +
-        (isFresh ? '<span class="pv-chip ok">FRESH</span>' : '') +
-        (st ? '<span class="pv-chip mut">' + V4_TIER_LABEL[st.tier] + ' \u00b7 ' + st.score + '/100 \u00b7 ' + V4_BAND_LABEL[st.band] + '</span>' : '') + '</div>' +
-        '<p class="pv-fact">' + esc(fc.text || '') + '</p>' +
-        (dates ? '<div class="pv-dates">' + dates + '</div>' : '') +
-        '<div class="pv-conf"><span class="reasons">' + (fc.url ? 'Source: <a class="lnk" href="' + esc(fc.url) + '" target="_blank" rel="noopener">' + esc(fc.source || 'link') + '</a>' : (fc.source ? 'Source: ' + esc(fc.source) : '')) + '</span></div></div></div>';
+      nFiled++;
+      if(!(fc.fresh || hotKeys[(f.name || '') + '|' + (fc.text || '')])) return;
+      if(!lrPubInWindow(fc.published)) return;
+      nFreshFiled++;
+      rendered[(f.name || '') + '|' + (fc.text || '')] = 1;
+      cards += cardFor(f.display, f.name, fc, di, st);
     });
   });
+  (DT.hot || []).forEach(function(h){
+    if(rendered[(h.name || '') + '|' + (h.text || '')]) return;
+    if(!lrPubInWindow(h.published)) return;
+    nHotExtra++;
+    var di = diOf(h.display, h.name);
+    var st = di != null ? v4PersonStats(D.directory[di]) : null;
+    cards += cardFor(h.display, h.name, h, di, st);
+  });
+  var shown = nFreshFiled + nHotExtra;
+  var otherN = nFiled - nFreshFiled;
   var checkedN = (DT.checked || []).length;
-  /* V4.3.0 (JD): the latest brief reads as a hero panel, and the
-     fact cards run two to a row. */
-  var hero = '<div class="lr-hero"><div class="lr-hero-l"><span class="lr-hero-k">Latest brief</span><b>' + esc(fmtIsoD(DT.date || today)) + '</b></div>' +
-    '<div class="lr-hero-stats"><span><b>' + checkedN + '</b> checked</span><span><b>' + nFacts + '</b> fact' + (nFacts === 1 ? '' : 's') + ' filed</span><span><b>' + nFresh + '</b> fresh</span></div>' +
-    '<span class="lr-hero-note">Fresh = happened in the last 21 days</span></div>';
-  return hero + '<div class="lr-cards2">' + (cards || '<div class="pv-card"><p class="pv-fact">Nothing filed in the latest brief.</p></div>') + '</div>';
-}
-/* V4.1 History: last-checked coverage + the change log (the old
+  var hero = '<div class="lr-hero"><div class="lr-hero-l"><span class="lr-hero-k">Fresh facts</span><b>' + shown + '</b></div>' +
+    '<div class="lr-hero-stats"><span><b>' + checkedN + '</b> checked</span><span><b>' + shown + '</b> fresh</span>' + (otherN ? '<span><b>' + otherN + '</b> more in New facts</span>' : '') + '</div>' +
+    '<span class="lr-hero-note">Fresh = published in the last 21 days</span></div>';
+  if(!cards){
+    var headline = (DT.fresh && DT.fresh.headline) ? esc(DT.fresh.headline) : 'Nothing fresh in the latest brief.';
+    var empty = '<div class="pv-card"><p class="pv-fact">' + headline + '</p>' +
+      (otherN ? '<p class="pv-fact" style="margin-top:6px">The brief also filed ' + otherN + ' fact' + (otherN === 1 ? '' : 's') + ' from older sources. ' + (otherN === 1 ? 'It lives' : 'They live') + ' in <a class="lnk" href="#/daily/facts">New facts</a> — this page only shows facts published in the last 21 days.</p>' : '') +
+      '</div>';
+    return hero + '<div class="lr-cards2">' + empty + '</div>';
+  }
+  return hero + '<div class="lr-cards2">' + cards + '</div>';
+}/* V4.1 History: last-checked coverage + the change log (the old
    Filings feed, unchanged underneath). */
 function lrHistoryHTML(){
   var fr = DT && DT.freshness ? DT.freshness : null;
