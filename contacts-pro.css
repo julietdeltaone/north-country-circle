@@ -6975,9 +6975,6 @@ button.af-name:hover{color:var(--pv-blue);text-decoration:underline}
 .af-foot{display:flex;align-items:center;gap:14px;padding:14px 0 4px}
 .af-count{font-size:12px;color:var(--pv-mut)}
 .af-empty{padding:18px 0}
-.af-undated{margin-top:34px}
-.af-undated h3{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pv-mut);margin:0 0 2px}
-.af-undated-sub{font-size:12.5px;color:var(--pv-mut);margin:0 0 6px}
 .af-now{margin-top:40px;border-top:1px solid var(--pv-line);padding-top:12px}
 .af-now-l{font:700 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--pv-mut);margin-bottom:8px}
 .af-now-row{display:flex;gap:8px;align-items:center;padding:4px 0;font-size:12.5px}
