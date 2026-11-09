@@ -4,22 +4,6 @@
  "suggestions": [],
  "auto_apply": [
   {
-   "key": "sf:ryan-blount",
-   "display": "Ryan Blount",
-   "field": "groups",
-   "value": "U.S. Air Force",
-   "conf": 100,
-   "id": "pf-66de773b70"
-  },
-  {
-   "key": "sf:antolik",
-   "display": "Samantha Antolik",
-   "field": "groups",
-   "value": "U.S. Air Force",
-   "conf": 100,
-   "id": "pf-54e54b10a8"
-  },
-  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
