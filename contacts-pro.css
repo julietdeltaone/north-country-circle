@@ -6948,4 +6948,50 @@ button.af-name:hover{color:var(--pv-blue);text-decoration:underline}
 .af-src:hover{text-decoration:underline}
 .af-foot{display:flex;align-items:center;gap:14px;padding:14px 0 4px}
 .af-count{font-size:12px;color:var(--pv-mut)}
+
 .af-empty{padding:18px 0}
+
+/* ============================================================
+   V4.9.0 cont. — hero date box + hero source chip rules.
+   view switch, condensed calendar. The date is the packet's
+   hero element (a small calendar page, .af-hero-date) and the
+   source rides a pill chip (.af-src-chip). Calendar rows are
+   compact (hero date + name/fact + chip, no avatar). Sparse
+   runs of empty months collapse to one 32px divider. Theme
+   tokens only (--pv-*), so light and dark both resolve.
+   Phone: hero date 52px wide.
+   ============================================================ */
+.af-switch{display:inline-flex;gap:2px;background:var(--pv-panel2);border:1px solid var(--pv-line);border-radius:999px;padding:2px;margin:2px 0 14px}
+.af-switch a{padding:4px 14px;border-radius:999px;font:600 12.5px var(--sans);color:var(--pv-mut);text-decoration:none}
+.af-switch a.on{background:var(--pv-panel);color:var(--pv-text);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.af-hero-date{flex:none;width:64px;border:1px solid var(--pv-line2);border-radius:10px;background:var(--pv-panel);display:flex;flex-direction:column;align-items:center;padding:5px 2px 6px;line-height:1.05;text-align:center}
+.af-hd-m{font:700 10px var(--sans);letter-spacing:.12em;color:var(--pv-blue)}
+.af-hd-d{font:800 24px var(--sans);color:var(--pv-text);margin:1px 0}
+.af-hd-y{font:600 10.5px var(--sans);color:var(--pv-mut)}
+.af-hd-y.big{font:800 17px var(--sans);color:var(--pv-text);margin:2px 0 1px}
+.af-hd-y.huge{font:800 19px var(--sans);color:var(--pv-text);margin:3px 0 2px}
+.af-hd-band{margin-top:4px;border-top:1px dashed var(--pv-line2);padding-top:3px;font:700 8px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pv-dim);width:100%}
+.af-src-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:999px;border:1px solid color-mix(in srgb,var(--pv-blue) 45%,transparent);background:var(--pv-blue-bg);color:var(--pv-blue);font:600 11.5px var(--sans);text-decoration:none;white-space:nowrap}
+a.af-src-chip:hover{text-decoration:underline}
+.af-src-chip.plain{border-color:var(--pv-line2);background:var(--pv-panel2);color:var(--pv-mut)}
+.afc-year{display:flex;align-items:baseline;gap:10px;margin:26px 0 10px}
+.afc-year:first-child{margin-top:2px}
+.afc-year h2{font:800 21px var(--sans);color:var(--pv-text);margin:0}
+.afc-ycount{font:600 12px var(--sans);color:var(--pv-mut)}
+.afc-block{background:var(--pv-panel);border:1px solid var(--pv-line);border-radius:14px;padding:6px 16px 10px;margin:0 0 12px}
+.afc-mhead{font:700 14.5px var(--sans);color:var(--pv-text);margin:10px 0 2px}
+.afc-mcount{display:inline-block;margin-left:6px;padding:0 7px;border-radius:999px;background:var(--pv-panel2);border:1px solid var(--pv-line);font:700 11px var(--sans);color:var(--pv-mut);vertical-align:1px}
+.afc-row{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--pv-line)}
+.afc-row:first-child{border-top:0}
+.afc-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.afc-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.afc-gap{display:flex;align-items:center;justify-content:center;height:32px;margin:2px 0 12px;border:1px dashed var(--pv-line2);border-radius:9px;font:600 11.5px var(--sans);color:var(--pv-dim);text-align:center;padding:0 10px}
+.afc-more{margin:6px 0 4px;padding:5px 14px;border-radius:999px;border:1px solid var(--pv-line2);background:var(--pv-panel2);color:var(--pv-blue);font:600 12px var(--sans);cursor:pointer}
+.afc-more:hover{text-decoration:underline}
+@media (max-width:640px){
+  .af-hero-date{width:52px}
+  .af-hd-d{font-size:20px}
+  .af-hd-y.huge{font-size:16px}
+  .afc-block{padding:4px 10px 8px}
+}
+
