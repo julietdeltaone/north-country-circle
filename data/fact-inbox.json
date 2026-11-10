@@ -4992,6 +4992,10 @@
    "name": "e._.flam",
    "pattern": "new_credential",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-10T13:06:00.249Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/node?page=43"
   },
   {
@@ -5005,6 +5009,10 @@
    "name": "ct:lydia bartlett",
    "pattern": "milestone",
    "source": "Rhode Island Catholic",
+   "state": {
+    "at": "2026-11-10T13:06:01.875Z",
+    "status": "read"
+   },
    "url": "https://thericatholic.com/stories/from-the-classroom-to-the-capital-young-catholics-stand-up-for-life,15223"
   },
   {
@@ -5018,6 +5026,10 @@
    "name": "marissa989",
    "pattern": "correction",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-10T13:06:03.787Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2020/honors2020.php"
   }
  ],
