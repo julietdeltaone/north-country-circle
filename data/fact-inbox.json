@@ -4946,6 +4946,32 @@
     "status": "read"
    },
    "url": "https://www.accp.com/stunet/chapters/findChapter.aspx"
+  },
+  {
+   "anchor": "Worship recording artist \u00b7 Potsdam, NY",
+   "batch": "PM run \u2014 Nov 9, 2026",
+   "display": "Gabe Paladin",
+   "fact": "Released the album \"Behold Him\" (12 songs) on Oct 30, 2026",
+   "id": "fi-20261109-gabepaladin-released-the-album-behold-him",
+   "key": "gabepaladin",
+   "learned": "2026-11-09",
+   "name": "gabepaladin",
+   "pattern": "discography",
+   "source": "Spotify",
+   "url": "https://open.spotify.com/album/1Psupdzwj0IiBSVwa792d9"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 Physical Therapy",
+   "batch": "PM run + compounding lane \u2014 Nov 9, 2026",
+   "display": "Jaime Bicknell",
+   "fact": "Board certification as a clinical specialist in pelvic and women's health physical therapy runs from Jun 30, 2020 through Jun 29, 2030",
+   "id": "fi-20261109-sf-jaime-bicknell-board-certification-runs-from",
+   "key": "sf:jaime-bicknell",
+   "learned": "2026-11-09",
+   "name": "sf:jaime-bicknell",
+   "pattern": "new_credential",
+   "source": "APTA ChoosePT",
+   "url": "https://www.choosept.com/find-a-pt/b/i/jaime-b.-bicknell-pt-dpt"
   }
  ],
  "patterns": {
