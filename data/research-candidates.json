@@ -14710,6 +14710,142 @@
    "fields": {},
    "published": "2026-11-04",
    "novelty": "expands"
+  },
+  {
+   "id": "lr-20261109-ct-dr-kring-son-joseph-kring-was-named-salutator",
+   "name": "ct:dr kring",
+   "display": "Lawrence Kring",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation (PM)",
+   "category": "sensitive",
+   "claim": "Morristown Central School announced its Class of 2026 leaders: Joseph Kring, son of Lawrence and Jane Kring, is the salutatorian with a 96.65 average.",
+   "file_text": "Son Joseph Kring was named Salutatorian of Morristown Central School's Class of 2026, with a 96.65 average",
+   "source": "Morristown Central School",
+   "url": "https://www.greenrockets.org/apps/news/article/2203708?categoryId=17232",
+   "anchors": [
+    "Lawrence Kring, named on the page as \"Lawrence Kring, III\"",
+    "His doctor degree (the page styles him \"Drs. Lawrence Kring, III\")"
+   ],
+   "quote": "This year's Salutatorian is Joseph Kring. Joseph has earned a cumulative average of 96.65, and he will graduate with a Regents Diploma with Advanced Designation with Honors, Mastery in Mathematics and Science, and the Seal of Civic Readiness. Joseph is the son of Drs. Lawrence Kring, III and Jane Kring.",
+   "missing_gate": "This is about Lawrence's family, so I always check with you first.",
+   "confidence": 86,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 28,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-kylgot-deputy-sheriff-with-the-st-lawrence-",
+   "name": "kylgot",
+   "display": "Kyle Gotham",
+   "run_date": "2026-11-09",
+   "run_label": "Daily rotation (PM)",
+   "category": "source",
+   "claim": "GovSalaries' St. Lawrence County salary list for 2025 names Kyle Gotham as a Deputy Sheriff / Undersheriff.",
+   "file_text": "Deputy Sheriff with the St. Lawrence County Sheriff's Office in 2025",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/salaries/NY/st-lawrence?page=4",
+   "anchors": [
+    "St. Lawrence County Sheriff's Office (profile employer)",
+    "Edwards, NY / St. Lawrence County (profile location)"
+   ],
+   "quote": "| 2025 Deputy Sheriff /Undersheriff St. Lawrence | Kyle Gotham | 2025 | Deputy Sheriff /Undersheriff | St. Lawrence |",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 70,
+   "confidence_parts": {
+    "identity": 40,
+    "source": 15,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-beth-randall-served-as-a-peer-reviewer-for-the-20",
+   "name": "sf:beth-randall",
+   "display": "Beth Randall",
+   "run_date": "2026-11-09",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "Her Clarkson University CV says she served as a peer reviewer for the 2024 AOTA Annual Conference and Expo. It also says she gave an invited lecture, \"The Healing Power of Occupational Therapy,\" at Historic Saranac Lake on October 2, 2021. It also says she has chaired Clarkson's OT Admissions Committee since 2021 and advises the CUOT COTAD chapter.",
+   "file_text": "Served as a peer reviewer for the 2024 American Occupational Therapy Association Annual Conference and Expo ;; Gave the invited lecture \"The Healing Power of Occupational Therapy\" as a Visiting Humanities Scholar at Historic Saranac Lake on Oct 2, 2021 ;; Has chaired Clarkson University's Occupational Therapy Admissions Committee since 2021 and serves as faculty advisor to the CUOT COTAD chapter",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/sites/default/files/2024-02/Beth%20Randall.pdf",
+   "anchors": [
+    "Clarkson University",
+    "Occupational Therapy"
+   ],
+   "quote": "July 2023  Peer Reviewer / 2024 AOTA Annual Conference and Expo ;; Randall, B. S. (2021, October 2). The Healing Power of Occupational Therapy. Historic Saranac Lake, Saranac Lake, NY. Visiting Humanities Scholar. Humanities New York Grant. ;; 2021- Chair, OT Admissions Committee ;; 2021- Faculty Advisor, CUOT COTAD Chapter",
+   "missing_gate": "These points come from her own Clarkson CV only, so I want you to decide.",
+   "confidence": 84,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 18,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-ct-wayne-lougheed-most-recently-served-as-director-of-",
+   "name": "ct:wayne lougheed",
+   "display": "Wayne Lougheed",
+   "run_date": "2026-11-09",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "TheOrg's St. Lawrence Health page says Wayne Lougheed \"most recently served\" as Director of Safety and Security, wording that suggests he may have left the role.",
+   "file_text": "Most recently served as Director of Safety and Security at St. Lawrence Health",
+   "source": "TheOrg",
+   "url": "https://theorg.com/org/st-lawrence-health/org-chart/wayne-lougheed",
+   "anchors": [
+    "St. Lawrence Health / Canton-Potsdam Hospital",
+    "Northwest Bergen Central Dispatch (prior role on file, restated on the page)"
+   ],
+   "quote": "Wayne Lougheed has a diverse work experience spanning several years. Wayne most recently served as the Director of Safety and Security at St. Lawrence Health.",
+   "missing_gate": "I found this on one website only, so I want you to decide.",
+   "confidence": 67,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 12,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261109-sf-rob-larrabee-st-lawrence-university-parent-of-stu",
+   "name": "sf:rob-larrabee",
+   "display": "Rob Larrabee",
+   "run_date": "2026-11-09",
+   "run_label": "Compounding lane",
+   "category": "identity",
+   "claim": "St. Lawrence University's page for Beth Larrabee lists her as a parent of students in the classes of 2020, 2022, 2025, 2027, and 2030; Rob's record lists the first three of those classes.",
+   "file_text": "St. Lawrence University parent of students in the classes of 2020, 2022, 2025, 2027, and 2030",
+   "source": "St. Lawrence University",
+   "url": "https://www.stlawu.edu/people/beth-larrabee",
+   "anchors": [
+    "St. Lawrence University, his school on file",
+    "Canton, NY",
+    "Parent classes 2020, 2022, and 2025 already on his record"
+   ],
+   "quote": "Beth Larrabee '97, M'06, P'20, '22, '25, '27, '30 is the Senior Associate Director for Career Programming with the Center for Career Excellence. Beth is also a St. Lawrence parent with daughters in the classes of 2020, 2022, 2025, 2027, and 2030.",
+   "missing_gate": "The page names Beth Larrabee, not Rob, and nothing on it names them together.",
+   "confidence": 77,
+   "confidence_parts": {
+    "identity": 32,
+    "source": 27,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "expands"
   }
  ]
 }
