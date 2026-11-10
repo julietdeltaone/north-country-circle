@@ -7082,3 +7082,75 @@ a.af-src-chip:hover{text-decoration:underline}
 .af-file-src{color:var(--pv-blue);text-decoration:none}
 .af-file-src:hover{text-decoration:underline}
 
+
+/* ============================================================
+   Stats (V4.11.0): the dedicated statistics section. Dense
+   studio layout on the standard card chrome; bars are plain
+   tracks with no transitions, so a repaint never replays an
+   animation. Decorative tracks sit in their own column and
+   never touch text, numbers or avatars (EDGES standard).
+   ============================================================ */
+.pg-stats{display:flex;flex-direction:column;gap:14px}
+.st-head h2{font-size:21px;font-weight:700;margin:0 0 4px}
+.st-tiles{display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:14px;align-items:stretch}
+.st-tile{padding:16px 20px}
+.st-tv{font-size:34px;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums}
+.st-tv.sm{font-size:26px}
+.st-tl{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);margin-top:3px}
+.st-tl.st-qhead{margin:0 0 10px}
+.st-ts{font-size:12.5px;color:var(--txt2,var(--txt));margin-top:7px}
+.st-minibars{display:flex;align-items:flex-end;gap:2px;height:36px;margin-top:12px}
+.st-mb{flex:1;background:var(--ink-about-bright);opacity:.8;min-height:2px;border-radius:1px 1px 0 0}
+.st-tilebars{margin-top:11px}
+.st-qs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.st-q{display:flex;flex-direction:column;gap:1px;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--card2);text-decoration:none;color:var(--txt)}
+.st-q:hover{border-color:var(--line2)}
+.st-q b{font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+.st-q span{font-size:11.5px;color:var(--mut)}
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.st-rows{display:flex;flex-direction:column;gap:7px}
+.st-rows.st-prows{gap:2px}
+.st-row{display:flex;align-items:center;gap:10px;font-size:12.5px;min-height:14px}
+.st-rl{flex:0 1 38%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt2,var(--txt))}
+.st-tr{flex:1;height:8px;border-radius:4px;background:color-mix(in srgb, var(--txt) 10%, transparent);overflow:hidden}
+.st-fill{display:block;height:100%;border-radius:4px;background:var(--ink-about-bright)}
+.st-fill.conn{background:var(--ink-conn-bright)}
+.st-fill.dim{background:color-mix(in srgb, var(--txt) 34%, transparent)}
+.st-rv{flex:0 0 auto;font-weight:600;font-variant-numeric:tabular-nums;min-width:30px;text-align:right}
+.st-prow{display:flex;align-items:center;gap:9px;padding:4px 6px;border-radius:8px;text-decoration:none;color:var(--txt)}
+.st-prow:hover{background:color-mix(in srgb, var(--txt) 6%, transparent)}
+.st-prow .st-pn{flex:0 1 30%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:550}
+.st-rk{flex:0 0 16px;color:var(--dim);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.st-donutwrap{display:flex;gap:18px;align-items:center}
+.st-dleg{flex:1;display:flex;flex-direction:column;gap:9px}
+.st-dleg .st-rl{flex:1}
+.st-sw{display:inline-block;width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.st-sw.std0{background:var(--ink-about-bright)}
+.st-sw.std1{background:var(--ink-conn-bright)}
+.st-sw.std2{background:color-mix(in srgb, var(--txt) 24%, transparent)}
+.std-s0{stroke:var(--ink-about-bright)}
+.std-s1{stroke:var(--ink-conn-bright)}
+.std-s2{stroke:color-mix(in srgb, var(--txt) 22%, transparent)}
+.st-dct{fill:var(--txt);font-size:16px;font-weight:700;text-anchor:middle}
+.st-dcs{fill:var(--mut);font-size:8.5px;text-anchor:middle}
+.st-segbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:color-mix(in srgb, var(--txt) 10%, transparent)}
+.st-seg{display:block;height:100%}
+.sg-contact{background:var(--ink-conn-bright)}
+.sg-proximity{background:var(--ink-about-bright)}
+.sg-narrative{background:color-mix(in srgb, var(--txt) 30%, transparent)}
+.st-cols{display:flex;align-items:stretch;gap:8px;height:128px}
+.st-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
+.st-cv{font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;height:14px}
+.st-colbar{width:70%;max-width:34px;display:flex;flex-direction:column;border-radius:4px 4px 0 0;overflow:hidden;background:color-mix(in srgb, var(--txt) 5%, transparent)}
+.st-cp{background:var(--ink-conn-bright);display:block}
+.st-cf{background:var(--ink-about-bright);display:block}
+.st-cl{font-size:10.5px;color:var(--dim);white-space:nowrap}
+.st-legline{display:flex;gap:16px;margin-top:10px;font-size:11.5px;color:var(--mut)}
+.st-legline .st-sw{margin-right:6px;vertical-align:-1px}
+.st-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.st-chip{border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:11.5px;color:var(--txt2,var(--txt))}
+.st-chip b{color:var(--txt)}
+.st-note{font-size:11.5px;color:var(--dim);margin:10px 0 0;line-height:1.45}
+.st-famrow{display:flex;flex-direction:column;gap:1px}
+.st-sub{font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:0}
+@media (max-width:1100px){.st-tiles{grid-template-columns:1fr}.st-grid{grid-template-columns:1fr}}
