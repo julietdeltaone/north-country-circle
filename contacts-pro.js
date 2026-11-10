@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.7.0';
+var APP_VERSION = '4.8.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10495,31 +10495,28 @@ function lrRecordsBodyHTML(){
 }
 
 /* ============================================================
-   V4.7.0 — Activity Feed rebuilt on EFFECTIVE dates (JD
-   2026-11-09, preview 4 "hero spotlight" approved): the date a
-   fact was found has very little value and is useless for
-   sorting; what matters is the effective date, when the thing
-   itself happened or started being relevant. Data comes from
-   data/effective-feed.json (scripts/build_effective_feed.py
-   derives an effective date for every merged filing — the same
-   changes.json + whatsnew.json merge the V4.6.0 feed did —
-   reading the fact text first, never the filed date; precision
-   is never invented). Filings the derivation cannot date are
-   excluded from the feed entirely (JD 2026-11-09: do not force
-   a date, and do not show an undated section; if it does not
-   carry a real effective date, it does not make the list).
-   Layout, top to bottom: a slim stats line; a hero for the
-   newest effective day (every non-photo event on that day in
-   one card); a "This season" band of medium cards (spans and
-   since facts covering the current school year); an "Earlier"
-   band of compact rows grouped by effective period, 60 at a
-   time; and at the very bottom the current-state facts (ongoing
-   + since) as a small strip with no hero treatment (JD: do not
-   waste big hero titles on it). Read-only, like Filings.
+   V4.8.0 — Activity Feed as ONE simple timeline (JD 2026-11-09,
+   simplifying V4.7.0 the same day): "I don't want date ranges.
+   I don't want date found. I want simple timeline easily
+   glanceable the date if you don't have a date, give me an
+   approximate date by your best guess. ... a vertical timeline
+   sorted by dates, most recent at the top, nothing else."
+   Data comes from data/effective-feed.json
+   (scripts/build_effective_feed.py): every merged filing from
+   changes.json + whatsnew.json, each carrying ONE date — the
+   effective date when the thing happened (spans and since
+   items show their start only, never a range), or, for items
+   with no real date, a best-guess date marked with a "~".
+   The page is a single vertical timeline: a line down the
+   left, a dot per packet, most recent at the top, paged 60 at
+   a time with Show more appending in place. The packets are
+   the V4.7.0 rows unchanged, plus the item's one date label at
+   the top. No hero, no stats, no bands, no group headers, no
+   current-state strip, no found/filed date anywhere.
+   Read-only, like Filings.
    ============================================================ */
 var AF = null, AF_LOADING = false, AF_SHOWN = 60;
 var AF_PAGE = 60;
-var AF_SEASON = { start:'2026-09-01', end:'2027-06-30', label:'2026-27' };
 function afLoad(){
   phLoad();
   if(AF || AF_LOADING) return;
@@ -10530,18 +10527,6 @@ function afLoad(){
       if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'activity') render(); })
     .catch(function(){ AF_LOADING = false; AF = { items:[], counts:{} };
       if(S.route && S.route.name === 'daily' && S.route.seg && S.route.seg[0] === 'activity') render(); });
-}
-var AF_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function afYmd(d){
-  function p(n){ return (n < 10 ? '0' : '') + n; }
-  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
-}
-function afFoundWord(iso){
-  var today = afYmd(new Date());
-  var yday = afYmd(new Date(Date.now() - 86400000));
-  if(iso === today) return 'today';
-  if(iso === yday) return 'yesterday';
-  return hmFmtD(iso);
 }
 function afAvatarHTML(e, di, size){
   var e2 = di != null ? D.directory[di] : null;
@@ -10562,92 +10547,24 @@ function afSrcHTML(e){
   if(e.url) return '<a class="af-src" data-act="extlink" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || 'Source') + ' ' + ic('ext', 10) + '</a>';
   return e.source ? '<span class="af-meta-item">' + esc(e.source) + '</span>' : '';
 }
-function afDayEvents(items){
-  var best = null;
-  items.forEach(function(e){
-    if(e.kind === 'event' && e.prec === 'day' && !e.photo && (!best || e.eff_end > best)) best = e.eff_end;
-  });
-  if(!best) return { day:null, events:[] };
-  return { day:best, events:items.filter(function(e){
-    return e.kind === 'event' && e.prec === 'day' && !e.photo && e.eff_end === best; }) };
-}
-function afInSeason(e){
-  if(e.kind !== 'span' && e.kind !== 'since') return false;
-  var end = e.eff_end || '9999-12-31';
-  return e.eff_start <= AF_SEASON.end && end >= AF_SEASON.start;
-}
-function afHeroHTML(items){
-  var g = afDayEvents(items);
-  if(!g.day) return '';
-  var p = g.day.split('-');
-  var big = AF_MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0];
-  var cells = g.events.map(function(e){
-    var di = hmDiOf(e.name);
-    return '<div class="af-hero-cell">' + afAvatarHTML(e, di, 'lg') +
-      '<div class="af-hero-main">' + afNameHTML(e, di) +
-      '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
-      '<div class="af-meta">' + afSrcHTML(e) +
-      (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
-      '</div></div></div>';
-  }).join('');
-  return '<section class="af-hero"><div class="af-hero-kick">Newest effective date in the feed</div>' +
-    '<h2 class="af-hero-date">' + esc(big) + '</h2>' +
-    '<div class="af-hero-grid n' + Math.min(g.events.length, 3) + '">' + cells + '</div></section>';
-}
-function afCardHTML(e){
-  var di = hmDiOf(e.name);
-  return '<article class="af-card">' +
-    '<div class="af-card-top">' + afAvatarHTML(e, di, 'md') +
-    '<span class="af-card-main">' + afNameHTML(e, di) +
-    '<span class="af-eff">' + esc(e.eff_label) + '</span></span></div>' +
-    '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
-    '<div class="af-meta">' + afSrcHTML(e) +
-    (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
-    '</div></article>';
-}
-function afPeriodOf(e){
-  if(e.prec === 'season' || e.prec === 'year') return e.eff_label;
-  var p = String(e.eff_end || '').split('-');
-  return p.length >= 2 ? (AF_MON[+p[1] - 1] + ' ' + p[0]) : e.eff_label;
-}
 function afRowEff(e){
   var di = hmDiOf(e.name);
-  return '<article class="af-row" data-kind="' + textKind(e.text) + '" data-eff="' + esc(e.eff_end) + '">' +
+  return '<article class="af-row" data-kind="' + textKind(e.text) + '" data-date="' + esc(e.date || '') + '">' +
     afAvatarHTML(e, di, 'md') +
     '<div class="af-main"><div class="af-top">' + afNameHTML(e, di) +
-    '<span class="af-effchip">' + esc(e.eff_label) + '</span>' +
+    '<span class="af-effchip af-date">' + esc(e.label || '') + '</span>' +
     (e.photo ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>' : '') + '</div>' +
     '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
     '<div class="af-meta">' + afSrcHTML(e) +
-    (e.filed ? '<span class="af-meta-item dim">found ' + esc(afFoundWord(e.filed)) + '</span>' : '') +
     '</div></div></article>';
-}
-function afEarlierList(items, hero, season){
-  return items.filter(function(e){
-    if(hero.events.indexOf(e) >= 0 || season.indexOf(e) >= 0) return false;
-    return e.kind === 'event' || e.kind === 'span';
-  });
 }
 function afStreamHTML(){
   if(!AF) return '';
   var items = AF.items || [];
-  var hero = afDayEvents(items);
-  var season = items.filter(afInSeason);
-  var earlier = afEarlierList(items, hero, season);
-  var shown = earlier.slice(0, AF_SHOWN);
-  var h = '', curPer = null;
-  shown.forEach(function(e){
-    var per = afPeriodOf(e);
-    if(per !== curPer){
-      curPer = per;
-      var cnt = 0;
-      earlier.forEach(function(x){ if(afPeriodOf(x) === curPer) cnt++; });
-      h += '<div class="af-day"><span class="af-day-l">' + esc(curPer) + '</span><em class="cnt">' + cnt + '</em></div>';
-    }
-    h += afRowEff(e);
-  });
-  if(shown.length < earlier.length)
-    h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + earlier.length + '</span>' +
+  var shown = items.slice(0, AF_SHOWN);
+  var h = shown.map(afRowEff).join('');
+  if(shown.length < items.length)
+    h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + items.length + '</span>' +
       '<button type="button" class="pv-btn sm" data-act="afmore">Show more</button></div>';
   return h;
 }
@@ -10659,44 +10576,9 @@ function lrActivityHTML(){
   if(!AF) return '<div class="page lr af-page v4p" data-kind="about">' +
     lrChromeHTML('activity', 'Activity Feed', 'Loading the feed&hellip;') +
     '<div class="af-empty"><p class="dim">Loading the feed&hellip;</p></div></div>';
-  var items = AF.items || [];
-  var c = AF.counts || {};
-  var dated = items.filter(function(e){ return e.kind === 'event' || e.kind === 'span'; });
-  var people = {}, years = {};
-  dated.forEach(function(e){
-    if(e.name) people[e.name.toLowerCase()] = 1;
-    if(e.eff_start) years[e.eff_start.slice(0, 4)] = 1;
-    if(e.eff_end) years[e.eff_end.slice(0, 4)] = 1;
-  });
-  var ys = Object.keys(years).sort();
-  var stats = '<div class="af-statsline">' +
-    '<span><b>' + dated.length + '</b> events with a date</span><span class="dot">&middot;</span>' +
-    '<span><b>' + Object.keys(people).length + '</b> people</span><span class="dot">&middot;</span>' +
-    '<span><b>' + (ys.length ? ys[0] + ' to ' + ys[ys.length - 1] : '') + '</b></span></div>';
-  var hero = afDayEvents(items);
-  var season = items.filter(afInSeason);
-  var current = items.filter(function(e){ return e.kind === 'ongoing' || e.kind === 'since'; });
-  var h = '<div class="page lr af-page v4p" data-kind="about">' +
-    lrChromeHTML('activity', 'Activity Feed', 'Sorted by when it happened, not when it was found.') + stats;
-  h += afHeroHTML(items);
-  if(season.length){
-    h += '<section class="af-bandsec"><div class="af-band"><h2>This season</h2>' +
-      '<p>The ' + AF_SEASON.label + ' school year and season, plus roles that began earlier and still run.</p></div>' +
-      '<div class="af-grid">' + season.map(afCardHTML).join('') + '</div></section>';
-  }
-  h += '<section class="af-bandsec"><div class="af-band"><h2>Earlier</h2>' +
-    '<p>Everything older, still sorted by when it happened.</p></div>' +
-    '<div id="af-stream">' + afStreamHTML() + '</div></section>';
-  if(current.length){
-    h += '<footer class="af-now"><div class="af-now-l">Current state</div>' +
-      current.map(function(e){
-        var di = hmDiOf(e.name);
-        return '<div class="af-now-row">' + afAvatarHTML(e, di, 'xs') +
-          '<span class="af-now-main">' + afNameHTML(e, di) +
-          '<span class="af-now-tx">' + esc(wnFullText({ text: e.text }, di)) + '</span></span></div>';
-      }).join('') + '</footer>';
-  }
-  return h + '</div>';
+  return '<div class="page lr af-page v4p" data-kind="about">' +
+    lrChromeHTML('activity', 'Activity Feed', '') +
+    '<div class="af-tl" id="af-stream">' + afStreamHTML() + '</div></div>';
 }
 
 function viewDaily(v){
@@ -10736,10 +10618,9 @@ function viewDaily(v){
     return;
   }
   if(S.route.seg && S.route.seg[0] === 'activity'){
-    /* V4.7.0: Activity Feed — the effective-date stream (hero
-       day, This season, Earlier, current-state strip; undated
-       filings are excluded by the producer). Read-only, like
-       Filings. */
+    /* V4.8.0: Activity Feed — one vertical timeline, most
+       recent at the top, one date per packet, nothing else.
+       Read-only, like Filings. */
     afLoad();
     v.innerHTML = lrActivityHTML();
     return;
