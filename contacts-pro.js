@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.9.0';
+var APP_VERSION = '4.10.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10515,6 +10515,23 @@ function lrRecordsBodyHTML(){
    its source the hero chip (.af-src-chip). The app trusts
    the file's order (the audited order) and never re-sorts.
    Read-only, like Filings.
+   V4.10.0 (JD 2026-11-10): the calendar becomes REAL month
+   calendars mirroring the Calendar page's grid (.afg-* — the
+   .ct-grid/.ca-dow/.ct-cell structure and look re-skinned in
+   --pv-* tokens): weekday header, 7-column day cells, tap a
+   name inside a cell to open the profile, today ringed in
+   gold. Only months holding day-precision events get a grid;
+   month-precision facts ride a slim strip above their month's
+   grid (or stand alone as a strip-only block), year-precision
+   facts a "Dated to YYYY only" strip at the top of their year
+   section; gap dividers keep their exact wordings. Timeline:
+   the fact sentence is now the packet's hero text (.af-hero-text,
+   ~18px); the source chip moves to the packet's top right;
+   other dates inside the sentence ride small highlight chips
+   (.af-dchip — never the packet's own date, never scores or
+   counts); a "More detail" disclosure (.af-more-det) shows the
+   audit evidence when an item carries it; and quiet month
+   breaks (.af-mbreak) mark each month change in the stream.
    ============================================================ */
 var AF = null, AF_LOADING = false, AF_SHOWN = 60;
 var AF_PAGE = 60;
@@ -10592,21 +10609,121 @@ function afSwitchHTML(on){
     '<a href="#/daily/activity"' + (on === 'tl' ? ' class="on"' : '') + '>Timeline</a>' +
     '<a href="#/daily/activity/calendar"' + (on === 'cal' ? ' class="on"' : '') + '>Calendar</a></div>';
 }
+function afDetailHTML(e){
+  /* "More detail" disclosure (V4.10.0): shown ONLY when the
+     item carries audit evidence. Plain language: the date and
+     its precision in words, where the date comes from, and the
+     cross-check line when the audit confirmed it two ways. */
+  var ev = String(e.evidence || '').trim();
+  if(!ev) return '';
+  var p = afLabelParts(e);
+  var precWord = p.prec === 'day' ? 'exact day' : (p.prec === 'month' ? 'month only' : 'year only');
+  var h = '<details class="af-more-det"><summary>More detail</summary><div class="af-det-body">' +
+    '<p class="af-det-line"><b>Date:</b> ' + esc(e.label || '') + ' (' + precWord + ')</p>' +
+    '<p class="af-det-line"><b>Where the date comes from:</b> ' + esc(ev) + '</p>';
+  if(e.checks >= 2) h += '<p class="af-det-line">Cross-checked two ways.</p>';
+  return h + '</div></details>';
+}
+var AF_DATE_RE = /\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4}\b|\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{4}\b|\b(?:Spring|Summer|Fall|Autumn|Winter)\s+(?:19|20)\d{2}\b|(?<!\d)(?:19|20)\d{2}(?!\d)(?!\s*[-–]\s*\d)/g;
+function afOwnVariants(e){
+  /* The written forms of THIS packet's own date — occurrences
+     of these in the text are the packet's date, never chips. */
+  var p = afLabelParts(e), out = [];
+  function push(s){ if(s && out.indexOf(s) < 0) out.push(s); }
+  if(p.prec === 'day'){
+    push(e.label);
+    push(AFFULL[p.mo - 1] + ' ' + p.d + ', ' + p.y);
+    push(AFMON[p.mo - 1] + ' ' + p.d + ', ' + p.y);
+  } else if(p.prec === 'month'){
+    push(e.label);
+    push(AFFULL[p.mo - 1] + ' ' + p.y);
+    push(AFMON[p.mo - 1] + ' ' + p.y);
+  } else if(p.prec === 'year') push(String(p.y));
+  out.sort(function(a, b){ return b.length - a.length; });
+  return out;
+}
+function afRichTextHTML(e, di){
+  /* Hero fact text (V4.10.0): the enriched sentence, with
+     every OTHER date it mentions wrapped in a highlight chip.
+     Conservative matching: full dates, month+year, season+year,
+     and standalone years — never the packet's own date (in any
+     written form), never part of a year range, never inside a
+     longer number. The stored text is what gets chipped: the
+     display expansion (wnFullText) only ever substitutes a
+     longer variant of the same sentence for SHORT stored
+     texts — it runs for those, exactly as the timeline has
+     always rendered them, and the chipping then works on the
+     rendered sentence. */
+  var raw = String(e.text || '');
+  var t = raw.length > 60 ? raw : wnFullText({ text: raw }, di);
+  var ovs = [], vars = afOwnVariants(e);
+  vars.forEach(function(v){
+    var at = 0;
+    while(true){
+      var j = t.indexOf(v, at);
+      if(j < 0) break;
+      ovs.push([j, j + v.length]);
+      at = j + v.length;
+    }
+  });
+  function inOwn(s, en){ return ovs.some(function(o){ return s < o[1] && o[0] < en; }); }
+  AF_DATE_RE.lastIndex = 0;
+  var out = '', last = 0, m, any = false;
+  while((m = AF_DATE_RE.exec(t)) !== null){
+    if(inOwn(m.index, m.index + m[0].length)) continue;
+    out += esc(t.slice(last, m.index)) + '<span class="af-dchip">' + esc(m[0]) + '</span>';
+    last = m.index + m[0].length;
+    any = true;
+  }
+  if(!any) return esc(t);
+  return out + esc(t.slice(last));
+}
 function afRowEff(e){
   var di = hmDiOf(e.name);
   return '<article class="af-row" data-kind="' + textKind(e.text) + '" data-date="' + esc(e.date || '') + '">' +
     afAvatarHTML(e, di, 'md') +
     '<div class="af-main"><div class="af-top">' + afHeroDateHTML(e) + afNameHTML(e, di) +
-    (e.photo ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>' : '') + '</div>' +
-    '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
-    '<div class="af-meta">' + afSrcChipHTML(e) +
-    '</div></div></article>';
+    (e.photo ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>' : '') +
+    '<span class="af-topright">' + afSrcChipHTML(e) + '</span></div>' +
+    '<p class="af-text af-hero-text">' + afRichTextHTML(e, di) + '</p>' +
+    afDetailHTML(e) +
+    '</div></article>';
+}
+function afMonthKeyOf(e){
+  /* The packet's stream month: its label's year + month (year-
+     precision packets key to month 0 — they belong to no
+     month). Month breaks fire when this key changes. */
+  var p = afLabelParts(e);
+  return p.y * 100 + (p.prec === 'year' ? 0 : p.mo);
 }
 function afStreamHTML(){
   if(!AF) return '';
   var items = AF.items || [];
   var shown = items.slice(0, AF_SHOWN);
-  var h = shown.map(afRowEff).join('');
+  var h = '';
+  shown.forEach(function(e, idx){
+    /* Month breaks (V4.10.0): a quiet labelled hairline where
+       the month changes between consecutive month-carrying
+       packets. The break belongs to the packet that starts
+       the new month and is computed from the FULL item list
+       on every render, so Show-more repaints neither
+       duplicate nor drop one. Year-precision packets carry
+       no month: they never fire a break and never reset the
+       comparison. The stream's first packet never gets one. */
+    var k = afMonthKeyOf(e);
+    if(idx > 0 && k % 100 !== 0){
+      for(var j = idx - 1; j >= 0; j--){
+        var pk = afMonthKeyOf(items[j]);
+        if(pk % 100 === 0) continue;
+        if(pk !== k){
+          var lp = afLabelParts(e);
+          h += '<div class="af-mbreak" data-mk="' + k + '"><span>' + AFFULL[lp.mo - 1] + ' ' + lp.y + '</span></div>';
+        }
+        break;
+      }
+    }
+    h += afRowEff(e);
+  });
   if(shown.length < items.length)
     h += '<div class="af-foot"><span class="af-count">Showing ' + shown.length + ' of ' + items.length + '</span>' +
       '<button type="button" class="pv-btn sm" data-act="afmore">Show more</button></div>';
@@ -10617,126 +10734,122 @@ function afPaintStream(){
   if(w) w.innerHTML = afStreamHTML();
 }
 function afCalModel(items){
-  /* Condensed calendar model (design spec B4/B5). Grouping is
-     GLOBAL, not by file adjacency: in the audited order, items
-     dated only to a year carry real mid-year sort keys (e.g. a
-     "2026" item can sit at 2026-09), so January items of a year
-     legitimately appear in several separated runs — they still
-     belong to ONE January block, and the year-only items to ONE
-     block per year. Blocks sort by their latest internal date
-     descending (year-only blocks sit at Dec 31 of their year,
-     after that year's month blocks); rows inside a block keep
-     file order. A year section's count covers month items only;
-     year-only items are counted on their own card.
-     Gaps (B5): a month is EMPTY when no month block covers it
-     and no year-only block covers its year. Rendered in
-     descending time, every maximal run of empty months becomes
-     ONE divider — except that a divider never spans a year
-     heading: the run is cut at the heading (the younger part
-     renders at the bottom of the newer year section, the older
-     part at the top of the older one). */
-  var months = {}, years = {}, order = [];
+  /* Calendar model (V4.10.0): REAL month grids, mirroring the
+     Calendar page's month structure (weekday header, 7-column
+     day cells). Grouping is by the verified LABEL, as always:
+     day-precision items land in their day cell; month-precision
+     items form a strip above their month's grid (a month with
+     month items but no day items renders as a strip-only
+     block — no empty grid); year-precision items form one
+     strip per year, placed at the TOP of their year section.
+     Node order is most-recent-first: year heading, that year's
+     year-strip, then its month units newest-first, with gap
+     dividers still splitting empty runs at year headings
+     exactly as the condensed model did. */
+  var dayBy = {}, monBy = {}, yrBy = {}, yset = {};
   items.forEach(function(e, i){
     var lp = afLabelParts(e);
-    /* Sort/group keys derive from the LABEL (the verified
-       display truth): year-only items key at Jan 1 of their
-       year, month items at the 1st, day items at their day —
-       monotonic in file order by construction of the audit. */
-    var key = lp.y * 10000 + (lp.mo || 1) * 100 + (lp.d || 1);
-    if(lp.prec === 'year'){
-      var y = String(lp.y);
-      if(!years[y]){ years[y] = { type:'year', year:y, items:[], max:0 }; order.push(years[y]); }
-      years[y].items.push({ e:e, i:i });
-      if(key > years[y].max) years[y].max = key;
+    yset[lp.y] = 1;
+    if(lp.prec === 'day'){
+      var dk = lp.y + '-' + String(lp.mo).padStart(2, '0') + '-' + String(lp.d).padStart(2, '0');
+      (dayBy[dk] = dayBy[dk] || []).push({ e: e, i: i });
+      var mk = lp.y + '-' + lp.mo;
+      if(!monBy[mk]) monBy[mk] = { y: lp.y, mo: lp.mo, strip: [] };
+    } else if(lp.prec === 'month'){
+      var mk2 = lp.y + '-' + lp.mo;
+      if(!monBy[mk2]) monBy[mk2] = { y: lp.y, mo: lp.mo, strip: [] };
+      monBy[mk2].strip.push({ e: e, i: i });
     } else {
-      var ym = lp.y + '-' + String(lp.mo).padStart(2, '0');
-      if(!months[ym]){ months[ym] = { type:'month', ym:ym, items:[], max:0 }; order.push(months[ym]); }
-      months[ym].items.push({ e:e, i:i });
-      if(key > months[ym].max) months[ym].max = key;
+      (yrBy[lp.y] = yrBy[lp.y] || []).push({ e: e, i: i });
     }
   });
-  var units = order.slice().sort(function(a, b){ return a.max < b.max ? 1 : (a.max > b.max ? -1 : 0); });
   function midx(y, m){ return y * 12 + (m - 1); }
   function mname(idx){ return { y: Math.floor(idx / 12), m: idx % 12 + 1 }; }
-  function spanOf(b){
-    if(b.type === 'month') return [midx(+b.ym.slice(0, 4), +b.ym.slice(5, 7)), midx(+b.ym.slice(0, 4), +b.ym.slice(5, 7))];
-    var yy = +b.year;
-    return [midx(yy, 1), midx(yy, 12)];
-  }
-  function blockYear(b){ return b.type === 'month' ? b.ym.slice(0, 4) : b.year; }
   function gapText(a, b){
     var A = mname(a), B = mname(b);
     if(a === b) return AFMON[A.m - 1] + ' ' + A.y + ' \u00b7 nothing dated to this month';
     return AFMON[A.m - 1] + ' ' + A.y + ' \u2013 ' + AFMON[B.m - 1] + ' ' + B.y + ' \u00b7 nothing dated to this span';
   }
+  /* Coverage: a month is covered when it holds a month unit
+     (grid or strip) or its year holds a year strip. */
   var covered = {};
-  units.forEach(function(b){
-    var sp = spanOf(b);
-    for(var ci = sp[0]; ci <= sp[1]; ci++) covered[ci] = 1;
+  Object.keys(monBy).forEach(function(k){ covered[midx(monBy[k].y, monBy[k].mo)] = 1; });
+  Object.keys(yrBy).forEach(function(y){
+    for(var m = 1; m <= 12; m++) covered[midx(+y, m)] = 1;
   });
-  /* Heading(Y) sits between Dec Y and Jan Y+1. Units sort by
-     internal max descending, so a section's units are
-     contiguous; a boundary between consecutive units is
-     "clean" (gap arithmetic crosses it freely) unless the
-     Dec/Jan line of some year falls strictly between the two
-     units' spans — then that year's heading intervenes. */
-  function boundaryYear(a, b){
-    /* a is the NEWER unit, b the OLDER. Return the year whose
-       heading intervenes, or null. */
-    var sa = spanOf(a), sb = spanOf(b);
-    for(var Y = +blockYear(a); Y >= +blockYear(b); Y--){
-      var dec = midx(Y, 12), jan = midx(Y + 1, 1);
-      var aAbove = sa[0] >= jan || sa[1] >= jan;
-      var bBelow = sb[1] <= dec || sb[0] <= dec;
-      if(aAbove && bBelow && !(sa[0] <= dec && sa[1] >= jan) && !(sb[0] <= dec && sb[1] >= jan)) return Y;
-      if(sa[0] <= dec && sa[1] >= jan) return null; /* a itself straddles or ends at the line */
-      if(sb[0] <= dec && sb[1] >= jan) return null;
-    }
-    return null;
-  }
-  function yearCount(y){
-    return units.reduce(function(s, x){ return s + (x.type === 'month' && x.ym.slice(0, 4) === y ? x.items.length : 0); }, 0);
-  }
+  var yearsDesc = Object.keys(yset).map(Number).sort(function(a, b){ return b - a; });
   var out = [];
-  if(units.length) out.push({ type:'yearhead', year: blockYear(units[0]), count: yearCount(blockYear(units[0])) });
-  for(var k = 0; k < units.length; k++){
-    var u = units[k];
-    out.push(u.type === 'month' ? { type:'month', ym:u.ym, items:u.items } : { type:'yearblock', year:u.year, items:u.items });
-    var nx = units[k + 1];
-    if(!nx) break;
-    var spA = spanOf(u), spB = spanOf(nx);
-    var emptyFrom = spB[1] + 1, emptyTo = spA[0] - 1; /* ascending idx range of the hole */
-    var hole = [];
-    for(var ei = emptyFrom; ei <= emptyTo; ei++) if(!covered[ei]) hole.push(ei);
-    var hy = boundaryYear(u, nx);
-    if(hy === null){
-      if(hole.length) out.push({ type:'gap', text: gapText(hole[0], hole[hole.length - 1]), from: hole[0], to: hole[hole.length - 1] });
-    } else {
-      var dec = midx(hy, 12);
-      var younger = hole.filter(function(x){ return x > dec; });
-      var older = hole.filter(function(x){ return x <= dec; });
-      if(younger.length) out.push({ type:'gap', text: gapText(younger[0], younger[younger.length - 1]), from: younger[0], to: younger[younger.length - 1] });
-      out.push({ type:'yearhead', year: String(hy), count: yearCount(String(hy)) });
-      if(older.length) out.push({ type:'gap', text: gapText(older[0], older[older.length - 1]), from: older[0], to: older[older.length - 1] });
+  yearsDesc.forEach(function(Y, yi){
+    var ycount = items.reduce(function(s, e){
+      var lp = afLabelParts(e);
+      return s + ((lp.y === Y && lp.prec !== 'year') ? 1 : 0);
+    }, 0);
+    out.push({ type: 'yearhead', year: String(Y), count: ycount });
+    if(yrBy[Y]) out.push({ type: 'yearstrip', year: String(Y), items: yrBy[Y] });
+    var mons = Object.keys(monBy).map(function(k){ return monBy[k]; })
+      .filter(function(u){ return u.y === Y; })
+      .sort(function(a, b){ return b.mo - a.mo; });
+    mons.forEach(function(u, ui){
+      out.push({ type: 'monthgrid', y: u.y, mo: u.mo, strip: u.strip, dayBy: dayBy });
+      var nx = mons[ui + 1];
+      if(nx){
+        var hole = [];
+        for(var ei = midx(nx.y, nx.mo) + 1; ei < midx(u.y, u.mo); ei++)
+          if(!covered[ei]) hole.push(ei);
+        if(hole.length) out.push({ type: 'gap', text: gapText(hole[0], hole[hole.length - 1]) });
+      }
+    });
+    /* Trailing gap of the section: empty months below its
+       oldest month unit, down to the section's floor — the
+       newer edge of the next section (exclusive), covering
+       the whole year when the section holds no month units. */
+    if(yi + 1 < yearsDesc.length){
+      var lo = mons.length ? midx(mons[mons.length - 1].y, mons[mons.length - 1].mo) : midx(Y + 1, 1);
+      var floor = midx(yearsDesc[yi + 1] + 1, 1);
+      var hole2 = [];
+      for(var ei2 = floor; ei2 < lo; ei2++) if(!covered[ei2]) hole2.push(ei2);
+      if(hole2.length) out.push({ type: 'gap', text: gapText(hole2[0], hole2[hole2.length - 1]) });
     }
-  }
+  });
   return out;
 }
-var AF_CAL_CAP = 12, AF_CAL_OPEN = {};
-function afCalRowHTML(w){
-  var e = w.e, di = hmDiOf(e.name);
-  return '<div class="afc-row" data-date="' + esc(e.date || '') + '">' + afHeroDateHTML(e) +
-    '<div class="afc-main"><div class="afc-top">' + afNameHTML(e, di) + '</div>' +
-    '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
-    '<div class="af-meta">' + afSrcChipHTML(e) + '</div></div></div>';
+function afgNameChip(w){
+  var di = hmDiOf(w.e.name);
+  return afNameHTML(w.e, di);
 }
-function afCalBlockRowsHTML(b, key){
-  var open = !!AF_CAL_OPEN[key];
-  var list = open ? b.items : b.items.slice(0, AF_CAL_CAP);
-  var h = list.map(afCalRowHTML).join('');
-  if(!open && b.items.length > AF_CAL_CAP)
-    h += '<button type="button" class="afc-more" data-act="afcalall" data-k="' + esc(key) + '">Show all ' + b.items.length + '</button>';
-  return h;
+function afGridHTML(u){
+  /* One month as a real calendar grid, mirroring the Calendar
+     page (ctlMonthHTML): weekday header row (.ca-dow), lead
+     blanks, day cells with the day number; events inside
+     their day cell as name chips (tappable to the profile);
+     today highlighted the Calendar page's way (gold ring +
+     tint). Up to 2 entries per cell, then "+N" plain text.
+     Sunday-first, like the Calendar page. */
+  var y = u.y, mo = u.mo;
+  var dim = new Date(y, mo, 0).getDate(), lead = new Date(y, mo - 1, 1).getDay();
+  var today = todayStr();
+  var h = '<div class="afg-grid">' + CA_DW.map(function(d){ return '<div class="ca-dow">' + d + '</div>'; }).join('');
+  for(var i = 0; i < lead; i++) h += '<div class="afg-cell dim"></div>';
+  for(var d = 1; d <= dim; d++){
+    var ds = y + '-' + String(mo).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    var cell = u.dayBy[ds] || [];
+    h += '<div class="afg-cell' + (ds === today ? ' today' : '') + '" data-d="' + ds + '"><div class="afg-dn">' + d + '</div>';
+    if(cell.length){
+      h += '<div class="afg-evs">' + cell.slice(0, 2).map(function(w){
+        return '<span class="afg-ev">' + afgNameChip(w) + '</span>';
+      }).join('') + '</div>';
+      if(cell.length > 2) h += '<div class="afg-more">+' + (cell.length - 2) + '</div>';
+    }
+    h += '</div>';
+  }
+  return h + '</div>';
+}
+function afStripHTML(items, cls){
+  /* A slim strip of name chips (tappable to profiles) for
+     facts dated only to a month or a year. */
+  return '<div class="afg-strip ' + cls + '">' + items.map(function(w){
+    return '<span class="afg-ev">' + afgNameChip(w) + '</span>';
+  }).join('') + '</div>';
 }
 function afCalHTML(){
   if(!AF) return '';
@@ -10747,29 +10860,19 @@ function afCalHTML(){
       h += '<div class="afc-year"><h2>' + esc(n.year) + '</h2><span class="afc-ycount">' + n.count + ' events</span></div>';
     } else if(n.type === 'gap'){
       h += '<div class="afc-gap">' + esc(n.text) + '</div>';
-    } else if(n.type === 'month'){
-      var y = n.ym.slice(0, 4), m = +n.ym.slice(5, 7);
-      h += '<section class="afc-block" data-ym="' + esc(n.ym) + '"><h3 class="afc-mhead">' + AFFULL[m - 1] + ' ' + y +
-        ' <span class="afc-mcount">' + n.items.length + '</span></h3><div class="afc-rows">' + afCalBlockRowsHTML(n, 'm' + n.ym) + '</div></section>';
-    } else if(n.type === 'yearblock'){
-      h += '<section class="afc-block yonly" data-y="' + esc(n.year) + '"><h3 class="afc-mhead">Dated to ' + esc(n.year) + ' only' +
-        ' <span class="afc-mcount">' + n.items.length + '</span></h3><div class="afc-rows">' + afCalBlockRowsHTML(n, 'y' + n.year) + '</div></section>';
+    } else if(n.type === 'yearstrip'){
+      h += '<section class="afg-block ystrip" data-y="' + esc(n.year) + '"><h3 class="afc-mhead">Dated to ' + esc(n.year) + ' only' +
+        ' <span class="afc-mcount">' + n.items.length + '</span></h3>' + afStripHTML(n.items, 'ystrip') + '</section>';
+    } else if(n.type === 'monthgrid'){
+      var hasGrid = Object.keys(n.dayBy).some(function(k){ return k.indexOf(n.y + '-' + n.mo + '-') === 0; });
+      h += '<section class="afg-block" data-ym="' + n.y + '-' + String(n.mo).padStart(2, '0') + '"><h3 class="afc-mhead">' +
+        AFFULL[n.mo - 1] + ' ' + n.y + '</h3>';
+      if(n.strip.length) h += '<div class="afg-striplab">Dated to this month only</div>' + afStripHTML(n.strip, 'mstrip');
+      if(hasGrid) h += afGridHTML(n);
+      h += '</section>';
     }
   });
   return h;
-}
-function afPaintCalBlock(key){
-  if(!AF) return;
-  var nodes = afCalModel(AF.items || []);
-  for(var j = 0; j < nodes.length; j++){
-    var n = nodes[j], k = n.type === 'month' ? 'm' + n.ym : (n.type === 'yearblock' ? 'y' + n.year : '');
-    if(k === key){
-      var btn = document.querySelector('.afc-more[data-k="' + key + '"]');
-      var rows = btn ? btn.closest('.afc-rows') : null;
-      if(rows) rows.innerHTML = afCalBlockRowsHTML(n, key);
-      return;
-    }
-  }
 }
 function lrActivityHTML(){
   var cal = !!(S.route.seg && S.route.seg[1] === 'calendar');
@@ -14945,7 +15048,6 @@ function onClick(ev){
     case 'mgdir': MGMT.dir = -MGMT.dir; MGMT.shown = 50; render(); break;
     case 'mgmore': MGMT.shown = (MGMT.shown || 50) + 50; mgPaintList(); break;
     case 'afmore': AF_SHOWN += AF_PAGE; afPaintStream(); break;
-    case 'afcalall': { var afk = el.getAttribute('data-k'); AF_CAL_OPEN[afk] = true; afPaintCalBlock(afk); break; }
     case 'wnday': { var wd = el.getAttribute('data-d'); if(wd){ if(WN_OPEN[wd]) delete WN_OPEN[wd]; else WN_OPEN[wd] = 1; } render(); break; }
     case 'sstview': SB.st.view = el.getAttribute('data-v') || 'all'; $$('.sst-viewseg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === SB.st.view); }); sstPaint(); break;
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
