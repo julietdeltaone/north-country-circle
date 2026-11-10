@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.8.0';
+var APP_VERSION = '4.9.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10495,24 +10495,25 @@ function lrRecordsBodyHTML(){
 }
 
 /* ============================================================
-   V4.8.0 — Activity Feed as ONE simple timeline (JD 2026-11-09,
-   simplifying V4.7.0 the same day): "I don't want date ranges.
-   I don't want date found. I want simple timeline easily
-   glanceable the date if you don't have a date, give me an
-   approximate date by your best guess. ... a vertical timeline
-   sorted by dates, most recent at the top, nothing else."
-   Data comes from data/effective-feed.json
-   (scripts/build_effective_feed.py): every merged filing from
-   changes.json + whatsnew.json, each carrying ONE date — the
-   effective date when the thing happened (spans and since
-   items show their start only, never a range), or, for items
-   with no real date, a best-guess date marked with a "~".
-   The page is a single vertical timeline: a line down the
-   left, a dot per packet, most recent at the top, paged 60 at
-   a time with Show more appending in place. The packets are
-   the V4.7.0 rows unchanged, plus the item's one date label at
-   the top. No hero, no stats, no bands, no group headers, no
-   current-state strip, no found/filed date anywhere.
+   Activity Feed (V4.8.0 shape; V4.9.0 audited data + calendar).
+   V4.8.0 (JD 2026-11-09): "I don't want date ranges. I don't
+   want date found. I want simple timeline easily glanceable
+   the date ... a vertical timeline sorted by dates, most
+   recent at the top, nothing else."
+   V4.9.0 (JD threshold, council timeline audit 2026-11-09/10):
+   the feed ships ONLY the audit's surviving items — every
+   item's date was carried by its own source and cross-checked;
+   photos, standing-state facts, un-dated and un-reachable
+   items are gone, and there are no guessed ("~") dates. Data:
+   data/effective-feed.json (scripts/build_effective_feed.py
+   applies the winners overlay, site/data/timeline-audit-
+   winners.json). Two views over one load: the vertical
+   timeline (#/daily/activity) and a condensed calendar
+   (#/daily/activity/calendar) — year sections, month blocks,
+   year-only blocks, empty runs collapsed to one divider.
+   Each packet's date gets the hero box (.af-hero-date) and
+   its source the hero chip (.af-src-chip). The app trusts
+   the file's order (the audited order) and never re-sorts.
    Read-only, like Filings.
    ============================================================ */
 var AF = null, AF_LOADING = false, AF_SHOWN = 60;
@@ -10543,19 +10544,62 @@ function afNameHTML(e, di){
     ? '<button type="button" class="af-name" data-act="hmgoto" data-di="' + di + '" title="Open ' + esc(e.name || '') + '\u2019s profile">' + esc(e.name || '') + '</button>'
     : '<span class="af-name plain">' + esc(e.name || '') + '</span>';
 }
-function afSrcHTML(e){
-  if(e.url) return '<a class="af-src" data-act="extlink" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + esc(e.source || 'Source') + ' ' + ic('ext', 10) + '</a>';
-  return e.source ? '<span class="af-meta-item">' + esc(e.source) + '</span>' : '';
+var AFMON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var AFMONU = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+var AFFULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function afLabelParts(e){
+  /* Parse the verified label — the feed's one source of truth
+     for display. Some audited `date` values are partial
+     ("2022-08", "1977"), so display never parses `date`. */
+  var lab = String(e.label || '');
+  var m = /^([A-Z][a-z]{2}) (\d{1,2}), (\d{4})$/.exec(lab);
+  if(m) return { prec:'day', y:+m[3], mo: AFMON.indexOf(m[1]) + 1, d:+m[2] };
+  m = /^([A-Z][a-z]{2}) (\d{4})$/.exec(lab);
+  if(m) return { prec:'month', y:+m[2], mo: AFMON.indexOf(m[1]) + 1, d:0 };
+  m = /^(\d{4})$/.exec(lab);
+  if(m) return { prec:'year', y:+m[1], mo:0, d:0 };
+  return { prec:'day', y:0, mo:0, d:0 };
+}
+function afPrecision(e){ return afLabelParts(e).prec; }
+function afHeroDateHTML(e){
+  /* The hero date box (design spec B2): the date as a small
+     calendar page. Day form: month over a big day number over
+     the year. Month/year forms swap the day number for a
+     dashed "MONTH ONLY" / "YEAR ONLY" precision band, so a
+     less exact date never masquerades as a day. */
+  var p = afLabelParts(e);
+  var inner;
+  if(p.prec === 'day')
+    inner = '<span class="af-hd-m">' + AFMONU[p.mo - 1] + '</span><span class="af-hd-d">' + p.d + '</span><span class="af-hd-y">' + p.y + '</span>';
+  else if(p.prec === 'month')
+    inner = '<span class="af-hd-m">' + AFMONU[p.mo - 1] + '</span><span class="af-hd-y big">' + p.y + '</span><span class="af-hd-band">Month only</span>';
+  else
+    inner = '<span class="af-hd-y huge">' + p.y + '</span><span class="af-hd-band">Year only</span>';
+  return '<span class="af-hero-date" data-prec="' + p.prec + '" title="' + esc(e.label || '') + '">' + inner + '</span>';
+}
+function afSrcChipHTML(e){
+  /* The hero source chip (design spec B3): a pill carrying the
+     source's stored name. No url -> the same pill, muted and
+     not a link (5 audited items have no link). */
+  var nm = esc(e.source || 'Source');
+  if(e.url) return '<a class="af-src-chip" data-act="extlink" href="' + esc(e.url) + '" target="_blank" rel="noopener">' + nm + ' ' + ic('ext', 10) + '</a>';
+  return '<span class="af-src-chip plain">' + nm + '</span>';
+}
+function afSwitchHTML(on){
+  /* Timeline | Calendar switch (design spec B1), riding under
+     the Live Records tabs; both views share one afLoad. */
+  return '<div class="af-switch" role="tablist" aria-label="Activity Feed view">' +
+    '<a href="#/daily/activity"' + (on === 'tl' ? ' class="on"' : '') + '>Timeline</a>' +
+    '<a href="#/daily/activity/calendar"' + (on === 'cal' ? ' class="on"' : '') + '>Calendar</a></div>';
 }
 function afRowEff(e){
   var di = hmDiOf(e.name);
   return '<article class="af-row" data-kind="' + textKind(e.text) + '" data-date="' + esc(e.date || '') + '">' +
     afAvatarHTML(e, di, 'md') +
-    '<div class="af-main"><div class="af-top">' + afNameHTML(e, di) +
-    '<span class="af-effchip af-date">' + esc(e.label || '') + '</span>' +
+    '<div class="af-main"><div class="af-top">' + afHeroDateHTML(e) + afNameHTML(e, di) +
     (e.photo ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>' : '') + '</div>' +
     '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
-    '<div class="af-meta">' + afSrcHTML(e) +
+    '<div class="af-meta">' + afSrcChipHTML(e) +
     '</div></div></article>';
 }
 function afStreamHTML(){
@@ -10572,12 +10616,172 @@ function afPaintStream(){
   var w = document.getElementById('af-stream');
   if(w) w.innerHTML = afStreamHTML();
 }
+function afCalModel(items){
+  /* Condensed calendar model (design spec B4/B5). Grouping is
+     GLOBAL, not by file adjacency: in the audited order, items
+     dated only to a year carry real mid-year sort keys (e.g. a
+     "2026" item can sit at 2026-09), so January items of a year
+     legitimately appear in several separated runs — they still
+     belong to ONE January block, and the year-only items to ONE
+     block per year. Blocks sort by their latest internal date
+     descending (year-only blocks sit at Dec 31 of their year,
+     after that year's month blocks); rows inside a block keep
+     file order. A year section's count covers month items only;
+     year-only items are counted on their own card.
+     Gaps (B5): a month is EMPTY when no month block covers it
+     and no year-only block covers its year. Rendered in
+     descending time, every maximal run of empty months becomes
+     ONE divider — except that a divider never spans a year
+     heading: the run is cut at the heading (the younger part
+     renders at the bottom of the newer year section, the older
+     part at the top of the older one). */
+  var months = {}, years = {}, order = [];
+  items.forEach(function(e, i){
+    var lp = afLabelParts(e);
+    /* Sort/group keys derive from the LABEL (the verified
+       display truth): year-only items key at Jan 1 of their
+       year, month items at the 1st, day items at their day —
+       monotonic in file order by construction of the audit. */
+    var key = lp.y * 10000 + (lp.mo || 1) * 100 + (lp.d || 1);
+    if(lp.prec === 'year'){
+      var y = String(lp.y);
+      if(!years[y]){ years[y] = { type:'year', year:y, items:[], max:0 }; order.push(years[y]); }
+      years[y].items.push({ e:e, i:i });
+      if(key > years[y].max) years[y].max = key;
+    } else {
+      var ym = lp.y + '-' + String(lp.mo).padStart(2, '0');
+      if(!months[ym]){ months[ym] = { type:'month', ym:ym, items:[], max:0 }; order.push(months[ym]); }
+      months[ym].items.push({ e:e, i:i });
+      if(key > months[ym].max) months[ym].max = key;
+    }
+  });
+  var units = order.slice().sort(function(a, b){ return a.max < b.max ? 1 : (a.max > b.max ? -1 : 0); });
+  function midx(y, m){ return y * 12 + (m - 1); }
+  function mname(idx){ return { y: Math.floor(idx / 12), m: idx % 12 + 1 }; }
+  function spanOf(b){
+    if(b.type === 'month') return [midx(+b.ym.slice(0, 4), +b.ym.slice(5, 7)), midx(+b.ym.slice(0, 4), +b.ym.slice(5, 7))];
+    var yy = +b.year;
+    return [midx(yy, 1), midx(yy, 12)];
+  }
+  function blockYear(b){ return b.type === 'month' ? b.ym.slice(0, 4) : b.year; }
+  function gapText(a, b){
+    var A = mname(a), B = mname(b);
+    if(a === b) return AFMON[A.m - 1] + ' ' + A.y + ' \u00b7 nothing dated to this month';
+    return AFMON[A.m - 1] + ' ' + A.y + ' \u2013 ' + AFMON[B.m - 1] + ' ' + B.y + ' \u00b7 nothing dated to this span';
+  }
+  var covered = {};
+  units.forEach(function(b){
+    var sp = spanOf(b);
+    for(var ci = sp[0]; ci <= sp[1]; ci++) covered[ci] = 1;
+  });
+  /* Heading(Y) sits between Dec Y and Jan Y+1. Units sort by
+     internal max descending, so a section's units are
+     contiguous; a boundary between consecutive units is
+     "clean" (gap arithmetic crosses it freely) unless the
+     Dec/Jan line of some year falls strictly between the two
+     units' spans — then that year's heading intervenes. */
+  function boundaryYear(a, b){
+    /* a is the NEWER unit, b the OLDER. Return the year whose
+       heading intervenes, or null. */
+    var sa = spanOf(a), sb = spanOf(b);
+    for(var Y = +blockYear(a); Y >= +blockYear(b); Y--){
+      var dec = midx(Y, 12), jan = midx(Y + 1, 1);
+      var aAbove = sa[0] >= jan || sa[1] >= jan;
+      var bBelow = sb[1] <= dec || sb[0] <= dec;
+      if(aAbove && bBelow && !(sa[0] <= dec && sa[1] >= jan) && !(sb[0] <= dec && sb[1] >= jan)) return Y;
+      if(sa[0] <= dec && sa[1] >= jan) return null; /* a itself straddles or ends at the line */
+      if(sb[0] <= dec && sb[1] >= jan) return null;
+    }
+    return null;
+  }
+  function yearCount(y){
+    return units.reduce(function(s, x){ return s + (x.type === 'month' && x.ym.slice(0, 4) === y ? x.items.length : 0); }, 0);
+  }
+  var out = [];
+  if(units.length) out.push({ type:'yearhead', year: blockYear(units[0]), count: yearCount(blockYear(units[0])) });
+  for(var k = 0; k < units.length; k++){
+    var u = units[k];
+    out.push(u.type === 'month' ? { type:'month', ym:u.ym, items:u.items } : { type:'yearblock', year:u.year, items:u.items });
+    var nx = units[k + 1];
+    if(!nx) break;
+    var spA = spanOf(u), spB = spanOf(nx);
+    var emptyFrom = spB[1] + 1, emptyTo = spA[0] - 1; /* ascending idx range of the hole */
+    var hole = [];
+    for(var ei = emptyFrom; ei <= emptyTo; ei++) if(!covered[ei]) hole.push(ei);
+    var hy = boundaryYear(u, nx);
+    if(hy === null){
+      if(hole.length) out.push({ type:'gap', text: gapText(hole[0], hole[hole.length - 1]), from: hole[0], to: hole[hole.length - 1] });
+    } else {
+      var dec = midx(hy, 12);
+      var younger = hole.filter(function(x){ return x > dec; });
+      var older = hole.filter(function(x){ return x <= dec; });
+      if(younger.length) out.push({ type:'gap', text: gapText(younger[0], younger[younger.length - 1]), from: younger[0], to: younger[younger.length - 1] });
+      out.push({ type:'yearhead', year: String(hy), count: yearCount(String(hy)) });
+      if(older.length) out.push({ type:'gap', text: gapText(older[0], older[older.length - 1]), from: older[0], to: older[older.length - 1] });
+    }
+  }
+  return out;
+}
+var AF_CAL_CAP = 12, AF_CAL_OPEN = {};
+function afCalRowHTML(w){
+  var e = w.e, di = hmDiOf(e.name);
+  return '<div class="afc-row" data-date="' + esc(e.date || '') + '">' + afHeroDateHTML(e) +
+    '<div class="afc-main"><div class="afc-top">' + afNameHTML(e, di) + '</div>' +
+    '<p class="af-text">' + esc(wnFullText({ text: e.text }, di)) + '</p>' +
+    '<div class="af-meta">' + afSrcChipHTML(e) + '</div></div></div>';
+}
+function afCalBlockRowsHTML(b, key){
+  var open = !!AF_CAL_OPEN[key];
+  var list = open ? b.items : b.items.slice(0, AF_CAL_CAP);
+  var h = list.map(afCalRowHTML).join('');
+  if(!open && b.items.length > AF_CAL_CAP)
+    h += '<button type="button" class="afc-more" data-act="afcalall" data-k="' + esc(key) + '">Show all ' + b.items.length + '</button>';
+  return h;
+}
+function afCalHTML(){
+  if(!AF) return '';
+  var nodes = afCalModel(AF.items || []);
+  var h = '';
+  nodes.forEach(function(n){
+    if(n.type === 'yearhead'){
+      h += '<div class="afc-year"><h2>' + esc(n.year) + '</h2><span class="afc-ycount">' + n.count + ' events</span></div>';
+    } else if(n.type === 'gap'){
+      h += '<div class="afc-gap">' + esc(n.text) + '</div>';
+    } else if(n.type === 'month'){
+      var y = n.ym.slice(0, 4), m = +n.ym.slice(5, 7);
+      h += '<section class="afc-block" data-ym="' + esc(n.ym) + '"><h3 class="afc-mhead">' + AFFULL[m - 1] + ' ' + y +
+        ' <span class="afc-mcount">' + n.items.length + '</span></h3><div class="afc-rows">' + afCalBlockRowsHTML(n, 'm' + n.ym) + '</div></section>';
+    } else if(n.type === 'yearblock'){
+      h += '<section class="afc-block yonly" data-y="' + esc(n.year) + '"><h3 class="afc-mhead">Dated to ' + esc(n.year) + ' only' +
+        ' <span class="afc-mcount">' + n.items.length + '</span></h3><div class="afc-rows">' + afCalBlockRowsHTML(n, 'y' + n.year) + '</div></section>';
+    }
+  });
+  return h;
+}
+function afPaintCalBlock(key){
+  if(!AF) return;
+  var nodes = afCalModel(AF.items || []);
+  for(var j = 0; j < nodes.length; j++){
+    var n = nodes[j], k = n.type === 'month' ? 'm' + n.ym : (n.type === 'yearblock' ? 'y' + n.year : '');
+    if(k === key){
+      var btn = document.querySelector('.afc-more[data-k="' + key + '"]');
+      var rows = btn ? btn.closest('.afc-rows') : null;
+      if(rows) rows.innerHTML = afCalBlockRowsHTML(n, key);
+      return;
+    }
+  }
+}
 function lrActivityHTML(){
+  var cal = !!(S.route.seg && S.route.seg[1] === 'calendar');
   if(!AF) return '<div class="page lr af-page v4p" data-kind="about">' +
     lrChromeHTML('activity', 'Activity Feed', 'Loading the feed&hellip;') +
+    afSwitchHTML(cal ? 'cal' : 'tl') +
     '<div class="af-empty"><p class="dim">Loading the feed&hellip;</p></div></div>';
+  if(cal) return '<div class="page lr af-page v4p" data-kind="about">' +
+    lrChromeHTML('activity', 'Activity Feed', '') + afSwitchHTML('cal') +
+    '<div class="afc" id="af-cal">' + afCalHTML() + '</div></div>';
   return '<div class="page lr af-page v4p" data-kind="about">' +
-    lrChromeHTML('activity', 'Activity Feed', '') +
+    lrChromeHTML('activity', 'Activity Feed', '') + afSwitchHTML('tl') +
     '<div class="af-tl" id="af-stream">' + afStreamHTML() + '</div></div>';
 }
 
@@ -10618,8 +10822,9 @@ function viewDaily(v){
     return;
   }
   if(S.route.seg && S.route.seg[0] === 'activity'){
-    /* V4.8.0: Activity Feed — one vertical timeline, most
-       recent at the top, one date per packet, nothing else.
+    /* V4.9.0: Activity Feed, two views over the audited data —
+       the vertical timeline (#/daily/activity) and the
+       condensed calendar (#/daily/activity/calendar).
        Read-only, like Filings. */
     afLoad();
     v.innerHTML = lrActivityHTML();
@@ -14740,6 +14945,7 @@ function onClick(ev){
     case 'mgdir': MGMT.dir = -MGMT.dir; MGMT.shown = 50; render(); break;
     case 'mgmore': MGMT.shown = (MGMT.shown || 50) + 50; mgPaintList(); break;
     case 'afmore': AF_SHOWN += AF_PAGE; afPaintStream(); break;
+    case 'afcalall': { var afk = el.getAttribute('data-k'); AF_CAL_OPEN[afk] = true; afPaintCalBlock(afk); break; }
     case 'wnday': { var wd = el.getAttribute('data-d'); if(wd){ if(WN_OPEN[wd]) delete WN_OPEN[wd]; else WN_OPEN[wd] = 1; } render(); break; }
     case 'sstview': SB.st.view = el.getAttribute('data-v') || 'all'; $$('.sst-viewseg button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-v') === SB.st.view); }); sstPaint(); break;
     case 'sefield': seOpenField(el.getAttribute('data-f'), el.getAttribute('data-seg')); break;
