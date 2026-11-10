@@ -6932,8 +6932,8 @@ html[data-mode="medium"] .psheets .tile{background:rgba(var(--band),.16)}
 .af-effchip{font-size:11px;font-weight:700;color:var(--pv-blue);background:var(--pv-blue-bg);border-radius:999px;padding:1px 8px;white-space:nowrap}
 .af-row{position:relative;display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--pv-line)}
 .af-row:first-of-type{border-top:0}
-.af-row::before{content:'';position:absolute;left:-27px;top:24px;width:9px;height:9px;border-radius:50%;background:var(--pv-blue)}
-.af-av{flex:none;width:38px;height:38px;border-radius:50%;overflow:hidden;display:inline-block}
+.af-row::before{content:'';position:absolute;left:-27px;top:33px;width:9px;height:9px;border-radius:50%;background:var(--pv-blue)}
+.af-av{flex:none;width:56px;height:56px;border-radius:50%;overflow:hidden;display:inline-block}
 .af-av img{width:100%;height:100%;object-fit:cover;display:block}
 .af-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .af-top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
@@ -7005,14 +7005,10 @@ a.af-src-chip:hover{text-decoration:underline}
 .af-more-det summary::-webkit-details-marker{display:none}
 .af-more-det summary::after{content:'▾';font-size:10px;transition:transform .15s}
 .af-more-det[open ] summary::after{transform:rotate(180deg)}
-.af-det-body{margin-top:4px;padding:8px 11px;border:1px solid var(--pv-line);border-radius:9px;background:var(--pv-panel2)}
+.af-det-body{margin-top:4px;padding:10px 12px;border:1px solid var(--pv-line);border-radius:9px;background:var(--pv-panel)}
 .af-det-line{margin:0 0 4px;font-size:12.5px;line-height:1.5;color:var(--pv-mut)}
 .af-det-line:last-child{margin-bottom:0}
 .af-det-line b{color:var(--pv-text);font-weight:650}
-.af-mbreak{display:flex;align-items:center;gap:10px;margin:14px 0 2px}
-.af-mbreak::before,.af-mbreak::after{content:'';flex:1;border-top:1px solid var(--pv-line)}
-.af-mbreak span{font:700 11px var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--pv-dim);white-space:nowrap}
-.af-mbreak + .af-row{border-top:0}
 .afg-block{background:var(--pv-panel);border:1px solid var(--pv-line);border-radius:14px;padding:6px 14px 14px;margin:0 0 12px}
 .afg-striplab{font:700 10.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--pv-dim);margin:8px 0 5px}
 .afg-strip{display:flex;flex-wrap:wrap;gap:5px;margin:2px 0 8px}
@@ -7041,4 +7037,48 @@ a.af-src-chip:hover{text-decoration:underline}
   .afg-ev .af-name{font-size:11px}
   .af-topright{max-width:38%}
 }
+/* ============================================================
+   V4.10.1 — Timeline only (JD 2026-11-10): bigger avatars,
+   month tics on the rail, a fleshed-out high-contrast "More
+   detail" disclosure, and the name above the fact text in
+   hierarchy. Calendar rules above are untouched.
+   Avatars: photo tiles (.af-av, sized in the V4.8.0 block)
+   and initials tiles (.av direct children of the row) both
+   render at 56px, ringed 2px in the row's kind ink — the
+   same ring the rest of the app uses (steel blue About /
+   antique gold Connection).
+   ============================================================ */
+.af-row>.av{width:56px;height:56px;font-size:21px}
+.af-row[data-kind="about"]>.af-av,.af-row[data-kind="about"]>.av{box-shadow:0 0 0 2px var(--ink-about-bright)}
+.af-row[data-kind="connection"]>.af-av,.af-row[data-kind="connection"]>.av{box-shadow:0 0 0 2px var(--ink-conn-bright)}
+/* Name hierarchy: the name is the packet's dominant element,
+   on its own line under the date row; the fact sentence steps
+   down below it. Timeline scope only (.af-tl) — calendar name
+   chips keep their compact sizes. */
+.af-namerow{margin-top:3px}
+.af-tl .af-name{font-size:20px;font-weight:750;line-height:1.2}
+.af-hero-text{font-size:16px;font-weight:600}
+/* Month tic: a 16x2 notch centred on the spine (the timeline
+   container pads content 36px; the spine sits at 13px, so the
+   tic band pulls back to the container edge and the notch is
+   placed at 5px..21px, centred on 13px), month name in small
+   caps just right of the spine. The band is 14px tall — a
+   ruler mark, not a section header. */
+.af-mtic{position:relative;height:14px;margin:8px 0 0 -36px}
+.af-mtic::before{content:'';position:absolute;left:5px;top:6px;width:16px;height:2px;border-radius:1px;background:var(--pv-dim)}
+.af-mtic span{position:absolute;left:27px;top:0;font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--pv-mut);line-height:14px;white-space:nowrap}
+.af-mtic + .af-row{border-top:0}
+/* Disclosure contrast: the panel rides the SOLID --pv-panel
+   token (set in the V4.10.0 block above); body text — the
+   evidence line and the file facts — is full-strength
+   --pv-text at 13.5px; only the secondary lines (date,
+   cross-check) stay muted, at 12.5px. */
+.af-det-line.ev{font-size:13.5px;line-height:1.55;color:var(--pv-text)}
+.af-det-file{margin-top:8px;border-top:1px solid var(--pv-line);padding-top:7px}
+.af-det-h{margin:0 0 5px;font:700 10.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--pv-mut)}
+.af-det-fact{margin:0 0 5px;font-size:13.5px;line-height:1.55;color:var(--pv-text)}
+.af-det-fact:last-child{margin-bottom:0}
+.af-det-fact .af-dchip{font-size:11px}
+.af-file-src{color:var(--pv-blue);text-decoration:none}
+.af-file-src:hover{text-decoration:underline}
 
