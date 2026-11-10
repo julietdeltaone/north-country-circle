@@ -4980,6 +4980,45 @@
     "status": "read"
    },
    "url": "https://www.choosept.com/find-a-pt/b/i/jaime-b.-bicknell-pt-dpt"
+  },
+  {
+   "anchor": "Clarkson University \u00b7 Engineering and Management",
+   "batch": "AM run \u2014 Nov 10, 2026",
+   "display": "Ethan Flamand",
+   "fact": "Received the Engineering and Management Emerging Leadership Award and a Phalanx Commendable Service Award (Juniors) at Clarkson University",
+   "id": "fi-20261110-e-flam-clarkson-awards",
+   "key": "e._.flam",
+   "learned": "2026-11-10",
+   "name": "e._.flam",
+   "pattern": "new_credential",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/node?page=43"
+  },
+  {
+   "anchor": "Rhode Island State Right to Life Committee \u00b7 Smithfield, RI",
+   "batch": "AM run \u2014 Nov 10, 2026",
+   "display": "Lydia Bartlett",
+   "fact": "Organized the Rhode Island State Right to Life Committee's bus trip to the March for Life in Washington, D.C., Jan 2026",
+   "id": "fi-20261110-ct-lydia-bartlett-march-for-life-trip",
+   "key": "ct:lydia bartlett",
+   "learned": "2026-11-10",
+   "name": "ct:lydia bartlett",
+   "pattern": "milestone",
+   "source": "Rhode Island Catholic",
+   "url": "https://thericatholic.com/stories/from-the-classroom-to-the-capital-young-catholics-stand-up-for-life,15223"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Liberal Arts-General Studies",
+   "batch": "AM run \u2014 Nov 10, 2026",
+   "display": "Marissa Wood",
+   "fact": "Named to SUNY Canton's Dean's List for Spring 2020 as a Liberal Arts-General Studies student; SUNY Canton's Spring 2020 honors list does not place her on the President's List",
+   "id": "fi-20261110-marissa989-spring-2020-deans-list-correction",
+   "key": "marissa989",
+   "learned": "2026-11-10",
+   "name": "marissa989",
+   "pattern": "correction",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2020/honors2020.php"
   }
  ],
  "patterns": {
