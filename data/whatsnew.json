@@ -3,6 +3,38 @@
  "count": 300,
  "items": [
   {
+   "date": "2026-11-10",
+   "kind": "filed",
+   "display": "Ethan Flamand",
+   "text": "Received the Engineering and Management Emerging Leadership Award and a Phalanx Commendable Service Award (Juniors) at Clarkson University",
+   "source": "Clarkson University",
+   "url": "https://www.clarkson.edu/node?page=43"
+  },
+  {
+   "date": "2026-11-10",
+   "kind": "filed",
+   "display": "Lydia Bartlett",
+   "text": "Organized the Rhode Island State Right to Life Committee's bus trip to the March for Life in Washington, D.C., Jan 2026",
+   "source": "Rhode Island Catholic",
+   "url": "https://thericatholic.com/stories/from-the-classroom-to-the-capital-young-catholics-stand-up-for-life,15223"
+  },
+  {
+   "date": "2026-11-10",
+   "kind": "filed",
+   "display": "Marissa Wood",
+   "text": "Named to SUNY Canton's Dean's List for Spring 2020 as a Liberal Arts-General Studies student; SUNY Canton's Spring 2020 honors list does not place her on the President's List",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2020/honors2020.php"
+  },
+  {
+   "date": "2026-11-10",
+   "kind": "filed",
+   "display": "Kyle Gotham",
+   "text": "Deputy Sheriff with the St. Lawrence County Sheriff's Office in 2025",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/salaries/NY/st-lawrence?page=4"
+  },
+  {
    "date": "2026-11-09",
    "kind": "filed",
    "display": "Gabe Paladin",
@@ -2369,38 +2401,6 @@
    "text": "Formerly practiced under the name Margaret T. Ecker, PA-C (NPI registry record, July 2016)",
    "source": "NPI Profile",
    "url": "https://npiprofile.com/npi/1114370046"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "filed",
-   "display": "Maggie Thibodeau",
-   "text": "Practices at Claxton-Hepburn Medical Center, 214 King St, Ogdensburg, NY, and offers telehealth appointments",
-   "source": "Sharecare",
-   "url": "https://providers.sharecare.com/doctor/margaret-thibodeau-xymvtbk"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "filed",
-   "display": "Makiah Barber",
-   "text": "Named to SUNY Potsdam's President's List, Fall 2025",
-   "source": "SUNY Potsdam",
-   "url": "https://www.potsdam.edu/news/presidentsdeanslistsfall2025"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "filed",
-   "display": "Maura Mayer",
-   "text": "Serves on the Volunteer Transportation Center's St. Lawrence County Advisory Committee",
-   "source": "NBC Watertown",
-   "url": "https://www.nbcwatertown.com/2025/08/04/541766/vtc-s-st-lawrence-county-golf-tournament-raises-16-000-to-aid-transportation-services"
-  },
-  {
-   "date": "2026-11-05",
-   "kind": "filed",
-   "display": "Max Ferran",
-   "text": "Recipient of the NYSACAC Writer's Fund scholarship and an emerging author; also holds the Presidential Ignite Fellowship",
-   "source": "Choice of Games Forum",
-   "url": "https://forum.choiceofgames.com/u/max_ferran"
   }
  ]
 }
