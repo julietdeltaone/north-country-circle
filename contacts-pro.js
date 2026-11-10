@@ -10676,7 +10676,11 @@ function afFileFacts(e, di){
      identity the wnFullText expansion uses); near-duplicate
      bullets dedupe the same way. Newest first, at most 4. */
   if(di == null || typeof D === 'undefined' || !D || !D.directory[di]) return [];
-  if(AF_FILECACHE[di]) return AF_FILECACHE[di];
+  /* The cache key carries the packet's own text: one person
+     can own several packets, and each packet excludes a
+     different "own" fact. */
+  var ckey = di + '|' + String(e.date || '') + '|' + String(e.text || '').slice(0, 60);
+  if(AF_FILECACHE[ckey]) return AF_FILECACHE[ckey];
   var own = afNormText(wnFullText({ text: String(e.text || '') }, di));
   function ownish(n){
     if(!own) return false;
@@ -10707,7 +10711,7 @@ function afFileFacts(e, di){
     if(dup) return;
     kept.push(n); out.push(c);
   });
-  AF_FILECACHE[di] = out;
+  AF_FILECACHE[ckey] = out;
   return out;
 }
 function afDetailHTML(e, di){
