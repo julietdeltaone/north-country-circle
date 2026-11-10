@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.10.0';
+var APP_VERSION = '4.10.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -10532,6 +10532,19 @@ function lrRecordsBodyHTML(){
    counts); a "More detail" disclosure (.af-more-det) shows the
    audit evidence when an item carries it; and quiet month
    breaks (.af-mbreak) mark each month change in the stream.
+   V4.10.1 (JD 2026-11-10 on the live V4.10.0): timeline only —
+   packet avatars grow to 56px with the 2px kind-ink ring;
+   month breaks become slim rail tics (.af-mtic: a notch on
+   the spine + a small-caps month label, no full-width row);
+   the "More detail" disclosure sits on the SOLID panel token
+   with full-strength text (evidence and file facts in
+   --pv-text) and gains a "More from their file" section — the
+   person's other dated footprint facts, resolved client-side
+   from the directory record the avatar already uses, so the
+   feed data contract is untouched; and the person's NAME
+   becomes the packet's dominant element (20px / 750 on its
+   own line under the date row), the fact sentence stepping
+   down to 16px / 600 below it. Calendar unchanged.
    ============================================================ */
 var AF = null, AF_LOADING = false, AF_SHOWN = 60;
 var AF_PAGE = 60;
@@ -10609,19 +10622,121 @@ function afSwitchHTML(on){
     '<a href="#/daily/activity"' + (on === 'tl' ? ' class="on"' : '') + '>Timeline</a>' +
     '<a href="#/daily/activity/calendar"' + (on === 'cal' ? ' class="on"' : '') + '>Calendar</a></div>';
 }
-function afDetailHTML(e){
-  /* "More detail" disclosure (V4.10.0): shown ONLY when the
-     item carries audit evidence. Plain language: the date and
-     its precision in words, where the date comes from, and the
-     cross-check line when the audit confirmed it two ways. */
+var AF_MON3 = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, sept:9, oct:10, nov:11, dec:12 };
+var AF_FULL_RX = /(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4}/;
+var AF_ISO_RX = /\d{4}-\d{2}-\d{2}/;
+var AF_MY_RX = /(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{4}/;
+var AF_SEASON_RX = /(?:Spring|Summer|Fall|Autumn|Winter)\s+(?:19|20)\d{2}/;
+var AF_RANGE_RX = /(?:19|20)\d{2}\s*[-–—]\s*(?:\d{2}|\d{4})(?!\d)/;
+var AF_YEAR_RX = /(?<!\d)(?:19|20)\d{2}(?!\d)(?!\s*[-–—]\s*\d)/;
+function afFactDate(t){
+  /* The one date a footprint fact carries, most specific form
+     first: a full date beats a season or a year range mentioned
+     earlier in the same sentence. Returns {key, label} — key
+     is a sortable yyyymmdd-ish number, label the matched text
+     as written (an ISO date is re-labelled in display form). */
+  var m = AF_FULL_RX.exec(t);
+  if(m){
+    var f = /^([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,\s*(\d{4})$/.exec(m[0]);
+    return { key: (+f[3]) * 10000 + AF_MON3[f[1].slice(0, 3).toLowerCase()] * 100 + (+f[2]), label: m[0] };
+  }
+  m = AF_ISO_RX.exec(t);
+  if(m){
+    var iso = m[0].split('-');
+    return { key: (+iso[0]) * 10000 + (+iso[1]) * 100 + (+iso[2]), label: AFMON[(+iso[1]) - 1] + ' ' + (+iso[2]) + ', ' + iso[0] };
+  }
+  m = AF_MY_RX.exec(t);
+  if(m){
+    var g = /^([A-Za-z]+)\.?\s+(\d{4})$/.exec(m[0]);
+    return { key: (+g[2]) * 10000 + AF_MON3[g[1].slice(0, 3).toLowerCase()] * 100, label: m[0] };
+  }
+  m = AF_SEASON_RX.exec(t);
+  if(m){
+    var sm = { Spring:3, Summer:6, Fall:9, Autumn:9, Winter:12 }[m[0].split(' ')[0]];
+    return { key: (+m[0].slice(-4)) * 10000 + sm * 100, label: m[0] };
+  }
+  m = AF_RANGE_RX.exec(t);
+  if(m) return { key: (+m[0].slice(0, 4)) * 10000 + 900, label: m[0] };
+  m = AF_YEAR_RX.exec(t);
+  if(m) return { key: (+m[0]) * 10000, label: m[0] };
+  return null;
+}
+function afNormText(s){
+  return String(s || '').replace(/^[•·\-*]\s*/, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+var AF_FILECACHE = {};
+function afFileFacts(e, di){
+  /* "More from their file" (V4.10.1): the person's OTHER dated
+     facts from their own directory footprint, resolved from
+     the same record the avatar uses — the feed file itself is
+     never touched. A footprint block can hold several bullets
+     (split on •, one bullet is one fact); a fact qualifies
+     when afFactDate can date it. The packet's own fact is
+     excluded by normalized-text prefix/overlap (the same
+     identity the wnFullText expansion uses); near-duplicate
+     bullets dedupe the same way. Newest first, at most 4. */
+  if(di == null || typeof D === 'undefined' || !D || !D.directory[di]) return [];
+  if(AF_FILECACHE[di]) return AF_FILECACHE[di];
+  var own = afNormText(wnFullText({ text: String(e.text || '') }, di));
+  function ownish(n){
+    if(!own) return false;
+    if(n.indexOf(own.slice(0, 48)) === 0 || own.indexOf(n.slice(0, 48)) === 0) return true;
+    if(own.length > 20 && n.indexOf(own) >= 0) return true;
+    if(n.length > 20 && own.indexOf(n) >= 0) return true;
+    return false;
+  }
+  var cands = [];
+  (footprintOf(D.directory[di]).blocks || []).forEach(function(b){
+    String(b.text || '').split(/\s*•\s*/).forEach(function(piece){
+      piece = piece.trim().replace(/^[•·\-*]\s*/, '').trim();
+      if(!piece) return;
+      var pd = afFactDate(piece);
+      if(!pd) return;
+      cands.push({ key: pd.key, label: pd.label, text: piece, url: (b.urls && b.urls[0]) || '', ord: cands.length });
+    });
+  });
+  cands.sort(function(a, b){ return b.key - a.key || a.ord - b.ord; });
+  var out = [], kept = [];
+  cands.forEach(function(c){
+    if(out.length >= 4) return;
+    var n = afNormText(c.text);
+    if(ownish(n)) return;
+    var dup = false;
+    for(var i = 0; i < kept.length; i++)
+      if(n.indexOf(kept[i].slice(0, 48)) === 0 || kept[i].indexOf(n.slice(0, 48)) === 0){ dup = true; break; }
+    if(dup) return;
+    kept.push(n); out.push(c);
+  });
+  AF_FILECACHE[di] = out;
+  return out;
+}
+function afDetailHTML(e, di){
+  /* "More detail" disclosure (V4.10.0; V4.10.1 contrast +
+     file facts): shown when the item carries audit evidence
+     or the person has other dated facts on file. Plain
+     language: the date and its precision in words, where the
+     date comes from (set in full-strength text — never the
+     muted token), the cross-check line when the audit
+     confirmed it two ways, then "More from their file". */
   var ev = String(e.evidence || '').trim();
-  if(!ev) return '';
-  var p = afLabelParts(e);
-  var precWord = p.prec === 'day' ? 'exact day' : (p.prec === 'month' ? 'month only' : 'year only');
-  var h = '<details class="af-more-det"><summary>More detail</summary><div class="af-det-body">' +
-    '<p class="af-det-line"><b>Date:</b> ' + esc(e.label || '') + ' (' + precWord + ')</p>' +
-    '<p class="af-det-line"><b>Where the date comes from:</b> ' + esc(ev) + '</p>';
-  if(e.checks >= 2) h += '<p class="af-det-line">Cross-checked two ways.</p>';
+  var facts = afFileFacts(e, di);
+  if(!ev && !facts.length) return '';
+  var h = '<details class="af-more-det"><summary>More detail</summary><div class="af-det-body">';
+  if(ev){
+    var p = afLabelParts(e);
+    var precWord = p.prec === 'day' ? 'exact day' : (p.prec === 'month' ? 'month only' : 'year only');
+    h += '<p class="af-det-line"><b>Date:</b> ' + esc(e.label || '') + ' (' + precWord + ')</p>' +
+      '<p class="af-det-line ev"><b>Where the date comes from:</b> ' + esc(ev) + '</p>';
+    if(e.checks >= 2) h += '<p class="af-det-line">Cross-checked two ways.</p>';
+  }
+  if(facts.length){
+    h += '<div class="af-det-file"><p class="af-det-h">More from their file</p>' + facts.map(function(f){
+      var tx = f.url
+        ? '<a class="af-file-src" data-act="extlink" href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(f.text) + '</a>'
+        : esc(f.text);
+      return '<p class="af-det-fact"><span class="af-dchip">' + esc(f.label) + '</span> ' + tx + '</p>';
+    }).join('') + '</div>';
+  }
   return h + '</div></details>';
 }
 var AF_DATE_RE = /\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?,\s*\d{4}\b|\b(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)\.?\s+\d{4}\b|\b(?:Spring|Summer|Fall|Autumn|Winter)\s+(?:19|20)\d{2}\b|(?<!\d)(?:19|20)\d{2}(?!\d)(?!\s*[-–]\s*\d)/g;
@@ -10681,11 +10796,12 @@ function afRowEff(e){
   var di = hmDiOf(e.name);
   return '<article class="af-row" data-kind="' + textKind(e.text) + '" data-date="' + esc(e.date || '') + '">' +
     afAvatarHTML(e, di, 'md') +
-    '<div class="af-main"><div class="af-top">' + afHeroDateHTML(e) + afNameHTML(e, di) +
+    '<div class="af-main"><div class="af-top">' + afHeroDateHTML(e) +
     (e.photo ? '<span class="af-kind af-k-photo">' + ic('camera', 11) + ' Photo</span>' : '') +
     '<span class="af-topright">' + afSrcChipHTML(e) + '</span></div>' +
+    '<div class="af-namerow">' + afNameHTML(e, di) + '</div>' +
     '<p class="af-text af-hero-text">' + afRichTextHTML(e, di) + '</p>' +
-    afDetailHTML(e) +
+    afDetailHTML(e, di) +
     '</div></article>';
 }
 function afMonthKeyOf(e){
@@ -10701,14 +10817,15 @@ function afStreamHTML(){
   var shown = items.slice(0, AF_SHOWN);
   var h = '';
   shown.forEach(function(e, idx){
-    /* Month breaks (V4.10.0): a quiet labelled hairline where
-       the month changes between consecutive month-carrying
-       packets. The break belongs to the packet that starts
-       the new month and is computed from the FULL item list
-       on every render, so Show-more repaints neither
-       duplicate nor drop one. Year-precision packets carry
-       no month: they never fire a break and never reset the
-       comparison. The stream's first packet never gets one. */
+    /* Month tics (V4.10.1; breaks in V4.10.0): a slim notch on
+       the rail itself where the month changes between
+       consecutive month-carrying packets — no full-width row.
+       The tic belongs to the packet that starts the new month
+       and is computed from the FULL item list on every render,
+       so Show-more repaints neither duplicate nor drop one.
+       Year-precision packets carry no month: they never fire
+       a tic and never reset the comparison. The stream's
+       first packet never gets one. */
     var k = afMonthKeyOf(e);
     if(idx > 0 && k % 100 !== 0){
       for(var j = idx - 1; j >= 0; j--){
@@ -10716,7 +10833,7 @@ function afStreamHTML(){
         if(pk % 100 === 0) continue;
         if(pk !== k){
           var lp = afLabelParts(e);
-          h += '<div class="af-mbreak" data-mk="' + k + '"><span>' + AFFULL[lp.mo - 1] + ' ' + lp.y + '</span></div>';
+          h += '<div class="af-mtic" data-mk="' + k + '"><span>' + AFFULL[lp.mo - 1] + ' ' + lp.y + '</span></div>';
         }
         break;
       }
