@@ -2,12 +2,12 @@
  "adopted": "2026-10-27",
  "budget": {
   "daily_tranche_pct": 14.3,
-  "expected_pct": 43,
+  "expected_pct": 57,
   "measure": "Usage is reported as a percentage of the weekly allowance, not a token count — the allowance's token size is not published, so the council budgets in percent.",
   "plan": "Power",
-  "read_at": "Nov 9, 2026, 7:58 AM ET",
-  "used_pct": 19,
-  "verdict": "Under pace — 19% used against ~43% even pace, with the week resetting Fri Nov 13, 2026, 7:38 AM EST.",
+  "read_at": "Nov 10, 2026, 7:58 AM ET",
+  "used_pct": 36,
+  "verdict": "Under pace — 36% used against ~57% even pace, with the week resetting Fri Nov 13, 2026, 7:38 AM EST.",
   "week_resets": "Fri Nov 13, 2026, 7:38 AM EST"
  },
  "charter_note": "Charter adopted Oct 27, 2026 (JD). Seven directors; JD interacts only with the Operations roll-up. Everything reports change-only; \"no findings\" is a valid report.",
@@ -59,8 +59,8 @@
   "content": [
    {
     "date": "2026-11-09",
-    "title": "Scans clean; both Nov 4 flags verified executed and closed; 1 new flag staged",
-    "summary": "730 live profiles: zero shared phones/emails, zero exact-name duplicates, zero fragments, zero inference gaps. Lydia Bartlett's school is named in the live Sheet ('Community College of Rhode Island') and all 10 church values now read 'Calvary Baptist Church' — both Nov 4 flags verified executed at the source and closed (28 closed). One new flag: the registry alias 'Canton-Potsdam Hospital' is back in use on Steve Evans."
+    "summary": "730 live profiles: zero shared phones/emails, zero exact-name duplicates, zero fragments, zero inference gaps. Lydia Bartlett's school is named in the live Sheet ('Community College of Rhode Island') and all 10 church values now read 'Calvary Baptist Church' — both Nov 4 flags verified executed at the source and closed (28 closed). One new flag: the registry alias 'Canton-Potsdam Hospital' is back in use on Steve Evans.",
+    "title": "Scans clean; both Nov 4 flags verified executed and closed; 1 new flag staged"
    },
    {
     "date": "2026-11-04",
@@ -91,8 +91,8 @@
   "layout": [
    {
     "date": "2026-11-09",
-    "title": "V4.4.8 crawl: gate FAILS on Photos (78 blocking) — fixed same cycle; V4.4.9 re-crawl PASSES",
-    "summary": "Dated reports: the FAIL run's per-combo counts in the crawl log (~/workspace/overlap-2026-11-09.log) and layout-audit-2026-11-09.md/.json (post-fix record). All 78 blocking instances were one class — Photos 'Possible photos' evidence lines clipped horizontally (nowrap + overflow hidden) at 1366 in both themes, fed by the Nov 5 batch's long evidence strings. Fix: the line wraps (one CSS rule). Re-crawl of the V4.4.9 tree: Gate PASS — 0 blocking across 16 surfaces × 4 combos; 1,377 proximity warnings remain advisory."
+    "summary": "Dated reports: the FAIL run's per-combo counts in the crawl log (~/workspace/overlap-2026-11-09.log) and layout-audit-2026-11-09.md/.json (post-fix record). All 78 blocking instances were one class — Photos 'Possible photos' evidence lines clipped horizontally (nowrap + overflow hidden) at 1366 in both themes, fed by the Nov 5 batch's long evidence strings. Fix: the line wraps (one CSS rule). Re-crawl of the V4.4.9 tree: Gate PASS — 0 blocking across 16 surfaces × 4 combos; 1,377 proximity warnings remain advisory.",
+    "title": "V4.4.8 crawl: gate FAILS on Photos (78 blocking) — fixed same cycle; V4.4.9 re-crawl PASSES"
    },
    {
     "date": "2026-11-04",
@@ -123,8 +123,8 @@
   "ops": [
    {
     "date": "2026-11-09",
-    "title": "Weekly cycle complete",
-    "summary": "Resource 17% vs ~42% pace (under, no flag). Photos: Cycle 2 slice 2 — 40 hunted, 1 possible filed, QC 101 checked / 1 hidden. UX: both themes clean; layout gate FAIL on 4.4.8 fixed and shipped as 4.4.9, re-crawl PASS. Content: scans clean, 2 flags verified closed, 1 new flag staged. Open flags for JD: 1."
+    "summary": "Resource 17% vs ~42% pace (under, no flag). Photos: Cycle 2 slice 2 — 40 hunted, 1 possible filed, QC 101 checked / 1 hidden. UX: both themes clean; layout gate FAIL on 4.4.8 fixed and shipped as 4.4.9, re-crawl PASS. Content: scans clean, 2 flags verified closed, 1 new flag staged. Open flags for JD: 1.",
+    "title": "Weekly cycle complete"
    },
    {
     "date": "2026-11-04",
@@ -155,8 +155,8 @@
   "photos": [
    {
     "date": "2026-11-09",
-    "title": "Cycle 2 slice 2: 40 hunted on new routes, 1 possible filed; QC hid 1 of the Nov 5 filings",
-    "summary": "Slice 2 (Benjamin Emmanuel → Jillian Ferrante) filed 0 confirmed / 1 possible: Ethan Ryan's SUNY Potsdam police-academy graduation group photo (his name is in the page's Norwood PD graduate list and the caption covers all graduates; his position is unidentified, so it files possible). The other 39 closed as dead ends on fresh routes — traps shut for Dianalyn Martin (photos BY her, not OF her), the basketball Ethan Thompson namesake, and Heidi Levendusky (all photos are of her daughters). QC over the 101 photos filed Nov 5: 101/101 display, 100 pass — Kailee Paige's filing is a full 'Meet the Tutor!' poster graphic, hidden via the Sheet's Photo Hidden field (verified read-back), never deleted."
+    "summary": "Slice 2 (Benjamin Emmanuel → Jillian Ferrante) filed 0 confirmed / 1 possible: Ethan Ryan's SUNY Potsdam police-academy graduation group photo (his name is in the page's Norwood PD graduate list and the caption covers all graduates; his position is unidentified, so it files possible). The other 39 closed as dead ends on fresh routes — traps shut for Dianalyn Martin (photos BY her, not OF her), the basketball Ethan Thompson namesake, and Heidi Levendusky (all photos are of her daughters). QC over the 101 photos filed Nov 5: 101/101 display, 100 pass — Kailee Paige's filing is a full 'Meet the Tutor!' poster graphic, hidden via the Sheet's Photo Hidden field (verified read-back), never deleted.",
+    "title": "Cycle 2 slice 2: 40 hunted on new routes, 1 possible filed; QC hid 1 of the Nov 5 filings"
    },
    {
     "date": "2026-11-04",
@@ -178,8 +178,8 @@
   "progress": [
    {
     "date": "2026-11-09",
-    "title": "No tripwires; Koberda route closed by another road; one batch-boundary miss caught",
-    "summary": "Every directorate produced state change. The Koberda Wayback watch closes: the Nov 5 pass filed his confirmed photo from a different route, so the last Wayback variant is moot. Two names fell between the hunter batch ranges (Wiegandt, Ingram) — caught by the coordinator's count check against the slice file and hunted on fresh routes; future batches go out by name and number. The layout gate's FAIL → one-line fix → PASS re-crawl is the cycle's evidence chain."
+    "summary": "Every directorate produced state change. The Koberda Wayback watch closes: the Nov 5 pass filed his confirmed photo from a different route, so the last Wayback variant is moot. Two names fell between the hunter batch ranges (Wiegandt, Ingram) — caught by the coordinator's count check against the slice file and hunted on fresh routes; future batches go out by name and number. The layout gate's FAIL → one-line fix → PASS re-crawl is the cycle's evidence chain.",
+    "title": "No tripwires; Koberda route closed by another road; one batch-boundary miss caught"
    },
    {
     "date": "2026-11-04",
@@ -209,14 +209,19 @@
   ],
   "resource": [
    {
-    "date": "2026-11-09",
-    "title": "Daily gauge check: 19% used",
-    "summary": "Under pace — 19% used vs ~43% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST)."
+    "date": "2026-11-10",
+    "summary": "Under pace — 36% used vs ~57% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
+    "title": "Daily gauge check: 36% used"
    },
    {
     "date": "2026-11-09",
-    "title": "Weekly cycle check: 17% used, under pace",
-    "summary": "Read Nov 9, 2026, 5:30 AM ET: 17% used vs ~42% even pace; week resets Fri Nov 13, 2026, 7:38 AM EST. Under by ~25 points — neither flag rule met, full Photos slice and full UX crawl ran uncut; no flag."
+    "summary": "Under pace — 19% used vs ~43% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
+    "title": "Daily gauge check: 19% used"
+   },
+   {
+    "date": "2026-11-09",
+    "summary": "Read Nov 9, 2026, 5:30 AM ET: 17% used vs ~42% even pace; week resets Fri Nov 13, 2026, 7:38 AM EST. Under by ~25 points — neither flag rule met, full Photos slice and full UX crawl ran uncut; no flag.",
+    "title": "Weekly cycle check: 17% used, under pace"
    },
    {
     "date": "2026-11-08",
@@ -232,18 +237,13 @@
     "date": "2026-11-06",
     "summary": "On pace — 0% used vs ~0% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 0% used"
-   },
-   {
-    "date": "2026-11-05",
-    "summary": "Ahead of pace — 91% used vs ~86% even pace (week resets Fri Nov 6, 2026, 7:38 AM EST).",
-    "title": "Daily gauge check: 91% used"
    }
   ],
   "ux": [
    {
     "date": "2026-11-09",
-    "title": "Both-themes crawl clean on V4.4.8; 1 presentation fix shipped as V4.4.9",
-    "summary": "9 views + a profile probe in light and dark: no broken views, no horizontal overflow, badge V4.4.8, nav lands correctly (Photos verified by probe — the harness's real-click leg is stale against the V4 rail). Every contrast flag was the established filled-primary-button pairing. The same-day layout gate failed the shipped build on Photos evidence clipping (see Layout) — fixed in CSS and shipped as V4.4.9, gate re-verified PASS."
+    "summary": "9 views + a profile probe in light and dark: no broken views, no horizontal overflow, badge V4.4.8, nav lands correctly (Photos verified by probe — the harness's real-click leg is stale against the V4 rail). Every contrast flag was the established filled-primary-button pairing. The same-day layout gate failed the shipped build on Photos evidence clipping (see Layout) — fixed in CSS and shipped as V4.4.9, gate re-verified PASS.",
+    "title": "Both-themes crawl clean on V4.4.8; 1 presentation fix shipped as V4.4.9"
    },
    {
     "date": "2026-11-04",
@@ -1527,9 +1527,9 @@
    "director": "content",
    "id": "lydia-bartlett-community-college",
    "kind": "near-duplicate-org",
+   "ruling": "Verified executed in the live Sheet Nov 9, 2026 (read directly): universities now read 'Community College of Rhode Island, Providence College' — the school was named. Closed by Operations, no longer needs a ruling.",
    "state": "closed",
-   "title": "Lydia Bartlett — bare 'Community College' university value",
-   "ruling": "Verified executed in the live Sheet Nov 9, 2026 (read directly): universities now read 'Community College of Rhode Island, Providence College' — the school was named. Closed by Operations, no longer needs a ruling."
+   "title": "Lydia Bartlett — bare 'Community College' university value"
   },
   {
    "date": "2026-11-04",
@@ -1537,29 +1537,11 @@
    "director": "content",
    "id": "calvary-baptist-name",
    "kind": "near-duplicate-org",
+   "ruling": "Verified executed in the live Sheet Nov 9, 2026 (read directly): the churches field now carries only 'Calvary Baptist Church' (10 profiles) — the 9 short forms were standardized to the full name. Closed by Operations, no longer needs a ruling.",
    "state": "closed",
-   "title": "'Calvary Baptist' (9 profiles) beside 'Calvary Baptist Church' (1)",
-   "ruling": "Verified executed in the live Sheet Nov 9, 2026 (read directly): the churches field now carries only 'Calvary Baptist Church' (10 profiles) — the 9 short forms were standardized to the full name. Closed by Operations, no longer needs a ruling."
+   "title": "'Calvary Baptist' (9 profiles) beside 'Calvary Baptist Church' (1)"
   },
   {
-   "date": "2026-11-09",
-   "director": "content",
-   "id": "cph-alias-evans",
-   "kind": "near-duplicate-org",
-   "state": "open",
-   "priority": 29,
-   "title": "'Canton-Potsdam Hospital' is back in use — Steve Evans",
-   "detail": "Steve Evans carries the registry alias 'Canton-Potsdam Hospital' as his companies value, while his groups already carry the canonical Rochester Regional Health. The registry maps the alias to Rochester Regional Health. Ruling needed: replace the companies value with Rochester Regional Health, or leave it.",
-   "theory": {
-    "grade": "Strong",
-    "text": "The exact alias class JD closed in October (then on Jaime Bicknell): 'Canton-Potsdam Hospital' is a registered alias of Rochester Regional Health, and Evans's own groups already carry the canonical name — the companies value is the leftover.",
-    "falsifier": "JD knows Evans's connection is specifically to the hospital under its old name in a way the canonical value would misstate."
-   },
-   "evidence": [
-    "Registry (site/data/org-registry.json): 'Canton-Potsdam Hospital' → Rochester Regional Health.",
-    "Bake: sf:steve-evans companies = 'Canton-Potsdam Hospital'; groups = 'Rochester Regional Health'.",
-    "52 registry aliases checked over 730 live profiles — this is the only alias in use."
-   ],
    "actions": [
     {
      "id": "fix-cph-evans",
@@ -1581,7 +1563,25 @@
      "label": "Leave as is",
      "note": "Records JD's ruling to leave the alias value on Evans."
     }
-   ]
+   ],
+   "date": "2026-11-09",
+   "detail": "Steve Evans carries the registry alias 'Canton-Potsdam Hospital' as his companies value, while his groups already carry the canonical Rochester Regional Health. The registry maps the alias to Rochester Regional Health. Ruling needed: replace the companies value with Rochester Regional Health, or leave it.",
+   "director": "content",
+   "evidence": [
+    "Registry (site/data/org-registry.json): 'Canton-Potsdam Hospital' → Rochester Regional Health.",
+    "Bake: sf:steve-evans companies = 'Canton-Potsdam Hospital'; groups = 'Rochester Regional Health'.",
+    "52 registry aliases checked over 730 live profiles — this is the only alias in use."
+   ],
+   "id": "cph-alias-evans",
+   "kind": "near-duplicate-org",
+   "priority": 29,
+   "state": "open",
+   "theory": {
+    "falsifier": "JD knows Evans's connection is specifically to the hospital under its old name in a way the canonical value would misstate.",
+    "grade": "Strong",
+    "text": "The exact alias class JD closed in October (then on Jaime Bicknell): 'Canton-Potsdam Hospital' is a registered alias of Rochester Regional Health, and Evans's own groups already carry the canonical name — the companies value is the leftover."
+   },
+   "title": "'Canton-Potsdam Hospital' is back in use — Steve Evans"
   }
  ],
  "roster": [
@@ -1626,7 +1626,7 @@
    "authority": "No director starts a large run without Resource clearance. Extensions come only from actual headroom.",
    "icon": "sparkle",
    "key": "resource",
-   "last_run": "Nov 9, 2026",
+   "last_run": "Nov 10, 2026",
    "mission": "Own the token budget: read the gauge against pace, authorize extra work from real headroom, call a halt when the day's tranche is spent.",
    "name": "Resource Manager",
    "next_run": "Daily, 8:00 AM ET",
@@ -1666,8 +1666,8 @@
  "runs": [
   {
    "date": "2026-11-09",
-   "title": "Weekly cycle",
-   "outcome": "Resource 17% vs ~42% pace (under, no flag). Photos: Cycle 2 slice 2 — 40 hunted, 1 possible filed, QC 101 checked / 1 hidden. UX: both themes clean; layout gate FAIL on V4.4.8 (Photos clipping) fixed and shipped as V4.4.9, re-crawl PASS. Content: scans clean, 2 flags verified closed, 1 new flag staged (CPH alias on Steve Evans). Progress: no tripwires."
+   "outcome": "Resource 17% vs ~42% pace (under, no flag). Photos: Cycle 2 slice 2 — 40 hunted, 1 possible filed, QC 101 checked / 1 hidden. UX: both themes clean; layout gate FAIL on V4.4.8 (Photos clipping) fixed and shipped as V4.4.9, re-crawl PASS. Content: scans clean, 2 flags verified closed, 1 new flag staged (CPH alias on Steve Evans). Progress: no tripwires.",
+   "title": "Weekly cycle"
   },
   {
    "date": "2026-11-04",
@@ -1701,5 +1701,5 @@
   "execution": "Do-now runs the action’s patches through queuePatch / sbPostBatch (batch endpoint, by profile key), then the result is verified against the Sheet. Executed entries are marked done in the queue cell and folded into council.json by Luna’s next pass.",
   "mechanism": "Staged council actions are stored as a JSON queue in the Profiles column \"Council Staged\" (BH) on JD's row ig:jdmeyers_ (Sheet row 314). The app writes it through the Apps Script batch endpoint ADDRESSED BY KEY — never through the directory: JD has two directory entries (ig:jdmeyers_ and an sf:jdmeyers_ shell at row 673) and pkey() resolves both to 'sf:jdmeyers_', so a directory patch would land on the wrong row. The endpoint resolves patch fields against the Profiles header row by name (Location-on-file precedent, no endpoint code change). The board reads the queue from the baked profiles.json (sync pull range widened to BH; council_staged added to PROFILE_FIELDS); Luna's passes read the same cell via the Sheets API."
  },
- "updated": "2026-11-09"
+ "updated": "2026-11-10"
 }
