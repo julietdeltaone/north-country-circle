@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.10.1';
+var APP_VERSION = '4.11.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -2135,7 +2135,7 @@ function activeNav(){
 }
 function renderChrome(){
   var act = activeNav();
-  var GL = { home:'\u2302', people:'\u25c9', daily:'\u25ce', calendar:'\u25e6', photos:'\u25e3', groups:'\u2b22', network:'\u2b61', audit:'\u2713', council:'\u265c', merge:'\u29c9', danger:'\u26a0', settings:'\u2699' };
+  var GL = { home:'\u2302', people:'\u25c9', daily:'\u25ce', calendar:'\u25e6', photos:'\u25e3', groups:'\u2b22', network:'\u2b61', audit:'\u2713', council:'\u265c', stats:'\u25a5', merge:'\u29c9', danger:'\u26a0', settings:'\u2699' };
   function rItem(n, right){
     return '<a href="#/' + n.k + '" class="nv' + (act === n.k ? ' on' : '') + '" data-nav="' + n.k + '"><span class="nv-gl" aria-hidden="true">' + (GL[n.k] || '') + '</span><span>' + n.l + '</span>' + (right || '') + '</a>';
   }
@@ -2160,8 +2160,8 @@ function renderChrome(){
     var right = n.k === 'people' ? '<span class="nv-ct">' + pplCt + '</span>' : n.k === 'daily' ? lrBdg : n.k === 'calendar' ? calCt : n.k === 'photos' ? phCt : '';
     return rItem(n, right);
   }).join('');
-  var library = [navBy.groups, navBy.network, navBy.audit, navBy.council].map(function(n){
-    var right = n.k === 'audit' ? '<span class="nv-ct">lanes open</span>' : n.k === 'council' ? cnCt : '';
+  var library = [navBy.groups, navBy.network, navBy.audit, navBy.council, { k:'stats', l:'Stats' }].map(function(n){
+    var right = n.k === 'audit' ? '<span class="nv-ct">lanes open</span>' : n.k === 'council' ? cnCt : n.k === 'stats' ? '<span class="nv-ct">' + pplCt + ' profiles</span>' : '';
     return rItem(n, right);
   }).join('');
   var system = [{ k:'merge', l:'Merge Studio' }, { k:'danger', l:'Danger Zone' }].map(function(n){ return rItem(n, ''); }).join('');
@@ -2357,7 +2357,7 @@ function parseRoute(){
   var seg = h.split('/').filter(Boolean).map(function(s){ try{ return decodeURIComponent(s); }catch(x){ return s; } });
   var name = seg[0] || 'home';
   if(name === 'p') name = 'profile';
-  if(['home','people','profile','network','family','groups','settings','audit','daily','whatsnew','photos','sandbox','council','lists','calendar','manage','merge','danger'].indexOf(name) < 0) name = 'people';
+  if(['home','people','profile','network','family','groups','settings','audit','daily','whatsnew','photos','sandbox','council','lists','calendar','manage','merge','danger','stats'].indexOf(name) < 0) name = 'people';
   return { name:name, seg:seg.slice(1) };
 }
 function go(path, o){
@@ -2388,7 +2388,7 @@ function histLabelFor(hash){
   var n = seg[0] || 'home';
   if(n === 'p'){ var di = diFromId(seg[1]); return di != null && D && D.directory[di] ? dispName(D.directory[di]) : 'Profile'; }
   if(n === 'groups') return seg[2] || 'Groups';
-  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', whatsnew:"What's New", calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings', manage:'Manage' }[n] || 'Back';
+  return { home:'Home', people:'People', network:'Network', family:'Family', photos:'Photos', daily:'Live Records', whatsnew:"What's New", calendar:'Calendar', audit:'Audit', council:'Council', lists:'Master List', sandbox:'Sandbox', settings:'Settings', manage:'Manage', stats:'Stats' }[n] || 'Back';
 }
 function navScroll(){ var v = $('#view'); return v ? v.scrollTop : 0; }
 function navTrack(){
@@ -2663,6 +2663,7 @@ function render(){
   try{
     renderChrome();
     if(n === 'home') viewHome(v);
+    else if(n === 'stats') viewStats(v);
     else if(n === 'people') viewPeople(v);
     else if(n === 'profile') viewProfile(v);
     else if(n === 'network') viewNetwork(v);
@@ -7970,10 +7971,269 @@ function viewHome(v){
    Sheet automatically. This view renders the latest brief
    (data/daily-ten.json, written by the routine); read-only.
    ============================================================ */
+/* ============================================================
+   Stats (V4.11.0, JD 2026-11-10): the dedicated home for
+   directory statistics — the twenty counts JD consolidated
+   here, each computed live at render from the same baked data
+   as every other section, denominators stated on the card.
+   The eight explorer graphs live here now (field completeness,
+   completeness bands, relationship mix, top towns, group
+   sizes, years known by decade, the most-fields-filled
+   leaderboard, last-contact recency), reusing the retired
+   Sandbox Stats Explorer's own computes (seDistGroups,
+   seFilledCount, SE_FIELDS); last-contact recency ALSO stays
+   on Home, as directed — the duplication of that one graph is
+   intended. Read-only: rows link out to profiles and to the
+   queues' own surfaces; nothing here writes. Where the baked
+   data carries no honest series (true profile creation dates),
+   the card says so and shows the closest labeled measure.
+   ============================================================ */
+function stDstr(t){ function p(n){ return (n < 10 ? '0' : '') + n; } return t.getFullYear() + '-' + p(t.getMonth() + 1) + '-' + p(t.getDate()); }
+function stCard(title, cnt, inner, note){
+  return '<section class="card st-card"><header><h3>' + esc(title) + '</h3>' + (cnt ? '<em class="cnt">' + esc(cnt) + '</em>' : '') + '</header><div class="cbody">' + inner + (note ? '<p class="st-note">' + note + '</p>' : '') + '</div></section>';
+}
+function stRow(label, c, max, valTxt, cls){
+  var pct = max > 0 ? (c > 0 ? Math.max(2, Math.round(c / max * 100)) : 0) : 0;
+  return '<div class="st-row"><span class="st-rl" title="' + esc(label) + '">' + esc(label) + '</span><span class="st-tr"><span class="st-fill' + (cls ? ' ' + cls : '') + '" style="width:' + pct + '%"></span></span><span class="st-rv">' + (valTxt != null ? esc(valTxt) : c) + '</span></div>';
+}
+function stPRow(rank, di, valTxt, frac){
+  var e = D.directory[di];
+  return '<a class="st-prow" href="#/p/' + esc(personId(e)) + '"><span class="st-rk">' + rank + '</span>' + avatar(e, 'sm') + '<span class="st-pn">' + esc(dispName(e)) + '</span><span class="st-tr"><span class="st-fill" style="width:' + Math.max(2, Math.round(frac * 100)) + '%"></span></span><span class="st-rv">' + esc(valTxt) + '</span></a>';
+}
+function stDonut(segs, total, centerTop, centerSub){
+  var C = 2 * Math.PI * 34, off = 0, out = '';
+  segs.forEach(function(s, i){
+    if(!s.c || !total) return;
+    var len = s.c / total * C;
+    out += '<circle class="std-s' + i + '" r="34" cx="42" cy="42" fill="none" stroke-width="11" stroke-dasharray="' + Math.max(0, len - 1.5).toFixed(1) + ' ' + C.toFixed(1) + '" stroke-dashoffset="' + (-off).toFixed(1) + '" transform="rotate(-90 42 42)"/>';
+    off += len;
+  });
+  return '<svg class="st-donut" viewBox="0 0 84 84" width="116" height="116" aria-hidden="true">' + out +
+    '<text class="st-dct" x="42" y="41">' + esc(centerTop) + '</text><text class="st-dcs" x="42" y="53">' + esc(centerSub) + '</text></svg>';
+}
+var ST_FAM = { ver:-1, rows:[] };
+function stFamClusters(P){
+  if(ST_FAM.ver === VER) return ST_FAM.rows;
+  var inP = {}; P.forEach(function(di){ inP[di] = 1; });
+  var disp = famDisplay(), adj = {};
+  function link(a, b){ if(a === b) return; (adj[a] = adj[a] || {})[b] = 1; (adj[b] = adj[b] || {})[a] = 1; }
+  Object.keys(disp).forEach(function(k){
+    var di = +k; if(!inP[di]) return;
+    ['parents', 'spouses', 'children', 'siblings'].forEach(function(rk){ (disp[di][rk] || []).forEach(function(x){ if(inP[x.di]) link(di, x.di); }); });
+  });
+  var seen = {}, comps = [];
+  Object.keys(adj).forEach(function(k){
+    var start = +k; if(seen[start]) return;
+    var comp = [], stack = [start]; seen[start] = 1;
+    while(stack.length){ var cur = stack.pop(); comp.push(cur); Object.keys(adj[cur]).forEach(function(nb){ nb = +nb; if(!seen[nb]){ seen[nb] = 1; stack.push(nb); } }); }
+    if(comp.length >= 3) comps.push(comp);
+  });
+  comps.sort(function(a, b){ return b.length - a.length || a[0] - b[0]; });
+  var rows = comps.slice(0, 8).map(function(comp){
+    var sur = {};
+    comp.forEach(function(di){ var s = famSurname(di); if(s) sur[s] = (sur[s] || 0) + 1; });
+    var best = '', bn = 0; Object.keys(sur).forEach(function(s){ if(sur[s] > bn){ bn = sur[s]; best = s; } });
+    var names = comp.slice().sort(function(a, b){ return dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); }).slice(0, 3).map(function(di){ return dispName(D.directory[di]); });
+    return { label:(best ? best + ' family' : 'Linked household'), n:comp.length, names:names.join(', ') + (comp.length > 3 ? ' +' + (comp.length - 3) + ' more' : '') };
+  });
+  ST_FAM = { ver:VER, rows:rows };
+  return rows;
+}
+function viewStats(v){
+  phLoad(); msgLoad(); dtLoad(); chLoad(); wnLoad(); pfLoad(); rcLoad(); fiLoad();
+  var P = people(), N = P.length || 1, deck = hmDeck(), dist = seDistGroups();
+  var now = new Date(), today = stDstr(now), ym = today.slice(0, 7);
+  var wkStart = stDstr(new Date(now.getTime() - 6 * 864e5));
+  function fpN(e){ return String(gv(e, 'public_footprint') || '').split('\n').filter(function(b){ return b.trim(); }).length; }
+  function pctOf(n){ return Math.round(n / N * 100); }
+  /* --- change log aggregates: filings, first filings, sourced filings --- */
+  var chEntries = (CH && CH.entries) ? CH.entries : null;
+  var firstFiled = {}, chMonth = {}, chUrlByName = {}, filedThisMonth = 0, chByDay = {};
+  if(chEntries){
+    chEntries.forEach(function(c){
+      if(!c.filed) return;
+      var nm = String(c.name || '').toLowerCase();
+      if(!firstFiled[nm] || c.filed < firstFiled[nm]) firstFiled[nm] = c.filed;
+      var mk = c.filed.slice(0, 7); chMonth[mk] = (chMonth[mk] || 0) + 1;
+      if(mk === ym) filedThisMonth++;
+      chByDay[c.filed] = (chByDay[c.filed] || 0) + 1;
+      if(c.url) chUrlByName[nm] = (chUrlByName[nm] || 0) + 1;
+    });
+  }
+  var nameSet = {}; P.forEach(function(di){ nameSet[dispName(D.directory[di]).toLowerCase()] = 1; });
+  var ffDay = {};
+  Object.keys(firstFiled).forEach(function(nm){ if(nameSet[nm]) ffDay[firstFiled[nm]] = (ffDay[firstFiled[nm]] || 0) + 1; });
+  var addsWk = 0, addsMo = 0, addBars = '', addMax = 1, addSeries = [];
+  for(var ai = 29; ai >= 0; ai--){ var ad = stDstr(new Date(now.getTime() - ai * 864e5)); addSeries.push({ d:ad, c:ffDay[ad] || 0 }); if((ffDay[ad] || 0) > addMax) addMax = ffDay[ad]; }
+  addSeries.forEach(function(x){ if(x.d >= wkStart) addsWk += x.c; if(x.d.slice(0, 7) === ym) addsMo += x.c; });
+  addBars = addSeries.map(function(x){ return '<span class="st-mb" style="height:' + Math.max(6, Math.round(x.c / addMax * 100)) + '%" title="' + x.d + ' \u00b7 ' + x.c + ' first filed"></span>'; }).join('');
+  var monthKeys = Object.keys(chMonth).sort();
+  var monthMax = Math.max.apply(null, monthKeys.map(function(k){ return chMonth[k]; }).concat([1]));
+  var monthBars = monthKeys.map(function(mk){ var yy = mk.split('-'); return stRow(MSG_MON[+yy[1] - 1] + ' ' + yy[0], chMonth[mk], monthMax, String(chMonth[mk])); }).join('');
+  /* --- events: kinds this month, proximity series --- */
+  var evTot = 0, evKinds = { contact:0, proximity:0, narrative:0 }, proxTot = 0, proxMo = 0, proxMonths = {};
+  P.forEach(function(di){
+    (D.directory[di].events || []).forEach(function(ev){
+      if(!ev) return; evTot++;
+      var k = ev.kind || ev.type || '';
+      var kind = k === 'contact' ? 'contact' : k === 'proximity' ? 'proximity' : 'narrative';
+      var dstr = String(ev.date || '');
+      if(dstr.slice(0, 7) === ym) evKinds[kind]++;
+      if(kind === 'proximity'){
+        proxTot++;
+        if(/^\d{4}-\d{2}/.test(dstr)){ var pm = dstr.slice(0, 7); proxMonths[pm] = (proxMonths[pm] || 0) + 1; if(pm === ym) proxMo++; }
+      }
+    });
+  });
+  var evMoTot = evKinds.contact + evKinds.proximity + evKinds.narrative;
+  /* --- photos --- */
+  var phReady = !!(PH && PH.people), phC = { conf:0, poss:0, none:0 }, photoN = null;
+  if(phReady){
+    var idx = phIndex() || {};
+    P.forEach(function(di){
+      var p = idx[dispName(D.directory[di])];
+      if(p && phHasPhoto(p) && p.status === 'confirmed') phC.conf++;
+      else if(p && phHasPhoto(p)) phC.poss++;
+      else phC.none++;
+    });
+    photoN = phPeopleCounts().onFile;
+  }
+  /* --- field completeness (the five headline fields) --- */
+  var orgN = 0, emailN = 0;
+  P.forEach(function(di){ var e = D.directory[di]; if(orgsOf(e).length) orgN++; if(String(gv(e, 'email') || '').trim()) emailN++; });
+  var fieldRows = [
+    ['Location', deck.locN], ['Organization', orgN], ['Phone', deck.phoneN], ['Email', emailN], ['Photo', photoN]
+  ].map(function(r){
+    return r[1] == null ? stRow(r[0], 0, N, 'loading\u2026') : stRow(r[0], r[1], N, r[1] + ' \u00b7 ' + pctOf(r[1]) + '%');
+  }).join('');
+  /* --- people leaderboards --- */
+  var docRows = P.map(function(di){ var e = D.directory[di]; return { di:di, f:fpN(e), ev:(e.events || []).length }; });
+  var docMax = Math.max.apply(null, docRows.map(function(r){ return r.f + r.ev; }).concat([1]));
+  var mostDoc = docRows.slice().sort(function(a, b){ return (b.f + b.ev) - (a.f + a.ev) || a.di - b.di; }).slice(0, 10);
+  var thin = docRows.slice().sort(function(a, b){ return a.f - b.f || a.ev - b.ev || dispName(D.directory[a.di]).localeCompare(dispName(D.directory[b.di])); }).slice(0, 10);
+  var thinMax = Math.max.apply(null, thin.map(function(r){ return r.f + r.ev; }).concat([1]));
+  var srcRows = P.map(function(di){ var e = D.directory[di]; var fl = (e.files || []).filter(function(f){ return f && f.url; }).length; return { di:di, n:fl + (chUrlByName[dispName(e).toLowerCase()] || 0) }; }).filter(function(r){ return r.n > 0; }).sort(function(a, b){ return b.n - a.n || a.di - b.di; }).slice(0, 10);
+  var compBoard = P.slice().sort(function(a, b){ return seFilledCount(b) - seFilledCount(a) || dispName(D.directory[a]).localeCompare(dispName(D.directory[b])); }).slice(0, 10);
+  var connRows = P.map(function(di){ return { di:di, n:knownAssociates(D.directory[di]).length }; }).sort(function(a, b){ return b.n - a.n || a.di - b.di; }).slice(0, 10);
+  var connMax = connRows.length ? connRows[0].n : 1;
+  /* --- employers --- */
+  var emp = {};
+  P.forEach(function(di){ var seen = {}; tagList(gv(D.directory[di], 'companies')).forEach(function(o){ var cn = regApply(o); if(cn && !seen[cn]){ seen[cn] = 1; emp[cn] = (emp[cn] || 0) + 1; } }); });
+  var empRows = Object.keys(emp).sort(function(a, b){ return emp[b] - emp[a] || a.localeCompare(b); }).slice(0, 10);
+  var empMax = empRows.length ? emp[empRows[0]] : 1;
+  /* --- military slice --- */
+  var army = P.filter(function(di){ var e = D.directory[di]; return personGroups(e).indexOf('U.S. Army') >= 0 || !!String(gv(e, 'rank') || '').trim(); });
+  var unitC = {}, rankC = {};
+  army.forEach(function(di){ var e = D.directory[di]; personGroups(e).forEach(function(g){ if(g !== 'U.S. Army' && /army|guard|ibct|bsb|hhc|battalion|brigade|infantry|signal/i.test(g)) unitC[g] = (unitC[g] || 0) + 1; }); var r = milRank(e); if(r) rankC[r] = (rankC[r] || 0) + 1; });
+  var unitRows = Object.keys(unitC).sort(function(a, b){ return unitC[b] - unitC[a] || a.localeCompare(b); }).slice(0, 8);
+  var unitMax = unitRows.length ? unitC[unitRows[0]] : 1;
+  var rankChips = Object.keys(rankC).sort(function(a, b){ return rankC[b] - rankC[a] || a.localeCompare(b); }).map(function(r){ return '<span class="st-chip"><b>' + esc(r) + '</b> \u00b7 ' + rankC[r] + '</span>'; }).join('');
+  /* --- correspondence --- */
+  var msgReady = !!(MSG && MSG.people), msgTot = 0, msgThreads = 0, msgRows = [];
+  if(msgReady){
+    P.forEach(function(di){ var mf = msgFor(D.directory[di]); if(mf && mf.n){ msgThreads++; msgTot += mf.n; msgRows.push({ di:di, n:mf.n }); } });
+    msgRows.sort(function(a, b){ return b.n - a.n || a.di - b.di; }); msgRows = msgRows.slice(0, 5);
+  }
+  /* --- filings this week (7-day columns) --- */
+  var wkDays = [], wkByDay = {};
+  for(var wi = 6; wi >= 0; wi--){ var wd = new Date(now.getTime() - wi * 864e5); var wds = stDstr(wd); wkByDay[wds] = { d:wds, dow:MSG_DAY[wd.getDay()].slice(0, 3), num:wd.getDate(), f:0, p:0 }; wkDays.push(wkByDay[wds]); }
+  Object.keys(chByDay).forEach(function(d){ if(wkByDay[d]) wkByDay[d].f = chByDay[d]; });
+  if(WN && WN.items) WN.items.forEach(function(it){ if(it.kind === 'photo' && wkByDay[it.date]) wkByDay[it.date].p++; });
+  var wkMax = Math.max.apply(null, wkDays.map(function(x){ return x.f + x.p; }).concat([1]));
+  var wkCols = wkDays.map(function(x){
+    var t = x.f + x.p, h = t ? Math.max(5, Math.round(t / wkMax * 100)) : 0;
+    return '<div class="st-col"><span class="st-cv">' + (t || '') + '</span><span class="st-colbar" style="height:' + h + '%">' +
+      (x.p ? '<span class="st-cp" style="height:' + Math.round(x.p / t * 100) + '%"></span>' : '') +
+      (x.f ? '<span class="st-cf" style="height:' + Math.round(x.f / t * 100) + '%"></span>' : '') +
+      '</span><span class="st-cl">' + x.dow + ' ' + x.num + '</span></div>';
+  }).join('');
+  /* --- explorer distributions, reused --- */
+  function distRows(g, limit, withPct){
+    var rows = g.rows.slice(0, limit || g.rows.length);
+    var max = Math.max.apply(null, rows.map(function(r){ return r.dis.length; }).concat([1]));
+    return rows.map(function(r){ return stRow(r.label, r.dis.length, max, withPct ? r.dis.length + ' \u00b7 ' + pctOf(r.dis.length) + '%' : String(r.dis.length)); }).join('');
+  }
+  /* --- records currency --- */
+  var curInner, curCnt = '';
+  if(DT && DT.freshness){
+    var F = DT.freshness, ofN = (DT.coverage && DT.coverage.of) || P.length;
+    curCnt = (DT.coverage && DT.coverage.checked_total != null ? DT.coverage.checked_total : '\u2014') + ' of ' + ofN + ' checked';
+    curInner = [['Checked in the last 7 days', F.d7], ['Checked 8\u201330 days ago', F.d30], ['Checked 31\u201390 days ago', F.d90], ['Checked over 90 days ago', F.older], ['Never checked', F.never]].map(function(r){ return stRow(r[0], r[1] || 0, ofN, (r[1] || 0) + ' of ' + ofN); }).join('');
+  } else curInner = '<p class="sub">Loading the latest Live Records brief\u2026</p>';
+  /* --- proximity months --- */
+  var proxKeys = Object.keys(proxMonths).sort().slice(-6);
+  var proxMax = Math.max.apply(null, proxKeys.map(function(k){ return proxMonths[k]; }).concat([1]));
+  var proxRows = proxKeys.map(function(mk){ var yy = mk.split('-'); return stRow(MSG_MON[+yy[1] - 1] + ' ' + yy[0], proxMonths[mk], proxMax, String(proxMonths[mk])); }).join('');
+  /* --- family clusters --- */
+  var famRows = stFamClusters(P);
+  var famMax = famRows.length ? famRows[0].n : 1;
+  /* --- tiles --- */
+  function qTile(n, label, href){ return '<a class="st-q" href="' + href + '"><b>' + n + '</b><span>' + label + '</span></a>'; }
+  var tiles = '<div class="st-tiles">' +
+    '<section class="card st-tile"><div class="st-tv">' + P.length + '</div><div class="st-tl">Profiles in the directory</div>' +
+      '<div class="st-ts">+' + addsWk + ' first filed in the last 7 days \u00b7 +' + addsMo + ' this month</div>' +
+      '<div class="st-minibars">' + addBars + '</div>' +
+      '<p class="st-note">First filings per day, last 30 days. The change log begins Oct 21, 2026, so its first days carry the directory\u2019s initial population \u2014 a profile\u2019s first filing is the closest add date the baked data carries.</p></section>' +
+    '<section class="card st-tile"><div class="st-tv">' + deck.fpTotal + '</div><div class="st-tl">Facts on file</div>' +
+      '<div class="st-ts">' + filedThisMonth + ' filed this month \u00b7 ' + (chEntries ? chEntries.length : 0) + ' filings in the change log</div>' +
+      '<div class="st-rows st-tilebars">' + monthBars + '</div>' +
+      '<p class="st-note">Filings per month from the change log (it begins Oct 21, 2026).</p></section>' +
+    '<section class="card st-tile"><div class="st-tl st-qhead">Queues \u2014 waiting now</div><div class="st-qs">' +
+      qTile(rcPendingCount(), 'Research Command holds', '#/daily/decide') +
+      qTile(pfPendingCount(), 'Prefill waiting', '#/daily/decide') +
+      qTile(fiUnreadCount(), 'Fact Inbox unread', '#/daily/facts') +
+      qTile(phReady ? phSuspects().length : '\u2026', 'Possible photos to check', '#/photos') +
+      '</div><p class="st-note">Each tile opens its queue.</p></section>' +
+  '</div>';
+  /* --- cards --- */
+  var photoInner = phReady ?
+    '<div class="st-donutwrap">' + stDonut([{ c:phC.conf }, { c:phC.poss }, { c:phC.none }], P.length, String(P.length), 'profiles') +
+    '<div class="st-dleg">' +
+      '<div class="st-row"><span class="st-sw std0"></span><span class="st-rl">Confirmed photo</span><span class="st-rv">' + phC.conf + ' \u00b7 ' + pctOf(phC.conf) + '%</span></div>' +
+      '<div class="st-row"><span class="st-sw std1"></span><span class="st-rl">Possible or likely only</span><span class="st-rv">' + phC.poss + ' \u00b7 ' + pctOf(phC.poss) + '%</span></div>' +
+      '<div class="st-row"><span class="st-sw std2"></span><span class="st-rl">No working photo</span><span class="st-rv">' + phC.none + ' \u00b7 ' + pctOf(phC.none) + '%</span></div>' +
+    '</div></div>' : '<p class="sub">Loading photo data\u2026</p>';
+  var evSegs = evMoTot ? '<div class="st-segbar">' +
+      (evKinds.contact ? '<span class="st-seg sg-contact" style="width:' + (evKinds.contact / evMoTot * 100) + '%" title="Contact \u00b7 ' + evKinds.contact + '"></span>' : '') +
+      (evKinds.proximity ? '<span class="st-seg sg-proximity" style="width:' + (evKinds.proximity / evMoTot * 100) + '%" title="Proximity \u00b7 ' + evKinds.proximity + '"></span>' : '') +
+      (evKinds.narrative ? '<span class="st-seg sg-narrative" style="width:' + (evKinds.narrative / evMoTot * 100) + '%" title="Narrative \u00b7 ' + evKinds.narrative + '"></span>' : '') + '</div>' +
+    '<div class="st-rows" style="margin-top:10px">' +
+      stRow('Contact', evKinds.contact, evMoTot, evKinds.contact + ' \u00b7 ' + Math.round(evKinds.contact / evMoTot * 100) + '%', 'conn') +
+      stRow('Proximity', evKinds.proximity, evMoTot, evKinds.proximity + ' \u00b7 ' + Math.round(evKinds.proximity / evMoTot * 100) + '%') +
+      stRow('Narrative', evKinds.narrative, evMoTot, evKinds.narrative + ' \u00b7 ' + Math.round(evKinds.narrative / evMoTot * 100) + '%', 'dim') +
+    '</div>' : '<p class="sub">No dated events this month yet.</p>';
+  var cards = [
+    stCard('Photo coverage', phReady ? phC.conf + ' of ' + P.length + ' confirmed' : '', photoInner, phReady ? 'People, of ' + P.length + ' profiles. \u201cPossible or likely only\u201d = a working photo whose identity is not yet confirmed; it waits in the Possible photos queue on the Photos page.' : ''),
+    stCard('Records currency', curCnt, curInner, (DT && DT.freshness) ? 'Live Records rotation \u2014 profiles are checked against the public record in turn. Oldest check on file: ' + esc(DT.freshness.oldest || '\u2014') + ' \u00b7 brief of ' + esc(DT.date || '') + '.' : ''),
+    stCard('Field completeness', 'of ' + P.length + ' profiles', '<div class="st-rows">' + fieldRows + '</div>', 'Email is scrubbed from the published data build, so the email count reflects only what the app data itself carries.'),
+    stCard('Events by kind \u2014 this month', evTot + ' events on file', evSegs, 'Kinds as filed: contact and proximity are stamped kinds; everything else reads as narrative. This month = ' + MSG_MON[now.getMonth()] + ' ' + now.getFullYear() + '.'),
+    stCard('Filings this week', 'last 7 days', '<div class="st-cols">' + wkCols + '</div><div class="st-legline"><span><span class="st-sw std0"></span>Fact &amp; event filings</span><span><span class="st-sw std1"></span>Photo filings</span></div>', 'Facts and events from the change log; photo filings from the What\u2019s New feed.'),
+    stCard('Proximity', proxTot + ' total \u00b7 ' + proxMo + ' this month', '<div class="st-rows">' + proxRows + '</div>', 'Proximity = co-presence on file (same place, same day). It never counts as contact. Months are the last six with any proximity filed.'),
+    stCard('Last-contact recency', 'of ' + P.length + ' profiles', '<div class="st-rows">' + distRows(dist[5], 5, true) + '</div>', 'The full distribution lives here; Home keeps the headline strip. \u201cNever / not recorded\u201d includes profiles whose last contact was years ago or never marked \u2014 read it as unmarked, not as due.'),
+    stCard('Completeness bands', 'score bands', '<div class="st-rows">' + distRows(dist[0], 5, true) + '</div>', 'The same completeness score People and Audit use.'),
+    stCard('Relationship mix', 'of ' + P.length + ' profiles', '<div class="st-rows">' + distRows(dist[1], 10, true) + '</div>', ''),
+    stCard('Years known by decade', 'dated profiles only', '<div class="st-rows">' + distRows(dist[4], 99, false) + '</div>', 'From the known-since year on each profile; profiles without one are not counted here.'),
+    stCard('Correspondence', msgReady ? msgThreads + ' exported threads' : '', msgReady ? '<div class="st-tv sm">' + msgTot + '</div><div class="st-ts">messages across ' + msgThreads + ' exported iMessage threads</div><div class="st-rows st-prows">' + msgRows.map(function(r, i){ return stPRow(i + 1, r.di, r.n + ' msgs', msgRows[0].n ? r.n / msgRows[0].n : 0); }).join('') + '</div>' : '<p class="sub">Loading correspondence data\u2026</p>', 'Exported iMessage threads matched to profiles; the five heaviest threads above.'),
+    stCard('Most documented people', 'facts + events', '<div class="st-rows st-prows">' + mostDoc.map(function(r, i){ return stPRow(i + 1, r.di, String(r.f + r.ev), (r.f + r.ev) / docMax); }).join('') + '</div>', 'Ranked by footprint facts plus timeline events on file.'),
+    stCard('Best-sourced profiles', 'source links', '<div class="st-rows st-prows">' + (srcRows.length ? srcRows.map(function(r, i){ return stPRow(i + 1, r.di, String(r.n), srcRows[0].n ? r.n / srcRows[0].n : 0); }).join('') : '<p class="sub">No sourced filings yet.</p>') + '</div>', 'Source links = file links attached to the profile plus change-log filings that carried a source URL.'),
+    stCard('Completeness leaderboard', 'fields filled', '<div class="st-rows st-prows">' + compBoard.map(function(di, i){ var n = seFilledCount(di); return stPRow(i + 1, di, n + ' / ' + SE_FIELDS.length, n / SE_FIELDS.length); }).join('') + '</div>', 'The Stats Explorer\u2019s field set \u2014 location, employers, schools, skills, photo, family links and more.'),
+    stCard('Thinnest records', 'the fix-it end', '<div class="st-rows st-prows">' + thin.map(function(r, i){ return stPRow(i + 1, r.di, r.f + (r.f === 1 ? ' fact' : ' facts'), (r.f + r.ev) / thinMax); }).join('') + '</div>', 'Fewest facts on file in the directory \u2014 where the next research pass pays off first.'),
+    stCard('Top employers', 'people per employer', '<div class="st-rows">' + empRows.map(function(k){ return stRow(k, emp[k], empMax, String(emp[k])); }).join('') + '</div>', 'From the companies field, names normalized to the org registry.'),
+    stCard('Biggest groups', 'members', '<div class="st-rows">' + distRows(dist[3], 10, false) + '</div>', ''),
+    stCard('Family clusters', 'linked households', '<div class="st-rows">' + (famRows.length ? famRows.map(function(r){ return '<div class="st-famrow">' + stRow(r.label, r.n, famMax, r.n + ' linked') + '<div class="st-sub">' + esc(r.names) + '</div></div>'; }).join('') : '<p class="sub">No linked households of 3+ yet.</p>') + '</div>', 'Households linked by the family fields \u2014 parents, spouses, children, siblings \u2014 3 or more people.'),
+    stCard('Top connectors', 'associates on file', '<div class="st-rows st-prows">' + connRows.map(function(r, i){ return stPRow(i + 1, r.di, String(r.n), connMax ? r.n / connMax : 0); }).join('') + '</div>', 'People with the most associates on file.'),
+    stCard('Military slice', army.length + ' Army on file', '<div class="st-rows">' + unitRows.map(function(k){ return stRow(k, unitC[k], unitMax, String(unitC[k])); }).join('') + '</div>' + (rankChips ? '<div class="st-chips">' + rankChips + '</div>' : ''), 'Army = a rank on file or membership in the U.S. Army group. Units and ranks as filed.'),
+    stCard('Top towns', 'people per town', '<div class="st-rows">' + distRows(dist[2], 10, false) + '</div>', 'First town of the location on file.')
+  ];
+  v.innerHTML = '<div class="pg-stats"><div class="st-head"><h2>Stats</h2><p class="sub">The directory in numbers \u2014 every count computed live from the baked data, denominators on the card. Visible set: ' + P.length + ' profiles at your current role.</p></div>' +
+    tiles + '<div class="st-grid">' + cards.join('') + '</div></div>';
+}
+
 /* One dispatcher for async data arrivals (audit F11): every loader
    repaints through here, so a new view joins one list, not three. */
 function repaintForData(kind){
   var r = S.route.name;
+  if(r === 'stats'){ render(); return; }   /* V4.11.0: Stats computes from every async file — any arrival repaints it whole */
   if(kind === 'msg'){
     /* Correspondence data landing mid-profile: rebuild the profile so
        the Files section appears, unless JD is mid-edit (the entry
