@@ -14846,6 +14846,199 @@
    "fields": {},
    "published": "",
    "novelty": "expands"
+  },
+  {
+   "id": "lr-20261110-sf-phyllis-paladin-her-mother-marion-frances-huber-died",
+   "name": "sf:phyllis-paladin",
+   "display": "Phyllis Paladin",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Her mother, Marion Frances Huber, died on June 16, 2022. The Lindley-Robertson-Holt Funeral Home obituary names Phyllis Paladin and her husband Lawrence Jr. among Marion's children.",
+   "file_text": "Her mother, Marion Frances Huber, died June 16, 2022",
+   "source": "Lindley-Robertson-Holt Funeral Home",
+   "url": "https://www.lindleyrobertsonholt.com/obituary/marion-huber?lud=97842CB6B6F0206909CCB83F4B470932",
+   "anchors": [
+    "Phyllis Paladin named as Marion's daughter",
+    "Her husband Lawrence Jr. (profile: Lawrence G. Paladin Jr.)",
+    "Her mother Marion Frances Huber (already on her record)"
+   ],
+   "quote": "Marion Frances Huber, 91, of Dobbin, formerly of Navasota, died Thursday June 16, 2022, after a long battle with Alzheimer's Disease.",
+   "missing_gate": "This is about Phyllis's family, so I always check with you first.",
+   "confidence": 88,
+   "confidence_parts": {
+    "identity": 45,
+    "source": 25,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-margaretnordberg-her-father-john-e-williamson-died-oc",
+   "name": "margaretnordberg",
+   "display": "Margaret Nordberg",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Her father, John E. Williamson of Canton, died on October 5, 2005. His obituary names his wife Ruth and his daughter Margaret Nordberg and her husband Dr. Robert of Canton.",
+   "file_text": "Her father, John E. Williamson, died October 5, 2005, in Canton, New York",
+   "source": "GenealogyBuff.com",
+   "url": "https://www.genealogybuff.com/ucd/admin_config.pl/read/3961",
+   "anchors": [
+    "Margaret Nordberg named as his daughter",
+    "Her husband Dr. Robert of Canton (profile: Dr. Robert Nordberg)",
+    "His wife Ruth (profile: her mother Ruth E. Williamson)"
+   ],
+   "quote": "John E. Williamson, 84, 40 West Main Street, Canton, died on October 5, 2005 at United Helpers Canton Nursing Home.",
+   "missing_gate": "This is about Margaret's family, so I always check with you first.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 16,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-ct-alexis-donnely-her-husband-is-named-alaric",
+   "name": "ct:alexis donnely",
+   "display": "Alexis Donnely",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "Her church's staff page says Alexis Krapf, Director of Discipleship and deacon at City on a Hill Somerville, eats pastries with her husband, Alaric. Her record does not name her husband.",
+   "file_text": "Her husband is named Alaric",
+   "source": "City on a Hill Somerville",
+   "url": "https://www.coahsomerville.org/leadership-staff",
+   "anchors": [
+    "Alexis Krapf, her married name (already on her record)",
+    "Director of Discipleship and deacon at City on a Hill Somerville (already on her record)",
+    "Two Gordon-Conwell master's degrees in 2025 (already on her record)"
+   ],
+   "quote": "She loves talking about grammar (whether modern English or ancient Greek), reading Jane Austen novels, and eating pastries with her husband, Alaric.",
+   "missing_gate": "This is about Alexis's family, so I always check with you first.",
+   "confidence": 84,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 20,
+    "detail": 16
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-vinnyvetere-authored-the-book-by-the-power-of-go",
+   "name": "vinnyvetere",
+   "display": "Vinny Vetere",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A book called 'By the Power of God' is credited to Vincent Vetere. The bookseller's page describes Rikers Island prison stories, armwrestling instruction, magic and illusion, and Christian testimony as a New York City correction officer.",
+   "file_text": "Authored the book 'By the Power of God,' about his work at Rikers Island, armwrestling, magic, and his Christian faith",
+   "source": "Podibooks",
+   "url": "https://www.podibooks.com/es/busqueda/listaLibros.php?autor=vetere&pagSel=1&tipoArticulo=L",
+   "anchors": [
+    "Armwrestling (he is a ranked armwrestler on his record)",
+    "Magic (his record calls him 'Magic Vinnie')",
+    "Christian testimony (his record ties him to Christian Fellowship Center)",
+    "New York City correction work (his record's specialty is Law Enforcement)"
+   ],
+   "quote": "You are about to be taken inside the walls of Rikers island prison with short stories of life and death situations. Then you will learn the secrets of how to become the best armwrestler you can and compete in tournaments.",
+   "missing_gate": "The page names a Vincent Vetere, but nothing on it ties him to Potsdam or Floral Park, so I am not sure it is him.",
+   "confidence": 56,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 12,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-sf-julie-rose-lashomb-julie-lashomb-of-massena-served-as-a",
+   "name": "sf:julie-rose-lashomb",
+   "display": "Julie Rose LaShomb",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Diocese of Ogdensburg's paper, North Country Catholic, named a Julie Lashomb of Massena as a member of the diocesan catechumenate committee in March 2016, and she wrote on RCIA for the paper.",
+   "file_text": "Julie Lashomb of Massena served as a member of the Diocese of Ogdensburg's diocesan catechumenate committee in 2016",
+   "source": "North Country Catholic",
+   "url": "https://www.northcountrycatholic.org/E Papers/2016/3-9-16lsefsdf/paper.pdf",
+   "anchors": [
+    "The name Julie Lashomb",
+    "Massena and the Diocese of Ogdensburg (North Country)"
+   ],
+   "quote": "Julie Lashomb of Massena, a member of the diocesan catechumenate committee",
+   "missing_gate": "The page names a Julie Lashomb in Massena, but nothing on it ties her to Parishville or the hospital work on file.",
+   "confidence": 57,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 22,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2016-03-09",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-sf-richard-gilchrist-listed-as-an-absent-member-of-the-tk",
+   "name": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Clarkson University's 1977 yearbook lists a Rich Gilchrist among the absent members in the TKE fraternity group listing.",
+   "file_text": "Listed as an absent member of the TKE fraternity in Clarkson University's 1977 yearbook",
+   "source": "Clarkson University",
+   "url": "https://www.e-yearbook.com/yearbooks/Clarkson_University_Clarksonian_Yearbook/1977/Page_1.html",
+   "anchors": [
+    "The short-form name Rich Gilchrist",
+    "Clarkson University (one of the schools on his record)"
+   ],
+   "quote": "ABSENT: John Bulton, Bob Conforti, Bill Csajko, Rich Gilchrist, Steve Hall, Pete Hoffman, Tom Horan, John McCardIe, Chip Owen, Dean Smith.",
+   "missing_gate": "The yearbook gives only the short name Rich Gilchrist at Clarkson, with nothing tying him to SUNY Canton or Virginia.",
+   "confidence": 50,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 20,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-ol9a-earned-two-bachelor-s-degrees-in-tea",
+   "name": "ol9a",
+   "display": "Olga Lindsey",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A San Antonio adult-literacy site carries a first-person story by an Olga Lindsey from Mexico who taught English as a foreign language for 28 years and holds two bachelor's degrees and a master's in bilingual education and educational technology.",
+   "file_text": "Earned two bachelor's degrees, in teaching and in computer science, and a master's in bilingual education and educational technology",
+   "source": "Each One Teach One",
+   "url": "https://www.eotosa.org/students",
+   "anchors": [
+    "The name Olga Lindsey only"
+   ],
+   "quote": "My name is Olga Lindsey, and I am from Mexico. After 28 years as an EFL teacher in public schools, I moved to the United States. I have two bachelor's degrees\u2014one in teaching and another in computer science\u2014and a master's in bilingual education and educational technology.",
+   "missing_gate": "The page names an Olga Lindsey in San Antonio, but nothing on it ties her to Bridgewater State or Rhode Island.",
+   "confidence": 34,
+   "confidence_parts": {
+    "identity": 10,
+    "source": 10,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
