@@ -4958,6 +4958,10 @@
    "name": "gabepaladin",
    "pattern": "discography",
    "source": "Spotify",
+   "state": {
+    "at": "2026-11-10T02:47:12.750Z",
+    "status": "read"
+   },
    "url": "https://open.spotify.com/album/1Psupdzwj0IiBSVwa792d9"
   },
   {
@@ -4971,6 +4975,10 @@
    "name": "sf:jaime-bicknell",
    "pattern": "new_credential",
    "source": "APTA ChoosePT",
+   "state": {
+    "at": "2026-11-10T02:47:14.403Z",
+    "status": "read"
+   },
    "url": "https://www.choosept.com/find-a-pt/b/i/jaime-b.-bicknell-pt-dpt"
   }
  ],
