@@ -10648,14 +10648,13 @@ function afRichTextHTML(e, di){
      Conservative matching: full dates, month+year, season+year,
      and standalone years — never the packet's own date (in any
      written form), never part of a year range, never inside a
-     longer number. The stored text is what gets chipped: the
-     display expansion (wnFullText) only ever substitutes a
-     longer variant of the same sentence for SHORT stored
-     texts — it runs for those, exactly as the timeline has
-     always rendered them, and the chipping then works on the
-     rendered sentence. */
+     longer number. The chipping runs on the text exactly as
+     the timeline renders it — wnFullText, the same display
+     expansion every feed has always used (a stored text that
+     is a prefix of the person's footprint bullet renders as
+     the whole bullet). */
   var raw = String(e.text || '');
-  var t = raw.length > 60 ? raw : wnFullText({ text: raw }, di);
+  var t = wnFullText({ text: raw }, di);
   var ovs = [], vars = afOwnVariants(e);
   vars.forEach(function(v){
     var at = 0;
@@ -10864,7 +10863,7 @@ function afCalHTML(){
       h += '<section class="afg-block ystrip" data-y="' + esc(n.year) + '"><h3 class="afc-mhead">Dated to ' + esc(n.year) + ' only' +
         ' <span class="afc-mcount">' + n.items.length + '</span></h3>' + afStripHTML(n.items, 'ystrip') + '</section>';
     } else if(n.type === 'monthgrid'){
-      var hasGrid = Object.keys(n.dayBy).some(function(k){ return k.indexOf(n.y + '-' + n.mo + '-') === 0; });
+      var hasGrid = Object.keys(n.dayBy).some(function(k){ return k.indexOf(n.y + '-' + String(n.mo).padStart(2, '0') + '-') === 0; });
       h += '<section class="afg-block" data-ym="' + n.y + '-' + String(n.mo).padStart(2, '0') + '"><h3 class="afc-mhead">' +
         AFFULL[n.mo - 1] + ' ' + n.y + '</h3>';
       if(n.strip.length) h += '<div class="afg-striplab">Dated to this month only</div>' + afStripHTML(n.strip, 'mstrip');
