@@ -1,396 +1,368 @@
 {
- "date": "2026-11-10",
+ "date": "2026-11-11",
  "checked": [
   {
-   "name": "sf:erica-arnold",
-   "display": "Erica Arnold"
+   "name": "ig:samwangerin",
+   "display": "Sam Wangerin"
   },
   {
-   "name": "sf:lindsey-elaine",
-   "display": "Lindsey Elaine"
+   "name": "ig:m.bsouth02",
+   "display": "Maddie Barton"
   },
   {
-   "name": "vale_zhuu",
-   "display": "Valeria Zhukova"
+   "name": "ig:john_zufall",
+   "display": "John Zufall"
   },
   {
-   "name": "sf:brittany-disalvo",
-   "display": "Brittany DiSalvo"
+   "name": "ig:michelledaniels9",
+   "display": "Michelle Daniels"
   },
   {
-   "name": "sf:daniel-todhunter",
-   "display": "Daniel Todhunter"
-  },
-  {
-   "name": "johnaeastmond",
-   "display": "John Eastmond"
-  },
-  {
-   "name": "muno_khosa",
-   "display": "Khosa Muno"
-  },
-  {
-   "name": "ct:julia tomford",
-   "display": "Julia Tomford"
-  },
-  {
-   "name": "kathy.moulton",
+   "name": "ig:kathy.moulton",
    "display": "Kathy Moulton"
   },
   {
-   "name": "max_ferran06",
-   "display": "Max Ferran"
+   "name": "ig:andrea247_",
+   "display": "Andrea Vetere"
   },
   {
-   "name": "sf:tori-brunet",
-   "display": "Tori Brunet"
+   "name": "ig:philiplloydpaige",
+   "display": "Philip Lloyd Paige"
   },
   {
-   "name": "sf:gabby-olivia",
-   "display": "Gabby Olivia"
+   "name": "ig:aspecthammy_",
+   "display": "Hamza Hmyene"
   },
   {
-   "name": "sf:emma turell",
-   "display": "Emma Turell"
+   "name": "ig:the.ndrx",
+   "display": "Noah Diederich"
   },
   {
-   "name": "sf:bartlomiej-brodzki",
-   "display": "Bartlomiej Brodzki"
+   "name": "ig:janelc8",
+   "display": "Janel Colbert"
   },
   {
-   "name": "hamiltonezra",
-   "display": "Ezra Hamilton"
+   "name": "ig:desknaebel",
+   "display": "Debbie Knaebel"
   },
   {
-   "name": "ct:julia sinclair",
-   "display": "Julia Sinclair"
+   "name": "ig:mbartell99",
+   "display": "Mason Bartell"
   },
   {
-   "name": "sf:zvi-szafran",
-   "display": "Zvi Szafran"
+   "name": "ig:certified.sauce",
+   "display": "Alfredo Rodriguez"
   },
   {
-   "name": "ct:joe mastro",
-   "display": "Joe Mastro"
+   "name": "ig:emma_bortnick5",
+   "display": "Emma Bortnick"
   },
   {
-   "name": "isaiahreiter",
-   "display": "Isaiah Reiter"
+   "name": "ig:pmurphy_00",
+   "display": "Patrick Murphy"
   },
   {
-   "name": "sf:kundai-mugugu",
-   "display": "Kundai Mugugu"
+   "name": "ig:colleendcheney",
+   "display": "Colleen Cheney"
   },
   {
-   "name": "sf:brittany-fountain-sharlow",
-   "display": "Brittany Fountain Sharlow"
+   "name": "ig:furious_myles",
+   "display": "Myles Laramay"
   },
   {
-   "name": "isacriscitello",
-   "display": "Isa Luciano Criscitello"
+   "name": "ig:wholehearted_wife",
+   "display": "Jennifer Trelease"
   },
   {
-   "name": "ct:brooke larrabee",
-   "display": "Brooke Larrabee"
+   "name": "ig:mayaatchan",
+   "display": "Maya M. Atchan"
   },
   {
-   "name": "sf:kathy-whiteford",
-   "display": "Kathy Whiteford"
+   "name": "ig:gabi_paige",
+   "display": "Gabi White"
   },
   {
-   "name": "sf:maria-tallo",
-   "display": "Maria Criscitello"
+   "name": "ig:eastmoewest",
+   "display": "Cayden Westwood"
   },
   {
-   "name": "jazmynkyara",
-   "display": "Jazmyn Villnave"
-  },
-  {
-   "name": "teri_thebatemom",
-   "display": "Teri Bates"
-  },
-  {
-   "name": "ct:jonathan daniels",
-   "display": "Jonathan Daniels"
-  },
-  {
-   "name": "fdb:b._ryan_dunphey",
-   "display": "B. Ryan Dunphey"
-  },
-  {
-   "name": "mdknaebel",
-   "display": "Mike Knaebel"
-  },
-  {
-   "name": "sf:susan-blewett",
-   "display": "Susan Blewett"
-  },
-  {
-   "name": "hulton2moulton",
-   "display": "Jenna Moulton"
-  },
-  {
-   "name": "jartib",
-   "display": "Jared T"
-  },
-  {
-   "name": "sf:corbin-ladison",
-   "display": "Corbin Ladison"
-  },
-  {
-   "name": "sf:grace cicchinelli",
-   "display": "Grace Cicchinelli"
-  },
-  {
-   "name": "sf:sam-rusaw",
-   "display": "Sam Rusaw"
-  },
-  {
-   "name": "josiahbounce",
-   "display": "Josiah McGrath"
-  },
-  {
-   "name": "nikki.sew",
-   "display": "Nicole Seward"
-  },
-  {
-   "name": "sf:matthew-cote",
-   "display": "Matthew Cote"
-  },
-  {
-   "name": "sf:benjamin-horner",
-   "display": "Benjamin Horner"
-  },
-  {
-   "name": "sf:jaime-bicknell",
-   "display": "Jaime Bicknell"
-  },
-  {
-   "name": "ct:megan daniels",
-   "display": "Megan Daniels"
-  },
-  {
-   "name": "ginnylou507",
-   "display": "Ginny L. Hunter"
-  },
-  {
-   "name": "sf:ian-blunt",
-   "display": "Ian Blunt"
-  },
-  {
-   "name": "sf:isa-goettl",
-   "display": "Isa Goettl"
-  },
-  {
-   "name": "ct:megan davis",
-   "display": "Megan Davis"
-  },
-  {
-   "name": "sf:jacinta-gomes",
-   "display": "Jacinta Gomes"
-  },
-  {
-   "name": "sf:samantha-marocco",
-   "display": "Samantha Marocco"
-  },
-  {
-   "name": "ct:elena trempe",
-   "display": "Elena Trempe"
-  },
-  {
-   "name": "sf:owen-kennedy",
-   "display": "Owen Kennedy"
-  },
-  {
-   "name": "sf:beth-randall",
-   "display": "Beth Randall"
-  },
-  {
-   "name": "jamesondunphey",
-   "display": "Jameson Dunphey"
-  },
-  {
-   "name": "ellie.jent",
-   "display": "Ellie Jent"
-  },
-  {
-   "name": "instabellaphoebe",
-   "display": "Isabella Phoebe"
-  },
-  {
-   "name": "ambikab.09",
-   "display": "Ambika Banavara"
-  },
-  {
-   "name": "haller.paula",
+   "name": "ig:haller.paula",
    "display": "Paula Haller"
   },
   {
-   "name": "anastasiasbakery",
-   "display": "Anastasia Cote"
+   "name": "ig:frannie_anniee",
+   "display": "Franny Olsen"
   },
   {
-   "name": "lena_musiienko",
+   "name": "ig:alexfornyassembly_",
+   "display": "Alex Hammond"
+  },
+  {
+   "name": "ig:ceciliesmith2025",
+   "display": "Cecilie Smith"
+  },
+  {
+   "name": "ig:josiahjmartin",
+   "display": "Josiah Martin"
+  },
+  {
+   "name": "ig:sarahchristinehaller",
+   "display": "Sarah Haller"
+  },
+  {
+   "name": "ig:kale_hitchman",
+   "display": "Kale Hitchman"
+  },
+  {
+   "name": "ig:megan.furner",
+   "display": "Megan Furner"
+  },
+  {
+   "name": "ig:cy.cy.17",
+   "display": "Cynthia"
+  },
+  {
+   "name": "ig:heathergamue",
+   "display": "Heather Gamue"
+  },
+  {
+   "name": "ig:joshua_white3",
+   "display": "Joshua White"
+  },
+  {
+   "name": "ig:lena_musiienko",
    "display": "Olena Musiienko"
   },
   {
-   "name": "sf:willow-rosemarie",
-   "display": "Willow Edwards"
+   "name": "ig:jonah_black01",
+   "display": "Jonah Black"
   },
   {
-   "name": "sf:elliot-martin",
-   "display": "Elliot Martin"
+   "name": "ig:sammace11",
+   "display": "Sam Mace"
   },
   {
-   "name": "ct:corey laprad",
-   "display": "Corey Laprad"
+   "name": "ig:oliviarorybrown",
+   "display": "Olivia Briggs"
   },
   {
-   "name": "ct:mark wentworth",
-   "display": "Mark Wentworth"
+   "name": "ig:dawsonwiegandt",
+   "display": "Dawson Wiegandt"
   },
   {
-   "name": "jordynbrothers5",
-   "display": "Jordyn Brothers"
+   "name": "ig:anastasiasbakery",
+   "display": "Anastasia Cote"
   },
   {
-   "name": "ct:andrew wiseman",
-   "display": "Andrew Wiseman"
+   "name": "ig:ally.dubbioso",
+   "display": "Ally Dubbioso"
   },
   {
-   "name": "sf:rohallah-hakimvand",
-   "display": "Rohallah Hakimvand"
+   "name": "ig:molliiwhitee",
+   "display": "Molli Sue"
   },
   {
-   "name": "ct:matthew tomford",
-   "display": "Matthew Tomford"
+   "name": "ig:jessicahurlbut",
+   "display": "Jessica Hurlbut"
   },
   {
-   "name": "richard.haller",
-   "display": "Richard Haller"
+   "name": "ig:marissa.k19",
+   "display": "Marissa Kelley"
   },
   {
-   "name": "sf:rob-larrabee",
-   "display": "Rob Larrabee"
+   "name": "ig:ally.sabre",
+   "display": "Allyssa Sabre"
   },
   {
-   "name": "cyrusking.47",
-   "display": "Judah Pare"
+   "name": "ig:amotwinsmom",
+   "display": "Rachelle Amo"
   },
   {
-   "name": "abbystiles_",
-   "display": "Abby Stiles"
+   "name": "ig:briettapaladin",
+   "display": "Brietta Paladin"
   },
   {
-   "name": "sf:shania-clayton",
-   "display": "Shania Clayton"
+   "name": "ig:haleydlutz",
+   "display": "Haley Lutz"
   },
   {
-   "name": "alex_conn504",
-   "display": "Alexandra Colbert"
+   "name": "ig:traci.laing",
+   "display": "Traci Laing"
   },
   {
-   "name": "sf:gregory-hurlbut",
-   "display": "Gregory Hurlbut"
+   "name": "ig:bree.rogers545",
+   "display": "Bree Rogers"
   },
   {
-   "name": "sf:calvin-brown",
-   "display": "Calvin Brown"
+   "name": "ig:katiie.huestis",
+   "display": "Katie Huestis"
   },
   {
-   "name": "sf:jessica-osypiewski",
-   "display": "Jessica Osypiewski"
+   "name": "ig:elizabethadaniels",
+   "display": "Elizabeth Daniels"
+  },
+  {
+   "name": "ig:kimberlymitchelldamon",
+   "display": "Kimberly Damon"
+  },
+  {
+   "name": "ig:fulton.julia",
+   "display": "Julia Fulton"
+  },
+  {
+   "name": "ig:autumn.zellweger",
+   "display": "Autumn Zellweger"
+  },
+  {
+   "name": "ig:johnaeastmond",
+   "display": "John Eastmond"
+  },
+  {
+   "name": "ig:gabematthis",
+   "display": "Gabe Matthis"
+  },
+  {
+   "name": "ig:katrina.cutler",
+   "display": "Katrina Lee Cutler"
+  },
+  {
+   "name": "ig:labellek14",
+   "display": "Katie LaBelle"
+  },
+  {
+   "name": "ig:ethan_j_bates",
+   "display": "Ethan Bates"
+  },
+  {
+   "name": "ig:summerdorrphoto",
+   "display": "Summer Dorr"
+  },
+  {
+   "name": "ig:noah_adams24",
+   "display": "Noah Adams"
+  },
+  {
+   "name": "ig:inawangerin",
+   "display": "Ina Wangerin"
+  },
+  {
+   "name": "ig:catchandtrelease",
+   "display": "Eric Trelease"
+  },
+  {
+   "name": "ig:mark.it5",
+   "display": "Mark Miller"
+  },
+  {
+   "name": "ig:boylemarky",
+   "display": "Mark Joseph Boyle"
+  },
+  {
+   "name": "ig:sarahdarah34",
+   "display": "Sarah Dahar"
+  },
+  {
+   "name": "ig:elisedeuel",
+   "display": "Elise Deuel"
+  },
+  {
+   "name": "ig:davidzufall",
+   "display": "David Zufall"
+  },
+  {
+   "name": "ig:aidantruth",
+   "display": "Aidan Daniels"
+  },
+  {
+   "name": "ig:meggreg4",
+   "display": "Meg Lapinski"
+  },
+  {
+   "name": "ig:megphill_",
+   "display": "Megan Phillips"
+  },
+  {
+   "name": "ig:mlapins7",
+   "display": "Molly Lapinski"
+  },
+  {
+   "name": "ig:philip__dennis",
+   "display": "Philip Dennis"
+  },
+  {
+   "name": "ig:criscitello_riley",
+   "display": "Riley Criscitello"
+  },
+  {
+   "name": "ig:_lanie_brown",
+   "display": "Elena Brown"
+  },
+  {
+   "name": "ig:johnmeyers_sr",
+   "display": "John Meyers"
   }
  ],
  "filed": [
   {
-   "name": "sf:benjamin-horner",
-   "display": "Benjamin Horner",
+   "name": "ig:philiplloydpaige",
+   "display": "Philip Lloyd Paige",
    "facts": [
     {
-     "text": "Named to SUNY Canton's President's List for Fall 2022 as a Criminal Investigation student",
-     "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2023/honorsf22.php",
-     "novelty": "expands",
-     "published": "2023-01-06",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "sf:samantha-marocco",
-   "display": "Samantha Marocco",
-   "facts": [
-    {
-     "text": "Performed on horn with the Potsdam Community Band at Louisville Hometown Days, Jul 2026",
-     "source": "Potsdam Community Band",
-     "url": "http://potsdamband.org/summer-2026-concert-program/",
-     "novelty": "new",
-     "published": "",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "sf:owen-kennedy",
-   "display": "Owen Kennedy",
-   "facts": [
-    {
-     "text": "Relisted 928 Delamont Ave in Schenectady with Empire Real Estate Firm after a buyer failed to secure financing, Oct 2026",
+     "text": "Listed 660 May Rd, Potsdam, for sale as listing agent with NOCO Homestead LLC",
      "source": "Homes.com",
-     "url": "https://www.homes.com/schenectady-ny/brown-school/s-mhwf6b3kmm2s9/p3/",
-     "novelty": "new",
+     "url": "https://www.homes.com/potsdam-ny/p2/",
+     "novelty": "expands",
      "published": "",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "instabellaphoebe",
-   "display": "Isabella Phoebe",
-   "facts": [
-    {
-     "text": "Received a SUNY Potsdam Kilmer grant for 2019-2020 for a geology research project on the Popple Hill Gneiss of the Carthage-Colton Shear Zone",
-     "source": "SUNY Potsdam",
-     "url": "http://potsdam.edu/sites/default/files/inline-files/LoCAL%20Annual%20Report%202020%20%283%29.pdf",
-     "novelty": "new",
-     "published": "",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "sf:annika-greco",
-   "display": "Annika Greco",
-   "facts": [
-    {
-     "text": "Authored 'Generosity: The secret resource in wielding power God's way' for Stewardship, Apr 2026",
-     "source": "Stewardship",
-     "url": "https://www.stewardship.org.uk/blogs/generosity-secret-resource-wielding-power-gods-way",
-     "novelty": "new",
-     "published": "2026-04-14",
      "fresh": false
     },
     {
-     "text": "Authored 'Would my bank manager know that I'm a Christian from looking at my statements?' for Stewardship, Jan 2026",
-     "source": "Stewardship",
-     "url": "https://www.stewardship.org.uk/stories/would-my-bank-manager-know-im-christian-looking-my-statements",
-     "novelty": "new",
-     "published": "2026-01-12",
+     "text": "Listed 14 Pleasant St, Potsdam, for sale as listing agent with NOCO Homestead LLC",
+     "source": "Homes.com",
+     "url": "https://www.homes.com/potsdam-ny/p2/",
+     "novelty": "expands",
+     "published": "",
      "fresh": false
     }
    ]
   },
   {
-   "name": "sf:amber-erwin",
-   "display": "Amber Erwin",
+   "name": "ig:fulton.julia",
+   "display": "Julia Fulton",
    "facts": [
     {
-     "text": "SUNY Canton's Spring 2026 honors list places her on the Dean's List as a Nursing - BS student, not on the President's List",
-     "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2026/honors-s26.php",
+     "text": "Served as president of the Hope Democrats club at Hope College, Sep 2017",
+     "source": "Hope College Anchor",
+     "url": "https://anchor.hope.edu/campus/candidates-governor-look-students/",
      "novelty": "expands",
-     "published": "2026-06-01",
+     "published": "2017-10-04",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:summerdorrphoto",
+   "display": "Summer Dorr",
+   "facts": [
+    {
+     "text": "Taught at North Country Community College in Saranac Lake, NY, before starting as Assistant Professor of English and Humanities at Alfred State College, 2023",
+     "source": "University of Alaska Fairbanks",
+     "url": "https://www.uaf.edu/english/graduate/mfa-program-news.php",
+     "novelty": "expands",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:aidantruth",
+   "display": "Aidan Daniels",
+   "facts": [
+    {
+     "text": "Clarkson University's Merit Pages story names him to the Dean's List for Spring 2026, not a Presidential Scholar",
+     "source": "Clarkson University \u00b7 Merit Pages",
+     "url": "https://clarkson.meritpages.com/stories/Aidan-T-Daniels-of-Norwood-NY-has-been-named-to-Clarkson-University-s-Dean-s-List/190042909",
+     "novelty": "expands",
+     "published": "2026-06-04",
      "fresh": false
     }
    ]
@@ -403,55 +375,55 @@
  },
  "next_up": [
   {
-   "name": "sf:alexis-sullivan",
-   "display": "Alexis Sullivan"
+   "name": "ig:aaronjdaniels",
+   "display": "Aaron Daniels"
   },
   {
-   "name": "alyssalramsay",
+   "name": "ig:abbystiles_",
+   "display": "Abby Stiles"
+  },
+  {
+   "name": "ig:abbydaniels03",
+   "display": "Abigail Daniels"
+  },
+  {
+   "name": "ig:adria.t18",
+   "display": "Adria Tebo"
+  },
+  {
+   "name": "ig:adhope2006",
+   "display": "Adriana Levendusky"
+  },
+  {
+   "name": "ig:askinnerusa",
+   "display": "Aeriel Skinner"
+  },
+  {
+   "name": "ig:alanahoover",
+   "display": "Alana Hoover"
+  },
+  {
+   "name": "ig:alex_conn504",
+   "display": "Alexandra Colbert"
+  },
+  {
+   "name": "ig:alli.potter17",
+   "display": "Alli Potter"
+  },
+  {
+   "name": "ig:alyssalramsay",
    "display": "Alyssa L Ramsay"
-  },
-  {
-   "name": "drewspov_",
-   "display": "Andrew Matott"
-  },
-  {
-   "name": "lise.cevallos",
-   "display": "Annelise Cevallos"
-  },
-  {
-   "name": "sf:ashleigh-graveline",
-   "display": "Ashleigh Graveline"
-  },
-  {
-   "name": "sf:ashley-lafay",
-   "display": "Ashley LaFay"
-  },
-  {
-   "name": "sf:ashlin-elliott",
-   "display": "Ashlin Elliott"
-  },
-  {
-   "name": "bree.rogers545",
-   "display": "Bree Rogers"
-  },
-  {
-   "name": "brian.m.zehr",
-   "display": "Brian M. Zehr"
-  },
-  {
-   "name": "sf:briana-mcgrath",
-   "display": "Briana McGrath"
   }
  ],
  "unchecked_remaining": 0,
  "freshness": {
-  "d7": 725,
-  "d30": 0,
+  "d7": 472,
+  "d30": 253,
   "d90": 0,
   "older": 0,
   "never": 0,
-  "oldest": "2026-11-06"
+  "oldest": "2026-10-26"
  },
  "hot": [],
- "note": "PM run (second Live Records run of the day). Checked 75 people and filed 7 bullets across 6 people, each verified on its source page by the parent and read back in the Sheet exactly once. Fresh sweep: none found \u2014 a dedicated sweep of items published Oct 20 to Nov 10 across NCPR, North Country Now, NNY360, WWNY and ClickNNY, the four colleges' news and athletics, honors announcements and health-system news found nothing new for a directory member; in-window items were already filed or known-role mentions only. Filed: Benjamin Horner's SUNY Canton President's List semester for Fall 2022 (his record covered Fall 2021 and Spring 2023); Samantha Marocco performing on horn with the Potsdam Community Band at Louisville Hometown Days in Jul 2026; Owen Kennedy relisting 928 Delamont Ave in Schenectady in Oct 2026 after a buyer failed to secure financing; and Isabella Phoebe's SUNY Potsdam Kilmer grant for 2019-2020, for a geology project on the Popple Hill Gneiss. The compounding lane filed two more Stewardship articles by Annika Greco (Apr 2026 and Jan 2026) and a correction for Amber Erwin: SUNY Canton's Spring 2026 honors list places her on the Dean's List, not the President's List \u2014 her record carried both, and the corrected fact now sits beside the old bullet, which stays under the append-only rule. Held, not filed: Ian Blunt's 2019 mortar qualification (the Army newsletter names his battalion, not the headquarters company on his record) is in Research Command as an identity question, and an Isabella Lucia bridesmaid listing in Quincy, Massachusetts (nothing ties it to SUNY Potsdam) matched the pending Nov 6 card about her living in Quincy, so this run's wedding page stands as a second source for that card instead of a new one; Angeles Felix's CMDA role, health-coach certification and Go Be founding detail rest on her own nonprofit's site and are in the ledger from the lane. Logged only, not filed and not added as cards: Zvi Szafran's Nov 5 scholarship-drive commendation (a known-role mention, the same call as Nov 6 and this morning); Jaime Bicknell's two scholarship quotes in her known role; Nicole Seward's ROOTS clinic posts (her own site only); Ben Hull's successor Allan Robinson winning the District 8 seat in Nov 2026 (a fact about Robinson, reached from Hull's seed \u2014 it corroborates the successor note already on Hull's record); and a WebMD claim that Angeles Felix's Rhode Island dental licence has expired (the same page wrongly names Tufts as her dental school, so it was not trusted; it needs a check on the Rhode Island licence lookup itself). 3 candidates added to Research Command. 11 of JD's console filing points were reconciled into the change log. Photo leads you flagged are still waiting for a photo pass: Christine Sutter (UConn Today), Emily Criscitello (Tulum dive operator), Joe Charlebois (Hockey records), Katelyn Tomford (Zola), Kayla Hettel (Puget Sound Birth Center), Max Ferran (Bold.org), Megan Converse (Merit Pages), Joann Duclos (Army.mil)."
+ "note": "AM run. Checked 75 people and filed 5 bullets across 4 people, each verified on its source page by the parent and read back in the Sheet exactly once. Fresh sweep: none found \u2014 a dedicated sweep of items published Oct 21 to Nov 11 across NCPR, North Country Now, NNY360, WWNY and ClickNNY, the four colleges' news and athletics, honors announcements and health-system news found nothing new for a directory member; in-window items were already filed (Walczyk re-election, Tebo assist, Johnston award) or known-role mentions only (Szafran, Larson, Haller). Filed: Philip Lloyd Paige's two current Potsdam listings with NOCO Homestead LLC (660 May Rd and 14 Pleasant St, Homes.com); Julia Fulton's presidency of the Hope Democrats club at Hope College in Sep 2017 (Hope College Anchor); Summer Dorr's teaching at North Country Community College before her 2023 Alfred State start (University of Alaska Fairbanks; her blank Degrees field was also filled with her UAF MA, 2018, from the same page); and a correction for Aidan Daniels \u2014 Clarkson University's own Merit Pages story names him to the Dean's List for Spring 2026, not a Presidential Scholar, so the correction now sits beside the Spring 2026 Presidential Scholar bullet his record carried, which stays under the append-only rule. Not filed: Alex Hammond's move to the Washington, D.C. area was already on his record word for word (caught at the Sheet check), and Jessica Hurlbut's Feb 2026 NTC Massena sermon rests on Listen Notes, an aggregator reproducing the church's own feed, so it was dropped under the gate. Sarah Dahar's Corning page came up again \u2014 JD dismissed that card on Oct 30 and the source is no stronger, so it did not return; her 2016 Oswego church-conference item is name-and-hometown only and stays in the run log. 1 candidate added to Research Command (ledger 585): Cecilie Smith \u2014 the Massena Central 2025-26 directory lists a 'Cecile Smith' as a teacher aide at Nightengale Elementary; the spelling and the building differ from her record, so it is an identity question for JD. 0 of JD's console 'file' decisions were pending reconciliation (all 456 are already in the change log). Unharvested photo leads flagged by JD remain: Christine Sutter, Emily Criscitello, Joe Charlebois, Katelyn Tomford, Kayla Hettel, Max Ferran, Megan Converse, Joann Duclos."
 }
