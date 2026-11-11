@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-09",
+ "updated": "2026-11-10",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -15035,6 +15035,88 @@
     "identity": 10,
     "source": 10,
     "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-sf-ian-blunt-as-sgt-1st-class-and-2nd-battalion-1",
+   "name": "sf:ian-blunt",
+   "display": "Ian Blunt",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The U.S. Army Watervliet Arsenal's August 2019 newsletter says Sgt. 1st Class Ian Blunt was the 2nd Battalion, 108th Infantry Regiment mortar platoon sergeant when his New York Army National Guard crews became the first in the state to qualify with the digital Mortar Fire Control System at Fort Drum on July 22, 2019.",
+   "file_text": "As Sgt. 1st Class and 2nd Battalion, 108th Infantry Regiment mortar platoon sergeant, his crews were the first in New York to qualify with the digital Mortar Fire Control System at Fort Drum, Jul 2019",
+   "source": "U.S. Army Watervliet Arsenal",
+   "url": "https://www.slideshare.net/slideshow/newsletter-from-the-us-armys-watervliet-arsenal-august-2019/170290210",
+   "anchors": [
+    "New York Army National Guard (his service on file)",
+    "Mortar work (he is pictured holding a mortar training round on his record)",
+    "The 27th IBCT (the 2nd Battalion, 108th Infantry is part of that brigade; his record is with its headquarters company)"
+   ],
+   "quote": "Mortar teams from 2nd Battalion, 108th Infantry Regiment, New York Army National Guard qualified using mortar systems produced at Watervliet Arsenal July 22. ;; The crews became the first in the state to qualify using the digital Mortar Fire Control System.",
+   "missing_gate": "The newsletter names his battalion, not the headquarters company on his record, so I am not fully sure it is him.",
+   "confidence": 78,
+   "confidence_parts": {
+    "identity": 34,
+    "source": 26,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-sf-shania-clayton-works-as-a-freelance-it-support-prov",
+   "name": "sf:shania-clayton",
+   "display": "Shania Clayton",
+   "run_date": "2026-11-10",
+   "run_label": "Daily rotation (PM)",
+   "category": "verification",
+   "claim": "A search result described a Shania Clayton offering freelance IT support, network security and troubleshooting on Intro and Fiverr, which fits her Syracuse University iSchool degree.",
+   "file_text": "Works as a freelance IT support provider offering computer setup, network security and troubleshooting",
+   "source": "Intro",
+   "url": "",
+   "anchors": [
+    "Syracuse University iSchool (her degree on file)"
+   ],
+   "quote": "",
+   "missing_gate": "I could not double-check this \u2014 the page showed nothing about her \u2014 so I want you to decide.",
+   "confidence": 34,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 6,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261110-dr-angelesfelix-serves-as-the-cmda-state-representat",
+   "name": "dr.angelesfelix",
+   "display": "Angeles Felix",
+   "run_date": "2026-11-10",
+   "run_label": "Compounding lane",
+   "category": "source",
+   "claim": "Go Be International's own site says three things that are not on her record. She serves as the CMDA State Representative for Rhode Island and is a Fellow of the CMDA Mentorship Academy. She is a certified Personal and Health Coach through John Maxwell University and the Health Coach Institute. She and her husband Alex founded Go Be International in 2017.",
+   "file_text": "Serves as the CMDA State Representative for Rhode Island and is a Fellow of the CMDA Mentorship Academy ;; Certified Personal and Health Coach through John Maxwell University and the Health Coach Institute ;; Founded Go Be International with her husband Alex in 2017",
+   "source": "Go Be International",
+   "url": "https://gobeinternational.org/",
+   "anchors": [
+    "Go Be International (the nonprofit she leads, on her record)",
+    "Dental Associates of Cumberland (the site's mailing address is her practice address)",
+    "Boston University (her advanced dental training, named on the page)"
+   ],
+   "quote": "She currently serves as the CMDA State Representative for Rhode Island and is a Fellow of the CMDA Mentorship Academy. ;; Dr. Felix is also a certified Personal and Health Coach through the John Maxwell University and the Health Coach Institute ;; In 2017, she and her husband founded Go Be International, a nonprofit organization dedicated to creating awareness, empowering individuals, and mobilizing communities to serve others through dental care and community outreach.",
+   "missing_gate": "These points come from her own nonprofit's website only, so I want you to decide.",
+   "confidence": 77,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 14,
+    "detail": 17
    },
    "fields": {},
    "published": "",
