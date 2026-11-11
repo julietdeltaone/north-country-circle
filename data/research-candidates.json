@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-10",
+ "updated": "2026-11-11",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -15119,6 +15119,36 @@
     "detail": 17
    },
    "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261111-cecilie-smith-worked-as-a-teacher-aide-at-nighteng",
+   "name": "ig:ceciliesmith2025",
+   "display": "Cecilie Smith",
+   "run_date": "2026-11-11",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Massena Central School District's 2025-26 employee directory lists a Cecile Smith as a teacher aide at Nightengale Elementary, with a district email address. The first name is spelled Cecile, not Cecilie, and the building is an elementary school; Cecilie Smith's record has her as a teacher aide at the junior high in the same district.",
+   "file_text": "Worked as a teacher aide at Nightengale Elementary in the Massena Central School District, 2025-26",
+   "source": "Massena Central School District",
+   "url": "https://4.files.edl.io/5ac5/10/01/25/124639-a8996dc4-d603-47a7-8fe7-eaf16b762da5.pdf",
+   "anchors": [
+    "Massena Central School District (the district on her record)",
+    "Teacher aide (the job on her record)",
+    "Massena, NY (where she lives, on her record)"
+   ],
+   "quote": "| Smith, Cecile | Teacher Aide | Nightengale Elementary | csmith@mcs.k12.ny.us |",
+   "missing_gate": "The directory spells the name Cecile and puts her at an elementary school, not the junior high on her record, so I am not sure it is her.",
+   "confidence": 62,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 25,
+    "detail": 12
+   },
+   "fields": {
+    "companies": "Massena Central School District"
+   },
    "published": "",
    "novelty": "new"
   }
