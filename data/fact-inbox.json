@@ -5043,6 +5043,10 @@
    "name": "sf:benjamin-horner",
    "pattern": "new_credential",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-11T12:26:57.018Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2023/honorsf22.php"
   },
   {
@@ -5069,6 +5073,10 @@
    "name": "instabellaphoebe",
    "pattern": "new_credential",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-11T12:27:06.941Z",
+    "status": "read"
+   },
    "url": "http://potsdam.edu/sites/default/files/inline-files/LoCAL%20Annual%20Report%202020%20%283%29.pdf"
   },
   {
