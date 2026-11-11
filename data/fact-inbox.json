@@ -5031,6 +5031,71 @@
     "status": "read"
    },
    "url": "https://www.canton.edu/news/2020/honors2020.php"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Criminal Investigation",
+   "batch": "PM run \u2014 Nov 10, 2026",
+   "display": "Benjamin Horner",
+   "fact": "Named to SUNY Canton's President's List for Fall 2022 as a Criminal Investigation student",
+   "id": "fi-20261110-sf-benjamin-horner-named-to-suny-cantons-presidents",
+   "key": "sf:benjamin-horner",
+   "learned": "2026-11-10",
+   "name": "sf:benjamin-horner",
+   "pattern": "new_credential",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2023/honorsf22.php"
+  },
+  {
+   "anchor": "Empire Real Estate Firm \u00b7 Schenectady, NY",
+   "batch": "PM run \u2014 Nov 10, 2026",
+   "display": "Owen Kennedy",
+   "fact": "Relisted 928 Delamont Ave in Schenectady with Empire Real Estate Firm after a buyer failed to secure financing, Oct 2026",
+   "id": "fi-20261110-sf-owen-kennedy-relisted-928-delamont-ave",
+   "key": "sf:owen-kennedy",
+   "learned": "2026-11-10",
+   "name": "sf:owen-kennedy",
+   "pattern": "milestone",
+   "source": "Homes.com",
+   "url": "https://www.homes.com/schenectady-ny/brown-school/s-mhwf6b3kmm2s9/p3/"
+  },
+  {
+   "anchor": "SUNY Potsdam \u00b7 Geology",
+   "batch": "PM run \u2014 Nov 10, 2026",
+   "display": "Isabella Phoebe",
+   "fact": "Received a SUNY Potsdam Kilmer grant for 2019-2020 for a geology research project on the Popple Hill Gneiss of the Carthage-Colton Shear Zone",
+   "id": "fi-20261110-instabellaphoebe-received-a-suny-potsdam-kilmer",
+   "key": "instabellaphoebe",
+   "learned": "2026-11-10",
+   "name": "instabellaphoebe",
+   "pattern": "new_credential",
+   "source": "SUNY Potsdam",
+   "url": "http://potsdam.edu/sites/default/files/inline-files/LoCAL%20Annual%20Report%202020%20%283%29.pdf"
+  },
+  {
+   "anchor": "SUNY Canton \u00b7 Nursing",
+   "batch": "PM run + compounding lane \u2014 Nov 10, 2026",
+   "display": "Amber Erwin",
+   "fact": "SUNY Canton's Spring 2026 honors list places her on the Dean's List as a Nursing - BS student, not on the President's List",
+   "id": "fi-20261110-sf-amber-erwin-suny-cantons-spring-2026-honors",
+   "key": "sf:amber-erwin",
+   "learned": "2026-11-10",
+   "name": "sf:amber-erwin",
+   "pattern": "correction",
+   "source": "SUNY Canton",
+   "url": "https://www.canton.edu/news/2026/honors-s26.php"
+  },
+  {
+   "anchor": "Go Be International \u00b7 Cumberland, RI",
+   "batch": "PM run + compounding lane \u2014 Nov 10, 2026",
+   "display": "Angeles Felix",
+   "fact": "Serves as the CMDA State Representative for Rhode Island and is a Fellow of the CMDA Mentorship Academy",
+   "id": "fi-20261110-dr-angelesfelix-serves-as-the-cmda-state",
+   "key": "dr.angelesfelix",
+   "learned": "2026-11-10",
+   "name": "dr.angelesfelix",
+   "pattern": "title_change",
+   "source": "Go Be International",
+   "url": "https://gobeinternational.org/"
   }
  ],
  "patterns": {
@@ -5041,6 +5106,6 @@
   "new_credential": "New credential",
   "title_change": "Title change"
  },
- "updated": "2026-11-09",
+ "updated": "2026-11-10",
  "version": 1
 }
