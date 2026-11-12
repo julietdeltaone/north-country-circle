@@ -15151,6 +15151,61 @@
    },
    "published": "",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261111-ig-taswyka-was-a-named-member-of-the-clarkson-e",
+   "name": "ig:taswyka",
+   "display": "Tim Swyka",
+   "run_date": "2026-11-11",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The 2009 Clarkson University Electric Knights design paper for the SAE Clean Snowmobile Competition lists a Tim Swyka among its authors. The paper says the Clarkson team converted a 2008 Polaris 600RR to a fully electric snowmobile for the 2009 competition.",
+   "file_text": "Was a named member of the Clarkson Electric Knights team that converted a 2008 Polaris 600RR to a fully electric snowmobile for the 2009 SAE Clean Snowmobile Competition",
+   "source": "SAE International / Michigan Tech Keweenaw Research Center",
+   "url": "http://www.mtukrc.org/download/clarkson/clarkson_ze_design_paper_2009.pdf",
+   "anchors": [
+    "Clarkson University (the school on his record)"
+   ],
+   "quote": "2009 Clarkson University Electric Snowmobile / Tim Swyka / Clarkson Electric Knights / The Clarkson University Electric Knights has taken a 2008 Polaris 600RR and converted it to a fully electric snowmobile for the 2009 SAE Clean Snowmobile Competition.",
+   "missing_gate": "The paper names a Tim Swyka at Clarkson, but nothing on it ties him to the Potsdam or Precise Biometrics facts already on file.",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 22,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261111-ig-megphill-holds-an-ms-in-water-resource-manage",
+   "name": "ig:megphill_",
+   "display": "Megan Phillips",
+   "run_date": "2026-11-11",
+   "run_label": "Compounding lane",
+   "category": "close",
+   "claim": "The Governor's Office announcement of the Adirondack Road Salt Reduction Task Force says Megan Phillips holds an MS in Water Resource Management and a BA in Conservation Biology from Cornell University, and lists her among the Governor's appointees to the task force, when she was Vice President for Conservation at the Adirondack Council.",
+   "file_text": "Holds an MS in Water Resource Management and a BA in Conservation Biology from Cornell University ;; Was appointed to the Adirondack Road Salt Reduction Task Force",
+   "source": "New York State Governor's Office",
+   "url": "https://www.governor.ny.gov/news/governor-hochul-announces-appointments-adirondack-road-salt-reduction-task-force",
+   "anchors": [
+    "Vice President for Conservation at the Adirondack Council (the job she left for the Adirondack Park Agency, on her record)"
+   ],
+   "quote": "Megan Phillips holds a MS in Water Resource Management and a BA in Conservation Biology from Cornell University. Formerly a Senior Policy Advisor for Energy and the Environment for the Executive Chamber, Megan is currently the Vice President for Conservation at the Adirondack Council.",
+   "missing_gate": "This follows from what is already on Megan's record, but it has not been confirmed on its own yet, so I want you to decide.",
+   "confidence": 82,
+   "confidence_parts": {
+    "identity": 44,
+    "source": 26,
+    "detail": 12
+   },
+   "fields": {
+    "degrees": "MS in Water Resource Management, Cornell University; BA in Conservation Biology, Cornell University",
+    "universities": "Cornell University"
+   },
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
