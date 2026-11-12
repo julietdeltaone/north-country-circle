@@ -1,437 +1,6 @@
 {
- "date": "2026-11-11",
+ "date": "2026-11-12",
  "checked": [
-  {
-   "name": "ig:madstop136",
-   "display": "Eric Criscitello"
-  },
-  {
-   "name": "ig:chelsea__mcgrath",
-   "display": "Chelsea McGrath"
-  },
-  {
-   "name": "ig:anastasia_g_daniels",
-   "display": "Anastasia Daniels"
-  },
-  {
-   "name": "ig:alanahoover",
-   "display": "Alana Hoover"
-  },
-  {
-   "name": "ig:big_dawg_j",
-   "display": "Jason Deschaine"
-  },
-  {
-   "name": "ig:taswyka",
-   "display": "Tim Swyka"
-  },
-  {
-   "name": "ig:evan_dennis_",
-   "display": "Evan Dennis"
-  },
-  {
-   "name": "ig:livparker5",
-   "display": "Olivia Parker"
-  },
-  {
-   "name": "ig:m_atkinson03",
-   "display": "Mary Atkinson"
-  },
-  {
-   "name": "ig:judder_budder",
-   "display": "Judson Colbert"
-  },
-  {
-   "name": "ig:outrageouslyloved",
-   "display": "Jeff McGrath"
-  },
-  {
-   "name": "ig:annecatherina7",
-   "display": "Anne Katherin Wolf"
-  },
-  {
-   "name": "ig:juliefelicianosec",
-   "display": "Julie Feliciano"
-  },
-  {
-   "name": "ig:brianna.hammond",
-   "display": "Brianna Hammond"
-  },
-  {
-   "name": "ig:eli.e.thomas",
-   "display": "Eli Thomas"
-  },
-  {
-   "name": "ig:syd.collins11",
-   "display": "Sydney Storrin"
-  },
-  {
-   "name": "ig:luannbailey",
-   "display": "Luann Bailey"
-  },
-  {
-   "name": "ig:elisameyers",
-   "display": "Elisa Meyers"
-  },
-  {
-   "name": "ig:kylgot",
-   "display": "Kyle Gotham"
-  },
-  {
-   "name": "ig:joshuamcgrath",
-   "display": "Josh McGrath"
-  },
-  {
-   "name": "ig:awretchlikebri",
-   "display": "Brianna McCarthy"
-  },
-  {
-   "name": "ig:goodrowolivia",
-   "display": "Olivia Goodrow"
-  },
-  {
-   "name": "ig:katepersun",
-   "display": "Katelyn Persun"
-  },
-  {
-   "name": "ig:drewspov_",
-   "display": "Andrew Matott"
-  },
-  {
-   "name": "ig:aaronjdaniels",
-   "display": "Aaron Daniels"
-  },
-  {
-   "name": "ig:martinlovell.8",
-   "display": "Martin Lovell"
-  },
-  {
-   "name": "ig:hnnbraun",
-   "display": "Hannah Braun"
-  },
-  {
-   "name": "ig:mercy.maurer",
-   "display": "Mercy Maurer"
-  },
-  {
-   "name": "ig:daniveteree",
-   "display": "Danielle Vetere"
-  },
-  {
-   "name": "ig:norahpease",
-   "display": "Norah Pease"
-  },
-  {
-   "name": "ig:tom_nate_ford",
-   "display": "Nathaniel Tomford"
-  },
-  {
-   "name": "ig:ysabellamcolbert",
-   "display": "Ysabella Colbert"
-  },
-  {
-   "name": "ig:hopiek_09",
-   "display": "Hope Kilcollins"
-  },
-  {
-   "name": "ig:m.not.a.lobster",
-   "display": "Michelle Johnston"
-  },
-  {
-   "name": "ig:ria.amo",
-   "display": "Ria Amo"
-  },
-  {
-   "name": "ig:jlevens18",
-   "display": "Joye Levendusky"
-  },
-  {
-   "name": "ig:ellie.jent",
-   "display": "Ellie Jent"
-  },
-  {
-   "name": "ig:haashaus",
-   "display": "Jen Haas"
-  },
-  {
-   "name": "ig:alyssalramsay",
-   "display": "Alyssa L Ramsay"
-  },
-  {
-   "name": "ig:reneeockrin",
-   "display": "Renee Ockrin"
-  },
-  {
-   "name": "ig:debbiegordon7",
-   "display": "Debbie Gordon"
-  },
-  {
-   "name": "ig:julianna_shatraw",
-   "display": "Julianna Shatraw"
-  },
-  {
-   "name": "ig:teri_thebatemom",
-   "display": "Teri Bates"
-  },
-  {
-   "name": "ig:hholt_777",
-   "display": "Hannah Holt"
-  },
-  {
-   "name": "ig:tcriscitello",
-   "display": "Timothy Criscitello"
-  },
-  {
-   "name": "ig:cyrusking.47",
-   "display": "Judah Pare"
-  },
-  {
-   "name": "ig:juliacarmella1",
-   "display": "Julia Swy"
-  },
-  {
-   "name": "ig:ejb1203",
-   "display": "Elsie Breen"
-  },
-  {
-   "name": "ig:katie_marie162",
-   "display": "Katie Bertrand"
-  },
-  {
-   "name": "ig:katelynmatthews10",
-   "display": "Katelyn Matthews"
-  },
-  {
-   "name": "ig:karajdaniels",
-   "display": "Kara Daniels"
-  },
-  {
-   "name": "ig:hennykv",
-   "display": "Vimbai Kuzanga"
-  },
-  {
-   "name": "ig:levi_white90",
-   "display": "Levi White"
-  },
-  {
-   "name": "ig:nikki.sew",
-   "display": "Nicole Seward"
-  },
-  {
-   "name": "ig:joshcparker_",
-   "display": "Josh Parker"
-  },
-  {
-   "name": "ig:kalbelleau",
-   "display": "Kallie Belleau"
-  },
-  {
-   "name": "ig:emijent",
-   "display": "Emily R. Jent"
-  },
-  {
-   "name": "ig:david.tulloch.10",
-   "display": "David Tulloch"
-  },
-  {
-   "name": "ig:em_anuel_xa",
-   "display": "Emmanuel Atindama"
-  },
-  {
-   "name": "ig:gab20n",
-   "display": "Gabriela Melendez"
-  },
-  {
-   "name": "ig:cashhyyy",
-   "display": "Cashlynn Colbert"
-  },
-  {
-   "name": "ig:ryanpdaniels",
-   "display": "Ryan Daniels"
-  },
-  {
-   "name": "ig:mauramayer",
-   "display": "Maura Mayer"
-  },
-  {
-   "name": "ig:meganrconverse",
-   "display": "Megan Converse"
-  },
-  {
-   "name": "ig:_cathaccino_",
-   "display": "Catherine Green"
-  },
-  {
-   "name": "ig:heatherjdowling",
-   "display": "Heather Dowling"
-  },
-  {
-   "name": "ig:kourtneyypeets",
-   "display": "Kourtney Peets"
-  },
-  {
-   "name": "ig:kaylemmccormick",
-   "display": "Kayle McCormick"
-  },
-  {
-   "name": "ig:morse_like_the_code",
-   "display": "Morgan Morse"
-  },
-  {
-   "name": "ig:hannahllbanana",
-   "display": "Hannah McConnell"
-  },
-  {
-   "name": "ig:adria.t18",
-   "display": "Adria Tebo"
-  },
-  {
-   "name": "ig:jtmoulton",
-   "display": "Joel Moulton"
-  },
-  {
-   "name": "ig:courtney_delosh",
-   "display": "Courtney Delosh"
-  },
-  {
-   "name": "ig:oliviamiller9334",
-   "display": "Olivia Miller"
-  },
-  {
-   "name": "ig:kaylawatkins8",
-   "display": "Kayla Hettel"
-  }
- ],
- "filed": [
-  {
-   "name": "ig:katie_marie162",
-   "display": "Katie Bertrand",
-   "facts": [
-    {
-     "text": "Named to SUNY Canton's Dean's List for Fall 2017 as a Nursing student from Canton",
-     "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2018/honorsf17.php",
-     "novelty": "new",
-     "published": "2018-01-11",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "ig:katelynmatthews10",
-   "display": "Katelyn Matthews",
-   "facts": [
-    {
-     "text": "Named to SUNY Canton's Dean's List for Fall 2024 in the Bachelor of Science in Nursing program",
-     "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2025/honorsf24.php",
-     "novelty": "new",
-     "published": "2025-01-08",
-     "fresh": false
-    },
-    {
-     "text": "Named to SUNY Canton's Dean's List for Spring 2025 in the Bachelor of Science in Nursing program",
-     "source": "SUNY Canton",
-     "url": "https://www.canton.edu/news/2025/honors-sp25.php",
-     "novelty": "new",
-     "published": "2025-05-30",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "ig:ellie.jent",
-   "display": "Ellie Jent",
-   "facts": [
-    {
-     "text": "Served as Co-President of the City of Plattsburgh's Climate Task Force, Mar 2026",
-     "source": "Sun Community News",
-     "url": "https://suncommunitynews.com/news/124328/plattsburgh-greenup-returns-april-18/",
-     "novelty": "new",
-     "published": "2026-03-18",
-     "fresh": false
-    },
-    {
-     "text": "Named a 2026 Women of Distinction honoree for Community and Civic Affairs by Assemblyman Michael Cashman, Mar 2026",
-     "source": "Sun Community News",
-     "url": "https://suncommunitynews.com/news/124417/assemblyman-cashman-hosts-first-women-of-distinction-ceremony/",
-     "novelty": "new",
-     "published": "2026-03-23",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "ig:joshcparker_",
-   "display": "Josh Parker",
-   "facts": [
-    {
-     "text": "At 16, ran a Canton maple operation whose wood-pellet-fired evaporator was the first of its kind in New York State, Mar 2014",
-     "source": "New York State Senate",
-     "url": "https://www.nysenate.gov/newsroom/press-releases/2014/patty-ritchie/ritchie-celebrates-maple-weekend-regions-newest-young",
-     "novelty": "new",
-     "published": "",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "ig:megphill_",
-   "display": "Megan Phillips",
-   "facts": [
-    {
-     "text": "Started as Deputy Director for Planning at the Adirondack Park Agency on Jan 24, 2022, coming from Vice President for Conservation at the Adirondack Council",
-     "source": "Sun Community News",
-     "url": "https://suncommunitynews.com/news/94882/barb-rice-selected-to-lead-apa/",
-     "novelty": "new",
-     "published": "2022-01-20",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "sf:hudson-brown",
-   "display": "Hudson Brown",
-   "facts": [
-    {
-     "text": "Still plays viola at church, in small chamber music ensembles and in pit orchestras for musicals, and teaches music lessons to local students while working at North Country Savings Bank",
-     "source": "North Country Savings Bank",
-     "url": "https://www.northcountrysavings.bank/blog-article/hudson-brown-ncsb-floating-relationship-banker?page=1",
-     "novelty": "expands",
-     "published": "",
-     "fresh": false
-    }
-   ]
-  },
-  {
-   "name": "sf:eli-larson",
-   "display": "Eli Larson",
-   "facts": [
-    {
-     "text": "Minored in Applied Physics and Mathematics at SUNY Canton while majoring in Mechatronics Technology",
-     "source": "SUNY Canton Athletics",
-     "url": "https://rooathletics.com/sports/mens-basketball/roster/eli-larson/7127",
-     "novelty": "new",
-     "published": "",
-     "fresh": false
-    },
-    {
-     "text": "Tied for the highest male cumulative GPA in the SUNY Canton Athletics department entering his final semester",
-     "source": "SUNY Canton Athletics",
-     "url": "https://rooathletics.com/sports/mens-basketball/roster/eli-larson/7127",
-     "novelty": "expands",
-     "published": "",
-     "fresh": false
-    }
-   ]
-  }
- ],
- "coverage": {
-  "checked_total": 725,
-  "of": 725,
-  "window_days": 30
- },
- "next_up": [
   {
    "name": "ig:abbystiles_",
    "display": "Abby Stiles"
@@ -471,17 +40,482 @@
   {
    "name": "ig:dr.angelesfelix",
    "display": "Angeles Felix"
+  },
+  {
+   "name": "ig:annabellerose.07",
+   "display": "Annabelle Dowling"
+  },
+  {
+   "name": "ig:lise.cevallos",
+   "display": "Annelise Cevallos"
+  },
+  {
+   "name": "ig:ariannamason91",
+   "display": "Arianna Mason"
+  },
+  {
+   "name": "ig:ariannarider",
+   "display": "Arianna Rider"
+  },
+  {
+   "name": "ig:becca_emmett",
+   "display": "Becca Emmett"
+  },
+  {
+   "name": "ig:benlevendusky",
+   "display": "Ben Levendusky"
+  },
+  {
+   "name": "ig:brendan.bombard_19",
+   "display": "Brendan Bombard"
+  },
+  {
+   "name": "ig:brian.m.zehr",
+   "display": "Brian M. Zehr"
+  },
+  {
+   "name": "ig:brocktulley",
+   "display": "Brock Tulley"
+  },
+  {
+   "name": "ig:bronwynpaladin",
+   "display": "Bronwyn Paladin"
+  },
+  {
+   "name": "ig:brookemariejoyce",
+   "display": "Brooke Joyce"
+  },
+  {
+   "name": "ig:brookelynnmoore_",
+   "display": "Brooke Moore"
+  },
+  {
+   "name": "ig:cadencolbert",
+   "display": "Caden Colbert"
+  },
+  {
+   "name": "ig:caelin.ramsay",
+   "display": "Caelin Ramsay"
+  },
+  {
+   "name": "ig:cbresett20",
+   "display": "Caleb Bresett"
+  },
+  {
+   "name": "ig:callindsey",
+   "display": "Caleb Lindsey"
+  },
+  {
+   "name": "ig:carina_gilchrist",
+   "display": "Carina Gilchrist"
+  },
+  {
+   "name": "ig:carolinaxxmedina",
+   "display": "Carolina Medina"
+  },
+  {
+   "name": "ig:caroline.lafountain",
+   "display": "Caroline LaFountain"
+  },
+  {
+   "name": "ig:cathie_deschaine",
+   "display": "Cathie Deschaine"
+  },
+  {
+   "name": "ig:charlie_garrelts",
+   "display": "Charlie Garrelts"
+  },
+  {
+   "name": "ig:charlotte_clark04",
+   "display": "Charlotte Clark"
+  },
+  {
+   "name": "ig:chiara.frasc",
+   "display": "Chiara"
+  },
+  {
+   "name": "ig:ms_dior.gor",
+   "display": "Chidiogor Ofodum"
+  },
+  {
+   "name": "ig:cierrahitchman",
+   "display": "Cierra Hitchman"
+  },
+  {
+   "name": "ig:c.w.bailey64",
+   "display": "Cliff Bailey"
+  },
+  {
+   "name": "ig:colleenhackett",
+   "display": "Colleen Hackett"
+  },
+  {
+   "name": "ig:coreyd123103",
+   "display": "Corey Delisa"
+  },
+  {
+   "name": "ig:cornbrain",
+   "display": "Corinne O'Brien"
+  },
+  {
+   "name": "ig:cameramancory",
+   "display": "Cory Williams"
+  },
+  {
+   "name": "ig:daniel__manor",
+   "display": "Daniel Manor"
+  },
+  {
+   "name": "ig:daniel_ursus_arctos",
+   "display": "Daniel Moulton"
+  },
+  {
+   "name": "ig:dpaladin",
+   "display": "Daniel Paladin"
+  },
+  {
+   "name": "ig:dsmithroc",
+   "display": "Daniel Smith"
+  },
+  {
+   "name": "ig:danielzufall",
+   "display": "Daniel Zufall"
+  },
+  {
+   "name": "ig:daniellecaskinett",
+   "display": "Danielle Caskinett"
+  },
+  {
+   "name": "ig:darlenesinclair3643",
+   "display": "Darlene Sinclair"
+  },
+  {
+   "name": "ig:the_nonsters",
+   "display": "Debra Criscitello"
+  },
+  {
+   "name": "ig:d_grant234",
+   "display": "Derek Grant"
+  },
+  {
+   "name": "ig:dillynngrant16",
+   "display": "Dillynn Grant"
+  },
+  {
+   "name": "ig:nahhhhhhh.hhh",
+   "display": "Dimitri Damon"
+  },
+  {
+   "name": "ig:dgruneisen",
+   "display": "Don Gruneisen"
+  },
+  {
+   "name": "ig:doriejreiter",
+   "display": "Dorie Colbert Reiter"
+  },
+  {
+   "name": "ig:eileen_mackenzie",
+   "display": "Eileen Mackenzie"
+  },
+  {
+   "name": "ig:elizabeth.deschaine",
+   "display": "Elizabeth Deschaine"
+  },
+  {
+   "name": "ig:liz.zehr",
+   "display": "Elizabeth Kelly Zehr"
+  },
+  {
+   "name": "ig:elliecriscitello",
+   "display": "Ellie Criscitello"
+  },
+  {
+   "name": "ig:emiliealbertt",
+   "display": "Emilie Albert"
+  },
+  {
+   "name": "ig:hello3milyy",
+   "display": "Emily Bouchard"
+  },
+  {
+   "name": "ig:emily_g_ramer",
+   "display": "Emily Ramer"
+  },
+  {
+   "name": "ig:emilywangerin",
+   "display": "Emily Wangerin"
+  },
+  {
+   "name": "ig:emma_morse315",
+   "display": "Emma Morse"
+  },
+  {
+   "name": "ig:e._.flam",
+   "display": "Ethan Flamand"
+  },
+  {
+   "name": "ig:hamiltonezra",
+   "display": "Ezra Hamilton"
+  },
+  {
+   "name": "ig:gabeockrin",
+   "display": "Gabriel Ockrin"
+  },
+  {
+   "name": "ig:grace.serene",
+   "display": "Grace Serene"
+  },
+  {
+   "name": "ig:gracyn_elizabeth",
+   "display": "Gracyn Denny"
+  },
+  {
+   "name": "ig:spurgeonfiddle",
+   "display": "Haddon Brown"
+  },
+  {
+   "name": "ig:hannahkhughes_",
+   "display": "Hannah Hughes"
+  },
+  {
+   "name": "ig:hpuglia12",
+   "display": "Hannah Puglia"
+  },
+  {
+   "name": "ig:havenfern",
+   "display": "Haven Fern"
+  },
+  {
+   "name": "ig:demers_st.hilaire",
+   "display": "Haydn Demers-St.Hilaire"
+  },
+  {
+   "name": "ig:hjlevendusky",
+   "display": "Heidi Jo Levendusky"
+  },
+  {
+   "name": "ig:isacriscitello",
+   "display": "Isa Luciano Criscitello"
+  },
+  {
+   "name": "ig:instabellaphoebe",
+   "display": "Isabella Phoebe"
+  }
+ ],
+ "filed": [
+  {
+   "name": "ig:charlie_garrelts",
+   "display": "Charlie Garrelts",
+   "facts": [
+    {
+     "text": "Breeze Airways took over Essential Air Service at Ogdensburg International Airport under a new three-year U.S. Department of Transportation contract beginning Oct 2026, with daily service to Raleigh-Durham and flights to Dulles ended",
+     "source": "ClickNNY",
+     "url": "https://steve.clicknny.com/news/ogdensburg-airport-traffic-rises-as-breeze-expands-raleigh-connections-68vz",
+     "novelty": "new",
+     "published": "2026-11-02",
+     "fresh": true
+    }
+   ]
+  },
+  {
+   "name": "ig:coreyd123103",
+   "display": "Corey Delisa",
+   "facts": [
+    {
+     "text": "DoorBit also won the Shipley Center's Greatest Commercialization Potential special prize at the North Country Regional Business Plan Competition",
+     "source": "Clarkson University",
+     "url": "https://www.clarkson.edu/news-events/nine-north-country-student-teams-advance-semi-final-round-new-york-business-plan-competition",
+     "novelty": "expands",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:cameramancory",
+   "display": "Cory Williams",
+   "facts": [
+    {
+     "text": "The Orchestra of Northern New York thanked Railroad Productions, Molly and Cory Williams, for support and assistance with its Holiday Concert, broadcast on WPBS on Dec 19, 2020",
+     "source": "Orchestra of Northern New York",
+     "url": "https://onny.org/sites/default/files/2020_ONNY_Holiday_Concert_Program_web.pdf",
+     "novelty": "new",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:daniel__manor",
+   "display": "Daniel Manor",
+   "facts": [
+    {
+     "text": "Named to the St. Lawrence-Lewis BOCES Seaway Career and Technical Center second-quarter honor roll for 2020-2021 in Building Trades 1, listed as Daniel Manor III",
+     "source": "North Country This Week",
+     "url": "https://zeta.creativecirclecdn.com/ncn/files/20220513-143756-2021-02-20.pdf",
+     "novelty": "new",
+     "published": "2021-02-20",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:dpaladin",
+   "display": "Daniel Paladin",
+   "facts": [
+    {
+     "text": "Travelled to Ukraine with a Network of Related Pastors ministry team that held 33 meetings in eight days in the Kharkiv and Chernivtsi area, Aug 2024",
+     "source": "Network of Related Pastors",
+     "url": "https://www.nrpastors.com/post/the-fruit-of-the-gospel-in-ukraine",
+     "novelty": "new",
+     "published": "2024-08-30",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:e._.flam",
+   "display": "Ethan Flamand",
+   "facts": [
+    {
+     "text": "Named a Presidential Scholar at Clarkson University for the Spring 2026 semester, as a senior majoring in Engineering and Management from Ware",
+     "source": "The Republican",
+     "url": "https://reader.sr.repub.com/wp-content/uploads/sites/1136/2026/06/import/the_republican_2026_06_11-page_18_pdf-fee39340ff39060cd0f1fad54c00df49.pdf",
+     "novelty": "expands",
+     "published": "2026-06-11",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:grace.serene",
+   "display": "Grace Serene",
+   "facts": [
+    {
+     "text": "Released the solo EP 'Scarlet' in 2015, while a high school student in Avon",
+     "source": "Rochester City Magazine",
+     "url": "https://www.roccitymag.com/music/grace-serene-and-the-super-clean-is-off-to-a-quick-sonic-start-13305314/",
+     "novelty": "new",
+     "published": "2021-06-11",
+     "fresh": false
+    },
+    {
+     "text": "Submitted Grace Serene and the Super Clean's video for 'Slow Down' to the NPR Tiny Desk Contest, 2021",
+     "source": "Rochester City Magazine",
+     "url": "https://www.roccitymag.com/music/grace-serene-and-the-super-clean-is-off-to-a-quick-sonic-start-13305314/",
+     "novelty": "new",
+     "published": "2021-06-11",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:spurgeonfiddle",
+   "display": "Haddon Brown",
+   "facts": [
+    {
+     "text": "Started at the Chicago School of Violin Making in Fall 2017 and had completed two violins and a viola in the white by 2019, as a Violin Society of America scholarship recipient",
+     "source": "Violin Society of America",
+     "url": "https://vsa.memberclicks.net/previous-scholarship-recipients",
+     "novelty": "expands",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:havenfern",
+   "display": "Haven Fern",
+   "facts": [
+    {
+     "text": "Graduated from SUNY Potsdam with a 3.98 GPA, on the President's List every semester, as a 2021 Chancellor's Award for Student Excellence recipient",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/news/studentshonoredchancellorsawards",
+     "novelty": "expands",
+     "published": "",
+     "fresh": false
+    },
+    {
+     "text": "Student-taught at Gouverneur Elementary School and in the Ogdensburg City School District and accepted her first position teaching elementary general music and chorus, 2021",
+     "source": "SUNY Potsdam",
+     "url": "https://www.potsdam.edu/giving/donorimpact/soft-sweet-and-beautiful-legacy",
+     "novelty": "expands",
+     "published": "",
+     "fresh": false
+    }
+   ]
+  },
+  {
+   "name": "ig:demers_st.hilaire",
+   "display": "Haydn Demers-St.Hilaire",
+   "facts": [
+    {
+     "text": "Pitched Utica to an 8-2 win over Hamilton on Mar 30, 2017, allowing two runs on eight hits over six innings, with six strikeouts and no walks",
+     "source": "Hamilton College Athletics",
+     "url": "https://athletics.hamilton.edu/news/2017/3/30/3_30_2017_85.aspx",
+     "novelty": "new",
+     "published": "2017-03-30",
+     "fresh": false
+    }
+   ]
+  }
+ ],
+ "coverage": {
+  "checked_total": 725,
+  "of": 725,
+  "window_days": 30
+ },
+ "next_up": [
+  {
+   "name": "ig:isaiahreiter",
+   "display": "Isaiah Reiter"
+  },
+  {
+   "name": "ig:jackson.paladin",
+   "display": "Jackson Paladin"
+  },
+  {
+   "name": "ig:jake_seguin",
+   "display": "Jake Seguin"
+  },
+  {
+   "name": "ig:jalesturkishdelights",
+   "display": "Jale -"
+  },
+  {
+   "name": "ig:jamesphilipm",
+   "display": "James Meyers"
+  },
+  {
+   "name": "ig:jamiesinclair",
+   "display": "Jamie Sinclair"
+  },
+  {
+   "name": "ig:jartib",
+   "display": "Jared T"
+  },
+  {
+   "name": "ig:jazmynkyara",
+   "display": "Jazmyn Villnave"
+  },
+  {
+   "name": "ig:jazmine_albin",
+   "display": "Jazzy Dunn"
+  },
+  {
+   "name": "ig:jeevesgreen",
+   "display": "Jeeves Green"
   }
  ],
  "unchecked_remaining": 0,
  "freshness": {
-  "d7": 547,
-  "d30": 178,
+  "d7": 622,
+  "d30": 103,
   "d90": 0,
   "older": 0,
   "never": 0,
   "oldest": "2026-10-26"
  },
  "hot": [],
- "note": "PM run. Checked 75 people and filed 10 bullets across 7 people, each verified on its source page by the parent and read back in the Sheet exactly once. Fresh sweep: none found \u2014 a dedicated sweep of items published Oct 21 to Nov 11 across NCPR, North Country Now, NNY360, WWNY and ClickNNY, the four colleges' news and athletics, honors announcements and health-system news found nothing new for a directory member; in-window items were already filed (Walczyk re-election, Tebo assist, Evans and Goettl at Union, Johnston award) or known-role mentions only. Filed: Katie Bertrand's Fall 2017 Dean's List semester at SUNY Canton (the page lists her as Katelyn Bertrand of Canton, Nursing, the same name form as her Spring 2018 graduation record); Katelyn Matthews's Fall 2024 and Spring 2025 Dean's List semesters in SUNY Canton's BSN program, section-checked on both pages; Ellie Jent's Co-Presidency of the City of Plattsburgh's Climate Task Force and her 2026 Women of Distinction honor (Sun Community News, Mar 2026); Josh Parker's 2014 wood-pellet-fired evaporator, the first of its kind in New York State (New York State Senate); and, from the compounding lane, Megan Phillips's Jan 24, 2022 start as Deputy Director for Planning at the Adirondack Park Agency, coming from Vice President for Conservation at the Adirondack Council (Sun Community News), Hudson Brown's current viola playing and music teaching alongside his North Country Savings Bank job, and Eli Larson's Applied Physics and Mathematics minor and tied-highest male cumulative GPA at SUNY Canton. Most batch claims were already on file in the live Sheet and were discarded, not re-filed: Norah Pease's second 90-Miler, Michelle Johnston's Shaffer Award study, Joye Levendusky's second King season, Ria Amo's accreditation working group, Hannah Holt's Swarthmore award, Debbie Gordon's 2013 appeal outcome, Alana Hoover's M Step 2 advance, Emmanuel Atindama's June 2025 paper, Patrick Tombs's REV Crutchie and Snow Goose casting, Dale Fournier's Buck Award, and Hannah Braun's Colorado State PhD. Nicole Seward's Nov 4, 2026 ROOTS blog post was logged, not filed \u2014 it sits on her own practice's blog, the same call as Nov 6 and Nov 10. Jason Deschaine's Oasis Grower Solutions hire came up again; JD dismissed that claim on Oct 30 from the same source, so it did not return. Hudson Brown's bank page title now calls him Loan Originator while the article body still says Floating Relationship Banker; a page title alone was logged, not filed. 2 candidates added to Research Command (ledger 587): Tim Swyka, whose name appears on Clarkson University's 2009 electric snowmobile design paper but with nothing tying him to his Potsdam record, and a compounding-lane card for Megan Phillips (Cornell degrees and a Road Salt Task Force appointment, from the Governor's Office). The Brianna Hammond media-production award and the Cashlynn Colbert baby-registry leads matched cards already in the ledger and were not duplicated. 5 of JD's console 'file' decision points reconciled into the change log (Angeles Felix x3, Cecilie Smith, Ian Blunt \u2014 all decided Nov 11). Unharvested photo leads flagged by JD remain: Christine Sutter, Emily Criscitello, Joe Charlebois, Katelyn Tomford, Kayla Hettel, Max Ferran, Megan Converse, Joann Duclos."
+ "note": "AM run. Checked 75 people and filed 13 bullets across 10 people, each verified on its source page by the parent and read back in the Sheet exactly once. Fresh: Charlie Garrelts \u2014 Breeze Airways took over Essential Air Service at Ogdensburg International Airport under a new three-year contract beginning Oct 2026 (ClickNNY, published Nov 2, 2026). A dedicated fresh sweep otherwise found nothing new: items published Oct 22 to Nov 12 across NCPR, North Country Now, NNY360, WWNY and ClickNNY, the four colleges' news and athletics, honors announcements and health-system news named directory members only in already-filed items (Johnston, Walczyk, Evans and Goettl, Tebo) or known-role mentions. Also filed: Corey Delisa's DoorBit Greatest Commercialization Potential prize (filed without a year \u2014 his record says 2024, Clarkson University's own news dates that competition to 2023); Cory Williams's ONNY Holiday Concert production thanks (Dec 2020); Daniel Manor's Seaway Tech Building Trades honor roll (2020-2021, as Daniel Manor III); Daniel Paladin's Ukraine ministry trip with the Network of Related Pastors team (Aug 2024); Ethan Flamand's Spring 2026 Clarkson Presidential Scholar semester; Grace Serene's 2015 solo EP 'Scarlet' and her band's 2021 NPR Tiny Desk Contest submission; Haddon Brown's Chicago School of Violin Making start and first instruments; Haven Fern's 3.98 GPA and President's List record and her student-teaching and first teaching position (2021); and Haydn Demers-St.Hilaire's 2017 pitching win over Hamilton. Not filed: Chidiogor Ofodum's Clarkson blog items are her own first-person writing, so they were not filed as fact; Daniel Paladin's BOB 2025 panel listing rests on a Listen Notes aggregator page only; Gracyn Denny's Hogansburg provider listing rests on an NPI-mirror page for another provider. 8 candidates added to the Research Command ledger (identity holds for Emma Morse, Hannah Hughes, Emily Ramer, Colleen Hackett and Ethan Flamand; sensitive holds for Daniel Paladin and Grace Serene; a verification record for Hannah Puglia, whose Fall 2023 Roberts Wesleyan Dean's List item on file could not be found on the university's own list). 0 of JD's console filings were pending reconciliation. Photo leads flagged by JD, not yet harvested: Christine Sutter, Emily Criscitello, Joe Charlebois, Katelyn Tomford, Kayla Hettel, Max Ferran, Megan Converse, Joann Duclos."
 }
