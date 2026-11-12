@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-11",
+ "updated": "2026-11-12",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -15205,6 +15205,214 @@
     "universities": "Cornell University"
    },
    "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ig-emma-morse315-was-listed-as-a-co-author-on-the-pos",
+   "name": "ig:emma_morse315",
+   "display": "Emma Morse",
+   "run_date": "2026-11-12",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A poster in the NYC Women in Computing 2021 final program lists \u201cEmma Morse, Undergraduate, SUNY Potsdam\u201d as a co-author of \u201cGet Girls Coding: Why Early Adolescent Exposure to Computer Science MATTERS.\u201d",
+   "file_text": "Was listed as a co-author on the poster 'Get Girls Coding: Why Early Adolescent Exposure to Computer Science MATTERS' at NYC Women in Computing 2021",
+   "source": "NYC Women in Computing",
+   "url": "https://static1.squarespace.com/static/63fe0ef7f01c6b7845bfa071/t/641a1445bc4ca743c8e27082/1679430725817/NYCWiC+2021+Final+Program.pdf",
+   "anchors": [
+    "SUNY Potsdam (the school on her record)"
+   ],
+   "quote": "Emma Morse, Undergraduate, SUNY Potsdam",
+   "missing_gate": "The program names an Emma Morse at SUNY Potsdam, but nothing on it ties her to the Gouverneur or Christian Fellowship Academy facts already on file.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 15,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ig-hannahkhughes-named-to-the-st-lawrence-lewis-boces",
+   "name": "ig:hannahkhughes_",
+   "display": "Hannah Hughes",
+   "run_date": "2026-11-12",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "North Country This Week's February 20, 2021 BOCES story lists a Hannah Hughes among the Allied Health students on the Seaway Career and Technical Center second-quarter honor roll for 2020-2021.",
+   "file_text": "Named to the St. Lawrence-Lewis BOCES Seaway Career and Technical Center second-quarter honor roll for 2020-2021 in Allied Health",
+   "source": "North Country This Week",
+   "url": "https://zeta.creativecirclecdn.com/ncn/files/20220513-143756-2021-02-20.pdf",
+   "anchors": [
+    "St. Lawrence County (her home county on file)"
+   ],
+   "quote": "Allied Health: Hayleigh Armstrong, Jozalynn Campbell, Emma Clemo, Sophie Clothier, McKenna Currier, Alexus Cuthbert, Tsiakoseriio David, Jade Fields, Sydney Graham, Laura Guimond, Hannah Hughes, Layla Johnson",
+   "missing_gate": "The list names a Hannah Hughes in St. Lawrence County, but nothing on it ties her to the Potsdam High School or Youth Committee facts already on file.",
+   "confidence": 63,
+   "confidence_parts": {
+    "identity": 28,
+    "source": 22,
+    "detail": 13
+   },
+   "fields": {},
+   "published": "2021-02-20",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ig-emily-g-ramer-was-listed-among-degree-candidates-a",
+   "name": "ig:emily_g_ramer",
+   "display": "Emily Ramer",
+   "run_date": "2026-11-12",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The University of Memphis 100th Commencement program (December 11, 2022) lists an Emily Ramer in its roster of degree candidates. The program itself says the roster is a list of candidates, not an official list of graduates, and gives no degree, hometown, or employer next to the name.",
+   "file_text": "Was listed among degree candidates at the University of Memphis 100th Commencement, Dec 2022",
+   "source": "University of Memphis",
+   "url": "https://www.memphis.edu/commencement/pdfs/programs/2022dec.pdf",
+   "anchors": [
+    "University of Memphis (the school on her record)"
+   ],
+   "quote": "Olivia Wereszczak Lilian Dudaskova Hannah Kellogg Emily Ramer Kristina White Ricci Dyson Chyna King",
+   "missing_gate": "The program names an Emily Ramer with no degree, hometown, or employer next to it, so I cannot tell she is the Emily Ramer on file.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 16,
+    "detail": 6
+   },
+   "fields": {},
+   "published": "2022-12-11",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ig-colleenhackett-is-an-assistant-professor-of-crimino",
+   "name": "ig:colleenhackett",
+   "display": "Colleen Hackett",
+   "run_date": "2026-11-12",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "An ORCID record for a Colleen Hackett lists her as an Assistant Professor of Criminology and Criminal Justice from August 2023, after work as an Associate Professor of Sociology, Criminology, and Anthropology, with a PhD in Sociology from 2015. Her record here has no facts on file to match against.",
+   "file_text": "Is an Assistant Professor of Criminology and Criminal Justice",
+   "source": "ORCID",
+   "url": "https://orcid.org/0009-0004-8388-7299",
+   "anchors": [],
+   "quote": "Assistant Professor (Criminology and Criminal Justice)",
+   "missing_gate": "The page names a Colleen Hackett, but nothing on it ties her to Potsdam or the North Country, and her record has no facts to match against.",
+   "confidence": 17,
+   "confidence_parts": {
+    "identity": 2,
+    "source": 10,
+    "detail": 5
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ig-e-flam-spoke-at-the-good-trouble-lives-on-r",
+   "name": "ig:e._.flam",
+   "display": "Ethan Flamand",
+   "run_date": "2026-11-12",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Amherst Indy reported on July 18, 2025 that a student named Ethan Flamand spoke at the \u201cGood Trouble Lives On\u201d rally on Amherst Town Common on July 17, 2025, reading from \u201cA Declaration for the Restoration of the Republic,\u201d which he authored.",
+   "file_text": "Spoke at the 'Good Trouble Lives On' rally in Amherst, Massachusetts, on Jul 17, 2025, reading from 'A Declaration for the Restoration of the Republic,' which he authored",
+   "source": "Amherst Indy",
+   "url": "https://www.amherstindy.org/2025/07/18/youth-leaders-shine-as-good-trouble-lives-on-in-amherst/",
+   "anchors": [
+    "Western Massachusetts, near his Ware hometown on file"
+   ],
+   "quote": "Finally, local student Ethan Flamand shared a modern twist on the ending of the Declaration of Independence, joining Pierce-Bonifaz in reading 'A Declaration for the Restoration of the Republic' which he authored.",
+   "missing_gate": "The story names an Ethan Flamand near Ware, but it does not mention Clarkson or Ware itself, so I am not sure it is him.",
+   "confidence": 69,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 24,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "2025-07-18",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ig-dpaladin-is-a-father-of-eleven-children",
+   "name": "ig:dpaladin",
+   "display": "Daniel Paladin",
+   "run_date": "2026-11-12",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A Network of Related Pastors trip recap from August 2024 says Daniel Paladin is the father of eleven children.",
+   "file_text": "Is a father of eleven children",
+   "source": "Network of Related Pastors",
+   "url": "https://www.nrpastors.com/post/the-fruit-of-the-gospel-in-ukraine",
+   "anchors": [
+    "Daniel Paladin, named as a member of the trip team on the same page",
+    "Christian Fellowship Center in Potsdam, New York, named on the same page as a trip funder"
+   ],
+   "quote": "They always cheered when they found out he was the father of eleven children.",
+   "missing_gate": "This is about Daniel's family, so I always check with you first.",
+   "confidence": 74,
+   "confidence_parts": {
+    "identity": 46,
+    "source": 26,
+    "detail": 2
+   },
+   "fields": {},
+   "published": "2024-08-30",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ig-grace-serene-grew-up-touring-with-her-parents-der",
+   "name": "ig:grace.serene",
+   "display": "Grace Serene",
+   "run_date": "2026-11-12",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "In a Nashville Voyager interview, Grace Serene says she grew up on the road with her parents, Derek and Heidi Levendusky, who were Christian rock musicians.",
+   "file_text": "Grew up touring with her parents, Derek and Heidi Levendusky, who were Christian rock musicians",
+   "source": "Nashville Voyager",
+   "url": "https://nashvillevoyager.com/interview/check-out-grace-serenes-story/",
+   "anchors": [
+    "Derek Levendusky, her father on file",
+    "Grace Serene, her stage name on file"
+   ],
+   "quote": "Growing up, I was often on the road with my parents, Derek and Heidi Levendusky, who were Christian rock musicians.",
+   "missing_gate": "This is about Grace's family, so I always check with you first.",
+   "confidence": 90,
+   "confidence_parts": {
+    "identity": 48,
+    "source": 25,
+    "detail": 17
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ig-hpuglia12-named-to-roberts-wesleyan-university",
+   "name": "ig:hpuglia12",
+   "display": "Hannah Puglia",
+   "run_date": "2026-11-12",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "Her record says she was named to Roberts Wesleyan University's Dean's List for Fall 2023. The university's own Fall 2023 Dean's List page was opened and read in full this run, and her name does not appear on it.",
+   "file_text": "Named to Roberts Wesleyan University's Dean's List for Fall 2023",
+   "source": "Roberts Wesleyan University",
+   "url": "https://www.ROBERTS.EDU/news?id=7884",
+   "anchors": [
+    "Roberts Wesleyan University (the school in the claim on her record)"
+   ],
+   "quote": "Below is a list of students whose academic achievement warrants notation on the Dean's List for the Fall 2023 semester.",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2024-01-04",
    "novelty": "new"
   }
  ]
