@@ -209,6 +209,11 @@
   ],
   "resource": [
    {
+    "date": "2026-11-12",
+    "summary": "Gauge unreadable this run — subscription-status returned unavailable with no usage percentage or reset line; no pace verdict computed and no numbers substituted. Last good reading remains Nov 11 (45% used).",
+    "title": "Daily gauge check: gauge unreadable this run"
+   },
+   {
     "date": "2026-11-11",
     "summary": "Under pace — 45% used vs ~72% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 45% used"
@@ -232,11 +237,6 @@
     "date": "2026-11-08",
     "summary": "Under pace — 13% used vs ~29% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
     "title": "Daily gauge check: 13% used"
-   },
-   {
-    "date": "2026-11-07",
-    "summary": "Under pace — 7% used vs ~14% even pace (week resets Fri Nov 13, 2026, 7:38 AM EST).",
-    "title": "Daily gauge check: 7% used"
    }
   ],
   "ux": [
@@ -1626,7 +1626,7 @@
    "authority": "No director starts a large run without Resource clearance. Extensions come only from actual headroom.",
    "icon": "sparkle",
    "key": "resource",
-   "last_run": "Nov 11, 2026",
+   "last_run": "Nov 12, 2026",
    "mission": "Own the token budget: read the gauge against pace, authorize extra work from real headroom, call a halt when the day's tranche is spent.",
    "name": "Resource Manager",
    "next_run": "Daily, 8:00 AM ET",
@@ -1701,5 +1701,5 @@
   "execution": "Do-now runs the action’s patches through queuePatch / sbPostBatch (batch endpoint, by profile key), then the result is verified against the Sheet. Executed entries are marked done in the queue cell and folded into council.json by Luna’s next pass.",
   "mechanism": "Staged council actions are stored as a JSON queue in the Profiles column \"Council Staged\" (BH) on JD's row ig:jdmeyers_ (Sheet row 314). The app writes it through the Apps Script batch endpoint ADDRESSED BY KEY — never through the directory: JD has two directory entries (ig:jdmeyers_ and an sf:jdmeyers_ shell at row 673) and pkey() resolves both to 'sf:jdmeyers_', so a directory patch would land on the wrong row. The endpoint resolves patch fields against the Profiles header row by name (Location-on-file precedent, no endpoint code change). The board reads the queue from the baked profiles.json (sync pull range widened to BH; council_staged added to PROFILE_FIELDS); Luna's passes read the same cell via the Sheets API."
  },
- "updated": "2026-11-11"
+ "updated": "2026-11-12"
 }
