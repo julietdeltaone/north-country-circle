@@ -7164,7 +7164,7 @@ a.af-src-chip:hover{text-decoration:underline}
    ================================================================ */
 #top{padding:15px 24px;gap:12px;flex-wrap:nowrap}
 #top .ib{width:40px;height:40px}
-#top .gsearch{flex:1 1 auto;min-width:220px;max-width:560px;height:44px;border-radius:10px}
+#top .gsearch{flex:1 1 auto;min-width:220px;max-width:620px;height:44px;border-radius:10px}
 #top .gsearch input{height:42px;font-size:14.5px;padding:0 36px 0 26px}
 #top .gsearch .gsi{left:11px}
 #top .gsr{top:50px}
