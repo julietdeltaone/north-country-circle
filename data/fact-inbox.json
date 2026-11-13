@@ -5060,6 +5060,10 @@
    "name": "sf:owen-kennedy",
    "pattern": "milestone",
    "source": "Homes.com",
+   "state": {
+    "at": "2026-11-13T02:15:56.074Z",
+    "status": "read"
+   },
    "url": "https://www.homes.com/schenectady-ny/brown-school/s-mhwf6b3kmm2s9/p3/"
   },
   {
@@ -5090,6 +5094,10 @@
    "name": "sf:amber-erwin",
    "pattern": "correction",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-13T02:15:57.167Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2026/honors-s26.php"
   },
   {
@@ -5103,6 +5111,10 @@
    "name": "dr.angelesfelix",
    "pattern": "title_change",
    "source": "Go Be International",
+   "state": {
+    "at": "2026-11-13T02:15:59.056Z",
+    "status": "read"
+   },
    "url": "https://gobeinternational.org/"
   },
   {
@@ -5116,6 +5128,10 @@
    "name": "ig:katie_marie162",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-13T02:15:49.697Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2018/honorsf17.php"
   },
   {
@@ -5129,6 +5145,10 @@
    "name": "ig:katelynmatthews10",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-13T02:15:50.628Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2025/honorsf24.php"
   },
   {
@@ -5142,6 +5162,10 @@
    "name": "ig:ellie.jent",
    "pattern": "title_change",
    "source": "Sun Community News",
+   "state": {
+    "at": "2026-11-13T02:15:51.545Z",
+    "status": "read"
+   },
    "url": "https://suncommunitynews.com/news/124328/plattsburgh-greenup-returns-april-18/"
   },
   {
@@ -5155,6 +5179,10 @@
    "name": "ig:ellie.jent",
    "pattern": "milestone",
    "source": "Sun Community News",
+   "state": {
+    "at": "2026-11-13T02:15:51.545Z",
+    "status": "read"
+   },
    "url": "https://suncommunitynews.com/news/124417/assemblyman-cashman-hosts-first-women-of-distinction-ceremony/"
   },
   {
@@ -5168,6 +5196,10 @@
    "name": "ig:joshcparker_",
    "pattern": "milestone",
    "source": "New York State Senate",
+   "state": {
+    "at": "2026-11-13T02:15:53.631Z",
+    "status": "read"
+   },
    "url": "https://www.nysenate.gov/newsroom/press-releases/2014/patty-ritchie/ritchie-celebrates-maple-weekend-regions-newest-young"
   },
   {
@@ -5181,6 +5213,10 @@
    "name": "ig:megphill_",
    "pattern": "employer_change",
    "source": "Sun Community News",
+   "state": {
+    "at": "2026-11-13T02:15:54.530Z",
+    "status": "read"
+   },
    "url": "https://suncommunitynews.com/news/94882/barb-rice-selected-to-lead-apa/"
   },
   {
@@ -5194,6 +5230,10 @@
    "name": "sf:hudson-brown",
    "pattern": "milestone",
    "source": "North Country Savings Bank",
+   "state": {
+    "at": "2026-11-13T02:15:55.294Z",
+    "status": "read"
+   },
    "url": "https://www.northcountrysavings.bank/blog-article/hudson-brown-ncsb-floating-relationship-banker?page=1"
   },
   {
@@ -5207,6 +5247,10 @@
    "name": "ig:megphill_",
    "pattern": "new_credential",
    "source": "New York State Governor's Office",
+   "state": {
+    "at": "2026-11-13T02:15:54.530Z",
+    "status": "read"
+   },
    "url": "https://www.governor.ny.gov/news/governor-hochul-announces-appointments-adirondack-road-salt-reduction-task-force"
   },
   {
@@ -5220,6 +5264,10 @@
    "name": "ig:katelynmatthews10",
    "pattern": "milestone",
    "source": "SUNY Canton",
+   "state": {
+    "at": "2026-11-13T02:15:50.628Z",
+    "status": "read"
+   },
    "url": "https://www.canton.edu/news/2025/honors-sp25.php"
   }
  ],
