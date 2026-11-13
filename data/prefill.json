@@ -4,6 +4,54 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "brianna.hammond",
+   "display": "Brianna Hammond",
+   "field": "universities",
+   "value": "SUNY Canton",
+   "conf": 92,
+   "id": "pf-96412d3d0f"
+  },
+  {
+   "key": "jordynbrothers5",
+   "display": "Jordyn Brothers",
+   "field": "location_on_file",
+   "value": "Potsdam, NY",
+   "conf": 91,
+   "id": "pf-6bdf3e598c"
+  },
+  {
+   "key": "oliviamiller9334",
+   "display": "Olivia Miller",
+   "field": "specialty",
+   "value": "Teaching",
+   "conf": 90,
+   "id": "pf-6f3a9a1e97"
+  },
+  {
+   "key": "sarah.ellabb",
+   "display": "Sarah El-Labban",
+   "field": "universities",
+   "value": "SUNY Potsdam",
+   "conf": 92,
+   "id": "pf-e473181d4b"
+  },
+  {
+   "key": "ct:natalie southworth",
+   "display": "Natalie Southworth",
+   "field": "specialty",
+   "value": "Engineering",
+   "conf": 62,
+   "id": "pf-6d60653376"
+  },
+  {
+   "key": "sf:courtney letiecq",
+   "display": "Courtney Letiecq",
+   "field": "companies",
+   "value": "Army National Guard",
+   "conf": 74,
+   "id": "pf-9e0136a31b"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
@@ -36,10 +84,20 @@
  ],
  "suppressed": {
   "counts": {
-   "shelved": 2,
-   "tentative_floor": 8
+   "tentative_floor": 10,
+   "shelved": 2
   },
   "items": [
+   {
+    "id": "pf-a4c989c515",
+    "key": "cashhyyy",
+    "display": "Cashlynn Colbert",
+    "field": "location_on_file",
+    "value": "Fort Covington, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
    {
     "id": "pf-a44d074ab1",
     "key": "elizabethadaniels",
@@ -96,6 +154,16 @@
     "display": "Philip Wangerin",
     "field": "location_on_file",
     "value": "Canton, NY",
+    "rules": [
+     "tentative_floor"
+    ]
+   },
+   {
+    "id": "pf-5b6da55f7a",
+    "key": "ct:susan buckley",
+    "display": "Susan Buckley",
+    "field": "location_on_file",
+    "value": "Potsdam, NY",
     "rules": [
      "tentative_floor"
     ]
