@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.12.0';
+var APP_VERSION = '4.13.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8246,9 +8246,18 @@ function repaintForData(kind){
   }
   if(kind === 'fi'){ fiPaintNavBadge(); if(r === 'daily') render(); return; }
   if(kind === 'cal'){ if(r === 'calendar') render(); return; }
+  if(kind === 'ch'){
+    /* V4.13.0: the Newly found badge keys off the change log — when it
+       lands, repaint the surfaces that carry the badge. */
+    if(r === 'daily' || r === 'home'){ render(); return; }
+    if($('#p-hero') && !Object.keys(S.prof.edit || {}).some(function(k){ return S.prof.edit[k]; })) repaintTop();
+    else if(r === 'people' && $('#plist')) paintPeople();
+    return;
+  }
   if(kind === 'ph'){
     if(r === 'photos' || r === 'audit' || r === 'home') render();
     else if(r === 'groups'){ grpPaintCards(); grpPaintMembers(); }
+    else if(r === 'people' && $('#plist')) paintPeople();
     else if($('#p-hero')) repaintTop();
   } else if(r === 'daily' || r === 'home') render();
 }
@@ -8306,6 +8315,95 @@ function novBar(n){
   if(n === 'redundant') return '<span class="novbar nov-red" title="Near-duplicate: may already be filed — worth a look"></span>';
   return '';
 }
+/* ============================================================
+   Newly found badge (JD 2026-11-12, V4.13.0): anything Luna files
+   — a fact, a photo, seeded contact entries — wears a color-coded
+   "Newly found · <date>" pill for 3 days, keyed to the FOUND/FILED
+   date, never the fact's own event or published date: an old fact
+   discovered today earns it. Visible on the found day and the two
+   days after (America/New_York calendar days), then gone. This is
+   a freshness marker only — it is NOT the Today tab's published-
+   date logic and never touches a hero/published date.
+   Sources: changes.json `filed` dates (resolved to people by Sheet
+   key, handle, or display name — the log writes all three forms)
+   and photos.json `added` dates. Person-level granularity is the
+   honest one for profiles: footprint bullets carry no per-bullet
+   found dates, so profiles and directory rows badge the person;
+   individual change rows and photo entries badge at their own
+   filed/added date.
+   ============================================================ */
+var NF_DAYS = 3;
+var NF_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function nfTodayET(){
+  try{
+    var parts = new Intl.DateTimeFormat('en-US', { timeZone:'America/New_York', year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(new Date()), y = '', m = '', d = '';
+    parts.forEach(function(p){ if(p.type === 'year') y = p.value; else if(p.type === 'month') m = p.value; else if(p.type === 'day') d = p.value; });
+    if(y && m && d) return y + '-' + m + '-' + d;
+  }catch(e){}
+  var n = new Date();
+  return n.getFullYear() + '-' + ('0' + (n.getMonth() + 1)).slice(-2) + '-' + ('0' + n.getDate()).slice(-2);
+}
+function nfAgeDays(iso){
+  var p = String(iso || '').slice(0, 10).split('-'), t = nfTodayET().split('-');
+  if(p.length < 3 || !p[0]) return null;
+  var a = Date.UTC(+p[0], +p[1] - 1, +p[2]), b = Date.UTC(+t[0], +t[1] - 1, +t[2]);
+  if(isNaN(a) || isNaN(b)) return null;
+  return Math.round((b - a) / 864e5);
+}
+function nfInWindow(iso){ var age = nfAgeDays(iso); return age != null && age >= 0 && age < NF_DAYS; }
+function nfFmt(iso){
+  var p = String(iso || '').split('-');
+  if(p.length < 3) return String(iso || '');
+  return NF_MON[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10);
+}
+function nfBadgeHTML(iso, sm){
+  if(!nfInWindow(iso)) return '';
+  return '<span class="nf-badge' + (sm ? ' sm' : '') + '" title="Newly found — filed ' + esc(nfFmt(iso)) + ', ' + esc(String(iso).slice(0, 4)) + '">Newly found &middot; ' + esc(nfFmt(iso)) + '</span>';
+}
+/* Person resolution for filings: the change log references people
+   by Sheet key (ig:/ct:/sf:/fdb:), by handle, and by display name
+   in different eras of the file. Mirror every form BYN registers,
+   plus the pkey form, first-wins — the same tolerance the app
+   links names by. */
+var NF_MAPS = null, NF_CACHE = null;
+function nfMaps(){
+  if(NF_MAPS || typeof D === 'undefined' || !D || !D.directory) return NF_MAPS;
+  var byKey = {}, byName = {};
+  D.directory.forEach(function(e, di){
+    var k = pkey(e).toLowerCase(); if(!(k in byKey)) byKey[k] = di;
+    var n = String(e.name || '').toLowerCase(); if(n && !(n in byKey)) byKey[n] = di;
+    [dispName(e), e.display, (e.profile || {}).display_name].forEach(function(nm){
+      var s = String(nm || '').toLowerCase(); if(s && !(s in byName)) byName[s] = di;
+    });
+  });
+  NF_MAPS = { byKey: byKey, byName: byName };
+  return NF_MAPS;
+}
+function nfResolve(name, display){
+  var maps = nfMaps(); if(!maps) return null;
+  var di = null, s = String(name || '').toLowerCase();
+  if(s){ di = maps.byKey[s]; if(di == null) di = maps.byName[s]; }
+  if(di == null && display) di = maps.byName[String(display).toLowerCase()];
+  return di == null ? null : di;
+}
+function nfBuild(){
+  var phNow = (typeof PH !== 'undefined' ? PH : null);
+  if(NF_CACHE && NF_CACHE.ch === CH && NF_CACHE.ph === phNow) return NF_CACHE.map;
+  var map = {};
+  function put(di, iso){
+    if(di == null || !iso || !nfInWindow(iso)) return;
+    if(!map[di] || iso > map[di]) map[di] = iso;
+  }
+  if(CH && CH.entries) CH.entries.forEach(function(c){ if(c && c.filed) put(nfResolve(c.name, c.display), c.filed); });
+  if(phNow && phNow.people) phNow.people.forEach(function(p){ if(p && p.added && p.name) put(nfResolve(p.name), p.added); });
+  NF_CACHE = { ch: CH, ph: phNow, map: map };
+  return map;
+}
+function nfForDi(di){
+  if(di == null || typeof D === 'undefined' || !D || !D.directory || !D.directory[di]) return '';
+  return nfBuild()[di] || '';
+}
+function nfBadgeForDi(di, sm){ return nfBadgeHTML(nfForDi(di), sm); }
 function chgEntryRow(c, linkFn, fmtFn, cls, style){
   return '<div class="chg' + (cls ? ' ' + cls : '') + '" data-kind="' + textKind(c.what) + '"' + (style || '') + '><div class="chg-name">' + linkFn(c.name) + '</div>' +
     '<p class="chg-what">' + esc(c.what || '') + '</p>' +
