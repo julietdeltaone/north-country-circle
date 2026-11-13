@@ -214,6 +214,10 @@ html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .backbtn{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:0 10px 0 4px;color:var(--txt);font-weight:600;border-radius:12px}
 .hero{display:flex;gap:12px;align-items:center;padding:14px;border-radius:16px;background:linear-gradient(180deg,var(--glass2),var(--glass));-webkit-backdrop-filter:blur(22px) saturate(185%);backdrop-filter:blur(22px) saturate(185%);border:1px solid var(--line);box-shadow:var(--sh)}
 .hero h1{font:600 22px/1.15 var(--serif);letter-spacing:-.2px;overflow-wrap:anywhere}
+#pnf{display:block;margin-top:6px}
+#pnf:empty{display:none}
+.nf-badge{display:inline-flex;align-items:center;gap:5px;font:700 10.5px/1 var(--sans);letter-spacing:.05em;padding:3px 8px;border-radius:999px;white-space:nowrap;background:color-mix(in srgb,var(--warn) 15%,transparent);border:1px solid color-mix(in srgb,var(--warn) 55%,transparent);color:var(--warn)}
+.nf-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--warn);flex:none}
 .hero .hloc{color:var(--txt2);font-size:13.5px;margin-top:3px;display:flex;align-items:center;gap:5px}
 .hero .hsub{color:var(--mut);font-size:13.5px;margin-top:2px}
 .hero .hlc{color:var(--mut);font-size:12.5px;margin-top:5px}
@@ -348,7 +352,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.9.0';
+var MOBILE_VERSION = '1.10.0';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -519,6 +523,53 @@ function photoURLs(e){
   if(rec){ add(rec.photo_url); (rec.also || []).forEach(function(a){ add(typeof a === 'string' ? a : (a && a.url) || (a && a.photo_url)); }); }
   var hid = {}; parseArr(gv(e, 'photo_hidden')).forEach(function(u){ hid[String(u)] = 1; });
   return out.filter(function(u){ return !hid[u]; });
+}
+/* Newly found badge (V1.10.0, JD 2026-11-12): the desktop V4.13.0
+   rule, ported — anything Luna files wears the pill for 3 days from
+   the filed/added date (America/New_York calendar days), keyed to
+   when it was FOUND, never the fact's own event/published date.
+   Sources: data/changes.json (fetched here for this) + the photos
+   sidecar's added dates, resolved against this person's Sheet key,
+   handle, and display name. */
+var CHANGES = null;
+function loadChanges(){
+  if(CHANGES) return Promise.resolve();
+  return fetch('data/changes.json', { cache:'no-cache' }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ CHANGES = j || { entries:[] }; }).catch(function(){ CHANGES = { entries:[] }; });
+}
+var NF_MON_M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function nfTodayET(){
+  try{
+    var parts = new Intl.DateTimeFormat('en-US', { timeZone:'America/New_York', year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(new Date()), y = '', m = '', d = '';
+    parts.forEach(function(p){ if(p.type === 'year') y = p.value; else if(p.type === 'month') m = p.value; else if(p.type === 'day') d = p.value; });
+    if(y && m && d) return y + '-' + m + '-' + d;
+  }catch(e){}
+  var n = new Date();
+  return n.getFullYear() + '-' + ('0' + (n.getMonth() + 1)).slice(-2) + '-' + ('0' + n.getDate()).slice(-2);
+}
+function nfAgeDaysM(iso){
+  var p = String(iso || '').slice(0, 10).split('-'), t = nfTodayET().split('-');
+  if(p.length < 3 || !p[0]) return null;
+  var a = Date.UTC(+p[0], +p[1] - 1, +p[2]), b = Date.UTC(+t[0], +t[1] - 1, +t[2]);
+  if(isNaN(a) || isNaN(b)) return null;
+  return Math.round((b - a) / 864e5);
+}
+function nfInWindowM(iso){ var a = nfAgeDaysM(iso); return a != null && a >= 0 && a < 3; }
+function nfLatestFor(e){
+  var best = '', key = pkey(e).toLowerCase(), nm = String(e.name || '').toLowerCase(), dn = dispName(e).toLowerCase();
+  if(CHANGES && CHANGES.entries) CHANGES.entries.forEach(function(c){
+    if(!c || !c.filed || !nfInWindowM(c.filed)) return;
+    var cn = String(c.name || '').toLowerCase(), cd = String(c.display || '').toLowerCase();
+    if(cn === key || cn === nm || cn === dn || (cd && cd === dn)){ if(c.filed > best) best = c.filed; }
+  });
+  var rec = PHOTO_BY_NAME[dn];
+  if(rec && rec.added && nfInWindowM(rec.added) && rec.added > best) best = rec.added;
+  return best;
+}
+function nfPaintHero(di){
+  var slot = document.getElementById('pnf'); if(!slot) return;
+  var e = D.directory[di]; if(!e) return;
+  var iso = nfLatestFor(e), p = String(iso || '').split('-');
+  slot.innerHTML = iso ? '<span class="nf-badge">Newly found &middot; ' + NF_MON_M[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + '</span>' : '';
 }
 
 /* ---------- outbox — mirrored from contacts-pro.js ---------- */
@@ -1591,7 +1642,7 @@ function viewPerson(v, di){
   var heroPhoto = photos.length ? '<span class="av av-lg"><img src="' + esc(photos[0]) + '" alt=""></span>' : avatarHTML(e, 'av-lg');
   v.innerHTML =
     '<div class="backrow"><button type="button" class="backbtn" id="pback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Contacts</button></div>' +
-    '<div class="hero">' + heroPhoto + '<div><h1>' + esc(name) + '</h1>' +
+    '<div class="hero">' + heroPhoto + '<div><h1>' + esc(name) + '</h1>' + '<span id="pnf"></span>' +
     (loc ? '<p class="hloc"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>' + esc(loc) + '</p>' : '') +
     '<p class="hsub">' + esc(sub || 'Not yet classified') + '</p>' +
     (lc ? '<p class="hlc">Last contact <b>' + esc(fmtDate(lc)) + '</b>' + (lcOnline(e) ? ' · online' : '') + '</p>' : '<p class="hlc">No contact logged yet</p>') +
@@ -1623,6 +1674,9 @@ function viewPerson(v, di){
     '<div id="secs"></div>' +
     '<div class="footver">CONTACTS PRO MOBILE · V' + MOBILE_VERSION + '</div>';
   $('#pback').addEventListener('click', function(){ if(history.length > 1) history.back(); else location.hash = '#/contacts'; });
+  /* Newly found badge: paint once the change log / photos land. */
+  loadChanges().then(function(){ if(S.route === 'person' && S.di === di) nfPaintHero(di); });
+  loadPhotos().then(function(){ if(S.route === 'person' && S.di === di) nfPaintHero(di); });
   /* the Lima Charlie note is the only collapsible form left — the log form
      above it is always open, so the page's main action never moves */
   $$('#view [data-qa]').forEach(function(b){
