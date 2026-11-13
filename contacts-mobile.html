@@ -197,6 +197,14 @@ html[data-mode="dark"] #deck{box-shadow:0 14px 24px -18px rgba(0,0,0,.75)}
 .qactions [data-qremove]{color:var(--bad)}
 @media (max-width:370px){.qactions{padding-left:8px}.home-door{font-size:16.5px;letter-spacing:.1em}}
 .seg2{display:flex;gap:4px;padding:3px;border-radius:12px;background:var(--fill);border:1px solid var(--line)}
+.enrichrow{display:flex;align-items:center;gap:11px;margin-top:12px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--fill)}
+.enrichrow .switch{flex:none;width:46px;height:28px;border-radius:999px;border:1px solid var(--line);background:var(--card);position:relative;cursor:pointer;padding:0}
+.enrichrow .knob{position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:var(--mut);transition:left .15s ease,background .15s ease}
+.enrichrow .switch.on{background:var(--acc);border-color:var(--acc)}
+.enrichrow .switch.on .knob{left:20px;background:#fff}
+.enrichrow .enrich-tx{display:flex;flex-direction:column;gap:1px;min-width:0}
+.enrichrow .enrich-tx b{font-size:14px}
+.enrichrow .enrich-tx small{color:var(--mut);font-size:12px;line-height:1.35}
 .seg2 button{flex:1;min-height:40px;border-radius:9px;color:var(--mut);font-weight:700;font-size:14px}
 .seg2 button.on{background:var(--acc);color:#fff}
 .scopeline{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut);font-weight:600}
@@ -340,7 +348,7 @@ button.chip:active{border-color:var(--acc)}
    Because both pages share an origin, the outbox, the local-wins overlay
    ('ncc_local_wins') and the edit key are literally the same stores the
    main app uses — a save made here is indistinguishable from one made there. */
-var MOBILE_VERSION = '1.8.0';
+var MOBILE_VERSION = '1.9.0';
 var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4imtNLN845jFDBnXIbtmT3sPGExsMlKFMQwt42FmrUdFBD/exec';
 var OUT_KEY = 'ncc_outbox_v2';
 var WINS_KEY = 'ncc_local_wins';
@@ -1601,8 +1609,9 @@ function viewPerson(v, di){
         '<button type="button" data-v="proximity">Proximity</button></div>' +
       '<label class="lab" for="lg-sum" id="lg-slab">Title</label><input type="text" id="lg-sum" placeholder="e.g. Coffee at Park Bros" autocomplete="off">' +
       '<label class="lab" for="lg-det" id="lg-dlab">Description (optional)</label><textarea id="lg-det" placeholder="What happened, what was left open…" rows="3"></textarea>' +
+      '<div class="enrichrow" id="lg-enrichrow"><button type="button" class="switch on" id="lg-enrich" role="switch" aria-checked="true" aria-label="Have Luna enrich this entry"><span class="knob"></span></button><span class="enrich-tx"><b>Have Luna enrich this</b><small id="lg-enrich-hint">Luna enriches this on her next pass and files the log entry then.</small></span></div>' +
       '<p class="hsub" id="lg-pnote" style="display:none">Proximity is co-presence, not contact — Last Contact won’t move.</p>' +
-      '<button type="button" class="btn primary big" id="lg-save">Log it</button>' +
+      '<button type="button" class="btn primary big" id="lg-save">Queue for Luna</button>' +
       '<p class="savestat" id="lg-stat"></p></div>' +
     '<div class="glasscard"><div class="qa-grid">' +
     '<div class="qa-item"><button type="button" class="qa-btn" data-qa="lc" aria-expanded="false"><span>Lima Charlie note<small>A note for Luna to apply on the next run</small></span>' + CHEV + '</button>' +
@@ -1647,7 +1656,24 @@ function viewPerson(v, di){
     toast(val.trim() ? 'Lima Charlie note saved.' : 'Lima Charlie note cleared.');
   });
   /* log kind seg wiring — Proximity hides the description (date + place
-     only) and relabels the form; Location/Online keep the contact shape */
+     only) and relabels the form; Location/Online keep the contact shape.
+     The enrich switch (V1.9.0, JD 2026-11-12) is the Quick Add default
+     from desktop: ON queues the typed lines as a Lima Charlie note for
+     Luna to enrich on her next pass; OFF files them verbatim via
+     saveLog. Proximity has nothing to enrich and always files. */
+  var lgEnrich = true;
+  function lgSaveLabel(){
+    var mb = $('#lg-mode .on'), mode = mb ? mb.getAttribute('data-v') : 'person';
+    $('#lg-save').textContent = mode === 'proximity' ? 'Log proximity' : (lgEnrich ? 'Queue for Luna' : 'Log it');
+    var er = $('#lg-enrichrow'); if(er) er.style.display = mode === 'proximity' ? 'none' : '';
+  }
+  $('#lg-enrich').addEventListener('click', function(){
+    lgEnrich = !lgEnrich;
+    this.classList.toggle('on', lgEnrich);
+    this.setAttribute('aria-checked', lgEnrich ? 'true' : 'false');
+    $('#lg-enrich-hint').textContent = lgEnrich ? 'Luna enriches this on her next pass and files the log entry then.' : 'Files exactly what you typed, right now.';
+    lgSaveLabel();
+  });
   $$('#lg-mode button').forEach(function(b){
     b.addEventListener('click', function(){
       $$('#lg-mode button').forEach(function(x){ x.classList.toggle('on', x === b); });
@@ -1659,7 +1685,7 @@ function viewPerson(v, di){
       $('#lg-pnote').style.display = prox ? '' : 'none';
       $('#lg-slab').textContent = prox ? 'Where / context' : 'Title';
       $('#lg-sum').placeholder = prox ? 'e.g. Lewis School, Clarkson Hall' : 'e.g. Coffee at Park Bros';
-      $('#lg-save').textContent = prox ? 'Log proximity' : 'Log it';
+      lgSaveLabel();
     });
   });
   $('#lg-save').addEventListener('click', function(){
@@ -1683,6 +1709,20 @@ function viewPerson(v, di){
           if(hAnchor){ var hp = document.createElement('p'); hp.className = 'hlc'; hp.id = 'hlp'; hp.innerHTML = hlpHTML; hAnchor.after(hp); }
         }
       }
+      paintSections(di);
+      return;
+    }
+    if(lgEnrich){
+      /* queue for Luna instead of filing verbatim: append the typed
+         lines to the Lima Charlie note (never overwriting a pending
+         note); her next run enriches and files the entry. */
+      var det = $('#lg-det').value.trim();
+      var line = 'Log contact (' + todayStr() + ', ' + (mode === 'online' ? 'online' : 'in person') + '): ' + sum + (det ? ' — ' + det : '');
+      var cur = lcNote(e).trim();
+      queuePatch(di, { lima_charlie_notes: cur ? cur + '\n' + line : line });
+      $('#lg-sum').value = ''; $('#lg-det').value = '';
+      arm('#lg-stat', pid, ['lima_charlie_notes']);
+      toast('Queued for Luna to enrich.');
       paintSections(di);
       return;
     }
