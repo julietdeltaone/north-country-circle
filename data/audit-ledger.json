@@ -13565,28 +13565,40 @@
   },
   "sf:steve-evans": {
    "tier": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-05T17:42:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-13T02:33:00Z",
+     "how": "filled"
+    }
    },
    "loc": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-05T17:42:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-13T02:33:00Z",
+     "how": "dismissed"
+    }
    },
    "phone": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-05T17:42:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-13T02:33:00Z",
+     "how": "dismissed"
+    }
    },
    "skills": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-05T17:42:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-13T02:33:00Z",
+     "how": "filled"
+    }
    }
   },
   "ig:212loni": {
@@ -37731,10 +37743,13 @@
     }
    },
    "phone": {
-    "state": "open",
-    "class": "new",
+    "state": "satisfied",
     "first_seen": "2026-11-09T16:39:00Z",
-    "source": "New profile"
+    "last_class": "new",
+    "satisfied": {
+     "at": "2026-11-13T02:33:00Z",
+     "how": "dismissed"
+    }
    },
    "skills": {
     "state": "satisfied",
@@ -37749,14 +37764,14 @@
  },
  "lanes": {
   "tier": {
-   "open": 2,
-   "new": 1,
+   "open": 1,
+   "new": 0,
    "regressed": 1,
    "cleared_at": null
   },
   "loc": {
-   "open": 1,
-   "new": 1,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T15:18:00Z"
   },
@@ -37779,8 +37794,8 @@
    "cleared_at": null
   },
   "phone": {
-   "open": 2,
-   "new": 2,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -37791,8 +37806,8 @@
    "cleared_at": "2026-11-05T02:52:00Z"
   },
   "skills": {
-   "open": 1,
-   "new": 1,
+   "open": 0,
+   "new": 0,
    "regressed": 0,
    "cleared_at": "2026-11-03T16:50:00Z"
   },
@@ -41422,5 +41437,5 @@
    "source": "Photo filed"
   }
  },
- "updated": "2026-11-13T02:22:00Z"
+ "updated": "2026-11-13T02:33:00Z"
 }
