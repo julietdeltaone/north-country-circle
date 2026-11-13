@@ -4,6 +4,14 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "sf:sian-miller",
+   "display": "Sian Miller",
+   "field": "first_contact",
+   "value": "2026-11-12",
+   "conf": 93,
+   "id": "pf-09b857f222"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
@@ -36,20 +44,10 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 10,
-   "shelved": 2
+   "shelved": 2,
+   "tentative_floor": 9
   },
   "items": [
-   {
-    "id": "pf-a4c989c515",
-    "key": "cashhyyy",
-    "display": "Cashlynn Colbert",
-    "field": "location_on_file",
-    "value": "Fort Covington, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
    {
     "id": "pf-a44d074ab1",
     "key": "elizabethadaniels",
