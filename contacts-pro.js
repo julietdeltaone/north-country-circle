@@ -3090,7 +3090,7 @@ function pvQuickKeep(e){
   return true;
 }
 function viewPeople(v){
-  ptEditClose(); msgLoad();
+  ptEditClose(); msgLoad(); chLoad();
   var f = S.ppl, groups = Object.keys(allGroups()).sort();
   function chips(key, opts, cur){
     return '<div class="chips" role="group">' + opts.map(function(o){
@@ -3281,15 +3281,17 @@ function ptFirstOrg(e, kind){
    location: when set it wins over the derived city/hometown everywhere. */
 function ptLocVal(e){ return gv(e, 'location_on_file') || gv(e, 'city') || gv(e, 'hometown') || ''; }
 var PTCELL = {
-  name: function(e){
+  name: function(e, di){
     /* JD 2026-10-28: names only — the relationship/handle sub-line
        moved to its own Relationship column, so rows are one line
        and thin. V4.1: the avatar ring carries the Two Inks — gold
        (Connection) for vetted/associate closeness, blue (About)
-       otherwise, per the preview. */
+       otherwise, per the preview. V4.13.0: a compact Newly found
+       pill rides after the name while the person is in the 3-day
+       found window (nfBadgeForDi — keyed to filed/added dates). */
     var av = avatar(e, 'sm'), t = tierOf(e);
     if(t === 'vetted' || t === 'partner' || t === 'associate') av = av.replace('class="av ', 'class="av ring-conn ');
-    return '<div class="cname-in">' + av + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + '</span></div>';
+    return '<div class="cname-in">' + av + '<span class="pn"><b>' + esc(dispName(e)) + '</b>' + milBadge(e) + nfDotForDi(di) + '</span></div>';
   },
   work: function(e){ var o = ptFirstOrg(e, 'work'); return o.length ? '<span class="clip" title="' + esc(o.join(', ')) + '">' + esc(o[0]) + (o.length > 1 ? ' <span class="pdim">+' + (o.length - 1) + '</span>' : '') + '</span>' : '<span class="pdim">—</span>'; },
   school: function(e){ var o = ptFirstOrg(e, 'school'); return o.length ? '<span class="clip" title="' + esc(o.join(', ')) + '">' + esc(o[0]) + (o.length > 1 ? ' <span class="pdim">+' + (o.length - 1) + '</span>' : '') + '</span>' : '<span class="pdim">—</span>'; },
@@ -3955,6 +3957,7 @@ function viewProfile(v){
   if(di == null || !D.directory[di] || !liveEntry(D.directory[di])){
     v.innerHTML = '<div class="page">' + emptyState('That profile is not here.', 'It may have been merged or removed.') + '<p class="center"><a class="btn" href="#/people">Back to People</a></p></div>'; return;
   }
+  chLoad();
   if(S.prof.di !== di) S.prof = { di:di, edit:{}, open:{}, evEdit:null, degEdit:null, skOpen:null, more:false };
   var e = D.directory[di];
   /* The crumb names where Back actually lands (V3.38.0): the previous
@@ -4204,10 +4207,12 @@ function heroHTML(di){
     (stampsOn && lcLabel(e) ? mi(lcOnline(e) ? 'Last Online' : 'Last contact', lcLabel(e), 'connection') : '') +
     (lp0 ? mi('Last proximity', ykLabelOf(lp0.date) + (lp0.venue ? ' · ' + lp0.venue : ''), 'connection') : '');
   var ph = phHeroHTML(e);
+  var nfb = nfBadgeForDi(di);
   var hotE = hotForDi(di);
   var sc = scoreFor(di), pres = profileSections(di);
   return '<div class="ih-id">' + (ph ? '' : avatar(e, 'xl')) +
     '<div class="ih-main"><h1 class="display" data-act="secedit" data-sec="identity" title="Tap to edit the name">' + esc(dispName(e)) + milBadge(e) + '<span class="hcue">' + ic('edit', 15) + '</span></h1>' +
+    (nfb ? '<div class="ih-nf">' + nfb + '</div>' : '') +
     (meta ? '<div class="ih-meta">' + meta + '</div>' : '') +
     ((ds || cs) ? '<div class="hrow">' + ds + cs + '</div>' : '') +
     (hotE ? '<div class="ih-hot"><span class="hot-dot"></span>Fresh &middot; published ' + esc(hmFmtD(hotE.published)) + '</div>' : '') + '</div></div>' +
@@ -6701,7 +6706,7 @@ function hmCoverageCard(dd, pd){
    Live Records filed rows open the filed person's profile. --- */
 function hmaRow(c, act){
   var di = hmDiOf(c.name);
-  var inner = '<div class="chg-name"><b>' + esc(c.name) + '</b></div>' +
+  var inner = '<div class="chg-name"><b>' + esc(c.name) + '</b>' + nfBadgeHTML(c.filed, 1) + '</div>' +
     '<p class="chg-what">' + esc(c.what || '') + '</p>' +
     '<div class="chg-src">' + (c.url ? '<a data-act="extlink" href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
     (c.source_date ? ' \u00b7 source ' + esc(hmFmtD(c.source_date)) : '') +
@@ -6719,7 +6724,7 @@ function hmaGroupRow(g, act){
     '<span class="chg-cnt">' + g.items.length + '</span>' +
     '<span class="chg-grp-main"><span class="chg-grp-what">' + esc(c.what || '') + '</span>' +
     '<span class="chg-src">' + esc(c.source || '') + (uniform && sd ? ' \u00b7 source ' + esc(hmFmtD(sd)) : '') +
-    (c.filed ? '<span class="chg-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' : '') + '</span></span>' +
+    (c.filed ? '<span class="chg-filed">Filed ' + esc(hmFmtD(c.filed)) + '</span>' : '') + nfBadgeHTML(c.filed, 1) + '</span></span>' +
     '<span class="chg-chev">' + ic('chev', 14) + '</span></button>' +
     '<div class="chg-members"><div class="chg-members-in">' + members + '</div></div></div>';
 }
@@ -6858,7 +6863,7 @@ function wnRow(it){
   var di = hmDiOf(it.display);
   var wnK = textKind(it.text);
   var inner = kindGlyph(wnK) + '<span class="wn-chip wn-' + esc(it.kind || 'filed') + '">' + esc(WN_KINDS[it.kind] || 'Filed') + '</span>' +
-    '<span class="wn-main"><span class="wn-nm">' + esc(it.display || '') + '</span>' +
+    '<span class="wn-main"><span class="wn-nm">' + esc(it.display || '') + '</span>' + nfBadgeHTML(it.date, 1) +
     '<span class="wn-tx">' + esc(wnFullText(it, di)) + '</span>' +
     '<span class="wn-meta">' + (it.url ? '<a data-act="extlink" href="' + esc(it.url) + '" target="_blank" rel="noopener">' + esc(it.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(it.source || '')) + '</span></span>';
   if(di == null) return '<div class="wn-row" data-kind="' + wnK + '">' + inner + '</div>';
@@ -8404,8 +8409,16 @@ function nfForDi(di){
   return nfBuild()[di] || '';
 }
 function nfBadgeForDi(di, sm){ return nfBadgeHTML(nfForDi(di), sm); }
+/* Directory rows get the dot form: the name column is ~225px and
+   the full pill wrapped under the name, growing badged rows ~4px.
+   The dot keeps row height untouched; the found date rides the
+   tooltip, and the full pill lives on the profile. */
+function nfDotForDi(di){
+  var iso = nfForDi(di);
+  return nfInWindow(iso) ? '<span class="nf-dot" title="Newly found &middot; ' + esc(nfFmt(iso)) + '"></span>' : '';
+}
 function chgEntryRow(c, linkFn, fmtFn, cls, style){
-  return '<div class="chg' + (cls ? ' ' + cls : '') + '" data-kind="' + textKind(c.what) + '"' + (style || '') + '><div class="chg-name">' + linkFn(c.name) + '</div>' +
+  return '<div class="chg' + (cls ? ' ' + cls : '') + '" data-kind="' + textKind(c.what) + '"' + (style || '') + '><div class="chg-name">' + linkFn(c.name) + nfBadgeHTML(c.filed, 1) + '</div>' +
     '<p class="chg-what">' + esc(c.what || '') + '</p>' +
     '<div class="chg-src">' + (c.url ? '<a href="' + esc(c.url) + '" target="_blank" rel="noopener">' + esc(c.source || 'source') + ' ' + ic('ext', 10) + '</a>' : esc(c.source || '')) +
     (c.source_date ? ' &middot; source ' + esc(fmtFn(c.source_date)) : '') +
@@ -8420,7 +8433,7 @@ function chgGroupRow(g, linkFn, fmtFn, cls, style){
     '<span class="chg-cnt">' + g.items.length + '</span>' +
     '<span class="chg-grp-main"><span class="chg-grp-what">' + esc(c.what || '') + '</span>' +
     '<span class="chg-src">' + esc(c.source || '') + (uniform && sd ? ' &middot; source ' + esc(fmtFn(sd)) : '') +
-    (c.filed ? '<span class="chg-filed">Filed ' + esc(fmtFn(c.filed)) + '</span>' : '') + '</span></span>' +
+    (c.filed ? '<span class="chg-filed">Filed ' + esc(fmtFn(c.filed)) + '</span>' : '') + nfBadgeHTML(c.filed, 1) + '</span></span>' +
     '<span class="chg-chev">' + ic('chev', 14) + '</span></button>' +
     '<div class="chg-members"><div class="chg-members-in">' + members + '</div></div></div>';
 }
@@ -11955,6 +11968,7 @@ function phHeroHTML(e){
      the photo opens the inspector, and the framing editor lives
      inside it. */
   return '<div class="hphoto" data-pname="' + esc(p.name) + '"><span class="hphoto-box" data-act="phinsp" data-pname="' + esc(p.name) + '" role="button" tabindex="0" title="Open the photo inspector"><img src="' + esc(photos[cur].url) + '" alt="' + esc(p.name) + '" referrerpolicy="no-referrer" style="' + phFrameStyleFor(p, photos[cur].url) + '" onerror="phImgErr(this)"></span>' +
+    (nfInWindow(p.added) ? '<span class="hphoto-nf">' + nfBadgeHTML(p.added, 1) + '</span>' : '') +
     nav + '</div>' + verdict;
 }
 /* Framing editor core. Two mounts: the standalone overlay (Photo
@@ -12406,7 +12420,7 @@ function phCard(p){
      is a caption scrim on the photo, not a separate bar under it. */
   if(phHasPhoto(p)){
     return '<section class="card phcard' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg"><img src="' + esc(phFrameFor(p.name, p).url || p.photo_url) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer" style="' + phFrameStyle(p) + '" onerror="phImgErr(this)"><span class="phthirds"></span></span>' +
-      '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + '</div></section>';
+      '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + nfBadgeHTML(p.added, 1) + '</div></section>';
   }
   return '<section class="card phcard noph' + (sel ? ' sel' : '') + '" data-act="phsel" data-pname="' + esc(p.name) + '" title="' + esc(p.name) + '"><span class="phimg phnoimg">' + ic('camera', 22) + '<em>NO PHOTO</em></span>' +
     '<div class="phnm"><b>' + esc(p.name) + '</b>' + milBadgeName(p.name) + '</div></section>';
