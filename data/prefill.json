@@ -36,7 +36,7 @@
  ],
  "suppressed": {
   "counts": {
-   "tentative_floor": 12,
+   "tentative_floor": 11,
    "shelved": 2
   },
   "items": [
@@ -126,16 +126,6 @@
     "display": "Philip Wangerin",
     "field": "location_on_file",
     "value": "Canton, NY",
-    "rules": [
-     "tentative_floor"
-    ]
-   },
-   {
-    "id": "pf-5b6da55f7a",
-    "key": "ct:susan buckley",
-    "display": "Susan Buckley",
-    "field": "location_on_file",
-    "value": "Potsdam, NY",
     "rules": [
      "tentative_floor"
     ]
