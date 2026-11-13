@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.11.0';
+var APP_VERSION = '4.12.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -9409,7 +9409,9 @@ document.addEventListener('click', function(ev){
    display-only calendar fixtures — was removed in V4 Phase 4;
    the Seen in person card stands where it stood.)
    ============================================================ */
-var CTL = { ym:null, day:null, fk:{ contact:true, online:true, proximity:true }, qdi:null };
+/* V4.12.0 (JD 2026-11-12): the Calendar opens on Contacts + Online.
+   Proximity is one tap away in the filter bar, never the default. */
+var CTL = { ym:null, day:null, fk:{ contact:true, online:true, proximity:false }, qdi:null };
 var CTLED = null;   /* editor sheet state: {di, i (null = new), kind} */
 var CTL_IDX = null;
 function ctlKindOf(ev){
@@ -16072,7 +16074,7 @@ function onKey(ev){
    outbox already creates rows for unknown ids (the Sandbox
    create's sf: key convention and field set).
    ============================================================ */
-var QA = { open:false, mode:'log', di:null, online:false, prox:false, hi:0, rows:[], prevFocus:null, watchT:null, npWarn:null, pxDi:null, pxHi:0, pxRows:[] };
+var QA = { open:false, mode:'log', di:null, online:false, prox:false, enrich:true, hi:0, rows:[], prevFocus:null, watchT:null, npWarn:null, pxDi:null, pxHi:0, pxRows:[] };
 var QA_QUEUE_KEY = 'ncc_contact_queue_v1';
 var QA_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function qaDateLabel(iso){
@@ -16125,6 +16127,26 @@ function qaSaveLog(di, sum, det, on){
   qaQueueRemove(di); /* a logged person leaves Up Next, whichever app logged them */
   return true;
 }
+/* --- enrich save (V4.12.0, JD 2026-11-12): the Quick Add default.
+   Instead of filing the typed lines verbatim as a Timeline event, the
+   text is appended to the person's Lima Charlie note; Luna's next
+   Lima Charlie run enriches it into the real log entry and clears the
+   note. The thread sentence JD typed stays verbatim inside the note —
+   the conversion rule preserves it as the event's summary. No Timeline
+   event is written here and Last Contact does not move until the run
+   files the enriched entry. An existing pending note is never
+   overwritten: the new text appends below it. --- */
+function qaSaveLC(di, sum, det, on){
+  var e = D.directory[di]; if(!e) return false;
+  sum = String(sum || '').trim(); if(!sum) return false;
+  det = String(det || '').trim();
+  var line = 'Log contact (' + todayStr() + ', ' + (on ? 'online' : 'in person') + '): ' + sum + (det ? ' — ' + det : '');
+  var cur = String(gv(e, 'lima_charlie_notes') || '').trim();
+  var val = cur ? cur + '\n' + line : line;
+  txn('Lima Charlie note', function(){ queuePatch(di, { lima_charlie_notes: val }); });
+  qaQueueRemove(di); /* queued for Luna counts as handled, same as a log */
+  return true;
+}
 /* --- proximity save (V3.69.0): a peer of the log save, NOT a variant of
    it — a Proximity event is co-presence ({date, kind:'proximity', venue,
    summary:venue}). It never writes the Last Contact stamp, and the person
@@ -16146,7 +16168,16 @@ function qaApplyTog(){
   var sum = $('#qa-sum'), det = $('#qa-det'), btn = $('#qa-savebtn');
   if(sum) sum.placeholder = QA.prox ? 'Where / context — e.g. Lewis School, Clarkson Hall' : 'What happened — one line';
   if(det) det.hidden = QA.prox;
-  if(btn) btn.textContent = QA.prox ? 'Log proximity' : 'Log contact';
+  if(btn) btn.textContent = QA.prox ? 'Log proximity' : (QA.enrich ? 'Queue for Luna' : 'Log contact');
+  var er = $('#qa-enrichrow');
+  if(er){
+    er.hidden = QA.prox;
+    var sw = $('#qa-enrich'), hint = $('#qa-enrich-hint');
+    if(sw){ sw.classList.toggle('on', QA.enrich); sw.setAttribute('aria-checked', QA.enrich ? 'true' : 'false'); }
+    if(hint) hint.textContent = QA.enrich
+      ? 'Luna enriches this on her next pass and files the log entry then.'
+      : 'Files exactly what you typed, right now.';
+  }
 }
 /* --- panel lifecycle --- */
 function qaEnsure(){
@@ -16178,6 +16209,8 @@ function qaEnsure(){
       '</div>' +
       '<input id="qa-sum" class="qa-in" placeholder="What happened — one line" autocomplete="off">' +
       '<input id="qa-det" class="qa-in" placeholder="Details (optional)" autocomplete="off">' +
+      '<div class="qa-enrichrow" id="qa-enrichrow"><button type="button" class="qa-switch on" id="qa-enrich" data-qact="enrichtog" role="switch" aria-checked="true" aria-label="Have Luna enrich this entry"><span class="qa-knob"></span></button>' +
+      '<span class="qa-enrich-tx"><b>Have Luna enrich this</b><small id="qa-enrich-hint">Luna enriches this on her next pass and files the log entry then.</small></span></div>' +
       '<div class="qa-endrow"><span class="qa-date" id="qa-date"></span>' +
       '<button type="button" class="btn primary" id="qa-savebtn" data-qact="logsave">Log contact</button></div>' +
     '</div>' +
@@ -16242,7 +16275,7 @@ function qaPlacePanel(){
   var b = $('.qadd');
   if(!b || window.innerWidth <= 560){ p.style.left = ''; p.style.right = ''; p.style.top = ''; return; }
   var r = b.getBoundingClientRect();
-  var w = Math.min(448, window.innerWidth - 20);
+  var w = Math.min(520, window.innerWidth - 20);
   var left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
   p.style.left = left + 'px'; p.style.right = 'auto'; p.style.top = (r.bottom + 8) + 'px';
 }
@@ -16439,6 +16472,17 @@ function qaDoLog(){
   var sum = $('#qa-sum').value, det = $('#qa-det').value;
   if(!sum.trim()){ qaStatus('Write what happened, one line — that line is the record.', 'err'); $('#qa-sum').focus(); return; }
   var di = QA.di, e = D.directory[di], on = QA.online;
+  if(QA.enrich){
+    if(!qaSaveLC(di, sum, det, on)){ qaStatus('That did not save. Try again.', 'err'); return; }
+    var ebase = 'Queued for Luna to enrich — ' + dispName(e) + ' · ' + qaDateLabel(todayStr()) + '. She files the log entry on her next pass.';
+    qaStatus(ebase + ' Saving through the Save Pool…', 'ok');
+    qaWatchWrite(pkey(e), ebase);
+    QA.di = null; QA.hi = 0;
+    $('#qa-sum').value = ''; $('#qa-det').value = ''; var q3 = $('#qa-q'); if(q3){ q3.value = ''; }
+    qaPaintLogList(); qaPaintQueueCount();
+    if(q3) q3.focus();
+    return;
+  }
   if(!qaSaveLog(di, sum, det, on)){ qaStatus('That did not save. Try again.', 'err'); return; }
   var base = 'Logged ' + (on ? 'online' : 'location') + ' contact with ' + dispName(e) + ' — ' + qaDateLabel(todayStr()) + '.';
   qaStatus(base + ' Saving through the Save Pool…', 'ok');
@@ -16532,6 +16576,7 @@ function qaOnClick(ev){
   else if(act === 'pickchange'){ QA.di = null; qaPaintLogList(); var q = $('#qa-q'); if(q) q.focus(); }
   else if(act === 'pxpickchange'){ QA.pxDi = null; qaPaintProxList(); var pq = $('#qa-px-q'); if(pq) pq.focus(); }
   else if(act === 'pxsave') qaDoProx();
+  else if(act === 'enrichtog'){ QA.enrich = !QA.enrich; qaApplyTog(); }
   else if(act === 'logsave') qaDoLog();
   else if(act === 'npcreate') qaDoCreate(false);
   else if(act === 'npforce') qaDoCreate(true);
