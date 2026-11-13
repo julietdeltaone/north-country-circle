@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-12",
+ "updated": "2026-11-13",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -16268,6 +16268,110 @@
    },
    "fields": {},
    "published": "2017-06-29",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261113-ig-jalesturkishdelights-started-a-catering-business-after-a",
+   "name": "ig:jalesturkishdelights",
+   "display": "Jale -",
+   "run_date": "2026-11-13",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "Her own website, Jale's Turkish Delights, says she started a catering business after a 2001 trip to Gaziantep, Turkey, and made her home in Istanbul, Turkey, in 2012.",
+   "file_text": "Started a catering business after a 2001 trip to Gaziantep, Turkey, and made her home in Istanbul, Turkey, in 2012",
+   "source": "Jale's Turkish Delights",
+   "url": "https://jalesturkishdelights.com/about/",
+   "anchors": [],
+   "quote": "Returning to America she started a catering business offering a wide variety of home-town cookin' and international dishes. Her heart drew her back to Turkey in 2012 where she made her home in Istanbul and began to learn the language and culture with fervor.",
+   "missing_gate": "Her record has no facts on file at all, and the only page is her own website, so I cannot tell this is the same person.",
+   "confidence": 30,
+   "confidence_parts": {
+    "identity": 5,
+    "source": 10,
+    "detail": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261113-ig-libbycriscitello-married-while-at-suny-potsdam-and-ga",
+   "name": "ig:libbycriscitello",
+   "display": "Libby Criscitello",
+   "run_date": "2026-11-13",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A SUNY Potsdam page about Elizabeth Criscitello, class of 2022, says she is pursuing two degrees, in English writing and community health. It says she married while at SUNY Potsdam and gave birth to a daughter, Giovanna, in spring 2020, and volunteered at Viable Options in Canton.",
+   "file_text": "Married while at SUNY Potsdam and gave birth to a daughter, Giovanna, in spring 2020, while pursuing dual degrees in English writing and community health",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/academics/AAS/depts/engl/EllieCriscitello",
+   "anchors": [
+    "Potsdam, New York (the place on her record)"
+   ],
+   "quote": "As she handles the responsibilities of marriage and motherhood, Elizabeth Criscitello '22 has faced the challenges of adulthood much quicker than many of her classmates at SUNY Potsdam. Engaged at the end of freshman year, married the following year, and then giving birth to her baby, Giovanna, in the spring of 2020, she has continued to balance parenting with her educational goals as she pursues dual degrees in English writing and community health.",
+   "missing_gate": "This is about Libby's family, so I always check with you first.",
+   "confidence": 66,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 28,
+    "detail": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261113-ig-nevaeh-phillips-played-for-katy-high-school-katy-tx",
+   "name": "ig:nevaeh_phillips",
+   "display": "Nevaeh Phillips",
+   "run_date": "2026-11-13",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "MaxPreps' early rankings for the 2026-27 high school softball season list a Nevaeh Phillips as a notable returning player for Katy High School in Katy, Texas, ranked tenth in the country.",
+   "file_text": "Played for Katy High School (Katy, TX), named a notable returner for the Tigers' 2026-27 season",
+   "source": "MaxPreps",
+   "url": "https://www.maxpreps.com/news/vnrwkcYorEeuDyb0QOQ0dQ/high-school-softball-rankings-orange-beach%2c-calvary-baptist-academy-and-norco-headline-way-too-early-maxpreps-top-25-for-2026-27.htm",
+   "anchors": [
+    "Katy, Texas (her hometown on her softball record)",
+    "Softball, class of 2028 (her sport and year on file)"
+   ],
+   "quote": "10. Katy (Texas) \u2026 Notable returners: Nevaeh Phillips, Haley Schmitt, Evie Willemssen",
+   "missing_gate": "The page names a Nevaeh Phillips at Katy High School, but nothing on it ties her to the Impact Gold Jazz team on file.",
+   "confidence": 55,
+   "confidence_parts": {
+    "identity": 25,
+    "source": 20,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2026-07-24",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261113-ig-krlap315-recorded-five-assists-in-suny-potsda",
+   "name": "ig:krlap315",
+   "display": "Katie Lapinski",
+   "run_date": "2026-11-13",
+   "run_label": "Daily rotation",
+   "category": "verification",
+   "claim": "SUNY Potsdam's own game story for the March 12, 2017 win at St. Joseph's says in its main text that senior captain Katie Lapinski recorded five assists, but the same page's summary text says she recorded four assists. The two numbers cannot both be right.",
+   "file_text": "Recorded five assists in SUNY Potsdam's 12-9 win at St. Joseph's College of Long Island, Mar 12, 2017",
+   "source": "SUNY Potsdam Athletics",
+   "url": "https://potsdambears.com/story.aspx?filename=wlaxvssjcli031217&file_date=3-12-2017",
+   "anchors": [
+    "SUNY Potsdam (her team on file)",
+    "Canton, New York / Hugh C. Williams (named with her on the same page)"
+   ],
+   "quote": "Senior captain Katie Lapinski (Canton, N.Y./Hugh C. Williams) recorded five assists",
+   "missing_gate": "I could not double-check this, so I want you to decide.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "2017-03-12",
    "novelty": "new"
   }
  ]
