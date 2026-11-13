@@ -15414,6 +15414,861 @@
    "fields": {},
    "published": "2024-01-04",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ct-julie-mcormond-made-the-wedding-cake-for-a-wedding",
+   "name": "ct:julie mcormond",
+   "display": "Julie McOrmond",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "Julie McOrmond was credited as the wedding-cake vendor for a wedding at The Stables at Windy Point in the Potsdam area, in an Erin Marie Photography post.",
+   "file_text": "Made the wedding cake for a wedding held at The Stables at Windy Point in the Potsdam area, credited as the cake vendor in the photographer's published vendor list.",
+   "source": "Erin Marie Photography",
+   "url": "https://erinmariephoto.com/stables-at-windy-point-summer-wedding/",
+   "anchors": [
+    "Julie McOrmond (distinctive name match)",
+    "Potsdam-area wedding \u2014 The Stables at Windy Point, Eternity Bridal Potsdam"
+   ],
+   "missing_gate": "The cake-vendor credit gives her name and a Potsdam-area venue, but nothing else on the page ties it to the Julie McOrmond on file.",
+   "confidence": 68,
+   "confidence_parts": {
+    "identity": 30,
+    "source": 24,
+    "detail": 14
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ally-sabre-her-stepfather-john-g-rusinovich-of-potsdam",
+   "name": "ally.sabre",
+   "display": "Allyssa Sabre",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Allyssa Sabre's stepfather, John G. Rusinovich of Potsdam, died on August 19, 2026, after a long battle with cancer, and his Frary Funeral Home obituary names Allyssa as his stepdaughter.",
+   "file_text": "Her stepfather, John G. Rusinovich of Potsdam, died on August 19, 2026.",
+   "source": "Frary Funeral Home",
+   "url": "https://fraryfuneralhome.com/obituaries/john-rusinovich",
+   "anchors": [
+    "Allyssa Sabre",
+    "Potsdam, NY"
+   ],
+   "missing_gate": "This is about Allyssa Sabre's family, so I always check with you first.",
+   "confidence": 92,
+   "confidence_parts": {
+    "detail": 18,
+    "identity": 48,
+    "source": 26
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-alex-conn504-donald-j-dj-colbert-ii-father-of",
+   "name": "alex_conn504",
+   "display": "Alexandra Colbert",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Donald J. 'DJ' Colbert II of Norwood, the founder of Cornerstone Services, died on August 12, 2022, and his Buck Funeral Home obituary lists 'Kirk and Alexandra Colbert, Norwood' among his five sons, with his funeral held at New Testament Church in Massena.",
+   "file_text": "Donald J. 'DJ' Colbert II, father of Kirk Colbert, died on August 12, 2022, and his funeral was held at New Testament Church in Massena, with Alexandra listed alongside Kirk among his surviving sons.",
+   "source": "Buck Funeral Home",
+   "url": "https://buckfuneralhome.com/tribute/details/2453/Donald-Colbert/obituary.html",
+   "anchors": [
+    "Alexandra Colbert",
+    "New Testament Church, Massena"
+   ],
+   "missing_gate": "This is about Alexandra Colbert's family, so I always check with you first.",
+   "confidence": 80,
+   "confidence_parts": {
+    "detail": 16,
+    "identity": 38,
+    "source": 26
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-awretchlikebri-named-to-guilford-technical-community-college-s",
+   "name": "awretchlikebri",
+   "display": "Brianna McCarthy",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "Guilford Technical Community College published its Spring 2026 honor roll on May 19, 2026, and it lists a Brianna McCarthy of Greensboro, North Carolina, where Brianna lives.",
+   "file_text": "Named to Guilford Technical Community College's Spring 2026 honor roll, listed from Greensboro, North Carolina.",
+   "source": "Guilford Technical Community College",
+   "url": "https://www.gtcc.edu/about/news-and-events/2026/051/gtcc-releases-spring-2026-honor-roll.php",
+   "anchors": [
+    "Brianna McCarthy",
+    "Greensboro, NC"
+   ],
+   "missing_gate": "The list gives only a name and city, and another Brianna McCarthy lives in Greensboro, so I cannot tell if it is her.",
+   "confidence": 50,
+   "confidence_parts": {
+    "detail": 8,
+    "identity": 15,
+    "source": 27
+   },
+   "fields": {},
+   "published": "2026-05-19",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-charlotte-clark04-spoke-at-the-march-for-our-lives",
+   "name": "charlotte_clark04",
+   "display": "Charlotte Clark",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A North Country Public Radio story about the June 11, 2022 March for Our Lives in Potsdam names Charlotte Clark, age 17, as a Potsdam High School student who spoke at the march about fearing for her safety at school.",
+   "file_text": "Spoke at the March for Our Lives in Potsdam on June 11, 2022, as a 17-year-old Potsdam High School student.",
+   "source": "North Country Public Radio",
+   "url": "https://www.northcountrypublicradio.org/news/story/46063/20220613/quot-i-can-t-be-quiet-quot-mdash-young-and-old-march-in-potsdam-for-stricter-gun-laws",
+   "anchors": [
+    "Potsdam, NY",
+    "Potsdam High School"
+   ],
+   "missing_gate": "Only name and Potsdam match; the profile is nearly empty and nothing ties this high school student to the Marine Corps service on file.",
+   "confidence": 66,
+   "confidence_parts": {
+    "detail": 16,
+    "identity": 22,
+    "source": 28
+   },
+   "fields": {},
+   "published": "2022-06-13",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-emma-morse315-works-as-a-software-engineer-at-xos",
+   "name": "emma_morse315",
+   "display": "Emma Morse",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "An Emma Morse works as a software engineer at XOS, an X-ray technology company in East Greenbush, New York, and is quoted on the company's careers page about developing its user experience design process.",
+   "file_text": "Works as a software engineer at XOS in East Greenbush, New York, where she helped develop the company's user experience design process.",
+   "source": "XOS",
+   "url": "https://www.xos.com/Careers",
+   "anchors": [
+    "Emma Morse (name only)"
+   ],
+   "missing_gate": "The page gives only a name and job title, with nothing tying her to Gouverneur or SUNY Potsdam, so it may be a different Emma Morse.",
+   "confidence": 53,
+   "confidence_parts": {
+    "detail": 10,
+    "identity": 18,
+    "source": 25
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-kale-hitchman-son-of-kelly-and-donald-hitchman-brother",
+   "name": "kale_hitchman",
+   "display": "Kale Hitchman",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Tyler Hitchman's published doctoral dissertation names their parents as Kelly and Donald Hitchman and says Tyler was raised in northern New York with two brothers, Kale Hitchman and Joshua Loughren.",
+   "file_text": "Son of Kelly and Donald Hitchman; brother of Tyler Hitchman and Joshua Loughren.",
+   "source": "Memorial Sloan Kettering Cancer Center (Tyler Hitchman dissertation)",
+   "url": "https://www.sloankettering.edu/sites/default/files/node/125497/document/hitchman-tyler-dissertationdeposit.pdf",
+   "anchors": [
+    "Tyler Hitchman (brother on file)",
+    "Potsdam High School"
+   ],
+   "missing_gate": "This is about Kale Hitchman's family, so I always check with you first.",
+   "confidence": 88,
+   "confidence_parts": {
+    "detail": 16,
+    "identity": 45,
+    "source": 27
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-katie-marie162-swam-for-canton-central-as-a-freshman",
+   "name": "katie_marie162",
+   "display": "Katie Bertrand",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A fall 2011 Canton Central girls' swim preview in the Watertown Daily Times lists a freshman named Katie Bertrand on the Canton roster.",
+   "file_text": "Swam for Canton Central as a freshman on the fall 2011 girls' swim team.",
+   "source": "Watertown Daily Times fall sports preview (via Yumpu)",
+   "url": "https://www.yumpu.com/en/document/view/4982485/pe-o-tab-watertown-daily-times/7",
+   "anchors": [
+    "Canton, NY",
+    "Canton Central"
+   ],
+   "missing_gate": "The page gives only her name and school in Canton; the age fits her 2018 nursing graduation, but nothing ties her to SUNY Canton or nursing.",
+   "confidence": 60,
+   "confidence_parts": {
+    "detail": 12,
+    "identity": 28,
+    "source": 20
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-kylepmoulton-works-as-a-defensive-tactics-instructor-for",
+   "name": "kylepmoulton",
+   "display": "Kyle Moulton",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Kyle Moulton works as Defensive Tactics Instructor for Border State Security, with a bachelor's degree in Criminal Justice and a Certified Advanced Healthcare Security Officer designation.",
+   "file_text": "Works as a Defensive Tactics Instructor for Border State Security, holding a Bachelor of Science degree in Criminal Justice and a Certified Advanced Healthcare Security Officer (CAHSO) designation.",
+   "source": "Border State Security",
+   "url": "https://www.borderstatesecurity.com/leadership",
+   "anchors": [
+    "Name match: Kyle Moulton",
+    "Bachelor of Science degree in Criminal Justice"
+   ],
+   "missing_gate": "The company page names no town, school, or past employer from his profile; the match rests on the name and a criminal justice degree.",
+   "confidence": 53,
+   "confidence_parts": {
+    "detail": 16,
+    "identity": 12,
+    "source": 25
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-rileyymulligan-works-as-an-art-teacher-at-edna",
+   "name": "rileyymulligan",
+   "display": "Riley Mulligan",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "An art teacher named Riley Mulligan teaches at Edna Louise Spear Elementary School in Port Jefferson, New York; she may be the same Riley Mulligan who earned a BFA in Art Education from SUNY Potsdam in 2023.",
+   "file_text": "Works as an art teacher at Edna Louise Spear Elementary School in Port Jefferson, New York.",
+   "source": "Port Jefferson School District",
+   "url": "https://www.portjeffschools.org/index.php?pageID=smartSiteFeed&psqFeed=true&articleID=94249261",
+   "anchors": [
+    "Riley Mulligan",
+    "elementary art teacher (fits her art education degree)"
+   ],
+   "missing_gate": "The page names an art teacher Riley Mulligan but has no tie to SUNY Potsdam or Potsdam, NY, so it may be a different person.",
+   "confidence": 68,
+   "confidence_parts": {
+    "detail": 15,
+    "identity": 25,
+    "source": 28
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-rleeder-named-among-the-grandchildren-of-charles-larue",
+   "name": "rleeder_",
+   "display": "Ryleigh Leeder",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Ryleigh Leeder is named among the grandchildren of Charles LaRue, Sr. of Ogdensburg in his 2019 obituary.",
+   "file_text": "Named among the grandchildren of Charles LaRue, Sr. of Ogdensburg in his 2019 obituary.",
+   "source": "Dignity Memorial",
+   "url": "https://www.dignitymemorial.com/es-es/obituaries/ogdensburg-ny/charles-larue-8192811",
+   "anchors": [
+    "Ryleigh Leeder",
+    "Ogdensburg, NY (she is from Heuvelton, in the same area)"
+   ],
+   "missing_gate": "This is about Ryleigh Leeder's family, so I always check with you first.",
+   "confidence": 78,
+   "confidence_parts": {
+    "detail": 18,
+    "identity": 35,
+    "source": 25
+   },
+   "fields": {},
+   "published": "2019-03-04",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ct-sarah-darabon-sarah-darabon-is-listed-among-the-grandchildren",
+   "name": "ct:sarah darabon",
+   "display": "Sarah Darabon",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Sarah Darabon is a granddaughter of Jean A. Myers of Norfolk, who died May 25, 2025.",
+   "file_text": "Sarah Darabon is listed among the grandchildren of Jean A. Myers of Norfolk, who died May 25, 2025, alongside Natalie Darabon.",
+   "source": "Buck Funeral Home obituary for Jean A. Myers",
+   "url": "https://buckfuneralhome.com/tribute/details/2745/Jean-Myers/obituary.html",
+   "anchors": [
+    "Clarkson University, Potsdam, NY",
+    "Myers family of Norfolk, NY"
+   ],
+   "missing_gate": "Family link rests on one obituary with no second source; JD to confirm this Sarah Darabon is Jean Myers's granddaughter before filing.",
+   "confidence": 67,
+   "confidence_parts": {
+    "detail": 10,
+    "identity": 35,
+    "source": 22
+   },
+   "fields": {},
+   "published": "2025-05-25",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-taylor-rawson-taylor-rawson-is-a-granddaughter-of-nancy",
+   "name": "taylor_rawson_",
+   "display": "Taylor Rawson",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Taylor Rawson is a granddaughter of Nancy J. Dalland of Potsdam, who died August 20, 2020, through her mother Teri Rawson.",
+   "file_text": "Taylor Rawson is a granddaughter of Nancy J. Dalland of Potsdam, who died August 20, 2020; her mother is Teri (Bret) Rawson of Potsdam.",
+   "source": "Hammill Funeral Home obituary for Nancy J. Dalland",
+   "url": "https://www.hammillfh.com/obituaries/nancy-dalland",
+   "anchors": [
+    "Potsdam, NY",
+    "Rawson family of Potsdam"
+   ],
+   "missing_gate": "Family link rests on one obituary and her profile has no other details on file; JD to confirm this is the right Taylor Rawson.",
+   "confidence": 69,
+   "confidence_parts": {
+    "detail": 12,
+    "identity": 35,
+    "source": 22
+   },
+   "fields": {},
+   "published": "2020-08-20",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ct-noah-marshall-worked-as-a-new-york-state-police",
+   "name": "ct:noah marshall",
+   "display": "Noah Marshall",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A state salary records site (GovSalaries) lists a Noah Marshall M as a New York State Police Trooper from 2023 to 2025, which starts the same year this Noah Marshall finished his criminal justice degree at SUNY Canton.",
+   "file_text": "Worked as a New York State Police Trooper from 2023 to 2025.",
+   "source": "GovSalaries",
+   "url": "https://govsalaries.com/marshall-noah-m-182509191",
+   "anchors": [
+    "SUNY Canton Criminal Justice degree, May 2023",
+    "New York State Police"
+   ],
+   "missing_gate": "The page names no town or school, so this trooper could be a different Noah Marshall than the SUNY Canton graduate from Canton.",
+   "confidence": 55,
+   "confidence_parts": {
+    "detail": 15,
+    "identity": 25,
+    "source": 15
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ct-jonathan-puglia-serves-as-lead-pastor-of-christian-fellowship",
+   "name": "ct:jonathan puglia",
+   "display": "Jonathan Puglia",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "The Christian Fellowship Center website names Jonathan Puglia as Lead Pastor of its Moira church; the page says he moved to the North Country in 2010, met his wife Hannah there, and lives in Hopkinton, the next town over from his South Colton address on file.",
+   "file_text": "Serves as Lead Pastor of Christian Fellowship Center's Moira church.",
+   "source": "Christian Fellowship Center (cfconline.org)",
+   "url": "https://www.cfconline.org/moira/",
+   "anchors": [
+    "South Colton / Hopkinton, NY",
+    "North Country since 2010"
+   ],
+   "missing_gate": "His file shows coffee work in Ogdensburg and no church role, so I cannot be fully sure the Moira pastor is the same Jonathan Puglia.",
+   "confidence": 78,
+   "confidence_parts": {
+    "detail": 18,
+    "identity": 35,
+    "source": 25
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-ct-brian-patraw-son-of-wayne-and-stephanie-patraw-of",
+   "name": "ct:brian patraw",
+   "display": "Brian Patraw",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Stephanie Patraw's October 2021 obituary from Hammill Funeral Home in Winthrop names Brian Patraw as one of her four sons, alongside brothers Rylan, Quinn, and Donovan.",
+   "file_text": "Son of Wayne and Stephanie Patraw of Winthrop; one of four brothers, with Rylan, Quinn, and Donovan Patraw.",
+   "source": "Hammill Funeral Home",
+   "url": "https://www.hammillfh.com/obituaries/stephanie-patraw",
+   "anchors": [
+    "Patraw family of Winthrop, St. Lawrence County",
+    "brother Donovan Patraw"
+   ],
+   "missing_gate": "This is about Brian Patraw's family, so I always check with you first.",
+   "confidence": 64,
+   "confidence_parts": {
+    "detail": 16,
+    "identity": 22,
+    "source": 26
+   },
+   "fields": {},
+   "published": "2021-10-20",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-calvin-brown-started-calvin-brown-consulting-llc-in-potsdam",
+   "name": "sf:calvin-brown",
+   "display": "Calvin Brown",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Calvin Brown Consulting LLC was filed in Potsdam, New York on September 8, 2025.",
+   "file_text": "Started Calvin Brown Consulting LLC in Potsdam, filed September 8, 2025.",
+   "source": "BizProfile (New York business records)",
+   "url": "https://www.bizprofile.net/ny/potsdam/calvin-brown-consulting-llc",
+   "anchors": [
+    "Potsdam, NY (hometown)",
+    "name match only"
+   ],
+   "missing_gate": "The name matches and Potsdam is his hometown, but it is a common name and the filing says nothing about his gaming or agency work.",
+   "confidence": 66,
+   "confidence_parts": {
+    "detail": 18,
+    "identity": 30,
+    "source": 18
+   },
+   "fields": {},
+   "published": "2025-09-08",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-cora-capozzi-named-as-a-bridesmaid-for-aliyah-bullock",
+   "name": "sf:cora-capozzi",
+   "display": "Cora Capozzi",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Cora Capozzi is listed as a bridesmaid in the October 9, 2027 Russell, New York wedding of Aliyah Bullock and Cody Ellsworth.",
+   "file_text": "Named as a bridesmaid for Aliyah Bullock and Cody Ellsworth's wedding on October 9, 2027 in Russell, New York.",
+   "source": "Zola wedding page for Aliyah Bullock and Cody Ellsworth",
+   "url": "https://www.zola.com/wedding/codyandaliyah2027/wedding_party",
+   "anchors": [
+    "name match only",
+    "Russell, NY (St. Lawrence County)"
+   ],
+   "missing_gate": "Her name is uncommon and Russell is close to Hopkinton, but the page gives no school, job, or family tie to her.",
+   "confidence": 60,
+   "confidence_parts": {
+    "detail": 15,
+    "identity": 25,
+    "source": 20
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-caroline-willis-caroline-willis-s-parents-are-stephen-and",
+   "name": "sf:caroline-willis",
+   "display": "Caroline Willis",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Caroline Willis's parents are Stephen and Jackie Milwicz, who never missed one of their three daughters' lacrosse games.",
+   "file_text": "Caroline Willis's parents are Stephen and Jackie Milwicz.",
+   "source": "Potsdam Bears Athletics",
+   "url": "https://potsdambears.com/sports/womens-lacrosse/roster/coaches/caroline-willis/480",
+   "anchors": [
+    "SUNY Potsdam women's lacrosse",
+    "Liberty University"
+   ],
+   "missing_gate": "This is about her family, so I always check with you first before anything about parents is written down.",
+   "confidence": 87,
+   "confidence_parts": {
+    "detail": 16,
+    "identity": 45,
+    "source": 26
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-colin-mackey-works-at-mohawk-valley-community-college-in",
+   "name": "sf:colin-mackey",
+   "display": "Colin Mackey",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Colin Mackey serves as Executive Director of Budget and Finance and Chief Financial Officer at Mohawk Valley Community College in Utica, confirmed in the college's August 17, 2026 board minutes, where he also serves as board treasurer.",
+   "file_text": "Works at Mohawk Valley Community College in Utica as Executive Director of Budget and Finance and Chief Financial Officer.",
+   "source": "Mohawk Valley Community College Board of Trustees minutes",
+   "url": "https://www.mvcc.edu/governance/pdfs/board-of-trustees/minutes/2026/2026-8-17-bot-min.pdf",
+   "anchors": [
+    "name match only",
+    "Utica, NY (near Sauquoit)"
+   ],
+   "missing_gate": "The college sits near his home in Sauquoit, but the minutes never mention SUNY Canton or Norwood, so this could be a different Colin Mackey.",
+   "confidence": 80,
+   "confidence_parts": {
+    "detail": 18,
+    "identity": 35,
+    "source": 27
+   },
+   "fields": {},
+   "published": "2026-08-17",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-charlie-sharon-sweet-guest-minister-at-pac-bible-church-on",
+   "name": "sf:charlie-sharon-sweet",
+   "display": "Charlie & Sharon Sweet",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Charlie Sweet was the guest minister at Pac Bible Church on November 11, 2026, billed as having ministered for 40 years in over 20 nations and 150 churches.",
+   "file_text": "Guest minister at Pac Bible Church on November 11, 2026.",
+   "source": "Facebook post by PacBibleChurch",
+   "url": "https://www.facebook.com/pacbiblechurch/posts/pfbid023Q88p2wURnMP7XxjooxbZEom9hvE8WWoDZp4gvfCbyY9UmM1eQXC9ByFX54nQYYNl",
+   "anchors": [
+    "name match only",
+    "traveling prophetic ministry"
+   ],
+   "missing_gate": "The flyer fits his traveling prophetic ministry, but it names no hometown, no Sharon, and no clock business, so it may be someone else.",
+   "confidence": 67,
+   "confidence_parts": {
+    "detail": 17,
+    "identity": 30,
+    "source": 20
+   },
+   "fields": {},
+   "published": "2026-11-02",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-dianalyn-martin-her-sister-tonja-shumaker-of-midlothian-virginia",
+   "name": "sf:dianalyn-martin",
+   "display": "Dianalyn Martin",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Dianalyn Martin's sister Tonja Shumaker of Midlothian, Virginia died; her obituary lists Diana-Lyn Martin among the surviving siblings, and a memorial service was held Monday, October 13 at Clover Hill Baptist Church.",
+   "file_text": "Her sister Tonja Shumaker of Midlothian, Virginia has died.",
+   "source": "Dignity Memorial obituary for Tonja Shumaker",
+   "url": "https://www.dignitymemorial.com/obituaries/midlothian-va/tonja-shumaker-12549901",
+   "anchors": [
+    "Finn family name (her brother Michael Jan Finn; Tonja's father Ulrich Butch Finn)",
+    "name variant Diana-Lyn Martin"
+   ],
+   "missing_gate": "This is about a death in her family, so I always check with you first before anything like this is written down.",
+   "confidence": 80,
+   "confidence_parts": {
+    "detail": 15,
+    "identity": 40,
+    "source": 25
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-dianalyn-martin-bought-a-house-at-115-north-main",
+   "name": "sf:dianalyn-martin",
+   "display": "Dianalyn Martin",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "Public records shown by Homes.com say Paul Martin and Dianalyn Martin bought the house at 115 North Main Street in Norwood on September 24, 2025 and sold it on June 30, 2026.",
+   "file_text": "Bought a house at 115 North Main Street in Norwood with Paul Martin in September 2025 and sold it in June 2026.",
+   "source": "Homes.com property record for 115 N Main St, Norwood, NY",
+   "url": "https://www.homes.com/property/115-n-main-st-norwood-ny/mgz39710kftqe/",
+   "anchors": [
+    "name pair Paul and Dianalyn Martin",
+    "Norwood, NY (her former address)"
+   ],
+   "missing_gate": "The names match hers and Paul Martin's, and she once lived on that street, but nothing in the record ties it to her life in Suffolk County.",
+   "confidence": 67,
+   "confidence_parts": {
+    "detail": 18,
+    "identity": 35,
+    "source": 14
+   },
+   "fields": {},
+   "published": "2026-06-30",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-peter-johnson-co-authored-the-2021-paper-high-fidelity",
+   "name": "sf:peter-johnson",
+   "display": "Peter Johnson",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A 2021 IEEE conference paper on fingerprint generation, kept on the National Science Foundation's public access site, lists a Peter Johnson from Clarkson University in Potsdam as a co-author alongside Clarkson biometrics professor Stephanie Schuckers.",
+   "file_text": "Co-authored the 2021 paper 'High Fidelity Fingerprint Generation: Quality, Uniqueness, and Privacy' with Clarkson University biometrics researchers.",
+   "source": "National Science Foundation Public Access Repository",
+   "url": "https://par.nsf.gov/servlets/purl/10318826",
+   "anchors": [
+    "Clarkson University",
+    "Potsdam, New York"
+   ],
+   "missing_gate": "Peter Johnson is a common name, and the paper never mentions Ombra or his site lead job, so this may be a different Clarkson researcher.",
+   "confidence": 70,
+   "confidence_parts": {
+    "detail": 15,
+    "identity": 30,
+    "source": 25
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-richard-gilchrist-became-department-head-for-advanced-products-and",
+   "name": "sf:richard-gilchrist",
+   "display": "Richard Gilchrist",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "The Org's company chart for Corning Incorporated shows a Richard Gilchrist as Department Head for Advanced Products and Finishing since October 2020, after working as a Lidl US district manager and owning Perry's Market.",
+   "file_text": "Became Department Head for Advanced Products and Finishing at Corning Incorporated in October 2020.",
+   "source": "The Org",
+   "url": "https://theorg.com/org/corning-inc/org-chart/richard-gilchrist",
+   "anchors": [
+    "name only \u2014 the page shows none of his schools or his Fredericksburg home"
+   ],
+   "missing_gate": "The page shows none of his schools and not his Fredericksburg home, and the name is common, so this is likely a different Richard Gilchrist.",
+   "confidence": 43,
+   "confidence_parts": {
+    "detail": 16,
+    "identity": 15,
+    "source": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-shelleymae-bartlett-serves-on-the-ministry-leadership-team-of",
+   "name": "sf:shelleymae-bartlett",
+   "display": "Shelleymae Bartlett",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "Fresh Oil Ministries International's own leadership page lists a Prop. Shelleymae Bartlett on its Ministry Leadership Team.",
+   "file_text": "Serves on the Ministry Leadership Team of Fresh Oil Ministries International, listed there as Prop. Shelleymae Bartlett.",
+   "source": "Fresh Oil Ministries International",
+   "url": "https://www.1fomi.org/leadership",
+   "anchors": [
+    "distinctive full name Shelleymae Bartlett"
+   ],
+   "missing_gate": "Her profile is nearly blank, and the ministry page gives no town, so I cannot be sure this is the Shelleymae Bartlett who lives in Potsdam.",
+   "confidence": 55,
+   "confidence_parts": {
+    "detail": 12,
+    "identity": 25,
+    "source": 18
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-thea-krywanczyk-granddaughter-of-gloria-dawn-levac-of-chase",
+   "name": "sf:thea-krywanczyk",
+   "display": "Thea Krywanczyk",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "The May 2020 obituary of Gloria Dawn Levac of Chase Mills, published by Donaldson Funeral Home of Massena, names Thea Krywanczyk among her grandchildren.",
+   "file_text": "Granddaughter of Gloria Dawn Levac of Chase Mills, who died on May 14, 2020.",
+   "source": "Donaldson Funeral Home obituary (mirrored on AlumniClass)",
+   "url": "https://www.alumniclass.com/norwood-norfolk-high-school-flyers-ny/in-memory-view/?p=148282",
+   "anchors": [
+    "hometown Norwood, New York \u2014 Chase Mills is in the Norwood area",
+    "Norwood Norfolk Central School"
+   ],
+   "missing_gate": "This is about Thea Krywanczyk's family, so I always check with you first.",
+   "confidence": 76,
+   "confidence_parts": {
+    "detail": 16,
+    "identity": 40,
+    "source": 20
+   },
+   "fields": {},
+   "published": "2020-05-14",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-jackie-card-lives-in-norwood-with-her-husband-and",
+   "name": "sf:jackie-card",
+   "display": "Jackie Card",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Jackie Card lives in Norwood with her husband and daughters.",
+   "file_text": "Lives in Norwood with her husband and daughters.",
+   "source": "GardenShare",
+   "url": "https://gardenshare.org/jackie-card/",
+   "anchors": [
+    "GardenShare staff page",
+    "SUNY Potsdam graduate"
+   ],
+   "missing_gate": "This is about Jackie Card's family, so I always check with you first.",
+   "confidence": 85,
+   "confidence_parts": {
+    "detail": 15,
+    "identity": 45,
+    "source": 25
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-wesley-hissong-served-as-director-of-safety-and-security",
+   "name": "sf:wesley-hissong",
+   "display": "Wesley Hissong",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Wesley Hissong served as Director of Safety and Security at Jefferson Community College in Watertown in 2018, before the Clarkson role on file.",
+   "file_text": "Served as Director of Safety and Security at Jefferson Community College in Watertown in 2018.",
+   "source": "Jefferson Community College",
+   "url": "https://sunyjefferson.edu/student-life/documents/Sexual_and_Interpersonal_Violence_Procedures_Handbook.pdf",
+   "anchors": [
+    "Director of Campus Safety and Security title",
+    "whissong email name"
+   ],
+   "missing_gate": "The Jefferson page shows the same name and the same safety director job he holds at Clarkson, but nothing on file ties him to Jefferson, so I am not sure it is the same person.",
+   "confidence": 75,
+   "confidence_parts": {
+    "detail": 15,
+    "identity": 35,
+    "source": 25
+   },
+   "fields": {},
+   "published": "2018-09",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-brenden-vanhorn-worked-as-a-network-technology-specialist-at",
+   "name": "sf:brenden-vanhorn",
+   "display": "Brenden Vanhorn",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Brenden VanHorn worked as a Network Technology Specialist at GST BOCES from January 31, 2022 until his resignation took effect May 31, 2022.",
+   "file_text": "Worked as a Network Technology Specialist at GST BOCES from January 31, 2022 until resigning effective May 31, 2022.",
+   "source": "GST BOCES board packet",
+   "url": "https://board.gstboces.org/Meeting Documents/_OLDER BOARD PACKETS/2021-2022 Board Packets/N - JUNE 7, 2022 REGULAR MEETING/6 PERSONNEL 6-7-22.pdf",
+   "anchors": [
+    "GST BOCES",
+    "Network technology field"
+   ],
+   "missing_gate": "His file says he studied network technology at GST BOCES, and this board record shows an employee with the same name in the same field, but I cannot confirm it is the same person.",
+   "confidence": 76,
+   "confidence_parts": {
+    "detail": 18,
+    "identity": 30,
+    "source": 28
+   },
+   "fields": {},
+   "published": "2022-06-07",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-wisdom-ran-cross-country-as-a-freshman-at",
+   "name": "sf:wisdom",
+   "display": "Rojanni Wisdom",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Rojanni Wisdom ran cross country as a freshman at Georgia Military College, listed in the men's 8k results at the Bobcat Invitational.",
+   "file_text": "Ran cross country as a freshman at Georgia Military College.",
+   "source": "TFRRS",
+   "url": "https://tfrrs.org/results/xc/19574/Bobcat_Invitational?meet_hnd=19574",
+   "anchors": [
+    "Georgia Military College",
+    "Uncommon full name"
+   ],
+   "missing_gate": "His file only says he is an Army company executive officer, and this race result gives the same uncommon name at a military college, but nothing confirms it is the same person.",
+   "confidence": 58,
+   "confidence_parts": {
+    "detail": 10,
+    "identity": 22,
+    "source": 26
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-breanne-sapp-daughter-of-keith-and-tammy-sapp-suny",
+   "name": "sf:breanne-sapp",
+   "display": "Breanne Sapp",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "sensitive",
+   "claim": "Breanne Sapp is the daughter of Keith and Tammy Sapp.",
+   "file_text": "Daughter of Keith and Tammy Sapp (SUNY Potsdam Athletics).",
+   "source": "SUNY Potsdam Athletics (Potsdam Bears)",
+   "url": "https://potsdambears.com/sports/mens-soccer/roster/breanne-sapp/1876",
+   "anchors": [
+    "Breanne Sapp (name)",
+    "SUNY Potsdam, her university on file"
+   ],
+   "missing_gate": "This names Breanne Sapp's parents, and family details like that always wait for your go-ahead before I file them.",
+   "confidence": 91,
+   "confidence_parts": {
+    "detail": 18,
+    "identity": 45,
+    "source": 28
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261112-sf-steve-evans-named-in-sandra-a-mclaughlin-s-2017",
+   "name": "sf:steve-evans",
+   "display": "Steve Evans",
+   "run_date": "2026-11-12",
+   "run_label": "Full-directory sweep",
+   "category": "identity",
+   "claim": "A Steve Evans of Winthrop, NY is named in the 2017 obituary of Sandra A. McLaughlin of Winthrop, listed alongside her daughter Melissa McLaughlin-TenEyck.",
+   "file_text": "Named in Sandra A. McLaughlin's 2017 obituary alongside her daughter Melissa McLaughlin-TenEyck of Winthrop (Hammill Funeral Home).",
+   "source": "Hammill Funeral Home",
+   "url": "https://www.hammillfh.com/obituaries/sandra-mclaughlin",
+   "anchors": [
+    "Steve Evans (name only)",
+    "Winthrop, NY; nothing ties this man to the Rochester Regional Health detail on file"
+   ],
+   "missing_gate": "His profile has almost nothing on file, so I can't tell whether this Winthrop Steve Evans is the same man.",
+   "confidence": 45,
+   "confidence_parts": {
+    "detail": 8,
+    "identity": 15,
+    "source": 22
+   },
+   "fields": {},
+   "published": "2017-06-29",
+   "novelty": "new"
   }
  ]
 }
