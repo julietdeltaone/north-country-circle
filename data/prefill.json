@@ -4,6 +4,30 @@
  "suggestions": [],
  "auto_apply": [
   {
+   "key": "ct:jonathan puglia",
+   "display": "Jonathan Puglia",
+   "field": "churches",
+   "value": "Christian Fellowship Center",
+   "conf": 92,
+   "id": "pf-e8ef51cb1a"
+  },
+  {
+   "key": "ct:jonathan puglia",
+   "display": "Jonathan Puglia",
+   "field": "specialty",
+   "value": "Preaching",
+   "conf": 62,
+   "id": "pf-f8f1435548"
+  },
+  {
+   "key": "ct:julie mcormond",
+   "display": "Julie McOrmond",
+   "field": "specialty",
+   "value": "Photography",
+   "conf": 62,
+   "id": "pf-f18b2b30f5"
+  },
+  {
    "key": "sf:murray",
    "display": "Murray",
    "field": "groups",
@@ -41,11 +65,11 @@
   },
   "items": [
    {
-    "id": "pf-a4c989c515",
-    "key": "cashhyyy",
-    "display": "Cashlynn Colbert",
+    "id": "pf-5e102198ad",
+    "key": "chiara.frasc",
+    "display": "Chiara",
     "field": "location_on_file",
-    "value": "Fort Covington, NY",
+    "value": "Potsdam, NY",
     "rules": [
      "tentative_floor"
     ]
