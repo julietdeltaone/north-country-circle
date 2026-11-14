@@ -8083,7 +8083,8 @@ var HM_VENUES = {
   "maple run 5k, canton, ny": { key: "canton, ny", label: "Canton, NY", lat: 44.5956, lng: -75.1691 },
 };
 var HM = { ver:-1, model:null, dateIdx:-1, playing:false, speed:1, heat:false,
-           sel:null, selBack:null, map:null, layer:null, spider:null, timer:null, cbs:null, loading:false };
+           sel:null, selBack:null, map:null, layer:null, spider:null, timer:null, cbs:null, loading:false,
+           fs:false, fsFallback:false };
 var HM_SPIDER_MAX = 28;
 function hmNormPlace(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 function hmDateNorm(s){
@@ -8182,8 +8183,9 @@ function hmVisibleAt(ds){
 }
 function hmHeroDefaultHTML(){
   return '<div class="gm-hero-def"><h3>As of <span id="hmAsOf">—</span></h3>' +
-    '<div class="gm-counts" id="hmCounts">—</div><div class="gm-gaps" id="hmGaps"></div>' +
-    '<p class="gm-dim gm-hero-hint">Click a place on the map, or a person in a place, and their card opens here, at the top.</p></div>';
+    '<div class="gm-counts" id="hmCounts">—</div>' +
+    '<p class="gm-hero-hint">Click a place on the map, or a person in a place, and their card opens here, at the top.</p>' +
+    '<div class="gm-gaps" id="hmGaps"></div></div>';
 }
 function hmBandHTML(o){
   var M = o.M, T = o.T, B = o.B;
@@ -8215,10 +8217,11 @@ function hmBandHTML(o){
     v4MRow('No date on file', '', 'dim', o.pct(M.lc.none), M.lc.none) +
     '<div class="pv-foot">' + (o.proxN ? 'Crossed paths this week without contact counting: ' + o.proxN + ' people' + (o.proxVenue ? ', most recently at ' + esc(o.proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar →</a></div>' +
     '</div>';
-  var center = '<div class="gm-mapcard">' +
-    '<div class="gm-mhead"><div><h2>People on the map</h2><p>Each person at their place on file, from their first dated record. A dated place event puts them there for that day.</p></div>' +
-    '<div class="gm-mtools"><button type="button" class="btn ghost sm" data-act="hmheat" id="hmHeatBtn" aria-pressed="false">Density</button>' +
-    '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button></div></div>' +
+  var center = '<div class="gm-mapcard" id="hmCard">' +
+    '<div class="gm-mhead"><div><h2>People on the map</h2><p>Each person at their place on file, from their first dated record. A dated place event puts them there for that day. Click a place to see its people; click a cluster to zoom in.</p></div>' +
+    '<div class="gm-mtools"><button type="button" class="btn ghost sm" data-act="hmheat" id="hmHeatBtn" aria-pressed="false" title="Density heat view of the same counts">Density</button>' +
+    '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button>' +
+    '<button type="button" class="btn ghost sm" data-act="hmfull" id="hmFsBtn">Full screen</button></div></div>' +
     '<div id="hmMap" class="gm-map" role="application" aria-label="Map of contacts by place over time"></div>' +
     '<div class="gm-scrub"><div class="gm-srow">' +
     '<button type="button" class="btn primary sm" data-act="hmplay" id="hmPlayBtn">Play</button>' +
@@ -8226,17 +8229,18 @@ function hmBandHTML(o){
     '<button type="button" data-act="hmspeed" data-s="1" class="on">1×</button><button type="button" data-act="hmspeed" data-s="2">2×</button><button type="button" data-act="hmspeed" data-s="4">4×</button></div>' +
     '<div class="gm-date" id="hmDateLab">—</div></div>' +
     '<input type="range" id="hmRange" min="0" max="100" value="100" step="1" aria-label="Scrub through time">' +
-    '<div class="gm-ticks"><span id="hmTickA">—</span><span>Drag to scrub · Play animates the years</span><span>Today</span></div></div>' +
+    '<div class="gm-ticks"><span id="hmTickA">—</span><span>2010</span><span>2013</span><span>2016</span><span>2020</span><span>2023</span><span>Today</span></div>' +
+    '<div class="gm-scrubhint">Drag to scrub · Play animates the years</div></div>' +
     '</div>';
   var right = '<div class="gm-rail gm-rail-r">' +
     '<div class="gm-hero" id="hmHero">' + hmHeroDefaultHTML() + '</div>' +
-    '<div class="gm-mini"><h3>How to read it</h3><div class="gm-legend">' +
+    '<div class="gm-mini" id="hmLegend"><h3>How to read it <button type="button" class="gm-legbtn" data-act="hmlegend">Hide</button></h3><div class="gm-legend">' +
     '<div><span class="gm-sw c-fresh"></span>In touch — contact in the last 45 days</div>' +
     '<div><span class="gm-sw c-year"></span>Contact within the last year</div>' +
     '<div><span class="gm-sw c-old"></span>Last contact over a year ago</div>' +
     '<div><span class="gm-sw c-prox"></span>Seen there (proximity) — no contact yet</div>' +
     '<div><span class="gm-sw c-und"></span>Place on file, no dated record — Today only</div>' +
-    '<div class="gm-leg-note">A place badge shows its people count; its ring takes the freshest colour there. A badge naming several places is a cluster — click to zoom in. Click a place to fan its people out; a place with more than ' + HM_SPIDER_MAX + ' people opens its list in the card at the top of this sidebar instead.</div>' +
+    '<div class="gm-leg-note">The ring takes the freshest colour there; a dashed ring means no dated record. Click a place to fan its people out; a badge naming several places is a cluster — click to zoom in. Places with more than ' + HM_SPIDER_MAX + ' people open their list in the card at the top instead.</div>' +
     '</div></div>' +
     '<div class="gm-mini hm-detail" id="hmDetail"></div>' +
     stats +
@@ -8250,7 +8254,7 @@ function hmBandHTML(o){
 }
 function hmGapsHTML(){
   var M = hmModel(), parts = [];
-  if(M.undatedN) parts.push(M.undatedN + ' people have a place on file but no dated record — they appear only at Today, in the muted style.');
+  if(M.undatedN) parts.push(M.undatedN + ' of the ' + M.placedN + ' placed have a place on file but no dated record — they appear only at Today, in the muted style.');
   var un = Object.keys(M.unplacedNames);
   if(un.length) parts.push('Not placed: ' + un.map(function(s){ return esc(s) + ' (' + M.unplacedNames[s] + ')'; }).join(', ') + ' — no match in the place list.');
   var uv = Object.keys(M.unplacedVenues);
@@ -8259,18 +8263,25 @@ function hmGapsHTML(){
 }
 function hmDetailDefault(ds){
   var M = hmModel(), vis = hmVisibleAt(ds);
-  var rows = Object.keys(vis.byPlace).map(function(pk){
+  var all = Object.keys(vis.byPlace).map(function(pk){
     return { pk:pk, n:vis.byPlace[pk].length, label:M.places[pk].label };
-  }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); }).slice(0, 6);
+  }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); });
+  var rows = all.slice(0, 6);
   return '<h3>Biggest places</h3>' + (rows.length ? rows.map(function(r){
-    return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b></button>';
+    return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b><span class="gm-chev">›</span></button>';
   }).join('') : '<p class="gm-dim">Nobody is placed yet at this date.</p>') +
-  '<p class="gm-dim">Click any place on the map to see who is there.</p>';
+  '<p class="gm-dim">Top ' + rows.length + ' of ' + all.length + ' places — click a row, or a place on the map.</p>';
 }
+function hmMonYear(dstr){ var d = new Date(dstr + 'T12:00:00'); return isNaN(d) ? dstr : d.toLocaleDateString('en-US', { month:'short', year:'numeric' }); }
 var HM_STATUS_TXT = { fresh:'In touch — contact in the last 45 days', year:'Contact within the last year', old:'Last contact over a year ago', prox:'Seen (proximity) — no contact yet' };
 function hmHeroHead(kick){
+  var backTxt = 'Back';
+  if(HM.selBack && HM.selBack.type === 'place'){
+    var bpl = hmModel().places[HM.selBack.key];
+    backTxt = 'Back to ' + (bpl ? bpl.label.replace(/, [A-Z]{2}$/, '') : HM.selBack.key);
+  }
   return '<div class="gm-hero-top"><span class="gm-hero-kick">' + kick + '</span><span class="gm-hero-btns">' +
-    (HM.selBack ? '<button type="button" class="gm-hero-x" data-act="hmback">Back</button>' : '') +
+    (HM.selBack ? '<button type="button" class="gm-hero-x back" data-act="hmback">' + esc(backTxt) + '</button>' : '') +
     '<button type="button" class="gm-hero-x" data-act="hmclose">Close</button></span></div>';
 }
 /* V4.15.0: the click detail is a HERO CARD pinned at the top of the
@@ -8293,7 +8304,7 @@ function hmPaintDetail(ds){
       '<h3 class="gm-hero-name">Places close together</h3>' +
       '<div class="gm-dsub">Too close to separate at this zoom — pick one:</div>' +
       (crows.length ? crows.map(function(r){
-        return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b></button>';
+        return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b><span class="gm-chev">›</span></button>';
       }).join('') : '<p class="gm-dim">Nobody at these places at this date.</p>');
     return;
   }
@@ -8304,14 +8315,20 @@ function hmPaintDetail(ds){
       return dispName(D.directory[a.di]).localeCompare(dispName(D.directory[b.di]));
     });
     var fresh = rows.length ? hmFreshest(rows) : null;
+    var lcByDi = {};
+    M.people.forEach(function(x){
+      var lc = '';
+      for(var ci2 = x.contacts.length - 1; ci2 >= 0; ci2--){ if(x.contacts[ci2] <= ds){ lc = x.contacts[ci2]; break; } }
+      lcByDi[x.di] = lc;
+    });
     hero.innerHTML = hmHeroHead('Place') +
       '<h3 class="gm-hero-name">' + esc(pl.label) + '</h3>' +
       '<div class="gm-dsub">' + rows.length + (rows.length === 1 ? ' person' : ' people') + ' here as of ' + hmFmtDate(ds) + '</div>' +
       (fresh ? '<div class="gm-dline"><span class="gm-dot c-' + fresh + '"></span>Freshest here: ' + HM_STATUS_TXT[fresh] + '</div>' : '') +
       (rows.length ? '<div class="gm-plist">' + rows.map(function(r){
-        var e = D.directory[r.di];
-        return '<button type="button" class="gm-prow" data-act="hmperson" data-di="' + r.di + '"><span class="gm-dot c-' + r.cls + (r.undated ? ' und' : '') + '"></span>' + avatar(e, 'xs') + '<span class="gm-pn">' + esc(dispName(e)) + '</span></button>';
-      }).join('') + '</div>' : '<p class="gm-dim">Nobody here at this date. Scrub forward, or pick another place.</p>');
+        var e = D.directory[r.di], lcT = lcByDi[r.di] ? hmMonYear(lcByDi[r.di]) : (r.cls === 'prox' ? 'Seen only' : (r.undated ? 'No date' : '—'));
+        return '<button type="button" class="gm-prow" data-act="hmperson" data-di="' + r.di + '"><span class="gm-dot c-' + r.cls + (r.undated ? ' und' : '') + '"></span>' + avatar(e, 'xs') + '<span class="gm-pn">' + esc(dispName(e)) + '</span><span class="gm-pdate">' + lcT + '</span><span class="gm-chev">›</span></button>';
+      }).join('') + '</div>' + (rows.length > 9 ? '<div class="gm-pfoot">' + rows.length + ' people, alphabetical — scroll for everyone.</div>' : '') : '<p class="gm-dim">Nobody here at this date. Scrub forward, or pick another place.</p>');
     return;
   }
   var di = HM.sel.di, e = D.directory[di];
@@ -8323,6 +8340,9 @@ function hmPaintDetail(ds){
   var lastC = '';
   if(p) for(var ci = p.contacts.length - 1; ci >= 0; ci--){ if(p.contacts[ci] <= ds){ lastC = p.contacts[ci]; break; } }
   var fc = hmDateNorm(gv(e, 'first_contact'));
+  var lastSeen = '';
+  if(p) p.visits.forEach(function(v){ if(v.d <= ds && v.d > lastSeen) lastSeen = v.d; });
+  (e.events || []).forEach(function(ev){ if(ev && ev.kind === 'proximity' && ev.date && ev.date <= ds && ev.date > lastSeen) lastSeen = ev.date; });
   var evs = (e.events || []).filter(function(ev){
     return ev && ev.venue && /^\d{4}-\d{2}-\d{2}$/.test(ev.date || '') && ev.date <= ds;
   }).slice(-4).reverse();
@@ -8333,11 +8353,12 @@ function hmPaintDetail(ds){
     (rec ? '<div class="gm-dline"><span class="gm-dot c-' + rec.cls + '"></span>' + HM_STATUS_TXT[rec.cls] + '</div>'
          : (p && p.appear ? '<div class="gm-dline gm-dim">First placed ' + hmFmtDate(p.appear) + '</div>' : '')) +
     '<div class="gm-hero-meta">' +
-    '<div><span>Last contact</span><b>' + (lastC ? hmFmtDate(lastC) : 'None by this date') + '</b></div>' +
+    '<div><span>Last contact</span><b>' + (lastC ? hmFmtDate(lastC) : (p && p.contacts.length ? 'None by this date' : 'No contact on file')) + '</b></div>' +
+    (lastSeen ? '<div><span>Last seen</span><b>' + hmFmtDate(lastSeen) + '</b></div>' : '') +
     '<div><span>First known</span><b>' + (fc ? hmFmtDate(fc) : (p && p.appear ? hmFmtDate(p.appear) : '—')) + '</b></div>' +
     '</div>' +
     (evs.length ? '<div class="gm-dline gm-dim">' + evs.map(function(ev){ return hmFmtDate(ev.date) + ' — ' + esc(ev.venue); }).join('<br>') + '</div>' : '') +
-    '<div class="gm-hero-acts"><a class="btn primary sm" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a></div>';
+    '<div class="gm-hero-acts"><a class="btn primary sm gm-openbtn" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a></div>';
 }
 function hmPaintReadout(ds){
   var M = hmModel(), vis = hmVisibleAt(ds);
@@ -8410,6 +8431,9 @@ function hmPaint(){
   if(!HM.layer) HM.layer = L.layerGroup().addTo(HM.map);
   HM.layer.clearLayers();
   var M = hmModel(), vis = hmVisibleAt(ds);
+  var selPk = null;
+  if(HM.sel && HM.sel.type === 'place') selPk = HM.sel.key;
+  else if(HM.sel && HM.sel.type === 'person'){ for(var svi = 0; svi < vis.list.length; svi++){ if(vis.list[svi].di === HM.sel.di){ selPk = vis.list[svi].pk; break; } } }
   if(HM.heat){
     Object.keys(vis.byPlace).forEach(function(pk){
       var pl = M.places[pk], n = vis.byPlace[pk].length;
@@ -8424,7 +8448,8 @@ function hmPaint(){
     g.forEach(function(a){ totN += a.n; wlat += a.pl.lat * a.n; wlng += a.pl.lng * a.n; });
     var lat = wlat / totN, lng = wlng / totN;
     if(g.length > 1){
-      var cm = L.marker([lat, lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-cluster">' + totN + '<small>' + g.length + ' places</small></span>', iconSize:[46, 46], iconAnchor:[23, 23] }) }).addTo(HM.layer);
+      var topA = g[0]; g.forEach(function(a){ if(a.n > topA.n) topA = a; });
+      var cm = L.marker([lat, lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-cluster" title="Cluster of ' + g.length + ' places — click to zoom in">' + totN + '</span><span class="gm-blab gm-clab">' + esc(topA.pl.label.replace(/, [A-Z]{2}$/, '')) + ' +' + (g.length - 1) + ' more</span>', iconSize:[46, 58], iconAnchor:[23, 23] }) }).addTo(HM.layer);
       cm.on('click', function(){
         /* Each click steps two zoom levels toward the cluster,
            so places always separate eventually (a bounds-fit can
@@ -8442,9 +8467,10 @@ function hmPaint(){
     } else {
       var a0 = g[0], rows = vis.byPlace[a0.pk], fresh = hmFreshest(rows);
       var short = a0.pl.label.replace(/, [A-Z]{2}$/, '');
+      var bsz = a0.n >= 100 ? 52 : a0.n >= 40 ? 46 : a0.n >= 15 ? 40 : 30;
       var pm = L.marker([a0.pl.lat, a0.pl.lng], { icon:L.divIcon({ className:'gm-di',
-        html:'<span class="gm-badge ring-' + fresh + (rows.some(function(r){ return r.undated; }) && rows.every(function(r){ return r.undated; }) ? ' und' : '') + '">' + a0.n + '</span><span class="gm-blab">' + esc(short) + '</span>',
-        iconSize:[34, 44], iconAnchor:[17, 17] }) }).addTo(HM.layer);
+        html:'<span class="gm-badge ring-' + fresh + (rows.some(function(r){ return r.undated; }) && rows.every(function(r){ return r.undated; }) ? ' und' : '') + (selPk === a0.pk ? ' sel' : '') + '" style="width:' + bsz + 'px;height:' + bsz + 'px;font-size:' + (bsz >= 46 ? 15 : bsz >= 40 ? 14 : 12) + 'px">' + a0.n + '</span><span class="gm-blab">' + esc(short) + '</span>',
+        iconSize:[Math.max(34, bsz), bsz + 14], iconAnchor:[Math.max(34, bsz) / 2, bsz / 2] }) }).addTo(HM.layer);
       pm.on('click', function(){ hmSelectPlace(a0.pk, true); });
     }
   });
@@ -8459,6 +8485,88 @@ function hmSelectPlace(pk, allowSpider){
   if(allowSpider && rows.length && rows.length <= HM_SPIDER_MAX) hmSpiderfy(pk, rows);
   else if(rows.length > HM_SPIDER_MAX) HM.map.flyTo([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { duration:.5 });
 }
+/* Full-screen map mode (V4.15.0, JD 2026-11-13): the map card
+   itself goes full screen \u2014 native Fullscreen API where the
+   browser allows it, a fixed full-viewport mode where it does
+   not (iOS Safari has no element fullscreen). The hero card and
+   the legend move INTO the card as an overlay panel, so selection
+   detail keeps working full-screen; both move back to the top of
+   the sidebar on exit. Esc exits in both modes (native: the
+   browser fires fullscreenchange; fallback: the key handler). */
+function hmFsMoveIn(){
+  var card = document.getElementById('hmCard'); if(!card) return;
+  var panel = document.getElementById('hmFsPanel');
+  if(!panel){ panel = document.createElement('div'); panel.id = 'hmFsPanel'; panel.className = 'gm-fspanel'; card.appendChild(panel); }
+  var hero = document.getElementById('hmHero'), leg = document.getElementById('hmLegend');
+  if(hero) panel.appendChild(hero);
+  if(leg){
+    panel.appendChild(leg);
+    if(HM.legClosed !== false) leg.classList.add('closed');
+    var lb = leg.querySelector('.gm-legbtn');
+    if(lb) lb.textContent = leg.classList.contains('closed') ? 'Show' : 'Hide';
+  }
+  if(!document.getElementById('hmFsHint')){
+    var hint = document.createElement('div');
+    hint.id = 'hmFsHint'; hint.className = 'gm-fshint'; hint.textContent = 'Press Esc to exit full screen';
+    card.appendChild(hint);
+    setTimeout(function(){ var h = document.getElementById('hmFsHint'); if(h) h.remove(); }, 4300);
+  }
+}
+function hmFsMoveBack(){
+  var rail = document.querySelector('.gm-rail-r'); if(!rail) return;
+  var hero = document.getElementById('hmHero'), leg = document.getElementById('hmLegend');
+  if(hero) rail.insertBefore(hero, rail.firstChild);
+  if(leg) rail.insertBefore(leg, hero ? hero.nextSibling : rail.firstChild);
+  if(leg) leg.classList.remove('closed');
+  var fh = document.getElementById('hmFsHint'); if(fh) fh.remove();
+  var panel = document.getElementById('hmFsPanel'); if(panel) panel.remove();
+}
+function hmFsSize(){ setTimeout(function(){ if(HM.map){ HM.map.invalidateSize(); hmPaint(); } }, 80); }
+function hmFsEnter(){
+  var card = document.getElementById('hmCard'); if(!card || HM.fs) return;
+  HM.fs = true; HM.fsFallback = false;
+  card.classList.add('gm-full');
+  hmFsMoveIn();
+  var b = document.getElementById('hmFsBtn'); if(b) b.textContent = 'Exit full screen';
+  function fb(){
+    if(!HM.fs || HM.fsFallback || document.fullscreenElement) return;
+    HM.fsFallback = true;
+    card.classList.add('gm-full-fb');
+    document.body.classList.add('gm-fs-lock');
+    hmFsSize();
+  }
+  if(card.requestFullscreen){
+    try { var pr = card.requestFullscreen(); if(pr && pr.catch) pr.catch(fb); } catch(x){ fb(); }
+    setTimeout(fb, 600);
+  } else fb();
+  hmFsSize();
+}
+function hmFsCleanup(){
+  var card = document.getElementById('hmCard');
+  HM.fs = false; HM.fsFallback = false;
+  if(card) card.classList.remove('gm-full', 'gm-full-fb');
+  document.body.classList.remove('gm-fs-lock');
+  hmFsMoveBack();
+  var b = document.getElementById('hmFsBtn'); if(b) b.textContent = 'Full screen';
+  hmFsSize();
+}
+function hmFsExit(){
+  if(!HM.fs) return;
+  if(document.fullscreenElement){ try { document.exitFullscreen(); } catch(x){ hmFsCleanup(); } return; }
+  hmFsCleanup();
+}
+document.addEventListener('fullscreenchange', function(){
+  var card = document.getElementById('hmCard');
+  if(document.fullscreenElement && HM.fs && HM.fsFallback){
+    HM.fsFallback = false;
+    if(card) card.classList.remove('gm-full-fb');
+    document.body.classList.remove('gm-fs-lock');
+    hmFsSize();
+  } else if(!document.fullscreenElement && HM.fs && !HM.fsFallback) hmFsCleanup();
+});
+document.addEventListener('keydown', function(ev){
+  if(ev.key === 'Escape' && HM.fs && HM.fsFallback) hmFsExit();
+});
 function hmFitDefault(){
   if(!HM.map) return;
   /* Default view (JD 2026-11-13): centred on the North Country —
@@ -8482,8 +8590,23 @@ function hmTick(){
   hmPaint();
   if(HM.dateIdx >= total) hmStopPlay();
 }
+/* If the basemap service itself fails (bad endpoint, outage),
+   Leaflet still loads and the badges would float on a blank
+   field — the exact failure that shipped silently in V4.14.0.
+   After a handful of tile errors, say so on the map. */
+function hmTileWatch(layer){
+  if(!layer || !layer.on) return;
+  layer.on('tileerror', function(){
+    HM.terr = (HM.terr || 0) + 1;
+    if(HM.terr === 9){
+      var n = document.getElementById('hmNote');
+      if(n){ n.hidden = false; n.textContent = 'The basemap tiles are not loading right now — badges, dates and lists still work.'; }
+    }
+  });
+}
 function hmMount(){
   var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
+  if(HM.fs){ HM.fs = false; HM.fsFallback = false; if(document.fullscreenElement){ try { document.exitFullscreen(); } catch(x){} } }
   var M = hmModel(), total = hmTotalDays();
   if(HM.dateIdx < 0) HM.dateIdx = total;
   HM.dateIdx = Math.min(HM.dateIdx, total);
@@ -8502,16 +8625,28 @@ function hmMount(){
     if(HM.map){ try { HM.map.remove(); } catch(x){} HM.map = null; HM.layer = null; HM.spider = null; }
     var mode = document.documentElement.getAttribute('data-mode');
     HM.map = L.map('hmMap', { scrollWheelZoom:true, attributionControl:true });
-    /* Basemap tiles: Esri's public ArcGIS basemaps — Dark Gray
-       Canvas in dark/medium mode, World Street Map in light mode —
-       key-free with attribution. The CARTO CDN basemaps used in
-       V4.14.0 now serve "API KEY REQUIRED" watermarked tiles to
-       anonymous requests (JD's screenshot, 2026-11-13), so they
-       are gone. (Esri tile order is {z}/{y}/{x}.) */
-    L.tileLayer(mode === 'light'
-      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
-      : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas_Dark_Gray/MapServer/tile/{z}/{y}/{x}',
-      { maxZoom:18, maxNativeZoom:16, attribution:'&copy; Esri \u2014 Esri, HERE, Garmin, &copy; OpenStreetMap contributors, and the GIS user community' }).addTo(HM.map);
+    if(L.control && L.control.scale) L.control.scale({ imperial:true, metric:false, position:'bottomleft' }).addTo(HM.map);
+    /* Basemap tiles: Esri's public ArcGIS basemaps \u2014 key-free
+       with attribution. Dark/medium: the Dark Gray Canvas BASE
+       plus its REFERENCE overlay (the base alone carries no place
+       labels). Light: World Street Map. Two dead ends preceded
+       this: the CARTO CDN basemaps (V4.14.0) now serve "API KEY
+       REQUIRED" watermarked tiles to anonymous requests (JD's
+       screenshot, 2026-11-13), and the first V4.15.0 build named
+       a non-existent Esri service (Canvas_Dark_Gray \u2014 404; the
+       real path is Canvas/World_Dark_Gray_Base). All three tile
+       endpoints below were verified serving real 256x256 tiles on
+       2026-11-13. (Esri tile order is {z}/{y}/{x}.) */
+    var esriAttr = '&copy; Esri \u2014 Esri, HERE, Garmin, &copy; OpenStreetMap contributors, and the GIS user community';
+    if(mode === 'light'){
+      hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        { maxZoom:18, attribution:esriAttr }).addTo(HM.map));
+    } else {
+      hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+        { maxZoom:18, maxNativeZoom:16, attribution:esriAttr }).addTo(HM.map));
+      hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+        { maxZoom:18, maxNativeZoom:16 }).addTo(HM.map));
+    }
     HM.map.on('moveend zoomend', function(){ if(!HM.heat) hmPaint(); });
     HM.map.on('movestart', function(){ hmClearSpider(); });
     hmFitDefault();
@@ -16209,9 +16344,11 @@ function onClick(ev){
     case 'hmheat': { HM.heat = !HM.heat; el.classList.toggle('on', HM.heat); el.setAttribute('aria-pressed', String(HM.heat)); hmClearSpider(); hmPaint(); break; }
     case 'hmreset': { hmFitDefault(); break; }
     case 'hmplace': { hmSelectPlace(el.getAttribute('data-k'), true); break; }
-    case 'hmperson': { HM.selBack = HM.sel; HM.sel = { type:'person', di:+el.getAttribute('data-di') }; hmPaintDetail(hmDateAt(HM.dateIdx)); break; }
+    case 'hmperson': { HM.selBack = HM.sel; HM.sel = { type:'person', di:+el.getAttribute('data-di') }; hmPaintDetail(hmDateAt(HM.dateIdx)); var nm2 = dispName(D.directory[HM.sel.di]); document.querySelectorAll('.gm-pdot').forEach(function(d){ d.classList.toggle('sel', d.title === nm2); }); break; }
     case 'hmback': { var hbk = HM.selBack; HM.selBack = null; if(hbk && hbk.type === 'place'){ hmSelectPlace(hbk.key, true); } else { HM.sel = hbk; hmClearSpider(); hmPaint(); } break; }
     case 'hmclose': { HM.sel = null; HM.selBack = null; hmClearSpider(); hmPaint(); break; }
+    case 'hmfull': { if(HM.fs) hmFsExit(); else hmFsEnter(); break; }
+    case 'hmlegend': { var lg2 = document.getElementById('hmLegend'); if(lg2){ var cl2 = lg2.classList.toggle('closed'); HM.legClosed = cl2; var lb3 = lg2.querySelector('.gm-legbtn'); if(lb3) lb3.textContent = cl2 ? 'Show' : 'Hide'; } break; }
     case 'ctnav': {
       var cnd = el.getAttribute('data-d');
       if(cnd === '0'){ var ct0 = todayStr(); CTL.ym = ct0.slice(0, 7); CTL.day = ct0; }
