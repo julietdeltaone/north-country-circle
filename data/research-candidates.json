@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-13",
+ "updated": "2026-11-14",
  "rubric": {
   "identity": "Identity match, 0-50: two or more profile anchors at the top, name-only or conflicting anchors at the bottom.",
   "source": "Source strength, 0-30: an independent primary or authoritative source at the top; aggregator, self-reported, or unverifiable at the bottom.",
@@ -16395,6 +16395,85 @@
     "identity": 20,
     "source": 15,
     "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261114-sf-donovan-patraw-engaged-to-cheyenne-myers-as-of-nov",
+   "name": "sf:donovan-patraw",
+   "display": "Donovan Patraw",
+   "run_date": "2026-11-14",
+   "run_label": "Daily rotation",
+   "category": "sensitive",
+   "claim": "A November 2021 obituary for Robert G. Powell of Winthrop names Donovan Patraw as one of his grandchildren and names Cheyenne Myers as Donovan's fiancee.",
+   "file_text": "Engaged to Cheyenne Myers, as of Nov 2021",
+   "source": "Hammill Funeral Home",
+   "url": "https://www.hammillfh.com/obituaries/robert-powell",
+   "anchors": [
+    "Winthrop, NY, where Donovan lives",
+    "The Patraw family of Winthrop \u2014 the obituary also names Wayne Patraw and Stephanie A. Patraw"
+   ],
+   "quote": "Donovan Patraw and his fiance Cheyenne Myers",
+   "missing_gate": "This is about Donovan's family, so I always check with you first.",
+   "confidence": 72,
+   "confidence_parts": {
+    "identity": 42,
+    "source": 18,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "2021-11-07",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261114-ct-bryan-noble-took-part-in-a-lower-manhattan-patro",
+   "name": "ct:bryan noble",
+   "display": "Bryan Noble",
+   "run_date": "2026-11-14",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "A New York State DEC bulletin about a November 20, 2025 patrol in Lower Manhattan says ECOs Noble and Toomey were staged nearby in uniform while other officers led them to fish that anglers had hidden around Robert F. Wagner Jr. Park, and that the officers issued six tickets.",
+   "file_text": "Took part in a Lower Manhattan patrol where ECOs issued six tickets to anglers hiding undersized fish, Nov 2025",
+   "source": "New York State Department of Environmental Conservation",
+   "url": "https://content.govdelivery.com/accounts/NYSDEC/bulletins/400c354",
+   "anchors": [
+    "He is an ECO \u2014 he graduated from the DEC basic school for Environmental Conservation Officers in Dec 2024"
+   ],
+   "quote": "then led ECOs Noble and Toomey, who were both staged nearby in uniform, to the hidden fish. ECOs issued six tickets to anglers for keeping undersized fish, along with other violations.",
+   "missing_gate": "The bulletin gives only the last name Noble, and nothing on the page ties him to Canton or St. Lawrence County.",
+   "confidence": 57,
+   "confidence_parts": {
+    "identity": 18,
+    "source": 27,
+    "detail": 12
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
+  },
+  {
+   "id": "lr-20261114-ct-katelyn-tomford-donated-to-the-margaret-home-2025",
+   "name": "ct:katelyn tomford",
+   "display": "Katelyn Tomford",
+   "run_date": "2026-11-14",
+   "run_label": "Daily rotation",
+   "category": "identity",
+   "claim": "The Margaret Home's 2025 annual report lists a Katelyn Tomford in its donor list, in the group that gave up to $250.",
+   "file_text": "Donated to The Margaret Home, 2025",
+   "source": "The Margaret Home",
+   "url": "https://themargarethome.org/wp-content/uploads/2026/09/The-Margaret-Home-2025-Annual-Report.pdf",
+   "anchors": [
+    "Name only \u2014 nothing else on the page matches what is on her record"
+   ],
+   "quote": "Cara Camden | Katelyn Tomford | Ted and Anne Smith",
+   "missing_gate": "The report lists only her name, with nothing tying it to Clarkson or her work, so I cannot tell it is her.",
+   "confidence": 40,
+   "confidence_parts": {
+    "identity": 12,
+    "source": 20,
+    "detail": 8
    },
    "fields": {},
    "published": "",
