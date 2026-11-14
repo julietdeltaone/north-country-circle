@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.17.0';
+var APP_VERSION = '4.17.1';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7924,7 +7924,6 @@ function viewHome(v){
     '<div class="pv-strip"><h3>Council \u2014 latest pass</h3><div class="pv-council-line">' + cnHTML + '</div></div>' +
     '<div class="pv-actions"><a class="pv-btn primary" href="#/calendar">\uff0b Log proximity for today</a><a class="pv-btn" href="#/daily/decide">Decide in Live Records \u2192</a></div>' +
     '</section>' +
-    '<p class="pv-note">Home\u2019s statistics ride in the sidebar beside the map. What left Home in V4: photo totals (now on Photos), group rankings (now a teaser inside Groups), and every other section’s private stats.</p>' +
     '</div>';
   hmMount();
 }
@@ -8346,7 +8345,7 @@ function hmPaintStrip(){
   }
   if(st.rest){
     var undN = A.items.filter(function(a){ return !a.published; }).length;
-    if(undN) h += '<div class="gm-asfoot">' + undN + ' more findings are on file without a published date — they rest on the map here, in All appearances, and in each place\u2019s list. They never join the event steps.</div>';
+    if(undN) h += '<div class="gm-asfoot">' + undN + ' findings on the map have no published date — they rest here, in All appearances, and in each place\u2019s list. They never join the event steps.</div>';
   }
   el.innerHTML = h;
 }
@@ -8454,8 +8453,18 @@ function hmBandHTML(o){
 function hmGapsHTML(){
   var parts = [];
   if(typeof AP !== 'undefined' && AP && AP.counts){
-    var ac = AP.counts;
-    parts.push(ac.dated + ' findings carry a published date — those are the steps. ' + ac.undated + ' do not; they are never backdated, and rest in All appearances and in their place\u2019s list.');
+    var ac = AP.counts, dPl = 0, uPl = 0;
+    (AP.items || []).forEach(function(a){
+      if(!a.pid) return;
+      if(a.published) dPl++; else uPl++;
+    });
+    /* One accounting, the same numbers the readout and the
+       strip carry (V4.17.1): dated and undated are stated for
+       the whole file AND for the placed findings the map and
+       the steps actually hold, each labeled as what it is. */
+    parts.push('Of the ' + ac.total + ' findings on file, ' + ac.dated + ' carry a published date: ' + dPl + ' of them are placed and form the steps' +
+      (ac.dated - dPl ? '; the other ' + (ac.dated - dPl) + ' name no place, so they cannot be stepped to' : '') + '. ' +
+      'The other ' + ac.undated + ' have no published date and are never backdated \u2014 ' + uPl + ' of them are placed, resting in All appearances and in their place\u2019s list.');
     if(ac.unplaced) parts.push(ac.unplaced + ' findings name no place in the record and have none on file — counted here, never placed by guess.');
   }
   return parts.join('<br>');
@@ -8566,7 +8575,7 @@ function hmPaintReadout(){
       var datedN = 0;
       hmAppsModel().items.forEach(function(a){ if(a.published) datedN++; });
       counts.innerHTML = '<b>' + st.list.length + '</b> findings on the map \u00b7 <b>' + Object.keys(st.byPlace).length + '</b> places<br>' +
-        '<b>' + datedN + '</b> of them carry a published date \u2014 those are the steps. The rest rest here, in All.';
+        '<b>' + datedN + '</b> of them carry a published date \u2014 those are the steps. The other <b>' + (st.list.length - datedN) + '</b> have no published date; they rest here, in All.';
     } else {
       counts.innerHTML = '<b>' + st.list.length + '</b> finding' + (st.list.length === 1 ? '' : 's') + ' on the map through ' + hmFmtDate(st.cutoff) +
         ' \u00b7 event ' + (HM.evIdx + 1) + ' of ' + evs.length + '<br>Rest on All appearances to bring the undated findings back.';
@@ -8718,13 +8727,32 @@ function hmPaint(){
        place (the newest), capped so the map stays readable. */
     var recent = st.list.filter(function(a){ return hmAppRecent(a, M.maxD); })
       .sort(function(a, b){ return b.published.localeCompare(a.published) || a.display.localeCompare(b.display); });
-    var seenPl = {}, pinN = 0;
+    var seenPl = {}, pinN = 0, pinBoxes = [];
+    var mapEl2 = document.getElementById('hmMap');
+    var mapW = mapEl2 ? mapEl2.clientWidth : 0, mapH = mapEl2 ? mapEl2.clientHeight : 0;
     recent.forEach(function(a){
       if(pinN >= 16 || seenPl[a.pid]) return;
-      seenPl[a.pid] = 1; pinN++;
+      seenPl[a.pid] = 1;
       var pl2 = M.places[a.pid]; if(!pl2) return;
       var cpt = HM.map.latLngToContainerPoint([pl2.lat, pl2.lng]);
-      var ll = HM.map.containerPointToLatLng(L.point(cpt.x, cpt.y - 40));
+      /* A label that cannot be read whole is not drawn
+         (V4.17.1): the pin's box (188 wide, riding 40px above
+         its place point, up to ~58 tall with two phrase lines)
+         is slid sideways to fit inside the map, and the pin is
+         skipped when it still cannot fit or would stack onto
+         a label already drawn — a label clipped by the map's
+         edge or buried under another answers nothing. The
+         place badge and the Latest appearances strip still
+         carry the finding. Newest findings win the labels. */
+      var bx1 = Math.max(4, Math.min(cpt.x - 94, mapW - 192));
+      var bx = { x1:bx1, y1:cpt.y - 86, x2:bx1 + 188, y2:cpt.y - 28 };
+      if(!mapW || bx.x2 > mapW - 4 || bx.y1 < 4 || bx.y2 > mapH - 4) return;
+      for(var bi = 0; bi < pinBoxes.length; bi++){
+        var ob = pinBoxes[bi];
+        if(bx.x1 < ob.x2 + 2 && bx.x2 > ob.x1 - 2 && bx.y1 < ob.y2 + 2 && bx.y2 > ob.y1 - 2) return;
+      }
+      pinBoxes.push(bx); pinN++;
+      var ll = HM.map.containerPointToLatLng(L.point(bx.x1 + 94, cpt.y - 40));
       var ageD = Math.round((hmDayMs(M.maxD) - hmDayMs(a.published)) / 864e5);
       var pin = L.marker(ll, { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-apin' + (ageD <= 21 ? ' fresh' : '') + (HM.sel && HM.sel.type === 'app' && HM.sel.i === a.i ? ' sel' : '') + '"><b>' + esc(a.display) + '</b><i>' + esc(hmAppsPhrase(a.text)) + '</i></span>', iconSize:[188, 46], iconAnchor:[94, 46] }) }).addTo(HM.layer);
       pin.on('click', function(){ hmSelectApp(a.i); });
