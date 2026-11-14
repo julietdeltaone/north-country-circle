@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.16.0';
+var APP_VERSION = '4.17.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -8085,10 +8085,13 @@ var HM_VENUES = {
 var HM = { ver:-1, model:null, dateIdx:-1, playing:false, speed:1, heat:false,
            sel:null, selBack:null, map:null, layer:null, spider:null, timer:null, cbs:null, loading:false,
            fs:false, fsFallback:false,
-           /* V4.16.0 layers: web = web-search appearances (the
-              leading story), home = each person's place on file,
-              seen = dated proximity sightings. */
-           layers:{ web:true, home:true, seen:true }, apps:null };
+           /* V4.17.0: the homepage map shows web-search appearances
+              ONLY (JD 2026-11-14). evIdx is the event stepper's
+              state: -1 = the resting "All appearances" state;
+              0..N-1 = stepped to that dated appearance (events
+              ordered by published date). The old V4.16 layer
+              toggles are gone — there is one layer left. */
+           layers:{ web:true, home:true, seen:true }, apps:null, evIdx:-1, ev:null };
 var HM_SPIDER_MAX = 28;
 function hmNormPlace(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 function hmDateNorm(s){
@@ -8186,18 +8189,24 @@ function hmVisibleAt(ds){
   return { list:out, byPlace:byPlace };
 }
 /* ============================================================
-   WEB APPEARANCES (V4.16.0, JD 2026-11-13): the map's leading
-   layer answers "who's been appearing in what web search,
-   where, and when?" — findings from the Live Records corpus
+   WEB APPEARANCES (V4.16.0, JD 2026-11-13; V4.17.0, JD
+   2026-11-14): the homepage map shows appearances and NOTHING
+   else — "who's been appearing in what web search, where, and
+   when?" — findings from the Live Records corpus
    (site/data/appearances.json, derived by
    scripts/build_appearances.py from the footprints + the
-   briefs' recorded published dates). An appearance exists on
-   the map FROM its published date forward; a finding with no
-   recorded published date is never backdated — it shows at
-   Today only, faded, like a person with no dated record.
-   Places come only from the record (the finding text, or the
-   person's place on file); findings with neither are counted
-   in the readout, never placed by guess.
+   briefs' recorded published dates). Places come only from the
+   record (the finding text, or the person's place on file);
+   findings with neither are counted in the readout, never
+   placed by guess.
+   TIME IS AN EVENT STEPPER, not a timeline (V4.17.0): the
+   dated appearances, ordered by published date, are the stops.
+   Stepping to event N shows appearances cumulatively up to
+   that event — things appear as you advance. A finding with no
+   recorded published date has no moment: it is NEVER backdated
+   and never enters the sequence; it lives in the resting "All
+   appearances" state and in its place's findings list, labeled
+   "No date on record" where a date would go.
    ============================================================ */
 var AP = null, AP_LOADING = false;
 function apLoad(){
@@ -8230,15 +8239,45 @@ function hmAppsModel(){
   HM.apps = { items:items, byPlace:byPlace, counts:(AP && AP.counts) || null };
   return HM.apps;
 }
-function hmVisibleApps(ds){
-  var A = hmAppsModel(), M = hmModel(), list = [], byPlace = {};
+/* The dated appearances in published order — the stepper's
+   stops. Cached against the loaded corpus. */
+function hmEvents(){
+  if(HM.ev) return HM.ev;
+  var A = hmAppsModel();
+  HM.ev = A.items.filter(function(a){ return !!a.published; })
+    .sort(function(a, b){ return a.published.localeCompare(b.published) || a.display.localeCompare(b.display); });
+  return HM.ev;
+}
+/* What the map shows at the current stepper state. Rest
+   (evIdx < 0): every placed appearance, dated and undated.
+   Stepped to event N: the dated appearances published on or
+   before that event's date (cumulative) — undated findings
+   have no moment and step aside until rest. */
+function hmStateApps(){
+  var A = hmAppsModel(), evs = hmEvents();
+  if(HM.evIdx < 0 || !evs.length) return { list:A.items, byPlace:A.byPlace, rest:true, cutoff:'' };
+  var k = Math.min(HM.evIdx, evs.length - 1), cutoff = evs[k].published;
+  var list = [], byPlace = {};
   A.items.forEach(function(a){
-    var on = a.published ? (a.published <= ds) : (ds === M.maxD);
-    if(!on) return;
-    list.push(a);
-    (byPlace[a.pid] = byPlace[a.pid] || []).push(a);
+    if(a.published && a.published <= cutoff){
+      list.push(a);
+      (byPlace[a.pid] = byPlace[a.pid] || []).push(a);
+    }
   });
-  return { list:list, byPlace:byPlace };
+  return { list:list, byPlace:byPlace, rest:false, cutoff:cutoff };
+}
+/* A place's findings list (its hero card): the findings the
+   current state puts on the map, PLUS every undated finding
+   for the place — undated findings belong to places, not to
+   moments, so they stay listed, labeled "No date on record".
+   Newest first; undated last (the byPlace sort already puts
+   empty dates last). */
+function hmPlaceFindings(pk){
+  var A = hmAppsModel(), all = A.byPlace[pk] || [];
+  if(HM.evIdx < 0) return all;
+  var evs = hmEvents(); if(!evs.length) return all;
+  var cutoff = evs[Math.min(HM.evIdx, evs.length - 1)].published;
+  return all.filter(function(a){ return !a.published || a.published <= cutoff; });
 }
 function hmAppRecent(a, ds){ return !!a.published && Math.round((hmDayMs(ds) - hmDayMs(a.published)) / 864e5) <= 90; }
 function hmAppsPhrase(text){
@@ -8264,64 +8303,53 @@ function hmAppRowHTML(a, ds, showPlace){
     '<span class="gm-adot ' + hmAppAgeCls(a, ds) + '"></span>' +
     '<span class="gm-pn"><b>' + esc(a.display) + '</b> — ' + esc(hmAppsPhrase(a.text)) + '</span>' +
     (showPlace ? '<span class="gm-pdate">' + esc(a.place || (pl ? pl.label : '')) + '</span>' : '') +
-    '<span class="gm-pdate">' + (a.published ? hmShortDate(a.published) : 'No date') + '</span>' +
+    '<span class="gm-pdate">' + (a.published ? hmShortDate(a.published) : 'No date on record') + '</span>' +
     '<span class="gm-chev">›</span></button>';
 }
-function hmPlaceAppsHTML(pk, ds){
-  if(!HM.layers.web || !AP) return '';
-  var rows = (hmVisibleApps(ds).byPlace[pk] || []);
+function hmPlaceAppsHTML(pk){
+  if(!AP) return '';
+  var rows = hmPlaceFindings(pk);
   if(!rows.length) return '';
+  var st = hmStateApps(), ref = st.rest ? hmModel().maxD : st.cutoff;
   var shown = rows.slice(0, 30);
-  return '<div class="gm-dsub2">In web search here — ' + rows.length + ' finding' + (rows.length === 1 ? '' : 's') + '</div>' +
-    '<div class="gm-plist gm-aplist">' + shown.map(function(a){ return hmAppRowHTML(a, ds, false); }).join('') + '</div>' +
+  return '<div class="gm-plist gm-aplist">' + shown.map(function(a){ return hmAppRowHTML(a, ref, false); }).join('') + '</div>' +
     (rows.length > shown.length ? '<div class="gm-pfoot">Showing the newest ' + shown.length + ' of ' + rows.length + ' findings here.</div>' : '');
 }
-function hmPersonAppsHTML(di, ds){
-  if(!HM.layers.web || !AP) return '';
-  var va = hmVisibleApps(ds), rows = va.list.filter(function(a){ return a.di === di; })
-    .sort(function(a, b){ return String(b.published || '').localeCompare(String(a.published || '')); });
-  if(!rows.length) return '';
-  var shown = rows.slice(0, 3);
-  return '<div class="gm-dsub2">Appeared in web search — ' + rows.length + ' finding' + (rows.length === 1 ? '' : 's') + '</div>' +
-    '<div class="gm-plist gm-aplist">' + shown.map(function(a){ return hmAppRowHTML(a, ds, true); }).join('') + '</div>';
-}
 /* The first-glance strip: the newest dated appearances at the
-   scrub date, readable without clicking — who, doing what,
-   where, when. Sits inside the map card under the map, so it
-   rides into full-screen mode with the card. */
-function hmPaintStrip(ds){
+   current stepper state, readable without clicking — who,
+   doing what, where, when. Sits inside the map card under the
+   stepper, so it rides into full-screen mode with the card. */
+function hmPaintStrip(){
   var el = document.getElementById('hmAppsStrip'); if(!el) return;
-  if(!HM.layers.web){ el.style.display = 'none'; el.innerHTML = ''; return; }
-  el.style.display = '';
   if(!AP){ el.innerHTML = '<div class="gm-as-head">Latest appearances<span>in web search</span></div><p class="gm-dim">Loading the findings…</p>'; return; }
-  var A = hmAppsModel(), M = hmModel();
-  var dated = A.items.filter(function(a){ return a.published && a.published <= ds; })
+  var A = hmAppsModel(), M = hmModel(), st = hmStateApps();
+  var ref = st.rest ? M.maxD : st.cutoff;
+  var dated = A.items.filter(function(a){ return a.published && a.published <= ref; })
     .sort(function(a, b){ return b.published.localeCompare(a.published) || a.display.localeCompare(b.display); });
-  var h = '<div class="gm-as-head">Latest appearances<span>in web search · as of ' + hmFmtDate(ds) + '</span></div>';
+  var h = '<div class="gm-as-head">Latest appearances<span>in web search · ' +
+    (st.rest ? 'as of ' + hmFmtDate(M.maxD) : 'through ' + hmFmtDate(st.cutoff)) + '</span></div>';
   if(dated.length){
     h += dated.slice(0, 5).map(function(a){
       var pl = M.places[a.pid];
       return '<button type="button" class="gm-asrow" data-act="hmapp" data-i="' + a.i + '" data-pub="' + a.published + '">' +
-        '<span class="gm-adot ' + hmAppAgeCls(a, ds) + '"></span>' +
+        '<span class="gm-adot ' + hmAppAgeCls(a, ref) + '"></span>' +
         '<span class="gm-aswho">' + esc(a.display) + '</span>' +
         '<span class="gm-aswhat">' + esc(hmAppsPhrase(a.text)) + '</span>' +
         '<span class="gm-aswhere">' + esc(a.place || (pl ? pl.label : '')) + '</span>' +
         '<span class="gm-aswhen">' + hmShortDate(a.published) + '</span></button>';
     }).join('');
   } else {
-    var firstD = A.items.filter(function(a){ return a.published; })
-      .sort(function(a, b){ return a.published.localeCompare(b.published); })[0];
-    h += '<p class="gm-dim">No appearance with a known published date by ' + hmFmtDate(ds) +
-      (firstD ? ' — dated appearances on file start ' + hmMonYear(firstD.published) + '; scrub forward.' : '.') + '</p>';
+    var evs = hmEvents(), firstD = evs.length ? evs[0] : null;
+    h += '<p class="gm-dim">No dated appearance yet at this stop' +
+      (firstD ? ' — dated appearances on file start ' + hmMonYear(firstD.published) + '; step forward.' : '.') + '</p>';
   }
-  if(ds === M.maxD){
+  if(st.rest){
     var undN = A.items.filter(function(a){ return !a.published; }).length;
-    if(undN) h += '<div class="gm-asfoot">' + undN + ' more findings are on file without a published date — they show on the map at Today only, faded, and in each place\u2019s list.</div>';
+    if(undN) h += '<div class="gm-asfoot">' + undN + ' more findings are on file without a published date — they rest on the map here, in All appearances, and in each place\u2019s list. They never join the event steps.</div>';
   }
   el.innerHTML = h;
 }
 function hmSelectApp(i){
-  var ds = hmDateAt(HM.dateIdx);
   if(HM.sel && HM.sel.type === 'place') HM.selBack = { type:'place', key:HM.sel.key };
   else if(HM.sel && HM.sel.type === 'person') HM.selBack = { type:'person', di:HM.sel.di };
   else if(!HM.sel) HM.selBack = null;
@@ -8331,10 +8359,14 @@ function hmSelectApp(i){
   A.items.forEach(function(x){ if(x.i === i) app = x; });
   if(app && HM.map){ var pl = hmModel().places[app.pid]; if(pl) HM.map.flyTo([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { duration:.5 }); }
 }
-function hmHeroDefaultHTML(){
-  return '<div class="gm-hero-def"><h3>As of <span id="hmAsOf">—</span></h3>' +
+/* The standing readout, in the footer band below the map
+   (V4.17.0): where the map stands, in counts and honest gaps.
+   The selection hero no longer lives here — it overlays the
+   map itself, so it is visible the moment anything is clicked. */
+function hmReadoutHTML(){
+  return '<div class="gm-mini gm-readout"><h3>Where the map stands — <span id="hmAsOf">—</span></h3>' +
     '<div class="gm-counts" id="hmCounts">—</div>' +
-    '<p class="gm-hero-hint">Click a finding label, a place, or a person in a place, and their card opens here, at the top.</p>' +
+    '<p class="gm-hero-hint">Click a finding label or a place on the map, and its card opens right on the map.</p>' +
     '<div class="gm-gaps" id="hmGaps"></div></div>';
 }
 function hmBandHTML(o){
@@ -8367,37 +8399,46 @@ function hmBandHTML(o){
     v4MRow('No date on file', '', 'dim', o.pct(M.lc.none), M.lc.none) +
     '<div class="pv-foot">' + (o.proxN ? 'Crossed paths this week without contact counting: ' + o.proxN + ' people' + (o.proxVenue ? ', most recently at ' + esc(o.proxVenue) : '') + '. ' : '') + '<a class="lnk" href="#/calendar">See the Calendar →</a></div>' +
     '</div>';
+  /* V4.17.0 layout (JD 2026-11-14): the map takes the FULL width
+     of the band — the right sidebar's space is merged into it —
+     and everything the sidebar carried moves BELOW the map into
+     a footer band (.gm-foot): the standing readout, the legend,
+     Biggest places, Directory at a glance, Known since. The one
+     exception is the selection detail: it keeps the hero-card
+     treatment but docks ON the map as an overlay (#hmHero inside
+     .gm-mapwrap), so a click answers immediately, on the map.
+     Controls are consolidated: Reset view + Full screen in the
+     header, and ONE time control — the event stepper — docked
+     directly under the map. No layer chips: the map shows web
+     appearances and nothing else. */
   var center = '<div class="gm-mapcard" id="hmCard">' +
-    '<div class="gm-mhead"><div><h2>Who is appearing, where</h2><p>Web appearances lead: findings from web searches, pinned where they happened, from the date they were published. Places on file and sightings ride along — the layer buttons choose what the map shows.</p></div>' +
-    '<div class="gm-mtools"><span class="gm-layers" role="group" aria-label="Map layers">' +
-    '<button type="button" class="gm-lchip l-web on" data-act="hmlayer" data-l="web" aria-pressed="true">Web appearances</button>' +
-    '<button type="button" class="gm-lchip l-home on" data-act="hmlayer" data-l="home" aria-pressed="true">Place on file</button>' +
-    '<button type="button" class="gm-lchip l-seen on" data-act="hmlayer" data-l="seen" aria-pressed="true">Seen</button></span>' +
-    '<button type="button" class="btn ghost sm" data-act="hmheat" id="hmHeatBtn" aria-pressed="false" title="Density heat view of the same counts">Density</button>' +
+    '<div class="gm-mhead"><div><h2>Who\u2019s appearing in web search</h2><p>Every finding from web searches, pinned where it happened — nothing else is on this map. Step through the dated findings one by one and watch them appear, or rest on all of them; a finding with no published date lives in All, and in its place\u2019s list.</p></div>' +
+    '<div class="gm-mtools">' +
     '<button type="button" class="btn ghost sm" data-act="hmreset">Reset view</button>' +
     '<button type="button" class="btn ghost sm" data-act="hmfull" id="hmFsBtn">Full screen</button></div></div>' +
-    '<div id="hmMap" class="gm-map" role="application" aria-label="Map of contacts by place over time"></div>' +
-    '<div class="gm-astrip" id="hmAppsStrip"></div>' +
-    '<div class="gm-scrub"><div class="gm-srow">' +
+    '<div class="gm-mapwrap"><div id="hmMap" class="gm-map" role="application" aria-label="Map of web search appearances"></div>' +
+    '<div class="gm-mapnote" id="hmNote" hidden></div>' +
+    '<div class="gm-hero gm-herodock" id="hmHero" hidden></div></div>' +
+    '<div class="gm-step"><div class="gm-srow">' +
+    '<button type="button" class="gm-stepbtn" data-act="hmprev" aria-label="Previous dated appearance">‹</button>' +
     '<button type="button" class="btn primary sm" data-act="hmplay" id="hmPlayBtn">Play</button>' +
-    '<div class="gm-speed" role="group" aria-label="Play speed">' +
-    '<button type="button" data-act="hmspeed" data-s="1" class="on">1×</button><button type="button" data-act="hmspeed" data-s="2">2×</button><button type="button" data-act="hmspeed" data-s="4">4×</button></div>' +
-    '<div class="gm-date" id="hmDateLab">—</div></div>' +
-    '<input type="range" id="hmRange" min="0" max="100" value="100" step="1" aria-label="Scrub through time">' +
-    '<div class="gm-ticks"><span id="hmTickA">—</span><span>2010</span><span>2013</span><span>2016</span><span>2020</span><span>2023</span><span>Today</span></div>' +
-    '<div class="gm-scrubhint">Drag to scrub · Play animates the years</div></div>' +
+    '<button type="button" class="gm-stepbtn" data-act="hmnext" aria-label="Next dated appearance">›</button>' +
+    '<button type="button" class="btn ghost sm" data-act="hmall">All appearances</button>' +
+    '<div class="gm-evread" id="hmEvRead">—</div></div>' +
+    '<input type="range" id="hmRange" min="0" max="0" value="0" step="1" aria-label="Step through the dated appearances, one stop per appearance">' +
+    '<div class="gm-evmarks" id="hmEvMarks"></div>' +
+    '<div class="gm-scrubhint">Each stop is one dated appearance — no empty years to drag across. Drag, use the arrow keys on the slider, or step with the buttons. Play walks the appearances in order and lands back on All.</div></div>' +
+    '<div class="gm-astrip" id="hmAppsStrip"></div>' +
     '</div>';
-  var right = '<div class="gm-rail gm-rail-r">' +
-    '<div class="gm-hero" id="hmHero">' + hmHeroDefaultHTML() + '</div>' +
+  var foot = '<div class="gm-foot">' +
+    hmReadoutHTML() +
     '<div class="gm-mini" id="hmLegend"><h3>How to read it <button type="button" class="gm-legbtn" data-act="hmlegend">Hide</button></h3><div class="gm-legend">' +
-    '<div><span class="gm-sw c-fresh"></span>In touch — contact in the last 45 days</div>' +
-    '<div><span class="gm-sw c-year"></span>Contact within the last year</div>' +
-    '<div><span class="gm-sw c-old"></span>Last contact over a year ago</div>' +
-    '<div><span class="gm-sw c-prox"></span>Seen there (proximity) — no contact yet</div>' +
-    '<div><span class="gm-sw c-und"></span>Place on file, no dated record — Today only</div>' +
-    '<div><span class="gm-sw a-pin"></span>Appeared in web search — published in the last 90 days; the label says who and what</div>' +
-    '<div><span class="gm-sw a-dia"></span>More findings at that place — click the count for the list (dashed: includes findings with no published date, Today only)</div>' +
-    '<div class="gm-leg-note">The ring takes the freshest colour there; a dashed ring means no dated record. Click a place to fan its people out; a badge naming several places is a cluster — click to zoom in. Places with more than ' + HM_SPIDER_MAX + ' people open their list in the card at the top instead. The layer buttons above the map switch web appearances, places on file, and sightings on and off.</div>' +
+    '<div><span class="gm-sw a-hot"></span>Published in the last 21 days</div>' +
+    '<div><span class="gm-sw a-mid"></span>Published in the last 90 days</div>' +
+    '<div><span class="gm-sw a-old"></span>Published longer ago</div>' +
+    '<div><span class="gm-sw a-und"></span>No published date on record — rests in All appearances, never in the steps</div>' +
+    '<div><span class="gm-sw a-pin"></span>A recent appearance, labeled with who and what</div>' +
+    '<div class="gm-leg-note">A place badge counts the findings there; its ring takes the newest finding\u2019s colour — dashed when a place has findings with no published date in view. A badge naming several places is a cluster of close places — click to zoom in. Click any place, label, or list row and its card opens on the map.</div>' +
     '</div></div>' +
     '<div class="gm-mini hm-detail" id="hmDetail"></div>' +
     stats +
@@ -8407,32 +8448,27 @@ function hmBandHTML(o){
     v4MRow('Under a year', '', 'gold', o.pct(M.ks.u1), M.ks.u1) +
     '<div class="pv-foot">Longest known: since <b>' + (M.ksMin || '—') + '</b> — your family.</div></div>' +
     '</div>';
-  return '<section class="gm-band">' + center + right + '</section>';
+  return '<section class="gm-band">' + center + foot + '</section>';
 }
 function hmGapsHTML(){
-  var M = hmModel(), parts = [];
-  if(M.undatedN) parts.push(M.undatedN + ' of the ' + M.placedN + ' placed have a place on file but no dated record — they appear only at Today, in the muted style.');
-  var un = Object.keys(M.unplacedNames);
-  if(un.length) parts.push('Not placed: ' + un.map(function(s){ return esc(s) + ' (' + M.unplacedNames[s] + ')'; }).join(', ') + ' — no match in the place list.');
-  var uv = Object.keys(M.unplacedVenues);
-  if(uv.length) parts.push('Place entries not placed: ' + uv.map(function(s){ return esc(s) + ' (' + M.unplacedVenues[s] + ')'; }).join(', ') + '.');
+  var parts = [];
   if(typeof AP !== 'undefined' && AP && AP.counts){
     var ac = AP.counts;
-    parts.push('Web appearances: ' + ac.dated + ' findings carry a published date; ' + ac.undated + ' do not — those show at Today only and are never backdated.');
-    if(ac.unplaced) parts.push(ac.unplaced + ' findings name no place and have none on file — counted here, not shown on the map.');
+    parts.push(ac.dated + ' findings carry a published date — those are the steps. ' + ac.undated + ' do not; they are never backdated, and rest in All appearances and in their place\u2019s list.');
+    if(ac.unplaced) parts.push(ac.unplaced + ' findings name no place in the record and have none on file — counted here, never placed by guess.');
   }
   return parts.join('<br>');
 }
-function hmDetailDefault(ds){
-  var M = hmModel(), vis = hmVisibleAt(ds);
-  var all = Object.keys(vis.byPlace).map(function(pk){
-    return { pk:pk, n:vis.byPlace[pk].length, label:M.places[pk].label };
+function hmDetailDefault(){
+  var M = hmModel(), st = hmStateApps();
+  var all = Object.keys(st.byPlace).map(function(pk){
+    return { pk:pk, n:st.byPlace[pk].length, label:M.places[pk] ? M.places[pk].label : pk };
   }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); });
   var rows = all.slice(0, 6);
   return '<h3>Biggest places</h3>' + (rows.length ? rows.map(function(r){
     return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b><span class="gm-chev">›</span></button>';
-  }).join('') : '<p class="gm-dim">Nobody is placed yet at this date.</p>') +
-  '<p class="gm-dim">Top ' + rows.length + ' of ' + all.length + ' places — click a row, or a place on the map.</p>';
+  }).join('') : '<p class="gm-dim">No findings on the map at this stop yet — step forward, or rest on All appearances.</p>') +
+  '<p class="gm-dim">Top ' + rows.length + ' of ' + all.length + ' places by findings ' + (st.rest ? 'in All appearances' : 'through this stop') + ' — click a row, or a place on the map.</p>';
 }
 function hmMonYear(dstr){ var d = new Date(dstr + 'T12:00:00'); return isNaN(d) ? dstr : d.toLocaleDateString('en-US', { month:'short', year:'numeric' }); }
 var HM_STATUS_TXT = { fresh:'In touch — contact in the last 45 days', year:'Contact within the last year', old:'Last contact over a year ago', prox:'Seen (proximity) — no contact yet' };
@@ -8446,34 +8482,37 @@ function hmHeroHead(kick){
     (HM.selBack ? '<button type="button" class="gm-hero-x back" data-act="hmback">' + esc(backTxt) + '</button>' : '') +
     '<button type="button" class="gm-hero-x" data-act="hmclose">Close</button></span></div>';
 }
-/* V4.15.0: the click detail is a HERO CARD pinned at the top of the
-   right sidebar (#hmHero) — person, place, and cluster selections
-   all render there, large, without scrolling. #hmDetail below it
-   keeps the default Biggest-places list. Nothing selected: the hero
-   slot carries the As-of readout, as before. Repaints touch only
-   the sidebar; the page never scrolls. */
-function hmPaintDetail(ds){
-  var det = document.getElementById('hmDetail'); if(det) det.innerHTML = hmDetailDefault(ds);
+/* V4.17.0: the click detail is a HERO CARD docked ON the map
+   (#hmHero inside .gm-mapwrap, an overlay at the map's right
+   edge) — place, cluster, and finding selections render there,
+   large, the moment they are clicked; the map stays visible
+   behind it. Nothing selected: the overlay is hidden, and the
+   standing readout lives in the footer band (#hmDetail keeps
+   the Biggest-places list there). Repaints touch only the
+   overlay and the footer; the page never scrolls. */
+function hmPaintDetail(){
+  var det = document.getElementById('hmDetail'); if(det) det.innerHTML = hmDetailDefault();
   var hero = document.getElementById('hmHero'); if(!hero) return;
   var M = hmModel();
-  if(!HM.sel){ hero.innerHTML = hmHeroDefaultHTML(); hmPaintReadout(ds); return; }
+  if(!HM.sel){ hero.hidden = true; hero.innerHTML = ''; return; }
+  hero.hidden = false;
   if(HM.sel.type === 'cluster'){
-    var visC = hmVisibleAt(ds);
+    var stC = hmStateApps();
     var crows = HM.sel.keys.map(function(pk){
-      return { pk:pk, n:(visC.byPlace[pk] || []).length, label:M.places[pk] ? M.places[pk].label : pk };
+      return { pk:pk, n:(stC.byPlace[pk] || []).length, label:M.places[pk] ? M.places[pk].label : pk };
     }).filter(function(r){ return r.n > 0; }).sort(function(a, b){ return b.n - a.n || a.label.localeCompare(b.label); });
     hero.innerHTML = hmHeroHead('Places close together') +
       '<h3 class="gm-hero-name">Places close together</h3>' +
       '<div class="gm-dsub">Too close to separate at this zoom — pick one:</div>' +
       (crows.length ? crows.map(function(r){
         return '<button type="button" class="gm-trow" data-act="hmplace" data-k="' + esc(r.pk) + '"><span>' + esc(r.label) + '</span><b>' + r.n + '</b><span class="gm-chev">›</span></button>';
-      }).join('') : '<p class="gm-dim">Nobody at these places at this date.</p>');
+      }).join('') : '<p class="gm-dim">No findings at these places at this stop.</p>');
     return;
   }
   if(HM.sel.type === 'app'){
     var A2 = hmAppsModel(), app = null;
     A2.items.forEach(function(x){ if(x.i === HM.sel.i) app = x; });
-    if(!app){ HM.sel = null; hmPaintDetail(ds); return; }
+    if(!app){ HM.sel = null; hmPaintDetail(); return; }
     var ae = D.directory[app.di], apl = M.places[app.pid];
     hero.innerHTML = hmHeroHead('Web appearance') +
       (ae ? '<div class="gm-hero-id"><span class="gm-hero-av">' + afAvatarHTML(ae, app.di, 'lg') + '</span>' +
@@ -8489,81 +8528,96 @@ function hmPaintDetail(ds){
       '<div class="gm-dline gm-dim">' + (app.placeSrc === 'profile'
         ? 'The finding itself names no place, so it is pinned at the place on file.'
         : 'The place is named in the finding itself.') +
-        (app.published ? '' : ' No published date is on file for this finding, so it shows at Today only — never backdated.') + '</div>' +
+        (app.published ? '' : ' No published date is on file for this finding, so it rests in All appearances and in its place\u2019s list — never backdated, and never one of the steps.') + '</div>' +
       (ae ? '<div class="gm-hero-acts"><a class="btn primary sm gm-openbtn" href="#/p/' + encodeURIComponent(personId(ae)) + '" data-act="openp" data-di="' + app.di + '">Open profile</a></div>' : '');
     return;
   }
   if(HM.sel.type === 'place'){
     var pl = M.places[HM.sel.key];
-    if(!pl){ HM.sel = null; hmPaintDetail(ds); return; }
-    var vis = hmVisibleAt(ds), rows = (vis.byPlace[HM.sel.key] || []).slice().sort(function(a, b){
-      return dispName(D.directory[a.di]).localeCompare(dispName(D.directory[b.di]));
-    });
-    var fresh = rows.length ? hmFreshest(rows) : null;
-    var lcByDi = {};
-    M.people.forEach(function(x){
-      var lc = '';
-      for(var ci2 = x.contacts.length - 1; ci2 >= 0; ci2--){ if(x.contacts[ci2] <= ds){ lc = x.contacts[ci2]; break; } }
-      lcByDi[x.di] = lc;
+    if(!pl){ HM.sel = null; hmPaintDetail(); return; }
+    var stP = hmStateApps();
+    var rowsF = hmPlaceFindings(HM.sel.key);
+    var mapN = (stP.byPlace[HM.sel.key] || []).length;
+    var undN = 0, newest = null;
+    rowsF.forEach(function(a){
+      if(!a.published) undN++;
+      else if(!newest || a.published > newest.published) newest = a;
     });
     hero.innerHTML = hmHeroHead('Place') +
       '<h3 class="gm-hero-name">' + esc(pl.label) + '</h3>' +
-      '<div class="gm-dsub">' + rows.length + (rows.length === 1 ? ' person' : ' people') + ' here as of ' + hmFmtDate(ds) + '</div>' +
-      (fresh ? '<div class="gm-dline"><span class="gm-dot c-' + fresh + '"></span>Freshest here: ' + HM_STATUS_TXT[fresh] + '</div>' : '') +
-      hmPlaceAppsHTML(HM.sel.key, ds) +
-      (rows.length ? '<div class="gm-dsub2">People placed here</div><div class="gm-plist">' + rows.map(function(r){
-        var e = D.directory[r.di], lcT = lcByDi[r.di] ? hmMonYear(lcByDi[r.di]) : (r.cls === 'prox' ? 'Seen only' : (r.undated ? 'No date' : '—'));
-        return '<button type="button" class="gm-prow" data-act="hmperson" data-di="' + r.di + '"><span class="gm-dot c-' + r.cls + (r.undated ? ' und' : '') + '"></span>' + avatar(e, 'xs') + '<span class="gm-pn">' + esc(dispName(e)) + '</span><span class="gm-pdate">' + lcT + '</span><span class="gm-chev">›</span></button>';
-      }).join('') + '</div>' + (rows.length > 9 ? '<div class="gm-pfoot">' + rows.length + ' people, alphabetical — scroll for everyone.</div>' : '') : '<p class="gm-dim">Nobody here at this date. Scrub forward, or pick another place.</p>');
+      '<div class="gm-dsub">' + rowsF.length + (rowsF.length === 1 ? ' finding' : ' findings') + ' here' +
+        (stP.rest ? ' in All appearances.' : ' listed — ' + mapN + ' of them on the map through this stop.') + '</div>' +
+      (newest ? '<div class="gm-dline"><span class="gm-adot ' + hmAppAgeCls(newest, stP.rest ? M.maxD : stP.cutoff) + '"></span><span>Newest here: <b>' + esc(newest.display) + '</b>, ' + hmFmtDate(newest.published) + '</span></div>' : '') +
+      (rowsF.length ? hmPlaceAppsHTML(HM.sel.key) : '<p class="gm-dim">No findings here at this stop. Step forward, or rest on All appearances.</p>') +
+      (undN && !stP.rest ? '<div class="gm-pfoot">' + undN + ' of these have no published date — they belong to the place, so they stay listed; they are not on the map at this stop.</div>' : '');
     return;
   }
-  var di = HM.sel.di, e = D.directory[di];
-  if(!e){ HM.sel = null; hmPaintDetail(ds); return; }
-  var rec = null, vis2 = hmVisibleAt(ds);
-  vis2.list.forEach(function(r){ if(r.di === di) rec = r; });
-  var p = null; M.people.forEach(function(x){ if(x.di === di) p = x; });
-  var here = rec ? M.places[rec.pk] : null;
-  var lastC = '';
-  if(p) for(var ci = p.contacts.length - 1; ci >= 0; ci--){ if(p.contacts[ci] <= ds){ lastC = p.contacts[ci]; break; } }
-  var fc = hmDateNorm(gv(e, 'first_contact'));
-  var lastSeen = '';
-  if(p) p.visits.forEach(function(v){ if(v.d <= ds && v.d > lastSeen) lastSeen = v.d; });
-  (e.events || []).forEach(function(ev){ if(ev && ev.kind === 'proximity' && ev.date && ev.date <= ds && ev.date > lastSeen) lastSeen = ev.date; });
-  var evs = (e.events || []).filter(function(ev){
-    return ev && ev.venue && /^\d{4}-\d{2}-\d{2}$/.test(ev.date || '') && ev.date <= ds;
-  }).slice(-4).reverse();
-  hero.innerHTML = hmHeroHead('Person') +
-    '<div class="gm-hero-id"><span class="gm-hero-av">' + afAvatarHTML(e, di, 'lg') + '</span>' +
-    '<div class="gm-hero-nm"><h3 class="gm-hero-name">' + esc(dispName(e)) + '</h3>' +
-    '<div class="gm-dsub">' + (here ? 'At <b>' + esc(here.label) + '</b> as of ' + hmFmtDate(ds) : 'Not on the map at this date') + '</div></div></div>' +
-    (rec ? '<div class="gm-dline"><span class="gm-dot c-' + rec.cls + '"></span>' + HM_STATUS_TXT[rec.cls] + '</div>'
-         : (p && p.appear ? '<div class="gm-dline gm-dim">First placed ' + hmFmtDate(p.appear) + '</div>' : '')) +
-    '<div class="gm-hero-meta">' +
-    '<div><span>Last contact</span><b>' + (lastC ? hmFmtDate(lastC) : (p && p.contacts.length ? 'None by this date' : 'No contact on file')) + '</b></div>' +
-    (lastSeen ? '<div><span>Last seen</span><b>' + hmFmtDate(lastSeen) + '</b></div>' : '') +
-    '<div><span>First known</span><b>' + (fc ? hmFmtDate(fc) : (p && p.appear ? hmFmtDate(p.appear) : '—')) + '</b></div>' +
-    '</div>' +
-    (evs.length ? '<div class="gm-dline gm-dim">' + evs.map(function(ev){ return hmFmtDate(ev.date) + ' — ' + esc(ev.venue); }).join('<br>') + '</div>' : '') +
-    hmPersonAppsHTML(di, ds) +
-    '<div class="gm-hero-acts"><a class="btn primary sm gm-openbtn" href="#/p/' + encodeURIComponent(personId(e)) + '" data-act="openp" data-di="' + di + '">Open profile</a></div>';
+  HM.sel = null; hero.hidden = true; hero.innerHTML = '';
 }
-function hmPaintReadout(ds){
-  var M = hmModel(), vis = hmVisibleAt(ds);
+function hmPaintReadout(){
+  var M = hmModel(), st = hmStateApps(), evs = hmEvents();
   var asOf = document.getElementById('hmAsOf'), counts = document.getElementById('hmCounts'),
-      gaps = document.getElementById('hmGaps'), lab = document.getElementById('hmDateLab');
-  if(lab) lab.textContent = ds === M.maxD ? hmFmtDate(ds) + ' · Today' : hmFmtDate(ds);
-  if(asOf) asOf.textContent = hmFmtDate(ds);
+      gaps = document.getElementById('hmGaps');
+  if(asOf) asOf.textContent = !AP ? 'loading' : (st.rest ? 'All appearances' : hmFmtDate(st.cutoff));
   if(counts){
-    var notYet = 0;
-    M.people.forEach(function(p){ if(p.appear && p.appear > ds) notYet++; });
-    counts.innerHTML = '<b>' + vis.list.length + '</b> people placed · <b>' + Object.keys(vis.byPlace).length + '</b> places' +
-      (notYet ? '<br>' + notYet + ' more appear later in the timeline.' : '');
-    if(HM.layers.web && AP){
-      var vaN = hmVisibleApps(ds).list.length;
-      counts.innerHTML += '<br><b>' + vaN + '</b> web appearance' + (vaN === 1 ? '' : 's') + ' on the map' + (ds === M.maxD ? '' : ' by this date') + '.';
+    if(!AP) counts.innerHTML = 'Loading the findings\u2026';
+    else if(st.rest){
+      var datedN = 0;
+      hmAppsModel().items.forEach(function(a){ if(a.published) datedN++; });
+      counts.innerHTML = '<b>' + st.list.length + '</b> findings on the map \u00b7 <b>' + Object.keys(st.byPlace).length + '</b> places<br>' +
+        '<b>' + datedN + '</b> of them carry a published date \u2014 those are the steps. The rest rest here, in All.';
+    } else {
+      counts.innerHTML = '<b>' + st.list.length + '</b> finding' + (st.list.length === 1 ? '' : 's') + ' on the map through ' + hmFmtDate(st.cutoff) +
+        ' \u00b7 event ' + (HM.evIdx + 1) + ' of ' + evs.length + '<br>Rest on All appearances to bring the undated findings back.';
     }
   }
   if(gaps) gaps.innerHTML = hmGapsHTML();
+}
+/* The event stepper's own paint: slider position, the per-event
+   tick strip (one segment per dated appearance, filled up to
+   the current stop), and the readout line that says, in words,
+   the current stop's date, who, what, and where. */
+function hmPaintStepper(){
+  var evs = hmEvents(), N = evs.length;
+  var r = document.getElementById('hmRange');
+  if(r){
+    if(r.max !== String(N)) r.max = String(N);
+    var v = HM.evIdx < 0 ? 0 : HM.evIdx + 1;
+    if(document.activeElement !== r && r.value !== String(v)) r.value = String(v);
+  }
+  var mk = document.getElementById('hmEvMarks');
+  if(mk && AP){
+    var cur = HM.evIdx < 0 ? 0 : HM.evIdx + 1;
+    if(mk._n !== N || mk._c !== cur){
+      var mh = '';
+      for(var i = 0; i < N; i++) mh += '<span class="' + (i < cur ? 'on' : '') + '" title="' + hmFmtDate(evs[i].published) + ' \u2014 ' + esc(evs[i].display) + '"></span>';
+      mk.innerHTML = mh; mk._n = N; mk._c = cur;
+    }
+  }
+  var rd = document.getElementById('hmEvRead');
+  if(rd){
+    if(!AP) rd.textContent = 'Loading the findings\u2026';
+    else if(HM.evIdx < 0 || !N){
+      var last = N ? evs[N - 1] : null;
+      rd.innerHTML = '<b>All appearances</b>' + (last ? ' \u00b7 newest dated: ' + hmFmtDate(last.published) + ' \u2014 ' + esc(last.display) + ', ' + esc(last.place) : '');
+    } else {
+      var a = evs[Math.min(HM.evIdx, N - 1)], pl = hmModel().places[a.pid];
+      rd.innerHTML = 'Event ' + (HM.evIdx + 1) + ' of ' + N + ' \u00b7 <b>' + hmFmtDate(a.published) + '</b> \u2014 <b>' + esc(a.display) + '</b> \u00b7 ' + esc(hmAppsPhrase(a.text)) + ' \u00b7 ' + esc(a.place || (pl ? pl.label : ''));
+    }
+  }
+}
+/* Move the stepper. v is the slider value: 0 = rest (All
+   appearances), 1..N = events 1..N in published order. */
+function hmSetEv(v, fly){
+  var evs = hmEvents(), N = evs.length;
+  v = Math.max(0, Math.min(N, v));
+  HM.evIdx = v - 1;
+  var r = document.getElementById('hmRange'); if(r) r.value = String(v);
+  hmPaint();
+  if(fly && HM.evIdx >= 0 && HM.map && window.L){
+    var a = evs[HM.evIdx], pl = a ? hmModel().places[a.pid] : null;
+    if(pl) HM.map.flyTo([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { duration:.7 });
+  }
 }
 function hmCluster(vis){
   /* screen-space grid clustering of place badges (64px cells of
@@ -8615,117 +8669,91 @@ function hmInitials(e){
 }
 function hmPaint(){
   var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
-  var ds = hmDateAt(HM.dateIdx);
-  hmPaintReadout(ds); hmPaintDetail(ds); hmPaintStrip(ds);
+  hmPaintStepper(); hmPaintReadout(); hmPaintDetail(); hmPaintStrip();
   if(!HM.map || !window.L) return;
-  hmClearSpider();
   if(!HM.layer) HM.layer = L.layerGroup().addTo(HM.map);
   HM.layer.clearLayers();
-  var M = hmModel(), vis = hmVisibleAt(ds);
+  var M = hmModel(), st = hmStateApps();
   var selPk = null;
   if(HM.sel && HM.sel.type === 'place') selPk = HM.sel.key;
-  else if(HM.sel && HM.sel.type === 'person'){ for(var svi = 0; svi < vis.list.length; svi++){ if(vis.list[svi].di === HM.sel.di){ selPk = vis.list[svi].pk; break; } } }
-  else if(HM.sel && HM.sel.type === 'app' && AP){ var A0 = hmAppsModel(); for(var avi = 0; avi < A0.items.length; avi++){ if(A0.items[avi].i === HM.sel.i){ selPk = A0.items[avi].pid; break; } } }
-  if(HM.heat){
-    Object.keys(vis.byPlace).forEach(function(pk){
-      var pl = M.places[pk], n = vis.byPlace[pk].length;
-      L.circleMarker([pl.lat, pl.lng], { radius:10 + Math.sqrt(n) * 3.6, weight:0,
-        fillColor:'#6ea8d8', fillOpacity:.30 + .45 * Math.min(1, n / 40) }).addTo(HM.layer)
-        .on('click', function(){ hmSelectPlace(pk, false); });
-    });
-  } else {
-  hmCluster(vis).forEach(function(g){
+  else if(HM.sel && HM.sel.type === 'app' && AP){
+    var A0 = hmAppsModel();
+    for(var avi = 0; avi < A0.items.length; avi++){ if(A0.items[avi].i === HM.sel.i){ selPk = A0.items[avi].pid; break; } }
+  }
+  /* Place badges + clusters, built from the state's findings
+     only. A badge counts findings; its ring takes the newest
+     dated finding's age colour at the state's reference date,
+     dashed when findings with no published date are in view,
+     and muted when the place has only undated findings. */
+  hmCluster(st).forEach(function(g){
     var totN = 0, wlat = 0, wlng = 0;
     g.forEach(function(a){ totN += a.n; wlat += a.pl.lat * a.n; wlng += a.pl.lng * a.n; });
     var lat = wlat / totN, lng = wlng / totN;
     if(g.length > 1){
-      var topA = g[0]; g.forEach(function(a){ if(a.n > topA.n) topA = a; });
-      var cm = L.marker([lat, lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-cluster" title="Cluster of ' + g.length + ' places — click to zoom in">' + totN + '</span><span class="gm-blab gm-clab">' + esc(topA.pl.label.replace(/, [A-Z]{2}$/, '')) + ' +' + (g.length - 1) + ' more</span>', iconSize:[46, 58], iconAnchor:[23, 23] }) }).addTo(HM.layer);
-      cm.on('click', function(){
-        /* Each click steps two zoom levels toward the cluster,
-           so places always separate eventually (a bounds-fit can
-           land on the same zoom and stall). At zoom 14 anything
-           still clustered — places under ~1km apart, like Potsdam
-           town and the Clarkson campus — opens as a place list in
-           the rail instead of zooming forever. */
-        if(HM.map.getZoom() >= 14){
-          HM.selBack = null; HM.sel = { type:'cluster', keys:g.map(function(a){ return a.pk; }) };
-          hmPaintDetail(hmDateAt(HM.dateIdx));
-          return;
-        }
-        HM.map.flyTo([lat, lng], Math.min(14, HM.map.getZoom() + 2), { duration:.5 });
+      var names = g.slice().sort(function(a, b){ return b.n - a.n; }).map(function(a){ return a.pl.label.replace(/, [A-Z]{2}$/, ''); });
+      var ctitle = (names.length > 2 ? names.slice(0, 2).join(' + ') + ' +' + (names.length - 2) : names.join(' + '));
+      var cmk = L.marker([lat, lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-badge gm-cluster' + (totN >= 10 ? ' b-lg' : (totN >= 4 ? ' b-md' : '')) + '" title="' + esc(ctitle) + '"><b>' + totN + '</b><i>' + esc(ctitle) + '</i></span>', iconSize:[52, 52], iconAnchor:[26, 26] }) }).addTo(HM.layer);
+      cmk.on('click', function(){
+        var z = HM.map.getZoom();
+        if(z >= 14){ HM.selBack = null; HM.sel = { type:'cluster', keys:g.map(function(a){ return a.pk; }) }; hmPaintDetail(); }
+        else HM.map.flyTo([lat, lng], Math.min(z + 2, 14), { duration:.5 });
       });
-    } else {
-      var a0 = g[0], rows = vis.byPlace[a0.pk], fresh = hmFreshest(rows);
-      var short = a0.pl.label.replace(/, [A-Z]{2}$/, '');
-      var bsz = a0.n >= 100 ? 52 : a0.n >= 40 ? 46 : a0.n >= 15 ? 40 : 30;
-      var pm = L.marker([a0.pl.lat, a0.pl.lng], { icon:L.divIcon({ className:'gm-di',
-        html:'<span class="gm-badge ring-' + fresh + (rows.some(function(r){ return r.undated; }) && rows.every(function(r){ return r.undated; }) ? ' und' : '') + (selPk === a0.pk ? ' sel' : '') + '" style="width:' + bsz + 'px;height:' + bsz + 'px;font-size:' + (bsz >= 46 ? 15 : bsz >= 40 ? 14 : 12) + 'px">' + a0.n + '</span><span class="gm-blab">' + esc(short) + '</span>',
-        iconSize:[Math.max(34, bsz), bsz + 14], iconAnchor:[Math.max(34, bsz) / 2, bsz / 2] }) }).addTo(HM.layer);
-      pm.on('click', function(){ hmSelectPlace(a0.pk, true); });
+      return;
     }
+    var a0 = g[0], rowsA = st.byPlace[a0.pk], pl = a0.pl;
+    var ref = st.rest ? M.maxD : st.cutoff, newestD = '', hasUnd = false;
+    rowsA.forEach(function(a){ if(!a.published) hasUnd = true; else if(a.published > newestD) newestD = a.published; });
+    var age = newestD ? hmAppAgeCls({ published:newestD }, ref) : '';
+    var ring = age === 'a-hot' ? 'ring-fresh' : (age === 'a-mid' ? 'ring-year' : (age === 'a-old' ? 'ring-old' : ''));
+    var cls = 'gm-badge' + (ring ? ' ' + ring : '') + (totN >= 10 ? ' b-lg' : (totN >= 4 ? ' b-md' : '')) +
+      (!newestD ? ' und' : (hasUnd ? ' dund' : '')) + (selPk === a0.pk ? ' sel' : '');
+    var mk = L.marker([pl.lat, pl.lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="' + cls + '" title="' + esc(pl.label) + '"><b>' + totN + '</b><i>' + esc(pl.label.replace(/, [A-Z]{2}$/, '')) + '</i></span>', iconSize:[52, 52], iconAnchor:[26, 26] }) }).addTo(HM.layer);
+    mk.on('click', function(){ hmSelectPlace(a0.pk); });
   });
-  }
-  /* Web appearances (V4.16.0): recent appearances (published in
-     the last 90 days at the scrub date) ride as labeled pins —
-     name + what they appeared for — above their place; every
-     other appearance folds into a findings count at the place,
-     opening the place card, whose list carries the findings.
-     Pins are capped (16 map-wide, ONE per place — the newest —
-     so neighbouring places like Potsdam and Canton never stack
-     labels on top of each other); the overflow joins the count. */
-  if(HM.layers.web && AP){
-    var va = hmVisibleApps(ds);
-    var recent = va.list.filter(function(a){ return hmAppRecent(a, ds); })
+  if(!AP) return;
+  if(st.rest){
+    /* Resting on All: the appearances of the last 90 days ride
+       as labeled pins — who and what, at a glance — one per
+       place (the newest), capped so the map stays readable. */
+    var recent = st.list.filter(function(a){ return hmAppRecent(a, M.maxD); })
       .sort(function(a, b){ return b.published.localeCompare(a.published) || a.display.localeCompare(b.display); });
-    var pinSlot = {}, perPlaceN = {}, pinN = 0;
+    var seenPl = {}, pinN = 0;
     recent.forEach(function(a){
-      if(pinN >= 16) return;
-      perPlaceN[a.pid] = (perPlaceN[a.pid] || 0) + 1;
-      if(perPlaceN[a.pid] > 1) return;
-      pinSlot[a.i] = perPlaceN[a.pid] - 1; pinN++;
+      if(pinN >= 16 || seenPl[a.pid]) return;
+      seenPl[a.pid] = 1; pinN++;
+      var pl2 = M.places[a.pid]; if(!pl2) return;
+      var cpt = HM.map.latLngToContainerPoint([pl2.lat, pl2.lng]);
+      var ll = HM.map.containerPointToLatLng(L.point(cpt.x, cpt.y - 40));
+      var ageD = Math.round((hmDayMs(M.maxD) - hmDayMs(a.published)) / 864e5);
+      var pin = L.marker(ll, { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-apin' + (ageD <= 21 ? ' fresh' : '') + (HM.sel && HM.sel.type === 'app' && HM.sel.i === a.i ? ' sel' : '') + '"><b>' + esc(a.display) + '</b><i>' + esc(hmAppsPhrase(a.text)) + '</i></span>', iconSize:[188, 46], iconAnchor:[94, 46] }) }).addTo(HM.layer);
+      pin.on('click', function(){ hmSelectApp(a.i); });
     });
-    Object.keys(va.byPlace).forEach(function(pk){
-      var pl = M.places[pk]; if(!pl) return;
-      var all = va.byPlace[pk];
-      var rest = all.filter(function(a){ return !(a.i in pinSlot); });
-      var cpt = HM.map.latLngToContainerPoint([pl.lat, pl.lng]);
-      all.forEach(function(a){
-        if(!(a.i in pinSlot)) return;
-        var pt = L.point(cpt.x, cpt.y - 40 - pinSlot[a.i] * 52);
-        var ll = HM.map.containerPointToLatLng(pt);
-        var ageD = Math.round((hmDayMs(ds) - hmDayMs(a.published)) / 864e5);
-        var pin = L.marker(ll, { icon:L.divIcon({ className:'gm-di',
-          html:'<span class="gm-apin' + (ageD <= 21 ? ' fresh' : '') + (HM.sel && HM.sel.type === 'app' && HM.sel.i === a.i ? ' sel' : '') + '"><b>' + esc(a.display) + '</b><i>' + esc(hmAppsPhrase(a.text)) + '</i></span>',
-          iconSize:[188, 46], iconAnchor:[94, 46] }) }).addTo(HM.layer);
-        pin.on('click', function(){ hmSelectApp(a.i); });
-      });
-      /* The findings count rides only where a place has DATED
-         findings beyond its pin — a count at every place with an
-         undated mention turns the map into noise (89 of them at
-         first build). Undated-only findings stay one click away
-         in the place card and are counted in the readout. */
-      if(rest.length && rest.some(function(a){ return !!a.published; })){
-        var pt2 = L.point(cpt.x + 34, cpt.y - 26);
-        var ll2 = HM.map.containerPointToLatLng(pt2);
-        var anyUnd = rest.some(function(a){ return !a.published; });
-        var dm = L.marker(ll2, { icon:L.divIcon({ className:'gm-di',
-          html:'<span class="gm-abadge' + (anyUnd ? ' und' : '') + '" title="' + rest.length + ' more findings at ' + esc(pl.label) + ' — click for the list"><span class="gm-adia"></span>' + rest.length + '</span>',
-          iconSize:[44, 24], iconAnchor:[22, 12] }) }).addTo(HM.layer);
-        dm.on('click', function(){ hmSelectPlace(pk, false); });
-      }
-    });
+  } else {
+    /* Stepping: earlier stops rest as small dots at their
+       places; the current stop wears the full labeled pin,
+       highlighted. Clicking a dot jumps the stepper to it. */
+    var evs2 = hmEvents();
+    for(var ei = 0; ei <= HM.evIdx && ei < evs2.length; ei++){
+      (function(a, idx, isCur){
+        var pl3 = M.places[a.pid]; if(!pl3) return;
+        if(isCur){
+          var cpt2 = HM.map.latLngToContainerPoint([pl3.lat, pl3.lng]);
+          var ll2 = HM.map.containerPointToLatLng(L.point(cpt2.x, cpt2.y - 40));
+          var ageD2 = Math.round((hmDayMs(M.maxD) - hmDayMs(a.published)) / 864e5);
+          var pin2 = L.marker(ll2, { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-apin cur' + (ageD2 <= 21 ? ' fresh' : '') + '"><b>' + esc(a.display) + '</b><i>' + esc(hmAppsPhrase(a.text)) + '</i></span>', iconSize:[188, 46], iconAnchor:[94, 46] }) }).addTo(HM.layer);
+          pin2.on('click', function(){ hmSelectApp(a.i); });
+        } else {
+          var dot = L.marker([pl3.lat, pl3.lng], { icon:L.divIcon({ className:'gm-di', html:'<span class="gm-edot ' + hmAppAgeCls(a, st.cutoff) + '" title="' + esc(a.display) + ' \u2014 ' + hmFmtDate(a.published) + '"></span>', iconSize:[14, 14], iconAnchor:[7, 7] }) }).addTo(HM.layer);
+          dot.on('click', function(){ hmSetEv(idx + 1, false); hmSelectApp(a.i); });
+        }
+      })(evs2[ei], ei, ei === HM.evIdx);
+    }
   }
 }
-function hmSelectPlace(pk, allowSpider){
-  var ds = hmDateAt(HM.dateIdx), vis = hmVisibleAt(ds), rows = vis.byPlace[pk] || [];
+function hmSelectPlace(pk){
   HM.selBack = (HM.sel && HM.sel.type === 'cluster') ? HM.sel : null;
   HM.sel = { type:'place', key:pk };
-  hmPaintDetail(ds);
-  if(!HM.map) return;
-  var pl = hmModel().places[pk]; if(!pl) return;
-  if(allowSpider && rows.length && rows.length <= HM_SPIDER_MAX) hmSpiderfy(pk, rows);
-  else if(rows.length > HM_SPIDER_MAX) HM.map.flyTo([pl.lat, pl.lng], Math.max(HM.map.getZoom(), 10), { duration:.5 });
+  hmPaint();
 }
 /* Full-screen map mode (V4.15.0, JD 2026-11-13): the map card
    itself goes full screen \u2014 native Fullscreen API where the
@@ -8738,10 +8766,14 @@ function hmSelectPlace(pk, allowSpider){
 function hmFsMoveIn(){
   var card = document.getElementById('hmCard'); if(!card) return;
   var panel = document.getElementById('hmFsPanel');
-  if(!panel){ panel = document.createElement('div'); panel.id = 'hmFsPanel'; panel.className = 'gm-fspanel'; card.appendChild(panel); }
-  var hero = document.getElementById('hmHero'), leg = document.getElementById('hmLegend');
-  if(hero) panel.appendChild(hero);
+  if(!panel){ panel = document.createElement('div'); panel.id = 'hmFsPanel'; panel.className = 'gm-fspanel gm-fspanel-leg'; card.appendChild(panel); }
+  /* V4.17.0: the hero already lives inside the map card (an
+     overlay on the map), so only the legend rides into the
+     full-screen panel — its footer home is remembered and
+     restored on exit. */
+  var leg = document.getElementById('hmLegend');
   if(leg){
+    HM.legHome = { parent: leg.parentNode, next: leg.nextSibling };
     panel.appendChild(leg);
     if(HM.legClosed !== false) leg.classList.add('closed');
     var lb = leg.querySelector('.gm-legbtn');
@@ -8755,11 +8787,13 @@ function hmFsMoveIn(){
   }
 }
 function hmFsMoveBack(){
-  var rail = document.querySelector('.gm-rail-r'); if(!rail) return;
-  var hero = document.getElementById('hmHero'), leg = document.getElementById('hmLegend');
-  if(hero) rail.insertBefore(hero, rail.firstChild);
-  if(leg) rail.insertBefore(leg, hero ? hero.nextSibling : rail.firstChild);
-  if(leg) leg.classList.remove('closed');
+  var leg = document.getElementById('hmLegend');
+  if(leg && HM.legHome && HM.legHome.parent){
+    if(HM.legHome.next && HM.legHome.next.parentNode === HM.legHome.parent) HM.legHome.parent.insertBefore(leg, HM.legHome.next);
+    else HM.legHome.parent.appendChild(leg);
+    leg.classList.remove('closed');
+  }
+  HM.legHome = null;
   var fh = document.getElementById('hmFsHint'); if(fh) fh.remove();
   var panel = document.getElementById('hmFsPanel'); if(panel) panel.remove();
 }
@@ -8825,12 +8859,19 @@ function hmStopPlay(){
 }
 function hmTick(){
   if(!document.getElementById('hmMap')){ hmStopPlay(); return; }
-  var step = HM.speed === 1 ? 14 : (HM.speed === 2 ? 35 : 80);
-  var total = hmTotalDays();
-  HM.dateIdx = Math.min(total, HM.dateIdx + step);
-  var r = document.getElementById('hmRange'); if(r) r.value = String(HM.dateIdx);
-  hmPaint();
-  if(HM.dateIdx >= total) hmStopPlay();
+  var evs = hmEvents(), N = evs.length;
+  if(!N){ hmStopPlay(); return; }
+  if(HM.evIdx >= N - 1){
+    /* The walk ends where JD's model rests: back on All
+       appearances, fitted to the whole map. */
+    HM.evIdx = -1;
+    var r = document.getElementById('hmRange'); if(r) r.value = '0';
+    hmPaint();
+    hmStopPlay();
+    hmFitDefault();
+    return;
+  }
+  hmSetEv(HM.evIdx + 2, true);
 }
 /* If the basemap service itself fails (bad endpoint, outage),
    Leaflet still loads and the badges would float on a blank
@@ -8849,22 +8890,18 @@ function hmTileWatch(layer){
 function hmMount(){
   var mapEl = document.getElementById('hmMap'); if(!mapEl) return;
   if(HM.fs){ HM.fs = false; HM.fsFallback = false; if(document.fullscreenElement){ try { document.exitFullscreen(); } catch(x){} } }
-  var M = hmModel(), total = hmTotalDays();
-  if(HM.dateIdx < 0) HM.dateIdx = total;
-  HM.dateIdx = Math.min(HM.dateIdx, total);
+  /* The stepper's stops are the dated appearances themselves:
+     slider 0 = All appearances, 1..N = events in published
+     order. Dragging paints in place; releasing flies to the
+     stop's place. Keyboard arrows ride the native slider. */
+  var evs0 = hmEvents();
+  if(HM.evIdx >= evs0.length) HM.evIdx = evs0.length - 1;
   var range = document.getElementById('hmRange');
   if(range){
-    range.max = String(total); range.value = String(HM.dateIdx);
-    range.oninput = function(){ hmStopPlay(); HM.dateIdx = +range.value; hmPaint(); };
+    range.max = String(evs0.length); range.value = String(HM.evIdx < 0 ? 0 : HM.evIdx + 1);
+    range.oninput = function(){ hmStopPlay(); hmSetEv(+range.value, false); };
+    range.onchange = function(){ hmSetEv(+range.value, true); };
   }
-  var tickA = document.getElementById('hmTickA'); if(tickA) tickA.textContent = M.minD.slice(0, 4);
-  var hb = document.getElementById('hmHeatBtn');
-  if(hb){ hb.classList.toggle('on', HM.heat); hb.setAttribute('aria-pressed', String(HM.heat)); }
-  $$('.gm-lchip').forEach(function(b){
-    var on = !!HM.layers[b.getAttribute('data-l')];
-    b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on));
-  });
-  $$('.gm-speed button').forEach(function(b){ b.classList.toggle('on', +b.getAttribute('data-s') === HM.speed); });
   hmPaint();
   hmLoadLeaflet(function(ok){
     if(!ok || !document.getElementById('hmMap')){ if(!ok) hmNoMap(); return; }
@@ -8893,8 +8930,7 @@ function hmMount(){
       hmTileWatch(L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
         { maxZoom:18, maxNativeZoom:16 }).addTo(HM.map));
     }
-    HM.map.on('moveend zoomend', function(){ if(!HM.heat) hmPaint(); });
-    HM.map.on('movestart', function(){ hmClearSpider(); });
+    HM.map.on('moveend zoomend', function(){ hmPaint(); });
     hmFitDefault();
     hmPaint();
     setTimeout(function(){ if(HM.map) HM.map.invalidateSize(); }, 60);
@@ -8902,7 +8938,7 @@ function hmMount(){
 }
 function hmNoMap(){
   var el = document.getElementById('hmMap');
-  if(el && !el.querySelector('.gm-nomap')) el.innerHTML = '<div class="gm-nomap">The map library could not load — the connection or the map service is unavailable. The readout and the statistics in the sidebar still work; reload to try the map again.</div>';
+  if(el && !el.querySelector('.gm-nomap')) el.innerHTML = '<div class="gm-nomap">The map library could not load — the connection or the map service is unavailable. The readout and the statistics below the map still work; reload to try the map again.</div>';
 }
 function hmLoadLeaflet(cb){
   if(window.L){ cb(true); return; }
@@ -16585,16 +16621,15 @@ function onClick(ev){
        profile Timeline editor and Quick Add. */
     case 'ctfk': { var cfk = el.getAttribute('data-k'); CTL.fk[cfk] = !CTL.fk[cfk]; render(); break; }
     case 'ctday': { CTL.day = el.getAttribute('data-d'); var sb6 = document.getElementById('ctDaySide'); if(sb6){ sb6.innerHTML = ctlDayHTML(); $$('.ct-cell.sel').forEach(function(c6){ c6.classList.remove('sel'); }); el.classList.add('sel'); var sc6 = sb6.closest('.gm-ctside'); if(sc6) sc6.scrollTop = 0; } else render(); break; }
-    case 'hmplay': { if(HM.playing){ hmStopPlay(); } else { if(HM.dateIdx >= hmTotalDays()) HM.dateIdx = 0; HM.playing = true; el.textContent = 'Pause'; if(HM.timer) clearInterval(HM.timer); HM.timer = setInterval(hmTick, 100); hmTick(); } break; }
-    case 'hmspeed': { HM.speed = +el.getAttribute('data-s') || 1; $$('.gm-speed button').forEach(function(b6){ b6.classList.toggle('on', b6 === el); }); break; }
-    case 'hmheat': { HM.heat = !HM.heat; el.classList.toggle('on', HM.heat); el.setAttribute('aria-pressed', String(HM.heat)); hmClearSpider(); hmPaint(); break; }
-    case 'hmlayer': { var lk2 = el.getAttribute('data-l'); HM.layers[lk2] = !HM.layers[lk2]; el.classList.toggle('on', HM.layers[lk2]); el.setAttribute('aria-pressed', String(HM.layers[lk2])); hmClearSpider(); hmPaint(); break; }
+    case 'hmplay': { if(HM.playing){ hmStopPlay(); } else { var evsP = hmEvents(); if(!evsP.length) break; if(HM.evIdx >= evsP.length - 1) HM.evIdx = -1; HM.playing = true; el.textContent = 'Pause'; if(HM.timer) clearInterval(HM.timer); HM.timer = setInterval(hmTick, 1500); hmTick(); } break; }
+    case 'hmprev': { hmStopPlay(); hmSetEv(HM.evIdx, true); break; }
+    case 'hmnext': { hmStopPlay(); hmSetEv(HM.evIdx + 2, true); break; }
+    case 'hmall': { hmStopPlay(); hmSetEv(0, false); hmFitDefault(); break; }
     case 'hmapp': { hmSelectApp(+el.getAttribute('data-i')); break; }
     case 'hmreset': { hmFitDefault(); break; }
-    case 'hmplace': { hmSelectPlace(el.getAttribute('data-k'), true); break; }
-    case 'hmperson': { HM.selBack = HM.sel; HM.sel = { type:'person', di:+el.getAttribute('data-di') }; hmPaintDetail(hmDateAt(HM.dateIdx)); var nm2 = dispName(D.directory[HM.sel.di]); document.querySelectorAll('.gm-pdot').forEach(function(d){ d.classList.toggle('sel', d.title === nm2); }); break; }
-    case 'hmback': { var hbk = HM.selBack; HM.selBack = null; if(hbk && hbk.type === 'place'){ hmSelectPlace(hbk.key, true); } else { HM.sel = hbk; hmClearSpider(); hmPaint(); } break; }
-    case 'hmclose': { HM.sel = null; HM.selBack = null; hmClearSpider(); hmPaint(); break; }
+    case 'hmplace': { hmSelectPlace(el.getAttribute('data-k')); break; }
+    case 'hmback': { var hbk = HM.selBack; HM.selBack = null; if(hbk && hbk.type === 'place'){ hmSelectPlace(hbk.key); } else if(hbk && hbk.type === 'cluster'){ HM.sel = hbk; hmPaint(); } else { HM.sel = null; hmPaint(); } break; }
+    case 'hmclose': { HM.sel = null; HM.selBack = null; hmPaint(); break; }
     case 'hmfull': { if(HM.fs) hmFsExit(); else hmFsEnter(); break; }
     case 'hmlegend': { var lg2 = document.getElementById('hmLegend'); if(lg2){ var cl2 = lg2.classList.toggle('closed'); HM.legClosed = cl2; var lb3 = lg2.querySelector('.gm-legbtn'); if(lb3) lb3.textContent = cl2 ? 'Show' : 'Hide'; } break; }
     case 'ctnav': {
