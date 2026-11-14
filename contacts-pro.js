@@ -20,7 +20,7 @@ var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwZli1Dv07iWBpR3Oz4jD4
 /* App version — one number shared by both apps (Contacts Pro + explorer); scheme
    and changelog live in VERSION.md at the repo root. MAJOR = design era
    (3 = Clear glass), MINOR = feature batch, PATCH = fixes and small tweaks. */
-var APP_VERSION = '4.15.0';
+var APP_VERSION = '4.16.0';
 
 /* ---- Clear glass theme: mode x gradient scheme (V3.0.0) ----
    The boot script in the HTML head sets data-mode / data-scheme on
@@ -7875,7 +7875,7 @@ function v4MRow(label, small, barCls, pct, val){
 }
 
 function viewHome(v){
-  phLoad(); dtLoad(); chLoad(); wnLoad(); pfLoad(); rcLoad(); cnLoad();
+  phLoad(); dtLoad(); chLoad(); wnLoad(); pfLoad(); rcLoad(); cnLoad(); apLoad();
   if(HMI) hmiClose(true);
   var M = v4Metrics(), N = M.N, T = M.tiers, B = M.bands, cy = M.cy;
   var MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -8084,7 +8084,11 @@ var HM_VENUES = {
 };
 var HM = { ver:-1, model:null, dateIdx:-1, playing:false, speed:1, heat:false,
            sel:null, selBack:null, map:null, layer:null, spider:null, timer:null, cbs:null, loading:false,
-           fs:false, fsFallback:false };
+           fs:false, fsFallback:false,
+           /* V4.16.0 layers: web = web-search appearances (the
+              leading story), home = each person's place on file,
+              seen = dated proximity sightings. */
+           layers:{ web:true, home:true, seen:true }, apps:null };
 var HM_SPIDER_MAX = 28;
 function hmNormPlace(s){ return String(s || '').trim().toLowerCase().replace(/\s+/g, ' '); }
 function hmDateNorm(s){
@@ -8171,9 +8175,9 @@ function hmVisibleAt(ds){
   var M = hmModel(), out = [], byPlace = {};
   M.people.forEach(function(p){
     var pk = null;
-    for(var i = 0; i < p.visits.length; i++) if(p.visits[i].d === ds) pk = p.visits[i].pk;
-    if(!pk && p.home && p.appear && p.appear <= ds) pk = p.home;
-    if(!pk && p.home && p.undated && ds === M.maxD) pk = p.home;
+    if(HM.layers.seen) for(var i = 0; i < p.visits.length; i++) if(p.visits[i].d === ds) pk = p.visits[i].pk;
+    if(!pk && HM.layers.home && p.home && p.appear && p.appear <= ds) pk = p.home;
+    if(!pk && HM.layers.home && p.home && p.undated && ds === M.maxD) pk = p.home;
     if(!pk) return;
     var rec = { di:p.di, pk:pk, cls:hmClsAt(p, ds), undated:p.undated && ds === M.maxD && !(p.appear && p.appear <= ds) };
     out.push(rec);
@@ -8181,6 +8185,72 @@ function hmVisibleAt(ds){
   });
   return { list:out, byPlace:byPlace };
 }
+/* ============================================================
+   WEB APPEARANCES (V4.16.0, JD 2026-11-13): the map's leading
+   layer answers "who's been appearing in what web search,
+   where, and when?" — findings from the Live Records corpus
+   (site/data/appearances.json, derived by
+   scripts/build_appearances.py from the footprints + the
+   briefs' recorded published dates). An appearance exists on
+   the map FROM its published date forward; a finding with no
+   recorded published date is never backdated — it shows at
+   Today only, faded, like a person with no dated record.
+   Places come only from the record (the finding text, or the
+   person's place on file); findings with neither are counted
+   in the readout, never placed by guess.
+   ============================================================ */
+var AP = null, AP_LOADING = false;
+function apLoad(){
+  if(AP || AP_LOADING) return;
+  AP_LOADING = true;
+  fetch('data/appearances.json', { cache:'no-cache' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){ AP_LOADING = false; AP = d || { items:[], counts:null }; HM.apps = null; if(document.getElementById('hmMap')) hmPaint(); })
+    .catch(function(){ AP_LOADING = false; AP = { items:[], counts:null }; });
+}
+function hmAppsModel(){
+  if(HM.apps) return HM.apps;
+  var M = hmModel(), items = [], byPlace = {};
+  ((AP && AP.items) || []).forEach(function(a, i){
+    if(!a.pid) return;
+    if(!M.places[a.pid]){
+      var pr = a.pid.split(',').map(Number);
+      if(pr.length === 2 && !isNaN(pr[0])) M.places[a.pid] = { key:a.pid, label:a.place || a.pid, lat:pr[0], lng:pr[1] };
+      else return;
+    }
+    var rec = { i:i, di:a.di, display:a.display || '', text:a.text || '', source:a.source || '',
+                url:a.url || '', published:a.published || '', fresh:!!a.fresh,
+                pid:a.pid, place:a.place || '', placeSrc:a.place_src || '' };
+    items.push(rec);
+    (byPlace[a.pid] = byPlace[a.pid] || []).push(rec);
+  });
+  Object.keys(byPlace).forEach(function(pk){
+    byPlace[pk].sort(function(a, b){ return String(b.published || '').localeCompare(String(a.published || '')); });
+  });
+  HM.apps = { items:items, byPlace:byPlace, counts:(AP && AP.counts) || null };
+  return HM.apps;
+}
+function hmVisibleApps(ds){
+  var A = hmAppsModel(), M = hmModel(), list = [], byPlace = {};
+  A.items.forEach(function(a){
+    var on = a.published ? (a.published <= ds) : (ds === M.maxD);
+    if(!on) return;
+    list.push(a);
+    (byPlace[a.pid] = byPlace[a.pid] || []).push(a);
+  });
+  return { list:list, byPlace:byPlace };
+}
+function hmAppRecent(a, ds){ return !!a.published && Math.round((hmDayMs(ds) - hmDayMs(a.published)) / 864e5) <= 90; }
+function hmAppsPhrase(text){
+  var t = String(text || '').replace(/\s+/g, ' ').trim().replace(/\s*\([^()]+\)\s*$/, '');
+  if(t.length <= 92) return t;
+  var cut = t.slice(0, 92), best = -1;
+  ['. ', '; ', ' — ', ', '].forEach(function(mk){ var i = cut.lastIndexOf(mk); if(i > 40 && i > best) best = i; });
+  if(best > 0) return cut.slice(0, best) + '…';
+  var sp = cut.lastIndexOf(' ');
+  return (sp > 40 ? cut.slice(0, sp) : cut) + '…';
+}
+function hmAppWhen(a){ return a.published ? hmFmtDate(a.published) : 'No published date on file'; }
 function hmHeroDefaultHTML(){
   return '<div class="gm-hero-def"><h3>As of <span id="hmAsOf">—</span></h3>' +
     '<div class="gm-counts" id="hmCounts">—</div>' +
