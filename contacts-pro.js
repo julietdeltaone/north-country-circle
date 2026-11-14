@@ -8214,7 +8214,7 @@ function apLoad(){
   AP_LOADING = true;
   fetch('data/appearances.json', { cache:'no-cache' })
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(d){ AP_LOADING = false; AP = d || { items:[], counts:null }; HM.apps = null; if(document.getElementById('hmMap')) hmPaint(); })
+    .then(function(d){ AP_LOADING = false; AP = d || { items:[], counts:null }; HM.apps = null; HM.ev = null; if(document.getElementById('hmMap')) hmPaint(); })
     .catch(function(){ AP_LOADING = false; AP = { items:[], counts:null }; });
 }
 function hmAppsModel(){
@@ -8243,6 +8243,7 @@ function hmAppsModel(){
    stops. Cached against the loaded corpus. */
 function hmEvents(){
   if(HM.ev) return HM.ev;
+  if(!AP) return [];
   var A = hmAppsModel();
   HM.ev = A.items.filter(function(a){ return !!a.published; })
     .sort(function(a, b){ return a.published.localeCompare(b.published) || a.display.localeCompare(b.display); });
