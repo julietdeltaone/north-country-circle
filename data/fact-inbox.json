@@ -5281,6 +5281,10 @@
    "name": "ig:wayne_brown_ii",
    "pattern": "milestone",
    "source": "Bitwire",
+   "state": {
+    "at": "2026-11-14T02:54:49.571Z",
+    "status": "read"
+   },
    "url": "https://www.bitwire.com/feed/cra-marketplace-and-black-lake-digital-markets-launch-gather-tm-the-first-end-to-end-institutional-platform-built-for-cra-eligible-mortgage-assets"
   },
   {
@@ -5294,6 +5298,10 @@
    "name": "sf:raedyn-spademan",
    "pattern": "milestone",
    "source": "Clarkson University Athletics",
+   "state": {
+    "at": "2026-11-14T02:54:53.397Z",
+    "status": "read"
+   },
    "url": "https://clarksonathletics.com/news/2026/10/24/womens-hockey-knights-record-sixth-straight-win-with-6-1-victory-over-providence.aspx"
   },
   {
@@ -5307,6 +5315,10 @@
    "name": "sf:raedyn-spademan",
    "pattern": "milestone",
    "source": "Clarkson University Athletics",
+   "state": {
+    "at": "2026-11-14T02:54:53.397Z",
+    "status": "read"
+   },
    "url": "https://clarksonathletics.com/news/2026/9/26/womens-hockey-hat-tricks-for-spademan-and-pellerin-in-knights-8-1-win-over-rit.aspx"
   },
   {
@@ -5320,6 +5332,10 @@
    "name": "sf:raedyn-spademan",
    "pattern": "correction",
    "source": "Clarkson University Athletics",
+   "state": {
+    "at": "2026-11-14T02:54:53.397Z",
+    "status": "read"
+   },
    "url": "https://clarksonathletics.com/news/2026/10/24/womens-hockey-knights-record-sixth-straight-win-with-6-1-victory-over-providence.aspx"
   },
   {
@@ -5333,6 +5349,10 @@
    "name": "sf:ashleigh-graveline",
    "pattern": "milestone",
    "source": "New York State Occupational Therapy Association",
+   "state": {
+    "at": "2026-11-14T02:54:54.837Z",
+    "status": "read"
+   },
    "url": "https://www.nysota.org/events/EventDetails.aspx?id=1784758"
   },
   {
@@ -5346,6 +5366,10 @@
    "name": "sf:sarah-diederich",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-14T02:54:56.485Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/news/CPS2025SomethingRotten"
   },
   {
@@ -5359,6 +5383,10 @@
    "name": "sf:sarah-diederich",
    "pattern": "milestone",
    "source": "SUNY Potsdam",
+   "state": {
+    "at": "2026-11-14T02:54:56.485Z",
+    "status": "read"
+   },
    "url": "https://www.potsdam.edu/news/computingVenus"
   },
   {
@@ -5372,6 +5400,10 @@
    "name": "sf:dale-fournier",
    "pattern": "milestone",
    "source": "Clarkson University",
+   "state": {
+    "at": "2026-11-14T02:54:57.567Z",
+    "status": "read"
+   },
    "url": "https://www.clarkson.edu/people/dale-fournier"
   },
   {
@@ -5385,6 +5417,10 @@
    "name": "sf:luke-boyle",
    "pattern": "new_credential",
    "source": "SEC / FINRA IAPD",
+   "state": {
+    "at": "2026-11-14T02:55:01.438Z",
+    "status": "read"
+   },
    "url": "https://reports.adviserinfo.sec.gov/reports/individual/individual_7646490.pdf"
   }
  ],
