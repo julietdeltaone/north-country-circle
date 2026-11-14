@@ -16373,6 +16373,32 @@
    "fields": {},
    "published": "2017-03-12",
    "novelty": "new"
+  },
+  {
+   "id": "lr-20261113-ig-vivian-de-voe-cast-as-marina-in-the-indie-film-spi",
+   "name": "ig:vivian_de_voe",
+   "display": "Vivian De Voe",
+   "run_date": "2026-11-13",
+   "run_label": "Daily rotation (PM)",
+   "category": "identity",
+   "claim": "The crowdfunding page for the indie film Spiral casts a Vivian De Voe as Marina and says she is a New York City based actor.",
+   "file_text": "Cast as Marina in the indie film Spiral",
+   "source": "Seed&Spark",
+   "url": "http://seedandspark.com/fund/spiral-1",
+   "anchors": [
+    "Acting (the one fact on her record)"
+   ],
+   "quote": "Vivian De Voe is a New York City based actor. In her free time she enjoys cooking for her friends, watching tv, and playing semi-alarming amounts of Fortnite.",
+   "missing_gate": "Her record has no facts on file beyond acting, and this page matches only that, so I cannot tell this is the same person.",
+   "confidence": 45,
+   "confidence_parts": {
+    "identity": 20,
+    "source": 15,
+    "detail": 10
+   },
+   "fields": {},
+   "published": "",
+   "novelty": "new"
   }
  ]
 }
