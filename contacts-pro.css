@@ -7217,14 +7217,15 @@ a.af-src-chip:hover{text-decoration:underline}
 
 /* ============================================================
    V4.14.0 — Home map hero + Calendar day sidebar.
-   The Home band: compact stat rails flanking the map card.
+   The Home band: the map card with ONE sidebar on the right
+   (V4.15.0 — hero card on top, then the compact stats).
    Colours ride the pv tokens; the four recency inks are fixed
-   hexes so they read identically on CARTO dark and light
-   tiles: gold #d9a441 (in touch), steel #6ea8d8 (within a
+   hexes so they read identically on the Esri dark and light
+   basemaps: gold #d9a441 (in touch), steel #6ea8d8 (within a
    year), slate #8b94a1 (over a year), violet #a58fd4 (seen,
    no contact yet). Undated pins render at half opacity.
    ============================================================ */
-.gm-band{display:grid;grid-template-columns:252px minmax(0,1fr) 302px;gap:16px;margin-bottom:16px;align-items:start}
+.gm-band{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:16px;margin-bottom:16px;align-items:start}
 .gm-rail{display:flex;flex-direction:column;gap:16px;min-width:0}
 .gm-kpi,.gm-mini{background:var(--pv-panel);border:1px solid var(--pv-line);border-radius:12px;padding:12px}
 .gm-kpi .lab{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pv-mut);font-weight:700}
@@ -7275,6 +7276,37 @@ html[data-mode="light"] .gm-map{background:#e8edf3}
 .gm-prow{display:flex;gap:8px;align-items:center;padding:5px 2px;color:var(--pv-text);text-decoration:none;font-size:12.5px;border-bottom:1px solid var(--pv-line)}
 .gm-prow:last-child{border-bottom:0}
 .gm-pn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* V4.15.0: the single right sidebar — compact stat rows compacted
+   from the retired left rail, and the hero card that carries the
+   click detail at the TOP of the sidebar. */
+.gm-skpi{padding:7px 0;border-bottom:1px solid var(--pv-line)}
+.gm-skpi:last-of-type{border-bottom:0}
+.gm-sk-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.gm-skpi .lab{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--pv-mut);font-weight:700}
+.gm-skpi .num{font-size:19px;font-weight:750;line-height:1.1;color:var(--pv-text);white-space:nowrap}
+.gm-skpi .num small{font-size:12px;color:var(--pv-mut);font-weight:600}
+.gm-skpi .sub{font-size:11.5px;color:var(--pv-dim);line-height:1.45;margin-top:2px}
+.gm-subh{font-size:12.5px;margin:14px 0 6px;color:var(--pv-text)}
+.gm-hero{background:var(--pv-panel);border:1px solid var(--pv-line);border-radius:12px;padding:14px}
+.gm-hero h3{font-size:12.5px;margin:0 0 8px;color:var(--pv-text)}
+.gm-hero .gm-hero-name{font-size:21px;line-height:1.2;margin:0 0 6px;color:var(--pv-text)}
+.gm-hero-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.gm-hero-kick{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--pv-gold);font-weight:700}
+.gm-hero-btns{display:flex;gap:6px}
+.gm-hero-x{background:transparent;border:1px solid var(--pv-line);border-radius:7px;color:var(--pv-mut);font:600 11.5px inherit;padding:3px 9px;cursor:pointer}
+.gm-hero-x:hover{color:var(--pv-text);border-color:var(--pv-line2)}
+.gm-hero-hint{margin-top:8px}
+.gm-hero-id{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.gm-hero-id .gm-dsub{margin-bottom:0}
+.gm-hero-av{flex:none;width:72px;height:72px}
+.gm-hero-av .af-av,.gm-hero-av .av{width:72px;height:72px;font-size:26px}
+.gm-hero-meta{display:flex;gap:20px;flex-wrap:wrap;margin:10px 0 6px}
+.gm-hero-meta span{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--pv-mut);font-weight:700;margin-bottom:2px}
+.gm-hero-meta b{font-size:14px;color:var(--pv-text);font-weight:650}
+.gm-hero-acts{margin-top:10px}
+.gm-hero .gm-plist{max-height:300px}
+button.gm-prow{font:inherit;background:transparent;border:0;border-bottom:1px solid var(--pv-line);width:100%;text-align:left;cursor:pointer}
+button.gm-prow:last-child{border-bottom:0}
 /* Leaflet divIcon content */
 .gm-di{background:none;border:none}
 .gm-badge{position:relative;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--pv-panel2);border:2.5px solid #8b94a1;color:var(--pv-text);font:700 12px/1 inherit;box-shadow:0 1px 5px rgba(0,0,0,.45);cursor:pointer}
@@ -7288,8 +7320,8 @@ html[data-mode="light"] .gm-map{background:#e8edf3}
 .gm-cluster small{font-size:8.5px;font-weight:600;color:var(--pv-mut);letter-spacing:.04em}
 .gm-pdot{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;color:#10131a;font:700 10.5px/1 inherit;border:1.5px solid rgba(255,255,255,.65);box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:pointer}
 @media(max-width:1240px){
-  .gm-band{grid-template-columns:1fr 1fr}
-  .gm-mapcard{grid-column:1/-1;order:-1}
+  .gm-band{grid-template-columns:1fr}
+  .gm-mapcard{order:-1}
 }
 @media(max-width:760px){
   .gm-band{grid-template-columns:1fr}
