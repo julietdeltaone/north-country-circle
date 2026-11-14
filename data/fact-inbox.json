@@ -5422,6 +5422,84 @@
     "status": "read"
    },
    "url": "https://reports.adviserinfo.sec.gov/reports/individual/individual_7646490.pdf"
+  },
+  {
+   "id": "fi-20261114-jordyn-hill-lost-his-opening-match-b",
+   "key": "sf:jordyn-hill",
+   "name": "sf:jordyn-hill",
+   "display": "Jordyn Hill",
+   "anchor": "Onondaga Community College \u00b7 Wrestling",
+   "fact": "Lost his opening match by fall in 5:27 to Oneonta's Tristan Hinchcliff in the 125 lb Freshman/Sophomore Division at the New York State Collegiate Wrestling Championships, Nov 2025",
+   "pattern": "milestone",
+   "source": "SUNY Oneonta Athletics",
+   "url": "https://oneontaathletics.com/news/2025/11/24/wrestling-leonard-and-monina-win-titles-at-nys-collegiate-championships-as-eight-red-dragons-place-top-six.aspx",
+   "learned": "2026-11-14",
+   "batch": "AM run \u2014 Nov 14, 2026"
+  },
+  {
+   "id": "fi-20261114-kaitlyn-mallette-graduated-from-george-el",
+   "key": "sf:kaitlyn-mallette",
+   "name": "sf:kaitlyn-mallette",
+   "display": "Kaitlyn Mallette",
+   "anchor": "Clarkson University \u00b7 Women's Hockey",
+   "fact": "Graduated from George Elliott Secondary School in 2025",
+   "pattern": "new_credential",
+   "source": "Clarkson University Athletics",
+   "url": "https://clarksonathletics.com/sports/womens-ice-hockey/roster/kaitlyn-mallette/9474",
+   "learned": "2026-11-14",
+   "batch": "AM run \u2014 Nov 14, 2026"
+  },
+  {
+   "id": "fi-20261114-victoria-fitch-led-the-online-campus-to",
+   "key": "sf:victoria-fitch",
+   "name": "sf:victoria-fitch",
+   "display": "Victoria Fitch",
+   "anchor": "SUNY Potsdam \u00b7 Director of Stewardship",
+   "fact": "Led the online campus tour for SUNY Potsdam's Reunion 2026, Jul 2026",
+   "pattern": "milestone",
+   "source": "SUNY Potsdam",
+   "url": "https://www.potsdam.edu/alumni-friends/reunion/reunion-schedule",
+   "learned": "2026-11-14",
+   "batch": "AM run \u2014 Nov 14, 2026"
+  },
+  {
+   "id": "fi-20261114-conor-miller-lynch-presented-a-progress-rep",
+   "key": "sf:conor-miller-lynch",
+   "name": "sf:conor-miller-lynch",
+   "display": "Conor Miller-Lynch",
+   "anchor": "CITeR \u00b7 Biometrics Research",
+   "fact": "Presented a progress-report poster on 'A Comprehensive Evaluation of End-to-End Conditional Synthetic Fingerprint Generation' at the CITeR Fall 2026 Program Review in Charlotte, Oct 2026",
+   "pattern": "milestone",
+   "source": "Center for Identification Technology Research",
+   "url": "https://research.charlotte.edu/wp-content/uploads/sites/631/2026/10/DRAFT-Fall-2026-Agenda-updated-10-15-2026.pdf",
+   "learned": "2026-11-14",
+   "batch": "AM run \u2014 Nov 14, 2026"
+  },
+  {
+   "id": "fi-20261114-conor-miller-lynch-gave-a-final-report-on-t",
+   "key": "sf:conor-miller-lynch",
+   "name": "sf:conor-miller-lynch",
+   "display": "Conor Miller-Lynch",
+   "anchor": "CITeR \u00b7 Biometrics Research",
+   "fact": "Gave a final report on 'Towards 3D Contactless Fingerprint and Face Matching' at the CITeR Fall 2026 Program Review in Charlotte, Oct 2026",
+   "pattern": "milestone",
+   "source": "Center for Identification Technology Research",
+   "url": "https://research.charlotte.edu/wp-content/uploads/sites/631/2026/10/DRAFT-Fall-2026-Agenda-updated-10-15-2026.pdf",
+   "learned": "2026-11-14",
+   "batch": "AM run \u2014 Nov 14, 2026"
+  },
+  {
+   "id": "fi-20261114-ana-miller-listed-as-teacher-integr",
+   "key": "ct:ana miller",
+   "name": "ct:ana miller",
+   "display": "Ana Miller",
+   "anchor": "Massena Central School District \u00b7 Madison Elementary",
+   "fact": "Listed as Teacher - Integrated Pre-K at Madison Elementary in the Massena Central School District's 2026-27 employee directory",
+   "pattern": "correction",
+   "source": "Massena Central School District",
+   "url": "https://4.files.edl.io/9751/09/03/26/194247-dd24acc4-3053-4b0a-8725-2e47d162bb3d.pdf",
+   "learned": "2026-11-14",
+   "batch": "AM run \u2014 Nov 14, 2026"
   }
  ],
  "patterns": {
