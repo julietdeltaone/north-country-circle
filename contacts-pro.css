@@ -7307,6 +7307,57 @@ html[data-mode="light"] .gm-map{background:#e8edf3}
 .gm-hero .gm-plist{max-height:300px}
 button.gm-prow{font:inherit;background:transparent;border:0;border-bottom:1px solid var(--pv-line);width:100%;text-align:left;cursor:pointer}
 button.gm-prow:last-child{border-bottom:0}
+/* Full-screen map mode (V4.15.0): the map card fills the screen —
+   native fullscreen, or the fixed full-viewport fallback class
+   where the API is unavailable. The hero card and legend ride as
+   an overlay panel inside the card, above the Leaflet panes. */
+.gm-mapcard{position:relative}
+.gm-mapcard.gm-full{display:flex;flex-direction:column;width:100%;height:100%;border-radius:0;border:0;padding:14px;background:var(--pv-panel)}
+.gm-mapcard.gm-full .gm-map{flex:1;height:auto;min-height:0}
+.gm-mapcard.gm-full-fb{position:fixed;inset:0;z-index:2000}
+body.gm-fs-lock{overflow:hidden}
+.gm-fspanel{position:absolute;top:84px;right:12px;width:min(336px,calc(100vw - 24px));max-height:calc(100% - 96px);overflow-y:auto;display:flex;flex-direction:column;gap:12px;z-index:1200}
+.gm-fspanel>*{flex:none}
+/* Design-audit redesign pass (V4.15.0, panel of three reviewers,
+   2026-11-13): clusters carry their dominant place's name; the
+   selected place gets a halo; "no dated record" is a dashed ring
+   (shape, not just colour); hero rhythm and affordances fixed. */
+.gm-badge.und{border-style:dashed}
+.gm-pdot.und{border-style:dashed}
+.gm-badge.sel,.gm-pdot.sel{outline:2.5px solid var(--pv-text);outline-offset:2px}
+html[data-mode="light"] .gm-badge{box-shadow:0 1px 3px rgba(16,24,40,.18),0 0 0 1px rgba(16,24,40,.05)}
+.gm-cluster{box-shadow:4px 4px 0 -2px var(--pv-panel2),4px 4px 0 0 var(--pv-line2),0 1px 6px rgba(0,0,0,.45);font-size:15px}
+.gm-clab{border-style:dashed}
+.gm-sw{box-shadow:0 0 0 1px rgba(140,150,170,.55)}
+.gm-sw.c-und{background:transparent;border:2px dashed #7d8595;box-sizing:border-box}
+.gm-dot{box-shadow:0 0 0 1px rgba(140,150,170,.35)}
+.gm-hero-kick{color:var(--pv-mut)}
+.gm-trow b{color:var(--pv-text)}
+.gm-trow:hover b{color:#d9a441}
+.gm-chev{color:var(--pv-dim);font-size:14px;margin-left:8px;flex:none}
+.gm-hero{padding:16px 16px 18px}
+.gm-hero .gm-plist{max-height:297px}
+.gm-pn{flex:1}
+.gm-pdate{margin-left:auto;font-size:11px;color:var(--pv-mut);flex:none}
+.gm-pfoot{font-size:11px;color:var(--pv-dim);margin-top:8px}
+.gm-hero-x{min-height:30px;padding:5px 12px;font-size:12px;font-weight:600}
+.gm-hero-x.back{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gm-dline{align-items:flex-start}
+.gm-dline .gm-dot{margin-top:4px;flex:none}
+.gm-hero .gm-dsub{margin-top:5px}
+.gm-openbtn{width:100%;height:36px;display:inline-flex;align-items:center;justify-content:center}
+.gm-counts{font-size:15px}
+.gm-hero-hint{color:var(--pv-text);font-size:12px;margin:8px 0 0}
+.gm-mtools .btn.ghost{border:1px solid var(--pv-line2);background:var(--pv-panel2);color:var(--pv-text);font-weight:600}
+.gm-mtools .btn[aria-pressed="true"]{background:var(--pv-text);border-color:transparent;color:var(--pv-panel)}
+.gm-scrubhint{text-align:center;font-size:10.5px;color:var(--pv-dim);margin-top:3px}
+.gm-legbtn{display:none;float:right;font:inherit;font-size:11px;font-weight:600;background:transparent;border:1px solid var(--pv-line2);color:var(--pv-mut);border-radius:999px;padding:2px 10px;cursor:pointer}
+.gm-full .gm-legbtn{display:inline-block}
+.gm-full #hmLegend.closed .gm-legend,.gm-full #hmLegend.closed .gm-leg-note{display:none}
+.gm-fshint{position:absolute;left:50%;bottom:70px;transform:translateX(-50%);background:var(--pv-panel);border:1px solid var(--pv-line2);color:var(--pv-text);font-size:12px;padding:6px 14px;border-radius:999px;z-index:1300;box-shadow:0 8px 28px rgba(0,0,0,.45);animation:gmFsHint 4.2s forwards;pointer-events:none}
+@keyframes gmFsHint{0%,70%{opacity:1}100%{opacity:0;visibility:hidden}}
+.gm-full .gm-hero,.gm-full .gm-mini{box-shadow:0 8px 28px rgba(0,0,0,.45)}
+.gm-full .gm-mhead p{max-width:640px}
 /* Leaflet divIcon content */
 .gm-di{background:none;border:none}
 .gm-badge{position:relative;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--pv-panel2);border:2.5px solid #8b94a1;color:var(--pv-text);font:700 12px/1 inherit;box-shadow:0 1px 5px rgba(0,0,0,.45);cursor:pointer}
