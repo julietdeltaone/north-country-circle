@@ -7370,6 +7370,47 @@ html[data-mode="light"] .gm-badge{box-shadow:0 1px 3px rgba(16,24,40,.18),0 0 0 
 .gm-cluster{display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;background:var(--pv-panel2);border:2px solid var(--pv-line2);color:var(--pv-text);font:750 14px/1.1 inherit;box-shadow:0 1px 6px rgba(0,0,0,.45);cursor:pointer}
 .gm-cluster small{font-size:8.5px;font-weight:600;color:var(--pv-mut);letter-spacing:.04em}
 .gm-pdot{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;color:#10131a;font:700 10.5px/1 inherit;border:1.5px solid rgba(255,255,255,.65);box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:pointer}
+/* V4.16.0 — web appearances layer (JD 2026-11-13): layer chips,
+   labeled appearance pins, findings-count diamonds, the Latest
+   appearances strip, and the appearance hero bits. Recency inks
+   match the map legend: gold = published within 21 days, steel
+   = within 90 days, slate = older, hollow dashed = no published
+   date (Today only, never backdated). */
+.gm-layers{display:inline-flex;gap:6px;flex-wrap:wrap}
+.gm-lchip{font:600 12px inherit;padding:5px 11px;border-radius:999px;border:1px solid var(--pv-line2);background:var(--pv-panel2);color:var(--pv-mut);cursor:pointer;min-height:30px}
+.gm-lchip.on{color:var(--pv-text);border-color:var(--pv-mut)}
+.gm-lchip.l-web.on{border-color:#d9a441;color:#d9a441}
+html[data-mode="light"] .gm-lchip.l-web.on{color:#9a6d1d;border-color:#b98a2e}
+.gm-astrip{margin-top:12px;border-top:1px solid var(--pv-line);padding-top:10px}
+.gm-as-head{font-size:12.5px;font-weight:700;color:var(--pv-text);margin-bottom:6px}
+.gm-as-head span{font-weight:500;color:var(--pv-dim);margin-left:8px;font-size:11.5px}
+.gm-asrow{display:flex;gap:10px;align-items:center;width:100%;background:transparent;border:0;border-bottom:1px solid var(--pv-line);padding:6px 2px;color:var(--pv-text);font:500 12.5px inherit;cursor:pointer;text-align:left}
+.gm-asrow:last-of-type{border-bottom:0}
+.gm-asrow:hover .gm-aswho{color:#d9a441}
+.gm-aswho{font-weight:700;white-space:nowrap;flex:none}
+.gm-aswhat{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--pv-dim)}
+.gm-aswhere{flex:none;color:var(--pv-mut);font-size:11.5px;white-space:nowrap}
+.gm-aswhen{flex:none;font-size:11.5px;color:var(--pv-mut);font-variant-numeric:tabular-nums;white-space:nowrap}
+.gm-asfoot{font-size:11.5px;color:var(--pv-dim);line-height:1.5;margin-top:7px}
+.gm-adot{flex:none;width:9px;height:9px;border-radius:50%;background:#8b94a1}
+.gm-adot.a-hot{background:#d9a441;box-shadow:0 0 0 2px color-mix(in srgb,#d9a441 30%,transparent)}
+.gm-adot.a-mid{background:#6ea8d8}
+.gm-adot.a-old{background:#8b94a1}
+.gm-adot.a-und{background:transparent;border:2px dashed #7d8595;box-sizing:border-box}
+.gm-apin{display:flex;flex-direction:column;gap:1px;width:188px;box-sizing:border-box;background:var(--pv-panel);border:1px solid var(--pv-line2);border-left:3px solid #6ea8d8;border-radius:9px;padding:6px 9px;box-shadow:0 3px 12px rgba(0,0,0,.5);cursor:pointer;overflow:hidden}
+.gm-apin b{font-size:12px;line-height:1.25;color:var(--pv-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gm-apin i{font-style:normal;font-size:11px;line-height:1.3;color:var(--pv-dim);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gm-apin.fresh{border-left-color:#d9a441}
+.gm-apin.sel{outline:2.5px solid var(--pv-text);outline-offset:1px}
+.gm-abadge{display:inline-flex;align-items:center;gap:6px;background:var(--pv-panel);border:1.5px solid #6ea8d8;color:var(--pv-text);font:700 11.5px/1 inherit;border-radius:999px;padding:5px 9px;box-shadow:0 2px 8px rgba(0,0,0,.5);cursor:pointer;white-space:nowrap}
+.gm-abadge.und{border-style:dashed;border-color:#7d8595}
+.gm-adia{width:7px;height:7px;background:#6ea8d8;transform:rotate(45deg);flex:none}
+.gm-abadge.und .gm-adia{background:transparent;border:1.5px dashed #7d8595;box-sizing:border-box}
+.gm-sw.a-pin{border-radius:4px;background:var(--pv-panel);border:1.5px solid #d9a441;box-sizing:border-box}
+.gm-sw.a-dia{border-radius:2px;background:#6ea8d8;transform:rotate(45deg) scale(.82)}
+.gm-dsub2{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--pv-mut);font-weight:700;margin:12px 0 4px}
+.gm-afind{font-size:14.5px;line-height:1.55;color:var(--pv-text);background:var(--pv-panel2);border:1px solid var(--pv-line);border-left:3px solid #d9a441;border-radius:9px;padding:11px 13px;margin-bottom:6px}
+.gm-aplist{max-height:220px}
 @media(max-width:1240px){
   .gm-band{grid-template-columns:1fr}
   .gm-mapcard{order:-1}
